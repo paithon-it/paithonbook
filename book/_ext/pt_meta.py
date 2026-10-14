@@ -1,15 +1,15 @@
 """Una descrizione diversa per ogni pagina, presa dal testo della pagina.
 
-Prima di questa estensione tutte le 160 pagine del libro dichiaravano lo stesso
+Senza, tutte le pagine del libro dichiarerebbero lo stesso
 `<meta name="description">`, lo stesso `og:title` e lo stesso `og:url` (quello
 della landing). Per un motore di ricerca, per un assistente che cita e per
 l'anteprima di un link condiviso quella riga *e'* la pagina: identica su tutte
 significa nessuna informazione su nessuna.
 
-La descrizione non si scrive a mano una per pagina (160 righe da tenere in
-pari): si prende il **primo paragrafo**, che nel libro e' sempre l'aggancio
-della sezione, ed e' scritto per spiegare di cosa si parla. Il valore finisce
-nel contesto del template come `pt_descrizione`, e lo usa
+La descrizione non si scrive a mano una per pagina (sarebbe una riga per
+pagina da tenere in pari): si prende il **primo paragrafo**, che nel libro e'
+sempre l'aggancio della sezione, ed e' scritto per spiegare di cosa si parla.
+Il valore finisce nel contesto del template come `pt_descrizione`, e lo usa
 `_static/head_custom.html`.
 
 La landing non passa da qui: apre con l'istruzione per l'interruttore dei

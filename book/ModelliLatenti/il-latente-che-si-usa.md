@@ -1,31 +1,31 @@
 # Il latente che si usa
 
-Con uno spazio latente ben fatto si può fare una cosa che ha l’aria di un gioco
-di prestigio: si prende il codice di un’immagine, si cambia un numero solo, lo
-si fa decodificare, e l’immagine che esce è quella di prima con una cosa sola
-diversa. Più luce. La stessa faccia girata di lato. Lo stesso volto con gli
-occhiali.
+Con uno spazio latente ben fatto si può compiere un’operazione che ha l’aria di
+un gioco di prestigio: si prende il codice di un’immagine, si cambia un numero
+solo, lo si fa decodificare, e l’immagine che esce è quella di prima con un
+solo elemento diverso. Più luce. La stessa faccia girata di lato. Lo stesso
+volto con gli occhiali.
 
-Quando funziona è una meraviglia, perché vuol dire che l’encoder, senza che
-nessuno glielo abbia chiesto, ha scoperto da solo di che cosa sono fatte le
-immagini. E qui c’è la domanda, ed è in due tempi:
-si può *chiedergli* di farlo? E se si chiede, che cosa si paga?
+Quando funziona è una meraviglia, perché l’encoder ha scoperto, senza che
+nessuno glielo chiedesse, di che cosa sono fatte le immagini. La domanda è in
+due tempi: si può *chiedergli* di farlo? E se si chiede, che cosa si paga?
 
 ## Un peso sul costo di descrizione
 
-Il VAE (l’autoencoder variazionale della sezione precedente) si addestra su una
-perdita fatta di due termini: quanto male si ricostruisce, e quanto costa
-descrivere il dato nel codice. Chi ha un conto con due voci prima o poi prova a
-cambiare il peso di una delle due, ed è esattamente quello che fecero Irina
-Higgins e colleghi nel 2017 {cite}`higgins2017beta`: moltiplicare il costo di
-descrizione per un coefficiente $\beta > 0$. La macchina che ne esce si chiama
+Il VAE (l’autoencoder variazionale della {doc}`sezione sull’ELBO
+</ModelliLatenti/il-salto-probabilistico>`) si addestra su una
+perdita fatta di due termini: quanto male si ricostruisce, e quanto si spende
+per descrivere il dato nel codice. Prima o poi si prova a cambiare il peso di
+una delle due voci, e lo fecero Irina Higgins e colleghi nel 2017
+{cite}`higgins2017beta`: moltiplicare il costo di descrizione per un
+coefficiente $\beta > 0$. La macchina che ne esce si chiama
 **$\beta$-VAE**: con $\beta = 1$ è il VAE di prima, con $\beta > 1$ il costo
 di descrizione pesa di più, con $\beta < 1$ di meno.
 
 `````{tab} Elementare
 
-Girare la manopola vuol dire chiedere all’archivista di essere ancora più
-sintetico. Con la manopola a uno siamo al patto della sezione precedente; a
+Con la manopola si chiede all’archivista di essere ancora più
+sintetico. Con la manopola a uno siamo al patto di prima; a
 due gli si dice che ogni riga scritta costa il doppio; a quattro, il quadruplo.
 Un tetto e un prezzo, per lui, sono due modi di dare lo stesso ordine: invece di
 scrivergli sul
@@ -38,12 +38,11 @@ luce, una sola per l’inclinazione, invece di spargere ogni cosa un po’
 dappertutto.
 
 Il modo in cui obbedisce ha una parte che sorprende: non accorcia soltanto le
-righe, ne spegne qualcuna del tutto, lasciando cadere per intero quelle che
-gli rendono meno e concentrandosi su quelle che restano. Fin qui è proprio il
-mestiere che gli abbiamo chiesto.
+righe, ne spegne qualcuna del tutto, lasciando cadere quelle che gli rendono
+meno e concentrandosi su quelle che restano. Fin qui fa il lavoro richiesto.
 
-Ma quel mestiere ha un punto in cui si rovescia, ed è lo stesso di cui la
-sezione precedente aveva già avvertito. A un archivista a cui la scrittura
+Il lavoro ha un punto in cui si rovescia, lo stesso già segnalato per
+l’ELBO. A un archivista a cui la scrittura
 costa troppo non conviene più essere sintetico: conviene smettere di
 scrivere. Prima cadono le righe che servivano meno, poi quelle che servivano
 un po’, e alla fine consegna schede vuote. A quel punto il copista dipinge
@@ -54,11 +53,11 @@ da cambiare.
 A volte la manopola c’era già, con un altro nome. Certe pagelle dicono al
 copista «su ogni pixel tollero un errore di tanto»: più si tollera, meno conta
 ricostruire bene, e più pesa, al confronto, il costo della scheda, cioè quel
-«tanto» fa lo stesso lavoro della manopola. Vale finché la tolleranza la sceglie
-chi addestra; se la si lascia scegliere al copista, la manopola sparisce. La
-pagella di queste cifre giudica ogni pixel come una scommessa fra bianco e
-nero, e una tolleranza da regolare non ce l’ha: la manopola va messa a mano, ed
-è quello che facciamo adesso, girandola su quattro tacche.
+«tanto» fa lo stesso lavoro della manopola. Vale finché la tolleranza la
+sceglie chi addestra; se la si lascia scegliere al copista, la manopola
+sparisce. La pagella di queste cifre giudica ogni pixel come una scommessa fra
+bianco e nero, e una tolleranza da regolare non ce l’ha: la manopola va messa a
+mano, e adesso la giriamo su quattro tacche.
 
 `````
 
@@ -95,8 +94,8 @@ cioè l’obiettivo del $\beta$-VAE con $\beta = 2\sigma^2$ quando la sua
 ricostruzione è scritta come somma dei quadrati degli scarti. Il valore
 numerico dipende da quella convenzione (con $-\tfrac{1}{2}\lVert\cdot\rVert^2$
 verrebbe $\sigma^2$, con la media sui pixel invece della somma $2\sigma^2/D$);
-quello che non ne dipende è che $\beta$ e la varianza del rumore regolano la
-stessa cosa. Due riserve,
+resta invariante che $\beta$ e la varianza del rumore regolano lo stesso
+compromesso. Due riserve,
 però, e la seconda morde qui: se $\sigma^2$ viene appreso invece che
 fissato, il termine additivo $-\tfrac{D}{2}\log(2\pi\sigma^2)$ non è più una
 costante e quel grado di libertà sparisce; e il nostro decoder non è
@@ -108,11 +107,12 @@ La seconda: l’effetto atteso è che le componenti latenti si specializzino, e 
 meccanismo per cui dovrebbe succedere è la pressione a spegnerne alcune.
 Ogni componente con $D_{\mathrm{KL}}$ vicino a zero è una componente che
 l’encoder ha rinunciato a usare, e in cui $q_\phi(z_j \mid \mathbf{x}) \approx
-p(z_j)$: è il collasso della posterior della sezione precedente, che qui compare
+p(z_j)$: è il collasso della posterior descritto per l’ELBO, che qui compare
 non come guasto ma come strumento di selezione. Nel caso lineare-gaussiano
 la soglia si scrive: con $\sigma^2$ fissato una componente si spegne quando
 il suo autovalore non supera $\sigma^2$ {cite}`tipping1999probabilistic`, e
-siccome $\beta$ fa il mestiere di $2\sigma^2$, alzare $\beta$ spegne le
+siccome $\beta$ corrisponde a
+$2\sigma^2$, alzare $\beta$ spegne le
 componenti a partire dalla più debole. Fra strumento e guasto passa il valore
 di $\beta$, e l’esperimento sulle quattro tacche misura dove.
 
@@ -181,15 +181,15 @@ La tabella dice tre cose.
 
 Il baratto va sempre nella stessa direzione: al crescere di $\beta$ si spende
 meno in costo di descrizione e si ricostruisce peggio, da 18,6 nat a 27,1.
-È quello che ci si aspetta da un problema vincolato come quello da cui nasce il
+Lo si può prevedere da un problema vincolato come quello da cui nasce il
 $\beta$-VAE: ogni valore di $\beta$ sceglie un punto diverso della stessa
 frontiera fra ricostruzione e costo, nessuno è «giusto» in assoluto, e dove
 stare dipende da che cosa serve.
 
 Le righe del codice si spengono, e non sempre una alla volta: da $\beta =
 0{,}5$ a $\beta = 1$ se ne spengono due, da 1 a 2 una, da 2 a 4 le ultime tre
-insieme. Già a $\beta = 1$, il VAE della sezione precedente, quattro delle otto
-righe portano zero nat: la rete ha scelto da sé di usarne quattro. La
+insieme. Già a $\beta = 1$, il VAE di prima, quattro delle otto
+righe portano zero nat: la rete ha scelto di usarne quattro. La
 dimensione effettiva del latente è quindi il numero di componenti attive,
 quelle con un costo di descrizione sopra zero, e la sceglie l’ottimizzazione
 in funzione di $\beta$, non chi dichiara `LATENTE = 8`; in pratica si dichiara
@@ -198,17 +198,17 @@ addestramento solo, con un seme fisso: con un altro seme le cifre si spostano
 di poco e una riga debole può accendersi o spegnersi, mentre la discesa al
 crescere di $\beta$ resta.)
 
-A $\beta = 4$ l’encoder ha smesso di codificare. Costo zero su tutte le
-righe: è il collasso della posterior, arrivato non per sfortuna ma perché lo
-abbiamo comprato alzando $\beta$. E c’è una conferma indipendente, che
-viene da due sezioni fa: la ricostruzione a $\beta = 4$ vale 27,1 nat, che
-è lo stesso costo di chi non guarda la cifra e dichiara per ogni pixel il
-grigio medio di tutte. Non è una coincidenza. A codice vuoto il decoder non
-può fare altro che produrre sempre la stessa immagine, e quella che gli conviene
-produrre è proprio la media: i due numeri devono coincidere. La prova
-del collasso, però, non è il 27,1, è la colonna del costo, che a quella tacca
-vale zero su tutte e otto le righe; il 27,1 è la conferma che arriva da fuori.
-E dice una cosa che resta vera in generale: il collasso non è un modello
+A $\beta = 4$ l’encoder ha smesso di codificare. Costo zero su tutte le righe:
+è il collasso della posterior, arrivato non per sfortuna ma perché lo abbiamo
+comprato alzando $\beta$. Una conferma indipendente viene dalla {doc}`sezione
+su comprimere e ricostruire </ModelliLatenti/comprimere-e-ricostruire>`: la
+ricostruzione a $\beta = 4$ vale 27,1 nat, che è lo stesso costo di chi non
+guarda la cifra e dichiara per ogni pixel il grigio medio di tutte. Non è una
+coincidenza. A codice vuoto il decoder non può fare altro che produrre sempre
+la stessa immagine, e quella che gli conviene produrre è la media: i due numeri
+devono coincidere. La prova del collasso, però, è la colonna del costo, che a
+quella tacca vale zero su tutte e otto le righe; il 27,1 è la conferma che
+arriva da fuori. Ne segue un principio generale: il collasso non è un modello
 brutto, è nessun modello.
 
 Per vederlo si fa variare una sola componente del codice, tenendo ferme le
@@ -265,27 +265,26 @@ Con $\beta = 4$ le cinque immagini sono la stessa immagine: fra la prima e
 l’ultima si contano due caratteri di differenza, uno nella terza riga e uno
 nella sesta, e a occhio non si vedono. Il codice non governa più niente.
 
-Con $\beta = 1$, invece, succede qualcosa, ed è il punto. A sinistra c’è uno
-zero, con il buco aperto
-in mezzo; spostandosi verso destra il buco si chiude, la figura si stringe e
-si sposta di lato, e l’ultima immagine non è più uno zero né si riesce a dire
-che cifra sia. Sono cambiate insieme la forma del tratto, la posizione e
-l’identità della cifra, e non una cosa sola. Quella componente del codice è una
-direzione lungo la quale parecchie cose si muovono insieme, e non «lo
-spessore» né «l’inclinazione».
+Con $\beta = 1$, invece, il codice governa qualcosa. A sinistra c’è uno zero,
+con il buco aperto in mezzo; spostandosi verso destra il buco si chiude, la
+figura si stringe e si sposta di lato, e l’ultima immagine non è più uno zero né
+si riesce a dire che cifra sia. Sono cambiate insieme la forma del tratto, la
+posizione e l’identità della cifra, e non un solo attributo. Quella componente
+del codice è una direzione lungo la quale parecchie cose si muovono insieme, e
+non «lo spessore» né «l’inclinazione».
 
-Ed è la regola, non l’eccezione. Chiamiamo **fattori** gli ingredienti di cui
+Succede quasi sempre così. Chiamiamo **fattori** gli ingredienti di cui
 un dato è fatto e che si vorrebbero tenere separati: per un volto, la luce,
 quanto la testa è girata, l’espressione. La parola arriva dall’analisi
-fattoriale di Spearman, con cui il capitolo si apre, e vuol dire cause che
+fattoriale di Spearman e indica le cause che
 concorrono a un effetto: i fattori di una moltiplicazione sono un’altra cosa.
-Tenerli separati in inglese si chiama *disentanglement*, ed è il nome con cui
-cercarne la letteratura. Nel 2019 Francesco Locatello e colleghi hanno
+Tenerli separati si chiama in inglese *disentanglement*, il nome con cui se ne
+cerca la letteratura. Nel 2019 Francesco Locatello e colleghi hanno
 addestrato più di dodicimila modelli di questa famiglia, su sette insiemi di
 dati e con le varianti più diffuse, per rispondere a una domanda sola: alzare
 $\beta$, o usare le sue varianti, separa davvero i fattori? La risposta ha due
 parti, e la prima è un teorema di impossibilità, uno dei pochi che incontrerai:
-dimostra che una cosa non si può fare, e non soltanto che è difficile
+dimostra che un’operazione non si può fare, e non soltanto che è difficile
 {cite}`locatello2019challenging`.
 
 Il teorema dice che, senza ipotesi in più sul modello e sui dati, separare i
@@ -324,7 +323,7 @@ accorga. Nei dati, quindi, non c’è niente che dica che la coppia di partenza
 sia più giusta di quella girata: sono due descrizioni ugualmente buone, e dai
 dati non arriva nessun motivo per preferire quella che a noi sembra sensata.
 
-Un motivo, per la verità, c’è, e non viene da quello che abbiamo chiesto: viene
+Un motivo, per la verità, c’è, e non viene dall’obiettivo: viene
 da com’è fatto l’encoder. La posterior approssimata ha covarianza diagonale, e
 le sue ellissi stanno dritte lungo gli assi del latente, come ovali che non si
 possono inclinare sul foglio. Ruotare il latente le inclinerebbe, e la famiglia
@@ -335,10 +334,10 @@ asimmetria spinge le direzioni scelte verso quelle della PCA
 separi invece di niente; ma la PCA guarda dove i dati variano di più, e quello
 non è l’elenco degli ingredienti.
 
-La seconda parte è sperimentale, ed è la più scomoda. Fra i dodicimila modelli,
+La seconda parte, sperimentale, è la più scomoda. Fra i dodicimila modelli,
 a contare non era quale metodo si fosse scelto. Contavano il sorteggio con
 cui la rete era stata inizializzata, cioè i suoi numeri interni prima di
-imparare, e il valore degli iperparametri, $\beta$ compreso. E nello studio non
+imparare, e il valore degli iperparametri, $\beta$ compreso. Nello studio non
 si è trovato un criterio per sceglierli senza etichette: la selezione del
 modello senza supervisione resta un problema aperto, e per adesso si prova.
 
@@ -347,39 +346,39 @@ non quali fattori separa.
 
 ## Quando il latente è fatto di simboli
 
-Al codice si può chiedere anche un’altra cosa, ed è la più conseguente di tutte
-per quello che viene dopo: che invece di numeri porti simboli, presi da un
-elenco finito di cui decidiamo in anticipo soltanto quanto sia lungo. La
-macchina che lo fa si chiama VQ-VAE, dove VQ sta per *vector quantization*,
-quantizzazione vettoriale: ogni vettore prodotto dall’encoder viene sostituito
-dal più vicino di un dizionario finito, e il codice diventa una sequenza di
-indici, cioè di simboli.
+Al codice si può chiedere anche un’altra proprietà, la più importante per i
+capitoli successivi: che invece di numeri porti simboli, presi da un elenco
+finito di cui decidiamo in anticipo soltanto la lunghezza. La macchina che lo
+fa si chiama VQ-VAE, dove VQ sta per *vector quantization*, quantizzazione
+vettoriale: ogni vettore prodotto dall’encoder viene sostituito dal più vicino
+di un dizionario finito, e il codice diventa una sequenza di indici, cioè di
+simboli.
 
 `````{tab} Elementare
 
 Fin qui l’archivista scriveva numeri, cioè poteva mettere sulla scheda
 qualunque sfumatura. Adesso gli si dà un prontuario da riempire:
-milleventiquattro caselle, che è il numero che i codec audio usano davvero per
-il suono. Le caselle gliele contiamo noi; a riempirle, con le descrizioni-tipo
-che tornano più spesso nei quadri, pensa lui. E da lì in poi non descrive più
-niente: guarda il quadro, cerca la casella che gli somiglia di più, e scrive
-quel numero. La scheda smette di essere una fila di misure e diventa una fila
-di numeri di catalogo. E la manopola non fa più presa: una casella costa quanto
-le altre, quindi la scheda costa uguale comunque la si scriva.
+milleventiquattro caselle, tante quante ne usano i codec audio per il suono. Le
+caselle gliele contiamo noi; a riempirle, con le descrizioni-tipo che tornano
+più spesso nei quadri, pensa lui. Da lì in poi non descrive più niente: guarda
+il quadro, cerca la casella che gli somiglia di più, e scrive quel numero. La
+scheda smette di essere una fila di misure e diventa una fila di numeri di
+catalogo. La manopola non fa più presa: tutte le caselle hanno lo stesso
+prezzo, quindi la scheda ha lo stesso prezzo comunque la si scriva.
 
 Il guadagno è enorme, e lo abbiamo già incassato due volte. Una fila di numeri di
-catalogo è, alla lettera, un testo: simboli in fila presi da un alfabeto
-finito, come le parole di una frase sono prese da un vocabolario. E su una cosa
-fatta così si può mettere al lavoro tutta la macchina costruita per il
+catalogo è, alla lettera, un testo: simboli in sequenza presi da un alfabeto
+finito, come le parole di una frase sono prese da un vocabolario. Su un testo
+fatto così si può mettere al lavoro tutta la macchina costruita per il
 linguaggio, quella che indovina il simbolo dopo. È il modo in cui una macchina
 genera musica, e il modo in cui genera parlato.
 
-C’è però un ostacolo, ed è esattamente quello che la sezione precedente aveva
-annunciato. Il trucco per far tornare indietro le correzioni funzionava perché
-lo scarto si poteva decidere prima e poi appoggiare sulla zona proposta. Fra la
-descrizione numero tre e la numero quattro non c’è niente in mezzo, quindi non
-c’è nessuno scarto da decidere, e il trucco non si applica. Ci vuole un’altra
-idea, e la si trova nella {doc}`sezione sui codec neurali
+C’è però un ostacolo, già annunciato nella sezione sull’ELBO. Il trucco per
+far tornare indietro le correzioni funzionava perché lo scarto si poteva
+decidere prima e poi appoggiare sulla zona proposta. Fra la descrizione numero
+tre e la numero quattro non c’è niente in mezzo, quindi non c’è nessuno scarto
+da decidere, e il trucco non si applica. Ci vuole un’altra idea, e la si trova
+nella {doc}`sezione sui codec neurali
 </Audio/codec-neurali>`,
 dove il prontuario si chiamava tavolozza: all’indietro si fa finta che la
 scelta della casella non ci sia, e la correzione arriva all’archivista come se
@@ -433,7 +432,7 @@ disponibile: non esiste una scrittura $\mathbf{z} = g(\boldsymbol{\epsilon},
 \phi, \mathbf{x})$ derivabile in $\phi$, perché la mappa da $\phi$ a un indice
 è costante a tratti e ha derivata nulla quasi ovunque. Restano tre strade, e si
 incontrano tutte e tre in punti diversi: lo stimatore a punteggio della sezione
-precedente, che si applica ma paga in varianza; un rilassamento continuo come
+sull’ELBO, che si applica ma paga in varianza; un rilassamento continuo come
 la Gumbel-softmax, che la {doc}`sezione sulle rappresentazioni
 auto-supervisionate </Audio/rappresentazioni-auto-supervisionate>` usa per
 wav2vec 2.0; e lo straight-through estimator, cioè copiare all’indietro il
@@ -441,20 +440,20 @@ gradiente saltando la quantizzazione, che è la scelta di VQ-VAE.
 
 Dell’ELBO, poi, resta poco. Con prior uniforme sugli indici e
 posterior deterministica il termine di divergenza vale $\log K$, cioè è una
-costante: c’è, ma non ha gradiente e non partecipa all’ottimizzazione. Quello
-che si minimizza davvero è la ricostruzione più due termini che nell’ELBO non
+costante: c’è, ma non ha gradiente e non partecipa all’ottimizzazione. Si
+minimizza la ricostruzione più due termini che nell’ELBO non
 compaiono affatto, e che servono a tenere insieme dizionario ed encoder. Il
 prior sugli indici viene semmai appreso dopo, con un modello autoregressivo
-sulla sequenza di simboli, ed è quel modello, non il VQ-VAE, a generare.
+sulla sequenza di simboli; a generare è quel modello, non il VQ-VAE.
 
 `````
 
 ## Quattro macchine, adesso che si sa come sono fatte
 
 Il modello a variabile latente è al lavoro in quattro sezioni di capitoli
-diversi, e adesso possiamo saldare il conto. Due li abbiamo già attraversati, e
-là c’era una promessa al posto della derivazione; due arrivano dopo, e possono
-darla per fatta.
+diversi, e adesso si può dire che cosa fa in ciascuna. Due li abbiamo già
+attraversati, e là c’era una promessa al posto della derivazione; due arrivano
+dopo, e possono darla per fatta.
 
 **Nei {doc}`codec neurali </Audio/codec-neurali>`**, per fabbricare un alfabeto
 del suono. Là il codice è fatto di simboli e non di numeri, cioè è il caso in
@@ -476,8 +475,8 @@ che cosa c’è dentro.
 **In {doc}`Stable Diffusion </ModelliDiffusione/stable-diffusion>`**, per far
 stare un generatore di immagini in un computer di casa. Là all’autoencoder non
 si chiede affatto di generare: gli si chiede solo di rimpicciolire le immagini
-di quarantotto volte, così che il generatore vero e proprio possa lavorare su
-qualcosa di piccolo. L’autoencoder impara prima, da solo, e poi smette di
+di quarantotto volte, così che il generatore possa lavorare su
+qualcosa di piccolo. L’autoencoder impara per primo, e poi smette di
 imparare; e il costo di descrizione, che tiene i codici raccolti, ha un peso
 apposta piccolissimo. È il caso in cui il difetto misurato nella sezione
 sull’ELBO, lo scarto fra il prior e l’insieme vero dei codici, non si risolve:
@@ -485,7 +484,7 @@ si aggira, perché a decidere che cosa esce dal codice pensa un altro modello.
 
 **Nei {doc}`mondi in miniatura </WorldModels/mondi-in-miniatura>`**, in cui un
 programma si allena immaginando invece che giocando, per spremere un fotogramma
-di videogioco in trentadue numeri. Là il punto è proprio la regolarità dello
+di videogioco in trentadue numeri. Là conta la regolarità dello
 spazio latente: se avesse buchi, la macchina che immagina il fotogramma
 successivo produrrebbe presto un codice a cui non corrisponde nessuna immagine,
 e il sogno si spezzerebbe dopo pochi passi.
@@ -507,7 +506,7 @@ e il sogno si spezzerebbe dopo pochi passi.
 - La manopola compra spazio sulla scheda, non significato: muovendo una
   riga cambiano più cose insieme. È dimostrato, e non è una difficoltà
   pratica: senza aiuti dall’esterno, e senza qualche idea in più su com’è
-  fatta la macchina, gli ingredienti di un dato non si separano. E che in
+  fatta la macchina, gli ingredienti di un dato non si separano. Che in
   pratica contino più il sorteggio iniziale e le manopole del metodo scelto lo
   hanno mostrato, nel 2019, dodicimila modelli.
 - La scheda può essere fatta di simboli invece che di numeri, e allora
@@ -552,9 +551,9 @@ e il sogno si spezzerebbe dopo pochi passi.
   *straight-through*. Nell’obiettivo del VQ-VAE il termine di divergenza vale
   $\log K$ ed è quindi costante, cioè resta lì senza avere gradiente, e accanto
   compaiono due termini estranei all’ELBO che allineano dizionario ed encoder.
-  Ma lo scostamento che conta è un altro: lo *straight-through* dà un gradiente
+  Lo scostamento che conta è un altro: lo *straight-through* dà un gradiente
   distorto, quindi non si sta più ottimizzando un limite in senso stretto. Il
-  guasto tipico sono le voci del dizionario che nessuno sceglie, e che restano
+  difetto tipico sono le voci del dizionario che nessuno sceglie, e che restano
   inutilizzate.
 - Quattro usi in altrettanti capitoli, due già letti e due che verranno:
   tokenizzazione del suono (codec neurali) e vincolo di supporto sulle azioni
@@ -577,4 +576,4 @@ campionare, ma di cui non si calcola la densità: niente limite inferiore,
 niente costo di descrizione, e al posto dell’obiettivo una seconda rete, il
 discriminatore, che guarda il risultato e dice se ci crede. Perdiamo la
 possibilità di dire quanto un dato è probabile; in cambio i campioni sono di
-norma più nitidi, al prezzo di un addestramento meno stabile.
+norma più nitidi, con un addestramento meno stabile.

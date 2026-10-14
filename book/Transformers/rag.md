@@ -7,21 +7,21 @@ fortissima. A libro aperto cambia tutto: non serve ricordare ogni data, serve
 saper *trovare* la pagina giusta in fretta e usarla bene.
 
 Un modello di linguaggio, così come è stato costruito fin qui, dà sempre
-l'esame a libro chiuso. Tutto quello che «sa» è compresso nei pesi
-durante il pre-addestramento; e quando gli chiedi qualcosa che non c'è (un
-fatto raro, un documento privato, una notizia successiva ai suoi dati) non
-tace: completa nel modo più plausibile, con la sicurezza fluente delle
-**allucinazioni** che abbiamo già messo tra i limiti strutturali di questi
-modelli. C'è anche un secondo difetto, più prosaico: il libro interno si ferma
-al giorno in cui è finito l'addestramento, e riscriverlo (riaddestrare il
-modello) costa settimane di calcolo su migliaia di acceleratori.
+l'esame a libro chiuso. Il suo sapere è compresso nei pesi durante il
+pre-addestramento; se gli chiedi qualcosa che non c'è (un fatto raro, un
+documento privato, una notizia successiva ai suoi dati) non tace: completa nel
+modo più plausibile, con la sicurezza fluente delle **allucinazioni**, uno dei
+limiti strutturali di questi modelli. C'è anche un secondo difetto, più
+prosaico: il libro interno si ferma al giorno in cui è finito l'addestramento,
+e per riscriverlo (riaddestrare il modello) servono settimane di calcolo su
+migliaia di acceleratori.
 
 L'idea del *retrieval* è dare al modello il libro aperto, e insegnargli a
-consultarlo. Servono due mestieri diversi: cercare (ed è il territorio
+consultarlo. Servono due operazioni diverse: cercare (è il territorio
 dell’*information retrieval*, una disciplina che precede di decenni i modelli di
 linguaggio neurali) e rispondere usando ciò che si è trovato. La combinazione
 dei due si chiama **RAG**, *Retrieval-Augmented Generation*, e per capirla si
-parte dal primo mestiere, il più antico.
+parte dalla ricerca, la più antica.
 
 ## Trovare l'ago: l'information retrieval
 
@@ -33,12 +33,12 @@ negli anni Sessanta il gruppo di Gerard Salton confrontava già documenti e
 domande come vettori, misurandone la somiglianza con il coseno
 {cite}`sanderson2012history`.
 
-Chi lo studia chiama quella richiesta una **query**, ed è la stessa parola che
-nel meccanismo di attenzione indica la domanda che una parola pone alle altre.
-Il gesto è analogo: si confronta la domanda con tutto quello che potrebbe
+Chi lo studia chiama quella richiesta una **query**, la stessa parola che nel
+meccanismo di attenzione indica la domanda che una parola pone alle altre.
+L'operazione è analoga: si confronta la domanda con ogni testo che potrebbe
 rispondere, e si tengono i migliori. Cambia il modo: l'attenzione dà a tutte le
 parole un peso, grande o piccolo, mentre il retrieval sceglie in modo netto i
-primi $k$ fra milioni di voci e scarta il resto. La prima domanda è di
+primi $k$ fra milioni di voci e scarta il resto. Il primo problema è di
 ingegneria: come si cerca in milioni di documenti *senza leggerli tutti* a ogni
 richiesta?
 
@@ -73,21 +73,21 @@ lunghezza non si sconta, in cima ai risultati ci finisce sempre lei. Chi
 compila lo schedario ha allora due manopole, quanto scontare le ripetizioni e
 quanto pesare la lunghezza, e le gira finché i risultati non lo convincono.
 
-Sullo scaffale dei ricettari il conto della rarità si rompe. Il peso di una
-parola, nel conto più diretto, nasce dal rapporto fra i libri che non la
-contengono e quelli che la contengono: «muro» in cinque libri su cento dà
-novantacinque contro cinque, e pesa molto. «Cucchiaio» in ottanta ricettari su
-cento dà venti contro ottanta, un rapporto sotto uno, e il conto lo trasforma
-in un peso negativo: contenere «cucchiaio» fa scendere il punteggio invece di
-lasciarlo dov'è. Chi cerca «cucchiaio di burro» si vedrebbe passare davanti
-proprio le ricette in cui il cucchiaio non compare. Nei sistemi veri il conto
-si ferma prima dello zero: una parola diffusissima vale pochissimo, mai meno di
-niente.
+Sullo scaffale dei ricettari la rarità, calcolata alla lettera, si rompe.
+Nella formula più diretta il peso di una parola nasce dal rapporto fra i libri
+che non la contengono e quelli che la contengono: «muro» in cinque libri su
+cento dà novantacinque contro cinque, e pesa molto. «Cucchiaio» in ottanta
+ricettari su cento dà venti contro ottanta, un rapporto sotto uno, e la formula
+lo trasforma in un peso negativo: contenere «cucchiaio» fa scendere il
+punteggio invece di lasciarlo dov'è. Chi cerca «cucchiaio di burro» si
+vedrebbe passare davanti le ricette in cui il cucchiaio non compare. Nei
+sistemi veri la formula si ferma prima dello zero: una parola diffusissima vale
+pochissimo, mai meno di niente.
 
-E come si sa se lo schedario funziona? Si prepara un elenco di domande di cui
-si conosce già la pagina giusta, e si guardano due numeri: quante delle prime
-dieci risposte sono davvero utili (più sono, meglio è) e a che posto arriva la
-prima buona (più è in alto, meglio è).
+Come si sa se lo schedario funziona? Si prepara un elenco di domande di cui
+si conosce già la pagina giusta e si guardano due numeri: quante delle prime
+dieci risposte sono utili (più sono, meglio è) e a che posto arriva la prima
+buona (più è in alto, meglio è).
 
 `````
 
@@ -119,7 +119,7 @@ collezione, in versione levigata,
 $\mathrm{idf}(t) = \log\frac{N - \mathrm{df}(t) + 0{,}5}{\mathrm{df}(t) + 0{,}5}$,
 con $N$ documenti totali e $\mathrm{df}(t)$ quelli contenenti $t$; $|d|$ è la
 lunghezza del documento e $\bar{\ell}$ la lunghezza media nella collezione;
-$k_1$ e $b$ sono due manopole. Un avviso a chi la implementa: così scritta,
+$k_1$ e $b$ sono due parametri di regolazione. Così scritta,
 l'idf diventa negativa per ogni termine presente in più di metà della
 collezione (basta che $\mathrm{df}(t) > N/2$), e un contributo negativo
 significa che contenere il termine *peggiora* il punteggio. È un'anomalia nota,
@@ -138,12 +138,12 @@ nemmeno il doppio, e sempre sotto il tetto). Il termine $b \in [0, 1]$
 penalizza i documenti più lunghi della media, che accumulano occorrenze per
 pura mole.
 
-Due parole sulla valutazione, perché torneranno. Detti $\mathrm{Ril}(q)$ i
-documenti rilevanti per la query e $\mathrm{Top}_k(q)$ i primi $k$ restituiti,
-la **precision@k** è $|\mathrm{Ril}\cap\mathrm{Top}_k|/k$ e la **recall@k** è
+Per misurare la qualità di un ordinamento, detti $\mathrm{Ril}(q)$ i documenti
+rilevanti per la query e $\mathrm{Top}_k(q)$ i primi $k$ restituiti, la
+**precision@k** è $|\mathrm{Ril}\cap\mathrm{Top}_k|/k$ e la **recall@k** è
 $|\mathrm{Ril}\cap\mathrm{Top}_k|/|\mathrm{Ril}|$: la prima misura quanto è
-pulita la lista, la seconda quanto del necessario è stato recuperato, ed è
-quella che conta per un sistema che poi legge i passaggi. L’**MRR** (*Mean
+pulita la lista, la seconda quanto del necessario è stato recuperato, e per un
+sistema che poi legge i passaggi è la seconda a contare. L’**MRR** (*Mean
 Reciprocal Rank*) è la media, sulle query, di $1/\mathrm{rank}$, dove
 $\mathrm{rank}$ è la posizione del primo risultato corretto (vale $1$ se il
 sistema azzecca sempre il primo posto). Quando la rilevanza ha dei gradi si usa
@@ -170,11 +170,11 @@ Cercare, allora, diventa misurare distanze invece che confrontare parole. Il
 modo di cercare che ne esce si chiama **retrieval denso**, dove «denso» dice
 come è fatto il vettore: non una coordinata per ogni parola della lingua, quasi
 tutte nulle, come nell'indice invertito, ma qualche centinaio o qualche
-migliaio di coordinate quasi tutte diverse da zero, nessuna delle quali ha da
-sola un significato. Contano le distanze e le direzioni.
+migliaio di coordinate quasi tutte diverse da zero, nessuna delle quali ha un
+significato isolata dalle altre; contano le distanze e le direzioni.
 
-Su una mappa del genere alcune relazioni diventano direzioni, e si possono
-perfino fare dei conti.
+Su una mappa del genere alcune relazioni diventano direzioni, e si può
+perfino fare dell'aritmetica.
 
 ```{figure} ../figures/word2vec-2013.svg
 :name: fig-aritmetica-vettori
@@ -199,12 +199,12 @@ Con la mappa cambia anche l'unità di misura. Un documento intero non si lascia
 ridurre a un punto solo, perché un manuale di quattrocento pagine, dovendo
 riassumersi in un indirizzo, finirebbe per parlare di tutto e quindi di
 niente. L'archivio si taglia prima in pezzi lunghi una frase o un paragrafo, e
-sono quelli a diventare punti sulla mappa. Si chiamano **passaggi**, e nei
-programmi portano il nome inglese *chunk*; ognuno porta poche idee, spesso una
-sola, ed è per questo che si fa trovare quando quell'idea viene chiesta. Il
-taglio è una scelta, e si paga nei due versi: troppo fine, e al pezzo manca il
-contesto che lo rende comprensibile; troppo grosso, e si torna al manuale che
-parla di tutto.
+sono questi a diventare punti sulla mappa. Si chiamano **passaggi** (*chunk*,
+nel gergo dei programmi); ognuno porta poche idee, spesso una
+sola, e quindi viene trovato quando quell'idea è chiesta. Il taglio è una
+scelta, e si paga nei due versi: troppo fine, e al pezzo manca il contesto che
+lo rende comprensibile; troppo grosso, e si torna al manuale che parla di
+tutto.
 
 `````{tab} Elementare
 
@@ -221,11 +221,11 @@ arriva, diventa anch'essa un punto sulla stessa mappa: i passaggi pertinenti
 sono semplicemente i punti più vicini, parole in comune o no.
 
 Attenzione però a non pensionare il catalogo. Se cerchi «errore E-52 della
-lavatrice», vuoi *esattamente* E-52, non «un errore simile»: sui codici, sui
-nomi propri, sulle sigle, il confronto letterale resta imbattibile, perché lì
-il significato *è* la parola esatta. Per questo i sistemi seri fanno cercare
+lavatrice», vuoi la sigla E-52, non «un errore simile»: sui codici, sui nomi
+propri, sulle sigle, il confronto letterale resta lo strumento giusto, perché
+lì il significato *è* la parola esatta. Per questo i sistemi seri fanno cercare
 tutti e due, il catalogo e il libraio, e poi fondono le due liste di risultati
-in una sola, tenendo in cima quello che compare in alto in entrambe.
+in una sola, tenendo in cima i risultati che compaiono in alto in entrambe.
 
 `````
 
@@ -243,7 +243,7 @@ coseno, già incontrata nella {doc}`sezione sull'algebra lineare
 </Matematica/algebra-lineare>`, quando i vettori sono normalizzati. Il
 vantaggio computazionale è decisivo: gli embedding dei passaggi si calcolano
 una volta sola, offline; al momento della ricerca restano solo una codifica e
-il calcolo dei vicini più prossimi. Esatta, quella ricerca costa $O(Nd)$ per
+il calcolo dei vicini più prossimi. Esatta, quella ricerca ha costo $O(Nd)$ per
 domanda, con $N$ passaggi di dimensione $d$: per i 21 milioni di passaggi di
 Wikipedia dell'articolo di Lewis e colleghi e $d = 768$, la dimensione di DPR,
 sono circa $1{,}6 \times 10^{10}$ moltiplicazioni a domanda, e i soli vettori,
@@ -253,7 +253,7 @@ nearest neighbor*, da non confondere con la sigla delle reti neurali): grafi
 navigabili a più livelli come HNSW {cite}`malkov2020hnsw`, liste invertite con
 quantizzazione del prodotto, librerie come FAISS {cite}`johnson2017billion`. Il
 compromesso è fra recall, latenza e memoria: si accetta di perdere qualche
-vicino vero in cambio di una ricerca sublineare, ed è la funzione dei database
+vicino vero in cambio di una ricerca sublineare, e di questo si occupano i database
 vettoriali.
 
 Il risultato che ha mostrato come bastino coppie supervisionate è DPR (*Dense
@@ -274,15 +274,17 @@ ricalcano le parole, e vengono tutte da poco più di cinquecento articoli. Quel
 che resta valido oltre i numeri è il perché: il denso recupera ciò che è detto
 con altre parole, il lessicale ciò che è scritto con quelle esatte. La misura
 fuori dal dominio di addestramento è BEIR {cite}`thakur2021beir`, diciotto
-raccolte eterogenee: lì BM25 si rivela una base robusta, il reranking e i
-modelli a interazione tardiva come ColBERT {cite}`khattab2020colbert` fanno
-meglio in media ma a un costo alto, e i retriever densi, più efficienti, spesso
-fanno peggio. I sistemi ibridi interrogano tutti e due e fondono le liste con
-la *reciprocal rank fusion*, $\mathrm{RRF}(d) = \sum_{m} 1/(c +
-\mathrm{rank}_m(d))$ con $c$ intorno a 60 {cite}`cormack2009reciprocal`: conta
-la posizione in ciascuna lista e non il punteggio, che fra un BM25 e un
-prodotto scalare non è confrontabile. La fusione e il reranking hanno una
-sezione propria, {doc}`RAG avanzato </Agenti/rag-avanzato>`.
+raccolte eterogenee: nei risultati dell'articolo BM25 si rivela una base
+robusta, il reranking e i modelli a interazione tardiva come ColBERT
+{cite}`khattab2020colbert` fanno meglio in media ma a un costo alto, e i
+retriever densi, più efficienti, spesso fanno peggio. I sistemi ibridi
+interrogano tutti e due e fondono le liste con la *reciprocal rank fusion*,
+$\mathrm{RRF}(d) = \sum_{m} 1/(c + \mathrm{rank}_m(d))$, dove $d$ torna a
+essere il documento come in BM25, $m$ scorre le liste e $c$ è una costante
+vicina a 60 {cite}`cormack2009reciprocal`. Conta la posizione in ciascuna lista
+e non il punteggio, che fra un BM25 e un prodotto scalare non è confrontabile.
+La fusione e il reranking hanno una sezione propria, {doc}`RAG avanzato
+</Agenti/rag-avanzato>`.
 
 Un raffinamento chiude il quadro. Il bi-encoder codifica query e passaggio
 *separatamente*, mentre un **cross-encoder** li concatena in un unico
@@ -295,12 +297,11 @@ dal retriever.
 
 ## Rispondere: il question answering
 
-Cercare non basta: la parte che cerca, il *retriever*, restituisce passaggi,
-non risposte. Trasformare un testo trovato in una risposta alla domanda è il
-compito che nell'overview del capitolo sul NLP avevamo chiamato question
-answering, uno dei compiti classici della disciplina. Ha avuto persino il suo
-momento televisivo: nel febbraio 2011 Watson di IBM, un sistema costruito
-proprio su ricerca più analisi della domanda, batté i campioni umani del quiz
+Cercare non basta: il *retriever* restituisce passaggi, non risposte.
+Trasformare un testo trovato in una risposta alla domanda è il *question
+answering*, uno dei compiti classici del NLP. Ha avuto persino
+il suo momento televisivo: nel febbraio 2011 Watson di IBM, un sistema
+costruito su ricerca e analisi della domanda, batté i campioni umani del quiz
 *Jeopardy!*.
 
 `````{tab} Elementare
@@ -314,8 +315,8 @@ tue, magari cucendo insieme più punti del testo. È il QA **generativo**, più
 flessibile, ma con la libertà arriva il rischio: chi scrive di suo può anche
 scrivere cose che nel testo non ci sono.
 
-C'è poi il caso in cui il brano non lo dà nessuno: la domanda arriva nuda, e la
-prima mossa è andarsi a cercare le pagine giuste. Trovate quelle, si torna a
+C'è poi il caso in cui il brano non lo dà nessuno: la domanda arriva nuda, e il
+primo passo è andarsi a cercare le pagine giuste. Trovate quelle, si torna a
 scegliere fra evidenziatore e penna.
 
 `````
@@ -326,16 +327,17 @@ Il QA estrattivo è stato standardizzato da **SQuAD**
 {cite}`rajpurkar2016squad`: oltre centomila domande scritte da crowdworker su
 articoli di Wikipedia, dove la risposta è per costruzione uno *span* del
 paragrafo dato. Il modello predice le posizioni di inizio e fine dello span
-(con BERT bastano due teste softmax sulle rappresentazioni dei token) e si
-valuta con *exact match* e F1 sui token. Nel giro di un paio d'anni i modelli
-della famiglia BERT {cite}`devlin2019bert` hanno superato su questo benchmark
-le prestazioni degli annotatori umani: un risultato vero, da leggere però per
-quello che misura (trovare uno span in *un* paragrafo già dato, non rispondere
+(con BERT {cite}`devlin2019bert` bastano due vettori appresi che danno a ogni
+token un punteggio di inizio e uno di fine, normalizzati da una softmax) e si
+valuta con *exact match* e F1 sui token. Nel 2018 i modelli neurali, BERT
+compreso, hanno superato su questo benchmark le prestazioni degli annotatori
+umani: un risultato vero, da leggere però sapendo che cosa misura (trovare uno
+span in *un* paragrafo già dato, in cui la risposta c'è sempre, non rispondere
 a domande nel mondo). Il QA generativo rimuove il vincolo dello span: un
 modello seq2seq (o un decoder autoregressivo) *scrive* la risposta,
-condizionata su domanda e contesto. E il QA a dominio aperto rimuove anche
-il paragrafo dato: prima si recuperano i passaggi da una collezione, poi si
-legge quel che si è trovato, ed è la catena su cui poggia la RAG.
+condizionata su domanda e contesto. Il QA a dominio aperto rimuove anche il
+paragrafo dato: prima si recuperano i passaggi da una collezione, poi si legge
+il materiale trovato, e su questa catena poggia la RAG.
 
 `````
 
@@ -343,13 +345,13 @@ legge quel che si è trovato, ed è la catena su cui poggia la RAG.
 
 Tutti i pezzi sono sul tavolo: un retriever che trova i passaggi giusti e un
 modello di linguaggio che sa scrivere. La Retrieval-Augmented Generation,
-«generazione aumentata dal recupero», li mette semplicemente in fila, ed è la
-catena di {numref}`fig-rag-pipeline`. La domanda va al retriever, che consulta
+«generazione aumentata dal recupero», li mette in fila nella catena di
+{numref}`fig-rag-pipeline`. La domanda va al retriever, che consulta
 l'archivio e restituisce i passaggi più pertinenti. Domanda e passaggi vengono
-poi incollati insieme in un unico testo, che si passa al modello come contesto:
-è questo che si chiama **prompt aumentato**, cioè la richiesta con attaccati i
-documenti che servono a rispondere. E il modello scrive la risposta
-appoggiandosi a quei passaggi, citandoli. Il nome viene dal lavoro di Patrick
+poi incollati in un unico testo, che si passa al modello come contesto: il
+**prompt aumentato**, cioè la richiesta con attaccati i documenti che servono a
+rispondere. Il modello scrive la risposta appoggiandosi a quei passaggi e
+citandoli. Il nome viene dal lavoro di Patrick
 Lewis e colleghi {cite}`lewis2020retrieval`, che nel 2020 hanno mostrato come
 saldare le due metà in un unico modello addestrabile.
 
@@ -375,25 +377,23 @@ meglio quelle in cima e in fondo che quelle in mezzo.
 
 I vantaggi sono concreti. La risposta è controllabile: chi corregge può
 andare a pagina 214 e verificare, cosa impossibile con una risposta recitata
-a memoria. E il sapere
-è aggiornabile: se esce l'edizione nuova del libro basta sostituirla sullo
-scaffale, e nessuno deve rimandare lo studente a scuola. Nei sistemi reali è la
-differenza tra aggiornare un archivio stanotte e riaddestrare un modello per
-settimane.
+a memoria. Il sapere è aggiornabile: se esce l'edizione nuova del libro basta
+sostituirla sullo scaffale, e nessuno deve rimandare lo studente a scuola. Nei
+sistemi reali è la differenza tra aggiornare un archivio stanotte e
+riaddestrare un modello per settimane.
 
-Ma il libro aperto non rende infallibili, e le cose vanno storte in tre punti
+Il libro aperto, però, non rende infallibili: le cose vanno storte in tre punti
 diversi. Lo studente può aprire la pagina *sbagliata*, perché l'indice l'ha
-ingannato o perché la domanda era ambigua: allora scrive una risposta sbagliata
-con tanto di citazione in bella vista, più convincente proprio perché ha la
-fonte a margine. Può non trovare affatto la pagina che serviva: quello che non
-ha davanti non entrerà nella risposta presa dal libro, e se lo scrive lo scrive
-a memoria senza dichiararlo, cioè è tornato di nascosto all'esame a libro
-chiuso. E può avere la pagina giusta sotto gli occhi e scrivere altro, o
-piegarne il senso: «pag. 214» resta una citazione esatta, e la frase sopra non
-è quello che a pagina 214 c'è scritto. Spostare il problema dalla memoria alla
-ricerca resta un ottimo affare, perché una ricerca si può ispezionare e
-migliorare; ma il problema non sparisce, e un pezzo resta dov'era, nella penna
-di chi scrive.
+ingannato o perché la domanda era ambigua; scrive allora una risposta sbagliata
+con la citazione in bella vista, più convincente perché ha la fonte a margine.
+Può non trovare la pagina che serviva: quel contenuto non entrerà nella
+risposta presa dal libro, e se lo scrive lo scrive a memoria senza dichiararlo,
+cioè è tornato di nascosto all'esame a libro chiuso. Può infine avere la pagina
+giusta sotto gli occhi e scrivere altro, o piegarne il senso: «pag. 214» resta
+una citazione esatta, ma la frase sopra non corrisponde al testo di pagina 214.
+Spostare il problema dalla memoria alla ricerca resta un buon affare, perché
+una ricerca si può ispezionare e migliorare; il problema però non sparisce, e
+un pezzo resta dov'era, nella penna di chi scrive.
 
 `````
 
@@ -408,7 +408,7 @@ tutto l'archivio: $p_\eta(z \mid x) \propto \exp\!\big(E_z(z)^\top
 E_q(x)\big)$. (Due avvisi sulle lettere, presi tutti e due dal paper: $\eta$
 sono i parametri del retriever e non il tasso di apprendimento che $\eta$
 indica nel resto del libro; e la domanda qui è $x$, la stessa che il bi-encoder
-chiamava $q$.) La risposta marginalizza sui passaggi recuperati, ed è la
+chiamava $q$.) La risposta marginalizza sui passaggi recuperati, nella
 variante che il paper chiama RAG-Sequence, quella che usa lo stesso passaggio
 per tutta la risposta (nell'altra, RAG-Token, la somma viene ricalcolata per
 ogni token, e parole diverse possono venire da passaggi diversi):
@@ -420,14 +420,14 @@ $$
 
 dove $x$ è la domanda, $y$ la risposta generata, $z$ uno dei $k$ passaggi
 recuperati, $\eta$ i parametri del retriever e $\theta$ quelli del generatore.
-Il segno di «circa» dice una cosa precisa: la somma esatta si estenderebbe a
-tutti i passaggi dell'archivio, mentre qui si ferma ai primi $k$. Il paper la
-chiama approssimazione top-$k$ e non la giustifica: quanto pesi la coda che
-resta fuori dipende dalla scala dei prodotti scalari del retriever, e non è
-detto sia poco. La somma troncata viene poi rinormalizzata sui soli $k$
-passaggi tenuti (nel codice di riferimento una softmax sui loro punteggi),
-quindi quello che ne esce è di nuovo una distribuzione: quella esatta, però,
-solo se la coda scartata pesava davvero poco.
+Il «circa» segnala che la somma esatta si estenderebbe a tutti i passaggi
+dell'archivio, mentre qui si ferma ai primi $k$. Il paper la chiama
+approssimazione top-$k$ e non la giustifica: quanto pesi la coda esclusa
+dipende dalla scala dei prodotti scalari del retriever, e non è detto sia poco.
+La somma troncata viene poi rinormalizzata sui soli $k$ passaggi tenuti
+(nell'implementazione di Hugging Face una softmax sui loro punteggi), e il
+risultato è di nuovo una distribuzione, che coincide con quella esatta solo se
+la coda scartata pesava poco.
 
 Il tutto si addestra end-to-end sulle sole coppie
 domanda–risposta: il gradiente attraversa il generatore e l'encoder delle
@@ -439,8 +439,8 @@ aggiornare senza toccare la prima.
 
 Il testo recuperato può entrare nel sistema in punti diversi, ciascuno col suo
 costo. In Fusion-in-Decoder {cite}`izacard2021leveraging` ogni passaggio è
-codificato insieme alla domanda, separatamente dagli altri, e il decoder attende
-alla concatenazione delle codifiche: l'encoder costa una quantità lineare nel
+codificato insieme alla domanda, separatamente dagli altri, e il decoder applica
+l'attenzione alla concatenazione delle codifiche: l'encoder ha un costo lineare nel
 numero di passaggi, e la qualità continua a crescere con quel numero. RETRO
 {cite}`borgeaud2022improving` porta il recupero dentro il modello, con
 un'attenzione incrociata su blocchi presi da una base di due trilioni di token;
@@ -450,43 +450,42 @@ embedding, senza riaddestrare. A parte sta l'addestramento del retriever:
 REALM {cite}`guu2020realm`, uscito due mesi prima di DPR, lo pre-addestra con il
 linguaggio mascherato, propagando il gradiente attraverso la ricerca.
 
-Oggi il termine RAG indica più spesso la variante leggera, leggera perché non
-addestra insieme il retriever e il generatore: recupero, poi *prompt
-augmentation* verso un modello già istruito col {doc}`post-training
-<post-training>`; è proprio l'instruction tuning a rendergli eseguibile una
-consegna come «rispondi usando solo i passaggi e cita le fonti». In quella
-variante sparisce anche la marginalizzazione: i passaggi finiscono tutti nello
-stesso prompt, il generatore li vede insieme, e a pesarne la pertinenza è lui,
-dal contenuto e non dal punteggio del recupero, che però decide ancora quali
+Oggi il termine RAG indica più spesso la variante leggera, che non addestra
+insieme il retriever e il generatore: recupero, poi *prompt augmentation*
+verso un modello già istruito col {doc}`post-training
+<post-training>`; è l'instruction tuning a rendergli eseguibile una consegna
+come «rispondi usando solo i passaggi e cita le fonti». In quella variante
+sparisce anche la marginalizzazione: i passaggi finiscono tutti nello stesso
+prompt, il generatore li vede insieme, e a pesarne la pertinenza è lui, dal
+contenuto e non dal punteggio del recupero, che però decide ancora quali
 entrano e in che ordine. L'ordine conta: con molti passaggi nel contesto le
 prestazioni sono spesso migliori quando l'informazione rilevante sta all'inizio
-o alla fine, e calano quando sta in mezzo {cite}`liu2024lost`. E ogni passaggio
-in più costa contesto: con $k$ passaggi di $n_p$ token ciascuno la domanda si
-allunga di $k\,n_p$ token, e $k$ diventa la manopola che mette in tensione la
-recall con il costo e il rumore. I limiti però non cambiano. Il tetto di ciò
-che il sistema può dire in modo fondato e citabile è la recall del retriever,
-cioè la quota dei passaggi pertinenti che la ricerca riesce a ripescare: è la
-stessa domanda della recall di un classificatore, quanti dei casi buoni si
-riescono a prendere, con i passaggi pertinenti dell'archivio al posto dei
-positivi da trovare (la {doc}`sezione sulle metriche
-</MachineLearning/metriche>` la definisce per esteso). Quel che non viene
-recuperato non può entrare nella risposta *a partire dai documenti*, e il
-modello può sempre rispondere attingendo ai propri pesi, ma allora è tornato
-all'esame a libro chiuso, e senza dirlo. Il generatore, poi, può ignorare i
-passaggi o contraddirli, tanto che la fedeltà alla fonte (*groundedness*) è
-oggi una metrica di valutazione a sé; e una citazione formalmente corretta non
-rende vera una risposta che ne travisa il contenuto.
+o alla fine, e calano quando sta in mezzo {cite}`liu2024lost`. Ogni passaggio
+in più occupa contesto: con $k$ passaggi di $n_p$ token ciascuno la domanda si
+allunga di $k\,n_p$ token, e $k$ diventa il parametro che mette in tensione la
+recall con il costo e il rumore. I limiti non cambiano. Il tetto delle risposte
+fondate e citabili è la recall del retriever: la quota dei passaggi pertinenti
+che la ricerca riesce a ripescare, definita come per un classificatore (la
+{doc}`sezione sulle metriche
+</MachineLearning/metriche>` la tratta per esteso), con i passaggi pertinenti
+dell'archivio al posto dei positivi. Un passaggio non recuperato non può
+entrare nella risposta *a partire dai documenti*; il modello può sempre
+attingere ai propri pesi, ma allora è tornato all'esame a libro chiuso, e senza
+dirlo. Il generatore, poi, può ignorare i passaggi o contraddirli, tanto che la
+fedeltà alla fonte (*groundedness*) è oggi una metrica di valutazione a sé; e
+una citazione formalmente corretta non rende vera una risposta che ne travisa
+il contenuto.
 
 `````
 
 Il modello originale di Lewis e colleghi tiene insieme le due metà con una
-somma: ogni passaggio recuperato produce la sua risposta per conto proprio, e
-le risposte si sommano contando ciascuna per il peso che il recupero le ha dato
-({numref}`fig-somma-pesata-passaggi`). I passaggi non si vedono fra loro, e il
-peso di ciascuno è deciso prima che il generatore scriva una parola. La
-variante di oggi fa diversamente: mette tutti i passaggi nello stesso prompt, e
-lascia al modello il compito di distinguere quello che serve da quello che
-somiglia soltanto.
+somma: ogni passaggio recuperato produce una risposta indipendente, e le
+risposte si sommano pesate dal punteggio che il recupero ha assegnato al
+passaggio ({numref}`fig-somma-pesata-passaggi`). I passaggi non si vedono fra
+loro, e il peso di ciascuno è deciso prima che il generatore scriva una parola.
+La variante di oggi mette invece tutti i passaggi nello stesso prompt e lascia
+al modello il compito di distinguere i passaggi utili da quelli che somigliano
+soltanto.
 
 ```{figure} ../figures/somma-pesata-passaggi.svg
 :name: fig-somma-pesata-passaggi
@@ -502,26 +501,24 @@ La risposta che perde si porta via lo stesso quattro decimi: pesare non è
 filtrare. I numeri sono inventati apposta, per far vedere il meccanismo.
 ```
 
-Il bilancio è questo. La RAG mitiga le allucinazioni: su ciò che sta
-nell'archivio il modello non deve più inventare, e nel dialogo fondato su
-conoscenze i modelli con recupero allucinano meno {cite}`shuster2021retrieval`.
-Non le elimina: un recupero sbagliato produce una risposta sbagliata con le
-fonti in bella vista. In cambio offre due cose che i soli pesi non danno in
-modo affidabile: la citabilità, perché una risposta con la fonte si può
-verificare e una senza fonte no, e l'aggiornabilità, perché quando i documenti
-cambiano si ricostruisce l'indice dell'archivio, non si riaddestra il
-modello.
+La RAG mitiga le allucinazioni: per i contenuti presenti nell'archivio il
+modello non deve più inventare, e nel dialogo fondato su conoscenze i modelli
+con recupero allucinano meno {cite}`shuster2021retrieval`. Non le elimina: un
+recupero sbagliato produce una risposta sbagliata con le fonti in bella vista.
+In cambio offre due cose che i soli pesi non danno in modo affidabile: la
+citabilità, perché una risposta con la fonte si può verificare e una senza
+fonte no, e l'aggiornabilità, perché quando i documenti cambiano si
+ricostruisce l'indice dell'archivio, non si riaddestra il modello.
 
 ## Un retriever denso in miniatura
 
-Chiudiamo con il codice. Costruiamo un retriever denso completo su un archivio
-di sei passaggi: si calcolano gli embedding, si misura quanto ciascuno è vicino
+Un retriever denso completo, su un archivio di sei passaggi, si costruisce in
+poche righe: si calcolano gli embedding, si misura quanto ciascuno è vicino
 alla domanda, si tengono i due migliori, si monta il prompt aumentato. Gli
 embedding qui sono scritti a mano e hanno quattro sole coordinate, ognuna con
 un significato leggibile (quanto il passaggio parla di gatti, di muri e casa, di
 automobili, di cucina), al posto delle centinaia di coordinate opache che
-produrrebbe un modello vero. Tutto il resto è identico a un sistema in
-funzione.
+produrrebbe un modello vero. Il resto è identico a un sistema in funzione.
 
 La vicinanza si misura con la similarità del coseno, $\cos\theta =
 \mathbf{a}^\top\mathbf{b} / (\lVert\mathbf{a}\rVert\,\lVert\mathbf{b}\rVert)$,
@@ -530,12 +527,12 @@ vettori allineati, $0$ per due perpendicolari e $-1$ per due opposti, e con i
 vettori normalizzati coincide con il prodotto scalare. Qui le coordinate sono
 tutte positive, quindi il coseno sta fra $0$ e $1$; con un modello vero scende
 fino a $-1$, e i valori negativi vanno letti come direzioni opposte, non come
-un guasto. Si legge come una misura di direzione, e non come una percentuale di
+un errore. Si legge come una misura di direzione, e non come una percentuale di
 somiglianza.
 
-Il programma segue la variante leggera. L'uscita mostra prima i due passaggi
-trovati con il loro coseno, poi il prompt aumentato per intero, cioè quello che
-il modello si troverà davanti.
+Il programma segue la variante leggera e stampa i due passaggi trovati con il
+loro coseno, poi il prompt aumentato completo, cioè il testo che il modello si
+troverà davanti.
 
 ```python
 import torch
@@ -594,42 +591,41 @@ Domanda: Su cosa salta il gatto nero?
 Risposta:
 ```
 
-Il primo passaggio è quello giusto, con una somiglianza di $0{,}99$, cioè
-quasi perfetta. Ma guarda il secondo, che sta a $0{,}78$: parla di gatti, ed è
-per questo *vicino* alla domanda sulla mappa, eppure non risponde. È il
-quasi-pertinente, l'insidia tipica della ricerca per significato: la vicinanza
-di tema non è pertinenza alla domanda. Nei sistemi reali è qui che interviene
-un secondo lettore, più lento e più accurato, che riesamina uno per uno i pochi
-candidati e li rimette in ordine (si chiama **reranker**). Senza di lui a
-distinguerli resta il generatore: la consegna «usando solo i passaggi» gli
-vieta di uscire dall'archivio, ma fra il [1] e il [2] deve scegliere lui, dal
-contenuto, e un generatore distratto può citare quello sbagliato.
+Il primo passaggio è quello giusto, con una somiglianza di $0{,}99$, quasi
+perfetta. Il secondo, a $0{,}78$, parla di gatti e per questo sta *vicino* alla
+domanda sulla mappa, eppure non risponde: è il quasi-pertinente, l'insidia
+tipica della ricerca per significato, dove la vicinanza di tema non è
+pertinenza alla domanda. Nei sistemi reali interviene un secondo lettore, più
+lento e più accurato, che riesamina uno per uno i pochi candidati e li rimette
+in ordine: il **reranker**. Senza di lui a distinguerli resta il generatore: la
+consegna «usando solo i passaggi» gli vieta di uscire dall'archivio, ma fra il
+[1] e il [2] deve scegliere lui, dal contenuto, e un generatore distratto può
+citare quello sbagliato.
 
-Da questo giocattolo a un sistema vero, di quelli che stanno dietro a un
-servizio in funzione, i passi sono pochi. Al posto degli embedding scritti a
-mano ci va un modello addestrato apposta a produrli: quello che ha fatto scuola
-si chiama **DPR**, *Dense Passage Retrieval*, e sono due encoder addestrati
-insieme a mettere vicine le domande e i passaggi che le soddisfano. Al posto
-delle sei righe ci vanno milioni di passaggi, tagliati da un archivio vero e
-serviti da un indice che sa trovare i punti vicini fra milioni di punti senza
-confrontarli tutti: si accontenta dei quasi-vicini in cambio della velocità, e
-per questo si chiama approssimato. Al posto del `print` finale ci va la
-chiamata a un modello istruito. La struttura (si codifica, si misura il coseno,
-si tengono i primi $k$, si monta il prompt) è esattamente quella del
-programma.
+I passi da questo giocattolo a un sistema vero, di quelli che servono utenti
+reali, sono pochi. Al posto degli embedding scritti a mano ci va un modello
+addestrato a produrli: quello che ha fatto scuola si chiama **DPR**, *Dense
+Passage Retrieval*, e sono due encoder addestrati insieme a mettere vicine le
+domande e i passaggi che le soddisfano. Al posto delle sei righe ci vanno
+milioni di passaggi, tagliati da un archivio vero e serviti da un indice che sa
+trovare i punti vicini fra milioni di punti senza confrontarli tutti: si
+accontenta dei quasi-vicini in cambio della velocità, e per questo si chiama
+approssimato. Al posto del `print` finale ci va la chiamata a un modello
+istruito. La struttura (si codifica, si misura il coseno, si tengono i primi
+$k$, si monta il prompt) è quella del programma.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Un modello da solo risponde a libro chiuso: quello che non ha in testa se
-  lo inventa in modo plausibile, e rifargli studiare il libro costa settimane.
-  Il recupero gli apre il libro.
-- Cercare per parole è il mestiere antico: l’indice analitico dice
+- Un modello risponde a libro chiuso: un fatto che non ha in testa se lo
+  inventa in modo plausibile, e per rifargli studiare il libro servono
+  settimane. Il recupero gli apre il libro.
+- Cercare per parole è il metodo antico: l’indice analitico dice
   subito in quali pagine compare una parola, senza doverle sfogliare tutte;
   poi si ordinano i risultati dando più peso alle parole rare, contando le
   ripetizioni sempre meno man mano che aumentano, e penalizzando i
   documenti-fiume.
-- Cercare per significato è il mestiere nuovo: ogni passaggio diventa un
+- Cercare per significato è il metodo nuovo: ogni passaggio diventa un
   punto su una mappa dove le cose che vogliono dire cose simili stanno vicine,
   e la domanda diventa un punto sulla stessa mappa. Vince sui sinonimi
   («auto» trova «vettura»), perde sui codici e sui nomi esatti, dove serve la
@@ -637,7 +633,7 @@ programma.
 - Rispondere avendo il testo sotto gli occhi si fa in due modi:
   l'evidenziatore (la risposta è già scritta, basta sottolinearla) o la penna
   (la risposta si compone con parole proprie, più libera e più rischiosa).
-- La RAG mette in fila le due cose: prima si cerca, poi si risponde con i
+- La RAG unisce le due operazioni: prima si cerca, poi si risponde con i
   passaggi sotto gli occhi, citando. I modi sono due: quello di oggi mette
   tutti i passaggi nello stesso testo e lascia scegliere al modello; quello
   originale scriveva una risposta per passaggio e poi le sommava, contando
@@ -651,9 +647,9 @@ programma.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Un LLM da solo risponde a libro chiuso: ciò che non è nei pesi viene
-  completato in modo plausibile (allucinazioni), e aggiornare i pesi costa un
-  riaddestramento. Il retrieval gli apre il libro.
+- Un LLM risponde a libro chiuso: un fatto assente dai pesi viene completato in
+  modo plausibile (allucinazioni), e per aggiornare i pesi occorre
+  riaddestrare. Il retrieval gli apre il libro.
 - L’information retrieval classico cerca per parole: indice invertito per
   non leggere tutto, BM25 {cite}`robertson2009probabilistic` per ordinare (il
   peso del modello probabilistico della rilevanza, con la forma di un TF-IDF,
@@ -678,7 +674,6 @@ programma.
 ```
 `````
 
-Fra i problemi che i Transformer lasciano aperti, la {doc}`sezione sulle
-tendenze e sui limiti <tendenzefuture>` ritrova il recupero di fonti esterne
-fra le mitigazioni delle allucinazioni: una mitigazione, appunto, e non una
-cura.
+La {doc}`sezione sulle tendenze e sui limiti <tendenzefuture>` rimette il
+recupero di fonti esterne fra le mitigazioni delle allucinazioni, accanto alla
+verifica e alla calibrazione.

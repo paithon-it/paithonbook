@@ -9,12 +9,12 @@ dell'alfabeto inglese è come scegliere fra ventisei possibilità: un'incertezza
 che, nell'unità con cui la si misura (il bit, cioè il numero di domande sì
 o no che servirebbero a risolverla), vale poco meno di cinque. Sapendo quel che
 c'è scritto prima, quell'incertezza scende a circa uno: una domanda sola,
-cioè quanto un testa-o-croce. Il contesto, insomma, toglie da solo i quattro
-quinti dell'incertezza. L'abbiamo raccontato nella {doc}`sezione sulla teoria
+cioè quanto un testa-o-croce. Il contesto toglie, insomma, i quattro quinti
+dell'incertezza. L'abbiamo raccontato nella {doc}`sezione sulla teoria
 dell'informazione </Matematica/teoria-informazione>`, a proposito
-dell'entropia. Settant'anni dopo, GPT-3 {cite}`brown2020language` gioca
-*esattamente lo stesso gioco*: indovinare come continua un testo. Niente di
-più. La scommessa è la stessa; è cambiata la scala. Un adolescente di tredici
+dell'entropia. Settant'anni dopo, GPT-3 {cite}`brown2020language` gioca lo
+stesso gioco, indovinare come continua un testo, su una scala molto
+diversa. Un adolescente di tredici
 anni, secondo le stime usate dalla ricerca sull'acquisizione del linguaggio, è
 stato esposto a meno di 100 milioni di parole, quasi tutte ascoltate
 {cite}`warstadt2023call`; GPT-3 in addestramento ne ha viste circa 300
@@ -48,27 +48,27 @@ preparazione è una parte rilevante del lavoro di chi costruisce un grande
 modello.
 
 `````{tab} Elementare
-Una lingua straniera si può imparare con *un solo tipo di esercizio*:
-frasi da completare. Nessuna grammatica, nessun insegnante, nessuna correzione
-a penna rossa: solo miliardi di esercizi di completamento, ricavati coprendo a
-turno ogni parola di frasi vere. «Il gatto nero salta sul ___»: provi, sbagli,
+Una lingua straniera si può imparare con *un solo tipo di esercizio*: frasi da
+completare. Nessuna grammatica, nessun insegnante, nessuna correzione a penna
+rossa: solo miliardi di esercizi di completamento, ricavati coprendo a turno
+ogni parola di frasi vere. «Il gatto nero salta sul ___»: provi, sbagli,
 aggiusti, scopri la parola e passi a coprire quella dopo. Il voto che conta è
 quanto si sbaglia in media su una parola: il totale degli sbagli, con miliardi
-di parole, direbbe soltanto che le parole erano tante. Con abbastanza
-esercizi, per completare bene *devi* assorbire ortografia, grammatica, modi di
-dire, e perfino nozioni sul mondo: non puoi completare «la capitale della
-Francia è ___» senza sapere di Parigi. Il bello è che gli esercizi si
-fabbricano da soli: qualunque testo esistente è già un esercizio con la
-soluzione inclusa. Serve però una biblioteca sterminata e *pulita*: se la
-soffitta è piena di doppioni, l'allievo impara a memoria invece di imparare la
-lingua; se è piena di spazzatura, impara la spazzatura. Per questo, prima di
-studiare, si butta via moltissimo: pagine duplicate, testo generato da
-macchine, contenuti di bassa qualità. A decidere che cosa buttare non c'è
-nessuno che legge: c'è un giudice automatico, a cui sono stati mostrati due o
-tre scaffali scelti bene, e che tiene le pagine somiglianti a quelli. E quello
-che resta non pesa tutto uguale: del mucchio raccolto dal web si legge una
-parte, mentre gli scaffali migliori si ripassano più volte, così contano nello
-studio più di quanto la loro mole direbbe.
+di parole, direbbe soltanto che le parole erano tante. Con abbastanza esercizi,
+per completare bene *devi* assorbire ortografia, grammatica, modi di dire, e
+perfino nozioni sul mondo: non puoi completare «la capitale della Francia è
+___» senza sapere di Parigi. Il bello è che gli esercizi si fabbricano senza
+fatica: qualunque testo esistente è già un esercizio con la soluzione inclusa.
+Serve però una biblioteca sterminata e *pulita*: se la soffitta è piena di
+doppioni, l'allievo impara a memoria invece di imparare la lingua; se è piena
+di spazzatura, impara la spazzatura. Per questo, prima di studiare, si butta
+via moltissimo: pagine duplicate, testo generato da macchine, contenuti di
+bassa qualità. A decidere che cosa buttare non c'è nessuno che legge: c'è un
+giudice automatico, a cui sono stati mostrati due o tre scaffali scelti bene, e
+che tiene le pagine somiglianti a quelli. Dopo la pulizia i testi non contano
+tutti allo stesso modo: del mucchio raccolto dal web si legge una parte, mentre
+gli scaffali migliori si ripassano più volte, così contano nello studio più di
+quanto la loro mole direbbe.
 `````
 
 `````{tab} Superiore
@@ -100,15 +100,15 @@ somma corre sugli $n$ token del corpus, che però è spezzato in sequenze
 indipendenti: il condizionamento si ferma alla finestra di contesto, e dentro
 ciascuna sequenza riparte da capo. Quando servirà la loss per token, cioè la
 stessa quantità divisa per $n$, la scriveremo $\bar{\mathcal{L}} =
-\mathcal{L}/n$: la distinzione conta, perché più avanti la perplessità si
-calcola mettendo all'esponente proprio quella, e chi confonde le due ottiene la
-perplessità elevata alla potenza $n$. È la stessa `nn.CrossEntropyLoss` dei
-capitoli precedenti, applicata a un problema di classificazione con decine di
-migliaia di classi (le parole possibili) ripetuto miliardi di volte; e quella
-che restituisce di suo è $\bar{\mathcal{L}}$, perché la sua riduzione
-predefinita è la media. Nessuna etichetta umana: per questo si parla di
-apprendimento auto-supervisionato. Sui rischi di corpora così raccolti (bias,
-contenuti tossici, opacità) il dibattito è aperto e acceso
+\mathcal{L}/n$: la distinzione conta, perché in «Misurare un gigante» la
+perplessità si calcola mettendo all'esponente quella, e chi confonde le due
+ottiene la perplessità elevata alla potenza $n$. È la stessa
+`nn.CrossEntropyLoss` dei capitoli precedenti, applicata a un problema di
+classificazione con decine di migliaia di classi (le parole possibili) ripetuto
+miliardi di volte; e quella che restituisce di suo è $\bar{\mathcal{L}}$,
+perché la sua riduzione predefinita è la media. Nessuna etichetta umana: per
+questo si parla di apprendimento auto-supervisionato. Sui rischi di corpora
+così raccolti (bias, contenuti tossici, opacità) il dibattito è aperto e acceso
 {cite}`bender2021dangers`.
 `````
 
@@ -116,10 +116,13 @@ Quell'idea, che qualunque testo esistente sia già un esercizio con la soluzione
 inclusa, è l'apprendimento auto-supervisionato, e non riguarda soltanto il
 linguaggio. È lo stesso meccanismo con cui il {doc}`capitolo sulla visione
 </VisioneArtificiale/overview>` ha fatto imparare a rappresentare le immagini
-senza etichette, e con cui più avanti si riconoscerà il parlato senza
-trascrizioni e si allineeranno le immagini alle loro didascalie. Il
-{doc}`capitolo sull'auto-supervisione </AutoSupervisione/overview>` lo tratta
-per intero, e discute perché regga tanti problemi: a ogni token il modello
+senza etichette, con cui si impara a riconoscere il parlato senza
+trascrizioni ({doc}`rappresentazioni auto-supervisionate dell'audio
+</Audio/rappresentazioni-auto-supervisionate>`) e con cui si allineano le
+immagini alle loro didascalie ({doc}`allineare due spazi
+</VisioneLinguaggio/allineare-due-spazi>`). Il
+{doc}`capitolo sull'auto-supervisione </AutoSupervisione/overview>` lo tratta nel
+dettaglio e discute perché funzioni su tanti problemi: a ogni token il modello
 riceve una correzione, un segnale molto più fitto di un'etichetta per
 fotografia o di un «hai vinto» a fine partita.
 
@@ -130,7 +133,7 @@ Perché proprio *grandi* modelli? È una regolarità che qualcuno ha misurato.
 Un modello di linguaggio ha un solo
 compito, indovinare la parola dopo, e su quel compito si può dargli un voto
 preciso: gli si fa leggere del testo che non ha mai visto e si guarda quanta
-probabilità aveva assegnato alle parole che poi sono comparse davvero. Se ne
+probabilità aveva assegnato alle parole che poi sono comparse. Se ne
 dava tanta, ha indovinato bene; se ne dava poca, male. Quel numero, che va
 verso il basso quando il modello impara, è l'errore (in gergo la *loss*),
 e quando si tratterà di dare un voto a un modello finito lo ritroveremo sotto
@@ -145,37 +148,37 @@ La ricetta di un modello di linguaggio ha tre ingredienti: la taglia del
 modello, la quantità di testo su cui studia, e il calcolo (quante ore di
 computer può bruciare). La taglia si misura in parametri, cioè i numeri interni
 che l'addestramento sposta un'inezia alla volta: «un modello da sette miliardi»
-vuol dire sette miliardi di parametri. La scoperta del 2020
+ha sette miliardi di parametri. La scoperta del 2020
 {cite}`kaplan2020scaling` è che aumentando gli ingredienti tutti insieme
 l'errore cala in modo *prevedibile*: niente salti misteriosi, una curva liscia,
 come una ricetta che riesce sempre un po’ meglio se si raddoppia ogni
 ingrediente. Prevedibile è la parola che conta: si prova la ricetta in piccolo,
 si guarda di quanto migliora a ogni raddoppio, e si sa già come verrà quella
 grande prima di infornarla. Il guadagno però è lento: ogni raddoppio del
-calcolo lima l'errore di poco più del tre per cento. E la ricetta perfetta non
+calcolo lima l'errore di poco più del tre per cento. La ricetta perfetta non
 arriva mai: sotto un certo punto non si scende comunque, perché una quota
 dell'incertezza appartiene alla lingua stessa, e nessuna quantità di parametri
 la toglie di mezzo. La seconda scoperta, del 2022 {cite}`hoffmann2022training`,
 è che gli ingredienti vanno bilanciati: è inutile fare una torta con dieci uova
 e un cucchiaio di farina. La regola pratica emersa è circa 20 pezzi di testo
 per ogni parametro del modello, contati in quei pezzi in cui il testo viene
-spezzato, i token, non in parole: per un modello da sette miliardi di parametri
-vuol dire centoquaranta miliardi di token da leggere. Molti modelli dell'epoca
+spezzato, i token, non in parole: a un modello da sette miliardi di parametri
+ne servono centoquaranta miliardi da leggere. Molti modelli dell'epoca
 erano enormi ma avevano studiato troppo poco, e la dimostrazione ha un nome,
 perché è un modello costruito apposta: si chiama **Chinchilla**, ha quattro
 volte meno parametri del suo rivale diretto (**Gopher**), ha letto quasi cinque
 volte più testo a parità di ore di calcolo, e lo batte. Da allora "più grande"
 non basta più: conta il rapporto fra modello e dati. Venti pezzi per parametro,
-però, è la proporzione che costa meno da addestrare: chi il modello lo deve poi
-usare moltissimo ne fa uno più piccolo e gli fa leggere molto di più, perché
-ogni risposta di un modello piccolo costa meno.
+però, è la proporzione che rende minimo il costo dell'addestramento: chi deve
+poi usare il modello moltissimo ne fa uno più piccolo e gli fa leggere molto di
+più, perché ogni risposta di un modello piccolo costa meno.
 `````
 
 `````{tab} Superiore
 Kaplan e colleghi {cite}`kaplan2020scaling` osservano che la loss di test per
-token, cioè la $\bar{\mathcal{L}}$ di poco fa, segue leggi di
-potenza in ciascuna delle tre risorse, quando le altre due non fanno da collo
-di bottiglia:
+token, cioè la $\bar{\mathcal{L}}$ definita per il pre-addestramento, segue
+leggi di potenza in ciascuna delle tre risorse, quando le altre due non fanno
+da collo di bottiglia:
 
 $$
 \bar{\mathcal{L}}(N) \approx \left(\frac{N_c}{N}\right)^{\alpha_N}, \qquad
@@ -197,9 +200,9 @@ sorprendente affidabilità su molti ordini di grandezza, il che permette di
 addestrando modelli da milioni. Un'avvertenza sulla forma: scritte così le tre
 leggi mandano la loss a zero su scale arbitrariamente grandi, il che è falso.
 Valgono dentro il regime misurato, e la forma completa che si usa per
-estrapolare davvero somma un termine costante irriducibile, l'entropia del
-linguaggio stesso, che nessuna quantità di parametri toglie di mezzo, ed è la
-forma che Hoffmann e colleghi adottano.
+estrapolare somma un termine costante irriducibile, l'entropia del
+linguaggio stesso, che nessuna quantità di parametri toglie di mezzo; è la forma
+adottata da Hoffmann e colleghi.
 
 Hoffmann e colleghi {cite}`hoffmann2022training` correggono la conclusione
 operativa di Kaplan (che suggeriva di privilegiare $N$): rifacendo le misure
@@ -254,8 +257,8 @@ dell'articolo, e Besiroglu e colleghi {cite}`besiroglu2024chinchilla`,
 ricostruendo i dati dai grafici, trovano che quei valori non descrivono bene i
 dati: il loro adattamento dà $E \approx 1{,}82$, $a \approx 0{,}35$, $b \approx
 0{,}37$, quindi $N_{\text{opt}} \propto C^{0{,}51}$ e un rapporto ottimo vicino
-a venti token per parametro. La regola del mezzo regge, i valori arrotondati
-no. E il rapporto 20 minimizza il costo dell'addestramento, non quello
+a venti token per parametro. La regola del mezzo resta valida, i valori arrotondati
+no. Il rapporto 20 minimizza il costo dell'addestramento, non quello
 dell'uso: chi prevede di servire molte richieste addestra di proposito un
 modello più piccolo su molti più token. La famiglia Llama 3 lo fa anche con i
 modelli più piccoli {cite}`grattafiori2024llama3`, e quello da 8 miliardi di
@@ -273,21 +276,20 @@ Chinchilla.
 ```
 
 Il confronto di {numref}`fig-chinchilla` è il motivo per cui «quanti
-parametri ha?» ha smesso di essere una domanda sensata da sola. Un numero di
+parametri ha?» non basta più come domanda. Un numero di
 parametri dice quanta capacità c'è, non quanta ne è stata riempita, e due
 modelli con lo stesso cartellino possono aver letto quantità di testo
 incomparabili.
 
-Una parola di prudenza: le leggi di scala descrivono come cala
-la loss di test dentro il regime in cui sono state misurate, cioè che il
-modello sbaglierà un po’ meno a indovinare la parola dopo, non che a una certa
-taglia gli spunterà una certa abilità. Che le abilità spuntino davvero
-all'improvviso è una faccenda controversa.
+Le leggi di scala descrivono come cala la loss di test dentro il regime in
+cui sono state misurate, cioè quanto il modello sbaglierà meno a indovinare la
+parola dopo; non dicono che a una certa taglia spunterà una certa abilità. Che
+le abilità spuntino all'improvviso è controverso.
 
 ## Generare: l'arte di scegliere la parola dopo
 
 Un modello addestrato non sceglie una parola: distribuisce probabilità su tutte
-quelle possibili. Per *scrivere*, però, bisogna sceglierne una davvero, poi
+quelle possibili. Per *scrivere*, però, bisogna sceglierne una, poi
 un'altra, poi un'altra ancora, e il modo in cui la si sceglie cambia moltissimo
 il testo che ne esce.
 
@@ -309,26 +311,26 @@ incastrato a girare in tondo («Il gatto nero salta sul muro. Il gatto nero
 salta sul muro. Il gatto nero...»). Gli stessi autori sono andati a
 controllare come è fatto il testo scritto da noi: hanno preso pagine di prosa
 umana e hanno chiesto al modello, parola per parola, quanto le riteneva
-probabili. Il risultato è che noi *non* scriviamo la sequenza più probabile,
-mai: le nostre frasi sono punteggiate di scelte a media e bassa probabilità, ed
-è quello che le rende vive. Per scrivere come noi, allora, il modello deve
-rischiare: non scegliere sempre il massimo, ma *campionare*, cioè tirare un
-dado truccato secondo le sue probabilità. E il trucco del dado si può regolare.
+probabili. Risulta che noi non scegliamo mai la sequenza più probabile: le
+nostre frasi sono punteggiate di scelte a media e bassa probabilità, e sono
+queste a renderle vive. Per scrivere come noi il modello deve rischiare, cioè
+*campionare*: tirare un dado truccato secondo le sue probabilità invece di
+scegliere sempre il massimo. Il trucco del dado si può regolare.
 
 ```{figure} ../figures/generazione-autoregressiva.gif
 :name: fig-generazione-autoregressiva
 :alt: "Animazione: la frase «Il gatto» viene evidenziata come contesto, sotto compaiono quattro candidati con le rispettive probabilità in barre orizzontali, il più probabile sale a formare la parola successiva, e il ciclo si ripete fino a «Il gatto nero salta sul muro»."
 :width: 90%
 
-Il ciclo della generazione: leggi tutto quello che c'è scritto finora, ottieni
+Il ciclo della generazione: leggi tutto il testo scritto finora, ottieni
 una probabilità per ogni parola possibile, scegline una, riattaccala in fondo e
 ricomincia da capo.
 ```
 
 Nella {numref}`fig-generazione-autoregressiva` la scelta cade ogni volta sul
-candidato più probabile: è la decodifica *greedy*, quella che produce i loop
-appena descritti. Gli iperparametri che seguono servono a non far vincere
-sempre la barra più lunga.
+candidato più probabile: è la decodifica *greedy*, quella che produce i loop in
+cui il testo si incarta. Gli iperparametri che seguono servono a non far
+vincere sempre la barra più lunga.
 
 `````{tab} Elementare
 Tre manopole, tutte con la stessa filosofia: quanta sorpresa vogliamo?
@@ -341,18 +343,17 @@ rispetta le probabilità del modello. A temperatura *alta* il dado si
 "stempera" verso l'equità: ogni tanto esce «pigiama», e il testo si fa
 creativo fino allo sproposito. Bassa = affidabile e prevedibile; alta = vivace
 e rischiosa. Il nome viene dalla fisica, non dal caldo: nelle formule che
-descrivono un gas compare esattamente la stessa manopola, e alzarla vuol dire
-far muovere le particelle più a caso. Qui non si scalda niente; è la formula a
-essere la stessa.
+descrivono un gas compare la stessa manopola, e alzarla fa muovere le
+particelle più a caso. Qui non si scalda niente; la formula è la stessa.
 
 Top-k e top-p tolgono dal mazzo le carte peggiori prima di pescare. Con il
 **top-k** tieni solo le $k$ carte migliori: con $k=2$, nel nostro gioco, pesca
-solo tra «muro» e «tetto»; «pigiama» non può proprio uscire. Il difetto: $k$ è
+solo tra «muro» e «tetto»; «pigiama» non può uscire. Il difetto: $k$ è
 fisso, ma a volte le carte buone sono due, a volte venti. Il **top-p** è più
 furbo: tieni le carte migliori finché, sommando le loro probabilità, copri
 (diciamo) il 90% del totale; a volte bastano due carte, a volte ne servono
-dieci, il mazzo si adatta da solo alla situazione. È il metodo proposto
-proprio nell'articolo del "caso curioso", con il nome di *nucleus sampling*:
+dieci, il mazzo si adatta alla situazione. È il metodo proposto
+nell'articolo del "caso curioso", con il nome di *nucleus sampling*:
 si pesca solo dal nucleo buono del mazzo, e la coda di parole strampalate (che
 una per una vale poco, ma sommata pesa) sparisce.
 
@@ -433,25 +434,25 @@ più libero.
 C'è un dettaglio pratico che a prima vista sembra un disastro. La generazione
 è autoregressiva: come visto nella {doc}`sezione sulla struttura del
 Transformer <architettura>`, il token prodotto rientra come input e si
-ricomincia. Ma allora, per ogni nuovo token, il Transformer dovrebbe rileggere
-*tutta* la sequenza, e i conti dell'attenzione sul prefisso sarebbero sempre
-gli stessi, rifatti da capo a ogni passo. Nessun sistema reale lavora così:
+ricomincia. Per ogni nuovo token il Transformer dovrebbe allora rileggere
+*tutta* la sequenza, e le operazioni dell'attenzione sul prefisso sarebbero
+sempre le stesse, rifatte da capo a ogni passo. Nessun sistema reale lavora così:
 tutti usano la KV cache, che la {doc}`sezione sull'attenzione in pratica
 <attenzione-in-pratica>` ha descritto come struttura dati. Il nome dice già
 tutto, una volta sciolto: K e V sono la *key* e il *value* dell'attenzione, i
 vettori che ogni posizione offre come chiave e come valore; *cache* è la
-memoria in cui si conserva quello che è già stato calcolato.
+memoria in cui si conserva il calcolo già fatto.
 
 `````{tab} Elementare
 È il taccuino della sezione sull'attenzione in pratica, uno per ogni piano e
 per ogni lettore: per ogni parola letta ci restano scritte l'etichetta con cui
 si fa trovare e l'informazione che consegna, e per una parola nuova il modello
 scrive soltanto le sue due righe, consultando le vecchie senza rifarle. Il
-risultato è identico a quello che verrebbe rileggendo tutto, perché nessuna
-parola può guardare avanti: quello che succede a pagina trecento non cambia
-quello che si era annotato a pagina dodici. Il risparmio è enorme, la
-differenza fra girare pagina e rileggere il libro da capo a ogni pagina. Il
-prezzo è lo spazio: il taccuino si allunga a ogni parola, mezzo megabyte a
+risultato è identico a quello ottenuto rileggendo tutto, perché
+nessuna parola può guardare avanti: quanto accade a pagina trecento non cambia
+gli appunti di pagina dodici. Il risparmio è enorme, la differenza fra girare
+pagina e rileggere il libro da capo a ogni pagina. Lo svantaggio è lo spazio: il
+taccuino si allunga a ogni parola, mezzo megabyte a
 parola per un modello da sette miliardi, e per conversazioni molto lunghe
 arriva a pesare quanto il modello stesso.
 
@@ -470,14 +471,14 @@ dell'intera generazione di $n$ token da $O(n^3 d + n^2 d^2)$ a
 $O(n^2 d + n\,d^2)$, come ricava la sezione sull'attenzione in pratica; per il
 modello intero si moltiplica per gli $n_{\text{strati}}$ strati.
 
-I due termini vanno tenuti distinti, perché è facile portarsi via la morale
-sbagliata. Il termine in $t\,d$ è quello dell'attenzione ed è ineliminabile,
+I due termini vanno tenuti distinti per non trarne la conclusione sbagliata. Il
+termine in $t\,d$ è quello dell'attenzione ed è ineliminabile,
 come nel confronto con le RNN; il termine in $d^2$ è quello delle matrici
 dense (proiezioni e feed-forward), e domina finché il contesto è più corto di
 qualche decina di migliaia di token. Per un modello da 7 miliardi di
 parametri, con le forme di Llama 2 7B ($n_{\text{strati}} = 32$,
 $d = d_{\text{model}} = 4096$, feed-forward SwiGLU con
-$d_{\text{ff}} = 11\,008$, vocabolario di $32\,000$ token), il conto mette due
+$d_{\text{ff}} = 11\,008$, vocabolario di $32\,000$ token), si contano due
 operazioni per parametro delle matrici dense e $4\,t\,d$ per strato per
 l'attenzione su $t$ token di contesto:
 
@@ -533,7 +534,7 @@ $2\,n_{\text{strati}}\,d_{\text{model}}$ numeri per token, mezzo megabyte a 16
 bit per il modello da sette miliardi, e una finestra di 4.096 token occupa
 circa 2 GB *per ogni sequenza nel batch*, da sommare ai ~14 GB dei pesi. Con
 meno teste di chiave e valore la voce scende (con GQA a otto gruppi, a un
-quarto), ed è per questo che MQA, GQA e MLA sono diventate standard nei
+quarto); da qui l'adozione di MQA, GQA e MLA come standard nei
 modelli recenti. Lo stesso conto spiega un'asimmetria che si nota usando i
 servizi commerciali: elaborare il prompt (il *prefill*, parallelo) e generare i
 token (la *decodifica*, sequenziale e affamata di memoria) hanno costi molto
@@ -577,7 +578,7 @@ anche se i suoi meccanismi di base, le *teste di induzione* che ricopiano il
 seguito di uno schema già comparso nel contesto, si formano già in modelli
 piccolissimi {cite}`olsson2022induction`.
 
-L'onestà impone però di dire che questa "programmazione" è fragile. L'ordine
+Questa "programmazione" è però fragile. L'ordine
 degli esempi nel prompt può portare l'accuratezza da vicino allo stato
 dell'arte fino al livello del caso {cite}`lu2022fantastically`; il solo formato
 della richiesta (separatori, maiuscole, spazi) la sposta fino a 76 punti su un
@@ -587,31 +588,31 @@ sostituirle a caso cambia poco {cite}`min2022rethinking`. Una frase
 d'istruzione che funziona con un modello può fallire con un altro. Non c'è un
 manuale del linguaggio di programmazione, perché non è un linguaggio di
 programmazione. Sotto non c'è nessuno che esegue un ordine: c'è una macchina
-che, dato tutto quello che ha davanti, calcola quanto è probabile ogni
-possibile continuazione, e ne sceglie una. Se cambi quello che ha davanti,
+che, dato tutto il contesto, calcola quanto è probabile ogni
+possibile continuazione, e ne sceglie una. Se cambi il contesto,
 cambiano le probabilità; l'istruzione è un pezzo di contesto come tutti gli
 altri e non un comando, e il confine tra "istruire" e "suggestionare" è sottile.
 Il *prompt engineering*
-(l'artigianato di formulare richieste che funzionano) è utile, ma va preso per
-quello che è: una collezione di euristiche su un sistema che nessuno, finora,
+(l'artigianato di formulare richieste che funzionano) è utile, ma resta
+una collezione di euristiche su un sistema che nessuno, finora,
 sa programmare con garanzie.
 
 ## Misurare un gigante
 
-Come si valuta un modello del genere? La misura più naturale è la stessa cosa
-che il modello sta imparando a fare: quanto resta indeciso sulla parola
-successiva. Si chiama perplessità, ed è l'esponenziale della loss media per
+Come si valuta un modello del genere? La misura più naturale è quella che il
+modello sta imparando a minimizzare: quanto resta indeciso sulla parola
+successiva. Si chiama perplessità ed è l'esponenziale della loss media per
 token, cioè il numero di scelte equiprobabili fra cui il modello si
-troverebbe, in media, a ogni passo. Perplessità 1 vuol dire che sa sempre
-esattamente che cosa viene dopo; più è alta, più è indeciso, e quindi più è
-bassa, meglio è. È un altro modo di scrivere l'errore di cui parlavano le
-leggi di scala, cioè esattamente la cosa che il pretraining fa scendere, e
-resta il termometro più affidabile della qualità *come modello di linguaggio*.
+troverebbe, in media, a ogni passo. Con perplessità 1 il modello sa sempre quale
+parola viene dopo; più è alta, più è indeciso, quindi più è bassa, meglio è.
+È l'errore delle leggi di scala scritto in un'altra forma, che il
+pretraining fa scendere, e resta il termometro più affidabile della qualità
+*come modello di linguaggio*.
 
 `````{tab} Elementare
-Il dado è tutto quello che serve. Se un modello ha perplessità 20 su un certo
-testo, vuol dire che, in media, a ogni parola si trova nella condizione di uno
-che deve indovinare fra venti possibilità equiprobabili. Un modello migliore
+Basta un dado per capirla. Se un modello ha perplessità 20 su un certo testo, a
+ogni parola si trova, in media, nella condizione di chi deve indovinare fra
+venti possibilità equiprobabili. Un modello migliore
 scende a dieci, uno molto migliore a cinque, e nessuno arriverà mai a uno,
 perché il linguaggio ha una sua imprevedibilità di fondo che nessun modello può
 togliere: quella che Shannon misurava coprendo una riga di testo e chiedendo a
@@ -655,8 +656,8 @@ per i byte invece che per i token dà una misura che si confronta anche fra
 modelli che spezzano il testo in modo diverso.
 `````
 
-Ma nemmeno la perplessità dice quasi nulla di ciò che interessa a chi il modello
-lo usa: sa rispondere a domande di diritto? Sa tradurre? Per questo si
+Nemmeno la perplessità dice però quasi nulla di ciò che interessa a chi il
+modello lo usa: sa rispondere a domande di diritto? Sa tradurre? Per questo si
 affiancano batterie di test standardizzati, i **benchmark**: il più citato è
 stato a lungo MMLU (*Massive Multitask Language Understanding*)
 {cite}`hendrycks2021measuring`, cinquantasette materie di domande a scelta
@@ -676,7 +677,7 @@ basta che il benchmark sia pubblico e il corpus sia il web.
 
 Come si vede in {numref}`fig-contaminazione`, la contaminazione non è un
 imbroglio ma una conseguenza quasi inevitabile del modo in cui si raccolgono i
-dati. Ed è per questo che è difficile da escludere: per dimostrare che una
+dati. Per questo è difficile da escludere: per dimostrare che una
 domanda *non* è nel corpus bisognerebbe poterlo ispezionare tutto, e chi
 pubblica un punteggio quasi mai pubblica anche i dati. Se il modello ha
 studiato l'intero web, è probabile che abbia già *visto* le domande del test,
@@ -696,9 +697,9 @@ dedicate ai grandi modelli.
 ### Le abilità emergenti, e il dubbio che siano un miraggio
 
 Su certi compiti (aritmetica
-a più cifre, ragionamento a più passi) i modelli piccoli vanno a zero, e
-poi, superata una certa scala, la prestazione salta all'improvviso. Non
-migliora gradualmente: appare. Da qui il nome *abilità emergenti*, e l'idea
+a più cifre, ragionamento a più passi) i modelli piccoli ottengono zero e,
+superata una certa scala, la prestazione salta all'improvviso, senza una salita
+graduale. Da qui il nome *abilità emergenti*, e l'idea
 inquietante che ingrandendo un modello si ottengano capacità non previste.
 
 ```{figure} ../figures/emergent-abilities.svg
@@ -730,10 +731,10 @@ cifre sono corrette, o la probabilità assegnata alla risposta giusta), la
 curva diventa liscia e prevedibile. Il miglioramento c'era ed era continuo: la
 metrica lo nascondeva.
 
-In molti casi, non in tutti. Che gran parte di quelle curve a scalino sia un
-effetto del righello è ormai ben argomentato; che ingrandire un modello non gli
-cambi *mai* niente di qualitativo è un'affermazione più forte, e nessuno l'ha
-dimostrata. Il dibattito è aperto, e conviene tenerlo aperto anche quando la
+Questo vale per molti casi, non per tutti. Che gran parte di quelle curve a
+scalino sia un effetto del righello è ormai ben argomentato; che ingrandire un
+modello non gli cambi *mai* niente di qualitativo è un'affermazione più forte, e
+nessuno l'ha dimostrata. Il dibattito è aperto, e resta tale anche quando la
 spiegazione furba fa comodo.
 
 La morale vale ben oltre gli LLM: una metrica discontinua trasforma un
@@ -750,14 +751,14 @@ Koyejo {cite}`schaeffer2023emergent`.
 L'argomento è preciso. Se l'errore per token cala regolarmente con la scala
 (come predicono le leggi di scala), l'accuratezza su una risposta di $n$ token
 valutata in modo esatto vale circa $p_{\text{tok}}^{\,n}$, dove
-$p_{\text{tok}}$ è la probabilità di azzeccare un singolo token e il conto
+$p_{\text{tok}}$ è la probabilità di azzeccare un singolo token e il calcolo
 suppone che gli errori sui token siano indipendenti l'uno dall'altro. Una
 funzione del genere resta schiacciata vicino a zero e poi si impenna: la
 discontinuità è prodotta dalla non linearità della metrica, non dal
 modello. Sostituendo l'accuratezza esatta con la distanza di edit, o con la
 log-verosimiglianza della risposta corretta, in molti casi l'emergenza svanisce.
 
-Il dibattito non è chiuso, e conviene tenere distinte due affermazioni. Che gran
+Il dibattito non è chiuso, e le due affermazioni vanno tenute distinte. Che gran
 parte delle curve «a salto» siano artefatti di misura è ormai ben argomentato.
 Che *nessun* cambiamento qualitativo avvenga con la scala è un'affermazione più
 forte e non dimostrata: fenomeni come l’*in-context learning* restano difficili
@@ -776,8 +777,8 @@ Temperatura, top-k e top-p stanno in una funzione di venti righe. Non c'è
 nessun modello scaricato: i punteggi grezzi (i *logit*, cioè i punteggi che il
 modello assegna a ogni token del vocabolario prima di trasformarli in
 probabilità) sono scritti a mano, così resta in vista solo il meccanismo. Le
-operazioni sono quelle di prima, nell'ordine: la temperatura divide i logit,
-top-k e top-p tolgono i token fuori dal taglio, e infine si campiona.
+operazioni sono quelle della decodifica, nell'ordine: la temperatura divide i
+logit, top-k e top-p tolgono i token fuori dal taglio, e infine si campiona.
 
 ```python
 import torch
@@ -818,7 +819,7 @@ T=2.0: tensor([0.4740, 0.2870, 0.1740, 0.0640])
 ```
 
 Sono i numeri della tabella: a $T = 0{,}5$ la distribuzione si concentra su
-«muro», a $T = 2$ si appiattisce. E un mini-ciclo di generazione, con un
+«muro», a $T = 2$ si appiattisce. Segue un mini-ciclo di generazione, con un
 "modello" giocattolo al posto di un vero Transformer: la struttura del loop è
 identica a quella reale.
 
@@ -851,7 +852,7 @@ Sostituendo `modello_giocattolo` con un Transformer addestrato si ottiene il
 ciclo di generazione di un modello linguistico, a parte la KV cache,
 l'elaborazione di più richieste insieme e i criteri per fermarsi.
 
-C'è però un ultimo tassello. Il modello che esce dal pretraining è un
+Il modello che esce dal pretraining è un
 *completatore*, non un assistente: alla domanda «Qual è la capitale della
 Francia?» può rispondere «Qual è la capitale della Spagna? Qual è la capitale
 dell'Italia?», perché nel web le liste di domande abbondano, e completare la
@@ -873,20 +874,20 @@ post-training, e ha una {doc}`sezione tutta sua <post-training>`.
   stessa. Gli ingredienti, poi, vanno bilanciati, e la regola pratica è una
   ventina di pezzi di testo per ogni parametro, se si vuole spendere il meno
   possibile per addestrarlo; chi poi deve usare il modello moltissimo ne fa uno
-  più piccolo e gli fa leggere di più. «Quanto è grande?», da sola, ha smesso
-  di essere una domanda sensata.
+  più piccolo e gli fa leggere di più. «Quanto è grande?» non basta più come
+  domanda.
 - Per scrivere, il modello non prende sempre la parola più probabile:
   verrebbe un testo noioso, che si incarta a ripetere sé stesso. Tira un dado,
   e tre manopole decidono quanto quel dado è truccato (la temperatura) e
   quante carte restano nel mazzo da cui pescare (il top-k e il top-p).
 - Il taccuino della KV cache evita di rileggere tutto da capo a ogni parola:
   gli appunti già presi restano in memoria. Si risparmia tempo e si paga in
-  spazio, ed è uno dei motivi per cui le conversazioni lunghe costano.
+  spazio: le conversazioni lunghe costano di più.
 - Il prompt è un modo di programmare scrivendo: potente e fragile insieme.
-  E i punteggi dei test vanno letti sapendo che un modello che ha studiato
+  I punteggi dei test vanno letti sapendo che un modello che ha studiato
   tutto il web potrebbe aver già visto le domande.
-- Quello che esce da tutto questo è un completatore di testo, non un
-  assistente: per quello serve una seconda fase, il post-training.
+- Il modello che esce dal pretraining è un completatore di testo, non un
+  assistente: per questo serve una seconda fase, il post-training.
 ```
 `````
 
@@ -922,9 +923,9 @@ post-training, e ha una {doc}`sezione tutta sua <post-training>`.
 ```
 `````
 
-Prima del post-training, però, un'idea architetturale che la scala rende
-interessante. Crescere conviene, ma per scrivere una
-sola parola il modello la moltiplica, piano dopo piano, per tutti i suoi
-parametri, e più i parametri sono tanti più ogni parola costa. A meno di far
-passare ogni parola solo per una parte dei parametri, che è l'idea della
-{doc}`sezione sui modelli a esperti <mixture-of-experts>`.
+Prima del post-training c'è però un'idea architetturale che la scala rende
+interessante. Crescere conviene, ma per scrivere una sola parola il modello la
+moltiplica, piano dopo piano, per tutti i suoi parametri, e più i parametri
+sono tanti più ogni parola costa. A meno di far passare ogni parola
+solo per una parte dei parametri: è l'idea della {doc}`sezione sui modelli a
+esperti <mixture-of-experts>`.

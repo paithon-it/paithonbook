@@ -6,7 +6,7 @@
 #                              Lo installa il workflow che costruisce il libro.
 #   requirements-notebook.txt  le versioni con cui il CODICE del libro è stato
 #                              eseguito, che è un vincolo di riproducibilità.
-#   questo file                gli attrezzi della redazione: il PDF, la card
+#   questo file                gli attrezzi per pubblicare: il PDF, la card
 #                              social, il registro, il deposito su Zenodo.
 #
 # Perché esiste. Queste librerie i workflow se le installavano una per una
@@ -67,10 +67,9 @@ playwright
 cairosvg
 fonttools
 
-# yt-dlp serve alla redazione, non al libro: prendere sottotitoli e metadati di
-# un video quando una fonte è un talk e non un paper (è successo con «An
-# Observation on Generalization», che un paper non ce l'ha). Sta qui perché è
-# un attrezzo, come pymupdf: nessuna pagina del libro lo importa.
+# yt-dlp prende i sottotitoli e i metadati di un video, quando una fonte citata
+# è un talk e non un paper. Sta qui perché è un attrezzo, come pymupdf: nessuna
+# pagina del libro lo importa.
 #
 # ATTENZIONE, ed è il motivo per cui la riga porta una nota invece di stare da
 # sola: da una macchina in cloud spesso non funziona. YouTube risponde «Sign in

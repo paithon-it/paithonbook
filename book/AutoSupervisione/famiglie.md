@@ -13,13 +13,13 @@ immagine (un ritaglio e un altro, oppure la stessa scena con i colori
 spostati), e chiediamo che le loro rappresentazioni coincidano. La soluzione
 banale è dare a tutte le foto la stessa rappresentazione: l'accordo è perfetto,
 la perdita è nulla, e il modello non ha guardato niente. Questa soluzione
-costante, la risposta vuota, si chiama collasso, ed è il guasto che i
-{doc}`modelli a energia </ModelliEnergia/energia-come-compatibilita>` hanno già
-incontrato: un'energia bassa dappertutto, che dà ragione a ogni coppia.
+costante, la risposta vuota, si chiama collasso, e i {doc}`modelli a energia
+</ModelliEnergia/energia-come-compatibilita>` l'hanno già incontrata come
+un'energia bassa dappertutto, che dà ragione a ogni coppia.
 
-Quindi la domanda vera non è «quale pretesto». È: che cosa impedisce la
-risposta vuota. Le quattro famiglie sono quattro risposte a questa domanda, e
-messe in fila si ricordano molto meglio di quattro elenchi di sigle.
+La domanda da porre non riguarda dunque il pretesto, ma che cosa impedisce la
+risposta vuota. Le quattro famiglie sono quattro risposte, e si ricordano
+meglio di quattro elenchi di sigle.
 
 ## La prima: respingere
 
@@ -33,18 +33,18 @@ foto hanno la stessa rappresentazione, il gemello non si distingue da nessun
 rivale, e la perdita sale al valore che avrebbe tirando a caso fra i $K$
 candidati, cioè $\log K$.
 
-È la famiglia contrastiva, già percorsa per intero in
+È la famiglia contrastiva, già trattata per intero in
 {doc}`Imparare a vedere senza etichette </VisioneArtificiale/senza-etichette>`:
 la ricetta di base, il costo dei rivali, e la coda di rivali già elaborati che
 permette di averne molti senza doverli calcolare tutti insieme. Qui interessa
 solo il posto che occupa nello schema: il collasso lo impedisce una forza che
 allontana.
 
-Il prezzo di questa famiglia sono i rivali: perché la perdita dica qualcosa ne
-servono migliaia, e costano. È quel prezzo che ha spinto la seconda e la terza
-famiglia a cercare un'altra strada. La quarta, quella che ricostruisce il pezzo
-coperto, ha un'origine indipendente: sul testo, con BERT, esisteva dal 2018,
-prima delle altre due.
+Il limite di questa famiglia sono i rivali: perché la perdita dica qualcosa ne
+servono migliaia, e ciascuno va elaborato dalla rete. Per questo la seconda e
+la terza famiglia hanno cercato un'altra strada. La quarta, quella che
+ricostruisce il pezzo coperto, ha un'origine indipendente: sul testo, con BERT,
+esisteva dal 2018, prima delle altre due.
 
 ## La seconda: rendere le due reti diverse
 
@@ -65,15 +65,14 @@ lenta e due ritocchi all'uscita dell'insegnante: la centratura, che sottrae la
 risposta media e gli impedisce di dire sempre la stessa cosa, e l'affilatura,
 che rende la risposta più netta e gli impedisce di dire un po' di tutto.
 
-È la famiglia della distillazione, perché una rete impara da quello che dice
-l'altra, e anche questa è già stata percorsa in
-{doc}`Imparare a vedere senza etichette </VisioneArtificiale/senza-etichette>`,
-con le formule di BYOL e la scena dell'allievo e dell'insegnante. Qui basta il
-posto nello schema: il collasso lo impedisce un'asimmetria, cioè una
-differenza costruttiva fra i due rami.
+È la famiglia della distillazione, perché una rete impara dall'uscita
+dell'altra; la tratta già {doc}`Imparare a vedere senza etichette
+</VisioneArtificiale/senza-etichette>`, con le formule di BYOL e la scena
+dell'allievo e dell'insegnante. Nello schema il collasso lo impedisce
+un'asimmetria, cioè una differenza costruttiva fra i due rami.
 
-Ed è un posto diverso da quello delle altre tre famiglie, perché qui la
-perdita non vieta niente. In BYOL e in SimSiam la perdita è la distanza fra la
+Il posto è diverso da quello delle altre tre famiglie, perché qui la perdita
+non vieta niente. In BYOL e in SimSiam la perdita è la distanza fra la
 predizione dello studente e l'uscita dell'insegnante, normalizzate, e sulla
 soluzione costante vale zero, cioè il suo minimo: il collasso è una soluzione
 perfetta, e a tenerlo lontano non è la funzione da minimizzare ma la strada che
@@ -125,21 +124,22 @@ sempre la stessa cosa della casella 5, ho una scheda da otto caselle che ne vale
 sette, e sto sprecando spazio. Quanto pesi la varietà rispetto alla somiglianza
 lo decidiamo noi, con una manopola.
 
-Ecco perché questa famiglia non ha bisogno né di rivali né di trucchi
-costruttivi: le due regole vietano guasti diversi, e insieme li coprono. La
-risposta vuota, cioè descrivere tutte le foto allo stesso modo, la ferma la
-somiglianza: caselle bloccate non si somigliano, non c'è niente da premiare, e
-quella regola resta insoddisfatta per intero. La varietà ferma un guasto più
-educato, la scheda che cambia da foto a foto ma dice otto volte la stessa cosa:
-lì i due ritagli si somigliano quanto devono, e a pagare è lo spreco. In tutti e
-due i casi la penalità è scritta nel punteggio, e non arriva per vie traverse.
+Per questo questa famiglia non ha bisogno né di rivali né di trucchi
+costruttivi: le due regole fermano due modi diversi di sbagliare, e insieme li
+coprono. La risposta vuota, cioè descrivere tutte le foto allo stesso modo, la
+ferma la somiglianza: caselle bloccate non si somigliano, non c'è niente da
+premiare, e quella regola resta insoddisfatta per intero. La varietà ferma il
+caso più educato, la scheda che cambia da foto a foto ma dice otto volte la
+stessa cosa: lì i due ritagli si somigliano quanto devono, e a pagare è lo
+spreco. In tutti e due i casi la penalità è scritta nel punteggio, e non arriva
+per vie traverse.
 
 Un secondo metodo, VICReg, scrive le stesse pretese in un altro modo. La
 somiglianza diventa soltanto «le due schede vicine», senza il controllo sulle
 altre foto; la casella bloccata, invece di non contare, si paga: ogni casella
 deve variare almeno un tanto da una foto all'altra, e se varia meno scatta una
 multa. Resta la varietà, che fa pagare due caselle che dicono la stessa cosa.
-La multa e la varietà guardano ciascuna scheda per conto suo, senza
+Sia la multa sia la varietà valutano ogni scheda separatamente, senza
 confrontarla con l'altra, e questo ha una conseguenza pratica: le due schede
 possono compilarle due persone che lavorano in modo diverso, o perfino su
 materiali diversi, perché nessuna delle due deve somigliare all'altra nel modo
@@ -181,21 +181,20 @@ dove SimCLR perde circa quattro punti. Con $N < D$, però, l'identità non
 $\mathbf{C}$ ha rango al più $N - 1$, e la perdita non è un vincolo da
 soddisfare ma una penalità da rendere piccola.
 
-L'anti-collasso non è una proprietà emergente, ed è utile vedere quale dei due
-termini ferma quale collasso, perché i due collassi sono diversi. Se l'uscita è
-costante, la standardizzazione ha numeratore e deviazione standard nulli, e
-con l’$\varepsilon$ che ogni implementazione tiene al denominatore manda a zero
-tutte le celle di $\mathbf{C}$: a pagare è allora il termine di invarianza,
-che vale $D$, mentre quello di ridondanza vale zero e non serve a niente. Se
-invece l'uscita varia ma tutte le coordinate portano lo stesso
-segnale, che è la forma interessante del collasso, dopo la standardizzazione le
-colonne di $\mathbf{Z}^A$ sono identiche fra loro, e così quelle di
-$\mathbf{Z}^B$: ogni cella di $\mathbf{C}$ vale allora lo stesso numero
-$\rho$, quello che sta sulla diagonale, e il termine di ridondanza paga
+L'anti-collasso non è una proprietà emergente. Ciascuno dei due termini ferma
+un collasso diverso. Se l'uscita è costante, la standardizzazione ha numeratore
+e deviazione standard nulli, e con l’$\varepsilon$ che ogni implementazione
+tiene al denominatore manda a zero tutte le celle di $\mathbf{C}$: a pagare è
+allora il termine di invarianza, che vale $D$, mentre quello di ridondanza vale
+zero e non serve a niente. Se invece l'uscita varia ma tutte le coordinate
+portano lo stesso segnale, che è la forma più insidiosa del collasso, dopo la
+standardizzazione le colonne di $\mathbf{Z}^A$ sono identiche fra loro, e così
+quelle di $\mathbf{Z}^B$: ogni cella di $\mathbf{C}$ vale allora lo stesso
+numero $\rho$, quello che sta sulla diagonale, e il termine di ridondanza paga
 $\lambda \, D(D-1) \, \rho^2$, cioè $D(D-1)$ celle piene quanto la diagonale,
 mentre una rappresentazione con la stessa diagonale e coordinate scorrelate
-pagherebbe zero. Non serve un argomento sulla dinamica dell'ottimizzazione:
-la penalità si legge sul valore della perdita, perché è scritta nell'obiettivo.
+pagherebbe zero. Non serve un argomento sulla dinamica dell'ottimizzazione: la
+penalità si legge sul valore della perdita, perché è scritta nell'obiettivo.
 
 **VICReg** {cite}`bardes2022vicreg` arriva alla stessa meta con tre termini
 espliciti. Con $\mathbf{z}_n$ le righe di $\mathbf{Z}$,
@@ -252,11 +251,10 @@ restano sfumate (gli autori lo chiamano $\varepsilon$ e lo fissano a $0{,}05$),
 e i vettori $\mathbf{u}$ e $\mathbf{v}$ si trovano con l'algoritmo di
 Sinkhorn-Knopp, di cui tre iterazioni bastano. Mathilde Caron firma come prima
 autrice anche il metodo di distillazione della famiglia precedente
-{cite}`caron2021emerging`, e l'equipartizione fa qui il mestiere che là fa la
-centratura: impedire che una componente dell'uscita assorba tutta la massa.
-Là quel mestiere richiede un contrappeso, perché la centratura da sola spinge
-verso l'uniformità e a tirare dall'altra parte serve l'affilatura; qui il
-vincolo è uno solo.
+{cite}`caron2021emerging`, e l'equipartizione svolge qui la funzione che là
+svolge la centratura: impedire che una componente dell'uscita assorba tutta la
+massa. Là la sola centratura spinge verso l'uniformità, e per tirare dall'altra
+parte serve l'affilatura; qui il vincolo è uno solo.
 
 `````
 
@@ -346,24 +344,23 @@ dopo 600       diagonale  0.93   fuori diagonale  0.01
 su dati nuovi  diagonale  0.92   fuori diagonale  0.03
 ```
 
-Le due colonne stampate raccontano due storie diverse, ed è esattamente il
-punto. La fuori diagonale crolla da $0{,}70$ a $0{,}01$: le otto coordinate
-smettono di ripetersi e cominciano a dire otto cose distinte. La diagonale
-invece parte già in cima e ci resta, al tetto imposto dal rumore, $0{,}92$.
+Le due colonne stampate raccontano due storie diverse. La fuori diagonale
+crolla da $0{,}70$ a $0{,}01$: le otto coordinate smettono di ripetersi e
+cominciano a dire otto cose distinte. La diagonale invece parte già in cima e
+ci resta, al tetto imposto dal rumore, $0{,}92$.
 
-Dopo seicento passi la diagonale segna $0{,}93$, cioè un centesimo sopra
-quel tetto, e il centesimo non è un errore di conto: il punteggio si calcola
-sulle cinquecentododici coppie che il modello ha davanti, non sulla sorgente da
-cui vengono, e su un campione finito un po' di somiglianza in più si trova
-sempre. Che sia questo lo dice l'ultima riga, dove lo stesso proiettore
-descrive esempi che non ha mai visto: lì la diagonale torna a $0{,}92$, e la
-fuori diagonale sale appena, da $0{,}01$ a $0{,}03$.
+Dopo seicento passi la diagonale segna $0{,}93$, un centesimo sopra quel tetto.
+Il centesimo viene dal campione: il punteggio si calcola sulle
+cinquecentododici coppie che il modello ha davanti e non sulla sorgente da cui
+vengono, e su un campione finito un po' di somiglianza in più si trova sempre.
+Che sia questo lo dice l'ultima riga, dove lo stesso proiettore descrive esempi
+che non ha mai visto: lì la diagonale torna a $0{,}92$, e la fuori diagonale
+sale appena, da $0{,}01$ a $0{,}03$.
 
-E la diagonale non deve andare a uno per forza: è l'errore che si fa più
-volentieri. Deve andare il più in alto che il rumore consente, e in una
-situazione reale quel tetto è imposto dalle trasformazioni che abbiamo scelto
-noi. Quello che l'ottimizzazione può davvero guadagnare, in questo esempio, è
-tutto nell'altra colonna.
+La diagonale non deve andare a uno per forza, anche se è l'errore che si fa più
+volentieri: deve salire quanto il rumore consente, e in una situazione reale
+quel tetto lo fissano le trasformazioni scelte da noi. In questo esempio
+l'ottimizzazione può guadagnare soltanto nell'altra colonna.
 
 ## La quarta: ricostruire
 
@@ -374,49 +371,45 @@ migliore possibile è l'immagine media, la stessa per tutte, e la perdita resta
 alta quanto le immagini sono diverse fra loro. Il collasso completo non è un
 minimo di questa perdita.
 
-È la famiglia **generativa mascherata**, ed è già stata percorsa due volte: sul
-testo, con l'esercizio di BERT, in {doc}`GPT, BERT, T5: tre esercizi di
-pre-addestramento </Transformers/multimodalita>`, e sulle immagini, con il MAE,
-in {doc}`Imparare a vedere senza etichette
-</VisioneArtificiale/senza-etichette>`. Il posto nello schema: il collasso lo
-impedisce il compito stesso, perché ricostruire un dato specifico richiede di
-averlo descritto in modo specifico. Resta però una scorciatoia, che è un guasto
-diverso: se si copre poco, il pezzo mancante si ricava dai vicini senza capire
-la scena, ed è per questo che il MAE copre i tre quarti dell'immagine.
+È la famiglia **generativa mascherata**, già trattata due volte: sul testo, con
+l'esercizio di BERT, in {doc}`GPT, BERT, T5: tre esercizi di pre-addestramento
+</Transformers/multimodalita>`, e sulle immagini, con il MAE, in {doc}`Imparare
+a vedere senza etichette
+</VisioneArtificiale/senza-etichette>`. Nello schema il collasso lo impedisce il
+compito stesso, perché ricostruire un dato specifico richiede di averlo
+descritto in modo specifico. Resta però una scorciatoia di natura diversa: se si
+copre poco, il pezzo mancante si ricava dai vicini senza capire la scena, e per
+questo il MAE copre i tre quarti dell'immagine.
 
-Il prezzo, che le altre tre non pagano, è che il conto si fa sul dato grezzo:
-ricostruire i pixel vuol dire spendere capacità anche sul granello di polvere e
-sul riflesso, cioè su dettagli che nessuno potrebbe indovinare e che a nessuno
-interessano. È l'obiezione da cui parte la JEPA di LeCun, un'architettura che
-invece dei pixel prova a prevedere la rappresentazione del pezzo coperto, e che
-{doc}`La via di LeCun </WorldModels/jepa>` racconta per esteso.
+Il difetto, che le altre tre non hanno, è che la perdita si misura sul dato
+grezzo: ricostruire i pixel obbliga a spendere capacità anche sul granello di
+polvere e sul riflesso, cioè su dettagli che nessuno potrebbe indovinare e che
+a nessuno interessano. È l'obiezione da cui parte la JEPA di LeCun,
+un'architettura che invece dei pixel prova a prevedere la rappresentazione del
+pezzo coperto, e che {doc}`La via di LeCun </WorldModels/jepa>` racconta per
+esteso.
 
 ## Una rinuncia annunciata, e chi l'ha firmata
 
-C'è un filo rimasto aperto, e adesso si può finalmente chiudere.
-
 In {doc}`Le quattro rinunce </ModelliEnergia/paesaggi-di-oggi>` compare
-l'elenco che Yann LeCun ripete nelle sue conferenze, e una di quelle dice:
-abbandonare i metodi contrastivi
-in favore di quelli regolarizzati. Cioè, nel lessico delle quattro famiglie:
-smettere di mostrare al modello dei controesempi da respingere, e costruirlo
-invece in modo che non possa dire di sì a tutto.
+l'elenco che Yann LeCun ripete nelle sue conferenze, e una delle quattro dice:
+abbandonare i metodi contrastivi in favore di quelli regolarizzati. Nel lessico
+delle quattro famiglie vuol dire smettere di mostrare al modello dei
+controesempi da respingere, e costruirlo invece in modo che non possa dire di
+sì a tutto.
 
-I metodi regolarizzati sono la terza famiglia, e i due lavori portano una firma
-che dice qualcosa: Barlow Twins e VICReg hanno LeCun stesso fra gli
-autori. La
-rinuncia e la sua attuazione sono la stessa persona, il che non la rende né più
-né meno vera, ma spiega perché quella riga della diapositiva non fosse una
-previsione generica.
+I metodi regolarizzati sono la terza famiglia, e Barlow Twins e VICReg hanno
+LeCun fra gli autori. Chi ha enunciato la rinuncia ne ha anche scritto
+l'attuazione, il che non la rende né più né meno vera, ma spiega perché quella
+riga della diapositiva non fosse una previsione generica.
 
-Se la scommessa sia giusta resta una questione aperta, e non c'è motivo di
-chiuderla al posto della ricerca. L'argomento di chi ci scommette è che al
-crescere della complessità del dato, e soprattutto sul video, le risposte
-possibili diventano così tante che nessuna quantità di controesempi basterebbe a
-puntellare il modello; l'argomento di chi non ci scommette è che i metodi
-contrastivi hanno prodotto, nel frattempo, rappresentazioni che si usano
-ovunque, come quella che {doc}`CLIP </VisioneLinguaggio/allineare-due-spazi>`
-costruisce fra immagini e testo.
+Se la scommessa sia giusta resta una questione aperta. L'argomento di chi ci
+scommette è che al crescere della complessità del dato, e soprattutto sul
+video, le risposte possibili diventano così tante che nessuna quantità di
+controesempi basterebbe a puntellare il modello; l'argomento di chi non ci
+scommette è che i metodi contrastivi hanno prodotto, nel frattempo,
+rappresentazioni che si usano ovunque, come quella che {doc}`CLIP
+</VisioneLinguaggio/allineare-due-spazi>` costruisce fra immagini e testo.
 
 ## Le quattro famiglie in una tabella
 
@@ -427,32 +420,28 @@ costruisce fra immagini e testo.
 | riduzione di ridondanza (vincolare le statistiche) | accordo fra due viste, coordinate scorrelate | un vincolo sulle coordinate scritto nella perdita | in quali statistiche si decide di vincolare |
 | generativa mascherata (ricostruire) | rifare il pezzo coperto | il compito stesso | in quanta informazione si toglie |
 
-L'ultima colonna è quella che si porta via chi legge. Fabbricare un pretesto
-significa decidere dove mettere la difficoltà, e ognuna delle quattro famiglie
-la mette in un posto diverso: nelle nostre scelte a monte, nella forma
-dell'architettura, in una condizione scritta nella perdita, o nella dose di
-informazione nascosta. Non c'è una risposta migliore in assoluto, c'è una
-risposta che si adatta meglio al tipo di dato e a quanto siamo disposti a
-mettere di nostro dentro il compito.
+L'ultima colonna dice che fabbricare un pretesto è decidere dove mettere la
+difficoltà, e che ognuna delle quattro famiglie la mette in un posto diverso:
+nelle nostre scelte a monte, nella forma dell'architettura, in una condizione
+scritta nella perdita, o nella dose di informazione nascosta. Non esiste una
+risposta migliore in assoluto, ma una che si adatta meglio al tipo di dato e a
+quanto siamo disposti a mettere di nostro dentro il compito.
 
 ## Un avvertimento sulle tassonomie
 
 Le famiglie si possono contare in più di un modo, e quale sia quello usato qui
-va detto. Il taglio è che cosa impedisce la risposta vuota, ed è la terza
-colonna della tabella, «che cosa impedisce la risposta vuota»; ne escono quattro
-famiglie. La colonna di destra, «dove sta la difficoltà», è invece l'asse che
-usa
-{doc}`Imparare a vedere senza etichette </VisioneArtificiale/senza-etichette>`.
-In
-{doc}`Tre famiglie per imparare senza etichette </WorldModels/jepa>` si taglia
-invece secondo dove avviene la previsione, cioè se il modello prova a
-rifare il dato (i pixel, i token) oppure la sua rappresentazione: da lì
-escono tre famiglie, e la terza, quella che predice nello spazio delle
-rappresentazioni, qui non compare affatto perché non è un modo diverso di
-evitare il collasso.
+va detto. Il taglio adottato è che cosa impedisce la risposta vuota, la terza
+colonna della tabella; ne escono quattro famiglie. La colonna di destra, «dove
+sta la difficoltà», è invece l'asse che usa {doc}`Imparare a vedere senza
+etichette </VisioneArtificiale/senza-etichette>`. In {doc}`Tre famiglie per
+imparare senza etichette </WorldModels/jepa>` si taglia invece secondo dove
+avviene la previsione, cioè se il modello prova a rifare il dato (i pixel, i
+token) oppure la sua rappresentazione: da lì escono tre famiglie, e la terza,
+quella che predice nello spazio delle rappresentazioni, qui non compare affatto
+perché non è un modo diverso di evitare il collasso.
 
-Non è una contraddizione ed è utile che sia così: i due assi sono indipendenti,
-e un metodo ha una posizione su ciascuno dei due. Una JEPA, per dire, sull'asse
+Le due tassonomie non si contraddicono: i due assi sono indipendenti, e un
+metodo ha una posizione su ciascuno dei due. Una JEPA, per esempio, sull'asse
 del *dove* predice nello spazio delle rappresentazioni, e sull'asse del *come
 non collassa* si affida a un'asimmetria, oppure a un vincolo sulle statistiche.
 Quando si leggono due elenchi con due numeri diversi, quasi sempre non
@@ -467,7 +456,7 @@ due lati.
   descrivere tutto allo stesso modo. È il collasso, e le famiglie di
   metodi si distinguono per come lo impediscono, non per come si chiamano.
 - Respingere: si mettono in campo dei rivali, e descrivere tutto uguale fa
-  perdere. Funziona, ma i rivali servono a migliaia e costano.
+  perdere. Funziona, ma servono migliaia di rivali, da elaborare uno per uno.
 - Rendere le due reti diverse: niente rivali, ma le due reti non sono
   intercambiabili. Una impara, l'altra fa da insegnante e in quel giro non si
   corregge. Qui il punteggio non vieta la risposta vuota, anzi la premierebbe:
@@ -482,11 +471,11 @@ due lati.
   scheda che dice otto volte la stessa cosa la ferma la varietà. Nessuna delle
   due arriva per vie traverse: è scritto nel punteggio. L'idea viene dalla
   neurofisiologia degli anni Sessanta.
-- Ricostruire: si copre un pezzo e si chiede di rifarlo. Qui la risposta
-  vuota non serve nemmeno a niente, perché per rifare *quella* foto bisogna
-  averla descritta in modo suo. Bisogna però coprire molto, perché un buco
-  piccolo si riempie guardando i vicini, senza capire niente. E si paga
-  altrove: si spreca fatica su dettagli che nessuno può indovinare.
+- Ricostruire: si copre un pezzo e si chiede di rifarlo. Qui la risposta vuota
+  non serve nemmeno a niente, perché per rifare *quella* foto bisogna averla
+  descritta in modo suo. Bisogna però coprire molto, perché un buco piccolo si
+  riempie guardando i vicini, senza capire niente. Si paga però altrove: si
+  spreca fatica su dettagli che nessuno può indovinare.
 - Cinquanta righe di codice fanno vedere il vincolo all'opera: le caselle
   smettono di ripetersi (il numero della ridondanza crolla da $0{,}70$ a
   $0{,}01$) mentre la somiglianza fra le due schede resta dov'era, perché era

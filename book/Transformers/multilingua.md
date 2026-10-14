@@ -1,35 +1,35 @@
 # Una rete, cento lingue
 
-La {doc}`sezione sulla traduzione con le reti
-</NaturalLanguageProcessing/seq2seq-traduzione>` si era fermata al 2016, con
-GNMT (il traduttore neurale di Google, ancora fatto di reti ricorrenti) che
-entrava in produzione: un modello per ogni coppia di lingue, addestrato sui
-*corpora paralleli* di quella coppia, cioè grandi raccolte di testi già
+Nel 2016 GNMT, il traduttore neurale di Google descritto nella {doc}`sezione
+sulla traduzione con le reti </NaturalLanguageProcessing/seq2seq-traduzione>`,
+usa ancora reti ricorrenti e un modello per ogni coppia di lingue, addestrato
+sui *corpora paralleli* di quella coppia, cioè grandi raccolte di testi già
 tradotti, frase per frase, da un umano. Pochi mesi dopo lo stesso gruppo prova
-una cosa che sembra solo un risparmio di ingegneria: invece di decine di
+un'alternativa che sembra solo un risparmio di ingegneria: invece di decine di
 modelli, uno solo, con la stessa architettura, addestrato su tutte le coppie
-insieme, con un'etichetta in testa alla frase a dire in che lingua si vuole
-l'uscita. L'etichetta è un *token* come tutti gli altri: `<2ko>` davanti a una
-frase vuol dire «questa me la vuoi in coreano».
+insieme, con un'etichetta in testa alla frase che dice in che lingua si vuole
+l'uscita. L'etichetta è un *token* come tutti gli altri: `<2es>` davanti a una
+frase significa «traducila in spagnolo».
 
-Il risparmio arriva, ma con un effetto collaterale che nessuno aveva ordinato.
-Il modello aveva visto giapponese verso inglese e coreano verso inglese, mai
-giapponese verso coreano. Gli si chiede giapponese verso coreano, e traduce
-{cite}`johnson2017google`. Non benissimo, ma traduce: una coppia su cui non ha
-mai visto un solo esempio. Gli autori parlano, con prudenza, di qualcosa che
-somiglia a una **interlingua**: una rappresentazione interna dove il
+Il risparmio arriva, ma con un effetto collaterale che nessuno aveva previsto.
+Il modello aveva visto portoghese e spagnolo solo in coppia con l'inglese, mai
+portoghese verso spagnolo. Gli si chiede portoghese verso spagnolo, e traduce
+{cite}`johnson2017google`, con 24,8 punti di BLEU contro i 31,5 di un modello
+addestrato apposta su quella coppia: non benissimo, ma senza averne mai visto
+un solo esempio. Gli autori parlano, con prudenza, di
+qualcosa che somiglia a una **interlingua**: una rappresentazione interna dove il
 significato di una frase finisce più o meno nello stesso posto qualunque
 lingua la vesta.
 
 Quella prudenza vale ancora: perché una rete addestrata su molte lingue le
 allinei non è del tutto chiaro, e la questione pesa soprattutto per chi lavora
 in una lingua diversa dall'inglese, dove il trasferimento da una lingua ricca
-di dati è una delle fonti da cui un modello ricava quello che sa fare.
+di dati è una delle fonti da cui un modello ricava le proprie capacità.
 
 ## Un vocabolario per tutte
 
-Il modo più economico di fare un modello multilingue è non fare niente di
-speciale, ed è quello che fa **mBERT**, il BERT multilingue del 2018: la stessa
+Il modo più economico di costruire un modello multilingue non ha niente
+di speciale, e lo segue **mBERT**, il BERT multilingue del 2018: la stessa
 architettura e lo stesso esercizio di BERT, su testi di più di cento lingue.
 
 `````{tab} Elementare
@@ -43,7 +43,7 @@ ogni tanto il turco, ogni tanto il coreano, e il compito non cambia mai.
 
 Prima però qualcuno prepara la scatola dei mattoncini. I pezzi ammessi (i
 *token*) si scelgono all'inizio, una volta per tutte, contando quali frammenti
-tornano più spesso nei testi. Qui il conto si fa su cento lingue insieme
+tornano più spesso nei testi. Le frequenze si contano su cento lingue insieme
 invece che su una, e la scatola che ne esce è una sola per tutte, circa
 centoventimila pezzi, dentro cui deve stare anche il curdo.
 
@@ -57,40 +57,39 @@ una manopola che dice quanto appiattire. Girata a fondo, ogni lingua ha lo
 stesso numero di turni, il curdo quanti l'inglese. Lasciata ferma, ognuna ha i
 turni che le spettano. La si mette in mezzo.
 
-Quanto in mezzo, non c'è accordo. Un pentolone con due sole lingue, cento
-frasi in tutto, novantanove inglesi e una curda. Riportiamo la stessa
-coppia di lingue a mBERT, il primo modello costruito così, che legge
-centoquattro Wikipedia in tutto: gira poco la manopola, e il rapporto di
-novantanove a uno diventa novantasei a quattro. La lingua piccola sale a galla
-quasi
-quattro volte più di quanto le spetti. I modelli venuti dopo, che puntavano di
-più sulle lingue rare, la girano molto di più, e si arriva a ottanta e venti,
-venti volte.
+Quanto in mezzo, non c'è accordo. Prendi un pentolone con due sole lingue,
+cento frasi in tutto, novantanove inglesi e una curda. mBERT, il primo modello
+costruito così, che legge centoquattro Wikipedia, gira la manopola di poco: il
+rapporto di novantanove a uno diventa novantasei a quattro, e la lingua piccola
+sale a galla quasi quattro volte più spesso di quanto le spetterebbe. I modelli
+venuti dopo, che puntavano di più sulle lingue rare, la girano molto di più e
+arrivano a ottanta contro venti, cioè a venti volte tanto.
 
 Dalla manopola dipende anche che cosa entra nella scatola. Il curdo deve
 comparire abbastanza da meritarsi pezzi di parola sensati; se compare poco,
-gli toccano lettere sciolte. E ogni turno regalato a una lingua rara è un
-turno tolto a una comune, ed è lì che si litiga.
+gli toccano lettere sciolte. Ogni turno regalato a una lingua rara viene tolto
+a una comune, e su questo si discute.
 
 `````
 
 `````{tab} Superiore
 
-mBERT ha esattamente l'architettura di BERT {cite}`devlin2019bert` e
-l'esercizio di BERT (*masked language modeling*: mascherare circa il 15% dei
-token e predirli). Cambiano solo i dati, le Wikipedia di 104 lingue, e il
+mBERT ha l'architettura di BERT {cite}`devlin2019bert` e ne riprende
+l'obiettivo principale, il *masked language modeling* (mascherare circa il 15%
+dei token e predirli). Cambiano solo i dati, le Wikipedia di 104 lingue, e il
 vocabolario, un unico WordPiece da circa 120 000 pezzi condiviso fra tutte.
 Nessun identificativo di lingua in ingresso, nessun corpus parallelo, nessun
-termine di perdita che chieda di allineare qualcosa. Lo chiameremo
-$\text{mMLM}$, per distinguerlo dal MLM monolingue: è la stessa funzione,
+termine di perdita che chieda di allineare qualcosa. La perdita, che indichiamo
+con $\mathcal{L}_{\text{mMLM}}$ per distinguerla da quella monolingue, ha la
+stessa forma,
 
 $$
 \mathcal{L}_{\text{mMLM}} = -\sum_{i \in \mathcal{M}_x} \log P\big(x_i \mid x_{\setminus \mathcal{M}_x}\big),
 $$
 
 dove $\mathcal{M}_x$ è l'insieme delle posizioni mascherate e
-$x_{\setminus \mathcal{M}_x}$ la frase con i buchi, applicata a un flusso di
-testi di lingue diverse messi in fila senza dichiararlo.
+$x_{\setminus \mathcal{M}_x}$ la frase con i buchi, ma è calcolata su un flusso
+di testi di lingue diverse, mescolati senza dichiarare la lingua.
 
 Lo squilibrio si corregge con un **ricampionamento a smorzamento
 esponenziale**. Se la lingua $i$ vale una frazione $p_i$ del corpus totale, si
@@ -101,80 +100,72 @@ q_i = \frac{p_i^{\,\alpha}}{\sum_j p_j^{\,\alpha}}, \qquad 0 < \alpha \le 1 .
 $$
 
 Con $\alpha = 1$ nulla cambia; più $\alpha$ scende, più la distribuzione si
-appiattisce verso l'uniforme. Il valore non è universale, ed è bene sapere di
-chi è: mBERT usa $\alpha = 0{,}7$ (il README multilingue ufficiale lo chiama
-$S$), XLM {cite}`lample2019cross` $\alpha = 0{,}5$, XLM-R
-{cite}`conneau2020unsupervised` $\alpha = 0{,}3$. La differenza non è di
-dettaglio. Prendendo due lingue che stanno nei dati al $99\%$ e all’$1\%$: con
-l’$\alpha$ di mBERT si campiona al $96\%$ e al $4\%$, cioè la lingua piccola è
-sovracampionata di quasi quattro volte; con quello di XLM-R si arriva a $80\%$ e
-$20\%$, venti volte. È così che, quando si costruisce il vocabolario condiviso,
-alle lingue a bassa disponibilità toccano pezzi sensati invece di sole lettere
-sciolte, che è esattamente il baratto discusso nella {doc}`sezione sui
-tokenizzatori
-</NaturalLanguageProcessing/tokenizzatori>`; ed è anche la manopola su cui si
-litiga, perché ogni turno dato a una lingua rara è un turno tolto a una comune.
-Il baratto ha un prezzo che si paga a ogni frase: dove il vocabolario condiviso
-riserva meno pezzi sale la *fertilità*, il numero medio di token prodotti per
-ogni parola del testo, e lo stesso contenuto occupa più token. Su testi
-paralleli il rapporto fra le lunghezze in token di due traduzioni della stessa
-frase, che Petrov e colleghi chiamano *premio*, arriva fino a quindici volte
-{cite}`petrov2023language`, e ciò significa più calcolo, meno testo nella
-finestra di contesto e, dove l'uso si paga a token, una tariffa più alta per
-dire la stessa cosa. Rust e colleghi {cite}`rust2021good`, che usano la
-fertilità per misurare i tokenizzatori, mostrano anche che sostituire quello
-multilingue con uno monolingue migliora il modello sulla sua lingua a parità di
-dati.
+appiattisce verso l'uniforme. Il valore cambia da un modello all'altro: mBERT usa
+$\alpha = 0{,}7$ (il README multilingue ufficiale lo chiama $S$), XLM
+{cite}`lample2019cross` $\alpha = 0{,}5$, XLM-R {cite}`conneau2020unsupervised`
+$\alpha = 0{,}3$, e la differenza si vede. Per due lingue che stanno nei dati al
+$99\%$ e all’$1\%$, l’$\alpha$ di mBERT dà il $96\%$ e il $4\%$, quindi la
+lingua piccola è sovracampionata di quasi quattro volte; quello di XLM-R dà
+l’$80\%$ e il $20\%$, venti volte. Lo stesso campionamento governa il
+vocabolario condiviso: alle lingue a bassa disponibilità toccano pezzi sensati
+invece di sole lettere sciolte, secondo il compromesso discusso nella
+{doc}`sezione sui tokenizzatori </NaturalLanguageProcessing/tokenizzatori>`. Ogni
+turno dato a una lingua rara viene però tolto a una comune. Il compromesso ha
+un effetto su ogni frase: dove il vocabolario condiviso riserva meno pezzi a una
+lingua sale la *fertilità*, il numero medio di token prodotti per ogni parola del
+testo, e lo stesso contenuto occupa più token. Su testi paralleli il rapporto
+fra le lunghezze in token di due traduzioni della stessa frase, che Petrov e
+colleghi chiamano *premio*, arriva fino a quindici volte
+{cite}`petrov2023language`; ne seguono più calcolo, meno testo nella finestra di
+contesto e, dove l'uso si paga a token, una tariffa più alta per dire la stessa
+cosa. Rust e colleghi {cite}`rust2021good`, che usano la fertilità per misurare
+i tokenizzatori, mostrano anche che sostituire il tokenizzatore multilingue con
+uno monolingue migliora il modello sulla sua lingua a parità di dati.
 
 `````
 
 ## L'allineamento che nessuno ha chiesto
 
-Nel procedimento appena descritto non c'è nulla che chieda al modello di
+Nell'addestramento di mBERT non c'è nulla che chieda al modello di
 mettere vicine le traduzioni. Nessuno gli mostra mai «il gatto nero salta sul
 muro» accanto a «the black cat jumps on the wall». Eppure, a fine
-addestramento, succede questo.
+addestramento, le due frasi hanno rappresentazioni vicine.
 
-Dentro il modello ogni frase diventa un vettore, una lista di numeri (in mBERT,
-la media dei vettori dei suoi token a un dato strato: 768 numeri), e una lista
-di numeri si può leggere come un indirizzo: due numeri sono un punto su un
-foglio, tre un punto nello spazio, settecentosessantotto un punto in un luogo
-che non si disegna ma su cui si ragiona allo stesso modo. Chiamiamola mappa del
-significato, perché la proprietà che conta è quella di una mappa: frasi che
-vogliono dire cose simili finiscono in indirizzi vicini. Ebbene, «il gatto nero
-salta sul muro» e «the black cat jumps on the wall» finiscono nella stessa
-regione, pur essendo in due lingue di cui al modello nessuno ha mai raccontato
-l'esistenza.
+Dentro il modello ogni frase diventa un vettore (in mBERT la media dei vettori
+dei suoi token a un dato strato, 768 numeri), cioè un indirizzo: due numeri
+sono un punto su un foglio, tre un punto nello spazio, settecentosessantotto un
+punto in un luogo che non si disegna ma su cui si ragiona allo stesso modo. Lo
+spazio degli indirizzi si legge come una mappa del significato, perché ne ha la
+proprietà essenziale: frasi con significato simile finiscono in indirizzi
+vicini. Così «il gatto nero salta sul muro» e «the black cat jumps on the wall»
+finiscono nella stessa regione, benché al modello nessuno abbia mai detto che
+si tratta di due lingue.
 
-Su *quanto* vicine serve precisione, perché il modo in cui la cosa si misura
-è più interessante dello slogan. I quartieri di due lingue sono affiancati e
-paralleli invece che sovrapposti. Fra l'uno e l'altro c'è uno spostamento, e
+La vicinanza va precisata. Le regioni occupate da due lingue sono affiancate e
+parallele invece che sovrapposte, e fra l'una e l'altra c'è uno spostamento.
 Pires e colleghi {cite}`pires2019multilingual` lo misurano nel modo più
-elementare che ci sia: prendono cinquemila frasi inglesi con accanto la loro
-traduzione tedesca, guardano di quanto ciascuna coppia è distanziata sulla
-mappa, e di tutti quegli scarti fanno la media. La scoperta è che quella media
-*funziona*: sommata a una frase inglese, la porta così vicino alla sua
-traduzione che, più della metà delle volte, fra le cinquemila frasi tedesche è
-proprio quella la più vicina, in tutti gli strati tranne i primi. Lo
-spostamento, cioè, dipende in gran parte dalla coppia di lingue e poco dalla
-frase. I due indirizzi, dunque, non coincidono: le due lingue occupano due
-copie della stessa mappa, una accanto all'altra.
+semplice: prendono cinquemila frasi inglesi con accanto la loro traduzione
+tedesca, calcolano di quanto dista ciascuna coppia sulla mappa e ne fanno la
+media. Sommato a una frase inglese, questo scarto medio la porta tanto vicino
+alla sua traduzione che, in tutti gli strati tranne i primi, più della metà
+delle volte fra le cinquemila frasi tedesche la più vicina è quella giusta. Lo
+spostamento dipende quindi in gran parte dalla coppia di lingue e poco dalla
+singola frase: le due lingue occupano due copie della stessa mappa, una
+accanto all'altra.
 
-La conseguenza pratica arriva subito, e va enunciata con cura, perché lo
-spostamento appena descritto sembrerebbe mandarla all'aria. Se un programma
-impara a riconoscere qualcosa guardando dove cadono le frasi inglesi (dire se
-una recensione è arrabbiata, per esempio: impara che gli arrabbiati stanno da
-quella parte del quartiere inglese), lo stesso programma funziona anche sulle
-frasi italiane, pur senza aver mai visto una frase italiana e pur senza che
-nessuno gli tolga di mezzo lo spostamento. Una spiegazione possibile, che
-nessun lavoro citato dimostra, sta nella direzione di quello spostamento: porta
-tutte le frasi italiane dalla stessa parte, e lo fa scivolando lungo il confine
-fra arrabbiate ed entusiaste invece di attraversarlo. Il confine imparato in
-inglese, se lo si appoggia sul quartiere italiano, cade quindi ancora al posto
-giusto. Che poi non ci cada
-perfettamente è vero, ed è la ragione per cui il trasferimento funziona bene
-ma non benissimo: quanto si perda dipende da quali sono le due lingue, e si
-misura.
+Lo spostamento sembrerebbe impedire il trasferimento, e invece non lo
+impedisce. Se un programma impara a riconoscere qualcosa guardando dove cadono
+le frasi inglesi (dire se una recensione è arrabbiata, per esempio: impara che
+gli arrabbiati stanno da quella parte del quartiere inglese), lo stesso
+programma funziona anche sulle frasi italiane, pur senza aver mai visto una
+frase italiana e pur senza che nessuno gli tolga di mezzo lo spostamento. Una
+spiegazione possibile, che nessun lavoro citato dimostra, sta nella direzione di
+quello spostamento: porta tutte le frasi italiane dalla stessa parte, scivolando
+lungo il confine fra arrabbiate ed entusiaste invece di attraversarlo. Il
+confine imparato in inglese, appoggiato sul quartiere italiano, cade quindi
+ancora al posto giusto. Non ci cade alla perfezione, quindi il
+trasferimento funziona bene ma non benissimo: quanto si perda dipende dalle due
+lingue, e si misura.
 
 `````{tab} Elementare
 
@@ -189,47 +180,44 @@ azzerando di proposito la sovrapposizione (rinominando i pezzi di una
 lingua in modo che non ne condivida più nemmeno uno), il trasferimento è calato
 appena. Il ponteggio, evidentemente, non era quello.
 
-C'è anche la prova presa dall'altro capo. Si parte da un modello che ha letto
-soltanto inglese e si congela, cioè si tiene fermo, tutto quello che ha
-imparato, tranne il primo
-passaggio, quello che trasforma i mattoncini in numeri; quel primo passaggio lo
-si rifà da capo con i mattoncini di una lingua nuova, rimettendo il modello a
-fare gli esercizi a buchi in quella lingua. Il trasferimento avviene lo stesso.
-Quel che una lingua ha di suo sta all'ingresso; quello che passa da una lingua
-all'altra è tutto il resto, cioè proprio la parte che nessuno ha toccato.
+C'è anche la prova dall'altro capo. Si parte da un modello che ha letto solo
+inglese e si congela, cioè si tiene fermo, tutto il modello tranne il primo
+passaggio, cioè la tabella che trasforma i mattoncini in numeri. Quel primo
+passaggio lo si rifà da capo con i mattoncini di una lingua nuova, rimettendo
+il modello a fare gli esercizi a buchi in quella lingua. Il trasferimento
+avviene lo stesso. La parte specifica di una lingua sta dunque all'ingresso;
+quella che passa da una lingua all'altra è tutto il resto, che nessuno ha
+toccato.
 
-L'altra spiegazione è meno intuitiva e più affascinante: il modello ha una
+L'altra spiegazione è meno intuitiva e più affascinante. Il modello ha una
 capacità limitata e cento lingue da imparare, e la strada più economica per
-riuscirci sta nell’accorgersi che si somigliano e riusare la stessa
-struttura, invece di memorizzarle una per una. Non allinea le lingue perché
-glielo chiediamo:
-allinea per avarizia, perché tenerle separate costerebbe più memoria di quanta
-ne abbia.
+riuscirci è accorgersi che si somigliano e riusare la stessa struttura invece
+di memorizzarle una per una. Allinea le lingue per avarizia, senza che nessuno
+glielo chieda: tenerle separate costerebbe più memoria di quanta ne abbia.
 
 Un indizio a favore viene dallo smontare il modello pezzo per pezzo. Un
 modello, ricordiamolo, è una torre di piani uguali, e a ogni piano lavorano in
 parallelo diversi lettori con l'evidenziatore (le *teste* di attenzione). Si
-può togliere roba nell'una o nell'altra direzione, e i due
-tagli non si equivalgono: lasciando un lettore solo per piano il
-trasferimento fra lingue tiene ancora, mentre togliendo piani peggiora, e
-sempre di più quanti più piani si tolgono. È la profondità a costruire il pezzo
-di rappresentazione che le lingue hanno in comune, non l'ampiezza.
+può togliere roba nell'una o nell'altra direzione, e i due tagli non si
+equivalgono: lasciando un lettore solo per piano il trasferimento fra lingue
+tiene ancora, mentre togliendo piani peggiora, e sempre di più quanti più piani
+si tolgono. A costruire il pezzo di rappresentazione comune alle lingue è la
+profondità della torre più della sua ampiezza.
 
-Che a lavorare sia la profondità non vuol dire però che più si sale meglio è.
-Si può fermare la frase a ogni piano, e chiedere proprio lì di ritrovare la sua
-traduzione in mezzo a tante altre frasi inglesi: le risposte giuste sono più
-numerose ai piani di mezzo. In cima ogni lingua torna a farsi riconoscere per
-quello che è, e la somiglianza si perde per strada. Il punto della torre in cui
-le lingue si assomigliano di più sta nel mezzo, non sul tetto.
+Che conti la profondità non implica che più si sale, meglio è. Se si ferma la
+frase a ogni piano e si chiede di ritrovare la sua traduzione fra tante altre
+frasi inglesi, le risposte giuste sono più numerose ai piani di mezzo. In cima
+ogni lingua torna riconoscibile come tale e la somiglianza si perde: le lingue
+si assomigliano di più a metà della torre che sul tetto.
 
-Detto onestamente: la questione è ancora aperta, e chi vi dice di sapere
-esattamente perché mBERT funzioni sta semplificando.
+La questione resta aperta, e chi sostiene di sapere perché mBERT funzioni sta
+semplificando.
 
 `````
 
 `````{tab} Superiore
 
-Prima, la riga di algebra dietro la spiegazione possibile. Per un
+L'algebra dietro la spiegazione possibile sta in una riga. Per un
 classificatore lineare $\operatorname{sign}(\mathbf{w}^\top\mathbf{x} + b)$ e
 uno scarto medio $\boldsymbol{\delta}$ fra le rappresentazioni delle due
 lingue, il punteggio di una frase traslata è
@@ -245,8 +233,8 @@ Sovrapposizione di vocabolario. Che la sovrapposizione dei sottotoken
 correli positivamente con il trasferimento zero-shot, e su compiti molto
 diversi fra loro (riconoscimento di entità, POS tagging, inferenza, parsing di
 dipendenze, classificazione di documenti), è il risultato di Wu e Dredze
-{cite}`wu2019beto`, che misurano mBERT su cinque compiti e trentanove lingue. Ma
-è correlazione, e due lavori la ridimensionano da direzioni diverse. Pires e
+{cite}`wu2019beto`, che misurano mBERT su cinque compiti e trentanove lingue. È
+però una correlazione, e due lavori la ridimensionano da direzioni diverse. Pires e
 colleghi {cite}`pires2019multilingual` mettono in grafico la resa sul
 riconoscimento di entità contro la sovrapposizione, per ogni coppia fra
 sedici lingue, e la trovano piatta: resta fra il 40% e il 70% di F1 perfino
@@ -265,9 +253,9 @@ vocabolario di fatto nulla. Nel verso opposto, hindi verso urdu, si scende a
 C'è anche la prova per la strada opposta. Artetxe, Ruder e Yogatama
 {cite}`artetxe2020cross` prendono un modello monolingue, ne congelano tutto
 il corpo e riapprendono soltanto la tabella di embedding nella lingua nuova,
-con lo stesso esercizio a buchi: il trasferimento avviene lo stesso. Il pezzo
-che dipende dalla lingua è quindi l'embedding in ingresso; quel che si
-trasferisce è tutto il resto, cioè proprio la parte che nessuno ha toccato.
+con lo stesso esercizio a buchi: il trasferimento avviene lo stesso. La
+componente che dipende dalla lingua è quindi l'embedding in ingresso, e il
+trasferimento passa per il corpo del modello, che nessuno ha toccato.
 
 Architettura. Karthikeyan e colleghi {cite}`karthikeyan2020cross` studiano BERT
 bilingui, con il russo e un inglese artificiale (l'inglese con i caratteri
@@ -286,9 +274,9 @@ multilinguità più basso (0,58 contro 0,70), e con un'altra modifica lo perde
 del tutto. L'interpretazione è che, quando i parametri non bastano a tenere le
 lingue separate, il modello sia costretto a condividere strutture; e gli autori
 aggiungono che mBERT, con centoquattro Wikipedia da imparare, potrebbe già
-trovarsi in quella condizione, senza misurarlo. Se fosse vero, l'allineamento
-non sarebbe una virtù del metodo ma una conseguenza della scarsità; e la
-scarsità ha un rovescio molto concreto, la maledizione della multilingualità.
+trovarsi in quella condizione, senza misurarlo. Se fosse così, l'allineamento
+deriverebbe dalla scarsità di parametri più che dal metodo, e la scarsità ha un
+rovescio molto concreto, la maledizione della multilingualità.
 
 Un dato che mette d'accordo tutti: l'allineamento non è uniforme lungo la pila.
 Cercando, per una frase in una lingua, la sua traduzione fra molte candidate in
@@ -305,7 +293,7 @@ interlingua. Il che suggerisce che le rappresentazioni siano insieme
 ## Allinearlo di proposito
 
 Se l'allineamento emerge da solo, si può anche chiederlo esplicitamente. Le due
-strade seguite si distinguono per la taglia di quel che si chiede di allineare:
+strade seguite si distinguono per la taglia dell'unità da allineare:
 la prima lavora sulle singole parole, la seconda sulle frasi intere.
 
 `````{tab} Elementare
@@ -316,21 +304,20 @@ parole in tutte e due. A quel punto, per indovinare la parola coperta in
 italiano, al modello conviene sbirciare nell'inglese, e viceversa. Non gli si
 dice «queste due sono la stessa cosa»: gli si rende conveniente scoprirlo.
 
-Il prezzo è che le frasi appaiate bisogna averle. Fra l'italiano e
-l'inglese ce ne sono a milioni, e lo stesso vale per qualche decina di altre
-coppie di lingue; per tutte le altre non ce n'è quasi nessuna, e sono proprio
-quelle che avrebbero più bisogno d'aiuto. Da qui la scelta opposta, che pure
-funziona: niente frasi appaiate, e al loro posto molto più testo qualunque, non
-le sole Wikipedia ma quello che si trova in giro per il web. Con abbastanza roba
-da leggere le lingue si mettono vicine da sole, e il vantaggio di mostrargli le
-frasi accoppiate si assottiglia.
+Le frasi appaiate, però, bisogna averle. Fra l'italiano e l'inglese ce ne sono
+milioni, e lo stesso vale per qualche decina di altre coppie di lingue; per
+tutte le altre non ce n'è quasi nessuna, e sono le lingue che avrebbero più
+bisogno d'aiuto. Da qui la scelta opposta, che funziona lo stesso: niente frasi
+appaiate, ma molto più testo qualunque, non le sole Wikipedia ma tutto quello che
+si trova sul web. Con abbastanza da leggere le lingue si avvicinano senza
+aiuto, e il vantaggio di mostrare al modello le frasi accoppiate si assottiglia.
 
 La seconda strada lavora su frasi intere, e la sua forma tornerà
 nell’{doc}`allineamento fra immagini e testo
 </VisioneLinguaggio/allineare-due-spazi>`, con immagini e didascalie al posto
-di frasi e traduzioni. Ogni frase viene letta per conto suo, senza
-che chi la legge veda mai l'altra lingua, e ridotta al suo indirizzo sulla
-mappa: il confronto avviene fra gli indirizzi, non fra le frasi. Si dà da una
+di frasi e traduzioni. Ogni frase viene letta senza
+che si veda mai l'altra lingua, e ridotta al suo indirizzo sulla mappa; poi si
+confrontano gli indirizzi, non le frasi. Si dà da una
 parte un mucchietto di frasi italiane e dall'altra il mucchietto mescolato delle
 loro traduzioni, e si chiede: appaiale. La griglia ha le frasi italiane
 sulle righe e quelle inglesi sulle colonne, e in ogni casella si scrive quanto i
@@ -343,14 +330,12 @@ parte le caselle sono cento: dieci sono gli appaiamenti giusti, novanta quelli
 sbagliati da respingere. Con cento frasi per parte le caselle diventano
 diecimila, e gli appaiamenti sbagliati novemilanovecento. Gli esempi di che cosa
 non va appaiato crescono molto più in fretta delle traduzioni che si sono dovute
-procurare, e non costano niente.
+procurare, e vengono gratis.
 
-È la stessa griglia che disegnerà il capitolo su visione e linguaggio, dove al
-posto dell'italiano e dell'inglese ci sono le immagini e le loro didascalie:
-cambia il materiale che si appaia, la griglia è quella. Da un caso all'altro
-cambia semmai la severità, cioè quanto nettamente la casella giusta deve
-vincere. Nel caso delle traduzioni non le basta prendere il numero più alto
-della sua riga: deve prenderlo con un certo scarto su tutte le altre.
+Rispetto alla griglia di immagini e didascalie cambia semmai la severità, cioè
+quanto nettamente la casella giusta deve vincere. Nel caso delle traduzioni non
+le basta prendere il numero più alto della sua riga: deve prenderlo con un
+certo scarto su tutte le altre.
 
 `````
 
@@ -385,18 +370,18 @@ che il capitolo su visione e linguaggio disegnerà nella
 meccanismo che conta: gli esempi negativi a costo zero, che crescono come $N^2$
 e rendono prezioso il batch grande.
 
-Sull'ordine serve precisione, perché è facile raccontarla al contrario: LaBSE è
-del luglio 2020 e CLIP del febbraio 2021, quindi non eredita niente da CLIP. E
-i due non hanno nemmeno lo stesso antenato dichiarato. LaBSE parte dal *dual
+LaBSE è del luglio 2020 e CLIP del febbraio 2021, quindi LaBSE non eredita
+niente da CLIP. I due non hanno nemmeno lo stesso antenato dichiarato. LaBSE
+parte dal *dual
 encoder* con graduatoria sulle traduzioni di Guo e colleghi
 {cite}`guo2018effective` e dalla softmax a margine additivo; l'articolo di CLIP
 indica invece come fonti la *multi-class N-pair loss* di Sohn, la InfoNCE di
 van den Oord e colleghi {cite}`oord2018representation` e ConVIRT. Li accomuna
 la forma: una softmax sulle somiglianze di un batch, con i negativi presi dal
-batch stesso. E il dettaglio in cui divergono è istruttivo: dove CLIP scala le
-somiglianze con una temperatura appresa, LaBSE sottrae un margine fisso alla
-diagonale, cioè chiede alla coppia giusta non solo di vincere ma di vincere di
-uno scarto. Due modi diversi di dire alla stessa loss quanto essere severa.
+batch stesso. Divergono in un dettaglio: dove CLIP scala le somiglianze con una
+temperatura appresa, LaBSE sottrae un margine fisso alla diagonale, cioè chiede
+alla coppia giusta non solo di vincere ma di vincere di uno scarto. Sono due
+modi diversi di dire alla stessa loss quanto essere severa.
 
 Il prodotto è un embedding di frase confrontabile fra
 lingue, che serve a recuperare traduzioni, a ripulire corpora paralleli
@@ -407,7 +392,7 @@ lingua.
 
 ## Rifinire in inglese, usare in italiano
 
-Tutto questo serve a una procedura sola, che è la ragione pratica per cui i
+Tutto questo serve a una procedura sola, la ragione pratica per cui i
 modelli multilingui esistono: lo *zero-shot cross-lingual transfer*,
 «trasferimento fra lingue a zero esempi». Si pre-addestra un modello su molte
 lingue; lo si rifinisce (*fine-tuning*) su un compito con dati etichettati in
@@ -416,8 +401,8 @@ si usa nelle altre senza un solo esempio etichettato in quelle lingue. La
 rifinitura sposta i parametri del modello, gli stessi che l'esercizio a buchi
 aveva messo a punto e che decidono dove ogni frase finisce sulla mappa. Per una
 lingua come l'italiano, ricca ma non quanto l'inglese, è spesso la differenza
-fra avere un programma che funziona e non averlo. Il termine di paragone sono i
-due metodi che passano per la traduzione automatica: tradurre nella lingua
+fra avere un programma che funziona e non averlo. Come termine di paragone si
+usano due metodi che passano per la traduzione automatica: tradurre nella lingua
 d'arrivo i dati etichettati in inglese e rifinire lì (*translate-train*),
 oppure tradurre in inglese il testo da giudicare e usare il modello inglese
 (*translate-test*), le due righe di confronto che accompagnano i risultati
@@ -426,24 +411,26 @@ multilingui fin da XNLI {cite}`conneau2018xnli`.
 Due avvertenze.
 
 La prima: la rifinitura consuma l'allineamento, perché i parametri che si
-spostano per imparare il compito sono gli stessi che tenevano vicine le
-lingue. Liu e colleghi {cite}`liu2020continual` lo misurano rifinendo un
-modello multilingue sul *POS tagging* inglese, cioè sull'etichettare ogni
-parola di una frase come nome, verbo, aggettivo. Prima della rifinitura,
-ritrovare la traduzione inglese di una frase italiana riusciva 45 volte su
-cento; dopo, 26. E la perplessità sull'esercizio a buchi in inglese, l'indice
-di quanto il modello resta indeciso sulla parola coperta, peggiora di venti
-volte. È **dimenticanza catastrofica**, cioè imparare una cosa nuova
-cancellandone una vecchia, un fenomeno descritto sulle reti neurali fin dal
-1989 {cite}`mccloskey1989catastrophic`. I rimedi dicono che cosa si è perso.
+spostano per imparare il compito sono gli stessi che tenevano vicine le lingue.
+Liu e colleghi {cite}`liu2020continual` lo misurano rifinendo un modello
+multilingue sul *POS tagging* inglese, cioè sull'etichettare ogni parola di una
+frase come nome, verbo, aggettivo. Prima della rifinitura, ritrovare la
+traduzione inglese di una frase italiana riusciva 45 volte su cento; dopo, 26.
+La perplessità sull'esercizio a buchi in inglese, l'indice di quanto il modello
+resta indeciso sulla parola coperta, peggiora di venti volte. È **dimenticanza
+catastrofica**, cioè imparare qualcosa di nuovo cancellando qualcosa di
+vecchio, un fenomeno descritto sulle reti neurali fin dal 1989
+{cite}`mccloskey1989catastrophic`. I rimedi mostrano che cosa si è perso.
 Rimettere il vecchio esercizio a buchi accanto al compito nuovo riporta la
 perplessità dov'era, ma le traduzioni si ritrovano 25 volte su cento, peggio di
 prima: l'allineamento non era un semplice prodotto secondario dell'esercizio.
 Impedire agli errori sul vecchio esercizio di crescere ne salva una parte, 32
-volte su cento. Per andare oltre il punto di partenza, fino a 64 volte su
-cento, bisogna chiedere durante la rifinitura proprio la cosa che si vuole
-conservare, cioè appaiare le frasi con le loro traduzioni, e tornano a servire
-le frasi appaiate che per quasi tutte le lingue non ci sono.
+volte su cento. Per superare il punto di partenza bisogna chiedere durante la
+rifinitura la proprietà che si vuole conservare, cioè appaiare le frasi con le
+loro traduzioni: con un vincolo che protegge insieme l'esercizio a buchi e
+l'appaiamento si arriva a 64 volte su cento, e con l'addestramento congiunto
+sui due esercizi a 74. Tornano così a servire le frasi appaiate che per quasi
+tutte le lingue non ci sono.
 
 La seconda: il trasferimento non è uniforme, e il modo in cui non lo è riserva
 una sorpresa. Le lingue si possono raggruppare per l'ordine in cui mettono le
@@ -457,40 +444,38 @@ su tutte le coppie di lingue diverse di ciascun gruppo. Rifinendo su una
 lingua SVO e usando su un'altra SVO si ottiene 81,6; rifinendo su una SVO e
 usando su una SOV si scende a 66,5.
 
-Fin qui sembra la solita morale, «lingue simili, salto facile», ed è quella che
-gli autori traggono. Le altre due combinazioni dicono però quanto poco garantisca:
-rifinendo su una lingua SOV e usando su un'altra SOV si ottiene 64,2, e
-rifinendo su una SOV per usare su una SVO si ottiene 64,0. Due decimi di
-scarto, contro i quindici punti che separano le due combinazioni di prima.
-Condividere l'ordine delle parole aiuta molto quando si parte da una lingua
-SVO e quasi niente quando si parte da una SOV, e quel che conta di più è
-dunque da dove si parte. È peraltro il caso in cui ricade l'italiano: chi misura la
-resa sull'italiano e ne deduce la resa «sulle altre lingue» sta misurando la
-cosa più facile che c'era da misurare.
+Fin qui sembra la solita morale, «lingue simili, salto facile», che è anche
+quella degli autori. Le altre due combinazioni mostrano però quanto poco
+garantisca: rifinendo su una lingua SOV e usando su un'altra SOV si ottiene
+64,2, e rifinendo su una SOV per usare su una SVO si ottiene 64,0. Due decimi
+di scarto, contro i quindici punti che separano le due combinazioni di prima.
+Condividere l'ordine delle parole aiuta molto quando si parte da una lingua SVO
+e quasi niente quando si parte da una SOV: conta soprattutto da dove si parte.
+L'italiano ricade nel caso più favorevole; chi misura la resa sull'italiano per
+dedurne quella «sulle altre lingue» sta misurando il caso più facile.
 
-Un avvertimento sul confronto, però, perché i due gruppi non differiscono solo
-per l'ordine delle parole. Quello SVO raccoglie ventisei varietà, e ci stanno
-dentro i due norvegesi, i due portoghesi e famiglie intere di lingue
-imparentate; quello SOV ne raccoglie dieci, in gran parte non imparentate e
-scritte in sette alfabeti diversi (ma hindi e urdu sono la stessa lingua in due
-grafie). Parentela, alfabeto condiviso e quantità di testo disponibile
-tirano tutti nello stesso verso dell'ordine delle parole, e quei quattro numeri
-non li separano.
+I due gruppi, però, non differiscono solo per l'ordine delle parole. Quello SVO
+raccoglie ventisei varietà, e ci stanno dentro i due norvegesi, i due
+portoghesi e famiglie intere di lingue imparentate; quello SOV ne raccoglie
+dieci, in gran parte non imparentate e scritte in sette alfabeti diversi (ma
+hindi e urdu sono la stessa lingua in due grafie). Parentela, alfabeto
+condiviso e quantità di testo disponibile tirano tutti nello stesso verso
+dell'ordine delle parole, e quei quattro numeri non li separano.
 
 ## La maledizione della multilingualità
 
-Resta il conto da pagare, e chiude il cerchio con l'argomento della capacità.
+Lo spazio di un modello è finito, e le lingue se lo dividono.
 
 `````{tab} Elementare
 
 Se un modello di dimensione fissa deve ospitare più lingue, ciascuna riceve
 meno spazio. Per una lingua con pochi testi il baratto conviene: guadagna dal
-fatto di somigliare alle vicine più di quanto perda in spazio. Ma continuando
+fatto di somigliare alle vicine più di quanto perda in spazio. Continuando
 ad aggiungere lingue si arriva a un punto in cui lo spazio manca a tutti, e da
 lì in poi ogni lingua in più peggiora un po’ tutte le altre, compresa quella
 che si voleva aiutare.
 
-E lo spazio se lo contendono anche cose diverse fra loro. Allungare l'elenco dei
+Lo spazio se lo contendono anche cose diverse. Allungare l'elenco dei
 mattoncini dà pezzi più sensati alle lingue piccole, ma ogni mattoncino in più
 occupa un posto nello stesso modello, e quel posto lo toglie a tutto il resto;
 girare la manopola delle dosi verso le lingue rare le aiuta e sottrae turni alle
@@ -503,10 +488,9 @@ dare a ogni lingua, a ogni piano, un pezzetto di macchina tutto suo, che si
 accende solo sui suoi testi, lasciando in comune il resto: il modello cresce
 con le lingue, ma ogni frase ne attraversa sempre la stessa quantità. Una
 strada più antica è addestrare un modello per una famiglia di lingue vicine,
-che ha molto meno da spartire. Ed è lo stesso argomento, girato, di quello che
-spiegava perché l'allineamento emerge: condividere è economico finché la
-scarsità costringe a condividere, e diventa un impaccio quando quello che
-serviva era distinguere.
+che ha molto meno da spartire. Il ragionamento è lo stesso che spiegava perché
+l'allineamento emerge, rovesciato: condividere è economico finché la scarsità
+costringe a farlo, e diventa un impaccio quando serviva distinguere.
 
 `````
 
@@ -546,16 +530,16 @@ riservi pezzi decenti, e ha in comune con l'inglese l'ordine delle parole
 (soggetto, verbo, oggetto) e l'alfabeto, le condizioni in cui il trasferimento
 zero-shot è risultato più efficace. In pratica, un
 classificatore rifinito su dati inglesi funziona in italiano meglio di quanto
-ci si aspetterebbe, ed è la ragione per cui in Italia si costruiscono sistemi
-funzionanti senza avere dataset italiani di dimensioni comparabili.
+ci si aspetterebbe, e così in Italia si costruiscono sistemi funzionanti
+senza avere dataset italiani di dimensioni comparabili.
 
-Ma la stessa comodità nasconde due cose. La prima è che *funziona meglio del
-previsto* non vuol dire *funziona come in inglese*: il divario esiste, ed è
-sistematicamente più grande dove conta la **morfologia**, cioè il modo in cui
+La stessa comodità ne nasconde però due. La prima: *funziona meglio del
+previsto* non equivale a *funziona come in inglese*. Il divario esiste e tende a
+essere più grande dove conta la **morfologia**, cioè il modo in cui
 una parola cambia forma. In inglese il verbo «to walk» fa «walk», «walks»,
 «walked», «walking»: quattro forme. In italiano «camminare» ne fa una
 cinquantina, e il modello deve imparare che sono tutte lo stesso verbo, con
-molti meno esempi per ciascuna. La seconda è che le lingue davvero minoritarie
+molti meno esempi per ciascuna. La seconda è che le lingue minoritarie
 non godono di nulla di tutto ciò: il sardo, il friulano, il ladino, il
 napoletano scritto non hanno abbastanza testo online per meritarsi pezzi propri
 nell'elenco dei mattoncini, e la maledizione della multilingualità fa il resto.
@@ -570,22 +554,22 @@ lingue si parlano.
   stesso esercizio a buchi, cento Wikipedia nel pentolone al posto di una, e
   una sola scatola di mattoncini (i pezzi di parola) per tutte le lingue.
   Siccome l'inglese sommergerebbe le altre, si bara sulle dosi in modo
-  controllato: alle lingue piccole si dà più turni di quanti ne avrebbero, e
+  controllato: alle lingue piccole si danno più turni di quanti ne avrebbero, e
   le proporzioni si appiattiscono verso la parità.
 - L’allineamento fra lingue emerge da solo: nessuno mostra mai al modello
   una frase accanto alla sua traduzione, eppure le due finiscono vicine.
   Perché, non si sa fino in fondo: i pezzi di parola in comune aiutano ma non
-  sono indispensabili (toglierli di proposito costa poco), contano più i piani
+  sono indispensabili (toglierli di proposito cambia poco), contano più i piani
   della torre che i lettori in parallelo, e c'è chi sostiene che il modello
   allinei per avarizia, perché tenere cento lingue separate costerebbe più
   memoria di quanta ne abbia.
 - Lo si può anche chiedere apertamente, in due modi: coprire parole tanto in
   una frase quanto nella sua traduzione, messe una dopo l'altra, così che per
   indovinarle convenga sbirciare nell'altra lingua; oppure ridurre ogni frase,
-  letta per conto suo, al suo indirizzo sulla mappa, e chiedere di appaiare un
-  mucchietto di frasi con il mucchietto mescolato delle loro traduzioni,
-  esattamente come si farà con immagini e didascalie nel
-  {doc}`capitolo su visione e linguaggio </VisioneLinguaggio/overview>`.
+  letta senza la sua traduzione, al suo indirizzo sulla mappa, e chiedere di
+  appaiare un mucchietto di frasi con il mucchietto mescolato delle loro
+  traduzioni, come si farà con immagini e didascalie nel {doc}`capitolo su
+  visione e linguaggio </VisioneLinguaggio/overview>`.
 - Il motivo pratico di tutto questo è rifinire in inglese e usare in
   italiano, senza un solo esempio etichettato in italiano. Due avvertenze:
   la rifinitura consuma l'allineamento (i numeri interni che si spostano per

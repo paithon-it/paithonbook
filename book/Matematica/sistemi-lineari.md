@@ -8,15 +8,15 @@ trentanove misure; due di prima, tre di seconda e uno di terza ne rendono
 trentaquattro; uno di prima, due di seconda e tre di terza ne rendono
 ventisei. Quanto rende un covone di ciascuna qualità?
 
-Il procedimento che il libro insegna è disporre i numeri in colonne su un
+Il procedimento che il manuale insegna è disporre i numeri in colonne su un
 tavoliere e sottrarre ripetutamente una colonna dall'altra, finché in fondo non
-resta una qualità sola. Quasi diciotto secoli dopo porta il nome di
-**eliminazione di Gauss**, che la sistemò all'inizio dell'Ottocento lavorando
-sulle orbite dei pianetini; e per governare quelle sottrazioni il testo cinese
-si trova costretto a maneggiare quantità negative, che in Europa avrebbero
-atteso il Rinascimento {cite}`shen1999nine`.
+resta una qualità sola. Quasi diciotto secoli dopo, all'inizio dell'Ottocento,
+Gauss lo sistemò lavorando sulle orbite dei pianetini, e da lui prende il nome:
+**eliminazione di Gauss**. Per governare quelle sottrazioni il testo cinese si
+trova costretto a maneggiare quantità negative, che in Europa avrebbero atteso
+il Rinascimento {cite}`shen1999nine`.
 
-Oggi il conto lo fa una libreria in pochi microsecondi. Guardarci dentro serve a
+Oggi una libreria esegue il calcolo in pochi microsecondi. Guardarci dentro serve a
 un'altra cosa: lo stesso procedimento che trova la risposta dice anche quando la
 risposta non c'è, e quando invece ce ne sono infinite. Sono i due casi tipici
 del machine learning: con più equazioni che incognite, come in una regressione,
@@ -37,10 +37,10 @@ $$
 \end{cases}
 $$
 
-Ogni riga somma dei prodotti fra un numero noto e un'incognita, e nient'altro:
-niente incognite moltiplicate fra loro, niente quadrati, niente radici. È questo
-che le rende lineari, ed è la ragione per cui si maneggiano con le matrici della
-{doc}`sezione sull'algebra lineare <algebra-lineare>`.
+Ogni riga è una somma di prodotti fra un numero noto e un'incognita: non ci
+sono incognite moltiplicate fra loro, né quadrati, né radici. Le equazioni sono
+perciò lineari, e si trattano con le matrici della {doc}`sezione
+sull'algebra lineare <algebra-lineare>`.
 
 Con le matrici il sistema diventa $\mathbf{A}\mathbf{x} = \mathbf{b}$, dove la
 matrice $\mathbf{A}$ raccoglie i coefficienti, il vettore $\mathbf{x}$ le
@@ -59,7 +59,7 @@ barattolo?
 
 Prima lettura, una riga per volta. Ogni riga del sistema è una promessa da
 mantenere. Il colore del cliente contiene una certa quantità di rosso, e la
-miscela che prepari dovrà contenerne esattamente altrettanto: ecco la prima
+miscela che prepari dovrà contenerne altrettanto: ecco la prima
 equazione. Poi c'è il giallo, e viene la seconda. Poi il blu. Tre pigmenti, tre
 promesse, tutte da mantenere insieme. Risolvere vuol dire trovare le dosi che le
 tengono tutte e tre in piedi contemporaneamente.
@@ -67,14 +67,14 @@ tengono tutte e tre in piedi contemporaneamente.
 Seconda lettura, una colonna per volta. Ogni barattolo ha una sua composizione
 fissa, che è una colonna della tabella: tanto rosso, tanto giallo, tanto blu.
 Versare mezzo litro del primo barattolo significa prendere metà di quella
-colonna. La miscela finale è la somma dei tre versamenti, cioè una mescolanza
+colonna. La miscela finale è la somma dei tre versamenti, una mescolanza
 delle colonne, e le dosi sono i numeri per cui le moltiplichi. La domanda
-diventa: con quali dosi la mescolanza dei tre barattoli fa esattamente il colore
+diventa: con quali dosi la mescolanza dei tre barattoli dà il colore
 del cliente?
 
 Le due letture descrivono lo stesso bancone. La prima guarda i pigmenti e chiede
 se i conti tornano voce per voce; la seconda guarda i barattoli e chiede se,
-dosandoli, ci si arriva. La seconda è quella che porta più lontano, perché rende
+dosandoli, ci si arriva. La seconda porta più lontano, perché rende
 visibile un caso che la prima nasconde. Se il terzo barattolo fosse una miscela
 dei primi due (un blu e un giallo, per esempio, e un verde fatto mescolando quei
 due), non aggiungerebbe nessun colore nuovo: con tre barattoli si farebbero le
@@ -131,10 +131,10 @@ $\mathbf{A}$, e le incognite sono i coefficienti della combinazione.
 
 Le due letture sono algebricamente equivalenti, ma non guidano l'intuizione
 allo stesso modo. La prima si visualizza bene per $n\le 3$ e smette di aiutare
-subito dopo. La seconda resta utile in qualunque dimensione e risponde da sola
+subito dopo. La seconda resta utile in qualunque dimensione e basta a rispondere
 alla domanda sull'esistenza: il sistema ammette soluzione se e solo se
 $\mathbf{b}$ appartiene all'insieme delle combinazioni lineari delle colonne.
-Quell'insieme ha un nome, e più avanti si chiamerà l’immagine di $\mathbf{A}$.
+Quell'insieme è l’immagine di $\mathbf{A}$.
 
 `````
 
@@ -145,7 +145,7 @@ gesti.
 
 `````{tab} Elementare
 
-Le mosse lecite sono tre, e ciascuna si giustifica in mezza riga.
+Le mosse lecite sono tre, e ciascuna si giustifica in poche parole.
 
 *Scambiare due equazioni.* L'ordine in cui le promesse sono scritte non
 cambia chi le mantiene.
@@ -155,10 +155,10 @@ trentanove» e «sei covoni rendono settantotto» dicono la stessa cosa. Lo zero
 va escluso: moltiplicando per zero resta $0 = 0$, che è vero sempre e non
 vincola più niente.
 
-*Sommare a un'equazione un multiplo di un'altra.* Questa è la mossa che fa
+*Sommare a un'equazione un multiplo di un'altra.* È l'operazione che fa
 tutto il lavoro. Chi soddisfa la prima promessa e la seconda soddisfa anche
-la loro somma; e siccome la mossa si può disfare (basta
-risottrarre), non si è perso niente per strada.
+la loro somma, e poiché l'operazione si può disfare (basta
+risottrarre), le soluzioni restano le stesse.
 
 Il gioco consiste nello scegliere i multipli in modo da far sparire le incognite
 una alla volta. Nel problema del grano conviene partire dalla terza promessa,
@@ -170,19 +170,20 @@ la $y$: resta $12z = 33$, cioè $z = 2{,}75$. Da lì si risale: la $z$ nota dà 
 forma di una scaletta: la prima riga con tre incognite, la seconda con due,
 l'ultima con una.
 
-Il costo si conta a occhio. Per far sparire un'incognita da una riga servono
+Il costo si stima a occhio. Per far sparire un'incognita da una riga servono
 tanti prodotti quante sono le colonne; le righe da ripulire sono quasi tutte,
 e le incognite da far sparire pure. Il lavoro cresce quindi come il cubo del
 numero di incognite: triplicando le incognite si lavora ventisette volte
-tanto. Per tre covoni è un attimo, per un sistema con un milione di incognite
-il cubo diventa proibitivo, ed è la ragione per cui su quelle taglie si usano
-metodi che si accontentano di una soluzione approssimata.
+tanto. Per tre covoni è un attimo, ma per un sistema con un milione di incognite
+il cubo diventa proibitivo; per questo su quelle taglie si usano
+metodi che sfruttano una tabella quasi vuota o si accontentano di una soluzione
+approssimata.
 
 C'è infine un'astuzia pratica che nasce dall'aritmetica della macchina. Per
 far sparire un'incognita bisogna dividere per il numero che le sta davanti,
-e se quel numero è minuscolo la divisione gonfia tutto quello che tocca,
-errori compresi. Il rimedio è scegliersi la riga: fra quelle disponibili, si
-porta in cima quella in cui l'incognita da eliminare ha il coefficiente più
+e se quel numero è minuscolo la divisione gonfia tutto ciò che incontra,
+errori compresi. Si sceglie perciò la riga: fra quelle disponibili, si porta
+in cima quella in cui l'incognita da eliminare ha il coefficiente più
 grosso.
 
 `````
@@ -212,19 +213,20 @@ Due avvertenze di pratica. La prima: per risolvere $\mathbf{A}\mathbf{x} =
 \mathbf{b}$ non si calcola $\mathbf{A}^{-1}$ e poi la si moltiplica per
 $\mathbf{b}$. Invertire costa circa tre volte l'eliminazione, e per giunta
 amplifica gli errori di arrotondamento più della fattorizzazione diretta;
-`numpy.linalg.solve` fattorizza, e `numpy.linalg.inv` compare quasi solo nei
-testi. La seconda: si adotta il pivoting parziale, cioè a ogni passo si
-scambia in cima la riga con il coefficiente di modulo massimo nella colonna
-corrente. Dividere per un pivot piccolo moltiplica per un numero enorme
-l'errore già presente nei dati, e la {doc}`sezione di analisi numerica
+`numpy.linalg.solve` fattorizza, e `numpy.linalg.inv` serve solo quando
+l'inversa stessa è ciò che si cerca. La seconda: si adotta il pivoting
+parziale, cioè a ogni passo si scambia in cima la riga con il coefficiente di
+modulo massimo nella colonna corrente. Dividere per un pivot piccolo moltiplica
+per un numero enorme l'errore già presente nei dati, e la {doc}`sezione di
+analisi numerica
 </Matematica/analisi-numerica>` mostra con quale grandezza si misura questo
 rischio.
 
 `````
 
-Il conto del grano, fatto dalla macchina, torna a quello che i *Nove capitoli*
-davano già duemila anni fa: la prima qualità rende $9\tfrac{1}{4}$ misure per
-covone, la seconda $4\tfrac{1}{4}$, la terza $2\tfrac{3}{4}$.
+La macchina ritrova i numeri che i *Nove capitoli* davano già duemila anni fa:
+la prima qualità rende $9\tfrac{1}{4}$ misure per covone, la seconda
+$4\tfrac{1}{4}$, la terza $2\tfrac{3}{4}$.
 
 ```python
 import numpy as np
@@ -243,9 +245,9 @@ print(np.allclose(A @ x, b))      # rimessa dentro, la soluzione torna -> True
 
 ## Una soluzione, nessuna, infinite
 
-Un sistema lineare può comportarsi in tre modi soltanto, e un quarto non esiste:
+Un sistema lineare può comportarsi in tre modi soltanto:
 o c'è esattamente una soluzione, o non ce n'è nessuna, o ce ne sono infinite.
-Non capita mai che ce ne siano due e basta, perché $\mathbf{A}$ è lineare: se
+Non capita mai che ce ne siano solo due, perché $\mathbf{A}$ è lineare: se
 $\mathbf{A}\mathbf{u}=\mathbf{b}$ e $\mathbf{A}\mathbf{v}=\mathbf{b}$, ogni
 punto $t\mathbf{u}+(1-t)\mathbf{v}$ della retta che li congiunge dà
 $t\mathbf{b}+(1-t)\mathbf{b}=\mathbf{b}$.
@@ -258,7 +260,7 @@ secondo, insieme, devono fare tre litri»: chiunque si presenti al bancone
 tornerà a casa a mani vuote, e non per colpa sua.
 
 **Infinite soluzioni.** Una promessa che ripete un'altra con parole diverse.
-Se la terza riga dice esattamente quello che dicono la prima e la seconda
+Se la terza riga dice quello che dicono la prima e la seconda
 messe insieme, allora sono due vincoli travestiti da tre, e resta un margine
 di manovra.
 
@@ -271,33 +273,32 @@ di centro e ottanta quella di periferia. Vuole ricostruire la
 tabella completa: quante copie del primo titolo ha venduto la libreria di
 centro, e così per le altre tre caselle.
 
-Quattro caselle da trovare, quattro numeri noti. Sembra chiuso, e non lo è. Il
-totale generale si può leggere in due modi, sommando i titoli ($90+60=150$)
-oppure le librerie ($70+80=150$), e i due modi danno per forza lo stesso
-numero. Quindi il quarto dato non aggiunge niente ai primi tre: è già
-contenuto in essi. I vincoli veri sono tre, le caselle quattro, e resta una
-direzione libera lungo cui muoversi.
+Le caselle da trovare sono quattro, i numeri noti quattro: il problema sembra
+determinato, ma non lo è. Il totale generale si può leggere in due modi,
+sommando i titoli ($90+60=150$) oppure le librerie ($70+80=150$), e i due modi
+danno per forza lo stesso numero. Il quarto dato non aggiunge quindi nulla ai
+primi tre, perché è già contenuto in essi. I vincoli veri sono tre, le caselle
+quattro, e resta una direzione libera lungo cui muoversi.
 
 Muoversi lungo quella direzione significa spostare una copia dalla casella in
 alto a sinistra a quella in alto a destra, e compensare spostandone una dal
 basso a destra al basso a sinistra: i totali di riga e di colonna restano
-identici. Ogni tabella così ottenuta rispetta tutti e quattro i dati, e i dati
-da soli non sanno dire quale sia quella giusta. Per sceglierne una serve
+identici. Ogni tabella così ottenuta rispetta tutti e quattro i dati, che non
+bastano a stabilire quale sia quella giusta. Per sceglierne una serve
 un'informazione in più che dai totali non arriva.
 
 Un dettaglio della scena ritorna spesso in machine learning. Le soluzioni
 possibili sono infinite in senso matematico, ma non tutte hanno senso: una
 libreria non può vendere meno di zero copie. Aggiungere questa richiesta
-ritaglia dall'insieme infinito un tratto finito, ed è il primo esempio di una
-mossa che si rivedrà spesso: quando i dati non bastano, si aggiungono richieste
-ragionevoli finché la risposta non si restringe.
+ritaglia dall'insieme infinito un tratto finito. Quando i dati non bastano, si
+aggiungono richieste ragionevoli finché la risposta non si restringe.
 
 `````
 
 `````{tab} Superiore
 
-La classificazione è governata dal confronto fra due ranghi, ed è il teorema
-di **Rouché–Capelli**: il sistema $\mathbf{A}\mathbf{x}=\mathbf{b}$ ammette
+La classificazione è governata dal confronto fra due ranghi (teorema
+di **Rouché–Capelli**): il sistema $\mathbf{A}\mathbf{x}=\mathbf{b}$ ammette
 soluzioni se e solo se
 
 $$
@@ -305,13 +306,13 @@ $$
 = \operatorname{rank}([\,\mathbf{A}\mid\mathbf{b}\,]),
 $$
 
-dove $\operatorname{rank}$ è il numero di pivot introdotto sopra e
+dove $\operatorname{rank}$ è il numero di pivot dell'eliminazione e
 $[\,\mathbf{A}\mid\mathbf{b}\,]$ la matrice aumentata. Quando la condizione
-vale, detta $r$ il rango comune e $n$ il numero di incognite, l'insieme delle
-soluzioni è un sottospazio affine di dimensione $n-r$: unica per $r=n$,
-infinita altrimenti, con $n-r$ variabili libere.
+vale, detti $r$ il rango comune e $n$ il numero di incognite, l'insieme delle
+soluzioni è un sottospazio affine di dimensione $n-r$: un solo punto per $r=n$,
+infiniti punti altrimenti, con $n-r$ variabili libere.
 
-Il senso della condizione si legge nella lettura per colonne: un pivot in più
+Il senso della condizione si vede nella lettura per colonne: un pivot in più
 nella colonna dei termini noti significa una riga della forma
 $0 = 1$, cioè $\mathbf{b}$ che sporge fuori dalle combinazioni delle colonne.
 
@@ -344,10 +345,9 @@ trasporto fra distribuzioni.
 
 Questo schema, in cui si osservano i marginali di una tabella e se ne vorrebbe
 ricostruire l'interno, ricompare in molti altri campi. È la ragione per cui
-conoscere due distribuzioni separate non determina la loro congiunta, ed è la
-struttura del problema che la {doc}`sezione sul flow matching
-</ModelliDiffusione/flow-matching>` incontrerà nella forma del trasporto fra
-due distribuzioni.
+conoscere due distribuzioni separate non determina la loro congiunta, e la
+{doc}`sezione sul flow matching </ModelliDiffusione/flow-matching>` ritroverà
+lo stesso schema nella forma del trasporto fra due distribuzioni.
 
 `````
 
@@ -403,13 +403,14 @@ trasformazione che una matrice compie assomiglia molto a questo, e
 Che cosa si può ottenere sul muro. Ogni punto dello spazio ha la sua ombra, e le
 ombre stanno tutte sul piano del muro: un punto che sta davanti o dietro il muro
 non è l'ombra di niente. Il piano del muro è l’**immagine** della
-trasformazione, ed è la risposta alla prima domanda: il sistema ha soluzione
+trasformazione e risponde alla prima domanda: il sistema ha soluzione
 soltanto se il termine noto sta lì sopra.
 
 Che cosa il muro non registra. Fissa un punto dell'oggetto e fallo scorrere
 lungo il raggio di sole che lo illumina: la sua ombra resta inchiodata
-dov'era. Quello spostamento il muro non lo vede, e siccome i raggi del sole
-arrivano tutti paralleli, è lo stesso spostamento per ogni punto dell'oggetto.
+dov'era. Il muro non vede quello spostamento, e poiché i raggi del sole
+arrivano tutti paralleli, lo spostamento invisibile è lo stesso per ogni punto
+dell'oggetto.
 L'insieme degli spostamenti invisibili si chiama **nucleo**, e risponde alla
 seconda domanda: se esiste uno spostamento invisibile diverso dallo stare
 fermi, allora ogni ombra ottenibile si ottiene in infiniti modi, perché a una
@@ -418,18 +419,17 @@ direzione. Con una lampada al posto del sole i raggi divergerebbero, ogni
 punto avrebbe la sua direzione invisibile, e l'ombra smetterebbe di essere una
 trasformazione di questo tipo.
 
-Le due cose stanno in un rapporto stretto, e il conto è il seguente. Un punto
+Le due cose stanno in un rapporto stretto. Un punto
 può scorrere in tre direzioni indipendenti (avanti, di lato, in alto); se una di
 queste è invisibile, sul muro se ne vedono due, e sono le due direzioni del
 piano del muro. Le direzioni di partenza si ripartiscono fra quelle che si
 perdono e quelle che arrivano, e la somma torna sempre: due più uno fa tre.
 
-Dalla scena si porta via una morale che vale ben oltre le ombre. Se una
+Se una
 direzione finisce nel nucleo, nessuna quantità di osservazioni la potrà mai
-recuperare: non è questione di misurare meglio o più a lungo, quella
-informazione all'arrivo non c'è. È il motivo per cui certi parametri di un
-modello restano indeterminati per sempre, e perché la tabella dell'editore non
-si può ricostruire dai soli totali per quanto a lungo li si guardi.
+recuperare, perché all'arrivo quell'informazione non c'è, per quanto meglio o
+più a lungo si misuri. Per questo certi parametri di un modello restano
+indeterminati, e la tabella dell'editore non si ricostruisce dai soli totali.
 
 `````
 
@@ -461,7 +461,7 @@ direzione lungo il raggio di luce.
 
 Con questi due oggetti le domande di prima diventano enunciati secchi. Il
 sistema è compatibile se e solo se $\mathbf{b}\in\operatorname{im}(\mathbf{A})$.
-E se $\mathbf{x}_p$ è una soluzione particolare, l'insieme completo è
+Se $\mathbf{x}_p$ è una soluzione particolare, l'insieme completo è
 
 $$
 \{\mathbf{x} : \mathbf{A}\mathbf{x} = \mathbf{b}\}
@@ -500,7 +500,7 @@ aggiuntiva, non un risultato.
 
 ## Il rango: quante direzioni davvero diverse
 
-Un numero torna in tutto quello che segue: il rango della matrice, cioè il
+Il rango di una matrice è il
 massimo numero di colonne linearmente indipendenti, quante ne restano scartando,
 una alla volta, quelle che si ottengono combinando le precedenti. Dice in quante
 direzioni indipendenti varia una tabella di dati, e per questo torna ogni volta
@@ -514,7 +514,7 @@ prima, e così via: allora le righe che portano qualcosa di nuovo sono due, e
 le altre novantotto si ricostruiscono da quelle. Quel conteggio, quante righe
 portano qualcosa di nuovo, è il **rango**.
 
-Vale la stessa cosa per le colonne, ed è un fatto tutt'altro che ovvio: il
+Lo stesso vale per le colonne, e non è ovvio: il
 numero di righe autonome e il numero di colonne autonome coincidono sempre.
 Una tabella di mille righe e tre colonne ha rango al massimo tre, comunque
 siano fatti i numeri.
@@ -523,7 +523,7 @@ Nel linguaggio delle ombre il rango è quante direzioni sopravvivono al
 passaggio. Se l'oggetto può muoversi in tre direzioni e sul muro se ne vedono
 due, il rango è due, e la direzione perduta è il nucleo.
 
-Ecco perché la parola torna così spesso. Quando una trasformazione ha rango
+Quando una trasformazione ha rango
 basso, la tabella che la descrive è grande soltanto all'apparenza: si può
 riscrivere come il passaggio attraverso una strettoia con poche corsie. Prima
 si comprime in poche direzioni, poi si riespande. I numeri da regolare crollano
@@ -531,23 +531,22 @@ di conseguenza: una tabella di duecento righe per trecento colonne ne contiene
 sessantamila, ma se la si ottiene facendo passare i dati per una strettoia a
 quattro corsie i numeri diventano duemila, trenta volte di meno.
 
-È la mossa su cui si regge LoRA, uno dei modi di adattare un modello linguistico
+È l'idea su cui si basa LoRA, uno dei modi di adattare un modello linguistico
 a un compito nuovo senza riaddestrarlo tutto: si lasciano fermi i numeri già
 imparati e si affianca loro una correzione che passa per una strettoia.
 La
 {doc}`sezione su ciò che viene dopo il pre-addestramento
-</Transformers/post-training>` la racconta per esteso; qui interessa il conto
-che la rende possibile, e il conto è tutto qui.
+</Transformers/post-training>` la racconta per esteso; il calcolo
+che la rende possibile è tutto qui.
 
-E c'è un modo di sbagliarlo, che conviene conoscere. Nei dati veri quasi
-nessuna riga è esattamente la somma di altre due: c'è sempre un pulviscolo
-di rumore che la rende autonoma per un pelo. Se si conta con l'aritmetica alla
-lettera, una tabella che in sostanza ha tre direzioni ne dichiara duecento, e
-la risposta è vera e inutile. La domanda sensata non è quante direzioni ci
-sono, ma quante contano davvero, e per rispondere bisogna saperle mettere in
-fila dalla più importante alla meno: è quello che fa la {doc}`sezione su
-ortogonalità e proiezioni </Matematica/ortogonalita-proiezioni>`, che da
-quell'ordine ricava anche quanto si perde tenendo solo le prime.
+Nei dati veri quasi nessuna riga è esattamente la somma di altre due: c'è
+sempre un pulviscolo di rumore che la rende autonoma per un pelo. Se si conta
+con l'aritmetica alla lettera, una tabella che in sostanza ha tre direzioni ne
+dichiara duecento, e la risposta è vera e inutile. Conviene chiedersi quante
+direzioni contano, e per rispondere bisogna ordinarle dalla più importante alla
+meno: lo fa la {doc}`sezione su ortogonalità e proiezioni
+</Matematica/ortogonalita-proiezioni>`, che da quell'ordine ricava anche quanto
+si perde tenendo solo le prime.
 
 `````
 
@@ -559,8 +558,7 @@ quella a coefficienti tutti nulli. Una **base** di un sottospazio $V$ è un
 insieme indipendente che lo genera; tutte le basi di $V$ hanno la stessa
 cardinalità, e quel numero è la dimensione di $V$.
 
-Il rango di $\mathbf{A}$ ammette quattro caratterizzazioni equivalenti,
-ed è utile averle tutte:
+Il rango di $\mathbf{A}$ ammette quattro caratterizzazioni equivalenti:
 
 - il numero di pivot nella forma a scala ridotta;
 - $\dim\operatorname{im}(\mathbf{A})$, cioè il massimo numero di colonne
@@ -568,8 +566,8 @@ ed è utile averle tutte:
 - il massimo numero di righe linearmente indipendenti (il rango per righe e
   quello per colonne coincidono);
 - il numero di valori singolari non nulli nella decomposizione
-  $\mathbf{A}=\mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^\top$ della sezione
-  precedente.
+  $\mathbf{A}=\mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^\top$ della {doc}`sezione
+  sull'algebra lineare <algebra-lineare>`.
 
 Da qui seguono i limiti che si usano di continuo:
 $\operatorname{rank}(\mathbf{A})\le\min(m,n)$, e soprattutto
@@ -588,14 +586,14 @@ di rango maggiore di $r$. È l'aritmetica di LoRA {cite}`hu2022lora`, delle
 raccomandazioni per fattorizzazione e degli autoencoder lineari.
 
 Nell'aritmetica in virgola mobile il rango così definito è una quantità
-fragile: una perturbazione arbitrariamente piccola rende una matrice singolare
-di rango pieno. Si usa quindi il rango numerico, cioè il numero di valori
-singolari sopra una soglia proporzionale a $\sigma_{\max}$ e alla precisione
-di macchina, che è ciò che `numpy.linalg.matrix_rank` calcola. La domanda
-sensata su dati reali riguarda il decadimento dello spettro, non
-l'annullamento; e quanto costi fermarsi alle prime $r$ direzioni lo dice il
+fragile: una perturbazione generica, anche minima, rende di rango pieno una
+matrice singolare. Si usa quindi il rango numerico, cioè il numero di valori
+singolari sopra una soglia proporzionale a $\sigma_{\max}$ e alla precisione di
+macchina, che è ciò che `numpy.linalg.matrix_rank` calcola. La domanda sensata
+su dati reali riguarda il decadimento dello spettro, non l'annullamento; e il
 teorema dell’{doc}`approssimazione di rango basso
-</Matematica/ortogonalita-proiezioni>`.
+</Matematica/ortogonalita-proiezioni>` dice quanto costi fermarsi alle prime
+$r$ direzioni.
 
 `````
 
@@ -659,8 +657,8 @@ nullo: su una matrice singolare a meno degli arrotondamenti (la situazione
 normale con i dati reali) non dice niente e restituisce un vettore enorme. `lstsq`
 invece non si ferma mai: restituisce una soluzione anche quando ce ne sono infinite
 (sceglie quella di norma minima) e anche quando non ce n'è nessuna (sceglie
-quella che minimizza l'errore). È comodo ma va saputo, perché una risposta arriva
-comunque, e sta a chi legge sapere a quale delle tre situazioni corrisponde. Due
+quella che minimizza l'errore). È comodo, ma insidioso: una risposta arriva
+comunque, e devi sapere a quale delle tre situazioni corrisponde. Due
 colonne uguali a meno di un'unità di macchina bastano a vederlo:
 
 ```python
@@ -722,7 +720,7 @@ print(np.round(x, 2), round(np.linalg.norm(A @ x - b), 2))  # e il suo residuo
 - Rouché–Capelli: il sistema è compatibile se e solo se
   $\operatorname{rank}(\mathbf{A}) =
   \operatorname{rank}([\,\mathbf{A}\mid\mathbf{b}\,])$, e in tal caso le
-  soluzioni formano un affine di dimensione $n-r$.
+  soluzioni formano un sottospazio affine di dimensione $n-r$.
 - $\operatorname{im}(\mathbf{A})$ è lo span delle colonne,
   $\ker(\mathbf{A})$ ciò che va a zero, e l'insieme delle soluzioni è
   $\mathbf{x}_p + \ker(\mathbf{A})$. Vale
@@ -742,4 +740,4 @@ produce (l'immagine), che cosa perde (il nucleo), quante direzioni indipendenti
 conserva (il rango). Resta il caso più comune nei dati, quello con più equazioni
 che incognite, dove nessuna soluzione esatta esiste: invece di cercare il punto
 che soddisfa $\mathbf{A}\mathbf{x}=\mathbf{b}$ si cerca il punto dell'immagine
-di $\mathbf{A}$ più vicino a $\mathbf{b}$, ed è il mestiere delle proiezioni.
+di $\mathbf{A}$ più vicino a $\mathbf{b}$, e lo trovano le proiezioni.

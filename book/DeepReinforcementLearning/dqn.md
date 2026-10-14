@@ -1,26 +1,26 @@
 # Deep Q-Network (DQN)
 
 Il risultato del 2013 su *Breakout* veniva da un programma solo, provato su
-sette videogiochi Atari, da *Pong* a *Space Invaders*: per tentativi, in tre di
-quei sette (*Breakout*, *Enduro* e *Pong*) arrivava a superare un umano esperto
-{cite}`mnih2013playing`. Due anni dopo il risultato finì sulla copertina di
-*Nature* {cite}`mnih2015human`. Quel programma si chiama Deep Q-Network, DQN.
+sette videogiochi Atari, da *Pong* a *Space Invaders*: in tre di quei sette
+(*Breakout*, *Enduro* e *Pong*) superava un giocatore umano esperto
+{cite}`mnih2013playing`. Due anni dopo la versione definitiva finì sulla
+copertina di *Nature* {cite}`mnih2015human`. Quel programma si chiama Deep
+Q-Network, DQN.
 
 Il {doc}`Q-learning </ReinforcementLearning/q-learning>` impara una funzione
 $Q(s,a)$ che stima quanto è conveniente, nel lungo periodo, compiere l'azione
 $a$ trovandosi nello stato $s$, e la tiene in una tabella: una riga per ogni
 stato, una colonna per ogni azione. Funziona con pochi stati. Con le schermate
-di un videogioco no, e il conto lo ha fatto
-l’{doc}`apertura del capitolo <overview>`: già i fotogrammi ridotti a
-$84\times84$ punti in grigio sono un numero di quasi diciassettemila cifre, e a
-una tabella così non basterebbe l'universo. Al suo posto serve una funzione che
-generalizzi, cioè che dia valori simili a stati simili anche quando non li ha
-mai visti.
+di un videogioco no, come mostra il calcolo nell’{doc}`apertura del capitolo
+<overview>`: già i fotogrammi ridotti a $84\times84$ punti in grigio sono tanti
+che il loro numero ha quasi diciassettemila cifre, e a una tabella così non
+basterebbe l'universo. Al suo posto serve una funzione che generalizzi, cioè
+che dia valori simili a stati simili anche quando non li ha mai visti.
 
 ## Dalla tabella alla rete
 
-La mossa di DQN è tanto semplice quanto radicale: buttiamo via la tabella e
-mettiamo al suo posto una rete neurale.
+DQN è semplice quanto radicale: butta via la tabella e mette al suo posto una
+rete neurale.
 
 `````{tab} Elementare
 
@@ -72,34 +72,32 @@ ogni mossa. L'agente sceglie l'azione con il valore più alto.
 
 ## Perché poteva divergere: la triade fatale
 
-Mettere una rete al posto della tabella non era, di per sé, un'idea nuova.
-TD-Gammon lo faceva dal 1992, con una rete addestrata a suon di partite di
-backgammon giocate contro se stessa; nella versione descritta tre anni dopo
-giocava quasi come i più forti campioni del mondo {cite}`tesauro1995temporal`.
-Eppure il Q-learning con una rete era noto per la sua instabilità: i valori
-stimati potevano crescere senza fermarsi, invece di assestarsi. Funzionava in
-casi particolari, e il replay delle esperienze che ritroveremo fra poco è di
-Long-Ji Lin, del 1992 {cite}`lin1992self`; con aggiornamenti a lotti funzionava
-anche il *Neural Fitted Q-iteration* di Martin Riedmiller
-{cite}`riedmiller2005neural`. In modo affidabile, su problemi grandi e partendo
-dai pixel, no.
+Mettere una rete al posto della tabella non era un'idea nuova. TD-Gammon lo
+faceva dal 1992, con una rete addestrata su partite di backgammon giocate
+contro sé stessa; nella versione descritta tre anni dopo giocava quasi alla
+pari dei più forti giocatori del mondo {cite}`tesauro1995temporal`. Il
+Q-learning con una rete, invece, era noto per la sua instabilità: i valori
+stimati potevano crescere senza fermarsi, invece di assestarsi. In casi
+particolari funzionava: il replay delle esperienze risale a Long-Ji Lin, nel
+1992 {cite}`lin1992self`, e con aggiornamenti a lotti funzionava anche il
+*Neural Fitted Q-iteration* di Martin Riedmiller {cite}`riedmiller2005neural`.
+In modo affidabile, su problemi grandi e partendo dai pixel, no.
 
-Fra TD-Gammon e il Q-learning c'è una differenza sola, e torna in tutto il
-capitolo. TD-Gammon aggiornava i valori della policy che stava giocando:
-apprendimento *on-policy*. Il Q-learning gioca in un modo e impara un altro.
-Ogni tanto, apposta, sceglie un'azione a caso per esplorare, ma il bersaglio
-verso cui corregge la stima non usa il valore di quell'azione: usa quello della
+Per la stabilità, TD-Gammon e il Q-learning differiscono in un punto. TD-Gammon
+aggiornava i valori della policy che stava giocando (apprendimento
+*on-policy*); il Q-learning gioca in un modo e impara un altro. Ogni tanto,
+apposta, sceglie un'azione a caso per esplorare, ma il bersaglio verso cui
+corregge la stima non usa il valore di quell'azione: usa quello della
 *migliore* fra le azioni disponibili nella situazione successiva. La policy che
 raccoglie i dati ($\varepsilon$-greedy) e quella di cui si stimano i valori
 (greedy) sono quindi due policy diverse, e si parla di apprendimento
 *off-policy*. È comodo, perché permette di imparare da qualunque partita: anche
 da una giocata male, anche da una giocata da altri molto tempo prima.
 
-E l'instabilità non veniva dalla sfortuna, né da un passo di apprendimento
+L'instabilità non dipendeva dalla sfortuna né da un passo di apprendimento
 tarato male (il *learning rate*: di quanto si spostano i pesi a ogni
-correzione). Prima dei due trucchi che hanno reso il metodo praticabile, serve
-capire da che cosa lo abbiano salvato: un risultato preciso e sorprendentemente
-pulito.
+correzione). I due accorgimenti che hanno reso praticabile il metodo curano un
+difetto preciso, che ha una descrizione sorprendentemente pulita.
 
 `````{tab} Elementare
 
@@ -112,49 +110,47 @@ mai visto. È l’approssimazione.
 
 Non aspetta la fine della partita. Una mossa gli frutta $1$ punto, valuta $7$
 la schermata in cui si ritrova, e scrive subito i due numeri messi insieme,
-il secondo contato per nove decimi: $7{,}3$, ed è il bersaglio verso cui
+il secondo contato per nove decimi: $7{,}3$, il bersaglio verso cui
 correggerà il voto di partenza. Aggiustare un voto
-con un altro voto si chiama bootstrapping, e separa le differenze
-temporali del capitolo precedente, il TD, dai metodi Monte Carlo, che
+con un altro voto si chiama bootstrapping, e separa le {doc}`differenze
+temporali </ReinforcementLearning/q-learning>`, il TD, dai metodi Monte Carlo, che
 aspettano il fischio finale per tirare le somme.
 
 Guarda partite giocate a casaccio e scrive i voti come se al posto di quel
 giocatore ci fosse un campione: si gioca da esploratore e si prendono appunti
 da campione. È l'off-policy.
 
-Ognuna di queste abitudini, da sola, è utile, e anche a coppie il taccuino si
-può tenere in ordine. Tutte e tre insieme aprono la porta a un guaio: i voti
-possono crescere senza fermarsi. Non succede per forza, e ci sono taccuini più
-complicati, costruiti apposta, che lo evitano; ma il pericolo c'è, e Richard
-Sutton e Andrew Barto, che hanno scritto il manuale classico della materia, la
-chiamano **triade fatale**.
+Ciascuna abitudine è utile, e a coppie il taccuino si tiene in ordine. Tutte e
+tre insieme espongono a un rischio: i voti possono crescere senza fermarsi. Non
+succede per forza, e ci sono taccuini più complicati, costruiti apposta, che lo
+evitano; ma il pericolo c'è, e Richard Sutton e Andrew Barto, autori del
+manuale classico della materia, chiamano **triade fatale** la combinazione dei
+tre.
 
-Per vederla non serve un gioco difficile, serve il contrario. Il più facile
-del mondo lo costruì Baird, e da lui si chiama **controesempio di Baird**:
-sette schermate, e non si guadagna mai un punto. Zero dappertutto è la
-risposta giusta, e il taccuino potrebbe scriverla alla perfezione: basterebbe
-mettere a zero la manciata di numeri con cui calcola i voti. Quei numeri,
-invece di posarsi sullo zero, crescono e non smettono più. Se il metodo sbaglia
-il problema più semplice del mondo, il guasto non è nel problema.
+Per vederla basta il gioco più facile possibile. Lo costruì Baird, e si chiama
+**controesempio di Baird**: sette schermate, e non si guadagna mai un punto.
+Zero dappertutto è la risposta giusta, e il taccuino potrebbe scriverla alla
+perfezione: basterebbe mettere a zero la manciata di numeri con cui calcola i
+voti. Quei numeri, invece di posarsi sullo zero, crescono e non smettono più.
 
-Il tale ritocca il voto di una schermata, e per somiglianza si spostano da sé
-anche le vicine: di solito è il suo vantaggio. Ma il bersaglio da cui era
-partito è il voto di una vicina, uno di quelli che ha appena mosso. Ogni
+Il tale ritocca il voto di una schermata, e per somiglianza si spostano anche
+quelli delle vicine: di solito è un vantaggio. Il bersaglio da cui era partito,
+però, è il voto di una vicina, uno di quelli che ha appena mosso. Ogni
 ritocco sposta il bersaglio che l'aveva deciso, e il ritocco seguente insegue
 un bersaglio già spostato: i voti si rimpallano fra loro.
 
-Di solito quel rimpallo si spegne da sé, e il motivo sta in quanto spesso il
-tale vede ciascuna schermata. Se le partite che guarda sono giocate come le
+Di solito quel rimpallo si spegne, e il motivo sta in quanto spesso il tale
+vede ciascuna schermata. Se le partite che guarda sono giocate come le
 giocherebbe lui, le schermate frequenti gli passano davanti spesso e quelle
 rare di rado, nelle proporzioni in cui contano davvero; e sono le frequenti a
-decidere come va a finire, così il rimpallo si smorza. Che vada così l'hanno
-dimostrato nel 1997 due studiosi, John Tsitsiklis e Benjamin Van Roy, ma solo
+decidere come va a finire, così il rimpallo si smorza. Due studiosi, John
+Tsitsiklis e Benjamin Van Roy, hanno dimostrato nel 1997 che va così, ma solo
 per il taccuino più semplice, quello in cui il voto di una schermata è una
 somma di pezzi, uno per ogni cosa che si vede (tanto per la pallina lì, tanto
 per la racchetta là). Con una rete a molti strati non c'è riuscito nessuno, e
 si conoscono casi in cui i voti scappano anche così.
 
-La terza abitudine toglie proprio questa protezione. Le partite del tale sono
+La terza abitudine toglie questa protezione. Le partite del tale sono
 giocate in un altro modo, e certe schermate gli passano davanti molto più
 spesso di quanto capiterebbero nel suo gioco, altre quasi mai. Corregge con
 forza dove non serve, il rimpallo non si smorza più, e i voti salgono invece di
@@ -177,45 +173,43 @@ Con due soli dei tre l'instabilità si può evitare. Con tutti e tre il pericolo
 c'è, e la divergenza si osserva già nel caso della sola predizione, senza
 controllo né miglioramento della policy. Non dipende nemmeno dall'incertezza
 sull'ambiente: si manifesta identica nella programmazione dinamica, dove il
-modello è noto per intero. Pericolo, però, e non condanna: i metodi
+modello è noto per intero. La divergenza non è comunque inevitabile: i metodi
 *Gradient-TD*, che scendono lungo il gradiente dell'errore di Bellman
-proiettato al prezzo di un secondo vettore di parametri con il suo passo, e gli
+proiettato a costo di un secondo vettore di parametri con il suo passo, e gli
 *Emphatic-TD*, che ripesano gli aggiornamenti, combinano tutti e tre gli
 elementi con garanzie di convergenza nel caso dell'approssimazione lineare
 {cite}`sutton2018reinforcement`.
 
-Il controesempio di Baird lo esibisce in forma minima: sette stati, due
-azioni, ricompensa sempre nulla, $\gamma = 0{,}99$, e una policy di
-comportamento che visita gli stati in modo uniforme mentre la policy bersaglio
-ne concentra tutta la massa su uno solo. La funzione valore vera è
-identicamente zero ed è esattamente rappresentabile dai parametri
-disponibili; il TD semi-gradiente, ciononostante, fa divergere i pesi. Il
-fattore decisivo è la distribuzione degli aggiornamenti: uniforme sugli
-stati, mentre la policy bersaglio li visiterebbe in proporzioni tutte diverse.
-Non basta osservare che l'aggiornamento semi-gradiente non è il gradiente di
-nessuna funzione obiettivo (si deriva rispetto alla stima ma non rispetto al
-bersaglio, che pure dipende dai parametri): lo stesso aggiornamento, con
-approssimatore lineare e sotto la distribuzione on-policy, converge, come
-dimostrarono Tsitsiklis e Van Roy nel 1997 {cite}`tsitsiklis1997analysis`. Ed
-è a quel caso, lineare e
-on-policy, che si fermano le garanzie di convergenza note: con approssimatori
-non lineari come le reti si conoscono controesempi di divergenza perfino
-on-policy.
+Il controesempio di Baird lo esibisce in forma minima: sette stati, due azioni,
+ricompensa sempre nulla, $\gamma = 0{,}99$, e una policy di comportamento che
+visita gli stati in modo uniforme mentre la policy bersaglio ne concentra tutta
+la massa su uno solo. La funzione valore vera è identicamente zero ed è
+esattamente rappresentabile dai parametri disponibili; il TD semi-gradiente,
+ciononostante, fa divergere i pesi. Il fattore decisivo è la distribuzione
+degli aggiornamenti: uniforme sugli stati, mentre la policy bersaglio li
+visiterebbe in proporzioni tutte diverse. Non basta osservare che
+l'aggiornamento semi-gradiente non è il gradiente di nessuna funzione obiettivo
+(si deriva rispetto alla stima ma non rispetto al bersaglio, che pure dipende
+dai parametri): lo stesso aggiornamento, con approssimatore lineare e sotto la
+distribuzione on-policy, converge, come dimostrarono Tsitsiklis e Van Roy nel
+1997 {cite}`tsitsiklis1997analysis`. Le garanzie di convergenza note si fermano
+a quel caso, lineare e on-policy: con approssimatori non lineari come le reti
+si conoscono controesempi di divergenza perfino on-policy.
 
-Sutton e Barto passano poi in rassegna i tre elementi chiedendosi a quale si
-possa rinunciare, ed è la lettura più utile per chi progetta. All’approssimazione
-no: senza, non si scala. Al bootstrapping si può, usando Monte Carlo, e si
-paga in efficienza computazionale (bisogna conservare tutto fino alla fine
-dell'episodio) e in efficienza di dati. All’off-policy si può, sostituendo
-il Q-learning con Sarsa, e si perde la possibilità di imparare da un archivio
-di esperienze altrui, che è però proprio la premessa del replay buffer.
+Sutton e Barto passano poi in rassegna i tre elementi per vedere a quale si
+possa rinunciare. All’approssimazione no:
+senza, non si scala. Al bootstrapping si può, usando Monte Carlo, e si paga in
+efficienza computazionale (bisogna conservare tutto fino alla fine
+dell'episodio) e in efficienza di dati. All’off-policy si può, sostituendo il
+Q-learning con Sarsa, e si perde la possibilità di imparare da un archivio di
+esperienze altrui, che è però la premessa del replay buffer.
 
 `````
 
 ## Due accorgimenti per non far esplodere l'addestramento
 
 DQN non rinuncia a nessuno dei tre elementi della triade: li tiene tutti e tre,
-e ne rende praticabile la convivenza con i due accorgimenti che seguono.
+e ne rende praticabile la convivenza con due accorgimenti.
 
 ### Experience replay
 
@@ -237,8 +231,8 @@ Ogni transizione $(s, a, r, s')$ viene salvata in un buffer $\mathcal{D}$
 (tipicamente un milione di transizioni). L'aggiornamento dei pesi avviene su
 *minibatch* campionati uniformemente da $\mathcal{D}$, e non sull'ultima
 transizione. Questo rompe la correlazione temporale tra campioni consecutivi
-(che violerebbe l'ipotesi di indipendenza della discesa del gradiente
-stocastica) e aumenta enormemente l'efficienza nell'uso dei dati, riutilizzando
+(che violerebbe l'ipotesi di indipendenza nella discesa stocastica del
+gradiente) e aumenta enormemente l'efficienza nell'uso dei dati, riutilizzando
 ogni transizione in molti aggiornamenti.
 
 `````
@@ -259,9 +253,9 @@ raggiungerlo.
 `````{tab} Superiore
 
 Si mantiene una rete-target con parametri $\theta^{-}$, copia periodica dei
-$\theta$ ogni $C$ passi. Quella dei $\theta$ è la rete che sceglie le mosse e
-si aggiorna a ogni passo, e per contrasto si chiama *rete online*: è lei che
-si allena minimizzando l'errore quadratico sull'equazione di Bellman:
+parametri $\theta$ ogni $C$ passi. La rete con parametri $\theta$, detta *rete
+online*, sceglie le azioni e si aggiorna a ogni passo: si allena minimizzando
+l'errore quadratico sull'equazione di Bellman:
 
 $$
 \mathcal{L}(\theta) = \mathbb{E}_{(s,a,r,s',d)\sim U(\mathcal{D})}
@@ -279,10 +273,10 @@ parole del lavoro, divergenza e oscillazioni diventano molto meno probabili.
 Due dettagli del lavoro su *Nature* {cite}`mnih2015human` cambiano questa
 perdita. Nel gradiente l'errore $\delta = y - Q(s,a;\theta)$ è tosato in
 $[-1,1]$, il che equivale alla perdita di Huber, quadratica per $|\delta| \le
-1$ e lineare oltre: un bersaglio sballato di cento spinge quanto uno sballato
+1$ e lineare oltre: un errore di cento contribuisce al gradiente quanto un errore
 di uno. E le ricompense sono tosate a $-1$, $0$, $+1$, perché lo stesso passo
-valga su giochi con scale di punteggio diversissime, al prezzo di non
-distinguere più un bottino piccolo da uno grande. Completano la ricetta un
+valga su giochi con scale di punteggio diversissime, impedendo però di
+distinguere una ricompensa piccola da una grande. Completano la ricetta un
 $\varepsilon$ portato da $1$ a $0{,}1$ nel primo milione di fotogrammi e ogni
 azione ripetuta per quattro fotogrammi. Nel lavoro, quindi, un «fotogramma» è
 un passo dell'agente: i $50$ milioni dell'addestramento sono $200$ milioni di
@@ -319,25 +313,25 @@ attenua nessuno, e stabilizza per un'altra via: spezza il legame fra
 un'esperienza e la successiva, che non è uno dei tre elementi. Sull'off-policy,
 semmai, tira dall'altra parte, perché pescare da un milione di ricordi vuol
 dire allenarsi su partite giocate da versioni vecchie della policy, più lontane
-da quella di adesso. Anzi, la memoria di replay l'apprendimento off-policy lo
-presuppone: senza un bersaglio che valuti una policy diversa da quella che ha
+da quella di adesso. Anzi, la memoria di replay presuppone l'apprendimento
+off-policy: senza un bersaglio che valuti una policy diversa da quella che ha
 raccolto i dati, un ricordo vecchio non si potrebbe riusare affatto. Il primo
 elemento, la rete al posto della tabella, resta intatto: è quello per cui si è
 fatto tutto il resto.
 
-La rete, in PyTorch, si costruisce in poche righe. Un paio di numeri prima di
-leggerla. I fotogrammi arrivano ridotti a $84\times84$ punti in scala di grigi
-e impilati a quattro a quattro, perché da una sola immagine ferma non si
-capisce dove stia andando la pallina. I tre strati convoluzionali usano filtri
-$8\times8$ con stride $4$, $4\times4$ con stride $2$ e $3\times3$ con stride
-$1$, senza bordo aggiunto, e un filtro $k\times k$ con stride $s$ porta un lato
-di $n$ punti a $\lfloor (n-k)/s\rfloor + 1$, come nella
-{doc}`sezione sulle reti convoluzionali </DeepLearning/reti-convoluzionali>`:
-il lato passa da $84$ a $20$, poi a $9$, poi a $7$. Restano $7\times7$
-posizioni per ciascuno dei $64$ filtri dell'ultimo strato, i rivelatori che la
-rete ha imparato (uno reagisce ai bordi verticali, un altro alla pallina, e
-così via), e da lì esce il `64 * 7 * 7` del primo strato denso, quello in cui
-ogni numero in entrata parla con ogni numero in uscita.
+La rete, in PyTorch, si costruisce in poche righe. I fotogrammi arrivano
+ridotti a $84\times84$ punti in scala di grigi e impilati a quattro a quattro,
+perché da una sola immagine ferma non si capisce dove stia andando la pallina.
+I tre strati convoluzionali usano filtri $8\times8$ con stride $4$, $4\times4$
+con stride $2$ e $3\times3$ con stride $1$, senza bordo aggiunto, e un filtro
+$k\times k$ con stride $s$ porta un lato di $n$ punti a $\lfloor
+(n-k)/s\rfloor + 1$, come nella {doc}`sezione sulle reti convoluzionali
+</DeepLearning/reti-convoluzionali>`: il lato passa da $84$ a $20$, poi a $9$,
+poi a $7$. Restano $7\times7$ posizioni per ciascuno dei $64$ filtri
+dell'ultimo strato, ognuno un rivelatore di un tratto dell'immagine (un bordo
+verticale, la pallina, e così via), e da lì esce il `64 * 7 * 7` del
+primo strato denso, quello in cui ogni numero in entrata parla con ogni numero
+in uscita.
 
 ```python
 from torch import nn
@@ -386,41 +380,41 @@ bersaglio = r + gamma * q_next * (1 - fine)        # se finisce qui, resta solo 
 
 ## Atari: giocare partendo dai pixel
 
-Il dettaglio storicamente rilevante è cosa vede la rete: nient'altro che
-l'immagine, cioè i quattro fotogrammi impilati. Nessuna informazione sulle
-regole, e nessuna misura scelta e calcolata a mano da un programmatore (in
-gergo, nessuna *feature*: niente «distanza fra pallina e racchetta», niente
-«numero di mattoni rimasti»). E da un gioco all'altro non cambiava niente: i 49
-titoli del confronto con il collaudatore umano raccontato in apertura di
-capitolo li ha imparati lo stesso algoritmo, con le stesse manopole di
-regolazione (gli *iperparametri*: quelli che si decidono prima e non si
-imparano), scelte una volta per tutte con qualche prova su cinque di quei
-giochi. Era la prima volta che un singolo sistema imparava una gamma così ampia
-di compiti partendo da input sensoriali grezzi.
+Il dettaglio storicamente rilevante è l'ingresso della rete: l'immagine, cioè i
+quattro fotogrammi impilati, e nient'altro. Nessuna informazione sulle regole,
+e nessuna misura scelta e calcolata a mano da un programmatore (in gergo,
+nessuna *feature*: niente «distanza fra pallina e racchetta», niente «numero di
+mattoni rimasti»). Da un gioco all'altro non cambiava niente: lo stesso
+algoritmo ha imparato i 49 titoli del confronto con il collaudatore
+umano raccontato nell’{doc}`apertura del capitolo <overview>`, con le stesse
+manopole di regolazione (gli *iperparametri*: quelli che si decidono prima e
+non si imparano), scelte una volta per tutte con qualche prova su cinque di
+quei giochi. Il lavoro lo presenta come il primo agente capace di eccellere in
+una gamma così ampia di compiti partendo da input sensoriali grezzi.
 
 ## Il difetto che il massimo si porta dietro
 
 Nel bersaglio di DQN c'è un'operazione che sembra innocua e non lo è: prendere
-il valore più alto. Capire perché l'operazione gonfi le stime serve due volte:
-il fenomeno è controintuitivo (prendere il massimo è proprio quello che si
-vuole fare), e lo stesso difetto con la stessa cura torneranno, identici, nella
+il valore più alto. Capire perché il massimo gonfia le stime serve due volte:
+il fenomeno è controintuitivo (prendere il massimo è l'operazione che si vuole
+fare), e lo stesso difetto, con la stessa cura, torna identico nella
 {doc}`sezione sul controllo continuo <controllo-continuo>`.
 
 `````{tab} Elementare
 
 Otto mosse da cui scegliere, e per ciascuna un voto approssimativo: giusto *in
 media*, ma sporcato ogni volta da un errore in più o in meno. Tu prendi sempre
-il voto più alto. Ora, il voto più alto degli otto è di
+il voto più alto. Il più alto degli otto è di
 solito quello della mossa a cui l'errore ha dato la spinta verso l'alto più
-grande, non quello della mossa davvero migliore. Fra otto misure sbagliate a
+grande, non quello della mossa migliore. Fra otto misure sbagliate a
 caso, la più alta è quasi sempre una misura fortunata.
 
 Prendere il massimo di stime rumorose, insomma, non restituisce il massimo dei
 valori veri: restituisce qualcosa di sistematicamente più grande. Il conto si
-può anche fare. Le otto mosse valgono tutte esattamente $5$, e ogni voto sbaglia
+può anche fare. Le otto mosse valgono tutte $5$, e ogni voto sbaglia
 di una quantità qualsiasi fra $-1$ e $+1$, in su come in giù, senza preferenze.
 Fra otto errori pescati così, il più grande sta quasi sempre vicino al bordo
-alto, e di quanto lo dice un ragionamento da righello. Otto punti buttati a caso
+alto, e un ragionamento col righello ne dà la misura. Otto punti buttati a caso
 su un segmento lo tagliano, in media, in nove pezzi uguali, e il più alto lascia
 sopra di sé un pezzo solo, un nono del segmento. Qui il segmento va da $-1$ a
 $+1$ ed è lungo $2$: il più alto degli otto errori sta in media a $2/9$ dal
@@ -431,23 +425,23 @@ $5{,}78$.
 Quanto si gonfia dipende da due cose: da quante sono le mosse fra cui si
 sceglie, e da quanto sono sballati i voti. Con due mosse sole, e gli stessi
 errori di prima, la gonfiatura scende a $1/3$; con otto mosse ma errori larghi
-il doppio, tutto raddoppia e sale a $1{,}56$. E il guaio è che il voto gonfiato
+il doppio, tutto raddoppia e sale a $1{,}56$. Il voto gonfiato
 diventa il bersaglio dell'aggiornamento successivo, quindi la gonfiatura non
 resta dov'era: si tramanda.
 
 Il rimedio si chiama **Double DQN**, e divide in due un lavoro che prima faceva
 una rete sola. Prima: la stessa rete decide qual è la mossa migliore *e* dice
 quanto vale. Dopo: la rete che sta imparando dice quale mossa, e la copia
-congelata dice quanto vale quella mossa lì. Che i due ruoli stiano su reti
+congelata dice quanto vale quella mossa. Che i due ruoli stiano su reti
 diverse è tutta la sostanza: l'errore che ha fatto *sembrare* buona quella
 mossa non è lo stesso errore che poi ne *misura* il valore, così la fortuna non
-viene contata due volte. E non si assegnano a caso: a dire *quanto vale* deve
-essere la copia congelata, altrimenti si perde il bersaglio fermo che serviva a
+viene contata due volte. I ruoli non sono intercambiabili: la copia congelata
+deve dire *quanto vale*, altrimenti si perde il bersaglio fermo che serviva a
 non far esplodere l'addestramento.
 
 Attenua, però, non guarisce. Le due reti non sono estranee fra loro: una è la
 copia dell'altra di qualche passo prima, e quella parentela lascia passare buona
-parte della gonfiatura. E quando le mosse non valgono davvero tutte uguale, il
+parte della gonfiatura. Quando le mosse non valgono tutte uguali, il
 correttivo tende a esagerare dalla parte opposta: i voti escono un filo bassi
 invece che alti.
 
@@ -455,9 +449,9 @@ invece che alti.
 
 `````{tab} Superiore
 
-La causa non è che le singole stime siano distorte, perché non lo sono: è
-l'incontro fra il rumore e la convessità del massimo, che la
-disuguaglianza di Jensen mette in conto. Per stime $\hat Q$ non distorte,
+Le singole stime non sono distorte: a gonfiare il bersaglio è l'incontro fra
+il rumore e la convessità del massimo, che la disuguaglianza di Jensen
+descrive. Per stime $\hat Q$ non distorte,
 
 $$
 \mathbb{E}\big[\max_a \hat Q(s,a)\big] \;\ge\; \max_a \mathbb{E}\big[\hat Q(s,a)\big]
@@ -515,7 +509,7 @@ a $\theta^{-}$ e valutare a $\theta$ conserverebbe il disaccoppiamento, e quindi
 una parte della correzione, ma rimetterebbe i pesi in aggiornamento dentro il
 bersaglio, buttando via il congelamento che era servito a stabilizzarlo.
 
-Gli autori sono prudenti sul risultato, ed è giusto esserlo con loro: l'algoritmo
+Gli autori sono prudenti sul risultato: l'algoritmo
 «riduce le sovrastime osservate», non le elimina. Il disaccoppiamento
 annullerebbe il bias solo con due stimatori indipendenti, e qui il secondo
 non lo è: la rete target è una copia ritardata del primo, scelta perché è il
@@ -526,7 +520,7 @@ sovrastima con una lieve sottostima.
 
 `````
 
-Il conto delle otto mosse si rifà pescando gli errori a caso, un milione di
+Il calcolo delle otto mosse si rifà pescando gli errori a caso, un milione di
 volte per ciascun caso, e facendo la media del massimo:
 
 ```python
@@ -562,12 +556,12 @@ dire che un'esperienza banale vale quanto una sorprendente. Uno studente vero
 non fa così: ripassa più spesso le pagine dove l'ultimo compito è andato
 peggio. È il **replay con priorità**: ogni esperienza porta un segnalibro
 grande quanto l'errore che la rete ci ha fatto sopra l'ultima volta, e la pesca
-premia i segnalibri grandi. Quanto li premi è una manopola: portata a zero, si
-torna alla pesca a caso di prima. Le esperienze appena vissute entrano col
-segnalibro al massimo, così nessuna finisce nel dimenticatoio prima di un
-primo ripasso. Il prezzo c'è: chi ripassa quasi soltanto le pagine dove
-sbaglia si fa un'idea storta del libro intero, e il rimedio è contare i
-ripassi pescati apposta un po’ meno di quelli che sarebbero usciti a caso.
+premia i segnalibri grandi. Una manopola regola quanto premiarli: portata a
+zero, si torna alla pesca a caso di prima. Le esperienze appena vissute entrano
+col segnalibro al massimo, così nessuna finisce nel dimenticatoio prima di un
+primo ripasso. Chi ripassa quasi soltanto le pagine dove sbaglia, però, si fa
+un'idea storta del libro intero, e il rimedio è contare i ripassi pescati
+apposta un po’ meno di quelli che sarebbero usciti a caso.
 
 L'altra idea spezza il voto in due domande: quanto è buona la situazione, e
 quanto aggiunge ciascuna mossa. Su un rettilineo vuoto guidare bene non
@@ -597,7 +591,7 @@ $$
 
 dove $\delta_i$ è l'ultimo errore TD misurato sulla transizione $i$, $\epsilon$
 è una costante piccola che impedisce a un errore sceso a zero di escludere per
-sempre quella transizione, e $\alpha \ge 0$ dosa quanto la priorità morde
+sempre quella transizione, e $\alpha \ge 0$ dosa l'effetto della priorità
 ($\alpha = 0$ riporta all'uniforme); le transizioni nuove entrano con priorità
 massima. Il campionamento non uniforme distorce però la distribuzione degli
 aggiornamenti, e la correzione è un peso di *importance sampling* $w_i =
@@ -625,28 +619,25 @@ Con il Double DQN e altre tre migliorie (i ritorni a più passi, la stima di
 un'intera distribuzione di ritorni al posto della media, l'esplorazione
 tramite rumore nei pesi), questi due pezzi confluiscono in **Rainbow**
 {cite}`hessel2018rainbow`; l'ablazione di quel lavoro indica il replay con
-priorità e i ritorni a più passi come i componenti la cui rimozione costa di
-più all'insieme.
+priorità e i ritorni a più passi come i componenti la cui rimozione penalizza di
+più l'insieme.
 
 `````
 
 ## I limiti
 
-Molti confini di questo approccio hanno guidato la ricerca successiva: oltre
-alla sovrastima del massimo, che il Double DQN attenua e basta, ne restano tre
-principali.
+Oltre alla sovrastima del massimo, che il Double DQN attenua senza eliminarla,
+restano tre limiti principali, e hanno guidato la ricerca successiva.
 
 - Fame di dati. La versione di *Nature* usa $50$ milioni di passi dell'agente
   per gioco, circa $38$ giorni di gioco ininterrotto; il collaudatore umano con
   cui è confrontata si era allenato circa due ore per gioco.
-- Le mosse devono essere poche e distinte (in gergo *discrete*, cioè
-  contabili una per una, come le voci di un menu). Prendere il valore più alto
-  vuol dire scorrerle tutte: va bene per un joystick a poche direzioni, non per
-  uno sterzo o un braccio robotico, dove la mossa è una quantità da dosare e le
-  possibilità sono infinite. Da lì nascono gli algoritmi attore-critico
-  (*actor-critic*), dove uno propone la mossa e l'altro la giudica, che
-  incontreremo nel {doc}`gradiente di policy <policy-gradient>` e nel
-  {doc}`controllo continuo <controllo-continuo>`.
+- Le mosse devono essere poche e distinte (in gergo *discrete*, cioè contabili
+  una per una, come le voci di un menu). Prendere il massimo vuol dire
+  scorrerle tutte: funziona con le poche scelte di un joystick, ma non quando
+  lo spazio delle azioni diventa continuo. Lì servono i metodi a
+  {doc}`gradiente di policy <policy-gradient>`, estesi poi al {doc}`controllo
+  continuo <controllo-continuo>`.
 - Ricompense rade. In certi giochi il punteggio arriva solo dopo lunghe
   sequenze di mosse esatte, e lì DQN sostanzialmente fallisce: senza segnale,
   non c'è nulla da inseguire. Il caso più celebre, *Montezuma's Revenge*, apre
@@ -658,15 +649,15 @@ principali.
 - DQN butta via lo schedario che aveva un cartellino per ogni schermata e
   ci mette una rete neurale: guarda i pixel e dice a colpo d'occhio quanto
   vale ciascuna mossa, anche su schermate mai viste prima.
-- Per anni un'idea così è stata instabile, e per una ragione precisa, la
-  triade fatale: una rete al posto della tabella, stime aggiornate a partire
-  da altre stime, e una strategia imparata mentre se ne gioca un'altra. Due
-  qualunque dei tre si possono tenere insieme senza danni; tutti e tre insieme
-  aprono la porta al guaio, e i valori possono crescere senza fermarsi. Non
-  succede per forza (DQN li tiene tutti e tre), ma il pericolo c'è: il
-  controesempio di Baird lo mostra su sette stati in cui non si guadagna mai
-  nulla e la risposta giusta ("tutto vale zero") il sistema saprebbe
-  rappresentarla alla perfezione, e i numeri crescono lo stesso.
+- Per anni un'idea così è stata instabile, e per una ragione precisa, la triade
+  fatale: una rete al posto della tabella, stime aggiornate a partire da altre
+  stime, e una strategia imparata mentre se ne gioca un'altra. Con due
+  qualunque dei tre l'instabilità si può evitare; con tutti e tre i valori
+  possono crescere senza fermarsi. Non succede per
+  forza (DQN li tiene tutti e tre), ma il pericolo c'è: il controesempio di
+  Baird lo mostra su sette stati in cui non si guadagna mai nulla; il sistema
+  saprebbe rappresentare alla perfezione la risposta giusta ("tutto vale
+  zero"), e i numeri crescono lo stesso.
 - Due accorgimenti lo rendono stabile: il quaderno degli appunti, che si
   chiama memoria di replay (ogni esperienza viene annotata e ripescata a
   caso, così l'agente mescola situazioni lontane invece di rileggere cento volte
@@ -674,8 +665,8 @@ principali.
   copia congelata della rete, che tiene fermo il bersaglio abbastanza a
   lungo perché lo si possa raggiungere. Nessuno dei tre ingredienti sparisce:
   la copia congelata addolcisce il bootstrapping (correggere una stima
-  guardandone un'altra), mentre il quaderno toglie un guaio che nella triade
-  non c'era, cioè proprio quel rileggere la stessa pagina; sull'off-policy,
+  guardandone un'altra), mentre il quaderno toglie un difetto che nella triade
+  non c'era, il rileggere la stessa pagina; sull'off-policy,
   semmai, tira dall'altra parte, perché i ricordi vengono da partite giocate
   in un altro modo e più vecchie.
 - Prendere sempre il voto più alto gonfia i voti: fra tante stime sporcate
@@ -710,8 +701,8 @@ principali.
 - Due accorgimenti lo rendono stabile: l’experience replay (memoria di
   transizioni campionate a caso) e la rete-target (bersaglio congelato).
   Nessuno dei tre ingredienti sparisce, e uno solo viene attenuato: la
-  rete-target smorza il bootstrapping; il replay decorrela i campioni, e
-  l'off-policy lo presuppone invece di attenuarlo.
+  rete-target smorza il bootstrapping; il replay decorrela i campioni, e presuppone
+  l'off-policy invece di attenuarlo.
 - Il $\max$ nel bersaglio sovrastima perché il rumore incontra una funzione
   convessa, non perché le stime siano distorte (Jensen; stretta solo se il
   rumore può cambiare quale azione risulta la migliore, non su tutte le stime
@@ -719,10 +710,11 @@ principali.
   $\mathbb{E}[\max_a \hat Q] \ge \max_a \mathbb{E}[\hat Q]$. Il Double DQN
   fa scegliere l'azione a $\theta$ e valutarla a $\theta^{-}$: *riduce* il bias,
   non lo annulla, perché i due stimatori non sono indipendenti.
-- Il prioritized replay campiona con $P(i)\propto(|\delta_i|+\epsilon)^{\alpha}$
-  e corregge il bias con pesi di importance sampling; la dueling network
-  ricompone $Q = V + (A - \bar A)$ e allena $V$ a ogni aggiornamento. Con
-  Double DQN e altre tre migliorie confluiscono in Rainbow.
+- Il prioritized replay campiona con
+  $P(i)\propto(|\delta_i|+\epsilon)^{\alpha}$ e corregge il bias con pesi di
+  importance sampling; la dueling network ricompone $Q = V + (A - \bar A)$ e
+  allena $V$ a ogni aggiornamento. Insieme a Double DQN e ad altre tre
+  migliorie, queste due soluzioni confluiscono in Rainbow.
 - Il risultato storico (Mnih et al., 2015): livello umano su molti giochi
   Atari partendo dai soli pixel. Restano limiti di efficienza, azioni discrete
   e ricompense rade.

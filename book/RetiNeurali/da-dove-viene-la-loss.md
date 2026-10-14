@@ -4,26 +4,26 @@ Perché l'errore di una rete si misura spesso al quadrato, e non con la
 differenza secca? I minimi quadrati hanno una seconda lettura, oltre a quella
 geometrica di {doc}`Ortogonalità e proiezioni
 </Matematica/ortogonalita-proiezioni>`, dove sono un'ombra proiettata su un
-sottospazio. Gauss la percorse in un verso che
-oggi si fa al contrario. Nel *Theoria motus* del 1809 si chiese quale
+sottospazio. Gauss arrivò ai quadrati in un verso che
+oggi si percorre al contrario. Nel *Theoria motus* del 1809 si chiese quale
 legge degli errori rendesse la media aritmetica il valore più probabile di una
 serie di misure: la risposta fu la curva a campana, e da lì la somma dei
 quadrati scendeva come conseguenza. Oggi si parte dall'altro capo. Si sceglie
 la campana, e i quadrati arrivano.
 
-Il cambio di verso sembra un dettaglio di racconto e vale molto di più, perché
-la strada che scende dalla distribuzione alla loss si può percorrere con
-qualunque distribuzione, non solo con la campana. Diventa una procedura: dato
-un problema nuovo, la sua loss si ottiene invece di cercarla a occhio fra
-quelle già viste. Le tre parole che servono sono la verosimiglianza, la
-log-verosimiglianza negativa e la mossa che le collega alla rete: la rete
-emette i parametri di una distribuzione sull'uscita, al posto del valore.
+Il cambio di verso ha una conseguenza pratica: la strada che scende dalla
+distribuzione alla loss si può percorrere con qualunque distribuzione, non solo
+con la campana. Diventa una procedura: dato un problema nuovo, la sua loss si
+ottiene invece di cercarla a occhio fra quelle già viste. Servono la
+verosimiglianza, la log-verosimiglianza negativa e il passaggio che le collega
+alla rete: la rete emette i parametri di una distribuzione sull'uscita, al
+posto del valore.
 
 ## La rete dichiara una distribuzione
 
 Finora la rete ha risposto con un numero: questa casa vale $210.000$ euro,
-questa foto è un gatto. La mossa che apre tutto il discorso sulle loss è
-cambiare l'oggetto della risposta. La rete riceve $\mathbf{x}$ e restituisce i
+questa foto è un gatto. Da qui in poi cambia l'oggetto della risposta: la rete
+riceve $\mathbf{x}$ e restituisce i
 parametri $\boldsymbol{\lambda}$ di una distribuzione di probabilità
 $p(y \mid \boldsymbol{\lambda})$ sulle risposte possibili, cioè i numeri che la
 fissano: per una campana, dove sta il centro e quanto è larga. La sbarra si
@@ -32,14 +32,13 @@ una componente. L'insieme delle risposte su cui la distribuzione è definita è 
 suo **dominio**.
 
 Il valore singolo non sparisce: si recupera quando serve, prendendo il punto
-in cui la distribuzione dichiarata è più alta. Quello che si guadagna è tutto
+in cui la distribuzione dichiarata è più alta. Si guadagna tutto
 il resto della dichiarazione, cioè quanto la rete crede a ciascuna delle altre
 risposte.
 
 ## La ricetta in quattro mosse
 
-Le mosse sono quattro, e hanno un nome ciascuna perché ognuna tornerà da sola
-più avanti.
+Sono quattro, ciascuna con il suo nome.
 
 - **la famiglia**: si prende una distribuzione definita sul dominio delle
   risposte, una gaussiana se la risposta è un numero reale qualunque, una
@@ -62,7 +61,7 @@ C'è un gioco che si fa con dieci gettoni, per cento turni. A ogni turno viene
 fuori qualcosa (il numero di panini venduti oggi, se domani piove, quale delle
 cinque squadre vince), e tu, prima di sapere com'è andata, non dici la risposta:
 distribuisci i gettoni sulle risposte possibili. Poi si scopre la verità, e
-vinci la parte dei dieci gettoni che avevi messo proprio lì: tre gettoni su
+vinci la parte dei dieci gettoni che avevi messo su quella risposta: tre gettoni su
 dieci valgono 0,3, dieci su dieci valgono 1.
 
 Le regole sono quattro, una per mossa della ricetta. La prima, la famiglia, è
@@ -70,7 +69,7 @@ disegnare il tavolo. Per un sì o un no bastano due caselle, per cinque squadre
 ne servono cinque; per un numero qualunque le caselle non ci sono, c'è un
 righello lungo, e i dieci gettoni vanno sbriciolati in sabbia e sparsi. Su un
 punto solo, allora, di sabbia non ce n'è: si guarda quanto è alto lo strato lì,
-cioè quanti gettoni per centimetro. E lo strato può superare di molto il dieci:
+cioè quanti gettoni per centimetro. Lo strato può superare di molto il dieci:
 dieci gettoni schiacciati in un millimetro fanno cento gettoni per centimetro.
 
 La seconda regola, la consegna alla rete: i gettoni non li distribuisci tu a
@@ -79,33 +78,33 @@ l'indizio, e cambia il modo in cui i gettoni finiscono sul tavolo.
 
 La terza è il punteggio. I cento turni si vincono tutti insieme, come cento
 scommesse che devono riuscire tutte, e il punteggio è il prodotto delle cento
-vincite, cioè la probabilità di tutto quello che è uscito secondo i gettoni
-della rete. È la verosimiglianza, lo stesso conto che nella {doc}`sezione su
+vincite, cioè la probabilità, secondo i gettoni della rete, di tutte le risposte
+uscite. È la verosimiglianza, lo stesso conto che nella {doc}`sezione su
 probabilità e statistica </Matematica/probabilita-statistica>` dava la
-probabilità di sette teste su dieci lanci di una moneta. Basta un turno con zero
-gettoni sulla risposta uscita, e il prodotto fa zero: partita persa. E le
-vincite si moltiplicano, come le probabilità di cose che non si influenzano,
-solo grazie a due regole della casa: il tavolo è lo stesso a ogni turno
-(cambiano l'indizio e dove finiscono i gettoni, non il tavolo né il modo in cui
-la rete li distribuisce), e ogni turno si conta per sé, senza che com'è andata
-ieri cambi il punteggio di oggi.
+probabilità di sette teste su dieci lanci di una moneta. Basta un turno con
+zero gettoni sulla risposta uscita, e il prodotto fa zero: partita persa. Le
+vincite si moltiplicano, come le probabilità di eventi che non si influenzano,
+solo grazie a due regole della casa. La prima: il tavolo è lo stesso a ogni
+turno (cambiano l'indizio e dove finiscono i gettoni, non il tavolo né il modo
+in cui la rete li distribuisce). La seconda: ogni turno si conta per sé, senza
+che com'è andata ieri cambi il punteggio di oggi.
 
-La quarta, il segno e il logaritmo, è una comodità di conti. Cento vincite
-minori di uno, moltiplicate fra loro, danno una cifra minuscola: cento volte 0,5
-fa un numero con trenta zeri dopo la virgola, e diecimila volte 0,5 (la taglia
-di un insieme di dati modesto) ne fa più di tremila, troppi anche per il
+La quarta, il segno e il logaritmo, è una comodità di calcolo. Cento vincite
+minori di uno, moltiplicate fra loro, danno una cifra minuscola: cento volte
+0,5 fa un numero con trenta zeri dopo la virgola, e diecimila volte 0,5 (la
+taglia di un insieme di dati modesto) ne fa più di tremila, troppi anche per il
 calcolatore, che a quel punto lo confonde con lo zero. Allora si passa ai
 logaritmi. Il logaritmo in base dieci conta gli zeri: 1000 dà 3, 100 dà 2, e
 1000 per 100, cioè 100 000, dà 5, cioè 3 più 2. Il prodotto è diventato una
 somma, e chi vinceva prima vince ancora, perché il logaritmo tiene i numeri
-nello stesso ordine. Sotto l'uno i conti si rovesciano: 1 dà zero, 0,1 dà meno
-uno, 0,01 meno due. Col segno cambiato, ogni turno diventa una multa: zero se
-avevi messo tutti i gettoni sulla risposta uscita, un gradino se ce n'era un
-decimo, due gradini se un centesimo. Il totale delle multe, quello che la rete
-deve far scendere, è la log-verosimiglianza negativa, che nel codice si chiama
-con la sigla inglese NLL.
+nello stesso ordine. Sotto l'uno il logaritmo diventa negativo: 1 dà zero, 0,1
+dà meno uno, 0,01 meno due. Col segno cambiato, ogni turno diventa una multa:
+zero se avevi messo tutti i gettoni sulla risposta uscita, un gradino se ce
+n'era un decimo, due gradini se un centesimo. Il totale delle multe, che la
+rete deve far scendere, è la log-verosimiglianza negativa, che nel codice si
+chiama con la sigla inglese NLL.
 
-E c'è un vincolo, uno solo, senza il quale il gioco non starebbe in piedi: i
+Il gioco ha un vincolo, uno solo, senza il quale non starebbe in piedi: i
 gettoni sono dieci e non uno di più, e per metterne di più su una risposta
 bisogna toglierli a un'altra. Altrimenti basterebbe coprire di gettoni tutto il
 tavolo per vincere sempre.
@@ -125,14 +124,14 @@ p(\mathcal{D} \mid \theta) = \prod_{i=1}^{m}
 p\big(y^{(i)} \mid f_\theta(\mathbf{x}^{(i)})\big) .
 $$
 
-Il prodotto poggia su due ipotesi che conviene enunciare, perché non sono
-scontate. La prima: la famiglia è la stessa per ogni esempio, e a cambiare
-da un esempio all'altro sono solo i parametri. La seconda: le risposte sono
-**condizionatamente indipendenti** dati gli ingressi, cioè sapere com'è andato
-l'esempio $j$ non dice niente in più sull'esempio $i$ una volta noto
-$\mathbf{x}^{(i)}$. Su dati raccolti in serie (misure consecutive dello stesso
-sensore, parole della stessa frase) la seconda è quasi sempre falsa, e ciò che
-ne risente è la stima dell'incertezza, non tanto il centro.
+Il prodotto poggia su due ipotesi non scontate. La prima: la famiglia è la
+stessa per ogni esempio, e a cambiare da un esempio all'altro sono solo i
+parametri. La seconda: le risposte sono **condizionatamente indipendenti** dati
+gli ingressi, cioè sapere com'è andato l'esempio $j$ non dice niente in più
+sull'esempio $i$ una volta noto $\mathbf{x}^{(i)}$. Su dati raccolti in serie
+(misure consecutive dello stesso sensore, parole della stessa frase) la seconda
+è quasi sempre falsa, e a risentirne è la stima dell'incertezza, non tanto il
+centro.
 
 Il logaritmo è strettamente crescente, quindi non sposta il punto di massimo,
 e il segno meno scambia il massimo con un minimo:
@@ -145,45 +144,45 @@ $$
 = \arg\min_{\theta} \mathcal{L}(\theta) .
 $$
 
-Quella somma è la **log-verosimiglianza negativa**, ed è la loss. Divisa per $m$
-diventa la media del {doc}`capitolo sul machine learning
+Quella somma è la **log-verosimiglianza negativa**, cioè la loss. Divisa per $m$
+diventa la media vista nella {doc}`sezione sull'apprendimento supervisionato
 </MachineLearning/apprendimento-supervisionato>`: il minimo è lo stesso, e la
 media è la forma che si usa per addestrare, perché non fa dipendere il passo dal
 numero degli esempi. Il vantaggio numerico è che si sommano logaritmi invece di
 moltiplicare $m$ numeri minori di uno, che in virgola mobile finirebbero a zero;
-il vantaggio concettuale è che ogni esempio contribuisce con un addendo proprio,
-cioè con il costo $\ell$ di una singola predizione.
+il vantaggio concettuale è che ogni esempio contribuisce con un addendo,
+il costo $\ell$ di una singola predizione.
 
-Il vincolo che rende il gioco non banale è la normalizzazione: per ogni
+Il vincolo che rende il problema non banale è la normalizzazione: per ogni
 $\boldsymbol{\lambda}$ vale $\sum_y p(y \mid \boldsymbol{\lambda}) = 1$, o
 $\int p(y \mid \boldsymbol{\lambda})\,\mathrm{d}y = 1$ nel caso continuo.
 Alzare la probabilità di una risposta obbliga ad abbassarla altrove, e senza
 questo vincolo il criterio si potrebbe soddisfare dichiarando tutto
 probabilissimo.
 
-Una nota sul caso continuo: lì $p$ è una densità, non una probabilità, e
-può superare $1$. Ne segue che $-\log p$ può essere negativa, e che il suo
-valore assoluto dipende dall'unità di misura scelta per $y$ (cambiare metri in
-centimetri sposta la loss di una costante additiva). A essere confrontabili
-sono le differenze fra due modelli sugli stessi dati, non il numero da solo.
+Nel caso continuo $p$ è una densità, non una probabilità, e può superare $1$.
+Ne segue che $-\log p$ può essere negativa, e che il suo valore assoluto
+dipende dall'unità di misura scelta per $y$ (cambiare metri in centimetri
+sposta la loss di una costante additiva). A essere confrontabili sono le
+differenze fra due modelli sugli stessi dati, non il valore preso isolatamente.
 
 `````
 
 ## Il pagamento: le loss che già si usano escono da qui
 
-La ricetta si giudica da quello che restituisce nei casi noti, e restituisce
-proprio le due loss che la
+La ricetta si giudica dai risultati sui casi noti, dove restituisce
+le due loss che la
 {doc}`backpropagation </RetiNeurali/backpropagation>` userà: l'errore
 quadratico per la regressione, la cross-entropia per la classificazione.
-Le produce la stessa procedura, cambiando una riga sola.
+La stessa procedura le produce entrambe, cambiando una riga sola.
 
 ### Un numero reale: la gaussiana dà l'errore quadratico
 
 `````{tab} Elementare
 
 Il tavolo è il righello, e sul righello la sabbia si sparge con uno stampo
-fisso, sempre della stessa larghezza: la campana. Alla rete resta una cosa sola
-da decidere, dove mettere il centro. Se la risposta fosse una probabilità,
+fisso, sempre della stessa larghezza: la campana. Alla rete resta da decidere
+soltanto dove mettere il centro. Se la risposta fosse una probabilità,
 chiusa fra 0 e 1, la rete dovrebbe restare dentro quei limiti; qui il centro
 può cadere in qualunque punto del righello, e qualunque numero le esca va bene
 così com'è.
@@ -192,7 +191,7 @@ Adesso guarda che multa esce. Lo stampo è più spesso al centro e si assottigli
 allontanandosi, in un modo particolare: a un passo dal centro lo spessore si è
 diviso una volta per un numero fisso, che dipende da quanto è largo lo stampo, a
 due passi quattro volte, a tre passi nove volte. Le volte sono la distanza al
-quadrato. E il logaritmo, col segno cambiato, conta proprio quante volte lo
+quadrato. Il logaritmo, col segno cambiato, conta quante volte lo
 spessore è stato diviso dal centro in giù, come il logaritmo di 1000 conta le
 tre volte del 10: quella parte della multa è la distanza al quadrato, in una
 scala che dipende solo dalla larghezza dello stampo.
@@ -209,40 +208,39 @@ forma dello stampo, e punire di più gli sbagli grossi ne è la conseguenza.
 
 Dove va messo, allora, il centro? Se in tre giornate con lo stesso indizio
 (poniamo tre lunedì di sole) i panini venduti sono stati $10$, $10$ e $40$, le
-distanze al quadrato dal centro, sommate sui tre turni, fanno
-$10^2 + 10^2 + 20^2 = 600$ con il centro a $20$, la media, e
-$0 + 0 + 30^2 = 900$ con il centro a $10$. Spostandolo un po' attorno alla media
-va peggio in tutti e due i versi (a $15$ e a $25$ si paga $675$), e nessun punto
-fa meglio della media. La multa che resta anche lì, i $600$ del centro migliore,
-non la toglie nessuna rete: davanti allo stesso indizio una rete deve dare lo
-stesso centro, e le tre giornate sono diverse fra loro.
+distanze al quadrato dal centro, sommate sui tre turni, fanno $10^2 + 10^2 +
+20^2 = 600$ con il centro a $20$, la media, e $0 + 0 + 30^2 = 900$ con il
+centro a $10$. Spostandolo un po' attorno alla media va peggio in tutti e due i
+versi (a $15$ e a $25$ si paga $675$), e nessun punto fa meglio della media.
+Nessuna rete toglie la multa che resta anche lì, i $600$ del centro migliore:
+davanti allo stesso indizio una rete deve dare lo stesso centro, e le tre
+giornate sono diverse fra loro.
 
 Con un'altra multa vince un altro centro. Se la multa è la distanza senza
-quadrato (anche lei viene da uno stampo, più appuntito della campana), il centro
-a $10$ costa $0 + 0 + 30 = 30$ e quello a $20$ costa $10 + 10 + 20 = 40$, e
-vince il valore di mezzo delle tre risposte messe in fila, la mediana. Se la
-multa è tutto o niente, un premio solo quando si indovina esatto (lo stampo è
-una puntina, tutti i gettoni su un numero solo), il centro a $10$ indovina due
-giornate su tre e quello a $20$ nessuna: vince il valore più frequente, la moda,
-e ha senso perché i panini si contano e lo stesso numero può ripetersi. (Qui
-mediana e moda cadono per caso sullo stesso $10$.) E il centro migliore per
-l'errore quadratico, $20$ panini, non si è visto in nessuna delle tre giornate.
-La media può non somigliare a nessuna delle giornate da cui viene, e per i
-panini non è un male. Lo diventa quando la risposta è un disegno: chi prova a
-disegnare come andrà a finire una scena che può finire in molti modi disegna la
-media di tutti, una foto sfocata, come racconta la {doc}`sezione sul predire
-nello spazio delle idee </WorldModels/jepa>`.
+quadrato (anche lei viene da uno stampo, più appuntito della campana), il
+centro a $10$ dà $0 + 0 + 30 = 30$ di multa e quello a $20$ dà $10 + 10 + 20 =
+40$, e vince il valore di mezzo delle tre risposte ordinate, la mediana. Se la
+multa è tutto o niente, un premio solo quando si indovina il numero giusto (lo
+stampo è una puntina, tutti i gettoni su un numero solo), il centro a $10$
+indovina due giornate su tre e quello a $20$ nessuna: vince il valore più
+frequente, la moda, e ha senso perché i panini si contano e lo stesso numero
+può ripetersi. (Qui mediana e moda cadono per caso sullo stesso $10$.) E il
+centro migliore per l'errore quadratico, $20$ panini, non si è visto in nessuna
+delle tre giornate. La media può non somigliare a nessuna delle giornate da cui
+viene, e per i panini non è un male. Lo diventa quando la risposta è un
+disegno: chi prova a disegnare come andrà a finire una scena che può finire in
+molti modi disegna la media di tutti, una foto sfocata, come racconta la
+{doc}`sezione sul predire nello spazio delle idee </WorldModels/jepa>`.
 
-E si vede subito che cosa renderebbe il quadrato la scelta sbagliata. Se ogni
-tanto capita un turno stravagante, un numero lontanissimo da tutti gli altri,
-quel turno da solo tira il centro verso di sé, perché la multa cresce col
-quadrato e una distanza doppia ne pesa quattro (è quello che ha fatto il $40$
-delle tre giornate, tirando il centro da $10$ a $20$). E se i panini
-venduti sono sempre o pochissimi o moltissimi, e quasi mai una via di mezzo, un
-mucchietto solo, per quanto ben centrato, mette il grosso dei gettoni proprio
-nella zona dove non succede mai niente. La campana è simmetrica e ha una sola
-gobba: dove i dati ne hanno due, questo tavolo è mal disegnato, e nessun modo
-di centrarla rimedia.
+Si vede subito anche che cosa renderebbe il quadrato la scelta sbagliata. Se
+ogni tanto capita un turno stravagante, un numero lontanissimo da tutti gli
+altri, quel turno basta a tirare il centro verso di sé, perché la multa cresce
+col quadrato e una distanza doppia ne pesa quattro (il $40$ delle tre giornate
+ha fatto così, tirando il centro da $10$ a $20$). Se i panini venduti sono
+sempre o pochissimi o moltissimi, e quasi mai una via di mezzo, un mucchietto
+solo, per quanto ben centrato, mette il grosso dei gettoni nella zona dove non
+succede mai niente. La campana è simmetrica e ha una sola gobba: dove i dati ne
+hanno due, questo tavolo è mal disegnato, e nessun modo di centrarla rimedia.
 
 `````
 
@@ -271,22 +269,22 @@ $$
 $$
 
 Il primo addendo non dipende da $\theta$ e il denominatore $2\sigma^2$ è una
-costante positiva: nessuno dei due sposta il punto di minimo. Quello che resta
-è $\sum_i (y^{(i)} - \hat y^{(i)})^2$, la somma dei quadrati dei residui. I
-minimi quadrati sono la log-verosimiglianza negativa di una gaussiana a
-varianza fissa, e gaussianità, indipendenza condizionata e varianza costante
-sono le ipotesi sotto cui la somma dei quadrati è la stima di massima
-verosimiglianza. Per usarla ne servono meno. Per qualunque distribuzione con
-varianza finita, il minimo dell'errore quadratico atteso è la media
-condizionata $\mathbb{E}[y \mid \mathbf{x}]$, e su un modello lineare basta che
-i residui abbiano media nulla, varianza costante e siano incorrelati (il
-teorema di Gauss-Markov): la gaussianità serve a fare della somma dei quadrati
-la migliore fra tutte le stime non distorte, lineari o no, e a dare agli
-intervalli la loro forma esatta, non a centrare la media.
+costante positiva: nessuno dei due sposta il punto di minimo. Resta $\sum_i
+(y^{(i)} - \hat y^{(i)})^2$, la somma dei quadrati dei residui. I minimi
+quadrati sono la log-verosimiglianza negativa di una gaussiana a varianza
+fissa, e gaussianità, indipendenza condizionata e varianza costante sono le
+ipotesi sotto cui la somma dei quadrati è la stima di massima verosimiglianza.
+Per giustificarla ne servono meno. Per qualunque distribuzione con varianza
+finita, il minimo dell'errore quadratico atteso è la media condizionata
+$\mathbb{E}[y \mid \mathbf{x}]$, e su un modello lineare basta che i residui
+abbiano media nulla, varianza costante e siano incorrelati (il teorema di
+Gauss-Markov). La gaussianità serve a fare della somma dei quadrati la migliore
+fra tutte le stime non distorte, lineari o no, e a dare agli intervalli la loro
+forma esatta, non a centrare la media.
 
-Che il minimo sia la media condizionata si dimostra in una riga, ed è il punto
-di partenza della teoria statistica della decisione {cite}`hastie2009elements`.
-Fissato $\mathbf{x}$, per ogni previsione costante $c$,
+Che il minimo sia la media condizionata è il punto di partenza della teoria
+statistica della decisione {cite}`hastie2009elements`, e si dimostra in una
+riga. Fissato $\mathbf{x}$, per ogni previsione costante $c$,
 
 $$
 \mathbb{E}\big[(y-c)^2 \mid \mathbf{x}\big]
@@ -308,9 +306,9 @@ $$
 
 Fra tutte le funzioni vince $f^*$, e l'errore che resta è la varianza
 condizionata, che con quegli ingressi nessun modello toglie. Una rete di
-capacità finita, che $f^*$ in generale non la contiene, ha come minimo del
+capacità finita, che in generale non contiene $f^*$, ha come minimo del
 rischio la funzione della sua famiglia più vicina a $f^*$ in media quadratica.
-Per un'uscita vettoriale il conto vale componente per componente. Cambiando la
+Per un'uscita vettoriale il calcolo vale componente per componente. Cambiando la
 perdita cambia il funzionale che si stima. L'errore assoluto porta a una mediana
 condizionata, che esiste sempre e può non essere unica; perché il rischio da
 minimizzare sia finito serve $\mathbb{E}[|y|\mid\mathbf{x}]<\infty$. Quando $y$
@@ -327,15 +325,15 @@ $$
 = H(P_{\mathbf{x}}) + D_{KL}(P_{\mathbf{x}}\,\|\,q) ,
 $$
 
-che è minima solo per $q = P_{\mathbf{x}}$: stima la distribuzione intera, ed è
-una {doc}`regola di punteggio propria </MachineLearning/metriche>`. E la media
+che è minima solo per $q = P_{\mathbf{x}}$: stima la distribuzione intera ed è
+una {doc}`regola di punteggio propria </MachineLearning/metriche>`. La media
 condizionata ha una conseguenza che torna nei {doc}`limiti del VAE
 </ModelliLatenti/il-salto-probabilistico>` e nella {doc}`predizione video
 </WorldModels/jepa>`: quando per lo stesso $\mathbf{x}$ il futuro può andare in
 modi molto diversi, il predittore ottimo in senso quadratico ne restituisce la
 media, che può non somigliare a nessuno di loro.
 
-Quali sono i punti di rottura si legge dalle ipotesi, una per una. Se la
+I punti di rottura si leggono dalle ipotesi, una per una. Se la
 distribuzione condizionata vera ha code più pesanti di una gaussiana, un
 singolo valore anomalo entra nella somma col suo quadrato e sposta la stima:
 la cura è cambiare famiglia, e la Laplace (che dà l'errore assoluto e stima la
@@ -351,41 +349,41 @@ la seconda.
 ### Una risposta fra tante: Bernoulli e categorica danno la cross-entropia
 
 Quando le risposte possibili si contano, il dominio su cui va definita la
-distribuzione è un insieme finito, e le famiglie che ci vivono sono la
+distribuzione è un insieme finito, e le famiglie definite su di esso sono la
 Bernoulli con due esiti e la categorica con $K$. Cambia la famiglia, il resto
 della procedura no.
 
 `````{tab} Elementare
 
-Il tavolo adesso ha delle caselle, e i gettoni ci vanno dentro davvero. Due
+Il tavolo adesso ha delle caselle, e i gettoni ci vanno dentro. Due
 caselle se la domanda è «piove sì o no», cinque se è «quale squadra vince».
 
 Qui compare un problema pratico che la campana non aveva. La rete, dentro,
 produce punteggi grezzi, numeri che possono valere qualunque cosa, anche $-4$
-o $37$. Ma i gettoni sono dieci e devono stare tutti sul tavolo: nessuna
+o $37$. I gettoni però sono dieci e devono stare tutti sul tavolo: nessuna
 casella può riceverne un numero negativo, e la somma deve fare dieci esatti.
 Serve quindi un passaggio che prenda i punteggi grezzi e li trasformi in una
 distribuzione legittima. Con due caselle è la sigmoide, con molte è la
-softmax, e sono proprio quelle che la sezione sulle funzioni di attivazione
-mette in fondo a un classificatore. Adesso si vede perché stanno lì e perché
-sono quelle: sono il modo di rendere valida una distribuzione di gettoni. E si
-fa una volta sola: chi lo rifà una seconda volta ridistribuisce gettoni già
-distribuiti, e il tavolo che ne esce non è più quello che voleva.
+softmax, e sono quelle che la sezione sulle funzioni di attivazione mette
+in fondo a un classificatore. Adesso si vede perché stanno lì e perché sono
+quelle: sono il modo di rendere valida una distribuzione di gettoni. La
+conversione si fa una volta sola: chi la rifà ridistribuisce gettoni già
+distribuiti, e il tavolo che ne esce non è più quello voluto.
 
-La multa, poi, si legge da sola. Alla fine del turno esce una casella, e la
-multa dipende solo da quanti gettoni c'erano lì dentro: nessuno se ne avevi
-messi dieci, tantissimi se ne avevi messi quasi zero. Il nome tecnico è
-cross-entropia, e la lettura è questa: la rete paga la sicurezza sbagliata molto
-più cara dell'incertezza. Dichiarare novantanove su cento e prendere l'altra
-lascia un centesimo sulla risposta giusta e costa due gradini, quasi sette volte
-un cinquanta e cinquanta, che costa poco meno di un terzo di gradino, e costa
-sempre quello, anche quando si indovina. Dichiarare cento su cento e sbagliare
-costa senza limite: è il turno a zero gettoni che fa perdere la partita.
+La multa è immediata. Alla fine del turno esce una casella, e la multa dipende
+solo da quanti gettoni c'erano lì dentro: nessuna se ne avevi messi dieci,
+altissima se ne avevi messi quasi zero. Il nome tecnico è cross-entropia. La
+rete paga la sicurezza sbagliata molto più cara dell'incertezza. Dichiarare
+novantanove su cento e prendere l'altra lascia un centesimo sulla risposta
+giusta, cioè due gradini di multa. Un cinquanta e cinquanta vale poco meno di
+un terzo di gradino, quasi sette volte meno, ma lo si paga sempre, anche quando
+si indovina. Dichiarare cento su cento e sbagliare dà una multa senza limite: è
+il turno a zero gettoni che fa perdere la partita.
 
-Ed è il vincolo dei dieci gettoni a impedire la furbizia ovvia. Se si potessero
-riempire tutte le caselle, la strategia migliore sarebbe metterne tante
-dappertutto e non sbagliare mai. Non si può: alzarne una vuol dire abbassarne
-un'altra, quindi dichiarare significa esporsi, sempre.
+Il vincolo dei dieci gettoni impedisce la furbizia ovvia. Se si potessero
+riempire tutte le caselle, la strategia migliore sarebbe metterne tanti
+dappertutto e non sbagliare mai. Non si può: ogni gettone in più su una casella è
+tolto a un'altra, quindi dichiarare significa esporsi, sempre.
 
 `````
 
@@ -411,26 +409,26 @@ $$
 
 cioè la **cross-entropia binaria**. Per $y \in \{1,\dots,K\}$ la famiglia è la
 **categorica**, i parametri sono $K$ probabilità che sommano a $1$, il
-simplesso è il loro dominio, e a portarci i $K$ logit è la softmax; la loss
+simplesso è il loro dominio, e la softmax vi porta i $K$ logit; la loss
 diventa $\mathcal{L}(\theta) = -\sum_i \log \hat y^{(i)}_{c_i}$, con $c_i$ la
 classe vera dell'esempio $i$.
 
-Dietro i tre casi c'è una regolarità sola, ed è il punto che conta: la
-funzione sull'ultimo strato la detta il dominio del parametro. La retta
+Dietro i tre casi c'è una regolarità sola: il dominio del parametro detta la
+funzione sull'ultimo strato. La retta
 reale della media gaussiana non chiede niente, l'intervallo $[0,1]$ della
 Bernoulli chiede la sigmoide, il simplesso della categorica chiede la softmax.
 La tabella di {doc}`Funzioni di attivazione </RetiNeurali/funzioni-attivazione>`
-diceva che sull'uscita la funzione la detta il problema; qui si vede
-attraverso che cosa la detta.
+diceva che è il problema a dettare la funzione sull'uscita; qui si vede
+attraverso che cosa lo fa.
 
 Da qui anche il motivo per cui `nn.CrossEntropyLoss` di PyTorch vuole i logit
 e non le probabilità: la softmax e il logaritmo si compongono in
 $\log\hat y_c = z_c - \log\sum_k e^{z_k}$, che si calcola in modo stabile con
 il *log-sum-exp*, mentre applicare prima la softmax e poi il logaritmo perde
-cifre proprio dove la loss è grande, cioè dove $\hat y_c$ è così piccola da
+cifre dove la loss è grande, cioè dove $\hat y_c$ è così piccola da
 sparire in virgola mobile.
 
-Un ultimo ponte, verso la
+C'è infine un legame con la
 {doc}`teoria dell'informazione </Matematica/teoria-informazione>`. Sulla
 distribuzione empirica dei dati la cross-entropia fra bersaglio e modello
 coincide con la log-verosimiglianza negativa media: minimizzare la
@@ -442,13 +440,13 @@ ricetta ne ha appena percorso il terzo.
 
 ### Le risposte di altra forma: il dominio è un catalogo
 
-Errore quadratico e cross-entropia sono due voci di un elenco più lungo, e chi
-ha la ricetta può leggerlo tutto. A cambiare da una voce all'altra è una cosa
-sola: l'insieme in cui la risposta ha il permesso di cadere. Una durata non è
-mai negativa, una proporzione sta fra zero e uno, una direzione torna su sé
-stessa dopo un giro, un conteggio salta di uno in uno. Ognuna di quelle forme
-ha almeno una distribuzione che ci vive sopra, e sceglierla è tutta la mossa;
-il resto della procedura non cambia di una riga.
+Errore quadratico e cross-entropia sono due voci di un elenco più lungo, e la
+ricetta le produce tutte. Da una voce all'altra cambia soltanto l'insieme
+in cui la risposta ha il permesso di cadere. Una durata non è mai negativa, una
+proporzione sta fra zero e uno, una direzione torna su sé stessa dopo un giro,
+un conteggio salta di uno in uno. Ognuna di queste forme ha almeno una
+distribuzione definita su di essa, e sceglierla è l'unico passo necessario; il
+resto della procedura non cambia di una riga.
 
 ```{figure} ../figures/il-dominio-sceglie-la-distribuzione.svg
 :name: fig-dominio-distribuzione
@@ -461,31 +459,31 @@ cambiando la sola riga in cui si sceglie la famiglia.
 ```
 
 Il catalogo di {numref}`fig-dominio-distribuzione`, dominio per dominio, è di
-Prince {cite}`prince2023understanding`, e va letto con una cautela: dice quali
-distribuzioni *possono* stare su quel dominio, e fra quelle non sceglie. Sulla
-retta intera ci vive anche la distribuzione di Laplace, una campana appuntita
-che dà l'errore assoluto invece del quadrato, e ci vive una mistura di
-gaussiane; a decidere fra le tre sono i dati che si hanno.
+Prince {cite}`prince2023understanding`, ma indica solo quali
+distribuzioni *possono* stare su quel dominio, senza scegliere. Sulla
+retta intera sono definite anche la distribuzione di Laplace, una campana appuntita
+che dà l'errore assoluto invece del quadrato, e una mistura di
+gaussiane; la scelta fra le tre dipende dai dati a disposizione.
 
-Lo stesso gesto, senza reti, è quello dei {doc}`modelli lineari generalizzati
-</MachineLearning/apprendimento-supervisionato>`: scelgono anche loro una
-distribuzione, e un punteggio lineare gliene fornisce il parametro passando per
-una funzione di legame, la funzione che collega il parametro al punteggio (per
-la Poisson il punteggio è il logaritmo della media). Qui il punteggio lineare
-diventa una rete, e la funzione dell'ultimo strato fa il mestiere del legame
-percorso a ritroso, dal punteggio grezzo al parametro. Lineare, logistica
-e Poisson erano già la stessa macchina con tre impostazioni: il resto della
-ricetta non è cambiato.
+I {doc}`modelli lineari generalizzati
+</MachineLearning/apprendimento-supervisionato>` fanno la stessa operazione,
+senza reti: scelgono una distribuzione, e un punteggio lineare ne fornisce il
+parametro passando per una funzione di legame, la funzione che collega il
+parametro al punteggio (per la Poisson il punteggio è il logaritmo della
+media). Qui il punteggio lineare diventa una rete, e la funzione dell'ultimo
+strato agisce come il legame percorso a ritroso, dal punteggio grezzo al
+parametro. Lineare, logistica e Poisson sono varianti della stessa macchina: il
+resto della ricetta non cambia.
 
 ## Quando l'incertezza cambia da punto a punto
 
-Fin qui la larghezza della gaussiana è rimasta una costante, ed è
-un'assunzione forte con un nome: **omoschedasticità**, cioè incertezza uguale
-dappertutto. La ricetta però non obbliga a fissarla. Se i parametri della
-distribuzione sono l'uscita della rete, e la varianza è un parametro, allora
-anche la varianza può essere un'uscita della rete: è la **regressione
-eteroschedastica**, vecchia quanto la statistica, e a farla predire a una rete
-sono Nix e Weigend nel 1994 {cite}`nix1994estimating`.
+Fin qui la larghezza della gaussiana è rimasta una costante, un'assunzione
+forte che ha un nome: **omoschedasticità**, cioè incertezza uguale dappertutto.
+La ricetta però non obbliga a fissarla. Se i parametri della distribuzione sono
+l'uscita della rete, e la varianza è un parametro, allora anche la varianza può
+essere un'uscita della rete: è la **regressione eteroschedastica**, vecchia
+quanto la statistica, che Nix e Weigend affidano a una rete nel 1994
+{cite}`nix1994estimating`.
 
 `````{tab} Elementare
 
@@ -493,49 +491,48 @@ Torniamo al righello, e cambiamo una regola sola: adesso lo stampo non ha più
 una larghezza fissa. A ogni turno la rete dichiara due cose invece di una, dove
 sta il centro e quanto largo spargere.
 
-Sembra un regalo, ed è soprattutto una domanda in più a cui rispondere,
+Sembra un regalo, ma è soprattutto una domanda in più a cui rispondere,
 perché sbagliare la larghezza si paga in tutti e due i versi. Sparso stretto, i
 gettoni stanno tutti in un dito di righello: se la verità cade lì la vincita è
 enorme, se cade appena fuori il mucchio è già finito e la multa è pesantissima.
 Sparso largo, il mucchio copre mezzo tavolo e la verità ci cade dentro di
 sicuro, ma è così basso che anche il centro pieno frutta pochissimo. I dieci
-gettoni sono sempre dieci: allargare vuol dire assottigliare.
+gettoni sono sempre dieci: allargare assottiglia.
 
-Quindi al giocatore conviene una cosa sola, dichiarare davvero quanto è
-sicuro. Nei turni facili stringe e incassa; in quelli difficili allarga e si
-protegge, pagando il prezzo del mucchio basso. E il conto lo mostra: la
-larghezza che frutta di più è esattamente lo sbaglio tipico del giocatore,
-quello che si ottiene facendo la media degli sbagli al quadrato e poi la
-radice, né un dito di meno né uno di più.
+Al giocatore conviene dunque dichiarare quanto è sicuro, né più né meno. Nei
+turni facili stringe e incassa; in quelli difficili allarga e si protegge,
+accettando il mucchio basso. Lo conferma il calcolo: la larghezza che frutta di
+più è lo sbaglio tipico del giocatore, ottenuto facendo la media degli sbagli al
+quadrato e poi la radice.
 
-C'è però un modo in cui questo gioco si guasta, e chi lo usa lo incontra. Un
-giocatore pigro può accorgersi che dichiararsi incerto costa poco e permette
-di smettere di mirare: sui turni difficili allarga il mucchio, la multa
-diventa sopportabile comunque, e la fatica di trovare il centro giusto lì non
-la fa più. A rimediare è il modo di allenarsi, non una regola in più: le due
-manopole non si girano mai insieme, e si aggiusta il centro a larghezza ferma,
-poi la larghezza a centro fermo.
+Questo gioco però ha un punto debole, e chi lo usa lo incontra. Un giocatore
+pigro può accorgersi che dichiararsi incerto costa poco e permette di smettere
+di mirare: sui turni difficili allarga il mucchio, la multa diventa
+sopportabile comunque, e lì non si sforza più di trovare il centro giusto. Il
+rimedio è il modo di allenarsi, non una regola in più: le due manopole non si
+girano mai insieme, e si aggiusta il centro a larghezza ferma, poi la larghezza
+a centro fermo.
 
-E c'è un limite che il gioco non copre affatto. La larghezza dichiarata dice
+Il gioco ha anche un limite. La larghezza dichiarata dice
 quanto ballano i risultati nei turni che il giocatore ha già visto, e non dice
 niente su quanto lui sia in alto mare davanti a un turno di un genere mai
-capitato prima. Lì una larghezza la dichiara lo stesso, con la stessa faccia
+capitato prima. In quel caso dichiara comunque una larghezza, con la stessa faccia
 sicura di sempre, e non c'è nel gioco niente che lo smentisca.
 
 `````
 
 `````{tab} Superiore
 
-La rete $f_\theta$ ha due uscite, $f_1$ e $f_2$. La prima è il centro,
-$\mu = f_1(\mathbf{x})$. La seconda deve dare una larghezza, che è positiva per
-definizione mentre l'uscita di uno strato lineare non lo è, quindi le si fa
-attraversare una funzione che la rende positiva; la scelta comune è leggerla
-come il logaritmo dello scarto tipico, $\sigma = \exp\big(f_2(\mathbf{x})\big)$,
-che copre tutti gli ordini di grandezza senza chiedere alla rete uscite
-grandi.
-(Questa $\sigma$ è la larghezza della gaussiana, e non ha niente a che vedere
-con la $\sigma(\cdot)$ della classificazione binaria, che è la sigmoide: la
-prima è un numero, la seconda una funzione.) La loss diventa
+La rete $f_\theta$ ha due uscite, $f_1$ e $f_2$. La prima è il centro, $\mu =
+f_1(\mathbf{x})$. La seconda deve dare una larghezza. Poiché una larghezza è
+positiva per definizione, mentre l'uscita di uno strato lineare può non
+esserlo, la si fa passare per una funzione che la rende positiva; la scelta
+comune è leggerla come il logaritmo dello scarto tipico, $\sigma =
+\exp\big(f_2(\mathbf{x})\big)$, che copre tutti gli ordini di grandezza senza
+chiedere alla rete uscite grandi. (Questa $\sigma$ è la larghezza della
+gaussiana, e non ha niente a che vedere con la $\sigma(\cdot)$ della
+classificazione binaria, che è la sigmoide: la prima è un numero, la seconda
+una funzione.) La loss diventa
 
 $$
 \mathcal{L}(\theta) = \sum_{i=1}^{m}
@@ -546,24 +543,24 @@ $$
 
 e i due addendi si leggono uno contro l'altro. Il secondo è l'errore
 quadratico pesato: un punto su cui la rete si è dichiarata incerta pesa
-meno, ed è la cosa che con la varianza fissa non si poteva fare. Il primo è il
-prezzo di dichiararsi incerti, e senza di esso il minimo sarebbe
+meno, e con la varianza fissa non era possibile. Il primo è la
+penalità per dichiararsi incerti, e senza di esso il minimo sarebbe
 $\sigma_i \to \infty$ per ogni $i$, cioè la resa incondizionata.
 
-Che il prezzo sia tarato bene si vede fissando $\mu$ e annullando la derivata
+Che la penalità sia tarata bene si vede fissando $\mu$ e annullando la derivata
 rispetto a $\sigma$: si ottiene $\hat\sigma^2 = (y-\mu)^2$ sul singolo punto e,
 su un gruppo di punti che condividono la stessa larghezza, la media dei
 quadrati dei residui. La larghezza ottima è lo scarto quadratico medio, cioè la
-loss chiede di dichiarare l'incertezza che si ha davvero. Il singolo punto,
-però, è anche il primo guasto. Se la rete riesce a far coincidere $\mu_i$ con
-$y^{(i)}$, il residuo è nullo, l'ottimo è $\sigma_i \to 0$ e la loss scende
-senza limite, perché $\log\sigma_i \to -\infty$: una densità può crescere a
-piacere, e con una sola osservazione e la media incognita la stima di massima
-verosimiglianza della varianza non esiste {cite}`detlefsen2019reliable`. In
-pratica si impone un limite inferiore a $\sigma$, o si stima la larghezza su
-punti che non hanno contribuito a fissare il centro.
+loss chiede di dichiarare l'incertezza che si ha. Il singolo punto pone
+però un problema. Se la rete riesce a far coincidere $\mu_i$ con $y^{(i)}$, il
+residuo è nullo, l'ottimo è $\sigma_i \to 0$ e la loss scende senza limite,
+perché $\log\sigma_i \to -\infty$: una densità può crescere a piacere, e con
+una sola osservazione e la media incognita la stima di massima verosimiglianza
+della varianza non esiste {cite}`detlefsen2019reliable`. In pratica si impone
+un limite inferiore a $\sigma$, o si stima la larghezza su punti che non hanno
+contribuito a fissare il centro.
 
-Due punti di rottura. Il primo: il gradiente rispetto a $\mu_i$
+Restano due punti di rottura. Il primo: il gradiente rispetto a $\mu_i$
 porta un fattore $1/\sigma_i^2$, quindi la rete può abbassare la loss
 gonfiando $\sigma$ dove il centro è difficile, e da lì in poi su quei punti
 smette di correggere il centro; l'addestramento congiunto di media e varianza
@@ -572,19 +569,20 @@ ottimizzando l'una a parametri dell'altra fermi
 {cite}`detlefsen2019reliable`. Il secondo: la varianza predetta descrive il
 rumore dei dati, non l'ignoranza del modello. Su una zona dell'ingresso senza
 nemmeno un esempio di addestramento la rete dichiarerà una larghezza qualsiasi,
-e con la stessa faccia sicura che ha altrove.
+con la stessa certezza che mostra altrove.
 
 `````
 
 ## In pratica, con NumPy
 
-Tre affermazioni si controllano in un blocco solo, dove NLL è la sigla inglese
-della log-verosimiglianza negativa e SSE quella della somma dei quadrati dei
-residui. Che a varianza fissa la log-verosimiglianza negativa sia l'errore
-quadratico più una costante; che la larghezza scelta dalla verosimiglianza sia
-lo scarto quadratico medio, con un costo che sale allargando e stringendo; e che
-due modelli con lo stesso centro, quindi con lo stesso errore quadratico, si
-distinguano appena si guarda l'incertezza dichiarata.
+Un singolo blocco di codice verifica tre affermazioni, dove NLL è la sigla
+inglese della log-verosimiglianza negativa e SSE quella della somma dei
+quadrati dei residui. La prima è che a varianza fissa la log-verosimiglianza
+negativa sia l'errore quadratico più una costante; la seconda, che la larghezza
+scelta dalla verosimiglianza sia lo scarto quadratico medio, con un costo che
+sale allargando e stringendo; la terza, che due modelli con lo stesso centro,
+quindi con lo stesso errore quadratico, si distinguano appena si guarda
+l'incertezza dichiarata.
 
 ```python
 import numpy as np
@@ -649,16 +647,16 @@ una larghezza sola:  sigma = 0.420          NLL = 110.2
 una per meta':       sigma = 0.115 e 0.552  NLL = 26.8
 ```
 
-La differenza fra le prime due righe è $183{,}788$, ed è la terza riga: la
-costante vale $\frac{n}{2}\log 2\pi$ e non dipende dai residui, quindi
-minimizzare la log-verosimiglianza negativa a larghezza fissa e minimizzare la
-somma dei quadrati portano nello stesso punto. Il secondo gruppo dice che la
-larghezza non è gratis in nessuno dei due versi: dimezzarla porta la loss da
-$110{,}2$ a $271{,}6$, decuplicarla a $471{,}7$, e il minimo cade su
-$0{,}420$, che è appunto lo scarto quadratico medio. Il terzo è il confronto
-che conta: l'errore quadratico medio vale $0{,}1763$ per tutti e due i modelli,
-perché il centro è lo stesso, e non ha modo di preferirne uno; la loss
-costruita con la ricetta scende invece da $110{,}2$ a $26{,}8$, e le due
+La differenza fra le prime due righe è $183{,}788$, cioè il valore stampato
+alla terza riga: la costante vale $\frac{n}{2}\log 2\pi$ e non dipende dai
+residui, quindi minimizzare la log-verosimiglianza negativa a larghezza fissa e
+minimizzare la somma dei quadrati portano nello stesso punto. Il secondo gruppo
+mostra che sbagliare la larghezza ha un costo in entrambi i versi: dimezzarla
+porta la loss da $110{,}2$ a $271{,}6$, decuplicarla a $471{,}7$, e il minimo
+cade su $0{,}420$, che è appunto lo scarto quadratico medio. Il terzo è il
+confronto che conta: l'errore quadratico medio vale $0{,}1763$ per tutti e due
+i modelli, perché il centro è lo stesso, e non ha modo di preferirne uno; la
+loss costruita con la ricetta scende invece da $110{,}2$ a $26{,}8$, e le due
 larghezze che sceglie, $0{,}115$ e $0{,}552$, sono vicine a quelle con cui i
 dati sono stati generati, $0{,}1$ e $0{,}6$.
 
@@ -669,13 +667,13 @@ dati sono stati generati, $0{,}1$ e $0{,}6$.
 - La penalità con cui si addestra una rete si ricava, invece di cercarla a
   occhio in un elenco, e la domanda da cui si ricava è una sola: che forma ha
   la risposta che stiamo chiedendo.
-- La mossa è che la rete smette di dire un numero e comincia a dire come si
-  spargono dieci gettoni sulle risposte possibili. I gettoni sono dieci:
-  metterne di più su una risposta vuol dire toglierli a un'altra, e dichiarare
-  significa esporsi.
-- Da lì la penalità viene da sé. Con i gettoni sparsi a campana su un righello
-  viene la distanza al quadrato, cioè l'errore quadratico di sempre. Con i
-  gettoni nelle caselle viene la cross-entropia, che punisce la sicurezza
+- Il passaggio chiave è che la rete smette di dire un numero e comincia a dire
+  come si spargono dieci gettoni sulle risposte possibili. I gettoni sono dieci:
+  metterne di più su una risposta è toglierli a un'altra, e dichiarare significa
+  esporsi.
+- Da lì la penalità segue direttamente. Con i gettoni sparsi a campana su un
+  righello viene la distanza al quadrato, cioè l'errore quadratico di sempre.
+  Con i gettoni nelle caselle viene la cross-entropia, che punisce la sicurezza
   sbagliata molto più dell'incertezza.
 - Con l'errore quadratico il centro migliore è la media delle risposte, con
   la distanza semplice è la mediana: e la media può non somigliare a nessuno
@@ -685,9 +683,9 @@ dati sono stati generati, $0{,}1$ e $0{,}6$.
   niente quantità negative, e il totale che torna.
 - Se la rete dichiara anche quanto largo spargere, impara a dire quando non
   sa. Allargare protegge e frutta poco, stringere frutta molto e rischia
-  grosso, e il conto migliore è dichiarare l'incertezza che si ha davvero.
-  Ma è l'incertezza dei casi già visti: davanti a un caso di un genere mai
-  capitato una larghezza la dichiara lo stesso.
+  grosso; il risultato migliore si ottiene dichiarando l'incertezza che si ha.
+  Si tratta però dell'incertezza dei casi già visti: davanti a un caso di un
+  genere mai capitato dichiara comunque una larghezza.
 ```
 
 `````
@@ -713,11 +711,11 @@ dati sono stati generati, $0{,}1$ e $0{,}6$.
   $y$ discreta dalla moda, la log-verosimiglianza negativa dalla distribuzione
   condizionata intera; la media di esiti molto diversi può non somigliare a
   nessuno.
-- La funzione sull'ultimo strato la detta il dominio del parametro: nessuna
+- Il dominio del parametro detta la funzione sull'ultimo strato: nessuna
   per $\mu \in \mathbb{R}$, sigmoide per $[0,1]$, softmax per il simplesso.
 - La regressione eteroschedastica fa predire anche $\sigma$, e la loss
   diventa $\sum_i [\log\sigma_i + (y^{(i)}-\mu_i)^2 / (2\sigma_i^2)]$: errore
-  pesato più il prezzo di dichiararsi incerti. Senza il termine $\log\sigma_i$
+  pesato più la penalità per dichiararsi incerti. Senza il termine $\log\sigma_i$
   il minimo sarebbe $\sigma \to \infty$.
 - Due limiti restano. Il gradiente su $\mu_i$ va come $1/\sigma_i^2$, quindi
   gonfiare $\sigma$ spegne l'apprendimento del centro; e la varianza predetta
@@ -732,6 +730,6 @@ si può costruire per un problema nuovo, anche uno che non compare fra questi
 capitoli: si guarda che forma ha la risposta, si trova una distribuzione
 definita là sopra, e si scrive il logaritmo cambiato di segno. Resta la domanda
 a cui la loss serviva: adesso che $\mathcal{L}(\theta)$ c'è, come si trovano i
-pesi che la rendono minima? È il mestiere della backpropagation, che ricava la
+pesi che la rendono minima? È il compito della backpropagation, che ricava la
 pendenza della loss rispetto a ciascuno dei parametri, e della discesa del
 gradiente, che con quelle pendenze si muove.

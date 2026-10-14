@@ -13,35 +13,35 @@ Non è un'idea recente. Negli anni Novanta le cifre scritte a mano si
 moltiplicavano già spostandole, allungandole e inclinandole, e così addestrata
 la rete LeNet-5 sbagliava lo 0,8% delle prove invece dello 0,95%
 {cite}`lecun1998gradient`; fra le {doc}`architetture storiche del deep learning
-</DeepLearning/architetture-storiche>` abbiamo visto che AlexNet, nel 2012, la
+</DeepLearning/architetture-storiche>` AlexNet, nel 2012, la
 usava in modo aggressivo (ritagli casuali, riflessioni, perturbazioni di
 colore). Bastano i primi due per ricavare da ogni immagine oltre duemila
-varianti possibili {cite}`krizhevsky2012imagenet`, ed è una moltiplicazione, non
-una magia. Il conto si rifà a mano. Da un'immagine di 256 pixel di lato se ne
-ritaglia una di 224: il bordo sinistro del ritaglio può stare tutto a sinistra o
-scivolare di una, due, fino a $256 - 224 = 32$ colonne, cioè in 33 posizioni, e
-il bordo alto in altrettante. Fanno $33 \times 33 = 1089$ ritagli diversi, che
-lo specchio raddoppia a $2178$. Gli autori scrivono $2048$, cioè contano
-trentadue posizioni per lato invece di trentatré; la sostanza non cambia.
+varianti possibili {cite}`krizhevsky2012imagenet`. Si tratta di una
+moltiplicazione, non di una magia, e il conto si rifà a mano. Da un'immagine di
+256 pixel di lato se ne ritaglia una di 224: il bordo sinistro del ritaglio può
+stare tutto a sinistra o scivolare di una, due, fino a $256 - 224 = 32$
+colonne, cioè in 33 posizioni, e il bordo alto in altrettante. Fanno $33 \times
+33 = 1089$ ritagli diversi, che lo specchio raddoppia a $2178$. Gli autori
+scrivono $2048$, cioè contano trentadue posizioni per lato invece di trentatré;
+la sostanza non cambia.
 
 ## Cambiare i pixel, non l'etichetta
 
-Tutto il trucco sta in un vincolo: una trasformazione è
-ammessa solo se cambia l'immagine ma non cambia l'etichetta. Le
-trasformazioni buone catturano le *invarianze* del compito: i modi in cui il
-mondo può variare senza che la risposta giusta vari. E qui serve onestà:
-nessuna trasformazione è innocente in assoluto.
+Tutto il trucco sta in un vincolo: una trasformazione è ammessa solo se cambia
+l'immagine ma non cambia l'etichetta. Le trasformazioni buone catturano le
+*invarianze* del compito: i modi in cui il mondo può variare senza che la
+risposta giusta vari. Nessuna trasformazione, però, è innocente in assoluto.
 
 `````{tab} Elementare
-Specchia la foto di un gatto: è ancora, senza alcun dubbio, un gatto. La
-natura non distingue tra gatti "che guardano a destra" e gatti "che guardano a
+Specchia la foto di un gatto: è ancora, senza alcun dubbio, un gatto. La natura
+non distingue tra gatti "che guardano a destra" e gatti "che guardano a
 sinistra", quindi lo specchio è un modo gratuito di raddoppiare le foto di
-gatti. Ma prova a specchiare un cartello stradale: l'obbligo di svolta a
+gatti. Prova invece a specchiare un cartello stradale: l'obbligo di svolta a
 destra diventa un obbligo di svolta a *sinistra* (stessa grafica, significato
 opposto). O prendi la cifra 6 e capovolgila: ottieni un 9. Una scritta ruotata
-di novanta gradi smette di essere leggibile. La stessa mossa che per i gatti è
-un regalo, per i cartelli o per le cifre è un sabotaggio: la trasformazione
-giusta dipende dal *compito*, non dall'immagine.
+di novanta gradi smette di essere leggibile. La stessa trasformazione che per i
+gatti è un regalo, per i cartelli o per le cifre è un sabotaggio: la
+trasformazione giusta dipende dal *compito*, non dall'immagine.
 
 C'è un secondo modo di sbagliare, e stavolta la risposta giusta non cambia
 affatto. Una foto di strada scattata storta di cinque gradi è ancora una foto
@@ -50,24 +50,23 @@ novanta gradi. Resta una strada, con la sua etichetta intatta, ma i pedoni
 vengono sdraiati sul marciapiede, e una telecamera montata su un palo non
 riprenderà mai una scena simile. Allenarsi su foto del genere è tempo speso su
 un mondo che non esiste. Quindi le domande da farsi sono due, una
-sull'etichetta e una sul mondo. La risposta cambia? E la foto che ne esce
-potrebbe capitare davvero?
+sull'etichetta e una sul mondo. La risposta cambia? La foto che ne esce
+potrebbe capitare nel mondo reale?
 `````
 
 `````{tab} Superiore
 Sia $(\mathbf{x}, y)$ una coppia immagine-etichetta. Una trasformazione $T$ è
 ammessa per il compito se la coppia $(T(\mathbf{x}), y)$ è ancora un esempio
-plausibile della stessa distribuzione: l'etichetta resta valida e l'immagine trasformata
-somiglia a qualcosa che il modello potrà davvero incontrare. L'insieme delle
-trasformazioni ammesse è conoscenza a priori sul dominio che iniettiamo
-nel modello: il flip orizzontale appartiene alle invarianze di "gatto contro
-cane", non a quelle del riconoscimento di cifre (un 3 specchiato non è
-nessuna cifra, e nemmeno le rotazioni ampie sono innocue: il 6 capovolto è
-un 9) né a quelle dei cartelli stradali, dove lo specchio inverte il
-significato. Conta
-anche l'intensità: una rotazione di 5 gradi su una foto di strada è
-realistica, una di 90 gradi produce pedoni sdraiati che in produzione non
-esistono. Scegliere le trasformazioni è progettazione, non un dettaglio
+plausibile della stessa distribuzione: l'etichetta resta valida e l'immagine
+trasformata somiglia a qualcosa che il modello potrà incontrare in produzione.
+L'insieme delle trasformazioni ammesse è conoscenza a priori sul dominio che
+iniettiamo nel modello: il flip orizzontale appartiene alle invarianze di
+"gatto contro cane", non a quelle del riconoscimento di cifre (un 3 specchiato
+non è nessuna cifra, e nemmeno le rotazioni ampie sono innocue: il 6 capovolto
+è un 9) né a quelle dei cartelli stradali, dove lo specchio inverte il
+significato. Conta anche l'intensità: una rotazione di 5 gradi su una foto di
+strada è realistica, una di 90 gradi produce pedoni sdraiati che in produzione
+non esistono. Scegliere le trasformazioni è progettazione, non un dettaglio
 tecnico.
 
 Quando l'uscita ha una geometria (riquadri, maschere, punti chiave) la
@@ -101,24 +100,25 @@ sana.
 
 In pratica le trasformazioni non si applicano una volta per tutte: si
 estraggono a caso, al volo, ogni volta che un'immagine viene caricata. La
-raccolta di foto sul disco non cresce di un byte, ma la rete non rivede mai due
+raccolta di foto sul disco non cresce di un byte e la rete non rivede mai due
 volte la stessa identica immagine. Un giro completo su tutte le foto si chiama
 epoca, e a ogni epoca le stesse foto tornano deformate in modo diverso.
 
-E c'è una regola d'oro che non ammette eccezioni disinvolte. Le foto sono divise
-in tre mucchi: quelle su cui la rete si allena (il training set), quelle su cui
-controlliamo strada facendo come sta andando per aggiustare le nostre scelte (il
-validation set) e quelle che restano chiuse in un cassetto fino alla fine, per
-il giudizio conclusivo (il test set). L'augmentation si applica solo al primo
-mucchio. Sugli altri due si fanno soltanto le operazioni che danno sempre lo
-stesso risultato: ridimensionare, ritagliare al centro e normalizzare.
-Normalizzare, qui, vuol dire sottrarre a ogni canale di colore una media e
-dividerlo per una deviazione standard fissate una volta per tutte, di solito
-quelle di ImageNet, così che i numeri entrino nella rete sulla stessa scala su
-cui è stata addestrata. È la stessa operazione per tutte le foto, quindi non
-pareggia la luce: una foto scattata in controluce resta più scura di una
-scattata al sole, e la differenza fra le due anzi si ingrandisce, perché si
-divide per un numero più piccolo di uno.
+Vale poi una regola d'oro, che non ammette eccezioni disinvolte. Le foto sono
+divise in tre mucchi: quelle su cui la rete si allena (il training set), quelle
+su cui controlliamo strada facendo come sta andando per aggiustare le nostre
+scelte (il validation set) e quelle che restano chiuse in un cassetto fino alla
+fine, per il giudizio conclusivo (il test set). L'augmentation si applica solo
+al primo mucchio. Sugli altri due si fanno soltanto le operazioni che danno
+sempre lo stesso risultato: ridimensionare, ritagliare al centro e
+normalizzare. Normalizzare, qui, consiste nel sottrarre a ogni canale di colore
+una media e nel dividerlo per una deviazione standard fissate una volta per
+tutte, di solito quelle di ImageNet, così che i numeri entrino nella rete sulla
+stessa scala su cui è stata addestrata. È la stessa operazione per tutte le
+foto, quindi non pareggia la luce: una foto scattata in controluce resta più
+scura di una scattata al sole, e la differenza fra le due anzi si ingrandisce,
+perché, con i valori dei pixel espressi fra 0 e 1, si divide per un numero
+più piccolo di uno (circa 0,2).
 
 `````{tab} Elementare
 È la differenza tra i compiti a casa e il compito in classe. A casa
@@ -133,12 +133,12 @@ settimana prima: serve a noi per decidere che cosa cambiare, quindi anche lui
 va lasciato uguale a sé stesso, altrimenti non si capisce se a migliorare sia
 stato il modello o il caso.
 
-Al compito in classe un'eccezione c'è, e regge perché è decisa prima.
+Un'eccezione al compito in classe è lecita se è decisa prima.
 L'insegnante prepara tre versioni della stessa prova, le annuncia, le fa fare a
 tutta la classe e mette in pagella la media dei tre voti. Ripetibile lo è,
 perché le tre versioni restano quelle, ed equa pure, perché nessuno ne riceve
 una diversa dagli altri; e la media di tre prove misura un po’ meglio di una
-sola, qualche decimo di voto. Costa il triplo del tempo, e un voto ottenuto
+sola, qualche decimo di voto. Richiede il triplo del tempo, e un voto ottenuto
 così si confronta solo con altri voti ottenuti allo stesso modo. Per una foto
 le versioni sono per esempio l'immagine intera, la stessa specchiata e qualche
 ritaglio fisso, gli angoli e il centro: sempre gli stessi, per ogni foto e per
@@ -165,11 +165,11 @@ fatto a parità di questa scelta.
 
 ## In pratica, con torchvision
 
-Nella sezione sul transfer learning la catena di operazioni da fare a ogni
-immagine prima di darla alla rete ce la dava la rete stessa
-(`pesi.transforms()`). Per aggiungere l'augmentation la scriviamo a mano con
-`torchvision.transforms`, tenendo rigorosamente separate le due catene, quella
-dell'allenamento e quella dell'esame.
+Nella sezione sul transfer learning la rete stessa forniva la catena di
+operazioni da fare a ogni immagine prima di riceverla (`pesi.transforms()`).
+Per aggiungere l'augmentation la scriviamo a mano con `torchvision.transforms`,
+tenendo rigorosamente separate le due catene, quella dell'allenamento e quella
+dell'esame.
 
 ```{code-block} python
 :class: pt-non-eseguibile
@@ -205,10 +205,11 @@ test_dl  = DataLoader(test_ds,  batch_size=32)
 ```
 
 Tutto il resto, la rete e il ciclo che la addestra, è identico a quello della
-sezione precedente: l'augmentation vive tutta dentro il `Dataset`, cioè nel
-punto in cui le immagini vengono lette. E la scelta delle trasformazioni segue
-il compito: per un classificatore di cifre o di cartelli stradali, il
-`RandomHorizontalFlip` va tolto.
+{doc}`sezione su classificazione e transfer learning
+</VisioneArtificiale/classificazione-transfer>`: l'augmentation vive tutta
+dentro il `Dataset`, cioè nel punto in cui le immagini vengono lette. La scelta
+delle trasformazioni segue il compito: per un classificatore di cifre o di
+cartelli stradali, il `RandomHorizontalFlip` va tolto.
 
 ## Perché funziona: un altro modo di mettere il freno
 
@@ -223,15 +224,15 @@ loro, ma agisce sui dati invece che sulla rete.
 
 `````{tab} Elementare
 Torniamo ai compiti a casa, e chiediamoci perché l'insegnante cambi i numeri
-ogni volta. Cento ripetizioni dell'esercizio identico si imparano a memoria;
-se i numeri cambiano, memorizzare non serve più a niente e l'unico modo di
+ogni volta. Cento ripetizioni dell'esercizio identico si imparano a memoria; se
+i numeri cambiano, memorizzare non serve più a niente e l'unico modo di
 rispondere bene è capire la regola. L'augmentation fa questo alla rete: le
 rende impossibile "fotografare" il training set, perché il training set non è
 mai due volte lo stesso. Ciò che sopravvive a specchi, ritagli e cambi di luce
-è proprio quello che vogliamo: l'idea di gatto, non i pixel di *quel* gatto. E
-il freno si vede nella risposta: alla rete che riceve la stessa foto un po’
-storta, un po’ più chiara, un po’ più stretta, conviene darle sempre la stessa
-risposta, cioè diventare poco sensibile proprio a quei piccoli cambiamenti.
+è l'idea di gatto, non i pixel di *quel* gatto. Il freno si vede nella
+risposta: alla rete che riceve la stessa foto un po’ storta, un po’ più chiara,
+un po’ più stretta, conviene dare sempre la stessa risposta, cioè diventare
+poco sensibile a quei piccoli cambiamenti.
 `````
 
 `````{tab} Superiore
@@ -288,7 +289,7 @@ $\mathbf{p} - \mathbf{y}$, che fa la parte del residuo.
 
 È l'idea del *vicinal risk minimization*,
 formulata da Chapelle, Weston, Bottou e Vapnik {cite}`chapelle2000vicinal`
-(apprendere non dai punti, ma dai loro dintorni), portata
+(apprendere dai dintorni dei punti), portata
 alle estreme conseguenze da mixup {cite}`zhang2018mixup`.
 `````
 
@@ -301,19 +302,19 @@ immagini che nessuna macchina fotografica scatterebbe, e regolarizzano più a
 fondo.
 
 `````{tab} Elementare
-**Mixup** è come proiettare due diapositive sullo stesso schermo, una al 70%
-e una al 30% di luminosità: un'immagine che è per sette decimi un gatto e per
-tre decimi un cane. Anche la risposta richiesta si mescola nelle stesse
-proporzioni: "70% gatto, 30% cane". Sembra assurdo, e fa due cose. Fra un
-gatto e un cane, dove l'addestramento normale non dice niente, costringe la
-rete a passare dall'uno all'altro per gradi, invece di saltare di colpo da una
-risposta all'altra. E, come si è visto dopo, la tiene meno sicura di sé dove
-non ha capito: una rete addestrata solo su risposte secche («questo è un
-gatto, punto») impara a essere sicurissima sempre, perché il gioco premia
-soltanto chi si sbilancia. Quanto mescolare lo decide una manopola, e la si
-tiene bassa. Il 70 contro 30 è già una dose generosa, e il più delle volte esce
-qualcosa di molto più sbilanciato, una diapositiva quasi piena e l'altra
-appena un'ombra; il mezzo e mezzo capita di rado.
+**Mixup** è come proiettare due diapositive sullo stesso schermo, una al 70% e
+una al 30% di luminosità: un'immagine che è per sette decimi un gatto e per tre
+decimi un cane. Anche la risposta richiesta si mescola nelle stesse
+proporzioni: "70% gatto, 30% cane". Sembra assurdo, e fa due cose. Fra un gatto
+e un cane, dove l'addestramento normale non dice niente, costringe la rete a
+passare dall'uno all'altro per gradi, invece di saltare di colpo da una
+risposta all'altra. Inoltre, come si è misurato in seguito, la tiene meno
+sicura di sé dove non ha capito: una rete addestrata solo su risposte secche
+(«questo è un gatto, punto») impara a essere sicurissima sempre, perché il
+gioco premia soltanto chi si sbilancia. Una manopola decide quanto mescolare, e
+la si tiene bassa. Il 70 contro 30 è già una dose generosa, e il più delle
+volte esce qualcosa di molto più sbilanciato, una diapositiva quasi piena e
+l'altra appena un'ombra; il mezzo e mezzo capita di rado.
 
 **Cutout** è ancora più semplice: si copre un rettangolo a caso della foto,
 come con un post-it. Se la rete riconosceva i gatti solo dalle orecchie, con il
@@ -321,14 +322,13 @@ post-it sulle orecchie dovrà imparare anche zampe e coda.
 
 Infine, invece di scegliere a mano le trasformazioni, si può lasciare che sia
 un algoritmo a cercare la combinazione migliore per il nostro archivio di foto:
-ne prova tante per davvero, addestra ogni volta un modello, guarda quale
-combinazione gli fa prendere il voto più alto a un esame di prova, e tiene
-quella. È l'idea delle *policy apprese* (una *policy*, qui, è semplicemente la
-lista delle trasformazioni scelte, con quanto forte applicarle). La prima
-versione costava carissimo, migliaia di addestramenti per una ricerca sola.
-Poi si è visto che bastano due manopole, quante trasformazioni pescare a caso
-e quanto forti applicarle, e provarne tutte le combinazioni è alla portata di
-chiunque.
+ne prova tante, addestra ogni volta un modello, guarda quale combinazione gli
+fa prendere il voto più alto a un esame di prova, e tiene quella. È l'idea
+delle *policy apprese* (una *policy*, qui, è semplicemente la lista delle
+trasformazioni scelte, con quanto forte applicarle). La prima versione era
+carissima, con migliaia di addestramenti per una ricerca sola. Poi si è visto
+che bastano due manopole, quante trasformazioni pescare a caso e quanto forti
+applicarle, e provarne tutte le combinazioni è alla portata di chiunque.
 `````
 
 `````{tab} Superiore
@@ -379,28 +379,28 @@ iperparametri (numero e intensità delle trasformazioni).
 
 ## Quando aiuta, e quando no
 
-L'augmentation rende di più dove i dati scarseggiano, ed è la prima cosa da
-provare quando il modello impara a memoria invece di capire (insieme, non in
-alternativa, al transfer learning visto nella sezione precedente). Ma non è
+L'augmentation rende di più dove i dati scarseggiano e va provata per prima
+quando il modello impara a memoria invece di capire (insieme, non in
+alternativa, al transfer learning). Non è però
 una moltiplicazione miracolosa: le varianti di una foto portano *meno*
 informazione di altrettante foto nuove, perché raccontano sempre la stessa
 scena.
 
-Soprattutto, non colma da sola la distanza fra i dati su cui il modello si è
-allenato e quelli che troverà al lavoro. Se è addestrato su foto diurne e in
-produzione arrivano riprese notturne, o se il nuovo ospedale usa uno scanner
-diverso da quello del training set, i dati di lavoro non vengono più dalla
-stessa distribuzione: è lo *shift di dominio*, un caso del dataset shift di
+Soprattutto, non colma la distanza fra i dati su cui il modello si è allenato e
+quelli che troverà al lavoro. Se è addestrato su foto diurne e in produzione
+arrivano riprese notturne, o se il nuovo ospedale usa uno scanner diverso da
+quello del training set, i dati di lavoro non vengono più dalla stessa
+distribuzione: è lo *shift di dominio*, un caso del dataset shift di
 {doc}`quando i dati cambiano </MachineLearning/dati-che-cambiano>`. Le
-trasformazioni lo riducono soltanto per la parte che sanno imitare: un
-disturbo di luce e di contrasto copre un pezzo della differenza fra il giorno
-e la sera, e catene di trasformazioni costruite apposta rendono un modello più
-robusto a disturbi che non ha mai visto {cite}`hendrycks2020augmix`. La fisica
-di uno scanner nuovo, o i pazienti di un'altra popolazione, nessuno specchio e
-nessun ritaglio li imita: lì servono dati rappresentativi del dominio reale.
+trasformazioni riducono lo shift solo dove sanno imitarlo: un disturbo di luce
+e di contrasto copre un pezzo della differenza fra il giorno e la sera, e
+catene di trasformazioni costruite apposta rendono un modello più robusto a
+disturbi che non ha mai visto {cite}`hendrycks2020augmix`. Nessuno specchio e
+nessun ritaglio imita la fisica di uno scanner nuovo o i pazienti di un'altra
+popolazione: lì servono dati rappresentativi del dominio reale.
 
 Anzi, un'augmentation scelta male può peggiorare le cose, perché iniettare
-l'invarianza sbagliata significa insegnare alla rete una cosa falsa sul mondo.
+l'invarianza sbagliata significa insegnare alla rete qualcosa di falso sul mondo.
 Una radiografia del torace specchiata mette il cuore a destra, un'anatomia
 rarissima: per un modello che deve dire dove sta il cuore, o da che parte
 passa un catetere, lo specchio insegna il falso, mentre per uno che cerca una
@@ -414,10 +414,10 @@ risponde.
 :class: important
 - L'augmentation fabbrica varianti di ogni foto (specchiata, ritagliata,
   ruotata, più chiara) e le conta come esempi nuovi. Le domande da farsi sono
-  due: la risposta giusta non deve cambiare (lo specchio va bene per i
-  gatti e rovina i cartelli stradali, e non è solo lo specchio: un 6 capovolto
-  diventa un 9), e la foto che ne esce dev'essere una foto che potrebbe
-  capitare davvero.
+  due: la risposta giusta non deve cambiare (lo specchio va bene per i gatti e
+  rovina i cartelli stradali, e non è solo lo specchio: un 6 capovolto diventa
+  un 9), e la foto che ne esce dev'essere una foto che potrebbe capitare nel
+  mondo reale.
 - Si applica solo alle foto su cui la rete si allena, e cambia a ogni
   passaggio. Sulle foto d'esame si fanno solo operazioni che danno sempre lo
   stesso risultato, altrimenti il voto non misura più niente.
@@ -455,9 +455,8 @@ risponde.
 - Varianti moderne: mixup (interpolazione di immagini ed etichette),
   cutout/random erasing (occlusioni casuali), policy apprese
   (AutoAugment, RandAugment).
-- Riduce lo shift di dominio solo per la parte che le trasformazioni sanno
-  descrivere (luce, rumore, sfocatura); per il resto servono dati del dominio
-  nuovo.
+- Riduce lo shift di dominio solo dove le trasformazioni sanno descriverlo
+  (luce, rumore, sfocatura); per il resto servono dati del dominio nuovo.
 ```
 
 `````

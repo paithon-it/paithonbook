@@ -2,22 +2,22 @@
 
 Gli storni con cui si è aperto il capitolo non stanno risolvendo niente: volano.
 La loro regola dei sei o sette vicini serve a restare insieme sopra il posatoio,
-non a calcolare qualcosa. Ma la domanda che quello spettacolo mette in testa a
-un informatico è vecchia e precisa: se una regola locale elementare basta a
+non a calcolare qualcosa. La domanda che quello spettacolo mette in testa a
+un informatico, però, è vecchia e precisa: se una regola locale elementare basta a
 tenere in aria migliaia di uccelli, può bastare anche a risolvere un
 problema?
 
 Per una trentina d'anni la risposta a questa domanda ha occupato una parte
-rilevante della ricerca multi-agente: prima che «agente» significasse un modello
-di linguaggio con un foglio di istruzioni, in buona parte di quella letteratura
-un agente era una particella con tre righe di aritmetica dentro. Le sezioni
-precedenti hanno contato quanto testo si fanno rileggere gli agenti, e hanno
-messo ordine nei loro messaggi, perché erano partecipanti costosi e
-chiacchieroni; qui la situazione si ribalta. Nelle formiche, nelle particelle e
-negli algoritmi genetici i partecipanti sono centinaia, non costano quasi
-niente, non ragionano e non si scrivono messaggi; nelle società simulate che
-chiudono il capitolo tornano agenti linguistici, e l'oggetto di studio diventa
-la società che formano. L'idea comune resta però quella dell'apertura:
+rilevante della ricerca multi-agente: prima che «agente» significasse un
+modello di linguaggio con un foglio di istruzioni, in buona parte di quella
+letteratura un agente era una particella con tre righe di aritmetica dentro. Le
+sezioni su costi e protocolli hanno contato quanto testo si fanno rileggere gli
+agenti e hanno messo ordine nei loro messaggi, perché sono partecipanti costosi
+e chiacchieroni; con gli sciami la situazione si ribalta. Nelle formiche, nelle
+particelle e negli algoritmi genetici i partecipanti sono centinaia, non
+costano quasi niente, non ragionano e non si scrivono messaggi; nelle società
+simulate tornano agenti linguistici, e l'oggetto di studio diventa la società
+che formano. L'idea comune resta però quella dell’{doc}`apertura <overview>`:
 molte unità quasi banali, nessun controllore centrale, e una soluzione che
 emerge dall'interazione invece di essere calcolata da qualcuno.
 
@@ -57,18 +57,18 @@ lasciata a ogni passaggio, e sulla strada corta se ne accumula il doppio. Le
 formiche che arrivano dopo trovano una traccia doppia da una parte, la seguono
 con probabilità maggiore, e depositano altro feromone proprio lì.
 
-Nessuno ha misurato le due strade. Nessuno le ha confrontate. La strada corta
+Nessuno ha misurato o confrontato le due strade. La strada corta
 vince perché la si percorre più spesso, e la si percorre più spesso perché è
 corta: è il tempo a fare la misura al posto di un cervello.
 
-Le formiche del computer fanno la stessa cosa con una scorciatoia. Invece di
+Le formiche del computer ottengono lo stesso effetto con una scorciatoia. Invece di
 lasciare sempre la stessa quantità e aspettare che sia il tempo a contare i
 passaggi, fanno un giro per volta e alla fine lasciano traccia tanto maggiore
 quanto più corto è stato il giro: chi ha fatto il giro lungo il doppio ne lascia
 la metà. Il doppio di traccia sulla strada corta arriva così in un colpo,
 invece che a forza di passaggi.
 
-E la formica del computer non è cieca del tutto. Fra due strade che spariscono
+La formica del computer, poi, non è cieca del tutto. Fra due strade che spariscono
 dietro l'angolo non c'è niente da vedere, ma quando il giro è fra molte città, a
 ogni tappa guarda anche quale città è più vicina, e pesa quello che vede contro
 quello che le altre hanno lasciato per terra: col solo naso andrebbe sempre
@@ -93,7 +93,7 @@ la **visibilità**, cioè l'inverso della lunghezza dell'arco ($\eta_{ij} =
 1/d_{ij}$ nel commesso viaggiatore, e niente a che vedere con il tasso di
 apprendimento $\eta$ del resto del libro). L'insieme $\mathcal{A}_k$ contiene i
 nodi che la formica $k$ non ha ancora visitato: una lista di nodi proibiti le
-vieta di tornare dove è già passata, ed è ciò che rende legale il giro. Infine,
+vieta di tornare dove è già passata, e rende così legale il giro. Infine,
 gli esponenti $\alpha, \beta \ge 0$ pesano i due termini l'uno contro l'altro.
 La formula è un compromesso fra esperienza collettiva ($\tau$: quante formiche
 sono passate di qui e quanto bene è andata) ed euristica locale ($\eta$: quanto
@@ -102,8 +102,8 @@ il feromone sparisce dal conto e resta un algoritmo goloso stocastico, cioè una
 colonia di formiche che non comunicano; con $\beta = 0$ resta solo il
 passaparola, senza nessuna informazione sul problema.
 
-Il rinforzo arriva a giro finito, ed è proporzionale alla qualità della
-soluzione costruita:
+Il rinforzo arriva a giro finito, proporzionale alla qualità della soluzione
+costruita:
 
 $$
 \Delta\tau_{ij} \;=\; \sum_{k=1}^{m} \Delta\tau_{ij}^{k},
@@ -131,7 +131,7 @@ registra il traffico, registra il merito.
 Nell'articolo del 1996 i valori risultati migliori per questa versione sono
 $\alpha = 1$, $\beta = 5$, $Q = 100$ e una persistenza di $0{,}5$ (la frazione
 di traccia che resta da un giro all'altro), con tante formiche quante città,
-$m = n$. Un giro della colonia costa $O(m\,n^2)$ operazioni, perché ciascuna
+$m = n$. Un giro della colonia ha complessità $O(m\,n^2)$, perché ciascuna
 delle $m$ formiche fa $n$ scelte fra al più $n$ candidati. Le varianti venute
 dopo lasciano depositare soltanto la formica migliore e tengono le
 tracce dentro un intervallo $[\tau_{\min}, \tau_{\max}]$, come il
@@ -141,10 +141,9 @@ senza alcun limite sul tempo che serve {cite}`stutzle2002convergence`.
 
 `````
 
-L'accumulo si vede solo nel tempo: in un fotogramma solo non c'è niente da
-guardare, perché è proprio l'accumularsi a decidere. In {numref}`fig-formiche-feromone` ci sono sei giri
-della colonia sulle due strade, che cambiano spessore man mano che il feromone
-si deposita.
+L'accumulo si vede solo nel tempo, perché in un fotogramma solo non c'è niente
+da guardare. {numref}`fig-formiche-feromone` mostra sei giri della colonia sulle
+due strade, che cambiano spessore man mano che il feromone si deposita.
 
 ```{figure} ../figures/formiche-feromone.svg
 :name: fig-formiche-feromone
@@ -161,28 +160,26 @@ il giro. Il modello della figura non ha evaporazione: il feromone si accumula
 e non svanisce.
 ```
 
-Nella figura contano due cose, e la seconda più della prima.
+Della figura contano due aspetti, il secondo più del primo.
 
-La prima è *dove* si muove di più. La quota di formiche sulla strada corta parte
+Il primo è *dove* si muove di più. La quota di formiche sulla strada corta parte
 da cinquanta su cento e diventa, giro dopo giro, sessantasei, settantatré,
 settantasette, ottanta, ottantadue: il salto grosso è il primo, sedici punti,
-contro i sette del secondo e i quattro del terzo. Ed è il salto che avviene
+contro i sette del secondo e i quattro del terzo. Quel salto avviene
 quando le due strade sono ancora percorse dallo stesso numero di formiche: lì a
 fare la differenza è soltanto quanto ciascuna lascia alla fine del giro, e
 siccome un giro è lungo la metà dell'altro, chi lo fa lascia il doppio di chi fa
 l'altro. Da lì in poi il vantaggio si rinforza da sé.
 
-La seconda è che anche la strada lunga si ispessisce. Il difetto sta nel
-meccanismo, non nel disegno. Finché le formiche passano, il feromone si
-accumula dappertutto e non se ne va più; quello che cresce è il *divario*, non
-la differenza fra una traccia e nessuna traccia. Un sistema fatto così sa
-premiare, ma non sa dimenticare, ed è esattamente il buco che le prossime pagine
-vanno a tappare.
+Il secondo è che anche la strada lunga si ispessisce. Il difetto sta nel
+meccanismo, non nel disegno: finché le formiche passano, il feromone si
+accumula dappertutto e non se ne va più, e a crescere è il *divario*, non la
+differenza fra una traccia e nessuna traccia.
 
 ## L'evaporazione è l'esplorazione
 
-Fin qui il meccanismo ha un difetto grosso, e conviene vederlo prima della
-cura, perché è lo stesso di molti sistemi che si alimentano da soli. Il
+Il meccanismo sa premiare ma non sa dimenticare, e ha il difetto di
+molti sistemi che si alimentano da sé. Il
 feromone attira formiche, le formiche depositano feromone, il feromone attira
 altre formiche: è una **retroazione positiva**, e senza un freno la traccia
 cresce senza limite proprio dove è già più forte. La prima strada
@@ -196,7 +193,7 @@ La cura è una sola parola: il feromone evapora.
 
 `````{tab} Elementare
 
-Ogni sera metà del feromone se ne va da solo. Una strada che continua a essere
+Ogni sera metà del feromone evapora. Una strada che continua a essere
 usata non se ne accorge, perché ogni giorno riceve un deposito nuovo. Una
 strada che è stata la migliore per un po’ e poi non lo è più si sbiadisce in
 fretta: partendo da cento, in cinque sere passa a cinquanta, venticinque,
@@ -205,20 +202,20 @@ l'uno per cento, come se non fosse mai esistita, e le formiche tornano a
 provarci altrove.
 
 Metà per sera fissa anche la taglia della memoria. Una strada battuta tutti i
-giorni non cresce all'infinito: si assesta sul doppio di quello che ci si lascia
-in una giornata, e lì quel che arriva la sera pareggia quel che se n'è andato. E
-il gruppo si ricorda in pratica gli ultimi due giorni: il deposito di ieri pesa
+giorni non cresce all'infinito: si assesta sul doppio del deposito giornaliero,
+e lì quanto arriva la sera pareggia quanto se n'è andato. Il gruppo ricorda in
+pratica gli ultimi due giorni: il deposito di ieri pesa
 la metà di quello di oggi, quello di tre sere fa un ottavo.
 
-Detta così sembra una perdita, ed è invece la cosa più preziosa
-dell'algoritmo. Senza evaporazione la memoria del gruppo è definitiva: la
-prima strada scoperta per caso resta la più marcata per sempre, e nessuna
-formica avrà mai occasione di scoprire quella dietro l'angolo. All'estremo
-opposto, se ogni sera sparisse tutto quello che c'era prima, la mattina
-resterebbe soltanto il segno del giorno appena finito: niente si accumula più,
-e la colonia ricomincia ogni volta quasi da capo. A metà per sera la memoria è
-un ricordo che va tenuto vivo per restare. Il gruppo dimentica, e dimenticando
-continua a guardarsi attorno.
+Detta così sembra una perdita, ma è la risorsa più preziosa dell'algoritmo.
+Senza evaporazione la memoria del gruppo è definitiva: la prima strada scoperta
+per caso resta la più marcata per sempre, e nessuna formica avrà mai occasione
+di scoprire quella dietro l'angolo. All'estremo opposto, se ogni sera sparisse
+tutto quello che c'era prima, la mattina resterebbe soltanto il segno del
+giorno appena finito: niente si accumula più, e la colonia ricomincia ogni
+volta quasi da capo. Con metà per sera la memoria dura abbastanza da servire e
+non tanto da bloccare. Il gruppo dimentica, e dimenticando continua a guardarsi
+attorno.
 
 `````
 
@@ -232,17 +229,17 @@ $$
 $$
 
 dove $\rho$ è il **tasso di evaporazione**: la frazione di feromone che sparisce
-a ogni ciclo, indipendentemente da quello che le formiche stanno facendo. (Due
+a ogni ciclo, indipendentemente dal comportamento delle formiche. (Due
 avvertenze di notazione. Nell'articolo del 1996 la stessa lettera indica la
 *persistenza*, e l'aggiornamento compare come
 $\tau \leftarrow \rho\,\tau + \Delta\tau$, con $1-\rho$ a fare l'evaporazione:
 è la stessa legge scritta dall'altro verso, e la letteratura successiva ha
-invertito la convenzione. Inoltre $\rho$ è la terza cosa che questa lettera
-indica nel capitolo, dopo la densità dello stormo e la correlazione fra
+invertito la convenzione. Inoltre $\rho$ è il terzo significato che questa lettera
+assume nel capitolo, dopo la densità dello stormo e la correlazione fra
 votanti: sono notazioni consolidate nei rispettivi campi, e qui vale quella
 locale.)
 
-Srotolando la ricorsione si vede che cosa sia davvero la traccia:
+Srotolando la ricorsione si vede che cosa sia la traccia:
 
 $$
 \tau_{ij}(t) \;=\; (1-\rho)^{\,t}\,\tau_{ij}(0) \;+\;
@@ -253,16 +250,16 @@ cioè una somma della qualità recente di quell'arco con pesi che decadono
 esponenzialmente (una media mobile esponenziale moltiplicata per $1/\rho$, che
 è la somma dei pesi: per questo il punto fisso vale $\Delta/\rho$ e non
 $\Delta$); il primo addendo è la traccia iniziale, una costante piccola e
-positiva uguale su tutti gli archi, che si spegne da sé nei primi cicli. Due
-conseguenze quantitative. La prima: la traccia non diverge. Se un arco riceve
+positiva uguale su tutti gli archi, che si spegne da sé nei primi cicli. Ne
+seguono due conseguenze quantitative. La traccia non diverge: se un arco riceve
 un deposito costante $\Delta$ a ogni ciclo, la serie geometrica converge al
 punto fisso $\tau^{\ast} = \Delta/\rho$, che con $\rho = 0{,}5$ vale il doppio
-di un singolo deposito. La seconda: la somma dei pesi è $1/\rho$, quindi
+di un singolo deposito. Inoltre la somma dei pesi è $1/\rho$, quindi
 $1/\rho$ è l'orizzonte di memoria in cicli. Con $\rho$ vicino a zero la colonia
 ricorda tutto e si fossilizza sul primo ottimo locale; con $\rho$ vicino a uno
 dimentica a ogni giro e le formiche tornano a essere golose e scorrelate. Il
-valore che gli autori trovano migliore per questa variante sta esattamente in
-mezzo, $\rho = 0{,}5$ (l'unico numero che vale lo stesso nelle due convenzioni,
+valore che gli autori trovano migliore per questa variante sta a
+metà, $\rho = 0{,}5$ (l'unico numero che vale lo stesso nelle due convenzioni,
 appunto perché sta in mezzo), cioè un orizzonte di due cicli; e la ragione che
 ne danno è la migliore descrizione in una riga del compromesso
 esplorazione-sfruttamento: l'algoritmo ha bisogno di poter dimenticare parte
@@ -273,11 +270,11 @@ adesso.
 
 ## La memoria non sta negli individui
 
-Adesso il punto che fa di uno sciame un sistema multi-agente, e non soltanto
-un metodo di ottimizzazione. Le formiche artificiali non si scambiano un solo
-messaggio. Non si conoscono, non si nominano, non sanno nemmeno in quante
-sono. Tutto quello che una formica sa delle altre lo legge per terra: la
-loro esperienza è diventata una proprietà fisica dell'ambiente, e la traccia
+Le formiche artificiali non si scambiano un solo messaggio, e questo fa dello
+sciame un sistema multi-agente e non soltanto un metodo di ottimizzazione. Non
+si conoscono, non si nominano, non sanno nemmeno in quante sono. Una formica
+conosce le altre soltanto attraverso le tracce che trova per terra: la loro
+esperienza è diventata una proprietà fisica dell'ambiente, e la traccia
 sopravvive alle singole formiche che l'hanno lasciata.
 
 Gli autori lo dicono in una frase che potrebbe stare in un manuale di sistemi
@@ -285,22 +282,22 @@ distribuiti: nell'Ant System le formiche comunicano modificando una struttura
 dati globale. È la forma della lavagna condivisa di Hearsay-II, incontrata
 nella {doc}`sezione sulle topologie <topologie>`, ed è la stigmergia: il
 coordinamento attraverso le tracce lasciate in uno spazio comune invece che
-attraverso messaggi diretti. E della lavagna tornano i pregi e i difetti.
+attraverso messaggi diretti. Della lavagna tornano i pregi e i difetti.
 Aggiungere una formica non obbliga a modificare nessun'altra, perché nessuna sa
 dell'esistenza delle altre. Al centro c'è qualcosa che conserva e non qualcuno
 che decide. E si perde per strada chi ha fatto che cosa, perché il feromone su
 una strada è un numero, e un numero non dice chi ce l'ha messo.
 
-La conseguenza fino a oggi è meno metaforica di quanto sembri. Una squadra di
-agenti che si coordina lasciando file in una cartella condivisa, o note in un
-documento che tutti possono leggere e riscrivere, sta facendo esattamente
-questo: non si scrivono messaggi, si modifica uno spazio comune e si reagisce a
-come lo si trova. Cambia la taglia (il feromone è un numero, una nota è un
-paragrafo) ma i problemi da risolvere sono gli stessi: che cosa succede se due
-scrivono insieme, come si tiene traccia di chi ha scritto che cosa, e che cosa
-fa dimenticare allo spazio comune ciò che non serve più. Le formiche
-quest'ultima cosa ce l'hanno per costruzione; una cartella di file cresce e
-basta.
+La conseguenza per gli agenti di oggi è meno metaforica di quanto sembri. Una
+squadra di agenti che si coordina lasciando file in una cartella condivisa, o
+note in un documento che tutti possono leggere e riscrivere, procede allo
+stesso modo: non si scrivono messaggi, si modifica uno spazio comune e si
+reagisce a come lo si trova. Cambia la taglia (il feromone è un numero, una
+nota è un paragrafo) ma i problemi da risolvere sono gli stessi: che cosa
+succede se due scrivono insieme, come si tiene traccia di chi ha scritto che
+cosa, e che cosa fa dimenticare allo spazio comune ciò che non serve più. Le
+formiche quest'ultima cosa ce l'hanno per costruzione; una cartella di file
+cresce soltanto.
 
 ## Lo sciame di particelle
 
@@ -329,20 +326,20 @@ Un gruppo di persone cerca il punto più basso di una valle nella nebbia. Ognuno
 vede solo dove mette i piedi, e può misurare la quota lì dove si trova. Nessuno
 ha la mappa.
 
-Ciascuno si ricorda una cosa sola: il punto più basso in cui *lui* è passato. E
-ne sente una sola: il punto più basso in cui è passato *qualcuno*, gridato a
-tutti. (Se invece ciascuno sentisse soltanto i due compagni che gli stanno
-accanto, la notizia passerebbe di bocca in bocca e arriverebbe più tardi.) A
-ogni passo tira un po’ verso il proprio ricordo e un po’ verso quello del
-gruppo, e quanto sia quel «po’» lo decide il caso: certe volte il richiamo lo
-porta appena oltre il punto, certe volte lo lascia a mezza strada, e in media lo
-porta proprio lì. E un po’ tira dritto per dove stava già andando, perché ha una
-sua velocità e non si ferma di colpo.
+Ciascuno ricorda un solo punto, il più basso in cui è passato *lui*, e ne sente
+un altro solo: il più basso in cui è passato *qualcuno*, gridato a tutti. (Se
+invece ciascuno sentisse soltanto i due compagni che gli stanno accanto, la
+notizia passerebbe di bocca in bocca e arriverebbe più tardi.) A ogni passo
+tira un po’ verso il proprio ricordo e un po’ verso quello del gruppo, e quanto
+sia quel «po’» lo decide il caso: certe volte il richiamo lo porta appena oltre
+il punto, certe volte lo lascia a mezza strada, e in media lo porta sul punto.
+Un po’ tira poi dritto per dove stava già andando, perché ha una sua velocità e
+non si ferma di colpo.
 
-Quest'ultima cosa sembra un dettaglio ed è quella che fa funzionare tutto. Se
+Quest'ultima spinta sembra un dettaglio, ma fa funzionare tutto. Se
 uno andasse solo dove è tirato, si poserebbe sul punto migliore conosciuto
 insieme a tutti gli altri: più gli si avvicina, più corto diventa il richiamo,
-finché non lo muove più. Ma siccome arriva lanciato, lo supera, va a guardare
+finché non lo muove più. Siccome però arriva lanciato, lo supera, va a guardare
 un po’ più in là, e ogni tanto scopre che più in là si scende ancora. Gli
 autori hanno provato a togliere questa inerzia e il metodo ha smesso di
 trovare i punti più bassi: quelli buoni non stanno dove il gruppo sta già
@@ -376,12 +373,12 @@ dove sono stato meglio io, dove è stato meglio il gruppo.
 Due precisazioni storiche. Nella formulazione del 1995 il peso $w$ non c'è: la
 velocità precedente entra con coefficiente unitario, e l'inerzia come parametro
 regolabile la introducono Shi ed Eberhart nel 1998 {cite}`shi1998modified`,
-perché $w$ grande favorisce l'esplorazione e $w$ piccolo la convergenza. E il
+perché $w$ grande favorisce l'esplorazione e $w$ piccolo la convergenza. Il
 valore originale $c_1 = c_2 = 2$ non è arbitrario: moltiplicando per $2$ un
 numero uniforme in $[0,1]$ si ottiene un fattore di media $1$, così che ciascuna
-delle due spinte, in media, porti la particella esattamente sul proprio
+delle due spinte, in media, porti la particella sul proprio
 attrattore, e quindi la faccia sorpassare circa una volta su due. Il sorpasso è
-deliberato: gli autori riportano che togliendo il termine di velocità
+deliberato: gli autori osservano che togliendo il termine di velocità
 precedente, che nel 1995 chiamano *momentum* (cioè sostituendo la velocità
 invece di correggerla), l'algoritmo diventa inefficace nel trovare gli ottimi
 globali. È la stessa ragione dell'evaporazione delle formiche, in veste
@@ -411,7 +408,7 @@ lavagna; con il migliore $\mathbf{l}_i$ del solo vicinato di $i$ (per esempio
 le due particelle adiacenti su un anello) l'informazione si propaga a velocità
 finita. Più collegamenti fanno convergere prima, senza per questo trovare
 ottimi migliori {cite}`kennedy2002population`: la topologia del vicinato è un
-parametro di progetto, ed è la tesi del capitolo dentro un algoritmo.
+parametro di progetto, la tesi del capitolo dentro un algoritmo.
 
 `````
 
@@ -430,36 +427,35 @@ seguire: una soluzione è un elenco di sì e no, e un elenco non ha un «poco pi
 destra».
 
 Un algoritmo genetico parte da una popolazione di zaini riempiti a caso, quasi
-tutti mediocri, e ripete tre gesti che vengono dalla biologia.
+tutti mediocri, e ripete tre operazioni che vengono dalla biologia.
 
 Selezione. Chi vale di più ha più probabilità di fare figli. Il modo più
 semplice è il torneo: si pescano due individui a caso e passa il migliore.
 
 Incrocio. Da due genitori si fa un figlio prendendo il primo pezzo
-dell'elenco dall'uno e il resto dall'altro. È il gesto che le formiche e le
+dell'elenco dall'uno e il resto dall'altro. È l'operazione che le formiche e le
 particelle non hanno: loro si spostano, questi si mescolano.
 
 Mutazione. Ogni tanto, a caso, si ribalta una scelta: un oggetto che c'era
 esce, uno che non c'era entra. Serve a non restare prigionieri del materiale
-genetico di partenza, ed è la stessa funzione dell'evaporazione nelle formiche
-e dell'inerzia nelle particelle.
+genetico di partenza, e svolge la stessa funzione dell'evaporazione nelle
+formiche e dell'inerzia nelle particelle.
 
-Più una cautela che dalla biologia non viene: il migliore di ogni generazione
-passa alla successiva così com'è. Senza, la generazione nuova può venire
-peggiore della vecchia, perché incrocio e mutazione rompono anche quello che
-funzionava.
+A queste operazioni si aggiunge una cautela che dalla biologia non viene: il
+migliore di ogni generazione passa alla successiva così com'è. Senza, la
+generazione nuova può venire peggiore della vecchia, perché incrocio e
+mutazione rompono anche quello che funzionava.
 
-Una popolazione, poi, permette di chiedere un'altra cosa ancora: non un solo
+Una popolazione, poi, permette di chiedere qualcosa in più: non un solo
 zaino migliore, ma tutta la fila dei compromessi, il più prezioso per ogni peso
 che sei disposto a portare.
 
-L'incrocio nasconde una scommessa, ed è il punto in cui questi algoritmi
-funzionano o falliscono: si assume che una buona soluzione sia fatta di buoni
-pezzi, e che i pezzi di due soluzioni decenti, mescolati, possano darne una
-migliore. Sullo zaino regge (un buon gruppo di oggetti resta buono accanto a
-un altro). Dove il valore dipende da tutte le scelte insieme, e spezzare
-l'elenco distrugge il senso di tutte e due le metà, l'incrocio è solo rumore
-costoso.
+L'incrocio nasconde una scommessa, che decide se questi algoritmi funzionano o
+falliscono: si assume che una buona soluzione sia fatta di buoni pezzi, e che i
+pezzi di due soluzioni decenti, mescolati, possano darne una migliore. Sullo
+zaino la scommessa vale (un buon gruppo di oggetti resta buono accanto a un
+altro). Dove il valore dipende da tutte le scelte insieme, e spezzare l'elenco
+distrugge il senso di tutte e due le metà, l'incrocio è solo rumore costoso.
 
 `````
 
@@ -499,16 +495,16 @@ $$
 $$
 
 Gli schemi corti, di ordine basso e sopra la media crescono di generazione in
-generazione. Ma è una disuguaglianza sul valore atteso del singolo schema, e non
-dice niente su come i pezzi si combinino fra loro: per questo i *building block*
-restano un'argomentazione euristica più che un teorema, e il loro limite ha un
-nome preciso, **epistasi**: quando il contributo di un gene dipende fortemente
-dagli altri, spezzare il genotipo distrugge proprio l'informazione che si voleva
-trasmettere, e il crossover degrada a mutazione macroscopica. La codifica fa
-quindi parte del progetto dell'algoritmo, perché decide quali pezzi sono
-separabili.
+generazione. La disuguaglianza riguarda però il valore atteso del singolo
+schema e non dice niente su come i pezzi si combinino fra loro: per questo i
+*building block* restano un'argomentazione euristica più che un teorema, e il
+loro limite ha un nome preciso, **epistasi**: quando il contributo di un gene
+dipende fortemente dagli altri, spezzare il genotipo distrugge proprio
+l'informazione che si voleva trasmettere, e il crossover degrada a mutazione
+macroscopica. La codifica fa quindi parte del progetto dell'algoritmo, perché
+decide quali pezzi sono separabili.
 
-Rispetto alle altre due famiglie della sezione, la differenza operativa è che
+Rispetto a formiche e particelle, la differenza operativa è che
 lo spazio non deve avere una metrica. PSO ha bisogno di sommare posizioni e
 velocità, quindi di uno spazio vettoriale; un algoritmo genetico ha bisogno
 solo di saper ricombinare e perturbare, e questo lo rende applicabile a
@@ -519,8 +515,8 @@ Un secondo vantaggio distintivo, che né il gradiente né le altre metaeuristich
 danno gratis, è l'ottimizzazione **multi-obiettivo**. Poiché la popolazione è
 un insieme e non un punto, la si può far convergere non su un ottimo ma
 sull'intero **fronte di Pareto** dei compromessi fra obiettivi in conflitto
-(accuratezza contro latenza, prestazione contro consumo): è ciò che fa NSGA-II
-{cite}`deb2002fast`, ordinando la popolazione per dominanza invece che per un
+(accuratezza contro latenza, prestazione contro consumo): come fa NSGA-II
+{cite}`deb2002fast`, che ordina la popolazione per dominanza invece che per un
 punteggio scalare. Con un metodo a singolo punto bisognerebbe fissare i pesi
 degli obiettivi in anticipo e rilanciare la ricerca per ogni compromesso.
 
@@ -530,7 +526,7 @@ Lo zaino è il tipo di problema su cui il metodo
 solito, quello che cerca il punto più basso sentendo da che parte scende il
 terreno (la discesa del gradiente della {doc}`matematica
 </Matematica/analisi-ottimizzazione>`, con cui si addestrano le reti), non ha
-proprio dove appoggiarsi. Nel codice che segue i
+dove appoggiarsi. Nel programma i
 venti oggetti, con i loro pesi e i loro valori, sono sorteggiati una volta sola e
 poi restano quelli; e siccome sono soltanto venti possiamo permetterci il lusso
 di conoscere la risposta vera, provando tutte le combinazioni una per una. Così
@@ -600,10 +596,10 @@ esiste alcuna pendenza da seguire, è molto. La seconda è che quel «otto volte
 dieci» non si può eliminare. Un algoritmo genetico non dà garanzie, e
 soprattutto non dice quanto gli è mancato: qui lo sappiamo perché lo zaino ha
 anche un algoritmo esatto e rapido, la programmazione dinamica, che con pesi
-interi costa dell'ordine di $n \cdot W$ operazioni ($n$ oggetti, $W$ la
+interi ha costo dell'ordine di $n \cdot W$ operazioni ($n$ oggetti, $W$ la
 capienza: qui $20 \cdot 60 = 1200$) e arriva anch'essa a 228. Lo zaino serve qui
-proprio da banco di prova con la risposta nota; un algoritmo genetico si usa
-dove una scorciatoia del genere non c'è, e lì la risposta trovata ha esattamente
+da banco di prova con la risposta nota; un algoritmo genetico si usa
+dove una scorciatoia del genere non c'è, e lì la risposta trovata ha
 lo stesso aspetto, giusta o sbagliata che sia.
 
 Nel machine learning questa famiglia compare in due punti. Il primo è la
@@ -615,24 +611,23 @@ guidata dal reinforcement learning, non dall'evoluzione. L'evoluzione è
 l'altra strada principale, e il suo esemplare è AmoebaNet
 {cite}`real2019regularized`, dove le architetture mutano e le migliori
 sopravvivono, con una selezione a torneo che scarta anche le più vecchie.
-Quell'algoritmo l'incrocio non ce l'ha, ed è coerente con la scommessa
-dichiarata poche righe fa: in un'architettura i pezzi non sono separabili,
-perché un blocco che funziona bene in una rete può essere pessimo in un'altra,
-quindi la scommessa non reggerebbe e l'algoritmo si limita a non farla. Il
+L'algoritmo non usa l'incrocio, coerentemente con la scommessa descritta sopra:
+in un'architettura i pezzi non sono separabili, perché un blocco che funziona
+bene in una rete può essere pessimo in un'altra, quindi la scommessa non
+varrebbe e l'algoritmo si limita a non farla. Il
 secondo punto è ovunque l'obiettivo non sia derivabile: scegliere
 iperparametri discreti, potare una rete decidendo *quali* pezzi togliere,
 ottimizzare una pipeline di preelaborazione.
 
 ## Perché non usare il gradiente
 
-Sia le formiche sia le particelle hanno una proprietà che va guardata in faccia:
-non usano mai la derivata della funzione da minimizzare, cioè la sua pendenza.
-Vedono solo il suo valore, in un punto alla volta. La sezione di matematica su
-{doc}`analisi e ottimizzazione </Matematica/analisi-ottimizzazione>` ha spiegato
-la discesa del gradiente (scendere seguendo quella pendenza), che è il metodo
-con cui si addestrano le reti neurali; qui abbiamo un'altra famiglia, e il
-confronto va fatto con cura, perché è il punto in cui questi metodi vengono
-spesso presentati senza il loro costo.
+Formiche e particelle non usano mai la derivata della funzione da minimizzare,
+cioè la sua pendenza: vedono solo il suo valore, in un punto alla volta. La
+sezione di matematica su {doc}`analisi e ottimizzazione
+</Matematica/analisi-ottimizzazione>` ha spiegato la discesa del gradiente
+(scendere seguendo quella pendenza), il metodo con cui si addestrano le reti
+neurali. Il confronto fra le due famiglie va fatto con cura, perché è il punto
+in cui questi metodi vengono spesso presentati senza il loro costo.
 
 `````{tab} Elementare
 
@@ -658,7 +653,7 @@ ognuna se si sale o se si scende. Chi non la sente le deve provare a una a una,
 e con un milione di direzioni gli servono almeno un milione di passi solo per
 sapere da che parte andare: la giornata finisce prima.
 
-E dove vince non promette niente. Quando si ferma, non sa dire se quello è il
+Dove vince, poi, non promette niente. Quando si ferma, non sa dire se quello è il
 punto più basso della valle o soltanto il più basso che ha visto.
 
 `````
@@ -667,14 +662,15 @@ punto più basso della valle o soltanto il più basso che ha visto.
 
 Formiche, sciami e algoritmi genetici sono metodi **senza derivate**:
 interrogano la funzione obiettivo come una scatola nera e non ne richiedono né
-differenziabilità né continuità. Il loro dominio proprio è dove il gradiente non c'è, non si calcola
-o non informa: funzioni non differenziabili, spazi combinatori (il commesso
-viaggiatore non ha un gradiente: ha permutazioni), valutazioni rumorose o
-prodotte da una simulazione, e paesaggi molto multimodali dove il gradiente è
-informativo solo dentro il bacino in cui si nasce.
+differenziabilità né continuità. Il loro dominio d'elezione è dove il gradiente
+non c'è, non si calcola o non informa: funzioni non differenziabili, spazi
+combinatori (il commesso viaggiatore non ha un gradiente: ha permutazioni),
+valutazioni rumorose o prodotte da una simulazione, e paesaggi molto
+multimodali dove il gradiente è informativo solo dentro il bacino in cui si
+nasce.
 
-Il prezzo si paga in valutazioni della funzione obiettivo, e in alta
-dimensione diventa proibitivo, per una ragione precisa. Con la
+Si paga in valutazioni della funzione obiettivo, e in alta
+dimensione il costo diventa proibitivo, per una ragione precisa. Con la
 retropropagazione una sola passata all'indietro produce tutte le $d$ derivate
 parziali di $\mathcal{L}$ rispetto ai parametri $\theta$, a un costo
 dell'ordine di una passata in avanti: l'informazione per passo cresce con $d$
@@ -749,7 +745,7 @@ iterazione  50   f = 0.000213   x = (+0.0010, -0.0004)
 iterazione  60   f = 0.000168   x = (+0.0009, +0.0000)
 ```
 
-La riga da guardare è la prima. Alla decima iterazione il punto migliore che lo
+Alla decima iterazione il punto migliore che lo
 sciame conosce sta dentro la fossetta accanto, quella scavata attorno al punto
 di coordinate meno uno e zero, il cui fondo vale uno invece di zero (e nel punto
 trovato la funzione vale poco meno di due, perché lo sciame in fondo a quella
@@ -760,14 +756,14 @@ esce senza alcuna informazione sulla pendenza: una particella era semplicemente
 arrivata più in là del punto migliore conosciuto, e più in là si scendeva. Dalla
 ventesima in poi il gruppo si limita a rifinire un valore già piccolissimo.
 
-Quanto costa? Ogni giro lo sciame misura la quota nei trenta punti in cui si
-trovano le sue particelle; i giri sono sessanta, più la misura iniziale, quindi
-in tutto milleottocentotrenta misure. In due dimensioni sono niente. In mille
-dimensioni sarebbero ancora milleottocentotrenta, e non basterebbero: per capire
-da che parte si scende servirebbero almeno mille misure a ogni passo, cioè più
-di metà del bilancio per un passo solo.
+Il costo si conta in misure. Ogni giro lo sciame misura la quota nei trenta
+punti in cui si trovano le sue particelle; i giri sono sessanta, più la misura
+iniziale, quindi in tutto milleottocentotrenta misure. In due dimensioni sono
+niente. In mille dimensioni sarebbero ancora milleottocentotrenta, e non
+basterebbero: per capire da che parte si scende servirebbero almeno mille
+misure a ogni passo, cioè più di metà del bilancio per un passo solo.
 
-E il risultato non è garantito. Il programma dello sciame parte da posizioni
+Il risultato non è garantito. Il programma dello sciame parte da posizioni
 sorteggiate, e ripetendolo con sorteggi diversi le cose vanno diversamente. Se
 lo si rifà trecento volte, cambiando ogni volta soltanto il sorteggio, lo sciame
 arriva al fondo vero in duecentosettantasette casi su trecento: poco più di nove
@@ -775,8 +771,8 @@ volte su dieci, non sempre.
 
 ### Il confronto che si legge in giro, e quello onesto
 
-Adesso il paragone con il metodo che segue la pendenza. Qui il
-confronto si fa spesso senza contare la spesa: fatta partire da un solo punto
+Il confronto con il metodo che segue la pendenza si fa spesso senza contare la
+spesa: fatta partire da un solo punto
 preso a caso, una discesa lungo la pendenza arriva al fondo vero due volte su
 trecento; nelle altre duecentonovantotto si ferma ordinatamente nella fossetta
 in cui è nata. Duecentosettantasette contro due: un confronto splendido e
@@ -794,38 +790,38 @@ diviso la curvatura, poco più di cinque millesimi), e con quel passo bastano
 poche decine di passi per arrivare in fondo alla fossetta in cui si è nati.
 Allora la discesa arriva al fondo vero sessantasette volte su trecento, cioè
 poco più di una su cinque, contro le nove su dieci dello sciame. Lo sciame
-vince ancora, e vince nettamente, ma vince circa quattro volte tanto e non
-centoquaranta.
+vince ancora, e nettamente, ma di circa quattro volte, non delle quasi
+centoquaranta del confronto precedente.
 
 Il confronto è perfino generoso verso la discesa, perché le regala la pendenza.
 In un problema in cui la funzione è una scatola nera la pendenza va stimata
-provando, e in due dimensioni costa tre misure per passo: con la stessa spesa
+provando, e in due dimensioni occorrono tre misure per passo: con la stessa spesa
 dello sciame la discesa può fare venti passi da ciascun punto, e il risultato
 resta sessantasette su trecento. Finché la discesa arriva in fondo alla
 fossetta in cui è nata, il numero e la lunghezza dei passi non cambiano il
 numero di prove riuscite; cambiano soltanto quanto si spende.
 
-E si può capire da dove venga quel sessantasette, il che è più interessante del
-numero. Le partenze singole in tutto sono novemila, cioè trecento prove per
-trenta punti ciascuna, e ne riescono settantadue: otto su mille, che è la
-misura della fossetta centrale. È larga circa uno per uno dentro un quadrato di
-lato dieci e un quarto, quindi occupa poco meno dell'uno per cento dell'area, e
-nascere lì dentro è appunto un tiro di dado che va bene una volta ogni cento e
-rotti.
+Da dove venga quel sessantasette è più interessante del numero stesso. Le
+partenze singole in tutto sono novemila, cioè trecento prove per trenta punti
+ciascuna, e ne riescono settantadue: otto su mille, che è la misura della
+fossetta centrale. È larga circa uno per uno dentro un quadrato di lato dieci e
+un quarto, quindi occupa poco meno dell'uno per cento dell'area, e nascere lì
+dentro è appunto un tiro di dado che va bene una volta ogni cento e rotti.
 
-Ogni punto iniziale, insomma, è un biglietto della lotteria che vince otto volte
-su mille, e ogni prova ne compra trenta. Attenzione a non sommarli: trenta per
+Ogni punto iniziale, insomma, è un biglietto della lotteria che vince otto
+volte su mille, e ogni prova ne gioca trenta. Non vanno sommati: trenta per
 otto farebbe ventiquattro su cento, ma una prova in cui due biglietti vincono
-resta una prova riuscita, e nel conto va contata una volta sola. La domanda
-giusta è al contrario: quante prove perdono tutti e trenta i biglietti? Un
-biglietto perde novecentonovantadue volte su mille, e perché perdano tutti e
-trenta bisogna moltiplicare quel numero per sé stesso trenta volte: viene poco
-meno di ottanta su cento. Le prove che vanno a segno sono il resto, poco più di
-una su cinque, cioè sessantaquattro su trecento. In formula, con $p = 0{,}008$
-la probabilità che una partenza riesca, una prova da trenta partenze riesce con
-probabilità $1 - (1-p)^{30} \approx 0{,}214$. Ne escono sessantasette.
+resta una prova riuscita, e va contata una volta sola. La domanda giusta è al
+contrario: quante prove perdono tutti e trenta i biglietti? Un biglietto perde
+novecentonovantadue volte su mille, e perché perdano tutti e trenta bisogna
+moltiplicare quel numero per sé stesso trenta volte: viene poco meno di ottanta
+su cento. Le prove che vanno a segno sono il resto, poco più di una su cinque,
+cioè sessantaquattro su trecento. In formula, con $p = 0{,}008$ la probabilità
+che una partenza riesca, una prova da trenta partenze riesce con probabilità
+$1 - (1-p)^{30} \approx 0{,}214$. Se ne attendono sessantaquattro e ne escono
+sessantasette.
 
-Il conto si controlla sui dati, per escludere un'altra storia che dia per caso
+Si controlla sui dati che non valga un'altra storia, capace di dare per caso
 lo stesso numero. Contiamo i sorteggi che avevano almeno un punto di
 partenza dentro la fossetta centrale: sono sessantasei, e riescono tutti e
 sessantasei. Le prove riuscite in tutto sono sessantasette, quindi una sola ce
@@ -835,9 +831,8 @@ ha imparato niente in più di quella a partenza singola: ha soltanto avuto trent
 biglietti invece di uno.
 
 Tutti questi numeri escono da un programma solo, che rifà le
-trecento prove per intero, con gli stessi sorteggi e la stessa soglia, che qui
-smette di essere sottintesa: «arrivare al fondo vero» vuol dire scendere sotto
-un centesimo.
+trecento prove con gli stessi sorteggi e con una soglia dichiarata: «arrivare al
+fondo vero» vuol dire scendere sotto un centesimo.
 
 ```python
 # Le trecento prove del confronto: semi 0..299. Ogni prova usa gli STESSI
@@ -918,47 +913,46 @@ stanno in cerchio, e ciascuna sente soltanto le due che le stanno accanto. Con
 gli stessi sorteggi e gli stessi sessanta giri, lo sciame ad anello arriva al
 fondo vero 191 volte su 300 invece di 277: la notizia viaggia di vicino in
 vicino, e in sessanta giri non fa in tempo ad arrivare a tutti. Gli individui
-sono identici, cambia soltanto chi ascolta chi, e cambia quello che il gruppo
-trova: è la tesi degli storni, dentro un algoritmo. Più lento non vuol dire
-peggiore in assoluto, perché un collegamento più fitto fa convergere prima
-senza per questo trovare ottimi migliori {cite}`kennedy2002population`; a
-parità di giri, qui, si misura la velocità.
+sono identici, cambia soltanto chi ascolta chi, e con questo cambia il
+risultato del gruppo: è la tesi degli storni, dentro un algoritmo. Più lento
+non vuol dire peggiore in assoluto, perché un collegamento più fitto fa
+convergere prima senza per questo trovare ottimi migliori
+{cite}`kennedy2002population`; a parità di giri, qui, si misura la velocità.
 
-Un'ultima nota sui tre numeri in cima al programma, quelli che pesano le tre
-spinte (tirare dritto per dove stavo andando, tornare dove sono stato meglio io,
-andare dove è stato meglio il gruppo). Non sono i valori del 1995 ma quelli oggi
-standard, e non sono stati trovati provando: vengono da un conto di Clerc e
-Kennedy del 2002, il **fattore di costrizione**, che dice per quali valori la
-velocità delle particelle non esplode. Il conto dà due numeri, uno per
-l'inerzia e uno per le altre due spinte, che sono uguali fra loro: arrotondati,
-sono lo `0.73` e i due `1.50` del programma. Con spinte troppo forti lo sciame si
-sparpaglia e non torna più; con questi valori sta insieme da sé, e nessuno deve
-tarare a mano l'ampiezza dei passi.
+I tre numeri in cima al programma dello sciame pesano le tre spinte (tirare
+dritto per dove stavo andando, tornare dove sono stato meglio io, andare dove è
+stato meglio il gruppo). Non sono i valori del 1995 ma quelli oggi standard, e
+non sono stati trovati provando: vengono da un calcolo di Clerc e Kennedy del
+2002, il **fattore di costrizione**, che dice per quali valori la velocità
+delle particelle non esplode. Il calcolo dà due numeri, uno per l'inerzia e uno
+per le altre due spinte, che sono uguali fra loro: arrotondati, sono lo `0.73`
+e i due `1.50` del programma. Con spinte troppo forti lo sciame si sparpaglia e
+non torna più; con questi valori lo sciame resta unito, e nessuno deve tarare a
+mano l'ampiezza dei passi.
 
 ## Venticinque agenti in un paese
 
-Gli sciami mettono molte unità stupide a risolvere un problema. Con i modelli di
-linguaggio si può fare una cosa che prima non si poteva: mettere molte unità non
-stupide a fare qualcosa che un problema di ottimizzazione non è, cioè
-comportarsi. Il lavoro di riferimento è quello di Park e colleghi del 2023
-{cite}`park2023generative`, che la {doc}`sezione sulle architetture degli agenti
+Gli sciami mettono molte unità stupide a risolvere un problema. Con i modelli
+di linguaggio diventa possibile mettere molte unità non stupide a fare qualcosa
+che non è un problema di ottimizzazione, cioè a comportarsi. Il lavoro di
+riferimento è quello di Park e colleghi del 2023 {cite}`park2023generative`,
+che la {doc}`sezione sulle architetture degli agenti
 </Agenti/architetture-e-valutazione>` ha già presentato parlando della memoria
 che dura: venticinque agenti in un paese simulato, ciascuno con un archivio di
 ricordi in linguaggio naturale. Il risultato più citato è un comportamento
-emerso, e conviene dire dove comincia l'emergenza: agli sperimentatori tocca una
-riga sola, mettere in testa a un agente l'intenzione di dare una festa di San
-Valentino, e da lì in poi nessuno instrada più niente. L'invito si propaga di
+emerso, e l'emergenza comincia dopo una sola riga: gli sperimentatori mettono in
+testa a un agente l'intenzione di dare una festa di San Valentino, e da lì in
+poi nessuno instrada più niente. L'invito si propaga di
 bocca in bocca, e alla fine tredici agenti su venticinque ne sanno qualcosa e
 cinque si presentano.
 
-Non ripetiamo l'architettura, che è già stata descritta lì: flusso di
-osservazioni, recupero, riflessione, pianificazione. La riflessione è il
-momento in cui l'agente si ferma, rilegge quello che gli è appena successo e ne
-ricava una conclusione più generale, che riscrive fra i propri ricordi.
-Il pezzo che regge tutto, e che è anche il più
-imitato senza capirlo, è la **funzione di recupero a tre termini**. Risponde
-alla domanda di qualunque memoria grande: fra diecimila ricordi, quali sono i
-pochi che vanno messi nel contesto adesso?
+Dell'architettura (flusso di osservazioni, recupero, riflessione,
+pianificazione) servono qui due pezzi. La riflessione è il momento in cui
+l'agente si ferma, rilegge quello che gli è appena successo e ne ricava una
+conclusione più generale, che riscrive fra i propri ricordi. Il secondo, il più
+imitato senza essere capito, è la **funzione di recupero a tre termini**, che
+risponde alla domanda di qualunque memoria grande: fra diecimila ricordi, quali
+sono i pochi che vanno messi nel contesto adesso?
 
 `````{tab} Elementare
 
@@ -978,7 +972,7 @@ il ricordo è nato: parte dall'ultima volta che è stato ripescato, e così un f
 di sei mesi fa a cui hai ripensato ieri è fresco. Partendo da uno, dopo
 cinquanta ore resta 0,78 e dopo duecento 0,37.
 
-Il guaio è sommare i tre criteri, perché sono misurati in unità diverse.
+Sommare i tre criteri è delicato, perché sono misurati in unità diverse.
 L'importanza è un voto da 1 a 10 che l'agente si dà da sé; gli altri due sono
 numeri fra zero e uno. Facciamo il conto su tre ricordi in gara:
 
@@ -988,7 +982,7 @@ numeri fra zero e uno. Facciamo il conto su tre ricordi in gara:
 | B: di duecento ore fa, drammatico | 0,367 | 8 | 0,44 | 8,81 |
 | C: di cinquanta ore fa, così così | 0,778 | 5 | 0,60 | 6,38 |
 
-Sommandoli così vince B, poi C, poi A: esattamente l'ordine dell'importanza, e
+Sommandoli così vince B, poi C, poi A: l'ordine dell'importanza, e
 gli altri due criteri non hanno contato niente. Un voto da 1 a 10 schiaccia due
 numeri fra 0 e 1.
 
@@ -1006,10 +1000,10 @@ due terzi scarsi della distanza fra i due e prende 0,65.
 
 La classifica si è rovesciata: adesso vince A, il ricordo appena successo e
 attinente, e il drammatico e vecchio finisce ultimo. È la differenza fra un
-agente che ragiona su quello che sta succedendo e uno ossessionato dal proprio
+agente che ragiona sul presente e uno ossessionato dal proprio
 passato più intenso.
 
-E questi voti dipendono dai concorrenti. Chi prende 1 lo prende perché è il
+Questi voti dipendono dai concorrenti. Chi prende 1 lo prende perché è il
 migliore dei tre in gara, non perché valga 1 in assoluto: lo stesso ricordo, in
 un'altra terna, ne uscirebbe con un punteggio diverso.
 
@@ -1030,13 +1024,13 @@ termine è stato riscalato con un min-max nell'intervallo $[0,1]$ prima della
 somma. Nel lavoro originale i tre pesi valgono tutti $1$, il che rende la
 normalizzazione l'unico meccanismo che impedisce al termine con l'escursione
 più ampia di dominare: sommando direttamente un voto in $[1,10]$ e due grandezze
-in $[0,1]$, il voto decide da solo l'ordine di due ricordi ogni volta che le
+in $[0,1]$, il voto basta a fissare l'ordine di due ricordi ogni volta che le
 loro importanze distano più di due punti, perché le altre due grandezze insieme
-non arrivano a recuperarli. E poiché il riscalamento è
+non arrivano a recuperarli. Poiché il riscalamento è
 relativo all'insieme dei candidati, il punteggio non è assoluto: lo stesso
 ricordo vale diversamente a seconda della compagnia.
 
-I tre segnali. La **recenza** decade esponenzialmente nel tempo simulato
+La **recenza** decade esponenzialmente nel tempo simulato
 trascorso dall'ultimo recupero di quella memoria, con fattore $0{,}995$ per ora:
 l'emivita è $\ln 0{,}5 / \ln 0{,}995 \approx 138$ ore, poco meno di sei giorni
 simulati, e il tempo caratteristico è all'incirca $1/0{,}005 = 200$ ore (il
@@ -1061,12 +1055,12 @@ proposizioni astratte e
 le riscrive nel flusso come ricordi nuovi, con la loro importanza e la loro
 recenza. È una retroazione: le sintesi competono con le osservazioni grezze nel
 recupero successivo, e sopra le prime riflessioni se ne formano altre. Ne esce
-un albero di astrazioni costruito dal basso, ed è anche il punto delicato
-dell'architettura, perché un'inferenza sbagliata in basso diventa una premessa
+un albero di astrazioni costruito dal basso, e qui l'architettura è delicata,
+perché un'inferenza sbagliata in basso diventa una premessa
 a tutti i livelli sopra.
 
-Ciò che fa di Smallville un esperimento multi-agente, e non venticinque
-esperimenti su un agente, sono le tre misure di emergenza sociale del lavoro. La
+Le tre misure di emergenza sociale del lavoro fanno di Smallville un
+esperimento multi-agente e non venticinque esperimenti su un agente. La
 **diffusione dell'informazione**: quanti agenti conoscono un fatto seminato in
 uno solo (la festa passa da $1$ a $13$ agenti su $25$ in due giorni simulati,
 una candidatura da $1$ a $8$). La **formazione di relazioni**, sul grafo non
@@ -1083,9 +1077,9 @@ conoscenze reciproche sei su 453 (l’1,3%).
 ## Che cosa dimostra una simulazione di persone
 
 Le trascrizioni di questi esperimenti sono convincenti. Gli agenti si invitano,
-si ricordano di essersi conosciuti, si giustificano se arrivano tardi. Ma la
+si ricordano di essersi conosciuti, si giustificano se arrivano tardi. La
 tentazione di usare simulazioni del genere come evidenza sul comportamento umano
-è forte e, senza dati veri alle spalle, il salto non è consentito.
+è forte, e senza dati veri alle spalle il salto non è consentito.
 
 Il punto sta in una parola che gli autori usano con cura e che chi li cita
 spesso lascia cadere: gli agenti producono comportamenti **credibili**
@@ -1094,8 +1088,8 @@ misura proprio la credibilità, giudicata da persone che leggono le risposte
 degli agenti, e mostra che l'architettura completa batte le versioni a cui
 manca la memoria, la riflessione o la pianificazione, e perfino le risposte
 scritte da persone reclutate per immedesimarsi negli agenti; non misura quanto
-quei comportamenti somiglino a quelli di una popolazione reale. E una parte
-della credibilità viene dal modello di linguaggio stesso. Un modello addestrato
+quei comportamenti somiglino a quelli di una popolazione reale. Una parte
+della credibilità viene poi dal modello di linguaggio stesso. Un modello addestrato
 su enormi quantità di testo umano è, per costruzione, una macchina per produrre
 continuazioni verosimili di testo umano; quando gli si chiede di comportarsi
 come una persona, il fatto che il risultato somigli a una persona è in buona
@@ -1104,21 +1098,21 @@ visto qualcosa di vero cresce con la qualità del modello, cioè con la sua
 abilità a produrre testo convincente, che di per sé non dice nulla sulla
 verità. Le mani avanti se le mettono gli autori stessi, in una nota a piè di
 pagina: i loro agenti, scrivono, come i personaggi animati della Disney puntano
-a dare un senso di credibilità, ma non implicano una vera capacità di agire per
-conto proprio.
+a dare un senso di credibilità, ma non implicano una vera capacità di agire in
+autonomia.
 
-Credibile non vuol dire predittivo, ed è la solita distinzione fra somigliare e
-prevedere. Perché una simulazione dicesse qualcosa sulle società reali dovrebbe
-riprodurre non i singoli comportamenti verosimili, ma le distribuzioni di quei
-comportamenti: quante persone su venticinque davvero verrebbero alla festa, e in
-quali condizioni nessuna. Su questo non c'è nessuna garanzia, e ce ne sono anzi
-di contrarie: un modello di linguaggio riflette le proporzioni del proprio
-corpus di addestramento, non quelle della popolazione che si vorrebbe studiare,
-e le opinioni che esprime si discostano in modo sostanziale da quelle di molti
-gruppi della popolazione, anche quando gli si chiede di parlare a nome di uno di
-quei gruppi {cite}`santurkar2023whose`. Che tredici agenti su venticinque
-abbiano saputo della festa è un fatto sulla simulazione, non una stima sulla
-diffusione di un invito in un paese.
+Credibile non vuol dire predittivo: è la solita distinzione fra
+somigliare e prevedere. Perché una simulazione dicesse qualcosa sulle società
+reali dovrebbe riprodurre non i singoli comportamenti verosimili, ma le
+distribuzioni di quei comportamenti: quante persone su venticinque davvero
+verrebbero alla festa, e in quali condizioni nessuna. Su questo non c'è nessuna
+garanzia, e ce ne sono anzi di contrarie: un modello di linguaggio riflette le
+proporzioni del proprio corpus di addestramento, non quelle della popolazione
+che si vorrebbe studiare, e le opinioni che esprime si discostano in modo
+sostanziale da quelle di molti gruppi della popolazione, anche quando gli si
+chiede di parlare a nome di uno di quei gruppi {cite}`santurkar2023whose`. Che
+tredici agenti su venticinque abbiano saputo della festa è un fatto sulla
+simulazione, non una stima sulla diffusione di un invito in un paese.
 
 Ne discende una regola d'uso netta. Come **generatore di ipotesi** queste
 simulazioni sono legittime e utili: fanno emergere dinamiche a cui non si era
@@ -1138,8 +1132,8 @@ ripetendo l'indagine due settimane dopo, contro il 74% di agenti costruiti sui
 soli dati demografici {cite}`park2026grounded`. Anche lì il valore predittivo
 vale per quelle persone e per quel tipo di domande, non per una popolazione
 qualunque. Chi presenta l'esito di una simulazione senza dati come un risultato
-sulle persone fa con il testo quello che nessuno accetterebbe con i numeri:
-chiamare dato ciò che è un'uscita del proprio modello.
+sulle persone chiama dato un'uscita del proprio modello, e nessuno lo
+accetterebbe se lo facesse con i numeri.
 
 ## La regola di interazione come variabile di progetto
 
@@ -1152,8 +1146,8 @@ scritto in cima al biglietto, il premio dato alla squadra o al singolo, la
 velocità con cui il feromone svanisce, il vicinato che una particella ascolta:
 sono la stessa variabile, regolata su sistemi diversi.
 
-È la tesi dell'apertura, arrivata in fondo intatta: a parità di individui, il
-comportamento di un gruppo lo decide la regola di interazione. Vale per gli
+È la tesi dell'apertura, arrivata in fondo intatta: a parità di individui, la
+regola di interazione determina il comportamento del gruppo. Vale per gli
 storni sopra Termini, che contando i vicini restano uniti e che, nelle
 simulazioni, misurandoli in metri si spezzerebbero molto più spesso
 {cite}`ballerini2008interaction`; vale per una colonia di formiche artificiali,
@@ -1184,8 +1178,8 @@ quando, e chi decide dopo.
   caso resta la più marcata per sempre e la colonia si fossilizza.
 - La memoria del gruppo non sta negli individui, sta nell’ambiente: è la
   stigmergia, cioè la lavagna condivisa della sezione sulle topologie. Una
-  squadra di agenti che si coordina lasciando file in una cartella comune fa
-  esattamente questo, con gli stessi problemi (chi scrive mentre un altro
+  squadra di agenti che si coordina lasciando file in una cartella comune fa lo
+  stesso, con gli stessi problemi (chi scrive mentre un altro
   scrive, chi ha messo lì una certa cosa, e che cosa fa dimenticare allo stato
   comune ciò che non serve più).
 - Nello sciame di particelle {cite}`kennedy1995particle`, nato togliendo
@@ -1209,20 +1203,20 @@ quando, e chi decide dopo.
   sia partito vicino alla risposta giusta. Sullo zaino a venti oggetti trova la
   risposta esatta otto volte su dieci provando meno di mezzo per cento delle
   combinazioni, e non dice mai quanto gli è mancato.
-- Questi metodi non sentono la pendenza: provano un punto e misurano la
-  quota. Servono dove la pendenza non c'è, non si calcola o non informa
-  (terreni pieni di buche, misure rumorose, scelte in cui non ci si può
-  spostare di un millimetro, come l'ordine in cui visitare venti città), e si
-  pagano in tentativi: sulla valle piena di fossette dell'esempio lo sciame
-  trova il fondo vero in 277 prove su 300. Il confronto va però fatto a parità
-  di esploratori e di spesa, altrimenti si bara: una discesa del gradiente
+- Questi metodi non sentono la pendenza: provano un punto e misurano la quota.
+  Servono dove la pendenza non c'è, non si calcola o non informa (terreni pieni
+  di buche, misure rumorose, scelte in cui non ci si può spostare di un
+  millimetro, come l'ordine in cui visitare venti città), e si pagano in
+  tentativi: sulla valle piena di fossette dell'esempio lo sciame trova il
+  fondo vero in 277 prove su 300. Il confronto va però fatto a parità di
+  esploratori e di spesa, altrimenti si bara: una discesa del gradiente
   lanciata da un punto solo ci arriva due volte su trecento, ma lanciata dagli
   stessi trenta punti dello sciame, con la stessa spesa, ci arriva poco più di
-  una volta su cinque. Lo sciame vince circa quattro volte, non centoquaranta.
-  Se poi ogni particella sente solo i due vicini invece del migliore di tutti,
-  in sessanta giri lo sciame ci arriva 191 volte su 300: anche qui conta chi
-  ascolta chi. E quando le variabili sono tantissime il rapporto si rovescia:
-  non sono un'alternativa generale.
+  una volta su cinque. Lo sciame vince circa quattro volte, non quasi
+  centoquaranta. Se poi ogni particella sente solo i due vicini invece del
+  migliore di tutti, in sessanta giri lo sciame ci arriva 191 volte su 300:
+  anche qui conta chi ascolta chi. E quando le variabili sono tantissime il
+  rapporto si rovescia: non sono un'alternativa generale.
 - Nelle società simulate {cite}`park2023generative` il pezzo da capire è come si
   scelgono i ricordi da rimettere davanti all'agente: quanto è recente, quanto è
   importante, quanto c'entra con quello che sta facendo, e i tre criteri vanno
@@ -1261,8 +1255,8 @@ quando, e chi decide dopo.
   (comportamento di stagnazione).
 - La memoria del gruppo non sta negli individui, sta nell’ambiente: è la
   stigmergia, cioè la lavagna condivisa della sezione sulle topologie. Una
-  squadra di agenti che si coordina lasciando file in una cartella condivisa fa
-  esattamente questo, con gli stessi problemi (contesa, provenienza, e che cosa
+  squadra di agenti che si coordina lasciando file in una cartella condivisa fa lo
+  stesso, con gli stessi problemi (contesa, provenienza, e che cosa
   fa dimenticare allo stato comune ciò che non serve più).
 - Nella particle swarm optimization {cite}`kennedy1995particle`, nata
   togliendo pezzi a una simulazione di stormo alla Reynolds
@@ -1314,10 +1308,8 @@ quando, e chi decide dopo.
 
 `````
 
-Chi progetta un sistema con più di una parte che parla ha una domanda da farsi
-prima di tutte le altre, e non riguarda soltanto gli agenti software: chi può
-scrivere a chi, quando, e chi decide dopo. {doc}`Audio oltre la
-voce </Audio/overview>` lascia i modelli linguistici e riparte da un segnale
-grezzo, l'onda che esce da un microfono; gli attrezzi però restano, e il
-Transformer riappare presto, con al posto delle parole dei simboli che
-descrivono un suono.
+La regola di interazione resta la variabile da progettare in ogni sistema con
+più di una parte che agisce. {doc}`Audio oltre la voce </Audio/overview>` lascia
+i modelli linguistici e riparte da un segnale grezzo, l'onda che esce da un
+microfono; gli attrezzi però restano, e il Transformer riappare presto, con al
+posto delle parole dei simboli che descrivono un suono.

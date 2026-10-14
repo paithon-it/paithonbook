@@ -54,18 +54,17 @@ ATTESA_LENTI = 4000   # con --anche-lenti: i blocchi `pt-lento` di PINN, da soli
 # per insieme di istruzioni vettoriali, e all'avvio scelgono quella adatta alla
 # CPU che trovano: registri piu' larghi vogliono dire piu' accumulatori
 # parziali, cioe' un albero di somme diverso e arrotondamenti in punti diversi.
-# Misurato: su questa macchina (kernel SkylakeX, AVX-512) un residuo dava
-# 5,551e-16 e su un runner di GitHub 4,441e-16, e tre accuratezze di Efficienza
-# ballavano di mezzo punto, perche' quelle ultime cifre entrano in un
-# addestramento che le amplifica. Stesse versioni delle librerie, stesso seme.
+# Lo stesso residuo vale 5,551e-16 con il kernel SkylakeX (AVX-512) e
+# 4,441e-16 su un runner di GitHub, e un'accuratezza che passa da un
+# addestramento si sposta di mezzo punto, perche' quelle ultime cifre vengono
+# amplificate. Stesse versioni delle librerie, stesso seme.
 #
 # Fissarle al minimo comune denominatore (AVX2, che qualunque x86-64 dal 2013
 # ha) rimette d'accordo numpy, e su quello si regge il residuo del polyfit di
-# `MachineLearning`. NON basta per torch, e la prima stesura di questa riga
-# diceva il contrario: `BLAS_INFO=mkl`, cioe' le moltiplicazioni fra matrici di
-# torch passano da MKL, che `OPENBLAS_CORETYPE` non tocca. Provate e scartate
-# anche `MKL_CBWR` (la riproducibilita' condizionale di MKL),
-# `DNNL_MAX_CPU_ISA` e il numero di thread: nessuna sposta i numeri qui.
+# `MachineLearning`. NON basta per torch: `BLAS_INFO=mkl`, cioe' le
+# moltiplicazioni fra matrici di torch passano da MKL, che `OPENBLAS_CORETYPE`
+# non tocca. E non spostano i numeri nemmeno `MKL_CBWR` (la riproducibilita'
+# condizionale di MKL), `DNNL_MAX_CPU_ISA` e il numero di thread.
 # Da qui `INSTABILI` piu' sotto. Il racconto per il lettore sta in
 # `book/Matematica/analisi-numerica.md`.
 #
@@ -78,21 +77,20 @@ KERNEL_FISSI = {
 
 # I capitoli le cui uscite NON sono riproducibili fra macchine diverse, e il
 # perche' di ciascuno. Non e' una scusa per non controllarli: qui sono
-# controllati sempre, e il cancello di `strumenti/pubblica.py` li esegue prima
-# di ogni pubblicazione, sulla macchina che quei numeri li ha prodotti. E'
+# controllati sempre, e prima di ogni pubblicazione si eseguono sulla
+# macchina che quei numeri li ha prodotti. E'
 # `--salta-instabili` (che passa solo la CI pubblica) a lasciarli fuori, perche'
 # li' l'hardware ruota.
 #
-# Misurato sul commit 33cbf33: lo stesso identico codice e' andato rosso 2 volte
-# su 6, sempre negli stessi undici punti e sempre con gli stessi valori. I
-# runner di GitHub sono di due tipi, ciascuno deterministico, e l'ultima cifra
-# di un addestramento in virgola mobile dipende da quale ti tocca.
+# Lo stesso identico codice, rilanciato in CI, va rosso solo su una parte dei
+# run, sempre negli stessi punti e con gli stessi valori: i runner di GitHub
+# sono di due tipi, ciascuno deterministico, e l'ultima cifra di un
+# addestramento in virgola mobile dipende da quale ti tocca.
 INSTABILI = {
-    # Misurato sui commit pubblici 31f6d655, f8e455f5 e aced2372: ciascuno ha
-    # avuto un run verde e uno rosso, e il rosso sempre negli stessi due punti
-    # con gli stessi valori. Le conclusioni dei due blocchi reggono su tutti e
-    # due i runner (MAML migliora 77 onde su 100 in entrambi); cambiano le
-    # cifre.
+    # Lo stesso commit da' un run verde e uno rosso, e il rosso sempre negli
+    # stessi due punti con gli stessi valori. Le conclusioni dei due blocchi
+    # reggono su tutti e due i runner (MAML migliora 77 onde su 100 in
+    # entrambi); cambiano le cifre.
     "DeepLearning":
         "MAML dopo cinque passi di adattamento da' 1.74 su un tipo di runner"
         " e 1.94 sull'altro, e l'errore del multi-compito con l'ausiliario di"
@@ -105,11 +103,10 @@ INSTABILI = {
         " nell'ultima cifra diventa un carattere diverso nel disegno",
     "VerosimiglianzaEsatta":
         "la log-verosimiglianza media si sposta di un millesimo di nat",
-    # Precauzione, non misura: questo capitolo ha dichiarato la sua prima
-    # uscita il 2026-09-01 e su questa macchina combacia, ma nessuno l'ha
-    # ancora visto girare su un runner. Sta qui per analogia con i tre sopra
-    # (trenta epoche di Adam su una fattorizzazione, tre decimali stampati) e
-    # chi lo vede passare sei volte di fila in CI lo tolga da questo elenco.
+    # Precauzione, non misura: le sue uscite non sono ancora state viste
+    # girare su un runner. Sta qui per analogia con quelli sopra (trenta epoche
+    # di Adam su una fattorizzazione, tre decimali stampati), e chi lo vede
+    # passare sei volte di fila in CI lo tolga da questo elenco.
     "SistemiRaccomandazione":
         "addestra una fattorizzazione per trenta epoche e stampa tre"
         " decimali di MSE, dentro e fuori dai voti di addestramento",
@@ -122,11 +119,9 @@ def avvisa_se_carica() -> None:
     CONTRIBUTING.md lo raccomanda («guarda il carico della macchina prima di
     dichiarare rotto qualcosa») e non basta averlo scritto: la regola si legge
     come un gesto da fare all'inizio, mentre il carico che falsa una misura e'
-    quasi sempre quello che si e' lanciato **da soli** un momento prima. E'
-    successo il 18 agosto 2026: lo stesso notebook ha dato 223 secondi con
-    altri controlli in parallelo e 28 con la macchina libera, cioe' un fattore
-    otto, e per un momento quel 223 e' stato preso per il costo vero di un
-    blocco.
+    quasi sempre quello che si e' lanciato **da soli** un momento prima: con
+    altri controlli in parallelo lo stesso notebook puo' metterci parecchie
+    volte tanto, e quel tempo sembra il costo vero di un blocco.
 
     Non ferma niente: stampa, perche' un numero misurato sotto carico non e'
     sbagliato, e' solo un numero di cui non ci si puo' fidare.

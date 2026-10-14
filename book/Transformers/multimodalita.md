@@ -1,8 +1,8 @@
 # Le famiglie di modelli, e oltre il testo
 
-L'architettura del 2017 era una macchina per tradurre. Quello che è successo
-dopo somiglia a ciò che accadde col motore a scoppio: nato come motore fisso
-per le officine, finì su carrozze, navi e aerei. Il Transformer è stato
+L'architettura del 2017 era una macchina per tradurre. La sua storia
+successiva somiglia a quella del motore a scoppio: nato come motore fisso per
+le officine, finì su carrozze, navi e aerei. Il Transformer è stato
 scomposto nelle sue due pile, l'encoder che legge e il decoder che scrive, e
 ciascuna, presa da sola e ingrandita, è diventata una famiglia di modelli: da
 un lato quelli che rappresentano il testo per *capirlo*, dall'altro quelli che
@@ -14,8 +14,8 @@ funzionato anche lì.
 I capostipiti delle tre famiglie, una per pila e una per la coppia intera, si
 distinguono soprattutto per l'esercizio che fanno su miliardi di frasi prima di
 essere messi al lavoro, cioè per l'obiettivo del pre-addestramento, la fase
-generale che negli {doc}`esempi pratici <esempi>` aveva prodotto i modelli già
-pronti da scaricare. A seconda dell'esercizio scelto ne esce un modello bravo a
+generale da cui vengono i modelli pronti da scaricare degli {doc}`esempi
+pratici <esempi>`. A seconda dell'esercizio scelto ne esce un modello bravo a
 scrivere o uno bravo a capire, e le sigle lo dicono: GPT sta per *Generative
 Pre-trained Transformer*, un Transformer pre-addestrato che genera testo; BERT
 per *Bidirectional Encoder Representations from Transformers*, le
@@ -28,17 +28,16 @@ compito come testo in ingresso e testo in uscita.
 :alt: "Confronto fra due matrici di attenzione sulla stessa frase. In BERT l'attenzione è bidirezionale: ogni parola può guardare tutte le altre, prima e dopo di sé, e la matrice è piena. In GPT l'attenzione è causale: ogni parola vede solo sé stessa e quelle che la precedono, e la metà superiore della matrice è oscurata."
 :width: 96%
 
-Lo stesso blocco con due maschere. Non cambia l'architettura del blocco: cambia
-quali posizioni ogni parola può guardare, e da lì discende il resto.
+Lo stesso blocco con due maschere: cambiano le posizioni che ogni parola può
+guardare, e ne discende il resto.
 ```
 
 {numref}`fig-bert-vs-gpt` mostra la differenza che conta fra i primi due: lo
 stesso tipo di blocco, con due maschere diverse. BERT usa la self-attention
-bidirezionale, quindi la rappresentazione di ogni parola dipende anche da quello
-che viene dopo, ed è ciò che serve per classificare una frase, trovarci dentro
-una risposta, confrontarla con un'altra; GPT usa la maschera causale e deve
-indovinare come si continua, che è esattamente l'esercizio da fare per
-imparare a scrivere.
+bidirezionale, quindi la rappresentazione di ogni parola dipende anche da ciò
+che viene dopo, requisito per classificare una frase, estrarne una risposta,
+confrontarla con un'altra; GPT usa la maschera causale e deve indovinare come
+si continua, l'esercizio che insegna a scrivere.
 
 `````{tab} Elementare
 Tre studenti si preparano allo stesso esame in tre modi diversi. GPT studia
@@ -53,23 +52,22 @@ segnaposto; il compito è riscrivere i pezzi tolti, ciascuno dietro il suo
 segnaposto. Poi trasforma
 ogni compito in un tema: scrive in cima al foglio "traduci:" oppure
 "riassumi:", e la risposta è sempre un testo, qualunque sia la domanda. Quando
-ChatGPT ti risponde, sotto c'è il metodo di GPT, coprire e indovinare, con
+ChatGPT ti risponde, alla base c'è il metodo di GPT, coprire e indovinare, con
 miliardi di esempi alle spalle.
 
-Nessuno dei tre, in quei milioni di ripetizioni, sta studiando il compito che
-gli verrà chiesto davvero. Studiano la lingua, e si correggono da soli, perché
-la risposta giusta sta già nella pagina, coperta dalla mano o nascosta dal buco,
-e nessun insegnante ha dovuto prepararla. Il compito vero (tradurre una frase,
-riassumere una pagina, dire se una recensione è entusiasta) arriva alla fine, e
+Nessuno dei tre, in quei milioni di ripetizioni, prepara il compito che gli
+verrà chiesto. Studiano la lingua e si correggono da soli, perché la risposta
+giusta sta già nella pagina, coperta dalla mano o nascosta dal buco, e nessun
+insegnante ha dovuto prepararla. Il compito vero (tradurre una frase,
+riassumere una pagina, dire se una recensione è entusiasta) arriva alla fine e
 si impara con pochissimo: qualche esercizio già corretto, a volte solo le
-istruzioni scritte in cima al foglio, e in quel caso senza nemmeno rimettersi a
-studiare.
+istruzioni scritte in cima al foglio, senza nemmeno rimettersi a studiare.
 
 Al banco di fianco siede un quarto studente, **ELECTRA**, che negli esercizi a
 buchi vede uno spreco: sparisce circa una parola su sette, e solo su quella si
 viene interrogati, mentre le altre sei non fruttano nessun voto. Così si fa
 preparare le pagine da un compagno più piccolo, che invece di cancellare le
-parole ne *sostituisce* qualcuna con un'altra plausibile, e poi fa il
+parole ne *sostituisce* qualcuna con un'altra plausibile; poi ELECTRA fa il
 controllore: parola per parola, dice se quella è l'originale o un'intrusa. Su
 ogni parola la domanda è più povera (sì o no, invece di indovinarne una fra
 decine di migliaia), ma non ne salta nessuna, e per arrivare dove arrivano i
@@ -82,33 +80,32 @@ originale. Finito lo studio va a casa, e all'esame si presenta il controllore.
 `````{tab} Superiore
 GPT {cite}`radford2018improving` (OpenAI, 2018) è un Transformer *decoder-only*
 con maschera causale, addestrato come modello di linguaggio autoregressivo:
-massimizza la log-verosimiglianza
-$\sum_t \log p_\theta(x_t \mid x_{t-k}, \dots, x_{t-1})$, dove $x_t$ è il token
-in posizione $t$ e $k$ la lunghezza della finestra di contesto. La linea di
-scala arriva a GPT-3 {cite}`brown2020language` (175 miliardi di parametri),
-che mostra l'apprendimento *in-context*: adattarsi a un compito mostrato nel
-prompt con pochi esempi svolti (*few-shot*) o soltanto descritto
-(*zero-shot*), senza aggiornare i pesi. BERT {cite}`devlin2019bert`
-(Google) è *encoder-only* e bidirezionale, pre-addestrato con *masked language
-modeling* (si sorteggia il $15\%$ dei token e si chiede di predirli: di quelli
-scelti l’$80\%$ diventa `[MASK]`, il $10\%$ un token a caso e il $10\%$ resta
-com'è) e *next sentence prediction*, cioè dire se la seconda frase segue
-davvero la prima, un esercizio che i modelli successivi hanno lasciato cadere
-(RoBERTa lo toglie e sui compiti a valle non perde, anzi migliora di poco
-{cite}`liu2019roberta`); eccelle nei compiti di comprensione (classificazione,
-estrazione di risposte) previo fine-tuning. T5 {cite}`raffel2020exploring`
-(Google, 2019) mantiene l'encoder-decoder completo, e il suo esercizio è un
-*denoising*: si elimina il 15% dei token, a spezzoni contigui di tre in media,
-e ogni spezzone lascia al suo posto un solo *sentinel token*, unico nella
-sequenza; il bersaglio è la concatenazione degli spezzoni tolti, ciascuno
-preceduto dal sentinel che lo sostituiva. Il contributo che gli ha dato il nome
-sta però a valle: riformula ogni task NLP come *text-to-text*, mostrando che un
-solo formato copre traduzione, sintesi, classificazione. La lezione comune:
-pre-addestramento auto-supervisionato su corpora enormi + adattamento leggero
-(il *transfer learning* che avevamo visto per le immagini, arrivato al
-linguaggio; con una differenza che conta, perché sulle immagini quel
-pre-addestramento era supervisionato, e il segnale glielo davano le etichette
-di ImageNet).
+massimizza la log-verosimiglianza $\sum_t \log p_\theta(x_t \mid x_{t-k},
+\dots, x_{t-1})$, dove $x_t$ è il token in posizione $t$ e $k$ la lunghezza
+della finestra di contesto. La linea di scala arriva a GPT-3
+{cite}`brown2020language` (175 miliardi di parametri), che mostra
+l'apprendimento *in-context*: adattarsi a un compito mostrato nel prompt con
+pochi esempi svolti (*few-shot*) o soltanto descritto (*zero-shot*), senza
+aggiornare i pesi. BERT {cite}`devlin2019bert` (Google, 2018) è *encoder-only*
+e bidirezionale, pre-addestrato con *masked language modeling* (si sorteggia il
+$15\%$ dei token e si chiede di predirli: di quelli scelti l’$80\%$ diventa
+`[MASK]`, il $10\%$ un token a caso e il $10\%$ resta com'è) e *next sentence
+prediction*, cioè dire se la seconda frase segue davvero la prima, un esercizio
+che i modelli successivi hanno lasciato cadere (RoBERTa lo toglie e sui compiti
+a valle non perde, anzi migliora di poco {cite}`liu2019roberta`); eccelle nei
+compiti di comprensione (classificazione, estrazione di risposte) previo
+fine-tuning. T5 {cite}`raffel2020exploring` (Google, 2019) mantiene
+l'encoder-decoder completo, e il suo esercizio è un *denoising*: si elimina il
+15% dei token, a spezzoni contigui di tre in media, e ogni spezzone lascia al
+suo posto un solo *sentinel token*, unico nella sequenza; il bersaglio è la
+concatenazione degli spezzoni tolti, ciascuno preceduto dal sentinel che lo
+sostituiva. Il contributo che gli ha dato il nome sta però a valle: riformula
+ogni task NLP come *text-to-text*, mostrando che un solo formato copre
+traduzione, sintesi, classificazione. Il tratto comune è il pre-addestramento
+auto-supervisionato su corpora enormi, seguito da un adattamento leggero: il
+*transfer learning* già visto per le immagini, con una differenza, perché là il
+pre-addestramento era supervisionato e il segnale veniva dalle etichette di
+ImageNet.
 
 **ELECTRA** {cite}`clark2020electra` attacca l'inefficienza del masked language
 modeling: mascherando il $15\%$ dei token, il segnale di addestramento arriva
@@ -132,10 +129,10 @@ La somiglianza con una **GAN** è dichiarata dagli autori stessi, e istruttiva
 soprattutto per dove si rompe: il generatore non è addestrato a ingannare
 il discriminatore (è addestrato con la sua verosimiglianza, come un normale
 MLM), non c'è vettore di rumore in ingresso, e quando produce per caso il token
-giusto quello viene etichettato come *originale* e non come falso. È
-un'architettura avversaria nella forma e cooperativa nella sostanza, e il
+giusto quello viene etichettato come *originale* e non come falso. Il
 {doc}`capitolo sulle GAN </GAN/overview>` mostrerà quanto dell'instabilità di
-quelle reti venga proprio dal pezzo che qui è stato tolto.
+quelle reti venga dal pezzo che qui manca, il generatore addestrato contro il
+discriminatore.
 `````
 
 Fra i tre, T5 merita un disegno.
@@ -146,17 +143,17 @@ Fra i tre, T5 merita un disegno.
 :width: 100%
 
 Un solo formato per tutto. Di solito a un modello si attacca in cima un pezzo
-diverso per ogni mestiere, uno che sa dare voti, uno che sa scegliere fra due
+diverso per ogni compito, uno che sa dare voti, uno che sa scegliere fra due
 risposte; T5 non ne attacca nessuno: mette il nome del compito davanti alla
 frase, e la risposta esce come testo anche quando è un voto o un'etichetta.
 ```
 
-L'idea di {numref}`fig-t5-text-to-text` sembra un dettaglio ingegneristico e
-invece anticipa il modo in cui oggi si usano i modelli di linguaggio. Se ogni
+L'idea di {numref}`fig-t5-text-to-text` è tecnicamente semplice e anticipa il
+modo in cui oggi si usano i modelli di linguaggio. Se ogni
 compito si può scrivere come testo in ingresso e testo in uscita, allora
-cambiare compito non richiede di cambiare il modello: basta cambiare quello che
-gli si scrive davanti. Quel «quello che gli si scrive davanti» è il prompt: le
-istruzioni e il testo che si consegnano al modello prima che risponda. Dentro
+cambiare compito non richiede di cambiare il modello: basta cambiare il testo
+che gli si scrive davanti, il prompt: le istruzioni e il testo che si
+consegnano al modello prima che risponda. Dentro
 il prompt ci si può mettere la sola consegna a parole, o anche due o tre
 esercizi già svolti perché il modello capisca che cosa gli si sta chiedendo.
 Che quei pochi esempi bastino a far eseguire un compito, senza aggiornare i
@@ -167,13 +164,12 @@ con «TL;DR:» in coda a un articolo per farlo riassumere e coppie «frase ingle
 
 ## Oltre il testo: Vision Transformer e modelli multimodali
 
-Fin qui il Transformer ha sempre elaborato delle parole. Ma se si guarda bene,
-l'attenzione non sa niente delle parole: sa solo confrontare liste di numeri
-messe in fila. Qualunque cosa si riesca a ridurre a una fila di liste di
-numeri, allora, può entrarci dentro, e le immagini sono state fra le prime: nel
-2018 l'Image Transformer {cite}`parmar2018image` le generava pixel dopo pixel
-con l'attenzione, e nel 2020 il Vision Transformer ha mostrato che un encoder
-Transformer puro, senza convoluzioni, regge il confronto con le reti
+Finora il Transformer ha elaborato parole, ma l'attenzione non sa niente di
+parole: confronta liste di numeri messe in fila. Qualunque cosa si riduca a una
+fila di liste di numeri può quindi entrarci, e le immagini sono state fra le
+prime: nel 2018 l'Image Transformer {cite}`parmar2018image` le generava pixel
+dopo pixel con l'attenzione, e nel 2020 il Vision Transformer ha mostrato che
+un encoder Transformer puro, senza convoluzioni, è competitivo con le reti
 convoluzionali nel classificare fotografie, se è pre-addestrato su abbastanza
 dati.
 
@@ -196,21 +192,21 @@ adiacenti e due lontanissime partono alla pari, e la struttura dello spazio va
 imparata dai dati.
 
 `````{tab} Elementare
-E le immagini? Si taglia la foto in
-tessere quadrate, come un mosaico, e si mettono le tessere in fila come se
-fossero le parole di una frase. A quel punto il Transformer fa quello che sa
-fare: per capire la tessera con l'orecchio del gatto, va a "guardare" anche
-quella con la coda, dall'altra parte della foto.
+Per le immagini si taglia la foto in
+tessere quadrate, come un mosaico, e si mettono le tessere in fila come le
+parole di una frase. A quel punto il Transformer lavora come sul testo: per
+capire la tessera con l'orecchio del gatto, va a "guardare" anche quella con la
+coda, dall'altra parte della foto.
 
 Quella libertà si paga. Ogni tessera porta scritto il posto da cui viene, ma
 nessuno le ha detto che due posti confinanti abbiano qualcosa a che fare l'uno
 con l'altro: la tessera accanto a quella dell'orecchio e la tessera della coda,
 per il Transformer, sono lontane uguale. Che i puntini vicini vadano insieme
 deve scoprirlo guardando fotografie, e gliene servono a milioni. Con una
-scatola di foto e basta il risultato è un po' peggiore di quello del metodo che
-guarda un pezzetto di foto alla volta, che quella regola ce l'ha scritta dentro
-e non deve impararla; con qualche accorgimento in più nello studio, la distanza
-si colma.
+scatola di foto e nient'altro il risultato è un po' peggiore di quello del
+metodo che guarda un pezzetto di foto alla volta, che quella regola ce l'ha
+scritta dentro e non deve impararla; con qualche accorgimento in più nello
+studio, la distanza si colma.
 
 I modelli **multimodali** fanno il passo successivo: imparano testo e immagini
 insieme, su milioni di fotografie prese ciascuna con la sua didascalia, così
@@ -230,29 +226,33 @@ stessa riga o della stessa colonna finiscono con embedding simili), ed è per
 questo che le varianti scritte a mano in due dimensioni, o relative, non
 migliorano; e già dai primi strati alcune teste guardano quasi tutta
 l'immagine, mentre altre restano locali. Il punto essenziale è la condizione:
-senza il *bias induttivo* di località delle CNN, il ViT dell'articolo regge il
-confronto solo se pre-addestrato su dataset molto grandi (ImageNet-21k,
+senza il *bias induttivo* di località delle CNN, il ViT dell'articolo è
+competitivo solo se pre-addestrato su dataset molto grandi (ImageNet-21k,
 JFT-300M). La soglia però si sposta con la ricetta: con aumentazione
 aggressiva, regolarizzazione e distillazione da una rete convoluzionale, DeiT
 {cite}`touvron2021training` addestra lo stesso modello sul solo ImageNet-1k. La
-località non è gratis: o la si mette nell'architettura, o la si compra in dati.
-Sul fronte multimodale, **CLIP** {cite}`radford2021learning` allinea in uno
-spazio comune embedding di immagini e testi tramite addestramento contrastivo
-su coppie immagine-didascalia; i modelli generativi di immagini usano il
-Transformer in due modi diversi, perché DALL·E {cite}`ramesh2021zero` è esso
-stesso un Transformer autoregressivo da 12 miliardi di parametri che genera i
-token dell'immagine dopo quelli del testo, mentre la diffusione latente di
-Stable Diffusion {cite}`rombach2022high` si condiziona sul testo con un encoder
-Transformer, attraverso la cross-attention; e modelli come GPT-4 (2023)
-accettano input misti testo+immagine.
+località va quindi inserita nell'architettura o appresa con più dati. Sul
+fronte multimodale, **CLIP** {cite}`radford2021learning` allinea in uno spazio
+comune embedding di immagini e testi tramite addestramento contrastivo su 400
+milioni di coppie immagine-didascalia, in cui ogni immagine del batch deve
+riconoscere la propria didascalia fra tutte quelle presenti, e viceversa (la
+{doc}`sezione sull'allineamento di due spazi
+</VisioneLinguaggio/allineare-due-spazi>` ne costruisce l'obiettivo);
+i modelli generativi di immagini usano il Transformer in due modi diversi,
+perché DALL·E {cite}`ramesh2021zero` è esso stesso un Transformer
+autoregressivo da 12 miliardi di parametri che genera i token dell'immagine
+dopo quelli del testo, mentre la diffusione latente di Stable Diffusion
+{cite}`rombach2022high` si condiziona sul testo con un encoder Transformer,
+attraverso la cross-attention; e modelli come GPT-4 (2023) accettano input
+misti testo+immagine.
 `````
 
-Il principio, ed è il filo di tutto il discorso sui Transformer, è che tutto
-ciò che si riduce a una sequenza di token (le parole di una frase, le tessere
-di una foto, gli spezzoni di un suono) si può elaborare con l'attenzione. Come
-si costruisca davvero un modello che vede e parla è l'argomento di
-{doc}`visione e linguaggio </VisioneLinguaggio/overview>`, che esplora e valuta
-i costi di tre strade: tenere immagini e parole ciascuna nel proprio spazio e
+Il filo di tutto il discorso sui Transformer è che ogni cosa riducibile a una
+sequenza di token (le parole di una frase, le tessere di una foto, gli spezzoni
+di un suono) si può elaborare con l'attenzione. Come si costruisca un modello
+che vede e parla lo spiega il capitolo
+{doc}`visione e linguaggio </VisioneLinguaggio/overview>`, che confronta tre
+strade e i loro costi: tenere immagini e parole ciascuna nel proprio spazio e
 addestrarle a mettere le cose corrispondenti nello stesso punto; innestare un
 encoder visivo su un modello di linguaggio già fatto, lasciando comandare il
 linguaggio; oppure dare a tessere e parole un unico vocabolario, come se le
@@ -274,11 +274,11 @@ predetto quelle forme con un'accuratezza confrontabile con le misure fatte in
 laboratorio per la maggior parte dei casi, sulle proteine formate da una catena
 sola.
 
-Le due riserve, «nella maggior parte dei casi» e «una catena sola», hanno un
-peso preciso. Restano fuori le proteine fatte di più catene incastrate, i tratti
-che una forma stabile non ce l'hanno affatto, le proteine che ne assumono più
-d'una a seconda della situazione, e l'effetto delle mutazioni: la formula
-«problema risolto», che allora circolò molto, va letta con quell'elenco accanto.
+Le due riserve, «nella maggior parte dei casi» e «una catena sola», escludono
+molto: le proteine fatte di più catene incastrate, i tratti che una forma
+stabile non ce l'hanno affatto, le proteine che ne assumono più d'una a seconda
+della situazione, e l'effetto delle mutazioni. La formula «problema risolto»,
+che allora circolò molto, va letta con quell'elenco accanto.
 
 ```{figure} ../figures/alphafold-2.svg
 :name: fig-alphafold
@@ -293,10 +293,9 @@ fatto milioni di esperimenti, e quelli sono i dati.
 Il blocco centrale di {numref}`fig-alphafold` è dove l'attenzione serve di più.
 Gli anelli della catena, in gergo, si chiamano **residui** (termine senza alcun
 legame con la connessione residua delle reti). Due residui lontanissimi lungo
-la catena possono ritrovarsi appiccicati una volta che la catena si è
-ripiegata: è la relazione fra due elementi lontani che i filtri delle reti per
-immagini faticano a vedere, ed è esattamente il caso che l'attenzione tratta
-come normale, perché per lei ogni coppia è a un passo di distanza.
+la catena possono ritrovarsi a contatto una volta ripiegata la catena: sono
+relazioni fra elementi lontani che i filtri delle reti per immagini faticano a
+cogliere, mentre per l'attenzione ogni coppia dista un passo.
 
 `````{tab} Elementare
 
@@ -392,12 +391,11 @@ servizio di consultazione.
 
 ## Vantaggi e sfide
 
-Il quadro va chiuso con la stessa onestà con cui il {doc}`confronto con i
-modelli precedenti <confronti>` aveva ammesso il costo quadratico. I vantaggi
-sono reali: ogni posizione raggiunge ogni altra in un solo passo,
-l'addestramento si spartisce fra migliaia di processori, e una sola
-architettura serve il testo, le immagini e l'audio. Ma anche le sfide sono
-reali:
+I vantaggi sono noti: ogni posizione raggiunge ogni altra in un solo passo,
+l'addestramento si spartisce fra migliaia di processori, una sola architettura
+serve il testo, le immagini e l'audio. Le sfide sono altrettanto concrete, e si
+sommano al costo quadratico già ammesso nel
+{doc}`confronto con i modelli precedenti <confronti>`:
 
 - Risorse: addestrare un grande modello richiede da centinaia a decine di
   migliaia di acceleratori che lavorano insieme per settimane o mesi (il più
@@ -405,22 +403,21 @@ reali:
   {cite}`grattafiori2024llama3`), con i consumi elettrici che ne seguono; anche
   solo *eseguirlo* può richiedere macchine fuori dalla portata di un
   laboratorio piccolo.
-- Dati: i *corpora* (cioè le grandi raccolte di testi su cui i modelli
-  studiano) da miliardi di parole contengono errori, stereotipi e contenuti
-  tossici, e i modelli li assorbono. Se in quei testi le infermiere sono sempre
-  donne e gli ingegneri sempre uomini, il modello impara quella regola come
-  impara la grammatica: sono i bias, cioè le distorsioni sistematiche dei
-  dati, che diventano distorsioni del modello.
-- Affidabilità: un modello autoregressivo (che scrive una parola alla volta,
-  ogni volta scegliendo una continuazione di quello che ha già scritto)
-  assegna una probabilità a ogni continuazione e ne produce una, e il suo
-  obiettivo premia la plausibilità del testo, non la verità. Le
+- Dati: i *corpora* da miliardi di parole contengono errori, stereotipi e
+  contenuti tossici, e i modelli li assorbono. Se in quei testi le infermiere
+  sono sempre donne e gli ingegneri sempre uomini, il modello impara quella
+  regola come impara la grammatica: un bias dei dati diventa un bias del
+  modello.
+- Affidabilità: un modello autoregressivo assegna una probabilità a ogni
+  continuazione e ne produce una, e il suo obiettivo premia la plausibilità del
+  testo, non la verità. Le
   "allucinazioni" (risposte fluenti e sbagliate) sono quindi una conseguenza
   dell'obiettivo, come già nella {doc}`matematica di un modello linguistico
   </Matematica/matematica-llm>`. Per i fatti arbitrari, quelli che nei dati
   compaiono una volta sola, un modello pre-addestrato e ben calibrato sbaglia
-  con una frequenza vicina alla quota di quei fatti
-  {cite}`kalai2024calibrated`, e a ridurre gli errori serve il post-training.
+  con una frequenza che, a meno di termini piccoli, non scende sotto la quota di
+  quei fatti {cite}`kalai2024calibrated`, e a ridurre gli errori serve il
+  post-training.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -467,9 +464,9 @@ reali:
   qualche token e far dire alla rete, per ogni posizione, se è originale o
   intrusa, dà segnale su tutta la sequenza invece che sul solo $15\%$
   mascherato, e a parità di calcolo rende molto di più.
-- ViT tratta l'immagine come una frase di tessere $16\times16$, e paga in
-  dati la località che le CNN hanno gratis nell'architettura; i modelli
-  multimodali (CLIP, GPT-4) allineano testo e immagini.
+- ViT tratta l'immagine come una frase di tessere $16\times16$, e deve
+  ricavare dai dati la località che le CNN hanno già nell'architettura; i
+  modelli multimodali (CLIP, GPT-4) allineano testo e immagini.
 - AlphaFold 2 tiene in dialogo l'MSA e la rappresentazione di coppia dentro
   l'Evoformer, e la *triangle attention* rende esprimibile, non obbligatoria,
   la disuguaglianza triangolare sulle distanze. Stima la propria confidenza

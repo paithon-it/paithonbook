@@ -303,11 +303,11 @@ def senza_data(pdf: pathlib.Path) -> None:
 
     Il seme rende il disegno di una banda sempre lo stesso, ma Chromium
     stampa dentro il PDF l'istante in cui l'ha scritto: due rigenerazioni a
-    disegno immutato producono trentasette blob nuovi, che in un repository
-    dove i PDF sono **tracciati** significa qualche megabyte di storia per
-    niente, e un `git status` che grida al cambiamento quando non e'
-    cambiato nulla. Misurato: il disegno era identico pixel per pixel, e la
-    sola differenza erano `creationDate` e `modDate`.
+    disegno immutato producono un blob nuovo per ogni banda, che in un
+    repository dove i PDF sono **tracciati** significa qualche megabyte di
+    storia per niente, e un `git status` che grida al cambiamento quando non
+    e' cambiato nulla. A disegno identico pixel per pixel, le sole differenze
+    sono `creationDate` e `modDate`.
 
     Se PyMuPDF non c'e' non succede niente di grave: si torna al
     comportamento di prima, che e' rumoroso ma corretto.
@@ -359,11 +359,10 @@ def quanti_capitoli() -> int:
 def marchio() -> tuple[str, int, int]:
     """Il logo del libro per la copertina a stampa, dal file del sito.
 
-    Prima questo PDF non lo generava nessuno: era stato fatto a mano una volta
-    e committato, e quando il logo e' cambiato (la «a» diventata il tribar, il
-    15 agosto 2026) la copertina del PDF ha continuato a mostrare quello
-    vecchio senza dirlo, perche' la ricetta LaTeX trova il file e lo mette.
-    Adesso si rifa' da `logo-light.svg`, cosi' non puo' piu' restare indietro.
+    Si rifa' da `logo-light.svg` a ogni giro, cosi' non puo' restare
+    indietro: un PDF fatto a mano una volta e committato, quando il logo
+    cambia, continua a mostrare quello vecchio senza dirlo, perche' la
+    ricetta LaTeX trova il file e lo mette.
 
     Si prende la versione chiara perche' la copertina e' su fondo crema; le
     misure escono dal `viewBox`, non si scrivono.

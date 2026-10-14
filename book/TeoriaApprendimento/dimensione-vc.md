@@ -25,7 +25,7 @@ Una retta divide tre punti non allineati in tutti gli otto modi possibili, e
 per questo si dice che li frantuma. Quattro punti invece non li frantuma mai:
 se stanno ai vertici di un quadrilatero le diagonali colorate uguali non si
 separano, se uno sta dentro il triangolo degli altri non lo si stacca da loro,
-e se stanno in fila basta alternare i colori.
+e se sono allineati basta alternare i colori.
 ```
 
 ## Frantumare un insieme di punti
@@ -40,21 +40,21 @@ Con tre puntini non allineati vinci sempre ({numref}`fig-frammentare`). Se hanno
 tutti lo stesso colore, posi il righello lontano; se uno ha un colore diverso
 dagli altri due, lo stacchi con un taglio; e le colorazioni possibili sono
 otto (due colori per ciascuno dei tre, $2\cdot2\cdot2$), tutte di uno di
-questi tipi. In fila no: rosso, blu, rosso non si separa con un righello, ed è
-per questo che i posti li scegli tu. Quando un righello riesce a separare un
+questi tipi. In fila no: rosso, blu, rosso non si separa con un righello;
+per questo i posti li scegli tu. Quando un righello riesce a separare un
 gruppo di puntini in tutti i modi in cui lo si può colorare, si dice che lo
 **frantuma**: la famiglia lo riduce in tutti i pezzi possibili.
 
-Con quattro puntini, invece, l'avversario ha sempre una mossa vincente. Se i
+Con quattro puntini, invece, l'avversario ha sempre una colorazione vincente. Se i
 quattro stanno ai vertici di un quadrilatero, colora uguali quelli sulle
 diagonali, e nessun righello li separa; se uno sta dentro il triangolo degli
-altri tre, colora lui di un colore e gli altri dell'altro; se stanno in fila,
+altri tre, colora lui di un colore e gli altri dell'altro; se sono allineati,
 alterna i colori come con tre. Il numero più grande di puntini che il righello
-frantuma è quindi tre, ed è la sua dimensione VC.
+frantuma è quindi tre, la sua dimensione VC.
 
 Altri attrezzi hanno altri numeri. Un paletto piantato su una strada, blu a
-sinistra e rosso a destra, che è poi una delle mille soglie con la strada al
-posto del segmento, frantuma un punto solo, perché con due punti la colorazione
+sinistra e rosso a destra, è una delle mille soglie, con la strada al
+posto del segmento. Frantuma un punto solo, perché con due punti la colorazione
 «rosso a sinistra, blu a destra» non gli riesce. Un tratto di strada dipinto di
 rosso, con il resto blu, ne frantuma due ma non tre (rosso, blu, rosso non si fa
 con un tratto solo). In una stanza, dove le direzioni sono tre, un foglio di
@@ -68,8 +68,7 @@ rosso) e frantuma tre punti. Non è così. Una curva a onda con una manopola
 sola, quanto è fitta, colora in tutti i modi quanti punti si vuole, purché
 siano messi nei posti giusti, a distanze che si dimezzano a ogni punto: si
 dimostra che stringendo l'onda del giusto, una volta sola, la si fa passare
-sopra i rossi e sotto i blu, qualunque sia la colorazione. Una manopola, e
-nessun limite al numero di punti.
+sopra i rossi e sotto i blu, qualunque sia la colorazione.
 
 `````
 
@@ -92,19 +91,18 @@ $$
 $$
 
 infinita se il massimo non esiste. Per dimostrare che
-$\mathrm{VCdim}(\mathcal{H})=d$ servono due mosse di segno opposto: esibire un
-insieme di $d$ punti frantumato, e mostrare che *nessun* insieme di $d+1$ punti
-lo è. Gli esempi standard {cite}`mohri2018foundations`: le soglie sulla retta,
-in un verso solo, hanno dimensione $1$ (con i due versi $2$); gli intervalli
-$2$, perché la dicotomia $(+,-,+)$ non si realizza (esempio 3.11); i semipiani
-di $\mathbb{R}^2$ hanno dimensione $3$, e per quattro punti i casi sono quelli
-della figura, a seconda che l'inviluppo convesso abbia quattro o tre vertici (se
-ne ha due i punti sono allineati, e i due in mezzo non si staccano da quelli
-agli estremi; esempio 3.12). In generale gli iperpiani di $\mathbb{R}^n$, dove
-$n$ è la dimensione dello spazio come nel resto del libro e $d$ resta la
-dimensione VC, hanno dimensione $n+1$. Il limite inferiore lo dà l'insieme
-formato dall'origine e dagli $n$ vettori della base canonica, che gli iperpiani
-frantumano: per le etichette $y_0,\dots,y_n\in\{\pm1\}$ bastano
+$\mathrm{VCdim}(\mathcal{H})=d$ occorre esibire un insieme di $d$ punti
+frantumato e mostrare che *nessun* insieme di $d+1$ punti lo è. Gli esempi
+standard {cite}`mohri2018foundations`: le soglie sulla retta, in un verso solo,
+hanno dimensione $1$ (con i due versi $2$); gli intervalli $2$, perché la
+dicotomia $(+,-,+)$ non si realizza (esempio 3.11); i semipiani di
+$\mathbb{R}^2$ hanno dimensione $3$, e per quattro punti i casi sono quelli
+della figura, a seconda che l'inviluppo convesso abbia quattro o tre vertici
+(se ne ha due i punti sono allineati, e i due in mezzo non si staccano da
+quelli agli estremi; esempio 3.12). In generale gli iperpiani di $\mathbb{R}^n$
+con termine noto hanno dimensione $n+1$ (senza, $n$). Il limite inferiore viene
+dall'insieme formato dall'origine e dagli $n$ vettori della base canonica, che
+gli iperpiani frantumano: per le etichette $y_0,\dots,y_n\in\{\pm1\}$ bastano
 $\mathbf{w}=(y_1,\dots,y_n)$ e $b=y_0/2$. Il limite superiore viene dal teorema
 di Radon, secondo cui $n+2$ punti di $\mathbb{R}^n$ si ripartiscono sempre in
 due sottoinsiemi con inviluppi convessi che si intersecano, e due insiemi così
@@ -116,7 +114,7 @@ $\{x\mapsto\mathrm{sgn}\sin(\omega x):\omega\in\mathbb{R}\}$ ha un parametro
 solo e dimensione VC infinita (esempio 3.16 ed esercizio 3.20): per ogni $m$ i
 punti $x_i=2^{-i}$ si frantumano, e per le etichette $y_i\in\{\pm1\}$ basta
 $\omega=\pi\big(1+\sum_{i=1}^{m}2^{i}(1-y_i)/2\big)$. La dimensione VC misura
-quello che la famiglia *fa* sui dati, non come è scritta.
+le dicotomie che la famiglia *produce* sui dati, non il modo in cui è scritta.
 
 `````
 
@@ -138,41 +136,44 @@ $2^{10}=1024$ modi. Quanti di questi riesce a fare un righello? Contarli uno
 per uno si può, e sono $92$: meno di uno su dieci, e vicino a cento, il
 quadrato di dieci. Con venti puntini le colorazioni sono più di un milione, e
 il righello ne fa $382$, vicino a quattrocento. Il righello, cioè, si comporta
-come un attrezzo con un numero di mosse diverse che cresce come il quadrato dei
-punti, non come uno che ne raddoppia le possibilità a ogni punto nuovo.
+come un attrezzo con un numero di colorazioni diverse che cresce come il
+quadrato dei punti, non come uno che ne raddoppia le possibilità a ogni punto
+nuovo.
 
-Questo salva il conto dell'investigatore. Di righelli ce ne sono infiniti, ma
-davanti a venti indizi quelli che li colorano allo stesso modo sono, per quanto
-riguarda quegli indizi, lo stesso sospettato: i sospettati veri sono poche
-centinaia, non infiniti. E siccome crescono piano, alla lunga vincono i
-dimezzamenti: raddoppiando gli indizi i sospettati distinti si moltiplicano per
-quattro, mentre la probabilità che uno da scartare resti in lista si divide per
-più di quattro appena gli indizi sono una trentina (trenta indizi in più sono
-due dimezzamenti, cioè una divisione per quattro), e per sempre di più dopo.
+Questo salva il ragionamento dell'investigatore. Di righelli ce ne sono
+infiniti, ma davanti a venti indizi quelli che li colorano allo stesso modo
+sono, per quanto riguarda quegli indizi, lo stesso sospettato: i sospettati
+veri sono poche centinaia, non infiniti. Siccome crescono piano, alla lunga
+vincono i dimezzamenti: raddoppiando gli indizi i sospettati distinti si
+moltiplicano per quattro, mentre la probabilità che uno da scartare resti in
+lista si divide per più di quattro appena gli indizi sono una trentina, e per
+sempre di più dopo (trenta indizi in più sono due dimezzamenti, cioè una
+divisione per quattro).
 
 Per contare il tetto non serve nemmeno conoscere l'attrezzo: basta la sua
 dimensione VC. Per un attrezzo che frantuma al più tre punti, su dieci punti le
 colorazioni possibili non superano $1+10+45+120=176$, cioè i modi di scegliere
-nessuno, uno, due o tre punti fra dieci ($45$ e $120$ sono i conti della sezione
-su {doc}`contare i casi </Matematica/probabilita-statistica>`). Il tetto ha
-questa forma perché a ogni colorazione diversa corrisponde un gruppetto di punti
-che l'attrezzo frantuma, e i gruppetti frantumati hanno al più tre punti. Sul
-paletto lo si vede a occhio. Con quattro puntini sulla strada le colorazioni
-sono cinque (tutti rossi, oppure blu fino al primo, al secondo, al terzo o al
-quarto), e i gruppetti che il paletto frantuma sono cinque anche loro, nessun
-punto oppure uno qualunque dei quattro: a «tutti rossi» va il gruppetto vuoto, a
-«blu fino al secondo» il secondo puntino, e così via. Il conto esatto per il
-righello dice $92$, sotto il tetto come deve.
+nessuno, uno, due o tre punti fra dieci ($45$ e $120$ sono i risultati della
+sezione su {doc}`contare i casi </Matematica/probabilita-statistica>`). Il
+tetto ha questa forma perché a ogni colorazione diversa corrisponde un
+gruppetto di punti che l'attrezzo frantuma, e i gruppetti frantumati hanno al
+più tre punti. Sul paletto lo si vede a occhio. Con quattro puntini sulla
+strada le colorazioni sono cinque (tutti rossi, oppure blu fino al primo, al
+secondo, al terzo o al quarto), e i gruppetti che il paletto frantuma sono
+cinque anche loro, nessun punto oppure uno qualunque dei quattro: a «tutti
+rossi» va il gruppetto vuoto, a «blu fino al secondo» il secondo puntino, e
+così via. Per il righello le colorazioni, contate, sono $92$, sotto il
+tetto come deve.
 
 Da qui la regola pratica: gli esempi che servono crescono con la dimensione VC,
 come prima crescevano con il numero di raddoppi dei sospettati. Un attrezzo più
 potente sbaglia meno sugli esempi che ha visto e ne chiede di più perché ci si
-possa fidare, e scegliere l'attrezzo vuol dire scegliere dove stare fra le due
-cose. E non si scende sotto: nessun metodo, per quanto astuto, se la cava con
-meno esempi di una quantità proporzionale alla dimensione VC. Quando la
-dimensione VC è infinita, come per l'onda, nessun numero di esempi basta in
-tutti i casi, perché l'attrezzo riesce a colorare qualunque cosa e quindi non
-impara niente dai colori che ha visto.
+possa fidare, e chi sceglie l'attrezzo sceglie anche dove stare fra le due
+cose. Esiste anche un minimo che non si aggira: nessun metodo, per quanto astuto,
+se la cava con meno esempi di una quantità proporzionale alla dimensione VC.
+Quando la dimensione VC è infinita, come per l'onda, nessun numero di esempi
+basta in tutti i casi, perché l'attrezzo riesce a colorare qualunque cosa e
+quindi non impara niente dai colori che ha visto.
 
 `````
 
@@ -199,14 +200,14 @@ più $\sum_{i\le d}\binom{m}{i}$. La forma chiusa viene, per $m\ge d$, da
 $\sum_{i\le d}\binom{m}{i}\le\sum_{i\le d}\binom{m}{i}(m/d)^{d-i}
 \le(m/d)^d(1+d/m)^m\le(em/d)^d$.
 
-La funzione di crescita è quindi o esattamente $2^m$ per ogni $m$ (dimensione
-infinita) o maggiorata da un polinomio di grado $d$: non esistono vie di mezzo.
-Per i semipiani del piano il teorema di Cover sulle dicotomie lineari
+La funzione di crescita è quindi uguale a $2^m$ per ogni $m$ (dimensione
+infinita) oppure maggiorata da un polinomio di grado $d$: non esistono vie di
+mezzo. Per i semipiani del piano il teorema di Cover sulle dicotomie lineari
 {cite}`cover1965geometrical` dà il valore esatto per punti in posizione
-generale, $\Pi(m)=m^2-m+2$, sotto il tetto di Sauer
-$\sum_{i\le 3}\binom{m}{i}$.
+generale, $\Pi(m)=m^2-m+2$, sotto il tetto di Sauer $\sum_{i\le
+3}\binom{m}{i}$.
 
-Sostituendo $\Pi_{\mathcal{H}}$ al posto di $|\mathcal{H}|$ nel conto
+Sostituendo $\Pi_{\mathcal{H}}$ a $|\mathcal{H}|$ nella disuguaglianza
 dell'unione si ottiene il **bound VC** (Mohri e colleghi, corollario 3.19): con
 probabilità almeno $1-\delta$, per ogni $h\in\mathcal{H}$,
 
@@ -239,14 +240,14 @@ largo, ma la dipendenza da $d$ è quella giusta nei due versi.
 
 Resta un compromesso, che Vapnik ha chiamato minimizzazione del rischio
 strutturale: una famiglia con $d$ più grande abbassa $\hat{R}_S$ e alza il
-termine di complessità, ed è la stessa tensione fra errore di approssimazione
+termine di complessità. È la stessa tensione fra errore di approssimazione
 ed errore di stima vista con lo {doc}`spazio delle ipotesi
 </MachineLearning/apprendimento-supervisionato>`, questa volta con un numero
 accanto.
 
 `````
 
-Il blocco conta le dicotomie che una retta produce su punti estratti a caso,
+Il programma conta le dicotomie che una retta produce su punti estratti a caso,
 provando tutte le rette che contano, e le confronta con la formula esatta che
 Thomas Cover ha dato per le rette nel 1965, $m^2-m+2$ dicotomie su $m$ punti
 senza tre allineati, e con il tetto di Sauer. Poi calcola, per le rette del
@@ -306,7 +307,7 @@ m=100000: rischio vero al massimo rischio empirico + 0.031
 Le prime righe fanno vedere il lemma di Sauer al lavoro: le dicotomie possibili
 raddoppiano a ogni punto, quelle di una retta crescono come il quadrato, e il
 conteggio fatto provando le rette coincide riga per riga con la formula di
-Cover. Le ultime dicono quanto costa la garanzia, che ha la forma di tutte
+Cover. Le ultime dicono che cosa promette la garanzia, che ha la forma di tutte
 quelle della teoria: l'errore vero sta sotto l'errore sugli esempi più uno
 scarto che cresce con la dimensione VC e cala con il numero degli esempi. Con
 cento esempi lo scarto promesso è $0{,}67$, sessantasette punti percentuali,
@@ -348,8 +349,8 @@ che si ha davanti di solito non è la peggiore.
 
 La garanzia della dimensione VC ha un difetto che i numeri calcolati per le
 rette lasciano intuire: guarda la peggiore distribuzione possibile e i peggiori
-punti possibili, e non si accorge che i dati che si hanno davanti possono essere
-molto più benevoli. Una retta che separa due nuvole lontane, lasciando fra loro
+punti possibili, e non si accorge che un campione vero può essere
+molto più benevolo. Una retta che separa due nuvole lontane, lasciando fra loro
 una strada larga, e una che passa rasente ai punti appartengono alla stessa
 famiglia, con la stessa dimensione VC, e la garanzia le tratta allo stesso
 modo. Per distinguerle serve una misura calcolata sui dati.

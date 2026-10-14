@@ -27,23 +27,23 @@ dall'ingresso.
 
 `````{tab} Elementare
 
-Riprendi il foglio-registro del capitolo precedente. A ogni parola ci si scrive
-una voce nuova, fatta di un’etichetta e di un contenuto, e per rileggere si
-presenta un'etichetta e si riceve indietro ciò che le somiglia di più. Il foglio
-ha un numero fisso di caselle, e la voce nuova si somma a quello che c'è già,
-lasciando un segno in tutte le caselle; prima di sommarla, però, il passato
-viene sbiadito un po’.
+Riprendi il foglio-registro della sezione dalla softmax alla ricorrenza. A ogni
+parola ci si scrive una voce nuova, fatta di un’etichetta e di un contenuto, e
+per rileggere si presenta un'etichetta e si riceve indietro ciò che le somiglia
+di più. Il foglio ha un numero fisso di caselle, e la voce nuova si somma a ciò
+che c'è già, lasciando un segno in tutte le caselle; prima di sommarla, però,
+il passato viene sbiadito un po’.
 
 Quasi tutte le architetture dell'attenzione lineare e degli SSM sono un
 apparecchio solo, con poche manopole. Il corpo della macchina è sempre lo
 stesso: una memoria che a ogni parola scrive una nuova voce e ne rilegge le
-vecchie. Cambiare architettura non vuol dire cambiare macchina, ma girare tre
-manopole, e ognuna si paga con qualcosa.
+vecchie. Cambiare architettura non cambia la macchina: gira tre manopole, e
+ognuna si paga con qualcosa.
 
-La prima decide **quanto è grande** la memoria. Più caselle vuol dire più voci
-che ci stanno senza pestarsi i piedi. Il conto arriva a ogni parola: le caselle
+La prima decide **quanto è grande** la memoria. Con più caselle ci
+stanno più voci senza pestarsi i piedi. Il conto arriva a ogni parola: le caselle
 si toccano tutte, una per una, sia per scrivere sia per rileggere, quindi un
-foglio più capiente costa di più. Quanto di più, dipende da come si fanno i
+foglio più capiente è più oneroso. Quanto di più, dipende da come si fanno i
 conti: una macchina che li fa in blocco, come Mamba-2 con la sua pressa, si
 permette un foglio molto più grande senza rallentare.
 
@@ -52,29 +52,28 @@ può non sbiadire affatto, sbiadire tutto in blocco della stessa quantità,
 sbiadire colonna per colonna, ciascuna al suo ritmo, oppure cancellare *di
 mira* solo la vecchia voce che sta per essere riscritta. Sbiadire alleggerisce
 tutto senza guardare che cosa butta via, cancellare di mira tiene in ordine una
-voce sola. Non sbiadire affatto, però, non vuol dire tenere tutto: le caselle
+voce sola. Non sbiadire affatto non significa tenere tutto: le caselle
 restano quelle, le voci continuano ad ammucchiarsi una sopra l'altra, e più se
-ne ammucchiano meno pulita torna ciascuna. Anche questa manopola ha il suo
-prezzo, e si paga in velocità. Un calcolatore di oggi ha migliaia di piccoli
-operai che lavorano fianco a fianco, e rende quando gli si dà una cosa grossa
-sola invece di mille cose piccole in fila. Con una regola di sbiadire semplice,
-uguale per tutte le caselle, l'apparecchio sbriga la pagina intera in una volta
-e li tiene occupati tutti; più la regola guarda al dettaglio della singola
-voce, più quel lavoro in blocco si spezzetta, e chi resta senza il suo pezzo
-aspetta fermo. Quello che si compra in cambio è un registro tenuto in ordine, e
-riletture che tornano più precise.
+ne ammucchiano meno pulita torna ciascuna. Anche questa manopola si paga, in
+velocità. Un calcolatore di oggi ha migliaia di piccoli operai che lavorano
+fianco a fianco, e rende quando gli si dà un lavoro grosso solo invece di mille
+lavoretti uno dopo l'altro. Con una regola di sbiadire semplice, uguale per
+tutte le caselle, l'apparecchio sbriga la pagina intera in una volta e li tiene
+occupati tutti; più la regola guarda al dettaglio della singola voce, più quel
+lavoro in blocco si spezzetta, e chi resta senza il suo pezzo aspetta fermo. In
+cambio si ottiene un registro tenuto in ordine, e riletture più precise.
 
 La terza manopola decide se queste scelte sono **fisse**, uguali
 per ogni parola, o se invece è la parola stessa a deciderle, momento per
 momento. Una regola fissa sbiadisce allo stesso modo la data che servirà fra
 trecento pagine e l'intercalare che non serve a nessuno, perché guarda soltanto
 a quanto tempo è passato. Se decide la parola, la data si tiene intatta e
-l'intercalare cade subito: si dimentica in base a quello che si legge. Anche
+l'intercalare cade subito: si dimentica in base al contenuto letto. Anche
 questo si paga: la scelta va rifatta a ogni parola, e non si può più
 preparare una volta sola all'inizio.
 
 RetNet, GLA, DeltaNet e Mamba-2 sono lo stesso apparecchio con le manopole in
-posizioni diverse. E le posizioni si combinano: c'è chi gira insieme la
+posizioni diverse. Le posizioni, poi, si combinano: c'è chi gira insieme la
 manopola dello sbiadire in blocco e quella del cancellare di mira, e si chiama
 Gated DeltaNet. S4 e Mamba-1 gli somigliano molto, ma in loro ogni casella
 sbiadisce a un ritmo tutto suo, che dipende sia dalla riga sia dalla colonna, e
@@ -102,17 +101,18 @@ transizione moltiplica a destra, e il lato conta: con lo stato fatto di colonne
 indicizzate dalle chiavi, è da quel lato che il fattore agisce sui canali di
 chiave (e che $\mathbf{I} - \beta_t \mathbf{k}_t \mathbf{k}_t^\top$ cancella la
 traccia lasciata da $\mathbf{k}_t$); a sinistra sbiadirebbe i canali dei
-valori, che è un'altra cosa. Nelle sezioni precedenti la stessa transizione
-compariva a sinistra, $\mathbf{h}_t =
-\bar{\mathbf{A}}\mathbf{h}_{t-1} + \dots$, e non è una contraddizione: lì lo
-stato era il vettore colonna $\mathbf{h}$ di un singolo canale, cioè una riga
-di $\mathbf{S}$ trasposta, e trasporre scambia i due lati. L'unico caso in cui
-il lato non conta davvero è quello di un fattore scalare, come l’$\alpha_t$ di
-Mamba-2, che commuta con tutto.
+valori, che è un'altra cosa. Nelle sezioni su {doc}`S4
+</StateSpaceModel/dai-sistemi-dinamici-a-s4>` e su {doc}`Mamba
+</StateSpaceModel/mamba>` la stessa transizione compariva a sinistra,
+$\mathbf{h}_t = \bar{\mathbf{A}}\mathbf{h}_{t-1} + \dots$, e non è una
+contraddizione: lì lo stato era il vettore colonna $\mathbf{h}$ di un singolo
+canale, cioè una riga di $\mathbf{S}$ trasposta, e trasporre scambia i due
+lati. L'unico caso in cui il lato non conta è quello di un fattore scalare,
+come l’$\alpha_t$ di Mamba-2, che commuta con tutto.
 
 Prima degli assi, i costi. Per il solo nucleo (senza le proiezioni lineari, che
-costano lo stesso in tutti i casi), su una sequenza di lunghezza $L$ con $D$
-canali e stato $N$ per canale:
+pesano allo stesso modo in tutti i casi), su una sequenza di lunghezza $L$ con
+$D$ canali e stato $N$ per canale:
 
 | | addestramento | un token in generazione | memoria in generazione |
 | :--- | :--- | :--- | :--- |
@@ -122,11 +122,11 @@ canali e stato $N$ per canale:
 | Mamba-2 (SSD a blocchi) | $O(LDN)$, quasi tutto in prodotti di matrici | $O(DN)$ | $O(DN)$ |
 
 Le ultime due righe hanno lo stesso ordine: Mamba-2 non fa meno operazioni,
-le fa sui tensor core, ed è per questo che può permettersi un $N$ di un ordine
+le fa sui tensor core, e per questo può permettersi un $N$ di un ordine
 di grandezza più grande. La tabella dice come il costo cresce, e non quale
 modello sia più veloce: lo decidono le costanti e l'hardware.
 
-Gli assi di progetto sono tre, e ciascuno ha un prezzo e un guadagno.
+Gli assi di progetto sono tre, e ciascuno ha i suoi vantaggi e i suoi svantaggi.
 
 **1. La dimensione dello stato.** Quanto è grande $d$ (o, per gli SSM, la
 dimensione $N$ dello stato per canale). Uno stato più grande è una memoria più
@@ -135,8 +135,9 @@ più calcolo e più memoria a ogni passo, $O(d^2)$ per l'aggiornamento. È la
 manopola della capacità grezza.
 
 **2. La struttura della transizione.** È la vera firma di ogni architettura, e
-la tabella unificante del capitolo precedente la metteva in fila per struttura
-via via più ricca:
+la tabella unificante della {doc}`sezione sulle architetture lineari
+</AttenzioneLineare/architetture-lineari>` la ordinava per struttura via via
+più ricca:
 
 $$
 \underbrace{\mathbf{I}}_{\text{lin. attn}}
@@ -175,7 +176,7 @@ preciso. Non in *state tracking*. Grazzi e colleghi {cite}`grazzi2025unlocking`
 dimostrano che una ricorrenza lineare a precisione finita, le cui transizioni
 hanno autovalori tutti positivi, non risolve nemmeno la parità (dire se in una
 stringa di bit gli uni sono pari o dispari); con gli intervalli dichiarati per
-$\alpha_t$ e $\beta_t$ è il caso di ogni gradino della fila. La cura costa una
+$\alpha_t$ e $\beta_t$ è il caso di ogni gradino della fila. La cura è una
 riga: $\beta_t \in (0,2)$ invece di $(0,1)$, così che l'autovalore
 $1-\beta_t\lVert\mathbf{k}_t\rVert^2$ possa scendere fino a $-1$ (e, per
 Mamba, $\bar a_t \in (-1,1)$). Con transizioni che sono prodotti di fattori di
@@ -185,7 +186,14 @@ linguaggio regolare; per contare modulo $3$ serve invece un autovalore non
 reale, e una transizione triangolare a elementi reali non basta. È lo stesso
 segno meno, insieme a una transizione che copia una colonna dello stato su
 un'altra, che dà la sua capacità a RWKV-7, e l'autovalore non reale è
-l'esigenza a cui Mamba-3 risponde con le rotazioni.
+l'esigenza a cui Mamba-3 risponde con le rotazioni. Il limite ha anche una forma
+di complessità: a precisione logaritmica e con un numero fisso di strati, gli
+SSM di S4 (transizione costante) e di Mamba (transizione diagonale) calcolano
+solo funzioni in $\mathsf{TC}^0$, e se
+$\mathsf{TC}^0 \neq \mathsf{NC}^1$ non possono comporre permutazioni di cinque
+elementi (la parola nel gruppo $S_5$, un problema $\mathsf{NC}^1$-completo)
+{cite}`merrill2024illusion`; la {doc}`sezione sulle architetture lineari
+</AttenzioneLineare/architetture-lineari>` riprende il quadro.
 
 **3. Il grado di dipendenza dai dati.** La transizione può essere fissa
 (scelta a priori, uguale per ogni token, come il $\gamma$ di RetNet o il
@@ -196,25 +204,25 @@ decidere cosa tenere e cosa lasciar cadere in base a *ciò che si legge*, non
 solo a quanto tempo è passato. È il salto che separa un metal detector
 regolato una volta per tutte da una guardia che valuta caso per caso.
 
-Su questa mappa gli SSM non sono un'isola, ma non ci stanno tutti allo stesso
-modo. Mamba-1 nella forma $\mathbf{S}_{t-1}(\text{transizione}_t)$ non entra:
-il suo decadimento $\exp(\Delta_{t,c}\, a_{c,n})$ ha un passo per canale del
-valore e un autovalore per dimensione dello stato, cioè un gate pieno applicato
-elemento per elemento, $\mathbf{S}_t = \mathbf{G}_t \odot \mathbf{S}_{t-1} +
-\dots$, più ricco anche di quello di GLA e che nessun fattore a destra
-riproduce {cite}`yang2024gla`: un fattore a destra agisce sulle colonne ed è
-uguale per tutte le righe, mentre qui cambia da riga a riga, cioè da canale a
-canale, attraverso $\Delta_{t,c}$. Per la stessa ragione resta fuori S4, dove
-ogni canale ha il proprio passo $\Delta_c$ (e, nella forma originale, una
-transizione piena, normale più basso rango). È la ricchezza a cui Mamba-2
-rinuncia per tornare ai prodotti di matrici. La dualità stato-attenzione (SSD)
-di Mamba-2 {cite}`dao2024mamba2`, vista nella {doc}`sezione sulla dualità
+Su questa mappa gli SSM non sono un'isola, anche se non vi rientrano tutti allo
+stesso modo. Mamba-1 nella forma $\mathbf{S}_{t-1}(\text{transizione}_t)$ non
+entra: il suo decadimento $\exp(\Delta_{t,c}\, a_{c,n})$ ha un passo per canale
+del valore e un autovalore per dimensione dello stato, cioè un gate pieno
+applicato elemento per elemento, $\mathbf{S}_t = \mathbf{G}_t \odot
+\mathbf{S}_{t-1} + \dots$, più ricco anche di quello di GLA e che nessun
+fattore a destra riproduce {cite}`yang2024gla`: un fattore a destra agisce
+sulle colonne ed è uguale per tutte le righe, mentre qui cambia da riga a riga,
+cioè da canale a canale, attraverso $\Delta_{t,c}$. Per la stessa ragione resta
+fuori S4, dove ogni canale ha il proprio passo $\Delta_c$ (e, nella forma
+originale, una transizione piena, normale più basso rango). È la ricchezza a
+cui Mamba-2 rinuncia per tornare ai prodotti di matrici. La dualità
+stato-attenzione (SSD) di Mamba-2 {cite}`dao2024mamba2`, vista nella
+{doc}`sezione sulla dualità
 </StateSpaceModel/dualita-e-mamba-2-3>`, dimostra che un SSM con transizione
-scalare per identità ($\alpha_t \mathbf{I}$) calcola *esattamente* la stessa
-funzione di un'attenzione lineare mascherata: è la riga del decadimento
-scalare, raggiunta dal versante dei sistemi dinamici invece che da quello
-dell'attenzione. Le due famiglie si incontrano su quel gradino, e fuori da lì
-restano parenti.
+scalare per identità ($\alpha_t \mathbf{I}$) calcola la stessa funzione di
+un'attenzione lineare mascherata: è la riga del decadimento scalare, raggiunta
+dal versante dei sistemi dinamici invece che da quello dell'attenzione. Le due
+famiglie si incontrano su quel gradino, e fuori da lì restano parenti.
 
 `````
 
@@ -231,7 +239,7 @@ esatto*: data una chiave, restituire il valore che le era stato associato.
 :alt: "Due grafici affiancati, sullo stesso foglio-registro da 32 caselle. A sinistra, due riletture messe a confronto con delle barre: dopo 8 voci scritte la voce cercata pesa 1,00 e le briciole delle altre 0,46; dopo 32 voci, cioè tante quante le caselle, la voce cercata pesa sempre 1,00 e le briciole 0,98, cioè altrettanto. A destra, la stessa misura per ogni numero di voci da 1 a 64: una curva che sale da 0,00 e attraversa la riga orizzontale del pari poco dopo le 32 voci. La curva non ha nessun gradino e nessun ginocchio: comincia a salire dalla prima voce scritta. Due punti marcati la segnano a 8 e a 32 voci, e un trattino verticale scende dal secondo."
 :width: 100%
 
-Il guasto non aspetta che il foglio sia pieno. Scritte otto voci in un foglio
+Il degrado non aspetta che il foglio sia pieno. Scritte otto voci in un foglio
 da trentadue caselle, le briciole delle altre pesano già quasi la metà del
 valore che si cercava; scritte trentadue voci, cioè tante quante le caselle,
 pesano altrettanto. A destra la stessa misura per ogni numero di voci: una
@@ -244,8 +252,8 @@ Un quaderno di appunti da una parte, una biblioteca dall'altra: la differenza è
 tutta lì. Il quaderno è il foglio-registro di sempre, che cambia nome per stare
 accanto alla biblioteca. L'attenzione piena dei Transformer è la biblioteca:
 conserva *ogni* parola letta, e quando le
-chiedi «cosa diceva esattamente quella frase a pagina 900?» va allo scaffale e la
-ripesca alla lettera. Il prezzo è doppio. Prima lo spazio: la biblioteca cresce
+chiedi «cosa diceva quella frase di pagina 900?» va allo scaffale e la
+ripesca alla lettera. Il costo è doppio. Prima lo spazio: la biblioteca cresce
 senza fine, un ripiano per ogni pagina. Poi, e conta di più, il lavoro: ogni
 pagina nuova va confrontata con tutte quelle che sono già sugli scaffali, e
 così un libro lungo il doppio non costa il doppio ma il quadruplo. È il costo
@@ -256,59 +264,58 @@ ogni pagina che leggi aggiorni i tuoi appunti: riassumi, sovrascrivi, cancelli
 il vecchio per far posto al nuovo. Il quaderno peggiora da subito, un pochino a
 ogni pagina, finché quel pochino diventa troppo per la domanda che gli stai
 facendo. Quando le voci ammucchiate sono più o meno tante quante le caselle,
-quello che rileggi è per metà la voce che cercavi e per metà le briciole di
-tutte le altre, e in {numref}`fig-interferenza-da-subito` si vede il conto, con
-quello che succede già molto prima. Il quaderno costa pochissimo: resta sempre
-dello stesso spessore per quante pagine tu legga. Ma proprio perché non cresce,
+rileggi per metà la voce che cercavi e per metà le briciole di tutte le altre.
+Il conto sta in {numref}`fig-interferenza-da-subito`, e mostra che
+l'interferenza cresce già molto prima. Il quaderno costa pochissimo: resta
+sempre dello stesso spessore per quante pagine tu legga. Per lo stesso motivo
 non può contenere tutto: se dopo mille pagine ti chiedo di citare a memoria una
 frase precisa di pagina 900, il quaderno ti dà il senso generale, non le parole
-esatte. Le hai riassunte, non trascritte. Che sia proprio così lo si misura con
-due prove fatte apposta: nascondere una frase in un testo lunghissimo e
-chiedere di ripescarla alla lettera (è *l'ago nel pagliaio*), oppure riempire
-la memoria di centinaia di coppie nome-numero e chiedere a bruciapelo il numero
-di un nome qualsiasi. E l'abilità più comune, indovinare la parola che viene
-dopo, non lo rivela: un modello a quaderno ci riesce perfino meglio di uno a
-biblioteca della stessa taglia, e intanto sbaglia quando gli chiedi di
-ricopiare una pagina.
+esatte. Le hai riassunte, non trascritte. Che sia così lo si misura con due
+prove fatte apposta: nascondere una frase in un testo lunghissimo e chiedere di
+ripescarla alla lettera (è *l'ago nel pagliaio*), oppure riempire la memoria di
+centinaia di coppie nome-numero e chiedere a bruciapelo il numero di un nome
+qualsiasi. L'abilità più comune, indovinare la parola che viene dopo, non lo
+rivela: un modello a quaderno ci riesce perfino meglio di uno a biblioteca
+della stessa taglia, e intanto sbaglia quando gli chiedi di ricopiare una
+pagina.
 
 Non tutti i quaderni si tengono allo stesso modo, e si vede: chi cancella la
 voce vecchia prima di metterci la nuova, invece di lasciare che le scritte si
-sovrappongano, tiene nello stesso quaderno molta più roba leggibile. Ma sposta
-più in là la pagina che lo manda
-in crisi, non la toglie: lo spessore è quello, e prima o poi arriva la domanda
-a cui il quaderno non sa rispondere. Questo è il compromesso: memoria che costa
-poco e non cresce, in cambio della rinuncia al ricordo alla lettera di ogni
-singolo dettaglio.
+sovrappongano, tiene nello stesso quaderno molta più roba leggibile. Sposta più
+in là la pagina che lo manda in crisi, non la toglie: lo spessore è quello, e
+prima o poi arriva la domanda a cui il quaderno non sa rispondere. Questo è il
+compromesso: memoria che costa poco e non cresce, in cambio della rinuncia al
+ricordo alla lettera di ogni singolo dettaglio.
 
 `````
 
 `````{tab} Superiore
 
-La ragione è di capacità d'informazione. Uno stato
-$\mathbf{S} \in \mathbb{R}^{d\times d}$ ha un numero finito di gradi di libertà:
-come osservato già nel lavoro sui *fast weight programmer*
-{cite}`schlag2021linear`, in dimensione $d$ non esistono più di $d$ direzioni
-mutuamente ortogonali. Attenzione a come si legge questo limite, perché la
-lettura sbagliata è la più comoda: l'interferenza fra associazioni non aspetta
-una soglia per comparire. Come si è visto nella {doc}`sezione dalla softmax
-alla ricorrenza </AttenzioneLineare/dalla-softmax-alla-ricorrenza>`, con chiavi
-casuali il *crosstalk* cresce da subito, come $\sqrt{N/d}$ nel numero $N$ di
-coppie scritte (in questa formula e nel limite di Arora e colleghi più avanti,
-$N$ conta le coppie: non è la dimensione dello stato di un SSM, che nel resto
-del capitolo porta la stessa lettera), e intorno a $N \approx d$ vale ormai
+La ragione è di capacità d'informazione. Uno stato $\mathbf{S} \in
+\mathbb{R}^{d\times d}$ ha un numero finito di gradi di libertà: come osservato
+già nel lavoro sui *fast weight programmer* {cite}`schlag2021linear`, in
+dimensione $d$ non esistono più di $d$ direzioni mutuamente ortogonali.
+Attenzione a come si legge questo limite, perché la lettura sbagliata è la più
+comoda: l'interferenza fra associazioni non aspetta una soglia per comparire.
+Come si è visto nella {doc}`sezione dalla softmax alla ricorrenza
+</AttenzioneLineare/dalla-softmax-alla-ricorrenza>`, con chiavi casuali il
+*crosstalk* cresce da subito, come $\sqrt{N/d}$ nel numero $N$ di coppie
+scritte (in questa formula e nel limite di Arora e colleghi sul recall
+associativo, $N$ conta le coppie: non è la dimensione dello stato di un SSM,
+che negli SSM porta la stessa lettera), e intorno a $N \approx d$ vale ormai
 quanto il valore che si sta cercando. Non c'è un punto in cui la memoria «si
 riempie»: c'è un degrado continuo, che a un certo punto diventa intollerabile
-per il compito che si ha davanti. L'attenzione piena non ha questo tetto: la sua
-«memoria» è la KV cache, che conserva tutte le coppie chiave-valore dei token
-passati, al prezzo di crescere linearmente con la lunghezza (ed è quel prezzo a
-rendere il costo complessivo quadratico).
+per il compito che si ha davanti. L'attenzione piena non ha questo tetto: la
+sua «memoria» è la KV cache, che conserva tutte le coppie chiave-valore dei
+token passati, a costo di crescere linearmente con la lunghezza, ed è questa
+crescita a rendere quadratico il costo complessivo.
 
 Questo divario si misura con i benchmark di recall. Nel *needle in a
 haystack* si nasconde un fatto preciso (l'ago) in un contesto molto lungo (il
 pagliaio) e si chiede al modello di recuperarlo verbatim. In **MQAR**
 (*Multi-Query Associative Recall*) {cite}`arora2023zoology` si presentano molte
 coppie chiave-valore e
-si interroga il modello su chiavi arbitrarie. Sono proprio i compiti su cui la
+si interroga il modello su chiavi arbitrarie. Sono i compiti su cui la
 dimensione dello stato diventa il collo di bottiglia, e il limite è dimostrato,
 non solo osservato: qualunque modello ricorrente che legga l'ingresso in modo
 causale ha bisogno di uno stato di $\Omega(N)$ bit per risolvere MQAR con $N$
@@ -325,7 +332,7 @@ copia e nella ricerca nel contesto più che nella perplessità: Mamba ha sul Pil
 una perplessità più bassa di Pythia di pari taglia, e nel copiare un testo o
 nel ritrovare un numero in un elenco perde nettamente. I progressi nella
 transizione aiutano (la delta rule di DeltaNet, che *riscrive* invece di
-accumulare, sposta in avanti la frontiera proprio perché usa meglio lo spazio
+accumulare, sposta in avanti la frontiera perché usa meglio lo spazio
 disponibile) ma non spostano il tetto: finché lo stato è di taglia fissa, per
 il retrieval esatto su contesti sufficientemente lunghi l'attenzione piena
 resta superiore. Sul suo terreno conviene affiancarla, invece di sostituirla.
@@ -340,33 +347,32 @@ chiave-valore per l'attenzione, uno stato di taglia fissa per gli altri):
 niente impedisce di mescolare strati dei due tipi, pochi di attenzione dove
 serve ripescare un dettaglio preciso e molti lineari o SSM per il resto. Sono
 le architetture ibride, e ricorrono in gran parte dei lavori recenti. Il costo
-che cresce al quadrato non sparisce, ma lo paga una minoranza di strati, e
+quadratico non sparisce, e lo paga una minoranza di strati, e
 finché il contesto non diventa smisurato pesa poco sul totale.
 
 `````{tab} Elementare
 
-Un modello è una squadra di lettori in fila, e ognuno ha la sua memoria. Se a
-tutti dai una biblioteca, la squadra ricorda ogni parola ma costa come tante
-biblioteche; se a tutti dai un quaderno, costa poco, ma nessuno sa citare alla
-lettera. La squadra mista dà la biblioteca a pochi, quelli che servono quando
-bisogna ripescare la citazione esatta, e il quaderno a tutti gli altri, che
-tengono il filo a costo basso. Le architetture ibride sono organizzate così:
-qualche strato che conserva tutto e ricorda alla lettera, il resto a memoria
-costante. Sono fatti così Jamba, un modello di linguaggio dell'azienda AI21
-Labs, e Samba, di Microsoft, tutti e due del 2024, e le versioni miste di
-architetture che abbiamo già incontrato. La divisione si può fare anche per
-tempo, ed è la ricetta di Samba: i lettori con la biblioteca tengono sugli
+Un modello è una squadra di lettori che si passano il testo, e ognuno ha la sua
+memoria. Se a tutti dai una biblioteca, la squadra ricorda ogni parola ma ha il
+costo di tante biblioteche; se a tutti dai un quaderno, è leggera, ma nessuno
+sa citare alla lettera. La squadra mista dà la biblioteca a pochi, quelli che
+servono quando bisogna ripescare la citazione esatta, e il quaderno a tutti gli
+altri, che tengono il filo a costo basso. Le architetture ibride sono
+organizzate così: qualche strato che conserva tutto e ricorda alla lettera, il
+resto a memoria costante. Sono fatti così Jamba, un modello di linguaggio
+dell'azienda AI21 Labs, e Samba, di Microsoft, tutti e due del 2024, e le
+versioni miste di architetture che abbiamo già incontrato. La divisione si può
+fare anche per tempo, come in Samba: i lettori con la biblioteca tengono sugli
 scaffali soltanto le ultime pagine, e del lungo periodo si fidano dei quaderni
 dei compagni.
 
 Due cose, però, la squadra mista non le fa sparire. Le biblioteche non sono
 abolite, solo ridotte a poche: se il testo si allunga a dismisura, quelle poche
-tornano a confrontare ogni pagina con tutte le altre, ed è di nuovo la spesa
-che si voleva evitare. E sulla citazione alla lettera una squadra di sole
-biblioteche resta più precisa: quella mista le arriva vicino, a una frazione
-del prezzo, e nelle prove più ampie sui compiti di tutti i giorni fa perfino
-meglio. I due tipi di memoria sono bravi in cose diverse, ed è tutto quello che
-serve perché convenga tenerli insieme.
+tornano a confrontare ogni pagina con tutte le altre, la spesa che si voleva
+evitare. Sulla citazione alla lettera, poi, una squadra di sole biblioteche
+resta più precisa: quella mista le arriva vicino, a una frazione del costo, e
+nelle prove più ampie sui compiti di tutti i giorni fa perfino meglio. Poiché i
+due tipi di memoria sono bravi in cose diverse, conviene tenerli insieme.
 
 `````
 
@@ -379,7 +385,7 @@ il 2023, con due soli strati di attenzione superava il Transformer sullo stesso
 corpus {cite}`fu2023h3`. Jamba (AI21 Labs, 2024) intervalla strati di
 attenzione e strati Mamba nel rapporto 1:7, con esperti selettivi
 (*mixture-of-experts*) a strati alterni; ha 52 miliardi di parametri, di cui 12
-attivi per token, e regge contesti fino a 256 mila token con una cache
+attivi per token, e gestisce contesti fino a 256 mila token con una cache
 chiave-valore otto volte più piccola di quella di un Transformer comparabile
 {cite}`lieber2024jamba`. Samba {cite}`ren2024samba` (Microsoft, 2024; ICLR
 2025) combina strati Mamba con strati di attenzione a finestra scorrevole
@@ -420,14 +426,14 @@ viste) che in un Transformer cresce a ogni parola prodotta: la memoria che
 occupa mentre scrive resta quella con cui è partito, e la differenza si sente
 quando si serve il modello a molti utenti in parallelo. I flussi continui
 (*streaming*), dove i dati arrivano senza fine e non si può rileggere tutto a
-ogni passo, sono il suo terreno naturale. E sui dispositivi con poca memoria,
-come i telefoni, un'occupazione fissa e prevedibile vale più di qualche punto
-di qualità sul richiamo esatto.
+ogni passo, sono il suo terreno naturale. Anche sui dispositivi con poca
+memoria, come i telefoni, un'occupazione fissa e prevedibile vale più di
+qualche punto di qualità sul richiamo esatto.
 
 La {doc}`sezione sulle tendenze future </Transformers/tendenzefuture>` del
-capitolo sui Transformer avvertiva che in questo campo le previsioni invecchiano
-in fretta, e già lì, fra le direzioni di ricerca, gli *state space model*
-comparivano come la linea che rimette in gioco idee ricorrenti dove
+capitolo sui Transformer avvertiva che in questo campo le previsioni
+invecchiano in fretta, e già lì, fra le direzioni di ricerca, gli *state space
+model* comparivano come la linea che rimette in gioco idee ricorrenti dove
 l'attenzione costa troppo. La lezione di fondo è più generale: nessuna
 architettura ha vinto per sempre. Chi conosce le idee semplici che stanno sotto
 (una memoria in cui ogni parola scrive una coppia chiave-valore, un modo di
@@ -456,7 +462,7 @@ stesso scheletro sotto il prossimo nome che farà rumore.
   un'architettura che le usa tutt'e due insieme, il Gated DeltaNet. È
   DeltaNet con in più la manopola dello sbiadire.
 - La dualità di Mamba-2 {cite}`dao2024mamba2` dimostra che uno *state space
-  model* che sbiadisce tutto in blocco fa esattamente lo stesso conto di
+  model* che sbiadisce tutto in blocco fa lo stesso calcolo di
   un'attenzione lineare che guarda solo all'indietro e che per giunta
   sbiadisce man mano che si allontana, con lo sbiadire dentro il modo stesso
   in cui guarda. Le due famiglie si incontrano su quel gradino, e fuori da lì
@@ -465,7 +471,7 @@ stesso scheletro sotto il prossimo nome che farà rumore.
   una biblioteca. Va benissimo per il senso del discorso, ma se dopo mille
   pagine chiedi di citare alla lettera una frase di pagina 900, il quaderno
   non ce l'ha: l'aveva riassunta, non trascritta. L'attenzione piena conserva
-  ogni parola letta e su quel compito resta superiore, al prezzo di uno scaffale
+  ogni parola letta e su quel compito resta superiore, a costo di uno scaffale
   che cresce senza fine. Si misura con due prove fatte apposta: nascondere una
   frase in un testo lunghissimo e chiedere di ripescarla (è *l'ago nel
   pagliaio*), e riempire la memoria di centinaia di coppie nome-numero per poi
@@ -493,19 +499,19 @@ stesso scheletro sotto il prossimo nome che farà rumore.
 
 ```{admonition} Da ricordare
 :class: important
-- Una sola famiglia: attenzione lineare (RetNet, GLA, DeltaNet, RWKV dalla
-  v5, la cella mLSTM di xLSTM) e *state space model* a transizione scalare
-  (Mamba-2) sono tutte RNN lineari a stato fisso
-  $\mathbf{S}_t = \mathbf{S}_{t-1}\, (\text{transizione}_t) + \mathbf{v}_t \mathbf{k}_t^\top$, con lettura
-  $\mathbf{o}_t = \mathbf{S}_t \mathbf{q}_t$. Si addestrano in parallelo, fanno
-  inferenza ricorrente a memoria costante per token. Le due eccezioni ritagliate
-  dal capitolo precedente restano fuori: la RWKV-4, il cui stato è un vettore
-  per canale, e la cella sLSTM, che il mescolamento fra celle rende
-  ricorrente e non parallelizzabile. Restano fuori anche S4 e Mamba-1: sono
-  RNN lineari, ma con un decadimento che cambia da canale a canale (per
-  Mamba-1 un gate elemento per elemento,
-  $\mathbf{S}_t = \mathbf{G}_t \odot \mathbf{S}_{t-1} + \dots$), che nessun
-  fattore a destra riproduce; è Mamba-2 a riportare l'SSM nella forma.
+- Una sola famiglia: attenzione lineare (RetNet, GLA, DeltaNet, RWKV dalla v5,
+  la cella mLSTM di xLSTM) e *state space model* a transizione scalare
+  (Mamba-2) sono tutte RNN lineari a stato fisso $\mathbf{S}_t =
+  \mathbf{S}_{t-1}\, (\text{transizione}_t) + \mathbf{v}_t \mathbf{k}_t^\top$,
+  con lettura $\mathbf{o}_t = \mathbf{S}_t \mathbf{q}_t$. Si addestrano in
+  parallelo, fanno inferenza ricorrente a memoria costante per token. Le due
+  eccezioni ritagliate dalla sezione sulle architetture lineari restano fuori:
+  la RWKV-4, il cui stato è un vettore per canale, e la cella sLSTM, che il
+  mescolamento fra celle rende ricorrente e non parallelizzabile. Restano fuori
+  anche S4 e Mamba-1: sono RNN lineari, ma con un decadimento che cambia da
+  canale a canale (per Mamba-1 un gate elemento per elemento, $\mathbf{S}_t =
+  \mathbf{G}_t \odot \mathbf{S}_{t-1} + \dots$), che nessun fattore a destra
+  riproduce; è Mamba-2 a riportare l'SSM nella forma.
 - Tre manopole di progetto: la dimensione dello stato (capacità), la
   struttura della transizione ($\mathbf{I} \to \alpha_t \mathbf{I} \to
   \mathrm{Diag}(\boldsymbol{\alpha}_t) \to \mathbf{I}-\beta_t \mathbf{k}_t \mathbf{k}_t^\top
@@ -516,7 +522,7 @@ stesso scheletro sotto il prossimo nome che farà rumore.
   per canale), e quanto dipende dai dati (fisso o generato
   dall'input, che compra il ragionamento basato sul contenuto).
 - La dualità SSD di Mamba-2 {cite}`dao2024mamba2` dimostra che un SSM a
-  transizione scalare ($\alpha_t \mathbf{I}$) calcola esattamente la stessa
+  transizione scalare ($\alpha_t \mathbf{I}$) calcola la stessa
   funzione di un'attenzione lineare mascherata: le due famiglie si incontrano
   su quel gradino, e fuori da lì si intersecano soltanto.
 - Il limite onesto: uno stato di dimensione fissa è un collo di
@@ -526,7 +532,7 @@ stesso scheletro sotto il prossimo nome che farà rumore.
   quanto il valore cercato. L'attenzione piena, che conserva ogni token nella
   KV cache, resta superiore sul retrieval verbatim (benchmark *needle in a
   haystack*, MQAR) e sulla copia (errore $> 1 - |\mathcal{S}|/|\Sigma|^L$
-  per uno stato con $|\mathcal{S}|$ configurazioni): al prezzo del costo
+  per uno stato con $|\mathcal{S}|$ configurazioni): a costo del calcolo
   quadratico. La perplessità non lo rivela.
 - Gli ibridi sono la ricetta che ricorre in gran parte dei lavori recenti:
   pochi strati di attenzione piena intervallati a molti strati lineari o SSM

@@ -14,36 +14,35 @@ Nel 1982 John Hopfield mostra come costruirne una con neuroni artificiali
 come si comportano solidi e liquidi, passato poi a studiare i sistemi
 biologici, e dal 1980 insegnava al California Institute of Technology.
 
-Non parte da un foglio bianco, ed è giusto dirlo. Memorie che si interrogano
+Non parte da un foglio bianco. Memorie che si interrogano
 per contenuto circolavano già da un decennio, costruite legando fra loro i
 pezzi che nei ricordi vanno d'accordo: le propongono nel 1972, ognuno per conto
 suo, Teuvo Kohonen {cite}`kohonen1972correlation`, Kaoru Nakano
 {cite}`nakano1972associatron`, James Anderson {cite}`anderson1972simple` e
-Shun-ichi Amari {cite}`amari1972learning`.[^little] Quello che Hopfield
-aggiunge, e che fa ripartire il campo da lui, è l’energia: un solo numero
-associato a ogni configurazione della rete, più la dimostrazione che la regola
+Shun-ichi Amari {cite}`amari1972learning`.[^little] Hopfield
+aggiunge l’energia, e con lei il campo riparte. L’energia è un solo numero
+associato a ogni configurazione della rete, e Hopfield dimostra che la regola
 con cui i neuroni cambiano stato, uno alla volta, non lo fa mai salire. Da quel
 momento i ricordi sono minimi, e ricordare è una discesa.
 
-La sua mossa è quella di un fisico. Si prendono $N$ neuroni che possono stare
+Il suo impianto è quello di un fisico. Si prendono $N$ neuroni che possono stare
 solo «accesi» o «spenti» (in gergo si dicono binari, come una fila di
 interruttori), e lo stato del neurone $i$ si scrive $s_i = +1$ se è acceso e
 $s_i = -1$ se è spento. I neuroni sono collegati a due a due da pesi
 $w_{ij}$, numeri che dicono quanto due neuroni tendono a stare d'accordo:
 positivi se preferiscono trovarsi nella stessa posizione, negativi se
-preferiscono l'opposta. E i pesi sono **simmetrici**, $w_{ij} = w_{ji}$: il
+preferiscono l'opposta. I pesi sono **simmetrici**, $w_{ij} = w_{ji}$: il
 legame fra due neuroni vale lo stesso nei due versi. Un sistema così ha la
 stessa struttura matematica di un modello di materiale magnetico, quello di
 Ising con legami di segno qualunque, dove ogni atomo si comporta come una
 freccina che punta in su o in giù e sente l'influenza delle altre.
 
-Quella freccina introduce un'altra parola in prestito dalla fisica: lo
-**spin**, ed è la parola che si incontra in tutti i lavori di fisica su queste
-reti. Qui non serve sapere che cos'è uno spin davvero: basta l'immagine
-della freccina con due sole posizioni, che è la stessa cosa di un neurone
-acceso o spento. Da qui in avanti «stato» e «configurazione» vogliono dire la
-stessa cosa: l'elenco $\mathbf{s}$ dei valori di tutti i neuroni in un dato
-momento.
+Quella freccina introduce un'altra parola in prestito dalla fisica, lo
+**spin**, che si incontra in tutti i lavori di fisica su queste reti. Qui non
+serve sapere che cos'è uno spin in fisica: basta l'immagine della freccina con
+due sole posizioni, equivalente a un neurone acceso o spento. «Stato» e
+«configurazione» sono sinonimi: indicano l'elenco $\mathbf{s}$ dei valori di
+tutti i neuroni in un dato momento.
 
 La fisica statistica studia da decenni sistemi di questo tipo, e parte da due
 domande: qual è l'energia di ogni configurazione, e verso dove scende?
@@ -57,7 +56,7 @@ Il paesaggio di energia di una rete di Hopfield. Le parole tecniche del
 disegno, sciolte: i «pattern memorizzati» sono i ricordi (nel disegno sono
 tre, e si chiamano A, B e C), i «minimi» sono i fondovalle in cui stanno,
 sull'asse orizzontale («stato della rete») ci sono tutte le configurazioni
-possibili messe in fila, lo stato «rumoroso» da cui
+possibili in successione, lo stato «rumoroso» da cui
 parte la pallina è l'indizio rovinato che diamo alla rete, e un
 «aggiornamento» è una casella che guarda i suoi vicini e decide se cambiare.
 ```
@@ -85,14 +84,14 @@ l'indizio non conteneva. La melodia stonata del passante ti deposita sul
 fianco della valle della canzone giusta, e la discesa fa il resto: il ricordo
 non lo *cerchi*, ci *cadi dentro*.
 
-Due avvertenze oneste, sulla valle sbagliata e sulla capienza. La pallina
+Due avvertenze, sulla valle sbagliata e sulla capienza. La pallina
 scende nella valle più *vicina*, non necessariamente in quella *giusta*, e
 «vicina» qui vuol dire somigliante: due configurazioni sono vicine quando
 differiscono in poche caselle. Se l'indizio è troppo rovinato somiglia più al
 ricordo sbagliato che a quello giusto, e da lì si finisce nel ricordo
 sbagliato con la stessa naturalezza.
 
-E il paesaggio ha una capienza. Scavando troppe valli in poco spazio i fianchi
+Il paesaggio ha anche una capienza. Scavando troppe valli in poco spazio i fianchi
 si fondono, e compaiono conche che nessuno ha mai memorizzato, miscele di più
 ricordi insieme: «ricordi fantasma». A fondersi per prime sono le valli dei
 ricordi che si somigliano, perché due ricordi somiglianti scavano vicini. Una
@@ -101,18 +100,17 @@ ricordi presi a caso il richiamo riesce l'88% delle volte, con quattro il 72%,
 con cinque il 54%, con sei il 36%. Il peggioramento, qui, è dolce.
 
 In una rete grande il passaggio è netto, e la soglia si sa dov'è, almeno per
-ricordi presi a caso: sta intorno al 14% del numero di neuroni, cioè un
-ricordo ogni sette. Sotto quella quota la rete funziona quasi sempre, al più
-con qualche casella su cento sbagliata; appena sopra smette di funzionare
-quasi del tutto. A rompersi di colpo è la rete grande, il contrario di quel
-che verrebbe da pensare, e la ragione è la stessa delle monete. Dieci lanci
-possono dare sette teste, diecimila lanci danno quasi esattamente metà teste.
-In una rete piccola ogni gruppo di ricordi pescato a caso è un caso a sé:
-alcuni si disturbano poco, altri molto, e la rete cede ogni volta a una quota
-diversa, così che a guardarle tutte insieme si vede una discesa dolce. In una
-rete grande i disturbi di migliaia di caselle si compensano fra loro, ogni
-gruppo di ricordi si comporta come gli altri, e la rete cede sempre alla
-stessa quota: uno scalino.
+ricordi presi a caso: sta intorno al 14% del numero di neuroni, cioè un ricordo
+ogni sette. Sotto quella quota la rete funziona quasi sempre, al più con
+qualche casella su cento sbagliata; appena sopra smette di funzionare quasi del
+tutto. A rompersi di colpo è la rete grande, contro l'intuizione, e la ragione
+è quella delle monete. Dieci lanci possono dare sette teste, diecimila lanci
+danno quasi metà teste. In una rete piccola ogni gruppo di ricordi pescato a
+caso è un caso a sé: alcuni si disturbano poco, altri molto, e la rete cede
+ogni volta a una quota diversa, così che a guardarle tutte insieme si vede una
+discesa dolce. In una rete grande i disturbi di migliaia di caselle si
+compensano fra loro, ogni gruppo di ricordi si comporta come gli altri, e la
+rete cede sempre alla stessa quota: uno scalino.
 
 `````
 
@@ -156,14 +154,14 @@ $$
 
 Ogni aggiornamento fa scendere l'energia o la lascia invariata, mai salire:
 invariata quando il neurone resta com'è (anche in caso di parità, $h_i = 0$),
-più bassa di $2|h_i|$ quando si capovolge. Tolta la simmetria il conto
-non torna: le due somme non si raccolgono più in $-s_i h_i$, un capovolgimento
+più bassa di $2|h_i|$ quando si capovolge. Tolta la simmetria la dimostrazione
+cade: le due somme non si raccolgono più in $-s_i h_i$, un capovolgimento
 può alzare $E$, e la rete può girare in tondo senza fermarsi mai (con due
 neuroni, $w_{12} = 1$ e $w_{21} = -1$, il primo vuole copiare il secondo e il
 secondo vuole fare il contrario del primo: gli stati sono quattro, e la rete
 li visita in cerchio).
 
-Che la discesa termini segue da un conto. L'energia è limitata,
+La discesa termina perché l'energia è limitata,
 $|E| \le \tfrac12 \sum_{i \neq j} |w_{ij}|$, e ogni capovolgimento la abbassa
 di almeno $2 \min\{|h_i| : h_i \neq 0\}$, un minimo preso su un numero finito
 di stati e quindi positivo: i capovolgimenti sono in numero finito, e una
@@ -188,10 +186,10 @@ w_{ij} = \frac{1}{N} \sum_{\mu=1}^{M} \xi_i^{\mu}\, \xi_j^{\mu}
 \qquad (i \neq j),
 $$
 
-dove $\xi_i^{\mu}$ è l’$i$-esimo bit del pattern $\mu$: ogni pattern rafforza
-i legami tra i propri bit concordi. Sostituendo questi pesi nell'energia si
-ottiene la forma da cui partirà, molto più avanti, la versione moderna di
-queste reti:
+dove $\xi_i^{\mu}$ è l’$i$-esimo bit del pattern $\mu$: ogni pattern rafforza i
+legami tra i propri bit concordi. Sostituendo questi pesi nell'energia si
+ottiene la forma da cui parte la versione moderna di queste reti, descritta nei
+{doc}`paesaggi di oggi </ModelliEnergia/paesaggi-di-oggi>`:
 
 $$
 E(\mathbf{s}) = -\frac{1}{2N} \sum_{\mu=1}^{M}
@@ -200,10 +198,10 @@ $$
 
 cioè ogni ricordo abbassa l'energia in proporzione al quadrato della sua
 sovrapposizione con lo stato (il $M/2$ è la diagonale che $w_{ii} = 0$ toglie,
-ed è una costante). Che la regola renda $\boldsymbol{\xi}^\mu$ un minimo locale di
-$E$ si vede in un conto solo, ed è il conto da cui discende tutto il resto
-della sezione. Mettendo la rete nello stato $\boldsymbol{\xi}^\mu$, il campo
-locale sul neurone $i$ vale
+una costante). Che la regola renda $\boldsymbol{\xi}^\mu$ un minimo locale di
+$E$ si vede dal campo locale sul pattern stesso, e da quel calcolo discendono i
+risultati successivi. Mettendo la rete nello stato $\boldsymbol{\xi}^\mu$, il
+campo locale sul neurone $i$ vale
 
 $$
 h_i^\mu = \underbrace{\frac{N-1}{N}\, \xi_i^{\mu}}_{\text{segnale}}
@@ -219,12 +217,13 @@ qui vengono, in un colpo solo, tre cose: che i pattern quasi ortogonali
 (interferenza piccola) siano stabili; che aggiungerne troppi faccia crescere il
 disturbo finché non prevale; e che a pesare non sia solo il loro numero, ma
 anche quanto si somigliano, come si vedrà con la T, la L e la X. Per pattern
-casuali il conto si chiude. L'interferenza è una somma di $(M-1)(N-1)$ termini
-$\pm 1/N$ indipendenti, con media nulla e varianza $\approx M/N$, quindi per il
-limite centrale un bit è instabile al primo passo con probabilità $\approx
-\Phi\big(-\sqrt{N/M}\big)$, dove $\Phi$ è la ripartizione della normale
-standard: a $M/N = 0{,}138$ vale $0{,}0036$. Se invece si pretende che tutti i
-bit di tutti i pattern restino fermi con probabilità che tende a uno, serve $M
+casuali si arriva a numeri precisi. L'interferenza è una somma di $(M-1)(N-1)$
+termini $\pm 1/N$ indipendenti, con media nulla e varianza $\approx M/N$,
+quindi per il limite centrale un bit è instabile al primo passo con probabilità
+$\approx \Phi\big(-\sqrt{N/M}\big)$, dove $\Phi$ è la ripartizione della
+normale standard: a $M/N = 0{,}138$ vale $0{,}0036$. Se invece si pretende che
+tutti i bit di tutti i pattern restino fermi con probabilità che tende a uno,
+serve $M
 < N/(4 \ln N)$ {cite}`mceliece1987capacity`: $1{,}9$ ricordi a $N = 25$, $271$
 a $N = 10\,000$, dove $0{,}138\,N$ ne darebbe $1380$. La differenza fra le due
 capienze è la tolleranza su una piccola frazione di bit. La capienza è dunque
@@ -238,10 +237,10 @@ un arrotondamento, e sta nello stesso articolo del 1985, che scrive $0{,}138$
 sotto la formula e nei due grafici, e circa $0{,}14$ nel sommario e nella
 conclusione. Il valore $0{,}138$ è quello della soluzione a simmetria di
 replica: rompendo la simmetria a un passo, gli stati di richiamo sopravvivono
-fino a $\alpha \approx 0{,}144$ {cite}`crisanti1986saturation`. E sotto soglia
-il richiamo non è perfetto: vicino ad $\alpha_c$ il ricordo richiamato ha
-ancora una frazione di bit sbagliati dell'ordine dell'uno o due per cento, ed è
-per questo che i teoremi parlano di ricordi «quasi» perfetti.
+fino a $\alpha \approx 0{,}144$ {cite}`crisanti1986saturation`. Anche sotto
+soglia il richiamo non è perfetto: vicino ad $\alpha_c$ il ricordo richiamato ha
+ancora una frazione di bit sbagliati dell'ordine dell'uno o due per cento, e per
+questo i teoremi parlano di ricordi «quasi» perfetti.
 
 Le ipotesi contano, perché sono ciò che rende quel numero un teorema e non
 un'osservazione: pattern casuali e non correlati, rete completamente
@@ -257,7 +256,7 @@ $0{,}36$ a $M = 6$, quasi il doppio del valore $M \approx 3{,}5$ in cui la
 formula asintotica metterebbe il crollo ($0{,}138 \times 25$): nessun crollo,
 una discesa regolare. Quel prodotto dà un ordine di grandezza e nient'altro: il
 crollo è un fenomeno di reti grandi, e prenderlo per una soglia su venticinque
-neuroni è un modo elegante di sbagliare.
+neuroni è un errore.
 
 Il limite è della regola di Hebb, e la rete da sola non lo impone. Con la
 regola della pseudo-inversa, $\mathbf{W} = \boldsymbol{\Xi}^{+}\boldsymbol{\Xi}$
@@ -265,12 +264,12 @@ con i ricordi nelle righe di $\boldsymbol{\Xi} \in \mathbb{R}^{M \times N}$
 (la proiezione sul sottospazio che generano), ogni insieme di ricordi
 linearmente indipendenti, anche correlati fra loro, è stabile e senza errori
 per ogni $M < N$ {cite}`personnaz1985information,kanter1987associative`; il
-prezzo è che il peso $w_{ij}$ non dipende più soltanto dai neuroni $i$ e $j$,
+peso $w_{ij}$ però non dipende più soltanto dai neuroni $i$ e $j$,
 e la regola smette di essere locale. Quanto al costo, un aggiornamento costa
 $O(N)$ e una passata $O(N^2)$, e la regola di Hebb tiene circa $0{,}138\,N$
 ricordi da $N$ bit in $N(N-1)/2$ pesi: poco più di un quarto di bit per peso.
 
-E anche sotto soglia il paesaggio contiene minimi non richiesti: gli opposti
+Anche sotto soglia il paesaggio contiene minimi non richiesti: gli opposti
 $-\boldsymbol{\xi}^{\mu}$ di ogni pattern, profondi quanto i pattern perché
 $E(-\mathbf{s}) = E(\mathbf{s})$, e le miscele spurie. Con tre pattern le
 miscele sono le $2^3$ combinazioni $\operatorname{sign}(\pm\boldsymbol{\xi}^{1}
@@ -288,11 +287,11 @@ conche spurie in cui la rete va a finire.
 Tutto questo si può toccare con mano, e in poche righe. Il codice che segue
 costruisce una rete di venticinque neuroni disposti in una griglia di cinque
 per cinque caselle, e le fa memorizzare tre lettere stilizzate: una T, una L e
-una X. Memorizzare, qui, vuol dire una cosa sola, e la fa una riga sola:
+una X. Memorizzare, qui, si fa in una riga:
 legare fra loro le caselle che nelle tre lettere vanno d'accordo, tanto più
 forte quanto più spesso ci vanno. È la regola che scava le valli, e porta il
 nome del neuropsicologo Donald
-Hebb, che nel 1949 propose per le sinapsi del cervello proprio questo: due
+Hebb, che nel 1949 propose per le sinapsi del cervello questo principio: due
 cellule che si accendono insieme rafforzano il legame che le unisce
 {cite}`hebb1949organization`. Poi il
 codice rovina una lettera
@@ -300,18 +299,18 @@ invertendo sei caselle a caso (sei su venticinque, il 24%) e lascia che la
 rete si aggiusti da sé, una casella alla volta, finché nessuna vuole più
 cambiare.
 
-Conviene vedere che numero esce da quel «legare», perché è il conto che regge
-tutto il resto della sezione. Prendiamo la seconda e la terza casella della
+Il numero che esce da quel «legare» si calcola a mano, e da quel numero
+dipendono i risultati successivi. Prendiamo la seconda e la terza casella della
 prima riga: nella T sono accese tutte e due, nella L sono spente tutte e due,
 nella X sono spente tutte e due. Vanno d'accordo tre volte su tre, e il loro
 legame vale $3/25 = 0{,}12$, il massimo che si possa avere con tre ricordi.
 Prendiamo invece la prima casella e la seconda della stessa riga: vanno
 d'accordo solo nella T (accese entrambe) e discordano nella L e nella X. Un
 accordo e due disaccordi fanno $1 - 1 - 1 = -1$; si divide per il numero di
-caselle, venticinque, perché così i legami restano della stessa taglia anche
-se la griglia cresce, e viene $-0{,}04$: un legame debole e di segno
-contrario, che quelle due caselle tenderà a tenerle diverse. Tutti i legami
-della rete sono numeri così, e sono tutto ciò che la rete «sa».
+caselle, venticinque, perché così i legami restano della stessa taglia anche se
+la griglia cresce, e viene $-0{,}04$: un legame debole e di segno contrario,
+che quelle due caselle tenderà a tenerle diverse. Tutti i legami della rete
+sono numeri così, e sono tutto ciò che la rete «sa».
 
 Il codice costruisce i legami con quella regola, e poi mette la rete alla
 prova.
@@ -439,21 +438,20 @@ confrontata con un'altra energia dello stesso paesaggio. $-11{,}20$ sta più in
 basso di $-2{,}08$, e qui è l'unico fatto che conta.
 
 Quella stampa mostra il prima e il dopo, e nasconde la parte interessante: i
-passi in mezzo. In {numref}`fig-hopfield-ricorda` ci sono tutti, e la figura
-mette per la prima volta accanto le due immagini che finora sono andate
-separate. A sinistra c'è la griglia di venticinque caselle, dove a ogni
-*aggiornamento* (una casella guarda lo stato delle altre e decide se cambiare) una
-sola casella cambia colore. A destra c'è la pallina, cioè l'energia. Sono la
-stessa cosa vista da due parti: ogni casella che cambia colore è uno scalino
-che la pallina scende. E si vede la proprietà che rende la rete una memoria e
-non un pasticcio: l'energia non risale mai. Scende quando una casella cambia,
-e resta ferma quando la casella si guarda intorno e decide di stare com'è; nel
-disegno si contano solo i sei cambi, perché sono i soli passi in cui succede
-qualcosa. Che i cambi siano sei come le caselle rovinate è il caso migliore e
-non una regola: vuol dire che ogni casella sbagliata si è raddrizzata una
-volta sola e che nessuna casella giusta si è mossa per sbaglio. Alla fine
-nessuna casella vuole più cambiare, e quello è ciò che i tecnici chiamano un
-**punto fisso**.
+passi in mezzo. La {numref}`fig-hopfield-ricorda` li mostra tutti e mette
+accanto le due immagini che finora sono andate separate. A sinistra c'è la
+griglia di venticinque caselle, dove a ogni *aggiornamento* (una casella guarda
+lo stato delle altre e decide se cambiare) una sola casella cambia colore. A
+destra c'è la pallina, cioè l'energia. Sono la stessa cosa vista da due parti:
+ogni casella che cambia colore è uno scalino che la pallina scende. Si vede la
+proprietà che rende la rete una memoria e non un pasticcio: l'energia non
+risale mai. Scende quando una casella cambia, e resta ferma quando la casella
+si guarda intorno e decide di stare com'è; nel disegno si contano solo i sei
+cambi, perché sono i soli passi in cui succede qualcosa. Che i cambi siano sei
+come le caselle rovinate è il caso migliore e non una regola: ogni casella
+sbagliata si è raddrizzata una volta sola e nessuna casella giusta si è mossa
+per sbaglio. Alla fine nessuna casella vuole più cambiare, e la rete si trova
+in un **punto fisso**.
 
 ```{figure} ../figures/hopfield-ricorda.svg
 :name: fig-hopfield-ricorda
@@ -468,12 +466,12 @@ più cambiare.
 Il codice rispetta le tre ipotesi della dimostrazione di discesa. La diagonale
 di $\mathbf{W}$ è nulla (`np.fill_diagonal`), quindi nessuna casella è
 collegata a se stessa, e la spinta che sente mentre decide non dipende dalla
-sua stessa posizione. $\mathbf{W}$ è simmetrica, perché è una somma di
-prodotti esterni: il legame fra due caselle vale lo stesso nei due versi, e la
-casella che decide vede lo stesso costo che il totale conta. E le caselle si
-aggiornano una alla volta, in un ordine che `rng.permutation` rimescola a ogni
-passata. Il ciclo si ferma quando una passata intera non cambia niente, cioè in
-un punto fisso.
+sua stessa posizione. $\mathbf{W}$ è simmetrica, perché è una somma di prodotti
+esterni: il legame fra due caselle vale lo stesso nei due versi, e la casella
+che decide vede lo stesso costo che il totale conta. Le caselle si aggiornano
+una alla volta, in un ordine che `rng.permutation` rimescola a ogni passata. Il
+ciclo si ferma quando una passata intera non cambia niente, cioè in un punto
+fisso.
 
 L'ipotesi che si dimentica più facilmente è la terza. Una casella cambia solo
 quando è in disaccordo con la spinta che riceve dalle altre, e se le altre
@@ -483,20 +481,19 @@ la rete potrebbe oscillare per sempre fra due stati, come due persone che per
 lasciarsi passare si scansano dallo stesso lato, poi tutte e due dall'altro, e
 così via.
 
-Poi c'è l'onestà statistica, che qui è più istruttiva della riuscita. Quella
-stampa viene da un unico sorteggio. Il $42$ è il seme del generatore di numeri
-pseudocasuali: fissa la sequenza dei sorteggi (le sei caselle rovinate e
+Quella stampa viene da un unico sorteggio. Il $42$ è il seme del generatore di
+numeri pseudocasuali: fissa la sequenza dei sorteggi (le sei caselle rovinate e
 l'ordine in cui le caselle vengono visitate), così che chi esegue il codice
 veda la stessa stampa, e cambiandolo cambia tutto il resto. Per sapere quanto
 vale la rete bisogna ripetere la prova molte volte, e in tre modi: con ricordi
-presi a caso, da tre a sei, ridisegnati a ogni prova;
-con la T, la L e la X, rovinate diecimila volte ciascuna, contando dove la rete
-si ferma; e misurando quanto le tre lettere si somigliano. Per misurarlo, per
-ogni coppia di lettere si contano le caselle su cui concordano, si sottraggono
-quelle su cui discordano, e del saldo si tiene il numero senza il segno, perché
-un ricordo e il suo esatto opposto danno lo stesso disturbo. Più il saldo è
-piccolo, meno le due lettere si somigliano (su venticinque caselle, che sono
-in numero dispari, il minimo è 1).
+presi a caso, da tre a sei, ridisegnati a ogni prova; con la T, la L e la X,
+rovinate diecimila volte ciascuna, contando dove la rete si ferma; e misurando
+quanto le tre lettere si somigliano. Per misurarlo, per ogni coppia di lettere
+si contano le caselle su cui concordano, si sottraggono quelle su cui
+discordano, e del saldo si tiene il numero senza il segno, perché un ricordo e
+il suo esatto opposto danno lo stesso disturbo. Più il saldo è piccolo, meno le
+due lettere si somigliano (su venticinque caselle, che sono in numero dispari,
+il minimo è 1).
 
 ```python
 from itertools import combinations, product
@@ -600,28 +597,26 @@ messa in una qualunque di loro, la rete non si muove più. Il decimo fallimento
 si divide in due, e la parte più grossa è l'immagine capovolta di un'altra
 lettera; il resto è un'altra lettera.
 
-Che le lettere capovolte compaiano è inevitabile, e capire perché aiuta:
-scambiando acceso e spento dappertutto, le caselle che andavano d'accordo
-continuano ad andarci, quindi ogni ricordo si porta dietro un gemello
-capovolto, profondo esattamente uguale. Quello che non compare mai è il
-gemello della lettera *da cui si è partiti*: in trentamila prove non capita neanche
-una volta, ed è troppo lontano perché succeda. Lo stato di partenza
-differisce dalla lettera in sei caselle su venticinque, e quindi dalla sua
-immagine capovolta in diciannove. Il gemello è profondo uguale, ma sta
+Che compaiano le lettere capovolte è inevitabile: scambiando acceso e spento
+dappertutto, le caselle che andavano d'accordo continuano ad andarci, quindi
+ogni ricordo si porta dietro un gemello capovolto, profondo esattamente uguale.
+Non compare mai il gemello della lettera *da cui si è partiti*: in trentamila
+prove non capita neanche una volta, perché è troppo lontano. Lo stato di
+partenza differisce dalla lettera in sei caselle su venticinque, e quindi dalla
+sua immagine capovolta in diciannove. Il gemello è profondo uguale, ma sta
 dall'altra parte, e una discesa che si muove una casella per volta non ci
 arriva mai.
 
-E c'è un punto in cui questa rete è più fortunata di quanto la teoria le
-concederebbe. Le tre lettere sono state scelte in modo da somigliarsi il meno
-possibile, non pescate a caso, e il saldo lo mostra: vale 3 fra T e L e 1 nelle
-altre due coppie, in media 1,7, mentre fra due disegni presi a caso ci si
-aspetta 4,0.
+Questa rete è più favorita di quanto la teoria le concederebbe. Le tre lettere
+sono state scelte in modo da somigliarsi il meno possibile, non pescate a caso,
+e il saldo lo mostra: vale 3 fra T e L e 1 nelle altre due coppie, in media
+1,7, mentre fra due disegni presi a caso ci si aspetta 4,0.
 
-E questo conta, perché è proprio la somiglianza fra i ricordi a far fondere i
-fianchi delle valli: la capienza di cui si diceva è calcolata su ricordi presi
-a caso e su reti grandi, e in questo caso i ricordi non sono casuali e la rete
-non è grande. Quel 93% la rete lo deve alla forma di questo paesaggio più che
-al codice, e la forma l'abbiamo scelta noi scegliendo le lettere.
+La somiglianza fra i ricordi fa fondere i fianchi delle valli, e la capienza di
+cui si diceva è calcolata su ricordi presi a caso e su reti grandi; qui i
+ricordi non sono casuali e la rete non è grande. Quel 93% la rete lo deve alla
+forma di questo paesaggio più che al codice, e la forma l'abbiamo scelta noi
+scegliendo le lettere.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -644,8 +639,9 @@ al codice, e la forma l'abbiamo scelta noi scegliendo le lettere.
   paesaggio compaiono anche conche che nessuno ha mai memorizzato, miscele di
   più ricordi, e il gemello capovolto di ogni ricordo.
 - La pallina finisce nella valle più *vicina*, non necessariamente in quella
-  giusta. E la rete ricorda soltanto: non inventa, e può solo scendere. Sono i
-  due limiti che la prossima sezione affronta con la temperatura e i neuroni
+  giusta. La rete ricorda soltanto: non inventa, e può solo scendere. Sono i
+  due limiti che la {doc}`sezione sulle macchine di Boltzmann
+  </ModelliEnergia/boltzmann>` affronta con la temperatura e i neuroni
   nascosti.
 ```
 `````
@@ -668,7 +664,8 @@ al codice, e la forma l'abbiamo scelta noi scegliendo le lettere.
   locale. Il paesaggio ospita anche minimi spuri: i gemelli capovolti
   $-\boldsymbol{\xi}^\mu$ e le miscele dei ricordi.
 - La rete *ricorda* ma non *inventa*, e può solo scendere: due limiti che la
-  prossima sezione affronta con la temperatura e i neuroni nascosti.
+  {doc}`sezione sulle macchine di Boltzmann </ModelliEnergia/boltzmann>`
+  affronta con la temperatura e i neuroni nascosti.
 ```
 `````
 

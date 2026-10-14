@@ -14,11 +14,11 @@ daranno il Nobel per l'economia.
 La diffusione, guardata da lontano, è un problema di questa famiglia. Ci sono
 due distribuzioni, il rumore gaussiano $p_{\text{prior}}$ e i dati
 $p_{\text{dati}}$, come due mucchi di terra di forma diversa, e generare
-significa trasportare il primo sul secondo. La sezione precedente ha costruito
-il trasporto per una via indiretta: un processo che rovina i dati, poi
-invertito.
-La domanda è se non si possa fare la cosa ovvia: scegliere il percorso,
-invece di ereditarlo dal modo in cui si è deciso di rovinare le immagini.
+significa trasportare il primo sul secondo. La {doc}`sezione sul limite
+continuo </ModelliDiffusione/sde-e-ode>` ha costruito il trasporto per una via
+indiretta: un processo che rovina i dati, poi invertito. La domanda è se non si
+possa scegliere direttamente il percorso, invece di ereditarlo dal modo in cui
+si è deciso di rovinare le immagini.
 
 La risposta è sì, il metodo si chiama **flow matching**, e la scelta più
 semplice, una retta fra il dato e il rumore, risulta anche la più comoda da
@@ -32,17 +32,16 @@ Cambia il punto di vista, e cambiano le domande che vengono naturali.
 
 Nel punto di vista della diffusione si decide come rovinare: si stabilisce
 quanto rumore aggiungere e a che ritmo, e quel che segue è determinato. Il
-percorso che i dati fanno per diventare rumore lo si subisce, ed è quello che il
-programma di rumore impone.
+percorso che i dati fanno per diventare rumore lo si subisce, perché lo impone
+il programma di rumore.
 
 Nel punto di vista del trasporto si decide il percorso. Si dice: questa
 fotografia deve trasformarsi in questo particolare mucchio di rumore, e ci
-arriverà passando di qui. Fatta la scelta, quello che resta da imparare è una
-sola cosa, un **campo di velocità**: in ogni punto dello spazio e in ogni
-istante, in che direzione e a che velocità muoversi. Un campo di velocità è
-esattamente quello che un meteorologo disegna sulle carte dei venti, con una
-frecciolina per ogni punto: chi ci si trova dentro viene portato dove la
-freccia indica.
+arriverà passando di qui. Fatta la scelta, resta da imparare una sola cosa, un
+**campo di velocità**: in ogni punto dello spazio e in ogni istante, in che
+direzione e a che velocità muoversi. Un meteorologo disegna un campo di
+velocità sulle carte dei venti, con una frecciolina per ogni punto: chi ci si
+trova dentro viene portato dove la freccia indica.
 
 Generare, allora, è lasciarsi portare: si parte da un punto sorteggiato nel
 rumore, si guarda la freccia, ci si sposta un pochino, si guarda la freccia
@@ -50,12 +49,13 @@ nuova, e avanti così fino a destinazione. Nessun caso, nessun sorteggio dopo il
 primo.
 
 C'è una condizione da rispettare, e ha a che fare con la conservazione della
-materia. Se il campo di venti deve trasformare esattamente un mucchio in un
-altro, non può inventare terra dove non c'era né farla sparire: quello che entra
-in una regione deve essere quello che esce dalle altre. Detta così sembra
-un'ovvietà; scritta in formule è un'equazione precisa, che lega il campo di
-velocità alla densità che si vuole spostare, e che va rispettata perché il
-trasporto sia legittimo.
+materia. Se il campo di venti deve trasformare un mucchio in un altro, non può
+inventare terra dove non c'era né farla sparire: la terra che entra in una
+regione deve provenire da un'altra, e quella che ne esce deve arrivare in
+un'altra ancora. Detta così sembra un'ovvietà;
+scritta in formule è un'equazione precisa, che lega il campo di velocità alla
+densità che si vuole spostare, e che va rispettata perché il trasporto sia
+legittimo.
 
 `````
 
@@ -82,22 +82,22 @@ $$
 $$
 
 che è la conservazione della massa scritta in forma locale: la densità cambia
-in un punto esattamente di quanto il flusso ne porta dentro meno quanto ne
-porta fuori. La coppia $(p_t,\mathbf{u}_t)$ si dice allora *compatibile*.
+in un punto di quanto il flusso ne porta dentro meno quanto ne porta fuori. La
+coppia $(p_t,\mathbf{u}_t)$ si dice allora *compatibile*.
 
-Il rovesciamento di prospettiva rispetto alla sezione precedente è tutto qui.
+Il rovesciamento di prospettiva rispetto al limite continuo è tutto qui.
 Là si fissava una SDE in avanti e si ricavava il campo che la inverte, un
 oggetto determinato da $\mathbf{f}$, $g$ e dal punteggio. Qui si fissa
 direttamente il percorso $p_t$ che interpola fra $p_0 = p_{\text{dati}}$ e
 $p_1 = p_{\text{prior}}$, e si cerca un $\mathbf{u}_t$ compatibile con esso.
 
-Il campo compatibile non è unico: all'equazione di continuità si può
-aggiungere qualunque campo $\mathbf{w}$ con $\nabla\!\cdot\!(p_t\mathbf{w})=0$
-senza cambiare l'evoluzione delle densità. Il flow matching ne sceglie uno, e a
-parità di percorso gaussiano quello che sceglie coincide con la PF-ODE della
-sezione precedente: il dizionario fra i due linguaggi lo mostra in una riga.
-Quello che il rovesciamento di prospettiva aggiunge è la libertà di scegliere
-il percorso, non un campo diverso da percorrere.
+Il campo compatibile non è unico: all'equazione di continuità si può aggiungere
+qualunque campo $\mathbf{w}$ con $\nabla\!\cdot\!(p_t\mathbf{w})=0$ senza
+cambiare l'evoluzione delle densità. Il flow matching ne sceglie uno, e a
+parità di percorso gaussiano il campo che sceglie coincide con la PF-ODE del
+limite continuo: il dizionario fra i due linguaggi lo mostra in una riga. Il
+rovesciamento di prospettiva aggiunge la libertà di scegliere il percorso, non
+un campo diverso da percorrere.
 
 `````
 
@@ -113,27 +113,27 @@ viaggio verso infiniti rumori diversi, ciascuna con la sua velocità, e quella
 giusta è la loro media. Calcolarla vorrebbe dire sommare su tutto l'archivio
 (fare un integrale, in matematica), per ogni punto e per ogni istante.
 
-Il trucco che sblocca la situazione reggeva già, senza dirlo, il gioco del
+Il trucco che sblocca la situazione sta già, senza dirlo, dietro il gioco del
 disturbo: la rete di DDPM non vede mai il verso della salita, vede soltanto il
 disturbo di una carta per volta, eppure è il verso della salita che impara. È
-uno dei trucchi più usati in tutto il machine learning. Invece
-di chiedere alla rete la velocità media su tutti i viaggi che passano di
-lì, le si chiede la velocità di un viaggio specifico: si prende una
-fotografia, si sorteggia un rumore di arrivo, si decide che quei due sono gli
-estremi del viaggio, e a quel punto la velocità è banale da scrivere, perché il
-viaggio lo abbiamo disegnato noi.
+uno dei trucchi più usati in tutto il machine learning. Invece di chiedere alla
+rete la velocità media su tutti i viaggi che passano di lì, le si chiede la
+velocità di un viaggio specifico: si prende una fotografia, si sorteggia un
+rumore di arrivo, si decide che quei due sono gli estremi del viaggio, e a quel
+punto la velocità è banale da scrivere, perché il viaggio lo abbiamo disegnato
+noi.
 
-Il fatto sorprendente, e il motivo per cui il metodo funziona, è che
-allenarsi sulla velocità del singolo viaggio porta esattamente allo stesso
-posto che allenarsi su quella media. Non è un'approssimazione: i due voti
-(le due funzioni di costo, nel gergo) danno il voto migliore alla stessa
-rete. La ragione è quella che rende speciale l'errore quadratico: chi cerca di
-indovinare un numero sorteggiato, e viene giudicato su quanto sbaglia al
-quadrato, ha come strategia migliore rispondere la media di quel numero. Con un
-dado: l'errore al quadrato di chi risponde sempre 3,5 è in media 2,92; per chi
-risponde 3 o 4 sale a 3,17, e per chi risponde 1 a 9,17. Quindi una rete allenata a
-indovinare le singole velocità, proprio perché non può indovinarle tutte,
-finisce per rispondere la loro media, che è quello che ci serviva.
+Il fatto sorprendente, e il motivo per cui il metodo funziona, è che allenarsi
+sulla velocità del singolo viaggio porta allo stesso posto che allenarsi su
+quella media. Non è un'approssimazione: i due voti (le due funzioni di costo,
+nel gergo) danno il voto migliore alla stessa rete. La ragione è quella che
+rende speciale l'errore quadratico: chi cerca di indovinare un numero
+sorteggiato, e viene giudicato su quanto sbaglia al quadrato, ha come strategia
+migliore rispondere la media di quel numero. Con un dado: l'errore al quadrato
+di chi risponde sempre 3,5 è in media 2,92; per chi risponde 3 o 4 sale a 3,17,
+e per chi risponde 1 a 9,17. Una rete allenata a indovinare le singole
+velocità, poiché non può indovinarle tutte, finisce per rispondere la loro
+media, cioè la velocità che serviva.
 
 `````
 
@@ -161,7 +161,7 @@ $$
 - \mathbf{u}_t(\mathbf{x}\mid\mathbf{z})\big\rVert^2\Big] .
 $$
 
-Il teorema che regge il metodo {cite}`lipman2023flow` è che i due obiettivi
+Il teorema su cui poggia il metodo {cite}`lipman2023flow` è che i due obiettivi
 differiscono per una costante indipendente da $\theta$, quindi
 
 $$
@@ -177,26 +177,24 @@ $$
 \;\big|\;\mathbf{x}_t=\mathbf{x}\big] .
 $$
 
-La dimostrazione è un conto di due righe. Sviluppando i quadrati, i due
-obiettivi hanno lo stesso termine in $\lVert\mathbf{v}_\theta\rVert^2$, perché
+La dimostrazione si fa in due righe. Sviluppando i quadrati, i due obiettivi
+hanno lo stesso termine in $\lVert\mathbf{v}_\theta\rVert^2$, perché
 $p_t(\mathbf{x}) = \int p_t(\mathbf{x}\mid\mathbf{z})\,p(\mathbf{z})\,
 \mathrm{d}\mathbf{z}$. Hanno anche lo stesso termine misto
 $\langle\mathbf{v}_\theta,\cdot\rangle$, perché il campo marginale è per
-definizione
-$\mathbf{u}_t(\mathbf{x}) = \int \mathbf{u}_t(\mathbf{x}\mid\mathbf{z})\,
+definizione $\mathbf{u}_t(\mathbf{x}) = \int
+\mathbf{u}_t(\mathbf{x}\mid\mathbf{z})\,
 p_t(\mathbf{x}\mid\mathbf{z})\,p(\mathbf{z})\,\mathrm{d}\mathbf{z}\,/\,
-p_t(\mathbf{x})$, cioè la media condizionata scritta sopra. Infine, differiscono
-soltanto nel termine in $\lVert\mathbf{u}\rVert^2$, che non dipende da
-$\theta$. La proprietà su cui tutto si regge è una sola: il minimo di
+p_t(\mathbf{x})$, cioè la media condizionata scritta sopra. Infine,
+differiscono soltanto nel termine in $\lVert\mathbf{u}\rVert^2$, che non
+dipende da $\theta$. La proprietà usata è una sola: il minimo di
 $\mathbb{E}[\lVert a - Y\rVert^2]$ rispetto ad $a$ è $\mathbb{E}[Y]$. Perché
 l'obiettivo abbia senso serve però anche il primo teorema dello stesso lavoro:
 se ogni campo condizionato genera il proprio percorso condizionato, il campo
-marginale genera il percorso marginale $p_t$, dove $p_t > 0$. È
-esattamente la struttura del denoising score matching di Vincent, dove il
-bersaglio intrattabile (il punteggio della marginale) veniva sostituito dal
-bersaglio banale (il rumore iniettato), con la stessa garanzia. Riconoscere che
-sono lo stesso teorema applicato due volte fa risparmiare metà della
-letteratura.
+marginale genera il percorso marginale $p_t$, dove $p_t > 0$. È la struttura
+del denoising score matching di Vincent, dove il bersaglio intrattabile (il
+punteggio della marginale) veniva sostituito dal bersaglio banale (il rumore
+iniettato), con la stessa garanzia. Sono lo stesso teorema applicato due volte.
 
 `````
 
@@ -209,18 +207,17 @@ Deciso di scegliersi il percorso, quale scegliere?
 Il percorso che la diffusione impone è una curva, e non per un capriccio: nasce
 dal fatto che a ogni istante si mescola un po' meno immagine con un po' più
 rumore, secondo un dosaggio che cambia continuamente. Se si disegna il viaggio
-di una singola fotografia verso il suo rumore, quello che viene fuori è una
-strada tortuosa.
+di una singola fotografia verso il suo rumore, se ne ricava una strada tortuosa.
 
 Ma niente obbliga a quel percorso. Si può stabilire che il viaggio sia la
 linea retta: al tempo zero la fotografia, al tempo uno il rumore, e in
-mezzo la miscela che sta esattamente a metà strada quando il tempo è a metà.
+mezzo la miscela a metà strada quando il tempo è a metà.
 Con questa scelta la velocità del viaggio è costantissima e si scrive senza
 pensarci: è la differenza fra il punto di arrivo e quello di partenza, uguale
 in ogni istante. Non c'è niente di più semplice da far imparare a una rete.
 
-Questa è l'idea del **flusso rettificato**, ed è la strada che i generatori di
-immagini più recenti hanno preso.
+Questa è l'idea del **flusso rettificato**, la strada presa dai generatori di
+immagini più recenti.
 
 C'è però un'insidia da capire bene, perché il metodo si spiega spesso male.
 Ogni singolo viaggio è una retta; il campo dei venti che ne risulta no. In un
@@ -236,7 +233,7 @@ Il rimedio esiste e si chiama **raddrizzamento**. Si fa girare il modello una
 volta, e si guarda dove ciascun rumore di partenza va a finire: si ottengono
 così delle coppie che il modello stesso ha accoppiato, invece che accoppiate a
 caso. Rifacendo l'addestramento su quelle coppie, i viaggi non si incrociano
-quasi più, e il campo dei venti diventa davvero dritto. A quel punto un solo
+quasi più, e il campo dei venti diventa dritto. A quel punto un solo
 passo, o due, bastano.
 
 `````
@@ -251,10 +248,10 @@ p_t(\mathbf{x}\mid\mathbf{x}_0)
 \sigma_t^2\mathbf{I}\big),
 $$
 
-esattamente la stessa forma del nucleo di perturbazione della sezione
-precedente, con $\alpha_0=1,\sigma_0=0$ e, all'altro capo,
-$\alpha_1=0,\sigma_1=1$: esattamente per il rettificato, solo al limite per la
-diffusione, ed è il rapporto segnale-rumore terminale non nullo di cui la
+esattamente la stessa forma del nucleo di perturbazione del limite
+continuo, con $\alpha_0=1,\sigma_0=0$ e, all'altro capo,
+$\alpha_1=0,\sigma_1=1$: il rettificato li raggiunge, la diffusione solo al
+limite, e lo scarto è il rapporto segnale-rumore terminale non nullo di cui la
 distillazione dovrà tenere conto. Le scelte di $(\alpha_t,\sigma_t)$ danno le
 varianti:
 
@@ -303,29 +300,29 @@ passi necessari crolla. Quanto siano dritte si misura con la rettitudine $S(Z)
 nulla se e solo se le traiettorie sono rette. Liu e colleghi dimostrano che, su
 $K$ giri di reflow, il migliore ha $\min_{k\le K} S(Z^k) \le \mathbb{E}\lVert
 X_1 - X_0\rVert^2 / K$: la rettitudine scende come $1/K$ per il migliore dei
-giri, ma non è garantito che scenda a ogni giro. Il prezzo è che ogni giro di
+giri, ma non è garantito che scenda a ogni giro. Il costo è che ogni giro di
 reflow richiede di generare un insieme di coppie con il modello corrente, e che
-l'accuratezza si degrada leggermente a ogni giro: gli autori stessi
-sconsigliano di farne troppi, perché l'errore di stima si accumula.
-L'alternativa che evita il secondo addestramento è accoppiare dato e rumore già
-dentro ogni minibatch, risolvendo su quel minibatch un piccolo problema di
-trasporto ottimo discreto: l'accoppiamento si avvicina a quello ideale al costo
-di un assegnamento per minibatch {cite}`tong2024improving`.
+l'accuratezza si degrada leggermente a ogni giro, perché l'errore di stima si
+accumula: i giri si tengono pochi. L'alternativa che evita il secondo
+addestramento è accoppiare dato e rumore già dentro ogni minibatch, risolvendo
+su quel minibatch un piccolo problema di trasporto ottimo discreto:
+l'accoppiamento si avvicina a quello ideale al costo di un assegnamento per
+minibatch {cite}`tong2024improving`.
 
 Un avvertimento sulla parentela con il trasporto ottimo, perché il nome
-inganna. Un accoppiamento che non fa incrociare le traiettorie è monotono,
-e in una dimensione la mappa monotona è effettivamente la soluzione del
-problema di Monge con costo quadratico. In più dimensioni questo non basta: il
-reflow non fa crescere il costo di trasporto a ogni giro, ma il limite non è in
-generale la mappa ottima, e nessuno di questi metodi risolve il problema di
-Monge. La coincidenza vale in dimensione uno e va lasciata lì.
+inganna. Un accoppiamento che non fa incrociare le traiettorie è monotono, e in
+una dimensione la mappa monotona è effettivamente la soluzione del problema di
+Monge con costo quadratico. In più dimensioni questo non basta: il reflow non
+fa crescere il costo di trasporto a ogni giro, ma il limite non è in generale
+la mappa ottima, e nessuno di questi metodi, così com'è, risolve il problema di
+Monge. La coincidenza vale in dimensione uno.
 
 `````
 
-Il vantaggio delle strade dritte si misura, e il conto si fa senza addestrare
-niente: sui dati della sezione precedente, che possono valere soltanto $-1{,}5$
-o $+1{,}5$ (i due *modi*), il campo di velocità esatto si scrive a mano, per il
-percorso rettificato come per quello della diffusione.
+Il vantaggio delle strade dritte si misura senza addestrare niente: sui dati
+della prova sul limite continuo, che possono valere soltanto $-1{,}5$ o $+1{,}5$ (i
+due *modi*), il campo di velocità esatto si scrive a mano, per il percorso
+rettificato come per quello della diffusione.
 
 ```python
 import numpy as np
@@ -393,18 +390,18 @@ print(f"esatto  {errore((1 - T_MIN) * x0 + T_MIN * e):.4f}   "
 
 La tabella dice due cose, e la seconda è la più istruttiva.
 
-La prima è il risultato atteso: con il percorso rettificato otto passi
-bastano ad arrivare più vicino di quanto il percorso della diffusione arrivi
-con duecentocinquantasei. Le righe in fondo, però, vanno lette con una
-riserva. La prova si ferma a un millesimo dalla fine, non a zero, e lì resta
-qualcosa che nessun numero di passi toglie: sulla retta il dato è ancora
-rimpicciolito di un millesimo e coperto da un velo di disturbo largo un
-millesimo, sulla diffusione il velo è largo $0{,}0105$. È quello che misura
-l'ultima riga stampata, i dati veri portati a quell'istante senza nessun
-passo: $0{,}0016$ e $0{,}0084$. La retta, a duecentocinquantasei passi, è già
-lì, e dei $0{,}0104$ della diffusione quasi tutto è quel residuo e non errore
-dei passi. Il divario vero fra i due percorsi è quello delle righe a quattro e
-a otto passi, dove la retta sbaglia quasi venti e sessanta volte meno.
+La prima è il risultato atteso: con il percorso rettificato otto passi bastano
+ad arrivare più vicino di quanto il percorso della diffusione arrivi con
+duecentocinquantasei. Le righe in fondo, però, vanno lette con una riserva. La
+prova si ferma a un millesimo dalla fine, non a zero, e lì resta qualcosa che
+nessun numero di passi toglie: sulla retta il dato è ancora rimpicciolito di un
+millesimo e coperto da un velo di disturbo largo un millesimo, sulla diffusione
+il velo è largo $0{,}0105$. Lo misura l'ultima riga stampata, che porta i dati
+veri a quell'istante senza nessun passo: $0{,}0016$ e $0{,}0084$. La retta, a
+duecentocinquantasei passi, è già lì, e dei $0{,}0104$ della diffusione la
+maggior parte è quel residuo e non errore dei passi. Il divario vero fra i due
+percorsi è quello delle righe a quattro e a otto passi, dove la retta sbaglia
+quasi venti e sessanta volte meno.
 
 La seconda è che con un passo solo il percorso rettificato fa peggio della
 diffusione, e finisce a metà strada fra $-1{,}5$ e $+1{,}5$. È la conferma
@@ -413,7 +410,7 @@ media dei dati, perché a quell'istante l'immagine di partenza è del tutto
 dimenticata e i due modi pesano uguale. Ogni viaggio è una retta, il campo che
 li media no, e un passo solo lo dimostra.
 
-Che sia proprio l'incrocio delle traiettorie il problema si vede guardando dove
+Che il problema sia l'incrocio delle traiettorie si vede guardando dove
 finisce ciascun punto di partenza.
 
 ```python
@@ -426,14 +423,13 @@ print(np.round(arrivo, 4))            # -> [-1.5013 -1.4996 -1.4973  1.4973  1.4
 print(bool(np.all(np.diff(arrivo) > 0)))          # la mappa e' monotona -> True
 ```
 
-La mappa che il campo induce è monotona: chi parte più a destra arriva più
-a destra, e le traiettorie non si scavalcano mai. L'unica eccezione è il punto
-esattamente a zero, dove i due modi si equivalgono e la velocità è nulla: è il
-confine fra chi finisce a $-1{,}5$ e chi a $+1{,}5$, un punto solo su tutta la
-retta. È questa monotonia che il raddrizzamento sfrutta, ed è anche il motivo
-per cui in una dimensione (e soltanto lì) la mappa che ne esce coincide con
-quella del trasporto ottimo, la mappa che sposterebbe la terra di Monge con la
-minima fatica.
+La mappa che il campo induce è monotona: chi parte più a destra arriva più a
+destra, e le traiettorie non si scavalcano mai. L'unica eccezione è il punto
+zero, dove i due modi si equivalgono e la velocità è nulla: è il confine fra
+chi finisce a $-1{,}5$ e chi a $+1{,}5$, un punto solo su tutta la retta. È
+questa monotonia che il raddrizzamento sfrutta, e ne segue che in una dimensione
+(e soltanto lì) la mappa che ne esce coincide con quella del trasporto ottimo,
+la mappa che sposterebbe la terra di Monge con la minima fatica.
 
 ## La stessa cosa vista da due parti
 
@@ -447,13 +443,13 @@ dosaggio; il campo di velocità che lo realizza si ricava dal punteggio con una
 formula, e viceversa. Una rete addestrata in un modo si può usare nell'altro
 riscrivendo la sua uscita.
 
-Quello che cambia sono tre cose pratiche, ed è per esse che il vocabolario
-nuovo si è imposto. La prima: potendo scegliere il percorso, si sceglie quello
-che costa meno passi da percorrere. La seconda: il flow matching non chiede che
-il punto di arrivo sia rumore gaussiano, quindi permette di andare da una
-distribuzione qualsiasi a un'altra qualsiasi, per esempio da fotografie diurne
-a fotografie notturne, senza passare dal rumore. La terza: le formule sono più
-corte, e formule più corte fanno commettere meno errori.
+Cambiano tre cose pratiche, e per esse il vocabolario nuovo si è imposto. La
+prima: potendo scegliere il percorso, si sceglie quello che si percorre in meno
+passi. La seconda: il flow matching non chiede che il punto di arrivo sia
+rumore gaussiano, quindi permette di andare da una distribuzione qualsiasi a
+un'altra qualsiasi, per esempio da fotografie diurne a fotografie notturne,
+senza passare dal rumore. La terza: le formule sono più corte, e formule più
+corte fanno commettere meno errori.
 
 `````
 
@@ -504,28 +500,28 @@ Transformer </ModelliDiffusione/diffusion-transformer>`.
 
 `````
 
-Una nota di lessico, perché aprendo il codice di una libreria si incontrano
-tutti e due i vocabolari nello stesso file. «Programma di rumore» e «percorso
-di probabilità» indicano la stessa scelta; «predire il rumore» e «predire la
-velocità» sono due uscite della stessa rete, convertibili l'una nell'altra; e
-un campionatore chiamato *flow matching Euler* e uno chiamato *DDIM* (nella
-versione deterministica, con le due uscite ricavate dalla stessa predizione)
-fanno, sul percorso rettificato, lo stesso identico passo: la formula
-$\mathbf{x}_s = \mathbf{x}_t + (s-t)\,\hat{\mathbf{v}}$ lungo la retta è
-l'aggiornamento esatto per entrambi. Sapere che i due dizionari traducono lo
-stesso testo evita di cercare differenze dove ci sono soltanto nomi diversi.
+Aprendo il codice di una libreria si incontrano tutti e due i vocabolari nello
+stesso file. «Programma di rumore» e «percorso di probabilità» indicano la
+stessa scelta; «predire il rumore» e «predire la velocità» sono due uscite
+della stessa rete, convertibili l'una nell'altra; e un campionatore chiamato
+*flow matching Euler* e uno chiamato *DDIM* (nella versione deterministica, con
+le due uscite ricavate dalla stessa predizione) fanno, sul percorso
+rettificato, lo stesso passo: la formula $\mathbf{x}_s = \mathbf{x}_t +
+(s-t)\,\hat{\mathbf{v}}$ lungo la retta è l'aggiornamento esatto per entrambi.
+Sapere che i due dizionari traducono lo stesso testo evita di cercare
+differenze dove ci sono soltanto nomi diversi.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
 - Nel flow matching si sceglie il percorso fra i dati e il rumore, invece di
-  ereditarlo dal modo in cui si è deciso di rovinare le immagini. Quello che
-  la rete impara è un campo di venti: in ogni punto e in ogni istante,
-  dove andare e quanto in fretta.
+  ereditarlo dal modo in cui si è deciso di rovinare le immagini. La rete
+  impara un campo di venti: in ogni punto e in ogni istante, dove andare e
+  quanto in fretta.
 - La velocità giusta in un punto è la media su tutti i viaggi che ci passano, e
   quella media non si sa calcolare. Il trucco è chiedere alla rete la velocità
   di un solo viaggio, che è banale perché il viaggio lo abbiamo disegnato
-  noi: allenarsi così porta esattamente allo stesso risultato, perché chi deve
+  noi: allenarsi così porta allo stesso risultato, perché chi deve
   indovinare un numero sorteggiato e viene giudicato sul quadrato dell'errore
   risponde la media.
 - Il percorso più semplice è la retta, e la sua velocità è costante: la
@@ -547,10 +543,10 @@ stesso testo evita di cercare differenze dove ci sono soltanto nomi diversi.
 ```{admonition} Da ricordare
 :class: important
 - Un flusso è generato da $\dot\Phi_t = \mathbf{u}_t(\Phi_t)$, e la coppia
-  $(p_t,\mathbf{u}_t)$ deve soddisfare l’equazione di continuità
-  $\partial_t p_t + \nabla\!\cdot\!(p_t\mathbf{u}_t)=0$. Il campo compatibile
-  con un dato $p_t$ non è unico; sui percorsi gaussiani quello che il flow
-  matching sceglie coincide con la PF-ODE.
+  $(p_t,\mathbf{u}_t)$ deve soddisfare l’equazione di continuità $\partial_t
+  p_t + \nabla\!\cdot\!(p_t\mathbf{u}_t)=0$. Il campo compatibile con un dato
+  $p_t$ non è unico; sui percorsi gaussiani il campo scelto dal flow matching
+  coincide con la PF-ODE.
 - $\mathcal{L}_{\text{FM}}$ è intrattabile; $\mathcal{L}_{\text{CFM}}$, che
   regredisce sulla velocità condizionata, ha lo stesso gradiente e lo
   stesso minimo, che è $\mathbb{E}[\mathbf{u}_t(\mathbf{x}\mid\mathbf{z})\mid
@@ -579,8 +575,9 @@ scelta migliore accorcia il viaggio. Resta il fatto che quel viaggio va
 comunque percorso, e che ogni passo è una valutazione della rete su tutti i
 numeri dell'immagine: per una fotografia a colori di $512\times512$ pixel sono
 786.432. Il primo modo di alleggerirla non tocca la strada ma lo spazio in cui
-si viaggia, ed è quello che ha portato la diffusione sui computer di casa: la
+si viaggia. Questo modo ha portato la diffusione sui computer di casa: la
 diffusione si fa sulla versione compressa che ne scrive un autoencoder, decine
 di volte più piccola. Ad accorciare la strada penseranno poi i
-{doc}`campionatori veloci </ModelliDiffusione/campionatori-veloci>`, con due
-secoli di analisi numerica alle spalle.
+{doc}`campionatori veloci
+</ModelliDiffusione/campionatori-veloci>`, con due secoli di analisi numerica
+alle spalle.

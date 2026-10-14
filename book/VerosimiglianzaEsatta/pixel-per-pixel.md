@@ -1,6 +1,6 @@
 # Un pixel alla volta
 
-Generare una cosa alla volta si è già visto. Il {doc}`capitolo sui
+Generare un pezzo alla volta si è già visto. Il {doc}`capitolo sui
 Transformer </Transformers/overview>` scrive testo una parola alla volta;
 quello sull'audio produce suono un simbolo alla volta, e prima ancora, con
 WaveNet, un campione d'onda alla volta. La ricetta è sempre la stessa: si mette
@@ -13,8 +13,8 @@ ventesimo. Nessuna approssimazione: quel prodotto *è* la probabilità, non una
 sua stima, e ogni fattore è una probabilità vera perché è una scelta fra un
 numero finito di possibilità, con i pesi che sommano a uno.
 
-Chiediamoci allora la cosa ovvia: e un'immagine? La domanda ha una storia più
-lunga dei modelli che l'hanno resa celebre. Le reti che scrivono la probabilità
+La stessa ricetta si applica a un'immagine, e ha una storia più lunga dei
+modelli che l'hanno resa celebre. Le reti che scrivono la probabilità
 di un dato a molte dimensioni come prodotto di condizionali risalgono almeno ai
 primi anni Novanta; nel 2011 il NADE di Hugo Larochelle e Iain Murray ne fa un
 modello neurale che si addestra e si valuta senza approssimazioni
@@ -28,7 +28,8 @@ dimensioni spaziali»; WaveNet, che la {doc}`sezione sul generare suono
 è la sorella minore di questo lavoro, stesso laboratorio e stesso anno, con
 l'onda al posto della griglia.
 
-Servono due cose, e la seconda è tutto il mestiere.
+Servono due cose, un ordine e una convoluzione che lo rispetti, e la difficoltà
+sta nella seconda.
 
 ## Primo: un ordine
 
@@ -53,24 +54,24 @@ Qui arriva l'ostacolo, e ha una forma precisa. Il {doc}`capitolo sul deep
 learning </DeepLearning/overview>` ha spiegato perché su un'immagine si usa una
 convoluzione e non uno strato denso: la convoluzione calcola l'uscita in un
 punto con un filtro, un quadratino di pesi che guarda un intorno del pixel,
-cioè i vicini in tutte le direzioni. Ma «tutte le direzioni» qui è esattamente
-ciò che non si può fare. L'intorno comprende anche pixel che nell'ordine di
+cioè i vicini in tutte le direzioni. Qui «tutte le direzioni» è ciò che non
+si può ammettere. L'intorno comprende anche pixel che nell'ordine di
 lettura vengono dopo, e se nel prevedere un pixel la rete li vede, il prodotto
 dei condizionali non è più una probabilità.
 
-Il vincolo si impone sui pesi, ed è la **convoluzione mascherata**: il filtro si
+Il vincolo si impone sui pesi con la **convoluzione mascherata**: il filtro si
 moltiplica, elemento per elemento, per una maschera di zeri e di uni che azzera
 i pesi sulle posizioni successive nell'ordine di lettura. Su un filtro
 $3 \times 3$ restano accese le tre caselle della riga di sopra e quella a
 sinistra del centro; si spengono la casella a destra e le tre della riga di
 sotto, e resta da decidere che cosa fare del centro.
 
-Al primo strato la casella centrale contiene il pixel vero, cioè proprio il
+Al primo strato la casella centrale contiene il pixel vero, cioè il
 valore da indovinare: se restasse accesa, la rete imparerebbe in pochi passi
 di addestramento a copiare la risposta dalla domanda, e avremmo un modello con
 verosimiglianza perfetta e utilità nulla. Il primo strato usa quindi la maschera
 di **tipo A**, che spegne anche il centro, cinque caselle su nove. Dal secondo
-strato in poi la casella centrale contiene quello che lo strato precedente ha
+strato in poi la casella centrale contiene il risultato che lo strato precedente ha
 calcolato lì a partire dai soli pixel già letti, perché il pixel vero la
 maschera di tipo A gliel'aveva tolto. Spegnerla sarebbe uno spreco, e si lascia
 accesa: è la maschera di **tipo B**, che di caselle ne spegne quattro.
@@ -167,20 +168,21 @@ campo visivo con 24 strati ('#' visto, '.' passato mai visto, ' ' futuro):
 ```
 
 La prima colonna dei numeri è la buona notizia, e va letta come una prova: a
-qualunque profondità, zero pixel del futuro entrano nel conto. Le maschere
-fanno il loro mestiere.
+qualunque profondità, nessun pixel del futuro contribuisce all'uscita. Le
+maschere rispettano l'ordine di lettura.
 
 La seconda colonna è la sorpresa. Con sei strati ventiquattro pixel del passato
-restano fuori, ed è atteso: la rete non arriva così lontano, basta farla più
-profonda. Con dodici ne restano fuori sei. Con ventiquattro ne restano fuori
-ancora sei, e sono una zona che quelle maschere non raggiungono a nessuna
-profondità: il triangolo che nella mappa sale a destra del pixel da indovinare.
-Si chiama **punto cieco** (*blind spot*), e il lavoro che l'ha diagnosticato lo
-dice in una riga: le PixelCNN «hanno un punto cieco nel campo recettivo che non
-può essere usato per fare predizioni» {cite}`oord2016conditional`. Il disegno lo
-mostra strato per strato ({numref}`fig-campo-cieco`): il cono si allarga fin
-dove arriva, e i sei quadretti tratteggiati che salgono a destra del pixel da
-indovinare restano dove sono anche quando tutto il resto si è acceso.
+restano fuori, perché la rete non arriva ancora così lontano e una profondità
+maggiore risolve il problema. Con dodici ne restano fuori sei. Con
+ventiquattro ne restano fuori ancora sei, una zona che quelle maschere non
+raggiungono a nessuna profondità: il triangolo che nella mappa sale a destra
+del pixel da indovinare. Si chiama **punto cieco** (*blind spot*), e il lavoro
+che l'ha diagnosticato lo dice in una riga: le PixelCNN «hanno un punto cieco
+nel campo recettivo che non può essere usato per fare predizioni»
+{cite}`oord2016conditional`. Il disegno lo mostra strato per strato
+({numref}`fig-campo-cieco`): il cono si allarga fin dove arriva, e i sei
+quadretti tratteggiati che salgono a destra del pixel da indovinare restano
+dove sono anche quando tutto il resto si è acceso.
 
 ```{figure} ../figures/campo-cieco.svg
 :name: fig-campo-cieco
@@ -194,14 +196,14 @@ di lettura, quindi la rete avrebbe tutto il diritto di guardarli, e non li
 guarderà mai. Quelli grigi vengono dopo, e restano spenti giustamente.
 ```
 
-Il perché è geometrico, e sulla figura si vede. I filtri sono $3 \times 3$,
-quindi ogni strato allarga la vista di una casella per lato. Verso sinistra e
-verso l'alto quella casella si guadagna subito; verso destra no, perché sulla
-riga corrente la maschera si ferma al centro, e l'unico modo di spostarsi a
-destra è passare per la riga di sopra: una colonna guadagnata a destra costa
-una riga guadagnata in alto. Il risultato è un cono che verso sinistra si apre
-in fretta e verso destra sale in diagonale, mentre il passato vero, quello
-dell'ordine di lettura, comprende tutta la riga di sopra fino in fondo.
+Il perché è geometrico. I filtri sono $3 \times 3$, quindi ogni strato allarga
+la vista di una casella per lato. Verso sinistra e verso l'alto quella casella
+si guadagna subito; verso destra no, perché sulla riga corrente la maschera si
+ferma al centro, e l'unico modo di spostarsi a destra è passare per la riga di
+sopra: ogni colonna guadagnata a destra va di pari passo con una riga
+guadagnata in alto. Il risultato è un cono che verso sinistra si apre in fretta
+e verso destra sale in diagonale, mentre il passato vero, quello dell'ordine di
+lettura, comprende tutta la riga di sopra fino in fondo.
 
 La riparazione, nello stesso lavoro, divide la convoluzione in due pile che
 lavorano in parallelo: una **verticale**, che guarda tutte le righe di sopra
@@ -228,9 +230,9 @@ Perché nessuno bari, gli occhiali che ti danno guardano soltanto all'indietro.
 La prima lente copre anche la parola da indovinare, com'è ovvio; le lenti
 successive leggono gli appunti della prima, e al centro di quegli appunti c'è
 soltanto ciò che la prima ha scritto senza vedere la risposta, quindi possono
-guardarlo. Il guaio è che gli occhiali hanno una fessura storta. Sulla riga che
+guardarlo. Gli occhiali hanno una fessura storta. Sulla riga che
 stai leggendo vedi indietro fin dove arriva la lente; sulle righe di sopra ti
-fermi prima verso destra, e il pezzo che ti sfugge è più lungo proprio sulla
+fermi prima verso destra, e il pezzo che ti sfugge è più lungo sulla
 riga appena sopra la tua, quella che ti servirebbe di più. Lenti più spesse
 allungano la portata; la forma della fessura resta quella, e quelle parole
 nessuno te le aveva vietate.
@@ -242,17 +244,17 @@ prova, e su un'immagine vera il triangolo cieco è molto più largo. È il punto
 cieco, e lì la profondità non serve più a niente, perché il limite sta nella
 forma dello strumento e si sposta soltanto cambiando quella. La riparazione
 del 2016 è mettere due finestre al posto di una: una guarda tutte le righe di
-sopra per intero, l'altra la riga corrente da sinistra. Quello che vede la
-prima lo si passa alla seconda, e mai al rovescio: al rovescio la prima si
+sopra da un lato all'altro, l'altra la riga corrente da sinistra. Ciò che vede la
+prima si passa alla seconda, e mai al rovescio: al rovescio la prima si
 ritroverebbe davanti pezzi che non ha il diritto di vedere, e il gioco
 tornerebbe truccato.
 
 Conta anche il modo di rispondere. Nel gioco la risposta è una parola, e al
-momento di sceglierne una le parole non stanno su una scala: non ce n'è una
-che sia in mezzo fra due altre. La rete invece sceglie fra 256 gradazioni di
+momento di sceglierne una le parole non stanno su una scala: non ce n'è una che
+sia in mezzo fra due altre. La rete invece sceglie fra 256 gradazioni di
 grigio, che stanno su una scala: il 128 e il 129 sono vicini di casa. Chi le
-tratta come 256 nomi di un elenco butta via quello che sa già; chi risponde
-con una curva sulla scala impara prima e indovina meglio.
+tratta come 256 nomi di un elenco butta via un'informazione che ha già; chi
+risponde con una curva sulla scala impara prima e indovina meglio.
 
 Vale ben oltre le immagini: quando un modello non arriva a un risultato, prima
 di ingrandirlo si guarda se quell'architettura possa arrivarci in linea di
@@ -292,7 +294,7 @@ qualunque ordine; per un modello addestrato no, e DeepNADE
 ordine delle variabili, osservando che le stime dei diversi ordini non
 coincidono.
 
-Le maschere realizzano il vincolo di causalità a livello di pesi: $\mathbf{W}
+Le maschere realizzano il vincolo di causalità sui pesi: $\mathbf{W}
 \leftarrow \mathbf{W} \odot \mathbf{M}$ con $\mathbf{M}$ binaria (che qui
 moltiplica i pesi, mentre la $\mathbf{M}$ dell'attenzione si somma ai
 punteggi), tipo A al primo strato e tipo B dopo. È la stessa idea con cui MADE
@@ -311,14 +313,14 @@ distribuzione di $x_i$), si ha $\partial \mathbf{o}_i / \partial x_j =
 \mathbf{0}$ per ogni $j \geq i$ nell'ordine di scansione, a qualunque
 profondità.
 
-Il punto cieco è il prezzo della realizzazione, non del vincolo. Detto in
-termini di campo recettivo: la maschera tronca la riga corrente al centro,
-quindi l'espansione verso destra guadagna al più una colonna per ogni riga
-guadagnata in alto. Il bordo destro del campo sale quindi a $45^\circ$ invece
-di coprire tutto il semipiano che l'ordinamento consentirebbe, e ciò che resta
-fra quella retta e il bordo dell'immagine non è raggiungibile a nessuna
-profondità: con filtri $3 \times 3$ il punto cieco arriva a coprire, dicono gli
-autori, «fino a un quarto del campo recettivo potenziale». La riparazione di
+Il punto cieco dipende dalla realizzazione, non dal vincolo. Sul campo
+recettivo si legge così: la maschera tronca la riga corrente al centro, quindi
+l'espansione verso destra guadagna al più una colonna per ogni riga guadagnata
+in alto. Il bordo destro del campo sale quindi a $45^\circ$ invece di coprire
+tutto il semipiano che l'ordinamento consentirebbe, e ciò che resta fra quella
+retta e il bordo dell'immagine non è raggiungibile a nessuna profondità: con
+filtri $3 \times 3$ il punto cieco arriva a coprire, dicono gli autori, «fino a
+un quarto del campo recettivo potenziale». La riparazione di
 {cite}`oord2016conditional` fattorizza il filtro in due pile: la verticale, non
 mascherata, sulle righe strettamente superiori (campo rettangolare, nessun
 punto cieco), e l'orizzontale, mascherata, sulla riga corrente. L'uscita della
@@ -329,25 +331,25 @@ sostituisce la ReLU con un'unità *gated* in stile LSTM, e aggiunge il
 condizionamento su un vettore esterno, che è il motivo per cui il titolo parla
 di generazione condizionale. Le due pile e le unità *gated* insieme portano il
 PixelCNN, su CIFAR-10, da $3{,}14$ a $3{,}03$ bit per dimensione (quanti bit
-costa in media ogni numero dell'immagine: più basso è meglio), a un soffio dal
-$3{,}00$ del PixelRNN. Quest'ultimo, però, è molto più lento da addestrare,
-perché una ricorrenza sui pixel non si parallelizza come una convoluzione. Il
-PixelRNN usa due LSTM bidimensionali: la *Row LSTM* elabora una riga alla volta
-con una convoluzione $k \times 1$ sullo stato della riga precedente, e ha un
-campo recettivo triangolare; la *Diagonal BiLSTM* scorre lungo le diagonali
-dell'immagine inclinata e copre tutto il contesto passato, ed è lei a dare il
-$3{,}00$. WaveNet risolve in una dimensione un problema diverso, un campo
-recettivo troppo corto: con filtri causali di lunghezza $k$ ogni strato allunga
-il campo di $k - 1$ posizioni, mentre con convoluzioni causali *dilatate*,
-raddoppiando la dilatazione a ogni strato, il campo di $L$ strati con $k = 2$
-arriva a $2^L$ invece che a $L + 1$.
+servono in media per ogni numero dell'immagine: più basso è meglio), a un
+soffio dal $3{,}00$ del PixelRNN. Quest'ultimo, però, è molto più lento da
+addestrare, perché una ricorrenza sui pixel non si parallelizza come una
+convoluzione. Il PixelRNN usa due LSTM bidimensionali: la *Row LSTM* elabora
+una riga alla volta con una convoluzione $k \times 1$ sullo stato della riga
+precedente, e ha un campo recettivo triangolare; la *Diagonal BiLSTM* scorre
+lungo le diagonali dell'immagine inclinata e copre tutto il contesto passato; è
+questa a dare il $3{,}00$. WaveNet risolve in una dimensione un problema
+diverso, un campo recettivo troppo corto: con filtri causali di lunghezza $k$
+ogni strato allunga il campo di $k - 1$ posizioni, mentre con convoluzioni
+causali *dilatate*, raddoppiando la dilatazione a ogni strato, il campo di $L$
+strati con $k = 2$ arriva a $2^L$ invece che a $L + 1$.
 
 Fra i successori, **PixelCNN++** {cite}`salimans2017pixelcnn` sostituisce la
 categorica su 256 livelli con una **miscela di logistiche discretizzate**: per
 una categorica il livello 128 e il 129 sono due simboli senza alcuna relazione,
 mentre una miscela continua e poi discretizzata recupera l'ordinamento dei
-valori; gli autori riportano che così l'addestramento accelera. Questa e altre
-quattro modifiche insieme portano il conto su CIFAR-10 a $2{,}92$. Una delle
+valori; gli autori osservano che così l'addestramento accelera. Questa e altre
+quattro modifiche insieme portano il risultato su CIFAR-10 a $2{,}92$. Una delle
 quattro cambia anche il costo del campionamento: PixelCNN++ condiziona su pixel
 interi invece che sui singoli canali, predice i tre canali di un pixel insieme
 (la dipendenza del verde dal rosso, e del blu da entrambi, passa per le medie
@@ -358,35 +360,35 @@ della miscela) e scende da $3n^2$ a $n^2$ passaggi sequenziali.
 ## Perché non ha vinto sulle immagini, e dove è tornata
 
 Il costo sta tutto nel campionamento. Valutare la probabilità di un'immagine
-costa un passaggio della rete; generarne una ne costa uno per valore, in fila,
-perché il valore numero mille si può estrarre solo dopo che il
-novecentonovantanovesimo è stato fissato. Su una fotografia a colori di
-$256 \times 256$ sono $256 \times 256 \times 3 = 196.608$ passaggi sequenziali
-per una sola immagine, contro l'unico passaggio di una GAN o del flusso della
-prossima sezione: più di cinque ordini di grandezza nel numero di passi in
-fila, che un'implementazione più furba rende più leggeri ma non riduce, perché
-la sequenza la impone la fattorizzazione stessa.
+richiede un passaggio della rete; generarne una ne costa uno per valore, in
+sequenza, perché il valore numero mille si può estrarre solo dopo che il
+novecentonovantanovesimo è stato fissato. Su una fotografia a colori di $256
+\times 256$ sono $256 \times 256 \times 3 = 196.608$ passaggi sequenziali per
+una sola immagine, contro l'unico passaggio di una GAN o di un flusso, come
+quello descritto in {doc}`I flussi normalizzanti <flussi>`: più di cinque
+ordini di grandezza nel numero di passi consecutivi, che un'implementazione più
+efficiente rende meno onerosi ma non riduce, perché la sequenza la impone la
+fattorizzazione stessa.
 
 Per questo l'idea, sulle immagini, è tornata spostandosi di un piano. Niente
-obbliga i pezzi da mettere in fila a essere pixel. Se prima si comprime
+obbliga i pezzi da ordinare a essere pixel. Se prima si comprime
 l'immagine in una griglia piccola di simboli presi da un catalogo, i passaggi
 sequenziali crollano. Ne è un esempio il VQ-VAE dei {doc}`modelli latenti
 </ModelliLatenti/il-latente-che-si-usa>`, o il suo successore con perdita
 avversaria, il VQ-GAN della {doc}`sezione sulle evoluzioni delle GAN
 </GAN/applicazioni-evoluzioni>`, che riduce $256 \times 256$ pixel a $16 \times
 16$ caselle, cioè 256 posizioni: i passaggi scendono da 196.608 a 256,
-settecentosessantotto volte meno, e a metterli in fila può pensare un
+settecentosessantotto volte meno, e a generarli in sequenza basta un
 Transformer. È la forma in cui l'autoregressione sulle immagini vive nei
 modelli che trattano testo e immagini come un'unica sequenza di simboli, come
 Chameleon nella {doc}`sezione sulla fusione precoce
 </VisioneLinguaggio/fusione-precoce-tardiva>`.
 
-Resta però una cosa che si perde in quel trasloco, e riguarda proprio questo
-capitolo: la verosimiglianza che si calcola sui token è quella dei token,
-non quella dell'immagine. Il passaggio dal catalogo ai pixel è una perdita, e
-oltre quella perdita il numero non parla più. Chi vuole $\log p$ dell'immagine
-vera deve restare sui pixel, o cambiare famiglia: ed è la strada dei
-{doc}`flussi normalizzanti </VerosimiglianzaEsatta/flussi>`.
+Nel trasloco si perde la verosimiglianza dell'immagine: quella che si
+calcola sui token è la verosimiglianza dei token. Il passaggio dai pixel
+al catalogo perde informazione, e il numero non dice più niente su ciò che si è
+perso. Chi vuole $\log p$ dell'immagine vera deve restare sui pixel o cambiare
+famiglia, con i {doc}`flussi normalizzanti </VerosimiglianzaEsatta/flussi>`.
 
 `````{tab} Elementare
 
@@ -394,24 +396,23 @@ vera deve restare sui pixel, o cambiare famiglia: ed è la strada dei
 :class: important
 - È la ricetta con cui si scrive un testo, applicata a una griglia. Si
   sceglie un ordine (riga per riga, come si legge), e la probabilità di
-  un'immagine è il prodotto di quella di ogni pixel dato tutto quello che viene
+  un'immagine è il prodotto di quella di ogni pixel dato tutto ciò che viene
   prima. Nessuna approssimazione, e per misurarla basta un passaggio solo.
-- Il costo è bendare in parte la convoluzione: si spengono le caselle
+- Il vincolo benda in parte la convoluzione: si spengono le caselle
   del filtro che guardano nel futuro. Al primo strato si spegne anche quella
   centrale, perché lì c'è il pixel che stiamo cercando di indovinare, e vederlo
   sarebbe copiare la risposta dalla domanda; dal secondo in poi la si lascia
   accesa, perché al centro c'è solo ciò che lo strato prima ha calcolato senza
   vederla.
-- La benda si porta dietro un guasto suo: un triangolo
+- La benda porta con sé un difetto: un triangolo
   di pixel che vengono prima e che la rete non guarderà mai, per quanto la
   si faccia profonda. Si chiama punto cieco, e non si cura con la
   profondità: si cura cambiando la forma della finestra, cioè mettendone due.
-- Generare costa carissimo, perché va fatto un pixel alla volta e in fila: su
+- Generare è lentissimo, perché va fatto un pixel alla volta: su
   una fotografia sono quasi duecentomila passaggi, contro l'unico di una GAN.
   Per questo oggi la stessa idea si applica a pezzi più grossi dei pixel (i
-  simboli di catalogo del VQ-GAN), dove i passaggi diventano poche centinaia. Il
-  prezzo del trasloco è che il numero esatto vale allora per i simboli, e non
-  più per l'immagine.
+  simboli di catalogo del VQ-GAN), dove i passaggi diventano poche centinaia. Nel
+  trasloco il numero esatto vale allora per i simboli e non più per l'immagine.
 ```
 
 `````
@@ -445,7 +446,7 @@ vera deve restare sui pixel, o cambiare famiglia: ed è la strada dei
 - Il collo di bottiglia è il campionamento sequenziale ($D$ passaggi, che la
   memorizzazione delle attivazioni rende più leggeri ma non riduce). Spostando
   l'autoregressione dai pixel a token discreti (VQ-GAN) si passa da
-  $196.608$ a $256$ passaggi, al prezzo di una verosimiglianza che è quella dei
+  $196.608$ a $256$ passaggi, con una verosimiglianza che è quella dei
   token e non dell'immagine.
 ```
 

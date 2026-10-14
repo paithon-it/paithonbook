@@ -6,7 +6,7 @@ selezione del personale
 {cite}`dastin2018amazon`. L'idea era seducente: addestrare un modello sui
 curriculum degli ultimi dieci anni perché imparasse a riconoscere i candidati
 «bravi», quelli che in passato erano stati assunti. Il modello imparò
-esattamente quello che l'obiettivo gli chiedeva. Poiché quei dieci anni di
+ciò che l'obiettivo gli chiedeva. Poiché quei dieci anni di
 assunzioni erano stati dominati da uomini, il sistema dedusse che *essere uomo*
 fosse un buon segnale:
 penalizzava i curriculum che contenevano la parola «women's», cioè
@@ -18,17 +18,17 @@ passato dell'azienda e riproposta come profezia.
 **Bias**, qui, vuol dire *pregiudizio*: quello della storia di Amazon, un
 trattamento sistematicamente peggiore riservato a un gruppo di persone.
 
-La stessa parola ha già fatto altri due mestieri, e vanno tenuti distinti: non
-è il bias del neurone (il termine $b$ che nel capitolo sulle reti neurali si
-somma ai pesi e sposta la soglia), e non è il bias del compromesso
-bias-varianza (l'errore sistematico di un modello troppo semplice, nella
-{doc}`sezione su overfitting e validazione
+La stessa parola ha già altri due significati nel libro, da tenere distinti: non
+è il bias del neurone (il termine $b$ che nel {doc}`capitolo sulle reti neurali
+</RetiNeurali/overview>` si somma ai pesi e sposta la soglia), e non è il bias
+del compromesso bias-varianza (l'errore sistematico di un modello troppo
+semplice, nella {doc}`sezione su overfitting e validazione
 </MachineLearning/overfitting-validazione>`). Il secondo in particolare è
 vicino abbastanza da creare confusione, ma è un concetto diverso: un modello
 troppo semplice non per questo discrimina, e un modello che discrimina può
 essere complicato quanto si vuole.
 
-Un modello non inventa il pregiudizio, lo eredita. Governarlo vuol dire prima
+Un modello non inventa il pregiudizio, lo eredita. Per governarlo bisogna prima
 capire *da dove* entra, poi *misurarlo* con precisione, con la tabella a quattro
 caselle del capitolo di Machine Learning compilata gruppo per gruppo. In fondo
 si incontra un risultato di impossibilità: alcune richieste di equità, ciascuna
@@ -55,9 +55,8 @@ po’ più marcata.
 La freccia di ritorno in {numref}`fig-ciclo-del-bias` è la ragione per cui il
 problema non si risolve una volta sola. Un sistema che seleziona candidati
 genera i dati sulle assunzioni future: se ha escluso un gruppo, il prossimo
-addestramento troverà davvero meno esempi di successo in quel gruppo, e ne
-diffiderà a ragion veduta. Sui dati avrà ragione; sulle persone no. Il
-pregiudizio si fabbrica le proprie prove. Gli studi su
+addestramento troverà meno esempi di successo in quel gruppo, e ne
+diffiderà a ragion veduta. Sui dati avrà ragione; sulle persone no. Gli studi su
 questo argomento (per esempio la rassegna di Mehrabi e colleghi
 {cite}`mehrabi2021survey`) distinguono alcune sorgenti ricorrenti.
 
@@ -77,7 +76,7 @@ arrivano da quattro porte.
   sistema funzionerà peggio su tutti gli altri, che non ha quasi mai visto; e se
   sono così anche le foto con cui lo si prova, nessuno se ne accorge.
 - Le etichette sono distorte. Spesso la «risposta giusta» che diamo in
-  pasto al modello non è la verità, ma una sua approssimazione imperfetta: «è
+  pasto al modello è un'approssimazione imperfetta della verità: «è
   stato arrestato» al posto di «ha commesso un reato», e l'arresto dipende
   anche da *dove* e *chi* la polizia controlla di più.
 - Il modello si morde la coda. Se un sistema manda più pattuglie in un
@@ -90,7 +89,7 @@ già mandate. Le altre due non si chiudono con altri dati dello stesso tipo.
 Mille prestiti in più dello stesso storico raccontano la stessa ingiustizia con
 qualche decimale in più; e «arrestato» scritto dove serviva «ha commesso un
 reato» resta la domanda sbagliata per quante risposte si raccolgano, finché non
-si trova un altro modo di misurare la cosa che interessa davvero.
+si trova un altro modo di misurare ciò che interessa.
 
 Il riassunto sta in un adagio: *bias in, bias out*. Un modello impeccabile
 allenato su dati storti produce risultati storti.
@@ -99,7 +98,7 @@ allenato su dati storti produce risultati storti.
 
 `````{tab} Superiore
 
-Conviene distinguere le sorgenti, perché richiedono rimedi diversi. Le quattro
+Le sorgenti si distinguono perché chiedono rimedi diversi. Le quattro
 voci che seguono vengono dal catalogo di Mehrabi e colleghi
 {cite}`mehrabi2021survey`, che ne elenca molte di più, e Suresh e Guttag
 {cite}`suresh2021framework` le dispongono lungo il ciclo di vita del modello,
@@ -130,7 +129,7 @@ dalla raccolta dei dati alla messa in uso.
   manderebbe i controlli soprattutto nei quartieri poveri e non bianchi,
   colpendo i neri a un tasso circa doppio dei bianchi, benché l'uso di droga
   stimato sia simile nei due gruppi; Ensign e colleghi
-  {cite}`ensign2018runaway` mostrano come il ciclo si chiuda da sé: più
+  {cite}`ensign2018runaway` mostrano come il ciclo si chiuda su sé stesso: più
   controlli dove il modello prevede reati $\Rightarrow$ più reati *registrati*
   lì $\Rightarrow$ previsioni ancora più concentrate. Il segnale si
   auto-rinforza indipendentemente dal tasso reale.
@@ -165,7 +164,7 @@ scaricarlo.
 La scheda tecnica di un dataset è una serie di domande a cui chi lo costruisce
 risponde per iscritto: perché è stato fatto e da chi; che cosa contiene, e chi
 ci manca o ci sta in pochi; come sono stati raccolti i dati e chi ha messo le
-etichette, e che cosa misurano davvero; per quali usi va bene e per quali no;
+etichette, e che cosa misurano; per quali usi va bene e per quali no;
 chi lo distribuisce e chi lo aggiornerà. Ogni domanda guarda una delle porte:
 «chi ci sta in pochi» è la porta del campione, «che cosa misura l'etichetta» è
 quella della misura, «per quali usi no» mette per iscritto dove la storia che i
@@ -173,7 +172,7 @@ dati si portano dietro farebbe danni (uno storico di assunzioni decise da capi
 di parte non va usato per scegliere chi assumere), «chi lo aggiornerà» tiene
 d'occhio l'anello che si richiude su sé stesso. Per un testo scritto o parlato
 si aggiunge in quale lingua o dialetto è, e chi l'ha detto, trascritto e scelto.
-E chi la legge decide con quelle risposte se il dataset fa al caso suo. Lo
+Chi la legge decide con quelle risposte se il dataset fa al caso suo. Lo
 studio *Gender Shades* {cite}`buolamwini2018gender` trovò che due archivi molto
 usati per provare i sistemi di analisi dei volti avevano pochi volti scuri: è la
 risposta che la domanda su chi ci sta in pochi avrebbe messo in prima pagina.
@@ -181,13 +180,13 @@ risposta che la domanda su chi ci sta in pochi avrebbe messo in prima pagina.
 Lo stesso vale per un modello: la sua scheda dice a che cosa serve e,
 soprattutto, quanto sbaglia gruppo per gruppo, non solo in media, perché una
 media alta può nascondere un gruppo su cui il modello tira a indovinare. Le
-schede però non aggiustano niente: rendono visibile. Non si possono compilare in
-automatico, perché il loro scopo è far riflettere chi le scrive; non
-garantiscono che i dati siano giusti; e costano tempo. Il regolamento europeo
-sull'intelligenza artificiale, l'AI Act, le ha rese in parte un obbligo: per i
-sistemi ad alto rischio chiede di documentare da dove vengono i dati e come sono
-stati preparati, e il testo italiano chiama quei documenti proprio «schede
-tecniche».
+schede però non aggiustano niente: rendono visibile. Non si possono compilare
+in automatico, perché il loro scopo è far riflettere chi le scrive; non
+garantiscono che i dati siano giusti; e chi le scrive ci impiega del tempo. Il
+regolamento europeo sull'intelligenza artificiale, l'AI Act, le ha rese in
+parte un obbligo: per i sistemi ad alto rischio chiede di documentare da dove
+vengono i dati e come sono stati preparati, e il testo italiano chiama quei
+documenti «schede tecniche».
 
 `````
 
@@ -219,13 +218,14 @@ ha parlato, annotato e curato i dati. Il regolamento europeo {cite}`euaiact2024`
 chiede per i sistemi ad alto rischio pratiche di governance dei dati che
 riguardano, fra l'altro, i processi di raccolta e l'origine dei dati e le
 operazioni di preparazione (articolo 10, paragrafo 2, lettere b e c), e nella
-documentazione tecnica (allegato IV, punto 2, lettera d) i requisiti sui dati
-«mediante schede tecniche»; il quadro complessivo sta nella sezione sulla
+documentazione tecnica (allegato IV, punto 2, lettera d) i requisiti sui dati in
+forma di schede tecniche (*datasheets*) che descrivono le metodologie di
+addestramento e i dataset usati; il quadro complessivo sta nella sezione sulla
 {doc}`governance </AIResponsabile/allineamento-e-governance>`.
 
 `````
 
-Un esperimento minimo mostra perché una scheda di modello chiede i conti gruppo
+Un esperimento minimo mostra perché una scheda di modello chiede i risultati gruppo
 per gruppo. Costruisce dati in cui un gruppo, un decimo del totale, lega la
 risposta a un'altra colonna, addestra un solo modello su tutti e ne misura
 l'accuratezza in media e per gruppo, con il suo errore standard.
@@ -271,15 +271,15 @@ dall'85%, appena sopra una moneta. L'ultima riga stampata dice perché: il
 modello ha dato quasi tutto il peso alla prima colonna, quella che decide la
 risposta nel gruppo grande, e quasi niente alla seconda, che la decide nel
 gruppo piccolo. La media assomiglia al gruppo grande perché è calcolata soprattutto
-sui suoi dati, e la quota nel dataset, la prima riga
-stampata, è la domanda sulla composizione della scheda tecnica: senza quella,
-e senza il conto per gruppo, il 54,5% non compare da nessuna parte.
+sui suoi dati. La quota di ciascun gruppo nel dataset (la prima riga stampata)
+è la domanda sulla composizione che la scheda tecnica pone; senza quella e
+senza il calcolo per gruppo, il 54,5% non compare da nessuna parte.
 
 ## Misurare l'equità guardando i gruppi
 
 Per parlare di equità con rigore serve un vocabolario, e quattro cose da
 tenere distinte: il **gruppo** a cui una persona appartiene, l’**esito reale**
-(quello che poi è successo davvero), la **decisione** del modello, e il
+(ciò che poi è successo), la **decisione** del modello, e il
 **punteggio** da cui quella decisione si ricava fissando una soglia. Punteggio
 e decisione non sono la stessa cosa, e la differenza tornerà utile: il
 punteggio è un numero fra zero e uno, la decisione è il sì o il no che si
@@ -293,7 +293,7 @@ modello riconosce, $\text{TPR}=\text{VP}/(\text{VP}+\text{FN})$; il **tasso di
 falsi positivi** (`FPR`) è la quota dei casi negativi che segnala per errore,
 $\text{FPR}=\text{FP}/(\text{FP}+\text{VN})$. I tassi sono frazioni, scritte
 fra zero e uno: $0{,}80$ sta per ottanta su cento. La differenza rispetto a
-quel capitolo è una sola, ed è decisiva: qui i conti si fanno separatamente per
+quel capitolo è una sola: qui i tassi si calcolano separatamente per
 ciascun gruppo e poi si confrontano ({numref}`fig-equita-tassi`).
 
 ```{figure} ../figures/equita-tassi.svg
@@ -311,25 +311,25 @@ modo diverso a seconda del gruppo.
 
 `````{tab} Elementare
 
-«Sì» vuol dire che il modello ha detto la cosa che stavamo
-prevedendo, e quella cosa non è per forza bella. Nel prestito il «sì» è «te
-lo diamo»; nel software dei tribunali è «questa persona è ad alto rischio». E
-«l'esito è accaduto» vuol dire che è successo davvero quel che il modello
-prevedeva, buono o brutto che sia. Parole neutre, per un conto che si fa uguale
-nei due casi.
+Un «sì» è la previsione positiva del modello: che si verifichi l'evento che
+stavamo cercando di prevedere, il che non è per forza una buona notizia. Nel
+prestito il «sì» è «te lo diamo»; nel software dei tribunali è «questa persona
+è ad alto rischio». Allo stesso modo «l'esito è accaduto» indica che è successo
+ciò che il modello prevedeva, buono o brutto che sia. Parole neutre, per un
+calcolo uguale nei due casi.
 
 Ci sono tre modi diversi di chiedere «il modello è equo?», e portano a tre
 richieste distinte.
 
 - Stessa quota di sì, in gergo *parità demografica*. Il modello dice «sì»
   alla stessa percentuale di persone in ogni gruppo. Se approva il 40% degli
-  uomini, deve approvare il 40% delle donne: a prescindere da tutto il resto. E
-  il «a prescindere» va preso alla lettera: la richiesta resta soddisfatta
+  uomini, deve approvare il 40% delle donne: a prescindere da tutto il resto. Il
+  «a prescindere» va preso alla lettera: la richiesta resta soddisfatta
   anche scegliendo i migliori fra gli uomini e tirando a sorte fra le donne.
 - Stessi errori per tutti, in gergo *equalized odds*: i due tassi di errore del
   modello devono essere uguali nei due gruppi. Sono due condizioni in una: il
-  modello deve prendere la stessa quota di persone a cui l'esito è poi capitato
-  davvero, e dare la stessa quota di falsi allarmi su chi non c'entrava nulla.
+  modello deve prendere la stessa quota di persone a cui l'esito è poi capitato,
+  e dare la stessa quota di falsi allarmi su chi non c'entrava nulla.
   È la richiesta che la {numref}`fig-equita-tassi` mostra violata: stesso
   modello, due comportamenti. Chi teme soprattutto di lasciare indietro qualcuno
   può pretendere soltanto la prima delle due.
@@ -337,12 +337,12 @@ richieste distinte.
   è una previsione di probabilità e non un voto. «70» non vuol dire
   «bravo sette su dieci», vuol dire «di persone come questa, secondo me,
   l'esito capita a settanta su cento».
-  Calibrato vuol dire che quella promessa viene mantenuta, e mantenuta allo
+  Un punteggio calibrato mantiene quella promessa, e la mantiene allo
   stesso modo per tutti: se fra gli uomini con punteggio 70 l'esito capita
-  davvero al 70%, lo stesso deve valere fra le donne.
+  al 70%, lo stesso deve valere fra le donne.
 
-Sembrano tre modi di dire la stessa cosa. Non lo sono affatto, e metterle
-d'accordo è impossibile più spesso di quanto chiunque si aspetterebbe.
+Sembrano tre modi di dire la stessa cosa. Sono richieste diverse, e metterle
+d'accordo è spesso impossibile.
 
 `````
 
@@ -430,14 +430,14 @@ Learning. È il criterio che Northpointe rivendicava a difesa di COMPAS
 
 ## I risultati di impossibilità
 
-Arriviamo al nodo. Ai tre criteri visti finora se ne affianca un quarto, che
-somiglia moltissimo alla calibrazione e non è la stessa cosa: quando il modello
-dice sì, ci prende ugualmente spesso in ogni gruppo. In gergo si chiama *parità
-del valore predittivo*, e la differenza con la calibrazione è sottile e conta:
-la calibrazione riguarda il punteggio, il «70» che deve voler dire settanta su
-cento per tutti; questa riguarda il sì e il no che si ottengono tagliando quel
-punteggio a una certa altezza. È quest'ultima, non la calibrazione, quella che
-l'azienda di COMPAS rivendicava.
+Ai tre criteri di gruppo (parità demografica, equalized odds, calibrazione) se
+ne affianca un quarto, che somiglia moltissimo alla calibrazione e non è la
+stessa cosa: quando il modello dice sì, ci prende ugualmente spesso in ogni
+gruppo. In gergo si chiama *parità del valore predittivo*, e la differenza con
+la calibrazione è sottile e conta: la calibrazione riguarda il punteggio, il
+«70» che deve voler dire settanta su cento per tutti; questa riguarda il sì e
+il no che si ottengono tagliando quel punteggio a una certa altezza. È
+quest'ultima, non la calibrazione, quella che l'azienda di COMPAS rivendicava.
 
 Questi criteri non entrano in conflitto per caso: alcuni sono matematicamente
 incompatibili ogni volta che i gruppi partono da tassi di base diversi, cioè
@@ -452,8 +452,7 @@ secondo, dice che cosa resta possibile: la calibrazione insieme alla parità di
 un solo tasso d'errore, contato sul punteggio e non sui sì e no, pagata in
 accuratezza. Scambiarli porta ad affermare il falso, per esempio che il caso
 COMPAS mostri un conflitto fra la calibrazione e la parità degli errori, mentre il
-teorema che lo spiega non nomina nemmeno la calibrazione. Cominciamo da
-quello, e prendiamoci lo spazio per vederlo succedere invece di annunciarlo.
+teorema che lo spiega non nomina nemmeno la calibrazione.
 
 `````{tab} Elementare
 
@@ -476,39 +475,39 @@ per forza, perché in tutti e due abbiamo preteso gli stessi due settanta per
 cento.
 
 Quei 15 falsi allarmi sono lo stesso numero, ma non sono presi dallo stesso
-mucchio. Nel Gruppo A le persone a cui l'esito non è capitato sono 50, quindi 15
-su 50: tre su dieci si prendono un'accusa ingiusta. Nel Gruppo B quelle stesse
-persone sono 150, quindi 15 su 150: uno su dieci. Tre volte più spesso, e
-nessuno l'ha voluto: il tre viene dal 50 contro 150, cioè da quante sono di qua
-e di là le persone che un falso allarme lo possono ricevere.
+mucchio. Nel Gruppo A le persone a cui l'esito non è capitato sono 50, quindi
+15 su 50: tre su dieci si prendono un'accusa ingiusta. Nel Gruppo B quelle
+stesse persone sono 150, quindi 15 su 150: uno su dieci. Tre volte più spesso,
+e nessuno l'ha voluto: il tre viene dal 50 contro 150, cioè da quante persone,
+in ciascun gruppo, possono ricevere un falso allarme.
 
-Il teorema di Chouldechova dice esattamente questo, in generale: quando i tassi
+Il teorema di Chouldechova lo dice in generale: quando i tassi
 di base sono diversi, tre parità non stanno insieme. Due le abbiamo appena
 pretese: che il sì valga lo stesso, e che il modello prenda la stessa quota di
 persone a cui l'esito è capitato, che è come pretendere che ne sfugga la stessa
 quota (se delle cinquanta ne prende trentacinque, le altre quindici gli
 sfuggono). La terza è quella saltata, la stessa quota di falsi allarmi (non lo
-stesso numero: il numero, come si è appena visto, coincide). Se ne assicuri due,
+stesso numero: il numero coincide). Se ne assicuri due,
 la terza salta. È un vincolo dell'aritmetica, che né codice migliore né più dati
 possono togliere; ne restano fuori soltanto due casi limite, un modello che non
 dà mai un falso allarme e uno che non prende nessuna delle persone a cui l'esito
 capita.
 
-E la richiesta rimasta fuori dal conto, dire sì alla stessa quota di persone in
+La richiesta rimasta fuori, dire sì alla stessa quota di persone in
 ogni gruppo, non si salva da sola. Se l'esito capita a una persona su due di
 qua e a una su quattro di là, l'unico modo di avere insieme la stessa quota di
 sì e gli stessi due tassi di errore è che il modello dica i suoi sì a caso,
 cioè che non serva a niente.
 
-Ed è il cuore della disputa su COMPAS. L'inchiesta di ProPublica guardava i
+Qui sta il cuore della disputa su COMPAS. L'inchiesta di ProPublica guardava i
 falsi allarmi e li trovava molto più alti fra gli imputati neri: la colonna dei
 15 su 50. L'azienda guardava quanto spesso il suo «alto rischio» ci prendeva
 davvero e lo trovava uguale nei due gruppi: la riga del settanta per cento.
-Avevano ragione entrambe, ed è proprio questo il punto.
+Avevano ragione entrambe.
 
 Teoremi di questa famiglia ce ne sono altri due. Quello di Kleinberg e colleghi
 guarda i punteggi invece dei sì, e si vede con gli stessi due gruppi. Se il
-punteggio è onesto, i conti tornano anche sommando: letti come probabilità («70»
+punteggio è onesto, tornano anche le somme: letti come probabilità («70»
 vale 0,7), i punteggi di un gruppo sommano in media al numero di persone che
 avranno l'esito, cioè a 50 nel Gruppo A e a 50 nel Gruppo B. Pretendiamo ora che
 chi l'esito lo avrà riceva in media lo stesso punteggio di qua e di là, diciamo
@@ -528,7 +527,7 @@ che il modello sa. Se invece a dover essere pari sono i sì e i no, il muro si
 sposta. Tagliando lo stesso punteggio onesto a un'altezza diversa nei due
 gruppi, a volte si riescono a pareggiare sia i falsi allarmi sia le persone
 sfuggite, e il punteggio resta onesto; a non tornare più pari, allora, è quanto
-spesso il sì ci prende, come vuole il conto di Chouldechova.
+spesso il sì ci prende, come impone il teorema di Chouldechova.
 
 `````
 
@@ -567,7 +566,7 @@ positivo da nessuna parte, dove il prodotto si annulla, oppure $\text{FNR}=1$,
 cioè nessun positivo preso, dove $\text{VPP}$ vale zero o non è definito e
 l'identità smette di valere.
 
-Un esempio numerico lo rende palpabile. Siano due gruppi con prevalenze
+Un esempio numerico: siano due gruppi con prevalenze
 $p_a=0{,}50$ e $p_b=0{,}25$, e supponiamo un modello con lo *stesso* valore
 predittivo $\text{VPP}=0{,}70$ e la *stessa* quota di positivi mancati
 $\text{FNR}=0{,}30$ (dunque anche $\text{TPR}=0{,}70$: perfino l'equal
@@ -581,7 +580,7 @@ $$
 
 Stesso valore predittivo, stesso tasso di veri positivi, eppure il tasso di
 falsi positivi è tre volte più alto nel gruppo con prevalenza maggiore:
-$0{,}30$ contro $0{,}10$. È esattamente la forma del caso COMPAS
+$0{,}30$ contro $0{,}10$. È la forma del caso COMPAS
 {cite}`angwin2016machine`. In questo enunciato manca però un elemento:
 la calibrazione. Il teorema di Chouldechova parla di $\text{VPP}$, che è una
 proprietà della decisione $\hat{Y}$, non di $S$.
@@ -622,10 +621,11 @@ $$
 \alpha \;=\; \frac{g_a(h_a) - g_b(h_b)}{g_b(h^{p_b}) - g_b(h_b)}.
 $$
 
-E qualunque algoritmo che rispetti quel vincolo, dimostrano, non fa meglio di
-questa randomizzazione di una quota delle predizioni: il prezzo lo paga in
-accuratezza il gruppo avvantaggiato. Sull'ipotesi conviene essere precisi,
-perché non è quella che verrebbe da immaginare: non si chiede affatto che il
+E, dimostrano, dati i classificatori calibrati migliori disponibili per i due
+gruppi, nessun algoritmo che rispetti quel vincolo fa meglio di questa
+randomizzazione di una quota delle predizioni: a perdere accuratezza è il
+gruppo avvantaggiato. L'ipotesi non è quella che verrebbe da immaginare: non
+si chiede affatto che il
 classificatore sia uno solo, dato che nel loro impianto ce n'è già uno per
 gruppo, e il rimedio che propongono ne fabbrica un terzo. Si chiede che il
 classificatore di cui si pareggiano gli errori sia esso stesso calibrato, e che
@@ -641,15 +641,14 @@ la prevalenza) vale $0{,}50$ e $0{,}45$. Con una soglia per gruppo, $0{,}584$ e
 $0{,}537$, si ottiene $\text{TPR}=0{,}489$ e $\text{FPR}=0{,}202$ in tutti e
 due, cioè equalized odds pieno, con la calibrazione intatta perché le soglie
 non toccano $S$. A divergere è il valore predittivo, $0{,}708$ contro
-$0{,}664$: esattamente come impone l'identità di Chouldechova. Non è una
-smentita di Pleiss, e capire perché è la parte che insegna. Calibrato, qui, è
-il punteggio $S$; il classificatore di cui abbiamo pareggiato gli errori è il
-sì o no che si ottiene tagliandolo, e *quello* calibrato non è, perché quando
-dice sì ci prende nel $70{,}8\%$ dei casi in un gruppo e nel $66{,}4\%$
-nell'altro, mentre un sì o no calibrato dovrebbe prenderci sempre, cioè essere
-perfetto. L'ipotesi non è caduta: l'abbiamo aggirata cambiando oggetto, e il
-prezzo si vede subito nel valore predittivo. Il post-processing di Hardt, Price
-e Srebro vive proprio in questo spiraglio.
+$0{,}664$: come impone l'identità di Chouldechova. Non smentisce Pleiss.
+Calibrato, qui, è il punteggio $S$; il classificatore di cui abbiamo pareggiato
+gli errori è il sì o no che si ottiene tagliandolo, e *quello* calibrato non è,
+perché quando dice sì ci prende nel $70{,}8\%$ dei casi in un gruppo e nel
+$66{,}4\%$ nell'altro, mentre un sì o no calibrato dovrebbe prenderci sempre,
+cioè essere perfetto. L'ipotesi non è caduta: è stata aggirata cambiando
+oggetto, e il costo compare subito nel valore predittivo. Il post-processing di
+Hardt, Price e Srebro sfrutta questo spiraglio.
 
 Quei numeri si rifanno in forma chiusa, senza bisogno di simulare: per
 $S \sim \text{Beta}(\alpha,\beta)$ la massa di punteggio sopra la soglia vale
@@ -664,8 +663,8 @@ vera e $0$ altrimenti. Da lì il TPR si ottiene dividendo quella massa per la
 prevalenza $p$; il FPR sottraendola da $P(S \ge t)$ e dividendo per $1-p$; il
 VPP dividendola per $P(S \ge t)$.
 
-E la terna dei criteri statistici. Per *independence*, *separation* e
-*sufficiency* il risultato è più severo, come riassumono Barocas, Hardt e
+Per la terna dei criteri statistici, *independence*, *separation* e
+*sufficiency*, il risultato è più severo, come riassumono Barocas, Hardt e
 Narayanan {cite}`barocas2023fairness`: sono incompatibili già a due a due,
 fuori dai casi degeneri. Independence e separation coesistono solo se
 $A \perp Y$ oppure $\hat{Y} \perp Y$; independence e sufficiency solo se
@@ -679,11 +678,10 @@ ottenuto con due soglie.
 
 ### Quel che i teoremi non dicono: i tassi di base sono misure
 
-Tutti e tre i risultati partono dallo stesso presupposto, ed è il punto in cui
-il ragionamento fatto finora rischia di dare una mano proprio a ciò che ha appena
-denunciato. Il conflitto si accende quando i tassi di base differiscono. Ma
-«tasso di base» è la frequenza di un esito così come lo abbiamo misurato,
-e non un dato di natura: è esattamente la grandezza che il bias di
+Tutti e tre i risultati partono dallo stesso presupposto: il conflitto si
+accende quando i tassi di base differiscono. Ma «tasso di base» è la frequenza
+di un esito così come lo abbiamo misurato, e non un dato di natura: è la
+grandezza che il bias di
 misura, quello delle etichette storte, può distorcere.
 In COMPAS il tasso di base non è la frequenza dei reati: è la frequenza dei
 riarresti. Se gli arresti dipendono anche da dove passano le pattuglie,
@@ -705,8 +703,8 @@ del conflitto siano solide. Una di esse non lo è.
 due gruppi hanno tassi di base diversi perché il mondo è ingiusto, il teorema
 che cosa dimostra?*
 
-Dimostra esattamente quello che dice, né più né meno: che con quei numeri lì
-non puoi avere tutte le garanzie insieme. Non dice che quei numeri fotografino
+Dimostra quel che dice e niente di più: che con quei numeri non puoi avere
+tutte le garanzie insieme. Non dice che quei numeri fotografino
 la realtà. Prendi due quartieri in cui succedono esattamente gli stessi reati,
 dieci per uno. Nel primo passano molte pattuglie e ne vengono registrati nove;
 nel secondo ne passano poche e ne vengono registrati cinque. I reati sono gli
@@ -715,20 +713,19 @@ valere, e continua a costringerti a scegliere; ma il divario che lo fa scattare
 l'ha prodotto il metro, non il mondo.
 
 La conseguenza pratica è che ci sono due domande, non una. La prima è «quale
-garanzia di equità pretendo?», ed è la domanda che il teorema mette sul tavolo.
-La seconda viene prima e si dimentica quasi sempre: «l'esito che sto prevedendo
-è davvero quello che mi interessa, o è solo quello che qualcuno ha registrato?».
-Un capitolo che facesse solo la prima insegnerebbe a scegliere bene dentro un
-problema mal posto.
+garanzia di equità pretendo?», la domanda che il teorema mette sul tavolo. La
+seconda viene prima e si dimentica quasi sempre: «l'esito che sto prevedendo è
+davvero quello che mi interessa, o è solo quello che qualcuno ha registrato?».
+Fermarsi alla prima insegna a scegliere bene dentro un problema mal posto.
 
 `````
 
 `````{tab} Superiore
 
-L'osservazione viene da dentro la letteratura, ed è di Chouldechova stessa.
+L'osservazione compare anche nei lavori della stessa Chouldechova.
 Fogliato, G'Sell e Chouldechova {cite}`fogliato2020fairness` studiano la
 valutazione dell'equità quando l'etichetta osservata è una versione rumorosa e
-sistematicamente distorta di quella d'interesse, ed è precisamente il caso
+sistematicamente distorta di quella d'interesse, come nel caso
 dell'arresto usato come proxy del reato. La conclusione è che anche piccole
 distorsioni nell'etichetta osservata possono rovesciare le conclusioni di
 un'analisi condotta su di essa.
@@ -760,25 +757,25 @@ sulle decisioni già prodotte.
 
 In una gara di corsa un gruppo parte più indietro. Puoi intervenire in tre
 momenti. Prima della gara, sistemando la linea di partenza: correggi i dati,
-dando più peso a certi esempi e meno ad altri (uno conta come due, un altro come
-mezzo), oppure raccogliendone altri. I pesi si scelgono in modo che, contando
-con i pesi, la quota di chi ce l'ha fatta sia la stessa in ogni gruppo: a quel
-punto sapere a quale gruppo appartiene una persona non dice più niente su come
-le è andata, e la linea sistemata vale per tutte le gare che verranno. Durante
-la gara, cambiando le regole: al modello
-si chiede di sbagliare il meno possibile, e gli si aggiunge una penale ogni
-volta che sbaglia più su un gruppo che sull'altro, come un giudice che toglie
-punti a chi taglia la strada; quanti punti togliere lo decidiamo noi, ed è la
-manopola con cui si sceglie quanta accuratezza spendere. Dopo la gara, spostando
-il traguardo: il modello resta com'è, ma il punteggio oltre il quale si dice sì
-viene fissato più in alto per un gruppo e più in basso per l'altro, finché i due
-tassi di errore coincidono.
+dando più peso a certi esempi e meno ad altri (uno conta come due, un altro
+come mezzo), oppure raccogliendone altri. I pesi si scelgono in modo che,
+contando con i pesi, la quota di chi ce l'ha fatta sia la stessa in ogni
+gruppo: a quel punto sapere a quale gruppo appartiene una persona non dice più
+niente su come le è andata, e la linea sistemata vale per tutte le gare che
+verranno. Durante la gara, cambiando le regole: al modello si chiede di
+sbagliare il meno possibile, e gli si aggiunge una penale ogni volta che
+sbaglia più su un gruppo che sull'altro, come un giudice che toglie punti a chi
+taglia la strada; quanti punti togliere lo decidiamo noi, e questa è la
+manopola con cui si sceglie quanta accuratezza spendere. Dopo la gara,
+spostando il traguardo: il modello resta com'è, ma il punteggio oltre il quale
+si dice sì viene fissato più in alto per un gruppo e più in basso per l'altro,
+finché i due tassi di errore coincidono.
 
 Nessuno dei tre è gratis. Riequilibrare i dati può abbassare l'accuratezza per
 tutti. Spostare il traguardo pareggia gli errori senza toccare il punteggio,
 che resta onesto com'era; a pagare è il «sì», che dopo vale di più in un gruppo
-che nell'altro. Ed è delicato per una ragione che si sente subito: vuol dire
-trattare due persone in modo diverso proprio in base al gruppo, che è la cosa
+che nell'altro. È delicato per una ragione evidente: comporta
+trattare due persone in modo diverso in base al gruppo, cioè ciò
 da cui eravamo partiti. C'è chi lo considera l'unico rimedio serio e chi una
 discriminazione a sua volta, e la discussione è aperta anche fra i giuristi.
 
@@ -818,7 +815,7 @@ discriminazione a sua volta, e la discussione è aperta anche fra i giuristi.
   costruzione geometrica sulle curve ROC dei due gruppi).
 
 I risultati di impossibilità restano sullo sfondo, e il post-processing è il
-posto in cui si vede meglio che cosa comprano davvero queste tecniche. Le
+posto in cui si vede meglio che cosa garantiscono queste tecniche. Le
 soglie per gruppo raggiungono l'equalized odds senza toccare il punteggio,
 quindi senza toccarne la calibrazione; ciò che non possono fare è tenere fermo
 anche il valore predittivo, che si separa fra i gruppi non appena le
@@ -829,7 +826,7 @@ prevalenze differiscono. Nessuna delle tre leve annulla il conflitto: sposta
 
 ## Equità individuale
 
-Le definizioni viste finora guardano ai gruppi in media. Una famiglia
+Le definizioni di gruppo guardano alla media dei gruppi. Una famiglia
 alternativa sposta l'obiettivo sul singolo: due persone che si somigliano
 devono ricevere lo stesso trattamento, e poco importa da quale gruppo vengano.
 È la strada aperta da Cynthia Dwork e colleghi {cite}`dwork2012fairness` con
@@ -891,7 +888,7 @@ applicabile tale e quale.
 
 ## Il conflitto, coi numeri
 
-Chiudiamo il cerchio con un esperimento riproducibile. Inventiamo due gruppi
+Un esperimento riproducibile mostra il conflitto. Inventiamo due gruppi
 di persone e diamo a ciascuna un punteggio di rischio onesto per
 costruzione: se il punteggio dice $0{,}7$, l'esito accade davvero sette
 volte su dieci, in entrambi i gruppi allo stesso modo (è la calibrazione di
@@ -987,7 +984,7 @@ Con una soglia per gruppo (0,72 per A e 0,57 per B):
   Gruppo B: TPR=0.219  FPR=0.055  VPP=0.660
 ```
 
-Le colonne dicono, per ciascun gruppo, quanto è frequente davvero l'esito
+Le colonne dicono, per ciascun gruppo, quanto è frequente l'esito
 (`base`) e a quante persone il modello dice sì (`selection`). `TPR` e `VPP`
 hanno lo stesso numeratore, i veri positivi, e denominatori diversi:
 $\text{TPR}=\text{VP}/(\text{VP}+\text{FN})$ conta quanti dei positivi reali
@@ -1003,7 +1000,7 @@ capitato nel $16\%$ dei casi. Sono essenzialmente identiche: in ogni
 fascia di punteggio la frazione è pressoché la stessa nei due gruppi, e
 coincide con la media dei punteggi *delle persone che stanno in quella fascia*
 (non con il centro della fascia: nella prima, che va da zero a zero virgola
-due, le persone si addensano verso l'alto, ed è per questo che si legge
+due, le persone si addensano verso l'alto, per questo si legge
 $0{,}16$ e non $0{,}10$). La calibrazione per gruppo è rispettata. Restano
 briciole di
 differenza fra i due gruppi, tutte nello stesso verso, e non sono un difetto:
@@ -1015,35 +1012,32 @@ $0{,}110$) e diverge nettamente anche il TPR ($0{,}658$ contro $0{,}348$):
 saltano tutte e due le parità degli errori, cioè l'equalized odds, quella dei
 falsi allarmi e quella dei casi presi.
 
-Attenzione però a non trarne la conclusione sbagliata, che è quella che si
-legge più spesso. Non è che quei tassi *non si possano* allineare: le ultime
-righe stampate, quelle con una soglia diversa per gruppo, fanno esattamente
-questo, e li allineano bene ($0{,}215$ contro $0{,}219$ e $0{,}056$ contro
-$0{,}055$), senza toccare il punteggio e senza toccare le frequenze di base,
-che restano $0{,}50$ e $0{,}33$. Quel che si sposta, e che con la soglia unica
-passava inosservato, è il valore predittivo: $0{,}795$ nel Gruppo A contro
-$0{,}660$ nel Gruppo B. Cioè: quando il modello dice sì, ci prende molto più
-spesso in un gruppo che nell'altro.
+La conclusione più diffusa, che quei tassi *non si possano* allineare, è
+sbagliata: le ultime righe stampate, quelle con una soglia diversa per gruppo,
+li allineano ($0{,}215$ contro $0{,}219$ e $0{,}056$ contro $0{,}055$), senza
+toccare il punteggio e senza toccare le frequenze di base, che restano $0{,}50$
+e $0{,}33$. Quel che si sposta, e che con la soglia unica passava inosservato,
+è il valore predittivo: $0{,}795$ nel Gruppo A contro $0{,}660$ nel Gruppo B.
+Quando il modello dice sì, ci prende molto più spesso in un gruppo che
+nell'altro.
 
-È il teorema, nella sua forma esatta: tre garanzie, al più due alla volta. Un
-esperimento non dimostra un'impossibilità (un esempio non è una prova), ma
-questo mostra la forma del vincolo, e mostra soprattutto che la scelta è una
-scelta vera: si può decidere di pareggiare gli errori accettando che il «sì»
-valga meno in un gruppo, oppure di pareggiare l'affidabilità del sì accettando
-tassi di errore diversi. Quello che non esiste è la scelta che le tiene
-entrambe.
+È il teorema: tre garanzie, al più due alla volta. Un esperimento non
+dimostra un'impossibilità, ma mostra la forma del vincolo e il fatto che la
+scelta è reale: si può pareggiare gli errori accettando che il «sì» valga meno
+in un gruppo, oppure pareggiare l'affidabilità del sì accettando tassi di
+errore diversi. Non esiste una scelta che le tenga entrambe.
 
 `````{tab} Elementare
 
-E qui il cerchio si chiude sull'inchiesta da cui era partito il capitolo, ma
-con una precisazione che i numeri della simulazione impongono. Nella disputa
+Il cerchio si chiude sull'inchiesta da cui era partito il capitolo, con una
+precisazione che i numeri della simulazione impongono. Nella disputa
 vera su COMPAS le due parti guardavano due colonne diverse della stessa
 tabella, e
 nessuna delle due mentiva. Nella nostra simulazione a soglia unica, invece,
 nemmeno la colonna dell'azienda è pari: il `VPP` vale $0{,}656$ e $0{,}607$,
 vicini ma non uguali. Per vedere la disputa nella sua forma pura bisogna
 guardare le righe con le due soglie, quelle in cui gli errori sono
-davvero pareggiati e la differenza si sposta tutta sul valore del «sì»:
+pareggiati e la differenza si sposta tutta sul valore del «sì»:
 $0{,}795$ contro $0{,}660$. È lì che le due parti hanno ragione entrambe.
 
 Una differenza però resta. Qui la frequenza dell'esito nei due gruppi l'abbiamo
@@ -1057,7 +1051,7 @@ può.
 La configurazione a soglia unica riproduce la struttura del caso COMPAS
 {cite}`angwin2016machine`: divario nei tassi di errore con punteggio calibrato.
 Quella a due soglie riproduce il post-processing di Hardt, Price e Srebro
-{cite}`hardt2016equality`, e mostra il prezzo che si paga a valle, la
+{cite}`hardt2016equality`, e mostra che cosa si perde a valle: la
 separazione del VPP, che è il criterio rivendicato da Northpointe
 {cite}`dieterich2016compas`. Resta il caveat sui tassi di base come grandezze
 misurate, e vale anche qui: nella simulazione sono noti per costruzione, mentre
@@ -1067,8 +1061,8 @@ su dati veri sono stimati da etichette che possono essere a loro volta distorte.
 
 ## Nessuna metrica è «quella giusta»
 
-Se c'è una lezione da portare via, è questa: la domanda «questo modello è
-equo?» è mal posta finché non specifichiamo *secondo quale criterio*. Parità
+La domanda «questo modello è equo?» è mal posta finché non specifichiamo
+*secondo quale criterio*. Parità
 demografica, equalized odds, calibrazione ed equità individuale sono definizioni
 diverse e in tensione, e non approssimazioni successive di un'unica verità
 nascosta: ciascuna è sensata in certi contesti e inaccettabile
@@ -1076,10 +1070,10 @@ in altri. In un esame di massa per una malattia grave conta non mancare i
 malati, e allora si pretende lo stesso tasso di veri positivi; nella
 concessione di un mutuo conta che un punteggio significhi lo stesso per tutti,
 e allora si pretende la calibrazione. Sono due risposte diverse alla stessa
-domanda, e sono diverse perché diverso è ciò che costa di più sbagliare.
+domanda, perché cambia l'errore che pesa di più.
 
 Quel che la statistica può fare lo fa fino in fondo: elenca le opzioni,
-quantifica cosa costa ciascuna, smaschera quelle che si escludono a vicenda.
+quantifica il costo di ciascuna, smaschera quelle che si escludono a vicenda.
 Poi si ferma, e la scelta va fatta in chiaro da qualcuno che se ne assume la
 responsabilità, invece che finire dentro una riga di codice che non legge
 nessuno.
@@ -1110,15 +1104,15 @@ nessuno.
   che nell'altro, non si possono avere tutte insieme, e il muro è preciso:
   fra l'affidabilità del sì, il tasso di falsi allarmi e la quota di persone
   che sfuggono se ne ottengono al più due alla volta, mai tre.
-- Il conto che lo mostra si fa a mano, ed è quello dei due gruppi da cento e
+- L'esempio che lo mostra si calcola a mano: due gruppi da cento e
   duecento persone. Se pretendi di prendere la stessa quota di persone a cui
   l'esito è poi capitato *e* di avere la stessa affidabilità quando dici sì, i
   falsi allarmi ti vengono 15 in tutti e due i gruppi: stesso numero, ma da
   una parte sono 15 innocenti su 50 e dall'altra 15 su 150. Il *tasso* di falsi
   allarmi è tre volte più alto, e non l'hai scelto tu.
-- E quella frequenza è un numero misurato da qualcuno, non un dato di
-  natura: se è la frequenza degli arresti invece che dei reati, il conto che ti
-  costringe a scegliere è stato fatto su una misura storta.
+- Quella frequenza è un numero misurato da qualcuno, non un dato di
+  natura: se è la frequenza degli arresti invece che dei reati, il calcolo che ti
+  costringe a scegliere poggia su una misura storta.
 - Si può attenuare, non risolvere, e si può farlo in tre momenti: prima
   della gara (sistemando i dati), durante (cambiando le regole
   dell'addestramento) o dopo (usando una soglia diversa per gruppo).
@@ -1150,9 +1144,9 @@ nessuno.
   d'errore, al più due su tre; Kleinberg, Mullainathan e Raghavan
   {cite}`kleinberg2017inherent`, calibrazione più i due bilanciamenti di classe
   (punteggi medi, non tassi); Pleiss e colleghi {cite}`pleiss2017fairness`,
-  calibrazione più equalized odds, ma con un solo vincolo d'errore alla volta e
-  sotto l'ipotesi che il classificatore di cui si pareggiano gli errori sia
-  esso stesso calibrato. Il primo dei tre è il nodo del caso COMPAS
+  calibrazione compatibile con un solo vincolo d'errore alla volta, e sotto
+  l'ipotesi che il classificatore di cui si pareggiano gli errori sia esso
+  stesso calibrato. Il primo dei tre è il nodo del caso COMPAS
   {cite}`angwin2016machine`, dove ProPublica e Northpointe
   {cite}`dieterich2016compas` avevano ragione entrambe.
 - I tassi di base che accendono il conflitto sono grandezze *misurate*: su

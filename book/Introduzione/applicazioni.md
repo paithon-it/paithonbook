@@ -6,30 +6,29 @@ carrelli si incrociano senza toccarsi. In tutti e tre i casi c'è un corpo che
 si muove e un sistema che decide come muoverlo. La robotica progetta il corpo
 (la meccanica, i sensori, i motori), l'intelligenza artificiale la parte che
 decide; in un robot moderno le due cose nascono insieme, e vedere, riconoscere
-e decidere si fanno con tecniche di AI.
+e decidere si affidano in gran parte a tecniche di AI.
 
 Un robot, in generale, è una macchina che sente l'ambiente fisico e agisce su
 di esso attraverso degli **attuatori**, cioè le parti che si muovono: motori,
-ruote, bracci, pinze. Il mestiere della robotica è tutto lì: far muovere quelle
-parti nel modo voluto e dosare la forza con cui toccano le cose. E non pensiamo
-solo agli «umanoidi», i robot con sembianze umane: sono robot anche i bracci
+ruote, bracci, pinze. Il compito della robotica è far muovere quelle
+parti nel modo voluto e dosare la forza con cui toccano le cose. Non vale
+solo per gli «umanoidi», i robot con sembianze umane: sono robot anche i bracci
 meccanici delle catene di montaggio, i *rover* che esplorano Marte, gli
 aspirapolvere che girano per casa. Per essere un robot non serve nemmeno
 spostarsi: il braccio di una catena di montaggio ha la base fissa e muove
 soltanto le giunture, e nessuno gli nega il titolo. Basta sentire e agire.
 
-Fin dove si può tirare questa definizione? Esiste un vocabolario
-internazionale, la norma ISO 8373, rivista nel 2021, in cui i tecnici di tutto
-il mondo si mettono d'accordo su che cosa chiamare robot. È più stretta della
-nostra: chiede che la macchina si sposti, maneggi oggetti o porti qualcosa in
-un punto preciso, e che lo faccia con un certo grado di autonomia, cioè
-decidendo da sé in base a quello che sente. Ne resta fuori la
-lavatrice, che pure sente (il carico, la temperatura) e agisce (apre la
-valvola, ferma il cestello). A noi qui interessa lo schema, sentire e agire,
-perché è quello con cui l'intelligenza artificiale ha a che fare; ma una
-lavatrice resta fuori anche dall'altra definizione, quella dei {doc}`compiti
-per cui nessuno sa scrivere una ricetta </Introduzione/overview>`: la ricetta
-per fermare il risciacquo esiste, ed è corta.
+Fin dove si può tirare questa definizione? La norma
+internazionale ISO 8373 (edizione 2021), che fissa il vocabolario della
+robotica, è più stretta: chiede che il meccanismo comandato da un programma si
+sposti, maneggi oggetti o porti qualcosa in un punto preciso, e che lo faccia
+con un certo grado di autonomia, cioè decidendo da sé in base a quello che
+sente. Ne resta fuori la lavatrice, che pure sente (il carico, la temperatura) e
+agisce (apre la valvola, ferma il cestello). Qui basta lo schema, sentire e
+agire. La lavatrice lo rispetta, ma resta fuori anche dalla definizione pratica
+di AI, quella dei {doc}`compiti per cui nessuno sa scrivere una ricetta
+</Introduzione/overview>`: la ricetta per fermare il risciacquo esiste, ed è
+corta.
 
 Un modo di ottenere il comportamento senza scriverlo a mano è il reinforcement
 learning (apprendimento per rinforzo), già incontrato fra i tre nomi
@@ -48,29 +47,29 @@ $2$ punti, poi $3$, poi di nuovo $2$.
 
 Ogni tentativo lascia una traccia: il robot si segna che cosa ha fatto e quanti
 punti ne ha ricavato. Un punto incassato subito conta più di uno che arriverà
-fra dieci secondi, e quelli lontanissimi quasi niente. Serve a una cosa
-precisa: un robot che non cadesse mai accumulerebbe infiniti punti, e fra due
-infiniti non si sceglie; pesando meno il futuro, anche una prova senza fine
-vale una somma finita, e due prove si possono sempre confrontare.
+fra dieci secondi, e quelli lontanissimi quasi niente. Un robot che non cadesse
+mai, infatti, accumulerebbe infiniti punti, e fra due infiniti non si sceglie;
+pesando meno il futuro, anche una prova senza fine vale una somma finita, e due
+prove si possono sempre confrontare.
 
-Le mosse non le sceglie a colpo sicuro, le sorteggia, come tirando un dado; e
+Non sceglie le mosse a colpo sicuro, le sorteggia, come tirando un dado; e
 quale dado tira dipende da com'è messo il corpo in quel momento, sbilanciato in
 avanti, piegato su un ginocchio, in equilibrio. Un dado strano, però, perché
-quello che sorteggia è la spinta da dare a un motore, e quella può valere
+il risultato è la spinta da dare a un motore, e quella può valere
 qualunque cosa fra il minimo e il massimo: più che scegliere fra alcune mosse,
 decide con quanta forza fare quella che sta facendo.
 
 All'inizio i dadi non preferiscono niente in particolare: la spinta esce a
 caso, e le spinte piccole escono un po’ più spesso di quelle forti. Dopo ogni
-tornata di prove il programma li ritocca di pochissimo, ed è qui che l'imparare
-succede: sui dadi tirati nelle prove andate bene rende un po’ più facile
-l'uscita delle mosse fatte, su quelli delle prove andate male un po’ più
+tornata di prove il programma li ritocca di pochissimo, e in quel ritocco sta
+tutto l'imparare: sui dadi tirati nelle prove andate bene rende un po’ più
+facile l'uscita delle mosse fatte, su quelli delle prove andate male un po’ più
 difficile. Ripeti migliaia di volte e i dadi si sbilanciano sempre di più verso
 il camminare; il punteggio sale a $10$, poi a $50$, poi a $500$.
 
 Restano le migliaia di cadute, che il robot vero non potrebbe permettersi: si
 sfascerebbe alla decima. Al posto suo cade una copia dentro una simulazione al
-computer, una specie di videogioco fedele del suo corpo. È lì che il gioco si
+computer, una specie di videogioco fedele del suo corpo. Ma qui il gioco si
 può rompere: il pavimento vero è un filo più scivoloso di quello simulato, i
 motori veri rispondono con un soffio di ritardo, e la camminata che nella copia
 era perfetta inciampa appena tocca il mondo. Portare quel che ha imparato dal
@@ -79,7 +78,7 @@ videogioco al metallo, senza perderlo per strada, resta un problema aperto.
 
 `````{tab} Superiore
 Nel formalismo dei due {doc}`capitoli sul reinforcement learning
-</ReinforcementLearning/overview>`: un agente osserva lo stato $s_t$
+</ReinforcementLearning/overview>`, un agente osserva lo stato $s_t$
 dell'ambiente, sceglie un'azione $a_t$ secondo una policy $\pi(a \mid s)$ e
 riceve una ricompensa $r_{t+1}$. L'obiettivo è trovare la policy che massimizza
 il ritorno atteso $\mathbb{E}_{\pi}\!\left[\sum_{t=0}^{\infty} \gamma^{\,t}
@@ -101,21 +100,20 @@ $$
 $$
 
 dove $G_t$ è il ritorno scontato dal passo $t$ in poi (a meno di un fattore
-$\gamma^{\,t}$ che nella pratica si omette). Così, le azioni seguite da un ritorno
-alto diventano più probabili, le altre meno (REINFORCE
-{cite}`williams1992simple`). La formula segue da
-$\nabla_\theta \pi_\theta = \pi_\theta \nabla_\theta \log \pi_\theta$, che porta
-il gradiente dentro l'attesa senza derivare attraverso l'ambiente. La stima ha
-varianza alta, e in pratica a $G_t$ si sottrae una *baseline* $b(s_t)$ che non
-dipende dall'azione. La sottrazione di solito riduce molto la varianza senza
-introdurre errore sistematico, perché
-$\mathbb{E}_{a \sim \pi_\theta}[\nabla_\theta \log \pi_\theta(a \mid s)] =
-\nabla_\theta \int \pi_\theta(a \mid s)\,\mathrm{d}a = \nabla_\theta 1 = 0$.
-L'addestramento avviene in simulazione, con il passaggio al robot fisico
-(*sim-to-real*) come problema aperto.
+$\gamma^{\,t}$ che nella pratica si omette). Salendo lungo questo gradiente le
+azioni seguite da un ritorno alto diventano più probabili e le altre meno
+(REINFORCE {cite}`williams1992simple`). La formula segue da $\nabla_\theta
+\pi_\theta = \pi_\theta \nabla_\theta \log \pi_\theta$, che porta il gradiente
+dentro l'attesa senza derivare attraverso l'ambiente. La stima ha varianza
+alta, e in pratica a $G_t$ si sottrae una *baseline* $b(s_t)$ che non dipende
+dall'azione. La sottrazione di solito riduce molto la varianza senza introdurre
+errore sistematico, perché $\mathbb{E}_{a \sim \pi_\theta}[\nabla_\theta \log
+\pi_\theta(a \mid s)] = \nabla_\theta \int \pi_\theta(a \mid s)\,\mathrm{d}a =
+\nabla_\theta 1 = 0$. L'addestramento avviene in simulazione, con il passaggio
+al robot fisico (*sim-to-real*) come problema aperto.
 `````
 
-I nomi di questo problema tornano per intero nei due {doc}`capitoli sul
+I nomi di questo problema tornano nei due {doc}`capitoli sul
 reinforcement learning </ReinforcementLearning/overview>`. Si chiama **agente**
 chi decide, cioè il robot che impara a camminare, e **ambiente** tutto il resto
 con cui ha a che fare: il pavimento, la gravità, la regola che assegna i punti.
@@ -124,7 +122,7 @@ l'agente deve decidere: com'è messo il corpo, a che velocità sta cadendo.
 L'agente sceglie un'azione $a_t$, cioè una mossa, e l'ambiente risponde con la
 **ricompensa** $r_{t+1}$, il punteggio di quella mossa, e con il nuovo stato
 $s_{t+1}$. La **policy** $\pi$ è la regola con cui l'agente sceglie l'azione in
-ogni stato, ed è la cosa che deve imparare; in italiano si traduce «politica»,
+ogni stato, e il robot deve impararla; in italiano si traduce «politica»,
 ma è una parola che porta fuori strada, e ovunque si trova scritto *policy*.
 
 La {numref}`fig-agente-ambiente` mette in fila queste parole e nient'altro. I
@@ -149,8 +147,7 @@ della mossa giusta. Stabilire a quale mossa, fra le tante, vada attribuito il
 merito di un punteggio arrivato dopo è il problema dell'assegnazione del
 credito (*credit assignment*), uno dei problemi centrali del campo.
 
-Fuori dai corpi meccanici, poi, l'intelligenza artificiale sconfina sempre più
-spesso in campi lontani dal suo: raffreddare un capannone pieno di computer
-accesi, leggere un elettrocardiogramma, e risolvere un problema di biologia rimasto
-aperto per mezzo secolo. Sono i tre esempi da cui {doc}`si riparte
-</Introduzione/conclusione>`.
+Fuori dai corpi meccanici l'AI è entrata in campi lontani dal suo: il
+raffreddamento di un capannone pieno di computer, la lettura di un
+elettrocardiogramma, un problema di biologia rimasto aperto per mezzo secolo.
+Sono i tre esempi della {doc}`Conclusione </Introduzione/conclusione>`.

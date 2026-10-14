@@ -1,7 +1,7 @@
 # Object detection e segmentazione
 
 Un'auto a guida autonoma si avvicina a un incrocio. Una rete di
-classificazione, di quelle viste finora, sa dirle una cosa sola:
+classificazione, di quelle viste finora, sa dirle soltanto questo:
 *nell'immagine c'è un pedone*. Vero, ma inutile. Per frenare in tempo l'auto
 deve sapere dove si trova quel pedone, se è uno o sono tre, se quello a
 destra è un ciclista, e (al limite) quale sagoma esatta occupa sull'asfalto.
@@ -25,21 +25,21 @@ semantica, cioè tre dei quattro compiti classici. Salendo da sinistra a destra
 cresce la precisione della risposta.
 ```
 
-La progressione di {numref}`fig-tre-uscite` ha un prezzo, già messo in fila fra
-i {doc}`compiti della visione <overview>`: un'etichetta per foto si scrive in
-un secondo, un riquadro va trascinato col mouse, una maschera pixel per pixel
-costa minuti a immagine. È spesso questo, e non l'architettura, a decidere
-quale dei tre compiti si può davvero affrontare.
+La progressione di {numref}`fig-tre-uscite` ha un costo di annotazione, già
+visto fra i {doc}`compiti della visione <overview>`: un'etichetta per foto si
+scrive in un secondo, un riquadro va trascinato col mouse, una maschera pixel
+per pixel richiede minuti a immagine. È spesso questo, e non l'architettura, a
+decidere quale dei tre compiti si può affrontare in pratica.
 
 `````{tab} Elementare
 
 Prendi un pennarello, cerchia in una foto ogni oggetto interessante e scrivigli
 accanto un nome: "auto", "cane", "semaforo". Ogni cerchio è in realtà un
 rettangolo (lo chiamiamo **bounding box**, la "cornice") e ogni nome è la
-classe. Un rilevatore fa esattamente questo, ma in automatico e per molti
+classe. Un rilevatore fa questo, ma in automatico e per molti
 oggetti insieme. Per ciascuno indovina tre cose alla volta: *dove* tracciare la
 cornice, *cosa* c'è dentro e *quanto ci crede*, cioè un numero fra 0 e 1 con
-cui dichiara la sua sicurezza che lì dentro qualcosa ci sia davvero.
+cui dichiara la sua sicurezza che lì dentro qualcosa ci sia.
 
 Il terzo numero serve perché nessuno gli ha detto quante cornici disegnare. In
 una foto di strada gli oggetti possono essere due o quaranta, e prima di
@@ -63,12 +63,12 @@ dappertutto e avere quasi sempre ragione.
 
 Per ogni oggetto la rete predice un vettore $(x, y, w, h, c, p_{\text{obj}})$:
 le coordinate del centro e le dimensioni del riquadro, la classe $c$ e una
-confidenza $p_{\text{obj}} \in [0,1]$ che stima se nel riquadro c'è davvero un
-oggetto. L'addestramento minimizza una loss composita che somma un termine di
+confidenza $p_{\text{obj}} \in [0,1]$ che stima se nel riquadro c'è un oggetto.
+L'addestramento minimizza una loss composita che somma un termine di
 localizzazione (errore sulle coordinate, tipicamente *smooth L1* o una
 IoU-loss), un termine di classificazione (cross-entropy sulla classe) e un
 termine di **objectness** che supervisiona la confidenza, spingendola verso
-l'alto dove un oggetto c'è e verso zero sullo sfondo. In YOLOv1 e YOLOv2 il
+l'alto dove c'è un oggetto e verso zero sullo sfondo. In YOLOv1 e YOLOv2 il
 bersaglio dell'objectness non era uno ma la IoU stessa fra riquadro predetto e
 riquadro vero (l'area in comune divisa per quella coperta in tutto), così che
 il punteggio incorporasse la qualità della localizzazione; da YOLOv3 in poi, è
@@ -80,17 +80,17 @@ $$
 
 Il coefficiente $\lambda$ bilancia localizzazione e riconoscimento; YOLO ne usa
 in realtà due, e il secondo ($\lambda_{\text{noobj}} = 0{,}5$ contro
-$\lambda_{\text{coord}} = 5$) serve proprio a smorzare il contributo delle
-moltissime celle vuote, cioè è un primo rimedio a quello squilibrio
-oggetto/sfondo su cui torneremo con la *focal loss*. Questa è la
-parametrizzazione di YOLO; nella famiglia Faster R-CNN il termine di objectness
-non sparisce, si sposta. Nel primo stadio, la *Region Proposal Network*, è
-proprio una objectness: ogni ancora viene classificata in binario come oggetto
-o sfondo, e il termine di regressione è attivo solo sulle ancore positive.
-Manca invece dalla testa del secondo stadio, dove la confidenza coincide con il
-punteggio softmax della classe perché lì lo sfondo è trattato come una classe
-in più. Un'immagine può contenere un numero variabile di oggetti: gestire
-questa cardinalità ignota è il vero nodo architetturale della detection.
+$\lambda_{\text{coord}} = 5$) serve a smorzare il contributo delle moltissime
+celle vuote: è un primo rimedio allo squilibrio oggetto/sfondo, che la *focal
+loss* affronta in modo sistematico. Questa è la parametrizzazione di YOLO;
+nella famiglia Faster R-CNN il termine di objectness non sparisce, si sposta.
+Nel primo stadio, la *Region Proposal Network*, è una objectness: ogni
+ancora viene classificata in binario come oggetto o sfondo, e il termine di
+regressione è attivo solo sulle ancore positive. Manca invece dalla testa del
+secondo stadio, dove la confidenza coincide con il punteggio softmax della
+classe perché lì lo sfondo è trattato come una classe in più. Un'immagine può
+contenere un numero variabile di oggetti: gestire questa cardinalità ignota è
+il vero nodo architetturale della detection.
 
 `````
 
@@ -112,14 +112,14 @@ L'approccio a stadio singolo, cioè una sola passata sull'immagine. La griglia
 ```
 
 Guardiamo la seconda famiglia, quella della passata unica, perché
-{numref}`fig-yolo` rende evidente cosa si guadagna e cosa si perde. Fare tutto
-in una passata sola è quello che rende possibile il tempo reale; il prezzo lo si
-legge nella griglia disegnata sopra la foto. Quella griglia è una divisione del
-lavoro decisa prima di guardare, in cui ogni casella (una cella) si prende la
-responsabilità degli oggetti che le cadono dentro. E siccome a ogni cella si
-concede in partenza un numero fisso di riquadri, due nel primo YOLO, oggetti
-piccoli e ammassati nella stessa cella se li contendono: il terzo passerotto
-dello stormo non ha una cornice a disposizione.
+{numref}`fig-yolo` rende evidente cosa si guadagna e cosa si perde. Una sola
+passata rende possibile il tempo reale; il compromesso si vede nella griglia
+disegnata sopra la foto. Quella griglia è una divisione del lavoro decisa prima
+di guardare, in cui ogni casella (una cella) si prende la responsabilità degli
+oggetti che le cadono dentro. Siccome a ogni cella si concede in partenza un
+numero fisso di riquadri, due nel primo YOLO, oggetti piccoli e ammassati nella
+stessa cella se li contendono: il terzo passerotto dello stormo non ha una
+cornice a disposizione.
 
 `````{tab} Elementare
 
@@ -131,48 +131,49 @@ Più lenti, e per anni i più precisi.
 I rilevatori a uno stadio fanno tutto in un colpo solo: un'unica passata
 sull'immagine sputa fuori direttamente cornici ed etichette. A lungo sono stati
 meno precisi sui casi difficili, ma abbastanza rapidi da lavorare in tempo
-reale su un video, ed è per questo che si chiama YOLO, *You Only Look Once*.
+reale su un video: da qui il nome del più celebre, YOLO, *You Only Look Once*.
 
-La ragione di quella minore precisione sta in un conto. Il revisore in due tempi
-esamina con calma soltanto le zone sospette, e quasi tutto lo sfondo l'ha già
-scartato al primo passaggio. Chi guarda una volta sola deve invece dare una
-risposta per ogni casella dell'immagine, e le caselle con dentro un oggetto sono
-una manciata contro decine di migliaia di asfalto, cielo e muro. Alla correzione
-arrivano così diecimila risposte quasi tutte uguali e quasi tutte facili:
-sommate, seppelliscono le poche difficili, e il rilevatore impara benissimo a
-dire "niente" e molto peggio tutto il resto. Abbassare in blocco il peso di
-tutte le risposte vuote, come si faceva all'inizio, aiuta e non basta: fra
-quelle vuote ce ne sono migliaia di ovvie e qualcuna insidiosa, e un peso unico
-le tratta allo stesso modo. Il rimedio, trovato nel 2017, cambia il modo di
-correggere invece dell'architettura: una risposta facile, di quelle su cui il
-rilevatore ha già ragione ed è pure sicuro, conta quasi zero, e a decidere la
-lezione restano i pochi casi su cui sta ancora sbagliando. Da lì lo svantaggio
-in precisione si è in gran parte chiuso, e fra le due famiglie è rimasta
-soprattutto la differenza di velocità.
+La ragione di quella minore precisione è aritmetica. Il revisore in due
+tempi esamina con calma soltanto le zone sospette, e ha già scartato quasi
+tutto lo sfondo al primo passaggio. Chi guarda una volta sola deve invece dare
+una risposta per ogni casella dell'immagine, e le caselle con dentro un oggetto
+sono una manciata contro decine di migliaia di asfalto, cielo e muro. Alla
+correzione arrivano così diecimila risposte quasi tutte uguali e quasi tutte
+facili: sommate, seppelliscono le poche difficili, e il rilevatore impara
+benissimo a dire "niente" e molto peggio tutto il resto. Abbassare in blocco il
+peso di tutte le risposte vuote, come si faceva all'inizio, aiuta e non basta:
+fra quelle vuote ce ne sono migliaia di ovvie e qualcuna insidiosa, e un peso
+unico le tratta allo stesso modo. Il rimedio, trovato nel 2017, cambia il modo
+di correggere invece dell'architettura: una risposta facile, di quelle su cui
+il rilevatore ha già ragione ed è pure sicuro, conta quasi zero, e a decidere
+la lezione restano i pochi casi su cui sta ancora sbagliando. Da lì lo
+svantaggio in precisione si è in gran parte chiuso, e fra le due famiglie è
+rimasta soprattutto la differenza di velocità.
 
 `````
 
 `````{tab} Superiore
 
-La famiglia a due stadi nasce con R-CNN {cite}`girshick2014rich`, che fa passare
-nella rete, una per una, le circa duemila regioni proposte per ogni immagine da
-un algoritmo esterno. Fast R-CNN {cite}`girshick2015fast` calcola le mappe di
-feature una volta sola sull'immagine intera e ne ritaglia le regioni con un *RoI
-pooling*, che porta ciascuna a una taglia fissa; Faster R-CNN
-{cite}`ren2015faster` sostituisce le proposte esterne con la *Region Proposal
-Network*, che lavora sulle stesse mappe. Uno stadio propone regioni candidate,
-il secondo le classifica e ne raffina i riquadri, e le mappe dell'immagine si
-calcolano una volta sola per tutti e due. Accuratezza elevata, ma latenza
-maggiore, perché il secondo stadio lavora regione per regione. Lo squilibrio fra
-oggetti e sfondo i due stadi lo aggirano per costruzione: il primo riduce le
-posizioni candidate da circa centomila a uno o duemila, scartando quasi tutto lo
-sfondo, e nel secondo si campiona un rapporto fisso fra oggetti e sfondo (uno a
-tre) oppure si scelgono gli esempi più difficili {cite}`lin2017focal`.
+La famiglia a due stadi nasce con R-CNN {cite}`girshick2014rich`, che fa
+passare nella rete, una per una, le circa duemila regioni proposte per ogni
+immagine da un algoritmo esterno. Fast R-CNN {cite}`girshick2015fast` calcola
+le mappe di feature una volta sola sull'immagine intera e ne ritaglia le
+regioni con un *RoI pooling*, che porta ciascuna a una taglia fissa; Faster
+R-CNN {cite}`ren2015faster` sostituisce le proposte esterne con la *Region
+Proposal Network*, che lavora sulle stesse mappe. Uno stadio propone regioni
+candidate, il secondo le classifica e ne raffina i riquadri, e le mappe
+dell'immagine si calcolano una volta sola per tutti e due. Accuratezza elevata,
+ma latenza maggiore, perché il secondo stadio lavora regione per regione. I due
+stadi aggirano per costruzione lo squilibrio fra oggetti e sfondo: il primo
+riduce le posizioni candidate da circa centomila a uno o duemila, scartando
+quasi tutto lo sfondo, e nel secondo si campiona un rapporto fisso fra oggetti
+e sfondo (uno a tre) oppure si scelgono gli esempi più difficili
+{cite}`lin2017focal`.
 
 La famiglia a uno stadio (YOLO {cite}`redmon2016you` e SSD
 {cite}`liu2016ssd`) elimina la fase di proposta: una sola rete convoluzionale
 predice simultaneamente riquadri e classi su una griglia dell'immagine. Il
-prezzo storico è stato lo squilibrio tra i pochi riquadri con oggetto e i
+limite storico è stato lo squilibrio tra i pochi riquadri con oggetto e i
 moltissimi di sfondo; la *focal loss* di RetinaNet {cite}`lin2017focal` lo ha
 in gran parte sanato, avvicinando le due famiglie in accuratezza. Posto
 $p_t = p$ se l'ancora è positiva e $p_t = 1 - p$ se è sfondo, la
@@ -217,13 +218,13 @@ il pedone, quella alta e stretta (terracotta) è già quasi giusta.
 
 Un corniciaio non costruisce una cornice su misura per ogni quadro che entra in
 bottega: tiene pronti alcuni formati standard (verticale per i ritratti,
-orizzontale per i paesaggi, quadrato) e poi ritocca quello che ci va più
+orizzontale per i paesaggi, quadrato) e poi ritocca il formato che ci va più
 vicino. Le ancore funzionano allo stesso modo. In ogni punto dell'immagine la
 rete ha a disposizione qualche cornice predefinita, di taglie e proporzioni
 diverse ({numref}`fig-anchor-boxes`). Davanti a un pedone non deve inventarsi
-il rettangolo: prende la cornice verticale, che gli somiglia già, e la aggiusta.
-Correggere una cornice quasi giusta è molto più facile che disegnarne una dal
-nulla, e la rete impara proprio questo: piccole correzioni, più il nome di ciò
+il rettangolo: prende la cornice verticale, che gli somiglia già, e la
+aggiusta. Correggere una cornice quasi giusta è molto più facile che disegnarne
+una dal nulla, e la rete impara questo: piccole correzioni, più il nome di ciò
 che c'è dentro.
 
 Le correzioni si dicono in frazioni della cornice stessa, mai in centimetri:
@@ -231,15 +232,15 @@ Le correzioni si dicono in frazioni della cornice stessa, mai in centimetri:
 Detta così, la stessa istruzione va bene per la cornicetta del passerotto in
 fondo al prato e per quella del camion in primo piano. Detta in centimetri, tre
 centimetri manderebbero la cornice del passerotto lontano dal passerotto e
-quella del camion appena appena, e la rete dovrebbe imparare un ritocco diverso
-per ogni taglia.
+sposterebbero appena quella del camion, e la rete dovrebbe imparare un ritocco
+diverso per ogni taglia.
 
 Per imparare quale formato scegliere e di quanto ritoccarlo, il corniciaio ha
 bisogno di quadri di prova di cui conosce già la cornice giusta: mette la sua
-accanto a quella, e corregge la mano. Davanti a un quadro nuovo la cornice
-giusta non la conosce nessuno: allora la rete ritocca tutte le sue cornici,
-dicendo per ciascuna quanto è sicura che lì dentro ci sia qualcosa, e alla fine
-restano solo le più convinte.
+accanto a quella, e corregge la mano. Davanti a un quadro nuovo nessuno conosce
+la cornice giusta: allora la rete ritocca tutte le sue cornici, dicendo per
+ciascuna quanto è sicura che lì dentro ci sia qualcosa, e alla fine restano
+solo le più convinte.
 
 `````
 
@@ -261,25 +262,25 @@ dove $(x_a, y_a, w_a, h_a)$ sono centro e dimensioni dell'ancora e $(x, y, w,
 h)$ quelli del riquadro da raggiungere; in addestramento ogni oggetto è
 assegnato alle ancore che meglio lo ricoprono (la sovrapposizione si misura con
 la IoU). Quel confronto appartiene al solo addestramento, quando i riquadri
-veri ci sono: le ancore che ricoprono bene un oggetto diventano positive e
-imparano classe e offset verso di lui, le altre fanno da sfondo. In inferenza
-non c'è nessun riquadro vero da ricoprire: la rete produce punteggi e offset
-per tutte le ancore, ogni ancora deformata dagli offset diventa un candidato, e
-la IoU ricompare solo alla fine, misurata fra i candidati stessi, per sfoltire
-i doppioni sullo stesso oggetto. È il meccanismo della *Region Proposal
-Network* di Faster R-CNN {cite}`ren2015faster`, che usa $k=9$ ancore per
-posizione (3 scale × 3 proporzioni), e di SSD {cite}`liu2016ssd`, che le chiama
-*default boxes* e le distribuisce su mappe di feature a più risoluzioni, per
-coprire oggetti piccoli e grandi. Esistono anche rilevatori *anchor-free*, che
-predicono direttamente centri e distanze dai bordi senza riquadri di partenza;
-ma le ancore restano il modo più chiaro per capire come una griglia fissa possa
-produrre riquadri di ogni forma.
+veri sono noti: le ancore che ricoprono bene un oggetto diventano positive e
+imparano la classe e gli offset per raggiungerlo, le altre fanno da sfondo. In
+inferenza non c'è nessun riquadro vero da ricoprire: la rete produce punteggi e
+offset per tutte le ancore, ogni ancora deformata dagli offset diventa un
+candidato, e la IoU ricompare solo alla fine, misurata fra i candidati stessi,
+per sfoltire i doppioni sullo stesso oggetto. È il meccanismo della *Region
+Proposal Network* di Faster R-CNN {cite}`ren2015faster`, che usa $k=9$ ancore
+per posizione (3 scale × 3 proporzioni), e di SSD {cite}`liu2016ssd`, che le
+chiama *default boxes* e le distribuisce su mappe di feature a più risoluzioni,
+per coprire oggetti piccoli e grandi. Esistono anche rilevatori *anchor-free*,
+che predicono direttamente centri e distanze dai bordi senza riquadri di
+partenza; ma le ancore restano il modo più chiaro per capire come una griglia
+fissa possa produrre riquadri di ogni forma.
 
 `````
 
 ## Grandi e piccoli: le piramidi
 
-Le ancore hanno più taglie, ma da sole non bastano. Per riempire una cornice la
+Le ancore hanno più taglie, ma non bastano. Per riempire una cornice la
 rete legge una **mappa di feature**, la griglia di numeri con cui uno dei suoi
 strati descrive l'immagine, e una mappa sola non va bene per gli oggetti
 piccoli e per quelli grandi. Le mappe degli ultimi strati sanno che cosa c'è ma
@@ -291,7 +292,7 @@ cui il significato degli ultimi strati viene riportato fino ai primi.
 
 `````{tab} Elementare
 
-La bottega ha un problema che le cornici da sole non risolvono: in un quadro il
+La bottega ha un problema che le cornici non risolvono: in un quadro il
 passerotto in fondo al prato è una macchiolina di pochi puntini, il camion in
 primo piano prende mezza tela. Per decidere le cornici, la rete guarda il
 quadro con una fila di aiutanti, ciascuno un passo più lontano del precedente.
@@ -303,16 +304,16 @@ lontano non saprebbe dire dove finisce.
 Una soluzione antica è rifare tutto più volte: preparare copie del quadro
 ingrandite e rimpicciolite, e far guardare ciascuna da capo. Funziona, ma il
 lavoro cresce con la superficie di tutte le copie messe insieme, e una copia
-ingrandita al doppio costa da sola quanto quattro.
+ingrandita al doppio equivale a quattro.
 
-La piramide di feature costa molto meno, perché la fila fa un giro solo: chi
-sta più indietro non guarda il quadro da capo, lavora sugli appunti già
-riassunti da chi gli sta davanti. Poi il significato torna indietro. L'ultimo
-segna su un foglio di carta lucida, a grandi linee, «qui c'è un uccello»;
-l'aiutante davanti a lui ingrandisce il foglio fino alla misura dei propri
-appunti, ce lo posa sopra e lo ripassa con il suo tratto più fine, e così via
-fino al primo. Alla fine ognuno ha le due cose insieme: il dettaglio del
-proprio sguardo e il significato portato da chi vedeva l'insieme. E siccome
+La piramide di feature richiede molto meno lavoro, perché la fila fa un giro
+solo: chi sta più indietro non guarda il quadro da capo, lavora sugli appunti
+già riassunti da chi gli sta davanti. Poi il significato torna indietro.
+L'ultimo segna su un foglio di carta lucida, a grandi linee, «qui c'è un
+uccello»; l'aiutante davanti a lui ingrandisce il foglio fino alla misura dei
+propri appunti, ce lo posa sopra e lo ripassa con il suo tratto più fine, e
+così via fino al primo. Alla fine ognuno ha le due cose insieme: il dettaglio
+del proprio sguardo e il significato portato da chi vedeva l'insieme. Siccome
 tutti incorniciano seguendo lo stesso manuale, ognuno ricopia i propri appunti
 sullo stesso formato di foglio.
 
@@ -330,18 +331,18 @@ più piccola della bottega gli sta comunque larga.
 Le reti convoluzionali sono già piramidali. In una ResNet l'uscita
 $\mathbf{C}_l$ dell'ultimo blocco dello stadio $l$ ha passo $2^l$ rispetto
 all'ingresso, cioè $4, 8, 16, 32$ pixel per $l = 2, \dots, 5$, e sempre più
-canali: meno risoluzione, più semantica. Le soluzioni precedenti sceglievano.
-Faster R-CNN legge da una mappa sola ($\mathbf{C}_4$ con una ResNet, passo
-$16$), dove un oggetto di $32$ pixel occupa due celle per lato. La piramide
-d'immagine rifà la rete su più ridimensionamenti: il costo è $\sum_i s_i^2$
-volte quello di un passaggio solo (con le scale $\tfrac12$, $1$ e $2$ fa
-$5{,}25$), e addestrarla da capo a fondo non entra in memoria, così la si usa
-solo in inferenza, incoerente con l'addestramento. SSD predice da mappe a più
-profondità, ma per non usare quelle troppo deboli parte da strati già alti, e
-rinuncia proprio alle mappe più fini, che servono agli oggetti piccoli. La
-**Feature Pyramid Network** {cite}`lin2017feature` costruisce invece un
-percorso dall'alto in basso con connessioni laterali, e predice da ogni
-livello:
+canali: meno risoluzione, più semantica. Le architetture precedenti imponevano
+un compromesso. Faster R-CNN legge da una mappa sola ($\mathbf{C}_4$ con una
+ResNet, passo $16$), dove un oggetto di $32$ pixel occupa due celle per lato.
+La piramide d'immagine rifà la rete su più ridimensionamenti: il costo è
+$\sum_i s_i^2$ volte quello di un passaggio solo (con le scale $\tfrac12$, $1$
+e $2$ fa $5{,}25$), e addestrarla su tutte le scale esaurisce la memoria
+disponibile, così la si usa solo in inferenza, in modo incoerente con
+l'addestramento. SSD predice da mappe a più profondità, ma per non usare quelle
+troppo deboli parte da strati già alti, e rinuncia alle mappe più fini,
+che servono agli oggetti piccoli. La **Feature Pyramid Network**
+{cite}`lin2017feature` costruisce invece un percorso dall'alto in basso con
+connessioni laterali, e predice da ogni livello:
 
 $$
 \mathbf{M}_5 = \mathrm{conv}^{(5)}_{1\times1}(\mathbf{C}_5), \qquad
@@ -361,9 +362,9 @@ sovracampionamento lascia. Ogni $\mathbf{P}_l$ ha così la risoluzione di
 $\mathbf{C}_l$ e la semantica che scende da $\mathbf{C}_5$, a un costo molto
 inferiore a quello di una piramide d'immagine, concentrato sul livello più
 fine. Le teste sono condivise fra i livelli, come in una piramide d'immagine,
-ed è per questo che tutti vanno portati alla stessa $d$. La novità rispetto a
-FCN e U-Net, che hanno anche loro un percorso dall'alto in basso, sta qui: si
-predice da ogni livello, con le stesse teste.
+perciò tutti vanno portati alla stessa $d$. La novità rispetto a FCN e U-Net,
+che hanno a loro volta un percorso dall'alto in basso, sta qui: si predice
+da ogni livello, con le stesse teste.
 
 Nella RPN ogni livello ha ancore di una sola area, $32^2, 64^2, 128^2, 256^2,
 512^2$ pixel su $\mathbf{P}_2, \dots, \mathbf{P}_6$, in tre proporzioni: tre
@@ -392,7 +393,7 @@ la sua ancora migliore.
 
 ## Quanto è buona una predizione? IoU e mAP
 
-Un riquadro predetto non è mai esattamente sovrapposto a quello vero, e la
+Un riquadro predetto non si sovrappone mai perfettamente a quello vero, e la
 misura della sovrapposizione è quella già incontrata fra i compiti della
 visione: l’**Intersection over Union**, l'area in comune divisa per l'area
 coperta in tutto. Qui serve a qualcosa di più, il voto complessivo di un
@@ -414,10 +415,9 @@ giusta, e lo confronta con la cornice che il rilevatore ha tracciato
 ({numref}`fig-iou`). Non combaciano mai. La foto è stampata su carta a
 quadretti, e allora la somiglianza si misura contando: i quadretti coperti da
 tutte e due, divisi per quelli coperti da almeno una. Trenta in comune,
-sessanta in tutto:
-$30/60 = 0{,}5$. Il conto si chiama IoU e dà sempre un numero fra 0 e 1, dove 1
-vuol dire cornici sovrapposte quadretto per quadretto e 0 cornici che non si
-toccano nemmeno.
+sessanta in tutto: $30/60 = 0{,}5$. Questa misura si chiama IoU e dà sempre un
+numero fra 0 e 1, dove 1 indica cornici sovrapposte quadretto per quadretto
+e 0 cornici che non si toccano nemmeno.
 
 Il correttore deve stabilire a che punto una cornice vale come buona. La regola
 solita è la metà: da 0,5 in su passa. Quella metà l'ha fissata una convenzione,
@@ -426,7 +426,7 @@ ribaltarsi, perché chi azzecca sempre il nome ma disegna cornici approssimative
 crolla molto più in fretta di chi le disegna precise.
 
 Mettiamo che in una foto i cani siano tre, e che il rilevatore consegni cinque
-cornici in fila, dalla più sicura alla meno sicura. Il correttore le prende in
+cornici, ordinate dalla più sicura alla meno sicura. Il correttore le prende in
 quest'ordine. Una cornice passa se copre abbastanza un cane che nessuna cornice
 precedente si è già presa, e da quel momento quel cane è suo: una seconda
 cornice sullo stesso animale, per quanto ben piazzata, va nella pila degli
@@ -440,29 +440,29 @@ su e giù come i denti di una sega. Prima di sommarli il correttore li
 appiattisce: al posto del numero di quel momento prende il più alto fra quello e
 tutti quelli che vengono dopo. I tre diventano 1, 0,60 e 0,60. È la precisione
 migliore che troverebbe accettando di andare un po’ più avanti nella fila, fino
-a una cornice giusta successiva. E rende il voto meno capriccioso: se due
+a una cornice giusta successiva. Rende anche il voto meno capriccioso: se due
 cornici quasi ugualmente sicure si scambiano di posto, i denti della sega si
 spostano, mentre il più alto fra adesso e dopo spesso resta dov'era. Spesso, non
 sempre: se si scambiassero le prime due cornici, la prima fermata cadrebbe a 1
 su 2, e appiattita varrebbe 0,60 invece di 1.
 
-La somma fa 2,20, e si divide per tre, cioè per i cani che c'erano davvero, non
+La somma fa 2,20, e si divide per tre, cioè per i cani presenti nella foto, non
 per le cinque cornici disegnate: 0,73. Un cane che nessuna cornice avesse
 cerchiato non aggiungerebbe niente alla somma e resterebbe comunque nel
 divisore. Chi disegna una cornice sola, la più sicura di tutte, tiene la
 precisione altissima e porta a casa un voto basso; chi ne disegna mille li
 cerchia tutti e tre e paga a ogni fermata gli errori che ha lasciato dietro.
-Quel 0,73 è il voto sui cani, e si chiama **Average Precision** (AP), precisione
-media: è già una media, fatta sui cani veri. Non tutti i correttori, però, si
-fermano dove si ferma lui: c'è chi guarda la fila in undici punti fissati prima,
-e chi in centouno, e due voti contati con regole diverse non si mettono a
-confronto.
+Quel 0,73 è il voto sui cani, e si chiama **Average Precision** (AP),
+precisione media: è già una media, fatta sui cani veri. Non tutti i correttori,
+però, si fermano dove si ferma lui: c'è chi guarda la fila in undici punti
+fissati prima, e chi in centouno, e due voti contati con regole diverse non si
+mettono a confronto.
 
 Poi si rifà tutto sulle auto, sui semafori, sulle biciclette, e si fa la media
 dei voti delle varie categorie: è la «m» di *mean* della **mAP**, la media delle
 AP. Ne esce un numero fra 0 e 1: più è alto, più spesso il rilevatore azzecca
 insieme la cornice e il nome. Nelle gare serie il correttore rifà poi l'intero
-conto con dieci soglie, da 0,5 a 0,95, e fa la media delle dieci mAP: nessuno si
+calcolo con dieci soglie, da 0,5 a 0,95, e fa la media delle dieci mAP: nessuno si
 presenta col metro tagliato su misura.
 
 `````
@@ -482,37 +482,37 @@ viene «consumato». Ogni oggetto reale si accoppia cioè a una sola predizione,
 i duplicati, per quanto ben sovrapposti, contano come falsi positivi. Da qui si
 costruisce la curva *precision–recall* per ciascuna classe: l'area sotto la sua
 interpolata (l'inviluppo monotono decrescente, campionato a 11 punti di recall
-nel VOC fino al 2009, a tutti i cambi di recall dal 2010, a 101 punti in COCO) è
-l’**Average Precision** (AP). La curva grezza è a denti di sega, e basta che due
-predizioni di confidenza quasi uguale si scambino di posto perché i denti si
-spostino. L'inviluppo, che a ogni recall prende la precisione migliore
-ottenibile a recall uguale o maggiore, ne attenua l'effetto
-{cite}`everingham2010pascal`: uno scambio che non tocca quel massimo non sposta
-niente, uno che lo tocca sposta l'AP come prima. Le convenzioni di campionamento
-restano però diverse, e un AP a 11 punti non si confronta con uno a 101. La
-**mean Average Precision** (mAP) ne fa la media sulle classi. Il benchmark COCO
-irrigidisce la metrica mediando la mAP su dieci soglie di IoU, da $0{,}5$ a
-$0{,}95$ a passi di $0{,}05$: premia i modelli che localizzano con precisione,
-non solo che indovinano la classe. Per la stessa ragione, la scelta di una
-soglia sola pesa sulla classifica. Alzandola, una predizione che indovina la
-classe con un riquadro approssimativo, accettata a $0{,}5$, diventa un falso
-positivo e lascia il suo oggetto senza abbinamento; chi produce riquadri così
-perde AP più in fretta di chi localizza con precisione, e due rilevatori
-possono scambiarsi di posto, il primo avanti in $\text{AP}_{50}$, il secondo in
-$\text{AP}_{75}$ (l'AP alle soglie $0{,}5$ e $0{,}75$).
+nel VOC fino al 2009, a tutti i cambi di recall dal 2010, a 101 punti in COCO)
+è l’**Average Precision** (AP). La curva grezza è a denti di sega, e lo scambio
+di posto di due predizioni di confidenza quasi uguale ne sposta i denti.
+L'inviluppo, che a ogni recall prende la precisione migliore ottenibile a
+recall uguale o maggiore, ne attenua l'effetto {cite}`everingham2010pascal`:
+uno scambio che non tocca quel massimo non sposta niente, uno che lo tocca
+sposta l'AP come prima. Le convenzioni di campionamento restano però diverse, e
+un AP a 11 punti non si confronta con uno a 101. La **mean Average Precision**
+(mAP) ne fa la media sulle classi. Il benchmark COCO irrigidisce la metrica
+mediando la mAP su dieci soglie di IoU, da $0{,}5$ a $0{,}95$ a passi di
+$0{,}05$: premia i modelli che localizzano con precisione, non solo che
+indovinano la classe. Per la stessa ragione, la scelta di una soglia sola pesa
+sulla classifica. Alzandola, una predizione che indovina la classe con un
+riquadro approssimativo, accettata a $0{,}5$, diventa un falso positivo e
+lascia il suo oggetto senza abbinamento; chi produce riquadri così perde AP più
+in fretta di chi localizza con precisione, e due rilevatori possono scambiarsi
+di posto, il primo avanti in $\text{AP}_{50}$, il secondo in $\text{AP}_{75}$
+(l'AP alle soglie $0{,}5$ e $0{,}75$).
 
 `````
 
-Le predizioni che arrivano a questo conto, però, sono già state ripulite. La
-rete non produce un riquadro per oggetto: ne produce migliaia. In ogni punto
+Le predizioni che arrivano a questa valutazione, però, sono già state ripulite.
+La rete non produce un riquadro per oggetto: ne produce migliaia. In ogni punto
 della griglia tiene pronte le sue cornici di partenza, e i punti della griglia
 sono a loro volta migliaia. Il risultato è che attorno a ogni oggetto se ne
 accumulano decine quasi identiche, ciascuna con la sua **confidenza**, cioè il
 numero da 0 a 1 con cui la rete dichiara quanto è sicura che lì dentro un
-oggetto ci sia davvero.
+oggetto ci sia.
 
 La **non-maximum suppression** (alla lettera «soppressione di ciò che non è il
-massimo», e in genere la si chiama NMS) le sfoltisce con una regola semplice,
+massimo», abbreviata in genere in NMS) le sfoltisce con una regola semplice,
 una classe alla volta: si ordinano i riquadri per confidenza, si tiene il più
 sicuro e si scartano tutti quelli che gli si sovrappongono oltre una soglia di
 IoU fissata in partenza (di solito fra 0,3 e 0,7), poi si ripete sui rimasti
@@ -530,7 +530,7 @@ confidenza dei riquadri sovrapposti tanto più quanto più si sovrappongono, e
 una persona vera parzialmente coperta ha così ancora una possibilità
 {cite}`bodla2017softnms`.
 
-C'è però una terza via, che il problema lo toglie invece di risolverlo. Una
+C'è però una terza via, che elimina il problema invece di risolverlo. Una
 famiglia di rilevatori inaugurata nel 2020 da DETR {cite}`carion2020end` (sta
 per *detection transformer*) chiede alla rete un numero fisso di risposte, per
 esempio cento, e durante l'addestramento le abbina agli oggetti veri una a una,
@@ -544,7 +544,7 @@ cubo del numero di risposte. Gli oggetti veri si completano con «nessun
 oggetto» fino a cento, e tutte le risposte rimaste sono premiate per dire «qui
 non c'è niente». Chi produce un doppione viene quindi punito mentre impara, non
 ripulito dopo, e alla fine dell'addestramento i doppioni non li produce più.
-Spariscono così sia le cornici di partenza sia la fase di pulizia. Il prezzo è
+Spariscono così sia le cornici di partenza sia la fase di pulizia. Il costo è
 stato un addestramento molto più lungo (500 epoche, contro le 109 del
 rilevatore a due stadi di riferimento, Faster R-CNN, che il lavoro riallena per
 un confronto alla pari, e le 36 della sua versione di serie) e risultati
@@ -554,36 +554,36 @@ peggiori sugli oggetti piccoli.
 
 Dieci anni di rilevamento si possono ripassare seguendo una famiglia sola. Il
 primo YOLO {cite}`redmon2016you` aveva la griglia e nient'altro: niente ancore,
-una passata sola, riquadri grossolani e gli oggetti piccoli persi quando si
-affollano nella stessa cella. Le versioni successive adottano, uno per uno, gli
-attrezzi del mestiere. YOLOv2 {cite}`redmon2017yolo9000` porta dentro le
+una passata sola, riquadri grossolani e oggetti piccoli persi quando si
+affollavano nella stessa cella. Le versioni successive adottano, uno per uno,
+gli accorgimenti consueti. YOLOv2 {cite}`redmon2017yolo9000` introduce le
 ancore, e invece di disegnarle a mano le ricava dai dati, raggruppando i
-riquadri veri del dataset per trovare le forme che ricorrono davvero. YOLOv3
+riquadri veri del dataset per trovare le forme che ricorrono più spesso. YOLOv3
 {cite}`redmon2018yolov3` predice su tre griglie a risoluzione diversa, così
 anche l'oggetto piccolo trova una griglia abbastanza fitta da vederlo, e al
 posto della softmax mette tanti classificatori indipendenti, uno per classe,
 perché la stessa figura può essere insieme «persona» e «pedone».
 
-Poi la famiglia si divide, e il filo da tenere è uno: le due impalcature del
-mestiere, le ancore e la pulizia dei doppioni, la famiglia le ha prima adottate
-e poi tolte tutte e due. Dal 2020 il nome lo portano due linee parallele. Da
-una parte ci sono articoli di gruppi di ricerca (YOLOv4 nel 2020 e YOLOv7 nel
-2022, degli stessi autori, e YOLOv10 nel 2024); dall'altra il software della
-società Ultralytics {cite}`jocher2026ultralytics`, la cui storia si legge
-soprattutto nei registri delle versioni: YOLOv5, una libreria PyTorch, non ha
-mai avuto un articolo scientifico, e quello di YOLO26 è uscito mesi dopo il
-software {cite}`jocher2026yolo26`. YOLOv8, nel 2023, toglie le ancore,
-predicendo direttamente centro e distanze dai bordi, come i rilevatori detti
-*anchor-free*. YOLO26, all'inizio del 2026, toglie anche la NMS: punisce i
-doppioni durante l'addestramento con la stessa idea dell'abbinamento uno a uno
-di DETR, che nella famiglia era entrata con YOLOv10, un lavoro dell'Università
-Tsinghua, e quello che la rete produce è già il risultato finale. Restano la
+Poi la famiglia si divide, e il filo da tenere è uno: ha prima
+adottato e poi abbandonato le due impalcature, le ancore e la
+pulizia dei doppioni. Dal 2020 due linee parallele portano questo nome. Da una
+parte ci sono articoli di gruppi di ricerca (YOLOv4 nel 2020 e YOLOv7 nel 2022,
+degli stessi autori, e YOLOv10 nel 2024); dall'altra il software della società
+Ultralytics {cite}`jocher2026ultralytics`, la cui storia si legge soprattutto
+nei registri delle versioni: YOLOv5, una libreria PyTorch, non ha mai avuto un
+articolo scientifico. YOLOv8, nel 2023, toglie le ancore, predicendo
+direttamente centro e distanze dai bordi, come i rilevatori detti
+*anchor-free*. Si può togliere anche la NMS, e un esempio recente è YOLO26,
+all'inizio del 2026 {cite}`jocher2026yolo26`: punisce i doppioni
+durante l'addestramento con la stessa idea dell'abbinamento uno a uno di DETR,
+che nella famiglia era entrata con YOLOv10, un lavoro dell'Università Tsinghua,
+e l'uscita della rete è già il risultato finale. Restano la
 griglia, la passata unica e il nome.
 
-Provare l'ultima versione costa cinque righe. La libreria si installa con
-`pip install ultralytics`, scarica i pesi alla prima esecuzione e porta con sé
-una foto di prova: un minibus elettrico e, sul marciapiede, quattro figure, due
-intere e due tagliate dai bordi della foto.
+Provare un rilevatore della famiglia richiede cinque righe di codice. La
+libreria si installa con `pip install ultralytics`, scarica i pesi alla prima
+esecuzione e porta con sé una foto di prova: un minibus elettrico e, sul
+marciapiede, quattro figure, due intere e due tagliate dai bordi della foto.
 
 ```{code-block} python
 :class: pt-lento
@@ -616,20 +616,20 @@ lettura resta la stessa, con la confidenza che cala dove calerebbe la nostra.
 ## Segmentare: dal riquadro alla sagoma
 
 Il riquadro è comodo ma grossolano: attorno a un pedone c'è sempre un rettangolo
-pieno di sfondo. Quando serve il contorno esatto, pixel per pixel, si passa alla
+pieno di sfondo. Quando serve il contorno preciso, pixel per pixel, si passa alla
 segmentazione. Qui vanno distinte due varianti.
 
-Prima, però, una forma che molte reti di segmentazione condividono: un ramo che
-riassume l'immagine e uno che la ricostruisce, e la più nota si chiama **U-Net**
-{cite}`ronneberger2015u` perché sullo schema disegna una U. Il problema da
-risolvere è questo: per capire *che cosa* c'è in una zona bisogna allontanarsi
-dai pixel e guardare largo, mentre per disegnarne il contorno esatto bisogna
-starci attaccati. Sono due esigenze opposte, e la U-Net non sceglie. Prima
-scende, rimpicciolendo l'immagine e capendo sempre meglio che cosa c'è; poi
-risale, tornando alla risoluzione di partenza per dire dove; e a ogni gradino
-della risalita si fa ripassare quello che aveva visto allo stesso gradino
-durante la discesa. Sono le connessioni orizzontali della figura, le **skip
-connection**: senza di quelle, il contorno tornerebbe su sfocato.
+Prima, però, molte reti di segmentazione condividono una forma: un ramo che
+riassume l'immagine e uno che la ricostruisce; la più nota è la **U-Net**
+{cite}`ronneberger2015u`, che sullo schema disegna una U. Per capire *che cosa*
+c'è in una zona bisogna allontanarsi dai pixel e guardare largo, mentre per
+disegnarne il contorno preciso bisogna starci attaccati. Sono due esigenze
+opposte, e la U-Net le soddisfa entrambe. Prima scende, rimpicciolendo
+l'immagine e capendo sempre meglio che cosa c'è; poi risale, tornando alla
+risoluzione di partenza per dire dove, e a ogni gradino della risalita si fa
+ripassare l'informazione vista allo stesso gradino durante la discesa. Sono le
+connessioni orizzontali dello schema, le **skip connection**: senza di quelle,
+il contorno tornerebbe su sfocato.
 
 ```{figure} ../figures/u-net-clessidra-con-skip.svg
 :name: fig-unet
@@ -667,16 +667,15 @@ nome, di ciascun pedone escono insieme cornice, nome e contorno.
 `````{tab} Superiore
 
 La segmentazione semantica assegna a ogni pixel una classe. La svolta è la
-*Fully Convolutional Network* {cite}`long2015fully`, che sostituisce
-gli strati densi finali con convoluzioni e *upsampling* per produrre una mappa
-di classi a piena risoluzione, e che già introduce le *skip connections*: la
-sua sezione «Combining what and where» fonde la predizione grossolana con gli
-strati a stride più fine (sono le varianti FCN-16s e FCN-8s,
-che dal modello base si distinguono solo per quante skip hanno). U-Net
-{cite}`ronneberger2015u`, nata per l'imaging biomedico e dello stesso anno, ne
-generalizza la forma: un decoder simmetrico che a ogni livello concatena
-l'intera mappa di feature dell'encoder, invece di sommare due mappe di
-punteggi di classe a due soli livelli.
+*Fully Convolutional Network* {cite}`long2015fully`, che sostituisce gli strati
+densi finali con convoluzioni e *upsampling* per produrre una mappa di classi a
+piena risoluzione. L'articolo introduce già le *skip connections*: la sezione
+«Combining what and where» fonde la predizione grossolana con gli strati a
+stride più fine (le varianti FCN-16s e FCN-8s si distinguono dal modello base
+solo per quante skip hanno). U-Net {cite}`ronneberger2015u`, nata per l'imaging
+biomedico e dello stesso anno, ne generalizza la forma: un decoder simmetrico
+che a ogni livello concatena l'intera mappa di feature dell'encoder, invece di
+sommare due mappe di punteggi di classe a due soli livelli.
 
 La segmentazione di istanza unisce detection e maschere: **Mask R-CNN**
 {cite}`he2017mask` estende Faster R-CNN con un terzo ramo che, per ciascuna
@@ -685,11 +684,11 @@ sigmoide per pixel invece di una softmax fra classi. Solo la maschera della
 classe vera riceve gradiente, così le classi non competono pixel per pixel; e
 le feature della regione si estraggono con **RoIAlign**, che campiona la mappa
 per interpolazione bilineare invece di arrotondare le coordinate della regione
-alla griglia, che farebbe scivolare la maschera di frazioni di cella. Ottiene
-così, insieme, riquadro, classe e sagoma di ogni singola istanza. Sotto, come
-backbone, una ResNet (o una ResNeXt) con la piramide di feature, che nel
-confronto del lavoro supera la lettura dalla sola $\mathbf{C}_4$ sia in
-accuratezza sia in velocità.
+alla griglia, perché l'arrotondamento farebbe scivolare la maschera di frazioni
+di cella. Ottiene così, insieme, riquadro, classe e sagoma di ogni singola
+istanza. Come backbone usa una ResNet (o una ResNeXt) con la piramide di
+feature, che negli esperimenti dell'articolo supera la lettura dalla sola
+$\mathbf{C}_4$ sia in accuratezza sia in velocità.
 
 Le metriche seguono. Per la semantica la IoU si calcola per classe, sui pixel
 di tutto il dataset, $\mathrm{IoU}_k = \mathrm{TP}_k / (\mathrm{TP}_k +
@@ -722,19 +721,19 @@ quanto sono giuste le sagome e quanti individui sono stati trovati.
 ## Risalire di risoluzione: la convoluzione trasposta
 
 Nelle reti di segmentazione c'è un passaggio rimasto nell'ombra. Le
-convoluzioni e il pooling (il passaggio che riassume ogni quadratino di
-griglia in un numero solo) *riducono* le mappe, cioè le griglie di numeri
-che ogni strato consegna al successivo: dopo il ramo discendente della U,
-quello che comprime, un'immagine 512×512 può essersi ristretta a 16×16. Quel
-ramo ha un nome, encoder, e vuol dire «la parte che riassume»: è lo stesso
-mestiere che nella {doc}`sezione sull'apprendimento senza etichette
-</VisioneArtificiale/senza-etichette>` riassumeva un'immagine in una lista di
-numeri, solo che qui il riassunto è una griglia piccola. Ma il verdetto della
-segmentazione va dato pixel per pixel, alla risoluzione di partenza: serve una
-seconda metà che riespanda, e quella si chiama **decoder**. Come si risale?
-L'operazione che la *Fully Convolutional Network* {cite}`long2015fully` ha reso
-standard è la **convoluzione trasposta**: una convoluzione che invece di
-rimpicciolire ingrandisce, con numeri che la rete impara.
+convoluzioni e il pooling (il passaggio che riassume ogni quadratino di griglia
+in un numero solo) *riducono* le mappe, cioè le griglie di numeri che ogni
+strato consegna al successivo: dopo il ramo discendente della U, il ramo che
+comprime, un'immagine 512×512 può essersi ristretta a 16×16. Quel ramo si
+chiama encoder («la parte che riassume»), come nella {doc}`sezione
+sull'apprendimento senza etichette </VisioneArtificiale/senza-etichette>`, dove
+riassumeva un'immagine in una lista di numeri; qui il riassunto è una griglia
+piccola. Il verdetto della segmentazione, però, va dato pixel per pixel, alla
+risoluzione di partenza: serve una seconda metà che riespanda, e quella si
+chiama **decoder**. Come si risale? L'operazione che la *Fully Convolutional
+Network* {cite}`long2015fully` ha reso standard è la **convoluzione
+trasposta**: una convoluzione che invece di rimpicciolire ingrandisce, con
+numeri che la rete impara.
 
 ```{figure} ../figures/convoluzione-trasposta.svg
 :name: fig-convoluzione-trasposta
@@ -775,31 +774,31 @@ $$
 L'1 ha stampato un blocchetto di 1, il 4 un blocchetto di 4. Con passo 1,
 invece, i colpi si sarebbero sovrapposti e nelle caselle condivise i valori si
 sarebbero sommati; con un timbro di due caselle, però, ogni casella interna ne
-riceve lo stesso numero, e solo il bordo ne riceve meno. Il guaio arriva quando
+riceve lo stesso numero, e solo il bordo ne riceve meno. Il problema nasce quando
 il timbro non copre un numero intero di passi, per esempio un timbro di tre
 caselle spostato ogni volta di due: allora una casella riceve due colpi e la
 vicina uno solo, alternandosi, e nell'immagine finale compare una trama regolare
 a quadretti che nella scena non c'era.
 
-C'è poi una cosa che la timbratura non può sapere. La mappa $2 \times 2$ di
-partenza l'ha prodotta la discesa, che aveva riassunto una tela più grande
-prendendone le caselle a due a due. Ma una tela di quattro caselle di lato e una
-di cinque si riducono tutte e due a quella stessa mappa: della quinta casella,
-spaiata, la discesa non sa che fare e la lascia fuori. Il riassunto non ricorda
-da quale delle due veniva, e timbrando si risale sempre alla più piccola. Chi
-mette in fila una discesa e una risalita si ritrova per questo, ogni tanto, le
-due metà della clessidra sfalsate di una casella, e deve dire a mano quale
-delle due taglie voleva.
+C'è poi un'informazione che la timbratura non può conoscere. La mappa $2 \times
+2$ di partenza l'ha prodotta la discesa, che aveva riassunto una tela più
+grande prendendone le caselle a due a due. Una tela di quattro caselle di lato
+e una di cinque, però, si riducono tutte e due a quella stessa mappa: della
+quinta casella, spaiata, la discesa non sa che fare e la lascia fuori. Il
+riassunto non ricorda da quale delle due veniva, e timbrando si risale sempre
+alla più piccola. Chi accoppia una discesa e una risalita si ritrova per
+questo, ogni tanto, le due metà della clessidra sfalsate di una casella, e deve
+dire a mano quale delle due taglie voleva.
 
-Con questo timbro banale abbiamo solo ingrandito la mappa; il punto è che i
-numeri sul timbro non sono fissi, la rete li impara. Può scoprire timbri che
-sfumano i bordi e ricostruiscono i dettagli molto meglio di un semplice zoom.
-Può però anche fare il contrario, e imparare timbri che la trama a quadretti la
-disegnano da soli, anche quando i colpi cadono ordinati e ogni casella ne riceve
-lo stesso numero. Sistemare il passo, quindi, non mette al riparo, e molte reti
-recenti scelgono una via più prudente: ingrandire la mappa in un modo fisso,
-ricopiando ogni casella o sfumando fra una casella e la vicina, e passarci sopra
-una convoluzione ordinaria, di quelle che non ingrandiscono.
+Con questo timbro banale abbiamo solo ingrandito la mappa; i numeri sul timbro
+non sono fissi, e la rete li impara. Può scoprire timbri che sfumano i bordi e
+ricostruiscono i dettagli molto meglio di un semplice zoom. Può però anche fare
+il contrario, e imparare timbri che la trama a quadretti la disegnano comunque,
+anche quando i colpi cadono ordinati e ogni casella ne riceve lo stesso numero.
+Sistemare il passo, quindi, non mette al riparo, e molte reti recenti scelgono
+una via più prudente: ingrandire la mappa in un modo fisso, ricopiando ogni
+casella o sfumando fra una casella e la vicina, e passarci sopra una
+convoluzione ordinaria, di quelle che non ingrandiscono.
 
 `````
 
@@ -814,7 +813,7 @@ $$
 dove $i$ è il lato della mappa in ingresso, $k$ quello del kernel, $s$ lo
 stride e $p$ il padding. Nell'esempio della figura $i=2$, $k=2$, $s=2$,
 $p=0$, quindi $o = 2 \cdot 1 + 2 - 0 = 4$. La formula assume dilatazione 1 e
-`output_padding` nullo, e quel parametro esiste per una ragione precisa: la
+`output_padding` nullo. L’`output_padding` esiste per una ragione precisa: la
 convoluzione diretta manda taglie di ingresso diverse nella stessa uscita (con
 $k=3$, $s=2$, $p=1$ sia un $7$ sia un $8$ diventano $4$), quindi la risalita
 non è univoca e la formula dà solo la più piccola delle partenze possibili. Chi
@@ -829,17 +828,15 @@ backpropagation propaga il gradiente attraverso uno strato convoluzionale: il
 vecchio nome "deconvoluzione" è fuorviante: non inverte la convoluzione, ne
 inverte solo la geometria. In PyTorch è `nn.ConvTranspose2d`.
 
-Una nota onesta: quando $k$ non è multiplo di $s$, i colpi di timbro si
-sovrappongono in modo disomogeneo e l'output mostra i tipici **artefatti a
-scacchiera** {cite}`odena2016deconvolution`. Verrebbe da concludere che basti
-scegliere $k$ multiplo di $s$, ed è proprio la conclusione che la fonte citata
-smentisce: la scelta toglie la disomogeneità geometrica ma non gli artefatti,
-perché una rete impara volentieri kernel che li producono anche a
-sovrapposizione uniforme. È per questo, e non per la sola divisibilità, che
-molte architetture
-recenti preferiscono un
-upsampling fisso (bilineare o *nearest-neighbor*) seguito da una convoluzione
-ordinaria.
+Quando $k$ non è multiplo di $s$, i colpi di timbro si sovrappongono in modo
+disomogeneo e l'output mostra i tipici **artefatti a scacchiera**
+{cite}`odena2016deconvolution`. Verrebbe da concludere che basti scegliere $k$
+multiplo di $s$, ma l'articolo citato dimostra il contrario: la scelta
+toglie la disomogeneità geometrica ma non gli artefatti, perché una rete impara
+volentieri kernel che li producono anche a sovrapposizione uniforme. Per
+questo, e non per la sola divisibilità, molte architetture recenti preferiscono
+un upsampling fisso (bilineare o *nearest-neighbor*) seguito da una
+convoluzione ordinaria.
 
 `````
 
@@ -854,16 +851,16 @@ perderebbe. Nell’industria, un rilevatore su una linea di produzione individua
 il graffio o il pezzo mal assemblato prima che arrivi al cliente.
 
 Nessuno di questi sistemi è infallibile, e il margine di errore va comunicato
-con precisione, perché la sovrapposizione non conta gli errori: dice quanto una
+con precisione. La sovrapposizione non conta gli errori: dice quanto una
 maschera combacia con quella vera. Una maschera con IoU $0{,}9$ è una maschera
-buona, e vuol dire che di dieci quadretti coperti in tutto, nove sono in comune
-e uno no: un decimo dell'area cade nel posto sbagliato, per eccesso o per
-difetto. Su un nodulo quel decimo può anche non cambiare il volume misurato,
-perché la parte in più e quella in meno si compensano; a spostarsi è il
-contorno, che in qualche punto entra nel tessuto sano e in qualche altro lascia
-fuori del tumore.
+buona: di dieci quadretti coperti in tutto, nove sono in comune e uno no: un
+decimo dell'area cade nel posto sbagliato, per eccesso o per difetto. Su un
+nodulo quel decimo può anche non cambiare il volume misurato, perché la parte
+in più e quella in meno si compensano; a spostarsi è il contorno, che in
+qualche punto entra nel tessuto sano e in qualche altro lascia fuori del
+tumore.
 
-E soprattutto restano gli oggetti mancati del tutto. La IoU si calcola fra due
+Restano soprattutto gli oggetti mancati del tutto. La IoU si calcola fra due
 cornici, quella vera e quella disegnata, quindi per un pedone che il rilevatore
 non ha visto non c'è nessuna coppia da confrontare, e una media delle IoU sulle
 sole coppie trovate non peggiora di niente. Lo vedono invece le misure che
@@ -892,7 +889,7 @@ profondità <geometria-e-profondita>`.
   resta soprattutto la velocità.
 - Nessuno disegna le cornici dal nulla: come un corniciaio, la rete tiene
   pronti alcuni formati standard in ogni punto dell'immagine e si limita a
-  ritoccare quello che ci va più vicino.
+  ritoccare il formato che ci va più vicino.
 - Gli oggetti piccoli e quelli grandi li trovano strati diversi: la rete guarda
   il quadro una volta sola, con una fila di aiutanti a distanze crescenti, e
   chi vede l'insieme passa all'indietro, su carta lucida, quello che ha capito.
@@ -926,10 +923,10 @@ profondità <geometria-e-profondita>`.
 :class: important
 - L’object detection predice per ogni oggetto un riquadro e una
   classe insieme.
-- Due famiglie: due stadi (R-CNN, Faster R-CNN) storicamente più accurate,
-  uno stadio (YOLO, SSD) più veloci; la *focal loss* ha in gran parte
-  sanato lo squilibrio oggetto/sfondo che costava quel divario, lasciando la
-  velocità come differenza principale. E una terza via, i rilevatori a
+- Due famiglie: due stadi (R-CNN, Faster R-CNN) storicamente più accurate, uno
+  stadio (YOLO, SSD) più veloci; la *focal loss* ha in gran parte sanato lo
+  squilibrio oggetto/sfondo che causava quel divario, lasciando la velocità
+  come differenza principale. Esiste poi una terza via, i rilevatori a
   predizione di insieme (DETR), che abbinano una a una le risposte della rete
   agli oggetti veri (due insiemi distinti, e per questo l'abbinamento si dice
   *bipartito*) ed eliminano per costruzione sia le ancore sia l'NMS.

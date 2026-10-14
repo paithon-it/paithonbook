@@ -1,8 +1,8 @@
 # Oltre la partizione: tre modi di aggirare $Z$
 
 La macchina di Boltzmann ha lasciato in eredità $Z$, la funzione di
-partizione: la somma su *tutte* le configurazioni possibili. È lei a dettare
-tutto ciò che segue. Per un'energia scelta senza vincoli sull'architettura, in
+partizione: la somma su *tutte* le configurazioni possibili. Da $Z$ dipende
+ciò che segue. Per un'energia scelta senza vincoli sull'architettura, in
 alta dimensione, non si riesce a calcolarla, e questo è un muro più che una
 difficoltà tecnica fra le tante: i modelli della {doc}`verosimiglianza esatta
 </VerosimiglianzaEsatta/overview>` lo evitano proprio pagando in vincoli sulla
@@ -16,44 +16,43 @@ che è il conto vero, prende meno di un minuto su un computer qualunque.
 Aggiungiamone settantacinque. Con cento neuroni le configurazioni diventano un
 numero lungo trentuno cifre ($2^{100} \approx 1{,}27 \times 10^{30}$), e anche
 regalando a quel computer una velocità mille volte superiore a quella che ha,
-un miliardo di configurazioni al secondo, servirebbero circa
-$4 \times 10^{13}$ anni per percorrerle: quasi tremila volte l'età
-dell'universo. E cento neuroni accesi o spenti sono un'immagine in bianco e
-nero di dieci pixel per dieci, molto meno di una fotografia. Il costo cresce
-come $2^N$, e nessun miglioramento dell'hardware fa sparire trenta zeri: per
-un'energia qualunque in alta dimensione, un metodo che deve calcolare $Z$ è
-escluso in partenza.
+un miliardo di configurazioni al secondo, servirebbero circa $4 \times 10^{13}$
+anni per percorrerle: quasi tremila volte l'età dell'universo. Cento neuroni
+accesi o spenti sono soltanto un'immagine in bianco e nero di dieci pixel per
+dieci, molto meno di una fotografia. Il costo cresce come $2^N$, e nessun
+miglioramento dell'hardware fa sparire trenta zeri: per un'energia qualunque in
+alta dimensione, un metodo che deve calcolare $Z$ è escluso in partenza.
 
 `````{tab} Elementare
 
-È la stessa carta in rilievo dell'apertura del capitolo, con tutte le
-risposte possibili messe una accanto all'altra, ma guardata per quello che è:
-grande come un continente, e da qui in avanti la chiameremo così. E su quel
-continente piove. L'acqua scende e si raccoglie in basso, quindi le valli si
-riempiono e le cime restano asciutte, e la pioggia raccolta è la probabilità.
-Quanta ne raccolga una valle dipende da due cose, da quanto è profonda e da
-quanto è larga: un pozzo strettissimo può essere profondissimo e raccogliere
-pochissimo, una conca larga e appena accennata può raccogliere molto.
+È la stessa carta in rilievo dell'apertura, con tutte le risposte possibili
+messe una accanto all'altra, ma guardata per quello che è: grande come un
+continente. Su quel continente piove. L'acqua scende e si raccoglie in basso,
+quindi le valli si riempiono e le cime restano asciutte, e la pioggia raccolta
+è la probabilità. Quanta ne raccolga una valle dipende da due cose, da quanto è
+profonda e da quanto è larga: un pozzo strettissimo può essere profondissimo e
+raccogliere pochissimo, una conca larga e appena accennata può raccogliere
+molto.
 
 Confrontare due valli è gratis: si guardano le due altezze. Dire invece che una
 valle raccoglie «il 30% di tutta la pioggia che cade sul continente» vuol dire
 aver girato il continente intero, valle per valle: quella misura è la funzione
 di partizione, ed è ciò che trasforma un'altezza in una percentuale.
 
-E perché mai dovremmo misurarlo? Perché imparare, per un modello a energia,
-sono due gesti e non uno: scavare il paesaggio dove stanno i dati veri, e
+Perché mai dovremmo misurarlo? Perché per un modello a energia imparare
+richiede due interventi: scavare il paesaggio dove stanno i dati veri, e
 rialzarlo dove il modello si immagina roba che non esiste. Sono la veglia e il
 sogno della macchina di Boltzmann, con altri nomi. Il primo è facile, i
 dati ce li abbiamo in mano. Il secondo no: per sapere che cosa il modello si
 immagina bisogna prima fargli produrre qualcosa, e produrlo *nelle proporzioni
-giuste* sembra richiedere di conoscere il continente intero. E i gesti sono due
-per forza: se ci si limitasse a scavare, il modello troverebbe subito la
+giuste* sembra richiedere di conoscere il continente intero. Servono per forza
+tutti e due, perché se ci si limitasse a scavare, il modello troverebbe subito la
 scorciatoia, cioè abbassare tutto dappertutto e dire di sì a qualunque cosa gli
-si presenti. L'alzare è il gesto che costa, ed è il motivo per cui la misura
+si presenti. Il rialzo è l'intervento oneroso, e per questo la misura
 del continente continua a ripresentarsi.
 
 Il continente è grande quanto tutte le immagini possibili, e non lo si
-percorre. Restano tre mosse. *Campionarlo*: mandare esploratori a caso e
+percorre. Restano tre strade. *Campionarlo*: mandare esploratori a caso e
 accontentarsi di quello che riportano. *Evitarlo*: descrivere il paesaggio con
 le pendenze invece che con le percentuali, che è una descrizione locale e non
 chiede nessuna misura d'insieme. Oppure *aggirarlo*: sostituire la domanda
@@ -67,12 +66,12 @@ andare, e quel «sembra richiedere» era di troppo.
 
 `````{tab} Superiore
 
-Da qui in avanti si pone $T = 1$, così che $Z$ dipenda soltanto dai parametri:
-$Z(\theta)$. Il punto di attrito è il gradiente della log-verosimiglianza. Da
+Si pone $T = 1$, così che $Z$ dipenda soltanto dai parametri: $Z(\theta)$. Il
+punto di attrito è il gradiente della log-verosimiglianza. Da
 $p_\theta(\mathbf{x}) = e^{-E_\theta(\mathbf{x})}/Z(\theta)$ segue $\log
 p_\theta(\mathbf{x}) = -E_\theta(\mathbf{x}) - \log Z(\theta)$, e il primo
-addendo si deriva immediatamente. Il termine complesso è il secondo, ed è il
-passaggio da cui dipende il resto del capitolo:
+addendo si deriva immediatamente. Il termine difficile è il secondo, e il
+passaggio che lo riguarda sostiene ciò che segue:
 
 $$
 \nabla_\theta \log Z(\theta)
@@ -82,7 +81,7 @@ $$
 = - \mathbb{E}_{\mathbf{x}' \sim p_\theta}\!\left[\nabla_\theta E_\theta(\mathbf{x}')\right].
 $$
 
-Tre mosse, e vanno nominate: si scambiano derivata e integrale (lecito per
+Il calcolo procede in tre passi: si scambiano derivata e integrale (lecito per
 convergenza dominata, se $\nabla_\theta e^{-E_\theta}$ è dominata da una
 funzione integrabile in un intorno di $\theta$); si deriva l'esponenziale; e
 si riconosce che il rapporto rimasto sotto integrale è la densità del
@@ -102,17 +101,17 @@ osservato e il secondo (**fase negativa**) la rialza sui campioni *del
 modello*. Mediando anche il primo su $p_{\text{dati}}$ si ottiene la forma
 simmetrica «media sui dati meno media sul modello» già incontrata nella
 macchina di Boltzmann. Il termine che dà problemi non è $Z$ in sé, ma quel
-valore atteso: la terza mossa lo ha reso stimabile, non gratuito, e per
+valore atteso: il terzo passo lo ha reso stimabile, non gratuito, e per
 stimarlo bisogna saper campionare da $p_\theta$, cioè dal modello che
 stiamo ancora addestrando.
 
 Il tutorial di LeCun {cite}`lecun2006tutorial` legge la stessa formula in
-chiave energetica, e la lettura è illuminante: il termine contrastivo «solleva
+chiave energetica: il termine contrastivo «solleva
 l'energia di ogni risposta con una forza proporzionale alla sua
 verosimiglianza sotto il modello», e tutte le tecniche di approssimazione
 (Monte Carlo, metodi variazionali) si possono vedere come strategie diverse
-per scegliere quali risposte tirare su. Le tre sezioni che seguono sono, in
-questa luce, tre risposte alla stessa domanda: chi solleviamo, e come?
+per scegliere quali risposte sollevare. Le tre vie che seguono sono tre
+risposte alla stessa domanda: quali risposte sollevare, e come?
 
 `````
 
@@ -139,11 +138,10 @@ regola più usata porta il nome del fisico francese Paul Langevin, che nel 1908
 la scrisse per il moto browniano, il tremolio di un granello di polline
 sull'acqua sotto gli urti delle molecole {cite}`langevin1908theorie`. È quasi
 uno slogan: scendere lungo la pendenza dell'energia, con addosso un po’ di
-rumore. E «rumore», qui, non ha niente a che fare con i suoni: vuol dire una
-perturbazione casuale, diversa a ogni passo, che non si sa da che parte
-arriverà. Nelle due vie che seguono la parola cambierà ancora mestiere: nella
-seconda sarà la perturbazione aggiunta apposta a un dato vero, nella terza gli
-esempi artificiali fabbricati per confronto.
+rumore. «Rumore», qui, non ha a che fare con i suoni: indica una perturbazione
+casuale, diversa a ogni passo. Nelle due vie che seguono la parola cambia
+significato: nella seconda è la perturbazione aggiunta apposta a un dato vero,
+nella terza sono gli esempi artificiali fabbricati per confronto.
 
 `````{tab} Elementare
 
@@ -156,32 +154,32 @@ tempo e segni dove si trova, scoprirai che passa più tempo dove il
 paesaggio è basso e pochissimo sulle cime: la frequenza con cui visita
 ogni punto *è* la probabilità che il paesaggio definisce.
 
-Questo è il punto elegante della faccenda, ed è il perno di tutta la sezione:
-per far vibrare e scendere la pallina serve solo la pendenza locale, quella
-sotto i suoi piedi. La misura dell'intero continente, quella che non sappiamo
-calcolare, serve a una cosa sola: dividere per il totale la pioggia di ogni
-valle, cioè fare lo stesso identico gesto in ogni punto. E fra le due lingue il
-cambio è questo: scendere di un gradino non aggiunge una quantità fissa di
-pioggia, la moltiplica per un fattore fisso, sempre lo stesso. Se ogni gradino
-in giù raddoppia la pioggia, una valle tre gradini più bassa di un'altra ne
-raccoglie otto volte tanto, dovunque stiano le due. Leggiamo la stessa regola
-al contrario: salire di un gradino dimezza la pioggia, salire di tre la divide
-per otto, e questo in ogni punto del continente. Dividere tutta la pioggia per
-otto, allora, è la stessa cosa che alzare tutto il paesaggio di tre gradini, e
-dividerla per un numero qualunque è alzarlo dappertutto di una stessa
-quantità. Ma alzare l'intero paesaggio di dieci metri non cambia di un grado
-nessuna salita e nessuna discesa. La pallina, che
-sente solo il pendio sotto i piedi, non se ne accorgerebbe nemmeno, e infatti
-non ha bisogno di conoscerlo.
+Il punto elegante è questo: per far vibrare e scendere la pallina serve solo la
+pendenza locale, quella sotto i suoi piedi. La misura dell'intero continente,
+quella che non sappiamo calcolare, serve a una cosa sola: dividere per il
+totale la pioggia di ogni valle, cioè applicare lo stesso fattore in ogni
+punto. Il cambio fra le due lingue funziona così: scendere di un gradino non
+aggiunge una quantità fissa di pioggia, la moltiplica per un fattore fisso,
+sempre lo stesso. Se ogni gradino in giù raddoppia la pioggia, una valle tre
+gradini più bassa di un'altra ne raccoglie otto volte tanto, dovunque stiano le
+due. Leggiamo la stessa regola al contrario: salire di un gradino dimezza la
+pioggia, salire di tre la divide per otto, e questo in ogni punto del
+continente. Dividere tutta la pioggia per otto, allora, è la stessa cosa che
+alzare tutto il paesaggio di tre gradini, e dividerla per un numero qualunque è
+alzarlo dappertutto di una stessa quantità. Ma alzare l'intero paesaggio di
+dieci metri non cambia di un grado nessuna salita e nessuna discesa. La
+pallina, che sente solo il pendio sotto i piedi, non se ne accorgerebbe
+nemmeno, e infatti non ha bisogno di conoscerlo.
 
-Il prezzo è il tempo. Se due valli sono separate da una montagna alta, la
+Il limite è il tempo. Se due valli sono separate da una montagna alta, la
 pallina può restare intrappolata a lungo da una parte, e la fotografia che
-ne ricavi è sbilanciata. E l'attesa non cresce in proporzione all'altezza:
+ne ricavi è sbilanciata. L'attesa non cresce in proporzione all'altezza:
 una collinetta dieci volte più alta si scavalca centinaia di volte meno
 spesso.
 
-E qui va spiegata una parola che tornerà spesso da adesso in poi: **alta
-dimensione**. Un'immagine di dieci pixel per dieci è fatta di cento numeri, e
+L'espressione **alta dimensione** indica un punto descritto da moltissimi
+numeri. Un'immagine di
+dieci pixel per dieci è fatta di cento numeri, e
 ognuno di quei numeri è una direzione in cui la si può cambiare: il suo
 paesaggio non è una collina con un davanti e un dietro, ha cento direzioni
 indipendenti, e quello di una fotografia vera ne ha milioni. In un posto così
@@ -220,10 +218,9 @@ transiente. A passo fissato, come nel codice della doppia buca e nella pratica
 degli EBM, la catena si assesta poi su una distribuzione leggermente distorta,
 con un errore dell'ordine di $\epsilon$: lo eliminerebbe un test di
 accettazione alla Metropolis (la variante MALA), a cui di solito si rinuncia in
-cambio della semplicità. Si noti che compare solo $\nabla_{\mathbf{x}}
-E_\theta$: la costante $\log Z(\theta)$, non dipendendo da $\mathbf{x}$, ha
-gradiente nullo. Il campionamento non ha mai bisogno della normalizzazione: è
-l'osservazione su cui poggia tutto il resto della sezione. Dove le ipotesi
+cambio della semplicità. Compare solo $\nabla_{\mathbf{x}} E_\theta$: la
+costante $\log Z(\theta)$, non dipendendo da $\mathbf{x}$, ha gradiente nullo.
+Il campionamento non ha mai bisogno della normalizzazione. Dove le ipotesi
 valgono, la convergenza può essere comunque lentissima: il tempo medio per
 scavalcare una barriera di altezza $\Delta E$ cresce come $e^{\Delta E}$ (la
 legge di Kramers {cite}`kramers1940brownian`), e un paesaggio con molte buche
@@ -233,8 +230,8 @@ barriere.
 La versione stocastica su minibatch, che sostituisce il gradiente esatto con
 quello stimato, è la *stochastic gradient Langevin dynamics*
 {cite}`welling2011bayesian`, nata per campionare la distribuzione a posteriori
-dei *parametri* e poi estesa direttamente al campionamento dei dati: un passo di
-discesa dimezzato ($\epsilon/2$) più un rumore di deviazione standard
+dei *parametri* e poi estesa direttamente al campionamento dei dati: un passo
+di discesa dimezzato ($\epsilon/2$) più un rumore di deviazione standard
 $\sqrt{\epsilon}$. Il $\tfrac12$ e la radice sono ciò che rende la ricorsione
 la discretizzazione di Eulero–Maruyama della diffusione $d\mathbf{x} =
 -\tfrac12 \nabla_{\mathbf{x}} E_\theta\, dt + d\mathbf{W}$, che ha $p_\theta$
@@ -242,33 +239,33 @@ come misura invariante. Le due ampiezze non si confrontano fra loro: hanno
 dimensioni diverse (la discesa va come $[\text{tempo}]$, il rumore come
 $[\text{tempo}]^{1/2}$), e su un intervallo di tempo fissato i due contributi
 restano dello stesso ordine, che è precisamente il motivo per cui il limite
-continuo esiste. Quello che in Welling e Teh diventa trascurabile al decrescere
-del passo è un'altra cosa ancora: il rumore del gradiente su minibatch, che
-scala come $\epsilon$ e finisce sotto quello iniettato; ed è lì che la catena
+continuo esiste. In Welling e Teh, al decrescere del passo, diventa
+trascurabile un'altra componente: il rumore del gradiente su minibatch, che
+scala come $\epsilon$ e finisce sotto quello iniettato; è lì che la catena
 passa senza soluzione di continuità dall'ottimizzazione al campionamento. Nella
 pratica degli EBM la catena si tronca dopo poche decine di passi (*short-run
 MCMC*), e la si fa ripartire dal rumore a ogni aggiornamento
 {cite}`nijkamp2019learning` oppure da un serbatoio di campioni passati
 {cite}`du2019implicit`; il serbatoio è l'erede diretto della persistent
-contrastive divergence della sezione precedente.
+contrastive divergence delle {doc}`macchine di Boltzmann
+</ModelliEnergia/boltzmann>`.
 
 `````
 
-Il codice che segue costruisce il paesaggio più semplice in cui la faccenda si
-vede: due valli e una collinetta in mezzo. In formula è l'energia a doppia
+Il paesaggio più semplice in cui la faccenda si vede ha due valli e una
+collinetta in mezzo. In formula è l'energia a doppia
 buca $E(x) = (x^2 - 1)^2$, e i conti si fanno a mente: in $x = 1$ e in
 $x = -1$ la parentesi vale zero, quindi l'energia vale zero (sono i due
 fondovalle), mentre in $x = 0$ vale $(0^2-1)^2 = 1$, che è la collinetta.
-Ci mette sopra ventimila palline (nel codice si chiamano `catene`, che è il
-nome tecnico di poco fa), le fa vibrare con la ricetta di Langevin e alla fine
-guarda dove si sono distribuite, senza aver mai calcolato $Z$. Poi, per pura
-verifica, $Z$ la calcola: in un paesaggio a una sola dimensione si può, ed è
+Il codice ci mette sopra ventimila palline (nel codice si chiamano `catene`,
+come le catene di Markov), le fa vibrare con la ricetta di Langevin e alla fine
+guarda dove si sono distribuite, senza aver mai calcolato $Z$. Poi, per
+verifica, calcola $Z$: in un paesaggio a una sola dimensione si può, ed è
 l'unico modo per sapere se il campionamento ha detto il vero. Nella tabella
 che ne esce, la colonna «campioni» dice dove sono finite le palline e la
 colonna «esatto» dove sarebbero dovute finire. Ogni riga raccoglie le palline
-finite in un tratto di paesaggio, per esempio fra $-0,5$ e $+0,5$; un tratto
-così, in gergo, si chiama **bin**, ed è la parola che tornerà nei conti che
-seguono.
+finite in un tratto di paesaggio, per esempio fra $-0{,}5$ e $+0{,}5$; un tratto
+così, in gergo, si chiama **bin**.
 
 ```python
 import numpy as np
@@ -396,8 +393,8 @@ non si sa di quanto balla.
 
 Qui la stima converge per una ragione che non si generalizza. La barriera fra
 le due buche è alta un'unità di energia, e con la temperatura a uno un'unità è
-esattamente il dislivello che la perturbazione casuale fa superare alla catena
-senza difficoltà: barriere così si scavalcano di continuo. Ma la difficoltà di
+il dislivello che la perturbazione casuale fa superare alla catena senza
+difficoltà: barriere così si scavalcano di continuo. Ma la difficoltà di
 superare una barriera non cresce in proporzione alla sua altezza, cresce molto
 più in fretta. Lo si vede moltiplicando l'energia per un'altezza $h$, $E(x) =
 h\,(x^2 - 1)^2$, e contando quante volte ventimila catene passano da una buca
@@ -457,12 +454,11 @@ sbilanciata, e nessuno se ne accorgerebbe: in alta dimensione la colonna
 
 Se il campionamento è costoso perché insegue le percentuali, si può cambiare
 bersaglio. Aapo Hyvärinen, nel 2005, propone di smettere di confrontare
-*quanta* probabilità il modello mette in ogni punto, e di confrontare invece
-la pendenza del paesaggio in quel punto {cite}`hyvarinen2005estimation`.
-Sembra un dettaglio ed è una liberazione, per una ragione che si dice in una
-riga: la misura dell'intero continente è un numero solo, lo stesso
-dappertutto, e un numero uguale dappertutto non ha pendenza. Cambiando
-bersaglio, sparisce.
+*quanta* probabilità il modello mette in ogni punto, e di confrontare invece la
+pendenza del paesaggio in quel punto {cite}`hyvarinen2005estimation`. Sembra un
+dettaglio ma è una liberazione: la misura dell'intero continente è un numero
+solo, lo stesso dappertutto, e un numero uguale dappertutto non ha pendenza.
+Cambiando bersaglio, sparisce.
 
 `````{tab} Elementare
 
@@ -474,14 +470,14 @@ continente. Eppure basta a ricostruire la forma del paesaggio, e quello che si
 perde per strada, a che altezza stia nel suo insieme, per produrre risposte non
 serve.
 
-Si perde però anche dell'altro, ed è meno innocuo. Se il continente è fatto di
+Si perde però anche dell'altro, e non è innocuo. Se il continente è fatto di
 due regioni separate da un deserto dove non piove mai, le pendenze dicono
 benissimo com'è fatta ciascuna e non dicono quanta pioggia tocchi all'una
 rispetto all'altra: per confrontarle bisognerebbe camminare dall'una all'altra,
 e di strada non ce n'è. Un modello che dà metà della pioggia alla prima regione
 e uno che gliene dà un decimo disegnano le stesse identiche pendenze. Quando i
-dati stanno in gruppi ben separati, che è il caso normale, è lì che questi
-metodi sbagliano le proporzioni.
+dati stanno in gruppi ben separati, che è il caso normale, questi metodi
+sbagliano le proporzioni.
 
 La carta è sempre quella, guardata da sopra o da sotto: l'altezza è l'energia,
 e dove il paesaggio scende la pioggia aumenta. La sua pendenza è quella che il
@@ -489,7 +485,7 @@ e dove il paesaggio scende la pioggia aumenta. La sua pendenza è quella che il
 punteggio, o *score*: la freccia che in ogni punto indica da che parte
 la pioggia si fa più fitta.
 
-Il prezzo si paga al momento di disegnare la carta. In ogni punto va
+Il costo arriva al momento di disegnare la carta. In ogni punto va
 controllato di quanto la pendenza cambia facendo un passo, e il controllo va
 rifatto in ogni direzione: su una collina le direzioni indipendenti sono due,
 nel paesaggio di una fotografia sono un milione, e il lavoro non finisce
@@ -499,19 +495,18 @@ La scappatoia è sporcare apposta. Si prende un punto vero, gli si dà una
 spintarella a caso e si chiede da che parte è arrivato. Chi indovina la
 spintarella sta indicando la strada per tornare al punto vero, e siccome i
 punti veri stanno nelle valli quella strada è la discesa: gli è bastata una
-misura. Il
-prezzo è che la carta descrive il paesaggio come si vede dopo la spinta, coi
-dettagli fini smussati. Più corta la spinta, più fedele la carta, e una spinta
-ci deve essere: per questo i generatori di immagini non ne usano una sola, ma
-una scala di spinte.
+misura. Il limite è che la carta descrive il paesaggio come si vede dopo la
+spinta, coi dettagli fini smussati. Più corta la spinta, più fedele la carta, e
+una spinta ci deve essere: per questo i generatori di immagini non ne usano una
+sola, ma una scala di spinte.
 
 `````
 
 `````{tab} Superiore
 
-Lo score di una densità è $s(\mathbf{x}) = \nabla_{\mathbf{x}} \log p(\mathbf{x})$ (la lettera $s$ qui
-non ha niente a che vedere con lo stato della rete delle sezioni precedenti:
-cambia mestiere). Per un modello a energia,
+Lo score di una densità è $s(\mathbf{x}) = \nabla_{\mathbf{x}} \log
+p(\mathbf{x})$ (la lettera $s$ qui non ha niente a che vedere con lo stato
+della rete di Hopfield: cambia mestiere). Per un modello a energia,
 
 $$
 \nabla_{\mathbf{x}} \log p_\theta(\mathbf{x}) = -\nabla_{\mathbf{x}} E_\theta(\mathbf{x}),
@@ -528,19 +523,17 @@ J(\theta) = \frac{1}{2}\,
 $$
 
 che a prima vista è inservibile (lo score dei dati non lo conosciamo) ma che
-un'integrazione per parti trasforma in una quantità calcolabile su un
-campione. Le ipotesi contano.
-L'integrazione per parti richiede regolarità: $p_{\text{dati}}$
-differenziabile, i due valori attesi
+un'integrazione per parti trasforma in una quantità calcolabile su un campione,
+sotto certe ipotesi. L'integrazione per parti richiede regolarità:
+$p_{\text{dati}}$ differenziabile, i due valori attesi
 $\mathbb{E}\lVert\nabla_{\mathbf{x}}\log p_\theta\rVert^2$ e
-$\mathbb{E}\lVert\nabla_{\mathbf{x}}\log p_{\text{dati}}\rVert^2$ finiti,
-e un decadimento all'infinito
-($p_{\text{dati}}(\mathbf{x})\, \nabla_{\mathbf{x}} \log p_\theta(\mathbf{x})
-\to 0$ per $\lVert\mathbf{x}\rVert \to \infty$, condizione che annulla il
-termine di bordo). Per concludere che il minimo di $J$ identifica il modello
-serve in più che la densità del modello sia strettamente positiva ovunque,
-ipotesi che nel caso ben specificato si trasmette ai dati
-{cite}`hyvarinen2005estimation`.
+$\mathbb{E}\lVert\nabla_{\mathbf{x}}\log p_{\text{dati}}\rVert^2$ finiti, e un
+decadimento all'infinito ($p_{\text{dati}}(\mathbf{x})\, \nabla_{\mathbf{x}}
+\log p_\theta(\mathbf{x}) \to 0$ per $\lVert\mathbf{x}\rVert \to \infty$,
+condizione che annulla il termine di bordo). Per concludere che il minimo di
+$J$ identifica il modello serve in più che la densità del modello sia
+strettamente positiva ovunque, ipotesi che nel caso ben specificato si
+trasmette ai dati {cite}`hyvarinen2005estimation`.
 
 È lì che le cose si rompono davvero, e per due motivi diversi. Il primo: i dati
 veri vivono su una varietà di dimensione molto minore dello spazio in cui
@@ -564,31 +557,33 @@ $$
 dove $\nabla_{\mathbf{x}}^2$ è la matrice hessiana rispetto a $\mathbf{x}$ e la
 costante, che vale $\tfrac{1}{2}\mathbb{E}\lVert\nabla_{\mathbf{x}} \log
 p_{\text{dati}}\rVert^2$, non dipende da $\theta$
-{cite}`hyvarinen2005estimation`. È lei a saldare le due forme, e la prima dice
-*perché* $J$ è un obiettivo sensato: essendo la prima forma una media di norme
-al quadrato, $J \ge 0$, e $J = 0$ se e solo se i due score coincidono quasi
+{cite}`hyvarinen2005estimation`. La costante salda le due forme, e la prima
+spiega perché $J$ è un obiettivo sensato: essendo una media di norme al
+quadrato, $J \ge 0$, e $J = 0$ se e solo se i due score coincidono quasi
 ovunque. Niente $Z$, niente catene di Markov: solo derivate del modello. Il
-costo si è spostato sulla traccia dell'hessiana, e va quantificato, perché è
-l'unico costo del capitolo che si lascia contare: sono $D$ retropropagazioni
-per ogni esempio, con $D$ la dimensione del dato. Su un'immagine è proibitivo.
-Lo *sliced score matching* lo evita proiettando gli score su direzioni casuali
-$\mathbf{v} \sim \mathcal{N}(\mathbf{0}, \mathbf{I})$ prima di confrontarli:
-la traccia diventa $\mathbb{E}_{\mathbf{v}}\big[\mathbf{v}^\top
-\nabla_{\mathbf{x}}^2 \log p_\theta(\mathbf{x})\, \mathbf{v}\big]$, che chiede
-un solo prodotto hessiana-vettore per proiezione, cioè due retropropagazioni
-invece di $D$ {cite}`song2020sliced`.
+costo si è spostato sulla traccia dell'hessiana, e si può quantificare: sono
+$D$ retropropagazioni per ogni esempio, con $D$ la dimensione del dato. Su
+un'immagine è proibitivo. Lo *sliced score matching* lo evita proiettando gli
+score su direzioni casuali $\mathbf{v} \sim \mathcal{N}(\mathbf{0},
+\mathbf{I})$ prima di confrontarli: la traccia diventa
+$\mathbb{E}_{\mathbf{v}}\big[\mathbf{v}^\top \nabla_{\mathbf{x}}^2 \log
+p_\theta(\mathbf{x})\, \mathbf{v}\big]$, che chiede un solo prodotto
+hessiana-vettore per proiezione, cioè due retropropagazioni invece di $D$
+{cite}`song2020sliced`.
 
-Il colpo di scena arriva nel 2011: Pascal Vincent dimostra che lo score
-matching su dati perturbati con rumore gaussiano equivale, a meno di
-costanti, ad addestrare un *denoising autoencoder*
-{cite}`vincent2011connection`. Con $\tilde{\mathbf{x}} = \mathbf{x} + \sigma \boldsymbol{\varepsilon}$ e
-$\boldsymbol{\varepsilon} \sim \mathcal{N}(\mathbf{0}, \mathbf{I})$, dove $\sigma$ è qui la deviazione
+Nel 2011 Pascal Vincent dimostra che lo score matching su dati perturbati con
+rumore gaussiano equivale, a meno di costanti, ad addestrare un *denoising
+autoencoder* {cite}`vincent2011connection`. Con $\tilde{\mathbf{x}} =
+\mathbf{x} + \sigma \boldsymbol{\varepsilon}$ e $\boldsymbol{\varepsilon} \sim
+\mathcal{N}(\mathbf{0}, \mathbf{I})$, dove $\sigma$ è qui la deviazione
 standard del rumore e non la sigmoide di poco fa, e $\boldsymbol{\varepsilon}$
 è il rumore iniettato e non il passo $\epsilon$ della catena di Langevin
 (stessa lettera greca, due mestieri: qui è un vettore, e va in grassetto), il
 bersaglio dello score sul dato perturbato è noto in forma chiusa,
-$\nabla_{\tilde{\mathbf{x}}} \log q_\sigma(\tilde{\mathbf{x}} \mid \mathbf{x}) = -(\tilde{\mathbf{x}} - \mathbf{x})/\sigma^2 = -\boldsymbol{\varepsilon}/\sigma$,
-e l'obiettivo diventa una regressione: predire il rumore iniettato.
+$\nabla_{\tilde{\mathbf{x}}} \log q_\sigma(\tilde{\mathbf{x}} \mid \mathbf{x})
+= -(\tilde{\mathbf{x}} - \mathbf{x})/\sigma^2 =
+-\boldsymbol{\varepsilon}/\sigma$, e l'obiettivo diventa una regressione:
+predire il rumore iniettato.
 
 Resta però da capire perché regredire sullo score condizionato a $\mathbf{x}$
 dia lo score della marginale $q_\sigma(\tilde{\mathbf{x}})$, che è quello
@@ -604,36 +599,37 @@ $$
 cioè lo score della marginale è la media del bersaglio condizionale sui dati
 compatibili con $\tilde{\mathbf{x}}$; la seconda è che il minimo di una
 regressione quadratica *è* la media condizionale del bersaglio. Chi minimizza
-la regressione, quindi, ottiene esattamente lo score della marginale. È il
-**denoising score matching**, niente hessiana e niente MCMC, ed è la loss dei
+la regressione, quindi, ottiene esattamente lo score della marginale. Questo è il
+**denoising score matching**: niente hessiana e niente MCMC. È la loss dei
 modelli di diffusione {cite}`song2021score` a meno di una riponderazione per
-livello di rumore, che pesa: senza di essa il bersaglio
+livello di rumore, che è necessaria: senza di essa il bersaglio
 $-\boldsymbol{\varepsilon}/\sigma$ farebbe esplodere il peso dei livelli di
 rumore piccoli, e il fattore che si usa (proporzionale a $\sigma^2$) è
 precisamente quello che cancella l’$1/\sigma$ e lascia la regressione sul
 rumore in forma pulita.
 
-Il prezzo c'è, e non è quello che si direbbe: ciò che si impara è lo score dei
-dati sporcati e non quello dei dati, cioè della densità marginale
-$q_\sigma$, che è $p_{\text{dati}}$ convoluta con la gaussiana (e si noti che
-$q_\sigma(\tilde{\mathbf{x}})$ e $q_\sigma(\tilde{\mathbf{x}} \mid \mathbf{x})$
-sono due oggetti diversi, come sempre nella notazione delle densità). I due
+Resta un limite. Ciò che si impara è lo score dei dati sporcati e non quello dei
+dati, cioè della densità marginale $q_\sigma$, che è $p_{\text{dati}}$ convoluta
+con la gaussiana ($q_\sigma(\tilde{\mathbf{x}})$ e
+$q_\sigma(\tilde{\mathbf{x}} \mid \mathbf{x})$ sono due oggetti diversi, come
+sempre nella notazione delle densità). I due
 score coincidono solo nel limite
 $\sigma \to 0$, e a $\sigma$ finito resta un errore sistematico che nessuna
 quantità di dati riduce. È il motivo più facile da vedere per cui i modelli di
-diffusione non usano un solo livello di rumore ma un'intera scala di livelli,
-e il campionamento deve attraversarli in fila.
+diffusione usano una scala di livelli di rumore invece di uno solo, e il
+campionamento li attraversa in successione.
 
 `````
 
 Il cerchio che si chiude qui è largo. Il compito con cui si addestrano i
 modelli di diffusione, «indovina il rumore che ho aggiunto a questa immagine»,
-nasce nel capitolo che porta il loro nome come una scelta pratica e felice.
+nasce nel {doc}`capitolo sulla diffusione </ModelliDiffusione/overview>` come
+una scelta pratica e felice.
 Vista dai modelli a energia è la soluzione di un problema vecchio di vent'anni:
 come dare forma a un paesaggio senza mai misurare il continente. I modelli di
 diffusione sono, in questa luce, modelli a energia addestrati sulla pendenza.
 
-Con una differenza tecnica da dire per onestà. Un modello a energia impara
+C'è però una differenza tecnica. Un modello a energia impara
 l'altezza del paesaggio, e la pendenza si ricava da quella; un modello di
 diffusione impara direttamente la pendenza, una freccia per ogni punto, e non
 si preoccupa che esista davvero una superficie di cui quelle frecce siano la
@@ -684,14 +680,14 @@ grigio e nient'altro. E dove la fabbrica non arriva mai non c'è confronto: lì
 il modello dice quello che vuole.
 
 La stessa mossa la fa una delle due reti delle GAN, quella a cui tocca dire se
-l'immagine che ha davanti viene dal mondo o l'ha fabbricata l'altra rete. Ed è
+l'immagine che ha davanti viene dal mondo o l'ha fabbricata l'altra rete. È
 la stessa con cui si insegna a un computer a dare dei numeri alle parole di una
 lingua o ai nodi di un grafo: gli si mostrano accostamenti veri e accostamenti
 inventati, e gli si chiede di distinguerli. Per le parole sono i *word
 embedding* della {doc}`sezione su come si rappresenta il testo
 </NaturalLanguageProcessing/rappresentare-testo>`; nella {doc}`sezione sul
-mondo come grafo </GraphNeuralNetwork/dati-a-grafo>`, più avanti nel libro, la
-stessa mossa si ritroverà col suo nome inglese, *negative sampling*. La famiglia
+mondo come grafo </GraphNeuralNetwork/dati-a-grafo>` la stessa mossa ricompare
+col suo nome inglese, *negative sampling*. La famiglia
 è più larga di quanto il nome lasci pensare.
 
 `````
@@ -726,48 +722,48 @@ J(\theta) = \mathbb{E}_{\mathbf{x} \sim p_{\text{dati}}}\big[\log h_\theta(\math
 + \nu\, \mathbb{E}_{\mathbf{x} \sim p_n}\big[\log\big(1 - h_\theta(\mathbf{x})\big)\big],
 $$
 
-con $h_\theta(\mathbf{x}) = P(\text{dati} \mid \mathbf{x})$ come sopra. Se $p_n$
-è positiva dove lo è $p_{\text{dati}}$ e il modello contiene la distribuzione
-vera, lo stimatore è consistente per ogni $\nu$; per $\nu \to \infty$ la sua
-varianza asintotica smette di dipendere dal rumore e, se il modello è già
-normalizzato, raggiunge quella della massima verosimiglianza. A $\nu$ fissato
-gli autori consigliano un rumore che somigli ai dati almeno in qualche aspetto,
-per esempio nella covarianza, perché con un rumore troppo diverso la
-classificazione è facile e insegna poco {cite}`gutmann2012noise`. La mossa
-decisiva è che $\log Z$ viene trattata come un parametro in più, stimato insieme
-agli altri: il modello non normalizzato
-$\log p_\theta(\mathbf{x}) = -E_\theta(\mathbf{x}) - c$ impara anche $c$, perché
-al classificatore la costante *serve* per calibrarsi. Con la massima
-verosimiglianza la stessa mossa è impossibile, non soltanto inutile: lasciando
-$c$ libero, la verosimiglianza si fa crescere quanto si vuole mandando
-$c \to -\infty$, cioè dichiarando una densità sempre più alta in ogni punto, e
-il problema non ha soluzione. È il vincolo di normalizzazione a impedirlo, ed è
-esattamente ciò a cui NCE rinuncia {cite}`gutmann2010noise`. La rinuncia,
-però, non costa la normalizzazione: all'ottimo la costante appresa coincide
-con il logaritmo della partizione, $\hat c = \log Z(\hat\theta)$, perché il
-massimo della funzione obiettivo, preso su tutte le densità non normalizzate,
-ha integrale uno da sé (Teorema 1 in {cite}`gutmann2012noise`). NCE normalizza
-il modello senza mai sommare su tutto lo spazio, ed è l'unica delle tre vie
-che restituisce una densità. La InfoNCE dei metodi contrastivi è la stessa
-idea con molti campioni di rumore per ogni dato e una softmax al posto della
-sigmoide, e la si ritrova nella sezione {doc}`Perché non collassa, e come si
-fa a saperlo </AutoSupervisione/collasso-e-misura>`.
+con $h_\theta(\mathbf{x}) = P(\text{dati} \mid \mathbf{x})$ come sopra. Se
+$p_n$ è positiva dove lo è $p_{\text{dati}}$ e il modello contiene la
+distribuzione vera, lo stimatore è consistente per ogni $\nu$; per $\nu \to
+\infty$ la sua varianza asintotica smette di dipendere dal rumore e, se il
+modello è già normalizzato, raggiunge quella della massima verosimiglianza. A
+$\nu$ fissato gli autori consigliano un rumore che somigli ai dati almeno in
+qualche aspetto, per esempio nella covarianza, perché con un rumore troppo
+diverso la classificazione è facile e insegna poco {cite}`gutmann2012noise`.
+$\log Z$ viene trattata come un parametro in più, stimato insieme agli altri:
+il modello non normalizzato $\log p_\theta(\mathbf{x}) =
+-E_\theta(\mathbf{x}) - c$ impara anche $c$, perché al classificatore la
+costante *serve* per calibrarsi. Con la massima verosimiglianza questo
+è impossibile, non soltanto inutile: lasciando $c$ libero, la verosimiglianza
+si fa crescere quanto si vuole mandando $c \to -\infty$, cioè dichiarando una
+densità sempre più alta in ogni punto, e il problema non ha soluzione. È il
+vincolo di normalizzazione a impedirlo, e NCE vi rinuncia
+{cite}`gutmann2010noise`. La rinuncia, però, non fa perdere la normalizzazione:
+all'ottimo la costante appresa coincide con il logaritmo della partizione,
+$\hat c = \log Z(\hat\theta)$, perché il massimo della funzione obiettivo,
+preso su tutte le densità non normalizzate, ha integrale uno da sé (Teorema 1
+in {cite}`gutmann2012noise`). NCE normalizza il modello senza mai sommare su
+tutto lo spazio, ed è l'unica delle tre vie a restituire una densità. La
+InfoNCE dei metodi contrastivi è la stessa idea con molti campioni di rumore
+per ogni dato e una softmax al posto della sigmoide, e la si ritrova nella
+sezione {doc}`Perché non collassa, e come si fa a saperlo
+</AutoSupervisione/collasso-e-misura>`.
 
-Il discriminatore delle GAN è cugino stretto di NCE: tutti e due imparano un
+Il discriminatore delle GAN è affine a NCE: tutti e due imparano un
 rapporto fra densità, non una densità. Il *negative sampling* di word2vec
 {cite}`mikolov2013distributed` (il secondo dei due articoli word2vec: il primo
-usava la softmax gerarchica) è invece una semplificazione dichiarata, che
-la garanzia la butta via: tiene i campioni di rumore e getta le loro
-probabilità, cioè proprio il termine che rendeva la stima un rapporto, e gli
+usava la softmax gerarchica) è invece una semplificazione dichiarata che
+rinuncia alla garanzia: tiene i campioni di rumore e scarta le loro
+probabilità, cioè il termine che rendeva la stima un rapporto, e gli
 autori scrivono che quella proprietà per il loro scopo non serve.
 
 `````
 
 ## Le tre strade a confronto
 
-{numref}`tab-tre-vie` le mette a confronto.
+La {numref}`tab-tre-vie` mette a confronto le tre vie.
 
-```{list-table} Tre modi di non pagare il conto del continente, e il prezzo di ciascuno.
+```{list-table} Tre modi di evitare la misura del continente, e il costo di ciascuno.
 :header-rows: 1
 :name: tab-tre-vie
 :widths: 22 34 44
@@ -796,9 +792,9 @@ autori scrivono che quella proprietà per il loro scopo non serve.
     diventa facile e servono moltissimi esempi per imparare poco
 ```
 
-Tre modi di non pagare il conto, e nessuno dei tre gratis. Le tre strade
-hanno però tutte lo stesso scopo, costruire un modello di com'è fatto il
-paesaggio, e si distinguono solo per come pagano il conto.
+Nessuna delle tre vie è gratuita. Hanno tutte lo stesso scopo, costruire un
+modello di com'è fatto il paesaggio, e si distinguono per il costo che
+accettano.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -862,6 +858,6 @@ paesaggio, e si distinguono solo per come pagano il conto.
 Resta una quarta possibilità, la più radicale, e cambia lo scopo invece del
 metodo: non chiedere mai la probabilità. Se ciò che serve è decidere, ordinare,
 pianificare, e non stampare percentuali, un modello della distribuzione non
-serve affatto: l'energia basta da sola, e il conto non si apre nemmeno. È la
+serve affatto: l'energia basta, e il conto non si apre nemmeno. È la
 tesi della {doc}`cornice di LeCun </ModelliEnergia/energia-come-compatibilita>`,
 che legge l'energia come un giudizio di compatibilità fra due cose.

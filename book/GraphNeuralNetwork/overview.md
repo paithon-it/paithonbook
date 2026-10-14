@@ -17,10 +17,10 @@ passatempo cittadino. Il fiume Pregel divideva la città prussiana in quattro
 lembi di terra, due sponde e due isole, cuciti insieme da sette ponti; e la
 domanda che circolava era se esistesse una passeggiata che attraversasse ogni
 ponte una e una sola volta. Nessuno ci riusciva, ma nessuno sapeva dire se
-fosse davvero impossibile o solo difficile.
+fosse impossibile o solo difficile.
 
-A rispondere fu il matematico svizzero Leonhard Euler, e la sua mossa fu
-buttare via la mappa. Le distanze, la forma delle
+A rispondere fu il matematico svizzero Leonhard Euler, che cominciò buttando
+via la mappa. Le distanze, la forma delle
 isole, la lunghezza dei ponti: niente di tutto questo contava. Contava solo
 *quale lembo di terra fosse collegato a quale*. Euler ridusse allora la città
 a quattro lettere, una per lembo di terra, e a sette ponti fra quelle lettere,
@@ -59,9 +59,8 @@ convoluzionali del {doc}`capitolo sul deep learning </DeepLearning/overview>`
 suppongono una griglia: i pixel di un'immagine hanno vicini fissi,
 sopra-sotto-destra-sinistra, sempre lo stesso numero. Le reti ricorrenti
 suppongono una sequenza: le parole di una frase arrivano in un ordine, una dopo
-l'altra. Sono ipotesi comode, e per immagini e testo sono anche giuste.
-
-Ma moltissimi dati del mondo non sono né una griglia né una sequenza. Sono
+l'altra. Sono ipotesi comode e per immagini e testo anche giuste, ma
+moltissimi dati del mondo non sono né una griglia né una sequenza. Sono
 fatti di cose e dei legami fra quelle cose: si dice che sono dati
 **relazionali**, perché quel che conta non sono i pezzi ma le relazioni.
 
@@ -73,7 +72,7 @@ fatti di cose e dei legami fra quelle cose: si dice che sono dati
   (*è capitale di*) «Italia»).
 
 Sotto la superficie, tutte queste cose hanno la stessa struttura: nodi e
-archi. È esattamente ciò che Euler aveva capito guardando i ponti.
+archi. È ciò che Euler aveva capito guardando i ponti.
 
 ```{figure} ../figures/grafo-esempi.svg
 :name: fig-grafo-esempi
@@ -86,7 +85,7 @@ quello scheletro, qualunque cosa rappresenti.
 ```
 
 Come mostra {numref}`fig-grafo-esempi`, se spogliamo questi oggetti delle loro
-apparenze resta la stessa figura astratta. E qui nasce il problema tecnico: un
+apparenze resta la stessa figura astratta. Da qui il problema tecnico: un
 grafo è ostico da dare in ingresso a una rete neurale ordinaria, per tre
 motivi.
 
@@ -108,10 +107,10 @@ invitato, e di risposte ne dà una per ognuno: devono essere gli stessi nomi di
 prima, e ciascuna deve restare attaccata alla sua persona anche adesso che il
 nome sta su un'altra riga.
 
-E non è finita: a una cena ognuno ha un numero diverso di amici (c'è chi
-ne ha due e chi dieci), mentre in un'immagine ogni pixel ha sempre lo stesso
-numero di vicini. E ogni cena ha un numero diverso di invitati, mentre le
-foto le possiamo tagliare tutte alla stessa misura; e lo stesso modo di fare
+Le difficoltà non finiscono qui: a una cena ognuno ha un numero diverso di amici
+(c'è chi ne ha due e chi dieci), mentre in un'immagine ogni pixel ha sempre lo
+stesso numero di vicini. Ogni cena ha poi un numero diverso di invitati, mentre
+le foto le possiamo tagliare tutte alla stessa misura, e lo stesso modo di fare
 deve andare bene per una tavolata da sei e per una da sessanta. Ordine che non
 conta, vicini in numero variabile, dimensione variabile: ecco perché un grafo
 non è né una griglia né una sequenza, e serve un'idea nuova.
@@ -123,15 +122,15 @@ non è né una griglia né una sequenza, e serve un'idea nuova.
 Formalmente un grafo è una coppia $G = (V, E)$, dove $V$ è l'insieme dei nodi e
 $E \subseteq V \times V$ quello degli archi. Lo si rappresenta spesso con la
 **matrice di adiacenza** $\mathbf{A} \in \{0,1\}^{N \times N}$ (con $N = |V|$),
-in cui $A_{ij} = 1$ se esiste l'arco $(i,j)$. Ma questa rappresentazione
-nasconde un'insidia: $\mathbf{A}$ dipende dall’ordine con cui numeriamo i
-nodi. Rietichettare i nodi con una permutazione $\mathbf{P}$ trasforma
-$\mathbf{A}$ in $\mathbf{P} \mathbf{A} \mathbf{P}^\top$ senza cambiare il
-grafo. Un modello sensato deve quindi essere **invariante alla permutazione**
-(se produce un'etichetta per l'intero grafo, non deve cambiare quando
-rinumeriamo i nodi) o **equivariante** (se produce un'etichetta per ogni nodo,
-le etichette devono seguire la permutazione). Questa è la simmetria che le CNN
-hanno per la traslazione e che le GNN devono avere per la permutazione.
+in cui $A_{ij} = 1$ se esiste l'arco $(i,j)$. Questa rappresentazione dipende
+dall’ordine con cui numeriamo i nodi. Rietichettare i nodi con una permutazione
+$\mathbf{P}$ trasforma $\mathbf{A}$ in $\mathbf{P} \mathbf{A} \mathbf{P}^\top$
+senza cambiare il grafo. Un modello sensato deve quindi essere **invariante
+alla permutazione** (se produce un'etichetta per l'intero grafo, non deve
+cambiare quando rinumeriamo i nodi) o **equivariante** (se produce un'etichetta
+per ogni nodo, le etichette devono seguire la permutazione). Questa è la
+simmetria che le CNN hanno per la traslazione e che le GNN devono avere per la
+permutazione.
 
 A ciò si aggiungono due irregolarità che rompono le architetture a griglia: il
 grado dei nodi è variabile ($\deg(v)$ diverso da nodo a nodo), quindi non
@@ -150,8 +149,8 @@ Il rimedio si enuncia in una frase:
 > che lo descrive, e costruirla facendo circolare l'informazione lungo gli
 > archi: ogni nodo ascolta i suoi vicini e si aggiorna, e si ricomincia.
 
-Quella fila di numeri si chiama rappresentazione del nodo, ed è la parola
-che con i grafi torna più spesso: vuol dire sempre questo, la fila di
+Quella fila di numeri si chiama rappresentazione del nodo, la parola
+che con i grafi torna più spesso, e indica sempre la fila di
 numeri con cui il modello descrive un nodo in un certo momento. All'inizio non
 contiene niente di speciale, sono le informazioni che sul nodo abbiamo già noi
 (per una persona l'età, per un atomo il tipo di elemento); a ogni giro di
@@ -161,17 +160,17 @@ Il resto è la macchina di sempre. Ogni operazione di un giro è derivabile
 (quasi ovunque, nel caso del massimo), quindi la rete si addestra
 dall'ingresso all'uscita con la retropropagazione e la discesa del gradiente
 della {doc}`sezione sulla backpropagation </RetiNeurali/backpropagation>`,
-come ogni altro modello visto finora. Non serve un modo nuovo di imparare:
-serve solo un modo di far parlare i nodi fra loro.
+come ogni altro modello visto finora. Ai grafi basta un modo di far parlare i
+nodi fra loro.
 
 `````{tab} Elementare
 
 Di una persona che non conosci ti fai un’idea guardando le compagnie che
 frequenta. «Dimmi con chi vai e ti dirò chi sei.» Una rete su grafo fa
-esattamente questo, a giri. All'inizio ogni nodo sa solo di sé; poi, a ogni
+questo, a giri. All'inizio ogni nodo sa solo di sé; poi, a ogni
 giro, ciascun nodo guarda i suoi vicini, raccoglie le file di numeri che
 ciascuno di loro ha in quel momento e le riduce a una sola, per esempio
-facendone la media. Di quello che ha sentito gli resta quell'unica impressione
+facendone la media. Di quanto ha sentito gli resta quell'unica impressione
 d'insieme, e chi ha parlato per primo non lascia traccia, perché una media non
 sa in che ordine le sono arrivati i numeri. Poi il nodo mescola quell'unica
 fila con quella che aveva già. La regola per ascoltare e per aggiornarsi è una
@@ -179,7 +178,7 @@ sola, la stessa per il più popolare e per il più schivo, e la stessa a ogni
 cena nuova. Dopo un giro, ogni nodo ha assorbito qualcosa dagli amici diretti;
 dopo due giri, anche dagli amici degli amici; e così l'informazione si diffonde
 per la rete come una voce che circola. Alla fine, la fila di numeri di ogni
-nodo non descrive più solo il nodo, ma il nodo
+nodo descrive ormai il nodo
 *immerso nel suo pezzo di mondo*. Questo passaparola tra vicini ha un nome
 (**message passing**, «scambio di messaggi») ed è il cuore del capitolo.
 
@@ -212,10 +211,10 @@ canonico; e mangia un numero variabile di vettori restituendone sempre uno
 solo, che è ciò che rende il modello indipendente dalla taglia del grafo.
 Dopo $K$ passi, $\mathbf{h}_v^{(K)}$ dipende soltanto dal sottografo entro
 distanza $K$ da $v$. Le funzioni $\mathrm{AGGREGATE}$ e $\mathrm{UPDATE}$ sono
-reti neurali con parametri $\theta$ condivisi da tutti i nodi, ed è questa
-condivisione, unita all'indifferenza all'ordine di $\mathrm{AGGREGATE}$, a
-garantire l'equivarianza alla permutazione; gli stessi parametri valgono anche
-da un grafo all'altro, ed è quello a permettere di addestrare su certi grafi e
+reti neurali con parametri $\theta$ condivisi da tutti i nodi, e questa
+condivisione, unita all'indifferenza all'ordine di $\mathrm{AGGREGATE}$,
+garantisce l'equivarianza alla permutazione; gli stessi parametri valgono anche
+da un grafo all'altro, e permettono di addestrare su certi grafi e
 usare il modello su altri. La sezione sul message passing sviscera questo
 schema e ne ricava l'incarnazione più celebre, la *Graph Convolutional
 Network* (GCN).
@@ -225,10 +224,10 @@ Network* (GCN).
 L'idea non è nuova, e ha una storia in buona parte italiana. La
 prima forma sono le *reti neurali ricorsive* di fine anni Novanta, nei lavori
 di Alessandro Sperduti e Antonina Starita (1997) e di Paolo Frasconi, Marco Gori
-e Sperduti (1998). Reggevano però soltanto grafi senza giri chiusi, in cui gli
+e Sperduti (1998). Trattavano però soltanto grafi senza giri chiusi, in cui gli
 archi hanno un verso e, seguendo le frecce, non si torna mai al punto di
-partenza: un albero genealogico sì, una rete di amicizie no. A reggere un grafo
-qualunque si arriva a metà anni Duemila, e per due strade italiane
+partenza: un albero genealogico sì, una rete di amicizie no. Un grafo
+qualunque si tratta solo dalla metà degli anni Duemila, e per due strade italiane
 che nel 2009 escono a pochi mesi l'una dall'altra sulla stessa rivista: il
 modello del gruppo di Siena di Franco Scarselli e Marco Gori
 {cite}`scarselli2009graph` e la rete di Alessio Micheli, a Pisa
@@ -254,7 +253,7 @@ collegamenti». Il terzo riguarda l’intero grafo preso come un tutt'uno:
 «questa molecola è tossica?», «questo composto uccide i batteri?», ed eccoci di
 nuovo ad halicin.
 
-Cambia anche quello che si ha in mano quando si comincia. Sul singolo nodo la
+Cambia anche l'informazione di partenza. Sul singolo nodo la
 risposta qualcuno l'ha già data, ma per pochi account: si impara da quei
 pochi, e tutti gli altri intorno fanno da contesto. Sull'arco si conoscono
 soltanto le amicizie che ci sono: per insegnare alla rete che aspetto ha una
@@ -305,21 +304,21 @@ tutte e tre: il protocollo va dichiarato insieme al numero.
 - I knowledge graph, cioè i grafi di fatti. Che cosa cambia quando ogni
   arco porta scritto sopra un verbo, e la coppia di nodi con il verbo in mezzo
   è un fatto sul mondo: («Roma», *è capitale di*, «Italia»). Come si mettono in
-  numeri quei fatti, perché un arco che manca vuol dire «non lo so» e non «è
+  numeri quei fatti, perché un arco assente dice «non lo so» e non «è
   falso», e perché a una domanda si può rispondere camminando sul grafo da
   un fatto all'altro invece di cercare la pagina che la contiene.
 - Oltre la GCN: GraphSAGE, GAT e applicazioni. Le due varianti che hanno
   reso le GNN utilizzabili su scala reale: *GraphSAGE*, che guarda solo un
-  campione dei vicini e regge così grafi enormi, e la *Graph Attention
+  campione dei vicini e si applica così a grafi enormi, e la *Graph Attention
   Network* (GAT), che pesa i vicini con l'attenzione incontrata nel
   {doc}`capitolo sui Transformer </Transformers/overview>`. Poi come si passa
   dai nodi a un verdetto sull'intero grafo, e la sorpresa che ne viene fuori:
   esistono coppie di grafi diversi che nessuna di queste reti riuscirà mai a
   distinguere. Una carrellata di applicazioni, dalla chimica alla frode, dalle
   mappe ai sistemi di raccomandazione; i limiti; e infine i
-  *Graph Transformer*, che rifanno la strada in senso inverso: non una rete su
-  grafo che assomiglia a un Transformer, ma un Transformer messo a lavorare su
-  un grafo.
+  *Graph Transformer*, che rifanno la strada in senso inverso: un Transformer
+  messo a lavorare su un grafo, invece di una rete su grafo che assomiglia a un
+  Transformer.
 
 ## Tre fili che tornano
 
@@ -327,8 +326,8 @@ Il primo è la convoluzione. Nella {doc}`sezione sulle reti
 convoluzionali </DeepLearning/reti-convoluzionali>` abbiamo visto un filtro
 scorrere su una griglia di pixel, combinando ogni pixel con i suoi
 vicini. Il message passing è la stessa idea (combinare un elemento con i suoi
-vicini) liberata dal vincolo della griglia: i «vicini» non sono più i quattro
-pixel adiacenti, ma i nodi collegati da un arco, in numero variabile. In questo
+vicini) liberata dal vincolo della griglia: i «vicini» sono i nodi collegati da
+un arco, in numero variabile, e non più i quattro pixel adiacenti. In questo
 senso la rete su grafo generalizza la rete convoluzionale, la CNN dei
 capitoli sulle immagini, a dati che una griglia non la formano.
 
@@ -360,7 +359,7 @@ raccomandazione tutto l'armamentario delle reti su grafo, portata in produzione
 da alcuni grandi servizi. Non è però la definizione del problema, e la
 {doc}`sezione sulla raccomandazione neurale
 </SistemiRaccomandazione/raccomandazione-neurale>` riprende il filo da vicino,
-dicendo anche perché i sistemi che girano davvero restano organizzati attorno
+dicendo anche perché i sistemi in produzione restano organizzati attorno
 al confronto fra due rappresentazioni, una per l'utente e una per il prodotto.
 
 Il terzo filo è il meno ovvio dei tre e il più utile, perché porta a un
@@ -377,22 +376,20 @@ poi la nuova rappresentazione di quella parola è il miscuglio di quelle delle
 altre, dosato secondo quei pesi. È il meccanismo che lì si chiama
 attenzione.
 
-Adesso rileggi la stessa cosa con le parole di questo capitolo. «Ogni parola
-guarda tutte le altre» vuol dire: c'è un grafo in cui ogni parola è un nodo, e
-ogni nodo è collegato a tutti gli altri (un grafo così si chiama **completo**),
-e in più a sé stesso, perché ogni parola pesa anche la propria.
-«Decide quanto ciascuna conta» vuol dire: ogni collegamento porta un peso. E
-«la nuova rappresentazione è il miscuglio delle altre» è, parola per parola, il
-passaparola fra vicini. Un Transformer, insomma, sta già
-facendo message passing: solo che il grafo non glielo dà nessuno, se lo
-fabbrica collegando tutti con tutti.
+Adesso rileggi la stessa cosa con il vocabolario dei grafi. «Ogni parola guarda
+tutte le altre» descrive un grafo in cui ogni parola è un nodo collegato a
+tutti gli altri (un grafo così si chiama **completo**) e a sé stesso, perché
+ogni parola pesa anche la propria. In «decide quanto ciascuna conta» ogni
+collegamento porta un peso. Il miscuglio delle altre che diventa la nuova
+rappresentazione è, parola per parola, il passaparola fra vicini. Un
+Transformer, insomma, sta già facendo message passing: solo che il grafo non
+glielo dà nessuno, se lo fabbrica collegando tutti con tutti.
 
-Il che ha un vantaggio e un prezzo, e conviene vederli in coppia perché
-tornano per tutto il capitolo. Il vantaggio è che non gli serve sapere niente
-su chi è collegato a chi: funziona anche quando i collegamenti veri nessuno li
-conosce. Il prezzo è che collegare tutti con tutti costa, e il conto è presto
-fatto: ogni parola va confrontata con ogni parola, quindi con dieci parole sono
-dieci per dieci, cento confronti, e con mille parole un milione. Da qui una
+Questo ha un vantaggio e un costo. Il vantaggio è che non gli serve sapere
+niente su chi è collegato a chi: funziona anche quando i collegamenti veri
+nessuno li conosce. Il costo è di calcolo: ogni parola va confrontata con ogni
+altra, quindi con dieci parole sono dieci per dieci, cento confronti, e con
+mille parole un milione. Da qui una
 cosa che a prima vista non c'entra niente: buona parte della ricerca su come
 rendere l'attenzione meno costosa consiste, alla lettera, nel togliere
 archi da quel grafo completo.
@@ -423,11 +420,11 @@ discende una lettura che vale in entrambe le direzioni: la GAT è la
 self-attention applicata a un grafo sparso invece che completo; e uno strato di
 self-attention è una GNN che ha rinunciato alla struttura, pagando in costo
 quadratico la libertà di non doverla conoscere. Vale dello strato, non del
-Transformer intero: la struttura che al linguaggio serve davvero, cioè
-l'ordine delle parole, un Transformer se la rimette da sé dentro le feature
-dei nodi, ed è la codifica posizionale. Da lì si capisce anche perché
+Transformer intero: la struttura che serve al linguaggio, cioè
+l'ordine delle parole, un Transformer la reinserisce nelle feature
+dei nodi con la codifica posizionale. Da lì si capisce anche perché
 tanta ricerca sull'efficienza dell'attenzione somigli a teoria dei grafi:
-renderla sparsa vuol dire, letteralmente, togliere archi.
+renderla sparsa è, alla lettera, togliere archi.
 
 `````
 
@@ -456,12 +453,12 @@ strada al contrario e a mettere un Transformer su un grafo qualunque.
   message passing, «dimmi con chi vai e ti dirò chi sei».
 - Le domande sono di tre tipi: su un nodo, su un collegamento che ancora non
   c'è (prevederlo si chiama *link prediction*), sull'intero grafo.
-- Le GNN fanno per i grafi quello che le reti convoluzionali fanno per le
+- Le GNN stanno ai grafi come le reti convoluzionali alle
   immagini, e alla raccomandazione danno un modo nuovo di guardarla:
   consigliare un prodotto diventa indovinare un collegamento che ancora non
   c'è, in un grafo con gli utenti da una parte e i prodotti dall'altra. Non è
-  però l'unico modo, né quello con cui sono fatti i sistemi che girano
-  davvero.
+  però l'unico modo, né quello con cui sono fatti i sistemi in
+  produzione.
 ```
 
 `````

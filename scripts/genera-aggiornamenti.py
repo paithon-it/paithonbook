@@ -24,7 +24,7 @@ quattro posti e' un numero che fra tre mesi ne dice due diversi. Chi lo legge:
 
   - `book/_ext/pt_conteggi.py`, che lo passa al testo come `{{ versione }}` e
     al tema come `pt_versione`;
-  - `strumenti/pubblica.py`, che ci intesta il commit pubblico.
+  - lo strumento di pubblicazione, che ci intesta il commit pubblico.
 
 ## Il titolo dei link non si scrive nel YAML
 
@@ -157,7 +157,7 @@ class LettoreSevero(yaml.SafeLoader):
 
     PyYAML tiene l'ultima e non dice niente: una modifica che perde per strada
     un `- versione:` fonde due voci in una, e quella sopra sparisce dal
-    registro senza che nulla fallisca. E' successo, e da qui non si vedeva.
+    registro senza che nulla fallisca.
     """
 
 

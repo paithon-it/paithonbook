@@ -5,14 +5,10 @@
 # capitoli ne hanno uno, e va benissimo: una tassonomia, un'architettura, un
 # confronto si spiegano meglio fermi.
 #
-# Quello che non va bene è non essersela chiesta. Le animazioni sono nate in
-# una prima ondata su quindici capitoli; poi il libro è arrivato a
-# trentacinque e nessuno ha più posto la domanda, perché la lista dei capitoli
-# scoperti era scritta a mano e non si aggiornava. Risultato: venticinque
-# capitoli senza una clip, e chi leggeva la parte nuova del libro non ne
-# vedeva più nessuna.
+# Quello che non va bene è non essersela chiesta, e una lista dei capitoli
+# scoperti scritta a mano non se la chiede: resta ferma mentre il libro cresce.
 #
-# Ora la domanda la fa il controllo: `python3 scripts/coerenza.py --solo
+# La domanda la fa il controllo: `python3 scripts/coerenza.py --solo
 # animazioni` segnala come difetto ogni capitolo a zero clip che non compaia
 # qui. Dichiararlo costa una riga; dimenticarsene non è più possibile.
 #

@@ -264,7 +264,7 @@
     for (const parola of parole) {
       // Tutte le occorrenze, non solo la prima: «reti» dentro «segreti» non
       // vale, ma non deve far scartare il titolo se piu' avanti c'e' «reti
-      // neurali». Fermandosi alla prima si perdevano risultati buoni.
+      // neurali». Fermandosi alla prima si perderebbero risultati buoni.
       let dove = -1;
       for (let i = titolo.indexOf(parola); i >= 0;
            i = titolo.indexOf(parola, i + 1)) {

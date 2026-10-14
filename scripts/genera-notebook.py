@@ -19,11 +19,10 @@ Con `--verifica` lo script esce con codice 1 se una cella si rompe: è così che
 
 ## Perché il capitolo e non la pagina
 
-Perché i numeri lo dicono. Su 28 capitoli con codice, quasi tutte le *pagine*
-hanno uno o due blocchi: Matematica ne ha 6 distribuiti su 6 pagine, Machine
-Learning 11 su 10. Un notebook per pagina sarebbe stato quasi sempre un notebook
-da due celle, che si copia a mano in meno tempo di quanto ci voglia ad aprire
-Colab. Il capitolo invece è un'unità che il lettore riconosce.
+Perché quasi tutte le *pagine* con del codice hanno uno o due blocchi: un
+notebook per pagina sarebbe quasi sempre un notebook da due celle, che si copia
+a mano in meno tempo di quanto ci voglia ad aprire Colab. Il capitolo invece è
+un'unità che il lettore riconosce.
 
 ## Le regole, che sono la sostanza
 
@@ -84,21 +83,16 @@ MINIMO_CELLE = 3
 # codice non provato e' una promessa che non possiamo mantenere. Il motivo sta
 # accanto al nome, cosi' si sa che cosa manca davvero.
 RINVIATI = {
-    # Resta solo questo, e la ragione NON e' quella che questa riga ha dato per
-    # mesi ("i kernel Triton non si compilano senza una GPU"): e' falsa, ed e'
-    # stata smentita su una macchina senza GPU. Con TRITON_INTERPRET=1 il
+    # La ragione NON e' che i kernel Triton non si compilino senza una GPU
+    # (si compilano, e girano anche). Con TRITON_INTERPRET=1 il
     # kernel di GPU/kernel-e-cuda.md gira in interprete sulla CPU e dà i numeri
     # che il testo promette (con a=2 e b=1: da 3 esce 7, da -4 esce 0), e
     # triton.compile con GPUTarget("cuda", 90, 32) lo traduce in PTX
     # .target sm_90a, con 8 fma.rn.f32 e nessuna mul.f32/add.f32 separata,
     # senza che quella scheda ci sia. Cio' che resta fuori portata e' il
     # comportamento su silicio: prestazioni, scelta del backend, esecuzione
-    # distribuita. E comunque, a prescindere: il capitolo ha due sole celle
-    # eseguibili contro MINIMO_CELLE = 3, quindi un notebook non nascerebbe in
-    # ogni caso. La copertura del suo codice si fa a mano. (Dal settembre 2026
-    # le celle sono cinque, con il conto del calcolo in memoria, e il notebook
-    # resta rinviato per la ragione di sopra: i numeri stampati del capitolo li
-    # controlla `verifica-uscite.py GPU`.)
+    # distribuita. La copertura del suo codice si fa a mano, e i numeri
+    # stampati del capitolo li controlla `verifica-uscite.py GPU`.
     "GPU": "silicio vero, e solo per il comportamento a runtime",
 }
 
@@ -290,12 +284,11 @@ def cella_codice(codice: str, tag: str | None = None,
         # `keepends=True` NON e' un dettaglio: nel formato ipynb `source` e' una
         # lista di righe che **conservano il proprio `\n`**, perche' chi legge il
         # file (nbformat, Jupyter, Colab) le ricongiunge con `''.join()`. Con uno
-        # `split("\n")` nudo le righe arrivano senza terminatore e ogni cella
-        # collassa su una riga sola: 151 celle su 264, in tutti e 23 i notebook,
-        # davano `SyntaxError` a chi le apriva. Sono i file che il lettore scarica
-        # dal pulsante «Esegui il codice», e nessuno se n'era accorto perche' la
-        # verifica qui sotto ricongiungeva con `"\n".join()`, cioe' rimetteva a
-        # posto in memoria proprio la cosa che sul disco era rotta.
+        # `split("\n")` nudo le righe arrivano senza terminatore, ogni cella
+        # collassa su una riga sola e da' `SyntaxError` a chi la apre dal
+        # pulsante «Esegui il codice». E una verifica che ricongiungesse con
+        # `"\n".join()` non se ne accorgerebbe: rimetterebbe a posto in memoria
+        # proprio la cosa che sul disco e' rotta.
         "source": codice.rstrip("\n").splitlines(keepends=True),
     }
 
@@ -528,7 +521,63 @@ def aggiorna_manifesto() -> None:
     print(f"  manifesto in _config.yml: {len(presenti)} capitoli")
 
 
-FLAG = ("--verifica", "--esistenti", "--severo")
+FLAG = ("--verifica", "--esistenti", "--severo", "--cambiato")
+
+RE_USCITA = re.compile(r"^```text\n(.*?)^```", re.S | re.M)
+
+# Quello che fa ripartire la verifica comunque, oltre alle pagine: i file del
+# filtro del workflow che non sono pagine, e il toc e il manifesto, da cui
+# dipendono l'ordine delle celle e il controllo «notebook aggiornati».
+SEMPRE = ("notebooks/", "scripts/genera-notebook.py", "scripts/verifica-uscite.py",
+          "requirements-notebook.txt", ".github/workflows/verifica-notebook.yml",
+          "book/_toc.yml", "book/_config.yml")
+
+
+def impronta(testo: str) -> tuple:
+    """Che cosa di una pagina finisce in un notebook o nella verifica delle uscite.
+
+    I titoli (la cella che apre ogni sezione), i blocchi di codice con il loro
+    stato e i blocchi ` ```text ` che `verifica-uscite.py` confronta con quello
+    che il codice stampa. La prosa no: un notebook non la contiene.
+    """
+    titoli = [m.group(0) for m in RE_TITOLO.finditer(senza_codice(testo))]
+    codice = [(c, s) for _, c, s in blocchi(testo)]
+    return titoli, codice, RE_USCITA.findall(testo)
+
+
+def cambiato(prima: str, dopo: str) -> tuple[bool, str]:
+    """Fra due commit è cambiato qualcosa che la verifica dei notebook guarda?
+
+    Serve al workflow per non lanciare mezz'ora di notebook a ogni push di sola
+    prosa, che nessuna cella può vedere.
+    Nel dubbio la risposta è sì: un file che non è una pagina del libro (il
+    filtro del workflow li elenca), una pagina nuova o tolta, un commit che non
+    si trova.
+    """
+    def git(*a):
+        return subprocess.run(["git", *a], capture_output=True, text=True,
+                              cwd=RADICE)
+    for sha in (prima, dopo):
+        if git("cat-file", "-e", f"{sha}^{{commit}}").returncode:
+            return True, f"il commit {sha[:12]} non c'e'"
+    # `core.quotePath=false`: senza, git mette fra virgolette i percorsi non
+    # ASCII, e una pagina col nome accentato non comincerebbe per `book/`, cioè
+    # una modifica al suo codice passerebbe per prosa
+    nomi = git("-c", "core.quotePath=false", "diff", "--name-status",
+               "--no-renames", prima, dopo).stdout.split("\n")
+    for riga in filter(None, nomi):
+        stato, nome = riga.split("\t", 1)
+        if nome.startswith(SEMPRE) or nome in SEMPRE:
+            return True, f"{nome}: lo guarda la verifica"
+        if not (nome.startswith("book/") and nome.endswith(".md")):
+            continue
+        if stato != "M":
+            return True, f"{nome}: {stato}"
+        vecchio = git("show", f"{prima}:{nome}").stdout
+        nuovo = git("show", f"{dopo}:{nome}").stdout
+        if impronta(vecchio) != impronta(nuovo):
+            return True, f"{nome}: codice, uscite o titoli cambiati"
+    return False, "solo prosa"
 
 
 def main() -> None:
@@ -545,6 +594,14 @@ def main() -> None:
         sys.exit(2)
 
     argomenti = [a for a in sys.argv[1:] if not a.startswith("--")]
+    if "--cambiato" in sys.argv:
+        # `--cambiato PRIMA DOPO`: per il workflow, una riga per $GITHUB_OUTPUT
+        if len(argomenti) != 2:
+            sys.exit("  --cambiato vuole due commit: PRIMA DOPO")
+        si, perche = cambiato(*argomenti)
+        print(f"verifica={'true' if si else 'false'}")
+        print(f"  {perche}", file=sys.stderr)
+        return
     con_verifica = "--verifica" in sys.argv
     solo_esistenti = "--esistenti" in sys.argv
     # In CI le librerie ci sono tutte: se un modulo manca là non è "non
@@ -554,8 +611,8 @@ def main() -> None:
     if con_verifica:
         # `uptime` prima di misurare, e non solo all'inizio di una sessione: il
         # carico che falsa un tempo e' quasi sempre quello che si e' lanciato da
-        # soli un momento prima. Misurato il 18 agosto 2026: lo stesso notebook,
-        # 223 secondi con altri controlli in parallelo e 28 a macchina libera.
+        # soli un momento prima, e con altri controlli in parallelo lo stesso
+        # notebook puo' metterci parecchie volte tanto.
         try:
             carico, cpu = os.getloadavg()[0], os.cpu_count() or 1
             if carico > cpu * 0.4:

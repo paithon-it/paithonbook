@@ -2,26 +2,27 @@
 
 Il 22 agosto 2022 compare online un file da circa quattro gigabyte: i pesi di
 **Stable Diffusion**, cioè tutto quello che la rete ha imparato, rilasciati in
-forma aperta. Averli vuol dire avere il modello, ed è da quel rilascio che la
+forma aperta. Averli significa avere il modello, e da quel rilascio la
 generazione di immagini è diventata un fenomeno pubblico. Il modello è nato dai
 *latent diffusion models* del gruppo di Björn Ommer all'Università Ludwig
-Maximilian di Monaco {cite}`rombach2022high`, sviluppato con Runway e addestrato
-con la potenza di calcolo di Stability AI. La novità non è la qualità delle
-immagini (DALL·E 2 e Imagen, usciti pochi mesi prima, erano già impressionanti)
-ma le condizioni: quei modelli vivevano nei data center dei loro proprietari,
-accessibili con il contagocce dietro liste d'attesa e interfacce controllate.
-Stable Diffusion invece si *scarica*. Chiunque, gratis, può metterlo sul proprio
-computer, e per farlo girare basta la GPU di un computer da videogiochi, cioè il
-processore grafico, quel pezzo che nei giochi disegna le immagini a schermo e
-che qui fa i conti del modello. Nel giro di poche settimane i forum si riempiono
-di immagini, spuntano interfacce grafiche amatoriali, plugin per Photoshop e
-Blender, versioni modificate per ogni gusto. La generazione di immagini smette
-di essere una demo da guardare e diventa uno strumento da usare.
+Maximilian di Monaco {cite}`rombach2022high`, sviluppato con Runway e
+addestrato con la potenza di calcolo di Stability AI. La novità non è la
+qualità delle immagini (DALL·E 2 e Imagen, usciti pochi mesi prima, erano già
+impressionanti) ma le condizioni: quei modelli vivevano nei data center dei
+loro proprietari, accessibili con il contagocce dietro liste d'attesa e
+interfacce controllate. Stable Diffusion invece si *scarica*. Chiunque, gratis,
+può metterlo sul proprio computer, e per farlo girare basta la GPU di un
+computer da videogiochi, cioè il processore grafico, quel pezzo che nei giochi
+disegna le immagini a schermo e che qui esegue i calcoli del modello. Nel giro
+di poche settimane i forum si riempiono di immagini, spuntano interfacce
+grafiche amatoriali, plugin per Photoshop e Blender, versioni modificate per
+ogni gusto. La generazione di immagini smette di essere una demo da guardare e
+diventa uno strumento da usare.
 
 La domanda è che cosa lo renda possibile *tecnicamente*. Non un modello più
 grande: al contrario, uno più piccolo. La diffusione smette di lavorare sui
 pixel e si sposta su una rappresentazione compressa dell'immagine, decine di
-volte più piccola, dove ogni valutazione della rete costa una frazione. Il
+volte più piccola, dove ogni valutazione della rete è molto più leggera. Il
 guadagno si misura in conti da fare, cioè in secondi di attesa e in memoria
 occupata sulla GPU: meno numeri da elaborare, meno conti, meno attesa.
 
@@ -29,10 +30,10 @@ La compressione la fa una rete a sé, diversa da quella che toglie il rumore, e
 la conosciamo già: è il *variational autoencoder* del {doc}`capitolo sui
 modelli latenti </ModelliLatenti/overview>`, che la {doc}`sezione sull'ELBO
 </ModelliLatenti/il-salto-probabilistico>` deriva per intero. Qui serve per
-un solo mestiere, comprimere e ricostruire, che non è quello per cui di solito
+una sola funzione, comprimere e ricostruire, che non è quella per cui di solito
 lo si costruisce: a generare penserà la diffusione.
 
-## Il prezzo dei pixel
+## Dai pixel allo spazio latente
 
 Facciamo due conti. Nella {doc}`sezione su come funziona la diffusione
 </ModelliDiffusione/come-funziona>` un'immagine era una griglia di numeri, uno
@@ -56,11 +57,11 @@ suo vicino) che contano poco, e solo una frazione a decidere le cose
 importanti: dov'è il gatto, dov'è il muro, da che parte arriva la luce.
 
 L'idea di Robin Rombach, Björn Ommer e colleghi {cite}`rombach2022high` è
-dividere il lavoro tra due specialisti. Una prima rete impara la
-**compressione percettiva**: trasforma i pixel in una rappresentazione
-compatta che conserva il contenuto e scarta il dettaglio ricostruibile. La
-diffusione, poi, impara la **composizione** dentro quello spazio compatto, dove
-ogni passo costa decine di volte meno.
+dividere il lavoro tra due specialisti. Una prima rete impara la **compressione
+percettiva**: trasforma i pixel in una rappresentazione compatta che conserva
+il contenuto e scarta il dettaglio ricostruibile. La diffusione, poi, impara la
+**composizione** dentro quello spazio compatto, dove ogni passo è decine di
+volte più economico.
 
 Quello spazio compatto è lo spazio latente del {doc}`capitolo sui modelli
 latenti </ModelliLatenti/overview>`: l'insieme dei valori che può prendere
@@ -75,28 +76,26 @@ models*, e Stable Diffusion ne è il figlio famoso.
 
 ## L'archivista: il variational autoencoder
 
-Il pezzo che comprime è il variational autoencoder (VAE) di Diederik
-Kingma e Max Welling {cite}`kingma2014auto`, del 2014, quindi più vecchio della
+Il pezzo che comprime è il variational autoencoder (VAE) di Diederik Kingma e
+Max Welling {cite}`kingma2014auto`, del 2014, quindi più vecchio della
 diffusione moderna e persino delle GAN. Con lui viene anche la metafora della
 {doc}`sezione su comprimere e ricostruire
-</ModelliLatenti/comprimere-e-ricostruire>`, che qui accompagna il resto del
-capitolo: la rete che comprime è un archivista e la
-rappresentazione compatta che scrive è la sua scheda; la rete che ricostruisce
-è un copista, che dalla scheda ridipinge il quadro. Da qui in avanti «scheda»
-vorrà dire sempre e solo questo.
+</ModelliLatenti/comprimere-e-ricostruire>`: la rete che comprime è un
+archivista e la rappresentazione compatta che scrive è la sua scheda; la rete
+che ricostruisce è un copista, che dalla scheda ridipinge il quadro. «Scheda»
+indica sempre e soltanto questa rappresentazione.
 
-Di quel capitolo qui serve una cosa sola, ed è la differenza fra la clessidra
+Di quel capitolo serve qui un solo punto, la differenza fra la clessidra
 semplice, l'autoencoder, e la sua variante: la clessidra impara a comprimere e
-nient'altro, perché il suo unico voto è quanto la copia somiglia
-all'originale, e in quello spazio non si può pescare. Il VAE aggiunge due
-cose: un margine di tolleranza (l'encoder restituisce una media e una
-deviazione standard invece di un punto) e una penalità che tiene la
-distribuzione dei codici vicina a un centro comune, il prior. In Stable
-Diffusion la penalità pesa pochissimo e serve a una cosa sola, impedire che il
-latente prenda una scala arbitraria; lo spazio in cui la diffusione lavora lo
-modellano soprattutto il margine, la compressione convoluzionale e le due
-perdite in più con cui l'autoencoder è addestrato, una percettiva e una
-avversaria.
+nient'altro, perché il suo unico voto è quanto la copia somiglia all'originale,
+e in quello spazio non si può pescare. Il VAE aggiunge due cose: un margine di
+tolleranza (l'encoder restituisce una media e una deviazione standard invece di
+un punto) e una penalità che tiene la distribuzione dei codici vicina a un
+centro comune, il prior. In Stable Diffusion la penalità pesa pochissimo e ha
+un solo scopo, impedire che il latente prenda una scala arbitraria; lo spazio
+in cui la diffusione lavora lo modellano soprattutto il margine, la
+compressione convoluzionale e le due perdite in più con cui l'autoencoder è
+addestrato, una percettiva e una avversaria.
 
 ```{figure} ../figures/vae-auto-encoding-variational-bayes.svg
 :name: fig-vae
@@ -105,7 +104,7 @@ avversaria.
 
 La rete che comprime non restituisce una scheda sola, ma una scheda e un
 margine di tolleranza: «all'incirca questo, più o meno tanto». È quel margine
-la trovata, ed è ciò che costringe schede vicine a ridiventare immagini simili.
+la trovata, perché costringe schede vicine a ridiventare immagini simili.
 (Sulla scheda il disegno mette i nomi tecnici: $\mu$ è il valore scritto,
 $\sigma$ il margine di tolleranza, e il pallino nero il punto sorteggiato
 dentro quel margine. La scheda, quindi, è la coppia: il valore *e* il margine.)
@@ -115,7 +114,7 @@ La {numref}`fig-vae` riassume i due tratti che il VAE aggiunge
 all'autoencoder. Il primo è il margine $\boldsymbol{\sigma}_\phi$: il codice si
 sorteggia dentro il margine, quindi in addestramento il decoder vede una zona
 attorno a ogni codice invece di un punto, e codici vicini tornano immagini
-simili. È quello che serve alla diffusione, che si muove nel latente a piccoli
+simili. Serve alla diffusione, che si muove nel latente a piccoli
 spostamenti e deve poter decodificare anche i punti intermedi. Il secondo è la
 penalità, il termine KL dell'ELBO (KL sta per Kullback e Leibler, la
 divergenza che misura quanto i codici si allontanano dal centro): con il peso
@@ -126,18 +125,17 @@ varianza 1, e per questo servirà una riscalatura.
 `````{tab} Elementare
 
 L'archivista del museo è la clessidra dei modelli latenti, la stessa che nei
-codec neurali comprimeva il suono, qui con due mestieri al posto delle due
-metà: per ogni quadro l'archivista scrive una scheda molto più piccola
+codec neurali comprimeva il suono, qui con due ruoli distinti al posto delle
+due metà: per ogni quadro l'archivista scrive una scheda molto più piccola
 dell'originale, e il copista deve *ridipingere* il quadro leggendo solo quella.
 Se la copia somiglia all'originale la scheda conteneva l'essenziale, e i due si
 allenano insieme perché una scheda è buona o cattiva solo rispetto a chi la
 deve leggere.
 
-Dopo milioni di prove su milioni di quadri, l'archivista ha imparato da solo
-che cosa annotare (soggetto, composizione, colori dominanti) e che cosa
-lasciar perdere: la grana della tela, le singole pennellate dello sfondo. Non
-perché il copista se le ricordi, ma perché se le inventa, e una grana di
-tela vale l'altra.
+Dopo milioni di prove su milioni di quadri, l'archivista ha imparato che cosa
+annotare (soggetto, composizione, colori dominanti) e che cosa lasciar perdere:
+la grana della tela, le singole pennellate dello sfondo. Non perché il copista
+se le ricordi, ma perché se le inventa, e una grana di tela vale l'altra.
 
 Nei numeri di Stable Diffusion: il quadro è fatto di 786.432 valori, la scheda
 di 16.384, quarantotto volte meno. Quel 16.384 esce da una scelta di progetto:
@@ -153,7 +151,7 @@ dita: se il copista si inventa la grana della tela nessuno se ne accorge, se si
 inventa le lettere di un'insegna se ne accorgono tutti. I successori hanno
 alzato quel soffitto mettendo più numeri per casella.
 
-E il «variational» del nome, che in italiano diremmo «variazionale»? Sta in due
+Il «variational» del nome, in italiano «variazionale», sta in due
 regole che tengono l'archivio in ordine: la scheda descrive una *nuvola di
 possibilità* («un gatto nero più o meno così») invece di inchiodare il quadro a
 un punto esatto, e tutte le schede stanno raccolte attorno a uno stesso centro,
@@ -166,7 +164,7 @@ insieme riempiano tutta la zona: restano dei buchi dove nessuna scheda è mai
 finita, e una scheda presa a caso in un buco il copista la trasforma in una
 macchia, perché lì non ha mai imparato niente. Da solo, quindi, il VAE è un
 generatore mediocre. In Stable Diffusion il problema non si pone, perché
-all'archivista non si chiede di inventare quadri per conto suo: su quale
+all'archivista non si chiede di inventare quadri nuovi: su quale
 scheda fermarsi lo decide il restauratore, che arriva dopo e non pesca a
 caso.
 
@@ -217,49 +215,50 @@ molto piccolo (la fedeltà della ricostruzione conta più della somiglianza al
 prior) e a decidere che cosa esce dal latente pensa la diffusione, non il
 decoder da solo.
 
-Il VAE di Stable Diffusion è convoluzionale e riduce ogni lato di un fattore
-$f = 8$, con 4 canali latenti: da $512 \times 512 \times 3$ a
-$64 \times 64 \times 4$, cioè da $786\,432$ a $16\,384$ valori, un fattore 48.
-Il fattore $f$ è il primo parametro che Rombach e colleghi esplorano, su
-$f \in \{1, 2, 4, 8, 16, 32\}$: con $f$ piccolo la diffusione resta quasi nei
-pixel e ne paga il costo, con $f = 32$ la compressione distrugge troppo; la
-fascia utile va da 4 a 16, e Stable Diffusion prende 8. Per non lasciare al
-latente una scala arbitraria il paper prova due regolarizzazioni: *KL-reg*,
-una penalità KL verso $\mathcal{N}(\mathbf{0}, \mathbf{I})$ con peso dell'ordine
-di $10^{-6}$, che del VAE conserva poco più del nome e non porta il latente a
-varianza unitaria; e *VQ-reg*, uno strato di quantizzazione vettoriale come nel
-{doc}`VQ-VAE </ModelliLatenti/il-latente-che-si-usa>`. Stable Diffusion usa la
-prima. In tutti e due i casi l'autoencoder è addestrato anche con una loss
-percettiva e una avversaria (un discriminatore in stile GAN, come nel capitolo
-precedente) che tengono nitide le ricostruzioni {cite}`rombach2022high`.
+Il VAE di Stable Diffusion è convoluzionale e riduce ogni lato di un fattore $f
+= 8$, con 4 canali latenti: da $512 \times 512 \times 3$ a $64 \times 64 \times
+4$, cioè da $786\,432$ a $16\,384$ valori, un fattore 48. Il fattore $f$ è il
+primo parametro che Rombach e colleghi esplorano, su $f \in \{1, 2, 4, 8, 16,
+32\}$: con $f$ piccolo la diffusione resta quasi nei pixel e ne paga il costo,
+con $f = 32$ la compressione distrugge troppo; la fascia utile va da 4 a 16, e
+Stable Diffusion prende 8. Per non lasciare al latente una scala arbitraria il
+paper prova due regolarizzazioni: *KL-reg*, una penalità KL verso
+$\mathcal{N}(\mathbf{0}, \mathbf{I})$ con peso dell'ordine di $10^{-6}$, che
+del VAE conserva poco più del nome e non porta il latente a varianza unitaria;
+e *VQ-reg*, uno strato di quantizzazione vettoriale come nel {doc}`VQ-VAE
+</ModelliLatenti/il-latente-che-si-usa>`. Stable Diffusion usa la prima. In
+tutti e due i casi l'autoencoder è addestrato anche con una loss percettiva e
+una avversaria (un discriminatore in stile GAN, come nella {doc}`sezione
+sull’addestramento avversario </GAN/come-funziona>`) che tengono nitide le
+ricostruzioni {cite}`rombach2022high`.
 
 Sarebbe però un errore liquidarlo come un dettaglio di efficienza: la
-compressione è distruttiva, e il danno è misurabile e definitivo. Tutto ciò
-che il decoder non sa ricostruire è perduto prima che la U-Net veda alcunché,
+compressione è distruttiva, e il danno è misurabile e definitivo. Tutto ciò che
+il decoder non sa ricostruire è perduto prima che la U-Net veda alcunché,
 quindi la capacità di ricostruzione dell'autoencoder è un limite superiore
 sulla qualità dell'intero sistema, che nessuna quantità di diffusione può
 superare. Rombach e colleghi lo mettono fra i limiti dichiarati del metodo, e
 la conferma più netta arriva dai loro stessi successori: a parità di $f$,
 portare i canali latenti da 4 a 16 migliora nettamente ogni misura di
 ricostruzione, ed è una delle scelte di Stable Diffusion 3
-{cite}`esser2024scaling`, che vedremo nella prossima sezione. Le due loss
-aggiuntive vanno lette nella stessa luce: il decoder non ricostruisce e basta,
-sceglie che cosa è plausibile ricostruire, il che è un'altra cosa e ha
-conseguenze proprie.
+{cite}`esser2024scaling`, di cui tratta la {doc}`sezione sui Diffusion
+Transformer </ModelliDiffusione/diffusion-transformer>`. Le due loss aggiuntive
+vanno lette nella stessa luce: il decoder non ricostruisce e basta, sceglie che
+cosa è plausibile ricostruire, il che è un'altra cosa e ha conseguenze proprie.
 
 `````
 
 ## La ricetta in quattro mosse
 
-Manca un pezzo solo, tenuto finora in disparte: il testo. Le fotografie con
-cui questi modelli si addestrano non arrivano nude, arrivano con una didascalia
+Manca un pezzo solo, tenuto finora in disparte: il testo. Le fotografie con cui
+questi modelli si addestrano non arrivano nude, arrivano con una didascalia
 accanto («un gatto nero seduto su un muro»), raccolta insieme all'immagine dal
 sito da cui è stata presa. È così che il modello impara ad associare le parole
-alle cose, ed è il motivo per cui alla fine gli si potrà scrivere che cosa
-disegnare. Le parole, però, una rete non le legge: legge numeri. A tradurle
-pensa una rete a parte, CLIP, quella della {doc}`sezione su come si allineano
-due spazi </VisioneLinguaggio/allineare-due-spazi>`, che qui viene riusata
-com'è.
+alle cose, e da questa associazione dipende la possibilità di scrivergli, alla
+fine, che cosa disegnare. Le parole, però, una rete non le legge: legge numeri.
+A tradurle pensa una rete a parte, CLIP, quella della {doc}`sezione su come si
+allineano due spazi </VisioneLinguaggio/allineare-due-spazi>`, che qui viene
+riusata com'è.
 
 La {numref}`fig-latent-diffusion` mette allora in fila tutto: la rete che
 comprime, lo spazio delle schede dove avviene la diffusione, il testo che entra
@@ -284,10 +283,10 @@ richiesta scritta dall'utente, che entra di lato.
 
 Quattro mosse. Prima: l'archivista comprime ogni fotografia dell'archivio
 di addestramento nella sua scheda; d'ora in poi si lavora solo su schede.
-Seconda: il restauratore fa esattamente il suo solito mestiere (sporca di
+Seconda: il restauratore fa il suo solito lavoro (sporca di
 rumore, impara a indicare il disturbo) ma su schede da 16.384 numeri invece che
 su quadri da 786.432, come restaurare cartoline anziché affreschi. Ogni giro di
-domanda e risposta costa decine di volte meno. Non proprio quarantotto:
+domanda e risposta è decine di volte più economico. Non proprio quarantotto:
 quarantotto dice quanti numeri in meno ci sono, non quanti conti in meno si
 fanno, e la rete delle schede è disegnata apposta per loro invece di essere
 quella dei quadri rimpicciolita.
@@ -296,7 +295,7 @@ Le schede, però, vanno convertite prima di finire sul tavolo del restauratore:
 si moltiplicano tutte per uno stesso numero fisso, 0,18215, poco meno di un
 quinto. Il restauratore dosa lo sporco su numeri di una certa taglia, e
 dall'archivio le schede escono con numeri cinque volte e mezzo più grandi di
-quella (cinque volte e mezzo è proprio 1 diviso 0,18215): chi salta la
+quella (cinque volte e mezzo è 1 diviso 0,18215): chi salta la
 conversione gli dà schede su cui quella stessa dose si vede appena, e lo manda
 ad allenarsi su un problema più facile del vero.
 
@@ -326,13 +325,14 @@ sua scheda.
 
 Formalmente, le quattro componenti sono queste.
 
-**1. Compressione.** L'encoder congelato porta ogni immagine nel latente. Non è
-una funzione, ed è la distribuzione definita sopra: il latente di addestramento
-si campiona, $\mathbf{z} \sim q_\phi(\cdot \mid \mathbf{x})$, con $\mathbf{z}
-\in \mathbb{R}^{64 \times 64 \times 4}$ per $\mathbf{x} \in \mathbb{R}^{512
-\times 512 \times 3}$ (scriveremo $\mathrm{Enc}(\mathbf{x})$ per brevità,
-ricordando che sotto c'è un campionamento, e $\mathrm{Dec}(\mathbf{z})$ per la
-media di $p_\psi(\mathbf{x} \mid \mathbf{z})$, cioè per la ricostruzione).
+**1. Compressione.** L'encoder congelato porta ogni immagine nel latente, e lo
+fa con la distribuzione definita sopra anziché con una funzione: il latente di
+addestramento si campiona, $\mathbf{z} \sim q_\phi(\cdot \mid \mathbf{x})$, con
+$\mathbf{z} \in \mathbb{R}^{64 \times 64 \times 4}$ per $\mathbf{x} \in
+\mathbb{R}^{512 \times 512 \times 3}$ (scriveremo $\mathrm{Enc}(\mathbf{x})$
+per brevità, ricordando che sotto c'è un campionamento, e
+$\mathrm{Dec}(\mathbf{z})$ per la media di $p_\psi(\mathbf{x} \mid
+\mathbf{z})$, cioè per la ricostruzione).
 
 **2. Diffusione nel latente.** Il processo diretto e quello inverso hanno la
 stessa forma di quelli di DDPM, applicati a $\mathbf{z}$ anziché a
@@ -365,8 +365,8 @@ $$
 $$
 
 dove $\mathbf{z}_t$ è il latente rumoroso al passo $t$, $\boldsymbol{\epsilon}$
-il rumore iniettato e $\tau$ il text encoder. Ogni valutazione della rete lavora
-su $16\,384$ valori invece di $786\,432$: è qui che si paga l'affitto ridotto
+il rumore iniettato e $\tau$ il text encoder. Ogni valutazione della rete
+lavora su $16\,384$ valori invece di $786\,432$: da qui viene il vantaggio
 dello spazio latente. Il 48 resta però il rapporto fra i valori, non fra le
 operazioni. Il costo di una convoluzione cresce con il numero di posizioni
 spaziali, che scendono di $f^2 = 64$ volte; quello della self-attention con il
@@ -417,7 +417,7 @@ raccolte dal web).
 `````
 
 L'asimmetria che ne risulta si misura in lavoro da fare, non in denaro.
-*Addestrare* Stable Diffusion è rimasto un mestiere da data center: la
+*Addestrare* Stable Diffusion è rimasto un'impresa da data center: la
 documentazione del modello dichiara
 centocinquantamila ore di calcolo su GPU professionali, cioè una GPU sola
 accesa per diciassette anni (nella realtà erano 256, in 32 macchine da otto,
@@ -437,7 +437,7 @@ strada. Il correttivo standard, usato da Stable Diffusion e da praticamente
 tutti i modelli che disegnano su richiesta, si chiama **classifier-free
 guidance** (letteralmente «guida senza classificatore»: fra poco si capirà da
 dove viene il nome), è di Jonathan Ho e Tim Salimans {cite}`ho2022classifier`,
-ed è di una semplicità che spiazza. La {numref}`fig-guida-due-direzioni` la
+e ha una semplicità che spiazza. La {numref}`fig-guida-due-direzioni` la
 mostra per intero.
 
 ```{figure} ../figures/guida-due-direzioni.svg
@@ -448,21 +448,21 @@ mostra per intero.
 Le due direzioni che la rete indica nello stesso punto: quella che ha in mente
 solo «una figura credibile» e quella che ha in mente anche la richiesta
 scritta. Sono quasi la stessa, e la piccola differenza fra le due è tutto
-quello che il testo ha da dire. La direzione che si segue davvero è la prima
-più quella differenza ripetuta sette volte e mezzo, che è il peso con cui
-Stable Diffusion esce di serie. Il disegno fissa un divario qualunque fra le
-due direzioni: quanto valga sul serio dipende dal modello e dal punto.
+quello che il testo ha da dire. La direzione seguita è la prima più quella
+differenza ripetuta sette volte e mezzo, che è il peso con cui Stable Diffusion
+esce di serie. Il disegno fissa un divario qualunque fra le due direzioni:
+quanto valga sul serio dipende dal modello e dal punto.
 ```
 
 `````{tab} Elementare
 
 Il trucco comincia in addestramento: circa una volta su dieci, al modello la
-commissione viene *nascosta*. Così impara due mestieri insieme: disegnare
+commissione viene *nascosta*. Così impara due compiti insieme: disegnare
 «un'immagine plausibile qualunque» quando non ha indicazioni, e disegnare
 «quello che dice il testo» quando le ha.
 
 In generazione, allora, a ogni passo puoi porre la domanda due volte e
-ottenere due risposte, al prezzo di fare il lavoro due volte. È il cartello
+ottenere due risposte, a patto di fare il lavoro due volte. È il cartello
 della salita, quello che indica in che direzione ritoccare l'immagine per
 renderla più credibile, che si sdoppia: uno dice «per
 una figura credibile, va’ di là», l'altro «per una figura credibile *e che
@@ -472,7 +472,7 @@ che ognuna indica la sua direzione, e le due direzioni non coincidono.
 Le due direzioni sono quasi uguali, e la piccola differenza fra loro è tutto
 quello che il testo ha da dire. La prima bussola dice «nord», la seconda dice
 «nord, un pelo verso est»: quel «pelo verso est» è il contributo della
-richiesta. Seguire la seconda bussola e basta è quello che si faceva prima, e
+richiesta. Seguire soltanto la seconda bussola è ciò che si faceva prima, e
 l'indicazione del testo nel totale pesa pochissimo. La rete tira soprattutto
 verso «un'immagine credibile», e «acquerello» è una spintarella dentro quella
 spinta grossa, che si perde per strada: il gatto viene a olio. Il colpo di
@@ -481,18 +481,17 @@ passi e mezzo verso est, e poi camminare verso nord-est. Sette e mezzo è il
 numero che Stable Diffusion usa di serie, e si chiama il **peso della guida**,
 $w$.
 
-A $w = 1$ non si esagera niente, ed è il gatto a olio di prima. Sotto l'uno il
-modello va a briglia sciolta, con immagini varie e richiesta presa alla
-leggera, fino a $w = 0$ dove la richiesta viene ignorata del tutto e si segue
-la prima bussola e basta; sopra l'uno ubbidisce di più e inventa di meno.
-Esagerando davvero, ben oltre il 7 e mezzo, l'immagine viene «sovracotta»:
-colori saturi, contrasti duri, composizioni tutte uguali.
+A $w = 1$ non si esagera niente, e si ottiene il gatto a olio di prima. Sotto
+l'uno il modello va a briglia sciolta, con immagini varie e richiesta presa
+alla leggera, fino a $w = 0$ dove la richiesta viene ignorata del tutto e si
+segue soltanto la prima bussola; sopra l'uno ubbidisce di più e inventa di
+meno. Esagerando, ben oltre il 7 e mezzo, l'immagine viene «sovracotta»: colori
+saturi, contrasti duri, composizioni tutte uguali.
 
-E il sette e mezzo? Chi misura quanto le immagini somigliano alle fotografie
-vere trova il punto migliore molto più in basso, e a sette e mezzo la
-somiglianza è già peggiorata. Sette e mezzo resta il valore di serie, e quello
-che si guadagna a stare così in alto si vede con gli occhi più che nelle
-misure.
+Chi misura quanto le immagini somigliano alle fotografie vere trova il punto
+migliore del peso molto più in basso, e a sette e mezzo la somiglianza è già
+peggiorata. Sette e mezzo resta il valore di serie, e quello che si guadagna a
+stare così in alto si vede con gli occhi più che nelle misure.
 
 Resta il nome. Un classificatore è una rete che guarda un'immagine e dice
 che cosa contiene («questo è un gatto»), e il metodo che c'era prima, del
@@ -546,15 +545,14 @@ $w = 1$ che usa la sola condizionata; sopra l'uno il peso della non
 condizionata diventa negativo, cioè non ci si limita a dar retta al testo, ci
 si allontana da «un'immagine plausibile qualunque».
 
-L'ispirazione, ed è bene chiamarla così e non «l'interpretazione»: la
-differenza tra le due predizioni approssima
-$-\sqrt{1-\bar{\alpha}_t}\,\nabla_{\mathbf{z}_t} \log p(c \mid \mathbf{z}_t)$,
-con il fattore *negativo* che lega $\boldsymbol{\epsilon}$ e score nella
-sezione sotto il cofano: la differenza punta nel verso opposto al gradiente, ed
-è proprio sommandola alla predizione di rumore (che il campionatore poi
-sottrae) che si sale su $\log p(c \mid \mathbf{z}_t)$. È ciò che la *classifier
+È un'ispirazione e non un'interpretazione: la differenza tra le due predizioni
+approssima $-\sqrt{1-\bar{\alpha}_t}\,\nabla_{\mathbf{z}_t} \log p(c \mid
+\mathbf{z}_t)$, con il fattore *negativo* che lega $\boldsymbol{\epsilon}$ e
+score nella sezione sotto il cofano: la differenza punta nel verso opposto al
+gradiente, e sommandola alla predizione di rumore (che il campionatore poi
+sottrae) si sale su $\log p(c \mid \mathbf{z}_t)$. È ciò che la *classifier
 guidance* di {cite}`dhariwal2021diffusion` otteneva addestrando un
-classificatore esterno, ed è da lì che viene il nome «senza classificatore».
+classificatore esterno, da cui il nome «senza classificatore».
 
 Qui però bisogna fermarsi, perché la formula suggerisce una conclusione che gli
 autori del metodo negano esplicitamente: il classificatore implicito non c'è.
@@ -567,23 +565,22 @@ essere letto come un attacco avversario a un classificatore di immagini. Il
 «classificatore implicito» è una guida al ragionamento, non un oggetto che
 esiste da qualche parte.
 
-E c'è una seconda conseguenza, che le interfacce non dichiarano mai: per
-$w > 1$ il campionatore non campiona più da $p(\mathbf{x} \mid c)$, e nemmeno
-dalla distribuzione «inclinata» $p(\mathbf{x})\,p(c \mid \mathbf{x})^w$ che di
-solito si cita per giustificarlo {cite}`bradley2024classifier`; che cosa faccia
-davvero alla distribuzione, misurato su un caso in cui tutto si calcola a mano,
-lo racconta la {doc}`sezione sulla guida </ModelliDiffusione/guida>`. Il $w =
-7{,}5$ di default sta ben oltre il punto
-in cui la somiglianza statistica con i dati veri comincia a peggiorare: non è
-una manopola della qualità, è una manopola della preferenza, e la distinzione
-conta ogni volta che si valuta un modello con una metrica invece che con gli
-occhi.
+C'è una seconda conseguenza, che le interfacce non dichiarano mai: per $w > 1$
+il campionatore non campiona più da $p(\mathbf{x} \mid c)$, e nemmeno dalla
+distribuzione «inclinata» $p(\mathbf{x})\,p(c \mid \mathbf{x})^w$ che di solito
+si cita per giustificarlo {cite}`bradley2024classifier`; che cosa faccia alla
+distribuzione, misurato su un caso in cui tutto si calcola a mano, lo racconta
+la {doc}`sezione sulla guida </ModelliDiffusione/guida>`. Il $w = 7{,}5$ di
+default sta ben oltre il punto in cui la somiglianza statistica con i dati veri
+comincia a peggiorare: non è una manopola della qualità, è una manopola della
+preferenza, e la distinzione conta ogni volta che si valuta un modello con una
+metrica invece che con gli occhi.
 
-Il prezzo è dunque triplice. Computazionale: due valutazioni della U-Net per
+Il costo è dunque triplice. Computazionale: due valutazioni della U-Net per
 ogni passo (in pratica, un batch di due). Statistico: al crescere di $w$
 aumenta l'aderenza al prompt ma cala la diversità dei campioni, con
 saturazione e artefatti per valori estremi (il trade-off fedeltà–varietà
-misurato sistematicamente nel paper {cite}`ho2022classifier`). E concettuale:
+misurato sistematicamente nel paper {cite}`ho2022classifier`). Concettuale:
 si perde la garanzia di star campionando da una distribuzione definita. Il
 *negative prompt* delle interfacce comuni è la stessa formula con
 $\varnothing$ sostituito da un prompt negativo $c_{\mathrm{neg}}$: si
@@ -594,17 +591,16 @@ estrapola allontanandosi da esso.
 ## Dieci righe di Python
 
 Non riscriveremo da zero tutta la catena di montaggio: nessuno lo fa, e il modo
-in cui la si usa davvero è la libreria `diffusers` di Hugging Face, che gira su
-PyTorch e impacchetta in un blocco solo l'archivista, il copista, il
+in cui la si usa in pratica è la libreria `diffusers` di Hugging Face, che gira
+su PyTorch e impacchetta in un blocco solo l'archivista, il copista, il
 restauratore, la rete che legge la commissione scritta e la procedura che
-scende la scala
-(`pip install diffusers transformers accelerate`). Al primo avvio scarica i
-pesi (qualche gigabyte); così com'è scritto vuole una GPU NVIDIA con circa
-quattro gigabyte di memoria, perché la riga `pipe.to("cuda")` la nomina. Sulla
-CPU la stessa pipeline gira togliendo quella riga e anche `torch_dtype`, cioè
-tornando alla precisione piena (che lì è la scelta sicura, e raddoppia la
-memoria), e molto più lentamente. Chi non ha una GPU così legge il blocco
-invece di lanciarlo, perché quello che c'è da capire sta nei nomi delle
+scende la scala (`pip install diffusers transformers accelerate`). Al primo
+avvio scarica i pesi (qualche gigabyte); così com'è scritto vuole una GPU
+NVIDIA con circa quattro gigabyte di memoria, perché la riga `pipe.to("cuda")`
+la nomina. Sulla CPU la stessa pipeline gira togliendo quella riga e anche
+`torch_dtype`, cioè tornando alla precisione piena (che lì è la scelta sicura,
+e raddoppia la memoria), e molto più lentamente. Chi non ha una GPU così legge
+il blocco invece di lanciarlo, perché il contenuto da capire sta nei nomi delle
 opzioni.
 
 ```{code-block} python
@@ -638,7 +634,7 @@ campionamento ancestrale di DDPM: la procedura che questo modello usa di serie
 Si sostituisce in una riga con uno dei metodi della {doc}`sezione sui
 campionatori veloci </ModelliDiffusione/campionatori-veloci>`: per DPM-Solver++
 basta assegnare a `pipe.scheduler` un `DPMSolverMultistepScheduler` costruito
-con `from_config(pipe.scheduler.config)`. E se la memoria non basta,
+con `from_config(pipe.scheduler.config)`. Se la memoria non basta,
 `pipe.enable_model_cpu_offload()` tiene sulla GPU un pezzo di modello per
 volta e lascia gli altri nella memoria del computer: si paga in secondi, ma il
 picco di memoria scende di molto.
@@ -651,11 +647,11 @@ personalizzazioni leggere. Con LoRA {cite}`hu2022lora`, una tecnica nata per i
 modelli di linguaggio, si specializza il modello su uno stile o un soggetto
 senza toccarlo tutto: accanto ai pesi originali, che restano fermi, si
 addestrano due tabelle di numeri molto più piccole che ne correggono l'uscita.
-Il file da condividere pesa qualche megabyte invece di qualche gigabyte, ed è la
-ragione per cui gli stili si sono messi a circolare come circolano le canzoni.
-Con **ControlNet** {cite}`zhang2023adding` si vincola invece la generazione a
-uno schizzo, una posa o una mappa di profondità (un'immagine in cui ogni pixel
-dice quanto è lontano quel punto) forniti dall'utente. LoRA è la stessa del
+Il file da condividere pesa qualche megabyte invece di qualche gigabyte, e per
+questo gli stili circolano come le canzoni. Con **ControlNet**
+{cite}`zhang2023adding` si vincola invece la generazione a uno schizzo, una
+posa o una mappa di profondità (un'immagine in cui ogni pixel dice quanto è
+lontano quel punto) forniti dall'utente. LoRA è la stessa del
 {doc}`post-training dei Transformer </Transformers/post-training>`. Sono tutte
 e due il motivo per cui attorno a Stable Diffusion esiste una comunità e non
 solo un'utenza.
@@ -708,25 +704,25 @@ suoi appunti a quelli del restauratore.
 Su ogni ponte c'è una manopola del volume per gli appunti dell'apprendista, e
 all'inizio sono tutte a zero: sono le convoluzioni a zero. Un'altra manopola,
 anche lei a zero, dosa lo schizzo che entra nell'apprendista. Il primo giorno,
-quindi, il restauratore lavora esattamente come prima, e niente di quello che sa
-viene sporcato da un apprendista che dello schizzo non sa ancora niente.
+quindi, il restauratore lavora come prima, e niente di quanto sa viene sporcato
+da un apprendista che dello schizzo non sa ancora niente.
 
 Al primo giro di addestramento si muovono soltanto le manopole dei ponti.
 L'apprendista lavora già, perché è una copia, e i suoi appunti sono sensati:
 solo che le manopole a zero li fermano sul ponte, e il restauratore non li
-riceve. Per ora ripetono quasi quello che il restauratore sa già, e farli
+riceve. Per ora ripetono in buona parte quanto il restauratore sa già, e farli
 passare non basterebbe a fare il quadro giusto. Bastano però a dare
 all'addestramento, che confronta il quadro uscito con quello che doveva uscire,
 una direzione da cui cominciare: per ogni manopola vede da che parte girarla
 perché il quadro si avvicini, e la gira di un filo. Se l'apprendista non avesse
-niente da dire, girare la manopola non cambierebbe niente, e l'addestramento non
-saprebbe da che parte girarla. Con le manopole aperte di un filo, dal secondo
-giro l'apprendista si fa sentire, e cominciano a imparare anche lui e la
-manopola dello schizzo. Se invece le manopole partissero da posizioni a caso, il
-restauratore non si guasterebbe, perché i suoi numeri non si toccano, ma i suoi
-quadri uscirebbero sporcati da appunti a caso, e le correzioni arriverebbero
-all'apprendista a caso anche loro, rovinando proprio quello che sapeva: essere
-una buona copia.
+niente da dire, girare la manopola non cambierebbe niente, e l'addestramento
+non saprebbe da che parte girarla. Con le manopole aperte di un filo, dal
+secondo giro l'apprendista si fa sentire, e cominciano a imparare anche lui e
+la manopola dello schizzo. Se invece le manopole partissero da posizioni a
+caso, il restauratore non si guasterebbe, perché i suoi numeri non si toccano,
+ma i suoi quadri uscirebbero sporcati da appunti a caso, e le correzioni
+arriverebbero all'apprendista a caso anche loro, rovinando ciò che sapeva fare:
+essere una buona copia.
 
 Siccome parte già sapendo guardare una scheda, all'apprendista bastano
 relativamente pochi esempi: da qualche decina di migliaia di quadri con il loro
@@ -739,11 +735,11 @@ non cambia mai, e togliendo l'apprendista lo si riavrebbe com'era.
 
 In metà dei giri la commissione viene tolta e resta solo lo schizzo, così
 l'apprendista è costretto a leggerlo, invece di lasciare che il restauratore
-indovini tutto dalla frase. E più apprendisti, uno per la posa e uno per la
+indovini tutto dalla frase. Più apprendisti, uno per la posa e uno per la
 profondità, possono lavorare insieme, ciascuno sommando i suoi appunti sugli
 stessi ponti.
 
-Il limite è che l'apprendista aggiunge appunti e basta, e la seconda fase resta
+Il limite è che l'apprendista aggiunge soltanto appunti, e la seconda fase resta
 del restauratore. L'apprendista gli dice dove e con che forma mettere ciò che sa
 già fare, e per uno stile nuovo si usa di solito LoRA. Se schizzo e commissione
 non si accordano esce un compromesso: negli esempi degli autori, uno schizzo di
@@ -772,7 +768,8 @@ congelamento di $\Theta$ protegge l'originale dall'oblio e dal sovradattamento
 ai pochi esempi nuovi. Che lo zero serva lo mostra l'ablazione degli autori:
 con convoluzioni di collegamento inizializzate a caso la qualità scende a
 quella di ControlNet-lite, una variante che al posto della copia ha un solo
-strato convoluzionale per blocco, cioè la copia perde quello che sapeva.
+strato convoluzionale per blocco, cioè la copia perde le conoscenze di
+partenza.
 
 Nulla però resta bloccato. In ogni posizione $p$ della griglia la
 convoluzione d'uscita è una mappa lineare sui canali,
@@ -796,45 +793,44 @@ In Stable Diffusion la copia è quella dei 12 blocchi del codificatore della
 U-Net e del blocco centrale, e le sue uscite, passate per convoluzioni a zero,
 si sommano alle 12 connessioni di salto e all'uscita del blocco centrale della
 U-Net congelata. Il controllo, un'immagine a piena risoluzione, viene portato
-alla forma del latente da una piccola rete convoluzionale, ed è la sua uscita il
+alla forma del latente da una piccola rete convoluzionale, e la sua uscita è il
 $\mathbf{c}_f$ dell'equazione; stando prima della convoluzione a zero
 d'ingresso, quella rete riceve gradiente solo dal terzo passo. L'obiettivo è la
 stessa perdita di denoising, condizionata su testo e controllo,
-$\mathbb{E}\,\|\boldsymbol{\epsilon} - \boldsymbol{\epsilon}_\theta(\mathbf{z}_t, t, \tau(c), \mathbf{c}_f)\|^2$
-(con $\tau(c)$ gli embedding del prompt, come nella ricetta), minimizzata
-rispetto ai soli parametri nuovi, cioè $\Theta_c$, $\Theta_{z1}$ e $\Theta_{z2}$
-di ogni blocco e quelli della piccola rete, mentre i $\theta$ della U-Net
-restano fermi. Metà delle richieste è sostituita a caso dalla stringa vuota,
-perché la rete impari a ricavare il contenuto dal solo controllo (è un'altra
-cosa dal prompt vuoto una volta su dieci con cui il modello di partenza impara
-la guida senza classificatore: qui lo scopo è costringere la copia a leggere il
-controllo). Gli autori
-riportano una *convergenza improvvisa*, che osservano senza spiegarla: per tutto
-l'addestramento le immagini restano di buona qualità, grazie alle convoluzioni a
-zero, e la rete non impara il controllo a poco a poco, ma comincia a seguirlo di
-colpo, di solito in meno di diecimila passi. L'addestramento è stabile tanto con
-meno di cinquantamila coppie quanto con più di un milione (non collassa nemmeno
-con mille, e migliora con i dati), perché la copia parte da pesi che sanno già
-leggere un'immagine. Su una A100, per passo di addestramento, gli autori
-misurano circa il 23% di memoria e il 34% di tempo in più che per addestrare
-Stable Diffusion senza ControlNet. Più controlli si combinano sommando i loro
-residui, senza coefficienti di miscela.
+$\mathbb{E}\,\|\boldsymbol{\epsilon} -
+\boldsymbol{\epsilon}_\theta(\mathbf{z}_t, t, \tau(c), \mathbf{c}_f)\|^2$ (con
+$\tau(c)$ gli embedding del prompt, come nella ricetta), minimizzata rispetto
+ai soli parametri nuovi, cioè $\Theta_c$, $\Theta_{z1}$ e $\Theta_{z2}$ di ogni
+blocco e quelli della piccola rete, mentre i $\theta$ della U-Net restano
+fermi. Metà delle richieste è sostituita a caso dalla stringa vuota, perché la
+rete impari a ricavare il contenuto dal solo controllo (è un'altra cosa dal
+prompt vuoto una volta su dieci con cui il modello di partenza impara la guida
+senza classificatore: qui lo scopo è costringere la copia a leggere il
+controllo). Gli autori riportano una *convergenza improvvisa*, che osservano
+senza spiegarla: per tutto l'addestramento le immagini restano di buona
+qualità, grazie alle convoluzioni a zero, e la rete non impara il controllo a
+poco a poco, ma comincia a seguirlo di colpo, di solito in meno di diecimila
+passi. L'addestramento è stabile tanto con meno di cinquantamila coppie quanto
+con più di un milione (non collassa nemmeno con mille, e migliora con i dati),
+perché la copia parte da pesi che sanno già leggere un'immagine. Su una A100,
+per passo di addestramento, gli autori misurano circa il 23% di memoria e il
+34% di tempo in più che per addestrare Stable Diffusion senza ControlNet. Più
+controlli si combinano sommando i loro residui, senza coefficienti di miscela.
 
 È la stessa mossa di {doc}`LoRA </Transformers/post-training>`, dove
 $\mathbf{B} = \mathbf{0}$ all'inizio e quindi $\Delta\mathbf{W} = \mathbf{0}$:
 un ramo nuovo che all'inizio restituisce esattamente il modello originale.
 Anche la cascata è la stessa. Al primo passo riceve gradiente solo
-$\mathbf{B}$, perché quello di $\mathbf{A}$ passa per
-$\mathbf{B}^\top = \mathbf{0}$, come qui la sola convoluzione d'uscita. Il
-limite è di progetto: il controllo entra solo come somma alle connessioni di
-salto e al blocco centrale, mentre il decodificatore della U-Net, il text
-encoder e il VAE restano quelli del modello congelato. Serve a disporre nello
-spazio ciò che il modello sa già generare, e per uno stile o un soggetto nuovi
-si ricorre di solito a LoRA; fin dove la copia possa spingersi oltre, il lavoro
-originale non lo misura. E testo e controllo possono chiedere cose
-incompatibili. Con lo schizzo di una casa e il prompt «delicious cake», negli
-esempi degli autori escono torte a forma di casa, la forma dal controllo e il
-contenuto dal testo.
+$\mathbf{B}$, perché quello di $\mathbf{A}$ passa per $\mathbf{B}^\top =
+\mathbf{0}$, come qui la sola convoluzione d'uscita. Il limite è di progetto:
+il controllo entra solo come somma alle connessioni di salto e al blocco
+centrale, mentre il decodificatore della U-Net, il text encoder e il VAE
+restano quelli del modello congelato. Serve a disporre nello spazio ciò che il
+modello sa già generare, e per uno stile o un soggetto nuovi si ricorre di
+solito a LoRA; fin dove la copia possa spingersi oltre, il lavoro originale non
+lo misura. Testo e controllo possono inoltre chiedere cose incompatibili. Con
+lo schizzo di una casa e il prompt «delicious cake», negli esempi degli autori
+escono torte a forma di casa, la forma dal controllo e il contenuto dal testo.
 
 `````
 
@@ -943,7 +939,7 @@ o no. Il codice di rilascio di Stable Diffusion incorporava di serie una
 filigrana invisibile (un segnale nascosto nei pixel, che un programma sa
 riconoscere) nelle immagini che produceva, e ci sono standard, come le
 *Content Credentials* del consorzio C2PA, che provano a certificare l'origine
-dei contenuti. Ma chi possiede i pesi disattiva la filigrana con una riga di
+dei contenuti. Chi possiede i pesi, però, disattiva la filigrana con una riga di
 codice, e riconoscere l'origine dopo il fatto resta una rincorsa. Sono problemi
 aperti nel senso pieno: tecnici solo in parte, e non risolvibili solo con la
 tecnica.
@@ -961,25 +957,24 @@ tecnica.
   allenano insieme, e la prova che la scheda è buona è che la copia somigli
   all'originale. La trovata dell'archivista è non scrivere un valore esatto ma
   un valore *con un margine*, così che schede vicine diventino immagini simili
-  e attorno a ogni scheda ci sia una zona intera che il copista sa leggere.
-  Non che l'archivio sia coperto tutto: a pescare a caso si finisce dove
-  nessuna scheda è mai arrivata, ed è il restauratore, non il sorteggio, a
-  decidere su quale fermarsi.
-- Quello che l'archivista non annota è perso per sempre: la scheda è il
+  e attorno a ogni scheda ci sia una zona intera che il copista sa leggere. Non
+  che l'archivio sia coperto tutto: a pescare a caso si finisce dove nessuna
+  scheda è mai arrivata, e a decidere su quale fermarsi è il restauratore, non
+  il sorteggio.
+- Il dettaglio che l'archivista non annota è perso per sempre: la scheda è il
   soffitto della qualità finale, e nessuna bravura di chi viene dopo lo alza. È
   una delle ragioni per cui i primi modelli di questa famiglia sbagliavano
   scritte, volti piccoli e mani, che sono tutte cose di dettaglio fine.
 - La ricetta in quattro mosse: l'archivista comprime, il restauratore fa il suo
-  solito mestiere sulle schede invece che sui quadri, tenendo d'occhio la
+  solito lavoro sulle schede invece che sui quadri, tenendo d'occhio la
   commissione scritta dal cliente, poi il copista ridipinge. L'archivista
   impara prima e poi smette di imparare.
-- Per decidere quanto dare retta alla richiesta si interroga la rete due
-  volte, una senza dirle niente e una dandole la richiesta, e si guarda di
-  quanto le due risposte differiscono: quella differenza è il contributo del
-  testo, ed è piccola. Si cammina lungo la prima risposta più quella
-  differenza moltiplicata, di solito per sette e mezzo. Più si moltiplica, più
-  il modello ubbidisce e meno inventa; esagerando, l'immagine viene
-  «sovracotta».
+- Per decidere quanto dare retta alla richiesta si interroga la rete due volte,
+  una senza dirle niente e una dandole la richiesta, e si guarda di quanto le
+  due risposte differiscono: quella differenza è il contributo del testo e
+  risulta piccola. Si cammina lungo la prima risposta più quella differenza
+  moltiplicata, di solito per sette e mezzo. Più si moltiplica, più il modello
+  ubbidisce e meno inventa; esagerando, l'immagine viene «sovracotta».
 - I pesi aperti hanno generato una comunità e non solo un'utenza: sono nate
   tecniche per specializzare il modello con file da pochi megabyte, o per
   fargli seguire uno schizzo. Per lo schizzo, al restauratore che non si vuole

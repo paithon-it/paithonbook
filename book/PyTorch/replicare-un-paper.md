@@ -4,21 +4,21 @@ Un articolo scientifico si può leggere in tre modi. Il primo è scorrerlo:
 mezz'ora, si ricava l'idea generale e si dimentica in una settimana. Il
 secondo è studiarlo: si seguono le derivazioni, si capisce l'argomento. Il
 terzo è farlo girare: trasformare le equazioni in `nn.Module`, mandare
-avanti un tensore e guardare se esce quello che deve uscire. È il modo più
+avanti un tensore e guardare se l'uscita è quella attesa. È il modo più
 severo, perché il codice non accetta i passaggi vaghi: dove il testo dice "si
 proietta linearmente" bisogna decidere una matrice, e la matrice ha una forma
 precisa.
 
-Quello che si impara replicando un paper è un metodo, che vale per qualunque
+Replicare un paper insegna un metodo che vale per qualunque
 articolo. Il modello su cui lo mettiamo alla prova usa due strati che arrivano
 più avanti: la convoluzione, nella {doc}`sezione sulle reti convoluzionali
 </DeepLearning/reti-convoluzionali>`, e l’attenzione multi-testa, nella
 {doc}`sezione sull’attenzione </Transformers/attenzione>`.
 
 Per ora contano come scatole di cui si conosce solo che forma entra e che forma
-esce, e basta questo: quello che si controlla sono le proprietà che devono
-valere comunque, prima e a prescindere da qualunque addestramento (nel gergo si
-chiamano *invarianti*), e quelle si verificano dal di fuori, senza aprire le
+esce, e questo basta: si controllano le proprietà che devono
+valere comunque, prima di qualunque addestramento e a prescindere da esso (nel
+gergo si chiamano *invarianti*). Queste si verificano dal di fuori, senza aprire le
 scatole. Per questo il metodo funziona anche su un articolo di cui non si è
 capito tutto, con un limite: gli invarianti sono condizioni necessarie, e
 dicono che il montaggio può essere giusto, non che lo sia.
@@ -48,21 +48,21 @@ montato al contrario, che ha le stesse viti di quello giusto.
 
 Poi, prima di dichiararlo finito, una spinta. Un mobile può stare in piedi con
 un ripiano soltanto appoggiato: da fuori sembra montato, e cede al primo peso.
-Si scuote il fianco e si guarda che cosa si muove insieme al resto; quello che
-resta fermo non è avvitato a niente. Sul modello il gesto è lo stesso: si dà un
+Si scuote il fianco e si guarda che cosa si muove insieme al resto; il pezzo
+che resta fermo non è avvitato a niente. Sul modello la prova è la stessa: si dà un
 colpo solo, dall'uscita, e si guarda se è arrivato fino a ogni singolo pezzo.
 Quelli che non l'hanno sentito non impareranno mai niente, perché la correzione
 non li raggiunge. Senza la spinta, il ripiano appoggiato si scopre dopo tre
 giorni di addestramento che non porta da nessuna parte.
 
-E se in negozio c'è lo stesso mobile già montato dal fabbricante, la prova più
+Se in negozio c'è lo stesso mobile già montato dal fabbricante, la prova più
 severa è metterlo accanto al tuo. Un ripiano montato al contrario ha le stesse
-viti e le stesse misure di quello giusto, e né il metro né il conto dei pezzi
-se ne accorgono; accanto all'originale salta all'occhio. Sul modello vuol dire
-dare a tutti e due gli stessi pesi e la stessa immagine, e guardare se escono
-gli stessi numeri.
+viti e le stesse misure di quello giusto, e né il metro né il conteggio dei pezzi
+se ne accorgono; accanto all'originale salta all'occhio. Sul modello si danno a
+tutti e due gli stessi pesi e la stessa immagine, e si guarda se escono gli
+stessi numeri.
 
-Finché le misure e il conto dei pezzi non tornano, e la spinta non arriva a
+Finché le misure e il conteggio dei pezzi non tornano, e la spinta non arriva a
 tutti, chiedersi se il modello vada bene quanto nella fotografia è prematuro.
 Da lì in poi comincia la parte difficile.
 `````
@@ -90,10 +90,10 @@ passo si verificano invarianti controllabili senza addestrare:
    Il controllo vede un ramo staccato per sbaglio con `detach()`, o un
    sotto-modulo che il `forward` non usa mai; non vede un peso creato con
    `torch.tensor(...)` invece che `nn.Parameter`, perché quello fra i
-   parametri non c'è e il ciclo non lo visita: lo prende l'invariante di
-   conteggio, che esce più basso del dovuto. E `not None` non vuol dire
-   diverso da zero (una ReLU che non si accende mai consegna gradienti
-   nulli), quindi conviene guardare anche `p.grad.abs().sum()`. Tutti e due i
+   parametri non c'è e il ciclo non lo visita: lo vede l'invariante di
+   conteggio, che esce più basso del dovuto. Un gradiente `not None`
+   può comunque essere nullo (una ReLU che non si accende mai consegna gradienti
+   nulli), quindi conviene guardare anche `p.grad.abs().sum()`. Questi
    difetti si scoprono qui e non dopo tre giorni di addestramento che non
    converge.
 4. **Invariante di equivalenza.** A parità di pesi, l'uscita deve coincidere
@@ -106,37 +106,38 @@ passo si verificano invarianti controllabili senza addestrare:
 
 Gli invarianti sono condizioni necessarie, non sufficienti: soddisfatti tutti
 e quattro, dicono che il montaggio può essere quello del paper. Solo a quel
-punto ha senso parlare di risultati numerici, ed è lì che comincia la parte
+punto ha senso parlare di risultati numerici, e da lì comincia la parte
 difficile.
 `````
 
 ## Il caso: il Vision Transformer
 
 Il metodo si prova su un modello molto più grande di quelli usati fin qui, e su
-un articolo che ricompare più avanti: *An Image is Worth 16x16 Words*
-{cite}`dosovitskiy2021image` (su arXiv nel 2020, alla conferenza ICLR nel 2021),
-che ha mostrato come un Transformer applicato direttamente ai riquadri di
-un'immagine, senza convoluzioni, regga il confronto con le reti convoluzionali
-nella classificazione, a patto di un pre-addestramento su moltissimi dati. È un
-buon caso di studio perché l'architettura si scrive in quattro equazioni e i
-numeri da verificare sono pubblicati. Della teoria di questo modello non si è
-ancora parlato, a dimostrazione che forme, conteggio e gradienti
-si controllano senza averla capita; che il montaggio sia anche quello giusto lo
-dice soltanto il confronto con un'implementazione di riferimento.
+un articolo che ricompare nella {doc}`sezione sulla multimodalità
+</Transformers/multimodalita>`: *An Image is Worth 16x16 Words*
+{cite}`dosovitskiy2021image` (su arXiv nel 2020, alla conferenza ICLR nel
+2021), che ha mostrato come un Transformer applicato direttamente ai riquadri
+di un'immagine, senza convoluzioni, sia competitivo con le reti
+convoluzionali nella classificazione, a patto di un pre-addestramento su
+moltissimi dati. È un buon caso di studio perché l'architettura si scrive in
+quattro equazioni e i numeri da verificare sono pubblicati. Le forme, il
+conteggio e i gradienti di questo modello si controllano senza averne compreso
+la teoria; che il montaggio sia anche quello giusto lo dice soltanto il
+confronto con un'implementazione di riferimento.
 
 La prima equazione del paper costruisce la sequenza di ingresso. L'immagine si
 divide in riquadri che non si sovrappongono, le *patch* (in italiano
 quadratini, ma nel codice si troverà la parola inglese); ogni patch si
 appiattisce in una fila di numeri, e una matrice $\mathbf{E}$, la stessa per
 tutte, la trasforma in un vettore di $D$ numeri. Davanti a tutti si mette un
-vettore in più che dall'immagine non viene, il *token di classe*, i cui numeri
-si imparano durante l'addestramento come quelli dei pesi; e a ogni vettore si
-somma un vettore di posizione, perché le patch, tolte dalla griglia, non
-portano più con sé il posto che occupavano: senza, il modello non saprebbe più
-quale stava in alto a sinistra.
+vettore in più che non viene dall'immagine, il *token di classe*, i cui numeri
+si imparano durante l'addestramento come quelli dei pesi. Infine, a ogni vettore si
+somma un vettore di posizione: senza di questo, le patch tolte dalla griglia non
+porterebbero più con sé il posto che occupavano, e il modello non saprebbe più
+quale quadratino stava in alto a sinistra.
 
-Nell'articolo l'equazione è questa, con le parentesi quadre che mettono i
-vettori in fila e la somma finale che aggiunge le posizioni:
+Nell'articolo l'equazione è questa, con le parentesi quadre che affiancano i
+vettori e la somma finale che aggiunge le posizioni:
 
 $$
 \mathbf{z}_0 = [\, \mathbf{x}_{\text{class}} ;\;
@@ -157,13 +158,12 @@ Il quadrato viene da lì: $224/16 = 14$ è il numero di quadratini che stanno su
 una riga, e l'immagine è una griglia, quindi le righe sono altrettante e i
 quadratini in tutto sono $14 \times 14$.
 
-Una coincidenza da segnalare, perché altrimenti confonde: il $768$ appena
-calcolato ($16 \cdot 16 \cdot 3$, quanti numeri contiene una patch) e il $768$
-che comparirà fra poco nel codice come `d_modello` sono due cose diverse.
-Il primo è quanto entra nella proiezione, il secondo quanto ne esce, ed è una
-scelta degli autori del paper. Che coincidano vuol dire soltanto che la
-proiezione, in questo caso, non cambia la quantità di numeri; con patch da $32$
-pixel il primo diventerebbe $3072$ e il secondo resterebbe $768$.
+Il $768$ appena calcolato ($16 \cdot 16 \cdot 3$, quanti numeri contiene una
+patch) e il $768$ che comparirà fra poco nel codice come `d_modello` sono due
+quantità diverse che qui coincidono per caso. Il primo è quanto entra nella
+proiezione; il secondo, quanto ne esce, è una scelta degli autori del paper. Se
+coincidono, la proiezione in questo caso non cambia la quantità di numeri; con
+patch da $32$ pixel il primo diventerebbe $3072$ e il secondo resterebbe $768$.
 
 Ecco la stessa equazione, in PyTorch:
 
@@ -218,18 +218,18 @@ manopole: quanto è largo il buco (`kernel_size`) e di quanto scatta ogni volta
 (`stride`).
 
 Il paper chiede di tagliare l'immagine in quadratini e di proiettare ciascuno.
-Alla lettera sono tre gesti: ritagliare, impilare, moltiplicare la pila. Con un
-buco largo sedici pixel e uno scatto pure di sedici il gesto è uno solo. La
-mascherina si sposta di quanto è larga, quindi ogni quadratino passa sotto una
-volta e nessun pixel due volte.
+Alla lettera sono tre operazioni: ritagliare, impilare, moltiplicare la pila.
+Con un buco largo sedici pixel e uno scatto pure di sedici l'operazione è una
+sola. La mascherina si sposta di quanto è larga, quindi ogni quadratino passa
+sotto una volta e nessun pixel due volte.
 
-E i conti sono gli stessi. Stessi numeri da imparare (la mascherina ne aggiunge
-soltanto uno per ogni numero che esce, una piccola correzione fissa), stessi
-prodotti, sistemati in due ordini diversi, e per passare dall'uno all'altro
-basta riordinarli. Cambia il lavoro attorno. Chi ritaglia stacca tutti e 196 i
-quadratini e li mette da parte, cioè si ritrova sul tavolo una seconda foto
-fatta a pezzi grande quanto la prima, e solo dopo moltiplica; la mascherina li
-legge dove stanno. Un gesto invece di tre, e più veloce.
+I due modi calcolano la stessa cosa. Stessi numeri da imparare (la mascherina
+ne aggiunge soltanto uno per ogni numero che esce, una piccola correzione
+fissa), stessi prodotti, sistemati in due ordini diversi, e per passare
+dall'uno all'altro basta riordinarli. Cambia il lavoro attorno. Chi ritaglia
+stacca tutti e 196 i quadratini e li mette da parte, cioè si ritrova sul tavolo
+una seconda foto fatta a pezzi grande quanto la prima, e solo dopo moltiplica;
+la mascherina li legge dove stanno. Un'operazione invece di tre, e più veloce.
 
 Quella pila pesa quanto la foto finché la mascherina scatta di quanto è larga.
 Chi la fa scattare di otto pixel con un buco da sedici ritrova lo stesso pixel
@@ -237,11 +237,11 @@ dentro più ritagli, e la pila diventa 3,7 volte la foto.
 
 Il token di classe. Sopra la pila dei 196 ritagli si mette un foglio che di
 immagine non ha niente. È lo stesso per ogni foto che arriva sul tavolo, e
-quello che ci sta scritto lo decide l'addestramento, come per un peso qualunque
+il suo contenuto lo decide l'addestramento, come per un peso qualunque
 della rete. Attraversando la rete quel foglio raccoglie qualcosa da tutti gli
 altri, e alla fine la risposta si legge lì, come nel verbale di una riunione,
-che tiene il senso di quello che i partecipanti si sono detti senza essere uno
-di loro.
+che raccoglie la sostanza di ciò che i partecipanti si sono detti senza essere
+uno di loro.
 
 Anche i cartellini delle posizioni si imparano allo stesso modo. Ai 197 posti
 della fila (i 196 ritagli più il foglio) ne è attaccato uno ciascuno, che dice
@@ -250,16 +250,15 @@ questo legame fra cartellini e posti si fa sentire quando le foto cambiano
 misura. Chi dà foto da 384 pixel a un
 modello addestrato su foto da 224 si ritrova sul tavolo 576 quadratini (24 per
 riga invece di 14) e 197 cartellini in mano. Stamparne di nuovi, vuoti,
-butterebbe via quello che il modello aveva imparato sulle posizioni, quindi si
+butterebbe via le posizioni che il modello aveva imparato, quindi si
 prendono quelli che ci sono e si stirano sulla griglia più grande.
 
 Al foglio c'è un'alternativa. Niente foglio in cima, e alla fine si fa la media
-di quello che hanno detto i 196 ritagli. Funziona altrettanto bene a un patto,
-scritto in fondo al paper e non nel testo principale: bisogna cambiare
-la lunghezza dei passi con cui il modello si corregge mentre impara (il
-*learning rate*). Con i passi di prima va peggio, e chi quella riga non l'ha
-letta conclude che l'alternativa non funzioni, mentre ha soltanto lasciato i
-passi com'erano.
+delle risposte dei 196 ritagli. Funziona altrettanto bene a un patto,
+scritto in fondo al paper e non nel testo principale: bisogna cambiare la
+lunghezza dei passi con cui il modello si corregge mentre impara (il *learning
+rate*). Con i passi di prima va peggio, e chi non ha letto quella riga conclude
+che l'alternativa non funzioni, mentre ha soltanto lasciato i passi com'erano.
 `````
 
 `````{tab} Superiore
@@ -267,19 +266,20 @@ L'equivalenza. Proiettare le patch appiattite significa calcolare
 $\mathbf{x}_p^{i}\mathbf{E}$ con $\mathbf{E} \in \mathbb{R}^{(P^2C) \times D}$
 per ogni $i$. Una `Conv2d` con `kernel_size = stride = P` calcola, per ogni
 posizione non sovrapposta, il prodotto scalare tra la finestra e ciascuno dei
-$D$ filtri: gli stessi $P^2C \cdot D$ moltiplicatori, riorganizzati. È
-identica anche nei parametri, a meno del bias: la `Conv2d` ne ha $D$ che
-l'equazione 1 non scrive (la tabella dei conti più avanti li include), e con
-il bias la proiezione è affine invece che lineare. Per passare da una forma
-all'altra basta portare il filtro $(D, C, P, P)$ in $(D, P^2C)$, con lo stesso
-ordine (canale, riga, colonna) con cui si appiattiscono le patch. Il calcolo,
-però, è delegato a un kernel ottimizzato invece che a `unfold` seguito da
-`nn.Linear`. Con patch non sovrapposte `unfold` non duplica nessun pixel: il
-tensore che materializza ha esattamente tanti elementi quanti l'immagine di
-partenza ($B \cdot P^2C \cdot N = B \cdot C \cdot 224^2$), e quello che si
-risparmia è la copia, non un'esplosione di memoria. L'esplosione arriva quando
-il passo è minore della finestra, dove lo stesso pixel cade in più finestre:
-con $P = 16$ e passo $8$ l'intermedio è già $3{,}7$ volte l'immagine.
+$D$ filtri: gli stessi $P^2C \cdot D$ moltiplicatori, riorganizzati. È identica
+anche nei parametri, a meno del bias: la `Conv2d` ne ha $D$ che l'equazione 1
+non scrive (la tabella dei parametri per strato, in «Verificare senza
+addestrare», li include), e con il bias la proiezione è affine invece che
+lineare. Per passare da una forma all'altra basta portare il filtro $(D, C, P,
+P)$ in $(D, P^2C)$, con lo stesso ordine (canale, riga, colonna) con cui si
+appiattiscono le patch. Il calcolo, però, è delegato a un kernel ottimizzato
+invece che a `unfold` seguito da `nn.Linear`. Con patch non sovrapposte
+`unfold` non duplica nessun pixel: il tensore che materializza ha tanti
+elementi quanti l'immagine di partenza ($B \cdot P^2C \cdot N = B \cdot C \cdot
+224^2$), e si risparmia la copia, non un'esplosione di memoria. L'esplosione
+arriva quando il passo è minore della finestra, dove lo stesso pixel cade in
+più finestre: con $P = 16$ e passo $8$ l'intermedio è già $3{,}7$ volte
+l'immagine.
 
 Token di classe e posizioni. Entrambi sono `nn.Parameter`, cioè imparati:
 $\mathbf{x}_{\text{class}}$ è la sonda da cui l'equazione 4 legge l'uscita, e
@@ -294,8 +294,8 @@ lunghezza di $\mathbf{E}_{\text{pos}}$ è legata alla risoluzione, quindi
 cambiare la dimensione dell'immagine richiede di interpolare le codifiche, non
 basta riallocarle. La seconda: l'alternativa al token di classe è il *global
 average pooling* sui token delle patch, che funziona altrettanto bene ma
-richiede un learning rate diverso; dettaglio che il paper riporta in appendice,
-ed esattamente il tipo di nota che fa fallire una replica.
+richiede un learning rate diverso; un dettaglio che il paper riporta soltanto
+in appendice, e note di questo tipo fanno fallire le repliche.
 `````
 
 Le equazioni 2 e 3 descrivono il blocco che poi si ripete dodici volte, e in
@@ -304,12 +304,12 @@ Transformer </Transformers/architettura>` spiega per esteso.
 Qui bastano una riga a testa. La scatola in cui i quadratini si guardano fra
 loro, e ognuno raccoglie qualcosa dagli altri, è l'attenzione multi-testa, MSA
 nel paper. MLP è una coppia di strati come quelli già
-visti, che lavora su ogni posizione per conto suo. LN è la
+visti, che lavora su una posizione alla volta. LN è la
 *LayerNorm*, che rimette i numeri su una scala comoda prima di darli in pasto
-alle altre due. *Pre-norm* vuol dire soltanto che quella rimessa in scala
-avviene prima delle scatole e non dopo. E la connessione residua è il
-`+ z` in fondo a ciascuna riga: quello che la scatola ha prodotto non
-sostituisce l'ingresso, gli si somma, così il segnale originale ha sempre una
+alle altre due. *Pre-norm* è il nome della scelta di rimettere in scala
+prima delle scatole e non dopo. La connessione residua è il
+`+ z` in fondo a ciascuna riga: l'uscita della scatola non
+sostituisce l'ingresso, ma gli si somma, così il segnale originale ha sempre una
 strada libera per arrivare in fondo.
 
 $$
@@ -353,17 +353,18 @@ class BloccoTransformer(nn.Module):
         return x
 ```
 
-Il blocco ha due trappole. `nn.MultiheadAttention` restituisce una coppia,
-l'uscita e i pesi dell'attenzione: senza il `[0]` che tiene la sola uscita, la
-somma col residuo dà un errore di tipo poco comprensibile. E
-`batch_first=True` non è il default: senza, il modulo si aspetta i tre assi
+Il blocco ha due trappole. La prima riguarda `nn.MultiheadAttention`, che
+restituisce una coppia, l'uscita e i pesi dell'attenzione: senza il `[0]` che
+tiene la sola uscita, la somma col residuo dà un errore di tipo poco
+comprensibile. La seconda è `batch_first=True`, che non è il default: senza, il
+modulo si aspetta i tre assi
 nell'ordine (posizione, esempio, numeri) e non (esempio, posizione, numeri).
 Questo secondo errore non solleva mai un'eccezione, perché l'attenzione
 conserva le forme e il residuo si chiude lo stesso: il modello gira, ma ogni
 patch raccoglie informazione dalla patch nello stesso posto delle altre
 immagini del batch, invece che dalle altre patch della propria. Lo trova la
-prova dell'indipendenza fra gli esempi, che arriva poco più avanti insieme alla
-verifica del modello intero.
+prova dell'indipendenza fra gli esempi, che compare in «Verificare senza
+addestrare» insieme alla verifica del modello intero.
 
 ## Verificare senza addestrare
 
@@ -420,10 +421,10 @@ componente, un moltiplicatore e uno spostamento: due numeri per ciascuna delle
 $768$ componenti, e i normalizzatori per blocco sono due, da cui
 $2 \cdot 2 \cdot 768$.
 
-Poco meno di $86$ milioni: è il numero che dichiara il paper. Il nostro conto,
+Poco meno di $86$ milioni: è il numero che dichiara il paper. Il nostro calcolo,
 però, si è fermato prima dei due pezzi finali necessari per
 arrivare a un modello completo. Il primo è la LayerNorm dell'equazione 4, che
-vale $2 \cdot 768 = 1\,536$ con lo stesso conto di prima. Il secondo è la
+vale $2 \cdot 768 = 1\,536$ come nel calcolo precedente. Il secondo è la
 **testa di classificazione**, cioè lo strato che dai 768 numeri del token di
 classe ricava un punteggio per ciascuna delle $K$ classi: sono $768 \cdot K$
 pesi, uno per ogni coppia componente-classe, più $K$ bias, uno per classe.
@@ -435,17 +436,17 @@ $$
 85\,797\,120 + 1\,536 + (768 \cdot 1000 + 1000) = 86\,567\,656,
 $$
 
-ed è esattamente il numero che quel modello riporta, fino all'ultima cifra. Il
+che coincide con il numero riportato da quel modello, fino all'ultima cifra. Il
 $+K$ in coda conta: dimenticare i mille bias della testa
-farebbe chiudere il conto mille parametri sotto, e in una verifica che si
+farebbe tornare il totale mille parametri sotto, e in una verifica che si
 vanta di essere esatta all'unità mille parametri si vedono.
 
 Se invece il nostro conteggio fosse uscito attorno ai $43$ milioni, il primo
 sospetto sarebbero sei blocchi invece di dodici, che danno $43\,269\,888$
 parametri; se fosse uscito attorno ai $170$ milioni, un numero di blocchi o una
-larghezza raddoppiati. Il controllo costa trenta secondi.
+larghezza raddoppiati. Il controllo richiede trenta secondi.
 
-Lo stesso controllo, strato per strato, lo dà `torchinfo`:
+`torchinfo` esegue lo stesso controllo strato per strato:
 
 ```python
 from torchinfo import summary
@@ -453,22 +454,22 @@ summary(modello, input_size=(1, 3, 224, 224),
         col_names=["input_size", "output_size", "num_params"])
 ```
 
-Quello che stampa è una tabella, una riga per strato, con la forma in ingresso,
+Stampa una tabella, una riga per strato, con la forma in ingresso,
 la forma in uscita e quanti parametri quel pezzo si porta dietro; in fondo, la
 somma. Serve per due cose: quando la catena si spezza, per vedere in quale riga
 la forma smette di combaciare, e quando il totale non torna, per capire su
 quale blocco è andato perso. Sul nostro modello il riepilogo in fondo alla
-tabella dice `Total params: 85,797,120`, lo stesso numero del conto a mano, ma
+tabella dice `Total params: 85,797,120`, lo stesso numero del calcolo a mano, ma
 stavolta con davanti il dettaglio di dove sta ciascun pezzo.
 
 Forme e conteggio non vedono le sviste che lasciano i numeri come sono: una
 normalizzazione messa dopo l'attenzione invece che prima, un residuo spostato,
 un dettaglio che il paper non scrive, gli assi scambiati di `batch_first`. Le
-vede il confronto con un'implementazione di riferimento, che per il ViT c'è,
+smaschera il confronto con un'implementazione di riferimento, che per il ViT è
 `vit_b_16` di torchvision. Si copiano i suoi pesi nel nostro modello, pezzo per
 pezzo, si dà a tutti e due la stessa immagine, e le uscite dei dodici blocchi
 devono coincidere. Il riferimento non serve addestrato, perché si confronta il
-montaggio e non quello che ha imparato.
+montaggio e non l'addestramento.
 
 ```python
 from torchvision.models import vit_b_16
@@ -537,7 +538,7 @@ un esempio non dipende dagli altri, batch_first=False: False
 
 Con le LayerNorm come nel riferimento lo scarto è zero, cifra per cifra: il
 montaggio è quello. Con il default di PyTorch, `eps` a $10^{-5}$ invece che a
-$10^{-6}$, lo scarto sale a qualche centesimo, e il confronto trova da solo un
+$10^{-6}$, lo scarto sale a qualche centesimo, e il confronto scova un
 dettaglio che il paper non dichiara e che il conteggio non può vedere, perché
 `eps` non è un parametro. Senza un riferimento resta la prova minima: con
 `batch_first` sbagliato forme, conteggio e gradienti tornano lo stesso, e
@@ -549,14 +550,14 @@ Architettura verificata, e poi? Riprodurre la *struttura* di un paper è
 questione di ore; riprodurne i risultati spesso non lo è, e non per colpa di chi
 ci prova.
 
-Il ViT è un caso esemplare proprio in questo. La tesi dell'articolo è che
+Il ViT è un caso esemplare di questa differenza. La tesi dell'articolo è che
 l'architettura raggiunge o supera le reti convoluzionali (le CNN, la famiglia
 di modelli per immagini del {doc}`capitolo sul deep learning
 </DeepLearning/overview>`) solo dopo essere stata addestrata una prima volta su
-quantità di dati enormi, e solo allora rifinita sul compito che interessa: è
-quello che si chiama *pre-addestramento*. La parola dice in che ordine si fanno
-le cose, e lascia aperto il resto: qui le immagini portano ancora la loro
-etichetta, mentre sul testo la stessa mossa si farà senza che nessuno etichetti
+quantità di dati enormi, e solo allora rifinita sul compito che interessa:
+questo passaggio si chiama *pre-addestramento*. La parola dice in che ordine si
+fanno le cose, e lascia aperto il resto: qui le immagini portano ancora la loro
+etichetta, mentre sul testo la stessa procedura si farà senza che nessuno etichetti
 niente. Nel paper quelle quantità sono ImageNet-21k, ventunomila categorie su
 quattordici milioni di immagini, o il JFT-300M interno a Google, diciottomila
 categorie su trecento milioni di immagini mai rese pubbliche. Addestrato da
@@ -571,9 +572,9 @@ sul solo ImageNet-1k, e all’83,4% aggiungendo una distillazione
 Sapere in anticipo che la riproduzione completa è impossibile cambia
 l'obiettivo, e in meglio: si replica l'architettura, la si verifica scaricando
 i pesi che gli autori hanno pubblicato, e si addestra su un problema alla
-propria portata partendo da quei pesi invece che da zero. Quest'ultima mossa si
-chiama *transfer learning*, ed è l'argomento della {doc}`sezione sul transfer
-learning </VisioneArtificiale/classificazione-transfer>`.
+propria portata partendo da quei pesi invece che da zero. Partire da pesi già
+addestrati si chiama *transfer learning*, argomento della {doc}`sezione sul
+transfer learning </VisioneArtificiale/classificazione-transfer>`.
 
 Quando invece i numeri dovrebbero tornare e non tornano, i sospetti abituali
 sono questi:
@@ -590,12 +591,12 @@ sono questi:
    "lr $= 10^{-3}$" ne sta omettendo metà.
 3. La dimensione del batch e l'accumulo. Chi ha 8 GPU e chi ne ha una non
    stanno addestrando lo stesso modello, a meno di accumulare i gradienti.
-4. I freni, cioè tutto quello che si mette apposta per rendere la vita più
-   difficile al modello mentre impara. Ce n'è una famiglia intera (weight decay,
-   dropout, *label smoothing*, che sfuma le etichette invece di darle secche),
-   e li raccoglie la {doc}`sezione su come far funzionare
-   le reti profonde </DeepLearning/ottimizzazione-regolarizzazione>`: un paper
-   che ne omette uno solo è già un altro esperimento.
+4. I freni, cioè tutti gli accorgimenti che si mettono apposta per rendere la vita
+   più difficile al modello mentre impara. Ce n'è una famiglia intera (weight
+   decay, dropout, *label smoothing*, che sfuma le etichette invece di darle
+   secche). La {doc}`sezione su come far funzionare le reti profonde
+   </DeepLearning/ottimizzazione-regolarizzazione>` li raccoglie: un paper che
+   ne omette uno solo è già un altro esperimento.
 5. L'inizializzazione, cioè da quali numeri partono i pesi, quando non è
    quella che la libreria mette di suo.
 6. Il protocollo di valutazione: su quale porzione di dati si misura, in
@@ -607,7 +608,7 @@ sono questi:
 Fra questi sospetti, i due da guardare per primi sono i dati con le loro
 trasformazioni e il programma del learning rate. La preparazione dei dati è
 quasi sempre raccontata di fretta, in mezza riga d'appendice, e un dettaglio di
-quella riga può spostare il risultato quanto un cambio di architettura. E il
+quella riga può spostare il risultato quanto un cambio di architettura. Il
 learning rate quasi mai è un numero fisso: sale piano all'inizio (il
 *riscaldamento*) e poi scende lungo l'addestramento, quindi chi legge solo il
 valore di picco sta copiando un terzo dell'informazione.
@@ -619,13 +620,13 @@ e lo stesso passo lungo di prima si dà quasi alla cieca. Le strade sono due:
 accorciare il passo, oppure accumulare le correzioni di più vassoi piccoli e
 muoversi una volta sola, che è un modo di fingere un vassoio grande su una
 macchina piccola. Il trucco imita bene, non alla perfezione: certi strati si
-tarano sulla media di quello che hanno davanti, e davanti hanno ancora il
+tarano sulla media dei dati che hanno davanti, e davanti hanno ancora il
 vassoio piccolo. Chi addestra a quelle scale sceglie allora strati che
-rimettono in scala ogni esempio per conto suo, come la LayerNorm.
+rimettono in scala ogni esempio separatamente, come la LayerNorm.
 
 Restano due sviste che, mentre succedono, non danno nessun segnale. Una
-riguarda i freni: quello che tira di continuo i pesi verso lo zero (il *weight
-decay*) di solito si mette sulla gran parte dei pezzi, ma non su quelli che
+riguarda i freni: il *weight decay*, che tira di continuo i pesi verso lo zero,
+di solito si mette sulla gran parte dei pezzi, ma non su quelli che
 servono soltanto a rimettere i numeri in scala; frenare anche loro non rompe
 niente, e sposta il risultato di poco, in un verso che dipende dal modello.
 L'altra è il righello: se il paper riporta il risultato migliore fra molte
@@ -637,24 +638,25 @@ misura e non dal modello.
 `````{tab} Superiore
 In dettaglio, i punti su cui una replica si perde.
 
-Programma del learning rate. Una forma molto diffusa è warmup lineare per
-$T_w$ passi seguito da decadimento a coseno fino a zero. Il valore di picco non
-è trasferibile tra batch di dimensione diversa: la *linear scaling rule*
+Programma del learning rate. Una forma molto diffusa è warmup lineare per $T_w$
+passi seguito da decadimento a coseno fino a zero. Il valore di picco non è
+trasferibile tra batch di dimensione diversa: la *linear scaling rule*
 {cite}`goyal2017accurate` prescrive $\eta \propto B$ per SGD, con un warmup che
-la tiene stabile nei primi passi, e vale finché $B$ resta sotto una soglia
-oltre la quale l'accuratezza peggiora rapidamente (circa $8\,000$ immagini nelle
-loro prove su ImageNet); con Adam e AdamW l'analisi via equazioni differenziali
-stocastiche {cite}`malladi2022sdes` suggerisce invece $\eta \propto \sqrt{B}$,
-insieme a memorie più corte per le due medie: moltiplicando il batch per
-$\kappa$, $\eta$ si moltiplica per $\sqrt{\kappa}$, $1-\beta_1$ e $1-\beta_2$
-per $\kappa$, e $\epsilon$ si divide per $\sqrt{\kappa}$. È la regola da cui si
-parte, da ricontrollare sul proprio problema. Un paper che riporta solo $\eta$
-senza $B$, warmup e schedule non è replicabile alla lettera. Nel ViT i valori
-stanno in un'appendice (tabella 3): batch $4096$, warmup lineare di $10\,000$
-passi, Adam con $\beta_1 = 0{,}9$ e $\beta_2 = 0{,}999$, decadimento lineare
-del learning rate nel pre-addestramento su JFT e su ImageNet-21k e a coseno su
-ImageNet, weight decay $0{,}1$, $0{,}03$ e $0{,}3$ rispettivamente, e su
-ImageNet anche il taglio del gradiente a norma globale $1$.
+stabilizza l'addestramento nei primi passi, e vale finché $B$ resta sotto una
+soglia oltre la quale l'accuratezza peggiora rapidamente (circa $8\,000$
+immagini nelle loro prove su ImageNet); con Adam e AdamW l'analisi via
+equazioni differenziali stocastiche {cite}`malladi2022sdes` suggerisce invece
+$\eta \propto \sqrt{B}$, insieme a memorie più corte per le due medie:
+moltiplicando il batch per $\kappa$, $\eta$ si moltiplica per $\sqrt{\kappa}$,
+$1-\beta_1$ e $1-\beta_2$ per $\kappa$, e $\epsilon$ si divide per
+$\sqrt{\kappa}$. È la regola da cui si parte, da ricontrollare sul proprio
+problema. Un paper che riporta solo $\eta$ senza $B$, warmup e schedule non è
+replicabile alla lettera. Nel ViT i valori stanno in un'appendice (tabella 3):
+batch $4096$, warmup lineare di $10\,000$ passi, Adam con $\beta_1 = 0{,}9$ e
+$\beta_2 = 0{,}999$, decadimento lineare del learning rate nel
+pre-addestramento su JFT e su ImageNet-21k e a coseno su ImageNet, weight decay
+$0{,}1$, $0{,}03$ e $0{,}3$ rispettivamente, e su ImageNet anche il taglio del
+gradiente a norma globale $1$.
 
 Accumulo dei gradienti. Il batch efficace è
 $B_{\text{eff}} = B_{\text{micro}} \times k \times n_{\text{GPU}}$, dove $k$
@@ -668,8 +670,10 @@ Weight decay. Per convenzione si esclude da bias e parametri di
 normalizzazione, e in PyTorch lo si fa passando a AdamW due *parameter group*
 distinti, uno con `weight_decay=0`. Quanto pesi la scelta dipende dal modello:
 su ResNet-50 l'esclusione sposta l'accuratezza di qualche centesimo o decimo di
-punto, e nelle prove di He e colleghi verso il basso {cite}`he2019bag`; per gli
-altri modelli non c'è una cifra da dare per buona.
+punto, e nella scomposizione di He e colleghi (loro tabella 4), aggiunta alle
+tecniche precedenti, l'accuratezza scende di $0{,}03$ punti con batch $256$ e
+di $0{,}34$ con batch $1024$ {cite}`he2019bag`; per gli altri modelli non c'è
+una cifra da dare per buona.
 
 Protocollo di valutazione. Se il paper usa una media esponenziale dei pesi
 (EMA), o *test-time augmentation*, o riporta la metrica migliore sulla
@@ -681,7 +685,7 @@ La disciplina è la stessa della {doc}`sezione sul
 flusso di lavoro <flusso-di-lavoro>`: si cambia un sospetto alla volta e
 si registra. Ed è utile sapere che il problema è riconosciuto e studiato: la
 comunità ha risposto con i *reproducibility checklist* adottati dalle grandi
-conferenze, che chiedono agli autori di dichiarare esattamente questi punti
+conferenze, che chiedono agli autori di dichiarare questi punti
 {cite}`pineau2021improving`.
 
 ### Il diario, che è la metà che nessuno scrive
@@ -697,15 +701,16 @@ per esperimento, scritta prima di lanciarlo:
 Tre proprietà rendono utile questo rito, e tolta una delle tre non funziona più.
 Una cosa alla volta, altrimenti il risultato non attribuisce il merito a
 nessuno dei due cambi. L'ipotesi prima del risultato, perché scritta dopo si
-adatta sempre a ciò che è successo, e si finisce per credere di aver capito. E
-soprattutto si annota anche quello che non ha funzionato: è la metà che
-nessuno scrive, ed è l'unica che impedisce di riprovare fra due settimane la
-stessa cosa senza ricordarsene.
+adatta sempre a ciò che è successo, e si finisce per credere di aver capito.
+Infine si annota anche l'esperimento fallito: è la metà che nessuno scrive, e
+l'unica che impedisce di riprovare fra due settimane la stessa strada senza
+ricordarsene.
 
 Gli strumenti che tracciano gli esperimenti (nel {doc}`capitolo su MLOps
 </MLOps/overview>`) rendono tutto questo cercabile e condivisibile, e non c'è
-ragione di non usarli. Ma registrano bene i parametri e i numeri, e non
-registrano l'unica cosa che non si può ricostruire dopo: perché si era provato.
+ragione di non usarli. Registrano però bene i parametri e i numeri, e non
+registrano l'unica informazione che non si può ricostruire dopo: perché si era
+provato.
 Quella va scritta a mano.
 
 ```{admonition} Onestà intellettuale
@@ -726,13 +731,13 @@ qualunque articolo che dichiari un'architettura e dei numeri.
 - Replicare un articolo è il modo più affidabile di capirlo: il codice non
   accetta i passaggi vaghi. Dove il testo dice «si proietta», il codice deve
   dire con che cosa e di che misura.
-- Le mosse sono quattro: inventario dei pezzi, una formula alla volta,
+- I passi sono quattro: inventario dei pezzi, una formula alla volta,
   metro da falegname a ogni passo (mandi dentro un dato finto e guardi che
   forma esce), conteggio dei pezzi alla fine.
 - Nessuna delle quattro richiede di addestrare niente, e nessuna richiede di
   aver capito che cosa fanno i pezzi dentro: bastano le misure in entrata e in
   uscita.
-- Il conteggio dei pezzi costa trenta secondi: se l'articolo dice 86 milioni e
+- Il conteggio dei pezzi richiede trenta secondi: se l'articolo dice 86 milioni e
   a te ne escono 43, ne hai montata metà. Non vede però un pezzo montato al
   contrario, che si vede soltanto mettendo il tuo modello accanto a uno già
   montato, con gli stessi pesi dentro.
@@ -757,9 +762,9 @@ qualunque articolo che dichiari un'architettura e dei numeri.
   un riferimento a parità di pesi (o almeno indipendenza fra gli esempi del
   batch). Sono condizioni necessarie, non sufficienti.
 - Nel ViT, una `Conv2d` con `kernel_size = stride = patch` *è* la proiezione
-  lineare delle patch: riconoscere queste equivalenze fa parte del mestiere.
+  lineare delle patch: riconoscere queste equivalenze è una competenza utile.
 - ViT-Base ha $85\,797\,120$ parametri senza LayerNorm finale né testa (la
-  testa ne aggiunge $768 \cdot K + K$): il conto si rifà a mano e smaschera
+  testa ne aggiunge $768 \cdot K + K$): il calcolo si rifà a mano e smaschera
   ogni svista che cambia il numero di parametri, non il numero di teste né
   l'ordine delle operazioni. Il confronto con `vit_b_16` a pesi copiati vede
   anche quelle, e trova l’`eps` delle LayerNorm, $10^{-6}$ invece del default
@@ -770,6 +775,6 @@ qualunque articolo che dichiari un'architettura e dei numeri.
 ```
 `````
 
-Resta una domanda che il metodo da solo non risolve: una volta che il modello
+Resta una domanda che il metodo non risolve: una volta che il modello
 è giusto, come lo si fa girare in fretta, e su più schede? È l'argomento di
 {doc}`prestazioni e scala <prestazioni>`.

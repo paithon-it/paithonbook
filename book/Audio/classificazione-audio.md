@@ -1,9 +1,9 @@
 # Riconoscere i suoni: classificazione e tagging
 
-Chiudi gli occhi in una stanza e prova a nominare quello che senti: il ronzio
+Chiudi gli occhi in una stanza e prova a nominare i suoni che senti: il ronzio
 del frigorifero, un'auto che passa, il tuo stesso respiro. Il cervello lo fa
-di continuo, in sottofondo, senza fatica, ed è un lavoro sorprendentemente
-difficile da imitare. In {doc}`Dal suono alle feature
+di continuo, in sottofondo, senza fatica, e imitarlo è sorprendentemente
+difficile. In {doc}`Dal suono alle feature
 </Audio/dal-suono-alle-feature>` abbiamo
 imparato a trasformare un suono in immagine: lo spettrogramma, la «parola
 visibile» di Potter. Fatto quel passaggio, la domanda «che suono è questo?»
@@ -12,21 +12,21 @@ rompe, una corda di chitarra pizzicata: ognuno lascia sullo spettrogramma una
 firma diversa (bande, righe verticali, macchie), e riconoscere motivi di quel
 genere è ciò che una rete addestrata sulle immagini sa fare bene. In gran
 parte, e non del tutto, perché sullo spettrogramma i due assi non si
-equivalgono, ed è il primo punto in cui il suono si separa dalla foto.
+equivalgono, e da lì il suono smette di somigliare a una foto.
 
-Non è un esercizio di scuola. Sistemi di questo tipo ascoltano le foreste per
+Sistemi di questo tipo ascoltano le foreste per
 sentire il rumore di una motosega dove non dovrebbe esserci, riconoscono il
 canto di un uccello dal telefono di un escursionista, avvisano quando in casa
-si rompe un vetro. È l'audio *oltre* la voce: non più «cosa hai detto», ma
-«cosa sta suonando».
+si rompe un vetro. È l'audio *oltre* la voce: la domanda diventa «cosa sta
+suonando» invece di «cosa hai detto».
 
 ## Dallo spettrogramma alla classe
 
 Il punto di partenza è quello costruito nella prima sezione, [Dal suono alle
 feature](dal-suono-alle-feature.md): l'onda diventa una tabella con il tempo su
 un asse e le frequenze sull'altro, riletta come la sente un orecchio (lo
-spettrogramma mel). Da lì in avanti il suono diventa un'immagine. E
-riconoscere un'immagine è il mestiere delle reti convoluzionali, in sigla
+spettrogramma mel). Da lì in avanti il suono diventa un'immagine, e
+riconoscere immagini è il compito delle reti convoluzionali, in sigla
 CNN: la stessa macchina che nel {doc}`capitolo di visione
 </VisioneArtificiale/overview>` riconosceva un gatto in una foto.
 
@@ -38,8 +38,8 @@ sale; una vocale è fatta di bande orizzontali parallele; un vetro che
 si rompe è uno schizzo verticale improvviso, pieno di frequenze alte tutte
 insieme. Il medico impara a leggere le lastre a forza di vederne; una rete
 neurale fa lo stesso, mostrandole migliaia di spettrogrammi già etichettati
-finché non impara a collegare la sagoma al nome del suono. La cosa
-sorprendente è che non serve inventare un metodo nuovo: è lo *stesso* tipo di
+finché non impara a collegare la sagoma al nome del suono. Non
+serve inventare un metodo nuovo: è lo *stesso* tipo di
 rete che riconosce i gatti nelle foto, perché ormai il suono, per lei, *è* una
 foto.
 
@@ -48,14 +48,14 @@ spostarsi in alto non sono la stessa cosa. La stessa macchia più a destra è lo
 stesso latrato mezzo secondo dopo; più in alto è un suono più acuto, cioè
 un'altra vocale, un'altra nota, un altro strumento. La rete invece cerca le
 sagome dappertutto allo stesso modo, in basso come in alto, come se una sagoma
-spostata in alto fosse ancora lo stesso suono. È qui che la lastra sonora
+spostata in alto fosse ancora lo stesso suono. Qui la lastra sonora
 smette di essere una foto: in una foto un gatto più in alto è ancora un gatto,
 sulla lastra un fischio più in alto è un altro fischio. La rete se la cava lo
 stesso, perché le sagome che contano sono piccole, ma quell'ipotesi, presa
-alla lettera, è falsa. Correggerla costa poco: le si scrive accanto a ogni riga
-della lastra a che altezza si trova, e la rete impara da sola a tenerne conto.
+alla lettera, è falsa. Correggerla è facile: le si scrive accanto a ogni riga
+della lastra a che altezza si trova, e la rete impara a tenerne conto.
 
-E c'è un regalo in più, che viene proprio da quella somiglianza con le foto. Una
+C'è un vantaggio in più, che viene dalla somiglianza con le foto. Una
 rete che ha già passato mesi a guardare fotografie ha imparato a riconoscere
 bordi, macchie, righe, motivi che si ripetono: roba che sulla lastra sonora c'è
 eccome. Allora non si riparte da zero: le si fanno vedere spettrogrammi finché
@@ -76,7 +76,7 @@ immagini](../VisioneArtificiale/classificazione-transfer.md), con un'unica
 differenza concettuale: qui i due assi non sono omogenei (uno è il tempo,
 l'altro la frequenza). La conseguenza però non riguarda la località, che non è
 mai stata in discussione (una firma sonora è un motivo locale nel piano
-tempo–frequenza esattamente come un occhio lo è in una foto): riguarda la
+tempo–frequenza come un occhio lo è in una foto): riguarda la
 condivisione dei pesi. Applicare gli stessi filtri a ogni banda rende ogni
 strato convoluzionale *equivariante* per traslazione (un motivo spostato
 produce la stessa risposta, spostata), e il pooling, soprattutto quello globale
@@ -99,10 +99,10 @@ tre canali RGB attesi in ingresso.
 
 La forma della risposta, poi, decide la funzione di perdita. Chiedersi «che
 strumento sta suonando?» presuppone che la risposta sia *una*: pianoforte
-*oppure* chitarra *oppure* violino, classi che si escludono a vicenda. Ma una
-clip di dieci secondi di strada cittadina contiene, tutte insieme, il traffico
-*e* una voce *e* un clacson *e* il vento, e nell'audio ambientale la presenza
-di più suoni insieme è la regola. Sono due problemi diversi, la
+*oppure* chitarra *oppure* violino, classi che si escludono a vicenda. Una clip
+di dieci secondi di strada cittadina contiene invece, tutte insieme, il
+traffico *e* una voce *e* un clacson *e* il vento, e nell'audio ambientale la
+presenza di più suoni insieme è la regola. Sono due problemi diversi, la
 classificazione a etichetta singola e il *tagging* multi-etichetta, e
 l'immagine li conosce entrambi; nel suono il secondo è il caso comune.
 
@@ -114,12 +114,12 @@ sale una scende un’altra. Poi c'è la lista della spesa: «segna *tutti* i suo
 presenti in questa registrazione», e qui possono essere veri contemporaneamente
 il traffico, una voce e un cane, senza togliersi spazio a vicenda. La crocetta
 si chiama classificazione a **etichetta singola**, la lista della spesa
-**tagging multi-etichetta**. E si può chiedere ancora di più: non solo *quali*
-suoni, ma *quando* ciascuno inizia e finisce, come sottotitolare i rumori di un
-film. Questo si chiama rilevamento degli eventi sonori.
+**tagging multi-etichetta**. Si può chiedere di più: oltre a *quali*
+suoni, *quando* ciascuno inizia e finisce, come sottotitolare i rumori di un
+film. Questo compito si chiama rilevamento degli eventi sonori.
 
-E qui c'è un nodo. Chi ha preparato gli esempi di solito ha segnato soltanto
-che cosa c'è in ogni registrazione, non quando: «c'è un cane», e basta. La
+Qui c'è un nodo. Chi ha preparato gli esempi di solito ha segnato soltanto
+che cosa c'è in ogni registrazione, non quando: «c'è un cane». La
 macchina dà una risposta per ogni istante, e per confrontarla con l'etichetta
 la deve riassumere in una risposta sola, per tutta la registrazione. Come la
 riassume decide se impara a mettere i sottotitoli al posto giusto. Chi guarda
@@ -188,7 +188,7 @@ positiva soltanto per i frame sopra metà della probabilità di clip. Su una
 clip positiva, dove la perdita spinge $y_c$ verso 1, quei frame vengono alzati
 e gli altri abbassati: le probabilità di frame si polarizzano, che è ciò che
 serve a localizzare. L'attenzione, che impara quali frame pesare, sulle clip
-negative finisce invece per pesare proprio i frame a probabilità bassa, e lascia
+negative finisce invece per pesare i frame a probabilità bassa, e lascia
 accesi gli altri, che diventano falsi positivi. Sulla Task 4 di DCASE 2017
 (17 classi di veicoli e segnali d'allarme) la linear softmax risulta la
 migliore delle cinque, e localizza almeno quanto il massimo (tasso d'errore
@@ -219,7 +219,7 @@ esempi: è un baratto che, con le reti profonde, conviene quasi sempre.
 
 Il catalogo però non si riempie in modo uniforme. La musica e il parlato
 compaiono ovunque; il verso di un uccello raro sta in un centinaio di frammenti
-su due milioni. E il modello lo si giudica categoria per categoria, facendo poi
+su due milioni. Il modello lo si giudica categoria per categoria, facendo poi
 la media dei voti, quindi quelle caselle quasi vuote pesano quanto la musica.
 Un modello bravissimo sulla musica e sordo alle centinaia di categorie rare
 prende un voto mediocre, anche se ha ragione su quasi tutti i frammenti: la
@@ -241,18 +241,19 @@ sono **deboli** (*weak labels*): indicano la presenza di un suono nella clip,
 senza localizzazione temporale, ed essendo multi-etichetta si prestano
 naturalmente alla coppia sigmoide + BCE. La metrica di riferimento non è
 l'accuratezza (inadatta a un problema multi-etichetta e sbilanciato) ma la mean
-Average Precision (mAP), che per ogni classe fa la media delle precisioni
-raggiunte a ciascuna soglia, pesandole con l'aumento di richiamo che quella
-soglia porta, e poi media sulle classi. Si massimizza. Un dataset grande e
-debolmente etichettato sposta il collo di bottiglia: non più «troppi pochi
-dati», ma «etichette rumorose e code lunghe di classi rare», un regime in cui
-la capienza del modello e il pre-addestramento contano più della precisione di
-ogni singola annotazione. C'è poi una complicazione pratica: AudioSet
-distribuisce gli identificatori dei video di YouTube e gli intervalli da
-ritagliare, non l'audio. Ogni gruppo scarica i video da sé, e quelli rimossi
-nel frattempo fanno sì che l'insieme davvero disponibile cambi da un gruppo
-all'altro: due mAP di articoli diversi si confrontano alla pari solo se i clip
-coincidono.
+Average Precision (mAP). Per la classe $c$ è $\mathrm{AP}_c = \sum_n (R_n -
+R_{n-1})\,P_n$, dove $P_n$ e $R_n$ sono la precisione e il richiamo alla
+$n$-esima soglia, con $R_0 = 0$ (le precisioni pesate con l'aumento di richiamo
+che ciascuna soglia porta), e la mAP è la media delle $\mathrm{AP}_c$ sulle $C$
+classi. Si massimizza. Un dataset grande e debolmente etichettato sposta il
+collo di bottiglia dai dati scarsi alle etichette rumorose e alle code lunghe
+di classi rare, un regime in cui la capienza del modello e il pre-addestramento
+contano più della precisione di ogni singola annotazione. C'è poi una
+complicazione pratica: AudioSet distribuisce gli identificatori dei video di
+YouTube e gli intervalli da ritagliare, non l'audio. Ogni gruppo scarica i
+video separatamente, e quelli rimossi nel frattempo fanno sì che l'insieme
+disponibile cambi da un gruppo all'altro: due mAP di articoli diversi si
+confrontano alla pari solo se i clip coincidono.
 
 `````
 
@@ -271,30 +272,30 @@ Transformer ({numref}`fig-ast-tessere`).
 :alt: A sinistra uno spettrogramma stilizzato con un colpo secco, una banda verticale marcata, e la sua eco più tenue più avanti nel tempo, tagliato in tessere quadrate da una griglia. A destra le stesse tessere in fila come parole, con un arco che collega la tessera del colpo a quella dell'eco, lontane nella fila.
 :width: 100%
 
-Lo spettrogramma tagliato in tessere, e le tessere messe in fila: il colpo e
-la sua eco, lontani nel tempo, si guardano direttamente.
+Lo spettrogramma tagliato in tessere, e le tessere messe una dopo l'altra: il
+colpo e la sua eco, lontani nel tempo, si guardano direttamente.
 ```
 
 `````{tab} Elementare
 
-Torna il trucco con cui il Transformer ha imparato a guardare le foto. Si taglia
-l'immagine in tante tessere quadrate, le si mette in fila come le parole di una
-frase, e poi ogni tessera guarda tutte le altre e decide quali le interessano.
-Quel «guardare le altre e scegliere» si chiama attenzione, e lo abbiamo
-incontrato con il {doc}`Vision Transformer
+Torna il trucco con cui il Transformer ha imparato a guardare le foto. Si
+taglia l'immagine in tante tessere quadrate, le si mette una dopo l'altra come le
+parole di una frase, e poi ogni tessera guarda tutte le altre e decide quali le
+interessano. Quel «guardare le altre e scegliere» si chiama attenzione, e lo
+abbiamo incontrato con il {doc}`Vision Transformer
 </Transformers/multimodalita>`.
 
 L'AST fa la stessa identica cosa sulla radiografia del suono: taglia lo
-spettrogramma in tessere, le mette in fila e lascia che ciascuna guardi le
-altre, collegando per esempio un colpo secco all'inizio con la sua eco un
+spettrogramma in tessere, le mette in fila e lascia che ciascuna guardi
+le altre, collegando per esempio un colpo secco all'inizio con la sua eco un
 istante dopo, anche se sulla lastra sono lontani. Niente filtri che scorrono:
-solo tessere che si guardano tra loro. E guardarsi tutte costa: dieci secondi
-di suono sono milleduecento tessere, e le coppie da confrontare, a ogni
-passaggio, quasi un milione e mezzo.
+solo tessere che si guardano tra loro. Il confronto fra tutte costa:
+dieci secondi di suono sono milleduecento tessere, e le coppie da confrontare,
+a ogni passaggio, quasi un milione e mezzo.
 
 Non è gratis, però. I filtri che
-scorrono portavano con sé un'idea già pronta (quello che conta sta vicino a
-quello che gli sta accanto), e a un modello che riceve un'idea in regalo bastano
+scorrono portavano con sé un'idea già pronta (conta ciò che sta vicino),
+e a un modello che riceve un'idea in regalo bastano
 meno esempi per imparare. Le tessere quell'idea non ce l'hanno e se la devono
 costruire dai dati, quindi di esempi ne chiedono molti di più: addestrato da
 zero su poca roba, un Transformer audio resta dietro a una rete convoluzionale.
@@ -314,7 +315,7 @@ embedding* per la posizione tempo–frequenza; da lì in poi è il consueto stac
 di *self-attention* del {doc}`capitolo sui Transformer
 </Transformers/overview>`. Il vantaggio è il campo recettivo globale fin dal
 primo strato: ogni patch può pesare qualunque altra, mentre una CNN allarga la
-propria vista solo strato dopo strato. Il prezzo si conta: con $128$ bande e
+propria vista solo strato dopo strato. Il costo è quadratico: con $128$ bande e
 $1024$ frame (dieci secondi a passo di $10$ ms, con un breve riempimento),
 patch $16 \times 16$ e passo $10$ nei due assi, cioè sovrapposte di $6$, le
 tessere sono $12 \times 101 = 1212$, e la self-attention ne confronta ogni
@@ -374,8 +375,8 @@ profonda e una «sss» sibilante.
 Con queste due sole misure distinguiamo già tre situazioni, purché le si guardi
 in un ordine preciso. Prima l'energia: se è quasi zero c'è silenzio, e non
 serve chiedere altro. Se invece c'è del suono, allora si guarda quante volte
-l'onda attraversa lo zero: pochi attraversamenti vuol dire tono, tantissimi
-rumore. Quest'ultima regola però vale finché il tono è grave e il rumore è un
+l'onda attraversa lo zero: pochi attraversamenti indicano un tono, tantissimi
+un rumore. Quest'ultima regola però vale finché il tono è grave e il rumore è un
 fruscio pieno di frequenze alte. Un fischio molto acuto attraversa lo zero
 tantissime volte anche lui, e un brontolio cupo, che pure è un rumore, quasi
 mai: gli attraversamenti dicono dove stanno le frequenze del suono, non se è
@@ -488,23 +489,23 @@ che la corrente di casa è a 230 volt: 230 è la radice della media dei quadrati
 il valore *efficace*, di una sinusoide che arriva a 325 volt di picco, e
 $325/\sqrt{2} \approx 230$.)
 
-Il suo zcr, invece, è bassissimo: $0{,}049$. Ecco il conto. Il tono del codice
+Il suo zcr, invece, è bassissimo: $0{,}049$. Il tono del codice
 fa 200 oscillazioni al secondo e noi misuriamo 8.000 volte al secondo, quindi
-ogni oscillazione la campioniamo 40 volte ($8000$ diviso $200$). Ma ogni
-oscillazione attraversa lo zero due volte, una salendo e una scendendo:
+ogni oscillazione la campioniamo 40 volte ($8000$ diviso $200$). Ogni
+oscillazione attraversa però lo zero due volte, una salendo e una scendendo:
 quindi un attraversamento ogni 20 campioni, e $1$ diviso $20$ fa $0{,}05$,
-cioè quello che troviamo nella tabella a meno degli arrotondamenti ai bordi.
+cioè il valore della tabella a meno degli arrotondamenti ai bordi.
 Più il suono è acuto, più fitti sono quei passaggi: è tutto il legame fra questa
 misura e le frequenze.
 
-Il silenzio ha energia praticamente nulla, e sullo zcr c'è una cosa da
-guardare: vale circa $0{,}5$, cioè quanto quello del rumore. È come
-l'abbiamo costruito: il nostro «silenzio» è rumore anche
-lui, solo trecento volte più piccolo. In un fondo così ogni minuscolo sbalzo
-casuale attraversa lo zero, esattamente come fanno gli sbalzi grossi del
-rumore vero. Contare gli attraversamenti, da solo, non li distingue affatto.
+Il silenzio ha energia praticamente nulla, e il suo zcr vale circa $0{,}5$,
+cioè quanto quello del rumore. Dipende da come l'abbiamo costruito: il nostro
+«silenzio» è rumore anche lui, solo trecento volte più piccolo. In un fondo
+così ogni minuscolo sbalzo casuale attraversa lo zero, come fanno gli sbalzi
+grossi del rumore vero. Contare soltanto gli attraversamenti non basta a
+distinguerli.
 
-E allora perché la regola funziona? Perché le due domande si fanno in un ordine
+La regola funziona perché le due domande si fanno in un ordine
 preciso: prima l'energia, che manda il silenzio fuori gioco, e solo dopo lo zcr,
 che a quel punto deve separare soltanto il tono dal rumore, e lì la differenza è
 enorme ($0{,}05$ contro $0{,}5$, dieci volte). Una regola a soglie è una
@@ -541,7 +542,7 @@ rumore cupo |    0.0900 |  0.018 | tono
 ```
 
 La regola sbaglia tutte e due le volte. Il tono acuto cambia segno quasi a ogni
-campione, e il conto di prima lo prevede: due attraversamenti per giro, 3.900
+campione, e la formula di prima lo prevede: due attraversamenti per giro, 3.900
 giri al secondo, 8.000 campioni, quindi $2 \times 3900 / 8000 \approx 0{,}975$.
 Il rumore cupo, che ha la stessa energia del rumore bianco, attraversa lo zero
 di rado, ben sotto la soglia di $0{,}20$, e la regola lo chiama tono. Lo zcr
@@ -550,8 +551,8 @@ tono o un rumore è un'altra domanda, e queste due misure non bastano per capirl
 
 Due numeri per finestra e due soglie, nessuna rete, e la logica è già quella dei
 modelli grandi: *estrarre feature che separano le classi, poi decidere*. La
-differenza è che una rete convoluzionale o un AST le feature migliori se le
-imparano da soli, invece di riceverle scritte a mano.
+differenza è che una rete convoluzionale o un AST imparano le feature migliori,
+invece di riceverle scritte a mano.
 
 `````{tab} Elementare
 
@@ -560,8 +561,8 @@ imparano da soli, invece di riceverle scritte a mano.
 - Una volta che il suono è diventato una radiografia (lo spettrogramma),
   riconoscerlo è in gran parte un problema di immagini: la stessa rete che
   distingue un gatto da un cane in una foto distingue un vetro rotto da un
-  clacson in una lastra sonora, e può perfino partire da quello che ha già
-  imparato sulle foto. Con un'avvertenza: sulla lastra spostare una sagoma a
+  clacson in una lastra sonora, e può perfino partire dalle conoscenze già
+  acquisite sulle foto. Con un'avvertenza: sulla lastra spostare una sagoma a
   destra è lo stesso suono più tardi, spostarla in alto è un suono diverso, e
   la rete quella differenza non la conosce, a meno che qualcuno non le scriva
   accanto l'altezza di ogni riga.
@@ -583,7 +584,7 @@ imparano da soli, invece di riceverle scritte a mano.
   fruscio, ma soltanto su un segnale costruito apposta: un fischio acuto o un
   brontolio cupo le ingannano, perché gli attraversamenti dicono dove stanno
   le frequenze, non se il suono è un tono o un rumore. È la stessa idea dei
-  modelli grandi, che però le misure se le scelgono da soli.
+  modelli grandi, che però ricavano le misure dai dati.
 ```
 
 `````
@@ -601,7 +602,7 @@ imparano da soli, invece di riceverle scritte a mano.
   tagging multi-etichetta (più suoni insieme, sigmoide + BCE) sono problemi
   diversi; il rilevamento di eventi sonori aggiunge il *quando*, da etichette
   deboli di clip, e il pooling che riduce i frame alla clip decide se la
-  localizzazione regge (la linear softmax meglio della media e
+  localizzazione è affidabile (la linear softmax meglio della media e
   dell'attenzione).
 - AudioSet {cite}`gemmeke2017audioset` cambia le regole con la scala: il
   paper definisce l'ontologia (632 categorie), la raccolta pubblicata arriva a
@@ -623,7 +624,7 @@ imparano da soli, invece di riceverle scritte a mano.
 
 `````
 
-Le reti che si costruiscono da sole le feature, però, le imparano da qualcuno
+Le reti che ricavano le feature dai dati, però, le imparano da qualcuno
 che ha etichettato gli esempi: per AudioSet ci sono voluti due milioni di clip
 ascoltate da persone, e per la maggior parte delle lingue e dei suoni una
 raccolta etichettata di quella taglia non esiste. Come si impari dal suono

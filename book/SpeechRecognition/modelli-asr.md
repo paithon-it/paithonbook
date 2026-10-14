@@ -11,26 +11,27 @@ quasi il triplo.
 Il compito del riconoscimento vocale automatico (*Automatic Speech
 Recognition*, ASR) è trasformare questa fila di campioni in una fila di
 caratteri, e la difficoltà sta nella sproporzione: sedicimila numeri al
-secondo in ingresso, una quindicina di caratteri in uscita, e nessuna
-indicazione di quale pezzo di suono vada con quale lettera. È il problema
+secondo in ingresso, una quindicina di caratteri al secondo in uscita, e
+nessuna indicazione di quale pezzo di suono vada con quale lettera. È il problema
 dell'allineamento, e per decenni ha deciso il modo di costruire questi
 modelli.
 
 ## Il problema dell'allineamento
 
-Prima di arrivare alla rete il segnale diventa uno spettrogramma: lo si taglia
-in finestre di circa 25 millesimi di secondo, una nuova ogni 10, e per
-ciascuna si misura quanta energia c'è a ogni frequenza, cioè a ogni altezza
-sonora. È la finestra di Hann del capitolo sull'audio, con i bordi sfumati e il
-passo che la fa sovrapporre alla vicina, e ogni finestra è uno dei *frame*
-della panoramica: un secondo di parlato ne dà un centinaio.
+Prima di arrivare alla rete il segnale diventa uno spettrogramma. Lo si taglia
+in finestre di circa 25 millesimi di secondo, una nuova ogni 10, e per ciascuna
+si misura quanta energia c'è a ogni frequenza, cioè a ogni altezza sonora. È la
+finestra di Hann del capitolo sull'audio, con i bordi sfumati e il passo che la
+fa sovrapporre alla vicina, e ogni finestra è un *frame*, come in {doc}`Speech
+Recognition
+</SpeechRecognition/overview>`: un secondo di parlato ne dà un centinaio.
 
-La riduzione non cancella la sproporzione: cento frame al secondo contro
-quei quindici caratteri, e nessuno ci dice quale frame corrisponde a quale
-lettera.
+La riduzione non cancella la sproporzione, perché restano cento frame al
+secondo contro quei quindici caratteri, e nessuno ci dice quale frame
+corrisponde a quale lettera.
 
 `````{tab} Elementare
-Sottotitolare un video a orecchio, senza avere i tempi. Chi parla lento, chi
+Stai sottotitolando un video a orecchio, senza avere i tempi. Chi parla lento, chi
 veloce; una vocale tenuta a lungo («caaasa») occupa molti fotogrammi ma resta
 una sola lettera; tra una parola e l'altra ci sono pause e respiri che non
 vanno scritti. Sai *cosa* è stato detto, ma non *quando* comincia e finisce
@@ -38,36 +39,34 @@ ogni suono. Questo è l'allineamento: appaiare i tanti pezzetti di audio ai
 pochi caratteri del testo.
 
 Una cosa però la sai già: si va nello stesso verso. Il video scorre, il testo
-scorre con lui, e quello che si sente prima è anche scritto prima. Un passaggio
-impastato lo si riascolta quante volte si vuole; quello che non capita mai è
-che una lettera debba scavalcare quella di prima.
+scorre con lui, e il suono che viene prima si scrive prima. Un passaggio
+impastato lo si riascolta quante volte si vuole, ma una lettera non scavalca
+mai quella che la precede.
 
-I tempi si potrebbero anche segnare a mano, col cronometro, suono per
-suono: su un video si fa, su milioni di ore di registrazioni non lo farà
-nessuno. Restano le due cose che costa poco avere, la registrazione e la sua
-trascrizione, e da quelle due i tempi bisogna tirarli fuori da sé.
+I tempi si potrebbero anche segnare a mano, col cronometro, suono per suono; su
+un video si fa, su milioni di ore di registrazioni non lo farà nessuno. Restano
+le due cose facili da avere, la registrazione e la sua trascrizione, e da
+quelle due i tempi vanno ricavati senza aiuto.
 `````
 
 `````{tab} Superiore
 Abbiamo un input $\mathbf{X} = (\mathbf{x}_1, \dots, \mathbf{x}_T)$ di $T$
-frame e un target
-$y = (y_1, \dots, y_U)$ di $U$ token (caratteri o sotto-parole): è la
-trascrizione che nella panoramica chiamavamo $W$, vista qui come sequenza di
-simboli. Con $T \gg U$, l'allineamento è **monotono** (l'audio scorre in
-avanti come il testo) ma sconosciuto: non abbiamo etichette frame per
-frame. Segmentare a
-mano milioni di ore per dire «da qui a qui c'è una a» è impraticabile. Serve un
-modello che impari l'allineamento *da solo*, dalla sola coppia
-(audio, trascrizione).
+frame e un target $y = (y_1, \dots, y_U)$ di $U$ token (caratteri o
+sotto-parole): è la trascrizione $W$ di {doc}`Speech Recognition
+</SpeechRecognition/overview>`, vista qui come sequenza di simboli. Con $T \gg
+U$, l'allineamento è **monotono** (l'audio scorre in avanti come il testo) ma
+sconosciuto: non abbiamo etichette frame per frame. Segmentare a mano milioni
+di ore per dire «da qui a qui c'è una a» è impraticabile. Serve un modello che
+impari l'allineamento dalla sola coppia (audio, trascrizione).
 `````
 
 ## CTC: imparare ad allineare da soli
 
 La svolta arriva nel 2006, e l'idea è di Alex Graves e colleghi: aggiungere
 all'alfabeto un simbolo speciale, il «vuoto» (*blank*, $\varnothing$), che
-significa «qui non produco nessun carattere». Di mestieri ne fa due: sta dove
-non si pronuncia niente, nei silenzi e nei respiri, e tiene separate due
-lettere uguali di fila, che altrimenti si fonderebbero in una. Il metodo si
+significa «qui non produco nessun carattere». Ha due funzioni: occupa i punti
+in cui non si pronuncia niente, nei silenzi e nei respiri, e separa due lettere
+uguali consecutive, che altrimenti si fonderebbero in una. Il metodo si
 chiama *Connectionist Temporal Classification*, in sigla **CTC**
 {cite}`graves2006connectionist`.
 
@@ -88,11 +87,11 @@ prima unisce i caratteri uguali consecutivi, poi elimina i vuoti.
 :width: 90%
 
 Il meccanismo della CTC, un passo alla volta. Per ogni frame è disegnato il
-simbolo più probabile, e fra i candidati c'è anche il «vuoto» ∅; poi si uniscono
-i ripetuti consecutivi, e solo dopo si tolgono i vuoti. L'ordine decide
-tutto: invertendolo la doppia «L» si perde, ed è per impedirlo che il ∅
-esiste. I frame disegnati sono sette perché ci stiano: per una parola come
-«palla» ne servirebbero una cinquantina, uno ogni dieci millesimi di secondo.
+simbolo più probabile, e fra i candidati c'è anche il «vuoto» ∅; poi si
+uniscono i ripetuti consecutivi, e solo dopo si tolgono i vuoti. L'ordine è
+essenziale: invertendolo la doppia «L» si perde, e il ∅ esiste per impedirlo. I
+frame disegnati sono sette perché ci stiano: per una parola come «palla» ne
+servirebbero una cinquantina, uno ogni dieci millesimi di secondo.
 ```
 
 `````{tab} Elementare
@@ -108,7 +107,7 @@ perché la rete vota ogni frame senza guardare che cosa ha votato negli altri:
 sette giudizi che non si parlano fra loro, come sette dadi tirati uno accanto
 all'altro, e allora la probabilità che escano tutti come vogliamo è il
 prodotto dei sette. Che i giudizi non si parlino è una scelta di chi ha
-costruito la CTC, e il suo prezzo arriva fra poco.
+costruito la CTC.
 
 Sette voti moltiplicati fra loro danno un numero piccolo; mettiamo che
 il primo allineamento valga il 3% e il secondo il 2% (sono numeri inventati
@@ -128,8 +127,8 @@ obbligatorio fra le due «L»: `P A L ∅ L A`, sei frame, e in sei frame non ce
 n'è nessun altro. In cinque frame non ce ne sta nessuno: la parola giusta ha
 probabilità zero, e l'addestramento non ha niente da alzare. Per questo la CTC
 serve ad ascoltare e non a parlare: nella sintesi si parte dal testo, corto, e
-si deve arrivare al suono, lungo, mentre la CTC sa soltanto accorciare. E i
-frame che contano sono quelli su cui la rete vota davvero: se prima di votare
+si deve arrivare al suono, lungo, mentre la CTC sa soltanto accorciare. Contano
+i frame su cui la rete vota: se prima di votare
 ne riassume otto in uno, dei cento frame di un secondo restano dodici voti e
 mezzo, meno delle lettere che chi parla svelto pronuncia in un secondo, e la
 sua frase non ci sta. Con pezzi di parola al posto delle lettere singole, i
@@ -154,14 +153,13 @@ riempire una tabella lunga cinquanta colonne, una per frame, e alta quanto
 cinquecentocinquanta caselle in tutto. È lo stesso risparmio del navigatore
 di Viterbi di
 {doc}`POS tagging ed entità </NaturalLanguageProcessing/etichettare-sequenze>`,
-con una differenza che fra poco conterà: là in ogni casella sopravviveva il
-cammino migliore, qui si sommano tutti.
+con una differenza che pesa nella decodifica: là in ogni casella sopravviveva
+il cammino migliore, qui si sommano tutti.
 
-C'è però un prezzo. La rete vota un frame alla volta, e ogni voto lo dà
-guardando il suono e nient'altro: non si rilegge mai
-quello che ha già scritto. Non sa, cioè, che dopo «c-a-n» in italiano viene
-molto più facilmente una «e» che una «q». È un'ignoranza che le costerà cara, e
-a cui qualcun altro dovrà rimediare al posto suo.
+C'è però un limite. La rete vota un frame alla volta, e ogni voto lo dà
+guardando il suono e nient'altro: non si rilegge mai. Non sa, per esempio, che
+dopo «c-a-n» in italiano viene molto più facilmente una «e» che una «q». A
+questa ignoranza dovrà rimediare un altro pezzo del sistema.
 `````
 
 `````{tab} Superiore
@@ -212,33 +210,32 @@ come nel paper. Si addestra minimizzando
 $\mathcal{L} = -\log p(y \mid \mathbf{X})$.
 
 Due limiti strutturali. Il primo è una conseguenza diretta della formula: la
-CTC emette esattamente un simbolo per posizione, quindi le posizioni devono
-bastare, e la soglia è $T \ge U + r$, dove $r$ conta le coppie di simboli
-uguali consecutivi in $y$, ciascuna delle quali vuole in mezzo un vuoto che la
-separi. Sotto quella soglia $\mathcal{B}^{-1}(y)$ è l'insieme vuoto,
-$p(y \mid \mathbf{X}) = 0$ e la loss vale $+\infty$: `ctc_loss` di PyTorch
-restituisce proprio `inf`, e con `zero_infinity=True` azzera quelle loss e i
-loro gradienti, che altrimenti guasterebbero l'addestramento. `PALLA` ha
-$U = 5$ e $r = 1$: in cinque posizioni non ci sta, in sei ci sta in un modo
+CTC emette un solo simbolo per posizione, quindi le posizioni devono bastare, e
+la soglia è $T \ge U + r$, dove $r$ conta le coppie di simboli uguali
+consecutivi in $y$, ciascuna delle quali vuole in mezzo un vuoto che la separi.
+Sotto quella soglia $\mathcal{B}^{-1}(y)$ è l'insieme vuoto, $p(y \mid
+\mathbf{X}) = 0$ e la loss vale $+\infty$: `ctc_loss` di PyTorch restituisce
+proprio `inf`, e con `zero_infinity=True` azzera quelle loss e i loro
+gradienti, che altrimenti guasterebbero l'addestramento. `PALLA` ha $U = 5$ e
+$r = 1$: in cinque posizioni non si può scrivere, in sei si scrive in un modo
 solo (`P A L ∅ L A`), e da lì in poi i modi si moltiplicano. Siccome $T$ è la
 lunghezza dopo il sottocampionamento, il vincolo pesa sulla scelta dell'unità
 di uscita: con un encoder che riduce l'asse del tempo di un fattore $8$, le
 posizioni sono $12{,}5$ al secondo, meno dei caratteri di un parlato svelto,
-mentre con un'unità più lunga, la sotto-parola, il vincolo torna largo. È
-anche il motivo per cui il metodo serve all'ascolto e non alla sintesi vocale,
-dove il testo in ingresso è più corto del suono in uscita
-{cite}`graves2012sequence`. Il secondo, il più citato, è invece un'ipotesi che
-la formula presuppone invece di dedurla, e l'articolo del 2006 la dichiara
-{cite}`graves2006connectionist`: il prodotto
-$\prod_t p_t(\pi_t \mid \mathbf{X})$ si può scrivere solo perché le uscite ai
-vari frame sono condizionatamente indipendenti, e a garantirlo è un vincolo di
-architettura, nessuna connessione di ritorno dallo strato di uscita a se
-stesso. Nel prodotto non c'è quindi nessun fattore della forma
-$p(y_u \mid y_{<u})$; e togliere quel vincolo è esattamente la mossa del
-trasduttore. Non è che la
-CTC modelli «non bene» le dipendenze fra i caratteri in uscita: non ha il posto
-dove metterle. Torneremo su questo punto parlando del modello di linguaggio,
-perché è di lì che discende tutto il resto.
+mentre con un'unità più lunga, la sotto-parola, il vincolo torna largo. È anche
+il motivo per cui il metodo serve all'ascolto e non alla sintesi vocale, dove
+il testo in ingresso è più corto del suono in uscita
+{cite}`graves2012sequence`.
+
+Il secondo limite, il più citato, è un'ipotesi che la formula presuppone e non
+deduce, e che l'articolo del 2006 dichiara {cite}`graves2006connectionist`: il
+prodotto $\prod_t p_t(\pi_t \mid \mathbf{X})$ si può scrivere solo perché le
+uscite ai vari frame sono condizionatamente indipendenti, e lo garantisce un
+vincolo di architettura, l'assenza di connessioni di ritorno dallo strato di
+uscita a se stesso. Nel prodotto non compare perciò nessun fattore della forma
+$p(y_u \mid y_{<u})$, e togliere quel vincolo è la modifica che porta al
+trasduttore. La CTC non modella le dipendenze fra i caratteri in uscita: non ha il
+posto dove metterle.
 
 Una conseguenza dell'addestramento si vede alla prima esecuzione: la rete
 concentra ogni simbolo su un frame, o su pochi, e dà il vuoto quasi a tutti
@@ -250,8 +247,8 @@ un allineatore forzato, come quello che {doc}`La voce sintetica
 `````
 
 Il reticolo su cui si fa quella somma, cioè la tabella con una colonna per frame
-e una riga per simbolo, ha una forma, e conviene guardarla:
-{numref}`fig-reticolo-ctc` lo disegna sui sette frame della parola d'esempio.
+e una riga per simbolo, è disegnato in {numref}`fig-reticolo-ctc` sui sette
+frame della parola d'esempio.
 
 ```{figure} ../figures/reticolo-ctc.svg
 :name: fig-reticolo-ctc
@@ -260,7 +257,7 @@ e una riga per simbolo, ha una forma, e conviene guardarla:
 
 Le righe sono «palla» con i vuoti dentro e ai lati, le colonne i frame. Da
 ogni casella si può restare dove si è, scendere di una riga o scenderne due
-scavalcando un vuoto, e il salto è l'unica mossa che ha un divieto: fra le
+scavalcando un vuoto, e il salto è l'unico passo che ha un divieto; fra le
 due «L» il vuoto va attraversato, o le due lettere si fondono. Ogni cammino
 che arriva in fondo è un allineamento, e la somma di tutti si fa riempiendo
 le caselle una volta sola invece di seguire i cammini uno per uno.
@@ -281,14 +278,14 @@ il modello di linguaggio.
 
 ## Dalla rete alla frase: la decodifica
 
-Fin qui si è visto come si addestra un modello CTC, non come gli si fa
-produrre una trascrizione. Il passaggio dalle distribuzioni di ogni frame alla
-frase scritta si chiama **decodifica**, e le due strade più ovvie non portano
-allo stesso risultato.
+Addestrare un modello CTC e fargli produrre una trascrizione sono due cose
+diverse. Il passaggio dalle distribuzioni di ogni frame alla frase scritta si
+chiama **decodifica**, e le due strade più ovvie non portano allo stesso
+risultato.
 
 La più semplice prende, frame per frame, il simbolo più probabile, e poi
 collassa la sequenza. Si chiama decodifica del **percorso migliore** (*best
-path*), costa un passo per frame, ed è quella di quasi tutto il codice di
+path*), è lineare nel numero di frame ed è quella di quasi tutto il codice di
 esempio. Calcola però il percorso più probabile, non la trascrizione più
 probabile, e i due in generale non coincidono.
 
@@ -311,10 +308,10 @@ lettera «A» esce da tre percorsi diversi, e insieme fanno 24 + 24 + 16 = 64%:
 quasi il doppio. Prendendo il percorso migliore avremmo trascritto il
 silenzio; sommando come fa la CTC, la risposta è «A».
 
-E succede davvero, non solo negli esempi costruiti ad arte: capita ogni volta
-che una trascrizione è sostenuta da tanti percorsi mediocri e un'altra da un
-percorso solo, molto convinto; e di percorsi che danno la stessa parola ce ne
-sono a miliardi, come abbiamo contato per «palla».
+Succede anche fuori dagli esempi costruiti ad arte: ogni volta che una
+trascrizione è sostenuta da tanti percorsi mediocri e un'altra da un percorso
+solo, molto convinto, vince la prima; e i percorsi che danno la stessa parola
+sono miliardi, come si è contato per «palla».
 
 `````
 
@@ -342,7 +339,7 @@ Graves e colleghi lo scrivono già nel paper del 2006
 {cite}`graves2006connectionist`, nella sezione in cui costruiscono il
 classificatore: per l’$\arg\max$ esatto «non conosciamo un algoritmo di
 decodifica trattabile in generale». Al suo posto propongono due metodi
-approssimati. Il primo è proprio il *best path*, che costa niente e non
+approssimati. Il primo è il *best path*, che si calcola senza fatica e non
 garantisce di trovare l'etichettatura più probabile. Il secondo è la *prefix
 search decoding*, che lavora sui prefissi
 invece che sui percorsi e, dato tempo a sufficienza, l'etichettatura più
@@ -356,22 +353,21 @@ ricerca a fascio sui prefissi, che ne tiene aperti $k$ e getta gli altri.
 
 `````
 
-La ricerca a fascio (*beam search*) l'abbiamo già incontrata in {doc}`Da
-frase a frase: tradurre con le reti
-</NaturalLanguageProcessing/seq2seq-traduzione>`: invece di decidere subito,
-si tengono aperte le $k$ ipotesi più promettenti (Whisper, più avanti, ne
-tiene cinque) e si va avanti qualche passo prima di scegliere. L'idea è la
-stessa, ma una cosa cambia, ed è proprio quella di prima: qui molti percorsi
-diversi danno la stessa identica parola. Nella traduzione le ipotesi
+La ricerca a fascio (*beam search*) è già comparsa in {doc}`Da frase a frase:
+tradurre con le reti </NaturalLanguageProcessing/seq2seq-traduzione>`: invece
+di decidere subito, si tengono aperte le $k$ ipotesi più promettenti e si va
+avanti qualche passo prima di scegliere. L'idea è la stessa, con una differenza
+che viene dal problema degli allineamenti: qui molti percorsi diversi danno la
+stessa parola. Nella traduzione le ipotesi
 competono: due strade diverse sono due frasi diverse, e alla fine ne resta
 una. Nella CTC no: due percorsi che si ripuliscono nello stesso testo sono la
 stessa ipotesi, e i loro punteggi vanno sommati invece di essere messi in
 concorrenza. Una ricerca a fascio che se ne dimentica può scartare la
 trascrizione giusta, come il percorso migliore.
 
-Il caso dei due frame si rifà in poche righe di codice, elencando i quattro
-percorsi e sommandoli, ed è il modo più rapido di convincersene: il percorso
-più votato vale 0,36 e non scrive niente, la lettera «A» vale 0,64.
+Il caso dei due frame si rifà in poche righe di codice, che elencano i quattro
+percorsi e li sommano: il percorso più votato vale 0,36 e non scrive niente, la
+lettera «A» vale 0,64.
 
 ```python
 import itertools
@@ -417,29 +413,27 @@ percorso migliore: ∅∅ -> '' 0.36
   p(y = '') = 0.36
 ```
 
-Da qui in avanti, quando diremo che un sistema CTC «trascrive», intendiamo una
-ricerca di questo tipo, non il simbolo più votato frame per frame.
+Quando si dice che un sistema CTC «trascrive», si intende una ricerca di questo
+tipo, non il simbolo più votato frame per frame.
 
 ## Ascoltare e attendere: i modelli con attenzione
 
-La CTC è una prima famiglia di modelli. Ce n'è una seconda, e il vuoto non ce
-l'ha proprio. Il lavoro qui è
-diviso fra due parti della stessa rete: una ascolta tutto l'audio e se lo
-riassume (si chiama *encoder*, «codificatore»), l'altra scrive il testo un
-carattere alla volta (il *decoder*), e ogni carattere lo sceglie tenendo conto
-di quelli che ha già scritto. In gergo si dice che procede in modo
+La seconda famiglia di modelli non ha il vuoto. Il lavoro è diviso fra due
+parti della stessa rete: l’*encoder* («codificatore») ascolta tutto l'audio e
+lo riassume, il *decoder* scrive il testo un carattere alla volta, scegliendo
+ciascuno in base a quelli già scritti. Si dice che procede in modo
 *autoregressivo*, cioè rileggendosi.
 
-A ogni passo il decoder deve decidere quale pezzo di audio guardare, e la cosa
-che glielo fa decidere si chiama attenzione. È di nuovo l'allineamento da cui
-siamo partiti, e anche qui il modello se lo impara da solo; la differenza con
-la CTC è che la CTC è obbligata ad andare avanti frame per frame, mentre
-l'attenzione può dare peso a qualunque punto dell'audio, avanti o indietro:
-l'allineamento diventa morbido, una distribuzione di pesi sui frame invece di
-un cammino che li visita uno dopo l'altro. L'architettura di riferimento è
-*Listen, Attend and Spell* {cite}`chan2016listen`, ed è da lì che viene
-«ascoltare e attendere»: «attendere» traduce l'inglese *attend*, che non vuol
-dire aspettare ma «fare attenzione a».
+A ogni passo il decoder deve decidere quale pezzo di audio guardare, e il
+meccanismo che glielo fa decidere si chiama attenzione. È di nuovo
+l'allineamento da cui siamo partiti, e anche qui il modello lo ricava dai dati;
+la differenza con la CTC è che la CTC è obbligata ad andare avanti frame per
+frame, mentre l'attenzione può dare peso a qualunque punto dell'audio, avanti o
+indietro: l'allineamento diventa morbido, una distribuzione di pesi sui frame
+invece di un cammino che li visita uno dopo l'altro. L'architettura di
+riferimento è *Listen, Attend and Spell* {cite}`chan2016listen`, ed è da lì che
+viene «ascoltare e attendere»: «attendere» traduce l'inglese *attend*, che non
+vuol dire aspettare ma «fare attenzione a».
 
 `````{tab} Elementare
 Un interprete che traduce a discorso finito prima ascolta l’intera frase, poi
@@ -448,13 +442,13 @@ Mentre pronuncia ogni parola, la sua attenzione torna al punto giusto di ciò
 che ha sentito. Il modello fa lo stesso: genera un carattere, si
 «riguarda» la porzione di audio più rilevante, genera il prossimo.
 
-E l'interprete non riparte da zero a ogni parola: tiene il filo di quello che
-ha appena detto, e dopo «i bambini» dirà «giocano», non «gioca». Da questo
+L'interprete non riparte da zero a ogni parola: tiene il filo delle parole
+appena dette, e dopo «i bambini» dirà «giocano», non «gioca». Da questo
 rileggersi il modello ricava gratis un orecchio per la lingua, che nessuno gli
 ha insegnato: sa come continuano le frasi, e ci si appoggia quando il suono è
 confuso.
 
-L'interprete, però, paga due prezzi. Il primo è che, per cominciare, deve
+L'interprete, però, ha due limiti. Il primo è che, per cominciare, deve
 aver ascoltato la frase fino in fondo: un modello così non può scrivere
 mentre uno sta ancora parlando. Il secondo è che
 niente gli impedisce di sbagliare punto. Può riguardare un pezzo di audio che
@@ -480,20 +474,19 @@ produrre il token $i$-esimo, e $T_{\text{enc}} \le T$ è il numero di stati
 dell'encoder: l'encoder tipicamente sottocampiona l'asse temporale (in LAS di
 un fattore 8), proprio per rendere trattabile l'attenzione su sequenze lunghe.
 A differenza della CTC, il decoder condiziona ogni token su quelli già emessi:
-modella cioè le dipendenze del testo in uscita, ed è per questo che un modello
-del genere si porta dentro un modello di linguaggio senza che nessuno
-gliel'abbia messo.
+modella cioè le dipendenze del testo in uscita, e per questo contiene un
+modello di linguaggio implicito, che nessuno gli ha inserito.
 
-Il prezzo si paga altrove, e non è la generazione sequenziale più lenta. È che
-nulla vincola $\alpha_{ij}$ ad avanzare al crescere di $i$: la CTC ha la
+Il punto debole sta altrove, non nella lentezza della generazione sequenziale.
+Nulla vincola $\alpha_{ij}$ ad avanzare al crescere di $i$: la CTC ha la
 monotonia per costruzione, l'attenzione la deve imparare, e niente le impedisce
 di saltare una porzione di audio, di riguardarne una già trascritta o di
 restare ferma dov'è. Da lì vengono le parole mancanti, le sillabe ripetute e i
-loop di ripetizione, che ritroveremo identici (stessa causa, altro compito)
-nella sintesi vocale. C'è poi un secondo prezzo, che conta appena si esce dal
-laboratorio: la somma corre su tutti gli stati dell'encoder, quindi il
-primo token non può uscire prima che sia arrivato l'ultimo frame. Un modello
-così non trascrive mentre ascolta.
+loop di ripetizione, che si ritrovano identici (stessa causa, altro compito)
+nella {doc}`sintesi vocale </SpeechRecognition/sintesi-vocale>`. Un secondo
+difetto conta appena si esce dal laboratorio. La somma corre su tutti gli stati
+dell'encoder, quindi il primo token non può uscire prima dell'ultimo frame, e
+il modello non trascrive mentre ascolta.
 `````
 
 Una tecnica di addestramento ha contato, per questi modelli, quanto
@@ -510,10 +503,10 @@ LibriSpeech, la raccolta di audiolibri letti che fa da prova d'esame comune. La
 ragione, scrivono gli autori, è che i dati guastati trasformano un problema di
 overfitting (la rete che impara a memoria gli esempi) in uno di underfitting
 (la rete che non riesce più a seguirli tutti), e a quel punto una rete più
-grande torna a rendere. Coprire a tratti l'ingresso è anche il gesto di
-wav2vec 2.0, un anno dopo: le sue rappresentazioni del suono le copre con una
-strategia che dichiara simile a questa, e ne fa un compito, indovinare che
-cosa c'era sotto, invece di un disturbo da sopportare.
+grande torna a rendere. Anche wav2vec 2.0, un anno dopo, copre a tratti
+l'ingresso: maschera le sue rappresentazioni del suono con una strategia che
+dichiara simile a questa, e ne fa un compito, indovinare che cosa c'era sotto,
+invece di un disturbo da sopportare.
 
 ## Il trasduttore neurale (RNN-T)
 
@@ -525,11 +518,12 @@ il segno. La scelta si evita con una terza famiglia, che tiene le due cose
 insieme: il **trasduttore neurale**, proposto da Alex Graves nel 2012
 {cite}`graves2012sequence`, cioè da chi aveva scritto la CTC sei anni prima.
 Nei testi si trova sempre con la sigla RNN-T, dove le prime tre lettere sono le
-reti ricorrenti del capitolo sul linguaggio naturale, quelle che leggono una
-sequenza un pezzo alla volta tenendosi in mente il pezzo di prima.
+{doc}`reti ricorrenti </NaturalLanguageProcessing/modelli-sequenza>`, quelle
+che leggono una sequenza un pezzo alla volta tenendosi in mente il pezzo di
+prima.
 
-Quella data va guardata. Il trasduttore non arriva *dopo* i modelli con
-attenzione per rimediare ai loro difetti: precede di tre anni *Listen, Attend
+Il trasduttore non nasce per rimediare ai difetti dei modelli con attenzione,
+che ancora non esistevano: precede di tre anni *Listen, Attend
 and Spell* (2015, in conferenza l'anno dopo) e di due il primo riconoscitore
 con attenzione. È nato dal lato della CTC, per toglierle il difetto che il suo
 autore le conosceva meglio di chiunque.
@@ -545,37 +539,35 @@ l'audio prima di cominciare.
 
 `````{tab} Elementare
 
-E se si scrivesse mentre l’altro parla? È il mestiere dello stenografo sotto
-dettatura: non aspetta la fine del discorso come l’interprete, scrive mentre
-ascolta, e non torna mai indietro sul nastro. Però ha sotto gli occhi il
+Si potrebbe scrivere mentre l’altro parla, come fa lo stenografo
+sotto dettatura: non aspetta la fine del discorso come l’interprete, scrive
+mentre ascolta, e non torna mai indietro sul nastro. Però ha sotto gli occhi il
 foglio, cioè quello che ha appena scritto, e quel foglio lo aiuta: se ha
 scritto «buon», la parola dopo sarà più probabilmente «giorno» che «gnorno».
 
-Il trasduttore è questo. A ogni istante ha due mosse possibili: scrivere un
+Il trasduttore funziona così. A ogni istante può fare due cose: scrivere un
 carattere (e allora rilegge il foglio aggiornato, ma resta fermo sull'audio) o
-passare al frame successivo senza scrivere niente. Questa seconda mossa è il
-vuoto, che qui cambia mestiere: non separa più le lettere, dice soltanto
-«avanti». Alternando le due mosse copre tutto l'audio e produce tutto il
-testo, senza mai tornare indietro e senza mai dimenticare quello che ha già
-messo giù. Le due «L» di PALLA, qui, non hanno bisogno di niente in mezzo:
-nessuno fonde più i simboli uguali, si scrivono due volte e basta.
+passare al frame successivo senza scrivere niente. La seconda azione è il
+vuoto, che qui cambia funzione: non separa più le lettere, dice soltanto
+«avanti». Alternando le due azioni copre tutto l'audio e produce tutto il
+testo, senza mai tornare indietro e senza mai dimenticare le lettere già messe
+giù. Le due «L» di PALLA, qui, non hanno bisogno di niente in mezzo: nessuno
+fonde più i simboli uguali, e si scrivono due volte.
 
 Quando scrivere e quando spostarsi non gliel'ha detto nessuno. I ritmi
 possibili sono moltissimi, come i modi di etichettare i frame nella CTC, e in
-addestramento contano tutti insieme: quello che si spinge in alto è il totale,
-non un ritmo in particolare.
+addestramento contano tutti insieme: a salire è il totale, non un ritmo in
+particolare.
 
-Restando fermo sull'audio, in teoria, potrebbe scrivere all'infinito: a
-fermarlo non c'è una regola, c'è il fatto che dopo aver scritto quello che quel
-pezzo di suono conteneva, il vuoto, cioè l'«avanti», diventa la mossa più
-votata, e allora si sposta. Se un modello mal addestrato si incaponisce a
-scrivere, infatti, esce proprio quello: una parola ripetuta finché qualcuno non
-stacca la spina.
+Restando fermo sull'audio potrebbe, in teoria, scrivere all'infinito. A
+fermarlo non c'è una regola. Dopo aver scritto le lettere di quel pezzo di
+suono, l'«avanti» diventa la scelta più votata, e il trasduttore si
+sposta. Un modello mal addestrato che si incaponisce a scrivere produce infatti
+una parola ripetuta finché qualcuno non stacca la spina.
 
-E quel foglio, quello che lo stenografo si rilegge, dentro il trasduttore è
-una rete a sé: la *prediction network*, «la rete che prevede», il cui unico
-mestiere è guardare le lettere già scritte e dire cosa ci si aspetta dopo. È
-la cosa che alla CTC manca del tutto.
+Il foglio che lo stenografo si rilegge è, nel trasduttore, una rete a sé: la
+*prediction network*, «la rete che prevede», che guarda le lettere già scritte
+e dice che cosa ci si aspetta dopo. Alla CTC manca del tutto.
 
 `````
 
@@ -630,7 +622,7 @@ $1{,}6$ GB in precisione singola per un solo esempio; per questo le
 implementazioni lo calcolano a pezzi, o potano il reticolo attorno a un
 allineamento stimato.
 
-Due conseguenze, ed è tutto il punto. La prediction network è a tutti gli
+Ne seguono due conseguenze. La prediction network è a tutti gli
 effetti un modello di linguaggio interno, condizionato sui token già emessi:
 il trasduttore modella cioè le dipendenze uscita-uscita che la CTC non ha dove
 mettere. E con un encoder causale $\mathbf{h}_t$ dipende solo dai frame fino
@@ -643,20 +635,24 @@ uscita dipendesse dall'intera sequenza in ingresso {cite}`graves2012sequence`,
 e il trasduttore originale lo streaming non lo faceva: la versione che
 trascrive in diretta è venuta dopo, con un encoder che guarda solo il passato
 {cite}`he2019streaming`. Oggi l'encoder, di un trasduttore come di una CTC, è
-spesso un Conformer {cite}`gulati2020conformer`: un Transformer in cui ogni
-blocco affianca all'auto-attenzione, che lega posizioni lontane, un modulo
+spesso un Conformer {cite}`gulati2020conformer`: un blocco Transformer in cui
+l'auto-attenzione, che lega posizioni lontane, è affiancata da un modulo
 convolutivo, che coglie le regolarità locali come il passaggio da un fonema al
-successivo.
+successivo. I due moduli stanno fra due reti feed-forward, ciascuna col suo
+contributo dimezzato nel residuo (struttura «macaron»). Nella taglia maggiore,
+con $118{,}8$ milioni di parametri e un decoder LSTM a trasduttore, il
+Conformer ottiene sul LibriSpeech un WER di $2{,}1\%$ sul parlato pulito e
+$4{,}3\%$ sul parlato più difficile senza modello di linguaggio, $1{,}9\%$ e
+$3{,}9\%$ con uno esterno.
 
 `````
 
-Il trasduttore è anche l'architettura che Google ha portato dentro il telefono:
+Il trasduttore è anche l'architettura che Google ha portato dentro il telefono.
 He e colleghi descrivono un riconoscitore che trascrive in diretta senza
 mandare l'audio a un server, due volte più veloce del tempo reale su un
 telefono Pixel {cite}`he2019streaming`. È la condizione della dettatura, dove
 la risposta deve arrivare mentre si parla e il modello deve stare dentro il
-dispositivo. Fra poco ci chiederemo a che cosa serva ancora, oggi, la vecchia
-catena a stadi.
+dispositivo.
 
 ## Whisper e i Transformer end-to-end
 
@@ -680,19 +676,19 @@ nessuno stadio con regole scritte a mano: encoder e decoder sono addestrati
 insieme, in un pezzo solo.
 ```
 
-Quello che manca in {numref}`fig-whisper` conta quanto quello che c'è. Un
-riconoscitore a stadi ha tre pezzi da mettere a punto lingua per lingua: il
+In {numref}`fig-whisper` mancano i pezzi che un riconoscitore a stadi deve
+mettere a punto lingua per lingua. Sono tre: il
 modello acustico, che giudica a quali suoni somiglia ogni frammento; il
 modello di linguaggio; e, fra i due, il **dizionario di pronuncia**, un elenco
 compilato a mano che dice di quali fonemi è fatta ogni parola. La catena di
-montaggio di {numref}`fig-asr-pipeline` mostrava i primi due, e il terzo non
+montaggio di {numref}`fig-asr-pipeline` mostrava i primi due, e il dizionario non
 compare in nessuno dei due disegni.
 
-Quei tre compiti restano anche qui, ma nessuno li ha più assegnati a un pezzo
-suo: sono sparsi nei pesi, cioè nei numeri che la rete ha imparato. Con un
-modello solo non c'è più niente da compilare a mano lingua per lingua, il
-dizionario di pronuncia per primo: aggiungere una lingua vuol dire darle altro
-audio con la sua trascrizione, non scriverle un pezzo su misura. Che convenga
+I tre compiti restano anche qui, ma nessun pezzo li svolge separatamente: sono
+sparsi nei pesi, cioè nei numeri che la rete ha imparato. Con un modello solo
+non c'è più niente da compilare a mano lingua per lingua, il dizionario di
+pronuncia per primo: per aggiungere una lingua basta altro audio con la sua
+trascrizione, senza scrivere un pezzo su misura. Che convenga
 mettere tante lingue e tanti compiti nella stessa rete, però, dipende dalla
 taglia. Gli autori di Whisper lo misurano sul riconoscimento dell'inglese: a
 parità di calcolo, i modelli piccoli addestrati su tutte le lingue e tutti i
@@ -700,12 +696,12 @@ compiti sbagliano più di quelli addestrati sul solo inglese, e solo i più
 grandi rovesciano il confronto.
 
 La sua forza, del resto, sta più nei dati che nell'architettura: le 680.000
-ore di audio della panoramica, raccolte dal web con **etichettatura debole**,
-cioè trascrizioni già esistenti in rete,
-scritte da qualcuno per i propri scopi e non per addestrare un modello.
+ore di audio, raccolte dal web con **etichettatura debole**, cioè con
+trascrizioni già esistenti in rete, scritte da qualcuno per i propri scopi e
+non per addestrare un modello.
 «Debole» non vuol dire «non curata». Gli autori le passano al setaccio con
 filtri automatici, buttando via quelle prodotte da altri riconoscitori
-(imparare da un altro riconoscitore vuol dire ereditarne gli errori) e i
+(chi impara da un altro riconoscitore ne eredita gli errori) e i
 duplicati; e ispezionano a mano le fonti che sbagliano di più, per eliminarle.
 Le coppie in cui la lingua parlata non è quella scritta le buttano via anche
 loro, con un'eccezione che conta: se il testo è in inglese la coppia resta, e
@@ -714,24 +710,24 @@ lo stesso modello, oltre a trascrivere, traduce.
 
 Quelle ore coprono quasi cento lingue, l'inglese e altre novantasei, ma non
 allo stesso modo: l'inglese se ne prende circa due terzi, e la maggior parte
-delle altre sta sotto le mille ore. È da qui che viene il salto di qualità che
-si sente passando all'italiano, e gli autori ne ricavano una stima, da una
+delle altre sta sotto le mille ore. È da qui che viene la differenza di qualità
+fra l'inglese e le altre lingue, e gli autori ne ricavano una stima, da una
 regressione fatta *fra* le lingue: il tasso di errore, cioè la quota di parole
 sbagliate, si dimezza ogni volta che le ore si moltiplicano per sedici. Da
 mille a sedicimila ore l'errore atteso si dimezza, e per dimezzarlo ancora ne
 servirebbero duecentocinquantaseimila: il costo di fare meglio cresce in
 fretta. La regressione confronta lingue diverse, però, e non dice che portare
-una lingua precisa a sedicimila ore ne dimezzi davvero l'errore: questo il
-paper non lo misura.
+una lingua precisa a sedicimila ore ne dimezzi l'errore: questo il paper non lo
+misura.
 
-Con lo stesso modello Whisper trascrive, traduce verso l'inglese e riconosce
-la lingua. A dirgli quale dei tre mestieri fare sono delle istruzioni infilate
-nel decoder sotto forma di simboli che non si pronunciano (in gergo *token*
-speciali): uno dice in che lingua si sta parlando, un altro se il compito è
-trascrivere o tradurre. La fila che il decoder scrive è
+Con lo stesso modello Whisper trascrive, traduce verso l'inglese e riconosce la
+lingua. Quale dei tre compiti svolgere lo stabiliscono alcune istruzioni
+infilate nel decoder sotto forma di simboli che non si pronunciano (in gergo
+*token* speciali): uno dice in che lingua si sta parlando, un altro se il
+compito è trascrivere o tradurre. La fila che il decoder scrive è
 `<|startoftranscript|> <|it|> <|transcribe|> <|notimestamps|>`, poi il testo,
-poi `<|endoftext|>`, e ogni campo è una predizione come le altre: la lingua il
-modello la dichiara da sé, `<|nospeech|>` dice che nella finestra non parla
+poi `<|endoftext|>`, e ogni campo è una predizione come le altre: la lingua la
+dichiara il modello stesso, `<|nospeech|>` dice che nella finestra non parla
 nessuno, e se i tempi servono, al posto di `<|notimestamps|>` scrive token di
 istante quantizzati a $20$ ms prima e dopo ogni frase. L'addestramento chiede
 soltanto di indovinare il token successivo, con la stessa entropia incrociata
@@ -750,51 +746,50 @@ modelli addestrati su LibriSpeech con cui lo confrontano, soprattutto sui
 rumori naturali come il brusio di un locale. Sull'audio pulito, invece, i
 modelli allenati apposta per quella prova gli restavano davanti.
 
-E ha un fianco scoperto, che il paper dichiara. I dati vengono dal web, e sul
+Ha anche un fianco scoperto, che il paper dichiara. I dati vengono dal web, e sul
 web stanno anche i benchmark: se le frasi dell'esame erano già dentro il
-materiale di studio, il voto è gonfiato. Gli autori il controllo l'hanno fatto,
+materiale di studio, il voto è gonfiato. Gli autori hanno fatto il controllo,
 ma su una raccolta sola (TED-LIUM 3, registrazioni di conferenze TED) e
-confrontando le trascrizioni scritte, non l'audio; il che vuol dire che una
-registrazione ripubblicata altrove con parole leggermente diverse sarebbe
-passata inosservata.
+confrontando le trascrizioni scritte, non l'audio; una registrazione
+ripubblicata altrove con parole leggermente diverse sarebbe passata
+inosservata.
 
 Due precisazioni, per non lasciare a Whisper meriti che non ha e difetti che
 non sono solo suoi.
 
 La prima: la catena a stadi non l'ha mandata in pensione Whisper, che del
 passaggio a una rete sola, cominciato anni prima con la CTC e i modelli con
-attenzione, è soltanto la vetrina più visibile. E la vecchia catena non è
-nemmeno sparita: dove le parole da riconoscere sono poche e note in anticipo
+attenzione, è soltanto la vetrina più visibile. La vecchia catena non è
+nemmeno sparita. Dove le parole da riconoscere sono poche e note in anticipo
 (i comandi di un centralino telefonico, i codici letti ad alta voce in un
 magazzino) i sistemi a stadi restano in servizio, perché sono piccoli e la
 grammatica delle frasi ammesse si cambia senza riaddestrare niente. Anche un
 modello end-to-end si può costringere dentro un elenco di parole, ma ci vuole
 un grafo di decodifica o un addestramento fatto apposta.
 
-La seconda riguarda la trascrizione in diretta, e va detta perché Whisper è
-così famoso che si finisce per credere che faccia tutto. Questo no: prima di
-scrivere la prima parola deve aver ascoltato tutto quello che gli è stato
-dato, e gliene diamo trenta secondi alla volta, quindi trascrive a blocchi. La
-dettatura che compare sullo schermo mentre parli è un'altra cosa, ed è quella
-dei trasduttori di poco fa, che sono end-to-end come lui ma tengono il passo
-dell'audio frame per frame.
+La seconda riguarda la trascrizione in diretta. Whisper è così famoso che si
+finisce per credere che faccia tutto, e questo non lo fa. Prima di scrivere la
+prima parola deve aver ascoltato tutto l'audio che gli è stato
+dato, e gliene
+diamo trenta secondi alla volta, quindi trascrive a blocchi. La dettatura che
+compare sullo schermo mentre parli la fanno i trasduttori, end-to-end come lui
+ma capaci di tenere il passo dell'audio frame per frame.
 
 Dal decoder con attenzione vengono anche i suoi limiti, che gli autori
-dichiarano onestamente. Il decoder non è obbligato a scorrere l'audio in
-avanti, e quando il legame fra testo e suono si allenta quello che resta è un
-modello di linguaggio molto bravo che continua a scrivere per conto proprio,
-senza più guardare il suono. Sull'audio lungo il guasto si aggrava, perché ogni
-finestra di trenta secondi comincia dove il modello stesso ha deciso che finiva
-la precedente: se ha sbagliato a decidere, l'errore passa alla finestra dopo.
-Il paper elenca tre sintomi: le prime o le ultime parole di un segmento che non
-vengono trascritte, le ripetizioni in loop, e il testo inventato di sana pianta
-(in gergo *allucinato*: il modello scrive parole che nessuno ha detto). È
-quello che si vede nei sottotitoli automatici quando riempiono di frasi un
-passaggio in cui non parla nessuno.
+dichiarano. Il decoder non è obbligato a scorrere l'audio in avanti, e quando
+il legame fra testo e suono si allenta resta un modello di linguaggio molto
+bravo che continua a scrivere senza più guardare il suono. Sull'audio lungo il
+guasto si aggrava, perché ogni finestra di trenta secondi comincia dove il
+modello stesso ha deciso che finiva la precedente: se ha sbagliato a decidere,
+l'errore passa alla finestra dopo. Il paper elenca tre sintomi: le prime o le
+ultime parole di un segmento che non vengono trascritte, le ripetizioni in
+loop, e il testo inventato di sana pianta (in gergo *allucinato*: il modello
+scrive parole che nessuno ha detto). Lo si vede nei sottotitoli automatici che
+riempiono di frasi un passaggio in cui non parla nessuno.
 
 Per questo prendere a ogni passo il simbolo più probabile, la decodifica che
 in gergo si dice *ingorda* (*greedy*), qui non basta. Somiglia al percorso
-migliore della CTC nel gesto, ma non nel guasto: là molti percorsi diversi
+migliore della CTC nella forma, ma non nel guasto: là molti percorsi diversi
 davano la stessa frase, qui ogni scelta condiziona tutte quelle dopo, e un
 errore iniziale può chiudere il decoder in un giro di ripetizioni da cui non
 esce più. Gli autori usano al suo posto una ricerca a fascio a cinque ipotesi,
@@ -811,15 +806,15 @@ scende sotto $-1$, il pezzo è scartato anche lui. Un pezzo scartato si rigenera
 temperatura più alta, salendo da $0$ fino a $1$ a passi di $0{,}2$
 {cite}`radford2022robust`; e siccome una temperatura alta rende il modello
 meno incaponito sulla parola che gli sembra ovvia, gli capiterà di provarne una
-diversa, che è esattamente quello che serve per uscire da un loop.
+diversa, e una parola diversa interrompe il loop.
 
 ## Il modello di linguaggio nella decodifica
 
-Quello che dice il suono, da solo, non basta mai. In italiano «l'ago» e
-«lago», «l'una» e «luna» si pronunciano allo stesso identico modo: a decidere
-è il contesto. Qui entra il modello di linguaggio (LM), che sa quali
-sequenze di parole sono frasi plausibili e sposta la trascrizione verso ciò
-che «suona» come italiano corretto.
+Il suono, da solo, non basta mai. In italiano «l'ago» e «lago», «l'una» e
+«luna» si pronunciano nello stesso modo. A decidere è il contesto. Qui entra il
+modello di linguaggio (LM), che sa quali sequenze di parole sono frasi
+plausibili e sposta la trascrizione verso ciò che «suona» come italiano
+corretto.
 
 Il modo di farlo entrare cambia con l'epoca. Nei sistemi classici il modello di
 linguaggio non arrivava dopo il riconoscitore: ci stava dentro. Prima di
@@ -842,41 +837,41 @@ lascia finire la ricerca e si riordinano con il modello di linguaggio le prime
 $n$ ipotesi che ha prodotto.
 
 Quanto serva, però, dipende dall'architettura. Un modello che scrive
-rileggendosi, come Whisper o come il *Listen, Attend and Spell* di prima (in
-gergo: con decoder autoregressivo), un modello di linguaggio ce l'ha già
-dentro. Lo ha imparato senza volerlo, perché sceglie ogni pezzo di testo
-guardando quelli che ha già scritto. Un modello di linguaggio esterno gli serve
-comunque, e Kannan e colleghi lo misurano: la fusione superficiale porta un
+rileggendosi, come Whisper o il *Listen, Attend and Spell* visto sopra (si
+dice: con decoder autoregressivo), un modello di linguaggio ce l'ha già dentro,
+imparato senza volerlo perché sceglie ogni pezzo di testo in base a quelli già
+scritti. Uno esterno serve comunque, e Kannan e colleghi lo misurano: la
+fusione superficiale con un modello di linguaggio a rete ricorrente porta un
 decoder con attenzione dal 10,3 al 6,9 per cento di parole sbagliate sul corpus
 del *Wall Street Journal*, dove si legge ad alta voce testo di giornale, e dal
-7,7 al 7,0 sulle ricerche vocali. Ma il guadagno si assottiglia man mano che le
-trascrizioni viste in addestramento aumentano, perché il decoder diventa da sé
-un modello di linguaggio robusto, e quello che resta è soprattutto sui termini
-rari o di dominio (nomi propri, sigle, gergo medico).
+7,7 al 7,0 sulle ricerche vocali. Il guadagno relativo è del 33% sul primo
+compito e del 9% sul secondo, che ha molte più trascrizioni di addestramento
+(quindici milioni di enunciati): su quel compito il modello di linguaggio
+interno del decoder è già competitivo, e quello esterno aggiunge poco.
 
-Un modello CTC, invece, decide ogni frame per conto suo, guardando il suono e
-mai le lettere che ha già scritto, ed è l'ignoranza già annunciata: non ha il
-posto dove mettere un modello di linguaggio interno, e per lui quello esterno
-pesa molto di più. Quanto, lo mostrano Baevski e colleghi con wav2vec 2.0 e una
-testa CTC a caratteri {cite}`baevski2020wav2vec`. Rifinito su dieci minuti di
-parlato trascritto e decodificato senza modello di linguaggio, sbaglia il 40,2
-per cento delle parole sugli audiolibri puliti di LibriSpeech, e gli errori
-sono quasi tutti di ortografia, parole quasi giuste che non esistono (*coud*
-per *could*, *stil* per *still*); con un modello di linguaggio Transformer
-scende al 4,8. Rifinito su tutte le 960 ore trascritte, passa dal 2,2 all'1,8:
-il modello di linguaggio serve sempre, ma il suo peso cala man mano che
-crescono le trascrizioni. Il trasduttore sta in mezzo, e ora si capisce perché:
+Un modello CTC, invece, decide ogni frame guardando il suono e mai le lettere
+già scritte: non ha il posto dove mettere un modello di linguaggio interno, e
+quello esterno pesa molto di più. Lo mostrano Baevski e colleghi con wav2vec
+2.0 e una testa CTC a caratteri {cite}`baevski2020wav2vec`. Rifinito su dieci
+minuti di parlato trascritto e decodificato senza modello di linguaggio,
+sbaglia il 40,2 per cento delle parole sugli audiolibri puliti di LibriSpeech,
+e gli errori sono quasi tutti di ortografia, parole quasi giuste che non
+esistono (*coud* per *could*, *stil* per *still*); con un modello di linguaggio
+Transformer scende al 4,8. Rifinito su tutte le 960 ore trascritte, passa dal
+2,2 all’1,8: il modello di linguaggio serve sempre, ma il suo peso cala al
+crescere delle trascrizioni. Il trasduttore sta in mezzo, e si capisce perché
 la sua *prediction network* (il foglio che lo stenografo si rilegge) è il
 modello di linguaggio interno che alla CTC mancava.
 
 ## Misurare gli errori: il Word Error Rate
 
-Come diciamo che una trascrizione è «buona»? La metrica standard è il Word
-Error Rate (WER), ed è la {doc}`distanza di edit
+Come si dice che una trascrizione è «buona»? La metrica standard è il Word
+Error Rate (WER): la {doc}`distanza di edit
 </NaturalLanguageProcessing/strumenti-classici>` che portava da *carta* a
-*casa*, con le parole al posto delle lettere: il numero minimo di correzioni
-(cambia una parola, toglila, aggiungine una) che servono per trasformare la
-trascrizione prodotta in quella di riferimento.
+*casa*, calcolata sulle parole invece che sulle lettere e divisa per la
+lunghezza del riferimento. È il numero minimo di correzioni (cambiare una
+parola, toglierla, aggiungerne una) che trasformano la trascrizione prodotta in
+quella di riferimento.
 
 $$
 \text{WER} = \frac{S + D + I}{N},
@@ -884,22 +879,21 @@ $$
 
 dove $S$ è il numero di sostituzioni, $D$ le cancellazioni, $I$ le
 inserzioni e $N$ il numero di parole nel riferimento, che è anche
-$S + D + C$ con $C$ le parole indovinate. Attenzione ai nomi,
-perché sono dal punto di vista del sistema e non di chi corregge: una
+$S + D + C$ con $C$ le parole indovinate. I nomi
+sono dati dal punto di vista del sistema e non di chi corregge: una
 *cancellazione* è una parola che il sistema si è mangiato, un’*inserzione* è
-una parola che ha aggiunto di suo. Chi corregge fa il gesto opposto, ma
-l'errore si chiama così. Il WER si minimizza: $0$ è la trascrizione perfetta,
-e il rapporto può anche superare $1$. Quando, lo dice un passaggio solo:
-siccome $N = S + D + C$, chiedere $S + D + I > N$ vuol dire chiedere
-$S + D + I > S + D + C$, dove $S$ e $D$ stanno da tutt'e due le parti e si
-cancellano. Resta $I > C$: basta che le parole aggiunte siano più di quelle
-azzeccate, e non serve affatto che siano più di quante ne contiene il
-riferimento. E succede: nelle tabelle di Whisper alcune lingue con poche ore
-di addestramento superano il 100 per cento, cioè il modello vi aggiunge più
-parole di quante ne indovini {cite}`radford2022robust`.
+una parola che ha aggiunto di suo. Chi corregge compie l'operazione opposta,
+ma l'errore ha il nome del sistema. Il WER si minimizza: $0$ è la
+trascrizione perfetta, e il rapporto può superare $1$. Poiché $N = S + D + C$,
+la condizione $S + D + I > N$ equivale a $S + D + I > S + D + C$, dove $S$ e
+$D$ compaiono da tutt'e due le parti e si cancellano. Resta $I > C$: basta che
+le parole aggiunte siano più di quelle azzeccate, e non serve che siano più di
+quante ne contiene il riferimento. Capita nelle tabelle di Whisper, dove il WER
+dei modelli piccoli supera il 100 per cento in diverse lingue, cioè il modello
+vi aggiunge più parole di quante ne indovini {cite}`radford2022robust`.
 
-Un conto per intero, fatto come quello fra *carta* e *casa* nel capitolo sul
-linguaggio naturale, ma sulle parole. Il riferimento è «il gatto nero salta sul
+Un esempio completo, calcolato come quello fra *carta* e *casa* ma sulle
+parole. Il riferimento è «il gatto nero salta sul
 muro», sei parole; il sistema ha scritto «il gatto nemo salta muro». Gli errori
 sono due: ha scritto «nemo» al posto di «nero» (una sostituzione) e si è
 mangiato «sul» (una cancellazione). Due errori su sei parole, il WER è $2/6 =
@@ -937,29 +931,29 @@ print(round(wer("il gatto nero salta sul muro",
 
 Il WER è comodo ma fragile, prima ancora che grezzo. Conta le parole come
 stringhe, quindi «9:30» contro «nove e trenta», una maiuscola o una virgola
-valgono un errore ciascuna anche quando la trascrizione è giusta: ogni confronto
+valgono un errore ciascuna anche quando la trascrizione è giusta. Ogni confronto
 presuppone una normalizzazione del testo, di riferimento e ipotesi, identica per
-tutti i sistemi, che è la normalizzazione della sintesi vocale percorsa al
-contrario. Gli autori di Whisper ne hanno scritta una apposta, e su alcune
-raccolte la sola normalizzazione abbassa il WER fino alla metà, quasi sempre per
-una stranezza del riferimento, come le contrazioni inglesi staccate con uno
-spazio. Avvertono anche il rischio: sviluppata guardando gli errori di Whisper,
-potrebbe essere tarata sul suo stile. Messa a confronto con un normalizzatore
-scritto da altri, quello del progetto FairSpeech, sulla maggior parte delle
-raccolte le due si equivalgono, ma su tre (WSJ, CallHome, Switchboard) la loro
-abbassa il WER di Whisper molto più di quanto abbassi quello degli altri
-modelli {cite}`radford2022robust`. Un WER riportato senza dire come è stato
-normalizzato il testo, dunque, non si confronta con niente. E anche
-normalizzato resta grezzo. Pesa
-allo stesso modo un errore grave e uno banale, e tratta male le lingue che
-attaccano le parole fra loro: in tedesco *Geschwindigkeitsbegrenzung* («limite
-di velocità») è una parola sola, quindi sbagliarne una sillaba conta come
-sbagliarla tutta, mentre in italiano lo stesso inciampo ne intaccherebbe una su
-tre. Per questo, accanto al WER, si riporta spesso il *Character Error Rate*
-(CER), con la stessa formula e i caratteri al posto delle parole. E come ogni
-media su una prova finita, il WER ha un margine: su poche centinaia di parole
-uno scarto di un decimo di punto non separa due sistemi, e l'intervallo si
-stima per esempio ricampionando le frasi della prova. Nessuna misura, però,
+tutti i sistemi, che è la normalizzazione della {doc}`sintesi vocale
+</SpeechRecognition/sintesi-vocale>` percorsa al contrario. Gli autori di
+Whisper ne hanno scritta una apposta, e su alcune raccolte la sola
+normalizzazione abbassa il WER fino alla metà, quasi sempre per una stranezza
+del riferimento, come le contrazioni inglesi staccate con uno spazio. Avvertono
+anche il rischio: sviluppata guardando gli errori di Whisper, potrebbe essere
+tarata sul suo stile. Messa a confronto con un normalizzatore scritto da altri,
+quello del progetto FairSpeech, sulla maggior parte delle raccolte le due si
+equivalgono, ma su tre (WSJ, CallHome, Switchboard) la loro abbassa il WER di
+Whisper molto più di quanto abbassi quello degli altri modelli
+{cite}`radford2022robust`. Un WER riportato senza dire come è stato normalizzato
+il testo, dunque, non si confronta con niente. Anche normalizzato resta grezzo,
+perché pesa allo stesso modo un errore grave e uno banale, e tratta male le
+lingue che attaccano le parole fra loro: in tedesco *Geschwindigkeitsbegrenzung*
+(«limite di velocità») è una parola sola, quindi sbagliarne una sillaba conta
+come sbagliarla tutta, mentre in italiano lo stesso inciampo ne intaccherebbe
+una su tre. Per questo, accanto al WER, si riporta spesso il *Character Error
+Rate* (CER), con la stessa formula e i caratteri al posto delle parole. E come
+ogni media su una prova finita, il WER ha un margine: su poche centinaia di
+parole uno scarto di un decimo di punto non separa due sistemi, e l'intervallo
+si stima per esempio ricampionando le frasi della prova. Nessuna misura, però,
 cattura del tutto ciò che conta davvero: se la frase trascritta, letta da un
 essere umano, significa ancora la cosa giusta.
 
@@ -980,8 +974,9 @@ essere umano, significa ancora la cosa giusta.
   quello è il percorso più probabile, che non è la parola più
   probabile. Si cerca a fascio, tenendo aperte più strade.
 - Whisper mette tutto in un modello solo, che fa molte lingue insieme. Se
-  perde il filo fra suono e testo continua a scrivere per conto suo: sono le
-  frasi inventate che ogni tanto compaiono nei sottotitoli automatici.
+  perde il filo fra suono e testo continua a scrivere senza guardare il
+  suono: sono le frasi inventate che ogni tanto compaiono nei sottotitoli
+  automatici.
 - Il modello di linguaggio è il pezzo che sceglie fra «l'ago» e «lago», e
   serve soprattutto alla CTC, che di suo non sa niente delle lettere già
   scritte; il WER conta quante correzioni servono per rimettere a posto
@@ -997,7 +992,7 @@ essere umano, significa ancora la cosa giusta.
 - Audio e testo hanno lunghezze diverse e l'allineamento non è dato: è il
   problema centrale dell'ASR.
 - La CTC lo risolve con il simbolo «vuoto» e sommando tutti gli
-  allineamenti possibili, al prezzo dell’indipendenza condizionale fra i
+  allineamenti possibili, a costo dell’indipendenza condizionale fra i
   frame e del vincolo $T \ge U + r$ sulle posizioni in uscita dall'encoder (dopo
   il sottocampionamento), che le vieta il verso opposto (la sintesi, dove il
   testo è più corto del suono); i modelli con attenzione lo

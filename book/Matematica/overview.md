@@ -40,21 +40,18 @@ poi a «incertezza». Alla fine seguì il consiglio, e quel nome è rimasto.
 
 L'aneddoto è tramandato, non documentato: lo raccontò Shannon stesso, a voce,
 nel 1961, e a stampa arrivò dieci anni più tardi, riferito da chi glielo aveva
-sentito dire. Va preso con la cautela che meritano le battute riportate. Ma dice
-una cosa giusta, ed è la cosa da mettere in chiaro prima di cominciare: spaventa
-più il nome che la cosa. L'entropia, sotto quel nome greco, misura quanto è
-imprevedibile, in media, quello che sta per succedere: il lancio di una moneta
-onesta è più imprevedibile di quello di una moneta che dà testa nove volte su
-dieci, e ha un'entropia più alta. La {doc}`sezione sulla teoria
+sentito dire. Resta vero che il nome spaventa più della cosa. L'entropia misura
+quanto è imprevedibile, in media, ciò che sta per succedere: il lancio di una
+moneta onesta è più imprevedibile di quello di una moneta che dà testa nove
+volte su dieci, e ha un'entropia più alta. La {doc}`sezione sulla teoria
 dell'informazione <teoria-informazione>` la trasforma in un numero. Con
 gradiente, vettore e verosimiglianza succede lo stesso: dietro il nome c'è
 un'idea che si dice a voce.
 
-C'è quindi un equivoco tenace da sciogliere. Nell'epigrafe Galileo dice che il
-libro dell'universo è scritto in lingua matematica, e non aveva torto; il
-vocabolario che serve a noi, però, è corto. Per usare il machine learning non
-serve essere matematici, ma per *capirlo* serve riconoscere le poche idee
-matematiche che vi ritornano di continuo.
+Galileo scrive che il libro dell'universo è in lingua matematica, ma il
+vocabolario che serve al machine learning è corto. Per usarlo non serve essere
+matematici; per *capirlo* serve riconoscere le poche idee matematiche che vi
+ritornano di continuo.
 
 ## Una foto, e tre lingue
 
@@ -62,47 +59,43 @@ Il compito più classico dell'AI è questo: guardare una foto e dire se contiene
 un gatto. Per un calcolatore quella foto è una griglia di numeri (l'intensità
 di ogni pixel), non un gatto. Disporre quei numeri in vettori e matrici (liste
 e tabelle di numeri), e trasformarli con somme e prodotti per numeri fissi, è
-il mestiere dell’**algebra lineare**: le trasformazioni di questo tipo si
+compito dell’**algebra lineare**: le trasformazioni di questo tipo si
 dicono lineari. Poi quei numeri vengono trasformati più volte di seguito, e
 ogni passaggio è uno strato: prende la lista di numeri che gli arriva e ne
 produce un'altra, fino a che dall'ultimo esce la risposta «gatto / non gatto».
 Anche questo è algebra lineare, alternata a funzioni non lineari, le funzioni
-di attivazione, che *piegano* i numeri. Le pieghe sono indispensabili: sommare
-e moltiplicare per numeri fissi, anche se ripetuto cento volte, equivale a
-sommare e moltiplicare per altri numeri fissi, e senza funzioni di attivazione
-cento strati farebbero quello che fa uno solo. Capire come ritoccare i numeri
-del programma per farlo sbagliare un po’ meno la volta dopo è il compito
-dell’**analisi**. L'analisi è il ramo della matematica che studia come cambia
-una quantità quando se ne muove un'altra: qui, di quanto cambia l'errore se si
-sposta un numero. E poiché la risposta del modello non è mai una certezza (il
-programma è «abbastanza sicuro» che sia un gatto), il modo naturale di
-esprimere quella sicurezza è la **probabilità**.
+di attivazione, che *piegano* i numeri. Senza di esse cento strati equivarrebbero
+a uno solo, perché sommare e moltiplicare per numeri fissi, ripetuto cento
+volte, resta una somma e una moltiplicazione per altri numeri fissi. Ritoccare i
+numeri del programma perché sbagli un po’ meno la volta dopo è compito
+dell’**analisi**, il ramo della matematica che studia come cambia una quantità
+quando se ne muove un'altra: qui, di quanto cambia l'errore se si sposta un
+numero. Poiché la risposta del modello non è mai una certezza (il programma è
+«abbastanza sicuro» che sia un gatto), la sicurezza si esprime con la
+**probabilità**.
 
-Quel «programma» ha un nome preciso, e i nomi li ha già dati
-l’{doc}`Introduzione </Introduzione/overview>`: un modello è un programma che
-riceve numeri e ne restituisce altri; i suoi parametri $\theta$ sono le
-migliaia (o i miliardi) di numeri regolabili che decidono la risposta; e
-addestrarlo vuol dire modificarli finché le risposte non si avvicinano a quelle
-giuste. Qui serve
-una sola aggiunta, fondamentale per l'algebra lineare: i
-parametri per cui il modello moltiplica ciò che riceve si chiamano **pesi**.
+Quel «programma» ha un nome: l’{doc}`Introduzione
+</Introduzione/overview>` ha già fissato i termini. Un modello è un programma
+che riceve numeri e ne restituisce altri; i suoi parametri $\theta$ sono le
+migliaia (o i miliardi) di numeri regolabili da cui dipende la risposta;
+addestrarlo vuol dire modificarli finché le risposte si avvicinano a quelle
+giuste. I parametri per cui il modello moltiplica l'ingresso si chiamano
+**pesi**.
 
-Le tre lingue, insieme, coprono quello che serve a un modello: *rappresentare*
-i dati, *regolare* i parametri, *quantificare* la fiducia nel risultato. Se ne
-aggiungono due. La **teoria dell'informazione** condensa in un numero solo la
-misura dell'errore per i modelli che rispondono con probabilità (ed è la casa
-dell'entropia di poco fa); l’**analisi numerica** si occupa di ciò che succede
-ai numeri quando i conti li fa una macchina che per ogni numero scrive solo
-poche cifre.
+Le tre lingue servono a *rappresentare* i dati, a *regolare* i parametri e a
+*quantificare* la fiducia nel risultato. Se ne aggiungono due. La **teoria
+dell'informazione** riduce a un numero solo l'errore dei modelli che rispondono
+con probabilità (l'entropia di Shannon nasce lì); l’**analisi numerica** studia
+che cosa accade ai numeri quando a calcolare è una macchina che per ogni numero
+scrive solo poche cifre.
 
-Qui dentro non c'è tutta la matematica: ci sono gli attrezzi che i capitoli
-successivi useranno davvero, e nient'altro.
+Il capitolo non contiene tutta la matematica, ma gli attrezzi che i capitoli
+successivi useranno.
 
 ## Cinque attrezzi, una domanda ciascuno
 
 Le tre lingue e le due che si aggiungono sono i cinque attrezzi del capitolo, e
-ciascuno risponde a una domanda che si può fare a voce. Alcuni occupano più di
-una sezione, perché la domanda si articola.
+ciascuno risponde a una domanda che si può fare a voce.
 
 - Algebra lineare: come si mettono i numeri in fila, e come si trasformano tutti
   insieme. Sono quattro sezioni: *vettori, matrici, prodotti e norme* per
@@ -119,19 +112,12 @@ una sezione, perché la domanda si articola.
   *catene di Markov*, dove la probabilità incontra l'algebra lineare e la
   domanda «dove finisce, andando avanti per sempre?» ha una risposta esatta.
 - Teoria dell'informazione: come si misura la sorpresa con un numero solo.
-  È da lì che viene il punteggio d'errore con cui si addestra quasi ogni
+  Da lì viene il punteggio d'errore con cui si addestra quasi ogni
   modello che deve scegliere fra alternative (entropia e cross-entropia).
-- Analisi numerica: che cosa cambia quando i conti li fa una macchina che
-  scrive solo poche cifre per numero, e come si evita che il conto vada fuori
+- Analisi numerica: che cosa cambia quando a calcolare è una macchina che
+  scrive solo poche cifre per numero, e come si evita che il risultato vada fuori
   strada.
 
-L'ultima sezione non aggiunge un sesto attrezzo: rimette al lavoro i cinque su
+L'ultima sezione rimette al lavoro i cinque attrezzi su
 un oggetto solo, un modello linguistico (in inglese *large language model*, da
-cui la sigla LLM che si incontra ovunque), smontato con gli attrezzi appena
-elencati.
-
-```{tip}
-Se un simbolo ti blocca, non saltarlo: quasi sempre dietro una formula
-intimidatoria si nasconde un'idea che sapresti spiegare a voce, ed è scritta
-accanto alla formula.
-```
+cui la sigla LLM che si incontra ovunque).

@@ -22,9 +22,9 @@ intanto, cresce con il modello senza sconti.
 
 La domanda è se le due cose si possano separare. Esiste un modello con molti
 parametri e poco calcolo per token? Si può comprare capacità senza comprare,
-nella stessa misura, aritmetica? La risposta è sì, ha un nome (*mixture of
-experts*, miscela di esperti) ed è la ragione per cui si leggono due numeri di
-parametri per lo stesso modello. Il costo però non sparisce: passa dal calcolo
+nella stessa misura, aritmetica? La risposta è sì e ha un nome, *mixture of
+experts*, miscela di esperti. È la ragione per cui di uno stesso modello si
+leggono due numeri di parametri. Il costo però non sparisce: passa dal calcolo
 alla memoria e alla comunicazione.
 
 ## Molti blocchi al posto di uno
@@ -32,7 +32,7 @@ alla memoria e alla comunicazione.
 Se si vuole risparmiare calcolo, conviene farlo dove il calcolo è più grosso.
 Nella sezione sull'architettura ogni strato del Transformer alterna
 l'attenzione, dove le parole si scambiano informazione, e la rete feed-forward
-(FFN), dove ogni parola si rielabora per conto suo; e la FFN, pur essendo la
+(FFN), dove ogni parola si rielabora individualmente; e la FFN, pur essendo la
 parte più semplice, contiene due terzi dei parametri dello strato. Il conto
 stava lì: quattro matrici $d_{\text{model}} \times d_{\text{model}}$
 nell'attenzione, contro due matrici quattro volte più grandi nella FFN, cioè
@@ -49,8 +49,8 @@ fini del bilancio basta che sia il blocco più pesante.
 Uno strato (in inglese *layer*) con otto esperti, due al lavoro: per ogni
 token si scelgono i due con il punteggio più alto (*top-2*), e gli altri sei
 restano spenti. Il modello contiene i parametri di tutti e otto, ma ogni token
-ne attraversa soltanto due: da qui il divorzio fra quanto un modello è grande e
-quanto costa farlo girare.
+ne attraversa soltanto due: da qui il divorzio fra la taglia di un modello e il
+calcolo necessario a farlo girare.
 ```
 
 L'idea sta in una riga: sostituire la rete feed-forward di uno strato (di ogni
@@ -63,7 +63,7 @@ attraversa soltanto $k$.
 
 Finché capacità e calcolo crescono insieme, l'unico modo di avere un modello più
 capace è pagarlo a ogni token. Lo strato di {numref}`fig-moe-layer` li separa,
-e il prezzo è un router che può sbagliare e la memoria per esperti che quasi
+ma introduce un router, che può sbagliare, e la memoria per esperti che quasi
 sempre stanno fermi.
 
 `````{tab} Elementare
@@ -75,50 +75,49 @@ sapere più tempo gli serve su ogni pezzo.
 
 La versione a esperti ne assume otto, ciascuno con la sua specialità, e mette
 all'ingresso uno smistatore (è lui il router) che legge le prime righe e passa
-il pezzo a quello che c'entra di più (o ai due che c'entrano di più, se si
+il pezzo al redattore più adatto (o ai due più adatti, se si
 vuole una seconda opinione). Un articolo sul mercato dei calciatori va allo
 sportivo; uno sul restauro di un affresco va all'esperto d'arte. (È un modo di
 dire: le specialità nessuno le assegna, i redattori se le trovano lavorando, e
 di rado coincidono con le pagine del giornale.) La redazione nel suo insieme sa
 molte più cose di prima, perché sono otto teste invece di una, mentre il
 lavoro su *un* articolo resta quello di sempre, perché a occuparsene è uno
-solo, o due. Lo smistatore, nel conto, non pesa: è una persona sola con un
+solo, o due. Lo smistatore, nel bilancio, non pesa: è una persona sola con un
 elenco di nomi.
 
 Una parte del lavoro, però, non si moltiplica. Ogni pezzo passa comunque per
-la riunione del mattino, dove tutti si dicono quello che sanno, e di riunione
-ce n'è una sola: si sono moltiplicati i tavoli di rilettura, non la sala.
-Diamo un prezzo alle due cose, così si vede: se la sala riunioni vale uno, un
-tavolo di rilettura vale due. La redazione di prima valeva tre, un tavolo più
-la sala. Quella nuova ha otto tavoli, cioè sedici, più la sala: diciassette.
-Quasi sei volte, e non otto come parrebbe a contare i soli tavoli.
+la riunione del mattino, dove tutti mettono in comune quello che sanno, e di
+riunione ce n'è una sola: si sono moltiplicati i tavoli di rilettura, non la
+sala. Assegniamo un valore alle due cose, così si vede: se la sala riunioni
+vale uno, un tavolo di rilettura vale due. La redazione di prima valeva tre, un
+tavolo più la sala. Quella nuova ha otto tavoli, cioè sedici, più la sala:
+diciassette. Quasi sei volte, e non otto come parrebbe a contare i soli tavoli.
 
-E un singolo pezzo quanto costa? Se lo rilegge un redattore solo, un tavolo
-più la sala: tre, esattamente quanto costava prima, con otto specialisti in
-casa al posto di un tuttologo. Se lo rileggono in due si arriva a cinque, una
-volta e mezza abbondante; per tornare a tre si assumono redattori a mezzo
-servizio, così che due di loro costino quanto il tuttologo.
+Quanto vale invece un singolo pezzo? Se lo rilegge un redattore solo, un tavolo
+più la sala: tre, come prima, con otto specialisti in casa al posto di un
+tuttologo. Se lo rileggono in due si arriva a cinque, una volta e mezza
+abbondante; per tornare a tre si assumono redattori a mezzo servizio, così che
+due di loro valgano quanto il tuttologo.
 
 Le redazioni più recenti spingono il mezzo servizio fino in fondo: tanti
 redattori a un quarto di servizio, quattro volte più numerosi, e su ogni pezzo
 ne lavorano otto insieme invece di due, così le squadre possibili sono
 moltissime di più. In più c'è un redattore fisso che legge ogni pezzo e si
 occupa di quello che serve a tutti, perché gli specialisti non debbano
-impararlo ciascuno per conto suo.
+impararlo.
 
 Separare quanto la redazione sa da quanto fatica su ogni pezzo: la
 miscela di esperti è tutta qui. Otto teste, però, non fanno un giornale otto
 volte migliore: il giornale migliora, e ogni redattore in più aggiunge un po’
-meno del precedente. Il prezzo si vede in busta paga, e non lo
-sconta nessuno: gli otto lo stipendio lo prendono tutti, anche quelli che oggi
-non hanno scritto una riga. La redazione costa diciassette; il pezzo, quando
-lo rilegge un redattore solo, costa tre.
+meno del precedente. Il costo si vede in busta paga: tutti e otto prendono lo
+stipendio, anche chi oggi non ha scritto una riga. La redazione costa
+diciassette; un pezzo, quando lo rilegge un redattore solo, ne costa tre.
 
 `````
 
 `````{tab} Superiore
 
-Facciamo il conto su un modello di taglia realistica, con $d_{\text{model}} =
+Calcoliamo i parametri di un modello di taglia realistica, con $d_{\text{model}} =
 4096$, dimensione interna della feed-forward $d_{\text{ff}} =
 4\,d_{\text{model}} = 16384$ e $n_{\text{strati}} = 32$. Per ogni strato:
 
@@ -148,15 +147,15 @@ n_{\text{strati}}\,\bigl(N \cdot 2\,d_{\text{model}}\,d_{\text{ff}} + 4\,d_{\tex
 = 32 \times (8 \times 134{,}2 + 67{,}1)\text{ M} = 36{,}5 \text{ miliardi},
 $$
 
-mentre i parametri attivi, quelli che un singolo token attraversa
-davvero, con $k = 1$ valgono
+mentre i parametri attivi, quelli che un singolo token attraversa,
+con $k = 1$ valgono
 
 $$
 n_{\text{strati}}\,\bigl(k \cdot 2\,d_{\text{model}}\,d_{\text{ff}} + 4\,d_{\text{model}}^2\bigr)
 = 32 \times (134{,}2 + 67{,}1)\text{ M} = 6{,}44 \text{ miliardi},
 $$
 
-cioè esattamente quanto il modello denso di partenza. Quasi sei volte i
+cioè quanto il modello denso di partenza. Quasi sei volte i
 parametri ($36{,}5 / 6{,}44 \approx 5{,}7$) a parità di aritmetica per token.
 Se la FFN fosse SwiGLU, a $d_{\text{ff}}$ invariato il rapporto salirebbe a
 $(8 \times 201{,}3 + 67{,}1)/(201{,}3 + 67{,}1) = 6{,}25$, mentre con
@@ -184,8 +183,7 @@ parametri totali e attivi non cambiano, ma le combinazioni di esperti possibili
 passano da $\binom{N}{k}$ a $\binom{mN}{mk}$ (con $N = 16$, $k = 2$ e $m = 4$,
 da $120$ a circa $4{,}4 \times 10^9$). Isola poi $K_s$ esperti **condivisi**,
 che ogni token attraversa sempre e che nelle intenzioni degli autori raccolgono
-il sapere comune, così che gli esperti instradati non debbano ripeterlo
-ciascuno per conto suo:
+il sapere comune, così che gli esperti instradati non debbano ripeterlo:
 
 $$
 \mathbf{y} = \sum_{s=1}^{K_s} E_s(\mathbf{x})
@@ -221,8 +219,8 @@ dicono quanta memoria serve per ospitarlo, i **parametri attivi** quanto calcolo
 costa ogni token. Mixtral 8x7B ne ha circa 47 e 13 miliardi
 {cite}`jiang2024mixtral`; un denso da 6,44 miliardi di parametri, con la FFN di
 ogni strato sostituita da otto esperti di cui uno attivo per token, ne avrebbe
-36,5 totali e 6,44 attivi. Citato da solo, uno dei due numeri fa credere a un
-modello molto più grande, o molto più piccolo, di quello che è.
+36,5 totali e 6,44 attivi. Citato isolatamente, uno dei due numeri fa credere a un
+modello molto più grande, o molto più piccolo, di quanto sia.
 
 ## Come sceglie il router
 
@@ -247,7 +245,7 @@ Con $k = 2$ si tengono i due migliori, l'esperto 1 e l'esperto 3, e gli altri
 due si buttano via: per questo token semplicemente non esistono. Restano da
 decidere le proporzioni della miscela, cioè da trasformare due punteggi
 ($2{,}0$ e $1{,}5$) in due percentuali che sommino a cento. La ricetta standard
-si chiama softmax, ed è una divisione con un passaggio in più: si prende il
+si chiama softmax: è una divisione con un passaggio in più. Si prende il
 numero $e = 2{,}718\ldots$, lo si eleva a ciascun punteggio (elevare a un
 esponente con la virgola è la stessa idea delle potenze che si conoscono, solo
 più fine: lo fa una calcolatrice, e più il punteggio è alto più il risultato
@@ -257,19 +255,18 @@ $e^{1{,}5} = 4{,}48$, che sommati fanno $11{,}87$; quindi
 $7{,}39 / 11{,}87 = 0{,}62$ e $4{,}48 / 11{,}87 = 0{,}38$. Due pesi che sommano
 a uno, con il primo un po’ più pesante perché il suo punteggio era più alto.
 (L'elevamento a potenza serve a due cose: non far uscire mai numeri negativi,
-e allargare le differenze, così che mezzo punto di vantaggio conti davvero.)
+e allargare le differenze, così che mezzo punto di vantaggio conti.)
 
 L'uscita è la media pesata delle due risposte: il 62% di quella dell'esperto 1
 più il 38% di quella dell'esperto 3. Il token ha attraversato due reti su
 quattro, e le altre due sono rimaste ferme: nessun calcolo, nessun costo.
 
-Un dettaglio che sembra un cavillo e invece conta: la softmax si applica
-*dopo* il taglio, non prima. Applicata a tutti e quattro (stessa ricetta, ma
-dividendo per la somma di quattro numeri invece che di due) darebbe $0{,}53$,
-$0{,}12$, $0{,}32$ e $0{,}03$, e i due scelti insieme farebbero solo $0{,}85$:
-buttare via il resto lascerebbe l'uscita sistematicamente più piccola del
-dovuto. Rinormalizzando sui soli scelti, il cento per cento viene sempre
-distribuito.
+La softmax si applica *dopo* il taglio, non prima. Applicata a tutti e quattro
+(stessa ricetta, ma dividendo per la somma di quattro numeri invece che di due)
+darebbe $0{,}53$, $0{,}12$, $0{,}32$ e $0{,}03$, e i due scelti insieme
+farebbero solo $0{,}85$: buttare via il resto lascerebbe l'uscita
+sistematicamente più piccola del dovuto. Rinormalizzando sui soli scelti, il
+cento per cento viene sempre distribuito.
 
 Con un esperto solo, però, la regola va lasciata cadere: rinormalizzato su di
 lui, il suo peso varrebbe sempre cento per cento, qualunque voto avesse preso,
@@ -279,11 +276,11 @@ la proporzione calcolata su tutti e quattro, lo $0{,}53$ di prima.
 Quanto costa scegliere? Poco o niente. Un punteggio è il confronto fra due
 liste di numeri, e di confronti ne servono quattro, uno per esperto; la rete
 di un esperto, in un modello vero, di conti ne fa milioni. Il router può
-permettersi di dare un voto a tutti proprio perché il voto costa così poco.
+permettersi di dare un voto a tutti perché il voto costa così poco.
 
 C'è poi una variante che, prima di tagliare, aggiunge a ogni punteggio un
 pizzico di casualità. Così chi resta fuori per un soffio entra ogni tanto; e
-soprattutto il conto di quanti pezzi toccano a ciascun esperto smette di andare
+soprattutto il numero di pezzi che toccano a ciascun esperto smette di andare
 a scatti e diventa una probabilità, che si può correggere di poco alla volta. È
 quella probabilità che serve a tenere il lavoro bilanciato.
 
@@ -377,11 +374,10 @@ peso, cioè il punteggio che il router gli aveva dato, e la volta dopo un token
 simile lo sceglierà più volentieri. Il router viene corretto sul risultato degli
 esperti che ha scelto, mai direttamente sulla scelta.
 
-E gli esperti *non* scelti? Non ricevono gradiente per quel token: nessuna
+Gli esperti *non* scelti non ricevono gradiente per quel token: nessuna
 correzione, nessun modo di dimostrare che avrebbero fatto meglio. Chi non lavora
-non sbaglia, e chi non sbaglia non impara. È questa asimmetria a far
-risparmiare calcolo, ed è anche all'origine del guasto tipico dei modelli a
-esperti.
+non sbaglia, e chi non sbaglia non impara. Questa asimmetria fa risparmiare
+calcolo e sta all'origine del difetto tipico dei modelli a esperti.
 
 ## Il collasso del router
 
@@ -405,15 +401,15 @@ giornale paga otto stipendi per tre redattori, e la ragione per cui li aveva
 assunti in otto è svanita.
 
 La cura è amministrativa. A fine mese il direttore guarda un numero solo,
-quanto il giornale ha sbagliato, e tutto il suo mestiere è farlo scendere. Da
+quanto il giornale ha sbagliato, e il suo compito è farlo scendere. Da
 adesso a quel numero si aggiunge una seconda voce, che sale quando il lavoro
 è sbilanciato. Pesa un centesimo della prima, il valore scelto da chi l'ha
-proposta: così poco che, quando specializzarsi rende davvero, al giornale
+proposta: così poco che, quando specializzarsi rende molto, al giornale
 conviene accettare un po’ di squilibrio, e abbastanza da non poter essere
 ignorata.
 
 Il direttore la calcola così. Per ogni redattore segna due numeri: la quota dei
-pezzi che gli sono arrivati davvero, e la quota di gradimento che lo
+pezzi che gli sono arrivati, e la quota di gradimento che lo
 smistatore gli dà in media, contando anche i pezzi finiti poi a un altro.
 Moltiplica i due numeri, redattore per redattore, e somma. Con quattro
 redattori e otto pezzi: al primo ne arrivano cinque, al secondo due, al terzo
@@ -422,18 +418,18 @@ medi sono $0{,}56$, $0{,}24$, $0{,}16$ e $0{,}04$. I prodotti fanno
 $0{,}35 + 0{,}06 + 0{,}02 + 0 = 0{,}43$, e moltiplicato per quattro, il numero
 dei redattori, $1{,}72$. Se invece ognuno avesse ricevuto due pezzi con un
 gradimento di un quarto, ogni prodotto varrebbe un sedicesimo, la somma un
-quarto, e per quattro esattamente uno: la moltiplicazione finale serve a far
+quarto, e per quattro uno: la moltiplicazione finale serve a far
 valere uno il mese equo in una redazione di qualunque grandezza. Più il lavoro
 si concentra, più la voce sale sopra uno. Spinge, però, senza garantire: se la
 maggior parte dei pezzi va a un redattore preferito per un soffio, mentre il
-gradimento medio pende da un'altra parte, il conto può scendere sotto uno anche
+gradimento medio pende da un'altra parte, il valore può scendere sotto uno anche
 con il lavoro sbilanciato.
 
 La correzione, poi, si può fare su uno solo dei due numeri. I pezzi consegnati
 o sono cinque o sono sei, e non si ritoccano di un'inezia; il gradimento sì.
 Allora si taglia il gradimento di ciascuno in proporzione ai pezzi che ha
 ricevuto: al primo, che ne ha presi cinque, si taglia di più, al quarto, che
-non ne ha preso nessuno, niente; e il quarto risale da solo, perché i
+non ne ha preso nessuno, niente; e il quarto risale per differenza, perché i
 gradimenti sono quote e devono sempre sommare a cento.
 
 `````
@@ -501,8 +497,8 @@ $(f_i) = (0{,}625;\ 0{,}25;\ 0{,}125;\ 0)$ e
 $(P_i) = (0{,}56;\ 0{,}24;\ 0{,}16;\ 0{,}04)$ danno
 $4 \times 0{,}43 = 1{,}72$, contro l’$1{,}00$ del caso uniforme.
 
-Il dettaglio elegante è dove passa il gradiente. Il conteggio $f_i$ non è
-differenziabile (è la stessa selezione discreta di prima), quindi la derivata
+Il conteggio $f_i$ non è
+differenziabile (è la stessa selezione discreta del router), quindi la derivata
 scorre solo attraverso $P_i$:
 
 $$
@@ -572,10 +568,11 @@ blocco si somma all'ingresso, quindi il token attraversa lo strato immutato,
 come se lì non ci fosse. Nessun errore, nessun messaggio: solo un po’ di
 qualità in meno, distribuita in modo silenzioso. Alzare $c$ riduce i token
 caduti ma alloca buffer più grandi, cioè spreca memoria per posti mai occupati.
-E con un tetto c'è una conseguenza più insidiosa: il destino di un token dipende
-dagli altri token del batch, quindi lo stesso identico input, in compagnia
-diversa, può ricevere un trattamento diverso, e il modello smette di essere una
-funzione del solo esempio. Chi ne cerca un guasto deve saperlo.
+Con un tetto c'è inoltre una conseguenza più insidiosa: il destino di un token
+dipende dagli altri token del batch, quindi lo stesso identico input, in
+compagnia diversa, può ricevere un trattamento diverso, e il modello smette di
+essere una funzione del solo esempio. Chi cerca la causa di un'anomalia deve
+saperlo.
 
 Il tetto però non è obbligatorio. MegaBlocks {cite}`gale2023megablocks` non
 scarta mai un token e lascia che ogni esperto ne riceva un numero variabile (è
@@ -620,21 +617,21 @@ buon giornale, e serve anche a non pagare venti sedi per farne lavorare tre.
 Quando poi il giornale scrive (cioè quando il modello genera il testo, una
 parola alla volta), il tempo se ne va in un posto che nessuno guarda. Le
 scrivanie di una sede sono migliaia e le loro penne vanno velocissime, perché
-sono fatte apposta per quello: sono i conti. Ma la roba con cui si scrive, cioè
-quello che il modello ha imparato, sta in faldoni giù in archivio, e
-dall'archivio alle scrivanie c'è un montacarichi solo. Le penne aspettano i
-faldoni, e la giornata se ne va tutta in quell'attesa. E un giornale a esperti,
-quando scrive, sta risparmiando proprio sulle penne.
+sono fatte apposta per i calcoli. Ma il materiale con cui si scrive, cioè ciò
+che il modello ha imparato, sta in faldoni giù in archivio, e dall'archivio alle
+scrivanie c'è un montacarichi solo. Le penne aspettano i faldoni, e la giornata
+se ne va tutta in quell'attesa. Un giornale a esperti, quando scrive,
+risparmia sulle penne, non sul montacarichi.
 
 Che il risparmio si senta dipende da quanti articoli sono in lavorazione
 insieme. Uno alla volta, i due faldoni degli specialisti scelti sono gli
 unici da tirare su: il montacarichi fa pochi viaggi e il vantaggio si sente
-per intero. Centinaia insieme, ciascuno chiama i suoi, e su per il
+tutto. Centinaia insieme, ciascuno chiama i suoi, e su per il
 montacarichi finiscono per passare quasi tutti i faldoni: la fatica torna
 quella dell'archivio intero, tutti e trentasei i miliardi, e le penne restano
 quasi ferme. Il vantaggio torna con migliaia di articoli in lavorazione: allora
 ogni faldone salito serve a tanti pezzi che il viaggio si ripaga, l'attesa
-torna sulle penne, e sulle penne il giornale a esperti risparmia davvero. Nel
+torna sulle penne, e sulle penne il giornale a esperti risparmia. Nel
 mezzo, con qualche centinaio di articoli, le due cose tirano in direzioni
 opposte.
 
@@ -645,7 +642,7 @@ opposte.
 Il conto in memoria è immediato. Il modello sparso da $36{,}5$ miliardi di
 parametri, in precisione a 16 bit, occupa $36{,}5 \times 2 \approx 73$ GB di
 soli pesi,
-contro i $12{,}9$ GB del modello denso che gli costa la stessa aritmetica per
+contro i $12{,}9$ GB del modello denso che richiede la stessa aritmetica per
 token. Quasi sei volte la memoria per lo stesso calcolo: il baratto è
 esplicito.
 
@@ -659,7 +656,7 @@ ogni altra i token destinati agli esperti che quella ospita, e ne riceve
 indietro le uscite. Due all-to-all per strato MoE, andata e ritorno: ogni token
 manda il suo vettore a $k$ esperti e ne riceve $k$ uscite, cioè
 $2k\,d_{\text{model}}$ elementi a token, per strato e per passata in avanti,
-meno la parte che resta sulla stessa scheda. Quanto pesino lo dice il rapporto
+meno la quota che resta sulla stessa scheda. Quanto pesino lo dice il rapporto
 fra operazioni e byte scambiati: un esperto fa circa
 $4\,d_{\text{model}}\,d_{\text{ff}}$ operazioni per token e ne scambia
 $2\,d_{\text{model}}$ elementi, cioè $d_{\text{ff}}$ operazioni per byte in 16
@@ -667,7 +664,7 @@ bit, qualunque siano $k$ e $d_{\text{model}}$. Per nascondere la comunicazione
 dietro il calcolo quel rapporto deve superare quello fra calcolo e banda della
 rete, che per le GPU Shazeer e colleghi stimano nell'ordine delle migliaia
 {cite}`shazeer2017outrageously`; fra nodi diversi, dove la banda è minore,
-DeepSeek-V3 manda ogni token al più su quattro nodi, proprio per contenere quel
+DeepSeek-V3 manda ogni token al più su quattro nodi, per contenere quel
 costo {cite}`liu2024deepseekv3`.
 
 Due proprietà rendono l'all-to-all scomodo. Primo, con i buffer a capacità fissa
@@ -684,8 +681,8 @@ riprenderà in dettaglio:
 la generazione è memory-bound, e il tempo per token è dominato dalla
 lettura dei pesi dalla memoria della GPU, non dall'aritmetica. La
 sparsità qui aiuta in modo condizionato, e la condizione è il batch. Con
-poche sequenze in volo si leggono davvero solo i $k$ esperti selezionati, e la
-latenza per token è quella del modello piccolo: un vantaggio reale. Ma appena
+poche sequenze in volo si leggono solo i $k$ esperti selezionati, e la
+latenza per token è quella del modello piccolo: un vantaggio reale. Appena
 il batch cresce, token diversi scelgono esperti diversi. Con routing uniforme la
 probabilità che un esperto resti fuori da $T$ token è $(1 - k/N)^T$, che con
 $N = 8$ e $k = 2$ scende sotto l’$1\%$ già a $T = 17$, e con i 256 esperti e
@@ -693,7 +690,7 @@ $k = 8$ di DeepSeek-V3 a $T = 146$: la lettura torna quasi completa, e il
 modello si comporta, in banda, come i suoi $73$ GB. La sparsità del calcolo non
 si traduce automaticamente in sparsità del traffico di memoria.
 
-Il vantaggio ritorna quando il batch è tanto grande che ogni esperto, da solo,
+Il vantaggio ritorna quando il batch è tanto grande che ogni esperto
 satura il calcolo. Un esperto che riceve $m$ token fa circa $2m$ operazioni per
 ogni parametro letto, cioè $m$ operazioni per byte in 16 bit, e supera il
 ginocchio del {doc}`roofline </GPU/gerarchia-memoria>` (circa 300 operazioni per
@@ -721,7 +718,7 @@ Robert Jacobs, Michael Jordan, Steven Nowlan e Geoffrey Hinton pubblicano su
 *Neural Computation* un articolo intitolato *Adaptive Mixtures of Local
 Experts* {cite}`jacobs1991adaptive`. La proposta è già tutta lì: più reti
 separate, e una **gating network** (letteralmente «rete cancello», l'antenato
-del router) che impara a pesarle a seconda di quello che le arriva davanti,
+del router) che impara a pesarle a seconda dell'input,
 così che ciascuna si specializzi su un tipo di dati invece di fare un
 compromesso mediocre su tutto. Manca però il pezzo che ci interessa qui: la
 miscela era densa, cioè si facevano lavorare tutti gli esperti e poi si faceva
@@ -767,7 +764,7 @@ token a token. Scegliere un solo esperto dimezza inoltre il traffico fra le
 schede, semplifica il codice e permette tetti di capacità più bassi.
 
 Switch Transformer porta anche gli accorgimenti che rendono stabile
-l'addestramento, e il più istruttivo riguarda la precisione dei numeri. Per
+l'addestramento; il principale riguarda la precisione dei numeri. Per
 andare più in fretta il modello li scrive in un formato a 16 bit, `bfloat16`, ma
 il router lavora in `float32`, a 32 bit: dei 16 bit del primo, quelli che
 portano le cifre significative sono 8, contro i 24 del secondo. La ragione la
@@ -796,7 +793,7 @@ una metafora comoda, non una descrizione verificata.
 
 ## In pratica: uno strato MoE in PyTorch
 
-La classe `StratoMoE` implementa lo strato per intero, e si legge in quattro
+La classe `StratoMoE` implementa lo strato completo, e si legge in quattro
 tempi: il router dà un punteggio a ogni esperto per ogni token, i punteggi
 diventano probabilità, `torch.topk` tiene i $k$ esperti migliori con i loro
 pesi, e ogni esperto lavora soltanto sui token che lo hanno scelto. Mancano le
@@ -856,11 +853,11 @@ I pesi sono le probabilità dei $k$ esperti
 sopravvissuti al `topk`, divise per la loro somma: è la rinormalizzazione sui
 soli scelti, e coincide con la softmax dei soli $k$ punteggi. Con $k = 1$ quella
 divisione darebbe sempre $1$ e il router non imparerebbe, e il codice lascia
-allora la probabilità com'è, come fa Switch Transformer. E l'esperto viene
-chiamato su `x[token]`, un sottoinsieme delle righe: è qui che il calcolo si
-risparmia davvero, perché se nessuno lo ha scelto non viene eseguito affatto.
+allora la probabilità com'è, come fa Switch Transformer. L'esperto viene
+chiamato su `x[token]`, un sottoinsieme delle righe, e qui il calcolo si
+risparmia: se nessuno lo ha scelto non viene eseguito affatto.
 
-Un controllo dei conti, con gli iperparametri di default, e del caso $k = 1$:
+Un controllo dei calcoli, con gli iperparametri di default, e del caso $k = 1$:
 
 ```python
 torch.manual_seed(0)
@@ -889,7 +886,7 @@ torch.Size([2, 5, 64])
 True
 ```
 
-Il conto, in italiano. Ogni esperto è fatto di due matrici, una che allarga il
+I numeri, a parole. Ogni esperto è fatto di due matrici, una che allarga il
 vettore del token da 64 numeri a 256 e una che lo ricomprime a 64, più un
 termine costante per ciascuna delle uscite: $64 \times 256 + 256$ per la prima,
 $256 \times 64 + 64$ per la seconda, in tutto $33\,088$ parametri. Otto esperti
@@ -898,7 +895,7 @@ esperti, ne aggiunge $512$; totale $265\,216$.
 
 Ogni token, però, attraversa soltanto due esperti, cioè $33\,088 \times 2 =
 66\,176$ parametri: un quarto, che è poi la frazione $k/N = 2/8$ degli esperti
-che lavorano. Lo strato sa quattro volte quello che gli costa lavorare una
+che lavorano. Lo strato contiene quattro volte i parametri che attraversa per ogni
 parola. Il rapporto stampato è $4{,}008$ invece di $4$ perché nel totale ci sono
 anche i $512$ parametri del router, che negli attivi non sono contati;
 contandoli da tutte e due le parti viene $3{,}98$. L'ultima riga controlla il
@@ -915,10 +912,10 @@ fretta, insieme al guadagno di qualità a parità di calcolo per token.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- La miscela di esperti prende il momento di lavoro individuale di ogni
-  strato (la parte che contiene due terzi dei numeri imparati) e lo
-  moltiplica: molti blocchi in parallelo, gli esperti, più uno smistatore, il
-  router, che per ogni parola ne sceglie pochi, uno o due nei modelli più noti.
+- La miscela di esperti moltiplica la rete feed-forward di ogni strato, che
+  contiene due terzi dei numeri imparati: molti blocchi in
+  parallelo, gli esperti, più uno smistatore, il router, che per ogni parola ne
+  sceglie pochi, uno o due nei modelli più noti.
   Un modello così non si racconta con un numero solo: uno dice quanto è
   grande, cioè quanta memoria occupa; l'altro quanto fatica su ogni parola,
   cioè quanto costa farlo scrivere. Più esperti lo rendono migliore, ma ognuno
@@ -941,17 +938,17 @@ fretta, insieme al guadagno di qualità a parità di calcolo per token.
 - Si risparmia fatica, non spazio: i redattori fermi prendono lo
   stipendio e occupano una scrivania lo stesso. Quando stanno in edifici
   diversi il costo si sposta sul viavai, perché ogni articolo attraversa la
-  città per arrivare al suo specialista e poi torna indietro. E quando il
-  modello scrive, il tempo se ne va più ad andare a prendere quello che sa che
-  a fare i conti: uno che sa moltissimo e fatica poco su ogni parola attacca
-  il lato sbagliato del problema. Quanto pesi dipende però da quante
+  città per arrivare al suo specialista e poi torna indietro. Quando il
+  modello scrive, il tempo se ne va più a portare su i faldoni che nello scrivere,
+  e risparmiare penne non basta se il tempo lo mangia il montacarichi.
+  Quanto questo pesi dipende da quante
   richieste si servono insieme: una alla volta il vantaggio si sente tutto, a
   centinaia insieme sparisce, e torna solo con migliaia di richieste, tante
   da tenere occupato ogni specialista.
 - L'idea è del 1991 {cite}`jacobs1991adaptive`, ma allora ogni pezzo passava
   per tutti gli esperti e delle loro risposte si faceva la media: un buon modo
   di organizzare il lavoro, non di risparmiarlo. Il salto è del 2017
-  {cite}`shazeer2017outrageously`, quando si calcolano davvero solo gli
+  {cite}`shazeer2017outrageously`, quando si calcolano solo gli
   esperti scelti; poi Switch Transformer {cite}`fedus2022switch` mostra che
   per ogni parola ne basta uno solo, purché il suo peso non venga ricalcolato
   su di lui.
@@ -982,7 +979,7 @@ fretta, insieme al guadagno di qualità a parità di calcolo per token.
   che si rinforza da solo. La cura è una loss ausiliaria
   $\alpha N \sum_i f_i P_i$ {cite}`fedus2022switch`, che resta bassa quando il
   lavoro è distribuito in parti uguali e cresce quando si concentra su pochi
-  esperti (un incentivo, non una garanzia: l'argomento regge finché
+  esperti (un incentivo, non una garanzia: l'argomento vale finché
   l’$\arg\max$ tiene allineati $(f_i)$ e $(P_i)$). Un eventuale tetto di
   capacità, $\lceil c\,kT/N \rceil$ token per esperto, fa cadere quelli in
   eccesso, che attraversano lo strato immutati grazie alla connessione

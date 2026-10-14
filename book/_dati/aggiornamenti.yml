@@ -23,10 +23,9 @@
 #
 # ## Una versione è una pubblicazione
 #
-# Non un commit e non un push. Qui dentro si lavora tutti i giorni e si
-# committa a metà lavoro; il libro pubblicato cambia quando lo si pubblica con
-# `strumenti/pubblica.py`, ed è quello il momento in cui si aggiunge una voce
-# qui sopra e si rigenera la pagina.
+# Non un commit e non un push: il libro pubblicato cambia quando lo si
+# pubblica, ed è quello il momento in cui si aggiunge una voce qui sopra e si
+# rigenera la pagina.
 #
 # ## Una voce pubblicata si corregge
 #
@@ -47,6 +46,30 @@
 #           conviene tornare a leggere.
 
 versioni:
+
+- versione: "1.14.3"
+  data: 2026-10-14
+  voci:
+
+  - tipo: corretto
+    testo: >
+      **Una prosa più asciutta, capitolo per capitolo.** Meno annunci e meno
+      frasi appese, il nome della cosa al posto della sua posizione nella
+      pagina, e ogni rimando a un'altra sezione diventa un link.
+
+  - tipo: corretto
+    testo: >
+      **Attribuzioni e numeri riportati alla misura delle fonti.** Fra gli
+      altri, il cancello di dimenticanza dell'LSTM, i FID di DiT contro la
+      U-Net, il peso della perdita mascherata nella diffusione discreta, chi
+      batte davvero le reti su grafo nella raccomandazione.
+
+  - tipo: ampliato
+    testo: >
+      **Più rigore nel livello Superiore.** Fra le aggiunte, la regressione
+      del test ADF, l'attenzione congiunta di MM-DiT, il teorema della
+      distillazione di consistenza, le basi di N-BEATS e lo stimatore IPS con
+      le sue ipotesi.
 
 - versione: "1.14.2"
   data: 2026-10-04

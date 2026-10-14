@@ -1,7 +1,8 @@
 # Paesaggi di oggi
 
 Le reti di Hopfield non si usano più, e nemmeno le macchine di Boltzmann
-ristrette, le RBM della sezione sulle macchine di Boltzmann. Sarebbe facile
+ristrette, le RBM delle {doc}`macchine di Boltzmann
+</ModelliEnergia/boltzmann>`. Sarebbe facile
 archiviare l'energia come un pezzo di storia del deep learning, e sarebbe
 sbagliato: il modo di ragionare è rimasto, e tre luoghi diversi lo praticano
 oggi correntemente. Nel primo lo si dichiara, e sono i ricercatori che scrivono
@@ -40,7 +41,7 @@ Mordatch, però, rotolano molto e tremano pochissimo, molto meno di quanto la
 ricetta di Langevin vorrebbe, e si fermano dopo qualche decina di passi: più
 che una camminata che rispetta le proporzioni, è una discesa con un filo di
 rumore. La rete che dà i voti va tenuta a freno, perché non dia voti enormi e
-le palline non schizzino via. E le palline non ripartono da capo ogni volta: si
+le palline non schizzino via. Le palline non ripartono da capo ogni volta: si
 tengono in un cesto e riprendono da dove erano arrivate, con qualcuna nuova
 buttata dentro ogni tanto. È il sogno che prosegue della macchina di
 Boltzmann, undici anni dopo e su fotografie a colori invece che su minuscole
@@ -49,13 +50,13 @@ cifre in bianco e nero.
 Mescolare concetti merita due numeri, perché è la proprietà più bella e la meno
 ovvia. Si prende il paesaggio di «giovane» e quello di «sorridente» e si
 sommano le due altezze punto per punto. Una faccia giovane e imbronciata sta a
-3 nel primo paesaggio e a 10 nel secondo: sommati, 13, ed è una cima. Una
-faccia giovane e sorridente sta a 3 e a 2: sommati, 5, ed è ancora una valle.
+3 nel primo paesaggio e a 10 nel secondo: sommati, 13: una cima. Una
+faccia giovane e sorridente sta a 3 e a 2: sommati, 5: ancora una valle.
 Sopravvivono insomma soltanto le conche che le due richieste hanno in comune, e
-cercare il punto più basso del paesaggio somma vuol dire cercare una faccia
+cercare il punto più basso del paesaggio somma equivale a cercare una faccia
 giovane *e* sorridente. Il riferimento rispetto a cui 13 è una cima e 5 una
 valle è il paesaggio stesso: contano i confronti fra punti, non i numeri presi
-da soli. E per sommare due paesaggi non serve misurarli: le palline sentono
+da soli. Per sommare due paesaggi non serve misurarli: le palline sentono
 soltanto la pendenza della somma.
 
 `````
@@ -71,7 +72,7 @@ $$
 \qquad \boldsymbol{\omega}_k \sim \mathcal{N}(\mathbf{0}, \sigma^2 \mathbf{I}),
 $$
 
-con passo e rumore scelti ciascuno per conto suo ($\lambda = 10$,
+con passo e rumore scelti indipendentemente ($\lambda = 10$,
 $\sigma = 0{,}005$), mentre la ricetta di Langevin li lega, $\lambda =
 \epsilon/2$ e $\sigma = \sqrt{\epsilon}$. Così tarata la catena è una discesa
 con un filo di rumore, fermata dopo qualche decina di passi, e non campiona
@@ -95,17 +96,18 @@ p(\mathbf{x}) \propto \prod_{k=1}^{K} e^{-E_k(\mathbf{x})},
 $$
 
 una densità alta solo dove tutti i fattori sono alti, cioè una congiunzione.
-La partizione del prodotto non è il prodotto delle partizioni dei fattori, ma
-né l’$\arg\min$ né la dinamica di Langevin ne hanno bisogno: basta
+La
+partizione del prodotto non è il prodotto delle partizioni dei fattori; né
+l’$\arg\min$ né la dinamica di Langevin però ne hanno bisogno: basta
 $\nabla_{\mathbf{x}} E = \sum_k \nabla_{\mathbf{x}} E_k$.
 
 `````
 
-Tutte queste cose, generare e completare e segnalare e mescolare, sono poi la
-stessa cosa: portarsi verso il basso. Non «nel punto più basso di tutti», che
-sarebbe la stessa risposta ogni volta: si scende con addosso il rumore, come
-nella prima delle tre vie, e ogni volta si finisce in una valle diversa. A
-cambiare, da un mestiere all'altro, è solo il vincolo con cui si scende.
+Generare, completare, segnalare e mescolare si riducono a portarsi
+verso il basso. Non «nel punto più basso di tutti», che darebbe sempre
+la stessa risposta: si scende con addosso il rumore, come nella prima delle tre
+vie, e ogni volta si finisce in una valle diversa. Da un compito all'altro
+cambia solo il vincolo con cui si scende.
 
 Nel 2020 Will Grathwohl e colleghi prendono sul serio una lettura che la
 {doc}`cornice di LeCun </ModelliEnergia/energia-come-compatibilita>` conteneva
@@ -124,10 +126,10 @@ esaltando il più alto: si legge la classe vincente e il resto si butta via.
 Si butta via più di quel che sembra. Le percentuali guardano solo le
 *differenze* fra i punteggi, non quanto sono grandi: 8, 2, 1 e 9, 3, 2 danno
 le stesse percentuali (99,7%, 0,2%, 0,1%), perché sono gli stessi numeri
-spostati tutti in su di uno. Ma i secondi sono più forti dei primi, e quella
+spostati tutti in su di uno. I secondi però sono più forti dei primi, e quella
 forza si perde per strada.
 
-Recuperarla costa poco: si prende il punteggio più alto e gli si aggiunge una
+Recuperarla è facile: si prende il punteggio più alto e gli si aggiunge una
 correzione che dipende da quanto gli altri gli stanno vicino. Con 8, 2, 1 gli
 altri due sono lontanissimi e la correzione è quasi zero: viene 8,003, cioè il
 massimo tale e quale. Con 8, 7, 7 sono a un passo e la correzione conta: viene
@@ -145,7 +147,7 @@ qualcosa che non ha mai visto, nessuna classe si accende e i punteggi restano
 fiacchi tutti quanti. Il grido finisce così per dire quanto l'immagine
 somiglia a ciò che la rete conosce, e non quale classe sia. Nessuno però
 gliel'aveva chiesto: l'addestramento guardava le differenze, e il volume è
-cresciuto da sé. E siccome nel nostro paesaggio le cose sensate stanno in
+cresciuto da sé. Siccome nel nostro paesaggio le cose sensate stanno in
 basso, l'energia è quel grido con il segno cambiato: chi grida forte sta in
 fondo a una valle, chi non grida sta in cima.
 
@@ -162,7 +164,7 @@ ottengono un classificatore che sbaglia con più prudenza: quando è incerto lo 
 riconosce le cose che non ha mai visto ed è più difficile da ingannare con
 immagini manipolate.
 
-Il secondo mestiere si insegna facendo rotolare palline giù per il paesaggio,
+Il secondo compito si insegna facendo rotolare palline giù per il paesaggio,
 come nella via del campionamento, e quelle ogni tanto scappano in regioni dove
 il paesaggio non ha ancora forma: chiedere le due cose insieme rende
 l'addestramento fragile. È il difetto di famiglia dei
@@ -207,21 +209,22 @@ convoluzionale qualunque nessuno garantisce. La lettura «un classificatore è
 un'energia» è sempre vera; la densità che ne segue, sotto condizione. Il
 risultato riportato è un classificatore con calibrazione migliore, rilevamento
 di fuori distribuzione più affidabile e maggiore robustezza agli attacchi
-avversari, al prezzo di un addestramento più fragile, che è il difetto
-ereditario di tutta la famiglia.
+avversari, con un addestramento più fragile, difetto ereditario di tutta la
+famiglia.
 
 `````
 
 ## I due ritorni non dichiarati
 
-Il primo lo abbiamo già incontrato nella sezione sulla funzione di partizione,
-ed è il ponte più solido del capitolo: i modelli di diffusione sono modelli
+Il primo, già incontrato nella sezione {doc}`Oltre la partizione
+</ModelliEnergia/oltre-la-partizione>`, è il ponte più solido: i modelli di
+diffusione sono modelli
 a energia che hanno smesso di dirlo. Il compito con cui si addestrano è quello
 della seconda delle tre vie, quella che rinuncia alle probabilità e impara
 soltanto la pendenza: «indovina il rumore che ti ho aggiunto»
-{cite}`vincent2011connection`. Quello che imparano, però, è la pendenza di una
-successione di paesaggi, uno per livello di rumore, e generare è una discesa
-rumorosa che li attraversa in fila, parente stretta della dinamica di Langevin
+{cite}`vincent2011connection`. Imparano però la pendenza di una successione di
+paesaggi, uno per livello di rumore, e generare è una discesa rumorosa che li
+attraversa in successione, affine alla dinamica di Langevin
 {cite}`song2021score`.
 
 `````{tab} Elementare
@@ -232,21 +235,22 @@ quando l'immagine è ancora tutta rumore il paesaggio è liscio, con poche valli
 larghe in cui è difficile sbagliare direzione; scendendo di grado diventa più
 dettagliato, con valli più strette, quelle che distinguono un volto dall'altro.
 
-A ogni passo si fanno le tre mosse del {doc}`capitolo sulla diffusione
-</ModelliDiffusione/come-funziona>`. Si cancella una scheggia del disturbo,
-quella che la rete indica, ed è la discesa lungo la pendenza del paesaggio di
-quel grado. Si moltiplica tutta l'immagine per un numero appena sopra uno,
-perché all'andata, mentre la si sporcava, la si rimpiccioliva un poco a ogni
-passo, e al ritorno va riportata alla sua taglia; la mossa ingrandisce insieme
-il disegno e lo sporco che lo copre. E si getta sopra una manciata di rumore
-appena sorteggiato, che è la scossa. La manciata è molto più grande della
-scheggia, eppure lo sporco cala: la scheggia punta sempre dalla parte giusta,
-mentre le manciate, sorteggiate ogni volta in una direzione diversa, a lungo
-andare si disfano fra loro. Nessuno toglie un velo alla volta.
+A ogni passo si compiono tre passaggi, quelli del {doc}`capitolo sulla
+diffusione </ModelliDiffusione/come-funziona>`. Si cancella una scheggia del
+disturbo, quella che la rete indica, e corrisponde alla discesa lungo la
+pendenza del paesaggio di quel grado. Si moltiplica tutta l'immagine per un
+numero appena sopra uno, perché all'andata, mentre la si sporcava, la si
+rimpiccioliva un poco a ogni passo, e al ritorno va riportata alla sua taglia;
+il passaggio ingrandisce insieme il disegno e lo sporco che lo copre. Infine si
+getta sopra una manciata di rumore appena sorteggiato, la scossa. La manciata è
+molto più grande della scheggia, eppure lo sporco cala: la scheggia punta
+sempre dalla parte giusta, mentre le manciate, sorteggiate ogni volta in una
+direzione diversa, a lungo andare si disfano fra loro. Nessuno toglie un velo
+alla volta.
 
 È la pallina della ricetta di Langevin, spinta a valle e scossa insieme, con una
 differenza sola: il paesaggio sotto di lei cambia a ogni passo, dal più liscio
-al più dettagliato. Ed è il rimedio al guaio della prima via. In un paesaggio
+al più dettagliato. Questo rimedia al problema della prima via. In un paesaggio
 dettagliato, con valli strette e creste alte, una pallina resterebbe
 prigioniera vicino a dove è caduta, per quanto la si scuota; partendo da quello
 liscio arriva prima nella regione giusta, dove le valli sono larghe e si passa
@@ -308,7 +312,7 @@ accesi o spenti, e la formula dell'energia è stata riscritta in tre tappe, da
 Dmitry Krotov e dallo stesso Hopfield nel 2016 {cite}`krotov2016dense`, da Mete
 Demircigil e colleghi l'anno dopo {cite}`demircigil2017model` e da Hubert
 Ramsauer e colleghi nel 2021 {cite}`ramsauer2021hopfield`. L'ultima tappa
-porta a una scoperta: il conto con cui una di queste memorie richiama un
+porta a una scoperta: il calcolo con cui una di queste memorie richiama un
 ricordo è, a tre condizioni, lo stesso con cui un Transformer presta
 attenzione. L'articolo si intitola *Hopfield Networks is All You Need*, «le
 reti di Hopfield sono tutto ciò che serve», e cita il titolo di quello che nel
@@ -328,20 +332,21 @@ all'esponenziale, ogni due neuroni aggiunti i ricordi che la rete può tenere
 quasi raddoppiano, come gli interessi composti.
 
 Portati i neuroni dall'acceso e spento a numeri qualsiasi, il richiamo diventa
-un gesto noto a chi ha letto il capitolo sui Transformer. Lo stato da cui si
+un procedimento noto a chi ha letto il {doc}`capitolo sui Transformer
+</Transformers/overview>`. Lo stato da cui si
 parte, la domanda fatta alla memoria, si confronta con tutti i ricordi in
 archivio, e ciascuno riceve un punteggio di somiglianza; la softmax trasforma i
 punteggi in pesi che sommano a uno, esaltando il più alto; e il nuovo stato è
 la media dei ricordi presi con quei pesi. È l'attenzione: la domanda è la
 *query*, i ricordi in archivio sono le *key*, e quello che si restituisce sono i
-*value*. Perché sia proprio l'attenzione servono tre condizioni: un solo passo,
+*value*. Perché coincida con l'attenzione servono tre condizioni: un solo passo,
 invece di continuare a scendere fino in fondo come farebbe una rete di
 Hopfield; la temperatura fissata al valore con cui i Transformer dividono i
 loro punteggi, la radice quadrata della lunghezza dei vettori; e un'ultima
 moltiplicazione che trasformi i ricordi grezzi, cioè le key, nei value.
 
 La sorpresa arriva guardando con questa lente dentro un modello di linguaggio
-addestrato davvero. In ogni strato l'attenzione ha parecchie copie che lavorano
+già addestrato. In ogni strato l'attenzione ha parecchie copie che lavorano
 in parallelo, le teste. Nei primi strati quasi nessuna testa richiama un
 ricordo solo: fa la media di moltissimi. Più avanti la media si stringe, a metà
 rete qualche testa arriva vicino a un ricordo singolo, e negli ultimi strati si
@@ -422,19 +427,20 @@ il documento di posizione di LeCun del 2022; la riga sulle probabilità è la
 tesi dei modelli a energia.
 ```
 
-Le quattro righe di {numref}`fig-quattro-rinunce` non poggiano sulla stessa
-roccia. Quella sulle probabilità poggia su un conto, la funzione di partizione;
+Le quattro righe di {numref}`fig-quattro-rinunce` non poggiano sullo stesso
+fondamento. Quella sulle probabilità poggia sulla funzione di partizione;
 quella sui metodi contrastivi su una scommessa su come si comportano in alta
-dimensione; quella sul reinforcement learning su un conto sui bit; quella sui
-modelli generativi su una previsione sul futuro della ricerca, ed è quella su
-cui si litiga di più. Conviene prenderle in quest'ordine, dalla più solida.
+dimensione; quella sul reinforcement learning su un argomento sui bit; quella
+sui modelli generativi su una previsione sul futuro della ricerca, la più
+discussa. Si prendono in quest'ordine, dalla più solida.
 
 La riga sulle probabilità chiede di sostituire il modello probabilistico con
 l'energia, e l'argomento tecnico è il più solido dei quattro, con la sua
 condizione: per un'energia scelta senza vincoli sull'architettura, misurare il
-paesaggio intero, il conto che trasforma le altezze in probabilità, è fuori
-portata, e moltissimi compiti non l'hanno mai richiesto. Chi quel conto lo fa
-esatto esiste, e paga in vincoli sulla forma della rete: i modelli di
+paesaggio intero, cioè calcolare la funzione di partizione che trasforma le
+altezze in probabilità, è fuori portata, e moltissimi compiti non l'hanno mai
+richiesto. Esistono modelli che la calcolano esattamente, e pagano in vincoli sulla
+forma della rete: i modelli di
 linguaggio, autoregressivi, sono modelli probabilistici e funzionano
 benissimo.
 
@@ -449,30 +455,31 @@ numero di risposte possibili è tale che nessuna quantità di controesempi
 basterebbe a puntellarlo.
 
 La riga sul reinforcement learning chiede di sostituirlo con il controllo
-predittivo basato su modello, cioè, nel lessico dei capitoli
-sull'apprendimento per rinforzo: invece di imparare per tentativi ed errori,
-costruirsi un modello di come va il mondo e pianificare dentro quello,
-ricorrendo ai tentativi soltanto per correggere il modello (o il giudice che
-dà il voto alle mosse) quando la previsione sbaglia.
+predittivo basato su modello, cioè, nel lessico della {doc}`sezione sull'RL
+basato su modello </DeepReinforcementLearning/model-based>`: invece di imparare
+per tentativi ed errori, costruirsi un modello di come va il mondo e
+pianificare dentro quello, ricorrendo ai tentativi soltanto per correggere il
+modello (o il giudice che dà il voto alle mosse) quando la previsione sbaglia.
 
-Il *perché* di quella riga non sta nella diapositiva, e sta in un conto. Quando
+Il *perché* di quella riga sta in un calcolo, non nella diapositiva. Quando
 un sistema impara per tentativi, la correzione che riceve alla fine di un
 tentativo è una quantità sola: è andata bene oppure male. Quando impara
 guardando, la correzione è grande quanto il pezzo di mondo che stava provando a
 indovinare, e contata in bit può valere decine di migliaia di volte tanto. È
 l'argomento che LeCun riassume dicendo che l'apprendimento per rinforzo è la
 «ciliegina sulla torta» {cite}`lecun2016cake`, e il {doc}`dibattito sul rinforzo
-</AutoSupervisione/dibattito-rl>` lo misura per intero, quel conto compreso,
+</AutoSupervisione/dibattito-rl>` lo misura nei dettagli, calcolo compreso,
 insieme alle obiezioni dei suoi critici.
 
-La riga sui modelli generativi è la più contestata. Rinunciare
-ai modelli generativi in favore delle architetture a incorporamento congiunto,
-cioè delle JEPA nominate in apertura di capitolo, quelle che confrontano due
-riassunti del mondo invece di ridisegnarlo, è una tesi sul modo giusto di
-costruire un modello del mondo. Non è un verdetto sulla generazione in quanto
-tale, e i fatti lo mostrano: mentre la diapositiva circolava, i modelli
-generativi hanno prodotto i generatori di immagini a diffusione e i modelli
-linguistici che hanno cambiato il dibattito pubblico.
+La riga sui modelli generativi è la più contestata. Rinunciare ai modelli
+generativi in favore delle architetture a incorporamento congiunto, cioè delle
+JEPA nominate nell’{doc}`apertura sui modelli a energia
+</ModelliEnergia/overview>`, quelle che confrontano due riassunti del mondo
+invece di ridisegnarlo, è una tesi sul modo giusto di costruire un modello del
+mondo. Non è un verdetto sulla generazione in quanto tale, e i fatti lo
+mostrano: mentre la diapositiva circolava, i modelli generativi hanno prodotto i
+generatori di immagini a diffusione e i modelli linguistici che hanno cambiato
+il dibattito pubblico.
 
 L'argomento di LeCun ammette che quei sistemi funzionano. Sostiene che predire
 ogni pixel costringe la rete a spendere i suoi neuroni e il suo addestramento
@@ -481,7 +488,7 @@ mossa dal vento, e che per prevedere il mondo convenga prevedere non i pixel ma
 il *riassunto* che la rete se ne fa. È una previsione sul futuro della ricerca,
 e come tutte le previsioni va tenuta distinta dai risultati che abbiamo in
 mano. Il {doc}`capitolo sui world model </WorldModels/overview>` la prende sul
-serio proprio perché la tratta così: come una scommessa argomentata, con i suoi
+serio perché la tratta così: come una scommessa argomentata, con i suoi
 risultati e i suoi limiti, non come una profezia.
 
 `````{tab} Elementare
@@ -521,7 +528,7 @@ risultati e i suoi limiti, non come una profezia.
   (meglio pianificare dentro un modello del mondo). Quella sulle probabilità
   è la tesi dei modelli a energia, e vale per un paesaggio disegnato senza
   vincoli; quella sui modelli generativi resta una scommessa, e il capitolo
-  sui modelli del mondo la discute per quello che è.
+  sui modelli del mondo la discute come tale.
 ```
 `````
 
@@ -538,7 +545,7 @@ risultati e i suoi limiti, non come una profezia.
   $E_\theta(\mathbf{x}) = -\operatorname{logsumexp}_y f_\theta(\mathbf{x})[y]$
   (che esiste se l'integrale di $e^{-E_\theta}$ converge). Addestrarla insieme
   al classificatore migliora calibrazione, rilevamento del fuori
-  distribuzione e robustezza, al prezzo di un addestramento fragile.
+  distribuzione e robustezza, con un addestramento fragile.
 - I modelli di diffusione sono modelli a energia che non lo dichiarano:
   loss di denoising score matching (riponderata per livello di rumore), campo
   dello score $-\nabla_{\mathbf{x}} E_t(\mathbf{x})$ a ogni livello $t$,
@@ -564,17 +571,15 @@ risultati e i suoi limiti, non come una profezia.
   predittivo. Quella sulle probabilità è la tesi dei modelli a energia, ed è
   solida per un'energia senza vincoli sull'architettura; quella sul generativo
   resta una scommessa, e il {doc}`capitolo sui world model
-  </WorldModels/overview>` la discute per quello che è.
+  </WorldModels/overview>` la discute come tale.
 ```
 `````
 
-L'energia, più che un modello, è una lente, ed è come lente che conviene
-tenerla: un punteggio di compatibilità fra due cose, basso quando stanno bene
-insieme, e nessun obbligo di trasformarlo in una probabilità. Resta aperta la
-domanda che questi modelli hanno incontrato a ogni passo: che cosa tiene alto
-il resto del paesaggio, cioè dove si trovano i controesempi, e che cosa
-impedisce al modello di dire sì a tutto. Il {doc}`capitolo
-sull'auto-supervisione </AutoSupervisione/overview>` riparte da lì, dal
-segnale di addestramento che si ricava dai dati quando nessuno ha etichettato
-niente, e dedica una sezione intera al collasso, la risposta sbagliata più
-comoda.
+L'energia è utile soprattutto come lente: un punteggio di compatibilità fra due
+cose, basso quando stanno bene insieme, senza obbligo di trasformarlo in una
+probabilità. Resta aperta la domanda che questi modelli hanno incontrato a ogni
+passo: che cosa tiene alto il resto del paesaggio, cioè dove si trovano i
+controesempi, e che cosa impedisce al modello di dire sì a tutto. Il
+{doc}`capitolo sull'auto-supervisione </AutoSupervisione/overview>` riparte da
+lì e dedica una sezione intera al {doc}`collasso
+</AutoSupervisione/collasso-e-misura>`, la risposta sbagliata più comoda.

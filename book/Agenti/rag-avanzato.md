@@ -5,53 +5,48 @@
 bene: al primo posto il passaggio giusto, «Il
 gatto nero salta sul muro del giardino». Ma al secondo posto si era intrufolato
 un impostore, «Il gatto dorme accanto ai fornelli»: vicino per tema, muto sulla
-domanda. Era il quasi-pertinente, e non era un incidente di percorso.
+domanda. Non era un incidente di percorso, ma il sintomo di un limite di fondo.
 
-Era il sintomo di un limite di fondo. Se il passaggio giusto non viene
-ripescato, il generatore non ha modo di rimediare: gli resta solo ricordare, e
-ricordando un modello inventa molto più che leggendo, senza per giunta lasciare
-accanto la fonte con cui lo si potrebbe controllare. La quota dei passaggi
-giusti che la ricerca riesce a ripescare ha un nome, la *recall*, ed è il
-tetto di tutto il sistema: nessun accorgimento applicato dopo può
-recuperare ciò che la ricerca non ha trovato.
+Se il passaggio giusto non viene ripescato, il generatore non ha modo di
+rimediare: gli resta solo ricordare, e ricordando un modello inventa molto più
+che leggendo, senza lasciare accanto la fonte con cui controllarlo. La quota
+dei passaggi giusti che la ricerca ripesca si chiama *recall* ed è il tetto
+dell'intero sistema: nessun accorgimento applicato dopo recupera ciò che la
+ricerca non ha trovato.
 
-Quanto sia duro quel tetto lo ha misurato l'articolo che ha inaugurato la RAG.
-Prendiamo le domande in cui la risposta non compare in nessuno dei
-documenti recuperati: il sistema di Lewis e colleghi le azzecca comunque poco
-più di una volta su dieci, l’$11{,}8\%$ su *Natural Questions*, che è una
-raccolta di domande vere rivolte a un motore di ricerca
-{cite}`lewis2020retrieval`. Quel po’ che resta viene dalla memoria del
-modello, cioè da quello che gli era rimasto impresso in addestramento.
+L'articolo che ha introdotto la RAG ha misurato il peso di quel tetto. Sulle
+domande la cui risposta non compare in nessun documento recuperato, il sistema
+di Lewis e colleghi risponde correttamente nell’$11{,}8\%$ dei casi su *Natural
+Questions*, una raccolta di domande reali rivolte a un motore di ricerca
+{cite}`lewis2020retrieval`. Quelle risposte vengono dalla memoria parametrica
+del modello.
 
-Il numero si legge in due modi. In un senso è tanto: un sistema che sapesse
-soltanto *ritagliare* la risposta dai documenti che ha davanti, senza poterla
-ricordare, in quei casi prenderebbe zero. In un altro senso è pochissimo:
-l'88,2% di quelle domande resta senza risposta giusta. È il dato di un sistema
-del 2020 su una sola raccolta, e dà l'ordine di grandezza di quanto si perde
-quando la ricerca manca il bersaglio.
+Il valore è alto rispetto a un sistema che si limiti a *ritagliare* la risposta
+dai documenti recuperati, che in quei casi prenderebbe zero; è basso in
+assoluto, perché l'88,2% di quelle domande resta senza risposta corretta. È il
+dato di un sistema del 2020 su una sola raccolta, e dà l'ordine di grandezza
+della perdita quando la ricerca manca il bersaglio.
 
-La RAG di base prendeva i pochi passaggi più vicini alla domanda (diciamo i
-primi cinque), trovati con il cercatore di DPR {cite}`karpukhin2020dense`, e li
-incollava nel prompt prima di far scrivere la risposta. È un ottimo punto di
-partenza e un pessimo punto di arrivo.
+La RAG di base prende i pochi passaggi più vicini alla domanda (diciamo i primi
+cinque), trovati con il cercatore di DPR {cite}`karpukhin2020dense`, e li
+inserisce nel prompt prima della risposta.
 
-E non la rende superflua la finestra lunga: con contesti da centinaia di
-migliaia di token si potrebbe incollare nel prompt l'archivio intero, e Li e
-colleghi trovano che, con risorse sufficienti, il contesto lungo dà in media
-risposte migliori, ma costa molto di più; il loro *Self-Route* sceglie domanda
-per domanda fra le due strade e si avvicina al contesto lungo spendendone una
-frazione {cite}`li2024ragorlongcontext`.
+La finestra lunga non rende superflua la RAG: con contesti da centinaia di
+migliaia di token si potrebbe inserire nel prompt l'archivio intero, e Li e
+colleghi trovano che il contesto lungo, con risorse sufficienti, dà in media
+risposte migliori, a un costo molto più alto; il loro *Self-Route* sceglie
+domanda per domanda fra le due strade e si avvicina alle prestazioni del
+contesto lungo con una frazione del costo {cite}`li2024ragorlongcontext`.
 
 Le tecniche per migliorare la catena sono tre, e si distinguono per il punto in
-cui intervengono lungo la pipeline, la catena di passi che porta dalla domanda
-alla risposta. *Prima* di cercare si migliora la domanda, e questo alza la
+cui intervengono. *Prima* di cercare si migliora la domanda, e questo alza la
 recall. *Dopo* aver cercato si riordinano i candidati, e questo alza la
 precisione, cioè la quota di materiale buono fra quello che arriva al
 generatore, e permette di pescare più candidati all'inizio senza consegnarli
 tutti. *Attorno* all'intero ciclo si lascia decidere al modello se e quando
 cercare, e questo alza la recall sulle domande che una ricerca sola non
-risolve. Chiudiamo con la domanda che fa da arbitro a tutto il resto: come si
-misura se un sistema RAG funziona davvero.
+risolve. La sezione si chiude con la valutazione: come si misura se un sistema
+RAG funziona.
 
 ```{figure} ../figures/rag-avanzato.svg
 :name: fig-rag-avanzato
@@ -64,45 +59,35 @@ parole così come sono scritte) e fra il recupero e il modello si interpone un
 riordino.
 ```
 
-La regola che governa {numref}`fig-rag-avanzato` è una sola: il recupero
-grezzo, quello all'inizio, deve essere generoso (meglio cento candidati
-mediocri che dieci scelti male, perché ciò che non entra lì è perduto per
-sempre) e ciò che viene dopo deve essere severo, perché al modello arrivi poco
-e buono. È il senso della scritta in fondo al disegno, dove *a monte* vuol dire
-all'inizio della catena e *a valle* alla fine, come per un fiume.
+La regola di {numref}`fig-rag-avanzato` è una sola: il recupero grezzo, quello
+all'inizio, deve essere generoso (meglio cento candidati mediocri che dieci
+scelti male, perché ciò che non entra lì è perduto) e ciò che viene dopo deve
+essere severo, perché al modello arrivi poco e buono. La scritta in fondo al
+disegno la riassume: *a monte* è l'inizio della catena, *a valle* la fine.
 
-Il disegno chiama «densa» la prima delle due ricerche. La ricerca densa
-confronta gli *embedding*, i vettori di $\mathbb{R}^d$ che stanno sulla mappa
-del significato di «Cercare per rispondere»: domanda e passaggi sono vettori, e
-si prendono i passaggi più vicini alla domanda (per coseno o prodotto scalare),
-anche quando non condividono una parola. La ricerca sparsa confronta invece i
-termini: il punteggio di un passaggio cresce con le occorrenze dei termini
-della domanda, pesa di più i termini rari (trovare «guarnizione» vale molto più
-che trovare «il») e tiene conto della lunghezza del passaggio. La funzione
-standard è BM25, degli anni Novanta, che resta una base di confronto difficile
-da battere fuori dal dominio su cui i cercatori densi sono stati addestrati
-{cite}`thakur2021beir`.
+La prima delle due ricerche del disegno è quella «densa» di «Cercare per
+rispondere»: domanda e passaggi sono embedding in $\mathbb{R}^d$ e si prendono i
+passaggi più vicini alla domanda, anche quando non condividono alcuna parola. La
+ricerca sparsa confronta invece i termini con BM25, una funzione degli anni
+Novanta che resta una base di confronto difficile da battere fuori dal dominio
+su cui i cercatori densi sono stati addestrati {cite}`thakur2021beir`.
 
-Le due ricerche sbagliano in modi diversi, ed è per questo che conviene farle
-entrambe. La densa avvicina «auto» e «vettura», ma può mancare un codice di
-prodotto scritto identico; la sparsa il codice lo trova al primo colpo, ma
-davanti a un sinonimo non trova niente.
+Le due ricerche sbagliano in modi diversi, per questo conviene farle entrambe.
+La densa avvicina «auto» e «vettura», ma può mancare un codice di prodotto
+scritto identico; la sparsa trova il codice al primo colpo, ma davanti a un
+sinonimo non trova niente.
 
-Cercando due volte, però, ci si ritrova con due classifiche invece che con
-una, e vanno rimesse insieme: è la fusione del disegno. C'è un ostacolo, e
-un modo elegante di aggirarlo. L'ostacolo è che le due ricerche danno punteggi
-calcolati in modi diversi, e sommarli non vorrebbe dire niente, come sommare
-un voto in decimi a uno in centesimi. Il modo più robusto di aggirarlo, quando
-non si hanno esempi su cui tarare niente, è buttare via i punteggi e tenere
-solo la posizione in classifica: chi sta in alto in tutte e due le liste sale,
-chi sta in alto in una sola resta indietro, e non serve sapere quanto valgano i
-due voti né come siano stati calcolati. La regola che lo fa si chiama
-**reciprocal rank fusion**. Se invece si ha qualche esempio con la risposta
-nota, si può fare di meglio: si riportano i due punteggi sulla stessa scala e
-li si somma con un peso tarato sugli esempi {cite}`bruch2023fusion`.
+Le due ricerche producono due classifiche, che la fusione del disegno riunisce.
+I punteggi non si possono sommare, perché sono calcolati in modi diversi, come
+un voto in decimi e uno in centesimi. Senza esempi su cui tarare, il metodo più
+robusto scarta i punteggi e conserva la posizione in classifica: sale chi sta in
+alto in entrambe le liste, resta indietro chi sta in alto in una sola. La regola
+si chiama **reciprocal rank fusion**. Con qualche esempio di risposta nota si
+può fare di meglio: si riportano i due punteggi sulla stessa scala e si sommano
+con un peso tarato sugli esempi {cite}`bruch2023fusion`.
 
-{numref}`fig-rag-due-fasi` guarda la stessa catena da un'altra angolatura: non
-*dove* si interviene, ma *quando* si paga.
+{numref}`fig-rag-due-fasi` guarda la stessa catena dal punto di vista del tempo:
+non *dove* si interviene, ma *quando* si sostiene il costo.
 
 ```{figure} ../figures/extra-rag-spiegato.svg
 :name: fig-rag-due-fasi
@@ -117,11 +102,11 @@ ogni domanda: si cercano i passaggi più vicini (*retrieval*), si incollano nel
 prompt e il modello risponde citando le fonti.
 ```
 
-Le tecniche che seguono intervengono quasi tutte nella seconda fase, quella
-che si paga di nuovo a ogni domanda ricevuta e che decide quanti secondi
-l'utente aspetta prima di vedere qualcosa, cioè la latenza. Ce n'è però una
-anche nella prima, ed è la più economica, perché si paga una volta: tagliare
-bene i passaggi e dare a ciascuno un po' del documento da cui viene. Il
+Le tecniche che seguono intervengono quasi tutte nella seconda fase, che si
+ripete a ogni domanda e determina l'attesa dell'utente (la latenza). Una
+riguarda invece la prima e ha un costo che si sostiene una volta sola: tagliare
+bene i passaggi e dare a ciascuno un po' del contesto del documento da cui
+viene. Il
 *contextual retrieval* di Anthropic antepone a ogni passaggio, prima di
 calcolarne l'embedding e di indicizzarlo per BM25, da cinquanta a cento token
 scritti da un modello che lo situano nel suo documento; sul proprio insieme di
@@ -132,8 +117,8 @@ prova la quota di passaggi giusti mancati fra i primi venti scende dal 5,7% al
 
 ## Migliorare la domanda: riscrittura ed espansione
 
-La domanda dell'utente non coincide con la *query*, il testo che si manda
-davvero al cercatore, e la prima leva consiste nel non farle coincidere. La
+La domanda dell'utente non coincide con la *query*, il testo inviato al
+cercatore, e la prima leva consiste nel non farle coincidere. La
 ricerca per significato presume che la query e il passaggio giusto abbiano
 embedding vicini; ma una domanda breve, ellittica o che dipende dalla
 conversazione è spesso una query povera, perché le mancano i termini che il
@@ -175,14 +160,13 @@ ipotetici» che si fa scrivere.
 
 Tutto dipende però da chi scrive l'esca. Se le tre paginette le butta giù uno
 che di cani non sa niente, portano lontano dallo scaffale giusto: meglio allora
-cercare con la domanda e basta. E c'è un caso in cui il trucco non è la prima
-cosa da provare: un cercatore
-si può addestrare sul proprio archivio, mostrandogli migliaia di domande con
-accanto i libri giusti, finché non impara a pescare quelli. Chi può
-permetterselo parte da lì; l'esca, sopra un cercatore già addestrato, a volte
-aiuta ancora e a volte peggiora, e lo si scopre solo provando. HyDE nasce per
-l'altro caso, il
-primo giorno, quando l'archivio è nuovo e nessuno ci ha ancora cercato niente.
+cercare con la domanda e basta. C'è però un caso in cui il trucco non è la
+prima cosa da provare: un cercatore si può addestrare sul proprio archivio,
+mostrandogli migliaia di domande con accanto i libri giusti, finché non impara
+a pescare quelli. Chi può permetterselo parte da lì; l'esca, sopra un cercatore
+già addestrato, a volte aiuta ancora e a volte peggiora, e lo si scopre solo
+provando. HyDE nasce per l'altro caso, il primo giorno, quando l'archivio è
+nuovo e nessuno ci ha ancora cercato niente.
 
 `````
 
@@ -214,22 +198,22 @@ L'intuizione è che le $\tilde{d}_i$, pur potendo contenere errori fattuali,
 vivono nello spazio delle risposte (la stessa regione dove abitano i
 passaggi veri) e ci somigliano più di quanto ci somigli la domanda. Attenzione
 però a non leggere il termine $E_p(q)$ come un'àncora: la query entra nella
-media con peso $1/(M+1)$, cioè conta esattamente quanto una delle ipotesi, e
+media con peso $1/(M+1)$, cioè conta quanto una delle ipotesi, e
 già con una manciata di documenti generati il suo contributo è minoritario. In
 pratica i documenti ipotetici sono generati dall'LLM e poi codificati con
 l'encoder dei documenti: le allucinazioni del modello non finiscono nella
 risposta finale, servono solo da esca per il recupero.
 
-Il perimetro va dichiarato, perché è la cosa più utile a chi deve decidere se
-adottare il metodo, ed è scritta nel lavoro originale: HyDE nasce per il caso
-in cui non si hanno etichette di rilevanza, con un unico encoder
+Il lavoro originale dichiara il perimetro di validità, che è l'informazione più
+utile a chi deve decidere se adottare il metodo: HyDE nasce per il caso in cui
+non si hanno etichette di rilevanza, con un unico encoder
 contrastivo non supervisionato usato indifferentemente per query e documenti.
 Gli autori sono espliciti nel dire che l'uso con un retriever messo a punto sul
 proprio dominio *non è quello previsto*.
 
-Il quadro che misurano è più sfumato di come lo si racconta di solito. Il voto
+I risultati sono più sfumati di come si riportano di solito. Il voto
 è l’**NDCG@10**, che premia le classifiche che mettono in alto, nei primi dieci
-posti, i documenti giusti, ed è qui riportato in centesimi. Nel caso per cui è
+posti, i documenti giusti, qui riportato in centesimi. Nel caso per cui è
 nato (Tab. 1 dell'articolo, generatore InstructGPT a temperatura $0{,}7$),
 senza etichette, HyDE porta l'NDCG@10 su TREC DL19 e DL20 a $61{,}3$ e
 $57{,}9$, da $50{,}6$ e $48{,}0$ di BM25 e da $44{,}5$ e $42{,}1$ del
@@ -271,15 +255,14 @@ le liste più della vetta di una sola.
 ## Riordinare i candidati: il reranking
 
 Riordinare vuol dire prendere quello che la ricerca ha pescato e rimetterlo in
-fila con più cura. Prima, però, conviene vedere come pesca un archivio vero,
-perché finora si è detto «prende i più vicini» senza dire come faccia a
-trovarli senza guardarli tutti.
+fila con più cura. Prima occorre chiarire come un archivio vero trovi i vicini
+più prossimi senza confrontare la domanda con ogni vettore.
 
-Gli embedding sono vettori, cioè liste di numeri: quelli del mini-archivio di
-«Cercare per rispondere» erano lunghi quattro, e ciascuno dei quattro misurava
-quanto la frase parlasse di un certo tema (gatti, muri, automobili, cucina). In
-un sistema vero i numeri sono da qualche centinaio a qualche migliaio, e
-nessuno sa dire che cosa misuri ciascuno: li ha scelti l'addestramento.
+Gli embedding del mini-archivio di «Cercare per rispondere» avevano quattro
+componenti leggibili, ciascuna delle quali misurava quanto la frase parlasse di
+un tema (gatti, muri, automobili, cucina). In un sistema reale ne hanno da
+qualche centinaio a qualche migliaio, e nessuna ha un significato leggibile,
+perché le fissa l'addestramento.
 
 La ricerca esatta confronta la domanda con ogni vettore dell'archivio, a uno a
 uno, e costa $O(Nd)$ con $N$ vettori di $d$ numeri: insostenibile quando i
@@ -288,10 +271,8 @@ approssimati dei vicini più prossimi rinunciano alla garanzia di trovare
 *sempre* il vicino esatto in cambio di una ricerca enormemente più rapida. Uno
 dei più usati, HNSW, costruisce un grafo a strati ({numref}`fig-hnsw`), con
 pochi nodi e archi lunghi in alto e tutti i nodi, collegati solo ai vicini, in
-basso, e lo percorre dall'alto, un po' come si raggiunge un posto lontano prima
-in autostrada, poi per le strade statali e infine per le vie del quartiere. Per
-strada qualche buon candidato si perde, ed è un altro motivo per cui il
-recupero grezzo va tenuto generoso.
+basso, e lo percorre dall'alto verso il basso. La discesa può perdere qualche
+buon candidato, altro motivo per tenere generoso il recupero grezzo.
 
 ```{figure} ../figures/vector-database.svg
 :name: fig-hnsw
@@ -317,11 +298,10 @@ di documenti è fuori discussione. La soluzione è usarli in due stadi.
 Il primo stadio, il bi-encoder, fa il grosso: percorre l'archivio con l'indice
 approssimato e restituisce non i pochi passaggi che finiranno sotto gli occhi
 del modello, ma molti più candidati grezzi (cinquanta, cento) tra cui, si
-spera, ci sono anche i migliori. Il secondo stadio, il
-reranker cross-encoder, si applica *solo* a quella rosa ristretta e la
-riordina con cura, promuovendo i passaggi che davvero rispondono e affondando
-i quasi-pertinenti. È il compromesso classico dell'ingegneria del recupero:
-recuperare tanto e alla svelta, poi riordinare poco e per bene.
+spera, ci sono anche i migliori. Il secondo stadio, il reranker cross-encoder,
+si applica *solo* a quella rosa ristretta e la riordina con cura, promuovendo i
+passaggi che rispondono e affondando i quasi-pertinenti. Il compromesso è
+recuperare molto e in fretta, poi riordinare poco e con cura.
 
 `````{tab} Elementare
 
@@ -333,7 +313,7 @@ scrematura: veloce, superficiale, va bene per buttare via i chiaramente fuori
 tema. Il cross-encoder è il colloquio: lento, ma guarda *insieme* il candidato
 e il posto da coprire, e non si fa ingannare da chi «suona simile» senza
 rispondere. Farlo a tutti e mille sarebbe rovinoso; farlo ai cinquanta scremati
-è esattamente il punto giusto.
+è il punto giusto.
 
 La scrematura, però, perde i dettagli: un'occhiata al foglio intero dà
 un'impressione sola, e il candidato che ha proprio quello che serve in una riga
@@ -362,17 +342,16 @@ cambio della garanzia di esattezza, il numero di confronti cresce molto più
 lentamente della dimensione dell'archivio, e raddoppiare i vettori costa un
 pugno di confronti in più invece del doppio.
 
-Sulla forma esatta di quella crescita conviene però essere precisi, perché è il
-punto in cui si tende a promettere un teorema che non c'è. Gli autori
-sostengono una scalabilità logaritmica rispetto a $N$, il numero di vettori
-nell'archivio, con un ragionamento che vale per un grafo di Delaunay esatto e di
-grado limitato, mentre HNSW ne costruisce solo un'approssimazione. La misurano poi
-su dati sintetici a bassa dimensione. A quattro dimensioni il parametro di
-ricerca che serve per una recall fissata smette di crescere quando l'archivio si
-allarga; a otto dimensioni, con dieci vicini cercati e la recall ferma a
-$0{,}95$, osservano una complessità «non peggiore che logaritmica». È evidenza
-empirica, non una garanzia dimostrata in generale. E il logaritmo è in $N$: il
-prezzo di vettori più lunghi non sparisce, si paga nel costo del singolo
+La crescita logaritmica non è un teorema. Gli autori sostengono una scalabilità
+logaritmica rispetto a $N$, il numero di vettori nell'archivio, con un
+ragionamento che vale per un grafo di Delaunay esatto e di grado limitato,
+mentre HNSW ne costruisce soltanto un'approssimazione, e la misurano su dati
+sintetici a bassa dimensione. A quattro dimensioni il parametro di ricerca che
+serve per una recall fissata smette di crescere quando l'archivio si allarga; a
+otto dimensioni, con dieci vicini cercati e la recall ferma a $0{,}95$,
+osservano una complessità «non peggiore che logaritmica». È evidenza empirica,
+non una garanzia dimostrata in generale. Il logaritmo è in $N$: la maggiore
+lunghezza dei vettori non sparisce, e si ripercuote sul costo del singolo
 confronto e, sui dati veri ad alta dimensione (duecento milioni di descrittori
 SIFT a 128 dimensioni), anche in uno scostamento dal logaritmo che gli autori
 stessi registrano.
@@ -384,20 +363,18 @@ due oggetti $z$ ed $E_z$), e ne trattiene i primi $k_1$; il secondo riordina
 questi $k_1$ con il punteggio del cross-encoder
 $\mathrm{score}(q, d) = \mathrm{CrossEnc}([q; d])$, dove $[q; d]$ è la
 concatenazione dei due testi data in input a un unico Transformer, e tiene i
-primi $k$, cioè i passaggi che entreranno davvero nel prompt del generatore
+primi $k$, cioè i passaggi che entreranno nel prompt del generatore
 (si sceglie $k_1 \gg k$: tipicamente $k_1$ nell'ordine delle decine o
 centinaia, $k$ pochi; $N$ resta la dimensione dell'archivio, che è un'altra
 cosa e di parecchi ordini di grandezza più grande). Il costo del reranking è
 $k_1$ inferenze di cross-encoder per query: accettabile con quei valori di
 $k_1$, proibitivo sull'intero archivio.
 
-Questa disposizione a stadi ha una sua letteratura, e conviene sapere dove
-guardare: Nogueira, Yang, Cho e Lin la montano con un cross-encoder BERT (il
-nome con cui si trova citata è *monoBERT*) e misurano che $k_1$ è la manopola
-con cui si sceglie il punto di equilibrio fra qualità e latenza
-{cite}`nogueira2019multistage`. Da qui l'indicazione pratica su come
-sceglierlo: alzare $k_1$ fa guadagnare recall ma costa attesa, quindi il valore
-giusto dipende da quanto l'attesa pesi nel sistema che si sta costruendo.
+La disposizione a stadi è studiata da Nogueira, Yang, Cho e Lin, che la montano
+con un cross-encoder BERT (*monoBERT*) e misurano che $k_1$ regola l'equilibrio
+fra qualità e latenza {cite}`nogueira2019multistage`. Alzare $k_1$ fa guadagnare
+recall e aumenta l'attesa, quindi il valore giusto dipende da quanto l'attesa
+pesi nel sistema che si sta costruendo.
 
 Tra i due estremi esiste una via di mezzo elegante: l’interazione tardiva
 di ColBERT {cite}`khattab2020colbert`. Invece di collassare ogni testo in
@@ -437,9 +414,9 @@ Il cross-encoder è finto, non è un vero modello addestrato, ma imita la cosa
 che conta: legge la coppia. Il bi-encoder ha schiacciato ogni frase in un punto
 solo, e da lì «gatto» e «salta» sono ormai mescolati; il nostro reranker riceve
 invece *domanda e passaggio* e conta quanti concetti della domanda il passaggio
-copre. È lì la differenza: guardando i due testi insieme si vede se il gatto e
-il saltare ci sono tutti e due, e a rispondere non è il gatto, e nemmeno il
-saltare, ma un gatto *che salta*.
+copre. Guardando i due testi insieme si vede se il gatto e il saltare ci sono
+tutti e due, e a rispondere è un gatto *che salta* e non il gatto o il saltare
+presi separatamente.
 
 La regola esatta, così il conto si può rifare a mente: ogni concetto della
 domanda che il passaggio copre vale un punto, e ogni coppia di concetti coperti
@@ -450,11 +427,10 @@ dorme accanto ai fornelli» copre il solo «gatto»: un concetto, nessuna coppia
 un punto. Il premio alle coppie non sposta la classifica, perché il conto si
 semplifica nel quadrato dei concetti coperti: con $c$ concetti le coppie sono
 $c(c-1)/2$, e $c + 2 \cdot c(c-1)/2 = c^2$, cioè $3^2 = 9$ contro $1^2 = 1$.
-Tutto il suo lavoro lo fa sulla *distanza* fra i punteggi, che è quello che
-serve qui. Ed è
-la sola cosa finta di tutto il blocco: un cross-encoder vero non conta le
-coppie, legge quali concetti sono e come stanno insieme nella frase, e non lo
-si scrive a mano, lo si impara dagli esempi.
+Il premio allarga invece la *distanza* fra i punteggi, che è quello
+che serve qui. Un cross-encoder vero non conta le coppie: legge quali concetti
+sono e come stanno insieme nella frase, e lo si impara dagli esempi invece di
+scriverlo a mano.
 
 ```python
 import torch
@@ -560,51 +536,45 @@ Al generatore va solo chi supera meta' del punteggio migliore:
   [1] Il gatto nero salta sul muro del giardino.
 ```
 
-Ecco il punto, e non è quello che ci si aspetterebbe. L'ordine dei primi due
-non cambia: il quasi-pertinente «Il gatto dorme accanto ai fornelli» era
-secondo e resta secondo. Quello che cambia è il significato della distanza fra
-il primo e il secondo. Il bi-encoder li dava a $0{,}99$ e $0{,}78$, e nel
-giocattolo una soglia a $0{,}9$ basterebbe già; ma è un effetto dei sei
-vettori scritti a mano. Con un modello vero la scala dei coseni cambia da un
-modello all'altro e da una domanda all'altra: un coseno di $0{,}8$ può voler
-dire «risponde» per una domanda e «parla d'altro» per un'altra, e una soglia
-fissa sui coseni non si trasferisce. Il cross-encoder finto dà $9{,}0$ contro
-$1{,}0$ perché la sua regola fa il quadrato dei concetti coperti; uno vero è
-addestrato proprio a separare i passaggi che rispondono da quelli che parlano
-solo dello stesso tema, e sul suo punteggio una soglia si può tarare una volta,
-su un campione di domande di cui si conosce la risposta.
+L'ordine dei primi due non cambia: il quasi-pertinente «Il gatto dorme accanto
+ai fornelli» era secondo e resta secondo. Cambia il significato della distanza
+fra il primo e il secondo. Il bi-encoder li dava a $0{,}99$ e $0{,}78$, e nel
+giocattolo una soglia a $0{,}9$ basterebbe già; ma è un effetto dei sei vettori
+scritti a mano. Con un modello vero la scala dei coseni cambia da un modello
+all'altro e da una domanda all'altra: un coseno di $0{,}8$ può voler dire
+«risponde» per una domanda e «parla d'altro» per un'altra, e una soglia fissa
+sui coseni non si trasferisce. Il cross-encoder finto dà $9{,}0$ contro $1{,}0$
+perché la sua regola fa il quadrato dei concetti coperti; uno vero è addestrato
+a separare i passaggi che rispondono da quelli che parlano solo dello stesso
+tema, e sul suo punteggio una soglia si può tarare una volta, su un campione di
+domande di cui si conosce la risposta.
 
-Da lì viene il guadagno vero, che è una decisione diventata possibile. Senza
-una soglia di cui fidarsi l'unica regola disponibile è «prendine i primi $k$»,
-e riempiendo i posti si finisce per infilare nel prompt un passaggio che non
-risponde. Con punteggi separati si può mettere una soglia: qui teniamo chi
-supera metà del punteggio migliore, cioè $4{,}5$, e l'unico a passare è il $9$.
-Metà, però, vuole un minimo assoluto sotto, qui un punto: una domanda a cui
-nessun passaggio risponde li farebbe passare tutti, perché metà di zero è zero.
-Al generatore arriva un passaggio solo, quello giusto, senza compagnia
-fuorviante. Notiamo anche che «Il muro portante sostiene il solaio», che pure
-condivide una parola con la risposta, finisce a zero, ed è corretto: la domanda
-parlava di un gatto che salta, non di solai.
+Senza una soglia affidabile l'unica regola è «prendine i primi $k$», che riempie
+i posti anche con un passaggio che non risponde. Con punteggi separati si può
+fissare una soglia: qui passa chi supera metà del punteggio migliore, cioè
+$4{,}5$, e l'unico a passare è il $9$. Metà del migliore richiede un minimo
+assoluto, qui un punto: se nessun passaggio rispondesse, i punteggi sarebbero
+tutti zero e la soglia, metà di zero, li farebbe passare tutti. Al generatore
+arriva un passaggio solo, quello giusto. «Il muro portante sostiene il solaio»,
+che pure condivide una parola con la risposta, finisce a zero, e il risultato è
+corretto: la domanda parlava di un gatto che salta, non di solai.
 
-Non abbiamo alzato la recall, perché il passaggio giusto era già stato
-recuperato. Abbiamo alzato la precisione, la quota di passaggi utili fra quelli
-che consegniamo al generatore. Sono due misure gemelle e descrivono due
-problemi diversi: la recall dice quanto ci siamo persi per strada, la
-precisione quanto materiale irrilevante abbiamo consegnato insieme a quello
-utile. Il tetto del sistema resta il primo, perché ciò che non si trova non si
-recupera più; ma la seconda si può alzare a valle, ed è quello che abbiamo
-appena fatto, guadagnando la capacità di dire di no.
+Il riordino non ha alzato la recall, perché il passaggio giusto era già stato
+recuperato, ma la precisione, cioè la quota di passaggi utili fra quelli
+consegnati al generatore. Le due misure descrivono problemi diversi: la recall
+dice quanto si è perso per strada, la precisione quanto materiale irrilevante
+accompagna quello utile. Il tetto del sistema resta la recall, perché ciò che
+non si trova non si recupera; la precisione si può alzare a valle.
 
 ## Il RAG che si corregge: Self-RAG e RAG agentico
 
-Fin qui abbiamo migliorato una catena che resta rigida: cerca sempre, una
-volta sola, poi genera. E cade in due modi opposti.
+Le tecniche viste finora migliorano una catena che resta rigida: cerca sempre,
+una volta sola, poi genera. Sbaglia in due modi opposti.
 
 Cercare quando non serve è uno spreco, e non solo di tempo. «Traduci
 "buongiorno" in francese» non ha bisogno di alcun archivio, ma il sistema
-rigido ci va lo stesso, e quel che riporta finisce nel prompt: passaggi che
-non c'entrano niente, davanti agli occhi del modello, con qualche probabilità
-di distrarlo dalla cosa semplice che gli era stata chiesta.
+rigido cerca lo stesso, e quel che riporta finisce nel prompt: passaggi
+irrilevanti che possono distrarre il modello dalla richiesta semplice.
 
 Cercare una volta sola, all'opposto, a volte non basta. Ci sono domande la cui
 risposta vive nell'incrocio di due fatti che stanno in documenti diversi, e
@@ -615,17 +585,17 @@ per costruzione.
 La terza leva fa del recupero una decisione del modello: se cercare, quando e
 quante volte.
 
-C'è anche una via diversa al secondo dei due problemi, e non passa dal cercare
-più volte: passa dal cambiare la forma dell'archivio. Se i fatti stanno in un
-*knowledge graph*, un grafo di conoscenza fatto di terne (soggetto, relazione,
-oggetto), come (Roma, capitale di, Italia), incrociare due fatti vuol dire
-percorrere due archi. Riprende l'idea, più avanti nel libro, la {doc}`sezione
-sui knowledge graph </GraphNeuralNetwork/knowledge-graph>`, fra le reti su
-grafi. Un'idea vicina nel nome, GraphRAG {cite}`edge2024graphrag`, costruisce
-il grafo dal corpus con un modello di linguaggio, ne riassume in anticipo i
-gruppi di entità collegate e serve soprattutto alle domande che riguardano
-l'intero corpus («quali sono i temi principali di questi documenti?»), a cui
-nessuna ricerca di pochi passaggi può rispondere.
+Al secondo problema si può rispondere anche cambiando la forma dell'archivio
+invece di cercare più volte. Se i fatti stanno in un *knowledge graph*, un grafo
+di conoscenza fatto di terne (soggetto, relazione, oggetto), come (Roma,
+capitale di, Italia), incrociare due fatti vuol dire percorrere due archi.
+L'idea è sviluppata nella {doc}`sezione sui knowledge graph
+</GraphNeuralNetwork/knowledge-graph>`, fra le reti su grafi. Un'idea vicina nel
+nome, GraphRAG {cite}`edge2024graphrag`, costruisce il grafo dal corpus con un
+modello di linguaggio, ne riassume in anticipo i gruppi di entità collegate e
+serve soprattutto alle domande che riguardano l'intero corpus («quali sono i
+temi principali di questi documenti?»), a cui nessuna ricerca di pochi passaggi
+può rispondere.
 
 `````{tab} Elementare
 
@@ -633,11 +603,10 @@ Torniamo allo studente all'esame a libro aperto. Lo studente ingenuo apre il
 libro *a ogni* domanda, anche a «quanto fa sette per otto»: perde tempo e
 rischia di copiare la pagina sbagliata. Lo studente maturo fa tre cose in più.
 
-Si chiede *se* gli serve il libro, e non se lo chiede una volta sola: a metà
-di una risposta può saltare fuori una data che a memoria non ha, e allora
-apre; alle domande che sa già risponde e basta. E quando la pagina che ha
-davanti gli basta anche per la frase dopo, non ne cerca un'altra: tiene
-quella.
+Si chiede *se* gli serve il libro, e non se lo chiede una volta sola: a metà di
+una risposta può saltare fuori una data che a memoria non ha, e allora apre;
+alle domande che sa già risponde e basta. Quando la pagina che ha davanti gli
+basta anche per la frase dopo, non ne cerca un'altra: tiene quella.
 
 Quando lo apre, rilegge criticamente, con due domande diverse: «questa
 pagina risponde alla domanda che mi hanno fatto, o l'ho aperta a caso?» e,
@@ -645,7 +614,7 @@ riga per riga, «quello che sto scrivendo sta davvero scritto qui, o l'ho
 aggiunto io?». E alla fine, che il libro l'abbia aperto o no, una terza:
 «quello che ho scritto serve a chi me l'ha chiesto?».
 
-E se una pagina non basta ne apre un'altra, e un'altra ancora, finché non ha
+Se una pagina non basta ne apre un'altra, e un'altra ancora, finché non ha
 in mano tutto quello che serve; se gli vengono in mente due modi di
 rispondere, consegna quello che le pagine aperte reggono meglio, non quello
 che suona meglio.
@@ -662,11 +631,11 @@ pagine? serve a chi me l'ha chiesto? mi manca ancora qualcosa? È la differenza
 tra consultare un libro e saperlo consultare.
 
 Chiedersi da sé se serve aprire il libro, rileggere con occhio critico quello
-che si è trovato e guardare alla fine se la risposta serve davvero sono le
-mosse di un modello che si chiama **Self-RAG**, cioè «RAG che si controlla da
-solo». Affidare il controllo delle pagine a un compagno è il **Corrective
-RAG**, o CRAG. Tornare a cercare quante volte serve fa invece il **RAG
-agentico**: lì cercare smette di essere un passo obbligato e diventa un
+che si è trovato e guardare alla fine se la risposta serve davvero sono i
+comportamenti di un modello che si chiama **Self-RAG**, cioè «RAG che si
+controlla da solo». Affidare il controllo delle pagine a un compagno è il
+**Corrective RAG**, o CRAG. Tornare a cercare quante volte serve fa invece il
+**RAG agentico**: lì cercare smette di essere un passo obbligato e diventa un
 attrezzo che si prende quando si vuole.
 
 `````
@@ -732,13 +701,12 @@ domande»: sulle domande semplici, spesso, la risposta è zero.
 
 ## Valutare un sistema RAG
 
-Tutte queste leve hanno senso solo se sappiamo dire quale migliora il sistema e
-quale no. Ma un RAG ha due pezzi, il cercatore e il generatore, e una risposta
-sbagliata può essere colpa dell'uno o dell'altro: o la ricerca ha mancato il
-documento giusto, o il documento c'era e chi ha scritto la risposta l'ha
-ignorato, o l'ha letto male. Un voto solo non distingue i due casi, e non offre
-indicazioni su dove intervenire. Servono misure separate, che sappiano dove
-guardare.
+Quale leva migliori il sistema si stabilisce con una misura. Un sistema RAG ha
+due componenti, il cercatore e il generatore, e una risposta sbagliata dipende
+dall'uno o dall'altro: la ricerca ha mancato il documento giusto, oppure il
+documento c'era e chi ha scritto la risposta l'ha ignorato o l'ha letto male. Un
+voto solo non distingue i casi e non indica dove intervenire, per cui servono
+misure separate.
 
 `````{tab} Elementare
 
@@ -788,7 +756,7 @@ risposta. La pertinenza della risposta valuta invece se la risposta indirizza
 la domanda posta (non un tema adiacente), e la precision/recall del contesto
 misurano la qualità del recupero a monte: quanti dei passaggi recuperati sono
 rilevanti (precision) e quanti dei rilevanti sono stati recuperati (recall);
-quest'ultimo è proprio il *tetto* da cui siamo partiti. Sul recupero da solo si
+quest'ultimo è il *tetto* da cui siamo partiti. Sul recupero da solo si
 usano la recall@k, la MRR e la nDCG definite nella {doc}`sezione sul RAG
 </Transformers/rag>`: la recall@k misurata alla profondità che il generatore
 vedrà davvero è il tetto stesso, e la nDCG è la metrica dei numeri di HyDE su
@@ -808,7 +776,7 @@ del 70% per la rilevanza del contesto. La recall del contesto fa eccezione: per
 contare i rilevanti *mancati* serve una risposta di riferimento annotata, e
 infatti la libreria la calcola solo se gliene si dà una. Il reference-free è
 comodo perché non richiede un dataset etichettato a mano, ma eredita in blocco
-i limiti dell’LLM-as-a-judge che vedremo più avanti, parlando di {doc}`LLMOps
+i limiti dell’LLM-as-a-judge, descritti nella sezione su {doc}`LLMOps
 </MLOps/llmops>`: il *position bias*, il *verbosity bias* e una preferenza per
 i propri testi che lavori successivi misurano
 {cite}`panickssery2024selfpreference`. Va perciò calibrato contro un campione
@@ -816,15 +784,14 @@ di giudizi umani, mai preso per oracolo.
 
 `````
 
-Un'ultima avvertenza, che vale per tutta la RAG. La fedeltà, la
-metrica più facile da scambiare per correttezza, non va confusa con la verità.
-Un sistema può essere perfettamente fedele e fattualmente sbagliato: se
-l'archivio contiene un documento errato, la risposta più fedele possibile a
-quel documento sarà errata, con tanto di citazione impeccabile. E vale anche il
-rovescio, già enunciato in «Cercare per rispondere»: una citazione formalmente
-corretta non rende vera una risposta che ne travisa il contenuto. La fedeltà
-dice che la risposta non ha inventato *rispetto alle fonti*; non dice nulla
-sulla bontà delle fonti, né sull'onestà con cui sono state riassunte. La RAG
+La fedeltà, la metrica più facile da scambiare per correttezza, non va confusa
+con la verità. Un sistema può essere perfettamente fedele e fattualmente
+sbagliato: se l'archivio contiene un documento errato, la risposta più fedele
+possibile a quel documento sarà errata, con tanto di citazione impeccabile. Vale
+anche il rovescio, già enunciato in «Cercare per rispondere»: una citazione
+formalmente corretta non rende vera una risposta che ne travisa il contenuto. La
+fedeltà indica che la risposta non inventa *rispetto alle fonti*; non dice
+nulla sulla bontà delle fonti né sull'onestà con cui sono state riassunte. La RAG
 avanzata alza il tetto del recupero e ripulisce la rosa dei candidati, ma la
 qualità dell'archivio resta un presupposto che nessuna di queste tecniche
 garantisce.
@@ -910,13 +877,13 @@ garantisce.
   grande. Il guadagno vero del secondo stadio è un punteggio su cui una soglia
   si può tarare, mentre la scala dei coseni cambia con il modello e la
   domanda.
-- RAG che si corregge: Self-RAG {cite}`asai2024selfrag` addestra il
-  modello a decidere *se* recuperare e a criticare i passaggi e la risposta
-  con token di riflessione; CRAG {cite}`yan2024crag` affida il giudizio a un
-  valutatore esterno con tre azioni; il RAG agentico usa il recupero come
-  strumento invocabile più volte (multi-hop). Ogni giro in più costa latenza e
-  denaro, e la rilettura del contesto cresce con i giri (la cache dei prefissi
-  ne abbassa il prezzo, non la crescita).
+- RAG che si corregge: Self-RAG {cite}`asai2024selfrag` addestra il modello a
+  decidere *se* recuperare e a criticare i passaggi e la risposta con token di
+  riflessione; CRAG {cite}`yan2024crag` affida il giudizio a un valutatore
+  esterno con tre azioni; il RAG agentico usa il recupero come strumento
+  invocabile più volte (multi-hop). Ogni giro in più costa latenza e denaro, e
+  la rilettura del contesto cresce con i giri (la cache dei prefissi ne abbassa
+  il prezzo senza fermarne la crescita).
 - Valutare: fedeltà/*groundedness* (la risposta è supportata dai
   passaggi?), pertinenza della risposta, precision/recall del contesto.
   RAGAS {cite}`es2024ragas` stima fedeltà, pertinenza e rilevanza del

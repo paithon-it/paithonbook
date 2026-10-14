@@ -8,27 +8,27 @@ altro, come gli incroci di una città. Tre disegni, e nessuna formula: sono la
 prima figura del primo di undici memorandum che Paul Baran, ingegnere della
 RAND Corporation, pubblica nell'agosto del 1964 su come costruire una rete di
 comunicazione che continui a funzionare dopo che una parte dei suoi nodi è
-stata distrutta. Stessi apparati, stesso mestiere, tre destini diversi. La
+stata distrutta. Stessi apparati, tre destini diversi. La
 domanda che Baran mette davanti al lettore è che forma debbano avere, più che
 quanti ne servano.
 
 La stessa domanda vale per una squadra di agenti. La {doc}`sezione sul costo
 del coordinamento <costo-del-coordinamento>` finiva su una differenza che qui
-diventa il tema: con una trascrizione condivisa, in cui ognuno legge tutto
-quello che dicono gli altri, i token letti crescono come il quadrato dei turni;
-con contesti separati, in cui ognuno legge soltanto il proprio pezzo, crescono
-come il numero di agenti, e il divario fra i due si allarga man mano che la
-squadra cresce. Fra i due casi non cambia il modello e non cambia il numero dei
-partecipanti: cambia chi legge i messaggi di chi, cioè la topologia.
+diventa il tema: con una trascrizione condivisa, in cui ognuno legge tutti gli
+interventi degli altri, i token letti crescono come il quadrato dei turni; con
+contesti separati, in cui ognuno legge soltanto i messaggi che lo riguardano,
+crescono come il numero di agenti, e il divario fra i due si allarga man mano
+che la squadra cresce. Fra i due casi non cambia il modello e non cambia il
+numero dei partecipanti: cambia chi legge i messaggi di chi, cioè la topologia.
 
 Una precisazione sulla parola, perché qui ha due sensi molto vicini. Nella
 {doc}`pagina d'apertura del capitolo <overview>` «topologica» descriveva la
 regola degli storni, quella che conta i vicini invece di misurarli in metri.
-Qui «topologia» vuol dire una cosa più vicina all'uso comune: la forma dello
-schema, chi è collegato a chi. I due sensi hanno la stessa radice, perché in
-entrambi i casi si guarda la struttura dei collegamenti e non le distanze, ma
-non vanno sovrapposti: gli storni non c'entrano con le cinque forme che
-seguono.
+Qui «topologia» ha un senso più vicino all'uso comune: la forma dello schema,
+cioè chi è collegato a chi. I due sensi hanno la stessa radice, perché in
+entrambi i casi si guarda la struttura dei collegamenti e non le distanze, e i
+due sensi non vanno sovrapposti: gli storni non c'entrano con le cinque forme
+che seguono.
 
 ## Il sistema è un grafo
 
@@ -37,7 +37,7 @@ sono gli agenti e i cui archi sono i canali di comunicazione. Un arco non
 significa «questi due *possono* scriversi»: dentro un programma tutti possono
 scrivere a tutti, basta una riga di codice. Significa «in questo progetto
 questi due *si scrivono*, e gli altri no». La topologia è un vincolo che il
-progettista impone, e il suo valore sta esattamente in ciò che vieta.
+progettista impone, e il suo valore sta in ciò che vieta.
 
 Su un grafo si misurano tre grandezze, le stesse che governano il progetto di
 una rete di calcolatori: quanta strada fa l'informazione per arrivare dove
@@ -49,34 +49,34 @@ smette di funzionare. Ogni topologia è un compromesso fra loro.
 Venti persone devono mettere in piedi una festa. Fatti tre domande sul modo in
 cui si sono organizzate.
 
-La prima: per quante mani passa una notizia prima di arrivare a tutti? Se
-c'è un organizzatore che chiama uno per uno, due passaggi bastano sempre. Se
-invece ognuno telefona solo al successivo, come in una catena di sant'Antonio,
-per andare dal primo all'ultimo servono diciannove telefonate in fila, e chi
-sta in fondo la sera prima non sa ancora niente.
+La prima: per quante mani passa una notizia prima di arrivare a tutti? Se c'è
+un organizzatore che chiama uno per uno, due passaggi bastano sempre. Se invece
+ognuno telefona solo al successivo, come in una catena di sant'Antonio, per
+andare dal primo all'ultimo servono diciannove telefonate una dopo l'altra, e
+chi sta in fondo la sera prima non sa ancora niente.
 
 La seconda: quanto lavoro fa il più carico? Nel primo caso l'organizzatore
 di telefonate ne fa diciannove, gli altri una a testa. Nel secondo nessuno ne
 fa più di due. Il primo modo è velocissimo, ma tutta la fatica sta su una
 persona sola.
 
-La terza, la più sgradevole: cosa succede se proprio quella persona prende
-l'influenza? Nel primo caso non si sa più niente: diciannove persone che non
-si parlano fra loro restano al buio. Nel secondo la catena si spezza in due
-tronconi, e metà del gruppo, quella a monte, la notizia ce l'ha comunque.
+La terza, la più sgradevole: cosa succede se quella persona prende l'influenza?
+Nel primo caso non si sa più niente: diciannove persone che non si parlano fra
+loro restano al buio. Nel secondo la catena si spezza in due tronconi, e metà
+del gruppo, quella a monte, la notizia ce l'ha comunque.
 
-Nessuna delle due organizzazioni è migliore in assoluto: ognuna compra una di
-quelle tre cose vendendo le altre due, ed è questo, non il numero di invitati,
-che decide come andrà la serata.
+Nessuna delle due organizzazioni è migliore in assoluto: ognuna ottiene una di
+quelle tre cose rinunciando alle altre due, e a decidere come andrà la serata è
+questo, non il numero di invitati.
 
-Attenzione però a dove finisce quella regola, perché più avanti ci servirà. Vale
-per queste due organizzazioni e per tutte quelle in cui, fra due persone
-qualsiasi, esiste una strada sola: un solo giro di telefonate che porta da
-me a te. Se si accetta di dare a ciascuno una o due telefonate in più, in modo
-che le strade fra due persone diventino parecchie, il baratto smette di essere
-obbligato e si possono comprare tutte e tre le cose insieme. Lo mostreranno i
-numeri, quando una rete a maglia batterà l'organigramma su tutte e tre le
-domande, ed è la ragione per cui Baran ha disegnato tre reti e non due.
+Attenzione però a dove finisce quella regola, perché ci servirà per la rete a
+maglia. Vale per queste due organizzazioni e per tutte quelle in cui, fra due
+persone qualsiasi, esiste una strada sola: un solo giro di telefonate che porta
+da me a te. Se si accetta di dare a ciascuno una o due telefonate in più, in
+modo che le strade fra due persone diventino parecchie, il baratto smette di
+essere obbligato e si possono avere tutte e tre le cose insieme. Lo mostreranno
+i numeri, quando una rete a maglia batterà l'organigramma su tutte e tre le
+domande, e per questo Baran ha disegnato tre reti e non due.
 
 `````
 
@@ -99,16 +99,16 @@ caso peggiore di quanti passaggi servono), $\Delta(G)$ è il grado massimo
 nodo, cioè la frazione di coppie $(s,t)$ per cui almeno un cammino minimo
 $\mathrm{sp}(s,t)$ attraversa $v$ senza averlo come estremo. È una versione
 semplificata della centralità di intermediazione (la *betweenness*) su due
-punti: conta le coppie invece di pesarle con la frazione dei loro cammini minimi
-che passa davvero per $v$, e le normalizza sul totale $\binom{N}{2}$ delle
+punti: conta le coppie invece di pesarle con la frazione dei loro cammini
+minimi che passa per $v$, e le normalizza sul totale $\binom{N}{2}$ delle
 coppie anziché sulle sole coppie che escludono $v$. La fragilità si legge da
 $\kappa(G)$, la connettività per vertici: quanti nodi bisogna rimuovere perché
 il grafo si spezzi. Negli alberi e nelle stelle $\kappa(G) = 1$, e ogni nodo
 interno è un punto di articolazione. Per distinguere fra loro grafi che hanno
-tutti $\kappa(G) = 1$ serve una misura graduata, ed è quella che stampa il
-programma sulle cinque forme: detto $A$ l'insieme degli agenti e
-$v^{*} = \arg\max_v \ell(v)$ il nodo più carico, la **connettività residua** è
-la frazione di coppie di agenti ancora collegate dopo averlo tolto,
+tutti $\kappa(G) = 1$ serve una misura graduata, quella che stampa il programma
+sulle cinque forme: detto $A$ l'insieme degli agenti e $v^{*} = \arg\max_v
+\ell(v)$ il nodo più carico, la **connettività residua** è la frazione di
+coppie di agenti ancora collegate dopo averlo tolto,
 
 $$
 \mathrm{res}(G) \;=\;
@@ -121,40 +121,40 @@ dove $G - v^{*}$ è il grafo senza quel nodo e i suoi archi. Il programma stampa
 anche il carico del nodo più carico, $\ell(v^{*}) = \max_v \ell(v)$. Dove
 $\kappa$ dice soltanto se il grafo si spezza, $\mathrm{res}$ dice di quanto.
 
-Sugli alberi le tre non sono indipendenti, ed è questo a rendere il progetto
-interessante. Con $N-1$ archi in tutto non c'è margine: abbassare il diametro
-obbliga a concentrare gli archi da qualche parte, il che alza $\Delta$ e $\ell$.
-Lo dice una disuguaglianza. Un albero di diametro $2k$ ha un centro da cui ogni
-nodo dista al più $k$, e se il grado massimo è $\Delta$ i nodi a distanza
-$i \ge 1$ dal centro sono al più $\Delta(\Delta-1)^{i-1}$, quindi
+Sugli alberi le tre non sono indipendenti, e questo rende interessante il
+progetto. Con $N-1$ archi in tutto non c'è margine: abbassare il diametro
+obbliga a concentrare gli archi da qualche parte, il che alza $\Delta$ e
+$\ell$. Lo dice una disuguaglianza. Un albero di diametro $2k$ ha un centro da
+cui ogni nodo dista al più $k$, e se il grado massimo è $\Delta$ i nodi a
+distanza $i \ge 1$ dal centro sono al più $\Delta(\Delta-1)^{i-1}$, quindi
 
 $$
 N \;\le\; 1 + \Delta \sum_{i=0}^{k-1} (\Delta-1)^{i},
 $$
 
 che è il limite di Moore per gli alberi: a $N$ fissato, abbassare il diametro
-obbliga ad alzare $\Delta$ (per la stella, $k = 1$, dà $\Delta \ge N-1$). E
-siccome $\kappa(G) = 1$, il nodo con $\ell$ alto è per costruzione quello la cui
-rimozione taglia più coppie. In una rete di calcolatori $\ell(v)$ alto significa
-un instradatore congestionato; in una squadra di agenti significa una finestra
-di contesto che deve contenere tutto ciò che transita, e questo è un limite più
-duro, perché la qualità della lettura degrada prima della lunghezza dichiarata
-(lo misura RULER, nella {doc}`sezione sul contesto
+obbliga ad alzare $\Delta$ (per la stella, $k = 1$, dà $\Delta \ge N-1$).
+Poiché $\kappa(G) = 1$, il nodo con $\ell$ alto è per costruzione quello la cui
+rimozione taglia più coppie. In una rete di calcolatori $\ell(v)$ alto
+significa un instradatore congestionato; in una squadra di agenti significa una
+finestra di contesto che deve contenere tutto ciò che transita, e questo è un
+limite più duro, perché la qualità della lettura degrada prima della lunghezza
+dichiarata (lo misura RULER, nella {doc}`sezione sul contesto
 </IngegneriaLLM/context-engineering>`: nel 2024, di diciassette modelli che
 dichiaravano almeno 32.000 token, solo la metà manteneva prestazioni
-soddisfacenti a quella lunghezza {cite}`hsieh2024ruler`), e perché quello che
-sta in mezzo viene letto peggio, l'effetto *lost in the middle*
-{cite}`liu2024lost`.
+soddisfacenti a quella lunghezza {cite}`hsieh2024ruler`), e perché il testo che
+sta in mezzo viene letto peggio (l'effetto *lost in the middle*
+{cite}`liu2024lost`).
 
 Il vincolo non è una legge dei grafi: vale per gli alberi, la famiglia con meno
 archi che tenga il grafo connesso. Non discende dalle definizioni di
 $\mathrm{diam}$, $\Delta$ e $\ell$, discende da $|E| = N-1$. Concedendo qualche
-arco in più il baratto si scioglie, come mostra il conto sull'ipercubo
+arco in più il baratto si scioglie, come mostra l'esempio dell'ipercubo
 $Q_4$.
 
 `````
 
-Le cinque forme che si incontrano davvero sono in fila nella
+Le cinque forme che si incontrano nella pratica sono affiancate nella
 {numref}`fig-multiagente-topologie`.
 
 ```{figure} ../figures/multiagente-topologie.svg
@@ -173,17 +173,16 @@ Nelle prime tre chi parla con chi lo decide il progettista; nelle ultime due no.
 
 ## Supervisore e lavoratori
 
-Un agente riceve il compito, lo scompone, ne distribuisce i pezzi ai lavoratori,
-raccoglie i risultati e li ricompone. I lavoratori non si parlano fra loro. È la
-rete centralizzata di Baran, quella con un nodo al centro e tutti gli altri
-appesi a lui, e nel linguaggio dei grafi è una stella: da qui in avanti la
-chiameremo così. È la forma più semplice da realizzare, perché nasce da sé
-appena un programma comincia a interrogare un modello più volte di seguito. È
-anche la squadra dell'apertura del capitolo: uno tiene le fila, uno scrive il
-codice, uno controlla se è sicuro eseguirlo, e i due in fondo non si scrivono
-mai {cite}`wu2024autogen`.
+Un agente riceve il compito, lo scompone, ne distribuisce i pezzi ai
+lavoratori, raccoglie i risultati e li ricompone. I lavoratori non si parlano
+fra loro. È la rete centralizzata di Baran, quella con un nodo al centro e
+tutti gli altri appesi a lui, e nel linguaggio dei grafi è una stella. È la
+forma più semplice da realizzare, perché nasce appena un programma comincia a
+interrogare un modello più volte di seguito. È anche la squadra dell'apertura
+del capitolo: uno tiene le fila, uno scrive il codice, uno controlla se è
+sicuro eseguirlo, e i due in fondo non si scrivono mai {cite}`wu2024autogen`.
 
-Quello che compra è il controllo, e vale più di quanto sembri: esiste un
+La stella garantisce il controllo, e vale più di quanto sembri: esiste un
 posto, uno solo, in cui sta la verità su come sta andando il compito. Chi va a
 cercare un errore ha un registro da leggere invece di una conversazione da
 ricostruire, e chi vuole fermare il lavoro prima che faccia danni sa dove mettere
@@ -205,11 +204,11 @@ ad ascoltare rapporti e non gli resta tempo per decidere.
 Il rimedio sta nel modo in cui gli si parla. Niente racconti: un modulo di tre
 righe, che cosa è fatto, che cosa manca, che cosa serve. Otto minuti di
 chiacchiere a testa, con trenta operai, sono quattro ore di giornata; un minuto
-e mezzo a testa sono quarantacinque minuti, cioè quello che gli costerebbero
-cinque o sei operai lasciati liberi di raccontare. E i trenta hanno lavorato
-come prima.
+e mezzo a testa sono quarantacinque minuti, cioè il tempo che gli porterebbero
+via cinque o sei operai lasciati liberi di raccontare. I trenta, intanto, hanno
+lavorato come prima.
 
-Resta la cosa che nessun modulo ripara: se il capo cantiere si ammala, il
+Resta un problema che nessun modulo risolve: se il capo cantiere si ammala, il
 cantiere non rallenta, si ferma.
 
 `````
@@ -217,31 +216,29 @@ cantiere non rallenta, si ferma.
 `````{tab} Superiore
 
 Con $N$ lavoratori (quindi $N+1$ nodi in tutto, supervisore compreso) la stella
-ha $\mathrm{diam}(G) = 2$ e $\Delta(G) = N$, tutto
-concentrato sul centro. Ma il costo che morde è ciò che scorre negli archi,
-più del loro numero: il supervisore riceve $N$ rapporti, e se ciascuno è lungo
-$\bar{m}$ token la sua finestra cresce come
+ha $\mathrm{diam}(G) = 2$ e $\Delta(G) = N$, tutto concentrato sul centro. Il
+costo che morde è ciò che scorre negli archi, più del loro numero: il
+supervisore riceve $N$ rapporti, e se ciascuno è lungo $\bar{m}$ token la sua
+finestra cresce come
 
 $$
 c_{\text{sup}}(N) \;=\; c_0 + N\,\bar{m},
 $$
 
-dove $c_0$ è il contesto iniziale. È lineare in $N$, non quadratica come
-nella trascrizione condivisa del costo del coordinamento, ed è esattamente il
-guadagno della stella: i lavoratori non si leggono a vicenda. Ma è lineare su
-un solo nodo. Con $N = 30$ lavoratori che riportano $\bar{m} = 800$ token,
-la finestra del supervisore contiene 24.000 token di rapporti prima di
-qualunque ragionamento.
+dove $c_0$ è il contesto iniziale. È lineare in $N$, non quadratica come nella
+trascrizione condivisa del costo del coordinamento: è il guadagno della stella,
+perché i lavoratori non si leggono a vicenda. È lineare, ma su un solo nodo.
+Con $N = 30$ lavoratori che riportano $\bar{m} = 800$ token, la finestra del
+supervisore contiene 24.000 token di rapporti prima di qualunque ragionamento.
 
-La contromisura sta nel comprimere all'ingresso,
-imponendo ai lavoratori un formato di risposta stretto (uno schema, non prosa
-libera). Portare $\bar{m}$ da 800 a 150 token vale, in questa formula, quanto
-ridurre di oltre cinque volte il numero di lavoratori, e non costa nulla in
-capacità di lavoro.
+La contromisura sta nel comprimere all'ingresso, imponendo ai lavoratori un
+formato di risposta stretto (uno schema, non prosa libera). Portare $\bar{m}$
+da 800 a 150 token vale, in questa formula, quanto ridurre di oltre cinque
+volte il numero di lavoratori, e non toglie nulla alla capacità di lavoro.
 
 `````
 
-Quello che si paga sta tutto sullo stesso nodo. Il supervisore è insieme il
+Tutto si paga sullo stesso nodo. Il supervisore è insieme il
 collo di bottiglia (ogni decisione aspetta il suo turno) e il punto singolo di
 rottura: se sbaglia lui, nessun altro può accorgersene, perché i lavoratori
 vedono solo il proprio pezzo. Sotto una certa taglia è quasi sempre la scelta
@@ -251,19 +248,19 @@ giusta; sopra, la stella non si allarga, si spezza.
 
 Ognuno riceve dal precedente, fa la sua parte, passa al successivo ed esce di
 scena: chi estrae i dati li passa a chi li analizza, che passa a chi scrive il
-rapporto. In inglese si chiama *handoff*, «passaggio di consegne», ed è la forma
-più semplice che esista: una fila, senza scorciatoie e senza modo di tornare
-indietro. Compra due cose. La semplicità, perché non c'è niente da
-coordinare, l'ordine della fila *è* il programma. E la pulizia di quello che
-ciascuno si trova davanti: nessuno legge conversazioni altrui, ognuno vede solo
-il proprio pezzo, e le finestre restano le più corte di tutte le cinque forme.
-Quello che costa è l'assenza di ritorno.
+rapporto. In inglese si chiama *handoff*, «passaggio di consegne», la forma più
+semplice che esista: una fila, senza scorciatoie e senza modo di tornare
+indietro. Offre due cose. La prima è la semplicità: non c'è niente da
+coordinare, l'ordine della fila *è* il programma. La seconda è la pulizia del
+contesto di ciascuno: nessuno legge conversazioni altrui, ognuno vede solo il
+proprio pezzo, e le finestre restano le più corte di tutte le cinque forme. Lo
+svantaggio è l'assenza di ritorno.
 
 `````{tab} Elementare
 
 I bambini del telefono senza fili, questa volta, non stanno giocando, stanno
 lavorando. Il primo raccoglie i dati e li passa al secondo, il secondo li
-analizza e passa al terzo, il terzo scrive il rapporto. E come nel gioco,
+analizza e passa al terzo, il terzo scrive il rapporto. Come nel gioco,
 nessuno ha visto l'originale tranne il primo.
 
 Da lì viene tutto il resto. Se al secondo passaggio qualcuno capisce male una
@@ -272,13 +269,13 @@ quinto non c'è nessuno che possa accorgersene: per accorgersene bisognerebbe
 avere in mano il foglietto iniziale, e chi sta in fondo alla fila non ce l'ha
 mai avuto.
 
-E poi c'è il conto che si moltiplica. Sei passaggi fatti
-bene novantacinque volte su cento non danno una fila affidabile al
-novantacinque per cento: danno una fila che arriva in fondo intatta poco più di
-settantatré volte su cento, cioè fallisce più di una volta su quattro, pur
-essendo fatta di partecipanti che non sbagliano quasi mai. E la fila si può
-allungare molto: quindici agenti in fila sono quattordici passaggi, cioè
-quattordici occasioni perché la richiesta di partenza si deformi per strada.
+C'è poi la moltiplicazione degli errori. Sei passaggi fatti bene novantacinque
+volte su cento non danno una fila affidabile al novantacinque per cento: danno
+una fila che arriva in fondo intatta poco più di settantatré volte su cento,
+cioè fallisce più di una volta su quattro, pur essendo fatta di partecipanti
+che non sbagliano quasi mai. La fila si può allungare molto: quindici agenti in
+sequenza sono quattordici passaggi, cioè quattordici occasioni perché la
+richiesta di partenza si deformi per strada.
 
 La cosa più sgradevole è che non se ne vede niente. Due agenti che hanno in
 testa due versioni diverse del compito continuano a scriversi messaggi cortesi e
@@ -292,70 +289,71 @@ pulito, ordinato e sbagliato.
 La catena è un cammino, cioè l'albero con fattore di ramificazione $b = 1$:
 $N-1$ archi, nessun arco all'indietro, $\mathrm{diam}(G) = N-1$.
 
-Quello che paga lo abbiamo già calcolato: non c'è ritorno. Un errore
-commesso al secondo passo arriva al quinto travestito da dato di partenza, e a
-valle nessuno ha modo di accorgersene, perché a valle nessuno ha visto
-l'originale. È la composizione moltiplicativa degli errori nella sua forma
-peggiore: con sei passi corretti al 95% ciascuno, la catena intera regge
-$0{,}95^6 \approx 0{,}74$, cioè fallisce una volta su quattro pur essendo fatta
-di agenti che non sbagliano quasi mai. E siccome il diametro cresce come $N$,
-quindici agenti in fila sono quattordici passaggi fra il primo e l'ultimo,
-quattordici occasioni perché una specifica si deformi strada facendo. Nella
-tassonomia dei fallimenti reali questa famiglia ha un nome, disallineamento
-fra agenti, ed è la più insidiosa perché non produce sintomi: due agenti che
-hanno in testa due versioni diverse del compito si scrivono messaggi cortesi e
-ben formati fino in fondo {cite}`cemri2025why`.
+L'abbiamo già calcolato: non c'è ritorno. Un errore commesso al secondo passo
+arriva al quinto travestito da dato di partenza, e a valle nessuno ha modo di
+accorgersene, perché a valle nessuno ha visto l'originale. È la composizione
+moltiplicativa degli errori nella sua forma peggiore: con sei passi corretti al
+95% ciascuno, la catena intera riesce con probabilità $0{,}95^6 \approx
+0{,}74$, cioè fallisce una volta su quattro pur essendo fatta di agenti che non
+sbagliano quasi mai. Siccome il diametro cresce come $N$, quindici agenti in
+sequenza sono quattordici passaggi fra il primo e l'ultimo, quattordici
+occasioni perché una specifica si deformi strada facendo. Nella tassonomia dei
+fallimenti reali questa famiglia ha un nome, disallineamento fra agenti, e
+risulta la più insidiosa perché non produce sintomi: due agenti che hanno in
+testa due versioni diverse del compito si scrivono messaggi cortesi e ben
+formati fino in fondo {cite}`cemri2025why`.
 
 `````
 
-La catena si usa quando i passi sono davvero uno dopo l'altro e ciascuno ha un
-modo suo di verificare il proprio risultato, così che il controllo stia
-dentro ogni passaggio e non solo alla fine. Senza controlli lungo la strada,
-ogni agente aggiunto alla fila toglie un'altra fetta all'affidabilità di quello
-che arriva in fondo.
+La catena si usa quando i passi si susseguono per natura e ciascuno ha un modo
+suo di verificare il risultato, così che il controllo stia dentro ogni
+passaggio e non solo alla fine. Senza controlli lungo la strada, ogni agente
+aggiunto alla fila toglie un'altra fetta all'affidabilità di quello che arriva
+in fondo.
 
 ## La gerarchia
 
-Quando la stella non regge più, la mossa naturale è metterne una dentro
+Quando la stella non basta più, la soluzione naturale è metterne una dentro
 l'altra: supervisori di supervisori, ciascuno con la sua squadretta. È
 l'organigramma, lo schema di chi riferisce a chi che hanno un'azienda o una
-scuola, ed è la forma che permette di diventare grandi, per una ragione
-aritmetica: si decide in anticipo quanti sottoposti può avere ciascun capo, e
-quel numero non cambia per quanti agenti ci siano in fondo. Nel gergo dei
-grafi l'organigramma si chiama albero, il capo supremo è la radice, quelli
-in fondo che non hanno sottoposti sono le foglie, e quanti sottoposti ha
-ciascun capo è il fattore di ramificazione $b$.
+scuola, la forma che permette di diventare grandi per una ragione aritmetica:
+si decide in anticipo quanti sottoposti può avere ciascun capo, e quel numero
+non cambia per quanti agenti ci siano in fondo. Nel gergo dei grafi
+l'organigramma si chiama albero, il capo supremo è la radice, quelli in fondo
+che non hanno sottoposti sono le foglie, e quanti sottoposti ha ciascun capo è
+il fattore di ramificazione $b$.
 
 `````{tab} Elementare
 
 Fila e organigramma sono la stessa forma con un numero diverso. In tutte e due,
-fra due partecipanti qualsiasi c'è una strada sola. Quello che cambia è quante
-persone riferiscono a ciascuno. Nella fila una, e allora si allunga senza fine:
-quindici agenti, quattordici passaggi. Nell'organigramma due, o cinque, o dieci,
-e la fila si accorcia di colpo, perché a ogni livello il gruppo si moltiplica.
+fra due partecipanti qualsiasi c'è una strada sola. Cambia il numero di persone
+che riferiscono a ciascuno. Nella fila una, e allora si allunga senza fine:
+quindici agenti, quattordici passaggi. Nell'organigramma due, o cinque, o
+dieci, e la fila si accorcia di colpo, perché a ogni livello il gruppo si
+moltiplica.
 
 Il conto, con due sottoposti a testa. Il capo supremo è uno; sotto di lui due;
 sotto quei due, quattro; sotto i quattro, otto: uno più due più quattro più otto
-fa quindici, ed è tutto l'organigramma in quattro livelli. Adesso manda uno
+fa quindici, tutto l'organigramma su quattro livelli. Adesso manda uno
 dell'ultimo livello a parlare con un altro dell'altra metà: deve salire tre
 gradini fino al capo supremo e riscenderne tre. Sei passaggi invece di
 quattordici, con le stesse quindici persone.
 
-Il prezzo si vede già a scuola. A ogni livello qualcuno riassume: la classe
+Il difetto si vede già a scuola. A ogni livello qualcuno riassume: la classe
 discute, il rappresentante riporta al consiglio d'istituto l'essenziale, e
 l'essenziale lo sceglie lui. È il modulo di tre righe del capo cantiere, ma lì
 il passaggio era uno e a sparire erano le chiacchiere; qui i passaggi sono in
 fila, e ogni volta resta fuori qualcosa che contava. Se a ogni passaggio verso
 l'alto sopravvive l'ottanta per cento di ciò che contava, con tre passaggi in
 cima arriva l'ottanta per cento dell'ottanta per cento dell'ottanta per cento,
-cinquantuno su cento. Il riassunto però sembra completo, è per questo che è un
-riassunto, e chi sta in cima non sa che cosa manca.
+cinquantuno su cento. Il riassunto sembra completo, e chi sta in cima non sa
+che cosa manca.
 
 Da qui una regola che sorprende: pochi livelli e larghi. Ogni livello in meno è
 un riassunto in meno, e i riassunti si moltiplicano fra loro. Al limite il capo
 supremo prende quattordici sottoposti diretti: un riassunto solo, ottanta su
 cento invece di cinquantuno, ma quel capo è di nuovo il capo cantiere che passa la
-giornata ad ascoltare. Si allarga finché la sua giornata regge.
+giornata ad ascoltare. Si allarga finché la sua giornata lo permette.
 
 E quando il risultato finale è sbagliato, capire *dove* lo sia diventa
 difficile: la responsabilità si è diluita lungo la scala, e ogni livello può
@@ -392,24 +390,24 @@ $\lambda \in (0,1)$ dell'informazione rilevante, in cima ne arriva
 $\lambda^{D}$. Il valore di $\lambda$ non si sa misurare su un riassunto in
 linguaggio naturale; la forma sì. A $N$ fissato, alzare $b$ abbassa la
 profondità $D$, e con essa migliorano insieme la frazione che arriva in cima,
-$\lambda^{D}$, e il diametro, $2D$: per $N = 15$ e $\lambda = 0{,}8$, con
-$b = 2$ si ha $D = 3$ e $\lambda^{D} = 0{,}512$, con $b = 14$ si ha $D = 1$ e
-$\lambda^{D} = 0{,}8$. Preso da solo, questo modello spingerebbe $b$
+$\lambda^{D}$, e il diametro, $2D$: per $N = 15$ e $\lambda = 0{,}8$, con $b =
+2$ si ha $D = 3$ e $\lambda^{D} = 0{,}512$, con $b = 14$ si ha $D = 1$ e
+$\lambda^{D} = 0{,}8$. Preso isolatamente, questo modello spingerebbe $b$
 all'assurdo: con $b = N-1$ e $D = 1$ si è ricostruita la stella, con il collo
 di bottiglia e il punto singolo di rottura che la rendono insostenibile oltre
 una certa taglia. Il termine che manca è il carico del singolo supervisore, la
-finestra $c_0 + b\,\bar{m}$ vista per la stella, che cresce linearmente in
-$b$: è lui il freno, e la regola operativa che ne esce è alzare $b$ finché la
-finestra di ciascun supervisore regge, e abbassare $D$ di conseguenza. È il
-contrario di ciò che suggerisce l'istinto organizzativo.
+finestra $c_0 + b\,\bar{m}$ vista per la stella, che cresce linearmente in $b$:
+è lui il freno, e la regola operativa che ne esce è alzare $b$ finché la
+finestra di ciascun supervisore resta gestibile, e abbassare $D$ di
+conseguenza. È il contrario di ciò che suggerisce l'istinto organizzativo.
 
 Il secondo costo è formale quanto il primo: la gerarchia rende difficile
-l’assegnazione del merito (e della colpa). Attribuire un esito sbagliato a
-un nodo richiede di ripercorrere all'indietro tutti i riassunti, e i riassunti
-sono proprio ciò che ha cancellato l'informazione che servirebbe. È lo stesso
-problema di *credit assignment* che nell'apprendimento per rinforzo
-multi-agente si affronta con la scomposizione del valore, e ne parla la sezione
-su {doc}`imparare insieme <imparare-insieme>`.
+l’assegnazione del merito (e della colpa). Attribuire un esito sbagliato a un
+nodo richiede di ripercorrere all'indietro tutti i riassunti, e i riassunti
+sono ciò che ha cancellato l'informazione che servirebbe. È lo stesso problema
+di *credit assignment* che nell'apprendimento per rinforzo multi-agente si
+affronta con la scomposizione del valore, e ne parla la sezione su
+{doc}`imparare insieme <imparare-insieme>`.
 
 `````
 
@@ -435,12 +433,12 @@ diversi. La quinta è quella che Baran disegnava per terza e che finora abbiamo
 lasciato da parte: una maglia in cui ogni nodo ha più strade per raggiungere
 ogni altro. Ne usiamo la versione con più struttura, l’**ipercubo** $Q_4$, cioè
 il cubo portato a quattro dimensioni: sedici nodi, uno per ogni numero da 0 a
-15 scritto in binario con quattro cifre (il modo in cui contano i
-calcolatori), e un arco fra due numeri che differiscono in una cifra sola. Ogni
-agente ha esattamente quattro vicini, nessuno sta più al centro degli altri, e
-gli archi sono trentadue. Di agenti ne vuole sedici e non quindici, perché
-$2^4$ non si ritaglia: uno in più su quindici è troppo poco per spiegare i
-numeri che seguono.
+15 scritto in binario con quattro cifre (il modo in cui contano i calcolatori),
+e un arco fra due numeri che differiscono in una cifra sola. Ogni agente ha
+esattamente quattro vicini, nessuno sta più al centro degli altri, e gli archi
+sono trentadue. Di agenti ne vuole sedici e non quindici, perché $2^4$ non si
+ritaglia: uno in più su quindici è troppo poco per spiegare i numeri che
+seguono.
 
 ```python
 import numpy as np
@@ -527,33 +525,32 @@ albero: radice 47%, capo intermedio 54%, foglia 0%
 
 Quattro letture, e l'ultima rimette in discussione le prime tre.
 
-La prima. La stella compra il diametro più basso possibile fra le forme che
+La prima. La stella ottiene il diametro più basso possibile fra le forme che
 spendono pochi fili (due passaggi: da un lavoratore al centro, e dal centro
 all'altro) e lo paga con l'87% del traffico su un nodo solo e una connettività
-residua nulla: se quel nodo si ferma non resta niente. L'87 e non il 100
-perché quando è il centro stesso a parlare con qualcuno non lo si conta come
-traffico *di passaggio*, e quelle conversazioni sono quattordici delle
-centocinque coppie possibili. La lavagna, che ha lo stesso diametro, arriva
-invece al 100%: il foglio comune sta nel mezzo di ogni scambio, perché non
-parla mai per conto suo.
+residua nulla: se quel nodo si ferma non resta niente. L’87 e non il 100 perché
+quando è il centro stesso a parlare con qualcuno non lo si conta come traffico
+*di passaggio*, e quelle conversazioni sono quattordici delle centocinque
+coppie possibili. La lavagna, che ha lo stesso diametro, arriva invece al 100%:
+il foglio comune sta nel mezzo di ogni scambio, perché non parla mai di propria
+iniziativa.
 
-La seconda. L'organigramma non batte la fila né sul carico (54% contro 47%)
-né su quello che resta in piedi (37% contro 46%): la batte sul diametro, sei
-contro quattordici, e basta. La gerarchia compra distanza, non robustezza, ed
-è bene non aspettarsi dell'altro.
+La seconda. L'organigramma non batte la fila né sul carico (54% contro 47%) né
+su ciò che resta in piedi (37% contro 46%): la batte solo sul diametro, sei
+contro quattordici. La gerarchia accorcia le distanze, non rafforza la
+robustezza, e non conviene aspettarsi altro.
 
-La terza, ed è la più istruttiva: nell'organigramma il più carico è un
-capo intermedio, non il capo supremo, con il 54% del traffico contro il
-47%. È la riga che il programma stampa in fondo, dopo la tabella. La ragione
-si vede contando le coppie. Il capo supremo sta in mezzo soltanto fra chi sta
-nella metà sinistra e chi sta nella destra: sette per sette, 49 coppie su 105.
-Un capo intermedio sta in mezzo fra ciascuno dei sei che ha sotto di sé e gli
-otto che stanno fuori dal suo ramo, 48 coppie, e in più fra i due gruppetti da
-tre che ha sotto, altre 9: 57 su 105. Chi progetta
-squadre di agenti farebbe bene a saperlo, perché il ruolo da irrobustire per
-primo non è quello che sembra.
+La terza è la più istruttiva: nell'organigramma il più carico è un capo
+intermedio, non il capo supremo, con il 54% del traffico contro il 47%. È la
+riga che il programma stampa in fondo, dopo la tabella. La ragione si vede
+contando le coppie. Il capo supremo sta in mezzo soltanto fra chi sta nella
+metà sinistra e chi sta nella destra: sette per sette, 49 coppie su 105. Un
+capo intermedio sta in mezzo fra ciascuno dei sei che ha sotto di sé e gli otto
+che stanno fuori dal suo ramo, 48 coppie, e in più fra i due gruppetti da tre
+che ha sotto, altre 9: 57 su 105. Chi progetta squadre di agenti farebbe bene a
+saperlo, perché il ruolo da irrobustire per primo non è il capo supremo.
 
-E poi c'è l'ultima riga della tabella. L'ipercubo batte l'organigramma a due
+Resta l'ultima riga della tabella. L'ipercubo batte l'organigramma a due
 sottoposti su tutte e tre le grandezze insieme: diametro quattro contro sei,
 carico 21% contro 54%, connettività residua 100% contro 37%, cioè togliendo il
 nodo più carico non si scollega nessuno. Lo paga con un collegamento in più
@@ -566,39 +563,39 @@ due volte, una per ognuno dei due che sta alle sue estremità: il totale va quin
 diviso a metà. Nell'albero la somma è due (il capo supremo) più tre per sei
 (i capi intermedi) più uno per otto (le foglie), cioè ventotto, e diviso due fa
 quattordici fili. Nell'ipercubo è quattro per sedici, cioè sessantaquattro,
-e diviso due fa trentadue. Più del doppio, ed è tutto lì il segreto.
+e diviso due fa trentadue. Più del doppio.
 
 La ragione è strutturale: in uno schema abbastanza regolare nessuno sta più al
-centro degli altri, quindi il traffico si distribuisce da sé, e con più strade
-fra ogni coppia togliere qualcuno non spezza niente. Il baratto fra le tre
-grandezze era il prezzo di chi vuole spendere pochi fili, non una legge:
-vale perché fra due partecipanti c'è una strada sola, e chi sta su quella strada
-la porta tutta.
+centro degli altri, quindi il traffico si ripartisce senza interventi, e con
+più strade fra ogni coppia togliere qualcuno non spezza niente. Il baratto fra
+le tre grandezze era la condizione di chi vuole spendere pochi fili, non una
+legge: vale perché fra due partecipanti c'è una strada sola, e chi sta su
+quella strada la porta tutta.
 
-Se la maglia vince su tutto, perché il resto della sezione parla d'altro? Perché
-i nodi di Baran erano macchine che smistano, mentre i nostri sono agenti che
-leggono e scrivono, e un collegamento in più non costa un cavo: costa, a ogni
-giro, altro testo da rileggere e da scrivere. Se a ogni giro ciascuno scrive ai
-suoi vicini e legge quello che gli arriva, ogni filo porta due messaggi, uno
-per verso, e il testo letto in un giro va con il numero di fili: sessantaquattro
-messaggi nell'ipercubo, ventotto nell'organigramma, più del doppio per lo stesso
-lavoro. Non è il conto che esplode della trascrizione condivisa, dove fra sedici
-agenti che leggono tutti gli altri i messaggi letti in un giro sarebbero
-duecentoquaranta; e a ciascun agente ne toccano pochi, quattro, meno dei
-quattordici che arrivano al centro di una stella. Il prezzo vero è un altro:
-nella maglia nessuno vede l'insieme. Un'informazione impiega fino a quattro
-giri per attraversarla, e ogni giro sono sedici chiamate al modello; e alla fine
-non c'è nessuno che tenga la risposta, per cui gli agenti devono mettersi
-d'accordo su quale sia, che è il problema della sezione su protocolli e
-consenso. Baran poteva tirare fili perché la sua rete doveva soltanto far
-passare i messaggi, e un cavo in più costava un cavo in più; la nostra deve
-anche decidere. Ed è la ragione per cui le forme che si usano davvero, le tre
-viste fin qui e le due che seguono, sono varianti dei primi due disegni di
-Baran e mai del terzo.
+Se la maglia vince su tutto, perché il resto della sezione parla d'altro?
+Perché i nodi di Baran erano macchine che smistano, mentre i nostri sono agenti
+che leggono e scrivono, e un collegamento in più non è un cavo da stendere: è,
+a ogni giro, altro testo da rileggere e da scrivere. Se a ogni giro ciascuno
+scrive ai suoi vicini e legge i messaggi che gli arrivano, ogni filo porta due
+messaggi, uno per verso, e il testo letto in un giro va con il numero di fili:
+sessantaquattro messaggi nell'ipercubo, ventotto nell'organigramma, più del
+doppio per lo stesso lavoro. Non è la crescita esplosiva della trascrizione
+condivisa, dove fra sedici agenti che leggono tutti gli altri i messaggi letti
+in un giro sarebbero duecentoquaranta; e a ciascun agente ne toccano pochi,
+quattro, meno dei quattordici che arrivano al centro di una stella. Il limite
+vero è un altro: nella maglia nessuno vede l'insieme. Un'informazione impiega
+fino a quattro giri per attraversarla, e ogni giro sono sedici chiamate al
+modello; e alla fine non c'è nessuno che tenga la risposta, per cui gli agenti
+devono mettersi d'accordo su quale sia, che è il problema della sezione su
+protocolli e consenso. Baran poteva tirare fili perché la sua rete doveva
+soltanto far passare i messaggi, e un cavo in più era soltanto un cavo in più;
+la nostra deve anche decidere. Per questo le forme che si usano nella pratica,
+le tre viste fin qui e le due che seguono, sono varianti dei primi due disegni
+di Baran e mai del terzo.
 
 ## La lavagna condivisa
 
-Le prime tre topologie hanno una cosa in comune: chi parla con chi lo decide il
+Le prime tre topologie hanno un tratto in comune: chi parla con chi lo decide il
 progettista, e lo decide prima che il sistema parta. Le due che restano vi
 rinunciano, e in cambio ottengono qualcosa che con un grafo fissato in anticipo
 non si ottiene.
@@ -613,9 +610,9 @@ L'architettura nasce dentro un riconoscitore di parlato, e il motivo per cui
 nasce lì è il ritratto in miniatura del problema che risolve (il riconoscimento
 del parlato ha poi un capitolo suo,
 {doc}`Speech Recognition </SpeechRecognition/overview>`).
-Riconoscere il parlato vuol dire far collaborare conoscenze di natura
-incompatibile, e nessuna affidabile da sola: com'è fatto il suono, come si
-dividono le sillabe, quali parole esistono, come si mettono in fila, che cosa ha
+Per riconoscere il parlato bisogna far collaborare conoscenze di natura
+incompatibile, e nessuna affidabile isolatamente: com'è fatto il suono, come si
+dividono le sillabe, quali parole esistono, come si susseguono, che cosa ha
 senso dire in quel contesto. Il suono propone parole plausibili e sbagliate, la
 grammatica scarta le sequenze impossibili, il significato sa che in quel dominio
 si parla di computazione e non di cucina. Soprattutto, non esiste un ordine
@@ -640,7 +637,7 @@ presa come un ordine di grandezza.
 `````{tab} Elementare
 
 In una sala operativa, come quella della protezione civile durante un'alluvione,
-la lavagna tiene tutto quello che si sa finora, scritto a mano e cancellabile.
+la lavagna riporta quanto si sa finora, scritto a mano e cancellabile.
 Chi entra non chiede a nessuno il permesso di parlare: guarda la lavagna, vede
 se sa aggiungere qualcosa, scrive, esce. Il meteorologo scrive che il vento
 gira; il tecnico legge quella riga e corregge una stima che aveva scritto lui
@@ -655,17 +652,17 @@ spendere.
 I difetti sono i due che chiunque abbia visto una lavagna vera conosce. Il
 primo è la ressa: in due che scrivono nello stesso punto nello stesso momento
 si danno fastidio, e serve una regola su chi va prima. La regola non guarda i
-gradi: scrive per primo chi in quel momento ha da aggiungere la cosa che serve
-di più, e lo si decide riga per riga. Il secondo difetto è che, guardandola a
-fine giornata, non si sa più chi ha scritto cosa: c'è un
+gradi: scrive per primo chi in quel momento ha da aggiungere l'informazione che
+serve di più, e lo si decide riga per riga. Il secondo difetto è che,
+guardandola a fine giornata, non si sa più chi ha scritto cosa: c'è un
 risultato, e se è sbagliato non si sa da quale mano sia uscito l'errore.
 
 Non tutto passa dalla lavagna. I conti che uno fa per arrivare alla sua riga
-restano
-sul suo taccuino: trascriverne ogni passaggio intermedio lo rallenterebbe e
-basta, e certe volte gli impedirebbe di arrivarci. E se il lavoro è sempre lo
-stesso e l'ordine si conosce già, radunarsi a ogni giro per decidere chi scrive
-è tempo tolto al lavoro: lì serve una fila con i compiti assegnati.
+restano sul suo taccuino: trascriverne ogni passaggio intermedio lo
+rallenterebbe e basta, e certe volte gli impedirebbe di arrivarci. Se invece il
+lavoro è sempre lo stesso e l'ordine si conosce già, radunarsi a ogni giro per
+decidere chi scrive è tempo tolto al lavoro: lì serve una fila con i compiti
+assegnati.
 
 `````
 
@@ -675,13 +672,13 @@ L'architettura ha tre pezzi, e conviene chiamarli con i nomi originali. La
 **blackboard** è una memoria globale strutturata in *livelli* di astrazione
 crescente (in Hearsay-II sono sette: parametro, segmento, sillaba, parola,
 sequenza di parole, frase, e in cima l'interrogazione alla base dati), su cui
-vivono le ipotesi, ciascuna con il proprio intervallo
-temporale e un punteggio di credibilità. Le **knowledge source** sono programmi
-indipendenti, ciascuno una coppia condizione-azione: la condizione dichiara a
-quali cambiamenti della lavagna il modulo reagisce, l'azione dice cosa scrive
-in risposta. Il terzo pezzo è lo **scheduler**: a ogni ciclo calcola una
-priorità per ogni azione applicabile ed esegue quella di valore atteso più
-alto, il che rende il controllo *opportunistico* invece che prestabilito.
+vivono le ipotesi, ciascuna con il proprio intervallo temporale e un punteggio
+di credibilità. Le **knowledge source** sono programmi indipendenti, ciascuno
+una coppia condizione-azione: la condizione dichiara a quali cambiamenti della
+lavagna il modulo reagisce, l'azione dice cosa scrive in risposta. Il terzo
+pezzo è lo **scheduler**: a ogni ciclo calcola una priorità per ogni azione
+applicabile ed esegue quella di valore atteso più alto, il che rende il
+controllo *opportunistico* invece che prestabilito.
 
 Topologicamente è una stella il cui centro non è un agente: nella tabella
 di poco fa la lavagna ha diametro 2 come il supervisore, ma un carico del 100%
@@ -698,29 +695,29 @@ il disaccoppiamento è massimo: le knowledge source non si nominano fra loro, e
 aggiungerne una non richiede di modificare le altre.
 
 Gli autori stessi elencano due debolezze, e valgono ancora. La prima nasce
-dalla generalità: ogni decisione passa per la lavagna, una scelta che si è rivelata
-desiderabile *fra* moduli e inadatta ai passaggi intermedi *dentro* un modulo,
-dove le knowledge source di Hearsay-II usavano strutture dati private e
+dalla generalità: ogni decisione passa per la lavagna, una scelta che si è
+rivelata desiderabile *fra* moduli e inadatta ai passaggi intermedi *dentro* un
+modulo, dove le knowledge source di Hearsay-II usavano strutture dati private e
 specializzate (reti sequenziali per il riconoscitore di parole, una grande
-matrice di bit delle adiacenze per quello di sequenze); costringerle nello stile
-della lavagna, scrivono, o falliva del tutto o degradava le prestazioni in modo
-intollerabile. La seconda riguarda l'efficienza: deliberare a ogni ciclo su
-quale azione convenga costa, e si giustifica solo finché per lo stesso compito
-non esiste un algoritmo esplicito; appena l'algoritmo c'è, compilarlo ed
-eseguirlo direttamente rende di più.
+matrice di bit delle adiacenze per quello di sequenze); costringerle nello
+stile della lavagna, scrivono, o falliva del tutto o degradava le prestazioni
+in modo intollerabile. La seconda riguarda l'efficienza: deliberare a ogni
+ciclo su quale azione convenga ha un costo, che si giustifica solo finché per
+lo stesso compito non esiste un algoritmo esplicito; appena l'algoritmo c'è,
+compilarlo ed eseguirlo direttamente rende di più.
 
-Un terzo costo lo aggiungiamo noi, ed è quello che ci riguarda più da vicino: la
-**provenienza**. Con decine di scritture asincrone su una struttura condivisa,
-ricostruire quale agente abbia prodotto quale contributo richiede di registrarlo
-esplicitamente, altrimenti l'informazione è perduta e con essa ogni possibilità
-di attribuzione.
+Un terzo costo lo aggiungiamo noi, quello che riguarda più da vicino i sistemi
+di agenti: la **provenienza**. Con decine di scritture asincrone su una
+struttura condivisa, ricostruire quale agente abbia prodotto quale contributo
+richiede di registrarlo esplicitamente, altrimenti l'informazione è perduta e
+con essa ogni possibilità di attribuzione.
 
 `````
 
 ## Il mercato
 
 Le prime quattro topologie danno per scontato che si sappia in anticipo chi sa
-fare cosa. Ma se non lo si sa? Se gli agenti disponibili cambiano, se le loro
+fare cosa. Se invece non lo si sa? Se gli agenti disponibili cambiano, se le loro
 competenze non sono dichiarate, se chi è libero adesso non lo era un minuto fa?
 
 La risposta è vecchia quanto il commercio: si mette il compito a bando. Chi
@@ -728,10 +725,10 @@ ha un lavoro da far fare lo annuncia, chi si ritiene capace presenta
 un'offerta, il banditore valuta e assegna. È il **contract net protocol**,
 formulato da Reid G. Smith in un articolo del dicembre 1980 sulle *IEEE
 Transactions on Computers* {cite}`smith1980contract` e dimostrato lì su una rete
-di sensori distribuiti, che doveva organizzarsi da sé in base a quali nodi
+di sensori distribuiti, che doveva organizzarsi in autonomia in base a quali nodi
 c'erano e a dove si trovavano.
 
-Quello che compra è la possibilità di assegnare il lavoro strada facendo,
+Il mercato dà la possibilità di assegnare il lavoro strada facendo,
 senza che nessuno tenga l'elenco di chi c'è e di chi sa fare cosa. Nessuno è
 designato capo in anticipo: «chi bandisce» e «chi esegue» sono ruoli che si
 prendono e si lasciano durante il lavoro, e di solito uno li ricopre entrambi
@@ -745,23 +742,23 @@ Funziona come un bando di gara, e i messaggi che servono sono quattro. Il
 banditore dice: «serve questo lavoro; possono rispondere solo quelli che hanno
 il tal requisito; nella risposta scrivetemi queste cose; c'è tempo fino a
 giovedì». Chi si sente in grado risponde con un'offerta. Il banditore le
-confronta e assegna il compito a chi gli sembra più adatto. E il quarto, quello
-che ci si dimentica sempre: chi ha preso il lavoro alla fine deve riferire,
-altrimenti il banditore non sa nemmeno se è stato svolto.
+confronta e assegna il compito a chi gli sembra più adatto. Il quarto, spesso
+dimenticato: chi ha preso il lavoro alla fine deve riferire, altrimenti il
+banditore non sa nemmeno se è stato svolto.
 
-La cosa elegante è che la scelta la fanno in due. Il banditore sceglie fra
-chi si è offerto, ma prima ancora ciascuno ha scelto se offrirsi e per quale
-bando: un agente sommerso di lavoro semplicemente non risponde, e il sistema si
-riequilibra da sé senza che nessuno tenga il conto di chi è libero.
+La cosa elegante è che la scelta la fanno in due. Il banditore sceglie fra chi
+si è offerto, ma prima ancora ciascuno ha scelto se offrirsi e per quale bando:
+un agente sommerso di lavoro semplicemente non risponde, e il sistema si
+riequilibra senza che nessuno tenga l'elenco di chi è libero.
 
 Il costo è altrettanto facile da vedere: il bando è lavoro che non produce
-niente. Se dieci agenti leggono l'annuncio e cinque preparano un'offerta,
-sono cinque ragionamenti spesi per decidere chi ne farà uno. Su compiti piccoli
-la gara costa più del lavoro che assegna.
+niente. Se dieci agenti leggono l'annuncio e cinque preparano un'offerta, sono
+cinque ragionamenti spesi per decidere chi ne farà uno. Su compiti piccoli la
+gara costa più del lavoro che assegna.
 
-E poi c'è il problema di chi promette troppo: quello che giura di finire in due
+C'è poi il problema di chi promette troppo, chi giura di finire in due
 giorni a metà prezzo, e poi non lo fa. Nelle gare vere ha perfino un nome,
-l’**offerta anomala**, ed è quella che chi bandisce deve controllare prima di
+l’**offerta anomala**, quella che chi bandisce deve controllare prima di
 assegnare. Un modello di linguaggio a cui si chiede «sei in grado di fare
 questo?» tende a rispondere di sì, e allora la gara premia chi si stima meglio,
 non chi lavora meglio. Contro le promesse il rimedio è chiedere qualcosa di
@@ -778,10 +775,11 @@ quattro campi: l’*astrazione del compito* (di che lavoro si tratta), la
 che serve a tagliare traffico inutile), la *specifica dell'offerta* (quali
 informazioni il gestore vuole ricevere) e il *tempo di scadenza*.
 L’**offerta**, che descrive il nodo secondo quanto richiesto.
-L’**assegnazione**, con la *specifica del compito*. E i **rapporti**, interinali e
-finale. Smith attribuisce alla negoziazione quattro proprietà: è locale (nessun
-controllo centralizzato), lo scambio è bidirezionale, ciascuna parte valuta
-secondo il proprio criterio, e l'accordo finale è per selezione reciproca.
+L’**assegnazione**, con la *specifica del compito*, e i **rapporti**,
+interinali e finale. Smith attribuisce alla negoziazione quattro proprietà: è
+locale (nessun controllo centralizzato), lo scambio è bidirezionale, ciascuna
+parte valuta secondo il proprio criterio, e l'accordo finale è per selezione
+reciproca.
 
 Il costo si conta in messaggi. Collocare un compito fra $N$ candidati richiede
 un annuncio (uno solo se il canale è a diffusione, altrimenti $N$), fino a $N$
@@ -795,33 +793,32 @@ $$
 
 dove $M(N)$ è il numero di messaggi per collocare un solo compito, e
 l'uguaglianza vale quando rispondono tutti i candidati: la specifica di
-eleggibilità serve proprio a ridurre le offerte. Con
-agenti classici sono pacchetti di rete e non contano nulla; con gli LLM ogni
-offerta è una chiamata al modello che legge l'annuncio e produce una
-valutazione. Con $N = 10$ candidati e un annuncio da 2000 token, la gara costa
-dell'ordine di $10 \times 2000 = 20.000$ token in ingresso prima che qualcuno
-abbia cominciato a lavorare. Smith lo dice a modo suo, ed è la regola operativa
-da portarsi via: la dimensione dei compiti messi a contratto dev'essere
-grande, altrimenti l'accelerazione ottenuta distribuendo se la mangia lo
-sforzo di distribuire.
+eleggibilità serve a ridurre le offerte. Con agenti classici sono pacchetti di
+rete e non contano nulla; con gli LLM ogni offerta è una chiamata al modello
+che legge l'annuncio e produce una valutazione. Con $N = 10$ candidati e un
+annuncio da 2000 token, la gara costa dell'ordine di $10 \times 2000 = 20.000$
+token in ingresso prima che qualcuno abbia cominciato a lavorare. Smith lo dice
+a modo suo, in una regola operativa: la dimensione dei compiti messi a
+contratto dev'essere grande, altrimenti l'accelerazione ottenuta distribuendo
+se la mangia lo sforzo di distribuire.
 
 Il secondo costo è la **calibrazione delle offerte**. Il protocollo assume che
 un nodo sappia stimare la propria idoneità, ipotesi ragionevole quando
 l'offerta è «ho tre sensori acustici a queste coordinate» e insostenibile
-quando è un modello di linguaggio che dichiara di saper fare una cosa. Il
+quando è un modello di linguaggio che dichiara di saper fare un compito. Il
 vincitore sistematico diventa l'agente più ottimista, e l'ottimismo non correla
 con la competenza. È la *maledizione del vincitore* delle aste: vince chi ha
-sovrastimato di più. E se l'ottimismo è un tratto stabile di certi agenti, e
+sovrastimato di più. Se poi l'ottimismo è un tratto stabile di certi agenti, e
 non un errore che capita a caso, diventa una selezione avversa: il protocollo
-seleziona proprio il tipo di partecipante che non voleva. Le contromisure
-sono due, e nessuna sta nel protocollo: rendere l'offerta verificabile (non
-«so farlo» ma un risultato parziale su un campione, che il gestore può
-controllare) e pesare le offerte con la storia degli esiti passati. È la stessa
-lezione dei fallimenti reali dei sistemi multi-agente, dove la verifica
-inadeguata è una delle tre famiglie ricorrenti {cite}`cemri2025why`: chi
-dichiara di saper fare una cosa e chi dichiara che è stata fatta bene pongono lo
-stesso problema, e la cura è la stessa, cioè qualcosa che il banditore possa
-controllare da sé.
+seleziona il tipo di partecipante che non voleva. Le contromisure sono due, e
+nessuna sta nel protocollo: rendere l'offerta verificabile (non «so farlo» ma
+un risultato parziale su un campione, che il gestore può controllare) e pesare
+le offerte con la storia degli esiti passati. È la stessa lezione dei
+fallimenti reali dei sistemi multi-agente, dove la verifica inadeguata è una
+delle tre famiglie ricorrenti {cite}`cemri2025why`: chi dichiara di saper fare
+un compito e chi dichiara che è stato fatto bene pongono lo stesso problema, e
+la cura è la stessa, cioè qualcosa che il banditore possa controllare di
+persona.
 
 `````
 
@@ -838,12 +835,12 @@ scriverà a chi, non il canale.
 
 La lavagna ci rinuncia togliendo il destinatario: nessuno scrive a nessuno,
 ognuno lascia una traccia in uno spazio comune e reagisce alle tracce che ci
-trova. Il coordinamento sta in quello che c'è scritto nello spazio comune.
-L'idea ha un nome preciso, **stigmergia**, coniato nel 1959 dal biologo francese
-Pierre-Paul Grassé per le termiti che ricostruiscono il nido senza progetto e
-senza capo, ciascuna reagendo a quello che le altre hanno già costruito; ed è il
-meccanismo su cui si regge l'ottimizzazione a colonia di formiche, nella
-{doc}`sezione su sciami e simulazioni <sciami-e-simulazioni>`.
+trova. Il coordinamento sta nel contenuto dello spazio comune. L'idea ha un
+nome preciso, **stigmergia**, coniato nel 1959 dal biologo francese Pierre-Paul
+Grassé per le termiti che ricostruiscono il nido senza progetto e senza capo,
+ciascuna reagendo a quanto le altre hanno già costruito; è il meccanismo su cui
+poggia l'ottimizzazione a colonia di formiche, nella {doc}`sezione su sciami e
+simulazioni <sciami-e-simulazioni>`.
 
 Il mercato ci rinuncia in modo opposto: il destinatario ce l'ha eccome, ma non
 lo sceglie il progettista, lo trova il bando. Gli agenti non si conoscono e
@@ -861,26 +858,26 @@ un posto o si condivide una lingua.
 ## Scegliere
 
 La topologia si sceglie dal compito, mai dall'eleganza. Le tre domande sulla
-festa non dicono quale forma sia migliore, dicono cosa si compra e cosa si
-vende; il compito dice quale delle tre cose non è negoziabile. E vale
-l'avvertenza dell'ipercubo: quel baratto obbligato è il prezzo di chi vuole
-spendere pochi collegamenti, non una legge di natura, e qui lo si accetta perché
-ogni collegamento in più è altro testo da rileggere per qualcuno, e perché una
-maglia senza centro, alla fine, deve mettersi d'accordo.
+festa non dicono quale forma sia migliore, dicono cosa si ottiene e cosa si
+cede; il compito dice quale delle tre cose non è negoziabile. Vale anche
+l'avvertenza dell'ipercubo: quel baratto obbligato è la condizione di chi vuole
+spendere pochi collegamenti, non una legge di natura, e qui lo si accetta
+perché ogni collegamento in più è altro testo da rileggere per qualcuno, e
+perché una maglia senza centro, alla fine, deve mettersi d'accordo.
 
-Un compito le cui parti sono indipendenti chiede un supervisore:
-scomponi, distribuisci, ricomponi, e il costo del centro è un prezzo onesto per
-avere un posto solo dove sta la verità. Un compito i cui passi vengono
-davvero uno dopo l'altro, e ciascuno si può verificare per conto suo, chiede
-una catena, con un controllo dentro ogni passaggio.
+Un compito le cui parti sono indipendenti chiede un supervisore: scomponi,
+distribuisci, ricomponi, e il costo del centro è accettabile, se in cambio c'è
+un posto solo dove sta la verità. Un compito i cui passi vengono uno dopo
+l'altro, e ciascuno si può verificare separatamente, chiede una catena, con un
+controllo dentro ogni passaggio.
 
-Un compito troppo grande per un supervisore solo chiede una gerarchia,
-tenuta più larga che alta. Ogni livello in più è un riassunto in più, e i
-riassunti si moltiplicano fra loro; a parità di agenti, allargare toglie
-livelli e accorcia anche le distanze, quindi su questi due conti più larga è
-sempre meglio. Il limite viene da un terzo conto, quanto ciascun capo
-intermedio riesce a leggere: si allarga finché la sua giornata regge, e non
-oltre, perché oltre si è semplicemente rifatta la stella con i suoi guai.
+Un compito troppo grande per un supervisore solo chiede una gerarchia, tenuta
+più larga che alta. Ogni livello in più è un riassunto in più, e i riassunti si
+moltiplicano fra loro; a parità di agenti, allargare toglie livelli e accorcia
+anche le distanze, quindi su questi due conti più larga è sempre meglio. Il
+limite viene da un terzo conto, quanto ciascun capo intermedio riesce a
+leggere: si allarga finché la sua giornata lo permette, e non oltre, perché
+oltre si è semplicemente rifatta la stella con i suoi guai.
 
 Un compito in cui contributi di natura diversa devono incontrarsi senza un
 ordine stabilito in anticipo chiede una lavagna. Un compito in cui non si
@@ -898,10 +895,10 @@ controllo che sbarra la strada, è nel frattempo un ottimo posto dove aspettare.
 :class: important
 - Un sistema multi-agente è uno schema di chi parla con chi, e si giudica su
   tre domande: per quante mani passa una notizia, quanto lavora il più carico, e
-  che cosa resta in piedi se proprio quello si ferma.
+  che cosa resta in piedi se quello si ferma.
 - Nelle forme in cui fra due partecipanti c'è una strada sola (la fila, il
-  capo cantiere, l'organigramma) quelle tre cose si comprano una vendendo le
-  altre. Non è una legge, ed è il conto dell'ipercubo a dimostrarlo: dando a
+  capo cantiere, l'organigramma) quelle tre cose si ottengono una rinunciando alle
+  altre. Non è una legge, come dimostra l'esempio dell'ipercubo: dando a
   ciascuno qualche collegamento in più, in modo che le strade fra due qualsiasi
   siano parecchie, si possono avere tutte e tre le cose insieme. Qui non si fa
   perché ogni collegamento in più è, a ogni giro, altro testo da leggere e da
@@ -923,11 +920,11 @@ controllo che sbarra la strada, è nel frattempo un ottimo posto dove aspettare.
   riferiscono a ciascuno, e allora si accorcia di colpo (quindici agenti
   diventano sei passaggi invece di quattordici). Si paga con i riassunti, che
   perdono qualcosa a ogni livello e non dicono che cosa hanno perso, e con la
-  responsabilità che si diluisce. Conviene quindi tenerla larga e bassa, ma solo
-  finché ogni capo riesce a leggere quel che gli arriva. E il più carico è un
-  capo intermedio, non il capo supremo.
+  responsabilità che si diluisce. Conviene quindi tenerla larga e bassa, ma
+  solo finché ogni capo riesce a leggere quel che gli arriva. Il più carico,
+  inoltre, è un capo intermedio, non il capo supremo.
 - Lavagna condivisa, come quella di una sala operativa: nessuno scrive a
-  nessuno, si scrive sulla lavagna e si reagisce a quello che ci si trova. Nata
+  nessuno, si scrive sulla lavagna e si reagisce a ciò che vi si trova. Nata
   con Hearsay-II per capire il parlato, dove suoni, parole, grammatica e
   significato devono contribuire senza un ordine stabilito prima
   {cite}`erman1980hearsay`. Ottimo per aggiungere uno specialista senza avvisare
@@ -936,15 +933,15 @@ controllo che sbarra la strada, è nel frattempo un ottimo posto dove aspettare.
 - Mercato, cioè il bando di gara (il *contract net* di Smith, 1980
   {cite}`smith1980contract`): chi ha un lavoro lo annuncia, chi si sente in
   grado si offre, il banditore assegna, e chi ha vinto alla fine riferisce.
-  Nessuno è capo per decreto, e il sistema si riequilibra da sé perché chi è
+  Nessuno è capo per decreto, e il sistema si riequilibra perché chi è
   sommerso non risponde. Si paga con il bando stesso, che è lavoro che non
   produce niente, e con l’offerta anomala: un modello a cui si chiede «sei in
   grado?» tende a dire di sì, e la gara premia chi si stima meglio, non chi
   lavora meglio.
 - Lavagna e mercato sono i due modi di coordinarsi senza sapere in anticipo con
-  chi si parlerà: o si condivide un posto (la lavagna, ed è la
-  *stigmergia*, che torna con le formiche) o si condivide una lingua (la
-  grammatica del bando).
+  chi si parlerà: o si condivide un posto (la lavagna, cioè la *stigmergia*,
+  che torna con le formiche) o si condivide una lingua (la grammatica del
+  bando).
 ```
 
 `````
@@ -955,10 +952,10 @@ controllo che sbarra la strada, è nel frattempo un ottimo posto dove aspettare.
 :class: important
 - Un sistema multi-agente è un grafo (nodi gli agenti, archi i canali) e si
   progetta su tre grandezze, le stesse delle reti di calcolatori: diametro,
-  carico sul nodo più sollecitato, e cosa resta se quel nodo si ferma.
-  Negli alberi ($|E| = N-1$, $\kappa(G) = 1$) si compra una delle tre
-  vendendo le altre; il vincolo è del numero di archi, non delle tre grandezze,
-  e un grafo regolare ben connesso le prende tutte insieme (l'ipercubo $Q_4$ fa
+  carico sul nodo più sollecitato, e cosa resta se quel nodo si ferma. Negli
+  alberi ($|E| = N-1$, $\kappa(G) = 1$) si ottiene una delle tre rinunciando
+  alle altre; il vincolo è del numero di archi, non delle tre grandezze, e un
+  grafo regolare ben connesso le prende tutte insieme (l'ipercubo $Q_4$ fa
   diametro $4$, carico $21\%$ e connettività residua $100\%$ contro $6$, $54\%$
   e $37\%$ dell'albero binario, con più del doppio degli archi). Qui non si usa
   perché il testo letto per giro va come $2|E|\,\bar{m}$ ($64\bar{m}$ contro i
@@ -966,9 +963,9 @@ controllo che sbarra la strada, è nel frattempo un ottimo posto dove aspettare.
   trascrizione condivisa) e perché nessun nodo ha la vista d'insieme:
   l'informazione impiega fino a $\mathrm{diam}(G)$ giri ad attraversare la
   maglia, e una risposta comune richiede un protocollo di consenso. Per gli
-  alberi il vincolo si scrive col limite di Moore,
-  $N \le 1 + \Delta\sum_{i=0}^{k-1}(\Delta-1)^i$ con diametro $2k$, e la
-  fragilità graduata con la connettività residua $\mathrm{res}(G)$.
+  alberi il vincolo si scrive col limite di Moore, $N \le 1 +
+  \Delta\sum_{i=0}^{k-1}(\Delta-1)^i$ con diametro $2k$, e la fragilità
+  graduata con la connettività residua $\mathrm{res}(G)$.
 - Supervisore e lavoratori (stella): ottimizza controllo e tracciabilità,
   c'è un posto solo dove sta la verità sul compito {cite}`wu2024autogen`; paga
   con il collo di bottiglia e il punto singolo di rottura. Il contesto del
@@ -976,14 +973,14 @@ controllo che sbarra la strada, è nel frattempo un ottimo posto dove aspettare.
   allargare la finestra.
 - Catena (*handoff*): semplicità massima e contesto pulitissimo, ma nessun
   ritorno, quindi un errore a monte non è più recuperabile a valle: con sei
-  passi al 95% la catena regge $0{,}95^6 \approx 0{,}74$. Serve un cancello dentro
-  ogni anello, non alla fine {cite}`cemri2025why`.
+  passi al 95% la catena riesce con probabilità $0{,}95^6 \approx 0{,}74$.
+  Serve un cancello dentro ogni anello, non alla fine {cite}`cemri2025why`.
 - Gerarchia: catena e gerarchia sono lo stesso albero con ramificazione
   diversa, e alzare $b$ porta il diametro da lineare a logaritmico ($6$ contro
   $14$ su quindici agenti). Paga con la perdita per riassunto, esponenziale
   nella profondità, e con la responsabilità diluita: conviene quindi allargare
-  la ramificazione e abbassare i livelli, ma solo finché la finestra
-  $c_0 + b\,\bar{m}$ di ogni supervisore regge, perché spinta all'estremo la
+  la ramificazione e abbassare i livelli, ma solo finché la finestra $c_0 +
+  b\,\bar{m}$ di ogni supervisore resta gestibile, perché spinta all'estremo la
   regola ricostruisce la stella. Il nodo più carico è un capo intermedio, non
   la radice.
 - Lavagna condivisa: nata con Hearsay-II alla Carnegie Mellon per la
@@ -1010,7 +1007,7 @@ controllo che sbarra la strada, è nel frattempo un ottimo posto dove aspettare.
 
 `````
 
-Una forma fissa chi parla con chi, ma non dice ancora che cosa vuol dire un
+Una forma fissa chi parla con chi, ma non dice ancora che cosa significhi un
 messaggio, né come si decide quando gli agenti non sono d'accordo. Sono i due
 argomenti dei {doc}`protocolli e del consenso <protocolli-e-consenso>`, e il
 mercato ha già dato un indizio: quattro tipi di messaggio bastano a due

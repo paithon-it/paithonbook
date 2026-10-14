@@ -3,19 +3,20 @@
 Il modo che tutti conoscono per seguire numericamente una traiettoria lo scrive
 Eulero nelle *Institutiones calculi integralis* del 1768: si guarda in che
 direzione si sta andando, si fa un passetto in quella direzione, si guarda di
-nuovo. Con passi abbastanza piccoli funziona, ed è il metodo più semplice e
-meno preciso di tutti, del primo ordine: l'errore cala solo in proporzione al
-passo. E butta via tutto quello che dell'equazione si sa in anticipo, perché la
-tratta come una scatola nera da interrogare passo per passo.
+nuovo. Con passi abbastanza piccoli funziona: è il metodo più semplice, del
+primo ordine, e fra quelli in uso è tra i meno precisi, perché l'errore cala
+solo in proporzione al passo. Ignora poi la struttura che dell'equazione si
+conosce in anticipo, trattandola come una scatola nera da interrogare passo per
+passo.
 
 L'equazione della diffusione, invece, ha una struttura particolare: è
 **semilineare**. Il termine lineare nello stato viene dal programma di rumore,
-che abbiamo scelto noi, e si risolve in forma chiusa, esattamente, senza
-approssimare niente; il termine che contiene la rete, e solo quello, va
-approssimato numericamente. Un integratore che tiene separati i due termini ha
-portato il costo di un'immagine da qualche centinaio di valutazioni della rete
-a una ventina, con la stessa rete e gli stessi pesi: nessun riaddestramento,
-soltanto un modo più accorto di percorrere la stessa strada.
+che abbiamo scelto noi, e si risolve in forma chiusa, senza approssimare
+niente; il termine che contiene la rete, e solo quello, va approssimato
+numericamente. Un integratore che tiene separati i due termini ha portato il
+costo di un'immagine da qualche centinaio di valutazioni della rete a una
+ventina, con la stessa rete e gli stessi pesi: nessun riaddestramento, soltanto
+un modo più accorto di percorrere la stessa strada.
 
 ## Metà dell'equazione si risolve a mano
 
@@ -31,13 +32,12 @@ ogni secondo lo spostamento complessivo e sommarlo: onesto, e sprecato, perché
 a ogni secondo si ricalcola anche la corrente, che era già nota. La seconda
 è tenere i due contributi separati: la corrente si calcola una volta per tutte
 con carta e penna (in gergo, si integra), e i passi numerici si spendono
-soltanto per i colpi di remo, che sono la parte davvero imprevedibile.
+soltanto per i colpi di remo, che sono la parte imprevedibile.
 
-L'equazione della diffusione è fatta esattamente così. Un pezzo dice «restringi
-lo stato di questo fattore», e il fattore è quello che abbiamo scelto noi
-quando abbiamo deciso il programma di rumore: si conosce in forma esatta a
-qualunque istante. L'altro pezzo dice «e adesso correggi secondo quello che la
-rete indica», e quello è il solo pezzo ignoto.
+L'equazione della diffusione è fatta così. Un pezzo dice «restringi lo stato di
+questo fattore», e il fattore dipende dal programma di rumore, scelto da noi:
+si conosce in forma esatta a qualunque istante. L'altro pezzo dice «e adesso
+correggi come indica la rete», e solo quello è ignoto.
 
 Un metodo che tratta i due pezzi allo stesso modo, come fa quello di Eulero,
 sta pagando passi per ricalcolare qualcosa di già noto. Un metodo che li separa
@@ -77,20 +77,20 @@ sta nell'integrale, cioè nella sola parte che dipende dalla rete.
 
 Questa è la definizione di **integratore esponenziale**, una famiglia di metodi
 sviluppata per i problemi *stiff*, quelli con costanti di tempo molto più corte
-del passo che si vorrebbe usare. Nella PF-ODE, però, la rigidità sta nel termine
-della rete vicino a $t = 0$, e il coefficiente lineare ne è esente:
+del passo che si vorrebbe usare. Nella PF-ODE, però, la rigidità sta nel
+termine della rete vicino a $t = 0$, e il coefficiente lineare ne è esente:
 $f(t) = -\tfrac12\beta(t)$ resta fra $-0{,}05$ e $-10$, e all'indietro, nel
 verso della generazione, allarga invece di smorzare, con $|hf| \le 1{,}25$ a
 otto passi uniformi: nessun modo da inseguire più in fretta del passo. Con
-$\boldsymbol{\epsilon}_\theta \approx (\mathbf{x} - \alpha_t\mathbf{x}_0)/\sigma_t$,
-invece, la derivata del termine della rete rispetto a $\mathbf{x}$ vale circa
-$g^2(t)/(2\sigma_t^2)$, che sul banco di prova passa da $10$ a $t = 1$ a circa
-$545$ a $t = 10^{-3}$. Il cambio di variabile in $\lambda$ lo disinnesca: il
-fattore $1/\sigma_t$ diventa il peso $e^{-\lambda}$, integrato in forma chiusa,
-e ad essere approssimata resta la sola
-$\hat{\boldsymbol{\epsilon}}_\theta(\lambda)$, che in $\lambda$ varia
-lentamente. Eulero a passi uniformi in $t$ non ha nessuna delle due difese, ed è
-la ragione per cui si comporta peggio del suo ordine nominale.
+$\boldsymbol{\epsilon}_\theta \approx (\mathbf{x} -
+\alpha_t\mathbf{x}_0)/\sigma_t$, invece, la derivata del termine della rete
+rispetto a $\mathbf{x}$ vale circa $g^2(t)/(2\sigma_t^2)$, che sul banco di
+prova passa da $10$ a $t = 1$ a circa $545$ a $t = 10^{-3}$. Il cambio di
+variabile in $\lambda$ lo disinnesca: il fattore $1/\sigma_t$ diventa il peso
+$e^{-\lambda}$, integrato in forma chiusa, e ad essere approssimata resta la
+sola $\hat{\boldsymbol{\epsilon}}_\theta(\lambda)$, che in $\lambda$ varia
+lentamente. Eulero a passi uniformi in $t$ non ha nessuna delle due difese, e
+per questo si comporta peggio del suo ordine nominale.
 
 `````
 
@@ -101,22 +101,22 @@ la ragione per cui si comporta peggio del suo ordine nominale.
 C'è una seconda idea, indipendente dalla prima e altrettanto redditizia: la
 scelta di come spaziare i passi.
 
-Distribuirli uniformemente nel tempo sembra la cosa naturale e non lo è, perché
+Distribuirli uniformemente nel tempo sembra naturale e non lo è, perché
 lungo il percorso non succede sempre la stessa quantità di cose. Nella prima
 parte del ritorno l'immagine è indistinguibile dal rumore e i cambiamenti sono
 grossolani; nell'ultimo tratto si decidono i dettagli, e lì i passi vanno
 fitti. Passi uniformi nel tempo ne sprecano parecchi dove non serve.
 
-La grandezza rispetto a cui conviene spaziarli è quanto segnale c'è rispetto
-al rumore, e conviene contarla per moltiplicazioni invece che per somme. Un
-passo porta il rapporto fra segnale e rumore da un centesimo a un decimo, il
+La grandezza rispetto a cui conviene spaziarli è quanto segnale c'è rispetto al
+rumore, e conviene contarla per moltiplicazioni invece che per somme. Un passo
+porta il rapporto fra segnale e rumore da un centesimo a un decimo, il
 successivo da un decimo a 1, quello dopo da 1 a 10: ogni passo moltiplica per
-dieci, cioè cambia le cose della stessa proporzione, ed è quello che rende i
-passi ugualmente informativi. Contare così, per fattori invece che per
-differenze, si chiama usare una scala logaritmica.
+dieci, cioè cambia le cose nella stessa proporzione, e i passi risultano
+ugualmente informativi. Contare così, per fattori invece che per differenze, si
+chiama usare una scala logaritmica.
 
 È un cambio di variabile, cioè un'operazione che non tocca l'equazione ma solo
-il modo di percorrerla, e da sola vale una parte importante del risparmio. Chi
+il modo di percorrerla, e vale già una parte importante del risparmio. Chi
 usa una libreria trova la spaziatura come impostazione a sé, staccata dal
 metodo di calcolo: sono due manopole, e girare la prima cambia l'immagine anche
 lasciando ferma la seconda.
@@ -197,12 +197,12 @@ l'opzione dei «sigma di Karras».
 
 Torniamo alla barca, con la corrente calcolata a penna. Resta da stimare
 l'effetto dei colpi di remo lungo ciascun tratto, e la stima più semplice è
-supporre che, per tutto il tratto, il rematore faccia quello che faceva
+supporre che, per tutto il tratto, il rematore continui a remare come
 all'inizio. Il conto che ne esce era già noto: è DDIM, il campionatore veloce
 comparso pochi mesi dopo DDPM. All'epoca ci si era arrivati da tutt'altra
-parte, ed è la strada che racconta la {doc}`sezione su come funziona la
-diffusione </ModelliDiffusione/come-funziona>`; visto da qui è il primo gradino
-di una scala.
+parte, la strada raccontata nella {doc}`sezione su come funziona la diffusione
+</ModelliDiffusione/come-funziona>`; visto da qui è il primo gradino di una
+scala.
 
 I gradini della scala si chiamano **ordini**. Un metodo del primo ordine, come
 DDIM, fa ogni passo guardando soltanto che cosa succede all'inizio del passo.
@@ -212,7 +212,7 @@ rete invece di una, ma un passo molto più preciso. L'ordine dice quanto in
 fretta cala l'errore quando si accorciano i passi: dimezzandoli, l'errore di
 un metodo del primo ordine si dimezza, quello di un metodo del secondo ordine
 si divide per quattro. Riconoscere DDIM come primo gradino ha quindi un
-vantaggio pratico immediato: si sa esattamente come costruire il secondo.
+vantaggio pratico immediato: si sa come costruire il secondo.
 
 `````
 
@@ -229,7 +229,7 @@ $$
 \qquad h := \lambda_t - \lambda_s ,
 $$
 
-che riscritta è esattamente l'aggiornamento DDIM
+che, riscritta, è l'aggiornamento DDIM
 {cite}`song2021denoising`:
 
 $$
@@ -241,8 +241,8 @@ $$
 Le due scritture sono la stessa cosa, e la seconda è quella con cui DDIM viene
 di solito presentato: si stima il dato pulito e lo si rimescola al livello di
 rumore successivo. L'errore locale è $O(h^2)$ e quello globale $O(h)$: DDIM è
-un metodo del primo ordine, ed è un integratore esponenziale, non un
-Eulero. La differenza si misura, ed è grande.
+un metodo del primo ordine e un integratore esponenziale, non un Eulero. La
+differenza si misura, e risulta grande.
 
 Il secondo ordine (DPM-Solver-2) valuta la rete anche in un punto intermedio
 $s_1$, con $\lambda_{s_1} = \lambda_s + r_1 h$:
@@ -276,8 +276,8 @@ Le tre affermazioni (il pezzo noto risolto a penna conviene, spaziare i passi
 sul rapporto segnale-rumore conviene, l'ordine alto conviene) si misurano sullo
 stesso banco di prova della {doc}`sezione sul limite continuo
 </ModelliDiffusione/sde-e-ode>`: due sole modalità, punteggio esatto scritto a
-mano, nessuna rete addestrata. Isolare i metodi dalla qualità del modello è
-precisamente ciò che serve per confrontarli.
+mano, nessuna rete addestrata. Isolare i metodi dalla qualità del modello serve
+a confrontarli.
 
 ```python
 import numpy as np
@@ -387,19 +387,18 @@ print("ordine di Eulero in lambda:", round(float(np.log(rapporto) / np.log(4)), 
 ```
 
 Gli ordini misurati (l'esponente $p$ per cui, raddoppiando i passi, l'errore si
-divide per $2^p$) dicono che i metodi si comportano
-esattamente come la teoria prevede: DDIM è del primo ordine ($1{,}07$),
-DPM-Solver del secondo ($2{,}08$). Eulero invece non raggiunge il primo ordine
-($0{,}78$), e il confronto va letto con un'avvertenza: Eulero cammina a passi
-uniformi in $t$, DDIM e DPM-Solver a passi uniformi in $\lambda$, quindi la
-tabella mescola il metodo e la griglia. Le ultime due righe li separano sullo
-stesso banco: Eulero sulla griglia in $\lambda$ torna del primo ordine
-($1{,}09$) e a trentadue valutazioni scende da $1{,}1 \cdot 10^{-2}$ a
-$2{,}8 \cdot 10^{-3}$, mentre DDIM sulla griglia uniforme in $t$ fa meglio che
-su quella in $\lambda$ ($1{,}1 \cdot 10^{-3}$ contro $2{,}1 \cdot 10^{-3}$). Il
-ritardo di Eulero viene soprattutto dalla griglia, che in $t$ lascia pochi passi
-proprio dove il termine della rete è più ripido; e quale griglia convenga
-dipende dal metodo e dal programma di rumore.
+divide per $2^p$) dicono che i metodi si comportano come la teoria prevede:
+DDIM è del primo ordine ($1{,}07$), DPM-Solver del secondo ($2{,}08$). Eulero
+invece non raggiunge il primo ordine ($0{,}78$), e il confronto va letto con
+un'avvertenza: Eulero cammina a passi uniformi in $t$, DDIM e DPM-Solver a
+passi uniformi in $\lambda$, quindi la tabella mescola il metodo e la griglia.
+Le ultime due righe li separano sullo stesso banco: Eulero sulla griglia in
+$\lambda$ torna del primo ordine ($1{,}09$) e a trentadue valutazioni scende da
+$1{,}1 \cdot 10^{-2}$ a $2{,}8 \cdot 10^{-3}$, mentre DDIM sulla griglia
+uniforme in $t$ fa meglio che su quella in $\lambda$ ($1{,}1 \cdot 10^{-3}$
+contro $2{,}1 \cdot 10^{-3}$). Il ritardo di Eulero viene soprattutto dalla
+griglia, che in $t$ lascia pochi passi dove il termine della rete è più ripido;
+e quale griglia convenga dipende dal metodo e dal programma di rumore.
 
 {numref}`fig-griglie-di-passi` mette le due griglie una sopra l'altra.
 
@@ -416,28 +415,27 @@ sezione.
 ```
 
 Il confronto a parità di valutazioni della rete, che è la valuta con cui si
-paga davvero, dice il resto. Per arrivare allo stesso scarto che DDIM ottiene
-con trentadue valutazioni, a Eulero ne servono più di centoventotto; a
-DPM-Solver del secondo ordine ne basta una ventina, a stimarlo fra le righe da
-sedici e da trentadue, e con le stesse trentadue è già tre volte più preciso.
+paga, dice il resto. Per arrivare allo stesso scarto che DDIM ottiene con
+trentadue valutazioni, a Eulero ne servono più di centoventotto; a DPM-Solver
+del secondo ordine ne basta una ventina, a stimarlo fra le righe da sedici e da
+trentadue, e con le stesse trentadue è già tre volte più preciso.
 
 ## Quando l'ordine alto smette di aiutare
 
-La tabella contiene anche il suo controesempio, ed è il punto
-che in pratica sorprende.
+La tabella contiene anche il suo controesempio, il punto che in pratica sorprende.
 
 `````{tab} Elementare
 
 Con otto sole valutazioni il metodo del secondo ordine fa peggio del primo
-ordine: quasi sei centesimi contro poco più di uno. Non c'è niente di sbagliato
-nel conto: i metodi di ordine alto sono più precisi quando i passi sono
-piccoli, e più fragili quando sono grandi. Un metodo del secondo ordine guarda
-avanti usando l'informazione presa a metà passo; se il passo è enorme, quella
-informazione è presa in un posto molto diverso da dove si finirà, e la
-correzione fa danni invece che bene. Dove cada il confine dipende però dal
-problema: sul banco di prova attorno alle sedici valutazioni, nei modelli veri
-molto prima, tanto che lì l'ordine alto vince già con dieci, e lo stesso
-rovescio si vede semmai fra il secondo ordine e il terzo.
+ordine: quasi sei centesimi contro poco più di uno. Nei numeri non c'è un errore:
+i metodi di ordine alto sono più precisi quando i passi sono piccoli, e più
+fragili quando sono grandi. Un metodo del secondo ordine guarda avanti usando
+l'informazione presa a metà passo; se il passo è enorme, quella informazione è
+presa in un posto molto diverso da dove si finirà, e la correzione fa danni
+invece che bene. Dove cada il confine dipende però dal problema: sul banco di
+prova attorno alle sedici valutazioni, nei modelli veri molto prima, tanto che
+lì l'ordine alto vince già con dieci, e lo stesso rovescio si vede semmai fra
+il secondo ordine e il terzo.
 
 Ci sono altre due cose che in pratica limitano l'ordine alto.
 
@@ -446,13 +444,13 @@ Diffusion </ModelliDiffusione/stable-diffusion>` che interroga la rete due
 volte, con e senza la richiesta, e moltiplica la differenza per sette o dieci.
 Quella moltiplicazione rende l'uscita della rete molto più grande del normale.
 Un metodo del secondo ordine, che dalle risposte già avute prevede come la
-risposta cambierà lungo il passo (è quello che si chiama estrapolare), su una
-grandezza così gonfiata prevede male ed esce di strada. La cura è cambiare la
-grandezza su cui si fa la previsione: invece del disturbo si prevede la stima
-dell'immagine pulita, che resta di taglia normale molto più a lungo e, quando
-esagera, si può riportare dentro i limiti dell'immagine. È la modifica che
-porta da DPM-Solver a DPM-Solver++, con i suoi due «più», ed è pensata per il caso
-guidato, che in pratica è quello di tutti.
+risposta cambierà lungo il passo (si chiama estrapolare), su una grandezza così
+gonfiata prevede male ed esce di strada. La cura è cambiare la grandezza su cui
+si fa la previsione: invece del disturbo si prevede la stima dell'immagine
+pulita, che resta di taglia normale molto più a lungo e, quando esagera, si può
+riportare dentro i limiti dell'immagine. È la modifica che porta da DPM-Solver
+a DPM-Solver++, con i suoi due «più», pensata per il caso guidato, che in
+pratica è quello di tutti.
 
 La seconda è che sotto una certa soglia il limite smette di essere il
 metodo. Se la rete stima il disturbo con un certo errore suo, nessun
@@ -501,9 +499,9 @@ $$
 
 che è ancora DDIM; il secondo ordine multipasso ci aggiunge la differenza fra
 le ultime due stime di $\hat{\mathbf{x}}_0$, con una sola valutazione nuova per
-passo. DEIS {cite}`zhang2023fast`, uscito pochi mesi prima, arriva alla stessa
-famiglia di integratori esponenziali estrapolando $\boldsymbol{\epsilon}_\theta$
-con un polinomio.
+passo. DEIS {cite}`zhang2023fast`, uscito poco prima di DPM-Solver, arriva alla
+stessa famiglia di integratori esponenziali estrapolando
+$\boldsymbol{\epsilon}_\theta$ con un polinomio.
 
 **Il pavimento dell'errore del modello.** Detto $\delta$ l'errore quadratico
 medio della rete rispetto al punteggio vero, l'errore del campione generato
@@ -511,12 +509,12 @@ porta un termine che dipende da $\delta$ e che nessun integratore riduce: i
 limiti noti sono superiori, cioè dicono che quel termine non sparisce
 rimpicciolendo il passo, non che esista un pavimento sotto cui non si possa
 scendere. Dove quel termine cominci a dominare, nei modelli veri, dipende dal
-modello e dal compito, e non c'è una cifra che valga per tutti. Quello che si
-osserva è che sotto le dieci valutazioni la qualità dei solutori senza
-addestramento cala in modo netto; il lavoro è continuato anche dopo
-DPM-Solver++, con metodi come UniPC {cite}`zhao2023unipc`, ma i guadagni in
-quella fascia si contano in punti di FID. Sotto quella soglia conviene
-cambiare modello: uno che percorra una traiettoria più corta, o che la salti.
+modello e dal compito, e non c'è una cifra che valga per tutti. Si osserva che
+sotto le dieci valutazioni la qualità dei solutori senza addestramento cala in
+modo netto; il lavoro è continuato anche dopo DPM-Solver++, con metodi come
+UniPC {cite}`zhao2023unipc`, ma i guadagni in quella fascia si contano in punti
+di FID. Sotto quella soglia conviene cambiare modello: uno che percorra una
+traiettoria più corta, o che la salti.
 
 `````
 
@@ -539,17 +537,17 @@ no. Nel lavoro di DPM-Solver, su CIFAR-10 con un modello addestrato, l'ordine
 alto batte DDIM già con dieci valutazioni (FID $13{,}58$ per DDIM, da $6{,}4$ a
 $11{,}3$ per DPM-Solver secondo la variante; a quindici, $8{,}92$ contro valori
 fra $3{,}8$ e $4{,}8$), e a rovesciarsi con pochi passi è il confronto fra
-secondo e terzo ordine: a dodici valutazioni fa meglio il secondo ($5{,}28$
-contro $6{,}03$), a diciotto il terzo ($3{,}43$ contro $2{,}90$)
-{cite}`lu2022dpm`. Sono numeri riportati dal lavoro, non misurati qui. Nelle
-librerie i nomi sono `DDIM` per il primo, e anche `Euler`, che
-però non è l'Eulero della tabella: fa i suoi passi sulla scala del rumore invece
-che sul tempo, e così finisce per comportarsi quasi come DDIM;
+secondo e terzo ordine: a dodici valutazioni, su un modello a tempo continuo,
+fa meglio il secondo ($5{,}28$ contro $6{,}03$), a diciotto il terzo ($3{,}43$
+contro $2{,}90$) {cite}`lu2022dpm`. Sono numeri riportati dal lavoro, non
+misurati qui. Nelle librerie i nomi sono `DDIM` per il primo, e anche `Euler`,
+che però non è l'Eulero della tabella: fa i suoi passi sulla scala del rumore
+invece che sul tempo, e così finisce per comportarsi quasi come DDIM;
 `DPMSolverMultistep` (nella variante «più») o `Heun` per il secondo. La scelta
 della griglia è un'impostazione a parte, e attenzione al nome: il parametro che
 si chiama *timestep spacing* sceglie fra tre spaziature tutte uniformi nel
 tempo, mentre la griglia che concentra i passi dove servono si accende con un
-altro interruttore, quello che ridistribuisce i livelli di rumore.
+altro interruttore, il parametro che ridistribuisce i livelli di rumore.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -560,8 +558,8 @@ altro interruttore, quello che ridistribuisce i livelli di rumore.
   quelli generici li spendono su tutti e due.
 - I passi vanno spaziati non nel tempo ma rispetto a quanto segnale c'è
   rispetto al rumore, in scala logaritmica: così ogni passo cambia le cose
-  della stessa proporzione. È un parametro a parte rispetto al metodo, e da
-  solo vale una fetta del risparmio.
+  della stessa proporzione. È un parametro a parte rispetto al metodo, e già
+  questo dà una fetta del risparmio.
 - DDIM è il primo gradino di questa scala, ricavato per un'altra strada nel
   2020. Riconoscerlo come tale dice subito come costruire i gradini successivi.
 - Sul banco di prova, per arrivare dove DDIM arriva con trentadue

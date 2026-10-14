@@ -1,14 +1,14 @@
 # La via di LeCun: predire nello spazio delle idee
 
-Il documento di LeCun che l'apertura del capitolo ha nominato ha una data
-precisa: il 27 giugno 2022 Yann LeCun deposita su OpenReview (la piattaforma
-dove di solito si caricano gli articoli in attesa di revisione) 62 pagine
-intitolate *A Path Towards Autonomous Machine Intelligence*
-{cite}`lecun2022path`. Già il sottotitolo è insolito: «versione 0.9.2», come un
-software non ancora finito. Non è un paper di risultati ma un documento di
-posizione, la visione dell'autore su come costruire macchine intelligenti, e
-la bozza è dichiarata: in un'epoca in cui si tende a mostrare solo ciò che già
-funziona, un premio Turing espone il proprio programma alle obiezioni di tutti.
+Il programma di LeCun ha una data precisa: il 27 giugno 2022 Yann LeCun
+deposita su OpenReview (la piattaforma dove di solito si caricano gli articoli
+in attesa di revisione) 62 pagine intitolate *A Path Towards Autonomous Machine
+Intelligence* {cite}`lecun2022path`. Già il sottotitolo è insolito: «versione
+0.9.2», come un software non ancora finito. Non è un paper di risultati ma un
+documento di posizione, la visione dell'autore su come costruire macchine
+intelligenti, e la bozza è dichiarata: in un'epoca in cui si tende a mostrare
+solo ciò che già funziona, un premio Turing espone il proprio programma alle
+obiezioni di tutti.
 
 Dentro c'è il disegno di una macchina autonoma, fatta di sei pezzi che si
 passano il lavoro. La percezione stima com'è messo il mondo adesso; il world
@@ -26,15 +26,14 @@ sequenze di azioni e scegliere quella dal costo previsto più basso. È un'eco
 della distinzione fra pensiero veloce e pensiero lento resa celebre da Daniel
 Kahneman, che LeCun richiama esplicitamente.
 
-Sei pezzi sono tanti, e in gran parte sono ancora sulla carta. Ma tutto il
-progetto sta o cade su una domanda sola: come si addestra il world model?
-La risposta di LeCun è: guardando, come il neonato dell'inizio del capitolo.
-Enormi quantità di video senza che nessuno ci abbia scritto sopra niente, e un
-solo esercizio, indovinare ciò che viene dopo; la correzione arriva da sé,
-perché il futuro arriva. È l'apprendimento auto-supervisionato di cui
-parlava l'apertura del capitolo, e fin qui non c'è niente di nuovo: anche i
-mondi in miniatura di Ha e Schmidhuber facevano qualcosa di simile. La rottura
-è nel *dove* si fa la previsione.
+Sei pezzi sono tanti, e in gran parte sono ancora sulla carta. Il progetto
+dipende da una domanda sola: come si addestra il world model? La risposta di
+LeCun è imparare guardando, come il neonato: enormi quantità di video senza
+etichette, e un solo esercizio, indovinare ciò che viene dopo. La correzione
+arriva da sé, perché il futuro arriva. È apprendimento auto-supervisionato, e
+fin qui non c'è niente di nuovo: anche i {doc}`mondi in miniatura
+</WorldModels/mondi-in-miniatura>` di Ha e Schmidhuber facevano qualcosa di
+simile. La rottura sta nel *dove* si fa la previsione.
 
 ## Perché non predire i pixel
 
@@ -58,29 +57,29 @@ mano. Ora prova invece a prevedere la *fotografia esatta* della scena tra due
 secondi: dove sarà ogni scheggia, come si rifletterà la luce su ogni frammento,
 che forma avrà la macchia d'acqua sul pavimento. Impossibile, e del tutto
 inutile: nessuna decisione sensata dipende dalla forma della terza scheggia. Un
-modello costretto a prevedere l'immagine pixel per pixel ha esattamente questo
-problema, due volte. Primo: spreca quasi tutta la sua capacità a studiare
-dettagli che non contano nulla. Secondo: siccome i futuri possibili sono tanti
-(le schegge possono disporsi in mille modi) e lui deve produrre *una* immagine
-sola, quella che gli costa meno errori è la media di tutti i futuri. Succede
-anche con un numero solo. Se ti chiedono di indovinare un numero che vale 2 o 8
-con la stessa probabilità, e ti multano con il quadrato dell'errore, rispondere
-2 costa in media 18 (zero una volta, 36 l'altra), mentre rispondere 5, che non
-esce mai, costa 9 ogni volta. Con un'immagine la media di tutti i futuri è una
-foto fantasma, sfocata, in cui mille rotture diverse si sovrappongono. La
-proposta di LeCun: non prevedere la foto, prevedere il *succo* («bicchiere in
-pezzi sul pavimento, acqua sparsa»), cioè prevedere nello **spazio delle
-idee**, dove i mille futuri diversi nei dettagli possono diventare un futuro
-solo, quello che conta, se l'allenamento insegna a buttare via le schegge e
-non il bicchiere.
+modello costretto a prevedere l'immagine pixel per pixel ha questo problema,
+due volte. Primo: spreca quasi tutta la sua capacità a studiare dettagli che
+non contano nulla. Secondo: siccome i futuri possibili sono tanti (le schegge
+possono disporsi in mille modi) e lui deve produrre *una* immagine sola, quella
+che gli dà meno errori è la media di tutti i futuri. Succede anche con un
+numero solo. Se ti chiedono di indovinare un numero che vale 2 o 8 con la
+stessa probabilità, e ti multano con il quadrato dell'errore, rispondere 2 ti
+fa perdere in media 18 (zero una volta, 36 l'altra), mentre rispondere 5, che
+non esce mai, ti fa perdere 9 ogni volta. Con un'immagine la media di tutti i
+futuri è una foto fantasma, sfocata, in cui mille rotture diverse si
+sovrappongono. La proposta di LeCun: non prevedere la foto, prevedere il
+*succo* («bicchiere in pezzi sul pavimento, acqua sparsa»), cioè prevedere
+nello **spazio delle idee**, dove i mille futuri diversi nei dettagli possono
+diventare un futuro solo, il futuro che conta, se l'allenamento insegna a
+buttare via le schegge e non il bicchiere.
 
-C'è un caso in cui il succo da solo non basta. La mano l'hai allungata: se il
-bicchiere lo prendi al volo, il succo giusto è «bicchiere salvo», e i due
-futuri sono diversi davvero, non per una scheggia in più o in meno. Nel
-disegno del 2022 LeCun prevede per questo un ingrediente in più, una
-variabile che nessuno osserva e che dice quale dei due esiti si sta
-raccontando (in gergo una variabile *latente*, cioè nascosta). Nei sistemi
-costruiti finora quella variabile non c'è, e la risposta resta una sola.
+C'è un caso in cui il succo non basta. La mano l'hai allungata: se il bicchiere
+lo prendi al volo, il succo giusto è «bicchiere salvo», e i due futuri sono
+diversi nella sostanza, non per una scheggia in più o in meno. Nel disegno del
+2022 LeCun prevede per questo un ingrediente in più, una variabile che nessuno
+osserva e che dice quale dei due esiti si sta raccontando (in gergo una
+variabile *latente*, cioè nascosta). Nei sistemi costruiti finora quella
+variabile non c'è, e la risposta resta una sola.
 
 `````
 
@@ -111,7 +110,7 @@ dove $\mathbf{z}$ è una variabile latente che assorbe la molteplicità dei futu
 $\theta$ sono i parametri dei due encoder e del predictor. L'energia della
 *coppia* è la seconda quantità, $E^\star$ (nel documento del 2022 si chiama
 energia libera e si scrive $F$, ma quella lettera nella {doc}`sezione
-sull'inferenza attiva </WorldModels/inferenza-attiva>` farà un altro mestiere,
+sull'inferenza attiva </WorldModels/inferenza-attiva>` avrà un altro significato,
 l'energia libera variazionale, che misura un'altra cosa): si sceglie la
 $\mathbf{z}$ che spiega meglio il futuro osservato, e quel minimo misura la
 compatibilità tra $\mathbf{x}$ e $\mathbf{y}$. Il collegamento con il capitolo
@@ -120,7 +119,7 @@ normalizzato; la compatibilità tra presente e futuro è l'errore di predizione
 nello spazio latente, l'inferenza è la solita $\arg\min$ (qui, il minimo su
 $\mathbf{z}$), e della funzione di partizione non c'è alcun bisogno.
 
-Una precisazione, perché altrimenti quel $\min_{\mathbf{z}}$ resta un debito: $\mathbf{z}$ è la
+Il $\min_{\mathbf{z}}$ richiede una precisazione: $\mathbf{z}$ è la
 forma generale dello schema proposto nel 2022, non la ricetta che poi è
 stata implementata. I due sistemi costruiti da Meta (I-JEPA per le immagini,
 V-JEPA per i video) istanziano il caso senza latente: il
@@ -140,8 +139,7 @@ informazione, e i gradi di libertà imprevedibili e irrilevanti (le foglie, i
 riflessi) possono non arrivare nello spazio in cui si calcola la loss.
 L'architettura lo rende possibile, non lo garantisce: che l'encoder scarti
 proprio quelli, e non il segnale utile, lo decide l'addestramento. Il caso
-limite in cui scarta tutto è il collasso, ed è per questo che serve una difesa
-contro di esso.
+limite in cui scarta tutto è il collasso, e per questo serve una difesa.
 
 `````
 
@@ -166,16 +164,15 @@ indovinare anche l'irrilevante), la seconda lo predice nello spazio delle
 rappresentazioni, dove l'irrilevante può restare fuori.
 ```
 
-Nel pannello A della figura il decoder deve tornare fino ai
-singoli puntini, e la loss lo punisce anche su ogni foglia che trema; nel
-pannello B la previsione parte dal contesto e arriva al target senza mai uscire
-dallo **spazio delle rappresentazioni**, che è lo spazio delle idee del titolo,
-e lì i dettagli irrilevanti possono restare fuori dalla porta. Quello del
-pannello B è lo
-schema che dà il nome a tutta questa linea di ricerca: JEPA,
-*Joint-Embedding Predictive Architecture*, architettura predittiva a
-rappresentazioni congiunte: la parola *joint*, congiunto, dice che i due
-riassunti vivono nello stesso spazio, ed è lì che si possono confrontare.
+Nel pannello A della figura il decoder deve tornare fino ai singoli puntini, e
+la loss lo punisce anche su ogni foglia che trema; nel pannello B la previsione
+parte dal contesto e arriva al target senza mai uscire dallo **spazio delle
+rappresentazioni**, che è lo spazio delle idee del titolo, e lì i dettagli
+irrilevanti possono restare fuori dalla porta. Il pannello B è lo schema che dà
+il nome a tutta questa linea di ricerca: JEPA, *Joint-Embedding Predictive
+Architecture*, architettura predittiva a rappresentazioni congiunte. La parola
+*joint*, congiunto, dice che i due riassunti vivono nello stesso spazio, dove si
+possono confrontare.
 
 ## Il ritorno del collasso
 
@@ -192,8 +189,8 @@ stesso, che nessun addestramento può spostare. Nel documento del 2022 LeCun
 indica la famiglia di rimedi che preferisce, quella già incontrata fra i
 modelli a energia: invece di fabbricare risposte sbagliate da bocciare, si
 toglie al modello la possibilità stessa di dare a tutto lo stesso riassunto,
-per esempio obbligandolo a tenerli diversi fra loro. Ma nei sistemi JEPA
-costruiti davvero da Meta la difesa concreta è un'altra, più semplice e più
+per esempio obbligandolo a tenerli diversi fra loro. Nei sistemi JEPA
+costruiti da Meta, invece, la difesa concreta è un'altra, più semplice e più
 sottile.
 
 I suoi pezzi sono tre, e non pesano uguale
@@ -221,14 +218,14 @@ nessuno dei due che abbia mai guardato la foto). Il trucco che rompe la truffa �
 togliere all'insegnante ogni voce in capitolo: le lamentele sul voto non lo
 raggiungono mai. In gergo si dice che non riceve *gradiente*, cioè quella spinta
 a correggersi che dopo ogni voto torna indietro nella rete e le ritocca i
-numeri, e il gesto di tagliargliela si chiama stop-gradient. Non potendo
+numeri, e tagliargliela si chiama stop-gradient. Non potendo
 contrattare, l'insegnante non può accordarsi con l'allievo per abbassare
 l'asticella, e all'allievo non resta che inseguire le descrizioni dell'altro.
 
 C'è poi una seconda accortezza, dalla parte dell'allievo: la sua descrizione
 non arriva all'insegnante così com'è, ma passa prima per un traduttore che
-lavora solo per lui e che l'insegnante non ha (il *predictor*). È quello che
-rende i due davvero diversi, e nei sistemi veri conta quanto il silenzio
+lavora solo per lui e che l'insegnante non ha (il *predictor*). Il traduttore
+rende i due diversi, e nei sistemi veri conta quanto il silenzio
 dell'insegnante: tolto il traduttore, o ridata la voce all'insegnante, la
 truffa ricomincia.
 
@@ -238,16 +235,16 @@ com'era in media negli ultimi tempi, cioè i suoi numeri mescolati un pochino a
 ogni passo (in gergo, una media mobile). Il dosaggio lo scelgono i ricercatori,
 e nel sistema vero è quattro parti su mille: se un numero dell'allievo passa da
 10 a 20, quello dell'insegnante non salta a 20, diventa 10,04, cioè copre
-quattro millesimi dei dieci di divario. Per raggiungerlo davvero gli servono
-centinaia di passi, e nel frattempo il bersaglio cambia idea solo al ritmo a
-cui l'allievo migliora *davvero*; verso la fine il dosaggio scende a zero, e
-l'insegnante non cambia più idea affatto. Delle tre accortezze, la lentezza è
-quella di cui a volte si fa a meno. Nella mini-JEPA in PyTorch la si toglie e
-la truffa non ricomincia; un sistema vero, SimSiam, ne fa a meno perdendo
-qualche punto; un altro, BYOL, senza di essa crolla, a meno di far correre
-molto di più il traduttore. Chi ha costruito le JEPA la tiene e la dichiara
-essenziale. Che aiuti, dunque, lo dicono i risultati; perché, con precisione, è
-ancora oggetto di studio.
+quattro millesimi dei dieci di divario. Per arrivarci gli servono centinaia di
+passi, e nel frattempo il bersaglio cambia idea solo al ritmo a cui l'allievo
+migliora; verso la fine il dosaggio scende a zero, e l'insegnante non
+cambia più idea affatto. Delle tre accortezze, la lentezza è quella di cui a
+volte si fa a meno. Nella mini-JEPA in PyTorch la si toglie e la truffa non
+ricomincia; un sistema vero, SimSiam, ne fa a meno perdendo qualche punto; un
+altro, BYOL, senza di essa crolla, a meno di far correre molto di più il
+traduttore. Chi ha costruito le JEPA la tiene e la dichiara essenziale. Che
+aiuti, dunque, lo dicono i risultati; perché, con precisione, è ancora oggetto
+di studio.
 
 `````
 
@@ -272,10 +269,10 @@ In I-JEPA $m$ parte da 0,996, quindi a ogni passo il target si sposta di una
 frazione millesimale verso l'encoder corrente, e cresce linearmente fino a 1
 lungo l'addestramento: verso la fine il bersaglio smette del tutto di muoversi.
 All'EMA si accompagna lo stop-gradient: la loss non si propaga
-mai attraverso il ramo del target, che è puro riferimento. E c'è un terzo
-pezzo, che si dimentica volentieri perché sta dalla parte dell'allievo: il
-predictor, che esiste su un ramo solo ed è ciò che rende l'asimmetria
-un'asimmetria vera. I paper della famiglia li nominano tutti e tre insieme.
+mai attraverso il ramo del target, che è puro riferimento. Il terzo
+pezzo si dimentica volentieri perché sta dalla parte dell'allievo: il
+predictor, presente su un ramo solo, che rende l'asimmetria un'asimmetria
+vera. I paper della famiglia li nominano tutti e tre insieme.
 
 Dei tre, l'EMA è quello a cui si può rinunciare, ma a certe condizioni. Nella
 mini-JEPA in PyTorch toglierla e tenere il resto non produce alcun collasso (la
@@ -302,7 +299,7 @@ esplicitamente regolarizzata, alla VICReg {cite}`bardes2022vicreg`, dove a
 proteggere dal collasso è la loss e non l'asimmetria: accanto alla distanza fra
 le due rappresentazioni, un termine a cerniera tiene la deviazione standard di
 ogni componente, nel batch, sopra una soglia, e un altro penalizza le
-covarianze fuori diagonale. La perdita per intero, con i pesi del paper, è
+covarianze fuori diagonale. La perdita completa, con i pesi del paper, è
 nella {doc}`sezione sulle famiglie dell'auto-supervisione
 </AutoSupervisione/famiglie>`, che la mette accanto a Barlow Twins. I-JEPA e
 V-JEPA, nei paper, si affidano invece all'asimmetria EMA.
@@ -314,17 +311,17 @@ V-JEPA, nei paper, si affidano invece all'asimmetria EMA.
 Nel documento del 2022 la JEPA è soprattutto un diagramma. La prima
 incarnazione che ne porta il nome arriva l'anno dopo, dal gruppo di LeCun a
 Meta AI: **I-JEPA** (*Image-based JEPA*, la JEPA per le immagini)
-{cite}`assran2023self`, presentata alla conferenza CVPR. I pezzi sono quelli di
-poco fa. L'encoder è un Vision Transformer, la rete che nella {doc}`sezione sui
-modelli multimodali </Transformers/multimodalita>` tagliava l'immagine in
-tessere e le trattava come le parole di una frase {cite}`dosovitskiy2021image`.
-Il compito è un indovinello: dato un solo blocco di *contesto* dell'immagine,
-prevedere che cosa c'è in quattro blocchi *bersaglio* nascosti. La novità è
-tutta nel che cosa si prevede: non i puntini dei blocchi mancanti, ma i loro
-riassunti, calcolati dalla copia lenta di poco fa. Quella copia prende la sigla
-di **EMA** (*exponential moving average*, media mobile esponenziale): è il nome
-tecnico per il mescolare, a ogni passo, un pochino dei numeri dell'allievo in
-quelli dell'insegnante.
+{cite}`assran2023self`, presentata alla conferenza CVPR. L'encoder è un Vision
+Transformer, la rete che nella {doc}`sezione sui modelli multimodali
+</Transformers/multimodalita>` tagliava l'immagine in tessere e le trattava
+come le parole di una frase {cite}`dosovitskiy2021image`. Il compito è un
+indovinello: dato un solo blocco di *contesto* dell'immagine, prevedere che
+cosa c'è in quattro blocchi *bersaglio* nascosti. La novità sta in che cosa si
+prevede: non i puntini dei blocchi mancanti, ma i loro riassunti, calcolati
+dalla copia lenta dell'encoder. Quella copia prende la sigla di **EMA**
+(*exponential moving average*, media mobile esponenziale): è il nome tecnico
+per il mescolare, a ogni passo, un pochino dei numeri dell'allievo in quelli
+dell'insegnante.
 
 `````{tab} Elementare
 
@@ -340,13 +337,14 @@ capito la scena («è un cane, quindi là sotto c'è una zampa»), mentre per un
 buchino basta allungare i bordi, senza capire niente. Secondo: al modello non
 servono i trucchi artigianali con cui di solito si addestrano questi sistemi
 (versioni ritagliate, specchiate, ricolorate della stessa foto, scelte a mano
-da chi progetta). Basta l'indovinello. E i risultati danno ragione alla
+da chi progetta). Basta l'indovinello. I risultati danno ragione alla
 scommessa: con appena l’1% delle etichette di ImageNet (una dozzina di foto
 etichettate per categoria) I-JEPA classifica meglio dei metodi che
-ricostruiscono i pixel: 73 risposte giuste su cento contro poco più di 71. E ci
-arriva con molto meno calcolo. Quel risparmio è facile capirlo al contrario:
-non è che ogni passata sui dati costi meno (costa anzi un pelo di più, c'è una
-rete in più da far girare), è che di passate ne servono cinque volte meno.
+ricostruiscono i pixel: 73 risposte giuste su cento contro poco più di 71. Ci
+arriva con molto meno calcolo, e il risparmio si capisce meglio al contrario:
+non è che ogni passata sui dati sia più leggera (è anzi un pelo più pesante,
+c'è una rete in più da far girare), è che di passate ne servono cinque volte
+meno.
 
 `````
 
@@ -414,11 +412,11 @@ rappresentazioni a partire dal resto.
 C'è una finezza che rivela quanto i video siano un problema diverso. Un video è
 una pila di fotogrammi, e i vicini si somigliano quasi in tutto: se la maschera
 coprisse zone diverse in fotogrammi diversi, il modello potrebbe barare
-copiando dal fotogramma accanto quello che nel suo manca. La maschera è perciò
+copiando dal fotogramma accanto la parte che nel suo manca. La maschera è perciò
 un **tubo**: dentro una stessa clip la regione coperta sta ferma e attraversa
 la pila da parte a parte, come un foro che buca tutte le carte di un mazzo
 nello stesso punto ({numref}`fig-maschera-a-tubo`). Dove cade, quel foro, lo
-si sorteggia a ogni clip. Ed è una maschera generosa, perché in media copre
+si sorteggia a ogni clip. La maschera è anche generosa, perché in media copre
 circa il 90% del video, e il poco che resta non basta a completare i bordi di
 ciò che manca: per indovinare il resto bisogna aver capito la scena.
 
@@ -426,7 +424,7 @@ Due proprietà, però, non fanno una ricetta, e la differenza si paga cara.
 Coprire il 90% con tanti tubicini sottili sparsi lascia dappertutto un bordo
 da cui completare, e gli autori quella variante l'hanno provata: a riconoscere
 le azioni nei video, il modello che ne esce dà 51,5 risposte giuste su cento
-invece di 72,9 {cite}`bardes2024revisiting`. Quello che funziona sono blocchi
+invece di 72,9 {cite}`bardes2024revisiting`. Funzionano invece blocchi
 grandi e contigui, ripetuti identici su tutta la clip, di due tipi: otto
 blocchi grandi ciascuno il 15% del fotogramma, oppure due blocchi grandi
 ciascuno il 70%; l'unione, dicono gli autori, copre in media il 90%. È la
@@ -438,10 +436,9 @@ stessa ragione per cui sulle immagini i rettangoli nascosti sono grandi.
 :width: 92%
 
 Perché la maschera non si sposta. Sopra, una regione che cambia posto a ogni
-fotogramma: quello che nasconde in uno sta scoperto in quello accanto, e
-prevederlo è copiare. Sotto, la stessa regione tenuta ferma, che attraversa la
-clip da parte a parte: nessun fotogramma mostra quello che gli altri
-nascondono.
+fotogramma: la parte nascosta in uno sta scoperta in quello accanto, e
+prevederla è copiare. Sotto, la stessa regione tenuta ferma, che attraversa la
+clip da parte a parte: nessun fotogramma mostra la parte che gli altri nascondono.
 ```
 
 Addestrato così su due milioni di video pubblici, senza etichette, senza testo
@@ -462,7 +459,7 @@ Le collezioni di video su cui si dà l'esame sono sempre le stesse per tutti,
 così che i risultati di gruppi diversi si confrontino: si chiamano **banchi di
 prova** (in inglese *benchmark*), e qui sono due. Uno chiede di riconoscere
 che cosa succede nella scena: chi nuota, chi suona, chi taglia le verdure.
-L'altro, ed è quello che conta di più, misura la comprensione del *movimento*
+L'altro, il più importante, misura la comprensione del *movimento*
 e non dell'aspetto: non basta riconoscere gli oggetti, bisogna distinguere
 «spingere qualcosa da sinistra a destra» da «spingere qualcosa da destra a
 sinistra», che sono la stessa scena al contrario. V-JEPA se la cava bene su
@@ -472,12 +469,12 @@ movimento.
 Un'avvertenza, però, e vale per tutti gli esami fatti così: più l'esaminatore
 è bravo, meno si capisce di chi sia il merito. Se è un programmino, quel che
 risponde lo ha trovato bell'e pronto nei riassunti; se è una rete capace, una
-parte del lavoro può averla fatta lui. E qui l'esaminatore è del secondo tipo:
+parte del lavoro può averla fatta lui. Qui l'esaminatore è del secondo tipo:
 una piccola rete addestrata apposta, che nella versione successiva del
 sistema cresce ancora. Quindi quel «sette su dieci» dice quanto l'informazione
 sul movimento sia facile da tirare fuori dai riassunti, che non è la
 stessa cosa che dire che il modello «ha capito». Il confronto fra sistemi
-regge lo stesso, purché l'esaminatore sia identico per tutti: il punteggio si
+resta valido, purché l'esaminatore sia identico per tutti: il punteggio si
 dà insieme al nome di chi ha corretto.
 
 `````
@@ -498,13 +495,13 @@ Kinetics-400 e 16,1 su Something-Something-v2 {cite}`bardes2024revisiting`. Uno
 strato di cross-attention è un aggregatore *addestrato* che decide quali token
 guardare, non un classificatore lineare: fra i due estremi «regressione
 logistica sopra feature congelate» e «fine-tuning completo» sta molto più vicino
-al secondo di quanto la parola «testa» lasci intendere. E in V-JEPA 2 la sonda
+al secondo di quanto la parola «testa» lasci intendere. In V-JEPA 2 la sonda
 cresce ancora: quattro blocchi transformer, l'ultimo dei quali sostituisce la
 self-attention con una cross-attention a query appresa. Quattro blocchi
-transformer sopra un backbone congelato formano un modello vero e proprio, più
+transformer sopra un backbone congelato formano un modello a sé, più
 che una testa.
 
-Da qui la cautela sulla lettura, ed è la stessa che la {doc}`sezione sui
+Da qui la cautela sulla lettura, la stessa che la {doc}`sezione sui
 simulatori e il dibattito </WorldModels/simulatori-e-dibattito>` applica al
 probing di Othello-GPT: il protocollo misura quanto le
 rappresentazioni congelate rendano estraibile l'informazione sul
@@ -512,7 +509,7 @@ movimento, non quanto il modello la «capisca», e fra le due ipotesi
 (l'informazione c'era nel backbone, oppure a costruirla è stata la sonda) non
 distingue. Più la sonda è capace, meno il merito è attribuibile al solo
 backbone; il confronto fra metodi resta valido finché la sonda è la stessa per
-tutti, ed è per questo che il protocollo va dichiarato insieme al numero.
+tutti, per questo il protocollo va dichiarato insieme al numero.
 
 `````
 
@@ -534,18 +531,17 @@ miglior sistema precedente, otto volte più grosso, si fermava a 27,6. È un
 progresso grosso su un compito che resta largamente irrisolto, il che è già un
 buon motivo per diffidare di chi riassume queste cose con «ci riesce».
 
-Ma la parte concettualmente nuova è **V-JEPA 2-AC** (*action-conditioned*,
-condizionato sulle azioni), ed è la parte in cui il capitolo arriva finalmente
-a un robot vero. Il meccanismo è quello dell'inizio, montato sopra un braccio
-meccanico: si dà al robot un’**immagine-obiettivo** (la tazza sopra il
-piatto), il modello immagina l'effetto di centinaia di comandi possibili e
-sceglie quello il cui esito previsto è più vicino all'obiettivo. Poi lo
-esegue, guarda com'è andata e ricomincia da capo, un comando alla volta.
-Dal progetto del 2022 la distanza è netta: là l'agente immaginava intere
-sequenze di azioni prima di muoversi, il robot vero ne immagina per ora una
-sola per volta, e già così ci mette sedici secondi. Immaginare prima, muovere
-poi: è il controllo predittivo su modello dell'apertura del capitolo, e questa
-volta il sistema controllato è un braccio robotico.
+La parte concettualmente nuova è **V-JEPA 2-AC** (*action-conditioned*,
+condizionato sulle azioni), quella in cui si arriva a un robot vero. Il
+meccanismo è quello della JEPA generale, montato sopra un braccio meccanico: si
+dà al robot un’**immagine-obiettivo** (la tazza sopra il piatto), il modello
+immagina l'effetto di centinaia di comandi possibili e sceglie quello il cui
+esito previsto è più vicino all'obiettivo. Poi lo esegue, guarda com'è andata e
+ricomincia da capo, un comando alla volta. Dal progetto del 2022 la distanza è
+netta: là l'agente immaginava intere sequenze di azioni prima di muoversi, il
+robot vero ne immagina per ora una sola per volta, e già così ci mette sedici
+secondi. Immaginare prima, muovere poi: è controllo predittivo su modello, e
+questa volta il sistema controllato è un braccio robotico.
 
 `````{tab} Elementare
 
@@ -554,12 +550,12 @@ registrazioni di bracci robotici al lavoro: una sessantina d'ore, prese da
 una raccolta pubblica che chiunque può scaricare (una raccolta
 di dati fatta apposta per addestrare si chiama dataset). Le registrazioni
 dicono anche come si è mosso il braccio istante per istante, perché è
-un'informazione che la macchina scrive da sé mentre lavora. Quel che nessuno ha
+un'informazione che la macchina registra mentre lavora. Quel che nessuno ha
 annotato è tutto il resto: che compito si stesse svolgendo, se sia riuscito, se
 chi guidava fosse bravo. Quei video vengono descritti come «non etichettati», e
-vuol dire esattamente questo: manca il giudizio su che cosa si stesse facendo e
+l'espressione indica questo: manca il giudizio su che cosa si stesse facendo e
 su come è andata, non l'informazione sui movimenti. Il pezzo che guarda i
-video resta com'era, con quello che aveva imparato da internet: si addestra
+video resta com'era, con quel che aveva imparato da internet: si addestra
 soltanto il pezzo che immagina l'effetto di un comando.
 
 Poi lo si mette in due laboratori che non aveva mai visto, senza un solo
@@ -570,8 +566,8 @@ Qui però serve la cifra, non l'aggettivo, perché «riesce» dice troppo.
 Raggiungere un punto gli riesce sempre. Posare un oggetto dove va, circa tre
 volte su quattro. Afferrare una tazza, due volte su tre. Afferrare una
 scatola, una volta su quattro. Posare, però, non gli riesce con una foto sola
-dell'obiettivo: gliene servono tre, e a sceglierle è una persona. E per ogni
-singolo gesto il robot passa
+dell'obiettivo: gliene servono tre, e a sceglierle è una persona. Per ogni
+singolo movimento il robot passa
 sedici secondi a immaginare, perché non prova un comando alla volta: ne
 sorteggia ottocento, tiene i dieci il cui esito finisce più vicino
 all'obiettivo, e sorteggia gli ottocento del giro dopo tutti attorno a quei
@@ -592,7 +588,7 @@ azioni, interlacciati nel tempo, con l'azione definita come la variazione dello
 stato dell'end-effector fra fotogrammi adiacenti. *Unlabeled*, nel paper, vuol
 dire un'altra cosa, dichiarata a chiare lettere: nessun meta-dato su
 ricompensa, su quale compito fosse in corso, o su se il tentativo sia riuscito.
-È una distinzione che tornerà utile davanti a Genie, che le azioni davvero non
+È una distinzione che tornerà utile davanti a Genie, che le azioni non
 ce le ha e deve inferirsele.
 
 La pianificazione è controllo predittivo a orizzonte recedente. Con
@@ -617,37 +613,34 @@ si campionano 800 candidate da gaussiane, si tengono le dieci migliori, se ne
 ricalcolano media e varianza e si ripete per dieci giri. Nei compiti riportati
 l'orizzonte è $T = 1$, cioè si ottimizza una sola azione per volta: gli autori
 lo dichiarano sufficiente perché i compiti considerati sono ingordi, e
-osservano che orizzonti più lunghi funzionano anch'essi ma costano di più. Il
-costo è 16 secondi di calcolo per ogni singola azione, su una sola scheda
-grafica da gioco. E i tassi di successo, medi sui due laboratori, dicono a che
-punto siamo davvero: *reach* 100%, pick-and-place della tazza 80% e della
-scatola 65%, presa della tazza 65%, presa della scatola 25%. Afferrare una
-scatola riesce una volta su quattro, e su numeri così piccoli il margine è
-largo: ogni percentuale è la media di dieci prove per laboratorio, cioè venti
-in tutto, e cinque successi su venti non distinguono un sistema che riesce una
-volta su dieci da uno che riesce quasi una volta su due. Il confronto, con lo
-stesso protocollo, dà la misura: Octo, addestrato per imitazione sullo stesso
-DROID, prende la tazza nel 15% dei casi, la scatola mai, e completa il
-pick-and-place nel 15% e nel 10%; Cosmos, un generatore di video usato come
-modello del mondo, impiega quattro minuti per ogni azione e nel secondo
-laboratorio non completa nessun pick-and-place. E il pick-and-place, che è il
-numero più alto, non si guida con un'immagine sola: gli autori ne danno tre
-(oggetto afferrato, oggetto vicino alla meta, oggetto posato) e passano
-dall'una all'altra a passi fissi. A scomporre l'obiettivo è una persona, ed è
-il conto che presenta l'orizzonte $T = 1$: fra i limiti gli autori mettono
-proprio il pick-and-place *senza* sotto-obiettivi. Il sistema regge anche
-compiti di *video question answering*, una volta allineato con un modello di
-linguaggio. È il punto esatto in cui la via di LeCun smette di essere un
-diagramma e tocca, letteralmente, il mondo fisico; non è il punto in cui la
-partita è vinta.
+osservano che orizzonti più lunghi funzionano anch'essi ma pesano di più in
+calcolo. Il costo è 16 secondi di calcolo per ogni singola azione, su una sola
+scheda grafica da gioco. I tassi di successo, medi sui due laboratori, dicono a
+che punto siamo: *reach* 100%, pick-and-place della tazza 80% e della scatola
+65%, presa della tazza 65%, presa della scatola 25%. Afferrare una scatola
+riesce una volta su quattro, e su numeri così piccoli il margine è largo: ogni
+percentuale è la media di dieci prove per laboratorio, cioè venti in tutto, e
+cinque successi su venti non distinguono un sistema che riesce una volta su
+dieci da uno che riesce quasi una volta su due. Il confronto, con lo stesso
+protocollo, dà la misura: Octo, addestrato per imitazione sullo stesso DROID,
+prende la tazza nel 15% dei casi, la scatola mai, e completa il pick-and-place
+nel 15% e nel 10%; Cosmos, un generatore di video usato come modello del mondo,
+impiega quattro minuti per ogni azione e nel secondo laboratorio non completa
+nessun pick-and-place. Il pick-and-place, che è il numero più alto, non si
+guida con un'immagine sola: gli autori ne danno tre (oggetto afferrato, oggetto
+vicino alla meta, oggetto posato) e passano dall'una all'altra a passi fissi. A
+scomporre l'obiettivo è una persona, conseguenza dell'orizzonte $T = 1$: fra i
+limiti gli autori indicano proprio il pick-and-place *senza* sotto-obiettivi.
+Allineato con un modello di linguaggio, il sistema affronta anche compiti di
+*video question answering*. È il punto in cui la via di LeCun smette di essere
+un diagramma e tocca il mondo fisico; non è il punto in cui la partita è vinta.
 
 `````
 
 ## Tre famiglie per imparare senza etichette
 
-Fermiamoci a mettere ordine, perché a questo punto i grandi modi di imparare
-senza annotatori umani li abbiamo incontrati tutti. Qui li si divide secondo
-*dove* avviene la previsione; il {doc}`capitolo sull'auto-supervisione
+I grandi modi di imparare senza annotatori umani sono tre, e qui li si divide
+secondo *dove* avviene la previsione; il {doc}`capitolo sull'auto-supervisione
 </AutoSupervisione/famiglie>` li divide secondo che cosa impedisce al modello
 di rispondere sempre la stessa cosa, e ne conta quattro. Sono due modi di
 tagliare gli stessi metodi, e ogni metodo ha un posto in tutti e due.
@@ -670,7 +663,7 @@ riassunto**: copre un pezzo e, invece di ricopiarlo, ne prevede la
 classifica: ricopiare con i buchi ha vinto nel linguaggio, il gioco delle
 coppie ha unito immagini e parole, prevedere il riassunto scommette sul futuro
 e sul video. Sono tre risposte diverse alla stessa domanda: di ciò che manca,
-che cosa serve davvero prevedere?
+che cosa serve prevedere?
 
 `````
 
@@ -692,8 +685,8 @@ difficoltà di trovarne mai abbastanza in alta dimensione. **Predittiva nello
 spazio latente**: la famiglia JEPA; energia = errore di predizione tra
 embedding, nessuna ricostruzione, nessuna coppia negativa, collasso evitato
 per asimmetria architetturale (lo stop-gradient, con l'EMA a stabilizzare) o
-per regolarizzazione esplicita (varianza/covarianza), che è poi lo stesso
-mestiere che la famiglia contrastiva svolge per un'altra via, alzando
+per regolarizzazione esplicita (varianza/covarianza), che è poi la stessa
+funzione che la famiglia contrastiva svolge per un'altra via, alzando
 l'energia sui controesempi. È la più giovane delle tre, e quella su cui pesa la
 scommessa più grossa.
 
@@ -701,38 +694,35 @@ scommessa più grossa.
 
 ## Una scommessa aperta
 
-La via di LeCun è una linea di
-ricerca in corso, non un traguardo raggiunto. Le rappresentazioni JEPA reggono
-il confronto con i metodi concorrenti sui banchi di prova considerati, senza
-batterli sempre, e nel caso di I-JEPA contro MAE chiedono molto meno calcolo di
-pre-addestramento; V-JEPA 2-AC ha mostrato che un world model
-auto-supervisionato può guidare un braccio robotico in compiti semplici, con
-successi fra il 25% e il 100% secondo il compito. Ma dell'architettura a
-sei moduli del 2022 la maggior parte resta sulla carta: la JEPA gerarchica,
-cioè fatta a livelli, dove quello alto pianifica a grandi passi («esco di casa,
-vado alla stazione») e quelli sotto ne riempiono i dettagli, ciascuno sulla
-propria scala di tempo; il configuratore; il ragionamento a lungo orizzonte,
-cioè su catene lunghe di conseguenze.
+La via di LeCun è una linea di ricerca in corso, non un traguardo raggiunto. Le
+rappresentazioni JEPA sono competitive con i metodi concorrenti sui banchi di
+prova considerati, senza batterli sempre, e nel caso di I-JEPA contro MAE
+chiedono molto meno calcolo di pre-addestramento; V-JEPA 2-AC ha mostrato che un
+world model auto-supervisionato può guidare un braccio robotico in compiti
+semplici, con successi fra il 25% e il 100% secondo il compito.
+Dell'architettura a sei moduli del 2022 la maggior parte resta sulla
+carta: la JEPA gerarchica, cioè fatta a livelli, dove quello alto pianifica a
+grandi passi («esco di casa, vado alla stazione») e quelli sotto ne riempiono i
+dettagli, ciascuno sulla propria scala di tempo; il configuratore; il
+ragionamento a lungo orizzonte, cioè su catene lunghe di conseguenze.
 
 I critici, dal canto loro, fanno notare che la storia recente non è stata tenera
 con le previsioni di insufficienza: i modelli generativi, cresciuti in taglia e
 in dati, continuano a mostrare capacità che quelle previsioni escludevano. Il
-loro argomento più forte è un esperimento, e lo racconta la {doc}`sezione sui
-simulatori e il dibattito </WorldModels/simulatori-e-dibattito>`: un modello
+loro argomento più forte è un esperimento, che la {doc}`sezione sui simulatori
+e il dibattito </WorldModels/simulatori-e-dibattito>` racconta: un modello
 addestrato soltanto a indovinare la mossa successiva di un gioco da tavolo si
 costruisce dentro una rappresentazione della scacchiera, e la usa
 {cite}`li2023emergent`. Va presa con cautela, invece, l'idea che la coerenza
-fisica dei generatori di video migliori da sé man mano che li si ingrandisce:
-per i sistemi più spinti le fonti sono annunci aziendali con dimostrazioni
-scelte, e l'affermazione va verificata, non concessa. Se per capire il mondo
-serva davvero smettere di generarlo, o se generare *sia* un modo di capire, è
-esattamente la domanda su cui il campo è spaccato, e LeCun, come ricordato in
-apertura di capitolo, ci ha legato la propria carriera. Il fronte
-opposto del dibattito (i simulatori generativi di video, da Sora a Genie, e la
-domanda se un modello che *disegna* futuri plausibili abbia capito la fisica o
-abbia solo imparato a imitarla) lo attraversa la {doc}`sezione sui simulatori
-</WorldModels/simulatori-e-dibattito>`.
-
+fisica dei generatori di video migliori spontaneamente man mano che li si
+ingrandisce: per i sistemi più spinti le fonti sono annunci aziendali con
+dimostrazioni scelte, e l'affermazione va verificata, non concessa. Se per
+capire il mondo serva smettere di generarlo, o se generare *sia* un modo di
+capire, è la domanda su cui il campo è spaccato, e LeCun ha legato a questa
+domanda la propria carriera. Il fronte opposto del dibattito (i simulatori
+generativi di video, da Sora a Genie, e la domanda se un modello che *disegna*
+futuri plausibili abbia capito la fisica o abbia solo imparato a imitarla) lo
+attraversa quella stessa sezione.
 
 ## Una mini-JEPA in PyTorch
 
@@ -742,8 +732,8 @@ embedding) stanno in una pagina di PyTorch. L'esperimento è in miniatura: ogni
 cui un Vision Transformer taglia un'immagine; qui le tessere nascono da un
 contenuto comune più rumore. Il modello vede 6 tessere di contesto e deve
 prevedere l’embedding, non i valori, delle 2 tessere coperte. Il bersaglio lo
-calcola la copia lenta, e non riceve gradiente: quel gesto si chiama
-stop-gradient, ed è la traduzione in codice dell'insegnante che non può
+calcola la copia lenta, e non riceve gradiente: questa scelta si chiama
+stop-gradient, la traduzione in codice dell'insegnante che non può
 lamentarsi del voto.
 
 ```python
@@ -825,7 +815,7 @@ rappresentazioni si stessero appiattendo: passa da 0,38 a 1,00. Il modello
 impara a prevedere il *contenuto* delle tessere coperte, che è condiviso con il
 contesto, e ignora il rumore, che non è prevedibile.
 
-Quale dei pezzi regga davvero il risultato, però, non lo dicono questi numeri:
+Questi numeri non dicono quale pezzo sostenga il risultato:
 lo si vede spegnendo i pezzi uno alla volta, e ripetendo ogni prova con tre
 semi diversi.
 
@@ -876,7 +866,7 @@ tolto predictor             loss 0.001   varietà: 0.39  0.36  0.37
 
 Togliere la copia lenta, cioè calcolare il bersaglio con l'allievo stesso ma
 sempre senza gradiente, non fa collassare niente: la varietà sale anzi sopra
-1,5, che in un giocattolo del genere non vuol dire rappresentazioni migliori.
+1,5, che in un giocattolo del genere non implica rappresentazioni migliori.
 Togliere insieme la copia lenta e lo stop-gradient rimette i due rami nella
 stessa rete, libera di accordarsi con sé stessa: la loss scende a cinque
 decimillesimi e la varietà crolla a 0,05, cioè scene diverse finiscono per
@@ -907,7 +897,7 @@ immagini e di ore di video. La logica è la stessa.
   il disegno di come dovrebbe essere fatta secondo lui una macchina che
   capisce il mondo. Sei pezzi, e al centro un modello del mondo che impara
   guardando, senza che nessuno gli spieghi niente.
-- Prevedere l'immagine esatta è la strada sbagliata, ed è la storia del
+- Prevedere l'immagine esatta è la strada sbagliata, come mostra la storia del
   bicchiere in bilico: il futuro può andare in mille modi e nessuna decisione
   dipende dalla forma della terza scheggia, quindi un modello obbligato a
   disegnare *una* foto finisce per disegnare la media sfocata di tutte. La
@@ -924,16 +914,16 @@ immagini e di ore di video. La logica è la stessa.
   ridisegnarli. Funziona, e impara con molto meno calcolo dei metodi che
   ridisegnano; ma non perché ogni passo costi meno, perché ne servono molti
   meno.
-- Sui video la copertura diventa un tubo, ferma nello stesso punto per
-  tutta la clip, così che il modello non possa copiare dal fotogramma accanto.
-  E l'ultima versione arriva a guidare un braccio robotico in due laboratori
-  mai visti, con un'immagine dell'obiettivo al posto delle istruzioni:
-  immagina prima, muove poi. Con i piedi per terra, però: afferrare una tazza
-  gli riesce due volte su tre, una scatola una volta su quattro, e ogni gesto
-  gli costa sedici secondi di calcolo.
+- Sui video la copertura diventa un tubo, ferma nello stesso punto per tutta la
+  clip, così che il modello non possa copiare dal fotogramma accanto. L'ultima
+  versione arriva a guidare un braccio robotico in due laboratori mai visti,
+  con un'immagine dell'obiettivo al posto delle istruzioni: immagina prima,
+  muove poi. Con i piedi per terra, però: afferrare una tazza gli riesce due
+  volte su tre, una scatola una volta su quattro, e per ogni movimento servono
+  sedici secondi di calcolo.
 - Tre modi di studiare senza professore, e sono tre studenti diversi:
   ricopiare con i buchi, il gioco delle coppie, prevedere il
-  riassunto. Prevedere il riassunto è la via JEPA, ed è la più giovane
+  riassunto. Prevedere il riassunto è la via JEPA, la più giovane
   delle tre. L'altra campana, quella di chi scommette sul generare, suona
   nella {doc}`sezione sui simulatori </WorldModels/simulatori-e-dibattito>`.
 ```
@@ -967,13 +957,13 @@ immagini e di ore di video. La logica è la stessa.
   stop-gradient, e il ruolo del predictor non si vede. L'alternativa senza
   asimmetria è la regolarizzazione esplicita alla VICReg (varianza per
   componente sopra una soglia, covarianze fuori diagonale penalizzate).
-- I-JEPA {cite}`assran2023self` (CVPR 2023): un ViT predice le
-  rappresentazioni di quattro blocchi mascherati dal contesto; niente
-  augmentation artigianali; con l’1% delle etichette di ImageNet batte i
-  metodi a ricostruzione di pixel (73,3% contro 71,5% di MAE) con oltre
-  dieci volte meno calcolo. Non per un costo unitario più basso: il singolo
-  passo costa il 7% in più, i passi sono cinque volte meno, e il fattore
-  dieci confronta due addestramenti interi, non due iterazioni.
+- I-JEPA {cite}`assran2023self` (CVPR 2023): un ViT predice le rappresentazioni
+  di quattro blocchi mascherati dal contesto; niente augmentation artigianali;
+  con l’1% delle etichette di ImageNet batte i metodi a ricostruzione di pixel
+  (73,3% contro 71,5% di MAE) con oltre dieci volte meno calcolo. Non per un
+  costo unitario più basso: il singolo passo è più pesante del 7%,
+  i passi sono cinque volte meno, e il fattore dieci confronta due
+  addestramenti interi, non due iterazioni.
 - V-JEPA {cite}`bardes2024revisiting` porta lo schema al video (maschere
   a blocchi contigui estesi su tutta la clip, che coprono in media il 90%; loss
   $L_1$); V-JEPA 2 {cite}`assran2025vjepa` scala a oltre un milione di ore di
@@ -987,7 +977,7 @@ immagini e di ore di video. La logica è la stessa.
   *attentive probe* (per V-JEPA 2, quattro blocchi transformer), quindi
   misurano quanto l'informazione sia estraibile, non quanto il modello
   «capisca».
--  Tre famiglie di auto-supervisione, classificate secondo dove avviene la
+- Tre famiglie di auto-supervisione, classificate secondo dove avviene la
   previsione: generativa (ricostruisci il dato: BERT, MAE), contrastiva
   (avvicina/allontana: CLIP), predittiva nello spazio latente (JEPA). È un asse
   diverso da quello del capitolo sull'auto-supervisione, che taglia invece
@@ -999,6 +989,6 @@ immagini e di ore di video. La logica è la stessa.
 
 `````
 
-Prima dei simulatori, una deviazione nelle neuroscienze: l’{doc}`inferenza
-attiva </WorldModels/inferenza-attiva>`, che alla stessa domanda risponde da
-tutt'altra parte.
+Un’altra risposta non viene dall'informatica: l’{doc}`inferenza attiva
+</WorldModels/inferenza-attiva>`, nata nelle neuroscienze, prende la stessa
+domanda da tutt'altra parte.

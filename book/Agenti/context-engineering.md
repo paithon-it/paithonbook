@@ -14,74 +14,67 @@ finestra di contesto già incontrata nell’{doc}`anatomia di un agente
 </Agenti/overview>`: il numero massimo di token che il modello elabora in una
 volta, fissato da chi l'ha costruito (per esempio 128.000).
 
-Ed è lì che sta il mestiere. Per chi usa un modello già addestrato, senza
-riaddestrarlo, l'unica leva è il testo che gli mette davanti: in questo senso
-il contesto è l'interfaccia del modello, l'unico punto da cui passa ogni
-comando. Con un modello di oggi non si programma scrivendo codice, si
-programma scrivendo il contesto. Nella sezione {doc}`sui grandi modelli
-linguistici </Transformers/llm>` questa scoperta ha un nome inglese,
-l’*in-context learning*, l'imparare dal contesto: gli descrivi il compito lì
-dentro, magari con due esempi, e lui lo esegue senza che nessuno
-abbia cambiato una virgola dentro di lui. È un modo di comandare un programma
-scrivendo in italiano invece che in codice, e come tutti i comandi è potente e
-fragile insieme: una parola diversa cambia la risposta.
+Per chi usa un modello già addestrato senza riaddestrarlo, l'unica leva è il
+testo che gli si mette davanti: il contesto è l'interfaccia del modello, il punto
+da cui passa ogni istruzione. Nella sezione {doc}`sui grandi modelli linguistici
+</Transformers/llm>` questa proprietà ha un nome inglese, *in-context learning*,
+apprendimento dal contesto: si descrive il compito nel contesto, magari con due
+esempi, e il modello lo esegue senza che i suoi pesi cambino. È un modo di
+comandare un programma scrivendo in italiano invece che in codice, e come ogni
+comando è potente e fragile: una parola diversa cambia la risposta.
 
-Il mestiere che nasce da lì si chiama **context engineering**, l'ingegneria del
-contesto: l'insieme delle strategie con cui si sceglie e si mantiene, a ogni
-passo, il testo che entra nella finestra (istruzioni, esempi, documenti
-recuperati, cronologia, risultati degli strumenti)
-{cite}`anthropic2025context`. La sua trattazione completa sta nel
-{doc}`capitolo su prompt, contesto e loop </IngegneriaLLM/overview>`, e in
-particolare nella {doc}`sezione sul context
-engineering </IngegneriaLLM/context-engineering>`: come si pensa il contesto,
-come lo si monta dentro un budget, quali mosse lo governano, in quanti modi si
-guasta.
+Questa pratica si chiama **context engineering**, ingegneria del contesto:
+l'insieme delle strategie con cui si sceglie e si mantiene, a ogni passo, il
+testo che entra nella finestra (istruzioni, esempi, documenti recuperati,
+cronologia, risultati degli strumenti) {cite}`anthropic2025context`. La
+trattazione completa è nel {doc}`capitolo su prompt, contesto e loop
+</IngegneriaLLM/overview>`, e in particolare nella {doc}`sezione sul context
+engineering </IngegneriaLLM/context-engineering>`: come si progetta il contesto,
+come lo si monta entro un budget, quali operazioni lo governano e in quanti modi
+si degrada.
 
-E per un agente il problema è ancora più acuto, perché il ciclo osserva →
-ragiona → agisci riempie il contesto da sé: ogni pensiero, ogni chiamata a uno
-strumento, ogni osservazione di ritorno è testo che si accumula, la
-*cronologia*, cioè l'elenco di tutto quel che si è detto e fatto finora. Con
+Per un agente il problema è più acuto, perché il ciclo osserva → ragiona →
+agisci riempie il contesto da sé: ogni pensiero, ogni chiamata a uno strumento,
+ogni osservazione di ritorno è testo che si accumula nella *cronologia*, cioè
+l'elenco di tutto quel che si è detto e fatto finora. Con
 osservazioni di migliaia di token bastano poche decine di passi per occuparne
-buona parte. E anche prima del limite la qualità cala, perché la capacità del
+buona parte. Anche prima del limite la qualità cala, perché la capacità del
 modello di ritrovare un'informazione nel contesto diminuisce al crescere dei
 token che contiene: Anthropic lo chiama *context rot*, il contesto che marcisce
 {cite}`anthropic2025context`. Decidere che cosa tenere e che cosa togliere fa
 quindi parte del progetto dell'agente.
 
-## La finestra è piccola e preziosa
+## La finestra come budget
 
-La finestra di contesto ha una misura, e la misura è un numero preciso. Non si
-conta in parole né in pagine, ma in token: i pezzetti in cui una frase
-viene tagliata prima di entrare nel modello. Quanto sia grande un pezzetto
-dipende dalla lingua e dal modello: in inglese vale grosso modo una parola, in
-italiano vale meno, e una parola sola ne consuma spesso più di uno. Ogni
-modello dichiara quanti token riesce a leggere in una volta, e oltre quel
-numero non si va.
+La finestra di contesto si misura in token, non in parole né in pagine. La
+lunghezza di un token dipende dalla lingua e dal tokenizzatore: in inglese vale
+grosso modo una parola, in italiano meno, e una parola ne consuma spesso più di
+uno. Ogni modello dichiara il numero massimo di token che riesce a leggere in
+una volta.
 
-Riempirli non è gratis, e il prezzo si conta in token.
-
-Si paga in tre valute. In memoria, perché per non ricalcolare a ogni passo ciò
-che ha già letto il modello conserva le chiavi e i valori dell'attenzione di
-tutto il contesto. È il *taccuino* della {doc}`sezione sull'attenzione in
-pratica </Transformers/attenzione-in-pratica>`, e cresce linearmente con i
-token: per il modello da sette miliardi di quella sezione, nella variante con
-tutte le teste (MHA), costa 512 KiB a token. A ottomila token sono già 4 GiB
-contro i 13 GiB dei pesi, e a 128.000 token lo spazio occupa parecchie volte il
-modello stesso. In secondi di attesa, perché il contesto va elaborato tutto
-prima che compaia il primo token della risposta. E in denaro, perché i
-fornitori fanno pagare ogni token che entra e ogni token che esce: quel listino
-si chiama *costo per token*, ha uno sconto sulla parte già vista quando si usa
-la cache dei prefissi, ed è una delle cose che LLMOps tiene d'occhio. Un
-contesto gonfio è una bolletta più salata e una risposta più lenta, e riempire
-la finestra fino all'orlo «per sicurezza» è quasi sempre un cattivo affare.
+Riempire la finestra ha tre costi. Il primo è la memoria: per non ricalcolare a
+ogni passo ciò che ha già letto, il modello conserva le chiavi e i valori
+dell'attenzione di tutto il contesto, il *taccuino* della {doc}`sezione
+sull'attenzione in pratica </Transformers/attenzione-in-pratica>`. Il taccuino
+cresce linearmente con i token: per il modello da sette miliardi di quella
+sezione, nella variante con tutte le teste (MHA), occupa 512 KiB a token. A
+8.192 token sono già 4 GiB contro i 13 GiB dei pesi, e a 128.000 token lo spazio
+supera di diverse volte il modello stesso. Il secondo è il tempo, perché il
+contesto va elaborato per intero prima che compaia il primo token della
+risposta. Il terzo è il denaro, perché i fornitori fanno pagare ogni token in
+ingresso e in uscita: il *costo per token*, con uno sconto sulla parte già vista
+quando si usa la cache dei prefissi, è una delle voci che LLMOps tiene sotto
+controllo. Un contesto gonfio comporta una spesa più alta e una risposta più
+lenta, e riempire la finestra fino al limite «per sicurezza» è quasi sempre
+svantaggioso.
 
 La {numref}`fig-context-window` mostra come la finestra si riempie in una
-giornata di lavoro vera, e due delle sue voci vanno chiamate per nome. La
-prima è il *system prompt*: il foglio di istruzioni di fondo che il programma
-antepone sempre, uguale a ogni richiesta, e che l'utente non vede né scrive. La
-seconda sono le *definizioni tool*, cioè il catalogo degli strumenti del
-{doc}`tool use </Agenti/agenti-e-tool-use>`, con nome, descrizione e argomenti
-di ciascuno: il modello lo legge come legge tutto il resto, e quindi si paga.
+giornata di lavoro, e due delle sue voci vanno definite. La prima è il *system
+prompt*: le istruzioni di fondo che il programma antepone a ogni richiesta, uguali
+per tutte, e che l'utente non vede né scrive. La seconda sono le *definizioni
+tool*, cioè il catalogo degli strumenti del {doc}`tool use
+</Agenti/agenti-e-tool-use>`, con nome, descrizione e argomenti di ciascuno: il
+modello lo legge come legge tutto il resto, e quindi lo si paga in token.
 
 ```{figure} ../figures/context-window.svg
 :name: fig-context-window
@@ -93,33 +86,32 @@ e l'ultimo (lo spazio per la risposta) è quello che si dimentica di contare
 finché il modello non la tronca a metà.
 ```
 
-Messa così, la finestra rivela la sua vera natura: un **budget**. I
-centoventottomila token del disegno (grosso modo un romanzo) sembrano
-tantissimi finché non li si vede ripartiti fra cinque voci che competono: ogni
-token che va a una lo toglie alle altre. E come ogni budget si può spendere
-bene o male: una descrizione di strumento scritta larga, una cronologia che
-nessuno accorcia mai, dieci documenti recuperati dove ne bastavano tre. Nessuna
-di queste è un errore in sé, ma insieme mangiano lo spazio della risposta, che
-è l'ultimo segmento e l'unico che nessuno pensa a contare.
+La finestra va dunque trattata come un **budget**. I 128.000 token del disegno
+(grosso modo un romanzo) sembrano molti finché non li si ripartisce fra cinque
+voci in competizione: ogni token assegnato a una è tolto alle altre. Come ogni
+budget, si può spendere male: una descrizione di strumento troppo estesa, una
+cronologia che nessuno accorcia, dieci documenti recuperati dove ne bastavano
+tre. Nessuna di queste scelte è un errore in sé, ma insieme riducono lo spazio
+della risposta, l'unica voce che nessuno pensa a contare.
 
-C'è di peggio, e va contro l'intuizione: anche quando lo spazio ci sarebbe,
-riempirlo può danneggiare la risposta, perché i modelli usano bene
-l'informazione che sta all’inizio e alla fine del contesto e trascurano quella
-sepolta in mezzo: è il *lost in the middle*, dal titolo dell'articolo in cui
-Nelson Liu e colleghi l'hanno misurato {cite}`liu2024lost`. Per un agente la
-conseguenza è immediata, perché i passi vecchi della traccia finiscono proprio
-lì, fra le istruzioni in testa e l'ultima osservazione in fondo. Come lo si è
-misurato, e come se ne tiene conto quando si monta il contesto, lo racconta la
-{doc}`sezione sul context engineering </IngegneriaLLM/context-engineering>`.
+Anche quando lo spazio c'è, riempirlo può danneggiare la risposta: i modelli
+usano meglio l'informazione all’inizio e alla fine del contesto e trascurano
+quella nel mezzo. L'effetto si chiama *lost in the middle*, dal titolo
+dell'articolo in cui Nelson Liu e colleghi lo hanno misurato
+{cite}`liu2024lost`. Per un agente la conseguenza è immediata, perché i passi
+vecchi della traccia finiscono nel mezzo, fra le istruzioni in testa e l'ultima
+osservazione in fondo. La {doc}`sezione sul context engineering
+</IngegneriaLLM/context-engineering>` racconta come è stato misurato e come se
+ne tiene conto nel montare il contesto.
 
 ## La memoria: oltre la finestra
 
-La finestra, allora, è quello che l'agente tiene «in testa» adesso: la sua
-**memoria di lavoro**, veloce da consultare, stretta, e che sparisce appena la
-conversazione finisce. Ma un agente serio deve ricordare anche oltre il singolo
-scambio: chi è l'utente, cosa si è detto ieri, cosa contengono mille pagine di
-documentazione che nella finestra non entrerebbero mai tutte insieme. Serve
-una **memoria a lungo termine**, e per forza deve stare *fuori* dal contesto.
+La finestra è la **memoria di lavoro** dell'agente: veloce da consultare,
+limitata, e scompare quando la conversazione finisce. Un agente deve però
+ricordare anche oltre il singolo scambio: chi è l'utente, che cosa si è detto
+ieri, che cosa contengono mille pagine di documentazione che non entrerebbero
+mai tutte insieme nella finestra. Serve una **memoria a lungo termine**, che sta
+necessariamente *fuori* dal contesto.
 
 `````{tab} Elementare
 
@@ -134,16 +126,16 @@ compito in corso. Nel lungo termine tiene uno **schedario** fuori, e la sua
 bravura sta nel pescarne solo la pagina che serve adesso, invece di tenere
 tutto aperto sul tavolo (dove non ci starebbe, e dove si perderebbe nel mezzo).
 
-Nello schedario finiscono tre generi di cose, e conviene distinguerle perché si
-recuperano in modi diversi. I **documenti**, che si vanno a cercare come
-abbiamo visto parlando di RAG. I **riassunti** di quello che si è già detto:
-quando una conversazione si allunga troppo, invece di portarsela dietro parola
-per parola se ne tiene un sunto, che costa una frazione dello spazio. E i
-**fatti sull'utente**, cioè le poche cose che valgono sempre (come si chiama,
-che lingua parla, cosa ha già chiesto tre volte), tenute a parte e rimesse
-davanti al modello quando c'entrano.
+Nello schedario finiscono tre generi di cose, che si recuperano in modi
+diversi. I **documenti**, che si vanno a cercare come abbiamo visto parlando di
+RAG. I **riassunti** di quello che si è già detto: quando una conversazione si
+allunga troppo, invece di portarsela dietro parola per parola se ne tiene un
+sunto, che occupa una frazione dello spazio. E i **fatti sull'utente**, cioè le
+poche cose che valgono sempre (come si chiama, che lingua parla, cosa ha già
+chiesto tre volte), tenute a parte e rimesse davanti al modello quando
+c'entrano.
 
-E quando un lavoro è troppo grande per un tavolo solo, se ne passa un pezzo a
+Quando un lavoro è troppo grande per un tavolo solo, se ne passa un pezzo a
 un aiutante, che lo sbriga sul suo tavolo e riporta soltanto il risultato: sul
 tavolo dell'agente arriva una pagina, non tutte le carte che sono servite a
 scriverla.
@@ -152,52 +144,48 @@ scriverla.
 
 `````{tab} Superiore
 
-La memoria a breve termine è lo *scratchpad*: uno spazio nel contesto in
-cui l'agente scrive i propri stati intermedi (la traccia ReAct del
-{doc}`ciclo dell'agente </Agenti/agenti-e-tool-use>` ne è un esempio) e che
-vive quanto vive la finestra. La memoria a lungo termine è esterna e
-persistente, e la letteratura la organizza a livelli, come la memoria virtuale
-di un sistema operativo: in MemGPT {cite}`packer2023memgpt` la finestra è la
-memoria principale, l'archivio esterno la secondaria, e il modello stesso
-decide che cosa spostare fra le due. Tre forme ricorrono. La prima è il
-**database vettoriale**: i ricordi (documenti, scambi passati) vengono
-codificati in embedding e recuperati per similarità quando servono; è
-esattamente il RAG dei Transformer, letto qui come un meccanismo di
-memoria, non solo di recupero. La seconda è il **riassunto
-progressivo**: quando la cronologia della conversazione si allunga, la si
-comprime in un sunto che ne conserva l'essenziale a costo di token molto
+La memoria a breve termine è lo *scratchpad*: uno spazio nel contesto in cui
+l'agente scrive i propri stati intermedi (la traccia ReAct del {doc}`ciclo
+dell'agente </Agenti/agenti-e-tool-use>` ne è un esempio) e che vive quanto
+vive la finestra. La memoria a lungo termine è esterna e persistente, e la
+letteratura la organizza a livelli, come la memoria virtuale di un sistema
+operativo: in MemGPT {cite}`packer2023memgpt` la finestra è la memoria
+principale, l'archivio esterno la secondaria, e il modello stesso decide che
+cosa spostare fra le due. Tre forme ricorrono. La prima è il **database
+vettoriale**: i ricordi (documenti, scambi passati) vengono codificati in
+embedding e recuperati per similarità quando servono; è il RAG dei Transformer,
+letto qui come un meccanismo di memoria, non solo di recupero. La seconda è il
+**riassunto progressivo**: quando la cronologia della conversazione si allunga,
+la si comprime in un sunto che ne conserva l'essenziale a costo di token molto
 minore, liberando finestra. La terza sono i **fatti strutturati** (preferenze,
 identità, vincoli dell'utente) tenuti a parte e reiniettati quando pertinenti.
-Nelle pratiche descritte da Anthropic nel 2025 {cite}`anthropic2025context`
-le stesse idee hanno nomi propri: la *compattazione* (riassumere la
-conversazione e ripartire con una finestra nuova), gli *appunti strutturati*
-tenuti fuori dalla finestra, e i *sotto-agenti*, ciascuno con una finestra
-sua, che restituiscono all'agente principale solo un riassunto del proprio
-lavoro. Il nodo difficile sta a valle dell'archivio, ed è una **politica di
-ammissione**: che cosa di tutto quel materiale merita la finestra a questo
-passo.
+Nelle pratiche descritte da Anthropic nel 2025 {cite}`anthropic2025context` le
+stesse idee hanno nomi propri: la *compattazione* (riassumere la conversazione
+e ripartire con una finestra nuova), gli *appunti strutturati* tenuti fuori
+dalla finestra, e i *sotto-agenti*, ciascuno con una finestra sua, che
+restituiscono all'agente principale solo un riassunto del proprio lavoro. Il
+nodo difficile sta a valle dell'archivio: la **politica di ammissione**, cioè
+che cosa di tutto quel materiale merita la finestra a questo passo.
 
 `````
 
 La memoria esterna non ha il limite della finestra, ma ogni voce che rientra
-nel contesto ne consuma lo spazio. Scrivere bene in memoria è già un problema
-(che cosa conservare, come aggiornare un fatto che cambia, quando
-dimenticare), e a ogni passo se ne aggiunge un secondo: decidere che cosa di
-tutto quel materiale merita di occupare la finestra *adesso*. Ogni riga che ci
-metti per ricordare è una riga in meno per ragionare, e il conto lo si paga
-subito: la domanda difficile non è cosa tenere, è cosa lasciare fuori.
+nel contesto ne consuma lo spazio. Scrivere in memoria pone già problemi (che
+cosa conservare, come aggiornare un fatto che cambia, quando dimenticare), e a
+ogni passo se ne aggiunge un secondo: decidere quale parte del materiale occupa
+la finestra *adesso*. Ogni riga dedicata al ricordo sottrae spazio al
+ragionamento.
 
 ## Pensare costa token: il ragionamento come context engineering
 
-Un'ultima osservazione chiude il cerchio. Far «ragionare ad alta voce»
-l'agente prima di agire, cioè fargli scrivere i passaggi intermedi nel
-contesto prima della conclusione (la catena di ragionamento, la
-chain-of-thought {cite}`wei2022chain`), è *anch'essa* ingegneria del contesto:
-si spende deliberatamente una parte del budget in token di «pensiero» per
-comprare qualità di risposta. Il ragionamento non è gratis, perché occupa
-finestra e fa aspettare, e il guadagno misurato si concentra sui compiti
-matematici e simbolici {cite}`sprague2025cot`: altrove spesso non ripaga il
-costo, e va speso dove serve.
+Anche far «ragionare ad alta voce» l'agente prima di agire, cioè fargli scrivere
+i passaggi intermedi nel contesto prima della conclusione (la catena di
+ragionamento, la chain-of-thought {cite}`wei2022chain`), è ingegneria del
+contesto: si spende una parte del budget in token di «pensiero» per ottenere
+risposte migliori. Il ragionamento occupa finestra e allunga l'attesa, e il
+guadagno misurato si concentra sui compiti matematici e simbolici
+{cite}`sprague2025cot`: altrove spesso non ripaga il costo, e va speso dove
+serve.
 
 L'idea si può spingere oltre sui problemi che chiedono di pianificare. Invece
 di seguire un unico filo fino in fondo, si aprono più strade di ragionamento,
@@ -221,11 +209,12 @@ riparte da quelli, un passo per volta; se una strada si chiude, torna al
 foglietto di prima e prova un'altra mossa. Da 4, 4 e 10 si arriva a
 (10 − 4) × 4 = 24: era la strada buona.
 
-Ogni foglietto in più costa carta e tempo, e il confronto onesto va fatto a
-parità di fatica. Un tentativo solo a colpo d'occhio, sui giochi difficili, va
-a segno quattro volte su cento; cento tentativi, contando il gioco come
-risolto se anche uno solo va a segno, circa la metà delle volte; il metodo dei
-foglietti, tenendone a ogni passo i cinque migliori, tre volte su quattro.
+Ogni foglietto in più costa carta e tempo, quindi il confronto va fatto a pari
+fatica. Un tentativo solo a colpo d'occhio, sui giochi difficili, va a segno
+quattro volte su cento; cento tentativi, contando il gioco come risolto se anche
+uno solo va a segno, circa la metà delle volte; il metodo dei foglietti,
+tenendone a ogni passo i cinque migliori e con una fatica paragonabile a quei
+cento tentativi, tre volte su quattro.
 
 `````
 
@@ -248,19 +237,21 @@ precedente.
 
 I numeri sono di GPT-4 (maggio 2023), su cento giochi difficili di una
 raccolta di 1.362. Una sola catena di pensiero ne risolve il 4%, l'albero il
-45% con $b = 1$ e il 74% con $b = 5$. Il guadagno va letto a parità di costo:
-concedendo alla catena di pensiero cento tentativi e contando il gioco come
-risolto se almeno uno va a segno, cioè con un oracolo che sa riconoscere
-quello giusto, si arriva al 49%, ancora sotto l'albero che visita più nodi.
-Il prezzo è sempre lo stesso: più token, più tempo, più costo.
+45% con $b = 1$ e il 74% con $b = 5$. Il confronto equo è a token generati
+simili: per gioco l'albero con $b = 5$ ne produce circa 5.500 e cento catene
+circa 6.700 (stime dell'articolo). Concedendo alla catena di pensiero cento
+tentativi e contando il gioco come risolto se almeno uno va a segno, cioè con un
+oracolo che sa riconoscere quello giusto, si arriva al 49%, contro il 74%
+dell'albero; con $b = 1$ l'albero (45%) sta poco sotto le cento catene, ma
+visita molti meno nodi. Il costo cresce in token, in tempo e in denaro.
 
 `````
 
-È il compromesso di fondo del context engineering, in una forma nuova: la
-finestra è un budget, e ogni cosa che ci metti (istruzioni, esempi, memoria
-recuperata, o il pensiero stesso del modello) la paghi, e va messa dove rende
-di più. Ed è, in fondo, quello che separava le due squadre da cui siamo
-partiti: che cosa mettere davanti al modello, e in che ordine.
+Il compromesso del context engineering è sempre lo stesso: la finestra è un
+budget, ogni elemento che vi entra (istruzioni, esempi, memoria recuperata, il
+pensiero stesso del modello) ha un costo, e va collocato dove rende di più. È la
+differenza fra le due squadre dell'apertura: che cosa mettere davanti al
+modello, e in quale ordine.
 
 
 
@@ -270,13 +261,13 @@ partiti: che cosa mettere davanti al modello, e in che ordine.
 :class: important
 - Con un modello istruito, se non lo si riaddestra, non si programma scrivendo
   codice, ma scrivendo il contesto: quello che gli metti davanti prima di
-  fargli la domanda è l'unico comando che hai. Il mestiere di riempire bene
-  quello spazio vale più di qualunque «frase magica».
+  fargli la domanda è l'unico comando che hai. Riempire bene quello
+  spazio vale più di qualunque «frase magica».
 - La finestra è piccola e costosa: ogni parola che ci metti la paghi in
   memoria, in attesa e in denaro, e gli strumenti e la traccia di un agente se
-  ne mangiano una parte a ogni passo. E il modello usa bene l'inizio e la fine
+  ne mangiano una parte a ogni passo. Il modello usa bene l'inizio e la fine
   di quello che legge, e trascura il centro (in inglese *lost in the middle*
-  {cite}`liu2024lost`): proprio lì finiscono i passi vecchi della traccia.
+  {cite}`liu2024lost`): lì finiscono i passi vecchi della traccia.
 - Memoria: a breve termine il foglio di brutta dentro la finestra, dove
   l'agente scrive i conti a metà; a lungo termine uno schedario esterno da
   cui pescare solo la pagina che serve adesso (i documenti recuperati, i
@@ -309,7 +300,7 @@ partiti: che cosa mettere davanti al modello, e in che ordine.
   dei valori (lineare nella lunghezza, 512 KiB per token per un modello da
   sette miliardi a 16 bit), sull'attesa del primo token e sul costo per token;
   le definizioni degli strumenti e la cronologia ne occupano una parte che
-  cresce a ogni passo. E c'è il lost in the middle {cite}`liu2024lost`: i
+  cresce a ogni passo. C'è anche il lost in the middle {cite}`liu2024lost`: i
   modelli usano bene l'inizio e la fine del contesto, male il centro, dove
   finiscono i passi vecchi della traccia.
 - Memoria: a breve termine lo *scratchpad* nella finestra; a lungo termine
@@ -322,8 +313,8 @@ partiti: che cosa mettere davanti al modello, e in che ordine.
   {cite}`wei2022chain` e la sua estensione ad albero, il Tree of Thoughts
   {cite}`yao2023tree`, comprano qualità spendendo token di «pensiero». Il
   guadagno della prima si concentra su matematica e logica
-  {cite}`sprague2025cot`; il secondo, nel gioco del 24, passa dal 4% al 74%, e
-  resta sopra il 49% di cento catene giudicate da un oracolo.
+  {cite}`sprague2025cot`; il secondo, nel gioco del 24, passa dal 4% al 74% con
+  $b = 5$, contro il 49% di cento catene giudicate da un oracolo.
 ```
 
 `````

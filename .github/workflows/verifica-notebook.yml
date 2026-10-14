@@ -7,9 +7,8 @@
 #
 # Le versioni arrivano da `requirements-notebook.txt`, fissate. È deliberato:
 # così un job rosso significa «hai cambiato il libro», non «nel frattempo una
-# libreria ha cambiato API». Al secondo mestiere pensa
-# `sentinella-librerie.yml`, che prova le versioni più recenti una volta a
-# settimana.
+# libreria ha cambiato API». Al secondo mestiere pensa un controllo che prova
+# le versioni più recenti una volta a settimana.
 #
 # Non tocca la pubblicazione del libro: quella è `call-deploy-book.yml`.
 
@@ -36,12 +35,75 @@ on:
   workflow_dispatch:
 
 jobs:
+  # Il passo che decide se serve. La verifica dura mezz'ora, e una modifica
+  # che non tocca codice, uscite ` ```text ` o titoli non cambia niente di cio'
+  # che guarda: lo decide `genera-notebook.py --cambiato`, che sa che cosa di
+  # una pagina finisce in un notebook. Su un push il confronto parte
+  # dall'ultima esecuzione riuscita su quel ramo, non dal commit prima del
+  # push: un push il cui run non parte, o fallisce, resta cosi'
+  # nell'intervallo del successivo invece di non essere guardato da nessuno.
+  # Nel dubbio (nessuna esecuzione riuscita, un commit che non si trova, una
+  # pagina nuova, i file del filtro qui sopra) la risposta e' si'. A mano parte
+  # sempre.
+  serve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      verifica: ${{ steps.decidi.outputs.verifica }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+
+      - name: Il push tocca codice, uscite o titoli?
+        id: decidi
+        env:
+          EVENTO: ${{ github.event_name }}
+          BASE_PR: ${{ github.event.pull_request.base.sha }}
+          DOPO: ${{ github.event.pull_request.head.sha || github.sha }}
+          RAMO: ${{ github.ref_name }}
+          REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "$EVENTO" = workflow_dispatch ]; then
+            echo "verifica=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ "$EVENTO" = pull_request ]; then
+            PRIMA=$BASE_PR
+          else
+            # solo le esecuzioni partite da un push: una pull request da un
+            # fork con lo stesso nome di ramo non fa da punto di partenza
+            PRIMA=$(gh api -X GET "repos/$REPO/actions/workflows/verifica-notebook.yml/runs" \
+                      -f status=success -f branch="$RAMO" -f event=push -F per_page=1 \
+                      --jq '.workflow_runs[0].head_sha // empty' 2>/dev/null) || PRIMA=""
+          fi
+          # il punto di partenza dev'essere un antenato del commit da guardare
+          # (un push forzato lo toglie dalla storia): altrimenti si verifica
+          if [ -z "$PRIMA" ] || ! git merge-base --is-ancestor "$PRIMA" "$DOPO" 2>/dev/null; then
+            echo "nessuna esecuzione riuscita da cui partire: si verifica"
+            echo "verifica=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "confronto con $PRIMA"
+          pip install --quiet pyyaml
+          python3 scripts/genera-notebook.py --cambiato "$PRIMA" "$DOPO" >> "$GITHUB_OUTPUT"
+
   verifica:
+    needs: serve
+    if: needs.serve.outputs.verifica == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.12'
           cache: pip
@@ -73,10 +135,10 @@ jobs:
       # di essi poggia la regola che i numeri commentati li stampi la macchina.
       # Gira sul sorgente, quindi copre anche i capitoli sotto le tre celle,
       # che un notebook non ce l'hanno.
-      # `--salta-instabili` lascia fuori i tre capitoli che addestrano: le loro
-      # ultime cifre dipendono dal runner che tocca (misurato: 2 rossi su 6
-      # esecuzioni dello stesso commit), e un controllo rosso a caso non lo
-      # legge piu' nessuno. Quei tre li esegue il cancello di `pubblica.py`,
+      # `--salta-instabili` lascia fuori i capitoli che addestrano: le loro
+      # ultime cifre dipendono dal runner che tocca (lo stesso commit va rosso
+      # su una parte delle esecuzioni), e un controllo rosso a caso non lo
+      # legge piu' nessuno. Quelli si eseguono prima di ogni pubblicazione,
       # sulla macchina che i numeri li ha scritti. La ragione di ciascuno sta
       # in `INSTABILI`, dentro lo script, e viene stampata qui sotto.
       - name: I numeri stampati nel libro sono quelli veri?

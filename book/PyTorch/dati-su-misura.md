@@ -1,9 +1,9 @@
 # Dati su misura: `Dataset`, `DataLoader` e trasformazioni
 
 Nei manuali il dataset arriva sempre pronto: con una riga di codice MNIST (la
-raccolta di cifre scritte a mano su cui il capitolo ha addestrato la sua prima
+raccolta di cifre scritte a mano su cui hai addestrato la tua prima
 rete) si
-scarica da solo, con le immagini già quadrate, già etichettate e già divise in
+scarica, con le immagini già quadrate, già etichettate e già divise in
 addestramento e test. Nella vita reale il primo giorno di un progetto
 assomiglia piuttosto a questo: una cartella con quattromila fotografie, i nomi
 dei file scritti da tre persone diverse, due immagini corrotte, una classe con
@@ -11,10 +11,10 @@ dodici esempi e un'altra con duemila. Prima di poter scrivere un `nn.Module`
 bisogna costruire il tubo che porta quei file dentro la rete, e in PyTorch
 quel tubo si costruisce con due pezzi soltanto, sempre gli stessi.
 
-Il capitolo li ha già incontrati di sfuggita nella sezione
+Li hai già visti di sfuggita nella sezione
 [sull'addestramento](addestramento.md): `Dataset` sa consegnare l'esempio
-numero $i$, `DataLoader` li impila in mini-batch. Qui li costruiamo noi, sui
-nostri dati.
+numero $i$, `DataLoader` li impila in mini-batch. Qui li costruisci tu, sui
+tuoi dati.
 
 ## La convenzione delle cartelle
 
@@ -33,7 +33,7 @@ dati/
     └── sushi/      ...
 ```
 
-Con questa disposizione, `torchvision` fa tutto da sé:
+Con questa disposizione, `torchvision` fa il resto:
 
 ```python
 from torchvision import datasets, transforms
@@ -57,7 +57,7 @@ print(immagine.shape, etichetta)  # torch.Size([3, 224, 224]) 0
 ```
 
 L'indice di ogni classe segue l'ordine delle cartelle per codice del
-carattere, e non l'ordine in cui le abbiamo in testa: le maiuscole vengono
+carattere, e non l'ordine in cui le hai in testa: le maiuscole vengono
 prima di tutte le minuscole, e le lettere accentate vanno in fondo, dopo la
 zeta. Per tradurre una predizione in una parola si usa
 `dati_train.classes[indice]`, l'unico modo che non riscrive quell'ordine: una
@@ -83,15 +83,15 @@ risponde a modo suo, leggendo immagini, un foglio di calcolo o dei file audio.
 ```
 
 La {numref}`fig-ereditarieta-dataset` mostra il meccanismo che permette al
-`DataLoader` di funzionare con qualunque `Dataset` senza saperne nulla, ed è
+`DataLoader` di funzionare con qualunque `Dataset` senza saperne nulla, cioè
 l'ereditarietà incontrata nella sezione sui [moduli](moduli.md), usata qui per
 un altro scopo. In cima c'è la classe base `Dataset`, lo stampo di partenza,
 che non contiene quasi niente: fissa soltanto le due domande che si possono
-fare. Sotto ci sono le classi che scriviamo noi, una per tipo di dato, e
-ciascuna risponde a quelle due domande a modo proprio. Il guadagno è che il
+fare. Sotto ci sono le classi che scrivi tu, una per tipo di dato, e
+ciascuna risponde a quelle due domande a modo suo. Il guadagno è che il
 `DataLoader` non deve conoscerle: gli basta che l'oggetto risponda a quelle due
 domande (funziona perfino con una lista Python, che ce l'ha già). Finché la
-nostra classe le rispetta, per il resto di PyTorch è indistinguibile da
+tua classe le rispetta, per il resto di PyTorch è indistinguibile da
 `ImageFolder`, anche se legge un tipo di dato che chi ha scritto la libreria
 non aveva previsto.
 
@@ -129,27 +129,27 @@ class DatasetImmagini(Dataset):
 ```
 
 `````{tab} Elementare
-Sono tre metodi, ma le domande sono due, ed è la distinzione che la
-{numref}`fig-ereditarieta-dataset` disegna. Le due domande che il `DataLoader`
-farà per tutto l'addestramento sono *quanti esempi hai?* (`__len__`) e *dammi
-il numero 137* (`__getitem__`). Qui si fa il lavoro di un esempio solo, si apre
-il suo file e lo si prepara, ed è la parte che verrà eseguita milioni di volte.
-Il terzo metodo, `__init__`, nessuno ce lo chiede: è la nostra preparazione,
-quella che avviene una volta sola prima di cominciare, dove si elencano i file
-o si legge il foglio con le etichette.
+Sono tre metodi, ma le domande sono due, come disegna la
+{numref}`fig-ereditarieta-dataset`. Le due domande che il `DataLoader` farà per
+tutto l'addestramento sono *quanti esempi hai?* (`__len__`) e *dammi il numero
+137* (`__getitem__`). Qui si fa il lavoro di un esempio solo, si apre il suo
+file e lo si prepara, e questo codice verrà eseguito milioni di volte. Il
+terzo metodo, `__init__`, nessuno te lo chiede: è la tua preparazione, quella
+che avviene una volta sola prima di cominciare, dove si elencano i file o si
+legge il foglio con le etichette.
 
 La seconda domanda chiede un numero preciso, e questo apre una possibilità. Un
 magazzino con gli scaffali numerati consegna il 137 senza toccare i
 centotrentasei che vengono prima, così i pezzi si possono chiedere nell'ordine
-che si vuole, per esempio in un ordine sorteggiato daccapo a ogni giro: è così
-che i dati vengono mescolati.
+che si vuole, per esempio in un ordine sorteggiato daccapo a ogni giro: in
+questo modo i dati vengono mescolati.
 
 Certi dati però non stanno su uno scaffale, arrivano come un nastro che
-scorre, e da un nastro si prende quello che passa: chiedere il 137 non
+scorre, e da un nastro si prende il pezzo che passa: chiedere il 137 non
 significa niente, perché per arrivarci bisogna aver lasciato passare tutti
 quelli davanti. Chi lavora così mescola come può, tenendo da parte un cesto di
 qualche centinaio di pezzi e pescando lì dentro, e almeno dentro il cesto
-l'ordine si mescola davvero. E se a prendere dal nastro sono due aiutanti, il
+l'ordine si mescola. Se a prendere dal nastro sono due aiutanti, il
 nastro va diviso fra loro: altrimenti ciascuno porta tutto, e ogni pezzo
 arriva due volte.
 
@@ -167,12 +167,12 @@ collegamento già avviato con un archivio di dati che sta su un altro computer.
 La preparazione la fa una persona sola, e le richieste vengono poi smistate a
 degli aiutanti, cioè a più processi che leggono i dati in parallelo (li accende
 il `DataLoader`, e quanti lo decide un suo argomento, `num_workers`). Ogni
-aiutante riceve una copia di tutto quello che la preparazione ha messo da
-parte, e copiare un collegamento già avviato è come passare una telefonata in corso
-a quattro persone insieme: parlano tutte sulla stessa linea, e nessuno
-capisce più niente. Il lavoro muore con un errore che sembra venire da
-tutt'altra parte. Il collegamento si apre alla prima richiesta, e lo apre
-l'aiutante che quella richiesta la sta servendo.
+aiutante riceve una copia di tutti gli oggetti messi da parte dalla
+preparazione, e copiare un collegamento già avviato è come passare una
+telefonata in corso a quattro persone insieme: parlano tutte sulla stessa
+linea, e nessuno capisce più niente. Il lavoro muore con un errore che sembra
+venire da tutt'altra parte. Il collegamento si apre alla prima richiesta, e lo
+apre l'aiutante che quella richiesta la sta servendo.
 `````
 
 `````{tab} Superiore
@@ -207,7 +207,7 @@ eseguito nei **processi worker**, non in quello principale (col default,
 `num_workers=0`, tutto resta nel processo principale). Ai worker viene passato
 l'oggetto `Dataset` stesso, che dove i worker nascono per *spawn* o
 *forkserver* (Windows e macOS, e da Python 3.14 anche Linux) deve quindi essere
-serializzabile (`pickle`); e un handle già aperto in `__init__` e usato
+serializzabile (`pickle`). Un handle già aperto in `__init__` e usato
 nel `__getitem__` (un connettore a database, un file HDF5) è la causa classica
 dei crash con `num_workers > 0`, qualunque sia il modo di avvio. Si apre
 *pigramente*, al primo accesso, dentro il worker. La seconda: deve restituire
@@ -263,16 +263,17 @@ le riceve a mazzetti, e un mazzetto si impila bene solo con fogli della stessa
 misura. C'è un modo sbrigativo di farlo: schiacciarle a forza dentro un
 quadrato, che in una foto larga fa di una pizza tonda un ovale. Il modo giusto
 porta il lato più corto a 256 pixel (i puntini di cui è fatta un'immagine) e
-cambia l'altro nella stessa proporzione, così una foto di 400 per 300 diventa di
-circa 341 per 256; poi ritaglia il quadrato di 224 che la rete si aspetta. Si
-perde un po’ di bordo, ma le proporzioni restano quelle vere. Il primo passo è
-identico mentre si studia e all'esame. Il quadrato invece si ritaglia ogni volta
-in un punto diverso mentre si studia, e il margine fra 256 e 224 serve proprio a
+cambia l'altro nella stessa proporzione, così una foto di 400 per 300 diventa
+di circa 341 per 256; poi ritaglia il quadrato di 224 che la rete si aspetta.
+Si perde un po’ di bordo, ma le proporzioni restano quelle vere. Il primo passo
+è identico mentre si studia e all'esame. Il quadrato invece si ritaglia ogni
+volta in un punto diverso mentre si studia, e il margine fra 256 e 224 serve a
 lasciargli spazio per spostarsi, mentre all'esame si ritaglia sempre al centro.
 Chi studia su pizze ovali e poi le trova tonde alla prova ha imparato a
-riconoscere una forma che all'esame non c'è. E schiacciare in tutte e due le
-occasioni non basta a rimediare quando si parte da un modello che ha già
-studiato altrove, come si fa quasi sempre: quello le pizze le ha viste tonde.
+riconoscere una forma che all'esame non c'è. Schiacciare in tutte e due le
+occasioni, d'altra parte, non basta a rimediare quando si parte da un modello
+che ha già studiato altrove, come si fa quasi sempre: quello le pizze le ha
+viste tonde.
 
 Un professore che racconta com'è andata la verifica non elenca ventidue voti,
 dice «due sopra la media» e «uno sotto». I numeri diventano piccoli, e la
@@ -280,7 +281,7 @@ differenza fra un compagno e l'altro si vede a colpo d'occhio invece di restare
 nascosta dentro cifre che si somigliano tutte. `Normalize` fa lo stesso ai
 colori.
 
-La media da sola non basta, e si vede con due materie. In italiano i voti
+La media non basta, e si vede con due materie. In italiano i voti
 stanno quasi tutti fra 5 e 7, in matematica vanno dal 2 al 10, e un 8 nella
 prima non è la stessa impresa di un 8 nella seconda. Allora lo scarto dalla
 media si divide per quanto quei voti si sparpagliano di solito, e lo
@@ -304,53 +305,54 @@ programma si ferma.
 
 I sei numeri vengono da **ImageNet**, la grande raccolta pubblica di fotografie
 etichettate su cui, dal 2012 in poi, si è misurata la visione artificiale.
-Perché la scala di ImageNet su delle foto di pizza? Perché quasi nessuno parte
+La scala di ImageNet si usa anche su foto di pizza perché quasi nessuno parte
 da zero: si prende un modello che ha già studiato là, e lui quella scala se
-l'aspetta, come uno studente abituato ai voti in decimi, che davanti a un
-giudizio a lettere non saprebbe più dire quanto è andato bene. Chi parte davvero
-da zero i sei numeri se li calcola sulle proprie foto, la prima volta che le
+l'aspetta. È come uno studente abituato ai voti in decimi, che davanti a un
+giudizio a lettere non saprebbe più dire quanto è andato bene. Chi parte davvero da
+zero i sei numeri se li calcola sulle proprie foto, la prima volta che le
 scorre tutte.
 `````
 
 `````{tab} Superiore
-`ToTensor()` converte una `PIL.Image` in un tensore `float32` con layout
-$(C, H, W)$ e valori riscalati in $[0,1]$; `Normalize`, date media $\mu$ e
+`ToTensor()` converte una `PIL.Image` in un tensore `float32` con layout $(C,
+H, W)$ e valori riscalati in $[0,1]$; `Normalize`, date media $\mu$ e
 deviazione standard $\sigma$, applica $x' = (x - \mu)/\sigma$ canale per
-canale. Serve all'ottimizzazione: con ingressi centrati e della stessa scala,
-un passo di gradiente della stessa misura sposta allo stesso modo i pesi
-collegati a ogni canale, mentre con scale diverse lo stesso passo è enorme per
-uno e trascurabile per un altro, e la discesa procede a zig-zag in una valle
-mal condizionata {cite}`lecun1998efficient`. L'ordine conta: la
-normalizzazione lavora su tensori, quindi va dopo `ToTensor()`, mentre le
-trasformazioni geometriche e fotometriche lavorano tradizionalmente su PIL e
-vanno prima.
+canale. La normalizzazione serve all'ottimizzazione: con ingressi centrati e
+della stessa scala, un passo di gradiente della stessa misura sposta allo
+stesso modo i pesi collegati a ogni canale. Con scale diverse, invece, lo
+stesso passo è enorme per uno e trascurabile per un altro, e la discesa procede
+a zig-zag in una valle mal condizionata {cite}`lecun1998efficient`. L'ordine
+conta: la normalizzazione lavora su tensori, quindi va dopo `ToTensor()`,
+mentre le trasformazioni geometriche e fotometriche lavorano tradizionalmente
+su PIL e vanno prima.
 
 `Resize(256)`, con un intero, scala l'immagine in modo che il lato corto misuri
 256 pixel e conserva il rapporto d'aspetto; `Resize((256, 256))`, con una
 coppia, impone la risoluzione e deforma ogni immagine non quadrata. Il ritaglio
-successivo (`CenterCrop` in valutazione, `RandomCrop` in addestramento) porta al
-quadrato che la rete si aspetta sacrificando una fascia di bordo su ogni lato,
-più larga lungo il lato lungo. `RandomResizedCrop` è un'altra cosa: sorteggia
-sull'immagine originale un ritaglio di area (dall'8% al 100%) e di rapporto
-d'aspetto (da 3/4 a 4/3) casuali e lo riporta alla misura richiesta, cioè fa da
-sé ridimensionamento e ritaglio e si usa al posto di tutti e due, non dopo un
-`Resize`. La deformazione delle proporzioni che introduce è casuale e cambia
-verso da un ritaglio all'altro. L'ingrandimento invece ha un verso solo, perché
-un ritaglio più piccolo dell'immagine, riportato a 224, mostra gli oggetti più
-grandi di quanto faccia la pipeline di valutazione: con i valori di default,
-nel conto di Touvron e colleghi, un oggetto visto in valutazione è in media
-l'80% di come lo si vede in addestramento, e valutare a una risoluzione più
-alta recupera accuratezza {cite}`touvron2019fixing`. Le due pipeline devono
-quindi condividere la geometria, o sapere dove non la condividono. Una
-deformazione presente solo in addestramento è uno spostamento sistematico fra
-la distribuzione su cui si addestra e quella su cui si valuta, introdotto da chi
-prepara i dati; e anche una deformazione simmetrica ha un prezzo quando si
-parte da pesi pre-addestrati, che hanno visto le proporzioni vere, perché lo
-stesso spostamento cade allora fra i dati del pre-addestramento e i propri.
+successivo (`CenterCrop` in valutazione, `RandomCrop` in addestramento) porta
+al quadrato che la rete si aspetta sacrificando una fascia di bordo su ogni
+lato, più larga lungo il lato lungo. `RandomResizedCrop` è un'altra cosa:
+sorteggia sull'immagine originale un ritaglio di area (dall'8% al 100%) e di
+rapporto d'aspetto (da 3/4 a 4/3) casuali e lo riporta alla misura richiesta,
+cioè esegue ridimensionamento e ritaglio in un solo passo e si usa al posto di
+tutti e due, non dopo un `Resize`. La deformazione delle proporzioni che
+introduce è casuale e cambia verso da un ritaglio all'altro. L'ingrandimento
+invece ha un verso solo, perché un ritaglio più piccolo dell'immagine,
+riportato a 224, mostra gli oggetti più grandi di quanto faccia la pipeline di
+valutazione. Con i valori di default, secondo il calcolo di Touvron e colleghi,
+un oggetto visto in valutazione è in media l’80% di come lo si vede in
+addestramento, e quindi valutare a una risoluzione più alta recupera
+accuratezza {cite}`touvron2019fixing`. Le due pipeline devono quindi
+condividere la geometria, o sapere dove non la condividono. Una deformazione
+presente solo in addestramento è uno spostamento sistematico fra la
+distribuzione su cui si addestra e quella su cui si valuta, introdotto da chi
+prepara i dati. Anche una deformazione simmetrica ha un costo quando si parte
+da pesi pre-addestrati, che hanno visto le proporzioni vere, perché lo stesso
+spostamento cade allora fra i dati del pre-addestramento e i propri.
 
 Le statistiche giuste sono quelle del dataset su cui il modello è stato
 addestrato: se si fa transfer learning da pesi ImageNet si usano quelle di
-ImageNet, e la scorciatoia più sicura è chiederle direttamente ai pesi;
+ImageNet, e la scorciatoia più sicura è chiederle direttamente ai pesi.
 `torchvision.models.EfficientNet_B0_Weights.DEFAULT.transforms()` restituisce
 la pipeline di valutazione con cui quei pesi sono stati misurati (lato corto a
 256 con interpolazione bicubica, ritaglio centrale a 224, le statistiche di
@@ -358,7 +360,7 @@ ImageNet), che è quella da replicare quando li si usa. Da `torchvision`
 0.15 esiste `torchvision.transforms.v2`, che accetta anche box, maschere e
 video insieme all'immagine (necessario per detection e segmentazione, dove la
 trasformazione geometrica va applicata *coerentemente* a immagine ed
-etichetta) ed è più veloce sui batch; l'API è retrocompatibile.
+etichetta) ed è più veloce sui batch. L'API è retrocompatibile.
 `````
 
 ## Il `DataLoader` sul serio
@@ -386,12 +388,12 @@ test_loader = DataLoader(dati_test, batch_size=64, shuffle=False,
 ```
 
 Ognuno di questi argomenti incide sul tempo che porta via il caricamento dei
-dati, e con modelli piccoli o medi quel tempo è spesso la parte più lunga
+dati, e con modelli piccoli o medi quel tempo occupa spesso la maggior parte
 dell'addestramento.
 
 `````{tab} Elementare
 Durante l'addestramento la scheda grafica cucina un vassoio mentre qualcuno
-prepara il successivo. Se a prepararli è il processo principale da solo, la
+prepara il successivo. Se a prepararli è il solo processo principale, la
 scheda finisce, aspetta, riceve il vassoio nuovo, finisce di nuovo: la parte
 più cara della macchina resta ferma metà del tempo. Il rimedio è assumere degli
 aiutanti che preparino i vassoi in anticipo, e quanti se ne assumono lo dice
@@ -408,30 +410,30 @@ una ragione che con la scheda grafica non c'entra niente.
 
 Il passaggio dei vassoi alla scheda ha il suo punto stretto, il passavivande.
 Mettere i dati su un piano d'appoggio accanto al passavivande (è `pin_memory`)
-li rende prelevabili dalla scheda senza passaggi intermedi, ed è la premessa
-perché la copia avvenga mentre il resto del lavoro va avanti; da sola non
-basta, perché la sovrapposizione va chiesta con una seconda manopola, quando i
-dati si passano alla scheda grafica.
+li rende prelevabili dalla scheda senza passaggi intermedi, premessa perché la
+copia avvenga mentre il resto del lavoro va avanti. Non basta, però, perché la
+sovrapposizione va chiesta con una seconda manopola, quando i dati si passano
+alla scheda grafica.
 
 Alla fine di ogni giro l'ultimo vassoio può restare mezzo vuoto: con duemila
-esempi e vassoi da 32, l'ultimo ne ha 16. Di solito non è un guaio, ma ci sono
+esempi e vassoi da 32, l'ultimo ne ha 16. Di solito non crea problemi; ci sono però
 pezzi della rete che rimettono in scala i numeri usando le medie del vassoio
 (la batch norm della sezione sul [training loop](addestramento.md)), e su metà
 vassoio quelle medie restano giuste e diventano soltanto più ballerine. Con
 2049 esempi, però, l'ultimo vassoio ne avrebbe uno solo, e da un numero solo la
 media si fa ma la misura di quanto i numeri si sparpagliano no. Quando quei
 pezzi dal vassoio ricevono un solo numero per ogni esempio, un vassoio da uno
-li ferma con un errore; su una fotografia no, perché lì i numeri su cui fanno
-il conto sono i pixel, e restano tanti anche con una foto sola. Per non
+li ferma con un errore; su una fotografia no, perché lì i numeri su cui calcolano
+sono i pixel, e restano tanti anche con una foto sola. Per non
 pensarci si butta via l'ultimo vassoio quando è incompleto: è `drop_last`.
 
 Alla fine di ogni giro, poi, gli aiutanti vengono licenziati e riassunti subito
-dopo, e se prepararsi costa loro qualche secondo quei secondi si pagano a ogni
-epoca: `persistent_workers` li tiene in servizio. E prima di ogni giro il mazzo
-si mescola, così la rete non impara l'ordine (`shuffle=True`). Chi preferisce
-pescare a modo suo, dando più probabilità agli esempi rari per esempio, passa
-il proprio modo di pescare e toglie `shuffle`: o l'uno o l'altro, e chiedendoli
-tutti e due si ottiene subito un errore.
+dopo, e se prepararsi richiede loro qualche secondo, quei secondi si pagano a
+ogni epoca: `persistent_workers` li tiene in servizio. Prima di ogni giro il
+mazzo si mescola, così la rete non impara l'ordine (`shuffle=True`). Chi
+preferisce pescare a modo suo, dando più probabilità agli esempi rari per
+esempio, passa il suo modo di pescare e toglie `shuffle`: o l'uno o l'altro, e
+chiedendoli tutti e due si ottiene subito un errore.
 
 Resta un tranello, che colpisce dove ogni aiutante appena assunto rilegge da
 capo il foglio delle istruzioni: su Windows e macOS, e da Python 3.14 anche su
@@ -444,19 +446,19 @@ programma, non chi arriva dopo».
 `````
 
 `````{tab} Superiore
-`num_workers=k` avvia $k$ processi (non thread: il GIL, spiegato nel capitolo
-su Python, serializzerebbe proprio il codice Python puro del *preprocessing*,
-che è il lavoro da parallelizzare qui) che eseguono
-`__getitem__` e il *collate* in parallelo, riempiendo una coda da cui il
-processo principale preleva. `prefetch_factor` (default 2) regola quanti batch
-ogni worker tiene pronti in anticipo: la memoria occupata cresce come
-$k \times \text{prefetch\_factor} \times \text{dimensione batch}$, e su
-macchine con poca RAM è la prima causa di *out of memory* che non riguarda la
-GPU. `persistent_workers=True` evita il costo di riavviarli a ogni epoca. Quel
-costo non è `__init__`, che gira una volta sola nel processo principale e ai
-worker arriva già fatto: è l'avvio dei processi e, dove nascono per *spawn* o
-*forkserver*, il re-import del modulo e la deserializzazione dell'oggetto
-`Dataset`, cioè la sua dimensione.
+`num_workers=k` avvia $k$ processi che eseguono `__getitem__` e il *collate* in
+parallelo, riempiendo una coda da cui il processo principale preleva. Si usano
+processi e non thread: il GIL, spiegato fra le {doc}`basi di Python
+</Python/basi>`, serializzerebbe il codice Python puro del
+*preprocessing*, che è il lavoro da parallelizzare qui. `prefetch_factor`
+(default 2) regola quanti batch ogni worker tiene pronti in anticipo: la
+memoria occupata cresce come $k \times \text{prefetch\_factor} \times
+\text{dimensione batch}$, e su macchine con poca RAM è la prima causa di *out
+of memory* che non riguarda la GPU. `persistent_workers=True` evita il costo di
+riavviarli a ogni epoca. Quel costo non è `__init__`, che gira una volta sola
+nel processo principale e ai worker arriva già fatto: è l'avvio dei processi e,
+dove nascono per *spawn* o *forkserver*, il re-import del modulo e la
+deserializzazione dell'oggetto `Dataset`, cioè la sua dimensione.
 
 `pin_memory=True` alloca i batch in memoria *page-locked*, che consente il
 trasferimento DMA asincrono verso la GPU; combinato con
@@ -464,7 +466,7 @@ trasferimento DMA asincrono verso la GPU; combinato con
 calcolo. Su Windows e macOS i worker nascono per *spawn*, e da Python 3.14
 anche su Linux, dove il metodo di avvio predefinito di `multiprocessing` non è
 più *fork* ma *forkserver*: in tutti questi casi il codice che li avvia deve
-stare sotto `if __name__ == "__main__":`, perché senza ogni worker rilegge il
+stare sotto `if __name__ == "__main__":`, perché altrimenti ogni worker rilegge il
 modulo principale e prova a far ripartire il programma, e Python lo ferma sul
 nascere con un `RuntimeError`.
 
@@ -472,16 +474,17 @@ nascere con un `RuntimeError`.
 media per canale della `BatchNorm` resta non distorta e diventa solo più
 dispersa; la varianza no, perché in addestramento la normalizzazione usa lo
 stimatore distorto, che divide per il numero $n$ di valori per canale e non per
-$n-1$, e il cui valore atteso è $\frac{n-1}{n}\sigma^2$. In una `BatchNorm1d` su
-vettori $n$ coincide con la taglia del batch $B$: $6\%$ sotto con $16$ esempi,
-$3\%$ con $32$. E siccome l'uscita di ogni batch ha varianza distorta $1$, la
+$n-1$, e il cui valore atteso è $\frac{n-1}{n}\sigma^2$. In una `BatchNorm1d`
+su vettori $n$ coincide con la taglia del batch $B$: il valore atteso è il
+$6\%$ sotto quello vero con $16$ esempi, e il $3\%$ sotto con $32$. Poiché
+l'uscita di ogni batch viene normalizzata per avere varianza distorta $1$, la
 sua varianza non distorta vale $n/(n-1)$, quindi l'ultimo batch corto esce un
 po' più disperso degli altri. In una `BatchNorm2d` $n$ è la taglia del batch
 per $H\,W$, un valore per pixel di ogni esempio, e la distorsione si perde nel
 rumore. Il caso netto è il batch da un elemento, su cui la varianza campionaria
-non esiste e `nn.BatchNorm1d` in `train()` alza `ValueError: Expected more
-than 1 value per channel`. Con $m$ esempi e batch $B$ succede quando
-$m \bmod B = 1$, che capita più spesso di quanto sembri.
+non esiste e `nn.BatchNorm1d` in `train()` alza `ValueError: Expected more than
+1 value per channel`. Con $m$ esempi e batch $B$ succede quando $m \bmod B =
+1$, che capita più spesso di quanto sembri.
 
 Infine `shuffle=True` e l'argomento `sampler` sono mutuamente esclusivi:
 `shuffle` è di fatto una scorciatoia per `RandomSampler`. Chi passa un sampler
@@ -491,12 +494,12 @@ personalizzato deve togliere `shuffle`.
 ## Quando gli esempi non hanno la stessa forma: `collate_fn`
 
 Il pezzo che impila gli esempi in un batch pretende che abbiano tutti la stessa
-forma. Si chiama *collate*, che in inglese vuol dire proprio «mettere in ordine
+forma. Si chiama *collate*, e in inglese indica l'atto di «mettere in ordine
 dei fogli sciolti», e nel codice compare come `collate_fn`. Con le immagini
 ridimensionate la stessa forma è vera per costruzione; con il testo, l'audio o
 le serie temporali non lo è quasi mai, perché una frase è lunga sette parole e
-la successiva quarantatré. La soluzione è sostituire quel meccanismo con il
-proprio.
+la successiva quarantatré. La soluzione è sostituire quel meccanismo con uno
+scritto da noi.
 
 ```python
 import torch
@@ -542,7 +545,7 @@ torch.Size([32, 37]) torch.Size([32]) torch.Size([32])
 
 I numeri cambiano da un batch all'altro, perché le frasi sono sorteggiate, e
 cambia con loro la larghezza del batch, che è la lunghezza della frase più
-lunga capitata dentro. Quello che non cambia sono le tre forme: trentadue
+lunga capitata dentro. Le tre forme non cambiano: trentadue
 righe, trentadue lunghezze, trentadue etichette.
 
 In questo batch la frase più lunga misura trentasette, e tutte le altre sono
@@ -553,17 +556,17 @@ arrivata a trentasette con trentadue zeri in coda: è l'imbottitura (in inglese
 
 Le lunghezze vanno restituite insieme ai dati, perché dopo l'imbottitura tutte
 le frasi del batch hanno la stessa larghezza, e gli zeri aggiunti in coda sono
-indistinguibili da parole vere: senza sapere dove
-finisce la frase, il modello imparerebbe che lo zero è una parola come le
-altre, e passerebbe metà del suo tempo a studiare l'imbottitura. Le lunghezze
-sono l'informazione che permette di dire «da qui in poi non guardare». Il
-gesto ha due conseguenze. La {doc}`sezione sull'etichettare le sequenze
+indistinguibili da parole vere: senza sapere dove finisce la frase, il modello
+imparerebbe che lo zero è una parola come le altre, e passerebbe metà del suo
+tempo a studiare l'imbottitura. Le lunghezze sono l'informazione che permette
+di dire «da qui in poi non guardare», e si usano in due modi. La {doc}`sezione
+sull'etichettare le sequenze
 </NaturalLanguageProcessing/etichettare-sequenze>` marca le caselle di
-imbottitura perché non entrino nel conto dell'errore, che è lo stesso lavoro
+imbottitura perché non contribuiscano all'errore, che è lo stesso lavoro
 fatto sulle etichette invece che sui dati. Nei
 {doc}`Transformer </Transformers/architettura>` quella stessa riga di «fin qui
 sì, da qui no» diventa un ingrediente dell'architettura e prende un nome, si
-chiama *maschera*, e serve anche a un secondo mestiere: vietare a una parola
+chiama *maschera*, e serve anche a un secondo scopo: vietare a una parola
 di guardare quelle che vengono dopo. Per ora basta avere in mano le
 lunghezze.
 
@@ -602,14 +605,14 @@ sbilanciate </MachineLearning/metriche>` le ordina dalla più economica alla
 più invasiva.
 
 Quella stessa sezione spiega perché, quando le classi sono sbilanciate così,
-l'accuratezza smette di dire la verità. Basta un conto: se su duemila foto
+l'accuratezza smette di dire la verità. Basta un esempio: se su duemila foto
 millenovecento sono pizza, un modello che risponde «pizza» a occhi chiusi,
 sempre, prende novantacinque su cento e non ha imparato niente. Servono misure
 che guardino anche le classi rare, e sono precisione, richiamo e F1.
 
 ## Dividere i dati senza barare
 
-Dividere in addestramento e test sembra un passaggio meccanico, ed è il punto
+Dividere in addestramento e test sembra un passaggio meccanico, ma è il punto
 in cui nasce la fuga di informazione dal test (*data leakage*): un danno che
 non dà nessun errore e fa sembrare il modello migliore di com'è.
 
@@ -632,10 +635,10 @@ caso, alcune finiscono nell'addestramento e altre nel test, il modello
 riconosce il paziente invece della malattia, e il voto d'esame risulta
 splendido (fino al giorno in cui arriva un paziente nuovo).
 
-La regola è: si divide per gruppo, non per esempio. Tutti i dati di un
-paziente stanno o di qua o di là. E se i dati hanno una data, si divide per
-data: si addestra sul passato e si valuta sul futuro, perché è così che
-funzionerà davvero.
+La regola è: si divide per gruppo, non per esempio. Tutti i dati di un paziente
+stanno o di qua o di là. Se i dati hanno una data, si divide per data: si
+addestra sul passato e si valuta sul futuro, come avverrà quando il modello
+sarà in uso.
 
 Conta anche come si ritaglia. Se la parte per le prove si ritaglia dalla stessa
 pila di foto che per lo studio vengono specchiate e schiarite, le deformazioni
@@ -648,7 +651,7 @@ la collezione (quanto è chiara in media, quanto variano i colori) per rimettere
 tutto sulla stessa scala. Se per calcolare quelle misure si guardano anche le
 foto d'esame, un pezzetto di loro è già entrato nelle decisioni prese prima
 dell'esame. Le misure si prendono sulle sole foto d'addestramento e si
-applicano tali e quali alle altre. Il regalo che ci si fa è piccolo, e basta a
+applicano tali e quali alle altre. Il regalo che ci si fa è piccolo, ma basta a
 far sembrare vincente un metodo che non lo è.
 `````
 
@@ -739,8 +742,8 @@ Più aiutanti. Alzare `num_workers`: se il problema è che nessuno prepara i
 vassoi mentre la scheda cucina, è la prima cosa da provare.
 
 Ritagliare le foto una volta sola. Se ogni epoca ridimensiona quattromila
-fotografie da dodici megapixel a 224 pixel per lato, quel lavoro lo si sta
-rifacendo identico decine di volte. Farlo una volta e salvare le immagini già
+fotografie da dodici megapixel a 224 pixel per lato, si sta rifacendo quello stesso
+lavoro decine di volte. Farlo una volta e salvare le immagini già
 piccole su disco è un pomeriggio che si ripaga in un'ora.
 
 Meno file, più grandi. È il rimedio che stupisce, perché risparmia un costo a
@@ -750,7 +753,7 @@ raggiunto attraverso la rete, il tempo se ne va nell’aprirli più che nel
 prendere un volume: il tempo lo fa il tragitto, non la lettura, e per un
 milione di volumi si fa un milione di tragitti. Impacchettare le immagini in
 pochi archivi grandi, letti di seguito, è chiedere al bibliotecario uno
-scaffale intero in una volta. Con i file sul proprio disco e non troppo
+scaffale intero in una volta. Con i file su un disco locale e non troppo
 piccoli il guadagno è modesto, perché lì pesa di più trasformare ogni foto in
 numeri; quando i file stanno in rete, invece, la differenza è enorme.
 
@@ -776,27 +779,28 @@ un milione di file produce un milione di accessi minuscoli e sparsi, lo schema
 peggiore per qualunque disco, con in più la latenza di ogni accesso quando il
 disco è in rete. Impacchettarli in pochi archivi letti in sequenza sposta il
 lavoro dove l'hardware è veloce. Su un disco locale domina invece di solito la
-decodifica: un JPEG si decodifica in un tempo molto più lungo di quello che
-serve a leggerne i byte, e lì si interviene con `num_workers`,
+decodifica: un JPEG si decodifica in un tempo molto più lungo di quello
+necessario a leggerne i byte, e lì si interviene con `num_workers`,
 ridimensionando le immagini una volta su disco o spostando le trasformazioni
 sulla GPU.
 `````
 
-C'è poi un secondo motivo per impacchettare i file, che si paga una volta e
-serve per sempre. Mentre si scorre tutta la collezione per riscriverla, la si
-sta già leggendo: costa zero calcolare intanto media e deviazione standard di
-ogni colore, cioè i sei numeri che servono a `Normalize` e che erano stati
-presi in prestito da ImageNet. Sui propri dati si calcolano, e vengono meglio.
+C'è poi un secondo motivo per impacchettare i file, un lavoro che si fa una
+volta sola e serve per sempre. Mentre si scorre tutta la collezione per
+riscriverla, la si sta già leggendo: calcolare intanto media e deviazione
+standard di ogni colore non allunga i tempi. Sono i sei numeri che servono a
+`Normalize` e che erano stati presi in prestito da ImageNet. Sui propri dati si
+calcolano, e vengono meglio.
 
 Due avvertenze. La prima è quella della divisione dei dati: i sei numeri si
 calcolano sulle sole foto di addestramento, perché calcolarli su tutte fa
 entrare le foto d'esame nelle decisioni prese prima dell'esame. È una fuga di
 informazione dal test della stessa famiglia di quella che nasce dividendo a
-caso esempi che si assomigliano, e la {doc}`sezione su overfitting e
-validazione </MachineLearning/overfitting-validazione>` la tratta per esteso.
+caso esempi che si assomigliano (si veda la {doc}`sezione su overfitting e
+validazione </MachineLearning/overfitting-validazione>`).
 La seconda: se si parte da un modello già addestrato da altri, i sei numeri non
 si calcolano affatto, si prendono quelli con cui è stato addestrato lui. Le
-librerie li tengono insieme ai pesi proprio per questo, e un modello a cui si
+librerie li tengono insieme ai pesi per questa ragione, e un modello a cui si
 danno immagini centrate diversamente da come le ricorda risponde peggio senza
 dire niente.
 
@@ -810,12 +814,12 @@ sulla velocità dal lato del calcolo.
 ```{admonition} Da ricordare
 :class: important
 - Un `Dataset` si scrive con tre metodi: la preparazione, che avviene una
-  volta sola e mette in fila ciò che vale per tutto l'insieme (l'elenco dei
-  file, le etichette); e le due domande che il `DataLoader` gli farà davvero,
+  volta sola e raccoglie ciò che vale per tutto l'insieme (l'elenco dei
+  file, le etichette); e le due domande che il `DataLoader` gli farà,
   quanti esempi hai e dammi il numero 137. La seconda gli verrà chiesta milioni
   di volte, e fa soltanto il lavoro di quell'esempio.
-- Se le foto stanno in una cartella per classe, `ImageFolder` fa tutto da sé.
-  I nomi delle classi li assegna in ordine alfabetico: vanno riletti da
+- Se le foto stanno in una cartella per classe, `ImageFolder` copre tutto il
+  lavoro. I nomi delle classi li assegna in ordine alfabetico: vanno riletti da
   lui, mai riscritti a mano in un altro ordine.
 - Le trasformazioni servono a due cose: preparare (stessa misura, stessa
   scala di numeri) e moltiplicare (specchiare, schiarire, ritagliare in un
@@ -826,7 +830,7 @@ sulla velocità dal lato del calcolo.
   all'esame.
 - Il `DataLoader` si regola con pochi argomenti, e il primo è il numero di
   aiutanti che preparano i vassoi in parallelo; e una regola: o si mescola
-  a caso, o si passa un modo di pescare proprio, non tutti e due. Su Windows e
+  a caso, o si passa un modo di pescare personale, non tutti e due. Su Windows e
   macOS, e da Python 3.14 anche su Linux, le righe che avviano il lavoro vanno
   sotto `if __name__ == "__main__":`.
 - I sei numeri di `Normalize` si calcolano sulle sole foto di addestramento,
@@ -837,7 +841,7 @@ sulla velocità dal lato del calcolo.
   altrimenti il modello studia l'imbottitura.
 - Si divide per gruppo (tutte le foto dello stesso paziente di qua o di
   là), o per data, mai a caso su esempi che si assomigliano: è il modo più
-  comune di darsi un bel voto senza meritarlo. E la parte per le prove si
+  comune di darsi un bel voto senza meritarlo; la parte per le prove si
   prepara come all'esame, senza deformazioni.
 - Se l'addestramento è lento, sospetta i dati prima del modello.
 ```
@@ -850,7 +854,7 @@ sulla velocità dal lato del calcolo.
   volta ciò che vale per tutto l'insieme (indice dei file, etichette);
   `__len__` e `__getitem__` sono le domande del `DataLoader`, e `__getitem__`
   fa solo il lavoro di un esempio (lettura, decodifica, trasformazioni), cioè
-  quello che `num_workers` parallelizza.
+  il lavoro che `num_workers` parallelizza.
 - `ImageFolder` copre il caso "una cartella per classe"; l'indice delle classi
   segue l’ordine alfabetico, e va riletto da `.classes`, mai riscritto a
   mano.

@@ -4,13 +4,13 @@ Apri il registro delle modifiche di un sistema che riconosce le frodi con la
 carta di credito, mentre è in funzione davanti a clienti veri. Il registro è
 quello di `git`, il programma con cui il mondo del software tiene la propria
 cronologia: ogni modifica ci finisce dentro con la sua data e il suo perché (si
-chiama *commit*). E il codice del modello è quasi fermo: qualche riga nuova al
+chiama *commit*). Il codice del modello è quasi fermo: qualche riga nuova al
 mese, una libreria aggiornata, una manopola ritoccata. Poi
 guarda i dati che quel codice ingoia: milioni di transazioni ogni giorno, mai
 due uguali, con nuovi negozi, nuovi importi, nuove truffe che ieri non
 esistevano. Il codice è la strada; i dati sono il traffico che ci passa sopra.
-Nel software tradizionale la cosa che cambia (e che quindi si conserva versione
-per versione, si controlla, si sorveglia) è la strada. Nel machine learning la
+Nel software tradizionale a cambiare (e quindi da conservare versione
+per versione, controllare, sorvegliare) è la strada. Nel machine learning la
 strada sta quasi ferma, e a muoversi sotto i piedi è il traffico.
 
 Da questa asimmetria nasce un'idea che negli ultimi anni ha un nome:
@@ -38,11 +38,12 @@ dati {cite}`huyen2022designing`.
 Se non sai *quali* dati hanno prodotto un modello, non puoi riprodurlo, non
 puoi capire perché una predizione è quella che è, e non puoi tornare indietro
 quando un nuovo addestramento peggiora le cose. Del codice `git` conserva ogni
-versione da decenni, ma sui dati, per il motivo già visto nella pagina
-d'apertura, non funziona: una raccolta di dati (un dataset) è enorme e non è
-fatta di righe da confrontare, e metterci dentro dieci gigabyte di immagini
-gonfia il progetto fino a renderlo inservibile. Per i dati serve quindi qualcosa
-di diverso, che faccia lo stesso mestiere.
+versione da decenni, ma sui dati, per il motivo spiegato
+nell’{doc}`introduzione al capitolo </MLOps/overview>`, non funziona: una
+raccolta di dati (un dataset) è enorme e non è fatta di righe da confrontare, e
+metterci dentro dieci gigabyte di immagini gonfia il progetto fino a renderlo
+inservibile. Per i dati serve quindi qualcosa di diverso, che svolga la stessa
+funzione.
 
 `````{tab} Elementare
 
@@ -66,7 +67,7 @@ esce è quello scritto sul cartellino, per strada non si è rotto niente.
 
 Niente si corregge sul posto: chi cambia i dati ne deposita una versione nuova,
 con un cartellino nuovo, e la vecchia resta dov'era: così chi riprende un
-lavoro di sei mesi prima ritrova i dati che quel lavoro aveva usato. E sul
+lavoro di sei mesi prima ritrova i dati che quel lavoro aveva usato. Sul
 modello finito si scrive di quali cartellini è fatto, quelli dei dati e quello
 del programma: mesi dopo, quando qualcuno chiede da dove viene una certa
 risposta, si risale all'indietro fino al dato di partenza.
@@ -110,7 +111,7 @@ si pulisce, buttando via i doppioni e sistemando le caselle vuote e i
 formati incoerenti; si costruiscono le feature, cioè le poche grandezze che
 si mettono davanti al modello al posto del dato grezzo («la spesa media
 dell'ultimo mese», «quante volte ha comprato di notte»); e solo alla fine si
-addestra. È la *pipeline* annunciata nella pagina d'apertura: il dato entra
+addestra. È la *pipeline* dell’anello MLOps: il dato entra
 da un capo, attraversa una stazione dopo l'altra e ne esce pronto. Ognuno di
 questi passaggi si scrive con gli attrezzi per maneggiare tabelle già visti in
 {doc}`Pandas e Matplotlib </Python/pandas-matplotlib>`.
@@ -131,16 +132,17 @@ Il modello non vede i dati: vede le feature. Tutto ciò che si decide nel
 blocco di mezzo è il mondo dentro cui il modello dovrà cavarsela.
 ```
 
-La freccia a senso unico di {numref}`fig-feature-engineering` dice una cosa
-sola: quello che il modello sa del mondo passa tutto per il blocco di mezzo, e
-niente lo scavalca. Ne segue che quel blocco va conservato versione per
-versione esattamente come il programma. Se cambia il modo di costruire una
-feature, il modello addestrato prima e quello addestrato dopo non stanno più
-guardando la stessa cosa, e confrontare i loro voti è come confrontare i tempi
-di due corse su piste di lunghezza diversa. Per le reti che imparano da sole le
-proprie rappresentazioni (le immagini, il testo) il blocco di mezzo si
-assottiglia, fino a ridursi alla normalizzazione o alla divisione in token; ma
-resta una trasformazione, e si conserva insieme al modello.
+La freccia a senso unico di {numref}`fig-feature-engineering` dice che il
+modello conosce il mondo solo attraverso il blocco di mezzo, e niente lo
+scavalca. Ne segue che quel blocco va conservato versione per versione come il
+programma. Se cambia il modo di costruire una feature, il modello addestrato
+prima e quello addestrato dopo non stanno più guardando la stessa cosa, e
+confrontare i loro voti è come confrontare i tempi di due corse su piste di
+lunghezza diversa. Per le reti che imparano da sole le
+proprie rappresentazioni (le
+immagini, il testo) il blocco di mezzo si assottiglia, fino a ridursi alla
+normalizzazione o alla divisione in token; ma resta una trasformazione, e si
+conserva insieme al modello.
 
 `````{tab} Elementare
 
@@ -148,7 +150,7 @@ Il latte che arriva in bottiglia ha attraversato una filiera: la cisterna lo
 raccoglie dalle stalle, il laboratorio ne analizza un campione, la
 pastorizzazione lo tiene alla temperatura giusta per il tempo giusto, e solo
 alla fine si imbottiglia. Nessuno di quei passaggi si salta, e nemmeno il loro
-ordine: se il campione si analizzasse in fondo, un carico guasto lo si
+ordine: se il campione si analizzasse in fondo, un carico avariato lo si
 scoprirebbe quando è già nelle bottiglie di tutti, mentre analizzato all'inizio
 quel carico si scarta e non entra. Una pipeline di dati è questo: passaggi
 collegati, ognuno con un compito e con il suo controllo, che trasformano il
@@ -175,14 +177,14 @@ piccoli, dichiarati, e nessuna trasformazione «a mano» che non lasci traccia.
 
 Formalmente una pipeline è un **DAG** (*directed acyclic graph*): i nodi sono
 trasformazioni, gli archi le dipendenze dato-verso-dato, e l'assenza di cicli
-garantisce che un ordine di esecuzione valido esista, di solito più d'uno, ed è
-per questo che qualcosa poi può andare in parallelo. Due proprietà la rendono
+garantisce che un ordine di esecuzione valido esista, di solito più d'uno, e per
+questo alcuni stadi possono andare in parallelo. Due proprietà la rendono
 governabile. La prima è l’**idempotenza**: rilanciare uno stadio già eseguito
-lascia il risultato dov'era invece di accumulare effetti collaterali, ed è la
-condizione per ripartire da metà catena dopo un errore. Formalmente, detto $A$
-lo stato dell'archivio e $\Phi(A)$ quello che lo stadio lascia dopo
+lascia il risultato dov'era invece di accumulare effetti collaterali, condizione
+per ripartire da metà catena dopo un errore. Formalmente, detto $A$
+lo stato dell'archivio e $\Phi(A)$ lo stato che lo stadio lascia dopo
 un'esecuzione, $\Phi(\Phi(A)) = \Phi(A)$; lo si ottiene facendo scrivere a ogni
-stadio il proprio risultato sotto una chiave determinata dall'ingresso (la
+stadio il suo risultato sotto una chiave determinata dall'ingresso (la
 partizione del giorno, l'impronta dei dati), sostituendo ciò che c'era invece
 di accodarvi. La seconda è la **materializzazione versionata** degli stadi
 intermedi, così che un cambiamento a valle non obblighi a ricalcolare tutto da
@@ -204,22 +206,22 @@ C'è una decisione che si prende all'inizio, che sembra tecnica e non lo è: com
 i dati stanno scritti su disco fra uno stadio e il successivo. La scelta più
 comune è il CSV, il modo più semplice di scrivere una tabella in un file di
 testo: una riga del file per ogni riga della tabella, e dentro ogni riga i
-valori separati da una virgola. È quello che esce da un foglio di calcolo
+valori separati da una virgola. È il formato che esce da un foglio di calcolo
 quando gli si chiede di esportare. Per le tabelle che passano da uno stadio
 all'altro, però, è una scelta povera: non porta con sé i tipi delle colonne,
-va letto per intero anche quando ne servono poche, e occupa molto più spazio
+va letto tutto anche quando ne servono poche, e occupa molto più spazio
 del necessario.
 
 `````{tab} Elementare
 
 Ottanta informazioni per ogni cliente, un milione di clienti: un archivio così
 si conserva in due modi. **Per riga**, cioè una scheda per cliente con tutte le
-sue ottanta voci in fila: è il CSV, ed è comodo se ti serve tutta la scheda di
+sue ottanta voci in sequenza: è il CSV, comodo se ti serve tutta la scheda di
 un cliente. Oppure **per colonna**, cioè un elenco di tutte le età, poi un
 elenco di tutte le città, e così via.
 
-Quale conviene dipende da cosa fai. E quello che si fa per addestrare un
-modello è sempre lo stesso: leggere tre colonne su ottanta, per tutti. Con
+Quale conviene dipende dall'uso, e per addestrare un
+modello l'uso è sempre lo stesso: leggere tre colonne su ottanta, per tutti. Con
 l'archivio per riga devi attraversare l'intero milione di schede e scartare il
 $96\%$ di ciò che leggi (77 voci buttate ogni 80): il disco consegna blocchi
 interi, e le tre voci che ti servono stanno sparse una qui e una là. Con
@@ -231,10 +233,10 @@ piccolo e il più grande che contengono: chi cerca le spese sopra i mille euro
 salta i cassetti che si fermano a cento, senza aprirli.
 
 Mettere insieme valori della stessa natura fa guadagnare una seconda volta,
-sullo spazio. Nella colonna delle città ci sono migliaia di «Milano» di fila, e
-allora «Milano» si scrive una volta sola e poi ci si rimanda con un numerino;
-nella scheda per riga ogni valore è circondato da valori di natura diversa, e
-non c'è niente da riconoscere.
+sullo spazio. Nella colonna delle città ci sono migliaia di «Milano» uno dopo
+l'altro, e allora «Milano» si scrive una volta sola e poi ci si rimanda con un
+numerino; nella scheda per riga ogni valore è circondato da valori di natura
+diversa, e non c'è niente da riconoscere.
 
 Questo risparmio, però, vale solo per i valori che si ripetono. Nella colonna
 degli orari, che crescono di pochi secondi alla volta, due orari uguali non ci
@@ -245,13 +247,13 @@ il trucco rende. Il formato lo sa fare, ma da solo non lo fa: bisogna
 chiederglielo.
 
 Il formato per colonna più usato si chiama **Parquet**, e in più tiene i tipi
-delle colonne (che il CSV non ha: per lui è tutto testo, ed è il motivo per cui
-un codice postale che comincia per zero si trasforma in un numero e perde lo
+delle colonne (che il CSV non ha: per lui è tutto testo, e un
+codice postale che comincia per zero si trasforma in un numero e perde lo
 zero).
 
 Poi c'è **Arrow**, che non riguarda il disco ma la memoria, cioè il tavolo su
 cui i dati si tirano fuori per lavorarci. Lì ogni programma li dispone a modo
-suo, e passare una tabella a un altro vuol dire riscriverla tutta; Arrow è
+suo, e passare una tabella a un altro obbliga a riscriverla tutta; Arrow è
 l'accordo di disporli tutti alla stessa maniera, e il passaggio non costa più
 niente.
 
@@ -274,7 +276,7 @@ tipo e spesso per contenuto, il che abilita codifiche specializzate (dizionario
 per le categorie a bassa cardinalità, run-length per i valori ripetuti, delta
 per i timestamp) prima ancora della compressione generica. Rispetto al CSV
 equivalente il guadagno è di qualche volta, e a decidere quante è soprattutto
-la codifica a dizionario. Il blocco che segue lo misura su tabelle di
+la codifica a dizionario. Lo si misura qui su tabelle di
 duecentomila righe, con le impostazioni di serie di Pandas e PyArrow, che la
 *delta encoding* (memorizzare la differenza fra un valore e il precedente) non
 la usano: la si chiede colonna per colonna.
@@ -343,25 +345,25 @@ ordini di grandezza, non costanti: cambiano con le stringhe, con la
 distribuzione dei valori e con la versione della libreria.
 
 Le colonne ordinate, che l'intuizione metterebbe in alto, non ci vanno, e la
-ragione è istruttiva: la codifica che le comprimerebbe davvero, la delta, non
-è quella che la libreria sceglie da sola. Su una colonna di istanti che
-crescono di pochi secondi alla volta l'impostazione di serie resta sotto il tre
-(2,7 e 2,5 nelle due prove), perché il dizionario, su valori quasi tutti
-diversi, non ha niente da riusare. Chiedendo esplicitamente la delta si sale a
-22,8 quando i salti stanno fra uno e tre secondi, e a 8,1 quando arrivano fino
-a un minuto: quanto si guadagna lo decide la regolarità dei salti, perché in
-ogni blocco ogni differenza si scrive con i bit che servono alla più larga. È
-il caso da tenere a mente ogni volta che si dichiara che cosa fa uno strumento
-«di serie»: qui l'impostazione di serie lascia sul tavolo un fattore che va da
-poco più di tre a più di otto.
+ragione è istruttiva: la codifica che le comprimerebbe, la delta, non è quella
+che la libreria sceglie da sola. Su una colonna di istanti che crescono
+di pochi secondi alla volta l'impostazione di serie resta sotto il tre (2,7 e
+2,5 nelle due prove), perché il dizionario, su valori quasi tutti diversi, non
+ha niente da riusare. Chiedendo esplicitamente la delta si sale a 22,8 quando i
+salti stanno fra uno e tre secondi, e a 8,1 quando arrivano fino a un minuto:
+quanto si guadagna lo decide la regolarità dei salti, perché in ogni gruppo di
+valori consecutivi ogni differenza si scrive con i bit che servono alla più
+larga del gruppo. È il caso da tenere a mente ogni volta che si dichiara che
+cosa fa uno strumento «di serie»: qui l'impostazione di serie lascia sul tavolo
+un fattore che va da poco più di tre a più di otto.
 
 Il terzo è il **predicate pushdown**: Parquet memorizza per ogni gruppo di righe le
 statistiche di ciascuna colonna (minimo, massimo, conteggio dei nulli), quindi
 un filtro `data > 2026-01-01` può saltare interi blocchi senza
 decomprimerli.
 
-A questo si aggiunge una cosa che il CSV strutturalmente non ha: uno schema
-con i tipi. Un CSV è testo, e ogni lettore riscopre i tipi per euristica, il
+A questo si aggiunge uno schema con i tipi, che il CSV strutturalmente non
+ha. Un CSV è testo, e ogni lettore riscopre i tipi per euristica, il
 che è la sorgente di una classe intera di bug silenziosi (l'identificativo con
 gli zeri iniziali letto come intero, la data interpretata secondo la
 convenzione locale, il campo vuoto che diventa `NaN` oppure la stringa
@@ -371,8 +373,8 @@ convenzione locale, il campo vuoto che diventa `NaN` oppure la stringa
 rappresentazione in memoria, colonnare, indipendente dal linguaggio. Il suo
 valore è l'eliminazione della serializzazione ai confini: due processi, o
 due librerie in linguaggi diversi, che parlano Arrow si scambiano una tabella
-senza copiarla né convertirla. È la ragione per cui lo stesso formato compare
-sotto motori che non si somigliano affatto, ed è anche ciò che sta sotto il
+senza copiarla né convertirla. Per questo lo stesso formato compare
+sotto motori che non si somigliano affatto, e sta anche sotto il
 tipo stringa di Pandas: dalla versione 3.0 le colonne di testo hanno un tipo
 dedicato, `str`, appoggiato ad Arrow quando PyArrow è installato, e quella
 differenza (con il vecchio `object` di NumPy era sostanziale) è ormai il
@@ -388,7 +390,7 @@ linguaggio, Arrow.
 
 C'è un punto della pipeline che merita un discorso a sé: le feature. Una
 stessa feature («spesa media dell'utente negli ultimi 30 giorni», «numero di
-transazioni nell'ultima ora») serve a più modelli. E soprattutto va calcolata
+transazioni nell'ultima ora») serve a più modelli, e va calcolata
 in *due momenti diversi*: una volta mentre il modello impara, su montagne di
 dati vecchi, e un'altra mentre il modello risponde, su un singolo caso appena
 arrivato. Se i due calcoli divergono anche di poco, il modello in funzione
@@ -407,21 +409,21 @@ stessa ricetta, e tutti i cuochi lo prendono già pronto da lì. Il piatto di
 oggi è identico a quello di ieri, e un cuoco nuovo non deve reinventare nulla.
 
 Il feature store è quella dispensa, e ha due scaffali. In cantina c'è tutto lo
-storico, barattolo per barattolo con la data sopra, ed è da lì che si pesca a
+storico, barattolo per barattolo con la data sopra: da lì si pesca a
 piene mani per far imparare un modello. Sul banco, a portata di mano, c'è
 soltanto il barattolo di oggi: chi è ai fornelli con il cliente che aspetta non
 può scendere in cantina. La ricetta però è una sola, e riempie tutti e due.
 
 Un barattolo, poi, va preso dal giorno giusto. Per rifare il piatto di un
 martedì di tre mesi fa serve il soffritto di quel martedì: chi prende quello di
-oggi ottiene un piatto migliore di quello che era uscito davvero, perché ci ha
+oggi ottiene un piatto migliore di quello uscito allora, perché ci ha
 messo dentro qualcosa che quel giorno non c'era ancora. Assaggia, conclude che
-la ricetta è ottima, e in servizio scopre di no. E il giorno che conta è quello
+la ricetta è ottima, e in servizio scopre di no. Conta il giorno
 in cui il barattolo è arrivato sul banco, non quello scritto sull'etichetta: un
 soffritto cotto il lunedì sera porta la data del lunedì, ma sul banco arriva il
 martedì sera, quindi per rifare il pranzo del martedì non vale.
 
-E una feature preparata bene la riusano dieci modelli diversi: si cucina una
+Una feature preparata bene la riusano dieci modelli diversi: si cucina una
 volta, si serve a tutti.
 
 `````
@@ -433,8 +435,8 @@ storico completo delle feature, ottimizzato per letture massicce: è la sorgente
 per costruire i dataset di addestramento. L’**online store** tiene invece
 l'ultimo valore di ogni feature, ottimizzato per letture a bassissima latenza:
 è ciò che il servizio interroga quando deve rispondere in millisecondi. La
-stessa *definizione* alimenta entrambi, ed è questa condivisione a sradicare
-alla radice le incoerenze tra addestramento e produzione.
+stessa *definizione* alimenta entrambi, e questa condivisione elimina alla
+radice le incoerenze tra addestramento e produzione.
 
 Il problema tecnico più insidioso che un feature store deve garantire è la
 **point-in-time correctness**. Costruendo un esempio di addestramento
@@ -455,7 +457,7 @@ $$
 
 dove $v_f(e, s)$ è il valore calcolato all'istante $s$ e $\delta_f$ il ritardo
 con cui quel valore diventa disponibile al servizio (in Pandas,
-`pd.merge_asof`). Il ritardo è la parte che si dimentica: gli istanti che
+`pd.merge_asof`). Il ritardo si dimentica facilmente: gli istanti che
 contano sono quelli in cui il dato è *arrivato* al sistema, non quelli in cui
 l'evento è *accaduto*. Un join sul solo tempo dell'evento rispetta $s \le t$ ma
 lascia trapelare il futuro lo stesso, perché il valore c'era già nell'archivio
@@ -467,8 +469,8 @@ come componente dedicato.
 
 ## Training–serving skew
 
-Arriviamo così a un guasto classico, e dei più insidiosi perché silenzioso:
-quello che il feature store esiste per prevenire. Succede quando una feature
+Arriviamo così al guasto che il feature store esiste per prevenire, classico e
+fra i più insidiosi perché silenzioso. Succede quando una feature
 viene calcolata in un modo mentre il modello impara e in un modo *anche solo
 leggermente diverso* mentre risponde. Il modello, tarato sui numeri del primo
 calcolo, si trova davanti numeri che vogliono dire un'altra cosa, e sbaglia in
@@ -484,7 +486,7 @@ dovrebbero coincidere.
 sopra in once. Nessun errore lampeggia sullo schermo: i numeri arrivano,
 sembrano plausibili, e il risultato è semplicemente sbagliato.
 
-Il caso da manuale è la normalizzazione, il gesto con cui si porta ogni
+Il caso da manuale è la normalizzazione, l'operazione con cui si porta ogni
 variabile su una scala confrontabile prima di darla al modello. Invece del
 valore grezzo, al modello si dice di quanto quel valore sta sopra o sotto la
 media degli altri, e quel «di quanto» si conta in sbalzi abituali, cioè in
@@ -494,11 +496,11 @@ calcolano una volta sola, sui dati di addestramento, e poi si congelano: fanno
 parte del modello quanto i pesi.
 
 In produzione, per una svista, qualcuno li ricalcola sul *singolo lotto* appena
-arrivato, ed è lì che la bilancia comincia a mentire. In addestramento «alto»
+arrivato, e la bilancia comincia a mentire. In addestramento «alto»
 voleva dire «più della media di tutti»; se la media la si rifà sul gruppetto
 appena arrivato, e quel gruppetto è fatto di soli importi alti, nessuno di loro
 è più sopra la media: sono tutti normali. Il modello smette di insospettirsi
-proprio del lotto più sospetto che gli sia mai capitato. Fra il programma
+del lotto più sospetto che gli sia mai capitato. Fra il programma
 giusto e quello bacato la differenza è una riga sola.
 
 `````
@@ -576,8 +578,8 @@ Lo stesso identico modello, sugli stessi identici dati, dà due risposte molto
 diverse. La pipeline corretta riconosce il lotto come sospetto: probabilità
 media di frode $0{,}97$, e tutte e 32 le transazioni oltre una soglia
 d'intervento di $0{,}5$. Quella bacata, ricentrando ogni lotto su sé stesso,
-cancella l'anomalia e scende a $0{,}45$, che non vuol dire «innocuo»: vuol dire
-testa o croce, ed è anche peggio, perché con la stessa soglia il sistema
+cancella l'anomalia e scende a $0{,}45$. Non è un lotto innocuo: è testa o
+croce, e con la stessa soglia il sistema
 antifrode ne ferma 13 su 32 e lascia passare le altre diciannove. Su singole
 transazioni la differenza fra le due risposte arriva a $0{,}79$. Nessun errore,
 nessun avviso: solo predizioni sbagliate. Ecco perché la definizione di una
@@ -586,7 +588,7 @@ feature deve vivere in *un posto solo*, condiviso tra addestramento e servizio:
 
 ## Validare i dati in ingresso
 
-Il *training–serving skew* è un bug di *calcolo* delle feature. Ma un'intera
+Il *training–serving skew* è un bug di *calcolo* delle feature. Un'intera
 famiglia di guai arriva prima, dal dato grezzo stesso: un campo che cambia
 unità di misura, una colonna che di colpo si riempie di valori nulli, un codice
 prodotto che non era mai comparso. Nel software normale un input malformato fa
@@ -619,12 +621,12 @@ non ha una media.
 La validazione dei dati è uno dei quattro assi della ML Test Score
 {cite}`breck2017ml`, la rubrica di collaudo che misura la maturità di un
 sistema di ML: include test sullo schema delle feature, sui loro intervalli e
-sul fatto che ogni feature apporti davvero valore. I controlli si dividono su due
+sul fatto che ogni feature apporti valore. I controlli si dividono su due
 livelli. Quelli puntuali (tipo, obbligatorietà, intervallo, assenza di
 `NaN`) si applicano a ogni record isolato e sono economici: sono quelli che il
 codice mette in pratica. I controlli distribuzionali (la media di una
 feature è slittata? la proporzione di una categoria è raddoppiata?) richiedono
-di confrontare un lotto con una *baseline* di riferimento, ed è qui che la
+di confrontare un lotto con una *baseline* di riferimento, e a quel punto la
 validazione statica sfuma nel monitoraggio del *dataset shift*
 {cite}`quinonero2009dataset`: lo abbiamo inquadrato in termini statistici in
 {doc}`Quando i dati cambiano </MachineLearning/dati-che-cambiano>`, e il suo
@@ -702,15 +704,15 @@ Poche righe, ma è la porta blindata del sistema: ogni scheda che entra viene
 promossa o respinta secondo regole esplicite, e le respinte finiscono in un
 registro invece che, silenziosamente, dentro il modello.
 
-Proprio questo guardiano, però, ha due falle, e le ultime due righe
+Proprio questo guardiano, però, ha due falle, e i record 5 e 6
 dell'uscita le mostrano. La prima è nel record 5. In Python il vero e il falso
 sono, sotto sotto, dei numeri: vero vale uno e falso vale zero. Ne segue che
 un'età scritta «vero» passa indenne da tutti e due i controlli sull'età,
 quello sul tipo (perché vero *è* un numero intero) e quello sull'intervallo
 (perché uno sta fra zero e centoventi). Il guardiano dice che va tutto bene, e
-non va bene niente. Capita davvero, ogni volta che una colonna di sì e no viene
-letta come vero-e-falso da un programma e come zero-e-uno da un altro, cioè
-proprio la classe di guasti silenziosi che un CSV senza tipi dichiarati produce
+non va bene niente. Capita ogni volta che una colonna di sì e no viene
+letta come vero-e-falso da un programma e come zero-e-uno da un altro: è la
+classe di guasti silenziosi che un CSV senza tipi dichiarati produce
 a getto continuo.
 
 La seconda falla è il rovescio della prima, nel record 6: un importo di 250
@@ -742,8 +744,8 @@ testing*. Il metodo più noto è CheckList, di Ribeiro, Wu, Guestrin e Singh
 `````{tab} Elementare
 
 Un'officina che collauda un'auto non si ferma a contare i chilometri fatti senza
-guasti: prova i freni sul bagnato, la tenuta in curva, l'accensione a freddo.
-Ogni prova chiede una cosa sola, e la chiede apposta.
+problemi: prova i freni sul bagnato, la tenuta in curva, l'accensione a freddo.
+Ogni prova verifica una sola capacità, e lo fa apposta.
 
 Con un modello che legge le recensioni di un ristorante si fa lo stesso, con
 tre tipi di prova. La prima è il minimo indispensabile: frasi semplicissime di
@@ -753,21 +755,21 @@ contare, come la città, e la risposta non deve muoversi. La terza è la
 direzione: si aggiunge una lamentela a una lode, e il giudizio non deve salire.
 Le frasi non si scrivono a mano una per una: si prepara un modulo con degli
 spazi vuoti («il ___ non era ___») e lo si riempie con elenchi di parole, così
-una prova diventa centinaia di frasi. E le prove dell'indifferenza e della
+una prova diventa centinaia di frasi. Le prove dell'indifferenza e della
 direzione non hanno nemmeno bisogno di sapere la risposta giusta: basta
 confrontare la risposta prima e dopo il ritocco, quindi si fanno anche su
 recensioni vere che nessuno ha mai etichettato.
 
-Il collaudo trova quello che il voto medio nasconde. Un modello può azzeccare
-tutte le recensioni del suo archivio e sbagliare ogni negazione, se
+Il collaudo trova i difetti che il voto medio nasconde. Un modello può
+azzeccare tutte le recensioni del suo archivio e sbagliare ogni negazione, se
 nell'archivio le negazioni non c'erano: il voto medio misura il modello sugli
 esempi che somigliano a quelli già visti, le prove sulle capacità che si decide
-di chiedere. E chi collauda così trova di più: in un esperimento con persone
-del mestiere, chi aveva le prove e i moduli ha scritto più del doppio dei test
-e trovato quasi il triplo dei difetti di chi lavorava senza. I limiti sono
+di chiedere. Chi collauda così trova di più: in un esperimento con persone
+pratiche del campo, chi aveva le prove e i moduli ha scritto più del doppio dei
+test e trovato quasi il triplo dei difetti di chi lavorava senza. I limiti sono
 quelli dell'officina: le prove trovano solo i difetti che qualcuno ha pensato
 di cercare; quante prove falliscono non dice quante volte il modello sbaglierà
-davvero, perché le frasi sono scelte apposta e non pescate da quelle che
+in servizio, perché le frasi sono scelte apposta e non pescate da quelle che
 arrivano; e una prova superata dice che quei casi passano, non che la capacità
 ci sia.
 
@@ -798,7 +800,7 @@ spesso le prestazioni, perché quei dati non coprono tutti i casi e condividono
 i bias dell'insieme di addestramento. Sull'analisi del sentiment il metodo ha
 trovato fallimenti frequenti su capacità elementari, come la negazione, sia in
 servizi commerciali sia in modelli di ricerca affinati con accuratezze oltre il
-90% sul proprio insieme di prova. In uno studio con diciotto partecipanti (otto
+90% sul loro insieme di prova. In uno studio con diciotto partecipanti (otto
 dall'industria, dieci dall'università), due ore ciascuno per collaudare un
 modello affinato a riconoscere le domande duplicate (il compito QQP), chi aveva
 capacità e template ha scritto più del doppio dei test di chi lavorava senza
@@ -816,7 +818,7 @@ individuato.
 
 `````
 
-Il blocco addestra un piccolo classificatore di recensioni su frasi costruite
+Il codice addestra un piccolo classificatore di recensioni su frasi costruite
 senza negazioni, lo misura sul suo insieme di prova e poi lo collauda con i tre
 tipi di test.
 
@@ -875,7 +877,7 @@ lodi che con una lamentela calano: 1.00
 Sul suo insieme di prova il modello non sbaglia niente, e il collaudo trova un
 difetto che quel voto non poteva vedere. Nessuna negazione esce negativa:
 nell'addestramento «non» non c'era, e una parola mai vista il modello la
-scarta. E anche avendola vista, un modello che somma un peso per ogni parola
+scarta. Anche avendola vista, un modello che somma un peso per ogni parola
 darebbe a «non» un contributo solo, uguale davanti a «buono» e davanti a
 «pessimo»: potrebbe abbassare «non buono» soltanto abbassando insieme «non
 pessimo». Le altre due prove passano: cambiare città non sposta nessuna
@@ -913,16 +915,16 @@ modello si rompe.
 - I dati in ingresso si controllano alla porta, come la merce al
   ricevimento di un supermercato: ci sono tutte le colonne? i valori sono
   plausibili? quante caselle sono vuote? Chi non passa finisce in un registro
-  invece che dentro il modello. E il guardiano va scritto con cura, perché
+  invece che dentro il modello. Il guardiano va scritto con cura, perché
   chiedere «è un numero?» lascia passare anche un «vero», che sotto sotto un
   numero lo è, e chiedere «è un numero con la virgola?» respinge un importo
   tondo che andava benissimo.
 - Anche il modello va collaudato, e non basta il voto medio sugli esempi messi
-  da parte: si preparano prove che chiedono una cosa sola (una negazione deve
-  uscire negativa, cambiare città non deve contare, una lamentela non deve far
-  salire il giudizio), e si trovano i difetti che il voto medio nasconde. Ma
-  solo quelli che qualcuno ha pensato di cercare, e una prova superata non
-  dimostra che la capacità ci sia.
+  da parte: si preparano prove che chiedono ciascuna una capacità sola (una
+  negazione deve uscire negativa, cambiare città non deve contare, una
+  lamentela non deve far salire il giudizio), e si trovano i difetti che il
+  voto medio nasconde, ma solo quelli che qualcuno ha pensato di cercare, e una
+  prova superata non dimostra che la capacità ci sia.
 ```
 `````
 
@@ -940,7 +942,7 @@ modello si rompe.
   meccanismo è quello con cui `git` indirizza i propri oggetti.
 - Una pipeline di dati (estrazione → pulizia → feature → training) va
   resa riproducibile e orchestrata (un DAG di stadi idempotenti), per non
-  degenerare nella *pipeline jungle*; automatizzarla per intero è il cuore della
+  degenerare nella *pipeline jungle*; automatizzarla tutta è il cuore della
   CD4ML {cite}`sato2019continuous`.
 - Conta anche il formato in cui i dati stanno fra uno stadio e l'altro: uno
   colonnare (Parquet) legge solo le colonne che servono, comprime
@@ -970,7 +972,7 @@ modello si rompe.
   `int` valido.
 - Il collaudo comportamentale (CheckList {cite}`ribeiro2020beyond`) incrocia
   capacità e tre tipi di test (MFT, INV, DIR) generati da template: trova
-  quello che l'accuratezza su dati tenuti da parte non vede, ma solo sulle
+  i difetti che l'accuratezza su dati tenuti da parte non vede, ma solo sulle
   capacità che qualcuno ha pensato di chiedere.
 ```
 `````

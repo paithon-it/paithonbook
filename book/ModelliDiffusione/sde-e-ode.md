@@ -12,15 +12,14 @@ il ritorno è quella dell'andata più un termine correttivo.
 Quel termine correttivo è il gradiente del logaritmo della densità dei dati
 rumorosi, $\nabla_{\mathbf{x}}\log p_t(\mathbf{x})$, detto **punteggio**
 (*score*): in ogni punto indica la direzione in cui la densità cresce più in
-fretta, cioè da che parte stanno i dati più fitti, ed è il «verso della salita»
-della mappa di colline. È la stessa quantità che la rete di DDPM stima, a meno
-di un fattore, quando predice il rumore. Per quasi quarant'anni l'articolo di
-Anderson resta un risultato tecnico citato da poche decine di lavori; poi nel
-2020 qualcuno si accorge che rovinare un'immagine con del rumore è esattamente
-una diffusione in avanti, che generare è percorrerla all'indietro, e che quel
-termine correttivo è la sola cosa che una rete debba imparare
-{cite}`song2021score`. La formula era già scritta, e aspettava soltanto che
-qualcuno avesse il problema giusto.
+fretta, cioè da che parte stanno i dati più fitti, e corrisponde al «verso
+della salita» della mappa di colline. È la stessa quantità che la rete di DDPM
+stima, a meno di un fattore, quando predice il rumore. Per quasi quarant'anni
+l'articolo di Anderson resta un risultato tecnico della teoria del filtraggio
+stocastico; poi nel 2020 qualcuno riconosce che rovinare un'immagine con del
+rumore è una diffusione in avanti, che generare è percorrerla all'indietro, e
+che quel termine correttivo è la sola cosa che una rete debba imparare
+{cite}`song2021score`.
 
 Passare dai mille passi di DDPM al tempo continuo porta un guadagno
 sostanziale e non estetico: nel continuo le due tradizioni della
@@ -41,30 +40,30 @@ sotto l'altra hanno però la
 stessa forma: il nuovo valore è il vecchio, più uno spostamento sistematico,
 più uno scossone sorteggiato. Cambia solo quanto valgono i due pezzi.
 
-Adesso applichiamo quella ricetta non mille volte, ma un milione, con
-passi mille volte più corti. Quello che si ottiene al limite è una
-descrizione continua: invece di dire «a ogni passo fai così», si dice «in ogni
-istante il valore deriva un po' in questa direzione e trema un po' con questa
-intensità». Il primo pezzo si chiama **deriva** e dice dove il valore è
-trascinato; il secondo si chiama **diffusione** e dice quanto trema. Una regola
-così, che dice come una cosa cambia istante per istante, in matematica si
-chiama equazione differenziale: la sua soluzione non è un numero, come per le
-equazioni di scuola, ma un intero percorso.
+Applichiamo ora quella ricetta un milione di volte invece di mille, con passi
+mille volte più corti. Al limite si ottiene una descrizione continua: invece di
+dire «a ogni passo fai così», si dice «in ogni istante il valore deriva un po'
+in questa direzione e trema un po' con questa intensità». Il primo pezzo si
+chiama **deriva** e dice dove il valore è trascinato; il secondo si chiama
+**diffusione** e dice quanto trema. Una regola così, che dice come una cosa
+cambia istante per istante, in matematica si chiama equazione differenziale: la
+sua soluzione non è un numero, come per le equazioni di scuola, ma un intero
+percorso.
 
-Il tremore si comporta in modo controintuitivo. Gli scossoni non
-si accumulano come uno spostamento normale: è il conto dei mille passi a caso,
-che portano a una trentina di metri e non a un chilometro. Cento scossoni da un
+Il tremore si comporta in modo controintuitivo. Gli scossoni non si accumulano
+come uno spostamento normale: è lo stesso fenomeno dei mille passi a caso, che
+portano a una trentina di metri e non a un chilometro. Cento scossoni da un
 centimetro allontanano di una decina di centimetri, non di un metro: chi va a
 destra e chi a sinistra si compensano parecchio, e quello che resta cresce come
 la radice quadrata del numero di scossoni (la radice di cento è dieci), non
 come il numero. Ecco perché nella ricetta il tremore di un passo compare con la
 radice quadrata della sua durata, mentre la deriva compare con la durata
 intera: spezzando lo stesso tratto di tempo in passetti sempre più corti, le
-derive si sommano fino a dare sempre lo stesso spostamento, e gli scossoni,
-che si sommano «a radice», danno sempre lo stesso tremore complessivo, né nullo
-né infinito. È la stessa regola che fa stabilizzare la media di tante misure:
-la loro somma si sparpaglia come la radice del loro numero, e la media, che è
-la somma divisa per quel numero, si stringe come uno diviso la radice.
+derive si sommano fino a dare sempre lo stesso spostamento, e gli scossoni, che
+si sommano «a radice», danno sempre lo stesso tremore complessivo, né nullo né
+infinito. È la stessa regola che fa stabilizzare la media di tante misure: la
+loro somma si sparpaglia come la radice del loro numero, e la media, che è la
+somma divisa per quel numero, si stringe come uno diviso la radice.
 
 Il gioco vale la candela per una ragione pratica: nel continuo la ricetta si
 descrive con due sole funzioni del tempo, e tutte le varianti che negli anni
@@ -102,9 +101,8 @@ $$
 
 dove $\mathbf{w}(t)$ è un **processo di Wiener** standard: parte da zero, ha
 incrementi indipendenti, e $\mathbf{w}(t)-\mathbf{w}(s)$ è gaussiano di media
-nulla e varianza $t-s$. È continuo ovunque e derivabile in nessun punto, ed è
-la ragione per cui la scrittura $\mathrm{d}\mathbf{w}$ non si può dividere per
-$\mathrm{d}t$.
+nulla e varianza $t-s$. È continuo ovunque e derivabile in nessun punto, per
+cui la scrittura $\mathrm{d}\mathbf{w}$ non si può dividere per $\mathrm{d}t$.
 
 La cosa che rende trattabile tutto il resto è la scelta di una deriva
 affine, $\mathbf{f}(\mathbf{x},t) = f(t)\,\mathbf{x}$ con $f$ scalare. Sotto
@@ -123,20 +121,23 @@ $$
 \sigma_t^2 = \alpha_t^2 \int_0^t \frac{g^2(s)}{\alpha_s^2}\,\mathrm{d}s .
 $$
 
-Qui $\alpha_t$ è quanto resta del dato di partenza e $\sigma_t^2$ la varianza
-del rumore accumulato. Sono le lettere della letteratura sul tempo continuo, e
-nella {doc}`sezione su come funziona la diffusione
-</ModelliDiffusione/come-funziona>` facevano un altro mestiere: là
+Le due formule risolvono le equazioni di media e varianza del processo lineare,
+$\dot m = f(t)\,m$ e $\dot v = 2f(t)\,v + g^2(t)$, con $m(0) = \mathbf{x}_0$ e
+varianza per componente $v(0) = 0$. Qui $\alpha_t$ è quanto resta del dato di
+partenza e $\sigma_t^2$ la varianza del rumore accumulato. Sono le lettere
+della letteratura sul tempo continuo, e nella {doc}`sezione su come funziona la
+diffusione
+</ModelliDiffusione/come-funziona>` avevano un altro ruolo: là
 $\alpha_t = 1-\beta_t$ era il fattore di un solo passo e $\sigma_t$ la
 deviazione standard del rumore fresco del passo inverso. Per il processo di
 DDPM (della famiglia VP, quella che conserva la varianza) il dizionario è
 $\alpha_t = \sqrt{\bar{\alpha}_t}$ e $\sigma_t = \sqrt{1-\bar{\alpha}_t}$, e da
 qui in avanti, nel tempo continuo, valgono le lettere nuove. La conseguenza
-operativa ha un nome, ed è il motivo per cui questi modelli si addestrano in
-tempi umani: il campionamento è **senza simulazione** (*simulation-free*). Per
-avere $\mathbf{x}_t$ a un istante qualsiasi non serve integrare l'equazione
-passo per passo, basta sorteggiare $\boldsymbol{\epsilon}$ e scrivere
-$\mathbf{x}_t = \alpha_t\mathbf{x}_0 + \sigma_t\boldsymbol{\epsilon}$.
+operativa, che spiega perché questi modelli si addestrano in tempi umani, ha un
+nome: il campionamento è **senza simulazione** (*simulation-free*). Per avere
+$\mathbf{x}_t$ a un istante qualsiasi non serve integrare l'equazione passo per
+passo, basta sorteggiare $\boldsymbol{\epsilon}$ e scrivere $\mathbf{x}_t =
+\alpha_t\mathbf{x}_0 + \sigma_t\boldsymbol{\epsilon}$.
 
 `````
 
@@ -207,10 +208,10 @@ $$
 \sigma_t^2 = 1 - \alpha_t^2 ,
 $$
 
-cioè $\alpha_t^2+\sigma_t^2 = 1$ esattamente: se i dati hanno varianza unitaria
+cioè $\alpha_t^2+\sigma_t^2 = 1$ per ogni $t$: se i dati hanno varianza unitaria
 la mantengono per tutta la traiettoria, e la marginale terminale tende a
 $\mathcal{N}(\mathbf{0},\mathbf{I})$. Il legame con la notazione discreta della
-sezione precedente è $\alpha_t = \sqrt{\bar{\alpha}_t}$.
+sezione su come funziona la diffusione è $\alpha_t = \sqrt{\bar{\alpha}_t}$.
 
 Esiste anche una **sub-VP**, che usa la stessa deriva con
 $g^2(t)=\beta(t)\,(1-\alpha_t^4)$, da cui $\sigma_t^2=(1-\alpha_t^2)^2$: la
@@ -228,9 +229,9 @@ in un unico spazio di progetto.
 
 `````
 
-Che il limite continuo dica la verità si controlla in venti righe, ed è il modo
-più rapido di convincersene: si simula l'equazione a piccoli passi e si
-confronta la nuvola che ne esce con quella che il conto esatto prevede.
+Che il limite continuo sia corretto si controlla in venti righe: si simula
+l'equazione a piccoli passi e si confronta la nuvola che ne esce con quella
+prevista dalla forma chiusa.
 
 ```python
 import numpy as np
@@ -285,15 +286,15 @@ ricostruisce la scintilla che l'ha prodotta. Il risultato di Anderson dice una
 cosa più sottile e più utile: la singola traiettoria non si riavvolge, ma la
 distribuzione sì. Non si può sapere da quale scintilla venga quel fumo lì; si
 può però costruire un processo che, partendo da nuvole di fumo, produce
-scintille distribuite esattamente come quelle vere.
+scintille distribuite come quelle vere.
 
 L'equazione all'indietro ha la stessa forma di quella in avanti, con un termine
 in più: in ogni punto, oltre alla deriva e al tremore, c'è una spinta che punta
 verso le zone dove i dati sono più densi. Quella spinta è il punteggio, il
-verso della salita di cui si parlava, e la cosa importante è che è l'unica
-cosa ignota. Deriva e tremore li abbiamo scelti noi quando abbiamo deciso
-come rovinare le immagini: sono nostri, li conosciamo esattamente. Della strada
-del ritorno manca un pezzo solo, ed è quello che la rete impara.
+verso della salita di cui si parlava, ed è l'unico elemento ignoto
+dell'equazione. Deriva e tremore li abbiamo scelti noi quando abbiamo deciso come
+rovinare le immagini: sono nostri, li conosciamo con precisione. Della strada
+del ritorno manca un pezzo solo, che la rete impara.
 
 Andando all'indietro si continua ad aggiungere
 rumore. Sembra assurdo, visto che si sta cercando di ripulire, ma i due
@@ -334,18 +335,18 @@ logaritmo della densità dei dati rumorosi.
 Il contenuto del teorema è forte e va enunciato con precisione: se la SDE
 all'indietro parte da $\bar{\mathbf{x}}(T)\sim p_T$, la marginale vera
 dell'istante finale, e se $\mathbf{f}$, $g$ e $p_t$ sono abbastanza regolari da
-dare alle due equazioni una soluzione unica, le marginali del processo invertito
-coincidono con quelle del processo in avanti a ogni istante, come uguaglianza e
-non come approssimazione asintotica. In pratica si parte da $p_{\text{prior}}$,
-che coincide con $p_T$ solo al limite, e si usa uno score stimato: sono questi
-due scarti, e l'errore di discretizzazione, a separare i campioni dai dati. Le
-singole traiettorie invece non si corrispondono, ed è la ragione per cui il
-generatore non ricostruisce l'immagine da cui il rumore era partito.
+dare alle due equazioni una soluzione unica, le marginali del processo
+invertito coincidono con quelle del processo in avanti a ogni istante, come
+uguaglianza e non come approssimazione asintotica. In pratica si parte da
+$p_{\text{prior}}$, che coincide con $p_T$ solo al limite, e si usa uno score
+stimato: sono questi due scarti, e l'errore di discretizzazione, a separare i
+campioni dai dati. Le singole traiettorie invece non si corrispondono, e per
+questo il generatore non ricostruisce l'immagine da cui il rumore era partito.
 
 L'ingrediente ignoto è uno solo. Scelti $\mathbf{f}$ e $g$, il resto della
-dinamica è determinato dal punteggio, e imparare il punteggio è il problema
-che la sezione precedente ha già risolto in forma discreta: il minimo della
-loss quadratica sul rumore è la media condizionata
+dinamica è determinato dal punteggio, e imparare il punteggio è il problema che
+la sezione su come funziona la diffusione ha già risolto in forma discreta: il
+minimo della loss quadratica sul rumore è la media condizionata
 $\mathbb{E}[\boldsymbol{\epsilon}\mid\mathbf{x}_t]$, e questa è
 $-\sigma_t\nabla\log p_t(\mathbf{x}_t)$.
 
@@ -363,19 +364,19 @@ $$
 dove $\pi_s := p_{T-s}$ è la densità bersaglio a quell'istante. Ha la forma
 della dinamica di Langevin con cui i {doc}`modelli a energia
 </ModelliEnergia/oltre-la-partizione>` campionano, e le differenze sono due. Il
-bersaglio cambia a ogni istante invece di essere
-sempre lo stesso: $\pi_s$ parte larga e si stringe verso i dati man mano che il
-rumore scende, ed è questo l’*annealing*, quello dei livelli di rumore di Song
-ed Ermon e non quello di una temperatura. E la deriva è il doppio di quella di
-Langevin, che a parità di diffusione vuole $\tau\nabla\log\pi$; la differenza
-è sostanziale: con il bersaglio congelato questa equazione avrebbe per stazionaria
-$\pi^2$ e non $\pi$, e la Langevin vera, dove serve, si aggiunge a parte come
-correttore. Il fattore $\tau(s)$, invece, di una temperatura ha soltanto la
-lettera: moltiplica insieme la deriva e la varianza del rumore, quindi ne lascia
-fisso il rapporto, che è ciò che in Langevin decide la temperatura, e cambia
-soltanto la velocità dell'orologio. Quello che nei
-modelli a energia è una catena lunghissima da far mescolare qui diventa un
-percorso guidato di durata prefissata.
+bersaglio cambia a ogni istante invece di essere sempre lo stesso: $\pi_s$
+parte larga e si stringe verso i dati man mano che il rumore scende, e questo è
+l’*annealing*, quello dei livelli di rumore di Song ed Ermon e non quello di
+una temperatura. La deriva, inoltre, è il doppio di quella di Langevin, che a
+parità di diffusione vuole $\tau\nabla\log\pi$; la differenza è sostanziale:
+con il bersaglio congelato questa equazione avrebbe per stazionaria $\pi^2$ e
+non $\pi$, e la Langevin vera, dove serve, si aggiunge a parte come correttore.
+Il fattore $\tau(s)$, invece, di una temperatura ha soltanto la lettera:
+moltiplica insieme la deriva e la varianza del rumore, quindi ne lascia fisso
+il rapporto, che è ciò che in Langevin decide la temperatura, e cambia soltanto
+la velocità dell'orologio. Quello che nei modelli a energia è una catena
+lunghissima da far mescolare qui diventa un percorso guidato di durata
+prefissata.
 
 `````
 
@@ -405,12 +406,12 @@ lo si può trovare percorrendo la strada all'incontrario. È così che si modifi
 un'immagine esistente invece di generarne una da zero: la si porta indietro
 fino al suo rumore, si cambia qualcosa nella richiesta, e la si riporta avanti.
 
-*Si può dire quanto è probabile un'immagine.* Lungo una strada tracciata si
-può tenere il conto di quanto lo spazio si allarga e si stringe, e quel conto è
+*Si può dire quanto è probabile un'immagine.* Lungo una strada tracciata si può
+tenere traccia di quanto lo spazio si allarga e si stringe, e quella quantità è
 precisamente il {doc}`determinante </Matematica/determinante-e-volume>`, cioè
 quanto una trasformazione gonfia lo spazio. Serve a dare un voto al modello
 intero: davanti a fotografie vere che non ha mai visto, il modello migliore è
-quello che le giudica più probabili. Con la strada casuale quel conto non si
+quello che le giudica più probabili. Con la strada casuale quel calcolo non si
 può fare.
 
 *Servono meno passi.* Le traiettorie senza tremore sono lisce, e una curva
@@ -419,7 +420,7 @@ frastagliate e chiedono passi corti. Quasi tutti i generatori veloci di oggi
 percorrono la strada deterministica, e la {doc}`sezione sui campionatori veloci
 </ModelliDiffusione/campionatori-veloci>` racconta come.
 
-Il prezzo si vede quando la spinta non è quella esatta ma quella che la rete
+Il limite si vede quando la spinta non è quella esatta ma quella che la rete
 ha imparato, cioè sempre. Sulla strada tracciata un errore commesso a metà
 percorso resta lì e si porta fino in fondo; su quella casuale il barcollamento
 rimescola a ogni passo, e ogni rimescolamento riporta la folla un po' più
@@ -429,9 +430,9 @@ arriva spesso più vicino alla folla vera, e chi vuole il massimo della qualità
 usa un misto: un po' di caso in un tratto del percorso, nessuno alla fine.
 
 Con la spinta esatta, invece, le due strade portano alla stessa folla, e il
-barcollamento costa soltanto passi in più: con passi non abbastanza piccoli la
-casuale arriva un po' più sparpagliata attorno alla meta, perché trema fino
-all'ultimo. La prova con i due soli valori $\pm 1{,}5$ fa vedere proprio
+barcollamento obbliga soltanto a fare più passi: con passi non abbastanza
+piccoli la casuale arriva un po' più sparpagliata attorno alla meta, perché
+trema fino all'ultimo. La prova con i due soli valori $\pm 1{,}5$ fa vedere
 questo.
 
 `````
@@ -481,22 +482,21 @@ Le tre conseguenze, in forma precisa:
   la soluzione è unica), è una biiezione fra gli *stati* e trasporta
   $p_{\text{dati}}$ in $p_T$. Da qui l’*inversione DDIM*, cioè integrare la ODE
   dall'immagine al suo rumore, che serve a editing e interpolazione nello
-  spazio del rumore. Per un campo stimato da una rete la condizione regge; per
+  spazio del rumore. Per un campo stimato da una rete la condizione vale; per
   il punteggio esatto può cadere vicino a $t = 0$, dove i dati si concentrano.
-- Verosimiglianza esatta. Trattando la PF-ODE come un
-  {doc}`flusso normalizzante continuo </VerosimiglianzaEsatta/a-che-serve>` si
-  ottiene
-  $\log p_0(\mathbf{x}_0) = \log p_T(\mathbf{x}_T) + \int_0^T
-  \nabla\!\cdot\!\mathbf{v}_t(\mathbf{x}_t)\,\mathrm{d}t$,
-  con $\mathbf{v}_t$ il campo di velocità della ODE e la divergenza stimata a
-  caso con lo stimatore di Hutchinson {cite}`hutchinson1989stochastic`, come fa
-  FFJORD nella stessa sezione sui flussi continui. È il conto che la SDE non
+- Verosimiglianza esatta. Trattando la PF-ODE come un {doc}`flusso
+  normalizzante continuo </VerosimiglianzaEsatta/a-che-serve>` si ottiene $\log
+  p_0(\mathbf{x}_0) = \log p_T(\mathbf{x}_T) + \int_0^T
+  \nabla\!\cdot\!\mathbf{v}_t(\mathbf{x}_t)\,\mathrm{d}t$, con $\mathbf{v}_t$
+  il campo di velocità della ODE e la divergenza stimata a caso con lo
+  stimatore di Hutchinson {cite}`hutchinson1989stochastic`, come fa FFJORD
+  nella stessa sezione sui flussi continui. È un calcolo che la SDE non
   permette.
-- Errore di discretizzazione. Un integratore di ordine $p$ su una
-  traiettoria liscia accumula errore $O(h^p)$ con $h$ il passo; le traiettorie
-  della SDE hanno regolarità di Hölder $1/2$ e i metodi stocastici si fermano a
-  ordini bassi. È la ragione strutturale per cui i campionatori a pochi passi
-  lavorano sulla ODE.
+- Errore di discretizzazione. Un integratore di ordine $p$ su una traiettoria
+  liscia accumula errore $O(h^p)$ con $h$ il passo; le traiettorie della SDE
+  hanno regolarità di Hölder di esponente inferiore a $1/2$ e i metodi
+  stocastici si fermano a ordini bassi. È la ragione strutturale per cui i
+  campionatori a pochi passi lavorano sulla ODE.
 
 Il rovescio, misurato in letteratura. Con il punteggio esatto SDE e ODE hanno
 le stesse marginali, quindi la stessa qualità e la stessa varietà; con un
@@ -556,12 +556,12 @@ for nome, v in (("ODE", y), ("SDE", z)):
 ```
 
 Le due strade arrivano nello stesso posto: metà dei campioni su ciascun modo, e
-i modi esattamente a $\pm 1{,}5$. L'ultima colonna è di quanto in media un
-campione manca il proprio modo, e dice la differenza fra le due: la strada
-casuale lascia una dispersione due volte e mezzo più larga, perché continua ad
-aggiungere rumore fino all'ultimo passo.
+i modi a $\pm 1{,}5$. L'ultima colonna è di quanto in media un campione manca
+il proprio modo, e dice la differenza fra le due: la strada casuale lascia una
+dispersione due volte e mezzo più larga, perché continua ad aggiungere rumore
+fino all'ultimo passo.
 
-E la strada deterministica è davvero una strada, cioè si percorre nei due
+La strada deterministica è davvero una strada, cioè si percorre nei due
 sensi.
 
 ```python
@@ -583,7 +583,7 @@ print(round(float(np.abs(x - partenza).max()), 4))   # -> 0.0077
 
 Sei immagini portate al rumore e riportate indietro tornano dove erano, a meno
 di otto millesimi. Quel residuo è l'errore di chi integra a passi finiti, non
-un difetto della strada: è esattamente la grandezza che i campionatori veloci
+un difetto della strada: è la grandezza che i campionatori veloci
 cercano di ridurre a parità di passi.
 
 ## Quattro modi di dire la stessa cosa
@@ -603,22 +603,22 @@ rispondere a una qualsiasi permette di rispondere a tutte le altre.
 - Qual era il disturbo? È la domanda di DDPM.
 - Qual era l'immagine pulita? È la domanda che sembra più naturale.
 - In che direzione salire? È il punteggio.
-- Con quale velocità muoversi? Se si guarda l'immagine rovinata come un
-  punto in viaggio fra l'immagine pulita e il rumore, la velocità dice da che
-  parte e quanto in fretta quel punto si sta spostando. Si ottiene mescolando
-  le prime due risposte, ed è la domanda su cui è costruito il flow matching.
+- Con quale velocità muoversi? Se si guarda l'immagine rovinata come un punto
+  in viaggio fra l'immagine pulita e il rumore, la velocità dice da che parte e
+  quanto in fretta quel punto si sta spostando. Si ottiene mescolando le prime
+  due risposte, e su di essa è costruito il flow matching.
 
 Sono quattro forme della stessa informazione perché l'immagine rovinata è fatta
 di due pezzi, l'immagine pulita e il disturbo, mescolati in proporzioni note.
 Sapendo l'immagine rovinata e uno dei due pezzi, l'altro si ricava sottraendo.
 
-La scelta non cambia la matematica, ma cambia i conti. Chiedere il disturbo
-funziona male quando di disturbo ce n'è pochissimo, perché di quel disturbo
-nell'immagine resta una traccia minuscola e va indovinato tutto a partire da
-lì; chiedere l'immagine pulita funziona male dall'altra parte, dove di immagine
-non c'è quasi più niente. La quarta domanda, la velocità, è stata inventata
-proprio per questo: mescola le due in modo da restare affidabile a tutti e due
-gli estremi, ed è quella che si usa quando il percorso deve essere accorciato a
+La scelta lascia invariata la matematica e cambia la precisione dei calcoli.
+Chiedere il disturbo funziona male quando di disturbo ce n'è pochissimo, perché
+di quel disturbo nell'immagine resta una traccia minuscola e va indovinato
+tutto a partire da lì; chiedere l'immagine pulita funziona male dall'altra
+parte, dove di immagine non c'è quasi più niente. La quarta domanda, la
+velocità, nasce per questo: mescola le due in modo da restare affidabile a
+tutti e due gli estremi, e si usa quando il percorso deve essere accorciato a
 pochi passi.
 
 `````
@@ -646,15 +646,14 @@ quattro si converte nelle altre senza riaddestramento, e le librerie infatti
 espongono un parametro di configurazione per sceglierla.
 
 L'equivalenza è algebrica, il condizionamento numerico no. Per $t\to 0$ si ha
-$\sigma_t\to 0$: la conversione $\hat{\boldsymbol{\epsilon}}\mapsto
-\mathbf{s}$ divide per $\sigma_t$ e amplifica l'errore, mentre
-$\hat{\mathbf{x}}_0$ è ben posta. Per $t\to T$ è il contrario, perché
-$\alpha_t\to 0$ e ricostruire $\hat{\mathbf{x}}_0$ significa dividere per
-qualcosa che tende a zero. La **$\mathbf{v}$-prediction**
-{cite}`salimans2022progressive` interpola fra le due e resta ben condizionata a
-entrambi gli estremi; è la parametrizzazione standard nella distillazione e
-nei programmi di rumore che portano il rapporto segnale-rumore esattamente a
-zero all'ultimo passo.
+$\sigma_t\to 0$: la conversione $\hat{\boldsymbol{\epsilon}}\mapsto \mathbf{s}$
+divide per $\sigma_t$ e amplifica l'errore, mentre $\hat{\mathbf{x}}_0$ è ben
+posta. Per $t\to T$ è il contrario, perché $\alpha_t\to 0$ e ricostruire
+$\hat{\mathbf{x}}_0$ significa dividere per qualcosa che tende a zero. La
+**$\mathbf{v}$-prediction** {cite}`salimans2022progressive` interpola fra le
+due e resta ben condizionata a entrambi gli estremi; è la parametrizzazione
+standard nella distillazione e nei programmi di rumore che portano il rapporto
+segnale-rumore a zero all'ultimo passo.
 
 Le funzioni di costo corrispondenti differiscono solo per un peso dipendente da
 $t$:
@@ -667,7 +666,7 @@ $$
 
 e ogni scelta di parametrizzazione equivale a una scelta di $w(t)$ nella
 formulazione sul rumore. Con il rapporto segnale-rumore $\mathrm{SNR}(t) =
-\alpha_t^2/\sigma_t^2$, fra le potenze, i conti stanno in una riga:
+\alpha_t^2/\sigma_t^2$, fra le potenze, il confronto sta in una riga:
 $\lVert\hat{\mathbf{x}}_0 - \mathbf{x}_0\rVert^2 =
 \lVert\hat{\boldsymbol{\epsilon}} -
 \boldsymbol{\epsilon}\rVert^2/\mathrm{SNR}(t)$, $\lVert\mathbf{s}_\theta -
@@ -709,8 +708,8 @@ print(round(float(v), 6),
 ```
 
 La prima riga è il controllo che conta: partendo dal rumore vero e
-dall'immagine rovinata si ricostruisce l'immagine pulita, e viene esattamente
-quella di partenza. Le quattro domande sono la stessa domanda.
+dall'immagine rovinata si ricostruisce l'immagine pulita, e viene quella di
+partenza.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -737,7 +736,7 @@ quella di partenza. Le quattro domande sono la stessa domanda.
   vera.
 - Le quattro cose che una rete può predire (il disturbo, l'immagine pulita, la
   direzione di salita, la velocità) sono la stessa informazione: sapendone
-  una si ricavano le altre tre. Cambia solo dove i conti restano precisi.
+  una si ricavano le altre tre. Cambia solo dove i calcoli restano precisi.
 ```
 `````
 

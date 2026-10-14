@@ -71,7 +71,7 @@ che spezzano l'indice per aree.
 | 6 | **Reti Neurali** | Percettrone, funzioni di attivazione, da dove viene la loss, backpropagation |
 | 7 | **PyTorch** | Tensori, autograd, `nn.Module`, training loop, `Dataset` e `DataLoader`, i tre errori più comuni, dal notebook agli script, replicare un paper, prestazioni e scala |
 | 8 | **GPU e calcolo parallelo** | Sotto il cofano: architettura ed esecuzione, gerarchia di memoria, kernel e Triton, GEMM e tensor core, Flash Attention, parallelismo dati/tensor/pipeline e FSDP |
-| 9 | **Efficienza** | Il modello che si addestra e quello che si usa: quantizzazione (scala e granularità, componenti anomale degli LLM, PTQ e QAT, GPTQ e AWQ), potatura e sparsità strutturata, ipotesi del biglietto della lotteria, distillazione e bersagli morbidi, e perché starci in memoria non sia rispondere in fretta |
+| 9 | **Efficienza** | Il modello che si addestra e quello che si usa: quantizzazione (scala e granularità, componenti anomale degli LLM, PTQ e QAT, GPTQ e AWQ), potatura e sparsità strutturata, ipotesi del biglietto vincente, distillazione e bersagli morbidi, e perché starci in memoria non sia rispondere in fretta |
 | 10 | **Deep Learning** | Reti convoluzionali, ottimizzazione e regolarizzazione, architetture storiche, una rete sola per molti compiti |
 | 11 | **Visione Artificiale** | Classificazione e transfer learning, data augmentation, apprendimento auto-supervisionato (SimCLR, MoCo, BYOL, DINO, MAE), detection e segmentazione, geometria e profondità, rendering neurale (NeRF, splatting), style transfer |
 | 12 | **Ricerca e pianificazione** | Guardare avanti senza imparare niente: spazio degli stati e albero di ricerca, ricerca cieca e in profondità iterativa, euristiche ammissibili e consistenti, A*, minimax e potatura alfa-beta, funzione di valutazione ed effetto orizzonte, e le tre ipotesi che cadendo aprono il rinforzo |
@@ -117,8 +117,9 @@ dell'Attenzione lineare) e si riconoscono dal razzo 🚀 fra i comandi in cima
 alla pagina: lì il codice gira restando nel libro, senza passare da Colab.
 
 I notebook non si scrivono a mano, li ricava dalle pagine
-`scripts/genera-notebook.py`; e quando una pagina o un notebook cambiano, la CI
-li riesegue e confronta quello che stampano con i numeri scritti nel libro
+`scripts/genera-notebook.py`; e quando cambiano il codice di una pagina, le
+uscite che riporta, i suoi titoli o un notebook, la CI li riesegue e confronta
+quello che stampano con i numeri scritti nel libro
 (`.github/workflows/verifica-notebook.yml`). Un «esegui» che consegna un errore
 è peggio che non offrirlo.
 

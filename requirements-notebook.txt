@@ -12,13 +12,13 @@
 #   senza versioni: su Colab quasi tutto è già installato, e forzare un
 #   downgrade romperebbe più di quanto aggiusti.
 #
-# Chi le aggiorna: `sentinella-librerie.yml`, che ogni settimana prova le
-# versioni PIÙ RECENTI. Se passano, propone il bump di questo file; se non
-# passano, apre una issue — è così che si scopre una API che se ne va, come
+# Chi le aggiorna: un controllo che ogni settimana prova le versioni PIÙ
+# RECENTI. Se passano, propone il bump di questo file; se non passano, apre una
+# issue: è così che si scopre una API che se ne va, come
 # `pipeline("translation")`, rimossa in transformers 5, senza aspettare che
 # qualcuno tocchi quella pagina per caso.
 #
-# Ultima verifica completa: 2026-07-25 — 18 capitoli, tutte le celle eseguite.
+# Ultima verifica completa: 2026-07-25 (tutte le celle di tutti i notebook).
 
 # --- il framework del libro (ruota CPU: in CI non c'è nessuna GPU) ---
 torch==2.13.0
@@ -73,10 +73,8 @@ soundfile==0.14.0
 torch-geometric==2.8.0.post1
 torchinfo==1.8.0
 # `xgboost` serve al blocco «da competizione» di
-# `MachineLearning/alberi-ensemble.md`, che era marcato `pt-lento` e quindi mai
-# eseguito da nessuno. Misurato con la macchina scarica: **0,2 secondi**. La
-# marcatura era infondata, è stata tolta, e il blocco è entrato nella rete
-# portandosi dietro questa riga.
+# `MachineLearning/alberi-ensemble.md`, che gira in 0,2 secondi e quindi sta
+# nella rete dei controlli, non fra i blocchi `pt-lento`.
 xgboost==3.4.1
 
 # `ultralytics` serve al blocco `pt-lento` della famiglia YOLO in

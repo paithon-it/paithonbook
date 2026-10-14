@@ -873,8 +873,8 @@ def prepara_font(app, config):
         return
     # La cartella si incolla, non si formatta: `FONTPKG` e' pieno di commenti
     # LaTeX, che cominciano per `%`, e con `%` di mezzo Python li legge come
-    # segnaposto. La prima versione di questa riga faceva proprio cosi' e
-    # moriva con «not enough arguments for format string».
+    # segnaposto, e la riga morirebbe con «not enough arguments for format
+    # string».
     config.latex_elements["fontpkg"] = (
         "\\def\\ptFontDir{" + str(cartella) + "/}\n" + FONTPKG)
 

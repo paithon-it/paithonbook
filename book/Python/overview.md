@@ -17,51 +17,48 @@ uffici del centro di ricerca dove lavora ad Amsterdam sono chiusi per le feste,
 e lui riempie il tempo scrivendo, per hobby, un nuovo linguaggio di
 programmazione. Lo chiama **Python**: non per il serpente, ma per i Monty
 Python, il gruppo comico inglese di cui è fan. La prima versione pubblica esce
-nel 1991. Trent'anni dopo, quel passatempo è il linguaggio in cui si scrivono i
-principali framework di deep learning e gran parte del codice che accompagna
-la ricerca sul machine learning, dalla rivoluzione del deep learning del 2012
-ai grandi modelli linguistici di oggi. Ci è arrivato con una divisione del
-lavoro: i conti pesanti li fanno programmi scritti in linguaggi più veloci e
-più faticosi da usare, e Python li comanda.
+nel 1991. Oggi quel passatempo è il linguaggio in cui si scrivono i principali
+framework di deep learning e gran parte del codice che accompagna la ricerca
+sul machine learning, dalla rivoluzione del 2012 ai grandi modelli linguistici
+attuali. Ci è arrivato con una divisione del lavoro: i calcoli pesanti li
+eseguono programmi scritti in linguaggi più veloci e più faticosi da usare, e
+Python li comanda.
 
 La divisione c'era già in AlexNet, la rete che nel 2012 aprì la stagione del
-deep learning: il calcolo in C++ e in CUDA, il linguaggio con cui si
-programmano le schede grafiche, e sopra uno strato di Python per configurarla e
-lanciarla. Che quel livello superiore fosse Python non era scontato. Negli anni
-subito dopo, i laboratori di punta scrivevano il codice in Lua, mentre Python
-aveva già Theano, nato in ambito accademico prima del 2012; la partita si è
-chiusa con librerie che si scrivono in Python e calcolano in C++, e la storia
-di PyTorch, cioè Torch rifatto per Python, la racconta l'apertura del
-{doc}`capitolo che porta il suo nome </PyTorch/overview>`.
+deep learning: il calcolo in C++ e in CUDA, l'estensione di C++ con cui si
+programmano le schede grafiche NVIDIA, e sopra uno strato di Python per
+configurarla e lanciarla. Che quel livello superiore fosse Python non era
+scontato: negli anni seguenti diversi laboratori di punta, fra cui Facebook AI
+Research, scrivevano in Lua con Torch, mentre Python aveva già Theano, nato in
+ambito accademico prima del 2012. La partita si è chiusa con librerie che si
+scrivono in Python e calcolano in C++. La storia di PyTorch, cioè Torch rifatto
+per Python, apre il {doc}`capitolo che porta il suo nome </PyTorch/overview>`.
 
-Com'è successo? Python non è il linguaggio più veloce, né il più elegante in
-senso accademico. Ha vinto per altre ragioni.
+Python non è il linguaggio più veloce né il più elegante in senso accademico,
+e ha prevalso per altre ragioni.
 
 ## Perché proprio Python
 
 `````{tab} Elementare
 
 Un **programma** è un elenco di istruzioni scritte in un file di testo, che il
-computer esegue una dopo l'altra dall'alto in basso. Nient'altro: niente di
-misterioso, un foglio di ordini in fila. E Python si legge quasi come inglese
-scarno. Una riga come `if voto >= 18: print("promosso")` si indovina prima
-ancora di aver scritto il primo programma: è come la diresti a voce, «se il
-voto è almeno diciotto, scrivi *promosso*» (all'università i voti vanno in
-trentesimi, e il diciotto è la sufficienza). Le regole di scrittura di
-un linguaggio (dove vanno i due punti, gli a capo, le parentesi) si chiamano la
-sua **sintassi**, e quella di Python è breve e leggera: sta in un pomeriggio, e
-poi il tempo lo passi a pensare a *cosa* dire, non a *come* scriverlo. Per chi
-arriva dalla matematica, dalla fisica o dalla biologia e vuole esprimere un
-ragionamento, è una liberazione.
+computer esegue una dopo l'altra, dall'alto in basso: un foglio di ordini in
+fila. Python si legge quasi come un inglese scarno. Una riga come
+`if voto >= 18: print("promosso")` si indovina anche senza averla mai scritta,
+perché è come la diresti a voce: «se il voto è almeno diciotto, scrivi
+*promosso*» (all'università i voti vanno in trentesimi, e il diciotto è la
+sufficienza). Le regole di scrittura di un linguaggio (dove vanno i due punti,
+gli a capo, le parentesi) si chiamano la sua **sintassi**. Quella di Python è
+breve e si impara in fretta, e il pensiero resta su *che cosa* dire invece che
+su *come* scriverlo.
 
-A questo si aggiungono due cose decisive: è gratuito e ha una comunità
-enorme. Per quasi ogni problema (leggere un file, disegnare un grafico,
-addestrare una rete neurale), qualcuno ha già scritto una libreria pronta:
-un pacchetto di istruzioni già confezionate da altri, che ti risparmia il
-lavoro. Non devi reinventare la ruota: la importi e la usi. Importare vuol
-dire scrivere una riga in cima al programma, `import numpy`, per dire a Python
-«da qui in poi voglio usare anche questa»: da quel momento tutti gli strumenti
-della libreria sono a disposizione. Python porta con sé una libreria standard
+Python è anche gratuito e ha una comunità enorme. Per quasi ogni problema
+(leggere un file, disegnare un grafico, addestrare una rete neurale) qualcuno
+ha già scritto una libreria: un pacchetto di istruzioni confezionate da altri,
+che ti risparmia il lavoro. Basta importarla, cioè scrivere una riga in cima al
+programma, `import numpy`, per dire a Python «da qui in poi voglio usare anche
+questa»: da quel momento tutti gli strumenti della libreria sono a
+disposizione. Python porta con sé una libreria standard
 già pronta (`math` per le funzioni matematiche, `time` per misurare il tempo,
 e decine di altre), ma le librerie scientifiche no: vanno installate, una
 volta sola, con un programma apposta che si chiama `pip`. La riga di
@@ -69,43 +66,41 @@ importazione ha due varianti che si incontrano subito: `import numpy as np` dà
 alla libreria un nome più corto, e `from math import sqrt` porta dentro un
 solo nome, da usare senza prefisso.
 
-C'è poi una cosa che si vede solo standoci dentro: quando esce un lavoro
-nuovo, di solito esce con il suo codice allegato, ed è quasi sempre codice
-Python. Chi legge può rifare l'esperimento invece di crederci sulla parola, e
-chi lo rifà parte da dove l'altro è arrivato. Un linguaggio solo per tutti vuol
-dire questo.
+Nella ricerca sul machine learning, inoltre, un lavoro nuovo esce molto spesso
+con il suo codice allegato, e quasi sempre in Python. Chi legge può rifare
+l'esperimento invece di crederci sulla parola, e chi lo rifà parte da dove
+l'altro è arrivato: un linguaggio comune a tutti rende possibile questo
+scambio.
 
-Sui calcoli pesanti, da solo, Python è lento; quei calcoli però non li fa
-quasi mai lui. Le librerie importanti sono scritte in linguaggi più veloci ma
-più faticosi da usare, e Python fa il capocantiere, quello che legge il
-progetto e dà gli ordini alle squadre. Tu scrivi la riga chiara; il muro lo
-tira su chi ha gli attrezzi per farlo in fretta.
+Sui calcoli pesanti Python, da solo, è lento, ma quei calcoli non li fa quasi
+mai lui. Le librerie importanti sono scritte in linguaggi più veloci e più
+faticosi da usare, e Python fa il capocantiere: legge il progetto e dà gli
+ordini alle squadre. Tu scrivi la riga chiara, e il muro lo tira su chi ha gli
+attrezzi per farlo in fretta.
 
 `````
 
 `````{tab} Superiore
 
-CPython, l'implementazione di riferimento, compila il sorgente in *bytecode*
-e lo esegue su una macchina virtuale a pila. I tipi sono dinamici, quindi ogni
-operazione va risolta a runtime sul tipo degli operandi: l'interprete
-adattivo della PEP 659 (Python 3.11) specializza il bytecode sui tipi che
-osserva, il JIT della PEP 744 (sperimentale dal 3.13) prova ad andare oltre, e
-il costo per operazione resta comunque molto sopra quello del codice
-compilato. Paghi in velocità di esecuzione ciò che guadagni in velocità di
-sviluppo. Il calcolo scientifico in Python convive con il *problema dei due
-linguaggi* (prototipare in un linguaggio comodo e riscrivere in uno veloce, il
-problema da cui è nato Julia) e lo risolve spartendolo per ruoli: il secondo
-linguaggio lo scrive chi sviluppa le librerie, e chi le usa resta nel primo.
-Le operazioni pesanti non girano affatto in Python puro: NumPy è
-scritto in C, PyTorch e TensorFlow in C++ e CUDA. Python fa da **collante**
-(*glue language*), orchestrando componenti compilate che sfruttano BLAS, SIMD
-e GPU. Scrivi codice ad alto livello, leggibile; sotto, gira codice nativo
-alla massima velocità.
+CPython, l'implementazione di riferimento, compila il sorgente in *bytecode* e
+lo esegue su una macchina virtuale a pila. I tipi sono dinamici, quindi ogni
+operazione va risolta a runtime sul tipo degli operandi. L'interprete adattivo
+della PEP 659 (Python 3.11) specializza il bytecode sui tipi che osserva, e il
+JIT della PEP 744 (sperimentale dal 3.13) prova ad andare oltre, ma il costo
+per operazione resta comunque molto sopra quello del codice compilato. Si cede
+velocità di esecuzione in cambio di velocità di sviluppo. Il calcolo
+scientifico in Python convive con il *problema dei due linguaggi* (prototipare
+in un linguaggio comodo e riscrivere in uno veloce, il problema da cui è nato
+Julia) e lo risolve spartendolo per ruoli: chi sviluppa le librerie scrive nel
+secondo linguaggio, e chi le usa resta nel primo. Le operazioni pesanti non
+girano affatto in Python puro: NumPy è scritto in C, PyTorch e TensorFlow in
+C++ e CUDA. Python fa da **collante** (*glue language*), orchestrando
+componenti compilate che sfruttano BLAS, SIMD e GPU.
 
 Attorno al linguaggio è cresciuto un ecosistema di centinaia di migliaia di
 pacchetti (distribuiti via PyPI e `pip`) e una prassi di ricerca in cui i
-paper arrivano con il codice allegato: la riproducibilità diventa la norma, e
-Python il denominatore comune.
+paper arrivano spesso con il codice allegato: riprodurre un risultato diventa
+praticabile, e Python è il denominatore comune.
 
 `````
 
@@ -123,35 +118,35 @@ Metà di quella riga non è un'istruzione: il cancelletto `#` apre un
 non per il computer, che lo salta. I commenti dicono che cosa fa la riga
 accanto, e la freccia `->` dentro un commento significa «e viene fuori questo».
 
-Su quel «viene fuori» c'è una convenzione da chiarire subito. Nell'interprete,
+Quel «viene fuori» segue una convenzione. Nell'interprete,
 la finestra in cui le istruzioni si scrivono una per volta, un'espressione
 digitata e confermata con Invio mostra il proprio valore: scrivendo `2 + 3`
 compare `5`. In un programma salvato in un file, invece, la stessa riga
 calcola e non mostra niente, e per vedere il risultato bisogna stamparlo con
 `print`. Gli esempi che seguono sono scritti come li si digiterebbe
-nell'interprete, ed è per questo che spesso una riga mostra un valore senza
+nell'interprete, perciò spesso una riga mostra un valore senza
 `print` accanto.
 
 Eseguendo `import this` compaiono i diciannove aforismi che Tim Peters
 codificò nel 1999.
 Tra questi: *"Explicit is better than implicit"* («meglio esplicito che
 implicito»), *"Simple is better than complex"* («meglio semplice che
-complicato»), *"Readability counts"* («la leggibilità conta»). Non è poesia:
-il codice si legge molte più volte di quante lo si scriva, e in un progetto
-condiviso ciò che non si capisce non si può nemmeno verificare. Questa
-chiarezza rende Python adatto a insegnare e a comunicare l'AI; per lavorarci
-serve anche altro, e lo dà l'ecosistema.
+complicato»), *"Readability counts"* («la leggibilità conta»). Il codice
+si legge molte più volte di quante lo si scriva, e in un progetto condiviso ciò
+che non si capisce non si può nemmeno verificare. Questa chiarezza rende Python
+adatto a insegnare e a comunicare l'AI, ma per lavorarci serve anche altro, e
+lo fornisce l'ecosistema.
 
 ## L'ecosistema scientifico
 
-La forza di Python nell'AI non è il linguaggio da solo, ma la torre di
+Il linguaggio da solo non basta: la forza di Python nell'AI sta nella torre di
 librerie costruite l'una sull'altra ({numref}`fig-stack-python`; in inglese
-quella torre si chiama *stack*). Ognuna fa una cosa e la fa bene.
+quella torre si chiama *stack*).
 
 - NumPy: il fondamento. Introduce l’*array* N-dimensionale, una griglia di
   numeri con quante dimensioni si vuole (una fila, una tabella, una pila di
-  tabelle) su cui i conti si fanno tutti insieme, e rende veloce l’algebra
-  lineare, cioè la matematica delle tabelle di numeri; quasi tutto il resto
+  tabelle) su cui i calcoli si fanno tutti insieme. Rende veloce l’algebra
+  lineare, cioè la matematica delle tabelle di numeri, e quasi tutto il resto
   poggia su di lui.
 - Pandas: dati tabellari. Il `DataFrame` è un foglio di calcolo
   programmabile: caricare, pulire e trasformare i dati prima di passarli a un
@@ -159,20 +154,19 @@ quella torre si chiama *stack*). Ognuna fa una cosa e la fa bene.
 - Matplotlib: visualizzazione. I grafici con cui esplori i dati e racconti
   i risultati.
 - scikit-learn: la cassetta degli attrezzi del machine learning *classico*,
-  quello che viene prima delle reti neurali. Dentro ci sono decine di
-  modelli diversi, e li si comanda tutti con le stesse due parole: `fit`
-  (impara da questi dati) e `predict` (adesso prevedi). Dopo averne usato
-  uno, l'interfaccia degli altri è già nota, ed è quel che si intende con
-  API uniforme (l'API di una libreria è l'insieme dei comandi con cui le si
-  parla).
+  quello che viene prima delle reti neurali. Dentro ci sono decine di modelli
+  diversi, e li si comanda tutti con le stesse due parole: `fit` (impara da
+  questi dati) e `predict` (adesso prevedi). Dopo averne usato uno,
+  l'interfaccia degli altri è già nota, e per questo l'API si dice uniforme
+  (l'API di una libreria è l'insieme dei comandi con cui le si parla).
 - PyTorch (Facebook AI Research, oggi Meta), deep learning: costruisce reti
   neurali e le addestra, calcolando da sé le derivate che servono a correggerne
   i parametri (la *differenziazione automatica*), anche sulla GPU, la scheda
-  grafica. Non sta sopra NumPy: il calcolo lo fa con un motore proprio, scritto
+  grafica. Non sta sopra NumPy: esegue il calcolo con un motore proprio, scritto
   in C++, e con NumPy scambia soltanto i dati: sulla CPU, `torch.from_numpy` e
   `Tensor.numpy()` condividono la stessa memoria invece di ricopiarli. Il suo
   concorrente storico è TensorFlow (Google, 2015),
-  che accanto alla torre sta allo stesso modo.
+  che si affianca alla torre nello stesso modo.
 
 ```{figure} ../figures/stack-scientifico-python.svg
 :name: fig-stack-python
@@ -181,51 +175,53 @@ quella torre si chiama *stack*). Ognuna fa una cosa e la fa bene.
 
 La torre delle librerie scientifiche di Python. Le due frecce sono i due
 «poggia su» veri: NumPy sul linguaggio, e Pandas, Matplotlib e scikit-learn su
-NumPy, senza il quale non funzionano. Sopra il secondo strato, la
-freccia manca, ed è il punto: PyTorch e TensorFlow stanno accanto alla torre
-più che sopra, perché i conti li fanno da sé, con un motore
+NumPy, senza il quale non funzionano. Sopra il secondo strato la
+freccia manca: PyTorch e TensorFlow stanno accanto alla torre
+più che sopra, perché fanno i calcoli con un motore
 tutto loro, e con NumPy si limitano a scambiarsi i dati.
 ```
 
 Dire che Pandas o scikit-learn sono «costruiti su NumPy» vuol dire che tengono
-i numeri in array di NumPy e fanno i conti con le sue operazioni, invece di
-riscriverle: Pandas aggiunge le etichette, le colonne e il raggruppamento
-delle righe, e quando c'è da sommare un milione di valori la somma la fa
+i numeri in array di NumPy e calcolano con le sue operazioni, invece di
+riscriverle. Pandas aggiunge le etichette, le colonne e il raggruppamento
+delle righe, e quando c'è da sommare un milione di valori, la somma tocca a
 NumPy.
 
-Il modo in cui NumPy esegue quella somma ha un nome, **vettorizzazione**: invece
-di dire al calcolatore che cosa fare a un numero e poi ripeterglielo un milione
-di volte, glielo si dice una volta sola sul blocco intero. Da dove venga il
-guadagno è meno ovvio di quanto sembri.
+Il modo in cui NumPy esegue quella somma ha un nome, **vettorizzazione**:
+invece di dire al calcolatore che cosa fare a un numero e poi ripeterglielo un
+milione di volte, glielo si dice una volta sola sul blocco intero. Quasi tutto
+il guadagno sta nel lavoro che l'interprete svolge attorno a ogni operazione, e
+non nell'aritmetica.
 
 `````{tab} Elementare
 
-Dieci centesimi di pedaggio non sono cari. Un milione di volte, sì.
+Dieci centesimi di pedaggio sono poca cosa; un milione di volte fanno centomila
+euro.
 
 Con il solo Python, raddoppiare un milione di numeri vuol dire percorrerli uno
-per uno in un ciclo (un'istruzione che si ripete tante volte, spiegata fra
-le basi del linguaggio), e a ogni giro Python paga il suo pedaggio: apre la
-casella, guarda che cosa c'è dentro, si ricorda che quello è un numero, cerca
-come si moltiplicano i numeri, e solo alla fine moltiplica. La moltiplicazione
-dura un istante; il pedaggio è tutto il resto, e si paga a ogni giro.
+per uno in un ciclo (un'istruzione che si ripete tante volte, spiegata nelle
+{doc}`basi del linguaggio </Python/basi>`). A ogni giro Python paga il suo
+pedaggio: apre la casella, guarda che cosa c'è dentro, si ricorda che quello è
+un numero, cerca come si moltiplicano i numeri, e solo alla fine moltiplica. La
+moltiplicazione dura un istante; il pedaggio è tutto il resto, e si paga a ogni
+giro.
 
 Con NumPy si scrive `2 * x`, dove `x` è il blocco intero dei numeri, e il
 pedaggio si paga una volta sola, all'ingresso. Da lì in poi Python resta fuori:
 dentro lavora un programma già tradotto in linguaggio macchina, che percorre il
-blocco senza fermarsi a chiedersi che cosa contiene, e che i numeri li prende a
+blocco senza fermarsi a chiedersi che cosa contiene, e prende i numeri a
 manciate invece che uno per volta, perché il processore sa moltiplicarne
-parecchi con una mossa sola. Perché possa farlo, però, i numeri devono stare in
-fila ed essere tutti dello stesso tipo, ed è la condizione che NumPy impone e
-che una lista di Python non rispetta.
+parecchi con un'unica istruzione. Perché possa farlo, però, i numeri devono
+stare in fila ed essere tutti dello stesso tipo: una condizione che NumPy
+impone e che una lista di Python non rispetta.
 
-Per i conti fra intere tabelle di numeri il lavoro passa oltre, a librerie
+Per i calcoli fra intere tabelle di numeri, NumPy affida il lavoro a librerie
 specializzate che qualcuno ha passato decenni a limare, le stesse che girano
 nei centri di calcolo.
 
-Fra il ciclo e la riga sola c'è un fattore cento, a volte mille. Ed è la
-ragione per cui le librerie scientifiche si sono messe d'accordo tutte sullo
-stesso blocco di numeri: chi lo produce e chi lo consuma non hanno niente da
-tradursi.
+Fra il ciclo e la riga sola c'è un fattore cento, a volte mille. Per questo le
+librerie scientifiche si sono messe d'accordo tutte sullo stesso blocco di
+numeri: chi lo produce e chi lo consuma non hanno niente da tradursi.
 
 `````
 
@@ -234,8 +230,8 @@ tradursi.
 La vettorizzazione è una singola operazione dichiarata su un intero array e
 delegata in blocco a codice compilato, invece di riattraversare il ciclo di
 valutazione dell'interprete a ogni elemento. Un `ndarray` di NumPy è una vista
-tipizzata su un blocco di memoria, contiguo nel caso più comune, ed è la
-tipizzazione a rendere la delega possibile: il codice chiamato sa in anticipo
+tipizzata su un blocco di memoria, contiguo nel caso più comune, e questa
+tipizzazione rende possibile la delega: il codice chiamato sa in anticipo
 quanti byte è largo ogni elemento e come si combinano, mentre su una lista di
 oggetti Python dovrebbe scoprirlo caso per caso.
 
@@ -262,7 +258,7 @@ con cui puoi conversare. Un passo avanti è il **notebook Jupyter**: un
 quaderno digitale fatto di celle, dove testo, codice, grafici e formule
 convivono nella stessa pagina. Scrivi una cella, la esegui, guardi il grafico
 che appare lì sotto. È il modo in cui gran parte del machine learning viene
-davvero insegnato e praticato.
+insegnato e praticato.
 
 Le celle però condividono la memoria: quello che una ha calcolato resta a
 disposizione delle altre. La comodità ha un tranello. Se esegui le celle in un
@@ -271,10 +267,9 @@ tuoi clic, non quello delle righe, e può mostrare un risultato che, rileggendo
 la pagina, non torna. Il rimedio, quando succede, è rieseguire tutto da capo,
 dall'alto in basso.
 
-E se non vuoi installare nulla? **Google Colab** ti dà un notebook nel
-browser, gratuito, e spesso con una scheda grafica in prestito: abbastanza per
-addestrare un modello senza
-possedere un computer potente.
+Se non vuoi installare nulla, **Google Colab** ti dà un notebook nel browser,
+gratuito e spesso con una scheda grafica in prestito: abbastanza per
+addestrare un modello senza possedere un computer potente.
 
 `````
 
@@ -284,7 +279,9 @@ L'interprete interattivo è un **REPL** (*read–eval–print loop*); la version
 arricchita `IPython` ne è il motore. Un notebook Jupyter è un documento
 `.ipynb` (JSON di celle) eseguito da un *kernel* che mantiene lo stato tra una
 cella e l'altra: da qui la potenza (e i tranelli) dell'esecuzione fuori
-ordine. **Google Colab** è un ambiente Jupyter gestito, con acceleratori
+ordine. Lo stato vive nel kernel e non nel file: un notebook è riproducibile
+solo se, riavviato il kernel e rieseguito dall'alto, produce gli stessi
+risultati. **Google Colab** è un ambiente Jupyter gestito, con acceleratori
 hardware (GPU/TPU) accessibili gratuitamente entro certi limiti, ideale per
 prototipazione e didattica riproducibile.
 
@@ -292,7 +289,8 @@ prototipazione e didattica riproducibile.
 
 ## Preparare l'ambiente: la prima riga eseguita davvero
 
-Il codice si può leggere, ma è fatto per essere provato.
+Per provare gli esempi ci sono due strade: nel browser, senza installare
+niente, oppure sul proprio computer.
 
 ### Senza installare niente
 
@@ -313,18 +311,18 @@ Il codice di ogni capitolo si esegue online, su book.paithon.it.
 ### Sul proprio computer
 
 Serve un **terminale**, cioè la finestra in cui si scrivono comandi al computer
-invece di cliccare: si chiama *Terminale* su macOS e Linux, *Prompt dei comandi*
-(o *PowerShell*) su Windows. Serve anche Python 3.11 o successivo: le versioni
-delle librerie usate negli esempi (NumPy 2, Pandas 3, Matplotlib 3.11) non
-girano su un Python più vecchio. Su Linux un Python di solito c'è già, ma va
-controllato, perché una distribuzione non recente ne ha uno più datato. Su macOS
-no: `/usr/bin/python3` è un segnaposto che esiste per gli strumenti da
-sviluppatore di Apple, al primo uso propone di installarli e contiene una
-versione vecchia, quindi anche lì Python si scarica da `python.org`, come su
-Windows. Su Windows, durante l'installazione, si spunta «Add Python to PATH»: è
-la casella che dice al terminale dove si trova Python, e senza di essa il
-terminale risponderà che Python non lo trova. Poi, quattro gesti (su Windows il
-comando si chiama `python`, oppure `py`, al posto di `python3`):
+invece di cliccare: si chiama *Terminale* su macOS e Linux, *Prompt dei
+comandi* (o *PowerShell*) su Windows. Serve anche Python 3.11 o successivo,
+perché le versioni delle librerie usate negli esempi (NumPy 2, Pandas 3,
+Matplotlib 3.11) non girano su un Python più vecchio. Su Linux un Python di
+solito c'è già, ma una distribuzione non recente ne ha uno più datato, quindi va
+controllato. Su macOS `/usr/bin/python3` è un segnaposto: al primo uso propone
+di installare gli strumenti da sviluppatore di Apple e contiene una versione
+vecchia, perciò anche lì Python si scarica da `python.org`, come su Windows. Su
+Windows, durante l'installazione, si spunta «Add Python to PATH»: è la casella
+che dice al terminale dove si trova Python, e senza di essa il terminale
+risponde che Python non lo trova. Poi quattro gesti (su Windows il comando si
+chiama `python`, oppure `py`, al posto di `python3`):
 
 ```text
 python3 --version        # c'è? risponde con il numero, per esempio "Python 3.12.3"
@@ -340,7 +338,7 @@ non nel terminale.
 Le istruzioni scritte all'interprete si perdono quando lo si chiude. Per tenere
 un programma lo si scrive in un file di testo con estensione `.py` (per esempio
 `primo.py`, con dentro `print("ciao")`) e lo si esegue con `python3 primo.py`.
-Il file lo si può scrivere con qualunque editor di testo, ma conviene
+Il file si può scrivere con qualunque editor di testo, ma conviene
 usarne uno che conosca Python e segnali gli errori mentre scrivi: i due più
 diffusi sono Visual Studio Code e PyCharm, gratuiti entrambi. Se un
 programma non finisce più (capita: basta un ciclo scritto male) si ferma
@@ -374,17 +372,17 @@ manca `ensurepip`. Quelle due distribuzioni consegnano Python senza il modulo
 che crea gli ambienti, e il modulo va chiesto a parte, una volta sola, con
 `sudo apt install python3-venv`. La parola `sudo` davanti a un comando
 significa «questo lo faccio da amministratore», e il terminale chiederà la
-password: serve perché stiamo aggiungendo qualcosa al computer intero, e non al
+password: serve perché stai aggiungendo qualcosa al computer intero, e non al
 singolo progetto.
 
-Due parole sui comandi. Il `-m` vuol dire «esegui il modulo che si chiama
-così», dove un modulo è un file di Python che si può tanto eseguire quanto
-importare; è il modo di lanciare uno strumento incluso in Python invece
-che un file scritto da te, e `venv` è quello strumento. `source` esegue le
-istruzioni contenute in un file senza aprire una finestra nuova, e serve
-proprio perché l'attivazione deve valere per il terminale che hai davanti. Che
-abbia funzionato lo vedi subito: all'inizio della riga del terminale compare
-`(.venv)`, e resta lì finché l'ambiente è attivo.
+Il `-m` vuol dire «esegui il modulo che si chiama così», dove un modulo è un
+file di Python che si può tanto eseguire quanto importare. È il modo di
+lanciare uno strumento incluso in Python invece che un file scritto da te, e
+`venv` è quello strumento. `source` esegue le istruzioni contenute in un file
+senza aprire una finestra nuova, e serve proprio perché l'attivazione deve
+valere per il terminale che hai davanti. Si vede subito se ha funzionato:
+all'inizio della riga del terminale compare `(.venv)`, e resta lì finché
+l'ambiente è attivo.
 
 Finito di lavorare, dall'ambiente si esce con `deactivate`, e quel `(.venv)`
 sparisce. Per ritrovare le stesse librerie su un'altra macchina,
@@ -405,7 +403,7 @@ non escono da lì, e due progetti sulla stessa macchina possono usare versioni
 diverse della stessa libreria senza incontrarsi.
 ```
 
-La separazione di {numref}`fig-ambiente-python` è quella che evita il progetto
+La separazione di {numref}`fig-ambiente-python` evita il progetto
 che non parte più: l'aggiornamento resta dentro l'ambiente del progetto che lo
 ha chiesto. Il Python di sistema resta intoccato, e cestinare un progetto
 significa cestinare anche il suo ambiente.
@@ -427,13 +425,13 @@ matematica </Matematica/overview>` fa i suoi conti e quello sul
 ```{admonition} Da ricordare
 :class: important
 - Python domina l'AI perché si legge, perché per quasi tutto c'è già una
-  libreria pronta e perché lo usa moltissima gente. Veloce non lo è, e non ne
-  ha bisogno: i conti pesanti li fa fare a librerie scritte in linguaggi più
-  vicini alla macchina, e si limita a dare gli ordini.
-- Le librerie sono una torre: NumPy alla base (i numeri), sopra Pandas
-  (le tabelle), Matplotlib (i grafici) e scikit-learn. PyTorch, con cui si
-  costruiscono le reti neurali, sta accanto alla torre più che sopra: i conti
-  se li fa da sé, e con NumPy si limita a scambiarsi i dati.
+  libreria pronta e perché lo usa moltissima gente. Veloce non lo è, ma
+  affida i calcoli pesanti a librerie scritte in linguaggi più vicini alla
+  macchina, e si limita a dare gli ordini.
+- Le librerie sono una torre: NumPy alla base (i numeri), sopra Pandas (le
+  tabelle), Matplotlib (i grafici) e scikit-learn. PyTorch, con cui si
+  costruiscono le reti neurali, sta accanto alla torre più che sopra: fa i
+  calcoli con un motore proprio, e con NumPy si limita a scambiarsi i dati.
 - Il guadagno di scrivere il conto sul blocco intero invece che numero per
   numero sta nel pedaggio che Python paga a ogni giro di un ciclo, e che così
   si paga una volta sola.
@@ -457,7 +455,7 @@ matematica </Matematica/overview>` fa i suoi conti e quello sul
 - Python domina l'AI per leggibilità, ecosistema e comunità più che
   per velocità bruta: fa da collante a librerie compilate in C/C++/CUDA.
 - Lo stack scientifico è a strati: NumPy alla base, poi Pandas, Matplotlib
-  e scikit-learn, che su di lui poggiano davvero. PyTorch e TensorFlow stanno
+  e scikit-learn, che poggiano su di lui. PyTorch e TensorFlow stanno
   invece a fianco: hanno un motore di calcolo proprio, e con NumPy si limitano
   a scambiare i dati.
 - Il guadagno della vettorizzazione viene dall’*overhead* dell'interprete
@@ -471,8 +469,7 @@ matematica </Matematica/overview>` fa i suoi conti e quello sul
 
 `````
 
-L'ambiente adesso c'è, e finora è rimasto vuoto. Quello che ci va dentro sono
-poche cose ripetute molte volte: dare un nome a un valore, tenerne insieme
-tanti, decidere, ripetere, e mettere da parte un pezzo di lavoro perché
-risponda a un nome. Sono le basi del linguaggio, e bastano già a scrivere il
-primo programma che serva a qualcosa.
+Con l'ambiente pronto si comincia dal linguaggio: poche cose ripetute molte
+volte, cioè dare un nome a un valore, tenerne insieme tanti, decidere,
+ripetere, racchiudere un pezzo di lavoro in una funzione che risponde a un
+nome. Sono le basi, e bastano già a scrivere un primo programma utile.

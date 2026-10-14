@@ -21,7 +21,7 @@ gateway deve difendersi.
 Un'applicazione che usa modelli linguistici raramente parla con un modello
 solo, e quasi mai direttamente. In mezzo c'è un **gateway**, una porta unica da
 cui passano tutte le chiamate, e dietro stanno i modelli: repliche proprie,
-servizi di terzi raggiunti via rete. Il gateway fa quattro mestieri. Decide chi
+servizi di terzi raggiunti via rete. Il gateway ha quattro funzioni. Decide chi
 passa e quanto, decide che cosa fare quando un modello non risponde, sceglie a
 quale modello mandare ciascuna richiesta, e registra che cosa succede. Il
 limite, i ritentativi e il ripiego su un altro modello sono meccanismi di difesa
@@ -44,14 +44,14 @@ secondi e ne tiene al massimo cinquanta in pila. Chi arriva prende dalla pila
 tanti biglietti quanti ne servono al suo gruppo; se la pila non basta, aspetta
 che la macchina ne stampi altri.
 
-Succedono due cose insieme, ed è per questo che il meccanismo funziona. Nel
-lungo periodo non entra più di un visitatore ogni sei secondi, perché più in
-fretta la macchina non stampa. Ma se il museo è rimasto tranquillo per un po’
-la pila è piena, e una scolaresca di cinquanta ragazzi entra tutta insieme
-senza aspettare: le raffiche sono permesse, purché siano state pagate prima da
-un po’ di calma. L'altezza della pila decide quanto può essere grande una
-raffica, il ritmo della stampa quanto si entra in media, e le due cose si
-regolano separatamente.
+Il meccanismo funziona perché succedono due cose insieme. Nel lungo
+periodo non entra più di un visitatore ogni sei secondi, perché più in fretta
+la macchina non stampa. Se il museo è rimasto tranquillo per un po’ la pila è
+piena, e una scolaresca di cinquanta ragazzi entra tutta insieme senza
+aspettare: le raffiche sono permesse, purché siano state pagate prima da un po’
+di calma. L'altezza della pila decide quanto può essere grande una raffica, il
+ritmo della stampa quanto si entra in media, e le due cose si regolano
+separatamente.
 
 Con i modelli i biglietti sono token, e c'è una complicazione: quanti ne
 consumerà una richiesta si sa solo per metà. Il testo in entrata si conta prima
@@ -114,19 +114,18 @@ servizio di tutti gli altri.
 
 Il tasso però non basta, perché con un LLM una richiesta lunga occupa il
 servente molto più di una breve. Si aggiunge allora un limite $L_{\max}$ sulle
-richieste in volo. Per la legge di Little, la stessa che in
-{doc}`Quante repliche accendere </MLOps/capacita-e-costo>` dà il bersaglio
-dell'autoscaler, il tasso medio ammesso è $L_{\max}/W$, con $W$ la permanenza
-media: quando il servente rallenta, $W$ cresce e il limite ammette meno
-richieste da sé. Quelle oltre il limite si respingono subito (*load shedding*)
-invece di accodarle, così che la coda non cresca proprio quando la capacità
-manca.
+richieste in volo. Per la legge di Little, la stessa che in {doc}`Quante
+repliche accendere </MLOps/capacita-e-costo>` dà il bersaglio dell'autoscaler,
+il tasso medio ammesso è $L_{\max}/W$, con $W$ la permanenza media: quando il
+servente rallenta, $W$ cresce e il limite ammette meno richieste. Quelle oltre
+il limite si respingono subito (*load shedding*) invece di accodarle, così che
+la coda non cresca nel momento in cui la capacità manca.
 
 `````
 
 ## Quando un modello non risponde
 
-Il secondo mestiere è il più delicato. Un modello può non rispondere per molte
+Il secondo compito è il più delicato. Un modello può non rispondere per molte
 ragioni (una replica caduta, un fornitore sovraccarico, una rete che perde
 pacchetti), e la reazione istintiva, riprovare, ripara un guasto isolato e
 aggrava un guasto da sovraccarico, a meno che qualcuno non ne limiti il numero.
@@ -138,21 +137,21 @@ Il lunedì alle otto lo studio del medico apre le prenotazioni, e le prende con
 la segreteria telefonica: si lascia un messaggio, e l'impiegata richiama i
 pazienti uno alla volta, nell'ordine in cui hanno chiamato. Chi non viene
 richiamato entro un quarto d'ora pensa che il messaggio sia andato perso e ne
-lascia un altro. Riprovare, di per sé, funziona: se un messaggio si è perso
-davvero, il secondo arriva.
+lascia un altro. Riprovare, di per sé, funziona: se un messaggio si è perso, il
+secondo arriva.
 
-Ma alle otto chiama mezzo quartiere, e l'impiegata non riesce a richiamare tutti
-entro un quarto d'ora. Allora quasi tutti lasciano un secondo messaggio, poi un
-terzo, e i messaggi smettono di essere quelli dei pazienti: sono i pazienti
-moltiplicati per i tentativi di ciascuno. L'impiegata richiama in ordine, e
-passa la mattina a richiamare messaggi vecchi, di gente che intanto ne ha
-lasciati altri due o che si è stufata ed è andata altrove. Alle nove i pazienti
-nuovi quasi non chiamano più, e la segreteria è ancora piena: la ressa si
-mantiene da sola, alimentata dai messaggi ripetuti.
+Alle otto, invece, chiama mezzo quartiere, e l'impiegata non riesce a
+richiamare tutti entro un quarto d'ora. Allora quasi tutti lasciano un secondo
+messaggio, poi un terzo, e i messaggi smettono di essere quelli dei pazienti:
+sono i pazienti moltiplicati per i tentativi di ciascuno. L'impiegata richiama
+in ordine, e passa la mattina a richiamare messaggi vecchi, di gente che
+intanto ne ha lasciati altri due o che si è stufata ed è andata altrove. Alle
+nove i pazienti nuovi quasi non chiamano più, e la segreteria è ancora piena:
+la ressa si mantiene, alimentata dai messaggi ripetuti.
 
 Le difese stanno in parte da chi chiama e in parte dallo studio. Chi chiama può
 aspettare prima di riprovare, e aspettare ogni volta di più: un quarto d'ora,
-poi mezz'ora, poi un'ora. E non tutti lo stesso minuto, o alle otto e un quarto
+poi mezz'ora, poi un'ora. Non tutti lo stesso minuto, o alle otto e un quarto
 richiamano tutti insieme e si ricomincia: ciascuno aggiunge un po’ di caso alla
 sua attesa. La segreteria può mettere un tetto ai messaggi ripetuti, e se
 superano uno ogni dieci messaggi nuovi smette di registrarli, perché oltre quel
@@ -184,7 +183,7 @@ indipendente dal carico, il ritentativo è quasi gratuito e recupera quasi
 tutte le richieste. In un guasto da sovraccarico $p$ dipende invece dal carico
 stesso: più tentativi allungano la coda, la coda fa scadere più tentativi, i
 tentativi scaduti ne generano altri. È una retroazione positiva, che con
-$k = 3$ moltiplica per quattro il carico proprio quando la capacità manca, e
+$k = 3$ moltiplica per quattro il carico quando la capacità manca, e
 può tenere il sistema in sovraccarico anche dopo che la causa scatenante è
 sparita. È un **guasto metastabile** {cite}`bronson2021metastable`: allo stesso
 carico nominale il sistema ha due equilibri, e un'eccitazione transitoria lo
@@ -220,14 +219,14 @@ quelle già scadute (la *propagazione della scadenza*), sparisce il lavoro speso
 per nessuno, che è il combustibile della metastabilità.
 
 Per un modello generativo il timeout si scrive sul TTFT e sulla pausa massima
-fra token, non sulla durata totale: una risposta lunga è lenta per
-costruzione, e un timeout sul totale la interromperebbe regolarmente, trasformando
-una risposta sana in un ritentativo che rifà il prefill da capo. E una chiamata
-che genera testo non si può ritentare in modo trasparente dopo che i primi
-token sono già arrivati all'utente: il ritentativo va fatto prima del primo
-token, o bisogna saper riprendere lo stream. E ritentare una richiesta che il
-servente stava già generando fa pagare due volte: il lavoro del primo
-tentativo, e presso un fornitore anche i suoi token, è speso per nessuno.
+fra token, non sulla durata totale: una risposta lunga è lenta per costruzione,
+e un timeout sul totale la interromperebbe regolarmente, trasformando una
+risposta sana in un ritentativo che rifà il prefill da capo. Una chiamata che
+genera testo non si può ritentare in modo trasparente dopo che i primi token
+sono già arrivati all'utente: il ritentativo va fatto prima del primo token, o
+bisogna saper riprendere lo stream. Ritentare una richiesta che il servente
+stava già generando fa pagare due volte: il lavoro del primo tentativo, e
+presso un fornitore anche i suoi token, è speso per nessuno.
 
 `````
 
@@ -304,23 +303,23 @@ aspettava ancora: prima del guasto, nei trenta secondi dopo, fra trenta e
 novanta secondi dopo, e fra quattro e cinque minuti dopo. L'ultima è quanto
 resta in fila quando la simulazione si ferma.
 
-Senza ritentativi il servizio si riprende da solo. A guasto finito in fila ci
-sono ottocento tentativi che, quando il modello li raggiunge, nessuno aspetta
-più, e il modello li smaltisce con un margine di venti al secondo (cento contro
-ottanta). Finché la fila vale più di due secondi d'attesa, cioè per una
-trentina di secondi, lavora a vuoto: ogni risposta arriva a qualcuno che se n'è
-già andato. Poi le risposte utili tornano a ottanta. Con tre ritentativi il
-servizio non si riprende più ({numref}`fig-tempesta-che-resta`). Ogni richiesta
-che trova la fila lunga scade, e scadendo ne genera un'altra, fino a quattro
-tentativi: 320 al secondo contro una capacità di 100. La fila cresce senza fine
-(68.192 tentativi quando la simulazione si ferma), il modello lavora al massimo
-e le risposte utili sono zero, con il guasto finito da cinque minuti. È lo
-stato che si chiama metastabile: la causa è sparita, ma il sistema resta
-bloccato in una condizione che si alimenta da sola, e ci resta finché qualcuno
-non spegne i ritentativi o non taglia il traffico. Ed era esposto molto prima
-degli ottanta al secondo: con tre ritentativi basta che le richieste nuove
-superino le 25 al secondo perché un guasto abbastanza lungo porti i tentativi
-oltre la capacità, 25 per quattro tentativi, cioè 100.
+Senza ritentativi il servizio si riprende senza interventi. A guasto finito in
+fila ci sono ottocento tentativi che, quando il modello li raggiunge, nessuno
+aspetta più, e il modello li smaltisce con un margine di venti al secondo
+(cento contro ottanta). Finché la fila vale più di due secondi d'attesa, cioè
+per una trentina di secondi, lavora a vuoto: ogni risposta arriva a qualcuno
+che se n'è già andato. Poi le risposte utili tornano a ottanta. Con tre
+ritentativi il servizio non si riprende più ({numref}`fig-tempesta-che-resta`).
+Ogni richiesta che trova la fila lunga scade, e scadendo ne genera un'altra,
+fino a quattro tentativi: 320 al secondo contro una capacità di 100. La fila
+cresce senza fine (68.192 tentativi quando la simulazione si ferma), il modello
+lavora al massimo e le risposte utili sono zero, con il guasto finito da cinque
+minuti. È lo stato che si chiama metastabile: la causa è sparita, ma il sistema
+resta bloccato in una condizione che si autoalimenta, e ci resta finché
+qualcuno non spegne i ritentativi o non taglia il traffico. Ed era esposto
+molto prima degli ottanta al secondo: con tre ritentativi basta che le
+richieste nuove superino le 25 al secondo perché un guasto abbastanza lungo
+porti i tentativi oltre la capacità, 25 per quattro tentativi, cioè 100.
 
 ```{figure} ../figures/tempesta-che-resta.svg
 :name: fig-tempesta-che-resta
@@ -354,11 +353,11 @@ guasto e aspetta ancora.
 
 ## A quale modello
 
-Il terzo mestiere nasce dal fatto che i modelli non costano uguale e non sanno
+Il terzo compito nasce dal fatto che i modelli non costano uguale e non sanno
 le stesse cose. Mandare tutto al modello più grande è la scelta sicura e la più
 cara, mandare tutto al più piccolo la più economica e la più rischiosa. Fra le
 due c'è l’**instradamento** (*routing*), che decide richiesta per richiesta chi
-deve rispondere. Accanto c'è un mestiere che gli somiglia e che non va
+deve rispondere. Accanto c'è una funzione che gli somiglia e che non va
 confuso, il **ripiego** (*fallback*): dove andare quando chi doveva rispondere
 non risponde.
 
@@ -376,23 +375,23 @@ Si può fare anche un'altra cosa, che somiglia al triage e funziona al rovescio.
 Tutti passano prima dall'ambulatorio veloce, e il medico generico prova a
 risolvere; se capisce che il caso lo supera, manda il paziente dallo
 specialista. La decisione arriva dopo una visita, quindi è più informata, e lo
-specialista vede solo i casi difficili. Il prezzo è che chi arriva allo
-specialista ha pagato due visite e ha aspettato due volte. Se il generico costa
-un decimo dello specialista e risolve otto casi su dieci, cento pazienti
-costano cento visite dal generico, che valgono quanto dieci dallo specialista,
-più le venti visite dallo specialista di chi non è stato risolto: trenta in
-tutto, meno di un terzo delle cento che servirebbero mandando tutti da lui.
-Conviene finché il generico sa riconoscere i casi che non sa risolvere; uno che
-si crede bravo e non manda mai nessuno costa poco e sbaglia molto.
+specialista vede solo i casi difficili. In cambio, chi arriva allo specialista
+ha pagato due visite e ha aspettato due volte. Se il generico costa un decimo
+dello specialista e risolve otto casi su dieci, cento pazienti costano cento
+visite dal generico, che valgono quanto dieci dallo specialista, più le venti
+visite dallo specialista di chi non è stato risolto: trenta in tutto, meno di
+un terzo delle cento che servirebbero mandando tutti da lui. Conviene finché il
+generico sa riconoscere i casi che non sa risolvere; uno che si crede bravo e
+non manda mai nessuno costa poco e sbaglia molto.
 
 Poi c'è il caso in cui lo specialista non c'è. Il turno salta, il reparto
 chiude, e il paziente va mandato in un altro ospedale. Qui il criterio smette
-di essere la difficoltà del caso e diventa la disponibilità. E l'altro ospedale
+di essere la difficoltà del caso e diventa la disponibilità. L'altro ospedale
 ha i suoi protocolli, i suoi moduli, le sue abitudini: il paziente sarà curato,
 ma non allo stesso modo. Se nessuno ha mai provato a mandarcene uno, il giorno
 che serve si scopre che il numero di telefono del reparto era sbagliato.
 L'altro ospedale, che di colpo riceve anche i pazienti del primo, rischia di
-chiudere a sua volta. E se i due dipendevano dallo stesso centralino, quando il
+chiudere a sua volta. Se i due dipendevano dallo stesso centralino, quando il
 centralino si ferma si fermano insieme.
 
 `````
@@ -430,20 +429,20 @@ sbagliate, che sono l'errore che la cascata non recupera. Con due modelli, e
 trascurando il costo del punteggiatore, la cascata costa meno che mandare tutto
 al secondo se $c_1 + (1-u_1)c_2 < c_2$, cioè se $u_1 > c_1/c_2$.
 
-Il **fallback** risponde alla disponibilità, e non alla difficoltà: è una
-lista ordinata di destinazioni equivalenti, percorsa quando la prima fallisce o
+Il **fallback** risponde alla disponibilità, e non alla difficoltà: è una lista
+ordinata di destinazioni equivalenti, percorsa quando la prima fallisce o
 supera il timeout, di solito dietro un circuit breaker, così che una
 destinazione aperta venga saltata senza aspettarne la scadenza. Tre avvertenze
 lo separano da un ritentativo qualsiasi. Due modelli non sono intercambiabili:
 tokenizzatore, lunghezza massima del contesto, formato delle chiamate agli
 strumenti e comportamento sullo stesso prompt cambiano, quindi il ripiego va
-valutato con lo stesso protocollo del primario (la valutazione di
-{doc}`LLMOps </MLOps/llmops>`). Il ripiego scarica sulla riserva il traffico
-del primario nel momento in cui questo cade, e una riserva dimensionata per il
-proprio traffico normale cade a sua volta: è la stessa amplificazione dei
-ritentativi, un livello più su. E le destinazioni devono guastarsi in modo
-indipendente, senza condividere la regione di calcolo, il fornitore o la
-dipendenza comune che le farebbe cadere insieme.
+valutato con lo stesso protocollo del primario (la valutazione di {doc}`LLMOps
+</MLOps/llmops>`). Il ripiego scarica sulla riserva il traffico del primario
+nel momento in cui questo cade, e una riserva dimensionata per il suo traffico
+normale cade a sua volta: è la stessa amplificazione dei ritentativi, un
+livello più su. Le destinazioni devono guastarsi in modo indipendente, senza
+condividere la regione di calcolo, il fornitore o la dipendenza comune che le
+farebbe cadere insieme.
 
 `````
 
@@ -483,7 +482,7 @@ Tracciare tutto rallenterebbe il servizio e riempirebbe i dischi, e allora si
 traccia solo una parte dei pacchi. Chi decide quali seguire alla partenza, prima
 di sapere com'è andata, perde quasi sempre i pochi pacchi in ritardo; chi decide
 a consegna finita può tenere sempre quelli lenti o finiti male, che sono quelli
-da cui si impara. E il contenuto del pacco non si fotografa: il testo delle
+da cui si impara. Il contenuto del pacco non si fotografa: il testo delle
 domande e delle risposte può contenere i dati di chi scrive, e si registra solo
 dove le regole lo consentono.
 
@@ -510,15 +509,15 @@ più gli span figli (recuperi di documenti, chiamate a strumenti) che precedono
 il primo token, con $t_{\text{rete}}$ i due tratti di rete, l'andata della
 richiesta e il ritorno del primo token al cliente. È il TTFT visto dal cliente,
 come in {doc}`Misurare un servizio </MLOps/metriche-di-servizio>`; la somma
-$t_{\text{coda}} + t_{\text{prefill}}$ è il tratto che la replica misura da sé,
-il TTFT lato servente. Il TPOT è la durata dello span di decode divisa per
-$N_{\text{out}} - 1$. La p99 aggregata dice che uno dei termini è cresciuto; la
-traccia dice quale.
+$t_{\text{coda}} + t_{\text{prefill}}$ è il tratto che la replica può misurare
+in autonomia, il TTFT lato servente. Il TPOT è la durata dello span di decode
+divisa per $N_{\text{out}} - 1$. La p99 aggregata dice che uno dei termini è
+cresciuto; la traccia dice quale.
 
 Il campionamento in testa (*head-based*), deciso all'ingresso con probabilità
-fissa come in Dapper, costa poco ma perde quasi tutte le richieste rare; quello
+fissa come in Dapper, è economico ma perde quasi tutte le richieste rare; quello
 in coda (*tail-based*), deciso a traccia completa, trattiene tutte le lente e
-tutte quelle in errore, al prezzo di tenere in memoria gli span finché la
+tutte quelle in errore, con l'onere di tenere in memoria gli span finché la
 richiesta non finisce. Gli attributi propri di un LLM sono il modello e la sua
 versione, $N_{\text{in}}$ e $N_{\text{out}}$, i token trovati nella cache del
 prefisso, l'indice del tentativo e l'eventuale destinazione di ripiego: senza gli
@@ -534,38 +533,38 @@ loro protezione lo consentono, di solito ridotto o cifrato.
 Le difese viste fin qui hanno un difetto in comune: entrano in funzione solo
 quando qualcosa va storto, cioè di rado, e il codice che gira di rado è il meno
 collaudato del sistema. Era il caso di AT&T, dove il `break` sbagliato stava
-proprio nel percorso di recupero. Il modo più affidabile di sapere se un ripiego
+nel percorso di recupero. Il modo più affidabile di sapere se un ripiego
 funziona è farlo scattare, in condizioni controllate.
 
 `````{tab} Elementare
 
 Una scuola non aspetta un incendio per scoprire se l'uscita di sicurezza si
 apre. Un paio di volte l'anno suona l'allarme per finta, e tutti escono. Prima
-di cominciare si stabilisce che cosa vuol dire che è andata bene (tutti in
+di cominciare si stabilisce quando l'esercitazione è andata bene (tutti in
 cortile entro tre minuti, nessuno dimenticato in bagno), e a esercitazione
-finita si confronta quello che è successo con quella promessa. Se il tempo è
-stato rispettato, la scuola ha una prova in più che il piano regge; se no, ha
+finita si confronta l'esito con quella promessa. Se il tempo è stato
+rispettato, la scuola ha una prova in più che il piano funziona; se no, ha
 trovato il difetto in un giorno tranquillo invece che durante un incendio.
 
 L'esercitazione si fa con la scuola vera, in orario di lezione, con i ragazzi
 veri: provata di sabato a scuola vuota direbbe che le porte si aprono, non che
-trecento persone ci passano in tre minuti. Ma il guasto finto tocca pochi: si
-fa trovare chiusa una scala a una classe sola, mentre tutte le altre escono
-come sempre, così la ressa nei corridoi è quella vera e, se qualcosa va storto,
-il problema resta confinato. C'è anche un modo di fermare tutto se va storto
-davvero. E si cambia l'evento, perché gli incendi non scelgono il momento
-comodo: un anno l'allarme suona mentre la scala principale è chiusa per lavori,
-un altro durante la ricreazione. Poi la si ripete, perché la scuola cambia
-(un'aula nuova, un corridoio chiuso) e il piano che reggeva l'anno scorso può
-non reggere più.
+trecento persone ci passano in tre minuti. Il guasto finto, invece, tocca
+pochi: si fa trovare chiusa una scala a una classe sola, mentre tutte le altre
+escono come sempre, così la ressa nei corridoi è quella vera e, se qualcosa va
+storto, il problema resta confinato. C'è anche un modo di fermare tutto se la
+prova degenera. Si cambia anche l'evento, perché gli incendi non scelgono il
+momento comodo: un anno l'allarme suona mentre la scala principale è chiusa per
+lavori, un altro durante la ricreazione. Poi la si ripete, perché la scuola
+cambia (un'aula nuova, un corridoio chiuso) e il piano valido l'anno scorso può
+non esserlo più.
 
 Con un servizio che risponde attraverso dei modelli si fa lo stesso. Si spegne
 apposta una replica, si fa rispondere piano un fornitore, si fa dire a un
 modello «troppe richieste», e lo si fa per una piccola parte delle richieste
 vere, mentre tutte le altre passano come sempre. Poi si guarda se i ripieghi
 scattano, se il limite di frequenza protegge, se i ritentativi restano dentro
-il loro tetto. La promessa con cui confrontare quello che succede è quella di
-sempre: la quota di richieste servite bene.
+il loro tetto. La promessa con cui confrontare l'esito è quella di sempre: la
+quota di richieste servite bene.
 
 `````
 
@@ -576,12 +575,12 @@ un'ipotesi da falsificare con esperimenti controllati, e la riassume in quattro
 principi formulati sull'esperienza di Netflix. Si definisce uno *stato
 stazionario* come un'uscita misurabile del sistema che indica il funzionamento
 normale (a Netflix gli avvii di streaming al secondo; qui il goodput, o la
-conformità agli SLO su TTFT e ITL), e si ipotizza che resti tale sia nel
-gruppo di controllo sia in quello sperimentale. Si introducono variabili che
+conformità agli SLO su TTFT e ITL), e si ipotizza che resti tale sia nel gruppo
+di controllo sia in quello sperimentale. Si introducono variabili che
 riproducono eventi reali: la caduta di una replica, la latenza di una
 dipendenza, risposte 429 o 5xx da un fornitore, la revoca di un'istanza
 prerilasciabile, la perdita di una zona. Si eseguono gli esperimenti in
-produzione, perché solo lì il carico ha la sua distribuzione vera. E li si
+produzione, perché solo lì il carico ha la sua distribuzione vera. Infine li si
 automatizza perché girino con continuità, dato che il sistema cambia e la
 confidenza guadagnata ieri invecchia. L'ipotesi è falsificata se lo stato
 stazionario differisce fra i due gruppi. Per contenere il rischio l'articolo
@@ -589,25 +588,25 @@ limita l'esperimento a una piccola percentuale degli utenti; la pratica
 successiva ne ha fatto un principio, il *raggio d'impatto* minimo, con un
 arresto automatico legato allo stato stazionario.
 
-Per un servizio che usa modelli, gli esperimenti che rendono di più sono
-quelli sui percorsi di recupero, perché sono quelli che il traffico normale
-non esercita mai: il circuit breaker si apre davvero sopra la soglia, il
-ripiego regge il traffico del primario oltre al proprio, il budget dei
+Per un servizio che usa modelli, gli esperimenti che rendono di più sono quelli
+sui percorsi di recupero, perché sono quelli che il traffico normale non
+esercita mai: il circuit breaker si apre sopra la soglia, il ripiego sostiene
+il traffico del primario oltre al traffico che già serve, il budget dei
 ritentativi tiene quando il primario restituisce solo errori, la revoca di
 un'istanza prerilasciabile non fa perdere le richieste in corso. I guasti
-metastabili spiegano perché serva la scala vera: la retroazione che li
-sostiene dipende dall'intensità del carico, e una prova in piccolo può non
-innescarla mai.
+metastabili spiegano perché serva la scala vera: la retroazione che li sostiene
+dipende dall'intensità del carico, e una prova in piccolo può non innescarla
+mai.
 
 `````
 
 Un gateway, quindi, lascia il modello com'è e gli costruisce intorno le
 condizioni per restare raggiungibile quando le cose vanno male. Limita chi
 chiede troppo, ritenta senza moltiplicare, instrada a chi costa meno quando
-basta, ripiega su una riserva provata, e registra abbastanza da capire che
-cosa è successo. E ognuno di questi meccanismi va provato rompendo di proposito
-le cose, perché è proprio il codice che gira solo nei giorni cattivi a
-nascondere il `break` fuori posto.
+basta, ripiega su una riserva provata, e registra abbastanza da capire che cosa
+è successo. Ognuno di questi meccanismi va provato rompendo di proposito le
+cose, perché a nascondere il `break` fuori posto è il codice che gira solo nei
+giorni cattivi.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -618,11 +617,11 @@ nascondere il `break` fuori posto.
   biglietti sono token: si prendono per la risposta più lunga permessa e si
   restituiscono quelli avanzati. Un distributore per cliente, perché chi
   esagera svuoti solo la sua pila, e un tetto alle persone presenti, che
-  rallenta gli ingressi da sé quando le sale si svuotano piano.
+  rallenta gli ingressi quando le sale si svuotano piano.
 - Ripetere un messaggio funziona quando il primo si è perso per caso; quando
   non si viene richiamati perché chiamano tutti, i messaggi ripetuti
-  moltiplicano il lavoro e la ressa si mantiene da sola anche dopo che la causa
-  è passata. Le difese sono aspettare sempre di più e ognuno un po’ a caso, un
+  moltiplicano il lavoro e la ressa continua anche dopo che la causa è
+  passata. Le difese sono aspettare sempre di più e ognuno un po’ a caso, un
   tetto ai messaggi ripetuti, l'avviso che chiude subito, e saltare i messaggi
   scaduti invece di richiamare chi non aspetta più.
 - Nella simulazione, dieci secondi di guasto con tre ritentativi lasciano il
@@ -634,7 +633,7 @@ nascondere il `break` fuori posto.
   l'ambulatorio veloce che manda dallo specialista solo i casi che lo
   superano: decide meglio, e chi ci passa paga due visite. Il ripiego su un
   altro modello è un altro ospedale: ha i suoi protocolli, va provato prima,
-  deve reggere anche i pazienti del primo e non deve dipendere dallo stesso
+  deve sostenere anche i pazienti del primo e non deve dipendere dallo stesso
   centralino.
 - Per capire dove va il tempo di una risposta serve la sua traccia, il
   percorso cronometrato tratto per tratto come il tracciamento di un pacco, e
@@ -657,7 +656,7 @@ nascondere il `break` fuori posto.
   il limite si allarga degli avanzi delle prenotazioni aperte. Secchi per
   cliente e per modello, su richieste e su token, danno l'isolamento; un limite
   $L_{\max}$ sulle richieste in volo ammette in media $L_{\max}/W$ richieste al
-  secondo, e si stringe da sé quando il servente rallenta.
+  secondo, e si stringe quando il servente rallenta.
 - Con probabilità di fallimento $p$ e $k$ ritentativi i tentativi per
   richiesta sono $A = (1-p^{k+1})/(1-p)$, che tende a $k+1$ nel sovraccarico:
   la retroazione può rendere il guasto metastabile
@@ -682,5 +681,5 @@ nascondere il `break` fuori posto.
 
 Tutto il lavoro di mettere un modello davanti a molte persone, dalle repliche
 ai gateway, si misura alla fine in schede accese e in ore di calcolo. Quelle
-ore hanno anche un conto che non si paga in euro, e che quasi nessuno dichiara:
-{doc}`Il conto in energia </MLOps/energia-e-impronta>`.
+ore hanno anche un costo che non si paga in euro, il {doc}`conto in energia
+</MLOps/energia-e-impronta>`.

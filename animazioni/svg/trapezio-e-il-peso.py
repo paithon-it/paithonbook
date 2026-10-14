@@ -30,12 +30,11 @@ Il banco di prova è un sistema scalare tempo-variante, dichiarato nella
 didascalia: non è Mamba-3, è la quadratura che Mamba-3 usa. Verifica la
 Proposizione 1 del paper, non l'implementazione.
 
-Una trappola, che è costata un falso verde a chi ha misurato prima di questo
-disegno: su un solo punto di partenza l'ordine si misura sbagliato, perché
-capita che la derivata seconda dell'integranda si annulli lì per caso. Lo
-scarto del pannello di destra è quindi una media su un giro intero di passi, e
-`verifica()` controlla anche che sul passo disegnato le due derivate non siano
-degeneri.
+Una trappola, che dà un falso verde: su un solo punto di partenza l'ordine si
+misura sbagliato, perché capita che la derivata seconda dell'integranda si
+annulli lì per caso. Lo scarto del pannello di destra è quindi una media su un
+giro intero di passi, e `verifica()` controlla anche che sul passo disegnato
+le due derivate non siano degeneri.
 
 Ferma: qui non scorre niente, sono due grafici.
 """
@@ -177,8 +176,8 @@ def verifica_testi(disegno: str) -> None:
     la larghezza dal numero di caratteri con le metriche del ripiego più
     largo. È un limite superiore grossolano e va bene così: quello che deve
     impedire è il caso in cui la stima ci sta e la resa no, e per questo la
-    costante sta sopra il peggio misurato. Il difetto che chiude si era visto
-    solo aprendo la figura: un sottotitolo tagliato a metà parola.
+    costante sta sopra il peggio misurato. Il difetto che chiude si vede solo
+    aprendo la figura: un sottotitolo tagliato a metà parola.
     """
     righe: dict[float, list] = {}
     for attributi, testo in re.findall(r"<text([^>]*)>([^<]*)</text>", disegno):

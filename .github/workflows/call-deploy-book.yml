@@ -15,8 +15,8 @@ on:
 
 jobs: 
   call-workflow:
-    # Solo dal repository pubblico. Il libro si scrive in un repo privato che ha
-    # gli stessi workflow: senza questa guardia proverebbe a pubblicare Pages da
+    # Solo dal repository pubblico: in un fork, o in un'altra copia con gli
+    # stessi workflow, senza questa guardia proverebbe a pubblicare Pages da
     # la', e il deploy ha una sola destinazione.
     if: github.repository == 'paithon-it/paithonbook'
     # Ancorato a un tag, non a `@main`. Il reusable e' di terzi e `main` si

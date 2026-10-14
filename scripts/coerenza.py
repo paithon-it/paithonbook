@@ -2,21 +2,20 @@
 """
 Cerca incoerenze nel libro: riferimenti che non portano da nessuna parte.
 
-Nasce da un'osservazione fatta assorbendo il corpus del magazine: quasi tutte
-le sezioni che mancavano davvero non erano temi dimenticati, erano **buchi di
-coerenza**. Il libro usava i decoratori senza averli spiegati, rimandava LoRA a
-una sezione che non esisteva, insegnava la U bias-varianza e altrove descriveva
-modelli da miliardi di parametri che la infrangono.
-
-Quelli si trovavano solo leggendo. Questi si trovano contando, e vale la pena
-toglierli di mezzo prima di rileggere:
+Le incoerenze di contenuto (un concetto usato prima di averlo spiegato, un
+rimando in prosa a una sezione che non c'e', un'affermazione che un altro
+capitolo smentisce) si trovano leggendo. Queste si trovano contando, e vale la
+pena toglierle di mezzo prima di rileggere:
 
   numref     riferimenti a figure/tabelle senza un :name: corrispondente
   cite       chiavi bibliografiche assenti dal .bib
   ref/doc    riferimenti interni a target inesistenti
   figure     file in book/figures/ che nessuno richiama
   toc        file sotto book/ non elencati in _toc.yml
-  landing    schede di intro.md che non corrispondono ai capitoli del _toc.yml,
+  codifica   pagine del toc con gli a capo CRLF o con un BOM in testa: non si
+             vedono in nessun editor, e una patch fatta su testo a capo LF su
+             quelle righe non si applica
+  landing   schede di intro.md che non corrispondono ai capitoli del _toc.yml,
              o a cui manca il collegamento al proprio capitolo in PDF
              (mancanti, di troppo, fuori ordine, o col numero scritto a mano)
   animazioni capitoli senza nemmeno una figura animata: zero clip puo' essere
@@ -52,14 +51,18 @@ toglierli di mezzo prima di rileggere:
              la verifica resta umana
   matematica segni di prosa finiti dentro `$...$`: l'apostrofo tipografico
              al posto della derivata prima, virgolette, lineette. Nessuno se ne
-             accorge (Sphinx non avvisa, MathJax li disegna), e una campagna di
-             ripulitura tipografica ne ha piazzati 36 in una volta sola
+             accorge (Sphinx non avvisa, MathJax li disegna), e una
+             sostituzione tipografica fatta su tutto il testo ce li porta
+             tutti insieme
   doppioni   la stessa frase scritta due volte nello stesso capoverso. Nasce
              dalle riscritture: si sostituisce un pezzo di testo con uno nuovo
              che riprende quello che diceva la frase dopo, e il capoverso
-             finisce per dirla due volte. Ne sono state trovate quattordici in
-             una passata sola, in nove capitoli, e nessuna l'ha vista un
-             controllo: la build non se ne accorge e il testo resta valido
+             finisce per dirla due volte. La build non se ne accorge e il
+             testo resta valido
+  frasi      le forme fisse di «La frase» in CONTRIBUTING.md (il libro che
+             parla di se', le formule d'annuncio, i calchi, il parlato
+             nella Superiore), solo elenco: quasi ogni forma ha anche un
+             uso giusto, e a decidere e' chi legge
   enfasi     il neretto per mille parole di prosa, capitolo per capitolo,
              contro il tetto di cinque. Non giudica QUALE marcatura sia
              giusta (i due assi in fondo a questa nota ci hanno provato e
@@ -73,68 +76,44 @@ toglierli di mezzo prima di rileggere:
              seguito da un capitolo che il lettore non ha ancora letto (e il
              contrario, «vedremo» verso un capitolo gia' letto). L'ordine di
              lettura sta nel _toc.yml, il link risolve benissimo e nessuna
-             build se ne accorge: trovato a mano in Visione e linguaggio (4
-             casi, verso i capitoli 21 e 24), in Audio (6) e in Speech (2)
+             build se ne accorge
 
   scripts/coerenza.py            # tutto
   scripts/coerenza.py --solo numref,cite
 
-Un asse PROVATO E SCARTATO, per non rifarlo: "termini usati prima di essere
-definiti", ricostruendo l'ordine di lettura dal _toc.yml e usando il grassetto
-come marca di introduzione (e' la convenzione del libro). Ha prodotto 474
-risultati quasi tutti rumore, parole comuni che capita siano in grassetto
-("ottimizzazione", "stessa", "a mano") e la front matter che anticipa tutto il
-libro per mestiere. Filtrando su intro/Introduzione e richiedendo che il
-termine sia anche un titolo di sezione si scende a 11, e di quegli 11 **nessuno
-e' un difetto reale**: l'unico plausibile, `transfer learning`, e' usato in
-corsivo tre volte prima del suo capitolo ma gia' glossato in una riga in
-DeepLearning/overview.
+Due assi PROVATI E SCARTATI, per non rifarli. Il primo cerca i termini usati
+prima di essere definiti, ricostruendo l'ordine di lettura dal _toc.yml e
+prendendo il grassetto come marca di introduzione (e' la convenzione del
+libro). Il secondo sembra aggirare il problema e non lo aggira: cerca i
+termini in grassetto solo dentro una scheda Superiore e usati anche nel testo
+comune, dove il lettore Elementare li incontra senza averli mai visti.
 
-La differenza col controllo sul codice e' il vocabolario: i costrutti Python
-sono un insieme chiuso e riconoscibile, i termini tecnici no. Su questo libro
-l'asse dell'ordine di introduzione e' esaurito.
+Tutti e due affogano nel rumore per la stessa ragione: nel libro il grassetto
+non marca solo l'introduzione di un termine, marca anche l'enfasi. Fra i
+risultati escono parole comuni che capita siano in grassetto («a sinistra»,
+«stessa», «10 minuti») e la front matter, che anticipa tutto il libro per
+mestiere, e il segnale resta sotto il rumore. I termini tecnici non sono un
+insieme chiuso e riconoscibile come i costrutti di un linguaggio, e il
+grassetto non basta a riconoscerli: quel difetto si vede leggendo, non
+contando. Il conteggio che invece funziona, e che sta qui sotto, e' quello
+dei riquadri «Da ricordare» fuori dalle schede, perche' li' la marca e' una
+direttiva MyST e non una convenzione tipografica.
 
-Un SECONDO asse provato e scartato (agosto 2026), che sembrava aggirare il
-problema di sopra e non lo aggira. La revisione a tre lenti ha trovato che il
-difetto piu' diffuso del libro e' un termine introdotto **solo dentro una scheda
-Superiore** e poi usato nel testo comune, dove il lettore Elementare lo incontra
-senza averlo mai visto: succede con GLA, Mamba-2, NT-Xent, «bias induttivo».
-Sembra contabile: si guarda in quale zona (fuori dalle schede / Elementare /
-Superiore) cade ogni occorrenza in grassetto, e si segnala chi e' in grassetto
-solo in Superiore ma compare anche altrove.
-
-Ha dato **625 risultati, quasi tutti rumore**, e per la stessa ragione di
-prima: nel libro il grassetto non marca solo l'introduzione di un termine, marca
-anche l'enfasi. Fra i primi risultati ci sono «a sinistra», «accanto»,
-«aggiorna», «10 minuti». Il segnale c'e' ma sta sotto il rumore, e un elenco di
-625 righe di cui novanta per cento false non lo legge nessuno.
-
-Quel difetto lo trovano bene i lettori (un agente che legge il capitolo come
-farebbe un tredicenne ne ha trovati 118 bloccanti in undici capitoli, con la
-causa giusta): e' una cosa che si vede leggendo, non contando. Il conteggio che
-invece funziona, e che sta qui sotto, e' quello dei riquadri «Da ricordare»
-fuori dalle schede, perche' li' la marca e' una direttiva MyST e non una
-convenzione tipografica.
-
-Un TERZO asse provato e scartato (agosto 2026), e questo e' un buco noto che
-resta aperto apposta. L'asse `lineette` maschera i blocchi di codice, per non
-segnalare i segni meno e le opzioni da riga di comando: quindi non vede una
-lineetta vietata scritta dentro un **commento**, che invece e' prosa a tutti
-gli effetti (in Transformers ne e' stata trovata una a mano).
-
-Estendere il controllo ai soli commenti sembra ovvio e non lo e'. Misurato su
-tutto il libro, togliendo i separatori `# ---` e gli intervalli numerici,
-resta **un solo** candidato, ed e' un falso positivo:
-`# modellino lineare ... normalizzata z = (x - mu)/sigma`. Nei commenti si
-scrivono formule, e in una formula il trattino spaziato e' un segno meno: il
-controllo segnalerebbe soprattutto quelle. Il libro e' pulito su questo asse, e
-il costo di tenerlo pulito con gli occhi e' minore del rumore che produrrebbe
-un controllo che sbaglia piu' spesso di quanto azzecchi.
+E un buco noto, che resta aperto apposta. L'asse `lineette` maschera i
+blocchi di codice, per non segnalare i segni meno e le opzioni da riga di
+comando: quindi non vede una lineetta vietata scritta dentro un **commento**,
+che invece e' prosa a tutti gli effetti. Estendere il controllo ai soli
+commenti sembra ovvio e non lo e': nei commenti si scrivono formule
+(`z = (x - mu)/sigma`), e in una formula il trattino spaziato e' un segno
+meno, quindi il controllo segnalerebbe soprattutto quelle. Tenerli puliti con
+gli occhi costa meno del rumore di un controllo che sbaglia piu' spesso di
+quanto azzecchi.
 """
 
 from __future__ import annotations
 
 import argparse
+import codecs
 import functools
 import hashlib
 import json
@@ -159,8 +138,15 @@ RX = {
     # "figures/nome.svg" invece di "nome.svg" e ogni figura risultava orfana.
     "fig_uso": re.compile(r"\{figure\}\s*\S*/([^\s`/]+)"),
     "img_uso": re.compile(r"!\[[^\]]*\]\(\S*/([^\s)/]+)\)"),
+    # Ancorata all'inizio della frase: `(?<![^.\n])` vuol dire dopo un punto,
+    # dopo un a capo o in testa al testo. Senza l'ancora `finditer` la
+    # riproverebbe da ogni posizione, e ogni volta `[^.\n]*` scorrerebbe la
+    # riga fino in fondo prima di cercare la parola: il costo crescerebbe con
+    # il quadrato della lunghezza della riga. Le frasi trovate sono le stesse,
+    # posizione per posizione.
     "avanti": re.compile(
-        r"[^.\n]*\b(vedremo|vedrai|prossima sezione|prossimo capitolo|"
+        r"(?<![^.\n])[^.\n]*"
+        r"\b(vedremo|vedrai|prossima sezione|prossimo capitolo|"
         r"piu[' ]avanti|torneremo|approfondiremo)\b[^.\n]*\.", re.I),
     # Le due formule con cui una frase dichiara da che parte sta il rimando.
     # Servono all'asse `verso`, e sono volutamente strette: meglio non vedere
@@ -175,13 +161,71 @@ RX = {
     # NON e' una formula di richiamo all'indietro «del capitolo su X»: nomina
     # un capitolo e basta, e nel libro compare piu' spesso per annunciare
     # («lo raccontano il capitolo sui Transformer e il capitolo su MLOps»)
-    # che per ricordare. Messa fra le formule all'indietro produceva due
-    # segnalazioni su tre false.
+    # che per ricordare. Messa fra le formule all'indietro, la maggior parte
+    # delle sue segnalazioni sarebbe falsa.
     "poi": re.compile(
         r"\b(vedremo|vedrai|lo vedremo|piu' avanti|più avanti|"
         r"nel prossimo capitolo|nella prossima sezione|torneremo|"
         r"approfondiremo|riprenderemo|lo riprende|ne parliamo)", re.I),
 }
+
+
+# L'uscita strutturata (`--json FILE`), per chi mostra le voci accanto al
+# testo invece di stamparle: una voce per occorrenza, con il file e la
+# posizione quando l'asse la conosce, e una misura per capitolo per gli assi
+# che contano contro un tetto. La stampa per chi legge resta identica, riga
+# per riga: le voci si aggiungono accanto, non al posto.
+VOCI: list[dict] = []
+
+
+def posizione(testo: str, inizio: int) -> tuple[int, int]:
+    """(riga, colonna), da 1, di un indice del testo.
+
+    La colonna conta i caratteri, non i byte: e' la misura di `len()`, e
+    «perché» vale sei, non sette.
+    """
+    riga = testo.count("\n", 0, inizio) + 1
+    return riga, inizio - (testo.rfind("\n", 0, inizio) + 1) + 1
+
+
+def voce(asse: str, categoria: str, file: str | None = None, *,
+         testo: str | None = None, inizio: int | None = None,
+         fine: int | None = None, riga: int | None = None,
+         colonna: int | None = None, fine_colonna: int | None = None,
+         identita: str = "", messaggio: str = "",
+         capitolo: str | None = None, **altro) -> None:
+    """Una voce dell'uscita strutturata.
+
+    La posizione si da' con il testo e gli indici (la fine esclusa), oppure
+    con riga e colonna gia' contate. `identita` e' cio' che resta uguale
+    quando la stessa voce si sposta di riga: il bersaglio di un rimando, la
+    chiave di una citazione, la frase. Chi confronta due giri la usa per dire
+    se un difetto e' nuovo o c'era gia'.
+    """
+    fine_riga = None
+    if testo is not None and inizio is not None:
+        riga, colonna = posizione(testo, inizio)
+        if fine is not None:
+            fine_riga, fine_colonna = posizione(testo, fine)
+    elif riga is not None and fine_colonna is not None:
+        fine_riga = riga
+    if capitolo is None and file and "/" in file:
+        capitolo = file.split("/")[0]
+    VOCI.append({"tipo": "voce", "asse": asse, "categoria": categoria,
+                 "file": file, "capitolo": capitolo, "riga": riga,
+                 "colonna": colonna, "fine_riga": fine_riga,
+                 "fine_colonna": fine_colonna, "identita": identita,
+                 "messaggio": messaggio or categoria, **altro})
+
+
+def misura(asse: str, categoria: str, capitolo: str, conteggio: float,
+           tetto: float, oltre: bool, occorrenze: list | None = None) -> None:
+    """Il conto di un capitolo contro il suo tetto, sopra o sotto che sia:
+    chi confronta due giri deve sapere anche quanto valeva prima."""
+    VOCI.append({"tipo": "misura", "asse": asse, "categoria": categoria,
+                 "capitolo": capitolo, "conteggio": conteggio,
+                 "tetto": tetto, "oltre": oltre,
+                 "occorrenze": occorrenze or []})
 
 
 def sorgenti() -> dict[str, str]:
@@ -190,9 +234,9 @@ def sorgenti() -> dict[str, str]:
     #
     # _build/ e' l'uscita di Sphinx, e va esclusa perche' contiene una COPIA di
     # ogni sorgente sotto `_sources/`: una cartella di build dimenticata in giro
-    # fa contare ogni file due volte e il totale passa da 6 problemi a 258, tutti
-    # fantasmi. Chi ci casca smette di fidarsi del controllo, che e' il danno
-    # peggiore che un controllo possa fare.
+    # fa contare ogni file due volte e riempie l'elenco di problemi fantasma.
+    # Chi ci casca smette di fidarsi del controllo, che e' il danno peggiore
+    # che un controllo possa fare.
     return {str(p.relative_to(LIBRO)): p.read_text(encoding="utf-8", errors="ignore")
             for p in sorted(list(LIBRO.rglob("*.md")) + list(LIBRO.rglob("*.ipynb")))
             if "_static" not in p.parts and "_build" not in p.parts}
@@ -204,11 +248,10 @@ def schede_non_chiuse(testo: str) -> list[int]:
     Succede quando una riscrittura toglie la chiusura di una scheda: la
     Superiore finisce annidata dentro l'Elementare, e la chiusura che segue
     chiude la scheda esterna. Nel sorgente si legge quasi bene, la build non
-    protesta, e nessun altro controllo lo vedeva: le due schede contano come
-    una sola linguetta, quindi l'asse delle schede contigue resta muto. Il caso
-    vero (GPU/kernel-e-cuda.md, 2026-09-27) l'ha trovato un lettore, non una
-    macchina. Una `{tab}` dentro un'altra con lo STESSO numero di backtick non
-    e' mai voluta: per annidare si allunga la recinzione esterna.
+    protesta, e nessun altro controllo lo vede: le due schede contano come
+    una sola linguetta, quindi l'asse delle schede contigue resta muto. Una
+    `{tab}` dentro un'altra con lo STESSO numero di backtick non e' mai
+    voluta: per annidare si allunga la recinzione esterna.
     """
     apre = re.compile(r"^(`{4,})\{tab\}")
     righe, fuori = testo.split("\n"), []
@@ -266,6 +309,12 @@ _RX_RECINTO_CODICE = re.compile(
     r"|dockerfile|xml|markdown|md|r|julia|rust|go)\b", re.I)
 
 
+_RX_RIGA_RECINTO = re.compile(r"^(\s*)(`{3,}|~{3,})(.*)$")
+
+
+# Ricordata per testo e riempitivo: sei assi la chiedono per ogni pagina, e
+# la risposta non cambia.
+@functools.lru_cache(maxsize=None)
 def _maschera_prosa(testo: str, riempitivo: str = " ") -> str:
     """Il testo con **il solo codice**, la matematica e gli URL messi a spazi.
 
@@ -273,7 +322,7 @@ def _maschera_prosa(testo: str, riempitivo: str = " ") -> str:
     gli stessi caratteri compaiono legittimamente dappertutto: segni meno nelle
     formule, opzioni da riga di comando, separatori di tabella.
 
-    Tre trappole, e tutte e tre sono costate.
+    Quattro trappole.
 
     La prima: un interruttore acceso/spento sui recinti si **desincronizza**
     sulle schede a cinque backtick, quindi ci vuole una pila.
@@ -283,16 +332,16 @@ def _maschera_prosa(testo: str, riempitivo: str = " ") -> str:
     `$...$`. Si sostituisce con spazi, e non si cancella, per non spostare i
     numeri di riga.
 
-    La terza, la piu' cara, e' rimasta in piedi per parecchio: **non tutte le
-    recinzioni contengono codice**. Le schede `{tab}` e i riquadri
-    `{admonition}` sono recinzioni, e dentro c'e' quasi tutta la prosa del
-    libro. Chi le maschera insieme ai blocchi `python` costruisce un controllo
-    che gira su una frazione del testo e torna verde, e nessuno se ne accorge
-    perche' verde e' la risposta che ci si aspetta. Qui si guarda **l'etichetta
-    del recinto**: si azzera solo dove quell'etichetta dice codice (o dove non
-    dice niente, che e' il caso dei blocchi di uscita), e la prosa dentro le
-    schede resta visibile. Le righe di apertura e chiusura si azzerano sempre,
-    perche' i backtick non sono testo.
+    La terza, la piu' insidiosa: **non tutte le recinzioni contengono
+    codice**. Le schede `{tab}` e i riquadri `{admonition}` sono recinzioni,
+    e dentro c'e' quasi tutta la prosa del libro. Chi le maschera insieme ai
+    blocchi `python` costruisce un controllo che gira su una frazione del
+    testo e torna verde, e nessuno se ne accorge perche' verde e' la
+    risposta che ci si aspetta. Qui si guarda **l'etichetta del recinto**:
+    si azzera solo dove quell'etichetta dice codice (o dove non dice niente,
+    che e' il caso dei blocchi di uscita), e la prosa dentro le schede resta
+    visibile. Le righe di apertura e chiusura si azzerano sempre, perche' i
+    backtick non sono testo.
 
     Il `riempitivo` esiste per chi cerca una **marcatura**, e non un segno di
     prosa: `**indipendentemente da $x$ e $y$**`, mascherato con gli spazi,
@@ -303,20 +352,19 @@ def _maschera_prosa(testo: str, riempitivo: str = " ") -> str:
     pieno lo vuole di un carattere che non sia ne' spazio ne' `*`, e le
     posizioni restano ferme in tutti e due i casi.
 
-    La quarta l'ha portata una riga di uscita vera: **dentro un recinto di
-    codice non si apre niente**. Dal 3.11 il traceback di Python sottolinea il
-    pezzo che ha ceduto con `~~~~^^^^^^`, e quella riga, dentro un blocco
-    ` ```text `, questo regex la prende per una recinzione a tilde: da li' in
-    poi la pila e' sfasata di uno e il recinto di codice non si chiude piu'.
-    In `Python/basi.md` restavano azzerate 741 righe di prosa su 1092, due
-    terzi del capitolo, per ogni asse che passa di qui. Adesso, quando in cima
-    alla pila c'e' un recinto di **codice**, l'unica riga che conta e' la sua
-    chiusura (stesso carattere, lunghezza non minore, nessuna etichetta): il
-    resto e' contenuto, che e' poi la regola di CommonMark.
+    La quarta: **dentro un recinto di codice non si apre niente**. Dal 3.11
+    il traceback di Python sottolinea il pezzo che ha ceduto con
+    `~~~~^^^^^^`, e quella riga, dentro un blocco ` ```text `, questo regex
+    la prende per una recinzione a tilde: da li' in poi la pila e' sfasata
+    di uno, il recinto di codice non si chiude piu', e la prosa che segue
+    resta azzerata per ogni asse che passa di qui. Quando in cima alla pila
+    c'e' un recinto di **codice**, l'unica riga che conta e' la sua chiusura
+    (stesso carattere, lunghezza non minore, nessuna etichetta): il resto e'
+    contenuto, che e' poi la regola di CommonMark.
     """
     fuori, pila = [], []          # pila di (backtick, e_codice)
     for riga in testo.split("\n"):
-        m = re.match(r"^(\s*)(`{3,}|~{3,})(.*)$", riga)
+        m = _RX_RIGA_RECINTO.match(riga)
         if m and pila and pila[-1][1] and not (
                 m.group(2)[0] == pila[-1][0][0]
                 and len(m.group(2)) >= len(pila[-1][0])
@@ -371,8 +419,9 @@ _RX_TIC = re.compile(
 # un'affermazione tecnica, non la sorella retorica di «non e' un caso» (= non
 # e' una coincidenza). Senza l'esclusione il rilevatore fa «riparare» una
 # frase giusta, che e' il modo in cui un controllo costa piu' di quanto rende.
-# E anche qui lo spazio e' `_SP`, perche' il difetto morde al contrario:
-# l'esclusione saltava appena l'a capo cadeva fra «caso» e «particolare».
+# E anche qui lo spazio e' `_SP`, perche' il difetto morde al contrario: con
+# uno spazio letterale l'esclusione salta appena l'a capo cade fra «caso» e
+# «particolare».
 _RX_SORELLE = re.compile(
     rf"[Nn]on{_SP}è{_SP}un{_SP}(?:dettaglio|caso|teoria|zelo|cosmesi"
     rf"|pignoleria|capriccio)\b(?!{_SP}particolare)")
@@ -404,6 +453,121 @@ def contrapposizioni(testo: str) -> list[tuple[int, str]]:
     return [(pulito[:pos].count("\n") + 1,
              " ".join(trovati[pos].group(0).split()))
             for pos in sorted(trovati)]
+
+
+# Le forme fisse della sezione «La frase» di `CONTRIBUTING.md`: il libro che
+# parla di se', le formule d'annuncio, i calchi dall'inglese, e il parlato che
+# nella scheda Superiore stona. Sono un elenco da leggere e non un errore,
+# perche' quasi ogni forma ha anche un uso giusto («cade fuori dall'intervallo»
+# e' italiano, «cade fuori dal conto» e' un calco): l'asse dice dove guardare.
+#
+# Lo spazio fra le parole e' di nuovo quello della prosa, che puo' andare a
+# capo, ma qui al piu' **due** spazi di fila: la maschera mette a spazi il
+# codice in linea, e «da qui in poi `x` la chiameremo» non deve diventare
+# «da qui in poi la chiameremo».
+_SP2 = r"(?:[^\S\n]{1,2}|[^\S\n]{0,2}\n[^\S\n]*)"
+
+
+def _forme(*voci: str) -> re.Pattern:
+    return re.compile("|".join(f"(?:{v.replace(' ', _SP2)})" for v in voci),
+                      re.I)
+
+
+# (famiglia, regex, solo nella scheda Superiore, pagine esenti). Prefazione,
+# pagina di apertura e Conclusioni possono parlare del libro (`CONTRIBUTING.md`).
+_ESENTI_DA_SE = {"prefazione.md", "intro.md", "Conclusioni/overview.md"}
+_FAMIGLIE = [
+    ("parla di se'", _forme(
+        r"\bfino a qui il capitolo", r"\bfin qui il capitolo",
+        r"\b(?:le|delle|nelle|dalle|alle) sezioni precedenti",
+        r"\b(?:nel|il|tutto il) resto del capitolo",
+        r"\bpiù avanti nel (?:capitolo|libro)", r"\balla fine del capitolo",
+        r"\b(?:introdott|vist|definit)[oaie] più su\b",
+        r"\bdi cui si (?:parlava|diceva) (?:sopra|più su)",
+        r"\bda qui (?:in poi|in avanti),? (?:la|lo|li|le) chiameremo",
+        r"\b(?:la|questa) parola tornerà", r"\btornerà più volte nel capitolo",
+        r"\bil capitolo (?:ripeterà|chiama sempre)",
+        r"\bcome abbiamo visto nel capitolo",
+        r"\b(?:in|nell['’]|dall['’]|all['’])apertura del capitolo",
+        r"\ball['’]inizio del capitolo"), False, _ESENTI_DA_SE),
+    ("annuncio", _forme(
+        r"\bconviene (?:dirl[oa]|vederl[oa]|notare|elencarl[ei]"
+        r"|distinguerl[ei]|distinguere subito|dire subito)\b",
+        r"\bvale la pena\b", r"\bva detta la cosa\b", r"\bva detto che\b",
+        r"\buna premessa, che\b", r"\buna parola sui simboli\b",
+        r"\bdue cose vanno dette\b", r"\b(?:il motivo|ed) è istruttivo\b",
+        r"\bsembra pedante e non lo è\b", r"\bsi noti\b",
+        r"\bfermiamoci un attimo\b", r"\bdose di onestà\b",
+        r"\bil punto è che\b"), False, set()),
+    ("calco", _forme(
+        r"\bcad(?:e|ono|ere|rebbe|uta|uto) fuori"
+        r" (?:da sol[oa]|dal conto|dai conti|dalla formula)",
+        r"\bnon compra\b", r"\bcompra (?:fedeltà|l['’]ancoraggio)",
+        r"\bcifra titolare\b", r"\bregredirl[aoie]\b",
+        r"\buccider\w* (?:la|il|un|una|le|i) (?:richiest|process|job)\w*",
+        r"\briporta(?:no)? un (?:classificatore|modello)\b",
+        r"\bsi legge \d", r"\bda portarsi via\b", r"\bonestamente aperta\b",
+        r"\bpinnat[eoai]\b", r"\bminor version\b", r"\bdiffabil[ei]\b",
+        r"\bconvergit[aoie]\b"), False, set()),
+    ("parlato nella Superiore", _forme(
+        r"\bper dire\s*[,)]", r"\bsenza storie\b", r"\bbasta e avanza\b",
+        r"\btirar(?:e|la|lo|li|le) su\b", r"\bpari pari\b",
+        r"\bparente stretto\b", r"\bsi tocca con mano\b",
+        r"\bci sta anche (?:lei|lui)\b", r"\bnon ci sta(?:nno)?\b",
+        r"\b(?:dare|dato|data|dati|date|diamo|dà) in pasto\b",
+        r"\btraslare in su\b", r"\bun bel niente\b"), True, set()),
+]
+
+
+def _righe_superiore(testo: str) -> set[int]:
+    """I numeri di riga (da 1) che stanno dentro una scheda `{tab} Superiore`.
+
+    La scheda si chiude con una recinzione dello stesso numero di backtick e
+    senza etichetta; i riquadri e i blocchi di codice che ci stanno dentro ne
+    usano di meno, quindi non la chiudono.
+    """
+    dentro, aperta = set(), None
+    for n, riga in enumerate(testo.split("\n"), 1):
+        if aperta is None:
+            m = re.match(r"^(`{4,})\{tab\}\s+Superiore\b", riga)
+            if m:
+                aperta = m.group(1)
+            continue
+        if riga.strip() == aperta:
+            aperta = None
+            continue
+        dentro.add(n)
+    return dentro
+
+
+def frasi_da_rivedere(testo: str, pagina: str = "") -> list[tuple[int, str, str]]:
+    """[(riga, famiglia, forma)] delle forme fisse di «La frase» in una pagina.
+
+    Come `contrapposizioni()`, sta a livello di modulo perche' chi misura possa
+    eseguire il rilevatore vero invece di riscriverne una copia.
+    """
+    pulito = _senza_citazioni(_maschera_prosa(testo))
+    # Il titolo di un riquadro sta sulla riga di apertura del recinto, che la
+    # maschera comune azzera (i backtick non sono testo), e con lei il titolo:
+    # «Il gesto da portarsi via» resterebbe invisibile. Si rimette qui, alla
+    # stessa posizione, senza toccare la maschera che usano gli altri assi.
+    righe = pulito.split("\n")
+    for i, riga in enumerate(testo.split("\n")):
+        m = re.match(r"^(\s*`{3,}\{admonition\}\s+)(.*)$", riga)
+        if m:
+            righe[i] = " " * len(m.group(1)) + m.group(2)
+    pulito = _senza_citazioni("\n".join(righe))
+    superiore = _righe_superiore(testo)
+    fuori = []
+    for famiglia, rx, solo_superiore, esenti in _FAMIGLIE:
+        if pagina in esenti:
+            continue
+        for m in rx.finditer(pulito):
+            riga = pulito[:m.start()].count("\n") + 1
+            if solo_superiore and riga not in superiore:
+                continue
+            fuori.append((riga, famiglia, " ".join(m.group(0).split())))
+    return sorted(fuori)
 
 
 # I capoversi che l'asse `doppioni` non legge, per scelta: elenchi puntati,
@@ -462,7 +626,7 @@ def frasi_doppie(testo: str) -> list[tuple[int, str]]:
             chiave = " ".join(parole[i:i + 8]).lower()
             # una finestra con dentro codice o formule non e' prosa: li'
             # ripetersi e' normale e non dice niente
-            if any(c in chiave for c in "`=#\\$" + _PIENO):
+            if _RX_SEGNI_NON_PROSA.search(chiave):
                 continue
             if chiave in visti and i - visti[chiave] < 90:
                 trovate.append((prima, chiave))
@@ -473,9 +637,9 @@ def frasi_doppie(testo: str) -> list[tuple[int, str]]:
 
 # La marcatura di enfasi, contro cui `CONTRIBUTING.md` mette un tetto. `(?!\s)`
 # e `(?<!\s)` perche' `** ` e ` **` in CommonMark non aprono e non chiudono
-# niente, e `re.S` perche' il libro va a capo a ottanta colonne: meta' delle
-# marcature lunghe sta a cavallo di un a capo, e un pattern che non lo
-# attraversa ne conta la meta'.
+# niente, e `re.S` perche' il libro va a capo a ottanta colonne: una
+# marcatura lunga sta spesso a cavallo di un a capo, e un pattern che non lo
+# attraversa non la conta.
 RX_NERETTO = re.compile(r"\*\*(?!\s)(?:(?!\*\*).)+?(?<!\s)\*\*", re.S)
 
 # Il riempitivo con cui questo asse maschera: un carattere pieno, per la
@@ -485,6 +649,8 @@ RX_NERETTO = re.compile(r"\*\*(?!\s)(?:(?!\*\*).)+?(?<!\s)\*\*", re.S)
 # caratteri, non con uno, cosi' le posizioni non si spostano.
 _PIENO = "~"
 _ASTERISCO_PROTETTO = ".."
+# I segni che in una finestra di `frasi_doppie` dicono codice o formule.
+_RX_SEGNI_NON_PROSA = re.compile("[" + re.escape("`=#\\$" + _PIENO) + "]")
 
 
 def parole_e_marcature(testo: str) -> tuple[int, list[str]]:
@@ -500,7 +666,8 @@ def parole_e_marcature(testo: str) -> tuple[int, list[str]]:
     dentro (giusto, e' una marcatura sola). «Parola» qui e' una sequenza di
     caratteri non-spazio, quindi il denominatore comprende anche la
     punteggiatura e i segni del Markdown: e' una stima **larga**, cioe' un
-    tasso prudente, ed e' la stessa con cui il tetto e' stato tarato.
+    tasso prudente, ed e' quella su cui il tetto e' definito: cambiarla vuol
+    dire cambiare il tetto.
     """
     parole = len(re.findall(r"\S+", _maschera_prosa(testo)))
     pieno = _maschera_prosa(testo.replace("\\*", _ASTERISCO_PROTETTO), _PIENO)
@@ -554,14 +721,13 @@ def _tempi_git() -> dict[str, int]:
     Serve perche' **la data di modifica di un file non dice niente in CI**: un
     `git checkout` scrive tutto l'albero in un istante solo, quindi ogni file
     risulta modificato nello stesso momento e ogni confronto fra due date
-    diventa un sorteggio. In locale funzionava e sul runner no: l'asse `stampa`
-    dichiarava «22 fermi immagine piu' vecchi dell'animazione» su un albero in
-    cui nessuno aveva toccato niente.
+    diventa un sorteggio. Con le date dei file si va bene in locale e male
+    sul runner: l'asse `stampa` dichiarerebbe vecchi dei fermi immagine su
+    un albero in cui nessuno ha toccato niente.
 
     Una sola invocazione di `git log` per tutto il repository: farne una per
-    file (qui sarebbero un centinaio e passa) costa secondi e da' lo stesso
-    risultato. E' la stessa mossa che fa `date_git()` in `genera-radice.py`,
-    per la stessa ragione.
+    file costa secondi e da' lo stesso risultato. E' la stessa mossa che fa
+    `date_git()` in `genera-radice.py`, per la stessa ragione.
     """
     fuori: dict[str, int] = {}
     try:
@@ -638,14 +804,25 @@ def chiavi_bib() -> set[str]:
 
 
 def main():
+    global QUI, LIBRO
     ap = argparse.ArgumentParser()
     ap.add_argument("--solo", help="controlli da eseguire, separati da virgola")
+    ap.add_argument("--radice", type=Path,
+                    help="il repository da controllare (di norma questo)")
+    ap.add_argument("--json", type=Path,
+                    help="scrive anche le voci, con file e posizione, in "
+                         "questo file")
     args = ap.parse_args()
+    if args.radice:
+        QUI = args.radice.resolve()
+        LIBRO = QUI / "book"
+    VOCI.clear()
     attivi = set(args.solo.split(",")) if args.solo else {
-        "numref", "cite", "ref", "figure", "toc", "landing", "animazioni",
+        "numref", "cite", "ref", "figure", "toc", "codifica", "landing",
+        "animazioni",
         "schede", "ricordare", "simboli", "avanti", "palette", "clip", "ambiente",
         "lineette", "stampa", "verso", "matematica", "doppioni",
-        "contrapposizioni", "enfasi"}
+        "contrapposizioni", "enfasi", "frasi"}
 
     testi = sorgenti()
     problemi = defaultdict(list)
@@ -658,9 +835,14 @@ def main():
 
     if "numref" in attivi:
         for f, t in testi.items():
-            for r in RX["numref"].findall(t):
+            for m in RX["numref"].finditer(t):
+                r = m.group(1)
                 if r.strip() not in nomi:
                     problemi["numref senza :name:"].append(f"{f}  ->  {r}")
+                    voce("numref", "numref senza :name:", f, testo=t,
+                         inizio=m.start(), fine=m.end(), identita=r.strip(),
+                         messaggio=f"{{numref}} verso «{r.strip()}»: nessuna"
+                                   " figura o tabella ha questo :name:")
 
         # Due difetti che la build non segnala e che si trovano solo contando.
         # I target di Sphinx sono GLOBALI: due figure diverse con lo stesso
@@ -669,40 +851,66 @@ def main():
         # `{figure}` produce invece due figure numerate diverse con la stessa
         # immagine, che al lettore sembra una svista, e di solito lo e'.
         dove_nome, dove_file = defaultdict(list), defaultdict(list)
+        posti_nome, posti_file = defaultdict(list), defaultdict(list)
         for f, t in testi.items():
-            for n in RX["name"].findall(t):
-                dove_nome[n].append(f)
-            for g in RX["fig_uso"].findall(t):
-                dove_file[g].append(f)
+            for m in RX["name"].finditer(t):
+                dove_nome[m.group(1)].append(f)
+                posti_nome[m.group(1)].append((f, t, m.start(1), m.end(1)))
+            for m in RX["fig_uso"].finditer(t):
+                dove_file[m.group(1)].append(f)
+                posti_file[m.group(1)].append((f, t, m.start(1), m.end(1)))
         for n, dove in sorted(dove_nome.items()):
             if len(dove) > 1:
                 problemi[":name: usato piu' volte"].append(
                     f"{n}  ->  {', '.join(dove)}")
+                for f, t, a, b in posti_nome[n]:
+                    voce("numref", ":name: usato piu' volte", f, testo=t,
+                         inizio=a, fine=b, identita=n,
+                         messaggio=f"il :name: «{n}» è usato più volte "
+                                   f"({', '.join(dove)}): i bersagli valgono"
+                                   " per tutto il libro")
         for g, dove in sorted(dove_file.items()):
             if len(dove) > 1:
                 problemi["stessa figura richiamata piu' volte"].append(
                     f"{g}  ->  {', '.join(dove)}")
+                for f, t, a, b in posti_file[g]:
+                    voce("numref", "stessa figura richiamata piu' volte", f,
+                         testo=t, inizio=a, fine=b, identita=g,
+                         messaggio=f"la figura {g} è richiamata più volte "
+                                   f"({', '.join(dove)})")
 
     if "ref" in attivi:
+        steli = {Path(k).stem for k in testi}
         for f, t in testi.items():
-            for r in RX["ref"].findall(t) + RX["doc"].findall(t):
-                r = r.strip()
+            for m in [*RX["ref"].finditer(t), *RX["doc"].finditer(t)]:
+                r = m.group(1).strip()
                 if r in nomi:
                     continue
                 # {doc} punta a un file: accetta se esiste
-                if any(k.startswith(r.lstrip("/")) or Path(k).stem == Path(r).stem
-                       for k in testi):
+                if Path(r).stem in steli or any(
+                        k.startswith(r.lstrip("/")) for k in testi):
                     continue
                 problemi["ref/doc senza target"].append(f"{f}  ->  {r}")
+                voce("ref", "ref/doc senza target", f, testo=t,
+                     inizio=m.start(), fine=m.end(), identita=r,
+                     messaggio=f"il rimando a «{r}» non porta a nessuna "
+                               "pagina né etichetta")
 
     if "cite" in attivi:
         bib = chiavi_bib()
         if bib:
             for f, t in testi.items():
-                for gruppo in RX["cite"].findall(t):
-                    for c in (x.strip() for x in gruppo.split(",")):
+                for m in RX["cite"].finditer(t):
+                    for c in (x.strip() for x in m.group(1).split(",")):
                         if c and c not in bib:
-                            problemi["cite senza voce nel .bib"].append(f"{f}  ->  {c}")
+                            problemi["cite senza voce nel .bib"].append(
+                                f"{f}  ->  {c}")
+                            voce("cite", "cite senza voce nel .bib", f,
+                                 testo=t, inizio=m.start(), fine=m.end(),
+                                 identita=c,
+                                 messaggio=f"la citazione «{c}» non ha una "
+                                           "voce in references.bib, e in "
+                                           "pagina sparisce senza avviso")
         else:
             problemi["cite senza voce nel .bib"].append("(nessun .bib trovato)")
 
@@ -741,6 +949,27 @@ def main():
                 if stem not in elencati and f not in elencati:
                     problemi["file non nel _toc.yml"].append(f)
 
+    if "codifica" in attivi:
+        # Gli a capo CRLF e il BOM non si vedono in nessun editor, e la build
+        # li digerisce. Ma un attrezzo che corregge le pagine con una patch
+        # riga per riga, fatta su testo a capo LF, su quelle righe non le
+        # ritrova. Si leggono i byte: `read_text` con le newline universali
+        # converte gli a capo prima di restituire il testo, e il conto
+        # tornerebbe zero senza errore. Il perimetro e' quello del toc; un
+        # file fuori dal toc lo segnala gia' l'asse `toc`.
+        for p in pagine_del_toc():
+            dati = p.read_bytes()
+            difetti = []
+            if dati.startswith(codecs.BOM_UTF8):
+                difetti.append("un BOM in testa")
+            if b"\r\n" in dati:
+                difetti.append("a capo CRLF")
+            elif b"\r" in dati:
+                difetti.append("un \\r da solo")
+            if difetti:
+                problemi["pagine con a capo CRLF o un BOM"].append(
+                    f"{p.relative_to(LIBRO).as_posix()}: {', '.join(difetti)}")
+
     if "landing" in attivi:
         # La griglia della landing e' l'indice del libro scritto a mano: i
         # numeri li conta il CSS (contatore `pt-scheda`), ma che ci sia una
@@ -755,17 +984,39 @@ def main():
             attese = [re.sub(r"\.(md|ipynb)$", ".html", f) for f in capitoli]
             testo_landing = landing.read_text(encoding="utf-8")
             schede = re.findall(r'class="pt-card"\s+href="([^"]+)"', testo_landing)
+            posti = {}
+            for m in re.finditer(r'class="pt-card"\s+href="([^"]+)"',
+                                 testo_landing):
+                posti.setdefault(m.group(1), m)
             for mancante in [a for a in attese if a not in schede]:
                 problemi["capitoli senza scheda nella landing"].append(mancante)
+                voce("landing", "capitoli senza scheda nella landing",
+                     "intro.md", identita=mancante,
+                     messaggio=f"manca la scheda del capitolo {mancante}")
             for extra in [s for s in schede if s not in attese]:
                 problemi["schede della landing senza capitolo"].append(extra)
+                voce("landing", "schede della landing senza capitolo",
+                     "intro.md", testo=testo_landing,
+                     inizio=posti[extra].start(1), fine=posti[extra].end(1),
+                     identita=extra,
+                     messaggio=f"la scheda {extra} non è un capitolo del "
+                               "_toc.yml")
             if schede != attese and not (set(schede) ^ set(attese)):
                 problemi["schede della landing fuori ordine"].append(
                     "l'ordine delle schede non e' quello del _toc.yml")
-            for numero in re.findall(r'<span class="pt-card-num">([^<]+)</span>',
-                                     testo_landing):
+                voce("landing", "schede della landing fuori ordine",
+                     "intro.md", identita="ordine",
+                     messaggio="le schede non sono nell'ordine del _toc.yml")
+            for m in re.finditer(r'<span class="pt-card-num">([^<]+)</span>',
+                                 testo_landing):
+                numero = m.group(1)
                 problemi["numero scritto a mano nella scheda"].append(
                     f"«{numero}», lo conta il CSS, lo <span> va lasciato vuoto")
+                voce("landing", "numero scritto a mano nella scheda",
+                     "intro.md", testo=testo_landing, inizio=m.start(1),
+                     fine=m.end(1), identita=numero,
+                     messaggio=f"il numero «{numero}» è scritto a mano: lo "
+                               "conta il CSS, lo <span> va lasciato vuoto")
 
             # Accanto a ogni scheda si scarica il capitolo in PDF, e il nome
             # del file lo decide la cartella. Se i due si scollano il lettore
@@ -775,16 +1026,20 @@ def main():
                 atteso = f"paithon-book-{scheda.split('/')[0]}.pdf"
                 if atteso not in testo_landing:
                     problemi["scheda senza il suo capitolo in PDF"].append(atteso)
+                    voce("landing", "scheda senza il suo capitolo in PDF",
+                         "intro.md", identita=atteso,
+                         messaggio=f"la scheda non porta al suo capitolo in "
+                                   f"PDF ({atteso})")
 
     if "schede" in attivi:
         # `sphinx-inline-tabs` unisce in UN SOLO gruppo le schede che si
         # toccano: due coppie Elementare/Superiore separate solo da righe
         # vuote diventano una barra da quattro linguette, con «Elementare»
         # scritto due volte. Il sorgente e' corretto, la build non protesta, e
-        # il difetto si vede solo aprendo la pagina: infatti quattro casi erano
-        # online da mesi. Il rimedio e' una riga di testo comune in mezzo, che
-        # e' anche la regola editoriale («le tab avvolgono i passaggi dove la
-        # profondita' fa la differenza, intervallati da testo universale»).
+        # il difetto si vede solo aprendo la pagina. Il rimedio e' una riga di
+        # testo comune in mezzo, che e' anche la regola editoriale («le tab
+        # avvolgono i passaggi dove la profondita' fa la differenza,
+        # intervallati da testo universale»).
         #
         # Il rischio non e' accidentale ma sistematico: sdoppiare un riquadro
         # «Da ricordare» significa aggiungere una coppia di schede in fondo a
@@ -800,6 +1055,11 @@ def main():
                     problemi["schede contigue, che la build fonde"].append(
                         f"{f}:{riga_inizio}  ->  {len(gruppo)} linguette: "
                         f"{' | '.join(gruppo)}")
+                    voce("schede", "schede contigue, che la build fonde", f,
+                         riga=riga_inizio, identita="contigue",
+                         messaggio=f"{len(gruppo)} linguette di fila "
+                                   f"({' | '.join(gruppo)}): la build le "
+                                   "fonde in un gruppo solo")
             while i < len(righe):
                 m = apre.match(righe[i])
                 if not m:
@@ -820,17 +1080,21 @@ def main():
             for riga in schede_non_chiuse(t):
                 problemi["scheda non chiusa, un'altra si apre dentro"].append(
                     f"{f}:{riga}")
+                voce("schede", "scheda non chiusa, un'altra si apre dentro",
+                     f, riga=riga, identita="non chiusa",
+                     messaggio="una scheda si apre dentro un'altra rimasta "
+                               "aperta: manca una chiusura")
 
-        # E il difetto speculare, che nessuno cercava perche' nel sorgente si
-        # legge benissimo: una Elementare e la sua Superiore separate da un
-        # capoverso di prosa. Sono due gruppi da UNA linguetta, non una coppia:
-        # la Superiore resta visibile a chi ha messo l'interruttore globale su
-        # Elementare, e l'interruttore non puo' nasconderla perche' nel suo
-        # gruppo non ha un'alternativa. Il sorgente non protesta, la build
-        # nemmeno, e si vede solo contando le linguette nell'HTML. Al 20 agosto
-        # 2026 ce n'era una sola in 217 file, prodotta da una riscrittura che
-        # aveva infilato la prosa in mezzo: cioe' e' un guasto da revisione, e
-        # arriva proprio quando qualcuno rimette mano a una pagina gia' buona.
+        # E il difetto speculare, che nel sorgente si legge benissimo: una
+        # Elementare e la sua Superiore separate da un capoverso di prosa.
+        # Sono due gruppi da UNA linguetta, non una coppia: la Superiore resta
+        # visibile a chi ha messo l'interruttore globale su Elementare, e
+        # l'interruttore non puo' nasconderla perche' nel suo gruppo non ha
+        # un'alternativa. Il sorgente non protesta, la build nemmeno, e si
+        # vede solo contando le linguette nell'HTML. Lo produce una
+        # riscrittura che infila la prosa in mezzo: e' un guasto da
+        # revisione, e arriva proprio quando qualcuno rimette mano a una
+        # pagina gia' buona.
         for f, t in testi.items():
             if not f.endswith(".md"):
                 continue
@@ -848,6 +1112,12 @@ def main():
                             problemi["coppia di schede spezzata da prosa"].append(
                                 f"{f}:{i + 1}  ->  {len(prosa)} righe fra "
                                 f"Elementare e Superiore: {prosa[0][:60]}")
+                            voce("schede",
+                                 "coppia di schede spezzata da prosa", f,
+                                 riga=i + 1, identita="spezzata",
+                                 messaggio="un capoverso fra l'Elementare e "
+                                           "la Superiore spezza la coppia in"
+                                           " due gruppi da una linguetta")
                         apertura = None
                     continue
                 if apertura and riga.rstrip() == apertura:
@@ -855,31 +1125,38 @@ def main():
 
     if "schede" in attivi:
         # La lunghezza di una scheda Elementare non e' un difetto di per se',
-        # ed e' per questo che qui si elenca e basta. Ma e' la deriva che la
-        # campagna dell'isomorfismo ha prodotto senza che nessuno la vedesse:
-        # riparando un buco si aggiunge un capoverso, il capoverso e' giusto, e
-        # dopo undici ondate la mediana era passata da 195 a 282 parole e le
-        # schede oltre le 300 erano raddoppiate. Oltre una certa lunghezza la
+        # ed e' per questo che qui si elenca e basta. Ma e' la deriva che le
+        # correzioni producono senza che nessuno la veda: riparando un buco si
+        # aggiunge un capoverso, il capoverso e' giusto, e una riparazione
+        # dopo l'altra la scheda si allunga. Oltre una certa lunghezza la
         # scena evapora e resta un elenco di condizioni in parole piane, che e'
         # una Superiore tradotta: il livello Elementare a quel punto non fa piu'
         # il mestiere per cui esiste (il test dell'ombrellone). Il numero non
         # decide, ma dice dove guardare.
         TETTO = 400
+        apre_scheda = re.compile(r"^(`{4,})\{tab\}\s*(\S+)")
+        chiude_scheda = re.compile(r"^`{4,}\s*$")
         for f, testo in testi.items():
             if not f.endswith(".md"):
                 continue
             corpo, dentro, inizio = [], False, 0
             for n, riga in enumerate(testo.split("\n"), 1):
-                m = re.match(r"^(`{4,})\{tab\}\s*(\S+)", riga)
+                m = apre_scheda.match(riga)
                 if m:
                     dentro = m.group(2).lower().startswith("element")
                     corpo, inizio = [], n
                     continue
-                if re.match(r"^`{4,}\s*$", riga):
+                if chiude_scheda.match(riga):
                     parole = len(" ".join(corpo).split())
                     if dentro and parole > TETTO:
                         problemi["schede Elementari molto lunghe (da rileggere)"].append(
                             f"{f}:{inizio}  ->  {parole} parole")
+                        voce("schede",
+                             "schede Elementari molto lunghe (da rileggere)",
+                             f, riga=inizio, identita="lunga",
+                             messaggio=f"una scheda Elementare di {parole} "
+                                       f"parole (oltre {TETTO}): la scena "
+                                       "tende a evaporare")
                     dentro = False
                     continue
                 if dentro:
@@ -887,40 +1164,37 @@ def main():
 
     if "simboli" in attivi:
         # Una lettera fa un mestiere solo per capitolo, e la medicina e'
-        # rinominare, non avvertire. Il difetto e' il secondo per frequenza fra
-        # quelli che una campagna di rilettura integrale ha trovato (dieci
-        # capitoli su venti tornate), e nasce naturale: due sottocampi usano la
-        # stessa lettera per convenzione, il capitolo li mette nella stessa
-        # pagina, e nessuno dei due autori sta sbagliando.
+        # rinominare, non avvertire. Il difetto nasce naturale: due sottocampi
+        # usano la stessa lettera per convenzione, il capitolo li mette nella
+        # stessa pagina, e nessuno dei due autori sta sbagliando.
         #
         # Non si cercano le occorrenze, che sono migliaia: si cercano le
         # GLOSSE. Il libro introduce un simbolo scrivendo «$x$ e' il ...», e se
         # nello stesso capitolo lo stesso simbolo riceve due glosse diverse,
         # o e' una collisione o e' la stessa cosa detta due volte.
         #
-        # **Elenca e basta, e la meta' delle righe non e' un difetto.** Le
-        # ventisette del 29 agosto 2026 sono state aperte una per una:
+        # **Elenca e basta, e molte righe non sono un difetto.** Le forme che
+        # ritornano:
         #
-        #   6  artefatti della regex: cinque volte il simbolo non e' il
-        #      soggetto ma la coda di un complemento («la media di tutti gli
-        #      $\ell$ **e' la** loss», «Cio' che risale da $D$ verso $G$ **e'
-        #      il** gradiente»: li' $\ell$ e $G$ fanno un mestiere solo), una
-        #      volta e' il pedice tolto ($F_1$ la metrica contro $F$ il simbolo
-        #      iniziale di una grammatica);
-        #  13  lo stesso mestiere glossato due volte, che e' spreco e non
-        #      errore: quattro «$r$ e' la ricompensa...» in DeepRL, tre
-        #      «$\sigma$ e' la sigmoide» nei Transformer;
-        #   4  l'ambiguita' **e' l'argomento** del paragrafo, e toglierla
-        #      toglierebbe la lezione: la $p$ della cross-entropia in
-        #      Matematica spiega con quelle due letture perche' la loss di
-        #      training scenda a zero e quella di validazione no;
-        #   4  riuso vero di una lettera consolidata in sezioni lontane, ognuna
-        #      con la sua glossa.
+        #   - artefatti della regex: il simbolo non e' il soggetto ma la coda
+        #     di un complemento («la media di tutti gli $\ell$ **e' la**
+        #     loss», «Cio' che risale da $D$ verso $G$ **e' il** gradiente»:
+        #     li' $\ell$ e $G$ fanno un mestiere solo), oppure il pedice tolto
+        #     ($F_1$ la metrica contro $F$ il simbolo iniziale di una
+        #     grammatica);
+        #   - lo stesso mestiere glossato due volte, che e' spreco e non
+        #     errore («$r$ e' la ricompensa...» ripetuto in DeepRL, «$\sigma$
+        #     e' la sigmoide» nei Transformer);
+        #   - l'ambiguita' che **e' l'argomento** del paragrafo, e toglierla
+        #     toglierebbe la lezione: la $p$ della cross-entropia in
+        #     Matematica spiega con quelle due letture perche' la loss di
+        #     training scenda a zero e quella di validazione no;
+        #   - il riuso vero di una lettera consolidata in sezioni lontane,
+        #     ognuna con la sua glossa.
         #
-        # Nessuna delle ventisette ha richiesto di rinominare. Prima di
-        # ripararne una si legga in `CONTRIBUTING.md` quando una collisione
-        # e' un difetto e quando e' una convenzione: la medicina non e' sempre
-        # rinominare, e questo asse non lo sa.
+        # Prima di ripararne una si legga in `CONTRIBUTING.md` quando una
+        # collisione e' un difetto e quando e' una convenzione: la medicina
+        # non e' sempre rinominare, e questo asse non lo sa.
         glossa = re.compile(
             r"\$\\?([A-Za-z]|\\[a-zA-Z]+)(?:_\{?\w+\}?)?\$\s*(?:è|e')\s+"
             r"((?:il|la|lo|l'|un|una|uno|i|le|gli)\s+\w+(?:\s+\w+)?)", re.I)
@@ -937,6 +1211,13 @@ def main():
                     problemi["una lettera con due glosse nello stesso capitolo"].append(
                         f"{capitolo}: ${simbolo}$  ->  "
                         + " | ".join(sorted(glosse)[:3]))
+                    voce("simboli",
+                         "una lettera con due glosse nello stesso capitolo",
+                         None, capitolo=capitolo,
+                         identita=f"{simbolo}: {' | '.join(sorted(glosse))}",
+                         messaggio=f"${simbolo}$ ha due glosse diverse nel "
+                                   "capitolo: "
+                                   + " | ".join(sorted(glosse)[:3]))
 
     if "schede" in attivi:
         # Una recinzione a backtick con del testo attaccato sulla stessa riga.
@@ -947,43 +1228,51 @@ def main():
         #
         # Il difetto e' invisibile a tutto: la build esce a zero, la pagina si
         # vede solo aprendola, e il controllo sui notebook non lo trova perche'
-        # il notebook e' COERENTE con il sorgente rotto. Al 22 agosto 2026 ce
-        # n'era una sola in tutto il libro, e per settimane aveva messo
-        # l'etichetta di sezione sbagliata su una cella di `Audio.ipynb`. Si e'
-        # vista costruendo il PDF, fra gli avvisi di LaTeX.
+        # il notebook e' COERENTE con il sorgente rotto, e mette l'etichetta
+        # di sezione sbagliata sulla cella che ne nasce. Lo denuncia soltanto
+        # un avviso di LaTeX, costruendo il PDF.
+        recinto_con_testo = re.compile(r"^(`{3,})\s*(\S.*)$")
         for f, testo in testi.items():
             if not f.endswith(".md"):
                 continue
             for n, riga in enumerate(testo.split("\n"), 1):
-                m = re.match(r"^(`{3,})\s*(\S.*)$", riga.rstrip())
+                m = recinto_con_testo.match(riga.rstrip())
                 if m and not m.group(2).startswith("{") and " " in m.group(2).strip():
                     problemi["recinzione con del testo attaccato"].append(
                         f"{f}:{n}  {riga.strip()[:60]}")
+                    voce("schede", "recinzione con del testo attaccato", f,
+                         riga=n, identita=riga.strip(),
+                         messaggio="testo attaccato a una recinzione: Sphinx"
+                                   " la legge come l'apertura di un blocco "
+                                   "di codice")
 
     if "ricordare" in attivi:
         # `book/aggiornamenti.md` promette al lettore, nero su bianco: «Ogni
         # capitolo si chiude con un riquadro "Da ricordare", scritto sui due
-        # livelli come il resto del libro». Una promessa pubblica che nessuno
-        # verificava: alla revisione dell'11 agosto 2026 erano 111 riquadri su
-        # 237 fuori dalle schede, e cinque capitoli non ne avevano NEMMENO UNO
-        # sdoppiato.
+        # livelli come il resto del libro». Una promessa pubblica si verifica.
         #
         # Fuori dalle schede non e' di per se' un difetto: un riquadro scritto
         # in lingua comune va benissimo. Lo diventa quando e' scritto in lingua
         # Superiore, e quello un programma non lo sa giudicare. Quindi qui si
         # elenca e basta, e la lettura resta umana; ma l'elenco c'e', e questo
-        # basta a non dimenticarsene per centoundici volte.
+        # basta a non dimenticarsene.
         apre = re.compile(r"^\s*(`{3,})(.*)$")
         for f, t in sorted(testi.items()):
             if not f.endswith(".md"):
                 continue
             pila, fuori = [], 0
-            for riga in t.split("\n"):
+            for numero, riga in enumerate(t.split("\n"), 1):
                 m = apre.match(riga)
                 if not m:
                     continue
                 n, info = len(m.group(1)), m.group(2).strip()
                 if "{admonition} Da ricordare" in info:
+                    if not any(pila):
+                        voce("ricordare", "«Da ricordare» fuori dalle schede",
+                             f, riga=numero, identita="fuori dalle schede",
+                             messaggio="un riquadro «Da ricordare» fuori dalle"
+                                       " schede: il libro lo promette sui due"
+                                       " livelli")
                     fuori += not any(pila)
                     pila.append((n, False))
                 elif pila and not info and n >= pila[-1][0]:
@@ -995,18 +1284,16 @@ def main():
                     f"{f}  ->  {fuori}")
 
     if "animazioni" in attivi:
-        # Le clip non le contava nessuno, ed e' cosi' che venti capitoli sono
-        # nati senza. `animazioni/README.md` scriveva gia' «i capitoli non
-        # ancora coperti sono la lista dei prossimi»: una lista scritta a mano,
-        # che infatti e' rimasta ferma mentre il libro raddoppiava. Contarla
-        # non invecchia.
+        # Le clip si contano, perche' una lista scritta a mano dei capitoli
+        # ancora scoperti resta ferma mentre il libro cresce. Contarla non
+        # invecchia.
         #
-        # Zero clip era un avviso e basta, e non e' bastato: elencare i
-        # capitoli scoperti senza chiedere niente a nessuno li ha lasciati
-        # scoperti. Adesso e' un difetto, con una sola via d'uscita: dichiarare
-        # il capitolo in `animazioni/senza-clip.toml` scrivendo perche' li' il
-        # tempo non e' il contenuto. La differenza che conta non e' fra un
-        # capitolo animato e uno fermo (un capitolo fermo puo' essere la scelta
+        # Zero clip e' un difetto, e non un avviso: un elenco dei capitoli
+        # scoperti che non chiede niente a nessuno li lascia scoperti. La via
+        # d'uscita e' una sola: dichiarare il capitolo in
+        # `animazioni/senza-clip.toml` scrivendo perche' li' il tempo non e'
+        # il contenuto. La differenza che conta non e' fra un capitolo
+        # animato e uno fermo (un capitolo fermo puo' essere la scelta
         # giusta), e' fra essersela chiesta e non essersela chiesta, e dal di
         # fuori le due cose si somigliano. Una riga in un file le separa.
         esenti = {}
@@ -1048,11 +1335,9 @@ def main():
                         f"{cartella}  ->  {len(clip)}: {', '.join(clip)}")
 
         # La tabella in fondo ad `animazioni/README.md` elenca le clip che
-        # esistono, ed e' scritta a mano tre paragrafi sotto la riga che spiega
-        # perche' gli elenchi scritti a mano invecchiano. Infatti e' invecchiata
-        # anche lei: a fine campagna dichiarava diciassette clip su
-        # trentaquattro generatori. Non la si genera (a un umano che apre il
-        # README serve leggerla li'), la si verifica.
+        # esistono, ed e' scritta a mano: invecchia come ogni elenco scritto a
+        # mano. Non la si genera (a un umano che apre il README serve leggerla
+        # li'), la si verifica.
         readme = QUI / "animazioni" / "README.md"
         if readme.is_file():
             elencati = set(re.findall(r"^\|\s*`([\w./-]+\.py)`",
@@ -1073,10 +1358,9 @@ def main():
 
     if "palette" in attivi:
         # Il motore delle figure generate verifica la palette e rifiuta il file
-        # (`scrivi()` in paithon_svg.py). Le figure scritte a mano non passavano
-        # da nessun controllo, ed e' cosi' che 172 file su 306 hanno finito per
-        # usare tre grigi che nessun documento autorizza, e cinque hanno
-        # attraversato due campagne di ripulitura con le lineette ancora dentro.
+        # (`scrivi()` in paithon_svg.py). Le figure scritte a mano da li' non
+        # passano, e senza questo asse ci finiscono colori che nessun
+        # documento autorizza e lineette che nessuna ripulitura del testo vede.
         #
         # Le due cose non pesano uguale, e infatti qui non pesano uguale.
         #
@@ -1084,12 +1368,12 @@ def main():
         # c'e' nessuna decisione in sospeso, e chi corregge il testo non ha
         # modo di sapere che quella lineetta e' disegnata anche altrove. Conta.
         #
-        # Il COLORE fuori palette e' un elenco da guardare: `#5E5852` con 927
-        # usi e' una convenzione stabilita che pero' esiste solo nei file, e
-        # decidere se diventa un token o si accorpa a `--pt-fg-muted` e' una
-        # decisione del repository `brand`, non di questo. Finche' non e'
-        # presa, farla fallire qui vorrebbe dire tenere il controllo rosso per
-        # una cosa che da qui non si puo' chiudere.
+        # Il COLORE fuori palette e' un elenco da guardare: un grigio usato in
+        # molte figure puo' essere una convenzione stabilita che pero' esiste
+        # solo nei file, e decidere se diventa un token o si accorpa a
+        # `--pt-fg-muted` e' una decisione del repository `brand`, non di
+        # questo. Finche' non e' presa, farla fallire qui vorrebbe dire tenere
+        # il controllo rosso per una cosa che da qui non si puo' chiudere.
         AMMESSI = {"#B5532C", "#2D5A5C", "#C9A961", "#1A1A1A", "#F8F5EE",
                    "#5A524A", "#E2DCC9", "#C5BEAA", "#FFFFFF"}
         rx_col = re.compile(r"#[0-9A-Fa-f]{6}")
@@ -1102,7 +1386,11 @@ def main():
                 problemi["script dentro le figure"].append(p.name)
             for c in {x.upper() for x in rx_col.findall(t)} - AMMESSI:
                 fuori[c] += 1
-        for c, n in sorted(fuori.items(), key=lambda kv: -kv[1]):
+        # A pari merito, in ordine alfabetico: l'insieme dei colori di una
+        # figura si scorre in un ordine che cambia da un processo all'altro
+        # (`PYTHONHASHSEED`), e due giri sullo stesso libro devono stampare
+        # la stessa cosa.
+        for c, n in sorted(fuori.items(), key=lambda kv: (-kv[1], kv[0])):
             problemi["colori fuori palette (decisione del repo brand)"].append(
                 f"{c}  ->  in {n} figure")
 
@@ -1112,20 +1400,18 @@ def main():
         # rigenera in un temporaneo e le confronta. Le clip Manim no: sono
         # video, rigenerarle costa, e due render della stessa scena non danno
         # comunque file identici. Risultato: fra `animazioni/*.py` e
-        # `book/figures/*.gif` non c'era **nessun** legame verificabile, e si
-        # poteva correggere il sorgente, committare, e lasciare online la clip
-        # vecchia senza che niente protestasse. E' successo con
-        # `diffusione-denoising`, che mostrava il passo deterministico di DDIM
-        # sotto un testo che spiega perche' quello di DDPM e' un altro: una
-        # formula dentro un'immagine, che nessuna grep puo' trovare.
+        # `book/figures/*.gif` non c'e' **nessun** legame verificabile, e si
+        # puo' correggere il sorgente, committare, e lasciare online la clip
+        # vecchia senza che niente protesti: una formula dentro un'immagine
+        # non la trova nessuna grep.
         #
         # Qui non si confrontano i video, si confrontano le date dei commit. Ma
         # la sola data grida al lupo, e un controllo che segnala cose che non
-        # sono difetti viene disattivato, il che e' peggio di non averlo: la
-        # campagna di luglio contro le lineette ha toccato la **docstring** di
-        # una scena e un **commento** di un'altra, e ne' l'una ne' l'altro
-        # finiscono nel video. Quindi si guarda anche il diff, e si segnala solo
-        # quando cambia una riga che il render puo' vedere.
+        # sono difetti viene disattivato, il che e' peggio di non averlo: una
+        # modifica alla sola **docstring** di una scena, o a un suo
+        # **commento**, sposta la data e non arriva nel video. Quindi si
+        # guarda anche il diff, e si segnala solo quando cambia una riga che il
+        # render puo' vedere.
         import ast
 
         for sorg in sorted((QUI / "animazioni").glob("*.py")):
@@ -1186,8 +1472,7 @@ def main():
         # L'immagine e' attrezzatura della macchina come Docker stesso: dove
         # manca (un runner CI appena nato) il controllo non puo' dire niente
         # sull'ambiente, e un "non posso misurare" non e' un rosso. Si tace
-        # CON NOTA, mai in silenzio (misurato 2026-08-30: il cancello della
-        # pubblicazione andava rosso su ogni runner, sempre).
+        # CON NOTA, mai in silenzio.
         ha_immagine = shutil.which("docker") and subprocess.run(
             ["docker", "image", "inspect", "paithon-manim"],
             capture_output=True).returncode == 0
@@ -1234,7 +1519,7 @@ def main():
                 # fotogrammi. Le date qui non funzionano in nessuna delle due
                 # versioni: la data di modifica la azzera il checkout della CI,
                 # e la data del commit puo' risultare invertita se i PNG e la
-                # loro animazione finiscono in commit diversi (e' successo).
+                # loro animazione finiscono in commit diversi.
                 # L'impronta e' l'unica cosa che dice davvero da quale
                 # animazione vengono quei fermi.
                 registrata = _impronte_fermi().get(sorgente.name)
@@ -1255,8 +1540,8 @@ def main():
 
         # Le figure devono dichiarare i font del brand. Non e' un vezzo da
         # stampa: un `font-family="sans-serif"` generico, come file autonomo,
-        # prende il font di sistema di chi legge, ed e' cosi' che per mesi
-        # meta' delle figure del libro sono uscite in Arial anche online.
+        # prende il font di sistema di chi legge, anche online.
+        #
         # La lineetta SPAZIATA dentro una figura. L'asse `palette` cerca la
         # doppia `--` e la lineetta lunga; questa terza forma passava, ed e'
         # la piu' facile da scrivere per sbaglio. Le sottrazioni fra numeri
@@ -1283,55 +1568,57 @@ def main():
 
     if "lineette" in attivi:
         # `CONTRIBUTING.md` vieta la lineetta lunga (—) perche' non e' nello
-        # stile dell'autore. Ma la stessa cosa si scrive in altri due modi, e
-        # sono i due che una macchina produce piu' volentieri: la **doppia
-        # lineetta** `--` e il **trattino singolo spaziato** ` - `. Vanno
-        # tenuti fuori con lo stesso rigore: sono la firma piu' riconoscibile
-        # di un testo generato, e a differenza della lineetta lunga non si
-        # vedono a colpo d'occhio scorrendo una pagina.
-        #
-        # Il libro oggi e' pulito su tutte e tre le forme (misurato: zero
-        # occorrenze in prosa), quindi questo controllo non ripara, impedisce di
-        # cominciare.
+        # stile dell'autore. Ma la stessa cosa si scrive in altri due modi: la
+        # **doppia lineetta** `--` e il **trattino singolo spaziato** ` - `.
+        # Vanno tenuti fuori con lo stesso rigore, e a differenza della
+        # lineetta lunga non si vedono a colpo d'occhio scorrendo una pagina.
         #
         # La parte delicata e' non gridare al lupo, perche' in un libro tecnico
         # quei segni compaiono legittimamente dappertutto: segni meno nelle
         # formule, opzioni da riga di comando, indici, commenti HTML, classi
-        # CSS, separatori di tabella, elenchi. Al primo giro un interruttore
-        # acceso/spento sui recinti ne ha lasciati passare cinque, perche' le
-        # schede a cinque backtick lo desincronizzavano; e la matematica in
-        # linea che va a capo non si vede guardando una riga per volta. La
-        # mascheratura sta in `_maschera_prosa`, che la fa **una volta sola**.
+        # CSS, separatori di tabella, elenchi. Un interruttore acceso/spento
+        # sui recinti si desincronizza sulle schede a cinque backtick, e la
+        # matematica in linea che va a capo non si vede guardando una riga per
+        # volta: la mascheratura sta in `_maschera_prosa`, che la fa **una
+        # volta sola**.
         doppia = re.compile(r"(?<![-\w])--(?![-\w])|(?<=\w)--(?=\w)")
         singola = re.compile(r"(?<=\w) - (?=\w)")
+        di_tabella = re.compile(r"^\s*\|[\s|:-]+\|\s*$")
+        di_trattini = re.compile(r"^\s*-{3,}\s*$")
+        segno_di_elenco = re.compile(r"^\s*[-*+]\s")
         for f, t in sorted(testi.items()):
             if not f.endswith(".md"):
                 continue
             for n, riga in enumerate(_maschera_prosa(t).split("\n"), 1):
                 if "<!--" in riga or "-->" in riga or '="' in riga:
                     continue
-                if re.match(r"^\s*\|[\s|:-]+\|\s*$", riga) or re.match(r"^\s*-{3,}\s*$", riga):
+                if di_tabella.match(riga) or di_trattini.match(riga):
                     continue
-                pulita = re.sub(r"^\s*[-*+]\s", "", riga)
-                if doppia.search(pulita) or singola.search(pulita):
+                pulita = segno_di_elenco.sub("", riga)
+                m = doppia.search(pulita) or singola.search(pulita)
+                if m:
                     problemi["lineette scritte in ASCII (-- oppure - )"].append(
                         f"{f}:{n}  {pulita.strip()[:88]}")
+                    scarto = len(riga) - len(pulita)
+                    voce("lineette", "lineette scritte in ASCII (-- oppure - )",
+                         f, riga=n, colonna=m.start() + scarto + 1,
+                         fine_colonna=m.end() + scarto + 1,
+                         identita="lineetta",
+                         messaggio="una lineetta scritta in ASCII: il libro "
+                                   "usa parentesi, virgole o due punti")
 
     if "contrapposizioni" in attivi:
         # «non e' X, e' Y». `CONTRIBUTING.md` ne ammette **due per capitolo**,
         # e solo dove la contrapposizione *e'* l'argomento. Fuori di li' e' la
         # cadenza da diapositiva: il paragrafo si presenta prima di parlare.
         #
-        # Questo asse nasce da una campagna, e la campagna ha insegnato tre
-        # cose che stanno tutte nel codice qui sotto.
+        # Quattro cose, che stanno tutte nel codice qui sotto.
         #
         # **La prima: il costrutto ha tre punteggiature, non una.** Un
-        # rilevatore che cerca solo la virgola ne trova meno della meta'. Su
-        # Machine Learning ha detto «ventuno, adesso due» quando ne restavano
-        # diciotto, tutti con i due punti o con il punto e virgola. Ogni volta
-        # che il pattern e' stato allargato ne sono usciti altri, tre volte di
-        # fila: e' la ragione per cui qui le tre forme sono nella stessa regex
-        # invece che in tre passate successive.
+        # rilevatore che cerca solo la virgola ne trova una parte, e dichiara
+        # dentro il tetto capitoli che non lo sono: le altre forme hanno i due
+        # punti o il punto e virgola. E' la ragione per cui qui le tre forme
+        # sono nella stessa regex invece che in tre passate successive.
         #
         # **La seconda: la negazione dentro una citazione non e' il
         # costrutto.** «una su due non e' a posto»: sono due bocciature
@@ -1340,21 +1627,14 @@ def main():
         # riferimenti, non mosse fatte adesso. Chi le «ripara» rompe una
         # citazione, quindi il testo fra «» e fra "" si maschera prima.
         #
-        # **La terza: sopra il tetto non si fallisce, si elenca.** Quando
-        # l'asse e' nato, trentacinque capitoli su quarantuno erano oltre, e un
-        # controllo sempre rosso non avvisa di niente. Falliscono i soli
-        # capitoli gia' portati dentro il tetto, elencati in CHIUSI: li' un
-        # ritorno sopra i due e' una regressione e va vista subito. Gli altri
-        # si contano e basta, e la lista si accorcia man mano.
-        # `CHIUSI` era diventato `None`, cioe' «tutti», perche' col rilevatore
-        # vecchio ogni capitolo risultava dentro il tetto. Riparato lo spazio
-        # il conto vero e' un altro, e tenere `None` renderebbe l'asse rosso
-        # per chiunque fino alla fine della campagna: un controllo sempre rosso
-        # non avvisa di niente, e' soltanto un cancello che si impara ad
-        # aggirare. Vale quindi il meccanismo che questo asse ha sempre avuto,
-        # e la lista **cresce** man mano che un capitolo rientra: dentro
-        # `CHIUSI` si fallisce, perche' li' tornare sopra il tetto e' una
-        # regressione; fuori si elenca e basta.
+        # **La terza: sopra il tetto non si fallisce, si elenca.** Un
+        # controllo sempre rosso non avvisa di niente, e' soltanto un cancello
+        # che si impara ad aggirare. Falliscono i soli capitoli gia' portati
+        # dentro il tetto, elencati in `CHIUSI`: li' tornare sopra i due e'
+        # una regressione e va vista subito. Gli altri si elencano e basta, e
+        # `CHIUSI` **cresce** man mano che un capitolo rientra. Con `None` al
+        # posto dell'insieme varrebbe per tutti, e l'asse resterebbe rosso per
+        # chiunque finche' un capitolo solo sta sopra il tetto.
         CHIUSI = {"Agenti", "AttenzioneLineare", "Audio",
                   "AutoSupervisione", "Conclusioni", "Efficienza", "GAN",
                   "GPU", "GraphNeuralNetwork", "Interpretabilita",
@@ -1368,19 +1648,26 @@ def main():
         # modulo, con `_SP` e le due regex: li' lo puo' eseguire anche chi
         # misura, invece di riscriverne una copia che poi diverge.
         per_capitolo = defaultdict(list)
+        occorrenze = defaultdict(list)
         for f, t in sorted(testi.items()):
             if "/" not in f:
                 continue
             capitolo = f.split("/")[0]
             for n, frase in contrapposizioni(t):
                 per_capitolo[capitolo].append(f"{f}:{n}  {frase[:78]}")
+                occorrenze[capitolo].append(
+                    {"file": f, "riga": n, "identita": frase})
 
         for capitolo, righe in sorted(per_capitolo.items()):
-            if len(righe) <= TETTO:
-                continue
             chiave = ("«non e' X, e' Y» oltre il tetto di due"
                       if CHIUSI is None or capitolo in CHIUSI else
-                      "«non e' X, e' Y» oltre il tetto (campagna in corso)")
+                      "«non e' X, e' Y» oltre il tetto (da leggere)")
+            # La misura c'e' anche sotto il tetto: chi confronta due giri deve
+            # sapere da quanto e' partito.
+            misura("contrapposizioni", chiave, capitolo, len(righe), TETTO,
+                   len(righe) > TETTO, occorrenze[capitolo])
+            if len(righe) <= TETTO:
+                continue
             problemi[chiave].append(
                 f"{capitolo}: {len(righe)} (tetto {TETTO})")
             for r in righe[:4]:
@@ -1388,12 +1675,35 @@ def main():
             if len(righe) > 4:
                 problemi[chiave].append(f"    … e altre {len(righe) - 4}")
 
+    if "frasi" in attivi:
+        # Elenco e basta, come le contrapposizioni fuori da CHIUSI: quasi ogni
+        # forma ha anche un uso giusto, e un controllo che fallisce su una
+        # frase giusta si impara ad aggirare. Il perimetro e' quello del toc,
+        # e il conto dichiara quante pagine ha letto, perche' zero non si
+        # verifica da se'.
+        chiave = "forme da rivedere («La frase» di CONTRIBUTING.md)"
+        lette, trovate = 0, []
+        for p in pagine_del_toc():
+            pagina = str(p.relative_to(LIBRO))
+            if pagina == "aggiornamenti.md":
+                continue
+            lette += 1
+            for n, famiglia, forma in frasi_da_rivedere(
+                    prosa_della_pagina(p), pagina):
+                trovate.append(f"{pagina}:{n}  [{famiglia}]  {forma}")
+                voce("frasi", chiave, pagina, riga=n,
+                     identita=f"{famiglia}: {forma.lower()}",
+                     messaggio=f"[{famiglia}] «{forma}»: una forma fissa da "
+                               "rileggere (la frase, in CONTRIBUTING.md)")
+        assert lette, "il toc non ha dato nessuna pagina da leggere"
+        if trovate:
+            problemi[chiave] = [f"(lette {lette} pagine del toc;"
+                                " aggiornamenti.md esclusa: e' generata)"] + trovate
+
     if "enfasi" in attivi:
         # Il tetto e' scritto in `CONTRIBUTING.md`: **cinque marcature di
-        # enfasi ogni mille parole di prosa**. Nasce da un confronto con testi
-        # tecnici di riferimento, che non sono piu' semplici ne' piu' poveri
-        # di analogie: non marcano tipograficamente il ritmo del proprio
-        # ragionamento.
+        # enfasi ogni mille parole di prosa**. Il neretto marca un termine,
+        # non il ritmo del ragionamento.
         #
         # Questo asse non giudica **quale** marcatura sia giusta, e non e' una
         # rinuncia: i due assi provati e scartati che stanno in cima a questo
@@ -1411,12 +1721,11 @@ def main():
         # `aggiornamenti.md` sta fuori, e l'esclusione e' **dichiarata**: la
         # scrive `scripts/genera-aggiornamenti.py` dal registro delle
         # versioni, e il suo neretto e' il titolo di ciascuna voce, cioe'
-        # struttura. Senza, un elenco di duecento voci diventa un muro di
-        # prosa. Ripararla a mano non avrebbe senso (la prossima
-        # rigenerazione lo cancella) e lasciarla dentro darebbe un rosso che
-        # nessuno puo' togliere, cioe' un controllo che si impara ad
-        # aggirare. Un'esclusione taciuta e' un buco; dichiarata e' una
-        # decisione.
+        # struttura. Senza, un registro lungo diventa un muro di prosa.
+        # Ripararla a mano non avrebbe senso (la prossima rigenerazione lo
+        # cancella) e lasciarla dentro darebbe un rosso che nessuno puo'
+        # togliere, cioe' un controllo che si impara ad aggirare.
+        # Un'esclusione taciuta e' un buco; dichiarata e' una decisione.
         ESCLUSE = {"aggiornamenti.md":
                    "generata da scripts/genera-aggiornamenti.py: il suo "
                    "neretto sono i titoli delle voci del registro"}
@@ -1468,12 +1777,14 @@ def main():
             if parole < MINIMO:
                 continue
             tasso = 1000 * marcature / parole
+            misura("enfasi", "enfasi oltre il tetto di cinque per mille",
+                   gruppo, round(tasso, 3), TETTO, tasso > TETTO)
             if tasso > TETTO:
                 problemi["enfasi oltre il tetto di cinque per mille"].append(
                     f"{gruppo}: {tasso:.2f} per mille ({marcature} marcature"
                     f" su {parole} parole di prosa, tetto {TETTO:.0f})")
 
-        # E l'altra meta', che una campagna a un capitolo per volta non puo'
+        # E l'altra meta', che una rilettura a un capitolo per volta non puo'
         # vedere: **lo stesso termine marcato in due capitoli**. La regola e'
         # una proprieta' del libro, non di un capitolo, e chi legge un
         # capitolo per volta non la puo' controllare. Non e' un errore, ed e'
@@ -1483,6 +1794,15 @@ def main():
         multi = {t: c for t, c in capitoli_del_termine.items()
                  if len(set(c)) > 1}
         if multi:
+            for termine, dove in sorted(multi.items()):
+                voce("enfasi",
+                     "termini in neretto in piu' di un capitolo (da leggere)",
+                     None, identita=termine, capitoli=sorted(set(dove)),
+                     messaggio=f"«{termine}» è in neretto in "
+                               f"{len(set(dove))} capitoli "
+                               f"({', '.join(sorted(set(dove)))}): il neretto"
+                               " marca un termine una volta sola, al primo "
+                               "uso")
             chiave = "termini in neretto in piu' di un capitolo (da leggere)"
             problemi[chiave].append(
                 f"{len(multi)} termini, per "
@@ -1499,8 +1819,8 @@ def main():
                     f" ({', '.join(sorted(set(dove)))})")
             # Qui sopra si elencano i termini che stanno in **tre o piu'**
             # capitoli, che sono l'elenco corto e ad alto segnale. Quelli in
-            # due si contano e basta: sono la coda lunga, e un elenco di
-            # duecento righe nessuno lo legge.
+            # due si contano e basta: sono la coda lunga, e un elenco
+            # lunghissimo non lo legge nessuno.
             due = sum(1 for c in multi.values() if len(set(c)) == 2)
             problemi[chiave].append(
                 f"… e {due} termini marcati in due capitoli soltanto,"
@@ -1508,22 +1828,22 @@ def main():
 
     if "matematica" in attivi:
         # Dentro `$...$` la tipografia italiana non vale, e nessuno se ne
-        # accorge. Una campagna che ha sostituito 1086 apostrofi ASCII con
-        # quello tipografico (perche' `smartquotes`, in italiano, rende `'` come
-        # `”` a fine parola) e' entrata anche in **36 formule**, dove `'` non e'
-        # un apostrofo ma la derivata prima: `s'`, `a'`, `w'` del Reinforcement
-        # Learning sono diventati `s’`, `a’`, `w’`.
+        # accorge. Una sostituzione degli apostrofi ASCII con quello
+        # tipografico (che serve, perche' `smartquotes`, in italiano, rende
+        # `'` come `”` a fine parola) che entra in una formula trasforma la
+        # derivata prima in un apostrofo: `s'`, `a'`, `w'` del Reinforcement
+        # Learning diventano `s’`, `a’`, `w’`.
         #
-        # E sono passati sotto tre reti: `coerenza.py` non guardava dentro la
-        # matematica (l'asse `lineette` la maschera apposta), la build Sphinx
-        # non ha alzato un avviso, e MathJax `’` lo disegna e basta. Il difetto
-        # si vede solo aprendo la pagina e riconoscendo che quel segno non e'
-        # un primo. In stampa e' peggio, perche' LuaLaTeX gira in nonstopmode.
+        # La build Sphinx non alza un avviso, e MathJax `’` lo disegna e basta:
+        # il difetto si vede solo aprendo la pagina e riconoscendo che quel
+        # segno non e' un primo. In stampa e' peggio, perche' LuaLaTeX gira in
+        # nonstopmode. E l'asse `lineette` qui non guarda, perche' maschera la
+        # matematica apposta.
         #
-        # Il filtro che ha fatto il danno ragionava riga per riga, e riga per
-        # riga il `$$` di blocco non si vede: sta su piu' righe. Qui la
-        # matematica si estrae dal testo intero, con la stessa pila di recinti
-        # dell'asse `lineette`, e i numeri di riga si ricavano dagli offset.
+        # Riga per riga il `$$` di blocco non si vede: sta su piu' righe. Qui
+        # la matematica si estrae dal testo intero, con la stessa pila di
+        # recinti dell'asse `lineette`, e i numeri di riga si ricavano dagli
+        # offset.
         #
         # Fuori dal setaccio resta `\text{...}` (e `\textrm`, `\mbox`), che e'
         # il posto in cui l'italiano dentro una formula ci sta di diritto: li'
@@ -1583,6 +1903,11 @@ def main():
                         estratto = " ".join(m.group(0).split())[:70]
                         problemi["segni di prosa dentro una formula"].append(
                             f"{f}:{n}  {ch}  {SEGNI[ch]}\n      {estratto}")
+                        voce("matematica", "segni di prosa dentro una formula",
+                             f, testo=t, inizio=m.start() + i,
+                             fine=m.start() + i + 1, identita=ch,
+                             messaggio=f"«{ch}» dentro una formula: "
+                                       f"{SEGNI[ch]}")
             # Una formula in linea che va a capo su una riga che comincia
             # con `- `, `+ `, `* `, `1. `, `>` o `# ` non e' piu' una
             # formula: Markdown legge quell'inizio di riga come una voce
@@ -1605,6 +1930,14 @@ def main():
                         estratto = resto.lstrip()[:60].split("\n")[0]
                         problemi["formula in linea spezzata da un a capo"
                                  ].append(f"{f}:{n}  {estratto}")
+                        voce("matematica",
+                             "formula in linea spezzata da un a capo", f,
+                             testo=t, inizio=m.start() + k + 1,
+                             identita="a capo",
+                             messaggio="una formula in linea va a capo su un "
+                                       "segno che Markdown legge come inizio"
+                                       " di un elenco, di una citazione o di "
+                                       "un titolo")
             # Il testo di un rimando ({doc}, {ref}, un link Markdown) e' testo
             # letterale: una `$n$` li' dentro non si compone, e in pagina e
             # sul sito escono i dollari. Si scrive senza matematica («modelli
@@ -1617,6 +1950,11 @@ def main():
                     n = prosa.count("\n", 0, m.start()) + 1
                     problemi["formula dentro il testo di un rimando"].append(
                         f"{f}:{n}  {' '.join(etichetta.split())[:60]}")
+                    voce("matematica", "formula dentro il testo di un rimando",
+                         f, testo=t, inizio=m.start(), fine=m.end(),
+                         identita=" ".join(etichetta.split()),
+                         messaggio="una formula nel testo di un rimando: resta"
+                                   " testo, e in pagina si vedono i dollari")
 
     if "doppioni" in attivi:
         # Il rilevatore e le sue ragioni stanno in `frasi_doppie`. Il registro
@@ -1628,16 +1966,17 @@ def main():
             for riga, chiave in frasi_doppie(t):
                 problemi["frasi scritte due volte"].append(
                     f"{f}:{riga}  ->  «{chiave}…»")
+                voce("doppioni", "frasi scritte due volte", f, riga=riga,
+                     identita=chiave,
+                     messaggio=f"la stessa frase due volte nello stesso "
+                               f"capoverso: «{chiave}…»")
 
     if "verso" in attivi:
-        # Il difetto piu' insidioso di questo libro non e' un fatto sbagliato:
-        # e' una frase giusta messa nel verso sbagliato. «Come abbiamo visto»
-        # seguito da un rimando a un capitolo che il lettore non ha ancora
-        # letto, e che gli chiede un ricordo che non puo' avere. In Visione e
-        # linguaggio (capitolo 17) ce n'erano quattro, verso i capitoli 21 e
-        # 24; in Audio sei, in Speech due. Nessuna build se ne accorge, perche'
-        # il link risolve benissimo: e' l'ordine di lettura a non tornare, e
-        # l'ordine di lettura sta nel _toc.yml.
+        # Una frase giusta nel verso sbagliato: «Come abbiamo visto» seguito
+        # da un rimando a un capitolo che il lettore non ha ancora letto, e
+        # che gli chiede un ricordo che non puo' avere. Nessuna build se ne
+        # accorge, perche' il link risolve benissimo: e' l'ordine di lettura a
+        # non tornare, e l'ordine di lettura sta nel _toc.yml.
         toc = LIBRO / "_toc.yml"
         if toc.is_file():
             capitoli = [f for f in re.findall(
@@ -1679,16 +2018,27 @@ def main():
                         if suo > mio and RX["indietro"].search(prima):
                             problemi["rimandi all'indietro che puntano in avanti"].append(
                                 f"{f}  ->  {cap}  …{coda}")
+                            voce("verso",
+                                 "rimandi all'indietro che puntano in avanti",
+                                 f, testo=t, inizio=m.start(), fine=m.end(),
+                                 identita=f"{cap} {bersaglio}",
+                                 messaggio="«come abbiamo visto» verso un "
+                                           "capitolo che il lettore non ha "
+                                           f"ancora letto ({cap})")
                         elif suo < mio and RX["poi"].search(prima):
                             problemi["rimandi in avanti che puntano indietro"].append(
                                 f"{f}  ->  {cap}  …{coda}")
+                            voce("verso",
+                                 "rimandi in avanti che puntano indietro",
+                                 f, testo=t, inizio=m.start(), fine=m.end(),
+                                 identita=f"{cap} {bersaglio}",
+                                 messaggio="«vedremo» verso un capitolo che "
+                                           f"il lettore ha già letto ({cap})")
 
             # I richiami in PROSA, che sono la forma vera: il libro scrive
-            # «come abbiamo visto nel capitolo sulle GAN», non un {doc}.
-            # Misurato prima di scrivere questo pezzo: 409 formule di richiamo
-            # all'indietro in tutto il libro, e zero con un link accanto. Un
-            # asse che guardasse solo i link guarderebbe l'unica forma che il
-            # libro non usa.
+            # «come abbiamo visto nel capitolo sulle GAN», non un {doc}, e un
+            # asse che guardasse solo i link guarderebbe la forma che il libro
+            # non usa.
             #
             # Il nome del capitolo da solo non basta come indizio («PyTorch»
             # compare ovunque come parola): dev'essere preceduto da un
@@ -1733,24 +2083,36 @@ def main():
                                 t[m.start():m.end() + mt.end()].split())
                             problemi["rimandi all'indietro che puntano in avanti"].append(
                                 f"{f}  ->  {cap}  …{frase[:120]}")
+                            voce("verso",
+                                 "rimandi all'indietro che puntano in avanti",
+                                 f, testo=t, inizio=m.start(),
+                                 fine=m.end() + mt.end(),
+                                 identita=f"{cap} {m.group(0).lower()}",
+                                 messaggio="«come abbiamo visto» verso un "
+                                           "capitolo che il lettore non ha "
+                                           f"ancora letto ({cap})")
                             break
 
     if "avanti" in attivi:
         for f, t in testi.items():
-            for frase in RX["avanti"].findall(t):
-                pass  # findall coi gruppi non serve: conta il testo intero
             for m in RX["avanti"].finditer(t):
                 problemi["rimandi in avanti (da leggere)"].append(
                     f"{f}: …{m.group(0).strip()[:110]}")
+                voce("avanti", "rimandi in avanti (da leggere)", f, testo=t,
+                     inizio=m.start(), fine=m.end(),
+                     identita=" ".join(m.group(0).lower().split()),
+                     messaggio=f"un rimando in avanti, da rileggere: "
+                               f"«{m.group(0).strip()[:110]}»")
 
     # `ordine` non e' solo l'ordine di stampa: e' anche il filtro. Una chiave
-    # che non compare qui viene calcolata e poi buttata via in silenzio, ed e'
-    # esattamente quel che e' successo ai due controlli sui doppioni.
+    # che non compare qui verrebbe calcolata e poi buttata via in silenzio, e
+    # per questo in fondo le chiavi senza posto si stampano lo stesso.
     ordine = ["numref senza :name:", ":name: usato piu' volte",
               "stessa figura richiamata piu' volte",
               "cite senza voce nel .bib",
               "ref/doc senza target", "figure mai richiamate",
               "file non nel _toc.yml",
+              "pagine con a capo CRLF o un BOM",
               "capitoli senza scheda nella landing",
               "schede della landing senza capitolo",
               "schede della landing fuori ordine",
@@ -1767,7 +2129,7 @@ def main():
               "animazioni/senza-clip.toml, con la ragione)",
               "lineette scritte in ASCII (-- oppure - )",
               "«non e' X, e' Y» oltre il tetto di due",
-              "«non e' X, e' Y» oltre il tetto (campagna in corso)",
+              "«non e' X, e' Y» oltre il tetto (da leggere)",
               "enfasi oltre il tetto di cinque per mille",
               "termini in neretto in piu' di un capitolo (da leggere)",
               "frasi scritte due volte",
@@ -1788,7 +2150,8 @@ def main():
               "formula dentro il testo di un rimando",
               "rimandi all'indietro che puntano in avanti",
               "rimandi in avanti che puntano indietro",
-              "rimandi in avanti (da leggere)"]
+              "rimandi in avanti (da leggere)",
+              "forme da rivedere («La frase» di CONTRIBUTING.md)"]
     # Assi che elencano e basta: dicono cosa guardare, non cosa e' rotto, e
     # quindi non fanno fallire niente.
     solo_elenco = {"schede Elementari molto lunghe (da rileggere)",
@@ -1796,8 +2159,9 @@ def main():
                    "una lettera con due glosse nello stesso capitolo",
                    "rimandi in avanti (da leggere)",
                    "colori fuori palette (decisione del repo brand)",
-                   "«non e' X, e' Y» oltre il tetto (campagna in corso)",
-                   "«Da ricordare» fuori dalle schede"}
+                   "«non e' X, e' Y» oltre il tetto (da leggere)",
+                   "«Da ricordare» fuori dalle schede",
+                   "forme da rivedere («La frase» di CONTRIBUTING.md)"}
     totale = 0
     for k in ordine:
         v = problemi.get(k)
@@ -1811,10 +2175,9 @@ def main():
             print(f"   … e altri {len(v) - len(mostra)}")
         if k not in solo_elenco:
             totale += len(v)
-    # E una chiave che manca da `ordine` non deve piu' sparire: la si stampa e
-    # la si conta. Il commento qui sopra racconta i doppioni; la terza volta e'
-    # toccata alle schede non chiuse, rimaste mute dal giorno in cui il
-    # controllo e' nato, mentre una scheda aperta rompeva una pagina del libro.
+    # E una chiave che manca da `ordine` non deve sparire: la si stampa e la
+    # si conta, perche' un asse che calcola e non stampa resta muto proprio
+    # quando trova qualcosa.
     for k, v in sorted(problemi.items()):
         if k in ordine or not v:
             continue
@@ -1827,6 +2190,21 @@ def main():
     print(f"\n{totale} problemi da correggere"
           f" ({len(problemi.get('rimandi in avanti (da leggere)', []))}"
           f" rimandi da leggere a mano)")
+    if args.json:
+        coperte = {v["categoria"] for v in VOCI}
+        for k, righe in sorted(problemi.items()):
+            # Un asse che non sa ancora dare le posizioni: la riga stampata,
+            # intera. Una voce che manca dall'uscita strutturata non la vede
+            # nessuno di quelli che la leggono, ed e' la stessa trappola
+            # delle chiavi senza posto in `ordine`.
+            if k not in coperte:
+                for r in righe:
+                    voce("coerenza", k, identita=r, messaggio=f"{k}: {r}")
+        for v in VOCI:
+            v["solo_elenco"] = v["categoria"] in solo_elenco
+        args.json.write_text(json.dumps(
+            {"radice": str(QUI), "assi": sorted(attivi), "voci": VOCI},
+            ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     return 1 if totale else 0
 
 

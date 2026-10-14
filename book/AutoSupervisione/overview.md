@@ -20,26 +20,21 @@ convincevano. Propose allora un metodo diverso e quasi brutale
 darlo da completare a dei lettori. Più parole indovinavano, più quel testo era
 prevedibile per loro, e quindi facile. Chiamò la procedura *cloze*, dalla
 chiusura percettiva di cui parlavano gli psicologi della forma: la tendenza a
-completare da sé una figura interrotta.
+completare una figura interrotta.
 
-Taylor misurava i testi, e per farlo metteva alla prova i lettori.
-Sessantasei anni dopo, lo stesso identico gioco (coprire una parola e farla
-indovinare) è diventato il modo in cui si addestrano i modelli di linguaggio,
-e gli autori di BERT lo dicono in chiaro, rimandando proprio a Taylor: quel
-loro esercizio, scrivono, in letteratura si chiama *compito cloze*
-{cite}`devlin2019bert`. Nel mezzo sono cambiati chi lo
-fa e a che scopo, non l'esercizio. Non si mette più alla prova il lettore, lo
-si fabbrica.
+Taylor misurava i testi mettendo alla prova i lettori. Sessantasei anni dopo lo
+stesso gioco, coprire una parola e farla indovinare, è diventato il modo in cui
+si addestrano i modelli di linguaggio, e gli autori di BERT rimandano a Taylor:
+il loro esercizio, scrivono, in letteratura si chiama *compito cloze*
+{cite}`devlin2019bert`. Nel frattempo sono cambiati chi lo fa e a che scopo,
+non l'esercizio. Non si mette più alla prova il lettore, lo si fabbrica.
 
-Il gioco di Taylor è la prima metà della risposta alla domanda con cui si sono
-congedati i {doc}`modelli a energia </ModelliEnergia/paesaggi-di-oggi>`, e la
-stessa mossa è già comparsa in quattro campi (il linguaggio, la visione,
-l'audio, la visione insieme al linguaggio), più un quinto, i modelli del mondo,
-che viene subito dopo. Ogni volta aveva il pretesto che serviva lì ed era
-descritta nel lessico di quel campo; oggi regge il pre-addestramento dei
-modelli di linguaggio, di visione e di parlato più usati. Che cosa hanno in
-comune quei cinque casi, e perché funzionano senza che nessuno etichetti
-niente?
+Il gioco di Taylor è già comparso in quattro campi (il linguaggio, la visione,
+l'audio, la visione insieme al linguaggio), e un quinto, i modelli del mondo,
+viene subito dopo. Ogni volta aveva il pretesto che serviva lì ed era descritto
+nel lessico di quel campo; oggi sta alla base del pre-addestramento dei modelli
+di linguaggio, di visione e di parlato più usati. Che cosa hanno in comune quei
+cinque casi, e perché funzionano senza che nessuno etichetti niente?
 
 ## Un compito la cui risposta è già nei dati
 
@@ -70,36 +65,36 @@ portare.
 ## Quanta informazione porta una risposta
 
 Le tre grandi famiglie di apprendimento (supervisionato, per rinforzo,
-auto-supervisionato) si distinguono di solito per come sono fatte. Conviene
-invece guardarle da un'altra parte: per quanto dice la risposta con cui il
-modello si corregge. Non quanto è giusta: quanto è *grande*.
+auto-supervisionato) si distinguono di solito per come sono fatte. Un altro
+criterio è la grandezza della risposta con cui il modello si corregge,
+indipendente dal fatto che sia giusta.
 
 `````{tab} Elementare
 
 Ci sono tre modi di imparare a riconoscere gli uccelli.
 
 Nel primo, qualcuno ti mostra una fotografia e ti dice una parola:
-«cardellino». Hai imparato qualcosa, ma quella parola è tutto quello che hai
-ricevuto per quella fotografia: una parola sola, scelta da un elenco di nomi
-che qualcuno ha compilato prima.
+«cardellino». Hai imparato qualcosa, ma per quella fotografia hai ricevuto
+soltanto quella parola, scelta da un elenco di nomi che qualcuno ha compilato
+prima.
 
 Nel secondo, ti mostrano la stessa fotografia con mezza immagine coperta e ti
-chiedono di disegnare quello che manca. Adesso la risposta giusta è tutta la
+chiedono di disegnare la parte mancante. Adesso la risposta giusta è tutta la
 metà nascosta e non una parola: con la forma del becco, il colore delle ali,
 il ramo che continua, l'ombra che cade dalla parte giusta. Per riempire quel
 buco devi aver capito parecchio, e ogni singolo dettaglio che indovini o sbagli
 ti dice qualcosa.
 
 Nel terzo, giri tutto il giorno in un bosco a osservare uccelli e la sera
-qualcuno ti dice: «oggi hai fatto bene». Punto. È stata una giornata intera, e
-di ritorno hai avuto una frase sola, che vale per tutto. Fosse durata un'ora, o
-una settimana, la frase sarebbe stata comunque una. Quali degli sguardi che hai
-dato erano quelli buoni? Nessuno te lo dice.
+qualcuno ti dice: «oggi hai fatto bene». È stata una giornata intera, e di
+ritorno hai avuto una frase sola, che vale per tutto. Fosse durata un'ora, o
+una settimana, la frase sarebbe stata comunque una. Nessuno ti dice quali, fra
+gli sguardi che hai dato, fossero quelli buoni.
 
 La fotografia con la sua parola è l'apprendimento supervisionato. La giornata
 nel bosco è l'apprendimento per rinforzo. Il buco da riempire è
-l'auto-supervisione, ed è il solo dei tre in cui la correzione che ricevi è
-grande quanto la cosa che stai guardando.
+l'auto-supervisione, e solo in questo caso la correzione che ricevi è grande
+quanto l'immagine che stai guardando.
 
 `````
 
@@ -111,7 +106,7 @@ porta *in media* al più $\log_2 K$ bit, che è l'entropia del caso
 equiprobabile e il tetto di tutti gli altri, e la ricava
 {doc}`Teoria dell'informazione </Matematica/teoria-informazione>`.
 
-Da qui tre conti, e sono conti di tetto, non di sostanza:
+Ne vengono tre conti, che danno tetti e non misure:
 
 - un'etichetta su $K = 1000$ classi porta al più $\log_2 1000 \approx 10$ bit,
   e li porta per immagine;
@@ -121,10 +116,10 @@ Da qui tre conti, e sono conti di tetto, non di sostanza:
 - una ricompensa binaria porta al più 1 bit, e lo porta per episodio, cioè
   per l'intera traiettoria, comunque lunga sia.
 
-L'ultima riga è quella che decide tutto, e non per la dimensione del numero ma
-per il denominatore: nel supervisionato e nell'auto-supervisionato il bersaglio
-si misura per esempio o per token, nel rinforzo per episodio. Un episodio
-può essere una mossa oppure diecimila.
+L'ultima riga decide, e per il denominatore più che per la dimensione del
+numero: nel supervisionato e nell'auto-supervisionato il bersaglio si misura
+per esempio o per token, nel rinforzo per episodio. Un episodio può durare un
+passo oppure diecimila.
 
 `````
 
@@ -188,10 +183,10 @@ L'etichetta e il verdetto di fine partita, la prima riga e l'ultima, distano
 appena un fattore dieci. Il salto sta nella terza riga, il brano di testo che
 il modello legge in un colpo solo, ottomila pezzetti di parola: vale quasi
 quattordicimila etichette e centotrentanovemila verdetti di fine partita, come
-mostrano i due rapporti appena calcolati. Un brano che nessuno ha annotato
-offre quindi un tetto di informazione migliaia di volte più alto di una
-fotografia con la sua etichetta; quanto di quel tetto il modello usi davvero è
-un'altra domanda.
+mostrano i due rapporti stampati dal programma. Un brano che nessuno ha
+annotato offre quindi un tetto di informazione migliaia di volte più alto di
+una fotografia con la sua etichetta; quanto di quel tetto il modello usi
+davvero è un'altra domanda.
 
 Senza una precisazione, però, questi numeri prometterebbero più di quanto
 possono mantenere.
@@ -202,21 +197,21 @@ Le quattordicimila etichette e i centotrentanovemila verdetti dicono quanto è
 grande la risposta giusta, ma tacciono su quanto il modello ne abbia capito.
 Sono il diametro del tubo, non l'acqua che ci passa.
 
-E il diametro è già generoso. Il conto tratta ogni dettaglio della metà coperta
-come una sorpresa, e sorprese non sono: se il ramo si vede per un tratto,
-l'altro tratto lo disegni senza pensarci, e da quel pezzo non hai imparato
-niente.
+Anzi, il diametro è già generoso: la stima tratta ogni dettaglio della metà
+coperta come una sorpresa, e molti non lo sono. Se il ramo si vede per un
+tratto, l'altro tratto lo disegni senza pensarci, e da quel pezzo non hai
+imparato niente.
 
 Anche dove la sorpresa c'è, chi riempie il buco può cavarne pochissimo: sfuma
 tutto, azzecca una macchia del colore giusto e passa oltre. La risposta era
-grande, quello che ha imparato è piccolo. E all'opposto, un solo «hai
-sbagliato» detto al momento giusto può insegnare più di mille foto etichettate
-male; solo che il momento giusto è la parte difficile, perché nel bosco quella
-frase arriva la sera, quando gli sguardi da correggere sono ormai centinaia.
+grande, ma ha imparato poco. All'opposto, un solo «hai sbagliato» detto al
+momento giusto può insegnare più di mille foto etichettate male; trovare il
+momento giusto però è difficile, perché nel bosco quella frase arriva la sera,
+quando gli sguardi da correggere sono ormai centinaia.
 
-Il confronto regge sui rapporti grossi, quelli da dieci volte in su, e sulla
-tendenza; non sui decimali. E va usato per quello: dice dove c'è spazio per
-imparare, non quanto si impara davvero.
+Il confronto vale per i rapporti grossi, da dieci volte in su, e per la
+tendenza, non per i decimali. Serve a dire dove c'è spazio per imparare, non
+quanto si impara.
 
 `````
 
@@ -226,17 +221,17 @@ Tre precisazioni, e sono tutte nella stessa direzione.
 
 La prima: $\log_2 K$ è l'entropia della distribuzione uniforme, cioè un
 massimo. Le etichette reali non sono uniformi e i token nemmeno: l'entropia
-condizionata di un token dato il contesto è molto minore di $\log_2 V$, ed è il
-limite sotto cui la perdita di un modello linguistico, misurata su testo che
+condizionata di un token dato il contesto è molto minore di $\log_2 V$, e fissa
+il limite sotto cui la perdita di un modello linguistico, misurata su testo che
 non ha visto, non può scendere. Quindi i numeri della tabella sono tetti, e il
 tetto vero è più basso. Quanto più basso lo dice una stima classica: per
 l'inglese Shannon dà fra $0{,}6$ e $1{,}3$ bit per carattere
-{cite}`shannon1951prediction`, e con circa quattro caratteri per token sono
-fra $2{,}4$ e $5{,}2$ bit per token invece di $17$. La finestra da $8192$ token
-porta allora fra $8192 \cdot 2{,}4 \approx 2 \cdot 10^4$ e
-$8192 \cdot 5{,}2 \approx 4 \cdot 10^4$ bit, non $1{,}4 \cdot 10^5$: un tetto
-da tre a sette volte più basso, che resta di quattro ordini di grandezza sopra
-il bit della ricompensa binaria.
+{cite}`shannon1951prediction`, e con circa quattro caratteri per token sono fra
+$2{,}4$ e $5{,}2$ bit per token invece di $17$. La finestra da $8192$ token
+porta allora fra $8192 \cdot 2{,}4 \approx 2 \cdot 10^4$ e $8192 \cdot 5{,}2
+\approx 4 \cdot 10^4$ bit, non $1{,}4 \cdot 10^5$: un tetto da tre a sette
+volte più basso, che resta di quattro ordini di grandezza sopra il bit della
+ricompensa binaria.
 
 La seconda: l'informazione del bersaglio è un limite superiore
 sull'informazione che il gradiente può trasportare, non una misura di ciò che
@@ -244,11 +239,11 @@ la rete acquisisce. Fra le due c'è di mezzo l'ottimizzazione, l'architettura e
 la scelta del pretesto, e quanto quella scelta pesi lo ha già mostrato
 {doc}`Imparare a vedere senza etichette </VisioneArtificiale/senza-etichette>`:
 con le trasformazioni sbagliate un modello risolve il pretesto per scorciatoia
-e non impara niente. Una misura di quanto la rete ha davvero acquisito esiste,
-ed è la lunghezza di descrizione prequenziale di
-{doc}`Capire è accorciare </AutoSupervisione/capire-e-accorciare>`: quanti bit
-si risparmiano, rispetto al codice uniforme, prevedendo i dati con un modello
-che li impara mentre li legge.
+e non impara niente. Esiste una misura di quanto la rete ha acquisito, la
+lunghezza di descrizione prequenziale di {doc}`Capire è accorciare
+</AutoSupervisione/capire-e-accorciare>`: quanti bit si risparmiano, rispetto
+al codice uniforme, prevedendo i dati con un modello che li impara mentre li
+legge.
 
 La terza, che tornerà nel {doc}`dibattito sul rinforzo
 </AutoSupervisione/dibattito-rl>`: la povertà del segnale nel rinforzo non è
@@ -281,8 +276,8 @@ l'apprendimento non usi supervisione affatto, mentre in realtà
 l'auto-supervisione «usa molti più segnali di correzione di quanti ne usino i
 metodi supervisionati e per rinforzo standard».
 
-Quella frase dice in parole quello che il conto sull'informazione del
-bersaglio dice in numeri, e la dice la persona che ha disegnato la torta.
+I numeri sull'informazione del bersaglio e questa frase sostengono lo stesso
+argomento, e a scriverla è chi ha disegnato la torta.
 
 Il nome tradizionale, del resto, non sparisce: resta giusto per il
 raggruppamento, la riduzione della dimensionalità e la stima di densità, che
@@ -301,9 +296,9 @@ cronologia, non come prova.
 
 ## Cinque pretesti, un solo meccanismo
 
-Pretesti se ne sono già costruiti parecchi, senza chiamarli per nome, e messi
-in fila stanno così. Le prime quattro righe sono strada percorsa; l'ultima è
-quella che viene subito dopo.
+Di pretesti ne sono già comparsi parecchi, senza questo nome; eccoli in
+tabella. Le prime quattro righe sono strada percorsa; l'ultima viene subito
+dopo.
 
 | dove | il pretesto | che cosa se ne tiene |
 |---|---|---|
@@ -317,12 +312,12 @@ Cinque pretesti diversi e un meccanismo solo, con il linguaggio che ci arriva
 per due strade, la parola coperta e la parola successiva. La colonna di mezzo
 cambia sempre; quella di destra dice quasi sempre la stessa cosa, una
 rappresentazione: il vettore $\mathbf{h} = f_\theta(\mathbf{x})$ che la parte
-di rete chiamata encoder, $f_\theta$, calcola da ogni dato $\mathbf{x}$, e
-che i compiti successivi usano come ingresso. L'encoder è quello che si tiene
-quando il pretesto si scarta. Fa eccezione il modello di linguaggio che
-indovina la parola successiva: lì il pretesto coincide con l'uso, perché
-generare un testo vuol dire proprio prevederne la parola dopo, e del modello si
-tiene tutto, compresa la parte che fa la previsione.
+di rete chiamata encoder, $f_\theta$, calcola da ogni dato $\mathbf{x}$, e che
+i compiti successivi usano come ingresso. Quando il pretesto si scarta, si
+tiene l'encoder. Fa eccezione il modello di linguaggio che indovina la parola
+successiva: lì il pretesto coincide con l'uso, perché generare un testo
+equivale a prevederne la parola dopo, e del modello si tiene tutto, testa di
+previsione compresa.
 
 Una riga della tabella sta sul confine. Nell'allineamento fra immagini e
 didascalie la risposta giusta non l'ha ricavata una regola meccanica: la
@@ -335,7 +330,7 @@ metodi contrastivi.
 
 C'è poi un sesto caso: l'organismo vivo. Nelle
 neuroscienze teoriche c'è un modo di guardare al cervello, l’**inferenza
-attiva**, secondo cui percepire e agire sono due facce dello stesso mestiere:
+attiva**, secondo cui percepire e agire sono due aspetti di uno stesso compito:
 indovinare che cosa c'è là fuori, e muoversi per indovinare meglio; gli è
 dedicata {doc}`Inferenza attiva </WorldModels/inferenza-attiva>`. Per gli
 autori che l'hanno messa in sistema, imparare «non è fondamentalmente diverso
@@ -350,58 +345,58 @@ come tale va presa; se ha ragione, l'auto-supervisione sarebbe anche il modo in
 cui impara un organismo, e l'ingegneria ci sarebbe arrivata per un'altra
 strada.
 
-La quantità che l'organismo cerca di tenere bassa, il divario fra quello che
-si aspetta e quello che gli arriva, in quella letteratura circola sotto più
-nomi che non sono sinonimi. La sorpresa è quanto era improbabile, per il
-modello che l'organismo ha del mondo, il segnale che gli è arrivato; la teoria
-non la sa calcolare, e al suo posto minimizza l’energia libera variazionale, un
-numero che le fa da tetto e che invece si calcola. Con l'energia dei
-{doc}`modelli a energia </ModelliEnergia/overview>`, il voto dato a una
-risposta, ha poco da spartire oltre al nome. L'errore di predizione e
-l'entropia, che è la sorpresa media, ne discendono sotto ipotesi che
-{doc}`Inferenza attiva </WorldModels/inferenza-attiva>` scrive per esteso.
+La quantità che l'organismo cerca di tenere bassa, il divario fra l'atteso e il
+ricevuto, in quella letteratura circola sotto più nomi che non sono sinonimi.
+La sorpresa è quanto era improbabile, per il modello che l'organismo ha del
+mondo, il segnale che gli è arrivato; la teoria non la sa calcolare, e al suo
+posto minimizza l’energia libera variazionale, un numero che le fa da tetto e
+che invece si calcola. Con l'energia dei {doc}`modelli a energia
+</ModelliEnergia/overview>`, il voto dato a una risposta, ha in comune solo il
+nome. L'errore di predizione e l'entropia, che è la sorpresa media, ne
+discendono sotto ipotesi che {doc}`Inferenza attiva
+</WorldModels/inferenza-attiva>` scrive per esteso.
 
 Il capitolo prosegue in quattro sezioni. {doc}`Le quattro famiglie
-</AutoSupervisione/famiglie>` mettono in fila i modi di fabbricare un pretesto
-come risposte a una domanda sola: che cosa impedisce al modello di rispondere
-sempre la stessa cosa. {doc}`Il collasso e la misura
-</AutoSupervisione/collasso-e-misura>` guardano che cosa va storto, e come si
-capisce se ha funzionato quando il punteggio del pretesto non dice niente.
-{doc}`Capire è accorciare </AutoSupervisione/capire-e-accorciare>` affronta la
-domanda più scomoda, perché indovinare la parola coperta dovrebbe insegnare
-anche qualcos'altro, con la risposta che una parte del campo dà: prevedere bene
-obbliga a comprimere, e comprimere obbliga a cogliere la struttura dei dati.
-Infine {doc}`la ciliegina </AutoSupervisione/dibattito-rl>`, il dibattito su
-quanto conti l'apprendimento per rinforzo se il grosso lo fa già
-l'auto-supervisione: è la parte in cui ricercatori autorevoli non sono
-d'accordo fra loro, e ogni posizione vi è riportata col nome di chi l'ha
-sostenuta.
+</AutoSupervisione/famiglie>` presentano i modi di fabbricare un pretesto come
+risposte a una domanda sola: che cosa impedisce al modello di rispondere sempre
+la stessa cosa. È la domanda con cui si chiudevano i {doc}`modelli a energia
+</ModelliEnergia/paesaggi-di-oggi>`: che cosa impedisce di dire sì a tutto.
+{doc}`Il collasso e la misura </AutoSupervisione/collasso-e-misura>` guardano
+che cosa va storto, e come si capisce se ha funzionato quando il punteggio del
+pretesto non dice niente. {doc}`Capire è accorciare
+</AutoSupervisione/capire-e-accorciare>` affronta la domanda più scomoda,
+perché indovinare la parola coperta dovrebbe insegnare anche qualcos'altro, con
+la risposta che una parte del campo dà: prevedere bene obbliga a comprimere, e
+comprimere obbliga a cogliere la struttura dei dati. Infine {doc}`la ciliegina
+</AutoSupervisione/dibattito-rl>`, il dibattito su quanto conti l'apprendimento
+per rinforzo se il grosso lo fa già l'auto-supervisione: è la parte in cui
+ricercatori autorevoli non sono d'accordo fra loro, e ogni posizione vi è
+riportata col nome di chi l'ha sostenuta.
 
 `````{tab} Elementare
 
 ```{admonition} Da ricordare
 :class: important
-- Auto-supervisione vuol dire inventarsi un esercizio la cui risposta
+- L'auto-supervisione consiste nell'inventare un esercizio la cui risposta
   giusta è già dentro i dati: coprire una parola e farla indovinare, ritagliare
-  un pezzo di foto e farlo ritrovare. Nessuno scrive la risposta, si nasconde e
-  basta. Di solito l'esercizio si butta via e si tiene quello che il modello ha
-  dovuto capire per farlo; quando l'esercizio è indovinare la parola dopo,
-  invece, si tiene tutto, perché scrivere un testo vuol dire proprio quello.
+  un pezzo di foto e farlo ritrovare. Nessuno scrive la risposta: la si
+  nasconde. Di solito l'esercizio si butta via e si tiene quello che il modello
+  ha dovuto capire per farlo; quando l'esercizio è indovinare la parola dopo,
+  invece, si tiene tutto, perché scrivere un testo coincide con quel compito.
 - Il gioco è più vecchio dei calcolatori: nel 1953 serviva a misurare quanto un
   testo fosse facile da leggere. Oggi serve a fabbricare chi lo legge.
 - La differenza che conta con gli altri modi di imparare è quanto è grande la
   correzione che il modello riceve. Una parola sola («cardellino») per una
   fotografia intera; oppure mezza fotografia da ricostruire, cioè migliaia di
   dettagli; oppure un «bravo» a fine giornata, che vale per tutta la giornata.
-- Il conto lo fa per bene un programma che si può rilanciare, e lo fa su un
-  caso solo: il brano di testo che il modello legge in un colpo, ottomila
+- Un programma che si può rilanciare calcola quanto è grande la correzione, su
+  un caso solo: il brano di testo che il modello legge in un colpo, ottomila
   pezzetti di parola. Quel brano vale quasi quattordicimila parole scritte
   sotto una foto e centotrentanovemila «bravo» di fine giornata, cioè quattro
   zeri di differenza da una parte e cinque dall'altra. La parola e il «bravo»,
   invece, distano appena dieci volte.
-- Attenzione a non chiedere troppo a quei numeri: dicono quanto è grande la
-  risposta, non quanto il modello ne ha capito. Sono il diametro del tubo, non
-  l'acqua che ci passa.
+- I numeri dicono quanto è grande la risposta, non quanto il modello ne ha
+  capito. Sono il diametro del tubo, non l'acqua che ci passa.
 - L'immagine famosa è la torta di Yann LeCun: il grosso è
   l'auto-supervisione, la glassa è imparare dalle etichette, la ciliegina è
   imparare per tentativi e premi. Nel 2016 la fetta grossa si chiamava «non
@@ -445,7 +440,7 @@ sostenuta.
 - Il meccanismo è già comparso in quattro ambiti (linguaggio, che ci arriva
   per due strade, visione, audio, visione e linguaggio, dove però la
   didascalia è una supervisione debole); il quinto, i world model, viene subito
-  dopo. Qui non si ripetono: si mettono sotto uno stesso schema.
+  dopo. Sono messi sotto uno schema comune.
 ```
 
 `````

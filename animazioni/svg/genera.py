@@ -16,9 +16,8 @@ esattamente ciò che vedrà la stampa. Va guardato prima di pubblicare.
 `--verifica` esiste perché queste figure sono **prodotti di generazione
 tracciati**, come i notebook e come `aggiornamenti.md`, e quindi possono
 restare indietro in silenzio: un giro di correzioni tocca i sorgenti, nessuno
-rigenera, e la figura pubblicata continua a dire la cosa vecchia. È già
-successo (`caffda4` ha tolto le lineette dai sorgenti e per settimane gli SVG
-online ne hanno portate tredici). Rigenera in un temporaneo e confronta:
+rigenera, e la figura pubblicata continua a dire la cosa vecchia. Rigenera in
+un temporaneo e confronta:
 non scrive niente e torna 1 se qualcosa è disallineato.
 
 `--misura` serve alle figure che disegnano un **esperimento**, non un calcolo:

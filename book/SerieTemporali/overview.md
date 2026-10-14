@@ -18,23 +18,22 @@ professore a Glasgow (il mondo lo avrebbe conosciuto come Lord Kelvin).
 Osservando anni di misure del livello del mare, Kelvin lo aveva scomposto nella
 somma di tante oscillazioni regolari (quella lunare, quella solare, quelle più
 sottili) e la macchina, girando una manovella, sommava meccanicamente quelle
-onde per *disegnare la marea di un anno intero prima che accadesse*. È la
-stessa idea che regge tutta la previsione delle serie temporali: il futuro si
-stima dal passato, purché il passato conservi delle regolarità.
+onde per *disegnare la marea di un anno intero prima che accadesse*. È l'idea
+su cui poggia tutta la previsione delle serie temporali: il futuro si stima dal
+passato, purché il passato conservi delle regolarità.
 
-Prevedere è un mestiere antico. Il contadino che legge il cielo per decidere
+Prevedere è un'attività antica. Il contadino che legge il cielo per decidere
 quando seminare, il mercante che anticipa il prezzo del grano, il meteorologo
 che stende le isobare (le linee che uniscono i punti di uguale pressione, e da
-cui si legge dove sta andando il tempo): tutti fanno lo stesso gesto, guardare
-la storia di un fenomeno per indovinarne il seguito. In inglese quel gesto si
-chiama **forecasting**, ed è la parola che si trova nella letteratura e nel
-codice.
+cui si legge dove sta andando il tempo): tutti guardano la storia di un
+fenomeno per indovinarne il seguito. In inglese si chiama **forecasting**,
+parola che ricorre nella letteratura e nel codice.
 
 Come metodo sistematico la disciplina nasce nel 1970, con un libro di George
 Box e Gwilym Jenkins destinato a diventare un classico dell'econometria (la
 statistica applicata ai fenomeni economici) e dell'ingegneria
-{cite}`box2015time`. La loro ricetta sta in tre mosse: identificare che forma
-ha la serie, stimare i numeri del modello, verificare che il modello non abbia
+{cite}`box2015time`. La loro ricetta prevede di identificare che forma ha la
+serie, stimare i numeri del modello e verificare che il modello non abbia
 lasciato fuori niente. Non è la prima idea di previsione statistica: spiegare
 un valore con quelli che lo precedono, cioè l’**autoregressione**, è un'idea
 che George Udny Yule usava già nel 1927, sulle macchie solari. Il contributo di
@@ -56,8 +55,8 @@ dopo l'altro nel tempo, e che in quell'ordine vanno letti.
 
 Un diario in cui ogni riga porta una data: il peso segnato ogni mattina, la
 temperatura misurata ogni ora, il numero di scontrini di un negozio giorno per
-giorno. Una **serie temporale** è esattamente questo: una fila di numeri con
-accanto un orologio.
+giorno. Una **serie temporale** è questo: una fila di numeri con accanto un
+orologio.
 
 La differenza con gli altri dati del libro è sottile ma decisiva.
 Nell'apprendimento supervisionato (riconoscere gatti, filtrare lo spam) gli
@@ -65,9 +64,9 @@ esempi erano palline pescate da un'urna, come nella {doc}`sezione sui dati che
 cambiano </MachineLearning/dati-che-cambiano>`: potevi rimescolarle a piacere
 senza perdere nulla, l'ordine non contava. Con una serie temporale non puoi. La
 temperatura di oggi somiglia a quella di ieri; se mescoli le date, distruggi
-proprio l'informazione che ti serve. L'ordine *è* il dato.
+l'informazione che ti serve. L'ordine *è* il dato.
 
-E c'è una seconda differenza. Le palline uscivano tutte dalla stessa urna,
+C'è una seconda differenza. Le palline uscivano tutte dalla stessa urna,
 oggi come l'anno scorso; il negozio del diario invece cambia mentre lo guardi:
 apre una filiale, gli mettono un concorrente di fronte, e da lì in poi gli
 scontrini seguono un'altra regola.
@@ -96,9 +95,9 @@ convivere con questa doppia rottura.
 
 ## I problemi che si pongono
 
-«Serie temporale» è la forma dei dati. Le domande che ci si può fare sopra sono
-diverse, e conviene distinguerle subito, perché ciascuna vuole i suoi strumenti
-e il suo modo di dare un voto al risultato.
+«Serie temporale» è la forma dei dati. Le domande che ci si può porre sopra
+sono diverse, e ciascuna richiede i suoi strumenti e il suo modo di dare un
+voto al risultato.
 
 I compiti sono quattro, e il primo è il più importante: il forecasting,
 stimare i valori *futuri* della serie a partire dai passati. È l'unico in cui la
@@ -114,42 +113,43 @@ gli altri tre:
 - Imputazione: ricostruire i valori mancanti *dentro* la serie, quando un
   sensore si è spento per qualche ora e restano dei buchi da riempire.
 
-Il forecasting, poi, non è sempre lo stesso mestiere: due cose ne
-cambiano la difficoltà, e conviene guardarle una per volta.
+La difficoltà del forecasting, poi, dipende da due scelte, che si guardano una
+per volta.
 
 `````{tab} Elementare
 
-Il primo asse riguarda quante cose guardiamo insieme. Prevedere la
-temperatura di domani dalle sole temperature passate è il caso **univariato**:
-una sola grandezza che scorre. Spesso conviene guardarne tante insieme
-(temperatura, umidità, pressione), perché si aiutano a vicenda, ed è il caso
+Il primo asse riguarda quante cose guardiamo insieme. Prevedere la temperatura
+di domani dalle sole temperature passate è il caso **univariato**: una sola
+grandezza che scorre. Spesso conviene guardarne tante insieme (temperatura,
+umidità, pressione), perché si aiutano a vicenda, e allora il caso è
 **multivariato**.
 
 Il secondo asse riguarda quanto lontano guardiamo. Prevedere il valore di
 domani è un *passo singolo*; prevedere l'intera settimana che verrà è *a più
 passi*.
 
-Per arrivare a domenica le strade di base sono due. Una: prevedi lunedì, tratti il
-lunedì previsto come se l'avessi misurato, e da lì vai a martedì, e così fino in
-fondo. Costa poco, e se su lunedì hai sbagliato di due gradi quei due gradi
-entrano nel conto di martedì e ci restano fino a domenica. L'altra: un metodo
-apposta per domenica, che guarda solo i giorni veri. Costa un metodo per ogni
-giorno della settimana, e non si porta dietro i propri errori.
+Per arrivare a domenica le strade di base sono due. Una: prevedi lunedì, tratti
+il lunedì previsto come se l'avessi misurato, e da lì vai a martedì, e così
+fino in fondo. Costa poco, e se su lunedì hai sbagliato di due gradi quei due
+gradi si ritrovano nella previsione di martedì e ci restano fino a domenica.
+L'altra: un metodo apposta per domenica, che guarda solo i giorni veri. Costa
+un metodo per ogni giorno della settimana, e non si porta dietro i propri
+errori.
 
 Nemmeno il metodo fatto apposta, però, indovina domenica come indovina lunedì:
 fra oggi e domenica devono succedere sei giorni che nessuno ha visto, e ognuno
 aggiunge la sua incertezza. Le previsioni del tempo a un giorno ci azzeccano
 quasi sempre, quelle a dieci molto meno.
 
-Ma l'incertezza non cresce all'infinito. La temperatura di una città torna
+L'incertezza non cresce all'infinito. La temperatura di una città torna
 verso un suo valore di riposo: marzo non se ne andrà mai a cento gradi. Se a
-marzo, un anno con l'altro, si sta fra i 10 e i 18 gradi, prevedere il marzo di
-fra dieci anni vuol dire esattamente quello: fra 10 e 18, e l'incertezza si
-ferma lì. Più ignoranti di così non si diventa.
+marzo, un anno con l'altro, si sta fra i 10 e i 18 gradi, la previsione per il
+marzo di fra dieci anni è quell'intervallo, e l'incertezza si ferma lì. Più
+ignoranti di così non si diventa.
 
-Il prezzo di un'azione un valore di riposo non ce l'ha: dopo un crollo riparte
-da dove è arrivato, e il livello di prima non lo rincorre. Lì l'incertezza
-cresce e basta.
+Il prezzo di un'azione non ha un valore di riposo: dopo un crollo riparte da
+dove è arrivato, senza rincorrere il livello di prima. Lì l'incertezza continua
+a crescere.
 
 `````
 
@@ -176,24 +176,24 @@ $$
 
 dove $j$ è il passo corrente e va da $1$ a $h$. La ricorsiva è economica ma
 soffre di **error compounding**: l'errore al passo $j$ entra nell'input del
-passo $j+1$ e si propaga. Su un modello lineare ben specificato questo non costa
-niente, perché la media condizionata di un AR si propaga per linearità e la
-ricorsione *è* la previsione ottima; il costo nasce in due punti da tenere
-distinti. Il primo è la non linearità: in una ricorsione
+passo $j+1$ e si propaga. Su un modello lineare ben specificato la ricorsione
+non perde niente, perché la media condizionata di un AR si propaga per
+linearità e la ricorsione *è* la previsione ottima; la perdita nasce in due
+punti da tenere distinti. Il primo è la non linearità: in una ricorsione
 $x_{t+1} = f(x_t) + \varepsilon_{t+1}$ reiniettare la previsione puntuale
-sbaglia la media, perché $\mathbb{E}[f(X)] \neq f(\mathbb{E}[X])$, ed è la
-ragione per cui i modelli probabilistici che vedremo campionano traiettorie
-invece di propagare la media. Il secondo è la specificazione: se il modello a un
-passo è sbagliato, lo sbaglio viene riapplicato $h$ volte, mentre la strategia
-diretta stima per ogni orizzonte la migliore proiezione di $x_{T+h}$ sul passato
-e resta robusta dove la ricorsiva si allontana. In cambio la diretta paga in
-varianza (un modello per orizzonte, nessun vincolo di coerenza fra orizzonti
-vicini) e non sfugge all'errore di stima: il coefficiente $\hat\phi_h$ di una
-regressione di $x_{t+h}$ su $x_t$ è distorto in campione finito come lo è
-$\hat\phi^{\,h}$, e nessun campionamento lo corregge. La ricorsiva è la più
-efficiente quando il modello a un passo è ben specificato, la diretta la più
-robusta quando non lo è, e quale delle due vinca sui dati veri è una questione
-empirica {cite}`marcellino2006comparison`.
+sbaglia la media, perché $\mathbb{E}[f(X)] \neq f(\mathbb{E}[X])$; per questo i
+modelli probabilistici come DeepAR campionano traiettorie invece di propagare
+la media. Il secondo è la specificazione: se il modello a un passo è sbagliato,
+lo sbaglio viene riapplicato $h$ volte, mentre la strategia diretta stima per
+ogni orizzonte la migliore proiezione di $x_{T+h}$ sul passato e resta robusta
+dove la ricorsiva si allontana. In cambio la diretta paga in varianza (un
+modello per orizzonte, nessun vincolo di coerenza fra orizzonti vicini) e non
+sfugge all'errore di stima: il coefficiente $\hat\phi_h$ di una regressione di
+$x_{t+h}$ su $x_t$ è distorto verso lo zero in campione finito come lo è
+$\hat\phi^{\,h}$, e ripetere la stima su altri campioni non lo toglie. La
+ricorsiva è la più efficiente quando il modello a un passo è ben specificato,
+la diretta la più robusta quando non lo è, e quale delle due vinca sui dati
+veri è una questione empirica {cite}`marcellino2006comparison`.
 
 Questa distorsione va tenuta separata dalla ragione per cui l'incertezza cresce
 con l'orizzonte, che è un'altra e vale per tutte le strategie, diretta
@@ -228,10 +228,10 @@ altrove davamo per scontato.
 
 La prima è l’**autocorrelazione**: la correlazione fra la serie e sé stessa
 spostata indietro di $k$ passi, che si scrive $\rho_k$. Il numero $k$ si chiama
-**ritardo**, in inglese *lag*, ed è la parola che si trova nel codice e nei
-manuali. Il conto è quello di una correlazione fra due file di numeri, la serie
-e la sua copia spostata, messe a coppie, il primo con il primo e il secondo con
-il secondo. Stimato su $n$ punti di media $\bar{x}$, è
+**ritardo**, in inglese *lag*, parola che compare nel codice e nei manuali. Il
+conto è quello di una correlazione fra due file di numeri, la serie e la sua
+copia spostata, messe a coppie, il primo con il primo e il secondo con il
+secondo. Stimato su $n$ punti di media $\bar{x}$, è
 
 $$
 \hat\rho_k = \frac{\sum_{t=k+1}^{n} (x_t - \bar{x})(x_{t-k} - \bar{x})}
@@ -249,12 +249,12 @@ proprio segno, i quattro prodotti valgono $+1$, e
 $\hat\rho_2 = 4/6 \approx 0{,}67$. È il modo più diretto di vedere quanto una
 serie sia lontana dai dati indipendenti del resto del libro.
 
-Il codice fa il conto su una serie inventata da noi, che sale piano e ha un
-ciclo di dodici passi, e stampa sei righe: il coefficiente a un passo sulla
-serie così com'è; lo stesso a uno, sei e dodici passi dopo averle tolto la
-salita (la serie `detrend` è la serie meno la retta che ne segue la crescita);
-quello a un passo con le date rimescolate; e quanto oscilla un coefficiente
-nato dal solo caso.
+Il codice calcola l'autocorrelazione su una serie inventata, che sale piano e
+ha un ciclo di dodici passi, e stampa sei righe: il coefficiente a un passo
+sulla serie così com'è; lo stesso a uno, sei e dodici passi dopo averle tolto
+la salita (la serie `detrend` è la serie meno la retta che ne segue la
+crescita); quello a un passo con le date rimescolate; e quanto oscilla un
+coefficiente nato dal solo caso.
 
 ```python
 import numpy as np
@@ -318,28 +318,27 @@ passi di ritardo, cioè un ciclo intero, torna alta, $0{,}83$, perché il
 fenomeno è tornato dov'era.
 
 Rimescoliamo adesso le date: teniamo gli stessi duecento numeri e li rimettiamo
-in fila a caso. Il coefficiente crolla a $0{,}14$. Non è esattamente zero, e
-non poteva esserlo: rimescolando duecento numeri qualche somiglianza per puro
-caso ci scappa sempre. Quanta, lo dice il rimescolamento rifatto duemila volte
-invece di una: il coefficiente oscilla attorno a zero con una deviazione
+in ordine casuale. Il coefficiente crolla a $0{,}14$. Non è esattamente zero, e
+non poteva esserlo, perché rimescolando duecento numeri qualche somiglianza per
+puro caso ci scappa sempre. Quanta, lo dice il rimescolamento rifatto duemila
+volte invece di una: il coefficiente oscilla attorno a zero con una deviazione
 standard di $0{,}070$, e la teoria la prevede in $1/\sqrt{n}$, cioè $0{,}071$
 con duecento punti. È la legge con cui cala l'errore di ogni media, quella
 della {doc}`sezione su probabilità e statistica
 </Matematica/probabilita-statistica>`, e vale anche qui perché su una serie
 senza memoria $\hat\rho_1$ è, in sostanza, la media di $n$ prodotti incorrelati
 fra loro. Ecco allora il metro per leggere qualunque coefficiente: dentro $\pm
-2/\sqrt{n}$, qui quattordici centesimi, un valore non si distingue dal caso, ed
-è la fascia che i programmi di statistica disegnano attorno allo zero nel
-grafico dei coefficienti. Il nostro $0{,}14$ cade proprio sul bordo della
-fascia: è il genere di somiglianza che il caso da solo produce, ogni tanto,
-rimescolando duecento numeri. Di quel $0{,}94$, invece, non è rimasto niente.
-Gli stessi identici valori, in un altro ordine, non prevedono più niente:
-quello che rendeva prevedibile la serie non stava nei numeri, stava nel loro
-ordine.
+2/\sqrt{n}$, qui quattordici centesimi, un valore non si distingue dal caso. I
+programmi di statistica disegnano quella fascia attorno allo zero nel grafico
+dei coefficienti. Il nostro $0{,}14$ cade sul bordo della fascia: è il genere
+di somiglianza che il caso da solo produce, ogni tanto, rimescolando duecento
+numeri. Di quel $0{,}94$, invece, non è rimasto niente. Gli stessi identici
+valori, in un altro ordine, non prevedono più niente: la prevedibilità della
+serie stava nel loro ordine.
 
 Tre ritardi sono tre assaggi, e il metro del caso vale per tutti: la
-{numref}`fig-copia-che-scivola` li mette in fila dal primo al ventiquattresimo,
-con la fascia disegnata attorno allo zero.
+{numref}`fig-copia-che-scivola` li mostra dal primo al ventiquattresimo, con la
+fascia disegnata attorno allo zero.
 
 ```{figure} ../figures/copia-che-scivola.svg
 :name: fig-copia-che-scivola
@@ -353,19 +352,20 @@ così: un'onda che scende, risale e si smorza, con il passo del ciclo. Dentro
 la fascia grigia non resta niente che si distingua dal caso.
 ```
 
-Ecco perché nel forecasting futuro e passato non si mescolano mai. La
-regola si dimentica soprattutto dove costa di più, cioè quando si tratta di
-dare un voto al modello (in gergo, la validazione). Se per giudicarlo gli
-si fanno indovinare dei giorni che stanno *in mezzo* a quelli su cui si è
-allenato, gli si sta chiedendo di riempire un buco avendo davanti i due bordi,
-che è tutt'altro mestiere che indovinare il seguito. Il voto che ne esce è
-gonfiato, e non se ne accorge nessuno finché il modello non va a lavorare sul
-futuro vero. È il mestiere della {doc}`sezione su validazione e feature
-</SerieTemporali/validazione-e-feature>`; per ora basti la regola: ci si allena
-sul prima, si verifica sul dopo, mai il contrario.
+Ecco perché nel forecasting futuro e passato non si mescolano mai. La regola si
+dimentica soprattutto dove il danno è maggiore, cioè quando si tratta di dare
+un voto al modello (in gergo, la validazione). Se per giudicarlo gli si fanno
+indovinare dei giorni che stanno *in mezzo* a quelli su cui si è allenato, gli
+si sta chiedendo di riempire un buco avendo davanti i due bordi, che è
+tutt'altro compito che indovinare il seguito. Il voto che ne esce è gonfiato, e
+non se ne accorge nessuno finché il modello non va a lavorare sul futuro vero.
+La {doc}`sezione su validazione e feature
+</SerieTemporali/validazione-e-feature>` lo tratta per esteso. Per ora basti la
+regola: ci si allena sul prima, si verifica sul dopo, mai il contrario.
 
 La seconda proprietà è la **non stazionarietà**, ed è quella che manda in crisi
-i metodi statistici classici, quelli della prossima sezione.
+i metodi statistici classici, quelli della {doc}`sezione su componenti e modelli
+classici </SerieTemporali/componenti-e-classici>`.
 
 `````{tab} Elementare
 
@@ -385,7 +385,7 @@ o una pandemia cambia le regole di colpo: un **cambio di regime**. Buona parte
 del lavoro consiste nel togliere tendenza e stagionalità, per riportare la
 serie a qualcosa di stabile.
 
-Ma per togliere una salita i gesti sono due, e non sono intercambiabili. Se il
+Per togliere una salita ci sono due modi, e non sono intercambiabili. Se il
 fiume sale lungo una linea regolare, tiri la linea e tieni di ogni giorno
 quanto stava sopra o sotto. Se invece ogni piena gli lascia il letto un po’ più
 alto per sempre, una linea da tirare non c'è: lasci perdere il livello e guardi
@@ -394,10 +394,10 @@ letto continua a spostarsi sotto.
 
 Quale dei due casi hai davanti lo dicono due prove sui dati, che si chiamano
 ADF e KPSS e si leggono in coppia, perché partono da sospetti opposti: l'ADF
-dal sospetto che il letto si sposti, il KPSS da quello che il fiume sia
-stabile. Nessuna delle due, però, certifica qualcosa. Funzionano come un esame
-del sangue, che può trovare un valore fuori posto ma non può dichiarare che tu
-stia bene: ciascuna dice soltanto se l'acqua misurata dà motivi per
+dal sospetto che il letto si sposti, il KPSS dal sospetto opposto, che il fiume
+sia stabile. Nessuna delle due, però, certifica qualcosa. Funzionano come un
+esame del sangue, che può trovare un valore fuori posto ma non può dichiarare
+che tu stia bene: ciascuna dice soltanto se l'acqua misurata dà motivi per
 abbandonare il proprio sospetto.
 
 `````
@@ -427,18 +427,18 @@ in poi.
 La strategia standard è ricondurre la serie alla stazionarietà prima di
 modellarla, e lo strumento dipende da quale delle violazioni si ha davanti.
 Contro una tendenza *stocastica* (una radice unitaria: ogni scossa sposta il
-livello per sempre) si usa la differenziazione,
-$\nabla x_t = x_t - x_{t-1}$, ed è la «I» (*integrated*) dell'ARIMA
-{cite}`box2015time`; contro una tendenza *deterministica* (la serie oscilla
-attorno a una retta) si stima la retta e si tengono i residui. La sezione
-seguente mostra perché scambiare le due non è affatto neutro. Per decidere
-esistono test appositi, ADF e KPSS, che hanno ipotesi nulle opposte e vanno
-letti insieme; li usa, al suo primo passo, la procedura in tre tempi di Box e
-Jenkins nella forma in cui la si pratica oggi. Nessuno dei due, però,
-«dimostra» qualcosa, esattamente come nessuna diagnostica dimostra che un
-modello sia giusto: ciascuno dice soltanto se i dati contengono prove contro
-la propria ipotesi nulla, che per l'ADF è la radice unitaria e per il KPSS la
-stazionarietà.
+livello per sempre) si usa la differenziazione, $\nabla x_t = x_t - x_{t-1}$,
+da cui la «I» (*integrated*) dell'ARIMA {cite}`box2015time`; contro una
+tendenza *deterministica* (la serie oscilla attorno a una retta) si stima la
+retta e si tengono i residui. La {doc}`sezione su componenti e modelli classici
+</SerieTemporali/componenti-e-classici>` mostra perché scambiare le due non è
+affatto neutro. Per decidere esistono test appositi, ADF e KPSS, che hanno
+ipotesi nulle opposte e vanno letti insieme; li usa, al suo primo passo, la
+procedura in tre tempi di Box e Jenkins nella forma in cui la si pratica oggi.
+Nessuno dei due, però, «dimostra» qualcosa, come nessuna diagnostica dimostra
+che un modello sia giusto: ciascuno dice soltanto se i dati contengono prove
+contro la propria ipotesi nulla, che per l'ADF è la radice unitaria e per il
+KPSS la stazionarietà.
 
 `````
 
@@ -448,35 +448,34 @@ supervisionato: che gli esempi siano indipendenti fra loro e vengano tutti
 dalla stessa distribuzione. L'autocorrelazione rompe l'indipendenza; la non
 stazionarietà, di cui il cambio di regime è la forma brusca, rompe la
 distribuzione unica. Una serie può avere l'una senza l'altra (una serie
-stazionaria può essere fortemente autocorrelata), e ogni metodo del capitolo è
-un modo di fare i conti con tutte e due.
+stazionaria può essere fortemente autocorrelata), e ogni metodo del capitolo
+tratta l'una e l'altra.
 
 ## Dai modelli classici alle reti
 
 Per prevedere una serie ci sono due grandi famiglie di metodi, i modelli
 statistici classici e le reti neurali, e in quest'ordine sono anche la storia
-della disciplina; una terza, i modelli additivi come Prophet, sta a metà
-strada e si incontra insieme alle reti. In mezzo, nell'ordine del capitolo,
-sta il mestiere che dice quale metodo stia funzionando, cioè dare un voto a una
-previsione senza barare col futuro.
+della disciplina; una terza, i modelli additivi come Prophet, sta a metà strada
+e si incontra insieme alle reti. In mezzo, nell'ordine del capitolo, sta la
+valutazione, cioè come dare un voto a una previsione senza barare col futuro,
+per sapere quale metodo funziona.
 
 1. **Componenti e modelli classici**, come scomporre una serie in tendenza,
    stagionalità e residuo, e i due cavalli di battaglia storici: la famiglia
    ARIMA di Box e Jenkins e il lisciamento esponenziale nella forma
-   Holt-Winters. Sono ancora oggi la linea di base, cioè l'avversario
-   banale che un metodo più sofisticato deve battere per meritare la fatica che
-   costa.
+   Holt-Winters. Sono ancora oggi la linea di base, cioè l'avversario banale
+   che un metodo più sofisticato deve battere per meritare la fatica che costa.
 2. **Validazione temporale e feature** (le *feature* sono le colonne di una
    tabella, quelle che si danno in pasto a un modello). Perché la *k-fold*
    mescolata della {doc}`sezione su overfitting e validazione
    </MachineLearning/overfitting-validazione>` (dividere gli esempi in fette a
-   caso e provare il modello su una fetta per volta) qui è vietata, e come si
-   valida sul tempo facendo scorrere in avanti il confine fra passato e futuro
-   (è il *backtesting*). Poi come si trasforma una serie in una tabella di
-   quelle: una colonna per il valore di ieri, una per la media degli ultimi
+   caso e provare il modello su una fetta per volta) qui di norma è vietata, e
+   come si valida sul tempo facendo scorrere in avanti il confine fra passato e
+   futuro (è il *backtesting*). Poi come si trasforma una serie in una tabella
+   di quelle: una colonna per il valore di ieri, una per la media degli ultimi
    giorni, una per il giorno della settimana, e a quel punto la sanno leggere
-   tutti i modelli del
-   {doc}`capitolo sul Machine Learning </MachineLearning/overview>`.
+   tutti i modelli del {doc}`capitolo sul Machine Learning
+   </MachineLearning/overview>`.
 3. **Forecasting neurale e modelli additivi**: i modelli additivi come
    Prophet, che disegnano la serie sul calendario; le reti convoluzionali che
    possono guardare solo all'indietro (TCN); quelle che invece di un numero
@@ -488,22 +487,24 @@ previsione senza barare col futuro.
 
 I metodi statistici classici sono trasparenti e sorprendentemente difficili da
 battere; quelli neurali hanno fame di dati, ma colgono regolarità più intricate
-e, guardando insieme migliaia di serie diverse, portano a ciascuna quello che
+e, guardando insieme migliaia di serie diverse, portano a ciascuna ciò che
 hanno imparato dalle altre. La lezione delle competizioni M è che la rivalità
 fra le due famiglie è meno netta di quanto sembri. Nella quarta edizione, la
 M4, correvano centomila serie e sessantuno metodi, e a vincere non fu né la
 statistica pura né il deep learning puro: fu un ibrido, l'ES-RNN di Slawek
-Smyl, in cui per ogni serie il lisciamento esponenziale della prossima sezione
+Smyl, in cui per ogni serie il lisciamento esponenziale della {doc}`sezione sui
+modelli classici
+</SerieTemporali/componenti-e-classici>`
 stima livello e stagionalità, e una rete ricorrente addestrata su tutte le
 serie insieme prevede il resto {cite}`smyl2020hybrid`. Fra i primi, a fare
 meglio dei metodi singoli, c'erano poi le combinazioni, cioè la media delle
 previsioni di più metodi messi insieme {cite}`makridakis2020m4`.
 
-Attraversa tutte e tre le sezioni un filo rosso, ed è quella stessa lezione: la
-previsione seria non è un numero, è un numero *con la sua incertezza*. Un
-modello che dice «domani 24 gradi» vale meno di uno che dice «domani fra 22 e 26
-gradi, e sono sicuro all'80%», dove quell'80% vuol dire: otto volte su dieci il
-valore vero cade dentro la forbice. Il secondo sa quanto poco sa.
+Questa lezione attraversa tutte e tre le sezioni, e dice che la previsione
+seria è un numero *con la sua incertezza*. Un modello che dice «domani 24
+gradi» vale meno di uno che dice «domani fra 22 e 26 gradi, e sono sicuro
+all’80%», dove quell’80% significa che otto volte su dieci il valore vero cade
+dentro la forbice. Il secondo sa quanto poco sa.
 
 Su questo, però, le bande dei metodi del capitolo, come la maggior parte delle
 bande di previsione, tendono a uscire più strette del dovuto
@@ -516,10 +517,10 @@ sia stretta di troppo si misura, e la {doc}`sezione sulla validazione
 
 ```{admonition} Da ricordare
 :class: important
-- Una serie temporale è un diario di numeri con la data accanto. A
-  differenza degli esempi del resto del libro, che si potevano rimescolare,
-  qui l'ordine *è* l'informazione: se mescoli le date distruggi proprio quello
-  che rendeva la serie prevedibile.
+- Una serie temporale è un diario di numeri con la data accanto. A differenza
+  degli esempi del resto del libro, che si potevano rimescolare, qui l'ordine
+  *è* l'informazione: se mescoli le date distruggi quello che rendeva la serie
+  prevedibile.
 - Il compito principale è la previsione (*forecasting*): dire come andrà
   avanti la serie, guardando una grandezza sola o molte insieme, per il solo
   giorno dopo o per l'intera settimana. Più lontano guardi, più cose ancora da
@@ -540,8 +541,7 @@ sia stretta di troppo si misura, e la {doc}`sezione sulla validazione
 - Il capitolo procede in tre tappe: i modelli classici, come si valuta
   onestamente una previsione e come si trasforma una serie in una tabella, e
   infine le reti neurali, con accanto i modelli che disegnano la serie sul
-  calendario. Con un filo comune: prevedere vuol dire anche dichiarare quanto
-  poco si sa.
+  calendario. Con un filo comune: chi prevede dichiara anche quanto poco sa.
 ```
 
 `````
@@ -574,7 +574,7 @@ sia stretta di troppo si misura, e la {doc}`sezione sulla validazione
 - Il capitolo procede in tre tappe, modelli classici (ARIMA, Holt-Winters),
   validazione temporale e feature, forecasting neurale e modelli additivi
   (Prophet, TCN, DeepAR, N-BEATS, Transformer, foundation model), con un filo
-  comune: prevedere significa anche dichiarare la propria incertezza.
+  comune: chi prevede dichiara anche la propria incertezza.
 ```
 
 `````

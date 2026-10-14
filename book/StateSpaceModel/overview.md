@@ -33,12 +33,11 @@ scelti per misurare le dipendenze a lunghissimo raggio, cioè i legami fra parti
 lontane di una sequenza (in un giallo, per capire l'ultima pagina bisogna
 ricordare il nome che compariva alla prima). Le sequenze vanno da mille a
 sedicimila passi, dove un «passo» è un elemento della sequenza: una parola, un
-pixel, un campione audio (uno delle migliaia di valori al secondo con cui si
-registra un suono). Il loro modello, **S4** {cite}`gu2022s4`, riesce là dove
-Transformer e reti ricorrenti si arrendevano, ed è il primo a risolvere il
-compito più lungo, quello in cui il legame da riconoscere si estende per
-sedicimila passi. Questa seconda strada viene da un'altra parte: dai sistemi
-dinamici.
+pixel, un campione audio (uno dei tanti valori, a migliaia al secondo, con cui
+si registra un suono). Il loro modello, **S4** {cite}`gu2022s4`, riesce là dove
+Transformer e reti ricorrenti si arrendevano, e per primo risolve il compito
+più lungo, quello in cui il legame da riconoscere si estende per sedicimila
+passi.
 
 ## Un sistema che riassume il passato
 
@@ -46,20 +45,20 @@ dinamici.
 
 Segui il livello dell'acqua in una vasca mentre entra ed esce di continuo. Non
 ti serve ricordare ogni singola goccia, ti basta un numero, quanta acqua c'è
-adesso. Quel numero si porta dietro tutta la storia, ed è lo stato.
+adesso. Quel numero si porta dietro tutta la storia e si chiama stato.
 
 Le cose che lo muovono restano sempre le stesse. Dal rubinetto entra acqua e
 il livello sale. Dallo scarico socchiuso ne esce, e più acqua c'è più in
-fretta cala, così di quello che c'era ogni minuto ne resta una frazione. Sul
+fretta cala, così ogni minuto ne resta una frazione di quella che c'era. Sul
 fianco della vasca un galleggiante muove un ago su una scala graduata, e quello
 che l'ago segna è la tua risposta a chi chiede. Che cosa entra, quanto resta di
 ciò che c'era, che cosa se ne legge, e la regola non ha altri pezzi.
 
-Resta da scegliere ogni quanto guardare. L'acqua scorre senza interruzione, tu
-l'ago lo segni una volta al minuto, e di quel che è successo fra una segnatura
-e l'altra hai soltanto quello che riesci a ricostruire. Segnando fitto ti
-sfugge poco di ciò che è entrato. Segnando di rado può passare in mezzo un
-getto intero che non hai visto, e quello che ricostruisci esce grossolano.
+Resta da scegliere ogni quanto guardare. L'acqua scorre senza interruzione e tu
+segni l'ago una volta al minuto, quindi di ciò che accade fra una segnatura e
+l'altra hai solo la ricostruzione. Segnando fitto ti sfugge poco di quanto è
+entrato; segnando di rado può passare un getto intero senza che tu lo veda, e la
+ricostruzione esce grossolana.
 
 Metti che dal rubinetto entrino due litri al minuto e che lo scarico porti via
 ogni minuto metà dell'acqua che trova. Parti da vasca vuota e segui l'ago:
@@ -87,20 +86,20 @@ era vuota, ciascuno sbiadito secondo quanto tempo fa è entrato: 2 + 1 + 0,5 +
 (quanto resta di un litro entrato adesso, un minuto fa, due, tre) e così via,
 sono le stesse a ogni minuto, e messe in fila formano un *filtro*: una fila di
 pesi da far scorrere lungo la sequenza dei getti. Al minuto dopo il filtro
-scivola di un posto e copre sei getti: alla somma si aggiunge in coda 0,0625, il
-getto più vecchio sbiadito cinque volte, e si arriva a 3,9375. La vasca dice lo
-stesso: metà di 3,875, più i due litri nuovi. Siccome nessun minuto aspetta il
-risultato di un altro, il filtro si fa scorrere su tutta la sequenza in un colpo
-solo. Sono la stessa identica cosa vista da due lati, ed è la **doppia natura**:
-si addestra il modello nel secondo modo, veloce perché fa tutti i conti in una
-volta, e lo si usa nel primo, economico perché a ogni parola gli basta il
+scivola di un posto e copre sei getti: alla somma si aggiunge in coda 0,0625,
+il getto più vecchio sbiadito cinque volte, e si arriva a 3,9375. La vasca dice
+lo stesso: metà di 3,875, più i due litri nuovi. Siccome nessun minuto aspetta
+il risultato di un altro, il filtro si fa scorrere su tutta la sequenza in un
+colpo solo. Sono lo stesso calcolo visto da due lati, la **doppia natura** del
+modello. Lo si addestra nel secondo modo, veloce perché fa tutti i passi
+insieme, e lo si usa nel primo, economico perché a ogni parola gli basta il
 riassunto di prima.
 
 Tutto questo sta in piedi finché nessuno tocca il rubinetto e lo scarico. Se
 qualcuno stesse alla vasca a girarli minuto per minuto, regolandoli in base
 all'acqua in arrivo, non ci sarebbe più una sola fila di sbiadimenti buona per
 l'intera storia, e quella non si potrebbe più far scorrere in un colpo solo.
-Modi di fare i conti tutti insieme ne restano, ma vanno ritrovati da capo, per
+Modi di calcolare tutto insieme ne restano, ma vanno ritrovati da capo, per
 un'altra strada.
 
 `````
@@ -120,8 +119,8 @@ l'uscita. Per usarlo su una sequenza discreta lo si discretizza con un passo
 $\Delta$, ottenendo una ricorrenza $\mathbf{h}_t = \bar{\mathbf{A}}\,
 \mathbf{h}_{t-1} + \bar{\mathbf{B}}\, x_t$, dove $x_t$ è l'ingresso campionato
 al passo $t$ e $\bar{\mathbf{A}}, \bar{\mathbf{B}}$ sono le versioni discrete
-di $\mathbf{A}$ e $\mathbf{B}$. E qui sta la ricchezza: finché i parametri sono
-costanti nel tempo, questa ricorrenza ha una doppia natura; si può calcolare
+di $\mathbf{A}$ e $\mathbf{B}$. Finché i parametri sono
+costanti nel tempo, questa ricorrenza ha una doppia natura. Si può calcolare
 passo per passo come una RNN (inferenza a costo costante *per token*) oppure, a
 stato iniziale nullo, tutta in una volta come una convoluzione (addestramento
 parallelo). È la stessa doppia natura parallelo/ricorrente che muove il
@@ -145,24 +144,24 @@ all'associatività della loro composizione.
 
 ## Due strade, una meta
 
-L'attenzione lineare del capitolo precedente e gli *state space model* di
-questo nascono da mondi diversi e approdano a una famiglia comune. Tengono uno
-stato di taglia fissa e a ogni parola lo aggiornano con una regola lineare,
-$\mathbf{h}_t = \mathbf{A}_t\,\mathbf{h}_{t-1} + \mathbf{b}_t$, dove
-$\mathbf{A}_t$ e $\mathbf{b}_t$ possono dipendere dalla parola in arrivo ma non
-dallo stato: il nuovo stato è il vecchio, trasformato, più ciò che entra
-adesso. Si addestrano lavorando su tutta la sequenza in una volta sola, e poi
-generano una parola alla volta senza che la memoria cresca.
+L'attenzione lineare e gli *state space model* nascono da mondi diversi e
+approdano a una famiglia comune. Tengono uno stato di taglia fissa e a ogni
+parola lo aggiornano con una regola lineare, $\mathbf{h}_t =
+\mathbf{A}_t\,\mathbf{h}_{t-1} + \mathbf{b}_t$, dove $\mathbf{A}_t$ e
+$\mathbf{b}_t$ possono dipendere dalla parola in arrivo ma non dallo stato: il
+nuovo stato è il vecchio, trasformato, più ciò che entra adesso. Si addestrano
+lavorando su tutta la sequenza in una volta sola, e poi generano una parola
+alla volta senza che la memoria cresca.
 
-Il nome per esteso è rete ricorrente lineare a stato di dimensione fissa, ed è
-la famiglia di ricorrenze lineari che il capitolo precedente mette in fila
-nella {doc}`sezione sulla scrittura in memoria
-</AttenzioneLineare/scrivere-nella-memoria>`: «ricorrente» perché ogni passo
-riparte dal risultato del passo precedente, «lineare» perché il nuovo stato è
-una funzione lineare del vecchio (qui la parola indica com'è fatta l'operazione,
-non quanto costa calcolarla), «a stato di dimensione
-fissa» perché lo stato non si allarga mai. L'attenzione lineare ci arriva dal
-meccanismo di attenzione, gli *state space model* dai sistemi dinamici.
+Il nome per esteso, rete ricorrente lineare a stato di dimensione fissa, designa
+la famiglia di ricorrenze lineari che elenca la {doc}`sezione sulla scrittura in
+memoria </AttenzioneLineare/scrivere-nella-memoria>` dell'attenzione lineare:
+«ricorrente» perché ogni passo riparte dal risultato del passo precedente,
+«lineare» perché il nuovo stato è una funzione lineare del vecchio (qui la
+parola indica com'è fatta l'operazione, non quanto costa calcolarla), «a stato
+di dimensione fissa» perché lo stato non si allarga mai. L'attenzione lineare ci
+arriva dal meccanismo di attenzione, gli *state space model* dai sistemi
+dinamici.
 
 ```{figure} ../figures/mamba-2023.svg
 :name: fig-attenzione-vs-ssm
@@ -171,38 +170,36 @@ meccanismo di attenzione, gli *state space model* dai sistemi dinamici.
 
 Due modi di portarsi dietro il passato. L'attenzione lo tiene tutto e lo
 riguarda; la ricorrenza lo riassume in uno stato di taglia fissa e ci scrive
-sopra, decidendo di volta in volta che cosa vale la pena scrivere. Sotto ogni
+sopra, decidendo di volta in volta che cosa scrivere. Sotto ogni
 schema il costo, dove $n$ è la lunghezza della sequenza e $\propto$ si legge
 «proporzionale a». Il rombo, il selettore, è la selettività: non va confuso con
-il filtro fisso della forma convoluzionale, che è proprio quello che un modello
-selettivo perde.
+il filtro fisso della forma convoluzionale, che un modello selettivo non ha
+più.
 ```
 
 {numref}`fig-attenzione-vs-ssm` mostra il guadagno, un costo proporzionale a
-$n$ invece che a $n^2$. Il prezzo è che uno stato di taglia fissa deve, prima o
-poi, dimenticare qualcosa. La selettività, il rombo sul lato destro, decide
-*che cosa* scrivere
+$n$ invece che a $n^2$. Uno stato di taglia fissa deve prima o poi dimenticare
+qualcosa. La selettività, il rombo sul lato destro, decide *che cosa* scrivere
 nello stato e che cosa lasciar cadere, in funzione di ciò che sta arrivando; ma
-non allarga lo stato, cambia come se ne usa lo spazio. Il tetto resta, ed è
-l'argomento di {doc}`Panorama e limiti </StateSpaceModel/panorama-e-limiti>`.
+non allarga lo stato, cambia come se ne usa lo spazio. Il tetto resta, e lo
+tratta {doc}`Panorama e limiti </StateSpaceModel/panorama-e-limiti>`.
 
-Con Mamba-2 {cite}`dao2024mamba2` (che nel capitolo precedente era una riga
-della tabella delle ricorrenze) i due capitoli si toccano in un punto preciso.
-Uno *state space model* la cui transizione è uno scalare, cioè in cui tutto lo
-stato sbiadisce alla stessa velocità, calcola la stessa funzione di
-un'attenzione lineare mascherata: un'attenzione senza softmax che guarda solo
-all'indietro, in cui il confronto fra due parole è pesato da quanto della prima
-è sopravvissuto nel frattempo. Le due famiglie si incontrano su quel gradino,
-e fuori da lì restano parenti.
+Con Mamba-2 {cite}`dao2024mamba2` (che nella sezione sulla scrittura in memoria
+era una riga della tabella delle ricorrenze) i due capitoli si toccano in un
+punto preciso. Uno *state space model* la cui transizione è uno scalare, cioè
+in cui tutto lo stato sbiadisce alla stessa velocità, calcola la stessa
+funzione di un'attenzione lineare mascherata: un'attenzione senza softmax che
+guarda solo all'indietro, in cui il confronto fra due parole è pesato da quanto
+della prima è sopravvissuto nel frattempo. Le due famiglie si incontrano su
+quel gradino, e fuori da lì restano parenti.
 
-Ma prima c'è una tensione da sciogliere. La forma a convoluzione, cioè il
-filtro unico che si fa scorrere sull'intera sequenza, vale solo se il sistema
-è invariante nel tempo: le stesse regole a ogni passo. Ed è proprio questa
-rigidità che rompe Mamba, il modello con cui Albert Gu e Tri Dao chiudono il
-2023 {cite}`gu2023mamba`. Mamba rende il sistema *selettivo*, cioè capace di
-decidere in base al contenuto che cosa ricordare e che cosa dimenticare, e in
-cambio perde il filtro unico. Il modo «tutto insieme» non scompare, ma
-va ricostruito su un'altra strada.
+Resta una tensione. La forma a convoluzione, cioè il filtro unico che si fa
+scorrere sull'intera sequenza, vale solo se il sistema è invariante nel tempo,
+con le stesse regole a ogni passo. Mamba, il modello con cui Albert Gu e Tri
+Dao chiudono il 2023 {cite}`gu2023mamba`, supera questa rigidità: rende il
+sistema *selettivo*, cioè capace di decidere in base al contenuto che cosa
+ricordare e che cosa dimenticare, e in cambio perde il filtro unico. Il modo
+«tutto insieme» non scompare, e si ricostruisce per un'altra strada.
 
 ## Dai sistemi dinamici a Mamba
 
@@ -214,8 +211,8 @@ come si fa a darle una memoria lunga: la ricetta HiPPO, che dice da quali
 numeri partire, e S4, che la rende veloce da calcolare.
 
 **Mamba**: come si insegna alla macchina a scegliere invece di trattare tutte
-le parole allo stesso modo; che cosa costa quella scelta (si perde la
-convoluzione) e con quali due mosse si recupera la velocità: lo *scan*
+le parole allo stesso modo; che cosa si perde con quella scelta (la
+convoluzione) e con quali due accorgimenti si recupera la velocità: lo *scan*
 parallelo, che sfrutta il fatto che due passi di una ricorrenza lineare si
 fondono in un passo dello stesso tipo, e un algoritmo che tiene lo stato nella
 memoria veloce della GPU.
@@ -239,13 +236,12 @@ lineari.
   che ha letto in un riassunto di dimensione sempre uguale, e a ogni parola
   lo aggiorna. Sono le stesse equazioni con cui l'ingegneria descrive un
   termostato o la traiettoria di un razzo; S4 {cite}`gu2022s4` trova il modo
-  di farle girare dentro una rete neurale a un costo sostenibile, ed è il
-  primo a risolvere il compito del *Long Range Arena* in cui il legame da
+  di farle girare dentro una rete neurale a un costo sostenibile, e per
+  primo risolve il compito del *Long Range Arena* in cui il legame da
   riconoscere è lungo sedicimila passi.
 - Il problema che vengono a risolvere: far guardare ogni parola a tutte le
-  altre costa al quadrato (testo doppio, lavoro quadruplo). Qui il costo
-  cresce di pari passo con la lunghezza, ed è ciò che si chiama costo
-  lineare.
+  altre ha un costo quadratico (testo doppio, lavoro quadruplo). Qui il costo
+  cresce di pari passo con la lunghezza: è il costo lineare.
 - Finché le regole non cambiano da un passo all'altro, lo stesso calcolo si può
   fare in due modi: passo dopo passo (economico per generare) oppure con un
   filtro solo, fatto scorrere sull'intera sequenza (veloce per addestrare). È

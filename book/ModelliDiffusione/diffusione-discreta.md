@@ -7,17 +7,17 @@ casella più determinata, e avanti così. L'ordine lo decide la griglia, un pass
 alla volta, e cambia da partita a partita.
 
 Un modello linguistico ordinario fa il contrario: scrive una parola dopo
-l'altra, da sinistra a destra, e quello che ha scritto non lo tocca più.
+l'altra, da sinistra a destra, e non torna sul testo già scritto.
 Funziona benissimo e ha due conseguenze che si pagano tutti i giorni: per
 scrivere mille parole servono mille passaggi nella rete, uno per parola; e per
 riempire un buco in mezzo a un testo già scritto servono un addestramento e un
 formato apposta, il *fill-in-the-middle* {cite}`bavarian2022efficient`, perché
 la rete legge solo il passato e il seguito glielo si deve spostare davanti.
 
-Serve un altro modo di rovinare, e la strada che l'ha trovato assomiglia al
-sudoku. Nel sudoku, del resto, la regola è tutta lì: in una riga ogni cifra può
+Per il testo serve un altro modo di rovinare i dati, e la strada che l'ha
+trovato assomiglia al sudoku. Nel sudoku, del resto, in una riga ogni cifra può
 comparire una volta sola, quindi appena se ne scrive una certe caselle restano
-con una sola possibilità, e sono quelle che conviene riempire per prime.
+con una sola possibilità, e sono quelle da riempire per prime.
 
 ## Rovinare un simbolo: cancellarlo
 
@@ -29,7 +29,7 @@ sola ha funzionato bene.
 
 *Sostituirla con un'altra a caso.* Si prende una parola e con una certa
 probabilità la si scambia con una qualunque del vocabolario. Aumentando quella
-probabilità si arriva a un testo del tutto casuale. Funziona, ed è scomodo: chi
+probabilità si arriva a un testo del tutto casuale. Funziona, ma è scomodo: chi
 deve ripulire non sa quali parole siano state toccate e quali no, e deve
 decidere anche questo.
 
@@ -38,22 +38,22 @@ livelli di grigio di un pixel che ne ha un numero finito. Con i testi lo si è
 provato, spostando ogni pezzo di parola verso quelli che una rete considera
 simili, e non ha aiutato: appena meglio della sostituzione a caso su una
 raccolta di testi, peggio su un'altra. Che «gatto» somigli a «gatta» più che
-a «treno» è vero, ma non è quello che serve a rovinare con metodo.
+a «treno» è vero, ma non serve a rovinare con metodo.
 
 *Cancellarla.* Al posto della parola si mette un segnaposto che dice «qui c'era
 qualcosa e non lo sai». Aumentando il tempo si cancella una frazione crescente
 di parole, finché non resta che una fila di segnaposti. È la strada che ha
-vinto, per una ragione che si vede subito: chi ripulisce sa esattamente dove
-guardare. Le parole rimaste sono vere e non si toccano; il lavoro è
-ricostruire quelle cancellate, e il modello sa quali sono.
+vinto, per una ragione che si vede subito: chi ripulisce sa dove guardare. Le
+parole rimaste sono vere e non si toccano; il lavoro è ricostruire quelle
+cancellate, e il modello sa quali sono.
 
-Il compito «ecco un testo con dei buchi,
-riempili» è esattamente quello su cui una generazione di modelli linguistici è
-stata addestrata a partire dal 2018, e nessuno all'epoca la chiamava diffusione.
-La differenza fra quei modelli e questi sta in due dettagli: la frazione di
-parole cancellate, che là era fissa e qui viene sorteggiata fra zero e tutto, e
-il fatto che qui esiste una procedura per generare partendo da una fila di
-soli segnaposti, invece di limitarsi a riempire i buchi di un testo dato.
+Il compito «ecco un testo con dei buchi, riempili» è quello su cui una
+generazione di modelli linguistici è stata addestrata a partire dal 2018, e
+all'epoca nessuno parlava di diffusione. La differenza fra quei modelli e
+questi sta in due dettagli: la frazione di parole cancellate, che là era fissa
+e qui viene sorteggiata fra zero e tutto, e il fatto che qui esiste una
+procedura per generare partendo da una fila di soli segnaposti, invece di
+limitarsi a riempire i buchi di un testo dato.
 
 `````
 
@@ -62,9 +62,9 @@ soli segnaposti, invece di limitarsi a riempire i buchi di un testo dato.
 Il processo in avanti si specifica con una matrice di transizione
 $\mathbf{Q}_t$ sul vocabolario, che agisce indipendentemente su ogni posizione:
 $q(x_t \mid x_{t-1}) = \operatorname{Cat}(x_t; \mathbf{Q}_t\,
-\mathbf{e}_{x_{t-1}})$. È una catena di Markov sui simboli, esattamente nel
-senso della {doc}`sezione di matematica </Matematica/catene-di-markov>`, e la
-scelta di $\mathbf{Q}_t$ definisce la famiglia:
+\mathbf{e}_{x_{t-1}})$. È una catena di Markov sui simboli, nel senso della
+{doc}`sezione di matematica </Matematica/catene-di-markov>`, e la scelta di
+$\mathbf{Q}_t$ definisce la famiglia:
 
 - **uniforme**: con probabilità $\beta_t$ il simbolo diventa uno qualsiasi del
   vocabolario. La stazionaria è l'uniforme.
@@ -80,13 +80,13 @@ scelta di $\mathbf{Q}_t$ definisce la famiglia:
 La terza è quella che si è imposta, e la ragione è strutturale: lo stato
 $\mathbf{x}_t$ dichiara quali posizioni sono state corrotte, quindi il
 posteriore $q(\mathbf{x}_{t-1}\mid\mathbf{x}_t,\mathbf{x}_0)$ è una delta su
-tutte le posizioni non mascherate, che restano fisse, e quello che resta da
-imparare vive sulle sole posizioni mascherate. Con la transizione uniforme
-nessuna posizione è al sicuro: il modello deve anche inferire *dove* è avvenuta
-la corruzione, e l'obiettivo variazionale è molto più rumoroso. La
-fattorizzazione per posizione, da sola, non discrimina fra le tre varianti:
-viene dall'indipendenza per posizione del processo in avanti, non dalla scelta
-di $\mathbf{Q}_t$ {cite}`austin2021structured`.
+tutte le posizioni non mascherate, che restano fisse, e il modello deve
+imparare soltanto le posizioni mascherate. Con la transizione uniforme nessuna
+posizione è al sicuro: il modello deve anche inferire *dove* è avvenuta la
+corruzione, e l'obiettivo variazionale è molto più rumoroso. La fattorizzazione
+per posizione, da sola, non discrimina fra le tre varianti: viene
+dall'indipendenza per posizione del processo in avanti, non dalla scelta di
+$\mathbf{Q}_t$ {cite}`austin2021structured`.
 
 Il nucleo di perturbazione, per la variante assorbente, ha forma chiusa e
 indipendente per posizione:
@@ -97,9 +97,9 @@ q(x_t^{(i)} \mid x_0^{(i)}) =
 $$
 
 cioè ogni posizione sopravvive con probabilità $\alpha_t$ e viene mascherata
-con probabilità $1-\alpha_t$, indipendentemente dalle altre. È l'analogo
-esatto del campionamento *simulation-free* del caso continuo: per avere
-$\mathbf{x}_t$ si sorteggia una maschera e basta.
+con probabilità $1-\alpha_t$, indipendentemente dalle altre. È l'analogo del
+campionamento *simulation-free* del caso continuo: per avere $\mathbf{x}_t$
+basta sorteggiare una maschera.
 
 `````
 
@@ -112,17 +112,16 @@ chiede al modello di indovinare le parole mancanti, e lo si punisce in
 proporzione a quanto sbaglia. Nient'altro: una scelta a più risposte, ripetuta
 su ogni posizione cancellata.
 
-Sviluppando il conto che dice quanto il modello è bravo, e semplificando tutto
-quello che si semplifica, resta esattamente questo e nient'altro. Non ci sono
-rumori gaussiani, non c'è nessun punteggio da imparare, non c'è nessuna
-equazione differenziale: c'è la somma degli errori sulle posizioni cancellate,
-ciascuno moltiplicato per un peso.
+Sviluppando il calcolo che misura quanto il modello è bravo e semplificando
+tutto il semplificabile, resta questo e nient'altro. Non ci sono rumori
+gaussiani, non c'è nessun punteggio da imparare, non c'è nessuna equazione
+differenziale: c'è la somma degli errori sulle posizioni cancellate, ciascuno
+moltiplicato per un peso.
 
-Il peso però conta, e dice una cosa sensata. Quando quasi tutto è cancellato,
+Il peso però conta, e ha un andamento sensato. Quando quasi tutto è cancellato,
 indovinare è quasi impossibile e ogni singola risposta vale poco; quando è
 cancellata una parola sola, il contesto la determina quasi del tutto e
-sbagliarla è grave. Il peso che il conto produce dà esattamente questo
-andamento.
+sbagliarla è grave. Il peso ricavato dal calcolo segue questo andamento.
 
 `````
 
@@ -142,32 +141,32 @@ $$
 
 cioè una cross-entropia sulle sole posizioni mascherate, pesata da un fattore
 che dipende solo dal programma di mascheramento
-{cite}`sahoo2024simple,shi2024simplified`. Quanto al segno, il
-programma scende da $\alpha_0=1$ a $\alpha_1=0$, quindi $\alpha_t'$ è negativa e
-il coefficiente $-\alpha_t'/(1-\alpha_t)$ è positivo, come deve essere una
-perdita fatta di termini positivi. Con il programma lineare, $\alpha_t = 1-t$,
-il peso vale $1/t$, e la somma ha in media $tL$ termini, con $L$ la lunghezza
-della sequenza: in media ogni posizione mascherata pesa uno, e la perdita è una
-cross-entropia mediata sulle posizioni cancellate. Le posizioni non mascherate
-la rete non le deve predire: le copia dall'ingresso. Non compaiono né il
-punteggio né una divergenza fra gaussiane: il modello risolve una
-classificazione sul vocabolario, posizione per posizione.
+{cite}`sahoo2024simple,shi2024simplified`. Quanto al segno, il programma scende
+da $\alpha_0=1$ a $\alpha_1=0$, quindi $\alpha_t'$ è negativa e il coefficiente
+$-\alpha_t'/(1-\alpha_t)$ è positivo, come deve essere una perdita fatta di
+termini positivi. Con il programma lineare, $\alpha_t = 1-t$, il peso vale
+$1/t$ e la somma ha in media $tL$ termini, con $L$ la lunghezza della sequenza:
+i due fattori si compensano, e la perdita divisa per $L$ è la cross-entropia
+media sulle posizioni cancellate. Le posizioni non mascherate la rete non le
+deve predire: le copia dall'ingresso. Non compaiono né il punteggio né una
+divergenza fra gaussiane: il modello risolve una classificazione sul
+vocabolario, posizione per posizione.
 
 Da qui il legame con il **modellamento mascherato del linguaggio** alla BERT
 {cite}`devlin2019bert`: a meno del peso, è la stessa somma valutata a un solo
-valore di $t$ invece che su tutti. La corrispondenza vale a meno di un dettaglio
-che conta. BERT sceglie il $15\%$ delle posizioni, ma di quelle sostituisce con
-$\texttt{[MASK]}$ soltanto i quattro quinti: un decimo lo rimpiazza con un
-simbolo a caso, un decimo lo lascia intatto, e la perdita si calcola su tutte e
-tre le specie. La frazione davvero cancellata è quindi il $12\%$, e fra le
-posizioni da indovinare ce ne sono che non sono buchi. Un modello di diffusione
-mascherata è un BERT addestrato su tutte le frazioni di maschera, con la
-cancellazione sempre applicata, più una procedura di campionamento che lo
-trasforma in un generatore. Austin e colleghi osservano già che BERT è un
-modello di diffusione a un passo {cite}`austin2021structured`; l'equivalenza
-per ogni frazione di maschera, con la perdita pesata di sopra, è di Sahoo e di
-Shi e colleghi {cite}`sahoo2024simple,shi2024simplified`, e rende disponibile
-il lavoro fatto sull'addestramento mascherato dal 2018 in poi.
+valore di $t$ invece che su tutti. BERT, però, sceglie il $15\%$ delle
+posizioni, ma di quelle sostituisce con $\texttt{[MASK]}$ soltanto i quattro
+quinti: un decimo lo rimpiazza con un simbolo a caso, un decimo lo lascia
+intatto, e la perdita si calcola su tutte e tre le specie. La frazione
+cancellata è quindi il $12\%$, e fra le posizioni da indovinare ce ne sono che
+non sono buchi. Un modello di diffusione mascherata è un BERT addestrato su
+tutte le frazioni di maschera, con la cancellazione sempre applicata, più una
+procedura di campionamento che lo trasforma in un generatore. Austin e colleghi
+osservano già che BERT è un modello di diffusione a un passo
+{cite}`austin2021structured`; l'equivalenza per ogni frazione di maschera, con
+la perdita pesata di sopra, è di Sahoo e di Shi e colleghi
+{cite}`sahoo2024simple,shi2024simplified`, e rende disponibile il lavoro fatto
+sull'addestramento mascherato dal 2018 in poi.
 
 Esiste anche una formulazione a tempo continuo che ricalca fedelmente il caso
 gaussiano, con al posto del gradiente della log-densità il rapporto fra
@@ -192,16 +191,15 @@ $p(\mathbf{y})/p(\mathbf{x})$ e $w_{\mathbf{x}\mathbf{y}} \ge 0$ sono pesi: ogni
 addendo è non negativo e si annulla solo quando la stima è esatta. Il rapporto
 vero non si conosce, e come nel caso gaussiano lo si sostituisce con quello del
 nucleo di perturbazione condizionato a $\mathbf{x}_0$ (la versione
-*denoising*), che cambia la perdita per una costante. La struttura è la stessa;
-cambia l'aritmetica.
+*denoising*), che cambia la perdita per una costante.
 
 `````
 
 ## Il prezzo del parallelismo
 
 Il vantaggio annunciato di questa famiglia è che le posizioni si possono
-riempire in parallelo invece che una per volta. Il vantaggio è reale e ha
-un prezzo esatto, che si misura su un linguaggio abbastanza piccolo da poterne
+riempire in parallelo invece che una per volta. Il vantaggio è reale e ha un
+costo preciso, che si misura su un linguaggio abbastanza piccolo da poterne
 enumerare tutte le frasi.
 
 ```python
@@ -266,40 +264,40 @@ dell'altro. Il legame c'è solo fra tutti e tre insieme, e si dice in cinque
 parole: due qualsiasi decidono il terzo. Se le prime due sono uno e zero, la
 terza deve essere uno, se no gli uni sono dispari.
 
-Riempire le tre posizioni in un colpo solo, ciascuna sorteggiata dalla
-propria probabilità, è come tirare tre monetine: esce una qualunque delle otto
-combinazioni, e infatti il conto le trova tutte e otto con la stessa frequenza,
-fra $0{,}123$ e $0{,}129$. Metà delle parole generate non appartiene al
-linguaggio: il modello ha dimenticato la regola. Non ha sbagliato nessun conto,
-ogni singola probabilità era giusta; ha sbagliato a usarle insieme, perché
-scriverne una cambia le altre e il colpo solo non lo lascia succedere.
+Riempire le tre posizioni in un colpo solo, ciascuna sorteggiata dalla propria
+probabilità, è come tirare tre monetine: esce una qualunque delle otto
+combinazioni, e infatti la simulazione le trova tutte e otto con la stessa
+frequenza, fra $0{,}123$ e $0{,}129$. Metà delle parole generate non appartiene
+al linguaggio: il modello ha dimenticato la regola. Non ha sbagliato nessun
+calcolo, ogni singola probabilità era giusta; ha sbagliato a usarle insieme,
+perché scriverne una cambia le altre e il colpo solo non lo lascia succedere.
 
 Con due passi il problema sparisce, e non per fortuna. Le prime due caselle
-si possono scoprire insieme proprio perché, prese in due, non hanno niente da
+si possono scoprire insieme perché, prese in due, non hanno niente da
 dirsi: tirarle nello stesso momento è lecito. È la terza che dipende da tutte e
 due, e quando tocca a lei le altre sono già scritte. Risultato: solo parole
 valide, e un quarto ciascuna.
 
 Questo è il compromesso della diffusione sui simboli, e vale ovunque. Il numero
-di passi che servono non dipende dalla lunghezza del testo ma da quanto le
+di passi necessari dipende meno dalla lunghezza del testo che da quanto le
 parti si condizionano a vicenda. Dove il testo è prevedibile si può scrivere
 molto in parallelo; dove ogni parola cambia il senso delle altre, i passi
 tornano tanti. Un modello che promette mille parole in dieci passaggi sta
-scommettendo che il testo sia in gran parte prevedibile, ed è una scommessa che
-qualche volta si perde.
+scommettendo che il testo sia in gran parte prevedibile, e qualche volta la
+scommessa si perde.
 
-E c'è un modo di scegliere quali posizioni scoprire per prime: quelle su cui il
-modello ha meno dubbi. Sono le caselle che il resto ha già quasi deciso, cioè
-esattamente la mossa con cui si comincia un sudoku.
+Si può anche scegliere quali posizioni scoprire per prime: quelle su cui il
+modello ha meno dubbi, cioè le caselle che il resto ha già quasi deciso, come
+all'inizio di un sudoku.
 
 Il risparmio, poi, non è pieno. Chi scrive una parola alla volta si tiene in
 mano il lavoro già fatto sulle parole precedenti e non lo rifà; qui, a ogni
 passo, si riguarda la frase intera da capo. Dieci passi su mille parole
-convengono, perché sono dieci letture invece di mille; cento passi su cento
-parole non convengono affatto. Per questo i modelli più recenti scrivono a
-blocchi: dentro un blocco riempiono i buchi come un sudoku, da un blocco al
-successivo procedono da sinistra a destra, e il lavoro sui blocchi già scritti
-lo tengono.
+convengono, perché sono dieci letture invece di mille, e a guadagnarci è
+l'attesa più che il calcolo totale; cento passi su cento parole non convengono
+affatto. Per questo i modelli più recenti scrivono a blocchi: dentro un blocco
+riempiono i buchi come un sudoku, da un blocco al successivo procedono da
+sinistra a destra, e il lavoro sui blocchi già scritti lo tengono.
 
 `````
 
@@ -319,7 +317,7 @@ $$
 che coincide con la congiunta solo se le posizioni del gruppo sono
 condizionatamente indipendenti dato $\mathbf{x}_t$. Nel linguaggio di parità non
 lo sono, e il risultato è la distribuzione prodotto delle marginali, cioè
-l'uniforme su $\{0,1\}^3$: il conto sul linguaggio di parità la mostra, con
+l'uniforme su $\{0,1\}^3$: la simulazione sul linguaggio di parità la mostra, con
 $0{,}499$ di parole valide e otto stati equifrequenti invece di quattro.
 
 La quantità che governa l'errore è la **multi-informazione** del gruppo
@@ -336,19 +334,18 @@ Scoprire in parallelo è esatto quando quella quantità è nulla, e l'errore
 cresce con essa. Per due sole posizioni coincide con l'informazione mutua; da
 tre in su non si riduce a nessuna somma di informazioni mutue a coppie, e il
 linguaggio di parità lo mostra nel modo più netto: ogni coppia di bit ha
-informazione mutua esattamente nulla, e le tre posizioni insieme hanno
-multi-informazione di un bit. È la ragione per cui due passi bastano e uno no.
-E la quantità non è solo un indice: con un modello perfetto, campionare il
-gruppo dal prodotto delle marginali invece che dalla congiunta costa, in
-divergenza di Kullback-Leibler, esattamente
+informazione mutua nulla, e le tre posizioni insieme hanno multi-informazione
+di un bit. È la ragione per cui due passi bastano e uno no. La quantità non è
+solo un indice: con un modello perfetto, campionare il gruppo dal prodotto
+delle marginali invece che dalla congiunta comporta una divergenza di
+Kullback-Leibler pari a
 $D_{\mathrm{KL}}\big(p(\cdot\mid\mathbf{x}_t)\,\big\Vert\,\prod_{i\in G}
-p(x^{(i)}\mid\mathbf{x}_t)\big) = \mathrm{TC}(G\mid\mathbf{x}_t)$, cioè un
-bit per il gruppo di tre del linguaggio di parità.
-Ne segue la strategia usata in pratica, che è adattiva: a ogni passo si
-scoprono le posizioni su cui il modello è più sicuro (entropia più bassa),
-perché lì la dipendenza residua dalle altre tende a essere minore
-{cite}`ghazvininejad2019mask`. È il sudoku dell'apertura, tradotto in un
-criterio.
+p(x^{(i)}\mid\mathbf{x}_t)\big) = \mathrm{TC}(G\mid\mathbf{x}_t)$, cioè un bit
+per il gruppo di tre del linguaggio di parità. Ne segue la strategia usata in
+pratica, che è adattiva: a ogni passo si scoprono le posizioni su cui il
+modello è più sicuro (entropia più bassa), perché lì la dipendenza residua
+dalle altre tende a essere minore {cite}`ghazvininejad2019mask`. È il sudoku
+dell'apertura, tradotto in un criterio.
 
 Le conseguenze pratiche, in ordine di quanto pesano:
 
@@ -356,12 +353,15 @@ Le conseguenze pratiche, in ordine di quanto pesano:
   rappresentazioni delle posizioni precedenti a costo zero; la diffusione su
   tutta la sequenza ricalcola a ogni passo tutta la sequenza, quindi il costo
   per passo è quello di un passaggio intero, e il guadagno esiste solo se i
-  passi sono molti meno delle posizioni. Le varianti a blocchi
+  passi sono molti meno delle posizioni. Il guadagno è di latenza più che di
+  calcolo: i FLOP totali crescono con il numero di passi, ma la decodifica
+  autoregressiva è limitata dalla lettura dei pesi, e un passo su molte
+  posizioni costa poco più di un passo su una sola. Le varianti a blocchi
   {cite}`arriola2025block` fanno diffusione dentro un blocco e autoregressione
   fra i blocchi, e riusano la cache di quelli già scritti; una cache
   approssimata si può dare anche ai modelli che guardano in tutte e due le
   direzioni {cite}`wu2025fastdllm`. È la via dei modelli più recenti, che
-  pagano in parallelismo massimo quello che guadagnano in cache.
+  pagano in parallelismo massimo il guadagno in cache.
 - Verosimiglianza solo come limite. Si ottiene un bound variazionale e non
   il valore esatto, quindi i confronti di perplessità con i modelli
   autoregressivi vanno letti sapendo che si sta confrontando un limite con un
@@ -406,22 +406,18 @@ dai vincoli è più naturale che scrivere da sinistra a destra.
 `````{tab} Superiore
 
 La fattorizzazione dice anche dove cercare la distanza dai modelli
-autoregressivi, ed è una previsione verificabile: la distanza deve concentrarsi
-sui compiti in cui la dipendenza fra posizioni lontane è forte, cioè sulla
-generazione lunga, e assottigliarsi dove il contesto determina quasi tutto, cioè
-sulla comprensione. È una previsione, e al 2026 i lavori su scala non l'hanno
-ancora messa alla prova in questa forma: LLaDA {cite}`nie2025llada`, nel 2025,
-riporta prestazioni
-paragonabili a quelle di un modello autoregressivo della stessa taglia sulla
-maggior parte dei compiti, e un vantaggio netto dove l'ordine da sinistra a
-destra è d'intralcio, come la *reversal curse*. Nel 2026 DiffusionGemma
-{cite}`diffusiongemma2026` ottiene un modello a diffusione adattando un
-modello autoregressivo e raffina in parallelo blocchi di 256 token, una
-ventina per passaggio in media: la via a blocchi, non la diffusione su tutta
-la sequenza.
-
-Da qui qualche osservazione di prospettiva, che si verifica sul conto fatto
-senza sapere quale modello sia uscito quando.
+autoregressivi, e ne esce una previsione verificabile: la distanza deve
+concentrarsi sui compiti in cui la dipendenza fra posizioni lontane è forte,
+cioè sulla generazione lunga, e assottigliarsi dove il contesto determina quasi
+tutto, cioè sulla comprensione. Al 2026 i lavori su scala non l'hanno ancora
+messa alla prova in questa forma: LLaDA {cite}`nie2025llada`, nel 2025, riporta
+prestazioni paragonabili a quelle di un modello autoregressivo della stessa
+taglia sulla maggior parte dei compiti, e un vantaggio netto dove l'ordine da
+sinistra a destra è d'intralcio, come la *reversal curse*. Nel 2026
+DiffusionGemma {cite}`diffusiongemma2026` ottiene un modello a diffusione
+adattando un modello autoregressivo e raffina in parallelo blocchi di 256
+token, una ventina per passaggio in media: la via a blocchi, non la diffusione
+su tutta la sequenza.
 
 Il limite viene dalla fattorizzazione, e non dalla diffusione
 in sé. Un passo parallelo esatto richiederebbe di campionare dalla congiunta
@@ -432,18 +428,18 @@ quantità.
 
 Inoltre, il caso continuo e quello discreto si descrivono con lo stesso
 principio, al livello in cui la probabilità si sposta: il rapporto fra
-probabilità di stati vicini fa il mestiere del gradiente della log-densità, la
-matrice generatrice quello della deriva, e le tre letture (variazionale, del
+probabilità di stati vicini svolge la funzione del gradiente della log-densità,
+la matrice generatrice quello della deriva, e le tre letture (variazionale, del
 punteggio, del flusso) si riscrivono tutte {cite}`lai2026principles`. La
-traduzione però non è letterale, ed è la stessa fonte a dirlo: in uno spazio
+traduzione però non è letterale, come dice la stessa fonte: in uno spazio
 finito non c'è nessuna geometria euclidea, quindi il gradiente rispetto allo
 stato non ha un analogo diretto, e un cammino di probabilità non determina una
-sola matrice generatrice. Chi ha capito il caso continuo può leggere il discreto
-come una traduzione, e questo vale anche nel verso pratico: le tecniche di guida
-della {doc}`sezione su guida e allineamento </ModelliDiffusione/guida>` hanno
-in molti casi una controparte discreta (la guida senza classificatore, per
-esempio, combina le due predizioni sui logit), anche se non tutte si traducono
-nella stessa forma.
+sola matrice generatrice. Chi ha capito il caso continuo può leggere il
+discreto come una traduzione, e questo vale anche nel verso pratico: le
+tecniche di guida della {doc}`sezione su guida e allineamento
+</ModelliDiffusione/guida>` hanno in molti casi una controparte discreta (la
+guida senza classificatore, per esempio, combina le due predizioni sui logit),
+anche se non tutte si traducono nella stessa forma.
 
 Infine, questa famiglia rende naturali i compiti di riempimento
 vincolato, che è la forma di molti problemi importanti fuori dal linguaggio:
@@ -458,40 +454,38 @@ Resta un'ultima differenza con il caso continuo, e riguarda il ritorno. Anche
 qui la strada del ritorno ha una regola esatta, che dice istante per istante
 con che probabilità ogni segnaposto torna a essere una parola, come nel
 continuo ce l'aveva il risultato di Anderson della {doc}`sezione sul limite
-continuo </ModelliDiffusione/sde-e-ode>`. Ma la regola esatta scopre una
+continuo </ModelliDiffusione/sde-e-ode>`. La regola esatta, però, scopre una
 posizione per volta: il processo in avanti cancella ogni posizione per conto
-suo, e due cancellazioni nello stesso istante esatto non capitano mai. Scoprirne
-due insieme vuol dire saltare, e il salto è un'approssimazione
+suo, e due cancellazioni nello stesso istante esatto non capitano mai.
+Scoprirne due insieme significa saltare, e il salto è un'approssimazione
 {cite}`campbell2022continuous`, la stessa delle tre caselle riempite in un
-colpo solo. Il modo in cui questa famiglia conviene, quello parallelo, è
-proprio quello in cui l'approssimazione morde. Il rovescio, però, è a favore
-del discreto: qui l'errore si azzera dopo un numero finito di passi, uno per
-posizione, mentre nel continuo si azzera solo con passi infinitamente
-piccoli.
+colpo solo. Il modo in cui questa famiglia conviene, quello parallelo, è quello
+in cui l'approssimazione pesa. Il rovescio, però, è a favore del discreto: qui
+l'errore si azzera dopo un numero finito di passi, uno per posizione, mentre
+nel continuo si azzera solo con passi infinitamente piccoli.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
 - A una parola non si può aggiungere un pizzico di rumore, perché fra due
   simboli non c'è niente in mezzo. Il modo che funziona è cancellarla,
-  sostituendola con un segnaposto: chi ripulisce sa esattamente dove guardare,
-  e le parole rimaste sono vere.
+  sostituendola con un segnaposto: chi ripulisce sa dove guardare, e le parole
+  rimaste sono vere.
 - L'obiettivo che ne esce è una vecchia conoscenza: indovinare le parole
   cancellate, con la frazione di cancellazione sorteggiata invece che fissa.
   È il compito su cui una generazione di modelli linguistici è stata
   addestrata, più una procedura per generare da zero.
-- Il vantaggio è riempire in parallelo invece che una parola alla volta, e
-  in qualunque ordine. Il prezzo è esatto e si misura: scoprire più posizioni
+- Il vantaggio è riempire in parallelo invece che una parola alla volta, e in
+  qualunque ordine. Il costo è preciso e si misura: scoprire più posizioni
   insieme le tratta come indipendenti, e dove non lo sono il risultato è
   spazzatura. Sul linguaggio a tre bit, un passo solo produce metà parole
-  sbagliate; due passi zero. E il risparmio non è pieno: a ogni passo si
-  riguarda la frase intera da capo, quindi conviene solo se i passi sono molti
-  meno delle parole, ed è per questo che i modelli più recenti scrivono a
-  blocchi.
-- Quindi il numero di passi necessari non dipende dalla lunghezza del testo ma
-  da quanto le parti si condizionano a vicenda, ed è la ragione per cui in
-  pratica si scoprono per prime le posizioni su cui il modello è più sicuro:
-  è il sudoku, dove si comincia dalla casella più costretta.
+  sbagliate; due passi zero. Il risparmio non è pieno: a ogni passo
+  si riguarda la frase intera da capo, quindi conviene solo se i passi sono
+  molti meno delle parole, perciò i modelli più recenti scrivono a blocchi.
+- Il numero di passi necessari dipende meno dalla lunghezza del testo che da
+  quanto le parti si condizionano a vicenda, e per questo in pratica si
+  scoprono per prime le posizioni su cui il modello è più sicuro: è il sudoku,
+  dove si comincia dalla casella più costretta.
 - Dove questa famiglia ha già un vantaggio chiaro è nei compiti di
   riempimento: completare un buco in mezzo a un file, rispettare vincoli su
   posizioni sparse, generare molecole o sequenze con parti fissate. Sulla
@@ -513,14 +507,14 @@ piccoli.
   programma scende: nessun punteggio, nessuna KL fra gaussiane. È il
   modellamento mascherato alla BERT esteso a tutte le frazioni di maschera, e
   a meno dei pesi, più un campionatore.
-- Scoprire $k$ posizioni insieme campiona dal prodotto delle marginali
-  invece che dalla congiunta, ed è esatto solo se sono condizionatamente
-  indipendenti; la quantità che misura l'errore è la multi-informazione del
-  gruppo, non le informazioni mutue a coppie. Sul linguaggio di parità le mutue
-  a coppie sono tutte nulle e un passo solo dà lo stesso $0{,}499$ di parole
-  valide e otto stati invece di quattro; due passi danno la distribuzione
-  esatta. La strategia pratica è scoprire per prime le posizioni a entropia
-  minima.
+- Scoprire $k$ posizioni insieme campiona dal prodotto delle marginali invece
+  che dalla congiunta; il campionamento è corretto solo se sono
+  condizionatamente indipendenti; la quantità che misura l'errore è la
+  multi-informazione del gruppo, non le informazioni mutue a coppie. Sul
+  linguaggio di parità le mutue a coppie sono tutte nulle e un passo solo dà lo
+  stesso $0{,}499$ di parole valide e otto stati invece di quattro; due passi
+  danno la distribuzione esatta. La strategia pratica è scoprire per prime le
+  posizioni a entropia minima.
 - Costi: riuso della cache solo nelle varianti a blocchi (la diffusione su
   tutta la sequenza ricalcola a ogni passo l'intera sequenza), verosimiglianza
   disponibile solo come limite. Guadagni:
@@ -534,18 +528,15 @@ piccoli.
 ```
 `````
 
-La strada è percorsa tutta, allora: da una ricetta per rovinare le immagini a
-una teoria che dice quale percorso seguire, quanto in fretta, in che direzione
-piegarlo, e che cosa fare quando lo stato non è fatto di numeri. Quello che
-resta uguale in tutte le versioni è la mossa iniziale: invece di chiedere a una
-rete di produrre in un colpo qualcosa di complicato, le si chiede tante volte
-di sistemare qualcosa di poco rovinato, e si mettono in fila le risposte. Su
-immagini e video è la famiglia che si è imposta; sul testo la partita è
-aperta.
+Il percorso è completo: da una ricetta per rovinare le immagini a una teoria
+che indica quale traiettoria seguire, con quanti passi, in che direzione
+piegarla e che cosa fare quando lo stato non è fatto di numeri. In tutte le
+versioni resta uguale l'idea di partenza: invece di chiedere a una rete di
+produrre in un colpo qualcosa di complicato, le si chiede tante volte di
+sistemare qualcosa di poco rovinato, e si concatenano le risposte. Su immagini
+e video la famiglia si è imposta; sul testo la partita è aperta.
 
-Un conto, però, è rimasto aperto in tutte le versioni. La diffusione sa
-generare, ma il numero che dice quanto è probabile un dato, nel modello
-addestrato, lo si ha solo come limite inferiore, o con un secondo calcolo
-lungo, l'integrale lungo la strada deterministica. Il {doc}`capitolo sui
-modelli a verosimiglianza esatta </VerosimiglianzaEsatta/overview>` parte da
-lì: modelli costruiti perché quel numero esca esatto, in un passaggio solo.
+Resta una domanda a cui la diffusione risponde solo in parte: quanto è
+probabile, per il modello, un dato che gli si mostra? Se ne occupa il
+{doc}`capitolo sui modelli a verosimiglianza esatta
+</VerosimiglianzaEsatta/overview>`.

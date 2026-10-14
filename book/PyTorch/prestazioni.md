@@ -6,7 +6,7 @@ ImageNet, fu vinta con un distacco mai visto da una rete neurale, **AlexNet**:
 {cite}`krizhevsky2012imagenet`. Il dettaglio che colpisce, riletto oggi, è
 l'attrezzatura: non un supercomputer, ma due schede grafiche da videogiocatori
 (GeForce GTX 580, circa 500 dollari l'una) montate in un normale PC, che
-macinarono il dataset per cinque-sei giorni. E già nell'introduzione gli
+macinarono il dataset per cinque-sei giorni. Già nell'introduzione gli
 autori scrissero, con disarmante franchezza, che i risultati sarebbero
 migliorati "semplicemente aspettando GPU più veloci e dataset più grandi".
 Avevano ragione: da allora il deep learning e l'hardware sono cresciuti
@@ -17,17 +17,15 @@ Finora hai costruito il *cosa*: tensori, moduli, training loop. Qui la
 domanda è *quanto in fretta*: perché la GPU è lo strumento giusto, come
 dimezzare i byte per (quasi) raddoppiare la velocità, come si misura un tempo
 su una GPU, cosa fa `torch.compile`, come si addestra su più schede, da quali
-valori conviene far partire i pesi, e cosa conta davvero quando di scheda ce
-n'è una sola, o nessuna. Il {doc}`capitolo successivo </GPU/overview>`, «GPU e
-calcolo parallelo», apre poi il cofano dell'hardware: com'è fatta una GPU,
-cos'è davvero un *kernel*, da dove nasce la velocità di una moltiplicazione tra
-matrici, e come si divide un modello che in una scheda sola non ci sta.
+valori conviene far partire i pesi, e che cosa conta quando di scheda ce
+n'è una sola, o nessuna. Il capitolo {doc}`«GPU e calcolo parallelo»
+</GPU/overview>` apre poi il cofano dell'hardware.
 
 ## Perché la GPU: moltiplicazioni indipendenti
 
-Nella {doc}`sezione sui tensori <tensori>` il gesto era `.to(device)`; qui c'è
-il perché. Il punto di partenza è che i conti di una rete neurale, visti
-dall'hardware, sono quasi soltanto una cosa: moltiplicazioni fra tabelle di
+Nella {doc}`sezione sui tensori <tensori>` il comando era `.to(device)`; qui c'è
+il perché. Il punto di partenza è che i calcoli di una rete neurale, visti
+dall'hardware, sono quasi soltanto moltiplicazioni fra tabelle di
 numeri (le matrici dell'algebra lineare), cioè milioni di prodotti e somme
 tutti uguali fra loro e, soprattutto, in gran parte indipendenti: ogni numero
 del risultato si calcola senza aspettare gli altri.
@@ -39,8 +37,8 @@ straordinariamente qualificati, capaci di qualunque compito complicato
 migliaia di manovali che sanno fare solo operazioni elementari, ma tutti
 insieme, nello stesso istante. Se il lavoro è "prendi questi due numeri,
 moltiplicali, somma il risultato" ripetuto milioni di volte, la squadra dei
-manovali stravince: non serve intelligenza, serve manodopera. E le reti neurali
-sono esattamente quel lavoro.
+manovali stravince: non serve intelligenza, serve manodopera. Le reti neurali
+sono quel lavoro.
 
 Un esempio con i numeri. Uno strato che collega 1000 neuroni ad altri 1000:
 ciascuno dei mille di destra deve raccogliere un contributo da ciascuno dei
@@ -48,41 +46,49 @@ mille di sinistra, quindi sono un milione di moltiplicazioni per una sola
 immagine. Su un vassoio di 64 esempi diventano 64 milioni, per un *singolo
 strato*, a ogni passo dell'addestramento. Sono conti che una CPU macina in
 fila, uno dopo l'altro, mentre una scheda grafica li fa a migliaia nello stesso
-istante, perché era nata per fare esattamente questo con i pixel dei
+istante, perché era nata per fare questo con i pixel dei
 videogiochi.
 
-C'è un modo di sprecare i manovali, ed è anche il più facile. Basta lasciarli
-senza materiale. Mille braccia ferme in attesa che arrivi il camion valgono
-quanto un operaio solo, e un camion che fa mille viaggi con un mattone per
-volta è molto peggio di uno che ne porta un bancale. Il materiale sono i
-numeri, e la strada che li porta dal magazzino, la memoria, al cantiere, le
-unità di calcolo, è stretta rispetto al piazzale: per buona parte della
-giornata quello che decide quanti muri si tirano su è quanto materiale riesce
-ad arrivare, non quante braccia ci sono ad aspettarlo.
+Il modo più facile per sprecare i manovali è lasciarli senza materiale. Mille
+braccia ferme in attesa che arrivi il camion valgono quanto un operaio solo, e
+un camion che fa mille viaggi con un mattone per volta è molto peggio di uno
+che ne porta un bancale. Il materiale sono i numeri, e la strada che li porta
+dal magazzino, la memoria, al cantiere, le unità di calcolo, è stretta rispetto
+al piazzale: per buona parte della giornata la quantità di materiale in arrivo
+decide quanti muri si tirano su, non quante braccia ci sono ad aspettarlo.
 `````
 
 `````{tab} Superiore
 Il prodotto tra una matrice $(M, K)$ e una $(K, N)$ costa circa $2MNK$
 operazioni in virgola mobile, e le $MN$ componenti del risultato sono
 indipendenti fra loro (ciascuna è una somma di $K$ prodotti): un parallelismo
-di dati quasi perfetto. Le GPU adottano un'architettura *throughput oriented*
-(migliaia di unità di calcolo semplici; modello SIMT, *single instruction,
-multiple threads*: i thread di un gruppo eseguono la stessa istruzione,
-ciascuno sui propri dati e con i propri registri), mentre le CPU sono *latency
-oriented* (pochi core complessi, ottimizzati per il singolo flusso di
-istruzioni). Alle unità semplici molte GPU NVIDIA affiancano i tensor core,
-dedicati proprio al prodotto tra piccole matrici. Il collo di bottiglia, più
-spesso del calcolo, è il movimento dei dati: la banda di memoria interna della
-GPU e, peggio ancora, il bus PCIe che separa CPU e GPU. Per questo i dati si
-spostano a batch interi invece che un esempio alla volta, perché ogni
+di dati quasi perfetto. Le GPU adottano un'architettura *throughput oriented*,
+con migliaia di unità di calcolo semplici, e un modello SIMT (*single
+instruction, multiple threads*): i thread di un gruppo eseguono la stessa
+istruzione, ciascuno sui propri dati e con i propri registri. Le CPU sono
+invece *latency oriented*, con pochi core complessi ottimizzati per il singolo
+flusso di istruzioni. Alle unità semplici molte GPU NVIDIA affiancano i tensor
+core, dedicati al prodotto tra piccole matrici. Il collo di bottiglia,
+più spesso del calcolo, è il movimento dei dati: la banda di memoria interna
+della GPU e, peggio ancora, il bus PCIe che separa CPU e GPU. Per questo i dati
+si spostano a batch interi invece che un esempio alla volta, perché ogni
 trasferimento paga una latenza fissa oltre ai byte, e per questo tenere la GPU
 *rifornita* conta quanto la GPU stessa.
+
+Il criterio quantitativo è l'intensità aritmetica, il rapporto fra operazioni e
+byte spostati. Un prodotto fra matrici $n \times n$ in `float32` esegue $2n^3$
+operazioni su $3n^2$ numeri da 4 byte (due matrici lette e una scritta, una
+volta sola ciascuna), cioè $n/6$ operazioni per byte, e il rapporto cresce con
+$n$; una somma elemento per elemento ne esegue $n^2$ sugli
+stessi $3n^2$ numeri, cioè $1/12$ per byte, qualunque sia $n$. Sotto una soglia
+che dipende dalla scheda (il rapporto fra potenza di calcolo e banda di
+memoria) l'operazione è limitata dalla memoria, sopra dal calcolo.
 `````
 
 ## Metà dei byte, quasi doppia velocità: la precisione mista
 
 Ogni numero di un tensore `float32` occupa 4 byte, cioè 32 bit (un byte sono
-otto bit, e il nome `float32` viene da lì). Ma servono davvero tutti? L'idea
+otto bit, e il nome `float32` viene da lì). Servono davvero tutti? L'idea
 della **precisione mista** {cite}`micikevicius2018mixed` è usare numeri da 16
 bit, cioè lunghi la metà, nei punti dove la precisione piena non serve, e
 tenere il `float32` dove invece è indispensabile.
@@ -92,37 +98,37 @@ sono due. La prima vale per le operazioni limitate dalla memoria, che in una
 rete sono molte (le attivazioni, le normalizzazioni, le somme dei residui): lì
 il tempo se ne va soprattutto a spostare i numeri fra la memoria e le unità di
 calcolo, che per gran parte del tempo aspettano. Dimezzare la lunghezza dei
-numeri dimezza il traffico, e il tempo scende quasi come lui.
+numeri dimezza il traffico, e il tempo scende quasi in proporzione.
 
 La seconda vale per i prodotti fra matrici grandi, limitati dal calcolo, e
 riguarda i **tensor core**: circuiti costruiti apposta per moltiplicare piccole
 tabelle di numeri corti, accanto alle unità di calcolo normali, che entrano in
-funzione solo se i numeri sono corti davvero. Le schede NVIDIA per datacenter
+funzione solo con numeri corti. Le schede NVIDIA per datacenter
 li hanno dal 2017, quelle da videogiocatori dalla serie GeForce RTX, del 2018.
 
 `````{tab} Elementare
-Per pesare le patate non serve il bilancino del farmacista: la bilancia da
-cucina basta, ed è più sbrigativa. Un numero in precisione piena porta con sé
+Per pesare le patate non serve il bilancino del farmacista: basta la bilancia da
+cucina, più sbrigativa. Un numero in precisione piena porta con sé
 circa 7 cifre significative; uno in mezza precisione circa 3. Per la maggior
-parte dei conti di una rete (attivazioni, moltiplicazioni), tre cifre bastano,
+parte dei calcoli di una rete (attivazioni, moltiplicazioni), tre cifre bastano,
 e scrivere numeri lunghi la metà significa spostare metà dei byte: dove il
 tempo se ne va a spostarli, quasi il doppio della velocità, quasi gratis, e
 sulle schede che hanno circuiti apposta per i numeri corti vanno più in fretta
-anche i conti. C'è però un'insidia: i numeri piccolissimi.
-Certi gradienti sono così minuscoli che, arrotondati a 16 bit, diventano zero
-spaccato, e un gradiente a zero è una lezione persa: quel peso non impara più.
-Il rimedio è una lente d'ingrandimento: prima di calcolare i gradienti si
-moltiplica la loss per un fattore grande, così anche i gradienti minuscoli
-restano visibili; subito prima di aggiornare i pesi, si divide per lo stesso
-fattore e tutto torna alla scala giusta. In PyTorch la lente si chiama
-`GradScaler`, e il fattore non lo devi scegliere tu. Lo raddoppia finché tutto
-fila, e quando ha ingrandito troppo, cioè quando qualche numero esce dai
-margini del foglio, butta via quel giro di correzioni e riprende con la metà
-dell'ingrandimento. I valori che sceglie sono sempre potenze di due
-($65\,536$ è il più comune, cioè $2^{16}$), e c'è una ragione. Un numero in
-virgola mobile è scritto in binario, e moltiplicarlo per una potenza di due fa
-quello che moltiplicare per mille fa a un numero scritto in decimale: sposta la
-virgola e lascia le cifre come sono. La lente ingrandisce e non sporca.
+anche i calcoli. C'è però un'insidia: i numeri piccolissimi. Certi gradienti sono
+così minuscoli che, arrotondati a 16 bit, diventano zero spaccato, e un
+gradiente a zero è una lezione persa: quel peso non impara più. Il rimedio è
+una lente d'ingrandimento: prima di calcolare i gradienti si moltiplica la loss
+per un fattore grande, così anche i gradienti minuscoli restano visibili;
+subito prima di aggiornare i pesi, si divide per lo stesso fattore e tutto
+torna alla scala giusta. In PyTorch la lente si chiama `GradScaler`, e il
+fattore non lo devi scegliere tu. Lo raddoppia finché tutto fila, e quando ha
+ingrandito troppo, cioè quando qualche numero esce dai margini del foglio,
+butta via quel giro di correzioni e riprende con la metà dell'ingrandimento. I
+valori che sceglie sono sempre potenze di due ($65\,536$ è il più comune, cioè
+$2^{16}$), e c'è una ragione. Un numero in virgola mobile è scritto in binario,
+e moltiplicarlo per una potenza di due ha lo stesso effetto che moltiplicare
+per mille ha su un numero scritto in decimale: sposta la virgola e lascia le
+cifre come sono. La lente ingrandisce e non sporca.
 
 Corti però non sono tutti i numeri. Chi pesa segna man mano su un quaderno, e
 il totale sul quaderno lo tiene con tutte le cifre. Se sul quaderno c'è
@@ -132,7 +138,7 @@ correzione entra e si somma alle altre. Diecimila correzioni di quella misura
 spostano il totale di due unità intere, oppure non lo spostano affatto, e la
 differenza sta tutta in quante cifre il quaderno tiene. Per questo le
 pesate si fanno sbrigative e la contabilità no, e i pesi della rete restano
-lunghi anche mentre i conti di passaggio viaggiano corti.
+lunghi anche mentre i calcoli intermedi viaggiano corti.
 `````
 
 `````{tab} Superiore
@@ -141,18 +147,18 @@ rispettivamente 1, 5, 10, quindi non solo meno precisione, ma anche un
 intervallo dinamico molto più stretto: i gradienti sotto la soglia dei
 denormali vanno in *underflow* a zero. Il **loss scaling** di
 {cite}`micikevicius2018mixed` moltiplica $\mathcal{L}$ per un fattore $s$
-prima del backward, i gradienti scalano linearmente,
-$\nabla(s\mathcal{L}) = s\nabla\mathcal{L}$, e divide per $s$ prima dello
+prima del backward (i gradienti scalano linearmente,
+$\nabla(s\mathcal{L}) = s\nabla\mathcal{L}$) e divide per $s$ prima dello
 `step`; `GradScaler` adatta $s$ dinamicamente: parte da $s = 2^{16}$, lo
-raddoppia dopo $2000$ passi di fila senza traboccamenti, e appena un gradiente
+raddoppia dopo $2000$ passi consecutivi senza traboccamenti, e appena un gradiente
 è `inf` o `NaN` lo dimezza e salta l'aggiornamento (il `float16` si ferma a
 $65\,504$, quindi un $s$ troppo grande trabocca in alto invece che in
 basso). I pesi del modello restano in `float32` (`autocast` li converte
 al volo solo dentro le singole operazioni), perché aggiornamenti piccoli su
 pesi a 16 bit si perderebbero per arrotondamento (è l'idea della copia
 *master* del paper). L'alternativa moderna è bfloat16 (1, 8, 7): stesso
-esponente del `float32`, quindi stesso intervallo dinamico e niente scaler, al
-prezzo di una mantissa più corta; è il formato preferito sulle GPU NVIDIA da
+esponente del `float32`, quindi stesso intervallo dinamico e niente scaler, a
+fronte di una mantissa più corta; è il formato preferito sulle GPU NVIDIA da
 Ampere in poi e sulle TPU, dov'è nato. Un terzo formato lavora anche senza
 essere chiesto: sulle GPU da Ampere in poi le convoluzioni di cuDNN usano per
 default il TF32 (8 bit di esponente, 10 di mantissa) dentro i tensor core,
@@ -215,21 +221,21 @@ batch 2: loss 2.3972 | uscita torch.bfloat16 | loss torch.float32
 ```
 
 Tre righe, una per batch, e su una scheda grafica l'uscita sarebbe
-`torch.float16` invece di `torch.bfloat16`. Dove `autocast` accetta i sedici
-bit sono le moltiplicazioni fra tabelle (`linear`, le convoluzioni, `matmul`),
-cioè il grosso del lavoro; dove li rifiuta sono le operazioni numericamente
-delicate, e quali siano dipende dal dispositivo. Su GPU, in `float16`, la
+`torch.float16` invece di `torch.bfloat16`. `autocast` accetta i sedici
+bit per le moltiplicazioni fra tabelle (`linear`, le convoluzioni, `matmul`),
+cioè il grosso del lavoro; li rifiuta per le operazioni numericamente
+delicate, che variano a seconda del dispositivo. Su GPU, in `float16`, la
 documentazione di PyTorch elenca fra le operazioni tenute in `float32` le somme
 lunghe come `sum` e `norm`, `softmax` e `log_softmax`, `exp` e `log`, le
 normalizzazioni e le loss; su CPU, in `bfloat16`, che ha lo stesso intervallo
 del `float32`, l'elenco si accorcia alle loss e a poche altre operazioni, come
 quelle di algebra lineare. La riga stampata lo fa vedere: l'uscita del modello
-è davvero in mezza precisione, la loss in `float32`, e questo mentre i pesi,
+è in mezza precisione, la loss in `float32`, e questo mentre i pesi,
 sul disco e in memoria, sono rimasti tutti quanti a 32 bit. Le conversioni
 avvengono al volo, dentro le singole operazioni, e il modello non lo tocca
 nessuno.
 
-Ed eccola, la differenza fra i due formati corti. Un numero, dentro un
+I due formati corti differiscono nella struttura. Un numero, dentro un
 computer, si scrive in due pezzi: uno dice quanto è grande (l'ordine di
 grandezza: miliardi, oppure miliardesimi) e l'altro dice con quante cifre
 lo si conosce. I sedici bit si possono spartire fra i due pezzi in modi
@@ -239,18 +245,19 @@ stessi estremi del `float32`, cioè in giù fino a numeri con trentasette zeri
 dopo la virgola, e altrettanto in su.
 
 La conseguenza pratica è che con il bfloat16 il problema dei gradienti
-minuscoli, quello per cui serviva il `GradScaler`, non si pone proprio: nessun
+minuscoli, quello per cui serviva il `GradScaler`, non si pone: nessun
 gradiente finisce a zero perché era troppo piccolo per essere scritto. Si
 perdono cifre decimali, che qui non servono, e si guadagna la semplicità: lo
 scaler si può togliere del tutto. Sulle GPU recenti si sceglie scrivendo
 `dtype=torch.bfloat16`.
 
 Nel blocco della precisione mista lo scaler c'è comunque, perché il codice deve
-girare in tutti e due i casi, e con il bfloat16 non si spegne da solo: resta
-acceso e continua a moltiplicare per $65\,536$, senza fare né bene né male,
-perché moltiplicare e poi dividere per una potenza di due restituisce i numeri
-identici a com'erano. In un programma scritto per il solo bfloat16 quelle righe
-si tolgono.
+girare in tutti e due i casi, e con il bfloat16 non si disattiva
+automaticamente: resta attivo e moltiplica la loss per un fattore che parte da
+$65\,536$ (e raddoppia a ogni serie di $2000$ passi senza traboccamenti), senza
+fare né bene né male, perché moltiplicare e poi dividere per una potenza di due
+restituisce i numeri identici a com'erano. In un programma scritto per il solo
+bfloat16 quelle righe si tolgono.
 
 ## Misurare davvero: la coda asincrona
 
@@ -270,16 +277,15 @@ confronti assurdi, del tipo «PyTorch è mille volte più veloce di NumPy»: non
 veloce, è che non ha ancora fatto niente.
 
 Per misurare sul serio bisogna dire esplicitamente «fermati qui finché la GPU
-non ha finito», e lo si dice due volte, una prima di far partire il cronometro,
+non ha finito». Lo si dice due volte: una prima di far partire il cronometro,
 perché nella coda può esserci ancora il lavoro di poco fa, e una alla fine,
 prima di leggere il tempo. Vale anche al contrario, quando si legge un
-risultato: se una riga sembra lentissima, spesso a essere lenta è la prima che
-ha avuto bisogno del risultato e ha dovuto aspettare tutta la coda accumulata
-prima.
+risultato: se una riga sembra lentissima, spesso è la prima ad
+aver richiesto il risultato e ad aver aspettato tutta la coda accumulata.
 
 La coda però è anche un'occasione. Il vassoio di esempi successivo può mettersi
 in viaggio verso la scheda mentre quella sta ancora lavorando su quello di
-adesso, e il viaggio finisce per non costare niente, perché avviene nel
+adesso, e il viaggio non aggiunge tempo, perché avviene nel
 frattempo. C'è una condizione, che si dimentica quasi sempre. Il vassoio deve
 stare in un punto fisso, non su uno scaffale che ogni tanto viene riordinato;
 se qualcuno nel frattempo lo ha spostato, chi va a prenderlo deve prima
@@ -296,20 +302,20 @@ Le chiamate CUDA sono asincrone rispetto all'host: vengono inserite in uno
 precisi, e conviene conoscerli perché sono anche i punti dove il codice
 rallenta senza motivo apparente: un `.item()`, un `.cpu()`, una `print` del
 tensore, un `if` che dipende da un valore calcolato sulla GPU. Ognuno di questi
-è una barriera implicita, ed è il motivo per cui loggare la loss a ogni passo
-può costare parecchio.
+è una barriera implicita, e per questo loggare la loss a ogni passo
+può rallentare parecchio.
 
 Per cronometrare correttamente serve `torch.cuda.synchronize()` prima di
 far partire il cronometro (per svuotare la coda pregressa) e dopo il blocco
 da misurare. In alternativa si usano i `torch.cuda.Event`, che si registrano
-nello stream e misurano sul lato GPU senza bloccare l'host, ed è ciò che fanno
-i profiler seri.
+nello stream e misurano sul lato GPU senza bloccare l'host e sono lo strumento
+dei profiler.
 
 Da qui anche un pattern utile: `tensore.to(device, non_blocking=True)`
 sovrappone il trasferimento al calcolo, ma solo se la memoria sorgente è
 *pinned* (bloccata in pagine non swappabili), che è ciò che fa
 `pin_memory=True` nel `DataLoader`. Senza quella condizione l'opzione non ha
-effetto, ed è una delle micro-ottimizzazioni più spesso copiate senza le sue
+effetto; è una delle micro-ottimizzazioni più spesso copiate senza le sue
 premesse.
 
 `````
@@ -355,20 +361,19 @@ le prime chiamate pagano costi che le successive non pagano (l'avvio dei thread
 di calcolo, la memoria che si scalda), quindi si fanno girare a vuoto e non si
 misurano. La seconda è prendere il minimo di più ripetizioni invece della
 prima misura: il minimo è il giro in cui il computer è stato meno disturbato da
-altro, ed è la statistica meno rumorosa che si possa usare su una macchina
-condivisa.
+altro, e su una macchina condivisa è la statistica meno rumorosa.
 
 Su CPU, con queste due precauzioni, i due numeri si equivalgono a meno del
-rumore di misura (qualche punto percentuale, in un senso o nell'altro), perché
-lì la coda non c'è: la CPU esegue e basta. Questa è la prova in bianco, quella
-che si fa apposta dove il fenomeno non deve comparire, e serve a
-dimostrare che la differenza che vedremo sulla GPU è del fenomeno e non del
-modo di misurare. Su una GPU, invece, la prima riga stampa un tempo
+rumore di misura (su una macchina condivisa può non essere piccolo, in un senso
+o nell'altro), perché lì la coda non c'è: la CPU esegue direttamente. Questa è
+la prova in bianco, fatta apposta dove il fenomeno non deve comparire: serve ad
+accertare che la differenza misurata sulla GPU dipenda dal fenomeno in esame e
+non dallo strumento. Su una GPU, invece, la prima riga stampa un tempo
 assurdamente piccolo e la seconda quello vero. Conviene rifare questo
-esperimento su una scheda vera appena se ne ha una sottomano: se non la si ha,
-la presta gratis Google Colab, che è un servizio con cui si eseguono notebook
-dal browser su macchine altrui, purché si ricordi di chiedere una GPU nelle
-impostazioni del notebook prima di partire.
+esperimento su una scheda vera appena se ne ha una sottomano. Se non la si ha,
+la presta gratis Google Colab, un servizio per eseguire notebook dal browser su
+macchine altrui; basta ricordarsi di chiedere una GPU nelle impostazioni prima
+di partire.
 
 Il cronometro dice quanto, non dove. Per sapere dove va il tempo serve un
 profilatore, che registra ogni operazione eseguita con la sua durata:
@@ -394,15 +399,15 @@ print(prof.key_averages().table(sort_by="cpu_time_total", row_limit=5))
 Se in testa alla tabella ci sono copie e attese sui dati invece dei prodotti
 fra matrici, il collo di bottiglia è la catena dei dati; se ci sono moltissime
 operazioni minuscole, ciascuna con il suo viaggio in memoria, conviene
-fonderle, ed è il mestiere della compilazione.
+fonderle: se ne occupa la compilazione.
 
 ## Una riga per compilare: `torch.compile`
 
 Il grafo che si costruisce mentre il codice gira, visto {doc}`nell'apertura del
 capitolo <overview>` (in inglese si dice *define-by-run*), ha un costo:
 eseguire il modello un'operazione alla volta significa che ogni operazione paga
-il viaggio verso la memoria della GPU. Da PyTorch 2.0 (2023) esiste il rimedio,
-e sta in una riga:
+il viaggio verso la memoria della GPU. Da PyTorch 2.0 (2023) il rimedio sta in
+una riga:
 
 ```python
 model = torch.compile(model)   # tutto qui: il resto del codice non cambia
@@ -412,16 +417,16 @@ model = torch.compile(model)   # tutto qui: il resto del codice non cambia
 È la differenza tra un cuoco che legge la ricetta una riga alla volta, apre il
 frigo, prende il burro, chiude il frigo; apre il frigo, prende le uova..., e
 uno che la legge tutta in anticipo e si organizza: un solo viaggio al frigo
-con tutto l'occorrente. `torch.compile` legge il tuo modello per intero, si
+con tutto l'occorrente. `torch.compile` legge il tuo modello tutto insieme, si
 accorge che tre operazioni consecutive possono diventare una sola, e riscrive
-i passaggi in una versione ottimizzata. Il patto è chiaro: la prima esecuzione
+i passaggi in una versione ottimizzata. La prima esecuzione
 è *più lenta*, perché studiare la ricetta costa; le successive sono più
 veloci. Conviene quindi quando lo stesso piatto va cucinato migliaia di volte
 (un addestramento lungo su un modello grande) e non conviene per un assaggio:
 su un esperimento di due minuti il tempo di compilazione mangia tutto il
 guadagno.
 
-E il piano vale finché il servizio resta quello. Se cambia il numero di
+Il piano vale finché il servizio resta quello. Se cambia il numero di
 coperti, cioè la forma dei dati che arrivano (un vassoio di esempi più grande,
 frasi più lunghe), la ricetta studiata non torna più, così il cuoco si rimette
 a leggere da capo e paga di nuovo lo studio. Per accorgersene in tempo, prima
@@ -429,7 +434,7 @@ di ogni piatto dà un'occhiata di controllo, e anche quell'occhiata costa. Su un
 piatto da due ingredienti costa più di quanto la riorganizzazione faccia
 risparmiare, e allora la cucina organizzata resta più lenta di quella
 disordinata anche dopo il primo giro. Si può finire in perdita e restarci,
-altro che pareggiare. E se nella ricetta c'è un passaggio che si decide solo
+altro che pareggiare. Se nella ricetta c'è un passaggio che si decide solo
 assaggiando (quanto sale, a seconda di com'è venuto), il cuoco non può
 organizzare tutto prima: la studia a pezzi, prima e dopo l'assaggio, e il
 guadagno si riduce.
@@ -444,26 +449,28 @@ legge e scrive la memoria una volta invece di tre; decisivo perché molte reti
 sono *memory bound*, limitate dalla banda più che dal calcolo. Il grafo è
 protetto da *guard*: se cambiano le forme dei tensori o i valori Python da cui
 dipende un ramo del codice, si ricompila (altro overhead). Sulle forme, PyTorch
-si difende da sé: alla prima ricompilazione dovuta a una dimensione cambiata la
-tratta come simbolo, e `dynamic=True` lo fa fin dall'inizio. Dove il codice
-Python non si lascia tracciare (un `if` su un valore del tensore, un `print`,
-una chiamata a una libreria esterna) il grafo si spezza in più pezzi, i *graph
-break*, ciascuno compilato a parte: `torch._dynamo.explain` ne elenca i punti,
-e `fullgraph=True` trasforma uno spezzamento in un errore. Le modalità contano
-anche loro: `mode="default"` bilancia guadagno e tempo di compilazione,
-`"reduce-overhead"` usa i CUDA graph contro il costo del lancio dei kernel,
-`"max-autotune"` prova più implementazioni dei prodotti fra matrici e compila
-più a lungo. Nei benchmark con cui PyTorch 2.0 è stato presentato (163 modelli
-open source su una GPU A100) il guadagno medio in addestramento era del 43%,
-una media pesata fra il 21% in `float32` e il 51% con precisione mista, ma la
-varianza è alta: modelli grandi e statici guadagnano di più, modelli piccoli o
-dalle forme variabili poco, nulla, o meno di zero: il pavimento non è la
-parità. Sulla MLP di MNIST in CPU la prima compilazione costa da sola una
-decina di secondi, contro un addestramento che dura minuti, e a regime il
-compilato resta più lento dell'eager, da una frazione a più del doppio a
-seconda del carico. Su CPU l'inductor gioca in trasferta, e il fattore non si
-trasferisce a una GPU, dove va rimisurato. La regola pratica: attivalo quando
-l'addestramento dura ore, misura, e tienilo solo se il cronometro dà ragione.
+evita le ricompilazioni continue: alla prima ricompilazione dovuta a una
+dimensione cambiata la tratta come simbolo, e `dynamic=True` lo fa fin
+dall'inizio. Dove il codice Python non si lascia tracciare (un `if` su un
+valore del tensore, un `print`, una chiamata a una libreria esterna) il grafo
+si spezza in più pezzi, i *graph break*, ciascuno compilato a parte:
+`torch._dynamo.explain` ne elenca i punti, e `fullgraph=True` trasforma uno
+spezzamento in un errore. Le modalità contano anche loro: `mode="default"`
+bilancia guadagno e tempo di compilazione, `"reduce-overhead"` usa i CUDA graph
+contro il costo del lancio dei kernel, `"max-autotune"` prova più
+implementazioni dei prodotti fra matrici e compila più a lungo. Nei benchmark
+con cui PyTorch 2.0 è stato presentato (163 modelli open source su una GPU
+A100) il guadagno medio in addestramento era del 43%, una media pesata (0,75 per la
+precisione mista, 0,25 per `float32`) fra il 51% con precisione mista e il 21%
+in `float32`, ma la varianza è alta: modelli
+grandi e statici guadagnano di più, modelli piccoli o dalle forme variabili
+poco o nulla, e a volte ci perdono. Su una MLP per MNIST in CPU la prima
+compilazione richiede da sola alcuni secondi a freddo, contro un
+addestramento che dura minuti, e a regime il compilato può restare più lento
+dell'eager, soprattutto sotto carico. Su CPU l'inductor è meno
+ottimizzato, e il fattore misurato non si trasferisce a una GPU, dove va
+rimisurato. La regola pratica: attivalo quando l'addestramento dura ore,
+misura, e tienilo solo se il cronometro dà ragione.
 `````
 
 ## Più GPU, un solo modello: il parallelismo dati
@@ -474,9 +481,9 @@ del mini-batch, e calcola i gradienti sulla propria fetta; poi le copie si
 riallineano con un'operazione collettiva, l’**all-reduce**, in cui ogni
 processo contribuisce con il proprio vettore e tutti ricevono la somma dei
 vettori di tutti, qui divisa per il numero di copie, cioè la media
-({numref}`fig-parallelismo-dati`). Quanto costi, e perché quasi non cresca con
-il numero di schede, lo racconta la {doc}`sezione sul parallelismo distribuito
-</GPU/parallelismo-distribuito>`.
+({numref}`fig-parallelismo-dati`). La {doc}`sezione sul parallelismo
+distribuito </GPU/parallelismo-distribuito>` espone il costo dell'all-reduce e
+perché cresca pochissimo con il numero di schede.
 
 ```{figure} ../figures/parallelismo-dati.svg
 :name: fig-parallelismo-dati
@@ -502,14 +509,14 @@ tre volte più in fretta.
 Le pile però devono essere uguali, e per questo si contano prima. Se uno ne
 corregge centocinquanta e un altro cinquanta, la media delle tre proposte pesa
 i cinquanta compiti quanto i centocinquanta, e la griglia che ne esce non è
-quella che sarebbe uscita correggendo tutta la pila di seguito. E il trucco
-funziona perché ogni compito si giudica per conto suo: se il voto di un compito
-dipendesse dagli altri della stessa pila, per esempio dalla media della pila,
-tre pile darebbero tre medie diverse, e le proposte messe insieme non sarebbero
-più quelle di una persona sola. Ogni ritocco, poi, nasce ora da trecento
-compiti e non dai cento che vede un correttore da solo: un compito strano
-capitato nella pila lo sposta di meno, e per questo lo si può fare un po’ più
-deciso.
+quella che sarebbe uscita correggendo tutta la pila di seguito. Il trucco
+funziona perché ogni compito si giudica senza guardare gli altri: se il
+voto di un compito dipendesse dagli altri della stessa pila, per esempio dalla
+media della pila, tre pile darebbero tre medie diverse, e le proposte messe
+insieme non sarebbero più quelle di una persona sola. Ogni ritocco, poi, nasce
+ora da trecento compiti e non dai cento che vede un solo correttore: un compito
+strano capitato nella pila lo sposta di meno, e per questo lo si può fare un
+po’ più deciso.
 
 Le GPU fanno lo stesso: ognuna elabora la sua fetta di esempi, poi tutte
 mettono in comune i gradienti, ne fanno la media e si aggiornano allo stesso
@@ -528,7 +535,7 @@ $$
 
 dove $\mathcal{L}_r$ è la loss media sulla fetta della replica $r$. Se le
 fette hanno la stessa dimensione, questa media è il gradiente sull'intero
-batch, a meno degli arrotondamenti: cambia solo chi fa i conti. L'uguaglianza
+batch, a meno degli arrotondamenti: cambia solo chi calcola. L'uguaglianza
 richiede però che la loss sia una media di termini per esempio, e che nessuno
 strato accoppi gli esempi del batch. Non vale con la batch normalization, che
 calcola le sue statistiche sulla sola fetta (a meno di `SyncBatchNorm`), né con
@@ -541,13 +548,14 @@ quello per replica: al crescere di $R$ va ritoccato il learning rate, con le
 regole di scalatura della {doc}`sezione sul replicare un paper
 <replicare-un-paper>`. Il vecchio `DataParallel` (processo unico, multi-thread)
 sopravvive nei tutorial ma è sconsigliato dalla documentazione stessa: il GIL
-di Python (un thread alla volta esegue bytecode, come si è visto nel capitolo
-su Python) e lo sbilanciamento sulla GPU 0 ne fanno un reperto storico. DDP
-gira un processo per GPU proprio per questo: un GIL a testa.
+di Python (un thread alla volta esegue bytecode, come si è visto fra le
+{doc}`basi di Python </Python/basi>`) e lo sbilanciamento sulla GPU 0 ne fanno
+un reperto storico. DDP avvia un processo per GPU, e ciascun processo ha il suo
+GIL.
 `````
 
-In codice questo si chiama **DDP**, da `DistributedDataParallel`, ed è più uno
-schema che una libreria da imparare. Questo schema non si
+In codice questo si chiama **DDP**, da `DistributedDataParallel`, uno
+schema più che una libreria da imparare. Questo schema non si
 lancia con `python`: serve un programma di avvio, `torchrun`, che fa partire
 un processo per ogni GPU e dice a ciascuno chi è.
 
@@ -584,7 +592,7 @@ dist.destroy_process_group()
 Il punto notevole sono gli ultimi commenti: il corpo del ciclo non cambia. DDP
 intercetta il `backward()` e ci innesta la media dei gradienti; tutto il resto
 (loss, ottimizzatore, precisione mista) è il codice che già conosci. Cambia
-quello che sta attorno: i dati vanno sul dispositivo del proprio processo, log
+il contorno del ciclo: i dati vanno sul dispositivo del proprio processo, log
 e checkpoint si scrivono da un processo solo, di solito il primo (quello con
 `rank` uguale a 0), e una metrica calcolata nel ciclo (la loss media,
 l'accuratezza di validazione) vale per la fetta di quel processo, quindi va
@@ -592,8 +600,8 @@ messa in comune con `dist.all_reduce` prima di riportarla.
 
 ## Partire col piede giusto: `nn.init`
 
-Fin qui si è guadagnato tempo su ogni passo dell'addestramento. Resta il numero
-di passi che servono, e dipende anche da dove partono i pesi.
+Fin qui si è guadagnato tempo su ogni passo dell'addestramento. Resta da
+ridurre il numero di passi necessari, che dipende anche da dove partono i pesi.
 
 Prima di imparare qualunque cosa, i pesi di una rete sono numeri a caso, e la
 domanda è *quanto* grandi. Se sono troppo piccoli, il segnale che entra da una
@@ -615,13 +623,13 @@ negativi li schiaccia a zero e quindi lascia passare circa metà del segnale, e
 per compensare raddoppia la varianza: con tanti ingressi quante uscite,
 $2/n_{\text{in}}$ contro il $1/n_{\text{in}}$ di Glorot. La {doc}`sezione
 sull'inizializzazione </DeepLearning/ottimizzazione-regolarizzazione>` ne dà la
-derivazione; qui vediamo il gesto con cui si applicano.
+derivazione; qui vediamo come si applicano.
 
 I default di PyTorch non sono né Glorot né He, benché si legga spesso il
 contrario: per `nn.Linear` il default è una variante uniforme ereditata dal
 vecchio Torch, che sorteggia i pesi fra $-1/\sqrt{n_{\text{in}}}$ e
 $+1/\sqrt{n_{\text{in}}}$ (nel sorgente di `nn.Linear` è `kaiming_uniform_` con
-`a=math.sqrt(5)`, che nonostante il nome dà proprio questa uniforme). Su uno
+`a=math.sqrt(5)`, che nonostante il nome dà questa uniforme). Su uno
 strato da mille ingressi, $\sqrt{1000}$ fa circa $31{,}6$, quindi i pesi
 nascono tutti fra $-0{,}032$ e $+0{,}032$: piccoli, e più piccoli di He. La
 loro dispersione attorno allo zero, la varianza, vale $1/(3n_{\text{in}})$, un
@@ -630,7 +638,7 @@ segnale perde a ogni strato un fattore $\sqrt{6} \approx 2{,}4$ in ampiezza
 (trascurando i bias). Su tre strati l'uscita parte già circa quindici volte più
 piccola che con He ($6^{3/2} \approx 14{,}7$), e su una rete profonda, dove il
 fattore si moltiplica a ogni strato, il segnale svanisce: è il caso in cui la
-ricetta esplicita serve davvero. Le ricette pronte stanno in `torch.nn.init`, e
+ricetta esplicita è necessaria. Le ricette pronte stanno in `torch.nn.init`, e
 i loro nomi finiscono tutti con un trattino basso: è la convenzione con cui
 PyTorch segna le funzioni che riscrivono il tensore che ricevono, invece di
 restituirne uno nuovo.
@@ -659,34 +667,33 @@ lavorano insieme: AlexNet, da cui siamo partiti, girava su due schede da
 videogiocatori dentro un PC. Per chi ha una GPU, o nessuna, le leve che
 spostano il cronometro sono più modeste e più vicine:
 
-- Riempi la GPU: alza il `batch_size` finché la memoria regge (quando non
-  regge più, PyTorch protesta con un *out of memory*: si abbassa e si
-  riprova). Una GPU mezza vuota spreca tempo; un batch più grande cambia però
-  anche l'ottimizzazione, e il learning rate va ricontrollato con le regole
-  della {doc}`sezione sul replicare un paper <replicare-un-paper>`.
+- Riempi la GPU: alza il `batch_size` finché la memoria basta (se non basta
+  più, PyTorch segnala un *out of memory*: si abbassa il valore e si riprova).
+  Una GPU mezza vuota spreca tempo; un batch più grande cambia però anche
+  l'ottimizzazione, e il learning rate va ricontrollato con le regole della
+  {doc}`sezione sul replicare un paper <replicare-un-paper>`.
 - Rifornisci la GPU: se l'utilizzo della scheda langue, il collo di
   bottiglia è spesso la catena dei dati, non il calcolo. Nel `DataLoader`,
   `num_workers` (fino a quanti sono i core del processore, che `os.cpu_count()`
   conta) prepara i batch in parallelo mentre la GPU lavora, e
   `pin_memory=True` accelera il trasferimento.
-- Precisione mista anche in piccolo: i tensor core li hanno tutte le
-  GeForce RTX, e quelle cinque righe sono spesso il guadagno più grande per
-  riga di codice su una GPU da videogiocatori.
+- Precisione mista anche in piccolo: tutte le GeForce RTX hanno i tensor core,
+  e quelle cinque righe sono spesso il guadagno più grande per riga di codice
+  su una GPU da videogiocatori.
 - Nessuna GPU? Google Colab ne offre una gratis, con limiti di tempo e di
   disponibilità; gli esempi che usano una scheda sola ci girano, lo schema DDP,
   che ne chiede più d'una, no.
 
-E prima di ogni ottimizzazione, la regola che vale a ogni scala: misura. Un
+Prima di ogni ottimizzazione, a ogni scala, bisogna misurare. Un
 cronometro attorno a un'epoca, con `time.perf_counter()`, dà il tempo totale;
 un'epoca è abbastanza lunga perché il riscaldamento pesi poco, ma su una scheda
 grafica, prima di leggere il cronometro, serve la sincronizzazione della coda
 asincrona, o si misura soltanto il tempo di accodare. Dove va quel tempo lo
-dice il profilatore. E `nvidia-smi`, un comando che si scrive nel terminale
+dice il profilatore. Il comando `nvidia-smi`, da scrivere nel terminale
 mentre l'addestramento gira, mostra in `GPU-Util` la percentuale di tempo in
 cui la scheda stava eseguendo almeno un'operazione: può essere vicina al cento
 per cento anche quando lavora soltanto una piccola parte dei circuiti, quindi
-dice se la scheda sta ferma, non quanto è piena. Ottimizzare senza misurare è
-potare un albero al buio.
+dice se la scheda sta ferma, non quanto è piena.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -700,21 +707,21 @@ potare un albero al buio.
   servono: dove il tempo se ne va a spostare numeri, quasi il doppio della
   velocità, quasi gratis, e di più sulle schede con i tensor core. L'unica
   insidia sono i numeri piccolissimi, e c'è una lente d'ingrandimento apposta.
-- Un cronometro attorno a un conto su GPU misura il tempo di accodarlo: per
+- Un cronometro attorno a un calcolo su GPU misura il tempo di accodarlo: per
   quello vero bisogna aspettare che la scheda abbia finito. Dove va il tempo
   lo dice un profilatore.
 - `torch.compile` legge il modello tutto insieme e riorganizza i passaggi:
-  conviene sugli addestramenti lunghi, non sugli assaggi, perché studiare la
-  ricetta costa e su un modello minuscolo può costare più di quanto rende.
+    conviene sugli addestramenti lunghi, non sugli assaggi: studiare la ricetta ha
+  un costo che su un modello minuscolo può superare il risparmio.
 - Se le schede sono più d'una, ognuna prende una fetta del vassoio, e alla
   fine tutte mettono in comune le correzioni e ne fanno la media. Il corpo del
-  giro di addestramento non cambia, e funziona finché ogni esempio si giudica
-  per conto suo.
+  giro di addestramento non cambia, e funziona finché il giudizio su un esempio
+  non dipende dagli altri.
 - Anche da quali numeri si parte conta: troppo piccoli e il segnale si spegne
   attraversando la rete, troppo grandi e esplode. Ci sono ricette pronte.
 - Su una macchina sola le leve che spostano il cronometro sono tre: riempire
-  la scheda, rifornirla di dati, usare i numeri corti. E prima di tutto,
-  misurare: ottimizzare senza misurare è potare un albero al buio.
+  la scheda, rifornirla di dati, usare i numeri corti. Prima di tutto,
+  misurare per non ottimizzare alla cieca.
 ```
 `````
 
@@ -756,15 +763,8 @@ potare un albero al buio.
 ```
 `````
 
-Gli attrezzi per far correre un addestramento ora ci sono tutti: numeri corti
-dove bastano, il cronometro con la sincronizzazione e il profilatore, la
-compilazione, più schede che si spartiscono il batch, i pesi che partono dalla
-scala giusta. Una riga, però, l'hai usata senza aprirla: `.to(device)`,
+Gli attrezzi per far correre un addestramento ora ci sono tutti. Una riga,
+però, l'hai usata senza aprirla: `.to(device)`,
 quella che sposta il modello e i dati sulla scheda grafica. Funziona, cambia i
 tempi di un addestramento, e finora ne hai visto il perché, non il come. Il
-{doc}`capitolo su GPU e calcolo parallelo </GPU/overview>` apre quella scatola:
-che cos'è un kernel, perché a decidere è così spesso la banda di memoria invece
-del calcolo, come lavorano i tensor core, e che cosa si fa quando il modello in
-una scheda sola non ci sta e dividere i dati non basta più. Da lì in poi
-«lento» smette di essere un'impressione e diventa qualcosa che si sa dove
-andare a cercare.
+{doc}`capitolo su GPU e calcolo parallelo </GPU/overview>` racconta il come.

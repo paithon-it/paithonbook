@@ -4,25 +4,24 @@ I sistemi visti fin qui tengono separate due cose. Da una parte un modello che
 impara a prevedere come va il mondo; dall'altra una strategia che, servendosi di
 quel modello, decide che cosa fare. Prima si addestra il modello della
 dinamica, poi lo si usa per scegliere la mossa. È la divisione del lavoro dei
-Dreamer, ed è anche quella della JEPA più un pianificatore.
+Dreamer, e vale anche per la JEPA con un pianificatore.
 
-Esiste un modo di guardare la faccenda in cui quella separazione non c'è, e i
-due mestieri sono lo stesso mestiere. Non nasce nell'informatica ma nelle
-neuroscienze teoriche, e si chiama inferenza attiva: il nome l'abbiamo già
-incontrato nella {doc}`sezione sul dibattito attorno al rinforzo
-</AutoSupervisione/dibattito-rl>`, dove serviva a spiegare perché chi vuole un
-caffè guarda prima il calendario. Là se ne è vista la conclusione, qui si parte
-dall'inizio. La sua trattazione d'insieme è un libro di Thomas Parr, Giovanni
-Pezzulo e Karl Friston {cite}`parr2022active`. «Inferenza», qui, è quella dei
-modelli latenti: risalire alla causa nascosta a partire da quel che si vede,
-non il far girare un modello già addestrato. Non è il modo in cui oggi si
-costruiscono i sistemi (e i limiti, in fondo, lo dicono senza giri di parole),
-ma risponde alla domanda iniziale da un'angolatura che Dreamer e JEPA non
-hanno: a che cosa serve, in fondo, un modello del mondo a una cosa viva.
+Esiste un modo di guardare la faccenda in cui quella separazione non c'è:
+predire e decidere sono un'operazione sola. Nasce nelle neuroscienze teoriche e
+si chiama inferenza attiva. Il nome compare già nella {doc}`sezione sul
+dibattito attorno al rinforzo </AutoSupervisione/dibattito-rl>`, dove serviva a
+spiegare perché chi vuole un caffè guarda prima il calendario; là se ne vede la
+conclusione, qui si parte dall'inizio. La trattazione d'insieme è un libro di
+Thomas Parr, Giovanni Pezzulo e Karl Friston {cite}`parr2022active`.
+«Inferenza», qui, è quella dei modelli latenti: risalire alla causa nascosta a
+partire da quel che si vede, non far girare un modello già addestrato. Non è il
+modo in cui oggi si costruiscono i sistemi (e i limiti li dichiarano gli autori
+stessi), ma risponde alla domanda iniziale da un'angolatura che Dreamer e JEPA
+non hanno: a che cosa serve un modello del mondo a una cosa viva.
 
 ## Un pesce deve restare nell'acqua
 
-Il punto di partenza è biologico, quasi banale, e regge tutto il resto.
+Il punto di partenza è biologico, quasi banale.
 
 Un organismo, per continuare a esistere, deve mantenersi in un piccolo
 sottoinsieme degli stati possibili. Un pesce, scrivono gli autori, deve stare
@@ -31,18 +30,18 @@ intervallo stretto, «altrimenti morirà, o più precisamente diventerà qualcos
 per esempio un cadavere». Quell'intervallo è ciò che definisce quella cosa come
 quella cosa, e non un obiettivo assegnato da qualcuno.
 
-Da qui la mossa. Se il modello che la creatura si porta dentro assegna alta
-probabilità agli stati in cui essa continua a esistere (per il pesce, essere
-nell'acqua), allora «trovarsi fuori dall'acqua» è per lei un'osservazione
-estremamente improbabile. Che il modello sia fatto così, e non sia una semplice
-copia del mondo, è il punto su cui torna la risposta all'obiezione della
-stanza buia. E un'osservazione improbabile è, in senso tecnico, molto
-sorprendente: la sorpresa di un esito è tanto maggiore quanto meno lo si
-riteneva probabile, ed è la misura che la {doc}`sezione sulla teoria
+Se il modello che la creatura si porta dentro assegna
+alta probabilità agli stati in cui essa continua a esistere (per il pesce,
+essere nell'acqua), allora «trovarsi fuori dall'acqua» è per lei
+un'osservazione estremamente improbabile. Che il modello sia fatto così, e non
+sia una semplice copia del mondo, è il punto su cui torna la risposta
+all'obiezione della stanza buia. Un'osservazione improbabile è, in senso
+tecnico, molto sorprendente: la sorpresa di un esito è tanto maggiore quanto
+meno lo si riteneva probabile, e la {doc}`sezione sulla teoria
 dell'informazione
-</Matematica/teoria-informazione>` conta in bit: un esito che aspettavi una
+</Matematica/teoria-informazione>` la misura in bit: un esito che aspettavi una
 volta su due vale un bit di sorpresa, uno che aspettavi una volta su mille ne
-vale una decina. E allora restare vivi e restare poco sorpresi diventano la
+vale una decina. Restare vivi e restare poco sorpresi diventano così la
 stessa cosa, detta in due lingue diverse.
 
 ## Due modi di smettere di essere sorpresi
@@ -64,14 +63,14 @@ mondo assomiglia a quello che ti aspettavi, e la tua idea di partenza torna ad
 avere ragione. Questo si chiama **agire**.
 
 Sono due strade diverse verso lo stesso risultato, cioè eliminare lo scarto fra
-quello che ti aspettavi e quello che trovi. E la tesi dell'inferenza attiva è
-che siano davvero la stessa operazione, fatta in due direzioni: percepire
-piega le tue idee verso il mondo, agire piega il mondo verso le tue idee.
+quello che ti aspettavi e quello che trovi. La tesi dell'inferenza attiva è che
+siano la stessa operazione, fatta in due direzioni: percepire piega le tue
+idee verso il mondo, agire piega il mondo verso le tue idee.
 
-Quello che puoi misurare davanti al buio, però, non è la sorpresa vera: per
-calcolarla dovresti già conoscere la spiegazione migliore di tutte, e non la
-conosci. Quello che misuri è lo sconcerto, cioè quanto il buio stona con la
-spiegazione che in quel momento ti sei dato. Mettiamoci numeri inventati ma
+Davanti al buio, però, non puoi misurare la sorpresa vera: per calcolarla
+dovresti già conoscere la spiegazione migliore di tutte, e non la conosci.
+Misuri lo sconcerto, cioè quanto il buio stona con la spiegazione che in quel
+momento ti sei dato. Mettiamoci numeri inventati ma
 onesti. La sorpresa vera della scena vale 3: è quella che resterebbe anche con
 la spiegazione migliore possibile, perché una stanza spenta quando la credevi
 accesa un po’ sorprende comunque. Se pensi «ci sarà un guasto elettrico», che
@@ -91,8 +90,8 @@ aggiustare l'idea di oggi, conviene cambiare il modello che quelle idee le
 produce. Gli autori lo dicono così: imparare «non è fondamentalmente diverso dal
 percepire, opera semplicemente su una scala di tempo più lenta».
 
-Qui non esiste una fase di addestramento separata dall'uso.
-C'è una cosa sola che va avanti sempre, a tre velocità diverse.
+Non esiste una fase di addestramento separata dall'uso: un processo solo va
+avanti sempre, a tre velocità diverse.
 
 `````
 
@@ -110,7 +109,7 @@ $$
 
 La seconda forma dice che cosa vale. Il termine $-\ln P(o)$ è la sorpresa,
 cioè l'evidenza logaritmica negativa del modello; la divergenza è non negativa,
-quindi $F$ è un limite superiore sulla sorpresa, e il divario è esattamente
+quindi $F$ è un limite superiore sulla sorpresa, e il divario è
 quanto $Q$ si discosta dalla distribuzione a posteriori che si otterrebbe
 facendo l'inferenza esatta. La prima forma dice perché la si usa: chiede
 soltanto $Q$ e il modello congiunto $P(o, s)$, non l'evidenza $P(o)$, che
@@ -141,24 +140,23 @@ stessa quantità:
   autori descrivono come non fondamentalmente diverso dalla percezione, «opera
   semplicemente su una scala di tempo più lenta».
 
-Sull'azione serve una precisazione. Scegliere un gesto istante per istante
+Sull'azione serve una precisazione. Scegliere un'azione istante per istante
 minimizza $F$; scegliere fra politiche, cioè fra corsi d'azione estesi nel
-tempo, richiede una seconda grandezza, l’energia libera attesa $G(\pi)$,
-dove «attesa» sta per il fatto che le osservazioni future non ci sono ancora e
-vanno messe in conto per come ce le si aspetta. Gli autori insistono che le due
-sono «matematicamente collegate ma con ruoli distinti e complementari»: $F$
-resta la quantità minimizzata nel tempo, e $G$ entra dentro il modello
-generativo come priore sulle politiche (grosso modo: una politica è
-probabile a priori nella misura in cui promette $F$ bassa in futuro)
-{cite}`parr2022active`. Nei modelli a stati discreti con cui il libro di Parr
-e colleghi lavora, il modello generativo ha quattro ingredienti: la
-verosimiglianza $\mathbf{A} = P(o \mid s)$, le transizioni $\mathbf{B}$, le
-preferenze $\mathbf{C}$ sulle osservazioni (la $C$ di $P(\tilde{o} \mid C)$
-più avanti) e il priore $\mathbf{D}$ sullo stato iniziale; e il priore sulle
-politiche è $P(\pi) = \mathrm{softmax}\big(-G(\pi)\big)$. Il costo si vede
-subito: $G$ va calcolata per ogni politica, e con $n$ azioni possibili a ogni
-passo e orizzonte $T$ le politiche sono $n^T$, un numero esponenziale
-nell'orizzonte. È
+tempo, richiede una seconda grandezza, l’energia libera attesa $G(\pi)$, dove
+«attesa» sta per il fatto che le osservazioni future non ci sono ancora e vanno
+messe in conto per come ce le si aspetta. Gli autori insistono che le due sono
+«matematicamente collegate ma con ruoli distinti e complementari»: $F$ resta la
+quantità minimizzata nel tempo, e $G$ entra dentro il modello generativo come
+priore sulle politiche (grosso modo: una politica è probabile a priori nella
+misura in cui promette $F$ bassa in futuro) {cite}`parr2022active`. Nei modelli
+a stati discreti con cui il libro di Parr e colleghi lavora, il modello
+generativo ha quattro ingredienti: la verosimiglianza $\mathbf{A} = P(o \mid
+s)$, le transizioni $\mathbf{B}$, le preferenze $\mathbf{C}$ sulle osservazioni
+(la $C$ di $P(\tilde{o} \mid C)$ nel paragrafo «Come fa a scegliere una mossa»)
+e il priore $\mathbf{D}$ sullo stato iniziale; e il priore sulle politiche è
+$P(\pi) = \mathrm{softmax}\big(-G(\pi)\big)$. Il costo si vede subito: $G$ va
+calcolata per ogni politica, e con $n$ azioni possibili a ogni passo e
+orizzonte $T$ le politiche sono $n^T$, un numero esponenziale nell'orizzonte. È
 una delle ragioni per cui le realizzazioni restano su spazi di stati piccoli,
 come gli autori stessi dichiarano.
 
@@ -201,12 +199,12 @@ cercare, e persino a esplorare, perché lo stato che vuole occupare non è quell
 in cui si trova adesso.
 
 Gli autori mostrano che questo scala molto oltre i riflessi. Restare alla
-temperatura giusta, scrivono, è sudare (che è fisiologia), ma anche
-comprarsi da bere (che è psicologia) e mettere l'aria condizionata in una città
-intera (che è una faccenda collettiva). E soprattutto è cercare l'ombra prima
-di surriscaldarsi, che è il caso in cui il correttivo arriva *prima* del
-guaio. Lo stesso imperativo, insomma, soddisfatto
-con un anticipo sempre maggiore, e per anticipare serve un modello di quel che
+temperatura giusta, scrivono, è sudare (che è fisiologia), ma anche comprarsi da
+bere (che è psicologia) e mettere l'aria condizionata in una città intera (che
+è una faccenda collettiva). Soprattutto è cercare l'ombra prima di
+surriscaldarsi, che è il caso in cui il correttivo arriva *prima* del danno. Lo
+stesso imperativo, insomma, viene soddisfatto con un anticipo sempre maggiore,
+e per anticipare serve un modello di quel che
 succederà.
 
 Non tutti sono convinti da questa risposta. Se ogni volta che la teoria sembra
@@ -224,16 +222,15 @@ del modello generativo stesso, cioè la distribuzione delle osservazioni che
 l'agente si aspetta di incontrare in quanto agente di quel tipo.
 
 Ne segue una proprietà che gli autori sottolineano: il modello generativo non
-può limitarsi a imitare la dinamica esterna, altrimenti l'agente si
-limiterebbe a seguirla passivamente. Deve anche specificare le regioni di stati
-che deve visitare per continuare a esistere, il che equivale ad assumere
-implicitamente che le proprie osservazioni preferite siano più probabili di
-quanto siano. Gli autori lo chiamano un **bias di ottimismo**, ed è necessario:
-è la differenza fra un modello che descrive il mondo e un modello che prescrive
-un comportamento.
+può limitarsi a imitare la dinamica esterna, altrimenti l'agente si limiterebbe
+a seguirla passivamente. Deve anche specificare le regioni di stati che deve
+visitare per continuare a esistere, il che equivale ad assumere implicitamente
+che le proprie osservazioni preferite siano più probabili di quanto siano. Gli
+autori lo chiamano un **bias di ottimismo**, e lo giudicano necessario: separa
+un modello che descrive il mondo da un modello che prescrive un comportamento.
 
 È anche il punto in cui questa cornice si separa nettamente dai world model
-delle sezioni precedenti. Là il modello stima la dinamica
+di Dreamer e della JEPA. Là il modello stima la dinamica
 $p_\theta(s_{t+1} \mid s_t, a_t)$, e di solito anche la ricompensa, ma che
 cosa sia desiderabile lo fissa il compito, con una ricompensa definita fuori
 dal modello. Qui la desiderabilità è dentro il modello, sotto forma di priori,
@@ -252,19 +249,18 @@ più generale, quando si discute che cosa l'inferenza attiva dimostri.
 Sapere che un pesce si muove per non trovarsi all'asciutto non dice *come*
 scelga di muoversi. Davanti a due mosse possibili, che cosa dice a un agente
 del genere quale delle due è meglio? La risposta ha una particolarità che
-sarebbe un peccato saltare, ed è la ragione per cui questa cornice torna utile
-due volte altrove: nella {doc}`sezione sul dibattito attorno al rinforzo
+spiega perché questa cornice compare altre due volte nel libro: nella
+{doc}`sezione sul dibattito attorno al rinforzo
 </AutoSupervisione/dibattito-rl>` e in quella {doc}`sull'esplorazione
 </DeepReinforcementLearning/esplorazione-e-ricompensa>`.
 
 `````{tab} Elementare
 
-Un agente così, prima di muoversi, misura ogni mossa due volte. Attenzione a
-che cosa sta misurando: non lo sconcerto di adesso, che è quello di cui si è
-parlato fin qui, ma quello che la mossa promette per il seguito. È una seconda
-grandezza, parente stretta della prima e con un mestiere suo, e si chiama
-energia libera attesa: attesa perché le osservazioni di cui parla non sono
-ancora arrivate.
+Un agente così, prima di muoversi, misura ogni mossa due volte. Non misura lo
+sconcerto di adesso, di cui si è parlato fin qui, ma quanto la mossa promette
+per il seguito. È una seconda grandezza, parente stretta della prima e con un
+compito diverso, e si chiama energia libera attesa: attesa perché le
+osservazioni di cui parla non sono ancora arrivate.
 
 La prima misura è quella che ci si aspetta: quanto quella mossa lo porta verso
 le condizioni in cui vuole trovarsi. È il valore di **ottenere**.
@@ -283,17 +279,16 @@ pesano, insomma, non è il passo per sé ma la strada che apre.
 Lo stesso conto fa evitare i posti da cui si vede male. Un vicolo e una
 piazza possono essere ugualmente vicini al bar, ma dal vicolo non si capisce
 nemmeno se la saracinesca è alzata: chi si infila lì resta nel dubbio comunque
-si giri, e il dubbio era la cosa che stava cercando di togliersi.
+si giri, e il dubbio che voleva togliersi è ancora lì.
 
-Il punto che conta è che quelle due misure sono le due metà di un voto solo,
-che l'agente cerca di rendere più alto possibile, e si contano con la stessa
-moneta: nessuno deve decidere a parte quanti punti di curiosità valga un passo
-verso la meta, perché la curiosità era lì dall'inizio, dentro quel voto.
-Quanto l'agente esplori dipende però da quanto sono forti le sue preferenze.
-Chi vuole il caffè disperatamente va dritto al bar che conosce, e il valore di
-ottenere schiaccia quello di sapere; chi è tranquillo può concedersi di
-scoprire un bar nuovo. E quanto sia forte la voglia, in un modello costruito,
-lo decide chi lo costruisce.
+Le due misure sono le due metà di un voto solo, che l'agente cerca di rendere
+più alto possibile, e si contano con la stessa moneta: nessuno deve decidere a
+parte quanti punti di curiosità valga un passo verso la meta, perché la
+curiosità era lì dall'inizio, dentro quel voto. Quanto l'agente esplori dipende
+però da quanto sono forti le sue preferenze. Chi vuole il caffè disperatamente
+va dritto al bar che conosce, e il valore di ottenere schiaccia quello di
+sapere; chi è tranquillo può concedersi di scoprire un bar nuovo. Quanto sia
+forte la voglia, in un modello costruito, lo decide chi lo costruisce.
 
 `````
 
@@ -328,8 +323,8 @@ con l'esempio del caffè. Poiché $G$ si minimizza, i due valori si massimizzano
 insieme e si misurano nella stessa unità, il nat, quindi non serve un
 coefficiente esterno che converta l'uno nell'altro. Il bilanciamento però non
 sparisce: gli autori scrivono che è il peso relativo dei due termini a decidere
-se il comportamento è prevalentemente esplorativo o di sfruttamento, e un conto
-di una riga dice da che cosa dipende quel peso. Scrivendo le preferenze come
+se il comportamento è prevalentemente esplorativo o di sfruttamento, e una riga
+di calcolo mostra da che cosa dipende quel peso. Scrivendo le preferenze come
 $P(\tilde{o} \mid C) \propto e^{\beta\, u(\tilde{o})}$, con $u$ un'utilità e
 $\beta > 0$ la loro precisione, il valore pragmatico vale $\beta\,
 \mathbb{E}_{Q(\tilde{o} \mid \pi)}[u(\tilde{o})]$ più una costante che non
@@ -342,7 +337,7 @@ Sviluppando la divergenza, il rischio vale $-H[Q(\tilde{o} \mid \pi)] -
 \mathbb{E}_{Q(\tilde{o} \mid \pi)}[\ln P(\tilde{o} \mid C)]$, quindi porta
 dentro anche l'entropia delle osservazioni previste. Annullare l'ambiguità non
 spegne dunque ogni spinta a informarsi: sopravvive quel termine di entropia,
-che è poi quello che gli autori, nel caso limite in cui si tolgano anche le
+che gli autori, nel caso limite in cui si tolgano anche le
 preferenze, descrivono come «tenersi aperte le opzioni». Quel che sparisce è
 l'altra metà, la spinta a cercare i posti da cui si vede bene.
 
@@ -350,7 +345,7 @@ l'altra metà, la spinta a cercare i posti da cui si vede bene.
 
 ## Che cosa resta, anche senza adottarlo
 
-Nessuna delle idee che seguono chiede di adottare il quadro per intero.
+Nessuna delle idee che seguono richiede di adottare l'intero quadro.
 
 La prima è una risposta alla domanda iniziale, «a che serve
 un modello del mondo». Qui la risposta non è «a pianificare meglio»: senza un
@@ -362,15 +357,14 @@ La seconda è la scomparsa di un pezzo che altrove sembra obbligatorio. Negli
 altri world model ci sono sempre due oggetti da specificare, il modello
 e la ricompensa; qui ce n'è uno solo, perché quello che si desidera è scritto
 nello stesso posto in cui è scritto quello che ci si aspetta. È una
-semplificazione concettuale vera, ed è anche la ragione per cui il dibattito
-sul rinforzo ha chiamato in causa questa cornice.
+semplificazione concettuale vera, e per questo il dibattito sul rinforzo ha
+chiamato in causa questa cornice.
 
 La terza è la scala dei tempi. Percepire, agire e imparare sono la stessa
-operazione a tre velocità, e non tre programmi diversi che si alternano.
-Chi ha letto il {doc}`capitolo sull'auto-supervisione
-</AutoSupervisione/overview>` riconosce l'idea, perché è la
-versione biologica di quello che quel capitolo dice dei dati: il bersaglio non lo
-scrive nessuno, arriva da sé, ed è il segnale successivo.
+operazione a tre velocità, e non tre programmi diversi che si alternano. Chi ha
+letto il {doc}`capitolo sull'auto-supervisione </AutoSupervisione/overview>`
+riconosce l'idea, perché è la versione biologica della tesi di quel capitolo sui
+dati: il bersaglio non lo scrive nessuno e coincide con il segnale successivo.
 
 ```{admonition} Due energie, e non sono la stessa cosa
 :class: warning
@@ -378,7 +372,7 @@ Il {doc}`capitolo sui modelli a energia </ModelliEnergia/overview>` chiama
 energia un punteggio di compatibilità: quanto una configurazione «sta bene
 insieme», con il buttafuori che dà i voti e i paesaggi in cui si cerca il punto
 più basso. L’**energia libera** dell'inferenza attiva misura un'altra cosa:
-quanto quel che capita si discosta da quel che ci si aspettava, ed è alta
+quanto quel che capita si discosta da quel che ci si aspettava, e cresce
 quando il mondo ci smentisce. Le due parole si somigliano perché vengono dallo
 stesso posto, la fisica statistica, e i due conti in qualche punto si toccano;
 ma scambiarle porta fuori strada, e chi legge «energia libera» pensando al
@@ -414,7 +408,8 @@ se* minimizzasse $F$. In questa forma nessun esperimento lo può smentire (in
 gergo, non è falsificabile), perché quasi qualunque comportamento si riscrive
 scegliendo il modello generativo e i priori, cioè le aspettative di partenza,
 che lo producono. È la critica che gli muovono più spesso, anche i filosofi
-della biologia {cite}`colombo2021first`, ed è la stessa della stanza buia. Il
+della biologia {cite}`colombo2021first`, e coincide con l'obiezione della
+stanza buia. Il
 secondo livello sono le *teorie di processo* che dal principio discendono, e
 quelle si possono smentire: un certo modo in cui la corteccia confronterebbe
 previsioni e segnali (la *codifica predittiva*), un certo modello a stati
@@ -434,13 +429,13 @@ l'ambiguità, cioè quanto da un posto si vede male: tolta quella, scrivono, «l
 schema risultante corrisponde al controllo sensibile al rischio o al controllo
 KL nella teoria del controllo» {cite}`parr2022active`.
 
-«Controllo KL» vuol dire una cosa precisa: un problema di controllo in cui al
+«Controllo KL» è un problema di controllo in cui al
 costo si aggiunge una penalità per quanto il comportamento si allontana da uno
 di riferimento, misurata con la divergenza di Kullback-Leibler della
 {doc}`sezione sulla teoria dell'informazione
 </Matematica/teoria-informazione>`, una distanza fra due distribuzioni di
-probabilità che vale zero quando coincidono. E un obiettivo fatto esattamente
-così è già comparso nella {doc}`sezione sul post-addestramento
+probabilità che vale zero quando coincidono. Un obiettivo della stessa forma
+è già comparso nella {doc}`sezione sul post-addestramento
 </Transformers/post-training>`.
 
 `````{tab} Elementare
@@ -454,23 +449,23 @@ ha punti ciechi, e un cuoco lasciato libero finirebbe per cucinare per il
 giudice invece che per chi mangia.
 
 La somiglianza salta all'occhio: anche lì l'obiettivo è fatto di due pezzi,
-«ottieni quello che vuoi» più «resta vicino a com'eri». E non è soltanto una
-somiglianza: la forma del conto è la stessa, scritta con altre lettere. L'hanno
-dimostrato nel 2022 tre ricercatori {cite}`korbak2022rl`, uno dei quali lavora
-proprio sull'inferenza attiva.
+«ottieni quello che vuoi» più «resta vicino a com'eri». Non è soltanto una
+somiglianza: la forma dell'obiettivo è la stessa, scritta con altre lettere.
+L'hanno dimostrato nel 2022 tre ricercatori {cite}`korbak2022rl`, uno dei quali
+lavora sull'inferenza attiva.
 
 La regola della cucina sembrava una toppa: un accorgimento pratico contro un
-guaio pratico. Si scopre invece che era la forma giusta fin dall'inizio, e che
-il pezzo «resta vicino a com'eri» non è una precauzione ma metà della
+problema pratico. Si scopre invece che era la forma giusta fin dall'inizio, e
+che il pezzo «resta vicino a com'eri» non è una precauzione ma metà della
 definizione del problema. È il genere di guadagno che una teoria può dare
 anche a chi non la adotta.
 
-La forma è la stessa; i pezzi, però, non fanno lo stesso mestiere di qua e di
-là. La ricetta di partenza non è quello che il cuoco vuole: quello gliel'ha
-scritto il giudice su un foglio a parte, e la ricetta è soltanto il punto da cui
-si è messo a cucinare. Il pesce quel foglio non ce l'ha, e l'acqua a cui deve
+La forma è la stessa; i pezzi, però, fanno cose diverse di qua e di là. La
+ricetta di partenza non è quello che il cuoco vuole: quello gliel'ha scritto il
+giudice su un foglio a parte, e la ricetta è soltanto il punto da cui si è
+messo a cucinare. Il pesce quel foglio non ce l'ha, e l'acqua a cui deve
 restare vicino è già tutto quello che vuole. La ricetta, in cambio, tiene in
-cucina anche i piatti che al giudice nessuno ha mai chiesto: è per questo che il
+cucina anche i piatti che al giudice nessuno ha mai chiesto: per questo il
 cuoco non finisce a servire sempre lo stesso.
 
 `````
@@ -515,45 +510,44 @@ sulla log-verosimiglianza di quell'evento, con $\pi_{\text{ref}}$ nel ruolo di
 priore {cite}`korbak2022rl`; il terzo autore lavora sull'inferenza attiva, il
 che spiega da dove arrivi il collegamento.
 
-Restano due differenze che nessuna algebra cancella, e sono quelle da tenere in
-mano. Primo, i due termini KL non sono lo stesso termine. Nel rischio
-dell'energia libera attesa la distribuzione di riferimento coincide con la
-preferenza, $P(\tilde{o} \mid C)$; nell'RLHF il riferimento è il priore
-$\pi_{\text{ref}}$ (il modello pre-addestrato, un artefatto della procedura) e
-la preferenza è scritta a parte, in $r_\phi$. I due mestieri li fanno oggetti
-diversi, e i due schemi si toccano solo passando per il quadro comune del
-**controllo come inferenza** (trattare la scelta di una traiettoria come
-l'inferenza di una distribuzione a posteriori), non con un travaso diretto.
+Restano due differenze che nessuna algebra cancella. Primo, i due termini KL
+non sono lo stesso termine. Nel rischio dell'energia libera attesa la
+distribuzione di riferimento coincide con la preferenza, $P(\tilde{o} \mid C)$;
+nell'RLHF il riferimento è il priore $\pi_{\text{ref}}$ (il modello
+pre-addestrato, un artefatto della procedura) e la preferenza è scritta a
+parte, in $r_\phi$. Riferimento e preferenza stanno dunque in oggetti diversi,
+e i due schemi si toccano solo passando per il quadro comune del **controllo
+come inferenza** (trattare la scelta di una traiettoria come l'inferenza di una
+distribuzione a posteriori), non con un travaso diretto.
 
-Secondo, che cosa sparisce davvero togliendo l'ambiguità. Non il valore
-dell'informazione per intero: come si è visto, il rischio conserva
+Secondo, che cosa sparisce togliendo l'ambiguità. Non l'intero valore
+dell'informazione: come si è visto, il rischio conserva
 $-H[Q(\tilde{o} \mid \pi)]$, e simmetricamente
 $-\beta D_{\mathrm{KL}}[\pi_\theta \| \pi_{\text{ref}}] =
 \beta H[\pi_\theta] + \beta \, \mathbb{E}_{\pi_\theta}[\ln \pi_{\text{ref}}]$,
 cioè un bonus di entropia sulla policy più un richiamo al priore. È
-esattamente il termine a cui {cite}`korbak2022rl` attribuisce il fatto che
+il termine a cui {cite}`korbak2022rl` attribuisce il fatto che
 l'RLHF non collassi su un'unica risposta, e che conservi fluidità e varietà del
-modello di partenza. Quello che sparisce è l'ambiguità in senso stretto: nessuno
+modello di partenza. Sparisce l'ambiguità in senso stretto: nessuno
 dei due schemi ha stati nascosti da disambiguare, quindi la spinta a cercare i
 posti da cui si vede bene non ha dove attaccarsi.
 
 `````
 
-Resta poi una cosa vera anche fuori dall'algebra. Quando un obiettivo pratico
-si scrive come «ottieni ciò che preferisci, ma non allontanarti dal punto di
-partenza», quella seconda metà è sempre un'ipotesi su dove sia lecito cercare,
-mai un dettaglio implementativo, ed è quasi sempre la parte che decide che cosa
-il sistema diventerà.
+Resta una conclusione valida anche fuori dall'algebra. Quando un obiettivo
+pratico si scrive come «ottieni quello che preferisci, ma non allontanarti dal
+punto di partenza», quella seconda metà è sempre un'ipotesi su dove sia lecito
+cercare, mai un dettaglio implementativo, e quasi sempre decide che cosa il
+sistema diventerà.
 
 `````{tab} Elementare
 
 ```{admonition} Da ricordare
 :class: important
-- L’inferenza attiva dice una cosa sola e grossa: percepire e agire sono lo
-  stesso mestiere in due direzioni. Davanti a uno scarto
-  fra quello che ti aspettavi e quello che trovi, o cambi idea (percepire) o
-  cambi il mondo (agire). Anche imparare è la stessa cosa, solo più
-  lenta.
+- L’inferenza attiva sostiene una tesi semplice e forte: percepire e agire sono
+  la stessa operazione in due direzioni. Davanti a uno scarto fra quello che ti
+  aspettavi e quello che trovi, o cambi idea (percepire) o cambi il mondo
+  (agire). Anche imparare è la stessa cosa, solo più lenta.
 - L'obiettivo è non essere sorpresi, e l'obiezione ovvia («allora stattene fermo
   in una stanza buia») cade subito: la sorpresa si misura rispetto a quello che
   sei, non a quello che capita. Per un pesce, essere all'asciutto è la cosa più
@@ -567,17 +561,17 @@ il sistema diventerà.
   farebbe scoprire qualcosa che non sa (il valore di sapere). Sono le due
   metà di un voto solo, contate nella stessa moneta; quanto l'agente esplori
   lo decide quanto sono forti le sue preferenze.
-- La differenza dai sistemi delle sezioni precedenti: là ci sono due cose da
+- La differenza dai sistemi di Dreamer e della JEPA: là ci sono due cose da
   scrivere, il modello del mondo e il premio; qui ce n'è una, perché quello
   che si desidera sta nello stesso posto in cui sta quello che ci si aspetta.
 - La regola d'oro della cucina, quella con cui si rifiniscono i modelli di
-  linguaggio («insegui il voto, ma non allontanarti dalla ricetta di partenza»),
-  ha la stessa forma del conto dell'energia libera, scritta con altre lettere,
-  e non è una toppa: lo hanno dimostrato nel 2022. I pezzi, però, non fanno lo
-  stesso mestiere.
-- Attenzione a non prendere l'inferenza attiva per il seguito delle tappe
-  precedenti: è una teoria di come funzionano gli esseri viventi, non il modo
-  in cui oggi si costruiscono i programmi che giocano o generano video.
+  linguaggio («insegui il voto, ma non allontanarti dalla ricetta di
+  partenza»), ha la stessa forma della formula dell'energia libera, scritta con
+  altre lettere, e non è una toppa: lo hanno dimostrato nel 2022. I pezzi,
+  però, non servono allo stesso scopo.
+- L'inferenza attiva non è il seguito di Dreamer e della JEPA: è una teoria di
+  come funzionano gli esseri viventi, non il modo in cui oggi si costruiscono i
+  programmi che giocano o generano video.
 ```
 
 `````
@@ -612,7 +606,7 @@ il sistema diventerà.
   che resta discussa, perché rischia di rendere la teoria non falsificabile. Il
   modello non può limitarsi a imitare la dinamica esterna: deve prescrivere gli
   stati da occupare, e gli autori chiamano bias di ottimismo questa asimmetria.
-- Differenza strutturale dai world model delle sezioni precedenti: là
+- Differenza strutturale dai world model di Dreamer e della JEPA: là
   $p_\theta(s_{t+1}\mid s_t,a_t)$ più una ricompensa specificata fuori; qui un
   solo oggetto, perché la desiderabilità vive nei priori.
 - Limiti dichiarati: le realizzazioni sono modelli di laboratorio, non i sistemi
@@ -626,5 +620,5 @@ il sistema diventerà.
 
 Il pesce, il caffè e la stanza buia raccontano un modello del mondo visto da
 dentro una creatura, che non ha bisogno di disegnare niente per usarlo. I
-generatori video vanno all'estremo opposto: macchine che il mondo lo disegnano
+generatori video vanno all'estremo opposto: macchine che disegnano il mondo
 fotogramma per fotogramma, e che hanno riaperto la domanda iniziale.

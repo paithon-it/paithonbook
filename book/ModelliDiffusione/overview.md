@@ -22,48 +22,45 @@ un verdetto onesto: disfare è facile; rifare non è *vietato*, è solo così
 improbabile che non basterebbe l'età dell'universo per vederlo accadere per
 caso.
 
-Ed è esattamente qui che si nasconde il trucco. Nel 2015 Jascha Sohl-Dickstein
-e colleghi, tra Stanford e Berkeley, pubblicano un paper dal titolo che sembra
-uscito da un dipartimento di fisica: *Deep Unsupervised Learning using
-Nonequilibrium Thermodynamics* {cite}`sohl2015deep`. L'ispirazione viene
-davvero dalla termodinamica di non equilibrio, e l'idea è di un'eleganza
-spudorata: se distruggere è facile e costruire da zero non lo sa fare nessuno,
-filmiamo la distruzione e insegniamo a una rete a proiettare il film al
-contrario. Prendi una fotografia e aggiungile del rumore, cioè numeri
-sorteggiati a caso che si sommano ai colori veri e li sporcano di puntini: un
-pizzico alla volta, finché non resta che pulviscolo. Questo è il verso facile,
-la goccia che si disperde. Poi addestra una rete a percorrere la pellicola
-all'indietro, un fotogramma per volta. Se impara bene, potrà partire da rumore
-puro, sorteggiato di nuovo e mai visto prima, e riavvolgerla fino a un'immagine
-che non è mai esistita. Non è la stessa foto che torna indietro: il sorteggio di
-partenza è diverso ogni volta, e da un pulviscolo diverso esce un'immagine
-diversa.
+Qui si nasconde il trucco. Nel 2015 Jascha Sohl-Dickstein e colleghi, tra
+Stanford e Berkeley, pubblicano un paper dal titolo che sembra uscito da un
+dipartimento di fisica: *Deep Unsupervised Learning using Nonequilibrium
+Thermodynamics* {cite}`sohl2015deep`. L'ispirazione viene dalla termodinamica
+di non equilibrio e l'idea è di un'eleganza spudorata: se distruggere è facile
+e costruire da zero non lo sa fare nessuno, filmiamo la distruzione e
+insegniamo a una rete a proiettare il film al contrario. Prendi una fotografia
+e aggiungile del rumore, cioè numeri sorteggiati a caso che si sommano ai
+colori veri e li sporcano di puntini: un pizzico alla volta, finché non resta
+che pulviscolo. Questo è il verso facile, la goccia che si disperde. Poi
+addestra una rete a percorrere la pellicola all'indietro, un fotogramma per
+volta. Se impara bene, potrà partire da rumore puro, sorteggiato di nuovo e mai
+visto prima, e riavvolgerla fino a un'immagine che non è mai esistita. Non è la
+stessa foto che torna indietro: il sorteggio di partenza è diverso ogni volta,
+e da un pulviscolo diverso esce un'immagine diversa.
 
-Due parole sul vocabolario. «Rumore» è il termine tecnico, ed è quello che
-compare nelle formule; raccontando la cosa a parole diremo anche disturbo,
-pulviscolo o sporco, ma è sempre lui, e sempre la stessa quantità. E già che ci
-siamo: si chiamano modelli di **diffusione** proprio per la goccia
-d'inchiostro, perché il verso facile è quello che la diffonde nell'acqua.
+«Rumore» è il termine tecnico e compare nelle formule; a parole diremo anche
+disturbo, pulviscolo o sporco, ma indicano sempre la stessa quantità. Si
+chiamano modelli di **diffusione** per la goccia d'inchiostro: il verso facile
+è quello che la diffonde nell'acqua.
 
 ## Il film proiettato al contrario
 
 Un modello di diffusione vive quindi di due processi, uno l'inverso dell'altro.
 L’**andata** non si impara: è una ricetta fissa che a ogni passo sbiadisce un
-pochino la fotografia e le getta sopra un pizzico di rumore casuale (due gesti,
-non uno, e nella prossima sezione si vedrà perché servono tutti e due). Il
-**ritorno** è l'unica cosa che si apprende, ed è una domanda sola: guardando un
+pochino la fotografia e le getta sopra un pizzico di rumore casuale (sono due
+le operazioni, e perché servano entrambe lo mostra la {doc}`sezione su come
+funziona la diffusione </ModelliDiffusione/come-funziona>`). Il **ritorno** è
+l'unica parte che si apprende e si riduce a una domanda sola: guardando un
 fotogramma sporco, *quanto rumore c'è qui sopra?*
 
-Su quella domanda conviene essere precisi subito. Alla rete non si chiede il
-pizzico dell'ultimo passo, ma tutto il rumore che la ricetta ha steso dalla
-fotografia pulita fino al livello di rovina $t$, quello che nelle formule si
-chiama $\boldsymbol{\epsilon}$. Non è la differenza fra il fotogramma e
-l'originale, perché nel frattempo anche la fotografia è sbiadita: è la parte
-del fotogramma che dalla fotografia non viene. La risposta ha la forma
-dell'immagine, un valore per punto, ed è una mappa del rumore, non
-un'immagine. Come si passi da quella mappa a un'immagine è una faccenda a
-parte, meno intuitiva di quanto sembri, ed è il centro della {doc}`sezione su
-come funziona la diffusione </ModelliDiffusione/come-funziona>`.
+Alla rete non si chiede il pizzico dell'ultimo passo, ma tutto il rumore che la
+ricetta ha steso dalla fotografia pulita fino al livello di rovina $t$, che
+nelle formule si indica con $\boldsymbol{\epsilon}$. Non coincide con la
+differenza fra il fotogramma e l'originale, perché nel frattempo anche la
+fotografia è sbiadita: è la parte del fotogramma che dalla fotografia non
+viene. La risposta ha la forma dell'immagine, un valore per punto: è una mappa
+del rumore, non un'immagine. Passare da quella mappa a un'immagine è meno
+intuitivo di quanto sembri, e ne tratta la stessa sezione.
 
 `````{tab} Elementare
 
@@ -75,15 +72,15 @@ ciascuno sia minuscolo: una foto ridotta a pulviscolo in un colpo solo non la
 rimette a posto nessuno, mentre fra due fotogrammi vicini c'è pochissima
 strada da rifare.
 
-Ora la parte furba. Non chiediamo alla rete l'impossibile («da questo pulviscolo
-tira fuori una foto») ma una cosa umile: «ecco il fotogramma 500: dimmi quanto
-sporco c'è qui sopra, punto per punto». È il mestiere di un restauratore
-paziente, che non ridipinge il quadro ma sa dire dov'è lo sporco e quanto è
-spesso. Di fotogrammi così ne serve una montagna per allenarla, da ogni foto
-dell'archivio e da ogni livello di rovina, e nessuno li prepara rovinando la
-foto cinquecento volte di seguito: la dose di sporco che spetta al passo 500 si
-sa calcolare in anticipo e si stende in un gesto solo. La risposta esatta la
-conosciamo sempre: lo sporco l'abbiamo messo noi.
+Ora la parte furba. Non chiediamo alla rete l'impossibile («da questo
+pulviscolo tira fuori una foto») ma una cosa umile: «ecco il fotogramma 500:
+dimmi quanto sporco c'è qui sopra, punto per punto». È il lavoro di un
+restauratore paziente, che non ridipinge il quadro ma sa dire dov'è lo sporco e
+quanto è spesso. Di fotogrammi così ne serve una montagna per allenarla, da
+ogni foto dell'archivio e da ogni livello di rovina, e nessuno li prepara
+rovinando la foto cinquecento volte di seguito: la dose di sporco che spetta al
+passo 500 si sa calcolare in anticipo e si stende in un colpo solo. La risposta
+esatta la conosciamo sempre: lo sporco l'abbiamo messo noi.
 
 Per generare un'immagine nuova si parte dalla fine: si sorteggia del
 pulviscolo nuovo (dado alla mano, come per rovinare la foto, solo che qui
@@ -154,19 +151,20 @@ $$
 - \boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t) \big\rVert^2\,\right],
 $$
 
-dove l'attesa è su un dato reale $\mathbf{x}_0$, un rumore $\boldsymbol{\epsilon}$ e un passo $t$
-estratti a caso: un errore quadratico medio. La derivazione completa, dal
-limite variazionale a questa forma, è il tema della prossima sezione.
+dove l'attesa è su un dato reale $\mathbf{x}_0$, un rumore
+$\boldsymbol{\epsilon}$ e un passo $t$ estratti a caso: un errore quadratico
+medio. La derivazione completa, dal limite variazionale a questa forma, è il
+tema della sezione su come funziona la diffusione.
 
 `````
 
 ## Una parabola in tre atti
 
-Le idee, in questo mestiere, raramente vincono al primo colpo, e questa ci ha
-messo sette anni. Il paper del 2015 dimostra che il meccanismo funziona
+Le idee, in questo campo, raramente vincono al primo colpo, e questa ne ha
+impiegati sette. Il paper del 2015 dimostra che il meccanismo funziona
 ({numref}`fig-ddpm-passi` ne è lo schema), ma su immagini piccole e con una
-qualità che non impensierisce nessuno: sono gli anni in cui le GAN, nate
-l'anno prima, si prendono la scena, e la diffusione resta per cinque anni una
+qualità che non impensierisce nessuno: sono gli anni in cui le GAN, nate l'anno
+prima, si prendono la scena, e la diffusione resta per cinque anni una
 curiosità da addetti ai lavori.
 
 ```{figure} ../figures/ddpm-denoising-iterativo.svg
@@ -180,22 +178,21 @@ figura, tanti passi piccoli invece di pochi grandi. Ogni passo chiede alla rete
 un compito facile, e la difficoltà si distribuisce sull'intera catena.
 ```
 
-La figura rende evidente anche il conto da pagare, un vincolo che tornerà di
-continuo. Se la generazione è una catena di centinaia di passi, ogni passo
-vuole la sua risposta dalla rete: per una immagine bisogna interrogarla
-centinaia di volte, non una. Da qui in avanti questa operazione (passare alla
-rete un fotogramma rumoroso con il suo livello di rovina, e leggerne la
-risposta) si chiama sempre allo stesso modo, **una valutazione della rete** (in
-inglese si contano le NFE, *number of function evaluations*), e se ne conterà
-il numero.
+La figura mette in evidenza anche un costo, che tornerà in tutto il capitolo.
+Se la generazione è una catena di centinaia di passi, ogni passo richiede una
+risposta della rete: per una immagine bisogna interrogarla centinaia di volte,
+non una. Passare alla rete un fotogramma rumoroso con il suo livello di rovina
+e leggerne la risposta è **una valutazione della rete** (in inglese le NFE,
+*number of function evaluations*), e il numero di valutazioni misura il costo
+di una generazione.
 
-Il secondo atto è del 2020. Jonathan Ho, Ajay Jain e Pieter Abbeel, a
-Berkeley, ripuliscono la formulazione e la battezzano **DDPM**, *Denoising
-Diffusion Probabilistic Models* {cite}`ho2020denoising`. L'addestramento si
-riduce a «indovina il rumore», e la rete che lo indovina è presa in prestito
-dalla visione artificiale: si chiama U-Net e la incontreremo per esteso
-nella prossima sezione. Per la prima volta le immagini prodotte reggono il
-confronto con le migliori GAN, e non a occhio: c'è un metro apposta, il FID
+Il secondo atto è del 2020. Jonathan Ho, Ajay Jain e Pieter Abbeel, a Berkeley,
+ripuliscono la formulazione e la battezzano **DDPM**, *Denoising Diffusion
+Probabilistic Models* {cite}`ho2020denoising`. L'addestramento si riduce a
+«indovina il rumore», e la rete che lo indovina è presa in prestito dalla
+visione artificiale: si chiama U-Net e la incontreremo per esteso nella sezione
+su come funziona la diffusione. Per la prima volta le immagini prodotte reggono
+il confronto con le migliori GAN, e non a occhio: c'è un metro apposta, il FID
 (*Fréchet Inception Distance*, definito nel capitolo sulle GAN), che confronta
 il mucchio delle immagini generate con il mucchio di quelle vere e dice quanto
 i due si somigliano. Più è basso, meglio è.
@@ -203,25 +200,25 @@ i due si somigliano. Più è basso, meglio è.
 Il terzo atto arriva un anno dopo, e il titolo dice tutto: *Diffusion Models
 Beat GANs on Image Synthesis* {cite}`dhariwal2021diffusion`. La diffusione
 supera le GAN migliori in due modi, nella qualità delle singole immagini e
-nella varietà di quelle che sa produrre: una GAN può affezionarsi a un
-pugno di soggetti e ripetere sempre quelli, ed è il difetto raccontato per
-esteso in {doc}`GAN </GAN/overview>`.
+nella varietà di quelle che sa produrre: una GAN può affezionarsi a un pugno di
+soggetti e ripetere sempre quelli, il difetto che racconta per esteso il
+{doc}`capitolo sulle GAN </GAN/overview>`.
 
-Poi c'è l'epilogo che non è più storia della ricerca ma storia e basta: il
-2022. Nel giro di pochi mesi OpenAI presenta DALL·E 2 (aprile), Google
-risponde con Imagen (maggio, annunciato ma non accessibile al pubblico),
-Midjourney apre la beta a tutti (luglio) e soprattutto, in agosto, arriva
-Stable Diffusion: nato dai *latent diffusion models* (modelli che diffondono
-non l'immagine ma una sua versione compressa) del gruppo di Björn
-Ommer a Monaco di Baviera {cite}`rombach2022high` e rilasciato con i pesi
-aperti: i pesi sono i milioni di numeri che una rete si ritrova dentro dopo
-l'addestramento, cioè tutto quello che ha imparato, e rilasciarli vuol dire
-mettere in rete un file che chiunque può scaricare e far girare a casa propria.
-Per la prima volta si può scrivere «un gatto nero che salta sul muro, in stile
-acquerello» e vedere l'immagine materializzarsi sul proprio computer, non nel
-data center di qualcun altro. La generazione di immagini smette di essere una
-demo e diventa un fenomeno pubblico, con il suo seguito di entusiasmo, cause
-legali sui dati di addestramento e domande aperte sul lavoro creativo.
+Segue l'epilogo, che ormai è cronaca pubblica oltre che ricerca: il 2022. Nel
+giro di pochi mesi OpenAI presenta DALL·E 2 (aprile), Google risponde con
+Imagen (maggio, annunciato ma non accessibile al pubblico), Midjourney apre la
+beta a tutti (luglio) e soprattutto, in agosto, arriva Stable Diffusion: nato
+dai *latent diffusion models* (modelli che diffondono non l'immagine ma una sua
+versione compressa) del gruppo di Björn Ommer a Monaco di Baviera
+{cite}`rombach2022high` e rilasciato con i pesi aperti: i pesi sono i milioni
+di numeri che una rete si ritrova dentro dopo l'addestramento, cioè tutto
+quello che ha imparato, e rilasciarli vuol dire mettere in rete un file che
+chiunque può scaricare e far girare a casa propria. Per la prima volta si può
+scrivere «un gatto nero che salta sul muro, in stile acquerello» e vedere
+l'immagine materializzarsi sul proprio computer, non nel data center di qualcun
+altro. La generazione di immagini smette di essere una demo e diventa un
+fenomeno pubblico, con il suo seguito di entusiasmo, cause legali sui dati di
+addestramento e domande aperte sul lavoro creativo.
 
 ## Il falsario e il restauratore
 
@@ -250,14 +247,13 @@ servono.
 Il capitolo sulle GAN si è chiuso, nella {doc}`sezione sulle loro evoluzioni
 </GAN/applicazioni-evoluzioni>`, con il passaggio di testimone del 2021
 raccontato dal lato di chi lo cede: i due guasti del duello. Dal lato di chi
-lo riceve, lo stesso passaggio ha un meccanismo preciso, e anche un conto da
-pagare.
+lo riceve, lo stesso passaggio ha un meccanismo preciso, e anche un costo.
 
 `````{tab} Elementare
 
 La GAN è un duello: un falsario e un esperto d'arte che si allenano
 ostacolandosi a vicenda. Quando funziona è spettacolare, ma tenere in
-equilibrio due avversari è un mestiere da domatori: se uno dei due prende il
+equilibrio due avversari è un lavoro da domatori: se uno dei due prende il
 sopravvento l'allenamento si incarta, e il falsario può scoprire un solo quadro
 che inganna sempre l'esperto e mettersi a rifare quello per sempre (il *mode
 collapse* del capitolo scorso, la fine della varietà).
@@ -271,7 +267,7 @@ rifugiarsi in un unico quadro vincente: la varietà viene di serie, e quando si
 perde è per altre strade, come la manopola che decide quanto il disegno debba
 obbedire a una richiesta scritta.
 
-Il conto da pagare è la lentezza. Il falsario, una volta allenato, dipinge in
+Il costo è la lentezza. Il falsario, una volta allenato, dipinge in
 una pennellata sola: una domanda alla rete, un'immagine. Il restauratore deve
 ripetere il suo giro di domanda e risposta centinaia o migliaia di volte per
 una sola immagine: la stabilità si paga in tempo d'attesa, e accorciare quel
@@ -285,7 +281,7 @@ Il confronto si gioca su tre assi.
 
 **Stabilità.** L'addestramento GAN cerca l'equilibrio di un gioco minimax
 $\min_G \max_D V(D,G)$: una dinamica a due giocatori che può oscillare,
-divergere o collassare, come visto nel capitolo precedente. La diffusione
+divergere o collassare, come racconta il capitolo sulle GAN. La diffusione
 minimizza una singola loss di regressione, $\mathcal{L} =
 \mathbb{E}\lVert\boldsymbol{\epsilon} -
 \boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)\rVert^2$: un obiettivo
@@ -306,34 +302,35 @@ può perdere per altre vie, la guida forte della {doc}`sezione sulla guida
 </ModelliDiffusione/guida>` e la memorizzazione di singoli esempi di
 addestramento {cite}`carlini2023extracting`. Dhariwal e Nichol
 {cite}`dhariwal2021diffusion` misurano, oltre alla qualità, anche la copertura
-della distribuzione dei dati, con il richiamo. (Attenzione a non appoggiare
-questo argomento al limite variazionale: la loss che si usa davvero non è un
-bound, come mostra la {doc}`sezione su come funziona la diffusione
-</ModelliDiffusione/come-funziona>`. Regge da sé.)
+della distribuzione dei dati, con il richiamo. (L'argomento non poggia sul
+limite variazionale: la loss usata in pratica non è un bound, come mostra la
+{doc}`sezione su come funziona la diffusione
+</ModelliDiffusione/come-funziona>`.)
 
-**Costo di campionamento.** Una GAN genera con una valutazione della rete;
-un DDPM ne richiede $T$ (mille, in origine), perché il campionamento percorre
-l'intera catena inversa. È il rovescio della medaglia, e ha aperto un filone
-di ricerca sui campionatori accelerati (a partire da DDIM, che riduce i passi
-a poche decine) che incontreremo più avanti nel capitolo.
+**Costo di campionamento.** Una GAN genera con una valutazione della rete; un
+DDPM ne richiede $T$ (mille, in origine), perché il campionamento percorre
+l'intera catena inversa. È il rovescio della medaglia, e ha aperto un filone di
+ricerca sui campionatori accelerati (a partire da DDIM, che riduce i passi a
+poche decine), ai quali è dedicata la {doc}`sezione sui campionatori veloci
+</ModelliDiffusione/campionatori-veloci>`.
 
 `````
 
-Nessun vincitore assoluto, dunque, e conviene dirlo con i meccanismi invece
-che con una classifica, perché i meccanismi non invecchiano: una GAN genera
-con una sola valutazione della rete, un DDPM con molte, e la diffusione paga
-in tempo ciò che guadagna in stabilità dell'addestramento e in copertura della
-varietà. Da lì in poi, buona parte del lavoro sulla diffusione è servito ad
-accorciare quel conto, e nel farlo ha spesso rimesso in gioco un
-discriminatore, che è il nome tecnico dell'esperto d'arte del capitolo
-precedente: il duello è rientrato come attrezzo di servizio dentro una macchina
-che di suo non ne ha bisogno, invece di sparire. L'impianto dei generatori di
-immagini arrivati al pubblico dal 2022 in poi, però, è questo e non quello, ed
-è la ragione per cui da qui in avanti lo smonteremo pezzo per pezzo.
+Nessun vincitore assoluto, dunque: i meccanismi, a differenza di una
+classifica, non invecchiano. Una GAN genera con una sola valutazione della
+rete, un DDPM con molte, e la diffusione paga in tempo ciò che guadagna in
+stabilità dell'addestramento e in copertura della varietà. Da lì in poi, buona
+parte del lavoro sulla diffusione è servito ad accorciare quel costo, e nel
+farlo ha spesso rimesso in gioco un discriminatore, che è il nome tecnico
+dell'esperto d'arte del capitolo sulle GAN: il duello è rientrato come
+attrezzo di servizio dentro una macchina che di suo non ne ha bisogno, invece
+di sparire. L'impianto dei generatori di immagini arrivati al pubblico dal 2022
+in poi, però, è questo e non quello, e per questo il capitolo lo smonta pezzo
+per pezzo.
 
 ## Dal rumore all'immagine
 
-Tre tappe portanti. Prima come funziona davvero: i due processi di DDPM
+Tre tappe portanti. Prima la meccanica di base: i due processi di DDPM
 {cite}`ho2020denoising` visti da vicino, come si dà un voto alla rete quando
 sbaglia la sua risposta, che rete sia (una vecchia conoscenza della visione
 artificiale) e tutto il meccanismo in miniatura, funzionante, in poche righe di
@@ -366,12 +363,12 @@ applicata a uno stato fatto di simboli invece che di numeri, cioè al testo.
 :class: important
 - Un modello di diffusione impara a proiettare al contrario il film di una
   rovina: l'andata (aggiungere un pizzico di disturbo mille volte, finché non
-  resta che pulviscolo) è una ricetta fissa che sa eseguire un dado; il
-  ritorno è l'unica cosa che si apprende, e quello che si impara è una domanda
-  sola, «quanto disturbo c'è qui sopra?», dove il disturbo da misurare è
-  tutto quello accumulato dalla foto pulita in poi, non il pizzico
-  dell'ultimo passo. L'idea viene da un'osservazione di fisica: disfare è
-  facile, rifare per caso è così improbabile da non accadere mai.
+  resta che pulviscolo) è una ricetta fissa che sa eseguire un dado; il ritorno
+  è l'unica cosa che si apprende, e si impara una domanda sola, «quanto
+  disturbo c'è qui sopra?», dove il disturbo da misurare è tutto quello
+  accumulato dalla foto pulita in poi, non il pizzico dell'ultimo passo. L'idea
+  viene da un'osservazione di fisica: disfare è facile, rifare per caso è così
+  improbabile da non accadere mai.
 - DDPM rende l'addestramento facile perché non chiede il capolavoro ma una
   cosa umile: «dimmi quanto disturbo ho steso su questa foto». La
   risposta esatta la conosciamo sempre, visto che il disturbo l'abbiamo messo
@@ -396,12 +393,12 @@ applicata a uno stato fatto di simboli invece che di numeri, cioè al testo.
 
 ```{admonition} Da ricordare
 :class: important
-- Un modello di diffusione impara a invertire una degradazione:
-  l'andata (aggiungere rumore in tanti piccoli passi) è fissa e banale, il
-  ritorno è l'unica cosa che si apprende, ed è la stima del rumore
-  presente, non la sua rimozione. L'idea nasce dalla termodinamica di non
-  equilibrio {cite}`sohl2015deep`; il risultato che la sostiene (per passi
-  piccoli l'inverso è approssimativamente gaussiano) è di Feller
+- Un modello di diffusione impara a invertire una degradazione: l'andata
+  (aggiungere rumore in tanti piccoli passi) è fissa e banale, il ritorno è
+  l'unica parte che si apprende, e consiste nella stima del rumore presente,
+  non nella sua rimozione. L'idea nasce dalla termodinamica di non equilibrio
+  {cite}`sohl2015deep`; il risultato che la sostiene (per passi piccoli
+  l'inverso è approssimativamente gaussiano) è di Feller
   {cite}`feller1949theory`.
 - DDPM {cite}`ho2020denoising` riduce l'addestramento a una regressione,
   predire il rumore iniettato, loss

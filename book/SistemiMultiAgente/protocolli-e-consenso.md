@@ -40,19 +40,19 @@ porta lo stato da un giro al successivo. Ogni partecipante a un protocollo è un
 di questi cicli: i messaggi entrano dalla percezione ed escono dall'azione.
 ```
 
-Prima di guardare i messaggi conviene rimettersi davanti il singolo agente della
-{doc}`sezione sul ciclo dell'agente </Agenti/agenti-e-tool-use>`, disegnato in
-{numref}`fig-ciclo-percezione-azione`: è l'unità di misura di tutto quello che
-segue. Ogni partecipante a un protocollo è uno di questi anelli, e i messaggi
-che si scambiano entrano dalla stazione «percezione» ed escono da quella
-«azione»: parlare, per un agente, è agire.
+Prima di guardare i messaggi conviene rimettersi davanti il singolo agente
+della {doc}`sezione sul ciclo dell'agente </Agenti/agenti-e-tool-use>`,
+disegnato in {numref}`fig-ciclo-percezione-azione`: è l'unità di misura di
+quanto segue. Ogni partecipante a un protocollo è uno di questi anelli, e i
+messaggi che si scambiano entrano dalla stazione «percezione» ed escono da
+quella «azione»: parlare, per un agente, è agire.
 
 `````{tab} Elementare
 
 Al frigorifero sono attaccati tre biglietti. Sul primo c’è scritto «il latte è
 finito». Sul secondo «compra il latte». Sul terzo «il latte lo prendo io
 tornando». Parlano tutti e tre della stessa cosa, con quasi le stesse
-parole, ma fanno tre mestieri diversi: il primo dà una notizia, il secondo
+parole, ma hanno tre funzioni diverse: il primo dà una notizia, il secondo
 scarica un compito su chi legge, il terzo se lo prende chi ha scritto.
 
 La differenza si vede domani mattina, quando il latte manca ancora. Col primo
@@ -65,10 +65,10 @@ mancato a qualcosa.
 
 Ci sono anche due modi diversi di sbagliare. «Il latte è finito» scritto mentre
 in frigo c'è un litro pieno è semplicemente falso. «Compra il latte» attaccato
-al frigorifero di un vicino non ha niente di falso, e però non vale: quel vicino
-non ti doveva la spesa, e domani nessuno può rimproverargli niente. Il biglietto
-falso lo smaschera chi apre il frigorifero; quello che non vale lo vede chi
-guarda a quale frigorifero è appeso.
+al frigorifero di un vicino non ha niente di falso, e però non vale: quel
+vicino non ti doveva la spesa, e domani nessuno può rimproverargli niente. Il
+biglietto falso lo smaschera chi apre il frigorifero; il biglietto che non vale
+lo vede chi guarda a quale frigorifero è appeso.
 
 `````
 
@@ -84,43 +84,42 @@ proposizionale** $P$. «Chiudi la porta» e «prometto di chiudere la porta»
 condividono $P$ e differiscono per $F$, e non c'è modo di ricavare $F$ da $P$:
 sono assi ortogonali.
 
-Searle raggruppa poi le forze in cinque classi: assertivi (impegnano chi
-parla sulla verità di $P$), direttivi (tentano di far fare qualcosa a chi
-ascolta), commissivi (impegnano chi parla a un'azione futura),
-espressivi e dichiarazioni (che modificano il mondo per il solo fatto
-di essere pronunciate da chi ne ha l'autorità). Le condizioni che Austin
-chiamava di felicità {cite}`austin1962how` Searle le sistema in regole di
-quattro specie {cite}`searle1969speech`: sul contenuto proposizionale (una
-promessa riguarda un atto futuro di chi parla), preparatorie (chi riceve
-preferisce che l'atto sia fatto, e non è ovvio che sarebbe fatto comunque; per
-un ordine, chi lo dà ha autorità su chi lo riceve), di sincerità (chi promette
-intende farlo) ed essenziale (dire la frase *conta come* assumersi l'obbligo).
-Un ordine dato a chi non è tenuto a obbedire viola una condizione preparatoria,
-ed è nullo anche se non contiene niente di falso. Ed è proprio la
-distinzione fra «falso» e «nullo» che serve a un sistema distribuito: un
-contenuto sbagliato è un problema di merito, un atto mal formato è un problema
-di protocollo, e si diagnosticano in modi diversi. Austin stesso, nelle ultime
-lezioni, abbandona la contrapposizione fra enunciati performativi e constativi
-(quelli che descrivono): ogni enunciato ha una forza illocutoria, anche
-«piove».
+Searle raggruppa poi le forze in cinque classi: assertivi (impegnano chi parla
+sulla verità di $P$), direttivi (tentano di far fare qualcosa a chi ascolta),
+commissivi (impegnano chi parla a un'azione futura), espressivi e dichiarazioni
+(che modificano il mondo per il solo fatto di essere pronunciate da chi ne ha
+l'autorità). Le condizioni che Austin chiamava di felicità
+{cite}`austin1962how` Searle le sistema in regole di quattro specie
+{cite}`searle1969speech`: sul contenuto proposizionale (una promessa riguarda
+un atto futuro di chi parla), preparatorie (chi riceve preferisce che l'atto
+sia fatto, e non è ovvio che sarebbe fatto comunque; per un ordine, chi lo dà
+ha autorità su chi lo riceve), di sincerità (chi promette intende farlo) ed
+essenziale (dire la frase *conta come* assumersi l'obbligo). Un ordine dato a
+chi non è tenuto a obbedire viola una condizione preparatoria e risulta nullo
+anche se non contiene niente di falso. La distinzione fra «falso» e «nullo»
+serve a un sistema distribuito: un contenuto sbagliato è un problema di merito,
+un atto mal formato è un problema di protocollo, e si diagnosticano in modi
+diversi. Austin stesso, nelle ultime lezioni, abbandona la contrapposizione fra
+enunciati performativi e constativi (quelli che descrivono): ogni enunciato ha
+una forza illocutoria, anche «piove».
 
 `````
 
 Negli anni Novanta la ricerca sugli agenti trasforma questa analisi in una
 regola di scrittura. Ogni messaggio fra agenti deve portare in cima, scritto a
-chiare lettere, che cosa quel messaggio fa: si chiama **performativa**, ed è il
-nome tecnico di quello che sui biglietti del frigorifero era il tipo di
-biglietto. È una casella obbligatoria, da riempire scegliendo in un elenco
-finito, accanto a mittente, destinatario, contenuto, a quale conversazione il
-messaggio appartiene e a quale messaggio risponde. Le due proposte che hanno
-fatto scuola sono **KQML**, sviluppato da Tim Finin e colleghi in un programma
-di ricerca finanziato dalla DARPA {cite}`finin1994kqml`, e **FIPA-ACL**, lo
-standard della Foundation for Intelligent Physical Agents, un consorzio nato nel
-1996; il suo catalogo di atti comunicativi conta ventidue voci
-{cite}`fipa2002acl`, e i nomi dicono già tutto: `inform` («ti informo che»),
-`request` («ti chiedo di»), `agree` («va bene, lo faccio»), `refuse` («no»),
-`failure` («ci ho provato e non ci sono riuscito»), `not-understood` («non ho
-capito che cosa vuoi»), e altre sedici sulla stessa falsariga.
+chiare lettere, che cosa quel messaggio fa: si chiama **performativa**, il nome
+tecnico del tipo di biglietto sul frigorifero. È una casella obbligatoria, da
+riempire scegliendo in un elenco finito, accanto a mittente, destinatario,
+contenuto, a quale conversazione il messaggio appartiene e a quale messaggio
+risponde. Le due proposte che hanno fatto scuola sono **KQML**, sviluppato da
+Tim Finin e colleghi in un programma di ricerca finanziato dalla DARPA
+{cite}`finin1994kqml`, e **FIPA-ACL**, lo standard della Foundation for
+Intelligent Physical Agents, un consorzio nato nel 1996; il suo catalogo di
+atti comunicativi conta ventidue voci {cite}`fipa2002acl`, e i nomi dicono già
+tutto: `inform` («ti informo che»), `request` («ti chiedo di»), `agree` («va
+bene, lo faccio»), `refuse` («no»), `failure` («ci ho provato e non ci sono
+riuscito»), `not-understood` («non ho capito che cosa vuoi»), e altre sedici
+sulla stessa falsariga.
 
 Perché conta oggi, che gli agenti sono modelli di linguaggio e la prosa libera
 gli riesce benissimo? Perché la prosa libera non si verifica. Se un agente
@@ -138,12 +137,12 @@ disallineamento osservati da Cemri e colleghi compaiono anche fra agenti dello
 stesso framework, che si scrivono in linguaggio naturale {cite}`cemri2025why`.
 
 Scrivere il tipo sul messaggio cambia la natura della conversazione: da testo da
-interpretare diventa una sequenza di mosse previste. In ogni momento ciascuno
+interpretare diventa una sequenza di passi previsti. In ogni momento ciascuno
 scambio si trova in uno di pochi stati dichiarati («ho chiesto e aspetto», «ha
 accettato e non ha ancora consegnato», «chiuso»), e da uno stato all'altro si
 passa solo con le performative lecite, e solo se a farle è chi ne ha titolo. In
 informatica un oggetto fatto così si chiama **macchina a stati finiti**, e si
-può registrare, rigiocare dall'inizio e controllare mossa per mossa.
+può registrare, rigiocare dall'inizio e controllare passo per passo.
 
 Nel programma, un pianificatore apre tre conversazioni, che nel
 codice si chiamano *fili*: chiede i dati a un ricercatore, una stima a un
@@ -238,15 +237,16 @@ violazione: filo f2: risponde ricercatore, ma la richiesta era per analista
 Una quarantina di righe di macchina a stati, senza una sola chiamata a un
 modello, e il sistema segnala fatti che una rilettura della trascrizione non
 rende evidenti. L'analista ha promesso una stima e non l'ha mai consegnata: è
-un **impegno pendente**, il biglietto «il latte lo prendo io» con il frigorifero
-ancora vuoto. Il revisore ha provato a rispondere su un filo che aveva già
-chiuso rifiutando, e il ricercatore a consegnare una stima che nessuno gli
-aveva chiesto: sono **violazioni di protocollo**, mosse che il protocollo non
-prevede o che fa chi non ne ha titolo, come il biglietto attaccato al
-frigorifero del vicino. Sono guasti diversi: a un impegno pendente si rimedia
-con un sollecito, o decidendo di aspettare al massimo tanto e poi dare per perso
-chi non ha risposto; a una violazione scartando il messaggio. Il
-disallineamento fra agenti, che la {doc}`sezione sul costo del coordinamento
+un **impegno pendente**, il biglietto «il latte lo prendo io» con il
+frigorifero ancora vuoto. Il revisore ha provato a rispondere su un filo che
+aveva già chiuso rifiutando, e il ricercatore a consegnare una stima che
+nessuno gli aveva chiesto: sono **violazioni di protocollo**, passi che il
+protocollo non prevede o che fa chi non ne ha titolo, come il biglietto
+attaccato al frigorifero del vicino. Sono problemi diversi: a un impegno
+pendente si rimedia con un sollecito, o decidendo di aspettare al massimo tanto
+e poi dare per perso chi non ha risposto; a una violazione scartando il
+messaggio. Il disallineamento fra agenti, che la {doc}`sezione sul costo del
+coordinamento
 <costo-del-coordinamento>` elencava fra le tre famiglie di fallimento
 {cite}`cemri2025why`, si manifesta spesso così, sotto una conversazione
 perfettamente cortese, e il tipo di messaggio è il primo strumento che lo rende
@@ -255,43 +255,44 @@ visibile.
 È lo stesso baratto che la sezione sul ciclo dell'agente fa quando impone al
 modello di chiamare gli strumenti con argomenti in un formato fisso invece che
 in prosa: si restringe quello che può scrivere, e in cambio si ottiene la
-possibilità di controllarlo a macchina. Quello che cambia qui è la scala. Il
-cancello di verifica descritto nella sezione sul costo del coordinamento, quel
-controllo esterno che o passa o non passa, giudica una risposta per volta; un
-protocollo giudica l’intera conversazione. Non «questa risposta è ben formata»,
-ma «questo scambio, dal primo messaggio all'ultimo, è una partita legale».
+possibilità di controllarlo a macchina. Qui cambia la scala. Il cancello di
+verifica descritto nella sezione sul costo del coordinamento, quel controllo
+esterno che o passa o non passa, giudica una risposta per volta; un protocollo
+giudica l’intera conversazione. Non «questa risposta è ben formata», ma «questo
+scambio, dal primo messaggio all'ultimo, è una partita legale».
 
-Uno dei primi protocolli di questo tipo ha più di quarant'anni, ed è lo stesso
-Contract Net di Reid G. Smith {cite}`smith1980contract` che la sezione
-sulle topologie ha incontrato come mercato. Là interessava chi prende il
-lavoro; qui interessa la forma dello scambio. Bando, offerta, assegnazione e
-rapporto finale sono quattro messaggi con il tipo scritto sopra, in una
-sequenza fissa, e dopo l'assegnazione esiste un oggetto che prima non c'era: un
-contratto, con un responsabile e una scadenza. È la stessa idea dei biglietti
-sul frigorifero, portata su scala di sistema: dopo l'assegnazione la domanda
-«questo compito ha un titolare?» ha una risposta che il programma sa dare da
-sé, senza rileggere niente, e il rapporto finale dice se il titolare l'ha
-svolto. La stessa sequenza torna ogni volta che si chiede a più agenti se sono
-in grado di svolgere un compito prima di affidarlo.
+Uno dei primi protocolli di questo tipo ha più di quarant'anni e coincide con
+il Contract Net di Reid G. Smith {cite}`smith1980contract` che la sezione sulle
+topologie ha incontrato come mercato. Là interessava chi prende il lavoro; qui
+interessa la forma dello scambio. Bando, offerta, assegnazione e rapporto
+finale sono quattro messaggi con il tipo scritto sopra, in una sequenza fissa,
+e dopo l'assegnazione esiste un oggetto che prima non c'era: un contratto, con
+un responsabile e una scadenza. È la stessa idea dei biglietti sul frigorifero,
+portata su scala di sistema: dopo l'assegnazione la domanda «questo compito ha
+un titolare?» ha una risposta che il programma sa dare da sé, senza rileggere
+niente, e il rapporto finale dice se il titolare l'ha svolto. La stessa
+sequenza torna ogni volta che si chiede a più agenti se sono in grado di
+svolgere un compito prima di affidarlo.
 
 ## Aggregare i giudizi: il conto di Condorcet
 
-Dai messaggi passiamo alle decisioni. Se più agenti hanno risposto e le risposte
-differiscono, la strada più ovvia è contare: vince la maggioranza. Ed è una
-strada con alle spalle il teorema più antico della materia. Nel 1785 Nicolas de
-Condorcet, matematico e politico, pubblica un saggio sull'applicazione del
-calcolo delle probabilità alle decisioni prese a maggioranza di voti. La domanda
-era se una giuria numerosa giudichi meglio di un singolo giudice. La risposta è
-sì, ma a due condizioni, e sono le condizioni a interessarci. La prima è che
-ciascun giurato, da solo, ci prenda più della metà delle volte. La seconda è che
-i giurati sbaglino in modo indipendente, cioè che non sbaglino tutti sulle
-stesse domande. La seconda è quella che nei sistemi di agenti salta sempre.
+Dai messaggi passiamo alle decisioni. Se più agenti hanno risposto e le
+risposte differiscono, la strada più ovvia è contare: vince la maggioranza. Ed
+è una strada con alle spalle il teorema più antico della materia. Nel 1785
+Nicolas de Condorcet, matematico e politico, pubblica un saggio
+sull'applicazione del calcolo delle probabilità alle decisioni prese a
+maggioranza di voti. La domanda era se una giuria numerosa giudichi meglio di
+un singolo giudice. La risposta è sì, ma a due condizioni, e sono le condizioni
+a interessarci. La prima è che ciascun giurato, preso singolarmente, ci prenda
+più della metà delle volte. La seconda è che i giurati sbaglino in modo
+indipendente, cioè che non sbaglino tutti sulle stesse domande. La seconda è
+quella che nei sistemi di agenti salta sempre.
 
 `````{tab} Elementare
 
-Nella pagina d'apertura del capitolo tre colleghi che ci prendono sette volte su
-dieci arrivavano, votando, al 78%, senza che si vedesse come. Ecco il conto: due
-sole risposte possibili, mille domande, e tutti i casi possibili messi in fila.
+Nella pagina d'apertura del capitolo tre colleghi che ci prendono sette volte
+su dieci arrivavano, votando, al 78%, senza che si vedesse come. Ecco i numeri:
+due sole risposte possibili, mille domande, e tutti i casi possibili elencati.
 
 Che ci prendano tutte e tre capita sette volte su dieci, per sette su dieci,
 per sette su dieci: sette per sette per sette fa trecentoquarantatré, quindi
@@ -302,24 +303,24 @@ Che ne azzecchino due su tre capita in tre modi diversi, a seconda di chi
 dei tre sbaglia, e ciascun modo vale sette per sette per tre, cioè
 centoquarantasette su mille: in tutto quattrocentoquarantuno.
 
-Che ne azzecchi una sola: ancora tre modi, ciascuno da sette per tre per
-tre, cioè sessantatré, in tutto centottantanove. E che sbaglino tutte e tre:
-tre per tre per tre fa ventisette. I quattro numeri messi insieme fanno mille,
-come devono.
+Che ne azzecchi una sola: ancora tre modi, ciascuno da sette per tre per tre,
+cioè sessantatré, in tutto centottantanove. Quanto al caso in cui sbaglino
+tutte e tre: tre per tre per tre fa ventisette. I quattro numeri messi insieme
+fanno mille, come devono.
 
-La maggioranza ha ragione nei primi due casi, quando ci prendono in tre o in due:
-trecentoquarantatré più quattrocentoquarantuno fa settecentottantaquattro su
-mille. Il gruppo azzecca quasi otto volte su dieci mentre ciascuno, da solo, ne
-azzecca sette. Il guadagno viene da un fatto elementare: perché il gruppo sbagli
-servono almeno due errori insieme, e due errori insieme sono più rari di uno.
+La maggioranza ha ragione nei primi due casi, quando ci prendono in tre o in
+due: trecentoquarantatré più quattrocentoquarantuno fa settecentottantaquattro
+su mille. Il gruppo azzecca quasi otto volte su dieci mentre ciascuno, preso
+singolarmente, ne azzecca sette. Il guadagno viene da un fatto elementare:
+perché il gruppo sbagli servono almeno due errori insieme, e due errori insieme
+sono più rari di uno.
 
 Con cinque persone servirebbero tre errori insieme, e il gruppo sale a
 ottantaquattro volte su cento; con nove ne servirebbero cinque, e si arriva a
-novanta. Sono lo stesso identico conto con più casi da elencare, e a quel punto
-conviene farli elencare a un programma.
+novanta. È lo stesso conto con più casi da elencare, lavoro adatto a un programma.
 
 E attenzione al verso, perché è la prima delle due condizioni. Se ciascuno ci
-prende meno della metà delle volte il conto si ribalta: con tre persone che
+prende meno della metà delle volte il risultato si ribalta: con tre persone che
 azzeccano quattro volte su dieci il gruppo scende a trentacinque su cento, e con
 nove a ventisette. Più si è, peggio si fa. Il voto non aggiunge competenza,
 amplifica quella che c'è: sopra la metà spinge verso la risposta giusta, sotto
@@ -341,37 +342,36 @@ $$
 dove $\binom{n}{k}$ conta i modi in cui $k$ votanti su $n$ possono essere
 quelli corretti, $p^k(1-p)^{n-k}$ è la probabilità di ciascuno di quei modi e
 l'estremo inferiore della somma è la più piccola maggioranza stretta (per $n$
-dispari, $(n+1)/2$; si prende $n$ dispari proprio per non dover arbitrare i
-pareggi).
+dispari, $(n+1)/2$; si prende $n$ dispari per non dover arbitrare i pareggi).
 
 L'ipotesi delle due sole alternative pesa sul seguito: le risposte di un agente
 non sono binarie, e con molte alternative la formula smette di dare
 l'accuratezza della maggioranza e ne diventa un limite inferiore, perché i voti
-sbagliati si disperdono invece di sommarsi su un'unica risposta falsa. E si
+sbagliati si disperdono invece di sommarsi su un'unica risposta falsa. Si
 sposta anche la soglia. Con voto di pluralità e voti indipendenti, se ciascuno
 sceglie la risposta giusta con probabilità $p$ e la più probabile fra le
-sbagliate con probabilità $q$, la pluralità tende alla verità per $n \to \infty$
-non appena $p > q$, anche con $p < 1/2$ {cite}`list2001epistemic`: una risposta
-giusta al 40% batte dieci risposte sbagliate al 6% ciascuna. La dicotomia con la
-soglia a $1/2$ che segue è quella del caso binario.
+sbagliate con probabilità $q$, la pluralità tende alla verità per $n \to
+\infty$ non appena $p > q$, anche con $p < 1/2$ {cite}`list2001epistemic`: una
+risposta giusta al 40% batte dieci risposte sbagliate al 6% ciascuna. La
+dicotomia con la soglia a $1/2$ che segue è quella del caso binario.
 
 Il teorema ha due parti: per $p > 1/2$ la successione $P_n$, letta
 sui valori dispari di $n$, è crescente e tende a $1$; per $p < 1/2$ è
 decrescente e tende a $0$. Il voto amplifica la tendenza di fondo, qualunque
 essa sia: sopra la soglia converge alla verità, sotto la soglia converge
-all'errore, e la soglia è esattamente il tirare a caso.
+all'errore, e la soglia coincide con il tirare a caso.
 
-Con $p = 0{,}7$: $P_3 = 0{,}784$, $P_5 = 0{,}837$, $P_9 = 0{,}901$,
-$P_{21} = 0{,}974$. La convergenza è reale ma lenta, con rendimenti decrescenti
-marcati: i primi due votanti aggiunti comprano otto punti
-($0{,}700 \to 0{,}784$), i dodici che portano da nove a ventuno ne comprano
-sette ($0{,}901 \to 0{,}974$). Questa curva va confrontata con il costo, che la
-sezione sul costo del coordinamento ha mostrato crescere come il quadrato quando
-tutti leggono tutto: il voto è il caso migliore per il multi-agente proprio
-perché i votanti non si parlano, e quindi il costo resta lineare in $n$.
+Con $p = 0{,}7$: $P_3 = 0{,}784$, $P_5 = 0{,}837$, $P_9 = 0{,}901$, $P_{21} =
+0{,}974$. La convergenza è reale ma lenta, con rendimenti decrescenti marcati:
+i primi due votanti aggiunti guadagnano otto punti ($0{,}700 \to 0{,}784$), i
+dodici che portano da nove a ventuno ne guadagnano sette ($0{,}901 \to 0{,}974$).
+Questa curva va confrontata con il costo, che la sezione sul costo del
+coordinamento ha mostrato crescere come il quadrato quando tutti leggono tutto:
+il voto è il caso migliore per il multi-agente perché i votanti non si parlano,
+e quindi il costo resta lineare in $n$.
 
 L'indipendenza si può indebolire, e la letteratura lo ha fatto in due modi.
-Ladha mostra che il teorema regge anche con voti correlati, purché la
+Ladha mostra che il teorema vale anche con voti correlati, purché la
 correlazione media fra i voti resti abbastanza piccola rispetto alla competenza
 dei votanti {cite}`ladha1992condorcet`. Dietrich e Spiekermann riformulano
 l'ipotesi come indipendenza *condizionata al problema*, cioè alla domanda e
@@ -391,7 +391,7 @@ sempre falsa. Lo misurano Kim e colleghi su più di trecentocinquanta modelli:
 sulle domande di una delle classifiche pubbliche che esaminano, quando due
 modelli sbagliano entrambi danno la stessa risposta sbagliata circa sei volte su
 dieci (a caso, fra le risposte sbagliate disponibili, accadrebbe una volta su
-tre), e gli errori sono molto correlati proprio fra i modelli più grandi e più
+tre), e gli errori sono molto correlati fra i modelli più grandi e più
 accurati, anche di architetture e fornitori diversi {cite}`kim2025correlated`.
 
 Dieci copie dello stesso modello, con lo stesso foglio di istruzioni, davanti
@@ -399,14 +399,14 @@ alla stessa domanda, valgono molto meno di dieci votanti indipendenti. È una
 conseguenza di come sono fatte. I pesi del modello, cioè i numeri che
 l'addestramento ha aggiustato una volta per tutte, sono fissi, e l'unica cosa
 che varia da una risposta all'altra è il campionamento: parola per parola, il
-modello non prende sempre la più probabile, ma ogni tanto ne pesca una vicina,
-e quanto spesso lo faccia lo regola la temperatura. Portata a zero, il caso si
+modello non prende sempre la più probabile e ogni tanto ne pesca una vicina, e
+quanto spesso lo faccia lo regola la temperatura. Portata a zero, il caso si
 spegne e dieci copie restituiscono (quasi) la stessa risposta, cioè un parere
 fotocopiato dieci volte. Alzandola si cambia il percorso lungo il quale la
 risposta si forma, non la macchina che la forma: restano identici i pesi, i
 dati su cui il modello si è addestrato e le lacune che quei dati hanno
-lasciato. Un errore sistematico vive esattamente lì (una formula memorizzata
-male, un'ambiguità letta sempre nello stesso verso, un fatto che nei testi di
+lasciato. Un errore sistematico vive lì (una formula memorizzata male,
+un'ambiguità letta sempre nello stesso verso, un fatto che nei testi di
 addestramento compare solo nella versione sbagliata) e non è il tipo di errore
 che quel pescare parole vicine possa disperdere: non è un singolo agente a
 sbagliare, sbagliano tutti, e sbagliano allo stesso modo. La maggioranza, in
@@ -423,8 +423,8 @@ sbagliate non basta: con due sole risposte possibili, due agenti che sbagliano
 danno per forza la stessa risposta sbagliata.)
 
 Mettiamo dei numeri, con la descrizione più semplice che tenga dentro il
-fenomeno. Una parte delle domande sono *trappole*: contengono proprio la cosa
-che manda fuori strada quel modello, e su quelle sbagliano tutti gli agenti
+fenomeno. Una parte delle domande sono *trappole*: contengono l'elemento che
+manda fuori strada quel modello, e su quelle sbagliano tutti gli agenti
 insieme. Sulle altre gli errori sono indipendenti, come vuole Condorcet.
 
 `````{tab} Elementare
@@ -438,22 +438,21 @@ volta.
 
 Al voto, però, le cose cambiano, anche se con tre agenti quasi non si vede: si
 passa da settantotto volte su cento a settantasette. Il conto è in due pezzi.
-Sulle venti trappole su cento la maggioranza sbaglia sempre. Sulle altre ottanta
-ciascuno ci prende sette volte su otto, e il conto dei casi fatto per Condorcet,
-rifatto con sette ottavi al posto di sette decimi, dà una maggioranza giusta
-novantasei volte su cento: novantasei per cento di ottanta fa settantasette. Con
-nove agenti, dove Condorcet prometteva novanta, ci si ferma a ottanta. E la cosa
-da guardare è che oltre non si va: con ventuno agenti si fa ottanta, con
+Sulle venti trappole su cento la maggioranza sbaglia sempre. Sulle altre
+ottanta ciascuno ci prende sette volte su otto, e l'elenco dei casi fatto per
+Condorcet, rifatto con sette ottavi al posto di sette decimi, dà una
+maggioranza giusta novantasei volte su cento: novantasei per cento di ottanta
+fa settantasette. Con nove agenti, dove Condorcet prometteva novanta, ci si
+ferma a ottanta. Oltre non si va: con ventuno agenti si fa ottanta, con
 novantanove ancora ottanta. Il tetto lo fissa la quota di domande-trappola:
 restano le altre quattro domande su cinque, cioè l'ottanta per cento, e nessun
 numero di partecipanti supera quella soglia, perché su quel quinto di domande
 stanno sbagliando tutti insieme.
 
-C'è di peggio, ed è la parte che dovrebbe far paura. Sulle trappole i nove
-agenti non sbagliano un po’ ciascuno per conto suo: rispondono la stessa cosa
-sbagliata, all'unanimità. Chi usa l'accordo come misura di fiducia (nove su
-nove, andiamo tranquilli) sta leggendo il segnale più forte proprio nel momento
-in cui è più falso.
+C'è di peggio, e dovrebbe far paura. Sulle trappole i nove agenti non sbagliano
+un po’ ciascuno per conto suo: rispondono la stessa cosa sbagliata,
+all'unanimità. Chi usa l'accordo come misura di fiducia (nove su nove, andiamo
+tranquilli) sta leggendo il segnale più forte nel momento in cui è più falso.
 
 Il conto si fa su cento domande. Venti di quelle cento sono trappole, e lì tutti
 e nove rispondono la stessa cosa sbagliata: venti unanimità, tutte sbagliate.
@@ -498,20 +497,20 @@ n_{\text{eff}} = \frac{n}{1 + (n-1)\rho}
 \;\xrightarrow[n \to \infty]{}\; \frac{1}{\rho},
 $$
 
-dove $\rho$ è la correlazione fra i giudizi di due votanti qualsiasi. Con
-$\rho = 0{,}5$, mille agenti valgono due votanti indipendenti; con
-$\rho = 0{,}2$ ne valgono cinque. Il numero va preso per quello che è, un ordine
-di grandezza: il conto è esatto per la varianza della media, mentre
-l'accuratezza della maggioranza su voti binari non è determinata dalla sola
-correlazione a coppie (due meccanismi di correlazione con la stessa $\rho$
-possono dare curve $P_n$ diverse, e il modello a trappole è appunto un
-meccanismo particolare). Il messaggio qualitativo però non cambia: la curva si
-appiattisce. È la stessa aritmetica che governa gli *ensemble* nella
-{doc}`sezione sugli alberi e gli ensemble </MachineLearning/alberi-ensemble>`,
-dove il guadagno del bagging viene dalla decorrelazione e non dal numero di
-alberi. La conseguenza per chi progetta è una sola: finché $\rho$ non si misura,
-il numero di agenti che si pagano dice poco sul numero di giudizi indipendenti
-che si ottengono, e la curva reale sta sotto quella di Condorcet.
+dove $\rho$ è la correlazione fra i giudizi di due votanti qualsiasi. Con $\rho
+= 0{,}5$, mille agenti valgono due votanti indipendenti; con $\rho = 0{,}2$ ne
+valgono cinque. Il numero è soltanto un ordine di grandezza: la formula è
+esatta per la varianza della media, mentre l'accuratezza della maggioranza su
+voti binari non è determinata dalla sola correlazione a coppie (due meccanismi
+di correlazione con la stessa $\rho$ possono dare curve $P_n$ diverse, e il
+modello a trappole è appunto un meccanismo particolare). Il messaggio
+qualitativo però non cambia: la curva si appiattisce. È la stessa aritmetica
+che governa gli *ensemble* nella {doc}`sezione sugli alberi e gli ensemble
+</MachineLearning/alberi-ensemble>`, dove il guadagno del bagging viene dalla
+decorrelazione e non dal numero di alberi. La conseguenza per chi progetta è
+una sola: finché $\rho$ non si misura, il numero di agenti che si pagano dice
+poco sul numero di giudizi indipendenti che si ottengono, e la curva reale sta
+sotto quella di Condorcet.
 
 Peggiora se si guarda l'unanimità. Nel modello a trappole, con $n = 9$, la
 probabilità che tutti concordino è $\lambda + (1-\lambda)p_0^9 = 0{,}441$: il
@@ -521,7 +520,7 @@ errori indipendenti, che su risposte non binarie ha probabilità irrisoria). La
 probabilità che una risposta unanime sia sbagliata è dunque
 $\lambda / 0{,}441 = 0{,}454$. L'accordo, usato come stima della confidenza, è
 un cattivo stimatore in modo *asimmetrico*: è alto quando l'errore è
-sistematico, cioè proprio nei casi in cui servirebbe un allarme.
+sistematico, cioè nei casi in cui servirebbe un allarme.
 
 `````
 
@@ -578,20 +577,19 @@ Ed è un esito pericoloso: un sistema che sbaglia e dà segno di essere incerto
 si può ancora recuperare, mentre uno che sbaglia esibendo nove firme in calce
 no.
 
-L'indipendenza, però, non è tutto o niente: un po’ se ne può comprare, e ogni
-modo di comprarla ha il suo prezzo. Si può alzare la manopola della
-temperatura, perché le risposte prendano strade diverse. Si può chiedere
-esplicitamente modi di ragionare diversi: risolvi per stima, poi per calcolo
-esatto, poi partendo dal risultato e tornando indietro. Si può cambiare il
-modo in cui la domanda è posta, riformulandola o rimescolando l'ordine delle
-opzioni, che è anche il modo di scoprire quanto la risposta dipendeva dalla
-formulazione. E si può, quando è possibile, cambiare modello: è l'intervento
-che allontana di più gli errori gli uni dagli altri, perché cambia la macchina e
-non solo la strada che percorre, anche se modelli diversi e accurati sbagliano
-spesso sulle stesse domande {cite}`kim2025correlated`; ed è anche il più caro da
-gestire.
+L'indipendenza, però, non è tutto o niente: un po’ se ne può guadagnare, e ogni
+modo di ottenerla ha un costo. Si può alzare la manopola della temperatura,
+perché le risposte prendano strade diverse. Si può chiedere esplicitamente modi
+di ragionare diversi: risolvi per stima, poi per calcolo esatto, poi partendo
+dal risultato e tornando indietro. Si può cambiare il modo in cui la domanda è
+posta, riformulandola o rimescolando l'ordine delle opzioni, che è anche il
+modo di scoprire quanto la risposta dipendeva dalla formulazione. Quando è
+possibile si può cambiare modello, l'intervento che allontana di più gli errori
+gli uni dagli altri perché cambia la macchina e non solo la strada che
+percorre, anche se modelli diversi e accurati sbagliano spesso sulle stesse
+domande {cite}`kim2025correlated`; è anche il più caro da gestire.
 
-È esattamente il meccanismo della self-consistency
+È il meccanismo della self-consistency
 {cite}`wang2023selfconsistency`, che la {doc}`sezione sul prompt engineering
 </IngegneriaLLM/prompt-engineering>` ha descritto come voto di maggioranza fra
 catene di ragionamento campionate, e dove era già comparsa la stessa riserva: il
@@ -601,22 +599,20 @@ in numeri. Funziona, e funziona per la ragione appena messa in conto: variare il
 modo di generare rende gli errori un po’ meno simili fra loro. Conviene
 insistere su quel «un po’». Quei percorsi escono tutti dallo stesso modello,
 quindi la somiglianza si abbassa ma non arriva a zero, il tetto resta dov'era, e
-il guadagno reale è sempre inferiore a quello che il conto di Condorcet
-promette.
+il guadagno reale è sempre inferiore a quello che promette la formula di Condorcet.
 
-Ne discende la cosa pratica da fare, che è una sola e costa una serata. Invece
-di scegliere il numero di agenti a intuito, si prova con tre, con cinque, con
-nove, con ventuno, e ogni volta si misura quanto ci prende il gruppo. All'inizio
-i numeri salgono; a un certo punto smettono, e da lì in poi aggiungere agenti
-non compra più niente. Il punto in cui smettono di salire è il tetto, ed è
-misurato invece che sperato. Va misurato con cura, però, perché le differenze
-vicino al tetto sono piccole: nel modello a trappole fra cinque e ventuno agenti
-c'è poco più di un punto. Su $m$ domande l'accuratezza di un gruppo che ci
-prende l'80% ha un errore standard di
-$\sqrt{0{,}8 \cdot 0{,}2/m} = 0{,}4/\sqrt{m}$, cioè quasi due punti con
-cinquecento domande; servono quindi molte domande, le stesse per tutti i gruppi,
-e il tetto è il punto oltre il quale le differenze non superano più
-quell'incertezza.
+Ne discende un'indicazione pratica, una sola, che occupa una serata. Invece di
+scegliere il numero di agenti a intuito, si prova con tre, con cinque, con
+nove, con ventuno, e ogni volta si misura quanto ci prende il gruppo.
+All'inizio i numeri salgono; a un certo punto smettono, e da lì in poi
+aggiungere agenti non migliora più nulla. Il punto in cui smettono di salire è
+il tetto, misurato invece che sperato. Va misurato con cura, però, perché le
+differenze vicino al tetto sono piccole: nel modello a trappole fra cinque e
+ventuno agenti c'è poco più di un punto. Su $m$ domande l'accuratezza di un
+gruppo che ci prende l’80% ha un errore standard di $\sqrt{0{,}8 \cdot 0{,}2/m}
+= 0{,}4/\sqrt{m}$, cioè quasi due punti con cinquecento domande; servono quindi
+molte domande, le stesse per tutti i gruppi, e il tetto è il punto oltre il
+quale le differenze non superano più quell'incertezza.
 
 ## Dibattere invece di votare
 
@@ -632,14 +628,14 @@ risposte diverse, e se coincidono non c'è niente da dibattere; per questo negli
 esperimenti i ruoli si assegnano in anticipo, e uno sostiene una risposta mentre
 l'altro la contesta.
 
-Il meccanismo interessante è lo squilibrio fra inventare e controllare. Comporre
-un cruciverba richiede giorni; verificare che una griglia compilata sia giusta
-richiede minuti, e non serve saperlo comporre. Il cruciverba è però il caso
-facile: lì basterebbe farsi dare la griglia e controllarla, e due agenti non
-servirebbero. Il dibattito nasce per il gradino sopra, quello in cui nemmeno la
-griglia compilata è alla portata del giudice. Quello che i turni comprano è la
+Il meccanismo interessante è lo squilibrio fra inventare e controllare.
+Comporre un cruciverba richiede giorni; verificare che una griglia compilata
+sia giusta richiede minuti, e non serve saperlo comporre. Il cruciverba è però
+il caso facile: lì basterebbe farsi dare la griglia e controllarla, e due
+agenti non servirebbero. Il dibattito nasce per il gradino sopra, quello in cui
+nemmeno la griglia compilata è alla portata del giudice. I turni ottengono una
 riduzione di scala. A ogni turno chi afferma scompone la propria tesi, chi
-contesta indica la parte che ritiene falsa, e il giro dopo si ricomincia lì
+contesta indica il pezzo che ritiene falso, e il giro dopo si ricomincia lì
 dentro: alla fine il giudice non ha davanti la griglia, ha una casella sola
 ({numref}`fig-ramo-contestato`).
 
@@ -663,11 +659,11 @@ sono due parti che hanno interesse opposto, e ciascuna ha tutte le ragioni per
 mettere in evidenza la falla dell'altra.
 
 Ecco il punto che rende il meccanismo forte: se uno dei due mente, all'altro
-conviene puntare il dito esattamente sul punto della bugia. Non deve conoscere
-tutta la verità per farlo, e ci riesce per una ragione precisa: è bravo
-quanto chi mente, ha davanti la stessa ricostruzione, e gli basta trovare un
-anello che non regge. Se lasciasse passare proprio quello, perderebbe: per
-questo contesta l'anello che gli sembra più debole.
+conviene puntare il dito sul punto della bugia. Non deve conoscere tutta la
+verità per farlo, e ci riesce per una ragione precisa: è bravo quanto chi
+mente, ha davanti la stessa ricostruzione, e gli basta trovare un anello che
+non tiene. Se lasciasse passare quell'anello, perderebbe: per questo contesta
+il più debole.
 
 E il processo non si esaurisce in un'udienza. Chi ha parlato per primo, messo
 sotto accusa su un punto, quel punto lo spiega più minutamente; l'altro guarda
@@ -679,13 +675,13 @@ giudice non deve essere più bravo dei dibattenti: deve solo saper valutare
 l'ultimo passaggio contestato. Quante udienze servano lo decide il caso: più
 è intricato, più giri ci vogliono per arrivare a quel dettaglio.
 
-E qui sta anche il limite, che è bene guardare in faccia. Tutto regge finché
-il giudice distingue un argomento sbagliato da uno valido. Se si lascia
-convincere dal più sicuro di sé, dal più fluente, da chi usa le parole
-difficili, allora il dibattito non premia chi ha ragione: premia chi è più
-persuasivo, che è una qualità diversa e a volte opposta.
+Qui sta anche il limite. Tutto funziona finché il giudice distingue un
+argomento sbagliato da uno valido. Se si lascia convincere dal più sicuro di
+sé, dal più fluente, da chi usa le parole difficili, allora il dibattito non
+premia chi ha ragione: premia chi è più persuasivo, che è una qualità diversa e
+a volte opposta.
 
-Il guaio peggiore però non riguarda il giudice. Se accusa e difesa hanno
+Il problema più grave non riguarda il giudice. Se accusa e difesa hanno
 studiato sugli stessi libri e credono tutte e due alla stessa cosa falsa, quella
 cosa in aula non la nomina nessuno: non viene contestata, il giudice non la
 sente mai, e il verdetto si gioca su tutto il resto. Ed è il caso normale, non
@@ -707,39 +703,37 @@ Carlo </DeepReinforcementLearning/mcts-alphago>`, e che
 {doc}`Imparare insieme <imparare-insieme>` riprende per esteso.
 
 L'argomento teorico che gli autori portano è un'analogia con la teoria della
-complessità, e chiarisce esattamente che cosa il dibattito compri
-{cite}`irving2018ai`. Un giudice che valuta direttamente una risposta esibita
-da un solo agente può decidere, con gioco ottimale, le domande in **NP**:
-quelle per cui esiste un certificato breve, verificabile in tempo polinomiale.
-Il gioco del dibattito, con due agenti in competizione, arriva a **PSPACE**,
-che contiene NP e tutta la gerarchia polinomiale, perché l'alternanza fra i due
-giocatori corrisponde all'alternanza dei quantificatori di una formula
-booleana quantificata, ed è quella corrispondenza (la PSPACE-completezza di
-TQBF) a reggere il risultato. Le ipotesi però contano, e sono tre: i dibattenti
-hanno potenza di calcolo illimitata, e il dibattente onesto deve poterla usare
-tutta, perché per vincere è costretto a simulare per intero un calcolo
-esponenziale; il giudice è polinomiale ma scelto in funzione del problema; e il
-numero di turni cresce con il problema, perché a $n$ turni fissati la classe
-raggiunta è $\Sigma_n^P$, un gradino della gerarchia polinomiale per ogni
-turno. Il guadagno non viene dal fatto che i dibattenti siano più bravi, ma dal
-fatto che il giudice non deve esaminare
-l'intero albero degli argomenti: gli basta seguire il ramo che i due, con
+complessità, e chiarisce che cosa il dibattito ottenga {cite}`irving2018ai`. Un
+giudice che valuta direttamente una risposta esibita da un solo agente può
+decidere, con gioco ottimale, le domande in **NP**: quelle per cui esiste un
+certificato breve, verificabile in tempo polinomiale. Il gioco del dibattito,
+con due agenti in competizione, arriva a **PSPACE**, che contiene NP e tutta la
+gerarchia polinomiale, perché l'alternanza fra i due giocatori corrisponde
+all'alternanza dei quantificatori di una formula booleana quantificata, e
+questa corrispondenza (la PSPACE-completezza di TQBF) sostiene il risultato. Le
+ipotesi però contano, e sono tre: i dibattenti hanno potenza di calcolo
+illimitata, e il dibattente onesto deve poterla usare tutta, perché per vincere
+è costretto a simulare per intero un calcolo esponenziale; il giudice è
+polinomiale ma scelto in funzione del problema; e il numero di turni cresce con
+il problema, perché a $n$ turni fissati la classe raggiunta è $\Sigma_n^P$, un
+gradino della gerarchia polinomiale per ogni turno. Il guadagno viene dal fatto
+che il giudice non deve esaminare l'intero albero degli argomenti, e non dalla
+maggiore bravura dei dibattenti: gli basta seguire il ramo che i due, con
 interessi opposti, hanno scelto di contestare.
 
 Tre avvertenze, e sono sostanziali. La prima: il risultato vale con gioco
 ottimale e giudice affidabile, cioè capace di valutare correttamente l'ultimo
 passaggio conteso. Un giudice sensibile alla posizione dell'intervento, alla
 sua lunghezza o alla somiglianza con il proprio stile rompe l'ipotesi, e il
-gioco premia la persuasione invece della verità. Sono esattamente i tre bias
+gioco premia la persuasione invece della verità. Sono i tre bias
 dell’*LLM-as-a-judge* (*position*, *verbosity* e *self-enhancement*) che la
 {doc}`sezione su LLMOps </MLOps/llmops>` riprende con i numeri: i primi due
 misurati, il terzo osservato senza poter essere dimostrato. La seconda riguarda
-proprio questo capitolo: due dibattenti istanziati dallo stesso modello
-ereditano la correlazione appena descritta. Se entrambi condividono lo stesso
-errore sistematico, nessuno dei due lo contesta, l'errore non entra mai nel
-dibattito e il giudice non ha nulla su cui esercitare la propria verifica. Il
-dibattito rende *ispezionabile* il disaccordo che c'è, non crea quello che
-manca.
+la correlazione appena descritta: due dibattenti istanziati dallo stesso
+modello la ereditano. Se entrambi condividono lo stesso errore sistematico,
+nessuno dei due lo contesta, l'errore non entra mai nel dibattito e il giudice
+non ha nulla su cui esercitare la propria verifica. Il dibattito rende
+*ispezionabile* il disaccordo che c'è, non crea quello che manca.
 
 La terza avvertenza è la più grave, perché non riguarda il giudice né la
 somiglianza fra i due: attacca l'asimmetria stessa da cui tutto discende. Chi
@@ -761,7 +755,7 @@ paragonabile a quello dell'avversario, ma solo sotto ipotesi di stabilità
 
 ## Quando qualcuno mente: i generali bizantini
 
-Resta il caso duro, e ha un teorema che dice esattamente quanto è duro.
+Resta il caso duro, e ha un teorema che dice quanto è duro.
 Nel 1982 Leslie Lamport, Robert Shostak e Marshall Pease pubblicano un
 articolo destinato a diventare un classico dei sistemi distribuiti
 {cite}`lamport1982byzantine`. La storiella è nota: alcune divisioni assediano
@@ -785,8 +779,7 @@ ritirati». Adesso il nostro generale sa che uno dei due mente, ma non ha alcun
 modo di sapere quale: le due storie sono perfettamente simmetriche. Potrebbe
 essere il comandante che ha dato ordini diversi ai due ufficiali sotto di lui (i
 luogotenenti), oppure il collega che riferisce il falso. Dall'interno, le due
-situazioni sono indistinguibili, perché sono fatte esattamente degli stessi
-messaggi.
+situazioni sono indistinguibili, perché sono fatte degli stessi messaggi.
 
 E il «a voce» conta, perché è l'unica cosa che rende il bugiardo impunibile:
 se i messaggi fossero firmati in modo non falsificabile, il nostro generale
@@ -795,12 +788,12 @@ salterebbe fuori in un colpo. Restiamo dunque a voce, che è il caso duro.
 
 Il caso dei tre è il mattone di un risultato più generale, che qui non
 dimostriamo: con soli messaggi a voce non basta che gli onesti siano la
-maggioranza, devono essere più di due terzi. Il che vuol dire che i bugiardi
-possono essere meno di un terzo, cioè che per sopportarne uno bisogna essere
-almeno in quattro (uno su quattro è meno di un terzo, uno su tre no); per due
-bugiardi almeno in sette, per tre almeno in dieci. Ogni bugiardo in più costa
-tre partecipanti. E non è che non si sia ancora trovato l'algoritmo giusto: è
-dimostrato che non esiste.
+maggioranza, devono essere più di due terzi. I bugiardi possono quindi essere
+meno di un terzo, e per sopportarne uno bisogna essere almeno in quattro (uno
+su quattro è meno di un terzo, uno su tre no); per due bugiardi almeno in
+sette, per tre almeno in dieci. Ogni bugiardo in più aggiunge tre partecipanti
+al minimo necessario. Non manca un algoritmo ancora da trovare: è dimostrato
+che non esiste.
 
 E con quattro, che cosa cambia? Che ciascuno, prima di decidere, chiede a
 tutti gli altri che cosa hanno sentito, mette insieme le risposte e prende
@@ -808,7 +801,7 @@ quella che compare più volte. Guarda i due casi. Se a mentire è il comandante,
 i tre luogotenenti leali si scambiano le tre versioni che hanno ricevuto e si
 ritrovano in mano tutti e tre lo stesso identico mucchietto: da un mucchietto
 uguale tirano fuori la stessa conclusione, qualunque essa sia, e attaccare
-tutti insieme o ritirarsi tutti insieme era proprio l'obiettivo. Se invece a
+tutti insieme o ritirarsi tutti insieme era l'obiettivo. Se invece a
 mentire è un luogotenente, i due leali hanno l'ordine vero due volte (ricevuto
 dal comandante e confermato l'un l'altro) e la bugia una volta sola: vince
 l'ordine vero. Con tre partecipanti quel mucchietto è di due sole risposte, una
@@ -816,19 +809,19 @@ per parte, e non c'è modo di far comparire qualcosa due volte: è tutta lì la
 differenza.
 
 C'è però un secondo muro, e sta prima di questo. Finora abbiamo dato per buona
-una cosa che sembra ovvia e non lo è: che ci si accorga quando un generale
-non risponde. Ma come fai ad accorgertene? Aspetti. E se dopo un'ora non è
-arrivato niente non sai se il messaggero è morto o se è solo in ritardo: da dove
-sei tu, un compagno fermo e un compagno lento sono la stessa identica cosa. Nel
-1985 tre informatici hanno dimostrato che senza un tempo massimo garantito per
-consegnare un messaggio basta che uno solo dei partecipanti possa fermarsi,
-senza mentire e senza fare niente di male, perché nessuna procedura fissata in
-anticipo possa garantire che gli altri si mettano d'accordo
+un'ipotesi che sembra ovvia e non lo è: che ci si accorga quando un generale
+non risponde. Come fai ad accorgertene? Aspetti, e se dopo un'ora non è
+arrivato niente non sai se il messaggero è morto o se è solo in ritardo: da
+dove sei tu, un compagno fermo e un compagno lento sono la stessa identica
+cosa. Nel 1985 tre informatici hanno dimostrato che senza un tempo massimo
+garantito per consegnare un messaggio basta che uno solo dei partecipanti possa
+fermarsi, senza mentire e senza fare niente di male, perché nessuna procedura
+fissata in anticipo possa garantire che gli altri si mettano d'accordo
 {cite}`fischer1985impossibility`. Ecco perché i sistemi veri, prima ancora di
-preoccuparsi dei bugiardi, comprano un orologio: decidono di aspettare al
+preoccuparsi dei bugiardi, si dotano di un orologio: decidono di aspettare al
 massimo tanto e di considerare morto chi non ha risposto entro quel tanto,
 sapendo benissimo che ogni tanto dichiareranno morto qualcuno che era soltanto
-lento. È il prezzo, e si paga volentieri.
+lento. È un costo che si accetta volentieri.
 
 `````
 
@@ -848,8 +841,8 @@ n \ge 3f + 1,
 $$
 
 e la condizione è anche sufficiente: l'algoritmo $\mathrm{OM}(f)$ degli autori
-risolve il problema con $n \ge 3f+1$ in $f+1$ giri di messaggi, al prezzo di
-un numero di messaggi che cresce come $O(n^{f+1})$, perché a ogni giro ciascun
+risolve il problema con $n \ge 3f+1$ in $f+1$ giri di messaggi, con un numero
+di messaggi che cresce come $O(n^{f+1})$, perché a ogni giro ciascun
 luogotenente rigira a tutti gli altri quello che ha appena sentito. Cambiando
 ipotesi cambia il limite: con **messaggi firmati**, cioè con firme non
 falsificabili e verificabili da chiunque, il vincolo dei due terzi cade e
@@ -873,39 +866,40 @@ esiste alcun limite noto ai ritardi di consegna né alla velocità relativa dei
 processi, nessun protocollo deterministico risolve il consenso se anche un solo
 processo può guastarsi, e guastarsi nel modo più mite immaginabile: fermandosi.
 Nessuna malizia, nessun messaggio contraddittorio, nessuna coalizione di
-traditori. Un processo che tace, e basta. La ragione, in una riga, è che in un
+traditori. Un processo che tace. La ragione, in una riga, è che in un
 sistema asincrono un processo fermo e un processo lento sono
 indistinguibili: chi aspetta non può sapere se sta aspettando invano, e un
 protocollo che decida comunque si lascia portare a decidere male da un ritardo
 abbastanza sfortunato.
 
 I due risultati sono due muri in modelli diversi, e non si ordinano l'uno
-sull'altro. FLP vale nel modello più debole, quello asincrono, e chiede soltanto
-che un processo possa fermarsi; $3f+1$ vale anche nel modello sincrono, ma per
-guasti arbitrari. La soglia dei due terzi è quindi ciò che si paga dopo aver
-comprato l'ipotesi che FLP nega, cioè un limite ai tempi. Le monete con cui la
-si compra sono tre, e sono tutte e tre in uso. La **sincronia parziale**, cioè i
-timeout: si scommette su un tempo massimo, e si accetta di sbagliare quando la
-scommessa salta. La **randomizzazione**, che rinuncia alla terminazione certa e
-si tiene quella con probabilità $1$ {cite}`benor1983another`. E i **rilevatori
-di guasti**, cioè un oracolo esterno, necessariamente fallibile, che dichiara
-chi è morto {cite}`chandra1996unreliable`. Paxos {cite}`lamport1998part` e Raft
+sull'altro. FLP vale nel modello più debole, quello asincrono, e chiede
+soltanto che un processo possa fermarsi; $3f+1$ vale anche nel modello
+sincrono, ma per guasti arbitrari. La soglia dei due terzi è quindi ciò che si
+paga dopo aver ottenuto l'ipotesi che FLP nega, cioè un limite ai tempi. Le vie
+per ottenerla sono tre, e sono tutte e tre in uso. La **sincronia parziale**,
+cioè i timeout: si scommette su un tempo massimo, e si accetta di sbagliare
+quando la scommessa salta. La **randomizzazione**, che rinuncia alla
+terminazione certa e si tiene quella con probabilità $1$
+{cite}`benor1983another`. Infine i **rilevatori di guasti**, cioè un oracolo
+esterno, necessariamente fallibile, che dichiara chi è morto
+{cite}`chandra1996unreliable`. Paxos {cite}`lamport1998part` e Raft
 {cite}`ongaro2014raft`, i due algoritmi con cui si tengono coerenti le basi di
-dati replicate, comprano la prima: la coerenza la garantiscono sempre, decidere
-entro un tempo dato no, e quando la rete si comporta male smettono di avanzare
-invece di sbagliare. Tollerano però processi che si *fermano*, non processi che
-mentono, e per questo bastano $n \ge 2f+1$ repliche: due maggioranze qualsiasi
-hanno sempre un membro in comune. Il caso bizantino in sincronia parziale
-richiede di nuovo $n \ge 3f+1$, e qui le firme non lo abbassano, perché con
-ritardi senza limite noto un leale non distingue un traditore da un compagno
-lento {cite}`dwork1988consensus`; il suo algoritmo classico è PBFT di Castro e
-Liskov {cite}`castro1999practical`. La soglia $n \ge f+2$ dei messaggi firmati
-è, insomma, un risultato sincrono.
+dati replicate, si appoggiano alla prima: la coerenza la garantiscono sempre,
+decidere entro un tempo dato no, e quando la rete si comporta male smettono di
+avanzare invece di sbagliare. Tollerano però processi che si *fermano*, non
+processi che mentono, e per questo bastano $n \ge 2f+1$ repliche: due
+maggioranze qualsiasi hanno sempre un membro in comune. Il caso bizantino in
+sincronia parziale richiede di nuovo $n \ge 3f+1$, e qui le firme non lo
+abbassano, perché con ritardi senza limite noto un leale non distingue un
+traditore da un compagno lento {cite}`dwork1988consensus`; il suo algoritmo
+classico è PBFT di Castro e Liskov {cite}`castro1999practical`. La soglia $n
+\ge f+2$ dei messaggi firmati è, insomma, un risultato sincrono.
 
 È un punto di metodo che vale ben oltre i generali: un risultato di
 impossibilità non dice «impossibile», dice «impossibile sotto queste
-ipotesi», e il lavoro dell'ingegnere è capire quale ipotesi si può comprare.
-Qui le ipotesi da comprare sono due, a due prezzi diversi: la sincronia si paga
+ipotesi», e il lavoro dell'ingegnere è capire quale ipotesi ci si può permettere.
+Qui le ipotesi da concedere sono due, a due prezzi diversi: la sincronia si paga
 in latenza e in falsi allarmi, la lealtà dei partecipanti si paga in
 partecipanti, tre volte tanti quanti sono i bugiardi che si vogliono tollerare.
 
@@ -946,19 +940,19 @@ che misura, una fonte che si può andare a leggere, un programma di prova che o
 passa o non passa: è il cancello di verifica della {doc}`sezione sul costo del
 coordinamento
 </SistemiMultiAgente/costo-del-coordinamento>`, qui nella veste di antidoto
-alla menzogna. E vale, sempre, l'avvertenza che la stessa sezione dava sui
-fallimenti reali: un verificatore che non ha modo di controllare
-davvero non aggiunge informazione, aggiunge una firma {cite}`cemri2025why`.
+alla menzogna. Resta valida l'avvertenza che la stessa sezione dava sui
+fallimenti reali: un verificatore che non ha modo di controllare non aggiunge
+informazione, aggiunge una firma {cite}`cemri2025why`.
 
 ## Rendere visibile il disaccordo
 
-C'è una cosa che il teorema dei generali bizantini garantisce e una che non
-garantisce, e la distinzione chiude la sezione. Garantisce l’accordo: i
-partecipanti leali decidono tutti lo stesso valore. Non garantisce la
-verità: se il comandante leale ordina una ritirata sbagliata, il protocollo
-farà ritirare tutti, ordinatamente e all'unanimità. Consenso e correttezza sono
-due proprietà diverse, e confonderle è il modo più elegante di costruire un
-sistema che sbaglia in modo coordinato.
+Il teorema dei generali bizantini garantisce una proprietà e non ne garantisce
+un'altra, e la distinzione chiude la sezione. Garantisce l’accordo: i
+partecipanti leali decidono tutti lo stesso valore. Non garantisce la verità:
+se il comandante leale ordina una ritirata sbagliata, il protocollo farà
+ritirare tutti, ordinatamente e all'unanimità. Consenso e correttezza sono due
+proprietà diverse, e confonderle è il modo più elegante di costruire un sistema
+che sbaglia in modo coordinato.
 
 Vale per tutti i meccanismi visti qui. Scrivere il tipo sul messaggio rende
 controllabile se un agente ha risposto e se ha mantenuto un impegno, senza
@@ -972,7 +966,7 @@ Ed è già molto, purché si progetti per quello. In pratica significa tre cose.
 
 Registrare i voti, non solo il vincitore. Cinque a quattro e nove a zero
 hanno lo stesso esito e valgono in modo diversissimo, e chi tiene solo l'esito
-butta via proprio l'informazione che gli servirebbe.
+butta via l'informazione che gli servirebbe.
 
 Trattare il disaccordo come un segnale da mandare da qualche parte, a un
 giudice, a un altro strumento o a una persona, invece che come rumore da
@@ -1000,9 +994,9 @@ converge in silenzio sulla risposta sbagliata.
   assegnazione e rapporto finale.
 - Condorcet: se tre persone ci prendono sette volte su dieci ciascuna e
   decidono a maggioranza, il gruppo ci prende quasi otto volte su dieci, e con
-  nove il novanta per cento. Ma se le risposte possibili sono due e ciascuna
-  ci prende meno della metà delle volte, votare *peggiora* le cose. Il voto
-  non aggiunge competenza: amplifica quella che c'è, nel bene e nel male.
+  nove il novanta per cento. Se le risposte possibili sono due e ciascuna ci
+  prende meno della metà delle volte, votare *peggiora* le cose. Il voto non
+  aggiunge competenza: amplifica quella che c'è, nel bene e nel male.
 - Fra agenti identici l'ipotesi crolla. Dieci copie dello stesso modello con
   le stesse istruzioni valgono molto meno di dieci votanti indipendenti: sulle
   domande che mandano fuori strada quel modello sbagliano tutte insieme e allo
@@ -1011,41 +1005,39 @@ converge in silenzio sulla risposta sbagliata.
   trappole, l'ottanta per cento), e alza molto di più la sicurezza con cui la
   risposta viene data: su nove agenti concordi, quasi una unanimità su due è
   sbagliata.
-- Un po’ di indipendenza si compra: far generare le risposte in modo meno
+- Un po’ di indipendenza si ottiene: far generare le risposte in modo meno
   prevedibile, chiedere strade di ragionamento diverse, riformulare la domanda,
   cambiare modello. È il motivo per cui la self-consistency
   {cite}`wang2023selfconsistency` funziona; il guadagno però resta sempre sotto
   a quello promesso, e il modo di scoprire quanti agenti servono è provare con
   tre, cinque, nove, ventuno, sulle stesse domande e su molte, e guardare quando
   i risultati smettono di salire.
-- Il dibattito {cite}`irving2018ai` restringe invece di aggregare: a ogni
-  turno chi afferma scompone e chi contesta indica il pezzo che ritiene falso,
-  finché il disaccordo sta in un dettaglio solo. Il giudice non deve essere più
-  bravo dei due contendenti, deve solo saper valutare quel dettaglio. Regge
-  finché il giudice distingue un argomento sbagliato da uno valido, e due
-  contendenti nati dallo stesso modello si portano dietro gli stessi punti
-  ciechi: il dibattito rende visibile il disaccordo che c'è, non crea quello
-  che manca. E chi mente ha una scappatoia: scomporre in tanti pezzi da rendere
-  la caccia all'errore più cara della bugia {cite}`browncohen2025obfuscation`.
+- Il dibattito {cite}`irving2018ai` restringe invece di aggregare: a ogni turno
+  chi afferma scompone e chi contesta indica il pezzo che ritiene falso, finché
+  il disaccordo sta in un dettaglio solo. Il giudice non deve essere più bravo
+  dei due contendenti, deve solo saper valutare quel dettaglio. Regge finché il
+  giudice distingue un argomento sbagliato da uno valido, e due contendenti
+  nati dallo stesso modello si portano dietro gli stessi punti ciechi: il
+  dibattito rende visibile il disaccordo che c'è, non crea quello che manca.
+  Chi mente, inoltre, ha una scappatoia: scomporre in tanti pezzi da rendere la
+  caccia all'errore più cara della bugia {cite}`browncohen2025obfuscation`.
 - I generali bizantini {cite}`lamport1982byzantine`: se qualcuno può dire cose
   diverse a persone diverse, per tollerare un bugiardo servono almeno quattro
-  partecipanti, per due sette, per tre dieci, ed è dimostrato che con meno non
-  si può. (È un teorema su traditori che possono anche mettersi d'accordo fra
-  loro, quindi il conto non si trasferisce così com'è a una squadra di agenti;
-  quello che si trasferisce è la distinzione fra il guasto e il bugiardo.) Un
-  agente guasto tace
-  e lo si becca aspettando; uno bugiardo risponde in tempo, con garbo, e dice
-  il falso, come un modello che produce una citazione inesistente con la stessa
-  disinvoltura di quelle vere. Contro di lui aggiungere copie non serve a
-  niente: serve un riscontro esterno, cioè qualcosa che si possa controllare
+  partecipanti, per due sette, per tre dieci, e si dimostra che con meno non si
+  può. (È un teorema su traditori che possono anche mettersi d'accordo fra
+  loro, quindi la soglia non si trasferisce così com'è a una squadra di agenti;
+  si trasferisce la distinzione fra il guasto e il bugiardo.) Un agente guasto
+  tace e lo si becca aspettando; uno bugiardo risponde in tempo, con garbo, e
+  dice il falso, come un modello che produce una citazione inesistente con la
+  stessa disinvoltura di quelle vere. Contro di lui aggiungere copie non serve
+  a niente: serve un riscontro esterno, cioè qualcosa che si possa controllare
   senza passare dalla sua parola.
 - E prima ancora dei bugiardi c'è il tempo. Se nessuno garantisce entro quanto
   un messaggio arriva, un partecipante fermo e uno lento sono la stessa cosa
-  vista da fuori, e basta che uno solo possa fermarsi perché nessuna
-  procedura decisa in anticipo garantisca l'accordo
-  {cite}`fischer1985impossibility`. I sistemi veri comprano un orologio: aspetto
-  al massimo tanto, e chi non risponde lo do per morto, sapendo che ogni tanto
-  sbaglierò.
+  vista da fuori, e basta che uno solo possa fermarsi perché nessuna procedura
+  decisa in anticipo garantisca l'accordo {cite}`fischer1985impossibility`. I
+  sistemi veri si dotano di un orologio: aspetto al massimo tanto, e chi non
+  risponde lo do per morto, sapendo che ogni tanto sbaglierò.
 - E il consenso garantisce l’accordo, mai la verità: un gruppo può
   ritirarsi tutto insieme, ordinatamente, dalla parte sbagliata.
 ```
@@ -1056,23 +1048,24 @@ converge in silenzio sulla risposta sbagliata.
 
 ```{admonition} Da ricordare
 :class: important
-- Un messaggio fra agenti ha un contenuto e una forza illocutoria (che
-  cosa fa: chiedere, informare, impegnarsi, rifiutare). KQML e FIPA-ACL l'hanno
-  resa un campo obbligatorio, e tipizzare i messaggi trasforma la conversazione
-  in una macchina a stati ispezionabile: si può verificare a macchina se una
-  richiesta ha avuto risposta, se un impegno è stato onorato e se a fare la
-  mossa è stato chi ne aveva titolo (una condizione preparatoria di Searle).
-  Il Contract Net {cite}`smith1980contract` (annuncio → offerta → assegnazione
-  → rapporto) è uno dei primi protocolli di questo tipo; oggi la stessa idea
-  torna in MCP e A2A, che tipizzano i messaggi senza eliminare il
-  disallineamento {cite}`cemri2025why`.
-- Il teorema di Condorcet: con $n$ votanti indipendenti corretti con probabilità
-  $p > 1/2$, la maggioranza tende alla verità ($p = 0{,}7$: $P_3 = 0{,}784$,
-  $P_9 = 0{,}901$). Sotto $1/2$ (con due alternative) converge all'errore: il
-  voto amplifica la tendenza di fondo. Con voti correlati regge finché la
-  correlazione media è piccola {cite}`ladha1992condorcet`; con indipendenza solo
-  condizionata al problema la maggioranza tende alla probabilità che il problema
-  sia facile, non a $1$ {cite}`dietrich2013independent`.
+- Un messaggio fra agenti ha un contenuto e una forza illocutoria (che cosa fa:
+  chiedere, informare, impegnarsi, rifiutare). KQML e FIPA-ACL l'hanno resa un
+  campo obbligatorio, e tipizzare i messaggi trasforma la conversazione in una
+  macchina a stati ispezionabile: si può verificare a macchina se una richiesta
+  ha avuto risposta, se un impegno è stato onorato e se a farla è stato chi ne
+  aveva titolo (una condizione preparatoria di Searle). Il Contract Net
+  {cite}`smith1980contract` (annuncio → offerta → assegnazione → rapporto) è
+  uno dei primi protocolli di questo tipo; oggi la stessa idea torna in MCP e
+  A2A, che tipizzano i messaggi senza eliminare il disallineamento
+  {cite}`cemri2025why`.
+- Il teorema di Condorcet: con $n$ votanti indipendenti corretti con
+  probabilità $p > 1/2$, la maggioranza tende alla verità ($p = 0{,}7$: $P_3 =
+  0{,}784$, $P_9 = 0{,}901$). Sotto $1/2$ (con due alternative) converge
+  all'errore: il voto amplifica la tendenza di fondo. Con voti correlati vale
+  finché la correlazione media è piccola {cite}`ladha1992condorcet`; con
+  indipendenza solo condizionata al problema la maggioranza tende alla
+  probabilità che il problema sia facile, non a $1$
+  {cite}`dietrich2013independent`.
 - L'ipotesi crolla fra agenti identici, e la correlazione degli errori si
   misura anche fra modelli diversi {cite}`kim2025correlated`. Dieci istanze
   dello stesso modello, a pesi fissi, differiscono solo per il campionamento:
@@ -1084,23 +1077,23 @@ converge in silenzio sulla risposta sbagliata.
   siano indipendenti si controlla confrontando la frequenza degli errori
   congiunti con il prodotto delle frequenze, e il tetto si cerca con molte
   domande, le stesse per tutti ($\mathrm{SE} = \sqrt{p(1-p)/m}$).
-- Un po’ di indipendenza si compra: campionare a temperatura, imporre percorsi
+- Un po’ di indipendenza si ottiene: campionare a temperatura, imporre percorsi
   di ragionamento diversi, riformulare la domanda, cambiare modello. È il
   motivo per cui la self-consistency {cite}`wang2023selfconsistency`
   funziona, ma decorrela solo parzialmente: il guadagno reale è sempre
-  minore di quello che Condorcet promette.
+  minore di quello promesso da Condorcet.
 - Il dibattito {cite}`irving2018ai` riduce la questione a un ramo solo
   dell'albero degli argomenti: con gioco ottimale, dibattenti illimitati e
-  giudice polinomiale scelto in funzione del problema si passa da NP a
-  PSPACE, e a turni fissati a $\Sigma_n^P$. Ma regge solo se il
-  giudice riconosce un argomento fallace, due dibattenti dello stesso modello
-  ereditano la stessa correlazione, e l'asimmetria stessa cade sugli argomenti
-  offuscati {cite}`barnes2020debate`, dove smascherare costa all'onesto più che
-  mentire al disonesto {cite}`browncohen2023doubly, browncohen2025obfuscation`.
+  giudice polinomiale scelto in funzione del problema si passa da NP a PSPACE,
+  e a turni fissati a $\Sigma_n^P$. Vale solo se il giudice riconosce un
+  argomento fallace, due dibattenti dello stesso modello ereditano la stessa
+  correlazione, e l'asimmetria stessa cade sugli argomenti offuscati
+  {cite}`barnes2020debate`, dove smascherare costa all'onesto più che mentire
+  al disonesto {cite}`browncohen2023doubly, browncohen2025obfuscation`.
 - I generali bizantini {cite}`lamport1982byzantine`: con soli messaggi orali
   servono $n \ge 3f+1$ partecipanti per tollerarne $f$ che mentono (con firme, e
   solo in un sistema sincrono, il vincolo cade, e il problema ha senso da $n =
-  f+2$ in su). Un agente guasto tace e lo becca un timeout; uno bizantino
+  f+2$ in su). Un agente guasto tace e lo rileva un timeout; uno bizantino
   risponde in modo plausibile e falso, come un LLM che allucina con sicurezza:
   contro di lui la ridondanza serve solo se i bugiardi sono pochi e
   indipendenti, e copie dello stesso modello non lo sono; serve un riscontro
@@ -1111,10 +1104,10 @@ converge in silenzio sulla risposta sbagliata.
   sistema asincrono nessun protocollo deterministico risolve il consenso se
   anche un solo processo può fermarsi, perché un processo fermo e uno lento sono
   indistinguibili. I due muri non si ordinano: la soglia $3f+1$ è ciò che si
-  paga *dopo* aver comprato la sincronia; le monete sono timeout,
+  paga *dopo* aver ottenuto la sincronia; le vie sono timeout,
   randomizzazione {cite}`benor1983another` e rilevatori di guasti
   {cite}`chandra1996unreliable`, e Paxos {cite}`lamport1998part` e Raft
-  {cite}`ongaro2014raft` comprano la prima.
+  {cite}`ongaro2014raft` si appoggiano alla prima.
 - E il consenso garantisce l’accordo, mai la verità.
 ```
 
@@ -1122,6 +1115,6 @@ converge in silenzio sulla risposta sbagliata.
 
 Protocolli, voti e dibattiti sono regole di interazione scritte da un
 progettista, che decide in anticipo chi parla, con quali messaggi e chi decide.
-Resta da vedere se gli agenti possano arrivare a coordinarsi da soli, imparando,
+Resta da vedere se gli agenti possano arrivare a coordinarsi imparando,
 e a quali condizioni: è l'argomento della sezione su {doc}`imparare insieme
 <imparare-insieme>`.

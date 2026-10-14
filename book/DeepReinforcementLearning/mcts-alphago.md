@@ -9,14 +9,14 @@ Quel calcolo ha un algoritmo, la ricerca ad albero Monte Carlo (*Monte Carlo
 tree search*, MCTS). Torna in AlphaGo e nei suoi successori, AlphaZero e
 MuZero, e in alcuni esperimenti sui modelli linguistici (i programmi che
 scrivono testo, come quelli dietro agli assistenti conversazionali) che
-esplorano più ragionamenti prima di rispondere. E sotto c'è un vecchio amico: a
-ogni bivio dell'albero si ripresenta il dilemma della
-{doc}`sezione sui bandit </ReinforcementLearning/banditi>`, provare ciò che
-promette o ciò che si conosce poco.
+esplorano più ragionamenti prima di rispondere. A ogni bivio dell'albero si
+ripresenta il dilemma della {doc}`sezione sui bandit
+</ReinforcementLearning/banditi>`: provare ciò che promette o ciò che si
+conosce poco.
 
 La {doc}`sezione sulle tre cose che la ricerca dava per scontate
-</Ricerca/quando-il-mondo-non-si-conosce>` aveva lasciato la faccenda
-esattamente qui: la ricerca classica, per fermarsi a metà albero, ha bisogno di
+</Ricerca/quando-il-mondo-non-si-conosce>` aveva lasciato la questione a
+questo punto: la ricerca classica, per fermarsi a metà albero, ha bisogno di
 una formula che dia un voto alla posizione, e nel Go nessuno è mai riuscito a
 scriverla a mano. La via d'uscita era smettere di giudicare e mettersi a
 contare, cioè giocare da lì un mucchio di partite a caso e guardare come
@@ -39,34 +39,34 @@ leva che prova, e ci tiene due cose: una tacca per ogni volta che l'ha tirata, e
 come è andata in media da lì in avanti. Poi torna all'ingresso e ricomincia,
 migliaia di volte.
 
-Ogni giro sono quattro gesti. Finché trova foglietti, sceglie la leva che mette
-d'accordo il buon rendimento e le poche tacche, ed è la **selezione**; quanto
-pesi la curiosità rispetto al rendimento è una manopola, e si regola prima di
-cominciare. Alla prima leva senza foglietto gliene appende uno bianco, ed è
-l’**espansione**. Da lì tira a casaccio e in fretta fino all'uscita, solo per
-vedere come va a finire, ed è la **simulazione**. Poi rifà la strada al contrario
-e segna l'esito su ogni foglietto incontrato, ed è la **risalita**. Le stanze
-sono a turno, una sua e una di chi gioca contro, e per l'altro una vincita è una
+Ogni giro ha quattro passi. Finché trova foglietti, sceglie la leva che mette
+d'accordo il buon rendimento e le poche tacche (la **selezione**); quanto pesi
+la curiosità rispetto al rendimento è una manopola, e si regola prima di
+cominciare. Alla prima leva senza foglietto ne appende uno bianco
+(l’**espansione**). Da lì tira a casaccio e in fretta fino all'uscita, solo per
+vedere come va a finire (la **simulazione**). Poi rifà la strada al contrario e
+segna l'esito su ogni foglietto incontrato (la **risalita**). Le stanze sono a
+turno, una sua e una di chi gioca contro, e per l'altro una vincita è una
 perdita: sui suoi foglietti lo stesso esito si segna al rovescio.
 
 Dopo qualche migliaio di giri le stanze non risultano battute allo stesso modo, e
-di proposito: certi corridoi hanno foglietti fitti per venti stanze di fila,
+di proposito: certi corridoi hanno foglietti fitti per venti stanze consecutive,
 altri una tacca sola sulla prima leva.
 
-Alla fine si tira per davvero la leva con più tacche, e non quella con la media
+Alla fine si tira la leva con più tacche, e non quella con la media
 migliore. Una media alta può venire da due colpi fortunati; una leva tirata mille
 volte ha resistito a mille occasioni di essere abbandonata.
 
 Con un consiglio si arriva prima. All'ingresso c'è chi conosce il posto e segna,
 a occhio, le due o tre leve da provare per prime; i primi giri seguono quei segni
-invece di trattare tutte le leve alla pari. Poi il consiglio si diluisce da sé
-man mano che le tacche si accumulano: dopo mille tiri su una leva, quello che ha
-reso davvero pesa più di qualunque impressione a prima vista.
+invece di trattare tutte le leve alla pari. Poi il consiglio si diluisce
+man mano che le tacche si accumulano: dopo mille tiri su una leva, il
+rendimento osservato pesa più di qualunque impressione a prima vista.
 
 C'è un caso in cui tutto si impianta: la leva che porta al premio grosso ma le
 prime tre volte, per sfortuna, non dà niente. Il foglietto dice tre tacche e tre
 volte male, quindi la leva scivola in fondo alla lista, e per riportarla su
-servono moltissimi altri giri. Continuando all'infinito salta fuori davvero, ma
+servono moltissimi altri giri. Continuando all'infinito salta fuori, ma
 «all'infinito» può voler dire un numero di giri che nessuno ha il tempo di fare.
 La leva più tirata è la più solida fra quelle guardate, e delle stanze in cui non
 si è mai entrati non si sa niente.
@@ -98,23 +98,25 @@ logaritmico. Il contributo di UCT è mostrare che, applicandola ricorsivamente,
 la stima alla radice converge al valore ottimo: lo scarto della stima va come
 $O(\log n / n)$ e la probabilità di scegliere alla radice un'azione non ottima
 tende a zero con velocità polinomiale nel numero $n$ di simulazioni. Sono
-garanzie asintotiche, e va preso alla lettera: valgono nel limite, non nel caso
+garanzie asintotiche, da prendere alla lettera: valgono nel limite, non nel caso
 peggiore. Coquelin e Munos
-{cite}`coquelin2007bandit` mostrarono l'anno dopo che l'ottimismo di UCT può
-costare, in alberi profondi e ostili, un numero di simulazioni proibitivo prima
-che la ricerca trovi il ramo buono, e proposero una variante con intervallo di
-confidenza che cresce esponenzialmente con la profondità: il prezzo di una
-garanzia vera. In pratica funziona; in teoria funziona alla lunga.
+{cite}`coquelin2007bandit` mostrarono l'anno dopo che in alberi profondi e
+ostili l'ottimismo di UCT può richiedere un numero di simulazioni che cresce
+come una torre di esponenziali, alta quanto la profondità, prima che la ricerca
+trovi il ramo buono. Proposero una variante in cui l'intervallo di confidenza
+è moltiplicato per un fattore che cresce esponenzialmente con la profondità, e
+che dà una garanzia sul caso peggiore.
 
 La risalita aggiorna $N$ e $W$ lungo il cammino; nei giochi a due giocatori il
-ritorno si alterna di segno a ogni livello, perché ciò che è buono per me è
-cattivo per l'avversario. A ricerca finita, alla radice si gioca l'azione più
-visitata e non quella con $Q(s,a)$ massimo: un conteggio è meno sensibile di
-una media alla manciata di ritorni fortunati che l'ha gonfiata.
+ritorno si alterna di segno a ogni livello, poiché il guadagno di un giocatore
+corrisponde alla perdita dell'avversario. A ricerca finita, alla radice si
+gioca l'azione più visitata e non quella con $Q(s,a)$ massimo: un conteggio è
+meno sensibile di una media alla manciata di ritorni fortunati che l'ha
+gonfiata.
 
-AlphaGo e i suoi successori cambiano due dei quattro passi, ed è lì che
-entrano le reti. Il termine di esplorazione diventa **PUCT**, pesato da una
-probabilità a priori fornita dalla rete di policy,
+AlphaGo e i suoi successori cambiano due dei quattro passi introducendo le reti
+neurali. Il termine di esplorazione diventa **PUCT**, pesato da una probabilità
+a priori fornita dalla rete di policy,
 
 $$
 U(s,a) = c_{\text{puct}}\, P(s,a)\,
@@ -125,9 +127,10 @@ così che la ricerca guardi per prime le mosse che la rete considera plausibili
 invece di trattarle tutte alla pari; $c_{\text{puct}}$ ha qui il ruolo che $c$
 aveva in UCT. La probabilità a priori pesa soprattutto all'inizio: il
 denominatore $1 + N(s,a)$ ne diluisce il contributo man mano che le visite vere
-si accumulano, e da lì in poi a decidere è $Q(s,a)$. (MuZero moltiplica il
-termine per un fattore che cresce, lentamente, col logaritmo delle visite al
-nodo.)
+si accumulano, e da lì in poi a decidere è $Q(s,a)$. (In AlphaGo, nel 2016, $N$
+conta soltanto i rollout, introdotti più sotto; in AlphaGo Zero conta tutte le
+visite. MuZero moltiplica il termine per un fattore che cresce, lentamente, col
+logaritmo delle visite al nodo.)
 
 Il secondo cambiamento riguarda la valutazione della foglia, e avviene in due
 tappe da non confondere. AlphaGo (2016) non butta via la
@@ -139,20 +142,18 @@ V(s_L) = (1-\lambda)\, v_\theta(s_L) + \lambda\, z_L ,
 $$
 
 dove $z_L$ è l'esito della simulazione, giocata fino in fondo con una policy
-veloce, e $\lambda = 0{,}5$ (è il simbolo del paper, e non ha niente a che
-vedere con il
-$\lambda$ della *generalized advantage estimation* incontrata col
-{doc}`gradiente di policy <policy-gradient>`: qui è
-soltanto il peso con cui si mescolano due giudizi). In gergo quella partita
-tirata via si chiama *rollout*, e la parola viene dal backgammon, dove per
-valutare una posizione la si giocava fino alla fine molte volte con i dadi
-tirati a caso {cite}`sutton2018reinforcement`; la strategia svelta che la guida
-è la *rollout policy*. Rete di valore
-e partita tirata via pesano quindi identico. La simulazione
-casuale sparisce del tutto solo con AlphaGo Zero (2017), dove la rete di
-valore basta da sola: è la stessa tappa in cui spariscono le partite umane, e
-non è una coincidenza, perché entrambe le cose diventano superflue quando la
-rete è abbastanza buona da giudicare da sé.
+veloce, e $\lambda = 0{,}5$, il peso con cui si mescolano i due giudizi (la
+notazione riprende l'articolo originale e non ha legami con il $\lambda$ della
+*generalized advantage estimation* incontrata col {doc}`gradiente di policy
+<policy-gradient>`). In gergo quella simulazione rapida si chiama *rollout*,
+termine derivato dal backgammon, dove per valutare una posizione la si giocava
+fino alla fine molte volte con i dadi tirati a caso
+{cite}`sutton2018reinforcement`; la strategia veloce che la guida è la *rollout
+policy*. Rete di valore e simulazione hanno quindi lo stesso peso. La
+simulazione casuale sparisce del tutto solo con AlphaGo Zero (2017), dove la
+sola rete di valore è sufficiente: è la stessa tappa in cui spariscono le
+partite umane, perché la ricerca guidata dalle sole reti produce da sé i dati
+con cui le reti si addestrano.
 
 Con AlphaGo Zero {cite}`silver2017mastering` la ricerca fa anche da maestro
 alla rete di policy. La distribuzione delle visite alla radice,
@@ -181,36 +182,33 @@ ricerca invece che con un massimo esatto.
 
 `````
 
-L'idea è più generale del gioco da tavolo, ed è il motivo per cui conviene
-averla in tasca: quando si può simulare, si può pensare. Il programma MuZero
-{cite}`schrittwieser2020mastering`, per esempio, la usa senza nemmeno
-conoscere le regole del gioco: se le costruisce da solo, guardando le partite.
-E il modello che si costruisce non ridisegna la scacchiera pezzo per pezzo, ne
-tiene solo un riassunto interno, il minimo che serve per pianificarci dentro.
-La {doc}`sezione sul RL basato su modello <model-based>` ci torna sopra. Ai
-modelli linguistici l'idea è stata applicata anche alla lettera: una ricerca ad
-albero fra i passi possibili di un ragionamento, con una rete addestrata a
-giudicare quali promettono. I modelli che ragionano a lungo e di cui si conosce
-la ricetta, però, si addestrano per lo più con il gradiente di policy, su
-ragionamenti scritti un passo dopo l'altro, senza albero.
+L'idea è più generale dei giochi da tavolo: quando si può simulare, si può
+pensare. Il programma MuZero {cite}`schrittwieser2020mastering`, per esempio,
+la usa senza conoscere le regole del gioco: impara un modello dalle partite. Il
+modello conserva una rappresentazione interna, il minimo necessario per
+pianificare, senza ridisegnare la scacchiera pezzo per pezzo. La {doc}`sezione
+sul RL basato su modello
+<model-based>` ci torna sopra. Ai modelli linguistici l'idea è stata applicata
+anche alla lettera: una ricerca ad albero fra i passi possibili di un
+ragionamento, con una rete addestrata a giudicare quali promettono. I modelli
+che ragionano a lungo e di cui si conosce la ricetta, però, si addestrano per
+lo più con il gradiente di policy, su ragionamenti scritti un passo dopo
+l'altro, senza albero.
 
 ## In pratica: le visite si concentrano
 
-Che la ricerca concentri le visite dove il gioco promette, e che l'albero cresca
-quindi storto, profondo da una parte e appena accennato dall'altra, si verifica
-facilmente. Prendiamo un albero giocattolo: due strade a ogni bivio e quattro
-bivi in fila, cioè $2\times2\times2\times2 = 16$ finali possibili, ognuno con il
-suo valore. Un valore alto lo piantiamo noi, nascosto in mezzo agli altri, e
-qual è il migliore dei sedici lo sappiamo comunque: l'algoritmo no, e il gioco
-è vedere se ci arriva. A giocare è uno solo, quindi nella risalita lo stesso
-ritorno si somma a tutti i nodi del cammino, senza il cambio di segno dei giochi
-a due.
-Due parole di gergo, che tornano nel codice e nei risultati: la radice è il
-punto di partenza dell'albero, le foglie sono le sue punte, cioè i sedici
-finali.
+È facile verificare che la ricerca concentri le visite dove il gioco promette,
+e che l'albero cresca quindi storto, profondo da una parte e appena accennato
+dall'altra. Prendiamo un albero giocattolo: due strade a ogni bivio e quattro
+bivi in fila, cioè $2\times2\times2\times2 = 16$ finali possibili, ognuno con
+il suo valore. Piantiamo noi un valore alto, nascosto in mezzo agli altri, e
+sappiamo già qual è il migliore dei sedici: l'algoritmo no, e il gioco è vedere
+se ci arriva. A giocare è uno solo, quindi nella risalita lo stesso ritorno si
+somma a tutti i nodi del cammino, senza il cambio di segno dei giochi a due. La
+radice è il punto di partenza dell'albero; le foglie sono i sedici finali.
 
-Una precauzione, prima di leggere i numeri. Se lancio un dado una volta e fa
-sei, non posso dire che quel dado fa sempre sei: ho misurato quel lancio, non
+Se lancio un dado una volta e fa
+sei, non posso dire che quel dado faccia sempre sei: ho misurato quel lancio, non
 il dado. Lo stesso vale per un algoritmo che a ogni passo tira a sorte. Quindi
 l'esperimento sull'albero giocattolo si lancia sessanta volte, cambiando ogni
 volta il *seme*, cioè il numero da cui parte il sorteggio. Dentro un computer
@@ -329,7 +327,7 @@ $16\%$ e l’$89\%$; scartando le quindici prove più basse e le quindici più a
 le trenta di mezzo stanno fra il $33\%$ e il $60\%$. Le visite al ramo giusto
 hanno mediana $1582$ e vanno da $593$ a $1965$, cioè il $1922$ del seme $7$ è
 vicino al massimo osservato. In nove semi su sessanta il ramo più visitato alla
-radice non è quello che contiene la foglia migliore. Guardati da vicino, però,
+radice non contiene la foglia migliore. Guardati da vicino, però,
 quei nove sono pareggi e non errori. Là dove la regola «si gioca la mossa
 più visitata» sceglie l'altro ramo, la foglia migliore lo batte di $0{,}004$,
 contro lo $0{,}032$ mediano su tutte e sessanta le prove: la ricerca sta
@@ -338,54 +336,55 @@ più visitata» resti una regola pratica, e non una certezza, non lo dicono
 questi nove semi: lo dice il fatto che la garanzia di UCT vale soltanto alla
 lunga, con un numero di simulazioni che cresce senza limite.
 
-La quota oscilla, la forma no: l'albero
-cresce storto su tutti e sessanta i semi, e mai una volta le visite si
-distribuiscono uniformemente. Ma se avessimo tenuto il solo numero del seme $7$,
-con la sua bella cifra decimale, l'algoritmo sarebbe sembrato più preciso di
-quanto sia, e la regola della mossa più visitata più sicura di quanto sia. È il
-motivo per cui in questo campo i risultati si riportano su molte ripetizioni, e
-non su una.
+La quota oscilla, la forma no: l'albero cresce storto su tutti e sessanta i
+semi, e mai una volta le visite si distribuiscono uniformemente. Ma se avessimo
+tenuto il solo numero del seme $7$, con la sua bella cifra decimale,
+l'algoritmo sarebbe sembrato più preciso, e la regola della mossa più visitata
+più sicura di quanto sia. È il motivo per cui in questo campo i risultati si
+riportano su molte ripetizioni, e non su una.
 
 ## Da AlphaGo ad AlphaZero
 
-Torniamo alla mossa 37. AlphaGo {cite}`silver2016mastering` non era un solo
-algoritmo, ma una sintesi: una rete di policy che proponeva mosse promettenti,
-una rete di valore che stimava chi fosse in vantaggio, e la ricerca ad albero
-Monte Carlo appena vista, che usava entrambe per esplorare in profondità solo
-le linee più sensate.
+Torniamo alla mossa 37 con cui si apre la {doc}`sezione sul gradiente di policy
+<policy-gradient>`. AlphaGo {cite}`silver2016mastering` sintetizzava più
+algoritmi: una rete di policy che proponeva mosse promettenti, una rete di
+valore che stimava chi fosse in vantaggio, e la ricerca ad albero Monte Carlo,
+che le usava entrambe per esplorare in profondità solo le linee più sensate.
 
 Per giudicare una posizione raggiunta in fondo alla ricerca, AlphaGo (2016) non
 si affidava soltanto alla rete di valore: ne faceva la media, a parti uguali,
 con l'esito di una partita tirata avanti alla svelta fino alla fine. Con AlphaGo
-Zero, l'anno dopo, basterà la rete da sola.
+Zero, l'anno dopo, basterà la rete.
 
 ```{figure} ../figures/alphago-2016.svg
 :name: fig-alphago
-:alt: "In alto, staccato e in tratteggio, il punto di partenza del 2016: le partite umane su cui la rete di policy viene addestrata all'inizio, con l'annotazione che è il passo che AlphaGo Zero eliminerà. Sotto, il ciclo chiuso: il self-play genera partite che il sistema gioca contro sé stesso; dalle partite si affinano due reti, quella di policy che propone le mosse e quella di valore che stima chi sta vincendo; le due reti guidano a loro volta una ricerca ad albero Monte Carlo, che gioca meglio di entrambe e produce le partite del giro successivo."
+:alt: "In alto, staccato e in tratteggio, il punto di partenza del 2016: le partite umane su cui la rete di policy viene addestrata all'inizio, con l'annotazione che è il passo che AlphaGo Zero eliminerà. Sotto, il ciclo chiuso come lo realizzano i successori di AlphaGo: il self-play genera partite che il sistema gioca contro sé stesso; dalle partite si affinano due reti, quella di policy che propone le mosse e quella di valore che stima chi sta vincendo; le due reti guidano a loro volta una ricerca ad albero Monte Carlo, che gioca meglio di entrambe e produce le partite del giro successivo. Il ritorno dalla ricerca al self-play è la novità di AlphaGo Zero: nel 2016 le partite di self-play le giocava la sola rete di policy."
 :width: 92%
 
-Il giro che si alimenta da solo, e il gradino da cui il giro parte. Nel 2016
-quel gradino sono ancora le partite umane; è il pezzo tratteggiato, ed è il
-primo che i successori toglieranno.
+Il ciclo che si autoalimenta, come lo chiudono i successori di AlphaGo, e il
+gradino da cui parte. Nel 2016 quel gradino è fatto ancora di partite umane: è
+la parte tratteggiata, la prima che i successori toglieranno. Il ritorno dalla
+ricerca al self-play non c'era ancora: lo introduce AlphaGo Zero.
 ```
 
 Il ciclo di {numref}`fig-alphago` è il motivo per cui i successori di AlphaGo
-poterono fare a meno delle partite umane, e poggia su un fatto da enunciare da
-solo: la ricerca gioca meglio delle due reti che la guidano. La rete propone
-guardando la sola posizione; la ricerca, prima di decidere, prova davvero
-migliaia di continuazioni (AlphaGo Zero ne fa $1600$ per mossa, circa quattro
-decimi di secondo di calcolo). Con abbastanza simulazioni la mossa che esce
-dalla ricerca è migliore di quella che la rete avrebbe scelto da sola, ed è un
+poterono fare a meno delle partite umane, e poggia su un fatto semplice: la
+ricerca gioca meglio delle due reti che la guidano. La rete propone guardando
+la sola posizione; la ricerca, prima di decidere, prova migliaia di
+continuazioni (AlphaGo Zero ne fa $1600$ per mossa, circa quattro decimi di
+secondo di calcolo). Con abbastanza simulazioni la mossa che esce dalla ricerca
+è migliore di quella che la rete avrebbe scelto senza ricerca, e diventa un
 esempio su cui la rete può allenarsi.
 
-Ecco la fonte di supervisione interna: non serve un maestro, basta giocare
-contro sé stessi e imparare da dove la ricerca ha portato. Nel 2016 AlphaGo
-questo giro lo faceva solo a metà: la rete di policy aveva imparato prima a
-imitare le partite umane e poi si era affinata giocando contro sé stessa; la
-rete di valore invece si era allenata soltanto su posizioni prese da quelle
-partite contro sé stessa, perché sulle partite umane, dove posizioni
-consecutive quasi identiche condividono lo stesso esito, imparava a memoria i
-risultati invece di stimarli.
+È una fonte di supervisione interna: non serve un maestro, basta giocare
+contro sé stessi e imparare da dove la ricerca ha portato. Nel 2016 AlphaGo non
+chiudeva il ciclo: le partite contro sé stesso le giocava la sola rete di
+policy, senza ricerca, e la ricerca entrava soltanto nelle partite vere. La
+rete di policy aveva imparato prima a imitare le partite umane e poi si era
+affinata contro sé stessa; la rete di valore si era allenata soltanto su
+posizioni prese da quelle partite di self-play, perché sulle partite umane, dove
+posizioni consecutive quasi identiche condividono lo stesso esito, imparava a
+memoria i risultati invece di stimarli.
 
 Un anno dopo, **AlphaGo Zero** {cite}`silver2017mastering` elimina persino le
 partite umane: parte dalle sole regole del Go e impara *tabula rasa*, dal
@@ -394,17 +393,17 @@ che aveva sconfitto Lee Sedol. Nel 2018 **AlphaZero** {cite}`silver2018general`
 generalizza la ricetta: lo stesso programma, senza ritocchi per gioco,
 padroneggia Go, scacchi e shogi (gli scacchi giapponesi), e in tutti e tre batte
 il programma più forte del momento; nel Go, quel programma è il suo stesso
-predecessore. È la dimostrazione più limpida di cosa nasce dall'unione di
-apprendimento per rinforzo, ricerca ad albero e reti profonde.
+predecessore. Mostra che cosa nasce dall'unione di apprendimento per rinforzo,
+ricerca ad albero e reti profonde.
 
 ## Un ultimo salto: allineare i modelli linguistici
 
 Lo stesso meccanismo (aumentare la probabilità di ciò che riceve un giudizio
-positivo) è oggi al cuore della fase di allineamento dei modelli linguistici,
-quella che segue il loro addestramento sui testi.
+positivo) è oggi al centro dell'allineamento dei modelli linguistici,
+la fase che segue l'addestramento sui testi.
 
-Allineare un modello vuol dire portarlo a fare ciò che chi lo interroga
-intende davvero. Non è scontato, perché un modello linguistico nasce sapendo
+Allineare un modello significa portarlo a fare ciò che chi lo interroga si
+aspetta. Non è scontato, perché un modello linguistico nasce sapendo
 fare una cosa sola: indovinare come prosegue un testo. A «spiegami perché il
 cielo è azzurro» un continuatore di testi può rispondere benissimo con un'altra
 domanda, o con l'indice di un libro di fisica: sono continuazioni plausibili, e
@@ -417,33 +416,31 @@ distanza.
 :width: 100%
 
 Il giudizio umano che diventa un numero. Le persone non danno voti: mettono in
-fila delle risposte, ed è il *reward model* (il modello di ricompensa) a
-tradurre quell'ordine in un punteggio che l'ottimizzazione sa usare.
+fila le risposte, e il *reward model* (il modello di ricompensa) traduce
+quell'ordine in un punteggio che l'ottimizzazione sa usare.
 ```
 
-Il dettaglio di {numref}`fig-instructgpt` da notare è il primo riquadro: alle
-persone si chiede di ordinare, non di valutare. Confrontare due risposte è
-un giudizio che gli esseri umani danno con buona coerenza fra loro; assegnare
-un voto da uno a dieci molto meno, e su scale diverse. Nell’**RLHF**
-(*Reinforcement Learning from Human Feedback*, cioè apprendimento per rinforzo
-dal giudizio umano; {cite}`christiano2017deep`, {cite}`ouyang2022training`) le
-risposte del modello sono l’"azione", i valutatori umani indicano quali
-preferiscono, e le loro preferenze addestrano un *modello di ricompensa*, che
-da lì in poi assegna il premio a ogni risposta. Con PPO si ritocca poi la
-policy del modello (la sua tendenza a produrre certe risposte), verso ciò che
-gli umani apprezzano, e una penalità tiene la policy vicina al modello di
-partenza; la misura di quella distanza (la divergenza di Kullback-Leibler) e il
-resto dei dettagli li scrive per intero la {doc}`sezione sul
-post-addestramento </Transformers/post-training>`. La stessa idea
-che ha portato una macchina a giocare la mossa 37 aiuta oggi un assistente a
-rispondere in modo utile e onesto.
+Nel primo riquadro di {numref}`fig-instructgpt`, alle persone si chiede di
+ordinare, non di valutare. Confrontare due risposte è un giudizio che gli
+esseri umani danno con buona coerenza fra loro; assegnare un voto da uno a
+dieci molto meno, e su scale diverse. Nell’**RLHF** (*Reinforcement Learning
+from Human Feedback*, cioè apprendimento per rinforzo dal giudizio umano;
+{cite}`christiano2017deep`, {cite}`ouyang2022training`) le risposte del modello
+sono l'azione, i valutatori umani indicano quali preferiscono, e le loro
+preferenze addestrano un *modello di ricompensa*, che da lì in poi assegna il
+premio a ogni risposta. Con PPO si ritocca poi la policy del modello (la sua
+tendenza a produrre certe risposte), verso ciò che gli umani apprezzano, e una
+penalità tiene la policy vicina al modello di partenza; la misura di quella
+distanza (la divergenza di Kullback-Leibler) e gli altri dettagli si trovano
+nella {doc}`sezione sul post-addestramento </Transformers/post-training>`. La
+stessa famiglia di metodi che ha affinato la policy di AlphaGo orienta oggi un
+assistente verso le risposte che le persone preferiscono.
 
-Il disegno comincia dagli ordinamenti, ma prima c'è un passo che non si vede:
-il modello viene addestrato a imitare risposte scritte da persone, cioè a
-copiare quello che avrebbe fatto qualcuno di bravo. Si chiama clonazione
-comportamentale, ed è la scorciatoia più ovvia di tutte: la
-{doc}`sezione sull'imitazione <imitazione>` ci torna sopra per esteso, e spiega
-perché da sola non basta.
+La figura comincia dagli ordinamenti, ma prima c'è un passo che non mostra: il
+modello viene addestrato a imitare risposte scritte da persone, cioè a copiare
+un esperto. Si chiama clonazione comportamentale, la scorciatoia più
+immediata; la {doc}`sezione sull'imitazione <imitazione>` ne analizza il
+funzionamento e spiega perché non basta.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -460,9 +457,9 @@ perché da sola non basta.
   alla foglia migliore i due rami valgono quasi lo stesso. È il motivo per
   cui i risultati si contano su molte prove e non su una.
 - AlphaGo e AlphaZero uniscono la strategia, la stima di chi sta
-  vincendo e quella esplorazione ad albero. Nel 2016 la ricerca si fidava a
+  vincendo e l'esplorazione ad albero. Nel 2016 la ricerca si fidava a
   metà della rete e a metà delle partite tirate a caso; solo con AlphaGo Zero,
-  l'anno dopo, la rete basta da sola. Con l’RLHF la stessa coppia di
+  l'anno dopo, la rete basta. Con l’RLHF la stessa coppia di
   strategia e giudice, con il giudice addestrato sulle preferenze delle
   persone, allinea i modelli linguistici.
 ```
@@ -477,8 +474,8 @@ perché da sola non basta.
   AlphaGo sostituisce il termine di esplorazione con PUCT, pesato dalla
   policy a priori, e *media* rete di valore e rollout ($\lambda=0{,}5$); la
   simulazione casuale sparisce solo con AlphaGo Zero. La distribuzione delle
-  visite alla radice è una policy migliorata: è l'operatore che rende
-  possibile il *self-play*.
+  visite alla radice è una policy migliorata: in AlphaGo Zero è l'operatore
+  che fa produrre alla ricerca i dati del *self-play*.
 - AlphaGo/AlphaZero uniscono policy, valore e ricerca ad albero; RLHF
   applica PPO all'allineamento degli LLM.
 ```

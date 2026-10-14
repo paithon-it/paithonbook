@@ -24,23 +24,21 @@ una normale classe Python.
 
 Abbiamo incontrato le classi e l'ereditarietà nella {doc}`sezione sulle basi di
 Python </Python/basi>`, con l'immagine dello stampo per biscotti: una classe è
-lo stampo, l'oggetto è il biscotto, ed *ereditare* vuol dire partire da uno
-stampo che esiste già e aggiungergli qualcosa. Nel codice l'eredità si scrive
-mettendo il nome della classe di partenza fra parentesi,
-`class MLP(nn.Module):`. Il metodo `__init__` (il costruttore, eseguito quando
-l'oggetto viene creato) costruisce i pezzi della rete e li assegna ad
-attributi, e la sua prima riga è `super().__init__()`: prepara gli elenchi
-interni di `nn.Module`, quelli in cui finiranno i pezzi, e senza di lei la
-prima assegnazione di uno strato si ferma con un `AttributeError`. Per questo
-la si ritroverà, identica, in ogni modello del capitolo. Ciò che si eredita da
-`nn.Module` è molto: tenere il conto di tutti i pesi sparsi nella rete,
+lo stampo, l'oggetto è il biscotto, ed *ereditare* è partire da uno stampo che
+esiste già e aggiungergli qualcosa. Nel codice l'eredità si scrive mettendo il
+nome della classe di partenza fra parentesi, `class MLP(nn.Module):`. Il metodo
+`__init__` (il costruttore, eseguito quando l'oggetto viene creato) costruisce
+i pezzi della rete e li assegna ad attributi, e la sua prima riga è
+`super().__init__()`: prepara gli elenchi interni di `nn.Module`, quelli in cui
+finiranno i pezzi, e senza di lei la prima assegnazione di uno strato si ferma
+con un `AttributeError`. La si ritrova, identica, in ogni modello. Ciò che si
+eredita da `nn.Module` è molto: registrare tutti i pesi sparsi nella rete,
 spostarli tutti insieme sulla scheda grafica, salvarli su un file, consegnarli
 all'ottimizzatore. Dei gradienti si occupa autograd: i pesi sono
 `nn.Parameter`, cioè tensori con `requires_grad=True`, e vengono tracciati
 senza altro lavoro.
 
-Ecco il modello per MNIST, intero; le righe che contano sono i due metodi, e
-li smontiamo subito sotto.
+Ecco il modello per MNIST, intero; le righe che contano sono i due metodi.
 
 ```python
 import torch
@@ -68,26 +66,25 @@ print(model)          # elenca i pezzi che compongono il modello
 ```
 
 `````{tab} Elementare
-Due metodi, due domande. In `__init__` si dice di quali pezzi è fatta la rete:
-qui uno strato che srotola l'immagine, uno nascosto da 128 neuroni e uno
-d'uscita da 10. I 784 in ingresso sono obbligati ($28 \times 28$, i pixel
-dell'immagine) e i 10 in uscita pure (le cifre da 0 a 9); il 128 nel mezzo no,
-l'abbiamo scelto noi. Un valore più grande dà una rete più capiente e più
-lenta, uno più piccolo il contrario: si prova, e come si sceglie è l'argomento
-della sezione sul [flusso di lavoro](flusso-di-lavoro.md).
+I due metodi rispondono a due domande. In `__init__` si dice di quali pezzi è
+fatta la rete: qui uno strato che srotola l'immagine, uno nascosto da 128
+neuroni e uno d'uscita da 10. I 784 in ingresso sono obbligati ($28 \times 28$,
+i pixel dell'immagine) e i 10 in uscita pure (le cifre da 0 a 9); il 128 nel
+mezzo no, l'abbiamo scelto noi. Un valore più grande dà una rete più capiente e
+più lenta, uno più piccolo il contrario: si prova, e la sezione sul [flusso di
+lavoro](flusso-di-lavoro.md) spiega come scegliere.
 
-Scrivere un pezzo come `self.qualcosa` lo fa entrare da solo nell'inventario
-della rete. È quell'inventario che l'addestramento andrà a regolare, e basta
-una riga per salvarlo tutto su un file o per spostarlo tutto insieme sulla
-scheda grafica. Se invece i pezzi si mettono in una normale lista di Python,
-per esempio `self.strati = [nn.Linear(784, 128), nn.Linear(128, 10)]`,
-funzionano benissimo quando i dati ci passano attraverso, ma nell'inventario
-non compaiono: nessuno li addestra, nessuno li salva, e restano com'erano
-appena creati. E il giorno in cui la rete trasloca sulla scheda grafica quei
-pezzi restano indietro, perché a spostare l'inventario ci pensa una riga sola e
-loro nell'inventario non ci sono: lì il guasto smette di essere silenzioso e il
-programma si ferma. Per una fila di pezzi c'è una lista apposta,
-`nn.ModuleList`, che li mette in inventario uno per uno.
+Scrivere un pezzo come `self.qualcosa` lo inserisce nell'inventario della rete.
+È quell'inventario che l'addestramento andrà a regolare, e una riga sola basta
+per salvarlo tutto su un file o per spostarlo tutto insieme sulla scheda
+grafica. Se invece i pezzi si mettono in una normale lista di Python, per
+esempio `self.strati = [nn.Linear(784, 128), nn.Linear(128, 10)]`, funzionano
+benissimo quando i dati ci passano attraverso, ma nell'inventario non
+compaiono: nessuno li addestra, nessuno li salva, e restano com'erano appena
+creati. Il giorno in cui la rete trasloca sulla scheda grafica, quei pezzi
+restano indietro, perché la riga che sposta l'inventario non li include: lì
+l'errore diventa esplicito e il programma si ferma. Per una fila di pezzi c'è
+una lista apposta, `nn.ModuleList`, che li mette in inventario uno per uno.
 
 In `forward` si dice che strada fanno i dati: entra l'immagine, viene
 srotolata, passa per lo strato nascosto e poi per la ReLU (che è un filtro
@@ -99,25 +96,25 @@ totale ne aggiunge un altro. Il filtro non sta dentro lo strato: lo si applica
 a parte, ai numeri che dallo strato escono, e chi scrive la rete deve
 ricordarsi di metterlo.
 
-Tutto il resto lo fanno altri: `nn.Module` tiene il conto dei pesi, li sposta e
-li salva, e il registratore di autograd, già acceso su ciascun peso, ne calcola
-i gradienti. E siccome `forward` è normale Python, ci si può mettere un `print`
-per sbirciare o un `if` per cambiare strada: il modello è codice che gira, non
-una descrizione da consegnare a qualcun altro. Nessuno, però, chiama `forward`
-per nome: il modo di farlo partire è `model(x)`, con le parentesi attaccate
+Tutto il resto lo fanno altri: `nn.Module` registra i pesi, li sposta e li
+salva, e il registratore di autograd, già acceso su ciascun peso, ne calcola i
+gradienti. Poiché `forward` è normale Python, ci si può mettere un `print` per
+sbirciare o un `if` per cambiare strada: il modello è codice che gira, non una
+descrizione da consegnare a qualcun altro. Nessuno, però, chiama `forward` per
+nome: il modo di farlo partire è `model(x)`, con le parentesi attaccate
 all'oggetto come a una funzione, e non `model.forward(x)`. Le due righe
 sembrano la stessa cosa e danno lo stesso risultato, ma la seconda salta i
-ganci che altri strumenti attaccano al passaggio dei dati: quello che stampa la
-forma dei numeri a ogni strato, o quello che spegne una parte dei pesi per
-alleggerire la rete. Non arriva nessun errore, e quegli strumenti smettono di
-lavorare senza dirlo.
+ganci che altri strumenti attaccano al passaggio dei dati, come quelli che
+stampano la forma dei numeri a ogni strato, o quelli che spengono una parte dei
+pesi per alleggerire la rete. Non arriva nessun errore, e quegli strumenti
+smettono di lavorare senza dirlo.
 `````
 
 `````{tab} Superiore
 `nn.Module` fornisce la contabilità dei parametri: ogni attributo che sia
 a sua volta un modulo (o un `nn.Parameter`) viene registrato automaticamente,
 e `model.parameters()` restituisce l'iteratore su tutti i parametri
-registrati, anche su quelli con `requires_grad=False` (è quello che passeremo
+registrati, anche su quelli con `requires_grad=False` (lo passeremo
 all'ottimizzatore). Ciò che invece finisce in una lista Python ordinaria non
 viene registrato: il `forward` lo usa lo stesso, ma resta fuori da
 `parameters()` e dallo `state_dict()`. Per una sequenza di moduli di lunghezza
@@ -144,21 +141,25 @@ quella di He: la varianza è $1/(3d)$, un sesto della sua); `nn.Conv2d` fa lo
 stesso con $d = C_{\text{in}} k^2$, il numero di valori che ogni filtro legge.
 Il motivo per cui conta, e che cosa usare al suo posto, si trovano nella
 {doc}`sezione sull'inizializzazione
-</DeepLearning/ottimizzazione-regolarizzazione>`. Su un batch la libreria
+</DeepLearning/ottimizzazione-regolarizzazione>`.
+
+Su un batch la libreria
 lavora nell'altra forma, quella con una riga per ogni esempio: dato $\mathbf{X}
 \in \mathbb{R}^{B \times d}$, con $B$ esempi nel batch, calcola
 $\mathbf{X}\mathbf{W}^\top + \mathbf{b}$, che è la stessa trasformazione
-trasposta, e `.weight` conserva la forma $u \times d$. Si noti che
-l'attivazione non è "dentro" lo strato, come accade in altre librerie: è una
-funzione (`torch.relu`) o un modulo (`nn.ReLU`) applicato esplicitamente in
-`forward`; coerente con la filosofia "il modello è il codice". La chiamata
-`model(x)` invoca `forward` attraverso `__call__`, che esegue anche gli *hook*
-registrati sul modulo (`register_forward_pre_hook`, `register_forward_hook`,
+trasposta, e `.weight` conserva la forma $u \times d$.
+
+L'attivazione non è
+"dentro" lo strato, come accade in altre librerie: è una funzione
+(`torch.relu`) o un modulo (`nn.ReLU`) applicato esplicitamente in `forward`,
+coerente con la filosofia "il modello è il codice". La chiamata `model(x)`
+invoca `forward` attraverso `__call__`, che esegue anche gli *hook* registrati
+sul modulo (`register_forward_pre_hook`, `register_forward_hook`,
 `register_full_backward_hook`). Ci si appoggiano strumenti come `torchinfo`,
 che con un *forward hook* legge la forma di ogni strato, e la potatura di
 `torch.nn.utils.prune`, che con un *pre-hook* applica la maschera ai pesi prima
-di ogni passata: `model.forward(x)` li salta tutti senza nessun errore, ed è
-per questo che non lo si chiama mai direttamente.
+di ogni passata: `model.forward(x)` li salta tutti senza nessun errore, perciò
+non lo si chiama mai direttamente.
 
 ```python
 mm = nn.Linear(2, 2)
@@ -191,13 +192,12 @@ model = nn.Sequential(
 `````{tab} Elementare
 Un autolavaggio a tunnel: l'auto entra da un capo, incontra il prelavaggio, le
 spazzole, il risciacquo, la cera e l'asciugatura, sempre in quest'ordine, e ne
-esce dall'altro capo. `nn.Sequential` descrive la rete esattamente così:
-elenchi i passaggi nell'ordine in cui il dato li attraversa, e i collegamenti
-si fanno da soli. Nota che qui anche la ReLU è un passaggio del tunnel
-(`nn.ReLU()`): l'asciugatura non lava niente, ma sta in fila come tutti gli
-altri passaggi, e senza di lei quello che esce non è la stessa cosa. È la
-stessa ReLU di prima in un'altra veste: `torch.relu` è il verbo, da scrivere
-dentro `forward`, `nn.ReLU()` è il pezzo, da mettere in fila.
+esce dall'altro capo. `nn.Sequential` descrive la rete così: elenchi i passaggi
+nell'ordine in cui il dato li attraversa, e i collegamenti sono impliciti. Qui
+anche la ReLU è un passaggio del tunnel (`nn.ReLU()`), come l'asciugatura, che
+non lava niente ma senza la quale il risultato cambia. È la stessa ReLU di
+prima in un'altra veste: `torch.relu` è il verbo, da scrivere dentro `forward`,
+`nn.ReLU()` è il pezzo, da inserire nell'elenco.
 
 Si usa questa scrittura finché la rete è una fila. Si torna
 alla classe il giorno in cui la fila non basta più, cioè quando il dato deve
@@ -217,16 +217,16 @@ Python. È la differenza rispetto a Keras, che per descrivere un grafo con rami
 affianca all'API `Sequential` un'API funzionale separata: in PyTorch non serve,
 perché la composizione arbitraria è già Python. Il limite di `nn.Sequential` è
 preciso: da un modulo al successivo passa un solo tensore, e un modulo che ne
-vuole due solleva un `TypeError`. Per MNIST la pila lineare basta e avanza.
+vuole due solleva un `TypeError`. Per MNIST la pila lineare è più che sufficiente.
 `````
 
 ## Quanti parametri ha questa rete?
 
 I parametri sono i numeri che il modello impara, quelli che l'addestramento
-regolerà: pesi e bias tutti insieme. Non tutti i pezzi ne hanno: quello che
+regolerà: pesi e bias tutti insieme. Non tutti i pezzi ne hanno: lo strato che
 srotola l'immagine sposta i numeri e non li cambia, quindi non ha parametri.
 Contarli è il primo controllo da fare su qualunque modello, prima ancora di
-addestrarlo: se il numero non è quello che ci si aspetta, la rete montata non è
+addestrarlo: se il numero non coincide con quello atteso, la rete montata non è
 quella che si aveva in mente.
 
 `````{tab} Elementare
@@ -234,8 +234,8 @@ Ogni collegamento tra un ingresso e un neurone ha il suo peso, più un piccolo
 termine di aggiustamento (il *bias*) per neurone. Lo strato nascosto collega
 784 ingressi a 128 neuroni: $784 \times 128 + 128 = 100\,480$ numeri da
 imparare. Lo strato d'uscita: $128 \times 10 + 10 = 1\,290$. In tutto
-$101\,770$ numeri che l'addestramento dovrà regolare, tanti, ma una rete
-moderna ne ha miliardi: MNIST è davvero una palestra in miniatura.
+$101\,770$ numeri che l'addestramento dovrà regolare. Sono tanti, ma una rete
+moderna ne ha miliardi: MNIST è una palestra in miniatura.
 `````
 
 `````{tab} Superiore
@@ -247,7 +247,7 @@ print(n_params)   # 101770
 ```
 
 `p.numel()` conta gli elementi di ciascun tensore; il filtro su
-`requires_grad` esclude eventuali parti congelate (tornerà utile nel
+`requires_grad` esclude eventuali parti congelate (utile nel
 *transfer learning*). La pila per MNIST è riassunta in
 {numref}`fig-mlp-mnist`: $784 \cdot 128 + 128 = 100\,480$ per lo strato
 nascosto, $128 \cdot 10 + 10 = 1\,290$ per l'uscita.
@@ -270,7 +270,7 @@ grezzi.
 Il modello esiste, ma non ha ancora imparato niente: i pesi sono numeri
 casuali. Per addestrarlo serve prima di tutto un modo di misurare *quanto
 sbaglia*: la funzione di perdita, o loss. Anche le loss sono moduli di
-`torch.nn`: non sono pezzi della rete, ma si costruiscono, si spostano su un
+`torch.nn`: non fanno parte della rete, però si costruiscono, si spostano su un
 dispositivo e si chiamano come gli strati. Le due che useremo più spesso
 coprono i due grandi casi: quando la risposta giusta è un numero, e quando è
 una scelta fra categorie.
@@ -289,25 +289,26 @@ print(errore.item())                       # circa 2,3 (con due sole immagini ba
 
 Il numero stampato cambia a ogni esecuzione, perché sia i pesi sia le due
 immagini sono estratti a sorte; con due immagini sole balla parecchio, fra
-$1{,}8$ e $2{,}9$. Il valore attorno a cui balla è $2{,}3$, ed è il metro con
-cui leggere tutte le loss di un classificatore a dieci classi: il logaritmo
+$1{,}8$ e $2{,}9$. Il valore attorno a cui balla è $2{,}3$, il metro con cui
+leggere tutte le loss di un classificatore a dieci classi: il logaritmo
 naturale di dieci, $\ln 10 = 2{,}3026$, cioè quanto vale la cross-entropy per
 chi dà a ciascuna delle dieci cifre la stessa probabilità, una su dieci. Un
 modello appena creato parte da lì vicino, in media un poco sopra, perché i pesi
 sorteggiati gli fanno già preferire qualcuna delle cifre, e una preferenza data
-a caso costa più di quanto rende; il programma su MNIST della {doc}`sezione
-sull'addestramento <addestramento>` stampa il punto da cui parte il nostro. Un
-addestramento che funziona scende da lì; uno che resta lassù non ha imparato
-niente.
+a caso fa perdere più di quanto fa guadagnare; il programma su MNIST della
+{doc}`sezione sull'addestramento <addestramento>` stampa il punto da cui parte
+il nostro. Un addestramento che funziona scende da lì; uno che resta lassù non
+ha imparato niente.
 
 `````{tab} Elementare
 Un perito passa la mattina in due appartamenti e su ogni scheda scrive tre
-numeri, il prezzo, le spese annue e i giorni che ci vorranno a vendere. Mesi
-dopo si sa com'è andata, e l'agenzia gli manda il conto: ogni numero mancato si
-paga al quadrato. Sbagliare di $2$ costa $4$, sbagliare di $10$ costa $100$. Un
-errore cinque volte più grande non ne vale cinque, ne vale venticinque. È la
-**MSE** (errore quadratico medio), la misura per quando la risposta è un
-numero, un prezzo o la temperatura di domani.
+numeri, il valore di mercato, le spese annue e i giorni che ci vorranno a
+vendere. Mesi dopo si sa com'è andata, e l'agenzia gli addebita gli errori:
+ogni numero mancato si paga al quadrato. Sbagliare di $2$ costa $4$, sbagliare
+di $10$ costa $100$. Un errore cinque volte più grande non ne vale cinque, ne
+vale venticinque. È la **MSE** (errore quadratico medio), la misura per quando
+la risposta è un numero, come il valore di un immobile o la temperatura di
+domani.
 
 Sulle due schede ci sono sei numeri, quindi sei multe. Sbagliati tutti di $2$,
 sono sei multe da $4$ e la media è $4$, perché l'agenzia divide per le multe
@@ -331,10 +332,10 @@ Guarda gli ultimi due: dal 10% all'1% la fiducia si divide per dieci e la multa
 raddoppia esatta, e ogni ulteriore divisione per dieci aggiunge sempre quegli
 stessi $2{,}3$. A contare è il rapporto fra le fiducie e non il loro divario, e
 verso il basso la multa non trova fondo: escludere ancora un po' la risposta
-vera costa altri $2{,}3$, e nessuno dice basta. È la cross-entropy, la misura
-per quando la risposta è una scelta fra categorie, quale cifra o quale animale.
-Di multa ce n'è una per formulario, e con dieci formulari in una volta esce la
-media di quelle dieci.
+vera aggiunge altri $2{,}3$ di multa, e nessuno dice basta. È la cross-entropy,
+la misura per quando la risposta è una scelta fra categorie, quale cifra o
+quale animale. Di multa ce n'è una per formulario, e con dieci formulari in una
+volta esce la media di quelle dieci.
 
 Sul foglio, però, l'impiegata non scrive percentuali: scrive un punteggio per
 cifra, alto per il $3$ che le sembra di vedere e basso per l’$8$ che le pare
@@ -357,13 +358,15 @@ $$
               (\hat{y}_{ik} - y_{ik})^2,
 $$
 
-dove $i$ scorre i $B$ esempi del batch e $k$ le $D$ uscite di ciascun
-esempio: la media è su tutti gli elementi del tensore, non sugli esempi.
-Quando l'uscita è una sola le due letture coincidono e la distinzione non si
-vede; in regressione multi-uscita no. Chi somma i quadrati di un esempio e poi
-media sugli esempi ottiene un numero $D$ volte più grande di quello che
-restituisce il modulo. Il punto di minimo è lo stesso, la scala del gradiente
-no, e con essa cambia il learning rate necessario. Per la classificazione a $K$
+dove $i$ scorre i $B$ esempi del batch e $k$ le $D$ uscite di ciascun esempio:
+la media è su tutti gli elementi del tensore, non sugli esempi. Quando l'uscita
+è una sola le due letture coincidono e la distinzione non si vede; in
+regressione multi-uscita no. Chi somma i quadrati di un esempio e poi media
+sugli esempi ottiene un numero $D$ volte più grande di quello restituito dal
+modulo. Il punto di minimo è lo stesso, la scala del gradiente no, e con essa
+cambia il learning rate necessario.
+
+Per la classificazione a $K$
 classi, `nn.CrossEntropyLoss` combina in un solo modulo `LogSoftmax` e
 `NLLLoss`: dati i logit $z_1, \dots, z_K$ e la classe vera $c$ di un singolo
 esempio,
@@ -375,13 +378,13 @@ $$
 $$
 
 dove qui $k$ e $j$ scorrono le $K$ classi, non gli esempi, e $\ell$ è il costo
-di una predizione, quello che sta dentro la somma. Sul batch il modulo
+di una predizione, il termine che sta dentro la somma. Sul batch il modulo
 restituisce la $\mathcal{L}$, cioè la media di questi termini sui $B$ esempi
-(`reduction='mean’`, il default): è il "numero solo" del codice, e qui la media
-è davvero calcolata sul singolo esempio, perché c'è un solo termine per
-ciascuno. Con pesi per classe (`weight`), però, la media divide per la somma
-dei pesi delle classi vere, e con `ignore_index` per il numero dei target non
-ignorati, non per $B$:
+(`reduction='mean'`, il default): è il "numero solo" del codice, e qui la media
+è calcolata sul singolo esempio, perché c'è un solo termine per ciascuno. Con
+pesi per classe (`weight`), però, la media divide per la somma dei pesi delle
+classi vere, e con `ignore_index` per il numero dei target non ignorati, non
+per $B$:
 
 $$
 \mathcal{L} = \frac{\sum_{i=1}^{B} w_{y_i}\,\ell_i}{\sum_{i=1}^{B} w_{y_i}},
@@ -409,7 +412,7 @@ $$
 $$
 
 limitato fra $-1$ e $1$ e nullo soltanto quando la predizione è giusta e
-sicura, quindi grande proprio dove il modello è sicuro e sbagliato. È qui la
+sicura, quindi grande dove il modello è sicuro e sbagliato. Questa è la
 differenza con la MSE applicata alle probabilità, il cui gradiente passa per la
 Jacobiana della softmax e si spegne dove questa satura, anche a predizione
 sbagliata: insieme al fatto che la cross-entropy è la log-verosimiglianza
@@ -419,21 +422,21 @@ nel modello compromette sia il calcolo congiunto sia questo gradiente: la loss
 riceve probabilità in $[0, 1]$ e le tratta come logit, quindi anche la
 predizione perfetta vale $-1 + \log(e + K - 1)$, cioè $1{,}46$ con $K = 10$, e
 sotto quel pavimento non si scende; e il gradiente attraversa la Jacobiana
-della softmax in più, che si annulla proprio dove il modello è sicuro. Per
-questo l'ultimo strato del modello non deve avere la softmax. Se servono le
+della softmax in più, che si annulla dove il modello è sicuro. Perciò
+l'ultimo strato del modello non deve avere la softmax. Se servono le
 probabilità (per leggere l'output, non per addestrare), si applica
 `torch.softmax(logits, dim=1)` a valle. Con etichette intere il target ha shape
 $(B,)$ e dtype `int64`, non serve il one-hot.
 `````
 
 Le due penalità che abbiamo appena visto in cifre hanno anche una forma, e
-metterle una accanto all'altra dice in un colpo d'occhio quello che i numeri
-dicono uno alla volta ({numref}`fig-mse-vs-crossentropy`). Attenzione a come si
-legge: sono due disegni distinti, con due grandezze diverse sull'asse
-orizzontale, e non due curve sovrapposte. A sinistra scorre l'errore, cioè di
-quanto la predizione ha mancato il valore vero; a destra scorre la fiducia che
-il modello ha dato alla risposta giusta, da zero (l'ha esclusa) a uno (ne era
-certo). In verticale, in tutti e due, la penalità.
+metterle una accanto all'altra dice in un colpo d'occhio ciò che i numeri
+dicono uno alla volta ({numref}`fig-mse-vs-crossentropy`). I due disegni sono
+distinti, con due grandezze diverse sull'asse orizzontale, e non due curve
+sovrapposte. A sinistra scorre l'errore, cioè di quanto la predizione ha
+mancato il valore vero; a destra scorre la fiducia che il modello ha dato alla
+risposta giusta, da zero (l'ha esclusa) a uno (ne era certo). In verticale, in
+tutti e due, la penalità.
 
 ```{figure} ../figures/loss-function-cosa-ottimizziamo.svg
 :name: fig-mse-vs-crossentropy
@@ -445,17 +448,17 @@ gli errori piccoli; la cross-entropy non perdona la sicurezza sbagliata, e
 cresce senza limite man mano che il modello esclude la risposta giusta.
 ```
 
-In classificazione si sceglie la seconda per due ragioni. La cross-entropy è la
-log-verosimiglianza negativa di una distribuzione sulle classi, come mostrato
-in {doc}`Da dove viene la loss </RetiNeurali/da-dove-viene-la-loss>`:
-minimizzarla vuol dire rendere il più probabile possibile la risposta giusta, e
-la penalità senza limite della figura ne è la conseguenza. E corregge di più
-proprio dove serve: quando il modello è sicuro e sbagliato la sua spinta resta
-forte, mentre quella dell'errore quadratico sulle probabilità, lì, quasi si
-spegne.
+In classificazione si sceglie la seconda per due ragioni. La prima è che la
+cross-entropy è la log-verosimiglianza negativa di una distribuzione sulle
+classi, come mostrato in {doc}`Da dove viene la loss
+</RetiNeurali/da-dove-viene-la-loss>`: minimizzarla equivale a rendere il più
+probabile possibile la risposta giusta, e la penalità senza limite della figura
+ne è la conseguenza. La seconda ragione è che corregge di più dove serve:
+quando il modello è sicuro e sbagliato la sua spinta resta forte, mentre quella
+dell'errore quadratico sulle probabilità, lì, quasi si spegne.
 
 Il modello esiste e sa dire quanto sbaglia. Manca chi usa quel numero per
-correggerlo, ed è l'argomento della {doc}`sezione
+correggerlo, argomento della {doc}`sezione
 sull'addestramento <addestramento>`.
 
 `````{tab} Elementare
@@ -491,7 +494,7 @@ sull'addestramento <addestramento>`.
   con rami si scrive il `forward` a mano.
 - `nn.Linear(d, u)` calcola $\mathbf{W}\mathbf{x}+\mathbf{b}$ e ha
   $u \cdot d + u$ parametri; `model.parameters()` li consegna
-  all'ottimizzatore, il componente che nella prossima sezione applicherà le
+  all'ottimizzatore, il componente che nel training loop applicherà le
   correzioni.
 - Le loss sono moduli: `nn.MSELoss` per la regressione, `nn.CrossEntropyLoss`
   per la classificazione; quest'ultima è la log-verosimiglianza negativa,

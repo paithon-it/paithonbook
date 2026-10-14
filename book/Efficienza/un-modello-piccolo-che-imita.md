@@ -7,24 +7,24 @@ sarebbe potuta prendere per un 8».
 
 Il secondo maestro ha detto la stessa cosa del primo più qualcos’altro, e quel
 qualcos’altro non riguarda quella cifra soltanto: riguarda come sono fatte le
-cifre. Che 7 e 1 si somiglino, e che 7 e 8 no, è una cosa che il maestro ha
-imparato in anni di cifre lette, e che l’etichetta «7» da sola non trasmette.
+cifre. Che 7 e 1 si somiglino, e 7 e 8 no, il maestro l’ha imparato in anni di
+cifre lette, e l’etichetta «7» non lo trasmette.
 
 La distillazione è il modo di passare quel sapere a un modello piccolo, e la
-domanda interessante è che cosa passi, oltre a quello che dice l’etichetta.
+domanda interessante è che cosa passi, oltre all’etichetta.
 
 ## Che cosa c’è dentro un «quasi»
 
 Le due leve precedenti stringevano un modello già fatto. Qui si fa un’altra
 cosa: si costruisce un modello nuovo, piccolo fin dall’inizio, e lo si addestra
-anche su quello che il modello grande risponderebbe, dubbi compresi, oltre che
+anche sulle risposte che darebbe il modello grande, dubbi compresi, oltre che
 sulle risposte giuste.
 
 `````{tab} Elementare
 
 Un maestro che legge cifre da trent’anni, se glielo si chiede, dice quanto
 scommetterebbe su ciascuna delle dieci cifre, quasi tutto sul sette, un pochino
-sull’uno, niente sull’otto. Il guaio è che glielo si deve chiedere. Lasciato
+sull’uno, niente sull’otto. Bisogna però chiederglielo. Lasciato
 fare taglia corto, «sette», con una sicurezza da 0,9999, e i ripensamenti
 restano un borbottio che nessuno sente.
 
@@ -51,20 +51,19 @@ a quattro la correzione si era indebolita di meno, e moltiplicata per sedici
 esce più forte di com’era. Così lo studente ascolta il maestro più delle sette
 parti su dieci che gli erano state assegnate. Funziona lo stesso, perché la
 proporzione la si ritocca guardando come vanno le cose; ma chi crede di averla
-messa a sette contro tre ha in mano un numero che non racconta quello che
-succede in classe.
+messa a sette contro tre ha in mano un numero che non descrive la situazione
+in classe.
 
-Una cifra con la sola etichetta insegna una cosa, che quel disegno è un sette.
+Una cifra con la sola etichetta insegna un fatto, che quel disegno è un sette.
 Col commento del maestro ne insegna dieci, quanto somiglia a ciascuna delle
 dieci cifre.
 
 Il guadagno grosso però è meno elegante, e sta nella pila dei fogli che in
 fondo all’aula nessuno ha mai etichettato. Il maestro li commenta uno per uno,
 e allo studente quei commenti valgono quanto gli altri. Etichettare costa, i
-fogli no, ed è per questo che la distillazione si usa più di quanto la si
-spieghi. Il maestro però può commentare bene soltanto quello che ha imparato:
-uno che ha visto le stesse poche etichette dello studente non ha niente da
-aggiungere.
+fogli no: per questo la distillazione si usa più di quanto la si spieghi. Il
+maestro però può commentare bene soltanto quello che ha imparato: uno che ha
+visto le stesse poche etichette dello studente non ha niente da aggiungere.
 
 Se il maestro è convinto che una certa quattro malfatta sia un nove, lo
 studente ne prende la convinzione, perché gliela sente ripetere con tutte le
@@ -99,7 +98,7 @@ $$
 dove $\mathcal{L}_{\text{dura}}$ è l’entropia incrociata con l’etichetta vera,
 calcolata a $T = 1$ e non alla temperatura della distillazione, e il secondo
 termine è la divergenza di Kullback-Leibler fra la distribuzione morbida del
-maestro e quella dello studente, calcolate tutt’e due alla stessa temperatura.
+maestro e quella dello studente, calcolate entrambe alla stessa temperatura.
 La KL differisce dall’entropia incrociata con i bersagli del maestro per
 l’entropia del maestro, che non dipende dallo studente: le due danno lo stesso
 gradiente.
@@ -125,7 +124,7 @@ lontano di quanto sembri. Sul maestro che il codice sulle cifre addestra
 gradiente della divergenza preso rispetto ai suoi logit su tutti gli esempi,
 l’esponente locale $\kappa$ di $\|\nabla\| \propto T^{-\kappa}$ vale $1{,}01$
 fra $T=1$ e $T=2$ e $1{,}13$ fra $2$ e $4$, e supera $2$ soltanto fra $8$ e
-$16$ (lo stampa il conto della temperatura, dopo l’esperimento). A $T=4$, cioè
+$16$ (lo misura il codice che fa variare la temperatura). A $T=4$, cioè
 alla temperatura che il codice usa, moltiplicare per $T^2$ sovracompensa di
 3,6 volte. Il risultato dell’esperimento è buono lo stesso, perché $\alpha$
 assorbe il resto; ma è il genere di dettaglio che distingue una ricetta
@@ -140,7 +139,7 @@ pagina del lavoro originale, che lo prende da Buciluă, Caruana e
 Niculescu-Mizil {cite}`bucilua2006model`, e si cita molto meno: i bersagli
 morbidi si possono calcolare su dati non etichettati, e questo sposta il
 problema da «quanti esempi ho» a «quanti esempi il maestro può commentare».
-L’esperimento sulle cifre misura il secondo, che è quello che si riesce a
+L’esperimento sulle cifre misura il secondo, il solo che si riesce a
 mostrare in modo pulito su un dataset piccolo, e mostra anche quanto tutti e
 due dipendano da quello che il maestro ha visto.
 
@@ -282,7 +281,7 @@ studente col maestro arriva a un punto dal maestro stesso, avendo in mano
 duecentoquarantanove volte meno parametri e centoventi etichette invece di
 ottocentonovantotto.
 
-La riga di mezzo è quella che serve di più, perché separa due cose che di
+La riga di mezzo serve più delle altre, perché separa due cose che di
 solito si raccontano come una sola. Con il maestro che commenta soltanto i
 centoventi esempi che lo studente ha già etichettati si guadagnano 2,4 punti:
 sono i dubbi, cioè sapere che un certo sette somigliava a un uno e non a un
@@ -331,7 +330,7 @@ studente: la cifra che il conto attribuisce ai dati non etichettati è un tetto.
 Le due cose insieme fanno la distillazione, e chi ne racconta solo la prima
 attribuisce a un meccanismo elegante un guadagno che viene soprattutto da un
 meccanismo banale. La riga dello studente con tutte le etichette dice che cosa
-il conto non dimostra, cioè che imitare sia meglio che imparare: con tutte le
+questa prova non dimostra, cioè che imitare sia meglio che imparare: con tutte le
 ottocentonovantotto etichette lo studente arriva al 95,7% da solo, e il maestro
 non aggiunge più niente.
 
@@ -371,7 +370,7 @@ più.
 Un ultimo conto riguarda la ricetta. Il termine del maestro, alzando la
 temperatura, si indebolisce, e il codice lo rimette in forza moltiplicandolo per
 $T^2$, cioè per sedici. Se la spinta che il maestro dà allo studente scendesse
-esattamente come $1/T^2$, l’esponente che si legge raddoppiando la temperatura
+come $1/T^2$, l’esponente che si legge raddoppiando la temperatura
 varrebbe 2. Lo si misura sullo studente appena creato, prima di ogni
 addestramento.
 
@@ -428,7 +427,7 @@ assegna.
 - Un maestro ben addestrato è troppo sicuro di sé e i numeri interessanti si
   perdono nelle cifre lontane. Si ammorbidiscono le sue risposte, come si
   schiariscono le ombre di una fotografia troppo contrastata: il soggetto resta
-  il più chiaro di tutti, e intanto nel buio ricompare quello che c’era.
+  il più chiaro di tutti, e intanto nel buio ricompare il dettaglio che c’era.
 - Il guadagno si spezza in due. Uno studente minuscolo con centoventi
   etichette sta al 90,2%; con i commenti del maestro sugli stessi centoventi
   esempi sale a 92,6% (+2,4: i dubbi di un maestro che ha visto più
@@ -464,8 +463,8 @@ assegna.
   (maestro al 96,9%, addestrato su 898 etichette). Tutti e due dipendono da
   quanto il maestro sa in più: addestrato sulle sole 120 etichette dello
   studente non porta niente, sulla metà dei dati i guadagni scendono a 1,8 e
-  1,5; e con tutte le etichette allo studente spariscono. Il 3,2 dei dati non
-  etichettati è un tetto, perché quelle etichette il maestro le ha viste.
+  1,5; e spariscono quando lo studente ha tutte le etichette. Il 3,2 dei dati
+  non etichettati è un tetto, perché quelle etichette il maestro le ha viste.
 - Un maestro con il 30% di etichette sbagliate porta lo studente sotto lo
   studente senza maestro (81,2% contro 90,2%, e 63,0% se commenta solo gli
   esempi etichettati): con $\alpha = 0{,}7$ il termine morbido pesa più di
@@ -482,6 +481,6 @@ Della distillazione resta questo: il maestro passa allo studente più di quanto
 dica l’etichetta, ma soltanto quello che sa in più, e il guadagno grosso viene
 dagli esempi che può commentare anche senza etichetta. Con lei le tre leve del
 capitolo finiscono, e hanno in comune che riguardano tutte il modello, quanto
-spazio occupa e quanti conti chiede. Perché questo non basti a farlo
-rispondere in fretta lo spiega la {doc}`sezione che chiude il capitolo
+spazio occupa e quanti conti chiede. Perché questo non basti a farlo rispondere
+in fretta lo spiega la sezione {doc}`«Starci non è rispondere»
 <far-rispondere-in-fretta>`.

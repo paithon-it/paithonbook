@@ -43,9 +43,9 @@ INCHIOSTRO = {"light": "#1A1714", "dark": "#F4ECDD"}
 # su un font da 2000 unità per em: quindi un em vale 120 unità SVG, la linea di
 # base è y=0 e le ascendenti arrivano a y=-90.
 EM_PAITHON = 120.0
-# Misure aggiornate il 15 agosto 2026, quando la «a» è diventata il tribar e il
-# bollo separato è sparito: la parola comincia a x=0 invece che a 166.189, ed è
-# più corta di quanto il bollo occupava. Si rimisurano rendendo il file senza il
+# Misure del logo con la «a» a tribar e senza il bollo separato: la parola
+# comincia a x=0 invece che a 166.189, ed è più corta di quanto il bollo
+# occupava. Si rimisurano rendendo il file senza il
 # gruppo `pt-book` e guardando dove finisce l'inchiostro, non a mano.
 X_FINE_PAITHON = 500.7        # bordo destro del wordmark, in unità SVG
 VIEWBOX_BASE = (-8.00, -98.24, 508.68, 134.20)

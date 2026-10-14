@@ -3,15 +3,13 @@
 C'è un modo infallibile per andare male a un esame: imparare a memoria le
 soluzioni dei compiti degli anni scorsi. Chi lo fa risponde alla perfezione
 alle domande già viste e va nel panico davanti a un esercizio anche solo
-leggermente diverso. Ha memorizzato, non capito. Un modello di machine
-learning può cadere esattamente nella stessa trappola, e distinguere la
-memoria dalla comprensione è, in fondo, il problema centrale di tutta la
-disciplina.
+leggermente diverso. Ha memorizzato senza capire. Un modello di machine
+learning può cadere nella stessa trappola, e distinguere la memoria dalla
+comprensione è il problema centrale della disciplina.
 
-La posta in gioco, fin dalle sezioni precedenti, è rispondere bene su input mai
+La posta in gioco, fin dall'inizio, è rispondere bene su input mai
 visti: si dice **generalizzare**. Un modello che azzecca ogni risposta sui dati
-di addestramento e sbaglia su quelli veri non ha imparato nulla di utile. Resta
-da vedere come accorgersene e come porvi rimedio.
+di addestramento e sbaglia su quelli veri non ha imparato nulla di utile.
 
 ## Imparare o memorizzare: overfitting e underfitting
 
@@ -31,23 +29,23 @@ il buon compromesso.
 `````{tab} Elementare
 
 Un modello troppo semplice, una retta a cui si chiede di descrivere dati
-chiaramente curvi, sbaglia già sugli esempi su cui ha studiato. E su un esempio
+chiaramente curvi, sbaglia già sugli esempi su cui ha studiato. Su un esempio
 nuovo sbaglia più o meno quanto sui vecchi: il suo limite è la forma che ha, e
-resta quello anche dandogliene altri mille. Si chiama **underfitting**, ed è un
-modello troppo rigido per il problema.
+non cambia dandogliene altri mille. Si chiama **underfitting**, e viene
+da un modello troppo rigido per il problema.
 
 All'estremo opposto c'è il modello troppo flessibile, che si contorce per
-passare esattamente su ogni singolo punto, rumore compreso. Sul foglio degli
+passare per ogni singolo punto, rumore compreso. Sul foglio degli
 esempi già visti prende dieci e lode, ma ha imparato anche gli errori di
 misura, gli accidenti, il caso, e su un dato nuovo crolla. Si chiama
 **overfitting**: ha memorizzato invece di capire.
 
 Accorgersene è un confronto fra due numeri: quanto il modello sbaglia sugli
 esempi con cui ha studiato, e quanto sbaglia su esempi che non ha mai visto.
-Sbaglia parecchio in tutti e due i casi, e più o meno allo stesso modo? È
-underfitting. Quasi niente sugli esempi di studio e parecchio sugli altri? È
-overfitting, e la distanza fra i due numeri ne dà la misura: quando quella
-distanza si allarga, il modello sta memorizzando.
+Se il modello sbaglia parecchio in tutti e due i casi, e più o meno allo stesso
+modo, è underfitting. Se sbaglia quasi niente sugli esempi di studio e parecchio
+sugli altri, è overfitting, e la distanza fra i due numeri ne dà la misura:
+quando si allarga, il modello sta memorizzando.
 
 `````
 
@@ -61,15 +59,18 @@ $$
 R(f_{\hat\theta}) = \mathbb{E}_{(\mathbf{x},y)}\Big[\ell\big(f_{\hat\theta}(\mathbf{x}),\, y\big)\Big],
 $$
 
-con $(\mathbf{x},y)$ estratto dalla stessa distribuzione dei dati e indipendente
-da $\mathcal{D}$. La sua media sugli insiemi di addestramento possibili,
-$\mathbb{E}_{\mathcal{D}}\,R(f_{\hat\theta})$, è l'errore di generalizzazione
-atteso (in ESL, $\mathrm{Err}_T$ ed $\mathrm{Err}$). L'errore di training,
-$\text{err}_{\text{train}} = \mathcal{L}(\hat\theta)$ calcolato sugli stessi $m$
-esempi da cui $\hat\theta$ è stato ricavato, ne è una stima ottimistica: per una
-minimizzazione esatta $\mathbb{E}\,\mathcal{L}(\hat\theta)\le\min_\theta
+con $(\mathbf{x},y)$ estratto dalla stessa distribuzione dei dati e
+indipendente da $\mathcal{D}$. La sua media sugli insiemi di addestramento
+possibili, $\mathbb{E}_{\mathcal{D}}\,R(f_{\hat\theta})$, è l'errore di
+generalizzazione atteso. Nel manuale di Hastie, Tibshirani e Friedman, *The
+Elements of Statistical Learning* (ESL) {cite}`hastie2009elements`, il rischio
+e la sua media si chiamano $\mathrm{Err}_T$ ed $\mathrm{Err}$. L'errore di
+training, $\text{err}_{\text{train}} = \mathcal{L}(\hat\theta)$ calcolato sugli
+stessi $m$ esempi da cui $\hat\theta$ è stato ricavato, ne è una stima
+ottimistica: per una minimizzazione esatta
+$\mathbb{E}\,\mathcal{L}(\hat\theta)\le\min_\theta
 R(f_\theta)\le\mathbb{E}\,R(f_{\hat\theta})$, perché $\hat\theta$ è scelto
-proprio per rendere piccolo $\mathcal{L}$. L'errore di test,
+per rendere piccolo $\mathcal{L}$. L'errore di test,
 $\text{err}_{\text{test}}$, è la stessa media su esempi indipendenti da
 $\mathcal{D}$: stima $R(f_{\hat\theta})$ senza distorsione, purché non sia
 servito a scegliere né $\hat\theta$ né gli iperparametri. Confrontare i due
@@ -114,11 +115,10 @@ correggono in modi opposti.
 ```
 
 Il bersaglio in basso a sinistra di {numref}`fig-bias-varianza`, colpi
-raccolti ma tutti fuori centro, è il più insidioso: un modello del genere è
-molto *coerente*, dà quasi sempre la stessa risposta, e la coerenza si scambia
-facilmente per affidabilità. Raccogliere altri dati serve a stringere il gruppo
-dei fori, non a spostarlo: qui il guaio è dove il gruppo è centrato, e altri
-dati non lo aggiustano.
+raccolti ma tutti fuori centro, è il più insidioso: il modello è molto
+*coerente*, dà quasi sempre la stessa risposta, e la coerenza si scambia per
+affidabilità. Altri dati stringerebbero il gruppo dei fori senza spostarlo, e il
+problema sta nel punto in cui il gruppo è centrato.
 
 `````{tab} Elementare
 
@@ -129,7 +129,7 @@ tutti raccolti, e tutti a dieci centimetri dal centro. È il modello rigido, la
 retta: campione dopo campione dà quasi la stessa risposta, e quasi sempre la
 stessa risposta storta, perché la forma giusta non è una retta. L'errore che si
 ripete uguale è il bias (si pronuncia *bàias*, e in inglese vuol dire
-proprio «inclinazione», la tendenza a pendere sempre dalla stessa parte).
+«inclinazione», la tendenza a pendere sempre dalla stessa parte).
 
 Il secondo ha il mirino a posto ma la mano che trema. In media è centrato,
 preso colpo per colpo va un po’ dappertutto. È il modello flessibile, la curva
@@ -140,30 +140,27 @@ Poi c'è il vento, che non dipende da nessuno dei due. Anche con il mirino a
 posto e la mano ferma i colpi non cadono tutti nello stesso punto, perché
 l'aria si muove. Nei dati il vento è la misura imprecisa, l'eccezione, tutto
 ciò che capita e basta: quella parte di errore resta lì comunque, e nessun
-modello, per quanto bravo, se la prende.
+modello, per quanto bravo, la elimina.
 
-Il conto va fatto come si è fatto sul prezzo delle case: si misura di quanto il
-colpo si allontana dal centro, si eleva al quadrato, e si fa la media su tutti
-i colpi. Solo allora i tre pezzi si sommano davvero, e quella media si spacca
-in tre addendi puliti: quello del mirino, quello della mano, quello del vento.
-Sulle distanze nude la somma non torna. Il quadrato di una somma si apre nei
-quadrati dei tre scarti più i loro doppi prodotti. In media su molti colpi,
-questi prodotti misti fanno zero. Quelli con la mano si annullano perché il
-tremore si misura a partire dal punto medio dei colpi, e gli scostamenti da una
-media si compensano per costruzione. Quelli con il vento si annullano perché il
-vento non sa niente né del mirino né della mano. Resta la somma dei tre
-quadrati. È la stessa aritmetica che rende il quadrato scomodo da leggere a
-renderlo scomponibile.
+Come per il prezzo delle case, si misura di quanto ciascun colpo si allontana
+dal centro, si eleva al quadrato e si fa la media su tutti i colpi. Solo così i
+tre pezzi si sommano, e la media si scompone in tre addendi: quello del mirino,
+quello della mano, quello del vento. Sulle distanze nude la somma non torna. Il
+quadrato di una somma si apre nei quadrati dei tre scarti più i loro doppi
+prodotti, e in media su molti colpi questi prodotti misti fanno zero. Quelli
+con la mano si annullano perché il tremore si misura a partire dal punto medio
+dei colpi, e gli scostamenti da una media si compensano per costruzione. Quelli
+con il vento si annullano perché il vento non sa niente né del mirino né della
+mano. Resta la somma dei tre quadrati, scomoda da leggere ma scomponibile.
 
-Letto così, il quadro è semplice. Un modello rigido ha molto bias e poca
-varianza; uno flessibile, poco bias e molta varianza. Il bravo modellista cerca
-il punto di mezzo.
+Un modello rigido ha molto bias e poca varianza; uno flessibile, poco bias e
+molta varianza, e chi costruisce il modello cerca il punto di mezzo.
 
-Il conto vale finché a giudicare è la distanza dal centro. Se quel che conta è
-soltanto finire dentro il cerchietto o fuori, il tiratore raccolto e storto non
-fa un centro in tutta la giornata, mentre quello che trema ogni tanto dentro ci
-finisce. Dove la domanda è secca, sano o malato, un po’ di tremore può perfino
-convenire, e i tre addendi smettono di sommarsi.
+La scomposizione vale finché a giudicare è la distanza dal centro. Se quel che
+conta è soltanto finire dentro il cerchietto o fuori, il tiratore raccolto e
+storto non fa un centro in tutta la giornata, mentre il tiratore che trema ogni
+tanto ci finisce. Dove la domanda è secca, sano o malato, un po’ di
+tremore può perfino convenire, e i tre addendi smettono di sommarsi.
 
 `````
 
@@ -173,7 +170,7 @@ Per un target $y = f(x) + \varepsilon$, con rumore a media nulla
 ($\mathbb{E}[\varepsilon]=0$), varianza $\sigma^2$ e indipendente dal campione
 di addestramento, l'errore quadratico atteso di una previsione $\hat{f}(x)$, a
 $x$ fissato, mediato sui possibili insiemi di addestramento e sul rumore del
-punto di test, si decompone in tre termini (sono proprio quelle ipotesi a far
+punto di test, si decompone in tre termini (sono quelle ipotesi a far
 sparire i doppi prodotti):
 
 $$
@@ -189,52 +186,49 @@ rumore intrinseco, che nessun modello può eliminare. Aumentando la complessità
 bias cala ma la varianza cresce: l'errore di test ha la classica forma a U, e
 il minimo è il modello ottimale.
 
-Un'avvertenza sull'ambito di validità, perché il vocabolario viaggia più lontano
-del teorema. La decomposizione è un’identità della loss quadratica. Per la loss
-0-1 dei classificatori non esiste una scomposizione additiva con termini non
-negativi: Domingos {cite}`domingos2000unified` ne propone una in cui, per due
-classi, la varianza entra con segno più dove la previsione più frequente fra i
-possibili addestramenti coincide con quella ottima, e con segno meno dove non
-coincide, e in generale una scomposizione additiva analoga non esiste
-{cite}`wood2023unified`. Ne segue che più varianza può perfino *ridurre*
-l'errore quando il bias sta dalla parte sbagliata della soglia. «Bias» e
-«varianza» restano quindi utili come vocabolario, anche parlando di alberi e di
-foreste, ma non come aritmetica.
+La decomposizione è un’identità della loss quadratica. Per la loss 0-1 dei
+classificatori non esiste una scomposizione additiva con termini non negativi:
+Domingos {cite}`domingos2000unified` ne propone una in cui, per due classi, la
+varianza entra con segno più dove la previsione più frequente fra i possibili
+addestramenti coincide con quella ottima, e con segno meno dove non coincide.
+Per le altre perdite è una questione aperta quali condizioni garantiscano una
+scomposizione additiva {cite}`wood2023unified`. Ne segue che più varianza può
+perfino *ridurre* l'errore quando il bias sta dalla parte sbagliata della
+soglia. «Bias» e «varianza» restano quindi utili come vocabolario, anche
+parlando di alberi e di foreste, ma non come aritmetica.
 
 `````
 
 Al crescere della complessità del modello il bias cala e la varianza cresce.
-L'errore sui dati di addestramento scende in genere sempre; l'errore sui dati
+L'errore sui dati di addestramento scende in genere sempre. L'errore sui dati
 nuovi, somma di bias al quadrato, varianza e rumore, ha di solito un minimo a
-una complessità intermedia: da sinistra (una retta) scende, perché il modello è
-troppo rigido per seguire i dati, e a destra (una curva che si contorce) risale,
-perché il modello segue anche il rumore del campione. Il minimo di questa curva
-a U è il modello da scegliere. La {ref}`doppia discesa <sec-doppia-discesa>`
-mostra in quali casi la curva non finisce lì.
+una complessità intermedia: scende partendo da sinistra (una retta), dove il
+modello è troppo rigido per seguire i dati, e risale verso destra (una curva
+che si contorce), dove il modello segue anche il rumore del campione. Il minimo
+di questa curva a U è il modello da scegliere. La {ref}`doppia discesa
+<sec-doppia-discesa>` mostra in quali casi la curva non finisce lì.
 
 ### Distinguerli in pratica: le curve di apprendimento
 
-Bias e varianza, finora, sono una spiegazione. C'è un modo di misurarli, e
-risponde alla domanda che costa di più in un progetto vero: *conviene
-raccogliere altri dati, o cambiare modello?*
+Finora bias e varianza sono una spiegazione, ma si possono anche misurare, e la
+misura risponde a una domanda decisiva in un progetto: *conviene raccogliere
+altri dati, o cambiare modello?*
 
-Si disegnano di nuovo delle curve, ma stavolta sono due e l'asse orizzontale
-cambia: non più la
-complessità del modello, come nella U di poco fa, bensì la quantità di dati
-usata, da pochi esempi a tutti quelli che abbiamo. Le due curve sono
+Si disegnano due curve con un asse orizzontale diverso da quello della U di poco
+fa: la quantità di dati usata, da pochi esempi a tutti quelli disponibili. Le
+due curve sono
 l'errore sugli esempi con cui il modello ha
 studiato (l'addestramento) e l'errore su esempi tenuti da parte per giudicarlo
-(la validazione: come si mettono da parte, e perché sia essenziale farlo,
-arriva fra poco). Guardandole scendere si capisce
+(la validazione). Guardandole scendere si capisce
 quale dei due mali si ha davanti.
 
-- Le due curve si avvicinano e si fermano in alto: il modello sbaglia
-  tanto sui dati che ha visto quanto su quelli che non ha visto, ed è già al
-  suo limite. È bias. Altri dati non servono a niente: serve un modello
-  capace di piegarsi a forme più complicate.
+- Le due curve si avvicinano e si fermano in alto: il modello sbaglia tanto sui
+  dati che ha visto quanto su quelli che non ha visto, e ha già raggiunto il
+  suo limite. È bias. Altri dati non servono a niente: serve un modello capace
+  di piegarsi a forme più complicate.
 - Fra le due resta un divario largo, e quella di validazione sta ancora
   scendendo: il modello ha imparato bene ciò che ha visto e generalizza meno. È
-  varianza, e qui altri dati aiutano davvero.
+  varianza, e qui altri dati aiutano.
 
 Bastano poche righe di scikit-learn, e il verdetto è netto.
 
@@ -284,63 +278,59 @@ foresta (abbastanza ricca)
   con 2400 esempi: train 0.031  validazione 0.215  divario +0.184
 ```
 
-Una parola su che cosa sono questi numeri. Qui gli $y$ sono numeri puri e non
-euro né gradi: li fabbrica la riga `y = ...`. E l'errore si misura
-come per la retta di best fit, cioè scarto fra vero e previsto, elevato al
-quadrato e mediato. Un errore di $2{,}3$ vuol dire che, in media, il quadrato
-dello scarto vale $2{,}3$: da solo non dice niente, e infatti le prime due
-righe del programma servono a costruire il metro.
+Qui gli $y$ sono numeri senza unità di misura, prodotti dalla riga `y = ...`.
+L'errore è quello della retta di best fit: scarto fra vero e previsto, elevato
+al quadrato e mediato. Un errore di $2{,}3$ vuol dire che il quadrato dello
+scarto vale in media $2{,}3$, e preso isolatamente non dice niente: per questo
+le prime due righe del programma costruiscono il metro.
 
-Il primo estremo del metro è quanto sbaglia chi non ci prova nemmeno, cioè
-chi risponde sempre la media di tutti gli $y$: su questi dati $3{,}471$. (È la
-varianza di $y$, e attenzione, non c'entra con la varianza del modello di poco
-fa: qui è semplicemente quanto i valori di $y$ sono sparpagliati attorno alla
-loro media.) Il secondo estremo è quanto sbaglia chi sa tutto. Non è zero:
-la riga che fabbrica $y$ ci aggiunge un disturbo casuale di ampiezza $0{,}3$,
-che nessun modello può indovinare perché non dipende da niente, e siccome
-l'errore si misura al quadrato quel disturbo costa $0{,}3^2 = 0{,}09$. Fra
-$3{,}471$ e $0{,}09$ si gioca tutta la partita: la strada da percorrere è lunga
-$3{,}471 - 0{,}09 = 3{,}38$.
+Il primo estremo è l'errore di chi risponde sempre la media di tutti gli $y$: su
+questi dati $3{,}471$, che è la varianza di $y$ (da non confondere con la
+varianza del modello di poco fa: qui misura quanto i valori di $y$ si
+sparpagliano attorno alla loro media). Il secondo estremo è l'errore di chi
+conosce la relazione esatta. Non è zero: la riga che genera $y$ vi aggiunge un
+disturbo casuale con deviazione standard $0{,}3$, che nessun modello può
+prevedere perché non dipende da niente, e che al quadrato vale
+$0{,}3^2 = 0{,}09$. Fra $3{,}471$ e $0{,}09$ sta l'intero margine di
+miglioramento, lungo $3{,}471 - 0{,}09 = 3{,}38$.
 
 Il modello lineare, passando da 120 a 2400 esempi, chiude il divario da
 $+0{,}230$ a $+0{,}013$: le due curve si sono toccate. Ma si sono toccate a
 $2{,}335$, che è ancora quasi in cima: dai $3{,}471$ di partenza sono scesi
 appena $1{,}14$ su $3{,}38$, cioè un terzo della strada. (Metà strada sarebbe
 stata $0{,}09 + 3{,}38/2 = 1{,}78$, parecchio più in basso.) L'errore di
-addestramento, per giunta, non è migliorato di un'unghia ($2{,}294$ con 120
-esempi, $2{,}321$ con 2400: la differenza è più piccola di quanto il sorteggio
-dei blocchi sposti da solo). Quello che non fa è scendere, ed è il segno che
-stiamo cercando: con pochi esempi una retta riesce a passare un po’ più vicino a
-tutti, con tanti non ce la fa più, perché la forma giusta non è una retta e i
-punti in più non fanno che ricordarglielo. Quel modello ha dato tutto quello che
-aveva, e altri diecimila esempi non farebbero scendere l'errore: lo
-porterebbero, se mai, verso quello della migliore retta possibile, che questo
-campione, uno dei più facili, sottostima. Se serve di meglio, serve un modello
+addestramento, per giunta, non migliora ($2{,}294$ con 120 esempi, $2{,}321$ con
+2400): con pochi esempi una retta riesce a passare un po’ più vicino a tutti,
+con tanti non ce la fa più, perché la forma giusta non è una retta e i punti in
+più lo mostrano. È il segno del bias. Il modello ha già dato quanto poteva,
+e altri diecimila esempi non farebbero scendere l'errore: lo porterebbero,
+semmai, verso quello della migliore retta possibile, che è un po’ più alto
+perché questo campione è uno dei più facili. Per migliorare serve un modello
 diverso.
 
-La foresta (una foresta casuale, un modello fatto di tanti alberi di
-decisione che votano: la incontreremo negli {doc}`alberi decisionali e metodi
-ensemble </MachineLearning/alberi-ensemble>`, e qui basta
-sapere che è molto più flessibile di una retta) arriva a $0{,}031$
+La foresta casuale è un modello fatto di tanti alberi di
+decisione che votano ({doc}`alberi decisionali e metodi
+ensemble </MachineLearning/alberi-ensemble>`); qui basta
+sapere che è molto più flessibile di una retta. Sui nostri dati arriva a $0{,}031$
 sull'addestramento e
 $0{,}215$ in validazione, con un divario di $+0{,}184$ ancora aperto: ha
-imparato benissimo ciò che ha visto e generalizza un po’ meno. Ma il suo
-$0{,}215$, sul metro di prima, è a un passo dal traguardo: della strada da
-$3{,}471$ a $0{,}09$ ne ha percorso il $96\%$. Diagnosi opposta e ricetta
-opposta: qui i dati in più pagano.
+imparato bene ciò che ha visto e generalizza un po’ meno. Sul metro di prima,
+tuttavia, il suo $0{,}215$ è vicino al traguardo: della strada da $3{,}471$ a
+$0{,}09$ ne ha percorso il $96\%$. La diagnosi è opposta e lo è anche la cura:
+qui i dati in più servono.
 
-Il valore di questa diagnostica è che si fa prima di spendere. Raccogliere
-o etichettare dati è la voce più cara di quasi ogni progetto, e queste due
-curve dicono in un pomeriggio se quella spesa avrà un effetto.
+Questa diagnostica si fa prima di spendere. Raccogliere o etichettare dati è la
+spesa più grande di quasi ogni progetto, e le due curve dicono in un
+pomeriggio se la spesa avrà effetto.
 
 ```{admonition} Due curve diverse con lo stesso nome
 :class: note
-Attenzione a non confonderle con le curve che si guardano durante
-l'addestramento di una rete, dove sull'asse orizzontale ci sono le epoche
-(un'epoca è una passata completa su tutti gli esempi: si addestra facendone
-molte di seguito): quelle diagnosticano l'andamento di *quella* sessione (passi
-della discesa del gradiente troppo lunghi o troppo corti, overfitting che
-comincia, quando fermarsi) e sono trattate nel {doc}`training loop
+Non vanno confuse con le curve che si guardano durante l'addestramento di una
+rete, dove sull'asse orizzontale ci sono le epoche (un'epoca è una passata
+completa su tutti gli esempi: si addestra facendone molte di seguito). Quelle
+curve diagnosticano l'andamento di *quella* sessione (passi della discesa del
+gradiente troppo lunghi o troppo corti, overfitting che comincia, quando
+fermarsi) e sono trattate nella {doc}`sezione sul training loop
 </PyTorch/addestramento>`. Qui l'asse orizzontale è la quantità di dati, e la
 domanda è diversa: non «come sta andando questo addestramento» ma «questo
 modello, con più dati, andrebbe meglio».
@@ -373,21 +363,21 @@ imparato a memoria *quell’* esame. Per questo il test si tiene chiuso in un
 cassetto e si apre soltanto alla fine. Ogni volta che usi il test per decidere
 qualcosa, lo "consumi", e il numero che ti restituisce diventa troppo ottimista.
 
-E si sbircia anche senza barare. Basta aprire la busta per vedere di che cosa
-parla, e le settimane di studio si organizzano da sole attorno a quel poco che
-si è intravisto, anche se su quelle pagine non ci si esercita mai. Per questo
-la busta si mette da parte come primo gesto, prima ancora di dare un'occhiata
-ai dati: dopo, è tardi.
+Si sbircia anche senza barare: basta aprire la busta con il compito per
+vedere di che cosa parla, e le settimane di studio si organizzano da sole
+attorno a quel poco che si è intravisto, anche se su quelle pagine non ci si
+esercita mai. Per questo la busta si mette da parte come primo gesto, prima
+ancora di dare un'occhiata ai dati: dopo, è tardi.
 
 Le prove in vista dell'esame sono un'altra faccenda, e si possono rifare quante
-volte si vuole. È il loro mestiere: assorbono tutte le decisioni prese per
+volte si vuole: assorbono tutte le decisioni prese per
 strada, su che cosa insistere e per quanto, così che all'esame si arrivi
 puliti.
 
-Resta da comporre la busta, e il sorteggio da solo non basta. Con moltissime
+Resta da comporre la busta, e il solo sorteggio non basta. Con moltissime
 domande in gioco il caso si compensa; con poche, o quando un argomento del
 programma compare una volta sola, capita di tirare fuori un esame che su
-quell'argomento non chiede niente. Il voto esce alto e misura un'altra cosa. Si
+quell'argomento non chiede niente, e il voto alto misura un'altra cosa. Si
 compone allora a proporzioni, da ogni argomento tante domande quanto quello
 pesa nel programma, e nella busta finisce un po’ di tutto.
 
@@ -397,21 +387,23 @@ pesa nel programma, e nella busta finisce un po’ di tutto.
 
 Usare il test per selezionare modelli è una forma sottile di *data leakage*: la
 stima dell'errore di generalizzazione diventa ottimista. Il validation set
-assorbe le decisioni intermedie e la selezione avviene su training e validation;
-il test stima senza distorsione il rischio del modello scelto solo se non ha
-contribuito a sceglierlo. Con $m_{\text{te}}$ esempi di test indipendenti dal
-modello, l'errore di test è la media di $m_{\text{te}}$ perdite indipendenti e
-ha deviazione standard $\sigma_\ell/\sqrt{m_{\text{te}}}$, con $\sigma_\ell^2$
-la varianza della perdita; per la perdita 0-1 e un errore vero $p$ vale
+assorbe le decisioni intermedie e la selezione avviene su training e
+validation; il test stima senza distorsione il rischio del modello scelto solo
+se non ha contribuito a sceglierlo. Con $m_{\text{te}}$ esempi di test
+indipendenti dal modello, l'errore di test è la media di $m_{\text{te}}$
+perdite indipendenti e ha deviazione standard
+$\sigma_\ell/\sqrt{m_{\text{te}}}$, con $\sigma_\ell^2$ la varianza della
+perdita; per la perdita 0-1 e un errore vero $p$ vale
 $\sqrt{p(1-p)/m_{\text{te}}}$, cioè $0{,}0095$ per $p=0{,}1$ e
 $m_{\text{te}}=1000$: è il margine da scrivere accanto al numero. Se invece si
 confrontano $K$ modelli sul test e si tiene il migliore, il punteggio del
-vincitore è il massimo di $K$ stime rumorose: per la disuguaglianza dell'unione,
-con probabilità almeno $1-\delta$ nessuna si discosta dal vero più di
-$\sqrt{\log(2K/\delta)/(2m_{\text{te}})}$, che cresce come $\sqrt{\log K}$ (lo
-mostra la {doc}`sezione sulla concentrazione </Matematica/concentrazione>`).
-Riusare il test poche volte costa poco; riusarlo a ogni tentativo lo trasforma
-in un secondo validation set, e la stima finale torna ottimista.
+vincitore è il massimo di $K$ stime rumorose: per la disuguaglianza
+dell'unione, con probabilità almeno $1-\delta$ nessuna si discosta dal vero più
+di $\sqrt{\log(2K/\delta)/(2m_{\text{te}})}$, che cresce come $\sqrt{\log K}$
+(lo mostra la {doc}`sezione sulla concentrazione
+</Matematica/concentrazione>`). Riusare il test poche volte introduce una
+distorsione piccola; riusarlo a ogni tentativo lo trasforma in un secondo
+validation set, e la stima finale torna ottimista.
 
 ```python
 import numpy as np
@@ -424,17 +416,16 @@ print(f"errore standard dell'errore di test: {np.sqrt(p * (1 - p) / m_te):.4f}")
 errore standard dell'errore di test: 0.0095
 ```
 
-Due precisazioni operative che fanno la differenza fra una stima onesta e una
-che sembra tale. La prima riguarda come si divide: il taglio puramente
-casuale è affidabile solo se il dataset è grande, e su dataset piccoli o con
-categorie rare produce insiemi che non si somigliano. Il rimedio è il
-**campionamento stratificato**, che preserva in ciascuna parte le proporzioni
-della variabile che conta (la classe da predire, o una covariata importante):
-è il `stratify=` di `train_test_split` e la `StratifiedKFold` della sezione
-seguente. Nel caso estremo, un test set che non contiene un solo esempio della
-classe rara non misura la cosa che interessa.
+Il taglio puramente casuale per dividere i dati è affidabile solo se il dataset
+è grande, e su dataset piccoli o con categorie rare produce insiemi che non si
+somigliano. Il rimedio è il **campionamento stratificato**, che preserva in
+ciascuna parte le proporzioni della variabile che conta (la classe da predire,
+o una covariata importante): è il `stratify=` di `train_test_split` e la
+`StratifiedKFold` della {doc}`sezione sugli iperparametri
+</MachineLearning/iperparametri>`. Nel caso estremo, un test set che non
+contiene un solo esempio della classe rara non misura la cosa che interessa.
 
-La seconda è che il test si sporca anche soltanto guardandolo. È il *data
+Inoltre, il test si sporca anche soltanto guardandolo. È il *data
 snooping bias*: se si ispeziona il test per decidere quali feature costruire,
 quale trasformazione applicare o quale famiglia di modelli provare, quelle
 decisioni sono state prese sui dati d'esame, e il numero finale è ottimista
@@ -451,18 +442,19 @@ Esiste una fuga d'informazione che non passa dal modello ma dai preparativi.
 :alt: "Il dataset viene diviso in una parte di training e una di test. Lo scaler viene tarato soltanto sulla parte di training, calcolandone media e deviazione standard, e poi applicato a entrambe le parti. Una freccia barrata segnala l'errore da evitare: tarare lo scaler sull'intero dataset prima della divisione."
 :width: 96%
 
-La freccia barrata è l'errore che non si vede. Se il calcolo che riscala i
+La freccia barrata indica l'errore invisibile: se il calcolo che riscala i
 numeri guarda anche il test per farsi la sua media, un pezzo di informazione
 del test è già entrato nell'addestramento.
 ```
 
-Quasi mai i dati arrivano al modello così come sono: si riportano le colonne su
-una scala comune (lo *scaler* calcola, per ogni colonna, media e deviazione
-standard), si riempiono i valori mancanti con un valore plausibile, come la
-media della colonna o una stima fatta da un modello a partire dalle altre
-colonne (è l’**imputazione**, di cui la {doc}`sezione su pandas e matplotlib
-</Python/pandas-matplotlib>` discute, parlando dei valori mancanti, i meccanismi
-e i rischi), si scartano le colonne inutili. Nella tabella delle case i metri
+Quasi mai i dati arrivano al modello così come sono. Si scartano le colonne
+inutili e si riportano le altre su una scala comune (lo *scaler* calcola media
+e deviazione standard per ciascuna). I valori mancanti si riempiono con un
+valore plausibile, come la media della colonna o una stima fatta da un modello
+a partire dalle altre colonne (è l’**imputazione**, di cui la {doc}`sezione su
+pandas e matplotlib
+</Python/pandas-matplotlib>` discute i meccanismi
+e i rischi). Nella tabella delle case i metri
 quadri stanno attorno a $100$ e le stanze attorno a $3$: senza una scala comune,
 chi misura distanze fra esempi o penalizza i pesi è dominato dalla colonna con i
 numeri più grandi.
@@ -491,8 +483,7 @@ solo l'insieme di addestramento, e a ruotare è il blocco di validazione.
 :width: 92%
 
 Il blocco di validazione ruota. Alla fine ogni esempio ha fatto da giudice
-esattamente una volta, e il risultato non è un numero ma un numero con la sua
-variabilità.
+una volta, e il risultato è un numero accompagnato dalla sua variabilità.
 ```
 
 `````{tab} Elementare
@@ -505,23 +496,23 @@ diverse del programma invece di giocarsi tutto su una sola interrogazione: il
 giudizio finale è più affidabile e meno soggetto al caso.
 
 Si può spingere all'estremo: un blocco per ogni singolo esempio, cioè tanti
-compiti quanti sono i dati. Sembra il giudizio più solido di tutti, e non lo è.
-Quello che il modello ha studiato prima di un compito e prima del successivo
-cambia di un esempio soltanto, quindi i giudizi si somigliano tutti, e la media
-di tanti giudizi che si somigliano è poco più stabile di uno solo. In più il
-modello va riaddestrato una volta per esempio, e con centomila esempi il conto
-non sta in piedi. Cinque o dieci blocchi sono il punto in cui la spesa vale il
-guadagno.
+compiti quanti sono i dati. Sembra il giudizio più solido di tutti, e di solito
+non lo è. Da un compito al successivo il materiale di studio cambia di un
+esempio soltanto, quindi i giudizi si somigliano tutti, e la media di tanti
+giudizi che si somigliano è poco più stabile di uno solo. In più il modello va
+riaddestrato una volta per esempio, e con centomila esempi sono centomila
+addestramenti. Con cinque o dieci blocchi il costo di calcolo e la stabilità
+del giudizio si bilanciano.
 
-Tutto questo regge su una condizione che salta più spesso di quanto sembri: le
-domande dei cinque compiti devono essere davvero diverse fra loro. Se nel
+Tutto questo presuppone una condizione che salta più spesso di quanto si pensi:
+le domande dei cinque compiti devono essere diverse fra loro. Se nel
 mucchio ci sono dieci varianti quasi identiche dello stesso esercizio, il
 sorteggio ne manda qualcuna nel compito e qualcuna nelle pagine da studiare: lo
 studente ritrova nel compito quello che ha appena letto, e prende dieci senza
-sapere niente. Con le risposte giuste tirate a monetina, dove non c'è proprio
-nulla da imparare e chiunque ne azzecca la metà, un giudizio costruito così
-arriva a dire che il modello non sbaglia mai. Il numero che ne esce non vuol
-dire niente, e a guardarlo non si vede la differenza.
+sapere niente. Se le risposte giuste sono tirate a monetina, e non c'è nulla da
+imparare perché chiunque ne azzecca la metà, un giudizio costruito così arriva a
+dire che il modello non sbaglia mai. Il numero non vuol dire niente, e
+guardandolo non si distingue da uno vero.
 
 Succede tutte le volte che più righe raccontano lo stesso soggetto: dieci
 visite dello stesso paziente, dieci fotogrammi dello stesso video. Il rimedio è
@@ -542,32 +533,37 @@ $$
 $$
 
 dove $f_\theta^{(-i)}$ è il modello addestrato escludendo il fold $i$-esimo. Il
-caso estremo $k=m$ (un fold per esempio) è la *leave-one-out*: quasi non
-distorta, perché ogni modello studia su $m-1$ esempi, ma costosa e con varianza
-più alta della $k$-fold con $k<m$ {cite}`james2023introduction`, perché media
-$m$ modelli addestrati su insiemi quasi identici e quindi fortemente correlati
-fra loro, e la media di quantità fortemente correlate si stabilizza poco: con
-correlazione $\rho$ fra i termini la sua varianza non scende sotto
-$\rho\,\sigma^2$, qualunque sia il numero dei termini. Valori $k=5$ o $k=10$
-sono un buon compromesso fra distorsione, costo computazionale e stabilità
-della stima {cite}`hastie2009elements`. Resta da dire che cosa stimino.
-$\text{CV}_k$ approssima bene l'errore atteso sui possibili insiemi di
-addestramento, e male l'errore del modello addestrato proprio sui nostri dati,
-con cui nelle simulazioni di ESL risulta perfino debolmente anticorrelata
-{cite}`hastie2009elements`; e siccome ogni modello vede $(k-1)m/k$ esempi, la
-stima è pessimista per il modello finale, addestrato su tutti gli $m$. Inoltre,
-perché la stima sia valida, ogni passo che guarda i dati deve stare dentro il
-ciclo. Il controesempio classico è di ESL: cinquanta esempi, cinquemila colonne
-di puro rumore, le cento più correlate con l'etichetta scelte guardando tutti i
-dati, e un $1$-NN valutato in cross-validation; l'errore stimato è del $3\%$,
-quello vero del $50\%$. Selezione delle colonne, riscalatura e imputazione
-vanno quindi in una `Pipeline`, che scikit-learn riaddestra da capo in ogni
-fold. Per il ricampionamento serve la `Pipeline` di imbalanced-learn, perché
-quella di scikit-learn non ammette passi che cambiano il numero di righe: lo
-spiega la {doc}`sezione sulle metriche </MachineLearning/metriche>`.
+caso estremo $k=m$ (un fold per esempio) è la *leave-one-out*. È una stima quasi
+non distorta, perché ogni modello studia su $m-1$ esempi, ma è costosa e di
+norma ha una varianza più alta della $k$-fold con $k<m$
+{cite}`james2023introduction`. Infatti fa la media di $m$ modelli addestrati su
+insiemi quasi identici e perciò fortemente correlati fra loro, e la media di
+quantità fortemente correlate si stabilizza poco: con correlazione $\rho$ fra i
+termini la sua varianza non scende sotto $\rho\,\sigma^2$, qualunque sia il
+numero dei termini. Per i minimi quadrati il costo sparisce: se $h_{ii}$ sono
+gli elementi diagonali della matrice che proietta $\mathbf{y}$ sulle previsioni
+(la matrice cappello) ed $e_i$ è il residuo sull'intero campione, il residuo
+leave-one-out vale $e_i/(1-h_{ii})$ {cite}`james2023introduction`, e basta un
+solo adattamento. Valori $k=5$ o $k=10$ sono un buon compromesso fra
+distorsione, costo computazionale e stabilità della stima
+{cite}`hastie2009elements`. $\text{CV}_k$ approssima bene l'errore atteso sui
+possibili insiemi di addestramento, e male l'errore del modello addestrato sui
+nostri dati, con cui nelle simulazioni di ESL risulta perfino debolmente
+anticorrelata {cite}`hastie2009elements`; e siccome ogni modello vede $(k-1)m/k$
+esempi, la stima è pessimista per il modello finale, addestrato su tutti gli
+$m$. Inoltre, perché la stima sia valida, ogni passo che guarda i dati deve
+stare dentro il ciclo. Il controesempio classico è di ESL: cinquanta esempi,
+cinquemila colonne di puro rumore, le cento più correlate con l'etichetta scelte
+guardando tutti i dati, e un $1$-NN valutato in cross-validation; l'errore
+stimato è del $3\%$, quello vero del $50\%$. Selezione delle colonne,
+riscalatura e imputazione vanno quindi in una `Pipeline`, che scikit-learn
+riaddestra da capo in ogni fold. Per il ricampionamento serve la `Pipeline` di
+imbalanced-learn, perché quella di scikit-learn non ammette passi che cambiano
+il numero di righe: lo spiega la {doc}`sezione sulle metriche
+</MachineLearning/metriche>`.
 
-E quando più configurazioni risultano a pari merito dentro l'incertezza della
-stima, la convenzione per decidere è la **regola dell'errore standard**: si
+Quando più configurazioni risultano a pari merito dentro l'incertezza della
+stima, si usa per convenzione la **regola dell'errore standard**: si
 tiene la più semplice fra le configurazioni il cui errore sta entro un errore
 standard dal minimo {cite}`james2023introduction`. L'errore standard di una
 stima cross-validata vale la dispersione fra i $k$ giri divisa per $\sqrt{k}$,
@@ -576,15 +572,14 @@ allarga la fascia di un fattore $2{,}2$ e fa scegliere un modello più semplice
 del dovuto. È il rasoio di Occam applicato a una
 classifica che si sa incerta.
 
-Un'ipotesi va però dichiarata, perché è quella che regge tutto il
-ragionamento: $\text{CV}_k$ stima l'errore a patto che le righe siano
+$\text{CV}_k$ stima l'errore a patto che le righe siano
 scambiabili, cioè che partizionarle a caso produca fold indipendenti fra
 loro. Se più righe descrivono lo stesso soggetto (più visite dello stesso
 paziente, più eventi dello stesso utente, più fotogrammi dello stesso video),
 il rimescolamento mette quasi-duplicati sia in training sia in validation, e il
 modello ritrova in validation ciò che ha già visto. Il risultato è una stima
 priva di significato, non solo un po’ ottimista, e non dà nessun
-segnale d'allarme. Il conto, con duecento soggetti, dieci misure quasi
+segnale d'allarme. Lo mostra un calcolo con duecento soggetti, dieci misure quasi
 identiche ciascuno e un'etichetta assegnata a caso a ogni soggetto (quindi non
 c'è niente da imparare, e la verità è $0{,}50$), fatto con un classificatore
 capace di memorizzare come il $k$-NN a un vicino:
@@ -623,18 +618,17 @@ rimescolamento.
 `````
 
 La riga finale di {numref}`fig-cross-validation` è la parte che si tende a
-buttare via: non la media dei cinque punteggi, ma la loro dispersione, cioè
-di quanto i cinque giri si discostano dalla media. In statistica la si riassume
-in un numero, la *deviazione standard*: quanto, in media, un giro si scosta dal
-risultato medio.
+trascurare: la dispersione dei cinque punteggi, cioè di quanto i cinque giri si
+discostano dalla media, che si riassume con la deviazione standard.
 
-Serve a non prendere per differenze quelle che sono oscillazioni, con una
-precisazione. La dispersione dei cinque giri dice quanto l'errore di *un*
-modello cambia da una parte dei dati all'altra, in gran parte perché alcuni
-blocchi sono più difficili di altri; è la misura di quanto fidarsi di quel
-numero. Il confronto fra due modelli si fa invece giro per giro, sugli stessi
-blocchi, e la dispersione che conta è quella delle differenze, di solito molto
-più piccola perché la difficoltà del blocco pesa su tutti e due.
+Serve a non prendere per differenze quelle che sono oscillazioni. La dispersione
+dei cinque giri, però, dice quanto l'errore di *un* modello cambia da una parte
+dei dati all'altra, in gran parte perché alcuni blocchi sono più difficili di
+altri; è la misura di quanto fidarsi di quel numero. Il confronto fra due
+modelli si fa invece giro per giro, sugli stessi blocchi, e la dispersione che
+conta è quella delle differenze, di solito molto più piccola perché la
+difficoltà del blocco pesa su tutti e due. Lo si vede sugli stessi dati delle
+curve di apprendimento, con un modello lineare (`Ridge`).
 
 ```python
 from sklearn.model_selection import train_test_split, cross_val_score
@@ -671,9 +665,10 @@ media +0.020, ballo della differenza 0.014
 
 Il ballo è $0{,}217$ su una media di $2{,}248$, poco meno di un decimo: dice
 quanto fidarsi del numero di *questo* modello. Per confrontarlo con
-`alpha=300.0` si sottraggono gli errori blocco per blocco: la differenza vale
-$+0{,}020$ in media, con un ballo di $0{,}014$, quindici volte più piccolo di
-quello dei singoli modelli, e quattro blocchi su cinque danno lo stesso segno.
+`alpha=300.0` si sottraggono gli errori blocco per blocco: la differenza
+(errore di `alpha=300.0` meno errore di `alpha=1.0`) vale $+0{,}020$ in media,
+con un ballo di $0{,}014$, quindici volte più piccolo di quello dei singoli
+modelli, e in quattro blocchi su cinque `alpha=300.0` sbaglia di più.
 Due centesimi, qui, sono un indizio e non una prova: i blocchi condividono i
 dati di addestramento e non sono indipendenti, quindi dividere per $\sqrt{5}$
 darebbe un'incertezza troppo ottimista.
@@ -681,24 +676,24 @@ darebbe un'incertezza troppo ottimista.
 ## Mettere un freno: la regolarizzazione
 
 Un modo diretto per contrastare l'overfitting è impedire ai pesi di diventare
-troppo grandi. Addestrare vuol dire rendere più piccola possibile la loss, il
-numero che misura quanto il modello sbaglia sui dati di addestramento.
+troppo grandi. Addestrare vuol dire rendere minima la loss sui dati di
+addestramento.
 
 La **regolarizzazione** aggiunge alla loss un secondo addendo, una **penalità**
 che cresce con la grandezza dei pesi (i numeri per cui il modello moltiplica
 ogni caratteristica). Da quel momento il modello non minimizza più soltanto
 l'errore ma «errore più spesa in pesi»: alzare un peso continua a convenire se
 fa scendere l'errore *più* di quanto fa salire la spesa, e smette di convenire
-quando serve solo a rincorrere un punto isolato. Il prezzo lo fissa un
-iperparametro, $\lambda$ (la lettera greca *lambda*), che moltiplica la
-penalità: $\lambda = 0$ vuol dire nessun freno, $\lambda$ grande freno tirato.
+quando serve solo a rincorrere un punto isolato. Un iperparametro, $\lambda$
+(la lettera greca *lambda*), fissa il prezzo moltiplicando la penalità:
+Con $\lambda = 0$ non c'è freno, con $\lambda$ grande il freno è tirato.
 
 Resta da decidere come si misura la grandezza dei pesi, e le due scelte
 classiche si chiamano **L1** e **L2**, dal nome delle norme che usano: la L1
 somma i valori assoluti dei pesi, la L2 somma i loro quadrati. La scelta decide
 quali pesi sopravvivono all'addestramento.
 
-Quello che di solito si impara come una regola da mandare a memoria («la L1
+La regola che di solito si impara a memoria («la L1
 azzera i pesi inutili, la L2 no») è in realtà una questione di forme, e si può
 disegnare.
 
@@ -721,15 +716,13 @@ una loss quadratica). Se quel minimo cade fuori dal recinto, il modello vorrebbe
 scendere fin là ma non può uscire: la soluzione vincolata è il punto del recinto
 dove il primo anello che si allarga dal minimo lo tocca.
 
-Ed è qui che la forma decide.
-
 ```{figure} ../figures/regolarizzazione-l1-l2.svg
 :name: fig-l1-l2
 :alt: "Due piani con i pesi w1 e w2 sugli assi. A sinistra la L1: la regione ammessa è un rombo con i vertici sugli assi, e le curve di livello dell'errore lo toccano proprio in un vertice, dove w1 è esattamente zero. A destra la L2: la regione è un cerchio, e il punto di contatto cade in una posizione qualsiasi del bordo, dove entrambi i pesi sono piccoli ma nessuno è zero."
 :width: 96%
 
 La differenza sta negli spigoli. A sinistra il recinto della L1, un rombo con
-le punte sugli assi, e gli anelli dell'errore che lo toccano proprio in una
+le punte sugli assi, e gli anelli dell'errore che lo toccano in una
 punta: lì un peso è esattamente zero. A destra il cerchio della L2, che di
 punte non ne ha e non privilegia nessuna direzione.
 ```
@@ -737,18 +730,17 @@ punte non ne ha e non privilegia nessuna direzione.
 Un anello che si allarga incontra un rombo in una punta, come mostra
 {numref}`fig-l1-l2`, e le punte del rombo stanno sugli assi, cioè in punti dove
 uno dei due pesi vale esattamente zero. Succede tanto più spesso quanto più
-stretto è il budget, ed è la ragione per cui la L1 azzera di più quando il
+stretto è il budget, e per questo la L1 azzera di più quando il
 freno è tirato di più. Un cerchio invece non ha punte, e il primo contatto
 cade in un posto qualunque del bordo, dove entrambi i pesi sono piccoli ma
 nessuno è nullo. Ecco perché sommare i valori assoluti seleziona le
-caratteristiche e sommare i quadrati no: la ragione sta tutta nella forma del
-recinto.
+caratteristiche e sommare i quadrati no: dipende dalla forma del recinto.
 
 `````{tab} Elementare
 
 Il modello compra i suoi pesi, e la regolarizzazione gli dà un budget. Senza,
 per passare su ogni punto la curva deve piegarsi di scatto, e le pieghe brusche
-costano pesi enormi di segno opposto, come $+1000$ e $-999$, che quasi si
+richiedono pesi enormi di segno opposto, come $+1000$ e $-999$, che quasi si
 annullano a vicenda: così nasce la curva contorta. Con un tetto alla spesa il
 modello diventa sobrio, e le curve sobrie sono più morbide.
 
@@ -760,18 +752,18 @@ l'ultimo centesimo costa quanto il primo: azzerare un peso che non serve
 conviene sempre, e le caratteristiche inutili spariscono dalla tabella. È lo
 stesso fatto che il rombo con le punte sugli assi racconta con la geometria.
 
-Quanto è stretto il budget è la manopola fra i due modi di sbagliare visti al
-poligono. Con la spesa quasi vietata tutti i pesi vanno a zero e il modello
-risponde sempre la stessa cosa: stabile e storto. Con il budget senza fondo
-torna la curva che si contorce. Il valore giusto sta in mezzo e non si indovina:
-se ne provano parecchi, e quale tenere lo dicono i cinque compiti in classe
-della cross-validation.
+Allargare o restringere il budget fa passare da uno all'altro dei due modi di
+sbagliare visti al poligono. Con la spesa quasi vietata tutti i pesi vanno a
+zero e il modello risponde sempre la stessa cosa: stabile e storto. Con il
+budget senza fondo torna la curva che si contorce. Il valore giusto sta in
+mezzo e non si indovina: se ne provano parecchi, e i cinque compiti in classe
+della cross-validation dicono quale tenere.
 
 Il budget ha senso se si paga per le cose giuste, e con la stessa moneta. La
 quota fissa che il modello somma a ogni previsione non si paga: chi prevede le
 temperature in gradi Kelvin, che sono i Celsius più 273, ha bisogno di una quota
 fissa più alta di 273, e se la pagasse il modello cambierebbe per una semplice
-scelta di unità. E la moneta è la stessa solo se le colonne stanno sulla stessa
+scelta di unità. La moneta è la stessa solo se le colonne stanno sulla stessa
 scala. Un reddito di $30\,000$ euro porta $30$ punti con un peso di $0{,}001$,
 una percentuale del $5$ ne vuole uno di $6$ per portarne altrettanti, e allo
 stesso prezzo per peso il freno lascerebbe in pace il reddito e strangolerebbe
@@ -779,7 +771,7 @@ la percentuale. Per questo, prima di fare la spesa, ogni colonna si misura in
 quanto si scosta dal suo solito.
 
 Il Lasso ha anche un capriccio: davanti a due colonne gemelle, che dicono quasi
-la stessa cosa, ne compra una e lascia l'altra, e quale delle due è quasi un
+la stessa cosa, ne compra una e lascia l'altra, e quale delle due scelga è quasi un
 sorteggio, che cambia con il campione. Al quadrato, invece, dividere un peso a
 metà fra le gemelle costa meno che darlo tutto a una ($0{,}5^2 + 0{,}5^2$ fa
 $0{,}5$, contro $1$), e allora, pagando un po’ con un listino e un po’ con
@@ -788,7 +780,7 @@ l'altro, le gemelle entrano o escono insieme.
 Certe colonne vanno in gruppo per costruzione. Il colore di un'auto, con quattro
 valori possibili, entra nel modello come quattro colonne sì o no, una per colore
 (è la codifica one-hot della {doc}`sezione sull'apprendimento
-supervisionato </MachineLearning/apprendimento-supervisionato>`), e il Lasso le
+supervisionato </MachineLearning/apprendimento-supervisionato>`). Il Lasso le
 compra una per una: può tenere «rosso» e lasciare «verde», come se il colore
 contasse per le auto rosse e non per le verdi. Lo stesso colore si scrive anche
 con tre colonne, togliendo quella del verde, che fa da zero come in un
@@ -798,21 +790,21 @@ scritti così il Lasso può lasciare colori diversi: la conclusione dipendeva
 dalla scrittura, non dai dati.
 
 Il **lasso a gruppi** vende ogni gruppo come un pacchetto, al prezzo della sua
-lunghezza, che è l'ipotenusa di Pitagora con quanti cateti servono: si sommano i
-quadrati dei pesi e si prende la radice. Due pesi da $0{,}3$ e $0{,}4$ fanno
+lunghezza, che è l'ipotenusa di Pitagora con quanti cateti servono: si sommano
+i quadrati dei pesi e si prende la radice. Due pesi da $0{,}3$ e $0{,}4$ fanno
 $0{,}09 + 0{,}16 = 0{,}25$, cioè un pacchetto lungo $0{,}5$. Poi toglie a ogni
 pacchetto un pezzo fisso di lunghezza, come il Lasso toglie a ogni peso lo
 stesso tanto: il pacchetto più corto di quel pezzo sparisce tutto, quello più
 lungo resta, e così entra intero o resta fuori intero. Dentro, i pesi si
 spartiscono la spesa come nel Ridge, e nessuno viene azzerato da solo. Il pezzo
 tolto, però, cresce con la radice di quanti pesi il pacchetto contiene, e per
-quattro pesi è il doppio: anche una colonna inutile riceve dal caso un pesetto,
-e quattro pesetti fanno un pacchetto più lungo di uno solo, che con lo stesso
-pezzo per tutti entrerebbe soltanto perché è grosso.
+quattro pesi è il doppio. Serve perché anche una colonna inutile riceve dal
+caso un pesetto, e quattro pesetti fanno un pacchetto più lungo di uno solo:
+con lo stesso pezzo per tutti, entrerebbe soltanto perché è grosso.
 
-I pacchetti li confeziona chi scrive il modello, e il metodo li prende per
+Chi scrive il modello confeziona i pacchetti, e il metodo li prende per
 buoni. Chi mette nello stesso pacchetto il colore e l'età dell'auto se li vede
-entrare e uscire insieme, anche se conta soltanto il colore. E se il pacchetto
+entrare e uscire insieme, anche se conta soltanto il colore. Se il pacchetto
 dell'età contiene l'età, il suo quadrato e il suo cubo, e conta solo l'età, chi
 vuole poter scartare il quadrato e il cubo aggiunge un po’ del listino del
 Lasso: il pacchetto entra, ma dentro i pesi inutili possono ancora andare a
@@ -859,7 +851,7 @@ $$
 
 dove il fattore $m$ viene dalla media nella loss. La matrice è invertibile per
 ogni $\lambda>0$, anche con colonne collineari o con più colonne che esempi,
-cioè proprio dove le equazioni normali degeneravano. Con colonne ortogonali,
+cioè dove le equazioni normali degeneravano. Con colonne ortogonali,
 $\mathbf{X}^\top\mathbf{X} = m\,\mathbf{I}$, le due penalità si leggono
 coefficiente per coefficiente a partire dalla stima dei minimi quadrati
 $\hat{\theta}_j$: Ridge la divide, $\hat{\theta}_j/(1+\lambda)$, e non la
@@ -872,7 +864,7 @@ si ottiene Ridge con $\lambda = \sigma^2/(m\tau^2)$, e con un prior di Laplace
 si ottiene il Lasso, che non ha forma chiusa e in scikit-learn si risolve per
 discesa coordinata.
 
-Due cose le formule le dicono in silenzio. La prima è che l'indice $j$ corre da
+Le formule sottintendono due cose. La prima è che l'indice $j$ corre da
 $1$ a $n$, cioè sulle sole caratteristiche: l’intercetta non è penalizzata. Se
 lo fosse, il modello dipenderebbe dall'origine scelta per $y$, e sommare una
 costante a tutte le etichette (per esempio misurarle in gradi Kelvin invece che
@@ -881,7 +873,7 @@ senso. La seconda è che la penalità mette sullo stesso piano pesi che vivono s
 scale diverse, e quindi presuppone feature standardizzate: il peso che
 moltiplica un reddito in euro è piccolo per forza, e la penalità lo lascerebbe
 in pace mentre schiaccia quello di una percentuale. Vale qui la stessa
-avvertenza del k-NN e delle SVM, con la differenza che qui è meno visibile,
+avvertenza del k-NN, con la differenza che qui è meno visibile,
 perché un modello mal regolarizzato funziona comunque, solo peggio: `Ridge` e
 `Lasso` non standardizzano da soli, e vanno messi dietro uno `StandardScaler`
 dentro una `Pipeline`, la catena di passaggi che scikit-learn tratta come se
@@ -896,23 +888,21 @@ insieme, il cosiddetto *grouping effect*. Con feature molte e correlate è un
 punto di partenza ragionevole, da confrontare in validazione incrociata con le
 due penalità pure.
 
-Un avvertimento sulla lettera $\alpha$, che qui fa due mestieri
-diversi. Nella formula dell'Elastic Net è il **rapporto di miscela** fra le due
-penalità ($\alpha = 1$ è Lasso puro, $\alpha = 0$ è Ridge puro) e non ha niente
-a che vedere con la loro intensità, che resta $\lambda$. Nel codice, invece,
-l'argomento `alpha` di `Ridge`, `Lasso` ed `ElasticNet` fa il mestiere
-dell’**intensità**, cioè del nostro $\lambda$, mentre la miscela lì si chiama
-`l1_ratio`. Fa il mestiere, però non è lo stesso numero, e la ragione è dove
-ciascuna libreria mette la divisione per il numero di esempi: la loss qui
-è mediata sugli esempi e la penalità no, mentre `Ridge` non media affatto e
-`Lasso` divide per $2m$.
-A parità di soluzione, $\lambda = \texttt{alpha}/m$ per la prima e
-$\lambda = 2\,\texttt{alpha}$ per la seconda. Sono due tradizioni che si sono incrociate su una lettera sola:
-conviene guardare che cosa fa il parametro, non come si chiama.
+La lettera $\alpha$ ha qui due ruoli diversi. Nella
+formula dell'Elastic Net è il **rapporto di miscela** fra le due penalità
+($\alpha = 1$ è Lasso puro, $\alpha = 0$ è Ridge puro) e non ha niente a che
+vedere con la loro intensità, che resta $\lambda$. Nel codice, invece,
+l'argomento `alpha` di `Ridge`, `Lasso` ed `ElasticNet` determina
+l’**intensità**, cioè il nostro $\lambda$, mentre la miscela lì si chiama
+`l1_ratio`. Il ruolo coincide, ma il numero no, e la ragione è dove ciascuna
+libreria mette la divisione per il numero di esempi: la loss qui è mediata
+sugli esempi e la penalità no, mentre `Ridge` non media affatto e `Lasso`
+divide per $2m$. A parità di soluzione, $\lambda = \texttt{alpha}/m$ per la
+prima e $\lambda = 2\,\texttt{alpha}$ per la seconda.
 
 Quando i gruppi sono noti in anticipo (le colonne indicatrici di una variabile
 categorica, i termini di un polinomio nella stessa variabile) il Lasso li
-spezza: sulle indicatrici tiene alcuni livelli e ne azzera altri, e quali
+spezza: sulle indicatrici tiene alcuni livelli e ne azzera altri, e quali tenga
 dipende dalla codifica, per esempio dal livello scelto come riferimento, che è
 una convenzione e non un fatto dei dati. Il **group lasso**, proposto da Bakin
 {cite}`bakin1999adaptive` e studiato da Yuan e Lin {cite}`yuan2006model`, impone
@@ -935,29 +925,30 @@ blocchi; se le colonne del blocco non contano, il membro di sinistra cresce per
 puro caso come $\sqrt{p_g}$, e senza il fattore un blocco grande entrerebbe più
 spesso solo perché è grande. Con colonne ortonormali la condizione, elevata al
 quadrato, confronta con una soglia la somma dei quadrati spiegata dal blocco
-divisa per $p_g$, come il test $F$ dell'analisi della varianza, ed è la ragione
-per cui Yuan e Lin scelgono questo fattore. E $p_g$ coefficienti tutti uguali ad
+divisa per $p_g$, come il test $F$ dell'analisi della varianza, e
+per questo Yuan e Lin scelgono quel fattore. E $p_g$ coefficienti tutti uguali ad
 $a$ hanno norma $a\sqrt{p_g}$, quindi pagano $p_g a$, quanto il Lasso li farebbe
 pagare uno per uno.
 
 Se le colonne di ogni blocco sono ortonormali nella scala della media
 ($\mathbf{X}_g^\top\mathbf{X}_g = m\,\mathbf{I}$) e i blocchi sono ortogonali
 fra loro, la soluzione si scrive blocco per blocco, a partire dalla stima dei
-minimi quadrati $\hat{\theta}_g$, come
-$\big(1 - \lambda\sqrt{p_g}/(2\lVert\hat{\theta}_g\rVert_2)\big)_+\,\hat{\theta}_g$:
-è il *soft thresholding* del Lasso applicato alla lunghezza del blocco invece
-che al singolo coefficiente. L'ortonormalità dentro i blocchi, che Yuan e Lin
-assumono in tutto il lavoro, fa più che semplificare i conti. La norma
-$\lVert\theta_g\rVert_2$ non cambia se la base del blocco ruota, ma cambia sotto
-un cambio di base qualsiasi, e solo con blocchi ortonormalizzati la soluzione
-dipende dallo spazio generato dalle colonne e non dai contrasti con cui si è
-scritta la variabile; una variabile a quattro livelli ha tre gradi di libertà, e
-il suo $p_g$ è $3$. Su blocchi non ortonormali il metodo prende ancora il blocco
-intero o niente, ma il $\lambda$ a cui lo prende torna a dipendere dalla
-codifica. Con la sola ortonormalità dentro i blocchi, la stessa formula
-applicata a turno a ogni blocco, sul residuo lasciato dagli altri, è l'algoritmo
-di Yuan e Lin; nel caso generale la si usa come passo di un metodo del gradiente
-prossimale, con soglia $\lambda\sqrt{p_g}$ moltiplicata per il passo.
+minimi quadrati $\hat{\theta}_g$, come $\big(1 -
+\lambda\sqrt{p_g}/(2\lVert\hat{\theta}_g\rVert_2)\big)_+\,\hat{\theta}_g$: è il
+*soft thresholding* del Lasso applicato alla lunghezza del blocco invece che al
+singolo coefficiente. L'ortonormalità dentro i blocchi, che Yuan e Lin assumono
+in tutto il lavoro, non serve solo a semplificare i conti. La norma
+$\lVert\theta_g\rVert_2$ non cambia se la base del blocco ruota, ma cambia
+sotto un cambio di base qualsiasi, e solo con blocchi ortonormalizzati la
+soluzione dipende dallo spazio generato dalle colonne e non dai contrasti con
+cui si è scritta la variabile; una variabile a quattro livelli ha tre gradi di
+libertà, e il suo $p_g$ è $3$. Su blocchi non ortonormali il metodo prende
+ancora il blocco intero o niente, ma il $\lambda$ a cui lo prende torna a
+dipendere dalla codifica. Con la sola ortonormalità dentro i blocchi, la stessa
+formula applicata a turno a ogni blocco, sul residuo lasciato dagli altri, è
+l'algoritmo di Yuan e Lin; nel caso generale la si usa come passo di un metodo
+del gradiente prossimale, con soglia $\lambda\sqrt{p_g}$ moltiplicata per il
+passo.
 
 Il punto di rottura è la partizione, che il metodo prende per vera: un blocco
 sbagliato entra o esce intero, e se in un blocco conta un solo termine del
@@ -978,7 +969,7 @@ codifica.
 
 `````
 
-Il blocco costruisce una risposta che dipende da una variabile numerica e dal
+Il codice costruisce una risposta che dipende da una variabile numerica e dal
 colore (quattro valori, quindi quattro colonne sì/no), mentre un'altra variabile
 numerica e la regione di provenienza (altre quattro colonne) non contano. Poi
 guarda, per trenta intensità del freno, se il Lasso prende qualche gruppo a
@@ -1059,7 +1050,7 @@ gruppo a metà. Con il freno lieve tiene dentro tutto, i due gruppi che non
 contano con lunghezze piccole ($0{,}02$ e $0{,}10$); al crescere di $\lambda$
 escono prima quei due, poi il colore, e ogni gruppo esce intero. La lunghezza di
 chi resta cala a ogni stretta del freno: è il restringimento, lo stesso del
-Lasso, applicato al blocco. Il blocco non ortonormalizza i gruppi, per restare
+Lasso, applicato al blocco. Il codice non ortonormalizza i gruppi, per restare
 vicino alle colonne sì/no, e al colore dà quattro colonne dove ne basterebbero
 tre: la regola del tutto o niente non ne risente, le intensità a cui i gruppi
 escono sì.
@@ -1070,34 +1061,34 @@ Prima dei freni continui le colonne si sceglievano a salti: si provano dei
 sottoinsiemi e si tiene il migliore. La **selezione del sottoinsieme migliore**
 (*best subset selection*) li prova tutti, e con $p$ colonne sono $2^p$ (ogni
 colonna dentro o fuori, due scelte per ciascuna), più di un milione già con
-venti colonne; la **selezione in avanti** (*forward stepwise selection*) ne
+venti colonne. La **selezione in avanti** (*forward stepwise selection*) ne
 costruisce una catena, aggiungendo a ogni passo la colonna che riduce di più
-l'errore, e quante tenerne lo decide la cross-validation. Il confronto con il
+l'errore, e la cross-validation decide quante tenerne. Il confronto con il
 Lasso dice quando il freno continuo conviene, e quando no.
 
 `````{tab} Elementare
 
 Scegliere a salti è come convocare una squadra: per ogni giocatore si decide
 dentro o fuori, e chi è dentro gioca tutta la partita. Il freno continuo del
-Lasso concede invece a ciascuno dei minuti, e li toglie un po' alla volta.
+Lasso concede invece a ciascuno dei minuti, e li toglie un po’ alla volta.
 
-Il difetto dei salti è che una convocazione cambia per poco. Basta qualche
+Il difetto dei salti è che una convocazione cambia per un nonnulla. Basta qualche
 esempio diverso perché fra due giocatori simili entri l'altro, e con lui cambia
 di colpo il modello intero, come una formazione che per un solo cambio
 ridistribuisce i ruoli di tutti: la scelta a salti è nervosa, e il nervosismo si
-paga in errore sui dati nuovi. Anche il Lasso, da un campione all'altro, può
-cambiare quale di due colonne gemelle tiene, ed è il suo capriccio; ma quando i
+paga in errore sui dati nuovi. Anche il Lasso può cambiare, da un campione
+all'altro, quale di due colonne gemelle tiene (il suo capriccio); ma quando i
 dati si spostano di poco i minuti passano dall'una all'altra poco alla volta, e
 siccome le gemelle dicono quasi la stessa cosa la previsione si sposta appena.
 Può ballare l'elenco dei convocati, mentre la previsione resta quasi ferma.
 
-Ma il freno ha un prezzo suo, perché fa due mestieri con una manopola sola:
+Ma anche il freno ha un difetto, perché fa due cose con una manopola sola:
 toglie minuti a tutti e decide chi resta in panchina. Tirato quanto serve per
 lasciare fuori le riserve, toglie troppi minuti ai titolari; allentato per far
 giocare i titolari, lascia entrare qualche riserva che non servirebbe. C'è poi
-un costo nascosto nella convocazione, ed è la trappola delle mille persone che
+un costo nascosto nella convocazione, la trappola delle mille persone che
 lanciano la moneta: chi prova migliaia di squadre sugli stessi dati ne trova
-sempre una che su quei dati va bene per caso, e il merito che le si attribuisce
+sempre una che su quei dati va bene per caso. Il merito che le si attribuisce
 è gonfiato dalla ricerca stessa, anche se alla fine i convocati sono pochi,
 perché a pesare non è quanti giocano ma quante squadre si sono provate per
 sceglierli. Quando i dati sono chiari, con poco rumore, la squadra convocata
@@ -1112,10 +1103,10 @@ convoca con il freno, e poi ai convocati lo si allenta.
 
 La selezione del sottoinsieme migliore risolve
 $\min_\theta \lVert \mathbf{y} - \mathbf{X}\theta\rVert^2$ con il vincolo
-$\lVert\theta\rVert_0 \le k$, il numero di coefficienti non nulli: un problema
+$\lVert\theta\rVert_0 \le k$, il numero di coefficienti non nulli. È un problema
 combinatorio, NP-difficile in generale, che la programmazione intera mista
 risolve con ottimalità certificata quando le colonne sono centinaia e gli esempi
-migliaia, in minuti per ogni $k$ secondo gli autori {cite}`bertsimas2016best`,
+migliaia: in minuti per ogni $k$ secondo gli autori {cite}`bertsimas2016best`,
 spesso in un'ora o più per chiudere il certificato secondo chi ha rifatto le
 prove {cite}`hastie2020best`. La selezione in avanti lo approssima in modo
 avido, con $O(p^2)$ adattamenti ai minimi quadrati lungo il cammino, e il Lasso
@@ -1123,9 +1114,9 @@ ne è il rilassamento convesso, con $\lVert\theta\rVert_1$ al posto di
 $\lVert\theta\rVert_0$. Breiman ha mostrato, con un argomento euristico e con
 simulazioni, che la selezione del sottoinsieme è *instabile* (cambiare pochi
 esempi può cambiare il sottoinsieme scelto) mentre la regressione ridge è
-stabile, e che l'instabilità si paga nella scelta della complessità: con la
+stabile. Questa instabilità si paga nella scelta della complessità: con la
 sfera di cristallo, cioè scegliendo $k$ sull'errore vero, il sottoinsieme
-batteva spesso la ridge, e perdeva il vantaggio quando $k$ andava scelto sui
+batteva spesso la ridge, ma perdeva il vantaggio quando $k$ andava scelto sui
 dati {cite}`breiman1996heuristics`. Il Lasso sta dalla parte della ridge: a
 $\lambda$ fissato la sua previsione $\mathbf{X}\hat{\theta}$ è una funzione
 continua di $\mathbf{y}$, mentre quella del sottoinsieme migliore e della
@@ -1145,26 +1136,27 @@ osservazionali già un rapporto di $1$, cioè un modello che spiega metà della
 varianza di $y$, è raro, e uno di $6$ è inaudito. Il *relaxed lasso*, che usa
 il Lasso per scegliere e poi restringe meno, è competitivo dappertutto. C'è
 anche un costo nascosto nella scelta a salti. I gradi di libertà effettivi di
-un modello (la somma delle covarianze fra ciascuna previsione e la sua
-etichetta, divisa per $\sigma^2$, che per i minimi quadrati su $k$ colonne
-fissate vale esattamente $k$) superano di molto i $k$ coefficienti che restano
-quando le colonne le ha scelte una ricerca, perché la ricerca stessa ha
-guardato i dati; quelli del Lasso valgono invece il numero atteso di
-coefficienti non nulli {cite}`hastie2020best`.
+un modello sono la somma delle covarianze fra ciascuna previsione e la sua
+etichetta, divisa per $\sigma^2$, e per i minimi quadrati su $k$ colonne
+fissate valgono esattamente $k$. Quando le colonne vengono da una ricerca, i
+gradi di libertà superano di molto i $k$ coefficienti che restano, perché la
+ricerca stessa ha guardato i dati; quelli del Lasso valgono invece il numero
+atteso di coefficienti non nulli {cite}`hastie2020best`.
 
 `````
 
 Il blocco mette alla prova le due strade su cento esempi con venti colonne, di
 cui cinque contano, correlate fra loro tanto più quanto sono vicine
-($0{,}5^{|i-j|}$), a tre rapporti segnale/rumore (quanto è sparpagliata la
-parte di $y$ che le colonne spiegano, divisa per quanto lo è il rumore: le
-varianze dei dati, non quella del modello), trenta campioni per ciascuno. La
-selezione in avanti sceglie quante colonne tenere con una cross-validation a
-cinque blocchi, come fa `LassoCV` per l'intensità del freno, e nessuno dei due
-stima un'intercetta, che i dati non hanno. L'errore è misurato su dati nuovi e
-diviso per la varianza del rumore, quindi $1$ è il meglio possibile, perché il
-rumore nessun modello lo può prevedere; accanto, il blocco stampa lo scarto fra
-i due con il suo errore standard, e quante colonne tiene in media ciascuno.
+($0{,}5^{|i-j|}$). Usa tre rapporti segnale/rumore, con trenta campioni
+per ciascuno; il rapporto è quanto è sparpagliata la parte di $y$ che le
+colonne spiegano divisa per quanto lo è il rumore (le varianze dei dati, non
+quella del modello). La selezione in avanti sceglie quante colonne tenere con
+una cross-validation a cinque blocchi, come fa `LassoCV` per l'intensità del
+freno, e nessuno dei due stima un'intercetta, che i dati non hanno. L'errore è
+misurato su dati nuovi e diviso per la varianza del rumore, quindi $1$ è il
+meglio possibile, perché nessun modello può prevedere il rumore; accanto, il
+blocco stampa lo scarto fra i due con il suo errore standard, e quante colonne
+tiene in media ciascuno.
 
 ```python
 import numpy as np
@@ -1238,30 +1230,30 @@ rovescia, e la selezione in avanti arriva a $1{,}09$ contro $1{,}12$. Su questi
 trenta campioni ogni scarto vale più di tre volte il suo errore standard.
 L'ultima colonna dice perché il Lasso perde dove i dati sono chiari: tiene in
 media quasi nove colonne, quando quelle che contano sono cinque, mentre la
-selezione in avanti ne tiene poco più di cinque. È, in piccolo, quello che
-Hastie, Tibshirani e Tibshirani trovano su un confronto molto più ampio: il
-freno continuo conviene quando il rumore rende nervosa ogni convocazione, la
-scelta a salti quando i dati sono abbastanza chiari da convocare bene.
+selezione in avanti ne tiene poco più di cinque. In piccolo, coincide con il
+risultato di un confronto molto più ampio di Hastie, Tibshirani e Tibshirani: il
+freno continuo conviene quando il rumore rende instabile ogni selezione, la
+scelta a salti quando i dati sono abbastanza chiari da selezionare bene.
 
 ## Il rasoio di Occam
 
 Sotto tutto questo c'è un principio antico. Nel XIV secolo il frate francescano
-**Guglielmo di Occam** enunciò quello che oggi chiamiamo il *rasoio*, riassunto
-poi nella formula *entia non sunt multiplicanda praeter necessitatem*, non
-moltiplicare le entità oltre il necessario (la frase esatta, per la cronaca,
+**Guglielmo di Occam** enunciò il principio che oggi chiamiamo *rasoio*,
+riassunto poi nella formula *entia non sunt multiplicanda praeter necessitatem*,
+non moltiplicare le entità oltre il necessario (la frase esatta, per la cronaca,
 non compare nei suoi scritti: la coniò un commentatore del Seicento). Tradotto
-per noi: a parità di capacità di spiegare i dati, scegli
-il modello più semplice.
+per noi: a parità di capacità di spiegare i dati, scegli il modello più
+semplice.
 
 La regolarizzazione mette il rasoio di Occam in formule: il parametro $\lambda$
-è il prezzo che si fa pagare alla complessità, misurata qui come grandezza dei
-pesi, così che il modello la compri solo quando serve davvero. La curva morbida
-del pannello centrale di {numref}`fig-overfitting` vince non perché sia la più
-elaborata, ma perché è la più semplice tra quelle che rendono conto dei dati. A
+è il prezzo applicato alla complessità, misurata qui come grandezza dei pesi,
+così che il modello la acquisti solo quando serve. La curva morbida del pannello
+centrale di {numref}`fig-overfitting` è la più semplice fra quelle che rendono
+conto dei dati, e per questo vince. A
 parità di errore sui dati, una regola semplice ha meno probabilità di essere una
-coincidenza fortunata, ed è per questo che la semplicità aiuta a generalizzare;
+coincidenza fortunata, e per questo la semplicità aiuta a generalizzare;
 che cosa conti come semplice, però, non si riduce al numero di parametri, come
-mostra la sezione che segue.
+mostra la doppia discesa.
 
 (sec-doppia-discesa)=
 
@@ -1297,17 +1289,17 @@ queste.
 `````{tab} Elementare
 
 Qualcuno ha fatto la cosa che i manuali sconsigliavano: ha continuato a
-ingrandire il modello *oltre* il punto in cui impara a memoria ogni esempio. E
-l'errore sul test, dopo essere risalito come previsto, è tornato a scendere.
-Non un caso fortunato: un fenomeno riproducibile, chiamato **doppia discesa**.
+ingrandire il modello *oltre* il punto in cui impara a memoria ogni esempio.
+L'errore sul test, dopo essere risalito come previsto, è tornato a scendere, e
+non per fortuna: il fenomeno è riproducibile e si chiama **doppia discesa**.
 
 La curva, insomma, è una U seguita da una seconda discesa. Il picco sta
-esattamente nel punto di **interpolazione**, cioè dove il modello riesce per la
+nel punto di **interpolazione**, cioè dove il modello riesce per la
 prima volta a passare per tutti i punti (in matematica si dice *interpolare*) e
 non gli avanza niente.
 
-E l'addestramento sceglie davvero, fra le infinite curve che passano per tutti i
-punti, quella meno tormentata? Per i modelli lineari è dimostrato: la discesa
+Fra le infinite curve che passano per tutti i punti, l'addestramento tende a
+scegliere quella meno tormentata. Per i modelli lineari è dimostrato: la discesa
 del gradiente (la procedura a piccoli passi vista con la retta di best fit),
 partendo da zero e muovendosi a passettini finché non riproduce i dati, arriva a
 quella con i pesi più piccoli. Per le reti profonde è l'ipotesi più studiata,
@@ -1318,8 +1310,8 @@ soluzione gentile.
 La gobba, poi, non compare soltanto ingrandendo il modello. Si vede anche
 allungando l'addestramento, e perfino aumentando i dati: se il modello sta
 vicino al punto di interpolazione, raccogliere altri esempi può fargli fare
-peggio, perché lo spinge proprio là dove non ha margine. Ma non compare
-sempre: la si vede soprattutto quando fra le risposte giuste ce n'è una quota
+peggio, perché lo spinge dove non ha margine. Ma non compare
+sempre: la si vede soprattutto quando una parte delle risposte date per giuste è
 sbagliata, e il prezzo messo sui pesi grandi l'appiana.
 
 Ne esce un solo consiglio pratico. Quando l'errore sui dati nuovi ha toccato il
@@ -1332,56 +1324,56 @@ ingrandire ancora, qualche volta, ripaga.
 
 Il fenomeno è stato descritto sistematicamente da Belkin e colleghi (2019)
 {cite}`belkin2019reconciling` e poi sulle reti profonde da Nakkiran e colleghi
-(2020) {cite}`nakkiran2020deep`. Tre precisazioni che evitano
-di trarne la conclusione sbagliata.
+(2020) {cite}`nakkiran2020deep`.
 
-Non è solo la taglia del modello. La doppia discesa si osserva anche
+La doppia discesa non dipende solo dalla taglia del modello. Si osserva anche
 rispetto al *tempo di addestramento* (epoch-wise) e alla *quantità di dati*, e
 in quest'ultimo caso produce l'effetto contro-intuitivo per cui, vicino al
-punto di interpolazione, aggiungere dati può peggiorare il test error.
+punto di interpolazione, aggiungere dati può peggiorare l'errore di test.
 
-Il rasoio di Occam regge, se si cambia che cosa si misura. Il numero di
-parametri è un pessimo proxy della complessità di una rete, e la candidata più
-studiata al suo posto è una misura di norma della soluzione trovata, la
-stessa da cui partono i {doc}`bound di norma della teoria dell'apprendimento
+Il rasoio di Occam resta valido se si cambia il modo di misurare la
+complessità. Il numero di parametri è un pessimo indicatore della complessità
+di una rete, e la candidata più studiata al suo posto è una misura di norma
+della soluzione trovata, la stessa da cui partono i {doc}`bound di norma della
+teoria dell'apprendimento
 </TeoriaApprendimento/garanzie-e-reti>`. In due casi il
-legame con l'algoritmo è un teorema: sui minimi quadrati con più parametri che
-esempi la discesa del gradiente partita da zero converge alla soluzione
-interpolante di norma $\ell_2$ minima, un fatto classico dell'algebra lineare, e
-sulla regressione logistica con dati separabili la direzione dei pesi converge
+legame con l'algoritmo è un teorema. Sui minimi quadrati con più parametri che
+esempi, la discesa del gradiente partita da zero converge alla soluzione
+interpolante di norma $\ell_2$ minima, un fatto classico dell'algebra lineare.
+Sulla regressione logistica con dati separabili, la direzione dei pesi converge
 a quella di massimo margine, come hanno dimostrato Soudry e colleghi
 {cite}`soudry2018implicit`. Sulle reti profonde lo stesso *bias implicito* è
-un'ipotesi con buone prove sperimentali: che «semplice» non si conti in
-parametri è assodato, in che cosa si conti no.
+un'ipotesi con buone prove sperimentali: è assodato che «semplice» non si
+misura in parametri, ma resta aperto in che cosa si misuri.
 
 Si vede soprattutto con le etichette sporche, e la regolarizzazione appiana il
-picco. La prima affermazione è degli autori stessi («le osserviamo tutte con più
-forza dove le etichette hanno del rumore»), che però elencano subito dopo i
-casi in cui il picco c'è anche con le etichette pulite, e ne mostrano almeno
-uno in cui sopravvive perfino all'arresto anticipato scelto al meglio. La
-seconda viene da un lavoro successivo dello stesso gruppo
-{cite}`nakkiran2021optimal`: una penalità $\ell_2$ tarata al meglio rende
-monotona la curva sui modelli lineari con dati isotropi, e attenua il picco
-anche sulle reti.
+picco. Gli autori stessi notano il legame con le etichette sporche («le
+osserviamo tutte con più forza dove le etichette hanno del rumore»), ma
+elencano subito dopo i casi in cui il picco c'è anche con le etichette pulite,
+e ne mostrano almeno uno in cui sopravvive perfino all'arresto anticipato
+scelto al meglio. L'effetto della regolarizzazione emerge da un lavoro
+successivo dello stesso gruppo {cite}`nakkiran2021optimal`: una penalità
+$\ell_2$ tarata al meglio rende monotona la curva sui modelli lineari con dati
+isotropi, e attenua il picco anche sulle reti.
 
-Il picco si calcola. Con $p$ colonne gaussiane isotrope, $m$ esempi, $\gamma =
-p/m$, rumore di varianza $\sigma^2$ e segnale $\lVert\boldsymbol\beta\rVert^2 =
-B^2$, la soluzione ai minimi quadrati di norma minima (l'unica per $\gamma<1$,
-l'interpolante di norma $\ell_2$ minima per $\gamma>1$) ha rischio in eccesso
-$\sigma^2\,\gamma/(1-\gamma)$ per $\gamma<1$ e
-$B^2(1-1/\gamma)+\sigma^2/(\gamma-1)$ per $\gamma>1$, per $m,p\to\infty$ a
-$\gamma$ fisso {cite}`hastie2022surprises`. Diverge in $\gamma=1$, dove il
-sistema $\mathbf{X}\boldsymbol\beta=\mathbf{y}$ ha una sola soluzione e
-$\mathbf{X}$ è quasi singolare, e per $\gamma\to\infty$ tende a $B^2$, il
-rischio del predittore nullo. Con $\sigma^2=0$ il picco non c'è, in questo
-modello, ed è per questo che la doppia discesa è più evidente con le etichette
+Nel caso lineare il picco si calcola. Con $p$ colonne gaussiane isotrope, $m$
+esempi, $\gamma = p/m$, rumore di varianza $\sigma^2$ e segnale
+$\lVert\boldsymbol\beta\rVert^2 = B^2$, la soluzione ai minimi quadrati di
+norma minima è l'unica per $\gamma<1$ e l'interpolante di norma $\ell_2$ minima
+per $\gamma>1$. Il suo rischio in eccesso vale $\sigma^2\,\gamma/(1-\gamma)$
+per $\gamma<1$ e $B^2(1-1/\gamma)+\sigma^2/(\gamma-1)$ per $\gamma>1$, nel
+limite $m,p\to\infty$ a $\gamma$ fisso {cite}`hastie2022surprises`. Diverge in
+$\gamma=1$, dove il sistema $\mathbf{X}\boldsymbol\beta=\mathbf{y}$ ha una sola
+soluzione e $\mathbf{X}$ è quasi singolare, e per $\gamma\to\infty$ tende a
+$B^2$, il rischio del predittore nullo. Con $\sigma^2=0$ il picco non c'è, in
+questo modello, e per questo la doppia discesa è più evidente con le etichette
 rumorose.
 
 Resta parecchio da capire: quali architetture e quali regimi la mostrino, e
-perché il bias implicito abbia la forma che ha. Il consiglio di fondo non cambia
-(misurare su dati mai visti, tenere il test chiuso); cambia un dettaglio: il
-primo minimo della curva di validazione non è detto che sia il migliore, e un
-modello che sembra troppo grande vale comunque una prova.
+perché il bias implicito abbia la forma che ha. Il consiglio di fondo resta lo
+stesso (misurare su dati mai visti, tenere il test chiuso), con un'aggiunta: il
+primo minimo della curva di validazione può non essere il migliore, e un
+modello che sembra troppo grande merita comunque una prova.
 
 `````
 
@@ -1398,7 +1390,7 @@ l'addestramento aggiusta (la {doc}`sezione sul percettrone
 se fossero tutti uguali, tutti i collegamenti di uno strato riceverebbero la
 stessa correzione e resterebbero uguali per sempre, e la rete non potrebbe
 specializzarsi. Una rete grande ha milioni di pesi. **Potare** vuol dire
-azzerare i pesi più piccoli in valore assoluto, che contano meno nella risposta:
+azzerare i pesi più piccoli in valore assoluto, che contano meno:
 tagliarli non cambia quasi la risposta, e quello che resta è una **sottorete**.
 
 ```{figure} ../figures/lottery-ticket-hypothesis.svg
@@ -1411,12 +1403,12 @@ nell'inizializzazione: quella sottorete funziona solo se riparte dai *suoi*
 pesi iniziali, quelli che aveva nella rete grande.
 ```
 
-La condizione in coda a {numref}`fig-biglietto-vincente` è ciò che rende
-questa idea, che si chiama **ipotesi del biglietto vincente**, interessante
-invece che ovvia. Se si riprende la stessa sottorete e
-la si inizializza da capo a caso, non impara altrettanto bene: il biglietto sta
-nella coppia fra la forma della sottorete e i numeri con cui è
-nata. Sovradimensionare, in questa lettura, serve a comprare molti biglietti.
+L'idea si chiama **ipotesi del biglietto vincente** (*lottery ticket
+hypothesis*), e la condizione in coda a {numref}`fig-biglietto-vincente` la
+rende interessante invece che ovvia. Se si riprende la stessa sottorete e la si
+inizializza da capo a caso, non impara altrettanto bene: il biglietto sta nella
+coppia fra la forma della sottorete e i numeri con cui è nata.
+Sovradimensionare, in questa lettura, serve a comprare molti biglietti.
 
 `````{tab} Elementare
 
@@ -1430,22 +1422,23 @@ Frankle e Carbin (2019) hanno provato una cosa diversa. Dopo aver potato, invece
 di ripartire con pesi casuali nuovi, hanno riavvolto i pesi sopravvissuti ai
 valori casuali che avevano *all'inizio*, prima di qualsiasi addestramento. Quella
 sottorete minuscola, riaddestrata da sola, raggiunge l'accuratezza della rete
-piena. E il giro si può ripetere: si pota ancora, si riavvolge ancora, e la
+piena. Il giro si può ripetere: si pota ancora, si riavvolge ancora, e la
 sottorete si stringe di volta in volta.
 
-La rete grande, allora, non serve tutta. Serve perché, fra le sue milioni di
+La rete grande, allora, non serve tutta. Serve perché, fra i suoi milioni di
 connessioni inizializzate a caso, ne contiene per fortuna un sottoinsieme già
 disposto bene per il compito; il resto è impalcatura. Da qui il nome,
 biglietto vincente, e la rete grande come un mazzo di biglietti comprati
 tutti insieme.
 
-Il seguito ha corretto due cose, e conoscerle evita di prendere l'idea per più
-di quello che è. Sulle reti grandi e sui dati veri il riavvolgimento fino al
+Il seguito ha corretto due punti, e conoscerli evita di attribuire all'idea più
+di quanto dimostri. Sulle reti grandi e sui dati veri il riavvolgimento fino al
 primo giorno smette di funzionare: bisogna tornare indietro un po’ meno, a dopo
 qualche giro di addestramento. Il biglietto, quindi, prende forma nelle prime
-ore di scuola invece di essere già stampato alla nascita. E per trovarlo la
-rete intera va addestrata comunque, più di una volta: è un modo di capire a che
-cosa serva tutta quella taglia, non una scorciatoia per allenare reti piccole.
+ore di scuola invece di essere già stampato alla nascita. Inoltre, per trovarlo
+la rete intera va addestrata comunque, più di una volta: è un modo di capire a
+che cosa serva tutta quella taglia, non una scorciatoia per allenare reti
+piccole.
 
 `````
 
@@ -1458,12 +1451,12 @@ riportano i sopravvissuti ai valori in $\theta_0$, si riaddestra, si ripete. Le
 sottoreti trovate pesavano spesso meno del $10$–$20\%$ della rete di partenza, e
 raggiungevano l'accuratezza piena in un numero comparabile di iterazioni.
 
-Due avvertenze di onestà, perché il risultato è più fragile di come viene
+Il risultato è più fragile di come viene
 spesso citato.
 
 Alla scala grande la ricetta va corretta, e la correzione non è nel lavoro del
 2019 ma in uno successivo di Frankle e Carbin con Dziugaite e Roy
-{cite}`frankle2020linear`: su reti profonde e dataset seri il riavvolgimento a
+{cite}`frankle2020linear`. Su reti profonde e dataset grandi il riavvolgimento a
 $\theta_0$ smette di funzionare, e si riavvolge invece a un $\theta_k$ dopo
 qualche iterazione di addestramento (*rewinding* tardivo). Il biglietto,
 quindi, non è del tutto presente all'inizializzazione: si forma nelle prime
@@ -1472,21 +1465,20 @@ fasi.
 Non è un metodo di compressione pratico. Per *trovare* il biglietto
 bisogna addestrare la rete piena, più volte. Il valore è conoscitivo (dice
 qualcosa su cosa fa la sovraparametrizzazione) non computazionale. Per
-comprimere davvero si usano la potatura strutturata e la quantizzazione, che
-sono il mestiere del {doc}`capitolo sull'efficienza </Efficienza/overview>`.
+comprimere si usano la potatura strutturata e la quantizzazione, che
+sono il tema del {doc}`capitolo sull'efficienza </Efficienza/overview>`.
 
-Il filo con la doppia discesa è comunque lo stesso: il numero di parametri
-misura male la complessità. La doppia discesa lo mostra dall'esterno, guardando
-la curva d'errore; il biglietto vincente dall'interno, guardando cosa la rete
-usa davvero.
+Il biglietto vincente arriva comunque alla stessa conclusione della doppia
+discesa: il numero di parametri misura male la complessità. La doppia discesa
+lo mostra dall'esterno, guardando la curva d'errore; il biglietto vincente
+dall'interno, guardando quali parti della rete contribuiscono al risultato.
 
 `````
 
-Attenzione a non trarne la conclusione sbagliata. Doppia discesa e biglietto
-vincente non smontano nulla di ciò che viene prima: dicono soltanto che
-«quanto è complesso un modello» non si conta in parametri. Tenere il test
-chiuso, misurare su dati mai visti e far pagare un prezzo alla complessità
-restano esattamente ciò che erano, e sono le cose da portarsi via.
+Doppia discesa e biglietto
+vincente non smontano nulla di ciò che viene prima: dicono che la complessità di
+un modello non si conta in parametri. Tenere il test chiuso, misurare su dati
+mai visti e penalizzare la complessità restano validi come prima.
 
 `````{tab} Elementare
 
@@ -1510,17 +1502,17 @@ restano esattamente ciò che erano, e sono le cose da portarsi via.
 - Per accorgersene bisogna misurare su dati che il modello non ha usato: si
   divide in tre, studio, prove, esame. L'esame (il *test*) si apre una sola
   volta, alla fine: ogni sbirciata lo consuma e il voto diventa più generoso
-  del vero. E anche i preparativi (rimettere le colonne in scala, riempire le
+  del vero. Anche i preparativi (rimettere le colonne in scala, riempire le
   caselle vuote) vanno fatti guardando solo la parte di studio.
 - Con pochi dati conviene la cross-validation: si divide in cinque blocchi
   e a turno uno fa da prova, come cinque compiti in classe su cinque parti
   diverse del programma invece di una sola interrogazione. Contano la media dei
   cinque voti e quanto sono discordi. Vale però solo se i cinque compiti
-  chiedono cose davvero diverse: se lo stesso soggetto ricompare in più righe,
+  chiedono cose diverse: se lo stesso soggetto ricompare in più righe,
   le sue righe vanno tenute tutte nello stesso blocco.
 - Per frenare la memorizzazione si mette un prezzo alla complessità: il
   modello può usare pesi grandi solo se ne conviene. Contando la spesa a
-  valori assoluti alcuni pesi vanno esattamente a zero (le caratteristiche
+  valori assoluti alcuni pesi vanno a zero (le caratteristiche
   inutili spariscono), contandola a quadrati si rimpiccioliscono tutti. Le
   colonne che vanno in gruppo si fanno pagare come un pacchetto, che entra o
   esce intero, e i pacchetti li sceglie chi scrive il modello.
@@ -1529,15 +1521,17 @@ restano esattamente ciò che erano, e sono le cose da portarsi via.
   rumore vince il freno continuo, e convocare con il freno per poi allentarlo
   va bene quasi sempre.
 - Il principio antico è il rasoio di Occam: a parità di spiegazione dei dati,
-  vince la spiegazione più semplice. Il principio regge anche per la doppia
+  vince la spiegazione più semplice. Il principio vale anche per la doppia
   discesa, dove oltre il punto in cui il modello impara tutto a memoria
-  ingrandirlo ancora torna a farlo funzionare meglio: quello che conta è quanto
-  sono grandi i pesi, più che quanti pesi ha il modello.
+  ingrandirlo ancora torna a farlo funzionare meglio. Basta che «semplice»
+  voglia dire pesi piccoli, non pochi pesi. Per i modelli lineari è dimostrato
+  che l'addestramento sceglie i pesi più piccoli, per le reti profonde è
+  l'ipotesi più studiata.
 - E una risposta c'è anche alla domanda a che cosa serva tutta quella taglia:
   dentro una rete grande ce n'è una piccola già disposta bene per il compito, e
   funziona solo se riparte dai numeri che aveva all'inizio, o poco dopo quando
-  la rete è grande davvero. Trovarla costa più che addestrare la rete intera,
-  quindi è un modo di capire, non di risparmiare.
+  la rete è molto grande. Trovarla richiede più calcolo che addestrare la
+  rete intera, quindi è un modo di capire, non di risparmiare.
 ```
 
 `````
@@ -1552,7 +1546,7 @@ restano esattamente ciò che erano, e sono le cose da portarsi via.
 - L'errore di test ha forma a U nella complessità: il minimo è il
   compromesso bias-varianza. Oltre il punto di interpolazione, però, la
   curva può riscendere (doppia discesa): il numero di parametri è un
-  pessimo proxy della complessità di una rete.
+  pessimo indicatore della complessità di una rete.
 - Il biglietto vincente guarda lo stesso fatto dall'interno: una rete grande
   contiene una sottorete piccola che, riavviata dai propri pesi iniziali (o da
   quelli di poche iterazioni dopo, sulle reti grandi), si addestra bene quanto
@@ -1578,10 +1572,10 @@ restano esattamente ciò che erano, e sono le cose da portarsi via.
   rapporto segnale/rumore basso vince il Lasso, a rapporto alto (raro sui dati
   osservazionali) la selezione; il relaxed lasso è competitivo in tutti e due i
   regimi.
-- Il rasoio di Occam regge se la complessità non si conta in parametri: sui
-  modelli lineari la discesa del gradiente ha un *bias implicito* dimostrato
-  verso soluzioni di norma piccola, sulle reti profonde è l'ipotesi più
-  studiata.
+- Il rasoio di Occam resta valido se la complessità non si conta in parametri:
+  sui modelli lineari la discesa del gradiente ha un *bias implicito*
+  dimostrato verso soluzioni di norma piccola, sulle reti profonde è l'ipotesi
+  più studiata.
 ```
 
 `````

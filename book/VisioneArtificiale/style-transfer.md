@@ -7,12 +7,10 @@ che è la cartolina della loro città, ridipinta nello stile della *Notte
 stellata* di van Gogh, dell’*Urlo* di Munch, di una composizione di Kandinsky
 {cite}`gatys2016image`. Nessun pittore e nessun filtro fotografico: solo una
 rete convoluzionale e la solita correzione a piccoli passi. Il metodo aveva un
-difetto
-(minuti di calcolo per una singola immagine) ma l'idea era irresistibile, e
-l'anno dopo scappò dal laboratorio: nel giugno 2016 l'app **Prisma** la portò
-in tasca a milioni di persone, con dieci milioni di download nelle prime
-settimane e settanta milioni in quattro mesi. Per un'estate i social si
-riempirono di gatti dipinti alla van Gogh.
+difetto (minuti di calcolo per una singola immagine), ma l'idea era
+irresistibile, e l'anno dopo scappò dal laboratorio: nel giugno 2016 l'app
+**Prisma** la portò in tasca a milioni di persone nel giro di poche settimane.
+Per un'estate i social si riempirono di gatti dipinti alla van Gogh.
 
 Dietro il giocattolo c'è una domanda seria: che cosa sono, per una rete
 neurale, il *contenuto* di un'immagine e il suo *stile*? E si possono
@@ -29,12 +27,12 @@ Il neural style transfer combina il *contenuto* di una foto (cosa c'è) con lo
 
 ## L'idea capovolta: si ottimizza l'immagine, non la rete
 
-Fin qui "addestrare" ha voluto dire una cosa sola: si
+Fin qui "addestrare" ha avuto un solo significato: si
 correggono a piccoli passi i pesi della rete, cioè i numeri interni che
 decidono come si comporta, finché le sue risposte non migliorano. Il neural
-style transfer capovolge lo schema. La rete, una VGG (il nome viene dal
-laboratorio di Oxford che la costruì) già addestrata a riconoscere oggetti sul
-grande archivio di foto etichettate ImageNet {cite}`simonyan2015very`, non
+style transfer capovolge lo schema. La rete è una VGG (il nome viene dal
+laboratorio di Oxford che la costruì), già addestrata a riconoscere oggetti sul
+grande archivio di foto etichettate ImageNet {cite}`simonyan2015very`, e non
 impara nulla: i suoi pesi restano congelati. A muoversi, un piccolo passo
 alla volta, sono i pixel dell'immagine.
 
@@ -43,19 +41,18 @@ alla volta, sono i pixel dell'immagine.
 Un critico d'arte dal giudizio infallibile ma immobile: non cambia mai idea, sa
 solo valutare. Gli mostri una tela e lui ti dice due cose: quanto la scena
 somiglia ancora alla tua foto, e quanto la pennellata somiglia a quella del
-quadro che vuoi imitare. E non si ferma ai due voti: per ogni puntino della tela
+quadro che vuoi imitare. Non si ferma ai due voti: per ogni puntino della tela
 sa dirti se, per migliorarli, conviene schiarirlo o scurirlo, e di quanto. Tu
 ritocchi la tela un pochino in quella direzione, gliela rimostri, ritocchi
 ancora: centinaia di volte. Alla fine la tela è la tua foto, ma dipinta.
 
-Una domanda che viene naturale: da che cosa si parte, la prima volta? Da quello
-che si vuole, e cambia meno di quanto si creda. Partire dalla foto stessa dà al
-critico metà del lavoro già fatto, e il risultato si piega un poco verso la
-disposizione della foto; partire da una tela di puntini a caso, quello che si
-chiama rumore, come uno schermo televisivo senza segnale, chiede più pazienza.
-Alla fine le tele si somigliano, con una differenza: da una partenza sempre
-uguale esce sempre lo stesso quadro, mentre da puntini diversi escono quadri
-diversi.
+Da che cosa si parte, la prima volta? La scelta conta
+meno di quanto si creda. Partire dalla foto stessa dà al critico metà del
+lavoro già fatto, e il risultato si piega un poco verso la disposizione della
+foto; partire da una tela di puntini a caso, il cosiddetto rumore, come
+uno schermo televisivo senza segnale, chiede più pazienza. Alla fine le tele si
+somigliano, con una differenza: da una partenza sempre uguale esce sempre lo
+stesso quadro, mentre da puntini diversi escono quadri diversi.
 
 Il critico è la rete convoluzionale: ha già imparato a "vedere" su milioni di
 immagini e qui non deve imparare altro. Ciò che cambia, ritocco dopo ritocco,
@@ -88,23 +85,24 @@ rete), qui usato a uno scopo diverso.
 
 `````
 
-Perché proprio una rete già addestrata? Perché, come abbiamo visto nel
-{doc}`capitolo sul Deep Learning </DeepLearning/overview>` e ritrovato nella
-sezione sul transfer learning, i suoi strati formano una gerarchia: i canali dei
-primi strati rispondono a bordi, colori e piccole trame, quelli profondi a parti
-di oggetti e a oggetti interi, perché a ogni strato cresce il campo recettivo,
-la porzione d'immagine che ciascun canale vede {cite}`zeiler2014visualizing`.
-Serve proprio questo, perché una pennellata e un campanile stanno a due scale
-diversissime e qui vanno giudicati tutti e due, dalla stessa rete, nello stesso
-momento: il contenuto si legge in uno strato profondo, lo stile in strati di
-ogni profondità, dai granelli di colore alle volute larghe.
+Perché una rete già addestrata? Perché i suoi strati formano una
+gerarchia, come abbiamo visto nel {doc}`capitolo sul Deep Learning
+</DeepLearning/overview>` e ritrovato nella sezione sul transfer learning: i
+canali dei primi strati rispondono a bordi, colori e piccole trame, quelli
+profondi a parti di oggetti e a oggetti interi, perché a ogni
+strato cresce il campo recettivo, la porzione d'immagine che ciascun canale
+vede {cite}`zeiler2014visualizing`. Serve questa gerarchia, perché una pennellata
+e un campanile stanno a due scale diversissime e qui vanno giudicati tutti e
+due, dalla stessa rete, nello stesso momento: il contenuto si legge in uno
+strato profondo, lo stile in strati di ogni profondità, dai granelli di colore
+alle volute larghe.
 
 ## Contenuto e stile: cosa c'è, come è dipinto
 
 La scoperta di Gatys e colleghi è che dentro questa gerarchia contenuto e stile
 si lasciano in buona parte separare e ricombinare. Non del tutto: di solito non
 esiste un'immagine che soddisfi alla perfezione insieme il contenuto di una foto
-e lo stile di un quadro, ed è per questo che la loss, più avanti, sarà un
+e lo stile di un quadro. Per questo la loss sarà un
 compromesso fra due termini.
 
 `````{tab} Elementare
@@ -117,20 +115,20 @@ quella è la mano, non il soggetto. È come la grafia di un amico: la riconosci 
 qualunque parola, perché non dipende da *cosa* scrive ma da *come* scrive.
 
 Nella rete succede lo stesso. Il "cosa c'è" abita negli strati profondi, quelli
-che si accendono sugli oggetti e sulla loro disposizione. Lassù la rete registra
-che c'è una casa con un albero a destra, e non di che colore sia ogni singolo
-puntino. Due tele possono avere un colore diverso in ogni punto e accendere gli
-stessi filtri profondi. Sul contenuto il critico si accontenta di quella
-somiglianza, ed è la ragione per cui una foto si può ridipingere da cima a fondo
-senza che la scena vada perduta.
+che si accendono sugli oggetti e sulla loro disposizione. Lassù la rete
+registra che c'è una casa con un albero a destra, e non di che colore sia ogni
+singolo puntino. Due tele possono avere un colore diverso in ogni punto e
+accendere gli stessi filtri profondi. Sul contenuto il critico si accontenta di
+quella somiglianza, e così una foto si può ridipingere da cima a fondo senza
+che la scena vada perduta.
 
-Il "come è dipinto" abita invece in una domanda diversa, e conviene arrivarci
-per gradi. Prendi uno dei primi strati: dentro ci sono qualche decina o
-centinaio di filtri, le lenti piccole che scorrono sull'immagine, e ciascuno si
-accende su una cosa diversa, uno sulle righe oblique, uno sul giallo acceso, uno
-sulle curve strette, uno sul blu scuro. Quelli sono i motivi elementari: non li
-ha scelti nessuno, se li è costruiti la rete addestrandosi su ImageNet, e sono
-gli stessi qualunque quadro le si metta davanti.
+Il "come è dipinto" abita invece in una domanda diversa. Prendi uno dei primi
+strati: dentro ci sono qualche decina o centinaio di filtri, le lenti piccole
+che scorrono sull'immagine, e ciascuno si accende su un motivo diverso, uno
+sulle righe oblique, uno sul giallo acceso, uno sulle curve strette, uno sul
+blu scuro. Quelli sono i motivi elementari: non li ha scelti nessuno, se li è
+costruiti la rete addestrandosi su ImageNet, e sono gli stessi qualunque quadro
+le si metta davanti.
 
 Adesso la domanda: *quali di questi filtri si accendono insieme, negli stessi
 punti del quadro?* Nella *Notte stellata* «curva stretta» e «blu scuro» si
@@ -139,7 +137,7 @@ col blu; «riga obliqua» e «giallo» pure. Si prendono allora tutte le coppie
 possibili di filtri e si conta, per ciascuna, quanto spesso e con quanta forza i
 due si accendono insieme, senza segnarsi dove. Quella tabella di conteggi è la
 carta d'identità della mano del pittore: dice quali ingredienti vanno assieme e
-non dice niente su dove stiano, ed è esattamente per questo che si può
+non dice niente su dove stiano. Per questo si può
 appiccicare a un'altra scena. Con la sola tabella, senza nessuna foto da
 rispettare, si può perfino fabbricare una superficie nuova con la stessa mano:
 una stoffa, una corteccia, un cielo a spirali.
@@ -168,14 +166,14 @@ dove l'elemento $G^{(l)}_{ij}$ è il prodotto scalare tra il canale $i$ e il
 canale $j$: misura quanto i due filtri si attivano *insieme*, sommando su
 tutte le posizioni spaziali. In quella somma la geometria della scena
 sparisce: resta solo la statistica delle co-occorrenze di texture e colori,
-cioè lo stile. È per questo che il risultato conserva la disposizione della
+cioè lo stile. Per questo il risultato conserva la disposizione della
 foto ma non copia i cipressi di van Gogh: della *Notte stellata* sopravvivono
 solo le correlazioni. L'idea viene da un lavoro degli stessi autori di pochi
 mesi prima, sulla sintesi di texture: lì una texture è descritta dalle matrici
 di Gram di una rete convoluzionale, e se ne generano di nuove cercando
 un'immagine che abbia le stesse Gram {cite}`gatys2015texture`. Il
 trasferimento di stile è quella sintesi con un vincolo in più, il contenuto di
-un'altra immagine da tenere fermo, ed è così che lo presentano gli autori
+un'altra immagine da tenere fermo; così lo presentano gli autori
 stessi.
 
 `````
@@ -183,10 +181,10 @@ stessi.
 ## La loss composita: due giudizi in un voto solo
 
 Per fondere le due cose serve un numero che dica quanto la tela è ancora
-sbagliata, e che sommi i due giudizi del critico. Quel numero si chiama loss
-(alla lettera «perdita»), come in ogni addestramento visto finora: più è alto,
-più c'è da correggere, e il gradiente serve appunto ad abbassarlo. Qui la loss,
-scritta $\mathcal{L}$, è la somma di due voci, una per giudice:
+sbagliata, e che sommi i due giudizi del critico. Quel numero si chiama loss,
+come in ogni addestramento visto finora: più è alto, più c'è da correggere, e
+il gradiente serve appunto ad abbassarlo. Qui la loss, scritta $\mathcal{L}$, è
+la somma di due voci, una per giudice:
 
 $$
 \mathcal{L} = \alpha \, \mathcal{L}_{\text{contenuto}} + \beta \, \mathcal{L}_{\text{stile}},
@@ -224,12 +222,11 @@ fino a farsi sentire accanto all'altro. Trovato l'ordine di grandezza,
 l'equilibrio fine è questione di gusto, letteralmente: si prova e si guarda il
 risultato.
 
-Attenzione però a un tranello: quel mille non è un numero universale. Basta
-cambiare la ricetta con cui i due voti si calcolano e cambia anche il rapporto
-che li mette in pari, perché un conto che restituisce voti più piccoli chiede
-un $\beta$ molto più grande per arrivare allo stesso equilibrio. Un
-numero del genere va sempre riletto insieme alla ricetta che lo accompagna, e
-mai copiato da solo.
+Quel mille, però, non è un numero universale. Basta cambiare la ricetta con cui
+i due voti si calcolano e cambia anche il rapporto che li mette in pari, perché
+una normalizzazione che restituisce voti più piccoli chiede un $\beta$ molto
+più grande per arrivare allo stesso equilibrio. Un numero del genere va sempre
+riletto insieme alla ricetta che lo accompagna, e mai copiato da solo.
 
 `````
 
@@ -281,7 +278,7 @@ Bastano poche decine di righe: una VGG-19 congelata da cui leggere le
 attivazioni, un'immagine dichiarata "ottimizzabile" e il solito loop, con
 l'ottimizzatore che riceve i pixel al posto dei pesi. Contenuto e stile, qui,
 sono due fotografie che scikit-learn porta con sé, un tempio e un fiore, ridotte
-a 128 pixel di lato perché il conto resti breve anche senza una GPU.
+a 128 pixel di lato perché l'esecuzione resti breve anche senza una GPU.
 
 ```{code-block} python
 :class: pt-lento
@@ -372,7 +369,7 @@ Da dove si parte. Qui si parte dalla foto, mentre nell'articolo si partiva
 dai puntini a caso. Partire dalla foto fa arrivare al risultato in meno passi e
 piega un po’ l'esito verso la struttura della foto, ma non lo rende «più
 fedele» in generale: gli autori osservano che il punto di partenza incide poco
-sull'esito finale. Quello a cui si rinuncia è la varietà, perché da una
+sull'esito finale. Si rinuncia invece alla varietà, perché da una
 partenza sempre uguale esce sempre la stessa immagine, mentre dai puntini a
 caso se ne possono generare quante se ne vuole.
 
@@ -391,25 +388,24 @@ leggermente più gradevoli, e le immagini famose sono fatte così. Qui usiamo la
 `vgg19` di torchvision com'è, come fa anche il tutorial ufficiale di PyTorch.
 
 Una rete riscalata. Gli autori riscalavano i pesi della VGG in modo che
-l'attivazione media di ogni filtro, su immagini e posizioni, valesse uno. In una
-rete che ha solo ReLU e nessuna normalizzazione questo non cambia l'uscita, ma
-cambia la taglia dei numeri da cui escono le due voci della loss
-{cite}`gatys2016image`. Qui la rete non è riscalata, ed è un'altra ragione per
-cui il rapporto fra $\alpha$ e $\beta$ non si copia da un'implementazione
-all'altra.
+l'attivazione media di ogni filtro, su immagini e posizioni, valesse uno. In
+una rete che ha solo ReLU e nessuna normalizzazione questo non cambia l'uscita,
+ma cambia la taglia dei numeri da cui escono le due voci della loss
+{cite}`gatys2016image`. Qui la rete non è riscalata, e anche per questo il
+rapporto fra $\alpha$ e $\beta$ non si copia da un'implementazione all'altra.
 
 ## L'eredità: da minuti a millisecondi
 
 Il limite del metodo di Gatys è strutturale: ogni immagine è un problema di
 ottimizzazione a sé, centinaia di passi di gradiente ogni volta. Johnson, Alahi
-e Fei-Fei {cite}`johnson2016perceptual` lo aggirarono con una mossa elegante:
-usare la loss di Gatys non per generare un'immagine, ma per addestrare una rete
+e Fei-Fei {cite}`johnson2016perceptual` lo aggirarono usando
+la loss di Gatys non per generare un'immagine ma per addestrare una rete
 che trasforma qualunque foto in quello stile con una passata sola, senza
 ritocchi successivi (in gergo, una rete *feed-forward*). L'ottimizzazione
 costosa si paga una volta sola, in fase di addestramento; dopo, applicare lo
-stile costa circa mille volte meno (tre ordini di grandezza), abbastanza per un
-video in tempo reale. È la famiglia di tecniche che ha reso possibili app come
-Prisma, con il compromesso di una rete da addestrare *per ciascuno stile*. Il
+stile è circa mille volte più rapido (tre ordini di grandezza), abbastanza per un
+video in tempo reale. È la famiglia di tecniche che rende pratiche le app di stile
+sul telefono, con il compromesso di una rete da addestrare *per ciascuno stile*. Il
 compromesso è durato poco: già nel 2016 c'erano reti capaci di più stili, e la
 forma rimasta è quella di Huang e Belongie {cite}`huang2017arbitrary`: per
 trasferire uno stile qualunque basta allineare, canale per canale, media e
@@ -433,17 +429,18 @@ sulle evoluzioni delle GAN </GAN/applicazioni-evoluzioni>` (GAN sta per
 
 La storia poi è proseguita altrove. Per insegnare a un programma a tradurre una
 foto in un quadro il modo ovvio sarebbe mostrargli tante coppie, la stessa
-identica scena fotografata e dipinta, e nessuno le ha: Monet è morto e non torna
-a dipingere su commissione. CycleGAN {cite}`zhu2017unpaired` ha risolto il
-problema imparando senza coppie, da due mucchi separati e non corrispondenti,
-tante foto da una parte e tanti Monet dall'altra. E oggi il trasferimento di
-stile è una delle tante abilità dei modelli di diffusione, i generatori di
-immagini che partono dal rumore e lo ripuliscono un passo alla volta
-{cite}`rombach2022high`: partendo da una fotografia e da un'istruzione scritta,
-la ridipingono nello stile richiesto {cite}`brooks2023instructpix2pix`. Di tutti
-e due parla la stessa sezione sulle GAN. Ma l'idea di fondo, contenuto e stile
-come due conteggi diversi dentro una stessa rete, nasce qui, da una passeggiata
-sul Neckar.
+identica scena fotografata e dipinta, e nessuno le ha: Monet è morto e non
+torna a dipingere su commissione. CycleGAN {cite}`zhu2017unpaired` ha risolto
+il problema imparando senza coppie, da due mucchi separati e non
+corrispondenti, tante foto da una parte e tanti Monet dall'altra. Oggi il
+trasferimento di stile è una delle tante abilità dei modelli di diffusione, i
+generatori di immagini che partono dal rumore e lo ripuliscono un passo alla
+volta {cite}`rombach2022high`: partendo da una fotografia e da un'istruzione
+scritta, la ridipingono nello stile richiesto
+{cite}`brooks2023instructpix2pix`. La {doc}`sezione sulle evoluzioni delle GAN
+</GAN/applicazioni-evoluzioni>` racconta CycleGAN e il passaggio di testimone
+alla diffusione. L'idea di fondo, contenuto e stile come due conteggi diversi
+dentro una stessa rete, nasce comunque qui, da una passeggiata sul Neckar.
 
 `````{tab} Elementare
 
@@ -500,8 +497,5 @@ foto, il riquadro intorno all'oggetto, la maschera dei pixel, le fotografie
 vere che una scena ricostruita doveva rifare, e perfino qui, dove il bersaglio
 era un quadro appeso in un museo. Quando il bersaglio mancava, la rete se lo
 fabbricava da sé, confrontando due viste della stessa foto oppure nascondendone
-un pezzo e provando a indovinarlo. Da qui il bersaglio sparisce del tutto, in
-due tempi: prima con programmi che non imparano niente e se la cavano guardando
-avanti nelle mosse possibili, poi con agenti che imparano e a cui nessuno dice
-mai la risposta giusta, perché l'unica cosa che torna indietro è come è andata
-a finire.
+un pezzo e provando a indovinarlo. Nel capitolo su {doc}`ricerca e pianificazione
+</Ricerca/overview>` il bersaglio sparisce del tutto.

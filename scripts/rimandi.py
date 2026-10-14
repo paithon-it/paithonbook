@@ -13,6 +13,7 @@ Si linka la PRIMA menzione di ogni capitolo in ogni pagina, non tutte: cinque
 link allo stesso posto nella stessa pagina sono rumore. I rimandi alla propria
 cartella non si toccano, e nemmeno quelli gia' dentro un link.
 """
+import bisect
 import re
 import sys
 from pathlib import Path
@@ -67,7 +68,11 @@ ALIAS = {
     "AutoSupervisione": ["auto-supervisione", "autosupervisione",
                          "apprendimento auto-supervisionato"],
     "WorldModels": ["world model", "modelli del mondo", "jepa"],
-    "GraphNeuralNetwork": ["graph neural network", "grafi", "gnn"],
+    # «reti neurali su grafo» va prima di «reti neurali»: vince l'alias
+    # piu' lungo, e senza questo il nome del capitolo sui grafi portava
+    # a quello sulle reti neurali.
+    "GraphNeuralNetwork": ["graph neural network", "reti neurali su grafo",
+                           "reti neurali sui grafi", "grafi", "gnn"],
     "SistemiRaccomandazione": ["sistemi di raccomandazione",
                                "raccomandazione"],
     "SerieTemporali": ["serie temporali"],
@@ -154,9 +159,57 @@ def maschera(testo):
     return fuori
 
 
+# Le spallette di un link (un ruolo come `{doc}` o `{ref}`, un link Markdown)
+# e il codice in linea si coprono, non si saltano: una riga che ha gia' un
+# link puo' avere accanto un rimando in prosa. Si coprono con un segno che non
+# e' ne' spazio ne' lettera: coperta di spazi, «il capitolo {doc}`precedente
+# <x>` sulla visione» si leggerebbe «il capitolo ... sulla visione», cioe' un
+# rimando che nel testo non c'e'.
+COPERTO = "\x00"
+SPALLETTE = re.compile(r"\{[a-z-]+\}`[^`]*`|`[^`]*`|\[[^\]]*\]\([^)]*\)")
+
+# Una voce d'elenco o una riga di tabella comincia un pezzo nuovo: un rimando
+# non scavalca il confine fra due voci.
+NUOVO_PEZZO = re.compile(r"\s*(?:[-*+]\s|\d+\.\s|\|)")
+
+
+def capoversi(righe, saltate):
+    """I pezzi di prosa di una pagina, come (indice della prima riga, righe).
+
+    Il libro va a capo a ottanta colonne, quindi «nel capitolo» in fondo a
+    una riga e «su Python» all'inizio della successiva sono lo stesso
+    rimando, e nessuna delle due righe lo contiene: si cerca nel capoverso.
+    Lo chiudono la riga vuota, una riga mascherata, una voce d'elenco e una
+    riga di tabella, perche' due capoversi sono due frasi diverse.
+    """
+    pezzo, inizio = [], 0
+    for n, riga in enumerate(righe):
+        if n in saltate or not riga.strip():
+            if pezzo:
+                yield inizio, pezzo
+                pezzo = []
+            continue
+        if pezzo and NUOVO_PEZZO.match(riga):
+            yield inizio, pezzo
+            pezzo = []
+        if not pezzo:
+            inizio = n
+        pezzo.append(riga)
+    if pezzo:
+        yield inizio, pezzo
+
+
 def candidati(percorso, overview):
+    """I rimandi da linkare di una pagina, come (riga, colonna d'inizio,
+    colonna di fine, testo, documento, avanzo).
+
+    Riga e colonne sono quelle della riga in cui il rimando comincia; se il
+    nome scavalca l'a capo, la colonna di fine e' la fine della riga e
+    `avanzo` dice quanti caratteri del nome stanno sulla riga dopo, piu' uno
+    per lo spazio che l'a capo diventa. `avanzo` vale -1 quando il rimando sta
+    su piu' di due righe: si conta e si mostra, ma il link si scrive a mano.
+    """
     testo = percorso.read_text()
-    righe_testo = testo.splitlines()
     saltate = maschera(testo)
     mio = percorso.relative_to(RADICE).parts[0]
     # Un capitolo gia' linkato in questa pagina conta come visto: se no la
@@ -164,19 +217,24 @@ def candidati(percorso, overview):
     # Vale QUALUNQUE pagina di quel capitolo, non il solo overview:
     # CONTRIBUTING.md dice di puntare alla SEZIONE che contiene la cosa
     # promessa, quindi una pagina che linka `</Agenti/context-engineering>` ha
-    # gia' fatto il suo lavoro. Cercando il solo overview lo strumento chiedeva
+    # gia' fatto il suo lavoro. Cercando il solo overview lo strumento chiede
     # un secondo link allo stesso capitolo, cioe' proprio il rumore che la
-    # regola vieta: erano 31 delle 102 segnalazioni.
-    visti = {c for c in overview if ("</" + c + "/") in testo}
+    # regola vieta.
+    # E un link conta in tutte le sue forme: con il titolo (`</C/`), senza
+    # (`` `/C/ ``) e in Markdown (`](../C/`).
+    visti = {c for c in overview
+             if any(s + c + "/" in testo for s in ("</", "`/", "](../"))}
     fuori = []
-    for n, riga in enumerate(testo.splitlines()):
-        if n in saltate or "{doc}" in riga or "](../" in riga:
-            continue
-        for m in RIMANDO.finditer(riga):
-            # Il nome del capitolo puo' finire sulla riga dopo: si guarda anche
-            # quella per scegliere il bersaglio, ma il link non ci si allunga.
-            seguito = righe_testo[n + 1] if n + 1 < len(righe_testo) else ""
-            coda = (riga[m.start(2):] + " " + seguito).lower().replace("’", "'")
+    for inizio, righe in capoversi(testo.splitlines(), saltate):
+        # Le posizioni restano quelle del capoverso: si copre, non si toglie,
+        # e l'a capo diventa uno spazio solo nel testo in cui si cerca.
+        piatto = SPALLETTE.sub(lambda m: COPERTO * len(m.group(0)),
+                               "\n".join(righe)).replace("\n", " ")
+        partenze = [0]
+        for r in righe[:-1]:
+            partenze.append(partenze[-1] + len(r) + 1)
+        for m in RIMANDO.finditer(piatto):
+            coda = piatto[m.start(2):].lower().replace("’", "'")
             bersaglio = None
             for cartella, parole in ALIAS.items():
                 for p in parole:
@@ -188,13 +246,22 @@ def candidati(percorso, overview):
             if bersaglio[0] not in overview:
                 continue
             visti.add(bersaglio[0])
+            k = bisect.bisect_right(partenze, m.start()) - 1
             fine = m.start(2) + len(bersaglio[1])
-            # Il nome puo' scavalcare l'a capo: il link se lo tiene dentro, e
-            # l'a capo dentro le spallette diventa uno spazio in resa.
-            avanzo = max(0, fine - len(riga))
-            if avanzo:
-                fine = len(riga)
-            fuori.append((n + 1, m.start(), fine, riga[m.start():fine],
+            dove = bisect.bisect_right(partenze, fine) - 1
+            riga, col = righe[k], m.start() - partenze[k]
+            if dove == k:
+                stop, avanzo = fine - partenze[k], 0
+            elif dove == k + 1:
+                # Il nome scavalca l'a capo: il link se lo tiene dentro, e
+                # l'a capo dentro le spallette diventa uno spazio in resa.
+                stop, avanzo = len(riga), fine - partenze[dove] + 1
+            else:
+                # Due a capo dentro un rimando, a ottanta colonne, non ci
+                # stanno, ma in un testo non ancora riavvolto, a righe corte,
+                # si': il rimando si conta, e chi scrive i link lo lascia a mano.
+                stop, avanzo = len(riga), -1
+            fuori.append((inizio + k + 1, col, stop, riga[col:stop],
                           overview[bersaglio[0]], avanzo))
     return fuori
 
@@ -222,12 +289,15 @@ def main():
         trovati = candidati(percorso, overview)
         if not trovati:
             continue
-        totale += len(trovati)
         rel = percorso.relative_to(RADICE)
         if scrivi:
+            a_mano = [t for t in trovati if t[5] < 0]
+            totale += len(trovati) - len(a_mano)
             righe = percorso.read_text().splitlines(keepends=True)
             for n, col, stop, testo, doc, avanzo in sorted(trovati,
                                                             reverse=True):
+                if avanzo < 0:
+                    continue
                 riga = righe[n - 1].rstrip("\n")
                 if avanzo:
                     taglio = avanzo - 1  # lo spazio finto fra le due righe
@@ -238,8 +308,12 @@ def main():
                     righe[n - 1] = (riga[:col] + "{doc}`" + testo + " <" + doc
                                     + ">`" + riga[stop:] + "\n")
             percorso.write_text("".join(righe))
-            print(f"  {rel}: {len(trovati)} link")
+            print(f"  {rel}: {len(trovati) - len(a_mano)} link")
+            for n, _, _, testo, doc, _a in a_mano:
+                print(f"  {rel}:{n}  «{testo}» -> {doc}: sta su piu' di due"
+                      " righe, il link va scritto a mano")
         else:
+            totale += len(trovati)
             for n, _, _, testo, doc, _a in trovati:
                 print(f"{rel}:{n}  «{testo}» -> {doc}")
     # Il denominatore accanto al numero: uno zero senza «su quanti file» non

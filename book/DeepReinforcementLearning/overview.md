@@ -23,13 +23,12 @@ tattica di scavare un tunnel sul lato del muro per far rimbalzare la pallina
 dietro i mattoni. Nessuno gliel'ha insegnata, e nel punteggio non c'era
 scritta.
 
-Il {doc}`capitolo sul reinforcement learning </ReinforcementLearning/overview>`
-ha consegnato un Q-learning che tiene i suoi conti in una tabella: una casella
-per ogni situazione, e dentro un voto per ciascuna mossa possibile lì. Al suo
-posto arriva una rete neurale, e da questa sostituzione viene il *deep*,
-«profondo», l'aggettivo che si usa per le reti fatte di molti strati
-sovrapposti, quelle del {doc}`capitolo sul deep
-learning </DeepLearning/overview>`.
+Il *deep* del titolo, «profondo», è l'aggettivo che si usa per le reti fatte di
+molti strati sovrapposti, quelle del {doc}`capitolo sul deep
+learning </DeepLearning/overview>`. Una rete così prende il posto della tabella
+in cui il {doc}`capitolo sul reinforcement learning
+</ReinforcementLearning/overview>` registrava i valori: una casella per ogni
+situazione, e dentro un voto per ciascuna mossa possibile lì.
 
 ## Quando la tabella diventa impossibile
 
@@ -43,21 +42,21 @@ La tabella del labirinto era un elenco con una riga per casella, e dentro ogni
 riga un voto per ciascuna mossa. Davanti a un televisore servirebbe una riga per
 ogni schermata che il gioco può mostrare.
 
-Il conto delle schermate possibili l'ha già fatto la {doc}`sezione sugli MDP
-</ReinforcementLearning/mdp-valore>`: una griglia di 84 quadretti per lato, 256
-sfumature di grigio per quadretto, e un numero di schermate di quasi
-diciassettemila cifre. Gli atomi dell'universo sono un 1 seguito da ottanta
-zeri: se ogni atomo tenesse un registro da un miliardo di righe, l'elenco non
-sarebbe nemmeno cominciato.
+La {doc}`sezione sugli MDP </ReinforcementLearning/mdp-valore>` ha già contato
+le schermate possibili: una griglia di 84 quadretti per lato, 256 sfumature di
+grigio per quadretto, e un numero di schermate di quasi diciassettemila cifre.
+Gli atomi dell'universo sono un 1 seguito da ottanta zeri: se ogni atomo
+tenesse un registro da un miliardo di righe, l'elenco non sarebbe nemmeno
+cominciato.
 
-Il guaio non finisce con la carta. Per scrivere il voto di una riga bisogna aver
-giocato quella schermata almeno una volta, e basta che la pallina si sposti di
-un quadretto perché la schermata sia un'altra, con la sua riga da riempire. Otto
+Poi ci sono i dati. Per scrivere il voto di una riga bisogna aver giocato
+quella schermata almeno una volta, e basta che la pallina si sposti di un
+quadretto perché la schermata sia un'altra, con la sua riga da riempire. Otto
 ore al giorno per cinquant'anni fanno scorrere una trentina di miliardi di
 schermate, che non scalfiscono nemmeno quell'elenco.
 
-Il modo di dare i voti regge. A cedere è l'elenco, cioè l'idea di tenere una
-riga per ciascuna schermata.
+L'idea di dare un voto a ogni mossa resta buona; a non funzionare è l'elenco,
+cioè l'idea di tenere una riga per ciascuna schermata.
 
 `````
 
@@ -75,7 +74,7 @@ $$
 $$
 
 un numero di quasi sessantottomila cifre, contro i $\sim 10^{80}$ atomi
-dell'universo osservabile. Una $Q$-table richiederebbe una cella per ciascuno
+dell'universo osservabile. Una $Q$-table richiederebbe una cella per ogni coppia di
 stato $s$ e azione $a$: né la memoria né i dati per visitarli tutti esisteranno
 mai. Il problema è la rappresentazione e non l'algoritmo: enumerare gli stati
 non scala.
@@ -106,15 +105,14 @@ cioè quanto conviene farla lì; si sceglie l'azione di valore più alto.
 Invece dell'elenco con una riga per ogni immagine, addestriamo un "occhio
 esperto" che guarda lo schermo e, sul momento, dà un voto a ciascuna mossa
 possibile ("vai a sinistra: 3", "resta fermo: 1", "vai a destra: 8"). Poi si
-sceglie la mossa col voto più alto. Il bello è che questo occhio, avendo visto
-tante partite, sa dare un voto sensato anche a una schermata mai vista
-prima, perché assomiglia ad altre che conosce. È la differenza fra imparare a
-memoria e capire.
+sceglie la mossa col voto più alto. Avendo visto tante partite, questo occhio sa
+dare un voto sensato anche a una schermata mai vista prima, perché assomiglia
+ad altre che conosce. È la differenza fra imparare a memoria e capire.
 
-Come impara a votare? Giocando, e correggendosi da solo. Dà un voto a una mossa,
-la fa, e guarda che cosa succede: i punti che arrivano subito, più il voto
-migliore che dà alla schermata che si trova davanti dopo. Quel secondo pezzo
-conta meno del primo, perché è roba che deve ancora arrivare; di quanto meno, lo
+L'occhio impara giocando. Dà un voto a una mossa, la fa, e guarda che cosa
+succede: i punti che arrivano subito, più il voto migliore che dà alla
+schermata che si trova davanti dopo. Quel secondo pezzo
+conta meno del primo, perché è roba che deve ancora arrivare, e di quanto meno
 si stabilisce una volta per tutte.
 
 L'occhio aveva dato 8 a "vai a destra". Si fa la mossa: arriva 1 punto, e sulla
@@ -124,13 +122,14 @@ mezzo. Quei due punti e mezzo sono l'errore, e l'occhio si corregge per
 ridurlo. Gli scarti grossi pesano più che in proporzione, perché contano per il
 loro quadrato, e quindi sono i primi a essere sistemati; oltre una certa misura,
 però, si contano soltanto in proporzione, così che un unico voto sballato non
-si trascini dietro tutto il resto. E l'occhio non si sposta per uno scarto
-isolato: si corregge sulla media di tante mosse giocate.
+si trascini dietro tutto il resto. L'occhio non si sposta per uno scarto
+isolato; si corregge sulla media di tante mosse giocate.
 
-Il voto sulla schermata successiva, poi, non lo chiede a sé stesso di adesso: lo
-chiede a una sua copia di qualche tempo prima, messa da parte e lasciata com'era.
+Il voto della schermata successiva, infine, non lo chiede a sé stesso di
+adesso ma a una sua copia di qualche tempo prima, messa da parte e lasciata
+com'era.
 
-C'è anche una seconda strada, e il capitolo le percorre tutt'e due. Invece di
+C'è anche una seconda strada. Invece di
 dare un voto a ogni mossa e prendere il più alto, si allena direttamente la mano
 che sceglie, e la si sposta verso le mosse che nelle partite hanno reso di più.
 
@@ -152,8 +151,7 @@ rete. È l'algoritmo Deep Q-Network (DQN). Nell'implementazione di Mnih e
 colleghi lo scarto è tosato in $[-1,1]$ nel gradiente, cioè il quadrato diventa
 lineare oltre l'unità: è la perdita di Huber. In alternativa si può
 parametrizzare direttamente la *policy* $\pi_\theta(a\mid s)$ e ottimizzarla per
-salita del gradiente sulla ricompensa attesa (*policy gradient*): due famiglie
-che il capitolo affronterà entrambe.
+salita del gradiente sulla ricompensa attesa (*policy gradient*).
 
 `````
 
@@ -169,27 +167,28 @@ una navicella o un mattoncino: riceve lo schermo grezzo, come lo riceve una
 persona.
 ```
 
-Il blocco laterale di {numref}`fig-dqn-atari`, la memoria delle esperienze
-(*experience replay*), è uno dei due accorgimenti che rendono stabile tutto il
-resto, e la {doc}`sezione su DQN <dqn>` lo racconta per esteso. Addestrare sui
-fotogrammi nell'ordine in cui arrivano significa dare alla rete esempi
-consecutivi, e quindi quasi identici fra loro; ripescarli a caso dalla memoria
-li rimescola, e la rete torna a vedere situazioni diverse una dall'altra.
+La memoria delle esperienze (*experience replay*, in {numref}`fig-dqn-atari`) è
+uno dei due accorgimenti che rendono stabile tutto il resto, e la {doc}`sezione
+su DQN <dqn>` la racconta per esteso. Addestrare sui fotogrammi nell'ordine in
+cui arrivano significa dare alla rete esempi consecutivi, e quindi quasi
+identici fra loro; ripescarli a caso dalla memoria li rimescola, e la rete
+torna a vedere situazioni diverse una dall'altra.
 
 Quel primo lavoro, *Playing Atari with Deep Reinforcement Learning* (Mnih e
-colleghi, 2013), diventa nel 2015 un articolo su *Nature*, *Human-level
-control through deep reinforcement learning*: un'unica architettura, senza
-ritocchi specifici per gioco, regge il confronto con un collaudatore umano
-professionista su 49 titoli Atari, e in ventinove di essi raggiunge almeno
-il 75% del punteggio umano, con il solo schermo per guida e un punteggio avaro, che
-nei giochi Atari arriva ogni tanto e non spiega mai perché.
+colleghi, 2013), diventa nel 2015 un articolo su *Nature*, *Human-level control
+through deep reinforcement learning*: un'unica architettura, senza ritocchi
+specifici per gioco, arriva a un livello paragonabile a quello di un
+collaudatore umano professionista su 49 titoli Atari, e in ventinove di essi
+supera il 75% del punteggio umano. Lo fa con il solo schermo per guida e un
+punteggio avaro, che nei giochi Atari arriva ogni tanto e non spiega mai
+perché.
 
 L'anno dopo arriva il colpo che raggiunge il grande pubblico. L'articolo su
 *Nature* del gennaio 2016 (Silver e colleghi) presenta AlphaGo e la
 vittoria per 5 a 0 sul campione europeo Fan Hui; due mesi più tardi, a Seul,
 una versione più forte dello stesso programma batte per 4 a 1 Lee Sedol, fra i
 più forti giocatori al mondo. Il Go, un gioco con più configurazioni che atomi
-nell'universo, era a lungo considerato fuori portata per le macchine. AlphaGo
+nell'universo, era stato a lungo considerato fuori portata per le macchine. AlphaGo
 affianca alle reti una *ricerca ad albero Monte Carlo*, che prima di ogni mossa
 esplora le continuazioni più promettenti; la {doc}`sezione su MCTS e AlphaGo
 <mcts-alphago>` la costruisce per intero. Il deep RL smette di essere una
@@ -197,9 +196,8 @@ curiosità da laboratorio.
 
 ## Il prezzo: un addestramento che balla, e milioni di partite
 
-L'entusiasmo non deve nascondere il conto da pagare. Il deep RL (abbreviazione
-di *deep reinforcement learning*, d'ora in avanti usata spesso) è
-notoriamente capriccioso.
+Accanto ai successi, il deep RL (abbreviazione di *deep reinforcement
+learning*) è notoriamente capriccioso.
 
 `````{tab} Elementare
 
@@ -207,9 +205,9 @@ Due difficoltà su tutte. La prima: l'allenamento è instabile. La rete si
 corregge inseguendo un numero che calcola lei stessa, e quel numero si sposta a
 ogni correzione: è come cercare di colpire la propria ombra, che si muove ogni
 volta che ti muovi tu. Basta poco (un ritocco alla velocità con cui la rete si
-corregge) e invece di assestarsi i suoi giudizi crescono senza fermarsi. È qui
-che servono i due accorgimenti incontrati poco fa, la memoria delle esperienze
-e la copia congelata della rete.
+corregge) e invece di assestarsi i suoi giudizi crescono senza fermarsi. Contro
+questo effetto servono la memoria delle esperienze e la copia congelata della
+rete.
 
 La seconda difficoltà: serve una quantità enorme di partite. L'agente
 impara per tentativi, e di tentativi ne vuole milioni: settimane di gioco. In
@@ -224,7 +222,7 @@ I campioni sono fortemente correlati (fotogrammi consecutivi) e il *target*
 $r + \gamma \max_{a'} Q(s',a';\theta)$ si muove insieme ai pesi che stiamo
 aggiornando: la combinazione di approssimazione, bootstrapping e apprendimento
 off-policy è la celebre *deadly triad* che può causare divergenza. DQN la
-addomestica con due trucchi: l’experience replay (campionare a caso da un
+addomestica con due accorgimenti: l’experience replay (campionare a caso da un
 buffer di transizioni passate, decorrelandole) e la rete target $\theta^{-}$
 aggiornata di rado, che stabilizza il bersaglio. Resta il costo campionario: la
 versione di *Nature* usava $50$ milioni di passi dell'agente per titolo, cioè
@@ -236,10 +234,9 @@ problema di ricerca aperto.
 
 ## Una libertà in più, un contenimento in più
 
-Il percorso segue le domande, non gli acronimi: di ogni pezzo interessa *perché*
-esiste, cioè quale fragilità del pezzo precedente è venuto a curare. E la cura
-ha quasi sempre la stessa forma: si concede all'agente una libertà in più, e
-subito dopo bisogna inventarsi il modo di contenerla.
+Ogni metodo del capitolo nasce per curare una fragilità del precedente, e la
+cura ha quasi sempre la stessa forma: si concede all'agente una libertà in più,
+e subito dopo bisogna inventarsi il modo di contenerla.
 
 Si comincia dal DQN: la libertà è una rete al posto della tabella, e a
 contenerla sono i due accorgimenti che le impediscono di esplodere, la memoria
@@ -248,32 +245,32 @@ delle esperienze e la copia congelata.
 Poi si cambia famiglia. Invece di stimare il valore di ogni azione e prendere
 la migliore, si impara direttamente la policy, la regola che dice che cosa
 fare. Sono i metodi a *gradiente di policy*: alla policy, che qui si chiama
-attore, si affianca un critico che ne giudica le mosse una per una, e la
-famiglia arriva a PPO, l'algoritmo che oggi si prova per primo, studiato per
-tenere ogni aggiornamento vicino alla policy da cui è partito. Una policy
+attore, si affianca un critico che ne giudica le mosse una per una. La famiglia
+arriva a PPO, uno degli algoritmi più usati, studiato
+per tenere ogni aggiornamento vicino alla policy da cui è partito. Una policy
 appresa così è anche il consiglio che orienta la ricerca ad albero di AlphaGo;
 e dalla stessa famiglia viene la fase finale dell'addestramento degli
 assistenti conversazionali, quella che li porta verso le risposte che le
 persone preferiscono.
 
-Quella famiglia serve subito. Nel controllo continuo (un braccio robotico,
-uno sterzo) le mosse sono una quantità da dosare e non un menu di poche voci, e
-la ricetta del DQN non si applica più.
+La stessa famiglia serve subito dopo, nel controllo continuo. Con un braccio
+robotico o uno sterzo le mosse sono una quantità da dosare e non un menu di
+poche voci, e la ricetta del DQN non si applica più.
 
-Le sezioni che seguono attaccano tutte lo stesso problema, cioè che
-l'esperienza costa. Il RL basato su modello fa provare all'agente le mosse
-nella propria testa prima che nel mondo, e il prezzo è un simulatore di cui non
-fidarsi troppo. L’imitazione salta i tentativi ed errori: si guarda
-qualcuno che il compito lo sa già fare, e si scopre perché non basta. L’offline
-RL impara da un archivio di esperienze altrui senza mai agire, che è l'unica
-strada quando sbagliare è pericoloso, in terapia intensiva come al volante, e
-deve diffidare di tutto ciò che l'archivio non contiene. La gerarchia affianca
-alle mosse elementari le *opzioni*, pezzi di comportamento che si chiamano per
-nome e si riusano per obiettivi diversi: fanno risparmiare esperienza, ma
-un'opzione porta dove porta, e può scavalcare la scorciatoia che una mossa alla
-volta avrebbe trovato.
+I metodi successivi affrontano tutti lo stesso problema: raccogliere esperienza
+è costoso. Il RL basato su modello fa provare all'agente le mosse nella propria
+testa prima che nel mondo, con il rischio di un simulatore di cui non fidarsi
+troppo. L’imitazione salta i tentativi ed errori: si guarda qualcuno che sa già
+svolgere il compito, e si scopre perché non basta. L’offline RL impara da un
+archivio di esperienze altrui senza mai agire. È l'unica strada quando
+sbagliare è pericoloso, in terapia intensiva come al volante, ma l'agente deve
+diffidare di tutto ciò che l'archivio non contiene. La gerarchia affianca alle
+mosse elementari le *opzioni*, pezzi di comportamento che si chiamano per nome
+e si riusano per obiettivi diversi: fanno risparmiare esperienza, ma un'opzione
+porta dove porta, e può scavalcare la scorciatoia che una mossa alla volta
+avrebbe trovato.
 
-Si chiude sull’esplorazione: cosa fare quando la ricompensa arriva così di
+L'ultimo ostacolo è l'esplorazione: cosa fare quando la ricompensa arriva così di
 rado che non c'è nulla da inseguire, e cosa succede quando l'agente ottimizza
 *troppo* bene una ricompensa scritta male. Quest'ultima insidia, il *reward
 hacking*, è il ponte verso il {doc}`problema dell'allineamento

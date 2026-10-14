@@ -13,7 +13,7 @@
 ```
 
 Centomila parole sono la lunghezza di un romanzo, e per leggerlo un Transformer
-deve confrontare ogni parola con tutte le altre: centomila per centomila, cioè
+deve confrontare ogni parola con tutte le altre, centomila per centomila, cioè
 dieci miliardi di confronti, e non una volta sola, ma in ognuno degli strati
 della rete, che sono decine. Nel 2020 Angelos Katharopoulos e tre colleghi,
 fra la Svizzera e gli Stati Uniti, provano ad aggirare quel conto. Il mondo
@@ -23,28 +23,25 @@ alla volta; il loro articolo si intitola invece *Transformers are RNNs*, «i
 Transformer sono reti ricorrenti» (RNN è la sigla inglese)
 {cite}`katharopoulos2020transformers`.
 
-La tesi è tanto semplice quanto spiazzante. Nell'attenzione la somiglianza fra
-due parole passa per l'esponenziale della
+Nell'attenzione la somiglianza fra due parole passa per l'esponenziale della
 {doc}`softmax </Transformers/attenzione>`, la funzione che trasforma i
 punteggi in pesi. Se al suo posto si mette una somiglianza più semplice, un
 prodotto scalare fra versioni trasformate della query e della chiave, che si
 spezza in un pezzo per chi interroga e uno per chi risponde, l'attenzione
 causale (quella in cui ogni parola guarda soltanto le precedenti) si riscrive
-esattamente come una rete ricorrente. Il Transformer, il modello che aveva
-appena spodestato le reti ricorrenti, ricade in una di loro. Il re, sotto il
-mantello, era un vecchio parente.
+come una rete ricorrente. Il Transformer, che aveva appena spodestato le reti
+ricorrenti, ricade così in una di loro.
 
-Questa equivalenza apre una porta. L'attenzione dei
-{doc}`Transformer </Transformers/overview>` si paga due volte, e il primo conto
-è quello appena fatto: ogni parola guarda tutte le altre, quindi raddoppiando
-la lunghezza del testo il lavoro quadruplica. È il costo *quadratico*, che si
-scrive $O(n^2)$, con $n$ il numero di token (un token è quasi sempre una parola
-o un pezzo di parola, e qui li chiameremo spesso parole): dieci volte il testo,
-cento volte il lavoro.
+L'attenzione dei {doc}`Transformer </Transformers/overview>` ha due costi. Il
+primo, appena visto, nasce dal fatto che ogni parola guarda tutte le altre, quindi
+raddoppiando la lunghezza del testo il lavoro quadruplica. È il costo
+*quadratico*, che si scrive $O(n^2)$, con $n$ il numero di token (un token è
+quasi sempre una parola o un pezzo di parola): dieci volte il testo, cento volte
+il lavoro.
 
-Il secondo conto si paga durante la generazione, quando il modello scrive un
-token dopo l'altro. Per non ricalcolare a ogni passo quello che
-ha già calcolato, il modello conserva per ogni token, in ogni strato, la sua
+Il secondo si paga durante la generazione, quando il modello scrive un token
+dopo l'altro. Per non rifare a ogni passo i calcoli già fatti, il modello
+conserva per ogni token, in ogni strato, la sua
 chiave (l'etichetta con cui lo si ritrova) e il suo valore (l'informazione che
 porta): è la *KV cache*, descritta nella {doc}`sezione sull'attenzione in
 pratica </Transformers/attenzione-in-pratica>`. Cresce di una coppia
@@ -58,7 +55,7 @@ la si può calcolare come una *ricorrenza*, cioè aggiornando a ogni token una
 memoria di dimensione fissa, lo *stato* $\mathbf{S}_t$, a partire da com'era
 al token prima. Il lavoro torna a crescere in modo *lineare*, cioè proporzionale
 alla lunghezza (il doppio di testo, il doppio di lavoro), e la memoria non
-cresce affatto. Da qui il nome, attenzione lineare: da quadratico a lineare.
+cresce affatto. Da qui il nome di attenzione lineare, da quadratico a lineare.
 
 ```{figure} ../figures/kv-cache-generazione.svg
 :name: fig-kv-cache-cresce
@@ -71,43 +68,42 @@ e nessun passo la libera.
 ```
 
 {numref}`fig-kv-cache-cresce` mostra la KV cache che cresce un token dopo
-l'altro: è il secondo dei due conti, quello che si paga durante la generazione.
-Una ricorrenza a stato fisso non fa crescere niente: comprime il passato in una
-memoria di taglia costante, e la domanda diventa quanto si perde nel
+l'altro, cioè il secondo costo, quello della generazione.
+Una ricorrenza a stato fisso non fa crescere niente e comprime il passato in una
+memoria di taglia costante; la domanda diventa quanto si perde nel
 comprimerlo.
 
 ## Il compromesso che tutti inseguono
 
-Addestramento e generazione costano in modo diverso, ed è su questa differenza
-che giocano le architetture lineari.
+Addestramento e generazione hanno costi diversi, e le architetture lineari
+giocano su questa differenza.
 
 `````{tab} Elementare
 
 L’addestramento si fa una volta sola: il testo esiste già tutto, e il modello
 lo attraversa per imparare. La generazione viene dopo, quando il modello è in
 uso e scrive parola per parola un testo che non esiste ancora (si chiama anche
-*inferenza*, che è il nome tecnico di questa fase). Le due cose costano
-in modo diverso, e un modello può essere bravo in una e disastroso nell'altra.
+*inferenza*, che è il nome tecnico di questa fase). Le due fasi hanno
+costi diversi, e un modello può essere bravo in una e disastroso nell'altra.
 
 Le due grandi famiglie di modelli per sequenze hanno infatti un pregio e un
 difetto speculari. I Transformer si addestrano in fretta, perché guardano
 tutta la frase in una volta e sfruttano a pieno le schede grafiche; ma per
-farlo devono tenere tutto sott'occhio, e più il testo è lungo più questo
-costa, finché il conto diventa insostenibile. Le vecchie reti ricorrenti fanno
-il contrario: leggono una parola alla volta portandosi dietro un riassunto di
-dimensione fissa, quindi quando generano costano poco, e il conto da fare per
-ogni parola resta lo stesso anche dopo mille pagine; ma proprio perché
-procedono in fila, addestrarle è lento.
+farlo devono tenere tutto sott'occhio, e più il testo è lungo più il lavoro
+cresce, finché diventa insostenibile. Le vecchie reti ricorrenti fanno il
+contrario: leggono una parola alla volta portandosi dietro un riassunto di
+dimensione fissa, quindi in generazione il lavoro per ogni parola è poco e
+resta lo stesso anche dopo mille pagine; ma procedono in sequenza, e per questo
+addestrarle è lento.
 
-Il sogno è avere le due cose insieme: la velocità di addestramento dei
+Il sogno è avere insieme la velocità di addestramento dei
 Transformer e il basso costo in generazione delle reti ricorrenti. Sembra
 una richiesta contraddittoria, perché guardare tutto in una volta e procedere
-in fila sono due modi opposti di lavorare. La via d'uscita sta nel fatto che si
-tratta di uno stesso conto, e uno stesso conto si può fare in due maniere.
-Tutto insieme, ed è così che il modello impara; una parola alla volta, ed è
-così che il modello scrive. Il risultato che ne esce è lo stesso. È ciò che
-promette l'attenzione lineare, e con lei tutta la famiglia di ricorrenze che
-le sta intorno.
+in sequenza sono due modi opposti di lavorare. La via d'uscita è che si tratta
+di uno stesso calcolo, e uno stesso calcolo si può fare in due maniere, tutto
+insieme quando il modello impara o una parola alla volta quando scrive. Il
+risultato è lo stesso. Lo promette l'attenzione lineare, con tutta la famiglia
+di ricorrenze che le sta intorno.
 
 `````
 
@@ -165,32 +161,31 @@ lineare: la si incontra con le
 `````{tab} Elementare
 
 Lo stato è una tabella di numeri, righe e colonne, sempre della stessa taglia
-(in matematica una tabella così si chiama *matrice*, e la parola tornerà
-spesso). Le reti ricorrenti dei
+(in matematica una tabella così si chiama *matrice*). Le reti ricorrenti dei
 {doc}`modelli di sequenza </NaturalLanguageProcessing/modelli-sequenza>` lo
 chiamavano il riassunto di quello che si è letto fin lì, e il nome è giusto a
 metà: un riassunto fa pensare a un foglio con delle frasi sopra, e qui di frasi
 non ce ne sono, ci sono solo numeri.
 
-Che una tabella di numeri possa contenere delle parole suona strano, e su
-questo regge tutto il resto: dentro un modello una parola è una fila di qualche
-centinaio di numeri (le posizioni di quella fila si
-chiamano *canali*). Etichetta e informazione sono due file di numeri anche
-loro, ricavate dalla parola. Quindi «scrivere nello stato» vuol dire sommare
-dei numeri alle caselle, e «rileggerlo» vuol dire rifare dei conti.
+Che una tabella di numeri possa contenere delle parole suona strano, ma tutto
+il resto poggia su questo: dentro un modello una parola è una fila di qualche
+centinaio di numeri (le posizioni di quella fila si chiamano *canali*).
+Etichetta e informazione sono due file di numeri anche loro, ricavate dalla
+parola. Quindi «scrivere nello stato» consiste nel sommare dei numeri alle
+caselle, e «rileggerlo» nel rifare dei calcoli.
 
 Ogni parola che passa deposita così un'associazione, «a questa etichetta
-corrisponde questa informazione», che si somma a quello che c'è già scritto
+corrisponde questa informazione», che si somma a ciò che è già scritto
 invece di aggiungere una riga nuova. Ecco perché la memoria non cresce: a
 cambiare sono i numeri dentro le caselle, non il numero di caselle.
 
-Il passaggio da una parola alla successiva è fatto di due gesti. Uno decide
-che fine fanno i numeri già scritti: possono restare com'erano, possono
-affievolirsi tutti un poco, oppure si può tornare su un'associazione sbagliata
-e correggerla. L'altro deposita l'associazione della parola appena letta. Il
-modo di depositare cambia poco da un modello all'altro (al più se ne dosa la
-quantità); il modo di trattare quello che c'era già cambia parecchio, ed è
-soprattutto lì che un modello si distingue dagli altri.
+Ogni parola fa due cose allo stato. La prima decide che fine fanno i numeri già
+scritti: possono restare com'erano, possono affievolirsi tutti un poco, oppure
+si può tornare su un'associazione sbagliata e correggerla. La seconda deposita
+l'associazione della parola appena letta. Il modo di depositare cambia poco da
+un modello all'altro (al più se ne dosa la quantità); il trattamento dei numeri
+già scritti cambia parecchio, e i modelli si distinguono soprattutto per
+quello.
 
 `````
 
@@ -219,7 +214,7 @@ chiave con cui si scrive è diversa da quella con cui si cancella.
 Il percorso ha tre tappe. La prima, {doc}`dalla softmax alla ricorrenza
 </AttenzioneLineare/dalla-softmax-alla-ricorrenza>`, mostra che cosa va
 cambiato nella somiglianza fra query e chiave (il *trucco del kernel*) perché
-il lavoro smetta di crescere col quadrato della lunghezza, come il nuovo conto
+il lavoro smetta di crescere col quadrato della lunghezza, come il calcolo
 diventi una ricorrenza con uno stato di dimensione fissa, e perché uno stato
 che sa soltanto sommare si confonde presto: le scritte si sovrappongono fin da
 subito, e bastano poche voci perché non ci si legga più niente di preciso. La
@@ -247,7 +242,7 @@ una parola alla volta, e controlla che il risultato coincida.
 - È la via per aggirare i due conti che i Transformer pagano sui testi lunghi:
   il lavoro che cresce a valanga con la lunghezza (raddoppiando il testo
   quadruplica) e la KV cache, la memoria di appoggio che si allunga a ogni
-  parola generata. Lineare vuol dire proprio questo: il lavoro torna a essere
+  parola generata. In questo senso è lineare: il lavoro torna a essere
   proporzionale, il doppio di testo per il doppio di lavoro, e la memoria non
   si allunga affatto.
 - Il compromesso che tutta la famiglia insegue: la velocità di addestramento

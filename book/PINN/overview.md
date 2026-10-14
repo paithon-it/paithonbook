@@ -27,8 +27,8 @@ risolte, a mano finché si è potuto, poi al calcolatore. Previsioni del tempo,
 gallerie del vento, reattori nucleari: sotto c'è sempre un'equazione.
 
 Il machine learning visto finora ha lavorato quasi sempre dall'altra parte:
-poche ipotesi sul fenomeno, molti dati, e una rete che le regolarità le trova
-da sola. Nel {doc}`capitolo sulle serie
+poche ipotesi sul fenomeno, molti dati, e una rete che ne ricava le
+regolarità. Nel {doc}`capitolo sulle serie
 temporali </SerieTemporali/forecasting-neurale>` una sola rete ha imparato a
 prevedere la domanda di milioni di prodotti, senza che nessuno le spiegasse
 perché la gente compra. Funziona quando i dati abbondano e le leggi non le
@@ -36,17 +36,17 @@ conosce nessuno: nessuna equazione governa lo spam, e infatti contro lo spam si
 è imparato dai dati.
 
 In molti problemi fisici la situazione è rovesciata. Le leggi sono note con
-buona approssimazione, e a scarseggiare sono i dati, perché lì misurare costa:
-una sonda calata sul fondo del mare, un sensore infilato dentro un'arteria, un
-prototipo messo in galleria del vento danno poche misure. E nessuna dà il
-valore vero: ogni strumento aggiunge un errore casuale, un po’ sopra o un po’
-sotto, e di misure fatte così si dice che sono rumorose. La domanda, allora: e
-se si potessero usare *entrambi*?
+buona approssimazione, e a scarseggiare sono i dati, perché lì misurare è
+difficile: una sonda calata sul fondo del mare, un sensore infilato dentro
+un'arteria, un prototipo messo in galleria del vento danno poche misure.
+Nessuna, poi, dà il valore vero: ogni strumento aggiunge un errore casuale, un
+po’ sopra o un po’ sotto, e di misure fatte così si dice che sono rumorose. La
+domanda, allora: e se si potessero usare *entrambi*?
 
 ## Una regola che dice come cambiano le cose
 
 Un'equazione differenziale, si è detto, è una regola su come cambiano le cose.
-Il modo in cui lo fa, però, spiazza: non dice mai *quanto vale* la cosa che ci
+Il modo in cui lo fa, però, spiazza: non dice mai *quanto vale* la grandezza che ci
 interessa, dice soltanto *di quanto sta cambiando*. Sembra pochissimo, eppure
 per ricostruire l'intera storia basta.
 
@@ -82,11 +82,11 @@ oltre che da un momento all'altro. Più fitti stanno, più il risultato è
 preciso e più conti servono: noi ne abbiamo fatti tre a mano, un calcolatore
 ne fa miliardi.
 
-Due cose però gli costano fatica. La griglia va tagliata su misura per la
-forma del problema, e tagliarla è un mestiere a sé. E i puntini esplodono
+Due cose lo mettono in difficoltà. La griglia va tagliata su misura per la
+forma del problema, e tagliarla è un lavoro a sé. Inoltre i puntini esplodono
 quando la risposta dipende da tante cose insieme: con dieci puntini per ogni
 cosa da cui dipende, una ne chiede dieci, due cento, tre mille, e ogni cosa in
-più moltiplica il conto per dieci.
+più moltiplica per dieci i calcoli da fare.
 
 La sbarra chiede anche un'altra cosa. Per il caffè bastava sapere da dove si
 parte; per la sbarra serve pure sapere che cosa le succede ai due capi,
@@ -131,11 +131,11 @@ calcolatore, nello spirito dei {doc}`richiami di analisi numerica
 finita, qui si accetta un continuo fatto a punti (una **griglia** su $x$ e $t$,
 con le derivate rimpiazzate da **differenze finite**, rapporti incrementali a
 passo piccolo ma non nullo). Più fitta la griglia, migliore l'approssimazione e
-più salato il conto: proibitivo quando le variabili indipendenti sono molte,
+più oneroso il calcolo: proibitivo quando le variabili indipendenti sono molte,
 perché con $n$ nodi per variabile i nodi sono $n^d$ in $d$ variabili, e crescono
 esponenzialmente con la dimensione. Su una geometria irregolare il problema è di
-altra natura: elementi finiti e volumi finiti la trattano benissimo, ma la
-griglia va costruita su misura, ed è un lavoro a sé.
+altra natura: elementi finiti e volumi finiti la trattano benissimo, ma
+richiedono una griglia costruita su misura, un lavoro a sé.
 
 `````
 
@@ -145,19 +145,19 @@ L'idea che salda i due mondi è usare una rete neurale $u_\theta$ come soluzione
 candidata, e addestrarla su due richieste insieme: che passi vicino alle poche
 misure e alle condizioni di partenza, che dicono dove la curva deve passare, e
 che rispetti l'equazione, che dice come deve comportarsi *dappertutto*.
-Sostituita nell'equazione, la candidata lascia uno scarto fra i due lati (quello
-che la regola chiede e quello che la curva fa), il **residuo**, e per calcolarlo
-servono soltanto le derivate della rete, cioè le sue pendenze rispetto alle
-coordinate.
+Sostituita nell'equazione, la candidata lascia uno scarto fra i due lati (la
+variazione che la regola prescrive e quella che la curva ha), il **residuo**, e
+per calcolarlo servono soltanto le derivate della rete, cioè le sue pendenze
+rispetto alle coordinate.
 
 È il perno di tutto. Per correggere una risposta, di solito, serve avere
 sott'occhio quella giusta, e qui la risposta giusta non ce l'ha nessuno: è
-proprio quella che stiamo cercando. Una legge però permette di correggere lo
-stesso, perché sa dire se una risposta è *sbagliata* anche quando nessuno sa
-dire quale sia quella buona. Per questo l'equazione può prendere il posto dei
-dati come supervisione.
+quella che stiamo cercando. Una legge però permette di correggere lo stesso,
+perché sa dire se una risposta è *sbagliata* anche quando nessuno sa dire quale
+sia quella buona. Per questo l'equazione può prendere il posto dei dati come
+supervisione.
 
-A rilanciare questa mossa, nel 2019, sono Maziar Raissi, Paris Perdikaris e
+A rilanciare questo approccio, nel 2019, sono Maziar Raissi, Paris Perdikaris e
 George Karniadakis {cite}`raissi2019physics`, e il nome che le danno è la sigla
 diventata celebre: **Physics-Informed Neural Networks**, PINN, cioè reti
 neurali informate dalla fisica. L'idea però è più vecchia di loro: una rete che
@@ -184,8 +184,8 @@ esaminatore guarda due cose: a che altezza sta la curva lì, e quanto sta
 scendendo lì. Se la curva dice 60 °C, allora la differenza con la stanza è 40
 gradi, e la regola (un decimo della differenza al minuto) impone
 che in quel momento stia scendendo di 4 gradi al minuto. Non uno, non otto:
-quattro. Se la curva scende di uno, lo scarto fra quello che fa e quello che
-dovrebbe fare vale 3, e la penalità cresce con lui. Quel «quanto sta
+quattro. Se la curva scende di uno, lo scarto fra la discesa che ha e quella
+richiesta vale 3, e la penalità cresce con lui. Quel «quanto sta
 scendendo», in un punto di una curva, si chiama pendenza: è la ripidità
 della strada misurata sotto i piedi, non su tutta la salita.
 
@@ -214,8 +214,8 @@ r_\theta(x,t) = \frac{\partial u_\theta}{\partial t}
 - \alpha \frac{\partial^2 u_\theta}{\partial x^2},
 $$
 
-che vale zero esattamente dove la rete rispetta l'equazione. La loss somma due
-richiami all'ordine:
+che si annulla in tutti e soli i punti in cui la rete rispetta l'equazione. La
+loss somma due richiami all'ordine:
 
 $$
 \mathcal{L}(\theta) =
@@ -230,8 +230,8 @@ dove $(x_i, t_i, u_i)$ sono le $N_d$ misure disponibili, incluse le
 condizioni iniziali e al contorno quando prescrivono il valore di $u$; i
 $(x_j, t_j)$ sono $N_c$ **punti di collocazione**
 estratti a caso nel dominio (nessuna griglia) e $\lambda$ bilancia i due
-termini. Il tocco elegante è il calcolo delle derivate di $u_\theta$ rispetto
-agli *ingressi*: le fornisce la differenziazione automatica, cioè la
+termini. La differenziazione automatica calcola le derivate di $u_\theta$ rispetto
+agli *ingressi*: è la
 regola della catena della backpropagation applicata a $x$ e $t$ anziché ai
 pesi {cite}`rumelhart1986learning`. In PyTorch è una chiamata a
 `torch.autograd.grad` {cite}`paszke2019pytorch`: derivate esatte a meno della
@@ -279,17 +279,17 @@ specialisti, che la PINN non deve fare. È un vantaggio di comodità, non di
 possibilità.
 
 Con molte variabili indipendenti, invece, la griglia smette di essere
-praticabile. Per il caffè ce n'è una, il tempo, e i nodi stanno in fila; per
+praticabile. Per il caffè ce n'è una, il tempo, e i nodi sono allineati; per
 la sbarra due, il tempo e il punto lungo la sbarra, e i nodi riempiono un
-rettangolo. Ma ci sono problemi con dieci variabili, e i nodi vanno messi in
+rettangolo. Esistono problemi con dieci variabili, e i nodi vanno messi in
 tutte le combinazioni: con dieci nodi per variabile ne servono dieci su un
 segmento, cento su un quadrato, mille su un cubo e $10^{10}$ con dieci
 variabili. Lì servono metodi che la griglia non la usano: la PINN è uno, la
 media su cammini casuali della {doc}`sezione sulle equazioni come medie
-</PINN/equazioni-come-medie>` ne è un altro. Che poi una rete ci arrivi
-davvero non è automatico: quando le variabili sono tante davvero, i risultati
-si ottengono con varianti costruite apposta, non con la ricetta base, ed è
-ricerca ancora in corso {cite}`hu2024tackling`.
+</PINN/equazioni-come-medie>` ne è un altro. Che una rete ci arrivi, però,
+non è automatico: con molte variabili i risultati si ottengono con varianti
+costruite apposta, non con la ricetta base, e la ricerca è ancora in corso
+{cite}`hu2024tackling`.
 
 La seconda proprietà è quella dei dati scarsi. Dove il laboratorio arriva
 con tre sensori, la legge riempie i vuoti: fra le infinite curve che passano
@@ -311,9 +311,9 @@ domanda del medico legale (a che ora il decesso, data la temperatura del
 corpo?) ed era la domanda di Le Verrier: dai disturbi nell'orbita di Urano,
 dov'è il pianeta che non vedo? Anche i metodi classici sanno rispondere, e
 bene: per farlo hanno procedure loro, collaudate, che però vanno riscritte da
-capo per ogni singola equazione, ed è un lavoro da specialisti. Per una PINN il
+capo, da specialisti, per ogni singola equazione. Per una PINN il
 pezzo di regola che manca è semplicemente un numero in più da addestrare, dello
-stesso tipo dei pesi che la rete regola già da sé: lo si aggiusta finché
+stesso tipo dei pesi che la rete già regola: lo si aggiusta finché
 fisica e misure non vanno d'accordo. Purché le misure lo dicano: se quella
 notte fuori ci fossero stati gli stessi gradi di dentro, la casa non si
 sarebbe raffreddata affatto, le letture sarebbero tutte uguali, e su quanto
@@ -345,7 +345,7 @@ risoluzioni del problema diretto {cite}`plessix2006adjoint`; va però scritto
 su misura per ogni equazione, solutore diretto e aggiunto compresi, mentre la
 PINN monta sempre lo stesso problema non vincolato in $(\theta, \alpha)$. La
 {doc}`sezione su dove la fisica aiuta e dove no </PINN/applicazioni-limiti>`
-ci torna sopra, e ci aggiunge un concorrente che costa ancora meno. È comunque
+ci torna sopra, e ci aggiunge un concorrente ancora più economico. È comunque
 questa naturalezza sui problemi inversi ad aver fatto la fortuna delle PINN
 {cite}`raissi2019physics`. Il filone che ne è nato (reti vincolate dalla
 fisica, operatori neurali, scoperta di equazioni dai dati) va oggi sotto il
@@ -369,23 +369,23 @@ vantaggio né nel tempo per ottenere la soluzione né nell'accuratezza
 `````{tab} Elementare
 
 Su un problema ordinario (regola nota, forma regolare, nessuna misura da
-tenere insieme alla legge) il conto a passettini vince, e non di poco: è più
-rapido ed è più preciso. E porta con sé una promessa scritta prima di partire:
+tenere insieme alla legge) il metodo a passettini vince, e non di poco, perché è
+più rapido e più preciso. Porta con sé una promessa scritta prima di partire:
 si sa dimostrare che accorciando i passi lo sbaglio scende, e di quanto. Per i
 metodi più usati, dimezzare i passi divide lo sbaglio per quattro, o per
 sedici.
 
-La promessa ha le sue condizioni, e chi fa il conto le conosce in anticipo. La
+La promessa ha le sue condizioni, e chi lo applica le conosce in anticipo. La
 più stretta lega fra loro i due passi della sbarra: se si dimezzano i
 passettini lungo il ferro, quelli nel tempo vanno divisi per quattro. Chi non
-lo fa vede uno sbaglio minuscolo crescere da solo. Un puntino con un grado di
-troppo, al passo dopo ne ha uno di meno, e i suoi due vicini uno di troppo;
-al passo dopo ancora ne ha tre di troppo, e i vicini due di meno. Lo sbaglio
-cambia segno da un puntino all'altro e cresce a ogni passo, finché il conto
-sputa temperature che nessun termometro vedrà mai. E se la storia da
-ricostruire fa un salto netto invece di scorrere liscia, accorciare i passi
-aiuta molto meno: lo sbaglio scende ancora, ma a ogni dimezzamento si riduce
-appena.
+lo fa vede uno sbaglio minuscolo crescere da solo. Un puntino con un
+grado di troppo, al passo dopo ne ha uno di meno, e i suoi due vicini uno di
+troppo; al passo dopo ancora ne ha tre di troppo, e i vicini due di meno. Lo
+sbaglio cambia segno da un puntino all'altro e cresce a ogni passo, finché il
+calcolo restituisce temperature che nessun termometro vedrà mai. Se poi la
+storia da ricostruire fa un salto netto invece di scorrere liscia, accorciare i
+passi aiuta molto meno: lo sbaglio scende ancora, ma a ogni dimezzamento si
+riduce appena.
 
 Di una rete addestrata non si sa dire niente del genere: l'addestramento
 finisce quando smette di migliorare, e nessuno può garantire quanto lontana
@@ -410,7 +410,7 @@ $u_i^{n+1} = u_i^n + \rho\,(u_{i+1}^n - 2u_i^n + u_{i-1}^n)$ con
 $\rho = \alpha\,\Delta t/\Delta x^2$, è stabile solo per $\rho \le 1/2$.
 Infittire in spazio senza ridurre $\Delta t$ in proporzione a $\Delta x^2$
 porta $\rho$ oltre la soglia, e il modo a scacchiera, che a ogni passo è
-moltiplicato per $1 - 4\rho < -1$, esplode. Ma sono
+moltiplicato per $1 - 4\rho < -1$, esplode. Sono
 ipotesi verificabili in anticipo, mentre la discesa del gradiente su una loss
 non convessa si ferma in un minimo locale qualsiasi e non promette nulla. Una
 PINN può richiedere minuti di addestramento dove un
@@ -422,11 +422,11 @@ solutore maturo impiega millisecondi, e a volte fallisce senza preavviso
 ## La legge dentro la loss, e i suoi limiti
 
 Dalla cornice al banco di lavoro. La {doc}`sezione sulla legge dentro la loss
-</PINN/come-funziona>` costruisce il metodo per intero, con una PINN scritta in
-PyTorch, e il banco di prova sarà una molla che oscilla e si smorza: la rete,
-la misura di quanto viola la regola, il punteggio che mette insieme i due
-controlli, e infine il problema inverso, con un pezzo di legge che fingeremo di
-non conoscere. Per le equazioni che diffondono, la {doc}`sezione sulle
+</PINN/come-funziona>` costruisce il metodo passo dopo passo, con una PINN
+scritta in PyTorch, e il banco di prova sarà una molla che oscilla e si smorza:
+la rete, la misura di quanto viola la regola, il punteggio che mette insieme i
+due controlli, e infine il problema inverso, con un pezzo di legge che fingeremo
+di non conoscere. Per le equazioni che diffondono, la {doc}`sezione sulle
 equazioni come medie </PINN/equazioni-come-medie>` offre una lettura che aggira
 la griglia calcolando la soluzione come media su cammini casuali. La
 {doc}`sezione su dove la fisica aiuta </PINN/applicazioni-limiti>` chiude sulle
@@ -455,16 +455,16 @@ appresa dai soli dati, fa girare i modelli meteo neurali.
   due esaminatori: il righello, che la tiene vicina alle (poche) misure e al
   punto da cui si parte, e il controllo della regola in punti scelti a caso,
   i punti di collocazione,
-  dove ogni violazione costa punti {cite}`raissi2019physics`. Funziona perché
+  dove ogni violazione toglie punti {cite}`raissi2019physics`. Funziona perché
   una legge sa dire che una risposta è sbagliata anche quando nessuno sa
   dire quale sia quella giusta; fra un punto di controllo e l'altro, però, la
   curva resta un po’ libera. Le pendenze che servono a controllarla gliele
-  darà il meccanismo con cui la rete già si addestra, quello che a ogni giro le
+  darà il meccanismo con cui la rete già si addestra e che a ogni giro le
   dice di quanto ritoccare ciascun peso.
 - Punti di forza: dati scarsi ma legge nota, molte grandezze in gioco, domini
   dalla forma complicata senza una griglia da costruire, e i problemi
   inversi (il pezzo di regola che manca diventa un numero in più che
-  l'addestramento regola da sé, purché le misure ne portino traccia).
+  l'addestramento regola, purché le misure ne portino traccia).
 - Onestà: sui problemi standard i metodi classici restano superiori, più
   rapidi e più precisi, e con una garanzia scritta prima di partire; le PINN
   si affiancano, non li sostituiscono {cite}`karniadakis2021physics`.

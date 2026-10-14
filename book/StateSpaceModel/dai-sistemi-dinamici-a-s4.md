@@ -7,7 +7,7 @@ riassumono ciò che del passato serve a prevedere il futuro, e una sua misura,
 disturbata da errori (*rumorosa*, si dice). È la *rappresentazione in spazio
 degli stati*. Il filtro che porta il suo nome, quello delle capsule Apollo
 {cite}`mcgee1985kalman`, stima lo stato (per un veicolo, posizione e velocità)
-da quelle misure rumorose; il ciclo di previsione e correzione su cui si regge
+da quelle misure rumorose; il ciclo di previsione e correzione su cui poggia
 l'avevano scritto anche altri prima di lui, come racconta la {doc}`sezione sui
 modelli classici delle serie temporali
 </SerieTemporali/componenti-e-classici>`. È un'idea di teoria del controllo e
@@ -26,7 +26,7 @@ incontrano.
 
 ## Un sistema che evolve nel tempo
 
-Il sistema di partenza è lineare, a tempo continuo e con un solo ingresso: un
+Il sistema di partenza è lineare, a tempo continuo e con un solo ingresso. Un
 segnale $u(t)$ entra, uno stato $\mathbf{h}(t)$ lo riassume istante per
 istante, un segnale $y(t)$ esce. Lo descrivono due equazioni. La prima lega lo
 stato alla sua velocità di variazione, cioè alla derivata incontrata nella
@@ -35,8 +35,8 @@ dice quanto in fretta lo stato cambia, dati lo stato e l'ingresso di adesso.
 Un'equazione che lega una grandezza alla propria derivata si chiama
 **equazione differenziale**. La seconda non ha derivate, e ricava l'uscita
 dallo stato. Dentro le due equazioni lavorano tre matrici, che sono le tre
-regole del sistema: come lo stato evolve da solo, come l'ingresso vi entra,
-come se ne legge l'uscita.
+regole del sistema: come lo stato evolve in assenza di ingresso, come
+l'ingresso vi entra, come se ne legge l'uscita.
 
 `````{tab} Elementare
 
@@ -53,17 +53,16 @@ quella che passa per la vasca.
 Quanto in fretta il livello scende, a rubinetto chiuso, dipende da quanto è
 aperto lo scarico: largo, e la vasca dimentica in un minuto; stretto, e si
 ricorda per un'ora; tappato, e non dimentica più niente, perché tutta l'acqua
-che hai versato resta lì. E la vasca non cala soltanto: spingi l'acqua verso un
-capo e per qualche secondo ondeggia avanti e indietro prima di quietarsi. Ci
-sono poi sistemi che crescono da soli, come il microfono avvicinato troppo alla
-cassa che lo amplifica: il fischio si alza da sé finché qualcuno non lo
-allontana. Calare, ondeggiare o crescere è quello che un sistema del genere fa
-quando lo lasci in pace, e a deciderlo è la sua regola interna, non chi lo
-alimenta.
+che hai versato resta lì. Calare non è l'unica possibilità: spingi
+l'acqua verso un capo e per qualche secondo ondeggia avanti e indietro prima di
+quietarsi. Ci sono poi sistemi che crescono da soli, come il microfono
+avvicinato troppo alla cassa che lo amplifica: il fischio sale finché qualcuno
+non lo allontana. Un sistema del genere, lasciato in pace, cala, ondeggia o
+cresce, e a deciderlo è la sua regola interna, non chi lo alimenta.
 
 Un'eco in una valle funziona allo stesso modo: gridi (ingresso), il suono
-rimbomba e si spegne gradualmente (stato che decade), e quello che senti è una
-versione attenuata e ritardata del grido (uscita). In tutti questi casi lo stato
+rimbomba e si spegne gradualmente (stato che decade), e senti una versione
+attenuata e ritardata del grido (uscita). In tutti questi casi lo stato
 è una fotografia compatta del passato: sapendo il livello dell'acqua *adesso* e
 cosa farai col rubinetto *da adesso in poi*, sai prevedere il futuro senza
 riavvolgere tutta la storia.
@@ -81,7 +80,7 @@ $$
 dove $u(t)\in\mathbb{R}$ è l'ingresso, $y(t)\in\mathbb{R}$ l'uscita e
 $\mathbf{h}(t)\in\mathbb{R}^{N}$ lo stato interno di dimensione $N$. Le tre
 matrici hanno ruoli distinti: $\mathbf{A}\in\mathbb{R}^{N\times N}$ è la
-**dinamica interna**, governa come lo stato evolve da solo, in assenza di
+**dinamica interna**, governa come lo stato evolve in assenza di
 ingresso (gli autovalori di $\mathbf{A}$ decidono se lo stato decade, oscilla o
 esplode); $\mathbf{B}\in\mathbb{R}^{N\times 1}$ è la **matrice d'ingresso**,
 dice come il segnale in arrivo si scrive nello stato;
@@ -100,43 +99,43 @@ verso lo zero) e in parte dal mondo esterno ($\mathbf{B}\,u$).
 
 Una parola sulla notazione, perché qui si incrociano due tradizioni che danno
 alle stesse cose lettere diverse, e chi arriva dall'una legge male le formule
-dell'altra. Il controllo chiama $\mathbf{x}$ lo stato e $u$ l'ingresso, ed è la
-convenzione con cui S4 ({cite}`gu2022s4`) scrive ancora il suo sistema:
+dell'altra. Il controllo chiama $\mathbf{x}$ lo stato e $u$ l'ingresso, e con
+questa convenzione S4 ({cite}`gu2022s4`) scrive ancora il suo sistema:
 $\mathbf{x}'(t) = \mathbf{A}\,\mathbf{x}(t) + \mathbf{B}\,u(t)$. La letteratura
 che tratta gli SSM come strati di rete neurale la ribalta e chiama $\mathbf{h}$
-lo stato, $x$ l'ingresso: lo fa Mamba ({cite}`gu2023mamba`), con
-$\mathbf{h}'(t) = \mathbf{A}\,\mathbf{h}(t) + \mathbf{B}\,x(t)$, ed è la forma
-che il campo ha adottato. Non è una questione di gusto: dentro una rete la
-lettera $x$ è già presa dal dato che entra nello strato, e in un SSM quel dato
-è esattamente l'ingresso della ricorrenza, così che uno stato di nome $x$
-finirebbe a dividere la lettera con il proprio ingresso nella stessa equazione.
-Il libro segue la seconda convenzione, che è anche quella con cui $\mathbf{h}$
-indica lo stato nascosto fin dalle reti ricorrenti. L'unico residuo della prima
-è la $u(t)$ del sistema a tempo continuo: appena discretizzeremo, con
-l'ingresso diventato una sequenza di campioni, prenderà il nome di $x_t$.
+lo stato, $x$ l'ingresso, come fa Mamba ({cite}`gu2023mamba`) con
+$\mathbf{h}'(t) = \mathbf{A}\,\mathbf{h}(t) + \mathbf{B}\,x(t)$; il campo ha
+adottato questa forma. La ragione non è di gusto: dentro una rete la lettera
+$x$ è già presa dal dato che entra nello strato, e in un SSM quel dato è
+l'ingresso della ricorrenza, così che uno stato di nome $x$ dividerebbe la
+lettera con il suo ingresso nella stessa equazione. Il libro segue la seconda
+convenzione, che è anche quella con cui $\mathbf{h}$ indica lo stato nascosto
+fin dalle reti ricorrenti. L'unico residuo della prima è la $u(t)$ del sistema
+a tempo continuo: appena discretizzeremo, con l'ingresso diventato una sequenza
+di campioni, prenderà il nome di $x_t$.
 
 `````
 
-Finora tutto è continuo: il tempo scorre senza gradini. Ma una frase è una
-sequenza di token (i pezzetti in cui il testo viene diviso, i «passi» di
-cui parlavamo), un segnale audio è una sequenza di campioni: dati discreti,
-uno dopo l'altro. Per usare questo sistema su una sequenza dobbiamo prima
-tradurlo dal continuo al discreto.
+Finora tutto è continuo, con il tempo che scorre senza gradini. Eppure una frase
+è una sequenza di token (i pezzetti in cui il testo viene diviso, i «passi» di
+cui parlavamo) e un segnale audio è una sequenza di campioni, dati discreti, uno
+dopo l'altro. Per usare questo sistema su una sequenza dobbiamo prima tradurlo
+dal continuo al discreto.
 
 ## Dal continuo al discreto
 
-Il passaggio si chiama **discretizzazione**: al posto di seguire il
+Il passaggio si chiama **discretizzazione**. Al posto di seguire il
 cambiamento istante per istante, si va avanti a salti, di lunghezza fissa.
 Chiamiamo $\Delta$ la durata di un salto (il tempo che passa tra una misura e
 la successiva) e riscriviamo il sistema in modo che vada di stato in stato,
 invece di scivolare con continuità.
 
-Non esiste un solo modo di discretizzare. Quello che succede *tra* una misura
-e l'altra non si osserva, e ogni regola lo ricostruisce con un'ipotesi
-diversa; S4 e Mamba ne usano due diverse, che non vanno scambiate. S4 usa la
-*trasformazione bilineare*, che stima con la regola del trapezio quanto lo stato
-cala da solo durante il salto. Mamba usa lo *zero-order hold* (in sigla ZOH),
-che tiene l'ingresso fermo per tutto il salto e quel calo lo calcola
+Non esiste un solo modo di discretizzare. Fra una misura e l'altra non si
+osserva niente, e ogni regola ricostruisce l'intervallo con un'ipotesi diversa;
+S4 e Mamba ne usano due, che non vanno scambiate. S4 usa la *trasformazione
+bilineare*, che stima con la regola del trapezio quanto lo stato cala durante
+il salto in assenza di ingresso. Mamba usa lo *zero-order hold* (in sigla ZOH),
+che tiene l'ingresso fermo per tutto il salto e quel calo lo integra
 esattamente.
 
 `````{tab} Elementare
@@ -150,23 +149,23 @@ loro $\Delta$ è un numero che il modello sceglie, e dice quanta storia della
 vasca far passare fra una parola e la successiva. Con $\Delta$ piccolo, fra un
 passo e l'altro lo scarico porta via poco e la memoria si allunga; con $\Delta$
 grande, fra un passo e l'altro succede molto e di quel che c'era prima resta
-poco. È l'intervallo a decidere quanto in fretta il sistema dimentica, e più
-avanti Mamba lo sceglierà di nuovo a ogni parola.
+poco. È l'intervallo a decidere quanto in fretta il sistema dimentica, e
+{doc}`Mamba </StateSpaceModel/mamba>` lo sceglierà di nuovo a ogni parola.
 
-Le due regole sono due modi diversi di indovinare cosa succede *tra* un passo
-e l'altro, e tutte e due tengono fermo il rubinetto per l'intero tratto,
+Le due regole sono due modi diversi di indovinare cosa succede *tra* un passo e
+l'altro, e tutte e due tengono fermo il rubinetto per l'intero tratto,
 all'apertura che si legge adesso. Si separano sullo scarico, che tira di più a
 vasca piena e di meno man mano che il livello scende; e l'acqua che entra
-comincia a defluire appena è entrata. Lo *zero-order hold*, la scelta di
-Mamba, tiene conto di tutto questo, e fa il conto esatto di quanta acqua la
-vasca perde nel tratto. La bilineare, la scelta di S4, lo scarico lo stima alla
-buona: prende quanto tirava all'inizio del tratto e quanto tira alla fine, e ne
-fa la media, cioè misura un **trapezio** al posto della curva vera. Il risultato
-è lo stesso tipo di regola passo dopo passo; cambia quanto errore ti porti
-dietro a ogni passo, e l'errore, a forza di passi, si accumula.
+comincia a defluire appena è entrata. Lo *zero-order hold*, la scelta di Mamba,
+tiene conto di tutto questo, e dà il valore esatto di quanta acqua la vasca
+perde nel tratto. La bilineare, la scelta di S4, stima lo scarico alla buona:
+prende quanto tirava all'inizio del tratto e quanto tira alla fine, e ne fa la
+media, cioè misura un **trapezio** al posto della curva vera. Il risultato è lo
+stesso tipo di regola passo dopo passo; cambia quanto errore ti porti dietro a
+ogni passo, e l'errore, a forza di passi, si accumula.
 
-Del suo conto esatto Mamba semplifica un pezzo. Per sapere quanta acqua, di
-quella entrata nel tratto, finisce davvero nella vasca, fa un **rettangolo**:
+Mamba semplifica un pezzo di quel calcolo. Per sapere quanta acqua,
+di quella entrata nel tratto, finisce nella vasca, fa un **rettangolo**:
 apertura per durata, come se l'acqua non defluisse mentre entra. È il pezzo che
 Mamba-3, il modello più recente della famiglia, rifarà a trapezi.
 
@@ -181,7 +180,7 @@ $\bar{\mathbf{B}}$ tali che la ricorrenza $\mathbf{h}_t =
 l'evoluzione continua ($x_t$ è l'ingresso campionato al passo $t$).
 
 Lo **zero-order hold** assume che l'ingresso resti costante entro ciascun
-intervallo $\Delta$ e integra esattamente il sistema su quel tratto:
+intervallo $\Delta$ e integra il sistema su quel tratto in forma chiusa:
 
 $$
 \bar{\mathbf{A}} = \exp(\Delta \mathbf{A}), \qquad
@@ -198,15 +197,16 @@ non si può valutare, la serie sì). In codice si usa la serie, oppure
 differenza $e^{z}-1$, scritta come `exp(z) - 1`, perde le cifre significative
 per {doc}`cancellazione </Matematica/analisi-numerica>`.
 
-Se $\mathbf{A}$ è diagonale, ogni suo autovalore $a$ si discretizza per conto suo:
-$\bar{a} = e^{\Delta a}$ e $\bar{b} = \frac{e^{\Delta a}-1}{a}\,b$, ben definito
-anche nel limite $a\to 0$, dove vale $\Delta b$ (è $\varphi_1(0)=1$). È la
-scelta di Mamba, con una precisazione: lo ZOH vale per la transizione,
-$\bar{\mathbf{A}} = \exp(\Delta \mathbf{A})$, mentre per l'ingresso
-l'implementazione (il paper dichiara lo ZOH anche lì) adotta la
-semplificazione al prim'ordine (Eulero) $\bar{\mathbf{B}} = \Delta \mathbf{B}$,
-che dello ZOH è il troncamento per $\Delta$ piccolo {cite}`lahoti2026mamba3`.
-La si ritrova nel codice della {doc}`sezione su Mamba </StateSpaceModel/mamba>`.
+Se $\mathbf{A}$ è diagonale, ogni suo autovalore $a$ si discretizza
+indipendentemente dagli altri: $\bar{a} = e^{\Delta a}$ e $\bar{b} =
+\frac{e^{\Delta a}-1}{a}\,b$, ben definito anche nel limite $a\to 0$, dove vale
+$\Delta b$ (è $\varphi_1(0)=1$). È la scelta di Mamba, con una precisazione: lo
+ZOH vale per la transizione, $\bar{\mathbf{A}} = \exp(\Delta \mathbf{A})$,
+mentre per l'ingresso l'implementazione (il paper dichiara lo ZOH anche lì)
+adotta la semplificazione al prim'ordine (Eulero) $\bar{\mathbf{B}} = \Delta
+\mathbf{B}$, che dello ZOH è il troncamento per $\Delta$ piccolo
+{cite}`lahoti2026mamba3`. La si ritrova nel codice della {doc}`sezione su Mamba
+</StateSpaceModel/mamba>`.
 
 La **trasformazione bilineare** sostituisce invece l'esponenziale con la sua
 approssimante razionale $[1/1]$, $e^{z} \approx (1+z/2)/(1-z/2)$ (la regola del
@@ -228,11 +228,11 @@ le matrici discrete. Il passo $\Delta$ decide molto: fissa la *scala temporale*
 del sistema, cioè quanto in fretta lo stato dimentica.
 
 Quanto conti la scelta della regola, invece, lo dicono le ablazioni. Poco nel
-caso LTI: in S4D lo ZOH, la bilineare ed Eulero non fanno differenze
-apprezzabili, mentre l'inizializzazione di $\mathbf{A}$ pesa molto di più
-{cite}`gu2022s4d`. Nel caso selettivo conta un po' di più, ma resta una
-correzione piccola: lo misura il paper di Mamba-3, con i numeri riportati nella
-{doc}`sezione sulla dualità </StateSpaceModel/dualita-e-mamba-2-3>`.
+caso LTI: in S4D lo ZOH e la bilineare non fanno differenza, mentre
+l'inizializzazione di $\mathbf{A}$ pesa molto di più {cite}`gu2022s4d`. Nel
+caso selettivo conta un po' di più, ma resta una correzione piccola: lo misura
+il paper di Mamba-3, con i numeri riportati nella {doc}`sezione sulla dualità
+</StateSpaceModel/dualita-e-mamba-2-3>`.
 
 `````
 
@@ -247,44 +247,41 @@ sequenza in un colpo.
 
 `````{tab} Elementare
 
-È la stessa doppia natura che abbiamo visto nel capitolo scorso con l'attenzione
-lineare, dove un unico calcolo si poteva leggere in due modi: "passo dopo passo"
-oppure "tutto insieme". Qui le due forme tornano, con un attrezzo diverso per
-il «tutto insieme»: un filtro.
+È la stessa doppia natura del {doc}`capitolo sull'attenzione lineare
+</AttenzioneLineare/overview>`, dove un unico calcolo si poteva leggere in due
+modi, "passo dopo passo" oppure "tutto insieme". Qui le due forme tornano, con
+un attrezzo diverso per il «tutto insieme», un filtro.
 
-Da un lato la forma ricorrente: parti dallo stato, aggiungi il nuovo
-ingresso, ottieni il nuovo stato, leggi l'uscita, e ripeti. Un token alla
-volta, con una quantità di memoria che non cresce mai: perfetta per generare
-testo o processare un flusso audio in tempo reale. È il modo di lavorare di
-una RNN.
+Da un lato la forma ricorrente, in cui parti dallo stato, aggiungi il nuovo
+ingresso, ottieni il nuovo stato, leggi l'uscita e ripeti. Un token alla volta,
+con una quantità di memoria che non cresce mai, perfetta per generare testo o
+processare un flusso audio in tempo reale. È il modo di lavorare di una RNN.
 
-Dall'altro la forma convoluzionale: se il sistema non cambia nel tempo, si
-può dimostrare che l'intera uscita è una singola convoluzione dell'ingresso
-con un filtro fisso. E la convoluzione la conosciamo dalle
-{doc}`reti convoluzionali </DeepLearning/reti-convoluzionali>`: un filtro che
-scorre lungo il segnale e a ogni posizione moltiplica i propri pesi per i
-valori che ha sotto, poi somma. Due
-differenze. La prima è che qui il filtro è lungo quanto tutta la sequenza, non
-una finestrella di pochi elementi. La seconda è che nessuno lo scrive a mano:
-si ricava, con un conto, dalle tre regole del sistema. Ed è una buona notizia,
-perché il modello ha da imparare le tre regole, che sono poche, e non i numeri
-del filtro, che sono tanti quanto il testo è lungo. Quei numeri, uno per
-posizione, dicono quanto una parola di venti o di mille passi fa conta ancora
-sull'uscita di adesso: nella vasca dei due litri al minuto erano 1, 0,5, 0,25,
-0,125 (quanto pesa ancora un getto entrato adesso, un minuto fa, due, tre). Il
-vantaggio è che una convoluzione si calcola in un colpo solo, in parallelo su
-tutta la sequenza: proprio ciò che serve per sfruttare le GPU in
-addestramento.
+Dall'altro la forma convoluzionale. Se il sistema non cambia nel tempo, si può
+dimostrare che l'intera uscita è una singola convoluzione dell'ingresso con un
+filtro fisso. Della convoluzione hai già visto il meccanismo nelle {doc}`reti
+convoluzionali </DeepLearning/reti-convoluzionali>`: un filtro che scorre lungo
+il segnale e a ogni posizione moltiplica i propri pesi per i valori che ha
+sotto, poi somma. Le differenze sono due. La prima è che qui il filtro è lungo
+quanto tutta la sequenza, non una finestrella di pochi elementi. La seconda è
+che nessuno lo scrive a mano, perché si ricava dalle tre regole del sistema.
+Per il modello è un vantaggio: deve imparare le tre regole, che sono poche, e
+non i numeri del filtro, che sono tanti quanto il testo è lungo. Quei numeri,
+uno per posizione, dicono quanto una parola di venti o di mille passi fa conta
+ancora sull'uscita di adesso: nella vasca dei due litri al minuto erano 1, 0,5,
+0,25, 0,125 (quanto pesa ancora un getto entrato adesso, un minuto fa, due,
+tre). Inoltre una convoluzione si calcola in un colpo solo, in
+parallelo su tutta la sequenza, come richiedono le GPU in addestramento.
 
-Morale: si addestra in forma convoluzionale (veloce, parallela) e si fa
-inferenza in forma ricorrente (economica, una parola alla volta). La stessa
-funzione, due vestiti diversi a seconda dell'occasione.
+In pratica si addestra in forma convoluzionale (veloce, parallela) e si fa
+inferenza in forma ricorrente (economica, una parola alla volta). La funzione è
+la stessa, in due forme scelte secondo l'occasione.
 
-Tutto questo regge a una condizione: il filtro è uno solo, lo stesso dalla
+Tutto questo vale a una condizione, che il filtro sia uno solo, lo stesso dalla
 prima parola all'ultima. Se le tre regole cambiassero da una parola alla
 successiva, un filtro da calcolare una volta per tutte non ci sarebbe più, e
-per fare i conti tutti insieme servirebbe un'altra strada. Mamba prenderà
-proprio quella deviazione, sapendo quel che costa.
+per calcolare tutto insieme servirebbe un'altra strada. Mamba prenderà
+quella deviazione e ne accetterà la perdita.
 
 `````
 
@@ -347,9 +344,9 @@ mostra le due facce affiancate.
 
 Le due facce della stessa macchina, quando le sue regole non cambiano da un
 passo all'altro. A sinistra si va **passo dopo passo**: lo stato si aggiorna
-una parola alla volta, ed è il modo economico per generare. A destra si fa
+una parola alla volta, il modo economico per generare. A destra si fa
 **tutto insieme**: un unico filtro, lungo quanto la sequenza, produce tutte le
-uscite in una volta sola, ed è il modo veloce per addestrare. Il simbolo al
+uscite in una volta sola, il modo veloce per addestrare. Il simbolo al
 centro dice che è lo stesso calcolo, scritto in due modi. Nelle formule
 $\mathbf{h}$ è lo stato, $x$ l'ingresso e $y$ l'uscita; $\bar{\mathbf{A}}$,
 $\bar{\mathbf{B}}$ e $\mathbf{C}$ sono le tre regole (quanto lo stato cala da
@@ -369,7 +366,7 @@ decadimento è già lento, dopo cinquanta passi ne resta $0{,}9^{50} \approx
 0{,}005$, cioè mezzo per cento, e dopo cento $0{,}9^{100} \approx 2{,}7 \cdot
 10^{-5}$, mezzo per cento di mezzo per cento. È lo stesso decadimento
 esponenziale che mette in difficoltà le RNN classiche, in avanti per il ricordo
-e all'indietro per il gradiente (il gradiente che svanisce), ed è una delle
+e all'indietro per il gradiente (il gradiente che svanisce), una delle
 ragioni per cui sono nate LSTM e GRU, con i loro cancelli (*gate*) che
 decidono a ogni passo quanto lasciar passare e quanto trattenere
 {cite}`hochreiter1997long`. Per gli SSM la risposta sta invece nella scelta di
@@ -379,7 +376,7 @@ corta; costruita con criterio, può essere lunghissima.
 `````{tab} Elementare
 
 Un romanzo lunghissimo, e una pagina sola di appunti da tenere aggiornata
-mentre lo leggi. La pagina non si allunga mai: per far entrare una riga nuova,
+mentre lo leggi. La pagina non si allunga mai, e per far entrare una riga nuova
 una vecchia deve stringersi. Se ogni frase nuova cancella la precedente, alla
 fine ti resta in mano solo l'ultimo capitolo.
 
@@ -395,23 +392,23 @@ ripartito fra gli strati. Chi comincia da lì ha la memoria lunga senza fare
 altro; chi comincia da una pagina bianca qualunque ricorda le ultime frasi e
 basta, e continuare a leggere non gliela allunga.
 
-S4 prende quella pagina impostata e ci aggiunge la velocità. Per allenarsi
-in fretta gli serve sapere in anticipo quanto ogni frase già letta pesa
+S4 prende quella pagina impostata e ci aggiunge la velocità. Per allenarsi in
+fretta gli serve sapere in anticipo quanto ogni frase già letta pesa
 sull'appunto di adesso: un elenco lungo quanto il romanzo, e ricavarlo voce per
 voce vuol dire ripercorrere la storia da capo ogni volta. Ridisegnare la pagina
 per renderla comoda da calcolare non era un'opzione: chi tocca quel disegno
-butta via la memoria lunga insieme a lui. Ma il disegno di HiPPO si lascia
-scomporre in due pezzi. Nel primo ogni riga della pagina si aggiorna per conto
-suo, senza guardare le altre, e per righe così l'elenco dei pesi si scrive con
-una formula, tutto in una volta. Il secondo è un ritocco piccolo, fatto di pochi
-ingredienti, che lega le righe fra loro, e un ritocco così si sistema alla fine
-con un solo conto in più. L'elenco intero esce in blocco. La memoria gliela dà
-la pagina di partenza, la velocità la scomposizione: senza tutt'e due sarebbe
-rimasto un esercizio.
+butta via la memoria lunga insieme a lui. Il disegno di HiPPO si lascia
+comunque scomporre in due pezzi. Nel primo ogni riga della pagina si aggiorna
+per conto suo, senza guardare le altre, e per righe così l'elenco dei pesi si
+scrive con una formula, tutto in una volta. Il secondo è un ritocco piccolo,
+fatto di pochi ingredienti, che lega le righe fra loro, e un ritocco così si
+sistema alla fine con un solo conto in più. L'elenco intero esce in blocco. La
+memoria gliela dà la pagina di partenza, la velocità la scomposizione: senza
+tutt'e due sarebbe rimasto un esercizio.
 
 Con tutt'e due è il primo modello che risolve **Path-X**, la prova più dura del
 *Long Range Arena*, la gara sulle dipendenze a lunghissimo raggio. Si guarda
-un'immagine di 128 pixel per 128, letta un pixel alla volta, in fila come se
+un'immagine di 128 pixel per 128, letta un pixel alla volta, come se
 fosse un testo: 128 per 128 fanno $16\,384$ passi. Alla fine si deve dire se
 due puntini sono uniti da un tratto oppure no, e per rispondere bisogna tenere
 insieme parti dell'immagine lontanissime nella fila. Lì i Transformer restavano
@@ -420,7 +417,7 @@ e sul linguaggio, il distacco si accorcia senza sparire.
 
 Una virtù, però, per strada si perde. Il modo di prendere appunti di HiPPO non
 si cura di quanto sia lungo il romanzo: cento pagine o mille, la pagina resta
-una e si riadatta da sé man mano che la storia si allunga. S4 lo congela in una
+una e si riadatta man mano che la storia si allunga. S4 lo congela in una
 macchina che procede a passi tutti uguali, e da quel momento la distanza su cui
 ricordare va decisa prima di cominciare a leggere. Il rimedio è non deciderla
 una volta sola. Un modello vero tiene molte pagine insieme, una per canale, e
@@ -440,7 +437,7 @@ misura sul passato. Lo stato $\mathbf{h}(t)$
 diventa il vettore dei coefficienti di quella proiezione: ricostruisce, nel
 modo meno sbagliato possibile, tutto il segnale visto fin lì. La variante
 **HiPPO-LegS** (*scaled Legendre*) usa una misura che copre uniformemente
-tutta la storia, ed è per costruzione robusta alla scala temporale:
+tutta la storia, e per costruzione è robusta alla scala temporale:
 l'operatore originale è tempo-variante (il suo passo è $1/t$, non $\Delta$) e
 non ha alcun iperparametro di scala, tanto che dilatare l'ingresso dilata
 semplicemente l'uscita. Attenzione a cosa si eredita e cosa no: S4 prende la
@@ -448,7 +445,7 @@ semplicemente l'uscita. Attenzione a cosa si eredita e cosa no: S4 prende la
 con passo $\Delta$ costante. Lì la scala temporale torna a essere fissata da
 $\Delta$, che infatti non si sceglie a caso ma si inizializza su una gamma
 ampia di ordini di grandezza (tipicamente log-uniforme fra $10^{-3}$ e
-$10^{-1}$), proprio per coprire orizzonti di memoria diversi. Il risultato
+$10^{-1}$), per coprire orizzonti di memoria diversi. Il risultato
 pratico è una matrice $\mathbf{A}$ specifica (la *matrice HiPPO*) con cui
 inizializzare l'SSM per dotarlo di memoria a lungo raggio. Per LegS, con indici
 $n, k = 0, \dots, N-1$,
@@ -463,18 +460,19 @@ triangolare inferiore: il coefficiente di grado $n$ riceve solo da quelli di
 grado più basso, e gli autovalori sono la diagonale.
 
 S4 (*Structured State Space Sequence model*, Gu, Goel e Ré, ICLR 2022,
-{cite}`gu2022s4`) parte proprio da qui, ma non è il primo strato a farlo. Il
-*Linear State-Space Layer* (LSSL) {cite}`gu2021combining`, dello stesso gruppo
-e comparso su arXiv cinque giorni prima, inizializzava già $\mathbf{A}$ con
-HiPPO-LegS e simulava il sistema lineare come strato di una rete: sul MNIST
-sequenziale, rispetto a una $\mathbf{A}$ casuale, l'accuratezza passava dal 60
-al 98 per cento. Il suo ostacolo era computazionale. Costruire il kernel
-$\bar{\mathbf{K}}$ richiede le potenze $\bar{\mathbf{A}}^{\,j}$ fino a $j =
-L-1$: farlo direttamente costa $O(N^2 L)$ operazioni, proibitivo per stati e
-sequenze grandi. La mossa di S4 non è imporre ad $\mathbf{A}$ una struttura, e
-la distinzione va tenuta ferma: se lo facesse perderebbe proprio la matrice che
-dà la memoria lunga, e l'argomento crollerebbe. S4 dimostra (Teorema 1 del
-paper) che le matrici HiPPO una struttura sfruttabile ce l'hanno già, e che è
+{cite}`gu2022s4`) parte da qui, ma non è il primo strato a farlo. Il *Linear
+State-Space Layer* (LSSL) {cite}`gu2021combining`, dello stesso gruppo e
+comparso su arXiv cinque giorni prima, inizializzava già $\mathbf{A}$ con
+HiPPO-LegS e simulava il sistema lineare come strato di una rete: sul MNIST a
+pixel permutati (pMNIST) una $\mathbf{A}$ casuale si ferma intorno al 62 per
+cento, mentre partendo dalla matrice HiPPO si arriva al 98,8
+{cite}`gu2021combining`. Il suo
+ostacolo era computazionale. Costruire il kernel $\bar{\mathbf{K}}$ richiede le
+potenze $\bar{\mathbf{A}}^{\,j}$ fino a $j = L-1$: farlo direttamente costa
+$O(N^2 L)$ operazioni, proibitivo per stati e sequenze grandi. S4 non impone ad
+$\mathbf{A}$ una struttura: se lo facesse perderebbe la matrice che dà la
+memoria lunga, e l'argomento crollerebbe. Dimostra invece (Teorema 1 del paper)
+che le matrici HiPPO una struttura sfruttabile ce l'hanno già, e che è
 **normale più basso rango** (NPLR):
 
 $$
@@ -530,9 +528,10 @@ arriva dove l'attenzione non arrivava.
 
 ## Tappe verso il linguaggio
 
-S4 mostrò che uno stato piccolo, ben costruito, regge le sequenze lunghe meglio
-dell'attenzione; sul linguaggio restava indietro di poco, a 0,8 di perplessità
-dal Transformer su WikiText-103 {cite}`gu2022s4`. Mamba sarà il primo modello
+S4 mostrò che uno stato piccolo, ben costruito, gestisce le sequenze lunghe
+meglio dell'attenzione; sul linguaggio restava indietro di poco, con una
+perplessità su WikiText-103 di 20,95 contro i 20,51 del Transformer di cui
+aveva sostituito l'attenzione {cite}`gu2022s4`. Mamba sarà il primo modello
 senza attenzione a pareggiare in perplessità una ricetta di Transformer molto
 curata, la Transformer++ {cite}`gu2023mamba`. Fra i due stanno alcuni lavori
 del 2022 e del 2023, ciascuno su un pezzo del problema.
@@ -551,7 +550,7 @@ di giri si è arrivati in fondo. Il conto per esteso lo fa Mamba, che eredita lo
 stesso trucco.
 
 **H3** (2023) affronta invece la memoria «a richiamo»: ritrovare più avanti
-una cosa già letta ("chi era il soggetto di quella frase?"). I modelli di
+un'informazione già letta ("chi era il soggetto di quella frase?"). I modelli di
 questa famiglia, trattando ogni parola con la stessa regola, faticavano a
 farlo; H3 li aiuta accoppiando due memorie e un cancello che dosa quanto passa
 dall'una all'altra, così il modello riesce a trattenere un'informazione finché
@@ -576,23 +575,23 @@ misurarsi.
 Prima ancora c'è un passo che Mamba darà per scontato: togliere a S4 la
 correzione di rango basso. DSS {cite}`gupta2022dss` e poi S4D {cite}`gu2022s4d`
 mostrano che con $\mathbf{A}$ soltanto diagonale la qualità resta vicina a
-quella di S4, purché l'inizializzazione sia scelta con cura. A reggere sono la
+quella di S4, purché l'inizializzazione sia scelta con cura. Funzionano bene la
 parte normale di LegS (S4D-LegS), con parte reale $-\tfrac12$ e parti
 immaginarie che vanno, secondo una congettura del paper verificata
 numericamente, come l'inverso dell'indice (la formula chiusa che ne discende è
 S4D-Inv), e la più semplice $a_n = -\tfrac12 + i\pi n$ (S4D-Lin), che prende le
 frequenze di Fourier di un'altra matrice HiPPO, FouT. Conservare lo spettro,
-invece, non basta: i reali $a_n = -(n+1)$ (S4D-Real), che sono proprio gli
+invece, non basta: i reali $a_n = -(n+1)$ (S4D-Real), che sono gli stessi
 autovalori di LegS, nelle ablazioni di S4D perdono circa cinque punti e mezzo
 su sCIFAR e dieci su Speech Commands rispetto a S4D-Inv (quasi sei e dieci e
 mezzo rispetto a S4D-Lin). Il kernel diventa una somma di $N$ esponenziali,
 $\bar K_j = \sum_n C_n\, e^{j\Delta a_n}\, \bar b_n$, calcolabile con una
 matrice di Vandermonde, senza Cauchy né Woodbury. La $\mathbf{A}$ diagonale e
-reale di Mamba è proprio l'inizializzazione di S4D-Real, e Mamba la sceglie per
-una ragione che il caso LTI non vede: con l'SSM selettivo e sul linguaggio,
-nelle ablazioni del suo paper S4D-Real batte S4D-Lin (perplessità 8,71 contro
-9,16), mentre i numeri complessi servono per i segnali continui, tanto che
-l'audio è l'unico esperimento di Mamba che li usa {cite}`gu2023mamba`.
+reale di Mamba è l'inizializzazione di S4D-Real, e Mamba la sceglie per una
+ragione che il caso LTI non vede: con l'SSM selettivo e sul linguaggio, nelle
+ablazioni del suo paper S4D-Real batte S4D-Lin (perplessità 8,71 contro 9,16),
+mentre i numeri complessi servono per i segnali continui, tanto che l'audio è
+l'unico esperimento di Mamba che li usa {cite}`gu2023mamba`.
 
 S5 (Smith, Warrington e Linderman, ICLR 2023, {cite}`smith2023s5`)
 semplifica S4 su due fronti. Primo: usa un unico SSM **MIMO** (a più ingressi
@@ -613,7 +612,7 @@ che l'attenzione fa con naturalezza. H3 impila due SSM, uno a spostamento
 prodotto elemento per elemento tra due rami che permette al modello di
 confrontare token vicini e "trattenere" un valore fino a quando serve. Con
 l'aggiunta di pochissimi strati di attenzione, gli ibridi basati su H3
-arrivano a taglie fino a 2,7 miliardi di parametri e reggono il confronto con
+arrivano a taglie fino a 2,7 miliardi di parametri e competono con
 i Transformer.
 
 Hyena (Poli, Massaroli et al., ICML 2023, {cite}`poli2023hyena`) tira una
@@ -646,39 +645,39 @@ che porta a {doc}`Mamba </StateSpaceModel/mamba>`.
 - Un SSM nasce da un sistema che evolve nel tempo, come la vasca con il
   rubinetto aperto e lo scarico socchiuso: il livello dell'acqua è lo stato,
   una fotografia compatta del passato che basta a prevedere il futuro. Tre
-  ingredienti: come lo stato si muove da solo (la vasca cala, altri sistemi
-  ondeggiano o crescono), come l'ingresso lo alza, come si legge l'uscita. È
-  l'altra strada verso un modello che regge i testi lunghi senza che il costo
-  esploda, complementare all'attenzione lineare del capitolo precedente.
+  ingredienti: come lo stato si muove in assenza di ingresso (la vasca cala,
+  altri sistemi ondeggiano o crescono), come l'ingresso lo alza, come si legge
+  l'uscita. È l'altra strada verso un modello che gestisce i testi lunghi senza
+  che il costo esploda, complementare all'attenzione lineare.
 - Per usarlo su una sequenza (parole, campioni audio) bisogna misurare a
   intervalli regolari e indovinare cosa succede *tra* un campione e il
   successivo. Le ricette non sono una sola e non vanno confuse: tutte e due
-  tengono fermo l'ingresso per il tratto; S4 stima con un
-  trapezio quanto lo stato cala nel frattempo, Mamba lo calcola esatto (è lo
-  *zero-order hold*, la tenuta di ordine zero). Per
-  calcolare quanta parte di ciò che entra finisce nella memoria, Mamba si
-  accontenta del conto più sbrigativo, a rettangoli: è il pezzo che il modello
-  più recente della famiglia, Mamba-3, rifarà a trapezi.
+  tengono fermo l'ingresso per il tratto; S4 stima con un trapezio quanto lo
+  stato cala nel frattempo, Mamba lo calcola esatto (è lo
+  *zero-order hold*, la tenuta di ordine zero). Per calcolare quanta parte di
+  ciò che entra finisce nella memoria, Mamba si accontenta dell'approssimazione
+  più sbrigativa, a rettangoli: è il pezzo che il modello più recente della
+  famiglia, Mamba-3, rifarà a trapezi.
 - Finché le regole non cambiano da un passo all'altro, lo stesso calcolo si
   può fare in due modi: passo dopo passo (un token alla volta, con una
   memoria che non cresce mai: economico per generare) oppure tutto insieme,
   come un unico filtro lungo che scorre sulla sequenza (parallelo: perfetto per
   addestrare sulle GPU). Si allena nel secondo modo, si usa nel primo: la stessa
   dualità vista con l'attenzione lineare.
-- L'equivalenza regge solo finché quelle regole restano fisse: Mamba le farà
+- L'equivalenza vale solo finché quelle regole restano fisse: Mamba le farà
   dipendere da ciò che legge, e allora il filtro unico non c'è più. La
   ricorrenza resta, e per farla girare in parallelo servirà un'altra strada,
   lo scan.
 - HiPPO (Gu et al., 2020) è il modo studiato apposta per riassumere una storia
   lunghissima in pochi numeri, come appunti a più livelli su un romanzo: dice
-  da quali numeri partire perché uno stato piccolo abbia memoria lunga.
-  S4 (2022) parte da lì e rende il conto efficiente, sfruttando il fatto che
-  quei numeri si scompongono in una parte semplice e in un piccolo ritocco, ed
-  è il primo a risolvere Path-X (sequenze da $16\,384$ elementi), la prova più
+  da quali numeri partire perché uno stato piccolo abbia memoria lunga. S4
+  (2022) parte da lì e rende il filtro veloce da ottenere, sfruttando il fatto che
+  quei numeri si scompongono in una parte semplice e in un piccolo ritocco, e
+  per primo risolve Path-X (sequenze da $16\,384$ elementi), la prova più
   dura della gara sulle dipendenze a lunghissimo raggio, Long Range Arena.
-- Le tappe verso il linguaggio: S5 (mostra che anche il passo dopo passo si
-  può svolgere quasi tutto in parallelo) e H3 (due memorie e un cancello che
-  dosa quanto passa dall'una all'altra, per ritrovare a distanza una cosa già
+- Le tappe verso il linguaggio: S5 (mostra che anche il passo dopo passo si può
+  svolgere quasi tutto in parallelo) e H3 (due memorie e un cancello che dosa
+  quanto passa dall'una all'altra, per ritrovare a distanza un'informazione già
   letta) preparano Mamba; Hyena, che impara direttamente il filtro lungo, è la
   strada che Mamba non prende.
 ```
@@ -690,20 +689,21 @@ che porta a {doc}`Mamba </StateSpaceModel/mamba>`.
 ```{admonition} Da ricordare
 :class: important
 - Un SSM nasce da un sistema dinamico continuo
-  $\mathbf{h}'(t)=\mathbf{A}\,\mathbf{h}(t)+\mathbf{B}\,u(t)$, $y(t)=\mathbf{C}\,\mathbf{h}(t)$: lo stato $\mathbf{h}$ è una fotografia
+  $\mathbf{h}'(t)=\mathbf{A}\,\mathbf{h}(t)+\mathbf{B}\,u(t)$,
+  $y(t)=\mathbf{C}\,\mathbf{h}(t)$: lo stato $\mathbf{h}$ è una fotografia
   compatta del passato, con $\mathbf{A}$ dinamica interna, $\mathbf{B}$
   ingresso, $\mathbf{C}$ uscita. È l'altra strada verso il tempo lineare,
-  complementare all'attenzione lineare del capitolo precedente.
-- Per usarlo su sequenze discrete serve un passo $\Delta$ di
-  discretizzazione: una regola per indovinare cosa succede *tra* un campione
-  e il successivo. Di regole ce n'è più d'una e non vanno confuse. S4 usa la
-  bilineare (trapezio sulla dinamica dello stato, ingresso tenuto
-  fermo); Mamba usa lo
-  *zero-order hold* (ZOH: l'ingresso resta fermo per tutto l'intervallo), che
-  gli dà la transizione $\bar{\mathbf{A}}=\exp(\Delta \mathbf{A})$. Per il
-  termine d'ingresso, però, l'implementazione di Mamba si accontenta del conto a
-  rettangoli, $\bar{\mathbf{B}}=\Delta \mathbf{B}$ (il metodo di Eulero, cioè lo
-  ZOH troncato al prim'ordine): è il pezzo che Mamba-3 rifarà a trapezi.
+  complementare all'attenzione lineare.
+- Per usarlo su sequenze discrete serve un passo $\Delta$ di discretizzazione:
+  una regola per indovinare cosa succede *tra* un campione e il successivo. Di
+  regole ce n'è più d'una e non vanno confuse. S4 usa la bilineare (trapezio
+  sulla dinamica dello stato, ingresso tenuto fermo); Mamba usa lo *zero-order
+  hold* (ZOH: l'ingresso resta fermo per tutto l'intervallo), che gli dà la
+  transizione $\bar{\mathbf{A}}=\exp(\Delta \mathbf{A})$. Per il termine
+  d'ingresso, però, l'implementazione di Mamba si accontenta
+  dell'approssimazione a rettangoli, $\bar{\mathbf{B}}=\Delta \mathbf{B}$ (il
+  metodo di Eulero, cioè lo ZOH troncato al prim'ordine): è il pezzo che
+  Mamba-3 rifarà a trapezi.
 - Se il sistema discretizzato è tempo-invariante (LTI), la stessa funzione ha
   due forme equivalenti: ricorrente
   $\mathbf{h}_t=\bar{\mathbf{A}}\mathbf{h}_{t-1}+\bar{\mathbf{B}}x_t$

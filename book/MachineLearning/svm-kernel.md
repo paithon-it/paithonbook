@@ -4,8 +4,8 @@ La SVM del massimo margine traccia frontiere *diritte*. Se le classi formano un
 bersaglio, una al centro e l'altra tutt'intorno ad anello, nessuna retta le
 separa. Si può allora trasformare ogni esempio con una funzione $\phi$ in uno
 spazio di dimensione maggiore, dove la frontiera torna dritta; il **kernel
-trick** permette di farlo senza mai calcolare $\phi$, ed è l'idea che ha reso
-celebri le SVM.
+trick**, l'idea che ha reso celebri le SVM, permette di farlo senza mai
+calcolare $\phi$.
 
 `````{tab} Elementare
 
@@ -18,9 +18,9 @@ quote diverse, e una lastra di vetro orizzontale infilata a mezz'aria le
 divide nettamente. I punti non sono cambiati: li abbiamo guardati in uno
 spazio con una dimensione in più, e lì il confine torna dritto.
 
-Il guaio è che sollevare i punti costa. Nei casi utili le dimensioni da
-aggiungere, cioè le coordinate nuove di ogni punto, non sono una ma migliaia, a
-volte infinite, e nessun calcolatore le regge. Qui sta il trucco. La strada più
+Sollevare i punti, però, richiede troppi calcoli. Nei casi utili le dimensioni da
+aggiungere (le coordinate nuove di ogni punto) non sono una ma migliaia, a
+volte infinite, e nessun calcolatore può gestirle. Qui sta il trucco. La strada più
 larga si calcola usando soltanto le ombre a due a due, un numero per ogni coppia
 di punti, e le coordinate non compaiono in nessun altro posto. Se sappiamo
 produrre direttamente quei numeri *come sarebbero dopo il sollevamento*, il
@@ -31,15 +31,15 @@ spazio sollevato resta un'idea: non lo si costruisce mai.
 
 Non ogni regola inventata a tavolino, però, è un kernel, e il motivo si vede
 guardando quei numeri a due a due. Il primo requisito è ovvio: quanto A vede B
-e quanto B vede A devono essere lo stesso numero. Il secondo lo è meno, e riguarda le
-terne. Scrivi che A e B si vedono quasi come sé stessi, e così B e C, ma che A
-e C non si vedono per niente: hai chiesto qualcosa che nessuna disposizione di
-punti, in nessuno spazio, può realizzare, come pretendere che il bar sia a due
-passi da casa, casa a due passi dalla scuola, e la scuola a dieci chilometri
-dal bar. Il fastidio è che nessuno protesta: il calcolatore macina lo stesso e
+e quanto B vede A devono essere lo stesso numero. Il secondo lo è meno, e
+riguarda le terne. Scrivi che A e B si vedono quasi come sé stessi, e così B e
+C, ma che A e C non si vedono per niente: hai chiesto qualcosa che nessuna
+disposizione di punti, in nessuno spazio, può realizzare. È come pretendere che
+il bar sia a due passi da casa, casa a due passi dalla scuola, e la scuola a
+dieci chilometri dal bar. Nessuno protesta: il calcolatore macina lo stesso e
 restituisce un confine, che però non è il più largo di niente. Per questo i
-kernel non si inventano a piacere, e chi ne prova uno nuovo controlla prima
-che una disposizione capace di produrre quei numeri esista davvero.
+kernel non si inventano a piacere, e chi ne prova uno nuovo controlla prima che
+una disposizione capace di produrre quei numeri esista.
 
 `````
 
@@ -59,11 +59,11 @@ problema, così com'è, sembra però costoso: se $\phi$ manda in uno spazio a
 migliaia di dimensioni, calcolare e conservare tutti quei
 $\phi(\mathbf{x}_i)$ diventa proibitivo.
 
-Il kernel trick è l'osservazione che salva tutto, ed è la ragione vera per cui
-la {doc}`strada più larga <svm>` ha percorso il duale passo per passo: là
-dentro, e nella regola di decisione, gli esempi compaiono *solo* attraverso
-prodotti scalari $\phi(\mathbf{x})^\top\phi(\mathbf{z})$. Se esiste una funzione
-$k$ che calcola quel prodotto scalare direttamente dalle coordinate originali,
+Il kernel trick è l'osservazione decisiva, la ragione per cui la {doc}`strada
+più larga <svm>` ha percorso il duale passo per passo: lì, e nella
+regola di decisione, gli esempi compaiono *solo* attraverso prodotti scalari
+$\phi(\mathbf{x})^\top\phi(\mathbf{z})$. Se esiste una funzione $k$ che calcola
+quel prodotto scalare direttamente dalle coordinate originali,
 
 $$
 k(\mathbf{x}, \mathbf{z}) = \phi(\mathbf{x})^\top\phi(\mathbf{z}),
@@ -86,38 +86,38 @@ $$
 dove $d$ è il grado del polinomio, $c \ge 0$ un termine costante e $\gamma > 0$
 l'iperparametro di ampiezza del kernel gaussiano, che stringe la campana al
 crescere. La larghezza è la deviazione standard equivalente $\sigma$, e vale
-$\sigma = 1/\sqrt{2\gamma}$, cioè $\gamma = 1/(2\sigma^2)$: $\gamma$ va quindi
+$\sigma = 1/\sqrt{2\gamma}$, da cui $\gamma = 1/(2\sigma^2)$: $\gamma$ va
 come l'inverso del *quadrato* della larghezza, e per dimezzare la campana va
 quadruplicato, non raddoppiato. $\gamma$ grande, campana stretta. Il kernel RBF
 corrisponde a uno spazio $\phi$ di dimensione *infinita*: sarebbe impossibile da
 costruire, eppure $k$ si calcola in una riga.
 
-Un'ultima clausola, quella che fa del trucco un teorema invece che una
-speranza. La frase «se esiste una funzione $k$ che calcola quel prodotto
-scalare» rovescia l'ordine dei fatti: in pratica non si parte da $\phi$ per
-cercare $k$, si sceglie $k$ e si spera che un $\phi$ esista. Esiste se e solo
-se $k$ è simmetrica e **semidefinita positiva**, cioè se ogni matrice di Gram
-$\mathbf{K}$, quella di elementi $K_{ij} = k(\mathbf{x}_i, \mathbf{x}_j)$, ha
-autovalori non negativi. È questa condizione la ragione per cui i kernel non si
-inventano a piacere: se $k$ non la rispetta, il duale smette di essere concavo
-e il solutore risolve un problema diverso da quello che si crede. Non ogni
-«misura di somiglianza» è un kernel, ed è l'errore più comune di chi prova a
-scriversene uno. Che la condizione basti lo dice il teorema di Moore e
-Aronszajn: ogni $k$ del genere definisce uno spazio di Hilbert di funzioni, lo
-spazio a nucleo riproducente $\mathcal{H}_k$, in cui $\langle
-k(\cdot,\mathbf{x}),\, k(\cdot,\mathbf{z})\rangle_{\mathcal{H}_k} =
-k(\mathbf{x},\mathbf{z})$, e basta prendere $\phi(\mathbf{x}) =
-k(\cdot,\mathbf{x})$. Il teorema di Mercer, con cui la condizione viene spesso
-confusa, è il caso di un $k$ continuo su un dominio compatto, dove $\phi$ si
-scrive con autovalori e autofunzioni dell'operatore integrale
-{cite}`scholkopf2002learning`. Dallo stesso spazio viene il **teorema del
-rappresentante**, di Kimeldorf e Wahba (1971) per la perdita quadratica, esteso
-poi a perdite qualsiasi (nella forma generale da Schölkopf, Herbrich e Smola
-{cite}`scholkopf2001generalized`): il problema $\min_{f \in \mathcal{H}_k}
-\sum_{i=1}^{m} \ell\bigl(y_i, f(\mathbf{x}_i)\bigr) + \lambda\lVert
-f\rVert^2_{\mathcal{H}_k}$ ha un minimo della forma $f = \sum_i \alpha_i\,
-k(\cdot, \mathbf{x}_i)$, che estende a ogni perdita il $\mathbf{w} = \sum_i
-\alpha_i y_i \mathbf{x}_i$ della strada più larga.
+Un'ultima clausola fa del trucco un teorema invece che una speranza.
+L'assunzione «se esiste una funzione $k$ che calcola quel prodotto scalare»
+rovescia l'ordine dei fatti: in pratica non si parte da $\phi$ per cercare $k$,
+ma si sceglie $k$ e si spera che un $\phi$ esista. Esiste se e solo se $k$ è
+simmetrica e **semidefinita positiva**: ogni matrice di Gram
+$\mathbf{K}$, quella di elementi $K_{ij} = k(\mathbf{x}_i, \mathbf{x}_j)$, deve
+avere autovalori non negativi. Per questa condizione i kernel non si inventano a
+piacere: se $k$ non la rispetta, il duale smette di essere concavo e il
+solutore risolve un problema diverso da quello voluto. L'errore più
+comune di chi progetta un kernel è credere che ogni «misura di somiglianza» lo
+sia. Il teorema di Moore e Aronszajn garantisce che la condizione basti: ogni
+$k$ del genere definisce uno spazio di Hilbert di funzioni, lo spazio a nucleo
+riproducente $\mathcal{H}_k$, in cui $\langle k(\cdot,\mathbf{x}),\,
+k(\cdot,\mathbf{z})\rangle_{\mathcal{H}_k} = k(\mathbf{x},\mathbf{z})$, e si può
+prendere $\phi(\mathbf{x}) = k(\cdot,\mathbf{x})$. Il teorema di Mercer, con
+cui la condizione viene spesso confusa, è il caso di un $k$ continuo su un
+dominio compatto, dove $\phi$ si scrive con autovalori e autofunzioni
+dell'operatore integrale {cite}`scholkopf2002learning`. Dallo stesso spazio
+viene il **teorema del rappresentante**, di Kimeldorf e Wahba (1971) per la
+perdita quadratica, esteso poi a perdite qualsiasi (nella forma generale da
+Schölkopf, Herbrich e Smola {cite}`scholkopf2001generalized`): il problema
+$\min_{f \in \mathcal{H}_k} \sum_{i=1}^{m} \ell\bigl(y_i,
+f(\mathbf{x}_i)\bigr) + \lambda\lVert f\rVert^2_{\mathcal{H}_k}$ ha un minimo
+della forma $f = \sum_i \alpha_i\, k(\cdot, \mathbf{x}_i)$, che estende a ogni
+perdita il $\mathbf{w} = \sum_i \alpha_i y_i \mathbf{x}_i$ della strada più
+larga.
 
 I kernel validi si costruiscono da altri kernel validi: se $k_1$ e $k_2$ sono
 semidefiniti positivi, lo sono anche $c\,k_1$ con $c > 0$, $k_1 + k_2$, $k_1
@@ -126,10 +126,10 @@ funzione reale $g$, ed $\exp(k_1)$ {cite}`scholkopf2002learning`. Il gaussiano
 ne è un esempio: $e^{-\gamma\lVert\mathbf{x}-\mathbf{z}\rVert^2} =
 e^{-\gamma\lVert\mathbf{x}\rVert^2}\, e^{2\gamma\,\mathbf{x}^\top\mathbf{z}}\,
 e^{-\gamma\lVert\mathbf{z}\rVert^2}$, l'esponenziale di un kernel lineare fra
-due fattori $g$. Quanto risparmi il trucco lo dice il kernel polinomiale: con
-$n$ caratteristiche (qui $n$, perché $d$ è già il grado),
-$(\mathbf{x}^\top\mathbf{z} + c)^d$ con $c > 0$ corrisponde a uno spazio con una
-coordinata per ogni monomio di grado al più $d$, cioè $\binom{n+d}{d}$
+due fattori $g$. Il kernel polinomiale mostra quanto faccia risparmiare il
+trucco: con $n$ caratteristiche (qui $n$, perché $d$ è già il grado),
+$(\mathbf{x}^\top\mathbf{z} + c)^d$ con $c > 0$ corrisponde a uno spazio con
+una coordinata per ogni monomio di grado al più $d$, in tutto $\binom{n+d}{d}$
 coordinate, $308\,505$ per i $784$ pixel di un'immagine $28 \times 28$ con $d =
 2$; e si calcola con $O(n)$ operazioni.
 
@@ -152,18 +152,18 @@ diventa, dopo il sollevamento, un problema lineare banale.
 
 Il nome *kernel* ha parecchi omonimi, e uno solo è parente: la campana della
 {doc}`regressione a nucleo <curve-al-posto-di-rette>`. Anche lì il kernel è una
-regola che dice quanto due punti si somigliano, e il kernel gaussiano che arriva
-fra poco è la stessa campana; cambia il mestiere, perché là pesava una media e
-qui fa da prodotto scalare. Non ha invece niente a che fare con il nucleo di una
-matrice, con il kernel che tiene lo stato di un notebook, né con i {doc}`kernel
-di calcolo </GPU/kernel-e-cuda>` che una libreria sceglie per il processore o
-per la scheda grafica.
+regola che dice quanto due punti si somigliano, e il kernel gaussiano della SVM
+è la stessa campana; cambia il ruolo, perché là pesava una media e qui fa da
+prodotto scalare. Non ha invece niente a che fare con il nucleo di una matrice,
+con il kernel che tiene lo stato di un notebook, né con i {doc}`kernel di
+calcolo </GPU/kernel-e-cuda>` che una libreria sceglie per il processore o per
+la scheda grafica.
 
 Fra i kernel il più usato è il gaussiano, detto **RBF** (sono le iniziali di
 *radial basis function*, «funzione a base radiale»: radiale perché guarda solo
 la distanza fra due punti, in qualunque direzione). Ha una manopola sola, che
-nelle formule si chiama $\gamma$, «gamma», e conviene capire che cosa fa, perché
-è lei a fissare il **raggio d'influenza** di ogni punto.
+nelle formule si chiama $\gamma$, «gamma», e fissa il **raggio d'influenza** di
+ogni punto.
 
 `````{tab} Elementare
 
@@ -172,14 +172,14 @@ gli sta accanto, sempre meno chi si allontana, per niente chi è lontano, e il
 numero che il kernel restituisce per due punti è quanta luce dell'uno arriva
 all'altro. Sta fra $0$ e $1$, e vale $1$ solo per il lampione stesso.
 
-Chiamiamo *portata* del lampione la distanza alla quale la luce è scesa a poco
-più di un terzo, cioè a $0{,}37$: mettiamo un metro e mezzo. Chi sta a un metro
-e mezzo si vede ancora. E chi sta al doppio, a tre metri? Non riceve la metà
+Chiamiamo *portata* del lampione la distanza alla quale la luce è scesa a
+$0{,}37$, poco più di un terzo: mettiamo un metro e mezzo. Chi sta a un metro
+e mezzo si vede ancora. Chi sta al doppio, a tre metri? Non riceve la metà
 della luce, e nemmeno un terzo. A decidere è il quadrato della distanza, e
 raddoppiando la distanza il quadrato si moltiplica per quattro: la luce si
 attenua come se avesse attraversato quattro portate una dopo l'altra, e ognuna
 la riduce a $0{,}37$. La luce che gli arriva è quindi $0{,}37$ elevato alla
-quarta, cioè circa $0{,}018$: meno di due centesimi, praticamente buio. Ecco
+quarta, circa $0{,}018$: meno di due centesimi, praticamente buio. Ecco
 perché il raggio d'influenza di un punto finisce così bruscamente.
 
 La manopola $\gamma$ regola quanto lontano arriva la luce, e lo fa al rovescio:
@@ -216,7 +216,7 @@ lontano dai dati $f$ vale $b$; è la memoria pura, con varianza massima. Per
 $\gamma \to 0$, $\mathbf{K} \to \mathbf{1}\mathbf{1}^\top$ e i punti diventano
 indistinguibili; se però intanto $C$ cresce come $\tilde C/(2\gamma)$, la SVM
 gaussiana tende alla SVM lineare con parametro $\tilde C$
-{cite}`keerthi2003asymptotic`, e una ricerca su $(C,\gamma)$ abbastanza larga
+{cite}`keerthi2003asymptotic`, e una ricerca su $(C,\gamma)$ abbastanza ampia
 contiene già il kernel lineare. Il gaussiano è il più usato perché è
 *universale* {cite}`steinwart2001influence`: le funzioni del suo spazio
 approssimano qualunque funzione continua su un compatto, e con abbastanza dati
@@ -229,10 +229,10 @@ Insieme a $C$, $\gamma$ è l'altro iperparametro da tarare per validazione.
 ## Non solo classificare: la regressione con le SVM
 
 Lo stesso principio si adatta alla regressione (SVR, *Support Vector
-Regression*). Nella classificazione la SVM cerca il corridoio più largo *tra* le
-classi; nella regressione la larghezza $\epsilon$ del tubo è fissata, e la SVR
-cerca la funzione più piatta che lascia i punti dentro il tubo, pagando quelli
-che sporgono.
+Regression*). Nella classificazione la SVM cerca il corridoio più largo *tra*
+le classi; nella regressione il tubo ha una larghezza fissata, $\epsilon$ per
+parte, e la SVR cerca la funzione più piatta che lascia i punti dentro il tubo,
+pagando quelli che sporgono.
 
 `````{tab} Elementare
 
@@ -244,17 +244,17 @@ tolleranza, come un tratto di pennarello grosso al posto di una riga di
 matita: finché un punto sta dentro il tratto, l'errore conta zero. Pagano solo
 i punti che sporgono, e solo per quanto sporgono. Con un pennarello largo due
 decimi per parte, una previsione di $21{,}5$ non paga niente se il valore vero
-sta fra $21{,}3$ e $21{,}7$; se il vero è $21{,}9$ paga $0{,}2$, cioè non i
+sta fra $21{,}3$ e $21{,}7$; se il vero è $21{,}9$ paga $0{,}2$: non i
 quattro decimi di scarto ma soltanto i due che escono dal tratto.
 
-Le manopole nuove sono due, e fanno mestieri diversi. La prima è la grossezza
-del pennarello, cioè quanto scarto si accetta di chiamare zero. La seconda è quanto si tiene ai punti rimasti fuori: girata verso il
-severo, la linea si torce pur di raccogliere anche quelli; girata verso
-l'indulgente, resta semplice e li lascia sporgere. E il tratto non deve
-restare dritto: con lo stesso sollevamento del bersaglio può curvare quanto
-serve, e resta il medesimo tubo.
+Le manopole nuove sono due, e hanno scopi diversi. La prima è la grossezza del
+pennarello: quanto scarto si accetta di chiamare zero. La seconda è quanto
+si tiene ai punti rimasti fuori: girata verso il severo, la linea si torce pur
+di raccogliere anche quelli; girata verso l'indulgente, resta semplice e li
+lascia sporgere. Il tratto, inoltre, non deve restare dritto: con lo stesso
+sollevamento del bersaglio può curvare quanto serve, e resta il medesimo tubo.
 
-Il pennarello troppo grosso è il modo in cui la faccenda si guasta. Se il
+Un pennarello troppo grosso fa fallire il modello. Se il
 tratto copre già tutti i punti, qualunque linea passi di lì va bene, e la più
 comoda è quella piatta, che risponde lo stesso numero a qualunque domanda.
 
@@ -283,16 +283,16 @@ y_i - f(\mathbf{x}_i) \le \epsilon + \xi_i,\ \ f(\mathbf{x}_i) - y_i \le \epsilo
 \end{gathered}
 $$
 
-e i vettori di supporto sono i punti sul bordo del tubo o fuori. Da qui anche il
-guasto: se $\epsilon \ge \tfrac12(\max_i y_i - \min_i y_i)$, la costante $f =
-\tfrac12(\max_i y_i + \min_i y_i)$ con $\mathbf{w} = \mathbf{0}$ sta tutta nel
-tubo, ha obiettivo nullo ed è quindi una soluzione (per $\epsilon$ maggiore
-della semiampiezza ce ne sono infinite: qualunque costante $b$ con $\max_i y_i -
-\epsilon \le b \le \min_i y_i + \epsilon$): il modello risponde lo stesso numero
-a ogni domanda. Il parametro $\epsilon$ fissa l'ampiezza del tubo, mentre $C$
-regola come sempre il compromesso tra piattezza del modello e violazioni. Anche
-qui vale il kernel trick, così la SVR può adattare curve non lineari esattamente
-come la SVM classifica frontiere non lineari.
+e i vettori di supporto sono i punti sul bordo del tubo o fuori. Da qui anche
+il caso degenere: se $\epsilon \ge \tfrac12(\max_i y_i - \min_i y_i)$, la
+costante $f = \tfrac12(\max_i y_i + \min_i y_i)$ con $\mathbf{w} = \mathbf{0}$
+sta tutta nel tubo, ha obiettivo nullo ed è quindi una soluzione (per
+$\epsilon$ maggiore della semiampiezza ce ne sono infinite: qualunque costante
+$b$ con $\max_i y_i - \epsilon \le b \le \min_i y_i + \epsilon$): il modello
+risponde lo stesso numero a ogni domanda. Il parametro $\epsilon$ fissa la
+larghezza del tubo, $2\epsilon$, mentre $C$ regola come sempre il compromesso
+tra piattezza del modello e violazioni. Anche qui vale il kernel trick, così la
+SVR può adattare curve non lineari come la SVM traccia frontiere non lineari.
 
 `````
 
@@ -325,8 +325,8 @@ stretto: è premuto contro il paese dalla parte del vuoto.
 Una manopola, $\nu$, dice quante case si accetta di lasciare fuori: al massimo
 quella frazione. È un permesso che conviene dare, perché una sola casa isolata
 in mezzo ai campi costringerebbe la staccionata ad allargarsi per chilometri.
-E la stessa frazione dice quante case, come minimo, finiranno appoggiate alla
-staccionata o fuori: sono quelle che la reggono, e togliere dalla mappa tutte
+La stessa frazione dice anche quante case, come minimo, finiranno appoggiate alla
+staccionata o fuori: sono quelle che la sostengono, e togliere dalla mappa tutte
 le altre non la sposterebbe di un metro.
 
 Da lì in avanti ogni transazione nuova che cade *fuori* dal recinto è
@@ -356,23 +356,23 @@ $$
 e la regola è $\operatorname{sign}\bigl(\mathbf{w}^\top\phi(\mathbf{x}) -
 \rho\bigr)$, con l'iperpiano a distanza $\rho/\lVert\mathbf{w}\rVert$
 dall'origine. Ricondotto allo spazio originale, questo equivale a racchiudere i
-dati normali in una regione compatta; ciò che cade fuori è novità o anomalia. Il
-parametro $\nu \in (0,1]$, che pesa le violazioni con $1/(\nu m)$, ha un doppio
-significato preciso: è un limite *superiore* alla frazione di esempi di
+dati normali in una regione compatta; ciò che cade fuori è novità o anomalia.
+Il parametro $\nu \in (0,1]$, che pesa le violazioni con $1/(\nu m)$, ha un
+doppio significato preciso: è un limite *superiore* alla frazione di esempi di
 addestramento classificati come anomali (i *margin error*) e un limite
-*inferiore* alla frazione di vettori di supporto. La distingue dalla
-classificazione binaria un'assenza, quella della classe «anomalo» in
-addestramento: si impara solo la forma del normale. Un parente stretto è la
-**Support Vector Data Description** (SVDD) di Tax e Duin, che invece della
-separazione dall'origine cerca la *ipersfera* minima che racchiude i dati; con
-un kernel a diagonale costante, come il gaussiano ($k(\mathbf{x},\mathbf{x}) =
-1$), le immagini dei punti stanno tutte su una sfera, e i due metodi danno lo
-stesso confine. Tra le alternative non-kernel ci sono l’**Isolation Forest**
-(che isola le anomalie con partizioni casuali, ereditando la scalabilità degli
-alberi della {doc}`sezione sugli ensemble <alberi-ensemble>`) e il *Local
-Outlier Factor* basato sulla densità locale.
+*inferiore* alla frazione di vettori di supporto. A differenza della
+classificazione binaria, in addestramento manca la classe «anomalo»: si impara
+solo la forma del normale. Molto vicina è la **Support Vector Data
+Description** (SVDD) di Tax e Duin, che invece della separazione dall'origine
+cerca la *ipersfera* minima che racchiude i dati; con un kernel a diagonale
+costante, come il gaussiano ($k(\mathbf{x},\mathbf{x}) = 1$), le immagini dei
+punti stanno tutte su una sfera, e i due metodi danno lo stesso confine. Tra le
+alternative non-kernel ci sono l’**Isolation Forest** (che isola le anomalie
+con partizioni casuali, ereditando la scalabilità degli alberi della
+{doc}`sezione sugli ensemble <alberi-ensemble>`) e il *Local Outlier Factor*
+basato sulla densità locale.
 
-I limiti sono due. Senza esempi anomali non c'è un errore da validare, e
+Senza esempi anomali non c'è un errore da validare, e
 $\gamma$ e $\nu$ si fissano con euristiche ($\nu$ dalla quota di anomalie che
 ci si aspetta). Il modello descrive i dati del giorno in cui è stato
 addestrato: se la loro distribuzione si sposta, il nuovo normale esce come
@@ -384,14 +384,14 @@ anomalo.
 
 In scikit-learn la famiglia SVM vive nel modulo `sklearn.svm`: `SVC` per la
 classificazione con kernel, `LinearSVC` per la versione lineare veloce, `SVR`
-per la regressione, `OneClassSVM` per la novelty detection. Due avvertenze
-valgono per tutte, e non sono opzionali.
+per la regressione, `OneClassSVM` per la novelty detection. Per tutte
+valgono due avvertenze.
 
 Standardizzare le feature: a ogni colonna si sottrae la media e la si divide per
 la deviazione standard, così che i metri quadri (che valgono decine) e il numero
 di stanze (che vale unità) contino allo stesso modo. Il kernel gaussiano dipende
 dalle distanze, e senza questa operazione la colonna con i numeri più grandi
-domina il conto, come in ogni metodo basato sulle distanze, a cominciare dal
+domina il calcolo, come in ogni metodo basato sulle distanze, a cominciare dal
 k-NN. In una `Pipeline` si mette uno `StandardScaler` davanti al modello; fa
 eccezione il testo in forma sparsa, dove si normalizza ogni riga, perché
 centrare le colonne distruggerebbe la sparsità.
@@ -399,15 +399,18 @@ centrare le colonne distruggerebbe la sparsità.
 Attenzione ai numeri grandi: l'addestramento di una SVM con un kernel costa fra
 $O(m^2)$ e $O(m^3)$ nel numero $m$ di esempi (raddoppiando gli esempi il lavoro
 si moltiplica per quattro o per otto), e la matrice di Gram ha $m^2$ elementi.
-Va bene da poche centinaia a qualche decina di migliaia di punti, e diventa
-proibitiva su milioni. Per i dataset molto grandi si ripiega su modelli lineari
-(`LinearSVC`, `SGDClassifier`, che scalano circa come $O(m)$) o sugli alberi in
-boosting della {doc}`sezione sugli ensemble <alberi-ensemble>`
-{cite}`geron2022hands`.
+`SVC` delega il calcolo a libsvm, un solutore di tipo SMO che a ogni passo
+aggiorna due moltiplicatori $\alpha_i$ insieme, perché il vincolo $\sum_i
+\alpha_i y_i = 0$ ne impedisce uno solo. La SVM con kernel va bene da poche
+centinaia a qualche decina di migliaia di punti, ma diventa proibitiva su
+milioni. Per i dataset molto grandi si ripiega su modelli lineari (`LinearSVC`,
+`SGDClassifier`, che scalano circa come $O(m)$) o sugli alberi in boosting
+della {doc}`sezione sugli ensemble
+<alberi-ensemble>` {cite}`geron2022hands`.
 
 Le tre varianti si provano sugli stessi duecento punti, due mezzelune
-intrecciate (`make_moons`), il caso di scuola delle frontiere curve. Il $\gamma$
-lo sceglie il default di scikit-learn, `gamma="scale"`, che vale $1/(n\,
+intrecciate (`make_moons`), il caso di scuola delle frontiere curve. Per $\gamma$
+si usa il default di scikit-learn, `gamma="scale"`, che vale $1/(n\,
 \mathrm{Var}(\mathbf{X}))$ con $n$ colonne: dopo lo `StandardScaler`, $1/n$.
 
 ```python
@@ -458,9 +461,9 @@ dei 100 visti, segnalati: 9
 ```
 
 Il rilevatore ha imparato la forma di una luna sola e non ha mai visto
-l'altra: dei cento punti di quell'altra ne riconosce estranei novantacinque.
+l'altra, eppure ne riconosce come estranei novantacinque punti su cento.
 
-La solita grammatica `fit`/`predict` regge anche qui. Per la SVM con kernel la
+Anche qui vale la solita interfaccia `fit`/`predict`. Per la SVM con kernel la
 coppia di iperparametri da tarare per validazione è $(C, \gamma)$: una ricerca
 su griglia con la cross-validation della {doc}`sezione sull'overfitting
 <overfitting-validazione>` è la prassi.
@@ -482,7 +485,7 @@ su griglia con la cross-validation della {doc}`sezione sull'overfitting
   riconoscere le anomalie (un recinto attorno ai dati normali, e chi cade
   fuori è sospetto, senza aver mai visto una frode).
 - In pratica: portare tutte le caratteristiche alla stessa scala, perché la SVM
-  con il kernel gaussiano ragiona per distanze; e ricordare che il conto cresce
+  con il kernel gaussiano ragiona per distanze; e ricordare che il costo cresce
   assai più in fretta del numero di esempi, tanto che oltre le decine di
   migliaia la SVM con kernel diventa impraticabile.
 ```
@@ -496,7 +499,7 @@ su griglia con la cross-validation della {doc}`sezione sull'overfitting
 - Il kernel trick rende non lineare la SVM: mappa i dati in uno spazio più ampio
   dove diventano separabili, calcolando i prodotti scalari con un kernel
   $k(\mathbf{x},\mathbf{z})=\phi(\mathbf{x})^\top\phi(\mathbf{z})$ senza
-  costruirlo: funziona perché nel duale gli esempi compaiono solo dentro
+  visitare lo spazio; funziona perché nel duale gli esempi compaiono solo dentro
   prodotti scalari, e vale se e solo se $k$ è simmetrica e semidefinita positiva
   (Moore e Aronszajn; Mercer ne dà la forma spettrale per $k$ continuo su un
   compatto). I kernel validi si compongono: somme, prodotti ed esponenziali di
@@ -514,8 +517,5 @@ su griglia con la cross-validation della {doc}`sezione sull'overfitting
 `````
 
 Le SVM hanno imparato a tracciare un confine, dritto o piegato dal kernel,
-guardando soltanto dove le classi si toccano. C'è un'altra strada, che il
-confine non lo cerca: impara com'è fatta ciascuna classe per intero, e il
-confine viene dopo, per conseguenza. È la strada dei {doc}`modelli generativi
-<modelli-generativi>`, e il Bayes ingenuo del confronto fra ensemble ne era già
-un esempio.
+guardando soltanto dove le classi si toccano. I {doc}`modelli generativi
+<modelli-generativi>` non cercano affatto il confine.

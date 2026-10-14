@@ -38,6 +38,19 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-14-3)=
+
+## 1.14.3 · 14 ottobre 2026
+
+### Pagine ampliate
+
+- **Più rigore nel livello Superiore.** Fra le aggiunte, la regressione del test ADF, l'attenzione congiunta di MM-DiT, il teorema della distillazione di consistenza, le basi di N-BEATS e lo stimatore IPS con le sue ipotesi.
+
+### Correzioni
+
+- **Una prosa più asciutta, capitolo per capitolo.** Meno annunci e meno frasi appese, il nome della cosa al posto della sua posizione nella pagina, e ogni rimando a un'altra sezione diventa un link.
+- **Attribuzioni e numeri riportati alla misura delle fonti.** Fra gli altri, il cancello di dimenticanza dell'LSTM, i FID di DiT contro la U-Net, il peso della perdita mascherata nella diffusione discreta, chi batte davvero le reti su grafo nella raccomandazione.
+
 (v1-14-2)=
 
 ## 1.14.2 · 4 ottobre 2026

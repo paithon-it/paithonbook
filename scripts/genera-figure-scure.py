@@ -23,12 +23,11 @@ Non e' una scelta di gusto: sono i token del blocco `[data-theme="dark"]` di
 libro dipingono tutto il resto della pagina scura, piu' la tabella
 chiaro/scuro del segno in `book/_static/brand/logos/README.md`.
 
-I **grigi** sono il punto delicato. Il libro ne usa nove, e una mappa che li
-schiacciasse tutti su due token ne fonderebbe due in una figura sola: succede
-davvero, `#5E5852` e `#8B847C` convivono in 59 figure, `#C5BEAA` e `#E2DCC9`
-in 43. Le coppie che convivono sono state contate una per una, e la mappa qui
-sotto e' scelta perche' **nessuna coppia che convive finisce sullo stesso
-valore**. Chi la tocca rifaccia quel conto.
+I **grigi** sono il punto delicato. Il libro ne usa parecchi, e una mappa che
+li schiacciasse tutti su due token ne fonderebbe due in una figura sola: coppie
+come `#5E5852` e `#8B847C`, o `#C5BEAA` e `#E2DCC9`, convivono in molte figure.
+La mappa qui sotto e' scelta perche' **nessuna coppia che convive finisce sullo
+stesso valore**, e chi la tocca rifaccia il conto delle coppie, una per una.
 
 Il verso e' quello dell'inversione: il grigio piu' scuro sul chiaro (quello
 che si vede di piu') diventa il piu' chiaro sullo scuro.

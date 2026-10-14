@@ -36,22 +36,22 @@ Invece di cercare di produrre un programma che simuli la mente adulta, perché n
 *Alan Turing, «Computing Machinery and Intelligence», 1950.*
 :::
 
-L'intelligenza artificiale ha la fama di essere una materia per pochi, e in
-giro si trovano soprattutto due cose: articoli che promettono tutto senza
-spiegare niente, e testi che spiegano bene ma danno per acquisiti corsi
-universitari di analisi e statistica. Questo libro prova a stare nel mezzo, in
-italiano, partendo da zero e senza saltare i passaggi difficili. Ogni concetto
-che conta è spiegato due volte, una con un'analogia di tutti i giorni e una
-con la notazione e le formule per intero. Non è la stessa spiegazione in
-versione corta e in versione lunga: sono due strade per lo stesso posto, e
-prendendone una non perdi l'altra.
+L'intelligenza artificiale ha la fama di essere una materia per pochi, e in giro
+si trovano soprattutto *due cose*: articoli che promettono tutto senza spiegare
+niente, e testi che spiegano bene ma danno per acquisiti corsi universitari.
+Questo libro prova a stare nel mezzo, in italiano, partendo da zero e senza
+saltare i passaggi difficili. Ogni concetto che conta è spiegato *due volte*,
+una con un'analogia di tutti i giorni e una con la notazione e la formalità di
+un testo tecnico. Non è semplicemente la stessa spiegazione in versione corta e
+in versione lunga: sono due visioni dello stesso concetto, e leggerne una non
+inficia l'altra.
 
 :::{only} html
 E «due volte» ha un secondo senso, che riguarda come queste pagine sono
 scritte: una prima AI le stende, una seconda le rilegge in cerca dell'errore, e
-alla fine passano da me, ed è quel passaggio a decidere che cosa resta. Perché
-il metodo è severo, su che cosa il libro scommette, e perché il segno qui sopra
-è un triangolo impossibile, sta nella {doc}`Prefazione </prefazione>`.
+alla fine passano da me, che decido che cosa resta. La {doc}`Prefazione
+</prefazione>` racconta perché il metodo è severo, su che cosa il libro
+scommette e perché il suo segno è un triangolo impossibile.
 :::
 
 :::{only} html
@@ -67,14 +67,14 @@ pt-livello__icona--superiore" viewBox="0 0 16 16" width="15" height="15"><rect
 x="1.6" y="7" width="5.2" height="6.4" rx="1.3" fill="currentColor"/><rect
 x="9.2" y="2.6" width="5.2" height="10.8" rx="1.3"
 fill="currentColor"/></svg></span>. Vale per tutto il libro
-in un colpo solo, e si cambia quando vuoi.
+e si cambia quando vuoi.
 :::
 
 :::{only} html
 Questa versione online del libro è gratuita ed è in continuo aggiornamento per
 stare al passo con le innovazioni di questa materia: aggiungo regolarmente
-sezioni, argomenti ed esempi in Python. Il codice usa PyTorch, NumPy e
-scikit-learn, e per provarlo non devi installare niente. Dove in alto compare
+sezioni, argomenti ed esempi in Python. Il codice usa *PyTorch*, *NumPy* e
+*scikit-learn*, e per provarlo non devi installare niente. Dove in alto compare
 **Esegui il codice**, quel capitolo ha un *notebook*: una copia della pagina in
 cui i blocchi di codice, invece di stare lì solo da leggere, si eseguono uno
 dopo l'altro. Il collegamento lo apre su Google Colab, un servizio gratuito che
@@ -83,15 +83,16 @@ Qualche pagina è essa stessa un notebook, e si riconosce dal razzo 🚀 fra i
 comandi in cima alla pagina: lì il codice si esegue restando nel libro. Altrove
 si legge qui e si copia dove preferisci.
 
-Che cosa è cambiato, e quando, sta scritto: {doc}`Aggiornamenti </aggiornamenti>` è il registro delle sezioni nuove e delle correzioni, una voce per pubblicazione, con il link alla pagina toccata. Questa è la versione {{ versione }} ({{ data_versione }}).
+{doc}`Aggiornamenti </aggiornamenti>` è il registro delle sezioni nuove e delle
+correzioni, una voce per pubblicazione, con il link alla pagina toccata. Questa
+è la versione {{ versione }} ({{ data_versione }}).
 :::
 
 :::{only} latex
-Il libro è gratuito ed è in continuo aggiornamento per stare al passo con
-questa materia: sezioni, argomenti ed esempi si aggiungono di continuo. Il
-codice usa PyTorch, NumPy e scikit-learn, e online si esegue senza
-installare niente, dentro il libro o su Google Colab. Qui il codice si legge e
-si copia; per eseguirlo, l'indirizzo è nel colophon.
+Il libro è gratuito e in continuo aggiornamento: si aggiungono regolarmente
+sezioni, argomenti ed esempi. Il codice usa PyTorch, NumPy e scikit-learn, e
+online si esegue senza installare niente, dentro il libro o su Google Colab. Qui
+il codice si legge e si copia; per eseguirlo, l'indirizzo è nel colophon.
 :::
 
 ::::{only} html
@@ -100,7 +101,12 @@ si copia; per eseguirlo, l'indirizzo è nel colophon.
 
 [**Leggilo nel browser**](https://doi.org/10.5281/zenodo.21947219)
 
-Tutti i capitoli in un file solo, impaginato per la lettura e per la stampa. Dove qui il libro anima una figura, là trovi tre fermi immagine e l'indirizzo per vederla muoversi. Leggerlo nel browser vuol dire aprirlo su Zenodo, l'archivio del CERN dove il libro è depositato: quel collegamento è il suo **DOI**, l'identificativo permanente che porta sempre all'ultima versione, la mostra pagina per pagina e dà la scheda per citarla.
+Tutti i capitoli in un file solo, impaginato per la lettura e per la stampa.
+Dove il libro online anima una figura, il PDF ne mostra tre fermi immagine e
+l'indirizzo per vederla muoversi. «Leggilo nel browser» apre il libro su Zenodo,
+l'archivio del CERN in cui è depositato. Il collegamento è il suo **DOI**,
+l'identificativo permanente, che porta sempre all'ultima versione, la mostra
+pagina per pagina e dà la scheda per citarla.
 :::
 ::::
 
@@ -108,8 +114,13 @@ Tutti i capitoli in un file solo, impaginato per la lettura e per la stampa. Dov
 
 ## Il percorso
 
-{{ n_capitoli_lettere|capitalize }} capitoli, dall'alfabeto (Python e matematica) alle frontiere (Transformer, modelli di diffusione, agenti LLM, generazione audio, produzione con l'MLOps). Se qui sotto trovi molti nomi che non ti dicono niente, sei nel posto giusto:
-è l'elenco di quello che saprai alla fine. I capitoli si leggono nell'ordine, e l'ordine è pensato per costruire un mattone alla volta, ognuno dando per acquisito quello prima; chi le basi già le ha salta dove gli pare.
+{{ n_capitoli_lettere|capitalize }} capitoli portano dall'alfabeto (Python e
+matematica) alle frontiere (Transformer, modelli di diffusione, agenti LLM,
+generazione audio, produzione con l'MLOps). Molti dei nomi che compaiono nelle
+descrizioni dei capitoli ti diranno poco, per ora, e sono l'elenco di ciò che
+avrai imparato alla fine.
+L'ordine dei capitoli costruisce un mattone alla volta, e ognuno dà per
+acquisito ciò che viene prima; chi ha già le basi può cominciare dove preferisce.
 
 <div class="pt-chapters"> <div class="pt-cella"><a class="pt-card"
 href="Introduzione/overview.html"> <span class="pt-card-num"></span> <span
@@ -177,7 +188,7 @@ calcolo parallelo» in PDF">PDF</a></div> <div class="pt-cella"><a
 class="pt-card" href="Efficienza/overview.html"> <span
 class="pt-card-num"></span> <span class="pt-card-title">Efficienza</span> <span
 class="pt-card-desc">Il modello che si addestra e quello che si usa:
-quantizzazione e componenti anomale, potatura e biglietto della lotteria,
+quantizzazione e componenti anomale, potatura e biglietto vincente,
 distillazione, e perché starci in memoria non è rispondere in fretta.</span>
 </a> <a class="pt-card-pdf"
 href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-Efficienza.pdf"
@@ -422,26 +433,26 @@ PDF">PDF</a></div> </div>
 
 ## Livelli di Complessità
 
-Il libro presenta due livelli di complessità: **Elementare** e **Superiore**:
+Il libro presenta due livelli di complessità, **Elementare** e **Superiore**.
 
 - *Elementare*: racconta il concetto con un'analogia di tutti i giorni, senza
   dare niente per acquisito. Se l'argomento è nuovo, si parte da qui.
 
-- *Superiore*: lo rifà con la notazione, le formule e i riferimenti. Presume
-  le basi, e arriva dove l'Elementare non può.
+- *Superiore*: rifà lo stesso percorso con la notazione, le formule e i
+  riferimenti. Presuppone le basi, e arriva dove l'analogia non può.
 
-Nessuno dei due è il riassunto dell'altro, e non c'è da sceglierne uno per
-sempre: si può leggere un capitolo tutto all'Elementare, uno tutto al
-Superiore, oppure lo stesso due volte, prima di qua e poi di là.
+Nessuno dei due riassume l'altro, e non devi sceglierne uno per sempre: puoi
+leggere un capitolo tutto all'Elementare e un altro tutto al Superiore, oppure
+lo stesso capitolo due volte, prima di qua e poi di là.
 
 :::{only} html
-Come si sceglie. Ogni concetto ha due schede, e si apre quella che si
-vuole. L'icona a due barrette in alto nella barra, invece, imposta il
-livello di tutto il libro in un colpo, e la scelta resta salvata nel
-browser: la ritrovi al ritorno, capitolo dopo capitolo. Le due cose convivono,
-e l'interruttore decide solo da dove *parte* ogni pagina: se leggi
-all'Elementare e vuoi sbirciare una formula, sbirciala, due paragrafi più
-sotto sarai di nuovo all'Elementare.
+Ogni concetto ha due schede, e si apre quella che si vuole. L'icona a due
+barrette in alto nella barra imposta invece il livello di tutto il libro, e la
+scelta resta salvata nel browser: la ritrovi al ritorno, capitolo dopo
+capitolo. Le due cose convivono. L'interruttore decide soltanto da dove *parte*
+ogni coppia di schede: se leggi all'Elementare e vuoi dare un'occhiata a una
+formula, apri la Superiore, e la coppia successiva ripartirà comunque
+dall'Elementare.
 :::
 
 :::{only} latex
@@ -453,16 +464,16 @@ Un esempio: la funzione ReLU, ai due livelli.
 
 `````{tab} Elementare
 
-La ReLU è un filtro, e per parlare di filtri serve una scrittura che conviene
-fissare subito: $f(x)$ si legge «quello che il filtro restituisce quando gli si
-dà $x$». La $x$ è il numero che entra, $f(x)$ quello che esce.
+La ReLU è un filtro, e per descriverlo serve una notazione: $f(x)$ si legge «il
+valore che il filtro restituisce quando gli si dà $x$». La $x$ è il numero che
+entra, $f(x)$ il numero che esce.
 
-Immagina allora uno sportello che smista movimenti di denaro: entra una somma
-$x$ in Euro (€) e lo sportello lascia passare soltanto gli importi positivi. Se
-$x$ è positivo, esce $x$ tale e quale; se $x$ è negativo, cioè un movimento
-che toglierebbe denaro invece di aggiungerne, non passa niente ed esce $0$, e
-lo stesso vale per un movimento nullo. Tutto qui: la ReLU lascia passare quello che entra quando è positivo,
-e blocca completamente il resto.
+Uno sportello smista movimenti di denaro: entra una somma $x$ in euro (€) e lo
+sportello lascia passare soltanto gli importi positivi. Se $x$ è positivo, esce
+$x$ tale e quale; se $x$ è negativo, cioè un movimento che toglierebbe denaro
+invece di aggiungerne, non passa niente ed esce $0$, e lo stesso vale per un
+movimento nullo. La ReLU lascia passare ciò che entra se è positivo e blocca il
+resto.
 
 Esempi:
 
@@ -473,12 +484,11 @@ x &= -3, & f(x) &= 0
 \end{aligned}
 $$
 
-E perché occuparsene? Perché un filtro così banale, ripetuto milioni di volte,
-è uno dei mattoni delle reti neurali: è la regola che decide quali segnali
-proseguono dentro la rete e quali si fermano lì. Il {doc}`capitolo sulle reti
-neurali </RetiNeurali/funzioni-attivazione>` racconta perché negli strati
-nascosti si parte quasi sempre da questa, invece che da alternative in
-apparenza più raffinate.
+Un filtro così semplice, ripetuto milioni di volte, è uno dei mattoni delle reti
+neurali: decide quali segnali proseguono dentro la rete e quali si fermano. La
+{doc}`sezione sulle funzioni di attivazione </RetiNeurali/funzioni-attivazione>`
+spiega perché negli strati nascosti si parte quasi sempre da questa e non da
+alternative in apparenza più raffinate.
 
 `````
 
@@ -516,24 +526,24 @@ smettono di aggiornarsi (la *dying ReLU*,
 di cui tratta la {doc}`sezione sulle funzioni di attivazione
 </RetiNeurali/funzioni-attivazione>`).
 
-Attenzione però a non chiedere alla ReLU più di quanto dia. Il gradiente che
-attraversa uno strato è $\mathbf{W}^\top
+Il gradiente che attraversa uno strato è $\mathbf{W}^\top
 \mathrm{diag}(\mathbb{1}[\mathbf{z}>0])$, dove $\mathbf{W}$ sono i pesi dello
-strato e $\mathbf{z}$ le sue preattivazioni: l'attenuazione la producono i pesi
-e le unità spente, non l'attivazione. Che il segnale sopravviva a molti strati
-dipende quindi dalla scala dell'inizializzazione. Con pesi indipendenti, a
-media nulla e varianza $\sigma_w^2$, in strati larghi $n$ con preattivazioni
+strato e $\mathbf{z}$ le sue preattivazioni: l'attenuazione dipende dai pesi e
+dalle unità spente, non dall'attivazione. Che il segnale sopravviva a molti
+strati dipende quindi dalla scala dell'inizializzazione. Con pesi indipendenti,
+a media nulla e varianza $\sigma_w^2$, in strati larghi $n$ con preattivazioni
 simmetriche attorno a zero, metà delle unità è spenta e ogni strato moltiplica
 in media il quadrato della norma del gradiente per $n\sigma_w^2/2$: dopo $L$
-strati la norma scala come $(n\sigma_w^2/2)^{L/2}$, un conto in media che
+strati la norma scala come $(n\sigma_w^2/2)^{L/2}$, un calcolo in media che
 diventa esatto al limite di strati molto larghi. La scala di Xavier,
 $\sigma_w^2 = 1/n$ per strati quadrati (giusta per la tangente iperbolica), dà
 $2^{-L/2}$: su cinquanta strati $2^{-25} \approx 3 \cdot 10^{-8}$, sette ordini
-e mezzo di attenuazione, e il doppio della varianza giusta dà lo stesso fattore
-all'insù. Il fattore resta $1$ solo con $\sigma_w^2 = 2/n$, la scala di He
-{cite}`he2015delving`, il cui $2$ compensa proprio la metà delle unità che la
-ReLU azzera; quella di Xavier l'avevano ricavata Glorot e Bengio per la
-tangente iperbolica {cite}`glorot2010understanding`.
+e mezzo di attenuazione, e una varianza doppia di quella giusta dà lo stesso
+fattore, in amplificazione invece che in attenuazione. Il fattore resta $1$
+solo con $\sigma_w^2 = 2/n$, la scala di He {cite}`he2015delving`, il cui $2$
+compensa proprio la metà delle unità che la ReLU azzera; quella di Xavier
+l'avevano ricavata Glorot e Bengio per la tangente iperbolica
+{cite}`glorot2010understanding`.
 
 In $x = 0$ la funzione non è derivabile (il grafico ha un punto angoloso); il sottodifferenziale è l'intervallo $[0, 1]$ e nella pratica, PyTorch compreso, si adotta la convenzione $f'(0) = 0$.
 

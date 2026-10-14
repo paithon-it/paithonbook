@@ -19,18 +19,18 @@ andare bene anche nelle altre, e quel «tende» si può misurare: si prendono du
 materie, si guardano le due graduatorie della classe e si chiede quanto vadano
 d’accordo, con un numero che vale 0 se non c’entrano niente l’una con l’altra,
 1 se sono la stessa identica graduatoria, e scende sotto zero quando una sale
-mentre l’altra scende. Charles Spearman fa il conto per ogni
+mentre l’altra scende. Charles Spearman calcola questo numero per ogni
 coppia di materie, e poi, per ciascuna materia, la media dei tre confronti con
 le altre tre: gli vengono 0,77 per le materie classiche, 0,72 per il francese,
 0,70 per l’inglese, 0,67 per la matematica {cite}`spearman1904general`. Sono
 numeri alti, e fin qui nessuno si stupisce: i bravi sono bravi.
 
-Poi Spearman fa una cosa che con la scuola non c’entra niente. Mette gli stessi
-ragazzi davanti a due suoni quasi identici e chiede quale dei due sia più
-acuto. È un compito da orecchio, non da studio: non si copia, non si ripassa la
-sera prima, e l’unico allenamento che conta è la musica. E il risultato mette
-in fila le quattro materie nello stesso ordine di prima: 0,60 con le
-materie classiche, 0,56 col francese, 0,45 con l’inglese, 0,39 con la
+Poi cambia genere di prova e ne sceglie una che con la scuola non c’entra. Mette
+gli stessi ragazzi davanti a due suoni quasi identici e chiede quale dei
+due sia più acuto. È un compito da orecchio, non da studio (non si copia, non si
+ripassa la sera prima, e l’unico allenamento che conta è la musica). Le
+correlazioni con le quattro materie escono nello stesso ordine di prima: 0,60
+con le materie classiche, 0,56 col francese, 0,45 con l’inglese, 0,39 con la
 matematica. (Sono le correlazioni grezze su tutta la scuola; restringendole ai
 ventidue ragazzi che studiavano musica salgono tutte, e l’ordine resta
 identico.)
@@ -45,8 +45,8 @@ materie non si somigliano fra loro: si somigliano perché sono figlie della
 stessa cosa.
 
 Se quella quantità esista davvero, e che cosa sia, è oggetto di una discussione
-che dura da oltre un secolo, e qui non serve prendere posizione: quello che ci
-serve è la mossa, non la conclusione. La mossa è sopravvissuta alla
+che dura da oltre un secolo, e qui non serve prendere posizione: ci
+serve la mossa, non la conclusione. Quella mossa è sopravvissuta alla
 discussione, ha preso un nome (variabile latente, dal latino *latere*, «stare
 nascosto») e ha una macchina matematica che la rende operativa, che Spearman
 inventò per sostenere la sua tesi e che oggi si chiama **analisi fattoriale**:
@@ -55,14 +55,13 @@ materia, più uno scarto. È l’antenata dei modelli a variabile latente contin
 e ne è la versione più semplice, perché fra la quantità nascosta e le cose
 visibili ci sono soltanto moltiplicazioni e somme.
 
-Anche l’altra metà del titolo si scioglie qui. **Inferenza** è il mestiere di
-risalire alla causa nascosta a partire da quello che si vede, dai voti di quei
-ragazzi alla quantità che nessuno ha misurato, ed è il senso che la parola ha
-in tutto il capitolo. Nel gergo del deep learning la stessa parola indica quasi
-sempre una cosa molto più modesta, il momento in cui un modello già addestrato
-risponde e basta, e chi la incontra di solito in quel senso qui deve lasciarla
-da parte. **Variazionale** dice come la si fa. La risposta di un’inferenza non
-è un numero ma una distribuzione, il ventaglio delle cause possibili con quanto
+Anche l’altra metà del titolo si scioglie qui. **Inferenza** è il procedimento
+con cui si risale dalle osservazioni, i voti di quei ragazzi, alla causa
+nascosta, la quantità che nessuno ha misurato. Nel gergo del deep learning
+indica quasi sempre un’operazione molto più modesta, la risposta di un modello
+già addestrato, e chi la conosce di solito in quel senso qui deve metterlo da
+parte. **Variazionale** dice come la si fa. La risposta di un’inferenza non è
+un numero ma una distribuzione, il ventaglio delle cause possibili con quanto
 ciascuna è credibile; invece di calcolarla esatta, se ne cerca la migliore
 approssimazione fra le distribuzioni di una forma fissata in anticipo, per
 esempio fra tutte le curve a campana.
@@ -73,14 +72,14 @@ Chi vuole costruire una macchina che fabbrica dati nuovi ha davanti un compito
 scoraggiante: scrivere una formula per la probabilità di un dato. Quanto è
 probabile *questa* fotografia?
 
-La domanda suona strana, perché una fotografia c’è o non c’è, e la
-sciogliamo subito, perché regge tutto il capitolo: vuol dire quanto ci si
-aspettava di vedere una cosa così. La foto di un gatto nero su un muro è
-probabile; la stessa foto con il muro fatto di puntini colorati a caso non lo
-è. E chi sa rispondere sa anche fabbricare, perché sapere quali immagini sono
-attese è sapere quali produrre.
+La domanda suona strana, perché una fotografia c’è o non c’è. La si scioglie
+subito, perché tutto il resto ne dipende: la probabilità di un dato è
+quanto ci si aspettava di vedere un dato così. La foto di un gatto nero su un
+muro è probabile; la stessa foto con il muro fatto di puntini colorati a caso
+non lo è. Chi sa rispondere sa anche fabbricare, perché sapere quali immagini
+sono attese è sapere quali produrre.
 
-Il guaio è che quella formula nessuno la sa scrivere. Il dato è enorme (una
+Nessuno sa scrivere quella formula. Il dato è enorme (una
 fotografia da $300 \times 300$ puntini, che è piccola, sono novantamila
 puntini, e ognuno vuole tre numeri per il rosso, il verde e il blu:
 duecentosettantamila numeri in tutto) e le
@@ -88,7 +87,7 @@ sue parti sono legate fra loro in modi che sfuggono: due pixel vicini hanno
 quasi sempre lo stesso colore, tranne sui contorni, e dove passano i contorni
 dipende da che cosa c’è nella foto.
 
-La mossa della variabile latente è cambiare domanda. Invece di descrivere il
+Il modello a variabile latente cambia la domanda. Invece di descrivere il
 dato, si descrive come è nato: prima si sorteggia qualcosa che non si vede, la
 causa nascosta $\mathbf{z}$, da una distribuzione semplice scelta in anticipo,
 il prior $p(\mathbf{z})$; poi, a partire da lei, si sorteggia il dato
@@ -108,30 +107,29 @@ e non lo scrivi da nessuna parte.
 Fai mille pescate e disegni l’istogramma delle misure, cioè il grafico che
 dice, per ogni misura, quante biglie ci sono cadute. Non viene una gobba sola:
 ne vengono due, una intorno a 12 e una intorno a 20, e in mezzo un
-avvallamento. Eppure dentro ciascun sacchetto le misure erano la cosa più
-semplice del mondo, una gobba e basta. La forma complicata (due gobbe) non l’ha
-messa nessuno: è comparsa perché una parte della storia, cioè quale sacchetto,
-è rimasta nascosta.
+avvallamento. Eppure dentro ciascun sacchetto le misure erano semplicissime,
+con una gobba sola. La forma complicata (due gobbe) non l’ha messa nessuno: è
+comparsa perché una parte della storia, cioè quale sacchetto, è rimasta
+nascosta.
 
 Se qualcuno ti dicesse a ogni pescata da quale sacchetto viene la biglia, il
 conto sarebbe una banalità: guardi il sacchetto, sai la sua gobba, hai finito.
 Siccome quel dato manca, per sapere quanto è probabile una biglia bisogna
 mettere in conto tutti i sacchetti da cui poteva venire. Con due sono due
-conti e si fanno a mente: il capitolo esiste perché fra poco i sacchetti non
-saranno due.
+calcoli e si fanno a mente.
 
-Nei casi che ci interessano sono infiniti. Immaginali allineati lungo un
-righello, uno per ogni punto: si sorteggia un punto del righello, e una regola
-dice attorno a che misura stanno le biglie del sacchetto che sta lì. E il
-sorteggio non è alla pari: i punti vicini al centro escono spesso, quelli
-lontani quasi mai, ed è una preferenza che decidiamo noi prima di cominciare.
-Quella preferenza è il prior.
+Nei casi che ci interessano i sacchetti sono infiniti. Immaginali allineati
+lungo un righello, uno per ogni punto: si sorteggia un punto del righello, e
+una regola dice attorno a che misura stanno le biglie del sacchetto che sta lì.
+Il sorteggio non è alla pari: i punti vicini al centro escono spesso, quelli
+lontani quasi mai, secondo una preferenza che decidiamo noi prima di
+cominciare. Quella preferenza è il prior.
 
-E i sacchetti nessuno te li ha mostrati. Torna ai due del cassetto e cambiali
-di poco, 12 e 14 millimetri con la stessa variazione: l’istogramma fa una gobba
-sola, e a guardarla non diresti mai che i sacchetti erano due. Sei tu a
-supporli, perché supponendoli i conti tornano più semplici, ed è una scommessa
-che può anche non pagare.
+Nessuno ti ha mostrato i sacchetti. Torna ai due del cassetto e
+cambiali di poco, 12 e 14 millimetri con la stessa variazione: l’istogramma fa
+una gobba sola, e a guardarla non diresti mai che i sacchetti erano due. Sei tu
+a supporli, perché supponendoli i calcoli tornano più semplici, e la scommessa
+può anche non pagare.
 
 `````
 
@@ -156,7 +154,7 @@ $\mathbf{z}$ è discreto.
 Il caso discreto si è già visto, e con questo nome: nella mistura di gaussiane
 della {doc}`sezione su riduzione e
 clustering </MachineLearning/riduzione-clustering>`, $z \in \{1, \dots, K\}$,
-la componente da cui l’esempio proviene, è introdotta lì proprio come variabile
+la componente da cui l’esempio proviene, è introdotta lì come variabile
 latente. Là $p(z = k) = \pi_k$ è il suo peso e $p(\mathbf{x} \mid z = k) =
 \mathcal{N}(\mathbf{x}; \boldsymbol{\mu}_k, \boldsymbol{\Sigma}_k)$ la sua
 campana, con $\boldsymbol{\mu}_k$ il centro della componente $k$ e
@@ -231,19 +229,16 @@ non l’idea.
 :width: 100%
 
 Pezzi semplici, risultato complicato. A sinistra le due gobbe, una per
-sacchetto, ciascuna pesata metà, perché metà
-delle pescate viene di lì; a destra la loro somma, cioè quello che si misura
-quando il sacchetto non lo si guarda mai. La forma a due gobbe non l’ha
-disegnata nessuno: è comparsa perché una parte della storia è rimasta
-nascosta. E non è garantita: se i due sacchetti si somigliassero abbastanza,
-la gobba tornerebbe una sola.
-(Le curve sono lisce: è la forma verso cui l’istogramma tende quando le pescate
-sono tantissime.)
+sacchetto (cioè una per componente della mistura), ciascuna pesata metà, perché
+metà delle pescate viene di lì; a destra la loro somma, cioè la curva che si
+misura quando il sacchetto non lo si guarda mai. Se i due sacchetti si
+somigliassero abbastanza, la gobba tornerebbe una sola. (Le curve sono lisce: è
+la forma verso cui l’istogramma tende quando le pescate sono tantissime.)
 ```
 
 Guardando {numref}`fig-due-gobbe` si capisce anche perché conviene: chi volesse
 descrivere la curva di destra senza sapere dei sacchetti dovrebbe inventarsi
-una formula per una cosa a due gobbe, mentre a noi sono bastate due gobbe
+una formula per una curva a due gobbe, mentre a noi sono bastate due gobbe
 semplici (in matematica si chiamano gaussiane, e «campana» è il soprannome
 della loro forma) e la regola con cui si sceglie il sacchetto. Gaussiane più
 una regola che sceglie fra loro fanno una mistura di gaussiane, la stessa della
@@ -253,8 +248,7 @@ componente da cui veniva un esempio.
 
 ## Il prezzo: la somma che non si può fare
 
-La mossa costa, e il prezzo si dice subito, perché è il problema che il
-capitolo passa il tempo ad aggirare.
+Il prezzo di questa scelta è un problema di calcolo.
 
 ```{figure} ../figures/modello-latente-generare-e-inferire.svg
 :name: fig-modello-latente
@@ -268,14 +262,14 @@ mano, è la parte cara. (Le due lettere del disegno sono quelle di sempre:
 z la causa nascosta, x il dato che si vede.)
 ```
 
-La freccia tratteggiata di {numref}`fig-modello-latente` costa in due modi
-diversi, che è bene tenere separati perché il capitolo li affronta con due
-strumenti distinti.
+La freccia tratteggiata di {numref}`fig-modello-latente` si percorre con
+difficoltà per due ragioni diverse, e ciascuna si affronta con uno strumento
+distinto.
 
 Prima difficoltà: la somma. Per sapere quanto è probabile un dato bisogna
 considerare tutti i valori che la causa nascosta poteva prendere, e sommare
 quanto ciascuno spiega il dato, contando ciascuno tanto quanto è probabile che
-tocchi proprio a lui: con due sacchetti pescati con una monetina sono due
+tocchi a lui: con due sacchetti pescati con una monetina sono due
 addendi, mezzo per uno. La causa nascosta di cui parleremo, però, è un
 vettore di $L$ numeri reali (nel capitolo $L = 8$, per comprimere una cifra
 scritta a mano, e si vedrà che la rete non li adopera nemmeno tutti), e siccome
@@ -290,7 +284,7 @@ griglia di punti; ma i punti della griglia si moltiplicano a ogni dimensione
 in più: se lungo un asse ne bastassero dieci, con due assi ne servirebbero
 cento, e con otto cento milioni.
 
-Seconda difficoltà, ed è quella che sorprende: nemmeno la stima Monte Carlo
+Seconda difficoltà, più sorprendente: nemmeno la stima Monte Carlo
 funziona. La via d’uscita ovvia è sorteggiare dal prior un po’ di valori
 $\mathbf{z}^{(1)}, \dots, \mathbf{z}^{(S)}$, calcolare per ciascuno quanto
 spiega il dato, $p_\theta(\mathbf{x} \mid \mathbf{z}^{(s)})$, e fare la media.
@@ -316,19 +310,19 @@ immagini di Stable Diffusion e i modelli del mondo. La sezione sul
 uno per uno, con la macchina del capitolo in mano.
 
 Il {doc}`capitolo sulla verosimiglianza esatta
-</VerosimiglianzaEsatta/overview>`, più avanti, mette in fila dove questa
-famiglia stia rispetto alle altre: là i modelli generativi incontrati fin lì
-sono ordinati in base a una cosa sola: che cosa ciascuno sa dire della
-verosimiglianza $p_\theta(\mathbf{x})$, cioè di quel numero di poco fa, quanto
-il modello si aspettava di vedere il dato. Qui basta l’essenziale, e vale per
-la macchina che il capitolo costruisce, non per le sue antenate. Dove la causa
+</VerosimiglianzaEsatta/overview>`, più avanti, colloca questa famiglia
+rispetto alle altre: ordina i modelli generativi incontrati fin lì in base a
+quanto ciascuno sa dire della verosimiglianza $p_\theta(\mathbf{x})$, il numero
+di poco fa, cioè quanto il modello si aspettava di vedere il dato. Qui basta
+l’essenziale, che vale per la macchina costruita nel capitolo e non per le sue
+antenate. Dove la causa
 nascosta passa per una rete neurale, la verosimiglianza si sa dire solo per
 difetto: si calcola un valore che sta di sicuro sotto quello vero. La mistura
 di gaussiane, la PCA probabilistica e l’analisi fattoriale, dove la causa
 prende pochi valori oppure il legame è lineare, la danno invece esatta, perché
 lì l’integrale si chiude. Si sa con precisione da che cosa sia formato il
 divario fra il valore calcolato e quello vero, e quanto valga lo si può stimare
-a parte, a modello addestrato, con un conto più costoso. Perché ci si debba
+a parte, a modello addestrato, con un calcolo più costoso. Perché ci si debba
 accontentare del valore per difetto, e perché convenga, è la storia della
 sezione sul salto probabilistico.
 
@@ -336,9 +330,9 @@ sezione sul salto probabilistico.
 
 ```{admonition} Da ricordare
 :class: important
-- La mossa di questo capitolo è spiegare quello che si vede con qualcosa che
-  non si vede: prima si sorteggia una causa nascosta, poi da quella si
-  sorteggia il dato. La cosa nascosta si chiama variabile latente.
+- Si spiega il visibile con l’invisibile: prima si sorteggia una causa
+  nascosta, poi da quella si sorteggia il dato. La causa nascosta si chiama
+  variabile latente.
 - Il guadagno è che pezzi semplici danno un risultato complicato: due
   sacchetti con una gobba ciascuno, se le misure tipiche dei due sono abbastanza
   lontane, producono un istogramma a due gobbe, e nessuno ha dovuto scrivere la
@@ -372,11 +366,11 @@ sezione sul salto probabilistico.
   chiusa, e la stima Monte Carlo dal prior ha varianza che esplode con la
   dimensione di $\mathbf{z}$, perché quasi tutti i campioni cadono dove
   $p_\theta(\mathbf{x} \mid \mathbf{z})$ è trascurabile. Con $\mathbf{z}$
-  discreto e pochi valori possibili, o con $f_\theta$ affine, il conto si
+  discreto e pochi valori possibili, o con $f_\theta$ affine, il calcolo si
   chiude: mistura, PCA probabilistica e analisi fattoriale la marginale la
   danno esatta.
-- Da qui il programma del capitolo: rinunciare al valore esatto di
-  $\log p_\theta(\mathbf{x})$ e ottimizzare un limite inferiore, che si
+- Negli altri casi si rinuncia al valore esatto di
+  $\log p_\theta(\mathbf{x})$ e si ottimizza un limite inferiore, che si
   paga con un secondo modello (l’encoder) e si guadagna in trattabilità.
 ```
 

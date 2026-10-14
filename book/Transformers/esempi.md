@@ -1,7 +1,7 @@
 # Esempi pratici
 
-Dopo tanta architettura, mettiamo i Transformer al lavoro su due compiti
-concreti: tradurre una frase e capire se una recensione è entusiasta o delusa.
+I Transformer lavorano qui su due compiti concreti: tradurre una frase e
+capire se una recensione è entusiasta o delusa.
 Sono gli stessi esempi che si incontrano ogni giorno senza pensarci (il tasto
 "traduci" sotto un post, il termometro delle recensioni di un prodotto), e non
 serve addestrare niente da zero. La parte costosa l'ha già fatta qualcun altro:
@@ -15,8 +15,8 @@ suo sito; la libreria che li carica e li fa girare si chiama `transformers`
 programma può aprire e usare, e sotto c'è {doc}`PyTorch </PyTorch/overview>`,
 lo strumento con cui si costruiscono le reti.
 
-Dei due esempi conta soprattutto il secondo, e non per quello che indovina:
-per quello che sbaglia, su una frase italiana di quattro parole.
+Il secondo esempio insegna di più, perché sbaglia su una frase italiana di
+quattro parole.
 
 ## Traduzione automatica
 
@@ -41,8 +41,7 @@ parola per parola. La differenza si vede con una parola ambigua: "bank"
 in inglese è sia la banca sia la riva del fiume, e su "The cat sits on the
 river bank" il modello scrive "sulla riva del fiume", perché la parola
 "river" era lì accanto e l'attenzione l'ha vista. Se il contesto non c'è, il
-modello sceglie il significato più comune e può sbagliare: non indovina, usa
-quello che gli hai dato.
+modello sceglie il significato più comune e può sbagliare.
 `````
 
 `````{tab} Superiore
@@ -82,14 +81,12 @@ la compie il modello, e la compie in funzione del contesto, perché senza
 più comune. È quello che ci si aspetta da una rappresentazione di «bank»
 costruita dall'attenzione anche sugli altri token della frase.
 
-Le tre righe di lavoro sono i tre passaggi visti nei capitoli precedenti, qui
-scritti in chiaro: tokenizzazione (la frase diventa una sequenza di id di
-token), inferenza con `generate` (encoder e decoder Transformer, con
+Il codice esegue tre passaggi: tokenizzazione (la frase diventa una sequenza
+di id di token), inferenza con `generate` (encoder e decoder Transformer, con
 generazione autoregressiva e maschera causale) e decodifica (dagli id di token
 al testo). La libreria offre anche una scorciatoia, `pipeline`, che li
-incapsula in una sola riga. In questo esempio restano separati per mostrare in
-pratica i passaggi appena studiati, mentre nel prossimo si userà la via più
-breve. Dietro le quinte il modello è un `nn.Module` PyTorch come quelli della
+incapsula in una sola riga, come nell'esempio sulle recensioni; qui restano
+separati. Dietro le quinte il modello è un `nn.Module` PyTorch come quelli della
 {doc}`sezione sui moduli </PyTorch/moduli>`: con `modello.named_parameters()`
 si ispezionano strati, teste di attenzione e parametri.
 `````
@@ -101,11 +98,10 @@ entusiasta o delusa. Si chiama *sentiment analysis*, «analisi del sentimento»,
 ed è quello che sta dietro alla percentuale di soddisfatti che compare sotto un
 prodotto in vendita.
 
-Qui il Transformer non deve generare nulla: deve *capire* e dare un voto. Il
-modello che useremo lo dà come lo darebbe un cliente su un sito di recensioni,
-da una a cinque stelle. Ed è un compito perfetto per un modello fatto della
-sola torre che legge, senza quella che scrive: se la risposta è un voto e non
-una frase, la torre che scrive non serve, e tenerla costerebbe soltanto. In
+Qui il Transformer non genera nulla: *capisce* e assegna un voto, da una a
+cinque stelle, come un cliente su un sito di recensioni. Basta quindi la sola
+torre che legge, senza quella che scrive: se la risposta è un voto e non una
+frase, la torre che scrive non serve, e tenerla aggiungerebbe solo calcolo. In
 gergo un modello così si dice **encoder-only**, "solo encoder", e il
 capostipite si chiama BERT.
 
@@ -123,17 +119,17 @@ casella dove ne ha messi di più. Ottanta gettoni su una casella e venti sparsi
 altrove, oppure due caselle in testa a pochi gettoni una dall'altra: l'annuncio
 esce identico, un nome di casella e nient'altro, mentre le due situazioni non
 si somigliano. Chiedere la fila completa, casella per casella, distingue la
-macchina sicura da quella in bilico. E nemmeno ottanta gettoni su una casella
+macchina sicura da quella in bilico. Nemmeno ottanta gettoni su una casella
 vogliono dire avere ragione ottanta volte su cento: se la sicurezza della
 macchina sia giustificata lo si scopre soltanto provandola su frasi di cui si
 sa già la risposta.
 
-Le frasi facili però le indovinano tutti, ed è sulle altre che si capisce
-quanto un modello abbia davvero capito. Il caso classico in italiano è il
+Le frasi facili le indovinano tutti; quanto un modello abbia capito si vede
+sulle altre. Il caso classico in italiano è il
 complimento detto negando il contrario, "non è affatto male": nessuna delle tre
 parole è un elogio, eppure la frase lo è. Lì il modello sbaglia: mette poco più
 di un terzo dei gettoni su due stelle, una recensione scontenta, e appena meno
-su tre. È indeciso, ma fra due risposte sbagliate tutte e due: le quattro e le
+su tre. È indeciso, ma fra due risposte entrambe sbagliate: le quattro e le
 cinque stelle, che di un complimento sarebbero la lettura giusta, insieme ne
 prendono sette su cento.
 `````
@@ -181,16 +177,15 @@ for r in recensioni:
 
 I pesi di questo modello risiedono sui server di chi lo pubblica: se in futuro
 venissero aggiornati, potrebbe cambiare anche la graduatoria. Per riprodurre
-esattamente queste cifre si fissa la versione dei pesi con l'argomento
+queste cifre si fissa la versione dei pesi con l'argomento
 `revision` (l'identificativo di una versione sul sito) e quella della libreria.
 
 Il modello è un BERT multilingue rifinito (*fine-tuned*) su recensioni: la
 classificazione usa la rappresentazione del token speciale `[CLS]`, passata per
 uno strato denso con tangente iperbolica (il *pooler* di BERT) e poi a una
 testa lineare a cinque uscite (architettura encoder-only, senza generazione). Le
-prime due
-righe sono quelle che ci si aspetta; la terza no, ed è il motivo per cui il
-codice stampa la graduatoria e non solo la vincente. I valori esatti sono
+prime due frasi danno il risultato atteso; la terza no, e per questo il
+codice stampa la graduatoria e non solo la vincente. Sulla terza i valori sono
 $0{,}365$ a due stelle e $0{,}336$ a tre: uno scarto di ventinove millesimi,
 l'unico delle quattro righe in cui le prime due classi si toccano così. Il solo
 `argmax` direbbe «2 stars» e si fermerebbe lì, indistinguibile dai verdetti
@@ -210,32 +205,27 @@ diversi da quelli di addestramento (ironia, sarcasmo, gergo) le prestazioni di
 solito calano, e una sola litote non basta a dire di quanto.
 `````
 
-Le frasi date al modello sono quattro: una lode, una stroncatura, e le due
-litoti «non è affatto male» e «non è male». L'errore sulla terza è la cosa più
-utile dei due esempi. Il modello dà a «non è affatto male» due stelle su
-cinque, cioè lo legge come una recensione scontenta, mentre a «non è male», la
-stessa frase senza l'avverbio, ne dà tre.
+Le quattro frasi sono una lode, una stroncatura e due litoti, «non è affatto
+male» e «non è male». L'errore sulla terza è la cosa più utile dei due esempi:
+il modello dà a «non è affatto male» due stelle su cinque, cioè la legge come
+una recensione scontenta, mentre a «non è male», la stessa frase senza
+l'avverbio, ne dà tre. Il modello non sceglie una risposta sola ma
+assegna una probabilità a ciascuna delle cinque stelle, e due e tre stelle
+restano quasi alla pari. Il quasi-pareggio sta fra due modi di sbagliare e non
+fra sbagliare e indovinare: le quattro e le cinque stelle, che sarebbero la
+lettura giusta di un complimento, si dividono in tutto sette centesimi.
 
-Il modello non sceglie una risposta sola: assegna una probabilità a ciascuna
-delle cinque stelle. Qui le due stelle stanno a 0,365 e le tre a 0,336, a
-ventinove millesimi l'una dall'altra, e nessuna delle altre tre frasi ha i
-primi due posti così attaccati. Il quasi-pareggio, però, è fra due modi di
-sbagliare e non fra sbagliare e indovinare: le quattro e le cinque stelle, che
-sarebbero la lettura giusta di un complimento, si dividono in tutto sette
-centesimi.
-
-L'errore viene probabilmente dalla compagnia che
-«affatto» tiene nei testi: compare quasi sempre dentro una stroncatura piena
-(«non mi è piaciuto affatto»), e quella compagnia se la porta dietro. (È una
-spiegazione plausibile, non una verifica: i testi su cui questo modello ha
-studiato non si possono ispezionare, perché chi lo ha addestrato non li ha
-pubblicati.) Dire una cosa negando il suo contrario (i retori la chiamano
-*litote*) chiede di comporre il significato di tre parole in una direzione che
-nessuna delle tre porta da sola: l'attenzione mette «non», «affatto» e «male»
-in contatto, ma il contatto non garantisce che dalla composizione esca la cosa
-giusta. Le due frasi facili, da sole, avrebbero fatto una bella dimostrazione e
-insegnato molto meno: quattro frasi provate al volo non sono un collaudo, e
-l'esempio appena visto lo dimostra da solo.
+L'errore dipende probabilmente dai testi in cui compare «affatto», quasi sempre
+dentro una stroncatura piena («non mi è piaciuto affatto»): il modello ne
+eredita l'associazione. È una spiegazione plausibile e non una verifica, perché
+i testi su cui questo modello è stato addestrato non si possono ispezionare:
+chi lo ha addestrato non li ha pubblicati. Dire una cosa negando il suo
+contrario (i retori la chiamano *litote*) richiede di comporre tre parole in un
+significato che nessuna delle tre porta con sé: l'attenzione mette «non»,
+«affatto» e «male» in contatto, ma il contatto non garantisce che la
+composizione dia il risultato giusto. Con le sole due frasi facili la
+dimostrazione sarebbe riuscita bene e avrebbe insegnato meno: quattro frasi
+provate al volo non sono un collaudo.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

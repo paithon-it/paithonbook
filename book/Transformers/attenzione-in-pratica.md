@@ -5,22 +5,22 @@ sola, che si intitola *Fast Transformer Decoding: One Write-Head is All You
 Need* {cite}`shazeer2019fast`. Il gioco di parole è deliberato: l'autore è
 Noam Shazeer, secondo firmatario dell'articolo del 2017. Due anni dopo aver
 scritto che serviva l'attenzione, torna sulla stessa formula per dire che, al
-momento di generare, di teste per le chiavi ne basta una. La formula non è
-cambiata di una virgola. È cambiato che cosa costa.
+momento di generare, di teste per le chiavi ne basta una. La formula resta
+quella; cambiano la memoria occupata e il modo di eseguirla.
 
 Lo stesso strato di attenzione gira in due modalità, con tutta la sequenza
 insieme in addestramento o un token alla volta in generazione, e i costi delle
-due sono molto diversi. Separarle è la condizione per capire quello che si
-legge sui costi dell'attenzione: che sia quadratica, che richieda molta
-memoria, che le teste condivise facciano risparmiare.
+due sono molto diversi. Separarle serve a leggere con precisione ciò che si
+dice sui costi dell'attenzione (che sia quadratica, che richieda molta
+memoria, che le teste condivise facciano risparmiare).
 
 ## Addestrare e generare: due regimi della stessa formula
 
 Un modello che scrive lo fa in modo **autoregressivo**: produce un token, se lo
 rimette in ingresso, produce il successivo. La
 {doc}`sezione sulla struttura del Transformer <architettura>` ha montato la
-maschera causale che rende questo possibile, e da lì discende tutto quello che
-segue sui costi.
+maschera causale che rende questo possibile, e da lì discendono i costi dei due
+regimi.
 
 `````{tab} Elementare
 Un correttore di bozze e uno scrittore lavorano sullo stesso testo con due
@@ -36,29 +36,26 @@ maschera invece del tempo. La generazione assomiglia allo scrittore, e non
 c'è nessun trucco che la renda parallela: le parole che non ha ancora prodotto
 non esistono da nessuna parte.
 
-Da qui viene lo spreco che ha fatto nascere tutto il resto. Rifare per intero
-il lavoro a ogni parola vorrebbe dire, per una risposta di mille parole,
-rileggere da capo il testo mille volte: alla parola numero mille si
-ricalcolerebbero per la millesima volta cose calcolate quando la prima parola
-era appena uscita. E il punto che rende la cosa riparabile è che quelle cose
-non sono cambiate. Poiché nessuna parola può guardare avanti, quello che
-il modello aveva ricavato dalla parola numero tre quando la frase finiva lì è
-identico a quello che ne ricaverebbe adesso che la frase è lunga mille.
+Da qui viene lo spreco da cui nasce tutto il resto. Rifare tutto il lavoro a
+ogni parola vorrebbe dire, per una risposta di mille parole, rileggere da capo
+il testo mille volte: alla parola numero mille si ricalcolerebbero per la
+millesima volta risultati già ottenuti quando la prima parola era appena
+uscita. I risultati, però, non sono cambiati. Poiché nessuna parola può
+guardare avanti, il contenuto che il modello ricava dalla parola numero tre è
+lo stesso quando la frase finisce lì e quando è lunga mille.
 
-C'è però una cosa che non si conserva, e distinguerla è metà del lavoro. La
-domanda che una parola ha posto serviva a quella parola e a quel momento:
-serve una volta, dà il suo risultato e si butta. Da tenere è invece ciò con cui
-una parola si fa trovare e ciò che consegna, perché a quelli attingeranno tutte
-le parole che verranno dopo.
+Non si conserva la domanda che una parola ha posto: serviva a quella parola e
+a quel momento, dà il suo risultato e si butta. Si tengono invece l'etichetta
+con cui la parola si fa trovare e l'informazione che consegna, perché vi
+attingeranno tutte le parole successive.
 
-E tutto questo regge finché vale il divieto di guardare avanti. Se ogni parola
-potesse tenere d'occhio anche quelle che verranno, aggiungerne una in fondo
-cambierebbe l'etichetta di tutte le altre, e quasi tutto quello che si era
-scritto prima andrebbe buttato e rifatto da capo a ogni parola nuova. Le
-macchine a cui quel divieto non si applica, quelle che un testo già scritto lo
-leggono per capirlo invece che per continuarlo, lavorano proprio così. Chi
-traduce, invece, ha un caso a parte: la frase da tradurre la legge una volta
-sola, e quello che ne ricava resta valido per tutta la traduzione.
+Il riuso vale finché vale il divieto di guardare avanti. Se ogni parola potesse
+tener conto anche di quelle che verranno, aggiungerne una in fondo cambierebbe
+l'etichetta di tutte le altre, e il lavoro già fatto andrebbe rifatto da capo a
+ogni parola nuova. Le macchine a cui il divieto non si applica, cioè quelle che
+leggono un testo già scritto per capirlo e non per continuarlo, lavorano così.
+La traduzione è un caso a parte: il modello legge la frase da tradurre una volta
+sola, e le sue rappresentazioni restano valide per tutta la traduzione.
 `````
 
 `````{tab} Superiore
@@ -69,8 +66,7 @@ Nell’**elaborazione a prefisso pieno** (addestramento, oppure il *prefill* di
 un prompt) molte posizioni di query vengono trattate insieme: $L = S = T$, la
 matrice dei punteggi è $T \times T$, e il calcolo è un prodotto fra matrici
 denso, ideale per l'hardware parallelo. La maschera causale garantisce che il
-risultato coincida con quello che si otterrebbe elaborando le posizioni una
-per una.
+risultato coincida con quello ottenuto elaborando le posizioni una per una.
 
 Nella **decodifica incrementale** arriva un token per volta: $L = 1$ (o poche
 righe, con la decodifica speculativa) e $S = T + 1$. La matrice dei punteggi ha
@@ -94,56 +90,54 @@ valori si distinguono dalla query per il riuso, non per la stabilità: tutte le
 query che verranno li rileggeranno. Conservare $\mathbf{Q}$ sarebbe occupare
 memoria per un oggetto che nessuno consulterà più.
 
-Un avvertimento sulla portata di tutto questo: la garanzia vale per
-l'attenzione causale. In un encoder bidirezionale la rappresentazione di ogni
-posizione, dal secondo strato in su, dipende anche da ciò che viene dopo,
-quindi aggiungere un token invalida le chiavi e i valori già calcolati a quei
-livelli (al primo strato dipendono soltanto dall'embedding del loro token). Un
-caso a parte è la cross-attention di un modello encoder-decoder: chiavi e
-valori vengono dall'uscita dell'encoder, che si calcola una volta sola, e
-restano fissi per tutta la generazione, una cache che non cresce.
+La garanzia vale per l'attenzione causale. In un encoder bidirezionale la
+rappresentazione di ogni posizione, dal secondo strato in su, dipende anche da
+ciò che viene dopo, quindi aggiungere un token invalida le chiavi e i valori
+già calcolati a quei livelli (al primo strato dipendono soltanto dall'embedding
+del loro token). Un caso a parte è la cross-attention di un modello
+encoder-decoder: chiavi e valori vengono dall'uscita dell'encoder, che si
+calcola una volta sola, e restano fissi per tutta la generazione, una cache che
+non cresce.
 `````
 
 ## La cache KV, come struttura dati
 
-Da questa osservazione nasce la KV cache, la stessa della
-{doc}`sezione sulla FlashAttention </GPU/flash-attention>`: la memoria delle
-chiavi (K) e dei valori (V) già calcolati, che ogni sistema usa per far
-generare un modello. Per ogni strato, cioè ogni piano della pila, e per ogni
-testa di chiave e valore, è una coppia di matrici che cresce di una riga per
-ogni token elaborato.
+Da questa osservazione nasce la KV cache, già incontrata nella
+{doc}`sezione sulla FlashAttention </GPU/flash-attention>`: la memoria di
+chiavi (K) e valori (V) già calcolati, che ogni sistema di inferenza usa per
+generare. Per ogni strato e per ogni testa di chiave e valore, è una coppia di
+matrici che cresce di una riga per ogni token elaborato.
 
 `````{tab} Elementare
 Un taccuino, uno per ogni piano del palazzo e per ogni lettore. Ogni volta che
 il modello elabora una parola nuova ci scrive due righe: l'etichetta con cui
 quella parola si farà trovare, e l'informazione che consegnerà a chi la sceglie.
-Le righe già scritte non si correggono mai, si aggiungono e basta, ed è
-l'opposto del taccuino della LSTM, che aveva una pagina sola e per fare posto
-cancellava: questo si allunga di due righe a ogni parola. Per la parola nuova
-bastano le righe che ci sono: la domanda che quella parola pone si confronta con
-tutte le etichette del taccuino, e il miscuglio si fa con le informazioni che
-ci stanno accanto.
+Le righe già scritte non si correggono mai, si aggiungono soltanto. È l'opposto
+del taccuino della LSTM, che aveva una pagina sola e per fare posto cancellava:
+questo si allunga di due righe a ogni parola. Per la parola nuova bastano le
+righe che ci sono: la domanda che quella parola pone si confronta con tutte le
+etichette del taccuino, e il miscuglio si fa con le informazioni che ci stanno
+accanto.
 
 Il risparmio si vede contando che cosa si evita. Senza taccuino, ogni parola
 nuova costringe a ricavare etichetta e informazione per tutte le parole già
 scritte; con il taccuino, se ne ricavano due sole, quelle della parola nuova.
-Il resto era già lì.
+Il resto è già scritto.
 
-Quello che il taccuino non fa sparire è il confronto. La parola nuova deve
-comunque guardare tutte le righe scritte finora, quindi la fatica di ogni
-parola cresce insieme al testo: la millesima costa mille confronti, la
-duemillesima duemila. Chi dice che il taccuino rende la scrittura gratis sta
-guardando solo la metà che si risparmia.
+Il taccuino non elimina il confronto. La parola nuova guarda comunque tutte le
+righe scritte finora, quindi il lavoro per ogni parola cresce con il testo: la
+millesima si confronta con mille righe, la duemillesima con duemila. Dire che
+il taccuino rende la scrittura gratuita significa guardare solo la metà che si
+risparmia.
 
-E c'è un prezzo di spazio che si vede subito appena si prova a immaginare il
-taccuino di una conversazione lunga. Un palazzo moderno, molto più alto di
-quello del 2017: trentadue piani con trentadue lettori per piano, cioè mille
-taccuini, ciascuno con due righe per ogni parola scritta, e ogni riga è
-centoventotto numeri da due byte l'uno: mille per due per centoventotto per due
-fa mezzo megabyte a parola, e una conversazione da ottomila parole ne vuole più
-di quattro gigabyte di carta da tenere aperta. E a ogni parola nuova quella
-carta va riletta tutta, insieme ai numeri del modello. Da lì in poi la domanda
-non è più come far scrivere il modello, ma dove mettere i taccuini.
+Resta lo spazio, che si vede subito sul taccuino di una conversazione lunga. Un
+palazzo moderno, molto più alto di quello del 2017, ha trentadue piani con
+trentadue lettori per piano: circa mille taccuini, ciascuno con due righe per
+ogni parola scritta, e ogni riga è fatta di centoventotto numeri da due byte.
+Mille per due per centoventotto per due fa circa mezzo megabyte a parola, e una
+conversazione da ottomila parole ne occupa più di quattro gigabyte. A ogni
+parola nuova quel materiale va riletto tutto, insieme ai numeri del modello. A
+questo punto la domanda diventa dove tenere i taccuini.
 `````
 
 `````{tab} Superiore
@@ -161,7 +155,7 @@ matrici e valuta l'attenzione di $\mathbf{q}_t$ (una riga) contro le $t$ righe
 accumulate. È il caso $L \neq S$ per eccellenza: $1 \times t$ invece di
 $t \times t$.
 
-Il conto degli elementi conservati per token, sommando su tutti gli strati, è
+Il numero di elementi conservati per token, sommando su tutti gli strati, è
 
 $$
 2 \, n_{\text{strati}} \, h_{kv} \, d_k ,
@@ -171,43 +165,43 @@ dove il $2$ conta chiavi e valori, $n_{\text{strati}}$ è quanti sono gli strati
 (da non confondere con l'indice $\ell$ che ne individua uno), $h_{kv}$ è il
 numero di teste di chiave-valore e $d_k$ la dimensione per testa (qui e nel
 seguito $d_v = d_k$, come in quasi tutte le implementazioni). In byte si
-moltiplica per la dimensione del tipo numerico. Il conto non dipende dal numero
-di teste di query, e questa è l'osservazione su cui si regge tutto ciò che
-segue.
+moltiplica per la dimensione del tipo numerico. Il numero non dipende dalle
+teste di query, e MQA, GQA e MLA sfruttano questa indipendenza.
 
 Il costo in calcolo, per token e per strato, si divide in due termini di natura
 diversa: $O(t\, d)$ per l'attenzione contro il prefisso, e $O(d^2)$ per le
 proiezioni e la rete feed-forward, con $d = d_{\text{model}}$. Il secondo non
 dipende dalla lunghezza; il primo sì, e cresce linearmente in ciò che è già
-stato letto. La generazione di $n$ token costa quindi $O(n^2 d + n\, d^2)$ per
-strato, contro l’$O(n^3 d + n^2 d^2)$ di un forward rifatto da capo a ogni
+stato letto. La generazione di $n$ token ha quindi costo $O(n^2 d + n\, d^2)$
+per strato, contro l’$O(n^3 d + n^2 d^2)$ di un forward rifatto da capo a ogni
 passo.
 
-Una precisazione da tenere a mente in vista di quel che segue: la cache
-riusa le proiezioni passate, non abolisce l'interazione con il
-prefisso. L'affermazione «la cache rende la decodifica a costo costante» è
+La cache riusa le proiezioni passate e non abolisce l'interazione con il
+prefisso: l'affermazione «la cache rende la decodifica a costo costante» è
 falsa per l'attenzione densa.
 
-Il costo che conta in decodifica, poi, non è il calcolo. A una richiesta per
-volta, ogni token generato rilegge dalla memoria tutti i pesi del modello e
-tutta la cache, quindi il tempo per token è almeno
+In decodifica domina la lettura della memoria, non il calcolo. Con una
+richiesta per volta, ogni token generato rilegge dalla memoria tutti i pesi del
+modello e tutta la cache, quindi il tempo per token è almeno
 
 $$
 t_{\text{token}} \;\gtrsim\; \frac{b_{\text{pesi}} + b_{\text{KV}}\,T}{B},
 $$
 
-con $b_{\text{pesi}}$ i byte dei pesi, $b_{\text{KV}}$ i byte di cache per token
-($2\,n_{\text{strati}}\,h_{kv}\,d_k$ elementi, per la dimensione del tipo
+con $b_{\text{pesi}}$ i byte dei pesi, $b_{\text{KV}}$ i byte di cache per
+token ($2\,n_{\text{strati}}\,h_{kv}\,d_k$ elementi, per la dimensione del tipo
 numerico), $T$ il contesto e $B$ la banda della memoria: è il collo di
 bottiglia sulla banda della decodifica incrementale, e il peso della cache in
-quella somma cresce con $T$.
+quella somma cresce con $T$. Con $R$ richieste servite insieme, ciascuna con
+contesto $T$, la cache occupa $R\,T\,b_{\text{KV}}$ byte, mentre i pesi,
+condivisi, restano gli stessi.
 `````
 
 Il modo più rapido di convincersi che le due strade danno la stessa cosa è
 eseguirle entrambe: si costruisce uno strato di attenzione causale con pesi
 casuali, lo si esegue una volta sulla sequenza intera e una volta un token per
 volta con la cache, e si confrontano le due uscite. La funzione `attenzione` è
-una sola, chiamata con forme diverse: è il punto della faccenda.
+una sola, chiamata con forme diverse.
 
 ```python
 import torch
@@ -246,13 +240,12 @@ cache dopo sei token: (6, 4) (6, 4)
 le due strade coincidono: True
 ```
 
-Due dettagli reggono tutto. La maschera è costruita in funzione delle due
-lunghezze, $L$ query e $S$ chiavi, così che nel caso quadrato dia il solito
-triangolo e con una query sola non vieti niente: è l'allineamento a destra,
-quello che serve a generare (nel codice `diagonal=S - L + 1`), ed è ciò che
-permette alla stessa funzione di servire tutti e due i regimi. E le sole righe
-che scrivono qualcosa sono le due che allungano la cache: della query
-$\mathbf{q}_t$ non resta traccia da nessuna parte.
+La maschera dipende dalle due lunghezze, $L$
+query e $S$ chiavi: nel caso quadrato dà il solito triangolo, con una query sola
+non vieta niente. È l'allineamento a destra, necessario per generare (nel
+codice `diagonal=S - L + 1`), e permette alla stessa funzione di servire i due
+regimi. Le uniche righe che scrivono nella cache sono le due che la
+allungano; della query $\mathbf{q}_t$ non resta traccia.
 
 ## Quante teste per le chiavi: da MHA a MLA
 
@@ -278,43 +271,40 @@ quante teste serve, non quanto occupa.
 ```
 
 `````{tab} Elementare
-Torniamo al palazzo del 2017, otto lettori per piano, che con numeri piccoli si
-segue meglio. Finora ognuno teneva il proprio taccuino: otto etichette e otto
-informazioni per ogni parola, per ogni piano. Nei testi quel modo si trova con
-la sigla MHA. Guardando i taccuini, però, viene un sospetto: i lettori si
-distinguono per le domande che pongono, non per il materiale che consultano. E
-allora perché non farli leggere dallo stesso taccuino?
+Torniamo al palazzo del 2017, con otto lettori per piano, che con numeri
+piccoli si segue meglio. Finora ognuno teneva il proprio taccuino: otto
+etichette e otto informazioni per ogni parola, per ogni piano. È la
+formulazione che i testi chiamano MHA. Eppure i lettori si distinguono per le
+domande che pongono, non per il materiale che consultano: perché non farli
+leggere dallo stesso taccuino?
 
-La versione estrema lo fa, e la sigla è MQA: un taccuino solo per piano, otto
-lettori che ci attingono tutti, ciascuno con le sue domande. Lo spazio si
-divide per quanti sono i lettori, la scrittura diventa molto più svelta, e si
-perde qualcosa in qualità, perché otto punti di vista che consultavano appunti
-diversi adesso consultano gli stessi.
+La versione estrema, MQA, lo fa: un taccuino solo per piano, otto lettori che
+vi attingono tutti, ciascuno con le sue domande. Lo spazio si divide per il
+numero dei lettori, la scrittura diventa molto più svelta e si perde qualcosa
+in qualità, perché otto punti di vista che consultavano appunti diversi adesso
+consultano gli stessi.
 
 La versione di mezzo, GQA, divide i lettori in gruppi: due gruppi da quattro, e
-un taccuino per gruppo. Si sceglie quanti gruppi fare, e con quella manopola si
-decide dove stare fra i due estremi. È la soluzione che hanno adottato quasi
-tutti, perché con pochi gruppi la perdita si assottiglia fino a non vedersi. E
-c'è una seconda ragione, che ha pesato quanto la prima: un palazzo già
-costruito, con il suo taccuino per ogni lettore, si converte ai gruppi senza
-tirarlo giù. Si fondono gli appunti dei lettori di uno stesso gruppo facendone
-la media, si rimette a punto il tutto per un ventesimo del tempo che era
-costato costruirlo, e il palazzo riapre.
+un taccuino per gruppo. Il numero dei gruppi è la manopola che decide dove
+stare fra i due estremi. L'hanno adottata quasi tutti, perché nelle prove di chi
+l'ha proposta, con pochi gruppi, la perdita resta piccola. La seconda ragione
+pesa quanto la prima: un palazzo già costruito, con il suo taccuino per ogni
+lettore, si converte ai gruppi senza tirarlo giù. Si fondono gli appunti dei
+lettori di uno stesso gruppo facendone la media, si rimette a punto il tutto
+per un ventesimo del tempo impiegato a costruirlo, e il palazzo riapre.
 
-L'ultima strada, MLA, cambia mestiere. Invece di far leggere a più lettori lo
-stesso taccuino, riscrive che cosa ci si annota: al posto delle etichette e
-delle informazioni per esteso, un riassunto compatto da cui le une e le altre
-si possono ricostruire al momento del bisogno. Un taccuino di appunti
-stenografati, che occupa una frazione dello spazio e si rilegge quando serve, e
-che nelle prove di chi l'ha inventato non fa leggere peggio dei taccuini
-separati. La stenografia ha un punto scomodo, e riguarda l'ordine delle parole:
-quel segnale va tenuto fuori dal riassunto, su una riga a parte, altrimenti il
-risparmio che rende conveniente la stenografia non c'è più.
+MLA segue un'altra strada. Invece di far leggere a più lettori lo stesso
+taccuino, riscrive che cosa ci si annota: al posto delle etichette e delle
+informazioni per esteso, un riassunto compatto da cui le une e le altre si
+ricostruiscono al momento del bisogno. È un taccuino di appunti stenografati
+che occupa una frazione dello spazio e che, nelle prove di chi l'ha inventato,
+non fa leggere peggio dei taccuini separati. Un punto resta scomodo, l'ordine
+delle parole: quel segnale va tenuto fuori dal riassunto, su una riga a parte,
+altrimenti il risparmio svanisce.
 
-Un equivoco da togliere subito, perché è quello che si sente ripetere. Nessuna
-di queste strade tocca il numero di lettori. Le domande restano otto, i punti
-di vista restano otto: quello che si condivide o si comprime è il materiale su
-cui si legge.
+Nessuna di queste strade riduce il numero di lettori, come invece si sente
+dire. Le domande restano otto e i punti di vista restano otto; si condivide o
+si comprime il materiale su cui si legge.
 `````
 
 `````{tab} Superiore
@@ -328,16 +318,16 @@ $2\,n_{\text{strati}}\,h_q\,d_k$.
 **Multi-query attention (MQA)** {cite}`shazeer2019fast`: $h_{kv} = 1$. Tutte le
 teste di query condividono un'unica testa di chiave e un'unica testa di valore.
 La cache si riduce di un fattore $h_q$, e con essa la banda di memoria
-richiesta a ogni passo di decodifica; il prezzo è una perdita di qualità
-rispetto a MHA.
+richiesta a ogni passo di decodifica, con una perdita di qualità rispetto a
+MHA.
 
 **Grouped-query attention (GQA)** {cite}`ainslie2023gqa`: $1 < h_{kv} < h_q$.
 Le teste di query sono partizionate in $h_{kv}$ gruppi, e ogni gruppo
 condivide una testa di chiave-valore. Il numero di gruppi è l'iperparametro che
 sposta il modello fra i due estremi, e gli autori mostrano che con pochi gruppi
 si arriva vicino alla velocità di MQA restando vicini alla qualità di MHA.
-Nello stesso lavoro c'è la parte che ne ha decretato l'adozione: un modello già
-addestrato con MHA si converte con un *uptraining* che costa il 5% del calcolo
+Lo stesso lavoro contiene il risultato che ne ha favorito l'adozione: un modello
+già addestrato con MHA si converte con un *uptraining* pari al 5% del calcolo
 del preaddestramento originale, dopo aver sostituito le proiezioni di chiave e
 valore di ciascun gruppo con la loro media, che nelle loro prove funziona
 meglio che tenere una testa sola o ripartire da pesi casuali.
@@ -351,8 +341,8 @@ valori. In decodifica si conserva il solo latente, e le matrici di
 ricostruzione si assorbono in $\mathbf{W}^Q$ e $\mathbf{W}^O$, quindi chiavi e
 valori per esteso non vengono nemmeno materializzati.
 
-La descrizione precisa richiede un'avvertenza che di solito si omette, e senza
-la quale la cache di MLA risulta più piccola di quella vera. RoPE è
+Per descrivere MLA con precisione serve un'avvertenza spesso omessa: senza di
+essa la cache risulterebbe più piccola di quella reale. RoPE è
 incompatibile con la compressione: applicandola alle chiavi ricostruite, la
 matrice di ricostruzione resterebbe incastrata fra $\mathbf{W}^Q$ e una matrice
 di rotazione che dipende dalla posizione corrente, e l'assorbimento non sarebbe
@@ -369,24 +359,29 @@ $(d_c + d_k^R)\,n_{\text{strati}}$ elementi per token.
 | MLA | $(d_c + d_k^R)\,n_{\text{strati}}$ | altra formulazione |
 
 Con i valori di DeepSeek-V2 ($d_c = 4 d_k$, $d_k^R = d_k/2$) la cache di MLA
-equivale a quella di un GQA con 2,25 gruppi. Il punto da non confondere: MLA
-non è riducibile a un GQA con meno teste, perché cambia l'oggetto conservato e
-l'algebra delle proiezioni usata in inferenza. Sulla qualità, gli autori
-riportano che MLA, con quella cache, fa meglio di MHA su quattro benchmark e
-due scale di modelli a esperti (con un'eccezione sulla scala piccola): è un
-risultato di chi ha progettato il modello, e il prezzo è un'implementazione più
-complessa, fra RoPE disaccoppiata e assorbimento delle matrici.
+equivale a quella di un GQA con 2,25 gruppi. MLA non è riducibile a un GQA con
+meno teste, perché cambia l'oggetto conservato e l'algebra delle proiezioni
+usata in inferenza. Gli stessi autori misurano che, con modelli densi da circa
+7 miliardi di parametri, su BBH, MMLU, C-Eval e CMMLU MHA sta davanti a GQA con
+otto gruppi e a MQA (su MMLU 45,2 contro 41,2 e 37,9): condividere le teste ha
+un costo in qualità, che i benchmark difficili mostrano. Sulla qualità di MLA
+riportano che, con una cache pari al 14% (scala piccola) e al 4% (scala grande)
+di quella di MHA, fa meglio di MHA su quattro benchmark e due scale di modelli
+a esperti (con un'eccezione, C-Eval sulla scala piccola). È un risultato di chi
+ha progettato il modello, e l'implementazione è più complessa, fra RoPE
+disaccoppiata e assorbimento delle matrici.
 
-Quello che né MQA né GQA né MLA toccano è il numero di teste di query, e con
-esso la molteplicità dei sottospazi in cui il modello calcola le compatibilità:
-quello che si condivide, o si comprime, è la rappresentazione conservata.
+Nessuna delle tre varianti tocca il numero di teste di query, e con esso la
+molteplicità dei sottospazi in cui il modello calcola le compatibilità: si
+condivide o si comprime la rappresentazione conservata.
 `````
 
-I numeri rendono l'idea meglio della formula. Si prende un modello di taglia
-ordinaria (trentadue strati, trentadue teste di query, $d_k = 128$, quindi
-$d_{\text{model}} = 4096$) con chiavi e valori a 16 bit, e si conta quanta
-memoria vuole la cache per ogni token e per una finestra di ottomila, e quale
-parte dei byte da rileggere a ogni token generato è cache, a finestra piena.
+Un esempio con i numeri rende l'idea meglio della formula. Si prende un modello
+di taglia ordinaria (trentadue strati, trentadue teste di query, $d_k = 128$,
+quindi $d_{\text{model}} = 4096$) con chiavi e valori a 16 bit, e si conta
+quanta memoria vuole la cache per ogni token e per una finestra di ottomila, e
+quale parte dei byte da rileggere a ogni token generato è cache, a finestra
+piena.
 
 ```python
 strati, teste_q, d_k, byte, contesto = 32, 32, 128, 2, 8192
@@ -419,47 +414,45 @@ MLA   (d_c = 4 d_k, d_R = d_k/2)           36        0.28         2.1%
 pesi del modello: 13.0 GiB
 ```
 
-Quattro GiB per una sola conversazione da ottomila token, contro i tredici dei
-pesi: bastano quattro richieste servite insieme perché la cache occupi più del
-modello, e già con una sola, a finestra piena, quasi un quarto dei byte da
-rileggere per ogni token generato è cache. La riga GQA dice perché la si trova
-quasi ovunque nei modelli recenti, e la riga MLA perché qualcuno abbia cambiato
-la formulazione dell'attenzione per un problema di memoria. La riga MHA è il
-caso in cui ogni testa di query si tiene le sue chiavi, ed è il conto che la
-{doc}`sezione sui grandi modelli linguistici <llm>` riprende per il suo modello
-da sette miliardi di parametri: mezzo megabyte a token.
+Una sola conversazione da ottomila token occupa 4 GiB, contro i 13 dei pesi:
+con quattro richieste servite insieme la cache supera il modello, e già con una,
+a finestra piena, quasi un quarto dei byte da rileggere a ogni token generato è
+cache. Il caso GQA spiega perché la si trovi in quasi tutti i modelli recenti,
+il caso MLA perché si sia cambiata la formulazione dell'attenzione per un
+problema di memoria. Il caso MHA, in cui ogni testa di query tiene le sue
+chiavi, viene ripreso dalla {doc}`sezione sui grandi modelli linguistici <llm>`
+per il suo modello da sette miliardi di parametri: mezzo megabyte a token.
 
 ## Che cosa è quadratico, e di quale risorsa si parla
 
-Il {doc}`confronto coi modelli precedenti <confronti>` ha messo il conto sul
-tavolo separando il tempo dalla memoria. Quella distinzione va portata un passo
-più in là, perché sotto la parola «quadratico» stanno grandezze che si
-comportano in modo diverso e che una discussione sui costi tratta come se
-fossero la stessa.
+Il {doc}`confronto coi modelli precedenti <confronti>` ha separato il tempo
+dalla memoria. La distinzione va portata più in là, perché sotto la parola
+«quadratico» stanno grandezze diverse, che i discorsi sui costi trattano spesso
+come una sola.
 
 Il **lavoro aritmetico**, cioè quante moltiplicazioni e somme si fanno,
 dell'attenzione densa su una sequenza di lunghezza $n$ ha un termine
 $O(n^2 d)$ per strato, che cresce come il quadrato della lunghezza: è un fatto
 sull'operazione, perché le coppie query-chiave sono $n^2$ e vanno calcolate
 tutte. La **memoria intermedia materializzata**, cioè quanti numeri si tengono
-scritti tutti insieme a metà del conto, è un fatto sull'implementazione:
+scritti tutti insieme a metà del calcolo, è un fatto sull'implementazione:
 un'implementazione ingenua scrive la matrice $n \times n$ dei punteggi, e
 allora anche lo spazio è quadratico; una che non la scrive tutta insieme non lo
 è. Il **traffico di memoria**, cioè quanti byte si spostano fra la memoria
 grande e lenta della scheda grafica e quella piccola e veloce dove si fanno i
-conti, è un terzo fatto ancora, e sulle schede di oggi è spesso quello che
-decide il tempo di esecuzione, a parità di conti da fare.
+conti, è un terzo fatto ancora, e sulle schede di oggi decide spesso il tempo di
+esecuzione, a parità di conti da fare.
 
 Tenerle distinte permette di dire due cose insieme senza contraddirsi:
 l'attenzione densa fa un numero quadratico di interazioni, e un'implementazione
 esatta può evitare di scrivere in memoria l'intera matrice quadratica e girare
 molto più in fretta. Quest'ultima è la strada della FlashAttention, che esegue
 l'attenzione esatta un pezzo alla volta: stessa attenzione, esecuzione diversa,
-e la costruisce per intero la {doc}`sezione sulla FlashAttention
-</GPU/flash-attention>`. Una famiglia diversa di rimedi cambia invece quali
+e la {doc}`sezione sulla FlashAttention </GPU/flash-attention>` ne dà la
+costruzione. Una famiglia diversa di rimedi cambia invece quali
 coppie si calcolano, con finestre locali o schemi sparsi, e allora l'attenzione
 non è più densa; un'altra ancora riscrive la softmax per non formare mai le
-coppie, ed è il {doc}`capitolo sull'attenzione lineare
+coppie, come nel {doc}`capitolo sull'attenzione lineare
 </AttenzioneLineare/overview>`.
 
 Mentre il modello genera, un token alla volta, il quadro cambia forma. Per ogni
@@ -469,17 +462,17 @@ somma su tutti i token generati. La cache, invece, occupa una memoria che
 cresce linearmente con la lunghezza per tutta la durata della richiesta, e
 moltiplicata per le richieste servite insieme è la voce che per prima limita il
 contesto e il numero di conversazioni aperte; a ogni passo, inoltre, va
-riletta per intero, e quando il contesto è lungo è questa lettura a fissare il
-tempo per token.
+riletta tutta, e quando il contesto è lungo è questa lettura a fissare il tempo
+per token.
 
 ## Gli errori che si fanno davvero
 
-Gli errori di chi scrive uno strato di attenzione da zero riguardano più spesso
-le forme, gli assi e le convenzioni che la formula, e molti non fanno rumore:
-il codice gira, le matrici hanno la forma giusta e il modello impara, un po’
-peggio di quanto potrebbe. Il più semplice da diagnosticare è la softmax lungo
-l'asse sbagliato, che definisce un'operazione diversa e ha un sintomo secco: le
-righe smettono di sommare a uno.
+Chi scrive da zero uno strato di attenzione sbaglia più spesso le forme, gli
+assi e le convenzioni che la formula, e molti errori non fanno rumore: il codice
+gira, le matrici hanno la forma giusta e il modello impara, un po’ peggio di
+quanto potrebbe. Il più facile da diagnosticare è la softmax sull'asse
+sbagliato, che definisce un'altra operazione e ha un sintomo netto: le righe non
+sommano più a uno.
 
 ```python
 import torch
@@ -499,26 +492,26 @@ somma per riga, normalizzando sulle query:  tensor([0.7525, 0.9791, 1.2684])
 ```
 
 `````{tab} Elementare
-Quattro di questi errori stanno sul tabellone, e si sono già visti uno per uno
-nella sezione sull'attenzione: colorare per colonna invece che per riga, e le
-righe smettono di sommare a uno; dimenticare la divisione prima di colorare, e
-il modello impara un po’ peggio, tanto più quanto più le liste sono lunghe,
-senza che niente si rompa; cancellare dopo aver colorato, e il miscuglio esce
-sbiadito; dare il tabellone per quadrato quando chi chiede e chi risponde sono
-due liste di lunghezza diversa, e il divieto di guardare avanti si allinea
-dalla parte sbagliata.
+Quattro di questi errori riguardano il tabellone, e la {doc}`sezione
+sull'attenzione <attenzione>` li ha già mostrati uno per uno: colorare per
+colonna invece che per riga, e le righe smettono di sommare a uno; dimenticare
+la divisione prima di colorare, e il modello impara un po’ peggio, tanto più
+quanto più le liste sono lunghe, senza che niente si rompa; cancellare dopo
+aver colorato, e il miscuglio esce sbiadito; dare il tabellone per quadrato
+quando chi chiede e chi risponde sono due liste di lunghezza diversa, e il
+divieto di guardare avanti si allinea dalla parte sbagliata.
 
-Gli altri tre stanno nei taccuini e nel conto della carta. Contare i lettori al
-posto dei taccuini: da quando i lettori condividono gli appunti i due numeri
-sono diversi, e una stima della carta fatta sui lettori sbaglia in eccesso,
-cioè nella direzione che non fa mai suonare nessun allarme. Consegnare al piano
-dopo le intensità del colore invece del miscuglio: le intensità servono a
-decidere le proporzioni e poi escono di scena, e quello che va consegnato è la
-miscela delle informazioni, che ha tutt'altra forma e tutt'altro significato.
-E confrontare due misure di memoria senza dire che cosa ci si è messo dentro: i
-numeri del modello, il tabellone di passaggio, i taccuini e tutto quello che il
-calcolatore tiene aperto per lavorare sono cose distinte, e due conti che non
-dichiarano quali voci comprendono non si possono paragonare.
+Gli altri tre riguardano i taccuini e la stima dello spazio. Il primo è contare
+i lettori al posto dei taccuini: da quando i lettori condividono gli appunti i
+due numeri sono diversi, e una stima fatta sui lettori sbaglia in eccesso,
+cioè nella direzione che non fa mai suonare nessun allarme. Il secondo è
+consegnare al piano dopo le intensità del colore invece del miscuglio: le
+intensità servono a decidere le proporzioni e poi escono di scena, mentre va
+consegnata la miscela delle informazioni, che ha tutt'altra forma e tutt'altro
+significato. Il terzo è confrontare due misure di memoria senza dire che cosa
+comprendono: i numeri del modello, il tabellone di passaggio, i taccuini e
+tutto ciò che il calcolatore tiene aperto per lavorare sono voci distinte, e
+due conti che non dichiarano quali voci includono non si possono paragonare.
 `````
 
 `````{tab} Superiore
@@ -540,14 +533,14 @@ La maschera quadrata dove $L \neq S$. Un triangolo costruito
 sull'assunzione che righe e colonne siano in corrispondenza uno a uno è
 sbagliato appena le due lunghezze differiscono, cioè nell'attenzione incrociata
 e nella decodifica con la cache. L'allineamento va dichiarato, e va fatto
-combaciare con quello che la libreria si aspetta.
+combaciare con la convenzione della libreria.
 
 Le teste di query confuse con quelle di chiave-valore. In GQA i due numeri
 differiscono, e ogni conto sulla cache va fatto con $h_{kv}$. Usare $h_q$
 sbaglia la stima di un fattore $h_q/h_{kv}$, cioè di quante teste di query
 si dividono la stessa testa di chiave-valore: con trentadue teste di query e
-otto di chiave-valore il fattore è quattro, non otto come i gruppi. E sbaglia
-in eccesso, che è la direzione che non fa mai fallire niente.
+otto di chiave-valore il fattore è quattro, non otto come i gruppi. La stima
+sbaglia in eccesso, direzione in cui niente fallisce.
 
 I pesi di attenzione presi per l'uscita dello strato. $\mathbf{A}$ è un
 intermedio $L \times S$; l'uscita è $\mathbf{A}\mathbf{V}$, seguito dalla
@@ -563,13 +556,13 @@ includono non sono confrontabili.
 
 ## Le frasi che si sentono dire
 
-Attorno all'attenzione circolano alcune formule fatte che sopravvivono proprio
-perché sono quasi vere, e che si smontano una per una.
+Attorno all'attenzione circolano alcune formule fatte che sopravvivono perché
+sono quasi vere, e che si smontano una per una.
 
 «L'attenzione è la memoria del modello.» L'attenzione è un'operazione di
-mescolamento, e non conserva niente da una chiamata all'altra. Quello che
-persiste durante la generazione è la cache, che appartiene al sistema di
-inferenza e viene buttata a fine risposta. Fra una conversazione e l'altra il
+mescolamento, e non conserva niente da una chiamata all'altra. Durante la
+generazione persiste soltanto la cache, che appartiene al sistema di inferenza
+e viene scartata a fine risposta. Fra una conversazione e l'altra il
 modello non ricorda nulla: ciò che sembra memoria è testo che qualcuno gli
 rimette davanti, e la {doc}`sezione sul context engineering
 </Agenti/context-engineering>` racconta come lo si sceglie.
@@ -577,38 +570,39 @@ rimette davanti, e la {doc}`sezione sul context engineering
 «Più teste è meglio.» A $d_{\text{model}}$ fisso, cioè con la stessa larghezza
 totale da spartire, aggiungere teste le rende più strette: con
 $d_{\text{model}} = 512$, otto teste lavorano in dimensione 64 e trentadue in
-dimensione 16. Oltre un certo punto ogni testa ha uno spazio
-troppo stretto perché la compatibilità che calcola dica qualcosa, e il guadagno
-di varietà si mangia quello di risoluzione. Il numero di teste è un compromesso
-che si taglia sul modello, non una quantità da massimizzare. L'articolo del
-2017 lo misura a calcolo costante (Tabella 3, righe A): con una testa sola il
-BLEU scende da 25,8 a 24,9, con sedici resta 25,8, con trentadue ridiscende a
-25,4. E su un modello già addestrato molte teste si tolgono con perdite
-trascurabili {cite}`michel2019sixteen`.
+dimensione 16. Oltre un certo punto lo spazio di ogni testa è troppo stretto
+per rappresentare una compatibilità utile, e il guadagno di varietà è
+compensato dalla perdita di risoluzione. Il numero di teste è un compromesso da
+tarare sul modello, non una quantità da massimizzare. L'articolo del 2017 lo
+misura a calcolo costante (Tabella 3, righe A): con una testa sola il BLEU
+scende da 25,8 a 24,9, con sedici resta 25,8, con trentadue ridiscende a 25,4.
+Su un modello già addestrato molte teste si tolgono con perdite trascurabili
+{cite}`michel2019sixteen`.
 
-«I pesi di attenzione sono la spiegazione.» È la più diffusa e la più
-delicata, perché quei pesi si disegnano bene: sono distribuzioni sulle
-posizioni d'ingresso, e la tentazione di leggere un peso alto come «il modello
-ha usato questo token perché contava» è forte. Il dibattito ha due voci, e
-conoscerle entrambe serve. Jain e Wallace {cite}`jain2019attention` hanno
-mostrato casi in cui i pesi appresi si legano debolmente alle misure di
-importanza basate sul gradiente, e in cui distribuzioni di attenzione molto
-diverse davano previsioni quasi identiche. Wiegreffe e Pinter
-{cite}`wiegreffe2019attention` hanno contestato il rifiuto categorico,
-sostenendo che la risposta dipende da che cosa si chiama spiegazione e da quali
-termini di paragone si adottano. La posizione difendibile sta in mezzo, ed è
-più stretta di tutti e due gli slogan: un peso alto dice dove è andata
-l'aggregazione, e non dice perché il modello abbia risposto così. Leggerlo come
-una spiegazione richiede un metodo e una validazione, che è il mestiere della
-{doc}`sezione su attribuzione e interpretabilità meccanicistica
+«I pesi di attenzione sono la spiegazione.» È la più diffusa e la più delicata,
+perché quei pesi si disegnano bene: sono distribuzioni sulle posizioni
+d'ingresso, e la tentazione di leggere un peso alto come «il modello ha usato
+questo token perché contava» è forte. Il dibattito ha due voci. Jain e Wallace
+{cite}`jain2019attention` hanno mostrato casi in cui i pesi appresi si legano
+debolmente alle misure di importanza basate sul gradiente, e in cui
+distribuzioni di attenzione molto diverse davano previsioni quasi identiche.
+Wiegreffe e Pinter {cite}`wiegreffe2019attention` hanno contestato il rifiuto
+categorico, sostenendo che la risposta dipende da che cosa si chiama
+spiegazione e da quali termini di paragone si adottano. La posizione
+difendibile sta in mezzo, più stretta di tutti e due gli slogan: un peso alto
+dice dove è andata l'aggregazione, e non dice perché il modello abbia risposto
+così. Leggerlo come una spiegazione richiede un metodo e una validazione, di
+cui si occupa la {doc}`sezione su attribuzione e interpretabilità
+meccanicistica
 </Interpretabilita/attribuzione-e-meccanicistica>`.
 
 ## L'attenzione che si usa davvero
 
 Scrivere l'attenzione a mano serve a capirla; chi la deve far girare chiama una
-funzione di libreria, che sceglie da sé l'implementazione adatta all'hardware
-che ha davanti. In PyTorch è `scaled_dot_product_attention`, e la sua firma
-raccoglie quasi tutti gli oggetti nominati fin qui.
+funzione di libreria, che seleziona l'implementazione adatta all'hardware
+disponibile. In PyTorch è `scaled_dot_product_attention`, e la sua firma
+raccoglie quasi tutti gli oggetti discussi: maschera, scala, teste di
+chiave-valore.
 
 ```{code-block} python
 :class: pt-non-eseguibile
@@ -626,14 +620,15 @@ uscita = F.scaled_dot_product_attention(
 )
 ```
 
-L'interfaccia ha due trappole del genere descritto fra gli errori. La prima:
+L'interfaccia ha due trappole dello stesso tipo degli errori di convenzione. La
+prima:
 nella maschera fatta di valori veri e falsi (*booleana*) di questa funzione,
 `True` significa che la posizione partecipa all'attenzione, cioè l'opposto
 della convenzione del `key_padding_mask` di `nn.MultiheadAttention`, dove
 `True` marca ciò che va escluso. Due funzioni
 della stessa libreria, due convenzioni opposte, nessun errore se le si scambia:
-soltanto un modello che guarda esattamente le posizioni sbagliate. La seconda:
-`is_causal=True` non fa la maschera che la funzione scritta poco fa costruisce
+soltanto un modello che guarda le posizioni sbagliate. La seconda:
+`is_causal=True` non produce la maschera della funzione `attenzione` costruita
 a mano. Allinea in alto a sinistra, quindi con una riga di query e un prefisso
 lungo la sola query vede la posizione iniziale e nient'altro; l'allineamento
 che serve a generare è quello a destra, che la libreria espone a parte. In
@@ -647,7 +642,7 @@ invece, dipendono dalla versione e vanno letti in quella installata.
 - La stessa formula gira in due regimi opposti. Con il testo già scritto
   davanti, il modello lavora su tutte le parole insieme; mentre scrive, va per
   forza una parola alla volta, perché quella dopo non esiste ancora.
-- Quello che una parola ha calcolato quando la frase finiva lì resta valido
+- Il lavoro svolto su una parola quando la frase finiva lì resta valido
   quando la frase si allunga, perché nessuno può guardare avanti. Da qui il
   taccuino, che a differenza di quello della LSTM non cancella mai e si allunga
   a ogni parola: si conservano l'etichetta e l'informazione di ogni parola, e
@@ -655,7 +650,7 @@ invece, dipendono dalla versione e vanno letti in quella installata.
 - Il taccuino toglie la fatica di ricalcolare, non quella di confrontare: ogni
   parola nuova guarda comunque tutte quelle di prima, quindi il costo di
   scrivere cresce insieme al testo.
-- E il taccuino occupa spazio, tanto: per un modello di taglia ordinaria mezzo
+- Il taccuino occupa molto spazio: per un modello di taglia ordinaria mezzo
   megabyte per ogni parola, e già quattro conversazioni lunghe servite
   insieme occupano più memoria del modello stesso.
 - Di lì le varianti: far leggere più lettori dallo stesso taccuino, tutti (MQA)
@@ -667,10 +662,10 @@ invece, dipendono dalla versione e vanno letti in quella installata.
   insieme è la fonte di quasi tutti gli equivoci sui costi.
 - Gli errori che si fanno montando questa macchina riguardano più spesso le
   righe, le colonne e le convenzioni che la formula. Il più delle volte niente
-  si rompe: il modello impara un po’ peggio, e basta.
+  si rompe: il modello impara un po’ peggio.
 - L'attenzione non è la memoria del modello: mescola, e non conserva niente da
   una volta all'altra. Fra una conversazione e l'altra il modello non ricorda
-  nulla, e quello che sembra memoria è testo che qualcuno gli rimette davanti.
+  nulla, e la sua apparente memoria è testo che qualcuno gli rimette davanti.
 ```
 `````
 
@@ -696,7 +691,7 @@ invece, dipendono dalla versione e vanno letti in quella installata.
   raggruppate, MLA conserva un latente compresso più una componente di RoPE
   disaccoppiata. Tutte riducono o comprimono le teste di chiave-valore, nessuna
   tocca $h_q$.
-- Per token generato, con la cache, l'attenzione costa $O(t\,d)$, lineare nel
+- Per token generato, con la cache, l'attenzione ha costo $O(t\,d)$, lineare nel
   prefisso; il quadrato riappare sommando sui token generati. Lavoro
   aritmetico, memoria intermedia materializzata e traffico fra i livelli di
   memoria sono grandezze distinte, e «quadratico» da solo non dice quale.
@@ -705,7 +700,7 @@ invece, dipendono dalla versione e vanno letti in quella installata.
   quadrato con $L \neq S$, $h_q$ usato al posto di $h_{kv}$, pesi restituiti al
   posto di $\mathbf{A}\mathbf{V}$.
 - Un peso di attenzione alto localizza l'aggregazione e non la spiega: trattarlo
-  come spiegazione richiede un metodo e una validazione. E l'attenzione non
+  come spiegazione richiede un metodo e una validazione. L'attenzione non
   conserva niente fra una chiamata e l'altra: persiste la cache, che appartiene
   al sistema di inferenza e si butta a fine risposta.
 ```
@@ -714,6 +709,6 @@ invece, dipendono dalla versione e vanno letti in quella installata.
 La formula del 2017 è rimasta quella, e attorno a lei è cambiato il modo di
 eseguirla: dove si conservano i suoi risultati intermedi, quante teste di
 chiave e valore li condividono, in che ordine si toccano i livelli di memoria.
-Quello che negli {doc}`esempi pratici <esempi>` si scarica e si esegue in tre
-righe è questa macchina, con gli accorgimenti accumulati dal 2017, diventati il
-modo normale di farla girare.
+Negli {doc}`esempi pratici <esempi>` questa macchina si scarica e si esegue in
+poche righe, con gli accorgimenti accumulati dal 2017, ormai il modo normale di
+farla girare.

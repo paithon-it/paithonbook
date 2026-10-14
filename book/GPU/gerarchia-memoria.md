@@ -1,29 +1,26 @@
 # La memoria: il vero collo di bottiglia
 
-Il racconto dell'architettura si è chiuso su un'osservazione scomoda, che la
-sezione {doc}`«Prestazioni e scala» </PyTorch/prestazioni>` aveva già lasciato
-cadere di sfuggita: il collo di bottiglia, più spesso del calcolo, è il
-movimento dei dati. È il momento di prenderla sul serio, perché è una delle
-verità meno intuitive di tutto l'hardware moderno.
+Più spesso del calcolo, a limitare una GPU è il movimento dei dati. La
+sezione {doc}`«Prestazioni e scala» </PyTorch/prestazioni>` lo aveva accennato
+di sfuggita; è una delle verità meno intuitive dell'hardware moderno, e qui si
+guarda da vicino.
 
 Si tende a pensare a una GPU come a una macchina che divora numeri. Spesso,
 invece, a limitarla è il rifornimento: le sue migliaia di unità di calcolo
 consumano in un lampo i dati che hanno a portata, e poi restano ferme ad
 aspettare i successivi.
 
-Nella {doc}`sezione sull'architettura <architettura-gpu>` abbiamo visto la mossa
-che salva la GPU da quelle attese: mentre un warp aspetta i suoi dati, il warp
-scheduler ne fa avanzare un altro, così lo SM non resta mai inattivo. Quel
-meccanismo però *nasconde* l'attesa del singolo, non fa arrivare i dati più in
-fretta. Le due cose vanno tenute distinte, e da qui in avanti le chiameremo
-sempre con lo stesso nome: la latenza è il tempo che passa prima che arrivi il
-primo dato; la **banda** è quanti byte al secondo la memoria riesce davvero a
-consegnare a regime, cioè una volta avviato il flusso (è il *throughput* di
-prima, misurato in byte invece che in compiti finiti). I warp coprono la
-latenza. La banda è finita e non si nasconde, ed è lei, più della potenza di
-calcolo, a decidere le prestazioni di moltissimi programmi: è il «muro della
-banda». Raddoppiare le unità di calcolo non serve, se i byte non arrivano più
-in fretta.
+Come mostra la {doc}`sezione sull'architettura <architettura-gpu>`, mentre un
+warp aspetta i suoi dati il warp scheduler ne fa avanzare un altro, e lo SM non
+resta inattivo. Il meccanismo *nasconde* l'attesa del singolo, ma non fa
+arrivare i dati più in fretta. Latenza e banda sono grandezze distinte: la
+latenza è il tempo che passa prima che arrivi il primo dato; la **banda** è
+quanti byte al secondo la memoria riesce a consegnare a regime, cioè una volta
+avviato il flusso (è il *throughput* di prima, misurato in byte invece che in
+compiti finiti). I warp coprono la latenza. La banda è finita e non si
+nasconde, e decide le prestazioni di moltissimi programmi più della potenza di
+calcolo: è il «muro della banda». Raddoppiare le unità di calcolo non serve, se
+i byte non arrivano più in fretta.
 
 Per capire dove i byte si perdono bisogna conoscere la geografia della memoria
 di una GPU. È una piramide di livelli e non un unico serbatoio, ognuno un
@@ -44,13 +41,13 @@ lontana e lenta. In mezzo, una scala di compromessi
 
 I cinque piani della memoria di una GPU. Salendo verso l'apice si trova
 memoria più veloce; scendendo verso la base memoria più lenta, perché più
-lontana dalle unità che fanno i conti. La larghezza dice quanta ne tocca a chi
+lontana dalle unità di calcolo. La larghezza dice quanta ne tocca a chi
 la usa (a un thread, a un blocco, a tutta la scheda), non quanta ce ne sia in
 tutto a quel piano: sul totale il triangolo inganna, perché i registri di tutti
 i thread di uno SM, messi insieme, superano la sua shared memory. I primi tre
 piani stanno *dentro* il chip della GPU (in inglese *on-chip*); gli ultimi due,
 la memoria grande della scheda e quella del computer, stanno fuori dal chip
-(*off-chip*), ed è per questo che raggiungerli costa tanto.
+(*off-chip*), e per questo raggiungerli costa tanto.
 ```
 
 `````{tab} Elementare
@@ -62,58 +59,56 @@ Sul piano della scrivania c'è un ripiano in comune con tutta la squadra che
 siede al tavolo. Ci sta l'equivalente di qualche decina di pagine, e un
 separatore lo divide in due. Da una parte ci metti tu i fogli del momento, e
 scegli quali tenere e per quanto: è la **shared memory**, la memoria condivisa.
-Dall'altra parte finisce da sé, senza che nessuno lo decida, quello che hai
-usato di recente, nel caso serva ancora: è la **cache L1** (*cache* si pronuncia
+Dall'altra parte finiscono, senza che nessuno lo decida, i fogli usati
+di recente, nel caso servano ancora: è la **cache L1** (*cache* si pronuncia
 *cash* e vuol dire ripostiglio; la L sta per *level*, livello, e questo è il
-primo). Il separatore si sposta, lo spazio no: la parte che scegli tu si
-allarga rubando all'altra.
+primo). Il separatore si sposta, lo spazio no: il tuo settore si
+allarga rubando all'altro.
 
-Il cassetto grande sotto il tavolo è la **cache L2**, il secondo livello: stesso
-mestiere, più capiente e in comune con gli altri tavoli. In fondo alla stanza
+Il cassetto grande sotto il tavolo è la **cache L2**, il secondo livello: stessa
+funzione, più capiente e in comune con gli altri tavoli. In fondo alla stanza
 c'è l'armadio, il magazzino comune a ogni tavolo: ci sta *tutto* il progetto, ma
 ogni volta ti tocca alzarti e attraversare la stanza. È la **memoria globale**,
 che i tecnici chiamano **HBM**, tre lettere per «memoria a banda larga»,
-costruita apposta per consegnare tantissimi byte al secondo. E in un altro
+costruita apposta per consegnare tantissimi byte al secondo. In un altro
 edificio c'è il deposito, la memoria del computer, di là dal cavo che collega
 CPU e GPU (il cavo si chiama **PCIe**): enorme, e andarci è una spedizione. Per
-questo, di là, ci si va il meno possibile: quello che serve a tutti (i pesi del
-modello) si porta nell'armadio una volta sola e resta lì, e il viaggio si ripete
-soltanto per i dati nuovi, un carico per ogni gruppo di esempi da elaborare. È
-la spedizione che fa la riga `.to(device)` del capitolo su PyTorch.
+questo, di là, ci si va il meno possibile: i dati che servono a tutti (i pesi
+del modello) si portano nell'armadio una volta sola e resta lì, e il viaggio si
+ripete soltanto per i dati nuovi, un carico per ogni gruppo di esempi da
+elaborare. È la spedizione che fa la riga `.to(device)` del capitolo su PyTorch.
 
 A quel tavolo lavorano più di mille persone. Le penne sono minuscole una per
-una, ma tutte insieme sono più roba di quanta ne stia sul ripiano: su una
-A100, una scheda da datacenter, le penne di un tavolo valgono 256 kilobyte e il
-ripiano intero 192. Il pugno di numeri è quello che tocca al singolo, non
-quanto ce n'è in tutto, ed è così che va letta la piramide. E chi vorrebbe più
-penne di quante gliene stiano in mano non le perde: quelle di troppo le
-appoggia sul ripiano, dalla parte che si riempie da sé, e ogni volta che gli
-servono deve allungare il braccio a riprenderle. Oltre un certo punto, quindi,
-chiedere più penne rallenta invece di aiutare: il lavoro si riempie di
-allungate di braccio.
+una, ma tutte insieme sono più roba di quanta ne stia sul ripiano: su una A100,
+una scheda da datacenter, le penne di un tavolo valgono 256 kilobyte e il
+ripiano intero 192. Il pugno di numeri è quanto tocca al singolo, non quanto ce
+n'è in tutto: la piramide va letta così. Chi vorrebbe più penne di quante
+gliene stiano in mano non le perde: quelle di troppo le appoggia sul ripiano,
+dalla parte che si riempie in automatico, e ogni volta che gli servono deve
+allungare il braccio a riprenderle. Oltre un certo punto, quindi, chiedere più
+penne rallenta invece di aiutare: il lavoro si riempie di allungate di braccio.
 
 Contano le proporzioni, più dei nomi. Se prendere la penna che hai già fra le
-dita costa un secondo, cercare fra i fogli sul piano ne costa una ventina,
+dita dura un secondo, cercare fra i fogli sul piano ne dura una trentina,
 aprire il cassetto grande un paio di centinaia, attraversare la stanza fino
 all'armadio cinquecento, e mandare qualcuno al deposito dell'altro edificio è
 una gita che dura un'ora. Fra la penna e il deposito ci sono migliaia di volte,
 non il doppio. Tutto questo è tempo di attesa, cioè la latenza, e l'attesa si
-può coprire: mentre uno aspetta il foglio che ha chiesto il vicino lavora su
-quello che ha già ricevuto, e il tavolo non si ferma mai.
+può coprire: mentre uno aspetta il foglio che ha chiesto il vicino lavora sul
+foglio già ricevuto, e il tavolo non si ferma mai.
 
 C'è però una seconda misura, sullo stesso armadio, e quella non si copre. Chi
 torna dall'armadio non porta un foglio solo: porta una bracciata, e quante
-bracciate al minuto l'armadio riesca a consegnare è deciso una volta per
-tutte. Se in un minuto arrivano meno fogli di quanti la squadra ne consuma, i
-mille al tavolo restano fermi comunque, bravi quanto si vuole. Quel numero, i
-fogli che arrivano al minuto, è la banda, ed è lui, più spesso di quante
-persone siedano al tavolo, a decidere la velocità del lavoro. Per l'armadio
-vero, la HBM, sono qualche migliaio di miliardi di byte al secondo (qualche
-terabyte al secondo, TB/s); il cavo verso il deposito ne porta qualche decina
-di miliardi (decine di gigabyte al secondo, GB/s), da dieci a cento volte meno.
-Chi programma una GPU fa lo stesso mestiere di chi si tiene in ordine la
-scrivania: vicino quello che serve adesso, e in giro per la stanza il meno
-possibile.
+bracciate al minuto l'armadio riesca a consegnare è deciso una volta per tutte.
+Se in un minuto arrivano meno fogli di quanti la squadra ne consuma, i mille al
+tavolo restano fermi comunque, bravi quanto si vuole. Quel numero, i fogli che
+arrivano al minuto, è la banda, e decide la velocità del lavoro più spesso di
+quante persone siedano al tavolo. Per l'armadio vero, la HBM, sono qualche
+migliaio di miliardi di byte al secondo (qualche terabyte al secondo, TB/s); il
+cavo verso il deposito ne porta qualche decina di miliardi (decine di gigabyte
+al secondo, GB/s), da dieci a cento volte meno. Chi programma una GPU fa lo
+stesso lavoro di chi si tiene in ordine la scrivania: vicino i fogli che servono
+adesso, e in giro per la stanza il meno possibile.
 `````
 
 `````{tab} Superiore
@@ -127,9 +122,9 @@ grandezza (le cifre esatte cambiano con la generazione: qui contano le
   la memoria più veloce che esista sul chip. Il singolare però inganna: *per
   SM* il register file è il banco on-chip più grande di tutti, 256 KB su A100
   contro i 192 KB di L1 e shared messe insieme, e sull'intera GPU sono 27 MB di
-  registri. È questa abbondanza, non il «pugno» del singolo thread, a rendere
-  possibile il secondo livello di tiling di cui si parlerà nel GEMM, quello che
-  vive nei registri.
+  registri. Questa abbondanza, non il «pugno» del singolo thread, rende
+  possibile il secondo livello di tiling del GEMM, quello nei
+  registri.
 - Shared memory e cache L1: on-chip, all'interno dell'SM. La shared memory è
   condivisa dai thread di uno stesso blocco, dell'ordine di un centinaio di KB
   per unità di calcolo, e la sua particolarità è che *non* è una cache
@@ -139,24 +134,24 @@ grandezza (le cifre esatte cambiano con la generazione: qui contano le
   separate con Maxwell e Pascal, e da Volta, nel 2017, lo sono di nuovo),
   ripartito fra le due funzioni da un parametro che il programmatore imposta
   (192 KB combinati per SM su A100, di cui fino a 164 configurabili come
-  shared; 256 KB su H100). Tre conseguenze pratiche: chiedere tutta la shared
-  possibile non è gratis, perché toglie cache; questa L1, la L2 e il broadcast
-  dentro il warp recuperano insieme il riuso «sperato» che il GEMM ingenuo
-  strappa alle cache; e negli spill dei registri (quando un thread ne chiede
-  più di quanti ne ha) è lì che si riversa il traffico che rende improduttivo
-  alzare ancora i registri per thread. Latenza di poche decine di cicli.
+  shared; 256 KB su H100). Tre conseguenze pratiche. Chiedere tutta la shared
+  possibile non è gratis, perché toglie cache. La L1, insieme alla L2 e al
+  broadcast dentro il warp, recupera il riuso che un GEMM ingenuo ottiene solo
+  per fortuna. Infine i registri in eccesso (gli *spill*, quando un thread ne
+  chiede più di quanti ne ha) finiscono in memoria locale e passano dalla L1, a cui
+  sottraggono capienza e banda. Latenza di poche decine di cicli.
 - Cache L2: condivisa da tutte le unità di calcolo, dell'ordine di decine
   di MB (40 MB su A100), con latenza di un paio di centinaia di cicli. È
   l'ultimo livello *dentro* il chip.
-- Memoria globale (HBM), la *High Bandwidth Memory* off-chip: decine di
-  GB, banda dell'ordine di qualche TB/s, ma latenza di *centinaia* di cicli. È
-  dove vivono tensori, pesi e attivazioni.
+- Memoria globale (HBM), la *High Bandwidth Memory* off-chip: decine di GB,
+  banda dell'ordine di qualche TB/s, ma latenza di *centinaia* di cicli. Lì
+  vivono tensori, pesi e attivazioni.
 - Memoria host, la RAM di sistema, di là dal bus PCIe che separa CPU e
   GPU: capiente quanto vuoi, ma raggiungibile solo attraverso quel bus, che
   consegna qualche decina di GB/s (uno o due ordini di grandezza sotto la
-  HBM). Il collo di bottiglia è il PCIe, non la RAM, che presa da sola è
-  molto più svelta. È il motivo per cui, come ricordava la sezione
-  «Prestazioni e scala», `.to(device)` va fatto *una volta per batch* e non
+  HBM). Il collo di bottiglia è il PCIe, non la RAM, molto più svelta in
+  sé. Per questo, come visto nella sezione {doc}`«Prestazioni e scala»
+  </PyTorch/prestazioni>`, `.to(device)` va fatto *una volta per batch* e non
   tensore per tensore.
 
 Due parametri descrivono ogni livello: la latenza (quanto aspetti il primo
@@ -169,7 +164,7 @@ superiore alla HBM, che a sua volta ne ha uno o due sul PCIe.
 Sulla capienza, invece, la forma a piramide va interpretata con cautela, perché
 diminuisce *per unità che ne dispone* (per thread, per blocco, per SM, per
 GPU), non in assoluto: come si è visto, su A100 il register file di un SM è più
-capiente della sua L1 più shared, ed è la punta della piramide a essere il
+capiente della sua L1 più shared, e la punta della piramide è il
 banco on-chip più grande (sulla generazione successiva i due si equivalgono, e
 in nessuno dei due casi il triangolo racconta le capienze totali). Il triangolo
 dice bene la scarsità che si affaccia al singolo lavoratore, non quanta memoria
@@ -183,32 +178,31 @@ l'intera arte dell'ottimizzazione su GPU.
 
 Sapere *dove* stanno i dati non basta: conta anche *come* li si chiede. Qui
 entra in gioco un dettaglio che può far buttare via i sette ottavi della banda
-senza che nessuno se ne accorga. Il fatto è che la memoria non consegna un byte
-alla volta: consegna a pacchi di indirizzi vicini, e chiedere numeri che stanno
-in fila costa molto meno che chiedere gli stessi numeri sparsi. Quando i 32
-thread di un warp chiedono indirizzi contigui, l'hardware fonde le richieste in
-poche consegne piene, e quel fondersi ha dato il nome alla cosa:
-**coalescenza** degli accessi, dal verbo *coalescere*, che si dice di due gocce
-quando diventano una sola.
+senza che nessuno se ne accorga. La memoria non consegna un byte alla volta:
+consegna a pacchi di indirizzi vicini, e chiedere numeri consecutivi è molto più
+rapido che chiedere gli stessi numeri sparsi. Quando i 32 thread di un warp
+chiedono indirizzi contigui, l'hardware fonde le richieste in poche consegne
+piene, e quel fondersi ha dato il nome alla cosa: **coalescenza** degli accessi,
+dal verbo *coalescere*, che si dice di due gocce quando diventano una sola.
 
 `````{tab} Elementare
 Un fattorino ha 32 pacchi da consegnare e un furgone che ne carica otto per
-volta. C'è però una regola del magazzino, ed è la regola che rende questo
+volta. C'è però una regola del magazzino che rende questo
 esempio vero: il furgone può scaricare in una via sola, e in una via ci
-stanno otto numeri civici esatti. Se i 32 indirizzi sono in fila, uno dopo
+stanno otto numeri civici esatti. Se i 32 indirizzi sono consecutivi, uno dopo
 l'altro, occupano quattro vie, e gli bastano dunque quattro giri, a ognuno
 dei quali scarica il furgone pieno: otto pacchi, otto consegne. Se invece i 32
 indirizzi sono sparsi ai quattro angoli della città, ogni giro consegna un
 pacco solo e riporta
-indietro sette posti vuoti: servono 32 giri per consegnare esattamente gli
+indietro sette posti vuoti: servono 32 giri per consegnare gli
 stessi 32 pacchi. Il lavoro utile è identico, i viaggi sono 32 invece di 4:
 otto volte tanto, e l'otto viene da qui, dai posti del furgone.
 
-La memoria di una GPU funziona proprio così, e nessuno dei due numeri è
+La memoria di una GPU funziona così, e nessuno dei due numeri è
 inventato. Il plotone è da 32 perché così è fatta la GPU, e il furgone porta
 otto numeri perché la memoria consegna a blocchi da 32 byte, dentro i quali di
 numeri da quattro byte ce ne stanno appunto otto. Se i 32 lavoratori di un
-plotone chiedono dati messi in fila, l'hardware li serve in quattro consegne
+plotone chiedono dati contigui, l'hardware li serve in quattro consegne
 piene; se li chiedono sparsi, deve fare una consegna quasi vuota per ognuno, e
 la banda va in fumo. La regola del magazzino, poi, dipende da come sono fatti i
 collegamenti dentro il chip, e non si può cambiare.
@@ -242,17 +236,17 @@ L'efficienza è il rapporto $\text{byte utili} / \text{byte trasferiti}$. Su un
 carico limitato dalla banda, un fattore 8 di traffico sprecato è un fattore 8 di
 tempo: ecco perché il modo in cui un tensore è disposto in memoria (il suo
 *layout*, l'ordine `row-major` di righe e colonne) e l'indice con cui ogni
-thread vi accede non sono dettagli, ma spesso la differenza tra un kernel che
-satura la GPU e uno che la lascia mezza spenta.
+thread vi accede decidono spesso se un kernel satura la GPU o la lascia mezza
+spenta.
 
 Un caso comune di accesso sparso non ha niente di esotico: è l’*array of
 structures*. Leggere il campo `x` di un vettore di `struct {float x, y, z;}`
-vuol dire un passo di 12 byte, e un warp tocca 12 segmenti (384 byte) per 128
+comporta un passo di 12 byte, e un warp tocca 12 segmenti (384 byte) per 128
 byte utili, un'efficienza del 33%; la disposizione *structure of arrays*, un
 array per campo, riporta l'accesso a 4 segmenti. Il 12,5% di prima, poi, è il
 caso peggiore: le cache ne recuperano una parte quando warp vicini rileggono
-presto gli stessi segmenti, come succede con un accesso in fila ma
-disallineato, mentre con un passo largo si arriva davvero a un segmento per
+presto gli stessi segmenti, come succede con un accesso contiguo ma
+disallineato, mentre con un passo largo si arriva a un segmento per
 thread.
 `````
 
@@ -263,47 +257,46 @@ ri-leggere dalla HBM ciò che ti serve più volte. Se un blocco di dati verrà
 usato da molti thread, conviene portarlo *una sola volta* nella shared memory
 e da lì servirlo a tutti.
 
-Di questo principio l'esempio più puro si chiama FlashAttention, ed è il modo
+Di questo principio l'esempio più puro si chiama FlashAttention, il modo
 in cui oggi si eseguono i confronti fra le parole di un testo dentro un modello
 linguistico; lo racconta per esteso la {doc}`sezione sulla FlashAttention
-</GPU/flash-attention>`. La cosa da sapere fin da adesso è una sola: quel
+</GPU/flash-attention>`. Quel
 metodo non fa *meno* conti di prima. Ne fa altrettanti, e in un passaggio
 addirittura qualcuno in più. Va molte volte più veloce soltanto perché muove
 molti meno byte.
 
 `````{tab} Elementare
 Lo stesso manuale, consultato decine di volte da tutta la squadra: i modi di
-farlo sono due. La mossa sciocca è che ognuno, ogni volta, corra in magazzino
-a prendere una copia, la legga e la riporti. La mossa intelligente è portare
+farlo sono due. Il primo, sciocco, è che ognuno, ogni volta, corra in magazzino a
+prendere una copia, la legga e la riporti. Il secondo, intelligente, è portare
 *una* copia sul tavolo comune all'inizio, e lasciare che tutti la consultino
 lì, a portata di mano, per tutto il tempo. Il viaggio in magazzino (la lettura
-dalla memoria lontana) si paga una volta sola invece di decine: trenta
+dalla memoria lontana) si fa una volta sola invece di decine: trenta
 consultazioni e un viaggio, cioè un trentesimo della strada. Il tavolo comune,
-poi, non si riempie da sé, e qui sta il suo vantaggio: qualcuno sceglie che
-cosa metterci e quando toglierlo per far posto al pezzo dopo. Questo «carica
-una volta, riusa in tanti» è il segreto di quasi tutti i kernel veloci (un
-kernel è il programmino che gira sulla GPU, quello che tutti i lavoratori
-eseguono insieme ciascuno sul proprio pezzo di dato: gli è dedicata la
-{doc}`sezione sui kernel <kernel-e-cuda>`), e sarà il cuore della
-{doc}`sezione sulla moltiplicazione fra matrici <gemm-e-tensor-core>`.
+poi, non si riempie in automatico, ed ecco il suo vantaggio: qualcuno sceglie
+che cosa metterci e quando toglierlo per far posto al pezzo dopo. Questo
+«carica una volta, riusa in tanti» è il segreto di quasi tutti i kernel veloci,
+e sarà il cuore della {doc}`sezione sulla moltiplicazione fra matrici
+<gemm-e-tensor-core>`. (Un kernel è il programmino che gira sulla GPU, quello
+che tutti i lavoratori eseguono insieme ciascuno sul proprio pezzo di dato: gli
+è dedicata la {doc}`sezione sui kernel <kernel-e-cuda>`.)
 
-Il tavolo comune ha però una regola sua, e a ignorarla si perde per strada
-quello che si era appena guadagnato. Il piano è uno scaffale con trentadue
-caselle, e le pagine ci vanno a giro: la prima nella prima casella, la seconda
-nella seconda, fino alla
-trentaduesima, poi si ricomincia. Una casella la può aprire una persona alla
-volta. Se i trentadue della squadra chiedono pagine che stanno in trentadue
-caselle diverse, si servono tutti nello stesso istante. Se invece chiedono
-pagine diverse che stanno nella stessa casella, devono fare la fila: in due,
-due turni; in trentadue sulla stessa casella, trentadue turni, e del vantaggio
-di avere il manuale sul tavolo resta poco (i tecnici la chiamano *bank
-conflict*: le caselle, dentro una GPU, si chiamano banchi). Un caso non
-costa niente: quando tutti vogliono la *stessa* pagina, uno la legge ad alta
+Il tavolo comune ha però una regola sua, e a ignorarla si perde per strada quello
+che si era appena guadagnato. Il piano è uno scaffale con trentadue caselle, e
+le pagine ci vanno a giro: la prima nella prima casella, la seconda nella
+seconda, fino alla trentaduesima, poi si ricomincia. Solo una persona alla
+volta può aprire una casella. Se i trentadue della squadra chiedono pagine che
+stanno in trentadue caselle diverse, si servono tutti nello stesso istante. Se
+invece chiedono pagine diverse che stanno nella stessa casella, devono fare la
+fila: in due, due turni; in trentadue sulla stessa casella, trentadue turni, e
+del vantaggio di avere il manuale sul tavolo resta poco (i tecnici la chiamano
+*bank conflict*: le caselle, dentro una GPU, si chiamano banchi). Un caso fa
+eccezione: quando tutti vogliono la *stessa* pagina, uno la legge ad alta
 voce e la sentono tutti insieme.
 
 Se la squadra legge di seguito, riga per riga, la fila non si forma: pagine
 vicine stanno in caselle vicine. Si forma quando si legge una tabella per
-colonne, e ogni riga della tabella è larga esattamente trentadue pagine: allora
+colonne, e ogni riga della tabella è larga trentadue pagine: allora
 una colonna intera cade tutta nella stessa casella, e servono trentadue turni
 per una lettura sola. Il rimedio sembra uno scherzo e funziona: si lascia una
 casella vuota in fondo a ogni riga, larghezza trentatré invece di trentadue.
@@ -316,29 +309,29 @@ fattore trentadue.
 La leva quantitativa è il **fattore di riuso**: quante volte un dato caricato
 in shared memory viene poi letto dai thread del blocco prima di essere
 scartato. Se lo carichi una volta e lo usi $r$ volte, hai diviso per $r$ il
-traffico verso la HBM per quel dato, e, come vedremo tra poco con il roofline,
-ridurre i byte spostati a parità di conti è esattamente ciò che sposta un
+traffico verso la HBM per quel dato:
+ridurre i byte spostati a parità di conti è ciò che sposta un
 kernel dal regime *memory-bound* verso quello *compute-bound*. La shared
-memory è gestita dal programmatore proprio per questo: a differenza di una cache
+memory è gestita dal programmatore per questo: a differenza di una cache
 automatica, sei tu a decidere quale tessera trattenere e per quanto, adattando
-il riuso alla struttura del calcolo. È un potere che si paga in complessità,
-ed è il motivo per cui i kernel di alte prestazioni si scrivono a mano (o li
-genera un compilatore come Triton, che incontreremo).
+il riuso alla struttura del calcolo. Questo potere si paga in complessità,
+motivo per cui i kernel di alte prestazioni si scrivono a mano (o li
+genera un compilatore come Triton).
 
-Ha però un secondo prezzo, ed è l'esatto analogo della coalescenza un piano più
+Ha però un secondo costo, l'analogo della coalescenza un piano più
 su. La shared memory è divisa in 32 banchi da 32 bit, con le parole consecutive
 assegnate a banchi consecutivi, e i banchi sono tanti quanti i thread di un
-warp proprio perché nel caso favorevole ciascun thread acceda a un banco
+warp perché nel caso favorevole ciascun thread acceda a un banco
 diverso e i 32 accessi vengano serviti insieme. Se invece più thread dello
 stesso warp chiedono parole *diverse* dello stesso banco (un **bank conflict**)
 l'hardware spezza la richiesta in tante richieste prive di conflitto quante
 servono, e la banda effettiva si divide per quel numero: fino a $32\times$ nel
 caso peggiore. Fa eccezione il caso in cui i thread chiedono la *stessa*
-parola: quello è un broadcast, ed è gratis.
+parola: quello è un broadcast, gratis.
 
 Nel tiling classico del GEMM il problema non si pone (la tessera di
 $\mathbf{A}$ si legge in broadcast, quella di $\mathbf{B}$ per parole
-consecutive) e proprio per questo l'avvertenza è necessaria: quello è il caso
+consecutive) e per questo l'avvertenza serve: quello è il caso
 favorevole, mentre ogni variante che percorre una tessera *per colonna* (una
 trasposta, il caricamento dei frammenti per i tensor core, il tile di
 $\mathbf{K}^\top$ in FlashAttention) cade nel caso scomodo. Il rimedio canonico
@@ -354,7 +347,7 @@ inglese *tile*, parola che resta per gli oggetti del codice). È il motore del
 prodotto fra matrici, l'operazione in cui sta quasi tutta l'aritmetica di una
 rete, a cui è dedicata la {doc}`sezione sul GEMM <gemm-e-tensor-core>`, dal
 nome (*GEneral Matrix Multiply*) con cui le librerie di calcolo chiamano quel
-prodotto. La shared memory esiste proprio per rendere possibile questo riuso.
+prodotto. La shared memory esiste per rendere possibile questo riuso.
 
 ## Il modello roofline: limitati dai conti o dai byte?
 
@@ -368,12 +361,11 @@ grafico il perché un programma va veloce o lento
 
 L'idea ruota attorno a una sola quantità, l’**intensità aritmetica**: quanti
 conti fai per ogni byte che sposti dalla memoria. Si misura in FLOP per byte
-(un FLOP, come si è detto nell'architettura, è un conto elementare: una
+(un FLOP è un'operazione elementare, una
 moltiplicazione o una somma). Poche operazioni per tanti byte significa che
 passi la vita ad aspettare i dati; tante operazioni per pochi byte significa
 che i dati ti bastano e sei limitato solo da quanto calcoli. Le due situazioni
-hanno un nome, e sono due parole inglesi che ricorreranno in ogni pagina che
-segue: nel primo caso si è **memory-bound**, alla lettera «legati alla
+hanno un nome: nel primo caso si è **memory-bound**, alla lettera «legati alla
 memoria», e il tempo lo decide la banda; nel secondo **compute-bound**,
 «legati al calcolo», e il tempo lo decide il picco di conti al secondo.
 
@@ -390,14 +382,14 @@ della scheda, che non si può superare in nessun modo. Il punto in cui le due
 falde si incontrano, e il tetto cambia pendenza come una gamba che si piega, si
 chiama **ginocchio**. Un calcolo che cade a sinistra del
 ginocchio è bloccato dalla memoria (*memory-bound*), uno a destra dal calcolo
-(*compute-bound*). Fondere più operazioni in una sola alza i conti per byte e
+(*compute-bound*). Fondere più operazioni in una sola alza le operazioni per byte e
 sposta l'operazione verso destra.
 ```
 
 `````{tab} Elementare
 In cucina la velocità con cui escono i piatti dipende da due cose: quanto sono
 bravi i cuochi e quanto in fretta arrivano gli ingredienti dal magazzino. I
-cuochi sono le unità che fanno i conti, il magazzino è la memoria grande della
+cuochi sono le unità di calcolo, il magazzino è la memoria grande della
 scheda, e la velocità dei piatti è quella del più lento dei due.
 
 Una ricetta che chiede pochissima preparazione e tantissimi ingredienti (apri
@@ -424,7 +416,7 @@ cuochi mentre lavorano. Per tabelloni di quella taglia sul tavolo non ci sta, e
 altri viaggi si fanno comunque: settecento è il massimo sperabile. Fatta nel
 modo più ingenuo, una casella alla volta, la moltiplicazione ne resta
 lontanissima, in fondo alla classifica; quanto la cucina vera ci si avvicini
-dipende da come organizza il lavoro, ed è la storia della sezione sulla
+dipende da come organizza il lavoro, tema della sezione sulla
 moltiplicazione fra matrici.
 
 In mezzo c'è il pareggio, il ginocchio, che su una scheda di qualche anno fa sta
@@ -456,43 +448,40 @@ I^\star = \frac{P_\text{picco}}{B},
 $$
 
 l'intensità di pareggio. A sinistra ($I < I^\star$) domina la banda: si è
-memory-bound. A destra ($I > I^\star$) domina il calcolo: si è
-compute-bound. Dietro il $\min$ c'è un modello di tempo,
-$t = \max(F / P_\text{picco},\; Q / B)$ per $F$ FLOP e $Q$ byte spostati, con
-$I = F/Q$, e tre ipotesi. La prima: calcolo e trasferimento si sovrappongono
-per intero (senza sovrapposizione il tempo è la somma dei due, e a
-$I = I^\star$ la prestazione si dimezza). La seconda: ci sono abbastanza
-accessi in volo da saturare la banda, la legge di Little della sezione
-sull'architettura. La terza: $Q$ è contato su un solo livello della piramide.
-Ogni livello ha il suo roofline, e lo stesso kernel può essere compute-bound
-rispetto alla HBM e memory-bound rispetto alla shared
-{cite}`williams2009roofline`.
+memory-bound. A destra ($I > I^\star$) domina il calcolo: si è compute-bound.
+Dietro il $\min$ c'è un modello di tempo, $t = \max(F / P_\text{picco},\; Q /
+B)$ per $F$ FLOP e $Q$ byte spostati, con $I = F/Q$, e tre ipotesi. La prima:
+calcolo e trasferimento si sovrappongono del tutto (senza sovrapposizione il
+tempo è la somma dei due, e a $I = I^\star$ la prestazione si dimezza). La
+seconda: ci sono abbastanza accessi in volo da saturare la banda, come richiede
+la legge di Little vista nella sezione sull'architettura. La terza: $Q$ è
+contato su un solo livello della piramide. Ogni livello ha il suo roofline, e
+lo stesso kernel può essere compute-bound rispetto alla HBM e memory-bound
+rispetto alla shared {cite}`williams2009roofline`.
 
 Nell'articolo il ginocchio si chiama *ridge point*, e l'intensità *operational
 intensity*: gli autori la contano sui soli byte che arrivano alla DRAM dopo il
-filtro delle cache, e scelgono quel nome proprio per distinguerla
+filtro delle cache, e scelgono quel nome per distinguerla
 dall’*arithmetic intensity*, che contava il traffico fra il processore e le
 cache. Nella letteratura sulle GPU il termine corrente è *arithmetic
 intensity*, contata sul livello che interessa. I tetti, infine, sono nominali:
-la banda che un kernel sostiene davvero sta sotto quella di targa, quindi i
+la banda che un kernel sostiene in pratica sta sotto quella di targa, quindi i
 tempi ricavati dalle schede tecniche (come i millisecondi del GEMM nella
 sezione dedicata) sono ottimistici, e il roofline di un kernel reale lo si
 misura con uno strumento di profilazione, come Nsight Compute per le schede
 NVIDIA.
 
-Conviene fissare subito dove cade quel ginocchio, perché è il metro con cui il
-resto del capitolo giudicherà ogni tecnica, e perché ce n'è più d'uno sulla
-stessa scheda: dipende da quali unità di calcolo si stanno usando. Su una
-A100 80 GB PCIe (banda $1{,}935$ TB/s) i CUDA core in `float32` danno
-$19{,}5/1{,}935 \approx 10$ FLOP/byte, ma i tensor core in `float16` danno
-$312/1{,}935 \approx 161$; su una H100 SXM (banda $3{,}35$ TB/s) si passa da
+Il ginocchio non è unico, perché dipende dalle unità di calcolo che si usano:
+sulla stessa scheda ce n'è più d'uno. Su una A100 80 GB PCIe (architettura del
+2020, banda $1{,}935$ TB/s) i CUDA core in `float32` danno $19{,}5/1{,}935
+\approx 10$ FLOP/byte, ma i tensor core in `float16` danno $312/1{,}935 \approx
+161$; su una H100 SXM (architettura del 2022, banda $3{,}35$ TB/s), si passa da
 $67/3{,}35 = 20$ a $989/3{,}35 \approx 295$. Un calcolo che sta a destra del
-primo ginocchio può stare comodamente a sinistra del secondo, e il secondo è
-quello che conta appena si accende la mezza precisione. Il ginocchio però non
-si sposta da solo: passando a `float16` anche i byte da spostare si dimezzano,
-quindi l'intensità del programma raddoppia e gli va incontro. Fra i due
-movimenti il divario che resta è la metà di quello che il rapporto fra i
-ginocchi lascerebbe credere.
+primo ginocchio può stare comodamente a sinistra del secondo, e appena si
+accende la mezza precisione conta il secondo. Passando a `float16`, però, anche
+i byte da spostare si dimezzano, quindi l'intensità del programma raddoppia e
+va incontro al ginocchio. Fra i due movimenti il divario che resta è la metà di
+quanto il rapporto fra i ginocchi lascerebbe credere.
 
 Due esempi concreti, con dati in `float32` (4 byte):
 
@@ -504,18 +493,18 @@ Due esempi concreti, con dati in `float32` (4 byte):
 - **GEMM grande** $\mathbf{C} = \mathbf{A}\mathbf{B}$ con matrici $n \times n$.
   Circa $2n^3$ FLOP e, *con riuso perfetto*, $3 n^2 \times 4 = 12 n^2$ byte,
   per un'intensità $I = n/6$ FLOP/byte che cresce con $n$: per $n = 4096$ vale
-  circa 680 FLOP/byte, saldamente compute-bound. Attenzione però a che cosa
-  vuol dire «riuso perfetto»: leggere ogni elemento di $\mathbf{A}$ e
+  circa 680 FLOP/byte, saldamente compute-bound. Per «riuso perfetto»
+  s'intende leggere ogni elemento di $\mathbf{A}$ e
   $\mathbf{B}$ *una volta sola*, cioè tenerle intere in memoria veloce. Per $n
   = 4096$ in `float32` sono 128 MiB, e l'unico banco on-chip che una tessera
   qualsiasi può attraversare è la cache L2, 50 MB su una H100: shared memory e
   registri sono ripartiti per SM e per blocco, e sommarli al totale darebbe un
   numero che nessun calcolo può spendere. Quell’$n/6$ è quindi un tetto ideale,
   non un traguardo. La {doc}`sezione sul GEMM <gemm-e-tensor-core>` riprenderà
-  questo conto per mostrare a che punto si arrivi davvero (e perché non serva
+  questo conto per mostrare a che punto si arrivi in pratica (e perché non serva
   arrivarci).
 
-Ora è chiaro *perché* la kernel fusion paga: fondere tre operazioni
+Ne segue *perché* la kernel fusion paga: fondere tre operazioni
 elemento-per-elemento in un solo kernel significa leggere gli input una volta
 e scrivere l'output una volta invece di tre (meno byte a parità di FLOP, cioè
 intensità $I$ più alta). Sul roofline l'operazione scivola verso destra, dal
@@ -536,11 +525,11 @@ domanda è sempre la stessa: quanti conti si fanno per ogni byte spostato?
 
 ## Portare i conti dove stanno i dati
 
-Le cure viste finora cambiano il programma perché faccia più conti per ogni
+Le cure viste finora cambiano il programma perché faccia più operazioni per ogni
 byte portato. C'è anche la cura opposta, che lascia il programma com'è e cambia
 l'hardware: mettere le unità di calcolo dentro la memoria, o subito accanto,
 così che i dati non debbano più attraversare il collegamento fra la memoria e
-il processore che fa i conti. Si chiama **elaborazione in memoria**
+il processore che esegue i calcoli. Si chiama **elaborazione in memoria**
 (*processing-in-memory*, PIM). Nella forma più spinta a calcolare sono le celle
 stesse che tengono i bit; in quella più diffusa, il calcolo *vicino* alla
 memoria (*near-memory computing*), le unità di calcolo stanno su una piastrina
@@ -574,10 +563,10 @@ magazzino. Il magazzino è un palazzo di quattro piani, e ogni corsia è una
 colonna di scaffali che sale per tutti i piani con il suo montacarichi; in
 fondo a ogni colonna, al piano terra, lavora un aiutante con un piccolo banco,
 che apre le scatolette dove stanno e manda in cucina (il processore) solo il
-risultato. Il fattorino fa molti meno viaggi, e le corsie lavorano ciascuna per
-conto suo, tutte insieme. Non è che le corsie, tutte insieme, aprano più
-scatolette al minuto di quante il fattorino ne porterebbe in cucina: il
-guadagno è la strada che ogni scatoletta non fa più, e la fatica di farla,
+risultato. Il fattorino fa molti meno viaggi, e le corsie lavorano in
+parallelo, ciascuna con il suo aiutante. Non è che le corsie, tutte insieme,
+aprano più scatolette al minuto di quante il fattorino ne porterebbe in cucina:
+il guadagno è la strada che ogni scatoletta non fa più, e la fatica di farla,
 mentre i cuochi restano liberi per il resto.
 
 Gli aiutanti del magazzino, però, non sono i cuochi della cucina. Hanno banchi
@@ -587,14 +576,14 @@ controllata più spesso, un lavoro che toglie tempo a tutto il resto. Per questo
 lì dentro si fanno solo i lavori semplici e ripetitivi, e i piatti elaborati
 restano in cucina. Ogni aiutante deve poi trovare nella propria corsia quello
 che gli serve, perché se deve andare a prendere le scatolette in un'altra
-corsia si torna a camminare. E non conviene per tutte le ricette: per il brodo
+corsia si torna a camminare. Non conviene per tutte le ricette: per il brodo
 che sobbolle su pochi ingredienti gli aiutanti non servono, perché lì il collo
 di bottiglia erano già i cuochi, e sui banchi piccoli del magazzino quel lavoro
 verrebbe anzi più lento.
 
 Un'ultima cosa cambia il modo di lavorare. In cucina ogni ingrediente arriva
 perché qualcuno lo ha chiesto; nel magazzino l'aiutante riceve la ricetta una
-volta, e sa da solo quale scaffale aprire dopo, senza aspettare un ordine per
+volta, e sa già quale scaffale aprire dopo, senza aspettare un ordine per
 ogni scatoletta, che costerebbe ogni volta un viaggio dalla cucina.
 
 `````
@@ -603,17 +592,16 @@ ogni scatoletta, che costerebbe ogni volta un viaggio dalla cucina.
 
 Nell’*Hybrid Memory Cube* (HMC) le vie verticali attraverso il silicio (TSV)
 collegano i die di DRAM allo strato logico. La memoria è divisa in sedici
-*vault*, colonne
-verticali della pila, ciascuna con il proprio controllore nello strato logico,
-e a ogni vault è collegato un elemento di calcolo, fatto nel progetto valutato
-di sedici unità di moltiplicazione e accumulo in virgola fissa a 16 bit. I dati
-di ogni conto non attraversano più i collegamenti seriali verso il processore,
-e i sedici vault si leggono in parallelo. La mossa architetturale è il
-*programmable neurosequence generator*: l'host scrive una volta per strato la
-descrizione della rete nei registri di configurazione, e da lì in poi la
-sequenza degli indirizzi la genera l'hardware, senza un'istruzione per ogni
-accesso. Gli autori lo chiamano calcolo *memory-centric*: a guidarlo è la
-memoria, non un programma.
+*vault*, colonne verticali della pila, ciascuna con il proprio controllore
+nello strato logico, e a ogni vault è collegato un elemento di calcolo,
+composto, nel progetto valutato, da sedici unità di moltiplicazione e accumulo
+in virgola fissa a 16 bit. I dati di ogni conto non attraversano più i
+collegamenti seriali verso il processore, e i sedici vault si leggono in
+parallelo. Il meccanismo architetturale è il *programmable neurosequence
+generator*: l'host scrive una volta per strato la descrizione della rete nei
+registri di configurazione, e da lì in poi la sequenza degli indirizzi la
+genera l'hardware, senza un'istruzione per ogni accesso. Gli autori lo chiamano
+calcolo *memory-centric*: a guidarlo è la memoria, non un programma.
 
 Sul roofline il calcolo in memoria può alzare il tratto inclinato, perché
 cambia il collegamento su cui si contano i byte: con molte unità che leggono in
@@ -636,16 +624,16 @@ le unità {cite}`gomezluna2021benchmarking`. I limiti sono fisici e di
 programmazione. La logica sotto la pila riscalda la DRAM, che a temperatura più
 alta trattiene la carica per meno tempo e va rinfrescata più spesso: il
 bilancio termico decide quindi quanta logica sia possibile integrare. Lo strato
-logico ha un bilancio di area e di potenza limitato, quindi unità semplici; e i
+logico ha un bilancio di area e di potenza limitato, quindi usa unità semplici. I
 dati vanno distribuiti fra i vault in modo che ciascuno lavori su ciò che ha,
 perché spostarli da un vault all'altro richiede di attraversare la rete sul die
 logico, e nell'articolo quel traffico laterale costa fino a un sesto della
-velocità sugli strati densi: gli autori lo evitano duplicando in ogni vault i
+velocità sugli strati densi. Gli autori lo evitano duplicando in ogni vault i
 dati di confine, e lo pagano in capacità di memoria.
 
 `````
 
-Il conto che rende attraente il calcolo in memoria è quello di uno strato
+Il caso che rende attraente il calcolo in memoria è quello di uno strato
 lineare (un vettore, cioè una lista di numeri, moltiplicato per una matrice di
 pesi, il mattone delle reti) applicato a pochi vettori alla volta, come quando
 un modello di linguaggio genera il testo una parola dopo l'altra e ogni parola
@@ -653,12 +641,12 @@ un modello di linguaggio genera il testo una parola dopo l'altra e ogni parola
 una moltiplicazione e una somma, e se ne va: il fondo del roofline. Con molti
 vettori insieme, ogni peso arrivato serve molte volte. In simboli, per
 $\mathbf{Y} = \mathbf{X}\mathbf{W}$ con $\mathbf{X} \in \mathbb{R}^{b \times
-n}$ e $\mathbf{W} \in \mathbb{R}^{n \times n}$ i conti sono $2bn^2$ e i byte, a
-due l'uno, $2(n^2 + 2nb)$: l'intensità è $I(b) = bn/(n + 2b)$, dove $n$ è la
-larghezza dello strato e $b$ quanti vettori passano insieme, e vale circa 1 per
-$b = 1$ e non supera mai $n/2$. Ecco come cresce con $b$, in `float16`, contro
-il ginocchio di una scheda NVIDIA A100 con i tensor core accesi, poco più di
-161 conti per byte.
+n}$ e $\mathbf{W} \in \mathbb{R}^{n \times n}$ le operazioni sono $2bn^2$ e i
+byte, a due l'uno, $2(n^2 + 2nb)$: l'intensità è $I(b) = bn/(n + 2b)$, dove $n$
+è la larghezza dello strato e $b$ quanti vettori passano insieme, e vale circa
+1 per $b = 1$ e non supera mai $n/2$. Ecco come cresce con $b$, in `float16`,
+contro il ginocchio di una scheda NVIDIA A100 con i tensor core accesi, poco
+più di 161 conti per byte.
 
 ```python
 from math import ceil
@@ -684,19 +672,19 @@ b = 512:  409.6 FLOP per byte, 100.0% del picco di calcolo al massimo
 ginocchio a 161 FLOP per byte: lo si supera da b = 176 vettori in su
 ```
 
-Con un vettore solo l'intensità è di un conto per byte, e al massimo si usa lo
-$0{,}6\%$ del picco; solo da centosettantasei vettori insieme in su l'intensità
-supera il ginocchio. Il vettore solo è il caso in cui portare i conti dentro la
-memoria vale di più; l'altra strada, per chi serve un modello di linguaggio, è
-raccogliere le richieste di molti utenti in lotti, così che ogni peso arrivato
-serva a molti vettori. È il conto che riprende, per un modello che scrive una
-parola alla volta, la sezione {doc}`«Starci non è rispondere»
-</Efficienza/far-rispondere-in-fretta>` del capitolo sull'efficienza.
+Con un vettore solo l'intensità è di un'operazione per byte, e al massimo si usa
+lo $0{,}6\%$ del picco; solo da centosettantasei vettori insieme in su
+l'intensità supera il ginocchio. Il vettore solo è il caso in cui portare il
+calcolo dentro la memoria vale di più; l'altra strada, per chi serve un modello
+di linguaggio, è raccogliere le richieste di molti utenti in lotti, così che
+ogni peso arrivato serva a molti vettori. La sezione {doc}`«Starci non è
+rispondere» </Efficienza/far-rispondere-in-fretta>` del capitolo sull'efficienza
+riprende questo calcolo per un modello che scrive una parola alla volta.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Il collo di bottiglia di una GPU, più spesso che i conti, è portare i
+- Il collo di bottiglia di una GPU, più spesso che i calcoli, è portare i
   numeri. Tenere tanti gruppi al lavoro nasconde le attese (la latenza), ma non
   fa arrivare i dati più in fretta: quanti ne consegna la memoria al secondo
   (la banda) è un tetto che non si alza. Le due misure vanno tenute distinte,
@@ -714,10 +702,10 @@ parola alla volta, la sezione {doc}`«Starci non è rispondere»
   otto volte il tempo per lo stesso lavoro. Perciò conviene disporre i dati in
   modo che lavoratori vicini leggano posti vicini: un elenco per ogni campo,
   per esempio, invece di schede con tutti i campi uno accanto all'altro.
-- L'altra mossa che risparmia viaggi è portare il manuale sul tavolo comune
+- L'altra tecnica che risparmia viaggi è portare il manuale sul tavolo comune
   una volta sola e lasciare che tutti lo consultino lì. Ripetuta su blocchetti
   di dati (le *tessere*), è la tecnica che rende veloce la moltiplicazione fra
-  matrici, ed è il motivo per cui la shared memory esiste.
+  matrici, e per questo la shared memory esiste.
 - Ogni calcolo è bloccato o dal magazzino o dai cuochi, e il grafico
   che lo dice si chiama *roofline*: si guarda quanti conti si fanno per ogni
   byte portato. Poche operazioni su tanti dati (sommare due liste di numeri)
@@ -729,7 +717,7 @@ parola alla volta, la sezione {doc}`«Starci non è rispondere»
 - Si può anche portare il lavoro nel magazzino: aiutanti con banchi piccoli,
   uno per corsia, che fanno i lavori semplici dove stanno le scatolette.
   Conviene per le ricette bloccate dal magazzino, non per quelle bloccate dai
-  cuochi, e solo se ogni aiutante trova nella sua corsia quello che gli serve.
+  cuochi, e solo se ogni aiutante trova nella sua corsia i dati che gli servono.
 ```
 `````
 

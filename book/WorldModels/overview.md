@@ -17,18 +17,18 @@ modello di linguaggio. A ripeterlo da anni, con poche variazioni, in conferenze
 e interviste, non è uno scettico qualsiasi ma Yann LeCun, premio Turing 2018 e
 uno dei padri del deep learning. Mentre mezzo mondo si stupiva di ciò che sanno
 scrivere i grandi modelli di linguaggio, uno dei loro nonni intellettuali
-indicava un gatto. Provocazione calcolata, certo. Ma proviamo a prenderla sul
-serio: che cosa sa fare, un gatto? Non risolve integrali e non scrive sonetti;
+indicava un gatto. È una provocazione calcolata, e va presa sul serio: che cosa
+sa fare, un gatto? Non risolve integrali e non scrive sonetti;
 però salta sul mobile calibrando la traiettoria al primo colpo, prevede da che
 parte sbucherà il gomitolo rotolato sotto il divano, e se una mossa è finita
 male non la ripete tale e quale.
 
-E prima del gatto, il bambino. A pochi mesi di vita un neonato si stupisce
+Prima del gatto c'è il bambino. A pochi mesi di vita un neonato si stupisce
 quando un giocattolo nascosto da uno schermo, una volta abbassato lo schermo,
 non c'è più; entro il primo anno si stupisce se un oggetto resta sospeso a
 mezz'aria invece di cadere. Lo stupore si misura da quanto a lungo guarda la
 scena impossibile rispetto a una possibile (è il metodo della *violazione
-dell'aspettativa*), e quello che misura è l'attesa, non la sua origine. Nessuno
+dell'aspettativa*), e misura l'attesa, non la sua origine. Nessuno
 gli ha spiegato la permanenza degli oggetti o la gravità, e nessuno gli ha
 mostrato milioni di esempi etichettati; quanto di quell'attesa venga dal
 guardare e quanto sia già lì alla nascita, però, gli psicologi dello sviluppo
@@ -37,14 +37,15 @@ rappresenta gli oggetti siano innati {cite}`spelke2007core`. LeCun scommette
 sulla prima lettura: guardando, il bambino si costruisce dentro qualcosa che
 gli permette di *aspettarsi* il mondo, cioè un modello.
 
-Secondo il metro introdotto dal {doc}`dibattito sul rinforzo
-</AutoSupervisione/dibattito-rl>`, ovvero la quantità di informazione del
-segnale, il bambino che guarda ne riceve uno ricchissimo e gratuito: a ogni
-istante il mondo gli dice se aveva previsto bene. Dare alle macchine qualcosa
-di simile, un **world model** (modello del mondo), vuol dire dar loro lo stesso
-maestro: prevedere che cosa succede dopo e, per chi deve agire, che cosa
-succede dopo un'azione. È un tentativo in corso, e resta aperto il dibattito su
-quanto sia davvero il pezzo mancante dell'intelligenza artificiale.
+Il gatto che calcola il salto e il bambino che guarda lo schermo fanno la
+stessa cosa: a ogni istante il mondo dice loro se avevano previsto bene, un
+segnale ricchissimo e gratuito, il genere di informazione che il
+{doc}`dibattito sul rinforzo </AutoSupervisione/dibattito-rl>` ha messo al
+centro del confronto. Per le macchine lo stesso insegnamento può venire da un
+**world model** (modello del mondo): un sistema che impara da sé ad aspettarsi
+ciò che segue e confronta l'attesa con ciò che accade. È un tentativo in corso,
+e quanto sia il pezzo mancante dell'intelligenza artificiale resta una
+questione aperta.
 
 ## Un modello in scala ridotta della realtà
 
@@ -56,21 +57,20 @@ esterna e delle proprie possibili azioni», scrive, allora può «provare divers
 alternative, concludere quale sia la migliore e reagire alle situazioni future
 prima che si presentino». Craik morì due anni dopo, a trentun anni, ma quella
 pagina è considerata l'atto di nascita dei *modelli mentali* nelle scienze
-cognitive, ed è ancora oggi la definizione più limpida di world model: un
-simulatore interno che serve a prevedere («cosa succede se lascio il
-bicchiere?») e quindi a pianificare, senza dover provare tutto per
-davvero.
+cognitive, e resta la definizione più limpida di world model: un simulatore
+interno che serve a prevedere («cosa succede se lascio il bicchiere?») e quindi
+a pianificare, senza dover provare tutto nel mondo reale.
 
-Su quella parola, «simulatore», bisogna intendersi, perché torna spesso. Il
-simulatore di volo su cui si esercitano i piloti l'hanno scritto degli
-ingegneri, un'equazione dell'aria alla volta, ed è anch'esso un modello del
-mondo nel senso di Craik. Nella letteratura che segue, però, «world model»
-indica un simulatore *appreso*: le regole le ricava dai dati, e resta sempre
-una copia approssimata. Serve alla stessa cosa (esercitarsi senza conseguenze),
-ma sbaglia per ragioni diverse: un simulatore scritto a mano sbaglia dove le
-sue equazioni semplificano, uno appreso dove i dati non l'hanno mai portato.
-Che forma prendano quegli sbagli lo racconta la {doc}`sezione sui mondi in
-miniatura </WorldModels/mondi-in-miniatura>`.
+Il termine «simulatore» ha due sensi. Il simulatore di volo su cui si
+esercitano i piloti l'hanno scritto degli ingegneri, un'equazione dell'aria
+alla volta, e anche questo è un modello del mondo nel senso di Craik. Nella
+letteratura che segue, però, «world model» indica un simulatore *appreso*: le
+regole le ricava dai dati, e resta sempre una copia approssimata. Serve alla
+stessa cosa (esercitarsi senza conseguenze), ma sbaglia per ragioni diverse: un
+simulatore scritto a mano sbaglia dove le sue equazioni semplificano, uno
+appreso dove i dati non l'hanno mai portato. Che forma prendano quegli sbagli lo
+racconta la {doc}`sezione sui mondi in miniatura
+</WorldModels/mondi-in-miniatura>`.
 
 `````{tab} Elementare
 
@@ -84,10 +84,10 @@ finisca quella vera.
 Guarda però che cosa ti serve, per prevedere quell'arco. Del cortile ti arriva
 un'immagine, quella che passa dal finestrino, e di quell'immagine tieni tre
 cose (dove finisce il muro, quanto spazio resta, dov'è appoggiata la bici); il
-colore delle persiane lo butti via, che per la manovra non conta niente. E da
-un'occhiata sola non sapresti dire se quella bici è ferma o ti sta arrivando
-addosso: lo sai perché la stai seguendo da qualche secondo, e quel filo che
-tieni mentre guardi conta quanto l'immagine.
+colore delle persiane lo butti via, che per la manovra non conta niente. Da
+un'occhiata sola, poi, non sapresti dire se quella bici è ferma o ti sta
+arrivando addosso: lo sai perché la stai seguendo da qualche secondo, e quel
+filo che tieni mentre guardi conta quanto l'immagine.
 
 Il modello del mondo è questo cinema interiore in cui il futuro si prova a
 costo zero. Non è perfetto (la manovra immaginata a volte finisce comunque con
@@ -122,22 +122,23 @@ il controfattuale in senso stretto («cosa *sarebbe* successo in *quella*
 traiettoria») chiederebbe invece di tenere fisso il caso già uscito (di riusare
 cioè la stessa realizzazione del rumore esogeno di quella traiettoria, non di
 ri-estrarlo) e di ri-simulare cambiando la sola azione; le due cose coincidono
-quando la dinamica è deterministica. C'è però un dettaglio che occuperà mezzo
-capitolo: nel mondo reale lo stato non si osserva. Si osservano pixel, suoni,
-letture di sensori: un'osservazione $\mathbf{x}_t$ ad alta dimensione e piena
-di dettagli irrilevanti. I world model moderni imparano perciò due oggetti
-distinti: un codice compatto della singola osservazione, $\mathbf{z}_t =
-f_\phi(\mathbf{x}_t)$ con $f_\phi$ un encoder appreso, e una memoria
-$\mathbf{h}_t$ che riassume la storia precedente. Da un solo fotogramma
-mancherebbero, per esempio, le velocità: è $\mathbf{h}_t$ a portarle, ed è la
-memoria della prossima sezione. Lo stato del modello è quindi la coppia
+quando la dinamica è deterministica. Nel mondo reale, però, lo stato non si
+osserva. Si osservano pixel, suoni, letture di sensori: un'osservazione
+$\mathbf{x}_t$ ad alta dimensione e piena di dettagli irrilevanti. I world
+model moderni imparano perciò due oggetti distinti: un codice compatto della
+singola osservazione, $\mathbf{z}_t = f_\phi(\mathbf{x}_t)$ con $f_\phi$ un
+encoder appreso, e una memoria $\mathbf{h}_t$ che riassume la storia
+precedente. Da un solo fotogramma mancherebbero, per esempio, le velocità: è
+$\mathbf{h}_t$ a portarle, la memoria di cui parla la {doc}`sezione sui mondi
+in miniatura
+</WorldModels/mondi-in-miniatura>`. Lo stato del modello è quindi la coppia
 $(\mathbf{z}_t, \mathbf{h}_t)$ e la dinamica si scrive
 $p_\theta(\mathbf{z}_{t+1} \mid \mathbf{z}_t, a_t, \mathbf{h}_t)$; nell'RSSM
 (*recurrent state-space model*, il modello ricorrente a spazio di stati che i
 Dreamer adottano) i due oggetti sopravvivono con gli stessi nomi,
 $\mathbf{h}_t$ deterministico e $\mathbf{z}_t$ stocastico condizionato su di
 esso. Che cosa debba finire in $\mathbf{z}_t$ (e che cosa sia giusto lasciar
-fuori) è una delle domande centrali del capitolo.
+fuori) è una delle domande centrali dell'intero campo.
 
 `````
 
@@ -146,7 +147,7 @@ fuori) è una delle domande centrali del capitolo.
 La prima ragione per volere un world model si chiama efficienza nei campioni
 (*sample efficiency*): quante interazioni con l'ambiente servono per imparare un
 compito. Il {doc}`capitolo sul Deep Reinforcement
-Learning </DeepReinforcementLearning/overview>` ne ha mostrato il prezzo. Il DQN
+Learning </DeepReinforcementLearning/overview>` ne ha mostrato il limite. Il DQN
 arrivava al livello di un collaudatore umano professionista su molti dei 49
 giochi Atari del confronto, ma dopo decine di milioni di fotogrammi per titolo,
 più di un mese di gioco senza mai staccare; il collaudatore con cui era
@@ -156,31 +157,30 @@ vocabolario per questa differenza esiste da decenni
 strategia direttamente dall'esperienza, e ogni aggiornamento consuma
 interazione vera; i metodi *model-based* imparano anche un modello di come
 l'ambiente risponde alle azioni, e lo usano per pianificare o per generare
-esperienza simulata, che costa soltanto calcolo.
+esperienza simulata, che consuma soltanto calcolo.
 
 `````{tab} Elementare
 
 Nessuna compagnia aerea fa esercitare le emergenze (un motore in fiamme, una
 raffica in atterraggio) su un aereo vero: si usa il simulatore, dove un errore
-non costa niente e la stessa situazione si può ripetere cento volte in un
-pomeriggio. Il DQN di quel capitolo è un allievo senza simulatore: ogni cosa
-che impara la impara schiantandosi per davvero, e per questo gli servono quelle
-decine di milioni di fotogrammi, partite su partite per settimane. Tu no: dopo
-qualche pallina persa a
-*Breakout* hai già in testa un piccolo *Breakout* tascabile
-(«se la racchetta è qui e la pallina scende lì, la manco») e le mosse le
-ripassi lì dentro, gratis. Chi possiede un simulatore interno spreme da ogni
-esperienza vera decine di esperienze immaginate.
+non ha conseguenze e la stessa situazione si può ripetere cento volte in un
+pomeriggio. Il DQN di quel capitolo è un allievo senza simulatore: tutto quello
+che impara lo impara schiantandosi nel gioco vero, e per questo gli servono
+quelle decine di milioni di fotogrammi, partite su partite per settimane. Tu
+no: dopo qualche pallina persa a *Breakout* hai già in testa un piccolo
+*Breakout* tascabile («se la racchetta è qui e la pallina scende lì, la
+manco») e le mosse le ripassi lì dentro, gratis. Chi possiede un simulatore
+interno spreme da ogni esperienza vera decine di esperienze immaginate.
 
-Il prezzo si paga quando il simulatore è impreciso, e si paga a rate. Il
-*Breakout* tascabile sbaglia di poco: dopo un rimbalzo la pallina immaginata è
-quasi dove sarà davvero, dopo cinque rimbalzi quel «quasi» è mezzo schermo, e
-la racchetta che avevi preparato aspetta nel posto sbagliato. Non tutti gli
-sbagli si allargano così: l'aereo del simulatore, se lo lasci andare, torna in
-assetto da solo, e lì lo scarto si riassorbe invece di crescere. Il guaio
-peggiore è un altro: se nel tuo *Breakout* mentale il muro ha un buco che nel
-gioco vero non c'è, ti alleni a infilarci la pallina e diventi bravissimo a un
-gioco che non esiste.
+L'errore di un simulatore appreso si accumula a rate. Il *Breakout* tascabile
+sbaglia di poco: dopo un rimbalzo la pallina immaginata è quasi dove sarà nel
+gioco vero, dopo cinque rimbalzi quel «quasi» è mezzo schermo, e la racchetta
+che avevi preparato aspetta nel posto sbagliato. Non tutti gli sbagli si
+allargano così: l'aereo del simulatore, lasciato a sé stesso, si rimette in
+assetto, e lì lo scarto si riassorbe invece di crescere. L'errore peggiore è un
+altro: se nel tuo *Breakout* mentale il muro ha un buco che nel gioco vero non
+c'è, ti alleni a infilarci la pallina e diventi bravissimo a un gioco che non
+esiste.
 
 `````
 
@@ -196,7 +196,7 @@ iteration faceva sul modello vero) o per generare esperienza sintetica su
 cui allenare valori e policy (l'architettura Dyna di Sutton, che già nel 1990
 alternava passi vissuti e passi immaginati {cite}`sutton1990integrated`, e che
 la {doc}`sezione sul reinforcement learning basato su modello
-</DeepReinforcementLearning/model-based>` tratta per esteso). Il prezzo è il
+</DeepReinforcementLearning/model-based>` tratta per esteso). Il limite è il
 *model bias*. Se la dinamica vera è $L$-Lipschitz nello stato e il modello
 sbaglia al più di $\epsilon$ in ogni stato raggiunto, a parità di azioni lo
 scarto $e_k$ fra stato immaginato e stato vero soddisfa
@@ -206,8 +206,8 @@ linearmente per $L = 1$, e resta sotto $\epsilon/(1-L)$ per $L < 1$ (la
 derivazione, con i suoi limiti, è nella sezione appena citata). Peggio, una
 policy ottimizzata dentro il modello impara a sfruttarne i difetti (*model
 exploitation*), ottenendo ritorni immaginari che l'ambiente vero non paga. Gran
-parte del capitolo è il racconto di come la ricerca ha negoziato questo
-compromesso: quanta fiducia concedere al sogno, e per quanti passi.
+parte della ricerca sui world model negozia questo compromesso: quanta fiducia
+concedere al sogno, e per quanti passi.
 
 `````
 
@@ -219,7 +219,7 @@ intuitiva* che il neonato dell'incipit costruisce guardando, senza etichette, e
 il segnale di cui si nutre è la sorpresa, nell'accezione introdotta
 dall’{doc}`apertura del capitolo sull'auto-supervisione
 </AutoSupervisione/overview>`: quanto era improbabile, per il modello che il
-bambino si è fatto, quello che poi accade. È una lezione auto-supervisionata,
+bambino si è fatto, l'evento che poi accade. È una lezione auto-supervisionata,
 perché il bersaglio non lo scrive nessuno: è il futuro stesso che arriva. Se il
 senso comune è fatto così, inseguirlo significa costruire macchine che imparano
 a prevedere il mondo, non a memorizzarlo.
@@ -229,8 +229,8 @@ a prevedere il mondo, non a memorizzarlo.
 Nel 2022 LeCun mette online, aperto ai commenti di chiunque, un documento di
 una sessantina di pagine: *A Path Towards Autonomous Machine Intelligence*
 {cite}`lecun2022path`. È un programma di ricerca e non un articolo di
-risultati, cioè il disegno di come andrebbe costruita una macchina che si
-arrangia da sola nel mondo. Il disegno è fatto di pezzi che si passano il
+risultati, cioè il disegno di come andrebbe costruita una macchina che agisce
+in autonomia nel mondo. Il disegno è fatto di pezzi che si passano il
 lavoro: uno guarda, uno ricorda, uno propone la mossa, uno pianifica provando
 le alternative. Al centro c'è un modello del mondo, imparato guardando e senza
 etichette. La tesi
@@ -243,12 +243,11 @@ di ricerca FAIR, per fondare una società dedicata ai world model.
 
 Dentro quel programma c'è anche la retrocessione dell'apprendimento per
 rinforzo a «ciliegina sulla torta» {cite}`lecun2016cake`, che il dibattito sul
-rinforzo ha appena pesato insieme alle obiezioni. L'argomento è il criterio
-da cui il capitolo è partito: chi impara per tentativi riceve una correzione
-poverissima, un «bravo» a fine giornata, mentre chi prevede il mondo ne riceve
-una a ogni istante. Da lì viene la proposta di sostituire i tentativi con la
-pianificazione dentro un modello del mondo, che è l'oggetto delle pagine che
-seguono.
+rinforzo ha pesato insieme alle obiezioni. L'argomento è il criterio di quel
+dibattito: chi impara per tentativi riceve una correzione poverissima, un
+«bravo» a fine giornata, mentre chi prevede il mondo ne riceve una a ogni
+istante. Da lì viene la proposta di sostituire i tentativi con la pianificazione
+dentro un modello del mondo, che è l'oggetto delle pagine che seguono.
 
 `````{tab} Elementare
 
@@ -258,22 +257,23 @@ basata sulle precedenti; se una scommessa introduce uno sbaglio (un
 personaggio che cambia nome, un bicchiere che cade verso l'alto) le parole
 dopo costruiscono sopra lo sbaglio, e più la storia è lunga più è probabile
 che deragli. Mettiamo che vada storta una parola su cento: dopo cinquecento
-parole, di cento racconti così ne resta in piedi meno di uno.
-Soprattutto, dice LeCun, a un sistema simile manca il cinema
-interiore del gatto: non immagina la scena, non prova le alternative nella
-testa, non ha mai visto un bicchiere cadere; ha solo letto miliardi di frasi e
-sceglie la parola più plausibile dopo le altre. Attenzione, però: questa è una
-*posizione* nel dibattito scientifico, non una verità assodata. Altri
-ricercatori rispondono che per indovinare bene la parola successiva in tutti i
-testi del mondo bisogna, in qualche misura, aver imparato molto del mondo che
-quei testi descrivono, e fanno notare che intanto i modelli continuano a
-migliorare. E che rileggere, un po’, quei programmi lo fanno: capita che si
+parole, di cento racconti così ne resta in piedi meno di uno. Secondo LeCun,
+a un sistema simile manca il cinema interiore del gatto: non immagina la
+scena, non prova le alternative nella testa, non ha mai visto un bicchiere
+cadere; ha solo letto miliardi di frasi e sceglie la parola più plausibile
+dopo le altre.
+
+Questa è però una *posizione* nel dibattito scientifico, non una verità
+assodata. Altri ricercatori rispondono che per indovinare bene la parola
+successiva in tutti i testi del mondo bisogna, in qualche misura, aver imparato
+molto del mondo che quei testi descrivono, e fanno notare che intanto i modelli
+continuano a migliorare. In parte rileggono il proprio testo: capita che si
 accorgano dello sbaglio e lo aggiustino nella frase dopo, e allora la catena
-non si spezza. Su questo c'è perfino un esperimento pensato per decidere la
-questione con i dati invece che con gli slogan, condotto su un gioco da tavolo:
-lo racconta per intero la {doc}`sezione sui simulatori e il dibattito
-</WorldModels/simulatori-e-dibattito>`, perché è la prova più pulita che il
-dibattito abbia prodotto. Chi abbia ragione è ancora da vedere.
+non si spezza. Un esperimento pensato per decidere la questione con i dati
+invece che con gli slogan, condotto su un gioco da tavolo, è la prova più
+pulita che il dibattito abbia prodotto: lo racconta la {doc}`sezione sui
+simulatori e il dibattito
+</WorldModels/simulatori-e-dibattito>`. Chi abbia ragione è ancora da vedere.
 
 `````
 
@@ -334,9 +334,9 @@ quel che verrà e non ogni puntino dello schermo. Le architetture che lo fanno s
 chiamano JEPA (*Joint-Embedding Predictive Architecture*, architettura
 predittiva a rappresentazioni congiunte): un encoder riassume la parte vista, un
 secondo encoder la parte da prevedere, e un predittore stima il secondo
-riassunto a partire dal primo, nello stesso spazio. Le generazioni costruite
-finora sono tre: I-JEPA per le immagini, V-JEPA per i video e V-JEPA 2, che con
-lo stesso schema guida un braccio robotico. Una JEPA è un modello a energia nel
+riassunto a partire dal primo, nello stesso spazio. Le versioni principali
+sono tre: I-JEPA per le immagini, V-JEPA per i video e V-JEPA 2, che con lo
+stesso schema guida un braccio robotico. Una JEPA è un modello a energia nel
 senso del {doc}`capitolo dedicato </ModelliEnergia/overview>`, e ne eredita il
 pericolo principale, il collasso: le due reti possono mettersi d'accordo per
 dare a ogni cosa lo stesso riassunto. Come lo si eviti lo racconta la
@@ -348,33 +348,32 @@ minimizzino la stessa quantità, l’energia libera variazionale, che fa da tett
 alla sorpresa di ciò che si osserva: la percezione aggiorna le credenze,
 l'azione cambia le osservazioni, l'apprendimento cambia il modello, più
 lentamente. Ne esce un sistema senza una ricompensa scritta a parte, perché le
-preferenze dell'organismo stanno nei priori del modello, accanto a quello che
-si aspetta.
+preferenze dell'organismo stanno nei priori del modello, accanto alle sue
+aspettative.
 
 Ultima risposta, i simulatori generativi di video: Sora di OpenAI, presentato
 nel febbraio 2024 come passo verso «simulatori di mondo»
 {cite}`brooks2024video`, e la famiglia Genie di Google DeepMind, che dal 2024
 genera ambienti in cui si può giocare {cite}`bruce2024genie`. Con loro arriva la
-domanda con cui il capitolo si chiude, ed è ancora del tutto aperta: generare video
-plausibili significa aver capito la fisica, o soltanto saperla imitare?
+domanda con cui il capitolo si chiude, e che resta del tutto aperta: generare
+video plausibili significa aver capito la fisica, o soltanto saperla imitare?
 
 `````{tab} Elementare
 
 ```{admonition} Da ricordare
 :class: important
-- Un world model è il cinema interiore di cui parlavamo: un simulatore
-  dell'ambiente che la macchina si costruisce da sé, e che le serve per
-  prevedere cosa succede, scegliere la mossa e provare alternative senza
-  pagarle davvero. L'idea del «modello in scala ridotta della realtà» è di
-  Kenneth Craik (1943).
+- Un world model è un cinema interiore: un simulatore dell'ambiente che la
+  macchina si costruisce, e che le serve per prevedere cosa succede, scegliere
+  la mossa e provare alternative senza pagarle nel mondo vero. L'idea del
+  «modello in scala ridotta della realtà» è di Kenneth Craik (1943).
 - Chi non ha il simulatore impara schiantandosi nel mondo vero; chi ce l'ha si
   allena nella propria immaginazione, come i piloti prima di salire su un
-  aereo. La seconda strada costa molta meno esperienza (al programma che
+  aereo. La seconda strada usa molta meno esperienza (al programma che
   impara i giochi Atari senza simulatore serve più di un mese di gioco per
   titolo, alla persona con cui è confrontato bastavano un paio d'ore di
-  pratica), ma ha un prezzo: se il simulatore è impreciso ci si allena a
-  vincere un gioco che non esiste, e in un mondo che non si rimette in assetto
-  da sé l'imprecisione si somma quanto più lontano si prova a guardare.
+  pratica), ma ha un limite: se il simulatore è impreciso ci si allena a
+  vincere un gioco che non esiste, e in un mondo che non si riassesta
+  spontaneamente l'imprecisione si somma quanto più lontano si prova a guardare.
 - Il senso comune è un repertorio di previsioni e non un elenco di fatti
   (le cose non sostenute cadono, quel che è nascosto continua a esistere) che
   i bambini costruiscono guardando, anche se quanto ne abbiano già alla
@@ -385,14 +384,14 @@ plausibili significa aver capito la fisica, o soltanto saperla imitare?
   posizione autorevole dentro un dibattito aperto, non un verdetto: altri
   ricercatori sostengono che, per azzeccare le parole, quei modelli un modello
   del mondo se lo siano già costruito dentro, per quanto rudimentale.
-- Nella stessa proposta c'è una retrocessione: imparare per tentativi e
-  premi, dice LeCun, è «la ciliegina sulla torta», e al suo posto va la
-  pianificazione dentro un modello del mondo. Il motivo è un conto e non il
-  disprezzo: chi impara per tentativi riceve una correzione pochissimo
-  informativa, una specie di «bravo» a fine giornata, mentre chi prevede il
-  mondo viene corretto a ogni istante.
-- La domanda con cui il capitolo si chiude: chi sa girare il filmato giusto ha
-  capito come funziona il mondo, o è solo bravissimo a imitarlo?
+- Nella stessa proposta c'è una retrocessione: imparare per tentativi e premi,
+  dice LeCun, è «la ciliegina sulla torta», e al suo posto va la pianificazione
+  dentro un modello del mondo. Il motivo è l'informazione e non il disprezzo:
+  chi impara per tentativi riceve una correzione pochissimo informativa, una
+  specie di «bravo» a fine giornata, mentre chi prevede il mondo viene corretto
+  a ogni istante.
+- La domanda finale: chi sa girare il filmato giusto ha capito come funziona
+  il mondo, o è solo bravissimo a imitarlo?
 ```
 
 `````
@@ -408,7 +407,7 @@ plausibili significa aver capito la fisica, o soltanto saperla imitare?
 - Model-free prova nel mondo, model-based prova nell'immaginazione: il
   secondo promette di ridurre le interazioni necessarie (il DQN ne usa decine
   di milioni di fotogrammi per gioco, il collaudatore umano con cui è
-  confrontato circa due ore di pratica), al prezzo del *model bias*. Con
+  confrontato circa due ore di pratica), al costo del *model bias*. Con
   dinamica $L$-Lipschitz ed errore del modello al più $\epsilon$, lo scarto
   dopo $k$ passi è maggiorato da $\epsilon \sum_{i<k} L^{i}$: esponenziale per
   $L > 1$, limitato da $\epsilon/(1-L)$ per $L < 1$.

@@ -66,16 +66,15 @@ FIRMA = "paithon-it"
 # Le righe del log che contano. In `nonstopmode` LaTeX segnala e prosegue,
 # quindi queste sono l'unico modo di sapere se il PDF e' venuto bene.
 #
-# La riga si prende INTERA (`.*`): la prima versione di questa espressione
-# si fermava al prefisso, e il rapporto degli errori era una colonna di punti
-# esclamativi. Un setaccio che non dice che cosa ha trovato non serve.
+# La riga si prende INTERA (`.*`): fermandosi al prefisso, il rapporto degli
+# errori sarebbe una colonna di punti esclamativi, e un setaccio che non dice
+# che cosa ha trovato non serve.
 #
-# `not found in language.dat.lua` e' entrato dopo: e' un *Warning*, quindi non
-# somigliava a un guasto, e per questo e' rimasto in pagina a lungo. Senza i
-# pattern di sillabazione LuaLaTeX non spezza le parole a fine riga, e il libro
-# esce con centinaia di righe che sbordano o troppo spaziate; ma la build
-# riesce, il codice di uscita e' 0 e il PDF c'e'. Vale la pena tenere presente
-# come si e' scoperto: non da un controllo, ma aprendo il PDF e leggendolo.
+# `not found in language.dat.lua` e' un *Warning*, quindi non somiglia a un
+# guasto ed e' facile lasciarlo passare. Senza i pattern di sillabazione
+# LuaLaTeX non spezza le parole a fine riga, e il libro esce con centinaia di
+# righe che sbordano o troppo spaziate; ma la build riesce, il codice di uscita
+# e' 0 e il PDF c'e', e il difetto lo vede solo chi apre il PDF e lo legge.
 # Si ripara sulla macchina (`texlive-lang-italian`), non nel libro.
 #
 # `undefined` prende i rimandi ciechi: un {doc} verso una pagina che in stampa
@@ -120,11 +119,11 @@ def costruisci_tex(pulisci: bool = False) -> pathlib.Path:
         conf.unlink(missing_ok=True)
 
     sorgente = TEX / f"{NOME}.tex"
-    # Si guarda il CODICE DI USCITA, non se il file c'e'. La prima versione
-    # guardava solo l'esistenza, e quando l'estensione moriva a `config-inited`
-    # trovava il .tex della build precedente e annunciava che era andato tutto
-    # bene. Uno strumento che verifica l'esistenza invece dell'esito e' peggio
-    # di nessuno strumento: fa credere di aver controllato.
+    # Si guarda il CODICE DI USCITA, non se il file c'e': quando l'estensione
+    # muore a `config-inited` il .tex della build precedente e' ancora li', e
+    # chi guardasse solo l'esistenza annuncerebbe che e' andato tutto bene. Uno
+    # strumento che verifica l'esistenza invece dell'esito e' peggio di nessuno
+    # strumento: fa credere di aver controllato.
     if fatto.returncode != 0:
         coda = "\n".join((fatto.stdout + fatto.stderr).splitlines()[-30:])
         sys.exit(f"sphinx si e' fermato (uscita {fatto.returncode}):\n{coda}")
@@ -143,11 +142,11 @@ def costruisci_tex(pulisci: bool = False) -> pathlib.Path:
     # I fermi immagine delle animazioni li mette in pagina `pt_stampa`, che
     # gira a doctree RISOLTO, cioe' dopo che Sphinx ha gia' raccolto e copiato
     # le immagini: quei PNG non li vede nessuno e nella cartella del .tex non
-    # arrivano. Non se n'era accorto nessuno perche' la build e' incrementale e
-    # li trovava avanzati da un giro precedente; alla prima build pulita sono
-    # spariti tutti e 132 in una volta, con 365 errori di LuaLaTeX che pero'
-    # non fermano niente (gira in nonstopmode) e un PDF che esce lo stesso, coi
-    # buchi. Si copiano qui, esplicitamente.
+    # arrivano. Una build incrementale li trova avanzati da un giro precedente,
+    # e il guasto si vede solo alla prima build pulita: spariscono tutti in una
+    # volta, con errori di LuaLaTeX che pero' non fermano niente (gira in
+    # nonstopmode) e un PDF che esce lo stesso, coi buchi. Si copiano qui,
+    # esplicitamente.
     fermi = LIBRO / "figures" / "fermi"
     if fermi.is_dir():
         dove = TEX / "figures" / "fermi"
@@ -181,11 +180,10 @@ def ritaglia_capitolo(sorgente: pathlib.Path, nome: str) -> pathlib.Path:
 
     # Si cerca la `\label` che il capitolo si mette addosso, non il nome
     # nudo: un `\hyperref` verso un altro capitolo contiene la stessa
-    # stringa, e siccome si prendeva il PRIMO capitolo che la conteneva,
-    # `--capitolo Matematica` restituiva il capitolo su Python, che alla
-    # matematica rimanda tre volte. Non falliva: dava il capitolo sbagliato
-    # e lo stampava lo stesso, quindi chi guardava un riquadro lo guardava
-    # nel posto sbagliato per tutta la sessione. Le etichette le emette solo
+    # stringa, e prendendo il PRIMO capitolo che la contiene
+    # `--capitolo Matematica` restituirebbe il capitolo su Python, che alla
+    # matematica rimanda tre volte: senza fallire, con il capitolo sbagliato
+    # stampato lo stesso. Le etichette le emette solo
     # il capitolo che possiede la pagina, quindi qui non c'e' ambiguita'.
     # Le pagine di radice (prefazione, intro) non stanno in una cartella:
     # la loro etichetta e' `nome:`, non `nome/`.
@@ -335,7 +333,7 @@ def note_di_rilascio(numero: str) -> str:
 def rilascia(pdf: pathlib.Path, conferma: bool) -> None:
     """Allega il PDF alla release del repository pubblico.
 
-    E' un comando a parte, non un passo di `pubblica.py`: le azioni verso
+    E' un comando a parte, non un passo della pubblicazione: le azioni verso
     l'esterno si fanno in modo esplicito, non si infilano in un comando
     composto. Vale per il push pubblico e vale identico qui.
     """
@@ -347,11 +345,10 @@ def rilascia(pdf: pathlib.Path, conferma: bool) -> None:
 
     # IL NUMERO E IL FILE ARRIVANO DA DUE POSTI DIVERSI, e non e' un dettaglio:
     # il numero lo dice il registro, il file sta su disco, e finche' non li si
-    # confronta possono raccontare due versioni diverse. E' successo: la 1.5.7
-    # e' uscita con dentro un PDF che in copertina diceva 1.5.6, perche' era
-    # stato costruito prima di aggiungere la voce al registro. Nessuno se n'era
-    # accorto perche' tutto funzionava, e il numero giusto lo scriveva il tag.
-    # La copertina il numero lo stampa: si legge di li'.
+    # confronta possono raccontare due versioni diverse: un PDF costruito prima
+    # di aggiungere la voce al registro porta in copertina il numero di prima,
+    # e tutto il resto funziona lo stesso, perche' il numero giusto lo scrive
+    # il tag. La copertina il numero lo stampa: si legge di li'.
     stampata = versione_stampata(pdf)
     if stampata and stampata != numero:
         sys.exit(f"il PDF in copertina dice {stampata}, il registro {numero}: "
@@ -841,9 +838,9 @@ def copertina_intera(pdf: pathlib.Path) -> str | None:
     """La copertina sta ancora in una pagina sola?
 
     Sta in una pagina per pochi millimetri: il fregio da solo prende 111mm dei
-    297 del foglio. Aggiungendoci il claim, fregio e riga della versione sono
-    scivolati sulla seconda pagina, e nessuno se n'e' accorto perche' nessuno
-    si lamenta: LuaLaTeX non emette avvisi (dentro un `titlepage` il contenuto
+    297 del foglio. Basta aggiungerci una riga, il claim per esempio, e fregio
+    e riga della versione scivolano sulla seconda pagina senza che nessuno si
+    lamenti: LuaLaTeX non emette avvisi (dentro un `titlepage` il contenuto
     che avanza semplicemente prosegue), il codice di uscita e' 0 e il PDF c'e'.
     Si vede solo aprendolo, e la copertina uno la guarda una volta l'anno.
 

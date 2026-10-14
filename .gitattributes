@@ -1,0 +1,6 @@
+# Le pagine vanno a capo LF anche quando si scrivono su Windows: git converte
+# gli a capo CRLF quando il file entra in un commit. Il BOM non lo toglie, e
+# una pagina che ce l'ha la segnala `python3 scripts/coerenza.py --solo
+# codifica`, insieme a quelle arrivate per un'altra strada.
+*.md text eol=lf
+*.ipynb text eol=lf

@@ -31,25 +31,25 @@ cioè reti che fabbricano qualcosa e che imparano a farlo sfidandosi.
 
 ## Generare, non classificare
 
-Abbiamo già incontrato reti che *producono* qualcosa: un modello
-linguistico scrive la parola dopo, un sintetizzatore legge un testo ad alta
-voce. Tutte e due, mentre imparavano, avevano accanto la risposta
-giusta: la parola che veniva davvero dopo, l'onda che quella frase aveva
-davvero. Nel sintetizzatore vocale, e prima ancora nei {doc}`codec neurali
+Abbiamo già incontrato reti che *producono* qualcosa: un modello linguistico
+scrive la parola dopo, un sintetizzatore legge un testo ad alta voce. Tutte e
+due, mentre imparavano, avevano accanto la risposta giusta: la parola che
+veniva davvero dopo, l'onda che quella frase aveva davvero. Nel sintetizzatore
+vocale, e prima ancora nei {doc}`codec neurali
 </Audio/codec-neurali>`, c'era già una seconda rete addestrata a riconoscere i
 falsi, ma lavorava accanto al confronto con l'onda vera, non al suo posto. Chi
 deve disegnare un gatto mai esistito, invece, una risposta giusta non ce l'ha e
 non può averla: non c'è nessun originale da mettere accanto al risultato per
 vedere, punto per punto, di quanto ci si è allontanati. La domanda delle GAN è
-proprio questa: come si insegna a una rete a fabbricare dati nuovi e
-plausibili quando non c'è niente con cui confrontarli.
+questa: come si insegna a una rete a fabbricare dati nuovi e plausibili quando
+non c'è niente con cui confrontarli.
 
 Una risposta l'ha appena data il {doc}`capitolo sui modelli latenti
 </ModelliLatenti/overview>`: si scrive la verosimiglianza
 $p_\theta(\mathbf{x})$, cioè quanto il modello trova probabile un dato, e
 siccome calcolarla esattamente non si può, se ne fa salire un limite inferiore,
-l'ELBO. Le GAN prendono la strada opposta, ed è la scelta che spiega tutto il
-resto: qui una verosimiglianza non si scrive affatto, e al suo posto si mette
+l'ELBO. Le GAN prendono la strada opposta, e da questa scelta discende tutto il
+resto: una verosimiglianza non si scrive affatto, e al suo posto si mette
 una seconda rete che guarda il risultato e dice se ci crede.
 
 `````{tab} Elementare
@@ -66,11 +66,11 @@ grosso ogni tanto. Ad addestramento finito la rete non cambia più, e quei
 numeri sono l'unica cosa che distingue una richiesta dall'altra: numeri diversi
 in ingresso, gatti diversi in uscita.
 
-E devono essere tirati a sorte nello stesso modo anche dopo. In addestramento
+Anche dopo, i numeri vanno tirati a sorte nello stesso modo. In addestramento
 alla rete arrivano solo manciate sorteggiate così, e lei impara a cavarsela
 dove quelle manciate cadono. Una manciata scelta a mano (numeri tutti grandi,
-o in fila 1, 2, 3…) cade quasi sempre in un territorio dove la rete non è mai
-stata, e quello che ne esce non ha nessuna ragione di somigliare a un gatto.
+o la sequenza 1, 2, 3…) cade quasi sempre in un territorio dove la rete non è mai
+stata, e l'immagine che ne esce non ha nessuna ragione di somigliare a un gatto.
 
 `````
 
@@ -107,19 +107,19 @@ serve a vedere a quali condizioni un duello del genere sta in piedi.
 
 Un **falsario** dipinge quadri contraffatti; un **esperto d'arte** deve dire
 quali sono autentici e quali falsi. All'inizio il falsario è maldestro e
-l'esperto lo smaschera senza sforzo. Ma ogni volta che viene scoperto, il
-falsario impara qualcosa e migliora; e l'esperto, di fronte a falsi sempre più
+l'esperto lo smaschera senza sforzo. Il falsario però, ogni volta che viene
+scoperto, impara qualcosa e migliora; l'esperto, di fronte a falsi sempre più
 raffinati, affina il proprio occhio. È una corsa agli armamenti: i due si
 perfezionano a vicenda. Se la corsa arriva in fondo, i falsi sono così buoni
 che nemmeno l'esperto sa più distinguerli. Il **generatore** è il falsario, il
 **discriminatore** è l'esperto.
 
-Resta una domanda, ed è il cuore di tutto il
+Resta una domanda, il cuore del
 capitolo: il falsario impara *che cosa*? Se l'esperto si limitasse a dire
-"falso", il falsario saprebbe di aver sbagliato ma non saprebbe dove, ed è
-la stessa differenza che passa fra un professore che scrive "no" in fondo al
-compito e uno che sottolinea le righe da rifare. L'esperto di questa storia
-appartiene al secondo tipo: non dice "falso", dice "falso, e soprattutto per
+"falso", il falsario saprebbe di aver sbagliato ma non saprebbe dove, come lo
+studente a cui il professore scrive soltanto "no" in fondo al compito, invece di
+sottolineargli le righe da rifare. L'esperto di questa storia
+è un professore che sottolinea: non dice "falso", dice "falso, e soprattutto per
 via di *questo* qui", indicando col dito, punto per punto del quadro, da che
 parte tirare. Come faccia, e perché per riuscirci debba essere una rete e non
 una persona, lo racconta la {doc}`sezione sull'addestramento avversario
@@ -145,7 +145,8 @@ dato generato $\tilde{\mathbf{x}} = G(\mathbf{z})$, cioè $\partial
 una componente per ogni numero del dato, che dice in che verso spostare
 ciascuna di quelle componenti perché il verdetto cambi. È una direzione, non un
 voto, e la sua esistenza richiede che $D$ sia derivabile rispetto al proprio
-ingresso: la sezione seguente riprende il punto con la regola della catena.
+ingresso: la {doc}`sezione sull'addestramento avversario </GAN/come-funziona>`
+riprende il punto con la regola della catena.
 
 `````
 
@@ -161,8 +162,8 @@ falsa; il discriminatore riceve immagini di tutti e due i tipi, una per volta,
 e su ciascuna emette un verdetto. Da come è arrivato al verdetto si ricava una
 correzione, che torna indietro a tutte e due le reti: al discriminatore serve
 per sbagliare di meno, al generatore per farlo sbagliare di più. La correzione
-non è il verdetto ed è molto più ricca di quello, ma per capire perché bisogna
-arrivare alla sezione seguente.
+è molto più ricca del semplice verdetto, come spiega la sezione
+sull'addestramento avversario.
 ```
 
 ## Il gioco a somma zero
@@ -187,15 +188,15 @@ come a testa o croce, e indovina una volta su due. Quel 50% è il massimo che
 chiunque possa ottenere quando non c'è più niente da vedere, non un esperto che
 si è arreso.
 
-Ma perché dovrebbe finire *così*, e non con l'esperto che vince sempre e il
+Perché dovrebbe finire *così*, e non con l'esperto che vince sempre e il
 falsario che resta scarso per sempre? Perché l'esperto, quando boccia un
 quadro, dice anche dove ha visto il falso: finché fra falsi e veri resta una
-differenza da vedere, il falsario ha una strada per correggersi. E quella
-strada porta verso i quadri veri, non verso un quadro qualunque, per via di un
+differenza da vedere, il falsario ha una strada per correggersi. Quella strada
+porta verso i quadri veri, e non verso un quadro qualunque, per via di un
 dettaglio dell'allenamento dell'esperto: ogni volta che tocca a lui guarda
-anche dei quadri autentici, ed è su quelli che viene corretto. È lui il punto
-in cui la realtà entra nel gioco. La corsa si ferma solo quando di differenze
-da vedere non ce ne sono più, cioè al pareggio.
+anche dei quadri autentici, e su quelli viene corretto. La realtà entra nel
+gioco da lui. La corsa si ferma solo quando di differenze da vedere non ce ne
+sono più, cioè al pareggio.
 
 Quel pareggio è delicato, e si rompe in due modi. L'esperto può prendere troppo
 vantaggio, e allora il falsario non ha più modo di stargli dietro. Oppure il
@@ -208,8 +209,8 @@ uno per uno.
 
 `````{tab} Superiore
 
-Goodfellow formula l'addestramento come un problema minimax sulla funzione di
-valore $V(D,G)$:
+Goodfellow e colleghi {cite}`goodfellow2014generative` formulano
+l'addestramento come un problema minimax sulla funzione di valore $V(D,G)$:
 
 $$
 \min_{G}\ \max_{D}\ V(D,G) =
@@ -240,7 +241,7 @@ StyleGAN di NVIDIA {cite}`karras2019style` alimenta siti come *This Person Does
 Not Exist*, dove ogni ricarica mostra un volto sintetico che a un primo sguardo
 non si distingue da una fotografia. Da qui arrivano anche i **deepfake** (volti
 sostituiti nei video) con tutto il loro carico di rischi per disinformazione e
-consenso. E arriva l’arte generata, con un ritratto prodotto da una GAN battuto
+consenso. C’è poi l’arte generata, con un ritratto prodotto da una GAN battuto
 all'asta da Christie's nel 2018: l'episodio, e la questione di chi ne sia
 l'autore, tornano nella {doc}`sezione sulle applicazioni
 </GAN/applicazioni-evoluzioni>`.
@@ -254,15 +255,15 @@ loro legami), ma anche di fabbricare falsi convincenti.
 
 Dall'intuizione si passa al meccanismo. La {doc}`sezione sull'addestramento
 avversario </GAN/come-funziona>` dice che cosa entra e che cosa esce da
-ciascuna delle due reti, che cosa esattamente l'una restituisce all'altra, e
-come dalla funzione di valore ciascuna ricavi la propria loss, cioè il conto
+ciascuna delle due reti, che cosa l'una restituisce all'altra, e
+come dalla funzione di valore ciascuna ricavi la propria loss, cioè la misura
 del proprio errore. Poi il ciclo di addestramento a turni, scritto riga per riga
 in PyTorch, con le sue insidie: il duello che non si stabilizza, e il *mode
 collapse*, il generatore che trova un solo campione capace di ingannare il
 discriminatore e si limita a rifare quello. Da lì due domande. Come si misura
 se una GAN sta funzionando, visto che la sua loss non lo dice: con l'Inception
 Score e soprattutto con il FID, che giudicano un insieme di immagini invece di
-una sola. E come si stabilizza il duello: cambiando la distanza che il gioco
+una sola. Poi, come si stabilizza il duello: cambiando la distanza che il gioco
 minimizza (la Wasserstein GAN), vincolando il discriminatore (il gradient
 penalty, la normalizzazione spettrale), oppure le regole dell'addestramento.
 

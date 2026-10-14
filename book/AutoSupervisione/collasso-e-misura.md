@@ -4,7 +4,7 @@ Un modello addestrato in modo supervisionato si controlla in un attimo: gli si
 danno degli esempi che non ha mai visto, si guarda quante volte azzecca, e quel
 numero è la risposta. Un modello auto-supervisionato no. Di ogni dato produce
 soltanto una rappresentazione, e il suo punteggio (quanto bene ha risolto il
-pretesto) non ci dice quello che vogliamo sapere, perché il pretesto lo
+pretesto) non dice se la rappresentazione sia utile, perché il pretesto lo
 abbiamo inventato noi e a nessuno interessa.
 
 Restano quindi due domande aperte. La prima: che cosa può andare storto senza
@@ -29,32 +29,31 @@ stessa scheda è il disastro visibile.
 
 Il collasso dimensionale, che si può chiamare anche parziale, è più subdolo. Le
 schede sono diverse fra loro, quindi a prima vista tutto funziona; solo che,
-guardandole tutte insieme, ci si accorge che cambiano in pochi modi soltanto.
-È come avere otto manopole, sei delle quali sono incollate insieme in modo
-che, girandone una, girano tutte e sei. Le manopole che si muovono davvero per
-conto loro sono tre (le due libere e il blocco delle sei incollate), e tre
+guardandole tutte insieme, ci si accorge che cambiano in pochi modi soltanto. È
+come avere otto manopole, sei delle quali sono incollate insieme in modo che,
+girandone una, girano tutte e sei. Le manopole che si muovono in modo
+indipendente sono tre (le due libere e il blocco delle sei incollate), e tre
 sono le **direzioni** in cui la scheda può cambiare: i modi indipendenti di
-cambiarla sono meno degli otto che hai pagato. Il modello non ti sta mentendo,
-ti sta dando meno di quello che sembra.
+cambiarla sono meno degli otto che hai pagato. Il modello non ti mente: ti dà
+meno di quanto sembra.
 
-Il guasto si scopre contando, su tante schede insieme, quante manopole si
-muovono davvero per conto loro. Contarne tante è necessario, ma non basta:
-otto manopole libere che girano a caso, come un rumore, sono tutte
-indipendenti e non descrivono niente. E il guasto non risparmia nessuno,
-nemmeno i metodi che giocano con i rivali.
+Per scoprirlo si contano, su tante schede insieme, le manopole che si muovono
+in modo indipendente. Contarle non basta: otto manopole libere che girano a
+caso, come un rumore, sono tutte indipendenti e non descrivono niente. Nemmeno
+i metodi che giocano con i rivali ne sono esenti.
 
 Perché è insidioso: il punteggio del pretesto può essere ottimo lo stesso. Se il
 gioco che gli abbiamo dato si vince con tre direzioni, tre direzioni gli bastano,
 e non ha nessun motivo di produrne otto. Il difetto salta fuori dopo, quando quel
 riassunto lo si vuole usare per un compito diverso da quello per cui è stato
-addestrato, e le direzioni mancanti erano proprio quelle che servivano.
+addestrato, e le direzioni mancanti erano quelle che servivano.
 
-Contro questo guasto serve la regola della varietà, quella che chiede che le
-otto caselle dicano otto cose diverse; e va chiesta nel modo giusto. Pretendere
-che ogni casella si muova abbastanza da una foto all'altra non basta: due
-caselle incollate insieme si muovono tutte e due, e il controllo passa. Il
-guasto lo vede solo chi le guarda a due a due, e fa pagare ogni coppia che dice
-la stessa cosa.
+Contro il collasso dimensionale serve la regola della varietà, quella che
+chiede che le otto caselle dicano otto cose diverse; e va chiesta nel modo
+giusto. Pretendere che ogni casella si muova abbastanza da una foto all'altra
+non basta: due caselle incollate insieme si muovono tutte e due, e il controllo
+passa. Se ne accorge solo chi le guarda a due a due, e fa pagare ogni coppia
+che dice la stessa cosa.
 
 `````
 
@@ -103,25 +102,24 @@ discesa del gradiente verso soluzioni di rango basso
 {cite}`jing2022understanding`.
 
 Il punto pratico è che la perdita del pretesto non lo vede: un obiettivo
-risolvibile in $r$ direzioni non ha alcun incentivo a usarne $D$. Ed è
-esattamente la ragione per cui la famiglia della riduzione di ridondanza scrive
-più di un vincolo. Uno spettro concentrato non è altro che una covarianza di
-rango deficiente, cioè coordinate fortemente dipendenti fra loro, e una
-condizione coordinata per coordinata non basta a escluderlo: il termine di
-varianza di VICReg tiene la deviazione standard di ogni coordinata sopra una
-soglia, e due coordinate identiche la superano tutte e due pur portando una
-direzione sola. Sul regime dimensionale mordono i termini che guardano le
-coppie, cioè gli elementi fuori dalla diagonale della cross-correlazione di
-Barlow Twins e il termine di covarianza di VICReg; il regime costante lo
-fermano gli altri due, la varianza e la diagonale. Due tipi di vincolo per due
-collassi diversi.
+risolvibile in $r$ direzioni non ha alcun incentivo a usarne $D$. Per questo la
+famiglia della riduzione di ridondanza scrive più di un vincolo. Uno spettro
+concentrato non è altro che una covarianza di rango deficiente, cioè coordinate
+fortemente dipendenti fra loro, e una condizione coordinata per coordinata non
+basta a escluderlo: il termine di varianza di VICReg tiene la deviazione
+standard di ogni coordinata sopra una soglia, e due coordinate identiche la
+superano tutte e due pur portando una direzione sola. Il regime dimensionale lo
+contrastano i termini che guardano le coppie, cioè gli elementi fuori dalla
+diagonale della cross-correlazione di Barlow Twins e il termine di covarianza
+di VICReg; il regime costante lo fermano gli altri due, la varianza e la
+diagonale. Due tipi di vincolo per due collassi diversi.
 
 `````
 
 ## Che cosa garantisce davvero il punteggio dei metodi contrastivi
 
-C'è una lettura elegante dei metodi contrastivi che circola molto, ma è vera solo a
-metà; e la parte mancante è proprio quella istruttiva.
+C'è una lettura elegante dei metodi contrastivi che circola molto, ma è vera
+solo a metà, e la metà mancante è la più istruttiva.
 
 La perdita con cui si addestrano questi metodi si chiama
 **InfoNCE** {cite}`oord2018representation`, e il nome dice già dove vuole
@@ -136,33 +134,33 @@ quei metodi funzionano.
 
 `````{tab} Elementare
 
-Il legame fra la perdita e l'informazione mutua c'è, ma ha un tetto, e il
-tetto dipende da una cosa che non c'entra niente con quanto il modello ha
-capito: quanti rivali ci sono nel gruppo.
+Il legame fra la perdita e l'informazione mutua c'è, ma ha un tetto, e il tetto
+dipende da un fattore che non c'entra niente con quanto il modello ha capito:
+quanti rivali ci sono nel gruppo.
 
 Il compito è ritrovare il gemello in mezzo a un gruppo di candidati. Anche
-riuscendoci sempre, quanto abbiamo dimostrato di sapere? Abbiamo dimostrato di
-saper scegliere fra quei candidati, che è quanto basta per vincere quel gioco e
-non un briciolo di più. Se i candidati sono otto, il massimo che quel gioco può
-certificare è la capacità di distinguere fra otto, cioè tre domande da sì o no,
-tre bit; se il modello ne sapesse mille volte tanto, il gioco non se ne
-accorgerebbe, perché ha finito le domande da fare.
+riuscendoci sempre, abbiamo dimostrato soltanto di saper scegliere fra quei
+candidati: quanto basta per vincere quel gioco, non un briciolo di più. Se i
+candidati sono otto, il massimo che quel gioco può certificare è la capacità di
+distinguere fra otto, cioè tre domande da sì o no, tre bit; se il modello ne
+sapesse mille volte tanto, il gioco non se ne accorgerebbe, perché ha finito le
+domande da fare.
 
-Con un modello che indovina sempre, cioè al meglio delle sue possibilità,
-quello che il gioco può certificare cresce col numero dei rivali e si ferma lì,
-sempre e solo lì: otto candidati, tre bit; mille, una decina. Allargare il
-gruppo alza il tetto e costa: ecco perché in questi metodi i gruppi si fanno
-enormi. E un tetto della stessa forma lo incontra chiunque voglia dimostrare
-quanto due cose dicono l'una dell'altra guardando un numero limitato di
-esempi, non solo questo gioco: cresce con gli esempi, e cresce piano.
+Con un modello che indovina sempre, cioè al meglio delle sue possibilità, ciò
+che il gioco può certificare cresce col numero dei rivali e si ferma lì: otto
+candidati, tre bit; mille, una decina. Allargare il gruppo alza il tetto ma
+richiede più calcolo; per questo in questi metodi i gruppi sono enormi. Un
+tetto della stessa forma lo incontra chiunque voglia dimostrare quanto due cose
+dicono l'una dell'altra a partire da un numero limitato di esempi, non solo in
+questo gioco: cresce con gli esempi, e cresce piano.
 
-E se il segreto stesse davvero nell'informazione, chi quel gioco non lo gioca
-affatto dovrebbe cavarsela male. Invece se la cava benissimo: far indovinare a
-una rete che cosa dice l'altra, o chiedere che le otto caselle dicano otto cose
-diverse, sono modi che di informazione non parlano mai, e i riassunti che ne
-escono sono ottimi. Quello che i metodi riusciti hanno in comune è un'altra
-coppia di cose: la stessa risposta pretesa sulle due viste della stessa foto, e
-una regola che chiude la strada alla risposta vuota.
+Se il segreto stesse nell'informazione, chi quel gioco non lo gioca affatto
+dovrebbe cavarsela male. Invece se la cava benissimo: far indovinare a una rete
+che cosa dice l'altra, o chiedere che le otto caselle dicano otto cose diverse,
+sono modi che di informazione non parlano mai, e i riassunti che ne escono sono
+ottimi. I metodi riusciti hanno in comune un'altra coppia di requisiti: la
+stessa risposta pretesa sulle due viste della stessa foto, e una regola che
+chiude la strada alla risposta vuota.
 
 `````
 
@@ -181,10 +179,10 @@ $$
 
 dove $f$ è il critico, cioè il punteggio di compatibilità fra due viste (nei
 metodi a due viste, la similarità coseno divisa per la temperatura). Qui $K$
-conta i candidati, come nel conto d'apertura del capitolo contava le
-possibilità di una scelta; gli esempi del batch sono $N$, come nelle famiglie.
-La relazione con l'informazione mutua è un limite inferiore, che vale per
-qualunque critico:
+conta i candidati, come nell’{doc}`apertura </AutoSupervisione/overview>`
+contava le possibilità di una scelta; gli esempi del batch sono $N$, come nelle
+famiglie. La relazione con l'informazione mutua è un limite inferiore, che vale
+per qualunque critico:
 
 $$
 I(\mathbf{x}; \mathbf{y}) \;\ge\; \log K - \mathcal{L}_{\text{NCE}},
@@ -206,29 +204,28 @@ l'informazione mutua può svanire {cite}`tschannen2020mutual`.
 
 Ne seguono due conseguenze, da tenere separate. La prima è tecnica: il numero
 $K$ dei candidati, e con lui il batch da cui si pescano, entra nella
-*garanzia*, non solo nel costo, ed è per questo che in questi metodi i batch si
-fanno enormi. La seconda è di
-interpretazione, ed è la più importante: la massimizzazione dell'informazione
-mutua non può essere la spiegazione del successo di questi metodi. Due risultati
-lo mostrano direttamente. Michael Tschannen e colleghi prendono encoder
-invertibili, che per costruzione conservano tutta l'informazione mutua, e
-trovano che la qualità delle rappresentazioni cambia lo stesso, durante
-l'addestramento e al variare dell'architettura; e mostrano che limiti più
-stretti, ottenuti con critici di capacità maggiore, possono dare
+*garanzia*, non solo nel costo, e per questo in questi metodi i batch sono
+enormi. La seconda riguarda l'interpretazione e pesa di più: la massimizzazione
+dell'informazione mutua non può essere la spiegazione del successo di questi
+metodi. Due risultati lo mostrano direttamente. Michael Tschannen e colleghi
+prendono encoder invertibili, che per costruzione conservano tutta
+l'informazione mutua, e trovano che la qualità delle rappresentazioni cambia lo
+stesso, durante l'addestramento e al variare dell'architettura; e mostrano che
+limiti più stretti, ottenuti con critici di capacità maggiore, possono dare
 rappresentazioni peggiori di limiti più larghi ottenuti con critici semplici
 {cite}`tschannen2020mutual`. David McAllester e Karl Stratos chiudono il lato
 teorico: nessun limite inferiore sull'informazione mutua che valga senza
 ipotesi sulla distribuzione, e con alta confidenza, può superare l'ordine di
 $\log M$ se lo si stima da $M$ campioni {cite}`mcallester2020formal`. Il
 risultato vale per qualunque stimatore, e dice che il tetto $\log K$ è il
-prezzo di certificare informazione a partire da un numero finito di esempi,
-che l'InfoNCE paga come tutti gli altri. La distillazione asimmetrica e la
-riduzione di ridondanza, che non stimano $I$ in nessun modo, completano il
-quadro. Quello che i metodi riusciti hanno in comune è una invarianza imposta
-più un meccanismo che vieta la risposta vuota, e non una quantità informativa
+limite di ogni certificazione di informazione a partire da un numero finito di
+esempi, a cui l'InfoNCE è soggetta come ogni altro stimatore. La distillazione
+asimmetrica e la riduzione di ridondanza, che non stimano $I$ in nessun modo,
+completano il quadro. I metodi riusciti hanno in comune un'invarianza imposta
+più un meccanismo che vieta la risposta vuota, non una quantità informativa
 massimizzata. Per la perdita contrastiva questa coppia ha anche una forma
-esplicita: al crescere del numero dei rivali l'InfoNCE ottimizza due
-proprietà, l'allineamento delle viste di uno stesso dato e l'uniformità delle
+esplicita: al crescere del numero dei rivali l'InfoNCE ottimizza due proprietà,
+l'allineamento delle viste di uno stesso dato e l'uniformità delle
 rappresentazioni normalizzate sulla sfera, e due misure costruite su queste
 proprietà seguono da vicino la prestazione a valle
 {cite}`wang2020understanding`.
@@ -273,34 +270,34 @@ for k in (8, 64, 512, 4096):
               4096     0.0000              12.00      12.00
 ```
 
-Le due colonne di destra coincidono riga per riga, ed è tutta la dimostrazione:
-con un giudice che riconosce sempre il gemello la perdita è nulla e il numero
-certificato è esattamente $\log_2 K$, dove $K$ sono i candidati. Prendiamo
-SimCLR {cite}`chen2020simple`, che è il metodo contrastivo più noto: un batch da
-$N = 4096$ immagini ne mette in campo $2N$ viste, e i candidati per ciascuna
-sono le altre $2N - 1$, cioè $K = 8191$. Il tetto è allora tredici bit (in
-SimCLR i rivali vengono a coppie dalla stessa immagine, quindi non sono
-indipendenti, e $8191$ dà l'ordine di grandezza del tetto più che il suo
-valore esatto). Nel lavoro originale un batch così richiede fino a centoventotto
-core di calcolo specializzati, e garantisce tredici bit contro i dieci di
-un'etichetta su mille classi del conto d'apertura del capitolo. Sono grandezze
-diverse, l'informazione fra due viste e quella di un bersaglio, ma dello stesso
-ordine; e che quei modelli imparino molto di più è fuori discussione. Quindi
-non è quel limite a spiegare quello che fanno.
+Le due colonne di destra coincidono riga per riga: con un giudice che riconosce
+sempre il gemello la perdita è nulla e il numero certificato è $\log_2 K$, dove
+$K$ sono i candidati. In SimCLR {cite}`chen2020simple`, presentato in
+{doc}`Imparare a vedere senza etichette </VisioneArtificiale/senza-etichette>`,
+un batch da $N = 4096$ immagini ne mette in campo $2N$ viste, e i candidati per
+ciascuna sono le altre $2N - 1$, cioè $K = 8191$. Il tetto è allora tredici bit
+(in SimCLR i rivali vengono a coppie dalla stessa immagine, quindi non sono
+indipendenti, e $8191$ dà l'ordine di grandezza del tetto più che il suo valore
+esatto). Nel lavoro originale un batch così richiede fino a centoventotto core
+di calcolo specializzati, e garantisce tredici bit contro i dieci di
+un'etichetta su mille classi, il caso del programma nell’{doc}`apertura del
+capitolo </AutoSupervisione/overview>`. Sono grandezze diverse, l'informazione
+fra due viste e quella di un bersaglio, ma dello stesso ordine; e che quei
+modelli imparino molto di più è fuori discussione. Quel limite non spiega,
+dunque, che cosa imparano.
 
 ## Con che cosa si sostituisce il punteggio
 
 Resta la seconda domanda: come si misura se la rappresentazione è buona.
 
-Lo strumento standard è già costruito in
-{doc}`Imparare a vedere senza etichette </VisioneArtificiale/senza-etichette>`,
-e si chiama sondaggio lineare: si congela l'encoder, gli si affianca un
-classificatore così semplice da non poter aggiungere niente di suo, e si guarda
-se passa l'esame. Se un giudice tanto sprovveduto ci riesce, il merito è della
-rappresentazione.
+Lo strumento standard, già presentato in {doc}`Imparare a vedere senza
+etichette </VisioneArtificiale/senza-etichette>`, è il sondaggio lineare: si
+congela l'encoder, gli si affianca un classificatore così semplice da non poter
+aggiungere niente di suo, e si guarda se passa l'esame. Se un giudice tanto
+sprovveduto ci riesce, il merito è della rappresentazione.
 
-Ma questo strumento non vede tutto, e i suoi limiti sono
-la parte che si dimentica più spesso.
+Lo strumento non vede tutto, e i suoi limiti sono il punto che si
+dimentica più spesso.
 
 `````{tab} Elementare
 
@@ -311,25 +308,25 @@ più contorta, e quell'esame lo boccerebbe lo stesso. È un metro, non un verdet
 Poi c'è un difetto che non riguarda lo strumento ma il modo in cui lo si usa: si
 misura quasi sempre sulla stessa cosa, cioè «che oggetto c'è in questa foto». È
 una domanda sola, e un riassunto può essere bravissimo a rispondere a quella e
-inservibile per le altre. E conta come si fa l'esame: da quale punto della rete
+inservibile per le altre. Conta poi come si fa l'esame: da quale punto della rete
 si prende il riassunto, quanti esempi corretti si danno al giudice per
 imparare. Due esami fatti in modo diverso non si confrontano.
 
-Accanto a quell'esame ne stanno due che costano poco e dicono cose diverse fra
+Accanto a quell'esame ne stanno due, poco costosi, che dicono cose diverse fra
 loro. Uno non studia niente: guarda a quali riassunti già visti somiglia quello
 nuovo, e ripete la risposta dei vicini senza aggiustare un solo numero. L'altro
-non fa domande: conta quante caselle della scheda dicono davvero qualcosa di
-proprio, e se sono poche il guaio si vede lì, senza aspettare che a rivelarlo
-sia un compito vero.
+non fa domande: conta quante caselle della scheda dicono qualcosa che le altre
+non dicono già, e se sono poche il difetto si vede lì, senza aspettare che a
+rivelarlo sia un compito vero.
 
-La prova che conta di più è un'altra, e costa di più: cambiare
-compito. Prendere quel riassunto e usarlo come base per qualcosa che non
-somiglia all'esame, per esempio per dire *dove* si trovano le cose invece che
-*che cosa* sono. Lì saltano fuori i riassunti che avevano imparato a rispondere
-bene a una domanda sola. Ed è la prova giusta perché è il motivo per cui
-addestriamo in anticipo: non per risolvere il pretesto, ma per avere un punto di
-partenza utile per compiti che, mentre ci addestravamo, non sapevamo nemmeno
-quali sarebbero stati.
+La prova più importante è un'altra, e anche la più costosa: cambiare compito.
+Prendere quel riassunto e usarlo come base per qualcosa che non somiglia
+all'esame, per esempio per dire *dove* si trovano le cose invece che *che cosa*
+sono. Lì saltano fuori i riassunti che avevano imparato a rispondere bene a una
+domanda sola. È la prova giusta perché riproduce lo scopo di addestrare in
+anticipo: non risolvere il pretesto, ma avere un punto di partenza utile per
+compiti che, mentre ci addestravamo, non sapevamo nemmeno quali sarebbero
+stati.
 
 `````
 
@@ -349,36 +346,38 @@ spettro della covarianza e la dimensione effettiva, che diagnosticano il
 collasso dimensionale prima che si manifesti come perdita di prestazioni a
 valle.
 
-La terza, e la più severa, è il trasferimento a compiti strutturalmente diversi:
-rilevamento e segmentazione chiedono una rappresentazione che resti informativa
-zona per zona, mentre la classificazione premia un riassunto globale. Un encoder
-può eccellere sotto sonda lineare e cedere come dorsale di un rilevatore, e
-questo scarto è un dato, non un contrattempo: dice che il pretesto ha
-selezionato un tipo di informazione e non un altro. Le sonde possono perfino
-ordinare gli stessi metodi al contrario: il MAE sta sotto i contrastivi con la
-sonda lineare e sopra di loro dopo la rifinitura completa {cite}`he2022masked`.
-E il protocollo della sonda fa parte del risultato: lo strato da cui si leggono
-le rappresentazioni (nei modelli generativi il migliore sta a metà rete, e le
-sonde di iGPT {cite}`chen2020generative` lo cercano strato per strato: prendere
-l'ultimo costa più di due punti su CIFAR-10), la regolarizzazione e le
-trasformazioni usate per addestrare la sonda, quanti esempi etichettati le si
-danno. Un confronto che non li dichiara non si può rifare.
+La terza, e la più severa, è il trasferimento a compiti strutturalmente
+diversi: rilevamento e segmentazione chiedono una rappresentazione che resti
+informativa zona per zona, mentre la classificazione premia un riassunto
+globale. Un encoder può eccellere sotto sonda lineare e cedere come dorsale di
+un rilevatore, e questo scarto è un dato, non un contrattempo: dice che il
+pretesto ha selezionato un tipo di informazione e non un altro. Le sonde
+possono perfino ordinare gli stessi metodi al contrario: il MAE sta sotto i
+contrastivi con la sonda lineare e sopra di loro dopo la rifinitura completa
+{cite}`he2022masked`. E il protocollo della sonda fa parte del risultato: lo
+strato da cui si leggono le rappresentazioni (nei modelli generativi il
+migliore sta a metà rete, e le sonde di iGPT {cite}`chen2020generative` lo
+cercano strato per strato: scegliere l'ultimo strato fa perdere più di due
+punti su CIFAR-10), la regolarizzazione e le trasformazioni usate per
+addestrare la sonda, quanti esempi etichettati le si danno. Un confronto che
+non li dichiara non si può rifare.
 
-Vale infine la disciplina già enunciata dal capitolo sulla visione: nessuna
-singola misura chiude la questione, e un confronto fra metodi condotto su una
-sola sonda e un solo dataset misura la sonda quanto i metodi.
+Vale infine la disciplina già enunciata in {doc}`Imparare a vedere senza
+etichette </VisioneArtificiale/senza-etichette>`: nessuna singola misura chiude
+la questione, e un confronto fra metodi condotto su una sola sonda e un solo
+dataset misura la sonda quanto i metodi.
 
 `````
 
-Le due domande di apertura hanno quindi la stessa forma di risposta, ed è una
-risposta scomoda: non esiste un punteggio unico. Il collasso si vede dalla
-forma che prendono, tutte insieme, le rappresentazioni di un batch, non dal
-punteggio del pretesto; e la qualità di una rappresentazione si vede solo
-mettendola a fare un mestiere diverso da quello per cui è stata addestrata.
-Misure riassuntive come il rango effettivo aiutano a confrontare esecuzioni
-dello stesso metodo, e nessuna sostituisce la prova su compiti a valle: il
-pretesto è stato inventato proprio perché il compito vero, quando si
-addestra, non lo si ha.
+Alle due domande, che cosa può andare storto e con che cosa si sostituisce il
+punteggio, la risposta è la stessa, e scomoda: non esiste un punteggio unico.
+Il collasso si vede dalla forma che prendono, tutte insieme, le
+rappresentazioni di un batch, non dal punteggio del pretesto; la qualità di una
+rappresentazione si vede solo usandola per un compito diverso da quello
+dell'addestramento. Misure riassuntive come il rango effettivo aiutano a
+confrontare esecuzioni dello stesso metodo, ma nessuna sostituisce la prova su
+compiti a valle: il pretesto esiste perché il compito vero, quando si addestra,
+non lo si ha.
 
 `````{tab} Elementare
 
@@ -406,10 +405,10 @@ addestra, non lo si ha.
   affianca un giudice troppo sprovveduto per aggiungerci qualcosa di suo, così
   che il merito, se passa l'esame, sia del riassunto. Ma promuove solo ciò che
   si separa con una linea dritta, e si fa quasi sempre sulla stessa domanda.
-- Accanto ce ne stanno due che costano poco: ripetere la risposta dei riassunti
-  già visti che somigliano a quello nuovo, senza studiare niente, e contare
-  quante caselle dicono davvero qualcosa di proprio. La prova che conta davvero
-  è cambiare compito, ed è il motivo per cui addestriamo in anticipo.
+- Accanto ce ne sono due, poco costosi: ripetere la risposta dei riassunti già
+  visti che somigliano a quello nuovo, senza studiare niente, e contare quante
+  caselle dicono qualcosa che le altre non dicono già. La prova più importante
+  è cambiare compito, che coincide con lo scopo dell'addestramento in anticipo.
   Nessuna di queste prove, da sola, chiude la questione.
 ```
 
@@ -429,7 +428,7 @@ addestra, non lo si ha.
   RankMe {cite}`garrido2023rankme` è un rango effettivo entropico sui valori
   singolari: condizione necessaria e non sufficiente, da usare solo fra
   esecuzioni dello stesso metodo.
-- Sul regime dimensionale mordono i termini che guardano le coppie di
+- Il regime dimensionale lo contrastano i termini che guardano le coppie di
   coordinate, la fuori diagonale della cross-correlazione di Barlow Twins e il
   termine di covarianza di VICReg; il regime costante lo fermano la varianza e
   la diagonale. Una condizione coordinata per coordinata non basta: due

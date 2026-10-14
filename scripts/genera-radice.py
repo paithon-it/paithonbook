@@ -3,6 +3,7 @@
 
     python3 scripts/genera-radice.py             # scrive book/_extra/
     python3 scripts/genera-radice.py --verifica  # sono allineati al _toc.yml?
+    python3 scripts/genera-radice.py --verifica --struttura  # date a parte
 
 ## Perche' non si scrivono a mano
 
@@ -119,9 +120,7 @@ RX_INLINE = [
 def prima_frase(percorso: Path, limite: int = 165) -> str:
     """Il primo paragrafo di testo della pagina, che nel libro e' l'aggancio.
 
-    Sta anche in `strumenti/compila_skill.py` (`sommario`), sul testo ripulito:
-    qui la sorgente e' il MyST grezzo, e i due lavori sono abbastanza diversi da
-    non valere un modulo in comune.
+    Qui la sorgente e' il MyST grezzo, e non il testo gia' ripulito.
     """
     if not percorso.is_file():
         return ""
@@ -312,6 +311,25 @@ def llms(url: str, elenco: list[dict]) -> str:
 
 # --------------------------------------------------------------------------
 
+def struttura(testo: str, nome: str) -> str:
+    """Il file senza le parti che cambiano a ogni commit di una pagina.
+
+    La `lastmod` della sitemap e' la data dell'ultimo commit di ogni pagina,
+    e `llms.txt` riporta la prima frase di ogni capitolo: tutte e due cambiano
+    a ogni pagina committata, e tornano in pari solo quando si rigenera la
+    radice prima di pubblicare. Un controllo che le confronta a ogni commit e'
+    rosso quasi sempre, e un controllo sempre rosso non avvisa di niente.
+    Quello che resta e' la struttura: le pagine, gli indirizzi, i titoli,
+    l'ordine, cioe' quello che un `_toc.yml` cambiato puo' rompere.
+    """
+    if nome == "sitemap.xml":
+        return re.sub(r"\n[ \t]*<lastmod>[^<]*</lastmod>", "", testo)
+    if nome == "llms.txt":
+        return re.sub(r"^(- \[[^\]\n]*\]\([^)\n]*\)): .*$", r"\1", testo,
+                      flags=re.M)
+    return testo
+
+
 def genera() -> dict[str, str]:
     url = base_url()
     elenco = pagine()
@@ -327,23 +345,30 @@ def main() -> int:
     ap.add_argument("--dove", type=Path, default=DOVE_DEFAULT)
     ap.add_argument("--verifica", action="store_true",
                     help="esce con 1 se i file sul disco non sono quelli attesi")
+    ap.add_argument("--struttura", action="store_true",
+                    help="con --verifica: confronta pagine, indirizzi e "
+                         "titoli, non le date e le descrizioni")
     argomenti = ap.parse_args()
     dove = argomenti.dove
     file = genera()
 
     if argomenti.verifica:
+        vista = struttura if argomenti.struttura else (lambda t, _nome: t)
         diversi = []
         for nome, atteso in file.items():
             percorso = dove / nome
             if not percorso.is_file():
                 diversi.append(f"{nome} (manca)")
-            elif percorso.read_text(encoding="utf-8") != atteso:
+            elif vista(percorso.read_text(encoding="utf-8"), nome) \
+                    != vista(atteso, nome):
                 diversi.append(nome)
         if diversi:
             print("da rigenerare: " + ", ".join(diversi))
             print("  python3 scripts/genera-radice.py")
             return 1
-        print(f"allineati al _toc.yml: {', '.join(file)}")
+        print(f"allineati al _toc.yml"
+              f"{' (la struttura)' if argomenti.struttura else ''}: "
+              f"{', '.join(file)}")
         return 0
 
     dove.mkdir(parents=True, exist_ok=True)

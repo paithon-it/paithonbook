@@ -12,28 +12,26 @@
 :alt: Un neurone con i dendriti ramificati i cui rami, verso destra, diventano le linee dritte di una piccola rete di nodi.
 ```
 
-C'è un'immagine che accompagna le reti neurali fin dal loro battesimo: quella
-del cervello. Miliardi di cellule che si scambiano segnali, e da quel brulichio
-emergono la memoria, il linguaggio, il riconoscere il volto di un amico in mezzo
-alla folla. L'idea, vecchia quasi quanto i computer, è seducente: se il cervello
-*è* fatto di neuroni, forse per costruire una macchina che impara basta
-costruire neuroni artificiali e collegarli fra loro. Da questa intuizione nasce
-tutto il deep learning, che è poi il nome che si dà all'apprendimento automatico
-quando i neuroni artificiali si impilano in molte file: «profondo» vuol dire
-questo, e nient'altro. Prima di costruire queste reti un pezzo alla volta,
-però, va sgombrato il campo da un equivoco.
+Le reti neurali portano fin dal nome l'immagine del cervello: decine di
+miliardi di cellule che si scambiano segnali, e da quel brulichio emergono la
+memoria, il linguaggio, il riconoscere il volto di un amico in mezzo alla folla.
+L'idea, vecchia quasi quanto i calcolatori, è seducente: se il cervello è fatto
+di neuroni, per costruire una macchina che impara forse basta costruire neuroni
+artificiali e collegarli fra loro. Il *deep learning* è l'apprendimento
+automatico con i neuroni artificiali impilati in molti strati; l'aggettivo
+«profondo» allude al loro numero. Prima di costruire queste reti
+un pezzo alla volta, però, va chiarito un equivoco.
 
 ## Un'ispirazione, non una copia
 
 Il neurone biologico riceve segnali dalle sue diramazioni d'ingresso, i
 **dendriti**, li somma nel corpo cellulare e, se il totale supera una soglia,
-"spara" un impulso lungo il proprio cavo d'uscita, l'assone, fino ai punti di
-contatto con gli altri neuroni. È da questa immagine che nasce il neurone
-artificiale. È una metafora, non una fotografia. Un neurone
-reale è una cellula viva,
-governata da una chimica di una complessità che non riproduciamo. Il neurone
-artificiale ne prende in prestito una sola idea (*sommare tanti segnali e
-decidere*) e la trasforma in aritmetica.
+"spara" un impulso lungo l'assone, il cavo d'uscita, fino ai punti di contatto
+con gli altri neuroni. Da questa immagine nasce il neurone artificiale, che è
+una metafora e non una fotografia: un neurone reale è una cellula viva,
+governata da una chimica che non riproduciamo. Il neurone artificiale ne prende
+in prestito una sola idea (*sommare tanti segnali e decidere*) e la trasforma
+in aritmetica.
 
 `````{tab} Elementare
 
@@ -41,19 +39,19 @@ Una giuria deve dire "sì" o "no". Ogni giurato porta un'opinione, e non tutte
 pesano uguale: quella dell'esperto conta più di
 quella del distratto in fondo alla sala. Il presidente somma i voti, ciascuno
 moltiplicato per quanto ci fidiamo di chi lo esprime. Se il totale supera una
-certa soglia, il verdetto è "sì"; altrimenti "no". Un neurone artificiale è
-esattamente questo: prende dei numeri in ingresso, li pesa, li somma e decide.
+certa soglia, il verdetto è "sì"; altrimenti "no". Un neurone artificiale fa
+lo stesso: prende dei numeri in ingresso, li pesa, li somma e decide.
 
-Due nomi, perché torneranno a ogni pagina. Quel "quanto ci fidiamo" di
-ciascun giurato è un numero, e si chiama peso. E il presidente ha una sua
-inclinazione ancora prima di sentire la giuria, chi parte prevenuto verso il
-sì e chi verso il no: anche quella è un numero, e si chiama **bias**.
+Quel "quanto ci fidiamo" di
+ciascun giurato è un numero, e si chiama peso. Il presidente ha poi una
+propria inclinazione ancora prima di sentire la giuria, prevenuto verso il sì o
+verso il no: anche quella è un numero, e si chiama **bias**.
 
 Il verdetto secco non è l'unica uscita possibile, e le reti di oggi ne
 preferiscono un'altra. Il presidente, invece di dire sì, dice di quanto il
 totale ha superato la soglia: se resta sotto, zero; se la supera, la misura
-dello scarto. Se poi quel numero va davanti a un'altra giuria, quello che le
-arriva è una quantità e non un verdetto.
+dello scarto. Se poi quel numero va davanti a un'altra giuria, le
+arriva una quantità e non un verdetto.
 
 `````
 
@@ -84,7 +82,7 @@ Ideas Immanent in Nervous Activity*: dimostrano che una rete di neuroni
 "tutto-o-niente" può calcolare qualunque **funzione logica**, cioè qualunque
 regola che, ricevuti in ingresso dei sì e dei no, risponda sì o no (l’*e*,
 l’*o*, il *non*, e tutto ciò che si ottiene combinandoli). Era una macchina di
-carta, senza apprendimento: i pesi li fissava a mano il progettista.
+carta, senza apprendimento: il progettista fissava i pesi a mano.
 
 Il salto arriva nel 1958 con Frank Rosenblatt e il suo **percettrone**. Non
 solo un neurone che decide, ma un neurone che *impara*: aggiusta i propri pesi
@@ -104,14 +102,14 @@ valeva l'ingresso: uno acceso, che vale uno, sposta il suo peso di un passo
 intero, uno spento non lo sposta affatto. È il passo con cui l'allievo si
 corregge. Nessuno gli ha scritto la regola, la ricava dagli errori.
 
-C'è una promessa, e vale a una condizione. Se un modo di pesare gli ingressi che
-azzecca tutti gli esempi del maestro esiste, l'allievo lo trova di sicuro: dopo
-un numero finito di correzioni smette di sbagliare, e da lì in poi i pesi
-restano dove sono. Se non esiste, l'allievo non si assesta mai: aggiusta un
-esempio e ne rompe un altro, poi torna indietro, e andrebbe avanti così per
+C'è una promessa, e vale a una condizione. Se esiste un modo di pesare gli
+ingressi che azzecchi tutti gli esempi del maestro, l'allievo lo trova di
+sicuro: dopo un numero finito di correzioni smette di sbagliare, e da lì in poi
+i pesi restano dove sono. Se non esiste, l'allievo non si assesta mai: aggiusta
+un esempio e ne rompe un altro, poi torna indietro, e andrebbe avanti così per
 sempre. Quanto manchi alla fine, però, dall'esterno non si vede: si guarda una
-risposta alla volta, e finché l'allievo sbaglia ogni tanto non si sa se sia a un
-passo dal riuscirci o se stia girando in tondo.
+risposta alla volta, e finché l'allievo sbaglia ogni tanto non si sa se sia a
+un passo dal riuscirci o se stia girando in tondo.
 
 `````
 
@@ -133,14 +131,14 @@ $$
 b \leftarrow b + \eta\,(y - \hat{y}),
 $$
 
-dove $y\in\{0,1\}$ è l'etichetta corretta, $\hat{y}$ la predizione ed
-$\eta>0$ il tasso di apprendimento. C'è poi il *teorema di convergenza*: se
-i dati sono linearmente separabili, questa regola trova in un numero finito di
-passi un iperpiano che li separa. Non è nell'articolo del 1958, che presenta il
-modello: la dimostrazione arriva con *Principles of Neurodynamics* del 1962
+dove $y\in\{0,1\}$ è l'etichetta corretta, $\hat{y}$ la predizione ed $\eta>0$
+il tasso di apprendimento. C'è poi il *teorema di convergenza*: se i dati sono
+linearmente separabili, questa regola trova in un numero finito di passi un
+iperpiano che li separa. Non è nell'articolo del 1958, che presenta il modello:
+la dimostrazione arriva con *Principles of Neurodynamics* del 1962
 {cite}`rosenblatt1962principles`, e le forme rigorose che si citano oggi si
-devono a Novikoff {cite}`novikoff1962convergence` e a Block. Il guaio è tutto in
-quel "se".
+devono a Novikoff {cite}`novikoff1962convergence` e a Block. Se i dati non sono
+separabili, il teorema non garantisce la convergenza.
 
 `````
 
@@ -148,9 +146,9 @@ quel "se".
 
 Nel 1969 Marvin Minsky e Seymour Papert pubblicano *Perceptrons*
 {cite}`minsky1969perceptrons`, un libro di matematica rigorosa, passato alla
-storia per una cosa che non contiene.
+storia per un risultato che non dimostra.
 
-Il fatto è questo. Un neurone solo, dovendo dividere i casi in due gruppi, sa
+Un neurone solo, dovendo dividere i casi in due gruppi, sa
 tracciare una riga dritta e nient'altro: separa soltanto i casi che una retta
 divide, e che per questo si dicono linearmente separabili. Esistono allora
 regole semplicissime che gli restano precluse, perché per separarne i casi una
@@ -161,32 +159,34 @@ forte, e li racconta la sezione sul {doc}`percettrone <percettrone>`.
 
 Al 1969 seguirono anni in cui i fondi per le reti neurali passarono all'altra
 intelligenza artificiale, quella dei programmi a regole scritte a mano, e dopo
-il 1973 calarono per tutto il campo: per le reti fu un inverno lungo, e fra il
+il 1973 calarono per tutto il campo. Per le reti fu un inverno lungo: fra il
 libro di Minsky e Papert e la ripresa passano quasi vent'anni. Quanta parte di
-colpa tocchi davvero a quel libro è una questione aperta, e la riprende la
-stessa sezione: meno di quanta gliene attribuisca il racconto corrente.
+colpa tocchi a quel libro si discute ancora, ma con ogni probabilità meno di
+quanta gliene attribuisca il racconto corrente; la stessa sezione riprende la
+questione.
 
 `````{tab} Elementare
 
 Lo XOR risponde "vero" quando i due ingressi sono diversi (uno acceso e uno
 spento) e "falso" quando sono uguali. Scriviamo acceso come $1$ e spento come
 $0$: le combinazioni possibili sono quattro, e sono $(0,0)$, $(0,1)$, $(1,0)$ e
-$(1,1)$. Le prime due cifre le mettiamo in orizzontale su un foglio a
-quadretti, le seconde in verticale, e i quattro casi diventano i quattro angoli
-di un quadrato. I due "veri", $(0,1)$ e $(1,0)$, finiscono su angoli opposti; i
-due "falsi", $(0,0)$ e $(1,1)$, sugli altri due, di nuovo opposti fra loro. Ora
-prova a separare i veri dai falsi con una sola retta: è impossibile,
-qualunque riga tu tracci ne lascia sempre uno dalla parte sbagliata.
+$(1,1)$. Su un foglio a quadretti mettiamo la prima cifra di ogni coppia in
+orizzontale e la seconda in verticale, e i quattro casi diventano i quattro
+angoli di un quadrato. I due "veri", $(0,1)$ e $(1,0)$, finiscono su angoli
+opposti; i due "falsi", $(0,0)$ e $(1,1)$, sugli altri due, di nuovo opposti
+fra loro. Ora prova a separare i veri dai falsi con una sola retta: è
+impossibile, qualunque riga tu tracci ne lascia sempre uno dalla parte
+sbagliata.
 
-E perché mai un neurone dovrebbe essere legato a una retta? Perché fa una cosa
-sola: moltiplica ogni ingresso per il suo peso, somma e confronta il totale con
-una soglia. Su quel foglio a quadretti i punti in cui il totale pareggia la
-soglia stanno tutti allineati, e formano proprio una riga dritta: da una parte
-il neurone dice sì, dall'altra no. Cambiare i pesi inclina quella riga,
+Perché un neurone dovrebbe essere legato a una retta? Perché moltiplica ogni
+ingresso per il suo peso, somma e confronta il totale con una soglia. Su quel
+foglio a quadretti i punti in cui il totale pareggia la soglia stanno tutti
+allineati e formano una riga dritta: da una parte il neurone dice sì,
+dall'altra no. Cambiare i pesi inclina quella riga,
 cambiare il bias la sposta, ma una riga resta. Un percettrone singolo sa
 disegnare solo quello, e quindi lo XOR non lo imparerà mai. (Che quei punti
-siano allineati non è una cosa da bersi sulla fiducia: nella sezione sul
-percettrone ne calcoliamo tre, con numeri veri, e stanno in fila.)
+siano allineati non va preso sulla fiducia: la sezione sul percettrone ne
+calcola tre, con numeri veri, e li trova su una riga.)
 
 `````
 
@@ -200,7 +200,7 @@ $\mathbf{w}$ e $b$ tali che $w_1 x_1 + w_2 x_2 + b$ risulti non negativo sui
 due punti con etichetta $1$ e negativo sugli altri due, e non esistono (la
 dimostrazione, in due righe, sta nella sezione sul percettrone). La
 soluzione (impilare più neuroni in strati) era nota già
-allora, ma mancava un modo efficiente per addestrarla, ed è questa la ragione
+allora, ma mancava un modo efficiente per addestrarla, motivo
 che gli stessi Minsky e Papert indicheranno per la lunga pausa che seguì. Il
 libro contribuì a raffreddare gli entusiasmi e a spostare risorse verso l'AI
 simbolica; nel decennio successivo, con il rapporto Lighthill del 1973, i
@@ -233,14 +233,14 @@ finisce il raggio.
 
 Un modo ovvio ci sarebbe: girare un pochino il primo specchietto, guardare dove
 va a finire il punto, rimetterlo com'era, e poi il secondo, e poi il terzo. Con
-dieci specchietti si fa; con dieci milioni no, perché ogni prova costa un giro
-intero del raggio. La backpropagation di giri ne fa uno solo, e all'indietro:
-parte dal punto sbagliato e risale la fila. A ogni specchietto arriva già fatto
-il conto di tutto il tratto che viene dopo, e per sapere quanto conta quello lì
-basta moltiplicarlo per quanto quello specchietto, girato un pochino, devia il
-raggio: gli effetti lungo la fila si moltiplicano uno dopo l'altro, come i giri
-degli ingranaggi della {doc}`regola della catena
-</Matematica/analisi-ottimizzazione>`. Poi il conto, aggiornato, passa allo
+dieci specchietti si fa; con dieci milioni no, perché a ogni prova il raggio
+deve rifare il giro intero. La backpropagation di giri ne fa uno solo, e
+all'indietro: parte dal punto sbagliato e risale la fila. A ogni specchietto
+arriva il calcolo già fatto di tutto il tratto che viene dopo, e per sapere
+quanto conta quello lì basta moltiplicarlo per quanto quello specchietto,
+girato un pochino, devia il raggio: gli effetti lungo la fila si moltiplicano
+uno dopo l'altro, come i giri degli ingranaggi della {doc}`regola della catena
+</Matematica/analisi-ottimizzazione>`. Poi il calcolo, aggiornato, passa allo
 specchietto precedente. Alla fine ognuno sa di quanto sposterebbe il punto, se
 lo si girasse un pochino, e il ritorno è costato quanto un paio di andate, non
 dieci milioni. Tutto questo funziona perché, girando uno specchietto, il punto
@@ -250,12 +250,12 @@ verdetto secco della giuria, che passa da no a sì tutto in una volta, la domand
 lo sposterebbe affatto, oppure lo farebbe saltare.
 
 Chi sposta il punto di più riceve la correzione più grande, chi quasi non conta
-resta quasi fermo, e ogni correzione rimane piccola, perché il conto appena
-fatto vale solo lì attorno. Ripetuto su migliaia di esempi, questo tornare
-indietro e correggere fa sì che anche i neuroni in mezzo alla fila, quelli di
-cui nessuno ha mai scritto la risposta giusta, imparino il loro mestiere. Hanno
-un nome: si chiamano neuroni nascosti, e "nascosto" vuol dire soltanto che non
-si affacciano né sull'ingresso né sull'uscita.
+resta quasi fermo, e ogni correzione rimane piccola, perché la pendenza
+appena calcolata vale solo nei dintorni. Ripetuto su migliaia di esempi, questo
+tornare indietro e correggere permette anche ai neuroni in mezzo alla fila,
+quelli di cui nessuno ha mai scritto la risposta giusta, di imparare. Si
+chiamano neuroni nascosti, e il nome indica soltanto che non si affacciano né
+sull'ingresso né sull'uscita.
 
 `````
 
@@ -280,7 +280,7 @@ una passata all'indietro è dello stesso ordine di una in avanti.
 ## L'anatomia di un percettrone multistrato
 
 Il modello che nasce da questa storia è il **percettrone multistrato** (MLP,
-*multilayer perceptron*). I neuroni si mettono in fila, e ogni fila è uno
+*multilayer perceptron*). I neuroni si dispongono in file, e ogni fila è uno
 strato: l'uscita di uno strato è l'ingresso del prossimo. Il primo strato è la
 porta da cui entrano i dati e si chiama **strato di input**, l'ultimo produce la
 risposta e si chiama **strato di output**, e quelli in mezzo, che non si
@@ -299,10 +299,10 @@ strato nascosto (4 neuroni), che a sua volta alimenta lo strato di output
 a destra.
 ```
 
-Quanti neuroni mettere in mezzo, e quanti strati, non lo dice nessuna formula:
+Nessuna formula dice quanti neuroni mettere in mezzo, né quanti strati:
 il 3-4-2 della figura è un esempio, e nella pratica quelle misure si scelgono
-provando. Ciò che cambia davvero, aggiungendo strati, è la forma del
-confine con cui la rete separa i casi ({numref}`fig-confini-multistrato`).
+provando. Aggiungendo strati cambia la forma del confine con cui la rete
+separa i casi ({numref}`fig-confini-multistrato`).
 
 ```{figure} ../figures/reti-multistrato.svg
 :name: fig-confini-multistrato
@@ -316,11 +316,11 @@ combinano fra loro e il bordo si fa di molti lati, senza che serva uno strato
 smisurato.
 ```
 
-I quattro punti del disegno sono un caso più facile dello XOR, che una riga
-sola risolve benissimo, e stanno lì per far vedere quali confini diventano
+I quattro punti del disegno sono un caso più facile dello XOR: una riga
+sola li separa benissimo. Stanno lì per far vedere quali confini diventano
 possibili mano a mano che gli strati aumentano, non perché quei punti li
 richiedano. Lo XOR risolto arriva nella {doc}`sezione sul percettrone
-<percettrone>`. Il senso però è lo stesso: il guaio del percettrone era che una
+<percettrone>`. Il senso però è lo stesso: il limite del percettrone era che una
 riga sola non può separare i quattro casi dello XOR per quanto bene la si giri,
 non che imparasse male. Serviva un secondo strato, non un addestramento
 migliore.
@@ -328,21 +328,20 @@ migliore.
 Dal primo riquadro al secondo si guadagna qualcosa che prima non c'era. Un
 neurone solo disegna una riga e nient'altro, quindi un confine chiuso gli è
 precluso comunque lo si addestri; due righe che si incrociano ritagliano invece
-uno spicchio, tre un triangolo, ed è il triangolo del secondo riquadro.
+uno spicchio, tre un triangolo (quello del secondo riquadro).
 
 Dal secondo al terzo, invece, non si guadagna niente di nuovo: si risparmia. A
 un contorno come quello del terzo riquadro ci si arriverebbe anche con un solo
-strato nascosto, purché di neuroni ce ne sia un numero abbastanza grande. Il
-punto è quel «abbastanza»: per certe forme diventa un numero fuori portata,
-mentre due o tre file di pochi neuroni bastano. È per questo che le reti si
-fanno profonde.
+strato nascosto, purché di neuroni ce ne sia un numero abbastanza grande.
+Quell’«abbastanza», per certe forme, diventa un numero fuori portata, mentre
+due o tre file di pochi neuroni bastano. Per questo le reti si fanno profonde.
 
 `````{tab} Elementare
 
 Tre strati, tre ruoli. Lo strato di input non calcola nulla: è la porta da
 cui entrano i dati (i tre numeri che descrivono l'esempio). Gli strati
 nascosti sono la fabbrica: ogni neurone combina ciò che riceve e passa avanti
-qualcosa di più elaborato di quello che ha ricevuto. In una rete che guarda
+un risultato più elaborato dell'ingresso. In una rete che guarda
 fotografie, per dire, i neuroni del primo strato reagiscono a cose minime, un
 bordo chiaro-scuro, una macchia di colore; quelli del secondo mettono insieme
 quei bordi e reagiscono a un angolo, a un cerchietto; più avanti si arriva a un
@@ -359,9 +358,9 @@ guidati, e nessuno gli garantisce che li troverà.
 
 C'è però una condizione. Fra uno strato e l'altro deve succedere qualcosa che
 non sia soltanto moltiplicare e sommare. Se ogni strato si limitasse a quello,
-dieci strati in fila darebbero lo stesso risultato di uno solo: moltiplicare
-per $2$ e poi per $3$ è come moltiplicare per $6$, e tutta la pila non
-servirebbe a niente.
+dieci strati uno dopo l'altro darebbero lo stesso risultato di uno solo:
+moltiplicare per $2$ e poi per $3$ è come moltiplicare per $6$, e tutta la pila
+non servirebbe a niente.
 
 `````
 
@@ -383,81 +382,82 @@ non linearità nascosta (tipicamente ReLU) e $\varphi$ l'attivazione d'uscita
 strato, e resta questo per tutto il libro: la parentesi tonda serve per
 distinguere gli esempi, come in $\hat{y}^{(i)}$.
 
-È l'impilamento di trasformazioni lineari e non lineari a dare la potenza: il
+La potenza viene dall'alternare trasformazioni lineari e non lineari: il
 *teorema di approssimazione universale* garantisce che una rete con un solo
 strato nascosto abbastanza ampio può approssimare, con errore arbitrariamente
 piccolo, qualunque funzione continua su un insieme compatto. Dimostrato prima
 per attivazioni limitate, come la sigmoide ({cite}`cybenko1989approximation`;
 {cite}`hornik1991approximation`), vale per ogni $g$ non polinomiale che sia
 continua a tratti e localmente limitata, ReLU compresa, con lo strato d'uscita
-lineare ({cite}`leshno1993multilayer`). È però un teorema di esistenza: dice che
-i pesi giusti ci sono, non che la discesa del gradiente li trovi. E c'è una
-seconda cosa che non dice, altrettanto importante: quanto ampio. Nell'enunciato
-"abbastanza ampio" non è quantificato, e nel caso peggiore il conto è
-proibitivo: per approssimare a meno di $\varepsilon$ ogni funzione di $n$
-variabili con $s$ derivate limitate bastano dell'ordine di $\varepsilon^{-n/s}$
-neuroni {cite}`mhaskar1996neural`, e se i pesi dipendono con continuità dalla
-funzione ne servono altrettanti {cite}`devore1989optimal`: esponenziale in $n$.
-Per una funzione generica il conto è fuori portata già per un'immagine piccola,
-ed è il vero motivo per cui il teorema consola meno di quanto suoni. Non per
-tutte, però: se la trasformata di Fourier della funzione ha primo momento finito
-$C_f$, Barron {cite}`barron1993universal` mostra che $k$ neuroni sigmoidali
-danno un errore quadratico dell'ordine di $C_f^2/k$, senza esponenziale in $n$
-(la dipendenza dalla dimensione si sposta dentro $C_f$). La non linearità $g$ è
-essenziale: senza di essa, due strati lineari collasserebbero in uno solo.
+lineare ({cite}`leshno1993multilayer`). È però un teorema di esistenza: dice
+che i pesi giusti ci sono, non che la discesa del gradiente li trovi. Non dice
+nemmeno quanto debba essere ampio lo strato. Nell'enunciato "abbastanza ampio"
+non è quantificato, e nel caso peggiore il numero è proibitivo: per
+approssimare a meno di $\varepsilon$ ogni funzione di $n$ variabili con $s$
+derivate limitate bastano dell'ordine di $\varepsilon^{-n/s}$ neuroni
+{cite}`mhaskar1996neural`, e se i pesi dipendono con continuità dalla funzione
+ne servono altrettanti {cite}`devore1989optimal`: esponenziale in $n$. Per una
+funzione generica quel numero è fuori portata già per un'immagine piccola,
+motivo per cui il teorema consola meno di quanto suoni. Non per tutte, però: se
+la trasformata di Fourier della funzione ha primo momento finito $C_f$, Barron
+{cite}`barron1993universal` mostra che $k$ neuroni sigmoidali danno un errore
+quadratico dell'ordine di $C_f^2/k$, senza esponenziale in $n$ (la dipendenza
+dalla dimensione si sposta dentro $C_f$). La non linearità $g$ è essenziale:
+senza di essa, due strati lineari collasserebbero in uno solo.
 
 Come leggere allora {numref}`fig-confini-multistrato`? Non con il teorema di
 approssimazione universale, che sull'efficienza non dice niente: dice solo che
-uno strato solo, se ampio a piacere, basta. A dire qualcosa sono altri
-risultati, i **teoremi di separazione**, che funzionano per esibizione: mostrano
-una funzione che una rete profonda calcola con pochi neuroni e che una rete più
+uno strato solo, se ampio a piacere, basta. Servono altri risultati, i
+**teoremi di separazione**, che funzionano per esibizione: mostrano una
+funzione che una rete profonda calcola con pochi neuroni e che una rete più
 piatta non sa approssimare se non pagando una larghezza esponenziale. Telgarsky
 {cite}`telgarsky2016benefits` costruisce funzioni di una variabile, lineari a
 tratti (una sega dai molti denti), che una rete profonda disegna con pochi
-neuroni per strato e che una rete di pochi strati richiederebbe un numero di
-neuroni esponenziale nella profondità risparmiata; Eldan e Shamir
+neuroni per strato e per le quali una rete di pochi strati richiederebbe un
+numero di neuroni esponenziale nella profondità risparmiata. Eldan e Shamir
 {cite}`eldan2016power` fanno lo stesso in $n$ dimensioni sul salto più piccolo
 che ci sia, da due strati nascosti a uno: esiste una funzione che due strati
 nascosti realizzano con larghezza polinomiale in $n$ e che uno strato solo non
-approssima senza larghezza esponenziale in $n$. Sono funzioni costruite apposta,
-non un teorema su tutte le funzioni, ed è già abbastanza: dicono che la
-profondità può comprare qualcosa che la larghezza paga carissimo.
+approssima senza larghezza esponenziale in $n$. Sono funzioni costruite
+apposta, e il risultato non vale per tutte le funzioni; basta però a mostrare
+che la profondità può ottenere con pochi neuroni ciò che la sola larghezza
+raggiunge a un costo esponenziale.
 
-Il terzo pannello è disegnato con gli
+Il terzo riquadro è disegnato con gli
 spigoli per una ragione: con la ReLU la rete è lineare a tratti e il confine
 resta un poligono, con sempre più lati man mano che gli strati si accumulano,
-finché da lontano sembra una curva. Curvo alla lettera lo è solo con
+finché da lontano sembra una curva. È curvo alla lettera solo con
 attivazioni derivabili come la sigmoide o la tangente iperbolica.
 
 `````
 
 ## Neurone, attivazione, loss, backpropagation
 
-Da qui in avanti smontiamo l'MLP pezzo per pezzo, in quattro tappe.
+L'MLP si smonta in quattro pezzi, che le sezioni seguenti prendono uno alla
+volta.
 
-La prima torna sul percettrone, il neurone singolo, e sulla regola con cui
-impara: è il mattone, e il suo limite è la ragione di tutto il resto. La seconda
-sono le funzioni di attivazione, cioè proprio quel qualcosa che deve succedere
-fra uno strato e l'altro perché impilarne dieci non equivalga a impilarne uno.
-La terza è il bersaglio, la loss: il numero che dice quanto la rete ha
-sbagliato, e che va costruito prima di poterlo far scendere, perché la sua forma
-la decide il tipo di risposta che stiamo chiedendo. La quarta è la
-backpropagation, il meccanismo con cui l'errore risale la rete e dice a ogni
-peso di quanto muoversi; e con essa la discesa del gradiente, il modo in cui
-quelle correzioni si fanno davvero, un passettino alla volta, sempre nella
-direzione che fa scendere l'errore (il gradiente è il vettore delle pendenze
+Il primo è il {doc}`percettrone <percettrone>`, il neurone singolo con la regola
+con cui impara: è il mattone, e il suo limite spiega tutto il resto. Il secondo
+sono le {doc}`funzioni di attivazione <funzioni-attivazione>`, l'operazione che
+deve avvenire fra uno strato e l'altro perché impilarne dieci non equivalga a
+impilarne uno. Il terzo è il bersaglio, la {doc}`loss <da-dove-viene-la-loss>`:
+il numero che dice quanto la rete ha sbagliato, la cui forma dipende dal tipo di
+risposta richiesta e che va costruito prima di poterlo far scendere. Il quarto è
+la {doc}`backpropagation <backpropagation>`, il meccanismo con cui l'errore
+risale la rete e dice a ogni peso di quanto muoversi; con essa la discesa del
+gradiente, che applica quelle correzioni a piccoli passi, sempre nella
+direzione che fa scendere l'errore. Il gradiente è il vettore delle pendenze
 della loss, una per peso, cioè delle sue derivate parziali: indica la direzione
-in cui la loss cresce più in fretta, e la discesa va nel verso opposto).
+in cui la loss cresce più in fretta, e la discesa va nel verso opposto.
 
-Restano fuori due scelte pratiche, riprese nella sezione su
+Restano fuori due scelte pratiche, che riprende la sezione su
 {doc}`ottimizzazione e regolarizzazione
 </DeepLearning/ottimizzazione-regolarizzazione>`: da dove far partire i pesi, e
 come impedire a una rete di imparare a memoria gli esempi che ha visto invece
-della regola che li governa (quando succede, sui casi nuovi sbaglia). È la
-cerniera del libro: tutto ciò che viene dopo (la visione artificiale, il
-linguaggio, i modelli che generano immagini e testo) è fatto degli stessi
-pezzi, strati di pesi, attivazioni, una loss e la backpropagation, combinati in
-architetture pensate per i loro dati.
+della regola che li governa (quando succede, sui casi nuovi sbaglia). Tutto ciò
+che viene dopo (la visione artificiale, il linguaggio, i modelli che generano
+immagini e testo) è fatto degli stessi pezzi, strati di pesi, attivazioni, una
+loss e la backpropagation, combinati in architetture pensate per i loro dati.
 
 `````{tab} Elementare
 
@@ -468,19 +468,19 @@ architetture pensate per i loro dati.
   non copia.
 - McCulloch e Pitts, nel 1943, scrivono il neurone come una regoletta di
   calcolo; Rosenblatt, nel 1958, lo fa *imparare*: gli mostri esempi e lui
-  aggiusta da solo le importanze.
-- Un neurone da solo sa dividere i casi con una riga dritta, e sullo
-  XOR quella riga non esiste: nel 1969 il libro di Minsky e Papert lo
-  ricorda a tutti. Agli anni di disinteresse e di fondi tagliati che seguirono
-  quel libro contribuì, ma non li decise da solo. E intanto le reti restavano
-  ferme per una ragione tecnica: nessuno sapeva correggere i neuroni in mezzo.
-- La backpropagation (1986) risolve la domanda che teneva ferma la
-  faccenda: come si correggono i neuroni in mezzo, quelli a cui nessuno dice
-  quale fosse la risposta giusta.
+  aggiusta le importanze.
+- Un neurone solo sa dividere i casi con una riga dritta, e sullo XOR quella
+  riga non esiste: nel 1969 il libro di Minsky e Papert lo ricorda a tutti.
+  Quel libro contribuì agli anni di disinteresse e di fondi tagliati che
+  seguirono, ma non li decise. Le reti restavano ferme anche per una ragione
+  tecnica: nessuno sapeva correggere i neuroni in mezzo.
+- La backpropagation (1986) risponde alla domanda che teneva ferme le reti:
+  come si correggono i neuroni in mezzo, quelli a cui nessuno dice quale fosse
+  la risposta giusta.
 - Una rete è una pila: i dati entrano, attraversano uno o più strati che li
   rimescolano, e dall'ultimo esce la risposta. Fra uno strato e l'altro deve
   succedere qualcosa che non sia moltiplicare e sommare, altrimenti dieci
-  strati in fila valgono quanto uno solo.
+  strati uno dopo l'altro valgono quanto uno solo.
 ```
 
 `````

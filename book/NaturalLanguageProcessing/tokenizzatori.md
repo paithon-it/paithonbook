@@ -4,11 +4,10 @@ Nella {doc}`rappresentazione del testo
 </NaturalLanguageProcessing/rappresentare-testo>` il taglio in token è stato un
 dato di partenza, con la ricetta appena accennata: si parte dalle lettere e si
 incollano le coppie che ricorrono di più. Resta la domanda di ingegneria:
-quali pezzi, e perché proprio quelli. Nessuno decide a mano dove spezzare una
+quali pezzi, e perché quelli. Nessuno decide a mano dove spezzare una
 parola rara come *tokenizzazione*; lo decide un algoritmo che ha letto un
 corpus enorme e ha scelto, uno per uno, i pezzi da tenere. I due estremi, le
-parole intere e le lettere singole, falliscono per ragioni opposte, ed è da lì
-che si parte.
+parole intere e le lettere singole, falliscono per ragioni opposte.
 
 Un vocabolario di parole intere non si chiude mai: più testo si legge, più
 parole nuove si incontrano. La crescita ha una forma nota, la **legge di
@@ -16,8 +15,8 @@ Heaps** (o di Herdan): un testo di $N$ parole ne contiene circa $kN^{\beta}$
 diverse, con $k$ e $\beta$ costanti e $0 < \beta < 1$, e i valori misurati
 stanno attorno a $0{,}5$ o poco sopra, a seconda del corpus e del genere
 {cite}`herdan1960type,heaps1978information,jurafsky2026speech`. In pratica,
-quadruplicare il testo raddoppia più o meno le parole diverse, e il conto non
-si ferma.
+quadruplicare il testo raddoppia più o meno le parole diverse, e la crescita
+non si ferma.
 
 Qualunque taglia si scelga, cinquantamila, centomila, un milione, prima o poi
 arriva una parola che non c'è: un cognome (*Rossellini*), un refuso (*gattto*),
@@ -30,16 +29,16 @@ scrivono anche, e `<UNK>` non si può *scrivere*. Un modello che lo tirasse
 fuori avrebbe prodotto un buco, e nessuno saprebbe con che cosa riempirlo.
 
 All'estremo opposto c'è la soluzione radicale: un vocabolario di singoli
-caratteri. Le parole sconosciute spariscono per costruzione, perché ogni testo
-è fatto di lettere che il vocabolario contiene tutte. Ma si paga due volte.
+caratteri. Le parole sconosciute spariscono per costruzione, perché il
+vocabolario contiene tutte le lettere di cui è fatto un testo. Si paga però due
+volte.
 
 Il primo costo è la lunghezza delle sequenze. Una parola italiana occupa in
 media cinque o sei caratteri, spazio compreso, quindi un testo tagliato in
-caratteri è circa cinque volte più lungo dello stesso testo tagliato in
-parole. E la lunghezza si paga cara, per via dell’*attenzione*, il meccanismo
-con cui un modello moderno confronta ogni posizione della frase con tutte le
-altre (la si incontra con la traduzione automatica, e per esteso nel
-{doc}`capitolo sui Transformer </Transformers/overview>`). I confronti
+caratteri è circa cinque volte più lungo dello stesso testo tagliato in parole.
+Questa lunghezza pesa soprattutto sull’*attenzione*, il meccanismo con cui un
+modello moderno confronta ogni posizione della frase con tutte le altre (nella
+{doc}`sezione sull'attenzione </Transformers/attenzione>`). I confronti
 crescono con il quadrato della lunghezza: raddoppiare le posizioni quadruplica
 il lavoro dell'attenzione, e una sequenza cinque volte più lunga lo moltiplica
 per venticinque.
@@ -52,7 +51,7 @@ gli darebbe già fatte.
 
 Le **sotto-parole** (*subword*) stanno in mezzo, e sono il compromesso che ha
 vinto: le parole frequenti restano intere, quelle rare si scompongono in pezzi
-noti, e niente resta fuori. L'elenco dei pezzi lo costruisce un algoritmo, e
+noti, e niente resta fuori. Un algoritmo costruisce l'elenco dei pezzi, e
 il più usato è il Byte Pair Encoding.
 
 ## Il dilemma del vocabolario
@@ -62,11 +61,12 @@ in direzioni opposte.
 
 `````{tab} Elementare
 
-La scatola di mattoncini della sezione sulla rappresentazione del testo ha due
-estremi. Con le sole ventuno lettere dell'alfabeto si costruisce tutto, ma ogni
-parola chiede cinque o sei pezzi; con un pezzo già fatto per ogni parola del
-dizionario si costruisce in un colpo solo, ma la scatola diventa enorme, e il
-giorno che serve un cognome o una parola inventata non basta lo stesso.
+La scatola di mattoncini della {doc}`rappresentazione del testo
+</NaturalLanguageProcessing/rappresentare-testo>` ha due estremi. Con le sole
+ventuno lettere dell'alfabeto si costruisce tutto, ma ogni parola chiede cinque
+o sei pezzi; con un pezzo già fatto per ogni parola del dizionario si
+costruisce in un colpo solo, ma la scatola diventa enorme, e il giorno che
+serve un cognome o una parola inventata non basta lo stesso.
 
 Una scatola enorme, poi, si paga in due modi. Ogni pezzo vuole il suo
 scomparto, e chi costruisce deve tenere a mente che cosa c'è in ciascuno: mille
@@ -105,7 +105,7 @@ proiezione finale se non è condivisa con essa. Con $|V| = 50\,000$ e
 $d_{\text{model}} = 4096$ sono $204{,}8$ milioni di parametri per la sola
 tabella degli embedding: circa otto volte i parametri di una ResNet-50 intera
 (attorno ai 25 milioni), spesi solo per dare un vettore a ciascun token.
-Inoltre la softmax finale corre su $|V|$ classi, e il suo costo cresce
+Inoltre la softmax finale opera su $|V|$ classi, e il suo costo cresce
 linearmente con la taglia.
 
 Le taglie usate in pratica (da qualche decina di migliaia a qualche centinaio
@@ -134,38 +134,37 @@ la sostituzione in una tabella, ripeti. Alla fine il file è più corto (dove
 c'erano due byte adesso ce n'è uno) e la tabella dice come ricostruirlo. Il
 nome che Gage gli dà è **byte pair encoding**, BPE.
 
-Una ventina d'anni dopo, nel 2015, Rico Sennrich, Barry Haddow e Alexandra Birch
-{cite}`sennrich2016neural` si accorgono che quell'algoritmo di compressione
-risolve un problema completamente diverso: la traduzione automatica delle
-parole rare. Cambiano due cose: fondono caratteri (e sequenze di caratteri)
-invece che byte, e invece di comprimere si fermano quando il vocabolario ha
-raggiunto la taglia voluta. Nel loro articolo il numero di
-fusioni è, testualmente, l'unico iperparametro dell'algoritmo: l'unica
-manopola, cioè, che chi lo usa deve girare a mano, perché tutto il resto lo
-decidono i conteggi. Il lavoro esce nel 2016, e la sua famiglia, BPE su
-caratteri o su byte, è oggi alla base dei tokenizzatori della maggior parte
-dei grandi modelli che generano testo.
+Una ventina d'anni dopo, nel 2015, Rico Sennrich, Barry Haddow e Alexandra
+Birch {cite}`sennrich2016neural` si accorgono che quell'algoritmo di
+compressione risolve un problema completamente diverso: la traduzione
+automatica delle parole rare. Cambiano due cose: fondono caratteri (e sequenze
+di caratteri) invece che byte, e invece di comprimere si fermano quando il
+vocabolario ha raggiunto la taglia voluta. Nel loro articolo il numero di
+fusioni è, testualmente, l'unico iperparametro dell'algoritmo: tutte le altre
+scelte sono determinate dai conteggi. Il lavoro esce nel 2016, e la sua
+famiglia, BPE su caratteri o su byte, è oggi alla base dei tokenizzatori della
+maggior parte dei grandi modelli che generano testo.
 
 ```{figure} ../figures/tokenizzazione-bpe.svg
 :name: fig-tokenizzazione-bpe
 :alt: "Catena in tre stadi. La parola «straordinariamente», che nel vocabolario del tokenizzatore di GPT-2 non esiste per intero, viene spezzata in cinque sottoparole, stra, ord, inar, iam ed ente; ciascuna sottoparola viene poi convertita nel proprio identificativo numerico, 3534, 585, 22050, 1789 e 21872, e il modello riceve i cinque numeri."
 :width: 92%
 
-Cosa arriva davvero al modello, nel tokenizzatore di GPT-2 (la parola è presa
+Cosa arriva al modello, nel tokenizzatore di GPT-2 (la parola è presa
 dentro una frase, con lo spazio che la precede). Una parola lunga e rara non
 entra nel vocabolario intera: si ricompone da pezzi che ci sono, e ogni pezzo
 diventa un numero.
 ```
 
-La catena della {numref}`fig-tokenizzazione-bpe` chiarisce un equivoco
-diffuso: il modello non riceve né parole né caratteri, ma numeri, gli
-*identificativi* (ID) dei pezzi, cioè la posizione di ciascun pezzo
-nell'elenco del vocabolario. Quel numero non va preso come una quantità, che è
-il guaio della numerazione in fila vista con la rappresentazione del testo: il
-modello lo usa soltanto per scegliere una riga di una tabella, quella che
-contiene i numeri con cui rappresenta il pezzo (la *matrice di embedding*). E
-il confine fra un pezzo e l'altro lo ha deciso un algoritmo di frequenze, non
-la grammatica. Ecco che cosa fa il tokenizzatore di GPT-2 con qualche parola:
+La catena della {numref}`fig-tokenizzazione-bpe` chiarisce un equivoco diffuso:
+il modello non riceve né parole né caratteri, ma numeri, gli *identificativi*
+(ID) dei pezzi, cioè la posizione di ciascun pezzo nell'elenco del vocabolario.
+Quel numero non va preso come una quantità, che era il difetto della
+numerazione progressiva vista con la rappresentazione del testo: il modello lo
+usa soltanto per scegliere una riga di una tabella, quella che contiene i
+numeri con cui rappresenta il pezzo (la *matrice di embedding*). E il confine
+fra un pezzo e l'altro è deciso dalle frequenze, non dalla grammatica. Ecco che
+cosa fa il tokenizzatore di GPT-2 con qualche parola:
 
 ```python
 from transformers import AutoTokenizer
@@ -199,15 +198,15 @@ Le parole lunghe e rare si spezzano in pezzi che ricorrono altrove:
 `izz`, `az` e `ione`, con gli stessi ID, e lo spazio che precede la parola
 resta attaccato al suo primo pezzo. *the*, frequentissima nei testi su cui
 questo tokenizzatore è stato costruito, quasi tutti inglesi, è un pezzo solo;
-*casa*, che in quei testi è rara, si spezza in due. Quanto una parola sia
-frequente lo decide il corpus del tokenizzatore, non la lingua di chi lo usa.
+*casa*, che in quei testi è rara, si spezza in due. La frequenza di una parola
+dipende dal corpus del tokenizzatore, non dalla lingua di chi lo usa.
 
 `````{tab} Elementare
 
 Il meccanismo si racconta in quattro righe.
 
 1. Spezza tutte le parole del corpus nelle loro lettere. Il vocabolario di
-   partenza sono le lettere, e basta.
+   partenza è fatto soltanto di lettere.
 2. Guarda tutto il corpus e conta quali due simboli vicini compaiono insieme
    più spesso. Su un testo italiano vero vincono coppie banali e
    frequentissime, come `re` o `to`.
@@ -230,7 +229,7 @@ l’elenco ordinato delle fusioni. Il secondo è più importante del primo,
 perché è la ricetta. Per tokenizzare una parola nuova non serve cercarla da
 nessuna parte: la si spezza in lettere e le si riapplicano le stesse fusioni,
 nello stesso ordine in cui erano state imparate. Se la parola contiene pezzi
-familiari, si ricompongono da soli; se non ne contiene nessuno, resta una fila
+familiari, si ricompongono; se non ne contiene nessuno, resta una fila
 di lettere. Ripassare l'elenco intero per ogni parola sarebbe uno spreco,
 perché le stesse poche parole tornano di continuo: il risultato si scrive
 accanto alla parola la prima volta, e dalla seconda in poi si legge e basta.
@@ -262,19 +261,19 @@ parte dai caratteri e si applicano $m_1, \dots, m_k$ in quest'ordine. L'ordine
 è sostanziale, non convenzionale: una fusione tardiva può agire su simboli che
 solo le precedenti sanno produrre, e invertirne due dà in generale una
 segmentazione diversa. La procedura è deterministica e priva di ricerca: BPE
-non cerca la segmentazione ottima di una parola, ma quella che le sue fusioni
-producono, il che è una proprietà da tenere a mente quando i risultati
-sorprendono.
+non cerca la segmentazione ottima di una parola, ma quella prodotta dalla
+sequenza delle sue fusioni, caratteristica che spiega risultati a prima vista
+sorprendenti.
 
-Sul costo: contare le coppie da zero a ogni passo costa $O(N)$ con $N$
-lunghezza totale del corpus in simboli, per un totale $O(Nk)$. Le
-implementazioni serie non lo fanno: mantengono un indice dalla coppia alle
-posizioni in cui compare e aggiornano solo i conteggi toccati dalla fusione,
-con una coda di priorità sulle frequenze. L'addestramento resta comunque
-un'operazione da fare una volta sola. La codifica di una parola di $L$
-caratteri con l'applicazione ingenua costa $O(kL)$, ma in pratica si tiene una
-cache parola $\to$ token e il costo ammortizzato crolla, perché la
-distribuzione delle parole è fortemente sbilanciata.
+Sulla complessità: contare le coppie da zero a ogni passo richiede $O(N)$, con
+$N$ lunghezza totale del corpus in simboli, per un totale di $O(Nk)$. Le
+implementazioni efficienti evitano questo ricalcolo: mantengono un indice dalla
+coppia alle posizioni in cui compare e aggiornano solo i conteggi toccati dalla
+fusione, con una coda di priorità sulle frequenze. L'addestramento resta
+comunque un'operazione da fare una volta sola. La codifica di una parola di $L$
+caratteri con l'applicazione ingenua richiede $O(kL)$, ma in pratica si tiene
+una cache parola $\to$ token e il costo ammortizzato si riduce drasticamente,
+perché la distribuzione delle parole è fortemente sbilanciata.
 
 Anche l'addestramento è greedy, e l'obiettivo che approssima è stato scritto
 solo di recente: né Gage né Sennrich e colleghi lo enunciano. Zouhar e
@@ -290,22 +289,22 @@ con la coda di priorità porta l'addestramento da $O(Nk)$ a $O(N \log k)$.
 
 `````
 
-Una precisazione tecnica che eviterà confusione più avanti. Così com'è
-descritto, BPE lavora su una parola per volta e non lascia sui pezzi nessuna
-traccia di *dove* si trovavano. Il guaio si vede in uscita: il pezzo `to`
-ritagliato dalla fine di `bassotto` e il pezzo `to` che apre una parola come
-`tornare` sono, per il modello, la stessa identica voce del vocabolario, anche
-se il primo è una desinenza e il secondo l'inizio di un verbo. Nel rimettere
-insieme i pezzi, poi, non c'è modo di sapere dove finisce una parola e comincia
-la successiva. Le implementazioni reali aggiungono perciò un marcatore: nel
-lavoro originale è un simbolo di fine parola, `</w>`; altrove è un simbolo che
-segna l’*inizio*, attaccato allo spazio che precede la parola, ed è la strada
-di SentencePiece che vedremo fra poco. Nell'esempio che segue lo omettiamo per
-non appesantire i conti.
+Così com'è descritto, BPE lavora su una parola per volta e non lascia sui pezzi
+nessuna traccia della loro posizione originaria. Il problema si vede in uscita:
+il pezzo `to` ritagliato dalla fine di `bassotto` e il pezzo `to` che apre una
+parola come `tornare` sono, per il modello, la stessa voce del vocabolario,
+anche se il primo è una desinenza e il secondo l'inizio di un verbo. Nel
+rimettere insieme i pezzi, poi, non c'è modo di sapere dove finisce una parola
+e comincia la successiva. Le implementazioni reali aggiungono perciò un
+marcatore: nel lavoro originale è un simbolo di fine parola, `</w>`; altrove è
+un simbolo d'inizio attaccato allo spazio che precede la parola, come in
+SentencePiece, che si incontra in {doc}`Oltre il BPE
+</NaturalLanguageProcessing/oltre-il-bpe>`. Nell'esempio numerico successivo il
+marcatore è omesso per non appesantire i calcoli.
 
 ## L'esempio svolto: cinque parole, quattro fusioni
 
-Tutto questo diventa chiaro solo facendo i conti a mano. Prendiamo un corpus
+Tutto questo diventa chiaro solo svolgendo i calcoli a mano. Prendiamo un corpus
 giocattolo di cinque parole italiane, con le loro frequenze, scelte perché si
 somigliano abbastanza da condividere pezzi:
 
@@ -319,9 +318,8 @@ somigliano abbastanza da condividere pezzi:
 
 In tutto sono $6 \cdot 5 + 2 \cdot 8 + 3 \cdot 5 + 9 \cdot 5 + 5 \cdot 8 = 146$
 caratteri (il totale tornerà utile con WordPiece, un criterio alternativo che
-divide proprio per delle frequenze). Ogni parola parte spezzata nelle sue
-lettere: `b a s s o`,
-`b a s s o t t o`, e così via.
+divide per le frequenze dei singoli caratteri). Ogni parola parte spezzata
+nelle sue lettere: `b a s s o`, `b a s s o t t o`, e così via.
 
 Passo 1. Contiamo ogni coppia adiacente, pesandola con la frequenza della
 parola. La coppia `s`+`s` compare una volta in ciascuna delle cinque parole,
@@ -361,15 +359,15 @@ Passo 3. Quattro parole su cinque contengono ora il simbolo `sso`:
 `b`+`a` e `a`+`sso` valgono 8 a testa. Vince `r`+`o` con 14. Terza fusione:
 `ro`.
 
-Passo 4. Adesso succede la cosa interessante. La coppia più frequente è
-`ro`+`sso`, con 9, cioè tutte e sole le occorrenze di `rosso`, e la fusione
-produce `rosso`: una parola intera diventa un singolo token. Non c'è nulla
-di speciale nella regola, è sempre la stessa: `ss`, `sso` e `ro` si sono
-formati prima perché li condividono più parole, e *rosso*, la parola più
-frequente del corpus, è la prima a saldarsi per intero. È il motivo per cui,
-nei tokenizzatori veri, le parole più frequenti nel corpus di addestramento
-sono un token solo e quelle rare ne prendono parecchi: in quello di GPT-2,
-come si è visto, *the* è un token e *ortogonalizzazione* ne prende sette.
+Passo 4. La coppia più frequente è `ro`+`sso`, con 9 occorrenze (tutte e sole
+quelle di `rosso`), e la fusione produce `rosso`: una parola intera diventa un
+singolo token. La regola è la stessa dei passi precedenti: `ss`, `sso` e `ro`
+si sono formati prima perché condivisi da più parole, e *rosso*, la parola più
+frequente del corpus, è la prima a saldarsi in un pezzo solo. Per questo, nei
+tokenizzatori reali, le parole più frequenti nel corpus di addestramento
+formano un token solo e quelle rare ne richiedono parecchi: nel vocabolario di
+GPT-2, ad esempio, *the* è un token unico e *ortogonalizzazione* ne prende
+sette.
 
 I quattro passi sono illustrati nella {numref}`fig-bpe-fusioni`: a sinistra
 le cinque parole, che a ogni fusione perdono una scatola; a destra l'elenco,
@@ -386,80 +384,77 @@ diventa un pezzo solo e il corpus si accorcia: 146 pezzi, poi 121, 101, 87 e
 infine 78, con `rosso` in una scatola sola.
 ```
 
-Dopo quattro fusioni il vocabolario contiene le sette lettere del corpus
-(`a b e o r s t`) più `ss`, `sso`, `ro`, `rosso`. Al passo successivo si
-presenterebbe un pareggio, `b`+`a` e `a`+`sso` a quota 8, e serve una regola
-di spareggio, che il programma fissa in modo esplicito: a parità di conteggio
-vince la coppia prima in ordine alfabetico. Un tokenizzatore, rilanciato
-domani sullo stesso corpus, deve produrre esattamente
-lo stesso vocabolario, altrimenti tutto ciò che il modello ha imparato punta ai
-pezzi sbagliati.
+Dopo quattro fusioni il vocabolario contiene le sette lettere del corpus (`a b
+e o r s t`) più `ss`, `sso`, `ro`, `rosso`. Al passo successivo si
+presenterebbe un pareggio, `b`+`a` e `a`+`sso` a quota 8, e serve una regola di
+spareggio, che il programma fissa in modo esplicito: a parità di conteggio
+vince la coppia prima in ordine alfabetico. Un tokenizzatore, rilanciato domani
+sullo stesso corpus, deve produrre lo stesso vocabolario, altrimenti tutto ciò
+che il modello ha imparato punta ai pezzi sbagliati.
 
 ### La parola mai vista
 
 Il collaudo è tokenizzare qualcosa che nel corpus non c'era. Prendiamo
 `bassetto`. Si parte dalle lettere, `b a s s e t t o`, e si riapplicano le
-fusioni imparate nell'ordine in cui sono state imparate. Con le prime
+fusioni nell'ordine in cui sono state imparate. Con le prime
 quattro: `ss` si applica (`b a ss e t t o`), `sso` no (dopo la doppia s c'è
 una e), `ro` no, `rosso` no.
 
-Fermarsi a quattro fusioni sarebbe però un vocabolario ridicolo: lasciamo
-correre l'algoritmo fino a dieci, come fa il programma della sezione «Il BPE in
-Python». Le sei che si aggiungono sono, in ordine e con il conteggio che le ha
-fatte vincere, `a`+`sso` → `asso` (8), `b`+`asso` → `basso` (8), `t`+`o` →
-`to` (7), `t`+`to` → `tto` (7), `e`+`tto` → `etto` (5) e `ro`+`ss` → `ross`
-(5). Con queste in mano, `bassetto` esce così:
+Fermarsi a quattro fusioni produrrebbe però un vocabolario troppo limitato:
+estendiamo l'algoritmo fino a dieci. Le sei che si aggiungono sono, in
+ordine e con il conteggio che le ha fatte prevalere, `a`+`sso` → `asso` (8),
+`b`+`asso` → `basso` (8), `t`+`o` → `to` (7), `t`+`to` → `tto` (7), `e`+`tto` →
+`etto` (5) e `ro`+`ss` → `ross` (5). Con queste fusioni, `bassetto` viene
+segmentato così:
 
 ```
 b | a | ss | etto
 ```
 
-Quattro token, nessun `<UNK>`, e due dei quattro sono pezzi imparati. C'è però
-un dettaglio che merita attenzione, perché smonta un equivoco comune. Nel
-vocabolario, a quel punto, il token `basso` c'è (è la sesta fusione), eppure in
-`bassetto` la `b` e la `a` restano due token separati. Il motivo è che l'unica
-strada per cui quelle due lettere si saldano passa prima per `a`+`sso` e poi
-per `b`+`asso`, e in `bassetto` dopo la doppia s non c'è una o: la prima delle
-due fusioni non scatta, la catena si spezza al primo anello, e la coppia
-`b`+`a`, che pure nel corpus è frequente, non è mai stata imparata come fusione
-a sé. BPE non cerca la scomposizione migliore: riapplica una ricetta. La
-segmentazione che ne esce somiglia spesso alla morfologia, ma non è morfologia,
-e quando le due divergono vince la ricetta.
+Quattro token, nessun `<UNK>`, e due dei quattro sono pezzi imparati. Nel
+vocabolario il token `basso` è presente (è la sesta fusione), eppure in
+`bassetto` le lettere `b` e `a` restano due token separati. L'unica sequenza
+che le unisce passa infatti per `a`+`sso` e poi per `b`+`asso`. In `bassetto`,
+poiché alla doppia s segue una *e*, la prima delle due fusioni non si applica;
+la catena si interrompe subito e la coppia `b`+`a`, per quanto frequente nel
+corpus, non è mai stata registrata come fusione autonoma. BPE non cerca la
+scomposizione migliore: riapplica una ricetta. La segmentazione che ne esce
+somiglia spesso alla morfologia, ma non è morfologia, e quando le due divergono
+vince la ricetta.
 
-Un caso più estremo: un cognome come `rossellini`, mai visto, diventa
+Un caso più estremo: un cognome come `rossellini`, mai visto, produce sette
+token per una parola sola:
 
 ```
 ross | e | l | l | i | n | i
 ```
 
-sette token per una parola sola. È il prezzo che le sotto-parole fanno pagare a
-ciò che è raro, e la sezione {doc}`Oltre il BPE
-</NaturalLanguageProcessing/oltre-il-bpe>` lo ritrova due volte: nei numeri,
-che si spezzano a casaccio, e nelle lingue diverse dall'inglese, che si
+È il costo che le sotto-parole impongono a ciò che è raro, e in {doc}`Oltre il
+BPE </NaturalLanguageProcessing/oltre-il-bpe>` lo si ritrova su due fronti: nei
+numeri, che si spezzano a casaccio, e nelle lingue diverse dall'inglese, che si
 frammentano di più.
 
-E c'è dell'altro, che conviene guardare in faccia invece di girarci intorno,
-perché è il punto in cui la promessa «niente resta fuori» mostra la sua
-condizione.
+Lo stesso cognome mostra anche a quale condizione vale la promessa «niente
+resta fuori».
 
 Guarda le lettere di `rossellini`. Le `l`, le `i` e la `n` nel nostro corpus
 giocattolo non compaiono mai: quel corpus è fatto di cinque parole, e le
 lettere che ci stanno dentro sono sette in tutto, `a b e o r s t`. Un
 tokenizzatore vero, prima di consegnare un pezzo, controlla di averlo nel
-vocabolario; e siccome quelle cinque lettere nel vocabolario non ci sono, al
-posto loro metterebbe cinque `<UNK>`, uno per ciascuna. Sette token, cinque dei
-quali buchi. Il programma della sezione «Il BPE in Python» non lo fa, perché
-riapplica le fusioni alla cieca, senza mai chiedersi se i simboli rimasti siano
-noti: è un programma didattico, non un tokenizzatore di produzione.
+vocabolario; e siccome quelle lettere nel vocabolario non ci sono, al posto
+loro metterebbe cinque `<UNK>`, uno per ogni occorrenza. Sette token, cinque
+dei quali buchi. Il codice didattico che segue non compie questo controllo,
+perché riapplica le fusioni senza verificare che i simboli residui siano noti:
+serve a illustrare l'algoritmo, non a tokenizzare in produzione.
 
-Il punto vero è quello, però, e conviene metterlo per iscritto. L'affermazione
+L'affermazione
 «con le sotto-parole non resta fuori niente» non è una proprietà
 dell'algoritmo: è una scommessa sull'alfabeto di partenza. Si vince finché
 il corpus di addestramento conteneva ogni carattere che potrà mai arrivare.
 Con cinque parole la scommessa è persa in partenza; con un corpus vero è quasi
 sempre vinta, e a farla fallire bastano un ideogramma raro o un'emoji uscita l'anno
-scorso. È il buco che il livello dei byte, fra qualche pagina, chiuderà per
-costruzione e per sempre.
+scorso. È il limite che i tokenizzatori basati sui byte supereranno per
+costruzione.
 
 ## Il BPE in Python
 
@@ -546,10 +541,10 @@ bassetto   -> ('b', 'a', 'ss', 'etto')
 rossellini -> ('ross', 'e', 'l', 'l', 'i', 'n', 'i')
 ```
 
-Le prime quattro fusioni sono esattamente quelle calcolate a mano, con gli
+Le prime quattro fusioni coincidono con quelle calcolate a mano, con gli
 stessi conteggi (25, 20, 14 e 9). Con altre frequenze cambierebbero le
-fusioni e il loro ordine: quello che un tokenizzatore sa delle parole è ciò
-che ha contato nel corpus su cui è stato costruito, e lo trasmette a ogni
+fusioni e il loro ordine: un tokenizzatore sa delle parole solo ciò
+che ha contato nel corpus di addestramento, e lo trasmette a ogni
 modello che lo usa.
 
 `````{tab} Elementare
@@ -566,8 +561,8 @@ modello che lo usa.
   parola mai vista non la cerca da nessuna parte: riapplica l'elenco nello
   stesso ordine. Non cerca la scomposizione migliore, ripete una ricetta.
 - Al modello arrivano numeri, gli ID dei pezzi, che servono solo a trovare la
-  riga giusta di una tabella. Quali parole restano intere lo decide il testo
-  su cui il tokenizzatore è stato costruito: in GPT-2 *the* è un pezzo solo,
+  riga giusta di una tabella. Il testo su cui il tokenizzatore è stato
+  costruito decide quali parole restano intere: in GPT-2 *the* è un pezzo solo,
   *casa* due.
 ```
 `````
@@ -577,24 +572,24 @@ modello che lo usa.
 :class: important
 - Un vocabolario di parole intere produce `<UNK>` (informazione persa e non
   generabile), e per la legge di Heaps non si chiude mai; uno di caratteri
-  allunga le sequenze e fa pagare il costo quadratico dell'attenzione: le
+  allunga le sequenze e comporta il costo quadratico dell'attenzione: le
   sotto-parole sono il compromesso, e la copertura è garantita solo per i
   caratteri visti in addestramento.
-- BPE {cite}`sennrich2016neural` parte dai caratteri e fonde, una alla
-  volta, la coppia adiacente più frequente. Il modello è la lista
-  ordinata delle fusioni, e tokenizzare una parola nuova vuol dire
-  riapplicarle nello stesso ordine, senza cercare la segmentazione migliore.
-  Anche la scelta delle fusioni è greedy, con una garanzia di approssimazione
-  su un'utilità di compressione {cite}`zouhar2023formal`.
+- BPE {cite}`sennrich2016neural` parte dai caratteri e fonde, una alla volta,
+  la coppia adiacente più frequente. Il modello è la lista ordinata delle
+  fusioni, e tokenizzare una parola nuova è riapplicarle nello stesso ordine,
+  senza cercare la segmentazione migliore. Anche la scelta delle fusioni è
+  greedy, con una garanzia di approssimazione su un'utilità di compressione
+  {cite}`zouhar2023formal`.
 - Il modello riceve gli ID dei token, che indicizzano le righe della matrice
   di embedding e non portano informazione come numeri.
 ```
 `````
 
 La ricetta ha tre punti in cui si può intervenire: il criterio con cui si
-sceglie la coppia da incollare (WordPiece), il modo di trattare il testo
-grezzo, spazi compresi, prima di contare (SentencePiece, che al posto delle
-fusioni può usare anche un modello diverso), e l'alfabeto di partenza, che con
-i 256 byte si chiude una volta per tutte. Sono i temi di {doc}`Oltre il BPE
+sceglie la coppia da incollare (WordPiece), il modo di trattare il testo grezzo,
+spazi compresi, prima di contare (SentencePiece, che al posto delle fusioni può
+usare anche un modello diverso), e l'alfabeto di partenza, che con i 256 byte si
+chiude una volta per tutte. Sono i temi di {doc}`Oltre il BPE
 </NaturalLanguageProcessing/oltre-il-bpe>`, con conseguenze che arrivano fino
-al conto che si paga a ogni richiesta fatta a un modello.
+alla spesa di ogni richiesta fatta a un modello.

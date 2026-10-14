@@ -7,18 +7,18 @@ descritta benissimo. A deciderlo è la testa di uscita, una softmax su un
 vocabolario che contiene soltanto parole: qualunque cosa il modello abbia
 capito guardando, per uscire deve passare da lì.
 
-L'asimmetria è strutturale, e detta in una riga suona così: il sistema ha un
-occhio in ingresso e una bocca in uscita, e nessuna mano.
+L'asimmetria è strutturale: il sistema ha un occhio in ingresso e una bocca in
+uscita, e nessuna mano.
 
 `````{tab} Elementare
 
 Al momento di scrivere la parola successiva, il modello ha davanti due cose di
-natura diversa. Da una parte quello che ha già scritto e la fotografia, che gli
+natura diversa. Da una parte il testo già scritto e la fotografia, che gli
 servono per decidere; dall'altra l'elenco da cui deve pescare, e in
-quell'elenco ci sono soltanto parole. È un quiz a crocette in cui la
-fotografia sta nel testo della domanda e le risposte possibili sono tutte
-parole: per quanto bene il modello guardi la foto, può soltanto crocettare una
-parola, e una foto fra le risposte non c'è.
+quell'elenco ci sono soltanto parole. È un quiz a crocette in cui la fotografia
+sta nel testo della domanda e le risposte possibili sono tutte parole: per
+quanto bene il modello guardi la foto, può soltanto crocettare una parola, e
+una foto fra le risposte non c'è.
 
 `````
 
@@ -36,17 +36,17 @@ $$
 dove $\mathbf{I}$ è l'immagine, $E$ l'encoder visivo con il suo connettore,
 $y_t$ il token prodotto al passo $t$ e $V_{\text{testo}}$ il vocabolario di
 uscita. La barra verticale si legge «dato», o «condizionato a», e separa due
-mestieri: a sinistra quel che il modello produce, a destra quel che gli è stato
-messo davanti per produrlo. L'immagine sta a destra: è una condizione, non un
+ruoli: a sinistra l'uscita del modello, a destra la condizione che gli è stata
+messa davanti per produrla. L'immagine sta a destra: è una condizione, non un
 valore che $y_t$ possa assumere.
 
 `````
 
 Da qui la domanda ingenua che è anche quella giusta: e se anche l'immagine
-avesse i suoi token? Se nell'elenco ci fossero, accanto alle parole, dei simboli
-che stanno per pezzi di immagine, l'ultimo strato potrebbe pescare anche quelli,
-e produrre un disegno diventerebbe *lo stesso gesto* con cui si produce una frase.
-L'idea funziona, e ha un prezzo.
+avesse i suoi token? Se nell'elenco ci fossero, accanto alle parole, dei
+simboli che stanno per pezzi di immagine, l'ultimo strato potrebbe pescare
+anche quelli, e produrre un disegno diventerebbe *la stessa operazione* con cui
+si produce una frase. L'idea funziona, ma ha dei costi.
 
 ## Un alfabeto anche per i pixel
 
@@ -69,25 +69,25 @@ livelli (la quantizzazione vettoriale residua), perché un solo codebook è
 troppo grossolano per un'onda. Un'onda è continua, e un alfabeto per il suono
 in natura non esiste: va costruito.
 
-Sui pixel il gesto è tutto qui: comprimere, arrotondare al prototipo più
-vicino, tenere l'indice.
+Sui pixel l'operazione si riduce a tre passi: comprimere, arrotondare al
+prototipo più vicino, tenere l'indice.
 
 ```{figure} ../figures/vq-vae-rappresentazioni-discrete.svg
 :name: fig-vq-vae
 :alt: "L'immagine entra in un encoder che produce una griglia di vettori continui. Accanto, il codebook appreso elenca un numero finito di vettori-prototipo. Ogni vettore della griglia viene sostituito dal prototipo più vicino, e di ciascuno resta soltanto l'indice: la griglia di vettori diventa così una griglia di numeri interi."
 :width: 100%
 
-Da grandezza continua ad alfabeto. L'arrotondamento al prototipo più vicino è
-tutto il trucco: perde qualcosa, ma trasforma un'immagine in una sequenza di
-numeri interi, cioè in qualcosa che un modello di linguaggio sa leggere. La
-freccia tratteggiata è il modo con cui l'addestramento aggira l'arrotondamento,
-facendo finta che non ci sia.
+Da grandezza continua ad alfabeto. L'arrotondamento al prototipo più vicino
+perde informazione, ma trasforma un'immagine in una sequenza di numeri interi,
+cioè in qualcosa che un modello di linguaggio sa leggere. La freccia
+tratteggiata è il modo con cui l'addestramento aggira l'arrotondamento, facendo
+finta che non ci sia.
 ```
 
 Il passaggio che conta in {numref}`fig-vq-vae` è l'ultimo, quando del vettore
 resta solo l'indice. Da lì in poi un'immagine e una frase sono oggetti dello
-stesso tipo per il modello, sequenze di simboli da un vocabolario finito, ed è
-questo che rende possibile trattarle nello stesso Transformer, benché le loro
+stesso tipo per il modello, sequenze di simboli da un vocabolario finito:
+questo permette di trattarle nello stesso Transformer, benché le loro
 statistiche restino molto diverse.
 
 `````{tab} Elementare
@@ -98,7 +98,7 @@ riprodurre una fotografia la divide in tessere di 16 pixel per lato, e per
 ogni tessera prima la descrive con una scheda di pochi numeri, e poi sceglie
 dal catalogo il campione che somiglia di più. Il catalogo non l'ha comprato:
 se l'è costruito guardando migliaia di foto, tenendo i campioni che servivano
-di più. E per rifare la foto c'è un secondo artigiano, che dal numero di
+di più. Per rifare la foto c'è un secondo artigiano, che dal numero di
 catalogo ridisegna la tessera. Alla fine, invece della fotografia, ha una
 lista di numeri di catalogo: uno per tessera, letti riga per riga come si legge
 una pagina.
@@ -113,15 +113,15 @@ Il conto, su una foto di 512 pixel per lato: le tessere sono 32 per riga e 32
 per colonna, in tutto 1.024, e altrettanti sono i numeri della lista, 1.024 per
 un muro bianco come per una folla in piazza, quanto diverse centinaia di parole
 in fila. Ogni numero sta fra 1 e 8.192, e per scriverlo bastano 13 cifre
-binarie: la lista intera pesa poco più di 1,6 kilobyte, contro i 786 della foto
-grezza, circa 470 volte meno. Il risparmio però conta poco (per quello esistono
-già i formati di compressione): quel che conta è che adesso l'immagine è una
-lista di simboli presi da un elenco fisso, esattamente come una frase è una
-lista di parole prese da un dizionario.
+binarie: la lista intera occupa poco più di 1,6 kilobyte, contro i 786 della
+foto grezza, circa 470 volte meno. Il risparmio però conta poco (per quello
+esistono già i formati di compressione): quel che conta è che adesso l'immagine
+è una lista di simboli presi da un elenco fisso, come una frase è una lista di
+parole prese da un dizionario.
 
 Due cose sono andate perse per strada. Il campione scelto è il più vicino che
 c'era in magazzino, non la tessera originale, e la differenza è sparita per
-sempre. E per fare della griglia una lista abbiamo dovuto decidere un ordine di
+sempre. Per fare della griglia una lista abbiamo dovuto decidere un ordine di
 lettura, riga per riga, come per il testo: ma una fotografia non ha un verso di
 lettura, quell'ordine ce lo siamo inventato noi.
 
@@ -153,9 +153,9 @@ $$
 
 dove $\mathrm{sg}$ blocca il gradiente: il secondo termine porta il prototipo
 verso l'uscita dell'encoder, il terzo (con $\beta = 0{,}25$ nel lavoro
-originale) impedisce all'encoder di allontanarsi dai prototipi. Il guasto tipico
-è il collasso del codebook, con molte voci che non vengono mai scelte. Si
-contrasta aggiornando i prototipi con una media mobile esponenziale (una
+originale) impedisce all'encoder di allontanarsi dai prototipi. Il difetto
+tipico è il collasso del codebook, con molte voci che non vengono mai scelte.
+Si contrasta aggiornando i prototipi con una media mobile esponenziale (una
 variante proposta nello stesso lavoro), ricollocando quelli inutilizzati, o
 eliminando del tutto il codebook appreso a favore di una quantizzazione scalare
 su una griglia fissa, componente per componente (FSQ {cite}`mentzer2024finite`,
@@ -164,86 +164,84 @@ cambia rispetto al suono è la forma del dominio: non una sequenza
 monodimensionale di frame, ma un reticolo bidimensionale di patch, che va
 linearizzato (di norma in ordine raster) per diventare una sequenza.
 
-Con i parametri del tokenizzatore di Chameleon {cite}`chameleon2024mixed`,
-$K = 8192$ e un'immagine $512 \times 512$ ridotta a $1024$ token: ogni token
-copre $512^2/1024 = 256$ pixel, cioè una patch di $16 \times 16$, e vale
-$\log_2 8192 = 13$ bit. L'immagine intera occupa $1024 \cdot 13 = 13312$ bit
-contro i $512 \cdot 512 \cdot 3 \cdot 8 = 6\,291\,456$ bit del formato grezzo,
-un fattore di compressione di circa $473$. Il tasso è irrigidito per
-costruzione: qualunque sia il contenuto, l'immagine costa sempre 1.024 token,
-né uno di più per una scena complessa né uno di meno per un muro bianco.
+Con i parametri del tokenizzatore di Chameleon {cite}`chameleon2024mixed`, $K =
+8192$ e un'immagine $512 \times 512$ ridotta a $1024$ token: ogni token copre
+$512^2/1024 = 256$ pixel, cioè una patch di $16 \times 16$, e vale $\log_2 8192
+= 13$ bit. L'immagine intera occupa $1024 \cdot 13 = 13312$ bit contro i $512
+\cdot 512 \cdot 3 \cdot 8 = 6\,291\,456$ bit del formato grezzo, un fattore di
+compressione di circa $473$. Il tasso è irrigidito per costruzione: qualunque
+sia il contenuto, l'immagine occupa sempre 1.024 token, né uno di più per una
+scena complessa né uno di meno per un muro bianco.
 
-Il vocabolario del modello diventa allora l'unione
-$V = V_{\text{testo}} \cup V_{\text{img}}$; in Chameleon un vocabolario BPE da
-65.536 voci che include le 8.192 dell'immagine. Da notare l'ordine di grandezza
-del contesto: un'immagine occupa quanto un migliaio di token di testo, cioè
-diverse centinaia di parole, e con più immagini il contesto e la KV cache si
-riempiono in fretta; il conto per intero lo fa la sezione {doc}`Il costo del
-dettaglio </VisioneLinguaggio/risoluzione-e-dettaglio>`.
+Il vocabolario del modello diventa allora l'unione $V = V_{\text{testo}} \cup
+V_{\text{img}}$; in Chameleon un vocabolario BPE da 65.536 voci che include le
+8.192 dell'immagine. Per il contesto, un'immagine occupa quanto un migliaio di
+token di testo, cioè diverse centinaia di parole, e con più immagini il
+contesto e la KV cache si riempiono in fretta; il calcolo completo è nella
+sezione {doc}`Il costo del dettaglio
+</VisioneLinguaggio/risoluzione-e-dettaglio>`.
 
 `````
 
 ## Dove si incontrano i due flussi
 
-Con i token visivi in mano si può dare un significato preciso alle due parole
-del titolo, quello che usa la letteratura sui modelli a token: tardiva è ogni
-architettura che tiene un encoder per ciascuna modalità, precoce quella in cui
-le modalità entrano nella stessa sequenza fin dall'ingresso e le elabora un
-solo Transformer, con gli stessi pesi. Delle tre strade dell'apertura del
-capitolo qui ne bastano quindi due: la mappa di CLIP e l'occhio innestato
-stanno dal lato tardivo, anche se nel secondo i token visivi entrano nel
-modello di linguaggio fin dal primo strato, e nessuno dei due sa produrre
-un'immagine. La differenza non sta in quanta informazione si scambiano immagine
-e testo, ma in come ciascuna modalità arriva alla sequenza: con un proprio
-encoder già addestrato, oppure con lo stesso vocabolario e gli stessi pesi.
+Con i token visivi in mano si possono definire «tardiva» e «precoce» nel senso
+che usa la letteratura sui modelli a token: tardiva è ogni architettura che
+tiene un encoder per ciascuna modalità, precoce quella in cui le modalità
+entrano nella stessa sequenza fin dall'ingresso e le elabora un solo
+Transformer, con gli stessi pesi. Delle tre strade presentate in apertura di
+capitolo ne bastano quindi due: la mappa di CLIP e l'occhio innestato stanno
+dal lato tardivo, anche se nel secondo i token visivi entrano nel modello di
+linguaggio fin dal primo strato, e nessuno dei due sa produrre un'immagine. La
+differenza non sta in quanta informazione si scambiano immagine e testo, ma in
+come ciascuna modalità arriva alla sequenza: con un proprio encoder già
+addestrato, oppure con lo stesso vocabolario e gli stessi pesi.
 
 `````{tab} Elementare
 
 In una prima redazione il fotografo e chi scrive lavorano in stanze separate:
-il fotografo guarda le sue immagini, passa a chi scrive quello che ha visto, ed
-esce di scena. Che gli passi un foglietto riassunto o il fascicolo intero, e
-anche se il fascicolo arriva sulla scrivania prima che si scriva la prima riga,
-qui non cambia niente: quel che conta è che il fotografo lavora con i suoi
-attrezzi e chi riceve fa un mestiere solo, mettere in fila delle parole. Il
-prodotto è sempre e soltanto un testo: da quella redazione non esce mai una
-fotografia, perché chi tiene la penna non ha mai avuto in mano una macchina
-fotografica.
+il fotografo guarda le sue immagini, passa a chi scrive quanto ha visto, ed
+esce di scena. Che il fotografo passi un foglietto riassuntivo o il fascicolo
+intero, e che il fascicolo arrivi sulla scrivania prima della prima riga, qui
+non cambia niente: il fotografo lavora con i suoi attrezzi, e chi riceve ha un
+solo compito, mettere in fila delle parole. Il prodotto è sempre e soltanto un
+testo: da quella redazione non esce mai una fotografia, perché chi tiene la
+penna non ha mai avuto in mano una macchina fotografica.
 
 Nella seconda redazione c'è una persona sola, e davanti a sé ha una cassa
 tipografica come quelle dei caratteri mobili: nelle caselle ci sono le lettere,
 e nelle caselle accanto ci sono i campioni del mosaicista di cui si parlava
-prima. Sono nella stessa cassa, si prendono con lo stesso gesto. Chi compone può
+prima. Sono nella stessa cassa e si prendono allo stesso modo. Chi compone può
 mettere in riga tre parole, poi mille campioni, poi altre due parole, e
 rileggendo la riga non distingue fra le due cose: sono tutti pezzi di piombo.
 Questa persona può produrre un'immagine per la stessa ragione per cui può
 produrre una frase, e cioè perché i pezzi stanno tutti nella stessa cassa.
 
-Il prezzo si intuisce già: la prima redazione la metti in piedi assumendo un
-fotografo che sa già fotografare e uno scrittore che sa già scrivere; la seconda
-devi formarla, spesso da capo, e chi la compone dovrà imparare due mestieri
-insieme, con la stessa testa.
+La contropartita si intuisce già: la prima redazione la metti in piedi assumendo un
+fotografo che sa già fotografare e uno scrittore che sa già scrivere; la
+seconda devi formarla, spesso da capo, e chi la compone dovrà imparare due
+competenze insieme, con la stessa testa.
 
 `````
 
 `````{tab} Superiore
 
 Le profondità di fusione dell'apertura del capitolo sono tre, ma con il
-criterio di Chameleon {cite}`chameleon2024mixed`, encoder separati per
-modalità o no, ne bastano due: i connettori, la via *intermedia*, ricadono dal
-lato tardivo, perché l'encoder visivo resta una rete a sé, i pesi che elaborano
-le due modalità restano quelli di due modelli pre-addestrati per conto proprio,
-e lo strato di uscita produce soltanto token di testo.
+criterio di Chameleon {cite}`chameleon2024mixed`, encoder separati per modalità
+o no, ne bastano due: i connettori, la via *intermedia*, ricadono dal lato
+tardivo, perché l'encoder visivo resta una rete a sé, i pesi che elaborano le
+due modalità restano quelli di due modelli pre-addestrati a parte, e lo strato
+di uscita produce soltanto token di testo.
 
 **Fusione tardiva.** Ciascuna modalità ha il suo encoder, addestrato a parte, e
 le rappresentazioni si combinano dopo che ciascuna è stata costruita. Nel caso
-estremo, l'addestramento contrastivo della sezione su CLIP, l'unica
-interazione fra le modalità è un prodotto scalare fra due vettori. Nel caso dei
-connettori l'interazione è più profonda (le patch entrano come prefisso, o via
+estremo, l'addestramento contrastivo della sezione su CLIP, l'unica interazione
+fra le modalità è un prodotto scalare fra due vettori. Nel caso dei connettori
+l'interazione è più profonda (le patch entrano come prefisso, o via
 cross-attention a ogni quarto strato in Flamingo-9B), ma l'encoder visivo resta
 una rete a sé, i pesi restano in gran parte quelli di due modelli
-pre-addestrati per conto proprio, e soprattutto la testa di uscita è una
-softmax su $V_{\text{testo}}$: la capacità generativa è asimmetrica per
-costruzione.
+pre-addestrati separatamente, e soprattutto la testa di uscita è una softmax su
+$V_{\text{testo}}$: la capacità generativa è asimmetrica per costruzione.
 
 **Fusione precoce.** Le due modalità diventano token dello stesso vocabolario
 $V$ all'ingresso, e da lì in avanti non esistono più due flussi: c'è una
@@ -277,41 +275,41 @@ più che una funzionalità in più.
 
 Lo stesso schema, un catalogo e un Transformer solo, si estende oltre le
 immagini ferme. Emu3 {cite}`wang2024emu3`, un modello del 2024, riduce a numeri
-di catalogo, allo stesso modo, testo, immagini e video. Qui il catalogo comprime
-anche nel tempo: quattro fotogrammi consecutivi diventano un solo gruppo di
-token, altrimenti un secondo di ripresa costerebbe quanto le ventiquattro o
-trenta fotografie che lo compongono. Sopra ci sta un unico Transformer
-addestrato da zero, con l'unico obiettivo di predire il simbolo successivo. Lo
-stesso modello genera e capisce: nella stessa sequenza di simboli sta la
-richiesta di produrre un'immagine e la domanda su un'immagine già data. Che il
-video entri quasi senza modifiche è un'indicazione: quel che rende la fusione
-precoce interessante è che il formato «sequenza di simboli» le assorbe tutte.
+di catalogo, allo stesso modo, testo, immagini e video. Qui il catalogo
+comprime anche nel tempo: quattro fotogrammi consecutivi diventano un solo
+gruppo di token, altrimenti un secondo di ripresa occuperebbe tanti token
+quanti le ventiquattro o trenta fotografie che lo compongono. Sopra ci sta un
+unico Transformer addestrato da zero, con l'unico obiettivo di predire il
+simbolo successivo. Lo stesso modello genera e capisce: nella stessa sequenza
+di simboli sta la richiesta di produrre un'immagine e la domanda su un'immagine
+già data. Che il video entri quasi senza modifiche indica il punto di forza
+della fusione precoce: il formato «sequenza di simboli» assorbe tutte le
+modalità.
 
 ## Perché non l'hanno fatto subito
 
-A leggerla così, la fusione precoce sembra la cosa ovvia da fare, e viene da
-chiedersi perché la strada battuta sia stata a lungo l'altra. Le ragioni sono
-due, ed entrambe dicono qualcosa sui modelli in generale.
+Letta così, la fusione precoce sembra la scelta ovvia, e viene da chiedersi
+perché per tanto tempo si sia battuta l'altra strada. Le ragioni sono due.
 
 L'idea in sé è vecchia quanto CLIP: DALL·E {cite}`ramesh2021zero`, nel 2021,
-metteva già 256 token di testo e 1.024 token d'immagine, da un codebook di 8.192
-voci, in un unico Transformer, ma solo per generare immagini dal testo.
+metteva già 256 token di testo e 1.024 token d'immagine, da un codebook di
+8.192 voci, in un unico Transformer, ma solo per generare immagini dal testo.
 Estenderla a un modello che legga e scriva entrambe le cose, in ordine
-qualsiasi, si è scontrato proprio con quelle due ragioni. La prima è economica
-ed è la più banale: la fusione tardiva riusa. Un encoder visivo pre-addestrato e
-un modello di linguaggio pre-addestrato esistono già, sono costati a qualcun
-altro, e il connettore che li unisce si addestra con risorse alla portata di un
-laboratorio universitario. La fusione precoce riusa meno, perché il suo
-vocabolario non è quello di nessun modello esistente: in Chameleon e in Emu3 il
-pre-addestramento è stato rifatto da zero, su migliaia di miliardi di token.
-Lavori successivi partono invece da un modello di linguaggio già addestrato e
-ne estendono il vocabolario con i token visivi (Show-o {cite}`xie2024showo`,
-Liquid {cite}`wu2024liquid`), con un costo di addestramento molto minore.
+qualsiasi, ha incontrato quelle due ragioni. La prima è economica: la fusione
+tardiva riusa. Un encoder visivo pre-addestrato e un modello di linguaggio
+pre-addestrato esistono già, sono costati a qualcun altro, e il connettore che
+li unisce si addestra con risorse alla portata di un laboratorio universitario.
+La fusione precoce riusa meno, perché il suo vocabolario non è quello di nessun
+modello esistente: in Chameleon e in Emu3 il pre-addestramento è stato rifatto
+da zero (in Chameleon su migliaia di miliardi di token). Lavori successivi
+partono invece da un modello di linguaggio già addestrato e ne estendono il
+vocabolario con i token visivi (Show-o {cite}`xie2024showo`, Liquid
+{cite}`wu2024liquid`), con un addestramento molto più breve.
 
 La seconda è che il modello che ne esce è più difficile da addestrare: non più
-lento, instabile. La loss, il costo che l'addestramento deve far scendere, a un
-certo punto diverge invece di calare fino alla fine; e lo fa tardi, quando una
-parte importante del calcolo è già stata spesa.
+lento, instabile. La loss, il costo che l'addestramento deve far
+scendere, a un certo punto diverge invece di calare fino alla fine; e lo fa
+tardi, quando una parte importante del calcolo è già stata spesa.
 
 `````{tab} Elementare
 
@@ -339,10 +337,9 @@ l'addestramento salta.
 
 La cura è quella di un fonico: dei limitatori, in tre punti diversi. Uno dove
 il segnale entra nell'amplificatore. Uno a ogni passaggio della catena, prima
-che quel che il passaggio aggiunge si sommi a quel che gli è arrivato. E uno in
-fondo, sul livello che va all'altoparlante, che tiene fermo il totale senza
-toccare l'equilibrio fra le due voci. Nessuno perde il diritto di parola, si
-toglie solo la possibilità di urlare.
+che quel che il passaggio aggiunge si sommi a quel che gli è arrivato. L'ultimo
+in fondo, sul livello che va all'altoparlante, che tiene fermo il totale senza
+toccare l'equilibrio fra le due voci.
 
 `````
 
@@ -359,7 +356,7 @@ senza che la funzione di perdita se ne accorga. Le norme di query e chiavi
 crescono, con esse i logit $\mathbf{Q}\mathbf{K}^\top/\sqrt{d_k}$ che entrano
 nella softmax dell'attenzione, e quando quei valori escono dall'intervallo in
 cui l'aritmetica a precisione ridotta (bf16) rappresenta ancora qualcosa,
-l'addestramento diverge. La crescita è lenta, ed è questo a renderla insidiosa:
+l'addestramento diverge. La crescita è lenta, e per questo insidiosa:
 nel lavoro citato il problema compare sopra gli 8 miliardi di parametri e i
 mille miliardi di token, e le divergenze possono arrivare anche dopo il 20-30%
 dell'addestramento (il modello da 7 miliardi senza normalizzazione di query e
@@ -399,11 +396,10 @@ della softmax, cioè la somma degli esponenziali dei logit: non tocca le
 probabilità, che dal livello assoluto non dipendono, ma toglie al modello la
 libertà di farlo crescere.
 
-La lezione generale va oltre la multimodalità: quando
-più sorgenti eterogenee condividono gli stessi parametri, la competizione fra
-di esse si scarica sulle norme, e la stabilità va difesa esattamente dove
-quelle norme entrano in una softmax, che della loro crescita non si accorge
-finché non è troppo tardi.
+La lezione generale va oltre la multimodalità: quando più sorgenti eterogenee
+condividono gli stessi parametri, la competizione fra di esse si scarica sulle
+norme, e la stabilità va difesa nei punti in cui quelle norme entrano in una
+softmax, che della loro crescita non si accorge finché non è troppo tardi.
 
 `````
 
@@ -416,16 +412,15 @@ ogni patch di $16 \times 16$ pixel (768 byte di colori) diventa uno fra 8.192
 simboli: sopravvive la struttura grossa, non il tratto sottile. Il caso
 peggiore è il testo dentro l'immagine, perché un carattere di un documento
 fotografato sta nella scala di dettaglio che la quantizzazione cancella; il
-lavoro su Chameleon lo dichiara come la debolezza principale del proprio
+lavoro su Chameleon lo indica come la debolezza principale del proprio
 tokenizzatore, che limita le prestazioni sui compiti di OCR
 {cite}`chameleon2024mixed`.
 
 ## Due obiettivi, un modello solo
 
-A questo punto la domanda diventa più precisa. Il primo motivo per la fusione
-precoce è rendere l'immagine qualcosa che il modello possa emettere, non solo
-leggere. Ma questo richiede davvero che l'immagine sia fatta di simboli
-discreti? La diffusione genera un'immagine in un altro modo, che non usa
+Il primo motivo per la fusione precoce è rendere l'immagine qualcosa che il
+modello possa emettere, non solo leggere. Questo non obbliga a usare simboli
+discreti: la diffusione genera un'immagine in un altro modo, che non usa
 vocabolari: parte da rumore gaussiano e ne toglie un po' a ogni passo, come
 descrive il {doc}`capitolo sui modelli di diffusione
 </ModelliDiffusione/overview>`.
@@ -448,18 +443,17 @@ immagini.)
 
 Una persona che sa scrivere e dipingere non usa la stessa tecnica per le due
 cose, e non c'è ragione di obbligarla. Il testo lo scrive da sinistra a destra,
-una parola dopo l'altra, e mentre sceglie una parola può rileggere solo quel
-che ha già scritto: quello che verrà dopo non esiste ancora. Il quadro no: il
-quadro lo abbozza tutto insieme e poi ci ripassa sopra, e mentre ritocca
-l'angolo in alto a sinistra guarda anche l'angolo in basso a destra, perché
-sono già lì tutti e due e devono stare insieme.
+una parola dopo l'altra, e mentre sceglie una parola può rileggere solo le
+parole già scritte: le successive non esistono ancora. Il quadro no: il quadro
+lo abbozza tutto insieme e poi ci ripassa sopra, e mentre ritocca l'angolo in
+alto a sinistra guarda anche l'angolo in basso a destra, perché sono già lì
+tutti e due e devono stare insieme.
 
-È esattamente questa la differenza che il modello si porta dentro. Quando
-elabora le parole, ogni posizione guarda solo all'indietro. Quando elabora i
-pezzi di un'immagine, dentro quel blocco tutti guardano tutti, avanti e
-indietro, perché non c'è un verso di lettura da rispettare: è la stessa
-obiezione che avevamo lasciato in sospeso quando abbiamo dovuto decidere,
-arbitrariamente, di leggere il mosaico riga per riga.
+Il modello si porta dentro questa stessa differenza. Quando elabora le parole,
+ogni posizione guarda solo all'indietro. Quando elabora i pezzi di un'immagine,
+dentro quel blocco tutti guardano tutti, avanti e indietro, perché non c'è un
+verso di lettura da rispettare. Cade così l'obiezione sull'ordine arbitrario
+in cui il mosaico veniva letto, riga per riga.
 
 Quando nel foglio arriva il punto in cui ci vuole un disegno, chi scrive posa
 la penna, apre un riquadro, lo abbozza e lo rifinisce guardando quel che ha
@@ -470,14 +464,14 @@ pennello.
 
 Il vantaggio pratico si vede subito: siccome l'immagine non viene mai
 arrotondata a un catalogo di tessere, il dettaglio fine non viene buttato via
-in partenza. Il vantaggio di principio è che si smette di fingere che un
-disegno sia una frase.
+in partenza. In linea di principio, poi, un disegno non viene più trattato come
+se fosse una frase.
 
 `````
 
 `````{tab} Superiore
 
-Due meccanismi reggono la costruzione.
+La costruzione poggia su due meccanismi.
 
 **L'attenzione mista.** La maschera è causale fra i token di testo, come in
 qualunque decoder, ma bidirezionale all'interno di ciascun blocco immagine:
@@ -487,43 +481,42 @@ motivazione è che l'ordine raster è una finzione: gli elementi di un'immagine
 sono co-presenti, non successivi, e imporre loro una causalità è un vincolo
 gratuito.
 
-**I due obiettivi.** La perdita è la somma di due termini che nel resto del
-libro vivono separati, uno per il testo e uno per l'immagine,
+**I due obiettivi.** La perdita è la somma di due termini che altrove nel libro
+compaiono separati, uno per il testo e uno per l'immagine,
 
 $$
 \mathcal{L} = \mathcal{L}_{\text{LM}} + \lambda\, \mathcal{L}_{\text{DDPM}},
 $$
 
 dove $\mathcal{L}_{\text{LM}}$ è la cross-entropia sul token successivo
-calcolata sulle sole posizioni testuali, $\mathcal{L}_{\text{DDPM}}$ è
-l'errore quadratico sul rumore stimato calcolato sulle sole posizioni visive
-(la $\mathbb{E}\lVert \epsilon - \epsilon_\theta(\mathbf{x}_t, t) \rVert^2$ che
-il capitolo sulla diffusione deriverà per esteso: $\epsilon$ è il rumore davvero
-aggiunto, $\epsilon_\theta$ quello che il modello stima di dover togliere, e
-questo $t$ è il livello di rumore, non la posizione nella sequenza)
-e $\lambda$ pesa il secondo rispetto al primo (nel lavoro
-originale $\lambda = 5$). Le due perdite non riguardano parametri diversi:
-attraversano gli stessi strati, e ogni peso del Transformer riceve gradienti da
-entrambe. Restano specifici della modalità soltanto gli innesti agli estremi
-(l'embedding dei token di testo da una parte, i pochi strati che impacchettano
-e spacchettano le patch latenti dall'altra), che è il minimo indispensabile per
+calcolata sulle sole posizioni testuali, $\mathcal{L}_{\text{DDPM}}$ è l'errore
+quadratico sul rumore stimato calcolato sulle sole posizioni visive (la
+$\mathbb{E}\lVert \epsilon - \epsilon_\theta(\mathbf{x}_t, t) \rVert^2$ che il
+capitolo sulla diffusione deriverà per esteso: $\epsilon$ è il rumore
+effettivamente aggiunto, $\epsilon_\theta$ il rumore che il modello stima di
+dover togliere, e questo $t$ è il livello di rumore, non la posizione nella
+sequenza) e $\lambda$ pesa il secondo rispetto al primo (nel lavoro originale
+$\lambda = 5$). Le due perdite non riguardano parametri diversi: attraversano
+gli stessi strati, e ogni peso del Transformer riceve gradienti da entrambe.
+Restano specifici della modalità soltanto gli innesti agli estremi (l'embedding
+dei token di testo da una parte, i pochi strati che impacchettano e
+spacchettano le patch latenti dall'altra), che è il minimo indispensabile per
 far entrare due tipi di dato nella stessa sequenza.
 
-In generazione il modello lavora in due modalità e passa dall'una all'altra da
-sé: campiona parole finché non emette il simbolo speciale che apre
-un'immagine, a quel punto accoda un blocco di patch di puro rumore, esegue su
-quel blocco il ciclo di denoising del capitolo sulla diffusione (con tutto il
-testo precedente che fa da condizionamento, tramite l'attenzione), chiude il
-blocco e torna a scrivere parole.
+In generazione il modello lavora in due modalità e passa dall'una all'altra
+senza interventi esterni: campiona parole finché non emette il simbolo speciale
+che apre un'immagine, a quel punto accoda un blocco di patch di puro rumore,
+esegue su quel blocco il ciclo di denoising del capitolo sulla diffusione (con
+tutto il testo precedente che fa da condizionamento, tramite l'attenzione),
+chiude il blocco e torna a scrivere parole.
 
 `````
 
-La regola su chi può guardare chi (in gergo, la maschera di attenzione) è
-l'unico pezzo davvero nuovo, e sta in poche righe. Costruiamola per una
-sequenza di nove posizioni: tre token di testo, un blocco immagine di quattro
-patch, altri due token di testo. Nell'uscita, che disegna la struttura meglio
-di qualunque descrizione, `X` vuol dire che l'attenzione è permessa e `.` che è
-vietata.
+La maschera di attenzione, cioè la regola su chi può guardare chi, è l'unico
+pezzo nuovo e occupa poche righe. Costruiamola per una sequenza di nove
+posizioni: tre token di testo, un blocco immagine di quattro patch, altri due
+token di testo. Nell'uscita `X` vuol dire che l'attenzione è permessa e `.` che
+è vietata.
 
 ```python
 import numpy as np
@@ -566,7 +559,7 @@ XXXXXXXXX
 ```
 
 Le prime tre righe e le ultime due sono la regola di sempre per le parole:
-ognuna guarda solo all'indietro, ed è la maschera causale. Le quattro righe
+ognuna guarda solo all'indietro, cioè la maschera causale. Le quattro righe
 centrali sono il blocco immagine: ciascuna vede tutte e quattro
 le patch, comprese quelle che vengono dopo, e vede tutto il testo che precede.
 Nessuna riga di testo, invece, guarda avanti. In PyTorch questa matrice si
@@ -596,16 +589,16 @@ consegne fra i due; e quel passaggio, che è fatto di parole, è il punto in cui
 l'informazione si perde. Un vocabolario comune, o un modello con due obiettivi,
 tiene tutto in un contesto solo.
 
-Onestà d'obbligo, per chiudere: il campo non ha deciso, e i sistemi reali sono
-spesso ibridi (un encoder continuo per capire, un decoder generativo per
-produrre, dentro lo stesso prodotto). L'argomento a favore della fusione
-precoce non è che generi meglio, perché su questo confrontare i sistemi ha
-poco senso e invecchia in fretta: è che la condivisione dei parametri
-*dovrebbe* produrre un trasferimento fra le due direzioni. Imparare a
-disegnare un gatto dovrebbe aiutare a riconoscerlo, perché per generarlo
-bisogna sapere com'è fatto, mentre per descriverlo spesso basta indovinare
-quello che di solito si scrive sotto una foto del genere, cioè parlare della
-fotografia senza averla guardata: il problema che l’{doc}`apertura del capitolo
+Il campo non ha deciso, e i sistemi reali sono spesso ibridi (un encoder
+continuo per capire, un decoder generativo per produrre, dentro lo stesso
+prodotto). L'argomento a favore della fusione precoce non è che generi meglio,
+perché su questo confrontare i sistemi ha poco senso e invecchia in fretta: è
+che la condivisione dei parametri *dovrebbe* produrre un trasferimento fra le
+due direzioni. Imparare a disegnare un gatto dovrebbe aiutare a riconoscerlo,
+perché per generarlo bisogna sapere com'è fatto, mentre per descriverlo spesso
+basta indovinare quello che di solito si scrive sotto una foto del genere, cioè
+parlare della fotografia senza averla guardata: il problema che
+l’{doc}`apertura del capitolo
 </VisioneLinguaggio/overview>` ha chiamato allucinazione visiva.
 
 La prova che deciderebbe la questione ha allora questa forma: a parità di
@@ -615,20 +608,20 @@ vocabolario comune è un modo di imparare meglio, e non una comodità
 architetturale, e vale il costo di estendere e riaddestrare il modello. Se le
 due capacità si limitano a convivere senza aiutarsi, la fusione precoce resta
 una scelta di ingegneria, giustificata quando serve un solo sistema al posto di
-due, e il connettore continuerà a vincere per la ragione più semplice del
-mondo: costa meno. Le prove disponibili nel 2024 vanno in direzioni diverse, e
-nessuna è quel confronto a parità di tutto. Liquid {cite}`wu2024liquid` riporta
-che in uno spazio di token unificato generazione e comprensione si rinforzano a
+due, e il connettore continuerà a vincere per una ragione semplice: è più
+economico. Le prove disponibili nel 2024 vanno in direzioni diverse, e nessuna
+è quel confronto a parità di tutto. Liquid {cite}`wu2024liquid` riporta che in
+uno spazio di token unificato generazione e comprensione si rinforzano a
 vicenda, e che il calo dovuto all'addestramento congiunto diminuisce al
 crescere del modello; Janus {cite}`wu2024janus` trova invece un conflitto fra i
-due compiti quando condividono lo stesso encoder visivo, e separa i due percorsi
-di codifica mantenendo un solo Transformer.
+due compiti quando condividono lo stesso encoder visivo, e separa i due
+percorsi di codifica mantenendo un solo Transformer.
 
-Che l'immagine entri come simboli o come vettori continui, comunque, il conto
-dei pezzi resta: ogni patch occupa un posto nella sequenza, e la sezione
-{doc}`Il costo del dettaglio </VisioneLinguaggio/risoluzione-e-dettaglio>`
-mostra che il problema si sposta, ma non sparisce nemmeno con gli encoder
-continui.
+Che l'immagine entri come simboli o come vettori continui, comunque, il numero
+dei pezzi resta un vincolo: ogni patch occupa un posto nella sequenza, e la
+sezione {doc}`Il costo del dettaglio
+</VisioneLinguaggio/risoluzione-e-dettaglio>` mostra che il problema si sposta,
+ma non sparisce nemmeno con gli encoder continui.
 
 `````{tab} Elementare
 
@@ -640,28 +633,30 @@ continui.
 - Il mosaicista con il catalogo dà all'immagine i suoi simboli: si divide la
   foto in tessere, per ognuna si sceglie dal catalogo di 8.192 campioni quello
   che le somiglia di più, e della foto resta una lista di numeri di catalogo.
-  Da quel momento disegnare e scrivere sono lo stesso mestiere.
+  Da quel momento disegnare e scrivere sono la stessa operazione.
 - Due redazioni. Nella prima il fotografo passa un foglietto a chi scrive ed
   esce di scena: da lì esce sempre e solo un testo. Nella seconda c'è una cassa
   tipografica dove le lettere e i campioni stanno nelle caselle accanto, e chi
-  compone le prende con lo stesso gesto: quella redazione può produrre anche
+  compone le prende allo stesso modo: quella redazione può produrre anche
   un'immagine.
-- Il conto della seconda strada è doppio: bisogna rifare buona parte della
+- La seconda strada chiede un doppio sforzo: bisogna rifare buona parte della
   formazione, spesso da capo, e i due cantanti con un solo amplificatore alzano
   la voce a turno finché quel che esce si impasta e gracchia. Si cura con dei
-  limitatori in tre punti della catena, cioè togliendo a tutti la possibilità di
-  urlare senza toccare l'equilibrio fra le voci.
+  limitatori in tre punti della catena, cioè togliendo a tutti la possibilità
+  di urlare senza toccare l'equilibrio fra le voci.
 - Arrotondare butta via: il campione scelto a catalogo non è mai identico alla
   tessera vera, e la differenza non torna più. Il primo a sparire è il
   dettaglio sottile, cioè il testo scritto dentro una fotografia.
 - C'è una via di mezzo: una macchina sola che scrive da sinistra a destra e
   dipinge tutto insieme, con due tecniche diverse per le due cose e nessun
-  arrotondamento. Il quadrato di `X` e di punti mostra la regola: le parole
-  guardano solo indietro, le tessere della stessa immagine si guardano tutte fra
-  loro, perché una fotografia non ha un verso di lettura.
-- La domanda aperta non è quale disegni meglio, ma se imparare a disegnare aiuti
-  a capire. Se sì, la lingua unica vale il suo costo; se no, vince l'innesto,
-  che costa meno. Le prime prove, del 2024, non sono d'accordo fra loro.
+  arrotondamento. La maschera di attenzione (le `X` e i punti del codice)
+  mostra la regola: le parole guardano solo indietro, le tessere della stessa
+  immagine si guardano tutte fra loro, perché una fotografia non ha un verso di
+  lettura.
+- La domanda aperta non è quale disegni meglio, ma se imparare a disegnare
+  aiuti a capire. Se sì, la lingua unica vale il suo costo; se no, vince
+  l'innesto, che è più economico. Le prime prove, del 2024, non sono d'accordo
+  fra loro.
 ```
 
 `````
@@ -684,7 +679,7 @@ continui.
   solo Transformer e un solo obiettivo autoregressivo
   {cite}`chameleon2024mixed`, esteso al video da {cite}`wang2024emu3`. Solo la
   seconda genera, perché la simmetria è nel vocabolario.
-- Il conto della fusione precoce è doppio: il pre-addestramento va rifatto da
+- Per la fusione precoce gli oneri sono due: il pre-addestramento va rifatto da
   zero, o esteso a lungo partendo da un modello di linguaggio
   {cite}`xie2024showo`, e con pesi condivisi fra modalità dalle statistiche
   diverse le norme crescono, finché i logit dell'attenzione escono
@@ -703,7 +698,7 @@ continui.
   dentro il blocco immagine, perché un'immagine non ha un ordine di lettura.
 - La domanda aperta non è quale generi meglio, ma se condividere i parametri
   produca trasferimento fra capire e generare. Se sì, il vocabolario comune
-  vale il suo costo; se no, l'innesto vince perché costa meno. Le prove del
+  vale il suo costo; se no, l'innesto vince perché è più economico. Le prove del
   2024 vanno in direzioni opposte {cite}`wu2024liquid`, {cite}`wu2024janus`.
 ```
 

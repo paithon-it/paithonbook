@@ -25,8 +25,8 @@ lavastoviglie, e la frase diventa testo (e poi azione) in una frazione di
 secondo. In mezzo c'è la storia dell’ASR (*Automatic Speech Recognition*),
 il riconoscimento vocale automatico.
 
-Gli attrezzi del mestiere li ha già costruiti il {doc}`capitolo
-sull'audio </Audio/overview>`, e qui si mettono in fila sulla voce.
+Gli strumenti per trattare il suono li ha già costruiti il {doc}`capitolo
+sull'audio </Audio/overview>`; qui servono sulla voce.
 
 ## Che cosa fa, in fondo
 
@@ -40,9 +40,9 @@ suono (alti, bassi, pause) e produci una riga di parole scritte. Dieci secondi
 di registrazione diventano una ventina di parole, e nessuno ti dice quanti
 centesimi di secondo tocchino a ciascuna. Dove il parlato è impastato torni
 indietro, riascolti, provi due letture possibili e scrivi quella che ti
-convince di più. Il riconoscitore vocale fa esattamente questo: in ingresso
-l'onda sonora catturata dal microfono, in uscita del testo. Del significato
-non capisce niente: il suo mestiere finisce con le lettere giuste.
+convince di più. Il riconoscitore vocale fa lo stesso: in ingresso l'onda
+sonora catturata dal microfono, in uscita del testo. Del significato non
+capisce niente, e si ferma alle lettere giuste.
 
 `````
 
@@ -100,9 +100,9 @@ Un pezzo del sistema giudica *quanto questo suono somiglia alla parola
 «cane»*; un altro pezzo, che
 ha letto montagne di testo italiano, giudica *quanto è plausibile la frase «il
 cane abbaia» rispetto a «il cane abbaglia»*. La trascrizione finale è quella
-che i due giudizi promuovono insieme, e basta che uno dei due la bocci perché
-sia fuori, per quanto l'altro la lodi. Ecco perché il contesto risolve gli
-omofoni: da solo il suono non basta, serve sapere che frasi hanno senso.
+che supera il giudizio di entrambi: se uno dei due la boccia, è fuori, per
+quanto l'altro la lodi. Per questo il contesto risolve gli omofoni: il suono
+non basta, serve sapere quali frasi hanno senso.
 
 `````
 
@@ -145,7 +145,7 @@ acustico moltiplica le densità di centinaia di frame come se fossero
 indipendenti, mentre frame vicini si somigliano molto: i suoi punteggi escono
 fuori scala rispetto a quelli del linguaggio, e $\lambda$ li riequilibra. Il
 modello di linguaggio $P(W)$ assegna una probabilità a priori alle frasi
-($n$-grammi, oggi reti neurali) ed è quello che disambigua gli omofoni. Dal
+($n$-grammi, oggi reti neurali) e disambigua gli omofoni. Dal
 2012 le reti neurali profonde sostituiscono le GMM nel modello acustico
 {cite}`hinton2012deep`: su una prova di conversazioni telefoniche (Switchboard,
 RT03S), con le stesse trecento ore circa di addestramento, l'errore sulle
@@ -153,17 +153,13 @@ parole scende dal $27{,}4\%$ del sistema a GMM al $18{,}5\%$, un terzo in meno.
 
 `````
 
-I due pareri hanno un nome che tornerà spesso: il primo, quello
-che giudica il suono, si chiama **modello
-acustico**; il secondo, quello che giudica se la frase è italiano plausibile,
-si chiama modello di linguaggio. Li ritroveremo in {doc}`La voce sintetica
-</SpeechRecognition/sintesi-vocale>`, dove il viaggio si fa al contrario e il
-modello acustico, invece di ascoltare suoni, decide quali produrre.
+Il parere sul suono spetta al **modello acustico**, quello sulla plausibilità
+della frase come italiano al **modello di linguaggio**.
 
-Su questa divisione del lavoro il riconoscimento vocale si è retto per
-trent'anni, dagli anni Ottanta al 2010 circa, e chi legge qualsiasi cosa
-scritta in quel periodo trova sempre la stessa sigla, **HMM-GMM**: due modelli
-già incontrati, che qui lavorano in coppia.
+Su questa divisione del lavoro il riconoscimento vocale ha poggiato per
+trent'anni, dagli anni Ottanta al 2010 circa, e la sigla che lo designa nei
+testi di quel periodo è **HMM-GMM**: due modelli già incontrati, che qui
+lavorano in coppia.
 
 Il primo, l'HMM («modello di Markov nascosto»), descrive una parola come una
 fila di stati che non si vedono: ogni fonema ne ha tre, il suo attacco, il suo
@@ -192,11 +188,10 @@ modelli con attenzione (una parte della rete ascolta tutto, l'altra
 scrive, e mentre scrive torna a guardare il punto dell'audio che le serve:
 quel tornare a guardare è l'attenzione) hanno reso possibile addestrare
 l'intero sistema da coppie (audio, testo). Il trasduttore è nato dalla CTC per
-aggiungerle ciò che le manca, la memoria di quello che ha già scritto, senza
+aggiungerle ciò che le manca, la memoria del testo già scritto, senza
 toglierle l'andatura frame per frame che permette di trascrivere mentre si
-parla. Le vedremo una per una in
-{doc}`I modelli di riconoscimento </SpeechRecognition/modelli-asr>`: qui
-bastano i nomi.
+parla. Le tratta una per una la sezione {doc}`I modelli di riconoscimento
+</SpeechRecognition/modelli-asr>`.
 
 L'esempio più noto è Whisper di OpenAI (2022): con un unico modello trascrive
 quasi cento lingue, italiano compreso, e traduce in inglese il parlato delle
@@ -231,7 +226,7 @@ consentono, e in fondo esce il testo.
 La prima tappa riduce il suono all'essenziale, e si chiama **estrazione delle
 feature** («caratteristiche», in inglese): al posto dell'onda grezza, poche
 misure per ogni frammento di suono. È il passaggio che rende trattabile tutto
-il resto, e merita un approfondimento.
+il resto.
 
 `````{tab} Elementare
 
@@ -242,8 +237,8 @@ colorate che ballano nelle app della musica, dove le più a sinistra si alzano
 sui suoni gravi e le più a destra sugli acuti. Le fettine si prendono
 accavallate, così una consonante a cavallo di un taglio non va persa. Questa
 sequenza di istantanee sonore è lo spettrogramma costruito passo per
-passo in {doc}`Dal suono alle feature </Audio/dal-suono-alle-feature>`, ed è
-questo che il modello acustico ascolta al posto dell'onda. Un tempo lo riceveva
+passo in {doc}`Dal suono alle feature </Audio/dal-suono-alle-feature>`, e il
+modello acustico ascolta questo al posto dell'onda. Un tempo lo riceveva
 anche più
 spremuto, una dozzina di numeri per fettina, perché lavorava bene solo con
 poche misure che non si ripetessero fra loro, e le bande vicine dello
@@ -277,7 +272,7 @@ che "capisce" il parlato: una volta che la voce è diventata testo, tocca agli
 strumenti del linguaggio naturale interpretarne il significato. Ma quel primo,
 difficile passo (dall'onda alla parola) comincia sempre qui.
 
-Ed è un passaggio in cui si sbaglia ancora, ogni giorno, sotto i nostri occhi: i
+Resta un passaggio in cui si sbaglia ancora, ogni giorno, sotto i nostri occhi: i
 sottotitoli automatici che scrivono una parola per un'altra, o che riempiono
 di frasi inventate un pezzo di video in cui nessuno parla, sono la parte
 visibile di limiti precisi, che {doc}`I modelli di riconoscimento

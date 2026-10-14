@@ -2,80 +2,74 @@
 
 Questo libro è stato scritto una prima volta nel 2019, per uscire su carta.
 Aveva un indice di quattordici capitoli. Su carta non è mai uscito, e il
-manoscritto è rimasto in un cassetto: la prima forma in cui arriva a qualcuno
-è questa, online e gratuita.
+manoscritto è rimasto in un cassetto: la prima forma in cui arriva a qualcuno è
+questa, *online* e *gratuita*.
 
 Con il senno di poi è stata una fortuna. Quell'indice prometteva codice in
 TensorFlow e Keras {cite}`abadi2016tensorflow,chollet2015keras` e il capitolo
 sul linguaggio naturale finiva alle reti ricorrenti; la parola *Transformer*
 non compariva da nessuna parte, benché l'articolo che la introduce (*Attention
 Is All You Need*, di Vaswani e colleghi {cite}`vaswani2017attention`) avesse
-due anni. Se questi nomi non ti dicono niente, benissimo: sono esattamente le
-cose che imparerai. Un libro stampato così avrebbe cominciato a invecchiare il
-giorno in cui arrivava in libreria; online un errore si corregge appena
-qualcuno lo segnala. Del manoscritto è rimasta l'ossatura, il codice è passato
-a PyTorch {cite}`paszke2019pytorch`, e attorno sono nati i capitoli che allora
-non si potevano scrivere.
+due anni. Se questi nomi non ti dicono niente, benissimo: sono le cose che
+imparerai. Un libro stampato così avrebbe cominciato a invecchiare il giorno in
+cui arrivava in libreria; online il testo si aggiorna, e un errore si corregge
+appena qualcuno lo segnala. Del manoscritto è rimasta l'ossatura, il codice è
+passato a PyTorch {cite}`paszke2019pytorch`, e attorno sono nati i capitoli che
+allora non si potevano scrivere.
 
-Nel 2021 un articolo molto discusso ha chiamato i modelli linguistici (i
-programmi dietro a ChatGPT e alle sue varianti) **pappagalli stocastici**
-{cite}`bender2021dangers`: macchine che rimettono insieme pezzi di quello che
-hanno letto senza capire quello che dicono. A un certo punto mi sono accorto
-che, a forza di ripetere quella formula, i pappagalli eravamo diventati noi.
-Per settimane, dopo ogni notizia, la stessa frase rimbalzava identica sui
-canali di chi commenta questa materia di mestiere, ripetuta da chi alla fonte
-non era andato. Intanto cambiava il lavoro: prima di ChatGPT chi curava i
-dati, chi addestrava i modelli e chi li portava in produzione facevano
-mestieri distinti, poi il mercato ne ha chiesto uno solo, capace di prendere
-il modello aperto del momento da Hugging Face {cite}`wolf2020transformers`,
-istruirlo con un prompt (le istruzioni scritte che gli si danno) perfezionato
-sul caso d'uso e rivenderlo come
-soluzione propria. Il gesto era lo stesso di chi ripeteva la frase: usare una
-cosa senza sapere che cosa fosse.
+Nel 2021 un articolo molto discusso ha chiamato i modelli linguistici (la
+famiglia di programmi a cui appartiene ChatGPT) **pappagalli stocastici**
+{cite}`bender2021dangers`: macchine che rimettono insieme pezzi dei testi che
+hanno letto senza capire che cosa dicono. A un certo punto mi sono accorto che,
+a forza di ripetere quella formula, i pappagalli eravamo diventati noi. Per
+settimane, dopo ogni notizia, la stessa frase rimbalzava identica sui canali di
+chi commenta questa materia di mestiere, ripetuta da chi non era andato alla
+fonte, mosso dalla frenesia di attrarre pubblico grazie all’ultima notizia in
+*hype*, che dopo tre ore sarebbe stata su ogni testata giornalistica e pagina
+social. Intanto la componente teorica e tecnica del machine learning classico e
+il lavoro del data scientist sono stati i primi a diventare obsoleti: prima di
+ChatGPT chi curava i dati, chi addestrava i modelli e chi li portava in
+produzione facevano mestieri distinti. Poi il mercato ne ha chiesto uno solo,
+capace di prendere il modello aperto del momento da Hugging Face
+{cite}`wolf2020transformers`, istruirlo con un *prompt* perfezionato sul caso
+d'uso e rivenderlo come soluzione innovativa proprietaria (quante start-up ha
+creato l’*in-context learning*?). Il gesto era lo stesso di chi ripeteva la
+frase: usare una cosa senza sapere che cosa fosse e speculare su API a basso
+costo di cui un giorno pagheremo il reale debito (tecnico più che economico).
 
-Emily M. Bender, prima firma di quell'articolo, racconta che all'inizio la sua
-espressione la usava chi l'articolo l'aveva letto, e che poi «la frase ha
-superato l'articolo» {cite}`bender2026unasked`. È il pappagallo che si
-descrive da solo. Su che cosa faccia una macchina la penso diversamente da
-lei; su chi sia il pappagallo, no: il bersaglio della sua critica, dice, non
-sono affatto i modelli, «quello che mi preoccupa sono le azioni delle
-persone». E l'unica cosa che separa chi capisce da chi ripete è sapere come
-funziona ciò di cui si parla.
+Questo libro cerca di stare dall'altra parte: meno speculazione, più
+architetture, iperparametri e funzioni di costo, con la speranza di rendere
+accessibile la più grande rivoluzione democratica della storia dell’uomo. Dentro
+ci sono i concetti principali dell'intelligenza artificiale, dal *machine
+learning* al *deep learning* al *reinforcement learning* (li definisce
+l’{doc}`introduzione </Introduzione/overview>`), e i capitoli che li portano in
+produzione e ne discutono le conseguenze. Ogni concetto che conta è spiegato
+*due volte*, una con un'analogia che non chiede prerequisiti e una con le
+formule al posto giusto, e decidi tu da quale parte stare: la {doc}`pagina di
+apertura </intro>` spiega come. Nessuna scorciatoia sulle cose difficili, nessun
+entusiasmo che il testo non sia in grado di giustificare, e le fonti sempre
+citate.
 
-Questo libro sta dall'altra parte: meno caccia all'istruzione magica, più
-architetture, iperparametri e funzioni di costo. Dentro ci sono i concetti
-principali dell'intelligenza artificiale, dal machine learning al deep
-learning al reinforcement learning (li definisce l’{doc}`introduzione
-</Introduzione/overview>`), e i capitoli che li portano in produzione e ne
-discutono le conseguenze. Ogni concetto che conta è spiegato due volte, una
-con un'analogia che non chiede prerequisiti e una con le formule al posto
-giusto, e decidi tu da quale parte stare: come funziona lo dice la
-{doc}`pagina di apertura </intro>`. Nessuna scorciatoia sulle cose difficili,
-nessun entusiasmo che il testo non sia in grado di giustificare, e le fonti
-sempre citate.
+Buona parte di queste pagine nasce da una stretta collaborazione con
+l'intelligenza artificiale stessa: sono io a delineare i temi, a dare la
+direzione e a scegliere le fonti, e l'AI elabora la prima bozza. Questo libro
+è, alla lettera, *l'AI che spiega se stessa*.
 
-C'è poi da dire come è scritto, perché interessa a chi legge. Buona parte di
-queste pagine nasce da una stretta collaborazione con l'intelligenza
-artificiale: sono io a delineare i temi, a dare la direzione e a scegliere le
-fonti, e l'AI elabora la prima bozza. Questo libro è, alla lettera, l'AI che
-spiega se stessa.
+Poi un'altra AI rilegge la bozza. Non avendo partecipato alla stesura, svolge
+un ruolo fondamentale: *cercare l'errore*. Rifà i conti, riapre gli articoli
+citati, ripercorre le derivazioni ed esegue il codice invece di analizzarlo
+solo staticamente. Chi ha scritto una cosa è l'ultimo a poterci trovare uno
+sbaglio, e vale per una macchina come per una persona.
 
-Quello che l'AI ha scritto lo rilegge un'altra AI, che alla stesura non ha
-partecipato e ha un compito solo, cercare l'errore: rifà i conti, riapre gli
-articoli citati, ripercorre le derivazioni ed esegue il codice invece di
-guardarlo. Chi ha scritto una cosa è l'ultimo a poterci trovare uno sbaglio, e
-vale per una macchina come per una persona.
+Solo dopo il testo arriva a me, e lì si decide che cosa resta: un modello punta
+a raggiungere uno scopo tramite euristiche che non sempre aiutano la stesura,
+un libro invece deve farsi leggere e comprendere.
 
-Solo dopo il testo arriva a me, ed è il passaggio che decide che cosa resta:
-un modello punta ad avere ragione, un libro deve farsi capire. Avere ragione
-si controlla riaprendo le fonti; farsi capire, soltanto leggendo la pagina
-come la leggerebbe chiunque altro.
-
-Il segno che il libro porta nel nome dice esattamente questo: la «a» di
-*paithon* è un **triangolo di Penrose**, tre lati che si reggono l'un l'altro
-e nessuno è il primo, come i tre passaggi appena descritti. Ed è anche una
-figura impossibile, e a leggerne una come un anello che torna su sé stesso ha
-insegnato Douglas Hofstadter in *Gödel, Escher, Bach*
+Il segno che il libro porta nel nome dice qualcosa di simile: la «a» di
+*paithon* è un **triangolo di Penrose**, tre lati che si reggono l'un l'altro e
+nessuno è il primo, come i tre passaggi di scrittura del libro. È anche una
+figura impossibile, e Douglas Hofstadter, in *Gödel, Escher, Bach*, ha
+insegnato a vedere in figure come questa un anello che torna su sé stesso
 {cite}`hofstadter1979godel`.
 
 ```{figure} figures/triangolo-di-penrose.svg
@@ -87,16 +81,17 @@ insegnato Douglas Hofstadter in *Gödel, Escher, Bach*
 Il logo del progetto paithon.
 ```
 
-Guarda uno qualsiasi dei tre angoli ({numref}`fig-triangolo-penrose`),
-coprendo con una mano il resto: quello che resta scoperto sono due travi che
-si incontrano ad angolo retto, e con dei pezzi di legno si costruisce davvero.
+Guarda uno qualsiasi dei tre angoli ({numref}`fig-triangolo-penrose`), coprendo
+con una mano il resto: restano scoperte due travi che si incontrano ad angolo
+retto, un incrocio che con dei pezzi di legno si costruisce davvero.
 L'impossibilità sta nel non poterli avere tutti insieme, e per accorgersene
 bisogna seguire una trave per l'intero giro
-{cite}`penrose1958impossible,penrose1991cohomology`. È il modo esatto in cui
-una macchina sbaglia su una materia tecnica: ogni frase regge da sola, ogni
-numero è verificabile, e il montaggio è falso. Il triangolo sta sul libro per
-tutte e due le ragioni: è il giro dei tre ruoli che si reggono a vicenda, ed è
-il guasto contro cui quel lavoro esiste.
+{cite}`penrose1958impossible,penrose1991cohomology`. È il modo in cui una
+macchina sbaglia su una materia tecnica: ogni frase regge da sola, ogni numero
+è verificabile, e la composizione è *errata* (almeno per un’intelligenza
+naturale). Il triangolo sta sul libro per tutte e due le ragioni: è il giro dei
+tre ruoli che si reggono a vicenda, e insieme l'errore che, revisione dopo
+revisione, si cerca di minimizzare per rendere tutto più corretto.
 
 Le illustrazioni che aprono i capitoli sono generate con il modello Recraft
 V4.1, a partire da una descrizione della scena con cui ciascun capitolo
@@ -115,8 +110,9 @@ un libro online non ha migliaia di copie stampate da rincorrere con l’*errata
 corrige*: si riscrive dove sbaglia il giorno in cui qualcuno se ne accorge, e
 {doc}`Aggiornamenti </aggiornamenti>` tiene il conto delle correzioni. È una
 scommessa che il libro fa su se stesso: che questi sistemi continuino a
-migliorare, e che ogni versione arrivi un po’ meno sbagliata della precedente.
-L'impegno a renderlo ogni volta più chiaro nasce da un fatto semplice.
+migliorare, e che ogni versione arrivi con un po’ meno errori della
+precedente. L'impegno che investirò in questo lavoro nasce da un fatto
+semplice.
 :::
 
 :::{only} latex
@@ -125,12 +121,13 @@ un libro online non ha migliaia di copie stampate da rincorrere con l’*errata
 corrige*: si riscrive dove sbaglia il giorno in cui qualcuno se ne accorge, e
 online il registro degli aggiornamenti tiene il conto delle correzioni. È una
 scommessa che il libro fa su se stesso: che questi sistemi continuino a
-migliorare, e che ogni versione arrivi un po’ meno sbagliata della precedente.
-L'impegno a renderlo ogni volta più chiaro nasce da un fatto semplice.
+migliorare, e che ogni versione arrivi con un po’ meno errori della
+precedente. L'impegno che investirò in questo lavoro nasce da un fatto
+semplice.
 :::
 
-È il non conoscere che genera paura e alimenta false speranze, e per
-dissiparle non c'è altra strada che guardare dentro il cuore dell'intelligenza
+È il non conoscere che genera paura e alimenta false speranze, e per dissiparle
+non c'è altra strada che guardare dentro il cuore dell'intelligenza
 algoritmica.
 
 % La firma e’ in HTML perche’ al sito serve l'allineamento a destra. In stampa

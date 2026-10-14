@@ -65,7 +65,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [La dimensione VC](https://book.paithon.it/main/TeoriaApprendimento/dimensione-vc.html)
   - [Rademacher e margine](https://book.paithon.it/main/TeoriaApprendimento/rademacher-margine.html)
   - [Garanzie e reti neurali](https://book.paithon.it/main/TeoriaApprendimento/garanzie-e-reti.html)
-- [Reti neurali](https://book.paithon.it/main/RetiNeurali/overview.html): C'è un'immagine che accompagna le reti neurali fin dal loro battesimo: quella del cervello. Miliardi di cellule che si scambiano segnali, e da quel brulichio emergono la memoria, il linguaggio, il…
+- [Reti neurali](https://book.paithon.it/main/RetiNeurali/overview.html): Le reti neurali portano fin dal nome l'immagine del cervello: decine di miliardi di cellule che si scambiano segnali, e da quel brulichio emergono la memoria, il linguaggio, il riconoscere il volto…
   - [Il percettrone](https://book.paithon.it/main/RetiNeurali/percettrone.html)
   - [Funzioni di attivazione](https://book.paithon.it/main/RetiNeurali/funzioni-attivazione.html)
   - [Da dove viene la loss](https://book.paithon.it/main/RetiNeurali/da-dove-viene-la-loss.html)
@@ -137,7 +137,7 @@ della sezione e URL), non si ridistribuisce il testo.
 
 ## Linguaggio e sequenze
 
-- [Natural Language Processing](https://book.paithon.it/main/NaturalLanguageProcessing/overview.html): Duecentocinquanta voci di vocabolario, fra radici e desinenze, e sei regole di grammatica: con questo un calcolatore tradusse dal russo all'inglese, davanti alla stampa, più di sessanta frasi.
+- [Natural Language Processing](https://book.paithon.it/main/NaturalLanguageProcessing/overview.html): Duecentocinquanta voci di vocabolario, fra radici e desinenze, e sei regole di grammatica: con questi soli strumenti un calcolatore tradusse dal russo all'inglese, davanti alla stampa, più di…
   - [La cassetta degli attrezzi](https://book.paithon.it/main/NaturalLanguageProcessing/strumenti-classici.html)
   - [Rappresentare il testo](https://book.paithon.it/main/NaturalLanguageProcessing/rappresentare-testo.html)
   - [Come si spezza il testo](https://book.paithon.it/main/NaturalLanguageProcessing/tokenizzatori.html)
@@ -162,7 +162,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Dopo il pre-addestramento](https://book.paithon.it/main/Transformers/post-training.html)
   - [Retrieval e RAG](https://book.paithon.it/main/Transformers/rag.html)
   - [Tendenze e limiti](https://book.paithon.it/main/Transformers/tendenzefuture.html)
-- [Attenzione lineare](https://book.paithon.it/main/AttenzioneLineare/overview.html): Centomila parole sono la lunghezza di un romanzo, e per leggerlo un Transformer deve confrontare ogni parola con tutte le altre: centomila per centomila, cioè dieci miliardi di confronti, e non una…
+- [Attenzione lineare](https://book.paithon.it/main/AttenzioneLineare/overview.html): Centomila parole sono la lunghezza di un romanzo, e per leggerlo un Transformer deve confrontare ogni parola con tutte le altre, centomila per centomila, cioè dieci miliardi di confronti, e non una…
   - [Dalla softmax alla ricorrenza](https://book.paithon.it/main/AttenzioneLineare/dalla-softmax-alla-ricorrenza.html)
   - [Scrivere nella memoria](https://book.paithon.it/main/AttenzioneLineare/scrivere-nella-memoria.html)
   - [Architetture lineari](https://book.paithon.it/main/AttenzioneLineare/architetture-lineari.html)
@@ -181,12 +181,12 @@ della sezione e URL), non si ridistribuisce il testo.
 
 ## Lavorare con gli LLM
 
-- [Agenti](https://book.paithon.it/main/Agenti/overview.html): Fra rispondere bene a una domanda e portare a termine un lavoro c'è un salto, e qualcuno ha provato a misurarlo con una gara di riparazioni.
+- [Agenti](https://book.paithon.it/main/Agenti/overview.html): Rispondere bene a una domanda e portare a termine un lavoro sono due compiti diversi, e un banco di prova ne misura la distanza: SWE-bench .
   - [Il ciclo dell'agente](https://book.paithon.it/main/Agenti/agenti-e-tool-use.html)
   - [RAG avanzato](https://book.paithon.it/main/Agenti/rag-avanzato.html)
   - [Il contesto è l'interfaccia](https://book.paithon.it/main/Agenti/context-engineering.html)
   - [Architetture e valutazione](https://book.paithon.it/main/Agenti/architetture-e-valutazione.html)
-- [Prompt, contesto e loop](https://book.paithon.it/main/IngegneriaLLM/overview.html): Nel giugno 2025 Andrej Karpathy (tra i fondatori di OpenAI, per anni a capo dell'intelligenza artificiale in Tesla) ha dato il suo appoggio a un nome appena proposto per un mestiere che esisteva già.
+- [Prompt, contesto e loop](https://book.paithon.it/main/IngegneriaLLM/overview.html): Nel giugno 2025 Andrej Karpathy (tra i fondatori di OpenAI, per anni a capo dell'intelligenza artificiale in Tesla) ha dato il suo appoggio a un nome appena proposto per un lavoro che esisteva già.
   - [Prompt engineering](https://book.paithon.it/main/IngegneriaLLM/prompt-engineering.html)
   - [Context engineering](https://book.paithon.it/main/IngegneriaLLM/context-engineering.html)
   - [Loop engineering](https://book.paithon.it/main/IngegneriaLLM/loop-engineering.html)

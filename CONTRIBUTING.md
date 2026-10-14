@@ -396,6 +396,7 @@ la mappa fra il comando e la regola che fa rispettare.
 | `coerenza.py --solo lineette` | i due travestimenti in ASCII della lineetta, la doppia `--` e il trattino singolo spaziato |
 | `coerenza.py --solo enfasi` | il tetto di cinque marcature ogni mille parole di prosa, capitolo per capitolo, e i termini marcati in più di un capitolo |
 | `coerenza.py --solo contrapposizioni` | i «non è X, è Y» oltre le due per capitolo |
+| `coerenza.py --solo frasi` | le forme fisse di «La frase»: il libro che parla di sé, le formule d'annuncio, i calchi, il parlato nella scheda Superiore (un elenco da leggere: quasi ogni forma ha anche un uso giusto) |
 | `coerenza.py --solo simboli` | una lettera che riceve due glosse diverse nello stesso capitolo |
 | `coerenza.py --solo doppioni` | la stessa frase due volte nello stesso capoverso |
 | `coerenza.py --solo schede` | due blocchi di schede contigui, che la build fonde in un gruppo da quattro linguette, e la coppia spezzata da un capoverso in mezzo |

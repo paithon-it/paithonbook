@@ -1,7 +1,7 @@
 # Meno pesi: la promessa che si riscuote male
 
 Novanta pesi su cento si possono buttare via e la rete continua a rispondere
-quasi come prima. Non è un modo di dire: più sotto un programma lo fa su una
+quasi come prima. Non è un modo di dire: un programma lo fa su una
 rete piccola che legge cifre scritte a mano, e ne stampa i numeri; sulle reti
 grandi lo hanno mostrato Han e colleghi, che hanno ridotto i parametri di nove
 volte su AlexNet e di tredici su VGG-16 senza perdere accuratezza
@@ -39,16 +39,15 @@ lasciata, a metà di un aggiustamento. Che due giocatori con gli stessi minuti
 lascino lo stesso buco: il portiere gioca quanto un difensore e non si
 rimpiazza con la stessa facilità. Che i buchi si sommino: due che si
 intendevano bene, tolti insieme, si sentono più della somma dei due presi uno
-per uno. E che quel criterio regga anche a tagliare in blocco: vale per un
+per uno. Infine, che il criterio valga anche tagliando in blocco: vale per un
 giocatore alla volta, e di pesi se ne azzerano nove su dieci in un pomeriggio.
-La cosa curiosa è che il criterio funzioni lo stesso, e nessuno sa dire bene
-perché.
+Curiosamente il criterio funziona lo stesso, e nessuno sa dire bene perché.
 
 La prima domenica dice come è andata. Tolti nove pesi su dieci, l'accuratezza
 passa da novantotto a trentanove per cento, cioè da «sbaglia una volta su
 cinquanta» a «sbaglia tre volte su cinque».
 
-Quello che salva la squadra è il ritiro. Dopo aver tagliato si riaddestra,
+A salvare la squadra è il ritiro. Dopo aver tagliato si riaddestra,
 tenendo però i tagli dove sono: i giocatori rimasti si allenano nei ruoli
 lasciati vuoti, e dopo qualche settimana si gioca di nuovo bene. Chi è stato
 mandato via non rientra: dopo ogni seduta i pesi tagliati vengono rimessi a
@@ -59,7 +58,7 @@ pomeriggio e poi allenare quel che resta funziona peggio che tagliarne pochi,
 allenare, tagliarne altri pochi: ogni volta si chiede alla squadra un
 aggiustamento piccolo, e lo regge.
 
-E a un certo punto nemmeno il ritiro basta. Con la metà dei pesi tolti la rete
+A un certo punto nemmeno il ritiro basta. Con la metà dei pesi tolti la rete
 non perde niente; con nove su dieci resta indietro di circa un punto; con
 diciannove su venti di quasi cinque. Il ritiro insegna a coprire i buchi, non
 a essere in due dove ne servono undici, e sotto un certo numero di giocatori
@@ -75,9 +74,9 @@ una soglia, tipicamente scelta per percentile all’interno di ciascuna matrice.
 {cite}`lecun1990optimal`, di venticinque anni prima, non ne è la
 giustificazione: è il lavoro scritto per scavalcarlo, che si propone di «andare
 oltre l'approssimazione che grandezza uguale importanza» e misura che ordinare
-per grandezza costa più che ordinare per l'importanza stimata. Ricostruire il
-criterio dentro quel quadro serve proprio a vedere quante approssimazioni
-nasconde. Spostando i pesi di $\delta\boldsymbol{\theta}$,
+per grandezza peggiora l'obiettivo più dell'ordinare per l'importanza stimata.
+Ricostruire il criterio dentro quel quadro serve proprio a vedere quante
+approssimazioni nasconde. Spostando i pesi di $\delta\boldsymbol{\theta}$,
 
 $$
 \delta \mathcal{L} = \mathbf{g}^{\top}\delta\boldsymbol{\theta}
@@ -87,11 +86,11 @@ $$
 
 con $\mathbf{g}$ il gradiente e $\mathbf{H}$ l’Hessiana. Di qui in poi OBD
 butta via tre pezzi, e li nomina: si ferma al secondo ordine
-(quadratica), pota ad addestramento finito, dove il gradiente è nullo e il
-primo termine sparisce (estremale), e trascura i termini fuori diagonale,
+(quadratica); pota ad addestramento finito, dove il gradiente è nullo e il
+primo termine sparisce (estremale); trascura i termini fuori diagonale,
 così il costo si spezza in un addendo per peso (diagonale),
 $\tfrac{1}{2}h_{ii}\,\delta
-\theta_i^2$; azzerare il peso $i$-esimo vuol dire $\delta\theta_i = -w_i$ (con
+\theta_i^2$. Azzerare il peso $i$-esimo vuol dire $\delta\theta_i = -w_i$ (con
 $w_i$ il valore di $\theta_i$ a fine addestramento), cioè un costo
 $s_i = \tfrac{1}{2}h_{ii}w_i^2$, che OBD chiama *salienza*. Le $h_{ii}$ si
 calcolano con una ricorsione simile alla retropropagazione, allo stesso costo
@@ -106,7 +105,7 @@ costo non è quadratico, una rete fermata da Adam non sta in un minimo,
 l’Hessiana non è diagonale, e la sua diagonale non è uniforme. Gli autori di
 OBD misurano dove si rompono le loro tre: l’accordo con la previsione regge
 fino a circa il trenta per cento dei pesi tolti, e potare al novanta è tre
-volte oltre. La cosa notevole è che il criterio regga lo stesso.
+volte oltre. Eppure il criterio funziona lo stesso.
 
 Il taglio da solo non basta perché la rete rimasta è fuori dal minimo in cui
 era stata portata: i pesi superstiti sono ottimi rispetto a una funzione che
@@ -217,29 +216,29 @@ rete intera: 97.8%
 controllo, rete intera con altri 300 passi: 98.0%
 ```
 
-La colonna di mezzo e quella di destra dicono due cose diverse, e la seconda è
-quella che conta. Tolti nove pesi su dieci la rete non sa più leggere una
-cifra, e dopo trecento passi di riaddestramento è tornata a 96,9 contro il 97,8
-di partenza: ha perso circa un punto avendo dentro un decimo dei
-collegamenti. Il decimale va preso con le molle: su un altro processore la
-stessa esecuzione, con lo stesso seme, si sposta di qualche decimo, perché la
-macchina somma in un altro ordine, l’ultima cifra dei conti cambia e trecento
-passi di addestramento la ingrandiscono. A metà strada, con la metà dei pesi,
-è perfino salita di due decimi, e qui bisogna resistere alla tentazione di
-dedurne qualcosa. Il riaddestramento dà alla rete potata trecento passi in più
-e un ottimizzatore nuovo, che la rete intera non riceve; dati alla rete intera,
-senza potare niente, la portano allo stesso 98,0%, ed è la riga del controllo.
-Quei due decimi non li ha regalati la potatura, li ha regalati il riavvio
+La colonna di mezzo e quella di destra dicono due cose diverse, e conta la
+seconda. Tolti nove pesi su dieci la rete non sa più leggere una cifra, e dopo
+trecento passi di riaddestramento è tornata a 96,9 contro il 97,8 di partenza:
+ha perso circa un punto avendo dentro un decimo dei collegamenti. Il decimale
+va preso con le molle: su un altro processore la stessa esecuzione, con lo
+stesso seme, si sposta di qualche decimo, perché la macchina somma in un altro
+ordine, l’ultima cifra dei calcoli cambia e trecento passi di addestramento la
+ingrandiscono. A metà strada, con la metà dei pesi, è perfino salita di due
+decimi, e qui bisogna resistere alla tentazione di dedurne qualcosa. Il
+riaddestramento dà alla rete potata trecento passi in più e un ottimizzatore
+nuovo, che la rete intera non riceve; dati alla rete intera, senza potare
+niente, la portano allo stesso 98,0%, come mostra la riga del controllo. Quei
+due decimi non li ha regalati la potatura, li ha regalati il riavvio
 dell’ottimizzatore.
 
 Quella prova pota in un colpo solo, perché sta in venti righe. Chi pota
 sul serio lo fa a giri: toglie una fetta, riaddestra, toglie un’altra
-fetta, e così via. {numref}`fig-potatura` fa proprio questo, tredici giri di
-fila più lo stato di partenza, ed è una figura che si muove: se la si
+fetta, e così via. {numref}`fig-potatura` fa questo, con tredici giri consecutivi
+più lo stato di partenza. È una figura che si muove: se la si
 guarda online i pesi si spengono giro dopo giro e la curva si allunga da
 sinistra a destra. La rete lì dentro ha un solo strato nascosto invece di due,
-quindi i numeri non combaciano con quelli della tabella e non devono: la cosa
-da guardare è la forma della curva, non il valore.
+quindi i numeri non combaciano con quelli della tabella e non devono: va
+guardata la forma della curva, non il valore.
 
 ```{figure} ../figures/potatura-che-assottiglia.svg
 :name: fig-potatura
@@ -247,15 +246,16 @@ da guardare è la forma della curva, non il valore.
 :width: 100%
 
 Tredici giri di potatura iterativa su una rete piccola, più lo stato di
-partenza. A sinistra i pesi che restano, a destra quello che costa toglierli.
-La curva non scende piano: resta piatta finché si tolgono i primi nove pesi su
-dieci, e poi cade. Il punto in cui cade non si sa prima, e per questo si pota
-misurando a ogni giro invece che scegliendo una percentuale all’inizio.
+partenza. A sinistra i pesi che restano, a destra la perdita di accuratezza che
+ne segue. La curva non scende piano: resta piatta finché si tolgono i primi
+nove pesi su dieci, e poi cade. Il punto in cui cade non si sa prima, e per
+questo si pota misurando a ogni giro invece che scegliendo una percentuale
+all’inizio.
 ```
 
 ## Perché la moltiplicazione non si accorge degli zeri
 
-E adesso la parte che rovina la festa. Una matrice con il novantacinque per
+Una matrice con il novantacinque per
 cento di zeri (una matrice **sparsa**, per distinguerla da una piena) viene
 moltiplicata esattamente come una piena.
 
@@ -295,15 +295,15 @@ occupata; il conto delle moltiplicazioni no, e dice la stessa cosa.
 
 `````{tab} Elementare
 
-La ragione è semplice e un po’ deludente: un calcolatore che moltiplica due
+Un calcolatore che moltiplica due
 matrici non guarda i numeri, li macina. Fa la stessa identica sequenza di
 moltiplicazioni comunque siano fatti, e moltiplicare per zero costa quanto
 moltiplicare per qualunque altra cosa.
 
 Per guadagnarci bisognerebbe saltare gli zeri, e per saltarli bisogna
 sapere dove sono, cioè tenere in memoria un elenco delle loro posizioni. Quel
-libretto costa a sua volta memoria da leggere, e i salti costano tempo perché
-mandano all’aria l’ordine con cui i numeri arrivano dalla memoria.
+libretto occupa a sua volta memoria da leggere, e i salti fanno perdere tempo
+perché mandano all’aria l’ordine con cui i numeri arrivano dalla memoria.
 
 A volte quel patto conviene e a volte no, e dipende da due cose: da quanto è
 vuota la matrice, e da che macchina la moltiplica. Su un processore normale,
@@ -311,17 +311,17 @@ con novantacinque zeri su cento, l’elenco conviene e si guadagna davvero; con
 la metà degli zeri no, perché tenere il conto delle posizioni costa più di
 quanto fa risparmiare. Su una scheda grafica non conviene quasi mai, perché lì
 la moltiplicazione ordinata va così veloce che saltare gli zeri costa più di
-farli. Ed è per questo che, in pratica, si sente dire che la potatura non fa
+farli. Per questo, in pratica, si sente dire che la potatura non fa
 guadagnare tempo: è vero dove i modelli grandi girano davvero.
 
-Quello che invece si guadagna è lo spazio, purché gli zeri siano tanti. Per
+Si guadagna invece in spazio, purché gli zeri siano tanti. Per
 non scriverli bisogna mettere accanto a ogni numero tenuto l’indirizzo della sua
 casella, che pesa più o meno quanto lui: con novanta zeri su cento la matrice
 si salva in circa un quinto dello spazio, con metà zeri non si risparmia
-niente. Per chi deve distribuire un modello questo conta. Ma spazio su disco e
-velocità di risposta sono due cose diverse.
+niente. Per chi deve distribuire un modello questo conta. Spazio su disco e
+velocità di risposta, però, sono due cose diverse.
 
-C’è un modo di riscuotere anche la seconda, ed è togliere i pesi **a blocchi**
+Per riscuotere anche la seconda si tolgono i pesi **a blocchi**
 invece che uno per uno: non il singolo collegamento più debole, ma un neurone
 intero con tutti i collegamenti che vi arrivano, cioè una riga intera della
 griglia. Una rete a cui si toglie un neurone intero è letteralmente una rete
@@ -333,11 +333,11 @@ sbagliata.
 Una via di mezzo esiste, e taglia a gruppi minuscoli invece che a righe intere.
 Non la sceglie chi addestra: la decide chi disegna le macchine. Certe schede
 grafiche sanno saltare gli zeri, a una condizione: che stiano al loro posto. Di
-ogni quattro pesi in fila almeno due devono essere zero, sempre, in tutta la
+ogni quattro pesi consecutivi almeno due devono essere zero, sempre, in tutta la
 griglia. La moltiplicazione resta ordinata
 abbastanza da correre veloce, e chi taglia resta libero abbastanza da non dover
 buttare via righe intere. Il vincolo però non si tratta: dove di pesi utili ce
-ne sono tre di fila, uno dei tre va a zero lo stesso.
+ne sono tre consecutivi, uno dei tre va a zero lo stesso.
 
 `````
 
@@ -350,26 +350,25 @@ regime per cui l’hardware è costruito, e la {doc}`sezione su GEMM e tensor co
 strutturata distrugge esattamente le due proprietà che rendono quel kernel
 veloce, la regolarità dell’accesso e la possibilità di riempire le unità
 vettoriali. Passare a un **formato sparso** (CSR e simili, cioè la matrice
-scritta come l'elenco delle sole posizioni non nulle, riga per riga) vuol dire
-quindi cambiare kernel, non aggiustare quello di prima, e se convenga è una
-domanda empirica, non di principio. Sulla matrice sparsa dell'esperimento
-precedente, su CPU e a tempo di processore: il CSR pareggia il denso intorno al
-venti per cento di densità, e al cinque per cento (cioè con i novantacinque
-zeri su cento di quell’esperimento) va dalle cinque alle sette volte più
-veloce, a seconda della macchina. Su GPU la soglia si sposta molto più in
-basso, perché il kernel denso lavora vicino al picco e gli accessi irregolari
-costano di più: è la ragione per cui in pratica la sparsità non strutturata si
-usa poco, e sta nell’hardware, non nell’aritmetica.
+scritta come l'elenco delle sole posizioni non nulle, riga per riga) cambia
+quindi il kernel invece di aggiustare quello di prima, e se convenga è una
+domanda empirica, non di principio. Su una matrice sparsa di $1024 \times 1024$
+per un blocco di 256 colonne, su CPU e a tempo di processore, il CSR pareggia
+il denso intorno al venti per cento di densità, e al cinque per cento (il caso
+di quella matrice, con novantacinque zeri su cento) va dalle cinque alle sette
+volte più veloce, a seconda della macchina. Su GPU la soglia si sposta molto
+più in basso, perché il kernel denso lavora vicino al picco e gli accessi
+irregolari costano di più: per questo in pratica la sparsità non strutturata si
+usa poco. Il limite sta nell’hardware, non nell’aritmetica.
 
 Da qui la distinzione operativa:
 
 - la **sparsità non strutturata** riduce i parametri e non tocca il tempo del
-  kernel denso, che è quello che quasi tutti eseguono. È utile per la
+  kernel denso, eseguito da quasi tutti. È utile per la
   dimensione del file, se la densità è abbastanza bassa da pagare gli indici
   (in CSR, con valori e indici a 32 bit, un elemento non nullo costa il doppio
   di uno denso, e il pareggio cade al cinquanta per cento di densità), e come
-  strumento di indagine (è quella che serve nel paragrafo sul biglietto della
-  lotteria);
+  strumento di indagine (lo usa l’ipotesi del biglietto vincente);
 - la **sparsità strutturata** rimuove unità intere (righe e colonne di una
   matrice, canali di una convoluzione, teste di attenzione
   {cite}`michel2019sixteen,voita2019analyzing`, strati). Il
@@ -399,28 +398,28 @@ gruppo la potatura scelga quali pesi tenere.
 Si prende la griglia dei pesi e la si divide, riga per riga, in gruppetti di
 quattro caselle. La regola è una sola, e vale dappertutto: in ogni gruppetto
 sopravvivono al più due numeri, di solito i due più grandi, e gli altri
-diventano zero. Scriverla costa poco più della metà, perché di ogni gruppetto
-si tengono solo i due sopravvissuti, ciascuno con un'etichetta minuscola che
-dice in quale delle quattro caselle stava: bastano due cifre binarie, perché le
-caselle sono quattro.
+diventano zero. Scriverla occupa poco più della metà dello spazio, perché di
+ogni gruppetto si tengono solo i due sopravvissuti, ciascuno con un'etichetta
+minuscola che dice in quale delle quattro caselle stava: bastano due cifre
+binarie, perché le caselle sono quattro.
 
 Poi il chip moltiplica. Di ogni gruppetto legge i due numeri rimasti, guarda le
 etichette, e fra i numeri d'ingresso prende soltanto i due che andrebbero
 moltiplicati proprio con quelle caselle; gli altri due non li tocca, perché
 andrebbero moltiplicati per zero. Due moltiplicazioni invece di quattro, in
-ogni gruppetto, e quindi metà del lavoro. E siccome la regola è la stessa per
+ogni gruppetto, e quindi metà del lavoro. Siccome la regola è la stessa per
 tutti i gruppetti, ogni pezzo del chip ha esattamente lo stesso lavoro degli
 altri, e nessuno resta ad aspettare.
 
-Il prezzo è quello del vincolo, già detto: il gruppetto con tre pesi utili ne
+Lo svantaggio è il vincolo, già detto: il gruppetto con tre pesi utili ne
 perde uno, e la rete ci rimette. Per questo, dopo aver azzerato, la si fa
 studiare di nuovo, per tutto il tempo che era servito la prima volta, e i pesi
 rimasti imparano a coprire quelli tolti: così torna quasi dov'era. Con i
 modelli linguistici grandi, però, ripetere l'addestramento costerebbe troppo, e
 si pota senza rifarlo. Lì la regola dei due su quattro fa perdere più punti
 rispetto a togliere la stessa metà dei pesi dove si vuole, e un ripasso breve
-recupera buona parte della differenza, senza colmarla. E la velocità doppia
-vale per le moltiplicazioni: i numeri da portare dalla memoria non si
+recupera buona parte della differenza, senza colmarla. Inoltre, la velocità doppia
+vale solo per le moltiplicazioni: i numeri da portare dalla memoria non si
 dimezzano, e l'intero calcolo accelera meno di due volte, in un modello grande
 una volta e mezza per le moltiplicazioni di uno strato e un quarto in più per
 la risposta intera.
@@ -439,31 +438,31 @@ dall'altra matrice i soli due elementi corrispondenti di ogni gruppo, ed esegue
 metà delle moltiplicazioni: il picco aritmetico è il doppio di quello denso.
 L'accelerazione di un GEMM intero resta sotto il doppio e dipende dalla forma e
 dall'intensità aritmetica: si dimezzano i prodotti, non i byte da muovere, e i
-pesi compressi con i loro indici pesano più della metà. Nelle misure di Wanda
-su A6000, simulate con i kernel GEMM di CUTLASS, i prodotti degli strati
-lineari di LLaMA-65B a batch 1 guadagnano da 1,54 a 1,63 volte, e il tempo di
-risposta intero di LLaMA-7B 1,24 volte {cite}`sun2024simple`. Il vincolo è
-locale e uniforme, quindi conserva le due proprietà che la sparsità non
-strutturata distrugge, la regolarità dell'accesso e il riempimento delle unità
-di calcolo, e in più bilancia il carico per costruzione.
+pesi compressi con i loro indici occupano più della metà dello spazio. Nelle
+misure di Wanda su A6000, simulate con i kernel GEMM di CUTLASS, i prodotti
+degli strati lineari di LLaMA-65B a batch 1 guadagnano da 1,54 a 1,63 volte, e
+il tempo di risposta intero di LLaMA-7B 1,24 volte {cite}`sun2024simple`. Il
+vincolo è locale e uniforme, quindi conserva le due proprietà che la sparsità
+non strutturata distrugge, la regolarità dell'accesso e il riempimento delle
+unità di calcolo, e in più bilancia il carico per costruzione.
 
-La ricetta degli autori è addestrare il modello denso, potarlo a 2:4 per
-modulo (in ogni gruppo si tengono i due pesi più grandi) e riaddestrarlo con lo
-stesso ottimizzatore e lo stesso calendario, per lo stesso numero di epoche,
-cioè con un secondo addestramento intero. Su un'ampia gamma di reti di visione e
-di linguaggio questo recupera l'accuratezza del denso, con eccezioni che gli
+La ricetta degli autori è addestrare il modello denso, potarlo a 2:4 per modulo
+(in ogni gruppo si tengono i due pesi più grandi) e riaddestrarlo con lo stesso
+ottimizzatore e lo stesso calendario, per lo stesso numero di epoche, cioè con
+un secondo addestramento intero. Su un'ampia gamma di reti di visione e di
+linguaggio questo recupera l'accuratezza del denso, con eccezioni che gli
 autori riportano: le reti già snelle, come MobileNet, vogliono prima una
 permutazione dei canali, e alcune reti generative perdono qualcosa. Sui modelli
-linguistici grandi, dove un secondo addestramento costa troppo, si pota dopo:
-Wanda {cite}`sun2024simple` toglie i pesi con il prodotto
+linguistici grandi, dove un secondo addestramento costa troppo, si pota dopo
+l'addestramento: Wanda {cite}`sun2024simple` toglie i pesi con il prodotto
 $|W_{ij}|\,\lVert\mathbf{X}_j\rVert_2$ più piccolo senza aggiornare gli altri,
 SparseGPT {cite}`frantar2023sparsegpt` aggiorna i superstiti strato per strato
 con la stessa ricostruzione del secondo ordine di GPTQ. Nelle tabelle di Wanda,
-su LLaMA e LLaMA-2, l'accuratezza media su sette compiti affrontati senza esempi
-scende con il vincolo 2:4 di qualche punto in più che con il 50% libero, sia
-con Wanda sia con SparseGPT, perché il vincolo esclude configurazioni buone; un
-fine-tuning breve con LoRA ne recupera buona parte, senza colmare il divario con
-il 50% libero sottoposto allo stesso fine-tuning.
+su LLaMA e LLaMA-2, l'accuratezza media su sette compiti affrontati senza
+esempi scende con il vincolo 2:4 di qualche punto in più che con il 50% libero,
+sia con Wanda sia con SparseGPT, perché il vincolo esclude configurazioni
+buone; un fine-tuning breve con LoRA ne recupera buona parte, senza colmare il
+divario con il 50% libero sottoposto allo stesso fine-tuning.
 
 `````
 
@@ -472,14 +471,13 @@ il 50% libero sottoposto allo stesso fine-tuning.
 La via di mezzo a densità fissa è un compromesso per chi moltiplica griglie
 piene. Un acceleratore costruito solo per far rispondere un modello già
 addestrato può spingersi oltre, e saltare gli zeri dovunque stiano: nei pesi,
-che la potatura ha azzerato, e negli ingressi di ogni strato, che dopo una ReLU
-(la funzione che lascia passare i positivi e azzera i negativi) sono zero
-spesso per metà o più. EIE di Han e colleghi {cite}`han2016eie` lo fa
-per il prodotto fra una griglia di pesi e un vettore, SCNN di Parashar e
+che la potatura ha azzerato, e negli ingressi di ogni strato. Dopo una ReLU, la
+funzione che lascia passare i positivi e azzera i negativi, gli ingressi sono
+nulli spesso per metà o più. EIE di Han e colleghi {cite}`han2016eie` salta gli
+zeri per il prodotto fra una griglia di pesi e un vettore, SCNN di Parashar e
 colleghi {cite}`parashar2017scnn` per le convoluzioni, lo strato delle reti per
-immagini che la
-{doc}`sezione sulle reti convoluzionali </DeepLearning/reti-convoluzionali>`
-racconta per esteso.
+immagini che la {doc}`sezione sulle reti convoluzionali
+</DeepLearning/reti-convoluzionali>` racconta per esteso.
 
 `````{tab} Elementare
 
@@ -490,63 +488,65 @@ colonna, tenendo solo i numeri diversi da zero, ciascuno con un'etichetta che
 dice quante caselle vuote lo precedono: una colonna con un 3 nella seconda
 casella e un 5 nella settima diventa «una vuota, poi 3; quattro vuote, poi 5».
 L'etichetta è corta, quattro cifre binarie, cioè sedici combinazioni, da zero a
-quindici: se le caselle vuote di fila sono di più, si scrive uno zero finto
-che fa da segnaposto, e si ricomincia a contare. Nemmeno i pesi sono scritti
-per intero: la rete ne usa soltanto sedici valori diversi, raccolti in una
-tavola comune a tutta la griglia, e al posto di ciascun peso c'è il suo numero
-di posto nella tavola, altre quattro cifre binarie.
+quindici: se le caselle vuote consecutive sono di più, si scrive uno zero finto che
+fa da segnaposto, e si ricomincia a contare. Nemmeno i pesi sono scritti per
+intero: la rete ne usa soltanto sedici valori diversi, raccolti in una tavola
+comune a tutta la griglia, e al posto di ciascun peso c'è la sua posizione
+nella tavola, altre quattro cifre binarie.
 
 Poi arriva la fila di numeri da moltiplicare per la griglia, il *vettore*
-d'ingresso. I suoi zeri non partono nemmeno; ogni numero diverso da zero va a
-tutti i banchi del chip insieme (i banchi sono i piccoli moltiplicatori di cui
-il chip è fatto, e ciascuno tiene una parte delle righe della griglia), e ogni
-banco lo moltiplica soltanto per i pesi non nulli della colonna corrispondente.
-Zero per qualcosa, qui, non si calcola mai, tranne gli zeri finti dei
-segnaposto.
+d'ingresso. I suoi zeri non partono nemmeno. Ogni numero diverso da zero va a
+tutti i banchi del chip insieme: i banchi sono i piccoli moltiplicatori di cui
+il chip è fatto, e ciascuno tiene una parte delle righe della griglia. Ogni
+banco moltiplica il numero soltanto per i pesi non nulli della colonna
+corrispondente. Zero per qualcosa, qui, non si calcola mai, tranne gli zeri
+finti dei segnaposto.
 
-Tutte queste etichette hanno un prezzo: stanno in memoria e vanno lette anche
-loro, così il risparmio vero resta molto sotto quello che il conto delle sole
-moltiplicazioni prometterebbe. E i banchi non finiscono insieme: a uno
+Tutte queste etichette hanno un costo: stanno in memoria e vanno lette anche
+loro, così il risparmio vero resta molto sotto il valore che il calcolo delle sole
+moltiplicazioni prometterebbe. I banchi non finiscono insieme: a uno
 toccano più pesi non nulli che a un altro, e chi è in anticipo resterebbe ad
 aspettare gli altri se una coda di lavoro non lo tenesse occupato.
 
-Per le reti che guardano le immagini c'è una variante, ed è SCNN. Lì ogni peso
+Per le reti che guardano le immagini c'è una variante: SCNN. Lì ogni peso
 incontra quasi ogni numero dell'ingresso, e allora si moltiplicano a blocchi
 tutte le coppie di numeri non nulli, e poi si spedisce ogni prodotto nella
 casella giusta del risultato. Lo smistamento diventa la parte costosa: due
 prodotti che vogliono la stessa casella nello stesso istante fanno la fila, e
-per ridurre gli ingorghi le caselle si raddoppiano. E qui il bilancio si
-rovescia quando gli zeri sono pochi: davanti a un'immagine quasi piena, o con
-troppo pochi pesi non nulli per riempire un blocco, lo smistamento costa più di
+per ridurre gli ingorghi le caselle si raddoppiano. Il bilancio si rovescia
+quando gli zeri sono pochi: davanti a un'immagine quasi piena, o con troppo
+pochi pesi non nulli per riempire un blocco, lo smistamento costa più di
 quanto fa risparmiare, e un chip che moltiplica tutto va più veloce.
 
 `````
 
 `````{tab} Superiore
 
-EIE {cite}`han2016eie` esegue $\mathbf{o} = \mathbf{W}\mathbf{a}$ per uno strato
-completamente connesso potato. I pesi stanno in formato per colonne (CSC): per
-ogni colonna $\mathbf{W}_{:,j}$ un vettore dei valori non nulli e uno di indici
-relativi a 4 bit, il numero di zeri che precede ogni voce, con uno zero
-esplicito inserito dopo quindici zeri consecutivi; il valore stesso è un indice
-a 4 bit in un dizionario di sedici pesi condivisi. Le attivazioni restano in
-formato denso: una rete di rilevamento degli elementi non nulli (*leading
-non-zero detection*) trova gli $a_j \neq 0$ e li trasmette in broadcast ai 64
-elementi di calcolo, a cui le righe di $\mathbf{W}$ sono assegnate a turno
-(riga $i$ all'elemento $i \bmod 64$); ciascuno scorre la propria parte della
-colonna $j$ e accumula. Il lavoro è proporzionale al numero di pesi non nulli
-nelle colonne con $a_j \neq 0$ invece che a tutta la griglia: con pesi al 10% e
-attivazioni al 30% di densità si fanno circa tre moltiplicazioni su cento. I
-costi sono gli indici (il lavoro attribuisce anche a loro un risparmio
-energetico reale circa dieci volte sotto quello teorico) e lo sbilanciamento
-del carico fra elementi, assorbito da code di profondità otto.
+EIE {cite}`han2016eie` esegue $\mathbf{o} = \mathbf{W}\mathbf{a}$ per uno
+strato completamente connesso potato. I pesi stanno in formato per colonne
+(CSC): per ogni colonna $\mathbf{W}_{:,j}$ un vettore dei valori non nulli e
+uno di indici relativi a 4 bit, il numero di zeri che precede ogni voce, con
+uno zero esplicito inserito dopo quindici zeri consecutivi; il valore stesso è
+un indice a 4 bit in un dizionario di sedici pesi condivisi. Le attivazioni
+restano in formato denso: una rete di rilevamento degli elementi non nulli
+(*leading non-zero detection*) trova gli $a_j \neq 0$ e li trasmette in
+broadcast ai 64 elementi di calcolo, a cui le righe di $\mathbf{W}$ sono
+assegnate a turno (riga $i$ all'elemento $i \bmod 64$); ciascuno scorre la
+propria parte della colonna $j$ e accumula. Il lavoro è proporzionale al numero
+di pesi non nulli nelle colonne con $a_j \neq 0$ invece che a tutta la griglia:
+con pesi al 10% e attivazioni al 30% di densità si fanno circa tre
+moltiplicazioni su cento. I costi sono gli indici (gli autori li indicano, insieme
+alla tecnologia a 45 nm di EIE contro i 28 nm delle GPU di confronto, fra le
+ragioni per cui il risparmio energetico reale resta circa dieci volte sotto
+quello teorico)
+e lo sbilanciamento del carico fra elementi, assorbito da code di profondità
+otto.
 
 SCNN {cite}`parashar2017scnn` porta l'idea alle convoluzioni, con pesi e
 attivazioni compressi entrambi. Il flusso *planar-tiled, input-stationary,
 Cartesian product* sfrutta il fatto che, a passo unitario, ogni peso di un
 filtro si moltiplica per ogni attivazione di una tessera del piano d'ingresso
-(ai bordi della tessera servono anche valori delle tessere vicine, che il
-lavoro scambia a parte):
+(i valori delle tessere vicine necessari ai bordi vengono scambiati a parte):
 ogni elemento prende un vettore di $F = 4$ pesi non nulli e uno di $I = 4$
 attivazioni non nulle, ne calcola tutti i sedici prodotti e li disperde,
 attraverso una crossbar, verso banchi di accumulatori scelti dalle coordinate
@@ -557,8 +557,8 @@ per crossbar e accumulatori, SCNN è più veloce solo quando pesi e attivazioni
 sono ciascuno sotto l’85% circa di densità, e più efficiente in energia sotto
 l’83% contro il denso semplice e sotto il 60% contro uno che spegne già le
 moltiplicazioni per zero e comprime il traffico verso la memoria. Rende poco
-anche quando i fattori non nulli sono troppo pochi per riempire l'array
-$4 \times 4$ (i filtri $1 \times 1$) e sugli strati d'ingresso, densi al 100%.
+anche quando i fattori non nulli sono troppo pochi per riempire l'array $4
+\times 4$ (i filtri $1 \times 1$) e sugli strati d'ingresso, densi al 100%.
 
 `````
 
@@ -612,8 +612,8 @@ voci del formato compresso: 31964, di cui 5797 zeri di riempimento
 Il risultato è quello del prodotto denso, con il 6,3% delle moltiplicazioni. Un
 peso su dieci per un ingresso su due ne farebbe sperare il 5%, e la differenza
 sono gli zeri di riempimento, che si moltiplicano come gli altri: quasi seimila
-voci su trentaduemila, il prezzo delle etichette corte, pagato in memoria e in
-conti.
+voci su trentaduemila, il costo delle etichette corte, pagato in memoria e in
+calcoli.
 
 ### Spegnere invece di saltare
 
@@ -631,16 +631,16 @@ parte sempre, anche a circuito fermo. È la stessa ragione che sta dietro il
 
 `````{tab} Elementare
 
-Dentro un chip l’energia se ne va quasi tutta in un gesto: un filo che cambia
-valore. Ogni filo è un secchiello, che per passare da zero a uno va riempito
+Dentro un chip l’energia se ne va quasi tutta quando un filo cambia valore. Ogni
+filo è un secchiello, che per passare da zero a uno va riempito
 fino all’orlo e per tornare a zero si svuota, e quell’acqua è persa. Un
-secchiello più grande costa di più; alzare l’orlo costa due volte, perché ci
-vuole più acqua e la si deve portare più in alto, così a orlo doppio la fatica è
+secchiello più grande vuole più acqua; alzare l’orlo pesa due volte, perché ce
+ne vuole di più e la si deve portare più in alto, così a orlo doppio la fatica è
 quattro volte tanto. Il metronomo del chip batte il tempo, e a ogni battito si
 riempiono i secchielli dei fili che cambiano, e solo quelli: un filo che resta
-com’era non costa niente. Più battiti al secondo, più secchielli. E c’è
-un’acqua che se ne va sempre, anche a chip fermo: i rubinetti gocciolano, ed è
-la *dispersione*.
+com’era non consuma niente. Più battiti al secondo, più secchielli. C’è poi
+un’acqua che se ne va sempre, anche a chip fermo, perché i rubinetti
+gocciolano: si chiama *dispersione*.
 
 A un banco, uno dei piccoli moltiplicatori del chip, arriva uno zero. Il
 risultato si sa già, zero per qualunque peso fa zero, e al totale non si
@@ -649,20 +649,20 @@ tocca la calcolatrice: i suoi fili restano come stavano e nessun secchiello si
 riempie. Su un chip per le reti che guardano le immagini questo solo
 accorgimento ha tolto quasi metà dell’energia spesa nei banchi. Il battito però
 passa lo stesso, e il banco lo passa fermo: si risparmia acqua, non tempo. Per
-risparmiare anche il battito bisogna sapere prima dove stanno gli zeri, ed è il
-mestiere delle etichette di EIE.
+risparmiare anche il battito bisogna sapere prima dove stanno gli zeri, e a questo
+servono le etichette di EIE.
 
 Un banco che per un intero strato non ha niente da fare smette di sentire il
 metronomo. Non si muove più niente, nemmeno i fili che portano il battito, che
 cambiano a ogni battito senza eccezioni e sono fra i più cari del chip. Anche
-questo ha un prezzo: il battito arriva al banco passando per un cancello in più,
+questo ha un costo: il battito arriva al banco passando per un cancello in più,
 cioè un filo in ritardo rispetto agli altri banchi, e chi progetta il chip deve
-rimettere tutti a tempo. E i rubinetti gocciolano ancora.
+rimettere tutti a tempo. I rubinetti gocciolano ancora.
 
 Per fermare anche le gocce si chiude la valvola del banco, e chiuderla ha tre
-prezzi. Quello che il banco aveva sul tavolo si perde, a meno di metterlo prima
-in un cassetto che resta collegato. Riaprire vuol dire riempire di nuovo i
-secchielli del banco, cioè acqua, e un po’ di attesa prima di ripartire. E se
+costi. Il contenuto del tavolo del banco si perde, a meno di metterlo prima in
+un cassetto che resta collegato. Riaprire vuol dire riempire di nuovo i
+secchielli del banco, cioè acqua, e un po’ di attesa prima di ripartire. Se
 tutti i banchi riaprissero insieme la pressione cadrebbe per tutti, così le
 valvole si riaprono una alla volta. Chiudere conviene solo se la pausa è lunga:
 se il banco perde una goccia a battito e riaprire costa quanto trenta gocce, una
@@ -706,8 +706,8 @@ ordinaria, si trascurano. Lo scaling di Dennard abbassava $C_L$ e $V_{dd}$ a
 ogni generazione, e $f_{clk}$ poteva salire a densità di potenza costante: il
 muro è arrivato quando $V_{dd}$ ha smesso di scendere.
 
-**Data gating.** Se un operando è zero il prodotto è noto, e basta non
-propagare niente. Eyeriss {cite}`chen2017eyeriss`, l’acceleratore del flusso
+**Data gating.** Se un operando è zero il prodotto è noto, quindi non
+serve propagare niente. Eyeriss {cite}`chen2017eyeriss`, l’acceleratore del flusso
 *row stationary* che la {doc}`sezione sulle reti convoluzionali
 </DeepLearning/reti-convoluzionali>` descrive, tiene in ogni elemento di calcolo
 un *zero buffer* di 12 bit con le posizioni degli zeri fra le attivazioni
@@ -724,7 +724,7 @@ formati compressi di EIE e SCNN con il loro costo in indici.
 segnale di abilitazione: a blocco disabilitato i registri non caricano, la
 logica a valle vede ingressi fermi, e si ferma anche il ramo dell’albero di
 clock, che commuta a ogni ciclo ($p_{01} = 1$) e ha una capacità grande. Toglie il
-termine dinamico del blocco, non la dispersione; il prezzo è nel progetto
+termine dinamico del blocco, non la dispersione; lo si paga nel progetto
 dell’albero, dove la porta aggiunge ritardo e sfasamento fra i rami
 {cite}`chandrakasan1994low`. Eyeriss spegne così, strato per strato, gli
 elementi che la mappatura lascia senza lavoro, e nella ripartizione della
@@ -822,7 +822,7 @@ ogni pausa. L’attesa migliore è di quindici cicli; oltre si ricomincia a
 perdere, perché anche le pause lunghe vengono staccate tardi. Senza memoria,
 invece, aspettare peggiora soltanto, e l’attesa migliore è zero.
 
-## Il biglietto della lotteria, e perché non ci salva
+## Il biglietto vincente, e perché non ci salva
 
 C’è una domanda che a questo punto viene naturale: se alla fine mi resta una
 rete con un decimo dei pesi che funziona, perché ho dovuto addestrare quella
@@ -839,33 +839,33 @@ i milioni di collegamenti di una rete grande, inizializzati a caso, qualcuno è
 già disposto bene per il compito, e addestrare la rete grande è comprare tutti
 i biglietti insieme per ritrovarsi in mano quello vincente.
 
-Qui interessa una conseguenza sola, ed è quella che riguarda l’efficienza: il
-risparmio che si vorrebbe non è disponibile. Per sapere quali sono i
-biglietti vincenti bisogna prima fare l’estrazione, cioè addestrare la rete
-grande, e per giunta più volte se si pota a giri. Tutto quello che si è visto
-finora (novanta pesi su cento tolti, un punto di accuratezza perso) si paga
-dopo un addestramento intero, non al posto suo. La potatura comprime un modello
-che esiste già; non insegna a farne uno piccolo.
+Qui interessa la conseguenza per l’efficienza: il risparmio che si vorrebbe non
+è disponibile. Per sapere quali sono i biglietti vincenti bisogna prima fare
+l’estrazione, cioè addestrare la rete grande, e per giunta più volte se si pota
+a giri. Tutti i risultati visti finora (novanta pesi su cento tolti, un punto
+di accuratezza perso) si pagano dopo un addestramento intero, non al posto suo.
+La potatura comprime un modello che esiste già; non insegna a farne uno
+piccolo.
 
-Con due riserve, che stringono la frase senza ribaltarla. Quando si potano unità
-intere, l’architettura che ne esce, addestrata da zero con un calendario
+Con due riserve, che stringono la frase senza ribaltarla. Quando si potano
+unità intere, l’architettura che ne esce, addestrata da zero con un calendario
 abbastanza lungo, spesso fa quanto il modello potato e rifinito
-{cite}`liu2019rethinking`: lì la potatura ha trovato una forma più che dei pesi,
-e la forma si può addestrare da sola. E una maschera si può cercare senza
-addestrare prima la rete densa, potando all’inizializzazione oppure cambiando la
-maschera durante l’addestramento, a numero di pesi fisso
-{cite}`evci2020rigging`. I metodi del primo tipo restano sotto la potatura fatta
-dopo l’addestramento {cite}`frankle2021pruning`, e il risparmio di conti dei
-secondi si incassa solo con un modo di moltiplicare che salti gli zeri, cioè
-alle condizioni già viste.
+{cite}`liu2019rethinking`: lì la potatura ha trovato una forma più che dei
+pesi, e la forma si può addestrare partendo da zero. Una maschera si può
+inoltre cercare senza addestrare prima la rete densa, potando
+all’inizializzazione oppure cambiando la maschera durante l’addestramento, a
+numero di pesi fisso {cite}`evci2020rigging`. I metodi del primo tipo restano
+sotto la potatura fatta dopo l’addestramento {cite}`frankle2021pruning`, e il
+risparmio di calcoli dei secondi si incassa solo con un modo di moltiplicare
+che salti gli zeri, cioè alle condizioni già viste.
 
 ## Le due leve insieme
 
-Le tre leve si compongono, e quello che costano insieme non è la somma di
-quello che costano da sole, né sta da una parte prevedibile. I pezzi per
-vederlo ci sono: si prende la rete, la si pota al novanta per cento
-riaddestrandola, e poi si arrotondano a quattro bit i pesi rimasti con la
-funzione della sezione precedente.
+Le leve si compongono, ma la perdita complessiva non è la somma delle perdite
+singole, né cade da una parte prevedibile. I pezzi per vederlo ci sono: si
+prende la rete, la si pota al novanta per cento riaddestrandola, e poi si
+arrotondano a quattro bit i pesi rimasti con la funzione `quantizza` della
+{doc}`sezione sulla quantizzazione <meno-bit>`.
 
 ```python
 def stato_pieno():
@@ -916,14 +916,13 @@ solo potata al 90%:         96.9%
 potata e poi a quattro bit: 96.7%
 ```
 
-Arrotondare da solo non costa niente, anzi guadagna due decimi, che sono
-rumore. Potare da solo costa 0,9 punti. Fare tutte e due costa 1,1, più della
-somma dei due costi presi separatamente, che è 0,7: su un campione di prova di
+Arrotondare da solo fa guadagnare due decimi, che sono rumore. Potare da solo
+fa perdere 0,9 punti. Insieme ne fanno perdere 1,1, più della somma algebrica
+dei due effetti presi separatamente, che è 0,7: su un campione di prova di
 cinquecentoquaranta cifre, quello scarto in più sono due cifre. Ripartendo da
 un'altra inizializzazione, però, lo scarto cambia anche di verso, e lo si vede
-rifacendo le stesse quattro prove su cinque reti addestrate da partenze
-diverse (i costi sono in punti di accuratezza, rispetto alla rete intera di
-ciascuna):
+rifacendo le stesse quattro prove su cinque reti addestrate da partenze diverse
+(i costi sono in punti di accuratezza, rispetto alla rete intera di ciascuna):
 
 ```python
 print(f"{'partenza':>8} {'solo 4 bit':>11} {'solo potata':>12} "
@@ -952,20 +951,20 @@ partenza  solo 4 bit  solo potata  tutte e due  somma
        4        +0.6         +1.5         +1.7   +2.0
 ```
 
-Su cinque partenze, comporre costa più della somma in tre e meno in due. Che
-sia più o meno non si sa prima: quello che ci si può permettere di perdere in
-tutto, il budget di errore, non si spartisce a tavolino fra le leve. Resta
-comunque un ottimo affare: un decimo dei pesi diversi da zero e un ottavo dei
-bit per ciascuno, per poco più di un punto di accuratezza. Quanto valga in byte
-dipende dal formato in cui si salva la rete, perché ogni peso tenuto si porta
-dietro il suo indirizzo.
+Su cinque partenze, la perdita composta supera la somma delle due in tre casi e
+le resta sotto in due. Quale dei due casi si presenti non si sa prima: la
+perdita che ci si può permettere in tutto, il budget di errore, non si
+spartisce a tavolino fra le leve. Resta comunque un ottimo affare: un decimo
+dei pesi diversi da zero e un ottavo dei bit per ciascuno, per poco più di un
+punto di accuratezza. Quanto valga in byte dipende dal formato in cui si salva
+la rete, perché ogni peso tenuto si porta dietro il suo indirizzo.
 
-Componendo le due leve salta fuori anche un guasto che nessuna delle due
+Componendo le due leve salta fuori anche un difetto che nessuna delle due
 mostrava da sola, e che non dà nessun errore. Dopo la potatura interi gruppi di
 sessantaquattro pesi sono tutti zeri: senza la riga di protezione di
 `quantizza` la scala di quei gruppi vale zero, dividere per zero riempie la
 rete di valori non numerici, e da lì `argmax` sceglie sempre la stessa cifra.
-Lo si vede rifacendo l'arrotondamento della rete potata di prima, ma senza la
+Lo si vede rifacendo l'arrotondamento della rete potata, ma senza la
 protezione.
 
 ```python
@@ -995,10 +994,9 @@ cifra 0 fra gli esempi di prova: 8.3%
 
 Duecentouno gruppi sono tutti zeri, e l'accuratezza si ferma all’8,3%, che non
 è il caso (il caso sarebbe il dieci per cento) ma la frequenza dello zero fra
-gli esempi di prova: la rete risponde «zero» a tutto. Senza un avviso e senza
-un errore. È il motivo della riga di protezione nella funzione `quantizza`
-della sezione precedente, ed è il genere di guasto che si trova solo componendo
-le cose e provandole.
+gli esempi di prova: la rete risponde «zero» a tutto, senza un avviso e senza
+un errore. È il motivo della riga di protezione nella funzione `quantizza`, e un
+difetto del genere si trova solo componendo le cose e provandole.
 
 Di tutte e tre le leve, la potatura non strutturata è quella con il divario più
 grande fra il risparmio sulla carta e quello sul calcolatore: la promessa è
@@ -1009,8 +1007,8 @@ quella densa, che quella promessa non la sa incassare.
 
 ```{admonition} Da ricordare
 :class: important
-- Potare vuol dire mettere a zero i pesi più piccoli. Da solo distrugge la
-  rete; quello che la salva è riaddestrare tenendo i tagli: togliendo nove pesi
+- Potare vuol dire mettere a zero i pesi più piccoli. Da solo distrugge la rete; a
+  salvarla è il riaddestramento che tiene i tagli: togliendo nove pesi
   su dieci si passa da 97,8% a 39,3%, e dopo trecento passi di riaddestramento
   si è a 96,9%.
 - La promessa però si riscuote male: con il novantacinque per cento di zeri le
@@ -1030,15 +1028,15 @@ quella densa, che quella promessa non la sa incassare.
   risparmia energia ma non tempo. Un banco senza lavoro può smettere di sentire
   il battito, o farsi chiudere anche l’acqua, che ferma le gocce ma conviene
   solo per pause più lunghe del pareggio.
-- Il biglietto della lotteria, che la {doc}`sezione su overfitting e
+- Il biglietto vincente, che la {doc}`sezione su overfitting e
   validazione </MachineLearning/overfitting-validazione>` ha già raccontato,
-  dice qui una cosa sola: per sapere quali collegamenti tenere
+  ne ricava qui una conseguenza sola: per sapere quali collegamenti tenere
   bisogna prima addestrare la rete grande. La potatura comprime un modello che
   esiste già; al più, quando toglie neuroni interi, insegna la forma di uno più
   piccolo.
-- Potare e poi arrotondare costa più della somma dei due costi in tre partenze
-  su cinque, e meno nelle altre due: quanto si perde mettendo insieme le leve
-  non si sa prima, si misura.
+- Potare e poi arrotondare perde più della somma delle due perdite in tre
+  partenze su cinque, e meno nelle altre due: quanto si perde mettendo insieme
+  le leve non si sa prima, si misura.
 ```
 
 `````
@@ -1068,7 +1066,7 @@ quella densa, che quella promessa non la sa incassare.
   maggiore in accuratezza. Gli schemi a densità fissa locale, come il 2:4
   {cite}`mishra2021accelerating`, sono il compromesso imposto dall’hardware:
   raddoppiano il picco delle moltiplicazioni ma accelerano un GEMM intero meno
-  di due volte, e senza riaddestramento costano più del 50% non strutturato.
+  di due volte, e senza riaddestramento perdono più del 50% non strutturato.
 - Gli acceleratori sparsi saltano gli zeri in hardware: EIE
   {cite}`han2016eie` con i pesi in CSC a indici relativi di 4 bit e le
   attivazioni non nulle in broadcast, SCNN {cite}`parashar2017scnn` con il
@@ -1081,26 +1079,25 @@ quella densa, che quella promessa non la sa incassare.
   termine $p_{01} C_L V_{dd}^2 f_{clk}$ dei blocchi fermi, power gating sulla
   dispersione, conveniente solo oltre il pareggio $D^* = E_{ov}/E_{leak}$; la
   politica a tempo rende se la vita residua delle pause cresce con l’attesa.
-- L’ipotesi del biglietto della lotteria {cite}`frankle2019lottery` sta nel
-  capitolo sul machine learning, con i suoi due limiti: sulle reti grandi si
-  riavvolge ai pesi di poche iterazioni dopo l’inizio
-  {cite}`frankle2020linear`, e la maschera si ottiene addestrando la rete densa.
-  Il secondo è quello che conta qui: il costo è pagato prima e non al posto.
-  Lo attenuano la potatura strutturata, la cui architettura si può addestrare
-  da zero {cite}`liu2019rethinking`, e l’addestramento sparso dinamico
-  {cite}`evci2020rigging`; la potatura all’inizializzazione resta sotto quella
-  fatta dopo l’addestramento {cite}`frankle2021pruning`.
+- L’ipotesi del biglietto vincente {cite}`frankle2019lottery` sta nella
+  {doc}`sezione su overfitting e validazione
+  </MachineLearning/overfitting-validazione>`, con i suoi due limiti: sulle
+  reti grandi si riavvolge ai pesi di poche iterazioni dopo l’inizio
+  {cite}`frankle2020linear`, e la maschera si ottiene addestrando la rete
+  densa. Il secondo conta qui: il costo è pagato prima e non al
+  posto. Lo attenuano la potatura strutturata, la cui architettura si può
+  addestrare da zero {cite}`liu2019rethinking`, e l’addestramento sparso
+  dinamico {cite}`evci2020rigging`; la potatura all’inizializzazione resta
+  sotto quella fatta dopo l’addestramento {cite}`frankle2021pruning`.
 - Le leve si compongono, i costi no: potare al 90% e arrotondare a quattro bit
-  costa più della somma dei due costi in tre partenze su cinque e meno nelle
-  altre due. Il budget di errore si misura sul modello composto.
+  dà una perdita maggiore della somma delle due in tre partenze su cinque e
+  minore nelle altre due. Il budget di errore si misura sul modello composto.
 ```
 
 `````
 
-Le prime due leve hanno in comune una cosa che finora è passata sotto silenzio:
+Le prime due leve hanno in comune un tratto che finora è passato sotto silenzio:
 partono da un modello già addestrato e ne cambiano l’interno, la
 quantizzazione arrotondandone i numeri, la potatura azzerandone una parte e
 riaddestrando il resto. La terza rovescia il tavolo. Non stringe il modello
 grande: ne costruisce un altro, piccolo, e gli affianca il grande come maestro.
-E la cosa da capire è che cosa passi fra i due, perché non è la risposta
-giusta: quella ce l’avevano già i dati.

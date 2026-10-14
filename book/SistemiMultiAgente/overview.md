@@ -39,16 +39,16 @@ dall'altra, la terza a soli due metri e mezzo da una delle prime due. Volevano
 dieci fotogrammi al secondo, ma oltre i cinque le loro macchine non riuscivano
 più a scattare tutte nello stesso istante. Su ogni postazione ne misero allora
 due, sei macchine in tutto, ciascuna a cinque scatti al secondo, e gli scatti
-dell'una cadevano esattamente a metà fra quelli dell'altra.
+dell'una cadevano a metà fra quelli dell'altra.
 
 Due fotografie scattate nello stesso istante bastano a dire dove sta un uccello
 nello spazio, con la stessa geometria con cui due occhi ricavano la profondità.
-La terza postazione serve ad altro, e serve alla cosa che finora aveva reso lo
+La terza postazione serve a risolvere il problema che finora aveva reso lo
 spettacolo impossibile da misurare: capire quale puntino di una foto sia lo
 stesso uccello di quale puntino dell'altra, quando i puntini sono migliaia e si
 somigliano tutti. Fra le due postazioni lontane l'algoritmo riusciva ad
 abbinare un uccello su cinque, troppo pochi; fra due vicine, che vedono quasi
-la stessa scena, nove su dieci. Ma due macchine vicine sono come due occhi
+la stessa scena, nove su dieci. Due macchine vicine sono come due occhi
 quasi sovrapposti, e della profondità misurano poco: a misurarla bene serve la
 coppia lontana. Ecco allora a che cosa serve la terza: gli abbinamenti si fanno
 fra le due vicine, dove sono facili, e la geometria delle tre viste li
@@ -88,8 +88,8 @@ ciascuno guarda gli altri.
 
 Finché la densità dello stormo resta la stessa, le due regole prevedono lo
 stesso comportamento e nessuna osservazione saprebbe distinguerle. Si separano
-quando la densità cambia, cioè quando lo stormo si dirada per sfuggire a un
-falco: proprio il momento in cui restare insieme conta di più. La
+quando la densità cambia, per esempio quando lo stormo si dirada per sfuggire a un
+falco, nel momento in cui restare insieme conta di più. La
 {numref}`fig-regola-metrica-topologica` mette le due regole una accanto
 all'altra sullo stesso stormo.
 
@@ -102,7 +102,7 @@ Lo stesso stormo, disegnato su un piano per poterlo guardare, prima fitto e poi
 diradato fino a occupare una superficie doppia. Il raggio fisso è sempre quello
 e dentro restano tre compagni invece di sette; i sette più vicini sono ancora
 quei sette, e a cambiare è soltanto quanto sta lontano il settimo, qui del 41
-per cento. Nell'aria, dove lo stormo vive davvero, si allarga meno, perché c'è
+per cento. Nell'aria, dove lo stormo si muove, si allarga meno, perché c'è
 una dimensione in più su cui distribuirsi.
 ```
 
@@ -135,8 +135,8 @@ quanti restano quanti anche quando il gruppo si allarga.
 `````{tab} Superiore
 
 Sia $\rho$ la densità locale (uccelli per unità di volume; nel capitolo questa
-lettera farà altri due mestieri, la correlazione fra votanti e l'evaporazione
-del feromone, e ognuno è la convenzione del proprio campo). Con una regola
+lettera avrà altri due significati, la correlazione fra votanti e l'evaporazione
+del feromone, ciascuno secondo la convenzione del proprio campo). Con una regola
 metrica di raggio $r$ il numero di vicini con cui un individuo interagisce è
 $n(r) = \tfrac{4}{3}\pi r^{3} \rho$, proporzionale a $\rho$: il grado di
 interazione collassa quando lo stormo si dirada. Con una regola topologica si
@@ -148,14 +148,14 @@ $$
 
 che dipende dalla densità solo come l'inverso della sua radice cubica:
 dimezzare $\rho$ allunga $r_c$ di $2^{1/3} \approx 1{,}26$, il 26%. Il grado
-resta costante per costruzione, ed è questa invarianza a sostenere la coesione
+resta costante per costruzione, e questa invarianza sostiene la coesione
 sotto grandi variazioni di densità: gli autori la argomentano e la mostrano su
 un modello a particelle auto-propulse in due dimensioni, non la dimostrano.
 Le due formule valgono in un intorno abbastanza omogeneo e lontano dal bordo
 dello stormo, dove il conteggio dei vicini va corretto e senza correzione dà
 risultati sbagliati.
 
-Il test empirico usa proprio questa differenza. Su dieci stormi di rarefazione
+Il test empirico sfrutta questa differenza. Su dieci stormi di rarefazione
 molto diversa ($r_1$, la distanza media dal primo vicino, va da $0{,}68$ a
 $1{,}51$ m) il raggio di interazione $r_c$ cresce con $r_1$ in modo netto
 ($R^2 = 0{,}78$), mentre il numero di vicini interagenti non mostra alcuna
@@ -167,8 +167,8 @@ linguaggio dei grafi, quello dei {doc}`dati a grafo
 raggio fisso e la topologica il grafo diretto degli $n_c$ vicini più prossimi,
 in cui ogni nodo sceglie i propri $n_c$ archi uscenti: il grado uscente è
 costante per costruzione (quello entrante no, perché la scelta non va
-ricambiata: io guardo te senza che tu debba guardare me, ed è la natura stessa
-dell'interazione fra storni) e il grafo non cambia affatto se tutte le distanze
+ricambiata e l'interazione fra storni non è simmetrica: io guardo te senza che
+tu debba guardare me) e il grafo non cambia affatto se tutte le distanze
 vengono riscalate.
 
 `````
@@ -178,11 +178,11 @@ uccelli: a parità di individui, il comportamento di un gruppo lo decide la
 regola di interazione. Nelle simulazioni con cui Ballerini e colleghi
 accompagnano le misure gli individui sono gli stessi, e cambia soltanto la
 regola con cui ciascuno guarda i vicini: con quella topologica lo stormo
-attaccato da un predatore resta quasi sempre intero, con quella metrica si
-spezza molto più spesso in più tronconi. La bravura dei singoli conta ancora,
+attaccato da un predatore resta intero nell'esito più probabile, con quella
+metrica si spezza di norma in più tronconi. La bravura dei singoli conta ancora,
 ma non basta a prevedere il gruppo. Ogni sezione che segue riprende questa tesi
 su programmi invece che su uccelli. Un agente, qui, è un programma a cui si
-affida un compito e che lo porta avanti da sé, decidendo un passo alla volta
+affida un compito e che lo porta avanti decidendo un passo alla volta
 che cosa fare; e gli stessi dieci agenti, a seconda di chi può scrivere a chi,
 formano sistemi diversi.
 
@@ -195,10 +195,10 @@ loro, come si accordano su chi fa che cosa, come decidono quando le loro
 risposte non coincidono. Sono le domande dei sistemi multi-agente, e hanno già
 trent'anni di risposte: conviene non riscoprirle male.
 
-Quello che è cambiato è il costo di partenza. Un modello di linguaggio è un
+È cambiato il costo di partenza. Un modello di linguaggio è un
 programma che, dato un testo, ne scrive il seguito, e lo fa abbastanza bene da
-poter ricevere le istruzioni a parole invece che in codice. Definirne dieci
-copie costa una riga di configurazione, perché il programma è sempre lo stesso:
+poter ricevere le istruzioni a parole invece che in codice. Per definirne dieci
+copie basta una riga di configurazione, perché il programma è sempre lo stesso:
 a distinguerle è soltanto il foglio di istruzioni che ciascuna si trova davanti
 prima di cominciare (il *prompt di sistema*: «tu scrivi codice e non discuti le
 scelte altrui», «tu cerchi errori e non ne proponi la correzione»). Dieci fogli
@@ -206,35 +206,35 @@ diversi, e la squadra c'è. Il costo vero comincia quando la squadra lavora,
 perché ogni messaggio che un agente scrive è una chiamata al modello, e ogni
 messaggio che legge si paga anche lui.
 
-Conviene fissare subito un esempio, perché nelle prossime pagine si parlerà a
-lungo di quanto costa una squadra e di che forma darle, e il prezzo di una cosa
-non dice niente finché non si sa che cosa sia. Prendiamo la richiesta: «apri
-questo file di vendite e dimmi quali negozi stanno peggiorando». Il
-coordinatore la riceve e tiene le fila. Il programmatore scrive il codice che
-apre il file e fa i conti. Il revisore lo legge e dice soltanto una cosa: se è
-sicuro eseguirlo, cioè se non cancella niente e non combina danni. A quel punto
-tocca di nuovo al coordinatore, perché è l'unico dei tre che può toccare la
-macchina vera: gli altri due scrivono e leggono testo, lui esegue. Il risultato
-torna al programmatore, che lo interpreta, e la risposta al mittente la
-consegna di nuovo il coordinatore.
+Serve un esempio concreto: le prossime pagine parlano a lungo del costo di una
+squadra e della forma da darle, e un costo non dice niente finché non si sa a
+quale compito si riferisce. Prendiamo la richiesta: «apri questo file di
+vendite e dimmi quali negozi stanno peggiorando». Il coordinatore la riceve e
+tiene le fila. Il programmatore scrive il codice che apre il file e svolge
+l'analisi. Il revisore lo legge e giudica un solo aspetto: se è sicuro
+eseguirlo, cioè se non cancella niente e non combina danni. A quel punto tocca
+di nuovo al coordinatore, perché è l'unico dei tre che può toccare la macchina
+vera: gli altri due scrivono e leggono testo, lui esegue. Il risultato torna al
+programmatore, che lo interpreta, e la risposta al mittente la consegna di
+nuovo il coordinatore.
 
 La squadra viene dall'articolo che presenta AutoGen {cite}`wu2024autogen`, un
 framework, cioè una libreria di programmi pronti, con cui conversazioni di
 questo genere fra agenti si scrivono in poche righe: là i tre si chiamano
 Commander, Writer e Safeguard, e interrogano un modello che ottimizza le
 consegne di una catena di fornitura (l'applicazione si chiama OptiGuide). Qui la
-domanda è un'altra, i tre mestieri sono quelli, ed è la squadra a cui pensare
+domanda è un'altra, i tre ruoli sono quelli, e questa è la squadra a cui riferirsi
 ogni volta che si parla di agenti che si passano messaggi. La {doc}`sezione
 sulle architetture degli agenti </Agenti/architetture-e-valutazione>` ha già
 descritto ruoli come questi uno per uno: il pianificatore, l'esecutore che
 svolge il lavoro e il critico che lo controlla. Qui il programmatore è
 l'esecutore, il revisore è il critico, e il coordinatore pianifica e in più è
-l'unico che fa girare il codice sulla macchina; quello che si studia è che cosa
+l'unico che fa girare il codice sulla macchina; si studia che cosa
 succede quando i tre sono insieme.
 
-Se definire i partecipanti costa poco, la difficoltà sta altrove: in chi parla
+Definire i partecipanti è facile; la difficoltà sta altrove: in chi parla
 con chi, in chi decide quando le proposte sono in disaccordo, e in una domanda
-che con un agente solo non si pone, come ci si accorge che il gruppo nel suo
+che con un agente solo non si pone, cioè come ci si accorge che il gruppo nel suo
 insieme ha sbagliato.
 
 L'ultima è la meno ovvia. Quando sbaglia un gruppo ogni singolo pezzo sembra a
@@ -242,8 +242,8 @@ posto: ciascuno ha fatto il proprio turno, i messaggi sono ben scritti, e il
 risultato è sbagliato lo stesso. Due esempi: la richiesta di partenza si
 deforma passando di mano in mano, e l'ultimo risponde benissimo a una domanda
 diversa da quella iniziale (la *deriva del compito*); oppure qualcuno afferma
-con sicurezza una cosa falsa e nessuno la controlla (la *verifica assente o
-sbagliata*, fra i modi di fallire più frequenti). Il guasto sta nella
+con sicurezza qualcosa di falso e nessuno lo controlla (la *verifica assente o
+sbagliata*, fra i modi di fallire più frequenti). Il difetto sta nella
 conversazione, non nei singoli turni, e catalogarne le forme è un lavoro
 cominciato da poco {cite}`cemri2025why`: la {doc}`sezione sul costo del
 coordinamento </SistemiMultiAgente/costo-del-coordinamento>` riprende quel
@@ -265,17 +265,17 @@ prende quasi otto volte su dieci (78%), e con nove colleghi il 90%: perché il
 gruppo sbagli servono almeno due errori insieme, che sono più rari di uno. Quel
 78 si ricava elencando i casi uno per uno nella {doc}`sezione sui protocolli e
 il consenso <protocolli-e-consenso>` (il 90 esce allo stesso modo, con molti
-più casi da elencare): è un conto da foglio e matita, ma per adesso basta il
+più casi da elencare): si fa con foglio e matita, ma per adesso basta il
 senso.
 
 Il conto però vale solo se i tre sbagliano in modo *diverso*. Se hanno studiato
 sugli stessi appunti sbagliati sbagliano insieme, la maggioranza conferma
 l'errore invece di correggerlo e il gruppo ci prende sette volte su dieci come
-ciascuno di loro: tre stipendi per il risultato di uno. E se ciascuno ci prende
-quattro volte su dieci, votare *peggiora* le cose: tre danno il 35%, nove il
-27%. Il voto amplifica la tendenza di fondo, qualunque sia. (Anche questi due
-numeri escono dallo stesso elenco di casi, rifatto partendo da quattro volte su
-dieci invece che da sette.)
+ciascuno di loro: tre stipendi per il risultato di uno. Se ciascuno ci prende
+quattro volte su dieci, invece, votare *peggiora* le cose: tre danno il 35%,
+nove il 27%. Il voto amplifica la tendenza di fondo, qualunque sia. (Anche
+questi due numeri escono dallo stesso elenco di casi, rifatto partendo da
+quattro volte su dieci invece che da sette.)
 
 `````
 
@@ -302,20 +302,21 @@ $$
 
 cioè l'errore del gruppo decade esponenzialmente in $n$. Il limite è largo
 ($p = 0{,}7$ e $n = 9$ danno soltanto $P_9 \ge 0{,}513$, contro il $0{,}901$
-esatto) ma ha la forma giusta. Le ipotesi che lo reggono sono tre: voti
+esatto) ma ha la forma giusta. Le ipotesi su cui poggia sono tre: voti
 indipendenti, la stessa $p$ per tutti, e voto sincero, cioè ciascuno vota per
 l'alternativa che ritiene giusta. La derivazione, il caso a più alternative e
 un modello di errori correlati stanno nella {doc}`sezione sui protocolli e il
 consenso <protocolli-e-consenso>`.
 
-L'ipotesi vincolante è l’**indipendenza degli errori**, ed è la più fragile che
-ci sia fra agenti che condividono il modello di base, i dati di
+L'ipotesi vincolante è l’**indipendenza degli errori**, la più fragile fra
+agenti che condividono il modello di base, i dati di
 pre-addestramento e spesso metà del prompt. Nel limite di correlazione perfetta
 $P_n = p$ per ogni $n$: la maggioranza di $n$ agenti vale un agente,
-moltiplicandone il costo. È la lezione degli ensemble del capitolo sul
-machine learning, dove il guadagno non viene dal numero di modelli ma dalla
-loro decorrelazione. Diversità prima di quantità; i modi di comprarla, ciascuno
-con il suo prezzo, li elenca la stessa sezione sui protocolli e il consenso.
+moltiplicandone il costo. È la lezione dei {doc}`metodi ensemble
+</MachineLearning/alberi-ensemble>`, dove il guadagno non viene dal numero di
+modelli ma dalla loro decorrelazione. Diversità prima di quantità; i modi di
+ottenerla, ciascuno con i suoi svantaggi, li elenca la stessa sezione sui
+protocolli e il consenso.
 
 `````
 
@@ -329,34 +330,34 @@ decisionale di Markov (MDP: si osserva uno stato, si sceglie un'azione, si
 riceve una ricompensa e si passa allo stato successivo), la *policy* $\pi$,
 cioè la regola con cui l'agente sceglie l'azione in ciascuno stato, e il
 problema dell'assegnazione del merito (*credit assignment*): la ricompensa
-arriva alla fine di una partita e bisogna stabilire quale mossa se la sia
-guadagnata. Con più agenti la domanda si sdoppia, e non chiede più soltanto
-*quale mossa* ha prodotto il risultato, ma anche *quale agente*.
+arriva alla fine di una partita e bisogna stabilire quale azione se la sia
+guadagnata. Con più agenti la domanda si sdoppia, e oltre a *quale azione* ha
+prodotto il risultato occorre stabilire *quale agente*.
 
 La terza idea sono le {doc}`GAN </GAN/overview>`, l'esempio più
 puro di due parti che si spingono a vicenda a migliorare.
 
 `````{tab} Elementare
 
-Più avanti nel libro incontrerai due reti che si allenano l'una contro l'altra:
-una fabbrica immagini false, l'altra cerca di smascherarle. Si chiamano GAN, e
-di loro qui basta sapere come finisce la partita. Addestrare un programma, di
-solito, somiglia a cercare il punto più basso di una valle nella nebbia: si
-scende, e quando non si scende più si è arrivati. Qui no, perché ogni passo
-avanti di uno rende più difficile il mestiere dell'altro, e una valle sola non
-c'è. Quello che si può sperare è un **equilibrio**, cioè il momento in cui a
-nessuno dei due conviene più cambiare mossa da solo: se l'altro resta dov'è,
-cambiare non gli fa guadagnare niente. Non è per forza un buon risultato. Può
-essere quello in cui tutti stanno peggio di come starebbero fidandosi l'uno
-dell'altro, e nessuno può uscirne da solo.
+Le GAN sono due reti che si allenano l'una contro l'altra: una fabbrica
+immagini false, l'altra cerca di smascherarle. Di loro qui basta sapere come
+finisce la partita. Addestrare un programma, di solito, somiglia a cercare il
+punto più basso di una valle nella nebbia: si scende, e quando non si scende
+più si è arrivati. Qui no, perché ogni passo avanti di uno rende più difficile
+il compito dell'altro, e una valle sola non c'è. Si può sperare in un
+**equilibrio**, cioè il momento in cui a nessuno dei due conviene più cambiare
+strategia, finché l'altro resta dov'è: cambiare non gli fa guadagnare niente.
+Non è per forza un buon risultato. Può essere quello in cui tutti stanno peggio
+di come starebbero fidandosi l'uno dell'altro, e nessuno, muovendosi per primo,
+ci guadagna.
 
 Un sistema multi-agente allarga quella struttura: i giocatori possono essere
-dieci, e non sono per forza nemici. E imparare diventa più difficile, perché un
+dieci, e non sono per forza nemici. Imparare diventa anche più difficile, perché un
 agente solo studia in un mondo fermo mentre dieci agenti studiano in un mondo
 che si muove: il «mondo» di ciascuno contiene gli altri nove, che stanno
 imparando anche loro. È come allenarsi per una gara in cui anche gli avversari
-si allenano: quello che bastava a vincere il mese scorso, il mese prossimo non
-basta più.
+si allenano: il mese prossimo non basterà più la preparazione che ha vinto il mese
+scorso.
 
 `````
 
@@ -373,7 +374,7 @@ per ciascun agente e un fattore di sconto $\gamma \in [0, 1)$. Se ogni agente
 osserva soltanto una parte $o^i$ dello stato, e la ricompensa è comune, il
 modello diventa il Dec-POMDP (processo decisionale di Markov decentralizzato e
 parzialmente osservabile) {cite}`oliehoek2016concise`, quello della sezione su
-{doc}`imparare insieme <imparare-insieme>`, ed è il caso degli agenti
+{doc}`imparare insieme <imparare-insieme>`, che descrive bene gli agenti
 linguistici, ciascuno dei quali vede soltanto il proprio contesto. Se $r^i = r$
 per ogni $i$ il gioco è cooperativo; se $N = 2$ e $r^1 + r^2 = 0$ si ricade nel
 caso a somma zero, che è la forma minimax della GAN (con la *loss* non-saturante
@@ -392,7 +393,7 @@ mentre con un agente solo una policy ottima deterministica c'è sempre. Di
 solito, poi, l'equilibrio non è unico e non è per forza un buon esito. Nel
 **dilemma del prigioniero** (ricompense $(3,3)$ se cooperano entrambi, $(5,0)$ o
 $(0,5)$ se defeziona uno solo, $(1,1)$ se defezionano entrambi) defezionare è la
-miglior risposta a qualunque mossa dell'altro: l'unico equilibrio è $(1,1)$, ed
+miglior risposta a qualunque mossa dell'altro: l'unico equilibrio è $(1,1)$, che
 è anche l'unico esito non **Pareto-ottimo**, cioè migliorabile per qualcuno
 senza peggiorarlo per nessuno. Nel caso cooperativo il profilo ottimo è un
 equilibrio, ma accanto a equilibri peggiori, e scegliere fra loro è un problema
@@ -407,26 +408,26 @@ MDP fisso, decadono. Lo affronta la stessa sezione su imparare insieme.
 ## Tre domande
 
 Il capitolo risponde a tre domande, in quest'ordine. Conviene davvero più di
-un agente, e a che prezzo? Come si organizzano, cioè chi parla con chi,
-con quali messaggi e con quale regola di decisione? E infine: possono
+un agente, e a quale costo? Come si organizzano, cioè chi parla con chi,
+con quali messaggi e con quale regola di decisione? Possono, infine,
 imparare a coordinarsi invece di essere programmati per farlo, come gli
 storni, a cui la regola dei sei o sette vicini non l'ha insegnata nessuno?
 
 - La prima domanda è quella del costo del coordinamento: quando più agenti
-  battono un singolo agente ben progettato, con i conti in mano (quante volte si
+  battono un singolo agente ben progettato, numeri alla mano (quante volte si
   interroga il modello, quanto testo gli si fa rileggere, quanti giri di
   conversazione servono).
 - La seconda ha due metà. Chi parla con chi: le forme che può prendere lo
   schema di chi scrive a chi (un coordinatore con i suoi lavoratori, la catena,
   la gerarchia, la lavagna condivisa, il mercato) e che cosa ciascuna fa al
-  numero di passaggi, al lavoro del più carico e a quello che resta in
+  numero di passaggi, al lavoro del più carico e a quanto resta in
   piedi se si ferma. Poi protocolli e consenso: messaggi che dichiarano che cosa
   fanno (una richiesta, un impegno, un rifiuto) e regole per decidere (il voto
   di maggioranza, il dibattito), fino al caso duro in cui un partecipante si
   guasta o mente.
 - La terza è imparare insieme: l'apprendimento per rinforzo multi-agente, la
-  ricetta di allenarsi guardando tutto e poi giocare guardando solo il proprio
-  pezzo (l'addestramento centralizzato con esecuzione decentralizzata) e il
+  ricetta di allenarsi guardando tutto e poi giocare guardando solo la sua
+  parte (l'addestramento centralizzato con esecuzione decentralizzata) e il
   *self-play* incontrato dietro AlphaGo.
 - Oltre gli agenti linguistici, sciami e simulazioni: regole locali elementari
   che risolvono problemi globali (colonie di formiche, sciami di particelle) e
@@ -448,8 +449,8 @@ storni, a cui la regola dei sei o sette vicini non l'ha insegnata nessuno?
 - La tesi del capitolo: a parità di individui, il comportamento del gruppo lo
   decide la regola di interazione. Stessi individui, regola diversa,
   collettivo diverso.
-- Definire dieci agenti costa poco: stesso modello, dieci fogli di istruzioni
-  diversi {cite}`wu2024autogen`. Il conto arriva quando lavorano, perché ogni
+- Definire dieci agenti è facile: stesso modello, dieci fogli di istruzioni
+  diversi {cite}`wu2024autogen`. La spesa arriva quando lavorano, perché ogni
   messaggio scritto e ogni messaggio letto si paga. La squadra da tenere in
   mente per tutto il capitolo ne ha tre: chi tiene le fila ed esegue, chi
   scrive il codice, chi controlla che si possa eseguire. Il difficile viene
@@ -463,7 +464,7 @@ storni, a cui la regola dei sei o sette vicini non l'ha insegnata nessuno?
 - Il caso con molti agenti non è quello singolo ripetuto tante volte: per
   ciascuno il mondo contiene gli altri, che nel frattempo cambiano. Il traguardo
   non è più il fondo di una valle ma un equilibrio: la situazione in cui a
-  nessuno conviene più muoversi da solo, e che non è per forza un buon
+  nessuno conviene più muoversi per primo, e che non è per forza un buon
   risultato per tutti.
 ```
 
@@ -487,10 +488,10 @@ storni, a cui la regola dei sei o sette vicini non l'ha insegnata nessuno?
 - La tesi del capitolo: a individui fissati, il comportamento del gruppo lo
   decide la regola di interazione. Stessi individui, regola diversa,
   collettivo diverso.
-- Istanziare dieci agenti costa una riga di codice {cite}`wu2024autogen`, farli
-  lavorare no: ogni messaggio è una chiamata al modello. Il difficile è chi
-  parla con chi, chi decide, e accorgersi che ha sbagliato il *gruppo* e non un
-  turno {cite}`cemri2025why`.
+- Per istanziare dieci agenti basta una riga di codice {cite}`wu2024autogen`,
+  per farli lavorare no: ogni messaggio è una chiamata al modello. Il difficile
+  è chi parla con chi, chi decide, e accorgersi che ha sbagliato il *gruppo* e
+  non un turno {cite}`cemri2025why`.
 - «Più teste» aiuta solo se sbagliano in modo indipendente (Condorcet: con
   $p = 0{,}7$, tre votanti danno $0{,}784$); con errori perfettamente correlati
   $n$ agenti valgono quanto uno, al costo di $n$.

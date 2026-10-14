@@ -23,7 +23,7 @@ La prima GAN usava soprattutto strati completamente connessi
 entrata: per uno strato così un'immagine è un vettore senza struttura spaziale,
 e che due pixel siano vicini non entra nel calcolo. Nelle immagini naturali,
 invece, pixel vicini sono fortemente correlati (un pezzo di cielo è azzurro
-tutto intorno), ed è la struttura che le convoluzioni sfruttano per
+tutto intorno), e le convoluzioni sfruttano questa struttura per
 costruzione. Una variante convoluzionale c'era già nel paper del 2014, ma
 addestrarla era instabile e mancava una ricetta riproducibile; la ricetta
 arriva a fine 2015 con la **DCGAN** (*Deep Convolutional GAN*) di Radford, Metz
@@ -50,24 +50,24 @@ il passaggio successivo ne mette quattro, e quanto ciascuno debba essere chiaro
 o scuro lo dicono i filtri. Con questa architettura le immagini smettono di
 essere macchie e cominciano ad avere bordi netti e coerenza.
 
-E su quel pugno di numeri di partenza si possono fare i conti. Si prendono i
+Su quel pugno di numeri di partenza si può fare aritmetica. Si prendono i
 numeri che hanno fatto tre uomini con gli occhiali, si tolgono quelli di tre
 uomini senza, si aggiungono quelli di tre donne senza: esce una donna con gli
-occhiali. Con un esemplare solo per gruppo il conto salta, perché «occhiali»
+occhiali. Con un esemplare solo per gruppo l'operazione fallisce, perché «occhiali»
 sta in una zona di quei numeri e non in un punto preciso.
 `````
 
 `````{tab} Superiore
 La DCGAN codifica una serie di scelte architetturali diventate standard: il
 generatore $G$ usa convoluzioni trasposte (nel paper si chiamano
-*fractional-strided convolutions*, ed è la `ConvTranspose2d` di PyTorch) per
-l'upsampling, il discriminatore $D$ usa convoluzioni con *stride*; nessun
-pooling; *batch normalization* in entrambe le reti, con due eccezioni che il
-paper stesso impone (niente batchnorm sullo strato di uscita di $G$ e su
-quello d'ingresso di $D$, dove gli autori riportano oscillazioni dei campioni
-e instabilità); attivazioni ReLU nel generatore (tranne l'output con $\tanh$)
-e LeakyReLU nel discriminatore. La ricetta comprende anche l'ottimizzazione:
-Adam con learning rate $2\cdot10^{-4}$, perché il $10^{-3}$ suggerito si rivela
+*fractional-strided convolutions*, e corrispondono a `ConvTranspose2d` in
+PyTorch) per l'upsampling, il discriminatore $D$ usa convoluzioni con *stride*;
+nessun pooling; *batch normalization* in entrambe le reti, con due eccezioni
+che il paper stesso impone (niente batchnorm sullo strato di uscita di $G$ e su
+quello d'ingresso di $D$, dove gli autori riportano oscillazioni dei campioni e
+instabilità); attivazioni ReLU nel generatore (tranne l'output con $\tanh$) e
+LeakyReLU nel discriminatore. La ricetta comprende anche l'ottimizzazione: Adam
+con learning rate $2\cdot10^{-4}$, perché il $10^{-3}$ suggerito si rivela
 troppo alto, e $\beta_1 = 0{,}5$ invece di $0{,}9$, che dava oscillazioni e
 instabilità; pesi inizializzati da $\mathcal{N}(0,\ 0{,}02^2)$, minibatch da
 $128$, pendenza $0{,}2$ nelle LeakyReLU, e nessuno strato completamente
@@ -76,12 +76,12 @@ connesso nascosto nelle architetture profonde.
 Il paper mostra anche che lo spazio latente $\mathcal{Z}$ è semanticamente
 strutturato: aritmetica vettoriale come "uomo con occhiali $-$ uomo senza
 occhiali $+$ donna senza occhiali" produce, decodificata da $G$, il volto di
-una donna con occhiali. C'è però una cautela, che il paper stesso dichiara e che
-pesa: sui singoli vettori l'operazione è instabile, e il risultato regge
-mediando i $\mathbf{z}$ di tre esemplari per concetto. La struttura c'è, ma è
-una proprietà di regioni dello spazio, non di punti singoli; ed è comunque un
-indizio precoce del fatto che la rete apprende una rappresentazione, non una
-tabella di memorizzazione.
+una donna con occhiali. C'è però una cautela, che il paper stesso dichiara e
+che pesa: sui singoli vettori l'operazione è instabile, e il risultato si
+ottiene mediando i $\mathbf{z}$ di tre esemplari per concetto. La struttura
+c'è, ma è una proprietà di regioni dello spazio, non di punti singoli; ed è
+comunque un indizio precoce del fatto che la rete apprende una
+rappresentazione, non una tabella di memorizzazione.
 `````
 
 ## Conditional GAN: prendere il controllo
@@ -100,8 +100,8 @@ decide una volta per tutte un numero per ciascuna parola possibile, e "voglio
 un gatto" diventa una manciata di numeri accodata al rumore. Sia il generatore
 sia il discriminatore ricevono questa etichetta: il primo la usa come
 istruzione, il secondo per giudicare non solo *se* l'immagine è verosimile, ma
-se corrisponde davvero all'etichetta richiesta. Così smettiamo di pescare a
-caso e cominciamo a ordinare su misura.
+se corrisponde all'etichetta richiesta. Così smettiamo di pescare a caso e
+cominciamo a ordinare su misura.
 `````
 
 `````{tab} Superiore
@@ -115,17 +115,17 @@ $$
 $$
 
 Qui $p_{\text{dati}}(\mathbf{x},y)$ è la distribuzione congiunta di dato e
-condizione, scritta con gli argomenti espliciti proprio per distinguerla dalla
-marginale sui soli dati che nel resto del capitolo abbiamo indicato con
-$p_{\text{dati}}$; $p_y$ è la distribuzione delle condizioni e $\mathbf{z}$ il
-rumore latente. Entrambe le reti ricevono $y$ come ingresso aggiuntivo, e per
-questo lo scriviamo come secondo argomento: $G(\mathbf{z},y)$ è il campione
-generato coerente con $y$, e $D(\mathbf{x},y)$ il giudizio del discriminatore
-sulla coppia. Il paper di Mirza e Osindero usa la barra, $D(\mathbf{x}\mid y)$
-e $G(\mathbf{z}\mid y)$; qui si scrive la virgola, perché per la rete $y$ è un
-ingresso in più. Il discriminatore resta però un classificatore condizionato:
-se le condizioni dei falsi si estraggono con la stessa distribuzione di quelle
-dei dati, $p_y = p_{\text{dati}}(y)$, il suo ottimo è
+condizione, scritta con gli argomenti espliciti per distinguerla dalla
+marginale sui soli dati, $p_{\text{dati}}(\mathbf{x})$; $p_y$ è la
+distribuzione delle condizioni e $\mathbf{z}$ il rumore latente. Entrambe le
+reti ricevono $y$ come ingresso aggiuntivo, e per questo lo scriviamo come
+secondo argomento: $G(\mathbf{z},y)$ è il campione generato coerente con $y$, e
+$D(\mathbf{x},y)$ il giudizio del discriminatore sulla coppia. Il paper di
+Mirza e Osindero usa la barra, $D(\mathbf{x}\mid y)$ e $G(\mathbf{z}\mid y)$;
+qui si scrive la virgola, perché per la rete $y$ è un ingresso in più. Il
+discriminatore resta però un classificatore condizionato: se le condizioni dei
+falsi si estraggono con la stessa distribuzione di quelle dei dati, $p_y =
+p_{\text{dati}}(y)$, il suo ottimo è
 
 $$
 D^*(\mathbf{x}, y) = \frac{p_{\text{dati}}(\mathbf{x}\mid y)}
@@ -142,7 +142,7 @@ input sempre più ricco, da un'etichetta discreta a un'intera frase.
 
 ## SAGAN e BigGAN: guardare lontano, poi crescere
 
-Condizionare sulla classe non basta, da solo, a far disegnare bene mille classi
+Condizionare sulla classe non basta a far disegnare bene mille classi
 diverse. Nel 2018 due lavori sulle GAN condizionate di ImageNet, la raccolta di
 oltre un milione di fotografie divise in mille classi su cui si addestrano i
 classificatori d’immagini, affrontano il problema uno dopo l’altro. La **SAGAN**
@@ -166,12 +166,12 @@ zampe vanno messe d’accordo fra loro e con il corpo, e sono lontane.
 L’attenzione della SAGAN dà a ogni punto la possibilità di guardare tutta la
 tela, e di pesare quanto gli servono i punti lontani. Serve anche all’esperto
 che giudica: può controllare che una zampa in basso a sinistra vada d’accordo
-con quella in alto a destra. E la rete impara per gradi: all’inizio il peso
+con quella in alto a destra. La rete impara per gradi: all’inizio il peso
 dell’attenzione è a zero e dipinge come prima, poi lo alza quando le conviene.
-Lo sguardo lungo ha un prezzo: ogni punto guarda tutti gli altri, e raddoppiando
-i punti le occhiate diventano quattro volte tante.
+Lo sguardo lungo richiede più calcoli: ogni punto guarda tutti gli altri, e
+raddoppiando i punti le occhiate diventano quattro volte tante.
 
-BigGAN fa la cosa che sembra la meno ingegnosa, e rende di più: tutto più
+BigGAN adotta la soluzione che sembra meno ingegnosa, e rende di più: tutto più
 grande. A ogni passo guarda otto volte più immagini, e ogni gruppo così contiene
 più tipi diversi di immagine: la correzione che le due reti ne ricavano, pensano
 gli autori, è più affidabile. Le reti sono poi più larghe, cioè con più filtri
@@ -186,16 +186,17 @@ immagine diventa più bella e tutte insieme più simili, fino a disegnare sempre
 lo stesso cane della classe. Diventa una manopola fra qualità e varietà, da
 girare dopo l’addestramento.
 
-La manopola ha un guasto, e sta nella fila intera. Durante l’addestramento
-ogni numero, da solo, stava spesso vicino allo zero, ma in ogni fila qualcuno
-era lontano: una fila tutta tranquilla la rete non l’aveva mai vista. Alcune
-reti, davanti a file così, rispondono con colori sparati e pezzi saturi.
-BigGAN ci rimedia con una regola, durante l’addestramento, che obbliga i
-filtri di ogni strato a non somigliarsi fra loro, e che rende la rete più
-docile: piccoli cambi nei numeri di partenza danno piccoli cambi nell’immagine,
-anche nelle zone che ha visto poco. Non funziona sempre: fra le reti che gli
-autori hanno addestrato con impostazioni diverse, senza la regola reggeva la
-manopola una su sei, con la regola sei su dieci.
+La manopola ha un punto debole, che sta nella fila intera. Durante
+l’addestramento ogni numero, preso singolarmente, stava spesso vicino allo
+zero, ma in ogni fila qualcuno era lontano: una fila tutta tranquilla la rete
+non l’aveva mai vista. Alcune reti, davanti a file così, rispondono con colori
+sparati e pezzi saturi. BigGAN ci rimedia con una regola, durante
+l’addestramento, che obbliga i filtri di ogni strato a non somigliarsi fra
+loro, e che rende la rete più docile: piccoli cambi nei numeri di partenza
+danno piccoli cambi nell’immagine, anche nelle zone che ha visto poco. Non
+funziona sempre: fra le reti che gli autori hanno addestrato con impostazioni
+diverse, senza la regola la manopola funzionava in una rete su sei, con la
+regola in sei su dieci.
 
 `````
 
@@ -209,19 +210,18 @@ zampe ben separate. La spiegazione che gli autori avanzano, e che i loro
 confronti classe per classe sostengono, sta nel campo recettivo locale della
 convoluzione: una dipendenza fra regioni lontane si forma solo attraverso una
 pila di strati, che l’ottimizzazione fatica a coordinare, e allargare i kernel
-costerebbe l’efficienza computazionale e statistica della struttura locale.
+farebbe perdere l’efficienza computazionale e statistica della struttura locale.
 
 Il blocco di SAGAN adatta l’operazione *non-local* all’interno di una GAN. Date
 le feature $\mathbf{x} \in \mathbb{R}^{C \times N}$ di uno strato ($N$
-posizioni, $C$ canali), tre proiezioni $1\times1$,
-$f(\mathbf{x}) = \mathbf{W}_f\mathbf{x}$,
-$g(\mathbf{x}) = \mathbf{W}_g\mathbf{x}$ e
+posizioni, $C$ canali), tre proiezioni $1\times1$, $f(\mathbf{x}) =
+\mathbf{W}_f\mathbf{x}$, $g(\mathbf{x}) = \mathbf{W}_g\mathbf{x}$ e
 $h(\mathbf{x}) = \mathbf{W}_h\mathbf{x}$, fanno da chiave, query e valore,
 tutte verso $\bar C = C/8$ canali, e una quarta, $\mathbf{W}_v \in
 \mathbb{R}^{C \times \bar C}$, riporta il risultato a $C$ canali (qui la
 posizione che guarda è $j$ e quella guardata è $i$, al contrario della
-convenzione $z_{ij} = \mathbf{q}_i^\top\mathbf{k}_j$ del capitolo sui
-Transformer):
+convenzione $z_{ij} = \mathbf{q}_i^\top\mathbf{k}_j$ usata nella {doc}`sezione
+sull'attenzione </Transformers/attenzione>`):
 
 $$
 \beta_{j,i} = \frac{\exp(s_{ij})}{\sum_{i=1}^{N}\exp(s_{ij})},\quad
@@ -230,14 +230,14 @@ s_{ij} = f(\mathbf{x}_i)^\top g(\mathbf{x}_j),\qquad
 $$
 
 e l’uscita del blocco è $\gamma\,\mathbf{o}_i + \mathbf{x}_i$, con $\gamma$
-scalare appreso e inizializzato a zero, così che la rete parta locale e aggiunga
-la dipendenza a lunga distanza quando conviene. Il blocco sta in $G$ e in $D$, e
-costa un tempo quadratico in $N$. SAGAN applica anche la normalizzazione
-spettrale {cite}`miyato2018spectral` al generatore oltre che al discriminatore,
-e usa learning rate diversi per le due reti (la *two time-scale update rule* di
-Heusel e colleghi {cite}`heusel2017gans`), che rende superflui i turni
-sbilanciati, più aggiornamenti del discriminatore per ogni aggiornamento del
-generatore.
+scalare appreso e inizializzato a zero, così che la rete parta locale e
+aggiunga la dipendenza a lunga distanza quando conviene. Il blocco sta in $G$ e
+in $D$, e costa un tempo quadratico in $N$. SAGAN applica anche la
+normalizzazione spettrale {cite}`miyato2018spectral` al generatore oltre che al
+discriminatore, e usa learning rate diversi per le due reti (la *two time-scale
+update rule* di Heusel e colleghi {cite}`heusel2017gans`), che rende superflui
+i turni sbilanciati, più aggiornamenti del discriminatore per ogni
+aggiornamento del generatore.
 
 BigGAN parte dall’architettura SAGAN e la scala: *batch* otto volte più grande
 (2048), canali più larghi del 50%, un’immersione della classe condivisa e
@@ -274,9 +274,10 @@ $$
 con $\lambda = 10^{-4}$ (nel paper il coefficiente si chiama $\beta$, che qui è
 già il peso dell’attenzione), che penalizza la somiglianza fra filtri senza
 vincolarne la norma: sulle configurazioni provate, la frazione di modelli che
-reggono la troncatura passa dal 16% al 60%. StyleGAN applicherà la stessa idea
-nello spazio $\mathcal{W}$, come interpolazione verso lo stile medio, e lì la
-troncatura regge in modo affidabile senza modificare la funzione di perdita.
+tollerano la troncatura passa dal 16% al 60%. StyleGAN applicherà la stessa
+idea nello spazio $\mathcal{W}$, come interpolazione verso lo stile medio, e lì
+la troncatura funziona in modo affidabile senza modificare la funzione di
+perdita.
 
 `````
 
@@ -284,12 +285,13 @@ troncatura regge in modo affidabile senza modificare la funzione di perdita.
 
 È la famiglia dietro i volti sintetici che chi guarda senza un addestramento
 apposito non distingue dalle fotografie meglio che tirando a sorte
-{cite}`nightingale2022ai`, ed è quella che ha reso famose le GAN presso chi non
-le ha mai studiate. Il contributo di StyleGAN {cite}`karras2019style`, però, è
-architetturale: un generatore a stili che controlla gli attributi
-dell'immagine scala per scala. Migliora anche la qualità (a parità di rete di
-base il FID cala di circa un sesto rispetto al generatore tradizionale), ma il
-risultato che lo distingue è il controllo.
+{cite}`nightingale2022ai`, e ha reso famose le GAN presso chi non le ha mai
+studiate. Il contributo di StyleGAN {cite}`karras2019style`, però, è
+architetturale: un generatore a stili che controlla gli attributi dell'immagine
+scala per scala. Migliora anche la qualità (a parità di addestramento e di
+iperparametri il FID su FFHQ scende da $5{,}25$ a $4{,}40$ rispetto al
+generatore tradizionale, circa un sesto), ma il risultato che lo distingue è il
+controllo.
 
 `````{tab} Elementare
 StyleGAN non "disegna" il volto tutto in una volta: lo costruisce a livelli, dal
@@ -304,7 +306,7 @@ aggrovigliati, e spostando un cursore se ne muovono tre. (La
 {doc}`sezione sul latente che si usa </ModelliLatenti/il-latente-che-si-usa>` ha
 mostrato che senza aiuti questa separazione non si ottiene; qui l'aiuto c'è ed è
 l'impianto stesso, perché ogni fila di numeri arriva a un livello diverso.
-Quello che si separa bene è il grossolano dal fine; posa, età e capelli si
+Si separa bene il grossolano dal fine; posa, età e capelli si
 sbrogliano meglio di prima, non del tutto.)
 
 Cambiando i cursori dei primi livelli cambia la posa; cambiando quelli degli
@@ -316,11 +318,10 @@ decide i dettagli che nessuno sceglie, dove cada una ciocca e come si posi la
 grana della pelle. Stessi cursori e casualità diversa danno la stessa persona
 appena spettinata.
 
-Una cosa StyleGAN non l'ha inventata, ed è quella che si nota per prima: le
-immagini grandi come una fotografia vera erano state conquistate l'anno prima
-dal modello da cui parte, la Progressive GAN, che faceva crescere le due
-reti un pezzo alla volta. StyleGAN eredita quella scala e ci aggiunge il
-controllo.
+StyleGAN non ha inventato l'aspetto che si nota per primo: le immagini grandi
+come una fotografia vera erano state conquistate l'anno prima dal modello da
+cui parte, la Progressive GAN, che faceva crescere le due reti un pezzo alla
+volta. StyleGAN eredita quella scala e ci aggiunge il controllo.
 
 Che poi il risultato sia una fotografia e non un disegno non dipende dai
 livelli: dipende dall'esperto, allenato su fotografie vere, che boccia tutto
@@ -348,24 +349,24 @@ volti belli e tutti simili, ha un FID di $91{,}7$ contro il $4{,}5$ di quella
 ottimizzata per il FID.
 
 La risoluzione $1024\times1024$, invece, StyleGAN la eredita: viene dalla
-Progressive GAN dello stesso gruppo {cite}`karras2018progressive`, che
-l'anno prima aveva imparato a salire fino a lì facendo crescere le due reti un
-livello per volta, e che StyleGAN dichiara come propria configurazione di base,
-«da cui ereditiamo le reti e tutti gli iperparametri, salvo dove indicato». Là
-si era imparato a *salire* la scala; qui si impara a decidere che cosa succede
-a ciascun gradino. StyleGAN2 (2020) elimina poi i caratteristici artefatti "a
+Progressive GAN dello stesso gruppo {cite}`karras2018progressive`, che l'anno
+prima aveva imparato a salire fino a lì facendo crescere le due reti un livello
+per volta, e che StyleGAN dichiara come propria configurazione di base, «da cui
+ereditiamo le reti e tutti gli iperparametri, salvo dove indicato». Là si era
+imparato a *salire* la scala; qui si impara a decidere che cosa succede a
+ciascun gradino. StyleGAN2 (2020) elimina poi i caratteristici artefatti "a
 goccia" ridisegnando la normalizzazione: con quella revisione la ricetta si
-assesta, ed è la forma in cui la famiglia è entrata nell'uso corrente.
+assesta, e in questa forma la famiglia è entrata nell'uso corrente.
 `````
 
 ## Sotto il cofano: crescere, modulare, e la goccia
 
 Tre meccanismi di StyleGAN meritano di essere aperti: come si fanno crescere
-due reti, che cosa vuol dire consegnare uno stile a un livello, e da dove
+due reti, che cosa significa consegnare uno stile a un livello, e da dove
 veniva la macchia a goccia che StyleGAN2 ha fatto sparire. I primi due valgono
 oltre StyleGAN. La crescita per gradini è l'esempio più limpido di un'idea che
 torna ogni volta che un addestramento è troppo grosso per essere affrontato
-tutto insieme, e verrà abbandonata proprio da chi l'aveva inventata. La
+tutto insieme, e verrà abbandonata da chi l'aveva inventata. La
 modulazione degli strati è finita dentro i generatori di immagini di oggi, e si
 ritrova sotto un altro nome nella {doc}`sezione sul Diffusion Transformer
 </ModelliDiffusione/diffusion-transformer>`. La goccia, invece, è un caso di
@@ -384,9 +385,9 @@ ovvia a dirsi: si comincia da $4 \times 4$, si aspetta che le due reti si
 assestino, poi si aggiunge uno strato a ciascuna e si raddoppia il lato. Sedici
 pixel, poi sessantaquattro, poi duecentocinquantasei, e via fino al milione.
 
-Il punto delicato è il gradino, ed è lì che sta il mestiere. Aggiungere di
-colpo uno strato nuovo, coi suoi numeri ancora casuali, davanti a due reti che
-avevano appena trovato l'equilibrio vuol dire buttare all'aria l'equilibrio. La
+Il punto delicato è il gradino. Aggiungere di
+colpo uno strato nuovo, coi suoi numeri ancora casuali, a due reti che
+avevano appena trovato l'equilibrio lo butta all'aria. La
 soluzione è una **dissolvenza**: per un po’ l'immagine che esce è una miscela
 fra quella del gradino vecchio (semplicemente ingrandita) e quella del gradino
 nuovo, e il peso della miscela scivola da zero
@@ -401,22 +402,22 @@ tracciare l'ovale, poi la posizione degli occhi, poi i lineamenti, e i dettagli
 per ultimi. Se si comincia dalle ciglia si sbaglia tutto, perché non c'è ancora
 una faccia su cui metterle.
 
-La crescita per gradini fa esattamente questo con due allievi che si
-controllano a vicenda. E la dissolvenza è la cortesia di non cambiare foglio di
+La crescita per gradini procede così, con due allievi che si
+controllano a vicenda. La dissolvenza è la cortesia di non cambiare foglio di
 colpo: per un po’ il disegno che si consegna è mezzo quello vecchio ingrandito
 e mezzo quello nuovo, e la proporzione si sposta piano. Chi giudica non se ne
 accorge, e continua a giudicare.
 
 Nel paper ci sono altri tre accorgimenti, e li nominiamo perché sono il genere
 di cosa che non si trova sui manuali e fa la differenza fra un addestramento
-che regge e uno che no. Il primo: si fa in modo che tutti i pesi della
-rete rispondano con la stessa prontezza, perché altrimenti alcuni si aggiustano
-in fretta e altri restano indietro, e chi resta indietro rallenta tutti. Il
+che tiene e uno che no. Il primo: si fa in modo che tutti i pesi della rete
+rispondano con la stessa prontezza, perché altrimenti alcuni si aggiustano in
+fretta e altri restano indietro, e chi resta indietro rallenta tutti. Il
 secondo: dentro il falsario, dopo ogni passaggio, i numeri vengono riportati a
 una taglia standard, perché in una gara a chi urla più forte tendono a
-gonfiarsi da soli. Il terzo: si mostra all'esperto quanto sono diverse fra
-loro le immagini di un gruppo, che è il modo più diretto di smascherare un
-falsario che dipinge sempre lo stesso quadro.
+gonfiarsi. Il terzo: si mostra all'esperto quanto sono diverse fra loro le
+immagini di un gruppo, che è il modo più diretto di smascherare un falsario che
+dipinge sempre lo stesso quadro.
 
 `````
 
@@ -485,7 +486,7 @@ StyleGAN se lo porta dentro il generatore e lo usa livello per livello.
 
 Dentro il falsario, a ogni livello, il segnale viaggia in tante corsie
 parallele, i canali, e ogni corsia ha il suo livello medio e la sua ampiezza di
-oscillazione. Il gesto ha due tempi. Primo tempo, si azzera: di ciascuna
+oscillazione. L'operazione ha due tempi. Primo tempo, si azzera: di ciascuna
 corsia si prende il valore medio e l'ampiezza delle oscillazioni e li si
 riporta a zero e a uno, come un mixer con tutti i cursori rimessi in posizione
 neutra. Una corsia che valeva in media $5$ e oscillava di $2$ in su e in giù
@@ -522,8 +523,8 @@ y_{s,i}\rvert$, qualunque fossero prima: le statistiche di primo e secondo
 ordine le decide lo stile, e della mappa sopravvive solo la forma spaziale. In
 Huang e Belongie la coppia è $\big(\sigma(\mathbf{s}_i),
 \mu(\mathbf{s}_i)\big)$, le statistiche delle feature di un'immagine di stile
-$\mathbf{s}$; StyleGAN la calcola da $\mathbf{w}$, livello per livello, ed è da
-lì che viene il controllo per scala.
+$\mathbf{s}$; StyleGAN la calcola da $\mathbf{w}$, livello per livello, e da
+qui viene il controllo per scala.
 
 `````
 
@@ -543,13 +544,13 @@ un esperimento la sostiene. Il primo tempo della AdaIN normalizza ogni canale
 separatamente, e così butta via un'informazione che al generatore può servire:
 quanto un canale è forte rispetto agli altri. L'ipotesi è che il generatore la
 reintroduca di contrabbando. Fabbrica in un punto qualunque dell'immagine un
-picco enorme, così alto da dominare da solo la statistica del canale; quando la
+picco enorme, così alto da dominare la statistica del canale; quando la
 normalizzazione divide per quella deviazione standard gonfiata, tutto il resto
 del canale esce schiacciato della quantità che serviva. Il picco è la goccia, e
-una macchia in un angolo costerebbe al generatore meno che perdere quel
-controllo: {numref}`fig-picco-schiaccia` fa il conto. A sostegno, gli autori
-mostrano che togliendo dal generatore il passo di normalizzazione le gocce
-spariscono del tutto, che è un indizio forte del movente senza esserne la
+una macchia in un angolo è per il generatore un danno minore che perdere quel
+controllo, come mostra il calcolo di {numref}`fig-picco-schiaccia`. A sostegno,
+gli autori mostrano che togliendo dal generatore il passo di normalizzazione le
+gocce spariscono del tutto, che è un indizio forte del movente senza esserne la
 prova.
 
 ```{figure} ../figures/il-picco-che-schiaccia.svg
@@ -586,10 +587,10 @@ anno, e la spiegazione proposta indica, più che un errore nel codice, una
 soluzione che l'ottimizzazione trova a un vincolo dell'architettura. È la
 differenza fra il debug di un programma, dove qualcosa è scritto storto, e la
 diagnosi di un modello, dove un difetto sistematico può essere la strada che
-l'obiettivo premia e che nessuno aveva previsto. Quando una rete fa una cosa
-strana e ripetuta, la domanda che paga è che cosa ci stia guadagnando, più che
-dove sia il guasto; il {doc}`capitolo sull'interpretabilità
-</Interpretabilita/overview>` ne fa un mestiere.
+l'obiettivo premia e che nessuno aveva previsto. Quando una rete fa qualcosa di
+strano e ripetuto, la domanda che paga è che cosa ci stia guadagnando, più che
+dove sia l'errore; il {doc}`capitolo sull'interpretabilità
+</Interpretabilita/overview>` ne fa il proprio oggetto di studio.
 ```
 
 Quel rimedio, e le altre due revisioni che lo stesso lavoro si porta dietro,
@@ -611,7 +612,7 @@ La seconda è una regola nuova che chiede al falsario di camminare a passo
 costante: spostare i cursori di un tanto deve cambiare l'immagine di un
 tanto, né di più né di meno, dovunque ci si trovi.
 Serve a togliere di mezzo i punti in cui uno spostamento minimo stravolge
-l'immagine, e regala un mestiere in più: un falsario che
+l'immagine, e offre un uso in più: un falsario che
 cammina a passo costante è molto più facile da percorrere al contrario,
 cioè da usare per scoprire quali cursori produrrebbero una fotografia che
 abbiamo già in mano, e quindi per dire se un volto l'ha fatto lui.
@@ -645,11 +646,11 @@ $j$ fissato, cioè è la norma dell'intero filtro che produce il canale $j$, e
 $i'$ e $k'$ scorrono mentre l’$i$ e il $k$ del numeratore restano fermi.
 L'ipotesi statistica è il punto: la demodulazione non misura le attivazioni
 vere, le assume, e per questo non offre nessun canale in
-cui nascondere segnale. Gli autori la dichiarano per quello che è, cioè più
-debole dell'instance normalization proprio perché poggia su ipotesi sul
+cui nascondere segnale. Gli autori la dichiarano più debole dell'instance
+normalization, perché poggia su ipotesi sul
 segnale invece che sul contenuto effettivo delle mappe: il controllo
-sull'ampiezza vale in media e non su ogni singolo esempio. Ed è quel «in media»
-a chiudere il varco.
+sull'ampiezza vale in media e non su ogni singolo esempio. Quel «in media»
+chiude il varco.
 
 Lo stesso lavoro rivede la crescita progressiva, che a quel punto risolveva un
 problema di stabilità già risolto altrove e in cambio dava ai dettagli una
@@ -676,20 +677,19 @@ $$
 
 dove $g$ è il generatore, $\mathbf{u}$ è l'immagine di rumore gaussiano su cui
 si proietta (il paper la chiama $\mathbf{y}$, lettera che in StyleGAN è già lo
-stile) e
-$a$ non è un iperparametro ma una media mobile
-esponenziale delle lunghezze osservate, cioè un bersaglio che il termine si
-sceglie da solo strada facendo. Lo jacobiano non si calcola mai per esteso:
-basta l'identità $\mathbf{J}_{\mathbf{w}}^{\top}\mathbf{u} =
+stile) e $a$ non è un iperparametro ma una media mobile esponenziale delle
+lunghezze osservate, cioè un bersaglio che si aggiorna durante l'addestramento.
+Lo jacobiano non si calcola mai per esteso: basta l'identità
+$\mathbf{J}_{\mathbf{w}}^{\top}\mathbf{u} =
 \nabla_{\mathbf{w}}\big(g(\mathbf{w}) \cdot \mathbf{u}\big)$, che è una normale
-retropropagazione. È un vincolo di buon condizionamento *numerico* della
-mappa latente-immagine (numerico nel senso dell'analisi numerica, cioè quanto
-la mappa amplifica una differenza in ingresso; da non confondere con il
-condizionamento della GAN condizionale, che è un'etichetta data in ingresso alle
-due reti), e ha un effetto collaterale utile dichiarato dagli autori: i
-generatori così regolarizzati sono molto più facili da invertire, cioè da
-usare al contrario per trovare il $\mathbf{w}$ che produce una data fotografia,
-e questo permette di attribuire un'immagine generata alla rete che l'ha fatta.
+retropropagazione. È un vincolo di buon condizionamento *numerico* della mappa
+latente-immagine (numerico nel senso dell'analisi numerica, cioè quanto la
+mappa amplifica una differenza in ingresso; da non confondere con il
+condizionamento della GAN condizionale, che è un'etichetta data in ingresso
+alle due reti), e ha un effetto collaterale utile dichiarato dagli autori: i
+generatori così regolarizzati sono molto più facili da invertire, cioè da usare
+al contrario per trovare il $\mathbf{w}$ che produce una data fotografia, e
+questo permette di attribuire un'immagine generata alla rete che l'ha fatta.
 
 `````
 
@@ -722,7 +722,7 @@ devo ritrovare la foto di partenza.
 Detta così, la regola sembra avere una scappatoia grande come una casa: al
 traduttore converrebbe non cambiare niente, restituire la foto tale e quale e
 vincere senza fatica. Non gli conviene, perché il vincolo di andata e ritorno
-non gioca da solo: dall'altra parte c'è sempre un esperto, uno per dominio,
+non agisce isolato: dall'altra parte c'è sempre un esperto, uno per dominio,
 addestrato a distinguere i veri Monet dai finti Monet. Chi non dipinge viene
 smascherato da lui. Le due regole si tengono a vicenda: l'esperto obbliga a
 cambiare stile, il ciclo obbliga a non stravolgere il contenuto.
@@ -743,12 +743,12 @@ dall'originale: $G(\mathbf{x})$ porta $\mathbf{x}$ nel dominio $\mathcal{Y}$,
 $F$ lo riporta indietro, e il risultato deve coincidere con $\mathbf{x}$; qui
 $\mathbf{y}$ è un'immagine del secondo dominio, che è la lettera di Zhu e
 colleghi e non lo stile di StyleGAN. Nell'obiettivo completo la
-$\mathcal{L}_{\text{cyc}}$ non compare da sola ma pesata da un coefficiente
+$\mathcal{L}_{\text{cyc}}$ compare pesata da un coefficiente
 $\lambda$ (nel paper, $\lambda = 10$) accanto alle due perdite avversarie: il
 rapporto fra le due spinte è un iperparametro, e non dei più innocui.
 
 Questo vincolo rende superfluo l'allineamento a coppie. Che il vincolo «ancori
-il contenuto», però, è vero solo in parte, ed è un limite noto: Chu, Zhmoginov
+il contenuto», però, è vero solo in parte. Chu, Zhmoginov
 e Sandler {cite}`chu2017cyclegan` hanno mostrato che CycleGAN impara a
 soddisfare il ciclo nascondendo l'immagine di partenza dentro quella tradotta,
 come un segnale ad alta frequenza quasi invisibile a occhio, che $F$ poi
@@ -765,23 +765,24 @@ fare e dove si ferma.
 Il primo è la super-risoluzione. SRGAN {cite}`ledig2017photo` ricostruisce
 dettagli plausibili in immagini a bassa risoluzione, e da lì vengono il
 restauro fotografico e l’*upscaling*, l'ingrandimento di un'immagine senza che
-diventi sgranata. La parola «plausibili» va presa alla lettera, ed è il limite
-dello strumento: i dettagli che nella foto piccola non c'erano la rete non li
-recupera, li inventa in modo verosimile. Su una foto di famiglia è una scelta
-estetica; su una lastra medica o su un fotogramma di sorveglianza è una
+diventi sgranata. La parola «plausibili» va presa alla lettera, e indica il
+limite dello strumento: i dettagli che nella foto piccola non c'erano la rete
+non li recupera, li inventa in modo verosimile. Su una foto di famiglia è una
+scelta estetica; su una lastra medica o su un fotogramma di sorveglianza è una
 trappola, perché il risultato ha l'aria di un'informazione e non lo è.
 
 Il secondo è la generazione di dati sintetici: volti, lastre mediche, scene
 stradali con cui addestrare altri modelli quando i dati reali sono scarsi o
 sensibili. Con due avvertenze. Un dato sintetico eredita le distorsioni di chi
 l'ha generato (i *bias*: se il generatore ha visto soltanto volti chiari,
-soltanto quelli saprà fare). E un dato sintetico non è per questo privato: un
-generatore può memorizzare esempi di addestramento e riprodurli, e Carlini e
-colleghi ne hanno estratti da GAN addestrate su CIFAR-10, anche se meno che dai
-modelli di diffusione di qualità paragonabile {cite}`carlini2023extracting`.
-Una garanzia di riservatezza chiede un addestramento apposito, con la
-{doc}`privacy differenziale </AIResponsabile/privacy-e-robustezza>`, e
-l'utilità dei dati sintetici per un compito si misura su quel compito.
+soltanto quelli saprà fare). Un dato sintetico, inoltre, non è per questo
+privato: un generatore può memorizzare esempi di addestramento e riprodurli, e
+Carlini e colleghi ne hanno estratti da GAN addestrate su CIFAR-10, anche se
+meno che dai modelli di diffusione di qualità paragonabile
+{cite}`carlini2023extracting`. Una garanzia di riservatezza chiede un
+addestramento apposito, con la {doc}`privacy differenziale
+</AIResponsabile/privacy-e-robustezza>`, e l'utilità dei dati sintetici per un
+compito si misura su quel compito.
 
 Il terzo esce dalle immagini. MolGAN {cite}`decao2018molgan` genera
 direttamente il grafo di una molecola, cioè i suoi atomi e i legami fra loro, e
@@ -790,11 +791,11 @@ premia le proprietà chimiche desiderate; sulla raccolta QM9 produce composti
 validi quasi nel cento per cento dei casi, e soffre di *mode collapse* come le
 sorelle che generano immagini.
 
-E l’arte. Nel 2018 il ritratto *Edmond de Belamy*, prodotto con una GAN dal
+Nell’arte, nel 2018, il ritratto *Edmond de Belamy*, prodotto con una GAN dal
 collettivo francese Obvious, fu battuto da Christie's per 432.500 dollari, con
 una stima di partenza di 7.000–10.000: la casa d'aste lo presentava come il
 primo ritratto generato da un algoritmo mai arrivato all'asta. Il dibattito
-sull'autorialità dell'arte generativa si aprì proprio lì, e con un'ironia
+sull'autorialità dell'arte generativa si aprì in quell'occasione, e con un'ironia
 utile: buona parte del codice era di Robbie Barrat, un altro artista, che
 l'aveva pubblicato con una licenza aperta, compreso il programma con cui
 Obvious aveva raccolto da WikiArt i quindicimila ritratti dell'addestramento
@@ -807,13 +808,13 @@ arrivare alla macchina.
 Tutte le varianti viste finora cambiano il regolamento del duello lasciandone
 intatto lo scopo: alla fine esce un'immagine, e a farla è il generatore.
 L'ultima che raccontiamo cambia lo scopo. Il duello non serve più a fare
-immagini: serve a fabbricare un alfabeto con cui scriverle. E chi poi le
-scrive è una macchina che il lettore conosce da tempo, quella che indovina il
-simbolo successivo.
+immagini: serve a fabbricare un alfabeto con cui scriverle. Chi poi le scrive è
+una macchina che il lettore conosce da tempo, quella che indovina il simbolo
+successivo.
 
 Il ragionamento parte da un desiderio. Un Transformer sa continuare qualunque
-cosa gli si dia in fila, purché sia una fila corta di simboli presi da un
-elenco finito: è così che scrive testo, ed è così che, nella
+sequenza di simboli presi da un
+elenco finito, purché non troppo lunga: così scrive testo, e così, nella
 {doc}`sezione sulla generazione di suono e musica </Audio/generazione-audio>`,
 ha scritto musica. Un'immagine non è né l'una né l'altra cosa. Non è un elenco
 finito, perché i suoi puntini sono numeri che variano con continuità; e non è
@@ -822,14 +823,14 @@ riduzioni, e per tutte e due il libro ha già gli attrezzi: un autoencoder
 per accorciare, e un codebook per rendere finito, cioè la tavolozza di
 pezzetti-tipo dei codec audio, quella del VQ-VAE {cite}`oord2017neural`.
 
-Il guaio è che le due riduzioni si mordono la coda. Un Transformer paga
+Le due riduzioni, però, si mordono la coda. Un Transformer paga
 l'attenzione col quadrato della lunghezza della fila (fila doppia, conto
 quadruplo), quindi la fila va accorciata tanto; ma comprimere tanto, con una
 rete addestrata a somigliare all'originale puntino per puntino, produce
 immagini sfocate, perché la strada più sicura per somigliare a tutto è fare la
 media di tutto. È qui che entra il duello. Patrick Esser, Robin Rombach e
 Björn Ommer {cite}`esser2021taming` cambiano due cose al compressore. Primo: al
-posto del conto puntino per puntino mettono un giudizio percettivo, che
+posto del confronto puntino per puntino mettono un giudizio percettivo, che
 misura la somiglianza come la valuterebbe un occhio (due fili d'erba
 diversi nello stesso prato sono la stessa cosa, una scritta storta no).
 Secondo: gli mettono contro un discriminatore. A quel punto il compressore non
@@ -849,20 +850,20 @@ parte qualcuno rimonta il quadro. Il catalogo è l'alfabeto, i numeri sono la
 frase.
 
 Chi rimonta il quadro non ha bisogno che i numeri vengano da un quadro vero: se
-qualcuno gliene inventa una fila plausibile, lui la rimonta lo stesso. E
-inventare file plausibili di simboli è il mestiere della macchina che completa
+qualcuno gliene inventa una fila plausibile, lui la rimonta lo stesso. Inventare
+file plausibili di simboli spetta alla macchina che completa
 le frasi. Un'immagine nuova diventa una frase nuova.
 
-Il catalogo però va fatto bene, e qui torna il duello. Se le tessere si scelgono
-soltanto col criterio «somiglia», il catalogo si riempie di tessere sbiadite:
-davanti a un dubbio la scelta più prudente è sempre il grigio medio, che
-somiglia un po’ a tutto e non è niente. Mettendo un esperto a bocciare le
-ricostruzioni sfocate, le tessere restano nette. È il mestiere di sempre, ma
-stavolta il prodotto dell'esperto è un alfabeto e non un'immagine.
+Il catalogo però va fatto bene, e qui torna il duello. Se le tessere si
+scelgono soltanto col criterio «somiglia», il catalogo si riempie di tessere
+sbiadite: davanti a un dubbio la scelta più prudente è sempre il grigio medio,
+che somiglia un po’ a tutto e non è niente. Mettendo un esperto a bocciare le
+ricostruzioni sfocate, le tessere restano nette. L'esperto fa il lavoro di
+sempre, ma ora ne esce un alfabeto e non un'immagine.
 
 Un'avvertenza: il catalogo è un soffitto. Ciò che nessuna delle mille
 tessere sa dire, nessuno lo recupera più a valle, per quanto bravo sia chi
-scrive le frasi. E le tessere devono restare grosse: se ciascuna coprisse un
+scrive le frasi. Le tessere, poi, devono restare grosse: se ciascuna coprisse un
 pezzetto minuscolo, quei duecentocinquantasei numeri basterebbero per un angolo
 del quadro, e chi rimonta si ritroverebbe con due mezze facce che non si
 guardano. Per i quadri grandi si detta a finestra, un riquadro per volta:
@@ -878,15 +879,15 @@ L'encoder $E$ produce $\hat{\mathbf{z}} = E(\mathbf{x}) \in \mathbb{R}^{h
 \times w \times d}$; ogni vettore spaziale è quantizzato al più vicino elemento
 del codebook $\mathcal{C} = \{\mathbf{e}_1, \dots, \mathbf{e}_K\}$ con la
 regola e lo *straight-through estimator* già visti per il VQ-VAE
-{cite}`oord2017neural`. La differenza sta nella loss del primo stadio, e sono
-due mosse distinte: la ricostruzione $\ell_2$ sui pixel viene sostituita da una
+{cite}`oord2017neural`. La differenza sta nella loss del primo stadio, e le
+modifiche sono due: la ricostruzione $\ell_2$ sui pixel viene sostituita da una
 **loss percettiva**, cioè una distanza calcolata non fra i pixel delle due
-immagini ma fra quello che una rete già addestrata vede in ciascuna, e sopra si
-aggiunge una **loss avversaria** con un discriminatore *patch-based*, quello di
-pix2pix {cite}`isola2017image`, che giudica riquadri invece dell'immagine
-intera e quindi valuta la resa locale più che il contenuto globale. I due
-termini che tengono agganciati codebook ed encoder (la perdita sul codebook e
-la *commitment loss*) restano quelli del VQ-VAE.
+immagini ma fra le rappresentazioni che una rete già addestrata ricava da
+ciascuna, e sopra si aggiunge una **loss avversaria** con un discriminatore
+*patch-based*, quello di pix2pix {cite}`isola2017image`, che giudica riquadri
+invece dell'immagine intera e quindi valuta la resa locale più che il contenuto
+globale. I due termini che tengono agganciati codebook ed encoder (la perdita
+sul codebook e la *commitment loss*) restano quelli del VQ-VAE.
 
 L'effetto dichiarato è sul fattore di compressione ammissibile: con
 $f = 16$ e $K = 1024$ un'immagine $256 \times 256$ si riduce a $16 \times 16 =
@@ -895,14 +896,14 @@ VQ-VAE-2 {cite}`razavi2019generating`, uscito un anno e mezzo prima, a fedeltà
 di ricostruzione dello stesso ordine (il modello ImageNet
 di punta del lavoro tiene $f = 16$ e sale a $K = 16\,384$).
 
-Sul valore di $f$ conviene riportare esattamente ciò che il paper misura,
-perché le due metà del compromesso vengono da due esperimenti diversi. Verso
+Le due metà del compromesso sul valore di $f$ vengono da due esperimenti
+diversi del paper. Verso
 l'alto: gli autori osservano che oltre un certo numero di dimezzamenti la
 qualità della ricostruzione degrada, e la soglia dipende dal dataset. Verso il
 basso: tenendo fissa la lunghezza della sequenza a $16 \times 16 = 256$ e
 variando $f \in \{1, 2, 8, 16\}$, la porzione d'immagine che quei 256 simboli
 coprono si stringe al calare di $f$, e sotto $f = 16$ le strutture globali non
-reggono più (a $f = 8$ escono facce mezze barbute, con punti di vista
+sono più coerenti (a $f = 8$ escono facce mezze barbute, con punti di vista
 incoerenti da una zona all'altra). Il vincolo dal basso, quindi, non è che la
 fila si allunghi: a fila costante è il campo visivo che si restringe.
 
@@ -912,9 +913,9 @@ ordine di scansione. Per risoluzioni oltre quella di addestramento il
 campionamento avviene a finestra scorrevole, condizionando ogni blocco sul
 contesto che ricade nella finestra: è ciò che permette immagini di dimensione
 arbitraria a lunghezza di contesto fissa. Gli autori dichiarano anche a quale
-condizione funziona, ed è la parte che conviene non perdere: il contesto
+condizione funziona: il contesto
 disponibile basta finché le statistiche del dataset sono all'incirca invarianti
-per traslazione, oppure finché c'è un condizionamento spaziale che regge la
+per traslazione, oppure finché c'è un condizionamento spaziale che garantisce la
 coerenza. Dove la condizione cade (sintesi non condizionata su dati allineati)
 si rimedia condizionando sulle coordinate.
 
@@ -929,7 +930,7 @@ quella ricetta è stata forgiata. Il secondo: l'idea di trattare un'immagine
 come una sequenza di simboli non è nuova per chi legge, perché la {doc}`sezione
 sulla fusione precoce </VisioneLinguaggio/fusione-precoce-tardiva>` l'ha già
 usata per i generatori multimodali; qui se ne vede l'officina, cioè da dove
-arriva l'alfabeto e a che prezzo lo si fabbrica.
+arriva l'alfabeto e con quale costo lo si fabbrica.
 
 `````
 
@@ -937,27 +938,26 @@ arriva l'alfabeto e a che prezzo lo si fabbrica.
 
 Verso il 2021 il primato cambia mano, e a dare il nome al sorpasso è il paper
 *Diffusion Models Beat GANs on Image Synthesis* {cite}`dhariwal2021diffusion`,
-che lo misura su due fronti: un FID migliore di quello di BigGAN su ImageNet,
-e una copertura più ampia della distribuzione, misurata dal richiamo (una
-guida forte, che alza la fedeltà, ne fa perdere una parte, ma resta sopra
-quella della GAN). La ragione per cui il passaggio è stato così rapido, però,
-sta nei due difetti delle GAN. Un modello di diffusione si addestra minimizzando
-una loss di regressione, con un bersaglio che non dipende da un'altra rete, e
+che lo misura su due fronti: un FID migliore di quello di BigGAN su ImageNet, e
+una copertura più ampia della distribuzione, misurata dal richiamo (una guida
+forte, che alza la fedeltà, ne fa perdere una parte, ma resta sopra quella
+della GAN). La ragione per cui il passaggio è stato così rapido, però, sta nei
+due difetti delle GAN. Un modello di diffusione si addestra minimizzando una
+loss di regressione, con un bersaglio che non dipende da un'altra rete, e
 quindi senza un duello da tenere in equilibrio; e copre i modi della
 distribuzione molto meglio di una GAN. L'idea è opposta a quella avversaria: si
 aggiunge a un'immagine rumore gaussiano in quantità crescente, si addestra una
 rete a stimarlo, e si genera partendo da puro rumore e togliendolo un passo
-alla volta. («Rumore» è la stessa parola usata finora, ma qui indica una cosa
-diversa: non i numeri casuali in ingresso al generatore, bensì la grana sparsa
-sopra un'immagine.) Su questa base nascono Stable Diffusion
-{cite}`rombach2022high` e DALL·E 2 (OpenAI, 2022): a entrambi si descrive a
-parole quello che si vuole ("un gatto nero seduto su un muro al tramonto") e
-loro lo disegnano, ed è così che la generazione di immagini su richiesta è
-arrivata al grande pubblico. Stable Diffusion in più toglie il rumore non
-dall'immagine a grandezza naturale ma da un latente, una sua versione
-compressa che occupa molta meno memoria: è la ragione per cui gira anche su un
-computer di casa. Del meccanismo parla il {doc}`capitolo sui modelli di
-diffusione </ModelliDiffusione/overview>`.
+alla volta. («Rumore» è la stessa parola usata finora, ma qui indica altro: non
+i numeri casuali in ingresso al generatore, bensì la grana sparsa sopra
+un'immagine.) Su questa base nascono Stable Diffusion {cite}`rombach2022high` e
+DALL·E 2 (OpenAI, 2022): a entrambi si descrive a parole la scena desiderata
+("un gatto nero seduto su un muro al tramonto") e loro lo disegnano; così la
+generazione di immagini su richiesta è arrivata al grande pubblico. Stable
+Diffusion in più toglie il rumore non dall'immagine a grandezza naturale ma da
+un latente, una sua versione compressa che occupa molta meno memoria: è la
+ragione per cui gira anche su un computer di casa. Del meccanismo parla il
+{doc}`capitolo sui modelli di diffusione </ModelliDiffusione/overview>`.
 
 Le GAN non sono scomparse, e il primo motivo è la velocità: una GAN produce
 l'immagine in un colpo solo, un unico passaggio attraverso il generatore,
@@ -983,7 +983,7 @@ un FID simile a quello di StyleGAN2. GigaGAN (2023) {cite}`kang2023scaling`
 porta l'architettura a un miliardo di parametri e al testo-immagine, e genera
 un'immagine di $512$ pixel di lato in $0{,}13$ secondi, contro i quasi tre di
 Stable Diffusion 1.5 a FID paragonabile, pur restando, per ammissione degli
-autori, sotto i modelli di produzione per realismo e composizione. E R3GAN
+autori, sotto i modelli di produzione per realismo e composizione. Infine R3GAN
 (2024) {cite}`huang2024gan` riparte dalla convergenza: una loss relativistica,
 in cui il discriminatore giudica a coppie quanto un dato vero sembri più vero
 di uno generato, con le penalità $R_1$ e $R_2$ sul gradiente del discriminatore
@@ -995,13 +995,14 @@ su FFHQ, ImageNet e CIFAR-10.
 
 C'è di più, e vale anche per chi userà soltanto la diffusione: un
 discriminatore è servito a costruire un pezzo di Stable Diffusion. Alla fine di
-tutto il lavoro c'è il decoder che riporta il latente ai pixel, quello che nel
-{doc}`capitolo sui modelli latenti </ModelliLatenti/il-latente-che-si-usa>`
-ricostruisce le immagini dopo una compressione di quarantotto volte. È stato
-addestrato anche con una loss avversaria, con un discriminatore *patch-based*
-come quello di VQ-GAN che finito l'addestramento si scarta, ed è quella parte a
-tenere nitide le ricostruzioni. Il duello, insomma, è passato dal centro della
-scena a un ruolo di manutenzione.
+tutto il lavoro c'è il decoder che riporta il latente ai pixel, lo stesso che
+nella {doc}`sezione sul latente che si usa
+</ModelliLatenti/il-latente-che-si-usa>` ricostruisce le immagini dopo una
+compressione di quarantotto volte. È stato addestrato anche con una loss
+avversaria, con un discriminatore *patch-based* come quello di VQ-GAN che
+finito l'addestramento si scarta, e a lui si deve la nitidezza delle
+ricostruzioni. Il duello, insomma, è passato dal centro della scena a un ruolo
+di manutenzione.
 
 ```{admonition} Nota etica: i deepfake
 :class: warning
@@ -1031,7 +1032,7 @@ duello, e conviene ripassarle così.
 - La SAGAN dà a ogni punto dell'immagine la possibilità di guardare quelli
   lontani, e le zampe tornano al loro posto; BigGAN la ingrandisce, e al
   momento di generare ripesca i numeri di partenza troppo estremi: immagini
-  più belle e meno varie, una manopola che non tutte le reti reggono.
+  più belle e meno varie, una manopola che non tutte le reti tollerano.
 - StyleGAN costruisce il volto a livelli e consegna a ciascun livello i
   propri cursori: da lì il controllo separato di posa, lineamenti e
   lentiggini. La risoluzione da fotografia, invece, era già stata conquistata
@@ -1050,7 +1051,7 @@ duello, e conviene ripassarle così.
 - pix2pix e CycleGAN traducono un'immagine in un'altra (schizzo in
   foto, foto in Monet); la seconda ci riesce senza coppie di immagini
   corrispondenti, grazie alla regola dell'andata e ritorno, che però va tenuta
-  insieme all'esperto: da sola si lascia aggirare. E nemmeno insieme garantisce
+  insieme all'esperto: da sola si lascia aggirare, e nemmeno insieme garantisce
   il soggetto, perché il falsario può nascondere la foto dentro il quadro, in una
   trama che l'occhio non vede, e ritrovarsela al ritorno.
 - VQ-GAN cambia lo scopo del duello: l'esperto non serve più a fare
@@ -1113,7 +1114,7 @@ duello, e conviene ripassarle così.
   fattore di compressione ammissibile ($f=16$: $256\times256 \to 16\times16 =
   256$ indici su $K = 1024$, contro i 5.120 di VQ-VAE-2). Sopra, un Transformer
   autoregressivo sugli indici, a finestra scorrevole oltre la risoluzione di
-  addestramento, e regge finché le statistiche del dataset sono all'incirca
+  addestramento, e funziona finché le statistiche del dataset sono all'incirca
   invarianti per traslazione o c'è un condizionamento spaziale. È la ricetta di
   perdite poi riusata nell'autoencoder di Stable
   Diffusion, con latente continuo invece che quantizzato.
@@ -1129,9 +1130,9 @@ duello, e conviene ripassarle così.
 
 `````
 
-Il duello esce ridimensionato ma non archiviato, ed è quello il lascito: non
-una famiglia di architetture, ma un modo di addestrare che sopravvive dentro
-sistemi che non si chiamano più GAN. La domanda però resta intera, fabbricare
+Il duello esce ridimensionato ma non archiviato, e il suo lascito è un modo di
+addestrare che sopravvive dentro sistemi che non si chiamano più GAN, più che
+una famiglia di architetture. La domanda però resta intera, fabbricare
 dati nuovi e plausibili senza un originale con cui confrontarsi, e i capitoli
 che seguono sono altrettante risposte diverse alla stessa domanda. La prima è
 quella dei {doc}`modelli di diffusione </ModelliDiffusione/overview>`, che al

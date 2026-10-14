@@ -21,10 +21,10 @@ L'idea di Mamba, proposta da Albert Gu e Tri Dao alla fine del 2023
 diventano funzioni di ciò che entra, così che il modello possa decidere, parola
 per parola, che cosa propagare e che cosa dimenticare. È lo stesso passaggio
 che, nella {doc}`sezione sulla scrittura in memoria
-</AttenzioneLineare/scrivere-nella-memoria>` del capitolo precedente, separava
-il decadimento fissato una volta per tutte (RetNet) da quello che la parola in
-arrivo ricalcola a ogni passo (Mamba-2): là si partiva dall'attenzione, qui dai
-sistemi dinamici.
+</AttenzioneLineare/scrivere-nella-memoria>` dell'attenzione lineare, separava
+il decadimento fissato una volta per tutte (RetNet) dal decadimento che la
+parola in arrivo ricalcola a ogni passo (Mamba-2): là si partiva
+dall'attenzione, qui dai sistemi dinamici.
 
 ## La selettività (S6)
 
@@ -37,7 +37,7 @@ il modello di un altro gruppo.
 Se le regole cambiano a ogni parola, il sistema non è più invariante nel tempo
 e non ha più un filtro unico: la forma «tutto insieme», che rendeva veloce
 l'addestramento di S4, non si può più usare. Per lavorare in parallelo servirà
-un'altra strada, lo *scan*. Ma prima il guadagno, che ripaga il sacrificio.
+un'altra strada, lo *scan*. Vediamo prima il guadagno, che ripaga il sacrificio.
 
 `````{tab} Elementare
 
@@ -49,9 +49,9 @@ cambiano da una faccia all'altra: quanto di una persona gli resta in testa,
 quanto di ciò che ha in testa tira fuori al momento giusto, e il tempo che le
 dedica.
 
-Una cosa invece il buttafuori non la cambia mai: il ritmo a cui i ricordi gli
-sbiadiscono col passare del tempo. Ed è proprio per questo che il tempo dedicato
-a ciascuno decide quanto dimentica a ogni faccia. Quando se la prende comoda,
+Il buttafuori non cambia mai una cosa: il ritmo a cui i ricordi gli sbiadiscono
+col passare del tempo. Per questo il tempo dedicato a ciascuno decide quanto
+dimentica a ogni faccia. Quando se la prende comoda,
 chi ha davanti gli si stampa bene in testa, e intanto le facce di prima gli
 sbiadiscono parecchio; se fa passare qualcuno in un lampo, quello non lascia
 traccia e la sua testa resta com'era. Con il solo intervallo ottiene tutte e due
@@ -59,13 +59,13 @@ le cose che gli servono: «di questo mi ricorderò» e «questo non l'ho nemmeno
 visto». È l'intervallo $\Delta$ della vasca, e Mamba lo sceglie a ogni parola.
 
 Questo meccanismo apre la porta a un tipo di ragionamento che un
-tornello non potrà mai fare: quello che dipende dal contenuto. Prendi il
+tornello non potrà mai fare, quello che dipende dal contenuto. Prendi il
 gioco del «copia solo le parole in maiuscolo» in mezzo a un fiume di parole
 minuscole: serve decidere, parola per parola, se questa va tenuta o buttata. Un
 sistema che tratta tutti i token allo stesso modo fallisce; uno che sa scegliere,
 no.
 
-Il prezzo si vede sulla fila fuori. Un tornello lo si regola la mattina, a
+Se ne accorge la fila fuori. Un tornello lo si regola la mattina, a
 locale vuoto: una regolazione sola, buona per tutti quelli che arriveranno,
 tanto che la fila si potrebbe smaltire a blocchi. Le decisioni del buttafuori
 non esistono prima che la persona gli sia arrivata davanti: non c'è nessuna
@@ -98,9 +98,9 @@ dimensione $D$ in tutto) e $\mathrm{softplus}(z) = \log(1 + e^z)$ garantisce un
 passo $\Delta_t > 0$. Nell'implementazione $\mathrm{Linear}_1$ è una proiezione
 di rango basso verso tutti i $D$ canali, così che ogni canale abbia il suo
 passo; la formula ne scrive la componente di un canale. La matrice
-$\mathbf{A}$, diagonale, resta un parametro fisso: non dipende dal token. Ma la
-discretizzazione (lo *zero-order hold*, che nella {doc}`sezione sui sistemi
-dinamici </StateSpaceModel/dai-sistemi-dinamici-a-s4>` ha dato
+$\mathbf{A}$, diagonale, resta un parametro fisso, che non dipende dal token.
+Tuttavia la discretizzazione (lo *zero-order hold*, che nella {doc}`sezione sui
+sistemi dinamici </StateSpaceModel/dai-sistemi-dinamici-a-s4>` ha dato
 $\bar{\mathbf{A}} = \exp(\Delta \mathbf{A})$) fa passare $\Delta_t$ *dentro* la
 transizione:
 
@@ -115,7 +115,7 @@ $$
 dove $\bar{\mathbf{A}}_t$ è la transizione discreta al passo $t$ e
 $\bar{\mathbf{B}}_t = \Delta_t \mathbf{B}_t$ è il termine di ingresso, entrambi
 ottenuti da $\Delta_t$ (la ricorrenza è scritta per un canale: $x_t$ è la
-componente dell'attivazione $\mathbf{x}_t$ su quel canale, ed è un numero).
+componente dell'attivazione $\mathbf{x}_t$ su quel canale, quindi un numero).
 Poiché $\Delta_t$ dipende da $\mathbf{x}_t$, anche $\bar{\mathbf{A}}_t$ diventa
 di fatto data-dipendente, pur partendo da una $\mathbf{A}$ fissa: un $\Delta_t$
 grande azzera quasi del tutto lo stato ($\bar{\mathbf{A}}_t \to \mathbf{0}$) e
@@ -135,11 +135,11 @@ $$
 
 cioè un cancello di interpolazione come nelle RNN a cancelli (è il Teorema 1
 del paper): con $g_t \to 1$ lo stato si azzera e vi si scrive $x_t$, con $g_t
-\to 0$ lo stato resta e $x_t$ è ignorato. L'identità richiede lo ZOH esatto
-anche per $B$; con la semplificazione di Eulero dell'implementazione,
+\to 0$ lo stato resta e $x_t$ è ignorato. L'identità richiede lo ZOH applicato
+anche a $B$; con la semplificazione di Eulero dell'implementazione,
 $\bar{B}_t = \Delta_t$, i due coefficienti non sommano più a uno.
 
-Il prezzo è la perdita dell'invarianza temporale: non esiste più un unico
+Si perde l'invarianza temporale: non esiste più un unico
 kernel $\bar{\mathbf{K}} = (\mathbf{C}\bar{\mathbf{B}},\,
 \mathbf{C}\bar{\mathbf{A}}\bar{\mathbf{B}},\, \dots)$, perché
 $\bar{\mathbf{A}}_t, \bar{\mathbf{B}}_t, \mathbf{C}_t$ cambiano a ogni passo.
@@ -148,15 +148,15 @@ problema di come addestrarla in parallelo.
 
 `````
 
-Il guadagno concettuale è quello che gli autori chiamano *ragionamento basato
-sul contenuto*. Il gioco delle parole da copiare e di quelle da lasciar
-cadere è il compito di *selective copying*. Nella sua versione classica, con le
-parole da copiare a distanze fisse, un SSM invariante nel tempo se la cava
-contando il tempo, con un filtro della lunghezza giusta; il selective copying
-rende casuali le distanze e toglie la scorciatoia. Lì il nucleo di S4 da solo
-si ferma al 18 per cento di risposte esatte, e dentro i blocchi di H3 o di
-Mamba a circa il 57; il nucleo selettivo arriva al 97 da solo e sopra il 99
-dentro un blocco {cite}`gu2023mamba`. Lo stesso vale per le *induction heads*
+Gli autori chiamano *ragionamento basato sul contenuto* il guadagno
+concettuale. Il gioco delle parole da copiare e di quelle da lasciar cadere è
+il compito di *selective copying*. Nella sua versione classica, con le parole
+da copiare a distanze fisse, un SSM invariante nel tempo se la cava contando il
+tempo, con un filtro della lunghezza giusta; il selective copying rende casuali
+le distanze e toglie la scorciatoia. Lì il nucleo di S4 senza blocco si ferma
+al 18 per cento di risposte esatte, e dentro i blocchi di H3 o di Mamba a circa
+il 57; il nucleo selettivo arriva al 97 anche senza blocco e sopra il 99 dentro
+un blocco {cite}`gu2023mamba`. Lo stesso vale per le *induction heads*
 {cite}`olsson2022induction`, le teste di induzione incontrate fra i
 {doc}`grandi modelli linguistici </Transformers/llm>`: il meccanismo con cui un
 modello, visto una volta lo schema «A è seguito da B», lo completa la volta
@@ -168,8 +168,8 @@ dove nessuno degli altri modelli provati va oltre il doppio.
 La selettività ha lo stesso compito che nella {doc}`sezione sulla scrittura in
 memoria </AttenzioneLineare/scrivere-nella-memoria>` avevano i gate di
 dimenticanza calcolati dai dati, e il legame è preciso: nel caso più piccolo la
-ricorrenza di Mamba è proprio una cella a cancello, come quelle delle RNN
-(Teorema 1 del paper).
+ricorrenza di Mamba è una cella a cancello, come quelle delle RNN (Teorema 1
+del paper).
 
 ## Lo scan hardware-aware
 
@@ -179,28 +179,28 @@ lineare, però, ha una proprietà che le ricorrenze non lineari non hanno, come
 anticipava la {doc}`sezione sui modelli di sequenza
 </NaturalLanguageProcessing/modelli-sequenza>`: comporre due passi dà ancora un
 passo dello stesso tipo, descritto dagli stessi numeri. Applicare $h \mapsto
-a_1 h + b_1$ e poi $h \mapsto a_2 h + b_2$ equivale ad applicare
-$h \mapsto (a_2 a_1)\,h + (a_2 b_1 + b_2)$, quindi fondere due passi costa una
-moltiplicazione e una somma. In una ricorrenza non lineare, come
-$h \mapsto \tanh(w\,h + u_t)$, la composta di due passi non ha una forma così
-compatta, e fonderli non fa risparmiare niente. A questa proprietà, la
-*chiusura*, si aggiunge da sé l’**associatività**, che vale per ogni
-composizione di funzioni: raggruppare i passi in un modo o nell'altro dà lo
-stesso risultato. Insieme autorizzano a fondere i passi a coppie, poi a gruppi
-di quattro, di otto, invece di percorrerli in fila da sinistra a destra.
+a_1 h + b_1$ e poi $h \mapsto a_2 h + b_2$ equivale ad applicare $h \mapsto
+(a_2 a_1)\,h + (a_2 b_1 + b_2)$, quindi fondere due passi si riduce a una
+moltiplicazione e una somma. In una ricorrenza non lineare, come $h \mapsto
+\tanh(w\,h + u_t)$, la composta di due passi non ha una forma così compatta, e
+fonderli non fa risparmiare niente. A questa proprietà, la *chiusura*, si
+affianca l’**associatività**, che vale per ogni composizione di funzioni:
+raggruppare i passi in un modo o nell'altro dà lo stesso risultato. Insieme
+autorizzano a fondere i passi a coppie, poi a gruppi di quattro, di otto,
+invece di percorrerli uno dopo l'altro da sinistra a destra.
 
-Questo è il *parallel scan*, dove «scan» è la passata che percorre la
-sequenza accumulando i risultati parziali. In fila, $L$ passi chiedono $L$
-turni uno dopo l'altro; a raddoppio ne bastano circa $\log_2 L$, una decina per
-mille passi, e raddoppiando la lunghezza si aggiunge un turno soltanto. Il
-prezzo è il lavoro totale, che nella versione più semplice cresce di un fattore
-$\log_2 L$ e in quella più efficiente resta dell'ordine di $L$, come in fila: è
-il compromesso tipico del calcolo parallelo, più conti (o almeno non meno) in
-cambio di meno attesa.
+Questo è il *parallel scan*, dove «scan» è la passata che percorre la sequenza
+accumulando i risultati parziali. In fila, $L$ passi chiedono $L$ turni uno
+dopo l'altro; a raddoppio ne bastano circa $\log_2 L$, una decina per mille
+passi, e raddoppiando la lunghezza si aggiunge un turno soltanto. Il rovescio è
+il lavoro totale, che nella versione più semplice cresce di un fattore $\log_2
+L$ e in quella più efficiente resta dell'ordine di $L$, come nella versione
+sequenziale: è il compromesso tipico del calcolo parallelo, più conti (o almeno
+non meno) in cambio di meno attesa.
 
 Ogni turno tiene occupati migliaia di core della GPU: quelli generici, però,
-non le sue unità dedicate a moltiplicare matrici, i *tensor core*, ed è il
-problema da cui partirà Mamba-2. La convoluzione se n'è andata, ma il
+non le sue unità dedicate a moltiplicare matrici, i *tensor core*, e da
+qui partirà Mamba-2. La convoluzione se n'è andata, ma il
 parallelismo resta.
 
 La {numref}`fig-scan-parallelo` mette le due strade sullo stesso orologio.
@@ -212,19 +212,19 @@ La {numref}`fig-scan-parallelo` mette le due strade sullo stesso orologio.
 
 Le due strade per svolgere la stessa ricorrenza su dodici passi, messe sullo
 stesso orologio: in verticale i turni, in orizzontale le posizioni della
-sequenza. A sinistra si va in fila, una composizione per turno, e il risultato
-definitivo (il pallino pieno) avanza di una posizione alla volta: servono
-undici turni. A destra si compongono le posizioni distanti prima 1, poi 2, poi
-4, poi 8, e siccome a ogni turno raddoppia il tratto di sequenza già riassunto,
-dopo quattro turni ogni posizione ha il suo risultato. Le due strade danno gli
-stessi numeri, e non con la stessa fatica: a sinistra di composizioni se ne
-contano undici, a destra trentatré, in cambio di quattro turni invece di
+sequenza. A sinistra si procede in sequenza, una composizione per turno, e il
+risultato definitivo (il pallino pieno) avanza di una posizione alla volta:
+servono undici turni. A destra si compongono le posizioni distanti prima 1, poi
+2, poi 4, poi 8, e siccome a ogni turno raddoppia il tratto di sequenza già
+riassunto, dopo quattro turni ogni posizione ha il suo risultato. Le due strade
+danno gli stessi numeri, e non con la stessa fatica: a sinistra di composizioni
+se ne contano undici, a destra trentatré, in cambio di quattro turni invece di
 undici.
 ```
 
-Non basta però l'algoritmo. Mamba deve fare i conti anche con il modo in cui
-una scheda grafica tiene i dati, la sua
-{doc}`gerarchia di memoria </GPU/gerarchia-memoria>`, ed è qui che sta la parte
+L'algoritmo non basta: Mamba tiene conto anche del modo in cui una scheda
+grafica conserva i dati, la sua
+{doc}`gerarchia di memoria </GPU/gerarchia-memoria>`, e qui sta la parte
 «hardware-aware», cioè attenta a come è fatta la macchina.
 
 `````{tab} Elementare
@@ -233,12 +233,12 @@ Mille numeri alla lavagna, e una classe che deve sommarli. Un ragazzo solo
 parte dal primo e va avanti, quasi mille addizioni una dopo l'altra, e nessuno
 può aiutarlo, perché per fare la somma di adesso deve aspettare quella di
 prima. La classe invece lavora tutta insieme: al primo giro ognuno somma al
-proprio numero quello del compagno che lo precede, al secondo quello di due
+suo numero quello del compagno che lo precede, al secondo quello di due
 posti prima, al terzo quello di quattro, e a ogni giro raddoppia il tratto di
 lavagna che ciascuno si è già messo dentro. Dopo dieci giri si è in fondo,
 perché raddoppiando dieci volte si passa il mille. Di addizioni se ne fanno
 parecchie più di prima, perché a ogni giro lavorano quasi tutti; a crollare è
-l'attesa, che da mille passi in fila scende a dieci giri.
+l'attesa, che da mille passi consecutivi scende a dieci giri.
 
 Alla lavagna, al posto dei numeri, la catena dei passi di Mamba mette
 istruzioni, e ognuna dice due cose, «del totale che hai, tieni questa parte» e
@@ -248,16 +248,16 @@ aggiungi 1», è come dire in un colpo solo «tieni un ventesimo e aggiungi 1,4�
 perché metà di un decimo è un ventesimo, e del 4 aggiunto prima sopravvive un
 decimo, cioè 0,4, che sommato a 1 fa 1,4. Tanto basta per mettersi a coppie
 come la classe. Due istruzioni diventano una, quella si accoppia con la
-vicina, e dopo una decina di giri il conto è fatto.
+vicina, e dopo una decina di giri la somma è fatta.
 
 C'è però una libertà che i ragazzi si prendono e le istruzioni no. Sommando,
 l'ordine non conta, 3 più 5 fa quanto 5 più 3. Le due istruzioni di prima,
 scambiate, danno un altro risultato, perché «tieni un decimo e aggiungi 1»
 seguito da «tieni metà e aggiungi 4» porta, partendo da zero, a 4,5 invece che
 a 1,4. Raggruppare quanto si vuole, scambiare mai, perché l'ordine delle
-istruzioni è l'ordine delle parole della frase. E non serve solo il totale
-finale, serve la somma fino a ciascun numero della lavagna, e quelle escono
-per strada, un giro dopo l'altro.
+istruzioni è l'ordine delle parole della frase. Non serve solo il totale
+finale: serve la somma fino a ciascun numero della lavagna, e quelle escono per
+strada, un giro dopo l'altro.
 
 Un contabile tiene la somma corrente di una lunghissima lista di movimenti. Ha
 un foglietto sulla scrivania, piccolo ma a portata di mano, e un archivio in
@@ -266,16 +266,15 @@ ogni riga, per depositare e riprendere il totale, è il modo stupido. Il modo
 furbo è tenere la somma sul foglietto, aggiornarla movimento dopo movimento
 senza mai alzarsi, e scendere in cantina una volta sola alla fine.
 
-Mamba fa esattamente questo. Il foglietto veloce è la memoria interna della
-scheda grafica, l'archivio lontano è la sua memoria principale, e sul
-foglietto ci stanno i conti della scheda, non il riassunto che il modello si
-fa del testo. I parametri li carica una volta, svolge tutta la catena sul
-foglietto e riporta in archivio soltanto il risultato, mentre i totali
-intermedi, che sono migliaia e ingombranti, in cantina non ci scendono mai.
-Quando poi servono di nuovo, per correggere i conti (è la *backpropagation*, il
-passaggio all'indietro dell'addestramento), il contabile non li ripesca, li
-rifà, perché rifare una somma costa meno che tenere in archivio migliaia di
-fogli.
+Mamba fa lo stesso. Il foglietto veloce è la memoria interna della scheda
+grafica, l'archivio lontano è la sua memoria principale, e sul foglietto ci
+stanno le operazioni della scheda, non il riassunto che il modello si fa del
+testo. I parametri li carica una volta, svolge tutta la catena sul foglietto e
+riporta in archivio soltanto il risultato, mentre i totali intermedi, che sono
+migliaia e ingombranti, in cantina non ci scendono mai. Quando poi servono di
+nuovo, per correggere i parametri (è la *backpropagation*, il passaggio
+all'indietro dell'addestramento), il contabile non li ripesca, li rifà, perché
+rifare una somma costa meno che tenere in archivio migliaia di fogli.
 
 `````
 
@@ -292,14 +291,14 @@ $$
 $$
 
 dove il fattore di sinistra è il passo che viene prima. La famiglia è dunque
-chiusa (il risultato è ancora una coppia dello stesso tipo), ed è la chiusura
-a rendere lo scan conveniente: ogni nodo dell'albero costa una moltiplicazione
-e una somma. L'operatore è anche associativo, perché lo è la composizione di
-funzioni, e l'associatività permette di riassociare l'albero a piacere; ma vale
-per qualunque ricorrenza, anche non lineare, dove però la composta di due passi
-non ha una forma chiusa e riassociare non fa risparmiare niente. L'operatore
-non è invece commutativo, e non potrebbe esserlo: l'ordine dei fattori è
-l'ordine della sequenza.
+chiusa (il risultato è ancora una coppia dello stesso tipo), e la chiusura
+rende lo scan conveniente: ogni nodo dell'albero si calcola con una
+moltiplicazione e una somma. L'operatore è anche associativo, perché lo è la
+composizione di funzioni, e l'associatività permette di riassociare l'albero a
+piacere; ma vale per qualunque ricorrenza, anche non lineare, dove però la
+composta di due passi non ha una forma chiusa e riassociare non fa risparmiare
+niente. L'operatore non è invece commutativo, e non potrebbe esserlo: l'ordine
+dei fattori è l'ordine della sequenza.
 
 Le versioni classiche dello scan sono due, e differiscono nel lavoro, non
 nella profondità. Detta $L$ la lunghezza della sequenza, quella **a
@@ -308,14 +307,14 @@ prima 1, poi 2, poi 4: raggiunge la profondità $O(\log L)$, ma con un lavoro
 $O(L\log L)$, cioè tante volte il necessario quanti sono i turni. Quella di
 **Blelloch**, con una passata che sale e una che scende, ha la stessa
 profondità $O(\log L)$ e lavoro $O(L)$, come la versione sequenziale. In
-entrambe il numero di turni crolla da $L$ al suo logaritmo, ed è il numero di
-turni ciò che si paga in attesa.
+entrambe il numero di turni scende da $L$ al suo logaritmo, e sono i turni a
+determinare l'attesa.
 
 Fin qui si contano composizioni. Una composizione costa $O(N)$ per uno stato
 diagonale, dove si combinano elemento per elemento le coppie
 $(\mathbf{a}, \mathbf{b}) \in \mathbb{R}^N \times \mathbb{R}^N$, e $O(N^3)$ per
-una $\mathbf{A}$ piena, che chiede un prodotto di matrici: è per questo che S5
-e Mamba prendono la transizione diagonale. Il lavoro totale è allora $O(LN)$
+una $\mathbf{A}$ piena, che chiede un prodotto di matrici: per questo S5 e
+Mamba prendono la transizione diagonale. Il lavoro totale è allora $O(LN)$
 con Blelloch e $O(LN \log L)$ a raddoppio. La versione a raddoppio è quella
 descritta da Hillis e Steele {cite}`hillis1986data`, quella a due passate è di
 Blelloch {cite}`blelloch1990prefix`; applicarle alle ricorrenze lineari delle
@@ -333,7 +332,7 @@ discretizzazione e la ricorrenza tramite il parallel scan, e riporta in HBM
 soltanto l'output $\mathbf{y}$ di dimensione $(\texttt{batch}, L, D)$. Lo stato espanso
 non viene mai scritto nella memoria lenta: nasce e muore in SRAM.
 
-Quanto pesi lo stato espanso lo dice un conto. In Mamba-130M ($D = 768$,
+Il peso dello stato espanso si calcola subito. In Mamba-130M ($D = 768$,
 fattore di espansione $E = 2$, quindi 1536 canali interni, e $N = 16$), per una
 sola sequenza e un solo strato:
 
@@ -398,7 +397,8 @@ def ssm_selettivo(x, A, B, C, delta):
 ```
 
 Il ciclo `for` è la forma ricorrente, quella dell'inferenza: costo e memoria
-costanti per token, un aggiornamento dopo l'altro. Quel ciclo però si può evitare in due modi, e li proviamo tutti e due.
+costanti per token, un aggiornamento dopo l'altro. Quel ciclo, però, si può
+evitare in due modi, e li proviamo entrambi.
 
 Il primo riprende la discretizzazione: se le regole non cambiano da un
 passo all'altro, lo stesso risultato si ottiene con un filtro unico che scorre
@@ -436,8 +436,8 @@ ricorrenza vs convoluzione, scarto massimo sotto 1e-12: True
 ```
 
 Il secondo è il *parallel scan*: anche quando le regole cambiano a ogni passo,
-e il filtro unico non esiste più, calcola esattamente lo stesso vettore `y`
-del ciclo, raggruppando i passi invece di percorrerli in fila.
+e il filtro unico non esiste più, calcola lo stesso vettore `y`
+del ciclo, raggruppando i passi invece di percorrerli uno dopo l'altro.
 
 ```python
 def scan_parallelo(a, b):
@@ -543,13 +543,13 @@ flusso è:
 1. **Proiezione in ingresso**: una proiezione lineare porta $\mathbf{u}$ a
    dimensione $2ED$ (fattore di espansione $E = 2$) e la divide in due rami da
    $ED$ canali, quello principale e $\mathbf{z}$ (di *gating*).
-2. **Convoluzione causale 1D**: una `Conv1d` *depthwise* (un filtro per
-   canale) a finestra di 4 passi scorre sul ramo principale lungo la
-   dimensione temporale. È «causale» perché ogni posizione vede solo il proprio
-   passato immediato (nessuna fuga di informazione dal futuro) ed è la stessa
-   idea di filtro che scorre vista per le reti convoluzionali, qui ridotta a
-   una dimensione e a una manciata di passi. Fornisce un contesto locale a
-   basso costo prima dell'SSM.
+2. **Convoluzione causale 1D**: una `Conv1d` *depthwise* (un filtro per canale)
+   a finestra di 4 passi scorre sul ramo principale lungo la dimensione
+   temporale. È «causale» perché ogni posizione vede solo il proprio passato
+   immediato (nessuna fuga di informazione dal futuro) ed è la stessa idea di
+   filtro che scorre vista per le reti convoluzionali, qui ridotta a una
+   dimensione e a una manciata di passi. Fornisce un contesto locale a basso
+   costo prima dell'SSM.
 3. **Attivazione SiLU**: si applica $\mathrm{SiLU}(x) = x\,\sigma(x)$ (nota anche
    come *Swish*), la parente liscia della ReLU delle
    {doc}`funzioni di attivazione </RetiNeurali/funzioni-attivazione>`, dove
@@ -583,24 +583,23 @@ fretta sulla scheda grafica e il blocco che li ospita, che cosa se ne ricava?
 
 Due cose, soprattutto. La prima è il costo lineare: testo doppio, lavoro
 doppio. Nella generazione parola per parola il vantaggio si sente, perché a
-ogni parola nuova il modello non deve rileggersi tutto quello che ha scritto
-finora: gli basta il suo riassunto, che è sempre della stessa misura.
+ogni parola nuova il modello non deve rileggere il testo già scritto: gli basta
+il suo riassunto, che è sempre della stessa misura.
 
-La seconda è la portata, ed è il punto in cui conviene essere precisi su
-dove è stata misurata. Le sequenze da un milione di passi su cui Mamba continua
-a migliorare non sono testo, ma suono grezzo (dove un passo è un campione
-sonoro: in un secondo di registrazione ce ne stanno circa sedicimila, quindi un
-milione di campioni è poco più di un minuto) e
-sequenze di DNA (dove un passo è una lettera del genoma). Sul linguaggio i
-contesti provati nell'articolo restano molto più corti, dell'ordine delle
-migliaia di parole. Che la stessa ricetta funzioni su tre materiali così
-diversi è comunque il segno che il meccanismo non ha niente di specificamente
-linguistico.
+La seconda è la portata, con una precisazione su dove è stata misurata. Le
+sequenze da un milione di passi su cui Mamba continua a migliorare non sono
+testo, ma suono grezzo (dove un passo è un campione sonoro: in un secondo di
+registrazione ce ne stanno circa sedicimila, quindi un milione di campioni è
+poco più di un minuto) e sequenze di DNA (dove un passo è una lettera del
+genoma). Sul linguaggio i contesti provati nell'articolo restano molto più
+corti, dell'ordine delle migliaia di parole. Che la stessa ricetta funzioni su
+tre materiali così diversi è comunque il segno che il meccanismo non ha niente
+di specificamente linguistico.
 
-Gli autori, poi, hanno misurato quale dei gesti del buttafuori pesi di più. Il
-tempo dedicato a ciascuno, da solo, vale più di ognuno degli altri due preso da
-solo, e tutti e tre insieme fanno meglio ancora. E una testa più capiente serve
-solo a chi sceglie: data a un tornello, non cambia niente.
+Gli autori, poi, hanno misurato quale delle tre azioni del buttafuori pesi di
+più. Il tempo dedicato a ciascuno vale più, preso singolarmente, di ognuno
+degli altri due, e tutti e tre insieme fanno meglio ancora. Una testa più
+capiente serve solo a chi sceglie: data a un tornello, non cambia niente.
 
 `````
 
@@ -636,7 +635,7 @@ Il bilancio, sui meccanismi:
 
 Restano due limiti. Lo *scan* selettivo non usa i *tensor core* della GPU, le
 unità fatte per le moltiplicazioni di matrici, dove sta quasi tutta la sua
-potenza. E lo stato di dimensione fissa, che è la forza di Mamba in
+potenza. Inoltre lo stato di dimensione fissa, che è la forza di Mamba in
 efficienza, resta il suo limite quando serve ritrovare un dettaglio preciso in
 un contesto molto lungo. Il primo lo scioglie Mamba-2, che riscrive lo scan
 come una moltiplicazione di matrici; il secondo lo allenta soltanto, perché con
@@ -656,16 +655,16 @@ incontrano.
   lunga, ma non sa scegliere. Mamba {cite}`gu2023mamba` mette al suo posto
   un buttafuori, che guarda in faccia chi passa e decide sul momento quanto
   scriverne nel riassunto e quanto lasciar cadere. È questa la selettività.
-- Si paga un prezzo: se la regola cambia a ogni parola, non esiste più un
-  filtro unico, e il modo «tutto insieme» di fare i conti se ne va. La
+- La scelta ha una conseguenza: se la regola cambia a ogni parola, non esiste
+  più un filtro unico, e il modo «tutto insieme» di calcolare se ne va. La
   ricorrenza resta, e va resa parallela in un altro modo.
-- Il prezzo si recupera con lo scan: due passi si fondono in un passo dello
-  stesso tipo, e la catena si svolge a gruppi invece che in fila (a coppie,
-  poi a quattro, poi a otto). Di operazioni se ne fanno di più, ma i turni di
-  attesa crollano. In più Mamba tiene i conti nella
-  memoria piccola e vicina della scheda grafica, come il contabile che non
-  scende in cantina a ogni riga, e i risultati intermedi che gli serviranno
-  dopo li rifà invece di conservarli.
+- La velocità si recupera con lo scan: due passi si fondono in un passo dello
+  stesso tipo, e la catena si svolge a gruppi invece che uno dopo l'altro (a
+  coppie, poi a quattro, poi a otto). Di operazioni se ne fanno di più, ma i
+  turni di attesa crollano. In più Mamba tiene il lavoro nella memoria piccola
+  e vicina della scheda grafica, come il contabile che non scende in cantina a
+  ogni riga, e i risultati intermedi che gli serviranno dopo li rifà invece di
+  conservarli.
 - Il blocco Mamba è un'unica stazione, ripetuta decine di volte: il pezzo
   si sdoppia, una copia passa per la lavorazione lunga (uno sguardo ai pezzi
   appena passati, mai a quelli che devono ancora arrivare; un ammorbidimento;
@@ -673,7 +672,7 @@ incontrano.
   moltiplicano. Niente attenzione, nessun altro tipo di stazione.
 - Cosa se ne ricava: il lavoro cresce di pari passo con la lunghezza (testo
   doppio, lavoro doppio, non quadruplo), la memoria durante la generazione non
-  cresce mai, e si reggono sequenze dell'ordine del milione di passi, misurate
+  cresce mai, e si gestiscono sequenze dell'ordine del milione di passi, misurate
   però fuori dal linguaggio (un minuto di suono grezzo, un tratto di genoma).
   Restano due limiti: lo scan non usa le parti più veloci della scheda
   grafica (lo risolverà Mamba-2), e una memoria di taglia fissa fatica a
@@ -711,13 +710,12 @@ incontrano.
   gating moltiplicativo con ramo parallelo (SiLU) → proiezione in uscita, con
   normalizzazione e residui. Un solo tipo di blocco, senza attenzione né MLP a
   parte.
-- Cosa ottiene: tempo lineare nella lunghezza, inferenza a memoria
-  costante (nessuna KV cache che cresce), scaling verificato fino a
-  $\sim 10^6$ passi su audio grezzo e genomica (sul linguaggio, contesti molto
-  più corti), e lo stesso impianto valido per tutte e tre le modalità. Resta
-  aperto
-  quello che Mamba-2 affronterà: lo scan non usa i tensor core, e lo stato
-  fisso limita il richiamo esatto.
+- Cosa ottiene: tempo lineare nella lunghezza, inferenza a memoria costante
+  (nessuna KV cache che cresce), scaling verificato fino a $\sim 10^6$ passi su
+  audio grezzo e genomica (sul linguaggio, contesti molto più corti), e lo
+  stesso impianto valido per tutte e tre le modalità. Restano aperti due limiti
+  che Mamba-2 affronterà: lo scan non usa i tensor core, e lo stato fisso
+  limita il richiamo esatto.
 ```
 
 `````

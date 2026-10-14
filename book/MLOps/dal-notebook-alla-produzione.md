@@ -15,26 +15,26 @@ risultato che era stato calcolato in una cella poi cancellata, e che quindi
 adesso non esiste più. Una cerca un file in una cartella che esiste solo su
 quel portatile.
 
-E poi c'è quella che non esplode affatto, ed è la peggiore. Divide gli esempi
+Poi c'è la cella che non esplode affatto, la peggiore. Divide gli esempi
 fra dati di addestramento e dati di prova tirandoli a sorte
-(`train_test_split`), e funziona benissimo: solo che il sorteggio ogni volta
-dà un esito diverso, perché nessuno ha fissato il *seme* da cui il generatore di
+(`train_test_split`) e sembra funzionare, ma il sorteggio dà ogni volta
+un esito diverso, perché nessuno ha fissato il *seme* da cui il generatore di
 numeri casuali comincia, e il 94% di ieri sera non si rivede più. La frase che
 chiude la giornata è la più celebre della disciplina: «Ma sul mio computer
 funzionava».
 
-Il disordine di quelle celle non è un peccato in sé. Mentre si
-esplora, saltare avanti e indietro è esattamente il modo giusto di lavorare, ed
-è per questo che il notebook esiste. Il peccato è consegnare quel disordine,
-cioè lasciare che il risultato buono viva soltanto nella memoria di una
-sessione che qualcuno prima o poi chiuderà.
+Il disordine di quelle celle non è un peccato in sé: mentre si esplora, saltare
+avanti e indietro è il modo giusto di lavorare, e i notebook esistono per
+questo. Il peccato sta nel consegnare quel disordine, cioè nel lasciare che il
+risultato buono viva soltanto nella memoria di una sessione che qualcuno prima
+o poi chiuderà.
 
 Fra quel notebook e un sistema che dà previsioni a persone vere, ogni giorno,
 senza sorprese, c'è quindi un abisso. Il primo tratto, dalle celle agli script
 che si rieseguono uguali, l'ha percorso la sezione {doc}`Dal notebook agli
-script </PyTorch/dal-notebook-agli-script>` del capitolo su PyTorch; colmare il
-resto è il mestiere dell’MLOps. Che cosa cambia davvero, passando «dal mio
-computer» al mondo, e con quali attrezzi si attraversa: si comincia da qui.
+script </PyTorch/dal-notebook-agli-script>` del capitolo su PyTorch; il
+resto spetta all’MLOps. Qui si vede che cosa cambia passando «dal mio
+computer» al mondo, e con quali attrezzi si attraversa il divario.
 
 ## Il divario ricerca–produzione
 
@@ -49,7 +49,7 @@ l'avevano prodotto.
 
 Una sera cucini un piatto per gli amici. Puoi assaggiare, aggiustare di sale a
 occhio, ripetere se viene male: nessuno ti cronometra. Metterlo nel menu di un
-ristorante è un altro mestiere. Il piatto deve venire *identico* la centesima e
+ristorante cambia le regole. Il piatto deve venire *identico* la centesima e
 la cinquecentesima volta; deve uscire dalla cucina in otto minuti, non in tre
 ore; deve reggere il sabato sera con la sala piena; e se il fornitore cambia i
 pomodori, qualcuno se ne deve accorgere prima che se ne accorga il cliente. I
@@ -93,7 +93,7 @@ Il rettangolino nero e l'anello li conosciamo già: addestrare è la parte
 piccola, e il percorso gira in tondo. L'anello ha un pezzo che si ripete più di
 ogni altro ({numref}`fig-cicd-ml`): il viaggio che compie una singola
 modifica, da quando qualcuno la propone a quando finisce sotto gli occhi del
-pubblico. Preso da solo, quel viaggio è una catena dritta.
+pubblico. Considerato a parte, quel viaggio è una catena dritta.
 
 ```{figure} ../figures/cicd-machine-learning.svg
 :name: fig-cicd-ml
@@ -108,31 +108,32 @@ pubblicato. Nella figura il voto è l’`F1`, uno dei modi di dare un numero sol
 alla bravura di un classificatore, visto nel {doc}`capitolo sul machine learning
 </MachineLearning/overview>`; va
 bene qualunque altro, purché la soglia sia stata scritta *prima*. Rispetto al
-software normale lo stadio in più è proprio quello del voto, ed è un cancello
+software normale lo stadio in più è quello del voto, un cancello
 che può dire di no.
 ```
 
 Lo stadio aggiunto in {numref}`fig-cicd-ml` è la differenza fra il rilascio di
-un programma e quello di un modello. Di un programma rotto il computer si
-accorge da solo e si rifiuta di partire; un modello no: restituisce comunque
+un programma e quello di un modello. Un programma rotto si ferma subito, con un
+errore; un modello no: restituisce comunque
 una predizione, e nessun errore segnala che è peggiore di quella della versione
 precedente. Senza una soglia scritta prima, non c'è modo automatico di
 accorgersene.
 
-Uno studio di ingegneria del software condotto in Microsoft mette in fila nove
+Uno studio di ingegneria del software condotto in Microsoft elenca nove
 fasi ricorrenti di un progetto di machine learning
 {cite}`amershi2019software`. La prima, la definizione dei requisiti (che cosa
 il modello deve fare, e con quale errore lo si considera accettabile), precede
 il lavoro sui dati; le altre otto qui si raggruppano in sei momenti:
 
-1. Dati: raccolta, pulizia, etichettatura. Fra i professionisti intervistati
-   nello stesso studio è la difficoltà indicata più spesso, a qualunque livello
+1. Dati: raccolta, pulizia, etichettatura. Nello stesso studio la
+   disponibilità, la raccolta, la pulizia e la gestione dei dati sono la
+   difficoltà che gli intervistati mettono al primo posto, a qualunque livello
    di esperienza.
 2. Feature: costruire, a partire dai dati grezzi, le grandezze che il modello
    riceve in ingresso (il *feature engineering*). È la forma in cui il modello
    «vede» il mondo.
 3. Addestramento (*training*): il ciclo che aggiusta i pesi un passo dopo
-   l'altro per ridurre l'errore, quello che abbiamo scritto a mano nel
+   l'altro per ridurre l'errore, che abbiamo scritto a mano nel
    {doc}`capitolo su PyTorch </PyTorch/overview>` ([Il training
    loop](../PyTorch/addestramento.md)). Qui è solo *una* delle fasi.
 4. Valutazione: la misura onesta delle prestazioni su dati mai visti, con la
@@ -145,27 +146,28 @@ il lavoro sui dati; le altre otto qui si raggruppano in sei momenti:
    domanda e da cui riceve la risposta, senza sapere né dover sapere che cosa
    c'è dietro.
 6. Monitoraggio, sorvegliare il modello in esercizio: le prestazioni
-   reggono? I dati in ingresso somigliano ancora a quelli di addestramento?
+   reggono? I dati in ingresso somigliano ancora a quelli di
+   addestramento?
 
 La freccia importante è quella che torna indietro. Il monitoraggio scopre che
 il mondo è cambiato (nuovi utenti, nuove parole, nuovi prodotti) e rimanda
 alla raccolta di dati freschi; la valutazione insoddisfacente rimanda al
 feature engineering o all'addestramento. Un sistema di ML non si «finisce»: si
-coltiva. È la ragione per cui in produzione il lavoro non cala dopo il primo
-rilascio, ma comincia davvero {cite}`huyen2022designing`.
+coltiva. Per questo in produzione il lavoro non cala dopo il primo
+rilascio: comincia la manutenzione, che dura quanto il modello
+{cite}`huyen2022designing`.
 
 ## Riproducibilità: i tre artefatti da versionare
 
 Rifare esattamente un risultato è la competenza su cui poggia tutto il resto.
 Se non sai riprodurre un modello non puoi confrontarlo con un altro, non puoi
 correggerlo quando sbaglia, e non puoi tornare a quello buono quando il nuovo
-peggiora. E qui è più difficile che nel software normale, perché il risultato
+peggiora. Qui è più difficile che nel software normale, perché il risultato
 non dipende solo dal codice.
 
-Le cose da conservare sono gli artefatti nominati nella pagina d'apertura,
-e conservarne ogni versione invece dell'ultima soltanto è ciò che in gergo si
-dice **versionare**: la parola torna in tutto il capitolo, e vuol dire questo e
-nient'altro.
+Le cose da conservare sono i tre artefatti già nominati (codice, dati,
+modello), e conservarne ogni versione invece dell'ultima soltanto si dice in
+gergo **versionare**.
 
 `````{tab} Elementare
 
@@ -178,7 +180,7 @@ codice, addestrato su dati anche solo un po’ diversi, produce un modello
 diverso. Per rifare la torta servono tutti e tre gli elementi congelati, e, in
 più, va segnato pure il lancio dei dadi, perché qui dentro c'è del caso.
 
-Tradotta dalla cucina al mestiere, l'analogia dice così: la ricetta è il
+Tradotta dalla cucina all'informatica, l'analogia dice così: la ricetta è il
 programma, gli ingredienti sono i dati, e la torta è il modello addestrato. Il
 forno è il computer con sopra le sue librerie, cioè i pacchi di programmi
 già fatti che il nostro programma usa senza riscriverli (uno che sa fare i
@@ -186,7 +188,7 @@ conti sui numeri, uno che sa addestrare le reti); e come un forno vero, una
 libreria di marca diversa, o della stessa marca ma di un altro anno, cuoce in
 modo un po’ diverso.
 
-E la torta si conserva anche lei, non solo la ricetta: rifarla identica costa
+Anche la torta si conserva, non solo la ricetta: rifarla identica costa
 ore di forno, e chi la deve mangiare non può aspettarle. Da tenere sotto
 chiave, allora, sono codice, dati e modello, con il forno (le librerie)
 come condizione da non dimenticare. Il programma ha già il suo quaderno delle
@@ -195,7 +197,7 @@ software tiene la cronologia del codice, e si chiama Git. Nel quaderno, però,
 non ci stanno i sacchi di farina né le torte: chi ce li forzasse dentro avrebbe
 un quaderno che non si sfoglia più. Sul quaderno va il cartellino, quel sacco
 lì, di quel lotto; la roba vera sta in dispensa e in freezer. Chi scrive
-«farina» e basta, un anno dopo la torta non la sa più rifare.
+soltanto «farina», un anno dopo la torta non la sa più rifare.
 
 `````
 
@@ -205,8 +207,9 @@ Per riprodurre un modello occorre versionare tre artefatti distinti, più il
 contesto in cui sono stati combinati:
 
 - Codice: sorgente del modello, delle trasformazioni e della pipeline. Qui
-  `git` fa benissimo il suo mestiere.
-- Dati: l'esatto insieme di addestramento e valutazione. Si versiona
+  `git` funziona benissimo.
+- Dati: gli insiemi di addestramento e di valutazione, nella forma in cui sono
+  stati usati. Si versiona
   fissandone un’**impronta** (l'hash del contenuto) e conservando lo
   *snapshot* in un archivio dedicato.
 - Modello: i pesi addestrati (in PyTorch lo `state_dict` visto nel
@@ -229,7 +232,7 @@ Il seme casuale merita una riga a parte, perché è la fonte di riproducibilità
 più facile da dimenticare e più economica da fissare. Il computer i dadi li
 tira per finta: segue una lista di numeri preparata in anticipo, e il seme
 è il punto della lista da cui parte. Fissarlo vuol dire far uscire sempre gli
-stessi dadi. E i dadi qui si tirano almeno in tre punti: quando i dati si
+stessi dadi. I dadi si tirano almeno in tre punti: quando i dati si
 dividono fra addestramento e prova, quando i pesi della rete ricevono i loro
 valori iniziali, e quando gli esempi vengono mescolati prima di essere dati in
 pasto al modello un gruppetto alla volta (i *mini-batch*).
@@ -281,21 +284,21 @@ La prima è la **riproducibilità bit a bit**: due esecuzioni che danno numeri
 identici fino all'ultima cifra. Si può avere, ma si paga. Bisogna dare un seme
 a ogni sorgente di casualità, chiedere esplicitamente alla libreria di usare
 solo procedimenti che a parità di ingressi danno sempre la stessa uscita
-(`torch.use_deterministic_algorithms(True)`, con `cudnn.benchmark` spento e,
-su GPU, la variabile `CUBLAS_WORKSPACE_CONFIG`), seminare anche i processi che
-caricano i dati, e accettare di andare più piano: il dettaglio sta in
-{doc}`Dal notebook agli script </PyTorch/dal-notebook-agli-script>`. E vale su
+(`torch.use_deterministic_algorithms(True)`, con `cudnn.benchmark` spento e, su
+GPU, la variabile `CUBLAS_WORKSPACE_CONFIG`), seminare anche i processi che
+caricano i dati, e accettare di andare più piano: il dettaglio sta in {doc}`Dal
+notebook agli script </PyTorch/dal-notebook-agli-script>`. La garanzia vale su
 una macchina sola: quel comando vieta i procedimenti ballerini di *quel*
 calcolatore, non l'ordine in cui due processori diversi sommano gli stessi
 numeri.
 
-La seconda è la **riproducibilità statistica**: i numeri non coincidono
-all'ultima cifra, ma ogni metrica resta dentro la variabilità che si osserva
-cambiando il seme, e il confronto fra due modelli non cambia verso. Quella
+La seconda è la **riproducibilità statistica**: i numeri possono differire
+nell'ultima cifra, purché ogni metrica resti dentro la variabilità che si osserva
+cambiando il seme e il confronto fra due modelli non cambi verso. Quella
 variabilità si misura: si ripete l'addestramento con alcuni semi diversi e se
 ne riportano media e deviazione standard, e due configurazioni si confrontano
-sugli stessi semi. È la promessa che serve quasi sempre, ed è quella che seme,
-ambiente congelato e dati versionati consegnano davvero.
+sugli stessi semi. È la promessa che serve quasi sempre, e seme,
+ambiente congelato e dati versionati bastano a mantenerla.
 Senza nemmeno il seme, però, non si ha né l'una né l'altra: due esecuzioni
 dello stesso codice danno modelli diversi, e ogni confronto perde di
 significato.
@@ -306,7 +309,7 @@ Durante l'esplorazione non si prova una configurazione sola: se ne provano
 decine, poi centinaia. Si cambia la velocità con cui il modello impara, si
 cambia la forma della rete, si cambia quali informazioni le si danno in pasto:
 sono gli iperparametri, le manopole che decide una persona e che il modello
-non impara da sé. E senza un registro, dopo una settimana, nessuno ricorda più
+non impara da sé. Senza un registro, dopo una settimana, nessuno ricorda più
 *quale* combinazione aveva dato quel 94%.
 
 La cura è segnare ogni prova: che cosa si era impostato prima di lanciarla e
@@ -323,22 +326,22 @@ somigliano tutte.
 
 La cura è un'abitudine, più che un attrezzo. Prima di lanciare una prova, scrivere
 da qualche parte che cosa si è impostato; a prova finita, scrivere com'è andata.
-«Da qualche parte» vuol dire in un posto che sopravviva alla chiusura del
-programma, non in una cella del notebook.
+«Da qualche parte» è un posto che sopravvive alla chiusura del
+programma, non una cella del notebook.
 
 Serve poi un modo per dare a ogni combinazione un nome corto e sempre uguale,
 così da accorgersi di stare rifacendo una prova già fatta. Il modo è un
 tritatutto: si passa dentro l'elenco delle impostazioni e ne esce un codice
-corto, completamente diverso appena una cifra cambia. Le impostazioni si mettono
-in fila in ordine alfabetico prima di buttarle dentro, così chi le ha scritte in
-un ordine e chi in un altro ottiene lo stesso codice. Per il resto, però, il
-tritatutto è letterale: legge quello che c'è scritto, non quello che si
-intendeva. «5» e «5,0» dicono la stessa cosa (cinque passate sui dati di
+corto, completamente diverso appena una cifra cambia. Le impostazioni si
+dispongono in ordine alfabetico prima di buttarle dentro, così chi le ha
+scritte in un ordine e chi in un altro ottiene lo stesso codice. Per il resto,
+però, il tritatutto è letterale: legge il testo com'è scritto, senza
+interpretarlo. «5» e «5,0» dicono la stessa cosa (cinque passate sui dati di
 addestramento) e danno due codici diversi, quindi i numeri vanno scritti sempre
-allo stesso modo, o si rifà una prova credendo che sia nuova. E un codice
-corto ha un limite suo: su qualche migliaio di prove due codici uguali per caso
-non escono praticamente mai, su milioni sì, e chi ne accumula tante lo tiene
-più lungo. È lo stesso attrezzo che serve a mettere un cartellino a un intero
+allo stesso modo, o si rifà una prova credendo che sia nuova. Un codice corto
+ha anche un limite: su qualche migliaio di prove due codici uguali per caso non
+escono praticamente mai, su milioni sì, e chi ne accumula tante lo tiene più
+lungo. È lo stesso attrezzo che serve a mettere un cartellino a un intero
 archivio di dati.
 
 `````
@@ -348,8 +351,8 @@ archivio di dati.
 Il cuore è un’impronta della configurazione: si serializza il dizionario
 degli iperparametri in una forma canonica e se ne prende un hash, così da
 riconoscere quando stiamo ripetendo un esperimento già fatto. `sort_keys=True`
-è ciò che rende irrilevante l'ordine in cui le chiavi sono state scritte, ed è
-la proprietà che l'esempio dimostra.
+rende irrilevante l'ordine in cui le chiavi sono state scritte, proprietà
+che l'esempio dimostra.
 
 La promessa larga («stessa configurazione, stesso identificativo») non è però
 quella che il codice consegna: la stabilità di quell'impronta ha un perimetro
@@ -428,11 +431,11 @@ software normale.
 `````{tab} Elementare
 
 Il debito tecnico è come costruire una casa di fretta: per consegnare in tempo
-salti qualche fondamenta, e per un po’ la casa sta in piedi. Ma ogni
-scorciatoia è un prestito: prima o poi va restituito, con gli interessi, sotto
-forma di crepe da riparare. L'immagine con cui lo stesso gruppo l'aveva detto
-l'anno prima è rimasta: il machine learning è la carta di credito ad alto tasso
-del debito tecnico. Oggi basta un notebook e qualche riga scritta di fretta per
+salti qualche fondamenta, e per un po’ la casa sta in piedi. Ogni scorciatoia,
+però, è un prestito: prima o poi va restituito, con gli interessi, sotto forma
+di crepe da riparare. L'immagine con cui lo stesso gruppo l'aveva detto l'anno
+prima è rimasta: il machine learning è la carta di credito ad alto tasso del
+debito tecnico. Oggi basta un notebook e qualche riga scritta di fretta per
 collegare fra loro i pezzi già pronti che si sono messi insieme: righe che non
 fanno niente di intelligente, servono solo a far combaciare l'uscita di un
 pezzo con l'ingresso del successivo. Si scrivono in un pomeriggio, poi vanno
@@ -440,19 +443,19 @@ mantenute per anni, e intanto diventano tantissime: tubi aggiunti uno sopra
 l'altro, con rubinetti che nessuno sa più a che cosa servano e che nessuno osa
 chiudere.
 
-E c'è un motivo più profondo: un modello dipende dai dati, non solo dal codice,
+C'è anche un motivo più profondo: un modello dipende dai dati, non solo dal codice,
 e dentro un modello le parti si tengono tutte insieme, come le ricette della
 cucina di apertura del capitolo. Basta cambiare una delle informazioni che gli
 si danno in pasto perché, al prossimo addestramento, il modello rifaccia i suoi
 equilibri e sposti le risposte anche dove nessuno se lo aspettava. Cambiare
-*qualsiasi* cosa può cambiare *tutto*. E i dati, a differenza del codice,
-cambiano da soli, senza che nessuno tocchi una riga.
+*qualsiasi* cosa può cambiare *tutto*. I dati, a differenza del codice,
+cambiano senza che nessuno tocchi una riga.
 
 Chi compra una casa così manda un perito, con un elenco di controlli da spuntare
 (per un sistema di machine learning ne esiste uno di ventotto, divisi fra i
 dati, il modello, le macchine e la sorveglianza), e il perito non fa la media
 delle stanze: guarda quella messa peggio. Muri perfetti e impianto elettrico
-fuori norma fanno una casa fuori norma. E il sopralluogo non si fa una volta
+fuori norma fanno una casa fuori norma. Il sopralluogo non si fa una volta
 sola a lavori finiti: si rifà a ogni modifica, e a farlo è una macchina che non
 si stanca.
 
@@ -476,7 +479,7 @@ Sculley e colleghi catalogano le forme di debito specifiche dell'ML, tra cui:
   *Changing Anything Changes Everything*.
 
 Come si misura se un sistema è pronto per la produzione? Una rubrica nota come
-**ML Test Score** mette in fila 28 controlli concreti su quattro aree (dati e
+**ML Test Score** elenca 28 controlli concreti su quattro aree (dati e
 feature, sviluppo del modello, infrastruttura, monitoraggio)
 {cite}`breck2017ml`. Il voto complessivo è dettato dall'area più debole: non
 basta un modello brillante se il monitoraggio è assente. Accanto a quella
@@ -491,18 +494,18 @@ affidabile, in ogni momento, con un comando invece che con un rito manuale.
 
 Nessuno di questi attrezzi (le versioni conservate di codice, dati e modello, il
 registro delle prove, i controlli contro il debito) è un fine in sé. Servono a
-una cosa sola: fare in modo che il modello del notebook di stamattina (quello
+uno scopo: far sì che il modello del notebook di stamattina (quello
 che «funzionava sul mio computer») continui a funzionare domani, sul computer di
 tutti, e che tra sei mesi qualcuno possa capire *perché* funzionava e rifarlo
 daccapo. È il passaggio dalla dimostrazione al prodotto: meno spettacolare della
-prima intuizione, ma è qui che la ricerca diventa qualcosa su cui le persone
+prima intuizione, ma da lì la ricerca diventa qualcosa su cui le persone
 possono contare.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Fra il notebook e la produzione c'è un abisso, ed è quello fra
-  cucinare un piatto una sera per gli amici e metterlo nel menù: in
+- Fra il notebook e la produzione c'è l'abisso che separa il
+  cucinare un piatto una sera per gli amici dal metterlo nel menù: in
   esplorazione conta solo che venga buono, in servizio deve venire identico la
   centesima volta, uscire in fretta e reggere il sabato sera.
 - Rifare esattamente un risultato è la competenza su cui poggia tutto il resto:
@@ -518,8 +521,8 @@ possono contare.
   andata, in un posto che sopravviva alla chiusura del programma. È la
   differenza fra un laboratorio con i quaderni e uno dove si va a memoria.
 - Le scorciatoie prese oggi si pagano con gli interessi domani (il debito
-  tecnico), e in questo mestiere si pagano più care, perché un modello
-  dipende dai dati e i dati cambiano da soli, senza che nessuno tocchi una
+  tecnico), e in questo campo si pagano più care, perché un modello
+  dipende dai dati e i dati cambiano senza che nessuno tocchi una
   riga.
 ```
 `````

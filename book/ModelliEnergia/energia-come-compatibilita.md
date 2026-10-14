@@ -2,9 +2,9 @@
 
 Nel 2006 Yann LeCun, con Sumit Chopra, Raia Hadsell, Marc'Aurelio Ranzato e Fu
 Jie Huang, pubblica un lungo articolo didattico {cite}`lecun2006tutorial` che
-compie il gesto inverso rispetto a Hopfield: non costruire una rete a energia,
-ma mostrare che *quasi ogni modello di apprendimento può essere letto come una
-funzione di energia*.
+fa il percorso inverso rispetto a Hopfield: invece di costruire una rete a
+energia, mostra che *quasi ogni modello di apprendimento può essere letto come
+una funzione di energia*.
 
 La ricetta è di una generalità spiazzante. Invece di dare un'energia a una
 configurazione sola, la si dà a una coppia: da una parte quello che si ha
@@ -19,11 +19,11 @@ che si ha davanti e $y$ la risposta candidata.
 Rispondere, allora, significa cercare la risposta che rende l'energia minima;
 imparare significa dare forma al paesaggio, abbassare l'energia delle
 coppie giuste e alzarla, o tenerla alta, su quelle sbagliate. È una
-cornice molto più larga di quel che sembra, e contiene una liberazione.
+cornice molto più larga di quel che sembra, e toglie un vincolo pesante.
 
 `````{tab} Elementare
 
-A una festa a coppie c’è un buttafuori. Il suo mestiere è
+A una festa a coppie c’è un buttafuori. Il suo compito è
 giudicare la coppia che ha davanti: questi due stanno bene insieme, passano;
 questi due no. Non gli serve conoscere tutte le persone della città, né
 compilare la classifica di tutti gli abbinamenti possibili con le percentuali
@@ -32,23 +32,23 @@ modello a energia è questo buttafuori: dare la *probabilità* di ogni risposta
 possibile, come fanno i modelli probabilistici, è un lavoro immane, perché per
 dire «70%» su una risposta devi aver messo in conto tutte le altre; dire
 «questa coppia sì, quella no» è enormemente più economico, e per moltissimi
-compiti basta e avanza.
+compiti è sufficiente.
 
-Rispondere è un altro mestiere. Portagli una persona sola e chiedigli con
+Rispondere è un altro lavoro. Portagli una persona sola e chiedigli con
 chi dovrebbe entrare: adesso deve scorrere la fila e tenersi il migliore che
-ha visto. Un giudizio costa poco, mille giudizi costano mille volte tanto, e
+ha visto. Un giudizio è rapido, mille giudizi richiedono mille volte il tempo, e
 quando i candidati sono tutte le frasi possibili la fila non finisce mai. In
 fondo non ci arriva nessuno. Quello che ti consegna è il migliore fra quelli
 che ha guardato, e nessuno può giurare che più indietro non ce ne fosse uno
 più adatto. Il risparmio sulle percentuali è vero; la fila, però, si paga.
 
-Il buttafuori e la carta in rilievo dell'inizio del capitolo sono la stessa
-cosa vista da vicino. Il suo giudizio su una coppia è l'altezza di quella
-coppia sul paesaggio, bassa se i due stanno bene insieme; scorrere la fila per
-tenersi il migliore è cercare il punto più basso. E quando i candidati sono
-tanti e simili fra loro, come i punti di una carta, invece di guardarli uno a
-uno si lascia rotolare una pallina: arriva in fretta in una valle, che però è
-la più vicina e non sempre la più bassa.
+Il buttafuori e la carta in rilievo sono la stessa cosa vista da vicino. Il suo
+giudizio su una coppia è l'altezza di quella coppia sul paesaggio, bassa se i
+due stanno bene insieme; scorrere la fila per tenersi il migliore è cercare il
+punto più basso. Quando i candidati sono tanti e simili fra loro, come i punti
+di una carta, invece di guardarli uno a uno si lascia rotolare una pallina:
+arriva in fretta in una valle, che però è la più vicina e non sempre la più
+bassa.
 
 C'è poi un pericolo, e ha un nome preciso: il collasso. Il buttafuori pigro
 ha scoperto la scorciatoia perfetta: dire sempre sì. Chiunque si presenti,
@@ -73,11 +73,11 @@ $$
 $$
 
 dove $\hat{y}$ è la risposta predetta: nessuna somma su $\mathcal{Y}$, solo
-una ricerca del minimo. «Solo», però, va preso per quello che è: il minimo
+una ricerca del minimo. Quel «solo» ha però dei limiti, perché il minimo
 esiste sotto ipotesi (continuità di $E_\theta$ e compattezza di $\mathcal{Y}$,
 o coercività dell'energia), e quando $\mathcal{Y}$ è ad alta dimensione
 trovarlo è a sua volta un'ottimizzazione non convessa, con gli stessi minimi
-locali del resto del capitolo. Il vantaggio è di non dover sommare su
+locali già incontrati. Il vantaggio è di non dover sommare su
 $\mathcal{Y}$, non di avere l'inferenza gratis. Un modello probabilistico si
 ottiene come caso
 particolare tramite la distribuzione di Gibbs:
@@ -89,16 +89,15 @@ $$
 
 dove $\beta > 0$ è una temperatura inversa e il denominatore è la funzione di
 partizione condizionata $Z_\theta(\mathbf{x})$, l'integrale (o la somma) su
-*tutte* le risposte possibili: un termine analogo alla $Z(\theta)$ della
-sezione precedente, ma non lo stesso oggetto, perché lì si integrava sui dati
-e qui sulle risposte. Quando $\mathcal{Y}$ è grande o continuo e ad alta
-dimensione (una risposta che è un'immagine, un video, una frase),
-$Z_\theta(\mathbf{x})$ può addirittura non esistere,
-e quando esiste è intrattabile: è il muro
-della sezione precedente. La tesi del tutorial è che per decidere, ordinare o
-pianificare serve solo l’$\arg\min$, che di $Z$ non ha alcun bisogno:
-rinunciare alla normalizzazione non è una perdita ma un vantaggio
-computazionale.
+*tutte* le risposte possibili: un termine analogo alla $Z(\theta)$ della sezione
+{doc}`Oltre la partizione </ModelliEnergia/oltre-la-partizione>`, ma non lo
+stesso oggetto, perché lì si integrava sui dati e qui sulle risposte. Quando
+$\mathcal{Y}$ è grande o continuo e ad alta dimensione (una risposta che è
+un'immagine, un video, una frase), $Z_\theta(\mathbf{x})$ può addirittura non
+esistere, e quando esiste è intrattabile: è il muro già descritto per
+$Z(\theta)$. La tesi del tutorial è che per decidere, ordinare o pianificare
+serve solo l’$\arg\min$, che di $Z$ non ha bisogno: rinunciare alla
+normalizzazione dà un vantaggio computazionale e non comporta una perdita.
 
 Due esempi fissano il vocabolario, e sono quelli del tutorial stesso. Un
 classificatore a $K$ classi con logit $f_\theta(\mathbf{x}) \in \mathbb{R}^K$ è
@@ -106,7 +105,7 @@ l'energia $E_\theta(\mathbf{x}, y) = -f_\theta(\mathbf{x})[y]$: l’$\arg\min_y 
 è la classe col logit più alto, e la distribuzione di Gibbs con $\beta = 1$ è
 la softmax. Lì la partizione condizionata
 $Z_\theta(\mathbf{x}) = \sum_{y=1}^{K} e^{f_\theta(\mathbf{x})[y]}$ ha $K$
-termini, e il muro non c'è: costa poco perché $\mathcal{Y}$ è piccolo e
+termini, e il muro non c'è: il calcolo è economico perché $\mathcal{Y}$ è piccolo e
 discreto. Una regressione è
 $E_\theta(\mathbf{x}, y) = \lVert y - g_\theta(\mathbf{x}) \rVert^2$, con
 $\arg\min_y E = g_\theta(\mathbf{x})$. Quando c'è anche una variabile latente
@@ -119,20 +118,19 @@ tende al minimo {cite}`lecun2006tutorial`.
 
 `````
 
-Due modelli già incontrati stanno dentro questa cornice, e i due casi sono
-diversi. La macchina di Boltzmann
-è quello facile: sull'energia si costruisce una probabilità, ed è proprio il
-caso da cui la cornice si libera.
+Due modelli già incontrati rientrano in questa cornice, in modi diversi. La
+macchina di Boltzmann è il caso facile: sull'energia si costruisce una
+probabilità, cioè il passaggio da cui la cornice si libera.
 
-Anche la memoria di Hopfield rientra in questa cornice, ma con una differenza.
-La sua energia guarda una cosa sola, lo stato della rete, e l'indizio rovinato
-non entra nel conto: decide soltanto da dove parte la discesa. E la risposta è
-il fondovalle in cui si finisce partendo di lì, non il più basso di tutti,
+La memoria di Hopfield rientra nella cornice con una differenza. La sua
+energia guarda un solo argomento, lo stato della rete, e l'indizio rovinato non
+entra nell'energia: decide soltanto da dove parte la discesa. La risposta è il
+fondovalle in cui si finisce partendo di lì, non il più basso di tutti,
 perché altrimenti la rete restituirebbe sempre lo stesso ricordo qualunque
 indizio le si desse.
 
-Che la risposta possa non essere la migliore in assoluto non è un difetto,
-ed è l'articolo stesso a metterlo in conto: in molte situazioni reali un
+Che la risposta possa non essere la migliore in assoluto non è un difetto, e
+l'articolo stesso lo mette in conto: in molte situazioni reali un
 modello che va a cercarsi la risposta ne trova una approssimata, che può
 essere il fondovalle più basso di tutti oppure no.
 
@@ -140,10 +138,10 @@ essere il fondovalle più basso di tutti oppure no.
 
 Il collasso, cioè l'energia bassa dappertutto e il sì a qualunque cosa, si
 previene a due livelli: nella forma del modello, e nel modo in cui lo si
-addestra. Addestrarlo vuol dire mostrargli una coppia, guardare che voto le dà,
-e ritoccarlo perché quel voto somigli di più a quello che volevamo. La regola
-con cui si decide «di quanto ha sbagliato», la funzione di perdita, è una
-scelta, e di regole possibili ce ne sono parecchie: con un modello di forma
+addestra. Per addestrarlo si mostra una coppia, si guarda che voto le dà e si
+ritocca il modello perché quel voto somigli di più a quello desiderato. La
+regola con cui si decide «di quanto ha sbagliato», la funzione di perdita, è
+una scelta, e di regole possibili ce ne sono parecchie: con un modello di forma
 qualunque, sono loro a decidere se il collasso è possibile oppure no.
 
 L'articolo di LeCun le passa in rassegna una per una e per ciascuna dice una
@@ -156,32 +154,31 @@ La prima regola della rassegna è anche la più ingenua, quella che si limita ad
 abbassare l'energia sui dati veri senza mai guardare nient'altro. Alla voce
 «margine» l'articolo scrive «none», nessuno {cite}`lecun2006tutorial`, cioè con
 un'architettura qualunque non protegge affatto (l'articolo mostra poi qualche
-architettura speciale in cui va bene lo stesso). È la prima regola della
-rassegna, non un difetto sottile da manuale avanzato. La questione del collasso
-torna, con le misure che permettono di accorgersene, nella sezione
-{doc}`Perché non collassa, e come si fa a saperlo
+architettura speciale in cui va bene lo stesso). Non è un difetto sottile da
+manuale avanzato. La questione del collasso torna, con le misure che permettono
+di accorgersene, nella sezione {doc}`Perché non collassa, e come si fa a
+saperlo
 </AutoSupervisione/collasso-e-misura>`.
 
 `````{tab} Elementare
 
-Come si costringe il buttafuori a fare sul serio? Due modi, ed è utile
-tenerli distinti perché tutta la discussione dei prossimi anni ruota su
-questa scelta.
+Come si costringe il buttafuori a fare sul serio? Due modi, da tenere distinti
+perché la discussione di questi anni ruota su questa scelta.
 
 Il primo: portargli davanti anche le coppie sbagliate e pretendere che le
 respinga. Quelle coppie sbagliate, fabbricate apposta per fargliele respingere,
-nel gergo del campo si chiamano **controesempi**, ed è con questo nome che
-torneranno. Il metodo funziona, e ha un difetto che si vede subito appena le
-coppie possibili diventano tante: quanti controesempi devi mostrare? Per ogni
-coppia giusta ne esiste un numero enorme di sbagliate, e mostrargliene un pugno
-alla volta è come puntellare un tendone con tre paletti.
+nel gergo del campo si chiamano **controesempi**. Il metodo funziona, e ha un
+difetto che si vede subito appena le coppie possibili diventano tante: quanti
+controesempi devi mostrare? Per ogni coppia giusta ne esiste un numero enorme
+di sbagliate, e mostrargliene un pugno alla volta è come puntellare un tendone
+con tre paletti.
 
-E i controesempi non sono tutti uguali: quello che insegna qualcosa è la coppia
+I controesempi non sono tutti uguali: quello che insegna qualcosa è la coppia
 sbagliata che al buttafuori sembra più giusta di tutte, cioè l'impostore
-migliore. Ma per trovarlo bisogna passare in rassegna la fila, che è esattamente
-il lavoro del rispondere, e va rifatto a ogni passo dell'addestramento. Il
-difetto è quindi doppio: i controesempi servono a migliaia, e trovarne uno buono
-costa quanto rispondere a una domanda.
+migliore. Per trovarlo però bisogna passare in rassegna la fila, cioè fare il
+lavoro del rispondere, e va rifatto a ogni passo dell'addestramento. Il difetto
+è quindi doppio: i controesempi servono a migliaia, e trovarne uno buono costa
+quanto rispondere a una domanda.
 
 Il secondo: cambiare la porta invece di istruire il buttafuori. Se al posto
 della porta c'è una fessura, di là non passa una folla qualunque cosa lui dica:
@@ -193,12 +190,11 @@ bene le coppie viste mille volte, e tutte le altre vengono male per forza:
 anche volendo, non può dire di sì a tutti. Nessun controesempio da andare a
 cercare.
 
-E il fatto che il primo metodo non regga quando le risposte possibili sono
-tantissime (per una foto sono più di quante se ne possano contare) è
-esattamente l'argomento su cui poggia la proposta di LeCun per i *world
-model*, i modelli che si costruiscono un'idea di come va il mondo per poterlo
-prevedere, e a cui è dedicato per intero il
-{doc}`capitolo sui world model </WorldModels/overview>`.
+Il primo metodo non regge quando le risposte possibili sono tantissime (per una
+foto sono più di quante se ne possano contare), e su questo argomento poggia la
+proposta di LeCun per i *world model*, i modelli che si costruiscono un'idea di
+come va il mondo per poterlo prevedere, trattati nel {doc}`capitolo sui world
+model </WorldModels/overview>`.
 
 `````
 
@@ -217,8 +213,8 @@ $$
 \ell = \max\!\big(0,\; m + E_\theta(\mathbf{x}, y) - E_\theta(\mathbf{x}, \bar{y})\big),
 $$
 
-dove $m > 0$ è il margine preteso fra coppia giusta e coppia sbagliata. E qui
-c'è un costo che di solito passa sotto silenzio: $\bar{y}$ è a sua volta un
+dove $m > 0$ è il margine preteso fra coppia giusta e coppia sbagliata. C'è
+un costo che di solito non si dichiara: $\bar{y}$ è a sua volta un
 $\arg\min$ su $\mathcal{Y}$, cioè un'inferenza completa a ogni passo di
 addestramento. I difetti dei metodi contrastivi sono quindi due: in alta
 dimensione i controesempi non bastano mai, e trovarne uno *buono* costa quanto
@@ -260,8 +256,7 @@ Due strade, dunque, e quale sia quella giusta non è affatto deciso. La
 questione compare anche nell'elenco che LeCun ripete nelle sue conferenze,
 quello delle quattro cose a cui il campo dovrebbe rinunciare: è la terza delle
 quattro, e la sezione sui {doc}`paesaggi di oggi
-</ModelliEnergia/paesaggi-di-oggi>` la riprende per l'ultima volta insieme alle
-altre.
+</ModelliEnergia/paesaggi-di-oggi>` la riprende insieme alle altre.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -274,7 +269,7 @@ altre.
 - Rispondere, allora, è cercare la risposta che sta meglio con quello che si
   ha davanti. Imparare è abbassare il terreno sotto le coppie giuste e
   alzarlo sotto quelle sbagliate.
-- Il pericolo ha un nome, il collasso, ed è il buttafuori pigro che dice
+- Il pericolo si chiama collasso: il buttafuori pigro che dice
   sempre sì. Se durante l'addestramento si premia soltanto il sì alle coppie
   giuste, la scorciatoia perfetta è dire sì a tutti: nessuno si lamenta, e il
   giudizio non vale più niente.
@@ -282,8 +277,8 @@ altre.
   mostrargli anche le coppie sbagliate e pretendere che le respinga, oppure
   stringere la porta, cioè costruirlo in modo che dire sì a tutti gli sia
   fisicamente impossibile. Il primo ha due difetti: le coppie sbagliate sono
-  troppe da mostrare, ed è quasi sempre il caso, e trovare quelle che
-  insegnano qualcosa costa quanto rispondere. Il secondo è la scommessa di
+  quasi sempre troppe da mostrare, e trovare quelle che insegnano qualcosa costa
+  quanto rispondere. Il secondo è la scommessa di
   LeCun per i modelli del mondo.
 ```
 `````

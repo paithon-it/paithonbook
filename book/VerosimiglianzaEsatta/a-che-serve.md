@@ -1,9 +1,10 @@
 # A che serve saperlo, e dove sbaglia
 
-Abbiamo speso due sezioni per ottenere un numero. Adesso la domanda che le
-giustifica: a che cosa serve calcolarlo. Sono tre mestieri (comprimere,
-scegliere fra ipotesi, riconoscere ciò che è fuori posto), e sul terzo questa
-famiglia ha preso una lezione che vale più degli altri due.
+{doc}`Un pixel alla volta <pixel-per-pixel>` e {doc}`I flussi normalizzanti
+<flussi>` hanno prodotto un numero, la probabilità esatta di un dato. A che
+serve calcolarlo? A tre usi: comprimere, scegliere fra ipotesi, riconoscere
+ciò che è fuori posto. Sul terzo la famiglia ha imparato una lezione che vale
+più degli altri due.
 
 ## Primo: comprimere
 
@@ -13,59 +14,59 @@ detta in due modi, e la {doc}`sezione sulla teoria dell'informazione
 stabilito: il numero di bit che servono per scrivere un messaggio con il codice
 migliore possibile è $-\log_2 p$ del messaggio, cioè quante volte bisogna
 dimezzare 1 per arrivare alla sua probabilità. Un messaggio che ha una
-probabilità su otto costa 3 bit, perché $2 \times 2 \times 2 = 8$; uno che ne ha
-una su mille ne costa circa dieci, perché $2^{10} = 1024$. E il codice migliore
-quel numero lo raggiunge davvero, non solo come ordine di grandezza: lo supera
-di un paio di bit su tutto il file, che è quanto costa scrivere in bit interi
-una quantità che intera non è.
+probabilità su otto si scrive in 3 bit, perché $2 \times 2 \times 2 = 8$; uno
+che ne ha una su mille in circa dieci, perché $2^{10} = 1024$. Il codice
+migliore raggiunge quel numero a meno di un paio di bit su tutto il file, il
+sovrappiù che comporta scrivere in bit interi una quantità che intera non è.
 
-Un modello che sa dire $p(\mathbf{x})$ *è* un compressore, e non per
-analogia. Gli si dà un file, lui dà una probabilità, e un codificatore
-aritmetico, il programma che converte una sequenza di probabilità in una
-sequenza di zeri e di uni lunga appunto $-\log_2 p$ (lo stesso del limite della
-compressione nei richiami), la traduce in bit; il file si ricostruisce
-esattamente. L'equivalenza ha due condizioni. La prima è che $p$ sia
-normalizzata: per la disuguaglianza di Kraft un codice con quelle lunghezze
-esiste solo se le probabilità sommano al più a uno, e un punteggio che non fa
-uno, come quello dei modelli a energia, non si traduce in un codice. La
-seconda è che chi decomprime sappia rifare le stesse probabilità nello stesso
-ordine: con un modello autoregressivo comprimere costa un passaggio della rete,
-perché il file è tutto lì, ma decomprimere ne costa uno per valore, come
-generare. È la ragione per cui in questa letteratura la qualità non si misura
-in punti su cento ma in **bit per dimensione**: quanti bit costa, in media, ogni
-numero dell'immagine. Un numero più basso vuol dire un modello migliore e un
-file più piccolo, ed è la stessa frase.
+Un modello che sa dire $p(\mathbf{x})$ *è* un compressore, e non per analogia.
+Gli si dà un file, lui dà una probabilità, e un codificatore aritmetico, il
+programma che converte una sequenza di probabilità in una sequenza di zeri e di
+uni lunga appunto $-\log_2 p$ (lo stesso del limite della compressione nei
+richiami), la traduce in bit; il file si ricostruisce esattamente.
+L'equivalenza ha due condizioni. La prima è che $p$ sia normalizzata: per la
+disuguaglianza di Kraft un codice con quelle lunghezze esiste solo se le
+probabilità sommano al più a uno, e un punteggio che non fa uno, come quello
+dei modelli a energia, non si traduce in un codice. La seconda è che chi
+decomprime sappia rifare le stesse probabilità nello stesso ordine: con un
+modello autoregressivo comprimere si fa in un passaggio della rete,
+perché il file è tutto lì, ma decomprimere ne comporta uno per valore, come
+generare. È
+la ragione per cui in questa letteratura la qualità non si misura in punti su
+cento ma in **bit per dimensione**, cioè quanti bit servono in media per ogni
+numero dell'immagine. Un numero più basso indica un modello migliore e un file
+più piccolo, e le due affermazioni coincidono.
 
 `````{tab} Elementare
 
 Una figurina a colori di 32 pixel per lato è fatta di $32 \times 32 \times 3 =
 3.072$ numeri, ognuno fra 0 e 255. Chi non sa niente di come sono fatte le
 immagini deve spendere 8 bit per ciascuno, cioè 3.072 byte: è il file grezzo.
-Un modello autoregressivo ben fatto costa 2,92 bit per numero, e
+Un modello autoregressivo ben fatto usa 2,92 bit per numero, e
 $3.072 \times 2{,}92$ fa 8.970 bit, cioè meno di 1.130 byte. Stesso contenuto,
 ricostruibile senza perdere niente, in poco più di un terzo dello spazio.
 L'unica cosa che il modello ha in più è sapere che cosa aspettarsi.
 
-Un'avvertenza sulla parola «esatto», perché vale per una delle due strade e
-non per l'altra. Chi mette i pixel in fila lavora sui numeri interi che
-l'immagine ha davvero, e il conto è quello e basta. Un flusso invece dà
-un'altezza di curva, non una probabilità (è la differenza fra altezza e area
-della sezione precedente), e su numeri interi questo apre un imbroglio: la
-curva può farsi altissima e sottilissima proprio sopra ciascuno dei 256 valori
-ammessi, con l'area totale sempre uguale a uno e un'altezza che sale quanto si
-vuole. Il modello dichiarerebbe allora densità enormi e un file che non costa
-quasi niente. Il rimedio è spalmare ogni pixel su tutta la sua casella: invece
-di 128 si usa un numero preso a caso fra 128 e 129, così che un picco sottile
-non serve più a niente. Il numero che esce misura i dati spalmati, e rispetto
-al file vero è prudente: il file vero non costa mai di più, semmai un po’ meno.
-Va benissimo per confrontare due modelli misurati allo stesso modo, ma non è
-la stessa cosa.
+La parola «esatto» vale per una delle due strade e non per l'altra. Chi mette i
+pixel in sequenza lavora sui numeri interi dell'immagine, e il calcolo è
+quello. Un flusso invece dà un'altezza di curva, non una probabilità (è la
+differenza fra altezza e area spiegata nella sezione sui {doc}`flussi
+<flussi>`), e su numeri interi questo apre un imbroglio: la curva può farsi
+altissima e sottilissima proprio sopra ciascuno dei 256 valori ammessi, con
+l'area totale sempre uguale a uno e un'altezza che sale quanto si vuole. Il
+modello dichiarerebbe allora densità enormi e un file che non costa quasi
+niente. Il rimedio è spalmare ogni pixel su tutta la sua casella: invece di 128
+si usa un numero preso a caso fra 128 e 129, così che un picco sottile non
+serve più a niente. Il numero che esce misura i dati spalmati, e rispetto al
+file vero è prudente: il file vero non occupa mai di più, semmai un po’ meno.
+Va benissimo per confrontare due modelli misurati allo stesso modo, ma non è la
+stessa cosa.
 
 `````
 
 `````{tab} Superiore
 
-Il codice della sezione precedente stampa nat di una densità continua su dati
+Il codice dei {doc}`flussi <flussi>` stampa nat di una densità continua su dati
 standardizzati, la letteratura riporta bit per dimensione su pixel interi, e il
 ponte fra i due è una divisione, purché $p$ sia misurata nella scala giusta:
 
@@ -86,49 +87,48 @@ solito si riportano come perplessità, $2^{\text{bit per simbolo}}$, quella dei
 richiami di teoria dell'informazione. Su CIFAR-10, che è il banco di prova
 storico della famiglia, in bit per dimensione sul test (meno è meglio): NICE
 $4{,}48$; RealNVP $3{,}49$; Glow $3{,}35$; PixelCNN $3{,}14$; Gated PixelCNN
-$3{,}03$; PixelRNN $3{,}00$; PixelCNN++ $2{,}92$. E in cima, a $8{,}00$, il
+$3{,}03$; PixelRNN $3{,}00$; PixelCNN++ $2{,}92$. In cima, a $8{,}00$, sta il
 modello che non sa niente. I valori degli autoregressivi sono esatti, quelli
-dei flussi limiti superiori, per la dequantizzazione del capoverso che segue.
+dei flussi sono limiti superiori perché misurati su pixel dequantizzati.
 
-L'elenco è quello storico, fermo al 2017, e si è mosso: nella tabella di VDM
-{cite}`kingma2021variational` un autoregressivo a Transformer scende a
+L'elenco è quello storico, fermo al 2017, e da allora si è mosso: nella tabella
+di VDM {cite}`kingma2021variational` un autoregressivo a Transformer scende a
 $2{,}80$, e VDM stesso, un modello di diffusione addestrato su un limite
-variazionale, a $2{,}65$, meglio di tutti i modelli esatti con un numero che è
-soltanto un limite superiore del costo. La contraddizione è apparente. Per
-comprimere basta un limite, con lo schema *bits-back* già incontrato con i
-{doc}`VAE </ModelliLatenti/il-salto-probabilistico>`, e VDM lo usa per una
-compressione senza perdita vicina all'ottimo teorico. L'esattezza serve quando
-si vuole la probabilità di un singolo dato, come nel riconoscere un dato
-anomalo, e non solo la media su un insieme di prova.
+variazionale, a $2{,}65$, meglio di tutti i modelli dell'elenco, con un numero
+che è soltanto un limite superiore del costo di codifica. La contraddizione è
+apparente. Per comprimere basta un limite, con lo schema *bits-back* già
+incontrato con i {doc}`VAE </ModelliLatenti/il-salto-probabilistico>`, e VDM lo
+usa per una compressione senza perdita vicina all'ottimo teorico. L'esattezza
+serve quando si vuole la probabilità di un singolo dato, come nel riconoscere
+un dato anomalo, e non solo la media su un insieme di prova.
 
-Una precisazione che la parola «esatta» rischia di far perdere. Un modello
-autoregressivo sui 256 livelli dà la probabilità di *quell'immagine lì*, e il
-conto è esatto senza aggiunte. Un flusso invece è continuo, e una densità
-continua su valori interi è mal posta (l'entropia differenziale di una
-distribuzione discreta è $-\infty$, e la verosimiglianza si può gonfiare a
-piacere): si aggiunge allora rumore uniforme ai pixel, cioè si
-**dequantizza**, e quel che si ottiene è la verosimiglianza esatta dei dati
-dequantizzati. Il legame con il numero che interessa lo dà una disuguaglianza
-di Jensen {cite}`theis2016note`. Se $q$ è la densità del flusso sui pixel
-dequantizzati, la probabilità che assegna all'immagine intera $\mathbf{x}$ è
-$P(\mathbf{x}) = \int_{[0,1)^D} q(\mathbf{x} + \mathbf{u})\,\mathrm{d}\mathbf{u}$,
-e per la concavità del logaritmo
+La parola «esatta» va precisata. Un modello autoregressivo sui 256 livelli dà
+la probabilità di *quell'immagine lì*, e il conto è esatto senza aggiunte. Un
+flusso invece è continuo, e una densità continua su valori interi è mal posta
+(l'entropia differenziale di una distribuzione discreta è $-\infty$, e la
+verosimiglianza si può gonfiare a piacere): si aggiunge allora rumore uniforme
+ai pixel, cioè si **dequantizza**, e quel che si ottiene è la verosimiglianza
+esatta dei dati dequantizzati. Il legame con il numero che interessa lo dà una
+disuguaglianza di Jensen {cite}`theis2016note`. Se $q$ è la densità del flusso
+sui pixel dequantizzati, la probabilità che assegna all'immagine intera
+$\mathbf{x}$ è $P(\mathbf{x}) = \int_{[0,1)^D} q(\mathbf{x} +
+\mathbf{u})\,\mathrm{d}\mathbf{u}$, e per la concavità del logaritmo
 $\mathbb{E}_{\mathbf{u}}\big[\log q(\mathbf{x} + \mathbf{u})\big] \le \log
 P(\mathbf{x})$: la log-verosimiglianza media del modello continuo sta sotto
 quella del corrispondente modello discreto, quindi i bit per dimensione
 riportati per un flusso sono un limite *superiore* al costo di codifica vero.
-Conservativo, il che va benissimo per confrontare due flussi nella stessa
-convenzione, ma non è la stessa cosa. La convenzione conta quanto il modello:
-la scala dei pixel sposta il numero di otto bit per dimensione, e Glow riporta
-per CIFAR-10 $3{,}35$ bit per dimensione sulle immagini a 8 bit e $1{,}67$
-sulle stesse immagini ridotte a 5 bit per canale {cite}`kingma2018glow`. Due
-righe di una tabella si confrontano solo se dati, scala e dequantizzazione sono
-gli stessi. Il problema, poi, è più largo dei soli valori interi: dati che
-stanno vicino a una varietà di dimensione minore di $D$ non hanno una densità
-rispetto al volume, e un flusso, che per costruzione ne definisce una positiva
-su tutto $\mathbb{R}^D$, può solo inseguire una densità degenere. Il rumore
-aggiunto, uniforme o gaussiano come in TarFlow {cite}`zhai2025tarflow`, dà al
-bersaglio una densità vera.
+Il limite è prudente: va bene per confrontare due flussi nella stessa
+convenzione, ma non equivale al costo di codifica. La convenzione conta quanto
+il modello: la scala dei pixel sposta il numero di otto bit per dimensione, e
+Glow riporta per CIFAR-10 $3{,}35$ bit per dimensione sulle immagini a 8 bit e
+$1{,}67$ sulle stesse immagini ridotte a 5 bit per canale
+{cite}`kingma2018glow`. Due righe di una tabella si confrontano solo se dati,
+scala e dequantizzazione sono gli stessi. Il problema, poi, è più largo dei
+soli valori interi: dati che stanno vicino a una varietà di dimensione minore
+di $D$ non hanno una densità rispetto al volume, e un flusso, che per
+costruzione ne definisce una positiva su tutto $\mathbb{R}^D$, può solo
+inseguire una densità degenere. Il rumore aggiunto, uniforme o gaussiano come
+in TarFlow {cite}`zhai2025tarflow`, dà al bersaglio una densità vera.
 
 Che verosimiglianza e qualità dei campioni si possano separare lo mostrano due
 costruzioni discusse da Theis e colleghi {cite}`theis2016note`. La prima, che
@@ -145,16 +145,16 @@ dimensione, meno dell'ultima cifra che le tabelle riportano.
 
 `````
 
-C'è anche un motivo per cui questo modo di misurare piace, e la
-{doc}`sezione sull'addestramento avversario </GAN/come-funziona>` lo rende
-evidente per contrasto. Confrontare due GAN richiede il FID, che si appoggia a una
-terza rete addestrata da qualcun altro, che a sua volta ha le sue idee su che
-cosa sia una fotografia. Confrontare due modelli a verosimiglianza esatta
-richiede un numero solo, misurato su dati mai visti e senza una terza rete che
+C'è anche un motivo per cui questo modo di misurare piace, e la {doc}`sezione
+sull'addestramento avversario </GAN/come-funziona>` lo rende evidente per
+contrasto. Confrontare due GAN passa per il FID, che si appoggia a una terza
+rete addestrata da qualcun altro, i cui criteri su che cosa sia una fotografia
+entrano nel giudizio. Per confrontare due modelli a verosimiglianza esatta
+basta un numero solo, misurato su dati mai visti e senza una terza rete che
 faccia da giudice, a patto che i due numeri siano misurati allo stesso modo:
 stessi dati, stessa scala dei pixel, stessa dequantizzazione. Le stesse
-immagini a 8 bit e a 5 bit per canale, o in scala $[0, 1]$ invece che
-$[0, 256)$, danno numeri che non si possono mettere in fila.
+immagini a 8 bit e a 5 bit per canale, o in scala $[0, 1]$ invece che $[0,
+256)$, danno numeri non confrontabili.
 
 ```{admonition} Un numero solo, ma su che cosa
 :class: caution
@@ -174,10 +174,10 @@ lo si vuole, non rispetto al numero più comodo da stampare.
 
 ## Secondo: ordinare, confrontare, scegliere
 
-Il secondo mestiere è meno vistoso e più usato di quanto sembri. Avere
-$p(\mathbf{x})$ vuol dire poter mettere in ordine delle ipotesi e sceglierne
-una. Un riconoscitore del parlato che esita fra «ho visto un gatto» e «o visto
-un gatto», che all'orecchio suonano uguali, chiede a un modello del linguaggio
+Il secondo uso è meno vistoso e più diffuso di quanto sembri. Avere
+$p(\mathbf{x})$ permette di ordinare delle ipotesi e di sceglierne una. Un
+riconoscitore del parlato che esita fra «ho visto un gatto» e «o visto un
+gatto», che all'orecchio suonano uguali, chiede a un modello del linguaggio
 quale delle due frasi sia più probabile, e riordina le sue ipotesi secondo la
 risposta (la {doc}`sezione sui modelli di riconoscimento
 </SpeechRecognition/modelli-asr>` lo fa con le prime $n$ trascrizioni); un
@@ -193,9 +193,9 @@ calcolabile la densità, che è proprio ciò che serve all'ELBO.
 
 ## Terzo: riconoscere ciò che è fuori posto, e dove la verosimiglianza sbaglia
 
-L'applicazione più ovvia di tutte è questa. Hai addestrato il modello sulle tue
-fotografie; adesso te ne arriva una nuova; se il modello le dà una probabilità
-bassissima, vuol dire che è diversa da quelle che hai visto. Rilevamento di
+L'applicazione più ovvia è questa. Hai addestrato il modello sulle tue
+fotografie e te ne arriva una nuova: se il modello le assegna una probabilità
+bassissima, la fotografia è diversa da quelle che hai visto. Rilevamento di
 anomalie, controllo qualità, allarme quando il mondo cambia sotto ai piedi del
 sistema (è il tema della {doc}`sezione sul sorvegliare un modello vivo
 </MLOps/monitoring-e-drift>`). Sembra il criterio più solido che ci sia.
@@ -227,7 +227,7 @@ lontano dalle immagini.
 Un modello addestrato su testi italiani riceve una pagina e dice quanto la
 trova probabile. Gli arriva un foglio bianco, con scritto in mezzo
 «aaaaaaaaaaaa». Quel testo non è italiano, il modello non l'ha mai visto, è
-fuori posto sotto ogni criterio. Ma la sequenza è anche facilissima: ogni
+fuori posto sotto ogni criterio. Eppure la sequenza è anche facilissima: ogni
 carattere è identico al precedente, quindi il modello ci azzecca ogni volta, e
 la probabilità che ne esce è altissima, più alta di quella di una pagina di
 italiano vero, piena di scelte difficili.
@@ -240,7 +240,7 @@ le fotografie di cani poco probabili, come ci si aspetta, perché per lui sono
 difficili.
 
 C'è poi un secondo motivo, ancora più strano, e varrebbe anche per un modello
-perfetto. In una vita di letture, una pagina fatta di «a» in fila non capita
+perfetto. In una vita di letture, una pagina di sole «a» non capita
 mai, anche se quella pagina è più probabile di qualunque pagina
 vera: le pagine vere sono tantissime, ognuna poco probabile, e tutte insieme si
 prendono quasi tutta la probabilità. Stanno in una fascia di mezzo, mai
@@ -248,19 +248,17 @@ facilissime e mai impossibili, e nessuna arriva vicino alla pagina più
 probabile di tutte, che è il record. «L'ho già visto» abita quella fascia, e il
 record ne sta fuori.
 
-Ed è qui la lezione, che vale ben oltre questa famiglia: «quanto è probabile» e
+La lezione vale ben oltre questa famiglia: «quanto è probabile» e
 «l'ho già visto» sono due domande diverse. Le abbiamo confuse perché nella
 nostra testa vanno insieme, e per un modello no. Per sapere se un dato viene
 dalla distribuzione su cui il modello è stato addestrato, una strada proposta è
 guardare se quel dato cade nella fascia di mezzo anziché controllare se ha
 battuto un record; se basti, è ancora discusso.
 
-C'è un lato lieto. La convinzione che una probabilità bassa bastasse a scovare
-un intruso girava da anni, ed è bastato un esperimento piccolo e riproducibile a
-smontarla: tre modelli costruiti in modi diversi, addestrati sulla stessa
-raccolta di fotografie e misurati su un'altra, e tutti e tre sbagliano nello
-stesso verso. Uno sbaglio condiviso da macchine così diverse sta nella domanda
-che si fa loro, più che in una di loro.
+La convinzione che una probabilità bassa bastasse a scovare un intruso girava
+da anni, e un esperimento piccolo e riproducibile l'ha smontata: tre modelli
+costruiti in modi diversi, addestrati sulla stessa raccolta di fotografie e
+misurati su un'altra, sbagliano tutti e tre nello stesso verso.
 
 `````
 
@@ -285,42 +283,41 @@ colleghi {cite}`serra2020input` propongono come ipotesi e sostengono con una
 serie di esperimenti, è che la densità in alta dimensione sia dominata dalla
 **complessità** dell'input più che dalla sua appartenenza alla distribuzione:
 dati più lisci ricevono log-densità più alte per ragioni che hanno poco a che
-vedere con il supporto della distribuzione di addestramento, e SVHN, con
-sfondi uniformi e poche texture, è esattamente questo rispetto a CIFAR-10. Da
-una stima della complessità dell'input ricavano un punteggio, leggibile come
-un rapporto di verosimiglianze, che regge il confronto con i metodi dedicati.
-Le altre letture non la escludono. Kirichenko e colleghi
-{cite}`kirichenko2020why` mostrano che i flussi imparano soprattutto
-correlazioni locali fra pixel vicini, comuni a tutte le immagini naturali e non
-specifiche della raccolta. Le Lan e Dinh {cite}`lelan2021perfect` mostrano che
-nemmeno un modello perfetto basterebbe: con il cambio di variabile della
-sezione precedente si costruisce una riparametrizzazione invertibile dei dati
-in cui ogni punto riceve la densità che si vuole, e il punteggio di densità si
-ribalta senza che i dati abbiano perso un'informazione. Ne discende comunque la
-stessa diagnosi: la densità non è una statistica di appartenenza, e usarla come
-tale confonde $p_\theta(\mathbf{x})$ alto con
-$\mathbf{x} \in \operatorname{supp} p_{\text{dati}}$.
+vedere con il supporto della distribuzione di addestramento, e SVHN, con sfondi
+uniformi e poche texture, è esattamente questo rispetto a CIFAR-10. Da una
+stima della complessità dell'input ricavano un punteggio, leggibile come un
+rapporto di verosimiglianze, che regge il confronto con i metodi dedicati. Le
+altre letture non la escludono. Kirichenko e colleghi {cite}`kirichenko2020why`
+mostrano che i flussi imparano soprattutto correlazioni locali fra pixel
+vicini, comuni a tutte le immagini naturali e non specifiche della raccolta. Le
+Lan e Dinh {cite}`lelan2021perfect` mostrano che nemmeno un modello perfetto
+basterebbe: con il cambio di variabile della {doc}`sezione sui flussi
+normalizzanti </VerosimiglianzaEsatta/flussi>` si costruisce una
+riparametrizzazione invertibile dei dati in cui ogni punto riceve la densità
+che si vuole, e il punteggio di densità si ribalta senza che i dati abbiano
+perso un'informazione. Ne discende comunque la stessa diagnosi: la densità non
+è una statistica di appartenenza, e usarla come tale confonde
+$p_\theta(\mathbf{x})$ alto con $\mathbf{x} \in \operatorname{supp}
+p_{\text{dati}}$.
 
-Va aggiunta una precisazione di geometria in alta dimensione, che rende il
-risultato meno paradossale di quanto sembri: la massa di
-probabilità di una gaussiana non sta nel punto di densità massima ma in un
-guscio a distanza $\approx \sqrt{D}$ dall'origine (su CIFAR-10, dove
+Un fatto di geometria in alta dimensione rende il risultato meno paradossale:
+la massa di probabilità di una gaussiana non sta nel punto di densità massima
+ma in un guscio a distanza $\approx \sqrt{D}$ dall'origine (su CIFAR-10, dove
 $D = 3.072$, la norma di un campione gaussiano standard vale in media
-$55{,}4$). Un campione tipico non
-è quindi un campione ad alta densità, e i due concetti divergono tanto più
-quanto $D$ cresce. Cercare l'atipico guardando la densità è, letteralmente,
-guardare l'asse sbagliato, ed è la strada che lo stesso gruppo prende subito
-dopo, nel 2019, proponendo al posto della densità un test di **tipicità**
-{cite}`nalisnick2019typicality`. È una proposta, e non chiude la questione:
-la costruzione di Le Lan e Dinh ribalta anche i test di tipicità applicati a un
-dato solo.
+$55{,}4$). Un campione tipico non è quindi un campione ad alta densità, e i due
+concetti divergono tanto più quanto $D$ cresce. Cercare l'atipico guardando la
+densità è, letteralmente, guardare l'asse sbagliato, ed è la strada che lo
+stesso gruppo prende subito dopo, nel 2019, proponendo al posto della densità
+un test di **tipicità** {cite}`nalisnick2019typicality`. È una proposta, e non
+chiude la questione: la costruzione di Le Lan e Dinh ribalta anche i test di
+tipicità applicati a un dato solo.
 
 `````
 
 ## Il ponte: dai flussi al *flow matching*
 
-Resta da dire da dove viene la parola «flusso» che il capitolo precedente usa
-per il *flusso rettificato* (*rectified flow*). La {doc}`sezione sul flow
+Resta da spiegare da dove viene la parola «flusso» del *flusso rettificato*
+(*rectified flow*). La {doc}`sezione sul flow
 matching </ModelliDiffusione/flow-matching>` chiama flusso la mappa con cui un
 campo di velocità trasporta i punti dello spazio, senza dire che cosa abbia a
 che fare con i flussi normalizzanti costruiti fin qui. La parentela passa per
@@ -381,7 +378,7 @@ la mappa $\Phi_T$ che porta $\mathbf{x}_0$ in $\mathbf{x}_T$ è un
 diffeomorfismo. L'invertibilità e la conservazione della dimensione restano, e
 la regolarità del campo prende il posto dei vincoli sull'architettura: FFJORD
 chiede che $\mathbf{v}_t$ e le sue derivate prime siano lipschitziane, il che
-in pratica vuol dire attivazioni lisce e non la ReLU. La densità lungo la
+in pratica impone attivazioni lisce e non la ReLU. La densità lungo la
 traiettoria segue il cambio di variabile istantaneo {cite}`chen2018neural`,
 
 $$
@@ -428,23 +425,23 @@ numericamente l'equazione.
 
 `````
 
-E qui arriva la mossa che ha preso piede, ed è una rinuncia. Il flow matching
-{cite}`lipman2023flow` osserva che, se quello che si vuole è generare, la
-verosimiglianza durante l'addestramento non serve affatto: basta che la
-velocità sia quella giusta. E la velocità giusta si può insegnare per
-regressione, mostrando alla rete coppie (punto, velocità) prese da traiettorie
-costruite a tavolino, senza mai integrare niente e senza mai calcolare una
-traccia. Il flusso rettificato {cite}`liu2023rectified` sceglie come
-traiettorie le linee dritte, ed è quello che Stable Diffusion 3 usa, come
-racconta il capitolo precedente.
+Qui interviene l'idea che ha preso piede, una rinuncia. Il flow matching
+{cite}`lipman2023flow` osserva che, se lo scopo è generare, la verosimiglianza
+durante l'addestramento non serve: basta che la velocità sia quella giusta. La
+velocità giusta si può insegnare per regressione, mostrando alla rete coppie
+(punto, velocità) prese da traiettorie costruite a tavolino, senza mai
+integrare niente e senza mai calcolare una traccia. Il flusso rettificato
+{cite}`liu2023rectified` sceglie come traiettorie le linee dritte, ed è quello
+che Stable Diffusion 3 usa, come racconta la {doc}`sezione sul Diffusion
+Transformer </ModelliDiffusione/diffusion-transformer>`.
 
 La famiglia di questo capitolo esiste per una proprietà sola, la
 verosimiglianza esatta, e il suo discendente più usato per generare immagini la
 mette da parte in addestramento, tenendo solo la parte geometrica, il
-movimento. La proprietà però resta lì: un modello a flow matching, se qualcuno
-vuole pagare il conto dell'equazione differenziale e della divergenza, la
+movimento. La proprietà però resta lì: un modello a flow matching, se si accetta il
+costo dell'equazione differenziale e della divergenza, la
 verosimiglianza la sa ancora dare. La rinuncia riguarda l'addestramento e
-lascia intatta la struttura, e la parola «flusso» dice ancora da dove viene.
+lascia intatta la struttura, e la parola «flusso» ne conserva l'origine.
 
 `````{tab} Elementare
 
@@ -454,10 +451,10 @@ lascia intatta la struttura, e la parola «flusso» dice ancora da dove viene.
   comprimere. Il numero di bit che serve per scriverlo con il codice migliore
   è $-\log_2$ della sua probabilità, e non per analogia: è quella grandezza lì,
   a un paio di bit su tutto il file. Per questo qui la qualità si misura in
-  bit: su una figurina di CIFAR-10 un buon modello costa meno di 3 bit per
+  bit: su una figurina di CIFAR-10 un buon modello usa meno di 3 bit per
   numero, contro gli 8 di chi non sa niente.
 - Quel numero però non dice se le immagini generate sono belle. I due
-  giudizi possono andare per conto loro, ed è documentato dal 2016: un modello
+  giudizi possono divergere, ed è documentato dal 2016: un modello
   può avere una verosimiglianza ottima e campioni mediocri.
 - L'uso più ovvio, «se la probabilità è bassa allora è una cosa che non ho
   mai visto», non funziona come ci si aspetta. Modelli addestrati su fotografie
@@ -531,7 +528,7 @@ lascia intatta la struttura, e la parola «flusso» dice ancora da dove viene.
 Il filo da tenere è il prezzo. La verosimiglianza esatta non è gratis, si paga
 in vincoli su come la rete può essere fatta, e ogni modello a verosimiglianza
 esatta è un modo diverso di pagarla, dalla generazione un pezzo alla volta ai
-determinanti facili dei flussi. Quel prezzo si può anche rifiutare, ed è la
-strada dei {doc}`modelli a energia </ModelliEnergia/overview>`: rinunciare a
-normalizzare, cioè al conto che trasforma i punteggi in probabilità vere, e
-tenersi soltanto il confronto fra un dato e l'altro.
+determinanti facili dei flussi. Quel prezzo si può anche rifiutare rinunciando
+a normalizzare: è la strada dei {doc}`modelli a energia
+</ModelliEnergia/overview>`, che si tengono soltanto il confronto fra un dato e
+l'altro.

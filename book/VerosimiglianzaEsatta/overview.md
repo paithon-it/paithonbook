@@ -23,19 +23,19 @@ ha imparato a produrre, non a valutare: il numero che misura quanto un dato è
 plausibile non compare da nessuna parte nel suo addestramento, e non c'è modo
 di estrarlo dai suoi pesi. Il {doc}`capitolo sui modelli di diffusione
 </ModelliDiffusione/overview>`, appena chiuso, sta un gradino più in là: lì quel
-numero esiste, ma non è quello che il modello ottimizza. In teoria ottimizza
+numero esiste, ma non è la grandezza che il modello ottimizza. In teoria ottimizza
 un limite inferiore, una stima prudente che sta sotto il valore vero; in
 pratica nemmeno quello, ma una sua versione ripesata, che dà campioni migliori
 e non è più un limite.
 
-La terza risposta è una famiglia di modelli costruiti in modo che quel numero
-esca esatto, e che per valutarlo basti un solo passaggio della rete. Il numero
-serve a tre mestieri: comprimere i dati senza perdere niente, scegliere la più
-probabile fra ipotesi alternative (la trascrizione più plausibile di una frase
-registrata), e accorgersi che un dato non somiglia a quelli su cui il modello è
-stato addestrato. Sono i mestieri per cui la famiglia è rimasta in servizio
-anche negli anni in cui, sulla qualità delle immagini generate, la diffusione
-la superava nettamente.
+La terza risposta è una famiglia di modelli in cui quel numero è esatto per
+costruzione e un solo passaggio della rete lo calcola. Il numero ha tre
+impieghi: comprimere i dati senza perdere niente, scegliere la più probabile
+fra ipotesi alternative (la trascrizione più plausibile di una frase
+registrata) e accorgersi che un dato non somiglia a quelli su cui il modello è
+stato addestrato. Per questi impieghi la famiglia è rimasta in uso anche negli
+anni in cui, sulla qualità delle immagini generate, la diffusione la superava
+nettamente.
 
 ## La parola, prima della mappa
 
@@ -45,24 +45,24 @@ fissati i dati, quanto è probabile ciò che si è visto se il modello fosse
 questo, letto come funzione dei parametri $\theta$. Qui la si guarda dall'altro
 capo. Fissato il modello $p_\theta$, la verosimiglianza di un dato $\mathbf{x}$
 è il numero $p_\theta(\mathbf{x})$ che il modello gli assegna, letto come
-«quanto mi aspettavo di vedere una cosa così»: alto se il dato è di quelli su
+«quanto mi aspettavo di vedere un dato così»: alto se il dato è di quelli su
 cui il modello avrebbe scommesso, basso se lo coglie di sorpresa. Il nome è
 scomodo e il concetto no: è un voto, e a differenza dell'energia del
 {doc}`capitolo sui modelli a energia </ModelliEnergia/overview>` è
-**normalizzato**, cioè sommato su tutti i dati possibili fa esattamente uno.
+**normalizzato**, cioè sommato su tutti i dati possibili fa uno.
 Quando il dato è fatto di numeri continui la somma diventa un integrale, e
 $p_\theta$ prende il nome di densità: un'altezza di curva più che una
 probabilità, che può anche superare uno, mentre a fare uno è l'area sotto la
 curva.
 
-Quel «fa esattamente uno» è tutto il problema, ed è il filo che lega i modelli
-a verosimiglianza esatta ai modelli a energia. Normalizzare un punteggio vuol
+Quel «fa uno» è tutto il problema, e lega i modelli a verosimiglianza esatta ai
+modelli a energia. Normalizzare un punteggio vuol
 dire dividerlo per la somma dei punteggi di tutti i dati possibili, e quella
 somma non si può fare: il capitolo sui modelli a energia mostrerà quanto il
 conto sia fuori portata. Le strade sono allora due: rinunciare alla
 normalizzazione e cavarsela lo stesso (come faranno i modelli a energia),
-oppure costruire il modello in modo che venga normalizzato da sé, senza mai
-fare quel conto. È la strada della verosimiglianza esatta.
+oppure costruire il modello in modo che sia normalizzato per costruzione, senza
+mai fare quel conto. È la strada della verosimiglianza esatta.
 
 ## La mappa
 
@@ -101,8 +101,8 @@ plausibile, non per stampare una percentuale. I modelli di diffusione
 addestrano su una versione ripesata dello stesso genere di limite; nella loro
 formulazione continua il valore esatto si può ottenere {cite}`song2021score`,
 ma passando per la soluzione di un'equazione differenziale e per una stima
-fatta a campione di un termine che calcolare per intero costerebbe troppo, cioè
-con un lavoro che nessuno fa a ogni immagine.
+a campione di un termine troppo oneroso da calcolare per intero, cioè con un
+lavoro che nessuno fa a ogni immagine.
 
 La terza risposta è che il modello ce l'ha esatta. Restituisce
 $\log p(\mathbf{x})$, il logaritmo della probabilità del dato, in un passaggio
@@ -116,7 +116,7 @@ testo e sull'audio e applicati qui alle immagini. La seconda costruisce
 una trasformazione invertibile che porta i dati su una distribuzione di base
 nota, di solito una gaussiana, e ricava la probabilità con un cambio di
 variabile: sono i flussi normalizzanti, e la parola «flusso» è la stessa del
-*flusso rettificato* con cui il capitolo precedente genera immagini.
+*flusso rettificato* con cui il capitolo sui modelli di diffusione genera immagini.
 
 ## Il prezzo
 
@@ -133,10 +133,10 @@ colori di $256 \times 256$ pixel ha quasi duecentomila valori, e chiede
 altrettanti passaggi della rete, uno dopo l'altro.
 
 Un flusso paga altrove. Perché la trasformazione si possa invertire ogni strato
-dev'essere invertibile, e questo esclude quasi tutto quello che il libro ha
-usato finora: gli strati che riducono la dimensione, come il *pooling* e le
-proiezioni su meno coordinate, e le attivazioni che mandano punti diversi nello
-stesso valore, come la ReLU, che manda a zero tutti i negativi. Un flusso
+dev'essere invertibile, e questo esclude molti strati comuni, a cominciare da
+quelli che riducono la dimensione, come il *pooling* e le proiezioni su meno
+coordinate, e dalle attivazioni che mandano punti diversi nello stesso valore,
+come la ReLU, che manda a zero tutti i negativi. Un flusso
 conserva il numero di coordinate: entra con un milione di numeri ed esce con un
 milione di numeri. Per lavorare su qualcosa di più piccolo deve farsi mettere
 davanti un compressore, come succede nella diffusione latente, e la
@@ -146,24 +146,24 @@ probabilità esatta vale allora per la versione compressa, non per l'immagine.
 
 ```{admonition} Da ricordare
 :class: important
-- C'è una domanda che al generatore di volti delle GAN non si può proprio
+- C'è una domanda che al generatore di volti delle GAN non si può
   fare: «questa fotografia, quanto è probabile?». Non ha lo sportello a cui
   rivolgerla: ha imparato a fabbricare, non a giudicare.
-- I modelli si mettono in fila secondo che cosa sanno dire di quel numero.
+- I modelli si dispongono secondo ciò che sanno dire di quel numero.
   Alcuni niente (le GAN). Alcuni un numero prudente: i modelli
   latenti e quelli a diffusione danno un valore che sta di sicuro sotto a
   quello vero, senza dire di quanto; nel caso della diffusione il valore vero
   si può anche ottenere, ma con un secondo lavoro lungo e a parte. Alcuni
   soltanto un confronto: i modelli a energia sanno dire
   quale di due dati è più plausibile, non stampare una percentuale, perché al
-  loro voto manca una costante che nessuno conosce. E alcuni lo sanno
-  esatto, ed è la famiglia di questo capitolo.
-- Le strade per saperlo esatto sono due. A pezzi in fila: si taglia il
-  dato in pezzetti, si mette in fila e si moltiplicano le probabilità, come si
+  loro voto manca una costante che nessuno conosce. Alcuni, infine, lo sanno
+  esatto, e sono la famiglia di questo capitolo.
+- Le strade per saperlo esatto sono due. A pezzi: si taglia il
+  dato in pezzetti, li si ordina e si moltiplicano le probabilità, come si
   fa da sempre con il testo. Per deformazione: si costruisce una macchina
   che si può usare nei due sensi e che porta i dati su una nuvola semplice, la
   probabilità si legge di là, e si tiene conto di quanto la macchina ha stirato
-  o schiacciato proprio in quel punto.
+  o schiacciato in quel punto.
 - Tutte e due si pagano in libertà di progetto. La prima costringe a generare
   un pezzetto alla volta, e su una fotografia a colori i pezzetti sono quasi
   duecentomila. La seconda vieta di buttare via qualunque cosa, quindi vieta di
@@ -192,12 +192,12 @@ probabilità esatta vale allora per la versione compressa, non per l'immagine.
   su 256 livelli, o una miscela di logistiche discretizzate). Valutazione in un
   passaggio (*teacher forcing*), campionamento in $D$ passaggi sequenziali,
   con $D$ il numero di valori che compongono il dato.
-- Flussi:
-  $\log p(\mathbf{x}) = \log p_Z(f(\mathbf{x})) + \log \lvert \det \partial f / \partial \mathbf{x} \rvert$,
-  con $f$ invertibile. Con gli strati di accoppiamento valutazione e
-  campionamento costano un passaggio ciascuno; nei flussi autoregressivi (MAF,
-  IAF) uno dei due ne costa $D$. In ogni caso $f$ è vincolata a essere un
-  diffeomorfismo, quindi a conservare la dimensione.
+- Flussi: $\log p(\mathbf{x}) = \log p_Z(f(\mathbf{x})) + \log \lvert \det
+  \partial f / \partial \mathbf{x} \rvert$, con $f$ invertibile. Con gli strati
+  di accoppiamento valutazione e campionamento costano un passaggio
+  ciascuno; nei flussi autoregressivi (MAF, IAF) uno dei due ne costa $D$.
+  In ogni caso $f$ è vincolata a essere un diffeomorfismo, quindi a conservare
+  la dimensione.
 - La verosimiglianza esatta si paga in vincoli: sull'architettura (maschere
   di causalità, invertibilità con un determinante trattabile) e, per gli
   autoregressivi, nel costo del campionamento. Sulla qualità dei campioni di
@@ -211,14 +211,14 @@ probabilità esatta vale allora per la versione compressa, non per l'immagine.
 
 ## Due meccanismi, e un bilancio
 
-Prima gli autoregressivi sulle immagini: come si fissa un ordine su una
-griglia di pixel, come si impone a una convoluzione di guardare solo i pixel
-già letti, e il difetto, il punto cieco, che quel vincolo porta con sé. Poi i
-flussi normalizzanti: il cambio di variabile per le densità, che è la sola
-matematica necessaria, il vincolo di invertibilità, e il modo di soddisfarlo
-con un determinante che in generale costa il cubo del numero di coordinate e
-che negli strati di accoppiamento si riduce a una somma. Infine il bilancio: a
-che cosa serve il numero (comprimere, scegliere fra ipotesi, riconoscere un
-dato anomalo), il fallimento istruttivo che ha smontato la più ovvia di queste
-applicazioni, e il ponte verso il *flow matching* che la diffusione ha
-già usato.
+Le immagini autoregressive sono il tema di {doc}`Un pixel alla volta
+<pixel-per-pixel>`: l'ordine su una griglia di pixel, la convoluzione che guarda
+solo i pixel già letti e il difetto che quel vincolo porta con sé, il punto
+cieco. {doc}`I flussi normalizzanti <flussi>` hanno per matematica il cambio di
+variabile per le densità e il vincolo di invertibilità, che gli strati di
+accoppiamento soddisfano con un determinante il cui costo in generale cresce
+come il cubo del numero di coordinate e che qui si riduce a una somma. {doc}`A
+che serve saperlo <a-che-serve>` chiude con gli impieghi del numero (comprimere,
+scegliere fra ipotesi, riconoscere un dato anomalo), con il fallimento
+istruttivo che ha smontato il più ovvio di questi e con il ponte verso il *flow
+matching* che la diffusione ha già usato.

@@ -23,24 +23,25 @@ al pollo, commenta Russell {cite}`russell1912problems`.
 Ogni modello che impara dagli esempi sta nella posizione di quel pollo. Ha
 visto mille casi e scommette sul milleunesimo, e nessuna quantità di casi
 visti dimostra il prossimo: David Hume lo aveva messo per iscritto già nel
-Settecento {cite}`hume1739treatise`. Russell però, poche righe più in là, dice
-anche che cosa resta da fare: se la certezza non si può avere, la probabilità
-è tutto ciò che si deve cercare.
+Settecento {cite}`hume1739treatise`. Qualche pagina dopo il pollo Russell conclude
+che, quando la certezza non si può avere, la probabilità è tutto ciò che si deve
+cercare.
 
 Settantadue anni dopo Leslie Valiant diede a quell'idea una forma che si può
-calcolare {cite}`valiant1984theory`. Rinuncia alla certezza in due punti
-precisi. Il modello imparato non deve essere perfetto ma **approssimativamente
-corretto**, con un errore non più grande di una tolleranza fissata prima; e non
-deve riuscirci sempre ma **probabilmente**, cioè su quasi tutti i campioni di
-esempi che il caso può fornire. In cambio chiede di sapere quanti esempi servono
-perché le due promesse valgano insieme. È l'apprendimento *PAC*, dalle iniziali
-inglesi di *probably approximately correct*, e da lì nasce la **teoria
-dell'apprendimento**: la parte del machine learning che studia perché e quando i
-modelli imparati funzionano, e che da quelle domande ha tratto anche algoritmi
-nuovi (il {doc}`boosting </MachineLearning/alberi-ensemble>` nasce da una
-domanda posta nell'apprendimento PAC). Per questo lavoro, e per altri sulla
-complessità del calcolo, Valiant ha ricevuto il premio Turing del 2010, il
-riconoscimento più alto dell'informatica.
+calcolare {cite}`valiant1984theory`. La sua definizione rinuncia alla certezza
+in due punti precisi. Il modello imparato non deve essere perfetto ma
+**approssimativamente corretto**, con un errore non più grande di una
+tolleranza fissata prima; e non deve riuscirci sempre ma **probabilmente**,
+cioè su quasi tutti i campioni di esempi che il caso può fornire. In cambio
+chiede di sapere quanti esempi servono perché le due promesse valgano insieme.
+È l'apprendimento *PAC*, dalle iniziali inglesi di *probably approximately
+correct*. Da lì nasce la **teoria dell'apprendimento**: la parte del machine
+learning che studia perché e quando i modelli imparati funzionano, e che da
+quelle domande ha tratto anche algoritmi nuovi (il {doc}`boosting
+</MachineLearning/alberi-ensemble>` nasce da una domanda posta
+nell'apprendimento PAC). Per questo lavoro, e per altri sulla complessità del
+calcolo, Valiant ha ricevuto il premio Turing del 2010, il riconoscimento più
+alto dell'informatica.
 
 La promessa ha una condizione, e il pollo di Russell la mostra meglio di
 qualunque formula. Tutto il ragionamento presuppone che gli esempi futuri
@@ -49,19 +50,19 @@ ciascuno indipendente dagli altri. Le mattine del pollo non lo erano: l'ultima
 non era un'estrazione come le altre, era una data segnata su un calendario che
 il pollo non vedeva. Nessuna garanzia del tipo di quella di Valiant salva chi
 viola quella condizione, che è la stessa incontrata guardando {doc}`i dati che
-cambiano </MachineLearning/dati-che-cambiano>`. L'apprendimento online di quella
-sezione ne dà una che non la chiede, e proprio per questo promette meno: non
-dice quanto il modello sbaglierà su un esempio nuovo, ma di quanto, col senno di
-poi, avrà fatto peggio del miglior modello fisso.
+cambiano </MachineLearning/dati-che-cambiano>`. L'apprendimento online di
+quella sezione dà una garanzia che non richiede questa condizione, e per questo
+promette meno: dice di quanto il modello, col senno di poi, avrà fatto peggio
+del miglior modello fisso, ma non dice quanto sbaglierà su un esempio nuovo.
 
 ## Due errori, e la distanza fra loro
 
 Per parlarne con precisione servono due numeri. Il **rischio empirico**
 $\hat{R}_S(h)$ è la frazione di errori che una regola $h$ commette sugli esempi
 del campione $S$ (la lettera viene da *ipotesi*, il nome che la teoria dà a ogni
-regola candidata); il **rischio** $R(h)$ è la probabilità che sbagli su un
-esempio nuovo estratto dalla stessa sorgente, cioè il suo errore medio su tutto
-quello che la sorgente può produrre, pesato con la frequenza con cui lo produce.
+regola candidata). Il **rischio** $R(h)$ è la probabilità che sbagli su un
+esempio nuovo estratto dalla stessa sorgente, cioè il suo errore medio su tutti
+gli esempi che la sorgente può produrre, ciascuno pesato con la sua frequenza.
 Il nome viene dalla teoria statistica delle decisioni, dove il rischio è la
 perdita che ci si aspetta, ed «empirico» vuol dire misurato sui dati. Il primo
 si calcola, il secondo no, e la teoria dell'apprendimento è lo studio della
@@ -71,20 +72,20 @@ distanza fra i due.
 
 Un'urna contiene milioni di biglietti, e su ognuno c'è una domanda con la sua
 risposta giusta: una foto e il nome dell'animale che mostra, un'email e la
-parola «spam» oppure «buona». Chi costruisce un modello l'urna non la vede.
+parola «spam» oppure «buona». Chi costruisce un modello non vede l'urna.
 Pesca mille biglietti, uno alla volta, rimettendo ogni volta nell'urna quello
 estratto e rimescolando, così che nessuna pescata dipenda dalle precedenti, e
 prova le sue regole su quei mille.
 
 Di ogni regola si possono dire due percentuali. Quella degli errori sui mille
-biglietti pescati si conta, ed è il rischio empirico. Quella degli errori su
-tutti i biglietti dell'urna è la cosa che interessa davvero, il rischio, e non
+biglietti pescati si conta, e si chiama rischio empirico. Quella degli errori su
+tutti i biglietti dell'urna, il rischio, è quella che interessa, e non
 si conta mai. Se la regola fosse stata scelta prima di pescare, la prima sarebbe
 una buona stima della seconda, come un sondaggio fatto bene lo è del voto, con
 il margine che la {doc}`sezione sulla concentrazione
 </Matematica/concentrazione>` sa calcolare.
 
-Ma la regola si sceglie dopo aver guardato i biglietti, prendendo quella che ne
+La regola però si sceglie dopo aver guardato i biglietti, prendendo quella che ne
 sbaglia di meno, e fra tante regole quella che va meglio sui mille è anche
 quella che con quei mille ha avuto più fortuna. È il vincitore di un concorso
 in cui conta anche la sorte: il suo punteggio dice un po' di bravura e un po'
@@ -96,18 +97,18 @@ tutti. Le persone sono le regole in gara.
 
 Per questo non basta che il punteggio sui biglietti pescati sia vicino a quello
 sull'urna per una regola sola. Siccome non si sa in anticipo chi farà dieci
-teste, deve esserlo per tutte le regole fra cui si sceglie, tutte insieme:
-allora, qualunque sia la vincitrice, il suo punteggio è onesto. E la garanzia
-deve valere qualunque cosa ci sia scritto sui biglietti, anche per l'urna
-peggiore, riempita apposta per ingannare chi pesca, perché l'urna non la vede
-nessuno. Quello che c'è dentro, e in che proporzioni, è ciò che i matematici
-chiamano la distribuzione dei dati. Quante regole si possono mettere in gara
-prima che questa garanzia salti, e quanti biglietti servono per tenerla in
-piedi, sono le domande da cui nasce tutto il resto.
+teste, i due punteggi devono essere vicini per tutte le regole fra cui si
+sceglie, tutte insieme: allora, qualunque sia la vincitrice, il suo punteggio è
+onesto. Inoltre la garanzia deve valere qualunque cosa ci sia scritto sui
+biglietti, anche per l'urna peggiore, riempita apposta per ingannare chi pesca,
+perché l'urna non la vede nessuno. Il contenuto dell'urna, con le proporzioni
+dei vari biglietti, si chiama distribuzione dei dati. Quante regole si possono
+mettere in gara prima che questa garanzia salti, e quanti biglietti servono per
+tenerla in piedi, sono le domande da cui nasce tutto il resto.
 
 L'urna poi deve restare la stessa. Se il biglietto che conta, quello di
 domani, viene pescato da un'altra urna, i mille di prima non dicono più
-niente: è quello che è successo al pollo.
+niente, come è successo al pollo.
 
 `````
 
@@ -142,7 +143,7 @@ l'ipotesi che sbaglia meno sul campione (la *minimizzazione del rischio
 empirico*), $\hat{R}_S(h_S)$ è anche distorta verso il basso: detta $h^*$ la
 migliore ipotesi di $\mathcal{H}$,
 $\mathbb{E}\hat{R}_S(h_S)\le\mathbb{E}\hat{R}_S(h^*)=R(h^*)\le\mathbb{E}R(h_S)$,
-ed è lo stesso meccanismo della maledizione del vincitore della
+per lo stesso meccanismo della maledizione del vincitore della
 {doc}`sezione sulla concentrazione </Matematica/concentrazione>`. Il rimedio è
 chiedere la **convergenza uniforme**,
 
@@ -154,27 +155,28 @@ $$
 che copre qualunque $h$ scelta in $\mathcal{H}$ a partire dai dati, $h_S$
 compresa. I risultati che seguono dicono quanto grande debba essere $m$ perché
 questo accada, in funzione della ricchezza di $\mathcal{H}$, e valgono per ogni
-$\mathcal{D}$: sono garanzie *distribution-free*, ed è questo che le rende
-utili, perché la distribuzione nessuno la conosce. L'unica ipotesi sulla
-sorgente è che il campione sia i.i.d. e che la distribuzione su cui si valuta
-il modello sia la stessa su cui lo si è addestrato. Quando questa ipotesi cade,
-cadono tutte le garanzie, e il pollo di Russell ne è il controesempio.
+$\mathcal{D}$: sono garanzie *distribution-free*, utili perché nessuno conosce
+la distribuzione. L'unica ipotesi sulla sorgente è che il campione sia i.i.d. e
+che la distribuzione su cui si valuta il modello sia la stessa su cui lo si è
+addestrato. Quando questa ipotesi cade le garanzie non valgono più, a meno di
+sapere di quanto le due distribuzioni differiscono, e il pollo di Russell ne è
+il caso estremo.
 
 `````
 
 Le misure che seguono rispondono ciascuna al limite di quella prima. Quando le
-regole in gara sono un numero finito basta contarle, e il conto dice che gli
+regole in gara sono un numero finito basta contarle, e il calcolo dice che gli
 esempi necessari crescono pochissimo con il loro numero (raddoppiare le regole
-costa sempre la stessa manciata di esempi in più): lo mostra la sezione su
+richiede sempre la stessa manciata di esempi in più): lo mostra la sezione su
 {doc}`che cosa vuol dire imparare in senso PAC <pac>`. Quando sono infinite
 (tutte le rette del piano, tutti i valori di una soglia, cioè di una regola che
-risponde sì sopra un certo valore e no sotto) il conto non si può fare, e al
+risponde sì sopra un certo valore e no sotto) non si possono contare, e al
 posto delle regole si contano le classificazioni diverse che producono su $m$
 punti; il numero di punti fino al quale le producono tutte, cioè riescono a
 dividerli fra le due classi in ogni modo possibile, è la {doc}`dimensione VC
 <dimensione-vc>`. Quando anche questa misura è troppo
 pessimista, perché guarda il caso peggiore su tutte le distribuzioni possibili,
-si misura la ricchezza della famiglia di regole sui dati che si hanno davvero,
+si misura la ricchezza della famiglia di regole sui dati disponibili,
 chiedendole di inseguire monete lanciate a caso: è la {doc}`complessità di
 Rademacher <rademacher-margine>`, e con lei il margine della SVM trova la sua
 giustificazione. Le garanzie che ne escono hanno tutte la stessa forma: l'errore
@@ -182,5 +184,5 @@ vero sta sotto quello sugli esempi più un termine che cresce con la ricchezza
 della famiglia e cala con il numero degli esempi. Resta infine l'esperimento
 che mette in crisi tutte e tre le
 misure: le reti neurali imparano senza fatica anche etichette tirate a sorte, e
-quello che le fa generalizzare, quando ci riescono, va cercato {doc}`fuori
+il motivo per cui generalizzano, quando ci riescono, va cercato {doc}`fuori
 dalla sola ricchezza del modello <garanzie-e-reti>`.

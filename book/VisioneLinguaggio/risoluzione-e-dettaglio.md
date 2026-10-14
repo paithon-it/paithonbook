@@ -3,13 +3,12 @@
 Prendi un giornale e allontanalo dagli occhi. A un metro riconosci ancora che è
 un giornale: distingui le fotografie dal testo, forse leggi il titolo di
 apertura. A due metri il titolo se ne va e restano quattro rettangoli grigi.
-Quello che hai perso non è l'immagine, che è ancora tutta lì: è il
-dettaglio, e con lui tutto ciò che nella pagina era *scritto* invece che
-disegnato.
+Non hai perso l'immagine, che è ancora tutta lì, ma il dettaglio, e con lui
+tutto quanto nella pagina era *scritto* invece che disegnato.
 
 Nelle sezioni su encoder, connettori e tokenizzatori la risoluzione era un
-dato: quanti pixel entrano nell'encoder. È il vincolo che governa i sistemi
-reali più delle differenze di architettura: a parità di token il tipo di
+dato: quanti pixel entrano nell'encoder. È un vincolo che pesa sui sistemi
+reali più di molte differenze di architettura: a parità di token il tipo di
 connettore conta poco, mentre contano la risoluzione e il numero di token
 {cite}`mckinzie2024mm1`. Ogni pixel in più si paga in contesto, cioè in
 posizioni nella sequenza sottratte a tutto il resto: le posizioni crescono con
@@ -26,28 +25,28 @@ sua conseguenza sul costo dell'attenzione non lo è.
 `````{tab} Elementare
 
 Prendiamo un encoder che taglia tessere da $14 \times 14$ puntini. Su
-un'immagine da $224 \times 224$ ne stanno $224 : 14 = 16$ per riga e altrettante
-per colonna, quindi $16 \times 16 = 256$ tessere: la nostra immagine è una
-«frase» di 256 pezzi. Con tessere da $16 \times 16$ ne verrebbero 196, ed è il
-conto fatto sul Vision Transformer: a decidere quanti pezzi ha la «frase» è la
-taglia della tessera.
+un'immagine da $224 \times 224$ ne stanno $224 : 14 = 16$ per riga e
+altrettante per colonna, quindi $16 \times 16 = 256$ tessere: la nostra
+immagine è una «frase» di 256 pezzi. Con tessere da $16 \times 16$ ne
+verrebbero 196, come nel calcolo fatto sul Vision Transformer: a decidere
+quanti pezzi ha la «frase» è la taglia della tessera.
 
-Raddoppiando il lato, da $224$ a $448$, vale il conto già fatto all'inizio del
-capitolo: le tessere quadruplicano, qui da 256 a $32 \times 32 = 1024$, perché
-a raddoppiare sono due lati insieme, e i confronti che il modello fa per
-capire ogni tessera, cioè l’{doc}`attenzione </Transformers/attenzione>`, si
+Raddoppiando il lato, da $224$ a $448$, vale il calcolo già fatto per il ViT:
+le tessere quadruplicano, qui da 256 a $32 \times 32 = 1024$, perché a
+raddoppiare sono due lati insieme, e i confronti che il modello fa per capire
+ogni tessera, cioè l’{doc}`attenzione </Transformers/attenzione>`, si
 moltiplicano per sedici. Raddoppiando ancora, da $448$ a $896$, si moltiplicano
-per altri sedici, duecentocinquantasei volte il conto di partenza. E vale
+per altri sedici, duecentocinquantasei volte il valore di partenza. Vale anche
 l'altra metà della regola: i confronti sono solo una parte del lavoro, e
-prendono il comando quando le tessere diventano migliaia.
+prevalgono quando le tessere diventano migliaia.
 
-Il prezzo che si paga per primo, però, sono i posti. Un modello di linguaggio
+Il primo costo, però, sono i posti. Un modello di linguaggio
 ha un numero fissato di posti nella sequenza, per esempio 4096, e 1024 tessere
 ne occupano un quarto: alle parole della domanda e della risposta restano
 quelli che avanzano.
 
-È il motivo per cui non esiste la risposta «e allora aumentiamo la risoluzione».
-La si aumenta, ma sapendo cosa si compra e a che prezzo.
+Per questo «aumentiamo la risoluzione» non è mai una risposta completa: la si
+aumenta sapendo quanti posti si occupano.
 
 `````
 
@@ -68,31 +67,31 @@ Il costo dell'attenzione è a sua volta quadratico in $N$, cioè $O(N^2 d)$ con
 $d$ dimensione del modello: quartico nel lato dell'immagine. Da $224$ a $448$
 si paga $(1024/256)^2 = 16$ volte tanto; da $224$ a $896$, $(4096/256)^2 = 256$.
 
-Una precisazione, per inquadrare il peso effettivo del termine quadratico.
-Nei FLOP di un blocco Transformer l'attenzione vale circa $4N^2 d$ e le
-proiezioni più il feed-forward (con strato nascosto a $4d$ unità) circa $24 N
-d^2$: il quadratico supera il lineare solo per $N > 6d$, cioè oltre $24\,576$
-token in un modello con $d = 4096$ (nell'encoder visivo, dove $d$ vale circa un
-migliaio, la soglia scende attorno ai seimila). Quello che si paga subito è il
-contesto occupato, il tempo di *prefill* e la KV cache; e la
-FlashAttention della {doc}`sezione sulle GPU </GPU/flash-attention>`
-{cite}`dao2022flashattention` toglie dal conto la memoria $O(N^2)$, non il
-calcolo: alza il tetto, non cambia l'esponente.
+Una precisazione, per inquadrare il peso effettivo del termine quadratico. Nei
+FLOP di un blocco Transformer l'attenzione vale circa $4N^2 d$ e le proiezioni
+più il feed-forward (con strato nascosto a $4d$ unità) circa $24 N d^2$: il
+quadratico supera il lineare solo per $N > 6d$, cioè oltre $24\,576$ token in
+un modello con $d = 4096$ (nell'encoder visivo, dove $d$ vale circa un
+migliaio, la soglia scende attorno ai seimila). Il primo effetto è il contesto
+occupato, il tempo di *prefill* e la KV cache; e la FlashAttention della
+{doc}`sezione sulle GPU </GPU/flash-attention>` {cite}`dao2022flashattention`
+elimina la memoria $O(N^2)$, non il calcolo: alza il tetto, non cambia
+l'esponente.
 
 `````
 
 ## Perché duecentoventiquattro pixel non bastano
 
-Se il conto è così severo, quanta risoluzione serve davvero? Non c'è una
-risposta valida in generale, ed è l'osservazione da cui dipende tutto il resto:
-la risoluzione la detta il compito, non l'architettura.
+Quanta risoluzione serva non ha una risposta valida in generale, e da questa
+osservazione dipende il resto: la risoluzione la detta il compito, non
+l'architettura.
 
 Un gatto lo si riconosce da lontano, perché la sagoma, le orecchie e la coda
-sono strutture larghe che sopravvivono a una riduzione brutale, ed è il tipo di
-compito su cui sono stati costruiti i primi encoder visivi. La riga di una
+sono strutture larghe che sopravvivono a una riduzione brutale; su compiti di
+questo tipo sono stati costruiti i primi encoder visivi. La riga di una
 fattura, no. Il numero di un grafico, la voce di una tabella, la scritta su un
-cartello, il pulsante di una schermata vivono nella scala di dettaglio più fine,
-quella che sparisce per prima.
+cartello, il pulsante di una schermata vivono nella scala di dettaglio più
+fine, quella che sparisce per prima.
 
 `````{tab} Elementare
 
@@ -120,12 +119,12 @@ il fatto che dove non ci sono puntini non c'è informazione.
 `````{tab} Superiore
 
 Si ragiona in pixel per millimetro, confrontati con la scala del segnale da
-leggere. Un A4 alto $297$ mm, ridotto a un lato lungo di $L$ pixel,
-dà $L/297$ px/mm; una maiuscola di un corpo da 9-10 punti è alta fra $2$ e
-$2{,}5$ mm, e nella tabella prendiamo l'estremo basso, $2$ mm. La scelta non
-decide l'esito: anche la maiuscola più alta, $2{,}5$ mm, a $224$ pixel resta
-sotto i due pixel ($1{,}9$), quindi la conclusione regge pure nel caso più
-favorevole alla lettura.
+leggere. Un A4 alto $297$ mm, ridotto a un lato lungo di $L$ pixel, dà $L/297$
+px/mm; una maiuscola di un corpo da 9-10 punti è alta fra $2$ e $2{,}5$ mm, e
+nella tabella prendiamo l'estremo basso, $2$ mm. La scelta non decide l'esito:
+anche la maiuscola più alta, $2{,}5$ mm, a $224$ pixel resta sotto i due pixel
+($1{,}9$), quindi la conclusione vale anche nel caso più favorevole alla
+lettura.
 
 | lato lungo | px/mm | maiuscola | una patch da 14 px |
 |---|---|---|---|
@@ -145,22 +144,22 @@ c'è più. A $1792$ pixel il periodo minimo scende a $0{,}33$ mm e un token copr
 poco più di due millimetri per lato, un paio di caratteri: la stessa
 architettura, con lo stesso encoder, di colpo legge.
 
-I compiti si dispongono quindi su una scala di **frequenza spaziale** richiesta:
-riconoscere una scena sta in basso, leggere testo dentro l'immagine o agire su
-una schermata stanno in alto, e nessun aumento di parametri li risolve se
-l'informazione è già stata buttata nel ridimensionamento. Non a caso i sistemi
-che puntano ai documenti alzano la risoluzione nativa dell'encoder in una fase
-di addestramento apposita: Qwen-VL {cite}`bai2023qwenvl`, il cui encoder è un
-ViT con patch di lato $14$, la porta da $224$ a $448$ nella fase di
-pre-addestramento multi-compito, e la ragione dichiarata è esattamente questa:
-ridurre l'informazione persa nel sotto-campionamento.
+I compiti si dispongono quindi su una scala di **frequenza spaziale**
+richiesta: riconoscere una scena sta in basso, leggere testo dentro l'immagine
+o agire su una schermata stanno in alto, e nessun aumento di parametri li
+risolve se l'informazione è già stata buttata nel ridimensionamento. Non a caso
+i sistemi che puntano ai documenti alzano la risoluzione nativa dell'encoder in
+una fase di addestramento apposita: Qwen-VL {cite}`bai2023qwenvl`, il cui
+encoder è un ViT con patch di lato $14$, la porta da $224$ a $448$ nella fase
+di pre-addestramento multi-compito, e la ragione dichiarata è questa: ridurre
+l'informazione persa nel sotto-campionamento.
 
 `````
 
-Tre risposte affrontano questo vincolo, e nessuna lo cancella: lo spostano.
-Le prime due riguardano quante tessere arrivano al modello di linguaggio; la
+Tre risposte affrontano questo vincolo, e nessuna lo cancella: lo spostano. Le
+prime due riguardano quante tessere arrivano al modello di linguaggio; la
 terza, per i documenti, riguarda che cosa della pagina si conserva. Per
-ciascuna si vede dove finisce il conto.
+ciascuna si vede dove finisce il costo.
 
 ## Prima risposta: tagliare l'immagine a riquadri
 
@@ -168,12 +167,13 @@ ciascuna si vede dove finisce il conto.
 {cite}`liu2024improved` e da InternVL {cite}`chen2024far`. Un encoder come
 quello di CLIP lavora a una risoluzione sola, quella su cui è stato addestrato,
 e l'immagine è più grande. Invece di rimpicciolire l'immagine fino a farla
-stare nell'encoder, la si taglia in riquadri grandi esattamente quanto lui si
-aspetta. Ogni riquadro passa per conto suo, e i pezzi che ne escono si mettono
-tutti in fila; in coda si aggiunge una miniatura dell'immagine intera, che è
-l'unico posto in cui si vede come i riquadri stanno insieme. Il metodo si
-chiama **tiling**, «tagliare a piastrelle», e si trova anche sotto i nomi
-*AnyRes* (in LLaVA-NeXT) e *dynamic high resolution* (in InternVL).
+stare nell'encoder, la si taglia in riquadri grandi quanto lui si aspetta. Ogni
+riquadro passa nell'encoder indipendentemente dagli altri, e i pezzi che ne
+escono si dispongono tutti in sequenza; in coda si aggiunge una miniatura
+dell'immagine intera, che è l'unico posto in cui si vede come i riquadri stanno
+insieme. Il metodo si chiama **tiling**, «tagliare a piastrelle», e si trova
+anche sotto i nomi *AnyRes* (in LLaVA-NeXT) e *dynamic high resolution* (in
+InternVL).
 
 `````{tab} Elementare
 
@@ -182,20 +182,20 @@ quadratino. Fai così: scatti sei foto ravvicinate, una per ogni pezzo del
 quadro, poi fai un passo indietro e ne scatti una settima che prende tutto, con
 molto meno dettaglio ma completa. Chi le riceve ha il dettaglio nelle prime sei
 e vede dalla settima come stanno insieme. Il pregio è che non hai comprato una
-macchina nuova, ed è per questo che il taglio a riquadri si è diffuso: si può
-aggiungere sopra un encoder già addestrato senza toccarlo. E un quadro lungo e
+macchina nuova: il taglio a riquadri si è diffuso perché si può
+aggiungere sopra un encoder già addestrato senza toccarlo. Un quadro lungo e
 basso lo copri con una fila di scatti, uno alto e stretto con una colonna,
 senza doverlo schiacciare in un quadrato.
 
 Il difetto lo indovini pensando a una figura a cavallo fra due pezzi. Nelle sei
-foto ravvicinate non c'è mai per intero: mezza faccia in una e mezza nell'altra,
-e chi guarda deve rimetterle insieme senza essere sicuro che appartengano alla
+foto ravvicinate non c'è mai tutta: mezza faccia in una e mezza nell'altra, e
+chi guarda deve rimetterle insieme senza essere sicuro che appartengano alla
 stessa cosa. Intera si vede solo nella settima, quella senza dettaglio. Il
 taglio cade dove capita, non segue i confini degli oggetti.
 
-Poi resta la pila. Sette foto invece di una, e la settima ripete quello che le
-altre hanno già preso: da guardare ce ne sono comunque sette. Il conto si è
-spostato dalla macchina fotografica al mucchio di foto.
+Poi resta la pila. Sette foto invece di una, e la settima ripete il contenuto
+delle altre: da guardare ce ne sono comunque sette. La spesa si è spostata
+dalla macchina fotografica al mucchio di foto.
 
 `````
 
@@ -213,80 +213,80 @@ originali. L'immagine viene ridimensionata a $(g_h t) \times (g_w t)$, divisa in
 $g_h g_w$ riquadri e affiancata dall'immagine intera ridotta a $t \times t$:
 i token totali sono $(g_h g_w + 1) \cdot N_t$ con $N_t = (t/p)^2$.
 
-Il guadagno computazionale è il primo argomento che viene in mente, ed è il meno
-solido dei tre. L'attenzione dell'encoder è quadratica
-dentro ogni riquadro e assente fra riquadri diversi, quindi il costo passa da
-$O\big((g_h g_w N_t)^2\big)$ a $O(g_h g_w N_t^2)$, cioè da quadratico a
-lineare nell'area: asintoticamente è un guadagno vero, ed è la ragione per
-cui il metodo scala. Con $896 \times 896$, $t = 448$ e
-$p = 14$: monolitica sono $4096$ token e $4096^2 \approx 16{,}8$ milioni di
-coppie; a riquadri sono cinque pezzi (quattro più la miniatura) da $1024$ token,
-cioè $5 \cdot 1024^2 \approx 5{,}2$ milioni di coppie, $3{,}2$ volte meno.
+Il guadagno computazionale è il primo argomento che viene in mente e il meno
+solido dei tre. L'attenzione dell'encoder è quadratica dentro ogni riquadro e
+assente fra riquadri diversi, quindi il costo passa da $O\big((g_h g_w
+N_t)^2\big)$ a $O(g_h g_w N_t^2)$, cioè da quadratico a lineare nell'area:
+asintoticamente è un guadagno vero, e spiega perché il metodo scala. Con $896
+\times 896$, $t = 448$ e $p = 14$: monolitica sono $4096$ token e $4096^2
+\approx 16{,}8$ milioni di coppie; a riquadri sono cinque pezzi (quattro più la
+miniatura) da $1024$ token, cioè $5 \cdot 1024^2 \approx 5{,}2$ milioni di
+coppie, $3{,}2$ volte meno.
 
 Quel $3{,}2$, però, conta le coppie di attenzione, non i FLOP dell'encoder, e a
-questi valori di $N$ le due cose non coincidono affatto. La soglia $N > 6d$ fra
-il termine quadratico e quello lineare dice che con $4096$ token e $d$
-dell'ordine del migliaio siamo ancora *sotto*: l'attenzione è meno della metà
-del blocco, e il tiling taglia la parte piccola del conto mentre manda nel
-feed-forward $5120$ token invece di $4096$, cioè paga di più sul termine che
-domina. Rifacendo il conto per intero con la stessa contabilità di prima
-($24Nd^2 + 4N^2d$ per strato), il lavoro totale cala di $1{,}24$ volte a $d =
-768$, di $1{,}14$ a $d = 1024$ e di $1{,}06$ a $d = 1408$, e con l'encoder di
-InternVL, largo $d = 3200$, si rovescia: a riquadri costa l'8,5% in più. Il
+questi valori di $N$ le due cose non coincidono. La soglia $N > 6d$ fra il
+termine quadratico e quello lineare dice che con $4096$ token e $d$ dell'ordine
+del migliaio siamo ancora *sotto*: l'attenzione è meno della metà del blocco, e
+il tiling riduce la parte minore del lavoro mentre manda nel feed-forward
+$5120$ token invece di $4096$, cioè paga di più sul termine che domina.
+Rifacendo il conto per intero con la stessa contabilità di prima ($24Nd^2 +
+4N^2d$ per strato), il lavoro totale cala di $1{,}24$ volte a $d = 768$, di
+$1{,}14$ a $d = 1024$ e di $1{,}06$ a $d = 1408$, e con l'encoder di InternVL,
+largo $d = 3200$, si rovescia: a riquadri costa l’8,5% in più. Il
 guadagno immediato va da un quinto a niente, e diventa una perdita quanto più
-l'encoder è largo. (Attenzione a non leggere il rapporto come una percentuale:
-dividere per $1{,}24$ vuol dire risparmiare il 19%, non il 24%.) In cambio i
-token *totali* salgono da $4096$ a $5120$, perché la miniatura è ridondante per
-costruzione: il conto si è spostato, non è sparito, e tutti quei token
-finiscono nella stessa sequenza del modello di linguaggio, dove l'attenzione è
-di nuovo quadratica su tutto.
+l'encoder è largo. (Il rapporto non è una percentuale: dividere per $1{,}24$
+vuol dire risparmiare il 19%, non il 24%.) In cambio i token *totali* salgono
+da $4096$ a $5120$, perché la miniatura è ridondante per costruzione: il costo
+si è spostato, non è sparito, e tutti quei token finiscono nella stessa
+sequenza del modello di linguaggio, dove l'attenzione è di nuovo quadratica su
+tutto.
 
-Gli argomenti che reggono di più, quindi, sono gli altri due, e non sono
-computazionali. Gli embedding di posizione dell'encoder restano validi, quindi
-non vanno interpolati su una griglia più grande, operazione che degrada e in
-genere chiede un riaddestramento; e il sistema resta indifferente alle
-proporzioni, perché una schermata panoramica e una pagina verticale ricevono
-griglie diverse invece di finire schiacciate entrambe in un quadrato.
+I due argomenti più solidi, quindi, sono gli altri, e non sono computazionali.
+Gli embedding di posizione dell'encoder restano validi, quindi non vanno
+interpolati su una griglia più grande, operazione che degrada e in genere
+chiede un riaddestramento; e il sistema resta indifferente alle proporzioni,
+perché una schermata panoramica e una pagina verticale ricevono griglie diverse
+invece di finire schiacciate entrambe in un quadrato.
 
-Tutti e due si possono avere anche senza tagliare, a un altro prezzo:
-addestrare l'encoder a risoluzione nativa, impacchettando nello stesso batch
-immagini di forme diverse {cite}`dehghani2023navit`, con codifiche di posizione
-che non hanno una griglia fissa da interpolare. Qwen2-VL
-{cite}`wang2024qwen2vl` usa la RoPE in due dimensioni: nessun riquadro, nessuna
-miniatura, e un'immagine $224 \times 224$ che, dopo una fusione $2 \times 2$
-dei token (lo stesso raggruppamento del pixel shuffle della seconda risposta,
-seguito da un MLP), ne costa $64$, più i due segnaposto che la aprono e la
-chiudono. Il prezzo è che l'encoder va riaddestrato.
+Tutti e due si possono avere anche senza tagliare, a un altro costo: addestrare
+l'encoder a risoluzione nativa, impacchettando nello stesso batch immagini di
+forme diverse {cite}`dehghani2023navit`, con codifiche di posizione che non
+hanno una griglia fissa da interpolare. Qwen2-VL {cite}`wang2024qwen2vl` usa la
+RoPE in due dimensioni: nessun riquadro, nessuna miniatura, e un'immagine $224
+\times 224$ che, dopo una fusione $2 \times 2$ dei token (lo stesso
+raggruppamento del pixel shuffle della seconda risposta, seguito da un MLP), ne
+costa $64$, più i due segnaposto che la aprono e la chiudono. L'encoder,
+però, va riaddestrato.
 
-I limiti sono altrettanto netti. Un oggetto o una riga di testo che attraversano
-il taglio finiscono in due passaggi indipendenti dell'encoder, che non si vedono
-fra loro, e ricucirli tocca all'attenzione a valle, che ha la sola miniatura come
-riferimento globale. E il numero di token cresce con l'area, che è il problema
-della seconda risposta.
+I limiti sono altrettanto netti. Un oggetto o una riga di testo che
+attraversano il taglio finiscono in due passaggi indipendenti dell'encoder, che
+non si vedono fra loro, e ricucirli tocca all'attenzione a valle, che ha la
+sola miniatura come riferimento globale. Il numero di token cresce poi con
+l'area, problema che la seconda risposta affronta.
 
 `````
 
 ## Seconda risposta: comprimere i token
 
-Il tiling moltiplica i pezzi: una pagina di documento, con la griglia più
-fitta che questi sistemi usano in addestramento, può chiederne dodici, e con la
+Il tiling moltiplica i pezzi: una pagina di documento, con la griglia più fitta
+che questi sistemi usano in addestramento, può chiederne dodici, e con la
 miniatura fanno tredici passaggi dell'encoder; siccome ogni riquadro da $448$
-puntini di lato dà $1024$ tessere, in fila ne finiscono $13 \times 1024 =
+puntini di lato dà $1024$ tessere, in sequenza ne finiscono $13 \times 1024 =
 13\,312$. A quella lunghezza il termine quadratico è ancora sotto il lineare
 ($N < 6d_t$), ma il contesto occupato e la KV cache pesano: circa $6{,}5$ GiB
 per richiesta in un modello da sette miliardi di parametri con attenzione
 multi-testa. La seconda risposta riduce le tessere *dopo* l'encoder e *prima*
 del modello di linguaggio: l'immagine viene guardata ad alta risoluzione, ma
-quello che entra nel contesto è più corto. Si può comprimere perdendo
-informazione subito, con il pooling, o spostandola dai posti al contenuto di
-ogni posto, con il **pixel shuffle**.
+il contesto riceve una sequenza più corta. Si può comprimere perdendo informazione
+subito, con il pooling, o spostandola dai posti al contenuto di ogni posto, con
+il **pixel shuffle**.
 
 `````{tab} Elementare
 
 Quattro barattoli di tempera, uno per colore, e tre ripiani da liberare.
 
 Primo modo: versi i quattro colori in un barattolo solo e mescoli. Occupi un
-ripiano invece di quattro, e quel che ne esce è davvero la media dei quattro; ma
+ripiano invece di quattro, e quel che ne esce è la media dei quattro; ma
 se qualcuno chiede «di che colore era il terzo barattolo?», dal marrone che hai
 in mano non lo ricavi più. Questo è il pooling, prendere quattro tessere
 vicine e sostituirle con la loro media. Semplice, efficace, irreversibile.
@@ -300,14 +300,14 @@ un pezzo solo, che porta con sé tutti e quattro i contenuti, uno di fianco
 all'altro. L'informazione si è spostata dai *posti* al *contenuto di ogni posto*.
 
 La cassetta, però, prima di entrare nel modello di linguaggio deve stare in un
-posto della misura di sempre: i posti in fila sono tutti uguali, e in uno solo
-adesso devono entrarci quattro barattoli. Se il posto è abbastanza capiente ci
-stanno tutti; se non lo è, qualcosa resta fuori. Il rimescolamento in sé non
-perde niente: a perdere, semmai, è il farcelo stare. Con una differenza dal
-barattolo mescolato: là il marrone viene deciso in partenza e sempre allo stesso
-modo, qui a far stare la cassetta nel posto è il proiettore, la tabella di
-conversione del connettore, che ha imparato a furia di prove che cosa conviene
-tenere.
+posto della misura di sempre: i posti della sequenza sono tutti uguali, e in
+uno solo adesso devono entrarci quattro barattoli. Se il posto è abbastanza
+capiente ci stanno tutti; se non lo è, qualcosa resta fuori. Il rimescolamento
+in sé non perde niente: a perdere, semmai, è il farcelo stare. Con una
+differenza dal barattolo mescolato: là il marrone viene deciso in partenza e
+sempre allo stesso modo, qui a far stare la cassetta nel posto è il proiettore,
+la tabella di conversione del connettore, che ha imparato a furia di prove che
+cosa conviene tenere.
 
 `````
 
@@ -335,49 +335,49 @@ token di un riquadro $448 \times 448$ diventano $256$: è la scelta di InternVL
 pagina in griglia $3 \times 4$ più miniatura passa così da $13\,312$ a $13
 \cdot 256 = 3328$ token.
 
-Il confronto con il pooling medio sullo stesso blocco $2 \times 2$ si
-formula in una riga. Il pooling è la mappa lineare
-$\mathbb{R}^{4 d_v} \to \mathbb{R}^{d_v}$,
-$(\mathbf{z}_1, \mathbf{z}_2, \mathbf{z}_3, \mathbf{z}_4) \mapsto \frac{1}{4}\sum_i \mathbf{z}_i$, il cui nucleo ha
-dimensione $3 d_v$: tre quarti dei gradi di libertà finiscono
-irrecuperabilmente a zero, e con essi ogni differenza *fra* le quattro patch,
-cioè precisamente il segnale ad alta frequenza spaziale su cui si gioca la
-lettura del testo. Il pixel shuffle ha nucleo banale.
+Il confronto con il pooling medio sullo stesso blocco $2 \times 2$ è immediato.
+Il pooling è la mappa lineare $\mathbb{R}^{4 d_v} \to \mathbb{R}^{d_v}$,
+$(\mathbf{z}_1, \mathbf{z}_2, \mathbf{z}_3, \mathbf{z}_4) \mapsto
+\frac{1}{4}\sum_i \mathbf{z}_i$, il cui nucleo ha dimensione $3 d_v$: tre
+quarti dei gradi di libertà finiscono irrecuperabilmente a zero, e con essi
+ogni differenza *fra* le quattro patch, cioè precisamente il segnale ad alta
+frequenza spaziale su cui si gioca la lettura del testo. Il pixel shuffle ha
+nucleo banale.
 
 La compressione, però, si è solo spostata sul proiettore, che deve comunque
-portare $4 d_v$ nella dimensione $d_t$ del modello di linguaggio. Se
-$d_t < 4 d_v$ è quella matrice la vera strozzatura, con la differenza
-sostanziale che è appresa invece che imposta a priori. Resta che ogni token
-deve rappresentare quattro volte più pagina con la stessa capacità: un
-compromesso favorevole, non un pasto gratis.
+portare $4 d_v$ nella dimensione $d_t$ del modello di linguaggio. Se $d_t < 4
+d_v$ è quella matrice la vera strozzatura, con la differenza sostanziale che è
+appresa invece che imposta a priori. Resta che ogni token deve rappresentare
+quattro volte più pagina con la stessa capacità: un compromesso favorevole, ma
+non gratuito.
 
 `````
 
-Le due risposte, insieme, dicono una cosa sola: si guarda l'immagine ad alta
-risoluzione a pezzi, così l'encoder non esplode, e al modello di linguaggio
-si consegna una versione impacchettata di quei pezzi, così non esplode il
+Messe insieme, le due risposte fanno questo: l'immagine si guarda ad alta
+risoluzione a pezzi, senza sovraccaricare l'encoder, e al modello di linguaggio
+si consegna una versione impacchettata di quei pezzi, senza saturare il
 contesto.
 
 ## Terza risposta: non convertire affatto
 
-C'è una famiglia di compiti in cui tutto questo si vede a occhio nudo, ed è la
+C'è una famiglia di compiti in cui tutto questo si vede a occhio nudo: la
 lettura dei documenti. Per decenni la sola strada praticabile è stata una
 catena: la pagina a un sistema di **riconoscimento ottico dei caratteri**
 (l'OCR), e il testo che ne usciva a chi doveva farci qualcosa, che oggi è un
 modello di linguaggio. Ogni anello è una conversione, e ogni conversione decide
-qualcosa al posto di chi verrà dopo. Qui la risposta al costo del dettaglio non
-riguarda quante tessere entrano, ma che cosa si tiene della pagina: invece di
-convertirla in testo, la si tiene come immagine.
+qualcosa al posto di chi verrà dopo. Qui la risposta riguarda che cosa si tiene
+della pagina, più che quante tessere entrano: invece di convertirla in testo,
+la si tiene come immagine.
 
 `````{tab} Elementare
 
 Un archivio ha due modi di conservare le pagine: fotocopiarle o farle ribattere
 a macchina.
 
-La trascrizione è comodissima, perché poi si cerca per parola. Ma chi ribatteva
-ha dovuto decidere: in che ordine si leggono due colonne affiancate? Dove
-finisce una cella della tabella? E il grafico, che non è fatto di parole, come
-si ribatte? (Di solito non si ribatte: sparisce, e con lui il numero stampato di
+La trascrizione è comodissima, perché poi si cerca per parola. Chi ribatteva,
+però, ha dovuto decidere: in che ordine si leggono due colonne affiancate? Dove
+finisce una cella della tabella? Il grafico, che non è fatto di parole, come si
+ribatte? (Di solito non si ribatte: sparisce, e con lui il numero stampato di
 fianco a una delle sue colonne, che nessuno saprebbe più a quale colonna
 attribuire.) Decisioni prese al buio, senza sapere che domanda arriverà, e una
 volta per tutte: chi legge la trascrizione l'originale non ce l'ha più, e se il
@@ -386,29 +386,29 @@ dattilografo ha battuto 8 dove c'era 3, quel 3 non torna.
 La fotocopia non decide niente: tiene la pagina com'è, con le colonne al loro
 posto e il timbro storto in fondo. Per anni non è stata un'alternativa, perché
 una macchina sapeva cercare solo fra le parole e in una fotocopia di parole
-cercabili non ce ne sono. Un modello che *vede* toglie l'obbligo. Il prezzo lo
-paga lo schedario: una pagina fotocopiata prende il posto di qualche pagina
-ribattuta.
+cercabili non ce ne sono. Un modello che *vede* toglie l'obbligo. Il costo
+ricade sullo schedario: una pagina fotocopiata prende il posto di qualche
+pagina ribattuta.
 
 `````
 
 `````{tab} Superiore
 
 Le perdite della catena OCR sono strutturali, non difetti di implementazione.
-L'estrazione linearizza un oggetto bidimensionale: la posizione in pagina, che è
-informazione semantica (una cifra in fondo a destra di una fattura non è una
+L'estrazione linearizza un oggetto bidimensionale: la posizione in pagina, che
+è informazione semantica (una cifra in fondo a destra di una fattura non è una
 cifra qualsiasi), diventa al più una coordinata in un file a parte; l'ordine di
 lettura su più colonne è una scelta euristica; la struttura di una tabella va
 ricostruita da allineamenti di *bounding box*; grafici, firme e caselle barrate
-non hanno rappresentazione nel testo estratto e si perdono. E gli errori si
-compongono, perché quello che l'OCR sbaglia il modello a valle non può
-correggere: non vede più l'originale.
+non hanno rappresentazione nel testo estratto e si perdono. Gli errori si
+compongono, perché il modello a valle non può correggere quelli dell'OCR: non
+vede più l'originale.
 
 Un VLM che riceve la pagina come immagine salta l'intera catena, legge il testo
 *e* la sua disposizione nello stesso passaggio, e la sua unica conversione è la
-patchificazione, che almeno preserva la geometria. Il prezzo va detto senza
-sconti: una pagina a risoluzione leggibile costa alcune migliaia di token,
-mentre la sua trascrizione ne costerebbe attorno al migliaio.
+patchificazione, che almeno preserva la geometria. Il confronto è netto: una
+pagina a risoluzione leggibile corrisponde ad alcune migliaia di token, mentre
+la sua trascrizione ne conta circa mille.
 
 `````
 
@@ -435,19 +435,18 @@ numeri. Nessuno ha trascritto niente, quindi nessuno ha deciso in che ordine
 leggere le colonne o cosa fare del grafico: la decisione arriva insieme alla
 domanda, che è il momento giusto.
 
-C'è un dettaglio che fa la differenza: di ogni pagina non si tiene una sola fila
-di numeri riassuntiva, ma una fila per ogni tessera del mosaico, mille
+C'è un dettaglio che fa la differenza: di ogni pagina non si tiene una sola
+fila di numeri riassuntiva, ma una fila per ogni tessera del mosaico, mille
 riassunti minuscoli invece di uno grande. Così ogni parola della domanda può
 cercarsi il pezzo di pagina che le somiglia di più, e i voti che ciascuna
 parola dà al suo pezzo migliore si sommano: vince la pagina in cui tutte le
-parole della domanda hanno trovato qualcosa di loro. In cambio l'archivio occupa
-molto più spazio: è il prezzo di non aver
-buttato via niente.
+parole della domanda hanno trovato qualcosa di loro. In cambio l'archivio
+occupa molto più spazio, perché non si è buttato via niente.
 
-Una cosa però si perde per strada, ed è il codice esatto. «Errore E-52», un
+Si perde però il codice esatto. «Errore E-52», un
 numero di protocollo, l'IBAN di un conto in banca: o si trovano alla lettera o
 non servono a niente,
-e una ricerca per somiglianza restituisce quello che somiglia. Per quelli il
+e una ricerca per somiglianza restituisce risultati simili. Per quelli il
 vecchio elenco di parole resta imbattibile, quindi si tengono tutti e due gli
 archivi invece di sostituirne uno con l'altro.
 
@@ -578,21 +577,19 @@ for d in (768, 1024, 1408, 3200):
   d = 3200: lavoro monolitico / a riquadri = 0.92
 ```
 
-Le tre righe della tabella sono il conto del quadrato: quattro volte i token,
-sedici volte le coppie. Le quattro righe sotto «896 x 896» riguardano il taglio
-a riquadri e il pixel shuffle. Il taglio fa confrontare all'encoder $3{,}2$
-volte meno coppie, ma aggiunge mille token, quelli della miniatura, che ripete
-quello che i riquadri hanno già visto. E quel $3{,}2$ non è un risparmio di
-lavoro: vale la regola dell'inizio del capitolo, i confronti fra tessere sono
-solo una parte di quello che l'encoder fa, e il lavoro che spende su ogni
-tessera per conto suo cresce con il numero delle tessere, quindi i mille token
-in più lo fanno crescere. Messi insieme i due conti, le ultime quattro righe
-dicono che il risparmio vero va da un quinto a niente, e con un encoder molto
-largo, come quello di InternVL ($d = 3200$), diventa una spesa in più. Il pixel
-shuffle, dal canto suo, riporta i $5120$ token che arrivano al modello di
-linguaggio a $1280$, meno di un terzo dei $4096$ dell'immagine intera non
-tagliata. Nessuna delle due tecniche cambia le tre righe della tabella: il
-quadrato resta lì.
+Le tre righe della tabella mostrano il quadrato: quattro volte i token, sedici
+volte le coppie. Le quattro righe sotto «896 x 896» riguardano il taglio a
+riquadri e il pixel shuffle. Il taglio fa confrontare all'encoder $3{,}2$ volte
+meno coppie, ma aggiunge mille token, quelli della miniatura, che ripete quello
+che i riquadri hanno già visto. Quel $3{,}2$ non è un risparmio di lavoro: i
+confronti fra tessere sono solo una parte del lavoro dell'encoder, e il lavoro
+per tessera cresce con il numero delle tessere, quindi i mille token in più lo
+fanno crescere. Messi insieme i due conti, le ultime quattro righe dicono che
+il risparmio vero va da un quinto a niente, e con un encoder molto largo, come
+quello di InternVL ($d = 3200$), diventa una spesa in più. Il pixel shuffle,
+dal canto suo, riporta i $5120$ token che arrivano al modello di linguaggio a
+$1280$, meno di un terzo dei $4096$ dell'immagine intera non tagliata. Nessuna
+delle due tecniche cambia le tre righe della tabella: il quadrato resta lì.
 
 ## La risoluzione si decide guardando il mestiere
 
@@ -615,14 +612,14 @@ pagare, e la risposta dipende dal compito.
 Resta un'ultima domanda. Tutto questo serve a far arrivare al modello
 abbastanza dettaglio; ma un modello che riceve qualche migliaio di pezzi
 d'immagine li sta davvero *guardando*? È il tema della {doc}`sezione
-sull'allucinazione visiva </VisioneLinguaggio/vedere-quel-che-non-ce>`, e la
-risposta non è confortante.
+sull'allucinazione visiva
+</VisioneLinguaggio/vedere-quel-che-non-ce>`, e la risposta non è confortante.
 
 `````{tab} Elementare
 
 ```{admonition} Da ricordare
 :class: important
-- Il conto è una divisione: quante tessere da 14 puntini stanno nella foto. A
+- Il calcolo è una divisione: quante tessere da 14 puntini stanno nella foto. A
   $224 \times 224$ sono 256 tessere, a $448 \times 448$ sono 1024, cioè
   quattro volte tante perché l'area è quadruplicata. Ma i confronti fra le
   tessere crescono come il quadrato delle tessere: raddoppiare il lato della
@@ -644,12 +641,12 @@ risposta non è confortante.
   niente (è il *pixel shuffle*). La cassetta però deve stare in un posto della
   misura di sempre: a perdere qualcosa, semmai, è il farcelo stare.
 - Per i documenti, fotocopiare invece di ribattere: chi ribatte decide in che
-  ordine si leggono le colonne, che fare delle tabelle e dei grafici, e lo decide
-  prima di sapere che domanda arriverà. Un modello che vede la pagina toglie
-  l'obbligo, e si può perfino cercare fra le fotocopie invece che fra le
-  trascrizioni, al prezzo di un archivio molto più grosso e del vecchio elenco di
-  parole da tenere accanto, perché un codice esatto o si trova alla lettera o non
-  serve a niente.
+  ordine si leggono le colonne, che fare delle tabelle e dei grafici, e lo
+  decide prima di sapere che domanda arriverà. Un modello che vede la pagina
+  toglie l'obbligo, e si può perfino cercare fra le fotocopie invece che fra le
+  trascrizioni, al prezzo di un archivio molto più grosso e del vecchio elenco
+  di parole da tenere accanto, perché un codice esatto o si trova alla lettera
+  o non serve a niente.
 - Nessuna delle tre risposte cancella il costo: lo spostano. Le prime due, che
   si usano anche insieme, lo fanno pagare in posto occupato o in quanta pagina
   deve stare dentro ogni tessera; la terza, per i documenti, in spazio su disco,
@@ -663,7 +660,7 @@ risposta non è confortante.
 
 ```{admonition} Da ricordare
 :class: important
-- Il conto è aritmetica: $N = \lfloor H/p \rfloor \cdot \lfloor W/p \rfloor$, e
+- Il calcolo è aritmetico: $N = \lfloor H/p \rfloor \cdot \lfloor W/p \rfloor$, e
   con patch $14 \times 14$ un'immagine $224 \times 224$ dà 256 token,
   $448 \times 448$ ne dà 1024. I token crescono con l’area, il costo
   dell'attenzione con il loro quadrato: raddoppiare il lato moltiplica per
@@ -683,21 +680,20 @@ risposta non è confortante.
   solidi sono gli embedding di posizione che restano validi e l'indifferenza
   alle proporzioni. In cambio un oggetto a cavallo di due riquadri
   si spezza, e la miniatura è l'unico posto dove l'insieme resta visibile.
-- Il pixel shuffle riduce i token di quattro volte concatenando quattro
-  patch adiacenti lungo i canali: è una permutazione, quindi da sola non butta
-  via niente, e sposta l'informazione dai posti al contenuto di ogni posto. La
+- Il pixel shuffle riduce i token di quattro volte concatenando quattro patch
+  adiacenti lungo i canali: è una permutazione, quindi da sola non butta via
+  niente, e sposta l'informazione dai posti al contenuto di ogni posto. La
   strozzatura si sposta sul proiettore, che deve portare $4 d_v$ in $d_t$, e
   dove $d_t < 4 d_v$ è quella matrice a decidere che cosa passa, con la
   differenza che lo ha imparato. Il pooling medio, sullo stesso blocco, ha
-  nucleo di dimensione $3 d_v$: cancella proprio le differenze fra patch
-  vicine, cioè il dettaglio fine.
-- Per i documenti la catena OCR-testo-modello decide l'ordine di
-  lettura, la struttura delle tabelle e il destino dei grafici prima di
-  conoscere la domanda. Un VLM legge la pagina come immagine e salta la catena;
-  il recupero *vision-native* {cite}`faysse2025colpali` indicizza le patch
-  visive della pagina e le confronta con l'interazione tardiva, al prezzo di un
-  indice molto più grande e della perdita del confronto letterale su codici e
-  sigle.
+  nucleo di dimensione $3 d_v$: cancella le differenze fra patch vicine, cioè
+  il dettaglio fine.
+- Per i documenti la catena OCR-testo-modello decide l'ordine di lettura, la
+  struttura delle tabelle e il destino dei grafici prima di conoscere la
+  domanda. Un VLM legge la pagina come immagine e salta la catena; il recupero
+  *vision-native* {cite}`faysse2025colpali` indicizza le patch visive della
+  pagina e le confronta con l'interazione tardiva, al prezzo di un indice molto
+  più grande e della perdita del confronto letterale su codici e sigle.
 - Nessuna delle tre risposte elimina il costo: il tiling lo sposta
   sull'encoder-contesto, la compressione sulla capacità dei singoli token, e le
   due si combinano (InternVL {cite}`chen2024far`); il recupero visivo risponde

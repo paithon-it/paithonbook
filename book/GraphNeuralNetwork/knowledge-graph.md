@@ -13,7 +13,7 @@ anni Sessanta con le reti semantiche di Ross Quillian, schemi in cui i concetti
 sono puntini e le linee fra loro dicono «è un», «ha un», «si trova in». Dal
 1984 con Cyc, il progetto in cui squadre di persone scrivevano a mano, un fatto
 per volta, le ovvietà che tutti sanno e nessuno scrive («la pioggia bagna»,
-«chi dorme ha gli occhi chiusi»). E nel 2001 con il web semantico proposto da
+«chi dorme ha gli occhi chiusi»). Nel 2001 con il web semantico proposto da
 Tim Berners-Lee, che voleva pagine leggibili non solo dalle persone ma anche
 dai programmi. Anche i grafi di fatti estratti in modo automatico da
 Wikipedia esistevano già da qualche anno (DBpedia e YAGO sono del 2007). Nuovo
@@ -39,7 +39,7 @@ Soggetto, relazione, oggetto, in quest'ordine: «Piemonte si-trova-in Torino»
 sarebbe un altro arco, e falso. La frasetta si chiama **tripla**, e migliaia di
 triple messe insieme formano un grafo in cui i nodi sono cose (persone, luoghi,
 film, proteine, prodotti) e gli archi sono fatti. Le cose si chiamano
-**entità**, e la parola vuol dire soltanto questo. Nodi di specie diverse,
+**entità**, e la parola indica soltanto questo. Nodi di specie diverse,
 archi di specie diverse: un grafo **eterogeneo**.
 
 Sopra le triple sta di solito un regolamento: Torino è una città, una città è
@@ -50,12 +50,12 @@ scritto: se Torino è una città allora è un luogo, e quell'arco non c'è bisog
 di scriverlo.
 
 C'è poi una differenza che sembra filosofica e invece decide come si progetta
-tutto il resto. In un knowledge graph, un arco che non c'è vuol dire «non lo
+tutto il resto. In un knowledge graph, un arco che non c'è dice «non lo
 so», non «è falso». Nessuno ha scritto tutti i fatti veri del mondo, e
 nessuno mai lo farà: l'assenza di (Torino, gemellata-con, Salt Lake City) non è
 una smentita, è un silenzio.
 
-Sembra un dettaglio da logici, e invece decide come si addestra un modello che
+Decide come si addestra un modello che
 impari a indovinare i fatti mancanti, cioè gli archi veri che nessuno ha
 ancora scritto. Per imparare a distinguere il vero dal falso a un modello
 servono esempi delle due specie; qui gli esempi di fatti veri abbondano, e di
@@ -81,46 +81,45 @@ entra e permettere l'inferenza per ereditarietà, cioè dedurre triple non scrit
 da quelle scritte.
 
 La proprietà semantica decisiva è l’**assunzione di mondo aperto**: la mancanza
-di una tripla non è la sua negazione. Ne discende che il problema naturale su un
-knowledge graph, la link prediction, non è una classificazione binaria
+di una tripla non è la sua negazione. Ne discende che il problema naturale su
+un knowledge graph, la link prediction, non è una classificazione binaria
 ordinaria: dispone di soli esempi positivi, e gli insiemi di addestramento e di
 valutazione vanno costruiti di conseguenza. La valutazione standard lo fa così.
 Per ogni tripla di test $(h, r, t)$ si sostituisce la coda con ciascuna entità
 $e \in \mathcal{E}$, si ordinano i candidati per punteggio $f(h, r, e)$ e si
 registra la posizione $\mathrm{rank}$ della coda vera; lo stesso si fa con la
 testa. Su un insieme $\mathcal{T}$ di interrogazioni si riportano la media dei
-reciproci,
-$\mathrm{MRR} = \frac{1}{|\mathcal{T}|}\sum_{q \in \mathcal{T}} 1/\mathrm{rank}_q$,
-e la frazione $\text{Hits@}k$ di interrogazioni con $\mathrm{rank}_q \le k$ (di
-solito $k$ vale 1, 3 o 10); per entrambe, più alto è meglio. L'impostazione
-*filtrata* toglie dalla graduatoria le altre entità che formano triple vere già
-note, perché un modello che mette al primo posto un'altra risposta giusta non va
-punito {cite}`bordes2013translating`. Il protocollo ha anche una storia da
-conoscere: nei banchi FB15k e WN18 molte triple di test erano l'inversa di una
-tripla d'addestramento, tanto che una regola banale, che rovescia le triple
-note, metteva la risposta giusta al primo posto nel 95% dei casi su WN18 e nel
-66% su FB15k, alla pari con i modelli migliori di allora, e le versioni
-ripulite FB15k-237 e WN18RR sono nate per toglierla
+reciproci, $\mathrm{MRR} = \frac{1}{|\mathcal{T}|}\sum_{q \in \mathcal{T}}
+1/\mathrm{rank}_q$, e la frazione $\text{Hits@}k$ di interrogazioni con
+$\mathrm{rank}_q \le k$ (di solito $k$ vale 1, 3 o 10); per entrambe, più alto
+è meglio. L'impostazione *filtrata* toglie dalla graduatoria le altre entità
+che formano triple vere già note, perché un modello che mette al primo posto
+un'altra risposta giusta non va punito {cite}`bordes2013translating`. Il
+protocollo ha anche una storia: nei banchi FB15k e WN18 molte triple di test
+erano l'inversa di una tripla d'addestramento, tanto che una regola banale, che
+rovescia le triple note, metteva la risposta giusta al primo posto nel 95% dei
+casi su WN18 e nel 66% su FB15k, alla pari con i modelli migliori di allora, e
+le versioni ripulite FB15k-237 e WN18RR sono nate per toglierla
 {cite}`toutanova2015observed,dettmers2018convolutional`.
 
 Un'ultima trappola riguarda i pareggi. Un modello che dà lo stesso punteggio a
 molte entità mette la risposta vera al primo posto se i pari merito si
 risolvono a suo favore, quindi il rango va calcolato dichiarando dove la si
 colloca fra i pari (in testa, in coda o a caso). Sun e colleghi hanno trovato
-modelli che su FB15k-237 assegnavano alla tripla vera lo stesso punteggio di
-centinaia di candidate, e dovevano a questo una parte del vantaggio pubblicato
-{cite}`sun2020reevaluation`.
+modelli (ConvKB e CapsE) che su FB15k-237 assegnavano alla tripla vera lo
+stesso punteggio di 125 e 197 candidate in media, e dovevano a questo una parte
+del vantaggio pubblicato {cite}`sun2020reevaluation`.
 
 `````
 
 ## Costruirlo è il lavoro
 
-Il grafo non arriva già fatto: costruirlo è la parte più costosa del lavoro, e i
-modelli che vi si applicano ne sono la parte più piccola. Il percorso da
+Il grafo non arriva già fatto: costruirlo è il passo più costoso, e i
+modelli che vi si applicano ne sono la voce più piccola. Il percorso da
 un mucchio di testi a un grafo di fatti passa per quattro gradini.
 
 Il primo gradino è trovare i nomi: individuare nel testo i pezzi che
-nominano una cosa. Si chiama **riconoscimento delle entità nominate**, e lo
+nominano qualcosa. Si chiama **riconoscimento delle entità nominate**, e lo
 tratta la sezione
 {doc}`POS tagging ed entità </NaturalLanguageProcessing/etichettare-sequenze>`.
 
@@ -134,7 +133,7 @@ Il terzo, e in pratica il più costoso, è il gemello del secondo: capire che
 «F.C. Juventus», «Juventus Football Club» e «la Juve» sono un nodo solo, e che
 due schede prodotto con nomi diversi descrivono lo stesso oggetto. Si chiama
 **risoluzione delle entità**, è il problema di togliere i doppioni su una scala
-enorme, ed è la voce su cui chi mantiene un knowledge graph spende gran parte
+enorme, e chi mantiene un knowledge graph vi spende gran parte
 del proprio lavoro.
 
 L'ultimo gradino è l’**estrazione di relazioni**: dedurre dal testo che fra due
@@ -147,8 +146,8 @@ stessa sicurezza con cui inserisce quelle vere.
 ## Entità come punti, relazioni come frecce
 
 Un grafo di fatti si può interrogare come un database, e per molte domande è la
-cosa giusta. Ma per prevedere i fatti mancanti serve trasformarlo in numeri,
-e qui succede una cosa che suonerà familiare.
+scelta giusta. Prevedere i fatti mancanti richiede di trasformarlo in numeri,
+e qui succede qualcosa di familiare.
 
 `````{tab} Elementare
 
@@ -173,14 +172,14 @@ pescata a caso, esce (Roma, capitale-di, Portogallo), che quasi certamente è
 falsa. Chiediamo che il fatto vero cada più vicino del suo gemello guastato, e
 non per un pelo: di uno scarto fissato in partenza.
 
-Una scorciatoia, però, il modello la trova da solo: allargare la mappa. Se tutti
-i punti si allontanano fra loro, il pelo di vantaggio che il fatto vero aveva
-già diventa da sé lo scarto richiesto, senza che una freccia sia stata puntata
+Una scorciatoia, però, il modello la trova senza aiuto: allargare la mappa. Se
+tutti i punti si allontanano fra loro, il pelo di vantaggio che il fatto vero
+aveva già diventa lo scarto richiesto, senza che una freccia sia stata puntata
 meglio. Per questo, a ogni passata, i punti vengono rimessi tutti alla stessa
 distanza dal centro.
 
 Alcuni fatti una freccia non li sa raccontare. Una freccia porta da un punto a
-un punto e basta, mentre «ha-recitato-in» lega un attore a decine di film: il
+un solo punto, mentre «ha-recitato-in» lega un attore a decine di film: il
 modello se la cava ammucchiando quei film nello stesso punto, dove diventano
 indistinguibili. Altre relazioni valgono nei due sensi: l'Italia «confina-con»
 la Francia, e la Francia con l'Italia. La stessa freccia dovrebbe portare di là
@@ -188,22 +187,22 @@ e riportare indietro, e l'unica che ci riesce è quella lunga zero, che lascia i
 due paesi nello stesso punto. Altre ancora si ereditano lungo la catena: se sei
 antenato di mio nonno sei antenato anche mio. La stessa freccia deve valere
 tanto per un passo quanto per due, ma una che sposta di tre, fatta due volte,
-sposta di sei: di nuovo regge soltanto la freccia lunga zero. Incatenare frecce
+sposta di sei: di nuovo vale soltanto la freccia lunga zero. Incatenare frecce
 *diverse*, invece, funziona benissimo: «fratello-di» seguita da «madre-di» dà
-«zio-di», e basta sommare le due frecce. Il conto non torna soltanto quando la
-relazione da incatenare è sempre la stessa.
+«zio-di», e per ottenerlo si sommano le due frecce. La somma si rompe
+soltanto quando la relazione da incatenare è sempre la stessa.
 
-Da quei guai è nata una lunga discendenza di modelli che al posto della
-freccia mettono un'altra mossa, e ognuno rimedia a un caso e ne rompe un
+Da quei guai è nata una lunga discendenza di modelli che al posto della freccia
+mettono un'altra trasformazione, e ognuno rimedia a un caso e ne rompe un
 altro. La più riuscita è la rotazione: invece di spostare il punto, lo si fa
 girare attorno al centro. Due quarti di giro fanno mezzo giro, quindi le catene
 di relazioni diverse si compongono come prima; e mezzo giro fatto due volte
-riporta al punto di partenza, che è proprio quello che chiede «confina-con».
-Nemmeno la rotazione, però, regge l'ereditarietà lungo la catena, perché un
-giro che fatto due volte deve dare sé stesso è il giro nullo. Per quella
-servono modelli in cui un'entità diventa una scatola capace di contenerne
-altre, la scatola «città» dentro la scatola «luogo»: un modo molto più naturale
-di dire «è un caso particolare di».
+riporta al punto di partenza, come chiede «confina-con». Nemmeno la rotazione,
+però, riesce a esprimere l'ereditarietà lungo la catena, perché un giro che
+fatto due volte deve dare sé stesso è il giro nullo. Per quella servono modelli
+in cui un'entità diventa una scatola capace di contenerne altre, la scatola
+«città» dentro la scatola «luogo»: un modo molto più naturale di dire «è un
+caso particolare di».
 
 C'è infine una via del tutto diversa: portare su un grafo di fatti il
 passaparola fra vicini. Qui gli archi non sono tutti uguali, e un
@@ -220,7 +219,7 @@ calcola niente.
 
 `````{tab} Superiore
 
-Un avviso di notazione, perché l'alfabeto cambia: nelle formule di TransE
+L'alfabeto cambia: nelle formule di TransE
 $\mathbf{h}$, $\mathbf{r}$ e $\mathbf{t}$ sono la testa, la relazione e
 la coda di una tripla. Gli stati nascosti del message passing tornano con
 R-GCN, e si riconoscono dal pedice del nodo e dall'apice dello strato
@@ -247,7 +246,7 @@ $$
 $$
 
 Le triple false non esistono in natura, per l'assunzione di mondo aperto: si
-fabbricano corrompendo quelle vere, ed è per questo che l'insieme dei
+fabbricano corrompendo quelle vere, e per questo l'insieme dei
 negativi $S'_{(h,r,t)}$ porta in pedice la tripla positiva da cui nasce, invece
 di essere un unico insieme globale: si sostituisce una sola delle due
 estremità con un'entità pescata a caso, mai tutt'e due. È l'equivalente, per i
@@ -270,20 +269,20 @@ $\mathbf{r} \approx -\mathbf{r}$, cioè $\mathbf{r} \approx \mathbf{0}$, e con
 la relazione annullata collassano anche le due entità. Le relazioni
 riflessive finiscono allo stesso modo.
 
-Il caso che manca chiede una precisazione, perché è il punto in cui il racconto
-corrente sbaglia bersaglio. Una traslazione compone benissimo: se dalla coppia
-$r_1(a,b)$ e $r_2(b,c)$ deve seguire $r_3(a,c)$, basta porre $\mathbf{r}_3 =
-\mathbf{r}_1 + \mathbf{r}_2$, ed è per questo che nella tassonomia diventata
-standard con RotatE {cite}`sun2019rotate` TransE è dato capace di composizione,
-di inversione e di antisimmetria, e incapace della sola simmetria. Quel che non
-regge è il caso particolare in cui le tre relazioni sono la stessa, cioè la
-**transitività** (`antenato-di`, `parte-di`, `sottoclasse-di`: la norma in
-qualunque grafo con un'ontologia). Lì servirebbero insieme $\mathbf{a} +
-2\mathbf{r} \approx \mathbf{c}$ e $\mathbf{a} + \mathbf{r} \approx \mathbf{c}$,
-cioè ancora una volta $\mathbf{r} \approx \mathbf{0}$.
+Il caso mancante è quello su cui il racconto corrente sbaglia bersaglio. Una
+traslazione compone benissimo: se dalla coppia $r_1(a,b)$ e $r_2(b,c)$ deve
+seguire $r_3(a,c)$, basta porre $\mathbf{r}_3 = \mathbf{r}_1 + \mathbf{r}_2$, e
+per questo nella tassonomia diventata standard con RotatE {cite}`sun2019rotate`
+TransE risulta capace di composizione, di inversione e di antisimmetria, e
+incapace della sola simmetria. Quel che non rappresenta è il caso particolare
+in cui le tre relazioni sono la stessa, cioè la **transitività**
+(`antenato-di`, `parte-di`, `sottoclasse-di`: la norma in qualunque grafo con
+un'ontologia). Lì servirebbero insieme $\mathbf{a} + 2\mathbf{r} \approx
+\mathbf{c}$ e $\mathbf{a} + \mathbf{r} \approx \mathbf{c}$, cioè ancora una
+volta $\mathbf{r} \approx \mathbf{0}$.
 
-Il seguito della famiglia sistema altre caselle, e conviene dire quali, perché
-non è la transitività. I modelli bilineari come DistMult
+Il seguito della famiglia sistema altre caselle, ma non quella della
+transitività. I modelli bilineari come DistMult
 {cite}`yang2015embedding` danno il
 punteggio $f(h,r,t) = \sum_{k} h_k r_k t_k$, una forma bilineare con matrice
 diagonale $\mathrm{diag}(\mathbf{r})$. Scambiando $\mathbf{h}$ e $\mathbf{t}$ il
@@ -303,7 +302,7 @@ $\theta_{r,k} \in \{0, \pi\}$, l'inversa al coniugato, la composizione alla
 somma degli angoli, e le quattro proprietà stanno insieme. La transitività però
 resta fuori anche di lì, per lo stesso motivo algebrico: se una rotazione
 applicata due volte deve dare sé stessa, e ha modulo uno, allora è l'identità, e
-la relazione torna a non spostare niente. A reggere le gerarchie servono
+la relazione torna a non spostare niente. Per rappresentare le gerarchie servono
 famiglie di altro tipo, che rappresentano un'entità non come un punto ma come un
 oggetto capace di contenerne un altro (ordini parziali, scatole, spazi
 iperbolici).
@@ -313,7 +312,7 @@ $d(|\mathcal{E}| + |\mathcal{R}|)$ numeri reali; ComplEx il doppio, perché ogni
 componente è complessa; RotatE $2d|\mathcal{E}| + d|\mathcal{R}|$, perché di
 una rotazione basta l'angolo. Il modello bilineare pieno, con una matrice
 $d \times d$ per relazione di cui DistMult tiene la sola diagonale, ne tiene invece
-$d|\mathcal{E}| + d^2|\mathcal{R}|$. E si addestrano in modi diversi: TransE e
+$d|\mathcal{E}| + d^2|\mathcal{R}|$. Si addestrano anche in modi diversi: TransE e
 DistMult con la *margin ranking loss* di TransE, ComplEx con la perdita
 logistica su triple vere e corrotte, RotatE con un campionamento dei negativi
 che pesa ogni tripla corrotta secondo quanto il modello stesso la trova
@@ -322,7 +321,7 @@ contare.
 
 Poi c'è la via del message passing. **R-GCN**
 {cite}`schlichtkrull2018modeling` porta il message passing sui grafi
-eterogenei con una mossa diretta: una matrice di pesi per ogni tipo di
+eterogenei in modo diretto: una matrice di pesi per ogni tipo di
 relazione,
 
 $$
@@ -344,14 +343,14 @@ fra DeepWalk e le GNN vista nella {doc}`sezione «Il mondo come grafo»
 dell'induttività, però, arriva solo se i nodi portano feature proprie da cui
 partire: nel paper originale le entità non ne hanno, lo stato iniziale è a sua
 volta un embedding appreso per ciascuna entità, e senza quella riga di tabella
-un'entità mai vista resta fuori, esattamente come in TransE.
+un'entità mai vista resta fuori, come in TransE.
 
 `````
 
 ## Rispondere navigando
 
-Riempire da sé i buchi che ha, prevedendo i fatti che nessuno ci ha scritto, è
-già qualcosa. Ma a che cosa serve, un grafo di fatti, quando la domanda arriva
+Prevedere i fatti che nessuno ha scritto è
+già qualcosa. A che cosa serve però un grafo di fatti, quando la domanda arriva
 da fuori? A tre cose, e sono tre cose che un archivio di documenti non sa
 fare.
 
@@ -361,8 +360,8 @@ questo film» si risponde percorrendo due archi. Il modo usuale di rispondere a
 una domanda su un archivio di testi è invece cercare i brani più somiglianti
 alla domanda e passarli a un modello di linguaggio: è il retrieval
 denso della {doc}`sezione su retrieval e RAG </Transformers/rag>`, dove i
-brani non si confrontano parola per parola, ma trasformando ciascuno in una
-fila di numeri e cercando le file più vicine. Se nessun documento contiene
+brani non si confrontano parola per parola: ciascuno diventa una
+fila di numeri e si cercano le file più vicine. Se nessun documento contiene
 entrambi i fatti, la ricerca per somiglianza di solito non porta davanti al
 modello tutti e due i brani, perché ciascuno somiglia alla domanda solo a
 metà, e il modello non può metterli insieme. Recuperare in più passi, usando
@@ -372,16 +371,15 @@ passo è un altro punto in cui il recupero può sbagliare.
 Il secondo vantaggio è che il cammino è la spiegazione. Una ricerca per
 somiglianza restituisce tre paragrafi e una risposta, e per verificarla bisogna
 leggere i paragrafi. Una risposta ottenuta navigando restituisce la catena di
-fatti che l'ha prodotta, e ogni anello si può controllare da solo. In un
-dominio dove sbagliare costa (clinico, legale, finanziario) è una differenza di
+fatti che l'ha prodotta, e ogni anello si può controllare separatamente. In un
+dominio dove un errore è grave (clinico, legale, finanziario) è una differenza di
 natura.
 
 Il terzo vantaggio si dimentica spesso ed è forse il più pratico: le domande
 che chiedono di contare. «Quanti registi italiani hanno girato almeno tre film
 ambientati a Napoli» non è una domanda a cui un modello di linguaggio possa
 rispondere in modo affidabile, e nemmeno un sistema di ricerca per somiglianza:
-vuole un'interrogazione a un archivio ordinato, e una struttura su cui contare
-davvero.
+vuole un'interrogazione a un archivio ordinato, e una struttura su cui contare.
 
 Dare a un modello di linguaggio dei documenti pescati sul momento, invece di
 fidarsi di quel che ricorda, si chiama RAG, dalle iniziali di
@@ -408,16 +406,15 @@ invecchia peggio di un archivio di documenti, perché sembra ancora autorevole
 mentre è già falso. La domanda da farsi prima di cominciare non è se sarebbe
 utile, ma chi lo aggiornerà fra due anni.
 
-I grandi modelli di linguaggio, inoltre, hanno assorbito una parte del
-mestiere che si affidava ai grafi di fatti: molte domande fattuali ricevono
-oggi una risposta corretta senza che nessun grafo sia stato consultato. Quello
-che i modelli non danno, e che resta la ragione durevole di questa struttura, è
-di altro tipo. Il cammino che si può verificare anello per anello. La
-possibilità di contare. E la possibilità di dichiarare delle regole che il
-sistema non ha il permesso di violare: che il sindaco di un posto debba essere
-una persona e non un'altra città, che nessuno possa essere nato dopo essere
-morto. Sono garanzie, non conoscenza, ed è per le garanzie che si paga il
-prezzo di costruirlo.
+I grandi modelli di linguaggio, inoltre, hanno assorbito una parte dei compiti
+che si affidavano ai grafi di fatti: molte domande fattuali ricevono oggi una
+risposta corretta senza che nessun grafo sia stato consultato. Ci sono cose,
+però, che i modelli non danno, e sono la ragione durevole di questa struttura:
+il cammino che si può verificare anello per anello, la possibilità di contare e
+quella di dichiarare regole che il sistema non ha il permesso di violare (che
+il sindaco di un posto debba essere una persona e non un'altra città, che
+nessuno possa essere nato dopo essere morto). Sono garanzie, non conoscenza, e
+sono le garanzie a giustificare il costo di costruirlo.
 
 `````{tab} Elementare
 
@@ -429,28 +426,28 @@ prezzo di costruirlo.
   oggetto. Nodi di specie diverse e archi di specie diverse: è un grafo
   eterogeneo, mentre quelli visti finora avevano nodi tutti della stessa
   specie.
-- Un arco che manca vuol dire «non lo so», non «è falso»: nessuno ha mai
+- Un arco che manca dice «non lo so», non «è falso»: nessuno ha mai
   scritto tutti i fatti veri del mondo. Ne segue una conseguenza pratica
   fastidiosa: di esempi sbagliati non ce ne sono, e per addestrare un modello
   bisogna fabbricarseli guastando i fatti veri, cioè sostituendo una delle
-  due estremità con una cosa pescata a caso.
+  due estremità con un'entità pescata a caso.
 - Il lavoro vero è costruirlo: trovare i nomi nel testo, capire di quale
   Torino si parla, accorgersi che «la Juve» e «Juventus Football Club» sono lo
   stesso nodo, ed estrarre dalle frasi i legami fra le cose. I modelli che ci
-  girano sopra sono la parte più piccola del lavoro.
+  girano sopra sono la voce più piccola del lavoro.
 - Il modo più semplice di metterlo in numeri è fare di ogni cosa un punto e
   di ogni relazione una freccia sempre uguale: da «Roma», seguendo la
   freccia «capitale-di», si atterra vicino a «Italia». Funziona, ma una freccia
   porta in un solo punto, e quindi non può legare un attore a dieci film né
-  reggere le relazioni che si ereditano lungo la catena (se sei antenato di mio
+  esprimere le relazioni che si ereditano lungo la catena (se sei antenato di mio
   nonno sei antenato mio): là la freccia dovrebbe valere sia un passo sia due,
   e l'unica freccia che lo fa è quella lunga zero. Da lì una lunga discendenza
   di modelli che sostituiscono la freccia con qualcosa di più flessibile (la
   migliore è una rotazione); quest'ultimo caso però nessuno di loro lo
   risolve, e servono entità fatte a scatola, che si contengono l'una
   nell'altra.
-- L'altra via è portare il passaparola delle sezioni precedenti su questo
-  grafo, usando una ricetta di riscrittura diversa per ogni tipo di arco: così
+- L'altra via è portare su questo grafo il passaparola della GCN,
+  usando una ricetta di riscrittura diversa per ogni tipo di arco: così
   la fila di numeri di un'entità si calcola da quel che le sta intorno invece
   di impararla a memoria, purché l'entità porti con sé qualcosa di proprio da
   cui partire. Se non lo porta, il punto di partenza resta imparato a memoria
@@ -459,8 +456,8 @@ prezzo di costruirlo.
   insieme più fatti in catena, non nel sapere i fatti (per quello ci sono i
   modelli di linguaggio): mostrare il percorso che ha prodotto la
   risposta perché sia verificabile, rispondere a domande che chiedono di
-  contare, e poter dichiarare regole che il sistema non può violare. E
-  un grafo non aggiornato è peggio di nessun grafo, perché sembra ancora
+  contare, e poter dichiarare regole che il sistema non può violare.
+  Un grafo non aggiornato è peggio di nessun grafo, perché sembra ancora
   autorevole quando è già falso.
 ```
 
@@ -473,18 +470,18 @@ prezzo di costruirlo.
 - Un knowledge graph è un multigrafo diretto etichettato di triple
   (soggetto, relazione, oggetto): nodi ed archi di tipi diversi, cioè un grafo
   eterogeneo, a differenza di tutti quelli visti finora nel capitolo.
-- Vale l’assunzione di mondo aperto: un arco che manca vuol dire «non lo
-  so», non «è falso». Da qui il fatto che gli esempi negativi non esistano e si
+- Vale l’assunzione di mondo aperto: un arco che manca equivale a «non lo
+  so», non a «è falso». Da qui il fatto che gli esempi negativi non esistano e si
   debbano fabbricare corrompendo le triple vere.
 - Costruirlo è il lavoro: riconoscimento delle entità, collegamento (quale
   Torino?), risoluzione (Juventus e la Juve sono un nodo solo), estrazione
-  di relazioni. La parte modellistica viene dopo, ed è la più piccola.
+  di relazioni. La parte modellistica viene dopo e ne è la più piccola.
 - TransE {cite}`bordes2013translating` fa delle relazioni delle
   traslazioni ($\mathbf{h}+\mathbf{r}\approx\mathbf{t}$), cioè prende sul
-  serio l'aritmetica delle analogie del capitolo sul linguaggio. Non regge le
-  relazioni uno-a-molti, le simmetriche e le riflessive; la composizione
-  invece la regge ($\mathbf{r}_3 = \mathbf{r}_1 + \mathbf{r}_2$), ed è il suo caso
-  particolare, la transitività, a forzare $\mathbf{r} \approx \mathbf{0}$.
+  serio l'aritmetica delle analogie del capitolo sul linguaggio. Non cattura le
+  relazioni uno-a-molti, le simmetriche e le riflessive; cattura invece la
+  composizione ($\mathbf{r}_3 = \mathbf{r}_1 + \mathbf{r}_2$), e a forzare
+  $\mathbf{r} \approx \mathbf{0}$ è il suo caso particolare, la transitività.
   Da lì la discendenza (DistMult perde antisimmetria e inversione; ComplEx le
   recupera entrambe, ma la composizione resta fuori tanto da DistMult quanto da
   ComplEx; RotatE le tiene tutte e quattro), che però la transitività non
@@ -495,7 +492,7 @@ prezzo di costruirlo.
   con matrici di base condivise per non esplodere in parametri.
 - Il vantaggio durevole sta nel comporre più fatti, non nel saperli (per
   quello ci sono gli LLM): esibire il cammino come spiegazione e rispondere
-  a domande aggregate. Il prezzo è la manutenzione, e un grafo non
+  a domande aggregate. Il costo è la manutenzione, e un grafo non
   aggiornato è peggio di nessun grafo perché sembra ancora autorevole.
 ```
 
@@ -503,8 +500,8 @@ prezzo di costruirlo.
 
 Un'entità mai vista, con R-GCN, resta fuori se non porta niente di proprio, e
 il problema è più generale: una rete addestrata guardando il grafo intero non
-sa che cosa fare dei nodi che arrivano dopo, né regge grafi da miliardi di
-archi. E i vicini, anche quando gli archi hanno un tipo solo, non contano
+sa che cosa fare dei nodi che arrivano dopo, né si addestra su grafi da miliardi di
+archi. I vicini, anche quando gli archi hanno un tipo solo, non contano
 tutti allo stesso modo, mentre la GCN li pesa soltanto secondo i gradi. Da
 queste due domande riparte la {doc}`sezione su GraphSAGE e GAT
 </GraphNeuralNetwork/architetture-applicazioni>`.

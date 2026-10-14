@@ -7,38 +7,41 @@ rimedi". Contando queste ricerche si poteva stimare la diffusione
 dell'influenza negli Stati Uniti in tempo quasi reale, con una o due settimane
 di anticipo sui CDC, l'ente federale che raccoglie i dati dai medici. Per
 qualche anno funzionò, e il servizio divenne il manifesto di una promessa che
-in quegli anni si sentiva dappertutto: adesso che ogni gesto lascia una traccia
-in rete, perché fare sondaggi lenti e costosi, quando i dati arrivano da soli?
+in quegli anni si sentiva dappertutto: adesso che ogni azione lascia una traccia
+in rete, perché fare sondaggi lenti e costosi, quando basta leggere i dati che
+la rete produce già?
 
 Poi arrivò l'inverno 2012–2013. A febbraio 2013 Google Flu Trends stimava una
 quota di visite mediche per sintomi influenzali più che doppia rispetto a
-quella registrata dai CDC. E non era un incidente isolato: tra l'agosto 2011 e
-il settembre 2013 il servizio aveva sovrastimato l'influenza in 100
-settimane su 108. Nel 2014 un gruppo di ricercatori firmò su *Science*
-l'autopsia del progetto, con un titolo diventato proverbiale: *The Parable of
-Google Flu* (la "parabola", nel senso del racconto che ammonisce
-{cite}`lazer2014parable`). Nell'agosto 2015 Google chiuse il servizio.
+quella registrata dai CDC. Non fu un incidente isolato. Tra l'agosto 2011 e il
+settembre 2013 il servizio aveva sovrastimato l'influenza in 100 settimane
+su 108. Nel 2014 un gruppo di ricercatori firmò su *Science* l'autopsia del
+progetto, con un titolo diventato proverbiale: *The Parable of Google Flu* (la
+"parabola", nel senso del racconto che ammonisce {cite}`lazer2014parable`).
+Nell'agosto 2015 Google chiuse il servizio.
 
 Che cosa era andato storto? Gli autori dell'articolo su *Science* indicano due
-cause, e solo la seconda è un invecchiamento. La prima nasce con il modello: i
-termini di ricerca erano stati scelti cercando, fra cinquanta milioni di
-candidati, quelli che seguivano meglio 1152 rilevazioni settimanali dei CDC, e
-molti seguivano l'inverno più che l'influenza. Il modello, scrivono, era in
-parte un rilevatore di influenza e in parte un rilevatore d'inverno: nel 2009
-mancò la pandemia di H1N1, arrivata fuori stagione, e fu corretto. La seconda è
-il tempo. Il modo di cercare in rete era cambiato, e Google stessa aggiornava il
-motore: dal giugno 2011 cominciò a proporre altri termini da cercare (a chi
-chiedeva dell'influenza suggeriva di cercarne le cure), dal febbraio 2012 a
-rispondere alle ricerche sui sintomi con le diagnosi possibili (chi cercava
-«febbre» o «tosse» si vedeva proporre l'influenza). Erano due spinte verso
-l'influenza che arrivavano anche a chi stava benissimo, e la catena si chiude da
-sé: più suggerimenti, più ricerche sull'influenza; e siccome il modello contava
-proprio quelle ricerche, più malati stimati. Intanto i giornali parlavano di
-epidemia e la gente cercava per curiosità, non per febbre. Il modello, tarato
-sul mondo di qualche anno prima, continuava a leggere il presente con gli
-occhiali di allora. Che cosa succede quando i
-dati che un modello incontra non somigliano più a quelli su cui è stato
-addestrato?
+cause, e solo la seconda è un invecchiamento. La prima nasce con il modello,
+perché i termini di ricerca erano stati scelti cercando, fra cinquanta milioni
+di candidati, quelli che seguivano meglio 1152 rilevazioni settimanali dei CDC,
+e molti seguivano l'inverno più che l'influenza. La versione iniziale,
+scrivono, era in parte un rilevatore di influenza e in parte un rilevatore
+d'inverno, tanto che nel 2009 mancò la pandemia di H1N1, arrivata fuori
+stagione, e l'algoritmo fu corretto.
+
+La seconda causa è il tempo. Il modo di cercare in rete era cambiato, e Google
+stessa aggiornava il motore. Nel giugno 2011 annunciò di aver modificato i
+risultati per proporre altri termini da cercare (a chi chiedeva dell'influenza
+suggeriva di cercarne le cure), nel febbraio 2012 di rispondere alle ricerche
+sui sintomi con le diagnosi possibili (chi cercava «febbre» o «tosse» si vedeva
+proporre l'influenza). Sono due spinte verso l'influenza che arrivavano anche a
+chi stava benissimo, e gli autori giudicano plausibile che abbiano gonfiato le
+ricerche sul tema, e il modello, che contava quelle ricerche, le avrebbe lette
+come malati in più. Nell'inverno 2012–2013 si aggiunsero i giornali, che
+parlavano di epidemia, e molti cercavano per curiosità e non per febbre. Il
+modello, tarato sul mondo di qualche anno prima, continuava a leggere il
+presente con gli occhiali di allora. Che cosa succede quando i dati che un
+modello incontra non somigliano più a quelli su cui è stato addestrato?
 
 ## L'ipotesi nascosta: che la distribuzione non cambi
 
@@ -47,44 +50,43 @@ poggia su un'assunzione che di solito non viene dichiarata: che i dati su cui il
 modello è addestrato e quelli che incontrerà dopo siano estratti dalla stessa
 distribuzione, e che ogni esempio sia estratto senza essere condizionato dagli
 altri. È l’**ipotesi i.i.d.** (*indipendenti e identicamente distribuiti*).
-Finché vale, l'errore misurato sugli esempi di test stima quello che il modello
+Finché vale, l'errore misurato sugli esempi di test stima l'errore che il modello
 farà sugli esempi futuri. Nessuna legge assicura che il mondo continui a
 rispettarla.
 
 `````{tab} Elementare
 
 Un sondaggio elettorale intervista mille persone e prevede il voto di milioni.
-Funziona per una sola ragione: le mille persone sono scelte in modo da
-*somigliare* ai milioni. Tutto quello che abbiamo visto finora (training,
-validation, test) è, in fondo, un sondaggio: peschiamo esempi da un'urna e
-contiamo, fidandoci che l'urna di domani sia la stessa di oggi.
+Funziona solo perché le mille persone sono scelte in modo da *somigliare* ai
+milioni. Training, validation e test sono, in fondo, un sondaggio: peschiamo
+esempi da un'urna e contiamo, fidandoci che l'urna di domani sia la stessa di
+oggi.
 
 Se in un'urna ben mescolata il 30% delle palline è rosso, in una manciata di
 cento ne troverai più o meno trenta rosse: la manciata "parla" per l'urna
 intera. Ma se stanotte qualcuno sostituisce metà delle palline, la manciata
-pescata ieri non dice più nulla sull'urna di oggi. È quello che è successo a
+pescata ieri non dice più nulla sull'urna di oggi. È successo a
 Google Flu Trends: l'urna (il modo in cui la gente usa un motore di ricerca)
 era cambiata, e nessuno aveva avvisato il modello.
 
-La manciata parla per l'urna anche a un'altra condizione, e riguarda il momento
-in cui si decide la domanda. «Quante rosse?» stabilito prima di pescare, e la
-manciata risponde per l'urna. Stabilito dopo, no. Chi pesca cento palline e poi
-va a cercare, fra mille domande possibili, quella a cui quelle cento rispondono
-nel modo più vistoso ha ritagliato la domanda addosso alla manciata, e sull'urna
-intera quella domanda non dice niente. È l'overfitting visto dal lato dell'urna,
-ed è anche la prima delle due cause di Google Flu Trends, che aveva scelto i
-suoi termini di ricerca fra cinquanta milioni guardando come andavano su quei
-dati. Ci si difende allo stesso modo, tenendo corto l'elenco delle domande che
-ci si concede prima di pescare.
+La manciata parla per l'urna anche a un'altra condizione, che riguarda il
+momento in cui si decide la domanda. Se «Quante rosse?» viene stabilito prima di
+pescare, la manciata risponde per l'urna. Stabilito dopo, no: chi pesca cento
+palline e poi va a cercare, fra mille domande possibili, quella a cui quelle
+cento rispondono nel modo più vistoso ha ritagliato la domanda addosso alla
+manciata, e sull'urna intera quella domanda non dice niente. È l'overfitting
+visto dal lato dell'urna, e la prima delle due cause di Google Flu Trends, che
+aveva scelto i suoi termini di ricerca fra cinquanta milioni guardando come
+andavano su quei dati. La difesa è la stessa: tenere corto l'elenco delle
+domande che ci si concede prima di pescare.
 
-Questa urna ha anche un nome tecnico. La distribuzione
-di una cosa è, semplicemente, il resoconto di quanto spesso ciascun valore
-capita: le palline rosse al 30% e le altre al 70% *sono* la distribuzione dei
-colori in quell'urna. «La distribuzione degli input è cambiata» vuol dire
-esattamente «l'urna non è più quella». E un'urna si cambia in più di un modo,
-mettendoci dentro palline diverse, oppure cambiando quanto spesso la risposta
-giusta è una o l'altra, oppure cambiando quello che il colore di una pallina
-significa.
+Questa urna ha anche un nome tecnico. La distribuzione di una grandezza è il
+resoconto di quanto spesso capita ciascun valore: le palline rosse al 30% e
+le altre al 70% *sono* la distribuzione dei colori in quell'urna. Dire che la
+distribuzione degli input è cambiata equivale a dire che l'urna non è più
+quella, e un'urna si cambia in più di un modo: mettendoci dentro palline
+diverse, cambiando quanto spesso la risposta giusta è una o l'altra, oppure
+cambiando il significato del colore di una pallina.
 
 `````
 
@@ -120,7 +122,7 @@ $$
 dove $P(\mathbf{x})$ è la distribuzione degli input, $P(y)$ quella delle
 etichette, $P(y \mid \mathbf{x})$ la relazione input-etichetta che il modello
 cerca di apprendere e $P(\mathbf{x} \mid y)$ come si presentano gli input di
-ciascuna classe. I fattori non cambiano per conto loro (con $P(y \mid
+ciascuna classe. I fattori non cambiano in modo indipendente (con $P(y \mid
 \mathbf{x})$ ferma, cambiare $P(\mathbf{x})$ cambia anche $P(y)$), e le famiglie
 di shift si distinguono da quale condizionata resta ferma.
 
@@ -128,17 +130,18 @@ di shift si distinguono da quale condizionata resta ferma.
 
 ## Tre modi in cui il mondo cambia
 
-Non tutti i cambiamenti sono uguali, e la distinzione che conta è quale parte
-della congiunta si è mossa: da questa dipende che cosa si può correggere senza
-etichette nuove. Le famiglie più usate sono tre, *covariate shift*, *label
-shift* (o *prior probability shift*) e *concept shift*, nella sistemazione di
+Non tutti i cambiamenti sono uguali. Conta quale parte della congiunta è
+cambiata, perché da questo dipende che cosa si può correggere senza etichette
+nuove. Le famiglie più usate sono tre, *covariate shift*, *label shift* (o
+*prior probability shift*) e *concept shift*, nella sistemazione di
 Moreno-Torres e coautori {cite}`morenotorres2012unifying`, e nella pratica
-arrivano mescolate. {numref}`fig-distribution-shift` mostra il caso più semplice
-da visualizzare: le densità di una stessa caratteristica (i metri quadri, l'età,
-il numero di ricerche) in addestramento e in produzione, con i valori in
-orizzontale e in verticale quanto spesso ciascuno capita. Le due curve sfalsate
-dicono che i valori frequenti in addestramento non sono quelli frequenti in
-produzione, e che il modello viene interrogato dove ha visto pochi esempi.
+arrivano mescolate. {numref}`fig-distribution-shift` mostra il caso più
+semplice da visualizzare: le densità di una stessa caratteristica (i metri
+quadri, l'età, il numero di ricerche) in addestramento e in produzione, con i
+valori in orizzontale e in verticale quanto spesso ciascuno capita. Le due
+curve sfalsate dicono che i valori frequenti in addestramento non sono quelli
+frequenti in produzione, e che il modello viene interrogato dove ha visto pochi
+esempi.
 
 ```{figure} ../figures/distribution-shift.svg
 :name: fig-distribution-shift
@@ -148,50 +151,50 @@ produzione, e che il modello viene interrogato dove ha visto pochi esempi.
 Due distribuzioni a confronto: la curva dei dati di addestramento e quella dei
 dati che il modello incontra una volta al lavoro. La linea tratteggiata segna il
 valore attorno a cui il modello è tarato, cioè dove i dati di ieri si
-addensavano; i dati di oggi cadono in gran parte altrove, dove di esempi non ne
-ha quasi mai visti.
+addensavano; i dati di oggi cadono in gran parte altrove, dove non
+ha quasi mai visto esempi.
 ```
 
 `````{tab} Elementare
 
-Cambiano le domande, cioè gli input che arrivano al modello (*covariate shift*).
-Un'app che riconosce le piante, addestrata su foto scattate d'estate, viene
-usata d'inverno: luce bassa, rami spogli, neve sullo sfondo. Le foto che
-arrivano sono diverse da quelle viste a lezione, ma attenzione: un abete resta
-un abete. La *regola* che collega foto e risposta non è cambiata; è cambiato il
-tipo di foto che arriva. Davanti a un ramo spoglio nella neve una risposta la dà
-lo stesso, e la dà su un caso che d'estate non poteva capitarle, allungando
-quello che sa oltre il punto in cui l'ha imparato.
+Cambiano le domande, cioè gli input che arrivano al modello (*covariate
+shift*). Un'app che riconosce le piante, addestrata su foto scattate d'estate,
+viene usata d'inverno: luce bassa, rami spogli, neve sullo sfondo. Le foto che
+arrivano sono diverse da quelle viste a lezione, ma un abete resta un abete. La
+*regola* che collega foto e risposta non è cambiata; è cambiato il tipo di foto
+che arriva. Davanti a un ramo spoglio nella neve dà lo stesso una risposta, e
+la dà su un caso che d'estate non poteva capitarle, estendendo la sua
+esperienza oltre il punto in cui l'ha acquisita.
 
 Cambiano le proporzioni delle risposte (*label shift*). Un modello aiuta a
 diagnosticare una malattia che, quando è stato addestrato, colpiva una persona
-su mille. Arriva un'epidemia e diventa una su cinquanta. I sintomi della
-malattia sono identici a prima: cambia solo *quanto spesso* la risposta giusta
-è «positivo».
+su mille. Arriva un'epidemia e i malati diventano uno su cinquanta. I sintomi
+della malattia sono identici a prima; cambia solo *quanto spesso* la risposta
+giusta è «positivo».
 
 Se i sintomi sono gli stessi, perché il modello dovrebbe sbagliare? Perché la
 rarità, di nascosto, è entrata nel suo giudizio. Un modello che ha imparato su
 un mondo in cui i malati sono uno su mille ha anche imparato che dire «sano»
 paga: ci prende 999 volte su 1000, e per convincerlo del contrario servono
-sintomi molto chiari. Davanti a un caso dubbio resterà prudente e dirà «sano»,
-il che era la scommessa giusta ieri ed è quella sbagliata oggi, che i malati
-sono venti volte tanti.
+sintomi molto chiari. Davanti a un caso dubbio resterà prudente e dirà «sano»:
+ieri era la scommessa giusta, oggi che i malati sono venti volte tanti è quella
+sbagliata.
 
 Cambia la regola stessa (*concept shift*). Che cos'è lo spam? Le stesse parole
 ("offerta", "clicca qui", "solo per oggi") che nel 2005 gridavano truffa, oggi
 arrivano da negozi legittimi; e intanto i truffatori hanno imparato a scrivere
-come una banca. Qui non cambiano solo le domande: cambia la *risposta giusta
-alla stessa domanda*. Allo spam sono serviti anni; altrove la regola cambia da
-un giorno all'altro, come quando una legge nuova stabilisce che cosa conta come
+come una banca. Qui cambiano le domande e cambia anche la *risposta giusta alla
+stessa domanda*. Allo spam sono serviti anni; altrove la regola cambia da un
+giorno all'altro, come quando una legge nuova stabilisce che cosa conta come
 transazione sospetta. È il caso più insidioso, perché nessuna quantità di dati
 vecchi può insegnare una regola nuova.
 
-Nel mondo vero i tre cambiamenti non arrivano in fila e ben separati.
-L'inverno porta insieme foto più scure e più abeti che margherite, cioè
-domande diverse e proporzioni diverse in una volta sola. E capire quale dei
-tre pesi di più, guardando i soli dati in arrivo, è difficile: per sapere se
-l'app ha sbagliato bisogna che qualcuno guardi la foto e dica che pianta era,
-e quel qualcuno arriva tardi, o non arriva affatto.
+Nel mondo vero i tre cambiamenti non arrivano uno alla volta e ben separati.
+L'inverno porta insieme foto più scure e più abeti che margherite, cioè domande
+diverse e proporzioni diverse in una volta sola. Capire quale dei tre pesi di
+più, guardando i soli dati in arrivo, è difficile, perché per sapere se l'app
+ha sbagliato bisogna che qualcuno guardi la foto e dica che pianta era, e quel
+qualcuno arriva tardi, o non arriva affatto.
 
 `````
 
@@ -212,8 +215,15 @@ quale condizionata resta ferma {cite}`morenotorres2012unifying`:
 - **Concept shift**: cambia $P(y \mid \mathbf{x})$. La relazione input-etichetta
   stessa si sposta, gradualmente (i gusti musicali) o di colpo (una nuova legge
   cambia cosa è "transazione sospetta"). Nella letteratura sui flussi di dati è
-  il *real concept drift*; *concept drift* da solo indica di solito qualunque
-  cambiamento della congiunta nel tempo {cite}`gama2014survey`.
+  il *real concept drift*; *concept drift* senza aggettivi indica di solito
+  qualunque cambiamento della congiunta nel tempo {cite}`gama2014survey`.
+
+Ciascuna famiglia è un'ipotesi su come le due distribuzioni si legano, e senza
+nessuna ipotesi non si impara niente: se le etichette si capovolgessero a parità
+di $P(\mathbf{x})$, nessun dato di addestramento potrebbe dirlo. Il covariate
+shift è l'ipotesi naturale quando $\mathbf{x}$ causa $y$ (le caratteristiche di
+una casa determinano il prezzo), il label shift quando $y$ causa $\mathbf{x}$
+(la malattia produce i sintomi).
 
 Nella pratica le tre forme arrivano mescolate, e distinguere quale domini a
 partire dai soli dati è un problema difficile: spesso mal posto, se le etichette
@@ -235,19 +245,19 @@ addestramento, non sotto quella che il modello incontrerà dopo.
 
 Train, validation e test sono tre ritagli della *stessa fotografia*. Se la
 fotografia invecchia, invecchiano tutti e tre insieme, e i loro voti restano
-alti proprio mentre il modello, nel mondo reale, comincia a sbagliare. È come
-guidare guardando lo specchietto retrovisore: ti dice benissimo la strada già
-percorsa, ma non la curva che sta arrivando.
+alti mentre il modello, nel mondo reale, comincia a sbagliare. È come guidare
+guardando lo specchietto retrovisore, che ti dice benissimo la strada già
+percorsa ma non la curva che sta arrivando.
 
-Google Flu Trends, sui dati con cui era stato validato, andava bene: era stato
-validato sul passato. Ma quel voto misurava quanto il modello somigliasse al
+Google Flu Trends andava bene sui dati di validazione, perché era stato
+validato sul passato. Quel voto misurava quanto il modello somigliasse al
 passato, non quanto avrebbe retto a un'altra stagione o a un altro modo di
 cercare, e fra i termini scelti ce n'erano di legati all'inverno più che
 all'influenza. La validazione risponde a "quanto sbaglierò su dati *come
 questi*?", non a "quanto sbaglierò *domani*?".
 
 C'è però un modo di rendere onesta anche la domanda, e vale ogni volta che i
-dati hanno una data sopra: invece di tagliarli a caso, si taglia nel tempo. Il
+dati hanno una data sopra, e invece di tagliarli a caso si taglia nel tempo. Il
 modello studia su gennaio-ottobre e viene interrogato su novembre-dicembre, che
 al momento dell'addestramento erano il futuro. Se già lì peggiora, è un segnale
 serio che in mezzo al mondo vero peggiorerà (a meno che la finestra scelta abbia
@@ -299,45 +309,46 @@ sono operativi prima che matematici. Sono tre:
 
 Un modello in produzione è come la bilancia del mercato, che per legge va
 ritarata periodicamente, perché con l'uso e il tempo si starano tutte, ed è
-meglio accorgersene prima del cliente. In pratica si tengono d'occhio tre cose.
-Le domande, per cominciare. Se un filtro antispam riceveva email lunghe in media
-80 parole e ora ne arrivano da 200, è un campanello. Poi le uscite. Se ieri
-segnalava come spam il 20% dei messaggi e oggi il 45%, qualcosa è cambiato, nel
-mondo o nel modello. Infine gli errori veri, appena si scopre la risposta giusta
-(l'utente ha ripescato l'email dal cestino?).
+meglio accorgersene prima del cliente. In pratica si tengono d'occhio le
+domande, le uscite e, appena si scopre la risposta giusta, gli errori veri. Se un
+filtro antispam riceveva email lunghe in media 80 parole e ora ne arrivano da
+200, è un campanello sulle domande. Se ieri segnalava come spam il 20% dei
+messaggi e oggi il 45%, qualcosa è cambiato, nel mondo o nel
+modello. Se gli utenti ripescano dal cestino molte email segnalate, gli errori
+veri stanno salendo, e lo si sa.
 
-Sui conteggi si può fare un aggiustamento, la ripesatura, ed è quello che gli
-istituti di sondaggi fanno da sempre. Il campione di mille persone ne contiene
-50 sotto i trent'anni, il 5%, mentre nel paese quella fascia pesa il 20%,
-quattro volte tanto. Allora ogni giovane intervistato viene contato quattro
-volte (20 diviso 5), e chi viene da una fascia sovrarappresentata conta meno di
-una persona intera. Nessuno torna a bussare a nessuna porta, cambia solo il peso
-che ogni risposta ha nella media finale, e il totale torna a somigliare al paese
-invece che al campione. Lo stesso conto ripara il caso della malattia diventata
+Sui conteggi si può fare un aggiustamento che gli istituti di sondaggi fanno da
+sempre, la ripesatura. Il campione di mille persone ne contiene 50 sotto i
+trent'anni, il 5%, mentre nel paese quella fascia pesa il 20%, quattro volte
+tanto. Allora ogni giovane intervistato viene contato quattro volte (20 diviso
+5), e chi viene da una fascia sovrarappresentata conta meno di una persona
+intera. Nessuno torna a bussare a nessuna porta, cambia solo il peso che ogni
+risposta ha nella media finale, e il totale torna a somigliare al paese invece
+che al campione. La stessa ripesatura ripara il caso della malattia diventata
 comune, dove i malati erano uno su mille e adesso sono uno su cinquanta: ogni
 malato del vecchio mucchio di esempi conta venti volte.
 
-Ripesare ripara un guasto solo, quello di aver intervistato le persone
+Ripesare corregge un solo difetto, quello di aver intervistato le persone
 sbagliate. Se nel frattempo la gente ha cambiato idea, i giovani del campione
-hanno detto quello che pensavano allora, e moltiplicare per quattro una risposta
+hanno espresso le opinioni di allora, e moltiplicare per quattro una risposta
 vecchia dà una risposta vecchia quattro volte.
 
-E se sotto i trent'anni non è stato intervistato nessuno, non c'è peso che
+Se sotto i trent'anni non è stato intervistato nessuno, non c'è peso che
 tenga, perché qualunque numero moltiplicato per zero fa zero. Di quella fascia
-il sondaggio non sa niente, e nessun conto può inventare le interviste che non
+il sondaggio non sa niente, e nessun calcolo può inventare le interviste che non
 sono state fatte.
 
 Il caso che inganna di più sta in mezzo. Se sotto i trent'anni ne sono
 capitati due invece di cinquanta, quei due devono valere per il 20% del paese
 e contano cento volte ciascuno; basta che uno dei due cambi idea perché un
-partito perda dieci punti. Il conto resta giusto, e il risultato balla. E le
+partito perda dieci punti. Il calcolo resta corretto e il risultato balla. Le
 fasce quasi vuote si moltiplicano appena si ripesa per più cose insieme, età e
 regione e titolo di studio e reddito, perché più le caselle sono strette e
 meno gente ci finisce dentro.
 
-Da qui viene anche il permesso di passare la mano. Davanti a un caso che
-non somiglia a nulla di già visto, meglio dire "non lo so, decida un umano"
-che sparare una risposta sicura e sbagliata.
+Un modello può anche passare la mano. Davanti a un caso che non somiglia
+a nulla di già visto, meglio dire "non lo so, decida un umano" che sparare una
+risposta sicura e sbagliata.
 
 `````
 
@@ -371,26 +382,29 @@ chiede $p_{\text{train}}(\mathbf{x}) > 0$ dovunque
 $p_{\text{prod}}(\mathbf{x}) > 0$: il supporto di produzione deve stare dentro
 quello di addestramento, e dove manca nessun peso può inventare esempi mai
 raccolti. Quindi $\mathcal{L}_w(\theta)$ è una stima corretta del rischio in
-produzione per ogni $\theta$, e il suo minimo converge a quello giusto al
-crescere di $m$; con $m$ finito la sua varianza cresce con $\mathbb{E}[w^2]$,
-e stimare il rapporto di densità in alta dimensione è difficile, con pesi
-enormi su pochi esempi che la fanno esplodere. Il rimedio di Shimodaira è
+produzione per ogni $\theta$, e con una classe di ipotesi di capacità limitata
+il suo minimo converge a quello giusto al crescere di $m$.
+
+Con $m$ finito la varianza di $\mathcal{L}_w$ cresce con $\mathbb{E}[w^2]$, e
+stimare il rapporto di densità in alta dimensione è difficile: quando pochi
+esempi ricevono pesi enormi, la varianza esplode. Il rimedio di Shimodaira è
 appiattire i pesi, $w^\lambda$ con $\lambda \in [0,1]$: $\lambda = 0$ ignora
-lo shift, $\lambda = 1$ lo corregge per intero, e in mezzo si scambia
-distorsione con varianza {cite}`shimodaira2000improving`. Quanti esempi
-contano davvero lo dice la taglia effettiva, $m_{\text{eff}} = \bigl(\sum_i
-w_i\bigr)^2 / \sum_i w_i^2$, che crolla appena pochi pesi dominano. Le due
+lo shift, $\lambda = 1$ lo corregge del tutto, e in mezzo si scambia distorsione
+con varianza {cite}`shimodaira2000improving`. La taglia effettiva dice a quanti
+esempi equivale il campione pesato, $m_{\text{eff}} = \bigl(\sum_i
+w_i\bigr)^2 / \sum_i w_i^2$, e crolla appena pochi pesi dominano. Le due
 densità, però, non vanno stimate una per una: un classificatore che distingue
 addestramento e produzione, addestrato su $m_{\text{tr}}$ e $m_{\text{prod}}$
-esempi, dà $w(\mathbf{x}) =
+esempi, dà
+$w(\mathbf{x}) =
 \frac{m_{\text{tr}}}{m_{\text{prod}}}\,\frac{P(\text{prod}\mid\mathbf{x})}{1 -
-P(\text{prod}\mid\mathbf{x})}$, ed è lo stesso classificatore di dominio che
-serve ad accorgersi della deriva. Infine il ripeso conta soprattutto quando il
-modello è mal specificato: se la famiglia contiene la vera $P(y \mid
-\mathbf{x})$, il minimo non pesato è già consistente e i pesi aggiungono
-soltanto varianza {cite}`shimodaira2000improving`.
+P(\text{prod}\mid\mathbf{x})}$. È lo stesso classificatore di dominio che serve
+ad accorgersi della deriva. Il ripeso serve soprattutto quando il modello è mal
+specificato: se la famiglia contiene la vera $P(y \mid \mathbf{x})$, il minimo
+non pesato è già consistente e i pesi aggiungono soltanto varianza
+{cite}`shimodaira2000improving`.
 
-Per il *label shift* il conto è più semplice, perché il rapporto dipende dalla
+Per il *label shift* il calcolo è più semplice, perché il rapporto dipende dalla
 sola classe. Con $P(\mathbf{x} \mid y)$ invariata, $p_{\text{prod}}(y \mid
 \mathbf{x}) \propto p_{\text{train}}(y \mid
 \mathbf{x})\;\pi_{\text{prod}}(y)/\pi_{\text{train}}(y)$, dove $\pi(y)$ è la
@@ -401,15 +415,17 @@ passata da uno su mille a uno su cinquanta, $20$ sui positivi e $0{,}98/0{,}999
 \approx 0{,}98$ sui negativi). Resta da stimare $\pi_{\text{prod}}$, che senza
 etichette nuove si ricava con un EM sulle posteriori
 {cite}`saerens2002adjusting` o invertendo la matrice di confusione del modello
-{cite}`lipton2018detecting`. Complementare a tutto questo è
-l’**out-of-distribution detection**: riconoscere gli input troppo lontani dalla
-distribuzione di addestramento e, invece di predire con finta sicurezza,
-astenersi o segnalare; un problema particolarmente delicato per le reti
-profonde, che su input fuori distribuzione tendono a essere *confidenti e
-sbagliate* insieme. I primi strumenti sono già comparsi: la densità di una
-mistura gaussiana ({doc}`Riduzione e clustering <riduzione-clustering>`) e la
-One-Class SVM ({doc}`Il kernel trick <svm-kernel>`) segnalano gli input che
-cadono dove la distribuzione di addestramento ha densità bassa.
+{cite}`lipton2018detecting`.
+
+Una difesa complementare è l’**out-of-distribution detection**, che riconosce
+gli input troppo lontani dalla distribuzione di addestramento e, invece di
+predire con finta sicurezza, si astiene o segnala. Il problema è particolarmente
+delicato per le reti profonde, che su input fuori distribuzione tendono a essere
+*confidenti e sbagliate* insieme. Due strumenti già visti vanno in questa
+direzione, la densità di una mistura gaussiana ({doc}`Riduzione e clustering
+<riduzione-clustering>`) e la One-Class SVM ({doc}`Il kernel trick
+<svm-kernel>`), e segnalano gli input che cadono dove la distribuzione di
+addestramento ha densità bassa.
 
 `````
 
@@ -419,24 +435,23 @@ per accorgersi di una deriva negli input basta un **classificatore di dominio**
 dati di addestramento e quelli raccolti in produzione, si scarta l'etichetta
 originale $y$ e se ne assegna una nuova a ogni esempio: 0 se viene
 dall'addestramento, 1 se viene dalla produzione. Un modello addestrato a
-indovinare la nuova etichetta dalle sole caratteristiche $\mathbf{x}$ ci riesce
-solo se le due distribuzioni degli input differiscono, e il suo punteggio misura
-quanto. Lo chiameremo il *detective*.
+indovinare la nuova etichetta dalle sole caratteristiche $\mathbf{x}$, una
+specie di *detective*, ci riesce solo se le due distribuzioni degli input
+differiscono, e il suo punteggio misura quanto.
 
 Il punteggio da guardare è l'AUC della {doc}`sezione sulle metriche
-<metriche>`: $0{,}5$ vuol dire che il detective non distingue le due
-popolazioni, cioè che tira a indovinare, e $1$ che le separa senza errori.
+<metriche>`: con $0{,}5$ il detective non distingue le due popolazioni, cioè
+tira a indovinare, e con $1$ le separa senza errori.
 
 Un'AUC vicina a $0{,}5$ non equivale a «va tutto bene», per due ragioni. La
-prima è che il detective vede solo gli input, non le risposte: del cambio di
-regola, in cui gli input restano gli stessi e a cambiare è la risposta giusta,
-non può accorgersi per costruzione, ed è il caso più insidioso dei tre. La
-seconda è che un'AUC vicina a $0{,}5$ può anche voler dire che gli esempi nuovi
-sono ancora troppo pochi: uno scarto piccolo ma reale resta sotto il rumore di
+prima è che il detective vede solo gli input, non le risposte: per costruzione
+non può accorgersi del cambio di regola (in cui gli input restano gli stessi e
+cambia la risposta giusta), il caso più insidioso dei tre. La seconda è che
+un'AUC vicina a $0{,}5$ può anche indicare che gli esempi nuovi sono ancora
+troppo pochi: uno scarto piccolo ma reale resta sotto il rumore di
 campionamento dell'AUC, e un classificatore di capacità limitata può non vedere
-un'interazione fra molte caratteristiche. Non aver trovato non è aver dimostrato
-che non c'è niente. È uno strumento da avere, purché letto per quello che è: un
-allarme quando suona, non un certificato quando tace.
+un'interazione fra molte caratteristiche. Un'AUC alta è quindi un allarme
+attendibile, mentre un'AUC vicina a $0{,}5$ non dimostra che la deriva manchi.
 
 ```python
 import numpy as np
@@ -469,12 +484,11 @@ produzione con la deriva : 0.736
 produzione senza deriva  : 0.508
 ```
 
-I due numeri sono le due letture possibili dello strumento, e vanno tenuti
-vicini perché da soli non si interpretano. Il secondo, $0{,}508$, è il caso in
-cui non è cambiato niente: il detective tira a indovinare, come chi lanciasse
-una monetina. Il primo, $0{,}736$, è l'allarme: una sola caratteristica
-scivolata di un'unità e mezza basta perché l'epoca di provenienza diventi in
-buona parte indovinabile.
+I due numeri sono le due letture possibili dello strumento e vanno letti
+insieme. Il secondo, $0{,}508$, è il caso in cui non è cambiato niente: il
+detective tira a indovinare, come chi lanciasse una monetina. Il primo,
+$0{,}736$, è l'allarme: una sola caratteristica scivolata di un'unità e mezza
+basta perché l'epoca di provenienza diventi in buona parte indovinabile.
 
 ## Imparare un esempio alla volta
 
@@ -494,15 +508,15 @@ Il filtro antispam impara una email alla volta. Arriva un messaggio, il filtro
 dà il suo verdetto, e poco dopo tu gli dici se aveva ragione, lasciando l'email
 dov'è o ripescandola dal cestino. Allora il filtro corregge un poco le sue
 regole, nella direzione che su quell'email avrebbe ridotto l'errore, e passa
-alla successiva: è la discesa del gradiente, fatta un esempio alla volta. Le
-email vecchie non le conserva, perché gli bastano le regole che ha adesso. E le
-regole le tiene dentro un recinto (tutti i pesi insieme non possono crescere
-oltre una certa misura), perché una parola che compare in mille spam non finisca
-per pesare all'infinito.
+alla successiva. È la discesa del gradiente, fatta un esempio alla volta. Non
+conserva le email vecchie, perché gli bastano le regole che ha adesso. Tiene
+inoltre le regole dentro un recinto (tutti i pesi insieme non possono crescere
+oltre una certa misura), così che una parola che compare in mille spam non
+finisca per pesare all'infinito.
 
-Quanto correggere ogni volta è la scelta che decide tutto. Correzioni grandi
-inseguono ogni singola email; correzioni piccole imparano con lentezza. La
-ricetta che funziona meglio sta nel mezzo e cambia col tempo: la correzione si
+Tutto dipende da quanto correggere ogni volta. Correzioni grandi inseguono ogni
+singola email; correzioni piccole imparano con lentezza. La ricetta che
+funziona meglio sta nel mezzo e cambia col tempo, perché la correzione si
 accorcia man mano che le email si accumulano, come uno diviso la radice di
 quante ne sono arrivate, e alla centesima vale un decimo della prima.
 
@@ -510,45 +524,47 @@ A fine anno, con tutte le email davanti, cerchi il miglior filtro fisso: quello
 che, applicato dal primo giorno, avrebbe sbagliato meno di tutti. Il rimpianto è
 quanto il filtro che ha imparato strada facendo ha sbagliato in più. Un teorema
 garantisce che il rimpianto cresce al più come la radice del numero di email,
-cioè più piano delle email stesse: se dopo cento email fosse dieci, dopo
+cioè più piano delle email stesse. Se dopo cento email fosse dieci, dopo
 diecimila sarebbe al più cento, e il rimpianto per email scenderebbe da un
 decimo a un centesimo. Per email, quindi, tende a zero.
 
 Più piano della radice, in generale, non si può promettere. Se le email fossero
 decise a testa o croce nessun filtro potrebbe indovinarle; eppure a fine anno
 uno dei filtri fissi sembrerebbe più bravo degli altri, per pura fortuna, di una
-quantità che cresce proprio come la radice (lanciando cento monete ci si
+quantità che cresce come la radice (lanciando cento monete ci si
 aspettano cinquanta teste, e cinquantacinque sono normali; con diecimila,
 cinquemila più o meno cinquanta).
 
 Si fa meglio solo se il problema aiuta. Quando ogni email punisce con decisione
 qualunque filtro lontano dal migliore, con un errore che sale come una conca
 ripida e non come un fondovalle piatto, la correzione si può accorciare più in
-fretta, come uno diviso il numero di email, e il rimpianto cresce appena come il
-logaritmo, cioè quasi niente. E la garanzia non chiede niente alle email: vale
-anche se chi le scrive prova apposta a ingannare il filtro, perché il paragone è
-sempre con il miglior filtro fisso su quelle stesse email.
+fretta, come uno diviso il numero di email, e il rimpianto cresce appena come
+il logaritmo, cioè quasi niente. La garanzia non chiede niente alle
+email, e vale anche se chi le scrive prova apposta a ingannare il filtro,
+perché il paragone è sempre con il miglior filtro fisso su quelle stesse email.
 
-Se poi le email vengono davvero tutte dalla stessa urna, c'è un regalo in più.
+Se poi le email vengono tutte dalla stessa urna, c'è un regalo in più.
 Fai la media dei filtri usati giorno per giorno, regola per regola (il peso
 medio che ogni parola ha avuto lungo l'anno), e il filtro che ne esce va bene su
 email nuove quasi quanto il miglior filtro fisso, che con un'urna fissa è il
 migliore in assoluto; e il mucchio intero non l'hai mai dovuto tenere da parte.
-La media e non l'ultimo filtro, perché il rimpianto è una somma su tutti i
-giorni, e la garanzia sulla somma passa alla media dei filtri, non all'ultimo.
+Si prende la media e non l'ultimo filtro, perché il rimpianto è una somma su
+tutti i giorni, e la garanzia sulla somma passa alla media dei filtri, non
+all'ultimo.
 
 Il punto di rottura sta nel paragone. Il rimpianto si misura contro il miglior
-filtro *fisso*, e se a metà anno gli spammer cambiano trucco nessun filtro fisso
-va bene per tutto l'anno: un rimpianto piccolo, allora, promette poco. Peggio,
-le correzioni che si accorciano rendono il filtro sempre più lento: dopo
-diecimila email ogni correzione vale un centesimo della prima, e il trucco nuovo
-lo trova testardo. Con correzioni di misura fissa il filtro resta pronto a
-seguire, e lo paga oscillando anche quando non cambia niente, perché ogni email
-lo strattona della stessa misura anche quando aveva già ragione. Quale misura
-scegliere dipende da quanto spesso gli spammer cambiano trucco, che non si sa in
-anticipo. C'è anche chi cambia il paragone: invece del miglior filtro fisso, il
-miglior filtro a cui è permesso cambiare qualche volta durante l'anno, e contro
-quello il rimpianto torna a promettere qualcosa.
+filtro *fisso*, e se a metà anno gli spammer cambiano trucco nessun filtro
+fisso va bene per tutto l'anno: un rimpianto piccolo, allora, promette poco.
+Peggio, le correzioni che si accorciano rendono il filtro sempre più lento.
+Dopo diecimila email ogni correzione vale un centesimo della prima, e il trucco
+nuovo trova un filtro testardo. Con correzioni di misura fissa il filtro resta
+pronto a seguire, e lo paga oscillando anche quando non cambia niente, perché
+ogni email lo strattona della stessa misura, che avesse già ragione o no. Quale
+misura scegliere dipende da quanto spesso gli spammer cambiano trucco, che non
+si sa in anticipo. C'è anche chi cambia il paragone e confronta il filtro,
+invece che con il miglior filtro fisso, con il miglior filtro a cui è permesso
+cambiare qualche volta durante l'anno: contro quello il rimpianto torna a
+promettere qualcosa.
 
 `````
 
@@ -559,7 +575,8 @@ l'algoritmo sceglie $\mathbf{w}_t$ in un insieme convesso $\mathcal{K}$ di
 diametro $D$, poi viene rivelata una perdita convessa $\ell_t$ e l'algoritmo
 paga $\ell_t(\mathbf{w}_t)$. Sulle $\ell_t$ non si fa nessuna ipotesi
 statistica, e può sceglierle un avversario che conosce l'algoritmo. Il
-rimpianto confronta con il miglior punto fisso col senno di poi,
+rimpianto misura la perdita in più rispetto al miglior punto fisso col senno di
+poi,
 
 $$
 R_T = \sum_{t=1}^{T} \ell_t(\mathbf{w}_t)
@@ -589,7 +606,7 @@ $O\big((G^2/\alpha)\log T\big)$ {cite}`hazan2007logarithmic`.
 Quando invece i dati sono i.i.d., il rimpianto diventa una garanzia statistica.
 Con una perdita convessa nel primo argomento e a valori in $[0,1]$, il punto
 medio $\bar{\mathbf{w}} = \frac{1}{T}\sum_t \mathbf{w}_t$ ha, con probabilità
-almeno $1-\delta$, rischio al più la perdita media pagata online più
+almeno $1-\delta$, un rischio che non supera la perdita media pagata online più
 $\sqrt{2\ln(1/\delta)/T}$ {cite}`cesabianchi2004generalization`, dove il
 rischio $L(\mathbf{w}) = \mathbb{E}[\ell(\mathbf{w};\mathbf{x},y)]$ è la
 perdita attesa su un esempio nuovo. La perdita media online supera di $R_T/T$
@@ -607,8 +624,8 @@ $\mathbf{u}_1, \dots, \mathbf{u}_T$, di lunghezza di cammino
 $P_T = \sum_t \|\mathbf{u}_{t+1} - \mathbf{u}_t\|$; con passo fisso $\eta$ la
 discesa online lo tiene sotto
 $\frac{7D^2}{4\eta} + \frac{D\,P_T}{\eta} + \frac{\eta\,G^2 T}{2}$
-{cite}`zinkevich2003online`. Il terzo termine è il prezzo del passo fisso, che
-si paga anche quando niente si muove; il secondo punisce il passo piccolo
+{cite}`zinkevich2003online`. Il terzo termine è il costo del passo fisso, che
+resta anche quando niente si muove; il secondo punisce il passo piccolo
 quando il bersaglio si sposta, e il passo che bilancia i due,
 $\eta \propto \sqrt{(D^2 + D\,P_T)/(G^2 T)}$, dipende da $P_T$, che non si
 conosce in anticipo. Nel caso a esperti lo stesso problema ha la risposta di
@@ -627,16 +644,18 @@ compresso rispetto al miglior compressore possibile.
 Il primo esperimento misura il rimpianto su flussi di esempi sempre più lunghi.
 Il modello è la regressione logistica, che si corregge dopo ogni esempio con
 passo $1/\sqrt{t}$ e riporta i pesi dentro una palla di raggio $5$ se ne
-escono, come chiede la garanzia. Il teorema di Zinkevich prende infatti
-$D/(G\sqrt{t})$, con $D$ il diametro dell'insieme ammesso per i pesi e $G$ il
-massimo della norma del gradiente, e ne ricava la costante $\tfrac32 GD$. La
-palla di raggio $5$ è l'insieme convesso $\mathcal{K} = \{\mathbf{w} :
-\lVert\mathbf{w}\rVert \le 5\}$ della formula, i pesi la cui lunghezza non
-supera $5$. La perdita è la sua cross-entropy (o *log-loss*), il modo della
-regressione logistica di contare quanto ha sbagliato. Il miglior modello fisso
-col senno di poi si trova risolvendo la regressione sull'intero flusso (il suo
-minimo cade dentro la palla, quindi è anche il migliore in $\mathcal{K}$), e il
-rimpianto è la differenza fra le due perdite totali.
+escono, perché la garanzia vuole un insieme limitato. Il passo è del tipo
+$c/\sqrt{t}$ con $c = 1$ e non con il $c = D/G$ del teorema di Zinkevich, dove
+$D$ è il diametro dell'insieme ammesso per i pesi e $G$ il massimo della norma
+del gradiente: con un $c$ qualunque il rimpianto resta di ordine $\sqrt{T}$, e
+cambia soltanto la costante davanti. La palla di raggio $5$ è l'insieme convesso
+$\mathcal{K} = \{\mathbf{w} : \lVert\mathbf{w}\rVert \le 5\}$ della
+formula, i pesi la cui lunghezza non supera $5$. La perdita è la sua
+cross-entropy (o *log-loss*), il modo della regressione logistica di contare
+quanto ha sbagliato. Il miglior modello fisso col senno di poi si trova
+risolvendo la regressione sull'intero flusso (il suo minimo cade dentro la
+palla, quindi è anche il migliore in $\mathcal{K}$), e il rimpianto è la
+differenza fra le due perdite totali.
 
 ```python
 import numpy as np
@@ -685,13 +704,14 @@ T = 100000: rimpianto  63.2   per esempio 0.0006   diviso la radice di T 0.20
 ```
 
 Il rimpianto cresce, da $20$ a $63$, mentre gli esempi crescono di cento volte,
-e per esempio scende da due centesimi a sei decimillesimi. Anche diviso per
-$\sqrt{T}$ scende. Il $\sqrt{T}$ della garanzia è il caso peggiore, quello di un
-avversario, e su esempi estratti da un'urna fissa il rimpianto può crescere più
-piano, come fa qui; ma nessuna delle garanzie appena viste lo promette per
-questo algoritmo: quella logaritmica chiede perdite fortemente convesse
-dappertutto, e la cross-entropy non lo è. E tre flussi estratti una volta sola
-non bastano a dire con quale legge cresca.
+e diviso per il numero degli esempi scende da due centesimi a sei
+decimillesimi. Anche diviso per $\sqrt{T}$ scende. Il $\sqrt{T}$ della garanzia
+è il caso peggiore, quello di un avversario, e su esempi estratti da una
+distribuzione fissa il rimpianto può crescere più piano, come fa qui; ma nessuna
+delle due garanzie sul rimpianto lo promette per questo algoritmo: quella
+logaritmica chiede perdite fortemente convesse dappertutto, e la cross-entropy
+non lo è. Tre flussi estratti una volta sola, poi, non bastano a dire con quale
+legge cresca.
 
 Il secondo esperimento mette alla prova il punto di rottura. Venti flussi di
 ventimila esempi, con la regola che a metà cambia; quattro allievi: uno
@@ -763,8 +783,8 @@ online l'ordine si rovescia da una colonna all'altra. Nei periodi tranquilli il
 passo che si accorcia è il più preciso, con $0{,}0008$ contro i $0{,}0138$ del
 passo fisso più lungo; subito dopo il cambio è il più lento, con $0{,}2246$
 contro $0{,}0303$, più di sette volte tanto. Il passo fisso più corto sta in
-mezzo in tutte le colonne, ed è il compromesso fra prontezza e precisione, e
-nessun passo fisso lo scioglie. La figura segue due degli allievi su un solo
+mezzo in tutte le colonne, un compromesso fra prontezza e precisione, che
+nessun passo fisso può sciogliere. La figura segue due degli allievi su un solo
 flusso, e invece della perdita misura quanto i loro pesi distano da quelli della
 regola vera ({numref}`fig-bersaglio-che-si-sposta`).
 
@@ -782,48 +802,47 @@ centinaia, e in cambio non smette mai di oscillare.
 
 ## Quando è il modello a cambiare i dati
 
-C'è un ultimo caso, il più sottile: quello in cui i dati non cambiano
-*nonostante* il modello, ma *a causa sua*. Gli autori della "parabola" lo
-avevano notato già in Google Flu Trends: era anche Google, aggiornando il motore
-di ricerca (i termini di ricerca suggeriti, le diagnosi proposte per i sintomi)
-a cambiare i dati che il suo stesso modello leggeva {cite}`lazer2014parable`.
+C'è un ultimo caso, il più sottile: quello in cui i dati cambiano *a causa* del
+modello. Gli autori della "parabola" lo avevano notato già in Google Flu
+Trends: aggiornando il motore di ricerca (i termini di ricerca suggeriti, le
+diagnosi proposte per i sintomi), era Google a cambiare i dati che il suo stesso
+modello leggeva {cite}`lazer2014parable`.
 
 Nei sistemi moderni questo **circuito di retroazione** (*feedback loop*) è
-ovunque. Un sistema di raccomandazione mostra i contenuti che prevede
+frequente. Un sistema di raccomandazione mostra i contenuti che prevede
 piaceranno; l'utente sceglie tra *quelli*, e i clic raccolti confermano al
-modello che aveva ragione, qualunque cosa avesse mostrato. Un modello di credito
-nega il prestito a chi giudica rischioso: di quelle persone non sapremo mai se
-avrebbero restituito i soldi, e i dati futuri conterranno solo le storie di chi
-il prestito l'ha avuto. In entrambi i casi il modello non osserva più il mondo:
-osserva le conseguenze delle proprie decisioni. E sui propri numeri può perfino
-sembrare sempre più bravo, mentre in realtà sta restringendo il mondo a ciò che
-aveva già deciso: chi guarda un video di cucina ne riceve altri dieci di cucina
-e non scoprirà mai la musica, e chi si è visto negare un prestito non avrà mai
-modo di dimostrare che l'avrebbe restituito.
+modello che aveva ragione, qualunque cosa avesse mostrato. Un modello di
+credito nega il prestito a chi giudica rischioso. Di quelle persone non sapremo
+mai se avrebbero restituito i soldi, e i dati futuri conterranno solo le storie
+di chi il prestito l'ha avuto. In entrambi i casi il modello non osserva più il
+mondo: osserva le conseguenze delle proprie decisioni. Sui propri numeri può
+perfino sembrare sempre più bravo, mentre restringe il mondo alle sue decisioni
+passate. Chi guarda un video di cucina ne riceve altri dieci e non scoprirà mai
+la musica.
 
-Riaddestrare spesso, il secondo dei rimedi, qui non basta da solo: ogni
-riaddestramento usa dati che il modello precedente ha contribuito a produrre, e
-la domanda diventa se questa rincorsa si ferma.
+Il riaddestramento periodico qui non basta, perché ogni riaddestramento usa
+dati che il modello precedente ha contribuito a produrre, e resta da chiedersi
+se questa rincorsa si ferma.
 
 `````{tab} Elementare
 
 Un sistema che consiglia video viene riaddestrato ogni settimana sui clic della
-settimana prima. Ma quei clic li ha prodotti lui: gli utenti hanno scelto fra i
-video che lui aveva deciso di mostrare. Così ogni riaddestramento insegue un
+settimana prima. Quei clic, però, li ha prodotti lui, e gli utenti hanno scelto
+fra i video che lui aveva deciso di mostrare. Così ogni riaddestramento insegue un
 bersaglio che il modello precedente ha spostato.
 
 Possono succedere due cose. Se i consigli spostano i gusti di poco, meno di
 quanto basterebbe a cambiare la lezione che il modello ne ricava (l'utente
 guarda qualche video di cucina in più, ma resta quello che era), le rincorse si
 accorciano settimana dopo settimana, e il modello si ferma in un punto in cui,
-riaddestrato sui clic che lui stesso produce, non cambia più: un equilibrio. Se
-invece i consigli spostano molto i gusti, ogni settimana il modello trova un
+riaddestrato sui clic che lui stesso produce, non cambia più, in un equilibrio.
+Se invece i consigli spostano molto i gusti, ogni settimana il modello trova un
 pubblico diverso da quello su cui si è preparato, e i riaddestramenti possono
 girare senza fermarsi mai.
 
-E anche quando ci si ferma, l'equilibrio può non essere il migliore possibile:
-il modello e i gusti che ha contribuito a creare si danno ragione a vicenda, e
-basta. Il video di cucina che non porterà mai alla musica è un equilibrio di
+Anche quando ci si ferma, l'equilibrio può non essere il migliore possibile,
+perché il modello e i gusti che ha contribuito a creare si danno ragione a
+vicenda. Il video di cucina che non porterà mai alla musica è un equilibrio di
 questo tipo.
 
 `````
@@ -843,29 +862,29 @@ $$
 $$
 
 Se la perdita è $\gamma$-fortemente convessa in $\theta$ e $\beta$-liscia (in
-$\theta$ e nei dati insieme), e il modello sposta i dati poco,
-$W_1\big(\mathcal{D}(\theta), \mathcal{D}(\theta')\big) \le
-\varepsilon\,\lVert\theta - \theta'\rVert$ con $W_1$ la distanza di
-Wasserstein-1 fra distribuzioni e $\varepsilon < \gamma/\beta$, l'iterazione
+$\theta$ e nei dati insieme), e il modello sposta i dati poco, l'iterazione
 converge in modo lineare a un unico punto *performativamente stabile*: un
-$\theta$ che resta ottimo sui dati che esso stesso produce. La condizione è
-stretta: se una delle ipotesi cade, il riaddestramento può non convergere
-affatto. E stabile non vuol dire ottimo: il punto fisso del riaddestramento in
+$\theta$ che resta ottimo sui dati che esso stesso produce. La condizione di
+vicinanza è $W_1\big(\mathcal{D}(\theta), \mathcal{D}(\theta')\big) \le
+\varepsilon\,\lVert\theta - \theta'\rVert$, con $W_1$ la distanza di
+Wasserstein-1 fra distribuzioni e $\varepsilon < \gamma/\beta$. Sono ipotesi
+strette: se una cade, il riaddestramento può non convergere affatto. Un punto
+stabile non è necessariamente ottimo: il punto fisso del riaddestramento in
 generale non minimizza $\mathrm{PR}$.
 
 `````
 
-Ci torneremo nel {doc}`capitolo sui sistemi di raccomandazione
-</SistemiRaccomandazione/overview>`, dove il circuito di retroazione è la
-struttura stessa del problema, e non un effetto collaterale.
+Il {doc}`capitolo sui sistemi di raccomandazione
+</SistemiRaccomandazione/overview>` riprende il circuito di retroazione come
+struttura stessa del problema, e non come effetto collaterale.
 
 `````{tab} Elementare
 
 ```{admonition} Da ricordare
 :class: important
 - L'apprendimento supervisionato poggia su un'ipotesi tacita: che i dati di ieri
-  e quelli di domani vengano dalla stessa urna. Il mondo non ha firmato quel
-  contratto.
+  e quelli di domani vengano dalla stessa urna, e nessuna legge assicura che il
+  mondo la rispetti.
 - Tre modi in cui l'urna cambia, e vanno distinti perché chiedono rimedi
   diversi: cambiano le domande (l'app che riconosce le piante, addestrata
   d'estate e usata d'inverno: le foto sono altre, ma un abete resta un abete);
@@ -881,7 +900,7 @@ struttura stessa del problema, e non un effetto collaterale.
 - I rimedi più usati sono abitudini prima che formule: sorvegliare il modello
   mentre lavora (gli ingressi somigliano a quelli di ieri? le risposte sono
   cambiate di colpo?), riaddestrarlo ogni tanto su dati recenti, giudicarlo su
-  dati freschi. E dargli il permesso di dire «non lo so».
+  dati freschi, e lasciargli la possibilità di dire «non lo so».
 - Un modello può anche imparare mentre lavora, un esempio alla volta. Lo si
   giudica col rimpianto, quanto sbaglia in più del miglior modello fisso
   scelto col senno di poi, e la garanzia vale qualunque cosa facciano i dati;
@@ -892,8 +911,8 @@ struttura stessa del problema, e non un effetto collaterale.
   mostra solo certi contenuti, vedrà solo clic su quelli; se nega il prestito,
   non saprà mai chi avrebbe restituito. Da lì in avanti guarda le conseguenze
   delle proprie decisioni invece del mondo, e riaddestrarlo spesso può non
-  bastare: la rincorsa si ferma con sicurezza quando il modello sposta i dati di
-  poco, e anche allora l'equilibrio non è per forza il migliore.
+  bastare: la rincorsa si ferma, a certe condizioni, quando il modello sposta i
+  dati di poco, e anche allora l'equilibrio non è per forza il migliore.
 - Google Flu Trends è la parabola da ricordare: un modello che va bene sul
   passato può sbagliare per due ragioni, perché ha imparato l'inverno invece
   dell'influenza e perché il mondo in cui cerca cambia sotto di lui, e gli esami
@@ -936,15 +955,15 @@ struttura stessa del problema, e non un effetto collaterale.
   fortemente convessa e liscia e $\varepsilon < \gamma/\beta$, e stabile non
   vuol dire ottimo.
 - Google Flu Trends resta la parabola di riferimento: un modello che va bene sul
-  passato può invecchiare in silenzio, e il suo adattamento iniziale ai dati era
+  passato può invecchiare senza avvisare, e il suo adattamento iniziale ai dati era
   in parte spurio {cite}`lazer2014parable`.
 ```
 
 `````
 
-Un modello che invecchia in silenzio non avverte quando lo si interroga lontano
-dai suoi esempi, che è proprio quello che fa il covariate shift. Resta da vedere
-un modello che accompagna ogni previsione con la propria incertezza, larga dove
-gli esempi mancano e stretta dove abbondano: sono i {doc}`processi gaussiani
-<processi-gaussiani>`. Sul cambio di regola non avvertirà nemmeno lui, perché la
-sua incertezza guarda dove stanno gli esempi, non che cosa dicono.
+Un modello non avverte quando lo si interroga lontano dai suoi esempi, e il
+covariate shift fa accadere proprio questo. I
+{doc}`processi gaussiani <processi-gaussiani>` accompagnano invece ogni
+previsione con la propria incertezza, larga dove gli esempi mancano e stretta
+dove abbondano. Sul cambio di regola non avvertiranno nemmeno loro, perché la
+loro incertezza guarda dove stanno gli esempi, non che cosa dicono.

@@ -23,12 +23,12 @@ nodo dichiarato vicino di sé stesso).
 L'introduzione al capitolo ha dato un nome al meccanismo: message passing,
 «scambio di messaggi». Qui lo apriamo: prima nella sua forma generale, poi nella
 sua forma più usata, la *Graph Convolutional Network*. Di quella
-vedremo, in quest'ordine, la formula, i conti che ne escono su un grafo
+vedremo, in quest'ordine, la formula, i calcoli che ne escono su un grafo
 minuscolo, la ragione per cui è fatta così e infine da dove viene.
 
-## Un nodo, i suoi vicini, tre mosse
+## Il passo di message passing: messaggio, aggregazione, aggiornamento
 
-L'idea si regge su un'operazione sola, ripetuta a ogni giro e uguale per ogni
+L'idea poggia su un'operazione sola, ripetuta a ogni giro e uguale per ogni
 nodo: guarda i vicini, riassumili, aggiornati. La
 {numref}`fig-message-passing` la mostra tutta in un colpo d'occhio.
 
@@ -39,8 +39,8 @@ nodo: guarda i vicini, riassumili, aggiornati. La
 
 Un passo di message passing su un nodo $v$: i messaggi dei vicini (le loro
 file di numeri) si aggregano in un unico riassunto che non dipende
-dall'ordine in cui arrivano, poi la mossa di aggiornamento fonde quel
-riassunto con quello che il nodo sapeva già di sé. In basso: impilando due
+dall'ordine in cui arrivano, poi l'aggiornamento fonde quel
+riassunto con lo stato che il nodo aveva già. In basso: impilando due
 strati, il pezzo di grafo che un nodo riesce a sentire (il suo campo
 recettivo) cresce dai vicini diretti ai vicini dei vicini.
 ```
@@ -55,24 +55,22 @@ quella fila di numeri a viaggiare lungo gli archi.
 
 A ogni giro un nodo fa tre cose, sempre nello stesso ordine. Prima ascolta, e
 ogni amico gli passa un bigliettino con sopra la propria fila di numeri (sono
-i *messaggi*). Poi riassume, e siccome i bigliettini sono file di numeri
-«riassumere» vuol dire fare i conti casella per casella, gli anni con gli
+i *messaggi*). Poi riassume, e siccome i bigliettini sono file di numeri,
+il riassunto si fa casella per casella, gli anni con gli
 anni, gli sport con gli sport. Il riassunto non deve dipendere dall'ordine in
 cui arrivano i bigliettini, perché tra amici non c'è un «primo» e un «ultimo»,
-e la somma va bene proprio per questo: cambi l'ordine degli addendi e il
+e la somma va bene per questo: cambi l'ordine degli addendi e il
 totale non cambia. Vanno bene anche la media e il massimo, cioè il più
 grande dei numeri arrivati in quella casella. Infine aggiorna la propria
-scheda, mettendo insieme il riassunto degli amici e quello che già sapeva di
-sé.
+scheda, mettendo insieme il riassunto degli amici e la scheda che aveva già.
 
 Fatto questo per tutti i nodi, il giro è finito e se ne può fare un altro. È
 lo stesso identico meccanismo per ogni persona della rete: nessuno ha una
 regola speciale. Proprio come nella convoluzione delle immagini, dove lo
-stesso piccolo filtro scorre su tutti i pixel: solo che qui i «vicini» non
-sono i quattro pixel accanto, ma gli amici sul grafo, che possono essere due o
-dieci.
+stesso piccolo filtro scorre su tutti i pixel: solo che qui i «vicini»
+sono gli amici sul grafo, due o dieci, e non i quattro pixel accanto.
 
-E se la domanda riguarda la comitiva intera invece della singola persona,
+Se la domanda riguarda la comitiva intera invece della singola persona,
 finiti i giri si mettono insieme le schede di tutti, di nuovo in un modo che
 non guarda l'ordine.
 
@@ -84,7 +82,7 @@ Il quadro generale è la *Message Passing Neural Network* (MPNN) di Gilmer e
 colleghi {cite}`gilmer2017neural`, che unifica sotto un'unica notazione quasi
 tutte le GNN. Sia $\mathbf{h}_v^{(k)}$ il vettore di stato del nodo $v$ dopo
 $k$ giri, con $\mathbf{h}_v^{(0)} = \mathbf{x}_v$ (la sua feature iniziale). Un
-passo si scrive in due mosse:
+passo si scrive in due parti:
 
 $$
 \mathbf{m}_v^{(k)} = \bigoplus_{u \in \mathcal{N}(v)}
@@ -111,7 +109,7 @@ $U_k \colon \mathbb{R}^{F_{k-1}} \times \mathbb{R}^{F_m} \to \mathbb{R}^{F_k}$,
 dove $F_0 = F$ è il numero di feature d'ingresso e $F_e$ quello delle feature
 d'arco. Il $\bigoplus$ opera componente per componente su un numero variabile
 di vettori tutti della stessa lunghezza $F_m$ e ne restituisce uno solo, sempre
-di lunghezza $F_m$: è per questo che il grado variabile non rompe le
+di lunghezza $F_m$, e così il grado variabile non rompe le
 dimensioni.
 (Attenzione al simbolo: qui $\bigoplus$ è l'aggregazione, mentre nel resto del
 libro $\oplus$ indica la concatenazione, che in questo capitolo si scrive
@@ -133,17 +131,17 @@ fissata (somma, media o massimo).
 
 ## Dalla formula alla matrice: la GCN
 
-Lo schema delle tre mosse è un telaio, non un modello: per avere una rete
+Lo schema dei tre passaggi è un telaio: per avere una rete
 funzionante bisogna decidere *come* si compongono i messaggi, *come* si
 aggregano e *come* si aggiorna lo stato dei nodi. La **Graph Convolutional
 Network** (GCN) di Thomas Kipf e Max Welling, circolata come preprint nel 2016
 e pubblicata nel 2017 {cite}`kipf2017semi`, fissa le tre scelte nel modo più
-semplice, ed è diventata il termine di paragone contro cui si misurano i
+semplice e si è imposta come termine di paragone contro cui si misurano i
 modelli successivi.
 
-Una parola sul vocabolario, perché da qui in avanti le due si alternano: ogni
-**giro** di passaparola è uno **strato** della rete. Sono la stessa cosa detta
-dai due lati, dal lato di chi ascolta e dal lato di chi la rete la costruisce.
+Le parole **giro** e **strato** si alternano: ogni giro di passaparola è uno
+strato della rete, detto dal lato di chi ascolta o dal lato di chi la rete la
+costruisce.
 
 La regola di propagazione della GCN, da uno strato al successivo, sta in una
 riga:
@@ -154,7 +152,7 @@ $$
 \hat{\mathbf{A}} = \tilde{\mathbf{D}}^{-1/2}\, \tilde{\mathbf{A}}\, \tilde{\mathbf{D}}^{-1/2}.
 $$
 
-Ogni simbolo ha un ruolo preciso, e la riga si può leggere a due profondità.
+Ogni simbolo ha un ruolo preciso.
 
 `````{tab} Elementare
 
@@ -162,7 +160,7 @@ Ogni simbolo ha un ruolo preciso, e la riga si può leggere a due profondità.
 tutti i nodi insieme.
 
 $\mathbf{H}^{(l)}$ è la pila delle schede al giro $l$: una riga per nodo e, al
-giro zero, quello che ogni nodo sa di sé.
+giro zero, le informazioni che ogni nodo ha su di sé.
 
 La $\mathbf{A}$ col cappello è la rubrica: una riga per nodo, e in ogni riga,
 accanto al nome di ciascun vicino, un numero, il peso con cui quel vicino viene
@@ -171,8 +169,8 @@ della sezione «Il mondo come grafo»: chi ascolta gli altri non deve
 dimenticare la propria scheda), e i pesi sono calcolati in modo che chi ha
 tanti vicini non copra la voce degli altri.
 
-Moltiplicare la pila delle schede per la rubrica vuol dire fare, per ogni nodo,
-sempre lo stesso gesto: scorrere la sua riga della rubrica, prendere la scheda
+Moltiplicare la pila delle schede per la rubrica fa, per ogni nodo, sempre la
+stessa operazione: scorrere la sua riga della rubrica, prendere la scheda
 di ciascun nome che ci trova, moltiplicare ogni numero della scheda per il peso
 scritto accanto al nome e sommare tutto, casella per casella. È il giro di
 raccolta dei bigliettini, fatto per tutti in una volta: sulla catena di quattro
@@ -181,7 +179,7 @@ decimi di quella del nodo 2.
 
 $\mathbf{W}^{(l)}$ è la ricetta con cui ogni nodo riscrive la propria scheda
 dopo la raccolta, la stessa per tutti, come il filtro che scorre identico su
-tutta l'immagine in una rete convoluzionale; ed è qui che stanno i numeri che
+tutta l'immagine in una rete convoluzionale; qui stanno i numeri che
 la rete impara. Infine $\sigma$ è il solito ritocco finale, una funzione come
 la ReLU che ci accompagna fin dalle prime reti neurali. Un giro intero di
 passaparola, per l'intera rete, in una riga.
@@ -216,7 +214,7 @@ di quattro nodi, e subito dopo si dirà perché sono fatti così.
   larghezza del passo successivo: $\mathbf{H}^{(l)}\mathbf{W}^{(l)}$ manda
   $N \times F_l$ in $N \times F_{l+1}$.
 
-Letta nodo per nodo, la riga matriciale dice esattamente «aggrega, poi
+Letta nodo per nodo, la riga matriciale dice «aggrega, poi
 aggiorna»:
 
 $$
@@ -231,8 +229,8 @@ particolare della MPNN a tre condizioni. L'insieme su cui corre $\bigoplus$
 include il nodo stesso. La funzione messaggio è lineare, $M(\mathbf{h}_v,
 \mathbf{h}_u, e_{vu}) = e_{vu}\,\mathbf{W}^{(l)\top}\mathbf{h}_u$, con il peso
 $e_{vu} = 1/\sqrt{\tilde{d}_v\,\tilde{d}_u}$ passato come feature dell'arco,
-perché i gradi non sono argomenti di $M$ in nessun altro modo. E l'aggregazione
-è la somma semplice, mentre l'aggiornamento è la non-linearità $\sigma$
+perché i gradi non sono argomenti di $M$ in nessun altro modo. L'aggregazione
+è la somma semplice e l'aggiornamento è la non-linearità $\sigma$
 applicata al solo messaggio aggregato: la normalizzazione sta nel messaggio, e
 l'aggregazione non ne sa niente.
 
@@ -260,24 +258,24 @@ $(\hat{\mathbf{A}}\mathbf{H}^{(l)})\mathbf{W}^{(l)}$, la propagazione costa
 $O(|E|\,F_l)$, e conviene far viaggiare lungo gli archi la matrice più
 stretta. La memoria dell'addestramento sul grafo intero cresce come
 $O(N \sum_l F_l)$, perché le attivazioni di tutti gli strati vanno tenute per
-il passo all'indietro, ed è questo che sui grafi grandi spinge verso il
+il passo all'indietro, e sui grafi grandi questo spinge verso il
 campionamento dei vicini.
 
 `````
 
-### Il conto, coi numeri
+### Uno strato su una catena di quattro nodi
 
 Il calcolo di uno strato su un grafo minimo mostra che cosa fanno i pesi. Il
-grafo è una catena di quattro nodi in fila
+grafo è una catena di quattro nodi
 (1–2–3–4), ciascuno con un solo numero sulla scheda invece di una
-fila, cioè $\mathbf{X} = (1,\, 2,\, 3,\, 4)^\top$. (La $\top$ in alto vuol dire
+fila, cioè $\mathbf{X} = (1,\, 2,\, 3,\, 4)^\top$. (La $\top$ in alto indica
 solo che quei quattro numeri vanno letti in colonna, uno per nodo, invece che
 in riga: è una convenzione di scrittura e non cambia niente.)
 
-Delle tre mosse ne teniamo una sola. La ricetta di riscrittura e il ritocco
+Dei tre passaggi ne teniamo uno solo. La ricetta di riscrittura e il ritocco
 finale li mettiamo a riposo (in formule, $\mathbf{W} = \mathbf{I}$ e
 $\sigma$ uguale all'identità: due modi di dire «per stavolta, lascia le cose
-come stanno»), così quello che si vede è l'effetto della sola raccolta dei
+come stanno»), così si vede l'effetto della sola raccolta dei
 bigliettini.
 
 Ogni collegamento porta un peso, e il peso è tanto più piccolo quanti più
@@ -322,20 +320,19 @@ $$
 \approx \mathrm{diag}(0{,}707,\ 0{,}577,\ 0{,}577,\ 0{,}707),
 $$
 
-dove l'esponente $-1/2$ vuol dire soltanto «uno diviso la radice quadrata»:
-$2^{-1/2} = 1/\sqrt{2} \approx 0{,}707$. Quei quattro numeri sono uno sconto
-per nodo, tanto più forte quanti più vicini il nodo ha, e il peso di un arco è
-il prodotto degli sconti delle sue due estremità: $0{,}707 \cdot
+dove l'esponente $-1/2$ è soltanto un modo di scrivere «uno diviso la radice
+quadrata»: $2^{-1/2} = 1/\sqrt{2} \approx 0{,}707$. Quei quattro numeri sono
+uno sconto per nodo, tanto più forte quanti più vicini il nodo ha, e il peso di
+un arco è il prodotto degli sconti delle sue due estremità: $0{,}707 \cdot
 0{,}707 = 0{,}5$ sul cappio di un nodo di bordo, $0{,}707 \cdot 0{,}577 \approx
-0{,}408$
-fra un bordo e un interno, $0{,}577 \cdot 0{,}577 \approx 0{,}333$ fra due
-interni. La tabella dei pesi così ottenuta si chiama **adiacenza
+0{,}408$ fra un bordo e un interno, $0{,}577 \cdot 0{,}577 \approx 0{,}333$ fra
+due interni. La tabella dei pesi così ottenuta si chiama **adiacenza
 normalizzata**, e si scrive $\hat{\mathbf{A}}$, la $\mathbf{A}$ col cappello:
-«normalizzare» vuol dire appunto questo, dividere per rimettere tutti sulla
-stessa scala, e il perché lo si vede appena finito il conto. In una riga sola:
+«normalizzare» è appunto questo, dividere per rimettere tutti sulla stessa
+scala, e il perché si vede appena finito il calcolo. In una riga sola:
 $\hat{A}_{vu} = \tilde{A}_{vu} / \sqrt{\tilde{d}_v\,\tilde{d}_u}$, cioè
-$\hat{A}_{12} = 1/\sqrt{2\cdot 3} = 1/\sqrt{6} \approx 0{,}408$ e
-$\hat{A}_{22} = 1/\sqrt{3\cdot 3} = 1/3 \approx 0{,}333$. La matrice completa è
+$\hat{A}_{12} = 1/\sqrt{2\cdot 3} = 1/\sqrt{6} \approx 0{,}408$ e $\hat{A}_{22}
+= 1/\sqrt{3\cdot 3} = 1/3 \approx 0{,}333$. La matrice completa è
 
 $$
 \hat{\mathbf{A}} = \tilde{\mathbf{D}}^{-1/2}\,\tilde{\mathbf{A}}\,\tilde{\mathbf{D}}^{-1/2} \approx
@@ -375,13 +372,13 @@ da $1{,}32$ a $3{,}30$, due punti scarsi. Il nodo 1, che valeva $1$, sale a
 $1{,}316$ perché è tirato in alto dal vicino 2; il nodo 4, che valeva $4$,
 scende a $3{,}225$ perché è tirato in basso dal 3.
 
-I due nodi di mezzo salgono invece tutti e due, e la cosa smonta una
-scorciatoia che verrebbe naturale: questa non è la media dei vicini. Se lo
+I due nodi di mezzo salgono invece tutti e due, e questo smonta una
+scorciatoia naturale: questa non è la media dei vicini. Se lo
 fosse, il nodo 3, che vale $3$ e sta fra un $2$ e un $4$, resterebbe a $3$;
 invece sale a $3{,}300$. La ragione è che i pesi di una riga non sommano a uno
 (in quella del nodo 3 fanno $1{,}07$), quindi ogni giro non è una media ma una
-somma pesata, che può alzare il livello generale. Quello che la GCN garantisce
-è che, ripetendo, le differenze di partenza si consumino, e non che ciascuno
+somma pesata, che può alzare il livello generale. La GCN garantisce
+che, ripetendo, le differenze di partenza si consumino, non che ciascuno
 vada verso i suoi vicini a ogni singolo passo. Il livellamento si vedrà
 succedere, giro dopo giro, su questi stessi quattro numeri.
 
@@ -393,12 +390,12 @@ basta i bigliettini dei vicini?
 
 `````{tab} Elementare
 
-Un riassunto fatto sommando e basta, senza dividere niente. Un nodo con dieci
+Un riassunto fatto con la sola somma, senza dividere niente. Un nodo con dieci
 amici riceve dieci bigliettini e li somma: un numerone. Un nodo con due amici
 ottiene un numero piccolo. Dopo qualche giro, i nodi «popolari» hanno valori
-enormi e quelli isolati valori minuscoli, non perché contino di più, ma solo
-perché hanno più connessioni. La rete finirebbe per confondere «essere
-importante» con «avere tanti amici».
+enormi e quelli isolati valori minuscoli, per il solo fatto di avere più o meno
+connessioni e non perché contino di più. La rete finirebbe per confondere
+«essere importante» con «avere tanti amici».
 
 Con la divisione tornano tutti più o meno sulla stessa scala: dieci opinioni o
 due, conta soprattutto il tenore. (Più o meno: nella catena di poco fa i pesi
@@ -419,7 +416,7 @@ il solitario dà a quella del popolare metà: lo stesso collegamento pesa
 $0{,}1$ in un verso e $0{,}5$ nell'altro. Con la spartizione pesa
 $1/\sqrt{10 \cdot 2} \approx 0{,}22$ in tutti e due, e la rubrica resta
 simmetrica, come il grafo. La GCN prende il secondo modo, e quella simmetria
-serve al conto da cui la formula è uscita, che arriva subito dopo.
+serve alla derivazione da cui la formula è uscita, che arriva subito dopo.
 
 `````
 
@@ -447,18 +444,18 @@ strato dopo strato, è il guadagno della normalizzazione *in quanto tale*
 rispetto a $\tilde{\mathbf{A}}$ nuda (che sui nodi ad alto grado amplifica i
 valori in modo incontrollato): è il collegamento diretto con il problema dei
 gradienti nelle reti profonde, discusso nella {doc}`sezione sulla
-backpropagation </RetiNeurali/backpropagation>`, ed
-è la sola cosa che Kipf e Welling rivendicano quando chiamano *renormalization
+backpropagation </RetiNeurali/backpropagation>`; è
+la sola cosa che Kipf e Welling rivendicano quando chiamano *renormalization
 trick* il passaggio da
 $\mathbf{I}_N + \mathbf{D}^{-1/2}\mathbf{A}\,\mathbf{D}^{-1/2}$, che ha
 autovalori in $[0,2]$, alla forma
 $\tilde{\mathbf{D}}^{-1/2}\tilde{\mathbf{A}}\tilde{\mathbf{D}}^{-1/2}$ con
 $\tilde{\mathbf{D}}$ calcolata su $\tilde{\mathbf{A}}$, cappi inclusi.
-Attenzione a non leggerci più di quanto ci sia: scala stabile non vuol dire
+Attenzione a non leggerci più di quanto ci sia: scala stabile non equivale a
 informazione conservata, perché tutto ciò che non giace lungo l'autovettore
 dominante svanisce comunque.
 
-Quel che distingue davvero la forma simmetrica è la simmetria stessa:
+La forma simmetrica si distingue per la simmetria stessa:
 $\hat{\mathbf{A}}$ è autoaggiunta, quindi ha autovalori reali e una base di
 autovettori ortonormale, mentre $\tilde{\mathbf{D}}^{-1}\tilde{\mathbf{A}}$
 non è simmetrica e i suoi autovettori non sono ortogonali. È questa proprietà,
@@ -491,24 +488,23 @@ spiega anche il difetto più noto delle GNN, l'oversmoothing.
 `````{tab} Elementare
 
 Su un'immagine, quanto in fretta le cose cambiano da un punto al punto accanto
-si chiama frequenza: bassa vuol dire zone di colore che cambiano piano,
-alta vuol dire dettagli fitti e bordi netti. Un filtro che «sfoca» toglie le
+si chiama frequenza: è bassa dove le zone di colore cambiano piano,
+alta dove ci sono dettagli fitti e bordi netti. Un filtro che «sfoca» toglie le
 alte e tiene le basse.
 
-Su un grafo la stessa parola ha un senso preciso, e basta cambiare che cosa si
+Su un grafo la stessa parola ha un senso preciso, purché si cambi che cosa si
 guarda. Una configurazione di numeri sui nodi è a bassa frequenza se nodi
 collegati portano valori simili, ad alta frequenza se lungo ogni arco il
 valore salta. La più liscia di tutte è quasi lo stesso valore su ogni nodo
 (quasi: un po' più alto dove i vicini sono di più); la più agitata somiglia a
 una scacchiera, con ogni nodo di segno opposto ai suoi vicini.
 
-Queste configurazioni, dalla più liscia alla più agitata, hanno un nome
-proprio: si chiamano gli **autovettori del laplaciano** del grafo. È un nome da
-registrare, perché nella sezione sui Graph Transformer torna a fare un mestiere
-che nessuno si aspetta: dire a ogni nodo dove sta nel grafo, come i Transformer
-dicono a ogni parola dove sta nella frase.
+Queste configurazioni, dalla più liscia alla più agitata, si chiamano gli
+**autovettori del laplaciano** del grafo. Li ritroviamo nella sezione sui Graph
+Transformer con una funzione inattesa: dire a ogni nodo dove sta nel grafo,
+come i Transformer dicono a ogni parola dove sta nella frase.
 
-Da qui si può copiare il mestiere dell'equalizzatore di uno stereo, che
+Da qui si può copiare l'idea dell'equalizzatore di uno stereo, che
 scompone la musica in bande, dai bassi agli acuti, alza le une e abbassa le
 altre con un cursore per banda, e rimette tutto insieme. Sul grafo le bande
 sono quelle configurazioni: si scrivono i numeri sui nodi come somma di
@@ -516,21 +512,20 @@ configurazioni, si decide con un cursore per ciascuna quanto tenerne, e si
 ricompone. È ciò che hanno fatto i primi lavori sulle reti convoluzionali su
 grafo, con i cursori regolati dall'addestramento, e i guai erano due. Il
 primo: le bande bisogna prima calcolarle, che su un grafo grande è un lavoro
-immane, e poi scomporre e ricomporre costa caro a ogni passaggio; i cursori,
+immane, e poi scomporre e ricomporre è oneroso a ogni passaggio; i cursori,
 uno per configurazione, sono tanti quanti i nodi, e valgono per quel grafo e
 per nessun altro. Il secondo: muovere un cursore tocca in un colpo tutto il
 grafo, mentre il passaparola vuole sentire soltanto i vicini.
 
-La GCN è quello che resta quando si rinuncia ai cursori liberi: un
-equalizzatore che sa fare un gesto solo, tenere i bassi e abbassare gli acuti,
-e che per farlo non ha bisogno di calcolare le bande, perché lo stesso effetto
+La GCN è l'equalizzatore che resta quando si rinuncia ai cursori liberi: ha
+un'unica regola, tenere i bassi e abbassare gli acuti,
+e per applicarla non ha bisogno di calcolare le bande, perché lo stesso effetto
 si ottiene facendo parlare ogni nodo con i vicini diretti. Il taglio rimedia a
 tutti e due i guai: niente calcolo immane, e quel che resta arriva a un salto
 per volta, come il passaparola. È un filtro che attenua le alte frequenze, cioè
 che smussa le differenze fra vicini.
 
-Una frase da tenere a mente, questa, perché torna presto con un'aria molto meno
-amichevole.
+La frase torna presto, con un'aria molto meno amichevole.
 
 `````
 
@@ -566,14 +561,14 @@ $x_u/\sqrt{d_u}$ a variare poco fra nodi collegati, in uno con $\lambda$ grande
 ad alternare. Su un autovettore di norma unitaria questa quantità *è*
 l'autovalore stesso, perché coincide con il **quoziente di Rayleigh**
 $R(\mathbf{x}) = \mathbf{x}^\top \mathbf{L} \mathbf{x} / \mathbf{x}^\top
-\mathbf{x}$: la forma quadratica e il quoziente sono due oggetti distinti, da
-non confondere, ma su $\lVert \mathbf{x} \rVert = 1$ dicono la stessa cosa, ed
-è il quoziente (con il principio di minimax) a caratterizzare gli autovalori
-come minimi della variazione. Su un ciclo, o su una griglia con i bordi
-periodici, gli autovettori del laplaciano sono seni e coseni, e questa
-costruzione si riduce alla trasformata di Fourier discreta. Su una catena con
-due estremi gli autovettori di $\mathbf{D} - \mathbf{A}$ sono soli coseni, ed è
-la trasformata del coseno; quelli del laplaciano normalizzato lo sono quasi,
+\mathbf{x}$: la forma quadratica e il quoziente sono due oggetti distinti, ma
+su $\lVert \mathbf{x} \rVert = 1$ dicono la stessa cosa, e con il principio di
+minimax è il quoziente a caratterizzare gli autovalori come minimi della
+variazione. Su un ciclo, o su una griglia con i bordi periodici, gli
+autovettori del laplaciano sono seni e coseni, e questa costruzione si riduce
+alla trasformata di Fourier discreta. Su una catena con due estremi gli
+autovettori di $\mathbf{D} - \mathbf{A}$ sono soli coseni, come nella
+trasformata del coseno; quelli del laplaciano normalizzato lo sono quasi,
 perché i due estremi hanno un vicino solo.
 
 Definita la trasformata come $\hat{\mathbf{x}} = \mathbf{U}^\top \mathbf{x}$,
@@ -614,7 +609,7 @@ parametri sono $K+1$ per filtro, qualunque sia il grafo. Secondo, una potenza
 $\mathbf{L}^k$ è non nulla in $(u,v)$ solo se
 esiste un cammino di lunghezza $\le k$ fra $u$ e $v$: un polinomio di grado $K$
 è quindi automaticamente **$K$-localizzato**, tocca soltanto i vicini entro $K$
-salti. È ChebNet {cite}`defferrard2016convolutional`, ed è già una GNN: la
+salti. È ChebNet {cite}`defferrard2016convolutional`, già una GNN: la
 localizzazione, che nella lettura spaziale era il punto di partenza, qui
 *emerge* dal troncamento.
 
@@ -650,7 +645,7 @@ staccano il fondo dello spettro da $-1$ (su una catena di otto nodi il minimo
 passa da $-1$ a $-0{,}30$, su un ciclo di otto da $-1$ a $-0{,}33$), cioè
 smorzano la componente a frequenza più alta
 {cite}`wu2019simplifying`. È già il filtro passa-basso che, applicato molte
-volte, appiattisce i nodi uno sull'altro, ed è comparso mentre credevamo di
+volte, appiattisce i nodi uno sull'altro, e compare mentre credevamo di
 stare solo mettendo in sicurezza i numeri.
 
 `````
@@ -659,7 +654,7 @@ L'oversmoothing segue dalla stessa costruzione.
 
 `````{tab} Elementare
 
-Riprendi la frase da tenere a mente: la GCN è un filtro che smussa le
+Riprendi la frase di prima: la GCN è un filtro che smussa le
 differenze fra vicini. Ogni giro di bigliettini ne cancella un po’; e se i giri
 sono tanti? Le differenze finiscono.
 
@@ -674,7 +669,7 @@ ritocco finale a riposo, i quattro valori vanno così:
 | $5$ giri | $1{,}95$ | $2{,}57$ | $2{,}88$ | $2{,}50$ |
 | $20$ giri | $2{,}22$ | $2{,}72$ | $2{,}73$ | $2{,}23$ |
 
-Guarda l'ultima riga. Il nodo che partiva da $1$ e quello che partiva da $4$
+Guarda l'ultima riga. Il nodo partito da $1$ e quello partito da $4$
 sono finiti praticamente sullo stesso numero, e così i due di mezzo. Delle
 differenze di partenza non è rimasto niente, e i due valori diversi che si
 vedono ancora ($2{,}2$ e $2{,}7$) non dicono chi era il nodo: dicono soltanto
@@ -683,9 +678,9 @@ quanti vicini ha, uno i due di bordo e due i due interni.
 Il perché si vede a occhio. Se a ogni giro ognuno si rimescola con i vicini, e
 i vicini fanno lo stesso con i loro, dopo un po’ nessuno ha più niente di suo:
 è la classe in cui tutti copiano un po’ dal compagno di banco, e dopo un'ora i
-compiti si somigliano tutti e non si capisce più chi la lezione la sapeva
-davvero. Due classi in aule separate si livellano però ciascuna per conto suo:
-la copiatura non passa i muri, e i due gruppi restano diversi. E la ricetta di
+compiti si somigliano tutti e non si capisce più chi la sapesse davvero.
+Due classi in aule separate si livellano ciascuna al proprio interno:
+la copiatura non passa i muri, e i due gruppi restano diversi. La ricetta di
 riscrittura, che qui abbiamo lasciato a riposo, non basta a salvarli: se
 moltiplica le schede per numeri grandi tiene in vita qualche differenza, se le
 moltiplica per numeri piccoli il livellamento arriva lo stesso.
@@ -702,17 +697,17 @@ venti.
 `````{tab} Superiore
 
 Chiamiamo $\lambda_i(\hat{\mathbf{A}})$ gli autovalori dell'operatore appena
-ottenuto: stanno in $[-1, 1]$, il più grande vale esattamente $1$, e il suo
+ottenuto: stanno in $[-1, 1]$, il più grande vale $1$, e il suo
 autovettore è $\tilde{\mathbf{D}}^{1/2}\mathbf{1}$, cioè la radice dei gradi.
 Uno strato GCN (a meno di $\mathbf{W}$ e della non linearità) è la
-moltiplicazione per $\hat{\mathbf{A}}$; $K$ strati sono $\hat{\mathbf{A}}^K$.
-Ma elevare alla $K$ una matrice eleva alla $K$ i suoi autovalori, e ogni
+moltiplicazione per $\hat{\mathbf{A}}$; $K$ strati sono $\hat{\mathbf{A}}^K$,
+che eleva alla $K$ gli autovalori di $\hat{\mathbf{A}}$, e ogni
 autovalore di modulo minore di $1$ svanisce: dopo abbastanza strati
 sopravvive solo la componente lungo l'autovettore dominante, che è la stessa
 per tutti i nodi a meno del loro grado. (Vale su un grafo **connesso**: se le
 componenti connesse sono più d'una, l'autovalore $1$ ha la loro molteplicità e
-il collasso avviene dentro ciascuna componente separatamente. E capita
-davvero, perché un batch di molecole in PyTorch Geometric *è* un unico grafo
+il collasso avviene dentro ciascuna componente separatamente. Succede
+in pratica, perché un batch di molecole in PyTorch Geometric *è* un unico grafo
 sconnesso, una componente per molecola, e l'oversmoothing non le mescola fra
 loro.)
 
@@ -731,7 +726,7 @@ separano ancora un centinaio e mezzo di passi elementari, il gradino minimo
 fra due numeri rappresentabili, e quanti esattamente dipende dall'ordine in
 cui si fanno le moltiplicazioni), ma è una differenza che nessun modello può
 più usare: al passo successivo della rete, moltiplicata per pesi dell'ordine
-dell'unità, resta quello che era.
+dell'unità, resta com'era.
 
 Il collasso si misura con un numero solo, il quoziente di Rayleigh del
 laplaciano costruito sulla matrice con i cappi,
@@ -759,9 +754,9 @@ per la rete intera è un teorema con le sue condizioni.
 Questo appiattimento ha un nome, **oversmoothing**, cioè «levigatura
 eccessiva», e la {doc}`sezione su GraphSAGE, GAT e le applicazioni
 </GraphNeuralNetwork/architetture-applicazioni>` lo elencherà fra i limiti
-delle GNN. Adesso però sappiamo che è quello che fa, per costruzione, un
-filtro che smussa le differenze (in gergo un **filtro passa-basso**) quando lo
-si applica molte volte di fila. Non c'è
+delle GNN. Adesso però sappiamo che è la conseguenza, per costruzione, di un
+filtro che smussa le differenze (in gergo un **filtro passa-basso**) applicato
+molte volte. Non c'è
 nessun errore di programmazione da andare a cercare. C'è da decidere quanti
 strati mettere, oppure da cambiare filtro.
 
@@ -809,25 +804,25 @@ divario fra il più alto e il più basso dopo 100 giri: 3e-14
 ## Impilare gli strati: il campo recettivo a $K$ salti
 
 Come vada a finire se si esagera lo sappiamo già. Resta da dire perché,
-fino a un certo punto, impilare gli strati conviene, e conviene molto: un solo
-strato di GCN fa vedere a ogni nodo i suoi vicini diretti, e il bello comincia
-appunto quando gli strati sono più d'uno.
+fino a un certo punto, impilare gli strati dà un grande vantaggio: un solo
+strato di GCN fa vedere a ogni nodo i suoi vicini diretti, e il vantaggio vero
+arriva con gli strati successivi.
 
 `````{tab} Elementare
 
 Nella catena 1–2–3–4 il nodo 1 ha un vicino solo, il nodo 2, e al primo
-giro parla soltanto con lui. Ma nello stesso giro anche il nodo 2 ha parlato col
+giro parla soltanto con lui. Nello stesso giro anche il nodo 2 ha parlato col
 nodo 3. Così, al secondo giro, quando
 il nodo 1 riascolta il nodo 2, dentro il nodo 2 c'è già un pezzo di nodo 3.
 Senza essersi mai «visti» direttamente, l'informazione del nodo 3 è arrivata al
 nodo 1 in due passi. Al terzo giro arriverebbe anche quella del nodo 4.
 
-È esattamente ciò che succede in una rete convoluzionale, dove impilando i
+Succede lo stesso in una rete convoluzionale, dove impilando i
 livelli ogni neurone «vede» una porzione via via più grande dell'immagine: il
 suo *campo recettivo* cresce con la profondità. Sul grafo vale la stessa legge,
 contata in salti: con $K$ strati, ogni nodo raccoglie informazione da tutto
 ciò che sta entro $K$ passi da lui. La striscia in basso nella
-{numref}`fig-message-passing` mostra proprio questo salto da uno a due.
+{numref}`fig-message-passing` mostra questo salto da uno a due.
 
 Quanti giri servono, allora? Tanti quanti i passi che separano un nodo
 dall'informazione che gli serve, e in una rete di citazioni o di amicizie sono
@@ -843,12 +838,12 @@ addestrare.
 Impilare $K$ strati di GCN corrisponde ad applicare $K$ volte l'operatore di
 propagazione: lo stato finale $\mathbf{h}_v^{(K)}$ dipende da tutti i nodi $u$
 per cui esiste un cammino di lunghezza $\le K$ fino a $v$ (il **campo
-recettivo** a $K$ salti, l'analogo esatto del campo recettivo che cresce con la
+recettivo** a $K$ salti, l'analogo del campo recettivo che cresce con la
 profondità nelle CNN). Da qui due indicazioni pratiche. Primo, la profondità va
 scelta in base a quanti salti di distanza sta l'informazione che serve: sui
 grafi di citazioni come Cora bastano due o tre strati, perché il numero di
 nodi raggiunti cresce in fretta col grado (sui compiti in cui l'informazione
-sta lontana, invece, no, ed è il problema dell'over-squashing). Secondo,
+sta lontana, invece, no: è il problema dell'over-squashing). Secondo,
 andare più a fondo senza accorgimenti peggiora i risultati, per due cause che
 si sommano e non sono facili da separare. Applicando molte volte
 $\hat{\mathbf{A}}$, le rappresentazioni dei nodi di una componente connessa si
@@ -870,10 +865,10 @@ diretti; al giro $k=2$ i messaggi partono dai nodi a due salti, passano *per* i
 vicini e arrivano anch'essi.
 ```
 
-La {numref}`fig-message-passing-animato` rende evidente il punto che rende
-delicata la profondità: l'informazione lontana non salta, transita. Ogni
+La {numref}`fig-message-passing-animato` mostra perché la profondità è
+delicata: l'informazione lontana non salta, transita. Ogni
 strato in più la fa passare per un altro nodo, che la mescola con la propria,
-ed è proprio questa mescolanza ripetuta a produrre, alla lunga,
+e questa mescolanza ripetuta produce, alla lunga,
 l'oversmoothing.
 
 ## Addestrare: classificare i nodi con poche etichette
@@ -884,7 +879,7 @@ sbagliare meno e ci si muove di un passo. Sono la *loss*, il *gradiente* e la
 *backpropagation* della {doc}`sezione omonima
 </RetiNeurali/backpropagation>`. Cambia solo la forma del dato.
 
-Il banco di prova classico è **Cora**, ed è un grafo di articoli scientifici.
+Il banco di prova classico è **Cora**, un grafo di articoli scientifici.
 I nodi sono circa 2700 articoli e gli archi le citazioni: c'è un arco ogni
 volta che un articolo ne cita un altro, e in tutto sono circa 5400. Su ogni
 nodo c'è una fila di 1433 numeri, che dice quali parole compaiono
@@ -990,7 +985,7 @@ comunità. Lo stesso addestramento si fa due volte, con $\hat{\mathbf{A}}$ e con
 la matrice identità al suo posto, cioè con ogni nodo che ascolta soltanto sé
 stesso: è la stessa rete, privata del grafo. L'esperimento si ripete con tre
 semi, perché il grafo, le feature e i pesi iniziali sono sorteggiati, e da
-un'estrazione sola non si capisce se l'ordine regge.
+un'estrazione sola non si capisce se l'ordine si conserva.
 
 ```python
 def prova(modello, X, A_in, y, mask_train):
@@ -1048,7 +1043,7 @@ Geometric** offre `GCNConv`, che aggiunge i cappi e applica la normalizzazione
 simmetrica al volo. Al posto della matrice $\hat{\mathbf{A}}$ intera prende il
 grafo in un formato compatto, `edge_index`, che è la sola lista degli archi (di
 forma `(2, num_archi)`). È l'unica strada praticabile sui grafi grandi, dove
-$\hat{\mathbf{A}}$ per intero non entrerebbe in memoria:
+$\hat{\mathbf{A}}$ intera non entrerebbe in memoria:
 
 ```python
 from torch_geometric.nn import GCNConv
@@ -1071,18 +1066,18 @@ vicini e i pesi di attenzione.
 
 ```{admonition} Da ricordare
 :class: important
-- Il passaparola (*message passing*) aggiorna ogni nodo in tre mosse,
-  ripetute a ogni giro: ogni vicino passa un bigliettino con quello che sa, i
+- Il passaparola (*message passing*) aggiorna ogni nodo in tre passaggi,
+  ripetuti a ogni giro: ogni vicino passa un bigliettino con quanto sa, i
   bigliettini si riassumono in un modo che non guarda l'ordine (somma,
   media, massimo) e il nodo riscrive la propria scheda unendo il riassunto
-  a quello che già sapeva di sé. È lo schema generale, valido per quasi tutte
+  alla scheda che aveva già. È lo schema generale, valido per quasi tutte
   le reti su grafo {cite}`gilmer2017neural`.
 - La GCN {cite}`kipf2017semi` è la versione più usata: la raccolta dei
   bigliettini segue la rubrica di chi è collegato a chi, in cui ogni nodo
   figura anche come vicino di sé stesso per non dimenticare la propria scheda;
   poi una ricetta di riscrittura uguale per tutti i nodi (sono i numeri che la
   rete impara) e un ritocco finale non lineare.
-- I bigliettini si pesano invece di sommarli e basta: chi ha tanti vicini
+- I bigliettini si pesano invece di sommarli semplicemente: chi ha tanti vicini
   non deve coprire la voce degli altri, e il peso di ogni collegamento si
   spartisce fra chi parla e chi ascolta, secondo quanti vicini ha ciascuno dei
   due. Serve anche a tenere i valori sulla stessa scala giro dopo giro.
@@ -1094,11 +1089,11 @@ vicini e i pesi di attenzione.
   {cite}`defferrard2016convolutional`.
 - Ogni strato in più allarga l'orecchio di un salto: con due giri arrivano gli
   amici degli amici, con tre quelli ancora dopo, come in una rete per immagini
-  il campo visivo di un neurone cresce con la profondità. Ma smussando a ogni
+  il campo visivo di un neurone cresce con la profondità. Smussando a ogni
   giro, troppi giri cancellano le differenze e i nodi diventano
   indistinguibili (è l’*oversmoothing*, la classe in cui tutti copiano dal
-  compagno di banco finché i compiti si somigliano tutti): è quello che il
-  metodo fa per costruzione, non un errore di programmazione. E una pila alta
+  compagno di banco finché i compiti si somigliano tutti): è una conseguenza del
+  metodo per costruzione, non un errore di programmazione. Una pila alta
   di strati è anche più difficile da addestrare.
 - L'addestramento tipico è indovinare la categoria di tutti i nodi
   conoscendola per pochissimi (Cora): si pagano solo gli errori su quei pochi,
@@ -1112,7 +1107,7 @@ vicini e i pesi di attenzione.
 
 ```{admonition} Da ricordare
 :class: important
-- Il message passing aggiorna ogni nodo in tre mosse ripetute a ogni
+- Il message passing aggiorna ogni nodo in tre passaggi ripetuti a ogni
   strato: calcola i messaggi dei vicini, li aggrega con una funzione
   invariante all'ordine (somma, media, max) e aggiorna lo stato del nodo.
   È il telaio generale delle MPNN {cite}`gilmer2017neural`.
@@ -1126,7 +1121,7 @@ vicini e i pesi di attenzione.
   però per entrambe le forme, quella per righe e quella simmetrica, che sono
   matrici simili e hanno lo stesso spettro. La GCN sceglie la
   simmetrica perché $\hat{\mathbf{A}}$ è autoaggiunta, quindi ha
-  autovettori ortonormali, ed è questo a rendere lecita la lettura spettrale da
+  autovettori ortonormali, e questo rende lecita la lettura spettrale da
   cui la formula discende (filtri di Čebyšëv,
   {cite}`defferrard2016convolutional`).
 - Sul grafo le frequenze hanno un senso preciso: un segnale è a bassa
@@ -1137,7 +1132,7 @@ vicini e i pesi di attenzione.
   Čebyšëv di grado $K$ la porta a $O(K|E|)$ e la rende $K$-localizzata, e il
   caso $K=1$ con $\lambda_{\max}\approx 2$ è la GCN.
 - Impilare $K$ strati dà a ogni nodo un campo recettivo a $K$ salti,
-  l'esatto analogo della profondità nelle CNN. Ma uno strato GCN è un filtro
+  l'analogo della profondità nelle CNN; uno strato GCN è anche un filtro
   passa-basso, e applicarlo molte volte lascia sopravvivere solo
   l'autovettore dominante di $\hat{\mathbf{A}}$: è l’*oversmoothing*, che per
   l'operatore lineare è algebra e per la rete intera, con i pesi e le non

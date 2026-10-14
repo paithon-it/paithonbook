@@ -54,15 +54,15 @@ $P(A\cup B)=P(A)+P(B)-P(A\cap B)$.
 e contarli è meno ovvio di quanto sembri. Il problema della posta interrotta,
 da cui era partita la corrispondenza fra Pascal e Fermat, si risolve così.
 Fermat contò tutti i modi in cui sarebbero potuti andare i turni rimasti,
-giocandoli fino in fondo anche quando la partita sarebbe già stata decisa, e
-Pascal ne scrisse la soluzione generale con il triangolo aritmetico, quello che
-in Italia si chiama di Tartaglia. Le regole per contare formano il **calcolo
+giocandoli fino in fondo anche quando la partita sarebbe già stata decisa.
+Pascal ne scrisse la soluzione generale con il triangolo aritmetico (noto in
+Italia come triangolo di Tartaglia). Le regole per contare formano il **calcolo
 combinatorio**, e il numero che ne esce più spesso ha un simbolo suo, il
-**coefficiente binomiale** $\binom{n}{k}$: quanti gruppi diversi di $k$
-oggetti si formano da $n$, senza badare all'ordine. Serve ogni volta che si
-contano coppie, squadre o gruppi: quante coppie si formano con mille esempi, in
-quanti modi una giuria di sette può trovarsi in maggioranza dalla parte giusta,
-che è il conto dietro il {doc}`teorema della giuria di Condorcet
+**coefficiente binomiale** $\binom{n}{k}$: quanti gruppi diversi di $k$ oggetti
+si formano da $n$, senza badare all'ordine. Serve ogni volta che si contano
+coppie, squadre o gruppi: quante coppie si formano con mille esempi, in quanti
+modi una giuria di sette può trovarsi in maggioranza dalla parte giusta, il
+calcolo alla base del {doc}`teorema della giuria di Condorcet
 </SistemiMultiAgente/protocolli-e-consenso>`.
 
 `````{tab} Elementare
@@ -73,11 +73,11 @@ coppie capitano-vice. È la regola che regge tutto il resto: quando si sceglie
 una cosa dopo l'altra, le possibilità si moltiplicano.
 
 Se invece devono formare una coppia per il doppio a ping-pong, dove nessuno
-comanda, il conto di prima conta ogni coppia due volte. Anna capitano con Bruno
+comanda, il calcolo di prima conta ogni coppia due volte. Anna capitano con Bruno
 vice e Bruno capitano con Anna vice, al tavolo, sono la stessa coppia. Le coppie
 sono quindi $90/2 = 45$.
 
-Con una squadra di tre i doppioni sono di più. Scegliendoli in fila si hanno
+Con una squadra di tre i doppioni sono di più. Scegliendo i tre in fila si hanno
 $10\cdot 9\cdot 8 = 720$ terne ordinate, ma ogni squadra compare tante volte
 quanti sono i modi di mettere in fila i suoi tre membri: tre per il primo posto,
 due per il secondo, uno per l'ultimo, $3\cdot 2\cdot 1 = 6$ (Anna, Bruno, Carlo
@@ -88,7 +88,7 @@ legge «dieci su tre», anche se non è una divisione. (Scegliere i tre che gioc
 è come scegliere i sette che restano in panchina, e infatti anche le panchine da
 sette sono $120$.)
 
-Si può contare anche in un altro modo, ed è un buon controllo. Anna o è nella
+Si può contare anche in un altro modo, utile come controllo. Anna o è nella
 squadra, o non c'è. Se c'è, restano da scegliere due compagni fra gli altri
 nove, $9\cdot 8/2 = 36$ squadre; se non c'è, servono tre persone fra quei nove,
 $9\cdot 8\cdot 7/6 = 84$. E $36 + 84 = 120$.
@@ -96,9 +96,9 @@ $9\cdot 8\cdot 7/6 = 84$. E $36 + 84 = 120$.
 Adesso ciascuno lancia una moneta. Le file possibili di testa e croce sono
 $2^{10} = 1024$ (due possibilità per ciascuno, moltiplicate dieci volte), tutte
 ugualmente probabili se le monete sono oneste. Quante hanno esattamente tre
-teste? Tante quante i modi di scegliere *chi* fa testa, cioè ancora $120$. La
-probabilità è $120/1024$, circa l’$11{,}7\%$: il conto delle squadre e quello
-delle monete sono lo stesso conto.
+teste? Tante quante i modi di scegliere *chi* fa testa: ancora $120$. La
+probabilità è $120/1024$, circa l’$11{,}7\%$: il calcolo delle squadre e quello
+delle monete sono lo stesso calcolo.
 
 La ricetta però vale solo se i casi contati sono ugualmente probabili, e
 sbagliare è facile. Nel 1754 Jean-Baptiste Le Rond d'Alembert, uno dei
@@ -110,10 +110,10 @@ Ma quei tre casi non si equivalgono, perché «testa subito» raccoglie due file
 testa-testa e testa-croce: il secondo lancio, anche se non lo si fa, sarebbe
 potuto andare in due modi. Contando le file, che sono quattro e ugualmente
 probabili, quelle con almeno una testa sono tre, e la probabilità è $3/4$.
-Pascal e Fermat, un secolo prima, avevano evitato proprio questo errore: per
+Pascal e Fermat, un secolo prima, avevano evitato questo errore: per
 dividere la posta giocavano sulla carta anche i turni che non servivano più.
 
-E i casi crescono in fretta. I modi di mettere in fila i dieci amici sono già
+I casi, però, crescono in fretta. I modi di mettere in fila i dieci amici sono già
 $10! = 3\,628\,800$, e quelli di mescolare un mazzo da 52 carte formano un
 numero di sessantotto cifre. Quando i casi sono troppi per elencarli, se ne
 guarda una parte estratta a caso, un campione, e si stima: lo si vedrà fare, per
@@ -139,7 +139,7 @@ n(n-1)\cdots(n-k+1) = \frac{n!}{(n-k)!},
 $$
 
 con $n! = n(n-1)\cdots 1$ e $0! = 1$ (un solo modo di mettere in fila zero
-oggetti, ed è la scelta che fa valere la formula anche per $k = n$); per $k = n$
+oggetti, la scelta che fa valere la formula anche per $k = n$); per $k = n$
 sono le $n!$ permutazioni. Se invece lo stesso elemento si può riprendere, le
 sequenze sono $n^k$, le *disposizioni con ripetizione*: le file di $n$ lanci di
 una moneta sono $2^n$. Ogni sottoinsieme di taglia $k$ corrisponde a esattamente
@@ -158,7 +158,7 @@ $$
 $$
 
 valida per $n\ge 1$ con la convenzione $\binom{n}{k} = 0$ fuori da
-$0\le k\le n$, e con una dimostrazione biiettiva che non chiede conti: fissato
+$0\le k\le n$, e con una dimostrazione biiettiva che non richiede calcoli: fissato
 un elemento, i sottoinsiemi di taglia $k$ si dividono in quelli che lo
 contengono (e scelgono gli altri $k-1$ fra i restanti $n-1$) e quelli che non lo
 contengono (e li scelgono tutti e $k$ fra i restanti). Il nome viene dal teorema
@@ -168,7 +168,7 @@ $x$; con $x = y = 1$ dà $\sum_k \binom{n}{k} = 2^n$, il numero dei sottoinsiemi
 Le scelte in cui conta solo quante volte compare ciascun elemento, le
 *combinazioni con ripetizione*, sono $\binom{n+k-1}{k}$ ($k$ segni e $n-1$
 separatori messi in fila, e si sceglie dove stanno i segni): tanti quanti i
-monomi di grado $k$ in $n$ variabili, cioè le coordinate di grado $k$ dello
+monomi di grado $k$ in $n$ variabili, le coordinate di grado $k$ dello
 spazio che il {doc}`kernel polinomiale </MachineLearning/svm-kernel>` usa senza
 calcolarle.
 
@@ -188,23 +188,24 @@ $y = 1-p$ la normalizza a uno. È la distribuzione del conteggio di successi su
 cui poggiano il test binomiale esatto e l'intervallo di Clopper-Pearson.
 
 Il punto debole della definizione classica, $P(A) = |A|/|\Omega|$, è l'ipotesi
-che gli esiti elementari siano equiprobabili, e da come si sceglie lo spazio
-dipende il risultato. D'Alembert, nella voce «Croix ou pile» dell’*Encyclopédie*
+che gli esiti elementari siano equiprobabili, e il risultato dipende da come si
+sceglie lo spazio. D'Alembert, nella voce «Croix ou pile» dell’*Encyclopédie*
 (1754), diede $2/3$ alla probabilità di almeno una testa in due lanci perché
-prese come equiprobabili gli esiti del gioco che si ferma alla prima testa ($T$,
-$CT$, $CC$) invece delle quattro sequenze complete; la risposta è $3/4$. È
-l'obiezione che Roberval aveva mosso al metodo di Fermat, e che Pascal riferisce
-nella lettera del 24 agosto 1654: la partita vera si ferma appena qualcuno ha
-vinto. Giocare anche i turni che non servono non cambia il vincitore, e rende
-equiprobabili le sequenze. Si conta su uno spazio in cui la simmetria del
-meccanismo rende gli esiti equiprobabili, e solo dopo si passa alle probabilità.
+prese come equiprobabili gli esiti del gioco che si ferma alla prima testa
+($T$, $CT$, $CC$) invece delle quattro sequenze complete; la risposta è $3/4$.
+È l'obiezione che Roberval aveva mosso al metodo di Fermat, e che Pascal
+riferisce nella lettera del 24 agosto 1654: la partita vera si ferma appena
+qualcuno ha vinto. Giocare anche i turni che non servono non cambia il
+vincitore, e rende equiprobabili le sequenze. Si conta su uno spazio in cui la
+simmetria del meccanismo rende gli esiti equiprobabili, e solo dopo si passa
+alle probabilità.
 
-Resta la crescita. La formula di Stirling, $n! \sim \sqrt{2\pi n}\,(n/e)^n$
-(il rapporto fra i due lati tende a $1$, e a $n = 52$ la sottostima è appena
-dello $0{,}16\%$), dà per il coefficiente centrale $\binom{2m}{m} \sim
-4^m/\sqrt{\pi m}$: con $n = 2m$, i soli sottoinsiemi di taglia $n/2$ sono $2^n$
-diviso appena $\sqrt{\pi n/2}$. Enumerare i sottoinsiemi di $n$ elementi costa
-dunque $2^n$ anche fermandosi a una taglia sola, e smette di essere praticabile
+Resta la crescita. La formula di Stirling, $n! \sim \sqrt{2\pi n}\,(n/e)^n$ (il
+rapporto fra i due lati tende a $1$, e a $n = 52$ la sottostima è appena dello
+$0{,}16\%$), dà per il coefficiente centrale $\binom{2m}{m} \sim 4^m/\sqrt{\pi
+m}$: con $n = 2m$, i soli sottoinsiemi di taglia $n/2$ sono $2^n$ diviso appena
+$\sqrt{\pi n/2}$. Enumerare i sottoinsiemi di $n$ elementi richiede dunque
+$2^n$ passi anche fermandosi a una taglia sola, e smette di essere praticabile
 già per qualche decina di elementi. Le grandezze definite come somme su tutti i
 sottoinsiemi o su tutti gli ordinamenti, come i valori di Shapley delle
 {doc}`spiegazioni locali </Interpretabilita/spiegazioni-locali>`, si calcolano
@@ -213,13 +214,13 @@ sottoinsiemi o ordinamenti.
 
 `````
 
-I conti delle squadre, delle monete e di d'Alembert si possono rifare senza
-formule, elencando i casi uno per uno. L'elenco però non sceglie lo spazio: a
-partire dai tre casi di d'Alembert restituisce di nuovo $2/3$. A dire quali casi
-si equivalgono è il gioco stesso, e lo si interroga giocandolo: su centomila
-partite simulate, fermandosi alla prima testa, almeno una testa esce tre volte
-su quattro. Il blocco confronta anche $52!$ con la formula approssimata di
-Stirling, che lo stima senza fare tutte le moltiplicazioni.
+I calcoli delle squadre, delle monete e di d'Alembert si rifanno senza formule,
+elencando i casi uno per uno. L'elenco, però, non sceglie lo spazio: partendo
+dai tre casi di d'Alembert restituisce di nuovo $2/3$. Il gioco stabilisce
+quali casi si equivalgono, e per saperlo lo si simula: su centomila partite,
+fermandosi alla prima testa, almeno una testa esce tre volte su quattro. Anche
+$52!$ si confronta con la formula di Stirling, che lo stima senza fare tutte le
+moltiplicazioni.
 
 ```python
 import random
@@ -278,7 +279,7 @@ in 100000 partite, almeno una testa nel 75%
 ## Variabili aleatorie
 
 Lanciare dieci monete e guardare come sono venute è una cosa; contare quante
-teste sono uscite è un'altra, ed è quasi sempre quella che interessa. Il salto
+teste sono uscite è un'altra, quasi sempre quella che interessa. Il salto
 è piccolo e cambia tutto: da un elenco di casi si passa a un numero, e sui
 numeri si possono fare medie, grafici, confronti.
 
@@ -309,8 +310,7 @@ l'informazione cumulata fino a $x$.
 
 `````
 
-La stessa curva si può disegnare in due modi, e conviene saperli riconoscere
-tutti e due.
+La stessa distribuzione si può disegnare in due modi.
 
 ```{figure} ../figures/variabili-aleatorie-momenti-percentili.svg
 :name: fig-densita-percentili
@@ -323,7 +323,7 @@ probabilità è l’*area* sotto la curva, e infatti la zona colorata è il cinq
 per cento dei casi che cadono oltre il valore segnato. A destra una seconda
 curva, che per ogni valore risponde alla domanda «quanta parte dei casi sta
 sotto questo numero?» e perciò sale da $0$ a $1$: lì la stessa probabilità è
-l’*altezza* della curva, cioè un punto da leggere invece di un'area da
+l’*altezza* della curva: un punto da leggere invece di un'area da
 calcolare. Il nome tecnico della seconda è **funzione di ripartizione**. (Le
 due sigle in cima ai grafici sono le abbreviazioni inglesi con cui si trovano
 ovunque: *PDF* per la densità, *CDF* per la ripartizione.)
@@ -332,25 +332,23 @@ ovunque: *PDF* per la densità, *CDF* per la ripartizione.)
 I due grafici di {numref}`fig-densita-percentili` descrivono la stessa
 variabile: la ripartizione è l'area della densità fino a $x$,
 $F(x)=\int_{-\infty}^{x}f(t)\,dt$, e la densità è la pendenza della
-ripartizione, $f=F'$. La seconda curva serve a rispondere alla domanda che si fa
-più spesso su una misura: «sotto quale valore cade il novantacinque per cento
-dei casi?». Quel valore si chiama novantacinquesimo percentile,
+ripartizione, $f=F'$. La seconda curva serve a rispondere alla domanda che si
+fa più spesso su una misura: «sotto quale valore cade il novantacinque per
+cento dei casi?». Quel valore si chiama novantacinquesimo percentile,
 $F^{-1}(0{,}95)$, e sul grafico di destra si legge partendo dall'altezza
-$0{,}95$ e scendendo al numero corrispondente; su quello di sinistra vorrebbe
-un'area da calcolare. È l'abitudine dei tecnici che sorvegliano un servizio
+$0{,}95$ e scendendo al numero corrispondente; su quello di sinistra richiede
+di calcolare un'area. È l'abitudine dei tecnici che sorvegliano un servizio
 online: invece di dire «in media il sito risponde in mezzo secondo» dicono «il
-novantacinquesimo percentile del tempo di risposta è due secondi», che è un modo
-di parlare non della giornata tipica, ma di quanto vanno male le giornate
-storte.
+novantacinquesimo percentile del tempo di risposta è due secondi», un modo di
+parlare non della giornata tipica, ma di quanto vanno male le giornate storte.
 
 ## Il centro e la larghezza
 
 Il quadro completo di come si comporta una grandezza casuale (quali valori
-escono, e con che frequenza ciascuno) si chiama la sua **distribuzione**: è la
-parola che d'ora in poi useremo per la curva o per l'elenco di probabilità
-appena visti. Quasi sempre non serve tutto
-il quadro: bastano due numeri, dove sta il centro della distribuzione e quanto
-è dispersa attorno a esso.
+escono, e con che frequenza ciascuno) si chiama la sua **distribuzione**, che
+si descrive con la curva della densità o con l'elenco delle probabilità. Quasi
+sempre non serve tutto il quadro: bastano due numeri, dove sta il centro della
+distribuzione e quanto è dispersa attorno a esso.
 
 ```{figure} ../figures/media-mediana-moda-varianza-numpy.svg
 :name: fig-centro-larghezza
@@ -382,7 +380,7 @@ lanci.
 
 La varianza, che si scrive $\mathrm{Var}(X)$ e si legge «varianza di X»,
 misura invece quanto tipicamente ci si allontana da quel centro: piccola se i
-valori sono raccolti, grande se sono sparpagliati. Il conto è meno spaventoso
+valori sono raccolti, grande se sono sparpagliati. Il calcolo è meno spaventoso
 del nome, e sul dado si fa a mano in un minuto. Si guarda di quanto ciascuna
 faccia dista dal centro $3{,}5$ (sono $-2{,}5$, $-1{,}5$, $-0{,}5$, $0{,}5$,
 $1{,}5$, $2{,}5$), si eleva ogni scarto al quadrato (per togliere di mezzo i
@@ -391,11 +389,11 @@ media: $17{,}5$ diviso $6$ fa circa $2{,}92$. Quella è la varianza.
 
 Il quadrato però ha gonfiato tutto, e per tornare a parlare in punti di dado si
 fa la radice: $\sqrt{2{,}92} \approx 1{,}7$. Questa è la **deviazione
-standard**, ed è la forma leggibile delle due: dice che rispetto al centro
-$3{,}5$ i risultati si sparpagliano tipicamente di un punto e mezzo o due, che
-guardando le facce di un dado è proprio quello che ci si aspetta.
+standard**, la forma leggibile delle due: dice che rispetto al centro $3{,}5$ i
+risultati si sparpagliano tipicamente di un punto e mezzo o due, come ci si
+aspetta guardando le facce di un dado.
 
-Sul dado il conto fila liscio perché le facce e le loro probabilità si
+Sul dado il calcolo fila liscio perché le facce e le loro probabilità si
 conoscono in partenza, centro compreso. Sui dati veri il centro non lo conosce
 nessuno: lo si ricava dagli stessi numeri di cui poi si misura lo
 sparpagliamento, e così la misura esce un po’ più piccola del giusto. Tre
@@ -420,15 +418,15 @@ per una continua le somme diventano integrali. La deviazione standard
 $\sigma=\sqrt{\mathrm{Var}(X)}$ riporta la dispersione nelle stesse unità di
 $X$. Il valore atteso è lineare,
 $\mathbb{E}[aX+cY+d]=a\,\mathbb{E}[X]+c\,\mathbb{E}[Y]+d$, anche quando $X$ e
-$Y$ dipendono l'una dall'altra, proprietà che useremo di continuo. Per la
+$Y$ dipendono l'una dall'altra. Per la
 varianza valgono $\mathrm{Var}(aX+d)=a^2\mathrm{Var}(X)$ e, per variabili
 indipendenti, $\mathrm{Var}(X+Y)=\mathrm{Var}(X)+\mathrm{Var}(Y)$ (in generale
 c'è il termine $2\,\mathrm{Cov}(X,Y)$). Per il dado:
 $\mathbb{E}[X^2]=\tfrac{91}{6}\approx 15{,}17$, quindi
 $\mathrm{Var}(X)=15{,}17-3{,}5^2\approx 2{,}92$ e $\sigma\approx 1{,}71$.
 
-Una distinzione che d'ora in poi è data per fatta. $\mathrm{Var}(X)$ è
-una proprietà della *distribuzione*, e nei conti di sopra la si calcola perché
+La varianza $\mathrm{Var}(X)$ è
+una proprietà della *distribuzione*, e per il dado la si ricava perché
 la distribuzione è nota. Sui dati veri non lo è: la si stima da un
 campione $x_1,\dots,x_n$, ed è un'altra cosa, che si scrive $s^2$ e non
 $\mathrm{Var}(X)$. La media degli scarti quadratici
@@ -443,17 +441,17 @@ $$
 Il linguaggio è quello degli **stimatori**: una funzione $\hat\theta$ del
 campione che serve a indovinare un parametro $\theta$ della distribuzione. La
 sua distorsione è
-$\operatorname{bias}(\hat\theta)=\mathbb{E}[\hat\theta]-\theta$, la sua varianza
-dice quanto cambia da un campione all'altro, e l'errore quadratico medio si
-spezza nelle due,
+$\operatorname{bias}(\hat\theta)=\mathbb{E}[\hat\theta]-\theta$, la sua
+varianza dice quanto cambia da un campione all'altro, e l'errore quadratico
+medio si spezza nelle due,
 $\mathbb{E}[(\hat\theta-\theta)^2]=\operatorname{bias}(\hat\theta)^2+\mathrm{Var}(\hat\theta)$.
-Per campioni i.i.d. il conto di Bessel sta in una riga, una volta noto che
+Per campioni i.i.d. il calcolo di Bessel è immediato, una volta noto che
 $\mathrm{Var}(\bar x)=\sigma^2/n$ (per le due regole sulla varianza appena
 viste): da $\sum_i(x_i-\bar x)^2=\sum_i(x_i-\mu)^2-n(\bar x-\mu)^2$ segue
 $\mathbb{E}\big[\sum_i(x_i-\bar x)^2\big]=n\sigma^2-n\,\mathrm{Var}(\bar
-x)=(n-1)\sigma^2$. Due avvertenze. Non distorto non vuol dire migliore: su dati
-gaussiani il divisore $n$ ha errore quadratico medio più piccolo di $n-1$, e
-$n+1$ più piccolo ancora. E la non distorsione non attraversa le funzioni non
+x)=(n-1)\sigma^2$. Non distorto non vuol dire migliore: su dati gaussiani il
+divisore $n$ ha errore quadratico medio più piccolo di $n-1$, e $n+1$ più
+piccolo ancora. La non distorsione, inoltre, non attraversa le funzioni non
 lineari: $s=\sqrt{s^2}$ sottostima $\sigma$, per la disuguaglianza di Jensen.
 
 Il divisore $n$ è quello della massima verosimiglianza gaussiana (il criterio
@@ -483,7 +481,7 @@ grandezze che sono somme di tanti piccoli contributi indipendenti.
 
 La distribuzione normale, che si abbrevia $\mathcal{N}(\mu,\sigma^2)$: le due
 lettere greche sono il centro della campana ($\mu$, «mu») e il suo scarto
-tipico ($\sigma$, «sigma»), cioè di quanto in genere i valori si allontanano
+tipico ($\sigma$, «sigma»): di quanto in genere i valori si allontanano
 dal centro. Nella sigla il secondo numero è scritto al quadrato perché per
 tradizione si elenca la varianza e non lo scarto; la larghezza che si vede nel
 disegno resta $\sigma$. Circa il $68\%$ della probabilità cade entro
@@ -504,20 +502,19 @@ code che si assottigliano ai lati. Vale una regola pratica utilissima, la
 ($\mu\pm\sigma$), circa il $95\%$ entro due ($\mu\pm 2\sigma$). Altezze, errori di
 misura, rumore: in natura la campana è dappertutto.
 
-Perché dappertutto? C'è un risultato che lo spiega, e ha un nome importante: il
-**teorema del limite centrale**. Dice una cosa sorprendente: ogni volta che una
-grandezza è la *somma* di tanti contributi casuali e indipendenti fra loro,
-nessuno dei quali possa da solo essere enormemente più grande di tutti gli
-altri messi insieme, il risultato assomiglia a una campana, e questo succede
-qualunque sia la forma dei singoli contributi. L'altezza di una persona è la
-somma di centinaia di piccoli effetti (geni, alimentazione, salute da bambino):
-campana. L'errore di uno strumento è la somma di tante imprecisioni minuscole:
-campana. Il totale di tre dadi è la somma di tre numeri che, presi da soli, non
-hanno niente di campanulare (in un dado tutte le facce sono ugualmente
-probabili, il disegno sarebbe piatto): eppure il totale, sì.
+Lo spiega un risultato dal nome importante, il **teorema del limite
+centrale**. Se una grandezza è la *somma* di tanti contributi casuali e
+indipendenti fra loro, nessuno dei quali sia enormemente più grande di tutti
+gli altri messi insieme, il risultato assomiglia a una campana, qualunque sia
+la forma dei singoli contributi. L'altezza di una persona è la somma di
+centinaia di piccoli effetti (geni, alimentazione, salute da bambino) e si
+dispone a campana; lo stesso vale per l'errore di uno strumento, somma di tante
+imprecisioni minuscole. Il totale di tre dadi è la somma di tre numeri che,
+presi da soli, non hanno niente di campanulare (in un dado tutte le facce sono
+ugualmente probabili, il disegno sarebbe piatto), eppure il totale sì.
 
-Attenzione a cosa il teorema promette e cosa no. Promette che, sommando
-abbastanza pezzi, la campana arriva. Non promette *quanto in fretta*: con i
+Il teorema promette che, sommando
+abbastanza pezzi, la campana arriva. Non promette però *quanto in fretta*: con i
 dadi bastano tre addendi, ma con ingredienti molto storti (per esempio un
 evento che capita una volta su cento) nemmeno trenta bastano, e la campana non
 si vede ancora.
@@ -554,16 +551,16 @@ e l'altro, e non la famiglia, tanto che il default di PyTorch campiona da
 un'uniforme e non da una normale.
 
 Il teorema dice che si converge, non quanto in fretta, e la seconda domanda ha
-una risposta separata. Una garanzia grossolana la dà la disuguaglianza di
-Berry–Esseen, $\sup_z |F_n(z)-\Phi(z)| \le C\,\rho_3 / (\sigma^3\sqrt{n})$,
-dove $F_n$ è la funzione di ripartizione della somma standardizzata, $\Phi$
-quella della normale standard, $C$ una costante universale minore di mezzo che
-non dipende dalla distribuzione di partenza, e $\rho_3 = \mathbb{E}|X-\mu|^3$.
-La distanza cala dunque come $1/\sqrt{n}$. Davanti, però, c'è un momento terzo
+una risposta separata. La disuguaglianza di Berry–Esseen dà una garanzia
+grossolana, $\sup_z |F_n(z)-\Phi(z)| \le C\,\rho_3 / (\sigma^3\sqrt{n})$, dove
+$F_n$ è la funzione di ripartizione della somma standardizzata, $\Phi$ quella
+della normale standard, $C$ una costante universale minore di mezzo che non
+dipende dalla distribuzione di partenza, e $\rho_3 = \mathbb{E}|X-\mu|^3$. La
+distanza cala dunque come $1/\sqrt{n}$. Davanti, però, c'è un momento terzo
 assoluto, che non distingue una sola coda lunga da due code lunghe simmetriche.
-A separarle è lo sviluppo di Edgeworth, il cui primo termine correttivo è
+Le separa lo sviluppo di Edgeworth, il cui primo termine correttivo è
 proporzionale all’asimmetria e si annulla quando la distribuzione di partenza è
-simmetrica: è lei, a parità di tutto il resto, a governare il termine
+simmetrica: a parità di tutto il resto, l'asimmetria governa il termine
 dominante.
 
 La distanza fra due distribuzioni si misura con la statistica di
@@ -576,8 +573,9 @@ scendere contro una normale continua; con la correzione di continuità la
 distanza è $0{,}010$. Per una lognormale con $\mu=0$ e $\sigma=2$, asimmetrica e
 continua, a $n=30$ resta $0{,}27$, su quattrocentomila somme simulate. Per una
 Bernoulli$(0{,}01)$, a $n=30$ vale $0{,}449$, e qui la discretezza è tutto il
-numero: la somma mette il $74\%$ della massa su un valore solo, e quel salto, da
-solo, vale $0{,}449$. Il caso del dado resta il più gentile, non il più ostile.
+numero: la somma mette il $74\%$ della massa sullo zero, la ripartizione salta
+da $0$ a $0{,}74$, la normale in quel punto vale $0{,}29$ e lo scarto massimo
+sta tutto in quel salto. Il caso del dado resta il più favorevole dei tre.
 
 ```python
 import numpy as np
@@ -627,8 +625,7 @@ trenta lognormali: 0.27
 
 `````
 
-Conviene vedere il teorema del limite centrale succedere, perché detto a
-parole sembra una promessa e guardato sembra un trucco.
+Il teorema del limite centrale si vede meglio all'opera che a parole.
 
 ```{figure} ../figures/limite-centrale.gif
 :name: fig-limite-centrale
@@ -636,25 +633,23 @@ parole sembra una promessa e guardato sembra un trucco.
 :width: 90%
 
 Un dado è piatto: nessuna faccia è più probabile di un'altra. Eppure la
-somma di tre dadi, ripetuta seicento volte, si dispone da sé lungo la campana.
+somma di tre dadi, ripetuta seicento volte, si dispone lungo la campana.
 La curva sovrapposta è la campana che il teorema prevede prima ancora di
 tirare i dadi, e non un disegno fatto sopra le barre a cose fatte: è centrata
 sulla somma media dei tre e larga di conseguenza, e i dadi le danno ragione.
 ```
 
-Due cose valgono più della formula, nella {numref}`fig-limite-centrale`. La
-prima è che la distribuzione di partenza non ha niente della campana:
-nessuna faccia è privilegiata, il disegno di un dado singolo sarebbe una
-fila di barre tutte uguali, e la campana arriva lo stesso. È questo il senso
-di «qualunque sia la forma dei singoli contributi».
+Nella {numref}`fig-limite-centrale` contano due cose. La distribuzione di
+partenza non ha niente della campana: nessuna faccia è privilegiata, il disegno
+di un dado singolo sarebbe una fila di barre tutte uguali, e la campana arriva
+lo stesso. È il senso di «qualunque sia la forma dei singoli contributi».
 
-La seconda va detta con più cautela di quanto si faccia di solito. Qui bastano
-tre addendi, ma il merito è del dado più che del teorema: è simmetrico,
-cioè non ha una coda più lunga dell'altra. È proprio la simmetria a far
-arrivare in fretta la campana, ed è per questo che il caso più «piatto» è anche
-il più facile.
+Poi bastano tre addendi, ma il merito è del dado più che del teorema: è
+simmetrico, senza una coda più lunga dell'altra, e la simmetria fa arrivare in
+fretta la campana. Per questo il caso più «piatto» è anche il più
+facile.
 
-Lo stesso fenomeno si vede con le monete, ed è il caso che ricorre più spesso
+Lo stesso fenomeno si vede con le monete, il caso che ricorre più spesso
 nel machine learning: contare i successi in una serie di prove «sì/no»
 indipendenti.
 
@@ -669,21 +664,21 @@ prove.
 ```
 
 L'accordo mostrato in {numref}`fig-conteggio-successi` è ciò che autorizza
-un'abitudine diffusa. Per sapere quanto vale un modello lo si prova su un gruppo
-di esempi tenuti da parte, mai visti durante l'addestramento (il test set), e si
-conta la percentuale di risposte esatte: quella percentuale si chiama
-**accuratezza**. Ma un conteggio di risposte esatte su prove indipendenti è una
-somma di Bernoulli, come il conteggio di teste appena disegnato, quindi lo si
-può trattare come una campana, purché le prove siano abbastanza numerose e la
-quota di risposte esatte non sia troppo vicina a zero o a uno (una regola
-pratica: $n\,p(1-p)$ almeno una decina, con $n$ le prove e $p$ quella quota). È
-l'approssimazione su cui poggiano gli intervalli di confidenza, e cede proprio
-dove il modello è molto buono: con cento esempi e il $98\%$ di risposte esatte,
-il margine calcolato con la campana arriva oltre il $100\%$.
+un'abitudine diffusa. Per sapere quanto vale un modello lo si prova su un
+gruppo di esempi tenuti da parte, mai visti durante l'addestramento (il test
+set), e si conta la percentuale di risposte esatte: quella percentuale si
+chiama **accuratezza**. Un conteggio di risposte esatte su prove indipendenti è
+una somma di Bernoulli, come il conteggio delle teste, quindi lo si può
+trattare come una campana, purché le prove siano abbastanza numerose e la quota
+di risposte esatte non sia troppo vicina a zero o a uno (una regola pratica:
+$n\,p(1-p)$ almeno una decina, con $n$ le prove e $p$ quella quota). È
+l'approssimazione su cui poggiano gli intervalli di confidenza, e cede dove il
+modello è molto buono: con cento esempi e il $98\%$ di risposte esatte, il
+margine calcolato con la campana arriva oltre il $100\%$.
 
 ## Aggiornare le credenze: il teorema di Bayes
 
-Fin qui abbiamo calcolato probabilità "in avanti". Ma spesso il problema è
+Fin qui abbiamo calcolato probabilità "in avanti". Spesso, però, il problema è
 rovesciato: osserviamo un effetto e vogliamo risalire alla causa. È il regno di
 Thomas Bayes, il cui saggio fu pubblicato postumo nel 1763.
 
@@ -692,9 +687,9 @@ Thomas Bayes, il cui saggio fu pubblicato postumo nel 1763.
 Un test cerca una malattia rara, che colpisce $1$ persona su $100$. Il
 test è buono: individua il $99\%$ dei malati e sbaglia solo nel $5\%$ dei sani. Ti
 arriva un risultato positivo: quanto devi preoccuparti? L'istinto dice
-"molto", ma i conti dicono altro. Su $10\,000$ persone, $100$ sono malate (e $99$
+"molto", ma i calcoli dicono altro. Su $10\,000$ persone, $100$ sono malate (e $99$
 risultano positive); ma dei $9\,900$ sani ben $495$ risultano positivi *per
-errore*. I positivi totali sono $99+495=594$, e solo $99$ sono davvero malati:
+errore*. I positivi totali sono $99+495=594$, e solo $99$ sono malati:
 circa il 17%. Con una malattia rara, la maggior parte dei positivi sono falsi
 allarmi.
 
@@ -702,16 +697,15 @@ allarmi.
 
 `````{tab} Superiore
 
-Per $P(B)>0$ la probabilità di $A$ dato $B$ è $P(A\mid B)=P(A\cap B)/P(B)$,
-la probabilità ricalcolata dentro il mondo ristretto a $B$. Due eventi sono
-**indipendenti** se $P(A\cap B)=P(A)\,P(B)$, cioè se sapere che $B$ è
-successo non sposta $A$; per le variabili aleatorie si chiede la stessa
-fattorizzazione per ogni coppia di valori, e «i.i.d.» vuol dire indipendenti
-e con la stessa distribuzione. Se $B_1,\dots,B_k$ partizionano lo spazio degli
-esiti, vale la legge della probabilità totale
-$P(A)=\sum_j P(A\mid B_j)\,P(B_j)$. Scrivendo $P(A\cap B)$ nei due modi si
-ottiene il teorema di Bayes, che lega la probabilità condizionata nei due
-versi:
+Per $P(B)>0$ la probabilità di $A$ dato $B$ è $P(A\mid B)=P(A\cap B)/P(B)$, la
+probabilità ricalcolata dentro il mondo ristretto a $B$. Due eventi sono
+**indipendenti** se $P(A\cap B)=P(A)\,P(B)$: sapere che $B$ è successo non
+sposta $A$; per le variabili aleatorie si chiede la stessa fattorizzazione per
+ogni coppia di valori, e «i.i.d.» vuol dire indipendenti e con la stessa
+distribuzione. Se $B_1,\dots,B_k$ partizionano lo spazio degli esiti, vale la
+legge della probabilità totale $P(A)=\sum_j P(A\mid B_j)\,P(B_j)$. Scrivendo
+$P(A\cap B)$ nei due modi si ottiene il teorema di Bayes, che lega la
+probabilità condizionata nei due versi:
 
 $$
 P(A\mid B)=\frac{P(B\mid A)\,P(A)}{P(B)} .
@@ -731,10 +725,10 @@ sbilanciate.
 
 `````
 
-Che a comandare sia quanto la malattia è diffusa, e non quanto il test è
-buono, si vede meglio spostando proprio quel dato. Teniamo lo stesso test
-(individua il $99\%$ dei malati e sbaglia sul $5\%$ dei sani) e rendiamo la
-malattia dieci volte più rara, una persona su mille invece di una su cento.
+La diffusione della malattia pesa più della bontà del test, e lo si vede
+spostando quel dato. Teniamo lo stesso test (individua il $99\%$ dei malati e
+sbaglia sul $5\%$ dei sani) e rendiamo la malattia dieci volte più rara, una
+persona su mille invece di una su cento.
 
 ```{figure} ../figures/teorema-bayes-test-medici.svg
 :name: fig-bayes-test
@@ -743,15 +737,15 @@ malattia dieci volte più rara, una persona su mille invece di una su cento.
 
 Lo stesso test su una malattia dieci volte più rara. I falsi positivi non
 cambiano di molto (vengono dai sani, che sono tanti); i positivi veri sì, e la
-probabilità di essere davvero malati crolla dal $17\%$ al $2\%$. Nel disegno
+probabilità di essere malati crolla dal $17\%$ al $2\%$. Nel disegno
 compaiono due termini del mestiere: **prevalenza** è quanto la malattia è
-diffusa nella popolazione (qui una persona su mille, cioè lo $0{,}1\%$), e
-**falso negativo** è il caso opposto del falso allarme, cioè un malato a cui il
+diffusa nella popolazione (qui una persona su mille, lo $0{,}1\%$), e
+**falso negativo** è il caso opposto del falso allarme: un malato a cui il
 test dice che sta bene.
 ```
 
 Il test non è peggiorato di una virgola fra {numref}`fig-bayes-test` e
-l'esempio di prima: a cambiare sono stati i malati. È la ragione per cui la stessa
+l'esempio di prima: sono cambiati i malati. Per questo la stessa
 identica prova diagnostica va interpretata diversamente in uno screening di
 massa e in un reparto, dove chi arriva è già stato selezionato dai sintomi.
 
@@ -772,15 +766,14 @@ Le oscillazioni non spariscono: si restringono. È una differenza che conta,
 perché nessun numero di prove rende la media *uguale* al valore vero.
 ```
 
-La forma a imbuto di {numref}`fig-legge-grandi-numeri` è quella che governa
+La forma a imbuto di {numref}`fig-legge-grandi-numeri` governa
 quanti esempi servono per valutare un modello, e l'imbuto si stringe più
-lentamente di quanto verrebbe da sperare: non in proporzione al numero di prove,
-ma alla sua radice quadrata. Il conto è quello: con cento prove l'incertezza
-vale un certo tanto, e per dimezzarla non basta arrivare a duecento, bisogna
-arrivare a quattrocento, perché quello che deve raddoppiare è la radice, e la
-radice di quattrocento è il doppio della radice di cento ($20$ contro $10$).
-Quattro volte i dati per metà dell'errore, e la tassa si paga ogni volta che si
-misura qualcosa su un campione.
+lentamente di quanto verrebbe da sperare: l'incertezza cala con la radice
+quadrata del numero di prove, non in proporzione a esso. Per dimezzarla
+non basta il doppio delle prove: ne servono quattro volte tante, perché deve
+raddoppiare la radice, e $\sqrt{400}=20$ è il doppio di $\sqrt{100}=10$.
+Quattro volte i dati per metà dell'errore, ogni volta che si misura qualcosa su
+un campione.
 
 `````{tab} Elementare
 
@@ -790,23 +783,22 @@ moneta equa, $7$ teste non stupiscono nessuno. Su $10\,000$ lanci, il $70\%$
 di teste è talmente improbabile che concluderesti (ragionevolmente) che la
 moneta è truccata.
 
-Attenzione a un equivoco diffuso: il caso non si corregge, si diluisce.
+Il caso non si corregge, si diluisce.
 Dopo dieci teste di fila la moneta non "deve" croce, il lancio successivo resta
-50 e 50. Quello che succede è che le dieci teste iniziali pesano sempre meno
+50 e 50. Le dieci teste iniziali, invece, pesano sempre meno
 man mano che i lanci si accumulano, finché diventano irrilevanti nella media.
 
-Due condizioni reggono la garanzia, e conviene tenerle distinte perché si
-rompono in modi diversi. La prima è che le osservazioni siano indipendenti, cioè
-che nessuna influenzi le altre: se le prime recensioni di un ristorante sono
-entusiaste, chi scrive dopo le ha lette e si adegua, e mille voti così non
-valgono mille pareri raccolti separatamente. La seconda è che vengano tutte
-dalla stessa distribuzione, cioè che si stia misurando sempre la stessa cosa:
-mille recensioni scritte dagli amici del ristoratore misurano l'amicizia, non la
-cucina, e sommarle a quelle dei clienti fa una media di due cose diverse. Se
-salta l'una o l'altra, la garanzia nella sua forma semplice non vale più (ne
-esistono versioni per dati dipendenti, ma chiedono condizioni che una raccolta
-fatta male non soddisfa), ed è la ragione per cui una raccolta di dati fatta
-male non migliora aggiungendone altra raccolta allo stesso modo.
+La garanzia poggia su due condizioni, che si rompono in modi diversi. La prima
+è che le osservazioni siano indipendenti, senza che nessuna influenzi le altre:
+se le prime recensioni di un ristorante sono entusiaste, chi scrive dopo le ha
+lette e si adegua, e mille voti così non valgono mille pareri raccolti
+separatamente. La seconda è che vengano tutte dalla stessa distribuzione, senza
+mescolare cose diverse: mille recensioni scritte dagli amici del ristoratore
+misurano l'amicizia, non la cucina, e sommarle a quelle dei clienti fa una
+media di due cose diverse. Se salta l'una o l'altra, la garanzia nella sua
+forma semplice non vale più (ne esistono versioni per dati dipendenti, ma
+chiedono condizioni che una raccolta fatta male non soddisfa). Per questo dati
+raccolti male non migliorano aggiungendone altri raccolti allo stesso modo.
 
 `````
 
@@ -844,7 +836,7 @@ $n$ conta molto meno di quanto dica il conteggio delle righe.
 
 Un modello nuovo raggiunge l’$87{,}2\%$ di accuratezza sul test set, il vecchio
 si fermava all’$86{,}8\%$. Il team festeggia. Ma se il test set ha $500$
-esempi, quattro decimi di punto sono due risposte esatte in più. Due.
+esempi, quattro decimi di punto sono due risposte esatte in più.
 
 ```{figure} ../figures/intervalli-di-confidenza.svg
 :name: fig-intervalli-confidenza
@@ -853,29 +845,28 @@ esempi, quattro decimi di punto sono due risposte esatte in più. Due.
 
 Le stesse tre misure, con l'incertezza disegnata. A e B non sono
 distinguibili: la differenza fra loro è più piccola di quanto la misura possa
-risolvere. C invece è davvero peggiore.
+risolvere. C invece è peggiore.
 ```
 
-{numref}`fig-intervalli-confidenza` mostra cosa si compra con una barra
-d'errore: la capacità di dire «non lo so». Senza, una classifica si può
-sempre stilare, e sembrerà informativa anche quando ordina rumore; con la
-barra, alcune coppie restano semplicemente a pari merito, che è la risposta
-corretta.
+{numref}`fig-intervalli-confidenza` mostra che una barra d'errore permette di
+dire «non lo so». Senza di essa una classifica si può sempre stilare, e sembra
+informativa anche quando ordina rumore; con la barra alcune coppie restano a
+pari merito, che è la risposta corretta.
 
 `````{tab} Elementare
 
 Un istituto intervista mille persone e trova il candidato A al $47{,}2\%$.
 Nessun giornale serio pubblica quel numero da solo: accanto ci va il margine
-d'errore, e con mille intervistati quel $47{,}2\%$ vuol dire «da qualche parte
+d'errore, e con mille intervistati quel $47{,}2\%$ va letto «da qualche parte
 fra il $44\%$ e il $50\%$». L'istituto non ha contato i voti di tutti. Ne ha
 presi mille a caso, un **campione**, e da quelli stima il numero vero, che si
 saprà solo la sera dello spoglio.
 
 Provare un modello su $500$ esempi è sondare $500$ elettori. L’$87\%$ di
-risposte esatte del modello nuovo è il suo sondaggio; l'elezione, cioè come se
-la caverebbe su tutti i casi possibili, nessuno la vedrà mai.
+risposte esatte del modello nuovo è il suo sondaggio; nessuno vedrà mai
+l'elezione: come se la caverebbe il modello su tutti i casi possibili.
 
-Il sondaggista il margine se lo fa a mente. Parte da un candidato al $50\%$,
+Il sondaggista calcola il margine a mente. Parte da un candidato al $50\%$,
 dove gli intervistati sono più divisi e la stima balla di più: lì il margine è
 circa $100/\sqrt{n}$ punti con $n$ intervistati, perché l'incertezza di una
 media cala come uno diviso la radice del numero di prove (è la legge dei grandi
@@ -892,16 +883,16 @@ terzi fanno un margine di tre punti.
 
 La stima onesta del modello nuovo sta quindi fra l’$84\%$ e il $90\%$, quella
 del vecchio fra l’$83{,}8\%$ e l’$89{,}8\%$. I due intervalli si sovrappongono
-quasi per intero, e i quattro decimi di punto di vantaggio sono compatibili con
-il **rumore**, il nome che si dà alla parte di un risultato che viene dal caso e
-non dal merito.
+quasi del tutto, e i quattro decimi di punto di vantaggio sono compatibili con
+il **rumore**, il nome che si dà alla parte di un risultato che viene dal caso
+e non dal merito.
 
 Per stringere il margine l'istituto deve sentire più gente, e molta, perché
 sotto c'è una radice quadrata: un test set di $5\,000$ esempi porta a circa
-$\pm 1$ punto, uno di $50\,000$ a $\pm 0{,}3$. E il conto con la radice vale per
-i sondaggi normali: in un paesino di poche decine di elettori, o con un
-candidato dato al $99\%$ o all’$1\%$, sbaglia, e chi fa sondaggi passa a formule
-fatte apposta.
+$\pm 1$ punto, uno di $50\,000$ a $\pm 0{,}3$. Il calcolo con la radice vale
+per i sondaggi normali: in un paesino di poche decine di elettori, o con un
+candidato dato al $99\%$ o all’$1\%$, sbaglia, e chi fa sondaggi passa a
+formule fatte apposta.
 
 Il $95\%$ stampato accanto al margine parla dell'istituto, non della singola
 tornata di telefonate. Il risultato dell'urna è già deciso, e o sta dentro il
@@ -917,7 +908,7 @@ quasi ovunque, e a dividerli sono gli esempi in cui uno risponde giusto e
 l'altro no. Se quei casi si spartiscono quasi a metà, il pari merito è
 confermato. Se uno la spunta quasi sempre, il vantaggio è reale anche con i
 margini sovrapposti: due margini messi a confronto sono prudenti per
-costruzione, e qualche differenza vera la lasciano in ombra.
+costruzione, e lasciano in ombra qualche differenza vera.
 
 `````
 
@@ -932,47 +923,46 @@ $$
 $$
 
 Con $\hat{p}=0{,}872$ e $n=500$: errore standard $\approx 1{,}49$ punti,
-margine $\approx 2{,}93$ punti, intervallo $[84{,}2\%,\ 90{,}2\%]$.
+margine $\approx 2{,}93$ punti, intervallo $[84{,}3\%,\ 90{,}1\%]$.
 
-Cosa significa davvero "95%". Non che il valore vero abbia il $95\%$ di
-probabilità di stare in *questo* intervallo: il valore vero è un numero fisso,
-o ci sta o non ci sta. Significa che la *procedura*, ripetuta su molti campioni,
-produce intervalli che contengono il valore vero nel $95\%$ dei casi. È una
-proprietà del metodo, non di questo singolo risultato.
+Il "95%" non significa che il valore vero abbia il $95\%$ di probabilità di
+stare in *questo* intervallo: il valore vero è un numero fisso, e l'intervallo
+lo contiene oppure no. Significa che la *procedura*, ripetuta su molti
+campioni, produce intervalli che contengono il valore vero nel $95\%$ dei casi.
+È una proprietà del metodo, non di questo singolo risultato.
 
-Due avvertenze pratiche. L'intervallo di Wald è inaffidabile con $n$ piccolo o
-$\hat p$ vicino a $0$ o $1$: con $\hat p=0{,}98$ e $n=100$ va da $95{,}2\%$ a
-$100{,}8\%$. Al suo posto si usa l'intervallo di Wilson, $\dfrac{\hat
-p+z^2/2n\pm z\sqrt{\hat p(1-\hat p)/n+z^2/4n^2}}{1+z^2/n}$ (qui da $92{,}9\%$ a
-$99{,}5\%$), oppure quello esatto di Clopper-Pearson. E quando si confrontano
-due modelli sullo stesso test set gli errori sono appaiati: il confronto fra due
-intervalli è conservativo e può nascondere differenze reali ($90\%$ contro
-$86\%$ su $500$ esempi dà intervalli che si sovrappongono). Il test adatto è
-quello di McNemar {cite}`mcnemar1947note` sui soli esempi in cui i due modelli
-dissentono: con $b$ esempi giusti solo per il primo e $c$ solo per il secondo,
-sotto $H_0$ la statistica $(b-c)^2/(b+c)$ è approssimativamente $\chi^2_1$,
-oppure si usa il test binomiale esatto su $b$ con $b+c$ prove e probabilità
-$1/2$. Con $b=30$ e $c=10$ il $p$ esatto è $0{,}002$.
+L'intervallo di Wald è inaffidabile con $n$ piccolo o $\hat p$ vicino a $0$ o
+$1$: con $\hat p=0{,}98$ e $n=100$ va da $95{,}3\%$ a $100{,}7\%$. Al suo posto
+si usa l'intervallo di Wilson, $\dfrac{\hat p+z^2/2n\pm z\sqrt{\hat p(1-\hat
+p)/n+z^2/4n^2}}{1+z^2/n}$ (qui da $93{,}0\%$ a $99{,}4\%$), oppure quello
+esatto di Clopper-Pearson. Quando si confrontano due modelli sullo stesso test
+set gli errori sono appaiati: il confronto fra due intervalli è conservativo e
+può nascondere differenze reali ($90\%$ contro $86\%$ su $500$ esempi dà
+intervalli che si sovrappongono). Il test adatto è quello di McNemar
+{cite}`mcnemar1947note` sui soli esempi in cui i due modelli dissentono: con
+$b$ esempi giusti solo per il primo e $c$ solo per il secondo, sotto $H_0$ la
+statistica $(b-c)^2/(b+c)$ è approssimativamente $\chi^2_1$, oppure si usa il
+test binomiale esatto su $b$ con $b+c$ prove e probabilità $1/2$. Con $b=30$ e
+$c=10$ il $p$ esatto è $0{,}002$.
 
 `````
 
 ## Escludere il caso: l'ipotesi nulla e il p-value
 
-Un intervallo di confidenza sa dire «non lo so», ed è già molto. Ma prima o poi
-qualcuno chiede una risposta secca: questo modello è meglio dell'altro, sì o no?
-Questa serie di dati è cambiata rispetto al mese scorso, sì o no? Una risposta
-secca si può dare, a patto di dichiarare quanto spesso si è disposti a
-sbagliarla.
+Un intervallo di confidenza sa dire «non lo so». Prima o poi, però, qualcuno
+chiede una risposta secca: questo modello è meglio dell'altro, sì o no? Questa
+serie di dati è cambiata rispetto al mese scorso, sì o no? Una risposta secca
+si può dare, a patto di dichiarare quanto spesso si è disposti a sbagliarla.
 
 `````{tab} Elementare
 
 Cento lanci di una moneta, sessanta teste. È truccata?
 
-La statistica comincia, e la prima volta sorprende, dalla risposta che vorrebbe
-scartare: suppone la moneta onesta, e guarda quanto sarebbe strano un sessanta
-contro quaranta se lo fosse davvero. Quella supposizione si chiama **ipotesi
+La statistica comincia dalla risposta che vorrebbe scartare, e la prima volta
+sorprende: suppone la moneta onesta, e guarda quanto sarebbe strano un sessanta
+contro quaranta se lo fosse. Quella supposizione si chiama **ipotesi
 nulla**. Non si scrive perché ci si creda: si scrive perché è l'unica su cui si
-sappiano fare i conti. «Onesta» dice esattamente che numeri aspettarsi;
+sappiano fare i conti. «Onesta» fissa i numeri da aspettarsi;
 «truccata» non dice niente, perché truccata al cinquantacinque per cento e
 truccata al novanta sono due mondi diversi.
 
@@ -985,15 +975,16 @@ venticinque, la cui radice è cinque teste. Sessanta sta dunque due larghezze
 sopra il centro, e fuori da due larghezze si finisce circa cinque volte su
 cento.
 
-«Circa» però non basta, perché la soglia è proprio cinque su cento, e la campana
-approssima un conto che si può fare esatto, contando quante file di cento
+«Circa» però non basta, perché la soglia è cinque su cento, e la campana
+approssima un calcolo che si può fare esatto, contando quante file di cento
 testa-o-croce hanno sessanta teste o più. Uno sbilanciamento di sessanta e più
-(o di quaranta e meno) capita a una moneta onesta $57$ volte su mille, cioè
-$0{,}057$: la regola a mente dava l'ordine di grandezza giusto, la decisione la
-prende la cifra. Quel numero, quanto spesso il caso da solo produrrebbe una
-stranezza almeno pari a quella vista, si chiama $p$, o $p$-value. Ed è un'altra
-$p$ rispetto a quella che indicava la probabilità che esca testa: quella era una
-proprietà *della moneta*, questa della *prova* appena fatta.
+(o di quaranta e meno) capita a una moneta onesta $57$ volte su mille, una
+probabilità di $0{,}057$: la regola a mente dava l'ordine di grandezza giusto,
+la decisione la prende la cifra. Quel numero, quanto spesso il solo caso
+produrrebbe una stranezza almeno pari a quella vista, si chiama $p$, o
+$p$-value. Ed è un'altra $p$ rispetto a quella che indicava la probabilità che
+esca testa: quella era una proprietà *della moneta*, questa della *prova*
+appena fatta.
 
 Si contano anche i quaranta e meno perché la domanda era «è truccata», e non «è
 truccata a favore di testa». Chi sceglie il verso dopo aver visto il risultato
@@ -1010,12 +1001,12 @@ Il verdetto può sbagliare in due modi. Si può accusare una moneta onesta, e
 quanto spesso capita lo si è deciso a tavolino. Oppure si può lasciar passare
 una moneta truccata, e capita tanto più spesso quanto meno si è lanciato: con
 venti lanci e dodici teste $p$ vale $0{,}503$, e con una prova così corta la
-stessa proporzione di teste non dice più niente. Non accusare non è assolvere. E
-i due errori si scambiano: alzare l'asticella per accusare lascia passare più
-monete truccate, e viceversa. Con la stessa prova in mano, l'unico modo di
+stessa proporzione di teste non dice più niente. Non accusare non è assolvere.
+I due errori, poi, si scambiano: alzare l'asticella per accusare lascia passare
+più monete truccate, e viceversa. Con la stessa prova in mano, l'unico modo di
 stringerli tutti e due è lanciare di più.
 
-C'è poi un modo di leggere $p$ che è sbagliato, ed è il primo che viene in
+C'è poi un modo sbagliato di leggere $p$, il primo che viene in
 mente: $p$ non è la probabilità che la moneta sia onesta. Per dire quella
 servirebbe sapere quante monete truccate girano, che è il passaggio del teorema
 di Bayes visto prima. $p$ risponde a una domanda sola: se fosse onesta, quanto
@@ -1040,26 +1031,26 @@ come raddoppio della coda minore, la convenzione più diffusa; la variante che
 somma tutte le probabilità non superiori a quella osservata qui coincide, perché
 la binomiale con $\theta = 1/2$ è simmetrica).
 
-La discretezza costa qualcosa, e va detto perché si vede nei conti. I valori
-ottenibili di $p$ sono un insieme finito, quindi il livello nominale $\alpha$
-non è quasi mai raggiunto: con $n = 100$ il più piccolo rifiuto ammesso è a $61$
-successi, e la taglia effettiva del test è $0{,}035$ invece di $0{,}05$. Un test
-esatto su una statistica discreta è conservativo, e un conto di falsi
-positivi fatto con $\alpha$ nominale ne prevede più di quanti ne arrivino.
+La discretezza ha un costo che si vede nei numeri. I valori ottenibili di $p$
+sono un insieme finito, quindi il livello nominale $\alpha$ non è quasi mai
+raggiunto: con $n = 100$ il più piccolo rifiuto ammesso è a $61$ successi, e la
+taglia effettiva del test è $0{,}035$ invece di $0{,}05$. Un test esatto su una
+statistica discreta è conservativo, e un calcolo dei falsi positivi fatto con
+$\alpha$ nominale ne prevede più di quanti ne arrivino.
 
 Il livello $\alpha$ si fissa prima, e Neyman e Pearson
 {cite}`neyman1933problem` gli danno il significato che ancora si usa: è la
-frequenza con cui la procedura rifiuta $H_0$ quando $H_0$ è vera, cioè l'errore
-di prima specie. L'errore di seconda specie $\beta$ è non rifiutare quando
-$H_1$ è vera, e $1-\beta$ è la potenza. A test fissato i due si scambiano;
-per stringerli insieme serve $n$.
+frequenza con cui la procedura rifiuta $H_0$ quando $H_0$ è vera: l'errore di
+prima specie. L'errore di seconda specie $\beta$ è non rifiutare quando $H_1$ è
+vera, e $1-\beta$ è la potenza. A test fissato i due si scambiano; per
+stringerli insieme serve $n$.
 
 La dualità con gli intervalli di confidenza vale a parità di famiglia:
 rifiutare $H_0: \theta = \theta_0$ al livello $\alpha$ equivale a non trovare
 $\theta_0$ dentro l'intervallo di confidenza al $1-\alpha$ costruito con lo
 stesso metodo. L'intervallo di Wald e il test binomiale esatto non sono duali
 fra loro, e chi li mescola trova casi in cui uno rifiuta e l'altro contiene, e
-con $n = 100$ succede proprio alle sessanta teste da cui questo conto è
+con $n = 100$ succede alle sessanta teste da cui questo conto è
 partito. Le coppie giuste: Clopper-Pearson con il test binomiale esatto, Wald
 con il test $z$ che stima l'errore standard dalla proporzione osservata,
 Wilson con il test $z$ che lo calcola sotto $H_0$. Test e intervallo dicono la
@@ -1077,21 +1068,21 @@ $p$-value superi o non superi una soglia. Il divieto del secondo è il
 passaggio da $\Pr(\text{dati} \mid H_0)$ a $\Pr(H_0 \mid \text{dati})$, che
 senza una probabilità a priori non si fa.
 
-Il punto di rottura è a monte del conto. Il $p$-value ha il significato dichiarato
-solo se la statistica, il verso e la soglia sono stati scelti prima di
-guardare i dati. Chi prova più definizioni di errore, più finestre temporali, più
-sottogruppi e riporta la migliore ha misurato la propria ostinazione, ed è la
-stessa porta da cui entra il guaio della molteplicità.
+Il punto di rottura è a monte del calcolo. Il $p$-value ha il significato
+dichiarato solo se la statistica, il verso e la soglia sono stati scelti prima
+di guardare i dati. Chi prova più definizioni di errore, più finestre
+temporali, più sottogruppi e riporta la migliore ha fatto molti confronti e ne
+dichiara uno solo; da qui nasce il problema della molteplicità.
 
 `````
 
 ### Mille domande insieme: Bonferroni e le false scoperte
 
-Il guaio comincia quando la domanda non è una sola. Un programma che sorveglia
+Il problema comincia quando la domanda non è una sola. Un programma che sorveglia
 un modello al lavoro tiene d'occhio trecento grandezze e per ciascuna chiede «è
 cambiata?»; uno studio di genetica misura ventimila geni; un banco di prova
-confronta sessanta modi di regolare la stessa rete. La soglia che regge una
-domanda non regge trecento.
+confronta sessanta modi di regolare la stessa rete. La soglia che vale per una
+domanda non vale per trecento.
 
 `````{tab} Elementare
 
@@ -1102,7 +1093,7 @@ cento lanci non si distinguerebbero. L'ispettore lancia ogni moneta cento volte
 e accusa quella che sbilancia troppo da una parte o dall'altra, con la solita
 soglia di cinque su cento: da sessantuno teste in su, o da trentanove in giù.
 
-Il guaio si vede prima ancora di aprire la scatola. La soglia prometteva cinque
+Il problema si vede prima ancora di aprire la scatola. La soglia prometteva cinque
 accuse ingiuste ogni cento monete oneste, che con novecento farebbero
 quarantacinque; saranno una trentina, perché le teste sono un numero intero e la
 soglia non si può centrare esattamente, ma trenta o quarantacinque il punto non
@@ -1110,37 +1101,36 @@ cambia. Nell'elenco delle accusate, lungo un centinaio, decine di monete sono l�
 per caso, e chi lo legge non ha modo di sapere quali.
 
 La prima riparazione alza l'asticella in proporzione al numero delle domande:
-con mille monete l'ispettore chiede $0{,}05$ diviso mille, cioè cinque su
-centomila. Il conto che la giustifica sta in una riga: ogni moneta onesta viene
-accusata cinque volte su centomila, le oneste sono novecento, e novecento per
-cinque su centomila fa al più cinque centesimi di accusa ingiusta a scatola,
-cioè un innocente accusato al più in una scatola su venti. Di nuovo cinque su
-cento, ma riferito all’intera scatola invece che alla singola moneta. È la
-correzione di **Bonferroni**, prudentissima, e il prezzo si vede subito: con
-l'asticella così in alto smettono di essere accusate anche quasi tutte le monete
-davvero truccate.
+con mille monete l'ispettore chiede $0{,}05$ diviso mille, cinque su centomila.
+Ogni moneta onesta viene allora accusata cinque volte su centomila; le oneste
+sono novecento, e novecento per cinque su centomila fa al più cinque centesimi
+di accusa ingiusta a scatola, quindi un innocente accusato al più in una
+scatola su venti. Di nuovo cinque su cento, ma riferito all’intera scatola
+invece che alla singola moneta. È la correzione di **Bonferroni**,
+prudentissima: l'asticella è così alta che smettono di essere accusate anche
+quasi tutte le monete truccate.
 
 La seconda riparazione cambia la promessa, e si chiama **Benjamini-Hochberg**.
 Invece di «quasi certamente non accuso nemmeno una moneta onesta», l'ispettore
 promette «fra le monete che accuso, in media non più del cinque per cento sono
 oneste», e anzi qualcosa meno, tanto meno quante più truccate ci sono nella
 scatola. In media su tante scatole, perché su una scatola sola nessuno può
-garantire niente; ed è una promessa più debole, che proprio per questo permette
+garantire niente. È una promessa più debole, e per questo permette
 di accusarne molte di più.
 
 L'ispettore mette in fila le mille monete, dalla più sbilanciata alla meno, e
-alla moneta che sta al posto numero $k$ chiede una soglia di $k$ volte il cinque
-per cento diviso mille: alla prima cinque su centomila, come Bonferroni; alla
-seconda il doppio; alla decima dieci volte tanto; alla centesima cento volte
-tanto, cioè il cinque per cento diviso dieci. Scende fino all'ultima che ce la
-fa, segna quel posto, e accusa tutte le monete da lì in su. Nel gruppo finisce
-anche qualcuna che da sola non ce l'avrebbe fatta, ed è voluto. Bonferroni
-giudica ogni moneta da sola, come se fosse l'unica; qui una moneta un po’
-sospetta viene creduta anche per la compagnia in cui si trova, perché sopra di
-lei nella fila ce ne sono decine ancora più sbilanciate, e decine di monete
-sbilanciate tutte insieme il caso da solo non le produce. La cosa che si tiene
-sotto controllo si chiama **tasso di false scoperte**, e «scoperta» è il nome
-che si dà a un'accusa quando il colpevole non è una moneta ma un gene o un
+alla moneta che sta al posto numero $k$ chiede una soglia di $k$ volte il
+cinque per cento diviso mille: alla prima cinque su centomila, come Bonferroni;
+alla seconda il doppio; alla decima dieci volte tanto; alla centesima cento
+volte tanto, che è il cinque per cento diviso dieci. Scende fino all'ultima che
+ce la fa, segna quel posto, e accusa tutte le monete da lì in su. Nel gruppo
+finisce anche qualcuna che da sola non ce l'avrebbe fatta, ed è voluto.
+Bonferroni giudica ogni moneta da sola, come se fosse l'unica; qui una moneta
+un po’ sospetta viene creduta anche per la compagnia in cui si trova, perché
+sopra di lei nella fila ce ne sono decine ancora più sbilanciate, e il solo
+caso non produce decine di monete sbilanciate tutte insieme. La cosa che si
+tiene sotto controllo si chiama **tasso di false scoperte**, e «scoperta» è il
+nome che si dà a un'accusa quando il colpevole non è una moneta ma un gene o un
 guasto.
 
 Quale delle due serva dipende da che cosa succede dopo l'accusa. Se ogni
@@ -1171,13 +1161,13 @@ errori fra le scoperte annunciate.
 La correzione di Bonferroni confronta ogni $p$-value con $\alpha/m$
 {cite}`dunn1961multiple`. Che controlli la FWER segue dalla disuguaglianza di
 Boole, $\Pr(\bigcup_i A_i) \le \sum_i \Pr(A_i)$, e quindi non chiede
-indipendenza: è la sua forza e la ragione della sua prudenza. Una cosa la
-chiede, e va detta perché è quella che si rompe più spesso: che ogni $p$-value
-sia valido di per sé, cioè $\Pr(p_i \le t \mid H_0) \le t$. Con $p$-value
-ottimisti Bonferroni fallisce anche senza nessuna dipendenza. Un'alternativa
-gratuita e mai peggiore esiste: la procedura di Holm ordina i $p$-value e
-allenta la soglia man mano, controlla la stessa FWER sotto le stesse ipotesi e
-rifiuta sempre almeno quanto Bonferroni.
+indipendenza: è la sua forza e la ragione della sua prudenza. Chiede però
+un'ipotesi, quella che si rompe più spesso: che ogni $p$-value sia valido di
+per sé: $\Pr(p_i \le t \mid H_0) \le t$. Con $p$-value ottimisti Bonferroni
+fallisce anche senza nessuna dipendenza. Esiste un'alternativa gratuita e mai
+peggiore: la procedura di Holm ordina i $p$-value e allenta la soglia man mano,
+controlla la stessa FWER sotto le stesse ipotesi e rifiuta sempre almeno quanto
+Bonferroni.
 
 La procedura di Benjamini e Hochberg {cite}`benjamini1995controlling`
 controlla invece la FDR a un livello $q$: si ordinano i $p$-value
@@ -1188,27 +1178,27 @@ p_{(k)} \le \frac{k}{m}\,q,
 $$
 
 e si rifiutano le prime $k$ ipotesi. Sotto indipendenza, e sotto la dipendenza
-positiva che Benjamini e Yekutieli chiamano PRDS
-{cite}`benjamini2001control`, la garanzia è $\mathrm{FDR} \le q\,m_0/m$, dove
-$m_0$ è il numero di ipotesi nulle vere: con il $90\%$ di nulle vere e
-$q = 0{,}05$, il limite effettivo è $4{,}5\%$. Fuori di lì la garanzia cade e
-serve la versione conservativa $q/\sum_{j \le m} 1/j$. E come Bonferroni,
-anche questa presuppone $p$-value validi: se sotto $H_0$ sono conservativi,
-come lo sono i $p$-value binomiali delle monete, la FDR misurata resta sotto il
-limite per quella ragione e non per merito della procedura.
+positiva che Benjamini e Yekutieli chiamano PRDS {cite}`benjamini2001control`,
+la garanzia è $\mathrm{FDR} \le q\,m_0/m$, dove $m_0$ è il numero di ipotesi
+nulle vere: con il $90\%$ di nulle vere e $q = 0{,}05$, il limite effettivo è
+$4{,}5\%$. Fuori di lì la garanzia cade e serve la versione conservativa
+$q/\sum_{j \le m} 1/j$. Come Bonferroni, anche questa presuppone $p$-value
+validi: se sotto $H_0$ sono conservativi, come lo sono i $p$-value binomiali
+delle monete, la FDR misurata resta sotto il limite per quella ragione e non
+per merito della procedura.
 
 Il punto di rottura sta nella parola *attesa*. La FDR è una media su ripetizioni:
 sul singolo insieme di dati la quota di falsi fra le scoperte può essere ben
 più alta di $q$, e nessuna procedura può garantire il contrario. La scelta fra
-le due grandezze è quindi una scelta di mestiere: confermare una singola
+le due grandezze dipende quindi dal problema: confermare una singola
 affermazione chiede la FWER, esplorare ventimila geni chiede la FDR.
 
 `````
 
-I due $p$ delle monete singole e la differenza fra le tre strade si misurano
-nello stesso blocco. Per la scatola: mille monete, cento delle quali escono
-testa il $65\%$ delle volte e le altre novecento oneste, cento lanci a testa, e
-il $p$ calcolato contando le combinazioni; il tutto ripetuto trecento volte con
+Un programma calcola i $p$ delle monete singole e confronta le tre strade su una
+scatola come quella dell'ispettore: mille monete, cento delle quali escono
+testa il $65\%$ delle volte e novecento oneste, cento lanci a testa, e il $p$
+calcolato contando le combinazioni. L'esperimento si ripete trecento volte con
 scatole sorteggiate in modo diverso, perché una quota media si guarda su molte
 prove.
 
@@ -1277,31 +1267,29 @@ Bonferroni           accusate   12.7   oneste fra le accusate   0.2%   truccate 
 Benjamini-Hochberg   accusate   48.6   oneste fra le accusate   3.5%   truccate trovate  46.9 su 100
 ```
 
-I numeri delle ultime tre righe sono medie su trecento scatole, ed è per questo
-che hanno la virgola. Senza correzione si annunciano centoquindici scoperte e
-più di una su quattro è rumore: la soglia del cinque per cento sta facendo il
-suo mestiere una domanda alla volta, e chi legge l'elenco intero non ha nessuna
-delle garanzie che crede di avere. Bonferroni porta i falsi quasi a zero e trova
-tredici monete truccate su cento; Benjamini-Hochberg ne trova quarantasette, e la
-quota di oneste fra le accusate resta al $3{,}5\%$, sotto il $4{,}5\%$ promesso
-(che è il cinque per cento moltiplicato per la quota di monete oneste nella
-scatola). L'ultima colonna, quante truccate si trovano su cento, ha un nome: è
-la **potenza** della procedura. Le tre righe descrivono tre promesse diverse,
-non una classifica, e la domanda giusta è quale delle tre serva a chi legge il
-risultato.
+I numeri delle ultime tre righe sono medie su trecento scatole, e per questo
+hanno la virgola. Senza correzione si annunciano centoquindici scoperte e più
+di una su quattro è rumore: la soglia del cinque per cento vale per una domanda
+alla volta, e chi legge l'elenco intero non ha nessuna delle garanzie che crede
+di avere. Bonferroni porta i falsi quasi a zero e trova tredici monete truccate
+su cento; Benjamini-Hochberg ne trova quarantasette, e la quota di oneste fra
+le accusate resta al $3{,}5\%$, sotto il $4{,}5\%$ promesso (che è il cinque
+per cento moltiplicato per la quota di monete oneste nella scatola). L'ultima
+colonna, quante truccate si trovano su cento, si chiama **potenza** della
+procedura. Le tre righe descrivono tre promesse diverse, non una classifica, e
+la domanda giusta è quale delle tre serva a chi legge il risultato.
 
-Un conto va rifatto, perché non torna, e la ragione è istruttiva. Senza
-correzione le accusate sono $115$ e le truccate trovate $83$: le oneste accusate
-sono quindi una trentina, mentre il cinque per cento di novecento ne farebbe
-prevedere quarantacinque. La spiegazione sta nella riga che stampa la quota vera
-di oneste accusate, $0{,}035$ invece di $0{,}05$. Le teste sono un numero
-intero, e fra sessanta e sessantuno non c'è niente: a sessanta $p$ vale
-$0{,}057$ e non basta, a sessantuno vale $0{,}035$ e basta. La soglia dichiarata
-è cinque su cento, quella che si ottiene davvero è tre e mezzo su cento, e il
-test è più prudente di quanto prometta. Da lì viene anche il margine fra il
-$3{,}5\%$ misurato e il $4{,}5\%$ promesso: con $p$-value continui quel margine
-sparirebbe. È il primo posto in cui guardare quando un conto sui $p$-value non
-torna.
+Nella riga senza correzione i numeri sembrano non tornare. Le accusate sono
+$115$ e le truccate trovate $83$: le oneste accusate sono quindi una trentina,
+mentre il cinque per cento di novecento ne farebbe prevedere quarantacinque. La
+spiegazione sta nella riga che stampa la quota vera di oneste accusate,
+$0{,}035$ invece di $0{,}05$. Le teste sono un numero intero, e fra sessanta e
+sessantuno non c'è niente: a sessanta $p$ vale $0{,}057$ e non basta, a
+sessantuno vale $0{,}035$ e basta. La soglia dichiarata è cinque su cento,
+quella effettiva è tre e mezzo su cento, e il test è più prudente di quanto
+prometta. Da lì viene anche il margine fra il $3{,}5\%$ misurato e il $4{,}5\%$
+promesso: con $p$-value continui quel margine sparirebbe. È il primo posto in
+cui guardare quando un calcolo sui $p$-value non torna.
 
 ## Correlazione non è causalità
 
@@ -1319,11 +1307,11 @@ curve c'è una terza cosa, il caldo.
 Il confondente, disegnato (nel disegno è etichettato «confonditore Z»: i
 due nomi indicano la stessa cosa, e qui si usa il primo). Fra gelati e
 annegamenti non passa nessuna freccia: il legame che si misura nei dati è
-tutto riflesso di quello che ciascuno dei due ha con il caldo.
+tutto riflesso del legame di ciascuno dei due con il caldo.
 ```
 
 In {numref}`fig-confonditore` conta soprattutto ciò che *non* c'è: la freccia
-fra $X$ e $Y$, cioè fra i gelati e gli annegamenti (nel disegno le due lettere
+fra $X$ e $Y$, fra i gelati e gli annegamenti (nel disegno le due lettere
 stanno per le due grandezze che si misurano, e $Z$ per la causa comune). I dati
 da soli non la disegnano né la cancellano: fra due sole variabili correlazione e
 causalità lasciano sui numeri la stessa traccia. A distinguerle serve qualcosa
@@ -1333,7 +1321,7 @@ conoscenza del dominio che dica quale freccia è plausibile.
 `````{tab} Elementare
 
 La correlazione misura il co-movimento: quanto due grandezze tendono a
-salire e scendere insieme. Ed è simmetrica e cieca.
+salire e scendere insieme. È simmetrica e cieca.
 
 *Simmetrica*: la correlazione fra gelati e annegamenti è identica a quella fra
 annegamenti e gelati (il numero non contiene alcuna informazione su chi
@@ -1353,7 +1341,7 @@ sopravvivono, quelli nei vicoli senza passaggio cucinano meglio della media,
 perché lì resta aperto solo chi cucina davvero bene. Fra tutti i ristoranti
 quel legame non esiste; lo ha creato la selezione dei sopravvissuti.
 
-Il guaio è che noi il caldo lo sospettiamo per buon senso; un modello no.
+Noi sospettiamo il caldo per buon senso; un modello no.
 Impara la scorciatoia che funziona sui dati che ha visto e la usa finché il
 mondo non cambia: poi sbaglia, e sbaglia in modo inspiegabile.
 
@@ -1368,10 +1356,11 @@ $$
 $$
 
 dove $\mathrm{Cov}(X,Y)=\mathbb{E}\big[(X-\mu_X)(Y-\mu_Y)\big]$ è la
-**covarianza**, cioè la media del prodotto dei due scarti dalla propria media
-(positiva se le due grandezze stanno di solito dalla stessa parte del proprio
-centro, negativa se da parti opposte), e $\sigma_X,\sigma_Y$ sono le due
-deviazioni standard, che servono a togliere di mezzo le unità di misura.
+**covarianza**, la media del prodotto dei due scarti dalla propria media,
+e $\sigma_X,\sigma_Y$ sono le due deviazioni standard, che servono a togliere
+di mezzo le unità di misura. La covarianza è positiva se le due grandezze
+stanno di solito dalla stessa parte del proprio centro, negativa se da parti
+opposte.
 
 Con più variabili le covarianze si raccolgono in una matrice. Per un vettore
 aleatorio $\mathbf{x}\in\mathbb{R}^d$ con media
@@ -1382,7 +1371,7 @@ simmetrica e semidefinita positiva, perché
 $\mathbf{v}^\top\boldsymbol{\Sigma}\mathbf{v}=\mathrm{Var}(\mathbf{v}^\top\mathbf{x})\ge
 0$ per ogni $\mathbf{v}$: la varianza lungo una direzione unitaria è una forma
 quadratica, e massimizzarla porta all'autovettore dominante di
-$\boldsymbol{\Sigma}$, cioè alla PCA della {doc}`sezione sull'algebra lineare
+$\boldsymbol{\Sigma}$, che è la PCA della {doc}`sezione sull'algebra lineare
 <algebra-lineare>`. Se $\boldsymbol{\Sigma}$ è definita positiva, la normale
 multivariata ha densità
 
@@ -1411,15 +1400,15 @@ Le strutture da tenere distinte:
   paradossi di selezione del campione.
 
 Dai soli dati osservativi la catena e il confondente sono indistinguibili:
-tutti e due rendono $X$ e $Y$ dipendenti, e tutti e due le rendono
-indipendenti dato $Z$. Il collider lascia invece un'impronta propria, $X$ e
-$Y$ indipendenti finché non si condiziona su $Z$, ed è questa struttura a v
-che gli algoritmi di scoperta causale riescono a orientare dai dati, sotto
-l'ipotesi che ogni indipendenza osservata venga dal grafo (fedeltà). Il verso
-di una catena e un confondente non osservato chiedono invece un intervento
-(esperimento randomizzato) o assunzioni causali esplicite. Nel machine
-learning la conseguenza ha un nome, *shortcut learning*: il modello aggancia
-la correlazione più comoda del dataset (lo sfondo invece dell'animale, il
+tutti e due rendono $X$ e $Y$ dipendenti, e tutti e due le rendono indipendenti
+dato $Z$. Il collider lascia invece un'impronta propria: $X$ e $Y$ sono
+indipendenti finché non si condiziona su $Z$. Gli algoritmi di scoperta causale
+riescono a orientare dai dati questa struttura a v, sotto l'ipotesi che ogni
+indipendenza osservata venga dal grafo (fedeltà). Il verso di una catena e un
+confondente non osservato chiedono invece un intervento (esperimento
+randomizzato) o assunzioni causali esplicite. Nel machine learning la
+conseguenza ha un nome, *shortcut learning*: il modello aggancia la
+correlazione più comoda del dataset (lo sfondo invece dell'animale, il
 marcatore dell'ospedale invece della patologia) e crolla appena la
 distribuzione cambia. La correlazione basta per predire dentro la stessa
 distribuzione; non basta per decidere un intervento.
@@ -1428,10 +1417,9 @@ distribuzione; non basta per decidere un intervento.
 
 ### Tre gradini: vedere, fare, immaginare
 
-Le tre strutture appena elencate si sistemano dentro una cornice più larga, da
-avere in testa perché rimette in fila cose che tornano in capitoli
-lontanissimi fra loro. La propone Judea Pearl, e la chiama **scala
-della causalità** {cite}`pearl2018book`.
+Le tre strutture si sistemano dentro una cornice più ampia, che rimette in fila
+cose che tornano in capitoli lontanissimi fra loro. La propone Judea Pearl, e
+la chiama **scala della causalità** {cite}`pearl2018book`.
 
 `````{tab} Elementare
 
@@ -1439,8 +1427,8 @@ I gradini sono tre, e ognuno risponde a un tipo di domanda che il gradino
 sotto non sa nemmeno formulare.
 
 **Vedere.** «Fra chi compra il gelato, quanti annegano?» È una domanda che si
-risolve guardando i dati e contando. Tutto ciò che si fa con una tabella, un
-grafico o un modello che prevede sta qui: si osserva quello che è successo e si
+risolve guardando i dati e contando. Qui sta tutto il lavoro con una tabella,
+un grafico o un modello che prevede: si osservano i fatti accaduti e se ne
 cercano le regolarità.
 
 **Fare.** «Se vietassi il gelato, gli annegamenti calerebbero?» Non è la stessa
@@ -1460,7 +1448,7 @@ cacciatore senza capire perché il topo vada sempre da A a B
 {cite}`pearl2018book`. La civetta ha visto migliaia di topi e sa dove sarà
 questo fra un secondo, il che le basta per prenderlo; delle ragioni per cui il
 topo si sposta non sa niente, e non le servono. Predire, insomma, non richiede
-capire. Il punto è sapere quale domanda si sta facendo, perché salire un gradino
+capire. Conta però sapere quale domanda si sta facendo, perché salire un gradino
 richiede sempre qualcosa che nei dati non c'è.
 
 `````
@@ -1470,14 +1458,13 @@ richiede sempre qualcosa che nei dati non c'è.
 I tre livelli si distinguono formalmente dall'oggetto probabilistico che
 sanno esprimere.
 
-1. Associazione: $P(y \mid x)$, cioè condizionare. È tutto ciò che si
+1. Associazione: $P(y \mid x)$, la probabilità condizionata. È tutto ciò che si
    ottiene osservando, e include correlazione, regressione e ogni modello
    puramente predittivo.
-2. Intervento: $P(y \mid do(x))$, dove l'operatore $do$ denota
-   l'imposizione di $X = x$ dall'esterno, che nel grafo causale corrisponde a
-   recidere tutti gli archi entranti in $X$. In generale
-   $P(y \mid do(x)) \neq P(y \mid x)$, e la differenza è esattamente il
-   contributo dei confondenti.
+2. Intervento: $P(y \mid do(x))$, dove l'operatore $do$ denota l'imposizione di
+   $X = x$ dall'esterno, che nel grafo causale corrisponde a recidere tutti gli
+   archi entranti in $X$. In generale $P(y \mid do(x)) \neq P(y \mid x)$, e la
+   differenza è il contributo dei confondenti.
 3. Controfattuale: $P(y_x \mid x', y')$, la probabilità che $Y$ sarebbe
    stato $y$ sotto $X = x$, dato che in realtà si è osservato $x'$ e $y'$.
    Richiede un modello strutturale completo, non solo il grafo.
@@ -1490,8 +1477,8 @@ variabili osservate soddisfa il criterio di backdoor, $P(y\mid do(x))=\sum_z
 P(y\mid x,z)\,P(z)$, mentre la semplice associazione è $P(y\mid x)=\sum_z
 P(y\mid x,z)\,P(z\mid x)$: la differenza sta nel peso, $P(z)$ al posto di
 $P(z\mid x)$. Non sempre la quantità è calcolabile: se i confondenti rilevanti
-non sono osservati, nessuna quantità di dati basta, ed è un'impossibilità di
-principio, non un limite di campione.
+non sono osservati, nessuna quantità di dati basta, per un'impossibilità di
+principio e non per un limite di campione.
 
 La conseguenza per chi costruisce sistemi è che il gradino di una domanda
 determina che dati servono. Chiedere «quali clienti abbandoneranno» è
@@ -1502,20 +1489,18 @@ grande sicurezza.
 
 `````
 
-I tre gradini si distinguono per che cosa serve avere prima di poter rispondere,
-non per quanto siano nobili le domande. Sul primo gradino, quello di chi guarda
-i dati e conta, sta la gran parte di quello che leggeremo. Sul secondo, quello
-di chi il mondo lo tocca invece di limitarsi a guardarlo, stanno i test A/B (si
-mostrano due versioni di un prodotto a due gruppi di utenti scelti a caso e si
-confrontano i risultati) e l'apprendimento per rinforzo, dove un programma i
-dati non li riceve, se li produce agendo. Sul terzo stanno le domande su ciò che
-non è successo, tipo «a questo cliente il prestito è stato negato; glielo
-avrebbero dato con mille euro di reddito in più?»: si chiamano spiegazioni
-controfattuali. Il secondo gradino non ha un capitolo proprio: lo abita
-l'apprendimento per rinforzo, dove l'agente produce i propri dati agendo, come
-racconta il
-{doc}`capitolo sul reinforcement learning </ReinforcementLearning/overview>`;
-le spiegazioni controfattuali stanno nel capitolo sull’{doc}`interpretabilità
+Da un gradino all'altro cambia che cosa bisogna avere prima di poter rispondere.
+Sul primo, quello di chi guarda i dati e conta, sta la gran parte del machine
+learning. Sul secondo, quello di chi tocca il mondo invece di limitarsi a
+guardarlo, stanno i test A/B (si mostrano due versioni di un prodotto a due
+gruppi di utenti scelti a caso e si confrontano i risultati) e l'apprendimento
+per rinforzo, dove un programma non riceve i dati ma se li produce agendo. Sul
+terzo stanno le domande su ciò che non è successo, come «a questo cliente il
+prestito è stato negato; glielo avrebbero dato con mille euro di reddito in
+più?», dette spiegazioni controfattuali. Il secondo gradino non ha un capitolo
+proprio: lo abita l'apprendimento per rinforzo, raccontato nel {doc}`capitolo
+sul reinforcement learning </ReinforcementLearning/overview>`; le spiegazioni
+controfattuali stanno nel capitolo sull’{doc}`interpretabilità
 </Interpretabilita/overview>`.
 
 ## Dalla probabilità all'apprendimento
@@ -1529,17 +1514,17 @@ MLE).
 :alt: "Due curve di verosimiglianza sovrapposte, in funzione della probabilità p di ottenere testa. La prima viene da 7 teste su 10 lanci ed è larga e piatta; la seconda da 70 teste su 100 ed è molto più stretta. Entrambe hanno il massimo nello stesso punto, p uguale a 0,7."
 :width: 90%
 
-Stessa proporzione, due quantità di prove. Il punto più alto non si sposta; a
-cambiare è quanto la curva sia stretta, cioè quanto ci si può contare. Il
-cappello su $\hat p$, nel disegno, vuol dire «ricavato dai dati», e serve a
-tenerlo distinto dal valore vero, che nessuno conosce.
+Stessa proporzione, due quantità di prove. Il punto più alto resta dov'è,
+mentre la curva si stringe: ci si può contare di più. Il cappello su $\hat p$,
+nel disegno, indica un valore ricavato dai dati, e serve a tenerlo distinto dal
+valore vero, che nessuno conosce.
 ```
 
-Le due curve di {numref}`fig-verosimiglianza` dicono ciò che la sola stima non
-dice. Con dieci lanci molti valori di $p$ spiegano l'osservazione quasi
-altrettanto bene; con cento, no. La stima puntuale è identica, ma la seconda è
-un'affermazione molto più forte, e a misurare la differenza è la larghezza
-della curva.
+Le due curve di {numref}`fig-verosimiglianza` mostrano un'informazione che la
+stima puntuale non dà. Con dieci lanci molti valori di $p$ spiegano
+l'osservazione quasi altrettanto bene; con cento, no. La stima puntuale è
+identica, ma la seconda è un'affermazione molto più forte, e la larghezza della
+curva misura la differenza.
 
 `````{tab} Elementare
 
@@ -1549,24 +1534,24 @@ valore di $p$ (la probabilità che esca testa) spiega meglio quel che ho
 osservato?
 
 Il modo di rispondere è provarli tutti e tenere il migliore. Per ogni valore di
-$p$ si calcola quanto sarebbe probabile vedere proprio 7 teste su 10. Il conto
-ha due pezzi. Il primo: una sequenza precisa, per dire TTTTTTTCCC, ha
-probabilità $p^7(1-p)^3$, cioè sette volte $p$ per tre volte $1-p$. Il secondo:
-di sequenze con sette teste ce ne sono $120$, tutte ugualmente probabili,
-quindi si moltiplica per $120$. Con $p=0{,}5$ viene $120 \cdot 0{,}5^{10}
-\approx 0{,}12$, cioè il $12\%$: possibile, non entusiasmante. Se fosse
-$p=0{,}6$ si salirebbe al $21\%$, con $p=0{,}7$ si arriverebbe al $27\%$, con
-$p=0{,}8$ si ridiscenderebbe al $20\%$. Il massimo cade a $0{,}7$, cioè
-esattamente sulla proporzione osservata, ed è questo che si intende quando si
-dice che $0{,}7$ è il valore «che rende l'osservazione più probabile».
+$p$ si calcola quanto sarebbe probabile vedere 7 teste su 10. Il calcolo ha due
+parti. Il primo: una sequenza precisa, per dire TTTTTTTCCC, ha probabilità
+$p^7(1-p)^3$ (sette volte $p$ per tre volte $1-p$). Il secondo: di sequenze con
+sette teste ce ne sono $120$, tutte ugualmente probabili, quindi si moltiplica
+per $120$. Con $p=0{,}5$ viene $120 \cdot 0{,}5^{10} \approx 0{,}12$, il
+$12\%$: possibile, non entusiasmante. Se fosse $p=0{,}6$ si salirebbe al
+$21\%$, con $p=0{,}7$ si arriverebbe al $27\%$, con $p=0{,}8$ si
+ridiscenderebbe al $20\%$. Il massimo cade a $0{,}7$, sulla proporzione
+osservata: in questo senso $0{,}7$ è il valore «che rende l'osservazione più
+probabile».
 
-Quel «quanto è probabile l'osservazione, se il parametro valesse così» ha un
-nome: si chiama **verosimiglianza**. La curva della figura è
-proprio questa: per ogni valore di $p$ sull'asse orizzontale, quanto sarebbe
-verosimile ciò che ho visto.
+Quel «quanto è probabile l'osservazione, se il parametro valesse così» si
+chiama **verosimiglianza**. Le curve di {numref}`fig-verosimiglianza` ne sono
+il grafico: per ogni valore di $p$ sull'asse orizzontale, quanto sarebbe
+verosimile l'osservazione.
 
-"Imparare", per un modello, è spesso esattamente questo: girare le manopole
-dei parametri finché i dati osservati diventano i più plausibili.
+Per un modello, imparare è spesso questo: girare le manopole dei parametri
+finché i dati osservati diventano i più plausibili.
 
 `````
 
@@ -1587,37 +1572,37 @@ $$
 
 Il passaggio dal prodotto alla somma dei logaritmi è lecito perché il
 logaritmo è strettamente crescente: applicarlo non sposta il punto di
-massimo, e i due problemi hanno lo stesso $\arg\max$. Che poi sommare sia
-anche numericamente più stabile che moltiplicare mille numeri piccoli è un
+massimo, e i due problemi hanno lo stesso $\arg\max$. Sommare è
+anche numericamente più stabile che moltiplicare mille numeri piccoli, ma è un
 secondo vantaggio, non la giustificazione.
 
 (Scriviamo $L$ e non $\mathcal{L}$: la $\mathcal{L}$ calligrafica indica la
-loss, che si minimizza; la verosimiglianza si massimizza, e le due si incontrano
-nella log-verosimiglianza negativa, $\mathcal{L}(\theta)=-\log L(\theta)$ a meno
-di costanti.) Il punto cruciale: per un modello di regressione che descrive $y$
+loss, che si minimizza; la verosimiglianza si massimizza, e le due si
+incontrano nella log-verosimiglianza negativa, $\mathcal{L}(\theta)=-\log
+L(\theta)$ a meno di costanti.) Per un modello di regressione che descrive $y$
 dato $x$ come una gaussiana centrata sulla predizione, $y \mid x \sim
 \mathcal{N}(\hat{y},\sigma^2)$ con varianza fissa, massimizzare la
 log-verosimiglianza equivale a minimizzare l'errore quadratico medio; sotto
 ipotesi di Bernoulli/categoriche equivale a minimizzare la cross-entropy. Le
 loss di regressione e di classificazione più usate sono verosimiglianze
-travestite, non scelte arbitrarie: a svestirle una per una, e a farne una
-procedura applicabile a una distribuzione qualsiasi, è
-{doc}`Da dove viene la loss </RetiNeurali/da-dove-viene-la-loss>`.
+travestite, non scelte arbitrarie: la sezione {doc}`Da dove viene la loss
+</RetiNeurali/da-dove-viene-la-loss>` le sveste una per una e ne fa una
+procedura applicabile a una distribuzione qualsiasi.
 
 `````
 
 ### Con un'opinione di partenza: la stima bayesiana
 
 La massima verosimiglianza tratta il parametro come un numero da trovare e
-basta. Il teorema di Bayes, visto sopra, permette di fare di più: dare al
-parametro $\theta$ (per la moneta, la probabilità di testa) una **distribuzione
-a priori** $p(\theta)$, in breve la *priore*, che dice che cosa se ne pensa
-prima dei dati, e ottenere con i dati $\mathcal{D}$ la **distribuzione a
-posteriori** $p(\theta \mid \mathcal{D})$, la *posteriore*, dove la barra si
-legge «sapendo che». Da lì escono la stima **MAP** (*maximum a posteriori*, il
-punto più alto della posteriore) e, quando la priore è **coniugata** alla
-verosimiglianza, cioè scelta in modo che la posteriore abbia la stessa forma
-della priore, un aggiornamento che si riduce a sommare dei conteggi.
+basta. Il teorema di Bayes permette di fare di più: dare al parametro $\theta$
+(per la moneta, la probabilità di testa) una **distribuzione a priori**
+$p(\theta)$, in breve la *priore*, che dice che cosa se ne pensa prima dei
+dati, e ottenere con i dati $\mathcal{D}$ la **distribuzione a posteriori**
+$p(\theta \mid \mathcal{D})$, la *posteriore*, dove la barra si legge «sapendo
+che». Da lì esce la stima **MAP** (*maximum a posteriori*, il punto più alto
+della posteriore). Quando la priore è **coniugata** alla verosimiglianza
+(scelta in modo che la posteriore abbia la stessa forma della priore),
+l'aggiornamento si riduce a sommare dei conteggi.
 {numref}`fig-credenza-che-si-stringe` mostra l'aggiornamento sulla moneta, un
 lancio dopo l'altro.
 
@@ -1638,7 +1623,7 @@ non sa se fa testa esattamente metà delle volte, ma non scommetterebbe che la
 faccia nove volte su dieci. Quell'idea si può scrivere come lanci immaginati,
 per esempio come se si fossero già viste due teste e due croci. Poi arrivano i
 lanci veri, e si sommano a quelli immaginati: dopo 7 teste su 10, la stima (il
-baricentro della curva di cui si dice subito sotto) diventa
+baricentro della curva) diventa
 $(2 + 7)/(4 + 10) = 9/14 \approx 0{,}64$, un po' più vicina a metà del $0{,}7$
 dei soli lanci veri, perché i quattro immaginati tirano verso il centro.
 
@@ -1648,15 +1633,15 @@ stringe, e i lanci immaginati pesano sempre meno: dopo 70 teste su 100 la stima
 è $(2 + 70)/(4 + 100) = 72/104 \approx 0{,}69$, quasi la proporzione osservata.
 Una curva si può riassumere in due modi, con il suo punto più alto o con il suo
 baricentro, e con pochi lanci i due differiscono un poco; con tanti coincidono.
-E il punto più alto è la massima verosimiglianza con in più una spinta verso
+Il punto più alto è la massima verosimiglianza con in più una spinta verso
 l'opinione di partenza: la {doc}`regolarizzazione
 </MachineLearning/overfitting-validazione>`, nel capitolo sul Machine Learning,
-userà proprio questo gesto per trattenere un modello che esagera.
+userà lo stesso meccanismo per trattenere un modello che esagera.
 
-Il prezzo è l'opinione di partenza, che bisogna scegliere. Con quattro lanci
-immaginati conta poco e presto; con mille lanci immaginati tutti a metà, cento
-teste di fila sposterebbero la stima soltanto da $0{,}50$ a $0{,}55$ (cioè
-$600/1100$), e sarebbe la testardaggine di chi l'ha scelta, non la prudenza.
+Il limite è l'opinione di partenza, che bisogna scegliere. Con quattro lanci
+immaginati conta poco, e per poco; con mille lanci immaginati tutti a metà,
+cento teste di fila sposterebbero la stima soltanto da $0{,}50$ a $0{,}55$
+($600/1100$), e sarebbe la testardaggine di chi l'ha scelta, non la prudenza.
 
 `````
 
@@ -1695,22 +1680,22 @@ $$
 
 una media pesata con le precisioni, in cui il peso della priore resta fisso e
 quello dei dati cresce con $n$: per $n \to \infty$ la media tende a $\bar{x}$ e
-la varianza a posteriori scende come $\sigma^2/n$. I limiti: la coniugazione
-esiste per le famiglie esponenziali con priori scelte apposta, e altrove la
-posteriore si approssima, campionando con le catene di Markov della
+la varianza a posteriori scende come $\sigma^2/n$. Ci sono però dei limiti. La
+coniugazione esiste per le famiglie esponenziali con priori scelte apposta, e
+altrove la posteriore si approssima campionando con le catene di Markov della
 {doc}`sezione sul MCMC </Matematica/catene-di-markov>` o con metodi
-variazionali; con pochi dati la priore pesa, e va giustificata; e la MAP, a
-differenza della massima verosimiglianza, dipende da come si parametrizza
+variazionali. Con pochi dati la priore pesa, e va giustificata. Infine la MAP,
+a differenza della massima verosimiglianza, dipende da come si parametrizza
 $\theta$, perché una densità cambia forma sotto un cambio di variabile e il suo
 massimo si sposta.
 
 `````
 
-Il blocco calcola sulla moneta, con la priore $\mathrm{Beta}(2, 2)$, la massima
+Sulla moneta, con la priore $\mathrm{Beta}(2, 2)$, si calcolano la massima
 verosimiglianza, la MAP, la media a posteriori e l'intervallo al 95% (la fascia
-centrale che contiene il 95% della credenza, detto intervallo di credibilità)
-dopo 7 teste su 10 e dopo 70 su 100; poi ricostruisce la prima posteriore su una
-griglia, moltiplicando verosimiglianza e priore, e la confronta con la formula
+centrale che contiene il 95% della credenza, detto intervallo di credibilità),
+dopo 7 teste su 10 e dopo 70 su 100. Poi la prima posteriore si ricostruisce su una
+griglia, moltiplicando verosimiglianza e priore, e si confronta con la formula
 della coniugata.
 
 ```python
@@ -1749,8 +1734,8 @@ $\mathrm{Beta}(9, 5)$ della formula.
 
 ## In pratica, con NumPy
 
-Poche righe traducono in codice tutto ciò che abbiamo visto: media e varianza di
-una distribuzione discreta, e l'aggiornamento bayesiano del test diagnostico.
+Poche righe di codice calcolano media e varianza di
+una distribuzione discreta e l'aggiornamento bayesiano del test diagnostico.
 
 ```python
 import numpy as np
@@ -1779,18 +1764,18 @@ print(posterior)       # ~0.167: solo il 17% dei positivi è davvero malato
   numero (le teste su dieci lanci), e per riassumerla bastano quasi sempre due
   cose: il risultato medio che ci si aspetta a lungo andare e quanto
   tipicamente ci si allontana da quel centro.
-- Contare i casi vuol dire moltiplicare le scelte e dividere per i modi di
+- I casi si contano moltiplicando le scelte e dividendo per i modi di
   mettere in fila che non contano: dieci amici formano $\binom{10}{3} = 120$
-  squadre da tre. Il conto diventa una probabilità solo se i casi contati sono
-  ugualmente probabili, ed è lì che sbagliò d'Alembert.
+  squadre da tre. Il conteggio diventa una probabilità solo se i casi contati sono
+  ugualmente probabili, e lì sbagliò d'Alembert.
 - La curva a campana compare ovunque perché tante piccole cause casuali che
-  si sommano la producono da sé, anche partendo da dadi in cui nessuna faccia è
+  si sommano la producono, anche partendo da dadi in cui nessuna faccia è
   favorita. Regola pratica: circa il $68\%$ dei casi cade entro uno scarto
   tipico dalla media, circa il $95\%$ entro due.
-- Un risultato positivo va sempre letto insieme a quanto la cosa cercata è
-  rara: con una malattia che colpisce una persona su cento, anche un test molto
-  buono produce più falsi allarmi che malati veri (solo il $17\%$ circa dei
-  positivi è davvero malato). È il teorema di Bayes al lavoro.
+- Un risultato positivo va sempre letto insieme alla rarità di ciò che si
+  cerca: con una malattia che colpisce una persona su cento, anche un test
+  molto buono produce più falsi allarmi che malati veri (solo il $17\%$ circa
+  dei positivi è davvero malato). È il teorema di Bayes al lavoro.
 - La media di tante osservazioni si assesta sul valore vero, ma le oscillazioni
   si stringono con calma: per dimezzare l'incertezza non basta il doppio dei
   dati, ne servono quattro volte tanti.
@@ -1799,14 +1784,14 @@ print(posterior)       # ~0.167: solo il 17% dei positivi è davvero malato
   di così può essere rumore: per deciderlo si guardano gli esempi su cui i due
   dissentono.
 - Per una risposta secca («è cambiato qualcosa, sì o no?») si parte dalla
-  risposta che si vuole scartare: si suppone che sia stato il caso e si
-  guarda quanto spesso il caso, da solo, produrrebbe una stranezza come quella
-  vista. Quel «quanto spesso» è il $p$, e la soglia sotto cui lo si accetta
-  (per convenzione cinque su cento) dice quante volte si è disposti ad accusare
-  un innocente, non quanto è forte la prova. Non accusare non è assolvere: con
+  risposta che si vuole scartare: si suppone che sia stato il caso e si guarda
+  quanto spesso il solo caso produrrebbe una stranezza come quella vista. Quel
+  «quanto spesso» è il $p$, e la soglia sotto cui lo si accetta (per
+  convenzione cinque su cento) dice quante volte si è disposti ad accusare un
+  innocente, non quanto è forte la prova. Non accusare non è assolvere: con
   pochi dati non si distingue una moneta truccata da una onesta.
 - E $p$ non è la probabilità che l'ipotesi sia vera: per quella servirebbe
-  anche sapere quanto la cosa cercata è rara, cioè di nuovo Bayes.
+  anche sapere quanto è rara la condizione cercata, e quindi di nuovo Bayes.
 - Facendo mille domande insieme con la solita soglia, decine di risposte
   positive arriverebbero per puro caso anche se non ci fosse assolutamente
   niente da trovare. Bonferroni stringe la soglia
@@ -1848,9 +1833,9 @@ print(posterior)       # ~0.167: solo il 17% dei positivi è davvero malato
 - La normale compare ovunque per il teorema del limite centrale; la regola
   68–95 lega la deviazione standard $\sigma$ alle probabilità.
 - Il teorema di Bayes aggiorna le credenze alla luce dei dati: con classi
-  rare, occhio ai falsi positivi.
+  rare, i falsi positivi dominano i positivi.
 - La legge dei grandi numeri garantisce la convergenza della media, ma solo
-  come $1/\sqrt{n}$: dimezzare l'incertezza costa quattro volte i dati.
+  come $1/\sqrt{n}$: dimezzare l'incertezza richiede quattro volte i dati.
 - Un'accuratezza è una stima: su $500$ esempi il margine al $95\%$ è di circa
   $\pm 3$ punti. Due modelli sullo stesso test set si confrontano con McNemar
   sui disaccordi, non con due intervalli sovrapposti.
