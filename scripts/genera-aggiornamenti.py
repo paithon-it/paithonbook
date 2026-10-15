@@ -79,71 +79,55 @@ TESTA = """\
 
 (aggiornamenti)=
 
-# Che cosa è cambiato, e quando
+# Registro degli aggiornamenti
 
-Questo libro non esce e finisce: cambia. Una sezione si aggiunge, un conto
-sbagliato si corregge, una spiegazione che non ha funzionato si riscrive.
-Questa pagina è il registro di quei cambiamenti, dal più recente al più
-vecchio, con il link alla pagina toccata. Se hai letto un capitolo un mese fa,
-di qui vedi in un minuto se nel frattempo è cambiato qualcosa, e dove.
+Paithon Book si aggiorna per versioni successive: si aggiungono capitoli e
+sezioni, si correggono gli errori, si riscrivono le spiegazioni che non
+funzionano. Questa pagina elenca le modifiche di ogni versione, dalla più
+recente alla più antica, con il collegamento alla pagina interessata.
 
-Non è la storia dei commit, che parla di file e serve a chi scrive il libro:
-quella è pubblica e sta [su
-GitHub](https://github.com/paithon-it/paithonbook/commits/main). Qui si parla
-di quello che legge chi legge.
+La cronologia completa delle modifiche al sorgente è pubblica [su
+GitHub](https://github.com/paithon-it/paithonbook/commits/main); qui sono
+riportate soltanto quelle che riguardano il testo.
 
-Se in una pagina trovi un errore, [segnalalo](https://github.com/paithon-it/paithonbook/issues):
-le correzioni che arrivano da fuori entrano in questo registro come tutte le
-altre, e chi le ha segnalate è citato nel commit che le porta online.
+Gli errori si segnalano [su GitHub](https://github.com/paithon-it/paithonbook/issues).
+Le correzioni proposte dai lettori entrano nel registro come le altre, e il
+commit che le pubblica cita chi le ha segnalate.
 
-## Come si legge il numero
+## Il numero di versione
 
-Il numero della versione è fatto di tre cifre, `impianto.sezioni.correzioni`:
+Il numero di versione ha tre cifre, `impianto.sezioni.correzioni`:
 
-- la **prima** sale quando cambia l'impianto: una parte nuova nell'indice, un
-  riordino che cambia il percorso di lettura, la licenza;
-- la **seconda** quando arriva un capitolo o una sezione;
-- la **terza** quando si corregge o si rifinisce quello che c'è già.
+- la **prima** cambia con l'impianto del libro: una nuova parte nell'indice,
+  un riordino del percorso di lettura, la licenza;
+- la **seconda** con l'aggiunta di un capitolo o di una sezione;
+- la **terza** con le correzioni e le revisioni del testo esistente.
 
-Quando una cifra sale, quelle alla sua destra tornano a zero. Se una
-pubblicazione porta sia sezioni nuove sia correzioni, il numero racconta la
-cosa più grossa che è successa e l'elenco racconta tutto il resto.
-
-Una versione corrisponde a una **pubblicazione**, non a una giornata di
-lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
-piedi.
+Quando una cifra aumenta, quelle alla sua destra tornano a zero. Una versione
+che contiene sia sezioni nuove sia correzioni prende il numero della modifica
+maggiore, e ogni versione corrisponde a una pubblicazione.
 """
 
 CODA = """\
 ## Prima della 1.0
 
-Il libro nasce nel 2019, scritto per uscire su carta con un editore. Non è
-successo, e il manoscritto è rimasto in un cassetto: la prima forma in cui
-questo testo è arrivato a qualcuno è quella che stai leggendo. Il repository è
-più giovane di cinque anni, quindi le date qui sotto non sono la storia del
-*libro*: sono la storia della sua **versione online**, cioè i giorni in cui il
-testo è arrivato qui dentro.
+Il libro nasce nel 2019 come manoscritto destinato alla stampa, che non è mai
+stato pubblicato: la versione online è la sua prima edizione. Le date che
+seguono riguardano questa versione, non la stesura del testo.
 
-Il 13 giugno 2024 nasce l'impianto Jupyter Book, con la licenza CC BY-NC-ND e
-le prime pagine: l'introduzione, il capitolo su Python e, quattro giorni dopo,
-i due livelli di lettura, che sono poi diventati la regola di tutto il resto.
-Nell'ottobre del 2025 si allarga il capitolo sui Transformer. Poi si ferma.
+L'impianto Jupyter Book risale al 13 giugno 2024, con la licenza CC BY-NC-ND
+e le prime pagine: l'introduzione, il capitolo su Python e, quattro giorni
+dopo, i due livelli di lettura, poi estesi a tutto il libro. Nell'ottobre del
+2025 si amplia il capitolo sui Transformer.
 
-Riparte nel luglio del 2026, e in tre settimane diventa un'altra cosa: prima
-l'ossatura del manoscritto (matematica, machine learning, reti neurali, deep
-learning, visione artificiale, NLP, GAN, reinforcement learning, speech
-recognition), poi, uno dietro l'altro, i capitoli che nel 2019 non potevano
-esserci, da PyTorch e le GPU fino agli agenti, ai modelli di diffusione, agli
-state space model, ai sistemi multi-agente.
+Il lavoro riprende nel luglio del 2026: prima i capitoli del manoscritto
+(matematica, machine learning, reti neurali, deep learning, visione
+artificiale, NLP, GAN, reinforcement learning, speech recognition), poi quelli
+che nel 2019 non potevano esserci, da PyTorch e le GPU fino agli agenti, ai
+modelli di diffusione, agli state space model e ai sistemi multi-agente.
 
-Agosto 2026 è il mese della rilettura: ogni capitolo ripassato sui fatti, sui
-conti e sul codice, i notebook compagni riallineati alle pagine, le figure che
-nessuna pagina richiamava messe da parte, e le sezioni nuove scritte per
-chiudere i buchi che la rilettura aveva trovato.
-
-Nessuna di queste tappe ha un numero di versione, e non gliene diamo uno
-adesso: non erano pubblicazioni, erano lavoro. Il registro comincia dalla
-1.0.0.
+Queste tappe non hanno un numero di versione, perché non corrispondono a
+pubblicazioni: il registro comincia dalla 1.0.0.
 """
 
 
