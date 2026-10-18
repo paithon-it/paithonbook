@@ -6,35 +6,32 @@ testo e chiedeva a una persona di indovinare, lettera dopo lettera, come
 continuava. Il risultato, contando i tentativi necessari, è più sorprendente di
 quanto sembri. Senza sapere niente del contesto, indovinare una lettera
 dell'alfabeto inglese è come scegliere fra ventisei possibilità: un'incertezza
-che, nell'unità con cui la si misura (il bit, cioè il numero di domande sì
-o no che servirebbero a risolverla), vale poco meno di cinque. Sapendo quel che
-c'è scritto prima, quell'incertezza scende a circa uno: una domanda sola,
-cioè quanto un testa-o-croce. Il contesto toglie, insomma, i quattro quinti
-dell'incertezza. L'abbiamo raccontato nella {doc}`sezione sulla teoria
-dell'informazione </Matematica/teoria-informazione>`, a proposito
-dell'entropia. Settant'anni dopo, GPT-3 {cite}`brown2020language` gioca lo
-stesso gioco, indovinare come continua un testo, su una scala molto
-diversa. Un adolescente di tredici
-anni, secondo le stime usate dalla ricerca sull'acquisizione del linguaggio, è
-stato esposto a meno di 100 milioni di parole, quasi tutte ascoltate
-{cite}`warstadt2023call`; GPT-3 in addestramento ne ha viste circa 300
-miliardi contate in *token*, cioè nei pezzi in cui il testo viene spezzato, che
-per l'inglese corrispondono a poco più di 200 miliardi di parole: più di
-duemila volte tanto.
+di poco meno di cinque bit (il numero di domande sì o no che servirebbero a
+risolverla). Sapendo quel che c'è scritto prima, quell'incertezza scende a
+circa uno: una domanda sola, cioè quanto un testa-o-croce. Il contesto toglie,
+insomma, i quattro quinti dell'incertezza, che la {doc}`sezione sulla teoria
+dell'informazione </Matematica/teoria-informazione>` chiama entropia.
+Settant'anni dopo, GPT-3 {cite}`brown2020language` gioca lo stesso gioco,
+indovinare come continua un testo, su una scala molto diversa. Un adolescente
+di tredici anni, secondo le stime usate dalla ricerca sull'acquisizione del
+linguaggio, è stato esposto a meno di 100 milioni di parole, quasi tutte
+ascoltate {cite}`warstadt2023call`; GPT-3 in addestramento ha visto circa 300
+miliardi di *token* (i pezzi in cui viene spezzato il testo), che per l'inglese
+corrispondono a poco più di 200 miliardi di parole: più di duemila volte tanto.
 
 Il terreno è già preparato. Nella {doc}`sezione sulle famiglie di modelli
 <multimodalita>` la famiglia GPT è quella dei Transformer *decoder-only*,
 addestrati a predire il token successivo; e GPT-3, arrivato a quella scala,
 sapeva eseguire un compito nuovo solo perché glielo si descriveva nel prompt,
 magari con due o tre esempi svolti: è la capacità *few-shot*. Fra il gioco di
-Shannon e GPT-3 c'è un gradino intermedio da nominare, GPT-2
-{cite}`radford2019language`, 1,5 miliardi di parametri addestrati nel 2019 su
-pagine web segnalate dagli utenti di Reddit, con un titolo che era già un
-programma: *Language Models are Unsupervised Multitask Learners*, cioè i
-modelli di linguaggio imparano da soli a svolgere molti compiti. Restano da
-spiegare da dove vengono i dati, perché «più grande» funziona in modo così
-prevedibile da meritarsi delle *leggi*, come si sceglie in pratica il token da
-scrivere e quale accorgimento di ingegneria rende la generazione sostenibile.
+Shannon e GPT-3 c'è un gradino intermedio, GPT-2 {cite}`radford2019language`,
+1,5 miliardi di parametri addestrati nel 2019 su pagine web segnalate dagli
+utenti di Reddit, con un titolo programmatico: *Language Models are
+Unsupervised Multitask Learners*, cioè i modelli di linguaggio imparano da soli
+a svolgere molti compiti. Restano da spiegare da dove vengono i dati, perché
+«più grande» funziona in modo così prevedibile da meritarsi delle *leggi*, come
+si sceglie in pratica il token da scrivere e quale accorgimento di ingegneria
+rende la generazione sostenibile.
 
 ## Il pretraining su scala web: i dati
 
@@ -74,18 +71,17 @@ quanto la loro mole direbbe.
 `````{tab} Superiore
 La materia prima tipica è **Common Crawl**, un'istantanea periodica e
 liberamente scaricabile del web, che va però raffinata: filtri di qualità (per
-GPT-3, un classificatore addestrato a distinguere le pagine simili a corpora
-di riferimento dal resto del crawl), deduplicazione fuzzy (i duplicati
-gonfiano la memorizzazione e falsano la valutazione) e rimozione di contenuti
-indesiderati. Il dataset di GPT-3 {cite}`brown2020language` è una miscela
-pesata a mano, e il peso non segue la dimensione: il Common Crawl filtrato dà
-il 60% dei token visti in addestramento; le fonti ritenute migliori, e più
-piccole, vengono ripassate più volte (WebText2 quasi tre, Wikipedia più di
-tre) e pesano il 22% e il 3%. Nel mezzo due corpora di libri, 8% ciascuno
-(le quote della tabella sommano a 101 per arrotondamento).
-Il testo è segmentato in sub-word con BPE, come visto nella
-{doc}`sezione sui tokenizzatori </NaturalLanguageProcessing/tokenizzatori>`
-{cite}`sennrich2016neural`.
+GPT-3, un classificatore addestrato a distinguere le pagine simili a corpora di
+riferimento dal resto del crawl), deduplicazione fuzzy (i duplicati gonfiano la
+memorizzazione e falsano la valutazione) e rimozione di contenuti indesiderati.
+Il dataset di GPT-3 {cite}`brown2020language` è una miscela pesata a mano, e il
+peso non segue la dimensione: il Common Crawl filtrato dà il 60% dei token
+visti in addestramento; le fonti ritenute migliori, e più piccole, vengono
+ripassate più volte (WebText2 quasi tre, Wikipedia più di tre) e pesano il 22%
+e il 3%. Completano la miscela due corpora di libri, all'8% ciascuno (la somma
+delle quote fa 101 per arrotondamento). Il testo è segmentato in sub-word con
+l'algoritmo BPE descritto nella {doc}`sezione sui tokenizzatori
+</NaturalLanguageProcessing/tokenizzatori>` {cite}`sennrich2016neural`.
 
 L'unica supervisione è il testo stesso: si minimizza la cross-entropia sul
 token successivo,
@@ -100,16 +96,15 @@ somma corre sugli $n$ token del corpus, che però è spezzato in sequenze
 indipendenti: il condizionamento si ferma alla finestra di contesto, e dentro
 ciascuna sequenza riparte da capo. Quando servirà la loss per token, cioè la
 stessa quantità divisa per $n$, la scriveremo $\bar{\mathcal{L}} =
-\mathcal{L}/n$: la distinzione conta, perché in «Misurare un gigante» la
-perplessità si calcola mettendo all'esponente quella, e chi confonde le due
-ottiene la perplessità elevata alla potenza $n$. È la stessa
-`nn.CrossEntropyLoss` dei capitoli precedenti, applicata a un problema di
-classificazione con decine di migliaia di classi (le parole possibili) ripetuto
-miliardi di volte; e quella che restituisce di suo è $\bar{\mathcal{L}}$,
-perché la sua riduzione predefinita è la media. Nessuna etichetta umana: per
-questo si parla di apprendimento auto-supervisionato. Sui rischi di corpora
-così raccolti (bias, contenuti tossici, opacità) il dibattito è aperto e acceso
-{cite}`bender2021dangers`.
+\mathcal{L}/n$: la distinzione conta, perché il calcolo della perplessità
+richiede la loss media per token, e scambiarla con quella totale porterebbe a
+elevare il risultato alla potenza $n$. È la stessa `nn.CrossEntropyLoss` dei
+capitoli precedenti, applicata a un problema di classificazione con decine di
+migliaia di classi (le parole possibili) ripetuto miliardi di volte; la sua
+riduzione predefinita è la media, quindi restituisce $\bar{\mathcal{L}}$.
+Nessuna etichetta umana: per questo si parla di apprendimento
+auto-supervisionato. Sui rischi di corpora così raccolti (bias, contenuti
+tossici, opacità) il dibattito è aperto e acceso {cite}`bender2021dangers`.
 `````
 
 Quell'idea, che qualunque testo esistente sia già un esercizio con la soluzione
@@ -130,14 +125,13 @@ fotografia o di un «hai vinto» a fine partita.
 
 Perché proprio *grandi* modelli? È una regolarità che qualcuno ha misurato.
 
-Un modello di linguaggio ha un solo
-compito, indovinare la parola dopo, e su quel compito si può dargli un voto
-preciso: gli si fa leggere del testo che non ha mai visto e si guarda quanta
-probabilità aveva assegnato alle parole che poi sono comparse. Se ne
-dava tanta, ha indovinato bene; se ne dava poca, male. Quel numero, che va
-verso il basso quando il modello impara, è l'errore (in gergo la *loss*),
-e quando si tratterà di dare un voto a un modello finito lo ritroveremo sotto
-un altro nome, la perplessità.
+Un modello di linguaggio ha un solo compito: indovinare la parola dopo. Su
+questo compito gli si può dare un voto preciso: gli si fa leggere del testo che
+non ha mai visto e si guarda quanta probabilità aveva assegnato alle parole che
+poi sono comparse. Se ne dava tanta, ha indovinato bene; se ne dava poca, male.
+Quel valore, che diminuisce quando il modello impara, è l'errore (in gergo la
+*loss*), da cui deriva anche la misura usata per valutare il modello finito: la
+perplessità.
 
 Tra il 2020 e il 2022 due lavori hanno misurato, con la pazienza di centinaia
 di addestramenti, come cambia quell'errore al crescere delle risorse, e hanno
@@ -148,30 +142,30 @@ La ricetta di un modello di linguaggio ha tre ingredienti: la taglia del
 modello, la quantità di testo su cui studia, e il calcolo (quante ore di
 computer può bruciare). La taglia si misura in parametri, cioè i numeri interni
 che l'addestramento sposta un'inezia alla volta: «un modello da sette miliardi»
-ha sette miliardi di parametri. La scoperta del 2020
-{cite}`kaplan2020scaling` è che aumentando gli ingredienti tutti insieme
-l'errore cala in modo *prevedibile*: niente salti misteriosi, una curva liscia,
-come una ricetta che riesce sempre un po’ meglio se si raddoppia ogni
-ingrediente. Prevedibile è la parola che conta: si prova la ricetta in piccolo,
-si guarda di quanto migliora a ogni raddoppio, e si sa già come verrà quella
-grande prima di infornarla. Il guadagno però è lento: ogni raddoppio del
-calcolo lima l'errore di poco più del tre per cento. La ricetta perfetta non
-arriva mai: sotto un certo punto non si scende comunque, perché una quota
-dell'incertezza appartiene alla lingua stessa, e nessuna quantità di parametri
-la toglie di mezzo. La seconda scoperta, del 2022 {cite}`hoffmann2022training`,
-è che gli ingredienti vanno bilanciati: è inutile fare una torta con dieci uova
-e un cucchiaio di farina. La regola pratica emersa è circa 20 pezzi di testo
-per ogni parametro del modello, contati in quei pezzi in cui il testo viene
-spezzato, i token, non in parole: a un modello da sette miliardi di parametri
-ne servono centoquaranta miliardi da leggere. Molti modelli dell'epoca
-erano enormi ma avevano studiato troppo poco, e la dimostrazione ha un nome,
-perché è un modello costruito apposta: si chiama **Chinchilla**, ha quattro
-volte meno parametri del suo rivale diretto (**Gopher**), ha letto quasi cinque
-volte più testo a parità di ore di calcolo, e lo batte. Da allora "più grande"
-non basta più: conta il rapporto fra modello e dati. Venti pezzi per parametro,
-però, è la proporzione che rende minimo il costo dell'addestramento: chi deve
-poi usare il modello moltissimo ne fa uno più piccolo e gli fa leggere molto di
-più, perché ogni risposta di un modello piccolo costa meno.
+ha sette miliardi di parametri. La scoperta del 2020 {cite}`kaplan2020scaling`
+è che aumentando gli ingredienti tutti insieme l'errore cala in modo
+*prevedibile*: niente salti misteriosi, una curva liscia, come una ricetta che
+riesce sempre un po’ meglio se si raddoppia ogni ingrediente. Prevedibile è la
+parola che conta: si prova la ricetta in piccolo, si guarda di quanto migliora
+a ogni raddoppio, e si sa già come verrà quella grande prima di infornarla. Il
+guadagno però è lento: ogni raddoppio del calcolo lima l'errore di poco più del
+tre per cento. La ricetta perfetta non arriva mai: sotto un certo punto non si
+scende comunque, perché una quota dell'incertezza appartiene alla lingua
+stessa, e nessuna quantità di parametri la toglie di mezzo. La seconda
+scoperta, del 2022 {cite}`hoffmann2022training`, è che gli ingredienti vanno
+bilanciati: è inutile fare una torta con dieci uova e un cucchiaio di farina.
+La regola pratica emersa è circa 20 pezzi di testo per ogni parametro del
+modello, contati in quei pezzi in cui il testo viene spezzato, i token, non in
+parole: a un modello da sette miliardi di parametri ne servono centoquaranta
+miliardi da leggere. Molti modelli dell'epoca erano enormi ma avevano studiato
+troppo poco, e la dimostrazione ha un nome, perché è un modello costruito
+apposta: si chiama **Chinchilla**, ha un quarto dei parametri del suo rivale
+diretto (**Gopher**), ha letto quasi cinque volte più testo a parità di ore di
+calcolo, e lo batte. Da allora "più grande" non basta più: conta il rapporto
+fra modello e dati. Venti pezzi per parametro, però, è la proporzione che rende
+minimo il costo dell'addestramento: chi deve poi usare il modello moltissimo ne
+fa uno più piccolo e gli fa leggere molto di più, perché ogni risposta di un
+modello piccolo costa meno.
 `````
 
 `````{tab} Superiore
@@ -188,21 +182,21 @@ $$
 $$
 
 dove $N$ è il numero di parametri (esclusi gli embedding), $D$ il numero di
-token di addestramento, $C_{\min}$ il calcolo speso in modo ottimo fra modello
-e dati (che è la grandezza per cui gli autori raccomandano di fare previsioni:
-la curva a batch size fissato ha un esponente suo, $\approx 0{,}057$), $N_c$,
-$D_c$ e $C_c$ costanti di normalizzazione, e gli esponenti misurati valgono
-$\alpha_N \approx 0{,}076$, $\alpha_D \approx 0{,}095$, $\alpha_C^{\min}
-\approx 0{,}050$. Esponenti piccoli: raddoppiare il calcolo, speso bene, riduce
-la loss di circa il 3,4% ($2^{-0{,}050} \approx 0{,}966$), poco, ma con
-sorprendente affidabilità su molti ordini di grandezza, il che permette di
+token di addestramento, $C_{\min}$ il calcolo ripartito in modo ottimo fra
+modello e dati, $N_c$, $D_c$ e $C_c$ costanti di normalizzazione, mentre gli
+esponenti misurati valgono $\alpha_N \approx 0{,}076$, $\alpha_D \approx
+0{,}095$, $\alpha_C^{\min} \approx 0{,}050$. Gli autori raccomandano di fondare
+le previsioni su $C_{\min}$: la curva a dimensione del batch fissata segue un
+esponente distinto, $\approx 0{,}057$. Esponenti piccoli: raddoppiare il
+calcolo riduce la loss di circa il 3,4% ($2^{-0{,}050} \approx 0{,}966$), un
+guadagno modesto, ma regolare su molti ordini di grandezza, che permette di
 *estrapolare*: si può stimare la loss di un modello da miliardi di parametri
-addestrando modelli da milioni. Un'avvertenza sulla forma: scritte così le tre
-leggi mandano la loss a zero su scale arbitrariamente grandi, il che è falso.
-Valgono dentro il regime misurato, e la forma completa che si usa per
-estrapolare somma un termine costante irriducibile, l'entropia del
-linguaggio stesso, che nessuna quantità di parametri toglie di mezzo; è la forma
-adottata da Hoffmann e colleghi.
+addestrando modelli da milioni. Scritte in questa forma, le tre leggi
+porterebbero la loss a zero su scale arbitrariamente grandi. Valgono in realtà
+solo dentro il regime misurato, e la forma completa impiegata per estrapolare
+somma un termine costante irriducibile: l'entropia del linguaggio stesso, che
+nessuna quantità di parametri può annullare. È la forma adottata da Hoffmann e
+colleghi.
 
 Hoffmann e colleghi {cite}`hoffmann2022training` correggono la conclusione
 operativa di Kaplan (che suggeriva di privilegiare $N$): rifacendo le misure
@@ -213,11 +207,11 @@ proporzione) con un rapporto quasi costante $D/N \approx 20$ token per
 parametro. La verifica empirica è **Chinchilla**: 70 miliardi di parametri
 addestrati su 1.400 miliardi di token che, a parità di calcolo, superano
 Gopher (280 miliardi di parametri, circa 300 miliardi di token). Col senno del
-2022, GPT-3 era fortemente sotto-addestrato. Il conto passa per il costo di un
+2022, GPT-3 era fortemente sotto-addestrato. Il calcolo parte dal costo di un
 addestramento, $C \approx 6ND$ operazioni in virgola mobile: due per parametro
-e per token nel passaggio in avanti, quattro nella retropropagazione. Con
-$D = 20N$ viene $C \approx 120N^2$, quindi $N_{\text{opt}} \approx
-\sqrt{C/120}$. Il conto si rifà in poche righe:
+e per token nel passaggio in avanti, quattro nella retropropagazione. Ponendo
+$D = 20N$ si ricava $C \approx 120N^2$, quindi $N_{\text{opt}} \approx
+\sqrt{C/120}$. In codice bastano poche righe:
 
 ```python
 # il conto di Hoffmann e colleghi: C = 6 N D, e all'ottimo D = 20 N
@@ -238,31 +232,32 @@ token per 175 miliardi di parametri: 3500 miliardi
 Llama 3 8B su 15 000 miliardi di token: 1875 per parametro
 ```
 
-Il calcolo di GPT-3, $3{,}15\cdot10^{23}$ operazioni, sarebbe stato speso al
-meglio su circa 51 miliardi di parametri e poco più di mille miliardi di token;
-tenuti fissi i 175 miliardi, la regola ne chiederebbe 3.500. Kaplan prescriveva
-invece $N_{\text{opt}} \propto C^{0{,}73}$. Hoffmann e colleghi attribuivano
-la differenza al programma del learning rate, che Kaplan teneva uguale per
-tutti i modelli; Porian e colleghi {cite}`porian2024resolving` hanno poi
-riprodotto la legge di Kaplan e ne hanno trovato altre tre cause: il calcolo
-dell'ultimo strato, che Kaplan non contava, la durata del riscaldamento e una
-regolazione dell'ottimizzatore che dipende dalla scala. Corretti questi tre
-punti i due risultati coincidono, e un decadimento accurato del learning rate
-non risulta essenziale.
+Il budget di calcolo di GPT-3, pari a $3{,}15\cdot10^{23}$ operazioni, sarebbe
+stato impiegato in modo ottimale su circa 51 miliardi di parametri e poco più
+di mille miliardi di token; tenuti fissi i 175 miliardi, la regola ne
+richiederebbe 3.500. Kaplan prescriveva invece $N_{\text{opt}} \propto
+C^{0{,}73}$. Hoffmann e colleghi attribuivano la differenza al programma del
+learning rate, che Kaplan teneva uguale per tutti i modelli; Porian e colleghi
+{cite}`porian2024resolving` hanno poi riprodotto la legge di Kaplan e ne hanno
+trovato altre tre cause: il calcolo dell'ultimo strato, che Kaplan non contava,
+la durata del riscaldamento e una regolazione dell'ottimizzatore che dipende
+dalla scala. Corretti questi tre punti i due risultati coincidono, e un
+decadimento accurato del learning rate non risulta essenziale.
 
 Hoffmann adatta la forma $\bar{\mathcal{L}}(N,D) = E + A/N^{a} + B/D^{b}$, con
 $E \approx 1{,}69$ il termine irriducibile, $A$ e $B$ due costanti di
 adattamento e $a \approx 0{,}34$, $b \approx 0{,}28$. Sono i valori arrotondati
 dell'articolo, e Besiroglu e colleghi {cite}`besiroglu2024chinchilla`,
-ricostruendo i dati dai grafici, trovano che quei valori non descrivono bene i
-dati: il loro adattamento dà $E \approx 1{,}82$, $a \approx 0{,}35$, $b \approx
-0{,}37$, quindi $N_{\text{opt}} \propto C^{0{,}51}$ e un rapporto ottimo vicino
-a venti token per parametro. La regola del mezzo resta valida, i valori arrotondati
-no. Il rapporto 20 minimizza il costo dell'addestramento, non quello
-dell'uso: chi prevede di servire molte richieste addestra di proposito un
-modello più piccolo su molti più token. La famiglia Llama 3 lo fa anche con i
-modelli più piccoli {cite}`grattafiori2024llama3`, e quello da 8 miliardi di
-parametri ha letto circa 15 000 miliardi di token, quasi 1.900 per parametro.
+ricostruendo i punti dai grafici, trovano che quei valori non descrivono bene
+l'andamento: il loro adattamento dà $E \approx 1{,}82$, $a \approx 0{,}35$, $b
+\approx 0{,}37$, quindi $N_{\text{opt}} \propto C^{0{,}51}$ e un rapporto
+ottimo vicino a venti token per parametro. L'esponente attorno a un mezzo resta
+valido, i valori arrotondati no. Il rapporto 20 minimizza il costo
+dell'addestramento, non quello dell'uso: chi prevede di servire molte richieste
+addestra di proposito un modello più piccolo su molti più token. La famiglia
+Llama 3 adotta questa scelta anche per i modelli più piccoli
+{cite}`grattafiori2024llama3`: quello da 8 miliardi di parametri ha letto circa
+15.000 miliardi di token, quasi 1.900 per parametro.
 `````
 
 ```{figure} ../figures/chinchilla-2022.svg
@@ -281,10 +276,10 @@ parametri dice quanta capacità c'è, non quanta ne è stata riempita, e due
 modelli con lo stesso cartellino possono aver letto quantità di testo
 incomparabili.
 
-Le leggi di scala descrivono come cala la loss di test dentro il regime in
-cui sono state misurate, cioè quanto il modello sbaglierà meno a indovinare la
-parola dopo; non dicono che a una certa taglia spunterà una certa abilità. Che
-le abilità spuntino all'improvviso è controverso.
+Le leggi di scala descrivono come cala la loss di test dentro il regime in cui
+sono state misurate, cioè quanto il modello sbaglierà meno a indovinare la
+parola dopo; non garantiscono che a una certa scala si manifesti una nuova
+abilità. Che certe capacità emergano all'improvviso resta un punto controverso.
 
 ## Generare: l'arte di scegliere la parola dopo
 
@@ -293,7 +288,7 @@ quelle possibili. Per *scrivere*, però, bisogna sceglierne una, poi
 un'altra, poi un'altra ancora, e il modo in cui la si sceglie cambia moltissimo
 il testo che ne esce.
 
-I due modi classici li abbiamo già visti nella {doc}`sezione sulla traduzione
+I due modi classici sono quelli della {doc}`sezione sulla traduzione
 con le reti </NaturalLanguageProcessing/seq2seq-traduzione>`. Il primo è
 prendere ogni volta la parola più probabile e tirare dritto (si chiama
 *greedy*, cioè ingorda). Il secondo è meno miope: invece di impegnarsi subito,
@@ -308,12 +303,12 @@ Per la traduzione questi due modi funzionano; per la generazione libera
 curioso, documentato da Holtzman e colleghi {cite}`holtzman2020curious`. Il
 testo che *massimizza* la probabilità è noioso, ripetitivo, e finisce spesso
 incastrato a girare in tondo («Il gatto nero salta sul muro. Il gatto nero
-salta sul muro. Il gatto nero...»). Gli stessi autori sono andati a
-controllare come è fatto il testo scritto da noi: hanno preso pagine di prosa
-umana e hanno chiesto al modello, parola per parola, quanto le riteneva
-probabili. Risulta che noi non scegliamo mai la sequenza più probabile: le
-nostre frasi sono punteggiate di scelte a media e bassa probabilità, e sono
-queste a renderle vive. Per scrivere come noi il modello deve rischiare, cioè
+salta sul muro. Il gatto nero...»). Gli stessi autori sono andati a controllare
+come è fatto il testo scritto da noi: hanno preso pagine di prosa umana e hanno
+chiesto al modello, parola per parola, quale probabilità assegnasse a ciascuna.
+Risulta che noi non scegliamo mai la sequenza più probabile: le nostre frasi
+sono punteggiate di scelte a media e bassa probabilità, e sono queste a
+renderle vive. Per scrivere come noi il modello deve rischiare, cioè
 *campionare*: tirare un dado truccato secondo le sue probabilità invece di
 scegliere sempre il massimo. Il trucco del dado si può regolare.
 
@@ -335,19 +330,19 @@ vincere sempre la barra più lunga.
 `````{tab} Elementare
 Tre manopole, tutte con la stessa filosofia: quanta sorpresa vogliamo?
 
-La temperatura regola quanto è truccato il dado. Riprendiamo il gioco: «Il
-gatto nero salta sul...» con quattro esiti; muro (probabile), tetto, divano,
-pigiama (assurdo). A temperatura *bassa* il dado è truccatissimo: esce «muro»
-quasi sempre, il testo è prudente e un po’ monotono. A temperatura 1 il dado
-rispetta le probabilità del modello. A temperatura *alta* il dado si
-"stempera" verso l'equità: ogni tanto esce «pigiama», e il testo si fa
-creativo fino allo sproposito. Bassa = affidabile e prevedibile; alta = vivace
-e rischiosa. Il nome viene dalla fisica, non dal caldo: nelle formule che
+La temperatura regola quanto è truccato il dado. Riprendiamo il gioco, «Il
+gatto nero salta sul...», con quattro possibili esiti: muro (probabile), tetto,
+divano, pigiama (assurdo). A temperatura *bassa* il dado è truccatissimo: esce
+«muro» quasi sempre, il testo è prudente e un po’ monotono. A temperatura 1 il
+dado rispetta le probabilità del modello. A temperatura *alta* il dado si
+"stempera" verso l'equità: ogni tanto esce «pigiama», e il testo si fa creativo
+fino allo sproposito. Bassa = affidabile e prevedibile; alta = vivace e
+rischiosa. Il nome viene dalla fisica, non dal caldo: nelle formule che
 descrivono un gas compare la stessa manopola, e alzarla fa muovere le
 particelle più a caso. Qui non si scalda niente; la formula è la stessa.
 
 Top-k e top-p tolgono dal mazzo le carte peggiori prima di pescare. Con il
-**top-k** tieni solo le $k$ carte migliori: con $k=2$, nel nostro gioco, pesca
+**top-k** tieni solo le $k$ carte migliori: con $k=2$, nel nostro gioco, peschi
 solo tra «muro» e «tetto»; «pigiama» non può uscire. Il difetto: $k$ è
 fisso, ma a volte le carte buone sono due, a volte venti. Il **top-p** è più
 furbo: tieni le carte migliori finché, sommando le loro probabilità, copri
@@ -401,15 +396,15 @@ $$
 \sum_{i \in \mathcal{V}'} p_i \ge p,
 $$
 
-ordinando per probabilità decrescente. Con $p=0{,}9$ e $T=1$: la cumulata fa
-$0{,}657 \to 0{,}899 \to 0{,}988$; siccome $0{,}899 < 0{,}9$, serve anche
-«divano», e il nucleo è {muro, tetto, divano}, rinormalizzato a
-$(0{,}665;\; 0{,}245;\; 0{,}090)$. A differenza di $k$, la taglia del nucleo
-si adatta alla forma della distribuzione: pochi candidati quando il modello è
-sicuro, molti quando è incerto. Holtzman e colleghi mostrano che è la
-strategia che meglio riproduce le statistiche del testo umano nella
-generazione di testi lunghi. Le tre operazioni si compongono: prima la
-temperatura, poi i tagli top-k e top-p, infine il campionamento.
+ordinando i token per probabilità decrescente. Con $p=0{,}9$ e $T=1$, la
+cumulata fa $0{,}657 \to 0{,}899 \to 0{,}988$; siccome $0{,}899 < 0{,}9$, serve
+anche «divano», e il nucleo è {muro, tetto, divano}, rinormalizzato a
+$(0{,}665;\; 0{,}245;\; 0{,}090)$. A differenza di $k$, la taglia del nucleo si
+adatta alla forma della distribuzione: pochi candidati quando il modello è
+sicuro, molti quando è incerto. Holtzman e colleghi mostrano che è la strategia
+che meglio riproduce le statistiche del testo umano nella generazione di testi
+lunghi. Le tre operazioni si compongono: prima la temperatura, poi i tagli
+top-k e top-p, infine il campionamento.
 `````
 
 ```{figure} ../figures/decoding-sampling.svg
@@ -424,7 +419,7 @@ restano nel mazzo con il taglio top-p.
 
 In {numref}`fig-decoding-sampling` si vede il compromesso a colpo d'occhio: la
 temperatura decide quanto la distribuzione è appuntita, il top-p dove tagliare
-la coda. In pratica si usano insieme (temperature attorno a 0,7–0,8 e $p$
+la coda. In pratica si usano insieme (temperature tra 0,7 e 0,8 e $p$
 attorno a 0,9 sono punti di partenza comuni) e la scelta dipende dal compito:
 per una risposta fattuale conviene un dado truccato, per una poesia un dado
 più libero.
@@ -432,8 +427,8 @@ più libero.
 ## La KV cache
 
 C'è un dettaglio pratico che a prima vista sembra un disastro. La generazione
-è autoregressiva: come visto nella {doc}`sezione sulla struttura del
-Transformer <architettura>`, il token prodotto rientra come input e si
+è autoregressiva, come nel decoder della {doc}`sezione sulla struttura del
+Transformer <architettura>`: il token prodotto rientra come input e si
 ricomincia. Per ogni nuovo token il Transformer dovrebbe allora rileggere
 *tutta* la sequenza, e le operazioni dell'attenzione sul prefisso sarebbero
 sempre le stesse, rifatte da capo a ogni passo. Nessun sistema reale lavora così:
@@ -517,27 +512,27 @@ operazioni per byte di pesi letti: 0.98
 A 1.024 token di contesto l'attenzione vale il 4% del calcolo per token, a
 4.096 il 14%; i due termini si pareggiano attorno ai 25.000 token, e oltre
 quella soglia il calcolo per token è fatto soprattutto di attenzione, l'84% a
-131.072. Il tempo, però, a una richiesta per volta lo decide un'altra cosa: a
+131.072. A una richiesta per volta, però, il tempo dipende da un altro fattore: a
 ogni token vanno riletti dalla memoria tutti i pesi, due byte per parametro a
 16 bit, per circa due operazioni per parametro, cioè un'operazione per byte
 letto, molto sotto il ginocchio del {doc}`modello roofline
 </GPU/gerarchia-memoria>`, che per una scheda grafica moderna in mezza
-precisione sta oltre le centocinquanta. Generare testo, a una richiesta per
-volta, è quindi un lavoro limitato dalla memoria più che dall'aritmetica, come
-dirà anche la {doc}`sezione sui modelli a esperti <mixture-of-experts>`: il
-collo di bottiglia è leggere i pesi a ogni parola, non confrontare la parola
-con quelle prima.
+precisione supera le centocinquanta operazioni per byte. Generare testo, a una
+richiesta per volta, è quindi un lavoro limitato dalla memoria più che
+dall'aritmetica, come dirà anche la {doc}`sezione sui modelli a esperti
+<mixture-of-experts>`: il collo di bottiglia è leggere i pesi a ogni parola,
+non confrontare la parola con quelle prima.
 
-Il conto della memoria è quello della tabella della sezione sull'attenzione in
-pratica: con una testa di chiave e valore per ogni testa di query sono
+Il conto della memoria riprende quello riportato nella sezione sull'attenzione
+in pratica: con una testa di chiave e valore per ogni testa di query servono
 $2\,n_{\text{strati}}\,d_{\text{model}}$ numeri per token, mezzo megabyte a 16
 bit per il modello da sette miliardi, e una finestra di 4.096 token occupa
 circa 2 GB *per ogni sequenza nel batch*, da sommare ai ~14 GB dei pesi. Con
-meno teste di chiave e valore la voce scende (con GQA a otto gruppi, a un
-quarto); da qui l'adozione di MQA, GQA e MLA come standard nei
-modelli recenti. Lo stesso conto spiega un'asimmetria che si nota usando i
-servizi commerciali: elaborare il prompt (il *prefill*, parallelo) e generare i
-token (la *decodifica*, sequenziale e affamata di memoria) hanno costi molto
+meno teste di chiave e valore questo fabbisogno si riduce (con GQA a otto
+gruppi, a un quarto); da qui l'adozione di MQA, GQA e MLA come standard nei
+modelli recenti. Lo stesso ragionamento spiega un'asimmetria che si nota usando
+i servizi commerciali: elaborare il prompt (il *prefill*, parallelo) e generare
+i token (la *decodifica*, sequenziale e affamata di memoria) hanno costi molto
 diversi.
 `````
 
@@ -560,26 +555,26 @@ riesce senza aver visto un solo esempio del compito.
 
 L'osservazione di {numref}`fig-gpt2-multitask` precede GPT-3 e ne spiega la
 premessa. Se il corpus è abbastanza vasto, contiene esempi impliciti di molti
-compiti linguistici, e un modello che prevede bene il testo può imparare in
-parte a svolgerli: è la congettura degli autori di GPT-2, che i loro risultati
+compiti linguistici, e un modello che prevede bene il testo può imparare a
+svolgerli: è la congettura degli autori di GPT-2, che i loro risultati
 sostengono solo in parte (55 di F1 sulle domande di CoQA, 5 di BLEU nella
 traduzione dall'inglese al francese, un riassunto che batte di poco tre frasi
-scelte a caso). GPT-3 la riprende con un modello più di cento volte più grande
-e con gli esempi nel prompt. Il fatto resta strano. Fin
-qui, "adattare un modello" ha significato addestrarlo, cioè
-mostrargli esempi, misurare quanto sbaglia e spostargli i numeri interni
-un'inezia alla volta, per giorni. Qui no: il compito viene *descritto in
-italiano* (o in inglese), e il modello, completando il testo nel modo più
-probabile, di fatto lo esegue. Il prompt è diventato un'interfaccia di
-programmazione in linguaggio naturale: si "programma" il modello scrivendo, e
-l’*in-context learning* (imparare dal contesto della singola richiesta) non
-era un obiettivo di progetto: nessuna loss lo chiede, e migliora con la scala,
-anche se i suoi meccanismi di base, le *teste di induzione* che ricopiano il
-seguito di uno schema già comparso nel contesto, si formano già in modelli
-piccolissimi {cite}`olsson2022induction`.
+scelte a caso). GPT-3 la riprende con un modello oltre cento volte più grande e
+con gli esempi nel prompt. Il fatto resta strano. Fin qui, "adattare un
+modello" ha significato addestrarlo, cioè mostrargli esempi, misurare quanto
+sbaglia e spostargli i numeri interni un'inezia alla volta, per giorni. Qui no:
+il compito viene *descritto in italiano* (o in inglese), e il modello,
+completando il testo nel modo più probabile, di fatto lo esegue. Il prompt è
+diventato un'interfaccia di programmazione in linguaggio naturale: si
+"programma" il modello scrivendo. L’*in-context learning* (imparare dal
+contesto della singola richiesta) non era un obiettivo di progetto: nessuna
+loss lo richiede, e migliora con la scala, anche se i suoi meccanismi di base,
+come le *teste di induzione* che ricopiano il seguito di uno schema già
+comparso nel contesto, si formano già in modelli piccolissimi
+{cite}`olsson2022induction`.
 
 Questa "programmazione" è però fragile. L'ordine
-degli esempi nel prompt può portare l'accuratezza da vicino allo stato
+degli esempi nel prompt può far oscillare l'accuratezza da valori vicini allo stato
 dell'arte fino al livello del caso {cite}`lu2022fantastically`; il solo formato
 della richiesta (separatori, maiuscole, spazi) la sposta fino a 76 punti su un
 modello da 13 miliardi di parametri {cite}`sclar2024quantifying`; e le
@@ -604,7 +599,7 @@ modello sta imparando a minimizzare: quanto resta indeciso sulla parola
 successiva. Si chiama perplessità ed è l'esponenziale della loss media per
 token, cioè il numero di scelte equiprobabili fra cui il modello si
 troverebbe, in media, a ogni passo. Con perplessità 1 il modello sa sempre quale
-parola viene dopo; più è alta, più è indeciso, quindi più è bassa, meglio è.
+parola viene dopo: più il valore è basso, minore è l'incertezza.
 È l'errore delle leggi di scala scritto in un'altra forma, che il
 pretraining fa scendere, e resta il termometro più affidabile della qualità
 *come modello di linguaggio*.
@@ -638,7 +633,7 @@ sbaglia: la cross-entropia del pretraining si scrive col logaritmo naturale,
 quindi la loss per token $\bar{\mathcal{L}}$ è in *nat* e non in bit.
 Per passare dagli uni agli altri si moltiplica per $\log_2 e = 1{,}4427$, cioè
 $H = \bar{\mathcal{L}}/\ln 2$, e la perplessità si scrive allora più comodamente
-$e^{\bar{\mathcal{L}}}$. Chi invece mette $\bar{\mathcal{L}}$ tale e quale
+$e^{\bar{\mathcal{L}}}$. Chi invece mette $\bar{\mathcal{L}}$ direttamente
 all'esponente di 2 sta usando un esponente più piccolo del dovuto di quel
 fattore, e ottiene la perplessità vera elevata a $\ln 2 = 0{,}693$: su una
 perplessità di 20 ne stampa 8. Il valore dipende poi dal corpus e da come il
@@ -656,8 +651,8 @@ per i byte invece che per i token dà una misura che si confronta anche fra
 modelli che spezzano il testo in modo diverso.
 `````
 
-Nemmeno la perplessità dice però quasi nulla di ciò che interessa a chi il
-modello lo usa: sa rispondere a domande di diritto? Sa tradurre? Per questo si
+Nemmeno la perplessità dice però quasi nulla di ciò che interessa a chi usa il
+modello: sa rispondere a domande di diritto? Sa tradurre? Per questo si
 affiancano batterie di test standardizzati, i **benchmark**: il più citato è
 stato a lungo MMLU (*Massive Multitask Language Understanding*)
 {cite}`hendrycks2021measuring`, cinquantasette materie di domande a scelta
@@ -696,11 +691,11 @@ dedicate ai grandi modelli.
 
 ### Le abilità emergenti, e il dubbio che siano un miraggio
 
-Su certi compiti (aritmetica
-a più cifre, ragionamento a più passi) i modelli piccoli ottengono zero e,
-superata una certa scala, la prestazione salta all'improvviso, senza una salita
-graduale. Da qui il nome *abilità emergenti*, e l'idea
-inquietante che ingrandendo un modello si ottengano capacità non previste.
+Su certi compiti (aritmetica a più cifre, ragionamento a più passi) i modelli
+piccoli ottengono zero e, superata una certa scala, la prestazione salta
+all'improvviso, senza una salita graduale. Da qui il nome di *abilità
+emergenti*, e l'ipotesi che ingrandendo un modello si ottengano capacità non
+previste.
 
 ```{figure} ../figures/emergent-abilities.svg
 :name: fig-capacita-emergenti
@@ -712,8 +707,8 @@ voti, non nei dati: quel modo assegna zero a una risposta quasi giusta finché
 non diventa esatta.
 ```
 
-I due grafici di {numref}`fig-capacita-emergenti` sono lo stesso modello,
-misurato in due modi diversi, e la differenza fra loro è il cuore della
+I due grafici di {numref}`fig-capacita-emergenti` mostrano lo stesso modello,
+misurato in due modi diversi: la differenza fra le due curve è il cuore della
 questione.
 
 `````{tab} Elementare
@@ -766,15 +761,15 @@ da ridurre a un miglioramento puramente continuo.
 
 La ricaduta pratica è però univoca, e riguarda chiunque valuti un modello:
 usare metriche continue quando si studia un andamento, e diffidare di
-qualunque grafico in cui una capacità «appare». La prima domanda da farsi è come
-è stata misurata.
+qualunque grafico in cui una capacità «appare». La prima domanda da porsi è come
+sia stata misurata.
 
 `````
 
 ## In pratica: campionare con PyTorch
 
 Temperatura, top-k e top-p stanno in una funzione di venti righe. Non c'è
-nessun modello scaricato: i punteggi grezzi (i *logit*, cioè i punteggi che il
+nessun modello scaricato: i punteggi grezzi (i *logit*, quelli che il
 modello assegna a ogni token del vocabolario prima di trasformarli in
 probabilità) sono scritti a mano, così resta in vista solo il meccanismo. Le
 operazioni sono quelle della decodifica, nell'ordine: la temperatura divide i
@@ -820,7 +815,7 @@ T=2.0: tensor([0.4740, 0.2870, 0.1740, 0.0640])
 
 Sono i numeri della tabella: a $T = 0{,}5$ la distribuzione si concentra su
 «muro», a $T = 2$ si appiattisce. Segue un mini-ciclo di generazione, con un
-"modello" giocattolo al posto di un vero Transformer: la struttura del loop è
+modello giocattolo al posto di un vero Transformer: la struttura del ciclo è
 identica a quella reale.
 
 ```python
@@ -908,7 +903,7 @@ post-training, e ha una {doc}`sezione tutta sua <post-training>`.
   {cite}`holtzman2020curious`: si campiona con temperatura (che scala i
   logit), top-k (i $k$ token più probabili) e top-p (il nucleo che copre
   probabilità cumulata $p$).
-- La KV cache conserva key e value già calcolati: niente ricalcoli, ma
+- La KV cache conserva chiavi e valori già calcolati: niente ricalcoli, ma
   memoria che cresce col contesto (~0,5 MB per token in un modello da 7
   miliardi di parametri con una testa di chiave e valore per ogni testa di
   query, un quarto con GQA a otto gruppi); ecco perché i contesti lunghi
@@ -924,8 +919,6 @@ post-training, e ha una {doc}`sezione tutta sua <post-training>`.
 `````
 
 Prima del post-training c'è però un'idea architetturale che la scala rende
-interessante. Crescere conviene, ma per scrivere una sola parola il modello la
-moltiplica, piano dopo piano, per tutti i suoi parametri, e più i parametri
-sono tanti più ogni parola costa. A meno di far passare ogni parola
-solo per una parte dei parametri: è l'idea della {doc}`sezione sui modelli a
-esperti <mixture-of-experts>`.
+interessante: dare a un modello molti parametri senza che ogni parola li
+attraversi tutti. È l'idea della {doc}`sezione sui modelli a esperti
+<mixture-of-experts>`.

@@ -27,23 +27,22 @@ vocabolario standard e con i pezzi che là restavano fuori.
 
 Per ogni posizione l'attenzione calcola una media pesata dei vettori di tutte
 le posizioni della frase. Il risultato è una versione della parola arricchita
-dal contesto: non più «salta» in astratto, ma «salta» in *questa* frase. Da una
-media pesata ordinaria la distingue la provenienza dei pesi: non sono parametri
-fissati una volta per tutte dall'addestramento, li ricalcola ogni volta il
-contenuto della frase, parola per parola. Una media con pesi decisi dalla
-somiglianza c'era già, nella {ref}`regressione a nucleo
+dal contesto: non più «salta» in astratto, ma «salta» in *questa* frase. A
+differenza di una media pesata ordinaria, i pesi non sono parametri fissati una
+volta per tutte dall'addestramento: il contenuto della frase li ricalcola ogni
+volta, parola per parola. Una media con pesi decisi dalla somiglianza c'era
+già, nella {ref}`regressione a nucleo
 <sec-regressione-a-nucleo>`; là però il modo di misurare la somiglianza era
 fissato in partenza, una campana sulla distanza, qui lo impara la rete.
 
 Il problema che l'attenzione viene a risolvere è il collo di bottiglia del
 modello encoder-decoder, che la {doc}`sezione sulla traduzione con le reti
 </NaturalLanguageProcessing/seq2seq-traduzione>` ha raccontato insieme alla
-soluzione di Bahdanau: l'encoder, che legge, comprimeva la frase in un
-solo vettore di lunghezza fissa, e il decoder, che scrive, doveva
-tradurre da quello soltanto. I due nomi sono la terminologia standard, e la
-{doc}`sezione sulla struttura del Transformer <architettura>` li smonta pezzo
-per pezzo. Il passo nuovo è prendere l'idea di Bahdanau, un decoder che
-rilegge tutte le parole d'origine pesandole di volta in volta, e farne
+soluzione di Bahdanau: l'encoder, che legge, comprimeva la frase in un solo
+vettore di lunghezza fissa, e il decoder, che scrive, doveva tradurre da quello
+soltanto. La {doc}`sezione sulla struttura del Transformer <architettura>` li
+smonta tutti e due. Il passo nuovo è prendere l'idea di Bahdanau, un decoder
+che rilegge tutte le parole d'origine pesandole di volta in volta, e farne
 l'unico meccanismo della rete.
 
 `````{tab} Elementare
@@ -59,7 +58,7 @@ resto.
 Le intensità sono numeri veri, e per "salta" potrebbero venire così: gatto
 0,52, muro 0,24, salta 0,10, nero 0,06, sul 0,05, il 0,03. Sono sei numeri, uno
 per ogni parola della frase, e c'è anche "salta" stessa, perché ogni parola
-guarda anche sé. Sommano a 1 per regola: l'attenzione distribuisce
+guarda anche sé stessa. La loro somma fa 1 per regola: l'attenzione distribuisce
 sempre una sola unità di colore, quindi ogni centesimo in più a "gatto" è
 tolto a qualcun altro. «Mescolare in quella proporzione» significa allora
 prendere il 52% della lista di numeri di "gatto", il 24% di quella di "muro", e
@@ -87,12 +86,12 @@ provare-e-correggere del
 `````
 
 `````{tab} Superiore
-Ogni parola (più precisamente ogni *token*, l'unità in cui la
-{doc}`sezione sui tokenizzatori </NaturalLanguageProcessing/tokenizzatori>` ha
-spezzato il testo) è rappresentata da un vettore. Una funzione di attenzione
-prende un vettore query $\mathbf{q}$ e un insieme di coppie
-chiave-valore $(\mathbf{k}_j, \mathbf{v}_j)$, e restituisce una
-combinazione dei valori. Per una sola query:
+Ogni token è rappresentato da un vettore, secondo la scomposizione introdotta
+nella {doc}`sezione sui tokenizzatori
+</NaturalLanguageProcessing/tokenizzatori>`. Una funzione di attenzione prende
+un vettore query $\mathbf{q}$ e un insieme di coppie chiave-valore
+$(\mathbf{k}_j, \mathbf{v}_j)$, e restituisce una combinazione dei valori. Per
+una sola query:
 
 $$
 \tilde{z}_j = \frac{\mathbf{q}^\top \mathbf{k}_j}{\sqrt{d_k}}, \qquad
@@ -105,21 +104,19 @@ chiave, $d_k$ è la dimensione di query e chiavi, $a_j$ è il peso che la softma
 ricava dai punteggi, e $\mathbf{o}$ è l'uscita, un vettore nello stesso spazio
 dei $\mathbf{v}_j$. La somma corre sulle sole chiavi permesse.
 
-Il meccanismo ha alcune proprietà. La compatibilità è appresa, perché
-$\mathbf{q}$ e $\mathbf{k}_j$ non sono i vettori grezzi dei token ma proiezioni
-di quei vettori con matrici che l'addestramento aggiusta. La softmax rende poi
+La compatibilità è appresa:
+$\mathbf{q}$ e $\mathbf{k}_j$ non sono i vettori grezzi dei token, ma proiezioni
+lineari regolate dall'addestramento. La softmax rende poi
 i pesi non negativi e li normalizza a somma unitaria, quindi $\mathbf{o}$ è una
 media pesata in senso proprio e resta nell'inviluppo convesso dei valori. Da
 ultimo, $\mathbf{K}$ e $\mathbf{V}$ hanno funzioni distinte: la chiave decide
 il peso, il valore fornisce il contenuto mescolato, e i due vivono in spazi
 diversi che nulla obbliga a coincidere.
 
-Chiamare
-$\mathbf{q}$ «la domanda» e $\mathbf{k}_j$ «la risposta» è un uso corrente e
-aiuta a ricordare, ma il meccanismo resta il
-prodotto scalare fra due proiezioni apprese, non un dialogo. Il prodotto
-scalare non c'era fin dall'inizio: nel lavoro del 2014 il punteggio lo
-calcolava una piccola rete a sé,
+Chiamare $\mathbf{q}$ «la domanda» e $\mathbf{k}_j$ «la risposta» è un uso
+corrente e aiuta a ricordare, ma il meccanismo resta il prodotto scalare fra
+due proiezioni apprese, non un dialogo. Il prodotto scalare non c'era fin
+dall'inizio: nel lavoro del 2014 una piccola rete a sé calcolava il punteggio,
 
 $$
 z_{ij} = \mathbf{v}_a^\top \tanh\big(\mathbf{W}_a \mathbf{s}_{i-1} +
@@ -137,11 +134,11 @@ $\mathbf{u}$ è la domanda, e nella traduzione con Luong, Pham e Manning
 decoder $\mathbf{s}$ e uno stato dell'encoder $\mathbf{h}_j$: il prodotto
 scalare $\mathbf{s}^\top\mathbf{h}_j$, la forma bilineare
 $\mathbf{s}^\top\mathbf{W}_a\mathbf{h}_j$ e una variante della rete additiva.
-È la prima che il Transformer adotta, con le proiezioni apprese davanti e la
-scala, e l'articolo del 2017 ne dice il motivo: a parità di complessità
-teorica il prodotto scalare è un prodotto fra matrici, molto più veloce e
-parco di memoria della rete additiva, che però lo supera quando $d_k$ è
-grande e la scala manca.
+Il Transformer adotta questa prima forma, con le proiezioni apprese e il
+fattore di scala. L'articolo del 2017 ne spiega il motivo: a parità di
+complessità teorica il prodotto scalare è un prodotto fra matrici, molto più
+veloce e parco di memoria della rete additiva, che però lo supera quando $d_k$
+è grande e la scala manca.
 `````
 
 ## Tutte le query insieme: le forme delle matrici
@@ -162,24 +159,24 @@ colonna per ogni parola che si offre come risposta. Nella casella dove la riga
 d'accordo. Riempito il tabellone, ogni riga viene guardata separatamente, e le
 sue caselle diventano le intensità dell'evidenziatore per quella parola lì.
 
-La parola «taglia» indica quanti numeri ci sono dentro una lista,
-non quanto è grande il tabellone. Domanda e risposta, cioè la riga e la colonna
-che si incrociano in una casella, vanno confrontate, quindi devono essere
-scritte con la stessa quantità di numeri; l'informazione consegnata no, quella
-può essere lunga a piacere, perché con nessuno si confronta. Il risultato di
-una riga ha sempre la stessa taglia, che le colonne siano dieci o diecimila:
-il tabellone si allarga, il risultato per ogni parola no. È il motivo per cui la
-stessa macchina lavora su una frase e su un capitolo senza cambiare forma. Cambia
-il costo: il tabellone cresce con il quadrato della lunghezza,
-e da lì vengono i limiti di lunghezza dei modelli.
+La parola «taglia» indica quanti numeri ci sono dentro una lista, non quanto è
+grande il tabellone. Domanda e risposta, cioè la riga e la colonna che si
+incrociano in una casella, vanno confrontate, quindi devono essere scritte con
+la stessa quantità di numeri; l'informazione consegnata può invece essere lunga
+a piacere, perché non si confronta con nessuno. Il risultato di una riga ha
+sempre la stessa taglia, che le colonne siano dieci o diecimila: il tabellone
+si allarga, il risultato per ogni parola no. È il motivo per cui la stessa
+macchina lavora su una frase e su un capitolo senza cambiare forma. Cambia il
+costo: il tabellone cresce con il quadrato della lunghezza, e da lì vengono i
+limiti di lunghezza dei modelli.
 
 Il tabellone è quadrato quando le due liste sono la stessa, cioè quando una
 frase interroga sé stessa, ma non deve esserlo. Un traduttore ha davanti due
 liste diverse: le parole italiane che sta scrivendo fanno le domande, le parole
 inglesi che ha letto fanno le risposte, e dodici righe possono incrociare
 diciassette colonne senza che niente sia sbagliato. Quando un modello scrive
-una parola per volta, di righe ce n'è una sola, lunga quanto tutto quello che
-ha letto finora.
+una parola per volta, c'è una sola riga, con tante caselle quante sono le
+parole lette finora.
 
 Il caso quadrato è un'abitudine pericolosa: chi
 lo immagina sempre quadrato scrive regole che valgono solo per quel caso,
@@ -222,12 +219,12 @@ lunghezza qualsiasi senza cambiare forma in uscita.
 $L = S$ vale nella self-attention su una sequenza intera, e le due lunghezze
 divergono in due casi tutt'altro che marginali: l'attenzione incrociata, dove
 la sequenza di query e quella di memoria sono diverse; e la decodifica con la
-cache, dove un blocco corto di query (spesso una riga sola) attende su un
-prefisso lungo. La documentazione corrente di PyTorch tiene infatti $L$ e $S$
-distinte nella firma di `scaled_dot_product_attention`. Assumere $n \times n$
-come forma universale dei pesi di attenzione è un errore che non si manifesta
-finché non si esce dal caso simmetrico, e allora si manifesta come un
-disallineamento della maschera.
+cache, dove un blocco corto di query (spesso una riga sola) calcola
+l'attenzione su un prefisso lungo. La documentazione corrente di PyTorch tiene
+infatti $L$ e $S$ distinte nella firma di `scaled_dot_product_attention`.
+Assumere $n \times n$ come forma universale dei pesi di attenzione è un errore
+che non emerge finché non si esce dal caso simmetrico, e allora si manifesta
+come un disallineamento della maschera.
 `````
 
 Nel codice queste matrici hanno due indici in più davanti: uno per l'esempio
@@ -246,7 +243,7 @@ si trovano ovunque, negli articoli e nel codice.
 Tutte e tre si ricavano dallo stesso vettore $\mathbf{x}_i$, moltiplicandolo
 per tre matrici diverse e apprese durante l'addestramento: sono le
 *proiezioni*. {numref}`fig-qkv` segue il percorso per un token solo, dalle
-proiezioni fino alla media dei value.
+proiezioni fino alla media dei valori.
 
 `````{tab} Elementare
 Sono i tre biglietti della {doc}`matematica di un modello linguistico
@@ -258,21 +255,21 @@ cercando: "gatto" si presenta come qualcosa di animato, che può compiere
 azioni. La terza è l'informazione che consegna a chi l'ha scelta: di "gatto",
 il fatto che sia un felino, che sia nero, che nella frase sia il protagonista.
 
-Le tre versioni escono dall'unica lista di partenza passandola attraverso tre
-tabelle di numeri: una tabella moltiplica una lista e ne restituisce
-un'altra, e siccome i numeri nelle tre tabelle sono diversi (e imparati durante
-l'addestramento), le tre liste che ne escono sono diverse fra loro.
+Le tre versioni si ricavano dall'unica lista di partenza facendola passare
+attraverso tre tabelle di numeri: una tabella moltiplica la lista e ne
+restituisce un'altra, e siccome i numeri nelle tre tabelle sono diversi (e
+imparati durante l'addestramento), le tre liste risultanti sono diverse fra
+loro.
 
-Le tre versioni non sono tre cartellini appiccicati
-addosso alla parola una volta per tutte. Le tabelle cambiano da un piano
-all'altro del modello, e dentro lo stesso piano ce n'è più di una copia che
-lavora in parallelo sulla stessa frase (fra poco quelle copie prenderanno il
-nome di teste). Quindi "gatto" cerca una cosa al primo piano e un'altra al
-ventesimo, e nello stesso piano si presenta in un modo a una copia e in un
-altro modo a quella accanto. Saperlo evita un errore preciso: chi si aspetta un
-cartellino fisso si aspetta anche che "gatto" venga scelto sempre dalle stesse
-parole, e poi trova due piani in cui succede il contrario, senza che nessuno
-dei due sia rotto.
+Le tre versioni non sono tre cartellini appiccicati addosso alla parola una
+volta per tutte. Le tabelle cambiano da un piano all'altro del modello, e
+dentro lo stesso piano ce n'è più di una copia che lavora in parallelo sulla
+stessa frase (le teste). Quindi "gatto" cerca una cosa al primo piano e
+un'altra al ventesimo, e nello stesso piano si presenta in un modo a una copia
+e in un altro modo a quella accanto. Saperlo evita un errore preciso: chi si
+aspetta un cartellino fisso si aspetta anche che "gatto" venga scelto sempre
+dalle stesse parole, e poi trova due piani in cui succede il contrario, senza
+che nessuno dei due sia sbagliato.
 
 La separazione dei tre ruoli sembra un lusso, e invece è la parte essenziale.
 Se ogni parola avesse una sola versione di sé, cercare ed essere trovati
@@ -292,17 +289,15 @@ $$
 \mathbf{V} = \mathbf{X}\mathbf{W}^V,
 $$
 
-con $\mathbf{W}^Q, \mathbf{W}^K \in
-\mathbb{R}^{d_{\text{model}} \times d_k}$ e
+con $\mathbf{W}^Q, \mathbf{W}^K \in \mathbb{R}^{d_{\text{model}} \times d_k}$ e
 $\mathbf{W}^V \in \mathbb{R}^{d_{\text{model}} \times d_v}$. Sono le trasposte
 delle $\mathbf{W}^A$, $\mathbf{W}^B$, $\mathbf{W}^C$ della {doc}`matematica di
 un modello linguistico </Matematica/matematica-llm>`, che lavora su vettori
 colonna; qui, come nelle librerie, le posizioni stanno nelle righe di
-$\mathbf{X}$. Nell'attenzione
-incrociata cambia una cosa sola: le query vengono da un flusso,
-$\mathbf{Q} = \mathbf{Y}\mathbf{W}^Q$ con $\mathbf{Y}$ le rappresentazioni di
-quell'altra sequenza, e chiavi e valori dall'altro. Tutto il
-resto dell'operazione è identico.
+$\mathbf{X}$. Nell'attenzione incrociata cambia una cosa sola: le query vengono
+da un flusso, $\mathbf{Q} = \mathbf{Y}\mathbf{W}^Q$ dove $\mathbf{Y}$ contiene
+le rappresentazioni dell'altra sequenza, mentre chiavi e valori provengono
+dall'altro flusso. Tutto il resto dell'operazione è identico.
 
 $\mathbf{Q}$, $\mathbf{K}$ e $\mathbf{V}$ sono dunque **viste apprese** delle
 rappresentazioni correnti, e non ruoli semantici attaccati ai token. Lo
@@ -315,20 +310,20 @@ La libertà di avere $\mathbf{W}^Q \neq \mathbf{W}^K$ ha una conseguenza
 strutturale che si perde di vista: la matrice dei punteggi
 $\mathbf{X}\mathbf{W}^Q(\mathbf{X}\mathbf{W}^K)^\top =
 \mathbf{X}\,\mathbf{W}^Q\mathbf{W}^{K\top}\mathbf{X}^\top$ è governata da
-$\mathbf{W}^Q\mathbf{W}^{K\top}$, una matrice
-$d_{\text{model}} \times d_{\text{model}}$ che in generale non è simmetrica. Che
-$i$ attenda a $j$ non implica quindi che $j$ attenda a $i$, e da questa
-asimmetria viene la capacità di rappresentare relazioni orientate come
-«chi è il soggetto di», invece della sola somiglianza. La stessa matrice ha
-rango al più $d_k$, perché è il prodotto di due fattori con $d_k$ colonne: ogni
-testa confronta le posizioni in un sottospazio di dimensione $d_k$, e non
-nell'intero $\mathbb{R}^{d_{\text{model}}}$. Le varianti che legano
-le due proiezioni rinunciano a quella libertà nei punteggi (la matrice
+$\mathbf{W}^Q\mathbf{W}^{K\top}$, una matrice $d_{\text{model}} \times
+d_{\text{model}}$ che in generale non è simmetrica. Che $i$ presti attenzione a
+$j$ non implica quindi che $j$ presti attenzione a $i$, e da questa asimmetria
+viene la capacità di rappresentare relazioni orientate come «chi è il soggetto
+di», invece della sola somiglianza. La stessa matrice ha rango al più $d_k$,
+perché è il prodotto di due fattori con $d_k$ colonne: ogni testa confronta le
+posizioni in un sottospazio di dimensione $d_k$, e non nell'intero
+$\mathbb{R}^{d_{\text{model}}}$. Le varianti che vincolano le due proiezioni
+rinunciano a quella libertà nei punteggi (la matrice
 $\mathbf{X}\mathbf{W}\mathbf{W}^\top\mathbf{X}^\top$ diventa simmetrica, anche
-se la softmax per riga lascia asimmetrici i pesi), e quanto costi dipende dal
-compito: il Reformer, nel {doc}`confronto coi modelli precedenti
-<confronti>`, non trova perdite sui due compiti su cui la prova, e varianti
-simmetriche più recenti riportano su BERT risultati pari o migliori con meno
+se la softmax per riga lascia asimmetrici i pesi). Quanto costi rinunciarvi
+dipende dal compito: il Reformer, nel {doc}`confronto coi modelli precedenti
+<confronti>`, non mostra cali nei due compiti di prova, e varianti
+simmetriche più recenti ottengono su BERT risultati pari o migliori con meno
 parametri {cite}`courtois2024symmetric`.
 `````
 
@@ -355,16 +350,16 @@ $$
 z_{ij} = \mathbf{q}_i^\top \mathbf{k}_j ,
 $$
 
-cioè si moltiplicano le coordinate corrispondenti e si sommano i risultati.
-Con due vettori di tre numeri, $(2, 0, 1)$ contro $(3, 1, 0)$ dà $2\cdot3 +
-0\cdot1 + 1\cdot0 = 6$, mentre contro $(0, 4, 0)$ dà $0$. Il punteggio viene
-grande quando i due vettori hanno valori grandi e dello stesso segno negli
-stessi posti, e piccolo, o negativo, quando non si allineano. È l'operazione
-che la {doc}`sezione sull'algebra lineare </Matematica/algebra-lineare>`
-chiama *prodotto scalare*, e il meccanismo non esegue altro confronto fra una
-query e una chiave. Il prodotto fra matrici $\mathbf{Q}\mathbf{K}^\top$ li
-calcola tutti in un colpo solo: ogni riga corrisponde a una posizione di
-query, ogni colonna a una posizione di chiave.
+cioè si moltiplicano le coordinate corrispondenti e si sommano i risultati. Con
+due vettori di tre elementi, il prodotto fra $(2, 0, 1)$ e $(3, 1, 0)$ dà
+$2\cdot3 + 0\cdot1 + 1\cdot0 = 6$, mentre con $(0, 4, 0)$ dà $0$. Il punteggio
+è alto quando i due vettori hanno valori grandi e concordi nelle stesse
+posizioni, e basso, o negativo, quando non sono allineati. È l'operazione che
+la {doc}`sezione sull'algebra lineare </Matematica/algebra-lineare>` chiama
+*prodotto scalare*, e il meccanismo non esegue altro confronto fra una query e
+una chiave. Il prodotto fra matrici $\mathbf{Q}\mathbf{K}^\top$ li calcola
+tutti in un colpo solo: ogni riga corrisponde a una posizione di query, ogni
+colonna a una posizione di chiave.
 
 Un punteggio grezzo non è una
 probabilità: può essere negativo, e la sua grandezza dipende dalla scala e
@@ -433,7 +428,7 @@ unitaria, indipendenti fra loro e indipendenti al variare di $c$. Allora ogni
 addendo del prodotto scalare ha varianza
 $\mathbb{E}[q_c^2 k_c^2] - (\mathbb{E}[q_c]\,\mathbb{E}[k_c])^2 =
 \mathbb{E}[q_c^2]\,\mathbb{E}[k_c^2] = 1$, dove la fattorizzazione
-dell'aspettazione usa l'indipendenza fra $q_c$ e $k_c$; e siccome gli
+del valore atteso usa l'indipendenza fra $q_c$ e $k_c$; e siccome gli
 addendi sono scorrelati al variare di $c$, le varianze si sommano:
 
 $$
@@ -442,13 +437,13 @@ $$
 
 Dividere per $\sqrt{d_k}$ la riporta a 1. Servono dunque due indipendenze
 diverse, una per ciascun passaggio, e una terza ipotesi che di solito non si
-dice: tutto questo vale all'inizializzazione, perché appena
-$\mathbf{W}^Q$ e $\mathbf{W}^K$ cominciano ad allenarsi smettono di produrre
-componenti a varianza unitaria. Sono ipotesi di illustrazione, non una
-descrizione di che cosa faccia un modello addestrato, e l'articolo del 2017 le
-presenta così {cite}`vaswani2017attention`.
+dice: tutto questo vale all'inizializzazione, perché non appena comincia
+l'addestramento $\mathbf{W}^Q$ e $\mathbf{W}^K$ smettono di produrre componenti
+a varianza unitaria. Sono ipotesi di illustrazione, non una descrizione di che
+cosa faccia un modello addestrato, e l'articolo del 2017 le presenta così
+{cite}`vaswani2017attention`.
 
-Che cosa il fattore evita, allora. Con logit di grande modulo la softmax entra
+Che cosa evita il fattore? Con logit di grande modulo la softmax entra
 in regime saturo: un peso vicino a 1 e gli altri vicini a 0. Lì lo jacobiano
 della softmax, $\partial a_i / \partial \tilde{z}_j = a_i(\delta_{ij} - a_j)$,
 ha tutti i termini che tendono a zero, quindi il gradiente che arriva ai
@@ -463,11 +458,10 @@ cambierebbe i punteggi in modo diverso da riga a riga.
 
 ## Le maschere: quali collegamenti sono permessi
 
-C'è un passaggio in mezzo che finora si è dato per scontato. Prima della
-softmax si può sommare alla matrice dei punteggi una **maschera**, cioè una
-matrice della stessa forma che vale $0$ dove il collegamento è lecito e
-$-\infty$ dove è vietato. Che la somma avvenga prima della softmax, e non dopo,
-fa parte della definizione: le due scelte danno risultati diversi.
+Prima della softmax si può sommare alla matrice dei punteggi una **maschera**,
+cioè una matrice della stessa forma che vale $0$ dove il collegamento è lecito
+e $-\infty$ dove è vietato. La somma deve avvenire prima della softmax, e non
+dopo: le due scelte danno risultati diversi.
 
 `````{tab} Elementare
 Il regolamento si scrive sul tabellone prima di cominciare a colorare, e su
@@ -518,18 +512,18 @@ mascheramento autoregressivo, ponendo a $-\infty$ i collegamenti illeciti prima
 della softmax {cite}`vaswani2017attention`.
 
 Le maschere non si esauriscono nella causalità. Una maschera di padding
-impedisce di attendere ai token di riempimento con cui si allineano le sequenze
-di un batch; una maschera strutturata limita la connettività a finestre
-locali o a blocchi, famiglia che la
-{doc}`sezione sul confronto coi modelli precedenti <confronti>` percorre.
-L'API corrente di PyTorch accetta maschere booleane o additive in virgola
-mobile, e tratta a parte la modalità causale.
+impedisce di prestare attenzione ai token di riempimento con cui si allineano
+le sequenze di un batch; una maschera strutturata limita la connettività a
+finestre locali o a blocchi, famiglia che la {doc}`sezione sul confronto coi
+modelli precedenti <confronti>` percorre. L'API corrente di PyTorch accetta
+maschere booleane o additive in virgola mobile, e tratta a parte la modalità
+causale.
 
 Perché mascherare dopo sia un errore si vede in una riga di algebra. Azzerare
 $a_j$ dopo la softmax lascia $\sum_j a_j = 1 - \sum_{j \in \mathcal{F}} a_j$,
 con $\mathcal{F}$ l'insieme vietato: l'uscita $\sum_j a_j \mathbf{v}_j$ è
 allora un multiplo arbitrario, e minore di uno, della media pesata voluta.
-Rinormalizzare a valle recupera i valori giusti finché i conti restano in
+Rinormalizzare a valle recupera i valori giusti finché i calcoli restano in
 precisione piena, perché la softmax ristretta a un sottoinsieme coincide con la
 softmax dell'intero rinormalizzata; ma i logit vietati continuano a entrare nel
 massimo e nella somma, e basta che uno sia abbastanza grande perché i termini
@@ -546,17 +540,17 @@ di PyTorch `scaled_dot_product_attention` su quella riga restituisce zeri (non
 da sempre, e non su ogni backend), quindi un confronto fra la versione a mano
 e quella di libreria diverge in quel punto.
 
-Resta la finezza dell'allineamento, che il caso quadrato nasconde. Con
-$L \neq S$ l'espressione «triangolare inferiore» è ambigua finché non si
-dichiara quale colonna corrisponde a quale riga, e le convenzioni possibili
-sono due. La decodifica con la cache vuole quella allineata a destra:
-l'ultima riga di query vede tutte le $S$ colonne, e la riga $i$ vede le prime
-$S - L + i$. PyTorch le distingue per nome, `LOWER_RIGHT` e `UPPER_LEFT`, e il
-suo `is_causal=True` prende la seconda: con una riga di query e $S$ chiavi
-quella riga vede la sola posizione iniziale, il contrario di quanto
-serve a generare. Costruire un triangolo $L \times S$, o accendere una comodità
-dell'API, senza guardare quale delle due convenzioni si sta prendendo, può far
-attendere il modello al suo stesso futuro.
+Resta la finezza dell'allineamento, che il caso quadrato nasconde. Con $L \neq
+S$ l'espressione «triangolare inferiore» è ambigua finché non si dichiara quale
+colonna corrisponde a quale riga, e le convenzioni possibili sono due. La
+decodifica con la cache vuole quella allineata a destra: l'ultima riga di query
+vede tutte le $S$ colonne, e la riga $i$ vede le prime $S - L + i$. PyTorch le
+distingue per nome, `LOWER_RIGHT` e `UPPER_LEFT`, e il suo `is_causal=True`
+prende la seconda: con una riga di query e $S$ chiavi quella riga vede la sola
+posizione iniziale, il contrario di quanto serve a generare. Costruire un
+triangolo $L \times S$, o abilitare un'opzione dell'API, senza verificare quale
+delle due convenzioni venga adottata, può portare il modello a prestare
+attenzione al suo stesso futuro.
 `````
 
 ## La softmax, riga per riga, e la miscela dei valori
@@ -607,8 +601,8 @@ $$
 dove $\tilde{z}_{ij} = \mathbf{q}_i^\top \mathbf{k}_j/\sqrt{d_k}$ è il punteggio
 scalato e $M_{ij}$ la maschera. Ogni riga di
 $\mathbf{A}$ è quindi una distribuzione di probabilità sulle posizioni di
-chiave permesse per quella query, e le sue entrate si trovano scritte anche
-$\alpha_{ij}$, che è la forma usata in {numref}`fig-qkv` e nella letteratura
+chiave permesse per quella query, e le sue entrate si trovano indicate anche come
+$\alpha_{ij}$, la notazione usata in {numref}`fig-qkv` e nella letteratura
 a partire da Bahdanau. Una softmax lungo le colonne normalizzerebbe
 fra query invece che fra chiavi, definendo un'operazione diversa: le righe non
 sommerebbero più a 1 e l'uscita non sarebbe una media pesata.
@@ -625,15 +619,15 @@ enunciare per esteso: $\mathbf{o}_i$ vive nello spazio dei valori, mai in
 quello dei punteggi, ed essendo una combinazione convessa dei $\mathbf{v}_j$
 sta nel loro inviluppo convesso. Una singola testa non può fabbricare direzioni
 che i valori non contengono già; può solo scegliere come mescolare i valori in
-funzione del contenuto, e cambiare la scelta a ogni posizione. Con più teste,
-che arrivano fra poco, la proprietà vale per ciascuna: l'uscita di ogni testa è
-una media convessa dei propri valori, con pesi propri, e la proiezione
-$\mathbf{W}^O$ che le ricompone è lineare, quindi l'uscita dello strato resta
-nel sottospazio generato dai valori di tutte le teste, proiettati. Le teste
-aggiungono un mescolamento diverso per ogni sottospazio. Dati i coefficienti,
-la combinazione dei valori è lineare: la non-linearità viene da come i
-coefficienti dipendono dall'ingresso, e dal fatto che li si moltiplica per
-valori che dall'ingresso dipendono anche loro.
+funzione del contenuto, e cambiare la scelta a ogni posizione. Nell'attenzione
+a più teste la proprietà vale per ciascuna: l'uscita di ogni testa è una media
+convessa dei propri valori, con pesi propri, e la proiezione $\mathbf{W}^O$ che
+le ricompone è lineare, quindi l'uscita dello strato resta nel sottospazio
+generato dai valori di tutte le teste, proiettati. Le teste aggiungono un
+mescolamento diverso per ogni sottospazio. Dati i coefficienti, la combinazione
+dei valori è lineare: la non-linearità viene da come i coefficienti dipendono
+dall'ingresso, e dal fatto che li si moltiplica per valori che dipendono
+anch'essi dall'ingresso.
 
 Il costo sta nei due prodotti fra matrici: $\mathbf{Q}\mathbf{K}^\top$ richiede
 $L\,S\,d_k$ moltiplicazioni, ciascuna con la sua somma, e $\mathbf{A}\mathbf{V}$
@@ -661,11 +655,11 @@ $$
 $$
 
 con la softmax applicata riga per riga: punteggi, scala, maschera, softmax,
-media dei valori. Su una frase di tre token la si rifà a mano. I vettori hanno
-due soli numeri ciascuno ($d_k = d_v = 2$), e la maschera è quella che vieta di
-guardare avanti, detta *causale*: ogni token vede sé stesso e quelli prima. I
-token sono "il", "gatto", "salta"; query e chiavi sono scelte in modo che
-"salta" cerchi sull'asse su cui "gatto" si fa trovare.
+media dei valori. Su una frase di tre token rifacciamo il calcolo a mano. I
+vettori hanno due soli numeri ciascuno ($d_k = d_v = 2$), e la maschera è
+quella che vieta di guardare avanti, detta *causale*: ogni token vede sé stesso
+e quelli prima. I token sono "il", "gatto", "salta"; query e chiavi sono scelte
+in modo che "salta" cerchi sull'asse su cui "gatto" si fa trovare.
 
 ```python
 import torch
@@ -771,7 +765,7 @@ con 200, somma 0.0 e rinormalizzata tensor([[nan, nan, nan]])
 La riga mascherata dopo la softmax somma a $8{,}9 \cdot 10^{-26}$ invece che a
 uno, e l'uscita che ne segue è di fatto azzerata. Rinormalizzarla recupera i
 valori giusti, con questi numeri; ma il punteggio vietato continua a entrare nel
-conto, e portandolo da $60$ a $200$ i termini permessi finiscono sotto il più
+conto, e se lo si porta da $60$ a $200$ i termini permessi finiscono sotto il più
 piccolo numero rappresentabile: la somma si azzera, e la
 rinormalizzazione restituisce `nan` (*not a number*, il valore con cui il
 calcolatore segnala un calcolo senza risultato, qui zero diviso zero). Il divieto
@@ -827,11 +821,11 @@ di liste ce n'è una per lettore: otto, nel Transformer originale, invece di
 una. Come si torna a una sola? Il trucco è che ogni lettore lavora fin
 dall'inizio su liste corte, un ottavo di quelle intere: attaccandole una in
 coda all'altra si ottiene di nuovo una lista lunga quanto quella di partenza,
-perché otto ottavi fanno uno. Resta un ultimo passaggio, una tabella che la
-lunghezza non la cambia ma mescola fra loro i contributi degli otto, così che
-il contributo di ciascuno arrivi in tutte le caselle e non solo nel suo
-ottavo. Alla fine il costo supera di poco quello di un lettore solo a lista
-piena, per via di quell'ultima tabella.
+perché otto ottavi fanno uno. Resta un ultimo passaggio: una tabella che non
+cambia la lunghezza, ma mescola fra loro i contributi degli otto lettori, così
+che l'informazione di ciascuno arrivi in tutte le caselle e non solo nel
+proprio ottavo. Alla fine il costo supera di poco quello di un lettore solo a
+lista piena, per via di quell'ultima tabella.
 
 Ogni lettore si chiama, per ragioni che nessuno ricorda più, una **testa** di
 attenzione. Perché otto e non nove? Perché funzionava: è una scelta provata sul
@@ -856,8 +850,8 @@ $$
 
 dove $\text{head}_i = \text{Attention}(\mathbf{X}\mathbf{W}_i^Q,
 \mathbf{X}\mathbf{W}_i^K, \mathbf{X}\mathbf{W}_i^V)$. L'argomento sono le
-rappresentazioni in ingresso, e non le $\mathbf{Q}$, $\mathbf{K}$, $\mathbf{V}$
-già proiettate di poco fa: quelle si proietterebbero due volte e le forme non
+rappresentazioni in ingresso, e non le matrici $\mathbf{Q}$, $\mathbf{K}$,
+$\mathbf{V}$ già proiettate: quelle si proietterebbero due volte e le forme non
 tornerebbero. Nell'attenzione incrociata le query partono da un flusso e chiavi
 e valori dall'altro, cioè $\text{head}_i =
 \text{Attention}(\mathbf{Y}\mathbf{W}_i^Q, \mathbf{X}\mathbf{W}_i^K,
@@ -886,21 +880,20 @@ verbo o tornare a una menzione precedente della stessa entità
 parte del lavoro, mentre molte altre si tolgono con perdite trascurabili
 {cite}`voita2019analyzing,michel2019sixteen`.
 
-Le teste di un modello vero si leggono con prudenza. Le loro semantiche sono
-emergenti: non c'è nessun vincolo che spinga una testa a corrispondere a un
-concetto pulito e nominabile, e trovarne alcune che lo fanno non autorizza a
-cercare un'etichetta per tutte.
+Le teste di un modello reale vanno interpretate con cautela. La loro
+specializzazione è emergente: nessun vincolo impone a una testa di
+rappresentare un concetto preciso e nominabile, e trovarne alcune con una
+funzione definita non autorizza a cercare un'etichetta per tutte.
 `````
 
 ## L'attenzione, da sola, non ha ordine
 
-Nella formula dell'attenzione non
-compare mai la posizione dei token. Ogni riga di $\mathbf{Q}$ viene confrontata
-con ogni riga di $\mathbf{K}$ senza che nulla dica quale venga prima, e la
-proprietà ha un nome: la self-attention senza maschera è *equivariante
+Nella formula dell'attenzione non compare mai la posizione dei token. Ogni riga
+di $\mathbf{Q}$ viene confrontata con ogni riga di $\mathbf{K}$ senza che nulla
+dica quale venga prima: la self-attention senza maschera è *equivariante
 rispetto alle permutazioni*, cioè rimescolare le parole in ingresso rimescola
-allo stesso modo le uscite, senza cambiarne i valori. Per l'attenzione,
-«Il gatto morde il cane» e «Il cane morde il gatto» sono lo stesso insieme di
+allo stesso modo le uscite, senza cambiarne i valori. Per l'attenzione, «Il
+gatto morde il cane» e «Il cane morde il gatto» sono lo stesso insieme di
 parole.
 
 `````{tab} Elementare
@@ -931,8 +924,8 @@ per riga; i punteggi diventano allora
 $\mathbf{P}\tilde{\mathbf{Z}}\mathbf{P}^\top$, gli stessi numeri con righe e
 colonne rimescolate; la softmax lavora riga per riga e il rimescolamento la
 attraversa intatto, quindi i pesi diventano
-$\mathbf{P}\mathbf{A}\mathbf{P}^\top$; e il prodotto finale lo riporta fuori
-tale e quale,
+$\mathbf{P}\mathbf{A}\mathbf{P}^\top$; e nel prodotto finale la permutazione si
+conserva:
 
 $$
 (\mathbf{P}\mathbf{A}\mathbf{P}^\top)(\mathbf{P}\mathbf{V}) =
@@ -957,10 +950,10 @@ sommando alle rappresentazioni un segnale che dipende dalla posizione, la
 codifica posizionale. La codifica non fa parte dell'attenzione: modifica le
 rappresentazioni, o l'interazione fra query e chiavi, in modo che l'attenzione
 possa usare la posizione, e anche nei modelli causali resta il modo diretto di
-dare l'ordine. Come la si calcolava nel 2017 e come la si calcola oggi (con una
-rotazione di query e chiavi, la RoPE, *rotary position embedding*) lo racconta
-la {doc}`sezione sulla struttura del Transformer <architettura>`, che monta il
-blocco completo.
+dare l'ordine. La {doc}`sezione sulla struttura del Transformer <architettura>`,
+che monta il blocco completo, racconta come si calcolava la codifica nel 2017 e
+come si calcola oggi (con una rotazione di query e chiavi, la RoPE, *rotary
+position embedding*).
 
 ## Dove va a finire l'attenzione: encoder e decoder
 
@@ -970,12 +963,12 @@ propri a ogni ripetizione. L'encoder, la parte che legge, è una pila di blocchi
 che trasforma la frase d'ingresso in una sequenza di rappresentazioni, una per
 token; il decoder, la parte che scrive, è un'altra pila, con un passaggio in
 più in ogni blocco, che produce l'uscita (una traduzione, una risposta) un
-token alla volta. Il passaggio in più è la cross-attention di poco fa, con cui
+token alla volta. Il passaggio in più è la cross-attention, con cui
 il decoder consulta le rappresentazioni dell'encoder.
 
 Una pila di blocchi è una rete profonda, e lo è in senso letterale: tanti
 passaggi uno sopra l'altro, decine, e più di cento nei modelli più grandi.
-Impilarli, però, non è gratis, e ogni blocco porta con sé due accorgimenti che
+Impilarli, però, non basta: ogni blocco porta con sé due accorgimenti che
 servono soltanto a rendere la pila addestrabile.
 
 `````{tab} Elementare
@@ -1018,8 +1011,8 @@ fuori giri alle prime correzioni. I modelli venuti dopo hanno portato le
 bilance all'ingresso delle stanze, il corrimano è tornato libero da cima a
 fondo, e quella partenza in punta di piedi è diventata meno necessaria.
 
-La pesata, intanto, si è fatta più spiccia. Nei modelli linguistici di oggi la
-media non la si toglie nemmeno: si divide soltanto per la grandezza tipica dei
+La pesata, intanto, si è fatta più spiccia. Nei modelli linguistici di oggi non
+si toglie nemmeno la media: si divide soltanto per la grandezza tipica dei
 numeri della lista, e poi si moltiplica per i fattori imparati. Un conto in
 meno a ogni piano, e la pila sta ferma lo stesso.
 `````
@@ -1032,11 +1025,11 @@ $$
 $$
 
 attorno a ogni sotto-strato (attenzione o feed-forward). La connessione
-residuale (la stessa idea delle ResNet che abbiamo visto fra le
+residuale (la stessa idea delle ResNet introdotta nelle
 {doc}`architetture storiche del deep learning
 </DeepLearning/architetture-storiche>`) offre al gradiente un cammino quasi
 diretto verso gli strati
-iniziali, contrastando il gradiente che svanisce; la layer normalization
+iniziali, contrastandone lo svanimento; la layer normalization
 {cite}`ba2016layer` standardizza ogni vettore sulle proprie coordinate, token
 per token e senza guardare il resto del batch:
 
@@ -1047,12 +1040,12 @@ $$
 \sigma^2 = \frac{1}{d}\sum_{c=1}^{d} (x_c - \mu)^2 ,
 $$
 
-dove $d = d_{\text{model}}$, $c$ corre sulle coordinate,
-$\boldsymbol{\gamma}, \boldsymbol{\beta} \in \mathbb{R}^d$ sono guadagno e
-traslazione appresi ed $\epsilon$ una costante piccola che evita la divisione
-per zero. Non usando statistiche del batch, si comporta allo stesso modo in
-addestramento e in inferenza e con sequenze di lunghezza qualsiasi, cosa che la
-batch normalization non garantisce; e rende l'addestramento meno sensibile a
+dove $d = d_{\text{model}}$, $c$ corre sulle coordinate, $\boldsymbol{\gamma},
+\boldsymbol{\beta} \in \mathbb{R}^d$ sono guadagno e traslazione appresi ed
+$\epsilon$ una costante piccola che evita la divisione per zero. Non usando
+statistiche del batch, la layer normalization si comporta allo stesso modo in
+addestramento e in inferenza e con sequenze di lunghezza qualsiasi, a
+differenza della batch normalization, e rende l'addestramento meno sensibile a
 learning rate e inizializzazione.
 
 Il cammino della connessione residua, però, è diretto solo in parte: in questa
@@ -1065,7 +1058,7 @@ la aggiunge esplicitamente), e con quella disposizione il cammino identità
 diventa pulito. Xiong e colleghi {cite}`xiong2020layer` spiegano con la teoria del
 campo medio perché lo spostamento conta: nel Post-LN, all'inizializzazione, i
 gradienti attesi dei parametri vicini all'uscita sono grandi, e con un learning
-rate alto l'addestramento diventa instabile; nel Pre-LN sono ben comportati.
+rate alto l'addestramento diventa instabile; nel Pre-LN restano invece controllati.
 Per questo l'articolo del 2017 aveva bisogno di un riscaldamento del learning
 rate, che al passo $s$ vale
 
@@ -1076,7 +1069,7 @@ $$
 cioè sale linearmente per i primi 4000 passi e poi decresce come $s^{-1/2}$
 {cite}`vaswani2017attention`; con il Pre-LN il riscaldamento si può togliere
 {cite}`xiong2020layer`, anche se molti grandi modelli linguistici recenti,
-pur adottandolo, ne usano comunque uno breve.
+pur adottando questa disposizione, ne usano comunque uno breve.
 
 Nei modelli linguistici recenti anche la normalizzazione stessa si è
 alleggerita: al posto della LayerNorm c'è quasi sempre la **RMSNorm**
@@ -1085,7 +1078,7 @@ vettore per la sua radice quadratica media e lo riscala con un guadagno
 appreso,
 $\mathbf{x} \mapsto \boldsymbol{\gamma} \odot \mathbf{x}/\mathrm{RMS}(\mathbf{x})$
 con $\mathrm{RMS}(\mathbf{x}) = \sqrt{\tfrac{1}{d}\sum_c x_c^2 + \epsilon}$:
-meno conti
+meno operazioni
 per strato, e in pratica la stessa stabilità.
 `````
 
@@ -1101,13 +1094,10 @@ destra è stata spostata all'ingresso dei sotto-strati, e la scorciatoia corre
 intera dall'alto in basso.
 ```
 
-Connessione residua e normalizzazione sono ciò che rende possibile impilare
+Connessione residua e normalizzazione rendono possibile impilare
 l'attenzione: nei modelli grandi di oggi i blocchi vanno da sessanta a più di
 cento, e senza questi due accorgimenti, montati come in
-{numref}`fig-corrimano-taratura`, una pila così profonda non si addestra. Con
-il meccanismo in mano, la {doc}`sezione sulla struttura del Transformer
-<architettura>` prende questi pezzi e li monta nelle due pile di una macchina
-vera.
+{numref}`fig-corrimano-taratura`, una pila così profonda non si addestra.
 
 ```{admonition} Un cantiere parallelo: le reti a memoria
 :class: note
@@ -1122,9 +1112,9 @@ andato in ufficio. Giovanni ha posato il latte. Giovanni è andato in bagno.
 Dov'è il latte?», dove per rispondere «in ufficio» servono i primi due fatti, e
 nessuno dei due basta. La rete teneva i fatti in un archivio a parte, separato
 dai parametri appresi, e ci pescava due volte in successione, la seconda con in
-mano il fatto trovato la prima: sono gli *hop*, i passi di lettura. In quella
-prima versione però la pesca era secca (si sceglieva *un* fatto, il più
-somigliante), e per addestrarla bisognava indicare alla rete, esempio per
+mano il fatto trovato al primo passaggio: sono gli *hop*, i passi di lettura.
+In quella prima versione però la pesca era secca (si sceglieva *un* fatto, il
+più somigliante), e per addestrarla bisognava indicare alla rete, esempio per
 esempio, quali fossero i fatti giusti.
 
 Il passo che ci interessa arriva l'anno dopo, con le *end-to-end memory
@@ -1136,7 +1126,7 @@ lettura dell'archivio, e la rete impara quali fatti usare.
 
 Quella lettura pesata *è* l'attenzione, con l'archivio al posto della frase. Le
 due strade sono partite quasi insieme: l'attenzione per la traduzione è del
-settembre 2014, le memory network dell'ottobre, e la seconda cita la prima fra
+settembre 2014, le memory network dell'ottobre, e queste ultime citano la prima fra
 i lavori affini, non fra le proprie basi; la versione end-to-end, del marzo
 2015, si presenta invece come un'estensione del modello di Bahdanau, con più
 passi di lettura per ogni parola prodotta. La caratteristica delle reti a memoria è
@@ -1153,8 +1143,8 @@ retrieval <rag>`.
   dà a tutte le altre un'intensità di colore e ne mescola le informazioni in
   quella proporzione. L'evidenziatore decide quanto; nel miscuglio entra
   l'informazione, e la rete tiene le due cose separate.
-- Le intensità le ricalcola ogni frase: la rete impara, su miliardi di esempi,
-  soltanto il criterio con cui il colore va assegnato.
+- Le intensità cambiano a ogni frase: la rete impara, su miliardi di esempi,
+  soltanto il criterio con cui assegnare il colore.
 - Ogni parola si presenta in tre versioni: la query (la domanda che fa), la key
   (l'etichetta con cui si fa trovare) e il value (l'informazione che
   consegna), e le tre versioni cambiano da un piano all'altro del modello.
@@ -1174,7 +1164,7 @@ retrieval <rag>`.
 - Più evidenziatori lavorano in parallelo, ognuno attento a un tipo di legame:
   sono le teste di attenzione, otto nel Transformer del 2017.
 - L'attenzione da sola non sa che cosa viene prima e che cosa dopo: l'ordine
-  glielo si aggiunge da fuori.
+  va aggiunto dall'esterno.
 - Attorno a ogni blocco ci sono una scorciatoia, che lascia passare
   l'informazione intatta e riporta indietro la correzione degli errori, e una
   taratura, che rimette i numeri su una scala standard. Senza, i palazzi alti
@@ -1213,13 +1203,13 @@ retrieval <rag>`.
 - La softmax normalizza lungo le chiavi, per riga: ogni query produce la
   propria distribuzione. I pesi $\mathbf{A}$ sono un intermedio, non l'uscita
   dello strato.
-- La Multi-Head Attention esegue più attenzioni in sottospazi distinti
-  ($h = 8$ nel modello originale) e ricompone con $\mathbf{W}^O$; le semantiche
-  delle teste sono emergenti e non garantite.
+- La Multi-Head Attention esegue più attenzioni in sottospazi distinti ($h = 8$
+  nel modello originale) e ricompone con $\mathbf{W}^O$; la specializzazione
+  delle teste è emergente e non garantita.
 - La self-attention senza maschera è equivariante alle permutazioni: la
   posizione va aggiunta da fuori. La maschera causale ne dà un segnale
   indiretto (la riga $i$ media su $i$ vettori), da cui un modello causale
-  riesce comunque a ricavarsi dove si trova.
+  riesce comunque a ricavare la propria posizione.
 - Residual connection e layer normalization tengono addestrabili le
   pile profonde di blocchi. L'articolo del 2017 le combina come
   $\text{LayerNorm}(\mathbf{x} + \text{SubLayer}(\mathbf{x}))$ (*Post-LN*); i
@@ -1230,6 +1220,6 @@ retrieval <rag>`.
 `````
 
 Il meccanismo è completo: cinque passaggi che si rifanno a mano su tre parole,
-e le scelte che danno alla formula la sua forma. Manca la macchina che gli
-sta attorno: l'architettura a due pile in cui il blocco viene impilato e il
-confronto strutturale con le reti ricorrenti.
+e le scelte che danno alla formula la sua forma. Manca la macchina che gli sta
+attorno, descritta nella {doc}`sezione sulla struttura del Transformer
+<architettura>`.

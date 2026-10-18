@@ -179,7 +179,8 @@ l'attrezzo che oggi la fa.
 
 Nessuno di questi attrezzi usa il modello per decidere: sono la struttura
 attorno al modello (lo *scaffolding*, in inglese) che rende ripetibile il suo
-lavoro.
+lavoro, e che il {doc}`capitolo sull'harness engineering </Harness/overview>`
+segue su lavori lunghi ore.
 
 ### Due agenti, non uno: chi fa e chi controlla
 
@@ -760,9 +761,8 @@ sistema, a differenza di una frase, va sorvegliato mentre lavora.
 Tre cerchi, uno dentro l'altro: la frase, il contesto che le sta intorno, il
 ciclo che di frasi ne produce a ripetizione. In mezzo c'è un'idea che vale ben
 oltre i modelli di linguaggio, cioè che chi propone non può essere anche chi
-approva. Finora, però, a decidere è stato uno solo: il programma che fa
-partire il giro, il cancello che dice sì o no. Il capitolo sui {doc}`sistemi
-multi-agente </SistemiMultiAgente/overview>` toglie anche questo presupposto.
-Quando a decidere sono in molti, ciascuno con la sua finestra, non basta più
-contare gli errori di ogni passo: mettersi d'accordo su che cosa fare costa
-messaggi, attese e voti, e può sbagliare a modo suo.
+approva. Finora, però, il ciclo è durato qualche giro. Quando un lavoro chiede
+ore e decine di sessioni, ciascuna con la finestra vuota, tutto quello che sta
+attorno al modello smette di essere un contorno e diventa il progetto: le
+istruzioni, la memoria su file, il passaggio fra un turno e l'altro, il
+collaudo. È il tema dell’{doc}`harness engineering </Harness/overview>`.

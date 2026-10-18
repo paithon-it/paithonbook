@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Paithon Book, figura animata: un lavoro come grafo: i passi, il guasto, la ripresa, la firma
+  Generata da animazioni/svg/harness-grafo.py: non modificare a mano.
+  Palette-locked, fondo trasparente, animazione in CSS puro (nessuno script).
+  Lo stato di riposo è quello finale: chi non anima (stampa, PDF,
+  prefers-reduced-motion) vede la figura conclusa.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 345"
+     role="img" aria-label="Un grafo di quattro nodi in fila, pianifica, costruisci, collauda e rilascia, con un arco che dal collaudo torna alla costruzione, al massimo 3 tentativi, e una firma sull'arco che porta al rilascio, segnato come irreversibile. Un gettone percorre il grafo: pianifica, costruisci, poi al collaudo si spegne (una croce resta sul nodo); riparte dal collaudo, che fallisce, torna alla costruzione, il secondo collaudo passa, si ferma alla firma e infine arriva al rilascio. Sotto, una fila di 8 caselle riporta i passi nell'ordine: 6 passi salvati, il guasto e la firma.">
+  <style>
+    svg  { --d: 12.0s; }
+    .ax  { stroke:#C5BEAA; stroke-width:2; fill:none; }
+    .axc { stroke:#E2DCC9; stroke-width:1.5; }
+    .lbl { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#1A1A1A; }
+    .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5A524A; }
+    .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#1A1A1A; }
+    .tok  { fill:#B5532C; transform-box:view-box; }
+    .nodo { fill:none; stroke:#2D5A5C; stroke-width:2; }
+    .irr  { stroke:#B5532C; stroke-dasharray:5 3; }
+    .arco { fill:none; stroke:#C5BEAA; stroke-width:2; }
+    .punta { fill:#C5BEAA; }
+    .firma { stroke:#C9A961; stroke-width:4; stroke-linecap:round; }
+    .croce { stroke:#B5532C; stroke-width:3; stroke-linecap:round; }
+    .casella { fill:none; stroke:#2D5A5C; stroke-width:1.5; }
+    .rotta { stroke:#B5532C; stroke-dasharray:4 3; }
+    .attesa { stroke:#C9A961; }
+    .nota { font-size:11px; }
+        @keyframes guasto{0.00%{opacity:0}22.50%{opacity:0}23.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes p0{0.00%{opacity:0}0.00%{opacity:0}0.50%{opacity:1}100.00%{opacity:1}}
+    @keyframes p1{0.00%{opacity:0}11.25%{opacity:0}11.75%{opacity:1}100.00%{opacity:1}}
+    @keyframes p2{0.00%{opacity:0}22.50%{opacity:0}23.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes p3{0.00%{opacity:0}33.75%{opacity:0}34.25%{opacity:1}100.00%{opacity:1}}
+    @keyframes p4{0.00%{opacity:0}45.00%{opacity:0}45.50%{opacity:1}100.00%{opacity:1}}
+    @keyframes p5{0.00%{opacity:0}56.25%{opacity:0}56.75%{opacity:1}100.00%{opacity:1}}
+    @keyframes p6{0.00%{opacity:0}67.50%{opacity:0}68.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes p7{0.00%{opacity:0}78.75%{opacity:0}79.25%{opacity:1}100.00%{opacity:1}}
+    @keyframes gettone{0.00%{transform:translateX(-585px);opacity:1}6.75%{transform:translateX(-585px);opacity:1}11.25%{transform:translateX(-390px);opacity:1}18.00%{transform:translateX(-390px);opacity:1}22.50%{transform:translateX(-195px);opacity:0.3}29.25%{transform:translateX(-195px);opacity:0.3}33.75%{transform:translateX(-195px);opacity:1}40.50%{transform:translateX(-195px);opacity:1}45.00%{transform:translateX(-390px);opacity:1}51.75%{transform:translateX(-390px);opacity:1}56.25%{transform:translateX(-195px);opacity:1}63.00%{transform:translateX(-195px);opacity:1}67.50%{transform:translateX(-97.5px);opacity:1}74.25%{transform:translateX(-97.5px);opacity:1}78.75%{transform:translateX(0px);opacity:1}85.50%{transform:translateX(0px);opacity:1}90.00%{transform:translateX(0px);opacity:1}100.00%{transform:translateX(0px);opacity:1}}
+    @media (prefers-reduced-motion:reduce) { .tok, .comp { animation:none !important; } }
+  </style>
+  <text class="ttl" x="40" y="30">un filo di lavoro che attraversa il grafo</text><line class="arco" x1="170" y1="150" x2="227" y2="150"/><path class="punta" d="M 225 145 L 235 150 L 225 155 Z"/><line class="arco" x1="365" y1="150" x2="422" y2="150"/><path class="punta" d="M 420 145 L 430 150 L 420 155 Z"/><line class="arco" x1="560" y1="150" x2="617" y2="150"/><path class="punta" d="M 615 145 L 625 150 L 615 155 Z"/><path class="arco" d="M 475 126.0 C 455 64.0 340 64.0 322 120.0"/><path class="punta" d="M 316 114.0 L 320 126.0 L 328 116.0 Z"/><text class="lbs" x="398" y="74.0" text-anchor="middle">fallito: si torna, al massimo 3 tentativi</text><line class="firma" x1="592" y1="134" x2="592" y2="166"/><text class="lbs" x="592" y="186" text-anchor="middle">firma</text><rect class="nodo" x="40" y="126" width="130" height="48" rx="8"/><text class="lbl" x="105" y="155" text-anchor="middle">pianifica</text><rect class="nodo" x="235" y="126" width="130" height="48" rx="8"/><text class="lbl" x="300" y="155" text-anchor="middle">costruisci</text><rect class="nodo" x="430" y="126" width="130" height="48" rx="8"/><text class="lbl" x="495" y="155" text-anchor="middle">collauda</text><rect class="nodo irr" x="625" y="126" width="130" height="48" rx="8"/><text class="lbl" x="690" y="155" text-anchor="middle">rilascia</text><text class="lbs" x="690" y="192" text-anchor="middle">irreversibile</text><g class="comp" style="animation:guasto var(--d) linear infinite"><path class="croce" d="M 549.0 123.0 L 563.0 137.0 M 563.0 123.0 L 549.0 137.0"/></g><text class="lbs" x="40" y="266">i passi, nell'ordine in cui il filo li ha fatti</text><g class="comp" style="animation:p0 var(--d) linear infinite"><rect class="casella" x="40.0" y="278" width="82.0" height="44" rx="6"/><text class="lbs" x="81.0" y="296" text-anchor="middle">pianifica</text><text class="lbs nota" x="81.0" y="313" text-anchor="middle">salvato</text></g><g class="comp" style="animation:p1 var(--d) linear infinite"><rect class="casella" x="130.0" y="278" width="82.0" height="44" rx="6"/><text class="lbs" x="171.0" y="296" text-anchor="middle">costruisci</text><text class="lbs nota" x="171.0" y="313" text-anchor="middle">salvato</text></g><g class="comp" style="animation:p2 var(--d) linear infinite"><rect class="casella rotta" x="220.0" y="278" width="82.0" height="44" rx="6"/><text class="lbs" x="261.0" y="296" text-anchor="middle">collauda</text><text class="lbs nota" x="261.0" y="313" text-anchor="middle">guasto</text></g><g class="comp" style="animation:p3 var(--d) linear infinite"><rect class="casella" x="310.0" y="278" width="82.0" height="44" rx="6"/><text class="lbs" x="351.0" y="296" text-anchor="middle">collauda</text><text class="lbs nota" x="351.0" y="313" text-anchor="middle">fallito</text></g><g class="comp" style="animation:p4 var(--d) linear infinite"><rect class="casella" x="400.0" y="278" width="82.0" height="44" rx="6"/><text class="lbs" x="441.0" y="296" text-anchor="middle">costruisci</text><text class="lbs nota" x="441.0" y="313" text-anchor="middle">salvato</text></g><g class="comp" style="animation:p5 var(--d) linear infinite"><rect class="casella" x="490.0" y="278" width="82.0" height="44" rx="6"/><text class="lbs" x="531.0" y="296" text-anchor="middle">collauda</text><text class="lbs nota" x="531.0" y="313" text-anchor="middle">passato</text></g><g class="comp" style="animation:p6 var(--d) linear infinite"><rect class="casella attesa" x="580.0" y="278" width="82.0" height="44" rx="6"/><text class="lbs" x="621.0" y="296" text-anchor="middle">rilascia</text><text class="lbs nota" x="621.0" y="313" text-anchor="middle">firma</text></g><g class="comp" style="animation:p7 var(--d) linear infinite"><rect class="casella" x="670.0" y="278" width="82.0" height="44" rx="6"/><text class="lbs" x="711.0" y="296" text-anchor="middle">rilascia</text><text class="lbs nota" x="711.0" y="313" text-anchor="middle">salvato</text></g><circle class="tok" cx="690" cy="114.0" r="8" style="animation:gettone var(--d) linear infinite"/>
+</svg>

@@ -370,6 +370,21 @@ parts:
       title: Context engineering
     - file: IngegneriaLLM/loop-engineering.md
       title: Loop engineering
+  - file: Harness/overview.md
+    title: Harness engineering
+    sections:
+    - file: Harness/il-repository-come-memoria.md
+      title: Il repository come memoria
+    - file: Harness/il-primo-turno.md
+      title: Il primo turno
+    - file: Harness/passaggio-di-consegne.md
+      title: Il passaggio di consegne
+    - file: Harness/finito-vuol-dire-collaudato.md
+      title: Finito vuol dire collaudato
+    - file: Harness/quando-nessuno-guarda.md
+      title: Quando nessuno guarda
+    - file: Harness/dal-ciclo-al-grafo.md
+      title: Dal ciclo al grafo
   - file: SistemiMultiAgente/overview.md
     title: Sistemi multi-agente
     sections:

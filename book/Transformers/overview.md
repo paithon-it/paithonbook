@@ -28,14 +28,14 @@ sta per Transformer.
 
 ## Il problema: leggere una frase tutta insieme
 
-Il Transformer tiene i pezzi che il {doc}`capitolo sul Natural Language
-Processing </NaturalLanguageProcessing/overview>` gli ha consegnato e cambia la
-macchina che li porta. Le reti ricorrenti, anche nelle varianti con porte che
-decidono che cosa conservare e che cosa cancellare dello stato (LSTM e GRU),
-riassumono il passato in uno stato aggiornato un passo alla volta. Questo metodo ha
-due limiti strutturali: l'informazione fra due parole
-lontane attraversa tutti i passi intermedi, e il passo $t$ non comincia finché
-il passo $t-1$ non è finito.
+Il Transformer tiene la rappresentazione del testo introdotta nel
+{doc}`capitolo sul Natural Language Processing
+</NaturalLanguageProcessing/overview>`, ma cambia l'architettura che la
+elabora. Le reti ricorrenti, anche nelle varianti con porte che decidono che
+cosa conservare e che cosa cancellare (LSTM e GRU), riassumono il passato in
+uno stato aggiornato un passo alla volta. Questo metodo ha due limiti
+strutturali: l'informazione fra due parole lontane attraversa tutti i passi
+intermedi, e il passo $t$ non comincia finché il passo $t-1$ non è finito.
 
 `````{tab} Elementare
 Un romanzo letto attraverso una fessura che scopre una parola alla volta, con
@@ -68,18 +68,18 @@ volta.
 
 `````{tab} Superiore
 Nelle RNN l'informazione che va dalla prima all'ultima parola di una sequenza
-lunga $n$ attraversa $O(n)$ passaggi di stato. Il segnale si degrada (per il
-problema del gradiente che svanisce, la cui derivazione sta nella {doc}`sezione
-sui modelli di sequenza </NaturalLanguageProcessing/modelli-sequenza>`) e le
-dipendenze lunghe si perdono: un limite che LSTM e GRU mitigano ma non
-eliminano. Inoltre la ricorrenza è intrinsecamente sequenziale: il passo $t$
-richiede il passo $t-1$, e l'hardware parallelo (le GPU) resta sottoutilizzato
-in addestramento.
+lunga $n$ attraversa $O(n)$ passaggi di stato. Il segnale si degrada per via
+del gradiente che svanisce e le dipendenze lunghe si perdono: un limite che
+LSTM e GRU mitigano ma non eliminano. La derivazione si trova nella
+{doc}`sezione sui modelli di sequenza
+</NaturalLanguageProcessing/modelli-sequenza>`. Inoltre la ricorrenza è
+intrinsecamente sequenziale: il passo $t$ richiede il passo $t-1$, e l'hardware
+parallelo (le GPU) resta sottoutilizzato in addestramento.
 
 Nel Transformer la self-attention collega ogni coppia di posizioni in un solo
-passo, lunghezza di cammino $O(1)$, e l'elaborazione di tutte le posizioni è un
-prodotto tra matrici, parallelizzabile per costruzione. È questa seconda
-proprietà, più ancora della prima, ad aver cambiato la scala dei modelli:
+passo, con lunghezza di cammino $O(1)$, e l'elaborazione di tutte le posizioni è un
+prodotto tra matrici, parallelizzabile per costruzione. Questa seconda
+proprietà, più ancora della prima, ha cambiato la scala dei modelli:
 addestrare su corpora enormi è diventato una questione di hardware, non di
 architettura. A questo vantaggio corrisponde un costo quadratico rispetto alla
 lunghezza della sequenza, analizzato nel {doc}`confronto coi modelli precedenti
@@ -90,13 +90,8 @@ lunghezza della sequenza, analizzato nel {doc}`confronto coi modelli precedenti
 
 Dentro un Transformer ci sono prodotti fra
 matrici, una softmax, normalizzazioni e piccole reti applicate a ogni
-posizione, montati in un ordine preciso: su una frase di tre parole si
-rifanno con carta e penna. Chi ha letto la {doc}`matematica di un modello
-linguistico </Matematica/matematica-llm>` ne conosce già il meccanismo, con
-altri nomi. Qui si aggiungono il vocabolario standard (query, key e value, i
-tre ruoli che ogni parola gioca nell'attenzione) e i pezzi che in quel capitolo
-restavano fuori: le maschere, che decidono quali parole ciascuna può guardare,
-e l'architettura che monta il tutto.
+posizione, disposti in un ordine preciso: su una frase di tre parole si
+possono calcolare con carta e penna.
 
 Il capitolo segue l'ordine dell'articolo del 2017. Si comincia dal meccanismo
 di attenzione e dalla sua forma con le matrici, poi si monta l’architettura
@@ -113,7 +108,7 @@ linguistici, con le leggi di scala, la scelta della parola da scrivere e il
 modo di valutarli; i modelli a esperti, che hanno moltissimi parametri ma per
 ogni parola ne usano una piccola parte; il post-training, che trasforma un
 completatore di frasi in un assistente che risponde; il retrieval, con cui un
-modello consulta dei documenti prima di rispondere. Chiude uno sguardo alle
+modello consulta dei documenti prima di scrivere. Chiude uno sguardo alle
 tendenze e ai limiti.
 
 `````{tab} Elementare
@@ -129,7 +124,7 @@ tendenze e ai limiti.
   parallelizzazione: le parole si elaborano tutte insieme invece che in
   fila, e i cento amici di prima servono, perché permettono di addestrare
   questi modelli su macchine con migliaia di processori.
-- Il conto si paga sulle coppie: ogni parola guarda ogni altra, quindi
+- Il costo sta nelle coppie: ogni parola guarda ogni altra, quindi
   raddoppiare la lunghezza del testo quadruplica il lavoro. È una delle ragioni
   per cui a questi modelli si mette un limite su quanto testo possono tenere
   davanti agli occhi in una volta.
@@ -150,10 +145,10 @@ tendenze e ai limiti.
   qualsiasi scende da $O(n)$ di uno strato ricorrente a $O(1)$, e secondo gli
   autori cammini più corti rendono più facili da imparare le dipendenze
   lunghe. È un'ipotesi e non una garanzia: sull'accordo fra soggetto e verbo
-  a distanza le LSTM hanno fatto meglio {cite}`tran2018importance`.
-- Cade con la ricorrenza anche il vincolo sequenziale: le operazioni da fare
-  una dopo l'altra passano da $O(n)$ a $O(1)$, quindi l'intera sequenza si
-  elabora in parallelo e l'addestramento sfrutta l'hardware a molti core.
+  a distanza le LSTM hanno ottenuto risultati migliori {cite}`tran2018importance`.
+- Con la ricorrenza cade anche il vincolo sequenziale: le operazioni in serie
+  passano da $O(n)$ a $O(1)$, quindi l'intera sequenza si elabora in parallelo
+  e l'addestramento sfrutta l'hardware a molti core.
 - Lo svantaggio sta nell'altra colonna della stessa tabella: il costo per strato è
   $O(n^2 \cdot d)$, con $d$ la dimensione delle rappresentazioni, cioè
   quadratico nella lunghezza $n$ della sequenza; ed è quadratica in $n$ anche
@@ -161,7 +156,7 @@ tendenze e ai limiti.
   nel {doc}`confronto coi modelli precedenti <confronti>` e nella sezione
   sull’{doc}`attenzione in pratica <attenzione-in-pratica>`.
 - Su questa architettura poggiano i grandi modelli linguistici (GPT, BERT,
-  T5): a imporla è stata la capacità di scalare con dati e parametri.
+  T5): l'ha imposta la capacità di scalare con dati e parametri.
 ```
 
 `````

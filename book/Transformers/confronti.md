@@ -1,7 +1,7 @@
 # Confronto con i modelli precedenti
 
-Ogni nuova architettura va giudicata contro ciò che sostituisce, e prima del
-2017 il testo lo trattavano le reti ricorrenti del {doc}`capitolo sul Natural
+Ogni nuova architettura va giudicata rispetto a ciò che sostituisce; prima del
+2017 il testo era trattato dalle reti ricorrenti del {doc}`capitolo sul Natural
 Language Processing </NaturalLanguageProcessing/overview>`: la RNN
 (*recurrent neural network*) e le due varianti con porte che l'hanno
 soppiantata, LSTM e GRU. Il confronto serve a capire *perché* il Transformer
@@ -60,14 +60,14 @@ vale per la torre che legge (l'encoder); quella che scrive (il decoder)
 ha una regola ferrea, non si sbircia avanti, e guarda solo all'indietro.
 
 La seconda riguarda la velocità. Il ricordo che non sbiadisce, da solo, non
-spiega la vittoria, perché il taccuino delle LSTM allungava già la memoria:
+spiega la vittoria: il taccuino delle LSTM allungava già la memoria, ma
 nessuna macchina di prima sapeva mettere tante mani sullo stesso testo. Se le
 parole si guardano tutte insieme invece che una dopo l'altra, il lavoro si può
 spartire fra migliaia di processori che macinano in parallelo: sono i «cento
-amici» dell'apertura del capitolo, quelli che con un libro da leggere pagina
-dopo pagina non servivano a niente e qui invece servono eccome. Attenzione però
-a quando: succede mentre il modello studia, cioè quando ha davanti tutto il
-testo e può lavorarci sopra in una volta sola. Quando poi scrive, le parole gli
+amici», quelli che con un libro da leggere pagina
+dopo pagina non servivano a niente e qui invece servono eccome. Questo però
+succede solo mentre il modello studia, cioè quando ha davanti tutto il
+testo e può lavorarci in una volta sola. Quando poi scrive, le parole gli
 escono comunque una alla volta, perché per scegliere la prossima deve sapere
 quale ha appena scritto: lì i cento amici tornano a girarsi i pollici, e
 infatti generare resta lento.
@@ -79,16 +79,16 @@ $\mathbf{h}_t = f(\mathbf{h}_{t-1}, \mathbf{x}_t)$: la dipendenza tra
 posizioni distanti $m$ passi attraversa $m$ applicazioni di $f$, e il
 gradiente retropropagato è un prodotto di $m$ jacobiane
 $\partial\mathbf{h}_s/\partial\mathbf{h}_{s-1}$. Se il massimo valore singolare
-della matrice ricorrente sta sotto $1/\gamma$, con $\gamma$ il massimo della
+della matrice ricorrente è inferiore a $1/\gamma$, con $\gamma$ il massimo della
 derivata della non linearità ($1$ per la tanh, $1/4$ per la sigmoide), la
 norma del prodotto decade in modo esponenziale; perché esploda è necessario che
 lo superi {cite}`pascanu2013difficulty`. La derivazione sta nella
 {doc}`sezione sui modelli di sequenza
 </NaturalLanguageProcessing/modelli-sequenza>`, che costruisce anche le LSTM
-{cite}`hochreiter1997long` e le GRU {cite}`cho2014learning`: con i gate aprono
-un cammino quasi lineare per il gradiente, e allungano l'orizzonte della
-memoria, ma restano sequenziali, perché il passo $t$ attende il passo $t-1$, in
-addestramento come in inferenza.
+{cite}`hochreiter1997long` e le GRU {cite}`cho2014learning`. Entrambe, grazie
+ai gate, aprono un cammino quasi lineare per il gradiente e allungano
+l'orizzonte della memoria, ma restano sequenziali: il passo $t$ attende il
+passo $t-1$, sia in addestramento sia in inferenza.
 
 La Tabella 1 dell'articolo del 2017 mette a confronto quattro tipi di strato,
 con $n$ la lunghezza della sequenza, $d$ la dimensione delle rappresentazioni,
@@ -117,11 +117,11 @@ sequenziale, un token alla volta.
 
 ## Il conto da pagare: l'attenzione cresce col quadrato
 
-Il Transformer non è gratis: il suo punto debole sta nell'operazione
+Il Transformer ha un prezzo: il suo punto debole sta nell'operazione
 che lo definisce, far guardare ogni parola a tutte le altre.
 
 `````{tab} Elementare
-Il conto è lo stesso dei cento sguardi dell’apertura del capitolo, con delle
+Il conto è lo stesso dei cento sguardi, con delle
 persone
 al posto delle parole. Quattro persone in una stanza, e ognuno deve parlare con
 ognuno: io con te, io
@@ -155,12 +155,12 @@ le chiacchiere, e fanno parlare tutti senza convocare la plenaria.
 Il primo fissa il programma prima di entrare: ognuno con i vicini di posto
 (poniamo i tre a destra e i tre a sinistra), qualche coppia sorteggiata per
 accorciare le distanze, e due o tre persone che parlano con tutti e fanno da
-ponte. In mille, invece di mezzo milione di chiacchiere ne servono qualche
+ponte. In mille, invece di mezzo milione di chiacchiere ne serve qualche
 migliaio. Si arriva ancora dove arrivava la plenaria, e lo si dimostra; la
 dimostrazione dipende dai ponti, non dai vicini. La riunione, però, si tiene
 a giri, uno per piano del modello, e in un giro i pochi ponti non ripetono tutto
-a tutti: c'è un compito che la plenaria sbriga in un giro solo e il programma
-fisso in tanti più giri quanti più sono i presenti (se vale un'ipotesi che
+a tutti: c'è un compito che la plenaria sbriga in un giro solo, mentre il programma
+fisso richiede tanti più giri quanti più sono i presenti (se vale un'ipotesi che
 nessuno ha ancora dimostrato). Si risparmia sulle chiacchiere di ogni giro e si
 paga in numero di giri.
 
@@ -197,15 +197,15 @@ $O(n^2 \cdot d)$ nella lunghezza $n$ della sequenza, con $d = d_{\text{model}}$,
 contro l’$O(n \cdot d^2)$ di uno strato ricorrente; la memoria per i punteggi è
 $O(n^2)$, contro l’$O(n \cdot d)$ delle attivazioni ricorrenti. Dal confronto
 fra i due termini l'articolo ricava che l'operazione di attenzione costa meno
-del passo ricorrente finché $n < d$, il caso tipico della traduzione del 2017;
+dello strato ricorrente finché $n < d$, il caso tipico della traduzione del 2017;
 le quattro proiezioni dello strato, che la sua tabella non conta, costano però
-$4nd^2$, quanto lo strato ricorrente, quindi lo strato intero non costa meno,
+$4nd^2$, quanto lo strato ricorrente: lo strato intero non costa quindi meno, ma
 si parallelizza meglio. Dentro il Transformer, poi, il termine quadratico va
 messo accanto a quello delle proiezioni e della FFN: per strato il totale è
 $12nd^2 + 2n^2d$, e il secondo supera il primo solo per $n > 6d$, come ricava
 la {doc}`matematica di un modello linguistico </Matematica/matematica-llm>`.
 
-Il termine di paragone che la tabella non mette è un livello denso sull'intera
+Un termine di paragone assente nella tabella è uno strato denso sull'intera
 sequenza, che mappi gli $nd$ numeri d'ingresso negli $nd$ d'uscita: avrebbe
 $O(n^2 d^2)$ parametri e una lunghezza fissata una volta per tutte.
 L'attenzione ne ha $O(d^2)$, condivisi fra le posizioni, e accetta qualunque
@@ -217,7 +217,7 @@ locali (Longformer, BigBird), approssimazioni a rango basso o kernel
 (Linformer, Performer {cite}`choromanski2021performer`), e ottimizzazioni
 esatte come FlashAttention {cite}`dao2022flashattention`, che lascia invariato
 il costo $O(n^2 d)$ ma non scrive mai la matrice $n \times n$ in memoria
-globale e porta lo spazio aggiuntivo da $O(n^2)$ a $O(n)$; la costruisce la
+globale e porta lo spazio aggiuntivo da $O(n^2)$ a $O(n)$, come spiegato nella
 {doc}`sezione sulla FlashAttention </GPU/flash-attention>`.
 
 L'attenzione sparsa nasce da un cambio di punto di vista, più che da un trucco
@@ -235,30 +235,27 @@ mondo» alla Watts-Strogatz), archi casuali alla Erdős-Rényi e token
 globali, e dimostra che il modello risultante resta un approssimatore
 universale di funzioni su sequenze.
 
-Quel teorema va letto con le sue ipotesi accanto, che è facile dimenticare
-davanti ai risultati che fanno comodo. Vale per le funzioni
-continue su un dominio limitato; e vale per
-qualunque schema sparso che contenga i token globali, cioè sono loro a
-portare il teorema, non la finestra. Soprattutto, gli stessi autori mostrano
-il rovescio nello stesso lavoro, e anche quel rovescio ha la sua ipotesi:
-esiste un compito che l'attenzione piena risolve in un numero costante di
-strati e che qualunque attenzione sparsa con un numero di archi
-proporzionale a $n$ costringe a una profondità che cresce con $n$, «under
-standard complexity theoretic assumptions», cioè ammettendo la congettura dei
-vettori ortogonali, che nessuno ha dimostrato. «Universale» garantisce che ci
-si arriva, non che ci si arriva alla stessa profondità: la sparsificazione non
-è gratis, baratta ampiezza con altezza.
+Il teorema richiede tuttavia ipotesi precise: vale per le funzioni continue su
+un dominio limitato e vale per qualunque schema sparso che contenga i token
+globali (sono questi ultimi a garantire la validità del risultato, non la
+finestra). Inoltre, nello stesso lavoro gli autori mostrano il limite di
+questo schema: ammettendo la congettura dei vettori ortogonali, non ancora
+dimostrata, esiste un compito che l'attenzione piena risolve in un numero
+costante di strati, mentre qualunque attenzione sparsa con un numero di archi
+proporzionale a $n$ richiede una profondità crescente con $n$. L'universalità
+garantisce che la funzione si possa approssimare, non che ci si arrivi alla
+stessa profondità: la sparsificazione baratta ampiezza con altezza.
 
 La {doc}`sezione sui Graph Transformer
 </GraphNeuralNetwork/architetture-applicazioni>` riprende questa lettura
-dall'altro capo. Là il giro in cui ogni nodo raccoglie i vettori dei suoi
-vicini e ne fonde il riassunto col suo ha un nome, *message passing*, e la
-self-attention è il caso in cui quel grafo è completo; da lì la conseguenza: i
-**Graph Transformer** applicano questo modello a un grafo qualunque, e per non
-perdere la topologia devono reintrodurla come codifica posizionale. Quella
-codifica nasce dallo stesso ragionamento delle sinusoidi appena viste, ma non ne
-è la generalizzazione matematica: là il confronto è fatto numero alla
-mano, e le due famiglie si somigliano senza coincidere.
+dall'altro capo, dove la fase in cui ogni nodo raccoglie i vettori dei suoi
+vicini e ne fonde la rappresentazione con la propria è il *message passing*, e
+la self-attention è il caso in cui quel grafo è completo; da lì la conseguenza:
+i **Graph Transformer** applicano questo modello a un grafo qualunque, e per
+non perdere la topologia devono reintrodurla come codifica posizionale. Quella
+codifica nasce dallo stesso ragionamento delle sinusoidi del 2017, ma non ne è
+la generalizzazione matematica: là il confronto è svolto nel dettaglio, e le
+due famiglie si somigliano senza coincidere.
 
 Longformer e BigBird decidono in anticipo quali archi tenere, in base alla
 posizione. Il **Reformer** {cite}`kitaev2020reformer` prende la strada
@@ -285,12 +282,11 @@ $O(n \log n)$. L'hashing sbaglia: si ripete con più
 funzioni indipendenti per ridurre la probabilità di perdere una coppia
 importante, e la sparsità non è più garantita ma probabilistica.
 
-Il secondo ingrediente del Reformer non riguarda l'attenzione ma la memoria, e
-merita di essere ricordato perché è trasversale: gli **strati reversibili**.
-In una rete ordinaria la retropropagazione ha bisogno delle attivazioni di
-ogni strato, quindi la memoria cresce con la profondità. Se però ogni strato è
-costruito in modo da poter essere invertito (dalle uscite si ricalcolano
-gli ingressi), quelle attivazioni non serve tenerle: si buttano e si
+Il secondo ingrediente del Reformer non riguarda l'attenzione ma la memoria:
+gli **strati reversibili**. In una rete ordinaria la retropropagazione ha
+bisogno delle attivazioni di ogni strato, quindi la memoria cresce con la
+profondità. Se però ogni strato è costruito in modo da poter essere invertito
+(dalle uscite si ricalcolano gli ingressi), non occorre conservarle: si
 ricostruiscono all'indietro quando servono. È il baratto **memoria contro
 calcolo** che l'ingegneria del deep learning ripropone a ogni scala, dalla
 ricomputazione delle attivazioni al modo in cui FlashAttention evita di
@@ -300,22 +296,21 @@ materializzare la matrice di attenzione.
 ## Quando conviene, e quando no
 
 Il Transformer rende al meglio quando ci sono molti dati di addestramento,
-hardware che esegue molti conti in parallelo invece che uno dopo l'altro (le
-GPU, le TPU) e legami fra parole molto distanti da catturare: sono le
-condizioni in cui si addestrano i grandi modelli linguistici. Le architetture
-ricorrenti restano ragionevoli dove la memoria e il calcolo per ogni parola
-devono restare costanti, con uno stato di dimensione fissa invece di una
-memoria che cresce con il testo: su un dispositivo piccolo, o davanti a un
-flusso che non finisce mai, come i sottotitoli in diretta o un traduttore che
-lavora mentre l'altro parla. Come idea, però, non sono tramontate: due linee di
-ricerca recenti riportano in gioco un riassunto che si aggiorna passo per
-passo, come facevano le RNN, ma costruito in modo da non pagare il
-costo quadratico dell'attenzione globale. Si chiamano *attenzioni lineari* e
-*state space model* (in italiano «modelli a spazio di stato», dove lo stato è
-appunto il riassunto che si aggiorna; il più noto si chiama Mamba), e hanno un
-capitolo ciascuna subito dopo quello sui Transformer: il {doc}`capitolo
-sull'attenzione lineare </AttenzioneLineare/overview>` e quello sugli
-{doc}`state space model </StateSpaceModel/overview>`.
+hardware che esegue molti calcoli in parallelo invece che in sequenza (come GPU
+e TPU) e legami fra parole molto distanti da catturare: sono le condizioni in
+cui si addestrano i grandi modelli linguistici. Le architetture ricorrenti
+restano ragionevoli dove la memoria e il calcolo per ogni parola devono restare
+costanti, con uno stato di dimensione fissa invece di una memoria che cresce
+con il testo: su un dispositivo piccolo, o davanti a un flusso che non finisce
+mai, come i sottotitoli in diretta o un traduttore che lavora mentre l'altro
+parla. Come idea, però, non sono tramontate: due linee di ricerca recenti
+riportano in gioco un riassunto che si aggiorna passo per passo, come facevano
+le RNN, ma costruito in modo da non pagare il costo quadratico dell'attenzione
+globale. Si chiamano *attenzioni lineari* e *state space model* (in italiano
+«modelli a spazio di stato», dove lo stato è appunto il riassunto che si
+aggiorna; il più noto si chiama Mamba), e a ciascuno è dedicato un capitolo: il
+{doc}`capitolo sull'attenzione lineare </AttenzioneLineare/overview>` e quello
+sugli {doc}`state space model </StateSpaceModel/overview>`.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -367,14 +362,12 @@ sull'attenzione lineare </AttenzioneLineare/overview>` e quello sugli
   chiavi condivise), oppure rinunciare del tutto alla softmax e
   fattorizzarla (il capitolo sull'attenzione lineare).
 - Nessuna architettura vince per sempre: attenzione lineare e *state space
-  model* (i due capitoli dopo quello sui Transformer) rimettono in gioco idee
+  model* rimettono in gioco formulazioni
   ricorrenti
   dove l'attenzione è troppo costosa.
 ```
 `````
 
-Prima di quei capitoli resta da vedere che cosa costa l'attenzione in fase di
-inferenza. I conti fatti fin qui riguardano l'addestramento, con il testo già
-davanti; in generazione, una parola per volta, la stessa formula gira in un
-regime diverso e ha un costo diverso, più di memoria che di calcolo, e lo
-misura la {doc}`sezione sull'attenzione in pratica <attenzione-in-pratica>`.
+Prima di quei capitoli resta da vedere che cosa costa l'attenzione mentre il
+modello genera, una parola per volta: lo misura la {doc}`sezione
+sull'attenzione in pratica <attenzione-in-pratica>`.

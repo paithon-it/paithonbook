@@ -496,7 +496,9 @@ passaggi per rilevanza, finché il budget basta) e una forma grezza di
 quattro mosse non coprono: *dove* mettere ciò che è entrato, con il passaggio
 migliore in fondo, a ridosso della domanda, per la curva a U del *lost in the
 middle*. *Write* lì manca, perché quel montatore non conserva niente da un
-passo all'altro, e il loop engineering la trasformerà in stato su file. La
+passo all'altro, e il loop engineering la trasformerà in stato su file, che il
+{doc}`repository come memoria </Harness/il-repository-come-memoria>` estende a
+un progetto intero. La
 quarta, *isolate*, apre verso la progettazione multi-agente, e chiama in causa
 il {doc}`loop engineering <loop-engineering>`: decidere *quando* delegare a un
 sotto-contesto è già una scelta sul ciclo, non sul singolo messaggio.
@@ -806,7 +808,9 @@ lavoro.
 
 Un PRP tipico raccoglie quattro ingredienti: (1) le regole di progetto in un
 file versionato accanto al codice (`CLAUDE.md`, `AGENTS.md` a seconda
-dell'assistente), con convenzioni, vincoli, cosa evitare; (2) esempi di codice
+dell'assistente, che il {doc}`repository come memoria
+</Harness/il-repository-come-memoria>` tratta come un indice e non come un
+manuale), con convenzioni, vincoli, cosa evitare; (2) esempi di codice
 del repository, che condizionano l'assistente sullo stile reale invece che su
 uno generico; (3) la documentazione pertinente (API, riferimenti), selezionata
 e non l'intera libreria; (4) un **validation gate**, cioè il criterio oggettivo

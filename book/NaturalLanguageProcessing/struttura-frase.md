@@ -1,18 +1,14 @@
 # La struttura nascosta della frase: sintassi e parsing
 
-«Ho visto un uomo con il binocolo». La frase con cui il capitolo ha
-presentato l'ambiguità merita di essere ripresa adesso, con gli attrezzi
-giusti in mano. Chi ha il
-binocolo? Se ce l'ho io, «con il binocolo» accompagna il verbo: dice *come* ho
-visto. Se ce l'ha lui, accompagna il nome: dice *quale* uomo ho visto. E c'è
-un dettaglio che rende la faccenda istruttiva: le etichette del
-{doc}`POS tagging <etichettare-sequenze>`, da sole, qui non bastano. Ausiliare,
-verbo, articolo, nome,
-preposizione, articolo, nome: il POS tagging produce la stessa identica
+«Ho visto un uomo con il binocolo». Chi ha il binocolo? Se ce l'ho io, «con il
+binocolo» accompagna il verbo: dice *come* ho visto. Se ce l'ha lui, accompagna
+il nome: dice *quale* uomo ho visto. Ma le etichette del {doc}`POS tagging
+<etichettare-sequenze>`, da sole, qui non bastano. Ausiliare, verbo, articolo,
+nome, preposizione, articolo, nome: il POS tagging produce la stessa identica
 sequenza per entrambe le letture. In «La vecchia porta la sbarra» l'ambiguità
 viveva al piano delle categorie grammaticali; qui vive un piano più su. Le due
-letture sono due strutture diverse costruite con gli stessi mattoni, e non
-due sfumature dello stesso significato.
+letture sono due strutture diverse costruite con gli stessi mattoni, e non due
+sfumature dello stesso significato.
 
 La disciplina che studia queste strutture è la **sintassi**; costruirle
 automaticamente si chiama **parsing**, o analisi sintattica, e un programma che
@@ -23,23 +19,22 @@ Per descrivere la struttura di una frase la linguistica usa due formalismi. La
 struttura a *costituenti* raggruppa le parole in blocchi annidati uno dentro
 l'altro; la struttura a *dipendenze* collega ogni parola alla parola da cui
 dipende, con una freccia che porta il nome della relazione. Dicono cose
-diverse: i costituenti dicono quali parole formano un blocco, le dipendenze
+diverse: i costituenti mostrano quali parole formano un blocco, le dipendenze
 quale parola regge quale. Dai primi si passa alle seconde con regole che
 indicano, in ogni blocco, la parola principale; il passaggio inverso non è
 univoco. Il NLP li usa tutti e due.
 
 ## Scatole dentro scatole: i costituenti
 
-L'osservazione di partenza è che certe sequenze di parole si comportano come
-un blocco unico. Nell'esempio ricorrente del libro, «Il gatto nero salta sul
-muro», il gruppo «il gatto nero» si sposta e si sostituisce come un pezzo solo.
-Questi blocchi si chiamano **sintagmi**, o costituenti, e li si riconosce con
-due prove, la *sostituzione* (il gruppo si rimpiazza con una parola sola) e lo
-*spostamento* (il gruppo si muove tutto intero). Per non perdersi conviene
-fissare adesso i tre nomi che tornano più spesso: si dice sintagma *nominale*
-il blocco che ha un nome per protagonista («il gatto nero»), sintagma
-*verbale* quello che ha un verbo («salta sul muro»), e sintagma
-*preposizionale* quello che comincia con una preposizione («sul muro»).
+L'osservazione di partenza è che certe sequenze di parole si comportano come un
+blocco unico. Nell'esempio «Il gatto nero salta sul muro», il gruppo «il gatto
+nero» si sposta e si sostituisce come un pezzo solo. Questi blocchi si chiamano
+**sintagmi**, o costituenti, e li si riconosce con due prove, la *sostituzione*
+(il gruppo si rimpiazza con una parola sola) e lo *spostamento* (il gruppo si
+muove tutto intero). I tre tipi più frequenti sono il sintagma *nominale*,
+costruito attorno a un nome («il gatto nero»), il sintagma *verbale*, attorno a
+un verbo («salta sul muro»), e il sintagma *preposizionale*, introdotto da una
+preposizione («sul muro»).
 
 `````{tab} Elementare
 
@@ -108,9 +103,9 @@ dove $F$ fa da simbolo iniziale $S$ ed è la frase, SN, SV e SP i sintagmi
 nominale, verbale e preposizionale, e le categorie lessicali (DET, N, V, AUX,
 P) riscrivono le parole. Una **derivazione** parte da $F$ e riscrive un simbolo
 alla volta finché restano solo parole; la sua storia è l’**albero di
-derivazione**. Si noti la ricorsione di $\text{SN} \to \text{SN}\ \text{SP}$:
-sei regole generano infinite frasi, ed è proprio questa regola, in concorrenza
-con $\text{SV} \to \text{SV}\ \text{SP}$, a produrre l'ambiguità del binocolo
+derivazione**. La regola $\text{SN} \to \text{SN}\ \text{SP}$ introduce la
+ricorsione: sei regole generano infinite frasi, e questa regola, in concorrenza
+con $\text{SV} \to \text{SV}\ \text{SP}$, produce l'ambiguità del binocolo
 (l’*attacco del sintagma preposizionale*, al nome oppure al verbo).
 
 `````
@@ -148,10 +143,10 @@ C'è un motivo pratico per cui questo disegno è quello che si usa quando si
 lavora su molte lingue insieme. In italiano si può dire «il gatto nero salta
 sul muro», ma anche «sul muro salta il gatto nero», e in altre lingue le parole
 girano ancora di più. Con le scatole ogni riordino richiede una regola di
-montaggio nuova (una regola dice come due pezzi ne fanno uno più grande: un
-articolo seguito da un nome fa un sintagma nominale), perché
-le scatole stanno in fila e la fila cambia. Con le frecce no: chi comanda chi
-resta identico, cambia solo dove le parole sono scritte sulla riga. È una delle
+montaggio nuova, perché le scatole stanno in fila e la fila cambia (una regola
+di montaggio dice come due pezzi ne fanno uno più grande: un articolo seguito
+da un nome fa un sintagma nominale). Con le frecce no: chi comanda chi resta
+identico, cambia solo dove le parole sono scritte sulla riga. È una delle
 ragioni per cui il progetto che annota con gli stessi criteri più di
 centocinquanta lingue, quell'Universal Dependencies già incontrato per le
 etichette, ha scelto le frecce, e infatti si chiama «delle dipendenze»: da una
@@ -162,8 +157,8 @@ C'è un effetto collaterale, e conta. Quando le parole si mescolano parecchio,
 due frecce disegnate sopra la riga possono accavallarsi, perché ciascuna deve
 raggiungere il proprio capo che nel frattempo è finito lontano. Dove l'ordine
 delle parole è rigido succede di rado; dove è libero è ordinaria
-amministrazione. E conta perché uno dei metodi che costruiscono il disegno,
-quello della pila che si incontra fra poco, sa fare soltanto frecce che non si
+amministrazione. Uno dei metodi che costruiscono il disegno,
+quello che lavora con una pila, sa fare soltanto frecce che non si
 incrociano.
 
 `````
@@ -178,48 +173,46 @@ Dependencies {cite}`nivre2016universal`, già incontrato per il POS tagging, le
 relazioni principali sono `nsubj` (soggetto), `obj` (oggetto diretto), `det`
 (determinante), `amod` (aggettivo modificatore), `case` (preposizione), `obl`
 (complemento obliquo), `nmod` (modificatore nominale). Le sigle sono quelle
-della seconda versione dello schema {cite}`demarneffe2021universal`, ed è lì
-che nasce la distinzione su cui gira l'esempio del binocolo: prima l'oggetto
-diretto si chiamava `dobj`, e `obl` non esisteva perché `nmod` copriva tutti e
-due i mestieri.
+della seconda versione dello schema {cite}`demarneffe2021universal`, che
+introduce la distinzione su cui poggia l'esempio del binocolo: prima l'oggetto
+diretto si chiamava `dobj`, e `obl` non esisteva perché `nmod` copriva entrambi
+i ruoli.
 
 Perché due formalismi? Le dipendenze pagano meglio nelle lingue a ordine
-flessibile. L'italiano ammette «Il binocolo l'ho visto io» o «Sul muro
-salta, il gatto nero»: una grammatica a costituenti deve prevedere regole per
-ogni permutazione, mentre l'albero a dipendenze resta *lo stesso*; a cambiare
-è solo l'ordine lineare in cui le parole compaiono, non la
-struttura. È uno dei motivi per cui il progetto UD ha scelto le dipendenze come
-base comune per annotare con gli stessi criteri più di centocinquanta lingue,
-dall'italiano al finlandese al giapponese: il suo obiettivo dichiarato è una
-rappresentazione in cui costruzioni simili restino parallele da una lingua
-all'altra, nonostante le differenze di ordine, di morfologia e di parole
-funzionali {cite}`demarneffe2021universal`. Un arco dalla testa $h$ al
-dipendente $d$ è **proiettivo** se da $h$ si arriva, seguendo gli archi, a ogni
-parola compresa fra $h$ e $d$ nella frase; un albero è proiettivo se lo sono
-tutti i suoi archi, il che equivale a dire che gli archi, disegnati sopra la
-frase con la radice compresa, non si incrociano. Un albero non proiettivo è
-raro in inglese, assai più comune nelle lingue a ordine libero.
+flessibile. L'italiano ammette «Il binocolo l'ho visto io» o «Sul muro salta,
+il gatto nero»: una grammatica a costituenti deve prevedere regole per ogni
+permutazione, mentre l'albero a dipendenze resta *lo stesso*; cambia solo
+l'ordine lineare in cui le parole compaiono, non la struttura. È uno dei motivi
+per cui il progetto UD ha scelto le dipendenze come base comune per annotare
+con gli stessi criteri più di centocinquanta lingue, dall'italiano al
+finlandese al giapponese: il suo obiettivo dichiarato è una rappresentazione in
+cui costruzioni simili restino parallele da una lingua all'altra, nonostante le
+differenze di ordine, di morfologia e di parole funzionali
+{cite}`demarneffe2021universal`. Un arco dalla testa $h$ al dipendente $d$ è
+**proiettivo** se da $h$ si arriva, seguendo gli archi, a ogni parola compresa
+fra $h$ e $d$ nella frase; un albero è proiettivo se lo sono tutti i suoi
+archi, il che equivale a dire che gli archi, disegnati sopra la frase con la
+radice compresa, non si incrociano. Un albero non proiettivo è raro in inglese,
+assai più comune nelle lingue a ordine libero.
 
 `````
 
 {numref}`fig-alberi-sintassi` mette i due disegni fianco a fianco sulla frase
 del binocolo, con una malizia: ciascuno mostra una lettura diversa. A sinistra,
-nelle scatole, «con il binocolo» sta dentro la scatola di «un uomo», ed è
+nelle scatole, «con il binocolo» sta dentro la scatola di «un uomo»:
 la lettura in cui il binocolo è dell'uomo. A destra, nelle frecce, «binocolo»
-dipende da «visto» e non da «uomo», ed è la lettura opposta, quella in cui il
+dipende da «visto» e non da «uomo»: la lettura opposta, in cui il
 binocolo è di chi guarda.
 
 Per scambiarle basta uno spostamento per parte: a sinistra tirare fuori la
 scatola del binocolo da quella dell'uomo e agganciarla a quella del verbo, a
-destra spostare la coda della freccia da «visto» a «uomo». Chi lavora in questo
-campo lo dice in due gerghi diversi, ed è utile riconoscerli quando si
-incontrano. Con le scatole si dice che il sintagma preposizionale passa dal
-sintagma nominale a quello verbale, cioè che «con il binocolo» smette di stare
-dentro «un uomo» e va a stare dentro «ho visto». Con le frecce si dice che la
-relazione cambia sigla, da `obl` a `nmod`: `obl` sta per «complemento del
-verbo» e `nmod` per «modificatore del nome», che sono esattamente le due
-relazioni di dipendenza che il binocolo può avere, dal verbo principale o
-dal nome.
+destra spostare la coda della freccia da «visto» a «uomo». I due formalismi lo
+dicono in modi diversi. Con le scatole si dice che il sintagma preposizionale
+passa dal sintagma nominale a quello verbale, cioè che «con il binocolo» si
+sposta da «un uomo» a «ho visto». Con le frecce si dice che la relazione cambia
+sigla, da `obl` a `nmod`: `obl` sta per «complemento del verbo» e `nmod` per
+«modificatore del nome», le due relazioni di dipendenza che il binocolo può
+avere, dal verbo principale o dal nome.
 
 ```{figure} ../figures/alberi-sintassi.svg
 :name: fig-alberi-sintassi
@@ -262,22 +255,21 @@ in mezzo, si aggancia al vedere: le due scatole si incrocerebbero.
 Contiamo, allora, tenendo fermo il primo complemento e provando tutti gli
 agganci del secondo.
 
-Caso A: il binocolo è dell'uomo, cioè «con il binocolo» sta dentro la
-scatola di «un uomo». Dove può andare «nel parco»? Al *vedere* (ho visto nel
-parco), all’*uomo con il binocolo* (l'uomo col binocolo che stava nel parco),
-oppure al *binocolo* (il binocolo del parco, quello lì in dotazione). Tre.
-Attenzione: agganciarlo al solo «uomo» *senza* il binocolo ricade nella stessa
-scatola e non in una quarta possibilità: dal momento che il binocolo è già
-dentro l'uomo, non c'è modo di infilare il parco fra i due senza rompere il
-costituente.
+Caso A: il binocolo è dell'uomo, cioè «con il binocolo» sta dentro la scatola
+di «un uomo». Dove può andare «nel parco»? Al *vedere* (ho visto nel parco),
+all’*uomo con il binocolo* (l'uomo col binocolo che stava nel parco), oppure al
+*binocolo* (il binocolo del parco, quello in dotazione). Tre. Agganciarlo al
+solo «uomo» *senza* il binocolo non crea una quarta possibilità: dal momento
+che il binocolo è già dentro l'uomo, non c'è modo di infilare il parco fra i
+due senza rompere il costituente.
 
-Caso B: il binocolo è mio, cioè «con il binocolo» è già agganciato al
-vedere. Dove può andare «nel parco»? Al *vedere*, oppure al *binocolo*. Non
-all’*uomo*: per farlo dovrebbe scavalcare «con il binocolo», che sta più a
-sinistra ma è agganciato più in alto, e le scatole si incrocerebbero. Due.
+Caso B: il binocolo è mio, cioè «con il binocolo» è già agganciato al vedere.
+Dove può andare «nel parco»? Al *vedere*, oppure al *binocolo*. Non all’*uomo*:
+per raggiungerlo dovrebbe scavalcare «con il binocolo», che si trova in mezzo
+ed è agganciato più in alto, e le scatole si incrocerebbero. Due.
 
 Tre più due fa cinque, tutte grammaticalmente ineccepibili. La
-{numref}`fig-cinque-letture-binocolo` le mette in fila, e mette anche la sesta,
+{numref}`fig-cinque-letture-binocolo` le mette in fila, insieme alla sesta,
 quella che il cartone non permette.
 
 ```{figure} ../figures/cinque-letture-binocolo.svg
@@ -297,26 +289,24 @@ combinazione che questo vieta, due scatole che si tagliano a vicenda.
 Aggiungi «dalla finestra» e salgono a 14, poi 42, 132, 429… Sono i **numeri di
 Catalan**, dal matematico belga Eugène Catalan che li studiò nell'Ottocento, e
 sono la risposta a una domanda che torna dappertutto: in quanti modi si può
-mettere fra parentesi una fila di cose. Il che è esattamente il nostro
-problema, perché inscatolare le parole e metterle fra parentesi sono la stessa
-operazione.
+mettere fra parentesi una fila di cose. È il nostro
+problema: inscatolare le parole equivale a metterle fra parentesi.
 
 Crescono in fretta: a ogni complemento in più gli alberi si moltiplicano per un
 fattore che sale (due e mezzo, quasi tre, tre, poco più di tre) e si avvicina a
 quattro. Continuando: 429 con sei complementi, poi 1.430, 4.862, e con nove si
 arriva a 16.796. Nove complementi in una frase sono tanti ma non impossibili, e
 le analisi grammaticalmente lecite sono già sedicimila. Il fenomeno ha un
-articolo di riferimento dal titolo emblematico, perché il titolo stesso
-è ambiguo: *Coping with syntactic ambiguity or how to put the
-block in the box on the table* {cite}`church1982coping`. Come mettere il blocco
-nella scatola sul tavolo: ma il tavolo sostiene la scatola, o è lì che va messo
-il blocco?
+articolo di riferimento dal titolo emblematico, a sua volta ambiguo: *Coping
+with syntactic ambiguity or how to put the block in the box on the table*
+{cite}`church1982coping`. Come mettere il blocco nella scatola sul tavolo: ma
+il tavolo sostiene la scatola, o è lì che va messo il blocco?
 
-La morale è doppia. Una frase di giornale può avere *migliaia* di alberi
+Una frase di giornale può avere *migliaia* di alberi
 grammaticalmente leciti, quasi tutti assurdi per un lettore umano ma
-impeccabili per la grammatica, che non giudica la plausibilità. E nessun
-parser può permettersi di elencarli uno per uno. Servono allora due cose. La
-prima è condividere i pezzi comuni a molte analisi, ed è la programmazione
+impeccabili per la grammatica, che non ne giudica la plausibilità; e nessun
+parser può elencarli uno per uno. Servono allora due mosse. La
+prima è condividere i pezzi comuni a molte analisi, cioè la programmazione
 dinamica, già incontrata con la griglia della distanza di edit e con
 l'algoritmo di Viterbi: risolvere una volta sola ogni pezzo che servirà più
 volte, e conservarne il risultato. La seconda è scegliere fra le analisi, e nella
@@ -344,16 +334,16 @@ schema: l'idea, il costo, il compromesso.
 Sul tavolo c'è un mosaico a metà. Due tessere che combaciano formano un'isola,
 cioè una scatola di parole già chiusa; un'altra coppia ne forma un'altra, e le
 isole si uniscono fra loro quando sono pronte. Il primo metodo monta la frase
-così, e si chiama **CKY** dalle iniziali
-di Cocke, Kasami e Younger, che negli anni Sessanta lo scoprirono ciascuno per
-conto suo. Prima mette insieme tutti i tratti lunghi due parole («un uomo», «il
-binocolo»), poi quelli di tre («con il binocolo»), poi di quattro, e a ogni
-giro incolla due isole già montate. Un'isola montata non si smonta più: «il
-binocolo» lo capisce una volta sola, anche se poi servirà a dieci letture
-diverse. È il risparmio del navigatore di Viterbi, spostato dalle parole ai
-tratti di frase. In cambio del tempo che costa, questo metodo non sbaglia mai
-per fretta: monta tutte le isole possibili, quindi l'albero giusto, se la
-grammatica lo prevede, sul tavolo c'è di sicuro.
+così, e si chiama **CKY** dalle iniziali di Cocke, Kasami e Younger, che negli
+anni Sessanta lo scoprirono ciascuno per conto suo. Prima mette insieme tutti i
+tratti lunghi due parole («un uomo», «il binocolo»), poi quelli di tre («con il
+binocolo»), poi di quattro, e a ogni giro incolla due isole già montate.
+Un'isola montata non si smonta più: CKY analizza «il binocolo» una volta sola,
+anche se poi servirà a dieci letture diverse. È il risparmio del navigatore di
+Viterbi, spostato dalle parole ai tratti di frase. In cambio del tempo che
+costa, questo metodo non sbaglia mai per fretta: monta tutte le isole
+possibili, quindi l'albero giusto, se la grammatica lo prevede, sul tavolo c'è
+di sicuro.
 
 Il tavolo però si riempie, e si può contare di quanto. Metti in fila quattro
 parole. Le isole da provare, una per ogni scelta di dove cominciare e dove
@@ -415,77 +405,77 @@ frasi lunghe.
 **CKY.** Il nome viene dalle iniziali di Cocke, Kasami e Younger, che negli
 anni Sessanta arrivarono all'algoritmo ciascuno per conto suo
 {cite}`jurafsky2026speech`. Richiede la grammatica in *forma normale di
-Chomsky* (regole binarie $A \to B\,C$ o lessicali $A \to w$; ogni CFG che non
-generi la stringa vuota vi si converte, e la conversione fa crescere $|R|$, che
-è il fattore che compare nel costo di CKY). Il numero di alberi binari su $n$
-foglie è il numero di Catalan $C_{n-1} = \frac{1}{n}\binom{2(n-1)}{n-1}$, dove
-le foglie non sono le parole ma i pezzi da imparentesare (il verbo, il sintagma
-nominale, e un sintagma preposizionale per ogni complemento); cresce come
-$4^{n}$ a meno di un fattore polinomiale, e l'enumerazione è fuori discussione.
-CKY riempie una tabella triangolare indicizzata dagli intervalli della frase:
-$T[i,j]$ è l'insieme delle categorie che possono coprire le parole dalla
-posizione $i$ alla $j$ (esclusa), calcolato dal corto verso il lungo. Il caso
-base sono gli intervalli di una parola sola, riempiti dalle regole lessicali
-($A \in T[i, i+1]$ se $A \to w_i \in R$); da lì in su vale la ricorrenza
+Chomsky*, con regole binarie $A \to B\,C$ o lessicali $A \to w$. Ogni CFG che
+non generi la stringa vuota può esservi convertita, aumentando la dimensione
+$|R|$ dell'insieme di regole, che compare nel costo di CKY. Il numero di alberi
+binari su $n$ foglie è il numero di Catalan $C_{n-1} =
+\frac{1}{n}\binom{2(n-1)}{n-1}$, dove le foglie non sono le parole ma i pezzi
+da imparentesare (il verbo, il sintagma nominale, e un sintagma preposizionale
+per ogni complemento); cresce come $4^{n}$ a meno di un fattore polinomiale, e
+l'enumerazione è fuori discussione. CKY riempie una tabella triangolare
+indicizzata dagli intervalli della frase: $T[i,j]$ è l'insieme delle categorie
+che possono coprire le parole dalla posizione $i$ alla $j$ (esclusa), calcolato
+dal corto verso il lungo. Il caso base è dato dagli intervalli di una parola
+sola, riempiti dalle regole lessicali ($A \in T[i, i+1]$ se $A \to w_i \in R$);
+da lì in su vale la ricorrenza
 
 $$
 T[i,j] = \big\{\, A \;:\; A \to B\,C \in R,\ \exists\,k,\;
 B \in T[i,k],\ C \in T[k,j] \,\big\},
 $$
 
-dove $k$ scorre sui punti di taglio interni all'intervallo e $R$ sono le
-regole. Le celle sono $O(n^2)$, ogni cella prova $O(n)$ tagli per ognuna delle
-$|R|$ regole: costo totale $O(n^3\,|R|)$, contro l'esplosione esponenziale
-degli alberi espliciti. La stessa ricorrenza, con somme al posto delle unioni,
-*conta* gli alberi, ed è la versione contabile di CKY che il programma sulla
-frase del binocolo esegue; con probabilità sulle regole e massimi al posto delle
-somme restituisce l'albero più probabile: è Viterbi, trasportato dai prefissi
-agli intervalli. Una PCFG (*probabilistic context-free grammar*) associa a ogni
-regola $A \to \alpha$ una probabilità $P(A \to \alpha)$, con
+dove $k$ scorre sui punti di taglio interni all'intervallo e $R$ è l'insieme
+delle regole. Le celle sono $O(n^2)$, ogni cella prova $O(n)$ tagli per ognuna
+delle $|R|$ regole: costo totale $O(n^3\,|R|)$, contro l'esplosione
+esponenziale degli alberi espliciti. La stessa ricorrenza, con somme al posto
+delle unioni, *conta* gli alberi: è la versione contabile di CKY eseguita dal
+programma sulla frase del binocolo. Con probabilità sulle regole e massimi al
+posto delle somme restituisce l'albero più probabile: è Viterbi, esteso dai
+prefissi agli intervalli. Una PCFG (*probabilistic context-free grammar*)
+associa a ogni regola $A \to \alpha$ una probabilità $P(A \to \alpha)$, con
 $\sum_\alpha P(A \to \alpha) = 1$ per ogni $A$, e la probabilità di un albero è
 il prodotto di quelle delle sue regole; su un treebank la stima di massima
-verosimiglianza è la frequenza relativa $C(A \to \alpha)/C(A)$. L'assunzione
-che pesa è l'indipendenza: la probabilità di una regola non dipende né dal
-contesto in cui la si applica né dalle parole, ed è per questo che una PCFG
-semplice sceglie male proprio l'attacco del sintagma preposizionale, che dalle
-parole dipende («binocolo» o «cappello»). I parser a costituenti si valutano
-con le misure PARSEVAL: precisione, richiamo ed $F_1$ sui costituenti
-etichettati (intervallo di parole e categoria) che l'albero prodotto ha in
-comune con quello annotato.
+verosimiglianza è la frequenza relativa $C(A \to \alpha)/C(A)$. Il limite è
+l'ipotesi di indipendenza: la probabilità di una regola non dipende né dal
+contesto in cui la si applica né dalle parole; per questo una PCFG semplice
+sbaglia l'attacco del sintagma preposizionale, che dipende dalle parole
+(«binocolo» o «cappello»). I parser a costituenti si valutano con le misure
+PARSEVAL: precisione, richiamo ed $F_1$ sui costituenti etichettati (intervallo
+di parole e categoria) che l'albero prodotto ha in comune con quello annotato.
 
 **Parsing a transizioni.** Per le dipendenze le strategie principali sono due.
 La prima, lo *shift-reduce*, costruisce l'albero con una sequenza di mosse
-scelte da un classificatore: è lineare nella lunghezza della frase, ma una mossa
-sbagliata non si corregge. Una configurazione è una terna (pila $\sigma$,
+scelte da un classificatore: è lineare nella lunghezza della frase, ma una
+mossa sbagliata non si corregge. Una configurazione è una terna (pila $\sigma$,
 buffer $\beta$, archi $\mathcal{A}$) e le mosse della variante *arc-standard*
-sono tre: `shift`
-(sposta la prossima parola sulla pila), `left-arc` e `right-arc` (creano un
-arco etichettato tra le due parole in cima e ne rimuovono la dipendente). La
-configurazione finale ha il buffer vuoto e sulla pila la sola radice, e una
-frase di $n$ parole ci arriva in circa $2n$ mosse: costo lineare. La mossa la
-sceglie un classificatore sullo stato corrente; dalla svolta neurale
-{cite}`chen2014fast` i tratti simbolici sono rimpiazzati dagli embedding delle
-parole su pila e buffer, dati in ingresso a un MLP. La decodifica greedy
-propaga gli errori; beam search e modelli globali attenuano il problema.
-Sull'inglese, sul Penn Treebank convertito in dipendenze (il treebank originale
-è a costituenti, e la conversione è un passaggio a parte), il parser di Chen e
-Manning arriva al 92% di **UAS** (*unlabeled attachment score*, la quota di
-parole agganciate alla testa giusta) analizzando più di mille frasi al secondo.
-L'arc-standard produce soltanto alberi proiettivi, quindi sulle lingue a ordine
-libero sbaglia per costruzione gli archi che si incrociano; li recupera una
-quarta mossa, `swap`, che riordina pila e buffer {cite}`nivre2009non`.
-La seconda strategia è il parsing **basato su grafi**: si assegna un punteggio
-$s(h, d)$ a ogni arco possibile dalla testa $h$ al dipendente $d$ e si cerca
-l'albero di punteggio massimo, con l'algoritmo di Eisner in $O(n^3)$ se lo si
-vuole proiettivo, con quello di Chu–Liu/Edmonds in $O(n^2)$ se no
-{cite}`mcdonald2005non`. Costa più del parsing a transizioni ed è in genere più
-accurato, soprattutto sulle frasi lunghe, dove le teste stanno lontane dai
-dipendenti {cite}`jurafsky2026speech`. Con i punteggi prodotti da una BiLSTM e
-da un prodotto biaffine arriva, sullo stesso Penn Treebank, al 95,7% di UAS e
-al 94,1% di **LAS** {cite}`dozat2017deep`; il LAS (*labeled attachment score*)
-conta giusta una parola solo se sono corrette sia la testa sia l'etichetta
-della relazione. I parser a grafo con punteggi biaffini sono la famiglia dei
-sistemi migliori nelle campagne su Universal Dependencies.
+sono tre: `shift` (sposta la prossima parola sulla pila), `left-arc` e
+`right-arc` (creano un arco etichettato tra le due parole in cima e ne
+rimuovono la dipendente). La configurazione finale ha il buffer vuoto e sulla
+pila la sola radice, e una frase di $n$ parole ci arriva in circa $2n$ mosse:
+costo lineare. Un classificatore sceglie la mossa sullo stato corrente; dalla
+svolta neurale {cite}`chen2014fast` i tratti simbolici sono rimpiazzati dagli
+embedding delle parole su pila e buffer, dati in ingresso a un MLP. La
+decodifica greedy propaga gli errori; beam search e modelli globali attenuano
+il problema. Sull'inglese, sul Penn Treebank convertito in dipendenze (il
+treebank originale è a costituenti, e la conversione è un passaggio a parte),
+il parser di Chen e Manning arriva al 92% di **UAS** (*unlabeled attachment
+score*, la quota di parole agganciate alla testa giusta) analizzando più di
+mille frasi al secondo. L'arc-standard produce soltanto alberi proiettivi,
+quindi sulle lingue a ordine libero sbaglia per costruzione gli archi che si
+incrociano; una quarta mossa, `swap`, li recupera riordinando pila e buffer
+{cite}`nivre2009non`. La seconda strategia è il parsing **basato su grafi**: si
+assegna un punteggio $s(h, d)$ a ogni arco possibile dalla testa $h$ al
+dipendente $d$ e si cerca l'albero di punteggio massimo, con l'algoritmo di
+Eisner in $O(n^3)$ nel caso proiettivo e con quello di Chu–Liu/Edmonds in
+$O(n^2)$ nel caso generale {cite}`mcdonald2005non`. Costa più del parsing a
+transizioni ed è in genere più accurato, soprattutto sulle frasi lunghe, dove
+le teste stanno lontane dai dipendenti {cite}`jurafsky2026speech`. Con i
+punteggi prodotti da una BiLSTM e da un prodotto biaffine arriva, sullo stesso
+Penn Treebank, al 95,7% di UAS e al 94,1% di **LAS** {cite}`dozat2017deep`; il
+LAS (*labeled attachment score*) conta giusta una parola solo se sono corrette
+sia la testa sia l'etichetta della relazione. I parser a grafo con punteggi
+biaffini sono la famiglia dei sistemi migliori nelle campagne su Universal
+Dependencies.
 
 `````
 
@@ -554,45 +544,44 @@ print(conta_alberi(
 
 Le due letture del binocolo ci sono; con il secondo complemento le analisi
 diventano cinque, il passo successivo dei numeri di Catalan, compresa quella in
-cui è il *binocolo* a indossare il cappello. La grammatica la genera senza
-batter ciglio, perché la grammatica dice solo che cosa si può montare, non che
-cosa ha senso: a scartare le assurdità tocca a qualcos'altro, e cioè a delle
-probabilità imparate su frasi vere o a una rete neurale. E con un terzo
-complemento, «con il gatto», le analisi sono già quattordici.
+cui è il *binocolo* a indossare il cappello. La grammatica genera questa
+combinazione senza batter ciglio, perché dice solo che cosa si può montare, non
+che cosa ha senso: scartare le assurdità tocca a probabilità imparate su frasi
+reali o a una rete neurale. E con un terzo complemento, «con il gatto», le
+analisi sono già quattordici.
 
 ## Da dove vengono gli alberi: i treebank
 
-Chi glieli insegna, ai modelli, gli alberi giusti? Persone. Un **treebank** è
-un corpus in cui ogni frase è accompagnata dal suo albero sintattico, tracciato
-e ricontrollato da annotatori esperti: un lavoro linguistico lento e prezioso,
-che nel NLP ha fatto da spartiacque. Quello che per decenni ha fatto da
-riferimento è il **Penn Treebank** {cite}`marcus1993building`, costruito
-all'Università della Pennsylvania a partire dal 1989 e distribuito ai
+A insegnare ai modelli gli alberi corretti sono persone. Un
+**treebank** è un corpus in cui ogni frase è accompagnata dal suo albero
+sintattico, tracciato e ricontrollato da annotatori esperti: un lavoro
+linguistico lento e prezioso, che nel NLP ha fatto da spartiacque. Per decenni
+il riferimento è stato il **Penn Treebank** {cite}`marcus1993building`,
+costruito all'Università della Pennsylvania a partire dal 1989 e distribuito ai
 ricercatori attraverso il Linguistic Data Consortium: oltre quattro milioni e
 mezzo di parole etichettate per categoria grammaticale e un nucleo di circa un
 milione di parole di articoli del *Wall Street Journal* annotato con alberi a
 costituenti.
 
-Da quelle decine di migliaia di frasi, per vent'anni, i parser hanno imparato
-quanto ciascuna regola di montaggio è frequente, e con quei numeri hanno
-imparato a scegliere fra le mille analisi possibili. È il ribaltamento
-importante: la grammatica ha smesso di essere scritta a mano, regola per
-regola, ed è diventata qualcosa che si *conta nei dati*.
+Da quelle decine di migliaia di frasi, per vent'anni, i parser hanno ricavato
+la frequenza di ciascuna regola di montaggio, imparando a scegliere fra le
+molte analisi possibili: la grammatica ha smesso di essere scritta a mano,
+regola per regola, ed è diventata qualcosa che si *conta nei dati*.
 
-Il progetto Universal Dependencies ha rifatto l'operazione in scala mondiale e
-con le frecce al posto delle scatole: per l'italiano il treebank di riferimento
-è ISDT (*Italian Stanford Dependency Treebank*), circa quattordicimila frasi
-nate dalla convergenza di risorse costruite negli anni da gruppi di Torino e
-Pisa. È su questi alberi che si addestrano tutti i parser di cui abbiamo
-parlato, ieri con le probabilità sulle regole, oggi con le reti neurali.
+Il progetto Universal Dependencies ha esteso l'operazione su scala mondiale con
+le frecce al posto delle scatole: per l'italiano il treebank di riferimento è
+ISDT (*Italian Stanford Dependency Treebank*), circa quattordicimila frasi nate
+dalla convergenza di risorse costruite negli anni da gruppi di Torino e Pisa.
+Su questi alberi si addestrano i parser, ieri con le probabilità sulle regole,
+oggi con le reti neurali.
 
 ## La sintassi al tempo dei modelli giganti
 
 I grandi modelli linguistici (in sigla LLM, *large
-language model*) fanno parsing? Non come un parser. Un modello addestrato a
-indovinare la parola successiva non costruisce alberi mentre legge, e il suo
-addestramento non glielo chiede; se glielo si chiede, un albero lo scrive come
-scrive qualunque altro testo, senza nessuna garanzia che sia un albero ben
+language model*) non fanno parsing come un parser: un modello addestrato a
+prevedere la parola successiva non costruisce alberi mentre legge, e il suo
+addestramento non glielo chiede; su richiesta scrive un albero come
+qualunque altro testo, senza garanzia che sia ben
 formato.
 
 Eppure c'è un filone di studi che guarda dentro questi modelli, e si chiama
@@ -623,17 +612,16 @@ per esteso nella {doc}`sezione sull'interpretabilità
 </Interpretabilita/attribuzione-e-meccanicistica>`.
 
 Hewitt e Manning {cite}`hewitt2019structural` cercano una trasformazione
-lineare delle attivazioni sotto cui la distanza fra due parole, al quadrato,
-approssima la loro distanza nell'albero a dipendenze, cioè quante frecce
-bisogna percorrere per andare dall'una all'altra nell'albero della frase:
-in «il gatto nero salta sul muro», «nero» dista una freccia da «gatto» e due da
-«salta». Dalle distanze ricostruite si risale a un albero, e con lo strato
-migliore di BERT-large quell'albero ha in comune con quello annotato l'82,5%
-delle frecce, senza contarne il verso, contro il 48,9% di un albero che lega
-semplicemente ogni parola alla successiva; e quegli alberi, al modello, nessuno
-li ha mai mostrati. È un indizio che qualcosa di simile alla struttura
-sintattica si formi da sola durante l'addestramento: un indizio, non la prova
-che il modello la usi come farebbe un linguista.
+lineare delle attivazioni in cui il quadrato della distanza fra due parole
+approssima la loro distanza nell'albero a dipendenze, cioè quante frecce le
+separano: in «il gatto nero salta sul muro», «nero» dista una freccia da
+«gatto» e due da «salta». Dalle distanze ricostruite si risale a un albero, e
+con lo strato migliore di BERT-large quell'albero ha in comune con quello
+annotato l'82,5% delle frecce, senza contarne il verso, contro il 48,9% di un
+albero che lega semplicemente ogni parola alla successiva; e nessuno ha mai
+mostrato quegli alberi al modello. È un indizio che qualcosa di simile alla
+struttura sintattica si formi da sé durante l'addestramento, non la prova che
+il modello la usi come farebbe un linguista.
 
 Il parsing esplicito, intanto, non è andato in pensione. Serve alla
 linguistica, che avendo tutte quelle lingue annotate con gli stessi criteri può
@@ -676,14 +664,15 @@ diventa un problema a sé.
   cima c'è la frase intera e le parole sono le foglie; con le frecce ogni
   parola è un nodo, il verbo principale comanda su tutti, e sopra di lui resta
   una sola casella che parola non è, quella da cui il disegno parte.
-- Gli alberi possibili esplodono: due con un complemento, cinque con due,
-  poi 14, 42, 132. Nessun programma può elencarli tutti, quindi ne condivide i
-  pezzi (la stessa astuzia della griglia e del navigatore delle sezioni
-  precedenti) e poi ne sceglie uno, con delle probabilità o con una rete.
-- Due modi di costruire l'analisi: il mosaico, che capisce prima i pezzi
+- Gli alberi possibili esplodono: due con un complemento, cinque con due, poi
+  14, 42, 132. Nessun programma può elencarli tutti, quindi ne condivide i
+  pezzi (la stessa astuzia della griglia della distanza di edit e del
+  navigatore di Viterbi) e poi ne sceglie uno, con delle probabilità o con una
+  rete.
+- Due modi di costruire l'analisi: il mosaico, che monta prima i pezzi
   corti e poi incolla, sicuro ma costoso; e la pila, che legge da sinistra
-  a destra decidendo mossa per mossa, velocissimo ma senza ripensamenti (e il
-  rimedio è quello già visto per la traduzione, tenere aperte alcune
+  a destra decidendo mossa per mossa, velocissima ma senza ripensamenti (con il
+  rimedio, già visto per la traduzione, di tenere aperte più
   alternative). La pila, da sola, non sa fare frecce che si incrociano: per
   quelle serve una mossa in più, o un metodo che dà un voto a ogni freccia.
 - Gli alberi giusti li insegnano delle persone: i *treebank* sono raccolte di
@@ -691,7 +680,7 @@ diventa un problema a sé.
   imparano. Per
   l'italiano quello di riferimento è ISDT, di circa quattordicimila frasi.
 - I modelli giganti non analizzano la frase mentre la leggono, e nessuno
-  glielo ha insegnato; se glielo si chiede, un albero lo scrivono come
+  glielo ha insegnato; se glielo si chiede, scrivono un albero come
   qualunque altro testo, senza garanzia che stia in piedi. Andando a guardare
   dentro di loro con una sonda piccola, però, si ritrova qualcosa che somiglia
   all'analisi logica, purché si controlli che la sonda non stia soltanto
@@ -708,8 +697,8 @@ diventa un problema a sé.
 - I costituenti raggruppano le parole in sintagmi annidati (prove di
   sostituzione e spostamento); il formalismo è la grammatica context-free, con
   regole di riscrittura e alberi di derivazione: nasce con le grammatiche a
-  struttura sintagmatica di Chomsky (1956), e il nome e il posto nella
-  gerarchia li riceve nel 1959.
+  struttura sintagmatica di Chomsky (1956), e riceve il nome e il posto nella
+  gerarchia nel 1959.
 - Le dipendenze collegano ogni parola alla sua testa con una relazione
   etichettata (`nsubj`, `obj`, `obl`…); reggono bene le lingue a ordine
   flessibile come l'italiano e sono lo standard di Universal
@@ -726,18 +715,18 @@ diventa un problema a sé.
 - I parser si addestrano sui treebank, il Penn Treebank per i costituenti,
   le UD (per l'italiano: ISDT) per le dipendenze, e si valutano con PARSEVAL i
   primi, con UAS e LAS i secondi.
-- I LLM non costruiscono alberi mentre leggono (un albero richiesto lo generano
-  come testo, senza garanzia che sia ben formato), ma il probing suggerisce che
-  una parte della struttura sintattica emerga nelle loro rappresentazioni, a
-  patto di controllare con compiti sorteggiati che la sonda non stia solo
-  memorizzando; il parsing esplicito resta utile a linguistica, a qualche
-  sistema di correzione grammaticale e alle lingue a poche risorse.
+- I LLM non costruiscono alberi mentre leggono (su richiesta generano un albero
+  come semplice testo, senza garanzia che sia ben formato), ma il probing
+  suggerisce che una parte della struttura sintattica emerga nelle loro
+  rappresentazioni, a patto di controllare con compiti sorteggiati che la sonda
+  non stia solo memorizzando; il parsing esplicito resta utile alla
+  linguistica, a qualche sistema di correzione grammaticale e alle lingue con
+  scarse risorse.
 ```
 `````
 
-Con le etichette del POS tagging e gli alberi del parsing, una macchina può dire
-chi fa che cosa a chi dentro una frase isolata. Ma le frasi, nella vita,
-arrivano in botta e risposta: domande, risposte, malintesi, sottintesi, e per
-capirne una bisogna ricordare che cosa è stato detto prima. Come una macchina
-si porti dietro quel ricordo da un turno all'altro è il problema del
-{doc}`dialogo tra persone e macchine <dialogo-chatbot>`.
+Con le etichette del POS tagging e gli alberi del parsing, una macchina può
+stabilire chi fa che cosa a chi dentro una singola frase. La sfida successiva
+comincia quando le frasi si legano in un'interazione: conservare lo stato della
+conversazione attraverso i turni è il compito del {doc}`dialogo tra persone e
+macchine <dialogo-chatbot>`.

@@ -32,6 +32,19 @@ Quando una cifra aumenta, quelle alla sua destra tornano a zero. Una versione
 che contiene sia sezioni nuove sia correzioni prende il numero della modifica
 maggiore, e ogni versione corrisponde a una pubblicazione.
 
+(v1-15-0)=
+
+## 1.15.0 · 18 ottobre 2026
+
+### Sezioni nuove
+
+- {doc}`Harness engineering </Harness/overview>`. **Nuovo capitolo: Harness engineering.** Tutto ciò che sta attorno al modello in un agente che lavora per ore: le istruzioni nel repository, il primo turno che prepara, il passaggio di consegne fra sessioni, il collaudo da utente, l'osservabilità e l'entropia, il lavoro disegnato come grafo; con tre figure animate.
+
+### Correzioni
+
+- **Prosa rivista nei capitoli su NLP e Transformer.** Frasi più dirette, termini italiani al posto dei calchi, rimandi che nominano la pagina di destinazione.
+- **Una pagina più comoda da leggere.** Corpo del testo e titoli ridisegnati, titoli di sezione in oro, indice di pagina più leggero; in apertura, quattro ingressi per scegliere da dove cominciare.
+
 (v1-14-3)=
 
 ## 1.14.3 · 14 ottobre 2026

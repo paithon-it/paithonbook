@@ -18,13 +18,14 @@
 # Il Libro di Intelligenza Artificiale che spiega due volte.
 
 ```{epigraph}
-Invece di cercare di produrre un programma che simuli la mente adulta, perché non provare piuttosto a produrne uno che simuli quella di un bambino?
+Invece di cercare di produrre un programma che simuli la mente adulta, perché
+non provare piuttosto a produrne uno che simuli quella di un bambino
 
 <p class="attribution">Alan Turing, <i>Computing Machinery and Intelligence</i>,&nbsp;1950</p>
 ```
 
 % L'attribuzione della citazione qui sopra e’ scritta in HTML perche’ al sito
-% serve la classe CSS `attribution`. In stampa il blocco raw sparisce e la
+% serve la classe CSS `attribu`. In stampa il blocco raw sparisce e la
 % citazione resterebbe senza autore, quindi si ripete per il solo LaTeX.
 %
 % L'epigrafe sta SUBITO SOTTO IL TITOLO e non dopo il primo capoverso: in
@@ -35,18 +36,16 @@ Invece di cercare di produrre un programma che simuli la mente adulta, perché n
 :::{only} latex
 *Alan Turing, «Computing Machinery and Intelligence», 1950.*
 :::
-
-L'intelligenza artificiale ha la fama di essere una materia per pochi, e in giro
-si trovano soprattutto *due cose*: articoli che promettono tutto senza spiegare
-niente, e testi che spiegano bene ma danno per acquisiti corsi universitari.
-Questo libro prova a stare nel mezzo, in italiano, partendo da zero e senza
-saltare i passaggi difficili. Ogni concetto che conta è spiegato *due volte*,
-una con un'analogia di tutti i giorni e una con la notazione e la formalità di
-un testo tecnico. Non è semplicemente la stessa spiegazione in versione corta e
-in versione lunga: sono due visioni dello stesso concetto, e leggerne una non
-inficia l'altra.
+L'intelligenza artificiale ha la fama di essere una materia per pochi, e in
+giro si trovano soprattutto *due cose*: contenuti che promettono tutto senza
+spiegare niente, e testi che spiegano nel dettaglio dei tecnicismi ma danno per
+acquisiti corsi universitari. Questo libro prova a stare nel mezzo, in
+italiano, partendo da zero e senza dare nulla per scontato. Ogni concetto che
+conta è spiegato *due volte*, una con un'analogia di tutti i giorni e una con
+la notazione e la formalità di un testo universitario.
 
 :::{only} html
+
 E «due volte» ha un secondo senso, che riguarda come queste pagine sono
 scritte: una prima AI le stende, una seconda le rilegge in cerca dell'errore, e
 alla fine passano da me, che decido che cosa resta. La {doc}`Prefazione
@@ -71,44 +70,30 @@ e si cambia quando vuoi.
 :::
 
 :::{only} html
-Questa versione online del libro è gratuita ed è in continuo aggiornamento per
-stare al passo con le innovazioni di questa materia: aggiungo regolarmente
-sezioni, argomenti ed esempi in Python. Il codice usa *PyTorch*, *NumPy* e
-*scikit-learn*, e per provarlo non devi installare niente. Dove in alto compare
-**Esegui il codice**, quel capitolo ha un *notebook*: una copia della pagina in
-cui i blocchi di codice, invece di stare lì solo da leggere, si eseguono uno
-dopo l'altro. Il collegamento lo apre su Google Colab, un servizio gratuito che
-fa girare il codice su una macchina di Google (serve un account Google).
-Qualche pagina è essa stessa un notebook, e si riconosce dal razzo 🚀 fra i
-comandi in cima alla pagina: lì il codice si esegue restando nel libro. Altrove
-si legge qui e si copia dove preferisci.
-
-{doc}`Aggiornamenti </aggiornamenti>` è il registro delle sezioni nuove e delle
-correzioni, una voce per pubblicazione, con il link alla pagina toccata. Questa
-è la versione {{ versione }} ({{ data_versione }}).
+```{raw} html
+<nav class="pt-inizio" aria-label="Da dove cominciare">
+<p class="pt-inizio-titolo">Da dove cominciare</p>
+<div class="pt-inizio-griglia">
+<a class="pt-inizio-scheda" href="Introduzione/overview.html"><span
+class="pt-inizio-nome">Comincio da zero</span><span class="pt-inizio-desc">Il
+primo programma, Python e la matematica che serve, spiegati
+dall'inizio.</span></a>
+<a class="pt-inizio-scheda" href="MachineLearning/overview.html"><span
+class="pt-inizio-nome">Ho già le basi</span><span
+class="pt-inizio-desc">Dall'apprendimento supervisionato alle reti neurali, con
+le formule e il codice.</span></a>
+<a class="pt-inizio-scheda" href="Transformers/overview.html"><span
+class="pt-inizio-nome">Voglio capire gli LLM</span><span
+class="pt-inizio-desc">L'attenzione e il Transformer, poi gli agenti e
+l'ingegneria che sta attorno ai modelli.</span></a>
+<a class="pt-inizio-scheda"
+href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book.pdf"><span
+class="pt-inizio-nome">Lo leggo su carta</span><span class="pt-inizio-desc">Il
+libro intero in PDF, impaginato per la lettura e per la stampa.</span></a>
+</div>
+</nav>
+```
 :::
-
-:::{only} latex
-Il libro è gratuito e in continuo aggiornamento: si aggiungono regolarmente
-sezioni, argomenti ed esempi. Il codice usa PyTorch, NumPy e scikit-learn, e
-online si esegue senza installare niente, dentro il libro o su Google Colab. Qui
-il codice si legge e si copia; per eseguirlo, l'indirizzo è nel colophon.
-:::
-
-::::{only} html
-:::{container} pt-scarica
-[**Scarica il libro intero in PDF** · versione {{ versione }}](https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book.pdf)
-
-[**Leggilo nel browser**](https://doi.org/10.5281/zenodo.21947219)
-
-Tutti i capitoli in un file solo, impaginato per la lettura e per la stampa.
-Dove il libro online anima una figura, il PDF ne mostra tre fermi immagine e
-l'indirizzo per vederla muoversi. «Leggilo nel browser» apre il libro su Zenodo,
-l'archivio del CERN in cui è depositato. Il collegamento è il suo **DOI**,
-l'identificativo permanente, che porta sempre all'ultima versione, la mostra
-pagina per pagina e dà la scheda per citarla.
-:::
-::::
 
 ---
 
@@ -288,6 +273,14 @@ engineering.</span> </a> <a class="pt-card-pdf"
 href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-IngegneriaLLM.pdf"
 aria-label="Scarica in PDF il capitolo «Prompt, contesto e loop»"
 title="«Prompt, contesto e loop» in PDF">PDF</a></div> <div class="pt-cella"><a
+class="pt-card" href="Harness/overview.html"> <span class="pt-card-num"></span>
+<span class="pt-card-title">Harness engineering</span> <span
+class="pt-card-desc">Tutto ciò che non è il modello: istruzioni nel
+repository, lista delle funzionalità, passaggio di consegne fra sessioni,
+collaudo da utente, grafi con checkpoint.</span> </a> <a class="pt-card-pdf"
+href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-Harness.pdf"
+aria-label="Scarica in PDF il capitolo «Harness engineering»"
+title="«Harness engineering» in PDF">PDF</a></div> <div class="pt-cella"><a
 class="pt-card" href="SistemiMultiAgente/overview.html"> <span
 class="pt-card-num"></span> <span class="pt-card-title">Sistemi
 multi-agente</span> <span class="pt-card-desc">Quando gli agenti sono molti:
@@ -428,6 +421,48 @@ del viaggio e letture per proseguire.</span> </a> <a class="pt-card-pdf"
 href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-Conclusioni.pdf"
 aria-label="Scarica in PDF il capitolo «Conclusioni»" title="«Conclusioni» in
 PDF">PDF</a></div> </div>
+
+## Il codice, il PDF e gli aggiornamenti
+
+:::{only} latex
+Il libro è gratuito e in continuo aggiornamento: si aggiungono regolarmente
+sezioni, argomenti ed esempi. Il codice usa PyTorch, NumPy e scikit-learn, e
+online si esegue senza installare niente, dentro il libro o su Google Colab. Qui
+il codice si legge e si copia; per eseguirlo, l'indirizzo è nel colophon.
+:::
+
+:::{only} html
+Questa versione online del libro è gratuita ed è in continuo aggiornamento per
+stare al passo con le innovazioni di questa materia: aggiungo regolarmente
+sezioni, argomenti ed esempi in Python. Il codice usa *PyTorch*, *NumPy* e
+*scikit-learn*, e per provarlo non devi installare niente. Dove in alto compare
+**Esegui il codice**, quel capitolo ha un *notebook*: una copia della pagina in
+cui i blocchi di codice, invece di stare lì solo da leggere, si eseguono uno
+dopo l'altro. Il collegamento lo apre su Google Colab, un servizio gratuito che
+fa girare il codice su una macchina di Google (serve un account Google).
+Qualche pagina è essa stessa un notebook, e si riconosce dal razzo 🚀 fra i
+comandi in cima alla pagina: lì il codice si esegue restando nel libro. Altrove
+si legge qui e si copia dove preferisci.
+
+{doc}`Aggiornamenti </aggiornamenti>` è il registro delle sezioni nuove e delle
+correzioni, una voce per pubblicazione, con il link alla pagina toccata. Questa
+è la versione {{ versione }} ({{ data_versione }}).
+:::
+
+::::{only} html
+:::{container} pt-scarica
+[**Scarica il libro intero in PDF** · versione {{ versione }}](https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book.pdf)
+
+[**Leggilo nel browser**](https://doi.org/10.5281/zenodo.21947219)
+
+Tutti i capitoli in un file solo, impaginato per la lettura e per la stampa.
+Dove il libro online anima una figura, il PDF ne mostra tre fermi immagine e
+l'indirizzo per vederla muoversi. «Leggilo nel browser» apre il libro su Zenodo,
+l'archivio del CERN in cui è depositato. Il collegamento è il suo **DOI**,
+l'identificativo permanente, che porta sempre all'ultima versione, la mostra
+pagina per pagina e dà la scheda per citarla.
+:::
+::::
 
 ---
 

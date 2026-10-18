@@ -47,6 +47,31 @@
 
 versioni:
 
+- versione: "1.15.0"
+  data: 2026-10-18
+  voci:
+
+  - tipo: nuovo
+    pagina: Harness/overview.md
+    testo: >
+      **Nuovo capitolo: Harness engineering.** Tutto ciò che sta attorno al
+      modello in un agente che lavora per ore: le istruzioni nel repository, il
+      primo turno che prepara, il passaggio di consegne fra sessioni, il
+      collaudo da utente, l'osservabilità e l'entropia, il lavoro disegnato
+      come grafo; con tre figure animate.
+
+  - tipo: corretto
+    testo: >
+      **Prosa rivista nei capitoli su NLP e Transformer.** Frasi più dirette,
+      termini italiani al posto dei calchi, rimandi che nominano la pagina di
+      destinazione.
+
+  - tipo: corretto
+    testo: >
+      **Una pagina più comoda da leggere.** Corpo del testo e titoli
+      ridisegnati, titoli di sezione in oro, indice di pagina più leggero; in
+      apertura, quattro ingressi per scegliere da dove cominciare.
+
 - versione: "1.14.3"
   data: 2026-10-14
   voci:

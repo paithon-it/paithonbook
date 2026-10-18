@@ -20,26 +20,26 @@ calcolo, finché nessuno dei tre fa da collo di bottiglia agli altri
 {cite}`kaplan2020scaling` {cite}`hoffmann2022training`. Il costo di ogni token,
 intanto, cresce con il modello senza sconti.
 
-La domanda è se le due cose si possano separare. Esiste un modello con molti
-parametri e poco calcolo per token? Si può comprare capacità senza comprare,
-nella stessa misura, aritmetica? La risposta è sì e ha un nome, *mixture of
-experts*, miscela di esperti. È la ragione per cui di uno stesso modello si
-leggono due numeri di parametri. Il costo però non sparisce: passa dal calcolo
-alla memoria e alla comunicazione.
+La domanda è se le due cose si possano separare: avere molti parametri con poco
+calcolo per token, aumentando la capacità senza far crescere nella stessa
+misura l'aritmetica. La risposta è la miscela di esperti (*mixture of
+experts*). È la ragione per cui di uno stesso modello si leggono due numeri di
+parametri. Il costo però non sparisce: passa dal calcolo alla memoria e alla
+comunicazione.
 
 ## Molti blocchi al posto di uno
 
-Se si vuole risparmiare calcolo, conviene farlo dove il calcolo è più grosso.
-Nella sezione sull'architettura ogni strato del Transformer alterna
-l'attenzione, dove le parole si scambiano informazione, e la rete feed-forward
-(FFN), dove ogni parola si rielabora individualmente; e la FFN, pur essendo la
-parte più semplice, contiene due terzi dei parametri dello strato. Il conto
-stava lì: quattro matrici $d_{\text{model}} \times d_{\text{model}}$
-nell'attenzione, contro due matrici quattro volte più grandi nella FFN, cioè
-otto della stessa taglia. Otto contro quattro, due terzi contro un terzo. Una
-linea di ricerca legge la FFN come la memoria del modello
-{cite}`geva2021transformer`, un'interpretazione sostenuta da esperimenti; ai
-fini del bilancio basta che sia il blocco più pesante.
+Se si vuole risparmiare calcolo, conviene farlo dove se ne fa di più. Nella
+sezione sull'architettura ogni strato del Transformer alterna l'attenzione,
+dove le parole si scambiano informazione, e la rete feed-forward (FFN), dove
+ogni parola si rielabora individualmente; e la FFN, pur essendo la parte più
+semplice, contiene due terzi dei parametri dello strato. Il rapporto è
+immediato: quattro matrici $d_{\text{model}} \times d_{\text{model}}$
+nell'attenzione, contro due matrici quattro volte più grandi nella FFN,
+equivalenti a otto matrici della stessa taglia (otto contro quattro, cioè due
+terzi contro un terzo). Una linea di ricerca legge la FFN come la memoria del
+modello {cite}`geva2021transformer`, un'interpretazione sostenuta da
+esperimenti; ai fini del bilancio basta che sia il blocco più pesante.
 
 ```{figure} ../figures/mixture-of-experts.svg
 :name: fig-moe-layer
@@ -78,7 +78,7 @@ all'ingresso uno smistatore (è lui il router) che legge le prime righe e passa
 il pezzo al redattore più adatto (o ai due più adatti, se si
 vuole una seconda opinione). Un articolo sul mercato dei calciatori va allo
 sportivo; uno sul restauro di un affresco va all'esperto d'arte. (È un modo di
-dire: le specialità nessuno le assegna, i redattori se le trovano lavorando, e
+dire: nessuno assegna le specialità, i redattori se le trovano lavorando, e
 di rado coincidono con le pagine del giornale.) La redazione nel suo insieme sa
 molte più cose di prima, perché sono otto teste invece di una, mentre il
 lavoro su *un* articolo resta quello di sempre, perché a occuparsene è uno
@@ -101,10 +101,9 @@ due di loro valgano quanto il tuttologo.
 
 Le redazioni più recenti spingono il mezzo servizio fino in fondo: tanti
 redattori a un quarto di servizio, quattro volte più numerosi, e su ogni pezzo
-ne lavorano otto insieme invece di due, così le squadre possibili sono
-moltissime di più. In più c'è un redattore fisso che legge ogni pezzo e si
-occupa di quello che serve a tutti, perché gli specialisti non debbano
-impararlo.
+ne lavorano otto insieme invece di due, moltiplicando le squadre possibili. A
+loro si affianca un redattore fisso che legge ogni pezzo e si occupa di quello
+che serve a tutti, perché gli specialisti non debbano impararlo.
 
 Separare quanto la redazione sa da quanto fatica su ogni pezzo: la
 miscela di esperti è tutta qui. Otto teste, però, non fanno un giornale otto
@@ -128,16 +127,15 @@ $$
 \mathbf{W}^O} = 67{,}1 \text{ M},
 $$
 
-dove il primo termine sono le due matrici della rete feed-forward e il secondo
-le quattro proiezioni dell'attenzione. In tutto $201{,}3$ M per strato, cioè
-$6{,}44$ miliardi di parametri sui 32 strati (embedding esclusi): un modello
-«da 7 miliardi», nel gergo corrente. La FFN è quella classica a due matrici
-della sezione sull'architettura; con una variante *gated* come SwiGLU le
-matrici diventano tre, e allora dipende da che cosa si tiene fisso: a
-$d_{\text{ff}}$ invariato il primo termine cresce di metà, mentre riducendo
-$d_{\text{ff}}$ a $\tfrac{8}{3}d_{\text{model}}$, che è la pratica corrente
-vista nella sezione sull'architettura, resta identico. Il bilancio qui
-sviluppato usa la FFN a due matrici.
+dove il primo termine corrisponde alle due matrici della rete feed-forward e il
+secondo alle quattro proiezioni dell'attenzione. In tutto $201{,}3$ M per
+strato, cioè $6{,}44$ miliardi di parametri sui 32 strati (embedding esclusi):
+un modello «da 7 miliardi», nel gergo corrente. La FFN è quella classica a due
+matrici; con una variante *gated* come SwiGLU le matrici diventano tre, e il
+bilancio dipende dal parametro che si fissa: a $d_{\text{ff}}$ invariato il
+primo termine aumenta della metà, mentre riducendo $d_{\text{ff}}$ a
+$\tfrac{8}{3}d_{\text{model}}$, come nella pratica corrente, resta identico. Il
+bilancio qui sviluppato usa la FFN a due matrici.
 
 Ora sostituiamo ogni FFN con $N = 8$ esperti della stessa taglia. I parametri
 totali diventano
@@ -169,7 +167,7 @@ strada: $k = 2$ su $N = 8$ esperti SwiGLU di taglia piena
 stessa formula, con tre matrici per esperto invece di due, dà circa 47,2
 miliardi di parametri totali e 13,4 attivi. Le cifre dichiarate nell'annuncio
 di Mistral, 46,7 e 12,9 (l'articolo le arrotonda a 47 e 13), sono più basse di
-circa mezzo miliardo, e per due cause che spingono in versi opposti. Mixtral
+circa mezzo miliardo per due fattori di segno opposto. Mixtral
 usa la {doc}`GQA <attenzione-in-pratica>` (otto teste di chiave e valore per
 trentadue di query: 42 M per strato invece di 67), che sui 32 strati toglie
 $0{,}8$ miliardi; gli embedding e la testa di uscita, che la formula non conta,
@@ -178,12 +176,13 @@ e gli embedding non si moltiplicano: si moltiplicano solo le FFN.
 
 Gli esperti **a grana fine** portano fino in fondo l'idea di ridurre la
 $d_{\text{ff}}$. DeepSeekMoE {cite}`dai2024deepseekmoe` divide ogni esperto in
-$m$ pezzi con dimensione interna $d_{\text{ff}}/m$ e ne attiva $mk$ su $mN$:
-parametri totali e attivi non cambiano, ma le combinazioni di esperti possibili
-passano da $\binom{N}{k}$ a $\binom{mN}{mk}$ (con $N = 16$, $k = 2$ e $m = 4$,
-da $120$ a circa $4{,}4 \times 10^9$). Isola poi $K_s$ esperti **condivisi**,
-che ogni token attraversa sempre e che nelle intenzioni degli autori raccolgono
-il sapere comune, così che gli esperti instradati non debbano ripeterlo:
+$m$ sotto-esperti con dimensione interna $d_{\text{ff}}/m$ e ne attiva $mk$ su
+$mN$: parametri totali e attivi non cambiano, ma le combinazioni di esperti
+possibili passano da $\binom{N}{k}$ a $\binom{mN}{mk}$ (con $N = 16$, $k = 2$ e
+$m = 4$, da $120$ a circa $4{,}4 \times 10^9$). Isola poi $K_s$ esperti
+**condivisi**, che ogni token attraversa sempre e che nelle intenzioni degli
+autori raccolgono il sapere comune, così che gli esperti instradati non debbano
+ripeterlo:
 
 $$
 \mathbf{y} = \sum_{s=1}^{K_s} E_s(\mathbf{x})
@@ -201,14 +200,15 @@ $\mathbf{W}_g \in \mathbb{R}^{N \times d_{\text{model}}}$ per strato, cioè
 $8 \times 4096 = 32\,768$ parametri, poco più di un milione sull'intero
 modello, lo $0{,}003\%$ del totale.
 
-Che cosa comprano i parametri in più? Nelle prove di Switch Transformer, a pari
-operazioni per token, il modello con 64 esperti raggiunge la qualità di T5-Base
-in un settimo del tempo di addestramento {cite}`fedus2022switch`. Il guadagno
-però non è proporzionale ai parametri totali: la loss di un modello a esperti
-migliora come una legge di potenza nel numero di esperti, e il miglioramento si
-riduce al crescere della taglia del modello di base {cite}`clark2022unified`;
-il modello denso con gli stessi parametri totali, che a ogni token costa molto
-più calcolo, ne resta il limite superiore {cite}`dai2024deepseekmoe`.
+Quale vantaggio offrono i parametri aggiuntivi? Nelle prove di Switch
+Transformer, a pari operazioni per token, il modello con 64 esperti raggiunge
+la qualità di T5-Base in un settimo del tempo di addestramento
+{cite}`fedus2022switch`. Il guadagno però non è proporzionale ai parametri
+totali: la loss di un modello a esperti migliora come una legge di potenza nel
+numero di esperti, e il miglioramento si riduce al crescere della taglia del
+modello di base {cite}`clark2022unified`; il modello denso con gli stessi
+parametri totali, che a ogni token costa molto più calcolo, ne resta il limite
+superiore {cite}`dai2024deepseekmoe`.
 
 `````
 
@@ -227,10 +227,10 @@ modello molto più grande, o molto più piccolo, di quanto sia.
 Il router è uno strato lineare: dal vettore $\mathbf{x}$ che rappresenta il
 token ricava $N$ punteggi, uno per esperto, ciascuno con un prodotto scalare fra
 $\mathbf{x}$ e una riga della sua matrice, lo stesso confronto con cui
-l'attenzione misura una query contro una key. Poi si tengono i $k$ punteggi più
+l'attenzione misura una query contro una chiave. Poi si tengono i $k$ punteggi più
 alti, si trasformano in pesi che sommano a uno (i pesi della miscela, da non
 confondere con i parametri del modello), e l'uscita dello strato è la
-combinazione degli esperti scelti con quei pesi.
+somma pesata delle risposte degli esperti scelti.
 
 `````{tab} Elementare
 
@@ -334,13 +334,14 @@ p_i(\mathbf{x}) = \operatorname{softmax}(\mathbf{W}_g\,\mathbf{x})_i,
 i^\ast = \arg\max_i\, p_i(\mathbf{x}).
 $$
 
-Il peso è un numero minore di $1$ che dipende dal punteggio, e il gradiente
-arriva; per di più, attraverso la normalizzazione, ne ricevono uno anche i
-punteggi degli esperti esclusi. Le due scritture differiscono solo per il
-denominatore: $G(\mathbf{x})_i = p_i(\mathbf{x}) / \sum_{j \in \text{top-}k}
-p_j(\mathbf{x})$, cioè la softmax dei $k$ punteggi sopravvissuti è la softmax
-su tutti divisa per la massa dei sopravvissuti (nell'esempio
-$p_1 = 0{,}53$ e $p_1 + p_3 = 0{,}85$, da cui di nuovo $0{,}62$).
+Il peso è strettamente minore di $1$ e dipende dal punteggio, consentendo la
+retropropagazione del gradiente; inoltre, attraverso la normalizzazione, anche
+i punteggi degli esperti esclusi ricevono un gradiente non nullo. Le due
+scritture differiscono solo per il denominatore: $G(\mathbf{x})_i =
+p_i(\mathbf{x}) / \sum_{j \in \text{top-}k} p_j(\mathbf{x})$, cioè la softmax
+dei $k$ punteggi sopravvissuti è la softmax su tutti divisa per la massa dei
+sopravvissuti (nell'esempio $p_1 = 0{,}53$ e $p_1 + p_3 = 0{,}85$, da cui di
+nuovo $0{,}62$).
 
 Il costo del router è $O(N\,d_{\text{model}})$ per token, contro
 $O(k\,d_{\text{model}}\,d_{\text{ff}})$ degli esperti: con $N = 8$,
@@ -348,17 +349,18 @@ $d_{\text{model}} = 4096$ e $d_{\text{ff}} = 16384$, sono $32\,768$
 moltiplicazioni contro i $134$ milioni di un solo esperto. Il costo della
 selezione è trascurabile.
 
-Una variante del lavoro del 2017 aggiunge casualità: il **noisy top-k gating**,
-prima di prendere i $k$ migliori, somma ai punteggi un rumore gaussiano di
-ampiezza appresa,
-$H(\mathbf{x})_i = (\mathbf{W}_g\mathbf{x})_i + \varepsilon_i\,
+Una variante proposta nello stesso lavoro di Shazeer e colleghi aggiunge
+casualità: il **noisy top-k gating**, prima di prendere i $k$ migliori, somma
+ai punteggi un rumore gaussiano di ampiezza appresa, $H(\mathbf{x})_i =
+(\mathbf{W}_g\mathbf{x})_i + \varepsilon_i\,
 \operatorname{softplus}\bigl((\mathbf{W}_{\text{noise}}\mathbf{x})_i\bigr)$ con
 $\varepsilon_i \sim \mathcal{N}(0, 1)$. Il rumore serve a rendere derivabile la
 stima del carico {cite}`shazeer2017outrageously`: il numero di token che
-toccano a un esperto è un conteggio, e non si deriva, mentre la probabilità che
-l'esperto entri fra i $k$ migliori, sotto il rumore, è una funzione liscia dei
-punteggi, e su di essa si costruisce una loss di bilanciamento. Di passaggio
-dà anche a un esperto sfavorito la possibilità di essere scelto ogni tanto.
+toccano a un esperto è un conteggio, e non è differenziabile, mentre la
+probabilità che l'esperto entri fra i $k$ migliori, sotto il rumore, è una
+funzione liscia dei punteggi, e su di essa si costruisce una loss di
+bilanciamento. Di passaggio dà anche a un esperto sfavorito la possibilità di
+essere scelto ogni tanto.
 
 `````
 
@@ -369,15 +371,15 @@ derivata della loss rispetto alla scelta è nulla. Come fa allora il router a
 imparare a smistare?
 
 Impara dai pesi della miscela, che sono continui e dipendono dai punteggi. Se
-un esperto scelto ha dato una risposta utile, la loss scende alzando il suo
-peso, cioè il punteggio che il router gli aveva dato, e la volta dopo un token
-simile lo sceglierà più volentieri. Il router viene corretto sul risultato degli
-esperti che ha scelto, mai direttamente sulla scelta.
+un esperto scelto ha dato una risposta utile, l'aggiornamento ne alza il peso,
+cioè il punteggio assegnato dal router, e la volta dopo il router lo sceglierà
+più volentieri per un token simile. Il router viene corretto sul risultato
+degli esperti che ha scelto, mai direttamente sulla scelta.
 
 Gli esperti *non* scelti non ricevono gradiente per quel token: nessuna
-correzione, nessun modo di dimostrare che avrebbero fatto meglio. Chi non lavora
-non sbaglia, e chi non sbaglia non impara. Questa asimmetria fa risparmiare
-calcolo e sta all'origine del difetto tipico dei modelli a esperti.
+correzione, nessun modo di dimostrare che avrebbero fatto meglio. Questa
+asimmetria fa risparmiare calcolo e sta all'origine del difetto tipico dei
+modelli a esperti.
 
 ## Il collasso del router
 
@@ -389,16 +391,15 @@ dinamica dell'addestramento.
 
 `````{tab} Elementare
 
-Torniamo in redazione. All'inizio gli otto redattori valgono più o meno
-uguale, e lo smistatore assegna i pezzi un po’ a caso. Per puro effetto del
-sorteggio il numero 7 ne riceve qualcuno in più. Scrivendo di più migliora;
-migliorando, lo smistatore impara che i pezzi mandati a lui vengono bene; e
-allora gliene manda ancora. Dopo un mese il 7 e altri due lavorano diciotto
-ore al giorno, e cinque colleghi non hanno mai toccato un articolo. Siccome
-non ne hanno mai toccato uno non hanno imparato niente, e non diventeranno
-mai bravi abbastanza da meritarsene uno. Il circolo si stringe da solo: il
-giornale paga otto stipendi per tre redattori, e la ragione per cui li aveva
-assunti in otto è svanita.
+Torniamo in redazione. All'inizio gli otto redattori valgono più o meno uguale,
+e lo smistatore assegna i pezzi un po’ a caso. Per puro effetto del sorteggio
+il numero 7 ne riceve qualcuno in più. Scrivendo di più migliora; migliorando,
+lo smistatore impara che i pezzi mandati a lui vengono bene; e allora gliene
+manda ancora. Dopo un mese il 7 e altri due lavorano diciotto ore al giorno, e
+cinque colleghi non hanno mai toccato un articolo. Senza fare pratica non hanno
+imparato niente, e non diventeranno mai bravi abbastanza da meritarsene uno. Il
+circolo si stringe da solo: il giornale paga otto stipendi per tre redattori, e
+la ragione per cui ne aveva assunti otto è svanita.
 
 La cura è amministrativa. A fine mese il direttore guarda un numero solo,
 quanto il giornale ha sbagliato, e il suo compito è farlo scendere. Da
@@ -409,21 +410,21 @@ conviene accettare un po’ di squilibrio, e abbastanza da non poter essere
 ignorata.
 
 Il direttore la calcola così. Per ogni redattore segna due numeri: la quota dei
-pezzi che gli sono arrivati, e la quota di gradimento che lo
-smistatore gli dà in media, contando anche i pezzi finiti poi a un altro.
-Moltiplica i due numeri, redattore per redattore, e somma. Con quattro
-redattori e otto pezzi: al primo ne arrivano cinque, al secondo due, al terzo
-uno, al quarto nessuno, cioè le quote $5/8$, $2/8$, $1/8$ e $0$; i gradimenti
-medi sono $0{,}56$, $0{,}24$, $0{,}16$ e $0{,}04$. I prodotti fanno
-$0{,}35 + 0{,}06 + 0{,}02 + 0 = 0{,}43$, e moltiplicato per quattro, il numero
-dei redattori, $1{,}72$. Se invece ognuno avesse ricevuto due pezzi con un
-gradimento di un quarto, ogni prodotto varrebbe un sedicesimo, la somma un
-quarto, e per quattro uno: la moltiplicazione finale serve a far
-valere uno il mese equo in una redazione di qualunque grandezza. Più il lavoro
-si concentra, più la voce sale sopra uno. Spinge, però, senza garantire: se la
-maggior parte dei pezzi va a un redattore preferito per un soffio, mentre il
-gradimento medio pende da un'altra parte, il valore può scendere sotto uno anche
-con il lavoro sbilanciato.
+pezzi che gli sono arrivati, e la quota di gradimento che lo smistatore gli dà
+in media, contando anche i pezzi finiti poi a un altro. Moltiplica i due
+numeri, redattore per redattore, e somma. Con quattro redattori e otto pezzi:
+al primo ne arrivano cinque, al secondo due, al terzo uno, al quarto nessuno,
+cioè le quote $5/8$, $2/8$, $1/8$ e $0$; i gradimenti medi sono $0{,}56$,
+$0{,}24$, $0{,}16$ e $0{,}04$. I prodotti fanno $0{,}35 + 0{,}06 + 0{,}02 + 0 =
+0{,}43$, che moltiplicato per quattro (il numero dei redattori) dà $1{,}72$. Se
+invece ognuno avesse ricevuto due pezzi con un gradimento di un quarto, ogni
+prodotto varrebbe un sedicesimo, la somma un quarto, e moltiplicato per quattro
+farebbe uno: la moltiplicazione finale serve a far valere uno il mese equo in
+una redazione di qualunque grandezza. Più il lavoro si concentra, più la voce
+sale sopra uno. Spinge, però, senza garantire: se la maggior parte dei pezzi va
+a un redattore preferito per un soffio, mentre il gradimento medio pende da
+un'altra parte, il valore può scendere sotto uno anche con il lavoro
+sbilanciato.
 
 La correzione, poi, si può fare su uno solo dei due numeri. I pezzi consegnati
 o sono cinque o sono sei, e non si ritoccano di un'inezia; il gradimento sì.
@@ -456,15 +457,15 @@ $N$ componenti, $p_i(\mathbf{x})$ quella dell'esperto $i$: non coincide con
 $G(\mathbf{x})$, che vale zero fuori dai $k$ scelti), $f_i$ è la frazione di
 token effettivamente instradati all'esperto $i$ (un conteggio), $P_i$ la
 probabilità media che il router gli ha assegnato (una quantità continua) e
-$\alpha$ il peso della penalità, $10^{-2}$ nel paper. La definizione di $f_i$
-con l’$\arg\max$ è quella di Switch, che sceglie un esperto solo; con $k > 1$
-si conta l'appartenenza ai $k$ scelti,
-$f_i = \frac{1}{kT}\sum_{\mathbf{x}\in\mathcal{B}}
+$\alpha$ il peso della penalità, $10^{-2}$ nell'articolo. La definizione di
+$f_i$ con l’$\arg\max$ è quella di Switch, che sceglie un esperto solo; con
+$k > 1$ si conta l'appartenenza ai $k$ scelti, $f_i =
+\frac{1}{kT}\sum_{\mathbf{x}\in\mathcal{B}}
 \mathbb{1}\{i\in\text{top-}k(\mathbf{x})\}$, così che $\sum_i f_i = 1$ e il
-termine valga ancora $1$ a carico uniforme. Anche la forma del peso cambia da
-un modello all'altro: softmax sui soli scelti in Shazeer e colleghi e in
-Mixtral, softmax su tutti senza rinormalizzare in Switch e in DeepSeekMoE,
-sigmoide normalizzata fra gli scelti in DeepSeek-V3.
+termine valga ancora $1$ a carico uniforme. Anche la forma dei pesi della
+miscela cambia da un modello all'altro: softmax sui soli scelti in Shazeer e
+colleghi e in Mixtral, softmax su tutti senza rinormalizzare in Switch e in
+DeepSeekMoE, sigmoide normalizzata fra gli scelti in DeepSeek-V3.
 
 Perché quel prodotto spinge verso il carico uniforme? Entrambi i vettori,
 $(f_i)$ e $(P_i)$, stanno sul simplesso ($\sum_i f_i = \sum_i P_i = 1$) e
@@ -472,9 +473,10 @@ tendono a essere allineati, perché l'instradamento segue l’$\arg\max$ delle
 stesse probabilità che compongono le $P_i$: gli esperti con $P_i$ alto sono di
 norma quelli con $f_i$ alto. In quel regime si può sostituire $f_i$ con $P_i$
 (una sostituzione dichiarata, non una conseguenza: è lecita solo dove
-l’$\arg\max$ è netto) e il prodotto scalare si comporta come $\sum_i P_i^2$. Su
-quella somma vale Cauchy-Schwarz, applicata al vettore $(P_i)$ e al vettore di
-tutti uno, che insieme al vincolo $\sum_i P_i = 1$ dà
+l’$\arg\max$ è netto) e il prodotto scalare si comporta come $\sum_i P_i^2$. A
+quella somma si applica la disuguaglianza di Cauchy-Schwarz tra il vettore
+$(P_i)$ e il vettore di tutti uno, che insieme al vincolo $\sum_i P_i = 1$
+fornisce
 
 $$
 1 = \Bigl(\sum_{i=1}^{N} P_i \cdot 1\Bigr)^{\!2}
@@ -505,30 +507,30 @@ $$
 \frac{\partial \mathcal{L}_{\text{aux}}}{\partial P_i} = \alpha\,N\,f_i ,
 $$
 
-cioè una spinta verso il basso proporzionale al carico già ricevuto. Gli
-esperti affollati si vedono abbassare i punteggi in proporzione a quanto sono
-affollati; quelli vuoti non ricevono alcuna spinta negativa e risalgono per
-differenza. A instradamento fissato la penalità è lineare nelle $P_i$, e in
-quel regime è ben condizionata: il gradiente non dipende da dove ci si trova
-sul simplesso. È una linearità locale, però, non globale: $(f_i)$ dipende dagli
-stessi parametri del router, e quando l'instradamento cambia cambia anche il
-coefficiente della penalità, il che riporta il paesaggio della loss ausiliaria
-fra le cose che si osservano, non fra quelle che si dimostrano.
+cioè una spinta verso il basso proporzionale al carico già ricevuto. Agli
+esperti più richiesti il gradiente abbassa i punteggi in proporzione; quelli
+privi di token non subiscono spinte negative e risalgono per differenza. A
+instradamento fissato la penalità è lineare nelle $P_i$, e in quel regime è ben
+condizionata: il gradiente non dipende da dove ci si trova sul simplesso. È una
+linearità locale, però, non globale: $(f_i)$ dipende dagli stessi parametri del
+router, e quando l'instradamento varia cambia anche il coefficiente della
+penalità; il paesaggio della loss ausiliaria torna così fra le cose che si
+osservano, non fra quelle che si dimostrano.
 
-Due lavori successivi toccano il quadro. ST-MoE {cite}`zoph2022stmoe` non
-sostituisce la loss di bilanciamento: le somma una *router z-loss*, con peso
-$10^{-3}$,
+Due lavori successivi modificano questa impostazione. ST-MoE
+{cite}`zoph2022stmoe` non sostituisce la loss di bilanciamento: le somma una
+*router z-loss*, con peso $10^{-3}$,
 $\frac{1}{T}\sum_{\mathbf{x}}\big(\log\sum_j
-e^{(\mathbf{W}_g\mathbf{x})_j}\big)^2$,
-che serve a un altro scopo, la stabilità: tiene piccoli i logit del router, e
-con essi gli errori di arrotondamento delle esponenziali in precisione ridotta.
-DeepSeek-V3 {cite}`liu2024deepseekv3` risponde invece ai difetti della loss
-ausiliaria, che con un peso alto peggiora anche la qualità: ne tiene solo una
-versione per sequenza con un peso minimo ($10^{-4}$), contro gli squilibri
-estremi dentro uno stesso testo, e il resto lo fa un bias $b_i$
-sommato a ogni punteggio, usato solo per scegliere i $k$ esperti e non per
-pesarli: dopo ogni passo lo si abbassa di poco agli esperti sovraccarichi e lo
-si alza a quelli scarichi. Il bilanciamento passa così, per la parte maggiore,
+e^{(\mathbf{W}_g\mathbf{x})_j}\big)^2$, che serve a un altro scopo, la
+stabilità: tiene piccoli i logit del router, e con essi gli errori di
+arrotondamento delle esponenziali in precisione ridotta. DeepSeek-V3
+{cite}`liu2024deepseekv3` risponde invece ai difetti della loss ausiliaria, che
+con un peso alto peggiora anche la qualità: ne tiene solo una versione per
+sequenza con un peso minimo ($10^{-4}$), contro gli squilibri estremi dentro
+uno stesso testo, e affida il resto del bilanciamento a un bias $b_i$ sommato a
+ogni punteggio, usato solo per scegliere i $k$ esperti e non per pesarli: a
+ogni passo lo abbassa di poco per gli esperti sovraccarichi e lo alza per
+quelli sottoutilizzati. Il bilanciamento passa così, per la parte maggiore,
 dalla loss a una regola di controllo, e il gradiente della cross-entropia ne
 resta quasi libero.
 
@@ -546,20 +548,20 @@ $$
 \text{capacità} = \left\lceil c\,\frac{k\,T}{N} \right\rceil,
 $$
 
-dove $T$ è il numero di token del batch, $N$ il numero di esperti, $k$ quanti ne
-sceglie ogni token, così che $kT/N$ è il carico di ciascuno in un mondo
-perfettamente equo, e $c$ il *capacity factor*, cioè il margine, appena sopra 1
-(fra $1{,}0$ e $1{,}25$ nelle prove di Switch Transformer
+dove $T$ è il numero di token del batch, $N$ il numero di esperti, $k$ quanti
+ne sceglie ogni token, così che $kT/N$ è il carico di ciascuno a ripartizione
+perfettamente uniforme, e $c$ il *capacity factor*, cioè il margine, appena
+sopra 1 (fra $1{,}0$ e $1{,}25$ nelle prove di Switch Transformer
 {cite}`fedus2022switch`, che ha $k = 1$; GShard {cite}`lepikhin2021gshard`, con
-$k = 2$, dà a ogni esperto $2T/N$ posti per ogni gruppo di $T$ token). Le
-parentesi con gli angoli sono l'arrotondamento all'intero superiore. Il conto
-su un esempio minuscolo, con $k = 1$: con $T = 8$ token e $N = 4$ esperti, in
-un mondo perfettamente equo ne toccherebbero due a testa; il margine
-$c = 1{,}25$ li porta a $2 \times 1{,}25 = 2{,}5$, che arrotondato per eccesso
-fa $3$. Un esperto che si vedesse assegnare cinque token ne elabora dunque tre
-e ne lascia cadere due. Con $k = 2$ il carico medio raddoppia, e con esso la
-capacità: dimenticare la $k$ vorrebbe dire, con $c = 1$, far cadere metà delle
-assegnazioni anche a carico perfettamente uniforme.
+$k = 2$, dà a ogni esperto $2T/N$ posti per ogni gruppo di $T$ token). I
+simboli $\lceil\cdot\rceil$ indicano l'arrotondamento all'intero superiore. Un
+esempio con $k = 1$: per $T = 8$ token e $N = 4$ esperti, in condizioni ideali
+ne toccherebbero due a testa; il margine $c = 1{,}25$ li porta a $2 \times
+1{,}25 = 2{,}5$, che arrotondato per eccesso fa $3$. Un esperto che si vedesse
+assegnare cinque token ne elabora dunque tre e ne lascia cadere due. Con $k =
+2$ il carico medio raddoppia, e con esso la capacità: dimenticare la $k$
+vorrebbe dire, con $c = 1$, far cadere metà delle assegnazioni anche a carico
+perfettamente uniforme.
 
 Che cosa succede ai token caduti? Nulla di drammatico e nulla di visibile. Lo
 strato non produce niente per quel token, e resta la connessione residua della
@@ -575,11 +577,12 @@ essere una funzione del solo esempio. Chi cerca la causa di un'anomalia deve
 saperlo.
 
 Il tetto però non è obbligatorio. MegaBlocks {cite}`gale2023megablocks` non
-scarta mai un token e lascia che ogni esperto ne riceva un numero variabile (è
-l'implementazione che l'articolo di Mixtral indica), e DeepSeek-V3 dichiara di
-non scartarne né in addestramento né in inferenza {cite}`liu2024deepseekv3`. Il
-costo si sposta allora sui kernel, che devono moltiplicare matrici di taglia
-diversa per ogni esperto, e sul bilanciamento, che deve tenere corte le code.
+scarta mai un token e lascia che ogni esperto ne riceva un numero variabile (la
+soluzione adottata nell'articolo di Mixtral), mentre DeepSeek-V3 dichiara di
+non scartare token né in addestramento né in inferenza
+{cite}`liu2024deepseekv3`. Il costo si sposta allora sui kernel, che devono
+moltiplicare matrici di taglia diversa per ogni esperto, e sul bilanciamento,
+che deve tenere corte le code.
 
 ## Il conto si sposta, non sparisce
 
@@ -599,17 +602,16 @@ suo specialista, e la riattraversa per andare in stampa.
 Le sedi sparse per la città sono vere. Un modello di questa taglia, mentre
 impara, non sta su una scheda grafica sola (i processori specializzati nel fare
 tanti conti insieme): lo si spezza fra molte schede, e gli esperti finiscono su
-schede diverse. Il lavoro risparmiato torna allora come traffico, due traversate
+schede diverse. Il lavoro risparmiato torna allora come traffico: due traversate
 della città per ogni piano, andata e ritorno. Il viavai conviene solo se ogni
 specialista, ricevuto il pezzo, ci lavora molto più a lungo di quanto il
-furgone abbia impiegato ad arrivare; e le sedi più lontane si usano il meno
+furgone impieghi ad arrivare; e le sedi più lontane si usano il meno
 possibile.
 
 I furgoni, poi, non si possono caricare la sera prima. Quanti pezzi tocchino
 a ciascuna sede lo decide lo smistatore la mattina stessa, un articolo alla
 volta (si può prenotare un furgone di misura fissa, ma allora parte spesso
-mezzo vuoto), e finché i furgoni sono per strada le sedi stanno ferme ad
-aspettare.
+mezzo vuoto), e finché i furgoni sono per strada le sedi restano ferme.
 Se il lavoro è sbilanciato, la sede affollata fa aspettare tutte le altre,
 che hanno finito da un pezzo. Tenere il carico pari serve a far uscire un
 buon giornale, e serve anche a non pagare venti sedi per farne lavorare tre.
@@ -624,22 +626,21 @@ se ne va tutta in quell'attesa. Un giornale a esperti, quando scrive,
 risparmia sulle penne, non sul montacarichi.
 
 Che il risparmio si senta dipende da quanti articoli sono in lavorazione
-insieme. Uno alla volta, i due faldoni degli specialisti scelti sono gli
-unici da tirare su: il montacarichi fa pochi viaggi e il vantaggio si sente
-tutto. Centinaia insieme, ciascuno chiama i suoi, e su per il
-montacarichi finiscono per passare quasi tutti i faldoni: la fatica torna
-quella dell'archivio intero, tutti e trentasei i miliardi, e le penne restano
-quasi ferme. Il vantaggio torna con migliaia di articoli in lavorazione: allora
-ogni faldone salito serve a tanti pezzi che il viaggio si ripaga, l'attesa
-torna sulle penne, e sulle penne il giornale a esperti risparmia. Nel
-mezzo, con qualche centinaio di articoli, le due cose tirano in direzioni
-opposte.
+insieme. Uno alla volta, i due faldoni degli specialisti scelti sono gli unici
+da tirare su: il montacarichi fa pochi viaggi e il vantaggio si sente tutto.
+Centinaia insieme, ciascuno chiama i suoi, e su per il montacarichi finiscono
+per passare quasi tutti i faldoni: la fatica torna quella dell'archivio intero,
+e le penne restano quasi ferme. Il vantaggio torna
+con migliaia di articoli in lavorazione: allora ogni faldone portato al piano
+serve a così tanti pezzi che il viaggio si ripaga, l'attesa torna sulle penne,
+e sulle penne il giornale a esperti risparmia. Nel mezzo, con qualche centinaio
+di articoli, le due cose tirano in direzioni opposte.
 
 `````
 
 `````{tab} Superiore
 
-Il conto in memoria è immediato. Il modello sparso da $36{,}5$ miliardi di
+Il conto della memoria è immediato. Il modello sparso da $36{,}5$ miliardi di
 parametri, in precisione a 16 bit, occupa $36{,}5 \times 2 \approx 73$ GB di
 soli pesi,
 contro i $12{,}9$ GB del modello denso che richiede la stessa aritmetica per
@@ -649,14 +650,14 @@ esplicito.
 In addestramento distribuito la strategia naturale è l’expert parallelism,
 già nominato nella {doc}`sezione sul parallelismo distribuito
 </GPU/parallelismo-distribuito>` accanto agli assi
-dati, tensor e pipeline: gli esperti di ciascuno strato si spartiscono fra le
-schede, una manciata per GPU. Il pattern di comunicazione che ne nasce non è
+dati, tensor e pipeline: gli esperti di ciascuno strato vengono distribuiti fra le
+schede, pochi per GPU. Il pattern di comunicazione che ne nasce non è
 l'all-reduce del parallelismo dati, ma un **all-to-all**: ogni GPU spedisce a
 ogni altra i token destinati agli esperti che quella ospita, e ne riceve
 indietro le uscite. Due all-to-all per strato MoE, andata e ritorno: ogni token
 manda il suo vettore a $k$ esperti e ne riceve $k$ uscite, cioè
 $2k\,d_{\text{model}}$ elementi a token, per strato e per passata in avanti,
-meno la quota che resta sulla stessa scheda. Quanto pesino lo dice il rapporto
+meno la quota che resta sulla stessa scheda. Quanto pesino dipende dal rapporto
 fra operazioni e byte scambiati: un esperto fa circa
 $4\,d_{\text{model}}\,d_{\text{ff}}$ operazioni per token e ne scambia
 $2\,d_{\text{model}}$ elementi, cioè $d_{\text{ff}}$ operazioni per byte in 16
@@ -676,32 +677,32 @@ implicita: la GPU con l'esperto più affollato detta il ritmo a tutte le altre.
 Questa, accanto alla qualità del modello, è la ragione economica della loss di
 bilanciamento.
 
-In inferenza vale il quadro che la {doc}`sezione su LLMOps </MLOps/llmops>`
-riprenderà in dettaglio:
-la generazione è memory-bound, e il tempo per token è dominato dalla
-lettura dei pesi dalla memoria della GPU, non dall'aritmetica. La
-sparsità qui aiuta in modo condizionato, e la condizione è il batch. Con
-poche sequenze in volo si leggono solo i $k$ esperti selezionati, e la
-latenza per token è quella del modello piccolo: un vantaggio reale. Appena
-il batch cresce, token diversi scelgono esperti diversi. Con routing uniforme la
-probabilità che un esperto resti fuori da $T$ token è $(1 - k/N)^T$, che con
-$N = 8$ e $k = 2$ scende sotto l’$1\%$ già a $T = 17$, e con i 256 esperti e
-$k = 8$ di DeepSeek-V3 a $T = 146$: la lettura torna quasi completa, e il
-modello si comporta, in banda, come i suoi $73$ GB. La sparsità del calcolo non
-si traduce automaticamente in sparsità del traffico di memoria.
+In inferenza, come mostra in dettaglio la {doc}`sezione su LLMOps
+</MLOps/llmops>`, la generazione è memory-bound: il tempo per token è dominato
+dal trasferimento dei pesi dalla memoria della GPU, non dall'aritmetica.
+L'efficacia della sparsità dipende dalla dimensione del batch. Con poche
+sequenze in elaborazione si leggono solo i $k$ esperti selezionati e la latenza
+per token resta quella del modello piccolo. Appena il batch cresce, token
+diversi scelgono esperti diversi. Con routing uniforme la probabilità che un
+esperto resti fuori da $T$ token è $(1 - k/N)^T$, che con $N = 8$ e $k = 2$
+scende sotto l’$1\%$ già a $T = 17$, e con i 256 esperti e $k = 8$ di
+DeepSeek-V3 a $T = 146$: la lettura torna quasi completa, e il modello si
+comporta, in banda, come i suoi $73$ GB. La sparsità del calcolo non si traduce
+automaticamente in sparsità del traffico di memoria.
 
-Il vantaggio ritorna quando il batch è tanto grande che ogni esperto
-satura il calcolo. Un esperto che riceve $m$ token fa circa $2m$ operazioni per
-ogni parametro letto, cioè $m$ operazioni per byte in 16 bit, e supera il
-ginocchio del {doc}`roofline </GPU/gerarchia-memoria>` (circa 300 operazioni per
-byte su una H100) quando $m$ arriva a qualche centinaio; con routing uniforme
-servono allora circa $mN/k$ token in volo per strato, un migliaio per
-$N/k = 4$ e quasi diecimila per i 256 esperti e $k = 8$ di DeepSeek-V3. È il
-motivo per cui un modello a esperti servito su larga scala spartisce gli
-esperti su molte schede: DeepSeek-V3 ne usa 32 per leggere i prompt e 320 per
-generare, perché a ogni esperto arrivi un batch abbastanza grande
-{cite}`liu2024deepseekv3`. Nell'intervallo di mezzo, con batch di decine o
-centinaia di token, i due obiettivi tirano in direzioni opposte.
+Il vantaggio ritorna quando il batch è tanto grande che ogni esperto satura il
+calcolo. Un esperto che riceve $m$ token fa circa $2m$ operazioni per ogni
+parametro letto, cioè $m$ operazioni per byte in 16 bit, e supera il ginocchio
+del {doc}`roofline </GPU/gerarchia-memoria>` (circa 300 operazioni per byte su
+una H100) quando $m$ arriva a qualche centinaio; con routing uniforme servono
+allora circa $mN/k$ token in volo per strato, un migliaio per $N/k = 4$ e quasi
+diecimila per i 256 esperti e $k = 8$ di DeepSeek-V3. È il motivo per cui un
+modello a esperti servito su larga scala spartisce gli esperti su molte schede:
+DeepSeek-V3 ne usa 32 per leggere i prompt e 320 per generare, perché a ogni
+esperto arrivi un batch abbastanza grande {cite}`liu2024deepseekv3`. Nei regimi
+intermedi, con batch di decine o centinaia di token, si perdono entrambi i
+vantaggi: la memoria viene letta per intero senza che il calcolo sia
+sufficiente a saturare l'hardware.
 
 `````
 
@@ -718,42 +719,39 @@ Robert Jacobs, Michael Jordan, Steven Nowlan e Geoffrey Hinton pubblicano su
 *Neural Computation* un articolo intitolato *Adaptive Mixtures of Local
 Experts* {cite}`jacobs1991adaptive`. La proposta è già tutta lì: più reti
 separate, e una **gating network** (letteralmente «rete cancello», l'antenato
-del router) che impara a pesarle a seconda dell'input,
-così che ciascuna si specializzi su un tipo di dati invece di fare un
-compromesso mediocre su tutto. Manca però il pezzo che ci interessa qui: la
-miscela era densa, cioè si facevano lavorare tutti gli esperti e poi si faceva
-la media delle loro risposte. L'architettura serviva a farli imparare meglio,
-senza alcun risparmio di calcolo.
+del router) che impara a pesarle a seconda dell'input, così che ciascuna si
+specializzi su un tipo di dati invece di fare un compromesso mediocre su tutto.
+Manca però la sparsità: la miscela era densa, tutti gli esperti elaboravano
+ogni input e le loro risposte venivano mediate. L'architettura serviva a farli
+imparare meglio, senza alcun risparmio di calcolo.
 
 Il salto è del 2017, con *Outrageously Large Neural Networks: The
 Sparsely-Gated Mixture-of-Experts Layer* di Noam Shazeer e colleghi
 {cite}`shazeer2017outrageously`, lo stesso anno di *Attention Is All You Need*
 {cite}`vaswani2017attention` e con un autore in comune. Qui il gating diventa
-sparso: si calcolano solo i $k$ esperti scelti, e la miscela smette di
-essere un modo di combinare modelli per diventare un modo di comprare
-parametri senza comprare aritmetica. Lo strato viene infilato fra strati LSTM
-(l'articolo esce a gennaio, i Transformer arriveranno cinque mesi dopo) e
-arriva a contenere fino a 137 miliardi di parametri. È anche il lavoro che
-mette a fuoco lo squilibrio
-di carico e il collasso del router (osservato prima da Eigen, Ranzato e
-Sutskever {cite}`eigen2013learning`, che lo curavano con un tetto imposto a
-mano sulle assegnazioni) e che introduce una loss ausiliaria per correggerlo
-mentre il modello impara.
+sparso: si calcolano solo i $k$ esperti scelti, e la miscela smette di essere
+un modo di combinare modelli per diventare un modo di comprare parametri senza
+comprare aritmetica. Lo strato viene inserito fra strati LSTM (l'articolo esce
+a gennaio, i Transformer arriveranno cinque mesi dopo) e il modello arriva a
+contenere fino a 137 miliardi di parametri. È anche il lavoro che mette a fuoco
+lo squilibrio di carico e il collasso del router (osservato prima da Eigen,
+Ranzato e Sutskever {cite}`eigen2013learning`, che lo curavano con un tetto
+imposto a mano sulle assegnazioni) e che introduce una loss ausiliaria per
+correggerlo mentre il modello impara.
 
-Nel 2020 GShard {cite}`lepikhin2021gshard`, pubblicato in conferenza l'anno
-dopo, porta il meccanismo dentro il Transformer nella forma che ancora usiamo:
-la rete feed-forward di uno strato ogni due sostituita da un banco di esperti,
-due esperti per token, il tetto alla capacità con i token che cadono, e gli
-esperti sparsi su migliaia di acceleratori che si scambiano token in
-continuazione (il modello da 600 miliardi di parametri è addestrato su 2048 TPU
-in quattro giorni). Poco più di sei mesi dopo, nel gennaio 2021, Switch
-Transformer {cite}`fedus2022switch`, uscito su rivista l'anno dopo, fa la
-scelta controintuitiva di un solo esperto per token (il *top-1*, dove GShard
-teneva i primi due). Gli autori attribuiscono a Shazeer e colleghi la
-congettura che ne servissero almeno due perché il router ricevesse un
-gradiente: con le proporzioni ricalcolate sul solo esperto scelto, il suo peso
-vale sempre uno, qualunque punteggio gli sia stato assegnato, e un numero che
-non cambia non insegna niente al router.
+Nel 2020 GShard {cite}`lepikhin2021gshard` porta il meccanismo nel Transformer,
+nella forma che si usa ancora: la rete feed-forward di uno strato ogni due
+viene sostituita da un banco di esperti, con due esperti per token e un tetto
+alla capacità che lascia cadere i token in eccesso. Gli esperti sono
+distribuiti su migliaia di acceleratori che si scambiano token continuamente
+(il modello da 600 miliardi di parametri è addestrato su 2048 TPU in quattro
+giorni). Poco più di sei mesi dopo, nel gennaio 2021, Switch Transformer
+{cite}`fedus2022switch` fa la scelta controintuitiva di un solo esperto per
+token (il *top-1*, dove GShard teneva i primi due). Gli autori attribuiscono a
+Shazeer e colleghi la congettura che ne servissero almeno due perché il router
+ricevesse un gradiente: con le proporzioni ricalcolate sul solo esperto scelto,
+il suo peso vale sempre uno, qualunque punteggio gli sia stato assegnato, e un
+numero che non cambia non insegna niente al router.
 
 Fedus, Zoph e Shazeer non ricalcolano le proporzioni: il peso resta la
 probabilità calcolata su tutti gli $N$ esperti, un numero minore di uno che
@@ -764,32 +762,33 @@ token a token. Scegliere un solo esperto dimezza inoltre il traffico fra le
 schede, semplifica il codice e permette tetti di capacità più bassi.
 
 Switch Transformer porta anche gli accorgimenti che rendono stabile
-l'addestramento; il principale riguarda la precisione dei numeri. Per
-andare più in fretta il modello li scrive in un formato a 16 bit, `bfloat16`, ma
-il router lavora in `float32`, a 32 bit: dei 16 bit del primo, quelli che
-portano le cifre significative sono 8, contro i 24 del secondo. La ragione la
-spiega un lavoro successivo, ST-MoE {cite}`zoph2022stmoe`: l'esponenziale della
-softmax amplifica gli errori di arrotondamento. Con dieci punteggi a $128$ e uno
-a $128{,}5$, in `bfloat16` il $128{,}5$ diventa $128$, e il peso dell'esperto
-migliore scende da $0{,}142$ a $0{,}091$. L'ordine dei punteggi cambia di rado;
-il peso che moltiplica l'uscita dell'esperto cambia di oltre un terzo.
+l'addestramento; il principale riguarda la precisione dei numeri. Per aumentare
+la velocità il modello adotta un formato a 16 bit, `bfloat16`, ma il router
+lavora in `float32`, a 32 bit: dei 16 bit del primo, quelli che portano le
+cifre significative sono 8, contro i 24 del secondo. Un lavoro successivo,
+ST-MoE {cite}`zoph2022stmoe`, ne spiega la ragione: l'esponenziale della
+softmax amplifica gli errori di arrotondamento. Con dieci punteggi a $128$ e
+uno a $128{,}5$, in `bfloat16` il $128{,}5$ diventa $128$, e il peso
+dell'esperto migliore scende da $0{,}142$ a $0{,}091$. L'ordine dei punteggi
+cambia di rado; il peso che moltiplica l'uscita dell'esperto cambia di oltre un
+terzo.
 
 Dal 2024 l'architettura sparsa è la scelta di diversi modelli aperti di grandi
 dimensioni: Mixtral 8x7B (articolo del gennaio 2024) ha circa 47 miliardi di
-parametri totali e 13 attivi {cite}`jiang2024mixtral`, DeepSeek-V3 (dicembre
-2024) 671 e 37 {cite}`liu2024deepseekv3`. I limiti documentati sono due. Il
-primo riguarda la rifinitura: rifiniti direttamente su un compito piccolo, i
-modelli sparsi tendono a sovradattarsi, e Switch Transformer alza per questo il
-dropout dentro gli esperti (0,4 contro lo 0,1 del resto); se passano prima per
-l'instruction tuning descritto nella {doc}`sezione sul post-training
-<post-training>`, il quadro cambia, perché ne guadagnano più dei modelli densi
-{cite}`shen2023moe`. Il secondo riguarda la specializzazione: nell'analisi del
-routing di Mixtral la distribuzione degli esperti è quasi la stessa per
-articoli scientifici di arXiv, di biologia e di filosofia, e a distinguere i
-token è piuttosto la sintassi (la parola `self` del codice Python, i rientri)
-{cite}`jiang2024mixtral`; nel 2017, su un modello a LSTM, Shazeer e colleghi
-avevano visto esperti specializzati per sintassi e per significato. «Esperti» è
-una metafora comoda, non una descrizione verificata.
+parametri totali e 13 attivi {cite}`jiang2024mixtral`, DeepSeek-V3
+(dicembre 2024) ne conta 671 totali e 37 attivi {cite}`liu2024deepseekv3`. I
+limiti documentati sono due. Il primo riguarda la rifinitura diretta su un
+compito piccolo: i modelli sparsi tendono a sovradattarsi, e Switch Transformer
+alza per questo il dropout dentro gli esperti (0,4 contro lo 0,1 del resto); se
+passano prima per l'instruction tuning descritto nella {doc}`sezione sul
+post-training <post-training>`, il quadro cambia, perché ne guadagnano più dei
+modelli densi {cite}`shen2023moe`. Il secondo riguarda la specializzazione:
+nell'analisi del routing di Mixtral la distribuzione degli esperti è quasi la
+stessa per articoli scientifici di arXiv, di biologia e di filosofia, e a
+distinguere i token è piuttosto la sintassi (la parola `self` del codice Python,
+i rientri) {cite}`jiang2024mixtral`; nel 2017, su un modello a LSTM, Shazeer e
+colleghi avevano visto esperti specializzati per sintassi e per significato.
+«Esperti» è una metafora comoda, non una descrizione verificata.
 
 ## In pratica: uno strato MoE in PyTorch
 
@@ -799,10 +798,10 @@ diventano probabilità, `torch.topk` tiene i $k$ esperti migliori con i loro
 pesi, e ogni esperto lavora soltanto sui token che lo hanno scelto. Mancano le
 ottimizzazioni vere (lo smistamento dei token fra le schede, i buffer di
 capacità preallocati), e il ciclo `for` sugli esperti sarebbe inaccettabile su
-scala. Manca anche la loss di bilanciamento, e quella riguarda la correttezza:
+scala. Manca anche la loss di bilanciamento, necessaria per la correttezza:
 chi addestrasse questo strato così com'è andrebbe incontro, con ogni
 probabilità, al collasso del router. Per calcolarla bastano poche righe, a
-partire da `indici` e `probabilita`, che il `forward` ha già in mano.
+partire da `indici` e `probabilita`, già disponibili nel metodo `forward`.
 
 ```python
 import torch
@@ -852,10 +851,10 @@ class StratoMoE(nn.Module):
 I pesi sono le probabilità dei $k$ esperti
 sopravvissuti al `topk`, divise per la loro somma: è la rinormalizzazione sui
 soli scelti, e coincide con la softmax dei soli $k$ punteggi. Con $k = 1$ quella
-divisione darebbe sempre $1$ e il router non imparerebbe, e il codice lascia
-allora la probabilità com'è, come fa Switch Transformer. L'esperto viene
-chiamato su `x[token]`, un sottoinsieme delle righe, e qui il calcolo si
-risparmia: se nessuno lo ha scelto non viene eseguito affatto.
+divisione darebbe sempre $1$, impedendo al router di imparare; il codice mantiene
+allora la probabilità invariata, come fa Switch Transformer. L'esperto viene
+chiamato su `x[token]`, un sottoinsieme delle righe, e qui si
+risparmia calcolo: se nessun token lo ha scelto non viene eseguito affatto.
 
 Un controllo dei calcoli, con gli iperparametri di default, e del caso $k = 1$:
 
@@ -886,7 +885,7 @@ torch.Size([2, 5, 64])
 True
 ```
 
-I numeri, a parole. Ogni esperto è fatto di due matrici, una che allarga il
+Ogni esperto è fatto di due matrici, una che allarga il
 vettore del token da 64 numeri a 256 e una che lo ricomprime a 64, più un
 termine costante per ciascuna delle uscite: $64 \times 256 + 256$ per la prima,
 $256 \times 64 + 64$ per la seconda, in tutto $33\,088$ parametri. Otto esperti
@@ -895,14 +894,14 @@ esperti, ne aggiunge $512$; totale $265\,216$.
 
 Ogni token, però, attraversa soltanto due esperti, cioè $33\,088 \times 2 =
 66\,176$ parametri: un quarto, che è poi la frazione $k/N = 2/8$ degli esperti
-che lavorano. Lo strato contiene quattro volte i parametri che attraversa per ogni
-parola. Il rapporto stampato è $4{,}008$ invece di $4$ perché nel totale ci sono
-anche i $512$ parametri del router, che negli attivi non sono contati;
-contandoli da tutte e due le parti viene $3{,}98$. L'ultima riga controlla il
-caso $k = 1$: con il peso lasciato alla probabilità, come in Switch, il router
-riceve un gradiente; con la rinormalizzazione il gradiente sarebbe nullo a meno
-degli arrotondamenti, qualche milionesimo, e la stessa riga stamperebbe
-`False`.
+che lavorano. Lo strato contiene quattro volte i parametri che attraversa per
+ogni parola. Il rapporto stampato è $4{,}008$ invece di $4$ perché nel totale
+ci sono anche i $512$ parametri del router, che negli attivi non sono contati;
+includendoli sia al numeratore sia al denominatore si ottiene $3{,}98$.
+L'ultima riga controlla il caso $k = 1$: con il peso lasciato alla probabilità,
+come in Switch, il router riceve un gradiente; con la rinormalizzazione il
+gradiente sarebbe nullo a meno degli arrotondamenti, qualche milionesimo, e la
+stessa riga stamperebbe `False`.
 
 Lo strato è intercambiabile con la FFN di un blocco Transformer: stessa forma
 in ingresso e in uscita, quindi si innesta in un'architettura esistente senza
@@ -1002,6 +1001,6 @@ fretta, insieme al guadagno di qualità a parità di calcolo per token.
 ```
 `````
 
-Denso o sparso, il modello che esce dal pre-addestramento resta un completatore
-di testo: per farne un interlocutore serve il {doc}`post-training
+Denso o sparso, al modello che esce dal pre-addestramento manca ancora un
+passo: il {doc}`post-training
 <post-training>`.

@@ -213,6 +213,9 @@ un minuto.
 | `svg/gradienti-integrati.py` | `fig-gradienti-integrati` | `Interpretabilita/attribuzione-e-meccanicistica.md` |
 | `svg/griglie-di-passi.py` | `fig-griglie-di-passi` | `ModelliDiffusione/campionatori-veloci.md` |
 | `svg/grokking-tarda.py` | `fig-grokking` | `DeepLearning/ottimizzazione-regolarizzazione.md` |
+| `svg/harness-turni.py` | `fig-harness-turni` | `Harness/passaggio-di-consegne.md` |
+| `svg/harness-deriva.py` | `fig-harness-deriva` | `Harness/quando-nessuno-guarda.md` |
+| `svg/harness-grafo.py` | `fig-harness-grafo` | `Harness/dal-ciclo-al-grafo.md` |
 | `svg/hopfield-ricorda.py` | `fig-hopfield-ricorda` | `ModelliEnergia/memoria-associativa.md` |
 | `svg/i-lettori-restano-otto.py` | `fig-teste-e-taccuini` | `Transformers/attenzione-in-pratica.md` |
 | `svg/il-codice-si-accorcia.py` | `fig-il-codice-si-accorcia` | `AutoSupervisione/capire-e-accorciare.md` |

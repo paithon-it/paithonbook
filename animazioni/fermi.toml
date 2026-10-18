@@ -209,3 +209,10 @@ istanti = [0.30, 0.50, 0.95]
 # primo fermo cade subito dopo il guasto, quando i tentativi in arrivo sono gia'
 # sopra i trecento; il secondo quando chi non ritenta si e' ripreso e chi
 # ritenta e' ancora a zero; il terzo e' la figura intera.
+
+[harness-grafo]
+istanti = [0.26, 0.70, 0.95]
+# perche': gli otto passi dividono il 90% del ciclo in fette da 11,25%, e i
+# default cadono su passi qualunque. In stampa servono i tre momenti che la
+# didascalia racconta: il guasto nel collaudo (gettone spento, croce accesa),
+# l'attesa alla firma e il lavoro concluso.

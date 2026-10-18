@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 500" role="img" aria-label="L'anatomia di un harness. Al centro un riquadro tratteggiato, la finestra di contesto, che dura una sessione; dentro, il modello che la legge, con i pesi congelati. Attorno, cinque riquadri pieni che restano: in alto le istruzioni (AGENTS.md e la cartella docs), a sinistra lo stato (avanzamento, funzionalità, storia git), a destra gli strumenti (catalogo e permessi), in basso a destra l'ambiente (macchina, dipendenze, applicazione avviabile), in basso a sinistra la verifica (test, linter, collaudo da utente). Le frecce chiudono il giro: istruzioni e stato entrano nella finestra a inizio sessione, le richieste del modello passano agli strumenti, gli strumenti hanno effetto sull'ambiente, gli esiti tornano nella finestra, l'ambiente passa alla verifica le cose da controllare, e la verifica scrive «fatto» nello stato.">
+  <defs>
+    <marker id="fn-ha" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1A1A1A"/>
+    </marker>
+    <marker id="ft-ha" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#B5532C"/>
+    </marker>
+  </defs>
+
+  <!-- legenda -->
+  <rect x="560" y="34" width="26" height="14" rx="3" fill="none" stroke="#5A524A" stroke-width="1.6" stroke-dasharray="5 4"/>
+  <text x="596" y="46" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5A524A">vive una sessione</text>
+  <rect x="560" y="60" width="26" height="14" rx="3" fill="#2D5A5C" fill-opacity="0.12" stroke="#1A1A1A" stroke-width="1.6"/>
+  <text x="596" y="72" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5A524A">resta su disco</text>
+
+  <!-- frecce -->
+  <path d="M 380 94 L 380 158" fill="none" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fn-ha)"/>
+  <text x="390" y="132" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#5A524A">entrano a inizio sessione</text>
+  <path d="M 196 240 L 260 240" fill="none" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fn-ha)"/>
+  <path d="M 500 240 L 564 240" fill="none" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fn-ha)"/>
+  <text x="532" y="230" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#5A524A">richieste</text>
+  <path d="M 651 282 Q 660 350 622 398" fill="none" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fn-ha)"/>
+  <text x="664" y="350" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#5A524A">effetti</text>
+  <path d="M 500 398 Q 470 360 452 322" fill="none" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fn-ha)"/>
+  <text x="494" y="356" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#5A524A">esiti</text>
+  <path d="M 468 440 L 294 440" fill="none" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fn-ha)"/>
+  <text x="381" y="430" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#5A524A">da controllare</text>
+  <path d="M 140 398 L 118 284" fill="none" stroke="#B5532C" stroke-width="2.4" marker-end="url(#ft-ha)"/>
+  <text x="146" y="336" font-family="Inter, system-ui, sans-serif" font-size="11.5" font-weight="700" fill="#B5532C">la verifica</text>
+  <text x="146" y="352" font-family="Inter, system-ui, sans-serif" font-size="11.5" font-weight="700" fill="#B5532C">scrive «fatto»</text>
+
+  <!-- finestra di contesto -->
+  <rect x="262" y="160" width="236" height="160" rx="14" fill="none" stroke="#5A524A" stroke-width="1.8" stroke-dasharray="7 5"/>
+  <text x="380" y="184" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#5A524A">finestra di contesto</text>
+  <rect x="315" y="206" width="130" height="72" rx="10" fill="#1A1A1A" fill-opacity="0.06" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="380" y="238" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="700" fill="#1A1A1A">modello</text>
+  <text x="380" y="259" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#5A524A">pesi congelati</text>
+
+  <!-- istruzioni -->
+  <rect x="280" y="26" width="200" height="68" rx="10" fill="#C9A961" fill-opacity="0.18" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="380" y="54" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#1A1A1A">ISTRUZIONI</text>
+  <text x="380" y="75" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#5A524A">AGENTS.md, docs/</text>
+
+  <!-- stato -->
+  <rect x="24" y="198" width="172" height="84" rx="10" fill="#2D5A5C" fill-opacity="0.14" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="110" y="226" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#1A1A1A">STATO</text>
+  <text x="110" y="247" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#5A524A">avanzamento,</text>
+  <text x="110" y="263" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#5A524A">funzionalità, storia git</text>
+
+  <!-- strumenti -->
+  <rect x="566" y="198" width="172" height="84" rx="10" fill="#C9A961" fill-opacity="0.18" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="652" y="226" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#1A1A1A">STRUMENTI</text>
+  <text x="652" y="247" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#5A524A">catalogo</text>
+  <text x="652" y="263" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#5A524A">e permessi</text>
+
+  <!-- ambiente -->
+  <rect x="470" y="400" width="226" height="80" rx="10" fill="#2D5A5C" fill-opacity="0.14" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="583" y="427" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#1A1A1A">AMBIENTE</text>
+  <text x="583" y="448" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#5A524A">macchina, dipendenze,</text>
+  <text x="583" y="464" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#5A524A">applicazione avviabile</text>
+
+  <!-- verifica -->
+  <rect x="66" y="400" width="226" height="80" rx="10" fill="#B5532C" fill-opacity="0.14" stroke="#B5532C" stroke-width="2.4"/>
+  <text x="179" y="427" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#1A1A1A">VERIFICA</text>
+  <text x="179" y="448" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#5A524A">test, linter,</text>
+  <text x="179" y="464" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#5A524A">collaudo da utente</text>
+</svg>

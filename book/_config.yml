@@ -117,6 +117,7 @@ sphinx:
       - Efficienza
       - GAN
       - GraphNeuralNetwork
+      - Harness
       - IngegneriaLLM
       - Interpretabilita
       - Introduzione

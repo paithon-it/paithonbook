@@ -58,28 +58,27 @@ venuti dopo sono arrivati a decine di piani, oltre cento nei più grandi.
 `````
 
 `````{tab} Superiore
-L'encoder è una pila di $n_{\text{strati}} = 6$ strati (l'articolo del 2017
-chiama $N$ questo numero, ma qui $N$ serve ad altro e $L$ conta le posizioni di
-query) con la stessa struttura e parametri propri (nel modello base,
-$d_{\text{model}} = 512$), ciascuno con due sotto-strati:
+L'encoder è una pila di $n_{\text{strati}} = 6$ strati con la stessa struttura
+e parametri propri (nel modello base, $d_{\text{model}} = 512$); l'articolo del
+2017 chiama $N$ il numero di strati, ma qui $N$ serve ad altro e $L$ conta le
+posizioni di query. Ogni strato ha due sotto-strati:
 
-1. **Multi-Head Self-Attention**: ogni posizione attende a tutte le posizioni
-   dell'input, catturando le relazioni a coppie in un solo passo;
+1. **Multi-Head Self-Attention**: ogni posizione calcola l'attenzione su tutte
+   le posizioni dell'input, catturando le relazioni a coppie in un solo passo;
 2. **Feed-Forward Network (FFN)**: una rete completamente connessa applicata
    *indipendentemente e identicamente* a ogni posizione.
 
 Ogni sotto-strato è avvolto da residual connection e layer normalization nella
-forma Post-LN dell'articolo originale,
-$\text{LayerNorm}(\mathbf{x} + \text{SubLayer}(\mathbf{x}))$, come visto nella
-{doc}`sezione sull'attenzione <attenzione>`, dove si è detto anche perché i
-modelli successivi preferiscono il Pre-LN, che è quello disegnato in
-{numref}`fig-blocco-transformer`: le formule che seguono sono quelle del 2017.
-La divisione dei ruoli è netta: l'attenzione *mescola* informazione tra le
+forma Post-LN dell'articolo originale, $\text{LayerNorm}(\mathbf{x} +
+\text{SubLayer}(\mathbf{x}))$. I modelli successivi adottano invece il Pre-LN
+di {numref}`fig-blocco-transformer`, per le ragioni esposte nella {doc}`sezione
+sull'attenzione <attenzione>`; le formule che seguono sono quelle del 2017. La
+divisione dei ruoli è netta: l'attenzione *mescola* informazione tra le
 posizioni, la FFN la *trasforma* posizione per posizione; è l'alternanza dei
 due movimenti, ripetuta per $n_{\text{strati}}$ strati, a costruire
-rappresentazioni via via più astratte. Per esteso, con
-$\mathbf{H}^{(0)} = \sqrt{d_{\text{model}}}\,\mathbf{X}_{\text{emb}} +
-\mathbf{PE}$, lo strato $\ell$ calcola
+rappresentazioni via via più astratte. Per esteso, con $\mathbf{H}^{(0)} =
+\sqrt{d_{\text{model}}}\,\mathbf{X}_{\text{emb}} + \mathbf{PE}$, lo strato
+$\ell$ calcola
 
 $$
 \begin{aligned}
@@ -99,15 +98,16 @@ e della normalizzazione, e alla somma fra embedding e codifica di posizione.
 
 Bias e normalizzazioni esclusi, e con $d_{\text{ff}} = 4d$ come nel modello
 base, uno strato di encoder ha $4d^2$ parametri nell'attenzione e $8d^2$ nella
-FFN, cioè $12d^2$ con $d = d_{\text{model}}$ (lo stesso conto che la
-{doc}`matematica di un modello linguistico </Matematica/matematica-llm>` fa per
-GPT-3); uno strato di decoder, con la cross-attention, ne ha $16d^2$.
+FFN, cioè $12d^2$ con $d = d_{\text{model}}$ (lo stesso calcolo svolto per
+GPT-3 nella {doc}`matematica di un modello linguistico
+</Matematica/matematica-llm>`); uno strato di decoder, con la cross-attention,
+ne ha $16d^2$.
 `````
 
 ## Il decoder, la parte che scrive
 
 L'uscita dell'encoder è una sequenza di rappresentazioni, non ancora una
-traduzione. A produrre la frase d'arrivo, un token alla volta, è il decoder, la
+traduzione. Il decoder produce la frase d'arrivo, un token alla volta; è la
 parte più delicata, perché mentre scrive non deve vedere le parole che non ha
 ancora scritto.
 
@@ -119,15 +119,15 @@ ferrea, la stessa dei compiti in classe: non si sbircia avanti. Per capirla
 serve sapere come si addestra questa macchina, che è più semplice di quanto
 sembri: le si danno milioni di frasi con accanto la traduzione giusta, scritta
 da una persona, e la si costringe a indovinarla parola per parola, controllando
-ogni volta quanto ci è andata vicina. Durante lo studio la traduzione giusta ce
-l'ha sotto gli occhi, perciò la si copre: quando impara a produrre la quarta
-parola può guardare solo le prime tre, altrimenti "imparerebbe" a copiare la
-quarta dalla soluzione, e il giorno in cui la soluzione non c'è (cioè sempre,
-una volta finito lo studio) non saprebbe fare nulla.
+ogni volta quanto ci è andata vicina. Durante lo studio la macchina ha sotto
+gli occhi la traduzione giusta, perciò la si copre: quando impara a produrre la
+quarta parola può guardare solo le prime tre, altrimenti "imparerebbe" a
+copiare la quarta dalla soluzione, e il giorno in cui la soluzione non c'è
+(cioè sempre, una volta finito lo studio) non saprebbe fare nulla.
 
 A ogni passo la macchina distribuisce la propria fiducia su tutte le parole che
 conosce, decine di migliaia, un po’ a questa e un po’ a quella; poi da
-quell'elenco ne prende una sola. È la parola presa a rientrare al passo dopo, in
+quell'elenco ne prende una sola. Questa parola rientra al passo dopo, in
 coda a quelle già scritte, perché l'ingresso è fatto per parole e un elenco di
 fiducie non ci passerebbe. Durante lo studio la parola che rientra è quella vera
 della soluzione, e non quella che la macchina avrebbe detto: così un inciampo
@@ -145,9 +145,9 @@ ciascuno:
    $t$ vede solo $1, \dots, t$. È ciò che rende il modello autoregressivo, e
    fa sì che il *meccanismo* di condizionamento sia lo stesso in addestramento
    e in generazione;
-2. Cross-Attention: le query vengono dal decoder, key e value dall'output
+2. Cross-Attention: le query vengono dal decoder, chiavi e valori dall'output
    dell'encoder, con cui la generazione "consulta" la frase di partenza;
-3. Feed-Forward Network, identica a quella dell'encoder.
+3. Feed-Forward Network: identica a quella dell'encoder.
 
 Per esteso, con $\mathbf{E}$ l'uscita dell'encoder,
 $\text{MultiHead}(\mathbf{Y}; \mathbf{X})$ l'attenzione a più teste con le
@@ -169,14 +169,14 @@ dove chiavi e valori della cross-attention vengono dalla stessa $\mathbf{E}$
 in tutti gli strati.
 
 In generazione il decoder produce un token alla volta: a valle della pila, una
-proiezione lineare sul vocabolario (nel paper con i pesi legati a quelli
+proiezione lineare sul vocabolario (nell'articolo con i pesi legati a quelli
 dell'embedding, §3.4) e una softmax danno la distribuzione del token
 successivo. Da quella distribuzione si sceglie un token, e l'input del passo
 dopo è il suo embedding, non la distribuzione: un vettore di $|\mathcal{V}|$
 probabilità non ha modo di entrare in un ingresso fatto per un token. Come si
-sceglie a generazione (il più probabile, oppure uno estratto a sorte) è una
-questione a sé, e la {doc}`sezione sui grandi modelli linguistici <llm>` la
-tratta a fondo. In addestramento entra invece il token vero (*teacher
+sceglie in generazione (il più probabile, oppure uno estratto a sorte)
+è una questione a sé, e la {doc}`sezione sui grandi modelli linguistici <llm>`
+la tratta a fondo. In addestramento entra invece il token vero (*teacher
 forcing*): per una frase di partenza $x_{1:n}$ e una traduzione di riferimento
 $y_{1:m}$ si minimizza
 
@@ -191,7 +191,7 @@ garantisce che il meccanismo sia lo stesso nei due casi, ma i prefissi su cui
 il decoder viene interrogato sono diversi: in addestramento sono quelli del
 riferimento, in generazione i propri. La discrepanza si chiama *exposure bias*,
 e la {doc}`sezione sulla traduzione con le reti
-</NaturalLanguageProcessing/seq2seq-traduzione>` l'ha raccontata insieme al
+</NaturalLanguageProcessing/seq2seq-traduzione>` la analizza insieme al
 teacher forcing.
 `````
 
@@ -247,7 +247,7 @@ numero diecimila, un valore che schiaccia quelli dell'embedding a cui si somma
 e che, in generazione, può superare tutti quelli visti in addestramento. Il
 secondo è che normalizzarlo non aiuta: se per tenerlo piccolo si divide per la
 lunghezza della frase, «metà frase» diventa 0,5 sia in una frase di sei parole
-sia in una di seicento, e la stessa firma finisce a significare due cose
+sia in una di seicento, e la stessa firma finisce per significare due cose
 diverse.
 
 La soluzione del 2017 tiene insieme le due esigenze con una famiglia di
@@ -257,9 +257,8 @@ geometrica, ognuna una frazione fissa della precedente. Siccome ogni coordinata
 oscilla fra $-1$ e $1$, nessun valore cresce con la posizione; le frequenze
 alte distinguono i vicini immediati, quelle basse dicono in quale parte della
 sequenza siamo: più scale insieme invece di una. Con $d_{\text{model}} = 512$
-la sinusoide più lenta ha un periodo, il numero di posizioni dopo cui torna
-uguale, di oltre sessantamila posizioni, e nessuna frase è abbastanza lunga
-perché la firma di una posizione si ripeta.
+la sinusoide più lenta ha un periodo di oltre sessantamila posizioni, e nessuna
+frase è abbastanza lunga perché la firma si ripeta.
 
 `````{tab} Elementare
 A teatro ogni spettatore ha un posto numerato, e la stessa persona in prima
@@ -267,7 +266,7 @@ fila o in quinta non sta nello stesso punto della sala. Al Transformer serve lo
 stesso, un posto numerato per ogni parola, e la soluzione del 2017 lo scrive
 con tre orologi affiancati, uno veloce, uno medio, uno lento: a formare il
 numero di posto sono le loro lancette. Nessuna lancetta si allontana mai,
-perché gira e torna: qualunque posizione della frase, il numero che se ne legge
+perché gira e torna: in qualunque posizione della frase, il numero che se ne legge
 resta sempre nella stessa fascia. La lancetta veloce distingue i vicini
 immediati, quella lenta dice in quale parte della frase siamo: due scale
 insieme invece di una.
@@ -302,13 +301,13 @@ diviso per la lunghezza, invece, tre parole più in là valgono mezzo passo in
 una frase di sei parole e mezzo centesimo in una di seicento.
 
 Nel 2017 quelle firme erano calcolate a tavolino, con una formula scritta a
-mano prima di cominciare: il modello non le impara, se le trova già pronte. Che
-quella comodità serva al modello, però, non è sicuro, e a metterlo in
-dubbio sono stati gli autori stessi: hanno provato a lasciare che il modello
-imparasse le firme, e le traduzioni sono venute quasi uguali.
-Infatti i modelli venuti dopo hanno preso strade diverse (chi le fa imparare,
-chi scrive direttamente quanto due parole sono distanti invece di dove stanno),
-ma il posto numerato, in una forma o nell'altra, serve a tutti.
+mano prima di cominciare: il modello non le impara, se le trova già pronte. Non
+è però sicuro che quella comodità serva al modello, e gli autori stessi lo
+hanno messo in dubbio: hanno provato a lasciare che il modello imparasse le
+firme, e le traduzioni sono venute quasi uguali. Infatti i modelli venuti dopo
+hanno preso strade diverse (chi le fa imparare, chi scrive direttamente quanto
+due parole sono distanti invece di dove stanno), ma il posto numerato, in una
+forma o nell'altra, serve a tutti.
 `````
 
 `````{tab} Superiore
@@ -323,12 +322,12 @@ $$
 \omega_i = 10000^{-2i/d_{\text{model}}}
 $$
 
-dove $\text{pos}$ è la posizione del token e $i$ *non* indicizza le
-coordinate ma le coppie di coordinate, cioè le frequenze: $i$ va da $0$ a
+dove $\text{pos}$ è la posizione del token e $i$ *non* indicizza le coordinate
+ma le coppie di coordinate, cioè le frequenze: $i$ va da $0$ a
 $d_{\text{model}}/2 - 1$, e ogni $i$ riempie le due coordinate $2i$ e $2i+1$
-con un seno e un coseno della stessa frequenza $\omega_i$. È il punto in cui si
-sbaglia scrivendo il codice, perché il paper scrive «$i$ is the dimension» e
-lascia credere che arrivi a $d_{\text{model}}$.
+con un seno e un coseno della stessa frequenza $\omega_i$. Qui è facile
+sbagliare scrivendo il codice: l'articolo scrive «$i$ is the dimension», e
+lascia credere che l'indice arrivi a $d_{\text{model}}$.
 
 Ogni posizione riceve così una firma unica, sommata all'embedding del token; e
 la scelta sinusoidale fa sì che la firma della posizione $\text{pos} + k$ sia
@@ -346,34 +345,33 @@ $$
 \begin{pmatrix} \sin(\text{pos}\,\omega_i) \\ \cos(\text{pos}\,\omega_i) \end{pmatrix},
 $$
 
-cioè una rotazione di angolo $k\omega_i$ su ciascuna coppia, e $\text{pos}$ è
-sparito dalla matrice. Da lì gli autori
-*ipotizzarono* che la rete potesse rappresentare facilmente le distanze
-*relative*: è una congettura, e la loro stessa ablazione la
-indebolisce, perché con positional embedding appresi i risultati sono
-«quasi identici» (Tabella 3, riga E, dell'articolo). Molti modelli successivi
-usano infatti encoding appresi (BERT); i modelli linguistici recenti usano
-quasi tutti la **RoPE** (*rotary position embedding*
+cioè una rotazione di angolo $k\omega_i$ su ciascuna coppia, e la posizione
+$\text{pos}$ scompare dalla matrice. Da lì gli autori *ipotizzarono* che la
+rete potesse rappresentare facilmente le distanze *relative*: è una congettura,
+e la loro stessa ablazione la indebolisce, perché con positional embedding
+appresi i risultati sono «quasi identici» (Tabella 3, riga E, dell'articolo).
+Molti modelli successivi usano infatti encoding appresi (BERT); i modelli
+linguistici recenti usano quasi tutti la **RoPE** (*rotary position embedding*
 {cite}`su2024roformer`), che prende quell'identità sul serio e la promuove da
-congettura a costruzione. La RoPE non aggiunge niente all'embedding:
-in ogni strato ruota query e chiave, coppia di coordinate per coppia, di un
-angolo proporzionale alla posizione assoluta del token,
-$\mathbf{q}_m \mapsto \mathbf{R}_{m}\,\mathbf{q}_m$ e
-$\mathbf{k}_n \mapsto \mathbf{R}_{n}\,\mathbf{k}_n$, dove
-$\mathbf{R}_m = \operatorname{diag}\big(\mathbf{R}(m\omega_0), \dots,
-\mathbf{R}(m\omega_{d_k/2-1})\big)$ è diagonale a blocchi di rotazioni piane
-$2 \times 2$ e $\omega_i = 10000^{-2i/d_k}$: la stessa legge delle sinusoidi,
+congettura a costruzione. La RoPE non aggiunge niente all'embedding: in ogni
+strato ruota query e chiave, coppia di coordinate per coppia, di un angolo
+proporzionale alla posizione assoluta del token, $\mathbf{q}_m \mapsto
+\mathbf{R}_{m}\,\mathbf{q}_m$ e $\mathbf{k}_n \mapsto
+\mathbf{R}_{n}\,\mathbf{k}_n$, dove $\mathbf{R}_m =
+\operatorname{diag}\big(\mathbf{R}(m\omega_0), \dots,
+\mathbf{R}(m\omega_{d_k/2-1})\big)$ è diagonale a blocchi di rotazioni piane $2
+\times 2$ e $\omega_i = 10000^{-2i/d_k}$: la stessa legge delle sinusoidi,
 calcolata però sulla larghezza $d_k$ di una testa invece che su
 $d_{\text{model}}$. Poiché $\mathbf{R}(\alpha)^\top = \mathbf{R}(-\alpha)$ e
 due rotazioni nello stesso piano si compongono sommando gli angoli, nel
-prodotto scalare le due si riducono a una,
-$\mathbf{R}_m^\top \mathbf{R}_n = \mathbf{R}_{n-m}$, e il punteggio
-$\mathbf{q}_m^\top \mathbf{R}_{n-m}\,\mathbf{k}_n$ dipende dalle posizioni
-soltanto attraverso la distanza $n-m$. Ogni vettore è ruotato secondo la
-posizione assoluta in cui sta, e l'attenzione vede solo le posizioni relative.
+prodotto scalare le due si riducono a una, $\mathbf{R}_m^\top \mathbf{R}_n =
+\mathbf{R}_{n-m}$, e il punteggio $\mathbf{q}_m^\top
+\mathbf{R}_{n-m}\,\mathbf{k}_n$ dipende dalle posizioni soltanto attraverso la
+distanza $n-m$. Ogni vettore è ruotato secondo la posizione assoluta in cui
+sta, e l'attenzione vede solo le posizioni relative.
 
 La stessa idea, scrivere nei punteggi la distanza invece della posizione, ha
-altre due forme. Shaw e colleghi {cite}`shaw2018self` sommano alla chiave un
+altre tre forme. Shaw e colleghi {cite}`shaw2018self` sommano alla chiave un
 vettore appreso per ogni distanza $j - i$ (tagliata oltre una soglia), così che
 ai punteggi arrivi un termine che dipende dalla query e dalla distanza; T5
 {cite}`raffel2020exploring` lo riduce a uno scalare per testa e per fascia di
@@ -390,7 +388,7 @@ posizioni si sostituisce la posizione $m$ con $m\,n_{\text{add}}/n'$, così che
 gli angoli restino dentro l'intervallo visto in addestramento, e una rifinitura
 breve, entro mille passi, è sufficiente. Il principio, in ogni caso, resta lo
 stesso: iniettare l'ordine, perché la self-attention da sola è
-permutation-equivariante, cioè permutando i token in ingresso le uscite escono
+permutation-equivariante, cioè permutando i token in ingresso le uscite risultano
 permutate allo stesso modo e la rappresentazione di ogni parola non dipende da
 dove sta.
 `````
@@ -398,8 +396,8 @@ dove sta.
 ## La feed-forward network: il lavoro individuale
 
 Manca un pezzo solo, quello che nella {numref}`fig-blocco-transformer`
-sta subito dopo l'attenzione. Ha un nome inglese, *feed-forward network*,
-«rete che va in avanti», cioè senza cappi né ritorni:
+sta subito dopo l'attenzione. Si chiama *feed-forward network*,
+«rete che va in avanti», senza cappi né ritorni:
 i numeri entrano da una parte ed escono dall'altra.
 
 `````{tab} Elementare
@@ -422,26 +420,27 @@ sette miliardi». In un piano della torre che legge, due terzi di quei numeri
 stanno sui moduli della scrivania e un terzo su quelli della riunione.
 
 Il conto è alla portata. La riunione usa quattro moduli grandi uguali: uno per
-la query, uno per la key, uno per il value, uno per rimettere insieme le
+la query, uno per la chiave, uno per il valore, uno per rimettere insieme le
 risposte degli otto lettori. La scrivania ne usa due soli, ma ciascuno quattro
 volte più grande, perché uno allarga e l'altro ricomprime: sono otto moduli
 della prima taglia. Otto contro quattro, due terzi contro un terzo. Nei piani
 della torre che scrive le riunioni sono due, la propria e la consultazione
 dell'altra torre, quindi lì si va a otto contro otto e la quota scende a metà;
 ma i grandi modelli linguistici di oggi tengono solo la torre che scrive e non
-consultano nessuno, e tornano ai due terzi. La parte più semplice della torre
-contiene anche la maggior parte dei numeri imparati, e molti ricercatori sono
-andati a cercare lì dove il modello conservi le sue conoscenze.
+consultano nessuno, e la quota torna ai due terzi. La parte più semplice della
+torre contiene anche la maggior parte dei numeri imparati, e molti ricercatori
+sono andati a cercare lì dove il modello conservi le sue conoscenze.
 
-Questo è il piano del 2017, con tre passaggi e due moduli, e i modelli di oggi lo
-hanno ritoccato in due punti. I numeri negativi ora si scoloriscono invece di
-sparire di colpo: quanto più erano negativi, tanto più si avvicinano allo zero.
-I fogli lunghi, poi, diventano due, compilati con due moduli diversi: il primo,
-quello con i negativi scoloriti, fa da filtro, e numero per numero decide
-quanto del secondo passa oltre. Perché il totale dei numeri stampati non
-cresca, i fogli si accorciano da quattro volte a poco meno di tre la nota di
-partenza: con il modulo che ricomprime, tre moduli così fanno di nuovo otto, e
-il bilancio di prima torna. Stessi numeri da regolare, e il modello riesce meglio.
+Questo è il piano del 2017, con tre passaggi e due moduli, e i modelli di oggi
+lo hanno ritoccato in due punti. I numeri negativi ora si scoloriscono invece
+di sparire di colpo: quanto più erano negativi, tanto più si avvicinano allo
+zero. I fogli lunghi, poi, diventano due, compilati con due moduli diversi: il
+primo, quello con i negativi scoloriti, fa da filtro, e numero per numero
+decide quanto del secondo passa oltre. Perché il totale dei numeri stampati non
+cresca, i fogli si accorciano da quattro a poco meno di tre volte la nota
+di partenza: con il modulo che ricomprime, tre moduli di questa misura
+equivalgono di nuovo a otto della prima taglia, e il bilancio di prima torna.
+Stessi numeri da regolare, e il modello funziona meglio.
 `````
 
 `````{tab} Superiore
@@ -456,22 +455,22 @@ $$
 Nel modello base la dimensione interna è $d_{\text{ff}} = 2048$, quattro volte
 $d_{\text{model}} = 512$: la FFN espande, applica la non linearità, ricomprime.
 Il fattore quattro è una scelta degli autori, non una derivazione: nella
-Tabella 3 dell'articolo una FFN più larga dà risultati migliori a parità del
-resto (con $d_{\text{ff}} = 4096$ il BLEU sale da 25,8 a 26,2, con
-$d_{\text{ff}} = 1024$ scende a 25,4), con più parametri. Pur essendo
+Tabella 3 dell'articolo una FFN più larga migliora i risultati a parità del
+resto, pur richiedendo più parametri (con $d_{\text{ff}} = 4096$ il BLEU sale
+da 25,8 a 26,2, mentre con $d_{\text{ff}} = 1024$ scende a 25,4). Pur essendo
 la parte concettualmente più semplice, contiene circa due terzi dei parametri
 di uno strato di encoder ($2\,d\,d_{\text{ff}} = 8d^2$ contro i $4d^2$ delle
 quattro proiezioni dell'attenzione); negli strati di decoder, che hanno una
-seconda attenzione, la quota scende a metà. Nei grandi modelli linguistici, che
-sono decoder-only e quindi senza cross-attention, si torna ai due terzi, e lì
-sta la maggior parte dei parametri. Una linea di ricerca legge la FFN
-come una memoria chiave-valore: le colonne di $\mathbf{W}_1$ fanno da chiavi
-che si accendono su configurazioni dell'ingresso, e le righe corrispondenti di
-$\mathbf{W}_2$ da valori che spostano la previsione del token successivo
-{cite}`geva2021transformer`. È un'interpretazione sostenuta da esperimenti, non
-una proprietà dell'architettura.
+seconda attenzione, la quota scende a metà. Nei grandi modelli linguistici,
+decoder-only e quindi privi di cross-attention, la quota della FFN torna a due
+terzi. Una linea di ricerca legge la FFN come una memoria chiave-valore: le
+colonne di $\mathbf{W}_1$ fanno da chiavi che si accendono su configurazioni
+dell'ingresso, e le righe corrispondenti di $\mathbf{W}_2$ da valori che
+spostano la previsione del token successivo {cite}`geva2021transformer`. È
+un'interpretazione sostenuta da esperimenti, non una proprietà
+dell'architettura.
 
-Questa è però la FFN del paper originale. I modelli successivi ne hanno
+Questa è però la FFN dell'articolo originale. I modelli successivi ne hanno
 cambiato la non linearità: prima la GELU {cite}`hendrycks2016gaussian`, una
 ReLU ammorbidita (GPT, BERT, GPT-2), poi le varianti *gated* proposte da
 Shazeer {cite}`shazeer2020glu`, e fra queste **SwiGLU**, che è la scelta
@@ -496,11 +495,12 @@ sarebbe una trappola.)
 Il ramo che porta la Swish fa da **cancello**: moltiplicando elemento per
 elemento, decide quanto lasciar passare di ciascuna unità del ramo lineare
 $\mathbf{x}\mathbf{W}_3$. Le matrici diventano tre invece di due, e per non
-gonfiare il conteggio dei parametri si riduce la dimensione interna da $4d$ a
-circa $\tfrac{8}{3}d$: così $3 \cdot d \cdot \tfrac{8}{3}d = 8d^2$, quanto
-$2 \cdot d \cdot 4d$ della versione classica. Stessi parametri, e
-nelle prove di Shazeer perplessità più bassa a parità di passi di
-addestramento; spiegazioni teoriche, l'autore dichiara di non averne.
+aumentare il numero dei parametri si riduce la dimensione interna da $4d$ a
+circa $\tfrac{8}{3}d$: così $3 \cdot d \cdot \tfrac{8}{3}d = 8d^2$, quanto $2
+\cdot d \cdot 4d$ della versione classica. Con gli stessi parametri, le prove
+di Shazeer mostrano una perplessità inferiore a parità di passi di
+addestramento; l'autore dichiara tuttavia di non avere spiegazioni teoriche per
+questo risultato.
 `````
 
 Con la feed-forward il giro è completo, e quasi tutti i pezzi del blocco
@@ -509,11 +509,11 @@ traduzione; la self-attention, in lavori sulla lettura e sul riassunto di
 testi; la piccola rete applicata a ogni posizione, come quelle del
 {doc}`capitolo sulle reti neurali </RetiNeurali/overview>`; la connessione
 residua e la normalizzazione; e perfino la codifica posizionale, che le reti
-convoluzionali per la traduzione usavano già, imparata. Come novità l'articolo
-porta la scala $1/\sqrt{d_k}$, le teste multiple e le sinusoidi; e soprattutto
-il montaggio, perché il Transformer è il primo modello di trasduzione fra
-sequenze basato sulla sola attenzione, senza ricorrenza né
-convoluzione {cite}`vaswani2017attention`. Impila quel blocco, sempre nello
+convoluzionali per la traduzione usavano già in forma appresa. Come novità
+l'articolo porta la scala $1/\sqrt{d_k}$, le teste multiple e le sinusoidi; e
+soprattutto il montaggio, perché il Transformer è il primo modello di
+trasduzione fra sequenze basato sulla sola attenzione, senza ricorrenza né
+convoluzione {cite}`vaswani2017attention`. Quel blocco si ripete, sempre nello
 stesso ordine: sei volte nel modello del 2017, qualche decina di volte in
 quelli di oggi.
 
@@ -522,17 +522,17 @@ milioni di parametri del modello base del 2017 ai 175 miliardi di GPT-3, tre
 anni dopo. Sono cambiate alcune scelte (dove sta la normalizzazione, la non
 linearità della feed-forward, il modo di scrivere la posizione) ed è cambiato
 il montaggio delle pile; il blocco, un'attenzione e una rete per posizione con
-scorciatoia e taratura attorno, è rimasto quello.
+connessione residua e normalizzazione attorno, è rimasto quello.
 
-GPT-3 dice anche un'altra cosa, da anticipare perché altrimenti si resta con
-l'idea che il Transformer sia soltanto una macchina per tradurre. È un
-Transformer *solo decoder*: tiene la pila che scrive, toglie quella che legge e
-con essa la cross-attention, così che dei tre sotto-strati di ogni blocco ne
-restano due, e il suo compito di addestramento è prevedere il token successivo.
-Davanti a un testo qualsiasi lo continua, e continuare un testo che è una
-domanda somiglia molto a rispondere. Le famiglie di modelli che nascono da
-questa scomposizione sono l'argomento della {doc}`sezione sulle famiglie di
-modelli <multimodalita>`.
+L'esempio di GPT-3 mostra inoltre che il Transformer non è soltanto una
+macchina per tradurre. Questo modello è infatti un Transformer *solo decoder*:
+tiene la pila che scrive, toglie quella che legge e con essa la
+cross-attention, riducendo a due i tre sotto-strati di ogni blocco, e il suo
+compito di addestramento è prevedere il token successivo. Posto davanti a un
+testo qualsiasi, lo continua; e continuare un testo che è una domanda somiglia
+molto a rispondere. Le famiglie di modelli che nascono da questa scomposizione
+sono l'argomento della {doc}`sezione sulle famiglie di modelli
+<multimodalita>`.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -551,7 +551,7 @@ modelli <multimodalita>`.
   consulta anche la frase originale, come l'altra torre l'ha capita.
 - L'attenzione da sola non sa in che ordine stanno le parole: a ciascuna viene
   sommato prima un posto numerato, la firma della sua posizione (calcolata
-  a tavolino nel paper del 2017; i modelli successivi la fanno in altri modi,
+  a tavolino nell'articolo del 2017; i modelli successivi la fanno in altri modi,
   ma il posto numerato serve a tutti).
 ```
 `````
@@ -566,13 +566,13 @@ modelli <multimodalita>`.
   norm attorno a ogni sotto-strato.
 - Il decoder usa la maschera causale (vietato guardare il futuro) e la
   cross-attention verso l'encoder.
-- L'attenzione ignora l'ordine: la codifica posizionale (sinusoidale nel
-  paper, appresa o relativa nei modelli successivi) lo reintroduce.
+- L'attenzione ignora l'ordine: la codifica posizionale (sinusoidale
+  nell'articolo, appresa o relativa nei modelli successivi) lo reintroduce.
 ```
 `````
 
-Prima delle famiglie di modelli resta da guardare il costo. Il
-{doc}`confronto con i modelli precedenti <confronti>` lo mette
-accanto ai vantaggi che l'attenzione ha portato, e la sezione
-sull’{doc}`attenzione in pratica <attenzione-in-pratica>` lo rilegge mentre il
-modello genera, una parola alla volta.
+Prima delle famiglie di modelli resta da guardare il costo. Il {doc}`confronto
+con i modelli precedenti <confronti>` ne misura la crescita rispetto alle reti
+ricorrenti, e la sezione sull’{doc}`attenzione in pratica
+<attenzione-in-pratica>` lo valuta mentre il modello genera, una parola alla
+volta.

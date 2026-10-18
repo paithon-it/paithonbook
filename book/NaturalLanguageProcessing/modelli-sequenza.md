@@ -13,7 +13,7 @@ ingresso che ha davanti: l'ingresso ha una dimensione fissa, e da un esempio al
 successivo non resta niente. I classificatori della {doc}`sezione sulla
 classificazione <classificazione-testo>` aggiravano il limite riducendo la frase
 a un vettore di lunghezza fissa, il sacchetto di parole o la media degli
-embedding, e così ne perdevano l'ordine. Gli n-gram l'ordine lo tengono, ma
+embedding, e così ne perdevano l'ordine. Gli n-gram mantengono l'ordine, ma
 solo per le ultime $n-1$ parole, e trattano ogni parola come un simbolo
 isolato: per loro «gatto» e «micio» restano due estranei.
 
@@ -23,11 +23,11 @@ stesso numero di parole) e portarsi dietro, parola dopo parola, un riassunto di
 quello che ha già letto. Tra gli anni Ottanta e il 2017 la risposta sono state
 le reti ricorrenti. Sanno fare la stessa scommessa degli n-gram sulla parola
 successiva, ma con un contesto che non si tronca a una distanza fissa; e
-siccome le parole vi entrano come embedding, due parole vicine nel
-significato, come «gatto» e «micio», arrivano alla rete come vettori vicini e
-tendono a lasciarle riassunti vicini. Poi è venuta l'architettura dei
-Transformer, su cui oggi si costruiscono i grandi modelli linguistici e a cui è
-dedicato il {doc}`capitolo che segue </Transformers/overview>`.
+siccome le parole vi entrano come embedding, due parole vicine nel significato,
+come «gatto» e «micio», arrivano alla rete come vettori vicini e tendono a
+lasciare riassunti simili. Poi è venuta l'architettura dei Transformer, su cui
+oggi si costruiscono i grandi modelli linguistici e a cui è dedicato il
+{doc}`capitolo che segue </Transformers/overview>`.
 
 ## Le reti ricorrenti: una memoria che scorre nel tempo
 
@@ -87,7 +87,7 @@ righe. Correggi
 la mano guardando quelle trenta, poi riparti dal foglietto così com'è, senza
 più tornare su come ci sei arrivato.
 
-Il prezzo di questa scorciatoia è chiaro, ed è meglio saperlo. Il foglietto non
+Il prezzo di questa scorciatoia è chiaro. Il foglietto non
 viene azzerato al confine fra un blocco e il successivo: passa di là com'è, e
 in avanti la lettura non si interrompe mai. A fermarsi al confine è la
 correzione. Così la
@@ -124,27 +124,26 @@ Usata come modello di linguaggio sulla frase $w_1, \dots, w_n$, la rete riceve
 come $\mathbf{x}_t$ l'embedding di $w_t$, e $\hat{\mathbf{y}}_t$ stima
 $P(w_{t+1} \mid w_1, \dots, w_t)$: la scommessa degli n-gram, con un contesto
 che non si tronca. Si addestra minimizzando la cross-entropia media sulla
-parola successiva,
-$\mathcal{L} = -\frac{1}{n-1}\sum_{t=1}^{n-1} \log \hat{y}_{t,\,w_{t+1}}$,
-dove $\hat{y}_{t,\,w}$ è la componente di $\hat{\mathbf{y}}_t$ relativa alla
-parola $w$. La perplessità della {doc}`sezione sugli n-gram <modelli-ngram>` è
-$e^{\mathcal{L}}$ con il logaritmo naturale, che è quello delle librerie, e
-coincide con il $2^{H}$ calcolato in bit sullo stesso testo. Senza la softmax
-quello che esce sono i *logit*, i punteggi grezzi: è la forma che
-`nn.CrossEntropyLoss` vuole in ingresso, perché softmax e logaritmo li calcola
-da sé, ed è per questo che in PyTorch l'ultimo strato di un classificatore si
-ferma un passo prima e la softmax non si scrive.
+parola successiva, $\mathcal{L} = -\frac{1}{n-1}\sum_{t=1}^{n-1} \log
+\hat{y}_{t,\,w_{t+1}}$, dove $\hat{y}_{t,\,w}$ è la componente di
+$\hat{\mathbf{y}}_t$ relativa alla parola $w$. La perplessità della
+{doc}`sezione sugli n-gram <modelli-ngram>` è $e^{\mathcal{L}}$ con il
+logaritmo naturale, che è quello delle librerie, e coincide con il $2^{H}$
+calcolato in bit sullo stesso testo. Senza la softmax si ottengono i *logit*, i
+punteggi grezzi: è il formato atteso da `nn.CrossEntropyLoss`, che calcola
+internamente sia la softmax sia il logaritmo. Per questo in PyTorch l'ultimo
+strato di un classificatore omette la softmax.
 
 Srotolare, però, ha un costo: la rete srotolata su una sequenza di mille passi
 è una rete profonda mille strati, e per retropropagare bisogna tenere in
-memoria tutte le attivazioni intermedie. Su un testo lungo, o su un flusso che
-non finisce mai, la cosa non sta in piedi. Il rimedio si chiama **BPTT
+memoria tutte le attivazioni intermedie. Su un testo lungo, o su un flusso
+continuo, questo approccio non è sostenibile. Il rimedio si chiama **BPTT
 troncato**: si spezza la sequenza in blocchi di lunghezza fissa (tipicamente
-qualche decina di passi), si retropropaga dentro un blocco e si stacca lo
-stato nascosto al confine, passandolo al blocco successivo come un valore
-qualunque, senza la sua storia. In PyTorch è letteralmente una chiamata,
-`h = h.detach()`, e per la LSTM, il cui stato è una coppia, la stessa cosa
-scritta su tutti e due i pezzi: `h = tuple(s.detach() for s in h)`.
+qualche decina di passi), si retropropaga dentro un blocco e si stacca lo stato
+nascosto al confine, passandolo al blocco successivo come un valore qualunque,
+senza la sua storia. In PyTorch basta una chiamata, `h = h.detach()`, e per la
+LSTM, il cui stato è una coppia, la stessa operazione applicata a entrambi gli
+elementi: `h = tuple(s.detach() for s in h)`.
 
 Il prezzo è noto: il gradiente non attraversa mai il confine, quindi la rete
 non può imparare dipendenze più lunghe del blocco. Lo stato in avanti continua
@@ -183,10 +182,10 @@ Alla correzione va anche peggio. La correzione è come una freccia: dice alla
 mano da che parte spostarsi, e di quanto. Per capire dove la mano ha sbagliato
 devi risalire le righe una per una, e a ogni riga la freccia ripassa per la
 stessa riscrittura che, nella lettura in avanti, aveva già smorzato i dettagli
-vecchi; si accorcia un pochino, poi ancora, poi ancora. Bastano poche decine di
-righe risalite e quando arriva in cima non sposta più niente. La mano si
-aggiusta benissimo su quello che è appena successo, mentre su quello che è
-lontano non riceve nessuna indicazione.
+vecchi; si accorcia un pochino, poi ancora, poi ancora. Basta risalire poche
+decine di righe: quando la freccia arriva in cima non sposta più niente. La
+mano si aggiusta benissimo su quello che è appena successo, mentre su quello
+che è lontano non riceve nessuna indicazione.
 
 Le RNN soffrono esattamente di questo doppio smorzamento, dei dettagli mentre si
 legge in avanti e della correzione mentre si risale, e il modello finisce per
@@ -199,7 +198,7 @@ cima è uno strattone che scompone la mano invece di aggiustarla. Che un gesto,
 preso da solo, sappia allungare è necessario ma non basta: un gesto può
 allungare la freccia in una direzione e il successivo accorciarla proprio in
 quella, e allora i due si compensano. Per sapere se lo strattone arriva bisogna
-seguirli nell'ordine in cui si susseguono. Per lo strattone il rimedio è
+seguirli nell'ordine in cui si presentano. Per lo strattone il rimedio è
 semplice: se la freccia arriva più lunga di una misura fissata, la si accorcia
 a quella misura prima di usarla, senza cambiarne la direzione. Per lo
 smorzamento no: serve un foglio diverso.
@@ -220,48 +219,48 @@ $$
 $$
 
 un prodotto di $k$ fattori, e l'ordine conta perché le jacobiane non commutano.
-Per la rete di Elman ciascun fattore si scrive per esteso,
-$\partial \mathbf{h}_s / \partial \mathbf{h}_{s-1} = \mathrm{diag}\big(1 - \mathbf{h}_s \odot \mathbf{h}_s\big)\,\mathbf{W}_{hh}$,
-e poiché la derivata della $\tanh$ non supera $1$ vale
-$\big\|\partial \mathbf{h}_t / \partial \mathbf{h}_{t-k}\big\| \le \|\mathbf{W}_{hh}\|^{k}$,
-con $\|\cdot\|$ la norma spettrale: se il massimo valore singolare di
-$\mathbf{W}_{hh}$ è minore di $1$ il gradiente svanisce in modo esponenziale
-(*vanishing gradient*), e la diagonale, che tende a zero quando le unità
-saturano, lo spinge ancora più giù. Il maggiorante non dice invece quando il
-gradiente esplode: un valore singolare maggiore di $1$ è condizione necessaria,
-non sufficiente {cite}`pascanu2013difficulty`. Per l'esplosione lo stesso lavoro
-propone di tagliare la norma del gradiente (*gradient clipping*; Mikolov lo
-faceva già, componente per componente): detto $\mathbf{g}$ il gradiente di tutti
-i parametri messi in fila, se $\|\mathbf{g}\| > \tau$ si riscala
-$\mathbf{g} \leftarrow \tau\,\mathbf{g}/\|\mathbf{g}\|$ (in PyTorch
+Per la rete di Elman ciascun fattore si scrive per esteso, $\partial
+\mathbf{h}_s / \partial \mathbf{h}_{s-1} = \mathrm{diag}\big(1 - \mathbf{h}_s
+\odot \mathbf{h}_s\big)\,\mathbf{W}_{hh}$, e poiché la derivata della $\tanh$
+non supera $1$ vale $\big\|\partial \mathbf{h}_t / \partial
+\mathbf{h}_{t-k}\big\| \le \|\mathbf{W}_{hh}\|^{k}$, con $\|\cdot\|$ la norma
+spettrale: se il massimo valore singolare di $\mathbf{W}_{hh}$ è minore di $1$
+il gradiente svanisce in modo esponenziale (*vanishing gradient*), e la
+diagonale, che tende a zero quando le unità saturano, lo spinge ancora più giù.
+Il maggiorante non dice invece quando il gradiente esplode: un valore singolare
+maggiore di $1$ è condizione necessaria, non sufficiente
+{cite}`pascanu2013difficulty`. Per l'esplosione lo stesso lavoro propone di
+tagliare la norma del gradiente (*gradient clipping*; Mikolov lo faceva già,
+componente per componente): detto $\mathbf{g}$ il gradiente di tutti i
+parametri messi in fila, se $\|\mathbf{g}\| > \tau$ si riscala $\mathbf{g}
+\leftarrow \tau\,\mathbf{g}/\|\mathbf{g}\|$ (in PyTorch
 `torch.nn.utils.clip_grad_norm_`), che cura l'esplosione e non tocca la
-scomparsa. Che una rete ricorrente «semplice» faccia fatica su molti passi lo
-analizza Sepp Hochreiter già nella tesi del 1991
-{cite}`hochreiter1991untersuchungen`, e lo dimostrano Yoshua Bengio, Patrice
+scomparsa. I limiti della rete ricorrente «semplice» sulle sequenze lunghe sono
+analizzati già nella tesi di Sepp Hochreiter del 1991
+{cite}`hochreiter1991untersuchungen`, e dimostrati da Yoshua Bengio, Patrice
 Simard e Paolo Frasconi nel 1994 {cite}`bengio1994learning`; il loro risultato
 va enunciato per quello che è: un compromesso, non un divieto. Se la rete
-conserva l'informazione in modo robusto, cioè in modo che
-un disturbo non la cancelli, allora il gradiente svanisce in modo esponenziale;
-e quindi è la discesa del gradiente a non riuscire a trovare quei legami, non la
-rete a non poterli rappresentare.
+conserva l'informazione in modo robusto, cioè in modo che un disturbo non la
+cancelli, allora il gradiente svanisce in modo esponenziale; e quindi è la
+discesa del gradiente a non riuscire a trovare quei legami, non la rete a non
+poterli rappresentare.
 
 `````
 
 ## LSTM e GRU: cancelli per la memoria
 
-La soluzione la propongono nel 1997 Sepp Hochreiter e Jürgen Schmidhuber
-{cite}`hochreiter1997long`, e si chiama **LSTM** (*Long Short-Term Memory*,
-memoria a breve termine lunga: il nome è un gioco di parole, ed è appunto una
-memoria di lavoro che però dura).
+Nel 1997 Sepp Hochreiter e Jürgen Schmidhuber propongono una soluzione
+{cite}`hochreiter1997long`, la **LSTM** (*Long Short-Term Memory*, una
+memoria a breve termine che dura a lungo).
 
 L'idea è dare alla cella una seconda memoria. Accanto allo stato nascosto
 $\mathbf{h}_t$, che si ricalcola da capo a ogni passo, la LSTM tiene un secondo
 vettore, lo **stato di cella** $\mathbf{c}_t$, che a ogni passo non viene
 riscritto ma ritoccato: una parte del vecchio contenuto si cancella, una parte
 di contenuto nuovo si aggiunge, e il resto passa com'è. Quello che ci si scrive
-può quindi sopravvivere a cento parole di distanza. A dosare i ritocchi sono
-tre **cancelli** (*gate*). Un cancello è un vettore di numeri fra zero e uno,
-uno per componente, che moltiplica ciò che passa: a uno lascia passare tutto, a
+può quindi sopravvivere a cento parole di distanza. Tre **cancelli** (*gate*)
+dosano questi ritocchi. Un cancello è un vettore di numeri fra zero e uno, uno
+per componente, che moltiplica ciò che passa: a uno lascia passare tutto, a
 zero niente, nel mezzo una parte. Quei numeri non sono fissati una volta per
 tutte: li calcola la rete a ogni passo, dalla parola nuova e dallo stato
 precedente, con pesi che si imparano come tutti gli altri. Il cancello di
@@ -274,15 +273,15 @@ erano due, d'ingresso e d'uscita, e lo stato di cella si aggiornava solo per
 addizione, senza poter mai essere svuotato. Arriva tre anni dopo, con Felix
 Gers, Jürgen Schmidhuber e Fred Cummins {cite}`gers2000learning`, e nasce da un
 difetto scoperto all'uso. Su una sequenza che non finisce, e che quindi non
-azzera mai lo stato, $\mathbf{c}_t$ cresce senza fermarsi. A guastarsi è la
-lettura: il valore letto passa per una funzione a S che schiaccia ogni numero
-fra $-1$ e $1$ (la $\tanh$, nella forma di oggi), e con $\mathbf{c}_t$ enorme
-ne esce sempre un estremo, qualunque cosa ci sia scritta. La cella smette di
+azzera mai lo stato, $\mathbf{c}_t$ cresce senza fermarsi. La lettura si
+satura: il valore passa per la $\tanh$ (nella forma di oggi), che comprime ogni
+numero fra $-1$ e $1$, e con $\mathbf{c}_t$ molto grande ne esce sempre un
+estremo, qualunque cosa ci sia scritta. La cella smette di
 distinguere un contenuto dall'altro e torna a comportarsi come una ricorrente
 qualunque. Su un testo che finisce va bene lo stesso; su un flusso che non
 finisce mai (una trasmissione, un sensore, una conversazione senza fine) è
 fatale. La forma con tre cancelli è quella che oggi si chiama LSTM senz'altra
-specificazione, ed è quella che segue.
+specificazione.
 
 ```{figure} ../figures/lstm-gru-cancelli-memoria.svg
 :name: fig-cella-lstm
@@ -301,13 +300,12 @@ Il dettaglio decisivo di {numref}`fig-cella-lstm` è la linea orizzontale che
 attraversa la cella quasi indisturbata: è lo stato di cella $\mathbf{c}_t$, che
 da un passo all'altro viene soltanto moltiplicato per il cancello di
 dimenticanza $\mathbf{f}_t$ e sommato a un contenuto nuovo. Il gradiente che
-risale lungo quella linea incontra quindi, a ogni passo, un solo fattore, e quel
-fattore la rete lo calcola dall'ingresso: dove deve ricordare, può tenerlo quasi
-a uno. Quanto vicino a uno, lo dicono le potenze. Dopo cento passi un fattore
-$0{,}999$ lascia passare il $90\%$ del segnale
-($0{,}999^{100} \approx 0{,}905$), un fattore $0{,}9$ ne lascia
-$0{,}9^{100} \approx 0{,}000027$. Nella rete
-semplice, invece, il gradiente passa a ogni passo per la stessa matrice di pesi
+risale lungo quella linea incontra quindi, a ogni passo, un solo fattore, e la
+rete calcola quel fattore a partire dall'ingresso: dove deve ricordare, può
+tenerlo quasi a uno. Dopo cento passi un fattore $0{,}999$ lascia passare il
+$90\%$ del segnale ($0{,}999^{100} \approx 0{,}905$), mentre un fattore $0{,}9$
+ne conserva appena $0{,}9^{100} \approx 0{,}000027$. Nella rete semplice,
+invece, il gradiente passa a ogni passo per la stessa matrice di pesi
 $\mathbf{W}_{hh}$ e per la derivata della $\tanh$, la funzione che schiaccia lo
 stato fra $-1$ e $1$, e nessun cancello decide, parola per parola, dove
 lasciarlo passare.
@@ -334,7 +332,7 @@ parlando di *chiavi*, plurale»), la prima manopola resta spalancata, dal
 taccuino non si cancella niente, e quella riga arriva intatta cento righe più
 in là.
 
-Ed è per la stessa ragione che la correzione, risalendo, arriva in cima. Sul
+Per la stessa ragione la correzione, risalendo, arriva in cima. Sul
 foglietto ogni riga ripassa per la stessa riscrittura, e cento riscritture che
 conservano nove decimi lasciano meno di un trentamillesimo: $0{,}9$
 moltiplicato per sé stesso cento volte fa $0{,}000027$. Sul taccuino la riga
@@ -355,7 +353,7 @@ si scoprì, è parte del saper ricordare.
 
 Esiste anche una versione più snella della stessa idea, proposta nel 2014 da
 Kyunghyun Cho e colleghi e chiamata **GRU** (*Gated Recurrent Unit*, «unità
-ricorrente con i cancelli»: il nome descrive esattamente quello che è). Le
+ricorrente a cancelli»). Le
 manopole sono due invece di tre, e taccuino e foglietto dei riassunti diventano
 un foglio solo. Una sola manopola decide insieme quanto
 tenere del vecchio e quanto scrivere del nuovo, perché lo spazio è uno: quello
@@ -375,8 +373,8 @@ prodotti da una sigmoide $\sigma$; nella formulazione del 1997 erano due,
 per pura addizione, senza poter mai essere svuotata: $\mathbf{c}_t =
 \mathbf{c}_{t-1} + \mathbf{i}_t \odot \tilde{\mathbf{c}}_t$, con
 $\tilde{\mathbf{c}}_t$ la memoria candidata, definita poco più avanti. La
-versione con il *forget gate* $\mathbf{f}_t$ {cite}`gers2000learning`, quella
-che segue, è la forma canonica di oggi:
+versione con il *forget gate* $\mathbf{f}_t$ {cite}`gers2000learning` è la
+forma canonica adottata oggi:
 
 $$
 \mathbf{f}_t = \sigma(\mathbf{W}_f(\mathbf{h}_{t-1}\oplus\mathbf{x}_t)+\mathbf{b}_f), \quad
@@ -384,11 +382,10 @@ $$
 \mathbf{o}_t = \sigma(\mathbf{W}_o(\mathbf{h}_{t-1}\oplus\mathbf{x}_t)+\mathbf{b}_o).
 $$
 
-Qui $\oplus$ è la concatenazione:
-$\mathbf{h}_{t-1} \oplus \mathbf{x}_t$ mette in fila le componenti dei due
-vettori, e se $\mathbf{x}_t$ ha dimensione $d_x$ ogni matrice $\mathbf{W}$ è
-$d \times (d + d_x)$. L'aggiornamento della memoria è quasi additivo, ed è
-questo a tenere vivo il gradiente:
+Qui $\oplus$ è la concatenazione: $\mathbf{h}_{t-1} \oplus \mathbf{x}_t$ mette
+in fila le componenti dei due vettori, e se $\mathbf{x}_t$ ha dimensione $d_x$
+ogni matrice $\mathbf{W}$ è $d \times (d + d_x)$. L'aggiornamento della memoria
+è quasi additivo, e questo mantiene vivo il gradiente:
 
 $$
 \mathbf{c}_t = \mathbf{f}_t \odot \mathbf{c}_{t-1} + \mathbf{i}_t \odot \tilde{\mathbf{c}}_t,
@@ -396,24 +393,24 @@ $$
 \mathbf{h}_t = \mathbf{o}_t \odot \tanh(\mathbf{c}_t),
 $$
 
-dove
-$\tilde{\mathbf{c}}_t = \tanh(\mathbf{W}_c(\mathbf{h}_{t-1}\oplus\mathbf{x}_t)+\mathbf{b}_c)$
-è la memoria candidata e $\odot$ è il prodotto elemento per elemento. Il perché
-si legge nella derivata lungo la strada della memoria: trascurando la dipendenza
-da $\mathbf{h}_{t-1}$ dei gate e della candidata,
-$\partial \mathbf{c}_t / \partial \mathbf{c}_{t-1} = \mathrm{diag}(\mathbf{f}_t)$,
-una diagonale che la rete porta vicino a $1$ quando deve ricordare, al posto del
+dove $\tilde{\mathbf{c}}_t =
+\tanh(\mathbf{W}_c(\mathbf{h}_{t-1}\oplus\mathbf{x}_t)+\mathbf{b}_c)$ è la
+memoria candidata e $\odot$ è il prodotto elemento per elemento. Lo mostra la
+derivata dello stato di cella rispetto al passo precedente: trascurando la
+dipendenza da $\mathbf{h}_{t-1}$ dei gate e della candidata, $\partial
+\mathbf{c}_t / \partial \mathbf{c}_{t-1} = \mathrm{diag}(\mathbf{f}_t)$, una
+diagonale che la rete porta vicino a $1$ quando deve ricordare, al posto del
 fattore $\mathrm{diag}(1 - \mathbf{h}_s \odot \mathbf{h}_s)\,\mathbf{W}_{hh}$
 della rete semplice, dove la matrice è la stessa a ogni passo e nessun cancello
 tiene la diagonale vicina a $1$. Nel 1997 quel fattore era l'identità per
 costruzione, il *constant error carousel* di Hochreiter e Schmidhuber; per la
-stessa ragione conviene inizializzare a $1$ il bias di $\mathbf{f}_t$, che con i
-pesi piccoli di partenza terrebbe il cancello intorno a $0{,}5$ e dimezzerebbe
-il gradiente a ogni passo: Jozefowicz e colleghi lo raccomandano notando che
-pochi lo facevano {cite}`jozefowicz2015empirical`, e `nn.LSTM` di PyTorch non lo
-fa da sé. La **GRU** (*Gated Recurrent Unit*, {cite}`cho2014learning`) fonde
-stato e memoria in un solo vettore e usa due gate, *update* $\mathbf{z}_t$ e
-*reset* $\mathbf{r}_t$:
+stessa ragione conviene inizializzare a $1$ il bias di $\mathbf{f}_t$, che con
+i pesi piccoli di partenza terrebbe il cancello intorno a $0{,}5$ e
+dimezzerebbe il gradiente a ogni passo: Jozefowicz e colleghi lo raccomandano
+notando che pochi lo facevano {cite}`jozefowicz2015empirical`, e `nn.LSTM` di
+PyTorch non lo fa da sé. La **GRU** (*Gated Recurrent Unit*,
+{cite}`cho2014learning`) fonde stato e memoria in un solo vettore e usa due
+gate, *update* $\mathbf{z}_t$ e *reset* $\mathbf{r}_t$:
 
 $$
 \mathbf{z}_t = \sigma(\mathbf{W}_z(\mathbf{h}_{t-1}\oplus\mathbf{x}_t)+\mathbf{b}_z), \quad
@@ -425,18 +422,19 @@ $$
 \mathbf{h}_t = \mathbf{z}_t \odot \mathbf{h}_{t-1} + (1-\mathbf{z}_t) \odot \tilde{\mathbf{h}}_t .
 $$
 
-L'update gate fa insieme il lavoro del forget e dell'input della LSTM, legati in
-modo da sommare a uno; il reset decide quanta parte dello stato passato entra
-nella candidata. Questa è la forma di Cho e colleghi, in cui il reset agisce su
-$\mathbf{h}_{t-1}$ prima del prodotto con la matrice. `nn.GRU` di PyTorch,
-quella con cui si può sostituire la LSTM nel classificatore di sentiment, lo
-applica dopo: spezzata $\mathbf{W}_h$ nel blocco $\mathbf{U}_h$ che moltiplica
-lo stato e nel blocco $\mathbf{V}_h$ che moltiplica l'ingresso, calcola
-$\tilde{\mathbf{h}}_t = \tanh\big(\mathbf{V}_h\mathbf{x}_t + \mathbf{b}_h + \mathbf{r}_t \odot (\mathbf{U}_h\mathbf{h}_{t-1} + \mathbf{b}'_h)\big)$,
-con un secondo bias $\mathbf{b}'_h$ dentro il prodotto. Le due varianti hanno
-le stesse matrici e calcolano funzioni diverse: chi confronta la formula con il
-codice, o carica in un'implementazione i pesi addestrati con l'altra, ottiene
-stati diversi.
+L'update gate svolge insieme la funzione del forget e dell'input della LSTM,
+con somma vincolata a uno; il reset decide quanta parte dello stato passato
+entra nella candidata. Questa è la forma di Cho e colleghi, in cui il reset
+agisce su $\mathbf{h}_{t-1}$ prima del prodotto con la matrice.
+L'implementazione `nn.GRU` di PyTorch applica invece il reset dopo la
+moltiplicazione lineare: spezzata $\mathbf{W}_h$ nel blocco $\mathbf{U}_h$ che
+moltiplica lo stato e nel blocco $\mathbf{V}_h$ che moltiplica l'ingresso,
+calcola $\tilde{\mathbf{h}}_t = \tanh\big(\mathbf{V}_h\mathbf{x}_t +
+\mathbf{b}_h + \mathbf{r}_t \odot (\mathbf{U}_h\mathbf{h}_{t-1} +
+\mathbf{b}'_h)\big)$, con un secondo bias $\mathbf{b}'_h$ dentro il prodotto.
+Le due varianti hanno le stesse matrici e calcolano funzioni diverse: chi
+confronta la formula con il codice, o carica in un'implementazione i pesi
+addestrati con l'altra, ottiene stati diversi.
 
 Con $d$ unità nascoste e ingressi di dimensione $d_x$, ogni blocco di pesi conta
 $d(d + d_x)$ parametri più i bias, che in PyTorch sono due vettori da $d$: la
@@ -496,24 +494,24 @@ alla stessa misura con dei riempitivi (il *padding*). L'ultimo posto letto è
 allora l'ultimo riempitivo, non l'ultima parola, e lo stato estratto dipende da
 quanti riempitivi si sono aggiunti.
 
-Il rimedio è dire alla rete quanto è lunga davvero ciascuna frase. In PyTorch lo
-si fa impacchettando il mini-batch con `pack_padded_sequence`, a cui si passano
-le lunghezze vere (con `enforce_sorted=False` se le frasi non sono ordinate
-dalla più lunga alla più corta). La rete restituisce allora, come secondo
-valore, lo stato finale `h_n` (per la LSTM la coppia `h_n, c_n`), che per
-ciascuna frase si ferma alla sua ultima parola vera. Lo si legge come
+Il rimedio è indicare alla rete la lunghezza effettiva di ciascuna frase. In
+PyTorch lo si fa impacchettando il mini-batch con `pack_padded_sequence`, a cui
+si passano le lunghezze delle sequenze (con `enforce_sorted=False` se non sono
+ordinate dalla più lunga alla più corta). La rete restituisce allora, come
+secondo valore, lo stato finale `h_n` (per la LSTM la coppia `h_n, c_n`), che
+per ciascuna frase si arresta all'ultima parola reale. Lo si legge come
 `h_n[-1]`: il primo indice di `h_n` scorre sugli strati della rete, anche con
-`batch_first=True`, e `-1` prende l'ultimo. Prendere invece `h[:, -1]` dopo aver
-srotolato l'uscita con `pad_packed_sequence` darebbe un vettore di zeri per ogni
-frase più corta delle altre. Senza impacchettare, lo stato giusto si prende,
-frase per frase, alla posizione della sua ultima parola vera, cioè alla sua
-lunghezza meno uno.
+`batch_first=True`, e `-1` prende l'ultimo. Prendere invece `h[:, -1]` dopo
+aver srotolato l'uscita con `pad_packed_sequence` darebbe un vettore di zeri
+per ogni frase più corta delle altre. Senza impacchettare, lo stato corretto si
+ricava, frase per frase, alla posizione dell'ultima parola effettiva, cioè alla
+sua lunghezza meno uno.
 
-Il ciclo di addestramento è quello che conosciamo dal {doc}`capitolo su PyTorch
-</PyTorch/overview>`. E provare, come si è detto, costa una parola: si scambia
-`nn.LSTM` con `nn.RNN` o con `nn.GRU`, e il resto del programma non cambia di
-una riga. Cambia invece il numero dei pesi, che con le dimensioni del
-classificatore si conta così:
+Il ciclo di addestramento è quello della {doc}`sezione sul training loop
+</PyTorch/addestramento>`. Provare costa una parola: si scambia `nn.LSTM` con
+`nn.RNN` o con `nn.GRU`, e il resto del programma non cambia di una riga.
+Cambia invece il numero dei pesi, che con le dimensioni del classificatore si
+conta così:
 
 ```python
 from torch import nn
@@ -532,19 +530,19 @@ LSTM   99328
 Una RNN semplice ha un blocco di pesi, una GRU tre e una LSTM quattro, tutti
 della stessa forma: la GRU ha esattamente tre quarti dei pesi della LSTM. Su
 sequenze lunghe LSTM e GRU si addestrano in genere meglio della RNN semplice,
-per la ragione appena vista: i cancelli lasciano aperta una strada su cui il
-gradiente arriva anche da lontano. Lo mostra il confronto sistematico di Chung
-e colleghi su musica polifonica e segnale vocale {cite}`chung2014empirical`,
-dove fra LSTM e GRU, invece, nessuna delle due prevale con chiarezza.
+poiché i cancelli mantengono una via diretta lungo cui il gradiente si propaga
+anche da passi lontani. Lo mostra il confronto sistematico di Chung e colleghi
+su musica polifonica e segnale vocale {cite}`chung2014empirical`, dove fra LSTM
+e GRU, invece, nessuna delle due prevale con chiarezza.
 
 ## Il collo di bottiglia sequenziale
 
 Per qualche anno, grosso modo fra il 2013 e il 2017, LSTM e GRU sono state
 l'architettura di riferimento per la traduzione automatica, il riconoscimento
-vocale e la generazione di testo. Restava però un limite di calcolo, oltre a
-quello di apprendimento appena visto: lo stato al passo $t$ dipende da quello
-al passo $t-1$, quindi i passi di una sequenza non si possono eseguire in
-parallelo.
+vocale e la generazione di testo. Accanto alle difficoltà nell'apprendere
+dipendenze a lungo termine, restava però un limite computazionale: lo stato al
+passo $t$ dipende da quello al passo $t-1$, impedendo l'esecuzione in parallelo
+dei passi di una sequenza.
 
 `````{tab} Elementare
 
@@ -583,23 +581,24 @@ stati </StateSpaceModel/overview>`.
 La ricorrenza $\mathbf{h}_t = f(\mathbf{h}_{t-1}, \mathbf{x}_t)$ è
 intrinsecamente sequenziale: il calcolo su una sequenza di lunghezza $n$
 richiede $O(n)$ passi che non possono essere parallelizzati lungo l'asse
-temporale. Questo mal si sposa con le GPU, progettate per eseguire in parallelo
-enormi moltiplicazioni tra matrici. Inoltre il segnale tra due token distanti
-deve attraversare $O(n)$ celle, il che rende ancora arduo (pur mitigato dai
-gate) l'apprendimento di dipendenze molto lunghe. Con stato di dimensione $d$ il
-conto è $O(n\,d^2)$ operazioni in $O(n)$ passi sequenziali; l'autoattenzione
-paga $O(n^2 d)$ operazioni, ma in $O(1)$ passi sequenziali e con un cammino di
-lunghezza $O(1)$ fra due posizioni qualsiasi, e costa meno finché $n$ resta
-sotto $d$ {cite}`vaswani2017attention`. La sequenzialità, del resto, è un
-vincolo delle ricorrenze non lineari. Se l'aggiornamento è lineare in
-$\mathbf{h}_{t-1}$, $\mathbf{h}_t = \mathbf{A}_t\mathbf{h}_{t-1} + \mathbf{b}_t$
-con $\mathbf{A}_t$ e $\mathbf{b}_t$ che dipendono solo dall'ingresso, due passi
-consecutivi si fondono in un passo della stessa forma,
-$(\mathbf{A}_2\mathbf{A}_1,\ \mathbf{A}_2\mathbf{b}_1 + \mathbf{b}_2)$; la
-fusione è associativa, e si calcola con una scansione parallela in $O(\log n)$
-passi. Perché convenga, $\mathbf{A}_t$ si prende diagonale: con una matrice
-piena ogni fusione costa $O(d^3)$. È la strada presa dai {doc}`modelli a spazio
-di stati </StateSpaceModel/mamba>`.
+temporale. Questa dipendenza limita lo sfruttamento delle GPU,
+progettate per eseguire in parallelo grandi moltiplicazioni tra matrici.
+Inoltre il segnale tra due token distanti deve attraversare $O(n)$ celle, il
+che rende ancora arduo (pur mitigato dai gate) l'apprendimento di dipendenze
+molto lunghe. Con stato di dimensione $d$ la complessità è di $O(n\,d^2)$
+operazioni in $O(n)$ passi sequenziali; l'autoattenzione richiede $O(n^2 d)$
+operazioni, ma in $O(1)$ passi sequenziali e con un cammino di lunghezza $O(1)$
+fra due posizioni qualsiasi, e costa meno finché $n$ resta sotto $d$
+{cite}`vaswani2017attention`. La sequenzialità, del resto, è un vincolo delle
+ricorrenze non lineari. Se l'aggiornamento è lineare in $\mathbf{h}_{t-1}$,
+$\mathbf{h}_t = \mathbf{A}_t\mathbf{h}_{t-1} + \mathbf{b}_t$ con $\mathbf{A}_t$
+e $\mathbf{b}_t$ che dipendono solo dall'ingresso, due passi consecutivi si
+fondono in un passo della stessa forma, $(\mathbf{A}_2\mathbf{A}_1,\
+\mathbf{A}_2\mathbf{b}_1 + \mathbf{b}_2)$; la fusione è associativa, e si
+calcola con una scansione parallela in $O(\log n)$ passi. Perché convenga,
+$\mathbf{A}_t$ viene scelta diagonale: con una matrice piena ogni fusione costa
+$O(d^3)$. È la strada presa dai {doc}`modelli a spazio di stati
+</StateSpaceModel/mamba>`.
 
 `````
 
@@ -608,16 +607,14 @@ di stati </StateSpaceModel/mamba>`.
 Le celle ricorrenti che abbiamo costruito qui sono i mattoni del passo
 successivo: mettere due RNN una di fronte all'altra (una che legge, una che
 scrive) e farle tradurre una frase intera. È la storia della {doc}`traduzione
-con le reti <seq2seq-traduzione>`, ed è proprio lì, per rimediare ai limiti di
-questa architettura, che
-nascerà il meccanismo di attenzione: la possibilità, per ogni parola in
-uscita, di tornare a guardare tutte le parole in ingresso e pesare da sola
-quali contano.
+con le reti <seq2seq-traduzione>`: in quell'ambito, per superare i limiti di
+questa architettura, nascerà il meccanismo di attenzione, che permetterà a ogni
+parola in uscita di esaminare tutte le parole in ingresso per valutare quali
+siano rilevanti.
 
-Quell'idea si rivelerà così potente da fare, nel 2017, un passo ulteriore:
-eliminare del tutto la ricorrenza e tenere solo l'attenzione
-{cite}`vaswani2017attention`, il salto che ha reso possibili i grandi modelli
-linguistici di oggi.
+Nel 2017 quell'intuizione porterà a un passo ulteriore: eliminare del tutto la
+ricorrenza e conservare la sola attenzione {cite}`vaswani2017attention`,
+il salto che ha reso possibili i grandi modelli linguistici di oggi.
 
 Le RNN, le LSTM e le GRU restano però in uso dove i dati arrivano un pezzo alla
 volta e non finiscono mai (il segnale di un sensore, l'audio di un microfono
@@ -674,12 +671,12 @@ lunghezza.
   del contesto.
 - Una RNN riusa la stessa cella a ogni passo, facendo scorrere lo stato
   nascosto $\mathbf{h}_t$ nel tempo.
-- Una RNN fatica sulle dipendenze a lungo termine per due ragioni distinte.
-  Il gradiente che svanisce, che è matematica e riguarda soprattutto le reti
-  semplici (la LSTM lo attenua; l'esplosione si cura col clipping). E il BPTT
-  troncato, che è ingegneria e vale per ogni ricorrente, LSTM compresa:
-  staccando lo stato al confine del blocco (`h.detach()`) il gradiente non lo
-  attraversa, quindi un legame più lungo del blocco la rete non lo impara mai.
+- Una RNN fatica sulle dipendenze a lungo termine per due ragioni distinte: il
+  gradiente che svanisce, limite matematico tipico delle reti semplici (la LSTM
+  lo attenua; l'esplosione si cura col clipping), e il BPTT troncato, vincolo
+  ingegneristico comune a ogni ricorrente, LSTM compresa. Poiché lo stato viene
+  staccato al confine del blocco (`h.detach()`), il gradiente non lo attraversa
+  e la rete non può imparare un legame più lungo del blocco.
 - LSTM e GRU introducono i gate, che decidono cosa ricordare e cosa
   dimenticare, proteggendo la memoria. L'architettura del 1997
   {cite}`hochreiter1997long` ne aveva due; il *forget gate* è del 2000

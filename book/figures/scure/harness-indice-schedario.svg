@@ -1,0 +1,86 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../harness-indice-schedario.svg
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 440" role="img" aria-label="Due modi di dare le istruzioni a un agente. A sinistra, un manuale: un file unico e lunghissimo, disegnato come una colonna di righe fitte; una riga terracotta a metà della colonna è la regola importante, e una nota dice che lì, a metà, il modello la legge peggio. Tutta la colonna entra nel contesto a ogni sessione. A destra, un indice: un file corto di poche righe che entra sempre nel contesto, con frecce verso quattro schede della cartella docs (architettura, piani, specifiche, riferimenti); soltanto la scheda dei piani, quella che serve al compito del giorno, è evidenziata ed entra nel contesto.">
+  <defs><marker id="fn-is" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#F4ECDD"/></marker><marker id="ft-is" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#E27B52"/></marker></defs>
+  <text x="215" y="36" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="700" fill="#F4ECDD">UN MANUALE</text>
+  <text x="620" y="36" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="700" fill="#F4ECDD">UN INDICE</text>
+  <rect x="130" y="56" width="170" height="300" rx="8" fill="#DDB874" fill-opacity="0.10" stroke="#F4ECDD" stroke-width="2"/>
+  <text x="215" y="76" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11.5" font-weight="700" fill="#F4ECDD">AGENTS.md</text>
+  <line x1="146" y1="90" x2="246" y2="90" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="146" y1="98" x2="276" y2="98" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="146" y1="106" x2="276" y2="106" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="146" y1="114" x2="276" y2="114" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="146" y1="122" x2="276" y2="122" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="146" y1="130" x2="246" y2="130" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="146" y1="138" x2="276" y2="138" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="146" y1="146" x2="246" y2="146" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="146" y1="154" x2="276" y2="154" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="146" y1="162" x2="246" y2="162" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="146" y1="170" x2="276" y2="170" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="146" y1="178" x2="276" y2="178" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="146" y1="186" x2="276" y2="186" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="146" y1="194" x2="276" y2="194" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="146" y1="202" x2="246" y2="202" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="146" y1="210" x2="286" y2="210" stroke="#E27B52" stroke-width="4" stroke-linecap="round"/>
+  <line x1="146" y1="218" x2="246" y2="218" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="146" y1="226" x2="276" y2="226" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="146" y1="234" x2="246" y2="234" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="146" y1="242" x2="276" y2="242" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="146" y1="250" x2="276" y2="250" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="146" y1="258" x2="276" y2="258" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="146" y1="266" x2="276" y2="266" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="146" y1="274" x2="246" y2="274" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="146" y1="282" x2="276" y2="282" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="146" y1="290" x2="246" y2="290" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="146" y1="298" x2="276" y2="298" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="146" y1="306" x2="246" y2="306" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="146" y1="314" x2="276" y2="314" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="146" y1="322" x2="276" y2="322" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="146" y1="330" x2="276" y2="330" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="146" y1="338" x2="276" y2="338" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <path d="M 110 210 L 138 210" fill="none" stroke="#E27B52" stroke-width="2" marker-end="u r l f t i s"/>
+  <text x="106" y="198" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="11.5" font-weight="700" fill="#E27B52">la regola</text>
+  <text x="106" y="213" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="11.5" font-weight="700" fill="#E27B52">che conta,</text>
+  <text x="106" y="228" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#BCB3A1">a metà:</text>
+  <text x="106" y="243" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#BCB3A1">letta peggio</text>
+  <path d="M 316 60 Q 330 60 330 74 L 330 196 Q 330 206 340 206 Q 330 206 330 216 L 330 338 Q 330 352 316 352" fill="none" stroke="#BCB3A1" stroke-width="1.6"/>
+  <text x="215" y="386" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#F4ECDD">entra tutto nel contesto,</text>
+  <text x="215" y="404" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#F4ECDD">a ogni sessione</text>
+  <line x1="370" y1="56" x2="370" y2="410" stroke="#34302A" stroke-width="1.4" stroke-dasharray="5 5"/>
+  <rect x="410" y="150" width="150" height="104" rx="8" fill="#DDB874" fill-opacity="0.22" stroke="#F4ECDD" stroke-width="2"/>
+  <text x="485" y="172" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11.5" font-weight="700" fill="#F4ECDD">AGENTS.md</text>
+  <line x1="426" y1="186" x2="516" y2="186" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="426" y1="196" x2="536" y2="196" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="426" y1="206" x2="516" y2="206" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="426" y1="216" x2="536" y2="216" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="426" y1="226" x2="516" y2="226" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <line x1="426" y1="236" x2="536" y2="236" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
+  <rect x="620" y="62" width="118" height="50" rx="7" fill="none" stroke="#BCB3A1" stroke-width="1.6"/>
+  <text x="679" y="84" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#BCB3A1">docs/</text>
+  <text x="679" y="100" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12.5" font-weight="700" fill="#F4ECDD">architettura</text>
+  <path d="M 562 170 L 616 87" fill="none" stroke="#BCB3A1" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#fn-is)"/>
+  <rect x="620" y="146" width="118" height="50" rx="7" fill="#5BA39C" fill-opacity="0.18" stroke="#5BA39C" stroke-width="2.6"/>
+  <text x="679" y="168" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#BCB3A1">docs/</text>
+  <text x="679" y="184" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12.5" font-weight="700" fill="#F4ECDD">piani</text>
+  <path d="M 562 192 L 616 171" fill="none" stroke="#5BA39C" stroke-width="2.2"  marker-end="url(#fn-is)"/>
+  <rect x="620" y="230" width="118" height="50" rx="7" fill="none" stroke="#BCB3A1" stroke-width="1.6"/>
+  <text x="679" y="252" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#BCB3A1">docs/</text>
+  <text x="679" y="268" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12.5" font-weight="700" fill="#F4ECDD">specifiche</text>
+  <path d="M 562 212 L 616 255" fill="none" stroke="#BCB3A1" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#fn-is)"/>
+  <rect x="620" y="314" width="118" height="50" rx="7" fill="none" stroke="#BCB3A1" stroke-width="1.6"/>
+  <text x="679" y="336" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#BCB3A1">docs/</text>
+  <text x="679" y="352" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12.5" font-weight="700" fill="#F4ECDD">riferimenti</text>
+  <path d="M 562 234 L 616 339" fill="none" stroke="#BCB3A1" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#fn-is)"/>
+  <text x="485" y="140" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11.5" font-weight="700" fill="#5BA39C">entra sempre</text>
+  <text x="679" y="384" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#F4ECDD">entra l'indice,</text>
+  <text x="679" y="402" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#F4ECDD">e la scheda che serve</text>
+  <text x="485" y="290" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#BCB3A1">poche righe:</text>
+  <text x="485" y="305" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#BCB3A1">che cos'è, i comandi,</text>
+  <text x="485" y="320" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#BCB3A1">le regole fisse,</text>
+  <text x="485" y="335" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#BCB3A1">dove guardare</text>
+</svg>

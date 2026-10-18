@@ -4,19 +4,15 @@ I Transformer lavorano qui su due compiti concreti: tradurre una frase e
 capire se una recensione è entusiasta o delusa.
 Sono gli stessi esempi che si incontrano ogni giorno senza pensarci (il tasto
 "traduci" sotto un post, il termometro delle recensioni di un prodotto), e non
-serve addestrare niente da zero. La parte costosa l'ha già fatta qualcun altro:
+serve addestrare niente da zero. Qualcun altro ha già fatto la parte costosa:
 ha preso una di queste reti con i parametri ancora a caso, l'ha addestrata su
 montagne di testo per giorni interi, su una fila di processori in parallelo, e
 ne ha pubblicato i pesi, che si scaricano e si usano in poche righe. Una rete
 così, con i parametri già ottimizzati su un grande corpus, si chiama modello
-**pre-addestrato**. Il catalogo di questi modelli lo tiene Hugging Face, sul
-suo sito; la libreria che li carica e li fa girare si chiama `transformers`
-{cite}`wolf2020transformers`, una cassetta degli attrezzi già pronta che un
-programma può aprire e usare, e sotto c'è {doc}`PyTorch </PyTorch/overview>`,
+**pre-addestrato**. Hugging Face ospita il catalogo di questi modelli sul
+suo sito; la libreria che li carica e li esegue si chiama `transformers`
+{cite}`wolf2020transformers`, basata su {doc}`PyTorch </PyTorch/overview>`,
 lo strumento con cui si costruiscono le reti.
-
-Il secondo esempio insegna di più, perché sbaglia su una frase italiana di
-quattro parole.
 
 ## Traduzione automatica
 
@@ -24,9 +20,9 @@ quattro parole.
 sulla struttura del Transformer <architettura>` l'ha presentato: l'encoder
 legge la frase di partenza, il decoder compone quella d'arrivo, e a ogni parola
 prodotta torna a guardare l'originale con la cross-attention della
-{doc}`sezione sull'attenzione <attenzione>`. Le domande, cioè le query («che
-cosa mi serve adesso?»), le pone il decoder; le chiavi e i valori con cui si
-risponde vengono dall'encoder.
+{doc}`sezione sull'attenzione <attenzione>`. Il decoder formula le query («che
+cosa mi serve adesso?»), mentre dall'encoder vengono le chiavi e i valori con
+cui si risponde.
 
 `````{tab} Elementare
 Segui il viaggio di "The cat sits on the mat". Prima la frase viene spezzata
@@ -76,34 +72,34 @@ Il gatto si siede sulla riva del fiume.
 
 La terza frase è la disambiguazione lessicale in atto: un dizionario elenca
 tutti e due i significati di «bank» e lascia la scelta a chi legge, mentre qui
-la compie il modello, e la compie in funzione del contesto, perché senza
-«river» la stessa frase diventa «Il gatto si siede sulla banca», il significato
-più comune. È quello che ci si aspetta da una rappresentazione di «bank»
-costruita dall'attenzione anche sugli altri token della frase.
+è il modello a decidere in funzione del contesto: senza «river», infatti, la
+stessa frase diventa «Il gatto si siede sulla banca», il significato più
+comune. È il risultato atteso di una rappresentazione di «bank» costruita
+dall'attenzione anche sugli altri token della frase.
 
-Il codice esegue tre passaggi: tokenizzazione (la frase diventa una sequenza
-di id di token), inferenza con `generate` (encoder e decoder Transformer, con
+Il codice esegue tre passaggi: tokenizzazione (la frase diventa una sequenza di
+id di token), inferenza con `generate` (encoder e decoder Transformer, con
 generazione autoregressiva e maschera causale) e decodifica (dagli id di token
 al testo). La libreria offre anche una scorciatoia, `pipeline`, che li
-incapsula in una sola riga, come nell'esempio sulle recensioni; qui restano
-separati. Dietro le quinte il modello è un `nn.Module` PyTorch come quelli della
-{doc}`sezione sui moduli </PyTorch/moduli>`: con `modello.named_parameters()`
-si ispezionano strati, teste di attenzione e parametri.
+incapsula in una sola riga, come nell'esempio successivo sulle recensioni; qui
+restano separati. Dietro le quinte il modello è un `nn.Module` PyTorch come
+quelli della {doc}`sezione sui moduli </PyTorch/moduli>`: con
+`modello.named_parameters()` si ispezionano strati, teste di attenzione e
+parametri.
 `````
 
 ## Il termometro delle recensioni
 
-Il secondo compito è capire l'umore di chi scrive: se una recensione è
-entusiasta o delusa. Si chiama *sentiment analysis*, «analisi del sentimento»,
-ed è quello che sta dietro alla percentuale di soddisfatti che compare sotto un
-prodotto in vendita.
+Il secondo compito è capire l'umore di chi scrive. Si chiama *sentiment
+analysis*, «analisi del sentimento», e sta dietro alla percentuale di
+soddisfatti che compare sotto un prodotto in vendita.
 
 Qui il Transformer non genera nulla: *capisce* e assegna un voto, da una a
 cinque stelle, come un cliente su un sito di recensioni. Basta quindi la sola
-torre che legge, senza quella che scrive: se la risposta è un voto e non una
-frase, la torre che scrive non serve, e tenerla aggiungerebbe solo calcolo. In
-gergo un modello così si dice **encoder-only**, "solo encoder", e il
-capostipite si chiama BERT.
+torre che legge: se la risposta è un voto e non una
+frase, la torre che scrive non serve e aggiungerebbe solo calcolo. In
+gergo un modello simile si chiama **encoder-only**, «solo encoder», e il
+capostipite è BERT.
 
 `````{tab} Elementare
 "Mi è piaciuto moltissimo questo prodotto!" e "Una delusione totale": per te è
@@ -124,7 +120,7 @@ vogliono dire avere ragione ottanta volte su cento: se la sicurezza della
 macchina sia giustificata lo si scopre soltanto provandola su frasi di cui si
 sa già la risposta.
 
-Le frasi facili le indovinano tutti; quanto un modello abbia capito si vede
+Tutti indovinano le frasi facili; quanto un modello abbia capito si vede
 sulle altre. Il caso classico in italiano è il
 complimento detto negando il contrario, "non è affatto male": nessuna delle tre
 parole è un elogio, eppure la frase lo è. Lì il modello sbaglia: mette poco più
@@ -181,28 +177,29 @@ queste cifre si fissa la versione dei pesi con l'argomento
 `revision` (l'identificativo di una versione sul sito) e quella della libreria.
 
 Il modello è un BERT multilingue rifinito (*fine-tuned*) su recensioni: la
-classificazione usa la rappresentazione del token speciale `[CLS]`, passata per
-uno strato denso con tangente iperbolica (il *pooler* di BERT) e poi a una
-testa lineare a cinque uscite (architettura encoder-only, senza generazione). Le
-prime due frasi danno il risultato atteso; la terza no, e per questo il
-codice stampa la graduatoria e non solo la vincente. Sulla terza i valori sono
-$0{,}365$ a due stelle e $0{,}336$ a tre: uno scarto di ventinove millesimi,
-l'unico delle quattro righe in cui le prime due classi si toccano così. Il solo
-`argmax` direbbe «2 stars» e si fermerebbe lì, indistinguibile dai verdetti
-delle altre tre righe, dove la seconda classe resta indietro di centocinquanta
-millesimi o più: `top_k=None` tiene visibile la differenza fra un verdetto
-comodo e uno in bilico.
+classificazione usa la rappresentazione del token speciale `[CLS]`, passata
+attraverso uno strato denso con tangente iperbolica (il *pooler* di BERT) e poi
+inviata a una testa lineare a cinque uscite (architettura encoder-only, senza
+generazione). Le prime due frasi danno il risultato atteso; la terza no, e per
+questo il codice stampa la graduatoria e non solo la vincente. Sulla terza i
+valori sono $0{,}365$ a due stelle e $0{,}336$ a tre: uno scarto di ventinove
+millesimi, l'unico caso fra le quattro frasi in cui le prime due classi
+risultano quasi appaiate. Il solo `argmax` direbbe «2 stars» e si fermerebbe
+lì, indistinguibile dai verdetti delle altre tre frasi, dove la seconda classe
+resta indietro di centocinquanta millesimi o più: `top_k=None` rende visibile
+la differenza fra una classificazione netta e una in bilico.
 
-Il punteggio della classe vincente è la probabilità che la softmax assegna a
-quella classe, e niente garantisce che sia calibrata, cioè che fra le frasi a
-cui il modello dà 0,6 ne siano giuste sei su dieci: le reti neurali moderne
-sono spesso mal calibrate {cite}`guo2017calibration`, e la {doc}`sezione su
-come si valuta un modello </MachineLearning/metriche>` spiega come se ne
-verifichi la calibrazione. Inoltre, un punteggio isolato non dice nulla sulla
-qualità del classificatore, che si misura con le metriche della stessa sezione
-(accuratezza, precision e recall) su dati del dominio che interessa; su testi
-diversi da quelli di addestramento (ironia, sarcasmo, gergo) le prestazioni di
-solito calano, e una sola litote non basta a dire di quanto.
+Il punteggio della classe vincente è la probabilità assegnata dalla softmax, ma
+nulla garantisce che sia calibrata, ossia che fra le frasi con punteggio 0,6 ne
+risultino corrette sei su dieci. Le reti neurali moderne sono spesso mal
+calibrate {cite}`guo2017calibration`; la {doc}`sezione su come si valuta un
+modello
+</MachineLearning/metriche>` spiega come verificarne la calibrazione. Inoltre,
+un punteggio isolato non dice nulla sulla qualità del classificatore, che va
+misurata con le metriche di quella sezione (accuratezza, precision e recall)
+sui dati del dominio di interesse. Su testi diversi da quelli di addestramento
+(ironia, sarcasmo, gergo) le prestazioni di solito calano, e una sola litote
+non basta a dire di quanto.
 `````
 
 Le quattro frasi sono una lode, una stroncatura e due litoti, «non è affatto
@@ -220,7 +217,7 @@ dentro una stroncatura piena («non mi è piaciuto affatto»): il modello ne
 eredita l'associazione. È una spiegazione plausibile e non una verifica, perché
 i testi su cui questo modello è stato addestrato non si possono ispezionare:
 chi lo ha addestrato non li ha pubblicati. Dire una cosa negando il suo
-contrario (i retori la chiamano *litote*) richiede di comporre tre parole in un
+contrario richiede di comporre tre parole in un
 significato che nessuna delle tre porta con sé: l'attenzione mette «non»,
 «affatto» e «male» in contatto, ma il contatto non garantisce che la
 composizione dia il risultato giusto. Con le sole due frasi facili la
@@ -249,11 +246,11 @@ provate al volo non sono un collaudo.
 :class: important
 - La traduzione usa il Transformer completo: encoder che legge, decoder
   che genera, cross-attention che li allinea.
-- L’analisi del sentiment usa un *encoder-only* (stile BERT) con una testa
+- L’analisi del sentiment usa un *encoder-only* (come BERT) con una testa
   di classificazione: capire, non generare.
 - La libreria `transformers` di Hugging Face (su PyTorch) dà accesso a
   modelli pre-addestrati per entrambi i compiti in poche righe: sotto, sono
-  `nn.Module` come quelli della sezione sui moduli di PyTorch.
+  `nn.Module` come quelli della {doc}`sezione sui moduli </PyTorch/moduli>`.
 - I risultati vanno validati sul proprio dominio: ironia, gergo e litoti
   restano difficili, e «non è affatto male», letta come scontenta, ne è il
   controesempio. La probabilità della classe vincente non è per forza
@@ -262,6 +259,5 @@ provate al volo non sono un collaudo.
 `````
 
 BERT, il modello del secondo esempio, è uno dei tre capostipiti da cui nascono
-le famiglie di Transformer: la {doc}`sezione sulle famiglie di modelli
-<multimodalita>` lo mette accanto a GPT e a T5, e poi porta lo stesso
-meccanismo fuori dal testo.
+le famiglie di Transformer, e la {doc}`sezione sulle famiglie di modelli
+<multimodalita>` lo mette accanto a GPT e a T5.

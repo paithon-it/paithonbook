@@ -60,14 +60,15 @@
   --sidebar-width: 300px;
   --spacing-unit: 1.5rem;
 
-  /* Corpo del testo e margine laterale: una scala continua, non quattro
-     scaglioni che si contraddicono. Prima erano 20px da desktop, 16px da
-     tablet, 19px da telefono e 18px da telefono piccolo — il tablet aveva il
-     testo PIÙ PICCOLO di tutti — e la riga passava da 26 caratteri a 360px a
-     75 a 768px e poi tornava a 47 a 1280px. Adesso il corpo va da ~17.4px a
-     ~20.5px senza salti e, con --measure a fare da tetto, la riga sale da 36
-     a 70 caratteri in modo monotono. */
-  --pt-corpo:   clamp(1.09rem, 1.03rem + 0.27vw, 1.28rem);
+  /* Corpo del testo e margine laterale: una scala continua, non scaglioni
+     che si contraddicono. Il corpo è quello della tipografia di lettura del
+     brand (`--pt-prose-body`, da 17 a 18px); con --measure a fare da tetto la
+     riga sale in modo monotono, e nella colonna di un capitolo con l'indice a
+     destra sta fra 65 e 75 caratteri, anche dentro le schede. Il secondo
+     argomento di ogni var(--pt-prose-*) è il ripiego per un brand fissato a
+     una versione che quei token non li ha ancora: sono gli stessi valori, e
+     se ne vanno quando il submodule li porta. */
+  --pt-corpo:   var(--pt-prose-body, clamp(1.0625rem, 1rem + 0.2vw, 1.125rem));
   --pt-margine: clamp(1.15rem, 0.60rem + 2.20vw, 3rem);
 
   /* Ombre e transizioni — da brand */
@@ -96,7 +97,7 @@
  */
 body {
   font-family: var(--font-body);
-  line-height: 1.62;
+  line-height: var(--pt-prose-leading, 1.62);
   color: var(--text-color);
   font-size: var(--pt-corpo);
   -webkit-font-smoothing: antialiased;
@@ -107,7 +108,7 @@ body {
 }
 
 @media (min-width: 48em) {
-  body { line-height: 1.72; }
+  body { line-height: var(--pt-prose-leading-wide, 1.72); }
 }
 
 /* Titoli display Fraunces — voce editoriale espressiva.
@@ -128,45 +129,66 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  font-size: clamp(2.1rem, 1.50rem + 2.60vw, 3.2rem);
-  font-weight: 800;
+  font-size: var(--pt-prose-h1, clamp(2.1rem, 1.5rem + 2.6vw, 3.2rem));
+  font-weight: var(--pt-prose-heading-weight, 400);
   letter-spacing: -0.025em;
   margin-top: 0;
   margin-bottom: 1.5rem;
   line-height: 1.08;
 }
 
+/* Il h2 prende l'ocra da testo del brand, come gli h2 degli articoli del
+   sito: l'ocra piena sul chiaro non si legge, quella da testo sì, in tutti e
+   due i temi. Con un brand che il token non lo ha ancora, il titolo resta del
+   colore del testo. */
 h2 {
-  font-size: clamp(1.60rem, 1.28rem + 1.40vw, 2.25rem);
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  padding-bottom: 0.6rem;
-  border-bottom: 2px solid var(--border-strong);
-  margin-top: 3.25rem;
-  margin-bottom: 1.6rem;
+  color: var(--pt-prose-h2-color, var(--pt-accent-3-ink, var(--text-color)));
+  font-size: var(--pt-prose-h2, clamp(1.5rem, 1.25rem + 1.1vw, 2rem));
+  font-weight: var(--pt-prose-heading-weight, 400);
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  padding-bottom: 0.4rem;
+  border-bottom: var(--pt-prose-rule, 1px) solid var(--border-color);
+  margin-top: 3rem;
+  margin-bottom: 1.1rem;
+}
+
+/* Il tema dichiara `.bd-article-container h1, h2 { font-weight: 500 }`, che
+   vince sulle regole qui sopra per specificità; e siccome i pesi di Fraunces
+   caricati sono 400, 600 e 800, il 500 cade sul 400. Il peso dei due titoli
+   maggiori si scrive allora con lo stesso selettore, e vale quello che si
+   legge: il tondo leggero del brand, che regge la misura grande senza
+   gridare. */
+.bd-article-container h1,
+.bd-article-container h2 {
+  font-weight: var(--pt-prose-heading-weight, 400);
+}
+
+.bd-article-container h2 {
+  color: var(--pt-prose-h2-color, var(--pt-accent-3-ink, var(--text-color)));
 }
 
 h3 {
-  font-size: clamp(1.35rem, 1.15rem + 0.85vw, 1.70rem);
+  font-size: var(--pt-prose-h3, clamp(1.2rem, 1.1rem + 0.5vw, 1.4rem));
   color: var(--text-color);
-  margin-top: 2.5rem;
-  margin-bottom: 1rem;
+  margin-top: 2.25rem;
+  margin-bottom: 0.75rem;
 }
 
 h4 {
-  font-size: clamp(1.18rem, 1.06rem + 0.50vw, 1.45rem);
-  margin-top: 2.25rem;
+  font-size: var(--pt-prose-h4, clamp(1.15rem, 1.1rem + 0.3vw, 1.3rem));
+  margin-top: 2rem;
 }
 
 h5 {
-  font-size: clamp(1.05rem, 1.00rem + 0.25vw, 1.25rem);
+  font-size: var(--pt-prose-h5, clamp(1.1rem, 1.08rem + 0.1vw, 1.15rem));
   margin-top: 2rem;
 }
 
 /* Paragrafi. Il corpo lo decide `body`: qui `1.1em` moltiplicava quella
    misura, e dentro una lista o un riquadro i moltiplicatori si sommavano. */
 p {
-  margin: 0 0 1.4em;
+  margin: 0 0 var(--pt-prose-gap, 1.15em);
   font-size: 1em;
 }
 
@@ -1086,6 +1108,10 @@ html[data-theme="dark"] {
   --pst-color-text-base: var(--pt-fg);
   --pst-color-text-muted: var(--pt-fg-muted);
   --pst-color-border: var(--pt-border);
+  /* Il nome che il tema legge davvero è `--pst-color-heading`
+     (`h1, h2 { color: var(--pst-color-heading) }`): senza, i titoli restavano
+     nel grigio freddo di fabbrica invece che nell'inchiostro del brand. */
+  --pst-color-heading: var(--pt-fg);
   --pst-color-heading-color: var(--pt-fg);
   --pst-heading-color: var(--pt-fg);
   --pst-color-inline-code: var(--pt-accent-hover);
@@ -1140,11 +1166,40 @@ header.bd-header,
   box-shadow: none;
 }
 
-/* TOC di pagina (destra) e footer sulla stessa carta */
-.bd-sidebar-secondary,
+/* Il footer sulla stessa carta della pagina. */
 .bd-footer {
   background: var(--bg-page);
   border-color: var(--border-color);
+}
+
+/* L'indice di pagina, a destra, non è un riquadro: è un filetto sottile a
+   sinistra con le voci in corpo piccolo, e lascia vedere il fondo della
+   pagina. Fa da segnalibro, e un pannello pieno gli dava lo stesso peso
+   del testo. */
+.bd-sidebar-secondary {
+  background: transparent;
+  border-color: var(--border-color);
+}
+
+.bd-sidebar-secondary .onthispage {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: var(--pt-tracking-caps, 0.08em);
+  text-transform: uppercase;
+  color: var(--text-light);
+}
+
+.bd-sidebar-secondary .page-toc .nav-link {
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  color: var(--text-light);
+}
+
+.bd-sidebar-secondary .page-toc .nav-link:hover,
+.bd-sidebar-secondary .page-toc .nav-link.active {
+  color: var(--primary-color);
 }
 
 /* --- Logo: lockup bollo tribar + wordmark "paithon" (SVG theme-aware) --- */
@@ -1448,6 +1503,79 @@ html[data-theme="dark"] footer img,
 html[data-theme="dark"] p.copyright img {
   filter: invert(1) hue-rotate(180deg);
   opacity: 0.85;
+}
+
+/* ============================================================
+   COPERTINA — «Da dove cominciare» (landing page intro.md)
+   Quattro ingressi per tipo di lettore, sopra la griglia dei capitoli. Sono
+   schede di un'altra classe di proposito: la griglia dei capitoli ha il suo
+   contatore e il suo controllo (l'asse `landing` di coerenza.py), e queste
+   non sono capitoli.
+   ============================================================ */
+
+.pt-inizio {
+  margin: 2rem 0 2.5rem;
+}
+
+.pt-inizio-titolo {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: var(--pt-tracking-caps, 0.08em);
+  text-transform: uppercase;
+  color: var(--text-light);
+  margin: 0 0 0.75rem;
+}
+
+.pt-inizio-griglia {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.75rem;
+}
+
+/* La freccia che lo script dei collegamenti esterni appende (uno
+   `span.external-icon`) andrebbe a capo da sola sotto la scheda del PDF: la
+   scheda intera è già il collegamento. */
+a.pt-inizio-scheda .external-icon {
+  display: none;
+}
+
+a.pt-inizio-scheda {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.95rem 1.05rem 1.05rem;
+  border: 1px solid var(--border-color);
+  border-left: 3px solid var(--accent-ocra);
+  border-radius: 10px;
+  background: var(--bg-main);
+  color: var(--text-color);
+  text-decoration: none;
+  transition: border-color var(--transition-fast),
+              box-shadow var(--transition-fast);
+}
+
+a.pt-inizio-scheda:hover {
+  border-color: var(--primary-color);
+  border-left-color: var(--primary-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.pt-inizio-nome {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 1.05rem;
+  line-height: 1.25;
+}
+
+a.pt-inizio-scheda:hover .pt-inizio-nome {
+  color: var(--primary-color);
+}
+
+.pt-inizio-desc {
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: var(--text-light);
 }
 
 /* ============================================================

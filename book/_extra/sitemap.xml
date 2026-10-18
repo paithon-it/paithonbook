@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://book.paithon.it/main/intro.html</loc>
-    <lastmod>2026-10-14T16:49:41+00:00</lastmod>
+    <lastmod>2026-10-18T00:04:40+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/prefazione.html</loc>
@@ -434,83 +434,83 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/NaturalLanguageProcessing/classificazione-testo.html</loc>
-    <lastmod>2026-10-03T19:34:44+00:00</lastmod>
+    <lastmod>2026-10-17T13:44:24+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/NaturalLanguageProcessing/modelli-ngram.html</loc>
-    <lastmod>2026-10-03T19:34:44+00:00</lastmod>
+    <lastmod>2026-10-17T13:44:24+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/NaturalLanguageProcessing/modelli-sequenza.html</loc>
-    <lastmod>2026-10-03T19:34:44+00:00</lastmod>
+    <lastmod>2026-10-17T13:44:24+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/NaturalLanguageProcessing/seq2seq-traduzione.html</loc>
-    <lastmod>2026-10-03T19:34:44+00:00</lastmod>
+    <lastmod>2026-10-17T13:44:24+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/NaturalLanguageProcessing/etichettare-sequenze.html</loc>
-    <lastmod>2026-10-03T19:34:44+00:00</lastmod>
+    <lastmod>2026-10-17T13:44:24+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/NaturalLanguageProcessing/struttura-frase.html</loc>
-    <lastmod>2026-10-03T19:34:44+00:00</lastmod>
+    <lastmod>2026-10-17T13:44:24+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/NaturalLanguageProcessing/dialogo-chatbot.html</loc>
-    <lastmod>2026-10-03T19:34:44+00:00</lastmod>
+    <lastmod>2026-10-17T13:44:24+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Transformers/overview.html</loc>
-    <lastmod>2026-10-14T11:39:33+00:00</lastmod>
+    <lastmod>2026-10-18T02:40:31+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Transformers/attenzione.html</loc>
-    <lastmod>2026-10-14T11:40:53+00:00</lastmod>
+    <lastmod>2026-10-18T02:40:31+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Transformers/architettura.html</loc>
-    <lastmod>2026-10-14T11:39:33+00:00</lastmod>
+    <lastmod>2026-10-18T02:40:31+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Transformers/confronti.html</loc>
-    <lastmod>2026-10-14T11:39:33+00:00</lastmod>
+    <lastmod>2026-10-18T02:40:31+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Transformers/attenzione-in-pratica.html</loc>
-    <lastmod>2026-10-14T11:42:19+00:00</lastmod>
+    <lastmod>2026-10-18T02:40:31+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Transformers/esempi.html</loc>
-    <lastmod>2026-10-14T11:42:19+00:00</lastmod>
+    <lastmod>2026-10-18T02:40:31+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Transformers/multimodalita.html</loc>
-    <lastmod>2026-10-14T11:42:19+00:00</lastmod>
+    <lastmod>2026-10-18T02:40:31+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Transformers/multilingua.html</loc>
-    <lastmod>2026-10-14T11:58:29+00:00</lastmod>
+    <lastmod>2026-10-18T03:16:36+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Transformers/llm.html</loc>
-    <lastmod>2026-10-14T14:30:30+00:00</lastmod>
+    <lastmod>2026-10-18T03:16:36+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Transformers/mixture-of-experts.html</loc>
-    <lastmod>2026-10-14T11:58:29+00:00</lastmod>
+    <lastmod>2026-10-18T03:16:36+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Transformers/post-training.html</loc>
-    <lastmod>2026-10-14T11:58:29+00:00</lastmod>
+    <lastmod>2026-10-18T03:16:36+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Transformers/rag.html</loc>
-    <lastmod>2026-10-14T12:01:43+00:00</lastmod>
+    <lastmod>2026-10-18T03:16:36+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Transformers/tendenzefuture.html</loc>
-    <lastmod>2026-10-14T12:01:43+00:00</lastmod>
+    <lastmod>2026-10-18T03:16:36+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/AttenzioneLineare/overview.html</loc>
@@ -578,7 +578,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/Agenti/overview.html</loc>
-    <lastmod>2026-10-14T09:25:38+00:00</lastmod>
+    <lastmod>2026-10-18T01:48:57+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Agenti/agenti-e-tool-use.html</loc>
@@ -606,11 +606,39 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/IngegneriaLLM/context-engineering.html</loc>
-    <lastmod>2026-10-14T12:21:32+00:00</lastmod>
+    <lastmod>2026-10-18T01:48:57+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/IngegneriaLLM/loop-engineering.html</loc>
-    <lastmod>2026-10-14T12:21:32+00:00</lastmod>
+    <lastmod>2026-10-18T01:48:57+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/Harness/overview.html</loc>
+    <lastmod>2026-10-18T01:47:02+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/Harness/il-repository-come-memoria.html</loc>
+    <lastmod>2026-10-18T00:47:02+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/Harness/il-primo-turno.html</loc>
+    <lastmod>2026-10-18T01:21:25+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/Harness/passaggio-di-consegne.html</loc>
+    <lastmod>2026-10-18T01:21:25+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/Harness/finito-vuol-dire-collaudato.html</loc>
+    <lastmod>2026-10-18T01:37:43+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/Harness/quando-nessuno-guarda.html</loc>
+    <lastmod>2026-10-18T07:26:03+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/Harness/dal-ciclo-al-grafo.html</loc>
+    <lastmod>2026-10-18T07:26:03+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/SistemiMultiAgente/overview.html</loc>
@@ -970,6 +998,6 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/aggiornamenti.html</loc>
-    <lastmod>2026-10-14T22:46:52+00:00</lastmod>
+    <lastmod>2026-10-18T07:35:32+00:00</lastmod>
   </url>
 </urlset>

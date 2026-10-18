@@ -11,10 +11,10 @@ occasione, Weizenbaum propose di registrare le conversazioni per poterle
 esaminare, fu travolto dalle proteste di chi usava il programma: quello era
 spiare, quelle erano cose private.
 
-Sessant'anni dopo, milioni di persone conversano ogni giorno con delle
-macchine, e il dialogo resta il compito che l'NLP non ha ancora chiuso. Una
-conversazione è più di una fila di frasi; le tre famiglie di sistemi che la
-affrontano la trattano in modi molto diversi; e valutarla è difficile, perché la
+Sessant'anni dopo, milioni di persone conversano ogni giorno con le
+macchine, e il dialogo resta il compito che l'NLP non ha ancora risolto. Una
+conversazione è più di una fila di frasi; le tre famiglie di sistemi la
+affrontano in modi molto diversi; e valutarla è difficile, perché la
 risposta giusta non è una sola. Intanto la storia della segretaria resta una
 questione aperta.
 
@@ -64,14 +64,14 @@ parole e sbagliato la mossa.
 
 Il terzo è controllare di essersi capiti. Quel «Mh-mh» non aggiunge niente alla
 prenotazione, dice «ti sto seguendo, continua». Dieci secondi di ristoratore
-muto sul registro, e il cliente chiede «pronto? mi sente?». Poi rilegge la
-ricevuta: un tavolo per quattro domani alle otto all'aperto. Il cliente non lo
-corregge, e la prenotazione diventa cosa di tutti e due. Ma confermare troppo
-costa caro. Uno che ripetesse ogni parola («Quattro? Quattro. All'aperto?
-All'aperto. Domani? Domani.») raddoppierebbe la telefonata, e a metà gli si
-riattacca il telefono in faccia. Chi sa il mestiere ha già deciso che cosa
-confermare, il numero, il giorno e l'ora, e lascia stare il resto. Meno di così
-il cliente non si fida, più di così si spazientisce.
+muto sul registro, e il cliente chiede «pronto? mi sente?». Poi il ristoratore
+rilegge l'appunto: un tavolo per quattro domani alle otto all'aperto. Il
+cliente non lo corregge, e la prenotazione diventa cosa di tutti e due. Ma
+confermare troppo costa caro. Uno che ripetesse ogni parola («Quattro? Quattro.
+All'aperto? All'aperto. Domani? Domani.») raddoppierebbe la telefonata, e a
+metà gli si riattacca il telefono in faccia. Chi sa il mestiere ha già deciso
+che cosa confermare, il numero, il giorno e l'ora, e lascia stare il resto.
+Meno di così il cliente non si fida, più di così si spazientisce.
 
 Il quarto è capire quello che nessuno dice. «Quanti siete?» «Quattro». Una
 parola, e al ristoratore basta, perché entrambi danno per scontato che l'altro
@@ -92,11 +92,11 @@ I quattro fenomeni hanno una letteratura precisa.
 **Presa del turno** (*turn-taking*). Sacks, Schegloff e Jefferson
 {cite}`sacks1974simplest` ne descrissero la sistematica: i parlanti proiettano
 il punto di completamento del turno altrui e si avvicendano con pause
-brevissime in ogni lingua studiata (Stivers e colleghi
+brevissime in ogni lingua studiata. Stivers e colleghi
 {cite}`stivers2009universals` misurano 208 ms di media su dieci lingue, con
 medie per lingua che vanno da 7 a 469 ms: l'universale che il lavoro dimostra è
-la brevità, non un valore fisso). Queste pause sono troppo brevi per
-pianificare da zero: pianifichiamo *mentre* l'altro parla. Per un sistema
+la brevità, non un valore fisso. Queste pause sono troppo brevi per
+pianificare da zero: il parlante pianifica *mentre* l'altro parla. Per un sistema
 vocale è un vincolo concreto: l’*endpointing* deve distinguere una pausa da una
 cessione del turno.
 
@@ -110,10 +110,10 @@ l'atto, non solo la forma.
 
 **Grounding**. Herbert Clark {cite}`clark1996using` descrive la conversazione
 come costruzione incrementale di un *common ground*, l'insieme delle conoscenze
-mutuamente accettate. Ogni contributo va *radicato*: segnali di continuità
-(«mh-mh», i *backchannel*), ripetizioni e riformulazioni. Un sistema che non
-conferma mai risulta inaffidabile; uno che conferma ogni dato, esasperante:
-la politica di conferma è una scelta di progetto.
+mutuamente accettate. Ogni contributo va *radicato* attraverso segnali di
+continuità («mh-mh», i *backchannel*), ripetizioni e riformulazioni. Un sistema
+che non conferma mai risulta inaffidabile; uno che conferma ogni dato,
+esasperante: la politica di conferma è una scelta di progetto.
 
 **Implicature e anafora**. Grice {cite}`grice1975logic` formulò le massime
 conversazionali (quantità, qualità, relazione, modo) da cui i parlanti derivano
@@ -132,14 +132,14 @@ In sessant'anni i sistemi di dialogo si sono organizzati in tre famiglie:
 quelli che rispondono **per regole**, quelli che compilano **moduli**, quelli
 che **generano** la risposta parola per parola. Non è solo una successione
 storica: tutte e tre sono vive, spesso dentro lo stesso prodotto. Accanto alla
-terza ne è cresciuta una parente, i sistemi *a recupero*, che la risposta non la
-scrivono ma la scelgono: fra milioni di battute già dette da persone pescano
-quella che si accorda meglio con la conversazione, e il voto a ogni coppia di
-conversazione e risposta candidata lo dà una rete addestrata a farlo. Lowe e
-colleghi ne fecero un banco di prova sulle chat di assistenza tecnica del
-sistema operativo Ubuntu {cite}`lowe2015ubuntu`. Non inventano parole, perché
-ogni risposta l'ha scritta qualcuno, ma non sanno dire niente che nessuno abbia
-già detto.
+terza ne è cresciuta una parente, i sistemi *a recupero*, che non scrivono la
+risposta ma la scelgono: fra milioni di battute già dette da persone pescano
+quella che si accorda meglio con la conversazione, e una rete addestrata allo
+scopo assegna un punteggio a ogni coppia di conversazione e risposta candidata.
+Lowe e colleghi ne fecero un banco di prova sulle chat di assistenza tecnica
+del sistema operativo Ubuntu {cite}`lowe2015ubuntu`. Non inventano parole,
+perché ogni risposta l'ha scritta qualcuno, ma possono solo ripetere ciò che è
+già stato detto.
 
 ```{figure} ../figures/tre-famiglie-dialogo.svg
 :name: fig-tre-famiglie-dialogo
@@ -151,9 +151,8 @@ memoria della conversazione, e la riga in fondo dice che cosa fa ciascuna
 quando la battuta esce dal previsto.
 ```
 
-Il confronto di {numref}`fig-tre-famiglie-dialogo` conviene tenerlo sott'occhio
-per tutte e tre le sezioni che seguono, perché la domanda che le separa è
-sempre quella: dove finisce quello che è stato detto finora.
+Il confronto di {numref}`fig-tre-famiglie-dialogo` mostra che cosa separa i tre
+approcci: come e dove viene conservata la memoria di quanto è stato detto.
 
 ### Lo specchio di regole: dentro ELIZA
 
@@ -228,34 +227,33 @@ tutto il resto del mondo, gatto sul muro compreso. L'ELIZA vera aveva più
 copioni, più varianti di risposta e un rudimento di memoria, ma il principio è
 tutto qui.
 
-E qui è anche il limite. Quel rudimento di memoria era poca cosa: ELIZA metteva
-da parte una frase per ripescarla quando non sapeva che dire, ma della
-conversazione non teneva il filo, e a ogni battuta ripartiva praticamente da
-zero. Quello che un interlocutore dovrebbe tenere da parte (chi sono io, di che
-cosa stiamo parlando, che cosa ci siamo già detti) ha un nome preciso: si
-chiama **stato del dialogo**, ed è l'insieme delle entità menzionate, degli
-impegni presi e dei dati che le due parti hanno accettato. ELIZA non ne ha, ed
-è il contrario esatto di ciò che la telefonata al ristorante ci ha mostrato
-essere una conversazione.
+Qui sta il limite. Quel rudimento di memoria era poca cosa: ELIZA metteva da
+parte una frase per ripescarla quando non sapeva che dire, ma non teneva il
+filo della conversazione, e a ogni battuta ripartiva praticamente da zero. Ciò
+che un interlocutore tiene da parte (chi sono io, di che cosa stiamo parlando,
+che cosa ci siamo già detti) si chiama **stato del dialogo**: l'insieme delle
+entità menzionate, degli impegni presi e dei dati che le due parti hanno
+accettato. ELIZA non ne ha, l'esatto contrario di quanto accadeva nella
+telefonata al ristorante.
 
 ### Il modulo da riempire: i sistemi a frame
 
 La seconda famiglia nasce nel 1977 allo Xerox PARC, il laboratorio californiano
-in cui in quegli anni si inventava metà dell'informatica che usiamo oggi (la
-scrivania con le finestre sullo schermo, per dire, viene di lì). L'articolo lo
-firmano in sei, e sono alcuni fra i nomi che avrebbero segnato l'informatica e
-la linguistica computazionale: Bobrow, Kaplan, Kay, Norman, Thompson e Winograd
-{cite}`bobrow1977gus`. Il loro sistema si chiamava GUS, faceva l'agente di
-viaggio e prenotava voli per San Diego.
+dove in quel decennio prendeva forma gran parte dell'informatica contemporanea
+(compresa l'interfaccia grafica a finestre). L'articolo è firmato da sei
+autori, destinati a segnare l'informatica e la linguistica computazionale:
+Bobrow, Kaplan, Kay, Norman, Thompson e Winograd {cite}`bobrow1977gus`. Il loro
+sistema si chiamava GUS, faceva l'agente di viaggio e prenotava voli per San
+Diego.
 
 Al centro c'è un'idea che l'articolo riprende da Marvin Minsky, uno dei padri
 dell'intelligenza artificiale, che a metà degli anni Settanta l'aveva proposta
 per rappresentare la conoscenza: il **frame**, cioè un modulo con delle caselle
-da riempire. La novità di GUS è far governare il dialogo da quelle caselle. Ed
-è qui che lo stato del dialogo di poco fa smette di essere una parola: il modulo
-mezzo pieno *è* lo stato, scritto in un posto che si può guardare. Da lì viene
-la longevità, perché quella forma si ritrova, decenni dopo, nell'ossatura degli
-assistenti orientati a un compito.
+da riempire. La novità di GUS è far governare il dialogo da quelle caselle. Qui
+lo stato del dialogo smette di essere una parola: il modulo mezzo pieno *è* lo
+stato, scritto in una struttura che si può ispezionare. Da lì viene la
+longevità dell'idea, perché quella forma si ritrova, decenni dopo,
+nell'ossatura degli assistenti orientati a un compito.
 
 `````{tab} Elementare
 
@@ -275,8 +273,8 @@ piena, la pratica parte.
 Un assistente vocale fa la stessa identica cosa, con moduli invisibili. «Che
 tempo fa domani a Roma?»: l'assistente riconosce *quale* modulo tirare fuori
 (previsioni meteo, non sveglie né musica) e compila le caselle, luogo: Roma;
-giorno: domani. Se dici solo «che tempo fa?», la casella del luogo la riempie
-con la tua posizione o te la chiede: «Per quale città?».
+giorno: domani. Se dici solo «che tempo fa?», riempie la casella del luogo
+con la tua posizione o la chiede: «Per quale città?».
 
 Un impiegato così non inventa: quando una casella è vuota la chiede, e non se
 la riempie da sé. Se qualcosa esce storto si vede subito dove, perché a
@@ -300,22 +298,23 @@ Un frame è una struttura dati con **slot** tipizzati; a ogni slot sono
 associati una domanda per elicitarlo e vincoli sul valore (LUOGO: città; DATA:
 anche relativa, «domani»; PERSONE: intero). Il dialogo è governato dal
 riempimento: domande per gli slot vuoti, riempimenti multipli in un turno,
-anche fuori ordine (*iniziativa mista*), azione a modulo completo. GUS gestiva
-già date relative, ellissi e semplici anafore: nel 1977.
+anche fuori ordine (*iniziativa mista*), azione a modulo completo. Nel 1977 GUS
+gestiva già date relative, ellissi e semplici anafore.
 
 L'erede moderno è l'architettura a stato di dialogo, una catena di
-componenti costruita in gran parte con gli attrezzi del capitolo:
+componenti specializzati:
 
-1. NLU: classificazione dell’**intento** (un classificatore di testo come
-   quelli visti per il sentiment) e **slot filling**, cioè etichettatura di
-   sequenze con schema BIO, identica al NER: in «che tempo fa domani a Roma»,
-   *domani* → `B-DATA`, *Roma* → `B-LUOGO`, intento = `previsioni_meteo`.
+1. NLU: classificazione dell’**intento** (tramite un classificatore di testo
+   analogo a quelli impiegati per il sentiment) e **slot filling**, cioè
+   etichettatura di sequenze con schema BIO, identica al NER: in «che tempo fa
+   domani a Roma», *domani* → `B-DATA`, *Roma* → `B-LUOGO`, intento =
+   `previsioni_meteo`.
 2. Tracker dello stato (*dialogue state tracking*, DST): accumula gli slot
    riempiti e confermati, cioè aggiorna lo stato del dialogo. Si valuta con la
    *joint goal accuracy*, la frazione di turni in cui l'insieme delle coppie
    slot-valore stimato coincide per intero con quello annotato: basta uno slot
    sbagliato perché il turno conti come sbagliato {cite}`henderson2014second`.
-3. Policy di dialogo (*dialogue policy*): decide la mossa (chiedere,
+3. Policy di dialogo (*dialogue policy*): decide l'azione di sistema (chiedere,
    confermare, eseguire).
 4. NLG: genera la risposta, spesso ancora per *template* riempiti con i
    valori degli slot.
@@ -353,13 +352,13 @@ stonerebbe con qualunque altra. «Non lo so» sta bene dappertutto, e con quel
 metro perde.
 
 E c'è un problema più profondo: un modello che ha imparato a *continuare* i
-testi non è ancora un buon interlocutore. Se scrivo «come si toglie una
-macchia di vino?», una continuazione plausibilissima trovata su internet è
-un'altra domanda sulle macchie, non la soluzione. Per trasformare un ottimo
-completatore di frasi in un assistente che risponde serve una seconda scuola,
-fatta di esempi di buone risposte e di giudizi umani. Come funzioni questa
-scuola lo racconta la {doc}`sezione sul post-addestramento
-</Transformers/post-training>`, che è il suo nome.
+testi non è ancora un buon interlocutore. Se scrivo «come si toglie una macchia
+di vino?», una continuazione plausibilissima trovata su internet è un'altra
+domanda sulle macchie, non la soluzione. Per trasformare un ottimo completatore
+di frasi in un assistente che risponde serve una seconda scuola, fatta di
+esempi di buone risposte e di giudizi umani. Questa scuola si chiama
+*post-addestramento*, e la {doc}`sezione che le è dedicata
+</Transformers/post-training>` ne racconta il funzionamento.
 
 `````
 
@@ -370,44 +369,41 @@ dialogo e $y$ la risposta, con la stessa fattorizzazione autoregressiva della
 traduzione {cite}`sutskever2014sequence`. Uno dei primi chatbot neurali
 end-to-end è quello di Vinyals e Le {cite}`vinyals2015neural`, addestrato su
 log di assistenza tecnica e sottotitoli di film. Il difetto emerse subito:
-massima verosimiglianza
-e beam search privilegiano risposte ad alta probabilità *marginale*, generiche
-per costruzione («I don't know»). Li e colleghi {cite}`li2016diversity`
-sostituiscono l'obiettivo di decodifica con una mutua informazione pesata,
-$\hat{y} = \arg\max_y \big[\log P(y \mid x) - \lambda \log P(y)\big]$, dove il
-secondo termine, stimato da un modello di linguaggio sulle sole risposte, toglie
-punti alle risposte probabili a prescindere dal contesto: con $\lambda = 1$ è la
-mutua informazione puntuale, e in pratica si usa $\lambda < 1$. Dentro la
-ricerca, però, quel termine toglie punti anche alle frasi fluenti e finisce per
-premiare quelle sgrammaticate: gli autori lo applicano allora ai soli primi
-token della risposta, dove si decide se sarà generica. La variante con il
-modello inverso, $(1-\lambda)\log P(y \mid x) + \lambda \log P(x \mid y)$, non
-si può calcolare prima che la risposta sia finita, e la si applica riordinando
-le $N$ migliori ipotesi del beam.
+massima verosimiglianza e beam search privilegiano risposte ad alta probabilità
+*marginale*, generiche per costruzione («I don't know»). Li e colleghi
+{cite}`li2016diversity` sostituiscono l'obiettivo di decodifica con una mutua
+informazione pesata, $\hat{y} = \arg\max_y \big[\log P(y \mid x) - \lambda \log
+P(y)\big]$, dove il secondo termine, stimato da un modello di linguaggio sulle
+sole risposte, toglie punti alle risposte probabili a prescindere dal contesto:
+con $\lambda = 1$ è la mutua informazione puntuale, e in pratica si usa
+$\lambda < 1$. Dentro la ricerca, però, quel termine toglie punti anche alle
+frasi fluenti e finisce per premiare quelle sgrammaticate: gli autori lo
+applicano allora ai soli primi token della risposta, dove si decide se sarà
+generica. La variante con il modello inverso, $(1-\lambda)\log P(y \mid x) +
+\lambda \log P(x \mid y)$, non si può calcolare prima che la risposta sia
+completa; viene quindi applicata riordinando le $N$ migliori ipotesi del beam.
 
-Il salto di qualità arriva con la scala (modelli decoder-only pre-addestrati
-su corpora web {cite}`brown2020language`) ma soprattutto con il
-post-training, che riduce il disallineamento di fondo senza eliminarlo: un
-language model
-modella $P(\text{continuazione} \mid \text{prefisso})$, non «rispondi in modo
-utile e onesto». La ricetta è in due tempi {cite}`ouyang2022training`:
+Il salto di qualità arriva con la scala (modelli decoder-only pre-addestrati su
+corpora web {cite}`brown2020language`) ma soprattutto con il post-training, che
+riduce il disallineamento di fondo senza eliminarlo: un modello di linguaggio
+stima $P(\text{continuazione} \mid \text{prefisso})$, non «rispondi in modo
+utile e onesto». Si procede in due tempi {cite}`ouyang2022training`:
 **instruction tuning** (fine-tuning supervisionato su coppie richiesta → buona
 risposta scritte da persone) e RLHF (*reinforcement learning from human
 feedback*), dove un modello di ricompensa addestrato sulle preferenze umane
-guida l'ottimizzazione della generazione. È questo passaggio a trasformare un
-modello di linguaggio in un interlocutore; i dettagli (e i limiti, a partire
-dalle risposte fluenti ma false) stanno nella {doc}`sezione sul
-post-addestramento </Transformers/post-training>`, che segue il percorso dal
-pre-addestramento ai modelli con cui oggi si conversa.
+guida l'ottimizzazione della generazione. Questo passaggio trasforma un modello
+di linguaggio in un interlocutore; i dettagli (e i limiti, a partire dalle
+risposte fluenti ma false) stanno nella {doc}`sezione sul post-addestramento
+</Transformers/post-training>`, che segue il percorso dal pre-addestramento ai
+modelli con cui oggi si conversa.
 
 `````
 
 ## Valutare un sistema di dialogo
 
 Come si stabilisce se un sistema di dialogo è *buono*? Per la traduzione
-avevamo almeno un riferimento con cui confrontarci. Qui no, ed è il cuore
-della difficoltà: a «Che si fa stasera?» esistono mille risposte eccellenti
-che non condividono una parola.
+avevamo almeno un riferimento con cui confrontarci. Nel dialogo no: a «Che si
+fa stasera?» esistono mille risposte eccellenti che non condividono una parola.
 
 `````{tab} Elementare
 
@@ -420,8 +416,8 @@ Con i sistemi a modulo si può ancora correggere come un dettato. La
 prenotazione è andata a buon fine, sì o no? Le caselle sono giuste una per
 una, o il tavolo è finito per cinque persone invece che per quattro? Quante
 battute ci sono volute, e quante volte il cliente ha dovuto ripetersi? Le
-prenotazioni riuscite e le caselle giuste si vogliono tante, le battute e le
-ripetizioni poche, e per ricavarne un voto solo bisogna decidere quanto pesa
+prenotazioni riuscite e le caselle giuste devono essere molte, le battute e le
+ripetizioni poche; per ricavarne un voto solo bisogna decidere quanto pesa
 una battuta in più rispetto a una casella sbagliata. Quel peso non si indovina
 a tavolino: si chiede a chi ha prenotato quanto è rimasto contento, e si
 guarda che cosa lo aveva fatto arrabbiare.
@@ -437,7 +433,7 @@ si chiede quale delle due è migliore, che è una domanda a cui si risponde
 meglio. Costoso, lento, un po’ soggettivo: ma a oggi non c'è metro
 migliore del giudizio umano su una cosa fatta per gli umani. Da qualche anno i
 temi si fanno correggere anche a un'altra macchina, che costa pochissimo e non
-si stanca; il suo difetto però si conosce, e tende a dare il voto più alto al
+si stanca; ha però un difetto noto: tende a dare il voto più alto al
 tema più lungo.
 
 `````
@@ -446,35 +442,35 @@ tema più lungo.
 
 Per i sistemi *task-oriented* la valutazione è ancorata al compito, e le
 grandezze si leggono in due versi opposti: tasso di successo e accuratezza
-degli slot si vogliono alti, i costi del dialogo (numero di turni, correzioni,
-richieste ripetute) bassi. Il framework PARADISE {cite}`walker1997paradise` ne
-fa una formula,
-$\mathrm{prestazione} = \alpha\, z(\kappa) - \sum_i w_i\, z(c_i)$, dove $\kappa$
-è il coefficiente kappa di accordo fra i valori raccolti dal sistema e quelli
-dello scenario (il successo del compito corretto per il caso), le $c_i$ sono i
-costi del dialogo, $z$ è la standardizzazione a media nulla e varianza unitaria
-che rende confrontabili grandezze in unità diverse, e i pesi $\alpha, w_i$ si
-stimano con una regressione lineare sui giudizi di soddisfazione degli utenti.
+degli slot devono essere elevati, mentre i costi del dialogo (numero di turni,
+correzioni, richieste ripetute) vanno minimizzati. Il framework PARADISE
+{cite}`walker1997paradise` ne fa una formula, $\mathrm{prestazione} = \alpha\,
+z(\kappa) - \sum_i w_i\, z(c_i)$, dove $\kappa$ è il coefficiente kappa di
+accordo fra i valori raccolti dal sistema e quelli dello scenario (il successo
+del compito corretto per il caso), le $c_i$ sono i costi del dialogo, $z$ è la
+standardizzazione a media nulla e varianza unitaria che rende confrontabili
+grandezze in unità diverse, e i pesi $\alpha, w_i$ si stimano con una
+regressione lineare sui giudizi di soddisfazione degli utenti.
 
 Per i chatbot aperti le metriche ereditate dalla traduzione falliscono: la
-sovrapposizione con una risposta di riferimento (BLEU {cite}`papineni2002bleu`
-e simili, definito nella {doc}`sezione sulla traduzione <seq2seq-traduzione>`)
-correla pochissimo con i giudizi umani, proprio per la molteplicità delle
-risposte valide (Liu e colleghi {cite}`liu2016how`, dal titolo eloquente: *How
-NOT to evaluate your dialogue system*). Il
-motivo si legge nella definizione stessa: BLEU conta $n$-grammi condivisi con
-il riferimento, e due risposte ottime alla stessa domanda possono non
-condividerne nemmeno uno. La perplessità misura la fluidità, non la qualità del
-dialogo. Restano i giudizi umani, per dimensioni separate (coerenza,
-specificità, correttezza fattuale, interesse) o per confronto a coppie; di
-recente si usano anche LLM come giudici, pratica economica ma con difetti
-documentati {cite}`zheng2023judging`: il giudice risente della posizione in cui
-gli si presentano le risposte, preferisce quelle lunghe e quelle che ha scritto
-lui stesso, e ragiona in modo limitato. Impone cautela.
+sovrapposizione con una risposta di riferimento (come BLEU
+{cite}`papineni2002bleu`, definito nella {doc}`sezione sulla traduzione
+<seq2seq-traduzione>`) correla pochissimo con i giudizi umani, proprio per la
+molteplicità delle risposte valide (Liu e colleghi {cite}`liu2016how`, dal
+titolo eloquente: *How NOT to evaluate your dialogue system*). Il motivo si
+legge nella definizione stessa: BLEU conta $n$-grammi condivisi con il
+riferimento, e due risposte ottime alla stessa domanda possono non condividerne
+nemmeno uno. La perplessità misura la fluidità, non la qualità del dialogo.
+Restano i giudizi umani, per dimensioni separate (coerenza, specificità,
+correttezza fattuale, interesse) o per confronto a coppie; di recente si usano
+anche LLM come giudici, pratica economica ma con difetti documentati
+{cite}`zheng2023judging`: il giudice risente della posizione in cui gli si
+presentano le risposte, preferisce quelle lunghe e quelle che ha scritto lui
+stesso, e ragiona in modo limitato. Questi limiti impongono cautela.
 
 `````
 
-Valutare una macchina che conversa è anche la domanda da cui era partito Alan
+Come valutare una macchina che conversa è la domanda da cui era partito Alan
 Turing nel 1950, con il gioco dell'imitazione {cite}`turing1950computing` che
 conosciamo dall'Introduzione: se una macchina, conversando per iscritto, si fa
 scambiare per una persona, la si può dire intelligente? Il gioco va maneggiato
@@ -498,17 +494,16 @@ intenzioni a qualunque cosa parli la nostra lingua. È il riflesso di una specie
 che per tutta la sua storia ha avuto un'unica sorgente di linguaggio fluente,
 gli altri esseri umani.
 
-Weizenbaum ne fu così turbato da cambiare mestiere: da costruttore di
-programmi a loro critico. Nel libro che scrisse dieci anni dopo, *Computer
-Power and Human Reason* {cite}`weizenbaum1976computer`, raccontò di non aver
-mai immaginato «che esposizioni brevissime a un programma per calcolatore
+Weizenbaum ne fu così turbato da cambiare mestiere: da costruttore di programmi
+a loro critico. Nel libro che scrisse dieci anni dopo, *Computer Power and
+Human Reason* {cite}`weizenbaum1976computer`, raccontò di non aver mai
+immaginato «che esposizioni brevissime a un programma per calcolatore
 relativamente semplice potessero indurre un pensiero delirante potente in
 persone del tutto normali»; lo scandalizzò, più di tutto, la proposta di
 psichiatri veri di usare programmi come il suo per la psicoterapia su larga
-scala. La sua tesi, spesso ridotta a un generico allarme, era invece precisa, e
-sta in due verbi. In quel libro scrive che la ragione strumentale, quella che
-calcola, «può prendere decisioni, ma fra decidere e scegliere c'è tutta la
-differenza».
+scala. La sua tesi, spesso ridotta a un generico allarme, era invece precisa:
+la ragione strumentale, quella che calcola, «può prendere decisioni, ma fra
+decidere e scegliere c'è tutta la differenza».
 
 Decidere, in questo senso stretto, è trovare la risposta giusta secondo un
 criterio che qualcuno ha già fissato: qual è la strada più corta, se questo
@@ -524,18 +519,17 @@ non si riduce a un calcolo. La domanda giusta, diceva, non è cosa le macchine
 Cinquant'anni dopo, la questione si è fatta concreta su tre fronti, e merita
 un tono sobrio: né allarme, né alzata di spalle.
 
-- Antropomorfizzazione, cioè la nostra abitudine ad attribuire qualità
-  umane a ciò che umano non è, dal cane di casa alla macchina che «non vuole
-  partire». I sistemi attuali sono incomparabilmente più fluenti di ELIZA, e la
-  fluidità amplifica l'effetto: scambiare la forma del linguaggio per
-  comprensione è l'errore contro cui mette in guardia la critica dei
-  «pappagalli stocastici» {cite}`bender2021dangers`, dove *stocastico* vuol
-  dire «governato dal caso»: un pappagallo che ripete quello che ha sentito,
+- Antropomorfizzazione, cioè la nostra abitudine ad attribuire qualità umane a
+  ciò che umano non è, dal cane di casa alla macchina che «non vuole partire».
+  I sistemi attuali sono incomparabilmente più fluenti di ELIZA, e la fluidità
+  amplifica l'effetto: scambiare la forma del linguaggio per comprensione è
+  l'errore contro cui mette in guardia la critica dei «pappagalli stocastici»
+  {cite}`bender2021dangers`: un pappagallo che ripete quello che ha sentito,
   scegliendo di volta in volta secondo le probabilità che ha imparato, senza
   sapere che cosa sta dicendo. E non è solo un equivoco filosofico. Quando un
   chatbot dice «io», ha un nome proprio e fa finta di esitare come farebbe una
-  persona, quel riflesso non lo subisce: lo asseconda, per scelta di chi
-  l'ha costruito.
+  persona, non subisce questo riflesso: lo asseconda, per scelta di chi l'ha
+  costruito.
 - Privacy. Chi protestò per i registri di ELIZA era in anticipo di
   sessant'anni. A un interlocutore che non giudica si confidano cose che non
   si scrivono in un modulo: oggi quelle conversazioni sono dati, che possono
@@ -548,8 +542,8 @@ un tono sobrio: né allarme, né alzata di spalle.
   altrui non somiglia a nessuna relazione umana. Gli effetti, specie sulle
   persone fragili, sono materia di studio ancora aperta.
 
-Niente di tutto questo rende i sistemi di dialogo cattivi in sé: rendono
-accessibili servizi a chi non sa usare un'interfaccia, assistono senza orari,
+Niente di tutto questo rende i sistemi di dialogo cattivi in sé: offrono servizi
+accessibili a chi non sa usare un'interfaccia, assistono senza orari,
 aiutano a studiare. Il punto di Weizenbaum non era vietarli, ma ricordare che
 la scelta di cosa affidare a una macchina che parla è una scelta nostra, da
 fare a occhi aperti: sapendo che dall'altra parte non c'è nessuno, per quanto
@@ -570,7 +564,7 @@ attaccati a ogni parola, come scatole e come frecce.
   accavallarsi; si fanno cose con le parole («avete un tavolo per domani
   sera?» non è una domanda a cui rispondere sì); ci si conferma di continuo
   che si sta seguendo (il
-  «mh-mh» del ristoratore, e la ricevuta riletta ad alta voce); e le parole
+  «mh-mh» del ristoratore, e l'appunto riletto ad alta voce); e le parole
   piccole («ne», «lo») pescano il senso nelle battute già dette. Per dialogare
   non basta capire l'ultima frase: bisogna ricordare la partita.
 - Tre famiglie di interlocutori artificiali, tutte e tre ancora vive. A
@@ -610,9 +604,9 @@ attaccati a ogni parola, come scatole e come frecce.
   stato del dialogo), a frame
   (GUS {cite}`bobrow1977gus`: slot da riempire con domande mirate; ancora
   l'ossatura degli assistenti vocali), generativi (dal seq2seq agli LLM).
-- Un modello di linguaggio impara a *continuare* i testi; a *rispondere* lo
-  si insegna col post-training (instruction tuning e RLHF
-  {cite}`ouyang2022training`), sviluppato nella {doc}`sezione dedicata
+- Un modello di linguaggio impara a *continuare* i testi; impara a *rispondere*
+  con il post-training (instruction tuning e RLHF {cite}`ouyang2022training`),
+  sviluppato nella {doc}`sezione dedicata
   </Transformers/post-training>`.
 - Valutare il dialogo è difficile perché non esiste *la* risposta giusta:
   successo del compito per i sistemi a frame (e *joint goal accuracy* per il
@@ -629,10 +623,8 @@ attaccati a ogni parola, come scatole e come frecce.
 `````
 
 Al {doc}`capitolo sui Transformer </Transformers/overview>` passano pezzi
-precisi: il testo spezzato in token e rappresentato da embedding; la
-previsione della parola successiva come modo di addestrare un modello di
-linguaggio, dagli n-gram alle reti ricorrenti; e l'attenzione nata nella
-traduzione, che là diventa l'unico meccanismo e manda in pensione la lettura in
-fila. Restano aperti i problemi che nessuna architettura risolve da sola: che
+precisi: il testo spezzato in token e rappresentato da embedding, la
+previsione della parola successiva e il meccanismo di attenzione nato nella
+traduzione. Restano aperti i problemi che nessuna architettura risolve da sola: che
 cosa conta come risposta giusta quando le risposte accettabili sono molte, e
 come si valuta una macchina che parla.

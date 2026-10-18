@@ -419,10 +419,13 @@ viene racchiuso in vincoli rigidi per riottenere parte di quelle garanzie.
 Schluntz e Zhang (Anthropic, dicembre 2024) distinguono i *workflow*, in cui
 l'LLM e gli strumenti sono orchestrati da percorsi di codice predefiniti, dagli
 *agenti*, in cui è l'LLM a dirigere dinamicamente il proprio processo e l'uso
-degli strumenti. Descrivono cinque schemi di workflow: concatenazione di prompt
-(*prompt chaining*), instradamento (*routing*), parallelizzazione, orchestratore
-con esecutori (*orchestrator-workers*) e valutatore con ottimizzatore
-(*evaluator-optimizer*).
+degli strumenti {cite}`schluntz2024agents`. Descrivono cinque schemi di
+workflow: concatenazione di prompt (*prompt chaining*), instradamento
+(*routing*), parallelizzazione, orchestratore con esecutori
+(*orchestrator-workers*) e valutatore con ottimizzatore
+(*evaluator-optimizer*). Come si scrivono questi percorsi in un grafo, con lo
+stato salvato a ogni passo, lo mostra la sezione {doc}`dal ciclo al grafo
+</Harness/dal-ciclo-al-grafo>`.
 
 `````
 
