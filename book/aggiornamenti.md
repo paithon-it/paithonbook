@@ -32,13 +32,21 @@ Quando una cifra aumenta, quelle alla sua destra tornano a zero. Una versione
 che contiene sia sezioni nuove sia correzioni prende il numero della modifica
 maggiore, e ogni versione corrisponde a una pubblicazione.
 
+(v1-16-1)=
+
+## 1.16.1 · 20 ottobre 2026
+
+### Correzioni
+
+- {doc}`Gli strumenti </Harness/gli-strumenti>` (Harness engineering). **Gli strumenti con il loro nome.** La sezione sugli strumenti di un agente si intitolava «Gli attrezzi», la parola dell'analogia della bottega: titolo e rimandi ora usano il termine del resto del libro, e la pagina ha un indirizzo nuovo.
+
 (v1-16-0)=
 
 ## 1.16.0 · 20 ottobre 2026
 
 ### Sezioni nuove
 
-- {doc}`Gli attrezzi </Harness/gli-attrezzi>` (Harness engineering). **Gli attrezzi di un agente.** Come si progettano gli strumenti che il modello può chiedere: che cosa devono restituire, come si modifica un file senza sbagliare versione, perché la riga di comando va chiusa in un recinto.
+- {doc}`Gli strumenti </Harness/gli-strumenti>` (Harness engineering). **Gli strumenti di un agente.** Come si progettano le operazioni che il modello può chiedere: che cosa devono restituire, come si modifica un file senza sbagliare versione, perché la riga di comando va chiusa in un recinto.
 - {doc}`Il conto </Harness/il-conto>` (Harness engineering). **Il conto di un compito.** Quanto costa e quanto dura il lavoro di un agente: la cache del prefisso e che cosa la rompe, quale modello chiamare e quando smettere, il cammino critico e le azioni speculative; con una figura animata.
 - {doc}`L'harness che si riscrive </Harness/l-harness-che-si-riscrive>` (Harness engineering). **L'harness che si riscrive.** Quando a modificare istruzioni, strumenti e memoria è un altro programma: l'archivio delle varianti, il voto tenuto da parte, e che cosa succede se chi viene misurato può toccare il metro.
 - {doc}`Servire un agente </MLOps/servire-un-agente>` (MLOps). **Servire un agente.** Le richieste di un agente si fermano ad aspettare uno strumento: che cosa fare della memoria intanto, a chi dare la precedenza, su quale copia del modello mandarle; con una figura animata.

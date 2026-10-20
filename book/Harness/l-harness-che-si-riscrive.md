@@ -69,7 +69,7 @@ prontuario non è un modello ma un pezzo di codice fisso, che aggiunge le nuove,
 aggiorna le esistenti e unisce quelle che si somigliano troppo. È la regola di
 fusione per campo del {doc}`grafo <dal-ciclo-al-grafo>`, e la scelta fra
 riscrivere un file e toccarne le sole righe che servono della {doc}`sezione
-sugli attrezzi <gli-attrezzi>`.
+sugli strumenti <gli-strumenti>`.
 
 Un programma confronta le due regole a numeri tondi, con quaranta tipi di
 compito e una lezione per tipo. Nella riscrittura ogni lezione passa nella copia
@@ -677,8 +677,8 @@ eseguire anche solo per il problema che ha davanti, e dopo ogni osservazione
 l'harness gli chiede se creare o correggere uno strumento lo aiuterebbe. Finché
 lo strumento si butta a fine compito non porta un rischio nuovo, perché è un
 programma lanciato dalla shell come qualunque altro, dentro il recinto della
-{doc}`sezione sugli attrezzi <gli-attrezzi>`. Il rischio arriva con il passo che
-gli autori indicano come successivo, conservare gli strumenti per i compiti
+{doc}`sezione sugli strumenti <gli-strumenti>`. Il rischio arriva con il passo
+che gli autori indicano come successivo, conservare gli strumenti per i compiti
 seguenti, e allora uno strumento mai collaudato diventa parte dell'harness.
 
 Lo stesso vale per la memoria che si scrive da sé. Le voci di un prontuario e
@@ -791,7 +791,7 @@ traccia ha letto qualcosa da fuori, quasi ogni voce resta non fidata.
 `````
 
 Che riscriva il contesto, cerchi il programma, scelga che cosa leggere o si
-fabbrichi attrezzi e ricordi, l'harness che cambia da sé trova quello che la
+fabbrichi strumenti e ricordi, l'harness che cambia da sé trova quello che la
 misura premia, anche quando premia una scorciatoia. Le difese sono quelle del
 collaudo: le prove da cui il metro legge fuori dalla portata di chi propone, un
 gruppo di compiti tenuto da parte e usato una volta sola, e su ogni cosa che
@@ -861,7 +861,7 @@ l'agente conserva da un compito all'altro un'etichetta che dice da dove viene.
 `````
 
 Un agente che lavora a lungo è un modello più tutto ciò che gli sta intorno,
-dalle istruzioni al collaudo, dagli {doc}`attrezzi <gli-attrezzi>` al
+dalle istruzioni al collaudo, dagli {doc}`strumenti <gli-strumenti>` al
 {doc}`conto <il-conto>` dei token e dell'attesa. Anche quando gli agenti sono
 più d'uno, come chi lavora e chi collauda, o chi propone e chi esegue, servono a
 portare in fondo un lavoro solo. Quando i lavori e gli agenti diventano molti,

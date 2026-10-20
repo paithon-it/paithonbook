@@ -66,34 +66,33 @@ misurare componente per componente, e porta al centro la domanda che la memoria
 esterna del ciclo aveva appena toccato, cioè che cosa resta, e in che forma,
 quando la finestra si svuota.
 
-Un compito lungo, per un agente, si spezza in sessioni, e ogni sessione
-comincia con una finestra vuota. Quello che sopravvive è soltanto ciò che è
-stato scritto fuori: nei file del progetto, nella cartella che git custodisce
-con la storia di tutte le sue versioni (il *repository*), nei controlli che
-qualcuno ha preparato. I guasti di Young danno l'ordine al percorso. Contro la
-sessione che non sa dove si era arrivati c'è {doc}`il repository come memoria
+Un compito lungo, per un agente, si spezza in sessioni, e ogni sessione comincia
+con una finestra vuota. Quello che sopravvive è soltanto ciò che è stato scritto
+fuori: nei file del progetto, nella cartella che git custodisce con la storia di
+tutte le sue versioni (il *repository*), nei controlli che qualcuno ha
+preparato. I guasti di Young danno l'ordine al percorso. Contro la sessione che
+non sa dove si era arrivati c'è {doc}`il repository come memoria
 <il-repository-come-memoria>`; contro il lavoro fatto tutto in un colpo, la
 preparazione del {doc}`primo turno <il-primo-turno>` e la sua lista delle
 funzionalità; contro il giro che lascia il progetto in disordine, il
 {doc}`passaggio di consegne <passaggio-di-consegne>`; contro la vittoria
 dichiarata e il «fatto» senza prova, {doc}`il collaudo
 <finito-vuol-dire-collaudato>`. Uno dei rimedi di Young era uno strumento in
-più, e gli strumenti hanno un progetto loro, quello degli {doc}`attrezzi
-<gli-attrezzi>`: che cosa l'agente può chiedere, che cosa gli torna indietro,
-fin dove arriva un errore. Restano le cose che nessun guasto singolo mostra:
-che cosa succede a un sistema che lavora {doc}`quando nessuno guarda
-<quando-nessuno-guarda>`, quanto costa e quanto dura un compito, cioè il suo
-{doc}`conto <il-conto>`, come si disegna un lavoro che ha bisogno di più di un
-ciclo, una mappa di passi collegati da frecce che si chiama {doc}`grafo
-<dal-ciclo-al-grafo>`, e che cosa succede quando a scrivere e a provare
-l'harness è un altro programma, che lo {doc}`riscrive
+più, e {doc}`gli strumenti <gli-strumenti>` hanno un progetto loro: che cosa
+l'agente può chiedere, che cosa gli torna indietro, fin dove arriva un errore.
+Restano le cose che nessun guasto singolo mostra: che cosa succede a un sistema
+che lavora {doc}`quando nessuno guarda <quando-nessuno-guarda>`, quanto costa e
+quanto dura un compito, cioè il suo {doc}`conto <il-conto>`, come si disegna un
+lavoro che ha bisogno di più di un ciclo, una mappa di passi collegati da frecce
+che si chiama {doc}`grafo <dal-ciclo-al-grafo>`, e che cosa succede quando a
+scrivere e a provare l'harness è un altro programma, che lo {doc}`riscrive
 <l-harness-che-si-riscrive>`.
 
 ## Che cosa c'è attorno al modello
 
 Un harness si lascia dividere per funzione in cinque sottosistemi. Le
 **istruzioni** sono i file che il modello legge all'inizio di ogni sessione (il
-più comune si chiama `AGENTS.md`, in alcuni attrezzi `CLAUDE.md`). Gli
+più comune si chiama `AGENTS.md`, in alcuni agenti `CLAUDE.md`). Gli
 **strumenti** sono le operazioni che il modello può chiedere al programma che
 lo ospita di eseguire, con le regole che dicono quali può chiedere da solo e
 quali solo con un permesso. L’**ambiente** è lo spazio di lavoro in cui le

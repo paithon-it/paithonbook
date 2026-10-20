@@ -176,8 +176,8 @@ protocollo), che per ogni sistema esterno apre un canale e li interroga tutti
 allo stesso modo. Le due estremità di ogni canale
 portano i nomi che il protocollo dà loro: *client* il connettore dalla parte
 dell'applicazione, *server* il programma dall'altra parte, quello che dichiara
-gli attrezzi che mette a disposizione (nel disegno uno governa dei file e uno
-un archivio di dati). Al modello arrivano poi strumenti come gli altri, senza
+gli strumenti che mette a disposizione (nel disegno uno governa dei file e uno
+un archivio di dati). Al modello arrivano come qualunque altro strumento, senza
 che debba sapere da dove vengono.
 ```
 
@@ -334,7 +334,7 @@ che superano il filtro diventano un dataset aumentato, e il modello ci viene
 messo a punto sopra con il consueto obiettivo auto-supervisionato. Il risultato
 è un modello che, a inferenza, decide *da sé* quando emettere una chiamata,
 perché ha imparato che in quei punti la chiamata migliora la predizione. Il
-criterio è puramente interno («l'attrezzo mi aiuta a continuare il testo?»)
+criterio è puramente interno («lo strumento mi aiuta a continuare il testo?»)
 e non richiede alcuna etichetta umana su dove usarlo.
 
 Gli autori dichiarano un limite: Toolformer decide *dove* chiamare, non *come*

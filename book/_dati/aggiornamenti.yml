@@ -47,14 +47,26 @@
 
 versioni:
 
+- versione: "1.16.1"
+  data: 2026-10-20
+  voci:
+
+  - tipo: corretto
+    pagina: Harness/gli-strumenti.md
+    testo: >
+      **Gli strumenti con il loro nome.** La sezione sugli strumenti di un
+      agente si intitolava «Gli attrezzi», la parola dell'analogia della
+      bottega: titolo e rimandi ora usano il termine del resto del libro, e la
+      pagina ha un indirizzo nuovo.
+
 - versione: "1.16.0"
   data: 2026-10-20
   voci:
 
   - tipo: nuovo
-    pagina: Harness/gli-attrezzi.md
+    pagina: Harness/gli-strumenti.md
     testo: >
-      **Gli attrezzi di un agente.** Come si progettano gli strumenti che il
+      **Gli strumenti di un agente.** Come si progettano le operazioni che il
       modello può chiedere: che cosa devono restituire, come si modifica un
       file senza sbagliare versione, perché la riga di comando va chiusa in un
       recinto.

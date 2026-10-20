@@ -195,7 +195,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Il primo turno](https://book.paithon.it/main/Harness/il-primo-turno.html)
   - [Il passaggio di consegne](https://book.paithon.it/main/Harness/passaggio-di-consegne.html)
   - [Finito vuol dire collaudato](https://book.paithon.it/main/Harness/finito-vuol-dire-collaudato.html)
-  - [Gli attrezzi](https://book.paithon.it/main/Harness/gli-attrezzi.html)
+  - [Gli strumenti](https://book.paithon.it/main/Harness/gli-strumenti.html)
   - [Quando nessuno guarda](https://book.paithon.it/main/Harness/quando-nessuno-guarda.html)
   - [Il conto](https://book.paithon.it/main/Harness/il-conto.html)
   - [Dal ciclo al grafo](https://book.paithon.it/main/Harness/dal-ciclo-al-grafo.html)

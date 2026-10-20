@@ -1,4 +1,4 @@
-# Gli attrezzi: l'interfaccia fra l'agente e il computer
+# Gli strumenti: l'interfaccia fra l'agente e il computer
 
 Un gruppo di Princeton ha messo un modello di linguaggio davanti alla riga di
 comando di un computer, la *shell*, e gli ha chiesto di correggere segnalazioni
@@ -918,5 +918,5 @@ SWE-agent, ed è lì che si decide fin dove può arrivare un errore.
 Uno strumento ben fatto dice all'agente che cosa è successo nel suo comando.
 Quello che succede dentro l'applicazione che l'agente costruisce, una pagina
 lenta, un servizio che di notte smette di rispondere, gli resta invisibile
-finché qualcuno non gli dà gli attrezzi per guardarci dentro: i log, le metriche
-e le tracce di {doc}`quando nessuno guarda <quando-nessuno-guarda>`.
+finché qualcuno non gli dà gli strumenti per guardarci dentro: i log, le
+metriche e le tracce di {doc}`quando nessuno guarda <quando-nessuno-guarda>`.

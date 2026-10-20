@@ -70,8 +70,8 @@ nel metodo ReWOO della {doc}`sezione sulle architetture degli agenti
 </Agenti/architetture-e-valutazione>`, una decisione di routine scritta nel
 codice dell'harness), purché le azioni raggruppate non dipendano l'una
 dall'altra. I token per passo scendono tagliando gli esiti degli strumenti, o
-dandoli a pezzi, come chiede la {doc}`sezione sugli attrezzi <gli-attrezzi>`, e
-chiedendo un'uscita breve. Il prezzo scende con la cache del prefisso e con il
+dandoli a pezzi, come chiede la {doc}`sezione sugli strumenti <gli-strumenti>`,
+e chiedendo un'uscita breve. Il prezzo scende con la cache del prefisso e con il
 lavoro differito, che i fornitori (le aziende che vendono l'accesso ai modelli)
 fanno pagare meno quando può aspettare ore.
 
@@ -230,7 +230,7 @@ quasi tutti dalla cache. E basta l'ora in testa per perdere tutto: ogni
 chiamata ha un prefisso diverso fin dal primo token, e la ripartenza costa 3,8
 volte tanto, quanto costerebbe senza cache. Per la stessa ragione, con la
 cache, accorciare un esito vecchio a metà sessione, una leva della sezione
-sugli attrezzi, fa rileggere a prezzo pieno tutto ciò che lo segue.
+sugli strumenti, fa rileggere a prezzo pieno tutto ciò che lo segue.
 
 `````{tab} Elementare
 
@@ -283,7 +283,7 @@ tavolo affollato l'artigiano lavora peggio.
 `````{tab} Superiore
 
 Sia $C_t$ la sequenza di token che la chiamata $t$ manda al modello,
-$\mathrm{tok}(C_t)$ il loro numero, come nella sezione sugli attrezzi, e $y_t$
+$\mathrm{tok}(C_t)$ il loro numero, come nella sezione sugli strumenti, e $y_t$
 il numero di token che il modello scrive. Il servente conserva per un tempo
 limitato la KV cache delle chiamate recenti, come i motori di inferenza che la
 condividono fra richieste che cominciano allo stesso modo
@@ -356,7 +356,7 @@ visto: un'informazione variabile in testa (l'ora, un identificativo), che porta
 $\chi_t$ a zero o quasi; uno strumento aggiunto, tolto o riordinato, perché le
 descrizioni degli strumenti stanno in testa; la compattazione; un'attesa più
 lunga della durata della cache; e la cronologia modificata, come nella leva
-della permanenza della {doc}`sezione sugli attrezzi <gli-attrezzi>`, che
+della permanenza della {doc}`sezione sugli strumenti <gli-strumenti>`, che
 accorcia l'esito vecchio di uno strumento. Quella leva risparmia token che
 costavano $\eta$ e fa rileggere a prezzo pieno tutti quelli che seguono la voce
 cambiata: in spesa conviene solo quando $\eta$ per i token tolti, sommati su

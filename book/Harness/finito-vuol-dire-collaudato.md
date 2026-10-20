@@ -527,7 +527,7 @@ metro fuori dalla portata di chi viene misurato e tarare chi giudica sono le
 difese contro la vittoria dichiarata. Passano tutte per gli strumenti che
 l'agente ha in mano, il browser del collaudo come il comando che modifica un
 file, e quegli strumenti si progettano come un’{doc}`interfaccia fra l'agente e
-il computer <gli-attrezzi>`.
+il computer <gli-strumenti>`.
 
 `````{tab} Elementare
 
