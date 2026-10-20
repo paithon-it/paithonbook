@@ -195,8 +195,11 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Il primo turno](https://book.paithon.it/main/Harness/il-primo-turno.html)
   - [Il passaggio di consegne](https://book.paithon.it/main/Harness/passaggio-di-consegne.html)
   - [Finito vuol dire collaudato](https://book.paithon.it/main/Harness/finito-vuol-dire-collaudato.html)
+  - [Gli attrezzi](https://book.paithon.it/main/Harness/gli-attrezzi.html)
   - [Quando nessuno guarda](https://book.paithon.it/main/Harness/quando-nessuno-guarda.html)
+  - [Il conto](https://book.paithon.it/main/Harness/il-conto.html)
   - [Dal ciclo al grafo](https://book.paithon.it/main/Harness/dal-ciclo-al-grafo.html)
+  - [L'harness che si riscrive](https://book.paithon.it/main/Harness/l-harness-che-si-riscrive.html)
 - [Sistemi multi-agente](https://book.paithon.it/main/SistemiMultiAgente/overview.html): Chi attraversa Roma in un pomeriggio d'inverno lo ha visto almeno una volta: poco prima del tramonto migliaia di storni arrivano dalla campagna e sopra gli alberi del posatoio disegnano forme che si…
   - [Il costo del coordinamento](https://book.paithon.it/main/SistemiMultiAgente/costo-del-coordinamento.html)
   - [Chi parla con chi](https://book.paithon.it/main/SistemiMultiAgente/topologie.html)
@@ -286,6 +289,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Misurare un servizio](https://book.paithon.it/main/MLOps/metriche-di-servizio.html)
   - [Capacità e costo](https://book.paithon.it/main/MLOps/capacita-e-costo.html)
   - [Davanti ai modelli](https://book.paithon.it/main/MLOps/gateway-e-affidabilita.html)
+  - [Servire un agente](https://book.paithon.it/main/MLOps/servire-un-agente.html)
   - [Il conto in energia](https://book.paithon.it/main/MLOps/energia-e-impronta.html)
 - [Interpretabilità](https://book.paithon.it/main/Interpretabilita/overview.html): Nel 2016 tre ricercatori dell'Università di Washington (Marco Tulio Ribeiro, Sameer Singh e Carlos Guestrin) costruirono di proposito un programma truccato.
   - [Modelli trasparenti](https://book.paithon.it/main/Interpretabilita/modelli-trasparenti-e-importanza.html)

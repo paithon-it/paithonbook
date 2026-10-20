@@ -1,17 +1,17 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../seq2seq-2014.svg
 -->
 <svg viewBox="0 0 760 360" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema encoder-decoder: l'encoder legge le parole inglesi e le comprime in un vettore di contesto, il decoder lo espande generando le parole francesi una alla volta">
   <defs>
     <marker id="s2s-teal" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#5BA39C"/></marker>
     <marker id="s2s-terra" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#E27B52"/></marker>
-    <marker id="s2s-ocra" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#DDB874"/></marker>
+    <marker id="s2s-ocra" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#C9A961"/></marker>
   </defs>
-  <rect x="0" y="0" width="760" height="360" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="760" height="360" fill="#16130F"/>
   <text x="30" y="34" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="700" fill="#F4ECDD">ENCODER</text>
   <text x="600" y="34" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="700" fill="#F4ECDD">DECODER</text>
 
@@ -28,14 +28,14 @@
   </g>
   <!-- input tokens -->
   <g font-family="Inter, system-ui, sans-serif" font-size="14" fill="#F4ECDD" text-anchor="middle">
-    <rect x="48" y="250" width="54" height="34" rx="6" fill="none" stroke="#DDB874" stroke-width="1.5"/>
+    <rect x="48" y="250" width="54" height="34" rx="6" fill="none" stroke="#C9A961" stroke-width="1.5"/>
     <text x="75" y="272">the</text>
-    <rect x="148" y="250" width="54" height="34" rx="6" fill="none" stroke="#DDB874" stroke-width="1.5"/>
+    <rect x="148" y="250" width="54" height="34" rx="6" fill="none" stroke="#C9A961" stroke-width="1.5"/>
     <text x="175" y="272">cat</text>
-    <rect x="248" y="250" width="54" height="34" rx="6" fill="none" stroke="#DDB874" stroke-width="1.5"/>
+    <rect x="248" y="250" width="54" height="34" rx="6" fill="none" stroke="#C9A961" stroke-width="1.5"/>
     <text x="275" y="272">sleeps</text>
   </g>
-  <g stroke="#DDB874" stroke-width="2" fill="none">
+  <g stroke="#C9A961" stroke-width="2" fill="none">
     <line x1="75" y1="250" x2="75" y2="176" marker-end="url(#s2s-ocra)"/>
     <line x1="175" y1="250" x2="175" y2="176" marker-end="url(#s2s-ocra)"/>
     <line x1="275" y1="250" x2="275" y2="176" marker-end="url(#s2s-ocra)"/>
@@ -44,9 +44,9 @@
   <!-- context vector -->
   <line x1="310" y1="146" x2="360" y2="146" stroke="#5BA39C" stroke-width="2" fill="none" marker-end="url(#s2s-teal)"/>
   <rect x="362" y="112" width="80" height="68" rx="10" fill="#F4ECDD"/>
-  <text x="402" y="140" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#0E0C0A" text-anchor="middle">vettore</text>
-  <text x="402" y="158" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#0E0C0A" text-anchor="middle">di</text>
-  <text x="402" y="176" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#0E0C0A" text-anchor="middle">contesto</text>
+  <text x="402" y="140" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#16130F" text-anchor="middle">vettore</text>
+  <text x="402" y="158" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#16130F" text-anchor="middle">di</text>
+  <text x="402" y="176" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#16130F" text-anchor="middle">contesto</text>
   <line x1="442" y1="146" x2="492" y2="146" stroke="#E27B52" stroke-width="2" fill="none" marker-end="url(#s2s-terra)"/>
 
   <!-- Decoder cells -->

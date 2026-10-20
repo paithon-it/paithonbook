@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../corrimano-e-taratura.svg
 -->
 <!--
@@ -25,8 +25,8 @@
     .corrimano { stroke:#E27B52; stroke-width:5; stroke-linecap:round; }
     .ramo { stroke:#5BA39C; stroke-width:2; fill:none; }
     .stanza { fill:#5BA39C; fill-opacity:0.14; stroke:#5BA39C; stroke-width:1.5; }
-    .tar { fill:#0E0C0A; stroke:#DDB874; stroke-width:2; }
-    .somma { fill:#0E0C0A; stroke:#E27B52; stroke-width:2; }
+    .tar { fill:#16130F; stroke:#C9A961; stroke-width:2; }
+    .somma { fill:#16130F; stroke:#E27B52; stroke-width:2; }
     .sgn, .stz, .trt { text-anchor:middle; }
     .giu { fill:#F4ECDD; }
         @keyframes scende{0.00%{transform:translateY(-440px)}10.00%{transform:translateY(-440px)}90.00%{transform:translateY(0px)}100.00%{transform:translateY(0px)}}

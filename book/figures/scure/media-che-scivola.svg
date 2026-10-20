@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../media-che-scivola.svg
 -->
 <!--
@@ -26,7 +26,7 @@
     .vera    { fill:none; stroke:#F4ECDD; stroke-width:1.6; stroke-dasharray:5 5; opacity:.7; }
     .punto   { fill:#5BA39C; opacity:.75; }
     .stima   { fill:none; stroke:#E27B52; stroke-width:3; stroke-linejoin:round; }
-    .campana { fill:none; stroke:#DDB874; stroke-width:3; }
+    .campana { fill:none; stroke:#C9A961; stroke-width:3; }
     #scopre-r { transform-box:fill-box; transform-origin:0% 50%; }
         @keyframes scorri{0.00%{transform:translateX(-580px)}8.00%{transform:translateX(-580px)}88.00%{transform:translateX(0px)}100.00%{transform:translateX(0px)}}
     @keyframes scopri{0.00%{transform:scaleX(0)}8.00%{transform:scaleX(0)}88.00%{transform:scaleX(1)}100.00%{transform:scaleX(1)}}

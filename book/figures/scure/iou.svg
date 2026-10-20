@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../iou.svg
 -->
 <!--
@@ -25,7 +25,7 @@
   <!-- PANNELLO SINISTRO: intersezione -->
   <g transform="translate(20,10)">
     <text class="ptitle" x="120" y="12" text-anchor="middle">Intersezione</text>
-    <rect x="90" y="95" width="60" height="65" fill="#DDB874"/>
+    <rect x="90" y="95" width="60" height="65" fill="#C9A961"/>
     <rect x="20" y="30" width="130" height="130" rx="6" fill="none" stroke="#5BA39C" stroke-width="3"/>
     <rect x="90" y="95" width="130" height="130" rx="6" fill="none" stroke="#E27B52" stroke-width="3"/>
     <text class="lbl" x="30" y="50" fill="#5BA39C">Reale</text>
@@ -42,7 +42,7 @@
   </g>
 
   <!-- legenda -->
-  <rect x="120" y="285" width="15" height="15" fill="#DDB874"/>
+  <rect x="120" y="285" width="15" height="15" fill="#C9A961"/>
   <text class="leg" x="142" y="297">area di intersezione</text>
   <rect x="345" y="285" width="15" height="15" fill="#5BA39C" fill-opacity="0.18" stroke="#5BA39C" stroke-width="1"/>
   <text class="leg" x="367" y="297">area di unione</text>

@@ -1,12 +1,12 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../open-weights-vs-closed.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 500" width="100%" role="img" aria-label="Mappa a quadranti. Sull'asse orizzontale come il modello è messo a disposizione, da chiuso e raggiungibile solo via interfaccia, a sinistra, a pesi scaricabili da chiunque, a destra. Sull'asse verticale la capacità, dal basso verso l'alto. I punti sono distribuiti in tutti e quattro i quadranti e nessuno dei due lati domina l'altro: ce ne sono di capaci fra i chiusi e fra gli aperti, e di contenuti in entrambi. I punti non portano nomi.">
-  <rect x="0" y="0" width="700" height="500" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="700" height="500" fill="#16130F"/>
   <text x="350" y="38" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#F4ECDD">Due assi indipendenti</text>
 
   <line x1="120" y1="430" x2="620" y2="430" stroke="#F4ECDD" stroke-width="2"/>

@@ -524,9 +524,10 @@ su $\sigma_j$, e una soglia fissata prima non la ferma.
 
 Collaudare da utente, far scrivere il segno «fatto» a chi collauda, tenere il
 metro fuori dalla portata di chi viene misurato e tarare chi giudica sono le
-difese contro la vittoria dichiarata, e valgono una sessione alla volta. Su
-centinaia di sessioni contano anche le cose che una sessione sola non mostra, e
-che si vedono soltanto {doc}`quando nessuno guarda <quando-nessuno-guarda>`.
+difese contro la vittoria dichiarata. Passano tutte per gli strumenti che
+l'agente ha in mano, il browser del collaudo come il comando che modifica un
+file, e quegli strumenti si progettano come un’{doc}`interfaccia fra l'agente e
+il computer <gli-attrezzi>`.
 
 `````{tab} Elementare
 

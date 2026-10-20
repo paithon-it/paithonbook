@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../sogno-diverge.svg
 -->
 <!--
@@ -25,7 +25,7 @@
     .vero   { fill:none; stroke:#5BA39C; stroke-width:3.5; }
     .sogno  { fill:none; stroke:#E27B52; stroke-width:2.6; }
     .ombra  { fill:#221F1A; opacity:0.45; }
-    .taglio { stroke:#DDB874; stroke-width:2.5; stroke-dasharray:6 5; }
+    .taglio { stroke:#C9A961; stroke-width:2.5; stroke-dasharray:6 5; }
     .cap    { font-family:Inter, system-ui, sans-serif; font-size:17px; font-weight:700;
               fill:#E27B52; }
         @keyframes scopri{0.00%{transform:translateX(-512px)}4.00%{transform:translateX(-512px)}88.00%{transform:translateX(0)}100.00%{transform:translateX(0)}}

@@ -1,12 +1,12 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../tre-famiglie-dialogo.svg
 -->
 <svg viewBox="0 0 760 486" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="La stessa battuta del cliente, &#171;un tavolo per quattro domani alle otto&#187;, entra in tre macchine diverse. La prima, a regole, aggancia uno schema nelle parole e rigira la frase: risponde &#171;mi dica di pi&#249; su un tavolo per quattro&#187;, e sotto &#232; scritto che non tiene niente da parte, perch&#233; ogni battuta riparte da zero. La seconda, a moduli, riempie tre caselle su cinque (quanti quattro, che giorno domani, a che ora le venti; restano vuote dove e a che nome) e chiede la prima casella vuota, &#171;all'aperto o dentro?&#187;; sotto &#232; scritto che quello che tiene da parte &#232; il modulo mezzo pieno. La terza, generativa, scrive la risposta una parola alla volta, &#171;certo, per quattro persone&#8230;&#187;, e sotto &#232; scritto che quello che tiene da parte &#232; tutto il testo che ha davanti. In fondo, che cosa fa ciascuna quando la battuta esce dal previsto: la prima risponde a vuoto, la seconda non risponde ma non inventa, la terza risponde a tutto e a volte inventa.">
-  <rect x="0" y="0" width="760" height="486" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="760" height="486" fill="#16130F"/>
   <text x="380" y="26" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#F4ECDD">Stessa battuta, tre macchine</text>
 
   <rect x="190" y="42" width="380" height="30" rx="6" fill="none" stroke="#F4ECDD" stroke-width="1.4"/>
@@ -21,7 +21,7 @@
   <polygon points="630,108 624,97 636,97" fill="#F4ECDD"/>
 
   <rect x="20" y="114" width="220" height="26" fill="#5BA39C"/>
-  <text x="130" y="132" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="bold" fill="#0E0C0A">a regole</text>
+  <text x="130" y="132" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="bold" fill="#16130F">a regole</text>
   <rect x="20" y="140" width="220" height="150" fill="none" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="34" y="162" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">aggancia uno schema</text>
   <rect x="34" y="172" width="192" height="24" rx="4" fill="#221F1A"/>
@@ -32,7 +32,7 @@
   <text x="34" y="278" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#E27B52">tiene da parte: niente</text>
 
   <rect x="270" y="114" width="220" height="26" fill="#E27B52"/>
-  <text x="380" y="132" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="bold" fill="#0E0C0A">a moduli</text>
+  <text x="380" y="132" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="bold" fill="#16130F">a moduli</text>
   <rect x="270" y="140" width="220" height="150" fill="none" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="284" y="160" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">riempie le caselle</text>
   <text x="288" y="178" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD">quanti</text>
@@ -48,7 +48,7 @@
   <text x="284" y="266" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD">«All'aperto o dentro?»</text>
   <text x="284" y="282" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#E27B52">tiene da parte: il modulo</text>
 
-  <rect x="520" y="114" width="220" height="26" fill="#DDB874"/>
+  <rect x="520" y="114" width="220" height="26" fill="#C9A961"/>
   <text x="630" y="132" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="bold" fill="#F4ECDD">generativi</text>
   <rect x="520" y="140" width="220" height="150" fill="none" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="534" y="162" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">scrive una parola alla volta</text>

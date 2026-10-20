@@ -1,16 +1,16 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../derivate-gradiente.svg
 -->
 <svg viewBox="0 0 720 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Superficie della loss vista dall'alto come curve di livello, con il percorso a passi della discesa del gradiente verso il minimo">
   <defs>
     <marker id="gd-terra" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#E27B52"/></marker>
-    <marker id="gd-ocra" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#DDB874"/></marker>
+    <marker id="gd-ocra" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#C9A961"/></marker>
   </defs>
-  <rect x="0" y="0" width="720" height="400" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="720" height="400" fill="#16130F"/>
   <text x="360" y="30" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" fill="#F4ECDD">la superficie della loss vista dall'alto</text>
   <g fill="none" stroke="#5BA39C" stroke-width="1.5">
     <ellipse cx="340" cy="210" rx="290" ry="140"/>
@@ -30,8 +30,8 @@
   </g>
   <circle cx="600" cy="120" r="6" fill="#E27B52"/>
   <text x="712" y="96" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#E27B52">partenza (parametri iniziali)</text>
-  <line x1="600" y1="120" x2="548" y2="148" stroke="#DDB874" stroke-width="2" stroke-dasharray="4 4" marker-end="url(#gd-ocra)"/>
-  <text x="546" y="168" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#DDB874">−∇ℒ: la discesa più ripida</text>
+  <line x1="600" y1="120" x2="548" y2="148" stroke="#C9A961" stroke-width="2" stroke-dasharray="4 4" marker-end="url(#gd-ocra)"/>
+  <text x="546" y="168" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#C9A961">−∇ℒ: la discesa più ripida</text>
   <circle cx="340" cy="210" r="6" fill="#F4ECDD"/>
   <text x="330" y="238" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">minimo</text>
   <text x="40" y="378" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#BCB3A1">ogni segmento è un passo: pendenza misurata, passo contro pendenza, ripetere</text>

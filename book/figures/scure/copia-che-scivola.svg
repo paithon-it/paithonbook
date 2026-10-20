@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../copia-che-scivola.svg
 -->
 <!--
@@ -26,8 +26,8 @@
     .copia { fill:none; stroke:#E27B52; stroke-width:2; }
     .zero { stroke:#34302A; stroke-width:1; }
     .fascia { fill:#221F1A; }
-    .barra { stroke:#DDB874; stroke-width:3; }
-    .punto { fill:#DDB874; }
+    .barra { stroke:#C9A961; stroke-width:3; }
+    .punto { fill:#C9A961; }
         @keyframes scivola{0.00%{transform:translateX(-150.0px)}2.20%{transform:translateX(-150.0px)}4.00%{transform:translateX(-143.8px)}6.20%{transform:translateX(-143.8px)}8.00%{transform:translateX(-137.5px)}10.20%{transform:translateX(-137.5px)}12.00%{transform:translateX(-131.2px)}14.20%{transform:translateX(-131.2px)}16.00%{transform:translateX(-125.0px)}18.20%{transform:translateX(-125.0px)}20.00%{transform:translateX(-118.8px)}22.20%{transform:translateX(-118.8px)}24.00%{transform:translateX(-112.5px)}26.20%{transform:translateX(-112.5px)}28.00%{transform:translateX(-106.2px)}30.20%{transform:translateX(-106.2px)}32.00%{transform:translateX(-100.0px)}34.20%{transform:translateX(-100.0px)}36.00%{transform:translateX(-93.8px)}38.20%{transform:translateX(-93.8px)}40.00%{transform:translateX(-87.5px)}42.20%{transform:translateX(-87.5px)}44.00%{transform:translateX(-81.2px)}46.20%{transform:translateX(-81.2px)}48.00%{transform:translateX(-75.0px)}50.20%{transform:translateX(-75.0px)}52.00%{transform:translateX(-68.8px)}54.20%{transform:translateX(-68.8px)}56.00%{transform:translateX(-62.5px)}58.20%{transform:translateX(-62.5px)}60.00%{transform:translateX(-56.2px)}62.20%{transform:translateX(-56.2px)}64.00%{transform:translateX(-50.0px)}66.20%{transform:translateX(-50.0px)}68.00%{transform:translateX(-43.8px)}70.20%{transform:translateX(-43.8px)}72.00%{transform:translateX(-37.5px)}74.20%{transform:translateX(-37.5px)}76.00%{transform:translateX(-31.2px)}78.20%{transform:translateX(-31.2px)}80.00%{transform:translateX(-25.0px)}82.20%{transform:translateX(-25.0px)}84.00%{transform:translateX(-18.8px)}86.20%{transform:translateX(-18.8px)}88.00%{transform:translateX(-12.5px)}90.20%{transform:translateX(-12.5px)}92.00%{transform:translateX(-6.2px)}94.20%{transform:translateX(-6.2px)}96.00%{transform:translateX(0.0px)}98.20%{transform:translateX(0.0px)}100.00%{transform:translateX(0px)}}
     @keyframes b0{0.00%{opacity:0}0.00%{opacity:0}0.00%{opacity:1}100.00%{opacity:1}}
     @keyframes b1{0.00%{opacity:0}3.99%{opacity:0}4.00%{opacity:1}100.00%{opacity:1}}

@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../wav2vec-parte-coperta.svg
 -->
 <!--
@@ -18,7 +18,7 @@
   <style>
     .lbl { font-family:Inter, system-ui, sans-serif; font-size:12px; font-weight:600; fill:#F4ECDD; }
     .leg { font-family:Inter, system-ui, sans-serif; font-size:11px; fill:#BCB3A1; }
-    .big { font-family:Fraunces, Georgia, serif; font-size:22px; font-weight:600; fill:#0E0C0A; }
+    .big { font-family:Fraunces, Georgia, serif; font-size:22px; font-weight:600; fill:#16130F; }
   </style>
 
   <!-- FORMA D'ONDA -->
@@ -59,7 +59,7 @@
       <rect x="210" y="0" width="56" height="44" rx="5" fill="#8E8676" opacity="0.5"/>
     </g>
     <text class="lbl" x="28"  y="27" text-anchor="middle">unità 12</text>
-    <text class="lbl" x="98"  y="27" text-anchor="middle" style="fill:#0E0C0A">unità 41</text>
+    <text class="lbl" x="98"  y="27" text-anchor="middle" style="fill:#16130F">unità 41</text>
     <text class="lbl" x="168" y="27" text-anchor="middle">unità 7</text>
     <text class="lbl" x="238" y="27" text-anchor="middle">unità 89</text>
     <!-- spunta sulla giusta -->

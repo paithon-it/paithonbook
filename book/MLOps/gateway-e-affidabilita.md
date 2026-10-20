@@ -358,8 +358,10 @@ le stesse cose. Mandare tutto al modello più grande è la scelta sicura e la pi
 cara, mandare tutto al più piccolo la più economica e la più rischiosa. Fra le
 due c'è l’**instradamento** (*routing*), che decide richiesta per richiesta chi
 deve rispondere. Accanto c'è una funzione che gli somiglia e che non va
-confuso, il **ripiego** (*fallback*): dove andare quando chi doveva rispondere
-non risponde.
+confusa, il **ripiego** (*fallback*): dove andare quando chi doveva rispondere
+non risponde. Dentro un agente la stessa scelta si fa passo per passo, e si
+giudica sul compito intero: è la parte del {doc}`conto di un compito
+</Harness/il-conto>` che riguarda l'agente; qui la si guarda dal gateway.
 
 `````{tab} Elementare
 
@@ -679,7 +681,8 @@ giorni cattivi.
 ```
 `````
 
-Tutto il lavoro di mettere un modello davanti a molte persone, dalle repliche
-ai gateway, si misura alla fine in schede accese e in ore di calcolo. Quelle
-ore hanno anche un costo che non si paga in euro, il {doc}`conto in energia
-</MLOps/energia-e-impronta>`.
+Il gateway decide a chi mandare una richiesta guardando la richiesta. Quando a
+chiamare è un agente, le richieste appartengono a un programma che si ferma ad
+aspettare uno strumento e poi riparte, e le decisioni che pesano di più si
+spostano dentro la replica, sulla memoria della scheda: è il mestiere di
+{doc}`Servire un agente </MLOps/servire-un-agente>`.

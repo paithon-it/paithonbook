@@ -277,7 +277,9 @@ class="pt-card" href="Harness/overview.html"> <span class="pt-card-num"></span>
 <span class="pt-card-title">Harness engineering</span> <span
 class="pt-card-desc">Tutto ciò che non è il modello: istruzioni nel
 repository, lista delle funzionalità, passaggio di consegne fra sessioni,
-collaudo da utente, grafi con checkpoint.</span> </a> <a class="pt-card-pdf"
+collaudo da utente, progetto degli strumenti, costo e attesa di un compito,
+grafi con checkpoint, harness cercati da un altro agente.</span> </a>
+<a class="pt-card-pdf"
 href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-Harness.pdf"
 aria-label="Scarica in PDF il capitolo «Harness engineering»"
 title="«Harness engineering» in PDF">PDF</a></div> <div class="pt-cella"><a
@@ -393,7 +395,8 @@ class="pt-cella"><a class="pt-card" href="MLOps/overview.html"> <span
 class="pt-card-num"></span> <span class="pt-card-title">MLOps</span> <span
 class="pt-card-desc">Dal notebook alla produzione: versioning e pipeline dei
 dati, serving, monitoraggio del drift, LLMOps, metriche di servizio, capacità e
-costo, gateway e affidabilità, il conto in energia.</span> </a> <a
+costo, gateway e affidabilità, servire un agente, il conto in
+energia.</span> </a> <a
 class="pt-card-pdf" href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-MLOps.pdf"
 aria-label="Scarica in PDF il capitolo «MLOps»" title="«MLOps» in
 PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"

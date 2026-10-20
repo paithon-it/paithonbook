@@ -1,8 +1,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../context-quattro-mosse.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" role="img" aria-label="Al centro la finestra di contesto, disegnata come un riquadro che contiene tre blocchi impilati (istruzioni, cronologia, documenti recuperati) e in fondo lo spazio tratteggiato per la risposta. Quattro frecce numerate dicono che cosa si può fare della finestra: la prima esce verso sinistra, verso un riquadro 'memoria esterna', ed è scrivere; la seconda rientra da lì, ed è selezionare, e porta dentro il pezzo che serve a questo passo; la terza è un arco che esce dal bordo alto e vi rientra, cioè resta dentro la finestra, ed è comprimere; la quarta esce verso destra, verso un secondo riquadro 'un'altra finestra', ed è isolare. In fondo la morale: tre mosse spostano roba oltre il bordo, una la rimpicciolisce restando dentro, e nessuna delle quattro aggiunge spazio.">
@@ -11,7 +11,7 @@
       <path d="M0,0 L10,5 L0,10 z" fill="#5BA39C"/>
     </marker>
     <marker id="fr-ocra" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-      <path d="M0,0 L10,5 L0,10 z" fill="#DDB874"/>
+      <path d="M0,0 L10,5 L0,10 z" fill="#C9A961"/>
     </marker>
     <marker id="fr-terra" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M0,0 L10,5 L0,10 z" fill="#E27B52"/>
@@ -19,18 +19,18 @@
   </defs>
 
   <!-- 3, comprimere: l'arco che esce dalla finestra e vi rientra -->
-  <path d="M 400 128 C 400 58, 520 58, 520 128" fill="none" stroke="#DDB874" stroke-width="2.5" marker-end="url(#fr-ocra)"/>
+  <path d="M 400 128 C 400 58, 520 58, 520 128" fill="none" stroke="#C9A961" stroke-width="2.5" marker-end="url(#fr-ocra)"/>
   <text x="460" y="50" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#F4ECDD">3 &#183; comprimere</text>
   <text x="460" y="68" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#BCB3A1">la stessa cosa, in meno token</text>
 
   <!-- la finestra di contesto -->
-  <rect x="330" y="130" width="260" height="252" rx="12" fill="#0E0C0A" fill-opacity="0.5" stroke="#F4ECDD" stroke-width="2.5"/>
+  <rect x="330" y="130" width="260" height="252" rx="12" fill="#16130F" fill-opacity="0.5" stroke="#F4ECDD" stroke-width="2.5"/>
   <text x="460" y="153" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#F4ECDD">finestra di contesto</text>
 
   <rect x="348" y="166" width="224" height="30" rx="5" fill="#5BA39C" fill-opacity="0.16" stroke="#5BA39C" stroke-width="1.5"/>
   <text x="460" y="186" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#F4ECDD">istruzioni</text>
 
-  <rect x="348" y="204" width="224" height="52" rx="5" fill="#DDB874" fill-opacity="0.2" stroke="#DDB874" stroke-width="1.5"/>
+  <rect x="348" y="204" width="224" height="52" rx="5" fill="#C9A961" fill-opacity="0.2" stroke="#C9A961" stroke-width="1.5"/>
   <text x="460" y="235" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#F4ECDD">cronologia</text>
 
   <rect x="348" y="264" width="224" height="52" rx="5" fill="#E27B52" fill-opacity="0.16" stroke="#E27B52" stroke-width="1.5"/>

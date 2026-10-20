@@ -1,16 +1,16 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../bag-of-words-tf-idf.svg
 -->
 <svg viewBox="0 0 720 300" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema: un documento di testo viene trasformato in un vettore di conteggi delle parole">
-  <rect x="0" y="0" width="720" height="300" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="720" height="300" fill="#16130F"/>
   <!-- documento -->
-  <rect x="30" y="60" width="200" height="180" rx="6" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2"/>
+  <rect x="30" y="60" width="200" height="180" rx="6" fill="#16130F" stroke="#F4ECDD" stroke-width="2"/>
   <text x="130" y="45" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#F4ECDD" text-anchor="middle">Documento</text>
-  <line x1="50" y1="90" x2="210" y2="90" stroke="#DDB874" stroke-width="2"/>
+  <line x1="50" y1="90" x2="210" y2="90" stroke="#C9A961" stroke-width="2"/>
   <line x1="50" y1="115" x2="190" y2="115" stroke="#8E8676" stroke-width="1.5"/>
   <line x1="50" y1="140" x2="205" y2="140" stroke="#8E8676" stroke-width="1.5"/>
   <line x1="50" y1="165" x2="180" y2="165" stroke="#E27B52" stroke-width="2"/>
@@ -30,7 +30,7 @@
     <rect x="440" y="107" width="160" height="22" fill="#5BA39C"/>
     <text x="610" y="122" fill="#BCB3A1">4</text>
     <text x="360" y="157" text-anchor="start">modello</text>
-    <rect x="440" y="142" width="80" height="22" fill="#DDB874"/>
+    <rect x="440" y="142" width="80" height="22" fill="#C9A961"/>
     <text x="530" y="157" fill="#BCB3A1">2</text>
     <text x="360" y="192" text-anchor="start">gatto</text>
     <rect x="440" y="177" width="40" height="22" fill="#E27B52"/>

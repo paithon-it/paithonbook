@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../dqn-stabilita.svg
 -->
 <!--
@@ -22,15 +22,15 @@
     .lbl { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#F4ECDD; }
     .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#BCB3A1; }
     .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#F4ECDD; }
-    .cel { fill:#0E0C0A; stroke:#34302A; stroke-width:1.5; }
+    .cel { fill:#16130F; stroke:#34302A; stroke-width:1.5; }
     .pes { fill:#5BA39C; stroke:none; }
     .leg { stroke:none; }
     .on  { fill:none; stroke:#5BA39C; stroke-width:3; stroke-linejoin:round; }
-    .tg  { fill:none; stroke:#DDB874; stroke-width:3; stroke-linejoin:round; }
-    .testa { stroke:#0E0C0A; stroke-width:2; }
+    .tg  { fill:none; stroke:#C9A961; stroke-width:3; stroke-linejoin:round; }
+    .testa { stroke:#16130F; stroke-width:2; }
     .testa.on { fill:#5BA39C; }
-    .testa.tg { fill:#DDB874; }
-    .cop { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#DDB874; opacity:1; }
+    .testa.tg { fill:#C9A961; }
+    .cop { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#C9A961; opacity:1; }
     .pas { font-family:Inter, system-ui, sans-serif; font-size:16px; font-weight:700; fill:#E27B52; }
         @keyframes f1{0.00%{opacity:0}10.71%{opacity:0}11.11%{opacity:1}21.82%{opacity:1}22.22%{opacity:0}100.00%{opacity:0}}
     @keyframes f2{0.00%{opacity:0}21.82%{opacity:0}22.22%{opacity:1}32.93%{opacity:1}33.33%{opacity:0}100.00%{opacity:0}}

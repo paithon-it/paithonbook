@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../stack-pytorch.svg
 -->
 <!--
@@ -17,7 +17,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" role="img"
      aria-label="Diagramma a strati dello stack di PyTorch: alla base l'hardware con CPU, GPU e altri acceleratori; sopra il motore C++ con ATen e autograd; sopra ancora l'API Python con torch, torch.nn e torch.optim; in cima il tuo modello">
   <style>
-    .box  { fill:#0E0C0A; }
+    .box  { fill:#16130F; }
     .name { font-family:Fraunces, Georgia, serif; font-size:19px; font-weight:600; fill:#F4ECDD; }
     .desc { font-family:Inter, system-ui, sans-serif; font-size:12px; fill:#BCB3A1; }
     .hw   { font-family:Fraunces, Georgia, serif; font-size:17px; font-weight:600; fill:#F4ECDD; }
@@ -39,7 +39,7 @@
   <text class="desc" x="260" y="69" text-anchor="middle">quello che progetti e addestri, in normale codice Python</text>
 
   <!-- API Python (ocra) -->
-  <rect class="box" x="40" y="104" width="440" height="56" rx="6" stroke="#DDB874" stroke-width="2.5"/>
+  <rect class="box" x="40" y="104" width="440" height="56" rx="6" stroke="#C9A961" stroke-width="2.5"/>
   <text class="name" x="260" y="130" text-anchor="middle">API Python</text>
   <text class="desc" x="260" y="149" text-anchor="middle">torch &#183; torch.nn &#183; torch.optim &#183; DataLoader</text>
 

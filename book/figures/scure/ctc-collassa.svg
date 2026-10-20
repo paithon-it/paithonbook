@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../ctc-collassa.svg
 -->
 <!--
@@ -24,11 +24,11 @@
     .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#F4ECDD; }
     .onda  { fill:none; stroke:#5BA39C; stroke-width:1.6;
              stroke-linejoin:round; }
-    .cella { fill:none; stroke:#DDB874; stroke-width:1.6; }
+    .cella { fill:none; stroke:#C9A961; stroke-width:1.6; }
     .giu   { stroke:#34302A; stroke-width:1.4; }
     .punta { fill:#34302A; }
     rect.box { fill:none; stroke:#34302A; stroke-width:1.8; }
-    rect.vuoto { stroke:#DDB874; }
+    rect.vuoto { stroke:#C9A961; }
     rect.fusa, rect.tenuta { stroke:#5BA39C; stroke-width:2.4; }
     rect.errata { stroke:#E27B52; stroke-width:2.2; }
     text.sim { font-family:Inter, system-ui, sans-serif; font-size:19px; font-weight:600;

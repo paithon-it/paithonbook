@@ -1,13 +1,13 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../schema-dqn.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 300" role="img" aria-labelledby="title-dqn">
   <title id="title-dqn">Schema del Deep Q-Network: lo schermo di gioco entra in una rete convoluzionale che produce un valore Q per ogni azione</title>
-  <!-- Palette: terracotta #E27B52, teal #5BA39C, ocra #DDB874, warm-black #F4ECDD, cream #0E0C0A, neutri #BCB3A1 #8E8676 #34302A #221F1A -->
+  <!-- Palette: terracotta #E27B52, teal #5BA39C, ocra #C9A961, warm-black #F4ECDD, cream #16130F, neutri #BCB3A1 #8E8676 #34302A #221F1A -->
   <defs>
     <marker id="dqn-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
       <path d="M0,0 L10,5 L0,10 z" fill="#F4ECDD"/>
@@ -15,21 +15,21 @@
   </defs>
 
   <!-- ===== STATO: fotogramma di gioco ===== -->
-  <rect x="24" y="80" width="132" height="132" rx="6" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2.5"/>
+  <rect x="24" y="80" width="132" height="132" rx="6" fill="#16130F" stroke="#F4ECDD" stroke-width="2.5"/>
   <!-- mattoncini (stile Breakout) -->
   <g>
-    <rect x="31" y="90"  width="17" height="8" fill="#DDB874"/>
+    <rect x="31" y="90"  width="17" height="8" fill="#C9A961"/>
     <rect x="50" y="90"  width="17" height="8" fill="#5BA39C"/>
-    <rect x="69" y="90"  width="17" height="8" fill="#DDB874"/>
+    <rect x="69" y="90"  width="17" height="8" fill="#C9A961"/>
     <rect x="88" y="90"  width="17" height="8" fill="#5BA39C"/>
-    <rect x="107" y="90" width="17" height="8" fill="#DDB874"/>
+    <rect x="107" y="90" width="17" height="8" fill="#C9A961"/>
     <rect x="126" y="90" width="17" height="8" fill="#5BA39C"/>
     <rect x="31" y="101" width="17" height="8" fill="#5BA39C"/>
-    <rect x="50" y="101" width="17" height="8" fill="#DDB874"/>
+    <rect x="50" y="101" width="17" height="8" fill="#C9A961"/>
     <rect x="69" y="101" width="17" height="8" fill="#5BA39C"/>
-    <rect x="88" y="101" width="17" height="8" fill="#DDB874"/>
+    <rect x="88" y="101" width="17" height="8" fill="#C9A961"/>
     <rect x="107" y="101" width="17" height="8" fill="#5BA39C"/>
-    <rect x="126" y="101" width="17" height="8" fill="#DDB874"/>
+    <rect x="126" y="101" width="17" height="8" fill="#C9A961"/>
   </g>
   <!-- pallina -->
   <circle cx="90" cy="162" r="4.5" fill="#F4ECDD"/>
@@ -41,7 +41,7 @@
   <line x1="158" y1="146" x2="200" y2="146" stroke="#F4ECDD" stroke-width="2.5" marker-end="url(#dqn-arrow)"/>
 
   <!-- ===== RETE CONVOLUZIONALE (volumi che rimpiccioliscono) ===== -->
-  <g stroke="#5BA39C" stroke-width="2.5" fill="#0E0C0A">
+  <g stroke="#5BA39C" stroke-width="2.5" fill="#16130F">
     <rect x="206" y="98" width="40" height="96"/>
     <rect x="262" y="110" width="34" height="72"/>
     <rect x="312" y="122" width="28" height="48"/>
@@ -62,7 +62,7 @@
   <line x1="342" y1="146" x2="372" y2="146" stroke="#F4ECDD" stroke-width="2.5" marker-end="url(#dqn-arrow)"/>
 
   <!-- ===== STRATO DENSO (nodi) ===== -->
-  <g fill="#0E0C0A" stroke="#BCB3A1" stroke-width="2">
+  <g fill="#16130F" stroke="#BCB3A1" stroke-width="2">
     <circle cx="392" cy="108" r="6.5"/>
     <circle cx="392" cy="128" r="6.5"/>
     <circle cx="392" cy="148" r="6.5"/>

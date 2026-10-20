@@ -1,8 +1,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../viterbi-traliccio.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 512" role="img" aria-label="Traliccio di Viterbi per la frase la porta cigola con tre stati DET, NOME e VERBO: il cammino ottimo DET, NOME, VERBO e' evidenziato in terracotta con le probabilita' parziali 0,30, 0,042 e 0,0063; i cammini alternativi valutati e scartati sono in grigio, quelli a probabilita' zero tratteggiati.">

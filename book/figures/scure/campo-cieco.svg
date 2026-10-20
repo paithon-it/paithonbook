@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../campo-cieco.svg
 -->
 <!--
@@ -23,10 +23,10 @@
     .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#BCB3A1; }
     .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#F4ECDD; }
     .q     { stroke-width:1.5; }
-    .pas   { fill:#0E0C0A; stroke:#221F1A; }
+    .pas   { fill:#16130F; stroke:#221F1A; }
     .vis   { fill:#5BA39C; stroke:#5BA39C; }
     .rif   { fill:#E27B52; stroke:#E27B52; }
-    .cieco { fill:none; stroke:#DDB874; stroke-width:2.5; stroke-dasharray:4 3; }
+    .cieco { fill:none; stroke:#C9A961; stroke-width:2.5; stroke-dasharray:4 3; }
     .fut   { fill:none; stroke:#34302A; stroke-dasharray:2 4; }
     .pro   { font-family:Inter, system-ui, sans-serif; font-size:17px; font-weight:700;
              fill:#F4ECDD; opacity:0; }

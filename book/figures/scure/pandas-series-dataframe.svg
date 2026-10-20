@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../pandas-series-dataframe.svg
 -->
 <!--
@@ -25,13 +25,13 @@
     .int  { fill:#5BA39C; stroke:#F4ECDD; stroke-width:1.4; }
     .idx  { fill:#E27B52; stroke:#F4ECDD; stroke-width:1.4; }
     .cel  { fill:none; stroke:#34302A; stroke-width:1.4; }
-    .estr { fill:#DDB874; fill-opacity:0.22; stroke:#34302A;
+    .estr { fill:#C9A961; fill-opacity:0.22; stroke:#34302A;
             stroke-width:1.4; }
-    .val  { fill:#DDB874; fill-opacity:0.38; stroke:#DDB874;
+    .val  { fill:#C9A961; fill-opacity:0.38; stroke:#C9A961;
             stroke-width:1.8; }
     .tint { font-family:Inter, system-ui, sans-serif; font-size:13.5px; font-weight:700;
-            fill:#0E0C0A; }
-    .tidx { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#0E0C0A; }
+            fill:#16130F; }
+    .tidx { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#16130F; }
     .tcel { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#F4ECDD; }
     .tnan { font-family:Inter, system-ui, sans-serif; font-size:13px; font-style:italic;
             fill:#BCB3A1; }

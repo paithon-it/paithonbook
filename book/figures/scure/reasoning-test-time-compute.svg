@@ -1,12 +1,12 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../reasoning-test-time-compute.svg
 -->
 <svg viewBox="0 0 720 420" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Grafico stilizzato: accuratezza in funzione del tempo di riflessione. La curva del reasoning model sale con rendimenti decrescenti; il modello standard resta piatto.">
-  <rect x="0" y="0" width="720" height="420" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="720" height="420" fill="#16130F"/>
   <text x="360" y="32" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#F4ECDD">Più riflessione, più accuratezza (fino a un certo punto)</text>
   <!-- assi -->
   <line x1="80" y1="340" x2="660" y2="340" stroke="#F4ECDD" stroke-width="2"/>
@@ -30,8 +30,8 @@
   <circle cx="640" cy="300" r="5" fill="#5BA39C"/>
   <text x="470" y="325" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#5BA39C">modello standard (risposta diretta)</text>
   <!-- zona rendimenti decrescenti -->
-  <rect x="480" y="70" width="180" height="270" fill="#DDB874" opacity="0.18"/>
-  <line x1="480" y1="70" x2="480" y2="340" stroke="#DDB874" stroke-width="2" stroke-dasharray="6 5"/>
+  <rect x="480" y="70" width="180" height="270" fill="#C9A961" opacity="0.18"/>
+  <line x1="480" y1="70" x2="480" y2="340" stroke="#C9A961" stroke-width="2" stroke-dasharray="6 5"/>
   <text x="570" y="215" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">rendimenti</text>
   <text x="570" y="232" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">decrescenti</text>
   <!-- annotazione divario -->

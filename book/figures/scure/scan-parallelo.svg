@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../scan-parallelo.svg
 -->
 <!--
@@ -25,7 +25,7 @@
     .rail   { stroke:#221F1A; stroke-width:1; fill:none; }
     .band   { fill:#221F1A; fill-opacity:.5;
               animation:scorre var(--d) infinite; }
-    .n      { fill:#0E0C0A; stroke:#5BA39C; stroke-width:2; }
+    .n      { fill:#16130F; stroke:#5BA39C; stroke-width:2; }
     .d      { fill:#E27B52; stroke:#E27B52; }
     .c      { stroke:#BCB3A1; stroke-width:1.3; fill:none; }
     .fronte { fill:#E27B52; fill-opacity:.35; }

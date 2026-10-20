@@ -1,8 +1,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../reticolo-ctc.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 696 492" role="img" aria-label="Reticolo della CTC per la parola PALLA su sette frame. Le undici righe sono la trascrizione estesa con un vuoto prima, uno dopo e uno fra ogni coppia di lettere; le sette colonne sono i frame. Le mosse sono tre: restare sulla stessa riga, scendere di una, e dalle righe delle lettere scendere di due scavalcando il vuoto in mezzo. Il salto &#232; vietato fra le due L, ed &#232; segnato con una croce: senza il vuoto in mezzo le due elle si fonderebbero. Un cammino evidenziato, P A A L vuoto L A, arriva in fondo e collassa in PALLA.">
@@ -176,7 +176,7 @@
   <line x1="411" y1="230" x2="471" y2="264" stroke="#E27B52" stroke-width="2.6"/>
   <line x1="489" y1="264" x2="549" y2="298" stroke="#E27B52" stroke-width="2.6"/>
   <line x1="567" y1="298" x2="627" y2="366" stroke="#E27B52" stroke-width="2.6"/>
-  <line x1="333" y1="230" x2="393" y2="298" stroke="#DDB874" stroke-width="2" stroke-dasharray="5 4"/>
+  <line x1="333" y1="230" x2="393" y2="298" stroke="#C9A961" stroke-width="2" stroke-dasharray="5 4"/>
   <line x1="354.0" y1="255.0" x2="372.0" y2="273.0" stroke="#E27B52" stroke-width="2.4"/>
   <line x1="354.0" y1="273.0" x2="372.0" y2="255.0" stroke="#E27B52" stroke-width="2.4"/>
   <circle cx="168" cy="60" r="7" fill="none" fill-opacity="0.0" stroke="#BCB3A1" stroke-width="1" stroke-opacity="0.45"/>

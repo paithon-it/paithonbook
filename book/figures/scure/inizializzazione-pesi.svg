@@ -1,12 +1,12 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../inizializzazione-pesi.svg
 -->
 <svg viewBox="0 0 760 360" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Grafico della varianza del segnale strato per strato: con pesi troppo grandi esplode, troppo piccoli collassa, con la scala calibrata sull'attivazione (Xavier per la tanh, He per la ReLU) resta stabile">
-  <rect x="0" y="0" width="760" height="360" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="760" height="360" fill="#16130F"/>
   <text x="380" y="32" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="bold" fill="#F4ECDD">Varianza del segnale, strato per strato</text>
   <!-- axes -->
   <line x1="80" y1="300" x2="700" y2="300" stroke="#F4ECDD" stroke-width="2"/>
@@ -20,9 +20,9 @@
     <text x="600" y="316">7</text><text x="680" y="316">8</text>
   </g>
   <!-- exploding: weights too large (ocra) -->
-  <polyline points="120,240 200,228 280,210 360,185 440,152 520,115 600,82 680,62" fill="none" stroke="#DDB874" stroke-width="2"/>
-  <circle cx="120" cy="240" r="4" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
-  <circle cx="680" cy="62" r="4" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
+  <polyline points="120,240 200,228 280,210 360,185 440,152 520,115 600,82 680,62" fill="none" stroke="#C9A961" stroke-width="2"/>
+  <circle cx="120" cy="240" r="4" fill="#C9A961" stroke="#F4ECDD" stroke-width="1.5"/>
+  <circle cx="680" cy="62" r="4" fill="#C9A961" stroke="#F4ECDD" stroke-width="1.5"/>
   <text x="560" y="92" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">pesi troppo grandi: esplode</text>
   <!-- vanishing: weights too small (terracotta) -->
   <polyline points="120,240 200,258 280,272 360,283 440,290 520,294 600,296 680,297" fill="none" stroke="#E27B52" stroke-width="2"/>

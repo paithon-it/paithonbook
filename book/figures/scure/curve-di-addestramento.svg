@@ -1,12 +1,12 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../curve-di-addestramento.svg
 -->
 <svg viewBox="0 0 720 500" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Quattro grafici della loss per epoca, ciascuno con la curva di addestramento e quella di validazione: nel primo restano entrambe alte e piatte, nel secondo scendono insieme con un divario stabile, nel terzo quella di addestramento continua a scendere mentre quella di validazione risale dopo un minimo segnato, nel quarto oscillano entrambe senza una tendenza chiara">
-<rect width="720" height="500" fill="#0E0C0A"/>
+<rect width="720" height="500" fill="#16130F"/>
 <text x="70" y="62" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="600" fill="#F4ECDD">Non impara</text>
 <line x1="70" y1="208" x2="330" y2="208" stroke="#F4ECDD" stroke-width="2"/>
 <line x1="70" y1="74" x2="70" y2="208" stroke="#F4ECDD" stroke-width="2"/>
@@ -24,7 +24,7 @@
 <text x="70" y="284" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="600" fill="#F4ECDD">Sovradattamento</text>
 <line x1="70" y1="430" x2="330" y2="430" stroke="#F4ECDD" stroke-width="2"/>
 <line x1="70" y1="296" x2="70" y2="430" stroke="#F4ECDD" stroke-width="2"/>
-<line x1="166.4" y1="296" x2="166.4" y2="430" stroke="#DDB874" stroke-width="2" stroke-dasharray="4 4"/>
+<line x1="166.4" y1="296" x2="166.4" y2="430" stroke="#C9A961" stroke-width="2" stroke-dasharray="4 4"/>
 <text x="172.4" y="310" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">qui si ferma</text>
 <polyline points="70.0,309.9 74.2,317.6 78.5,324.8 82.7,331.6 86.9,337.8 91.2,343.7 95.4,349.2 99.7,354.3 103.9,359.1 108.1,363.6 112.4,367.8 116.6,371.7 120.8,375.4 125.1,378.8 129.3,382.0 133.6,385.0 137.8,387.8 142.0,390.4 146.3,392.8 150.5,395.1 154.7,397.2 159.0,399.2 163.2,401.1 167.5,402.8 171.7,404.4 175.9,405.9 180.2,407.3 184.4,408.7 188.6,409.9 192.9,411.1 197.1,412.1 201.4,413.1 205.6,414.1 209.8,415.0 214.1,415.8 218.3,416.6 222.5,417.3 226.8,418.0 231.0,418.6 235.3,419.2 239.5,419.7 243.7,420.2 248.0,420.7 252.2,421.2 256.4,421.6 260.7,422.0 264.9,422.3 269.2,422.7 273.4,423.0 277.6,423.3 281.9,423.6 286.1,423.8 290.3,424.1 294.6,424.3 298.8,424.5 303.1,424.7 307.3,424.9 311.5,425.1 315.8,425.2 320.0,425.4" fill="none" stroke="#E27B52" stroke-width="2.4"/>
 <polyline points="70.0,300.0 74.2,310.0 78.5,321.0 82.7,330.7 86.9,339.3 91.2,346.9 95.4,353.6 99.7,359.4 103.9,364.6 108.1,369.1 112.4,373.0 116.6,376.4 120.8,379.3 125.1,381.8 129.3,384.0 133.6,385.8 137.8,387.3 142.0,388.5 146.3,389.4 150.5,390.2 154.7,390.7 159.0,391.1 163.2,391.3 167.5,391.3 171.7,391.2 175.9,391.0 180.2,390.6 184.4,390.2 188.6,389.6 192.9,388.9 197.1,388.2 201.4,387.3 205.6,386.4 209.8,385.4 214.1,384.4 218.3,383.2 222.5,382.0 226.8,380.8 231.0,379.5 235.3,378.1 239.5,376.7 243.7,375.2 248.0,373.7 252.2,372.1 256.4,370.5 260.7,368.8 264.9,367.1 269.2,365.3 273.4,363.5 277.6,361.7 281.9,359.8 286.1,357.8 290.3,355.8 294.6,353.8 298.8,351.7 303.1,349.6 307.3,347.5 311.5,345.3 315.8,343.0 320.0,340.8" fill="none" stroke="#5BA39C" stroke-width="2.4" stroke-dasharray="7 5"/>

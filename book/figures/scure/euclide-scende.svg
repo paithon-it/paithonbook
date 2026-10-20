@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../euclide-scende.svg
 -->
 <!--
@@ -28,7 +28,7 @@
     rect.esi  { fill:#E27B52; stroke:#E27B52; stroke-width:2.6; }
     text.num  { font-family:Inter, system-ui, sans-serif; font-size:20px; font-weight:600; fill:#F4ECDD; }
     text.zer  { fill:#BCB3A1; }
-    text.esi  { fill:#0E0C0A; }
+    text.esi  { fill:#16130F; }
     .fre      { fill:none; stroke-width:1.8; }
     .fre.cop  { stroke:#5BA39C; }
     .fre.res  { stroke:#E27B52; }

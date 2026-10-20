@@ -695,9 +695,9 @@ sono quattro:
   che il modello usa soltanto perché è lì, e che tira la risposta fuori fuoco.
   L'esempio di Breunig riguarda l'elenco degli strumenti fra cui il modello
   deve scegliere per rispondere: un modello piccolo, di quelli che girano su un
-  computer normale, messo davanti a quarantasei strumenti prende quello
-  sbagliato e la richiesta fallisce; con lo stesso compito e diciannove
-  strumenti in elenco sceglie giusto.
+  computer normale, messo davanti a quarantasei strumenti fallisce la
+  richiesta; con lo stesso compito e diciannove strumenti in elenco la porta a
+  termine.
 - **Il conflitto** (*context clash*): pezzi di contesto che si contraddicono fra
   loro, due documenti che si smentiscono, il regolamento vecchio accanto a
   quello nuovo. Il modello non sa a chi credere, e la risposta ne risente.

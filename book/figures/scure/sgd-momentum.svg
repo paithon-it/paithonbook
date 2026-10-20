@@ -1,8 +1,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../sgd-momentum.svg
 -->
 <svg viewBox="0 0 720 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Curve di livello di una valle allungata con due traiettorie: senza momentum lo zigzag attraversa la valle avanzando poco, con momentum il percorso si raddrizza verso il minimo">
@@ -10,9 +10,9 @@
     <marker id="sgd45-a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#E27B52"/></marker>
     <marker id="sgd45-b" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#5BA39C"/></marker>
   </defs>
-  <rect x="0" y="0" width="720" height="400" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="720" height="400" fill="#16130F"/>
   <text x="360" y="30" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" fill="#F4ECDD">stesso canyon, stesso punto di partenza, due traiettorie</text>
-  <g fill="none" stroke="#DDB874" stroke-width="1.5">
+  <g fill="none" stroke="#C9A961" stroke-width="1.5">
     <ellipse cx="520" cy="215" rx="180" ry="120" opacity="0.5"/>
     <ellipse cx="520" cy="215" rx="135" ry="85" opacity="0.65"/>
     <ellipse cx="520" cy="215" rx="90" ry="52" opacity="0.8"/>

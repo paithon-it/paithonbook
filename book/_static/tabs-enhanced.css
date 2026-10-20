@@ -74,12 +74,12 @@
 /* Hover per livello (1 = Elementare/teal, 2 = Superiore/terracotta) */
 .tab-set > .tab-label:nth-of-type(1):hover {
   color: var(--accent-color);
-  background: rgba(45, 90, 92, 0.07);
+  background: var(--pt-tint-accent-2);
 }
 
 .tab-set > .tab-label:nth-of-type(2):hover {
   color: var(--primary-color);
-  background: rgba(181, 83, 44, 0.07);
+  background: var(--pt-tint-accent);
 }
 
 /* Linguetta attiva: colore pieno del livello + filo superiore */
@@ -182,7 +182,7 @@
     border: none;
     background: none;
     justify-content: flex-start;
-    font-weight: 700;
+    font-weight: var(--pt-weight-semibold, 600);
   }
 
   .tab-set > .tab-content {

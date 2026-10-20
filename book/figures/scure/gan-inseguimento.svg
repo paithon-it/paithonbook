@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../gan-inseguimento.svg
 -->
 <!--
@@ -24,7 +24,7 @@
     .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#F4ECDD; }
     .vero  { fill:none; stroke:#5BA39C; stroke-width:6.5; opacity:0.5; }
     .falso { fill:none; stroke:#E27B52; stroke-width:2.6; }
-    .disc  { fill:none; stroke:#DDB874; stroke-width:3; }
+    .disc  { fill:none; stroke:#C9A961; stroke-width:3; }
     .mezzo { stroke:#34302A; stroke-width:1.5; stroke-dasharray:5 5; }
         @keyframes g0{0.00%{opacity:0}0.00%{opacity:1}7.14%{opacity:1}8.74%{opacity:0}100.00%{opacity:0}}
     @keyframes g1{0.00%{opacity:0}12.69%{opacity:0}14.29%{opacity:1}21.43%{opacity:1}23.03%{opacity:0}100.00%{opacity:0}}

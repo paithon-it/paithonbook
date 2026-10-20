@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../potatura-che-assottiglia.svg
 -->
 <!--
@@ -24,7 +24,7 @@
     .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#F4ECDD; }
     .griglia { stroke:#221F1A; stroke-width:1; }
     .cur  { stroke:#E27B52; stroke-width:2.5; }
-    .pun  { fill:#E27B52; stroke:#0E0C0A; stroke-width:1.5; }
+    .pun  { fill:#E27B52; stroke:#16130F; stroke-width:1.5; }
     .tic  { font-family:Inter, system-ui, sans-serif; font-size:12px; fill:#BCB3A1; }
     .big  { font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:600; fill:#5BA39C; }
     .big2 { font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:600;

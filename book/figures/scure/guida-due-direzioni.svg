@@ -1,8 +1,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../guida-due-direzioni.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 366" role="img" aria-label="Da uno stesso punto partono tre frecce. La grigia, verticale, è la direzione che la rete indica quando la richiesta scritta non c'è, cioè il caso con peso zero. La verde è la direzione con la richiesta, il caso con peso uno: è lunga uguale e spostata di appena sette gradi, tanto che le due quasi si sovrappongono, e la distanza fra le due punte, marcata da una graffa, è tutto il contributo del testo. Quel contributo viene ripetuto lungo una linea tratteggiata, dove sette pallini segnano le prime sette ripetizioni e la punta cade mezzo passo più in là. Lì arriva la terza freccia, spessa e color terracotta, che parte dallo stesso punto ed è la direzione seguita davvero con peso sette e mezzo: è molto più inclinata delle prime due.">
@@ -44,7 +44,7 @@
 
   <!-- il contributo del testo, ripetuto lungo la stessa retta -->
   <line class="g" x1="250" y1="150" x2="428" y2="161.19"/>
-  <g fill="#DDB874" stroke="#0E0C0A" stroke-width="1.4">
+  <g fill="#C9A961" stroke="#16130F" stroke-width="1.4">
     <circle cx="272.58" cy="151.42" r="3.8"/>
     <circle cx="295.16" cy="152.84" r="3.8"/>
     <circle cx="317.74" cy="154.26" r="3.8"/>
@@ -56,7 +56,7 @@
   <text class="s" x="306" y="130">sette pallini, e la punta cade mezzo passo più in là</text>
 
   <!-- la graffa che marca il contributo, fra le due punte -->
-  <g stroke="#DDB874" stroke-width="2.4" fill="none">
+  <g stroke="#C9A961" stroke-width="2.4" fill="none">
     <line x1="250" y1="112" x2="272.58" y2="113.42"/>
     <line x1="250" y1="108" x2="250" y2="122"/>
     <line x1="272.58" y1="109.42" x2="272.58" y2="123.42"/>

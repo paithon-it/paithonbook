@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../orbite-che-non-cadono.svg
 -->
 <!--
@@ -23,7 +23,7 @@
     .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#BCB3A1; }
     .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#F4ECDD; }
     .orbita  { fill:none; stroke:#5BA39C; stroke-width:2.6; }
-    .orbita2 { fill:none; stroke:#DDB874; stroke-width:2.2; }
+    .orbita2 { fill:none; stroke:#C9A961; stroke-width:2.2; }
     .tri     { fill:none; stroke:#34302A; stroke-width:1.6; }
     .cro     { stroke:#BCB3A1; stroke-width:2; }
     .fre     { fill:#5BA39C; }

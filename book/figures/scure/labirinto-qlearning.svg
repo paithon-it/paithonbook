@@ -1,8 +1,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../labirinto-qlearning.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 340" role="img" aria-label="Griglia 3 per 4 con partenza, meta, trappola, muro e frecce della politica appresa" font-family="Inter, Helvetica, Arial, sans-serif">
@@ -13,16 +13,16 @@
   </defs>
 
   <!-- Celle libere (cream) -->
-  <rect x="60" y="40" width="90" height="90" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2"/>
-  <rect x="150" y="40" width="90" height="90" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2"/>
-  <rect x="240" y="40" width="90" height="90" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2"/>
+  <rect x="60" y="40" width="90" height="90" fill="#16130F" stroke="#F4ECDD" stroke-width="2"/>
+  <rect x="150" y="40" width="90" height="90" fill="#16130F" stroke="#F4ECDD" stroke-width="2"/>
+  <rect x="240" y="40" width="90" height="90" fill="#16130F" stroke="#F4ECDD" stroke-width="2"/>
 
-  <rect x="60" y="130" width="90" height="90" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2"/>
-  <rect x="240" y="130" width="90" height="90" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2"/>
+  <rect x="60" y="130" width="90" height="90" fill="#16130F" stroke="#F4ECDD" stroke-width="2"/>
+  <rect x="240" y="130" width="90" height="90" fill="#16130F" stroke="#F4ECDD" stroke-width="2"/>
 
-  <rect x="150" y="220" width="90" height="90" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2"/>
-  <rect x="240" y="220" width="90" height="90" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2"/>
-  <rect x="330" y="220" width="90" height="90" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2"/>
+  <rect x="150" y="220" width="90" height="90" fill="#16130F" stroke="#F4ECDD" stroke-width="2"/>
+  <rect x="240" y="220" width="90" height="90" fill="#16130F" stroke="#F4ECDD" stroke-width="2"/>
+  <rect x="330" y="220" width="90" height="90" fill="#16130F" stroke="#F4ECDD" stroke-width="2"/>
 
   <!-- Muro -->
   <rect x="150" y="130" width="90" height="90" fill="#34302A" stroke="#F4ECDD" stroke-width="2"/>
@@ -30,16 +30,16 @@
 
   <!-- Meta (goal) -->
   <rect x="330" y="40" width="90" height="90" fill="#E27B52" stroke="#F4ECDD" stroke-width="2"/>
-  <text x="375" y="80" text-anchor="middle" font-size="26" font-weight="700" fill="#0E0C0A">+1</text>
-  <text x="375" y="105" text-anchor="middle" font-size="13" fill="#0E0C0A">meta</text>
+  <text x="375" y="80" text-anchor="middle" font-size="26" font-weight="700" fill="#16130F">+1</text>
+  <text x="375" y="105" text-anchor="middle" font-size="13" fill="#16130F">meta</text>
 
   <!-- Trappola -->
-  <rect x="330" y="130" width="90" height="90" fill="#DDB874" stroke="#F4ECDD" stroke-width="2"/>
+  <rect x="330" y="130" width="90" height="90" fill="#C9A961" stroke="#F4ECDD" stroke-width="2"/>
   <text x="375" y="170" text-anchor="middle" font-size="26" font-weight="700" fill="#F4ECDD">−1</text>
   <text x="375" y="195" text-anchor="middle" font-size="13" fill="#F4ECDD">trappola</text>
 
   <!-- Partenza -->
-  <rect x="60" y="220" width="90" height="90" fill="#0E0C0A" stroke="#5BA39C" stroke-width="4"/>
+  <rect x="60" y="220" width="90" height="90" fill="#16130F" stroke="#5BA39C" stroke-width="4"/>
   <text x="74" y="242" text-anchor="middle" font-size="18" font-weight="700" fill="#5BA39C">S</text>
 
   <!-- Frecce della politica -->

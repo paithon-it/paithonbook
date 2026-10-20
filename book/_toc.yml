@@ -381,10 +381,16 @@ parts:
       title: Il passaggio di consegne
     - file: Harness/finito-vuol-dire-collaudato.md
       title: Finito vuol dire collaudato
+    - file: Harness/gli-attrezzi.md
+      title: Gli attrezzi
     - file: Harness/quando-nessuno-guarda.md
       title: Quando nessuno guarda
+    - file: Harness/il-conto.md
+      title: Il conto
     - file: Harness/dal-ciclo-al-grafo.md
       title: Dal ciclo al grafo
+    - file: Harness/l-harness-che-si-riscrive.md
+      title: L'harness che si riscrive
   - file: SistemiMultiAgente/overview.md
     title: Sistemi multi-agente
     sections:
@@ -566,6 +572,8 @@ parts:
       title: Capacità e costo
     - file: MLOps/gateway-e-affidabilita.md
       title: Davanti ai modelli
+    - file: MLOps/servire-un-agente.md
+      title: Servire un agente
     - file: MLOps/energia-e-impronta.md
       title: Il conto in energia
   - file: Interpretabilita/overview.md

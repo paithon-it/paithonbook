@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../ciclo-addestramento.svg
 -->
 <!--
@@ -23,9 +23,9 @@
     .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#BCB3A1; }
     .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#F4ECDD; }
     svg   { --g: 3.50s; }
-    .box  { fill:#0E0C0A; stroke:#34302A; stroke-width:2; }
+    .box  { fill:#16130F; stroke:#34302A; stroke-width:2; }
     .box.att { stroke:#E27B52; stroke-width:3.5; }
-    .badge { fill:#0E0C0A; stroke:#34302A; stroke-width:1.5; }
+    .badge { fill:#16130F; stroke:#34302A; stroke-width:1.5; }
     .num  { font-family:Inter, system-ui, sans-serif; font-size:12px; font-weight:700; fill:#BCB3A1; }
     .nome { font-family:Inter, system-ui, sans-serif; font-size:14px; font-weight:700; fill:#F4ECDD; }
     .nome.att { fill:#E27B52; }
@@ -34,7 +34,7 @@
     .frec { fill:#34302A; }
     .base { stroke:#34302A; stroke-width:2; }
     .div  { stroke:#221F1A; stroke-width:1.5; }
-    .gbar { fill:#DDB874; transform-box:view-box; transform-origin:0px 240px; }
+    .gbar { fill:#C9A961; transform-box:view-box; transform-origin:0px 240px; }
     .pista { stroke:#221F1A; stroke-width:2; }
     .tacca { stroke:#34302A; stroke-width:2.5; }
     .peso { fill:#5BA39C; }

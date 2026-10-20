@@ -1,16 +1,16 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../numeri-stringhe-liste.svg
 -->
 <svg viewBox="0 0 720 300" width="100%" role="img" aria-label="Tre contenitori: il numero come scatolina sigillata con un solo valore, la stringa come catena di caselle saldate con lucchetto, la lista come cassetta aperta con scomparti numerati a partire da zero e freccia di append" xmlns="http://www.w3.org/2000/svg">
-  <rect x="0" y="0" width="720" height="300" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="720" height="300" fill="#16130F"/>
   <text x="360" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="bold" fill="#F4ECDD">Tre tipi, tre contenitori</text>
 
   <!-- NUMERO: scatolina sigillata -->
-  <rect x="45" y="110" width="120" height="80" fill="#0E0C0A" stroke="#E27B52" stroke-width="2"/>
+  <rect x="45" y="110" width="120" height="80" fill="#16130F" stroke="#E27B52" stroke-width="2"/>
   <line x1="45" y1="130" x2="165" y2="130" stroke="#E27B52" stroke-width="2"/>
   <text x="105" y="168" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="22" fill="#E27B52" font-weight="bold">42</text>
   <text x="105" y="82" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#F4ECDD">int / float</text>
@@ -18,7 +18,7 @@
   <text x="105" y="237" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#F4ECDD">scatola sigillata</text>
 
   <!-- STRINGA: catena di caselle saldate + lucchetto -->
-  <g stroke="#5BA39C" stroke-width="2" fill="#0E0C0A">
+  <g stroke="#5BA39C" stroke-width="2" fill="#16130F">
     <rect x="230" y="120" width="36" height="46"/>
     <rect x="266" y="120" width="36" height="46"/>
     <rect x="302" y="120" width="36" height="46"/>
@@ -36,11 +36,11 @@
   <text x="309" y="245" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#F4ECDD">catena saldata (immutabile)</text>
 
   <!-- LISTA: cassetta aperta con scomparti -->
-  <path d="M470 108 h190 v76 h-190 z" fill="#0E0C0A" stroke="#DDB874" stroke-width="2"/>
-  <line x1="470" y1="108" x2="482" y2="96" stroke="#DDB874" stroke-width="2"/>
-  <line x1="660" y1="108" x2="672" y2="96" stroke="#DDB874" stroke-width="2"/>
-  <line x1="482" y1="96" x2="672" y2="96" stroke="#DDB874" stroke-width="2"/>
-  <g stroke="#DDB874" stroke-width="1.5">
+  <path d="M470 108 h190 v76 h-190 z" fill="#16130F" stroke="#C9A961" stroke-width="2"/>
+  <line x1="470" y1="108" x2="482" y2="96" stroke="#C9A961" stroke-width="2"/>
+  <line x1="660" y1="108" x2="672" y2="96" stroke="#C9A961" stroke-width="2"/>
+  <line x1="482" y1="96" x2="672" y2="96" stroke="#C9A961" stroke-width="2"/>
+  <g stroke="#C9A961" stroke-width="1.5">
     <line x1="518" y1="108" x2="518" y2="184"/>
     <line x1="566" y1="108" x2="566" y2="184"/>
     <line x1="614" y1="108" x2="614" y2="184"/>

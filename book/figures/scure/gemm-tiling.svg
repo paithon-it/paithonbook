@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../gemm-tiling.svg
 -->
 <!--
@@ -20,10 +20,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 500" role="img"
      aria-label="Diagramma del tiling della moltiplicazione tra matrici C uguale ad A per B. La matrice A e disposta in basso a sinistra, la matrice B in alto a destra sopra la matrice C, che sta in basso a destra; A condivide le righe con C, B condivide le colonne con C. Una tessera di C e evidenziata in terracotta. La banda orizzontale di A che sta sulle sue stesse righe e la banda verticale di B che sta sulle sue stesse colonne sono evidenziate: il loro prodotto genera la tessera. Lungo la dimensione K le bande si scorrono a blocchi: un blocco di A e uno di B, in ocra, rappresentano i dati caricati una volta nella shared memory e riusati per tutta la tessera. Frecce collegano il blocco di A e il blocco di B alla tessera di C.">
   <style>
-    .cell   { fill:#0E0C0A; stroke:#5BA39C; stroke-width:1.2; }
+    .cell   { fill:#16130F; stroke:#5BA39C; stroke-width:1.2; }
     .band   { fill:#E27B52; fill-opacity:0.16; stroke:#5BA39C; stroke-width:1.2; }
     .tile   { fill:#E27B52; fill-opacity:0.42; stroke:#E27B52; stroke-width:2.4; }
-    .shm    { fill:#DDB874; fill-opacity:0.6; stroke:#F4ECDD; stroke-width:1.4; }
+    .shm    { fill:#C9A961; fill-opacity:0.6; stroke:#F4ECDD; stroke-width:1.4; }
     .name   { font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:700; fill:#F4ECDD; }
     .dim    { font-family:Inter, system-ui, sans-serif; font-size:12px; fill:#F4ECDD; opacity:0.7; }
     .note   { font-family:Inter, system-ui, sans-serif; font-size:12.5px; font-weight:600; fill:#E27B52; }
@@ -38,7 +38,7 @@
   </defs>
 
   <!-- backing cream: rende la figura leggibile anche in dark mode -->
-  <rect x="6" y="6" width="708" height="488" rx="14" fill="#0E0C0A" stroke="#F4ECDD" stroke-opacity="0.12" stroke-width="1.5"/>
+  <rect x="6" y="6" width="708" height="488" rx="14" fill="#16130F" stroke="#F4ECDD" stroke-opacity="0.12" stroke-width="1.5"/>
 
   <!-- ===================== B (K x N), sopra C ===================== -->
   <!-- griglia 3 righe (K) x 4 colonne (N), tessere da 40 -->

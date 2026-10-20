@@ -514,7 +514,7 @@ programma si chiama *programmazione genetica*.
 Un secondo vantaggio distintivo, che né il gradiente né le altre metaeuristiche
 danno gratis, è l'ottimizzazione **multi-obiettivo**. Poiché la popolazione è
 un insieme e non un punto, la si può far convergere non su un ottimo ma
-sull'intero **fronte di Pareto** dei compromessi fra obiettivi in conflitto
+sull'intero fronte di Pareto dei compromessi fra obiettivi in conflitto
 (accuratezza contro latenza, prestazione contro consumo): come fa NSGA-II
 {cite}`deb2002fast`, che ordina la popolazione per dominanza invece che per un
 punteggio scalare. Con un metodo a singolo punto bisognerebbe fissare i pesi

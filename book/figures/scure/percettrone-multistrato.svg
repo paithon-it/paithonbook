@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../percettrone-multistrato.svg
 -->
 <!--
@@ -21,7 +21,7 @@
     .lab  { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#F4ECDD; }
     .cap  { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#BCB3A1; }
     .edge { stroke:#34302A; stroke-width:1.2; }
-    .node { fill:#0E0C0A; stroke-width:2.5; }
+    .node { fill:#16130F; stroke-width:2.5; }
   </style>
 
   <!-- connessioni input -> strato nascosto -->
@@ -61,10 +61,10 @@
   <text class="lab" x="90" y="260" text-anchor="middle" dy=".35em">x₃</text>
 
   <!-- strato nascosto (ocra) -->
-  <circle class="node" cx="280" cy="75"  r="20" stroke="#DDB874"/>
-  <circle class="node" cx="280" cy="145" r="20" stroke="#DDB874"/>
-  <circle class="node" cx="280" cy="215" r="20" stroke="#DDB874"/>
-  <circle class="node" cx="280" cy="285" r="20" stroke="#DDB874"/>
+  <circle class="node" cx="280" cy="75"  r="20" stroke="#C9A961"/>
+  <circle class="node" cx="280" cy="145" r="20" stroke="#C9A961"/>
+  <circle class="node" cx="280" cy="215" r="20" stroke="#C9A961"/>
+  <circle class="node" cx="280" cy="285" r="20" stroke="#C9A961"/>
 
   <!-- strato di output (terracotta) -->
   <circle class="node" cx="470" cy="135" r="20" stroke="#E27B52"/>

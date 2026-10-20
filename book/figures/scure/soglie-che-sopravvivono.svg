@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../soglie-che-sopravvivono.svg
 -->
 <!--
@@ -26,9 +26,9 @@
     .guida { stroke:#34302A; stroke-width:1.2; stroke-dasharray:3 4; }
     .toll  { stroke:#F4ECDD; stroke-width:1.4; fill:none; }
     .vera  { fill:#F4ECDD; }
-    .banda { fill:#DDB874; opacity:.75; transform-box:fill-box; transform-origin:0% 50%; }
-    .pos   { fill:#E27B52; stroke:#0E0C0A; stroke-width:.8; }
-    .neg   { fill:#5BA39C; stroke:#0E0C0A; stroke-width:.8; }
+    .banda { fill:#C9A961; opacity:.75; transform-box:fill-box; transform-origin:0% 50%; }
+    .pos   { fill:#E27B52; stroke:#16130F; stroke-width:.8; }
+    .neg   { fill:#5BA39C; stroke:#16130F; stroke-width:.8; }
     .cont  { font-family:Inter, system-ui, sans-serif; font-size:16px; font-weight:700; fill:#E27B52; opacity:0; }
         @keyframes banda{0.00%{transform:translateX(-27.3px) scaleX(12.822)}18.00%{transform:translateX(-27.3px) scaleX(12.822)}23.00%{transform:translateX(-27.3px) scaleX(6.088)}38.00%{transform:translateX(-27.3px) scaleX(6.088)}43.00%{transform:translateX(-27.3px) scaleX(6.088)}58.00%{transform:translateX(-27.3px) scaleX(6.088)}63.00%{transform:translateX(-27.3px) scaleX(3.746)}78.00%{transform:translateX(-27.3px) scaleX(3.746)}83.00%{transform:translateX(0.0px) scaleX(1.000)}100.00%{transform:translateX(0px) scaleX(1)}}
     @keyframes g1{0.00%{opacity:0}18.00%{opacity:0}20.00%{opacity:1}100.00%{opacity:1}}

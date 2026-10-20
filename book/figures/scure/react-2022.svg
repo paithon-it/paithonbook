@@ -1,48 +1,48 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../react-2022.svg
 -->
 <svg viewBox="0 0 720 600" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ciclo ReAct: sequenza verticale che alterna passi di pensiero, azione e osservazione, ripetuti fino alla risposta">
-  <rect x="0" y="0" width="720" height="600" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="720" height="600" fill="#16130F"/>
   <text x="360" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#F4ECDD">Il ciclo ReAct</text>
 
   <!-- Box 1: Pensiero -->
-  <rect x="170" y="56" width="380" height="56" rx="6" fill="#0E0C0A" stroke="#E27B52" stroke-width="2"/>
+  <rect x="170" y="56" width="380" height="56" rx="6" fill="#16130F" stroke="#E27B52" stroke-width="2"/>
   <rect x="170" y="56" width="10" height="56" fill="#E27B52"/>
   <text x="196" y="80" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="700" fill="#E27B52">PENSIERO</text>
   <text x="196" y="99" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">Mi serve il film d'esordio del regista. Lo cerco.</text>
 
   <!-- Box 2: Azione -->
-  <rect x="170" y="144" width="380" height="56" rx="6" fill="#0E0C0A" stroke="#5BA39C" stroke-width="2"/>
+  <rect x="170" y="144" width="380" height="56" rx="6" fill="#16130F" stroke="#5BA39C" stroke-width="2"/>
   <rect x="170" y="144" width="10" height="56" fill="#5BA39C"/>
   <text x="196" y="168" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="700" fill="#5BA39C">AZIONE</text>
   <text x="196" y="187" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD" font-style="italic">cerca[«nome regista»]</text>
 
   <!-- Box 3: Osservazione -->
-  <rect x="170" y="232" width="380" height="56" rx="6" fill="#0E0C0A" stroke="#DDB874" stroke-width="2"/>
-  <rect x="170" y="232" width="10" height="56" fill="#DDB874"/>
-  <text x="196" y="256" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="700" fill="#DDB874">OSSERVAZIONE</text>
+  <rect x="170" y="232" width="380" height="56" rx="6" fill="#16130F" stroke="#C9A961" stroke-width="2"/>
+  <rect x="170" y="232" width="10" height="56" fill="#C9A961"/>
+  <text x="196" y="256" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="700" fill="#C9A961">OSSERVAZIONE</text>
   <text x="196" y="275" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">Ha esordito con «titolo del film»: manca l'anno.</text>
 
   <!-- Box 4: Pensiero -->
-  <rect x="170" y="320" width="380" height="56" rx="6" fill="#0E0C0A" stroke="#E27B52" stroke-width="2"/>
+  <rect x="170" y="320" width="380" height="56" rx="6" fill="#16130F" stroke="#E27B52" stroke-width="2"/>
   <rect x="170" y="320" width="10" height="56" fill="#E27B52"/>
   <text x="196" y="344" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="700" fill="#E27B52">PENSIERO</text>
   <text x="196" y="363" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">Apro la pagina di quel film per l'anno di uscita.</text>
 
   <!-- Box 5: Azione -->
-  <rect x="170" y="408" width="380" height="56" rx="6" fill="#0E0C0A" stroke="#5BA39C" stroke-width="2"/>
+  <rect x="170" y="408" width="380" height="56" rx="6" fill="#16130F" stroke="#5BA39C" stroke-width="2"/>
   <rect x="170" y="408" width="10" height="56" fill="#5BA39C"/>
   <text x="196" y="432" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="700" fill="#5BA39C">AZIONE</text>
   <text x="196" y="451" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD" font-style="italic">cerca[«titolo del film»]</text>
 
   <!-- Box 6: Osservazione -->
-  <rect x="170" y="496" width="380" height="56" rx="6" fill="#0E0C0A" stroke="#DDB874" stroke-width="2"/>
-  <rect x="170" y="496" width="10" height="56" fill="#DDB874"/>
-  <text x="196" y="520" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="700" fill="#DDB874">OSSERVAZIONE</text>
+  <rect x="170" y="496" width="380" height="56" rx="6" fill="#16130F" stroke="#C9A961" stroke-width="2"/>
+  <rect x="170" y="496" width="10" height="56" fill="#C9A961"/>
+  <text x="196" y="520" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="700" fill="#C9A961">OSSERVAZIONE</text>
   <text x="196" y="539" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">Uscito nel 1994 → ora posso rispondere.</text>
 
   <!-- Arrows between boxes -->

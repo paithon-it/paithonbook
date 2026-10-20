@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../jepa-tre-pezzi.svg
 -->
 <!--
@@ -22,18 +22,18 @@
     .lbl { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#F4ECDD; }
     .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#BCB3A1; }
     .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#F4ECDD; }
-    .box { fill:#0E0C0A; stroke:#5BA39C; stroke-width:2; }
-    .dato { fill:#0E0C0A; stroke:#34302A; stroke-width:2; }
-    .chiave { fill:#0E0C0A; stroke:#E27B52; stroke-width:3; }
-    .copia { fill:#0E0C0A; stroke:#DDB874; stroke-width:2; stroke-dasharray:6 4; }
-    .perdita { fill:#0E0C0A; stroke:#F4ECDD; stroke-width:2; }
+    .box { fill:#16130F; stroke:#5BA39C; stroke-width:2; }
+    .dato { fill:#16130F; stroke:#34302A; stroke-width:2; }
+    .chiave { fill:#16130F; stroke:#E27B52; stroke-width:3; }
+    .copia { fill:#16130F; stroke:#C9A961; stroke-width:2; stroke-dasharray:6 4; }
+    .perdita { fill:#16130F; stroke:#F4ECDD; stroke-width:2; }
     .fl { stroke:#BCB3A1; stroke-width:1.8; }
     .sg { stroke:#E27B52; }
     .sgt { fill:#E27B52; }
     .taglio { stroke:#E27B52; stroke-width:2.5; }
     .pt { fill:#BCB3A1; }
     .ptsg { fill:#E27B52; }
-    .ema { stroke:#DDB874; stroke-width:2; stroke-dasharray:4 4; }
+    .ema { stroke:#C9A961; stroke-width:2; stroke-dasharray:4 4; }
     
     @media (prefers-reduced-motion:reduce) { * { animation:none !important; } }
   </style>

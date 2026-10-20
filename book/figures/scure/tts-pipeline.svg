@@ -1,8 +1,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../tts-pipeline.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 230" role="img" aria-label="Pipeline della sintesi vocale: il testo scritto attraversa quattro tappe, la normalizzazione, la conversione in fonemi, il modello acustico che produce il mel-spettrogramma e il vocoder che ne fa l'onda sonora">
@@ -37,23 +37,23 @@
   <!-- stadio 4: modello acustico, con mini mel-spettrogramma -->
   <rect x="540" y="60" width="130" height="100" rx="8" fill="#5BA39C" fill-opacity="0.10" stroke="#5BA39C" stroke-width="2"/>
   <rect x="552" y="76" width="15" height="9" fill="#5BA39C"/>
-  <rect x="570" y="76" width="15" height="9" fill="#DDB874"/>
+  <rect x="570" y="76" width="15" height="9" fill="#C9A961"/>
   <rect x="588" y="76" width="15" height="9" fill="#E27B52" fill-opacity="0.7"/>
   <rect x="606" y="76" width="15" height="9" fill="#5BA39C" fill-opacity="0.5"/>
-  <rect x="624" y="76" width="15" height="9" fill="#DDB874" fill-opacity="0.7"/>
+  <rect x="624" y="76" width="15" height="9" fill="#C9A961" fill-opacity="0.7"/>
   <rect x="642" y="76" width="15" height="9" fill="#5BA39C"/>
-  <rect x="552" y="89" width="15" height="9" fill="#DDB874" fill-opacity="0.8"/>
+  <rect x="552" y="89" width="15" height="9" fill="#C9A961" fill-opacity="0.8"/>
   <rect x="570" y="89" width="15" height="9" fill="#E27B52" fill-opacity="0.55"/>
   <rect x="588" y="89" width="15" height="9" fill="#5BA39C" fill-opacity="0.85"/>
-  <rect x="606" y="89" width="15" height="9" fill="#DDB874" fill-opacity="0.5"/>
+  <rect x="606" y="89" width="15" height="9" fill="#C9A961" fill-opacity="0.5"/>
   <rect x="624" y="89" width="15" height="9" fill="#5BA39C" fill-opacity="0.7"/>
   <rect x="642" y="89" width="15" height="9" fill="#E27B52" fill-opacity="0.45"/>
   <rect x="552" y="102" width="15" height="9" fill="#E27B52" fill-opacity="0.4"/>
   <rect x="570" y="102" width="15" height="9" fill="#5BA39C" fill-opacity="0.6"/>
-  <rect x="588" y="102" width="15" height="9" fill="#DDB874" fill-opacity="0.85"/>
+  <rect x="588" y="102" width="15" height="9" fill="#C9A961" fill-opacity="0.85"/>
   <rect x="606" y="102" width="15" height="9" fill="#5BA39C" fill-opacity="0.9"/>
   <rect x="624" y="102" width="15" height="9" fill="#E27B52" fill-opacity="0.65"/>
-  <rect x="642" y="102" width="15" height="9" fill="#DDB874" fill-opacity="0.6"/>
+  <rect x="642" y="102" width="15" height="9" fill="#C9A961" fill-opacity="0.6"/>
   <text x="605" y="134" font-family="Inter, sans-serif" font-size="14.5" font-weight="700" fill="#F4ECDD" text-anchor="middle">Modello</text>
   <text x="605" y="152" font-family="Inter, sans-serif" font-size="14.5" font-weight="700" fill="#F4ECDD" text-anchor="middle">acustico</text>
   <text x="605" y="180" font-family="Inter, sans-serif" font-size="12" fill="#BCB3A1" text-anchor="middle">mel-spettrogramma</text>

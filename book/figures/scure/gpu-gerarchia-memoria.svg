@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../gpu-gerarchia-memoria.svg
 -->
 <!--
@@ -27,7 +27,7 @@
   </style>
 
   <!-- backing cream: rende la figura leggibile anche in dark mode -->
-  <rect x="6" y="6" width="688" height="418" rx="14" fill="#0E0C0A" stroke="#F4ECDD" stroke-opacity="0.12" stroke-width="1.5"/>
+  <rect x="6" y="6" width="688" height="418" rx="14" fill="#16130F" stroke="#F4ECDD" stroke-opacity="0.12" stroke-width="1.5"/>
 
   <!-- ===== livelli della piramide (apice = veloce/piccolo) ===== -->
   <!-- 1. Registri -->
@@ -41,7 +41,7 @@
   <text class="det"  x="330" y="167" text-anchor="middle">per-blocco · ~100 KB · on-chip</text>
 
   <!-- 3. Cache L2 -->
-  <polygon class="band" points="219,184 441,184 483,246 177,246" fill="#DDB874" fill-opacity="0.45" stroke="#DDB874"/>
+  <polygon class="band" points="219,184 441,184 483,246 177,246" fill="#C9A961" fill-opacity="0.45" stroke="#C9A961"/>
   <text class="name" x="330" y="212" text-anchor="middle">Cache L2</text>
   <text class="det"  x="330" y="229" text-anchor="middle">condivisa · decine di MB</text>
 

@@ -1,19 +1,19 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../constitutional-ai-2022.svg
 -->
 <svg viewBox="0 0 760 430" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema del ciclo di Constitutional AI: una lista di principi alimenta un modello che critica una risposta iniziale e la riscrive, generando il feedback che riaddestra il modello">
-  <rect x="0" y="0" width="760" height="430" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="760" height="430" fill="#16130F"/>
   <!-- Costituzione -->
-  <rect x="40" y="150" width="150" height="130" fill="none" stroke="#DDB874" stroke-width="2"/>
+  <rect x="40" y="150" width="150" height="130" fill="none" stroke="#C9A961" stroke-width="2"/>
   <text x="115" y="140" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#F4ECDD" text-anchor="middle" font-weight="bold">Costituzione</text>
-  <line x1="60" y1="180" x2="170" y2="180" stroke="#DDB874" stroke-width="2"/>
-  <line x1="60" y1="205" x2="170" y2="205" stroke="#DDB874" stroke-width="2"/>
-  <line x1="60" y1="230" x2="170" y2="230" stroke="#DDB874" stroke-width="2"/>
-  <line x1="60" y1="255" x2="140" y2="255" stroke="#DDB874" stroke-width="2"/>
+  <line x1="60" y1="180" x2="170" y2="180" stroke="#C9A961" stroke-width="2"/>
+  <line x1="60" y1="205" x2="170" y2="205" stroke="#C9A961" stroke-width="2"/>
+  <line x1="60" y1="230" x2="170" y2="230" stroke="#C9A961" stroke-width="2"/>
+  <line x1="60" y1="255" x2="140" y2="255" stroke="#C9A961" stroke-width="2"/>
   <text x="115" y="300" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1" text-anchor="middle">principi in</text>
   <text x="115" y="314" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1" text-anchor="middle">linguaggio naturale</text>
   <!-- freccia principio verso AI -->

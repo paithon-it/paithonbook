@@ -216,12 +216,14 @@ un minuto.
 | `svg/harness-turni.py` | `fig-harness-turni` | `Harness/passaggio-di-consegne.md` |
 | `svg/harness-deriva.py` | `fig-harness-deriva` | `Harness/quando-nessuno-guarda.md` |
 | `svg/harness-grafo.py` | `fig-harness-grafo` | `Harness/dal-ciclo-al-grafo.md` |
+| `svg/harness-cammino-critico.py` | `fig-harness-cammino-critico` | `Harness/il-conto.md` |
 | `svg/hopfield-ricorda.py` | `fig-hopfield-ricorda` | `ModelliEnergia/memoria-associativa.md` |
 | `svg/i-lettori-restano-otto.py` | `fig-teste-e-taccuini` | `Transformers/attenzione-in-pratica.md` |
 | `svg/il-codice-si-accorcia.py` | `fig-il-codice-si-accorcia` | `AutoSupervisione/capire-e-accorciare.md` |
 | `svg/il-picco-che-schiaccia.py` | `fig-picco-schiaccia` | `GAN/applicazioni-evoluzioni.md` |
 | `svg/interferenza-da-subito.py` | `fig-interferenza-da-subito` | `StateSpaceModel/panorama-e-limiti.md` |
 | `svg/jepa-tre-pezzi.py` | `fig-jepa-tre-pezzi` | `WorldModels/jepa.md` |
+| `svg/kv-in-attesa.py` | `fig-kv-in-attesa` | `MLOps/servire-un-agente.md` |
 | `svg/kmeans-converge.py` | `fig-kmeans-converge` | `MachineLearning/riduzione-clustering.md` |
 | `svg/learning-rate.py` | `fig-learning-rate` | `DeepLearning/ottimizzazione-regolarizzazione.md` |
 | `svg/linee-di-base.py` | `fig-linee-di-base` | `SerieTemporali/validazione-e-feature.md` |

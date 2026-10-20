@@ -1,12 +1,12 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../positional-encoding.svg
 -->
 <svg viewBox="0 0 720 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Onde sinusoidali a frequenze diverse che codificano le posizioni dei token">
-  <rect x="0" y="0" width="720" height="400" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="720" height="400" fill="#16130F"/>
   <text x="360" y="30" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="bold" fill="#F4ECDD">Ogni posizione, una firma di onde</text>
   <!-- axis -->
   <line x1="70" y1="330" x2="680" y2="330" stroke="#F4ECDD" stroke-width="1.5"/>
@@ -29,19 +29,19 @@
   <path d="M 70 170 Q 107 130 145 170 Q 182 210 220 170 Q 257 130 295 170 Q 332 210 370 170 Q 407 130 445 170 Q 482 210 520 170 Q 557 130 595 170 Q 632 210 670 170" fill="none" stroke="#5BA39C" stroke-width="2"/>
   <text x="60" y="174" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5BA39C">media</text>
   <!-- wave 3: slow, ocra -->
-  <path d="M 70 250 Q 145 195 220 235 Q 295 275 370 250 Q 445 225 520 245 Q 595 265 670 240" fill="none" stroke="#DDB874" stroke-width="2"/>
-  <text x="60" y="254" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#DDB874">bassa</text>
+  <path d="M 70 250 Q 145 195 220 235 Q 295 275 370 250 Q 445 225 520 245 Q 595 265 670 240" fill="none" stroke="#C9A961" stroke-width="2"/>
+  <text x="60" y="254" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#C9A961">bassa</text>
   <!-- vertical sample lines at positions -->
   <line x1="260" y1="55" x2="260" y2="322" stroke="#F4ECDD" stroke-width="1.5" stroke-dasharray="4 4"/>
   <line x1="470" y1="55" x2="470" y2="322" stroke="#F4ECDD" stroke-width="1.5" stroke-dasharray="4 4"/>
   <!-- sample dots pos 5 -->
   <circle cx="260" cy="74" r="5" fill="#E27B52" stroke="#F4ECDD" stroke-width="1.5"/>
   <circle cx="260" cy="150" r="5" fill="#5BA39C" stroke="#F4ECDD" stroke-width="1.5"/>
-  <circle cx="260" cy="252" r="5" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
+  <circle cx="260" cy="252" r="5" fill="#C9A961" stroke="#F4ECDD" stroke-width="1.5"/>
   <!-- sample dots pos 15 -->
   <circle cx="470" cy="106" r="5" fill="#E27B52" stroke="#F4ECDD" stroke-width="1.5"/>
   <circle cx="470" cy="188" r="5" fill="#5BA39C" stroke="#F4ECDD" stroke-width="1.5"/>
-  <circle cx="470" cy="237" r="5" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
+  <circle cx="470" cy="237" r="5" fill="#C9A961" stroke="#F4ECDD" stroke-width="1.5"/>
   <!-- labels -->
   <text x="268" y="48" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">posizione 5: firma [•,•,•]</text>
   <text x="478" y="48" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">posizione 12: firma diversa</text>

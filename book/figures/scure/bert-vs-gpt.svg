@@ -1,12 +1,12 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../bert-vs-gpt.svg
 -->
 <svg viewBox="0 0 720 340" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Confronto tra attenzione bidirezionale di BERT e attenzione causale di GPT">
-  <rect x="0" y="0" width="720" height="340" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="720" height="340" fill="#16130F"/>
   <text x="180" y="36" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="18" font-weight="bold" fill="#F4ECDD">BERT: encoder</text>
   <text x="180" y="56" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">ogni token vede tutti gli altri</text>
   <g stroke="#5BA39C" stroke-width="1.5" fill="none">
@@ -20,13 +20,13 @@
   </g>
   <g font-family="Inter, system-ui, sans-serif" font-size="13" text-anchor="middle">
     <rect x="55" y="200" width="50" height="40" rx="6" fill="#5BA39C" stroke="#F4ECDD" stroke-width="1.5"/>
-    <text x="80" y="225" fill="#0E0C0A">Il</text>
+    <text x="80" y="225" fill="#16130F">Il</text>
     <rect x="125" y="200" width="50" height="40" rx="6" fill="#5BA39C" stroke="#F4ECDD" stroke-width="1.5"/>
-    <text x="150" y="225" fill="#0E0C0A">gatto</text>
-    <rect x="195" y="200" width="50" height="40" rx="6" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
+    <text x="150" y="225" fill="#16130F">gatto</text>
+    <rect x="195" y="200" width="50" height="40" rx="6" fill="#C9A961" stroke="#F4ECDD" stroke-width="1.5"/>
     <text x="220" y="225" fill="#F4ECDD">[MASK]</text>
     <rect x="275" y="200" width="50" height="40" rx="6" fill="#5BA39C" stroke="#F4ECDD" stroke-width="1.5"/>
-    <text x="300" y="225" fill="#0E0C0A">sul</text>
+    <text x="300" y="225" fill="#16130F">sul</text>
   </g>
   <text x="540" y="36" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="18" font-weight="bold" fill="#F4ECDD">GPT: decoder</text>
   <text x="540" y="56" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">ogni token vede solo il passato</text>
@@ -38,12 +38,12 @@
   </g>
   <g font-family="Inter, system-ui, sans-serif" font-size="13" text-anchor="middle">
     <rect x="415" y="200" width="50" height="40" rx="6" fill="#E27B52" stroke="#F4ECDD" stroke-width="1.5"/>
-    <text x="440" y="225" fill="#0E0C0A">Il</text>
+    <text x="440" y="225" fill="#16130F">Il</text>
     <rect x="485" y="200" width="50" height="40" rx="6" fill="#E27B52" stroke="#F4ECDD" stroke-width="1.5"/>
-    <text x="510" y="225" fill="#0E0C0A">gatto</text>
+    <text x="510" y="225" fill="#16130F">gatto</text>
     <rect x="555" y="200" width="50" height="40" rx="6" fill="#E27B52" stroke="#F4ECDD" stroke-width="1.5"/>
-    <text x="580" y="225" fill="#0E0C0A">dorme</text>
-    <rect x="635" y="200" width="50" height="40" rx="6" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5" stroke-dasharray="5 3"/>
+    <text x="580" y="225" fill="#16130F">dorme</text>
+    <rect x="635" y="200" width="50" height="40" rx="6" fill="#C9A961" stroke="#F4ECDD" stroke-width="1.5" stroke-dasharray="5 3"/>
     <text x="660" y="225" fill="#F4ECDD">?</text>
   </g>
   <text x="180" y="300" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">contesto da sinistra e da destra</text>

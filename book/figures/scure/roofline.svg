@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../roofline.svg
 -->
 <!--
@@ -39,7 +39,7 @@
   </defs>
 
   <!-- backing cream -->
-  <rect x="6" y="6" width="688" height="438" rx="14" fill="#0E0C0A" stroke="#F4ECDD" stroke-opacity="0.12" stroke-width="1.5"/>
+  <rect x="6" y="6" width="688" height="438" rx="14" fill="#16130F" stroke="#F4ECDD" stroke-opacity="0.12" stroke-width="1.5"/>
 
   <!-- assi -->
   <line class="frame" x1="92" y1="60"  x2="92"  y2="380"/>
@@ -59,8 +59,8 @@
   <line class="roof" x1="392" y1="120" x2="632" y2="120"/>
 
   <!-- ginocchio -->
-  <circle cx="392" cy="120" r="6" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
-  <text class="reg" x="392" y="108" text-anchor="middle" fill="#DDB874" opacity="1">ginocchio</text>
+  <circle cx="392" cy="120" r="6" fill="#C9A961" stroke="#F4ECDD" stroke-width="1.5"/>
+  <text class="reg" x="392" y="108" text-anchor="middle" fill="#C9A961" opacity="1">ginocchio</text>
 
   <!-- etichette dei due tetti -->
   <text class="rooflbl" x="200" y="228" transform="rotate(-40.5 200 228)">tetto di banda (pendenza = banda)</text>

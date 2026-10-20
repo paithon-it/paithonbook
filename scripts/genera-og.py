@@ -6,9 +6,11 @@ l'app scarica la pagina e mostra la card con l'immagine dichiarata in
 `og:image`. Prima quel meta puntava a un file che non esisteva (404), quindi la
 card usciva senza immagine: solo titolo e URL.
 
-Qui la card si compone e si rasterizza:
+Qui la card si compone e si rasterizza, e con lei l'icona che iOS mette
+sulla schermata Home quando si aggiunge il libro:
 
     python3 scripts/genera-og.py     ->  book/_static/social/og-book.png
+                                         book/_static/social/apple-touch-icon.png
 
 Due scelte tecniche che vale la pena spiegare.
 
@@ -34,16 +36,38 @@ STATICO = RADICE / "book/_static"
 FONT_DISPLAY = STATICO / "brand/motion/fonts/fraunces-600-og.ttf"
 FONT_TESTO = STATICO / "brand/motion/fonts/inter-400-og.ttf"
 USCITA = STATICO / "social/og-book.png"
+TOKENS = STATICO / "brand/tokens.css"
+SEGNO = STATICO / "brand/logos/paithon-mark.svg"
+ICONA = STATICO / "social/apple-touch-icon.png"
 
 L, H = 1200, 630                      # misura canonica delle card social
 
-# Palette: gli stessi valori del tema scuro del libro, che è come il lettore
-# vedrà la pagina appena apre il link.
-FONDO = "#14110D"
-INCHIOSTRO = "#F4ECDD"
-TENUE = "#B5AEA0"
-TEAL = "#5BA39C"
-TERRACOTTA = "#E27B52"
+
+
+def token_scuro(nome: str) -> str:
+    """Il valore di un token nel blocco `[data-theme="dark"]` del brand."""
+    css = TOKENS.read_text(encoding="utf-8")
+    inizio = css.index('[data-theme="dark"] {')
+    blocco = css[inizio:css.index("}", inizio)]
+    trovato = re.search(rf"{re.escape(nome)}:\s*(#[0-9A-Fa-f]{{6}})\b", blocco)
+    assert trovato, f"{nome} non e' nel blocco scuro di {TOKENS.name}"
+    return trovato.group(1).upper()
+
+
+# Palette: i token del tema scuro del libro, che è come il lettore vedrà la
+# pagina appena apre il link. Si leggono dal brand invece di ricopiarli.
+FONDO = token_scuro("--pt-bg")
+INCHIOSTRO = token_scuro("--pt-fg")
+TENUE = token_scuro("--pt-fg-muted")
+TEAL = token_scuro("--pt-accent-2")
+TERRACOTTA = token_scuro("--pt-accent")
+
+# L'icona della schermata Home: il segno su carta crema, come quella del sito.
+# iOS non la ritaglia ma ne arrotonda gli angoli, quindi il segno sta al
+# centro con un margine che gli angoli non tocchino.
+LATO_ICONA = 180
+LATO_SEGNO = 132
+CREMA = "#F8F5EE"                     # --pt-illus-cream, la carta del segno
 
 # Ogni riga è una sequenza di (testo, colore): "due" e "volte" portano i colori
 # dei due livelli (teal l'Elementare, terracotta il Superiore) come le
@@ -96,6 +120,22 @@ def logo(x: float, y: float, larghezza: float) -> str:
             f'scale({s:.6f})">{corpo}</g>')
 
 
+def icona() -> None:
+    """Il segno del brand, centrato su carta crema, in PNG 180x180."""
+    svg = SEGNO.read_text(encoding="utf-8")
+    vb = re.search(r'viewBox="([^"]+)"', svg).group(1)
+    corpo = svg[svg.index(">", svg.index("<svg")) + 1: svg.rindex("</svg>")]
+    margine = (LATO_ICONA - LATO_SEGNO) / 2
+    tela = (f'<svg xmlns="http://www.w3.org/2000/svg" width="{LATO_ICONA}" '
+            f'height="{LATO_ICONA}" viewBox="0 0 {LATO_ICONA} {LATO_ICONA}">'
+            f'<rect width="{LATO_ICONA}" height="{LATO_ICONA}" fill="{CREMA}"/>'
+            f'<svg x="{margine}" y="{margine}" width="{LATO_SEGNO}" '
+            f'height="{LATO_SEGNO}" viewBox="{vb}">{corpo}</svg></svg>')
+    cairosvg.svg2png(bytestring=tela.encode(), write_to=str(ICONA),
+                     output_width=LATO_ICONA, output_height=LATO_ICONA)
+    print(f"  scritto {ICONA.relative_to(RADICE)}  {LATO_ICONA}x{LATO_ICONA}")
+
+
 def main() -> None:
     display = TTFont(FONT_DISPLAY)
     testo = TTFont(FONT_TESTO)
@@ -132,6 +172,7 @@ def main() -> None:
     print(f"  scritto {USCITA.relative_to(RADICE)}  {L}x{H}  {peso/1024:.0f} kB")
     if peso > 500_000:
         print("  ATTENZIONE: sopra i 500 kB, alcune app non la scaricano")
+    icona()
 
 
 if __name__ == "__main__":

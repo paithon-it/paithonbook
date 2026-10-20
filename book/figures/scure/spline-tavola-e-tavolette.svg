@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../spline-tavola-e-tavolette.svg
 -->
 <!--
@@ -21,7 +21,7 @@
     .dato    { fill:#5BA39C; }
     .vera    { fill:none; stroke:#BCB3A1; stroke-width:1.4; opacity:.45; }
     .curva   { fill:none; stroke:#E27B52; stroke-width:2.6; stroke-linecap:round; }
-    .spago   { fill:none; stroke:#DDB874; stroke-width:1.7; }
+    .spago   { fill:none; stroke:#C9A961; stroke-width:1.7; }
     .righello{ fill:none; stroke:#BCB3A1; stroke-width:1.7; stroke-dasharray:6 3; }
     .fuga    { fill:none; stroke:#E27B52; stroke-width:2.2; stroke-linecap:round;
                 stroke-linejoin:round; }

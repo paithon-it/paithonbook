@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../svm-kernel-trick.svg
 -->
 <!--
@@ -26,9 +26,9 @@
   <style>
     .teal   { fill:#5BA39C; }
     .terra  { fill:#E27B52; }
-    .guide  { fill:none; stroke:#DDB874; stroke-width:1.6; stroke-dasharray:5 5; }
+    .guide  { fill:none; stroke:#C9A961; stroke-width:1.6; stroke-dasharray:5 5; }
     .axis   { stroke:#8E8676; stroke-width:1.5; }
-    .surf   { fill:none; stroke:#DDB874; stroke-width:1.8; }
+    .surf   { fill:none; stroke:#C9A961; stroke-width:1.8; }
     .sep    { stroke:#F4ECDD; stroke-width:2.2; stroke-dasharray:7 5; }
     .phi    { stroke:#F4ECDD; stroke-width:2.4; }
     .lbl    { font-family:Inter, system-ui, sans-serif; font-size:14px; fill:#BCB3A1; }

@@ -1,12 +1,12 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../il-dominio-sceglie-la-distribuzione.svg
 -->
 <svg viewBox="0 0 760 516" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Otto riquadri, in ciascuno la forma dell'insieme in cui vive la risposta disegnata a sinistra e a destra il nome della distribuzione che ci vive e che cosa si predice. Tutta la retta: gaussiana, un numero qualsiasi. I numeri positivi, cioè una semiretta che parte da zero: esponenziale o gamma, una durata o una grandezza. Un segmento fra zero e uno: beta, una proporzione. Un cerchio: von Mises, una direzione. Due caselle: Bernoulli, sì o no. K caselle: categorica, una classe fra K. I numeri interi a partire da zero, disegnati come punti staccati: Poisson, quante volte. Tre rette parallele: normale multivariata, più risposte insieme. In fondo, la riga che chiude: il dominio del parametro sceglie la funzione dell'ultimo strato, nessuna sulla retta, la sigmoide sul segmento, la softmax sulle caselle.">
-  <rect x="0" y="0" width="760" height="516" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="760" height="516" fill="#16130F"/>
   <text x="380" y="26" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#F4ECDD" font-weight="bold">Il dominio della risposta sceglie la distribuzione</text>
   <text x="380" y="46" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#BCB3A1">la ricetta è sempre la stessa: cambia solo la riga in cui si sceglie la famiglia</text>
   <rect x="24" y="62" width="344" height="96" rx="6" fill="none" stroke="#34302A" stroke-width="1.2"/>

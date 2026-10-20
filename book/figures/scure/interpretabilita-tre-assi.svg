@@ -1,19 +1,19 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../interpretabilita-tre-assi.svg
 -->
 <svg viewBox="0 0 760 420" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tre assi orizzontali sovrapposti, ognuno con un capo a sinistra e uno a destra: si legge da s&#233; (trasparente) contro si spiega dopo (post-hoc); tutto il modello (globale) contro una risposta sola (locale); un tipo di modello (specifico) contro qualunque modello (agnostico). Su ogni asse sono appoggiati tre metodi, ciascuno con il suo colore e una spezzata che unisce le sue tre scelte. I coefficienti di una regressione lineare stanno a sinistra su tutti e tre gli assi e la loro spezzata &#232; diritta; LIME, il metodo che spiega una risposta per volta, sta a destra su tutti e tre e anche la sua &#232; diritta; rimescolare una colonna per vedere quanto peggiora il modello sta a destra sul primo asse, a sinistra sul secondo e a destra sul terzo, e la sua spezzata zigzaga.">
-  <rect x="0" y="0" width="760" height="420" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="760" height="420" fill="#16130F"/>
   <text x="380" y="30" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#F4ECDD">Le tre domande, e dove cade ogni metodo</text>
 
   <circle cx="120" cy="56" r="6" fill="#5BA39C"/>
   <text x="134" y="60" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">coefficienti di una regressione lineare</text>
   <circle cx="470" cy="56" r="6" fill="#E27B52"/>
   <text x="484" y="60" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">LIME</text>
-  <circle cx="120" cy="80" r="6" fill="#DDB874"/>
+  <circle cx="120" cy="80" r="6" fill="#C9A961"/>
   <text x="134" y="84" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">rimescolare una colonna e vedere quanto peggiora</text>
 
   <line x1="255" y1="150" x2="555" y2="150" stroke="#F4ECDD" stroke-width="1.5"/>
@@ -41,15 +41,15 @@
   <text x="570" y="334" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">agnostico</text>
 
   <polyline points="270,150 270,235 270,320" fill="none" stroke="#5BA39C" stroke-width="2"/>
-  <polyline points="500,150 295,235 500,320" fill="none" stroke="#DDB874" stroke-width="2"/>
+  <polyline points="500,150 295,235 500,320" fill="none" stroke="#C9A961" stroke-width="2"/>
   <polyline points="540,150 540,235 540,320" fill="none" stroke="#E27B52" stroke-width="2"/>
 
   <circle cx="270" cy="150" r="6" fill="#5BA39C"/>
   <circle cx="270" cy="235" r="6" fill="#5BA39C"/>
   <circle cx="270" cy="320" r="6" fill="#5BA39C"/>
-  <circle cx="500" cy="150" r="6" fill="#DDB874"/>
-  <circle cx="295" cy="235" r="6" fill="#DDB874"/>
-  <circle cx="500" cy="320" r="6" fill="#DDB874"/>
+  <circle cx="500" cy="150" r="6" fill="#C9A961"/>
+  <circle cx="295" cy="235" r="6" fill="#C9A961"/>
+  <circle cx="500" cy="320" r="6" fill="#C9A961"/>
   <circle cx="540" cy="150" r="6" fill="#E27B52"/>
   <circle cx="540" cy="235" r="6" fill="#E27B52"/>
   <circle cx="540" cy="320" r="6" fill="#E27B52"/>

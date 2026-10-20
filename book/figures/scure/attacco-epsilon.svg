@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../attacco-epsilon.svg
 -->
 <!--
@@ -36,7 +36,7 @@
     .eti  { font-family:Inter, system-ui, sans-serif; font-size:15px; opacity:0; }
     #curva { fill:none; stroke:#F4ECDD; stroke-width:2.5;
             stroke-dasharray:470.9; animation:disegna var(--d) infinite; }
-    #pallino { fill:#E27B52; stroke:#0E0C0A; stroke-width:2;
+    #pallino { fill:#E27B52; stroke:#16130F; stroke-width:2;
             animation:corri var(--d) infinite, vira var(--d) infinite; }
     #soglia { animation:svela var(--d) infinite; }
         @keyframes cresce{0.00%{transform:scaleY(0.000)}7.86%{transform:scaleY(0.000)}14.29%{transform:scaleY(0.167)}22.14%{transform:scaleY(0.167)}28.57%{transform:scaleY(0.333)}36.43%{transform:scaleY(0.333)}42.86%{transform:scaleY(0.500)}50.71%{transform:scaleY(0.500)}57.14%{transform:scaleY(0.667)}65.00%{transform:scaleY(0.667)}71.43%{transform:scaleY(0.833)}79.29%{transform:scaleY(0.833)}85.71%{transform:scaleY(1.000)}93.57%{transform:scaleY(1.000)}100.00%{transform:scaleY(1)}}

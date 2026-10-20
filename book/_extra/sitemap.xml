@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://book.paithon.it/main/intro.html</loc>
-    <lastmod>2026-10-18T00:04:40+00:00</lastmod>
+    <lastmod>2026-10-20T15:42:07+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/prefazione.html</loc>
@@ -606,7 +606,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/IngegneriaLLM/context-engineering.html</loc>
-    <lastmod>2026-10-18T01:48:57+00:00</lastmod>
+    <lastmod>2026-10-20T15:41:30+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/IngegneriaLLM/loop-engineering.html</loc>
@@ -614,7 +614,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/Harness/overview.html</loc>
-    <lastmod>2026-10-18T01:47:02+00:00</lastmod>
+    <lastmod>2026-10-20T15:41:30+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Harness/il-repository-come-memoria.html</loc>
@@ -626,19 +626,31 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/Harness/passaggio-di-consegne.html</loc>
-    <lastmod>2026-10-18T01:21:25+00:00</lastmod>
+    <lastmod>2026-10-20T15:41:30+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Harness/finito-vuol-dire-collaudato.html</loc>
-    <lastmod>2026-10-18T01:37:43+00:00</lastmod>
+    <lastmod>2026-10-20T15:41:30+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/Harness/gli-attrezzi.html</loc>
+    <lastmod>2026-10-20T17:04:15+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Harness/quando-nessuno-guarda.html</loc>
-    <lastmod>2026-10-18T07:26:03+00:00</lastmod>
+    <lastmod>2026-10-20T15:41:30+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/Harness/il-conto.html</loc>
+    <lastmod>2026-10-20T15:41:30+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Harness/dal-ciclo-al-grafo.html</loc>
-    <lastmod>2026-10-18T07:26:03+00:00</lastmod>
+    <lastmod>2026-10-20T15:41:30+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/Harness/l-harness-che-si-riscrive.html</loc>
+    <lastmod>2026-10-20T17:04:15+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/SistemiMultiAgente/overview.html</loc>
@@ -646,7 +658,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/SistemiMultiAgente/costo-del-coordinamento.html</loc>
-    <lastmod>2026-10-14T12:29:04+00:00</lastmod>
+    <lastmod>2026-10-20T15:41:30+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/SistemiMultiAgente/topologie.html</loc>
@@ -662,7 +674,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/SistemiMultiAgente/sciami-e-simulazioni.html</loc>
-    <lastmod>2026-10-14T12:38:22+00:00</lastmod>
+    <lastmod>2026-10-20T15:41:30+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Audio/overview.html</loc>
@@ -914,7 +926,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/MLOps/overview.html</loc>
-    <lastmod>2026-10-14T14:17:52+00:00</lastmod>
+    <lastmod>2026-10-20T15:42:07+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/MLOps/dal-notebook-alla-produzione.html</loc>
@@ -946,7 +958,11 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/MLOps/gateway-e-affidabilita.html</loc>
-    <lastmod>2026-10-14T14:22:30+00:00</lastmod>
+    <lastmod>2026-10-20T15:42:07+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/MLOps/servire-un-agente.html</loc>
+    <lastmod>2026-10-20T15:42:07+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/MLOps/energia-e-impronta.html</loc>
@@ -998,6 +1014,6 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/aggiornamenti.html</loc>
-    <lastmod>2026-10-18T07:35:32+00:00</lastmod>
+    <lastmod>2026-10-20T16:44:19+00:00</lastmod>
   </url>
 </urlset>

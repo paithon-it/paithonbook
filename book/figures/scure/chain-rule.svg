@@ -1,8 +1,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../chain-rule.svg
 -->
 <svg viewBox="0 0 720 340" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Catena di tre funzioni annidate: x entra in f, poi in g, poi in h fino alla loss; sotto, le derivate locali dei tre anelli si moltiplicano nella derivata totale">
@@ -10,14 +10,14 @@
     <marker id="cr-nero" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#F4ECDD"/></marker>
     <marker id="cr-terra" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#E27B52"/></marker>
   </defs>
-  <rect x="0" y="0" width="720" height="340" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="720" height="340" fill="#16130F"/>
   <text x="360" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" fill="#F4ECDD">funzioni annidate: l'uscita di una è l'ingresso della successiva</text>
   <text x="60" y="112" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#F4ECDD">x</text>
   <line x1="80" y1="107" x2="128" y2="107" stroke="#F4ECDD" stroke-width="1.5" marker-end="url(#cr-nero)"/>
   <rect x="136" y="77" width="110" height="60" rx="10" fill="none" stroke="#5BA39C" stroke-width="2"/>
   <text x="191" y="113" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#5BA39C">f</text>
   <line x1="246" y1="107" x2="294" y2="107" stroke="#F4ECDD" stroke-width="1.5" marker-end="url(#cr-nero)"/>
-  <rect x="302" y="77" width="110" height="60" rx="10" fill="none" stroke="#DDB874" stroke-width="2"/>
+  <rect x="302" y="77" width="110" height="60" rx="10" fill="none" stroke="#C9A961" stroke-width="2"/>
   <text x="357" y="113" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#F4ECDD">g</text>
   <line x1="412" y1="107" x2="460" y2="107" stroke="#F4ECDD" stroke-width="1.5" marker-end="url(#cr-nero)"/>
   <rect x="468" y="77" width="110" height="60" rx="10" fill="none" stroke="#E27B52" stroke-width="2"/>

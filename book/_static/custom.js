@@ -601,6 +601,26 @@
   // caricato da `_config.yml`: e' la stessa ricetta che serve al sito, che
   // nasce scuro come il libro, e una ricetta sola non puo' divergere.
 
+  // ===== IL COLORE DELLA BARRA DEL BROWSER =====
+  // Il `theme-color` e' il fondo della pagina, cioe' --pt-bg del brand nel
+  // tema attivo. Si legge dal CSS invece di ricopiarlo, e si rilegge a ogni
+  // cambio di `data-theme`: il pulsante del tema, e la stampa che lo scambia
+  // per la sua durata (`brand/print.js`).
+  function allineaColoreBarra() {
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (!meta) return;
+    const aggiorna = () => {
+      const fondo = getComputedStyle(document.documentElement)
+        .getPropertyValue('--pt-bg').trim();
+      if (fondo) meta.setAttribute('content', fondo);
+    };
+    aggiorna();
+    new MutationObserver(aggiorna).observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
+    });
+  }
+
   // ===== PERFORMANCE: REDUCE MOTION FOR ACCESSIBILITY =====
   function respectReducedMotion() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -645,6 +665,7 @@
     setupSidebarWidening();
     improveMobileTouch();
     setupLente();
+    allineaColoreBarra();
     respectReducedMotion();
 
     console.log('✨ Paithon Book UI enhancements loaded');

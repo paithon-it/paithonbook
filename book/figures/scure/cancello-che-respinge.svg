@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../cancello-che-respinge.svg
 -->
 <!--
@@ -22,7 +22,7 @@
     .lbl { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#F4ECDD; }
     .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#BCB3A1; }
     .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#F4ECDD; }
-    .cas  { fill:#0E0C0A; stroke:#34302A; stroke-width:1.8; }
+    .cas  { fill:#16130F; stroke:#34302A; stroke-width:1.8; }
     .hit  { fill:#E27B52; fill-opacity:0.16; }
     .ch   { font-family:JetBrains Mono, ui-monospace, monospace; font-size:14.5px; fill:#F4ECDD; }
     .acc  { fill:#E27B52; font-weight:700; }
@@ -36,15 +36,15 @@
             transform-box:view-box; }
     .a-l  { transform-origin:158px 202px; }
     .a-r  { transform-origin:280px 202px; }
-    .card { fill:#0E0C0A; stroke:#BCB3A1; stroke-width:2; }
+    .card { fill:#16130F; stroke:#BCB3A1; stroke-width:2; }
     .fre-t { stroke:#E27B52; stroke-width:3; fill:none; }
     .fre-v { stroke:#5BA39C; stroke-width:3; fill:none; }
     .conn { stroke:#E27B52; stroke-width:2; fill:none; stroke-opacity:0.75; }
     .ver-t { font-family:Inter, system-ui, sans-serif; font-size:14px; font-weight:700; fill:#E27B52; }
     .ver-v { font-family:Inter, system-ui, sans-serif; font-size:14px; font-weight:700; fill:#5BA39C; }
-    .okb  { fill:#0E0C0A; stroke:#5BA39C; stroke-width:2.5; }
+    .okb  { fill:#16130F; stroke:#5BA39C; stroke-width:2.5; }
     .okl  { font-family:Inter, system-ui, sans-serif; font-size:11px; font-weight:700; fill:#5BA39C; }
-    .mem  { fill:#0E0C0A; stroke:#34302A; stroke-width:1.6; }
+    .mem  { fill:#16130F; stroke:#34302A; stroke-width:1.6; }
     rect.nuova { stroke:#E27B52; stroke-width:2.6; fill-opacity:0.9; }
     .mnum { font-family:Inter, system-ui, sans-serif; font-size:12px; font-weight:700; fill:#BCB3A1; }
     .mtx  { font-family:Inter, system-ui, sans-serif; font-size:12.5px; fill:#F4ECDD; }

@@ -349,6 +349,10 @@ L'anello si percorre e se ne sciolgono i nodi, uno per uno.
   modello non risponde senza peggiorare le cose, a quale modello mandare
   ciascuna richiesta, e come si prova, rompendolo
   apposta, che tutto questo resiste.
+- {doc}`Servire un agente </MLOps/servire-un-agente>`, che cosa cambia quando
+  le richieste arrivano da un agente: chiamate che dipendono l'una dall'altra e
+  si fermano ad aspettare uno strumento, che cosa fare della memoria intanto, a
+  chi dare la precedenza e su quale copia del modello mandarle.
 - {doc}`Il conto in energia </MLOps/energia-e-impronta>`, l'unica voce che non
   si dichiara quasi mai: dove finisce la corrente (quando si genera una parola
   alla volta, più nei viaggi dei dati che nei conti), come si arriva

@@ -1,12 +1,12 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../stagione-additiva-e-moltiplicativa.svg
 -->
 <svg viewBox="0 0 760 396" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tre grafici affiancati, ciascuno con quattro anni di dati mensili, la linea di tendenza tratteggiata e una freccia verticale che misura l'altezza del picco estivo sopra la tendenza, nel primo anno e nell'ultimo. Nel primo grafico la stagione &#232; additiva e le due frecce misurano tutte e due ventidue: la stessa cifra ogni anno. Nel secondo la stagione &#232; moltiplicativa e le due frecce misurano venticinque virgola sei e quarantaquattro virgola tre: l'oscillazione cresce insieme al livello. Nel terzo si disegna il logaritmo della seconda serie, e le due frecce tornano lunghe uguali. In fondo: portare la serie sui logaritmi riporta una stagione moltiplicativa al caso additivo.">
-  <rect x="0" y="0" width="760" height="396" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="760" height="396" fill="#16130F"/>
   <text x="380.0" y="26.0" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#F4ECDD" font-weight="bold">La stessa stagione, nelle due forme</text>
   <text x="380.0" y="46.0" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#BCB3A1">e che cosa ne fa il logaritmo: la freccia misura quanto l&#8217;estate sta sopra la tendenza</text>
   <text x="380.0" y="66.0" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#BCB3A1">quattro anni di dati mensili, costruiti apposta</text>
@@ -41,11 +41,11 @@
   <text x="380.0" y="302.0" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD" font-weight="bold">+25,6 e +44,3</text>
   <text x="380.0" y="318.0" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#BCB3A1">cresce insieme al livello</text>
   <rect x="520" y="96" width="216" height="236" rx="6" fill="none" stroke="#34302A" stroke-width="1.2"/>
-  <rect x="520" y="96" width="216" height="4" rx="2" fill="#DDB874"/>
+  <rect x="520" y="96" width="216" height="4" rx="2" fill="#C9A961"/>
   <text x="628.0" y="122.0" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#F4ECDD" font-weight="bold">il logaritmo della seconda</text>
   <rect x="536" y="136" width="184" height="132" fill="none" stroke="#34302A" stroke-width="0.9"/>
   <polyline points="536.0,249.5 539.9,246.8 543.8,244.1 547.7,241.5 551.7,239.0 555.6,236.5 559.5,234.0 563.4,231.6 567.3,229.3 571.2,226.9 575.1,224.7 579.1,222.4 583.0,220.2 586.9,218.1 590.8,215.9 594.7,213.9 598.6,211.8 602.6,209.8 606.5,207.8 610.4,205.8 614.3,203.9 618.2,202.0 622.1,200.1 626.0,198.3 630.0,196.4 633.9,194.7 637.8,192.9 641.7,191.1 645.6,189.4 649.5,187.7 653.4,186.0 657.4,184.4 661.3,182.8 665.2,181.1 669.1,179.6 673.0,178.0 676.9,176.4 680.9,174.9 684.8,173.4 688.7,171.9 692.6,170.4 696.5,168.9 700.4,167.5 704.3,166.1 708.3,164.7 712.2,163.3 716.1,161.9 720.0,160.5" fill="none" stroke="#BCB3A1" stroke-width="1.1" stroke-dasharray="4 3"/>
-  <polyline points="536.0,249.5 539.9,234.7 543.8,223.9 547.7,218.4 551.7,218.7 555.6,224.4 559.5,234.0 563.4,245.0 567.3,253.4 571.2,255.2 575.1,248.8 579.1,235.8 583.0,220.2 586.9,206.0 590.8,195.7 594.7,190.7 598.6,191.5 602.6,197.7 606.5,207.8 610.4,219.2 614.3,228.0 618.2,230.3 622.1,224.2 626.0,211.6 630.0,196.4 633.9,182.6 637.8,172.6 641.7,168.0 645.6,169.2 649.5,175.6 653.4,186.0 657.4,197.7 661.3,206.9 665.2,209.4 669.1,203.7 673.0,191.3 676.9,176.4 680.9,162.8 684.8,153.1 688.7,148.8 692.6,150.2 696.5,156.9 700.4,167.5 704.3,179.4 708.3,188.8 712.2,191.5 716.1,186.0 720.0,173.9" fill="none" stroke="#DDB874" stroke-width="2" stroke-linejoin="round"/>
+  <polyline points="536.0,249.5 539.9,234.7 543.8,223.9 547.7,218.4 551.7,218.7 555.6,224.4 559.5,234.0 563.4,245.0 567.3,253.4 571.2,255.2 575.1,248.8 579.1,235.8 583.0,220.2 586.9,206.0 590.8,195.7 594.7,190.7 598.6,191.5 602.6,197.7 606.5,207.8 610.4,219.2 614.3,228.0 618.2,230.3 622.1,224.2 626.0,211.6 630.0,196.4 633.9,182.6 637.8,172.6 641.7,168.0 645.6,169.2 649.5,175.6 653.4,186.0 657.4,197.7 661.3,206.9 665.2,209.4 669.1,203.7 673.0,191.3 676.9,176.4 680.9,162.8 684.8,153.1 688.7,148.8 692.6,150.2 696.5,156.9 700.4,167.5 704.3,179.4 708.3,188.8 712.2,191.5 716.1,186.0 720.0,173.9" fill="none" stroke="#C9A961" stroke-width="2" stroke-linejoin="round"/>
   <line x1="547.7" y1="241.5" x2="547.7" y2="218.4" stroke="#F4ECDD" stroke-width="1.3"/>
   <polygon points="547.7,241.5 544.2,235.5 551.2,235.5" fill="#F4ECDD"/>
   <polygon points="547.7,218.4 544.2,224.4 551.2,224.4" fill="#F4ECDD"/>

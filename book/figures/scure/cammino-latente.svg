@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../cammino-latente.svg
 -->
 <!--
@@ -22,13 +22,13 @@
     .lbl { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#F4ECDD; }
     .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#BCB3A1; }
     .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#F4ECDD; }
-    .cod  { stroke:#0E0C0A; stroke-width:1.2; }
+    .cod  { stroke:#16130F; stroke-width:1.2; }
     .alo  { opacity:0.20; }
     .via  { stroke:#BCB3A1; stroke-width:1.6; stroke-dasharray:6 5; }
-    .seg  { fill:#DDB874; stroke:#F4ECDD; stroke-width:2; }
+    .seg  { fill:#C9A961; stroke:#F4ECDD; stroke-width:2; }
     .base { stroke:#34302A; stroke-width:1.5; }
     .pro  { fill:none; stroke-width:2.5; }
-    .cur  { stroke:#0E0C0A; stroke-width:1.5; }
+    .cur  { stroke:#16130F; stroke-width:1.5; }
     .tic  { font-family:Inter, system-ui, sans-serif; font-size:12px; fill:#BCB3A1; }
         @keyframes corsas{0.00%{transform:translate(-185.2px,44.3px)}8.00%{transform:translate(-185.2px,44.3px)}88.00%{transform:translate(0px,0px)}100.00%{transform:translate(0px,0px)}}
     @keyframes corsad{0.00%{transform:translate(-78.3px,19.6px)}8.00%{transform:translate(-78.3px,19.6px)}88.00%{transform:translate(0px,0px)}100.00%{transform:translate(0px,0px)}}

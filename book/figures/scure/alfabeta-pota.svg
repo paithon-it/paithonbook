@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../alfabeta-pota.svg
 -->
 <!--
@@ -24,10 +24,10 @@
     .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#F4ECDD; }
     .ram    { stroke:#34302A; stroke-width:2; }
     .spento { stroke:#221F1A; stroke-dasharray:5 5; }
-    .nodo   { stroke-width:2.5; fill:#0E0C0A; }
+    .nodo   { stroke-width:2.5; fill:#16130F; }
     .max    { stroke:#E27B52; }
     .min    { stroke:#5BA39C; }
-    .cassa  { fill:#0E0C0A; stroke:#34302A; stroke-width:2; }
+    .cassa  { fill:#16130F; stroke:#34302A; stroke-width:2; }
     .spenta { stroke:#221F1A; }
     .croce  { stroke:#34302A; stroke-width:2.5; }
     .val    { font-family:Inter, system-ui, sans-serif; font-size:17px; font-weight:600;

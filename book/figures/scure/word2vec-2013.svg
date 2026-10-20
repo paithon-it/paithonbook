@@ -1,12 +1,12 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../word2vec-2013.svg
 -->
 <svg viewBox="0 0 680 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagramma di aritmetica vettoriale: i vettori di uomo, re, donna, regina formano un parallelogramma, e re meno uomo più donna cade vicino a regina, in un disegno idealizzato">
-  <rect x="0" y="0" width="680" height="400" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="680" height="400" fill="#16130F"/>
   <text x="340" y="32" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#F4ECDD" font-weight="bold">re − uomo + donna ≈ regina</text>
 
   <!-- assi leggeri -->
@@ -32,7 +32,7 @@
   <text x="248" y="140" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#F4ECDD">re</text>
   <circle cx="440" cy="300" r="6" fill="#F4ECDD"/>
   <text x="440" y="324" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#F4ECDD">donna</text>
-  <circle cx="520" cy="150" r="7" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
+  <circle cx="520" cy="150" r="7" fill="#C9A961" stroke="#F4ECDD" stroke-width="1.5"/>
   <text x="540" y="146" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#F4ECDD" font-weight="bold">regina</text>
 
   <!-- legenda -->

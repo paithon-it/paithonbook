@@ -1,12 +1,12 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../chinchilla-2022.svg
 -->
 <svg viewBox="0 0 720 420" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Due allocazioni dello stesso budget di calcolo: Gopher con molti parametri e pochi token, Chinchilla con pochi parametri e molti token">
-  <rect x="0" y="0" width="720" height="420" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="720" height="420" fill="#16130F"/>
   <text x="360" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#F4ECDD">Stesso budget di calcolo, due modi di spenderlo</text>
   <!-- baseline -->
   <line x1="50" y1="330" x2="670" y2="330" stroke="#F4ECDD" stroke-width="2"/>

@@ -1,12 +1,12 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../toolformer-2023.svg
 -->
 <svg viewBox="0 0 760 430" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema di Toolformer: mentre genera testo il modello raggiunge un punto di decisione, sceglie di chiamare un tool esterno, ne inserisce il risultato e prosegue la frase">
-  <rect x="0" y="0" width="760" height="430" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="760" height="430" fill="#16130F"/>
   <!-- flusso di testo in ingresso -->
   <rect x="30" y="60" width="200" height="50" fill="none" stroke="#F4ECDD" stroke-width="2"/>
   <text x="130" y="82" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD" text-anchor="middle">"...400 su 1400,</text>
@@ -14,7 +14,7 @@
   <line x1="230" y1="85" x2="290" y2="85" stroke="#F4ECDD" stroke-width="1.5"/>
   <polygon points="290,85 280,80 280,90" fill="#F4ECDD"/>
   <!-- decisione -->
-  <polygon points="360,45 425,85 360,125 295,85" fill="#DDB874" fill-opacity="0.18" stroke="#DDB874" stroke-width="2"/>
+  <polygon points="360,45 425,85 360,125 295,85" fill="#C9A961" fill-opacity="0.18" stroke="#C9A961" stroke-width="2"/>
   <text x="360" y="82" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD" text-anchor="middle">chiamo</text>
   <text x="360" y="98" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD" text-anchor="middle">un tool?</text>
   <!-- ramo NO -->
@@ -39,7 +39,7 @@
   <!-- risultato reinserito nel testo -->
   <line x1="615" y1="206" x2="615" y2="250" stroke="#F4ECDD" stroke-width="1.5"/>
   <polygon points="615,250 610,240 620,240" fill="#F4ECDD"/>
-  <rect x="120" y="300" width="520" height="60" fill="#DDB874" fill-opacity="0.15" stroke="#DDB874" stroke-width="2"/>
+  <rect x="120" y="300" width="520" height="60" fill="#C9A961" fill-opacity="0.15" stroke="#C9A961" stroke-width="2"/>
   <text x="380" y="326" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD" text-anchor="middle">"...400 su 1400, cioè il [Calculator(400/1400) → 0.29] 29%."</text>
   <text x="380" y="347" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#BCB3A1" text-anchor="middle">il risultato rientra nella frase e la generazione riprende</text>
   <line x1="615" y1="250" x2="615" y2="300" stroke="#F4ECDD" stroke-width="0"/>

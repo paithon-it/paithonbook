@@ -1,8 +1,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../nlp-parabola-storica.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 300" role="img" aria-label="Linea del tempo del Natural Language Processing in quattro tappe">
@@ -23,7 +23,7 @@
   <text x="120" y="223" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13.5" fill="#F4ECDD">scritte a mano</text>
 
   <!-- Tappa 2: Statistica -->
-  <circle cx="330" cy="150" r="15" fill="#DDB874"/>
+  <circle cx="330" cy="150" r="15" fill="#C9A961"/>
   <text x="330" y="96" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="18" font-weight="700" fill="#F4ECDD">Statistica</text>
   <text x="330" y="116" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#BCB3A1">anni '90–2000</text>
   <text x="330" y="205" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13.5" fill="#F4ECDD">conteggi su</text>

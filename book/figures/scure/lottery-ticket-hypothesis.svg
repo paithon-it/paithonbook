@@ -1,12 +1,12 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../lottery-ticket-hypothesis.svg
 -->
 <svg viewBox="0 0 720 380" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Una rete neurale densa con tutte le connessioni in grigio; un sottoinsieme di connessioni e nodi, il biglietto vincente, è evidenziato in terracotta">
-  <rect x="0" y="0" width="720" height="380" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="720" height="380" fill="#16130F"/>
   <text x="360" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" fill="#F4ECDD">la rete densa (grigio) e il biglietto vincente al suo interno (terracotta)</text>
   <!-- connessioni dense in grigio -->
   <g stroke="#34302A" stroke-width="1.2">
@@ -27,7 +27,7 @@
     <line x1="380" y1="230" x2="620" y2="190"/>
   </g>
   <!-- nodi non vincenti -->
-  <g fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.5">
+  <g fill="#16130F" stroke="#F4ECDD" stroke-width="1.5">
     <circle cx="140" cy="190" r="16"/>
     <circle cx="380" cy="150" r="16"/><circle cx="380" cy="310" r="16"/>
     <circle cx="620" cy="110" r="16"/><circle cx="620" cy="270" r="16"/>

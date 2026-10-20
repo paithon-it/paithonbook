@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../row-stationary.svg
 -->
 <!--
@@ -17,10 +17,10 @@
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 470" role="img" aria-label="Una matrice di tre righe per quattro colonne di elementi di calcolo. Ogni riga della matrice riceve da sinistra una riga del filtro, che la attraversa tutta: la prima riga del filtro serve i quattro elementi della prima riga, e così via. Ogni elemento riceve anche una riga dell'immagine, e la stessa riga dell'immagine arriva a tutti gli elementi di una diagonale: la terza riga, per esempio, va all'elemento in alto nella terza colonna, a quello di mezzo nella seconda e a quello in basso nella prima. Le somme parziali scendono lungo ogni colonna, e in fondo alla colonna j esce la riga j della mappa d'uscita.">
   <style>
-    .pe   { fill:#0E0C0A; stroke:#F4ECDD; stroke-opacity:0.6; stroke-width:1.5; }
+    .pe   { fill:#16130F; stroke:#F4ECDD; stroke-opacity:0.6; stroke-width:1.5; }
     .fil  { stroke:#E27B52; stroke-width:3; fill:none; }
     .imm  { stroke:#5BA39C; stroke-width:2.2; stroke-dasharray:6 5; fill:none; opacity:0.85; }
-    .ps   { stroke:#DDB874; stroke-width:3.2; fill:none; }
+    .ps   { stroke:#C9A961; stroke-width:3.2; fill:none; }
     .t1   { font-family:Inter, system-ui, sans-serif; font-size:12px; font-weight:700; fill:#E27B52; }
     .t2   { font-family:Inter, system-ui, sans-serif; font-size:12px; font-weight:700; fill:#5BA39C; }
     .t3   { font-family:Inter, system-ui, sans-serif; font-size:12px; font-weight:700; fill:#F4ECDD; opacity:0.75; }
@@ -28,9 +28,9 @@
   </style>
   <defs>
     <marker id="rs-t" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#E27B52"/></marker>
-    <marker id="rs-o" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#DDB874"/></marker>
+    <marker id="rs-o" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#C9A961"/></marker>
   </defs>
-  <rect x="6" y="6" width="688" height="458" rx="14" fill="#0E0C0A" stroke="#F4ECDD" stroke-opacity="0.12" stroke-width="1.5"/>
+  <rect x="6" y="6" width="688" height="458" rx="14" fill="#16130F" stroke="#F4ECDD" stroke-opacity="0.12" stroke-width="1.5"/>
   <line class="imm" x1="394" y1="99" x2="216" y2="247"/>
   <line class="imm" x1="512" y1="99" x2="216" y2="351"/>
   <line class="imm" x1="630" y1="99" x2="334" y2="351"/>

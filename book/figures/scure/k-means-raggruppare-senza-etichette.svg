@@ -1,20 +1,20 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../k-means-raggruppare-senza-etichette.svg
 -->
 <svg viewBox="0 0 720 300" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tre pannelli mostrano i centroidi di K-means che migrano dalla posizione casuale iniziale al centro dei cluster">
-  <rect x="0" y="0" width="720" height="300" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="720" height="300" fill="#16130F"/>
   <!-- Pannello 1: inizializzazione -->
   <g>
     <rect x="15" y="40" width="210" height="210" fill="none" stroke="#F4ECDD" stroke-width="1.5"/>
     <text x="120" y="28" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#F4ECDD" text-anchor="middle">1. Inizio casuale</text>
     <!-- cluster alto-sx -->
-    <circle cx="55" cy="85" r="5" fill="#DDB874"/><circle cx="75" cy="70" r="5" fill="#DDB874"/><circle cx="70" cy="100" r="5" fill="#DDB874"/><circle cx="90" cy="88" r="5" fill="#DDB874"/>
+    <circle cx="55" cy="85" r="5" fill="#C9A961"/><circle cx="75" cy="70" r="5" fill="#C9A961"/><circle cx="70" cy="100" r="5" fill="#C9A961"/><circle cx="90" cy="88" r="5" fill="#C9A961"/>
     <!-- cluster basso-dx -->
-    <circle cx="160" cy="190" r="5" fill="#DDB874"/><circle cx="180" cy="205" r="5" fill="#DDB874"/><circle cx="170" cy="220" r="5" fill="#DDB874"/><circle cx="195" cy="195" r="5" fill="#DDB874"/>
+    <circle cx="160" cy="190" r="5" fill="#C9A961"/><circle cx="180" cy="205" r="5" fill="#C9A961"/><circle cx="170" cy="220" r="5" fill="#C9A961"/><circle cx="195" cy="195" r="5" fill="#C9A961"/>
     <!-- centroidi casuali -->
     <path d="M 130 60 l 7 7 m 0 -7 l -7 7" stroke="#E27B52" stroke-width="2" fill="none"/>
     <path d="M 60 230 l 7 7 m 0 -7 l -7 7" stroke="#5BA39C" stroke-width="2" fill="none"/>

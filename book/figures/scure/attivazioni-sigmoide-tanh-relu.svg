@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../attivazioni-sigmoide-tanh-relu.svg
 -->
 <!--
@@ -26,7 +26,7 @@
     .cap b { fill:#F4ECDD; }
     .sig   { fill:none; stroke:#E27B52; stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
     .tan   { fill:none; stroke:#5BA39C; stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
-    .rel   { fill:none; stroke:#DDB874; stroke-width:3.2; stroke-linecap:round; stroke-linejoin:round; }
+    .rel   { fill:none; stroke:#C9A961; stroke-width:3.2; stroke-linecap:round; stroke-linejoin:round; }
   </style>
 
   <!-- ===== Pannello 1: Sigmoide ===== -->

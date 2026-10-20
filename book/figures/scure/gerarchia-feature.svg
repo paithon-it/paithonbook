@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../gerarchia-feature.svg
 -->
 <!--
@@ -18,7 +18,7 @@
      aria-label="Quattro riquadri in fila mostrano come una rete profonda costruisce la percezione a strati: a sinistra l'immagine di input di un gatto fatta di pixel, poi i primi strati che rilevano bordi e linee orientate, poi gli strati intermedi che rilevano texture e parti come un occhio o una curva, infine gli ultimi strati che riconoscono il gatto come oggetto intero racchiuso in un riquadro di rilevamento; frecce collegano i riquadri da sinistra a destra">
   <style>
     .card  { fill:none; stroke:#34302A; stroke-width:2; }
-    .tile  { fill:#0E0C0A; stroke:#221F1A; stroke-width:1.5; }
+    .tile  { fill:#16130F; stroke:#221F1A; stroke-width:1.5; }
     .title { font-family:Inter, system-ui, sans-serif; font-size:12px; fill:#BCB3A1; }
     .label { font-family:Inter, system-ui, sans-serif; font-size:12.5px; font-weight:600; fill:#F4ECDD; }
     .edge  { stroke:#F4ECDD; stroke-width:4; stroke-linecap:round; }
@@ -46,9 +46,9 @@
   <polygon points="498,132 490,127 490,137" fill="#BCB3A1"/>
 
   <!-- ===== A) immagine di input: gatto geometrico (teal) ===== -->
-  <polygon points="58,106 66,82 86,100"  fill="#0E0C0A" stroke="#5BA39C" stroke-width="3" stroke-linejoin="round"/>
-  <polygon points="110,106 102,82 82,100" fill="#0E0C0A" stroke="#5BA39C" stroke-width="3" stroke-linejoin="round"/>
-  <circle cx="84" cy="132" r="30" fill="#0E0C0A" stroke="#5BA39C" stroke-width="3"/>
+  <polygon points="58,106 66,82 86,100"  fill="#16130F" stroke="#5BA39C" stroke-width="3" stroke-linejoin="round"/>
+  <polygon points="110,106 102,82 82,100" fill="#16130F" stroke="#5BA39C" stroke-width="3" stroke-linejoin="round"/>
+  <circle cx="84" cy="132" r="30" fill="#16130F" stroke="#5BA39C" stroke-width="3"/>
   <circle cx="74" cy="130" r="4" fill="#5BA39C"/>
   <circle cx="94" cy="130" r="4" fill="#5BA39C"/>
   <circle cx="84" cy="142" r="3" fill="#E27B52"/>
@@ -74,7 +74,7 @@
   <!-- curva (arco terracotta) -->
   <path d="M 416,118 Q 431,90 446,118" fill="none" stroke="#E27B52" stroke-width="3" stroke-linecap="round"/>
   <!-- angolo / vertice (ocra) -->
-  <path d="M 364,172 L 377,146 L 390,172" fill="none" stroke="#DDB874" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 364,172 L 377,146 L 390,172" fill="none" stroke="#C9A961" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
   <!-- texture (righe diagonali) -->
   <line x1="417" y1="174" x2="431" y2="150" stroke="#BCB3A1" stroke-width="2.5" stroke-linecap="round"/>
   <line x1="425" y1="176" x2="439" y2="152" stroke="#BCB3A1" stroke-width="2.5" stroke-linecap="round"/>
@@ -82,9 +82,9 @@
 
   <!-- ===== D) ultimi strati: oggetto rilevato (terracotta) ===== -->
   <rect x="528" y="82" width="72" height="96" rx="4" fill="none" stroke="#E27B52" stroke-width="1.8" stroke-dasharray="5 4"/>
-  <polygon points="540,106 549,82 568,100" fill="#0E0C0A" stroke="#E27B52" stroke-width="3" stroke-linejoin="round"/>
-  <polygon points="588,106 579,82 560,100" fill="#0E0C0A" stroke="#E27B52" stroke-width="3" stroke-linejoin="round"/>
-  <circle cx="564" cy="132" r="28" fill="#0E0C0A" stroke="#E27B52" stroke-width="3"/>
+  <polygon points="540,106 549,82 568,100" fill="#16130F" stroke="#E27B52" stroke-width="3" stroke-linejoin="round"/>
+  <polygon points="588,106 579,82 560,100" fill="#16130F" stroke="#E27B52" stroke-width="3" stroke-linejoin="round"/>
+  <circle cx="564" cy="132" r="28" fill="#16130F" stroke="#E27B52" stroke-width="3"/>
   <circle cx="556" cy="130" r="3.5" fill="#5BA39C"/>
   <circle cx="572" cy="130" r="3.5" fill="#5BA39C"/>
   <circle cx="564" cy="142" r="3" fill="#E27B52"/>

@@ -1,8 +1,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../alberi-sintassi.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" role="img" aria-label="La frase ambigua Ho visto un uomo con il binocolo analizzata due volte: a sinistra l'albero a costituenti della lettura in cui il binocolo appartiene all'uomo, a destra il grafo a dipendenze della lettura in cui il binocolo serve a chi guarda, con archi etichettati sopra le parole.">

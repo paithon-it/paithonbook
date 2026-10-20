@@ -1,12 +1,12 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../immagine-e-nucleo.svg
 -->
 <svg viewBox="0 0 720 430" width="100%" role="img" aria-label="Il sole, in alto a sinistra, manda raggi paralleli che proiettano i punti di uno spazio a tre dimensioni su un muro a destra. Due punti diversi, allineati sullo stesso raggio di luce, cadono nello stesso punto del muro: quella direzione e' il nucleo. Il piano del muro e' l'immagine: ogni sua posizione e' l'ombra di qualcosa, mentre un punto davanti al muro, fuori da quel piano, non e' l'ombra di niente." xmlns="http://www.w3.org/2000/svg">
-  <rect x="0" y="0" width="720" height="430" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="720" height="430" fill="#16130F"/>
   <defs>
     <marker id="inFrec" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#E27B52"/></marker>
     <marker id="inFrecK" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#BCB3A1"/></marker>
@@ -27,8 +27,8 @@
   <text x="470" y="376" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#E27B52" text-anchor="middle">non è l’ombra di niente</text>
 
   <!-- ===== il sole: raggi paralleli ===== -->
-  <circle cx="62" cy="62" r="13" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
-  <g stroke="#DDB874" stroke-width="1.6" stroke-linecap="round">
+  <circle cx="62" cy="62" r="13" fill="#C9A961" stroke="#F4ECDD" stroke-width="1.5"/>
+  <g stroke="#C9A961" stroke-width="1.6" stroke-linecap="round">
     <line x1="62" y1="41" x2="62" y2="33"/>
     <line x1="77" y1="47" x2="83" y2="41"/>
     <line x1="83" y1="62" x2="91" y2="62"/>
@@ -41,7 +41,7 @@
   <text x="104" y="73" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">raggi paralleli</text>
 
   <!-- ===== raggi paralleli, tutti con la pendenza del raggio del nucleo ===== -->
-  <g stroke="#DDB874" stroke-width="1.1" stroke-dasharray="3 5" opacity="0.85">
+  <g stroke="#C9A961" stroke-width="1.1" stroke-dasharray="3 5" opacity="0.85">
     <line x1="40" y1="150" x2="556" y2="69.2"/>
     <line x1="40" y1="272" x2="556" y2="191.2"/>
     <line x1="40" y1="372" x2="556" y2="291.2"/>

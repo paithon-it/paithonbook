@@ -1,16 +1,16 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../transfer-learning.svg
 -->
 <svg viewBox="0 0 760 340" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema del transfer learning: backbone congelato e testa nuova addestrabile">
-  <rect x="0" y="0" width="760" height="340" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="760" height="340" fill="#16130F"/>
   <text x="380" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="bold" fill="#F4ECDD">Backbone congelato + testa nuova</text>
   <!-- input image -->
-  <rect x="30" y="120" width="80" height="80" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2"/>
-  <circle cx="58" cy="146" r="9" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
+  <rect x="30" y="120" width="80" height="80" fill="#16130F" stroke="#F4ECDD" stroke-width="2"/>
+  <circle cx="58" cy="146" r="9" fill="#C9A961" stroke="#F4ECDD" stroke-width="1.5"/>
   <path d="M36 192 L64 158 L84 180 L98 166 L104 192 Z" fill="#5BA39C" stroke="#F4ECDD" stroke-width="1.5"/>
   <text x="70" y="222" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">immagine</text>
   <!-- arrow -->
@@ -22,10 +22,10 @@
   <rect x="252" y="120" width="52" height="80" fill="#5BA39C" stroke="#F4ECDD" stroke-width="1.5"/>
   <rect x="324" y="130" width="52" height="60" fill="#5BA39C" stroke="#F4ECDD" stroke-width="1.5"/>
   <rect x="396" y="138" width="52" height="44" fill="#5BA39C" stroke="#F4ECDD" stroke-width="1.5"/>
-  <text x="206" y="165" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#0E0C0A">bordi</text>
-  <text x="278" y="165" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#0E0C0A">texture</text>
-  <text x="350" y="164" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#0E0C0A">parti</text>
-  <text x="422" y="164" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#0E0C0A">oggetti</text>
+  <text x="206" y="165" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#16130F">bordi</text>
+  <text x="278" y="165" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#16130F">texture</text>
+  <text x="350" y="164" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#16130F">parti</text>
+  <text x="422" y="164" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#16130F">oggetti</text>
   <text x="323" y="68" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#5BA39C">BACKBONE (congelato)</text>
   <text x="323" y="262" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">pesi pre-addestrati su milioni di immagini, non si aggiornano</text>
   <!-- arrow -->
@@ -34,7 +34,7 @@
   <!-- new head -->
   <rect x="538" y="95" width="120" height="130" fill="#E27B52" opacity="0.15" stroke="#E27B52" stroke-width="2"/>
   <rect x="560" y="120" width="34" height="80" fill="#E27B52" stroke="#F4ECDD" stroke-width="1.5"/>
-  <rect x="612" y="135" width="30" height="50" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
+  <rect x="612" y="135" width="30" height="50" fill="#C9A961" stroke="#F4ECDD" stroke-width="1.5"/>
   <text x="598" y="83" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#E27B52">TESTA (nuova)</text>
   <text x="598" y="248" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">strati nuovi, addestrati</text>
   <text x="598" y="266" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">sui nostri dati</text>

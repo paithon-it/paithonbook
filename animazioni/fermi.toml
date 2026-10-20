@@ -216,3 +216,14 @@ istanti = [0.26, 0.70, 0.95]
 # default cadono su passi qualunque. In stampa servono i tre momenti che la
 # didascalia racconta: il guasto nel collaudo (gettone spento, croce accesa),
 # l'attesa alla firma e il lavoro concluso.
+
+[harness-cammino-critico]
+istanti = [0.208, 0.40, 0.95]
+# perche': il cursore corre per l'80% del ciclo (25 secondi della scala), e i
+# default cadono a 3,1 secondi, quando nella corsia speculativa c'e' solo la
+# prima previsione, e a 15,6, oltre la meta' della scala. Il primo fermo va a
+# 6,5 secondi, quando la lettura avviata sulla seconda previsione corre accanto
+# al pensiero e sembra ancora una lettura qualunque; il secondo a 12,5, cioe' a
+# meta' della scala, quando la corsia in parallelo ha finito, quella lettura e'
+# gia' scartata e la terza previsione e' partita; il terzo e' il lavoro
+# concluso, l'unico in cui si leggono tutti e tre i totali della didascalia.

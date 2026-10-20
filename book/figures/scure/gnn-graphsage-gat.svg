@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../gnn-graphsage-gat.svg
 -->
 <!--
@@ -19,15 +19,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400" role="img"
      aria-label="Confronto di due strategie di aggregazione dei vicini. A sinistra GraphSAGE: un nodo centrale color ocra circondato da sei vicini; solo tre di essi, in teal, sono campionati e collegati da archi pieni, mentre gli altri tre sono sbiaditi in grigio con archi tratteggiati, a indicare che se ne usa solo un sottoinsieme. A destra la rete ad attenzione GAT: lo stesso nodo con gli stessi sei vicini, ma gli archi hanno spessori diversi, in terracotta, proporzionali al peso di attenzione: un vicino ha l'arco molto più spesso e conta più degli altri. In basso, le etichette campionamento a sinistra e attenzione a destra.">
   <style>
-    .node   { fill:#0E0C0A; stroke:#F4ECDD; stroke-width:2; }
-    .hub    { fill:#DDB874; stroke:#F4ECDD; stroke-width:2.5; }
+    .node   { fill:#16130F; stroke:#F4ECDD; stroke-width:2; }
+    .hub    { fill:#C9A961; stroke:#F4ECDD; stroke-width:2.5; }
     .samp   { fill:#5BA39C; stroke:#F4ECDD; stroke-width:2; }
-    .faded  { fill:#0E0C0A; stroke:#8E8676; stroke-width:1.5; }
+    .faded  { fill:#16130F; stroke:#8E8676; stroke-width:1.5; }
     .esamp  { stroke:#5BA39C; stroke-width:3; }
     .efade  { stroke:#8E8676; stroke-width:1.5; stroke-dasharray:4 4; }
     .eatt   { stroke:#E27B52; stroke-linecap:round; }
     .hublbl { font-family:Inter, system-ui, sans-serif; font-size:16px; font-weight:700; fill:#F4ECDD; text-anchor:middle; }
-    .fadelbl{ font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:600; fill:#0E0C0A; text-anchor:middle; }
+    .fadelbl{ font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:600; fill:#16130F; text-anchor:middle; }
     .title  { font-family:Fraunces, Georgia, serif; font-size:19px; font-weight:600; fill:#F4ECDD; text-anchor:middle; }
     .cap    { font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:600; text-anchor:middle; }
   </style>

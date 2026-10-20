@@ -1,8 +1,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../mdp-grafo.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 350" width="100%" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" role="img" aria-label="Grafo di un MDP con tre stati collegati da azioni etichettate con le rispettive ricompense">
@@ -25,15 +25,15 @@
   <text x="96" y="334" font-size="14" fill="#BCB3A1" text-anchor="middle">resta · <tspan fill="#BCB3A1">r = −1</tspan></text>
 
   <!-- stati -->
-  <circle cx="120" cy="215" r="34" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2.5"/>
+  <circle cx="120" cy="215" r="34" fill="#16130F" stroke="#F4ECDD" stroke-width="2.5"/>
   <text x="120" y="222" font-size="20" fill="#F4ECDD" text-anchor="middle">s₀</text>
 
-  <circle cx="330" cy="120" r="34" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2.5"/>
+  <circle cx="330" cy="120" r="34" fill="#16130F" stroke="#F4ECDD" stroke-width="2.5"/>
   <text x="330" y="127" font-size="20" fill="#F4ECDD" text-anchor="middle">s₁</text>
 
   <circle cx="545" cy="215" r="40" fill="#E27B52" stroke="#F4ECDD" stroke-width="2.5"/>
-  <circle cx="545" cy="215" r="32" fill="none" stroke="#0E0C0A" stroke-width="2"/>
-  <text x="545" y="222" font-size="20" fill="#0E0C0A" text-anchor="middle">s₂</text>
+  <circle cx="545" cy="215" r="32" fill="none" stroke="#16130F" stroke-width="2"/>
+  <text x="545" y="222" font-size="20" fill="#16130F" text-anchor="middle">s₂</text>
 
   <!-- didascalie di stato -->
   <text x="58" y="219" font-size="12" fill="#8E8676" text-anchor="middle">partenza</text>

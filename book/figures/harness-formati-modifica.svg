@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 460" role="img" aria-label="Un piano con in orizzontale le righe che il modello scrive, in scala logaritmica, con le tacche a 1, 10 e 100, e in verticale la robustezza. Quattro punti. In alto a sinistra l'operazione sull'albero, 1 riga, solo per le operazioni che lo strumento conosce, con la sintassi sempre valida, ma che rinominando verso un nome già usato, se lo strumento non lo controlla, sbaglia in silenzio. Più in basso e più a destra il cerca e sostituisci, 8 righe, che rifiuta se l'ancora non compare esattamente una volta. Una linea tratteggiata separa i formati che, quando la loro condizione non vale, rifiutano da quelli che possono applicarsi lo stesso. Sotto la linea il diff unificato, 17 righe, che chiede che il contorno combaci, anche spostato, e che un applicatore tollerante può mettere nel punto sbagliato; in basso a destra la riscrittura intera, 120 righe, che si applica sempre ma può cambiare in silenzio le righe ricopiate.">
+  <defs>
+    <marker id="fm-fr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1A1A1A"/>
+    </marker>
+  </defs>
+
+  <!-- assi -->
+  <path d="M 104 402 L 724 402" fill="none" stroke="#1A1A1A" stroke-width="1.6" marker-end="url(#fm-fr)"/>
+  <path d="M 104 402 L 104 46" fill="none" stroke="#1A1A1A" stroke-width="1.6" marker-end="url(#fm-fr)"/>
+  <path d="M 120.0 402 L 120.0 408" stroke="#1A1A1A" stroke-width="1.4"/>
+  <text x="120.0" y="424.0" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#1A1A1A" fill-opacity="0.72">1</text>
+  <path d="M 372.1 402 L 372.1 408" stroke="#1A1A1A" stroke-width="1.4"/>
+  <text x="372.1" y="424.0" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#1A1A1A" fill-opacity="0.72">10</text>
+  <path d="M 624.1 402 L 624.1 408" stroke="#1A1A1A" stroke-width="1.4"/>
+  <text x="624.1" y="424.0" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#1A1A1A" fill-opacity="0.72">100</text>
+  <text x="412.0" y="448.0" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#1A1A1A">righe che il modello scrive per cambiarne 4 su 120 (scala logaritmica: ogni tacca vale dieci volte la precedente)</text>
+  <text x="0" y="0" transform="translate(76 224) rotate(-90)" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#1A1A1A">robustezza: tocca solo ciò che doveva, o rifiuta</text>
+
+  <!-- confine fra chi rifiuta e chi può sbagliare in silenzio -->
+  <path d="M 112 226 L 716 226" fill="none" stroke="#1A1A1A" stroke-opacity="0.4" stroke-width="1.2" stroke-dasharray="6 5"/>
+  <text x="712.0" y="216.0" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#1A1A1A" fill-opacity="0.72">se la sua condizione non vale, rifiuta</text>
+  <text x="712.0" y="244.0" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#1A1A1A" fill-opacity="0.72">se non vale, può applicarsi lo stesso</text>
+
+  <!-- operazione sull'albero -->
+  <circle cx="120.0" cy="104" r="8" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.6"/>
+  <text x="136.0" y="100.0" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="700" fill="#1A1A1A">operazione sull'albero · 1 riga</text>
+  <text x="136.0" y="118.0" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#1A1A1A" fill-opacity="0.72">solo per le operazioni note; sintassi</text>
+  <text x="136.0" y="133.0" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#1A1A1A" fill-opacity="0.72">sempre valida, ma su un nome già usato,</text>
+  <text x="136.0" y="148.0" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#1A1A1A" fill-opacity="0.72">se non controlla, sbaglia in silenzio</text>
+
+  <!-- cerca e sostituisci -->
+  <circle cx="347.6" cy="170" r="8" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.6"/>
+  <text x="363.6" y="166.0" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="700" fill="#1A1A1A">cerca e sostituisci · 8 righe</text>
+  <text x="363.6" y="184.0" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#1A1A1A" fill-opacity="0.72">l'ancora deve comparire una volta sola,</text>
+  <text x="363.6" y="199.0" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#1A1A1A" fill-opacity="0.72">altrimenti la modifica è rifiutata</text>
+
+  <!-- diff unificato -->
+  <circle cx="430.1" cy="296" r="8" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.6"/>
+  <text x="414.1" y="292.0" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="700" fill="#1A1A1A">diff unificato · 17 righe</text>
+  <text x="414.1" y="310.0" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#1A1A1A" fill-opacity="0.72">il contorno deve combaciare, anche spostato;</text>
+  <text x="414.1" y="325.0" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#1A1A1A" fill-opacity="0.72">un applicatore tollerante può sbagliare posto</text>
+
+  <!-- riscrittura intera -->
+  <circle cx="644.1" cy="356" r="8" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.6"/>
+  <text x="628.1" y="352.0" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="700" fill="#1A1A1A">riscrittura intera · 120 righe</text>
+  <text x="628.1" y="370.0" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#1A1A1A" fill-opacity="0.72">si applica sempre; le righe ricopiate</text>
+  <text x="628.1" y="385.0" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#1A1A1A" fill-opacity="0.72">possono cambiare in silenzio</text>
+</svg>

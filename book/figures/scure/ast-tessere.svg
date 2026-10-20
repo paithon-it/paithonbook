@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../ast-tessere.svg
 -->
 <!--
@@ -58,7 +58,7 @@
       <rect x="40"  y="0" width="34" height="34" fill="#E27B52" opacity="0.9"/>
       <rect x="80"  y="0" width="34" height="34" fill="#5BA39C" opacity="0.25"/>
       <rect x="120" y="0" width="34" height="34" fill="#5BA39C" opacity="0.4"/>
-      <rect x="160" y="0" width="34" height="34" fill="#DDB874" opacity="0.5"/>
+      <rect x="160" y="0" width="34" height="34" fill="#C9A961" opacity="0.5"/>
       <rect x="200" y="0" width="34" height="34" fill="#E27B52" opacity="0.42"/>
       <rect x="240" y="0" width="34" height="34" fill="#5BA39C" opacity="0.25"/>
     </g>

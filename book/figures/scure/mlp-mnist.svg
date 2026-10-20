@@ -1,8 +1,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../mlp-mnist.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 470" role="img" aria-labelledby="title-mlp">
@@ -22,27 +22,27 @@
   </g>
 
   <!-- Box 1: Input -->
-  <rect x="180" y="30" width="260" height="56" rx="10" fill="#0E0C0A" stroke="#5BA39C" stroke-width="2.5"/>
+  <rect x="180" y="30" width="260" height="56" rx="10" fill="#16130F" stroke="#5BA39C" stroke-width="2.5"/>
   <text x="310" y="63" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="600" fill="#F4ECDD">Input: immagine 28×28</text>
   <text x="470" y="63" text-anchor="start" font-family="'JetBrains Mono', monospace" font-size="13" fill="#BCB3A1">(28, 28)</text>
 
   <!-- Box 2: Flatten -->
-  <rect x="180" y="118" width="260" height="56" rx="10" fill="#0E0C0A" stroke="#8E8676" stroke-width="2.5"/>
+  <rect x="180" y="118" width="260" height="56" rx="10" fill="#16130F" stroke="#8E8676" stroke-width="2.5"/>
   <text x="310" y="151" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="600" fill="#F4ECDD">Flatten: srotola</text>
   <text x="470" y="151" text-anchor="start" font-family="'JetBrains Mono', monospace" font-size="13" fill="#BCB3A1">(784,)</text>
 
   <!-- Box 3: Dense 128 -->
-  <rect x="180" y="206" width="260" height="56" rx="10" fill="#0E0C0A" stroke="#E27B52" stroke-width="2.5"/>
+  <rect x="180" y="206" width="260" height="56" rx="10" fill="#16130F" stroke="#E27B52" stroke-width="2.5"/>
   <text x="310" y="239" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="600" fill="#F4ECDD">Linear(784, 128) → ReLU</text>
   <text x="470" y="239" text-anchor="start" font-family="'JetBrains Mono', monospace" font-size="13" fill="#BCB3A1">(128,)</text>
 
   <!-- Box 4: Dense 10 -->
-  <rect x="180" y="294" width="260" height="56" rx="10" fill="#0E0C0A" stroke="#E27B52" stroke-width="2.5"/>
+  <rect x="180" y="294" width="260" height="56" rx="10" fill="#16130F" stroke="#E27B52" stroke-width="2.5"/>
   <text x="310" y="327" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="600" fill="#F4ECDD">Linear(128, 10) → logit</text>
   <text x="470" y="327" text-anchor="start" font-family="'JetBrains Mono', monospace" font-size="13" fill="#BCB3A1">(10,)</text>
 
   <!-- Box 5: Output -->
-  <rect x="180" y="382" width="260" height="56" rx="10" fill="#0E0C0A" stroke="#DDB874" stroke-width="2.5"/>
+  <rect x="180" y="382" width="260" height="56" rx="10" fill="#16130F" stroke="#C9A961" stroke-width="2.5"/>
   <text x="310" y="415" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="600" fill="#F4ECDD">Fuori dal modello: softmax</text>
 
   <!-- Etichetta laterale: la pila Sequential -->

@@ -1,29 +1,29 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../ai-act-guida-pratica.svg
 -->
 <svg viewBox="0 0 760 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema: la piramide dei livelli di rischio dell'AI Act">
-  <rect x="0" y="0" width="760" height="400" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="760" height="400" fill="#16130F"/>
   <text x="380" y="30" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="bold" fill="#F4ECDD">I quattro livelli di rischio dell'AI Act</text>
 
   <!-- Tier 1: vietato -->
   <polygon points="225,75 295,75 335,137 185,137" fill="#E27B52" stroke="#F4ECDD" stroke-width="1.5"/>
-  <text x="260" y="112" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#0E0C0A">Inaccettabile</text>
+  <text x="260" y="112" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#16130F">Inaccettabile</text>
 
   <!-- Tier 2: alto rischio -->
-  <polygon points="182,141 338,141 379,204 141,204" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
+  <polygon points="182,141 338,141 379,204 141,204" fill="#C9A961" stroke="#F4ECDD" stroke-width="1.5"/>
   <text x="260" y="178" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#F4ECDD">Alto rischio</text>
 
   <!-- Tier 3: limitato -->
   <polygon points="139,208 381,208 422,271 98,271" fill="#5BA39C" stroke="#F4ECDD" stroke-width="1.5"/>
-  <text x="260" y="245" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#0E0C0A">Rischio limitato</text>
+  <text x="260" y="245" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#16130F">Rischio limitato</text>
 
   <!-- Tier 4: minimo -->
   <polygon points="95,275 425,275 468,342 52,342" fill="#F4ECDD" stroke="#F4ECDD" stroke-width="1.5"/>
-  <text x="260" y="313" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#0E0C0A">Rischio minimo</text>
+  <text x="260" y="313" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#16130F">Rischio minimo</text>
 
   <!-- connectors + annotations -->
   <line x1="315" y1="106" x2="486" y2="106" stroke="#BCB3A1" stroke-width="1.5"/>

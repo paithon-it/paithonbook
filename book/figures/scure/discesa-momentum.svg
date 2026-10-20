@@ -1,8 +1,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../discesa-momentum.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" width="100%" role="img" aria-label="Confronto tra discesa senza momentum, che oscilla da parete a parete, e con momentum, piu diretta verso il minimo in una valle stretta e allungata">
@@ -15,7 +15,7 @@
     </marker>
   </defs>
 
-  <rect x="0" y="0" width="640" height="420" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="640" height="420" fill="#16130F"/>
 
   <!-- Curve di livello: valle stretta e allungata (ellissi larghe in x, strette in y) -->
   <g fill="none" stroke="#BCB3A1" stroke-opacity="0.4" stroke-width="1.6">
@@ -26,7 +26,7 @@
   </g>
 
   <!-- Minimo -->
-  <circle cx="432" cy="190" r="6" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.4"/>
+  <circle cx="432" cy="190" r="6" fill="#C9A961" stroke="#F4ECDD" stroke-width="1.4"/>
   <text x="432" y="216" text-anchor="middle" font-family="Inter, Helvetica, Arial, sans-serif" font-size="14" fill="#F4ECDD">minimo</text>
 
   <!-- Traiettoria SENZA momentum: oscilla da parete a parete -->

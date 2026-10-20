@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../frontiera-che-si-allarga.svg
 -->
 <!--
@@ -23,7 +23,7 @@
     .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#BCB3A1; }
     .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#F4ECDD; }
     .cel { stroke:none; }
-    .dia { stroke:#DDB874; stroke-width:2.5; }
+    .dia { stroke:#C9A961; stroke-width:2.5; }
     .cnt { font-family:Inter, system-ui, sans-serif; font-size:14px; font-weight:600; fill:#F4ECDD; }
         @keyframes scs0{0.00%{opacity:0}5.00%{opacity:0}6.00%{opacity:1}100.00%{opacity:1}}
     @keyframes scs1{0.00%{opacity:0}8.42%{opacity:0}9.42%{opacity:1}100.00%{opacity:1}}

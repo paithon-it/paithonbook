@@ -1,12 +1,12 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../convoluzione.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 380" role="img" aria-label="Un filtro 3x3 evidenziato su una porzione di una griglia di ingresso 5x5; una freccia collega la regione alla singola casella corrispondente della mappa dei risultati.">
-  <!-- Palette: terracotta #E27B52, teal #5BA39C, ocra #DDB874, warm-black #F4ECDD, cream #0E0C0A, neutri #BCB3A1 #8E8676 #34302A #221F1A -->
+  <!-- Palette: terracotta #E27B52, teal #5BA39C, ocra #C9A961, warm-black #F4ECDD, cream #16130F, neutri #BCB3A1 #8E8676 #34302A #221F1A -->
   <defs>
     <marker id="cnn-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
       <path d="M0,0 L10,5 L0,10 z" fill="#F4ECDD"/>
@@ -14,7 +14,7 @@
   </defs>
 
   <!-- ===== INPUT GRID 5x5 ===== -->
-  <rect x="60" y="90" width="200" height="200" fill="#0E0C0A" stroke="#34302A" stroke-width="1.5"/>
+  <rect x="60" y="90" width="200" height="200" fill="#16130F" stroke="#34302A" stroke-width="1.5"/>
   <!-- linee verticali -->
   <line x1="100" y1="90" x2="100" y2="290" stroke="#34302A" stroke-width="1.5"/>
   <line x1="140" y1="90" x2="140" y2="290" stroke="#34302A" stroke-width="1.5"/>
@@ -39,7 +39,7 @@
   <text x="384" y="176" text-anchor="middle" font-family="Inter, Helvetica, Arial, sans-serif" font-size="15" fill="#5BA39C">somma pesata</text>
   
   <!-- ===== FEATURE MAP 3x3 ===== -->
-  <rect x="540" y="130" width="120" height="120" fill="#0E0C0A" stroke="#34302A" stroke-width="1.5"/>
+  <rect x="540" y="130" width="120" height="120" fill="#16130F" stroke="#34302A" stroke-width="1.5"/>
   <line x1="580" y1="130" x2="580" y2="250" stroke="#34302A" stroke-width="1.5"/>
   <line x1="620" y1="130" x2="620" y2="250" stroke="#34302A" stroke-width="1.5"/>
   <line x1="540" y1="170" x2="660" y2="170" stroke="#34302A" stroke-width="1.5"/>

@@ -1,12 +1,12 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../tuple-dizionari-set.svg
 -->
 <svg viewBox="0 0 720 430" width="100%" role="img" aria-label="Tabella decisionale dei contenitori Python: per lista, tupla, dizionario e set sono indicate le proprietà ordinato, modificabile, duplicati ammessi e tipo di accesso, con la domanda guida per ciascuno" xmlns="http://www.w3.org/2000/svg">
-  <rect x="0" y="0" width="720" height="430" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="720" height="430" fill="#16130F"/>
   <text x="360" y="36" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="bold" fill="#F4ECDD">Quale contenitore? La tabella decisionale</text>
 
   <!-- intestazioni colonne -->
@@ -28,7 +28,7 @@
 
   <!-- riga LIST -->
   <rect x="52" y="112" width="120" height="36" fill="#E27B52"/>
-  <text x="112" y="136" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#0E0C0A">list  [ ]</text>
+  <text x="112" y="136" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#16130F">list  [ ]</text>
   <g font-family="Inter, system-ui, sans-serif" font-size="16" text-anchor="middle">
     <text x="240" y="136" fill="#5BA39C" font-weight="bold">sì</text>
     <text x="352" y="136" fill="#5BA39C" font-weight="bold">sì</text>
@@ -39,7 +39,7 @@
 
   <!-- riga TUPLE -->
   <rect x="52" y="192" width="120" height="36" fill="#5BA39C"/>
-  <text x="112" y="216" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#0E0C0A">tuple  ( )</text>
+  <text x="112" y="216" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#16130F">tuple  ( )</text>
   <g font-family="Inter, system-ui, sans-serif" font-size="16" text-anchor="middle">
     <text x="240" y="216" fill="#5BA39C" font-weight="bold">sì</text>
     <text x="352" y="216" fill="#E27B52" font-weight="bold">no</text>
@@ -49,7 +49,7 @@
   <text x="590" y="226" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">insieme, sigillati?</text>
 
   <!-- riga DICT -->
-  <rect x="52" y="272" width="120" height="36" fill="#DDB874"/>
+  <rect x="52" y="272" width="120" height="36" fill="#C9A961"/>
   <text x="112" y="296" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#F4ECDD">dict  {k: v}</text>
   <g font-family="Inter, system-ui, sans-serif" font-size="16" text-anchor="middle">
     <text x="240" y="296" fill="#5BA39C" font-weight="bold">sì*</text>
@@ -62,7 +62,7 @@
 
   <!-- riga SET -->
   <rect x="52" y="352" width="120" height="36" fill="#F4ECDD"/>
-  <text x="112" y="376" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#0E0C0A">set  { }</text>
+  <text x="112" y="376" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#16130F">set  { }</text>
   <g font-family="Inter, system-ui, sans-serif" font-size="16" text-anchor="middle">
     <text x="240" y="376" fill="#E27B52" font-weight="bold">no</text>
     <text x="352" y="376" fill="#5BA39C" font-weight="bold">sì</text>

@@ -129,7 +129,8 @@ prefisso già visto e lo fatturano con uno sconto, il *prompt caching* della
 trascrizione condivisa il prefisso di ogni richiesta è quasi tutto già passato
 da quell'agente al turno precedente, e pagati per intero restano soprattutto i
 messaggi arrivati nel frattempo. Lo sconto abbassa la costante, non
-l'esponente: i token letti restano $O(\bar{m}\,T^2)$, e non cambiano né la
+l'esponente, come per l'agente solo del {doc}`conto di un compito
+</Harness/il-conto>`: i token letti restano $O(\bar{m}\,T^2)$, e non cambiano né la
 larghezza della finestra né l'effetto *lost in the middle*. La seconda riguarda
 il calcolo, quando il prefisso non viene riusato: con attenzione piena,
 elaborare un contesto di lunghezza $L$ ha un termine quadratico in $L$, e

@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../somma-pesata-passaggi.svg
 -->
 <!--
@@ -25,13 +25,13 @@
     .pann { fill:none; stroke:#34302A; stroke-width:1.4; }
     .pAb  { fill:#E27B52; }
     .pBb  { fill:#5BA39C; }
-    .pCb  { fill:#DDB874; }
+    .pCb  { fill:#C9A961; }
     .pAt  { font-family:Inter, system-ui, sans-serif; font-size:14px; font-weight:700;
             fill:#E27B52; }
     .pBt  { font-family:Inter, system-ui, sans-serif; font-size:14px; font-weight:700;
             fill:#5BA39C; }
     .pCt  { font-family:Inter, system-ui, sans-serif; font-size:14px; font-weight:700;
-            fill:#DDB874; }
+            fill:#C9A961; }
     .et   { font-family:Inter, system-ui, sans-serif; font-size:13.5px; font-weight:700;
             fill:#F4ECDD; }
     .val  { font-family:Inter, system-ui, sans-serif; font-size:13px; font-weight:700;

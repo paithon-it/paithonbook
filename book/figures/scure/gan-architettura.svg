@@ -1,8 +1,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../gan-architettura.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 400" role="img" aria-label="Schema dell'architettura di una GAN: un vettore di rumore z entra nel generatore G che produce un dato sintetico; il dato sintetico e i dati reali entrano nel discriminatore D che restituisce una probabilita reale o falso; i gradienti dell'errore tornano indietro dal discriminatore al generatore">
@@ -16,27 +16,27 @@
   </defs>
 
   <!-- rumore z -->
-  <rect x="20" y="78" width="122" height="58" rx="8" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2"/>
+  <rect x="20" y="78" width="122" height="58" rx="8" fill="#16130F" stroke="#F4ECDD" stroke-width="2"/>
   <text x="81" y="102" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="22" font-style="italic" fill="#F4ECDD">z</text>
   <text x="81" y="122" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" fill="#BCB3A1">rumore</text>
 
   <!-- Generatore G -->
   <rect x="182" y="70" width="134" height="74" rx="10" fill="#E27B52" stroke="#F4ECDD" stroke-width="2"/>
-  <text x="249" y="104" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="30" font-weight="700" fill="#0E0C0A">G</text>
-  <text x="249" y="126" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="12" fill="#0E0C0A">generatore</text>
+  <text x="249" y="104" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="30" font-weight="700" fill="#16130F">G</text>
+  <text x="249" y="126" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="12" fill="#16130F">generatore</text>
 
   <!-- dato sintetico -->
-  <rect x="356" y="74" width="156" height="66" rx="8" fill="#0E0C0A" stroke="#E27B52" stroke-width="2.5"/>
+  <rect x="356" y="74" width="156" height="66" rx="8" fill="#16130F" stroke="#E27B52" stroke-width="2.5"/>
   <text x="434" y="101" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="18" font-style="italic" fill="#F4ECDD">x&#771; = G(z)</text>
   <text x="434" y="122" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="12" fill="#BCB3A1">dato sintetico</text>
 
   <!-- dati reali -->
   <rect x="356" y="250" width="156" height="66" rx="8" fill="#5BA39C" stroke="#F4ECDD" stroke-width="2"/>
-  <text x="434" y="278" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="18" font-style="italic" fill="#0E0C0A">x</text>
-  <text x="434" y="299" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="12" fill="#0E0C0A">dati reali</text>
+  <text x="434" y="278" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="18" font-style="italic" fill="#16130F">x</text>
+  <text x="434" y="299" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="12" fill="#16130F">dati reali</text>
 
   <!-- Discriminatore D -->
-  <rect x="556" y="150" width="120" height="96" rx="10" fill="#DDB874" stroke="#F4ECDD" stroke-width="2"/>
+  <rect x="556" y="150" width="120" height="96" rx="10" fill="#C9A961" stroke="#F4ECDD" stroke-width="2"/>
   <text x="616" y="192" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="30" font-weight="700" fill="#F4ECDD">D</text>
   <text x="616" y="214" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F4ECDD">discriminatore</text>
 

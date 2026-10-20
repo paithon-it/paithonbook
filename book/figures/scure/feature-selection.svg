@@ -1,23 +1,23 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../feature-selection.svg
 -->
 <svg viewBox="0 0 680 340" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema della feature selection: a sinistra un grafico a barre con il punteggio di otto feature e una soglia tratteggiata che ne promuove tre; una freccia porta a destra, dove il dataset filtrato conserva solo le tre colonne migliori">
-  <rect x="0" y="0" width="680" height="340" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="680" height="340" fill="#16130F"/>
   <text x="50" y="34" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#F4ECDD" font-weight="bold">1. misura ogni feature</text>
   <text x="452" y="34" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#F4ECDD" font-weight="bold">2. tieni le migliori</text>
   <!-- barre dei punteggi -->
   <rect x="50" y="100" width="24" height="150" fill="#E27B52" stroke="#F4ECDD" stroke-width="1.5"/>
-  <rect x="86" y="210" width="24" height="40" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
+  <rect x="86" y="210" width="24" height="40" fill="#C9A961" stroke="#F4ECDD" stroke-width="1.5"/>
   <rect x="122" y="80" width="24" height="170" fill="#E27B52" stroke="#F4ECDD" stroke-width="1.5"/>
-  <rect x="158" y="170" width="24" height="80" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
-  <rect x="194" y="220" width="24" height="30" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
+  <rect x="158" y="170" width="24" height="80" fill="#C9A961" stroke="#F4ECDD" stroke-width="1.5"/>
+  <rect x="194" y="220" width="24" height="30" fill="#C9A961" stroke="#F4ECDD" stroke-width="1.5"/>
   <rect x="230" y="130" width="24" height="120" fill="#E27B52" stroke="#F4ECDD" stroke-width="1.5"/>
-  <rect x="266" y="195" width="24" height="55" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
-  <rect x="302" y="185" width="24" height="65" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
+  <rect x="266" y="195" width="24" height="55" fill="#C9A961" stroke="#F4ECDD" stroke-width="1.5"/>
+  <rect x="302" y="185" width="24" height="65" fill="#C9A961" stroke="#F4ECDD" stroke-width="1.5"/>
   <!-- soglia -->
   <line x1="42" y1="145" x2="340" y2="145" stroke="#F4ECDD" stroke-width="1.5" stroke-dasharray="6 4"/>
   <text x="50" y="66" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#BCB3A1">soglia: le 3 con punteggio piu' alto</text>

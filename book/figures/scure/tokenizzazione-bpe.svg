@@ -1,16 +1,16 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../tokenizzazione-bpe.svg
 -->
 <svg viewBox="0 0 760 300" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Catena di tokenizzazione: la parola straordinariamente viene spezzata in cinque subword e poi convertita in cinque id numerici">
-  <rect x="0" y="0" width="760" height="300" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="760" height="300" fill="#16130F"/>
   <text x="380" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#F4ECDD">Da parola a numeri, in due tagli</text>
   <!-- fase 1: parola -->
   <text x="90" y="72" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="bold" fill="#5BA39C">1. PAROLA</text>
-  <rect x="90" y="84" width="580" height="48" rx="6" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2"/>
+  <rect x="90" y="84" width="580" height="48" rx="6" fill="#16130F" stroke="#F4ECDD" stroke-width="2"/>
   <text x="380" y="114" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="18" fill="#F4ECDD">straordinariamente</text>
   <!-- frecce -->
   <g stroke="#F4ECDD" stroke-width="1.5" fill="none">
@@ -20,15 +20,15 @@
   <!-- fase 2: subword, come le taglia il tokenizzatore di GPT-2 -->
   <text x="90" y="150" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="bold" fill="#5BA39C">2. SUBWORD</text>
   <rect x="90" y="160" width="100" height="48" rx="6" fill="#E27B52" stroke="#F4ECDD" stroke-width="1.5"/>
-  <text x="140" y="190" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" fill="#0E0C0A">stra</text>
+  <text x="140" y="190" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" fill="#16130F">stra</text>
   <rect x="210" y="160" width="100" height="48" rx="6" fill="#5BA39C" stroke="#F4ECDD" stroke-width="1.5"/>
-  <text x="260" y="190" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" fill="#0E0C0A">ord</text>
-  <rect x="330" y="160" width="100" height="48" rx="6" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
+  <text x="260" y="190" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" fill="#16130F">ord</text>
+  <rect x="330" y="160" width="100" height="48" rx="6" fill="#C9A961" stroke="#F4ECDD" stroke-width="1.5"/>
   <text x="380" y="190" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" fill="#F4ECDD">inar</text>
   <rect x="450" y="160" width="100" height="48" rx="6" fill="#E27B52" stroke="#F4ECDD" stroke-width="1.5"/>
-  <text x="500" y="190" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" fill="#0E0C0A">iam</text>
+  <text x="500" y="190" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" fill="#16130F">iam</text>
   <rect x="570" y="160" width="100" height="48" rx="6" fill="#5BA39C" stroke="#F4ECDD" stroke-width="1.5"/>
-  <text x="620" y="190" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" fill="#0E0C0A">ente</text>
+  <text x="620" y="190" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" fill="#16130F">ente</text>
   <!-- frecce verso id -->
   <g stroke="#F4ECDD" stroke-width="1.5" fill="none">
     <line x1="140" y1="208" x2="140" y2="228"/>
@@ -44,14 +44,14 @@
   </g>
   <!-- fase 3: id -->
   <text x="90" y="228" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="bold" fill="#5BA39C">3. ID</text>
-  <rect x="95" y="236" width="90" height="40" rx="6" fill="#0E0C0A" stroke="#E27B52" stroke-width="2"/>
+  <rect x="95" y="236" width="90" height="40" rx="6" fill="#16130F" stroke="#E27B52" stroke-width="2"/>
   <text x="140" y="262" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="16" fill="#F4ECDD">3534</text>
-  <rect x="215" y="236" width="90" height="40" rx="6" fill="#0E0C0A" stroke="#5BA39C" stroke-width="2"/>
+  <rect x="215" y="236" width="90" height="40" rx="6" fill="#16130F" stroke="#5BA39C" stroke-width="2"/>
   <text x="260" y="262" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="16" fill="#F4ECDD">585</text>
-  <rect x="335" y="236" width="90" height="40" rx="6" fill="#0E0C0A" stroke="#DDB874" stroke-width="2"/>
+  <rect x="335" y="236" width="90" height="40" rx="6" fill="#16130F" stroke="#C9A961" stroke-width="2"/>
   <text x="380" y="262" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="16" fill="#F4ECDD">22050</text>
-  <rect x="455" y="236" width="90" height="40" rx="6" fill="#0E0C0A" stroke="#E27B52" stroke-width="2"/>
+  <rect x="455" y="236" width="90" height="40" rx="6" fill="#16130F" stroke="#E27B52" stroke-width="2"/>
   <text x="500" y="262" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="16" fill="#F4ECDD">1789</text>
-  <rect x="575" y="236" width="90" height="40" rx="6" fill="#0E0C0A" stroke="#5BA39C" stroke-width="2"/>
+  <rect x="575" y="236" width="90" height="40" rx="6" fill="#16130F" stroke="#5BA39C" stroke-width="2"/>
   <text x="620" y="262" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="16" fill="#F4ECDD">21872</text>
 </svg>

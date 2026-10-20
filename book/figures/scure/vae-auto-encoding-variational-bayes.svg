@@ -1,27 +1,27 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../vae-auto-encoding-variational-bayes.svg
 -->
 <svg viewBox="0 0 720 320" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema del variational autoencoder: l'encoder produce media e deviazione, si campiona un punto nello spazio latente, il decoder ricostruisce">
-  <rect x="0" y="0" width="720" height="320" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="720" height="320" fill="#16130F"/>
   <text x="360" y="30" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#F4ECDD">Il latente probabilistico del VAE</text>
   <!-- input -->
-  <rect x="30" y="120" width="70" height="70" rx="6" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2"/>
+  <rect x="30" y="120" width="70" height="70" rx="6" fill="#16130F" stroke="#F4ECDD" stroke-width="2"/>
   <text x="65" y="160" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#F4ECDD">x</text>
   <text x="65" y="215" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">input</text>
   <!-- encoder -->
   <polygon points="120,105 210,135 210,175 120,205" fill="#E27B52"/>
-  <text x="163" y="160" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#0E0C0A">encoder</text>
+  <text x="163" y="160" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#16130F">encoder</text>
   <!-- mu / sigma -->
-  <rect x="230" y="105" width="56" height="36" rx="6" fill="#0E0C0A" stroke="#E27B52" stroke-width="2"/>
+  <rect x="230" y="105" width="56" height="36" rx="6" fill="#16130F" stroke="#E27B52" stroke-width="2"/>
   <text x="258" y="128" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">μ</text>
-  <rect x="230" y="165" width="56" height="36" rx="6" fill="#0E0C0A" stroke="#E27B52" stroke-width="2"/>
+  <rect x="230" y="165" width="56" height="36" rx="6" fill="#16130F" stroke="#E27B52" stroke-width="2"/>
   <text x="258" y="188" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">σ</text>
   <!-- latent cloud -->
-  <ellipse cx="380" cy="155" rx="62" ry="48" fill="#DDB874" fill-opacity="0.5" stroke="#DDB874" stroke-width="2"/>
+  <ellipse cx="380" cy="155" rx="62" ry="48" fill="#C9A961" fill-opacity="0.5" stroke="#C9A961" stroke-width="2"/>
   <circle cx="380" cy="155" r="5" fill="#F4ECDD"/>
   <text x="398" y="150" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">z</text>
   <text x="380" y="235" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">spazio latente: una nuvola, non un punto</text>
@@ -31,9 +31,9 @@
   <text x="470" y="92" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">z = μ + σ·ε</text>
   <!-- decoder -->
   <polygon points="470,135 560,105 560,205 470,175" fill="#5BA39C"/>
-  <text x="515" y="160" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#0E0C0A">decoder</text>
+  <text x="515" y="160" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#16130F">decoder</text>
   <!-- output -->
-  <rect x="585" y="120" width="70" height="70" rx="6" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2"/>
+  <rect x="585" y="120" width="70" height="70" rx="6" fill="#16130F" stroke="#F4ECDD" stroke-width="2"/>
   <text x="620" y="160" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#F4ECDD">x̂</text>
   <text x="620" y="215" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">ricostruzione</text>
   <!-- arrows -->

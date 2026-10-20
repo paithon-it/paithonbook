@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../curva-normale.svg
 -->
 <!--
@@ -26,8 +26,8 @@
   </style>
 
   <!-- bande laterali (mu+/-sigma .. mu+/-2sigma), ocra -->
-  <path d="M 140,250 L 140,222.9 L 160,197.6 L 180,161.0 L 195,128.7 L 195,250 Z" fill="#DDB874" opacity="0.45"/>
-  <path d="M 305,250 L 305,128.7 L 320,161.0 L 340,197.6 L 360,222.9 L 360,250 Z" fill="#DDB874" opacity="0.45"/>
+  <path d="M 140,250 L 140,222.9 L 160,197.6 L 180,161.0 L 195,128.7 L 195,250 Z" fill="#C9A961" opacity="0.45"/>
+  <path d="M 305,250 L 305,128.7 L 320,161.0 L 340,197.6 L 360,222.9 L 360,250 Z" fill="#C9A961" opacity="0.45"/>
 
   <!-- banda centrale (mu+/-sigma), terracotta -->
   <path d="M 195,250 L 195,128.7 L 215,86.7 L 235,57.3 L 250,50 L 265,57.3 L 285,86.7 L 305,128.7 L 305,250 Z" fill="#E27B52" opacity="0.35"/>

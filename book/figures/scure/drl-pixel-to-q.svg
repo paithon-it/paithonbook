@@ -1,23 +1,23 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../drl-pixel-to-q.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 330" font-family="'Inter', system-ui, sans-serif">
   <!-- SCHERMO DI GIOCO (stile Breakout) -->
-  <rect x="40" y="66" width="172" height="172" rx="5" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="3"/>
+  <rect x="40" y="66" width="172" height="172" rx="5" fill="#16130F" stroke="#F4ECDD" stroke-width="3"/>
   <!-- mattoncini -->
   <rect x="52" y="82" width="28" height="11" fill="#E27B52"/>
-  <rect x="84" y="82" width="28" height="11" fill="#DDB874"/>
+  <rect x="84" y="82" width="28" height="11" fill="#C9A961"/>
   <rect x="116" y="82" width="28" height="11" fill="#5BA39C"/>
   <rect x="148" y="82" width="28" height="11" fill="#E27B52"/>
-  <rect x="180" y="82" width="20" height="11" fill="#DDB874"/>
-  <rect x="52" y="97" width="28" height="11" fill="#DDB874"/>
+  <rect x="180" y="82" width="20" height="11" fill="#C9A961"/>
+  <rect x="52" y="97" width="28" height="11" fill="#C9A961"/>
   <rect x="84" y="97" width="28" height="11" fill="#5BA39C"/>
   <rect x="116" y="97" width="28" height="11" fill="#E27B52"/>
-  <rect x="148" y="97" width="28" height="11" fill="#DDB874"/>
+  <rect x="148" y="97" width="28" height="11" fill="#C9A961"/>
   <rect x="180" y="97" width="20" height="11" fill="#5BA39C"/>
   <!-- pallina -->
   <circle cx="132" cy="162" r="6" fill="#F4ECDD"/>

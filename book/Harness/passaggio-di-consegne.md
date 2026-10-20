@@ -503,7 +503,8 @@ riassunto conserva la continuità ma non dà una pagina pulita
 context engineering </IngegneriaLLM/context-engineering>` descrive, abbassa il
 prezzo dei token riletti e cambia i pesi del conto, perché ogni taglio rende
 nuovo tutto ciò che segue il prefisso fisso; non cambia la finestra né il calo
-di qualità sui contesti lunghi.
+di qualità sui contesti lunghi. Il {doc}`conto di un compito <il-conto>` rifà
+il calcolo con la cache e i prezzi.
 
 `````
 

@@ -55,10 +55,13 @@ LARGHEZZA_FERMO = "31%"
 # faccia sola non li copre. Con una sola, Chromium ripiega su Liberation e
 # DejaVu, e in una figura su tre le etichette escono con un altro carattere.
 #
-# Il peso 700 non c'e' e non e' una dimenticanza: il brand si ferma a 600, e
-# l'URL di Google Fonts che usa il sito chiede 400, 500 e 600. Chiedendo 700,
-# Chromium sceglie il 600, che e' esattamente quello che gia' succede online.
-# Le figure devono somigliare a se stesse, non essere piu' belle in stampa.
+# Il peso 700 non c'e' e non e' una dimenticanza: i pesi sono quelli del
+# brand, 400-600 per Inter e JetBrains Mono (il grassetto e' il 600) e 400,
+# 600, 800 per Fraunces. Una figura che chiede 700 lo ottiene dal ripiego di
+# Chromium, che sopra il 500 cerca prima i pesi piu' alti e poi i piu' bassi:
+# Inter a 700 esce al 600, Fraunces a 700 esce all'800. Online la figura non
+# fa da confronto: una SVG caricata con <img> non vede i font della pagina, e
+# le etichette prendono quelli installati sul sistema di chi legge.
 #
 # (famiglia, file, peso, stile)
 FONT = [

@@ -1,8 +1,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../pinn-schema.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 450" role="img" aria-label="Schema di una PINN: le coordinate x e t entrano in una rete MLP che produce la soluzione candidata u; da u partono due rami, quello di autograd che calcola le derivate rispetto all'input e compone il residuo dell'equazione, e quello dei dati e delle condizioni iniziali; i due rami confluiscono nella loss totale, che con la backpropagation aggiorna i pesi della rete.">
@@ -11,7 +11,7 @@
       <path d="M0,0 L10,5 L0,10 z" fill="#BCB3A1"/>
     </marker>
     <marker id="freccia-pinn-ocra" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-      <path d="M0,0 L10,5 L0,10 z" fill="#DDB874"/>
+      <path d="M0,0 L10,5 L0,10 z" fill="#C9A961"/>
     </marker>
     <marker id="freccia-pinn-terra" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M0,0 L10,5 L0,10 z" fill="#E27B52"/>
@@ -48,8 +48,8 @@
   <text x="418" y="232" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">soluzione candidata</text>
 
   <!-- ramo autograd (ocra), verso l'alto -->
-  <line x1="452" y1="185" x2="534" y2="122" stroke="#DDB874" stroke-width="2.5" marker-end="url(#freccia-pinn-ocra)"/>
-  <rect x="540" y="42" width="212" height="86" rx="8" fill="#DDB874" fill-opacity="0.15" stroke="#DDB874" stroke-width="2.5"/>
+  <line x1="452" y1="185" x2="534" y2="122" stroke="#C9A961" stroke-width="2.5" marker-end="url(#freccia-pinn-ocra)"/>
+  <rect x="540" y="42" width="212" height="86" rx="8" fill="#C9A961" fill-opacity="0.15" stroke="#C9A961" stroke-width="2.5"/>
   <text x="646" y="66" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#F4ECDD">autograd &#8594; residuo</text>
   <text x="646" y="88" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" fill="#F4ECDD">&#8706;u/&#8706;t, &#8706;&#178;u/&#8706;x&#178;, &#8230;</text>
   <text x="646" y="108" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">quanto u viola l'equazione</text>

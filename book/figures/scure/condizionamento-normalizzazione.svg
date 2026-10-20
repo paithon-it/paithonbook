@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../condizionamento-normalizzazione.svg
 -->
 <!--
@@ -50,7 +50,7 @@
   <circle class="step" cx="172" cy="122" r="3.5"/>
 
   <!-- minimo -->
-  <circle cx="170" cy="180" r="5" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.4"/>
+  <circle cx="170" cy="180" r="5" fill="#C9A961" stroke="#F4ECDD" stroke-width="1.4"/>
 
   <!-- ===== Pannello B: dati standardizzati (ben condizionato) ===== -->
   <text class="tag" x="392" y="34">dati standardizzati</text>
@@ -72,7 +72,7 @@
   <circle class="step" cx="476" cy="166" r="3.5"/>
 
   <!-- minimo -->
-  <circle cx="486" cy="180" r="5" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.4"/>
+  <circle cx="486" cy="180" r="5" fill="#C9A961" stroke="#F4ECDD" stroke-width="1.4"/>
 
   <!-- didascalie sotto i pannelli -->
   <text class="cap" x="60"  y="320">passi a <tspan font-weight="700" fill="#F4ECDD">zig-zag</tspan>, convergenza lenta</text>

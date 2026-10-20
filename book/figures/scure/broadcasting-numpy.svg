@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../broadcasting-numpy.svg
 -->
 <!--
@@ -18,11 +18,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 270" role="img"
      aria-label="Diagramma del broadcasting: una riga 1 per 4 si ripete verso il basso e una colonna 3 per 1 si ripete verso destra, sommandosi in una matrice 3 per 4.">
   <style>
-    .realA { fill:#0E0C0A; stroke:#5BA39C; stroke-width:2.2; }
+    .realA { fill:#16130F; stroke:#5BA39C; stroke-width:2.2; }
     .ghostA{ fill:none;    stroke:#5BA39C; stroke-width:1.4; stroke-dasharray:3 4; opacity:.6; }
-    .realB { fill:#0E0C0A; stroke:#E27B52; stroke-width:2.2; }
+    .realB { fill:#16130F; stroke:#E27B52; stroke-width:2.2; }
     .ghostB{ fill:none;    stroke:#E27B52; stroke-width:1.4; stroke-dasharray:3 4; opacity:.6; }
-    .cellC { fill:#0E0C0A; stroke:#F4ECDD; stroke-width:1.8; }
+    .cellC { fill:#16130F; stroke:#F4ECDD; stroke-width:1.8; }
     .num   { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#F4ECDD; text-anchor:middle; }
     .numg  { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#8E8676; text-anchor:middle; }
     .lbl   { font-family:Fraunces, Georgia, serif; font-size:14px; font-weight:600; fill:#F4ECDD; text-anchor:middle; }

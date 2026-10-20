@@ -1,12 +1,12 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../roc-auc-valutare-a-ogni-soglia.svg
 -->
 <svg viewBox="0 0 560 420" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Curva ROC di un buon modello confrontata con la diagonale del caso">
-  <rect x="0" y="0" width="560" height="420" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="560" height="420" fill="#16130F"/>
   <!-- axes -->
   <line x1="80" y1="350" x2="500" y2="350" stroke="#F4ECDD" stroke-width="2"/>
   <line x1="80" y1="350" x2="80" y2="40" stroke="#F4ECDD" stroke-width="2"/>
@@ -18,7 +18,7 @@
   <text x="500" y="370" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#BCB3A1" text-anchor="middle">1</text>
   <text x="68" y="46" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#BCB3A1" text-anchor="end">1</text>
   <!-- AUC shading under ROC curve -->
-  <path d="M 80 350 C 110 180, 160 100, 260 68 C 360 45, 450 42, 500 40 L 500 350 Z" fill="#DDB874" opacity="0.25"/>
+  <path d="M 80 350 C 110 180, 160 100, 260 68 C 360 45, 450 42, 500 40 L 500 350 Z" fill="#C9A961" opacity="0.25"/>
   <!-- random diagonal -->
   <line x1="80" y1="350" x2="500" y2="40" stroke="#BCB3A1" stroke-width="1.5" stroke-dasharray="7 6"/>
   <text x="330" y="245" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#BCB3A1" transform="rotate(-36 330 245)">caso (AUC = 0,5)</text>

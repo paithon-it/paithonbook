@@ -1,8 +1,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../audio-codec-rvq.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 344" role="img" aria-label="Pipeline di un codec audio neurale: un'onda audio entra in un encoder convoluzionale che la comprime in un vettore latente z; z passa in un blocco di quantizzazione a residui (RVQ) fatto di codebook in cascata, ognuno dei quali produce un token intero e passa il residuo al successivo; i token, piu' flussi paralleli, alimentano un decoder che ricostruisce l'onda audio.">
@@ -16,42 +16,42 @@
   </defs>
 
   <!-- audio in -->
-  <rect x="18" y="60" width="100" height="80" rx="6" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2"/>
+  <rect x="18" y="60" width="100" height="80" rx="6" fill="#16130F" stroke="#F4ECDD" stroke-width="2"/>
   <polyline points="28,100 38,82 48,118 58,84 68,116 78,86 88,114 98,86 108,100" fill="none" stroke="#E27B52" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
   <text x="68" y="158" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#F4ECDD">audio</text>
 
   <line x1="120" y1="100" x2="144" y2="100" stroke="#E27B52" stroke-width="2.5" marker-end="url(#ac-sig)"/>
 
   <!-- encoder (trapezio che comprime) -->
-  <polygon points="148,60 148,140 214,124 214,76" fill="#0E0C0A" stroke="#5BA39C" stroke-width="2" stroke-linejoin="round"/>
+  <polygon points="148,60 148,140 214,124 214,76" fill="#16130F" stroke="#5BA39C" stroke-width="2" stroke-linejoin="round"/>
   <text x="181" y="105" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#5BA39C">encoder</text>
   <text x="181" y="158" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5BA39C">(CNN)</text>
 
   <line x1="214" y1="100" x2="238" y2="100" stroke="#E27B52" stroke-width="2.5" marker-end="url(#ac-sig)"/>
 
   <!-- latente z -->
-  <rect x="242" y="82" width="36" height="36" rx="4" fill="#0E0C0A" stroke="#5BA39C" stroke-width="2"/>
+  <rect x="242" y="82" width="36" height="36" rx="4" fill="#16130F" stroke="#5BA39C" stroke-width="2"/>
   <text x="260" y="106" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="16" font-style="italic" fill="#5BA39C">z</text>
   <text x="260" y="136" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5BA39C">latente</text>
 
   <line x1="278" y1="100" x2="342" y2="100" stroke="#E27B52" stroke-width="2.5" marker-end="url(#ac-sig)"/>
 
   <!-- contenitore RVQ -->
-  <rect x="302" y="44" width="344" height="262" rx="8" fill="none" stroke="#DDB874" stroke-width="2.5"/>
+  <rect x="302" y="44" width="344" height="262" rx="8" fill="none" stroke="#C9A961" stroke-width="2.5"/>
   <text x="316" y="64" text-anchor="start" font-family="Inter, sans-serif" font-size="12.5" font-weight="700" fill="#E27B52">RVQ &#183; quantizzazione a residui</text>
 
   <!-- codebook 1 -->
-  <rect x="346" y="80" width="150" height="40" rx="5" fill="#0E0C0A" stroke="#5BA39C" stroke-width="2"/>
+  <rect x="346" y="80" width="150" height="40" rx="5" fill="#16130F" stroke="#5BA39C" stroke-width="2"/>
   <text x="421" y="98" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" font-weight="700" fill="#F4ECDD">codebook 1</text>
   <text x="421" y="113" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#5BA39C">K prototipi</text>
 
   <!-- codebook 2 -->
-  <rect x="346" y="160" width="150" height="40" rx="5" fill="#0E0C0A" stroke="#5BA39C" stroke-width="2"/>
+  <rect x="346" y="160" width="150" height="40" rx="5" fill="#16130F" stroke="#5BA39C" stroke-width="2"/>
   <text x="421" y="178" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" font-weight="700" fill="#F4ECDD">codebook 2</text>
   <text x="421" y="193" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#5BA39C">K prototipi</text>
 
   <!-- codebook 3 -->
-  <rect x="346" y="240" width="150" height="40" rx="5" fill="#0E0C0A" stroke="#5BA39C" stroke-width="2"/>
+  <rect x="346" y="240" width="150" height="40" rx="5" fill="#16130F" stroke="#5BA39C" stroke-width="2"/>
   <text x="421" y="258" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" font-weight="700" fill="#F4ECDD">codebook 3</text>
   <text x="421" y="273" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#5BA39C">K prototipi</text>
 
@@ -63,15 +63,15 @@
 
   <!-- token in uscita da ogni codebook -->
   <line x1="496" y1="100" x2="534" y2="100" stroke="#E27B52" stroke-width="2.5" marker-end="url(#ac-sig)"/>
-  <rect x="538" y="82" width="36" height="36" rx="4" fill="#0E0C0A" stroke="#E27B52" stroke-width="2"/>
+  <rect x="538" y="82" width="36" height="36" rx="4" fill="#16130F" stroke="#E27B52" stroke-width="2"/>
   <text x="556" y="106" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#E27B52">5</text>
 
   <line x1="496" y1="180" x2="534" y2="180" stroke="#E27B52" stroke-width="2.5" marker-end="url(#ac-sig)"/>
-  <rect x="538" y="162" width="36" height="36" rx="4" fill="#0E0C0A" stroke="#E27B52" stroke-width="2"/>
+  <rect x="538" y="162" width="36" height="36" rx="4" fill="#16130F" stroke="#E27B52" stroke-width="2"/>
   <text x="556" y="186" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#E27B52">2</text>
 
   <line x1="496" y1="260" x2="534" y2="260" stroke="#E27B52" stroke-width="2.5" marker-end="url(#ac-sig)"/>
-  <rect x="538" y="242" width="36" height="36" rx="4" fill="#0E0C0A" stroke="#E27B52" stroke-width="2"/>
+  <rect x="538" y="242" width="36" height="36" rx="4" fill="#16130F" stroke="#E27B52" stroke-width="2"/>
   <text x="556" y="266" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#E27B52">7</text>
 
   <text x="556" y="298" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" font-weight="700" fill="#E27B52">token (N flussi)</text>
@@ -84,13 +84,13 @@
   <line x1="600" y1="180" x2="662" y2="180" stroke="#E27B52" stroke-width="2.5" marker-end="url(#ac-sig)"/>
 
   <!-- decoder (trapezio che espande) -->
-  <polygon points="666,156 666,204 732,220 732,140" fill="#0E0C0A" stroke="#5BA39C" stroke-width="2" stroke-linejoin="round"/>
+  <polygon points="666,156 666,204 732,220 732,140" fill="#16130F" stroke="#5BA39C" stroke-width="2" stroke-linejoin="round"/>
   <text x="699" y="185" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#5BA39C">decoder</text>
 
   <line x1="732" y1="180" x2="756" y2="180" stroke="#E27B52" stroke-width="2.5" marker-end="url(#ac-sig)"/>
 
   <!-- audio ricostruito -->
-  <rect x="760" y="140" width="100" height="80" rx="6" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2"/>
+  <rect x="760" y="140" width="100" height="80" rx="6" fill="#16130F" stroke="#F4ECDD" stroke-width="2"/>
   <polyline points="770,180 780,162 790,198 800,164 810,196 820,166 830,194 840,166 850,180" fill="none" stroke="#E27B52" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
   <text x="810" y="238" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#F4ECDD">audio</text>
   <text x="810" y="255" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5BA39C">ricostruito</text>

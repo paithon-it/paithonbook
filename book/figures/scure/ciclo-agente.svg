@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../ciclo-agente.svg
 -->
 <!--
@@ -22,7 +22,7 @@
     .lbl { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#F4ECDD; }
     .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#BCB3A1; }
     .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#F4ECDD; }
-    .box  { fill:#0E0C0A; stroke:#34302A; stroke-width:2; }
+    .box  { fill:#16130F; stroke:#34302A; stroke-width:2; }
     .hl   { fill:#E27B52; fill-opacity:0.15; stroke:#E27B52; stroke-width:3; }
     .nome { font-family:Inter, system-ui, sans-serif; font-size:16px; font-weight:700; fill:#F4ECDD; }
     .eng  { font-family:Inter, system-ui, sans-serif; font-size:11px; fill:#BCB3A1; }
@@ -32,9 +32,9 @@
     .mini { font-family:Inter, system-ui, sans-serif; font-size:11px; fill:#BCB3A1; }
     .miniv { font-family:Inter, system-ui, sans-serif; font-size:11px; fill:#5BA39C; }
     .giro { font-family:Inter, system-ui, sans-serif; font-size:14px; font-weight:700; fill:#E27B52; }
-    .usb  { fill:#0E0C0A; stroke:#5BA39C; stroke-width:2.5; }
+    .usb  { fill:#16130F; stroke:#5BA39C; stroke-width:2.5; }
     .anst { font-family:Inter, system-ui, sans-serif; font-size:11px; font-weight:700; fill:#5BA39C; }
-    .blk  { fill:#0E0C0A; stroke:#34302A; stroke-width:1.6; }
+    .blk  { fill:#16130F; stroke:#34302A; stroke-width:1.6; }
     .tag  { font-family:Inter, system-ui, sans-serif; font-size:11px; font-weight:700; fill:#BCB3A1; }
     .riga { font-family:Inter, system-ui, sans-serif; font-size:12.5px; fill:#F4ECDD; }
     .oss  { fill:#E27B52; font-weight:700; }

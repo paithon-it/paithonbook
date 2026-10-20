@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../shap-contributi.svg
 -->
 <!--
@@ -20,8 +20,8 @@
     .titolo { font-family:'Fraunces', Georgia, serif; font-size:19px; fill:#F4ECDD; text-anchor:middle; }
     .barpos { fill:#E27B52; }
     .barneg { fill:#5BA39C; }
-    .ref    { stroke:#DDB874; stroke-width:2; stroke-dasharray:6 5; }
-    .conn   { stroke:#DDB874; stroke-width:1.4; stroke-dasharray:3 3; }
+    .ref    { stroke:#C9A961; stroke-width:2; stroke-dasharray:6 5; }
+    .conn   { stroke:#C9A961; stroke-width:1.4; stroke-dasharray:3 3; }
     .flabel { font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:600; fill:#F4ECDD; text-anchor:end; }
     .vpos   { font-family:Inter, system-ui, sans-serif; font-size:13px; font-weight:600; fill:#E27B52; }
     .vneg   { font-family:Inter, system-ui, sans-serif; font-size:13px; font-weight:600; fill:#5BA39C; text-anchor:end; }

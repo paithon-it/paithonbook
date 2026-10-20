@@ -1,12 +1,12 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../cross-entropy-kl-divergence.svg
 -->
 <svg viewBox="0 0 720 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Due distribuzioni sovrapposte: p, la realtà, in teal e q, il modello, in terracotta; lo scarto tra le due è ciò che la KL divergence misura">
-  <rect x="0" y="0" width="720" height="400" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="720" height="400" fill="#16130F"/>
   <!-- assi -->
   <line x1="60" y1="310" x2="670" y2="310" stroke="#F4ECDD" stroke-width="2"/>
   <line x1="60" y1="310" x2="60" y2="50" stroke="#F4ECDD" stroke-width="2"/>
@@ -22,7 +22,7 @@
   <line x1="410" y1="53" x2="410" y2="63" stroke="#F4ECDD" stroke-width="1.5"/>
   <text x="380" y="46" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD" text-anchor="middle">scarto</text>
   <!-- zona critica: coda di p ignorata da q -->
-  <circle cx="150" cy="290" r="5" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
+  <circle cx="150" cy="290" r="5" fill="#C9A961" stroke="#F4ECDD" stroke-width="1.5"/>
   <text x="150" y="272" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD" text-anchor="middle">qui p esiste, q quasi no:</text>
   <text x="150" y="257" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD" text-anchor="middle">la KL esplode</text>
   <!-- legenda -->

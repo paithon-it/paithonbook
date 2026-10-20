@@ -112,7 +112,7 @@ che spezzano l'indice per aree.
 | | *Lavorare con gli LLM* | |
 | 20 | **Agenti** | Tool use e ReAct, RAG avanzato (HyDE, reranking, Self-RAG), context engineering, architetture multi-agente e valutazione |
 | 21 | **Prompt, contesto e loop** | Programmare gli LLM a parole su tre livelli concentrici: prompt engineering (ruoli, few-shot, chain-of-thought, self-consistency), context engineering (le quattro mosse, i guasti del contesto, il PRP), loop engineering (il ciclo con validation gate, split maker/checker, governance) |
-| 22 | **Harness engineering** | Tutto ciò che non è il modello: istruzioni nel repository (AGENTS.md come indice), la sessione d'inizializzazione e la lista delle funzionalità, il passaggio di consegne fra sessioni (compattare o ripartire), il collaudo da utente e il cancello in mano all'harness, osservabilità ed entropia, i grafi con stato e checkpoint |
+| 22 | **Harness engineering** | Tutto ciò che non è il modello: istruzioni nel repository (AGENTS.md come indice), la sessione d'inizializzazione e la lista delle funzionalità, il passaggio di consegne fra sessioni (compattare o ripartire), il collaudo da utente e il cancello in mano all'harness, il progetto degli strumenti (interfaccia agente-computer, uscite che insegnano, sandbox), osservabilità ed entropia, il conto di un compito (cache del prefisso, routing per passo, cammino critico e azioni speculative), i grafi con stato e checkpoint, l'harness cercato da un altro agente (ADAS, Darwin Gödel Machine, ACE) |
 | 23 | **Sistemi multi-agente** | Quando gli agenti sono molti: il costo del coordinamento (Amdahl, composizione degli errori), topologie (supervisore, lavagna, mercato), protocolli e consenso (Condorcet, dibattito, bizantini), MARL e self-play, sciami (ACO, PSO) e società simulate |
 | | *Suono e voce* | |
 | 24 | **Audio oltre la voce** | Dal suono alle feature (spettrogramma, mel, MFCC), classificazione (AudioSet, AST), rappresentazioni auto-supervisionate (wav2vec 2.0, HuBERT), codec neurali (VQ-VAE, RVQ, EnCodec), generazione (WaveNet, AudioLM, MusicGen) |
@@ -131,7 +131,7 @@ che spezzano l'indice per aree.
 | 35 | **Serie temporali** | Prevedere dal passato: decomposizione, ARIMA e Holt-Winters, validazione temporale e metriche (MASE, pinball loss), forecasting neurale (TCN, DeepAR, N-BEATS, Transformer, foundation model) |
 | 36 | **Physics-Informed Neural Networks** | Le equazioni differenziali dentro la loss; operatori neurali |
 | | *Produzione e responsabilità* | |
-| 37 | **MLOps** | Dal notebook alla produzione: versionamento, pipeline, serving, metriche di servizio, costo per token, gateway e affidabilità, drift, LLMOps, energia |
+| 37 | **MLOps** | Dal notebook alla produzione: versionamento, pipeline, serving, metriche di servizio, costo per token, gateway e affidabilità, servire un agente (la KV cache durante l'attesa di uno strumento, scheduling per programma, instradamento consapevole della cache), drift, LLMOps, energia |
 | 38 | **Interpretabilità** | Aprire la scatola nera: modelli trasparenti, importanza delle feature, LIME/SHAP/controfattuali, Grad-CAM e integrated gradients, interpretabilità meccanicistica |
 | 39 | **AI responsabile** | Equità e bias, privacy (differential privacy, federated learning) e robustezza agli attacchi avversari, sicurezza degli LLM (prompt injection, jailbreak, red teaming), allineamento (RLHF/DPO) e governance (l'AI Act europeo) |
 | | *Chiusura* | |

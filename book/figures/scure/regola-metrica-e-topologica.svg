@@ -1,8 +1,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../regola-metrica-e-topologica.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 646" role="img" aria-label="Quattro riquadri, due colonne per due righe, con lo stesso stormo di novanta uccelli disegnato su un piano. In alto lo stormo &#232; fitto, in basso lo stesso stormo diradato fino a occupare una superficie doppia, disegnato con lo stesso metro. La colonna di sinistra applica la regola metrica: un cerchio pieno di raggio fisso attorno all'uccello in ocra al centro, con un segmento verso ogni compagno che ci sta dentro. Da fitto i compagni collegati sono 7, da rado sono 3: il cerchio &#232; lo stesso e dentro ne restano meno della met&#224;. La colonna di destra applica la regola topologica: un cerchio tratteggiato che arriva fino al settimo compagno pi&#249; vicino. Da fitto i compagni collegati sono 7, da rado sono ancora 7, e sono gli stessi uccelli: a cambiare &#232; solo il raggio del cerchio, che si allarga del 41 per cento.">
@@ -109,7 +109,7 @@
   <circle cx="97.2" cy="132.0" r="2.4" fill="#BCB3A1" fill-opacity="0.42"/>
   <circle cx="224.3" cy="242.9" r="2.4" fill="#BCB3A1" fill-opacity="0.42"/>
   <circle cx="193.5" cy="265.7" r="2.4" fill="#BCB3A1" fill-opacity="0.42"/>
-  <circle cx="140.8" cy="185.8" r="5" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.2"/>
+  <circle cx="140.8" cy="185.8" r="5" fill="#C9A961" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="42" y="86" font-family="Inter, sans-serif" font-size="11.5" fill="#BCB3A1">stormo fitto</text>
   <text x="149" y="336" text-anchor="middle" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#E27B52">7 vicini</text>
   <rect x="400" y="96" width="214" height="214" rx="6" fill="none" stroke="#F4ECDD" stroke-opacity="0.16"/>
@@ -211,7 +211,7 @@
   <circle cx="455.2" cy="132.0" r="2.4" fill="#BCB3A1" fill-opacity="0.42"/>
   <circle cx="582.3" cy="242.9" r="2.4" fill="#BCB3A1" fill-opacity="0.42"/>
   <circle cx="551.5" cy="265.7" r="2.4" fill="#BCB3A1" fill-opacity="0.42"/>
-  <circle cx="498.8" cy="185.8" r="5" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.2"/>
+  <circle cx="498.8" cy="185.8" r="5" fill="#C9A961" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="400" y="86" font-family="Inter, sans-serif" font-size="11.5" fill="#BCB3A1">stormo fitto</text>
   <text x="507" y="336" text-anchor="middle" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#5BA39C">7 vicini</text>
   <rect x="42" y="384" width="214" height="214" rx="6" fill="none" stroke="#F4ECDD" stroke-opacity="0.16"/>
@@ -309,7 +309,7 @@
   <circle cx="75.8" cy="390.6" r="2.4" fill="#BCB3A1" fill-opacity="0.42"/>
   <circle cx="255.4" cy="547.4" r="2.4" fill="#BCB3A1" fill-opacity="0.42"/>
   <circle cx="212.0" cy="579.7" r="2.4" fill="#BCB3A1" fill-opacity="0.42"/>
-  <circle cx="137.3" cy="466.7" r="5" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.2"/>
+  <circle cx="137.3" cy="466.7" r="5" fill="#C9A961" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="42" y="374" font-family="Inter, sans-serif" font-size="11.5" fill="#BCB3A1">stesso stormo, superficie doppia</text>
   <text x="149" y="624" text-anchor="middle" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#E27B52">3 vicini</text>
   <text x="149" y="640" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#BCB3A1">stesso cerchio, meno della met&#224;</text>
@@ -412,7 +412,7 @@
   <circle cx="433.8" cy="390.6" r="2.4" fill="#BCB3A1" fill-opacity="0.42"/>
   <circle cx="613.4" cy="547.4" r="2.4" fill="#BCB3A1" fill-opacity="0.42"/>
   <circle cx="570.0" cy="579.7" r="2.4" fill="#BCB3A1" fill-opacity="0.42"/>
-  <circle cx="495.3" cy="466.7" r="5" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.2"/>
+  <circle cx="495.3" cy="466.7" r="5" fill="#C9A961" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="400" y="374" font-family="Inter, sans-serif" font-size="11.5" fill="#BCB3A1">stesso stormo, superficie doppia</text>
   <text x="507" y="624" text-anchor="middle" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#5BA39C">7 vicini</text>
   <text x="507" y="640" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#BCB3A1">gli stessi sette, un po&#8217; pi&#249; in l&#224;</text>

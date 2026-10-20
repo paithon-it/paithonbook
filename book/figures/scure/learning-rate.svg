@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../learning-rate.svg
 -->
 <!--
@@ -25,7 +25,7 @@
     .par { fill:none; stroke:#5BA39C; stroke-width:2.5; }
     .tra { fill:none; stroke:#E27B52; stroke-width:2; stroke-opacity:0.45;
             stroke-dasharray:4 4; }
-    .dot { fill:#E27B52; stroke:#0E0C0A; stroke-width:2;
+    .dot { fill:#E27B52; stroke:#16130F; stroke-width:2;
             transform-box:view-box; }
     .esito { font-family:Inter, system-ui, sans-serif; font-size:14px; font-weight:700; }
     .ok  { fill:#5BA39C; }

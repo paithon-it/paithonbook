@@ -1,21 +1,21 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../correlazione-non-causalita.svg
 -->
 <svg viewBox="0 0 640 340" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Grafo causale con confonditore: il caldo estivo causa sia le vendite di gelato sia gli annegamenti; tra questi ultimi due esiste solo una correlazione spuria">
-  <rect x="0" y="0" width="640" height="340" fill="#0E0C0A"/>
-  <ellipse cx="320" cy="70" rx="110" ry="40" fill="#DDB874" stroke="#F4ECDD" stroke-width="2"/>
+  <rect x="0" y="0" width="640" height="340" fill="#16130F"/>
+  <ellipse cx="320" cy="70" rx="110" ry="40" fill="#C9A961" stroke="#F4ECDD" stroke-width="2"/>
   <text x="320" y="66" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="bold" fill="#F4ECDD">Caldo estivo</text>
   <text x="320" y="86" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">(confonditore Z)</text>
   <ellipse cx="140" cy="250" rx="105" ry="40" fill="#E27B52" stroke="#F4ECDD" stroke-width="2"/>
-  <text x="140" y="246" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#0E0C0A">Gelati venduti</text>
-  <text x="140" y="266" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#0E0C0A">(X)</text>
+  <text x="140" y="246" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#16130F">Gelati venduti</text>
+  <text x="140" y="266" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#16130F">(X)</text>
   <ellipse cx="500" cy="250" rx="105" ry="40" fill="#5BA39C" stroke="#F4ECDD" stroke-width="2"/>
-  <text x="500" y="246" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#0E0C0A">Annegamenti</text>
-  <text x="500" y="266" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#0E0C0A">(Y)</text>
+  <text x="500" y="246" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#16130F">Annegamenti</text>
+  <text x="500" y="266" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#16130F">(Y)</text>
   <defs>
     <marker id="freccia" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
       <path d="M0,0 L10,4 L0,8 Z" fill="#F4ECDD"/>

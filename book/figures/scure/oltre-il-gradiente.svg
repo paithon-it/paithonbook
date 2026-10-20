@@ -1,12 +1,12 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../oltre-il-gradiente.svg
 -->
 <svg viewBox="0 0 680 360" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Paesaggio di ottimizzazione con più valli: una pallina terracotta resta bloccata nel primo minimo locale seguendo solo la discesa; una traiettoria teal tratteggiata mostra i salti del simulated annealing che scavalcano due colline e raggiungono il minimo globale, segnato da una bandierina ocra">
-  <rect x="0" y="0" width="680" height="360" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="680" height="360" fill="#16130F"/>
   <!-- paesaggio: curva con 3 valli, la terza e' la piu' profonda -->
   <path d="M 30 80 Q 90 200 150 195 Q 210 190 240 120 Q 270 60 310 130 Q 350 200 390 205 Q 430 210 460 110 Q 490 20 540 170 Q 575 275 620 280 L 650 278"
         fill="none" stroke="#F4ECDD" stroke-width="2"/>
@@ -27,7 +27,7 @@
   <!-- minimo globale -->
   <circle cx="620" cy="272" r="9" fill="#5BA39C" stroke="#F4ECDD" stroke-width="1.5"/>
   <line x1="620" y1="260" x2="620" y2="225" stroke="#F4ECDD" stroke-width="2"/>
-  <polygon points="620,225 648,232 620,240" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
+  <polygon points="620,225 648,232 620,240" fill="#C9A961" stroke="#F4ECDD" stroke-width="1.5"/>
   <text x="600" y="318" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD" text-anchor="middle">minimo globale</text>
   <!-- asse -->
   <line x1="30" y1="330" x2="650" y2="330" stroke="#F4ECDD" stroke-width="1.5"/>

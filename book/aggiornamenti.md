@@ -32,6 +32,21 @@ Quando una cifra aumenta, quelle alla sua destra tornano a zero. Una versione
 che contiene sia sezioni nuove sia correzioni prende il numero della modifica
 maggiore, e ogni versione corrisponde a una pubblicazione.
 
+(v1-16-0)=
+
+## 1.16.0 · 20 ottobre 2026
+
+### Sezioni nuove
+
+- {doc}`Gli attrezzi </Harness/gli-attrezzi>` (Harness engineering). **Gli attrezzi di un agente.** Come si progettano gli strumenti che il modello può chiedere: che cosa devono restituire, come si modifica un file senza sbagliare versione, perché la riga di comando va chiusa in un recinto.
+- {doc}`Il conto </Harness/il-conto>` (Harness engineering). **Il conto di un compito.** Quanto costa e quanto dura il lavoro di un agente: la cache del prefisso e che cosa la rompe, quale modello chiamare e quando smettere, il cammino critico e le azioni speculative; con una figura animata.
+- {doc}`L'harness che si riscrive </Harness/l-harness-che-si-riscrive>` (Harness engineering). **L'harness che si riscrive.** Quando a modificare istruzioni, strumenti e memoria è un altro programma: l'archivio delle varianti, il voto tenuto da parte, e che cosa succede se chi viene misurato può toccare il metro.
+- {doc}`Servire un agente </MLOps/servire-un-agente>` (MLOps). **Servire un agente.** Le richieste di un agente si fermano ad aspettare uno strumento: che cosa fare della memoria intanto, a chi dare la precedenza, su quale copia del modello mandarle; con una figura animata.
+
+### Correzioni
+
+- **Caratteri, colori e figure scure dal design system di paithon.it.** La pagina usa i font e l'inchiostro del sito, senza più caricarli da fuori, e figure e animazioni in tema scuro sono ridisegnate con la sua mappa di colori.
+
 (v1-15-0)=
 
 ## 1.15.0 · 18 ottobre 2026

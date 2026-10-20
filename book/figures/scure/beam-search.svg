@@ -1,8 +1,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../beam-search.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 400" role="img" aria-label="Albero di beam search con larghezza due su tre passi: al primo passo restano nel fascio A con 0,50 e The con 0,40; al secondo passo The black con 0,24 supera A black con 0,15; al terzo passo l'ipotesi migliore e' The black cat con 0,19. I rami scartati, in grigio tratteggiato, sono One, cat dopo A e wall dopo The.">
@@ -36,7 +36,7 @@
   <line x1="350" y1="196" x2="422" y2="278" stroke="#BCB3A1" stroke-width="1.5" stroke-dasharray="6 5" stroke-opacity="0.7" marker-end="url(#freccia-bs-g)"/>
 
   <!-- radice -->
-  <rect x="40" y="172" width="110" height="36" rx="8" fill="#0E0C0A" stroke="#5BA39C" stroke-width="2"/>
+  <rect x="40" y="172" width="110" height="36" rx="8" fill="#16130F" stroke="#5BA39C" stroke-width="2"/>
   <text x="95" y="195" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" font-style="italic" fill="#5BA39C">inizio</text>
 
   <!-- passo 1 -->

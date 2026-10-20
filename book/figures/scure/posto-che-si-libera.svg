@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../posto-che-si-libera.svg
 -->
 <!--
@@ -26,10 +26,10 @@
     .pan  { font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:700; fill:#F4ECDD; }
     .ite  { font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:700; fill:#E27B52; }
     .occ  { fill:#5BA39C; stroke:#F4ECDD; stroke-width:1.5; }
-    .ric  { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#0E0C0A; }
+    .ric  { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#16130F; }
     .fermo { fill:none; stroke:#E27B52; stroke-width:1.5; stroke-dasharray:5 4; }
     .fer  { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#E27B52; }
-    .pill { fill:#DDB874; stroke:#F4ECDD; stroke-width:1.2; }
+    .pill { fill:#C9A961; stroke:#F4ECDD; stroke-width:1.2; }
         @keyframes v0{0.00%{opacity:1}8.33%{opacity:1}9.43%{opacity:0}100.00%{opacity:0}}
     @keyframes v1{0.00%{opacity:0}7.23%{opacity:0}8.33%{opacity:1}16.67%{opacity:1}17.77%{opacity:0}100.00%{opacity:0}}
     @keyframes v2{0.00%{opacity:0}15.57%{opacity:0}16.67%{opacity:1}25.00%{opacity:1}26.10%{opacity:0}100.00%{opacity:0}}

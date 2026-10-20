@@ -1,12 +1,12 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../flusso-di-lavoro-pytorch.svg
 -->
 <svg viewBox="0 0 720 420" width="100%" role="img" aria-label="Sei riquadri collegati in un anello: problema, dati, modello, addestramento, valutazione, uso. Una freccia di ritorno dalla valutazione al modello indica il ciclo di miglioramento." xmlns="http://www.w3.org/2000/svg">
-  <rect x="0" y="0" width="720" height="420" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="720" height="420" fill="#16130F"/>
   <defs>
     <marker id="fArrK" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#F4ECDD"/></marker>
     <marker id="fArrT" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#E27B52"/></marker>
@@ -15,40 +15,40 @@
   <text x="360" y="44" font-family="Fraunces, Georgia, serif" font-size="21" font-weight="600" fill="#F4ECDD" text-anchor="middle">Il flusso di lavoro, sei stazioni</text>
 
   <!-- ============ riga superiore: 1 problema, 2 dati, 3 modello ============ -->
-  <rect x="40" y="80" width="180" height="74" rx="8" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.8"/>
+  <rect x="40" y="80" width="180" height="74" rx="8" fill="#16130F" stroke="#F4ECDD" stroke-width="1.8"/>
   <circle cx="66" cy="106" r="12" fill="#5BA39C"/>
-  <text x="66" y="111" font-family="Inter, sans-serif" font-size="13" font-weight="bold" fill="#0E0C0A" text-anchor="middle">1</text>
+  <text x="66" y="111" font-family="Inter, sans-serif" font-size="13" font-weight="bold" fill="#16130F" text-anchor="middle">1</text>
   <text x="86" y="111" font-family="Inter, sans-serif" font-size="14" font-weight="bold" fill="#F4ECDD">Il problema</text>
   <text x="60" y="136" font-family="Inter, sans-serif" font-size="11.5" fill="#BCB3A1">che cosa vuoi predire?</text>
 
-  <rect x="270" y="80" width="180" height="74" rx="8" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.8"/>
+  <rect x="270" y="80" width="180" height="74" rx="8" fill="#16130F" stroke="#F4ECDD" stroke-width="1.8"/>
   <circle cx="296" cy="106" r="12" fill="#5BA39C"/>
-  <text x="296" y="111" font-family="Inter, sans-serif" font-size="13" font-weight="bold" fill="#0E0C0A" text-anchor="middle">2</text>
+  <text x="296" y="111" font-family="Inter, sans-serif" font-size="13" font-weight="bold" fill="#16130F" text-anchor="middle">2</text>
   <text x="316" y="111" font-family="Inter, sans-serif" font-size="14" font-weight="bold" fill="#F4ECDD">I dati</text>
   <text x="290" y="136" font-family="Inter, sans-serif" font-size="11.5" fill="#BCB3A1">train / validation / test</text>
 
-  <rect x="500" y="80" width="180" height="74" rx="8" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.8"/>
+  <rect x="500" y="80" width="180" height="74" rx="8" fill="#16130F" stroke="#F4ECDD" stroke-width="1.8"/>
   <circle cx="526" cy="106" r="12" fill="#5BA39C"/>
-  <text x="526" y="111" font-family="Inter, sans-serif" font-size="13" font-weight="bold" fill="#0E0C0A" text-anchor="middle">3</text>
+  <text x="526" y="111" font-family="Inter, sans-serif" font-size="13" font-weight="bold" fill="#16130F" text-anchor="middle">3</text>
   <text x="546" y="111" font-family="Inter, sans-serif" font-size="14" font-weight="bold" fill="#F4ECDD">Il modello</text>
   <text x="520" y="136" font-family="Inter, sans-serif" font-size="11.5" fill="#BCB3A1">nn.Module e la loss</text>
 
   <!-- ============ riga inferiore: 4 addestramento, 5 valutazione, 6 uso ============ -->
-  <rect x="500" y="250" width="180" height="74" rx="8" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.8"/>
+  <rect x="500" y="250" width="180" height="74" rx="8" fill="#16130F" stroke="#F4ECDD" stroke-width="1.8"/>
   <circle cx="526" cy="276" r="12" fill="#5BA39C"/>
-  <text x="526" y="281" font-family="Inter, sans-serif" font-size="13" font-weight="bold" fill="#0E0C0A" text-anchor="middle">4</text>
+  <text x="526" y="281" font-family="Inter, sans-serif" font-size="13" font-weight="bold" fill="#16130F" text-anchor="middle">4</text>
   <text x="546" y="281" font-family="Inter, sans-serif" font-size="14" font-weight="bold" fill="#F4ECDD">Addestramento</text>
   <text x="520" y="306" font-family="Inter, sans-serif" font-size="11.5" fill="#BCB3A1">il loop dei cinque passi</text>
 
-  <rect x="270" y="250" width="180" height="74" rx="8" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.8"/>
+  <rect x="270" y="250" width="180" height="74" rx="8" fill="#16130F" stroke="#F4ECDD" stroke-width="1.8"/>
   <circle cx="296" cy="276" r="12" fill="#5BA39C"/>
-  <text x="296" y="281" font-family="Inter, sans-serif" font-size="13" font-weight="bold" fill="#0E0C0A" text-anchor="middle">5</text>
+  <text x="296" y="281" font-family="Inter, sans-serif" font-size="13" font-weight="bold" fill="#16130F" text-anchor="middle">5</text>
   <text x="316" y="281" font-family="Inter, sans-serif" font-size="14" font-weight="bold" fill="#F4ECDD">Valutazione</text>
   <text x="290" y="306" font-family="Inter, sans-serif" font-size="11.5" fill="#BCB3A1">su dati mai visti</text>
 
-  <rect x="40" y="250" width="180" height="74" rx="8" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.8"/>
+  <rect x="40" y="250" width="180" height="74" rx="8" fill="#16130F" stroke="#F4ECDD" stroke-width="1.8"/>
   <circle cx="66" cy="276" r="12" fill="#5BA39C"/>
-  <text x="66" y="281" font-family="Inter, sans-serif" font-size="13" font-weight="bold" fill="#0E0C0A" text-anchor="middle">6</text>
+  <text x="66" y="281" font-family="Inter, sans-serif" font-size="13" font-weight="bold" fill="#16130F" text-anchor="middle">6</text>
   <text x="86" y="281" font-family="Inter, sans-serif" font-size="14" font-weight="bold" fill="#F4ECDD">Salvare e usare</text>
   <text x="60" y="306" font-family="Inter, sans-serif" font-size="11.5" fill="#BCB3A1">lo state_dict, poi l'uso</text>
 

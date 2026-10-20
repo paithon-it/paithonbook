@@ -1,8 +1,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../matrice-utenti-film.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 365" role="img" aria-label="Matrice utenti per film: griglia di sei utenti per otto film in cui poche celle contengono un voto da uno a cinque e tutte le altre un punto interrogativo; una cella evidenziata in terracotta indica il voto da prevedere.">
@@ -11,7 +11,7 @@
       <path d="M0,0 L10,5 L0,10 z" fill="#BCB3A1"/>
     </marker>
   </defs>
-  <rect x="150" y="70" width="496" height="252" rx="6" fill="#0E0C0A" stroke="#BCB3A1" stroke-width="1.5"/>
+  <rect x="150" y="70" width="496" height="252" rx="6" fill="#16130F" stroke="#BCB3A1" stroke-width="1.5"/>
   <line x1="212" y1="70" x2="212" y2="322" stroke="#BCB3A1" stroke-width="0.8" stroke-opacity="0.55"/>
   <line x1="274" y1="70" x2="274" y2="322" stroke="#BCB3A1" stroke-width="0.8" stroke-opacity="0.55"/>
   <line x1="336" y1="70" x2="336" y2="322" stroke="#BCB3A1" stroke-width="0.8" stroke-opacity="0.55"/>
@@ -42,23 +42,23 @@
   <text x="140" y="306" text-anchor="end" font-family="Inter, sans-serif" font-size="13" fill="#F4ECDD">Fabio</text>
   <rect x="215" y="73" width="56" height="36" rx="4" fill="#5BA39C" fill-opacity="0.22" stroke="#5BA39C" stroke-width="1.5"/>
   <text x="243" y="97" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#5BA39C">5</text>
-  <rect x="401" y="73" width="56" height="36" rx="4" fill="#DDB874" fill-opacity="0.22" stroke="#DDB874" stroke-width="1.5"/>
+  <rect x="401" y="73" width="56" height="36" rx="4" fill="#C9A961" fill-opacity="0.22" stroke="#C9A961" stroke-width="1.5"/>
   <text x="429" y="97" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#F4ECDD">3</text>
   <rect x="153" y="115" width="56" height="36" rx="4" fill="#5BA39C" fill-opacity="0.22" stroke="#5BA39C" stroke-width="1.5"/>
   <text x="181" y="139" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#5BA39C">4</text>
-  <rect x="525" y="115" width="56" height="36" rx="4" fill="#DDB874" fill-opacity="0.22" stroke="#DDB874" stroke-width="1.5"/>
+  <rect x="525" y="115" width="56" height="36" rx="4" fill="#C9A961" fill-opacity="0.22" stroke="#C9A961" stroke-width="1.5"/>
   <text x="553" y="139" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#F4ECDD">2</text>
   <rect x="215" y="157" width="56" height="36" rx="4" fill="#5BA39C" fill-opacity="0.22" stroke="#5BA39C" stroke-width="1.5"/>
   <text x="243" y="181" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#5BA39C">5</text>
   <rect x="339" y="157" width="56" height="36" rx="4" fill="#5BA39C" fill-opacity="0.22" stroke="#5BA39C" stroke-width="1.5"/>
   <text x="367" y="181" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#5BA39C">4</text>
-  <rect x="463" y="199" width="56" height="36" rx="4" fill="#DDB874" fill-opacity="0.22" stroke="#DDB874" stroke-width="1.5"/>
+  <rect x="463" y="199" width="56" height="36" rx="4" fill="#C9A961" fill-opacity="0.22" stroke="#C9A961" stroke-width="1.5"/>
   <text x="491" y="223" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#F4ECDD">1</text>
   <rect x="153" y="241" width="56" height="36" rx="4" fill="#5BA39C" fill-opacity="0.22" stroke="#5BA39C" stroke-width="1.5"/>
   <text x="181" y="265" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#5BA39C">4</text>
   <rect x="587" y="241" width="56" height="36" rx="4" fill="#5BA39C" fill-opacity="0.22" stroke="#5BA39C" stroke-width="1.5"/>
   <text x="615" y="265" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#5BA39C">5</text>
-  <rect x="339" y="283" width="56" height="36" rx="4" fill="#DDB874" fill-opacity="0.22" stroke="#DDB874" stroke-width="1.5"/>
+  <rect x="339" y="283" width="56" height="36" rx="4" fill="#C9A961" fill-opacity="0.22" stroke="#C9A961" stroke-width="1.5"/>
   <text x="367" y="307" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#F4ECDD">2</text>
   <text x="181" y="97" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#BCB3A1" fill-opacity="0.65">?</text>
   <text x="305" y="97" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#BCB3A1" fill-opacity="0.65">?</text>

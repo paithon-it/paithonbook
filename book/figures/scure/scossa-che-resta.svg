@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../scossa-che-resta.svg
 -->
 <!--
@@ -28,7 +28,7 @@
             stroke-dasharray:6 5; stroke-linejoin:round; }
     .sco  { stroke:#E27B52; stroke-width:2; }
     .sca  { stroke:#5BA39C; stroke-width:2.4; stroke-dasharray:3 3; }
-    .pun  { fill:#0E0C0A; stroke:#5BA39C; stroke-width:2.4; }
+    .pun  { fill:#16130F; stroke:#5BA39C; stroke-width:2.4; }
     .num  { font-family:Inter, system-ui, sans-serif; font-size:13px; font-weight:700;
             fill:#E27B52; }
     .pan  { font-family:Inter, system-ui, sans-serif; font-size:16px; font-weight:700;

@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../decodifica-per-differenza.svg
 -->
 <!--
@@ -27,12 +27,12 @@
     .wl   { font-family:Inter, system-ui, sans-serif; font-size:13.5px; fill:#F4ECDD; }
     .tit  { font-family:Inter, system-ui, sans-serif; font-size:14px; font-weight:700; }
     .ta   { fill:#5BA39C; }
-    .oc   { fill:#DDB874; }
+    .oc   { fill:#C9A961; }
     .te   { fill:#E27B52; }
     .glo  { font-family:Inter, system-ui, sans-serif; font-size:11px; fill:#BCB3A1; }
     .ass  { stroke:#34302A; stroke-width:1.5; }
     .ba   { fill:#5BA39C; fill-opacity:0.68; stroke:#5BA39C; stroke-width:1; }
-    .bb   { fill:#DDB874; fill-opacity:0.72; stroke:#DDB874; stroke-width:1; }
+    .bb   { fill:#C9A961; fill-opacity:0.72; stroke:#C9A961; stroke-width:1; }
     .bc   { fill:#E27B52; fill-opacity:0.55; stroke:#E27B52; stroke-width:1; }
     .bc.vince { fill-opacity:0.9; stroke-width:2; }
     .spenta { fill-opacity:0.2; stroke-dasharray:3 3; }

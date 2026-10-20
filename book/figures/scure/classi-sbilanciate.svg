@@ -1,12 +1,12 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../classi-sbilanciate.svg
 -->
 <svg viewBox="0 0 720 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Dataset sbilanciato 99 a 1: griglia di cento punti con un solo caso positivo">
-  <rect width="720" height="400" fill="#0E0C0A"/>
+  <rect width="720" height="400" fill="#16130F"/>
   <text x="360" y="34" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#F4ECDD" text-anchor="middle">Un dataset 99 / 1: cento esempi, un solo caso positivo</text>
   <!-- griglia 10x10 di cerchi: teal = classe negativa, terracotta = positivo in posizione (riga4,col7) -->
   <g>
@@ -35,7 +35,7 @@
     <text x="556" y="210" font-size="12" fill="#F4ECDD">Il modello che dice</text>
     <text x="556" y="227" font-size="12" fill="#F4ECDD">sempre "negativo"</text>
     <text x="556" y="244" font-size="12" fill="#F4ECDD">sbaglia solo qui →</text>
-    <text x="556" y="272" font-size="14" font-weight="bold" fill="#DDB874">accuracy: 99%</text>
+    <text x="556" y="272" font-size="14" font-weight="bold" fill="#C9A961">accuracy: 99%</text>
     <text x="556" y="292" font-size="14" font-weight="bold" fill="#E27B52">recall: 0%</text>
   </g>
 </svg>

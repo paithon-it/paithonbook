@@ -219,7 +219,7 @@ button.fullscreen-button {
   padding: 0.45rem 0.8rem;
   border: 0;
   background: transparent;
-  color: #F8F5EE;
+  color: var(--pt-on-accent);   /* sopra l'accento della pillola, nei due temi */
   font: inherit;
   font-size: 0.78rem;
   font-weight: 600;
@@ -231,7 +231,8 @@ button.fullscreen-button {
 
 /* Un filo di separazione fra le due voci, non un bordo pieno. */
 .pt-azioni__voce + .pt-azioni__voce {
-  box-shadow: inset 1px 0 0 rgba(248, 245, 238, 0.28);
+  box-shadow: inset 1px 0 0
+              color-mix(in srgb, var(--pt-on-accent) 28%, transparent);
 }
 
 .pt-azioni__voce:hover {
@@ -475,7 +476,7 @@ dialog.pt-lente {
   margin: 0;
   padding: 0;
   border: 0;
-  background: var(--pt-bg, #F8F5EE);
+  background: var(--pt-bg);
   color: var(--pt-fg, #1A1714);
   overflow: hidden;
 }
@@ -533,7 +534,7 @@ dialog.pt-lente::backdrop {
   gap: 0.4rem;
   padding: 0.6rem 0.7rem;
   background: linear-gradient(to bottom,
-              color-mix(in srgb, var(--pt-bg, #F8F5EE) 92%, transparent),
+              color-mix(in srgb, var(--pt-bg) 92%, transparent),
               transparent);
 }
 
@@ -595,7 +596,7 @@ dialog.pt-lente::backdrop {
   overflow-y: auto;
   padding: 0.9rem clamp(1rem, 4vw, 2rem) calc(0.9rem + env(safe-area-inset-bottom, 0px));
   background: linear-gradient(to top,
-              color-mix(in srgb, var(--pt-bg, #F8F5EE) 94%, transparent) 60%,
+              color-mix(in srgb, var(--pt-bg) 94%, transparent) 60%,
               transparent);
   font-family: var(--pt-font-body, system-ui, sans-serif);
   font-size: 0.86rem;

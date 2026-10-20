@@ -1,18 +1,18 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../classification-detection-segmentation.svg
 -->
 <svg viewBox="0 0 780 310" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="La stessa foto con tre output: etichetta di classificazione, bounding box di detection, maschera di segmentazione">
-  <rect x="0" y="0" width="780" height="310" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="780" height="310" fill="#16130F"/>
   <text x="130" y="28" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#F4ECDD" text-anchor="middle">Classificazione</text>
   <text x="390" y="28" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#F4ECDD" text-anchor="middle">Detection</text>
   <text x="650" y="28" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#F4ECDD" text-anchor="middle">Segmentazione</text>
 
   <!-- Pannello 1: classificazione -->
-  <rect x="20" y="42" width="220" height="180" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2"/>
+  <rect x="20" y="42" width="220" height="180" fill="#16130F" stroke="#F4ECDD" stroke-width="2"/>
   <line x1="20" y1="182" x2="240" y2="182" stroke="#F4ECDD" stroke-width="1.5"/>
   <ellipse cx="110" cy="165" rx="38" ry="20" fill="none" stroke="#F4ECDD" stroke-width="2"/>
   <circle cx="152" cy="142" r="15" fill="none" stroke="#F4ECDD" stroke-width="2"/>
@@ -25,7 +25,7 @@
   <text x="130" y="274" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD" text-anchor="middle">un'etichetta per tutta l'immagine</text>
 
   <!-- Pannello 2: detection -->
-  <rect x="280" y="42" width="220" height="180" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2"/>
+  <rect x="280" y="42" width="220" height="180" fill="#16130F" stroke="#F4ECDD" stroke-width="2"/>
   <line x1="280" y1="182" x2="500" y2="182" stroke="#F4ECDD" stroke-width="1.5"/>
   <ellipse cx="370" cy="165" rx="38" ry="20" fill="none" stroke="#F4ECDD" stroke-width="2"/>
   <circle cx="412" cy="142" r="15" fill="none" stroke="#F4ECDD" stroke-width="2"/>
@@ -42,7 +42,7 @@
   <text x="390" y="274" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD" text-anchor="middle">che cosa e dove</text>
 
   <!-- Pannello 3: segmentazione -->
-  <rect x="540" y="42" width="220" height="180" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2"/>
+  <rect x="540" y="42" width="220" height="180" fill="#16130F" stroke="#F4ECDD" stroke-width="2"/>
   <rect x="541" y="182" width="218" height="39" fill="#5BA39C"/>
   <ellipse cx="630" cy="165" rx="38" ry="20" fill="#E27B52" stroke="#F4ECDD" stroke-width="1.5"/>
   <circle cx="672" cy="142" r="15" fill="#E27B52" stroke="#F4ECDD" stroke-width="1.5"/>
@@ -50,7 +50,7 @@
   <rect x="605" y="180" width="6" height="20" fill="#E27B52"/>
   <rect x="645" y="180" width="6" height="20" fill="#E27B52"/>
   <line x1="592" y1="160" x2="576" y2="146" stroke="#E27B52" stroke-width="4"/>
-  <circle cx="720" cy="172" r="12" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
+  <circle cx="720" cy="172" r="12" fill="#C9A961" stroke="#F4ECDD" stroke-width="1.5"/>
   <text x="650" y="252" font-family="Inter, system-ui, sans-serif" font-size="15" fill="#E27B52" text-anchor="middle" font-weight="bold">una classe per pixel</text>
   <text x="650" y="274" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD" text-anchor="middle">sagome esatte, non riquadri</text>
 </svg>

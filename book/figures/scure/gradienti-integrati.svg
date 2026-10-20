@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../gradienti-integrati.svg
 -->
 <!--
@@ -25,7 +25,7 @@
     .curva   { fill:none; stroke:#5BA39C; stroke-width:3; }
     .tang    { stroke:#E27B52; stroke-width:3; stroke-linecap:round; }
     .pallino { fill:#E27B52; }
-    .fetta   { fill:#DDB874; fill-opacity:0.22; }
+    .fetta   { fill:#C9A961; fill-opacity:0.22; }
     .somma   { fill:#5BA39C; fill-opacity:0.9; }
     .obb     { stroke:#E27B52; stroke-width:2; stroke-dasharray:6 4; }
     .asse    { stroke:#34302A; stroke-width:2; }

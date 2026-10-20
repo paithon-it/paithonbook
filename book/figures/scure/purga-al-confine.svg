@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../purga-al-confine.svg
 -->
 <!--
@@ -23,7 +23,7 @@
     .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#BCB3A1; }
     .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#F4ECDD; }
     .feat { fill:#5BA39C; opacity:.35; }
-    .feat-test { fill:#DDB874; opacity:.7; }
+    .feat-test { fill:#C9A961; opacity:.7; }
     .bers { fill:#E27B52; }
     .tolta { opacity:.45; }
     .barra { stroke:#F4ECDD; stroke-width:1.5; }

@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../credito-spalmato.svg
 -->
 <!--
@@ -22,13 +22,13 @@
     .lbl { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#F4ECDD; }
     .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#BCB3A1; }
     .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#F4ECDD; }
-    .pas { fill:#0E0C0A; stroke:#34302A; stroke-width:1.5; }
+    .pas { fill:#16130F; stroke:#34302A; stroke-width:1.5; }
     .pas.err { stroke:#E27B52; stroke-width:2.5; }
     .rin { fill:#5BA39C; fill-opacity:0.42; stroke:none; }
-    .ret { fill:#DDB874; stroke:none; }
+    .ret { fill:#C9A961; stroke:none; }
     .retn { font-family:Inter, system-ui, sans-serif; font-size:19px; font-weight:700; fill:#F4ECDD; }
-    .testa { fill:#5BA39C; stroke:#0E0C0A; stroke-width:2; }
-    .arc { fill:none; stroke:#DDB874; stroke-width:2; }
+    .testa { fill:#5BA39C; stroke:#16130F; stroke-width:2; }
+    .arc { fill:none; stroke:#C9A961; stroke-width:2; }
     .num { font-family:Inter, system-ui, sans-serif; font-size:12px; fill:#BCB3A1; }
     .cap { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#BCB3A1; }
     .peso { font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:700; fill:#5BA39C; }

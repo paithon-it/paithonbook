@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../alexnet-2012.svg
 -->
 <!--
@@ -66,24 +66,24 @@
       <line x1="50" y1="142" x2="130" y2="156"/><line x1="130" y1="142" x2="50" y2="156"/>
     </g>
     <!-- fc6 -->
-    <rect x="20"  y="156" width="60" height="16" rx="4" fill="#DDB874"/>
-    <rect x="100" y="156" width="60" height="16" rx="4" fill="#DDB874"/>
+    <rect x="20"  y="156" width="60" height="16" rx="4" fill="#C9A961"/>
+    <rect x="100" y="156" width="60" height="16" rx="4" fill="#C9A961"/>
     <!-- INCROCIO fc6 -> fc7 -->
     <g stroke="#E27B52" stroke-width="1.8">
       <line x1="50" y1="172" x2="50" y2="186"/><line x1="130" y1="172" x2="130" y2="186"/>
       <line x1="50" y1="172" x2="130" y2="186"/><line x1="130" y1="172" x2="50" y2="186"/>
     </g>
     <!-- fc7 -->
-    <rect x="20"  y="186" width="60" height="16" rx="4" fill="#DDB874"/>
-    <rect x="100" y="186" width="60" height="16" rx="4" fill="#DDB874"/>
+    <rect x="20"  y="186" width="60" height="16" rx="4" fill="#C9A961"/>
+    <rect x="100" y="186" width="60" height="16" rx="4" fill="#C9A961"/>
     <!-- INCROCIO fc7 -> fc8 -->
     <g stroke="#E27B52" stroke-width="1.8">
       <line x1="50" y1="202" x2="50" y2="216"/><line x1="130" y1="202" x2="130" y2="216"/>
       <line x1="50" y1="202" x2="130" y2="216"/><line x1="130" y1="202" x2="50" y2="216"/>
     </g>
     <!-- fc8 -->
-    <rect x="20"  y="216" width="60" height="16" rx="4" fill="#DDB874"/>
-    <rect x="100" y="216" width="60" height="16" rx="4" fill="#DDB874"/>
+    <rect x="20"  y="216" width="60" height="16" rx="4" fill="#C9A961"/>
+    <rect x="100" y="216" width="60" height="16" rx="4" fill="#C9A961"/>
     <!-- etichette laterali -->
     <text class="leg" x="172" y="80">conv</text>
     <text class="leg" x="172" y="198">densi</text>

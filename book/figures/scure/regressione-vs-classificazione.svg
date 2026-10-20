@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../regressione-vs-classificazione.svg
 -->
 <!--
@@ -11,7 +11,7 @@
   Sinistra: scatter con retta di regressione (best fit) che segue i punti.
   Destra: due nuvole di punti (classi terracotta e teal) separate da un
   confine di decisione tratteggiato (ocra).
-  Palette-locked: terracotta #E27B52, teal #5BA39C, ocra #DDB874,
+  Palette-locked: terracotta #E27B52, teal #5BA39C, ocra #C9A961,
   warm-black #F4ECDD, neutri warm. Fondo trasparente (light e dark).
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 300" role="img"
@@ -19,9 +19,9 @@
   <style>
     .axis  { stroke:#8E8676; stroke-width:1.4; }
     .reg   { stroke:#F4ECDD; stroke-width:2.6; stroke-linecap:round; }
-    .bound { stroke:#DDB874; stroke-width:2.6; stroke-dasharray:7 5; stroke-linecap:round; }
-    .ptA   { fill:#E27B52; stroke:#0E0C0A; stroke-width:1; }
-    .ptB   { fill:#5BA39C; stroke:#0E0C0A; stroke-width:1; }
+    .bound { stroke:#C9A961; stroke-width:2.6; stroke-dasharray:7 5; stroke-linecap:round; }
+    .ptA   { fill:#E27B52; stroke:#16130F; stroke-width:1; }
+    .ptB   { fill:#5BA39C; stroke:#16130F; stroke-width:1; }
     .title { font-family:Fraunces, Georgia, serif; font-size:16px; font-weight:600; fill:#F4ECDD; text-anchor:middle; }
     .lbl   { font-family:Inter, system-ui, sans-serif; font-size:12px; fill:#BCB3A1; }
   </style>

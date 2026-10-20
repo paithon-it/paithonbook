@@ -1,8 +1,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../acf-pacf-due-firme.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 480" role="img" aria-label="Quattro grafici a barre, due righe per due colonne, con il ritardo in ascissa da uno a dodici e l&#8217;autocorrelazione in ordinata. Ogni pannello ha una fascia chiara attorno allo zero, dentro cui una barra non &#232; distinguibile dal caso. Riga di sopra, una serie AR(1) di 400 giorni: nella sua ACF la prima barra vale 0,64 e le seguenti scendono gradualmente restando fuori dalla fascia per parecchi ritardi; nella sua PACF sporge la sola prima barra, 0,64, e tutte le altre stanno dentro la fascia. Riga di sotto, una serie MA(1): nella sua ACF sporge la prima barra, 0,42, e poi soltanto quella al ritardo 7, che vale 0,15 e sporge per puro caso; nella sua PACF le barre si alternano di segno e scendono gradualmente. Le due firme sono specularmente scambiate.">

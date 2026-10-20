@@ -32,6 +32,14 @@ vecchia, dice solo che i colori sono diversi. Quello che si vuole sapere e'
 risponde `fermi.py`: al render si registra in `impronte-scure.json` l'impronta
 del `.py` da cui la clip e' uscita, e `--verifica` confronta quella.
 
+La scena pero' non e' tutto quello da cui la clip scura viene: i colori li
+sceglie il motore del brand (`motion/paithon_anim.py`), che li legge dalla
+mappa delle figure (`figure/palette.json`). Un fondo o un'ocra che cambiano
+nel brand cambiano la clip quanto una riga della scena, e senza di loro nel
+registro le clip scure resterebbero quelle di prima con il controllo verde.
+Quindi il registro tiene due impronte: quella della scena e quella di quei due
+file del brand, e `--verifica` le confronta tutte e due.
+
 E il registro copre anche il caso che nessun altro controllo vede: **la clip
 chiara non ha un cancello suo**. `fermi.py` confronta i fermi immagine con la
 GIF, non la GIF con la scena, quindi chi tocca `animazioni/<nome>.py` e non
@@ -85,10 +93,32 @@ IMPRONTE = QUI / "impronte-scure.json"
 # silenzio.
 IMMAGINE_DEL_LIBRO = "paithon-manim"
 
+# Il brand da cui il driver prende motore e palette: lo stesso che sceglie lui,
+# il submodule oppure `PAITHON_BRAND` quando si lavora al brand e al libro
+# insieme. Di li' contano i due file che decidono i colori della clip scura.
+BRAND = pathlib.Path(os.environ.get("PAITHON_BRAND",
+                                    RADICE / "book" / "_static" / "brand"))
+DAL_BRAND = ("motion/paithon_anim.py", "figure/palette.json")
+
 
 def impronta(file: pathlib.Path) -> str:
     """L'impronta del contenuto di un sorgente, non la sua data."""
     return hashlib.sha256(file.read_bytes()).hexdigest()[:16]
+
+
+def impronta_brand() -> str | None:
+    """L'impronta del motore e della palette del brand, insieme.
+
+    None se il brand non c'e' (submodule non inizializzato): in quel caso non
+    si puo' dire da quale versione venga una clip, e chi la chiede lo dice.
+    """
+    h = hashlib.sha256()
+    for relativo in DAL_BRAND:
+        file = BRAND / relativo
+        if not file.is_file():
+            return None
+        h.update(relativo.encode() + b"\0" + file.read_bytes() + b"\0")
+    return h.hexdigest()[:16]
 
 
 def registrate() -> dict[str, dict]:
@@ -200,6 +230,7 @@ def rendi(nome: str, sorgente: pathlib.Path,
                 f"{(larghezza, altezza, fotogrammi)}"]
 
     registra(nome, {"impronta": impronta(sorgente),
+                    "brand": impronta_brand(),
                     "fotogrammi": fotogrammi,
                     "larghezza": larghezza,
                     "fps": int(fps)})
@@ -214,6 +245,11 @@ def verifica() -> list[str]:
     problemi = []
     note = registrate()
     viste = set()
+    del_brand = impronta_brand()
+    if del_brand is None:
+        problemi.append(f"il brand non c'e' in {BRAND}: senza motore e "
+                        f"palette non si sa da dove vengano le clip scure "
+                        f"(git submodule update --init book/_static/brand)")
 
     tutte = clip()
     for nome, sorgente, chiara in tutte:
@@ -235,6 +271,10 @@ def verifica() -> list[str]:
         elif voce.get("impronta") != impronta(sorgente):
             problemi.append(f"{nome}: la resa scura viene da una versione "
                             f"precedente di {sorgente.name}")
+        elif del_brand is not None and voce.get("brand") != del_brand:
+            problemi.append(f"{nome}: la resa scura viene da un altro motore "
+                            f"o da un'altra palette del brand "
+                            f"({', '.join(DAL_BRAND)})")
         sue = misura(chiara)
         if not gemelle(misura(scura), sue):
             problemi.append(
@@ -274,6 +314,7 @@ def main() -> int:
         return 0
 
     note = registrate()
+    del_brand = impronta_brand()
     da_fare = []
     for nome, sorgente, chiara in clip():
         if scelte.solo and scelte.solo != nome:
@@ -281,8 +322,10 @@ def main() -> int:
         if not sorgente.is_file():
             print(f"  {nome}: salto, il sorgente della scena non c'e'")
             continue
+        voce = note.get(nome, {})
         gia = ((SCURE / f"{nome}.gif").is_file()
-               and note.get(nome, {}).get("impronta") == impronta(sorgente))
+               and voce.get("impronta") == impronta(sorgente)
+               and voce.get("brand") == del_brand)
         if gia and not scelte.tutte:
             continue
         da_fare.append((nome, sorgente, chiara))

@@ -1,8 +1,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../quattro-rinunce.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 396" role="img" aria-label="Quattro coppie affiancate. A sinistra, in terracotta e precedute da un simbolo di divieto, le rinunce proposte da LeCun: modelli generativi, modelli probabilistici, metodi contrastivi, reinforcement learning. A destra, in teal, le alternative: architetture a incorporamento congiunto, modelli a energia, metodi regolarizzati, controllo predittivo su modello. Sotto ogni alternativa, il punto del libro che la tratta.">
@@ -15,7 +15,7 @@
   <!-- intestazioni delle due colonne -->
   <text x="92" y="44" font-family="Inter, sans-serif" font-size="13" font-weight="700" letter-spacing="1.6" fill="#E27B52">ABBANDONARE</text>
   <text x="400" y="44" font-family="Inter, sans-serif" font-size="13" font-weight="700" letter-spacing="1.6" fill="#5BA39C">IN FAVORE DI</text>
-  <line x1="92" y1="58" x2="768" y2="58" stroke="#DDB874" stroke-width="1.5"/>
+  <line x1="92" y1="58" x2="768" y2="58" stroke="#C9A961" stroke-width="1.5"/>
 
   <!-- riga 1: generativo -> incorporamento congiunto -->
   <circle cx="101" cy="105" r="9" fill="none" stroke="#E27B52" stroke-width="2"/>

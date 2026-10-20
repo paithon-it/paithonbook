@@ -1,8 +1,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../ventaglio-che-si-assesta.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 372" role="img" aria-label="Due grafici affiancati. A sinistra, il ventaglio di previsione: in ascissa i giorni previsti in avanti, da oggi a dieci, in ordinata il valore. Dall'ultimo giorno osservato, un punto in alto a sinistra, parte una linea terracotta, la mediana, che scende e si appiattisce sulla riga ocra della media di lungo periodo, che vale dieci; attorno a essa si apre una banda teal. A destra, la larghezza di quella stessa banda contro l'orizzonte: parte da 2,563 al primo giorno, sale a 3,128 al terzo e arriva a 3,2038 al decimo, dove la riga tratteggiata del tetto, 3,2039, le resta appena sopra: a questa scala le due linee non si distinguono. Quasi tutto l'allargamento sta nei primi tre giorni.">
@@ -10,8 +10,8 @@
   <line x1="46" y1="56" x2="46" y2="300" stroke="#F4ECDD" stroke-width="1" stroke-opacity="0.35"/>
   <line x1="486" y1="300" x2="700" y2="300" stroke="#F4ECDD" stroke-width="1" stroke-opacity="0.35"/>
   <line x1="486" y1="56" x2="486" y2="300" stroke="#F4ECDD" stroke-width="1" stroke-opacity="0.35"/>
-  <line x1="46" y1="194.3" x2="412" y2="194.3" stroke="#DDB874" stroke-width="1.4"/>
-  <text x="412" y="209.3" text-anchor="end" font-family="Inter, sans-serif" font-size="10.5" fill="#DDB874">media di lungo periodo, 10</text>
+  <line x1="46" y1="194.3" x2="412" y2="194.3" stroke="#C9A961" stroke-width="1.4"/>
+  <text x="412" y="209.3" text-anchor="end" font-family="Inter, sans-serif" font-size="10.5" fill="#C9A961">media di lungo periodo, 10</text>
   <polygon points="46.0,112.9 82.6,93.4 119.2,104.2 155.8,113.1 192.4,119.1 229.0,123.0 265.6,125.4 302.2,126.9 338.8,127.8 375.4,128.3 412.0,128.6 412.0,258.9 375.4,258.6 338.8,258.0 302.2,257.1 265.6,255.5 229.0,252.9 192.4,248.3 155.8,240.3 119.2,225.8 82.6,197.6 46.0,112.9" fill="#5BA39C" fill-opacity="0.16"/>
   <polyline points="46.0,112.9 82.6,93.4 119.2,104.2 155.8,113.1 192.4,119.1 229.0,123.0 265.6,125.4 302.2,126.9 338.8,127.8 375.4,128.3 412.0,128.6" fill="none" stroke="#5BA39C" stroke-width="1.5"/>
   <polyline points="46.0,112.9 82.6,197.6 119.2,225.8 155.8,240.3 192.4,248.3 229.0,252.9 265.6,255.5 302.2,257.1 338.8,258.0 375.4,258.6 412.0,258.9" fill="none" stroke="#5BA39C" stroke-width="1.5"/>

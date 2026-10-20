@@ -1,12 +1,12 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../pca-in-pratica.svg
 -->
 <svg viewBox="0 0 640 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Nuvola di punti allungata in diagonale con i due assi principali: il primo lungo la direzione di massima varianza, il secondo perpendicolare">
-  <rect x="0" y="0" width="640" height="400" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="640" height="400" fill="#16130F"/>
   <line x1="60" y1="350" x2="600" y2="350" stroke="#34302A" stroke-width="1.5"/>
   <line x1="60" y1="350" x2="60" y2="40" stroke="#34302A" stroke-width="1.5"/>
   <text x="590" y="372" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#8E8676" text-anchor="end">feature x₁</text>
@@ -29,8 +29,8 @@
   <line x1="120" y1="330" x2="545" y2="95" stroke="#E27B52" stroke-width="2"/>
   <polygon points="545,95 528,98 536,112" fill="#E27B52"/>
   <text x="470" y="90" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#E27B52">PC1: massima varianza</text>
-  <line x1="295" y1="180" x2="365" y2="300" stroke="#DDB874" stroke-width="2"/>
-  <polygon points="295,180 296,197 311,190" fill="#DDB874"/>
-  <text x="212" y="168" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#DDB874">PC2: il residuo</text>
+  <line x1="295" y1="180" x2="365" y2="300" stroke="#C9A961" stroke-width="2"/>
+  <polygon points="295,180 296,197 311,190" fill="#C9A961"/>
+  <text x="212" y="168" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#C9A961">PC2: il residuo</text>
   <text x="330" y="35" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#F4ECDD" text-anchor="middle">La PCA ruota gli assi lungo la forma della nuvola</text>
 </svg>

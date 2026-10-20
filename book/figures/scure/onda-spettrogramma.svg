@@ -1,8 +1,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../onda-spettrogramma.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 400" role="img" aria-label="Dalla forma d'onda allo spettrogramma" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">
@@ -59,49 +59,49 @@
   <line x1="482" y1="262" x2="482" y2="66" stroke="#BCB3A1" stroke-width="1.5" marker-end="url(#axis)"/>
   <text x="466" y="166" text-anchor="middle" font-size="12" fill="#BCB3A1" transform="rotate(-90 466 166)">frequenza</text>
   <!-- griglia di celle 8 x 6 -->
-  <g stroke="#0E0C0A" stroke-width="1">
+  <g stroke="#16130F" stroke-width="1">
     <!-- riga 0 (alta freq) y=70 -->
-    <rect x="490" y="70" width="34" height="32" fill="#0E0C0A"/>
+    <rect x="490" y="70" width="34" height="32" fill="#16130F"/>
     <rect x="524" y="70" width="34" height="32" fill="#221F1A"/>
     <rect x="558" y="70" width="34" height="32" fill="#221F1A"/>
-    <rect x="592" y="70" width="34" height="32" fill="#0E0C0A"/>
-    <rect x="626" y="70" width="34" height="32" fill="#0E0C0A"/>
+    <rect x="592" y="70" width="34" height="32" fill="#16130F"/>
+    <rect x="626" y="70" width="34" height="32" fill="#16130F"/>
     <rect x="660" y="70" width="34" height="32" fill="#221F1A"/>
     <rect x="694" y="70" width="34" height="32" fill="#221F1A"/>
-    <rect x="728" y="70" width="34" height="32" fill="#0E0C0A"/>
+    <rect x="728" y="70" width="34" height="32" fill="#16130F"/>
     <!-- riga 1 y=102 -->
     <rect x="490" y="102" width="34" height="32" fill="#221F1A"/>
-    <rect x="524" y="102" width="34" height="32" fill="#DDB874"/>
-    <rect x="558" y="102" width="34" height="32" fill="#DDB874"/>
+    <rect x="524" y="102" width="34" height="32" fill="#C9A961"/>
+    <rect x="558" y="102" width="34" height="32" fill="#C9A961"/>
     <rect x="592" y="102" width="34" height="32" fill="#221F1A"/>
-    <rect x="626" y="102" width="34" height="32" fill="#0E0C0A"/>
+    <rect x="626" y="102" width="34" height="32" fill="#16130F"/>
     <rect x="660" y="102" width="34" height="32" fill="#221F1A"/>
-    <rect x="694" y="102" width="34" height="32" fill="#DDB874"/>
+    <rect x="694" y="102" width="34" height="32" fill="#C9A961"/>
     <rect x="728" y="102" width="34" height="32" fill="#221F1A"/>
     <!-- riga 2 y=134 -->
     <rect x="490" y="134" width="34" height="32" fill="#221F1A"/>
-    <rect x="524" y="134" width="34" height="32" fill="#DDB874"/>
+    <rect x="524" y="134" width="34" height="32" fill="#C9A961"/>
     <rect x="558" y="134" width="34" height="32" fill="#E27B52"/>
-    <rect x="592" y="134" width="34" height="32" fill="#DDB874"/>
+    <rect x="592" y="134" width="34" height="32" fill="#C9A961"/>
     <rect x="626" y="134" width="34" height="32" fill="#221F1A"/>
-    <rect x="660" y="134" width="34" height="32" fill="#DDB874"/>
+    <rect x="660" y="134" width="34" height="32" fill="#C9A961"/>
     <rect x="694" y="134" width="34" height="32" fill="#E27B52"/>
-    <rect x="728" y="134" width="34" height="32" fill="#DDB874"/>
+    <rect x="728" y="134" width="34" height="32" fill="#C9A961"/>
     <!-- riga 3 y=166 -->
-    <rect x="490" y="166" width="34" height="32" fill="#DDB874"/>
+    <rect x="490" y="166" width="34" height="32" fill="#C9A961"/>
     <rect x="524" y="166" width="34" height="32" fill="#E27B52"/>
     <rect x="558" y="166" width="34" height="32" fill="#E27B52"/>
-    <rect x="592" y="166" width="34" height="32" fill="#DDB874"/>
+    <rect x="592" y="166" width="34" height="32" fill="#C9A961"/>
     <rect x="626" y="166" width="34" height="32" fill="#221F1A"/>
-    <rect x="660" y="166" width="34" height="32" fill="#DDB874"/>
+    <rect x="660" y="166" width="34" height="32" fill="#C9A961"/>
     <rect x="694" y="166" width="34" height="32" fill="#E27B52"/>
-    <rect x="728" y="166" width="34" height="32" fill="#DDB874"/>
+    <rect x="728" y="166" width="34" height="32" fill="#C9A961"/>
     <!-- riga 4 y=198 -->
-    <rect x="490" y="198" width="34" height="32" fill="#DDB874"/>
+    <rect x="490" y="198" width="34" height="32" fill="#C9A961"/>
     <rect x="524" y="198" width="34" height="32" fill="#E27B52"/>
     <rect x="558" y="198" width="34" height="32" fill="#5BA39C"/>
     <rect x="592" y="198" width="34" height="32" fill="#E27B52"/>
-    <rect x="626" y="198" width="34" height="32" fill="#DDB874"/>
+    <rect x="626" y="198" width="34" height="32" fill="#C9A961"/>
     <rect x="660" y="198" width="34" height="32" fill="#E27B52"/>
     <rect x="694" y="198" width="34" height="32" fill="#5BA39C"/>
     <rect x="728" y="198" width="34" height="32" fill="#E27B52"/>
@@ -110,7 +110,7 @@
     <rect x="524" y="230" width="34" height="32" fill="#5BA39C"/>
     <rect x="558" y="230" width="34" height="32" fill="#5BA39C"/>
     <rect x="592" y="230" width="34" height="32" fill="#E27B52"/>
-    <rect x="626" y="230" width="34" height="32" fill="#DDB874"/>
+    <rect x="626" y="230" width="34" height="32" fill="#C9A961"/>
     <rect x="660" y="230" width="34" height="32" fill="#E27B52"/>
     <rect x="694" y="230" width="34" height="32" fill="#5BA39C"/>
     <rect x="728" y="230" width="34" height="32" fill="#E27B52"/>
@@ -124,9 +124,9 @@
   <!-- ===== Legenda intensità ===== -->
   <text x="490" y="336" font-size="12" fill="#BCB3A1">intensità:</text>
   <text x="556" y="336" font-size="11" fill="#8E8676">bassa</text>
-  <rect x="600" y="326" width="22" height="14" fill="#0E0C0A" stroke="#34302A" stroke-width="1"/>
+  <rect x="600" y="326" width="22" height="14" fill="#16130F" stroke="#34302A" stroke-width="1"/>
   <rect x="624" y="326" width="22" height="14" fill="#221F1A"/>
-  <rect x="648" y="326" width="22" height="14" fill="#DDB874"/>
+  <rect x="648" y="326" width="22" height="14" fill="#C9A961"/>
   <rect x="672" y="326" width="22" height="14" fill="#E27B52"/>
   <rect x="696" y="326" width="22" height="14" fill="#5BA39C"/>
   <text x="724" y="336" font-size="11" fill="#8E8676">alta</text>

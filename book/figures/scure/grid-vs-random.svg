@@ -1,8 +1,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../grid-vs-random.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 400" role="img" aria-label="Confronto tra grid search e random search: a sinistra una griglia tre per tre prova nove combinazioni ma solo tre valori distinti del parametro importante; a destra nove punti casuali provano nove valori distinti e campionano meglio la curva del punteggio disegnata sopra ciascun pannello.">
@@ -19,7 +19,7 @@
   <!-- ===== pannello sinistro: griglia ===== -->
   <!-- curva del punteggio lungo il parametro importante -->
   <text x="64" y="72" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">punteggio</text>
-  <polyline fill="none" stroke="#DDB874" stroke-width="2.5" stroke-linejoin="round"
+  <polyline fill="none" stroke="#C9A961" stroke-width="2.5" stroke-linejoin="round"
     points="70,94.2 80.5,93 91,90.7 101.5,86.7 112,80.6 122.5,72.5 133,63.6 143.5,55.7 154,50.8 160,50 166,50.8 175,54.7 185.5,62.4 196,71.3 206.5,79.5 217,86 227.5,90.3 238,92.8 248.5,94.1 259,94.6 269.5,94.9 280,95"/>
   <!-- valori della curva effettivamente assaggiati dalla griglia: solo 3 -->
   <circle cx="122.5" cy="72.5" r="4.5" fill="#5BA39C"/>
@@ -27,7 +27,7 @@
   <circle cx="227.5" cy="90.3" r="4.5" fill="#5BA39C"/>
 
   <!-- riquadro dello spazio di ricerca -->
-  <rect x="70" y="110" width="210" height="210" rx="6" fill="#0E0C0A" stroke="#5BA39C" stroke-width="2"/>
+  <rect x="70" y="110" width="210" height="210" rx="6" fill="#16130F" stroke="#5BA39C" stroke-width="2"/>
   <!-- linee guida della griglia -->
   <line x1="122.5" y1="110" x2="122.5" y2="320" stroke="#5BA39C" stroke-width="1" stroke-opacity="0.25"/>
   <line x1="175" y1="110" x2="175" y2="320" stroke="#5BA39C" stroke-width="1" stroke-opacity="0.25"/>
@@ -61,7 +61,7 @@
 
   <!-- ===== pannello destro: casuale ===== -->
   <!-- curva del punteggio (identica) -->
-  <polyline fill="none" stroke="#DDB874" stroke-width="2.5" stroke-linejoin="round"
+  <polyline fill="none" stroke="#C9A961" stroke-width="2.5" stroke-linejoin="round"
     points="460,94.2 470.5,93 481,90.7 491.5,86.7 502,80.6 512.5,72.5 523,63.6 533.5,55.7 544,50.8 550,50 556,50.8 565,54.7 575.5,62.4 586,71.3 596.5,79.5 607,86 617.5,90.3 628,92.8 638.5,94.1 649,94.6 659.5,94.9 670,95"/>
   <!-- valori della curva assaggiati dal caso: 9, uno quasi sul massimo -->
   <circle cx="476.8" cy="91.8" r="4.5" fill="#E27B52"/>
@@ -75,7 +75,7 @@
   <circle cx="659.5" cy="94.9" r="4.5" fill="#E27B52"/>
 
   <!-- riquadro dello spazio di ricerca -->
-  <rect x="460" y="110" width="210" height="210" rx="6" fill="#0E0C0A" stroke="#E27B52" stroke-width="2"/>
+  <rect x="460" y="110" width="210" height="210" rx="6" fill="#16130F" stroke="#E27B52" stroke-width="2"/>
   <!-- i 9 punti casuali -->
   <circle cx="476.8" cy="257" r="6" fill="#E27B52"/>
   <circle cx="499.9" cy="162.5" r="6" fill="#E27B52"/>

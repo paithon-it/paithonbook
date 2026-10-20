@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../quattro-ingredienti.svg
 -->
 <!--
@@ -25,7 +25,7 @@
     .dom  { fill:#5BA39C; fill-opacity:0.06; stroke:none; }
     .nudo { stroke:#34302A; stroke-width:1.4; stroke-dasharray:5 4; }
     .cont { stroke:#E27B52; stroke-width:5; stroke-linecap:round; }
-    .iniz { stroke:#DDB874; stroke-width:5; stroke-linecap:round; }
+    .iniz { stroke:#C9A961; stroke-width:5; stroke-linecap:round; }
     .src  { stroke:#5BA39C; stroke-width:2; stroke-linecap:round; fill:none; }
     .ass  { stroke:#BCB3A1; stroke-width:1.4; }
     .et   { font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:700; fill:#F4ECDD; }

@@ -1,8 +1,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../salvare-e-ricaricare.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 296" role="img" aria-label="Tre colonne. A sinistra il modello vivo, l'architettura in memoria con i suoi pesi. Una sola freccia, torch.save, porta al centro, dove c'&#232; il file salvato con dentro cinque voci: pesi, stato dell'ottimizzatore, epoca, nomi delle classi e configurazione, e dentro la configurazione anche il seme. Dal file partono invece due frecce verso destra, e vanno a due riquadri numerati: prima la configurazione, che serve a ricostruire il modello vuoto, poi i pesi, che si caricano dentro quel modello. Sotto, la riga che riassume: un gesto per salvare, due per ricaricare.">

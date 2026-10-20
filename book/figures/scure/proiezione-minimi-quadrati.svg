@@ -1,16 +1,16 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../proiezione-minimi-quadrati.svg
 -->
 <svg viewBox="0 0 720 400" width="100%" role="img" aria-label="Un piano disegnato in prospettiva rappresenta l'immagine della matrice, con due frecce corte che vi giacciono sopra: sono le colonne. Una freccia b parte dall'origine e punta fuori dal piano. La sua ombra sul piano e' la freccia p, e il segmento verticale fra la punta di p e la punta di b, marcato con un angolo retto, e' il residuo. Un altro punto del piano e' collegato alla punta di b da un tratteggio visibilmente piu' lungo." xmlns="http://www.w3.org/2000/svg">
-  <rect x="0" y="0" width="720" height="400" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="720" height="400" fill="#16130F"/>
   <defs>
     <marker id="prB" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#E27B52"/></marker>
     <marker id="prT" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5BA39C"/></marker>
-    <marker id="prO" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#DDB874"/></marker>
+    <marker id="prO" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#C9A961"/></marker>
   </defs>
 
   <!-- il piano: l'immagine della matrice -->
@@ -25,10 +25,10 @@
   <path d="M 226 160 Q 300 168 348 210" fill="none" stroke="#8E8676" stroke-width="1" stroke-dasharray="3 3"/>
 
   <!-- le colonne, dentro al piano -->
-  <line x1="190" y1="285" x2="330" y2="298" stroke="#DDB874" stroke-width="2" marker-end="url(#prO)"/>
-  <line x1="190" y1="285" x2="262" y2="232" stroke="#DDB874" stroke-width="2" marker-end="url(#prO)"/>
-  <text x="338" y="296" font-family="Inter, system-ui, sans-serif" font-size="13.5" font-weight="bold" fill="#DDB874">a₁</text>
-  <text x="256" y="224" font-family="Inter, system-ui, sans-serif" font-size="13.5" font-weight="bold" fill="#DDB874">a₂</text>
+  <line x1="190" y1="285" x2="330" y2="298" stroke="#C9A961" stroke-width="2" marker-end="url(#prO)"/>
+  <line x1="190" y1="285" x2="262" y2="232" stroke="#C9A961" stroke-width="2" marker-end="url(#prO)"/>
+  <text x="338" y="296" font-family="Inter, system-ui, sans-serif" font-size="13.5" font-weight="bold" fill="#C9A961">a₁</text>
+  <text x="256" y="224" font-family="Inter, system-ui, sans-serif" font-size="13.5" font-weight="bold" fill="#C9A961">a₂</text>
 
   <!-- il vettore dei dati, che sporge -->
   <line x1="190" y1="285" x2="450" y2="128" stroke="#E27B52" stroke-width="2.6" marker-end="url(#prB)"/>

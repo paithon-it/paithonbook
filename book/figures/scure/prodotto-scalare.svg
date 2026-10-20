@@ -1,12 +1,12 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../prodotto-scalare.svg
 -->
 <svg viewBox="0 0 720 420" width="100%" role="img" aria-label="Proiezione geometrica: il vettore a proiettato sul vettore b, con l'angolo theta e la perpendicolare tratteggiata; la lunghezza della proiezione evidenziata in terracotta" xmlns="http://www.w3.org/2000/svg">
-  <rect x="0" y="0" width="720" height="420" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="720" height="420" fill="#16130F"/>
   <defs>
     <marker id="pArrK" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#F4ECDD"/></marker>
     <marker id="pArrG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5BA39C"/></marker>
@@ -26,10 +26,10 @@
   <line x1="110" y1="352" x2="420" y2="352" stroke="#E27B52" stroke-width="1.5" marker-start="url(#pArrT)" marker-end="url(#pArrT)"/>
   <text x="265" y="378" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#E27B52" text-anchor="middle">proiezione di a su b  =  ‖a‖ · cos θ</text>
   <!-- angolo theta -->
-  <path d="M 170 310 A 60 60 0 0 0 161 279" fill="none" stroke="#DDB874" stroke-width="2"/>
-  <text x="185" y="292" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#DDB874">θ</text>
+  <path d="M 170 310 A 60 60 0 0 0 161 279" fill="none" stroke="#C9A961" stroke-width="2"/>
+  <text x="185" y="292" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#C9A961">θ</text>
   <!-- formula in card -->
-  <rect x="430" y="60" width="250" height="96" fill="#0E0C0A" stroke="#34302A" stroke-width="1.5" rx="8"/>
+  <rect x="430" y="60" width="250" height="96" fill="#16130F" stroke="#34302A" stroke-width="1.5" rx="8"/>
   <text x="555" y="100" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="bold" fill="#F4ECDD" text-anchor="middle">a · b = ‖a‖ ‖b‖ cos θ</text>
   <text x="555" y="132" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#BCB3A1" text-anchor="middle">lunghezza dell'ombra × lunghezza di b</text>
 </svg>

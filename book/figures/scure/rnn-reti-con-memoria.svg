@@ -1,12 +1,12 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../rnn-reti-con-memoria.svg
 -->
 <svg viewBox="0 0 720 440" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Una cella ricorrente con un cappio su sé stessa, e la sua versione srotolata in tre copie identiche lungo il tempo">
-  <rect width="720" height="440" fill="#0E0C0A"/>
+  <rect width="720" height="440" fill="#16130F"/>
   <defs>
     <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
       <path d="M0,0 L8,4 L0,8 Z" fill="#F4ECDD"/>
@@ -16,7 +16,7 @@
 
   <!-- cella ripiegata -->
   <rect x="70" y="200" width="70" height="64" rx="8" fill="#5BA39C" stroke="#F4ECDD" stroke-width="2"/>
-  <text x="105" y="238" font-family="Inter, system-ui, sans-serif" font-size="20" fill="#0E0C0A" text-anchor="middle" font-weight="600">A</text>
+  <text x="105" y="238" font-family="Inter, system-ui, sans-serif" font-size="20" fill="#16130F" text-anchor="middle" font-weight="600">A</text>
   <path d="M140,210 C185,195 185,255 140,254" fill="none" stroke="#E27B52" stroke-width="2" marker-end="url(#ar)"/>
   <text x="192" y="232" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#E27B52">stato</text>
   <line x1="105" y1="300" x2="105" y2="266" stroke="#F4ECDD" stroke-width="2" marker-end="url(#ar)"/>
@@ -30,15 +30,15 @@
   <g>
     <line x1="290" y1="232" x2="345" y2="232" stroke="#E27B52" stroke-width="2" marker-end="url(#ar)"/>
     <rect x="345" y="200" width="70" height="64" rx="8" fill="#5BA39C" stroke="#F4ECDD" stroke-width="2"/>
-    <text x="380" y="238" font-family="Inter, system-ui, sans-serif" font-size="20" fill="#0E0C0A" text-anchor="middle" font-weight="600">A</text>
+    <text x="380" y="238" font-family="Inter, system-ui, sans-serif" font-size="20" fill="#16130F" text-anchor="middle" font-weight="600">A</text>
 
     <line x1="415" y1="232" x2="470" y2="232" stroke="#E27B52" stroke-width="2" marker-end="url(#ar)"/>
     <rect x="470" y="200" width="70" height="64" rx="8" fill="#5BA39C" stroke="#F4ECDD" stroke-width="2"/>
-    <text x="505" y="238" font-family="Inter, system-ui, sans-serif" font-size="20" fill="#0E0C0A" text-anchor="middle" font-weight="600">A</text>
+    <text x="505" y="238" font-family="Inter, system-ui, sans-serif" font-size="20" fill="#16130F" text-anchor="middle" font-weight="600">A</text>
 
     <line x1="540" y1="232" x2="595" y2="232" stroke="#E27B52" stroke-width="2" marker-end="url(#ar)"/>
     <rect x="595" y="200" width="70" height="64" rx="8" fill="#5BA39C" stroke="#F4ECDD" stroke-width="2"/>
-    <text x="630" y="238" font-family="Inter, system-ui, sans-serif" font-size="20" fill="#0E0C0A" text-anchor="middle" font-weight="600">A</text>
+    <text x="630" y="238" font-family="Inter, system-ui, sans-serif" font-size="20" fill="#16130F" text-anchor="middle" font-weight="600">A</text>
     <line x1="665" y1="232" x2="700" y2="232" stroke="#E27B52" stroke-width="2" marker-end="url(#ar)"/>
   </g>
 

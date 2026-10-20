@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../somma-che-si-accumula.svg
 -->
 <!--
@@ -27,7 +27,7 @@
     .cambio  { stroke:#BCB3A1; stroke-width:1.2; stroke-dasharray:2 4; }
     .dato    { fill:#5BA39C; opacity:.8; }
     .somma   { fill:none; stroke:#E27B52; stroke-width:2.6; stroke-linejoin:round; }
-    .allarme { fill:#DDB874; stroke:#F4ECDD; stroke-width:1.2; }
+    .allarme { fill:#C9A961; stroke:#F4ECDD; stroke-width:1.2; }
     .all     { font-family:Inter, system-ui, sans-serif; font-size:14px; font-weight:700; fill:#F4ECDD; }
     #avanza-r { transform-box:fill-box; transform-origin:0% 50%; }
         @keyframes accendi{0.00%{opacity:0}80.97%{opacity:0}81.47%{opacity:1}100.00%{opacity:1}}

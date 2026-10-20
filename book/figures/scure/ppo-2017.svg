@@ -1,12 +1,12 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../ppo-2017.svg
 -->
 <svg viewBox="0 0 760 320" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagramma: dalla policy vecchia un piccolo passo verso la policy nuova resta dentro la fascia consentita ed è permesso, mentre un salto lungo esce dalla fascia e viene tagliato">
-  <rect x="0" y="0" width="760" height="320" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="760" height="320" fill="#16130F"/>
   <text x="380" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#F4ECDD">Un passo alla volta, dentro la fascia</text>
 
   <!-- fascia consentita -->

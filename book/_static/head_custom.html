@@ -59,11 +59,6 @@
      un pulsante che porta in un vicolo cieco è peggio di nessun pulsante. -->
 <meta name="pt-lettura-url" content="">
 
-<!-- Google Fonts paithon: Fraunces (display), Inter (body), JetBrains Mono (code) -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-
 {#- Titolo, descrizione e URL sono di QUESTA pagina, non del libro. Prima erano
     gli stessi su tutte e 160: per un motore di ricerca, per un assistente che
     cita e per l'anteprima di un link condiviso, quella riga *e'* la pagina, e
@@ -120,12 +115,16 @@
 <meta name="author" content="Paithon.it">
 <meta name="language" content="Italian">
 
-<!-- Favicon improvements -->
-<link rel="apple-touch-icon" sizes="180x180" href="{{ pathto('_static/figures/logo.png', 1) }}">
+<!-- L'icona per la schermata Home: il segno del brand su carta crema, come
+     quella del sito. La scrive `scripts/genera-og.py`. -->
+<link rel="apple-touch-icon" sizes="180x180"
+      href="{{ pathto('_static/social/apple-touch-icon.png', 1) }}">
 
-<!-- Theme color for mobile browsers -->
-<meta name="theme-color" content="#B5532C">
-<meta name="msapplication-navbutton-color" content="#B5532C">
+<!-- Il colore della barra del browser e' il fondo della pagina (--pt-bg). Qui
+     c'e' quello del tema scuro, con cui il libro si apre la prima volta; il
+     valore vero lo rimette `custom.js` leggendo il token, e lo riallinea a
+     ogni cambio di tema. -->
+<meta name="theme-color" content="#0E0C0A">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
 <!-- Performance: DNS prefetch -->
@@ -138,8 +137,8 @@
     position: absolute;
     top: -40px;
     left: 0;
-    background: var(--primary-color, #B5532C);
-    color: white;
+    background: var(--pt-accent);
+    color: var(--pt-on-accent);
     padding: 8px 16px;
     text-decoration: none;
     border-radius: 0 0 4px 0;

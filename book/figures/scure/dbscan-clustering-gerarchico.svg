@@ -1,12 +1,12 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../dbscan-clustering-gerarchico.svg
 -->
 <svg viewBox="0 0 720 340" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A sinistra DBSCAN: due cluster a forma irregolare con punti core, border e rumore. A destra un dendrogramma con linea di taglio.">
-  <rect x="0" y="0" width="720" height="340" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="720" height="340" fill="#16130F"/>
   <!-- Pannello sinistro: DBSCAN -->
   <text x="180" y="30" font-family="Inter, system-ui, sans-serif" font-size="15" fill="#F4ECDD" text-anchor="middle">DBSCAN: cluster = zone dense</text>
   <rect x="20" y="45" width="320" height="230" fill="none" stroke="#F4ECDD" stroke-width="1.5"/>
@@ -17,7 +17,7 @@
   <circle cx="230" cy="210" r="6" fill="#5BA39C"/><circle cx="252" cy="198" r="6" fill="#5BA39C"/><circle cx="270" cy="215" r="6" fill="#5BA39C"/><circle cx="248" cy="228" r="6" fill="#5BA39C"/><circle cx="272" cy="238" r="6" fill="#5BA39C"/>
   <circle cx="292" cy="222" r="4" fill="none" stroke="#5BA39C" stroke-width="1.5"/>
   <!-- raggio eps attorno a un core -->
-  <circle cx="132" cy="82" r="30" fill="none" stroke="#DDB874" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <circle cx="132" cy="82" r="30" fill="none" stroke="#C9A961" stroke-width="1.5" stroke-dasharray="4 3"/>
   <text x="132" y="62" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD" text-anchor="middle">eps</text>
   <!-- rumore -->
   <path d="M 300 75 l 8 8 m 0 -8 l -8 8" stroke="#F4ECDD" stroke-width="1.5" fill="none"/>
@@ -48,7 +48,7 @@
   <!-- fusione finale (warm black) -->
   <path d="M 476 170 V 90 H 626 V 160" fill="none" stroke="#F4ECDD" stroke-width="2"/>
   <!-- linea di taglio -->
-  <line x1="392" y1="125" x2="688" y2="125" stroke="#DDB874" stroke-width="2" stroke-dasharray="6 4"/>
+  <line x1="392" y1="125" x2="688" y2="125" stroke="#C9A961" stroke-width="2" stroke-dasharray="6 4"/>
   <text x="396" y="115" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">taglio → 2 cluster</text>
   <text x="540" y="300" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD" text-anchor="middle">in basso: punti singoli · in alto: fusioni sempre più grandi</text>
 </svg>

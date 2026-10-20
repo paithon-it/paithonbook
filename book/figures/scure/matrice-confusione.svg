@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../matrice-confusione.svg
 -->
 <!--
@@ -17,7 +17,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 390" role="img"
      aria-label="Matrice di confusione due per due. Colonne: valore reale positivo e negativo. Righe: predizione del modello positiva e negativa. In alto a sinistra i Veri Positivi, in alto a destra i Falsi Positivi, in basso a sinistra i Falsi Negativi, in basso a destra i Veri Negativi. La diagonale principale, con VP e VN, rappresenta le predizioni corrette.">
   <style>
-    .cell   { fill:#0E0C0A; }
+    .cell   { fill:#16130F; }
     .big    { font-family:Fraunces, Georgia, serif; font-size:30px; font-weight:700; }
     .small  { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#BCB3A1; }
     .head   { font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:600; fill:#F4ECDD; }

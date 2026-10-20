@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../ramo-contestato.svg
 -->
 <!--
@@ -24,7 +24,7 @@
     .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#F4ECDD; }
     .ram      { stroke:#34302A; stroke-width:2; fill:none; }
     .morto    { stroke:#221F1A; }
-    .nodo     { stroke-width:2.5; fill:#0E0C0A; }
+    .nodo     { stroke-width:2.5; fill:#16130F; }
     .afferma  { stroke:#E27B52; }
     .contesta { stroke:#5BA39C; stroke-width:2.5; fill:none;
                  stroke-dasharray:6 5; }

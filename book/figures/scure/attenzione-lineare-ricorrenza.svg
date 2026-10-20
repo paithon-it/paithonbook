@@ -1,8 +1,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../attenzione-lineare-ricorrenza.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 430" font-family="'Inter', -apple-system, Segoe UI, sans-serif" role="img" aria-label="Confronto tra l'attenzione classica, la cui cache di chiavi e valori cresce a ogni token, e l'attenzione lineare, che riassume tutto il passato in uno stato di dimensione fissa aggiornato token per token con la somma dell'outer product del valore per la chiave.">
@@ -25,37 +25,37 @@
   <!-- 4 passi con pila crescente di coppie (k,v) -->
   <!-- passo 1 -->
   <g>
-    <rect x="60" y="300" width="26" height="16" rx="2" fill="#DDB874"/>
+    <rect x="60" y="300" width="26" height="16" rx="2" fill="#C9A961"/>
     <rect x="88" y="300" width="26" height="16" rx="2" fill="#5BA39C"/>
     <text x="87" y="336" font-size="12" text-anchor="middle" fill="#F4ECDD">t=1</text>
   </g>
   <!-- passo 2 -->
   <g>
-    <rect x="130" y="282" width="26" height="16" rx="2" fill="#DDB874"/>
+    <rect x="130" y="282" width="26" height="16" rx="2" fill="#C9A961"/>
     <rect x="158" y="282" width="26" height="16" rx="2" fill="#5BA39C"/>
-    <rect x="130" y="300" width="26" height="16" rx="2" fill="#DDB874"/>
+    <rect x="130" y="300" width="26" height="16" rx="2" fill="#C9A961"/>
     <rect x="158" y="300" width="26" height="16" rx="2" fill="#5BA39C"/>
     <text x="157" y="336" font-size="12" text-anchor="middle" fill="#F4ECDD">t=2</text>
   </g>
   <!-- passo 3 -->
   <g>
-    <rect x="200" y="264" width="26" height="16" rx="2" fill="#DDB874"/>
+    <rect x="200" y="264" width="26" height="16" rx="2" fill="#C9A961"/>
     <rect x="228" y="264" width="26" height="16" rx="2" fill="#5BA39C"/>
-    <rect x="200" y="282" width="26" height="16" rx="2" fill="#DDB874"/>
+    <rect x="200" y="282" width="26" height="16" rx="2" fill="#C9A961"/>
     <rect x="228" y="282" width="26" height="16" rx="2" fill="#5BA39C"/>
-    <rect x="200" y="300" width="26" height="16" rx="2" fill="#DDB874"/>
+    <rect x="200" y="300" width="26" height="16" rx="2" fill="#C9A961"/>
     <rect x="228" y="300" width="26" height="16" rx="2" fill="#5BA39C"/>
     <text x="227" y="336" font-size="12" text-anchor="middle" fill="#F4ECDD">t=3</text>
   </g>
   <!-- passo 4 -->
   <g>
-    <rect x="270" y="246" width="26" height="16" rx="2" fill="#DDB874"/>
+    <rect x="270" y="246" width="26" height="16" rx="2" fill="#C9A961"/>
     <rect x="298" y="246" width="26" height="16" rx="2" fill="#5BA39C"/>
-    <rect x="270" y="264" width="26" height="16" rx="2" fill="#DDB874"/>
+    <rect x="270" y="264" width="26" height="16" rx="2" fill="#C9A961"/>
     <rect x="298" y="264" width="26" height="16" rx="2" fill="#5BA39C"/>
-    <rect x="270" y="282" width="26" height="16" rx="2" fill="#DDB874"/>
+    <rect x="270" y="282" width="26" height="16" rx="2" fill="#C9A961"/>
     <rect x="298" y="282" width="26" height="16" rx="2" fill="#5BA39C"/>
-    <rect x="270" y="300" width="26" height="16" rx="2" fill="#DDB874"/>
+    <rect x="270" y="300" width="26" height="16" rx="2" fill="#C9A961"/>
     <rect x="298" y="300" width="26" height="16" rx="2" fill="#5BA39C"/>
     <text x="297" y="336" font-size="12" text-anchor="middle" fill="#F4ECDD">t=4</text>
   </g>
@@ -74,7 +74,7 @@
   <!-- riuso una funzione a mano: box 44x44 con griglia 2x2 -->
   <!-- S1 -->
   <g>
-    <rect x="452" y="270" width="44" height="44" rx="4" fill="#0E0C0A" stroke="#E27B52" stroke-width="2.5"/>
+    <rect x="452" y="270" width="44" height="44" rx="4" fill="#16130F" stroke="#E27B52" stroke-width="2.5"/>
     <line x1="474" y1="270" x2="474" y2="314" stroke="#E27B52" stroke-width="1" opacity="0.55"/>
     <line x1="452" y1="292" x2="496" y2="292" stroke="#E27B52" stroke-width="1" opacity="0.55"/>
     <text x="474" y="335" font-size="12" text-anchor="middle" fill="#F4ECDD">t=1</text>
@@ -83,7 +83,7 @@
   <line x1="500" y1="292" x2="524" y2="292" stroke="#E27B52" stroke-width="2.5" marker-end="url(#alr-terra)"/>
   <!-- S2 -->
   <g>
-    <rect x="528" y="270" width="44" height="44" rx="4" fill="#0E0C0A" stroke="#E27B52" stroke-width="2.5"/>
+    <rect x="528" y="270" width="44" height="44" rx="4" fill="#16130F" stroke="#E27B52" stroke-width="2.5"/>
     <line x1="550" y1="270" x2="550" y2="314" stroke="#E27B52" stroke-width="1" opacity="0.55"/>
     <line x1="528" y1="292" x2="572" y2="292" stroke="#E27B52" stroke-width="1" opacity="0.55"/>
     <text x="550" y="335" font-size="12" text-anchor="middle" fill="#F4ECDD">t=2</text>
@@ -91,7 +91,7 @@
   <line x1="576" y1="292" x2="600" y2="292" stroke="#E27B52" stroke-width="2.5" marker-end="url(#alr-terra)"/>
   <!-- S3 -->
   <g>
-    <rect x="604" y="270" width="44" height="44" rx="4" fill="#0E0C0A" stroke="#E27B52" stroke-width="2.5"/>
+    <rect x="604" y="270" width="44" height="44" rx="4" fill="#16130F" stroke="#E27B52" stroke-width="2.5"/>
     <line x1="626" y1="270" x2="626" y2="314" stroke="#E27B52" stroke-width="1" opacity="0.55"/>
     <line x1="604" y1="292" x2="648" y2="292" stroke="#E27B52" stroke-width="1" opacity="0.55"/>
     <text x="626" y="335" font-size="12" text-anchor="middle" fill="#F4ECDD">t=3</text>
@@ -99,7 +99,7 @@
   <line x1="652" y1="292" x2="676" y2="292" stroke="#E27B52" stroke-width="2.5" marker-end="url(#alr-terra)"/>
   <!-- S4 -->
   <g>
-    <rect x="680" y="270" width="44" height="44" rx="4" fill="#0E0C0A" stroke="#E27B52" stroke-width="2.5"/>
+    <rect x="680" y="270" width="44" height="44" rx="4" fill="#16130F" stroke="#E27B52" stroke-width="2.5"/>
     <line x1="702" y1="270" x2="702" y2="314" stroke="#E27B52" stroke-width="1" opacity="0.55"/>
     <line x1="680" y1="292" x2="724" y2="292" stroke="#E27B52" stroke-width="1" opacity="0.55"/>
     <text x="702" y="335" font-size="12" text-anchor="middle" fill="#F4ECDD">t=4</text>
@@ -112,10 +112,10 @@
   <text x="584" y="384" font-size="12.5" text-anchor="middle" fill="#5BA39C" font-weight="600">memoria costante a ogni token</text>
 
   <!-- ===================== LEGENDA ===================== -->
-  <rect x="250" y="404" width="15" height="11" rx="2" fill="#DDB874"/>
+  <rect x="250" y="404" width="15" height="11" rx="2" fill="#C9A961"/>
   <text x="270" y="413" font-size="12" fill="#BCB3A1">chiave k</text>
   <rect x="330" y="404" width="15" height="11" rx="2" fill="#5BA39C"/>
   <text x="350" y="413" font-size="12" fill="#BCB3A1">valore v</text>
-  <rect x="410" y="403" width="13" height="13" rx="2" fill="#0E0C0A" stroke="#E27B52" stroke-width="2"/>
+  <rect x="410" y="403" width="13" height="13" rx="2" fill="#16130F" stroke="#E27B52" stroke-width="2"/>
   <text x="428" y="413" font-size="12" fill="#BCB3A1">stato S (matrice d&#215;d)</text>
 </svg>

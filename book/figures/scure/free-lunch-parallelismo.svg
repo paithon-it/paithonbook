@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../free-lunch-parallelismo.svg
 -->
 <!--
@@ -19,13 +19,13 @@
      aria-label="Grafico schematico in scala logaritmica. L'asse orizzontale e l'anno, dal 1990 al 2020; il verticale una scala logaritmica qualitativa. Una linea ocra, il numero di transistor, sale in modo costante per tutto l'intervallo. Una linea terracotta, la frequenza di clock ovvero la prestazione di un singolo core, sale insieme alla prima fino a circa il 2005, poi si appiattisce quasi orizzontale. Una linea verticale tratteggiata segna il 2005 con l'etichetta 'il free lunch finisce'. Un riquadro in basso spiega che i transistor in piu diventano piu core, e il futuro e parallelo.">
   <style>
     .frame  { stroke:#F4ECDD; stroke-width:1.6; opacity:0.55; fill:none; }
-    .tran   { stroke:#DDB874; stroke-width:3.6; fill:none; stroke-linejoin:round; stroke-linecap:round; }
+    .tran   { stroke:#C9A961; stroke-width:3.6; fill:none; stroke-linejoin:round; stroke-linecap:round; }
     .clock  { stroke:#E27B52; stroke-width:3.6; fill:none; stroke-linejoin:round; stroke-linecap:round; }
     .mark   { stroke:#5BA39C; stroke-width:1.6; stroke-dasharray:4 5; opacity:0.7; }
     .axlbl  { font-family:Inter, system-ui, sans-serif; font-size:13px; font-weight:600; fill:#F4ECDD; opacity:0.8; }
     .tick   { font-family:Inter, system-ui, sans-serif; font-size:11.5px; fill:#F4ECDD; opacity:0.6; }
     .leg    { font-family:Inter, system-ui, sans-serif; font-size:12.5px; font-weight:600; fill:#F4ECDD; }
-    .noteT  { font-family:Inter, system-ui, sans-serif; font-size:12px; font-weight:600; fill:#DDB874; }
+    .noteT  { font-family:Inter, system-ui, sans-serif; font-size:12px; font-weight:600; fill:#C9A961; }
     .noteC  { font-family:Inter, system-ui, sans-serif; font-size:12px; font-weight:600; fill:#E27B52; }
     .markl  { font-family:Inter, system-ui, sans-serif; font-size:12px; font-weight:700; fill:#5BA39C; }
     .call   { font-family:Inter, system-ui, sans-serif; font-size:12.5px; font-weight:700; fill:#5BA39C; }
@@ -33,7 +33,7 @@
   </style>
 
   <!-- backing cream (leggibile anche in dark mode) -->
-  <rect x="6" y="6" width="708" height="418" rx="14" fill="#0E0C0A" stroke="#F4ECDD" stroke-opacity="0.12" stroke-width="1.5"/>
+  <rect x="6" y="6" width="708" height="418" rx="14" fill="#16130F" stroke="#F4ECDD" stroke-opacity="0.12" stroke-width="1.5"/>
 
   <!-- assi -->
   <line class="frame" x1="100" y1="66"  x2="100" y2="330"/>
@@ -69,12 +69,12 @@
   <text class="noteC" x="560" y="176" text-anchor="middle">la frequenza si ferma</text>
 
   <!-- legenda (in alto a sinistra, area libera) -->
-  <rect x="120" y="96" width="18" height="4" rx="2" fill="#DDB874"/>
+  <rect x="120" y="96" width="18" height="4" rx="2" fill="#C9A961"/>
   <text class="leg" x="146" y="103">numero di transistor</text>
   <rect x="120" y="118" width="18" height="4" rx="2" fill="#E27B52"/>
   <text class="leg" x="146" y="125">frequenza di clock (velocità di un core)</text>
 
   <!-- riquadro conclusivo -->
-  <rect x="342" y="284" width="334" height="34" rx="8" fill="#0E0C0A" stroke="#5BA39C" stroke-width="1.6" stroke-opacity="0.8"/>
+  <rect x="342" y="284" width="334" height="34" rx="8" fill="#16130F" stroke="#5BA39C" stroke-width="1.6" stroke-opacity="0.8"/>
   <text class="call" x="509" y="305" text-anchor="middle">i transistor in più → più core: il futuro è parallelo</text>
 </svg>

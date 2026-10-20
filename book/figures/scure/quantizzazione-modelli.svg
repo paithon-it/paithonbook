@@ -1,12 +1,12 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../quantizzazione-modelli.svg
 -->
 <svg viewBox="0 0 720 340" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Confronto tra precisione numerica e memoria occupata per un modello da 7 miliardi di parametri">
-  <rect x="0" y="0" width="720" height="340" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="720" height="340" fill="#16130F"/>
   <text x="360" y="30" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#F4ECDD">Precisione vs memoria: modello da 7 miliardi di parametri</text>
 
   <!-- FP32 -->
@@ -21,7 +21,7 @@
 
   <!-- INT8 -->
   <text x="120" y="190" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">INT8 · 8 bit</text>
-  <rect x="140" y="172" width="120" height="28" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
+  <rect x="140" y="172" width="120" height="28" fill="#C9A961" stroke="#F4ECDD" stroke-width="1.5"/>
   <text x="272" y="191" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">~7 GB</text>
 
   <!-- INT4 -->

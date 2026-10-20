@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../collo-di-bottiglia.svg
 -->
 <!--
@@ -26,9 +26,9 @@
     .ponte { stroke:#E27B52; stroke-width:3.5; }
     .nuovo { stroke:#5BA39C; stroke-width:2.5; stroke-dasharray:6 4; fill:none; }
     .nuovo-t { fill:#5BA39C; }
-    .nodo { fill:#0E0C0A; stroke:#F4ECDD; stroke-width:1.5; }
+    .nodo { fill:#16130F; stroke:#F4ECDD; stroke-width:1.5; }
     .nodo-uv { fill:#5BA39C; stroke:#F4ECDD; stroke-width:1.5; }
-    .bianco { fill:#0E0C0A; font-size:13px; }
+    .bianco { fill:#16130F; font-size:13px; }
     
     @media (prefers-reduced-motion:reduce) { * { animation:none !important; } }
   </style>

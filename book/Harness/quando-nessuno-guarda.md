@@ -490,9 +490,10 @@ pota diventa un altro deposito di regole scadute, come il manuale unico che la
 {doc}`sezione sul repository come memoria <il-repository-come-memoria>`
 sconsiglia.
 
-Tutto questo vale per un lavoro che segue sempre la stessa routine. Quando i
-passi, i ritorni indietro e le firme si moltiplicano, conviene disegnarli in un
-{doc}`grafo <dal-ciclo-al-grafo>`, che regge anche un guasto.
+Le tracce servono anche a fare i conti: sommando ciò che i loro intervalli
+registrano, i token letti e scritti e le attese degli strumenti, si ottiene
+quanto è costato e quanto è durato un compito, ed è da lì che comincia il
+{doc}`conto di un compito <il-conto>`.
 
 `````{tab} Elementare
 

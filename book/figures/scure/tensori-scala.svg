@@ -1,16 +1,16 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../tensori-scala.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 250" role="img" aria-label="Quattro oggetti in fila, collegati da frecce, ciascuno con sotto il nome e la sua forma: un singolo quadrato (scalare, rank 0), una riga di quattro celle (vettore, rank 1, forma (4,)), una griglia 3 per 3 (matrice, rank 2, forma (3, 3)) e una pila di tre griglie 3 per 3 (tensore 3D, rank 3, forma (3, 3, 3)).">
-  <rect x="0" y="0" width="820" height="250" rx="14" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="820" height="250" rx="14" fill="#16130F"/>
 
   <!-- Scalare: rank 0 -->
   <rect x="70" y="100" width="30" height="30" fill="#E27B52" stroke="#F4ECDD" stroke-width="2"/>
-  <circle cx="85" cy="115" r="4" fill="#0E0C0A"/>
+  <circle cx="85" cy="115" r="4" fill="#16130F"/>
   <text x="85" y="200" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="18" font-weight="700" fill="#F4ECDD">Scalare</text>
   <text x="85" y="222" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#BCB3A1">rank 0 &#183; ()</text>
 
@@ -31,7 +31,7 @@
   <text x="345" y="122" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="22" fill="#8E8676">&#8594;</text>
 
   <!-- Matrice: rank 2 -->
-  <g stroke="#F4ECDD" stroke-width="2" fill="#DDB874">
+  <g stroke="#F4ECDD" stroke-width="2" fill="#C9A961">
     <rect x="385" y="70" width="30" height="30"/>
     <rect x="415" y="70" width="30" height="30"/>
     <rect x="445" y="70" width="30" height="30"/>
@@ -50,7 +50,7 @@
 
   <!-- Tensore 3D: rank 3 (pila di griglie) -->
   <!-- layer posteriore -->
-  <g fill="#0E0C0A" stroke="#5BA39C" stroke-width="2">
+  <g fill="#16130F" stroke="#5BA39C" stroke-width="2">
     <rect x="613" y="46" width="90" height="90"/>
     <line x1="643" y1="46" x2="643" y2="136"/>
     <line x1="673" y1="46" x2="673" y2="136"/>
@@ -58,7 +58,7 @@
     <line x1="613" y1="106" x2="703" y2="106"/>
   </g>
   <!-- layer intermedio -->
-  <g fill="#0E0C0A" stroke="#5BA39C" stroke-width="2">
+  <g fill="#16130F" stroke="#5BA39C" stroke-width="2">
     <rect x="598" y="61" width="90" height="90"/>
     <line x1="628" y1="61" x2="628" y2="151"/>
     <line x1="658" y1="61" x2="658" y2="151"/>

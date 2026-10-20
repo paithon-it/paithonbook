@@ -38,7 +38,8 @@ MARCA = "def esegui("
 def _blocco(marcatore: str) -> str:
     """Il blocco con la marca (``python``) o la sua uscita (``text``)."""
     testo = SEZIONE.read_text(encoding="utf-8")
-    trovati = [m for m in re.finditer(r"```python\n(.*?)```", testo, re.S)
+    trovati = [m for m in re.finditer(r"^```python\n(.*?)^```", testo,
+                                      re.S | re.M)
                if MARCA in m.group(1)]
     if len(trovati) != 1:
         raise ValueError(f"{NOME}: {len(trovati)} blocchi ```python con "
@@ -46,7 +47,8 @@ def _blocco(marcatore: str) -> str:
     codice = trovati[0]
     if marcatore == "python":
         return codice.group(1)
-    uscita = re.match(r"\n*```text\n(.*?)```", testo[codice.end():], re.S)
+    uscita = re.match(r"\n*```text\n(.*?)^```", testo[codice.end():],
+                      re.S | re.M)
     if not uscita:
         raise ValueError(f"{NOME}: il blocco in {SEZIONE.name} non ha il suo "
                          f"```text subito dopo")

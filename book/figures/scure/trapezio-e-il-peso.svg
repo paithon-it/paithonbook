@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../trapezio-e-il-peso.svg
 -->
 <!--
@@ -27,16 +27,16 @@
             stroke-width:1.2; }
     .gcur { fill:none; stroke:#F4ECDD; stroke-width:2.2;
             stroke-linejoin:round; }
-    .trap { stroke:#DDB874; stroke-width:1.8; stroke-dasharray:6 4; }
+    .trap { stroke:#C9A961; stroke-width:1.8; stroke-dasharray:6 4; }
     .pAl  { stroke:#E27B52; stroke-width:2.4; }
     .pBl  { stroke:#5BA39C; stroke-width:2.4; }
-    .pCl  { stroke:#DDB874; stroke-width:2.4; }
+    .pCl  { stroke:#C9A961; stroke-width:2.4; }
     .pAs  { fill:#E27B52; stroke:none; }
     .pBs  { fill:#5BA39C; stroke:none; }
-    .pCs  { fill:#DDB874; stroke:none; }
+    .pCs  { fill:#C9A961; stroke:none; }
     .pAp  { fill:#E27B52; stroke:none; }
     .pBp  { fill:#5BA39C; stroke:none; }
-    .pCp  { fill:#DDB874; stroke:none; }
+    .pCp  { fill:#C9A961; stroke:none; }
     .tick { stroke:#BCB3A1; stroke-width:1.2; stroke-dasharray:3 3; }
     .val  { font-family:Inter, system-ui, sans-serif; font-size:13px; font-weight:700;
             fill:#F4ECDD; }

@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../fili-conduttori.svg
 -->
 <!--
@@ -19,11 +19,11 @@
      aria-label="Arco del libro con cinque tappe (Matematica, Machine learning, Reti neurali, Deep learning, Generativi e reinforcement learning) e sotto tre fili conduttori paralleli: Dati, Rappresentazioni, Ottimizzazione">
   <style>
     .rail  { stroke:#8E8676; stroke-width:2.5; fill:none; }
-    .dot   { fill:#0E0C0A; stroke:#F4ECDD; stroke-width:2; }
+    .dot   { fill:#16130F; stroke:#F4ECDD; stroke-width:2; }
     .way   { font-family:Inter, system-ui, sans-serif; font-size:12.5px; fill:#F4ECDD; }
     .sub   { font-family:Inter, system-ui, sans-serif; font-size:11px; font-style:italic; fill:#BCB3A1; }
     .title { font-family:Fraunces, Georgia, serif; font-size:15px; font-weight:600; fill:#F4ECDD; }
-    .pill  { fill:#0E0C0A; }
+    .pill  { fill:#16130F; }
     .pilltx{ font-family:Inter, system-ui, sans-serif; font-size:13.5px; font-weight:600; fill:#F4ECDD; }
     .role  { font-family:Inter, system-ui, sans-serif; font-size:11.5px; font-style:italic; fill:#BCB3A1; }
   </style>
@@ -76,14 +76,14 @@
   <text class="role" x="625" y="214">il cuore</text>
 
   <!-- Filo 3: Ottimizzazione (ocra) -->
-  <line x1="232" y1="252" x2="612" y2="252" stroke="#DDB874" stroke-width="2.8"/>
-  <circle cx="280" cy="252" r="3.5" fill="#DDB874"/>
-  <circle cx="346" cy="252" r="3.5" fill="#DDB874"/>
-  <circle cx="412" cy="252" r="3.5" fill="#DDB874"/>
-  <circle cx="478" cy="252" r="3.5" fill="#DDB874"/>
-  <circle cx="544" cy="252" r="3.5" fill="#DDB874"/>
-  <circle cx="612" cy="252" r="4"   fill="#DDB874"/>
-  <rect class="pill" x="40" y="236" width="178" height="32" rx="6" stroke="#DDB874" stroke-width="2.2"/>
+  <line x1="232" y1="252" x2="612" y2="252" stroke="#C9A961" stroke-width="2.8"/>
+  <circle cx="280" cy="252" r="3.5" fill="#C9A961"/>
+  <circle cx="346" cy="252" r="3.5" fill="#C9A961"/>
+  <circle cx="412" cy="252" r="3.5" fill="#C9A961"/>
+  <circle cx="478" cy="252" r="3.5" fill="#C9A961"/>
+  <circle cx="544" cy="252" r="3.5" fill="#C9A961"/>
+  <circle cx="612" cy="252" r="4"   fill="#C9A961"/>
+  <rect class="pill" x="40" y="236" width="178" height="32" rx="6" stroke="#C9A961" stroke-width="2.2"/>
   <text class="pilltx" x="129" y="257" text-anchor="middle">Ottimizzazione</text>
   <text class="role" x="625" y="256">il motore</text>
 </svg>

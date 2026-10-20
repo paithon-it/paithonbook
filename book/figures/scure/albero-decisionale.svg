@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../albero-decisionale.svg
 -->
 <!--
@@ -21,7 +21,7 @@
     .axis  { stroke:#8E8676; stroke-width:1.6; }
     .split { stroke:#F4ECDD; stroke-width:2.4; }
     .edge  { stroke:#8E8676; stroke-width:1.8; fill:none; }
-    .node  { fill:#0E0C0A; stroke:#BCB3A1; stroke-width:1.8; }
+    .node  { fill:#16130F; stroke:#BCB3A1; stroke-width:1.8; }
     .lbl   { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#BCB3A1; }
     .axl   { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#BCB3A1; }
     .nlbl  { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#F4ECDD; text-anchor:middle; }

@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../overfitting-tre-fit.svg
 -->
 <!--
@@ -18,7 +18,7 @@
      aria-label="Tre grafici a dispersione con la stessa nube di punti a forma di collina. Nel primo una retta quasi orizzontale manca del tutto la curvatura (underfitting). Nel secondo una curva morbida segue bene l'andamento senza toccare ogni punto (buon fit). Nel terzo una curva contorta passa esattamente per ogni punto oscillando in mezzo (overfitting).">
   <style>
     .axis  { stroke:#8E8676; stroke-width:1.4; }
-    .pt    { fill:#E27B52; stroke:#0E0C0A; stroke-width:1; }
+    .pt    { fill:#E27B52; stroke:#16130F; stroke-width:1; }
     .fit   { fill:none; stroke:#5BA39C; stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round; }
     .ttl   { font-family:Fraunces, Georgia, serif; font-size:15px; font-weight:700; fill:#F4ECDD; text-anchor:middle; }
     .cap   { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#BCB3A1; text-anchor:middle; }

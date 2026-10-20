@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../svm-larghezza-strada.svg
 -->
 <!--
@@ -44,7 +44,7 @@
     .margin { stroke:#BCB3A1; stroke-width:1.6; stroke-dasharray:6 5; }
     .teal   { fill:#5BA39C; }
     .terra  { fill:#E27B52; }
-    .sv     { fill:none; stroke:#DDB874; stroke-width:2.6; }
+    .sv     { fill:none; stroke:#C9A961; stroke-width:2.6; }
     .diff   { stroke:#5BA39C; stroke-width:2.2; fill:none; }
     .meas   { stroke:#F4ECDD; stroke-width:2.2; }
     .scarto { stroke:#BCB3A1; stroke-width:4.5; stroke-linecap:round; fill:none; }

@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../palla-certificata.svg
 -->
 <!--
@@ -26,8 +26,8 @@
     .cornice { fill:none; stroke:#34302A; stroke-width:1.5; }
     .va { fill:#5BA39C; opacity:.55; }
     .vb { fill:#E27B52; opacity:.7; }
-    .palla { fill:none; stroke:#DDB874; stroke-width:3; }
-    .garantita { fill:none; stroke:#DDB874; stroke-width:2; stroke-dasharray:6 4; }
+    .palla { fill:none; stroke:#C9A961; stroke-width:3; }
+    .garantita { fill:none; stroke:#C9A961; stroke-width:2; stroke-dasharray:6 4; }
     .x { fill:#F4ECDD; }
     
     @media (prefers-reduced-motion:reduce) { * { animation:none !important; } }

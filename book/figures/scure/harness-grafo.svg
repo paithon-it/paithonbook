@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../harness-grafo.svg
 -->
 <!--
@@ -27,11 +27,11 @@
     .irr  { stroke:#E27B52; stroke-dasharray:5 3; }
     .arco { fill:none; stroke:#34302A; stroke-width:2; }
     .punta { fill:#34302A; }
-    .firma { stroke:#DDB874; stroke-width:4; stroke-linecap:round; }
+    .firma { stroke:#C9A961; stroke-width:4; stroke-linecap:round; }
     .croce { stroke:#E27B52; stroke-width:3; stroke-linecap:round; }
     .casella { fill:none; stroke:#5BA39C; stroke-width:1.5; }
     .rotta { stroke:#E27B52; stroke-dasharray:4 3; }
-    .attesa { stroke:#DDB874; }
+    .attesa { stroke:#C9A961; }
     .nota { font-size:11px; }
         @keyframes guasto{0.00%{opacity:0}22.50%{opacity:0}23.00%{opacity:1}100.00%{opacity:1}}
     @keyframes p0{0.00%{opacity:0}0.00%{opacity:0}0.50%{opacity:1}100.00%{opacity:1}}

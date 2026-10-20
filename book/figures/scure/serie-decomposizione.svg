@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../serie-decomposizione.svg
 -->
 <!--
@@ -11,7 +11,7 @@
   pannelli impilati che condividono l'asse del tempo.
   Dall'alto: serie osservata (terracotta), trend (teal), stagionalita (ocra),
   residuo (barrette warm-black attorno allo zero).
-  Palette-locked: terracotta #E27B52, teal #5BA39C, ocra #DDB874,
+  Palette-locked: terracotta #E27B52, teal #5BA39C, ocra #C9A961,
   warm-black #F4ECDD. Fondo trasparente (light e dark).
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="-32 0 752 540" width="100%" role="img"
@@ -21,7 +21,7 @@
     .base  { stroke:#8E8676; stroke-width:1; opacity:0.6; }
     .obs   { fill:none; stroke:#E27B52; stroke-width:2.4; stroke-linejoin:round; stroke-linecap:round; }
     .trend { fill:none; stroke:#5BA39C; stroke-width:2.6; stroke-linejoin:round; stroke-linecap:round; }
-    .seas  { fill:none; stroke:#DDB874; stroke-width:2.4; stroke-linejoin:round; stroke-linecap:round; }
+    .seas  { fill:none; stroke:#C9A961; stroke-width:2.4; stroke-linejoin:round; stroke-linecap:round; }
     .stem  { stroke:#F4ECDD; stroke-width:2; stroke-linecap:round; }
     .lbl   { font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:600; fill:#F4ECDD; text-anchor:end; }
     .op    { font-family:Fraunces, Georgia, serif; font-size:20px; fill:#8E8676; text-anchor:middle; }

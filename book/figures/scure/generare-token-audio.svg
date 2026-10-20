@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../generare-token-audio.svg
 -->
 <!--
@@ -31,7 +31,7 @@
   <path d="M 140,60 L 168,60" stroke="#F4ECDD" stroke-width="2"/>
   <polygon points="172,60 162,55 162,65" fill="#F4ECDD"/>
   <g transform="translate(178,36)">
-    <polygon points="0,0 64,12 64,36 0,48" fill="#DDB874" stroke="#F4ECDD" stroke-width="2" stroke-linejoin="round"/>
+    <polygon points="0,0 64,12 64,36 0,48" fill="#C9A961" stroke="#F4ECDD" stroke-width="2" stroke-linejoin="round"/>
     <text class="lbl" x="30" y="28" text-anchor="middle">encoder</text>
     <text class="leg" x="32" y="66" text-anchor="middle">del codec</text>
   </g>
@@ -55,8 +55,8 @@
   <!-- RIGA 2: generare e decodificare -->
   <g transform="translate(20,196)">
     <rect x="0" y="0" width="110" height="48" rx="6" fill="#5BA39C" stroke="#F4ECDD" stroke-width="2"/>
-    <text class="lbl" x="55" y="22" text-anchor="middle" style="fill:#0E0C0A">Transformer</text>
-    <text class="leg" x="55" y="38" text-anchor="middle" style="fill:#0E0C0A">un token alla volta</text>
+    <text class="lbl" x="55" y="22" text-anchor="middle" style="fill:#16130F">Transformer</text>
+    <text class="leg" x="55" y="38" text-anchor="middle" style="fill:#16130F">un token alla volta</text>
   </g>
   <path d="M 134,220 L 150,220" stroke="#F4ECDD" stroke-width="2"/>
   <polygon points="150,220 140,215 140,225" fill="#F4ECDD"/>
@@ -69,15 +69,15 @@
     </g>
     <text class="tok" x="22"  y="25" text-anchor="middle" fill="#F4ECDD">92</text>
     <text class="tok" x="74"  y="25" text-anchor="middle" fill="#F4ECDD">31</text>
-    <text class="tok" x="126" y="25" text-anchor="middle" fill="#0E0C0A">58</text>
-    <text class="tok" x="178" y="25" text-anchor="middle" fill="#0E0C0A">6</text>
+    <text class="tok" x="126" y="25" text-anchor="middle" fill="#16130F">58</text>
+    <text class="tok" x="178" y="25" text-anchor="middle" fill="#16130F">6</text>
     <text class="leg" x="100" y="60" text-anchor="middle">la fila continua: i nuovi</text>
     <text class="leg" x="100" y="74" text-anchor="middle">sono in terracotta</text>
   </g>
   <path d="M 372,220 L 400,220" stroke="#F4ECDD" stroke-width="2"/>
   <polygon points="404,220 394,215 394,225" fill="#F4ECDD"/>
   <g transform="translate(410,196)">
-    <polygon points="0,12 64,0 64,48 0,36" fill="#DDB874" stroke="#F4ECDD" stroke-width="2" stroke-linejoin="round"/>
+    <polygon points="0,12 64,0 64,48 0,36" fill="#C9A961" stroke="#F4ECDD" stroke-width="2" stroke-linejoin="round"/>
     <text class="lbl" x="31" y="28" text-anchor="middle">decoder</text>
     <text class="leg" x="32" y="66" text-anchor="middle">del codec</text>
   </g>

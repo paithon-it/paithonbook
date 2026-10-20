@@ -1,125 +1,125 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../gestire-dati-mancanti.svg
 -->
 <svg viewBox="0 0 740 396" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="La stessa tabella di cinque righe e tre colonne (eta, acquisti, spesa), con due caselle vuote, gli acquisti della seconda riga e la spesa della terza, trattata in tre modi affiancati. Nel primo le due righe incomplete sono barrate: con loro se ne vanno 4 numeri buoni e restano tre righe su cinque. Nel secondo i due buchi sono riempiti con la media della loro colonna, 4,75 acquisti e 159,25 di spesa, uguale per chiunque. Nel terzo il valore si ricostruisce dalle altre colonne della stessa riga, e due frecce tratteggiate orizzontali entrano in ciascun buco partendo dalle celle che gli stanno accanto: chi ha fatto nove acquisti prende 347 di spesa invece di 159,25, e chi ha speso 240 prende 6,2 acquisti invece di 4,75. In fondo, la regola d'oro: il valore con cui si riempie si calcola solo sui dati con cui il modello impara.">
   <defs><marker id="ft" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5BA39C"/></marker></defs>
-  <rect x="0" y="0" width="740" height="396" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="740" height="396" fill="#16130F"/>
   <text x="370.0" y="30" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" fill="#F4ECDD" font-weight="bold">La stessa tabella bucata, tre strategie</text>
   <text x="370.0" y="50" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">due caselle vuote: gli acquisti della seconda riga e la spesa della terza</text>
   <text x="118.0" y="76" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#E27B52" font-weight="bold">1 &#183; Elimina</text>
   <text x="118.0" y="93" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#BCB3A1">le righe con un buco: via</text>
-  <text x="366.0" y="76" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#DDB874" font-weight="bold">2 &#183; Riempi con la media</text>
+  <text x="366.0" y="76" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#C9A961" font-weight="bold">2 &#183; Riempi con la media</text>
   <text x="366.0" y="93" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#BCB3A1">della colonna</text>
   <text x="614.0" y="76" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#5BA39C" font-weight="bold">3 &#183; Ricostruisci dalla riga</text>
   <text x="614.0" y="93" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#BCB3A1">dalle altre colonne, l&#236; accanto</text>
   <text x="66.0" y="110" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#BCB3A1">eta</text>
   <text x="118.0" y="110" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#BCB3A1">acquisti</text>
   <text x="170.0" y="110" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#BCB3A1">spesa</text>
-  <rect x="40" y="118" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="40" y="118" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="66.0" y="135" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">34</text>
-  <rect x="92" y="118" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="92" y="118" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="118.0" y="135" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">3</text>
-  <rect x="144" y="118" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="144" y="118" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="170.0" y="135" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">118</text>
-  <rect x="40" y="144" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="40" y="144" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="66.0" y="161" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#BCB3A1">41</text>
-  <rect x="92" y="144" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="92" y="144" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="118.0" y="161" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#BCB3A1"></text>
-  <rect x="144" y="144" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="144" y="144" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="170.0" y="161" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#BCB3A1">240</text>
   <line x1="34" y1="157.0" x2="202" y2="157.0" stroke="#E27B52" stroke-width="2"/>
-  <rect x="40" y="170" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="40" y="170" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="66.0" y="187" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#BCB3A1">52</text>
-  <rect x="92" y="170" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="92" y="170" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="118.0" y="187" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#BCB3A1">9</text>
-  <rect x="144" y="170" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="144" y="170" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="170.0" y="187" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#BCB3A1"></text>
   <line x1="34" y1="183.0" x2="202" y2="183.0" stroke="#E27B52" stroke-width="2"/>
-  <rect x="40" y="196" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="40" y="196" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="66.0" y="213" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">23</text>
-  <rect x="92" y="196" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="92" y="196" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="118.0" y="213" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">2</text>
-  <rect x="144" y="196" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="144" y="196" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="170.0" y="213" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">83</text>
-  <rect x="40" y="222" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="40" y="222" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="66.0" y="239" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">29</text>
-  <rect x="92" y="222" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="92" y="222" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="118.0" y="239" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">5</text>
-  <rect x="144" y="222" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="144" y="222" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="170.0" y="239" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">196</text>
   <text x="118.0" y="270" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#E27B52">se ne vanno anche 4 numeri buoni</text>
   <text x="118.0" y="286" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#BCB3A1">e restano tre righe su cinque</text>
   <text x="314.0" y="110" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#BCB3A1">eta</text>
   <text x="366.0" y="110" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#BCB3A1">acquisti</text>
   <text x="418.0" y="110" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#BCB3A1">spesa</text>
-  <rect x="288" y="118" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="288" y="118" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="314.0" y="135" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">34</text>
-  <rect x="340" y="118" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="340" y="118" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="366.0" y="135" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">3</text>
-  <rect x="392" y="118" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="392" y="118" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="418.0" y="135" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">118</text>
-  <rect x="288" y="144" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="288" y="144" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="314.0" y="161" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">41</text>
-  <rect x="340" y="144" width="52" height="26" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.2"/>
-  <text x="366.0" y="161" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#0E0C0A" font-weight="bold">4,75</text>
-  <rect x="392" y="144" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="340" y="144" width="52" height="26" fill="#C9A961" stroke="#F4ECDD" stroke-width="1.2"/>
+  <text x="366.0" y="161" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#16130F" font-weight="bold">4,75</text>
+  <rect x="392" y="144" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="418.0" y="161" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">240</text>
-  <rect x="288" y="170" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="288" y="170" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="314.0" y="187" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">52</text>
-  <rect x="340" y="170" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="340" y="170" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="366.0" y="187" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">9</text>
-  <rect x="392" y="170" width="52" height="26" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.2"/>
-  <text x="418.0" y="187" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#0E0C0A" font-weight="bold">159,25</text>
-  <rect x="288" y="196" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="392" y="170" width="52" height="26" fill="#C9A961" stroke="#F4ECDD" stroke-width="1.2"/>
+  <text x="418.0" y="187" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#16130F" font-weight="bold">159,25</text>
+  <rect x="288" y="196" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="314.0" y="213" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">23</text>
-  <rect x="340" y="196" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="340" y="196" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="366.0" y="213" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">2</text>
-  <rect x="392" y="196" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="392" y="196" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="418.0" y="213" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">83</text>
-  <rect x="288" y="222" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="288" y="222" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="314.0" y="239" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">29</text>
-  <rect x="340" y="222" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="340" y="222" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="366.0" y="239" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">5</text>
-  <rect x="392" y="222" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="392" y="222" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="418.0" y="239" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">196</text>
-  <text x="366.0" y="270" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#DDB874">ogni buco prende lo stesso valore</text>
+  <text x="366.0" y="270" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#C9A961">ogni buco prende lo stesso valore</text>
   <text x="366.0" y="286" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#BCB3A1">e la colonna si sparpaglia meno di prima</text>
   <text x="562.0" y="110" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#BCB3A1">eta</text>
   <text x="614.0" y="110" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#BCB3A1">acquisti</text>
   <text x="666.0" y="110" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#BCB3A1">spesa</text>
-  <rect x="536" y="118" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="536" y="118" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="562.0" y="135" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">34</text>
-  <rect x="588" y="118" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="588" y="118" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="614.0" y="135" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">3</text>
-  <rect x="640" y="118" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="640" y="118" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="666.0" y="135" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">118</text>
-  <rect x="536" y="144" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="536" y="144" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="562.0" y="161" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">41</text>
   <rect x="588" y="144" width="52" height="26" fill="#5BA39C" stroke="#F4ECDD" stroke-width="1.2"/>
-  <text x="614.0" y="161" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#0E0C0A" font-weight="bold">6,2</text>
-  <rect x="640" y="144" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <text x="614.0" y="161" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#16130F" font-weight="bold">6,2</text>
+  <rect x="640" y="144" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="666.0" y="161" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">240</text>
-  <rect x="536" y="170" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="536" y="170" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="562.0" y="187" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">52</text>
-  <rect x="588" y="170" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="588" y="170" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="614.0" y="187" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">9</text>
   <rect x="640" y="170" width="52" height="26" fill="#5BA39C" stroke="#F4ECDD" stroke-width="1.2"/>
-  <text x="666.0" y="187" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#0E0C0A" font-weight="bold">347</text>
-  <rect x="536" y="196" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <text x="666.0" y="187" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#16130F" font-weight="bold">347</text>
+  <rect x="536" y="196" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="562.0" y="213" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">23</text>
-  <rect x="588" y="196" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="588" y="196" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="614.0" y="213" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">2</text>
-  <rect x="640" y="196" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="640" y="196" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="666.0" y="213" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">83</text>
-  <rect x="536" y="222" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="536" y="222" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="562.0" y="239" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">29</text>
-  <rect x="588" y="222" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="588" y="222" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="614.0" y="239" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">5</text>
-  <rect x="640" y="222" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="640" y="222" width="52" height="26" fill="#16130F" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="666.0" y="239" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">196</text>
   <line x1="576.0" y1="165" x2="584" y2="165" stroke="#5BA39C" stroke-width="1.4" stroke-dasharray="3 3" marker-end="url(#ft)"/>
   <line x1="652.0" y1="165" x2="644" y2="165" stroke="#5BA39C" stroke-width="1.4" stroke-dasharray="3 3" marker-end="url(#ft)"/>

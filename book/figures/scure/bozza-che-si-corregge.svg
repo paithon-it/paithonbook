@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../bozza-che-si-corregge.svg
 -->
 <!--
@@ -24,7 +24,7 @@
     .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#F4ECDD; }
     .acc { fill:#5BA39C; }
     .ric { fill:#E27B52; }
-    .bozza { fill:#DDB874; opacity:.8; }
+    .bozza { fill:#C9A961; opacity:.8; }
     .tgt { fill:none; stroke:#F4ECDD; stroke-width:1.5; }
     .asse { stroke:#34302A; stroke-width:2; }
         @keyframes sgonfia{0.00%{transform:scaleY(var(--k))}18.33%{transform:scaleY(var(--k))}33.33%{transform:scaleY(1)}100.00%{transform:scaleY(1)}}

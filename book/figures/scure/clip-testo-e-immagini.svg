@@ -1,12 +1,12 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../clip-testo-e-immagini.svg
 -->
 <svg viewBox="0 0 660 430" width="100%" role="img" aria-label="Schema di CLIP: encoder di immagini e di testo producono vettori confrontati in una matrice di similarita, la cui diagonale segna le coppie corrette" xmlns="http://www.w3.org/2000/svg" font-family="Inter, system-ui, sans-serif">
-  <rect x="0" y="0" width="660" height="430" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="660" height="430" fill="#16130F"/>
   <text x="24" y="32" font-size="17" font-weight="700" fill="#F4ECDD">Una matrice di similarità: la diagonale sono le coppie giuste</text>
 
   <!-- text encoder band -->
@@ -15,9 +15,9 @@
 
   <!-- column headers: three text snippets -->
   <g stroke="#F4ECDD" stroke-width="1.5">
-    <rect x="340" y="104" width="56" height="30" rx="4" fill="#0E0C0A"/>
-    <rect x="412" y="104" width="56" height="30" rx="4" fill="#0E0C0A"/>
-    <rect x="484" y="104" width="56" height="30" rx="4" fill="#0E0C0A"/>
+    <rect x="340" y="104" width="56" height="30" rx="4" fill="#16130F"/>
+    <rect x="412" y="104" width="56" height="30" rx="4" fill="#16130F"/>
+    <rect x="484" y="104" width="56" height="30" rx="4" fill="#16130F"/>
   </g>
   <g stroke="#8E8676" stroke-width="1.5">
     <line x1="346" y1="113" x2="384" y2="113"/><line x1="346" y1="120" x2="378" y2="120"/><line x1="346" y1="127" x2="382" y2="127"/>
@@ -30,7 +30,7 @@
   <text x="79" y="260" font-size="13" fill="#5BA39C" text-anchor="middle" transform="rotate(-90 79 260)">image encoder ↓</text>
 
   <!-- row headers: three image icons -->
-  <g stroke="#F4ECDD" stroke-width="1.5" fill="#0E0C0A">
+  <g stroke="#F4ECDD" stroke-width="1.5" fill="#16130F">
     <rect x="104" y="158" width="40" height="34" rx="4"/>
     <rect x="104" y="230" width="40" height="34" rx="4"/>
     <rect x="104" y="302" width="40" height="34" rx="4"/>
@@ -45,18 +45,18 @@
   <g>
     <!-- row 0 -->
     <rect x="340" y="152" width="60" height="60" fill="#E27B52" stroke="#F4ECDD" stroke-width="1.5"/>
-    <rect x="412" y="152" width="60" height="60" fill="#0E0C0A" stroke="#34302A" stroke-width="1.5"/>
-    <rect x="484" y="152" width="60" height="60" fill="#0E0C0A" stroke="#34302A" stroke-width="1.5"/>
+    <rect x="412" y="152" width="60" height="60" fill="#16130F" stroke="#34302A" stroke-width="1.5"/>
+    <rect x="484" y="152" width="60" height="60" fill="#16130F" stroke="#34302A" stroke-width="1.5"/>
     <!-- row 1 -->
-    <rect x="340" y="224" width="60" height="60" fill="#0E0C0A" stroke="#34302A" stroke-width="1.5"/>
+    <rect x="340" y="224" width="60" height="60" fill="#16130F" stroke="#34302A" stroke-width="1.5"/>
     <rect x="412" y="224" width="60" height="60" fill="#E27B52" stroke="#F4ECDD" stroke-width="1.5"/>
-    <rect x="484" y="224" width="60" height="60" fill="#0E0C0A" stroke="#34302A" stroke-width="1.5"/>
+    <rect x="484" y="224" width="60" height="60" fill="#16130F" stroke="#34302A" stroke-width="1.5"/>
     <!-- row 2 -->
-    <rect x="340" y="296" width="60" height="60" fill="#0E0C0A" stroke="#34302A" stroke-width="1.5"/>
-    <rect x="412" y="296" width="60" height="60" fill="#0E0C0A" stroke="#34302A" stroke-width="1.5"/>
+    <rect x="340" y="296" width="60" height="60" fill="#16130F" stroke="#34302A" stroke-width="1.5"/>
+    <rect x="412" y="296" width="60" height="60" fill="#16130F" stroke="#34302A" stroke-width="1.5"/>
     <rect x="484" y="296" width="60" height="60" fill="#E27B52" stroke="#F4ECDD" stroke-width="1.5"/>
   </g>
-  <g fill="#0E0C0A" font-size="20" font-weight="700" text-anchor="middle">
+  <g fill="#16130F" font-size="20" font-weight="700" text-anchor="middle">
     <text x="370" y="190">●</text><text x="442" y="262">●</text><text x="514" y="334">●</text>
   </g>
 

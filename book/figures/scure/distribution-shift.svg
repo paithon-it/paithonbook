@@ -1,8 +1,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../distribution-shift.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 340" role="img" aria-label="Due distribuzioni a campana sfalsate lungo l'asse degli input: quella dei dati di addestramento a sinistra e quella dei dati incontrati in produzione spostata a destra. Una linea tratteggiata segna il punto in cui il modello è stato tarato, lontano dal grosso dei nuovi dati.">

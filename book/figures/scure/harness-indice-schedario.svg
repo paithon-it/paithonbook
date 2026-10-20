@@ -1,15 +1,15 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../harness-indice-schedario.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 440" role="img" aria-label="Due modi di dare le istruzioni a un agente. A sinistra, un manuale: un file unico e lunghissimo, disegnato come una colonna di righe fitte; una riga terracotta a metà della colonna è la regola importante, e una nota dice che lì, a metà, il modello la legge peggio. Tutta la colonna entra nel contesto a ogni sessione. A destra, un indice: un file corto di poche righe che entra sempre nel contesto, con frecce verso quattro schede della cartella docs (architettura, piani, specifiche, riferimenti); soltanto la scheda dei piani, quella che serve al compito del giorno, è evidenziata ed entra nel contesto.">
   <defs><marker id="fn-is" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#F4ECDD"/></marker><marker id="ft-is" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#E27B52"/></marker></defs>
   <text x="215" y="36" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="700" fill="#F4ECDD">UN MANUALE</text>
   <text x="620" y="36" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="700" fill="#F4ECDD">UN INDICE</text>
-  <rect x="130" y="56" width="170" height="300" rx="8" fill="#DDB874" fill-opacity="0.10" stroke="#F4ECDD" stroke-width="2"/>
+  <rect x="130" y="56" width="170" height="300" rx="8" fill="#C9A961" fill-opacity="0.10" stroke="#F4ECDD" stroke-width="2"/>
   <text x="215" y="76" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11.5" font-weight="700" fill="#F4ECDD">AGENTS.md</text>
   <line x1="146" y1="90" x2="246" y2="90" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
   <line x1="146" y1="98" x2="276" y2="98" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
@@ -52,7 +52,7 @@
   <text x="215" y="386" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#F4ECDD">entra tutto nel contesto,</text>
   <text x="215" y="404" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#F4ECDD">a ogni sessione</text>
   <line x1="370" y1="56" x2="370" y2="410" stroke="#34302A" stroke-width="1.4" stroke-dasharray="5 5"/>
-  <rect x="410" y="150" width="150" height="104" rx="8" fill="#DDB874" fill-opacity="0.22" stroke="#F4ECDD" stroke-width="2"/>
+  <rect x="410" y="150" width="150" height="104" rx="8" fill="#C9A961" fill-opacity="0.22" stroke="#F4ECDD" stroke-width="2"/>
   <text x="485" y="172" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11.5" font-weight="700" fill="#F4ECDD">AGENTS.md</text>
   <line x1="426" y1="186" x2="516" y2="186" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>
   <line x1="426" y1="196" x2="536" y2="196" stroke="#34302A" stroke-width="2" stroke-linecap="round"/>

@@ -1,12 +1,12 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../bias-varianza.svg
 -->
 <svg viewBox="0 0 660 560" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Quattro bersagli che illustrano le combinazioni di bias e varianza">
-  <rect width="660" height="560" fill="#0E0C0A"/>
+  <rect width="660" height="560" fill="#16130F"/>
   <text x="205" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#F4ECDD" font-weight="bold">varianza bassa</text>
   <text x="490" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#F4ECDD" font-weight="bold">varianza alta</text>
   <text x="28" y="170" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#F4ECDD" font-weight="bold" transform="rotate(-90 28 170)">bias basso</text>
@@ -15,7 +15,7 @@
   <!-- bias basso, varianza bassa -->
   <g>
     <circle cx="205" cy="170" r="90" fill="none" stroke="#F4ECDD" stroke-width="1.5"/>
-    <circle cx="205" cy="170" r="58" fill="none" stroke="#DDB874" stroke-width="1.5"/>
+    <circle cx="205" cy="170" r="58" fill="none" stroke="#C9A961" stroke-width="1.5"/>
     <circle cx="205" cy="170" r="26" fill="none" stroke="#5BA39C" stroke-width="1.5"/>
     <circle cx="205" cy="170" r="4" fill="#F4ECDD"/>
     <circle cx="198" cy="164" r="6" fill="#E27B52"/>
@@ -28,7 +28,7 @@
   <!-- bias basso, varianza alta -->
   <g>
     <circle cx="490" cy="170" r="90" fill="none" stroke="#F4ECDD" stroke-width="1.5"/>
-    <circle cx="490" cy="170" r="58" fill="none" stroke="#DDB874" stroke-width="1.5"/>
+    <circle cx="490" cy="170" r="58" fill="none" stroke="#C9A961" stroke-width="1.5"/>
     <circle cx="490" cy="170" r="26" fill="none" stroke="#5BA39C" stroke-width="1.5"/>
     <circle cx="490" cy="170" r="4" fill="#F4ECDD"/>
     <circle cx="440" cy="130" r="6" fill="#E27B52"/>
@@ -42,7 +42,7 @@
   <!-- bias alto, varianza bassa -->
   <g>
     <circle cx="205" cy="420" r="90" fill="none" stroke="#F4ECDD" stroke-width="1.5"/>
-    <circle cx="205" cy="420" r="58" fill="none" stroke="#DDB874" stroke-width="1.5"/>
+    <circle cx="205" cy="420" r="58" fill="none" stroke="#C9A961" stroke-width="1.5"/>
     <circle cx="205" cy="420" r="26" fill="none" stroke="#5BA39C" stroke-width="1.5"/>
     <circle cx="205" cy="420" r="4" fill="#F4ECDD"/>
     <circle cx="150" cy="378" r="6" fill="#E27B52"/>
@@ -55,7 +55,7 @@
   <!-- bias alto, varianza alta -->
   <g>
     <circle cx="490" cy="420" r="90" fill="none" stroke="#F4ECDD" stroke-width="1.5"/>
-    <circle cx="490" cy="420" r="58" fill="none" stroke="#DDB874" stroke-width="1.5"/>
+    <circle cx="490" cy="420" r="58" fill="none" stroke="#C9A961" stroke-width="1.5"/>
     <circle cx="490" cy="420" r="26" fill="none" stroke="#5BA39C" stroke-width="1.5"/>
     <circle cx="490" cy="420" r="4" fill="#F4ECDD"/>
     <circle cx="425" cy="360" r="6" fill="#E27B52"/>

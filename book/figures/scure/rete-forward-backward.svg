@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../rete-forward-backward.svg
 -->
 <!--
@@ -20,7 +20,7 @@
      aria-label="Rete neurale a quattro strati: input, due strati nascosti e uscita. Una freccia in alto (forward) indica i dati che avanzano da sinistra a destra fino alla previsione; una freccia in basso (backward) indica il gradiente dell'errore che si propaga a ritroso, da destra verso gli strati iniziali a sinistra.">
   <style>
     .edge  { stroke:#34302A; stroke-width:1; opacity:.6; }
-    .node  { fill:#0E0C0A; stroke-width:2.5; }
+    .node  { fill:#16130F; stroke-width:2.5; }
     .flow  { font-family:Fraunces, Georgia, serif; font-size:16px; font-weight:600; }
     .lbl   { font-family:Inter, system-ui, sans-serif; font-size:12px; fill:#BCB3A1; }
   </style>
@@ -51,15 +51,15 @@
   <circle class="node" cx="110" cy="195" r="15" stroke="#5BA39C"/>
   <circle class="node" cx="110" cy="255" r="15" stroke="#5BA39C"/>
   <!-- strato nascosto 1 (ocra) -->
-  <circle class="node" cx="300" cy="117" r="15" stroke="#DDB874"/>
-  <circle class="node" cx="300" cy="169" r="15" stroke="#DDB874"/>
-  <circle class="node" cx="300" cy="221" r="15" stroke="#DDB874"/>
-  <circle class="node" cx="300" cy="273" r="15" stroke="#DDB874"/>
+  <circle class="node" cx="300" cy="117" r="15" stroke="#C9A961"/>
+  <circle class="node" cx="300" cy="169" r="15" stroke="#C9A961"/>
+  <circle class="node" cx="300" cy="221" r="15" stroke="#C9A961"/>
+  <circle class="node" cx="300" cy="273" r="15" stroke="#C9A961"/>
   <!-- strato nascosto 2 (ocra) -->
-  <circle class="node" cx="490" cy="117" r="15" stroke="#DDB874"/>
-  <circle class="node" cx="490" cy="169" r="15" stroke="#DDB874"/>
-  <circle class="node" cx="490" cy="221" r="15" stroke="#DDB874"/>
-  <circle class="node" cx="490" cy="273" r="15" stroke="#DDB874"/>
+  <circle class="node" cx="490" cy="117" r="15" stroke="#C9A961"/>
+  <circle class="node" cx="490" cy="169" r="15" stroke="#C9A961"/>
+  <circle class="node" cx="490" cy="221" r="15" stroke="#C9A961"/>
+  <circle class="node" cx="490" cy="273" r="15" stroke="#C9A961"/>
   <!-- uscita (terracotta) -->
   <circle class="node" cx="650" cy="165" r="15" stroke="#E27B52"/>
   <circle class="node" cx="650" cy="225" r="15" stroke="#E27B52"/>

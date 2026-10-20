@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../diffusione-avanti.svg
 -->
 <!--
@@ -22,7 +22,7 @@
     .lbl { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#F4ECDD; }
     .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#BCB3A1; }
     .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#F4ECDD; }
-    .velo { fill:#0E0C0A; }
+    .velo { fill:#16130F; }
     .num  { font-family:Inter, system-ui, sans-serif; font-size:13px; font-weight:700; }
         @keyframes d0{0.00%{opacity:1}0.01%{opacity:1}0.00%{opacity:0}100.00%{opacity:0}}
     @keyframes d1{0.00%{opacity:1}16.07%{opacity:1}16.67%{opacity:0}100.00%{opacity:0}}

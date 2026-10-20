@@ -1,8 +1,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../tabella-dei-voti.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 300" role="img" aria-label="A sinistra il labirinto di tre righe per quattro colonne: in alto a destra la meta che paga pi&#249; uno, sotto di lei la trappola che ne toglie uno, un muro al centro, e quattro quadretti liberi marcati con le lettere A, B, C e D. A destra la tabella dei voti: una riga per quadretto, una colonna per ciascuna delle quattro mosse, su, gi&#249;, sinistra e destra. La riga A porta 0,90 0,81 0,81 1,00; la riga B, evidenziata come il suo quadretto, porta 0,90 0,73 0,81 e meno 1,00, e il voto pi&#249; alto della riga, lo 0,90 della mossa su, &#232; cerchiato; la riga C porta 0,81 0,73 0,66 0,66; la riga D porta meno 1,00 0,66 0,73 0,66. Sotto, la riga che spiega: si guarda la riga del quadretto in cui si &#232;, e si prende il voto pi&#249; alto.">

@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../convoluzione-trasposta.svg
 -->
 <!--
@@ -28,10 +28,10 @@
   </defs>
 
   <!-- mappa 2x2 -->
-  <rect x="60" y="80" width="128" height="128" fill="#0E0C0A"/>
+  <rect x="60" y="80" width="128" height="128" fill="#16130F"/>
   <rect x="60"  y="80"  width="64" height="64" fill="#5BA39C" fill-opacity="0.20" stroke="#F4ECDD" stroke-width="1.2"/>
   <rect x="124" y="80"  width="64" height="64" fill="#E27B52" fill-opacity="0.20" stroke="#F4ECDD" stroke-width="1.2"/>
-  <rect x="60"  y="144" width="64" height="64" fill="#DDB874" fill-opacity="0.30" stroke="#F4ECDD" stroke-width="1.2"/>
+  <rect x="60"  y="144" width="64" height="64" fill="#C9A961" fill-opacity="0.30" stroke="#F4ECDD" stroke-width="1.2"/>
   <rect x="124" y="144" width="64" height="64" fill="#BCB3A1" fill-opacity="0.25" stroke="#F4ECDD" stroke-width="1.2"/>
   <text class="num" x="92"  y="119" text-anchor="middle">1</text>
   <text class="num" x="156" y="119" text-anchor="middle">2</text>
@@ -41,7 +41,7 @@
 
   <!-- kernel (timbro) -->
   <text class="leg" x="334" y="52" text-anchor="middle">timbro (kernel) 2×2</text>
-  <rect x="300" y="64" width="68" height="68" fill="#0E0C0A"/>
+  <rect x="300" y="64" width="68" height="68" fill="#16130F"/>
   <rect x="300" y="64" width="34" height="34" fill="none" stroke="#F4ECDD" stroke-width="1.2"/>
   <rect x="334" y="64" width="34" height="34" fill="none" stroke="#F4ECDD" stroke-width="1.2"/>
   <rect x="300" y="98" width="34" height="34" fill="none" stroke="#F4ECDD" stroke-width="1.2"/>
@@ -56,7 +56,7 @@
   <text class="leg" x="326" y="184" text-anchor="middle">stride 2</text>
 
   <!-- mappa 4x4 -->
-  <rect x="470" y="48" width="192" height="192" fill="#0E0C0A"/>
+  <rect x="470" y="48" width="192" height="192" fill="#16130F"/>
   <!-- blocco del valore 1 (teal) -->
   <rect x="470" y="48"  width="48" height="48" fill="#5BA39C" fill-opacity="0.20" stroke="#F4ECDD" stroke-width="0.8"/>
   <rect x="518" y="48"  width="48" height="48" fill="#5BA39C" fill-opacity="0.20" stroke="#F4ECDD" stroke-width="0.8"/>
@@ -68,10 +68,10 @@
   <rect x="566" y="96"  width="48" height="48" fill="#E27B52" fill-opacity="0.20" stroke="#F4ECDD" stroke-width="0.8"/>
   <rect x="614" y="96"  width="48" height="48" fill="#E27B52" fill-opacity="0.20" stroke="#F4ECDD" stroke-width="0.8"/>
   <!-- blocco del valore 3 (ocra) -->
-  <rect x="470" y="144" width="48" height="48" fill="#DDB874" fill-opacity="0.30" stroke="#F4ECDD" stroke-width="0.8"/>
-  <rect x="518" y="144" width="48" height="48" fill="#DDB874" fill-opacity="0.30" stroke="#F4ECDD" stroke-width="0.8"/>
-  <rect x="470" y="192" width="48" height="48" fill="#DDB874" fill-opacity="0.30" stroke="#F4ECDD" stroke-width="0.8"/>
-  <rect x="518" y="192" width="48" height="48" fill="#DDB874" fill-opacity="0.30" stroke="#F4ECDD" stroke-width="0.8"/>
+  <rect x="470" y="144" width="48" height="48" fill="#C9A961" fill-opacity="0.30" stroke="#F4ECDD" stroke-width="0.8"/>
+  <rect x="518" y="144" width="48" height="48" fill="#C9A961" fill-opacity="0.30" stroke="#F4ECDD" stroke-width="0.8"/>
+  <rect x="470" y="192" width="48" height="48" fill="#C9A961" fill-opacity="0.30" stroke="#F4ECDD" stroke-width="0.8"/>
+  <rect x="518" y="192" width="48" height="48" fill="#C9A961" fill-opacity="0.30" stroke="#F4ECDD" stroke-width="0.8"/>
   <!-- blocco del valore 4 (grigio caldo) -->
   <rect x="566" y="144" width="48" height="48" fill="#BCB3A1" fill-opacity="0.25" stroke="#F4ECDD" stroke-width="0.8"/>
   <rect x="614" y="144" width="48" height="48" fill="#BCB3A1" fill-opacity="0.25" stroke="#F4ECDD" stroke-width="0.8"/>
@@ -80,7 +80,7 @@
   <!-- contorni dei blocchi -->
   <rect x="470" y="48"  width="96" height="96" fill="none" stroke="#5BA39C" stroke-width="2.5"/>
   <rect x="566" y="48"  width="96" height="96" fill="none" stroke="#E27B52" stroke-width="2.5"/>
-  <rect x="470" y="144" width="96" height="96" fill="none" stroke="#DDB874" stroke-width="2.5"/>
+  <rect x="470" y="144" width="96" height="96" fill="none" stroke="#C9A961" stroke-width="2.5"/>
   <rect x="566" y="144" width="96" height="96" fill="none" stroke="#BCB3A1" stroke-width="2.5"/>
   <!-- valori -->
   <text class="numS" x="494" y="78"  text-anchor="middle">1</text>

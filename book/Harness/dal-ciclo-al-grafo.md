@@ -351,28 +351,29 @@ ordine fissato; la sostituzione, con due rami che scrivono lo stesso campo,
 non si ammette, e LangGraph la rifiuta.
 
 La ripresa dopo un guasto riparte dall'ultimo punto salvato, e dà al nodo in
-corso una semantica *almeno una volta*: se si è interrotto dopo aver prodotto
-un effetto esterno ma prima che il punto fosse scritto, alla ripresa lo
-produce di nuovo. Vale a una condizione, che il punto si scriva in un archivio
-durevole e in modo sincrono, prima di passare al nodo dopo: un dizionario in
-memoria, come quello del motore, sparisce con il processo. Una semantica
-*esattamente una volta* per gli effetti esterni chiede qualcosa in più dal lato
-di chi li riceve. O nodi idempotenti, cioè tali che eseguirli due volte
+corso una semantica *almeno una volta*: se si è interrotto dopo aver prodotto un
+effetto esterno ma prima che il punto fosse scritto, alla ripresa lo produce di
+nuovo. Vale a una condizione, che il punto si scriva in un archivio durevole e
+in modo sincrono, prima di passare al nodo dopo: un dizionario in memoria, come
+quello del motore, sparisce con il processo. Una semantica *esattamente una
+volta* per gli effetti esterni chiede qualcosa in più dal lato di chi li riceve.
+O nodi idempotenti, la proprietà che la sezione sugli {doc}`attrezzi
+<gli-attrezzi>` chiede agli strumenti, cioè tali che eseguirli due volte
 equivalga a eseguirli una; o una chiave d'idempotenza derivata da filo e passo,
 che il servizio esterno usa per riconoscere la ripetizione (e che conserva per
 un tempo limitato, quindi una ripresa molto tardiva la può superare); o
-un'intenzione con un identificativo, scritta nello stato prima dell'effetto,
-che alla ripresa si confronta con lo stato del servizio esterno. L'intenzione
-da sola dice soltanto che l'effetto forse c'è stato. C'è poi l'ambiente: il
-nodo che lavora sui file cambia il disco, che il punto salvato non contiene,
-quindi alla ripresa lo stato è quello di prima e i file no, ed è un'altra
-ragione per riportarli al commit dell'ultimo punto, come nel passaggio di
-consegne. La terminazione di un grafo con cicli si garantisce con una
-variante intera, limitata dal basso, che decresce a ogni giro e che i nodi non
-possono scrivere, qui $\text{TETTO} - \text{tentativi}$, come il tetto del ciclo
-del loop engineering; non copre le riprese, perché un guasto che si ripete
-sempre fa ripartire il filo senza che la variante scenda, e serve un tetto
-anche ai tentativi per nodo.
+un'intenzione con un identificativo, scritta nello stato prima dell'effetto, che
+alla ripresa si confronta con lo stato del servizio esterno. L'intenzione da
+sola dice soltanto che l'effetto forse c'è stato. C'è poi l'ambiente: il nodo
+che lavora sui file cambia il disco, che il punto salvato non contiene, quindi
+alla ripresa lo stato è quello di prima e i file no, ed è un'altra ragione per
+riportarli al commit dell'ultimo punto, come nel passaggio di consegne. La
+terminazione di un grafo con cicli si garantisce con una variante intera,
+limitata dal basso, che decresce a ogni giro e che i nodi non possono scrivere,
+qui $\text{TETTO} - \text{tentativi}$, come il tetto del ciclo del loop
+engineering; non copre le riprese, perché un guasto che si ripete sempre fa
+ripartire il filo senza che la variante scenda, e serve un tetto anche ai
+tentativi per nodo.
 
 Un nodo irreversibile si comporta come un nodo il cui ingresso arriva da fuori:
 il grafo scrive il punto salvato, si ferma, e riprende quando l'approvazione
@@ -450,12 +451,6 @@ esterno, e come tale va trattato alla ripresa.
 
 `````
 
-Un agente che lavora a lungo è un modello più tutto quello che gli sta
-intorno: istruzioni che indicano dove guardare, un primo turno che prepara, un
-passaggio di consegne fra sessioni, un collaudo che nessuno può aggirare, occhi
-sul sistema e una pulizia che non finisce, e un disegno che regge un guasto.
-Anche quando i ruoli sono più d'uno, come nell'harness di Rajasekaran, sono
-modi di portare in fondo un lavoro solo, su un filo solo. Quando i lavori e gli
-agenti diventano molti, ciascuno con il suo modello, le sue istruzioni e il suo
-contesto, la domanda diventa chi parla con chi, ed è quella del
-{doc}`capitolo sui sistemi multi-agente </SistemiMultiAgente/overview>`.
+Ogni pezzo dell'harness, dalle istruzioni al grafo, l'ha scritto e misurato
+finora una persona. Può scriverlo anche un programma, che lo prova e lo cambia:
+è {doc}`l'harness che si riscrive <l-harness-che-si-riscrive>`.

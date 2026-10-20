@@ -58,7 +58,9 @@ LARGA, ALTA = 794, 132
 # c'e' e la prima pagina del libro era due terzi di crema vuota.
 FREGIO_LARGO, FREGIO_ALTO = 794, 420
 
-# Gli unici colori ammessi. Vedi `_static/brand/tokens.css`.
+# Gli unici colori ammessi. Vedi `_static/brand/tokens.css`: sono i cinque
+# --pt-illus-* (terracotta, teal, ocra, ink, cream), la palette fissa delle
+# illustrazioni, che e' quella della carta.
 TERRACOTTA, TEAL, OCRA, NERO, CREMA = (
     "#B5532C", "#2D5A5C", "#C9A961", "#1A1A1A", "#F8F5EE")
 INCHIOSTRI = (TERRACOTTA, TEAL, OCRA)

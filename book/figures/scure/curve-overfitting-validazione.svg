@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../curve-overfitting-validazione.svg
 -->
 <!--
@@ -26,7 +26,7 @@
     .axis  { stroke:#8E8676; stroke-width:1.5; }
     .train { fill:none; stroke:#5BA39C; stroke-width:3.4; stroke-linecap:round; stroke-linejoin:round; }
     .val   { fill:none; stroke:#E27B52; stroke-width:3.4; stroke-linecap:round; stroke-linejoin:round; }
-    .stop  { stroke:#DDB874; stroke-width:2.2; stroke-dasharray:5 5; }
+    .stop  { stroke:#C9A961; stroke-width:2.2; stroke-dasharray:5 5; }
     .meas  { stroke:#BCB3A1; stroke-width:1.3; }
     .lbl   { font-family:Inter, system-ui, sans-serif; font-size:14px; fill:#BCB3A1; }
     .lbls  { font-family:Inter, system-ui, sans-serif; font-size:12px; fill:#BCB3A1; }
@@ -52,7 +52,7 @@
   <path class="val" d="M 70,90 C 130,162 185,207 225,208 C 275,209 350,168 438,138"/>
 
   <!-- punto di minimo della validazione -->
-  <circle cx="225" cy="208" r="5.5" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
+  <circle cx="225" cy="208" r="5.5" fill="#C9A961" stroke="#F4ECDD" stroke-width="1.5"/>
 
   <!-- misura del divario a destra -->
   <line class="meas" x1="426" y1="146" x2="426" y2="246"

@@ -18,16 +18,21 @@ quando serve. Questo file scrive quelle copie in `book/figures/scure/`.
 
 ## La mappa, e da dove viene
 
-Non e' una scelta di gusto: sono i token del blocco `[data-theme="dark"]` di
-`book/_static/brand/tokens.css`, cioe' gli stessi colori con cui il sito e il
-libro dipingono tutto il resto della pagina scura, piu' la tabella
-chiaro/scuro del segno in `book/_static/brand/logos/README.md`.
+Non sta qui: e' quella del brand, `book/_static/brand/figure/palette.json`,
+letta con il suo `palette.py`. E' la stessa con cui il sito ricolora le sue
+figure e con cui il motore di Manim disegna le clip in tema scuro, quindi una
+figura statica e una clip sulla stessa pagina hanno lo stesso fondo e gli
+stessi colori. Chi vuole cambiare un colore scuro lo cambia nel brand, e qui
+basta rigenerare.
 
 I **grigi** sono il punto delicato. Il libro ne usa parecchi, e una mappa che
 li schiacciasse tutti su due token ne fonderebbe due in una figura sola: coppie
 come `#5E5852` e `#8B847C`, o `#C5BEAA` e `#E2DCC9`, convivono in molte figure.
-La mappa qui sotto e' scelta perche' **nessuna coppia che convive finisce sullo
-stesso valore**, e chi la tocca rifaccia il conto delle coppie, una per una.
+La regola e' che **nessuna coppia che convive finisce sullo stesso valore**, e
+siccome la mappa sta nel brand e cambia di la', il conto non si fa a mano: lo
+fa `fusioni()` su ogni figura, e una coppia nuova ferma tutto, come un colore
+sconosciuto. Le fusioni volute sono elencate in `FUSIONI_VOLUTE`, ciascuna con
+la sua ragione.
 
 Il verso e' quello dell'inversione: il grigio piu' scuro sul chiaro (quello
 che si vede di piu') diventa il piu' chiaro sullo scuro.
@@ -51,8 +56,8 @@ che si vede di piu') diventa il piu' chiaro sullo scuro.
 
 Un colore che non sta nella mappa ferma tutto. Indovinarlo (schiarirlo di
 tanto, invertirlo) darebbe una figura plausibile e sbagliata in un punto solo,
-che nessuno riaprirebbe mai. Chi aggiunge un colore al libro aggiunge una riga
-qui, e la aggiunge guardando i token del brand.
+che nessuno riaprirebbe mai. Chi aggiunge un colore al libro lo aggiunge nel
+brand, in `figure/palette.json`, guardando i token.
 """
 
 from __future__ import annotations
@@ -74,33 +79,28 @@ SCURE = FIGURE / "scure"
 sys.path.insert(0, str(QUI / "scripts"))
 from coerenza import pagine_del_toc                        # noqa: E402
 
-# chiaro -> scuro, e il token del brand da cui viene. L'ordine e' quello della
-# scala: prima gli ancoraggi, poi i grigi dal piu' scuro al piu' chiaro.
-MAPPA = {
-    "#1A1A1A": ("#F4ECDD", "--pt-fg, l'osso"),
-    "#F8F5EE": ("#0E0C0A", "--pt-bg, la carta scura"),
-    "#B5532C": ("#E27B52", "--pt-accent, la terracotta scura"),
-    "#2D5A5C": ("#5BA39C", "--pt-accent-2, il teal scuro"),
-    "#C9A961": ("#DDB874", "--pt-accent-3, l'ocra scura"),
-    # ocra scurita apposta per fare da TESTO sulla carta chiara (dove l'ocra
-    # piena non si legge). Sul nero il testo lo regge l'ocra scura, e quindi
-    # va li': non e' un colore in piu', e' lo stesso mestiere dall'altra parte.
-    "#9A7B2E": ("#DDB874", "--pt-accent-3, l'ocra scura"),
-    "#5A524A": ("#BCB3A1", "--pt-fg-muted"),
-    "#5E5852": ("#BCB3A1", "--pt-fg-muted"),
-    "#8B847C": ("#8E8676", "--pt-fg-subtle"),
-    "#A89F92": ("#8E8676", "--pt-fg-subtle"),
-    "#C5BEAA": ("#34302A", "--pt-border-strong"),
-    "#C9C2B4": ("#34302A", "--pt-border-strong"),
-    "#E2DCC9": ("#221F1A", "--pt-border"),
-    "#E8E2D5": ("#221F1A", "--pt-border"),
-    "#F2EDE2": ("#16130F", "--pt-bg-elev"),
+# La mappa chiaro -> scuro del brand: i colori della palette delle figure piu'
+# i loro sinonimi (grigi dell'interfaccia rimasti nelle figure). Il percorso e'
+# esplicito per la stessa ragione di quello qui sopra.
+sys.path.insert(0, str(LIBRO / "_static" / "brand" / "figure"))
+import palette                                             # noqa: E402
+
+MAPPA: dict[str, str] = palette.MAPPA_SCURA
+
+# Due colori chiari che finiscono sullo stesso scuro e possono convivere nella
+# stessa figura, perche' lo ha deciso il brand e qui c'e' il perche'. Ogni
+# altra coppia che convive e collide ferma la generazione.
+FUSIONI_VOLUTE = {
+    # l'ocra cupa esiste per fare da TESTO sulla carta chiara, dove l'ocra
+    # piena non si legge. Sul nero l'ocra piena regge da sola come testo, e
+    # quindi il mestiere e' lo stesso dall'altra parte: un colore, non due.
+    frozenset({"#C9A961", "#9A7B2E"}),
 }
 
 # `currentColor` dentro un SVG caricato con <img> non eredita niente dalla
 # pagina: vale il `color` iniziale, cioe' nero. Sulla carta chiara passa per
-# inchiostro; sul fondo scuro sparirebbe.
-CORRENTE = "#F4ECDD"
+# inchiostro; sul fondo scuro sparirebbe, quindi diventa l'inchiostro scuro.
+CORRENTE = palette.scuro("#1A1A1A")
 
 # Palette-locked: il segno della marca non cambia colore in nessun tema.
 FERME = {"triangolo-di-penrose.svg", "favicon.svg"}
@@ -111,8 +111,8 @@ RX_CORRENTE = re.compile(r"\bcurrentColor\b")
 INTESTAZIONE = """<!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../{nome}
 -->
 """
@@ -158,31 +158,61 @@ def da_ricolorare(solo: list[str] | None = None) -> list[pathlib.Path]:
     return file
 
 
+def fusioni(testo: str) -> list[tuple[str, ...]]:
+    """Le coppie di colori della figura che finirebbero sullo stesso scuro.
+
+    Solo quelle che convivono davvero nella figura, e senza le volute: in
+    tema scuro sarebbero due cose diverse disegnate dello stesso colore.
+    """
+    per_scuro: dict[str, set[str]] = {}
+    for m in RX_ESADECIMALE.finditer(testo):
+        chiaro = m.group(0).upper()
+        if chiaro in MAPPA:
+            per_scuro.setdefault(MAPPA[chiaro], set()).add(chiaro)
+    fuse = []
+    for gruppo in per_scuro.values():
+        ordinati = sorted(gruppo)
+        for i, uno in enumerate(ordinati):
+            for altro in ordinati[i + 1:]:
+                if frozenset({uno, altro}) not in FUSIONI_VOLUTE:
+                    fuse.append((uno, altro))
+    return sorted(fuse)
+
+
 def scurisci(testo: str, nome: str) -> str:
     """La stessa figura con la palette scura.
 
-    Rifiuta un colore che non conosce invece di indovinarlo.
+    Rifiuta un colore che non conosce invece di indovinarlo, e due colori che
+    convivono e diventerebbero uno solo.
     """
     ignoti = sorted({m.group(0).upper() for m in RX_ESADECIMALE.finditer(testo)}
                     - set(MAPPA))
     if ignoti:
         raise SystemExit(
             f"{nome}: colori che la mappa non conosce: {', '.join(ignoti)}.\n"
-            f"  Aggiungili in testa a {pathlib.Path(__file__).name}, "
-            f"prendendo il valore dal blocco [data-theme=\"dark\"] di "
-            f"book/_static/brand/tokens.css.")
+            f"  Si aggiungono nel brand, in figure/palette.json (qui "
+            f"book/_static/brand), prendendo il valore scuro dai token.")
+
+    fuse = fusioni(testo)
+    if fuse:
+        raise SystemExit(
+            f"{nome}: colori che convivono e sullo scuro diventerebbero "
+            f"uno solo: {', '.join(' e '.join(c) for c in fuse)}.\n"
+            f"  O la figura smette di usarne uno, o la mappa del brand li "
+            f"separa; se la fusione e' voluta, va in FUSIONI_VOLUTE con la "
+            f"sua ragione.")
 
     # Prima gli esadecimali, POI `currentColor`: al contrario, il valore che
     # `currentColor` lascia al suo posto e' esso stesso un esadecimale, e la
     # passata dopo lo ritrova e non lo riconosce.
-    fuori = RX_ESADECIMALE.sub(lambda m: MAPPA[m.group(0).upper()][0], testo)
+    fuori = RX_ESADECIMALE.sub(lambda m: MAPPA[m.group(0).upper()], testo)
     fuori = RX_CORRENTE.sub(CORRENTE, fuori)
 
     # Il collaudo del proprio attrezzo: dopo la sostituzione non deve
     # sopravvivere nessun colore della palette CHIARA. Se ne resta uno, la
     # regex ha guardato il posto sbagliato e la figura sarebbe uscita a meta'.
     resti = sorted({c for c in MAPPA if c in fuori.upper()}
-                   - {v[0].upper() for v in MAPPA.values()})
+                   - {v.upper() for v in MAPPA.values()})
     assert not resti, f"{nome}: colori chiari sopravvissuti: {resti}"
 
     # L'intestazione va DOPO l'eventuale dichiarazione XML, che deve restare

@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../workflow-ml.svg
 -->
 <!--
@@ -17,7 +17,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 740 210" role="img"
      aria-label="Flusso di un progetto di machine learning: Dati, poi Feature, poi Modello, poi Valutazione, infine Deploy; una freccia di feedback riporta dalla Valutazione alle Feature per iterare il processo">
   <style>
-    .box   { fill:#0E0C0A; }
+    .box   { fill:#16130F; }
     .name  { font-family:Fraunces, Georgia, serif; font-size:17px; font-weight:600; fill:#F4ECDD; }
     .desc  { font-family:Inter, system-ui, sans-serif; font-size:10.5px; fill:#BCB3A1; }
     .fb    { font-family:Inter, system-ui, sans-serif; font-size:11px; font-style:italic; fill:#E27B52; }
@@ -40,7 +40,7 @@
   <text class="desc" x="77"  y="100" text-anchor="middle">raccolta &#183; pulizia</text>
 
   <!-- Feature -->
-  <rect class="box" x="162" y="56" width="110" height="58" rx="6" stroke="#DDB874" stroke-width="2.5"/>
+  <rect class="box" x="162" y="56" width="110" height="58" rx="6" stroke="#C9A961" stroke-width="2.5"/>
   <text class="name" x="217" y="82"  text-anchor="middle">Feature</text>
   <text class="desc" x="217" y="100" text-anchor="middle">rappresentazione</text>
 

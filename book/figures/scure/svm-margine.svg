@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../svm-margine.svg
 -->
 <!--
@@ -28,7 +28,7 @@
     .margin { stroke:#BCB3A1; stroke-width:1.6; stroke-dasharray:6 5; }
     .teal   { fill:#5BA39C; }
     .terra  { fill:#E27B52; }
-    .sv     { fill:none; stroke:#DDB874; stroke-width:2.6; }
+    .sv     { fill:none; stroke:#C9A961; stroke-width:2.6; }
     .meas   { stroke:#F4ECDD; stroke-width:1.4; }
     .lbl    { font-family:Inter, system-ui, sans-serif; font-size:14px; fill:#BCB3A1; }
     .lblp   { font-family:Inter, system-ui, sans-serif; font-size:13px; font-weight:600; }
@@ -74,5 +74,5 @@
   <!-- etichette -->
   <text class="lblp" x="368" y="70" fill="#F4ECDD" text-anchor="end">iperpiano</text>
   <text class="lbl"  x="60"  y="300">margine</text>
-  <text class="lblp" x="150" y="360" fill="#DDB874">vettori di supporto (cerchiati)</text>
+  <text class="lblp" x="150" y="360" fill="#C9A961">vettori di supporto (cerchiati)</text>
 </svg>

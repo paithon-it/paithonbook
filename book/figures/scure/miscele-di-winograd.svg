@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../miscele-di-winograd.svg
 -->
 <!--
@@ -25,10 +25,10 @@
     .cd   { fill:none; stroke:#5BA39C; stroke-width:2; }
     .cg   { fill:none; stroke:#E27B52; stroke-width:2; }
     .val  { font-family:Inter, system-ui, sans-serif; font-size:19px; font-weight:700; fill:#F4ECDD; }
-    .prod { fill:none; stroke:#DDB874; stroke-width:2.6; }
+    .prod { fill:none; stroke:#C9A961; stroke-width:2.6; }
     .filo { stroke:#34302A; stroke-width:1.2; }
     .per  { font-family:Inter, system-ui, sans-serif; font-size:18px; fill:#BCB3A1; }
-    .cont { font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:700; fill:#DDB874; }
+    .cont { font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:700; fill:#C9A961; }
     .espr { font-family:Inter, system-ui, sans-serif; font-size:17px; fill:#F4ECDD; }
     .usc  { font-weight:700; fill:#E27B52; }
         @keyframes t1{0.00%{opacity:0}24.00%{opacity:0}27.00%{opacity:1}100.00%{opacity:1}}

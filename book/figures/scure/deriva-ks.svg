@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../deriva-ks.svg
 -->
 <!--
@@ -24,8 +24,8 @@
     .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#F4ECDD; }
     .rif  { fill:none; stroke:#5BA39C; stroke-width:3; }
     .cor  { fill:none; stroke:#E27B52; stroke-width:3; }
-    .dist { stroke:#DDB874; stroke-width:4; stroke-linecap:round; }
-    .dval { font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:700; fill:#DDB874; }
+    .dist { stroke:#C9A961; stroke-width:4; stroke-linecap:round; }
+    .dval { font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:700; fill:#C9A961; }
     .cap  { font-family:Inter, system-ui, sans-serif; font-size:16px; font-weight:700; }
         @keyframes m0{0.00%{opacity:0}0.00%{opacity:1}8.33%{opacity:1}9.83%{opacity:0}100.00%{opacity:0}}
     @keyframes m1{0.00%{opacity:0}15.17%{opacity:0}16.67%{opacity:1}25.00%{opacity:1}26.50%{opacity:0}100.00%{opacity:0}}

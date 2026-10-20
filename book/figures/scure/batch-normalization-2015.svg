@@ -1,12 +1,12 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../batch-normalization-2015.svg
 -->
 <svg viewBox="0 0 680 360" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A sinistra tre distribuzioni delle attivazioni, spostate e di larghezza diversa, che vagano lungo la rete; una stazione di Batch Normalization le riporta tutte centrate sullo zero con dispersione unitaria; poi i parametri gamma e beta le riscalano dove serve">
-  <rect x="0" y="0" width="680" height="360" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="680" height="360" fill="#16130F"/>
   <text x="340" y="30" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#F4ECDD">Distribuzioni stabilizzate</text>
 
   <!-- asse zero comune -->

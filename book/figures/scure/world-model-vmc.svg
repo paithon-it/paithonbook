@@ -1,8 +1,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../world-model-vmc.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 410" role="img" aria-label="Pipeline del world model: l'ambiente produce un fotogramma che V, l'autoencoder variazionale, comprime in un codice z di 32 numeri; M, una rete ricorrente LSTM, predice la distribuzione del prossimo codice; C, un controller lineare da 867 parametri, legge z e h e sceglie l'azione. L'azione torna all'ambiente e, per una diramazione, rientra anche in M, che senza di essa predirebbe lo stesso futuro qualunque cosa l'agente faccia. Un anello tratteggiato sopra M indica il sogno, in cui la predizione di M rientra come suo input al posto dell'ambiente.">
@@ -14,12 +14,12 @@
       <path d="M0,0 L10,5 L0,10 z" fill="#E27B52"/>
     </marker>
     <marker id="freccia-wm-o" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-      <path d="M0,0 L10,5 L0,10 z" fill="#DDB874"/>
+      <path d="M0,0 L10,5 L0,10 z" fill="#C9A961"/>
     </marker>
   </defs>
 
   <!-- circuito del sogno: M alimenta se stesso -->
-  <path d="M 598 143 C 632 66, 486 66, 505 140" fill="none" stroke="#DDB874" stroke-width="2.2" stroke-dasharray="7 6" marker-end="url(#freccia-wm-o)"/>
+  <path d="M 598 143 C 632 66, 486 66, 505 140" fill="none" stroke="#C9A961" stroke-width="2.2" stroke-dasharray="7 6" marker-end="url(#freccia-wm-o)"/>
   <text x="553" y="38" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#F4ECDD">il &#171;sogno&#187;</text>
   <text x="553" y="56" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#BCB3A1">la predizione di M rientra come suo input</text>
 
@@ -57,7 +57,7 @@
   <line x1="424" y1="205" x2="464" y2="205" stroke="#BCB3A1" stroke-width="2" marker-end="url(#freccia-wm)"/>
 
   <!-- M: memoria -->
-  <rect x="468" y="145" width="170" height="120" rx="8" fill="#DDB874" fill-opacity="0.14" stroke="#DDB874" stroke-width="2.5"/>
+  <rect x="468" y="145" width="170" height="120" rx="8" fill="#C9A961" fill-opacity="0.14" stroke="#C9A961" stroke-width="2.5"/>
   <text x="553" y="184" text-anchor="middle" font-family="Inter, sans-serif" font-size="24" font-weight="700" fill="#F4ECDD">M</text>
   <text x="553" y="206" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#F4ECDD">memoria</text>
   <text x="553" y="225" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">LSTM: la distribuzione</text>

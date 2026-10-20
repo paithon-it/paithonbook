@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../assi-girati.svg
 -->
 <!--
@@ -24,9 +24,9 @@
     .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#F4ECDD; }
     .pt { fill:#5BA39C; fill-opacity:0.38; }
     .asse { stroke:#E27B52; stroke-width:2.5; }
-    .guida { stroke:#DDB874; stroke-width:2; stroke-dasharray:5 5; }
-    .tick { fill:#DDB874; }
-    .scheda { fill:#DDB874; stroke:#F4ECDD; stroke-width:2; }
+    .guida { stroke:#C9A961; stroke-width:2; stroke-dasharray:5 5; }
+    .tick { fill:#C9A961; }
+    .scheda { fill:#C9A961; stroke:#F4ECDD; stroke-width:2; }
     .lett { fill:#E27B52; }
     .asse { transform-box:view-box;
         transform-origin:558.0px 218.0px; }

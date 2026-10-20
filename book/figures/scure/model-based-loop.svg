@@ -1,8 +1,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../model-based-loop.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 420" role="img"
@@ -18,21 +18,21 @@
 
   <!-- box A: esperienza reale (ambiente) -->
   <rect x="60" y="70" width="250" height="90" rx="10" fill="#5BA39C" stroke="#F4ECDD" stroke-width="2"/>
-  <text x="185" y="108" text-anchor="middle" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#0E0C0A">Esperienza reale</text>
-  <text x="185" y="132" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" fill="#0E0C0A">l&#8217;ambiente &#183; il mondo vero</text>
+  <text x="185" y="108" text-anchor="middle" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#16130F">Esperienza reale</text>
+  <text x="185" y="132" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" fill="#16130F">l&#8217;ambiente &#183; il mondo vero</text>
 
   <!-- box B: modello appreso -->
-  <rect x="450" y="70" width="250" height="90" rx="10" fill="#DDB874" stroke="#F4ECDD" stroke-width="2"/>
+  <rect x="450" y="70" width="250" height="90" rx="10" fill="#C9A961" stroke="#F4ECDD" stroke-width="2"/>
   <text x="575" y="108" text-anchor="middle" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#F4ECDD">Modello appreso</text>
   <text x="575" y="132" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" fill="#F4ECDD">dinamica + ricompensa</text>
 
   <!-- box C: rollout immaginati / planning -->
   <rect x="450" y="250" width="250" height="90" rx="10" fill="#5BA39C" stroke="#F4ECDD" stroke-width="2"/>
-  <text x="575" y="288" text-anchor="middle" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#0E0C0A">Rollout immaginati</text>
-  <text x="575" y="312" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" fill="#0E0C0A">planning &#183; traiettorie simulate</text>
+  <text x="575" y="288" text-anchor="middle" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#16130F">Rollout immaginati</text>
+  <text x="575" y="312" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" fill="#16130F">planning &#183; traiettorie simulate</text>
 
   <!-- box D: policy e valore -->
-  <rect x="60" y="250" width="250" height="90" rx="10" fill="#DDB874" stroke="#F4ECDD" stroke-width="2"/>
+  <rect x="60" y="250" width="250" height="90" rx="10" fill="#C9A961" stroke="#F4ECDD" stroke-width="2"/>
   <text x="185" y="288" text-anchor="middle" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#F4ECDD">Policy e Valore</text>
   <text x="185" y="312" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#F4ECDD">&#960;(a|s) &#183; V(s)</text>
 

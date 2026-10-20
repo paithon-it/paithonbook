@@ -1,8 +1,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../discesa-gradiente-da-zero.svg
 -->
 <svg viewBox="0 0 640 360" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Curva di loss a forma di valle con la traiettoria della discesa del gradiente: punti che partono in alto a sinistra e scendono a passi sempre più corti verso il minimo">
@@ -19,7 +19,7 @@
     controllo sta all'incrocio delle tangenti agli estremi), quindi i marcatori
     cadono sulla curva al pixel, non accanto.
   -->
-  <rect x="0" y="0" width="640" height="360" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="640" height="360" fill="#16130F"/>
   <line x1="60" y1="310" x2="600" y2="310" stroke="#F4ECDD" stroke-width="1.5"/>
   <line x1="60" y1="310" x2="60" y2="40" stroke="#F4ECDD" stroke-width="1.5"/>
   <text x="330" y="345" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#F4ECDD">parametro w</text>
@@ -42,7 +42,7 @@
   <circle cx="280.5" cy="260.5" r="6" fill="#E27B52" stroke="#F4ECDD" stroke-width="1.5"/>
   <circle cx="296.8" cy="265.4" r="6" fill="#E27B52" stroke="#F4ECDD" stroke-width="1.5"/>
   <circle cx="308.3" cy="267.7" r="6" fill="#E27B52" stroke="#F4ECDD" stroke-width="1.5"/>
-  <circle cx="335" cy="270" r="8" fill="#DDB874" stroke="#F4ECDD" stroke-width="2"/>
+  <circle cx="335" cy="270" r="8" fill="#C9A961" stroke="#F4ECDD" stroke-width="2"/>
   <text x="107.9" y="86" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#E27B52">partenza</text>
   <text x="335" y="296" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">minimo</text>
   <text x="430" y="62" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5BA39C">passi lunghi dove la pendenza è forte,</text>

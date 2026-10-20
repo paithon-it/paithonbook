@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../repliche-in-ritardo.svg
 -->
 <!--
@@ -25,9 +25,9 @@
     .asse  { stroke:#34302A; stroke-width:1.2; }
     .traf  { fill:none; stroke:#F4ECDD; stroke-width:2; stroke-linejoin:round; }
     .cap   { fill:none; stroke:#5BA39C; stroke-width:2.2; }
-    .cal   { fill:none; stroke:#DDB874; stroke-width:2.4; stroke-dasharray:6 4; }
+    .cal   { fill:none; stroke:#C9A961; stroke-width:2.4; stroke-dasharray:6 4; }
     .buco  { fill:#E27B52; opacity:.55; }
-    .lente { fill:#DDB874; opacity:.35; stroke:#F4ECDD; stroke-width:.8; }
+    .lente { fill:#C9A961; opacity:.35; stroke:#F4ECDD; stroke-width:.8; }
     .rinvio { stroke:#BCB3A1; stroke-width:1; stroke-dasharray:2 3; }
     .lbb   { font-family:Inter, system-ui, sans-serif; font-size:13px; font-weight:700; fill:#E27B52; }
     .lbc   { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#F4ECDD; }

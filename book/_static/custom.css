@@ -5,6 +5,12 @@
 
 /* Fonte unica della firma visiva: paithon-it/brand (submodule _static/brand). */
 @import "brand/tokens.css";
+/* I font (Fraunces, Inter, JetBrains Mono), ospitati nel brand: niente
+   richieste a Google Fonts. Gli url() di fonts.css sono relativi a lui, quindi
+   i WOFF2 si trovano in `_static/brand/fonts/`, che Sphinx copia con il resto
+   di `_static`. I pesi che esistono sono quelli dei file: Fraunces da 400 a
+   800, Inter e JetBrains Mono da 400 a 600 (il grassetto e' il 600). */
+@import "brand/fonts.css";
 /* Sfondo "aurora" condiviso col sito paithon — stessa fonte, stessi token. */
 @import "brand/aurora.css";
 /*
@@ -27,7 +33,10 @@
 :root {
   /* Palette — da brand */
   --primary-color: var(--pt-accent);        /* terracotta */
-  --primary-light: #D17552;                 /* brand non ha una terracotta chiara in light */
+  /* La terracotta schiarita verso la carta, per la sottolineatura dei link al
+     passaggio del mouse: il brand non ha una terracotta chiara, e mescolata
+     col fondo segue il tema da sola. */
+  --primary-light: color-mix(in srgb, var(--pt-accent) 55%, var(--pt-bg));
   --primary-dark:  var(--pt-accent-hover);  /* terracotta hover */
   --accent-color:  var(--pt-accent-2);      /* verde petrolio */
   --accent-ocra:   var(--pt-accent-3);      /* ocra */
@@ -44,6 +53,10 @@
   --font-body:    var(--pt-font-body);
   --font-heading: var(--pt-font-display);
   --font-mono:    var(--pt-font-mono);
+  /* I blocchi di codice prendono il carattere da `thebe.css`
+     (`pre { font-family: var(--jp-code-font-family) }`), che di suo e' Menlo
+     o DejaVu Sans Mono: il monospazio del brand arriva solo cosi'. */
+  --jp-code-font-family: var(--pt-font-mono);
 
   /* Layout — locale al book. UNA COLONNA SOLA: la misura di lettura vale per
      tutto il contenuto (prosa, codice, figure, tabelle, tab, riquadri), che
@@ -64,11 +77,8 @@
      che si contraddicono. Il corpo è quello della tipografia di lettura del
      brand (`--pt-prose-body`, da 17 a 18px); con --measure a fare da tetto la
      riga sale in modo monotono, e nella colonna di un capitolo con l'indice a
-     destra sta fra 65 e 75 caratteri, anche dentro le schede. Il secondo
-     argomento di ogni var(--pt-prose-*) è il ripiego per un brand fissato a
-     una versione che quei token non li ha ancora: sono gli stessi valori, e
-     se ne vanno quando il submodule li porta. */
-  --pt-corpo:   var(--pt-prose-body, clamp(1.0625rem, 1rem + 0.2vw, 1.125rem));
+     destra sta fra 65 e 75 caratteri, anche dentro le schede. */
+  --pt-corpo:   var(--pt-prose-body);
   --pt-margine: clamp(1.15rem, 0.60rem + 2.20vw, 3rem);
 
   /* Ombre e transizioni — da brand */
@@ -84,8 +94,6 @@
  * var(--pt-*), e i token brand commutano da soli su [data-theme="dark"] e
  * prefers-color-scheme. Il toggle tema NATIVO (sphinx-book-theme) stampa
  * data-theme, quindi il dark eredita interamente da brand.
- * (Unica eccezione: --primary-light, che brand non definisce → resta il
- * literal del :root, uguale in light e dark.)
  */
 
 /* ===== TIPOGRAFIA SUPER LEGGIBILE ===== */
@@ -97,7 +105,7 @@
  */
 body {
   font-family: var(--font-body);
-  line-height: var(--pt-prose-leading, 1.62);
+  line-height: var(--pt-prose-leading);
   color: var(--text-color);
   font-size: var(--pt-corpo);
   -webkit-font-smoothing: antialiased;
@@ -108,7 +116,7 @@ body {
 }
 
 @media (min-width: 48em) {
-  body { line-height: var(--pt-prose-leading-wide, 1.72); }
+  body { line-height: var(--pt-prose-leading-wide); }
 }
 
 /* Titoli display Fraunces — voce editoriale espressiva.
@@ -129,8 +137,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  font-size: var(--pt-prose-h1, clamp(2.1rem, 1.5rem + 2.6vw, 3.2rem));
-  font-weight: var(--pt-prose-heading-weight, 400);
+  font-size: var(--pt-prose-h1);
+  font-weight: var(--pt-prose-heading-weight);
   letter-spacing: -0.025em;
   margin-top: 0;
   margin-bottom: 1.5rem;
@@ -142,53 +150,64 @@ h1 {
    due i temi. Con un brand che il token non lo ha ancora, il titolo resta del
    colore del testo. */
 h2 {
-  color: var(--pt-prose-h2-color, var(--pt-accent-3-ink, var(--text-color)));
-  font-size: var(--pt-prose-h2, clamp(1.5rem, 1.25rem + 1.1vw, 2rem));
-  font-weight: var(--pt-prose-heading-weight, 400);
+  color: var(--pt-prose-h2-color);
+  font-size: var(--pt-prose-h2);
+  font-weight: var(--pt-prose-heading-weight);
   line-height: 1.2;
   letter-spacing: -0.015em;
   padding-bottom: 0.4rem;
-  border-bottom: var(--pt-prose-rule, 1px) solid var(--border-color);
+  border-bottom: var(--pt-prose-rule) solid var(--border-color);
   margin-top: 3rem;
   margin-bottom: 1.1rem;
 }
 
 /* Il tema dichiara `.bd-article-container h1, h2 { font-weight: 500 }`, che
-   vince sulle regole qui sopra per specificità; e siccome i pesi di Fraunces
-   caricati sono 400, 600 e 800, il 500 cade sul 400. Il peso dei due titoli
+   vince sulle regole qui sopra per specificità, e 500 non è un peso di
+   Fraunces nel brand (400, 600, 800). Il peso dei due titoli
    maggiori si scrive allora con lo stesso selettore, e vale quello che si
    legge: il tondo leggero del brand, che regge la misura grande senza
    gridare. */
 .bd-article-container h1,
 .bd-article-container h2 {
-  font-weight: var(--pt-prose-heading-weight, 400);
+  font-weight: var(--pt-prose-heading-weight);
 }
 
 .bd-article-container h2 {
-  color: var(--pt-prose-h2-color, var(--pt-accent-3-ink, var(--text-color)));
+  color: var(--pt-prose-h2-color);
+}
+
+/* Lo stesso tema colora gli altri titoli dell'articolo con
+   `--pst-color-muted`, il grigio freddo di fabbrica (#29313D sul chiaro,
+   #F3F4F5 sullo scuro), e il suo selettore batte `h1 { color: … }` qui
+   sopra. Tornano all'inchiostro del brand: d'oro è solo l'h2. */
+.bd-article-container h1,
+.bd-article-container h3,
+.bd-article-container h4,
+.bd-article-container h5 {
+  color: var(--text-color);
 }
 
 h3 {
-  font-size: var(--pt-prose-h3, clamp(1.2rem, 1.1rem + 0.5vw, 1.4rem));
+  font-size: var(--pt-prose-h3);
   color: var(--text-color);
   margin-top: 2.25rem;
   margin-bottom: 0.75rem;
 }
 
 h4 {
-  font-size: var(--pt-prose-h4, clamp(1.15rem, 1.1rem + 0.3vw, 1.3rem));
+  font-size: var(--pt-prose-h4);
   margin-top: 2rem;
 }
 
 h5 {
-  font-size: var(--pt-prose-h5, clamp(1.1rem, 1.08rem + 0.1vw, 1.15rem));
+  font-size: var(--pt-prose-h5);
   margin-top: 2rem;
 }
 
 /* Paragrafi. Il corpo lo decide `body`: qui `1.1em` moltiplicava quella
    misura, e dentro una lista o un riquadro i moltiplicatori si sommavano. */
 p {
-  margin: 0 0 var(--pt-prose-gap, 1.15em);
+  margin: 0 0 var(--pt-prose-gap);
   font-size: 1em;
 }
 
@@ -334,15 +353,15 @@ article.bd-article,
 }
 
 .bd-sidebar .nav-link:hover {
-  background: rgba(181, 83, 44, 0.08);
+  background: var(--pt-tint-accent);
   color: var(--primary-dark);
   transform: translateX(3px);
 }
 
 .bd-sidebar .nav-link.active {
-  background: rgba(181, 83, 44, 0.10);
+  background: var(--pt-tint-accent);
   color: var(--primary-dark);
-  font-weight: 700;
+  font-weight: var(--pt-weight-semibold);
   box-shadow: inset 3px 0 0 var(--primary-color);
 }
 
@@ -357,6 +376,18 @@ article.bd-article,
 }
 
 /* ===== CODE BLOCKS ULTRA LEGGIBILI ===== */
+/* JetBrains Mono compone `!=`, `->`, `>=`, `==` come un solo segno (sono le
+   sue alternative contestuali, `calt`, che il browser accende da se'): in un
+   blocco di Python la pagina mostrerebbe `≠` e `→`, cioe' codice che non
+   esiste, e chi lo ricopia a mano prende un errore. Spente qui come nel PDF. */
+code,
+pre,
+kbd,
+samp {
+  font-variant-ligatures: none;
+  font-feature-settings: "calt" 0;
+}
+
 code {
   font-family: var(--font-mono);
   font-size: 0.88em;
@@ -426,33 +457,61 @@ pre code {
   line-height: 1.75;
 }
 
-.admonition.note {
-  border-left-color: #2D5A5C;
-  background: rgba(45, 90, 92, 0.06);
+/*
+ * Il colore di ogni tipo di riquadro, e i tre punti dove si vede: il filo a
+ * sinistra, la fascia del titolo e l'icona. Il tema li dipinge con le sue
+ * variabili per tipo (la nota con --pst-color-info, l'«important» con
+ * --pst-color-attention...) e con selettori `div.admonition.note`, che a
+ * specificita' battono `.admonition.note`: scritti cosi', i colori del libro
+ * non ci arrivano. Qui il tipo sceglie un colore solo, e le tre regole sotto
+ * lo usano con un selettore che sta sopra quelli del tema.
+ *
+ * Sono colori dell'interfaccia, non delle illustrazioni: seguono il tema da
+ * soli, e il verde e l'ocra sono quelli da testo, che reggono anche come
+ * filo e come icona.
+ */
+div.admonition {
+  --pt-avviso: var(--pt-accent);
 }
 
-.admonition.warning,
-.admonition.caution {
-  border-left-color: #C9A961;
-  background: rgba(201, 169, 97, 0.10);
+div.admonition.note {
+  --pt-avviso: var(--pt-accent-2);
 }
 
-.admonition.tip,
-.admonition.hint {
-  border-left-color: #2D6A4F;
-  background: rgba(45, 106, 79, 0.06);
+div.admonition.tip,
+div.admonition.hint,
+div.admonition.seealso {
+  --pt-avviso: var(--pt-success);
 }
 
-.admonition.important,
-.admonition.attention,
-.admonition.danger,
-.admonition.error {
-  border-left-color: #B5532C;
-  background: rgba(181, 83, 44, 0.06);
+div.admonition.warning,
+div.admonition.caution {
+  --pt-avviso: var(--pt-warning);
+}
+
+div.admonition.important,
+div.admonition.attention,
+div.admonition.danger,
+div.admonition.error {
+  --pt-avviso: var(--pt-terra);
+}
+
+article.bd-article div.admonition {
+  border-color: var(--border-color);
+  border-left-color: var(--pt-avviso);
+  background: color-mix(in srgb, var(--pt-avviso) 6%, transparent);
+}
+
+article.bd-article div.admonition > .admonition-title {
+  background-color: color-mix(in srgb, var(--pt-avviso) 14%, transparent);
+}
+
+article.bd-article div.admonition > .admonition-title::after {
+  color: var(--pt-avviso);
 }
 
 .admonition-title {
-  font-weight: 700;
+  font-weight: var(--pt-weight-semibold);
   margin-bottom: 1.25rem;
   font-size: 1.25rem;
   font-family: var(--font-heading);
@@ -482,13 +541,13 @@ table {
 
 thead {
   background: var(--accent-color);
-  color: #F8F5EE;
+  color: var(--pt-on-accent-2);
 }
 
 th {
   padding: 1.5rem;
   text-align: left;
-  font-weight: 700;
+  font-weight: var(--pt-weight-semibold);
   font-family: var(--font-heading);
   font-size: 1.05em;
   letter-spacing: 0.02em;
@@ -624,7 +683,7 @@ li {
 
 li::marker {
   color: var(--primary-color);
-  font-weight: bold;
+  font-weight: var(--pt-weight-semibold);
 }
 
 /* Liste annidate */
@@ -651,7 +710,7 @@ li > p:last-child {
 
 /* ===== HEADER E NAVBAR ===== */
 .navbar-brand {
-  font-weight: 700;
+  font-weight: var(--pt-weight-semibold);
   font-size: 1.3rem;
   color: var(--primary-color) !important;
   transition: transform var(--transition-fast);
@@ -698,7 +757,7 @@ nav a {
 
 .btn-primary {
   background: var(--primary-color);
-  color: white;
+  color: var(--pt-on-accent);
 }
 
 .btn-primary:hover {
@@ -936,7 +995,7 @@ html {
     margin-bottom: 0.5rem;
     font-family: var(--pt-font-body, sans-serif);
     font-size: 0.72rem;
-    font-weight: 700;
+    font-weight: var(--pt-weight-semibold, 600);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: #444444;
@@ -1028,9 +1087,18 @@ blockquote cite::before {
 }
 
 /* ===== STRONG & EM - ENFATIZZATI ===== */
+/* Il grassetto e' il 600, come nel PDF: Inter non ha il 700, e chiederlo
+   vorrebbe dire lasciare al browser la scelta del peso. */
 strong, b {
-  font-weight: 700;
+  font-weight: var(--pt-weight-semibold);
   color: var(--text-color);
+}
+
+/* Lo stesso per il codice dentro un link, che il tema mette in `bold`:
+   JetBrains Mono si ferma al 600. */
+code.xref,
+a code {
+  font-weight: var(--pt-weight-semibold);
 }
 
 em, i {
@@ -1115,7 +1183,7 @@ html[data-theme="dark"] {
   --pst-color-heading-color: var(--pt-fg);
   --pst-heading-color: var(--pt-fg);
   --pst-color-inline-code: var(--pt-accent-hover);
-  --pst-color-target: rgba(201, 169, 97, 0.35);
+  --pst-color-target: var(--pt-tint-accent-3);
 
   /* La famiglia dei fondini, che prima mancava. Il tema non tiene un colore
    * solo per ruolo ma una coppia (tinta piena + `-bg`, il rettangolo dietro),
@@ -1130,11 +1198,30 @@ html[data-theme="dark"] {
   --pst-color-accent: var(--pt-accent-3);
   --pst-color-accent-bg: var(--pt-tint-accent-3);
   --pst-color-table-row-hover-bg: var(--pt-bg-tint);
+  --pst-color-table-inner-border: var(--pt-border);
   --pst-color-inline-code-links: var(--pt-accent-2);
+
+  /* I colori di stato, con la loro fascia: il tema li usa per i riquadri
+   * (che il libro ricolora poi tipo per tipo, nella sezione dei riquadri),
+   * per le pastiglie e per gli avvisi. Lasciati di fabbrica sono blu, arancio
+   * e rosso Bootstrap. L'ocra e il verde sono quelli da testo: il tema li usa
+   * anche per icone e scritte. */
+  --pst-color-info: var(--pt-accent-2);
+  --pst-color-info-bg: var(--pt-tint-accent-2);
+  --pst-color-success: var(--pt-success);
+  --pst-color-success-bg: color-mix(in srgb, var(--pt-success) 14%, transparent);
+  --pst-color-warning: var(--pt-warning);
+  --pst-color-warning-bg: var(--pt-tint-accent-3);
+  --pst-color-attention: var(--pt-accent-3-ink);
+  --pst-color-attention-bg: var(--pt-tint-accent-3);
+  --pst-color-danger: var(--pt-error);
+  --pst-color-danger-bg: color-mix(in srgb, var(--pt-error) 14%, transparent);
 
   --pst-font-family-base: var(--font-body);
   --pst-font-family-heading: var(--font-heading);
   --pst-font-family-monospace: var(--font-mono);
+  /* Le didascalie il tema le vuole a 300, che Fraunces del brand non ha. */
+  --pst-font-weight-caption: var(--pt-weight-regular);
 }
 /*
  * Non serve un blocco dark separato: i valori sono var(--pt-*), che commutano
@@ -1389,7 +1476,7 @@ blockquote p.attribution {
 
 /* --- Dettagli editoriali --- */
 ::selection {
-  background: rgba(201, 169, 97, 0.35);
+  background: var(--pt-tint-accent-3);
   color: var(--text-color);
 }
 
@@ -1443,7 +1530,7 @@ hr {
 .header-article-items .btn:hover,
 .bd-header-article button:hover,
 .bd-header-article .btn:hover {
-  background: rgba(181, 83, 44, 0.08);
+  background: var(--pt-tint-accent);
   color: var(--primary-dark);
   transform: none;
   box-shadow: none;
@@ -1478,8 +1565,8 @@ button.copybtn:hover {
 }
 
 button.copybtn:hover svg {
-  color: #F8F5EE;
-  stroke: #F8F5EE;
+  color: var(--pt-on-accent);
+  stroke: var(--pt-on-accent);
 }
 
 /* Footer: le icone Creative Commons in linea col testo, senza ombre.
@@ -1637,12 +1724,14 @@ a.pt-card:hover {
 
 /* Lo <span> resta — è la prima riga della scheda e porta la sua tipografia —
    ma è vuoto nel sorgente: il numero è il suo ::before. */
+/* Il numero e' testo, quindi l'ocra da testo: quella piena sul crema non si
+   legge (2:1). Sullo scuro le due ocra coincidono. */
 .pt-card-num {
   font-family: var(--font-heading);
   font-weight: 800;
   font-size: 1.6rem;
   line-height: 1;
-  color: var(--accent-ocra);
+  color: var(--pt-accent-3-ink);
   letter-spacing: -0.02em;
 }
 
@@ -1678,7 +1767,8 @@ a.pt-card-pdf {
   right: 1.15rem;
   font-family: var(--font-heading);
   font-size: 0.66rem;
-  font-weight: 700;
+  /* l'etichetta e' minuscola: l'800 la tiene leggibile */
+  font-weight: var(--pt-weight-bold);
   letter-spacing: 0.07em;
   line-height: 1;
   padding: 0.3rem 0.45rem;
@@ -1692,7 +1782,7 @@ a.pt-card-pdf {
 }
 
 a.pt-card-pdf:hover {
-  color: var(--bg-main);
+  color: var(--pt-on-accent);
   background: var(--primary-color);
   border-color: transparent;
 }
@@ -1949,7 +2039,8 @@ nav.bd-links p.caption {
   border-top: 1px solid var(--border-color);
   font-family: var(--font-heading);
   font-size: 0.78rem;
-  font-weight: 700;
+  /* sta sopra i titoli dei capitoli, che sono a 600 */
+  font-weight: var(--pt-weight-bold);
   line-height: 1.3;
   letter-spacing: 0.11em;
   text-transform: uppercase;
@@ -2002,7 +2093,7 @@ nav.bd-links li.toctree-l1 > a.reference::before {
   font-size: 0.76em;
   font-weight: 500;
   font-variant-numeric: tabular-nums;
-  color: var(--accent-ocra);
+  color: var(--pt-accent-3-ink);   /* e' testo: l'ocra da testo, come le schede */
 }
 
 nav.bd-links li.toctree-l1 > a.reference:hover {
@@ -2086,10 +2177,10 @@ nav.bd-links li.toctree-l1.current > details > summary .toctree-toggle {
 .pt-scarica {
   margin: 1.6rem 0 2rem;
   padding: 1.1rem 1.3rem;
-  border: 1px solid var(--pt-ocra, #C9A961);
+  border: 1px solid var(--pt-accent-3);
   border-left-width: 3px;
   border-radius: 6px;
-  background: color-mix(in srgb, var(--pt-ocra, #C9A961) 7%, transparent);
+  background: color-mix(in srgb, var(--pt-accent-3) 7%, transparent);
 }
 
 .pt-scarica p {

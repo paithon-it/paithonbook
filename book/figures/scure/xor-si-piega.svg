@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../xor-si-piega.svg
 -->
 <!--
@@ -22,17 +22,17 @@
     .lbl { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#F4ECDD; }
     .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#BCB3A1; }
     .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#F4ECDD; }
-    .pt  { stroke:#0E0C0A; stroke-width:1.5; }
+    .pt  { stroke:#16130F; stroke-width:1.5; }
     .pos { fill:#E27B52; }
     .neg { fill:#5BA39C; }
     .sep { stroke:#F4ECDD; stroke-width:3; fill:none; }
-    .nas { stroke:#DDB874; stroke-width:2.5; fill:none; }
-    .banda { stroke:#DDB874; stroke-opacity:0.16; fill:none; }
+    .nas { stroke:#C9A961; stroke-width:2.5; fill:none; }
+    .banda { stroke:#C9A961; stroke-opacity:0.16; fill:none; }
     .zona { fill:#E27B52; fill-opacity:0.09; }
     .scia { stroke:#34302A; stroke-width:1.6; stroke-dasharray:5 5; }
     .ombra { fill:none; stroke:#34302A; stroke-width:1.6; }
-    .anello { fill:none; stroke:#DDB874; stroke-width:2; }
-    .nom { font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:700; fill:#DDB874; }
+    .anello { fill:none; stroke:#C9A961; stroke-width:2; }
+    .nom { font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:700; fill:#C9A961; }
     .eti { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#BCB3A1; opacity:0; }
     .cnt { font-family:Inter, system-ui, sans-serif; font-size:16px; font-weight:700; fill:#E27B52; }
     #partenza { animation:attenua var(--d) infinite; }

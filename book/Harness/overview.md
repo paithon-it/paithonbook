@@ -77,11 +77,17 @@ preparazione del {doc}`primo turno <il-primo-turno>` e la sua lista delle
 funzionalità; contro il giro che lascia il progetto in disordine, il
 {doc}`passaggio di consegne <passaggio-di-consegne>`; contro la vittoria
 dichiarata e il «fatto» senza prova, {doc}`il collaudo
-<finito-vuol-dire-collaudato>`. Restano due cose che nessun guasto singolo
-mostra: che cosa succede a un sistema che lavora {doc}`quando nessuno guarda
-<quando-nessuno-guarda>`, e come si disegna un lavoro che ha bisogno di più di
-un ciclo, una mappa di passi collegati da frecce che si chiama
-{doc}`grafo <dal-ciclo-al-grafo>`.
+<finito-vuol-dire-collaudato>`. Uno dei rimedi di Young era uno strumento in
+più, e gli strumenti hanno un progetto loro, quello degli {doc}`attrezzi
+<gli-attrezzi>`: che cosa l'agente può chiedere, che cosa gli torna indietro,
+fin dove arriva un errore. Restano le cose che nessun guasto singolo mostra:
+che cosa succede a un sistema che lavora {doc}`quando nessuno guarda
+<quando-nessuno-guarda>`, quanto costa e quanto dura un compito, cioè il suo
+{doc}`conto <il-conto>`, come si disegna un lavoro che ha bisogno di più di un
+ciclo, una mappa di passi collegati da frecce che si chiama {doc}`grafo
+<dal-ciclo-al-grafo>`, e che cosa succede quando a scrivere e a provare
+l'harness è un altro programma, che lo {doc}`riscrive
+<l-harness-che-si-riscrive>`.
 
 ## Che cosa c'è attorno al modello
 

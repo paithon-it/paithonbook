@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../embedding-analogia.svg
 -->
 <!--
@@ -19,7 +19,7 @@
   <defs>
     <marker id="ah-ocra" viewBox="0 0 10 10" refX="8" refY="5"
             markerWidth="7" markerHeight="7" orient="auto">
-      <path d="M0,0 L10,5 L0,10 z" fill="#DDB874"/>
+      <path d="M0,0 L10,5 L0,10 z" fill="#C9A961"/>
     </marker>
     <marker id="ah-teal" viewBox="0 0 10 10" refX="8" refY="5"
             markerWidth="7" markerHeight="7" orient="auto">
@@ -29,7 +29,7 @@
   <style>
     .axis  { stroke:#8E8676; stroke-width:1.5; }
     .constr{ stroke:#34302A; stroke-width:1.3; stroke-dasharray:3 4; }
-    .off-o { stroke:#DDB874; stroke-width:2.6; stroke-linecap:round; }
+    .off-o { stroke:#C9A961; stroke-width:2.6; stroke-linecap:round; }
     .off-t { stroke:#5BA39C; stroke-width:2.6; stroke-linecap:round; }
     .lbl   { font-family:Fraunces, Georgia, serif; font-size:17px; font-weight:600; fill:#F4ECDD; }
     .ann   { font-family:Inter, system-ui, sans-serif; font-size:12.5px; font-style:italic; }
@@ -68,7 +68,7 @@
   <text class="lbl" x="357" y="84"  style="fill:#E27B52">regina</text>
 
   <!-- annotazioni degli offset -->
-  <text class="ann" x="78"  y="163" fill="#DDB874">+ femminile</text>
+  <text class="ann" x="78"  y="163" fill="#C9A961">+ femminile</text>
   <text class="ann" x="225" y="208" text-anchor="middle" fill="#5BA39C">+ regalità</text>
 
   <!-- origine -->

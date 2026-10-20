@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../pandas-selezione-filtri-groupby.svg
 -->
 <!--
@@ -24,13 +24,13 @@
     .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#F4ECDD; }
     .grA  { fill:#E27B52; fill-opacity:0.30; stroke:#E27B52;
             stroke-width:1.8; }
-    .grB  { fill:#DDB874; fill-opacity:0.38; stroke:#DDB874;
+    .grB  { fill:#C9A961; fill-opacity:0.38; stroke:#C9A961;
             stroke-width:1.8; }
     .grC  { fill:#5BA39C; fill-opacity:0.26; stroke:#5BA39C;
             stroke-width:1.8; }
     .ris  { fill:none; stroke-width:2; }
     .grAb { stroke:#E27B52; }
-    .grBb { stroke:#DDB874; }
+    .grBb { stroke:#C9A961; }
     .grCb { stroke:#5BA39C; }
     .cel  { fill:none; stroke:#34302A; stroke-width:1.4; }
     .tgrA { font-family:Inter, system-ui, sans-serif; font-size:12.5px; fill:#F4ECDD; }

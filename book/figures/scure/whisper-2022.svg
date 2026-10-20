@@ -1,12 +1,12 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../whisper-2022.svg
 -->
 <svg viewBox="0 0 820 300" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pipeline di Whisper: forma d'onda audio, spettrogramma log-mel, Transformer encoder-decoder, token di testo">
-  <rect x="0" y="0" width="820" height="300" fill="#0E0C0A"/>
+  <rect x="0" y="0" width="820" height="300" fill="#16130F"/>
   <defs>
     <marker id="arrow" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
       <path d="M0,0 L7,3 L0,6" fill="none" stroke="#F4ECDD" stroke-width="1.5"/>
@@ -24,14 +24,14 @@
   <!-- Stage 2: spectrogram (mel bands + time gridlines) -->
   <g>
     <rect x="188" y="100" width="150" height="20" fill="#5BA39C"/>
-    <rect x="188" y="120" width="150" height="20" fill="#DDB874"/>
+    <rect x="188" y="120" width="150" height="20" fill="#C9A961"/>
     <rect x="188" y="140" width="150" height="20" fill="#E27B52"/>
-    <rect x="188" y="160" width="150" height="20" fill="#DDB874"/>
+    <rect x="188" y="160" width="150" height="20" fill="#C9A961"/>
     <rect x="188" y="180" width="150" height="20" fill="#5BA39C"/>
-    <line x1="218" y1="100" x2="218" y2="200" stroke="#0E0C0A" stroke-width="1.5"/>
-    <line x1="248" y1="100" x2="248" y2="200" stroke="#0E0C0A" stroke-width="1.5"/>
-    <line x1="278" y1="100" x2="278" y2="200" stroke="#0E0C0A" stroke-width="1.5"/>
-    <line x1="308" y1="100" x2="308" y2="200" stroke="#0E0C0A" stroke-width="1.5"/>
+    <line x1="218" y1="100" x2="218" y2="200" stroke="#16130F" stroke-width="1.5"/>
+    <line x1="248" y1="100" x2="248" y2="200" stroke="#16130F" stroke-width="1.5"/>
+    <line x1="278" y1="100" x2="278" y2="200" stroke="#16130F" stroke-width="1.5"/>
+    <line x1="308" y1="100" x2="308" y2="200" stroke="#16130F" stroke-width="1.5"/>
     <rect x="188" y="100" width="150" height="100" fill="none" stroke="#F4ECDD" stroke-width="1.5"/>
   </g>
   <text x="263" y="220" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">spettrogramma</text>

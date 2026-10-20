@@ -1,8 +1,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../actor-critic.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 300" role="img"
@@ -20,9 +20,9 @@
   </defs>
   <style>
     .box   { fill:none; stroke:#F4ECDD; stroke-width:2.5; }
-    .env   { fill:none; stroke:#DDB874; stroke-width:3; }
+    .env   { fill:none; stroke:#C9A961; stroke-width:3; }
     .ttl   { font-family:Inter, system-ui, sans-serif; font-weight:700; fill:#F4ECDD; }
-    .in    { font-family:Inter, system-ui, sans-serif; fill:#0E0C0A; }
+    .in    { font-family:Inter, system-ui, sans-serif; fill:#16130F; }
     .lbl   { font-family:Inter, system-ui, sans-serif; font-weight:600; }
     .sm    { font-family:Inter, system-ui, sans-serif; font-size:11px; fill:#BCB3A1; }
   </style>

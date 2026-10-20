@@ -1,8 +1,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../seq2seq-attenzione.svg
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 430" role="img" aria-label="Encoder-decoder con attenzione: in basso sei stati dell'encoder bidirezionale per Il gatto nero salta sul muro, in alto il decoder che genera The black cat; mentre produce cat, frecce di spessore diverso collegano ogni stato dell'encoder al decoder, e la piu spessa parte da gatto.">
@@ -26,13 +26,13 @@
   <line x1="530" y1="46" x2="530" y2="34" stroke="#E27B52" stroke-width="2" marker-end="url(#freccia-s2s)"/>
 
   <!-- celle del decoder -->
-  <rect x="204" y="50" width="92" height="44" rx="8" fill="#0E0C0A" stroke="#E27B52" stroke-width="2"/>
+  <rect x="204" y="50" width="92" height="44" rx="8" fill="#16130F" stroke="#E27B52" stroke-width="2"/>
   <text x="250" y="77" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#F4ECDD">s&#8321;</text>
-  <rect x="344" y="50" width="92" height="44" rx="8" fill="#0E0C0A" stroke="#E27B52" stroke-width="2"/>
+  <rect x="344" y="50" width="92" height="44" rx="8" fill="#16130F" stroke="#E27B52" stroke-width="2"/>
   <text x="390" y="77" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#F4ECDD">s&#8322;</text>
   <rect x="484" y="50" width="92" height="44" rx="8" fill="#E27B52" fill-opacity="0.15" stroke="#E27B52" stroke-width="2.5"/>
   <text x="530" y="77" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#F4ECDD">s&#8323;</text>
-  <rect x="624" y="50" width="92" height="44" rx="8" fill="#0E0C0A" stroke="#E27B52" stroke-width="1.5" stroke-opacity="0.5"/>
+  <rect x="624" y="50" width="92" height="44" rx="8" fill="#16130F" stroke="#E27B52" stroke-width="1.5" stroke-opacity="0.5"/>
   <text x="670" y="77" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#BCB3A1">&#8230;</text>
 
   <!-- ricorrenza del decoder (solo in avanti) -->
@@ -41,12 +41,12 @@
   <line x1="578" y1="72" x2="620" y2="72" stroke="#BCB3A1" stroke-width="2" marker-end="url(#freccia-s2s)"/>
 
   <!-- frecce di attenzione: da ogni stato encoder verso s3, spessore = peso -->
-  <line x1="156" y1="296" x2="506" y2="98" stroke="#DDB874" stroke-width="1" stroke-opacity="0.55"/>
-  <line x1="268" y1="296" x2="516" y2="98" stroke="#DDB874" stroke-width="5"/>
-  <line x1="380" y1="296" x2="526" y2="98" stroke="#DDB874" stroke-width="2.5" stroke-opacity="0.9"/>
-  <line x1="492" y1="296" x2="536" y2="98" stroke="#DDB874" stroke-width="1.2" stroke-opacity="0.55"/>
-  <line x1="604" y1="296" x2="546" y2="98" stroke="#DDB874" stroke-width="0.8" stroke-opacity="0.5"/>
-  <line x1="716" y1="296" x2="556" y2="98" stroke="#DDB874" stroke-width="0.8" stroke-opacity="0.5"/>
+  <line x1="156" y1="296" x2="506" y2="98" stroke="#C9A961" stroke-width="1" stroke-opacity="0.55"/>
+  <line x1="268" y1="296" x2="516" y2="98" stroke="#C9A961" stroke-width="5"/>
+  <line x1="380" y1="296" x2="526" y2="98" stroke="#C9A961" stroke-width="2.5" stroke-opacity="0.9"/>
+  <line x1="492" y1="296" x2="536" y2="98" stroke="#C9A961" stroke-width="1.2" stroke-opacity="0.55"/>
+  <line x1="604" y1="296" x2="546" y2="98" stroke="#C9A961" stroke-width="0.8" stroke-opacity="0.5"/>
+  <line x1="716" y1="296" x2="556" y2="98" stroke="#C9A961" stroke-width="0.8" stroke-opacity="0.5"/>
 
   <!-- pesi delle due frecce principali -->
   <text x="338" y="258" font-family="Inter, sans-serif" font-size="12.5" font-weight="700" fill="#F4ECDD">&#945; = 0,62</text>
@@ -57,9 +57,9 @@
   <text x="24" y="166" font-family="Inter, sans-serif" font-size="12" fill="#BCB3A1">degli stati dell'encoder</text>
 
   <!-- legenda -->
-  <line x1="24" y1="206" x2="64" y2="206" stroke="#DDB874" stroke-width="5"/>
+  <line x1="24" y1="206" x2="64" y2="206" stroke="#C9A961" stroke-width="5"/>
   <text x="72" y="210" font-family="Inter, sans-serif" font-size="11.5" fill="#BCB3A1">peso &#945; grande</text>
-  <line x1="24" y1="228" x2="64" y2="228" stroke="#DDB874" stroke-width="1" stroke-opacity="0.55"/>
+  <line x1="24" y1="228" x2="64" y2="228" stroke="#C9A961" stroke-width="1" stroke-opacity="0.55"/>
   <text x="72" y="232" font-family="Inter, sans-serif" font-size="11.5" fill="#BCB3A1">peso &#945; piccolo</text>
 
   <!-- celle dell'encoder -->

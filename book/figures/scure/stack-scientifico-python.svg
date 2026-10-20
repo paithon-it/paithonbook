@@ -2,8 +2,8 @@
 <!--
   GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
   La prossima rigenerazione cancella qualunque cosa venga scritta
-  qui dentro. La palette e' quella del blocco [data-theme=dark]
-  di book/_static/brand/tokens.css.
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
   fonte: ../stack-scientifico-python.svg
 -->
 <!--
@@ -18,7 +18,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 350" role="img"
      aria-label="Diagramma a strati dello stack scientifico di Python: alla base Python, sopra NumPy, poi Pandas Matplotlib e scikit-learn, in cima PyTorch e TensorFlow">
   <style>
-    .box   { fill:#0E0C0A; }
+    .box   { fill:#16130F; }
     .name  { font-family:Fraunces, Georgia, serif; font-size:18px; font-weight:600; fill:#F4ECDD; }
     .desc  { font-family:Inter, system-ui, sans-serif; font-size:12px; fill:#BCB3A1; }
     .conn  { stroke:#8E8676; stroke-width:1.5; stroke-dasharray:3 4; }
@@ -44,13 +44,13 @@
   <text class="desc" x="364" y="68"  text-anchor="middle">reti neurali (Google)</text>
 
   <!-- Strato 2: Pandas, Matplotlib, scikit-learn -->
-  <rect class="box" x="30"  y="108" width="136" height="58" rx="6" stroke="#DDB874" stroke-width="2.5"/>
+  <rect class="box" x="30"  y="108" width="136" height="58" rx="6" stroke="#C9A961" stroke-width="2.5"/>
   <text class="name" x="98"  y="135" text-anchor="middle">Pandas</text>
   <text class="desc" x="98"  y="153" text-anchor="middle">dati tabellari</text>
-  <rect class="box" x="182" y="108" width="136" height="58" rx="6" stroke="#DDB874" stroke-width="2.5"/>
+  <rect class="box" x="182" y="108" width="136" height="58" rx="6" stroke="#C9A961" stroke-width="2.5"/>
   <text class="name" x="250" y="135" text-anchor="middle">Matplotlib</text>
   <text class="desc" x="250" y="153" text-anchor="middle">grafici</text>
-  <rect class="box" x="334" y="108" width="136" height="58" rx="6" stroke="#DDB874" stroke-width="2.5"/>
+  <rect class="box" x="334" y="108" width="136" height="58" rx="6" stroke="#C9A961" stroke-width="2.5"/>
   <text class="name" x="402" y="135" text-anchor="middle">scikit-learn</text>
   <text class="desc" x="402" y="153" text-anchor="middle">ML classico</text>
 
