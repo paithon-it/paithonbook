@@ -67,50 +67,50 @@ Il problema è che un modello non ci dice, di suo, *perché* decide come decide.
 esce, e i numeri che stanno in mezzo si possono anche stampare tutti, ma
 nessuno di essi dice qualcosa che una persona sappia leggere.
 
-Le regole di questo programma, del resto, non le ha scritte nessuno: il modello
-se le è ricavate dagli esempi, e sono i parametri della rete a strati che il
+Del resto, nessuno ha scritto le regole di questo programma: il modello se le è
+ricavate dagli esempi. Sono i parametri della rete a strati che il
 {doc}`capitolo sulle reti neurali </RetiNeurali/overview>` ha montato pezzo per
 pezzo, una tabella di numeri senza nome (milioni, nei modelli di oggi).
 
-Nessuno di quei numeri, preso da solo, significa qualcosa. Il modello non
-risponde soltanto «lupo»: risponde con un punteggio, per esempio una probabilità
-di 0,87 che nella foto ci sia un lupo. Quel valore non sta scritto in nessun
-punto del modello: è l'effetto combinato di tutti i parametri, ognuno dei quali
-spinge un poco verso il lupo o contro, e i loro contributi in gran parte si
-compensano fra loro. Stampare il programma non serve a niente, perché il
-programma *è* quella tabella, e lì dentro la parola «neve» non è scritta da
+Nessuno di quei numeri, preso da solo, significa qualcosa. Ad esempio, il
+modello non risponde soltanto «lupo»: risponde con un punteggio, come una
+probabilità di 0,87 che nella foto ci sia un lupo. Quel valore non sta scritto
+in nessun punto del modello: è l'effetto combinato di tutti i parametri, ognuno
+dei quali spinge un poco verso il lupo o contro, e i loro contributi in gran
+parte si compensano fra loro. Stampare il programma non serve a niente, perché
+il programma *è* quella tabella, e lì dentro la parola «neve» non è scritta da
 nessuna parte. Chiamiamo **interpretabilità** la capacità di capire su che cosa
 si appoggia la risposta di un modello, anche quando il modello non la offre da
 sé.
 
-Se il modello suggerisce un film, un errore costa poco. Se decide se concedere
-un mutuo, se un tumore è maligno o se rilasciare un imputato, la domanda
-«perché?» diventa una questione di fiducia e di giustizia. Lì gli esempi non
-sono fotografie ma righe di una tabella, una per persona, con le feature in
-colonna (il reddito, l'età, i debiti in corso): è alle colonne che i metodi di
-spiegazione chiedono conto delle risposte.
+Se il modello suggerisce un film, un errore costa poco. Se invece decide se
+concedere un mutuo, se un tumore è maligno o se rilasciare un imputato, la
+domanda «perché?» diventa una questione di fiducia e di giustizia. In questi
+casi gli esempi non sono fotografie ma righe di una tabella, una per persona,
+con le feature in colonna (il reddito, l'età, i debiti in corso): è alle
+colonne che i metodi di spiegazione chiedono conto delle risposte.
 
-La domanda «perché?» è anche una questione di legge. Il Regolamento
-generale sulla protezione dei dati europeo (GDPR, applicabile dal 2018) detta
-delle regole sulle decisioni prese da un programma senza che un essere umano ci
-metta mano, e obbliga chi le usa a dare all'interessato, cioè alla persona su
-cui la decisione cade, «informazioni significative sulla logica utilizzata».
-Per anni i giuristi hanno discusso se da lì nascesse un vero e proprio
-«diritto alla spiegazione», e il punto della lite era questo: quelle
-informazioni riguardano il funzionamento del sistema in generale, o si può
-pretendere il motivo della *propria* decisione, quella e non un'altra? Nel
-febbraio del 2025 la Corte di giustizia dell'Unione europea (causa C-203/22) ha
-preso la seconda strada: chi decide deve descrivere la procedura e i principi
-che ha applicato davvero, in modo che l'interessato capisca quali dei suoi dati
-sono stati usati e come, e consegnargli l'algoritmo non basta. L'AI Act, il
-regolamento europeo sull'intelligenza artificiale, aggiunge per le decisioni
-prese sulla base di un sistema ad alto rischio il diritto a spiegazioni chiare e
-significative sul ruolo che il sistema ha avuto e sugli elementi principali
-della decisione (art. 86) {cite}`euaiact2024`. Che cosa debba contenere, in
-concreto, una spiegazione così resta aperto, e la differenza fra le due letture
-è una delle domande che ordinano i metodi di spiegazione: spiegare il
-modello in generale non è la stessa cosa che spiegare una sua singola risposta,
-e non si fa con gli stessi attrezzi.
+La domanda «perché?» è anche una questione di legge. Il Regolamento generale
+sulla protezione dei dati europeo (GDPR, applicabile dal 2018) detta delle
+regole sulle decisioni prese da un programma senza che un essere umano ci metta
+mano, e obbliga chi le usa a dare all'interessato, cioè alla persona su cui la
+decisione cade, «informazioni significative sulla logica utilizzata». Per anni
+i giuristi hanno discusso se da lì nascesse un vero e proprio «diritto alla
+spiegazione», e il punto della lite era questo: quelle informazioni riguardano
+il funzionamento del sistema in generale, o si può pretendere il motivo della
+*propria* decisione, quella e non un'altra? Nel febbraio del 2025 la Corte di
+giustizia dell'Unione europea (causa C-203/22) ha preso la seconda strada: chi
+decide deve descrivere la procedura e i principi che ha applicato davvero, in
+modo che l'interessato capisca quali dei suoi dati sono stati usati e come, e
+consegnargli l'algoritmo non basta. L'AI Act, il regolamento europeo
+sull'intelligenza artificiale, aggiunge per le decisioni prese sulla base di un
+sistema ad alto rischio il diritto a spiegazioni chiare e significative sul
+ruolo che il sistema ha avuto e sugli elementi principali della decisione
+(art. 86) {cite}`euaiact2024`. Che cosa debba contenere, in concreto, una
+spiegazione così resta aperto. La differenza fra le due letture è però una
+delle domande che ordinano i metodi di spiegazione: spiegare il modello in
+generale non è la stessa cosa che spiegare una sua singola risposta, e per
+questo non si fa con gli stessi strumenti.
 
 `````{tab} Elementare
 
@@ -167,7 +167,7 @@ si addestra facendo scendere un solo numero, la perdita, che misura quanto le
 sue risposte sono sbagliate e nient'altro; e si vuole una spiegazione quando
 quel numero non esprime tutte le richieste che gli facciamo: «indovina
 l'animale» si scrive in una formula, «guarda l'animale e non lo sfondo» o «non
-discriminare» no. Elencarle conviene lo stesso, perché guidano
+discriminare» no. Elencarle serve comunque, perché guidano
 *che tipo* di spiegazione cerchiamo.
 
 - **Fiducia.** Un medico non delega una diagnosi a un sistema di cui non
@@ -301,7 +301,7 @@ sezione «Una spiegazione può convincere ed essere falsa».
 I metodi per spiegare un modello sono decine, e presi in blocco sembrano un
 elenco senza capo né coda. Tre domande li mettono in ordine. Sono quasi
 indipendenti l'una dall'altra: l'unico legame è che un modello che si legge da
-sé si legge, per costruzione, con un attrezzo fatto per quel tipo di modello.
+sé si legge, per costruzione, con uno strumento fatto per quel tipo di modello.
 
 `````{tab} Elementare
 
@@ -392,8 +392,7 @@ risposta sola.
 
 Le tre domande, e la {numref}`fig-interpretabilita-assi` con loro, dicono
 *come* lavora un metodo, non che cosa restituisce. Qui c'è una trappola,
-perché sotto la parola «spiegazione» stanno oggetti di forma
-diversissima:
+perché sotto la parola «spiegazione» stanno oggetti di forma diversissima:
 
 - una classifica delle colonne, valida per tutti gli esempi insieme: «in questo
   modello il reddito conta più dell'età, e il colore preferito non conta niente»
@@ -428,12 +427,12 @@ C'è poi una quarta domanda, che non riguarda il funzionamento di un metodo ma
 decide quale risposta sia quella giusta: si vuole spiegare il modello, o il
 mondo? Sembra la stessa cosa e non lo è, e su un caso si vede.
 
-Mettiamo che nella tabella ci siano due colonne che dicono quasi la stessa cosa,
-due colonne gemelle: lo stipendio del mese e il reddito dichiarato in un anno.
-Chi ha l'uno alto ha alto anche l'altro, quindi al modello ne basta una, e
-mettiamo che abbia scelto
-lo stipendio e ignorato il reddito annuo. Adesso chiediamoci quanto vale
-ciascuna delle due colonne, e notiamo che ci sono due domande diverse, non una.
+Ad esempio, mettiamo che nella tabella ci siano due colonne che dicono quasi la
+stessa cosa, due colonne gemelle: lo stipendio del mese e il reddito dichiarato
+in un anno. Chi ha l'uno alto ha alto anche l'altro, quindi al modello ne basta
+una, e mettiamo che abbia scelto lo stipendio e ignorato il reddito annuo.
+Adesso chiediamoci quanto vale ciascuna delle due colonne, e notiamo che ci
+sono due domande diverse, non una.
 
 - «Su che cosa si appoggia questo programma?» Risposta: tutto sullo
   stipendio, zero sul reddito annuo. È la verità sul programma: se cancelli la
@@ -528,18 +527,18 @@ foresta casuale    96.0%, cioè 144 fiori su 150
 
 Una foresta mette ai voti molti alberi cresciuti su campioni diversi, e il voto
 sbaglia meno del singolo albero quando gli errori dei singoli non vanno tutti
-nella stessa direzione. Qui la foresta indovina il 96,0% contro il 94,7%
-dell'alberello, ma su 150 fiori sono due fiori di differenza, troppo pochi per
-dire che sia più brava. In cambio, la logica della foresta non si stampa più,
-perché sono centinaia di ricette che votano invece di una sola. I metodi di
-spiegazione servono quando questo scambio esiste, cioè quando il modello che
-non si legge indovina parecchio di più di uno leggibile.
+nella stessa direzione. Qui la foresta indovina il 96,0% contro il
+94,7% dell'alberello, ma su 150 fiori sono due fiori di differenza, troppo
+pochi per dire che sia più brava. In cambio, la logica della foresta non si
+stampa più, perché sono centinaia di alberi che votano invece di uno solo. I
+metodi di spiegazione servono quando questo scambio esiste, cioè quando il
+modello che non si legge indovina parecchio di più di uno leggibile.
 
 I due fiori, poi, misurano il tetto che all'albero abbiamo messo noi per farlo
 stare in sette righe, e non quanto la leggibilità faccia perdere. Concedendogli
 una domanda in più, un albero di profondità tre, che si stampa ancora tutto in
-una schermata, indovina gli stessi 144 fiori della foresta. Su questi fiori lo
-scambio non c'è.
+una schermata, indovina gli stessi 144 fiori della foresta. Su questi fiori,
+quindi, lo scambio non c'è.
 
 ## Una spiegazione può convincere ed essere falsa
 
@@ -601,7 +600,7 @@ dove $\pi_{\mathbf{x}_0}$ è un peso di prossimità, grande sui punti
 $\mathbf{z}$ vicini a $\mathbf{x}_0$ e quasi nullo su quelli lontani; le
 $\mathbf{z}$ sono perturbazioni estratte da una distribuzione di campionamento
 che sceglie chi usa il metodo (in LIME, sui dati in tabella, quella dei dati di
-addestramento, sicché la località la porta soltanto $\pi_{\mathbf{x}_0}$); e
+addestramento, quindi la località la porta soltanto $\pi_{\mathbf{x}_0}$); e
 $\ell$ è una loss adatta al tipo di uscita: l'indicatrice di disaccordo per
 etichette discrete, uno scarto quadratico per probabilità o punteggi continui.
 La quantità cresce quando la fedeltà cala: tanto più è piccola, tanto più $g$ è
@@ -618,14 +617,13 @@ fedeltà vale per ogni spiegazione, comunque prodotta.
 
 `````
 
-Su questo punto la letteratura è divisa, e per capire perché serve prima la
+Su questo punto la letteratura è divisa. Per capire perché serve prima la
 convinzione che il dibattito mette in discussione: che chiarezza e bravura si
 paghino l'una con l'altra, cioè che un modello leggibile sia per forza più
-scarso di uno oscuro, e che quindi valga la pena accettare l'oscurità per
-avere ragione più spesso. La bravura qui si misura con
-l'accuratezza, la quota di risposte giuste, e chiamiamo quella convinzione il
-presunto **scambio fra accuratezza e chiarezza**; sui fiori dell'iris non lo
-abbiamo trovato.
+scarso di uno oscuro, e che quindi valga la pena accettare l'oscurità per avere
+ragione più spesso. La bravura qui si misura con l'accuratezza, la quota di
+risposte giuste, e chiamiamo quella convinzione il presunto **scambio fra
+accuratezza e chiarezza**; sui fiori dell'iris non lo abbiamo trovato.
 
 Cynthia Rudin {cite}`rudin2019stop` sostiene una tesi tagliente: per le
 decisioni ad alta posta in gioco (giustizia, sanità, credito) si dovrebbe
@@ -636,7 +634,7 @@ scambio, su molti problemi veri, semplicemente non esiste. Quando i dati stanno
 in una tabella e ogni colonna significa qualcosa di preciso (il reddito, l'età,
 la pressione arteriosa), un modello trasparente ben costruito arriva spesso
 dove arriva la scatola nera, e allora l'oscurità è un costo senza
-contropartita: si paga e non si compra niente.
+contropartita: si rinuncia alla leggibilità e non si guadagna niente.
 
 Non tutti concordano, e la ragione è che non tutti i dati stanno in una
 tabella. Su fotografie, testi e suoni, dove le colonne di partenza sono i pixel
@@ -813,14 +811,15 @@ scambio fra accuratezza e chiarezza non c'è.
 
 ## Dai modelli trasparenti ai circuiti
 
-Il percorso ha tre tappe. Prima i modelli trasparenti, e le misure che
-valgono per un modello qualsiasi preso nel suo insieme; poi le spiegazioni di
-una risposta sola; infine le reti profonde, guardate prima dall'esterno, pixel
-per pixel, e poi dall'interno.
+Il percorso ha tre tappe. Prima i modelli trasparenti, e le
+misure che valgono per un modello qualsiasi preso nel suo insieme; poi le
+spiegazioni di una risposta sola; infine le reti profonde, guardate prima
+dall'esterno, pixel per pixel, e poi dall'interno.
 
 La prima tappa riparte dai modelli trasparenti: l'albero sugli iris, e i
 modelli che rispondono facendo una somma, tanti punti per il reddito, tanti per
-l'età. Li abbiamo già incontrati nel capitolo sul Machine Learning, e qui li
+l'età. Li abbiamo già incontrati nel {doc}`capitolo sul Machine Learning
+</MachineLearning/overview>`, e qui li
 rileggiamo con un'altra domanda in testa, quanto sono leggibili. Vengono poi i
 modi di misurare su che cosa un modello qualsiasi si appoggia in media, su
 tutti gli esempi insieme: la classifica delle colonne, che si chiama importanza
@@ -832,40 +831,45 @@ male.
 La seconda tappa, quella delle spiegazioni locali, riguarda una risposta sola.
 Il primo metodo costruisce, attorno al caso da spiegare e solo lì, un
 modellino semplice che imita quello vero, un surrogato locale. Si chiama LIME
-e ha disegnato le macchie sulla neve. Il secondo spartisce fra le
+e ha disegnato le macchie sulla neve. Il secondo ripartisce fra le
 colonne il merito di una risposta, con una regola che viene da un problema del
 1953: come dividere in modo equo il guadagno di un'impresa fra i soci che ci
 hanno lavorato. Quelle quote sono i valori di Shapley, e il modo di calcolarle
 in fretta si chiama SHAP. Il terzo risponde alla domanda più pratica di tutte,
 «che cosa sarebbe dovuto essere diverso perché la risposta cambiasse?», e sono
-le spiegazioni controfattuali. La stessa domanda locale ammette poi altre due
-risposte: una regola che dice fin dove la risposta resta quella, e ciò che
-manca e che, se ci fosse, la cambierebbe.
+le spiegazioni controfattuali.
 
-La terza tappa entra nelle reti profonde. Lì la domanda diventa quanto ogni
-pezzo dell'ingresso, ogni singolo pixel, ha contribuito a una risposta: quella
-quota di merito si chiama attribuzione, e la cartina che la disegna sopra la
-foto si chiama mappa di salienza. I metodi che la disegnano sono di tre
-famiglie (chi misura una pendenza, chi divide il risultato all'indietro, chi
-toglie un pezzo e guarda che cosa cambia), e non tutti superano le prove con cui
-si controlla se una mappa descrive il modello. La stessa domanda vale
-per i pesi di attenzione della {doc}`sezione sul meccanismo di attenzione
+La stessa domanda locale ammette poi altre due risposte: una regola che dice
+fin dove la risposta resta quella, e ciò che manca e che, se ci fosse, la
+cambierebbe.
+
+La terza tappa entra nelle reti profonde. Lì la domanda diventa
+quanto ogni pezzo dell'ingresso, ogni singolo pixel, ha contribuito a una
+risposta: quella quota di merito si chiama attribuzione, e la cartina che la
+disegna sopra la foto si chiama mappa di salienza. I metodi che la disegnano
+sono di tre famiglie (chi misura una pendenza, chi divide il risultato
+all'indietro, chi toglie un pezzo e guarda che cosa cambia), e non tutti
+superano le prove con cui si controlla se una mappa descrive il modello. La
+stessa domanda vale per i pesi di attenzione della {doc}`sezione sul meccanismo
+di attenzione
 </Transformers/attenzione>`: sembrano una spiegazione già pronta, e sono un
-indizio. Poi si guarda dentro la rete: a che cosa risponde ciascun filtro,
-quale informazione è scritta a ciascun piano, e infine il tentativo più
-ambizioso e più giovane, quello di smontare una rete pezzo per pezzo come un
-ingegnere apre un chip per capire che cosa fa ciascun componente. Si chiama
-interpretabilità meccanicistica, e i pezzi che prova a isolare, piccoli gruppi
-di neuroni che insieme svolgono un compito riconoscibile, si chiamano circuiti.
+indizio.
+
+Si guarda poi dentro la rete: a che cosa risponde ciascun filtro, quale
+informazione è scritta a ciascun piano, e infine il tentativo più ambizioso e
+più giovane, quello di smontare una rete pezzo per pezzo come un ingegnere apre
+un chip per capire che cosa fa ciascun componente. Si chiama interpretabilità
+meccanicistica, e i pezzi che prova a isolare, piccoli gruppi di neuroni che
+insieme svolgono un compito riconoscibile, si chiamano circuiti.
 
 Un filo lega l’interpretabilità all’AI responsabile. Aprire la scatola nera è
 il primo passo per costruire sistemi di cui potersi fidare, e da poter
 contestare quando sbagliano; non è un vezzo accademico. Il rilevatore di lupi
-era stato truccato apposta, per dimostrare quanto è facile non accorgersene. I
-modelli addestrati su dati veri imparano scorciatoie dello stesso tipo senza
-che nessuno le costruisca, e un'accuratezza alta sui dati di prova non le
-rivela: le scoprono le prove mirate, su dati raccolti altrove o divisi per
-gruppi di persone, e lo sguardo su che cosa il modello si appoggia.
+era stato truccato apposta, per dimostrare quanto è facile non accorgersene.
+I modelli addestrati su dati veri, invece, imparano scorciatoie dello stesso
+tipo senza che nessuno le costruisca, e un'accuratezza alta sui dati di prova
+non le rivela: le scoprono le prove mirate, su dati raccolti altrove o divisi
+per gruppi di persone, e lo sguardo su che cosa il modello si appoggia.
 
 `````{tab} Elementare
 

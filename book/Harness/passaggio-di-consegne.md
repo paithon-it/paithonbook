@@ -27,10 +27,11 @@ ordine di priorità, e sceglie la prima fra quelle non ancora riuscite. Poi,
 prima di toccare qualunque cosa, avvia l'applicazione con lo script del primo
 turno e fa una prova di base da utente; nel codice d'esempio di Anthropic
 riprova anche una o due funzionalità già segnate come riuscite, le più
-centrali {cite}`anthropic2025autonomouscoding`. Se il turno prima ha lasciato
-qualcosa di rotto, quella funzionalità torna fra le non riuscite e va riparata
-adesso, prima di aggiungere altro sopra. Solo allora la sessione lavora, e su
-**una funzionalità sola**.
+centrali {cite}`anthropic2025autonomouscoding`.
+
+Se il turno prima ha lasciato qualcosa di rotto, quella funzionalità torna fra
+le non riuscite e va riparata adesso, prima di aggiungere altro sopra. Solo
+allora la sessione lavora, e su **una funzionalità sola**.
 
 La fine del turno è altrettanto fissa. Il lavoro si salva nella storia di git
 con un messaggio che dice che cosa è cambiato, il file di avanzamento si
@@ -39,20 +40,23 @@ descrive come adatto a essere integrato nel ramo principale, cioè nella
 versione del codice che tutti considerano buona: senza difetti gravi, in
 ordine, documentato, tale che il turno dopo possa partire subito con una
 funzionalità nuova senza dover prima mettere a posto il disordine di quello
-precedente. La storia serve anche all'indietro: con i salvataggi e i loro
-messaggi, osserva Young, il modello poteva annullare le modifiche sbagliate e
-tornare a uno stato del codice che funzionava.
+precedente.
+
+La storia serve anche all'indietro: con i salvataggi e i loro messaggi,
+osserva Young, il modello poteva annullare le modifiche sbagliate e tornare a
+uno stato del codice che funzionava.
 
 Una funzionalità per turno è la difesa contro il primo dei guasti che Young
-aveva visto, il lavoro tentato tutto in un colpo. Una sessione che porta avanti
-cinque fronti insieme, se la finestra finisce prima, lascia cinque lavori a
-metà, nessuno dei quali si può provare; una sessione che ne apre uno solo lo
-porta fino alla prova, lo salva e lo annota, e se la finestra finisce prima
-resta aperto quello solo, e il registro dice quale. Perché funzioni, la
-funzionalità deve stare in una sessione, che è la misura chiesta all'elenco dal
-primo turno. Il lavoro diventa una sequenza di unità che si chiudono, e
-un'unità chiusa non ha bisogno di essere ricordata: basta leggerne il
-risultato.
+aveva visto, il lavoro tentato tutto in un colpo. Ad esempio, una sessione che
+porta avanti cinque fronti insieme, se la finestra finisce prima, lascia cinque
+lavori a metà, nessuno dei quali si può provare. Una sessione che ne apre uno
+solo, invece, lo porta fino alla prova, lo salva e lo annota: se la finestra
+finisce prima resta aperto quello solo, e il registro dice quale.
+
+Perché la difesa funzioni, la funzionalità deve stare in una sessione, che è la
+misura chiesta all'elenco dal primo turno. Il lavoro diventa così una sequenza
+di unità che si chiudono, e un'unità chiusa non ha bisogno di essere ricordata:
+basta leggerne il risultato.
 
 `````{tab} Elementare
 
@@ -64,10 +68,12 @@ teneva, ed è stato rimesso com'era la mattina. Prende il foglio dell'ordine,
 dove i pezzi sono scritti dal più urgente al meno urgente, e sceglie il primo
 non spuntato. Poi, prima di cominciare, accende la macchina e taglia un
 listello di prova: se ieri qualcuno ha spostato la guida della sega, se ne
-accorge adesso. E riprova sulla dima uno o due mobili già spuntati, quelli su
-cui poggia il resto, perché montare un pezzo nuovo accanto a uno vecchio può
-averlo spinto fuori squadra: se uno non passa più, gli toglie la spunta e lo
-ripara per primo.
+accorge adesso.
+
+Riprova poi sulla dima uno o due mobili già spuntati, quelli su cui poggia il
+resto, perché montare un pezzo nuovo accanto a uno vecchio può averlo spinto
+fuori squadra. Se uno non passa più, gli toglie la spunta e lo ripara per
+primo.
 
 Poi fa un pezzo, uno solo, fino in fondo, compresa la prova sulla dima. Il
 pezzo dev'essere della misura di una giornata: se non lo è, a sera resta a
@@ -162,17 +168,19 @@ Il turno dopo riceve tre memorie diverse. L'elenco delle funzionalità dice
 arrivati e che cosa viene adesso: l'ultima funzionalità toccata, quello che si
 è rotto, quello che blocca, il prossimo passo. La storia di git dice **come**
 ci si è arrivati: ogni salvataggio con il suo messaggio, e la possibilità di
-tornare a uno stato in cui tutto funzionava. Una quarta cosa si perde
-facilmente se nessuno la scrive, ed è il **perché**. Il codice sopravvive alla
-sessione, la ragione di una scelta no: se un'opzione è stata scartata per un
-buon motivo e il motivo non è annotato, la sessione dopo vede soltanto codice
-che le pare migliorabile, e lo «migliora» rifacendo l'errore che quella scelta
-evitava. Il rimedio costa poco: un file delle decisioni, una riga per decisione
-con la ragione e l'alternativa scartata, che nello sviluppo del software si
-chiama *architecture decision record* {cite}`nygard2011adr`. Per esempio: «I
-prezzi si tengono in centesimi interi. Scartati gli euro con la virgola: le
-somme dei numeri con la virgola, nel calcolatore, sbagliano di qualche
-centesimo.»
+tornare a uno stato in cui tutto funzionava.
+
+Una quarta cosa si perde facilmente se nessuno la scrive, ed è il **perché**.
+Il codice sopravvive alla sessione, la ragione di una scelta no: se un'opzione
+è stata scartata per un buon motivo e il motivo non è annotato, la sessione
+dopo vede soltanto codice che le pare migliorabile, e lo «migliora» rifacendo
+l'errore che quella scelta evitava.
+
+Il rimedio costa poco: un file delle decisioni, una riga per decisione con la
+ragione e l'alternativa scartata, che nello sviluppo del software si chiama
+*architecture decision record* {cite}`nygard2011adr`. Per esempio: «I prezzi si
+tengono in centesimi interi. Scartati gli euro con la virgola: le somme dei
+numeri con la virgola, nel computer, sbagliano di qualche centesimo.»
 
 Il file di avanzamento ha un vantaggio preciso sul riassunto che, nel primo
 tentativo di Young, passava da una finestra all'altra. Tutti e due li scrive il
@@ -181,8 +189,8 @@ riassunto si scrive quando la finestra è piena, in un punto qualunque del
 lavoro, su tutto ciò che c'è dentro, compresi i tentativi abbandonati, e il
 modello decide lì per lì che cosa tenere. Il file di avanzamento si scrive a un
 momento stabilito, la fine di un'unità di lavoro, su un lavoro appena
-verificato, secondo lo schema che le istruzioni chiedono. Il primo è la
-compressione di una conversazione, il secondo è un passaggio di consegne.
+verificato, secondo lo schema che le istruzioni chiedono. In sintesi, il primo è
+la compressione di una conversazione, il secondo è un passaggio di consegne.
 
 `````{tab} Elementare
 
@@ -238,15 +246,18 @@ confronta a macchina.
 Su un compito lungo la finestra si riempie, e un harness deve decidere che cosa
 fare prima che succeda. Le politiche sono due, e corrispondono a due delle
 operazioni del {doc}`context engineering </IngegneriaLLM/context-engineering>`:
-comprimere ciò che resta, o scriverlo fuori e ripartire. **Compattare** vuol
-dire tenere una sola sessione lunga e, quando il contesto supera una soglia,
-riassumere la cronologia dentro la sessione stessa e continuare: la continuità
-si conserva, i dettagli in parte si perdono, e non sempre si sa quali.
-**Ripartire da capo** vuol dire chiudere la sessione a un confine naturale, la
-fine di una funzionalità, e aprirne una nuova, con la finestra vuota, che legge
-il registro, l'elenco e la storia: si riparte puliti, a patto che quello che è
-stato scritto basti. Le due si combinano: una sessione per funzionalità, con la
-compattazione come rete di sicurezza per la funzionalità che si allunga.
+comprimere ciò che resta, o scriverlo fuori e ripartire.
+
+**Compattare** vuol dire tenere una sola sessione lunga e, quando il contesto
+supera una soglia, riassumere la cronologia dentro la sessione stessa e
+continuare: la continuità si conserva, i dettagli in parte si perdono, e non
+sempre si sa quali. **Ripartire da capo** vuol dire chiudere la sessione a un
+confine naturale, la fine di una funzionalità, e aprirne una nuova, con la
+finestra vuota, che legge il registro, l'elenco e la storia: si riparte
+puliti, a patto che quello che è stato scritto basti.
+
+Le due si combinano: una sessione per funzionalità, con la compattazione come
+rete di sicurezza per la funzionalità che si allunga.
 
 Prithvi Rajasekaran, che in Anthropic ha costruito harness per lavori di molte
 ore, riporta che la scelta dipende dal modello {cite}`rajasekaran2026harness`.
@@ -259,10 +270,12 @@ continuità ma non dà al modello una pagina pulita, e l'ansia può restare. Su
 un modello di due mesi dopo (Claude Opus 4.5) il comportamento era in gran
 parte sparito da sé, e Rajasekaran ha potuto togliere le ripartenze e far
 girare tutto il lavoro come una sola sessione continua, con la compattazione
-automatica a fare spazio quando serviva. Sono osservazioni del suo lavoro, non
-misure, e il nome di un modello è un esempio di oggi; la lezione dura di più:
-la strategia per la memoria è un componente dell'harness, e come ogni
-componente dipende dal modello che serve.
+automatica a fare spazio quando serviva.
+
+Sono osservazioni del suo lavoro, non misure, e il nome di un modello è un
+esempio di oggi; la lezione dura di più: la strategia per la memoria è un
+componente dell'harness, e come ogni componente dipende dal modello che
+serve.
 
 C'è poi un conto che vale per qualunque modello, ed è quello dei token. Un
 modello linguistico non ricorda niente fra una chiamata e l'altra: a ogni giro
@@ -270,7 +283,9 @@ del ciclo riceve di nuovo tutto il contesto, istruzioni e cronologia, e lo
 rilegge da capo. Se la cronologia cresce di una quantità fissa a ogni giro,
 ogni giro costa un po' più del precedente, e il costo di una sessione cresce
 con il quadrato della sua lunghezza: una sessione lunga il doppio legge quasi
-quattro volte tanto. Un programma fa il conto su numeri tondi, scelti per far
+quattro volte tanto.
+
+Un programma fa il conto su numeri tondi, scelti per far
 vedere la forma del conto e non misurati su un sistema vero: un compito di
 sessanta giri, istruzioni fisse di cinquemila token, tremila token in più a
 ogni giro, una finestra di centomila. Confronta quattro strategie: nessuna; la
@@ -369,17 +384,20 @@ risalire il contesto fino alla soglia prima di ogni riassunto: legge in media
 più di quarantamila token per giro, con punte di ottantamila, e sui contesti
 lunghi la qualità cala, come la {doc}`sezione sul contesto come interfaccia
 </Agenti/context-engineering>` ha già mostrato. La ripartenza legge circa un
-terzo in meno e non supera la metà della finestra. A decidere il confronto,
+terzo in meno e non supera la metà della finestra.
+
+A decidere il confronto,
 però, è la frequenza del taglio più che la strategia: la compattazione al
 cinquanta per cento, che taglia più o meno ogni quindici giri come la
 ripartenza, legge poco più di lei, e la differenza sta tutta nelle chiamate che
 scrivono i riassunti. Due funzionalità nella stessa sessione, infine, leggono
 quasi il doppio di due sessioni da una funzionalità, perché la seconda si fa su
 un contesto già pieno della prima: è la seconda ragione del limite di una
-funzionalità per turno. Che cosa decida fra compattare e ripartire, allora, non
-sta in questi numeri: è la qualità di ciò che passa oltre il taglio, ed è il
-modello. La {numref}`fig-harness-turni` mostra giro dopo giro tre delle
-strategie.
+funzionalità per turno.
+
+Che cosa decida fra compattare e ripartire, allora, non sta in questi numeri:
+è la qualità di ciò che passa oltre il taglio, ed è il modello. La
+{numref}`fig-harness-turni` mostra giro dopo giro tre delle strategie.
 
 ```{figure} ../figures/harness-turni.svg
 :name: fig-harness-turni
@@ -417,8 +435,10 @@ affollato, e a ogni mossa rilegge una montagna di fogli; chi sgombera quando è
 pieno a metà rilegge poco, quasi quanto chi smonta a ogni pezzo, più la
 rilettura di tutto che ogni riassunto richiede. Per la stessa ragione due pezzi
 nella stessa giornata costano più di due giornate da un pezzo: il secondo si fa
-su un tavolo già pieno delle carte del primo. E la mattina conta anche quanto è
-lungo quello che si legge prima di cominciare. Se ogni giorno si rilegge tutto
+su un tavolo già pieno delle carte del primo.
+
+E la mattina conta anche quanto è lungo quello che si legge prima di
+cominciare. Se ogni giorno si rilegge tutto
 il foglio dell'ordine, duecento righe, e tutto il registro, che si allunga di
 giorno in giorno, ripartire smette di costare poco: conviene leggere solo le
 prime righe non spuntate, e ogni tanto riassumere le pagine vecchie del
@@ -471,7 +491,7 @@ soltanto per $r - s$, e alla compattazione si aggiunge la chiamata che scrive
 il riassunto, che rilegge il contesto intero, circa $\sigma W$ token per
 taglio: il costo lo fissa la frequenza del taglio, non il nome della strategia.
 
-Il conto ha un'ipotesi che va detta, $r$ costante. In realtà $r$ è ciò che la
+Il conto poggia sull'ipotesi che $r$ sia costante. In realtà $r$ è ciò che la
 sessione legge all'avvio, e cresce: il registro si allunga di sessione in
 sessione, e un elenco di duecento voci letto per intero vale decine di
 migliaia di token. Con $r$ di quell'ordine la ripartenza costa per giro più

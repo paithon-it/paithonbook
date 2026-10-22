@@ -13,8 +13,10 @@ dibattito attorno al rinforzo </AutoSupervisione/dibattito-rl>`, dove serviva a
 spiegare perché chi vuole un caffè guarda prima il calendario; là se ne vede la
 conclusione, qui si parte dall'inizio. La trattazione d'insieme è un libro di
 Thomas Parr, Giovanni Pezzulo e Karl Friston {cite}`parr2022active`.
-«Inferenza», qui, è quella dei modelli latenti: risalire alla causa nascosta a
-partire da quel che si vede, non far girare un modello già addestrato. Non è il
+
+«Inferenza», qui, è quella dei modelli latenti, cioè risalire alla causa
+nascosta a partire da quel che si vede, e non far girare un modello già
+addestrato. Non è il
 modo in cui oggi si costruiscono i sistemi (e i limiti li dichiarano gli autori
 stessi), ma risponde alla domanda iniziale da un'angolatura che Dreamer e JEPA
 non hanno: a che cosa serve un modello del mondo a una cosa viva.
@@ -35,14 +37,16 @@ alta probabilità agli stati in cui essa continua a esistere (per il pesce,
 essere nell'acqua), allora «trovarsi fuori dall'acqua» è per lei
 un'osservazione estremamente improbabile. Che il modello sia fatto così, e non
 sia una semplice copia del mondo, è il punto su cui torna la risposta
-all'obiezione della stanza buia. Un'osservazione improbabile è, in senso
+all'obiezione della stanza buia.
+
+Un'osservazione improbabile è, in senso
 tecnico, molto sorprendente: la sorpresa di un esito è tanto maggiore quanto
 meno lo si riteneva probabile, e la {doc}`sezione sulla teoria
 dell'informazione
-</Matematica/teoria-informazione>` la misura in bit: un esito che aspettavi una
-volta su due vale un bit di sorpresa, uno che aspettavi una volta su mille ne
-vale una decina. Restare vivi e restare poco sorpresi diventano così la
-stessa cosa, detta in due lingue diverse.
+</Matematica/teoria-informazione>` la misura in bit. Ad esempio, un esito
+che aspettavi una volta su due vale un bit di sorpresa, uno che aspettavi una
+volta su mille ne vale una decina. Restare vivi e restare poco sorpresi
+diventano così la stessa cosa, detta in due lingue diverse.
 
 ## Due modi di smettere di essere sorpresi
 
@@ -70,16 +74,20 @@ idee verso il mondo, agire piega il mondo verso le tue idee.
 Davanti al buio, però, non puoi misurare la sorpresa vera: per calcolarla
 dovresti già conoscere la spiegazione migliore di tutte, e non la conosci.
 Misuri lo sconcerto, cioè quanto il buio stona con la spiegazione che in quel
-momento ti sei dato. Mettiamoci numeri inventati ma
+momento ti sei dato.
+
+Mettiamoci numeri inventati ma
 onesti. La sorpresa vera della scena vale 3: è quella che resterebbe anche con
 la spiegazione migliore possibile, perché una stanza spenta quando la credevi
 accesa un po’ sorprende comunque. Se pensi «ci sarà un guasto elettrico», che
 è una spiegazione storta (in casa non si è spento nient'altro), lo sconcerto
-vale 7: 3 di sorpresa vera più 4 di errore tuo. Ti viene in mente che qualcuno
-è uscito e ha spento: è quasi la spiegazione migliore, e lo sconcerto scende a
-3,5, cioè 3 più mezzo punto di errore. Più giù di 3 non va, qualunque
-spiegazione trovi. Lo sconcerto, nel linguaggio dell'inferenza attiva, si
-chiama energia libera (il nome viene dalla fisica statistica, dove una
+vale 7: 3 di sorpresa vera più 4 di errore tuo. Se invece ti viene in mente che
+qualcuno è uscito e ha spento, che è quasi la spiegazione migliore, lo
+sconcerto scende a 3,5, cioè 3 più mezzo punto di errore. Più giù di 3 non va,
+qualunque spiegazione trovi.
+
+Lo sconcerto, nel linguaggio dell'inferenza attiva, si
+chiama **energia libera** (il nome viene dalla fisica statistica, dove una
 grandezza con la stessa forma ha lo stesso nome): è sempre almeno quanto la
 sorpresa vera, il di più misura quanto la tua spiegazione dista dalla
 migliore, e a differenza della sorpresa vera si può calcolare. Per questo è
@@ -90,8 +98,8 @@ aggiustare l'idea di oggi, conviene cambiare il modello che quelle idee le
 produce. Gli autori lo dicono così: imparare «non è fondamentalmente diverso dal
 percepire, opera semplicemente su una scala di tempo più lenta».
 
-Non esiste una fase di addestramento separata dall'uso: un processo solo va
-avanti sempre, a tre velocità diverse.
+In altri termini, non esiste una fase di addestramento separata dall'uso: un
+processo solo va avanti sempre, a tre velocità diverse.
 
 `````
 
@@ -111,7 +119,9 @@ La seconda forma dice che cosa vale. Il termine $-\ln P(o)$ è la sorpresa,
 cioè l'evidenza logaritmica negativa del modello; la divergenza è non negativa,
 quindi $F$ è un limite superiore sulla sorpresa, e il divario è
 quanto $Q$ si discosta dalla distribuzione a posteriori che si otterrebbe
-facendo l'inferenza esatta. La prima forma dice perché la si usa: chiede
+facendo l'inferenza esatta.
+
+La prima forma dice perché la si usa: chiede
 soltanto $Q$ e il modello congiunto $P(o, s)$, non l'evidenza $P(o)$, che
 richiederebbe di marginalizzare su tutti gli stati. Minimizzare $F$ rispetto a
 $Q$ stringe il limite ed è l'inferenza approssimata di sempre: è lo stesso
@@ -126,8 +136,8 @@ F \;=\; \underbrace{D_{\mathrm{KL}}\big[Q(s) \,\|\, P(s)\big]}_{\text{complessit
 $$
 
 che è la perdita di un VAE con prior $P(s)$, e ha la stessa forma
-(verosimiglianza più KL) della perdita del modello del mondo di Dreamer. Il
-punto nuovo è che $F$ dipende anche da $o$, e le osservazioni un agente se le
+(verosimiglianza più KL) della perdita del modello del mondo di Dreamer. Si
+noti che $F$ dipende anche da $o$, e che le osservazioni un agente se le
 può andare a prendere.
 
 Da qui i tre modi, che sono tre argomenti diversi rispetto a cui si minimizza la
@@ -140,21 +150,26 @@ stessa quantità:
   autori descrivono come non fondamentalmente diverso dalla percezione, «opera
   semplicemente su una scala di tempo più lenta».
 
-Sull'azione serve una precisazione. Scegliere un'azione istante per istante
+Per l'azione vanno distinti due casi. Scegliere un'azione istante per istante
 minimizza $F$; scegliere fra politiche, cioè fra corsi d'azione estesi nel
-tempo, richiede una seconda grandezza, l’energia libera attesa $G(\pi)$, dove
-«attesa» sta per il fatto che le osservazioni future non ci sono ancora e vanno
-messe in conto per come ce le si aspetta. Gli autori insistono che le due sono
-«matematicamente collegate ma con ruoli distinti e complementari»: $F$ resta la
-quantità minimizzata nel tempo, e $G$ entra dentro il modello generativo come
-priore sulle politiche (grosso modo: una politica è probabile a priori nella
-misura in cui promette $F$ bassa in futuro) {cite}`parr2022active`. Nei modelli
+tempo, richiede invece una seconda grandezza, l’energia libera attesa $G(\pi)$,
+dove «attesa» sta per il fatto che le osservazioni future non ci sono ancora e
+vanno messe in conto per come ce le si aspetta. Gli autori insistono che le due
+sono «matematicamente collegate ma con ruoli distinti e complementari»: $F$
+resta la quantità minimizzata nel tempo, e $G$ entra dentro il modello
+generativo come priore sulle politiche (grosso modo: una politica è probabile a
+priori nella misura in cui promette $F$ bassa in futuro)
+{cite}`parr2022active`.
+
+Nei modelli
 a stati discreti con cui il libro di Parr e colleghi lavora, il modello
 generativo ha quattro ingredienti: la verosimiglianza $\mathbf{A} = P(o \mid
 s)$, le transizioni $\mathbf{B}$, le preferenze $\mathbf{C}$ sulle osservazioni
 (la $C$ di $P(\tilde{o} \mid C)$ nel paragrafo «Come fa a scegliere una mossa»)
 e il priore $\mathbf{D}$ sullo stato iniziale; e il priore sulle politiche è
-$P(\pi) = \mathrm{softmax}\big(-G(\pi)\big)$. Il costo si vede subito: $G$ va
+$P(\pi) = \mathrm{softmax}\big(-G(\pi)\big)$.
+
+Il costo si vede subito: $G$ va
 calcolata per ogni politica, e con $n$ azioni possibili a ogni passo e
 orizzonte $T$ le politiche sono $n^T$, un numero esponenziale nell'orizzonte. È
 una delle ragioni per cui le realizzazioni restano su spazi di stati piccoli,
@@ -181,12 +196,13 @@ qualunque formula.
 La risposta è che la sorpresa non si misura rispetto a quello che capita, ma
 rispetto a quello che sei.
 
-Il modello di una creatura non è una fotocopia del mondo: chi avesse in testa
-solo una fotocopia descriverebbe la corrente e si lascerebbe portare. Il modello
-si porta dentro anche le condizioni in cui quella creatura deve trovarsi per
-continuare a esistere. Nessuno ha scritto al pesce, su un foglio a parte, un
-premio per l'acqua: il pesce si aspetta l'acqua, e se la aspetta un po’ più di
-quanto i fatti gli garantiscano. Da quel po’ di ottimismo viene la nuotata.
+Il modello di una creatura non è una fotocopia del mondo. Infatti chi avesse in
+testa solo una fotocopia descriverebbe la corrente e si lascerebbe portare. Il
+modello si porta dentro anche le condizioni in cui quella creatura deve
+trovarsi per continuare a esistere. Nessuno ha scritto al pesce, su un foglio a
+parte, un premio per l'acqua: il pesce si aspetta l'acqua, e se la aspetta un
+po’ più di quanto i fatti gli garantiscano. Da quel po’ di ottimismo viene la
+nuotata.
 
 Per un pesce, «essere all'asciutto» è la cosa più sorprendente che possa
 capitargli, e nessuna quantità di immobilità gliela risparmia: al contrario, se
@@ -198,14 +214,13 @@ corpo. Per non essere sorpreso, un organismo è costretto a muoversi, a
 cercare, e persino a esplorare, perché lo stato che vuole occupare non è quello
 in cui si trova adesso.
 
-Gli autori mostrano che questo scala molto oltre i riflessi. Restare alla
-temperatura giusta, scrivono, è sudare (che è fisiologia), ma anche comprarsi da
-bere (che è psicologia) e mettere l'aria condizionata in una città intera (che
-è una faccenda collettiva). Soprattutto è cercare l'ombra prima di
-surriscaldarsi, che è il caso in cui il correttivo arriva *prima* del danno. Lo
-stesso imperativo, insomma, viene soddisfatto con un anticipo sempre maggiore,
-e per anticipare serve un modello di quel che
-succederà.
+Gli autori mostrano che questo scala molto oltre i riflessi. Ad esempio,
+restare alla temperatura giusta, scrivono, è sudare (che è fisiologia), ma
+anche comprarsi da bere (che è psicologia) e mettere l'aria condizionata in una
+città intera (che è una faccenda collettiva). Soprattutto è cercare l'ombra
+prima di surriscaldarsi, che è il caso in cui il correttivo arriva *prima* del
+danno. Lo stesso imperativo, insomma, viene soddisfatto con un anticipo sempre
+maggiore, e per anticipare serve un modello di quel che succederà.
 
 Non tutti sono convinti da questa risposta. Se ogni volta che la teoria sembra
 sbagliare basta aggiungere alla creatura una voglia in più, scritta nel suo
@@ -257,18 +272,18 @@ spiega perché questa cornice compare altre due volte nel libro: nella
 `````{tab} Elementare
 
 Un agente così, prima di muoversi, misura ogni mossa due volte. Non misura lo
-sconcerto di adesso, di cui si è parlato fin qui, ma quanto la mossa promette
-per il seguito. È una seconda grandezza, parente stretta della prima e con un
-compito diverso, e si chiama energia libera attesa: attesa perché le
-osservazioni di cui parla non sono ancora arrivate.
+sconcerto di adesso, ma quanto la mossa promette per il seguito. È una seconda
+grandezza, parente stretta della prima e con un compito diverso, e si chiama
+energia libera attesa: attesa perché le osservazioni di cui parla non sono
+ancora arrivate.
 
-La prima misura è quella che ci si aspetta: quanto quella mossa lo porta verso
-le condizioni in cui vuole trovarsi. È il valore di **ottenere**.
+La prima misura è quella che ci si aspetta, cioè quanto quella mossa lo porta
+verso le condizioni in cui vuole trovarsi. È il valore di **ottenere**.
 
-La seconda è meno ovvia: quanto quella mossa gli farebbe scoprire qualcosa
-che ancora non sa. È il valore di **sapere**, e non è un premio di consolazione.
-Una mossa che non porta da nessuna parte, ma toglie un dubbio, può valere più di
-una che avvicina la meta a occhi chiusi.
+La seconda è meno ovvia, e dice quanto quella mossa gli farebbe scoprire
+qualcosa che ancora non sa. È il valore di **sapere**, e non è un premio di
+consolazione. Una mossa che non porta da nessuna parte, ma toglie un dubbio, può
+valere più di una che avvicina la meta a occhi chiusi.
 
 Il caffè degli autori, già raccontato nella {doc}`sezione sul dibattito
 attorno al rinforzo </AutoSupervisione/dibattito-rl>`, mostra le due misure
@@ -276,19 +291,21 @@ insieme: chi non sa che giorno è guarda prima il calendario, che non lo
 avvicina al caffè ma gli apre la porta del bar giusto. Quel che le due misure
 pesano, insomma, non è il passo per sé ma la strada che apre.
 
-Lo stesso conto fa evitare i posti da cui si vede male. Un vicolo e una
-piazza possono essere ugualmente vicini al bar, ma dal vicolo non si capisce
-nemmeno se la saracinesca è alzata: chi si infila lì resta nel dubbio comunque
+Lo stesso conto fa evitare i posti da cui si vede male. Un vicolo e una piazza
+possono essere ugualmente vicini al bar, ma dal vicolo non si capisce nemmeno
+se la saracinesca è alzata, quindi chi si infila lì resta nel dubbio comunque
 si giri, e il dubbio che voleva togliersi è ancora lì.
 
 Le due misure sono le due metà di un voto solo, che l'agente cerca di rendere
 più alto possibile, e si contano con la stessa moneta: nessuno deve decidere a
 parte quanti punti di curiosità valga un passo verso la meta, perché la
-curiosità era lì dall'inizio, dentro quel voto. Quanto l'agente esplori dipende
-però da quanto sono forti le sue preferenze. Chi vuole il caffè disperatamente
-va dritto al bar che conosce, e il valore di ottenere schiaccia quello di
-sapere; chi è tranquillo può concedersi di scoprire un bar nuovo. Quanto sia
-forte la voglia, in un modello costruito, lo decide chi lo costruisce.
+curiosità era lì dall'inizio, dentro quel voto.
+
+Quanto l'agente esplori dipende però da quanto sono forti le sue preferenze. Ad
+esempio, chi vuole il caffè disperatamente va dritto al bar che conosce, e il
+valore di ottenere schiaccia quello di sapere; chi è tranquillo può concedersi
+di scoprire un bar nuovo. Quanto sia forte la voglia, in un modello costruito,
+lo decide chi lo costruisce.
 
 `````
 
@@ -319,12 +336,16 @@ predizione congiunta si fattorizza come $Q(\tilde{o}, \tilde{s} \mid \pi) =
 Q(\tilde{s} \mid \pi)\, P(\tilde{o} \mid \tilde{s})$, che è la forma che gli
 autori le danno, scrivendola come definizione; è la stessa che la {doc}`sezione
 sul dibattito attorno al rinforzo </AutoSupervisione/dibattito-rl>` ha usato
-con l'esempio del caffè. Poiché $G$ si minimizza, i due valori si massimizzano
+con l'esempio del caffè.
+
+Poiché $G$ si minimizza, i due valori si massimizzano
 insieme e si misurano nella stessa unità, il nat, quindi non serve un
 coefficiente esterno che converta l'uno nell'altro. Il bilanciamento però non
 sparisce: gli autori scrivono che è il peso relativo dei due termini a decidere
 se il comportamento è prevalentemente esplorativo o di sfruttamento, e una riga
-di calcolo mostra da che cosa dipende quel peso. Scrivendo le preferenze come
+di calcolo mostra da che cosa dipende quel peso.
+
+Scrivendo le preferenze come
 $P(\tilde{o} \mid C) \propto e^{\beta\, u(\tilde{o})}$, con $u$ un'utilità e
 $\beta > 0$ la loro precisione, il valore pragmatico vale $\beta\,
 \mathbb{E}_{Q(\tilde{o} \mid \pi)}[u(\tilde{o})]$ più una costante che non
@@ -409,11 +430,14 @@ gergo, non è falsificabile), perché quasi qualunque comportamento si riscrive
 scegliendo il modello generativo e i priori, cioè le aspettative di partenza,
 che lo producono. È la critica che gli muovono più spesso, anche i filosofi
 della biologia {cite}`colombo2021first`, e coincide con l'obiezione della
-stanza buia. Il
-secondo livello sono le *teorie di processo* che dal principio discendono, e
-quelle si possono smentire: un certo modo in cui la corteccia confronterebbe
-previsioni e segnali (la *codifica predittiva*), un certo modello a stati
-discreti che predice come una persona sceglie fra due bar. Anche l'oggetto
+stanza buia.
+
+Il secondo livello è quello delle *teorie di processo* che dal principio
+discendono, e queste si possono smentire: un certo modo in cui la corteccia
+confronterebbe previsioni e segnali (la *codifica predittiva*), un certo
+modello a stati discreti che predice come una persona sceglie fra due bar.
+
+Anche l'oggetto
 tecnico centrale ha le sue discussioni. L'energia libera attesa $G(\pi)$,
 quella che ordina le mosse, non coincide con l'energia libera variazionale
 calcolata sulle osservazioni future, e sceglierla come criterio, con la spinta
@@ -472,7 +496,7 @@ cuoco non finisce a servire sempre lo stesso.
 
 `````{tab} Superiore
 
-Il confronto, per esteso. Nell'RLHF si massimizza
+Vediamo il confronto per esteso. Nell'RLHF si massimizza
 
 $$
 J(\theta) \;=\; \mathbb{E}\big[r_\phi(x, y)\big] \;-\; \beta \, D_{\mathrm{KL}}\big[\pi_\theta \,\|\, \pi_{\text{ref}}\big],

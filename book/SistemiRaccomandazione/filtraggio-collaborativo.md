@@ -23,10 +23,11 @@ dieci, e il sistema è il setaccio.
 
 ## La saggezza dei vicini
 
-La versione più diretta dell'idea si chiama filtraggio collaborativo *a vicini*
-(*neighborhood-based*), dove i «vicini» non sono quelli di casa ma gli utenti
-che hanno votato come te. Ha due versioni speculari, secondo da dove si
-comincia: dagli utenti simili o dagli oggetti simili.
+La versione più diretta dell'idea si chiama filtraggio
+collaborativo **a vicini** (*neighborhood-based*), dove i «vicini» non sono
+quelli di casa ma gli utenti che hanno votato come te. Ha due versioni
+speculari, secondo da dove si comincia: dagli utenti simili o dagli
+oggetti simili.
 
 ```{figure} ../figures/recommender-collaborative-filtering.svg
 :name: fig-matrice-voti
@@ -143,10 +144,10 @@ fattori latenti, che è tutt'altro conteggio.
 
 La formula nasconde un difetto meno ovvio. Con $|\mathcal{I}_{uv}| = 0$ la
 similarità non è definita e i due utenti non si vedono, un falso negativo
-sgradevole ma riconoscibile. Con $|\mathcal{I}_{uv}| = 1$ la formula
-restituisce $\mathrm{sim}(u,v) = 1$ sempre, qualunque siano i due voti: anche
-se uno ha dato 1 e l'altro 5, il numeratore e il denominatore coincidono. Il
-metodo fabbrica così un gemello perfetto, con peso massimo nella media, a
+sgradevole ma riconoscibile. In particolare, con $|\mathcal{I}_{uv}| = 1$ la
+formula restituisce $\mathrm{sim}(u,v) = 1$ sempre, qualunque siano i due voti:
+anche se uno ha dato 1 e l'altro 5, il numeratore e il denominatore coincidono.
+Il metodo fabbrica così un gemello perfetto, con peso massimo nella media, a
 partire da nessuna evidenza; e centrare i voti sposta il problema di un passo
 invece di chiuderlo, perché su un film solo la correlazione di Pearson non è
 nemmeno definita, e su due vale $\pm 1$ ogni volta che lo è.
@@ -167,12 +168,12 @@ numerosità** (*shrinkage*, nella forma di Koren {cite}`koren2008factorization`;
 Herlocker e colleghi, col nome di *significance weighting*, usavano invece
 $\min(|\mathcal{I}_{uv}|, 50)/50$ {cite}`herlocker1999algorithmic`): si
 moltiplica la similarità per $\frac{|\mathcal{I}_{uv}|}{|\mathcal{I}_{uv}| +
-\beta}$, con $\beta$ da tarare sui dati (in letteratura si va da qualche decina
-al centinaio), così una somiglianza vista su due film pesa una frazione di una
-vista su cinquanta; in alternativa si impone una soglia minima su
-$|\mathcal{I}_{uv}|$ e sotto quella soglia si dichiara di non sapere.
+\beta}$, con $\beta$ da calibrare sui dati (in letteratura si va da qualche
+decina al centinaio), così una somiglianza vista su due film pesa una
+frazione di una vista su cinquanta; in alternativa si impone una soglia
+minima su $|\mathcal{I}_{uv}|$ e sotto quella soglia si dichiara di non sapere.
 
-Questa forma media voti grezzi, e i voti grezzi non sono confrontabili da
+Questa forma media i voti grezzi, e i voti grezzi non sono confrontabili da
 persona a persona: c'è chi dà 5 a tutto e chi non supera mai il 3. Sottrarre a
 ciascuno la propria media è il correttivo standard, e si applica in due punti
 indipendenti. Nella *predizione* si media lo scarto di ogni vicino dalla
@@ -187,7 +188,7 @@ $$
 Nella *similarità*, invece, centrare cambia la metrica, e le cambia il nome: se
 la media sottratta è calcolata sui soli film di $\mathcal{I}_{uv}$ si ottiene
 esattamente la correlazione di Pearson; se è la media di *tutti* i voti
-dell'utente si ottiene il coseno centrato (*mean-centered cosine*), variante
+dell'utente si ottiene il **coseno centrato** (*mean-centered cosine*), variante
 vicina ma distinta. Le due centrature sono ortogonali: si possono adottare
 entrambe, una sola, o nessuna. Anche il nome è ambiguo. GroupLens calcolava
 medie e somme sui soli articoli votati da entrambi
@@ -229,19 +230,20 @@ scorrere i vicini dei pochi film già votati dall'utente.
 `````
 
 I vicini funzionano, e per anni hanno fatto girare i primi sistemi commerciali;
-soffrono però la sparsità in due modi. Due utenti con gusti simili e nessun
-film in comune hanno similarità non definita, e il metodo non li collega. Due
-utenti con un solo film in comune risultano identici qualunque voto abbiano
-dato, perché il coseno confronta direzioni e un vettore di una componente
-positiva punta sempre dalla stessa parte: $(4)$ e $(1)$ hanno similarità $1$
-come $(4, 2)$ e $(2, 1)$. I due difetti hanno un'unica causa: la similarità si
-calcola soltanto sui film votati da entrambi, e in una matrice quasi vuota sono
-pochi. Serve un modo di confrontare due utenti che non passi da lì.
+soffrono però la sparsità in due modi. In primo luogo, due utenti con gusti
+simili e nessun film in comune hanno similarità non definita, e il metodo non
+li collega. In secondo luogo, due utenti con un solo film in comune risultano
+identici qualunque voto abbiano dato, perché il coseno confronta direzioni e un
+vettore di una componente positiva punta sempre dalla stessa parte: ad esempio
+$(4)$ e $(1)$ hanno similarità $1$ come $(4, 2)$ e $(2, 1)$. I due difetti
+hanno un'unica causa: la similarità si calcola soltanto sui film votati da
+entrambi, e in una matrice quasi vuota sono pochi. Serve un modo di confrontare
+due utenti che non passi da lì.
 
 ## Fattori latenti: la matrice compressa
 
 Invece di confrontare fra loro le righe e le colonne della matrice, la
-fattorizzazione di matrici (*matrix factorization*) parte da un'ipotesi: la
+**fattorizzazione di matrici** (*matrix factorization*) parte da un'ipotesi: la
 matrice dei voti $\mathbf{R}$ ha rango effettivo basso, cioè i gusti di tutti
 si spiegano con pochi tratti latenti. Si cercano allora due matrici strette,
 $\mathbf{P}$ con una riga per utente e $\mathbf{Q}$ con una riga per film,
@@ -250,7 +252,7 @@ approssimi $\mathbf{R}$ nelle celle note ({numref}`fig-matrix-factorization`).
 Come $12 = 3 \times 4$ scompone un numero in due fattori, $\mathbf{R} \approx
 \mathbf{P}\mathbf{Q}^\top$ scompone una matrice in due matrici più piccole. Le
 righe $\mathbf{p}_u$ di $\mathbf{P}$ e $\mathbf{q}_i$ di $\mathbf{Q}$ si
-chiamano vettori latenti, o *embedding*, e il voto previsto parte dal loro
+chiamano **vettori latenti**, o *embedding*, e il voto previsto parte dal loro
 prodotto scalare. Al {doc}`Netflix Prize </SistemiRaccomandazione/overview>`
 questi modelli si dimostrarono superiori ai metodi a vicinato
 {cite}`koren2009matrix`.
@@ -395,7 +397,7 @@ k^2 + k^3)$ invece di $O(m k^2)$, e un passaggio completo su utenti e oggetti
 $O(k^2 |\mathcal{S}| + k^3 (n + m))$, con $\mathcal{S}$ l'insieme delle
 interazioni: lineare nei dati, non nel numero delle celle. Qui $\lambda$ non
 porta il peso $n_u$ della versione per il caso esplicito. Il metodo si chiama
-iALS, ha quasi vent'anni ed è tutt'altro che un cimelio: ritarato con cura,
+iALS, ha quasi vent'anni ed è tutt'altro che un cimelio: ricalibrato con cura,
 resta competitivo con i metodi più recenti sui banchi di prova su cui erano
 stati presentati {cite}`rendle2022revisiting`.
 
@@ -425,16 +427,17 @@ con cui Zhou e colleghi addestrarono l'ALS sui dati del Netflix Prize
 {cite}`zhou2008largescale`: la penalità cresce con i voti dell'utente, e la
 scelta di $\lambda$ dipende meno da quanti voti ha ciascuno. Il costo è $O(n_u
 k^2 + k^3)$ per utente, e ogni utente si risolve indipendentemente dagli altri.
-SGD è più semplice e più veloce sul dato sparso esplicito; ALS si parallelizza
-meglio e diventa obbligato quando ogni cella conta, come sull'implicito. In
-nessuno dei due casi c'è la garanzia di arrivare a un minimo globale: il
-problema è convesso in $\mathbf{P}$ e in $\mathbf{Q}$ *separatamente* (e per
-questo ha senso alternare) ma non nei due insieme, e dove si finisce dipende
-anche da dove si è partiti.
+In sintesi, SGD è più semplice e più veloce sul dato sparso esplicito; ALS si
+parallelizza meglio e diventa obbligato quando ogni cella conta, come
+sull'implicito. In nessuno dei due casi c'è la garanzia di arrivare a un minimo
+globale: il problema è convesso in $\mathbf{P}$ e in $\mathbf{Q}$
+*separatamente* (e per questo ha senso alternare) ma non nei due insieme, e
+dove si finisce dipende anche da dove si è partiti.
 
 `````
 
-I fattori latenti non hanno un significato fissato in partenza. Il prodotto
+I fattori latenti non hanno un significato fissato in partenza.
+Infatti il prodotto
 $\mathbf{P}\mathbf{Q}^\top$ resta lo stesso se si sostituiscono $\mathbf{P}$
 con $\mathbf{P}\mathbf{A}$ e $\mathbf{Q}$ con $\mathbf{Q}\mathbf{A}^{-\top}$,
 per ogni matrice invertibile $\mathbf{A}$ di dimensioni $k \times k$, perché
@@ -563,8 +566,8 @@ di queste l’83% ne ha uno o due: è il regime in cui la similarità calcolata 
 film in comune fabbrica utenti identici, e per questo qui si passa direttamente
 ai fattori latenti.
 
-L'addestramento è un normale ciclo PyTorch. A ogni epoca (cioè a ogni giro
-completo sui voti) il modello prevede, calcola di quanto ha sbagliato, e
+L'addestramento è un normale ciclo PyTorch. A ogni epoca (cioè a ogni passata
+completa sui voti) il modello prevede, calcola di quanto ha sbagliato, e
 l'ottimizzatore aggiorna i vettori latenti. La misura è l'errore quadratico
 medio, la MSE incontrata nella {doc}`sezione sulle metriche
 </MachineLearning/metriche>`. È lo stesso metro del Netflix Prize meno l'ultimo
@@ -607,7 +610,7 @@ epoca 20 · MSE visti 0.034 · MSE tenuti da parte 0.481 · banale 0.997
 epoca 30 · MSE visti 0.014 · MSE tenuti da parte 0.348 · banale 0.997
 ```
 
-Sui voti di addestramento l'MSE scende a $0{,}014$, praticamente zero, e di per
+Sui voti di addestramento l'MSE scende a $0{,}014$, praticamente zero, ma di per
 sé il numero non dimostra niente. Il modello ha $(300 + 200) \cdot 8 + 500 + 1
 = 4.501$ parametri: un vettore di otto numeri per ciascuno dei 300 utenti e dei
 200 film (l'otto è la `k=8` del codice, un po’ più dei quattro fattori con cui
@@ -621,7 +624,7 @@ Il numero che conta è il secondo. Sui voti tenuti da parte, che non entrano
 nell'addestramento (anche se 91 stanno su celle già viste), l'MSE si ferma a
 $0{,}35$, circa un terzo dello $0{,}997$
 della previsione banale «a tutti il voto medio»: il modello ha imparato
-qualcosa di vero, anche se in stelle il vantaggio si assottiglia, $0{,}59$
+qualcosa di vero, anche se in stelle il vantaggio si riduce, $0{,}59$
 contro $1{,}00$. Ma è venticinque volte l'errore sui voti di addestramento, e
 lo scarto fra i due misura quanto il modello ha memorizzato, cioè l'overfitting
 della {doc}`sezione sulla validazione
@@ -693,7 +696,7 @@ ottimista; per un numero da riportare ne servirebbe un terzo insieme.
 Le righe di AdamW dicono un'altra cosa. Con $10^{-4}$ AdamW dà praticamente gli
 stessi numeri del modello senza regolarizzazione, e per ottenere da AdamW lo
 stesso freno che Adam dà con $10^{-4}$ bisogna scrivergli $10^{-1}$, mille
-volte tanto. Lo stesso numero in due ottimizzatori quasi uguali è una
+volte tanto. Dunque lo stesso numero in due ottimizzatori quasi uguali è una
 regolarizzazione diversa, e la ragione sta nel modo in cui la riga che gira si
 scosta dalla formula.
 
@@ -808,7 +811,7 @@ accanto a quella lista salta la domanda più semplice.
 
 `````{tab} Superiore
 
-Partenza a freddo. L'embedding di un utente o di un item senza interazioni
+**Partenza a freddo.** L'embedding di un utente o di un item senza interazioni
 non compare in nessun termine della somma, quindi niente lo determina: con
 l'SGD sulle sole triple resta all'inizializzazione, con ALS o con un
 decadimento dei pesi finisce a zero. In nessuno dei due casi il modello
@@ -830,7 +833,7 @@ sta già servendo una classifica non personalizzata, quindi tanto vale
 sceglierla apposta e sceglierla robusta, perché $b_i$ stimato su una manciata
 di voti è esposto allo stesso rischio della similarità su due film in comune.
 
-Bias di popolarità. La distribuzione delle interazioni è a coda lunga, e
+**Bias di popolarità.** La distribuzione delle interazioni è a coda lunga, e
 l'obiettivo di minimizzare l'errore medio concentra la capacità del modello
 sulla testa della distribuzione, dove stanno quasi tutti i termini della somma.
 Il feedback loop visto nella panoramica fa il resto: più esposizione, più
@@ -910,7 +913,7 @@ che per la partenza a freddo offre qualcosa.
   righe, la famiglia di modelli che al Netflix Prize superò i vicini. Con quasi
   un parametro per voto l'MSE di addestramento non misura la generalizzazione:
   qui $0{,}014$ sui voti visti contro $0{,}35$ su quelli tenuti da parte.
-- La regolarizzazione $L_2$ si tara sui voti tenuti da parte: con Adam e
+- La regolarizzazione $L_2$ si calibra sui voti tenuti da parte: con Adam e
   `weight_decay` $10^{-4}$ l'MSE scende in media da $0{,}446$ a $0{,}315$, a
   $10^{-2}$ gli embedding vanno a zero e il modello smette di personalizzare.
   In Adam il `weight_decay` passa per la normalizzazione dei momenti e non

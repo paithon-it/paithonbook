@@ -4,52 +4,59 @@ Una calcolatrice risponde in meno di un millesimo di secondo; una persona che
 legge la risposta di un modello e scrive la domanda successiva può metterci più
 di un minuto. In mezzo stanno una ricerca su Wikipedia, che torna in media in
 meno di un secondo, e una mossa in una casa simulata, che ne chiede un decimo.
-Reyna Abhyankar, Zijian He e i loro colleghi dell'Università della California a
-San Diego hanno guardato che cosa succede durante quelle attese al servente, il
-programma che fa girare il modello e risponde alle richieste. Hanno preso sei
-modi in cui una generazione si interrompe per aspettare qualcosa da fuori: la
-calcolatrice in un problema di aritmetica, le ricerche su Wikipedia, la casa
-simulata di ALFWorld, la conversazione con una persona, un modello che genera
-immagini e uno che legge il testo ad alta voce {cite}`abhyankar2024infercept`.
 
-I serventi di allora, compreso vLLM, quello di {doc}`LLMOps </MLOps/llmops>`,
-trattavano l'interruzione come la fine della richiesta. Buttavano la KV cache,
-gli appunti che il modello tiene su ciò che ha già letto, e al ritorno dello
-strumento ricevevano una richiesta nuova da rileggere dall'inizio. Sul carico
+Reyna Abhyankar, Zijian He e i loro colleghi dell'Università della California a
+San Diego hanno studiato che cosa succede, durante quelle attese, al
+**server**, il programma che fa girare il modello e risponde alle richieste.
+Hanno considerato sei modi in cui una generazione si interrompe per aspettare
+qualcosa da fuori: la calcolatrice in un problema di aritmetica, le ricerche su
+Wikipedia, la casa simulata di ALFWorld, la conversazione con una persona, un
+modello che genera immagini e uno che legge il testo ad alta voce
+{cite}`abhyankar2024infercept`.
+
+I server di allora, compreso vLLM, quello di {doc}`LLMOps </MLOps/llmops>`,
+trattavano l'interruzione come la fine della richiesta. Scartavano la **KV
+cache**, gli appunti che il modello tiene su ciò che ha già letto, e al ritorno
+dello strumento ricevevano una richiesta nuova da rileggere dall'inizio. Sul carico
 misto delle sei interruzioni, fra il 37 e il 40% del tempo di calcolo del
-modello se ne andava a ricostruire contesti già calcolati. Le alternative ovvie
-sprecavano in altri modi. Conservando la cache durante l'attesa, quasi metà
-della memoria della scheda restava occupata da richieste ferme, e così per più
-del 60% del tempo; spostandola nella memoria del computer in cui la scheda è
-montata (l'host), con trasferimenti che bloccano il calcolo, più di un quarto
-del tempo passava ad aspettarli. Il lavoro, presentato nel 2024 alla conferenza
-ICML con il nome di InferCept, partiva da questi tre sprechi, nessuno dei quali
-va bene sempre.
+modello se ne andava a ricostruire contesti già calcolati.
+
+Le alternative ovvie, però, sprecavano in altri modi. Conservando la cache
+durante l'attesa, quasi metà della memoria della scheda restava occupata da
+richieste ferme, e così per più del 60% del tempo; spostandola nella memoria
+del computer in cui la scheda è montata (l'host), con trasferimenti che
+bloccano il calcolo, più di un quarto del tempo passava ad aspettarli. Il
+lavoro, presentato nel 2024 alla conferenza ICML con il nome di InferCept,
+partiva da questi tre sprechi, nessuno dei quali va bene sempre.
 
 Il continuous batching di LLMOps e le misure di {doc}`Misurare un servizio
 </MLOps/metriche-di-servizio>` guardano le richieste una per una. Quelle di un
-agente dipendono l'una dall'altra, si allungano a ogni passo e, fra una e
-l'altra, aspettano.
+agente, invece, dipendono l'una dall'altra, si allungano a ogni passo e, fra
+una e l'altra, aspettano.
 
 ## Un programma, molte chiamate
 
 Il {doc}`ciclo dell'agente </Agenti/agenti-e-tool-use>`, visto dal motore che
-serve il modello (il servente dell'inizio), è una successione di richieste.
-Alla chiamata $j$ il modello riceve un contesto di $L_j$ token, ne genera $o_j$
-(un ragionamento e una richiesta di strumento) e si ferma; l'harness esegue lo
-strumento, che impiega $t_j$ secondi e restituisce $r_j$ token; la chiamata
-dopo legge $L_{j+1} = L_j + o_j + r_j$ token (con 1.000 di contesto, 50
-generati e 200 di risultato, 1.250). Le chiamate dipendono l'una dall'altra,
+serve il modello (il server), è una successione di richieste. Alla chiamata $j$
+il modello riceve un contesto di $L_j$ token, ne genera $o_j$ (un ragionamento
+e una richiesta di strumento) e si ferma; l'harness esegue lo strumento, che
+impiega $t_j$ secondi e restituisce $r_j$ token; la chiamata dopo legge
+$L_{j+1} = L_j + o_j + r_j$ token (ad esempio, con 1.000 di contesto, 50
+generati e 200 di risultato, 1.250).
+
+Le chiamate dipendono l'una dall'altra,
 perché la $j + 1$ non esiste finché la $j$ non è finita e lo strumento non ha
 risposto. Il contesto cresce, e finché l'harness non lo riscrive (una
 compattazione, un esito vecchio sostituito da una riga) ogni chiamata contiene
-la precedente come prefisso. E i buchi fra una chiamata e l'altra cambiano di
-ordini di grandezza. Su cento esecuzioni di un agente che corregge difetti veri
-di programmi (la raccolta SWE-bench), Hanchen Li e colleghi contano in media
-10,9 giri del ciclo per compito e strumenti che durano in media 925
-millisecondi, con una deviazione standard (lo scarto tipico dalla media) di
-3.550 millisecondi, quasi quattro volte la media, segno che qualche chiamata
-dura moltissimo {cite}`li2025continuum`.
+la precedente come prefisso.
+
+Inoltre i buchi fra una chiamata e l'altra
+cambiano di ordini di grandezza. Ad esempio, su cento esecuzioni di un agente
+che corregge difetti veri di programmi (la raccolta SWE-bench), Hanchen Li e
+colleghi contano in media 10,9 iterazioni del ciclo per compito e strumenti che
+durano in media 925 millisecondi, con una deviazione standard (lo scarto tipico
+dalla media) di 3.550 millisecondi, quasi quattro volte la media, segno che
+qualche chiamata dura moltissimo {cite}`li2025continuum`.
 
 L'insieme delle chiamate di un agente su un compito, con le dipendenze fra
 loro, si chiama **programma**: una catena di chiamate e di interruzioni, o un
@@ -62,8 +69,8 @@ identificativo di programma, e lo attacca a ogni chiamata. Il motore può allora
 decidere che cosa fare della KV cache di un programma fermo su uno strumento, a
 quale programma dare la precedenza, su quale replica (copia del modello)
 mandare la chiamata che torna. Il {doc}`conto di un compito
-</Harness/il-conto>` guardava le stesse chiamate dal lato di chi le paga; dal
-lato di chi tiene accese le schede conta la memoria.
+</Harness/il-conto>` guardava le stesse chiamate dal lato di chi le paga; per
+chi tiene accese le schede, invece, conta la memoria.
 
 ## Mentre lo strumento lavora
 
@@ -85,13 +92,15 @@ altre richieste nel mazzo. Il conto vale quando qualche richiesta aspetta
 posto; se nessuno aspetta, conservare non costa. Mentre la scheda ricostruisce
 una cache, o la copia con un trasferimento che blocca il calcolo, restano ferme
 anche le altre richieste del mazzo, e la loro memoria si spreca come quella
-della richiesta. Un conto a numeri tondi misura questo spreco per una richiesta
-di 2.000 token in pausa per quattro durate diverse. Il modello ha sette
-miliardi di parametri, le altre richieste tengono trenta gigabyte di cache, e
-l'attenzione è multi-testa piena (MHA) oppure GQA, la variante di
-{doc}`L'attenzione in pratica
+della richiesta.
+
+Per vederlo, un calcolo a numeri tondi misura questo spreco
+per una richiesta di 2.000 token in pausa per quattro durate diverse. Il
+modello ha sette miliardi di parametri, le altre richieste tengono trenta
+gigabyte di cache, e l'attenzione è multi-testa piena (MHA) oppure GQA, la
+variante di {doc}`L'attenzione in pratica
 </Transformers/attenzione-in-pratica>` che qui tiene un quarto degli appunti
-per token. Poi il conto cerca la soglia oltre la quale conservare smette di
+per token. Infine cerca la soglia oltre la quale conservare smette di
 convenire.
 
 ```python
@@ -147,14 +156,16 @@ Con l'attenzione multi-testa piena la cache pesa 1,05 GB e ricostruirla costa
 56 millisecondi di prefill. Lo spreco dello scarto viene quasi tutto dai trenta
 gigabyte delle altre richieste, ferme per quei 56 millisecondi, e i suoi 1,74
 GB·s battono la conservazione oltre 1,66 secondi, la soglia in cui i due
-sprechi si pareggiano (1,74 GB·s divisi per 1,05 GB). Due viaggi da 41,9
-millisecondi costano più di un ricalcolo da 56, e il trasferimento non vince
-mai (2,60 contro 1,74 GB·s). Con la GQA la cache pesa un quarto, i viaggi
-durano 10,5 millisecondi, e oltre 2,42 secondi conviene spostare (0,63 GB·s) e
-non scartare (1,69). Calcolatrice, Wikipedia e casa simulata stanno sotto la
-soglia di questo conto, una persona che risponde mezzo minuto dopo sta ben
-sopra. La {numref}`fig-kv-in-attesa` segue la memoria della scheda durante una
-pausa di cinque secondi, una strada per corsia.
+sprechi si pareggiano (1,74 GB·s divisi per 1,05 GB). Quanto al trasferimento,
+due viaggi da 41,9 millisecondi costano più di un ricalcolo da 56, e il
+trasferimento non vince mai (2,60 contro 1,74 GB·s).
+
+Con la GQA, invece, la cache pesa un quarto, i viaggi durano 10,5 millisecondi,
+e oltre 2,42 secondi conviene spostare (0,63 GB·s) e non scartare (1,69). In
+pratica, calcolatrice, Wikipedia e casa simulata stanno sotto la soglia di
+questo calcolo; una persona che risponde mezzo minuto dopo sta ben sopra. La
+{numref}`fig-kv-in-attesa` segue la memoria della scheda durante una pausa di
+cinque secondi, una strada per corsia.
 
 ```{figure} ../figures/kv-in-attesa.svg
 :name: fig-kv-in-attesa
@@ -184,13 +195,13 @@ sedie restano ferme per tutta la telefonata mentre la fila aspetta, e cinque
 minuti fanno venti sedie-minuto. Se sparecchia, la fila entra, ma al ritorno il
 cameriere deve riapparecchiare. Lo fa dalla comanda, che resta (è il testo
 della conversazione), e rimette tutto in un colpo, molto più in fretta della
-cena; intanto però il giro si ferma per tutta la sala. Con altre centosedici
-sedie occupate e un minuto di lavoro, sono le quattro della comitiva più le
-centosedici ferme per un minuto, centoventi sedie-minuto, quante ne costa
-tenere il tavolo senza nessuno seduto per mezz'ora. Per una telefonata più
-corta il maître lascia il tavolo, per una più lunga sparecchia. Tutto vale
-perché alla porta c'è la fila. Se nessuno aspettasse, il tavolo lasciato non
-toglierebbe posto a nessuno, e sparecchiare sarebbe solo fatica.
+cena; intanto però il giro si ferma per tutta la sala. Ad esempio, con altre
+centosedici sedie occupate e un minuto di lavoro, sono le quattro della
+comitiva più le centosedici ferme per un minuto, centoventi sedie-minuto,
+quante ne costa tenere il tavolo senza nessuno seduto per mezz'ora. Per una
+telefonata più corta il maître lascia il tavolo, per una più lunga sparecchia.
+Tutto vale perché alla porta c'è la fila. Se nessuno aspettasse, il tavolo
+lasciato non toglierebbe posto a nessuno, e sparecchiare sarebbe solo fatica.
 
 Il maître può anche caricare la tavola su un carrello e parcheggiarlo nel
 magazzino accanto, la memoria dell'host, dove c'è posto ma si passa da una
@@ -298,7 +309,9 @@ non arriva, e gli autori di Continuum vi trovano due lacune
 {cite}`li2025continuum`. Una richiesta sfrattata, quando lo strumento risponde,
 non riparte subito nemmeno con la cache già pronta nell'host, perché aspetta
 che le richieste entrate al suo posto liberino memoria, e quell'attesa si
-ripete a ogni giro del programma. E le durate di uno stesso strumento sono
+ripete a ogni iterazione del programma.
+
+La seconda lacuna è che le durate di uno stesso strumento sono
 molto disuguali (nelle loro tracce il 10% più lento delle chiamate a uno
 strumento che scarica pagine web fa il 52,5% del tempo passato in quello
 strumento), quindi una cache conservata per uno strumento che sfora la
@@ -322,11 +335,11 @@ le sedie le usa lei. Sull'altro mette quello che si risparmia se la comitiva
 torna in tempo, la tavola da non rifare e l'attesa al rientro. Chi ha perso il
 tavolo, tornando, anche se passa primo nella fila deve aspettare che si liberi
 un posto, e i posti li hanno presi altri, che non si alzano prima di aver
-finito; a ogni telefonata succede di nuovo. Il tavolo ha quattro sedie, e la
-comitiva che torna in tempo fa risparmiare quaranta sedie-minuto. Se nove
-telefonate su dieci di quel tipo finiscono entro quattro minuti, promettere
-quattro minuti costa sedici sedie-minuto e ne fa risparmiare in media
-trentasei, venti guadagnate; promettere un'ora le copre tutte, ma costa
+finito; a ogni telefonata succede di nuovo. Ad esempio, il tavolo ha quattro
+sedie, e la comitiva che torna in tempo fa risparmiare quaranta sedie-minuto.
+Se nove telefonate su dieci di quel tipo finiscono entro quattro minuti,
+promettere quattro minuti costa sedici sedie-minuto e ne fa risparmiare in
+media trentasei, venti guadagnate; promettere un'ora le copre tutte, ma costa
 duecentoquaranta sedie-minuto per risparmiarne quaranta. Il maître promette
 quattro minuti.
 
@@ -398,23 +411,27 @@ come, first served*). Per un agente conta il tempo del programma intero, dalla
 prima chiamata all'ultima, e l'ordine d'arrivo delle richieste lo ignora. Ogni
 chiamata nuova di un programma lungo entra in coda come una richiesta
 qualunque, e un programma corto che fa anche lui più di una chiamata se la
-ritrova davanti a ogni chiamata sua. Autellix lo chiama blocco in testa alla
-coda a livello di programma (*head-of-line blocking*, chi sta davanti nella
+ritrova davanti a ogni chiamata sua. Autellix lo chiama **blocco in testa alla
+coda a livello di programma** (*head-of-line blocking*, chi sta davanti nella
 fila ferma tutti quelli dietro), lo stesso effetto che in Misurare un servizio
-un prompt lunghissimo aveva sulle risposte in corso {cite}`luo2025autellix`. Le
-risposte guardano al programma e si dividono in due famiglie. Autellix dà la
-precedenza al programma che ha ricevuto meno servizio fino a quel momento;
-Continuum, e già InferCept per le richieste che rientrano, rispettano l'ordine
-d'arrivo del programma invece di quello della chiamata.
+un prompt lunghissimo aveva sulle risposte in corso {cite}`luo2025autellix`.
+
+Le
+soluzioni proposte guardano al programma e si dividono in due famiglie.
+Autellix dà la precedenza al programma che ha ricevuto meno servizio fino a
+quel momento; Continuum, e già InferCept per le richieste che rientrano,
+rispettano l'ordine d'arrivo del programma invece di quello della chiamata.
 
 Una simulazione a numeri tondi mette alla prova tre regole, l'ordine d'arrivo
 delle chiamate, il minor servizio ricevuto dal programma (la regola di
 Autellix, chiamata PLAS) e l'ordine d'arrivo dei programmi, su due carichi. Nel
 primo, con lunghezze molto disuguali, quattro programmi su cinque fanno quasi
 sempre una o due chiamate e uno ne fa una ventina in media; nel secondo tutti
-ne fanno sette. Il motore ha quattro posti nel mazzo e lavora all'85% circa; il
+ne fanno sette.
+
+Il motore ha quattro posti nel mazzo e lavora all'85% circa; il
 tempo si conta in passi, e a ogni passo ogni posto fa un'unità di lavoro. Tutto
-si sorteggia all'arrivo di ogni programma, così che le tre regole servono lo
+si estrae a caso all'arrivo di ogni programma, così che le tre regole servono lo
 stesso carico. Si stampano i passi che impiegano in media tutti i programmi e,
 nel primo carico, i corti (al più due chiamate) e i lunghi (almeno venti).
 
@@ -494,9 +511,9 @@ tutti uguali
 Con lunghezze così disuguali PLAS chiude i programmi corti in 5,5 passi, contro
 i 9,6 dell'ordine d'arrivo delle chiamate e i 37,1 dell'ordine d'arrivo dei
 programmi, e abbassa anche la durata media di tutti, 44,8 passi contro 47,1 e
-65,2. Il conto lo pagano i lunghi, che passano da 361,7 e 295,0 a 419,9 passi.
-Con sette chiamate per tutti la stessa regola diventa la peggiore, 100,6 passi
-in media contro 78,6 e 67,4.
+65,2. Il prezzo lo pagano i lunghi, che passano da 361,7 e 295,0 a 419,9 passi.
+Con sette chiamate per tutti, invece, la stessa regola diventa la peggiore,
+100,6 passi in media contro 78,6 e 67,4.
 
 `````{tab} Elementare
 
@@ -545,13 +562,13 @@ le chieda; ma deve sapere già tutto quello che ordinerà.
 
 `````{tab} Superiore
 
-L'obiettivo è il tempo medio di risposta dei programmi. Su un servente solo, la
+L'obiettivo è il tempo medio di risposta dei programmi. Su un server solo, la
 regola che serve per primo il lavoro residuo più corto (SRPT) lo minimizza, ma
 richiede di conoscere il residuo, che un motore non conosce
 {cite}`luo2025autellix`. Fra le regole che non usano la lunghezza del lavoro il
 riferimento è il servizio al lavoro che ne ha ricevuto meno (*least attained
 service*, LAS). In una coda GI/GI/1 (arrivi e durate indipendenti, di
-distribuzioni qualunque, un servente), se le lunghezze hanno tasso di guasto
+distribuzioni qualunque, un server), se le lunghezze hanno tasso di guasto
 decrescente (la densità in $x$ divisa per la probabilità di superare $x$; è la
 classe DFR, che comprende alcune delle distribuzioni a coda pesante più note),
 LAS rende la lunghezza della coda stocasticamente minima, a ogni istante, fra
@@ -630,10 +647,12 @@ stesso modello, quante ne servono secondo {doc}`Quante repliche accendere
 </MLOps/capacita-e-costo>`. L'instradamento di {doc}`Davanti ai modelli
 </MLOps/gateway-e-affidabilita>` sceglieva fra modelli diversi; fra repliche
 dello stesso modello a distinguerle è che cosa hanno in memoria, perché ognuna
-tiene la sua cache dei prefissi, gli inizi di richiesta che ha già letto. Un
+tiene la sua **cache dei prefissi**, gli inizi di richiesta che ha già letto. Un
 bilanciatore del carico classico la ignora. Il turno a rotazione (*round
 robin*) manda le richieste alle repliche in ordine ciclico, l'altra regola
-comune le manda alla replica con meno richieste in corso. Nelle misure di
+comune le manda alla replica con meno richieste in corso.
+
+Ad esempio, nelle misure di
 Autellix, fra chiamate dello stesso programma la quota di token in ingresso già
 presenti in cache resta sopra il 90% a ogni lunghezza dell'ingresso, mentre fra
 programmi diversi cala rapidamente con la lunghezza, perché in comune hanno
@@ -801,7 +820,7 @@ lunghezze dei programmi, il prefisso che troppi vogliono nello stesso posto.
   dello strumento sorprende; il costo $uT$ è prudente {cite}`li2025continuum`.
 - PLAS dà la precedenza al programma con meno servizio ricevuto, ATLAS al
   cammino critico più corto, con code discrete e un correttivo contro la fame
-  {cite}`luo2025autellix`. Su un servente solo, fra le regole che non conoscono
+  {cite}`luo2025autellix`. Su un server solo, fra le regole che non conoscono
   il lavoro residuo, LAS rende minima la coda, e il tempo medio, quando le
   lunghezze sono DFR; con lunghezze IFR vincono, nella stessa classe, le regole
   che non interrompono {cite}`nuyens2004foreground`. PLAS è fuori da quelle

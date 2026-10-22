@@ -1,0 +1,14 @@
+# Le postille di questa pagina, una per capoverso del testo comune.
+# Ognuna vale finché la sua impronta combacia col testo del capoverso.
+- inizio: "Tolta l'attivazione, uno strato si limita"
+  impronta: "29ff8cc70d35"
+  postilla: "Senza attivazione uno strato è affine, e strati affini in fila ne fanno uno solo"
+- inizio: "Il criterio con cui si giudicano"
+  impronta: "63bd0780395e"
+  postilla: "Un'attivazione si giudica dalle pendenze, calcolate dall'uscita all'indietro"
+- inizio: "Ogni volta che attraversa uno strato,"
+  impronta: "24813bc9b0dc"
+  postilla: "Il gradiente passa dove l'attivazione è ripida, e si spegne dove è piatta"
+- inizio: "Ogni funzione è una o due"
+  impronta: "51c6217ae91a"
+  postilla: "Softmax: sottrarre il punteggio più alto, e dire su quali numeri fare la somma"

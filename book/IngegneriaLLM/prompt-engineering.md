@@ -26,7 +26,7 @@ stesso oggetto si divide anche in tre strati, secondo il ruolo e la durata di
 ciascun pezzo: il *system prompt*, che fissa ruolo e regole e resta identico a
 ogni richiesta; le istruzioni e gli esempi, che mostrano il compito; il formato
 della risposta, spesso uno schema che il programma a valle sa leggere. Le
-quattro parti lo dividono secondo la funzione, e i due tagli convivono.
+quattro parti, invece, lo dividono secondo la funzione; i due tagli convivono.
 
 `````{tab} Elementare
 
@@ -72,17 +72,18 @@ Quando un programma parla con un modello non gli spedisce un solo testo:
 gli spedisce dei messaggi, ognuno con un mittente dichiarato. È il formato a
 **ruoli**, e i ruoli fondamentali sono tre, nella convenzione più diffusa:
 *system* (le istruzioni di fondo di chi costruisce l'applicazione), *user*
-(chi la usa) e *assistant* (il modello). Nei cicli con strumenti se ne aggiunge
-un quarto, che porta al modello i risultati degli strumenti; i nomi esatti
-dipendono dal fornitore, e c'è chi le istruzioni di fondo non le spedisce come
-un messaggio ma come una voce a parte della richiesta, con lo stesso effetto.
+(chi la usa) e *assistant* (il modello). Nei cicli con strumenti se ne
+aggiunge un quarto, che porta al modello i risultati degli strumenti; i nomi
+esatti dipendono dal fornitore, e c'è chi le istruzioni di fondo non le spedisce
+come un messaggio ma come una voce a parte della richiesta, con lo stesso
+effetto.
 
 Un programma si rivolge al servizio che ospita il modello attraverso una API,
 l'ingresso di servizio che non passa dalla pagina web. Ogni richiesta spedita
 di lì è una chiamata al modello, e porta con sé due cose: il testo, e le
 impostazioni con cui si vuole la risposta. È l'unità di lavoro, e quella che si
 paga. La stessa parola, negli agenti, indicava anche la chiamata a uno
-strumento, che è un'altra cosa: quella la scrive il modello dentro la sua
+strumento, che è un'altra cosa. Quella la scrive il modello dentro la sua
 risposta, il programma la esegue per lui, e si paga come testo della chiamata
 al modello in cui viaggia.
 
@@ -115,16 +116,16 @@ formato) e resta identico a ogni turno: è la spina dorsale su cui il programma
 costruisce il resto. I messaggi user contengono le richieste dell'utente
 finale; i messaggi assistant contengono le risposte del modello, e riinserire i
 turni passati è ciò che dà continuità alla conversazione. La gerarchia non è
-puramente convenzionale: i modelli vengono addestrati a dare priorità alle
-istruzioni di sistema su quelle dell'utente. Wallace e colleghi la chiamano
+puramente convenzionale, poiché i modelli vengono addestrati a dare priorità
+alle istruzioni di sistema su quelle dell'utente. Wallace e colleghi la chiamano
 *instruction hierarchy* e la ottengono con dati costruiti apposta, fine-tuning
 supervisionato e RLHF su GPT-3.5 Turbo: l'obiettivo dichiarato è che il modello
 ignori le istruzioni di grado più basso quando contrastano con quelle di grado
 più alto {cite}`wallace2024instruction`. Questa gerarchia è però *morbida*, non
 una barriera crittografica: un utente abile può tentare di aggirarla, e qui sta
-il nodo del *jailbreak*. Nel formato chat i vecchi esempi *few-shot* si possono
-anche esprimere come turni `user`/`assistant` fittizi che precedono la
-richiesta reale: esempi «recitati» che condizionano lo stile della risposta.
+il nodo del *jailbreak*. Si noti che nel formato chat i vecchi esempi *few-shot*
+si possono anche esprimere come turni `user`/`assistant` fittizi che precedono
+la richiesta reale: esempi «recitati» che condizionano lo stile della risposta.
 
 `````
 
@@ -136,33 +137,35 @@ top-p della {doc}`sezione sui grandi modelli linguistici </Transformers/llm>`,
 e si scrive con il trattino basso perché così si chiama nel codice. Quel «come»
 è il campionamento: il modello non produce una parola ma una classifica di
 parole con le loro probabilità, e campionare è estrarre la parola a sorte con
-quelle probabilità invece di prendere sempre la prima. Là le manopole erano
+quelle probabilità invece di prendere sempre la prima. Là i parametri erano
 tre, perché c'era anche il top-k, che tiene un numero fisso di candidati; qui
-ne bastano due, perché sono quelle che si girano in pratica quando si regola
-una chiamata.
+ne bastano due, perché sono quelli che si usano in pratica quando si
+imposta una chiamata.
 
-Queste due manopole non stanno nella casella della chat: le interfacce
-conversazionali non le espongono, e si regolano quando si chiama il modello da
+Questi due parametri non stanno nella casella della chat: le interfacce
+conversazionali non li espongono, e si regolano quando si chiama il modello da
 un programma, o da una pagina di prova che i fornitori mettono a disposizione,
 e perciò appartengono a chi costruisce l'applicazione più che a chi la usa.
-Chiederle a parole dentro il messaggio («rispondi con temperatura bassa») non
-le tocca affatto: sono impostazioni della chiamata, non del testo, e il modello
+Chiederli a parole dentro il messaggio («rispondi con temperatura bassa») non
+li tocca affatto: sono impostazioni della chiamata, non del testo, e il modello
 quella frase la legge come legge tutte le altre.
 
-Che cosa fanno, in breve. La temperatura cambia quanto contano le differenze
+La temperatura cambia quanto contano le differenze
 fra i candidati, e il nome viene dalla fisica, dove la stessa formula descrive
 un sistema che, scaldato, comincia a passare per configurazioni che a freddo
 non prendeva quasi mai. A temperatura vicina a zero il modello prende quasi
 sempre il primo della classifica; a 1 pesca seguendo le percentuali così come
-sono; sopra 1 le appiattisce, e anche i candidati bassi hanno la loro speranza
-(il valore si può di solito girare fra 0 e 2). Il top_p invece taglia: si tiene
-i candidati più probabili finché le loro percentuali, sommate una dopo l'altra,
-non arrivano alla soglia che gli abbiamo dato (la *p* sta per probabilità, e
-0,9 è il 90 per cento), e butta via tutti gli altri. I candidati che restano
-formano il *nucleo*: le loro percentuali si riscalano perché tornino a sommare
-cento, e la parola si estrae da lì. A $p$ pari a $1$ non si butta via niente,
-cioè la seconda manopola è spenta. La {numref}`fig-due-manopole` mostra le due
-operazioni sulla stessa classifica di partenza.
+sono; sopra 1 le appiattisce, e anche i candidati in coda guadagnano probabilità
+(il valore si può di solito regolare fra 0 e 2).
+
+Il top_p invece taglia: si tiene i candidati più probabili finché le loro
+percentuali, sommate una dopo l'altra, non arrivano alla soglia che gli abbiamo
+dato (la *p* sta per probabilità, e 0,9 è il 90 per cento), e scarta tutti gli
+altri. I candidati che restano formano il *nucleo*: le loro percentuali si
+riscalano perché tornino a sommare cento, e la parola si estrae da lì. A $p$
+pari a $1$ non si butta via niente, cioè il secondo parametro è spento. La
+{numref}`fig-due-manopole` mostra le due operazioni sulla stessa classifica di
+partenza.
 
 ```{figure} ../figures/temperature-top-p.svg
 :name: fig-due-manopole
@@ -175,7 +178,7 @@ soglia non si muove mai; il taglio sì.
 ```
 
 Nell'ordine più diffuso la temperatura ripesa prima tutti i candidati, e poi il
-top_p taglia su quella classifica *già ripesata*: le due manopole allora non
+top_p taglia su quella classifica *già ripesata*: i due parametri allora non
 sono indipendenti, e la figura lo fa vedere. A temperatura 1 le prime tre
 parole arrivano al 91 per cento e il nucleo è di tre; a temperatura 2 le
 percentuali si riavvicinano fra loro, le prime tre si fermano a ottanta e non
@@ -189,14 +192,14 @@ una classifica che la temperatura non ha ancora toccato, e il nucleo resta lo
 stesso a ogni temperatura. Prima di applicare questo ragionamento alla propria
 chiamata bisogna quindi guardare in che ordine lavora il servizio che si usa.
 
-Il calcolo si rifà in poche righe di Python. Con cinquanta candidati abbastanza
-appaiati (presi a caso, ma sempre gli stessi per tutte le prove) la stessa
-soglia di 0,9 ne lascia passare due a temperatura 0,2, sedici a temperatura 1 e
-trentotto a temperatura 3. Cambiando i candidati i tre numeri cambiano, e
-parecchio, mentre la crescita con la temperatura resta in ogni caso. Girare le
-due manopole insieme nella stessa direzione, insomma, non fa la somma dei due
-effetti: li mette uno sopra l'altro, e il risultato smette di essere
-prevedibile a mente. Da qui la regola pratica di muoverne una per volta.
+Il calcolo si rifà in poche righe di Python. Con cinquanta
+candidati abbastanza appaiati (presi a caso, ma sempre gli stessi per tutte le
+prove) la stessa soglia di 0,9 ne lascia passare due a temperatura 0,2, sedici
+a temperatura 1 e trentotto a temperatura 3. Cambiando i candidati i tre numeri
+cambiano, e parecchio, mentre la crescita con la temperatura resta in ogni
+caso. Regolare i due parametri insieme nella stessa direzione, insomma, non fa
+la somma dei due effetti: li mette uno sopra l'altro, e il risultato smette di
+essere prevedibile a mente. Perciò la regola pratica è muoverne uno per volta.
 
 ```python
 import numpy as np
@@ -250,7 +253,9 @@ parte.
 Un'ultima cosa, perché sorprende tutti: nemmeno a temperatura zero il modello
 ti darà *sempre* identica la stessa risposta, e la ragione è che il computer
 dall'altra parte non serve solo te: mette insieme le richieste che gli arrivano
-nello stesso momento e le calcola in blocco. I calcoli con la virgola sono come
+nello stesso momento e le calcola in blocco.
+
+I calcoli con la virgola sono come
 lo scontrino delle due cassiere della {doc}`sezione sull'analisi numerica
 </Matematica/analisi-numerica>`: lo stesso totale, spezzato in un numero
 diverso di colonne, arrotonda in punti diversi e finisce per differire nelle
@@ -274,7 +279,9 @@ endpoint condiviso la stessa richiesta a $T = 0$ può dare uscite diverse fra
 un'esecuzione e l'altra, a parità di modello e di seme, perché i kernel di
 normalizzazione, matmul e attenzione non sono invarianti alla dimensione del
 batch, e il batch dipende da quanti altri utenti stanno chiamando in
-quell'istante {cite}`he2025nondeterminism`. Ne segue che un confronto A/B fra
+quell'istante {cite}`he2025nondeterminism`.
+
+Ne segue che un confronto A/B fra
 due versioni di prompt non si fa a una esecuzione per lato. Si fa sullo stesso
 banco $D$ di domande per tutte e due, e il confronto è appaiato: detti $b$ il
 numero di domande giuste solo con A e $c$ quello delle giuste solo con B, la
@@ -282,12 +289,16 @@ differenza di accuratezza è $(b-c)/|D|$, il suo errore standard è
 $\sqrt{b+c-(b-c)^2/|D|}\,/|D|$, e l'ipotesi che le due versioni si equivalgano
 si saggia con il test di McNemar, $(b-c)^2/(b+c)$ confrontato con una $\chi^2$ a
 un grado di libertà. Se le risposte non sono ripetibili, ogni domanda si ripete
-più volte per lato e si conta la frazione di risposte giuste. Il top_p (*nucleus
+più volte per lato e si conta la frazione di risposte giuste.
+
+Il top_p (*nucleus
 sampling* {cite}`holtzman2020curious`) tronca invece la distribuzione al più
 piccolo insieme di token la cui probabilità cumulata raggiunge la soglia $p$,
 ridistribuendo la massa su quel nucleo: adatta dinamicamente il numero di
 candidati alla forma della distribuzione, cosa che un semplice *top-k* fisso non
-fa. Si legge spesso che i due parametri agiscono «su assi diversi», uno sulla
+fa.
+
+Si legge spesso che i due parametri agiscono «su assi diversi», uno sulla
 forma della distribuzione e l'altro sul supporto ammesso, e la conclusione che
 se ne trae è che si possano regolare indipendentemente. Con l'ordine più diffuso
 non è così, e la ragione sta nell'ordine: il nucleo si calcola sulla
@@ -354,11 +365,12 @@ misurano che, sulla maggior parte dei compiti, l'accuratezza sale passando da
 nessun esempio a qualche esempio {cite}`brown2020language`; quanto sale,
 però, dipende dalla scelta e dall'ordine degli esempi.
 
-- **Zero-shot**: solo l'istruzione, nessun esempio. «Dimmi se questa recensione
-  è positiva, negativa o neutra» (in gergo: classificarne il *sentiment*, cioè
-  il giudizio che ci sta dentro). Sui compiti comuni funziona bene perché i
-  modelli di oggi, dopo il pre-addestramento, sono stati addestrati apposta a
-  seguire istruzioni (lo racconta la {doc}`sezione sul post-training
+- **Zero-shot**: solo l'istruzione, nessun esempio. Ad esempio, «Dimmi se
+  questa recensione è positiva, negativa o neutra» (in gergo: classificarne il
+  *sentiment*, cioè il giudizio che ci sta dentro). Sui compiti comuni funziona
+  bene perché i modelli di oggi, dopo il pre-addestramento, sono stati
+  addestrati apposta a seguire istruzioni (lo racconta la {doc}`sezione sul
+  post-training
   </Transformers/post-training>`); un modello soltanto pre-addestrato, senza
   esempi, rende molto meno.
 - **One-shot / few-shot**: prima della richiesta si mettono uno o più esempi
@@ -394,7 +406,9 @@ si risponde «negativo», e avrebbe sbagliato la quarta per imitazione: eccone
 una per etichetta, per scelta. Contano anche l'ordine in cui le metti e il modo
 in cui scrivi l'etichetta. Conta il numero: dopo una manciata di mani il
 guadagno cresce sempre più piano, e intanto si paga, perché gli esempi vanno
-rimostrati tutti a ogni domanda nuova. Un'ultima sorpresa: se nelle mani
+rimostrati tutti a ogni domanda nuova.
+
+Un'ultima sorpresa: se nelle mani
 d'esempio scambi apposta le etichette, chiamando «negativo» ciò che è positivo,
 un modello piccolo le ignora e continua a rispondere secondo quello che sa,
 mentre uno molto grande si adegua e sbaglia come gli hai mostrato.
@@ -409,7 +423,9 @@ learning, la capacità (documentata su larga scala da Brown e colleghi con GPT-3
 nel contesto, senza fine-tuning. Il modello definisce, un token alla volta, la
 distribuzione $P(y \mid I, (x_1,y_1),\dots,(x_k,y_k), x)$, dove $I$ sono le
 istruzioni, le coppie $(x_i, y_i)$ i $k$ esempi svolti e $x$ la richiesta
-corrente, e la risposta se ne ricava per decodifica. Conta che cosa la
+corrente, e la risposta se ne ricava per decodifica.
+
+Conta che cosa la
 decodifica restituisca: il *greedy* massimizza token per token, senza garanzie
 sulla sequenza; il campionamento non massimizza affatto, e restituisce un
 campione da $P$ soltanto per $T = 1$ e senza troncamento. A $T \neq 1$ la
@@ -419,7 +435,9 @@ proporzionale a $P^{1/T}$ perché il normalizzatore $Z_t$ dipende dal prefisso;
 il top_p aggiunge un troncamento, anch'esso token per token. Qui basti
 ricordare che gli esempi agiscono come condizionamento, spostando la
 distribuzione condizionata del modello verso lo stile e il formato mostrati,
-non come dati d'addestramento. Alcune avvertenze empiriche contano nella
+non come dati d'addestramento.
+
+Alcune avvertenze empiriche contano nella
 pratica, e hanno un nome e una misura. Zhao e colleghi
 {cite}`zhao2021calibrate` mostrano che la scelta degli esempi, il formato e
 persino l'ordine portano GPT-3 da un'accuratezza vicina al caso a una vicina
@@ -429,7 +447,9 @@ le parole comuni nel pre-addestramento; il loro rimedio, la *calibrazione
 contestuale*, legge l'uscita del modello su un ingresso vuoto come «N/A» e la
 corregge finché lì non è uniforme. Lu e colleghi {cite}`lu2022fantastically`
 trovano che la sensibilità all'ordine resta nei modelli più grandi e che la
-permutazione buona per un modello non lo è per un altro. Min e colleghi
+permutazione buona per un modello non lo è per un altro.
+
+Min e colleghi
 {cite}`min2022rethinking`, sui compiti di classificazione e a scelta multipla,
 sostituiscono le etichette degli esempi con etichette a caso e perdono
 pochissimo: gli esempi trasmettono soprattutto lo spazio delle etichette, la
@@ -440,6 +460,7 @@ esempi e restano sulle conoscenze del pre-addestramento, mentre i più grandi le
 seguono anche quando contraddicono le loro conoscenze {cite}`wei2023larger`, e
 lì il confine fra condizionare e apprendere dal contesto si sposta. Da qui la
 regola di bilanciare le classi e di guardare quale etichetta sta per ultima.
+
 Quanto al numero, Min e colleghi vedono la prestazione crescere poco oltre gli
 otto esempi, ma su modelli piccoli (fino a sei miliardi di parametri) e con le
 finestre di allora {cite}`min2022rethinking`. Con le finestre lunghe il quadro
@@ -461,7 +482,8 @@ cifre meno di una volta su tre {cite}`brown2020language`, e con i modelli di
 oggi l'esempio va fatto con numeri più lunghi. Chiedigli di mostrare i passaggi
 e il risultato migliora nettamente: se scrive «17 × 24 = 17 × 20 + 17 × 4 =
 340 + 68 = 408», arriva alla risposta giusta molto più spesso. È la
-chain-of-thought, la catena di pensiero che nel capitolo sugli agenti il
+chain-of-thought, la catena di pensiero che nella {doc}`sezione su ReAct
+</Agenti/agenti-e-tool-use>` il
 modello scriveva fra un'azione e l'altra: far scrivere al modello i passaggi
 intermedi del ragionamento *prima* della conclusione. La propongono nel 2022
 Wei e colleghi {cite}`wei2022chain`, che la ottengono mostrando esempi già
@@ -480,13 +502,14 @@ invece di dover indovinare tutto in un colpo.
 ```
 
 C'è una lettura di {numref}`fig-chain-of-thought` che vale più della tecnica, e
-sta in come il modello lavora. Per ogni parola che scrive il modello compie un
-giro di calcolo attraverso tutta la rete, e quella parola, appena scritta,
-torna nel testo che ha davanti al giro dopo. Se la risposta deve uscire subito,
-deve completare tutto il lavoro in un giro solo; se prima gli lasciamo scrivere
-«17 × 20 = 340», di giri ne ha uno in più, e nel secondo quel 340 non deve più
-calcolarlo: gli sta davanti, scritto. Lasciarlo scrivere i passaggi gli dà più
-spazio per fare i calcoli, e non è una cortesia.
+sta in come il modello lavora. Per ogni parola che scrive il modello compie una
+passata di calcolo attraverso tutta la rete, e quella parola, appena scritta,
+torna nel testo che ha davanti alla passata dopo. Se la risposta deve uscire
+subito, deve completare tutto il lavoro in una passata sola; se prima gli
+lasciamo scrivere «17 × 20 = 340», di passate ne ha una in più, e nella seconda
+quel 340 non deve più calcolarlo: gli sta davanti, scritto. In altri termini,
+lasciarlo scrivere i passaggi gli dà più spazio per fare i calcoli, e non è una
+cortesia.
 
 `````{tab} Elementare
 
@@ -499,7 +522,9 @@ chiedi di ragionare passo per passo, spezza il problema in pezzi piccoli e ci
 inciampa molto meno. Non è più «intelligente»: pensando ad alta voce non deve
 più tenere niente a mente, perché ogni pezzo che ha già detto gli resta davanti
 mentre affronta quello dopo. Dove non c'è niente da contare o da calcolare,
-però, il guadagno si assottiglia fin quasi a sparire. Un modello che è stato
+però, il guadagno si assottiglia fin quasi a sparire.
+
+Un modello che è stato
 allenato apposta a ragionare per passi lo fa già da sé: a lui chiederlo
 aggiunge poco, e ti fa soltanto aspettare di più.
 
@@ -528,7 +553,9 @@ una variante che elimina del tutto gli esempi: Kojima e colleghi
 alla domanda una singola frase-innesco (l'ormai celebre «*Let's think step by
 step*», «ragioniamo passo per passo») per attivare un ragionamento a più passi
 anche in zero-shot. Una riga di testo, nessun esempio, e su MultiArith, con
-InstructGPT, le risposte esatte passano da 17,7 a 78,7 su cento. Che la catena
+InstructGPT, le risposte esatte passano da 17,7 a 78,7 su cento.
+
+Che la catena
 sia anche una spesa del budget di contesto, token di «pensiero» comprati per
 avere qualità, lo ha già mostrato la {doc}`sezione sul contesto come
 interfaccia </Agenti/context-engineering>`.
@@ -563,20 +590,26 @@ catena *assomigli* a un ragionamento non dice che *sia* il ragionamento che ha
 prodotto la risposta, e Wei e colleghi lasciano la questione esplicitamente
 aperta. Quando se ne è misurata la fedeltà, il verdetto è stato severo, e i due
 lavori che la {doc}`sezione sul ciclo dell'agente </Agenti/agenti-e-tool-use>`
-ha citato a proposito della traccia di ReAct qui si leggono per esteso. Turpin
+ha citato a proposito della traccia di ReAct qui si leggono per esteso.
+
+Turpin
 e colleghi {cite}`turpin2023unfaithful` inseriscono nel prompt few-shot una
 caratteristica di bias (riordinare le opzioni perché la risposta sia sempre la
 prima) e trovano che i modelli producono catene che razionalizzano la risposta
 sbagliata senza mai nominare la causa che li ha spostati, con cali di
-accuratezza fino al 36% su tredici compiti di BIG-Bench Hard. Lanham e colleghi
+accuratezza fino al 36% su tredici compiti di BIG-Bench Hard.
+
+Lanham e colleghi
 {cite}`lanham2023faith` intervengono direttamente sulla catena (vi inseriscono
 errori, la parafrasano) e trovano che i modelli a volte vi si appoggiano molto
 e a volte la ignorano quasi del tutto, e soprattutto che «al crescere della
 taglia e delle capacità producono ragionamenti meno fedeli sulla maggior parte
 dei compiti». Questo si accosta male all’«emerge con la scala» di poche righe
-fa: con la scala il guadagno cresce e la fedeltà cala. Conseguenza operativa:
-la catena si legge come **traccia ispezionabile**, utile per accorgersi che
-qualcosa non torna, non come spiegazione di che cosa è successo.
+fa: con la scala il guadagno cresce e la fedeltà cala.
+
+Conseguenza operativa: la catena si legge come **traccia ispezionabile**, utile
+per accorgersi che qualcosa non torna, non come spiegazione di che cosa è
+successo.
 
 `````
 
@@ -608,11 +641,11 @@ una sola risposta.
 
 Con il modello, però, le dieci teste sono una sola: è come interrogare la
 stessa persona dieci volte, e fra una volta e l'altra cambia soltanto un po’ di
-casualità. Contro le
-distrazioni funziona, perché chi si distrae si distrae ogni volta in un punto
-diverso. Contro un malinteso no: se la domanda è scritta in modo da portare
-fuori strada, porta fuori strada tutte e dieci le volte, e il conteggio finale
-non corregge l'errore, lo conferma con dieci voti invece che con uno.
+casualità. Contro le distrazioni funziona, perché chi si distrae si distrae
+ogni volta in un punto diverso. Contro un malinteso no: se la domanda è scritta
+in modo da portare fuori strada, porta fuori strada tutte e dieci le volte, e
+il conteggio finale non corregge l'errore, lo conferma con dieci voti invece
+che con uno.
 
 `````
 
@@ -624,23 +657,24 @@ indipendenti con temperatura $T > 0$; (2) da ciascuna si estrae la risposta
 finale, scartando i passaggi intermedi; (3) si marginalizza sul ragionamento
 tenendo la risposta di maggioranza, $\hat{y} = \arg\max_{y} \sum_{i=1}^{N}
 \mathbb{1}[\,a_i = y\,]$, dove $a_i$ è la risposta della $i$-esima catena.
-L'intuizione statistica: le derivazioni corrette tendono a convergere sulla
-stessa risposta, mentre gli errori sono idiosincratici e si sparpagliano, così
-il voto le premia. Rispetto alla singola catena greedy il metodo guadagna, nel
-lavoro originale, fino a $17{,}9$ punti su GSM8K, $12{,}2$ su AQuA e $11{,}0$
-su SVAMP fra i problemi aritmetici, e $6{,}4$ su StrategyQA e $3{,}9$ su
-ARC-Challenge fra quelli di senso comune {cite}`wang2023selfconsistency`: più
+L'intuizione statistica è che le derivazioni corrette tendono a convergere
+sulla stessa risposta, mentre gli errori sono idiosincratici e si sparpagliano,
+così il voto le premia. Rispetto alla singola catena greedy il metodo guadagna,
+nel lavoro originale, fino a $17{,}9$ punti su GSM8K, $12{,}2$ su AQuA e
+$11{,}0$ su SVAMP fra i problemi aritmetici, e $6{,}4$ su StrategyQA e $3{,}9$
+su ARC-Challenge fra quelli di senso comune {cite}`wang2023selfconsistency`: più
 il compito è di calcolo, più rende, in accordo con quanto si misura per la sola
-catena; il costo è lineare nel calcolo: $N$ generazioni invece di una, mentre
-la latenza resta circa quella di una singola generazione se le catene,
-indipendenti per costruzione, si campionano in parallelo. In fattura il fattore
-può scendere sotto $N$, ma non automaticamente: le catene condividono lo stesso
-prefisso (istruzione ed esempi), e quel prefisso si paga una volta sola
-soltanto se qualcosa lo sfrutta, cioè se si chiedono $N$ campioni in una
-chiamata unica oppure se il fornitore sconta il contesto già visto. Senza
-nessuna delle due, $N$ chiamate separate pagano il prefisso $N$ volte. È un
-compromesso di puro context/compute engineering: si compra affidabilità
-spendendo campioni.
+catena; il costo è lineare nel calcolo, cioè $N$ generazioni invece di una,
+mentre la latenza resta circa quella di una singola generazione se le catene,
+indipendenti per costruzione, si campionano in parallelo.
+
+In fattura il fattore può scendere sotto $N$, ma non automaticamente: le catene
+condividono lo stesso prefisso (istruzione ed esempi), e quel prefisso si paga
+una volta sola soltanto se qualcosa lo sfrutta, cioè se si chiedono $N$
+campioni in una chiamata unica oppure se il fornitore sconta il contesto già
+visto. Senza nessuna delle due, $N$ chiamate separate pagano il prefisso $N$
+volte. In sintesi, è un compromesso di puro context/compute engineering: si
+compra affidabilità spendendo campioni.
 
 Sotto all’«intuizione statistica» c'è un'ipotesi che il testo di solito tace, e
 non è innocua. Dato il contesto $C$, le $N$ catene sono campioni indipendenti
@@ -654,7 +688,9 @@ moda è di solito giusta, e infatti è il regime in cui il metodo è stato
 misurato. Per gli errori indotti dal prompt no: sono gli stessi in tutte le
 catene, la moda è sbagliata, e la maggioranza non corregge, conferma, con $N$
 voti invece di uno {cite}`turpin2023unfaithful`. La self-consistency compra
-affidabilità contro il rumore, non contro il bias. Quanto a $N$, nel lavoro
+affidabilità contro il rumore, non contro il bias.
+
+Quanto a $N$, nel lavoro
 originale si campionano quaranta catene, ma gli autori notano che il guadagno
 satura presto e che cinque o dieci ne danno già la maggior parte; e un
 confronto onesto con la catena singola mette le due a parità di calcolo.
@@ -694,7 +730,8 @@ L'idea si spinge anche oltre la catena dritta. Invece di generare catene
 separate e votare alla fine, si possono esplorare i passaggi intermedi come i
 rami di un albero, giudicandoli via via e tornando indietro da quelli che
 non promettono bene. È il Tree of Thoughts, l'albero dei pensieri
-{cite}`yao2023tree`, già incontrato nel capitolo sugli Agenti, e qui basta il
+{cite}`yao2023tree`, già incontrato nel {doc}`capitolo sugli Agenti
+</Agenti/context-engineering>`, e qui basta il
 richiamo: stessa idea di fondo, far lavorare il modello di più per farlo
 ragionare meglio, con una ricerca fatta meglio.
 
@@ -751,7 +788,9 @@ siano del tipo dichiarato. Nella forma più rigorosa, il *decoding vincolato*,
 lo schema si traduce in un automa (a stati finiti per un'espressione regolare,
 a pila per una grammatica ricorsiva come quella di JSON) e a ogni passo si
 mettono a $-\infty$, prima della softmax, i logit dei token che porterebbero il
-prefisso fuori dalle stringhe ammesse {cite}`willard2023efficient`. Il costo
+prefisso fuori dalle stringhe ammesse {cite}`willard2023efficient`.
+
+Il costo
 per token è una maschera sul vocabolario: per un automa a stati finiti si
 precalcola stato per stato, per una grammatica a pila solo in parte, perché
 l'ammissibilità di certi token dipende da tutto il contenuto della pila.
@@ -873,11 +912,12 @@ chiamate dello stesso modello.
 
 `````
 
-Il conto simula la selezione senza nessun modello linguistico: venti istruzioni
-candidate con accuratezze vere fra $0{,}66$ e $0{,}74$, provate su un banco di
-cinquanta domande e poi di cinquecento, duemila volte. Stampa il voto con cui
-vince la vincitrice, quanto vale in realtà, quante volte è la migliore, e
-l’errore standard di un’accuratezza di $0{,}7$ misurata su quel banco.
+Il calcolo simula la selezione senza nessun modello linguistico: venti
+istruzioni candidate con accuratezze vere fra $0{,}66$ e $0{,}74$, provate su
+un banco di cinquanta domande e poi di cinquecento, duemila volte. Stampa il
+voto con cui vince la vincitrice, quanto vale in realtà, quante volte è la
+migliore, e l’errore standard di un’accuratezza di $0{,}7$ misurata su quel
+banco.
 
 ```python
 import numpy as np
@@ -942,6 +982,7 @@ queste due, su cinque modelli e due batterie di domande difficili, e in media
 non hanno trovato effetti significativi sulle prestazioni: qualche differenza
 isolata su singoli modelli, e sulle singole domande scarti grandi, in un verso
 o nell'altro, che non si sa prevedere in anticipo {cite}`meincke2025threats`.
+
 La minaccia non è un'idea nata sui forum: l'ha sostenuta in pubblico anche
 Sergey Brin, cofondatore di Google, secondo cui «i modelli tendono a fare
 meglio se li minacci». Sulla cortesia lo stesso gruppo aveva già misurato che a
@@ -974,13 +1015,16 @@ lavori altrui. I risultati si contano in risposte esatte su cento. Nei lavori
 riletti, chiedere i passaggi ne fa guadagnare in media 14,2 sul ragionamento
 simbolico (contare, sostituire, applicare regole formali) e 12,3 sulla
 matematica; sul ragionamento logico si scende già a 6,9, e su tutto il resto la
-media passa da 56,1 senza catena a 56,8 con, cioè non si muove. Le prove
-rifatte confermano il quadro. Su MMLU, per dirne una (una batteria di domande a
-scelta multipla su cinquantasette materie, dalla storia alla medicina, con cui
-si misura quanto un modello sa in generale), chiedere i passaggi dà
-un'accuratezza quasi identica a quella del rispondere di getto, tranne quando
-la domanda o la risposta del modello contengono un segno di uguale, cioè quando
-c'è di mezzo un calcolo. La regola pratica che ne esce è netta: se il compito
+media passa da 56,1 senza catena a 56,8 con, cioè non si muove.
+
+Le prove rifatte confermano il quadro. Su MMLU, per dirne una (una batteria di
+domande a scelta multipla su cinquantasette materie, dalla storia alla
+medicina, con cui si misura quanto un modello sa in generale), chiedere i
+passaggi dà un'accuratezza quasi identica a quella del rispondere di getto,
+tranne quando la domanda o la risposta del modello contengono un segno di
+uguale, cioè quando c'è di mezzo un calcolo.
+
+La regola pratica che ne esce è netta: se il compito
 ha dentro un calcolo o una manipolazione di simboli, i passaggi servono; se è
 una domanda di conoscenza o di giudizio, si stanno pagando token per niente.
 
@@ -1010,7 +1054,9 @@ colleghi misurano fino a 76 punti di accuratezza di differenza fra
 formattazioni equivalenti degli stessi esempi, su LLaMA-2-13B, e la sensibilità
 non sparisce con modelli più grandi, con più esempi o con l'addestramento a
 seguire istruzioni {cite}`sclar2024quantifying`; e per un modello di
-ragionamento come DeepSeek-R1 gli esempi peggiorano le cose. Gli altri tre sono
+ragionamento come DeepSeek-R1 gli esempi peggiorano le cose.
+
+Gli altri tre sono
 regole di buona scrittura: sensate, usate ovunque, e senza una misura alle
 spalle. Nella figura non ci sono perché la figura ordina i risultati misurati
 da qualcuno, e questi non sono stati misurati. La distinzione è facile da fare
@@ -1113,7 +1159,7 @@ livelli sopra, il {doc}`contesto <context-engineering>` e il {doc}`loop
   assistant, con priorità (morbida) al system. «Sfondo» e non «contesto»
   perché qui il contesto è l'intera finestra.
 - Temperatura e top_p regolano il campionamento: bassa per fatti e codice, alta
-  per creatività; muovi una manopola per volta, perché dove la temperatura si
+  per creatività; muovi un parametro per volta, perché dove la temperatura si
   applica prima del taglio non sono indipendenti, e il nucleo si calcola sulla
   distribuzione già riscalata e non si restringe mai al crescere di $T$
   (l'ordine lo decide la libreria). Non sono esposte nelle interfacce di chat.

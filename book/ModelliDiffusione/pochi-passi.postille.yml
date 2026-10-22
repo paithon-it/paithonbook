@@ -1,0 +1,14 @@
+# Le postille di questa pagina, una per capoverso del testo comune.
+# Ognuna vale finché la sua impronta combacia col testo del capoverso.
+- inizio: "Con i modelli di diffusione si"
+  impronta: "1651ac0d8244"
+  postilla: "Distillazione: la rete resta grande e a ridursi sono i passi"
+- inizio: "La prima riga non verifica niente:"
+  impronta: "3e403ddfd65c"
+  postilla: "La difficoltà sta nell'imparare la velocità media, non nel campionare"
+- inizio: "Il primo è la varietà, e"
+  impronta: "b34acd3fbb19"
+  postilla: "Il costo cambia col metodo: meno varietà o campioni singoli peggiori"
+- inizio: "La guida, il peso per cui"
+  impronta: "b6df381d0cf3"
+  postilla: "La guida ha un costo, e con un passo solo non si può più applicare a ogni passo"

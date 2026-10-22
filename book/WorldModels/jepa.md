@@ -39,9 +39,9 @@ simile. La rottura sta nel *dove* si fa la previsione.
 
 Anche nei mondi in miniatura la previsione non avveniva sui puntini dello
 schermo: avveniva sui 32 numeri in cui V, la rete che guardava, riassumeva il
-fotogramma. Quel
-riassunto, però, era stato addestrato a rimettere insieme i puntini: era
-bravo nella misura in cui il disegno rifatto somigliava all'originale. LeCun
+fotogramma. Quel riassunto, però, era stato addestrato a rimettere insieme i
+puntini: era buono nella misura in cui il disegno rifatto somigliava
+all'originale. LeCun
 propone di tagliare anche quel cordone. Il futuro, osserva, ha due proprietà
 che rendono una pessima idea provare a disegnarlo: è **molteplice** (da uno
 stesso presente possono seguire tanti futuri diversi, tutti plausibili) ed è
@@ -180,20 +180,19 @@ La trappola è il collasso, già incontrato nella {doc}`sezione sull'energia com
 compatibilità </ModelliEnergia/energia-come-compatibilita>`: un'energia che
 vale zero per ogni coppia. Se la loss misura soltanto la distanza fra la
 rappresentazione predetta e quella del bersaglio, ha un minimo banale: due
-encoder che producono la stessa fila di numeri qualunque cosa guardino.
-Predizione perfetta, energia zero dappertutto, e rappresentazioni che non
-distinguono un gatto da un lampadario. Per le JEPA è il pericolo numero uno,
-perché qui il bersaglio è prodotto da un encoder i cui parametri dipendono
+encoder che producono la stessa fila di numeri qualunque cosa guardino. Ne
+risultano una predizione perfetta, energia zero dappertutto e rappresentazioni
+che non distinguono un gatto da un lampadario. Per le JEPA è il pericolo numero
+uno, perché qui il bersaglio è prodotto da un encoder i cui parametri dipendono
 dalla stessa loss, mentre in un modello generativo il bersaglio è il dato
 stesso, che nessun addestramento può spostare. Nel documento del 2022 LeCun
 indica la famiglia di rimedi che preferisce, quella già incontrata fra i
 modelli a energia: invece di fabbricare risposte sbagliate da bocciare, si
 toglie al modello la possibilità stessa di dare a tutto lo stesso riassunto,
-per esempio obbligandolo a tenerli diversi fra loro. Nei sistemi JEPA
-costruiti da Meta, invece, la difesa concreta è un'altra, più semplice e più
-sottile.
+per esempio obbligandolo a tenerli diversi fra loro. Nei sistemi JEPA costruiti
+da Meta, invece, la difesa concreta è un'altra, più semplice e più sottile.
 
-I suoi pezzi sono tre, e non pesano uguale
+I pezzi di questa difesa sono tre, e non pesano uguale
 ({numref}`fig-jepa-tre-pezzi`).
 
 ```{figure} ../figures/jepa-tre-pezzi.svg
@@ -268,7 +267,7 @@ capitolo è già occupato dalla temperatura del sogno; MoCo, come qui, usa $m$).
 In I-JEPA $m$ parte da 0,996, quindi a ogni passo il target si sposta di una
 frazione millesimale verso l'encoder corrente, e cresce linearmente fino a 1
 lungo l'addestramento: verso la fine il bersaglio smette del tutto di muoversi.
-All'EMA si accompagna lo stop-gradient: la loss non si propaga
+All'EMA si accompagna lo stop-gradient, per cui la loss non si propaga
 mai attraverso il ramo del target, che è puro riferimento. Il terzo
 pezzo si dimentica volentieri perché sta dalla parte dell'allievo: il
 predictor, presente su un ramo solo, che rende l'asimmetria un'asimmetria
@@ -283,7 +282,7 @@ qualche punto di accuratezza (71,3% contro il 74,3% di BYOL, a 800 epoche)
 {cite}`chen2021exploring`. BYOL invece, tolta la media mobile, collassa (0,3%
 di accuratezza nell'ablazione a 300 epoche, dove il modello completo ottiene il
 72,5%), e torna al 66,9% solo dando al predictor un tasso di apprendimento
-dieci volte più alto {cite}`grill2020bootstrap`; e I-JEPA chiama l'EMA
+dieci volte più alto {cite}`grill2020bootstrap`. Anche I-JEPA chiama l'EMA
 «essenziale per addestrare» architetture come questa, attribuendo la difesa dal
 collasso all'asimmetria fra i due rami nel suo insieme {cite}`assran2023self`.
 Stop-gradient e predictor servono invece insieme: in SimSiam togliere l'uno o
@@ -296,7 +295,7 @@ contrastivi potesse non collassare era stata la scoperta empirica di BYOL nel
 
 Il documento del 2022 {cite}`lecun2022path` discute anche l'alternativa
 esplicitamente regolarizzata, alla VICReg {cite}`bardes2022vicreg`, dove a
-proteggere dal collasso è la loss e non l'asimmetria: accanto alla distanza fra
+proteggere dal collasso è la loss e non l'asimmetria. Accanto alla distanza fra
 le due rappresentazioni, un termine a cerniera tiene la deviazione standard di
 ogni componente, nel batch, sopra una soglia, e un altro penalizza le
 covarianze fuori diagonale. La perdita completa, con i pesi del paper, è
@@ -365,12 +364,12 @@ $$
 dove $B_i$ è l'insieme delle patch del blocco bersaglio $i$, e
 $\hat{\mathbf{s}}_{y,j}$ e $\mathbf{s}_{y,j}$ sono le rappresentazioni predette
 e bersaglio della singola patch $j$: il confronto avviene patch per patch, non
-fra due riassunti di blocco. V-JEPA e V-JEPA 2 sostituiscono poi la norma
-$L_2$ al quadrato con la norma $L_1$, che gli autori trovano più stabile
+fra due riassunti di blocco. V-JEPA e V-JEPA 2 sostituiscono poi la norma $L_2$
+al quadrato con la norma $L_1$, che gli autori trovano più stabile
 {cite}`bardes2024revisiting`, e in $L_1$ è anche l'energia con cui V-JEPA 2
-pianifica. Un dettaglio architetturale è decisivo: l'encoder
-target elabora l'immagine intera, e i bersagli si ottengono mascherando la sua
-*uscita*, non il suo ingresso; così ogni rappresentazione-bersaglio incorpora il
+pianifica. Un dettaglio architetturale è decisivo: l'encoder target elabora
+l'immagine intera, e i bersagli si ottengono mascherando la sua *uscita*, non
+il suo ingresso; così ogni rappresentazione-bersaglio incorpora il
 contesto globale ed è semanticamente ricca. Niente augmentation artigianali:
 nessun crop multiplo, nessun jitter di colore. I numeri del paper
 {cite}`assran2023self`: su ImageNet-1K con l’1% delle etichette, un ViT-H/14
@@ -379,12 +378,12 @@ ViT-H/16 a risoluzione 448), contro il 71,5% di MAE (il metodo generativo che
 ricostruisce i pixel mascherati) e il 69,7% di iBOT (lì con un ViT-B/16, che è
 un modello molto più piccolo). Nella stessa tabella data2vec
 {cite}`baevski2022data2vec`, che predice anch'esso le rappresentazioni di un
-maestro EMA invece dei pixel, arriva al 73,3% con un ViT-L/16, e MSN, che usa le
-augmentation, al 75,7%: il vantaggio netto di I-JEPA è sui metodi che
-ricostruiscono i pixel, non sull'intera famiglia che predice nel latente, di cui
-data2vec è un predecessore; e il pre-addestramento del ViT-H/14 richiede meno di
-1200 ore-GPU (meno di 72 ore su 16 A100), oltre dieci volte meno di MAE a parità
-di architettura.
+maestro EMA invece dei pixel, arriva al 73,3% con un ViT-L/16, e MSN, che usa
+le augmentation, al 75,7%: il vantaggio netto di I-JEPA è sui metodi che
+ricostruiscono i pixel, non sull'intera famiglia che predice nel latente, di
+cui data2vec è un predecessore; e il pre-addestramento del ViT-H/14 richiede
+meno di 1200 ore-GPU (meno di 72 ore su 16 A100), oltre dieci volte meno di MAE
+a parità di architettura.
 
 Il risparmio, però, non viene da dove sembra. Calcolare i bersagli nello spazio
 delle rappresentazioni, invece che nei pixel, aggiunge costo, perché c'è un
@@ -415,12 +414,12 @@ coprisse zone diverse in fotogrammi diversi, il modello potrebbe barare
 copiando dal fotogramma accanto la parte che nel suo manca. La maschera è perciò
 un **tubo**: dentro una stessa clip la regione coperta sta ferma e attraversa
 la pila da parte a parte, come un foro che buca tutte le carte di un mazzo
-nello stesso punto ({numref}`fig-maschera-a-tubo`). Dove cade, quel foro, lo
-si sorteggia a ogni clip. La maschera è anche generosa, perché in media copre
-circa il 90% del video, e il poco che resta non basta a completare i bordi di
-ciò che manca: per indovinare il resto bisogna aver capito la scena.
+nello stesso punto ({numref}`fig-maschera-a-tubo`). Dove cade quel foro, lo
+si estrae a caso a ogni clip. La maschera è anche generosa, perché in media
+copre circa il 90% del video, e il poco che resta non basta a completare i
+bordi di ciò che manca: per indovinare il resto bisogna aver capito la scena.
 
-Due proprietà, però, non fanno una ricetta, e la differenza si paga cara.
+Due proprietà, però, non bastano, e la differenza si paga cara.
 Coprire il 90% con tanti tubicini sottili sparsi lascia dappertutto un bordo
 da cui completare, e gli autori quella variante l'hanno provata: a riconoscere
 le azioni nei video, il modello che ne esce dà 51,5 risposte giuste su cento
@@ -492,14 +491,14 @@ rientra nel token di query per connessione residua e passa in un MLP a due
 strati, poi in una LayerNorm e in un classificatore lineare. Rispetto alla
 semplice media delle feature, la sonda attentiva guadagna 17 punti su
 Kinetics-400 e 16,1 su Something-Something-v2 {cite}`bardes2024revisiting`. Uno
-strato di cross-attention è un aggregatore *addestrato* che decide quali token
-guardare, non un classificatore lineare: fra i due estremi «regressione
-logistica sopra feature congelate» e «fine-tuning completo» sta molto più vicino
-al secondo di quanto la parola «testa» lasci intendere. In V-JEPA 2 la sonda
-cresce ancora: quattro blocchi transformer, l'ultimo dei quali sostituisce la
-self-attention con una cross-attention a query appresa. Quattro blocchi
-transformer sopra un backbone congelato formano un modello a sé, più
-che una testa.
+strato di cross-attention è un aggregatore *addestrato* che
+decide quali token guardare, non un classificatore lineare: fra i due estremi
+«regressione logistica sopra feature congelate» e «fine-tuning completo» sta
+molto più vicino al secondo di quanto la parola «testa» lasci intendere. In
+V-JEPA 2 la sonda cresce ancora: quattro blocchi transformer, l'ultimo dei
+quali sostituisce la self-attention con una cross-attention a query appresa.
+Quattro blocchi transformer sopra un backbone congelato formano un modello a
+sé, più che una testa.
 
 Da qui la cautela sulla lettura, la stessa che la {doc}`sezione sui
 simulatori e il dibattito </WorldModels/simulatori-e-dibattito>` applica al
@@ -578,18 +577,18 @@ notevole; non è un maggiordomo.
 
 `````{tab} Superiore
 
-Sopra l'encoder congelato viene addestrato un predictor condizionato sulle
-azioni, usando meno di 62 ore di video del dataset pubblico DROID. La parola
-«non etichettati» che il paper usa è facilissima da fraintendere, perché le
-azioni ci sono eccome e sono l'ingrediente su cui poggia tutta la variante
+Sopra l'encoder congelato si addestra un predictor condizionato sulle
+azioni, usando meno di 62 ore di video del dataset pubblico DROID. L'espressione
+«non etichettati» usata dal paper si fraintende facilmente, perché le
+azioni ci sono e sono l'ingrediente su cui poggia tutta la variante
 AC: il predictor riceve mappe di feature, stato
 dell'end-effector (posizione, tre angoli di Eulero, apertura della pinza) e
 azioni, interlacciati nel tempo, con l'azione definita come la variazione dello
 stato dell'end-effector fra fotogrammi adiacenti. *Unlabeled*, nel paper, vuol
 dire un'altra cosa, dichiarata a chiare lettere: nessun meta-dato su
 ricompensa, su quale compito fosse in corso, o su se il tentativo sia riuscito.
-È una distinzione che tornerà utile davanti a Genie, che le azioni non
-ce le ha e deve inferirsele.
+È una distinzione che tornerà utile davanti a Genie, che non dispone
+delle azioni e deve inferirle.
 
 La pianificazione è controllo predittivo a orizzonte recedente. Con
 $\mathbf{s}_k$ la rappresentazione del fotogramma corrente, $\mathbf{e}_k$ lo
@@ -610,30 +609,31 @@ da raggiungere, cioè sta dentro l'energia: è la stessa scelta che
 l’{doc}`inferenza attiva </WorldModels/inferenza-attiva>` fa mettendo le
 preferenze nei priori del modello. A ottimizzare è il *Cross-Entropy Method*:
 si campionano 800 candidate da gaussiane, si tengono le dieci migliori, se ne
-ricalcolano media e varianza e si ripete per dieci giri. Nei compiti riportati
-l'orizzonte è $T = 1$, cioè si ottimizza una sola azione per volta: gli autori
-lo dichiarano sufficiente perché i compiti considerati sono ingordi, e
-osservano che orizzonti più lunghi funzionano anch'essi ma pesano di più in
+ricalcolano media e varianza e si ripete per dieci iterazioni. Nei compiti
+riportati l'orizzonte è $T = 1$, cioè si ottimizza una sola azione per volta:
+gli autori lo dichiarano sufficiente perché i compiti considerati sono ingordi,
+e osservano che orizzonti più lunghi funzionano anch'essi ma pesano di più in
 calcolo. Il costo è 16 secondi di calcolo per ogni singola azione, su una sola
 scheda grafica da gioco. I tassi di successo, medi sui due laboratori, dicono a
-che punto siamo: *reach* 100%, pick-and-place della tazza 80% e della scatola
-65%, presa della tazza 65%, presa della scatola 25%. Afferrare una scatola
-riesce una volta su quattro, e su numeri così piccoli il margine è largo: ogni
-percentuale è la media di dieci prove per laboratorio, cioè venti in tutto, e
-cinque successi su venti non distinguono un sistema che riesce una volta su
-dieci da uno che riesce quasi una volta su due. Il confronto, con lo stesso
-protocollo, dà la misura: Octo, addestrato per imitazione sullo stesso DROID,
-prende la tazza nel 15% dei casi, la scatola mai, e completa il pick-and-place
-nel 15% e nel 10%; Cosmos, un generatore di video usato come modello del mondo,
-impiega quattro minuti per ogni azione e nel secondo laboratorio non completa
-nessun pick-and-place. Il pick-and-place, che è il numero più alto, non si
-guida con un'immagine sola: gli autori ne danno tre (oggetto afferrato, oggetto
-vicino alla meta, oggetto posato) e passano dall'una all'altra a passi fissi. A
-scomporre l'obiettivo è una persona, conseguenza dell'orizzonte $T = 1$: fra i
-limiti gli autori indicano proprio il pick-and-place *senza* sotto-obiettivi.
-Allineato con un modello di linguaggio, il sistema affronta anche compiti di
-*video question answering*. È il punto in cui la via di LeCun smette di essere
-un diagramma e tocca il mondo fisico; non è il punto in cui la partita è vinta.
+che punto siamo: *reach* 100%, pick-and-place della tazza 80% e
+della scatola 65%, presa della tazza 65%, presa della scatola 25%. Afferrare
+una scatola riesce una volta su quattro, e su numeri così piccoli il margine è
+largo: ogni percentuale è la media di dieci prove per laboratorio, cioè venti
+in tutto, e cinque successi su venti non distinguono un sistema che riesce una
+volta su dieci da uno che riesce quasi una volta su due. Il confronto, con lo
+stesso protocollo, dà la misura: Octo, addestrato per imitazione sullo stesso
+DROID, prende la tazza nel 15% dei casi, la scatola mai, e completa il
+pick-and-place nel 15% e nel 10%; Cosmos, un generatore di video usato come
+modello del mondo, impiega quattro minuti per ogni azione e nel secondo
+laboratorio non completa nessun pick-and-place. Il pick-and-place, che è il
+numero più alto, non si guida con un'immagine sola: gli autori ne danno tre
+(oggetto afferrato, oggetto vicino alla meta, oggetto posato) e passano
+dall'una all'altra a passi fissi. A scomporre l'obiettivo è una persona,
+conseguenza dell'orizzonte $T = 1$: fra i limiti gli autori indicano proprio il
+pick-and-place *senza* sotto-obiettivi. Allineato con un modello di linguaggio,
+il sistema affronta anche compiti di *video question answering*. È il punto in
+cui la via di LeCun smette di essere un diagramma e tocca il mondo fisico; non
+è il punto in cui la partita è vinta.
 
 `````
 
@@ -672,9 +672,9 @@ che cosa serve prevedere?
 **Generativa**: si ricostruisce l'input nello spazio dell'input. Il masked
 language modeling di BERT {cite}`devlin2019bert` predice i token mascherati
 con una cross-entropia sul vocabolario; MAE fa lo stesso con i pixel delle
-patch mascherate, con loss $L_2$. Funziona magnificamente sul testo (dove i
+patch mascherate, con loss $L_2$. Funziona molto bene sul testo (dove i
 token sono discreti e la softmax rappresenta senza sforzo l'incertezza) e
-resta più goffa su segnali continui ad alta dimensione, dove l'equivalente
+è meno efficace su segnali continui ad alta dimensione, dove l'equivalente
 della softmax non esiste e ricostruire costringe a modellare l'irrilevante: è
 l'argomento centrale di {cite}`lecun2022path`. **Contrastiva**: si impara una
 geometria, avvicinando le coppie compatibili e allontanando quelle
@@ -682,13 +682,13 @@ incompatibili (CLIP {cite}`radford2021learning` con la loss InfoNCE su coppie
 immagine–didascalia). Nel lessico dei modelli a energia: energia abbassata
 sulle coppie giuste e *alzata esplicitamente* sui controesempi, con la nota
 difficoltà di trovarne mai abbastanza in alta dimensione. **Predittiva nello
-spazio latente**: la famiglia JEPA; energia = errore di predizione tra
-embedding, nessuna ricostruzione, nessuna coppia negativa, collasso evitato
-per asimmetria architetturale (lo stop-gradient, con l'EMA a stabilizzare) o
-per regolarizzazione esplicita (varianza/covarianza), che è poi la stessa
-funzione che la famiglia contrastiva svolge per un'altra via, alzando
-l'energia sui controesempi. È la più giovane delle tre, e quella su cui pesa la
-scommessa più grossa.
+spazio latente**: la famiglia JEPA; l'energia è l'errore di predizione
+tra embedding; non c'è ricostruzione né coppia negativa, e il collasso si
+evita per asimmetria architetturale (lo stop-gradient, con l'EMA a
+stabilizzare) o per regolarizzazione esplicita (varianza/covarianza), che è poi
+la stessa funzione che la famiglia contrastiva svolge per un'altra via,
+alzando l'energia sui controesempi. È la più giovane delle tre, e quella su
+cui pesa la scommessa più grossa.
 
 `````
 
@@ -726,7 +726,7 @@ attraversa quella stessa sezione.
 
 ## Una mini-JEPA in PyTorch
 
-Tutti i pezzi della sezione (encoder, copia lenta EMA, predictor, loss fra
+Tutti i pezzi della JEPA (encoder, copia lenta EMA, predictor, loss fra
 embedding) stanno in una pagina di PyTorch. L'esperimento è in miniatura: ogni
 «immagine» è una scena finta fatta di 8 patch, cioè di 8 tessere, come quelle in
 cui un Vision Transformer taglia un'immagine; qui le tessere nascono da un
@@ -815,9 +815,9 @@ rappresentazioni si stessero appiattendo: passa da 0,38 a 1,00. Il modello
 impara a prevedere il *contenuto* delle tessere coperte, che è condiviso con il
 contesto, e ignora il rumore, che non è prevedibile.
 
-Questi numeri non dicono quale pezzo sostenga il risultato:
-lo si vede spegnendo i pezzi uno alla volta, e ripetendo ogni prova con tre
-semi diversi.
+Questi numeri non dicono quale pezzo sostenga il risultato: lo
+si vede spegnendo i pezzi uno alla volta, e ripetendo ogni prova con tre semi
+diversi.
 
 ```python
 import statistics
@@ -870,8 +870,8 @@ sempre senza gradiente, non fa collassare niente: la varietà sale anzi sopra
 Togliere insieme la copia lenta e lo stop-gradient rimette i due rami nella
 stessa rete, libera di accordarsi con sé stessa: la loss scende a cinque
 decimillesimi e la varietà crolla a 0,05, cioè scene diverse finiscono per
-avere quasi lo stesso riassunto. È il collasso, l'energia zero ovunque di cui
-parlava la sezione. Togliere il predictor, invece, qui non fa collassare: la
+avere quasi lo stesso riassunto. È il collasso, cioè l'energia zero
+ovunque. Togliere il predictor, invece, qui non fa collassare: la
 varietà resta dov'era all'inizio, attorno a 0,4, e non cresce. Il giocattolo
 mostra quindi il ruolo dello stop-gradient, non quello del predictor, che lo
 documenta SimSiam su dati veri, dove togliere l'uno o l'altro fa collassare

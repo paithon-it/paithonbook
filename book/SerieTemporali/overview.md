@@ -32,19 +32,19 @@ parola che ricorre nella letteratura e nel codice.
 Come metodo sistematico la disciplina nasce nel 1970, con un libro di George
 Box e Gwilym Jenkins destinato a diventare un classico dell'econometria (la
 statistica applicata ai fenomeni economici) e dell'ingegneria
-{cite}`box2015time`. La loro ricetta prevede di identificare che forma ha la
+{cite}`box2015time`. Il loro metodo prevede di identificare che forma ha la
 serie, stimare i numeri del modello e verificare che il modello non abbia
-lasciato fuori niente. Non è la prima idea di previsione statistica: spiegare
-un valore con quelli che lo precedono, cioè l’**autoregressione**, è un'idea
-che George Udny Yule usava già nel 1927, sulle macchie solari. Il contributo di
-Box e Jenkins è una procedura completa, che dice come scegliere il modello
-invece di lasciare che se ne inventi uno diverso ogni volta. Dal 1982 lo
-statistico greco Spyros Makridakis mette alla prova quei metodi su larga scala
-con le **competizioni M**, gare pubbliche di previsione su un migliaio di serie
-reali nella prima edizione e su centomila nella quarta, del 2018
-{cite}`makridakis2020m4`. La lezione che ne esce è tanto tecnica quanto morale:
-si prevede, sì, ma con umiltà. Nessun modello domina sempre, e dichiarare
-*quanto* siamo incerti conta quanto la previsione stessa.
+lasciato fuori niente. Non è la prima idea di previsione statistica, perché
+spiegare un valore con quelli che lo precedono, cioè l’**autoregressione**, è
+un'idea che George Udny Yule usava già nel 1927, sulle macchie solari. Il
+contributo di Box e Jenkins è una procedura completa, che dice come scegliere
+il modello invece di lasciare che se ne inventi uno diverso ogni volta. Dal
+1982 lo statistico greco Spyros Makridakis mette alla prova quei metodi su
+larga scala con le **competizioni M**, gare pubbliche di previsione su un
+migliaio di serie reali nella prima edizione e su centomila nella quarta, del
+2018 {cite}`makridakis2020m4`. La lezione che ne esce è tanto tecnica quanto
+morale: si prevede, sì, ma con umiltà. Nessun modello domina sempre, e
+dichiarare *quanto* siamo incerti conta quanto la previsione stessa.
 
 ## Che cos'è una serie temporale
 
@@ -63,8 +63,8 @@ Nell'apprendimento supervisionato (riconoscere gatti, filtrare lo spam) gli
 esempi erano palline pescate da un'urna, come nella {doc}`sezione sui dati che
 cambiano </MachineLearning/dati-che-cambiano>`: potevi rimescolarle a piacere
 senza perdere nulla, l'ordine non contava. Con una serie temporale non puoi. La
-temperatura di oggi somiglia a quella di ieri; se mescoli le date, distruggi
-l'informazione che ti serve. L'ordine *è* il dato.
+temperatura di oggi somiglia a quella di ieri, quindi se mescoli le date
+distruggi l'informazione che ti serve. L'ordine *è* il dato.
 
 C'è una seconda differenza. Le palline uscivano tutte dalla stessa urna,
 oggi come l'anno scorso; il negozio del diario invece cambia mentre lo guardi:
@@ -101,16 +101,16 @@ voto al risultato.
 
 I compiti sono quattro, e il primo è il più importante: il forecasting,
 stimare i valori *futuri* della serie a partire dai passati. È l'unico in cui la
-cosa da indovinare è la serie stessa, più in là nel tempo. Attorno a lui ruotano
-gli altri tre:
+cosa da indovinare è la serie stessa, più in là nel tempo. Attorno a esso
+ruotano gli altri tre:
 
-- Classificazione di serie, assegnare un'etichetta a un'intera sequenza:
-  un elettrocardiogramma è normale o aritmico? una vibrazione del motore
-  segnala un guasto imminente?
-- Rilevamento di anomalie, individuare i punti in cui la serie si comporta
-  in modo inatteso: una frode su una carta, un picco anomalo di traffico, un
-  sensore che impazzisce.
-- Imputazione: ricostruire i valori mancanti *dentro* la serie, quando un
+- **Classificazione di serie**, cioè assegnare un'etichetta a un'intera
+  sequenza: un elettrocardiogramma è normale o aritmico? una vibrazione del
+  motore segnala un guasto imminente?
+- **Rilevamento di anomalie**, cioè individuare i punti in cui la serie si
+  comporta in modo inatteso: una frode su una carta, un picco anomalo di
+  traffico, un sensore che impazzisce.
+- **Imputazione**: ricostruire i valori mancanti *dentro* la serie, quando un
   sensore si è spento per qualche ora e restano dei buchi da riempire.
 
 La difficoltà del forecasting, poi, dipende da due scelte, che si guardano una
@@ -118,11 +118,11 @@ per volta.
 
 `````{tab} Elementare
 
-Il primo asse riguarda quante cose guardiamo insieme. Prevedere la temperatura
-di domani dalle sole temperature passate è il caso **univariato**: una sola
-grandezza che scorre. Spesso conviene guardarne tante insieme (temperatura,
-umidità, pressione), perché si aiutano a vicenda, e allora il caso è
-**multivariato**.
+Il primo asse riguarda quante cose guardiamo insieme. Ad esempio, prevedere la
+temperatura di domani dalle sole temperature passate è il caso **univariato**:
+una sola grandezza che scorre. Spesso conviene guardarne tante insieme
+(temperatura, umidità, pressione), perché si aiutano a vicenda, e allora il
+caso è **multivariato**.
 
 Il secondo asse riguarda quanto lontano guardiamo. Prevedere il valore di
 domani è un *passo singolo*; prevedere l'intera settimana che verrà è *a più
@@ -147,9 +147,9 @@ marzo, un anno con l'altro, si sta fra i 10 e i 18 gradi, la previsione per il
 marzo di fra dieci anni è quell'intervallo, e l'incertezza si ferma lì. Più
 ignoranti di così non si diventa.
 
-Il prezzo di un'azione non ha un valore di riposo: dopo un crollo riparte da
-dove è arrivato, senza rincorrere il livello di prima. Lì l'incertezza continua
-a crescere.
+Il prezzo di un'azione, invece, non ha un valore di riposo: dopo un crollo
+riparte da dove è arrivato, senza rincorrere il livello di prima. Lì
+l'incertezza continua a crescere.
 
 `````
 
@@ -186,7 +186,7 @@ modelli probabilistici come DeepAR campionano traiettorie invece di propagare
 la media. Il secondo è la specificazione: se il modello a un passo è sbagliato,
 lo sbaglio viene riapplicato $h$ volte, mentre la strategia diretta stima per
 ogni orizzonte la migliore proiezione di $x_{T+h}$ sul passato e resta robusta
-dove la ricorsiva si allontana. In cambio la diretta paga in varianza (un
+dove la ricorsiva si allontana. In cambio la diretta ha più varianza (un
 modello per orizzonte, nessun vincolo di coerenza fra orizzonti vicini) e non
 sfugge all'errore di stima: il coefficiente $\hat\phi_h$ di una regressione di
 $x_{t+h}$ su $x_t$ è distorto verso lo zero in campione finito come lo è
@@ -229,7 +229,7 @@ altrove davamo per scontato.
 La prima è l’**autocorrelazione**: la correlazione fra la serie e sé stessa
 spostata indietro di $k$ passi, che si scrive $\rho_k$. Il numero $k$ si chiama
 **ritardo**, in inglese *lag*, parola che compare nel codice e nei manuali. Il
-conto è quello di una correlazione fra due file di numeri, la serie e la sua
+calcolo è quello di una correlazione fra due file di numeri, la serie e la sua
 copia spostata, messe a coppie, il primo con il primo e il secondo con il
 secondo. Stimato su $n$ punti di media $\bar{x}$, è
 
@@ -238,16 +238,16 @@ $$
 {\sum_{t=1}^{n} (x_t - \bar{x})^2} .
 $$
 
-In parole: si toglie la media a ogni valore, si moltiplicano a due a due i
-valori che distano $k$ passi, si somma, e si divide per la somma dei quadrati,
-che tiene il risultato fra $-1$ e $+1$. Sulla serie $2, 4, 2, 4, 2, 4$, di
-media $3$ e scarti $-1, +1, -1, +1, -1, +1$, a un passo di ritardo ogni scarto
-finisce accanto a uno di segno opposto: i cinque prodotti valgono tutti $-1$,
-e $\hat\rho_1 = -5/6 \approx -0{,}83$, un legame rovesciato (a un valore alto
-segue regolarmente un valore basso). A due passi ogni scarto ritrova il
-proprio segno, i quattro prodotti valgono $+1$, e
-$\hat\rho_2 = 4/6 \approx 0{,}67$. È il modo più diretto di vedere quanto una
-serie sia lontana dai dati indipendenti del resto del libro.
+In altri termini, si toglie la media a ogni valore, si moltiplicano a due a due
+i valori che distano $k$ passi, si somma, e si divide per la somma dei
+quadrati, che tiene il risultato fra $-1$ e $+1$. Ad esempio, sulla serie $2,
+4, 2, 4, 2, 4$, di media $3$ e scarti $-1, +1, -1, +1, -1, +1$, a un passo di
+ritardo ogni scarto finisce accanto a uno di segno opposto: i cinque prodotti
+valgono tutti $-1$, e $\hat\rho_1 = -5/6 \approx -0{,}83$, un legame rovesciato
+(a un valore alto segue regolarmente un valore basso). A due passi ogni scarto
+ritrova il proprio segno, i quattro prodotti valgono $+1$, e $\hat\rho_2 = 4/6
+\approx 0{,}67$. È il modo più diretto di vedere quanto una serie sia lontana
+dai dati indipendenti del resto del libro.
 
 Il codice calcola l'autocorrelazione su una serie inventata, che sale piano e
 ha un ciclo di dodici passi, e stampa sei righe: il coefficiente a un passo
@@ -301,18 +301,19 @@ oscillazione del caso:      0.070   (1 diviso radice di n: 0.071)
 
 Sulla serie ordinata l'autocorrelazione a un passo vale $0{,}94$, cioè quasi il
 massimo: ogni valore anticipa quasi perfettamente il successivo. Una parte di
-quel numero, per onestà, la mette la salita: in una serie che cresce sempre due
-giorni consecutivi si somigliano più di due giorni presi a caso in tutta la
-storia, e questo succede anche se di memoria vera non ce n'è nessuna. Per
-neutralizzarla si traccia la retta che segue meglio la salita e si tiene, di ogni
-punto, soltanto quanto sta sopra o sotto quella retta: sono due righe di
-codice, e il codice le ha già fatte. Su quel che resta il coefficiente scende
-a $0{,}78$, che è ancora tanto: la dipendenza è vera, non è solo la salita.
+quel numero, per onestà, la mette la salita, perché in una serie che cresce
+sempre due giorni consecutivi si somigliano più di due giorni presi a caso in
+tutta la storia, e questo succede anche se di memoria vera non ce n'è nessuna.
+Per neutralizzarla si traccia la retta che segue meglio la salita e si tiene,
+di ogni punto, soltanto quanto sta sopra o sotto quella retta: sono due righe
+di codice, e il codice le ha già fatte. Su quel che resta il coefficiente
+scende a $0{,}78$, che è ancora tanto: la dipendenza è vera, non è solo la
+salita.
 
 La retta va tolta anche per leggere la stagionalità, e per lo stesso motivo:
 altrimenti terrebbe alta l'autocorrelazione a qualunque distanza. Fatto questo,
 il contrasto è netto. A sei passi di ritardo, cioè mezzo ciclo, la serie si
-trova nel punto opposto del giro (dove prima c'era un picco adesso c'è un
+trova nel punto opposto del ciclo (dove prima c'era un picco adesso c'è un
 avvallamento) e la somiglianza è fortemente negativa, $-0{,}87$; a dodici
 passi di ritardo, cioè un ciclo intero, torna alta, $0{,}83$, perché il
 fenomeno è tornato dov'era.
@@ -327,14 +328,16 @@ con duecento punti. È la legge con cui cala l'errore di ogni media, quella
 della {doc}`sezione su probabilità e statistica
 </Matematica/probabilita-statistica>`, e vale anche qui perché su una serie
 senza memoria $\hat\rho_1$ è, in sostanza, la media di $n$ prodotti incorrelati
-fra loro. Ecco allora il metro per leggere qualunque coefficiente: dentro $\pm
+fra loro.
+
+Ecco allora il metro per leggere qualunque coefficiente: dentro $\pm
 2/\sqrt{n}$, qui quattordici centesimi, un valore non si distingue dal caso. I
 programmi di statistica disegnano quella fascia attorno allo zero nel grafico
 dei coefficienti. Il nostro $0{,}14$ cade sul bordo della fascia: è il genere
 di somiglianza che il caso da solo produce, ogni tanto, rimescolando duecento
-numeri. Di quel $0{,}94$, invece, non è rimasto niente. Gli stessi identici
-valori, in un altro ordine, non prevedono più niente: la prevedibilità della
-serie stava nel loro ordine.
+numeri. Di quel $0{,}94$, invece, non è rimasto niente. In altri termini, gli
+stessi identici valori, in un altro ordine, non prevedono più niente: la
+prevedibilità della serie stava nel loro ordine.
 
 Tre ritardi sono tre assaggi, e il metro del caso vale per tutti: la
 {numref}`fig-copia-che-scivola` li mostra dal primo al ventiquattresimo, con la
@@ -376,7 +379,7 @@ valore attorno a cui la portata balla, l'ampiezza con cui balla, e il modo in
 cui due giorni si somigliano, che dipende da quanto distano fra loro e non da
 quando cadono nel calendario (due giorni di fila si somigliano allo stesso
 modo, che siano di marzo o di settembre). Questa stabilità è ciò che i tecnici
-chiamano stazionarietà.
+chiamano **stazionarietà**.
 
 Molte serie vere non sono così. Il prezzo di una casa cresce di decennio in
 decennio (la media sale: c'è una **tendenza**), i consumi di gelato salgono
@@ -405,8 +408,8 @@ abbandonare il proprio sospetto.
 `````{tab} Superiore
 
 Un processo $\{X_t\}$ con momenti secondi finiti ($\mathbb{E}[X_t^2] < \infty$,
-senza cui la richiesta non avrebbe senso) è stazionario in senso debole (o in
-covarianza) se i suoi primi due momenti non dipendono dal tempo:
+senza cui la richiesta non avrebbe senso) è **stazionario in senso debole**
+(o in covarianza) se i suoi primi due momenti non dipendono dal tempo:
 
 $$
 \mathbb{E}[X_t] = \mu, \qquad
@@ -456,7 +459,7 @@ tratta l'una e l'altra.
 Per prevedere una serie ci sono due grandi famiglie di metodi, i modelli
 statistici classici e le reti neurali, e in quest'ordine sono anche la storia
 della disciplina; una terza, i modelli additivi come Prophet, sta a metà strada
-e si incontra insieme alle reti. In mezzo, nell'ordine del capitolo, sta la
+e si incontra insieme alle reti. In questo capitolo, fra le due sta la
 valutazione, cioè come dare un voto a una previsione senza barare col futuro,
 per sapere quale metodo funziona.
 
@@ -464,7 +467,8 @@ per sapere quale metodo funziona.
    stagionalità e residuo, e i due cavalli di battaglia storici: la famiglia
    ARIMA di Box e Jenkins e il lisciamento esponenziale nella forma
    Holt-Winters. Sono ancora oggi la linea di base, cioè l'avversario banale
-   che un metodo più sofisticato deve battere per meritare la fatica che costa.
+   che un metodo più sofisticato deve battere per meritare la fatica che
+   richiede.
 2. **Validazione temporale e feature** (le *feature* sono le colonne di una
    tabella, quelle che si danno in pasto a un modello). Perché la *k-fold*
    mescolata della {doc}`sezione su overfitting e validazione
@@ -489,7 +493,9 @@ I metodi statistici classici sono trasparenti e sorprendentemente difficili da
 battere; quelli neurali hanno fame di dati, ma colgono regolarità più intricate
 e, guardando insieme migliaia di serie diverse, portano a ciascuna ciò che
 hanno imparato dalle altre. La lezione delle competizioni M è che la rivalità
-fra le due famiglie è meno netta di quanto sembri. Nella quarta edizione, la
+fra le due famiglie è meno netta di quanto sembri.
+
+Nella quarta edizione, la
 M4, correvano centomila serie e sessantuno metodi, e a vincere non fu né la
 statistica pura né il deep learning puro: fu un ibrido, l'ES-RNN di Slawek
 Smyl, in cui per ogni serie il lisciamento esponenziale della {doc}`sezione sui

@@ -8,23 +8,26 @@ due specie non lo ha mai tracciato; ce l'ha in testa come conseguenza di due
 descrizioni.
 
 A parte il Bayes ingenuo incontrato fra gli ensemble, i classificatori visti
-finora fanno il contrario, e si chiamano **discriminativi**: modellano la
+finora fanno il contrario. Si chiamano **discriminativi** e modellano la
 probabilità della classe dato l'esempio, $p(y \mid \mathbf{x})$, come la
-regressione logistica e l'albero, oppure soltanto il confine, come la SVM.
-Sanno dove finisce una classe e comincia l'altra, non com'è fatta ciascuna.
+regressione logistica e l'albero, oppure soltanto il confine, come la SVM. In
+altri termini, sanno dove finisce una classe e comincia l'altra, ma non com'è
+fatta ciascuna.
 
-L'altra strada è descrivere ciascuna classe: stimare la distribuzione degli
-esempi dentro la classe, $p(\mathbf{x} \mid y)$, e la frequenza delle classi,
-$p(y)$, e ricavare il confine dopo, con il teorema di Bayes. I modelli che lo
-fanno si chiamano **generativi**, e i tre membri classici della famiglia
-(analisi discriminante lineare, analisi discriminante quadratica e naive Bayes)
-hanno tutti più di cinquant'anni e sono tutti ancora in uso. Il nome dei primi
-due inganna: l'analisi *discriminante* sta dalla parte dei generativi.
+L'altra strada è descrivere ciascuna classe, cioè stimare la distribuzione
+degli esempi dentro la classe, $p(\mathbf{x} \mid y)$, e la frequenza delle
+classi, $p(y)$, per poi ricavare il confine con il teorema di Bayes. I modelli
+che seguono questa strada si chiamano **generativi**. I tre membri classici
+della famiglia (analisi discriminante lineare, analisi discriminante
+quadratica e naive Bayes) hanno tutti più di cinquant'anni e sono tutti ancora
+in uso. Il nome dei primi due inganna, perché l'analisi *discriminante* sta
+dalla parte dei generativi.
 
 ## Due modi di rispondere alla stessa domanda
 
 Alla fine ogni classificatore assegna una classe a un esempio, e molti lo fanno
-stimando quanto è probabile ciascuna classe. Cambia da dove ci si arriva.
+stimando quanto è probabile ciascuna classe. Quello che cambia è la strada per
+arrivarci.
 
 `````{tab} Elementare
 
@@ -36,21 +39,23 @@ riconosciute.
 Versi il barattolo sul foglio e segni ogni moneta come un punto, il peso in
 orizzontale e il diametro in verticale. Poi tiri la riga che tiene i due mucchi
 più separati. Adesso pesi la moneta nuova, la misuri, guardi da che parte cade.
-Della moneta da un euro non hai imparato niente in particolare. Hai imparato
-dove finisce.
+Della moneta da un euro non hai imparato niente in particolare; hai
+imparato dove finisce.
 
 Oppure dividi il barattolo in due mucchi, uno per taglio (il valore della
 moneta). Calcoli il peso medio e il diametro medio delle monete da un euro, e
 di quanto le singole se ne scostano di solito; poi rifai tutto sul mucchio da
 due. Adesso hai due descrizioni, e alla moneta nuova fai due domande: quanto
-sarebbe strana fra quelle da un euro, e quanto fra quelle da due? Strana vuol
-dire lontana dal centro, contata in scostamenti: se le monete da un euro pesano
-in media 7,5 grammi e se ne scostano di solito di un decimo, una da 8 grammi è
-cinque scostamenti più in là. Vince il mucchio che la trova meno strana, con
-una correzione che nel barattolo si legge: settecento delle mille erano da un
-euro e trecento da due, quindi a parità di stranezza la dai da un euro.
+sarebbe strana fra quelle da un euro, e quanto fra quelle da due?
 
-Una descrizione permette anche di inventare: sorteggi un peso e un diametro che
+Qui strana vuol dire lontana dal centro, contata in scostamenti. Ad esempio, se
+le monete da un euro pesano in media 7,5 grammi e se ne scostano di solito di
+un decimo, una da 8 grammi è cinque scostamenti più in là. Vince il mucchio che
+la trova meno strana, con una correzione che si legge nel barattolo: settecento
+delle mille erano da un euro e trecento da due, quindi a parità di stranezza la
+dai da un euro.
+
+Una descrizione permette anche di inventare. Sorteggi un peso e un diametro che
 le stiano dentro, e sul foglietto compare una moneta da un euro credibile che
 nel barattolo non c'era. La riga non sa farlo. Il nome generativo viene da qui,
 e i programmi che inventano immagini e frasi fanno lo stesso, con descrizioni
@@ -58,60 +63,62 @@ molto più ricche.
 
 Il giorno che nel barattolo finiscono i cinquanta centesimi, ne calcoli media e
 scostamenti e la terza descrizione è pronta; le prime due restano quelle di
-ieri, mentre la riga andrebbe ritracciata da capo. Giudichi col solo peso la
-moneta col bordo ammaccato, che nel calibro non entra dritta: ogni descrizione
-sa dire quanto pesano le monete del suo taglio, mentre la riga, senza il
-diametro, non sa dove metterla.
+ieri, mentre la riga andrebbe ritracciata da capo.
+
+Giudichi col solo peso la moneta col bordo ammaccato, che nel calibro non entra
+dritta. Ogni descrizione, infatti, sa dire quanto pesano le
+monete del suo taglio, mentre la riga, senza il diametro, non sa dove metterla.
 
 Togli dal barattolo tutto tranne venti monete, e di ognuna misura anche
 spessore, colore del bordo e usura: poche monete, tante misure. Medie e
 scostamenti di ciascun mucchio escono comunque, perché li calcoli solo su quel
 mucchio, e nella media ogni moneta pesa poco. La riga, invece, dipende
-soprattutto dalle poche monete vicine al confine: con cinque misure non si
+soprattutto dalle poche monete vicine al confine. Con cinque misure non si
 disegna più su un foglio, il confine resta netto, e con venti monete basta
 spostarne una perché giri.
 
 Poi sul tavolo arriva un gettone del luna park, o una moneta straniera, o un
 falso fatto male. Sta lontano da tutti e due i centri, e le due descrizioni lo
-trovano stranissimo tutte e due. La riga non ha quella parola: qualunque
+trovano stranissimo tutte e due. La riga non ha quella parola, perché qualunque
 cosa le metti sopra cade a destra o a sinistra, e il gettone esce come una
 moneta da due euro con la stessa disinvoltura di una vera.
 
-Le due descrizioni, in fondo, colorano il foglio: scuro dove le monete sono
-fitte, chiaro dove sono rade, e il gettone cade nel bianco. Colorare così si
-chiama **stima di densità**, e la «densità» è quanto sono fitte,
-come gli abitanti di una città. L'inchiostro però sta in una boccetta sola: chi
+Le due descrizioni, in fondo, colorano il foglio: scuro dove le monete
+sono fitte, chiaro dove sono rade, e il gettone cade nel bianco. Colorare così
+si chiama **stima di densità**, e la «densità» è quanto sono fitte, come gli
+abitanti di una città. L'inchiostro, però, sta in una boccetta sola, quindi chi
 annerisce un posto deve lasciarne chiaro un altro. Se no basterebbe annerire
 tutto, e ogni moneta, gettone compreso, sembrerebbe normale.
 
 Con la boccetta che è quella, una descrizione è tanto migliore quanto più
 inchiostro mette sotto le monete vere del barattolo, purché resti semplice: un
 centro per mucchio, e una forma, cioè quanto e in che direzione il mucchio si
-allarga. Una che versasse una goccia sotto ciascuna delle mille monete le
-troverebbe normalissime, e troverebbe strana qualunque moneta nuova.
+allarga. Una descrizione che versasse una goccia sotto ciascuna delle mille
+monete, infatti, le troverebbe normalissime, e troverebbe strana qualunque
+moneta nuova.
 
-Il barattolo potrebbe anche arrivare senza cartellini. Il foglio si colora lo
-stesso, col barattolo intero: si cercano due macchie invece di una, e si
-indovina quale moneta sta in quale. Il gettone resta nel bianco, lontano da
-tutte le monete di qualunque taglio.
+Il barattolo potrebbe anche arrivare senza cartellini. In quel caso il foglio
+si colora lo stesso, col barattolo intero: si cercano due macchie invece di
+una, e si indovina quale moneta sta in quale. Il gettone resta nel bianco,
+lontano da tutte le monete di qualunque taglio.
 
 Con due misure tutto questo funziona. Con migliaia, come i puntini di una
-fotografia, può ingannare, e una delle ragioni è questa: ogni foto vera si
-scosta dalla foto media in mille piccoli modi, uno per puntino, così nessuna
-sta al centro, dove l'inchiostro è più scuro. Stanno tutte in un anello
-tutt'intorno, e una foto di tutt'altro genere può cadere più vicino di loro
-alla macchia più scura. Programmi che avevano studiato fotografie di animali e
-di camion hanno trovato le fotografie di numeri civici, mai viste, più normali
-di quelle su cui avevano studiato.
+fotografia, può ingannare. Una delle ragioni è che ogni foto vera si
+scosta dalla foto media in mille piccoli modi, uno per puntino, così
+nessuna sta al centro, dove l'inchiostro è più scuro. Le foto vere stanno tutte
+in un anello tutt'intorno, e una foto di tutt'altro genere può cadere più
+vicino di loro alla macchia più scura. Programmi che avevano
+studiato fotografie di animali e di camion hanno trovato le fotografie di
+numeri civici, mai viste, più normali di quelle su cui avevano studiato.
 
 Il conto si paga quando la descrizione che ti sei dato è sbagliata. Hai dato
 per buono che ogni taglio faccia un mucchio solo, tondo e compatto, e invece,
 mettiamo, le monete da due euro sono di due serie, una più pesante e una più
-leggera: due mucchietti staccati. La tua descrizione ne fa la media e mette il
-centro a metà strada, dove non ci sono monete da due euro, e da lì sbagli anche
-pezzi che una riga tirata a occhio avrebbe messo dalla parte giusta. Chi
-racconta com'è fatto ogni taglio risponde di ogni dettaglio raccontato male,
-compresi quelli che alla domanda non servivano.
+leggera, cioè due mucchietti staccati. La tua descrizione ne fa la media e
+mette il centro a metà strada, dove non ci sono monete da due euro, e da lì
+sbagli anche pezzi che una riga tirata a occhio avrebbe messo dalla parte
+giusta. Chi racconta com'è fatto ogni taglio risponde di ogni
+dettaglio raccontato male, compresi quelli che alla domanda non servivano.
 
 `````
 
@@ -134,11 +141,11 @@ p(y = k \mid \mathbf{x}) =
 $$
 
 Il nome «generativo» viene da una proprietà che il discriminativo non ha: avendo
-$p(\mathbf{x} \mid y)$ si possono campionare esempi nuovi di una classe. Il
-modello non riassume i dati, li sa rifare. Il nome è lo stesso dei modelli che
-generano immagini e testo, che pure apprendono una distribuzione dei dati da cui
-si può campionare (spesso condizionata a un'etichetta o a un testo), ma non
-tutti ne danno una densità calcolabile.
+$p(\mathbf{x} \mid y)$ si possono campionare esempi nuovi di una classe. In
+altri termini, il modello non riassume i dati, li sa rifare. Il nome è lo
+stesso dei modelli che generano immagini e testo, che pure apprendono una
+distribuzione dei dati da cui si può campionare (spesso condizionata a
+un'etichetta o a un testo), ma non tutti ne danno una densità calcolabile.
 
 Le conseguenze pratiche di modellare $p(\mathbf{x}\mid y)$ invece di
 $p(y \mid \mathbf{x})$ sono quattro:
@@ -149,12 +156,12 @@ $p(y \mid \mathbf{x})$ sono quattro:
 2. i parametri si stimano in forma chiusa, ciascuno da tutti i dati della sua
    classe e non tutti insieme dentro un'unica ottimizzazione, un vantaggio
    sensibile quando gli esempi sono pochi rispetto alle feature;
-3. le classi si stimano una alla volta e indipendentemente: aggiungere una
-   classe non richiede di riaddestrare le altre, e i dati mancanti si trattano
-   marginalizzando invece che imputando;
+3. le classi si stimano una alla volta e indipendentemente, quindi aggiungere
+   una classe non richiede di riaddestrare le altre; e i dati mancanti si
+   trattano marginalizzando invece che imputando;
 4. se il modello di $p(\mathbf{x}\mid y)$ è sbagliato, l'errore si paga anche
-   dove non serviva: il generativo spende capacità a descrivere aspetti dei dati
-   che non contano per la decisione.
+   dove non serviva, perché il generativo spende capacità a descrivere aspetti
+   dei dati che non contano per la decisione.
 
 La **stima di densità** è il compito su cui poggia quel punteggio: dato un
 campione $\mathbf{x}_1,\dots,\mathbf{x}_m$ estratto i.i.d. da una distribuzione
@@ -178,21 +185,25 @@ $$
 \frac{1}{m}\sum_{i=1}^{m} \log q(\mathbf{x}_i)
 $$
 
-è la minimizzazione empirica della KL. Conta anche la famiglia: su una troppo
-ricca il massimo degenera, e una componente di mistura che si stringe su un
-punto solo manda la verosimiglianza all'infinito, come mostra la {doc}`sezione
-su riduzione e clustering <riduzione-clustering>`. Senza etichette è un compito
-non supervisionato (misture gaussiane, flussi, modelli generativi profondi);
-con le etichette, un classificatore generativo ne risolve uno per classe, e la
+è la minimizzazione empirica della KL.
+
+Conta anche la famiglia. Su una troppo ricca il massimo degenera, e una
+componente di mistura che si stringe su un punto solo manda la
+verosimiglianza all'infinito, come mostra la {doc}`sezione
+su riduzione e clustering <riduzione-clustering>`. Senza etichette la stima di
+densità è un compito non supervisionato (misture gaussiane, flussi, modelli
+generativi profondi); con le etichette, un classificatore generativo ne
+risolve uno per classe, e la
 $p(\mathbf{x}) = \sum_k \pi_k\, p(\mathbf{x}\mid y=k)$ che ne risulta è una
-densità a sua volta. In alta dimensione, però, il punteggio può ingannare:
-flussi, VAE e PixelCNN addestrati su fotografie di oggetti comuni danno una
-verosimiglianza più alta a fotografie di numeri civici mai viste
-{cite}`nalisnick2019do`. Le spiegazioni proposte sono due: la regione di
-densità più alta non coincide con quella in cui cadono i campioni tipici
-{cite}`nalisnick2019typicality`, e la semplicità di un'immagine basta ad
-alzarne la verosimiglianza {cite}`serra2020input`. La {doc}`sezione sugli usi
-della verosimiglianza esatta
+densità a sua volta.
+
+In alta dimensione, però, il punteggio può ingannare: flussi, VAE e PixelCNN
+addestrati su fotografie di oggetti comuni danno una verosimiglianza più alta a
+fotografie di numeri civici mai viste {cite}`nalisnick2019do`. Le spiegazioni
+proposte sono due: la regione di densità più alta non coincide con quella in
+cui cadono i campioni tipici {cite}`nalisnick2019typicality`, e la semplicità
+di un'immagine basta ad alzarne la verosimiglianza {cite}`serra2020input`. La
+{doc}`sezione sugli usi della verosimiglianza esatta
 </VerosimiglianzaEsatta/a-che-serve>` le mette a confronto.
 
 `````
@@ -202,35 +213,37 @@ dentro ogni classe gli esempi seguono una gaussiana multivariata,
 $p(\mathbf{x}\mid y = k) = \mathcal{N}(\mathbf{x}\mid\boldsymbol{\mu}_k,
 \boldsymbol{\Sigma}_k)$, con una media $\boldsymbol{\mu}_k$ (il centro della
 classe, dove sta l'esemplare tipico) e una matrice di covarianza
-$\boldsymbol{\Sigma}_k$ (la forma: quanto e in quali direzioni gli esempi si
-allontanano dal centro). Con le etichette le due si stimano con due medie: la
-media degli esempi della classe, e la media dei prodotti dei loro scarti dal
+$\boldsymbol{\Sigma}_k$ (la forma, cioè quanto e in quali direzioni gli esempi
+si allontanano dal centro). Con le etichette le due si stimano con due medie:
+la media degli esempi della classe, e la media dei prodotti dei loro scarti dal
 centro presi a due a due (peso per peso, peso per diametro, diametro per
 diametro).
 
 Senza etichette gli stessi due ingredienti vanno indovinati insieme
 all'appartenenza di ciascun punto, con una procedura iterativa, l'algoritmo EM,
 che la {doc}`sezione su riduzione e clustering <riduzione-clustering>` applica
-alle misture gaussiane. Qui ci sono le etichette, e non c'è niente da
-indovinare.
+alle misture gaussiane. In un classificatore generativo le etichette ci sono, e
+non c'è niente da indovinare.
 
 ## Analisi discriminante: lineare o quadratica
 
 Ronald Fisher affronta il problema nel 1936, studiando dei fiori
 {cite}`fisher1936use`. Il botanico Edgar Anderson aveva misurato lunghezza e
 larghezza di petali e sepali di centocinquanta iris, cinquanta per ciascuna di
-tre specie; la domanda era se quelle quattro misure bastassero a distinguerle.
-Fisher cercava la combinazione delle quattro misure che separasse al meglio le
-specie, e il metodo che ne uscì porta il suo nome. Nel suo stesso articolo
-Fisher mette un'avvertenza che vale per chiunque riusi quei dati: la terza
-specie, *Iris virginica*, «differisce dagli altri due campioni per non essere
-stata raccolta nella stessa colonia naturale», il che «potrebbe alterare
-parecchio sia le medie sia le loro variabilità». Poiché le altre due, secondo
-Anderson, vengono dalla penisola di Gaspé in Québec, una parte delle differenze
-di *virginica* può dipendere dal luogo e non dalla specie. È lo stesso `iris`
-che il {doc}`capitolo sull'interpretabilità </Interpretabilita/overview>` farà
-classificare a un albero, probabilmente il dataset più riusato della storia
-della statistica.[^eugenics]
+tre specie, e la domanda era se quelle quattro misure bastassero a
+distinguerle. Per rispondere, Fisher cercava la combinazione delle quattro
+misure che separasse al meglio le specie, e il metodo che ne uscì porta il suo
+nome.
+
+Nel suo stesso articolo Fisher mette un'avvertenza che vale per chiunque riusi
+quei dati: la terza specie, *Iris virginica*, «differisce dagli altri due
+campioni per non essere stata raccolta nella stessa colonia naturale», il che
+«potrebbe alterare parecchio sia le medie sia le loro variabilità». Poiché le
+altre due, secondo Anderson, vengono dalla penisola di Gaspé in Québec, una
+parte delle differenze di *virginica* può dipendere dal luogo e non dalla
+specie. È lo stesso `iris` che il {doc}`capitolo sull'interpretabilità
+</Interpretabilita/overview>` farà classificare a un albero, probabilmente il
+dataset più riusato della storia della statistica.[^eugenics]
 
 [^eugenics]: L'articolo esce sugli *Annals of Eugenics*, che è il nome della
     rivista fino al 1954, e Fisher ne fu redattore dal 1934. È un fatto
@@ -247,39 +260,46 @@ variano allo stesso modo (chi è più pesante è anche un po’ più largo, nell
 stessa misura per tutte e due), e a distinguerli è solo dove sta il centro.
 
 Allora, per dire da quale taglio viene una moneta nuova, guardi a quale dei due
-centri è più vicina. La distanza però la misuri nella forma del mucchio, non in
-grammi e millimetri: se il peso di solito si scosta di un decimo di grammo e il
-diametro di un centesimo di millimetro, un decimo di grammo di scarto è normale
-e un decimo di millimetro no. La solita correzione per quanto sono comuni i due
-tagli resta anche qui. Con la distanza misurata così, le monete ugualmente
-lontane dai due centri stanno su una retta, l'asse del segmento che li unisce
-se si prende la forma del mucchio come unità di misura; sul foglio ordinario la
-stessa retta non taglia il segmento ad angolo retto. La correzione la sposta
-soltanto, parallela a sé stessa. Il metodo porta il nome di Fisher: è l'analisi
-discriminante lineare, o LDA.
+centri è più vicina. Però misuri la distanza nella forma del mucchio, non in
+grammi e millimetri. Ad esempio, se il peso di solito si scosta di un decimo di
+grammo e il diametro di un centesimo di millimetro, un decimo di grammo di
+scarto è normale e un decimo di millimetro no. La solita correzione per quanto
+sono comuni i due tagli resta anche qui.
+
+Con la distanza misurata così, le monete ugualmente lontane dai due centri
+stanno su una retta, l'asse del segmento che li unisce se si prende la forma
+del mucchio come unità di misura; sul foglio ordinario la stessa retta
+non taglia il segmento ad angolo retto. La correzione la sposta soltanto,
+parallela a sé stessa. Il metodo porta il nome di Fisher, ed è l’**analisi
+discriminante lineare**, o LDA.
 
 Fisher ci arrivava da un'altra parte, senza le due descrizioni. Cercava una
 ricetta che mescolasse le misure in un numero solo, per esempio due volte il
-peso in grammi più tre volte il diametro in millimetri: per una moneta da un
-euro (7,5 grammi, 23,25 millimetri) fa $84{,}75$, per una da due (8,5 e 25,75)
-$94{,}25$. Messo come un punto su una linea, quel numero doveva tenere i due
-tagli lontani fra loro e ciascuno ben raccolto. I due centri distano nove e
-mezzo, e ciascun mucchio si allarga di qualche decimo attorno al suo: il
+peso in grammi più tre volte il diametro in millimetri. Per una moneta da un
+euro (7,5 grammi, 23,25 millimetri) la ricetta fa $84{,}75$, per una da due
+(8,5 e 25,75) $94{,}25$.
+
+Messo come un punto su una linea, quel numero doveva tenere i due tagli lontani
+fra loro e ciascuno ben raccolto. Nell'esempio i due centri distano nove e
+mezzo, e ciascun mucchio si allarga di qualche decimo attorno al suo, quindi il
 rapporto fra la distanza dei centri e la larghezza dei mucchi è nell'ordine
-delle decine, e la ricetta migliore è quella che lo rende più grande.
+delle decine. La ricetta migliore è quella che rende questo rapporto più
+grande.
 
 Poi sulla linea scegli una soglia, sopra da due euro e sotto da uno. Una moneta
 da $7{,}5$ grammi e $25$ millimetri e una da $9$ grammi e $24$ millimetri fanno
-tutte e due $90$: ogni grammo in più si compensa con due terzi di millimetro in
-meno, sempre nello stesso rapporto. Sul foglio, quindi, le monete che cadono
-sulla soglia stanno su una retta, inclinata come il confine trovato con i due
-centri: le due strade arrivano allo stesso confine. Ed è una retta come quella
-tirata sul barattolo all'inizio. Cambia come la trovi (là guardando dove cadono
-le monete, qui calcolandola dalle due descrizioni), e finché le descrizioni
-sono giuste le due rette finiscono quasi nello stesso posto.
+tutte e due $90$, perché ogni grammo in più si compensa con due terzi di
+millimetro in meno, sempre nello stesso rapporto. Sul foglio, quindi, le monete
+che cadono sulla soglia stanno su una retta, inclinata come il confine trovato
+con i due centri: le due strade arrivano allo stesso confine.
 
-La ricetta di Fisher, però, non dice dove mettere la soglia. A metà strada
-fra i due centri va bene solo se i due tagli sono ugualmente comuni. Con
+Ed è una retta come quella tirata sul barattolo all'inizio. Cambia
+come la trovi (là guardando dove cadono le monete, qui calcolandola dalle due
+descrizioni), e finché le descrizioni sono giuste le due rette finiscono quasi
+nello stesso posto.
+
+La ricetta di Fisher, però, non dice dove mettere la soglia. Metterla a metà
+strada fra i due centri va bene solo se i due tagli sono ugualmente comuni. Con
 settecento monete da un euro e trecento da due, la solita correzione sposta la
 soglia verso il mucchio da due e lascia più spazio alle monete da uno; a metà
 strada avresti una retta parallela a quella giusta, ma troppo vicina al mucchio
@@ -287,23 +307,26 @@ da un euro.
 
 Con tre tagli (uno, due euro e cinquanta centesimi) un numero solo di solito
 non basta e ne servono due, perché tre centri stanno sempre su un foglio piano.
-Passare a due numeri serve quando le misure sono tante. Con cinque misure ogni
-moneta è un punto in uno spazio che non si disegna, e i tre centri fissano
-comunque un foglio, come tre puntine. Accendi una lampada sopra il foglio e
-guarda dove cade l'ombra della moneta: con le distanze misurate nella forma del
-mucchio, per dire a quale centro è più vicina conta solo l'ombra, perché quanto
-la moneta sta sollevata dal foglio pesa allo stesso modo su tutte e tre le
-distanze. L’ombra si dice con due numeri; con peso e diametro soltanto, il
-foglio lo hai già.
+Passare a due numeri serve quando le misure sono tante. Con cinque misure, ad
+esempio, ogni moneta è un punto in uno spazio che non si disegna, e i tre
+centri fissano comunque un foglio, come tre puntine.
+
+Accendi allora una lampada sopra il foglio e guarda dove cade l'ombra della
+moneta. Con le distanze misurate nella forma del mucchio, per dire a quale
+centro è più vicina conta solo l'ombra, perché quanto la moneta sta sollevata
+dal foglio pesa allo stesso modo su tutte e tre le distanze. L’ombra si dice
+con due numeri; con peso e diametro soltanto, il foglio lo hai già.
 
 Se invece i due tagli hanno forme diverse (uno varia tanto in peso, l'altro
 tanto in diametro), la sola vicinanza al centro inganna. Un taglio molto
 variabile trova poco strano qualunque valore, e a lasciarlo fare si prenderebbe
 tutte le monete dubbie; quindi alla stranezza che trova si aggiunge una tassa,
-tanto più alta quanto più quel taglio è sparpagliato. Con una forma sola quella
-tassa era uguale per i due tagli e non spostava il confine di un millimetro; con
-due forme diverse decide. Impari una forma per ciascuno, e il confine si
-incurva. È l'analisi discriminante quadratica, QDA.
+tanto più alta quanto più quel taglio è sparpagliato.
+
+Con una forma sola quella tassa era uguale per i due tagli e non spostava il
+confine di un millimetro; con due forme diverse decide. Impari una
+forma per ciascuno, e il confine si incurva: è l’**analisi discriminante
+quadratica**, o QDA.
 
 La seconda sembra sempre preferibile, perché include la prima come caso
 particolare. Imparare una forma per taglio, però, richiede di stimare il doppio
@@ -315,14 +338,14 @@ libera per le monete che ha.
 
 Quando le monete sono poche c'è una via di mezzo: stimi le due forme separate e
 poi le tiri verso la forma unica, tenendo un po’ di ciascuna. Quanto tirare è
-una manopola, e la fermi dove le monete tenute da parte per la prova vengono
-riconosciute meglio.
+una manopola, e la fermi dove le monete tenute da parte per la prova
+vengono riconosciute meglio.
 
 `````
 
 `````{tab} Superiore
 
-Si assume $p(\mathbf{x} \mid y = k) = \mathcal{N}(\mathbf{x} \mid
+Supponiamo che $p(\mathbf{x} \mid y = k) = \mathcal{N}(\mathbf{x} \mid
 \boldsymbol{\mu}_k, \boldsymbol{\Sigma}_k)$. Sostituendo in Bayes e prendendo il
 logaritmo, la regola di decisione confronta le **funzioni discriminanti**
 
@@ -337,19 +360,21 @@ $-\tfrac12 D_k^2(\mathbf{x})$, dove $D_k^2(\mathbf{x}) =
 (\mathbf{x}-\boldsymbol{\mu}_k)^{\top}\boldsymbol{\Sigma}_k^{-1}(\mathbf{x}-\boldsymbol{\mu}_k)$
 è la **distanza di Mahalanobis** al quadrato dal centro della classe, cioè la
 distanza euclidea dopo aver trasformato i dati con
-$\boldsymbol{\Sigma}_k^{-1/2}$: è la formalizzazione di «misurare la distanza
-nella forma giusta».
+$\boldsymbol{\Sigma}_k^{-1/2}$, ed è la formalizzazione di «misurare la
+distanza nella forma giusta».
 
 I parametri si stimano classe per classe: $\hat\pi_k = m_k/m$,
 $\hat{\boldsymbol\mu}_k = \frac{1}{m_k}\sum_{y_i = k}\mathbf{x}_i$. Per la QDA
 la covarianza è $\hat{\boldsymbol\Sigma}_k = \frac{1}{m_k - 1}\sum_{y_i =
 k}(\mathbf{x}_i - \hat{\boldsymbol\mu}_k)(\mathbf{x}_i -
-\hat{\boldsymbol\mu}_k)^\top$; per la LDA, la covarianza comune è
+\hat{\boldsymbol\mu}_k)^\top$; per la LDA, la **covarianza comune** è
 $\hat{\boldsymbol\Sigma} = \frac{1}{m - K}\sum_k \sum_{y_i = k}(\mathbf{x}_i -
 \hat{\boldsymbol\mu}_k)(\mathbf{x}_i - \hat{\boldsymbol\mu}_k)^\top$
 {cite}`hastie2009elements`, dove $m_k$ è il numero di esempi della classe $k$ e
-$K$ il numero delle classi. Le inverse esistono solo se le classi hanno
-abbastanza esempi in posizione generale: se ci sono colonne ridondanti
+$K$ il numero delle classi.
+
+Le inverse esistono solo se le classi hanno abbastanza esempi in
+posizione generale. In particolare, se ci sono colonne ridondanti
 (combinazioni lineari di altre), $\hat{\boldsymbol\Sigma}_k$ è singolare con
 qualunque numero di esempi, e serve una regolarizzazione.
 
@@ -360,7 +385,7 @@ Con covarianze diverse (QDA) i termini
 $\mathbf{x}^{\!\top}\boldsymbol{\Sigma}_k^{-1}\mathbf{x}$ non si cancellano, e il
 confine è una quadrica (iperbole, ellisse, parabola secondo il caso).
 
-Se le covarianze sono uguali (LDA), $\boldsymbol{\Sigma}_k =
+Se invece le covarianze sono uguali (LDA), $\boldsymbol{\Sigma}_k =
 \boldsymbol{\Sigma}$ per ogni $k$ e il termine quadratico è lo stesso nelle due
 funzioni discriminanti e sparisce nella differenza. Sviluppando:
 
@@ -377,12 +402,12 @@ $$
 dove il termine raccolto dalla graffa non è costante in $\mathbf{x}$ (è quello
 quadratico), ma è lo stesso per tutte le classi, quindi sparisce nella
 differenza $\delta_k - \delta_\ell$, da cui dipende il confine. Il resto è
-affine in $\mathbf{x}$ e il confine è un iperpiano. Il collaudo numerico
-verifica questo enunciato, perché `decision_function` restituisce quella
+affine in $\mathbf{x}$, e di conseguenza il confine è un iperpiano. Lo si può
+verificare anche numericamente, perché `decision_function` restituisce quella
 differenza.
 
 Il nome ha una storia più lunga di questa derivazione. Fisher nel 1936 non
-suppone classi gaussiane: cerca la direzione $\mathbf{a}$ che massimizza il
+suppone classi gaussiane, ma cerca la direzione $\mathbf{a}$ che massimizza il
 rapporto fra la dispersione delle medie di classe e quella dentro le classi,
 
 $$
@@ -393,7 +418,7 @@ dove $\mathbf{S}_B$ è la covarianza delle medie di classe e $\mathbf{S}_W$ la
 covarianza comune dentro le classi; per due classi il massimo è in
 $\mathbf{a} \propto \mathbf{S}_W^{-1}(\boldsymbol{\mu}_1 - \boldsymbol{\mu}_0)$,
 la stessa direzione che la regola bayesiana dà con
-$\boldsymbol{\Sigma} = \mathbf{S}_W$. La soglia invece nel quoziente non
+$\boldsymbol{\Sigma} = \mathbf{S}_W$. Nel quoziente, invece, la soglia non
 compare. La regola bayesiana taglia in
 
 $$
@@ -406,49 +431,54 @@ senza riscalarlo, e tagliare nel punto medio delle medie proiettate dà la
 stessa regola solo con classi equiprobabili. Per Fisher la linearità era dunque
 un'ipotesi, perché la regola è una combinazione lineare per costruzione; la
 lettura gaussiana, venuta dopo, la trasforma in una conseguenza dell'aver
-condiviso la covarianza. I punti stazionari di $J$ sono gli autovettori del
+condiviso la covarianza.
+
+I punti stazionari di $J$ sono gli autovettori del
 problema agli autovalori generalizzati $\mathbf{S}_B\mathbf{a} =
 \lambda\,\mathbf{S}_W\mathbf{a}$. Poiché con $K$ classi $\mathbf{S}_B$ ha rango
 al più $K-1$, il problema ha al più $\min(K-1, d)$ autovalori non nulli.
-Proiettare su quelle direzioni non perde niente per la regola LDA: nelle
+Proiettare su quelle direzioni non perde niente per la regola LDA, perché nelle
 coordinate sbiancate da $\mathbf{S}_W$ i $K$ centri stanno in un sottospazio
 affine di dimensione al più $K-1$, e le componenti ortogonali a quel
 sottospazio pesano allo stesso modo su tutte le distanze dai centri
 {cite}`hastie2009elements`. È da qui che viene la riduzione a $K-1$ dimensioni.
 
-Il conto dei parametri spiega il compromesso. Con $d$ feature e $K$ classi, la
+Il numero dei parametri spiega il compromesso. Con $d$ feature e $K$ classi, la
 LDA stima $K$ medie più una covarianza, cioè $Kd + d(d+1)/2$ numeri; la QDA
 stima $K$ medie e $K$ covarianze, cioè $Kd + K\,d(d+1)/2$. Per $d = 20$ e $K =
-2$ sono $250$ contro $460$: quasi il doppio, e a raddoppiare è la parte
+2$ sono $250$ contro $460$, quasi il doppio, e a raddoppiare è la parte
 difficile, perché stimare una covarianza è stimare circa $d^2/2$ numeri da dati
-che ne informano poco. Da qui la **regularized discriminant analysis** di
+che ne informano poco. Da qui nasce la **regularized discriminant analysis** di
 Friedman {cite}`friedman1989regularized`, che interpola fra le due mescolando
-$\boldsymbol{\Sigma}_k$ con la covarianza comune. In scikit-learn quella
-interpolazione non c'è (`QuadraticDiscriminantAnalysis(reg_param=...)` fa solo
-l'altra metà e tira ciascuna $\boldsymbol{\Sigma}_k$ verso l'identità); c'è
-invece un rimedio diverso e complementare,
+$\boldsymbol{\Sigma}_k$ con la covarianza comune.
+
+In scikit-learn quella interpolazione non c'è
+(`QuadraticDiscriminantAnalysis(reg_param=...)` fa solo l'altra metà e tira
+ciascuna $\boldsymbol{\Sigma}_k$ verso l'identità); c'è invece un rimedio
+diverso e complementare,
 `LinearDiscriminantAnalysis(shrinkage=...)`, che tira la covarianza comune
 verso un multiplo dell'identità: $(1-\alpha)\hat{\boldsymbol{\Sigma}} +
 \alpha\,\frac{\operatorname{tr}\hat{\boldsymbol{\Sigma}}}{d}\mathbf{I}$. Cura
 il rumore della stima e non la differenza fra le classi (e vuole
-`solver="lsqr"` o `"eigen"`: con il solver predefinito il parametro solleva un
+`solver="lsqr"` o `"eigen"`; con il solver predefinito il parametro solleva un
 errore invece di essere ignorato, che è il modo giusto di comportarsi).
 
 La LDA ha due parentele, con la regressione logistica e con le misture
 gaussiane. Produce una posteriore che, per due classi, è una sigmoide di una
-funzione affine, la stessa forma funzionale della regressione logistica; e il
-legame con le misture gaussiane è ancora più stretto, perché la LDA è una
-mistura gaussiana a covarianza condivisa in cui le variabili latenti sono
-osservate. Rispetto all'algoritmo EM della sezione sul clustering la seconda
-parentela si legge al contrario: il passo E, che là dovrà stimare le
+funzione affine, la stessa forma funzionale della regressione logistica.
+
+Il legame con le misture gaussiane, poi, è ancora più stretto, perché la LDA è
+una mistura gaussiana a covarianza condivisa in cui le variabili latenti sono
+osservate. Rispetto all'algoritmo EM della sezione sul clustering questa
+seconda parentela si legge al contrario: il passo E, che là dovrà stimare le
 responsabilità, qui è dato (valgono $0$ e $1$, e sono note), e resta il solo
-passo M, che sono le due medie e la covarianza comune, eseguito una volta.
+passo M (le due medie e la covarianza comune), eseguito una volta.
 
 `````
 
-Le due situazioni, misurate: due classi con la stessa forma e due classi con
-forme diverse, gli stessi $200$ esempi di addestramento, la stessa prova su
-ventimila esempi mai visti.
+Confrontiamo ora le due situazioni, due classi con la stessa forma e due
+classi con forme diverse, con gli stessi $200$ esempi di addestramento e la
+stessa prova su ventimila esempi mai visti.
 
 ```python
 import numpy as np
@@ -485,23 +515,24 @@ stessa forma, due classi        0.728 ±0.003  0.726 ±0.003  0.728 ±0.003
 forme diverse                   0.813 ±0.005  0.855 ±0.002  0.810 ±0.007
 ```
 
-Il $\pm$ è la deviazione standard fra venti addestramenti e dice quanto ogni
-valore cambia se si ripete tutto; senza di esso le medie non si leggono. Con la
-stessa forma i tre valori stanno entro $\pm 0{,}003$ l'uno dall'altro, dentro
-la dispersione di un singolo addestramento. Quando le classi hanno la stessa
-forma non c'è niente da guadagnare a imparare due forme (né a passare a un
-discriminativo), e la QDA, che stima il doppio dei numeri, resta due millesimi
-sotto. Con forme diverse la QDA sta quattro punti sopra le altre due, con la
-deviazione più piccola di tutte: la differenza è reale.
+Il $\pm$ è la deviazione standard fra venti addestramenti, e dice quanto ogni
+valore cambia se si ripete tutto; senza di esso le medie non si leggono.
+
+Con la stessa forma i tre valori stanno entro $\pm 0{,}003$ l'uno dall'altro,
+cioè dentro la dispersione di un singolo addestramento. Quando le classi hanno
+la stessa forma, quindi, non c'è niente da guadagnare a imparare due forme (né
+a passare a un discriminativo), e la QDA, che stima il doppio dei numeri, resta
+due millesimi sotto. Con forme diverse la QDA sta quattro punti sopra
+le altre due, con la deviazione più piccola di tutte: la differenza è reale.
 
 LDA e regressione logistica, poi, si muovono appaiate in tutti e due i casi,
 perché tracciano lo stesso tipo di confine e differiscono solo su come ne
 stimano la posizione.
 
-Che il confine della LDA sia una retta si può verificare: si prende
-il punteggio con cui il modello decide, si cerca la retta che meglio lo imita,
-e si guarda di quanto i due si scostano nel punto peggiore. Se il punteggio è
-una retta lo scarto deve venire zero.
+Che il confine della LDA sia una retta si può verificare. Si prende il
+punteggio con cui il modello decide, si cerca la retta che meglio lo imita e si
+guarda di quanto i due si scostano nel punto peggiore; se il punteggio è una
+retta, lo scarto deve venire zero.
 
 ```python
 X, y = genera(4000, True, 1)
@@ -528,10 +559,11 @@ QDA, scarto dall'affine: 7.21e+00
 
 Lo scarto della LDA è dell'ordine di $10^{-14}$, quello degli arrotondamenti in
 doppia precisione (l'epsilon di macchina è $2{,}2\cdot10^{-16}$, e i valori
-della funzione di decisione sono dell'ordine delle unità): zero. Il punteggio
-della LDA è una retta, non si limita a somigliarle. La QDA se ne scosta di
-$7{,}2$: i suoi termini quadratici, stimati separatamente per classe, non si
-cancellano, e sui punti lontani dai dati pesano. È la stessa cosa che si
+della funzione di decisione sono dell'ordine delle unità), cioè zero. Il
+punteggio della LDA è una retta, non si limita a somigliarle. La QDA, invece,
+se ne scosta di $7{,}2$: i suoi termini quadratici, stimati
+separatamente per classe, non si cancellano, e sui punti lontani dai dati
+pesano. È la stessa cosa che si
 ottiene con l'algebra, dove per la LDA i termini al quadrato si cancellano fra
 le due classi perché sono identici.
 
@@ -552,15 +584,16 @@ dritte, con gli assi paralleli a quelli del grafico.
 ### La LDA come regressione, e che cosa ne nasce
 
 Con più di due classi si arriva alla LDA anche per un'altra strada, la
-regressione. Da quella strada nascono due sue estensioni: la *flexible
-discriminant analysis* (FDA), che incurva il confine, e la *penalized
-discriminant analysis* (PDA), che funziona anche quando le misure sono
+regressione. Da quella strada nascono due sue estensioni: la **flexible
+discriminant analysis** (FDA), che incurva il confine, e la **penalized
+discriminant analysis** (PDA), che funziona anche quando le misure sono
 centinaia e ordinate, come i valori di uno spettro di frequenze
-{cite}`hastie1994flexible,hastie1995penalized`. Il punto di partenza è un modo
-di sbagliare: dare a ogni esempio un voto per classe, uno alla propria e zero
-alle altre (le *indicatrici*), e cercare per regressione lineare una formula
-che indovini ciascun voto; con tre classi disposte lungo una linea, quella di
-mezzo resta *mascherata*.
+{cite}`hastie1994flexible,hastie1995penalized`.
+
+Il punto di partenza è un modo di sbagliare. Si dà a ogni esempio un voto per
+classe, uno alla propria e zero alle altre (le **indicatrici**), e si cerca per
+regressione lineare una formula che indovini ciascun voto; con tre classi
+disposte lungo una linea, però, quella di mezzo resta *mascherata*.
 
 `````{tab} Elementare
 
@@ -572,31 +605,34 @@ alto.
 
 Con le monete da un euro, da cinquanta centesimi e da due, però, i cinquanta
 centesimi stanno in mezzo: più larghi di quelle da un euro (24,25 millimetri
-contro 23,25) e più stretti di quelle da due (25,75). La ricetta del voto «due
-euro» sale andando verso le monete larghe, quella del voto «un euro» scende, e
-quella del voto «cinquanta centesimi» dovrebbe salire in mezzo e scendere ai due
-lati. Una somma di tanto peso e tanto diametro questo non lo sa fare: resta
-quasi piatta, e vicino al centro le altre due la superano. Molti cinquanta
-centesimi finiscono sotto un altro nome, e il taglio di mezzo resta
-*mascherato*.
+contro 23,25) e più stretti di quelle da due (25,75).
 
-Il rimedio sta nello scegliere i voti invece di fissarli a uno e a zero:
-*optimal scoring*, i voti scelti al meglio. Per ogni taglio si cerca il numero
-che una ricetta sola indovina meglio, e i numeri che escono mettono l’euro a un
-capo, i due euro all’altro e i cinquanta centesimi in mezzo, dove stanno. Con i
-voti scelti così la regressione ritrova la ricetta di Fisher, e il taglio di
-mezzo non si perde più.
+La ricetta del voto «due euro» sale andando verso le monete larghe, quella del
+voto «un euro» scende, e quella del voto «cinquanta centesimi» dovrebbe salire
+in mezzo e scendere ai due lati. Ma una somma di tanto peso e tanto diametro
+non lo sa fare: resta quasi piatta, e vicino al centro le altre due la
+superano. Molti cinquanta centesimi finiscono sotto un altro
+nome, e il taglio di mezzo resta *mascherato*.
 
-Da lì si può allargare in due direzioni. La ricetta può smettere di essere una
-somma e diventare una curva qualunque, e allora il confine fra i tagli si piega
-dove serve: non solo nei modi della QDA, che ammette soltanto le curve che
-nascono da due forme diverse, ma in tutti quelli che la curva scelta permette.
-È la FDA. Oppure le misure sono centinaia, una dopo l'altra, come il suono
-della moneta che cade sul tavolo registrato a duecentocinquantasei altezze
+Il rimedio sta nello scegliere i voti invece di fissarli a uno e a zero, e
+prende il nome di **optimal scoring**, i voti scelti al meglio. Per ogni taglio
+si cerca il numero che una ricetta sola indovina meglio, e i numeri che escono
+mettono l’euro a un capo, i due euro all’altro e i cinquanta centesimi in
+mezzo, dove stanno. Con i voti scelti così la regressione ritrova la ricetta di
+Fisher, e il taglio di mezzo non si perde più.
+
+Da lì si può allargare in due direzioni. Nella prima, la ricetta può smettere
+di essere una somma e diventare una curva qualunque, e allora il confine fra i
+tagli si piega dove serve: non solo nei modi della QDA, che ammette soltanto le
+curve che nascono da due forme diverse, ma in tutti quelli che la curva scelta
+permette. È la FDA.
+
+La seconda serve quando le misure sono centinaia, una dopo l'altra, come il
+suono della moneta che cade sul tavolo registrato a duecentocinquantasei altezze
 diverse. Una ricetta libera darebbe a ogni altezza un peso tutto suo, alto e
 basso a caso, e imparerebbe il rumore di quelle poche monete. Si chiede allora
-che due altezze vicine abbiano pesi simili, con una manopola che dice quanto
-chiederlo, e la ricetta viene liscia: è la PDA.
+che due altezze vicine abbiano pesi simili, con una manopola che dice
+quanto chiederlo, e la ricetta viene liscia: è la PDA.
 
 `````
 
@@ -604,17 +640,18 @@ chiederlo, e la ricetta viene liscia: è la PDA.
 
 Sia $\mathbf{Y} \in \{0,1\}^{m \times K}$ la matrice indicatrice delle classi.
 La regressione lineare di $\mathbf{Y}$ sulla matrice dei dati $\mathbf{X}$, con
-intercetta, seguita dalla regola $\hat{y} = \arg\max_k \hat{Y}_k(\mathbf{x})$, è
-un classificatore lineare, e per $K = 2$ la sua direzione è quella di Fisher.
-Per $K \ge 3$ no: le $\hat{Y}_k$ sommano a uno in ogni punto, e con i centroidi
-quasi allineati la funzione della classe centrale resta quasi costante e viene
-superata dalle due esterne. È il *masking*, tanto più probabile quanto più $K$ è
-grande rispetto alla dimensione $d$ {cite}`hastie2009elements`.
+intercetta, seguita dalla regola $\hat{y} = \arg\max_k \hat{Y}_k(\mathbf{x})$,
+è un classificatore lineare, e per $K = 2$ la sua direzione è quella di Fisher.
+Per $K \ge 3$ questo non vale più: le $\hat{Y}_k$ sommano a uno in ogni punto,
+e con i centroidi quasi allineati la funzione della classe centrale resta quasi
+costante e viene superata dalle due esterne. È il cosiddetto **masking**, tanto
+più probabile quanto più $K$ è grande rispetto alla dimensione $d$
+{cite}`hastie2009elements`.
 
-L’*optimal scoring* sostituisce le indicatrici con punteggi $\theta_\ell : \{1,
-\dots, K\} \to \mathbb{R}$ (qui $\theta_\ell$ è un punteggio delle classi, non
-un parametro del modello: è la notazione di Hastie, Tibshirani e Buja), scelti
-insieme ai coefficienti per minimizzare
+L’**optimal scoring** sostituisce le indicatrici con punteggi
+$\theta_\ell : \{1, \dots, K\} \to \mathbb{R}$ (qui $\theta_\ell$ è un punteggio
+delle classi, non un parametro del modello; la notazione è quella di Hastie,
+Tibshirani e Buja), scelti insieme ai coefficienti per minimizzare
 
 $$
 \mathrm{ASR} = \frac{1}{m} \sum_{\ell=1}^{L} \sum_{i=1}^{m}
@@ -628,19 +665,23 @@ direzioni discriminanti di Fisher, e la LDA si ottiene assegnando la classe del
 centroide più vicino nello spazio delle
 $\hat{\eta}_\ell(\mathbf{x}) = \mathbf{x}^{\!\top}\boldsymbol{\beta}_\ell$, con
 pesi $w_\ell = 1/\big(r_\ell^2(1 - r_\ell^2)\big)$, dove $r_\ell^2$ è il residuo
-quadratico medio del punteggio $\ell$ {cite}`hastie1994flexible`. Il calcolo è
-una regressione multipla di $\mathbf{Y}$ seguita da un problema agli autovalori
-di dimensione $K$,
+quadratico medio del punteggio $\ell$ {cite}`hastie1994flexible`.
+
+Il calcolo è una regressione multipla di $\mathbf{Y}$ seguita da un problema
+agli autovalori di dimensione $K$,
 $\mathbf{Y}^{\!\top}\hat{\mathbf{Y}}\boldsymbol{\theta} =
 \lambda\,\mathbf{Y}^{\!\top}\mathbf{Y}\boldsymbol{\theta}$, da cui si scarta il
-punteggio costante ($\lambda = 1$); per gli altri $r_\ell^2 = 1 - \lambda_\ell$.
+punteggio costante ($\lambda = 1$); per gli altri $r_\ell^2 = 1 -
+\lambda_\ell$.
 
 La FDA sostituisce $\mathbf{x}^{\!\top}\boldsymbol{\beta}_\ell$ con una
 regressione non parametrica $\eta_\ell(\mathbf{x})$ (spline additive, MARS,
 nuclei) e minimizza $\mathrm{ASR} + \gamma \sum_\ell \mathcal{R}(\eta_\ell)$,
 con $\mathcal{R}$ il regolarizzatore di quella famiglia. Con un polinomio di
-secondo grado i confini sono quadriche, le stesse che darebbe una LDA sulle
-feature aumentate dei quadrati e dei prodotti incrociati. Quando la regressione
+secondo grado, ad esempio, i confini sono quadriche, le stesse che darebbe una
+LDA sulle feature aumentate dei quadrati e dei prodotti incrociati.
+
+Quando la regressione
 è lineare su un’espansione $h(\mathbf{x})$ con penalità
 $\gamma\,\boldsymbol{\beta}^{\!\top}\boldsymbol{\Omega}\,\boldsymbol{\beta}$,
 la FDA diventa la PDA {cite}`hastie1995penalized`, una LDA nello spazio espanso
@@ -648,17 +689,19 @@ con la covarianza interna sostituita da $\mathbf{S}_W +
 \gamma\boldsymbol{\Omega}$. Le direzioni massimizzano
 $\mathbf{a}^{\!\top}\mathbf{S}_B\,\mathbf{a}$ sotto
 $\mathbf{a}^{\!\top}(\mathbf{S}_W + \gamma\boldsymbol{\Omega})\mathbf{a} = 1$,
-e la distanza è quella di Mahalanobis nella stessa metrica. La PDA serve anche
-senza espansione, quando i predittori sono già troppi e correlati (i 256 valori
-di un log-periodogramma, i pixel di una cifra scritta a mano): con
-$\boldsymbol{\Omega}$ che penalizza le differenze fra coefficienti adiacenti,
-la metrica pesa meno le combinazioni ruvide, e la direzione discriminante esce
-liscia. È parente dello *shrinkage* di scikit-learn, che tira la covarianza
+e la distanza è quella di Mahalanobis nella stessa metrica.
+
+La PDA serve anche senza espansione, quando i predittori sono già troppi e
+correlati (i 256 valori di un log-periodogramma, i pixel di una cifra scritta
+a mano). Scegliendo $\boldsymbol{\Omega}$ in modo che penalizzi le differenze
+fra coefficienti adiacenti, la metrica pesa meno le combinazioni ruvide, e la
+direzione discriminante esce liscia. La PDA è parente dello *shrinkage* di
+scikit-learn, che tira la covarianza
 verso un multiplo dell’identità invece che verso la levigatezza.
 
 `````
 
-Le tre regole si mettono alla prova sulle monete: un euro, cinquanta centesimi
+Mettiamo alla prova le tre regole sulle monete: un euro, cinquanta centesimi
 e due euro, trecento per taglio, con peso e diametro veri e uno scarto di un
 decimo su tutte e due le misure. L’optimal scoring è scritto a mano, perché
 scikit-learn ha la LDA e la QDA ma non la FDA né la PDA.
@@ -713,14 +756,16 @@ optimal scoring e LDA concordano su 900 monete su 900
 ```
 
 La regressione sulle indicatrici sbaglia 117 monete su 900, e 97 sono da
-cinquanta centesimi: il taglio di mezzo ne perde quasi un terzo. L’optimal
-scoring e la LDA non ne sbagliano nessuna e concordano su tutte e 900, perché
-sono la stessa regola scritta in due modi. Il primo punteggio mette l’euro a
-$-1{,}12$, i due euro a $1{,}31$ e i cinquanta centesimi in mezzo, a $-0{,}19$:
-più vicini all’euro, perché nel diametro gli sono più vicini, un millimetro
-contro uno e mezzo. Già il primo punteggio basta a non sbagliarne nessuna:
-nelle monete da euro, peso e diametro crescono quasi in proporzione, e i tre
-centri stanno quasi su una retta. È il caso in cui la regressione sulle
+cinquanta centesimi, quindi il taglio di mezzo ne perde quasi un terzo.
+L’optimal scoring e la LDA, invece, non ne sbagliano nessuna e concordano su
+tutte e 900, perché sono la stessa regola scritta in due modi.
+
+Il primo punteggio mette l’euro a $-1{,}12$, i due euro a $1{,}31$ e i
+cinquanta centesimi in mezzo, a $-0{,}19$, cioè più vicini all’euro, perché
+nel diametro gli sono più vicini (un millimetro contro uno e mezzo). Già il
+primo punteggio basta a non sbagliarne nessuna: nelle monete da euro
+peso e diametro crescono quasi in proporzione, e i tre centri stanno quasi su
+una retta. È il caso in cui la regressione sulle
 indicatrici maschera di più, e in cui un numero solo, scelto bene, separa
 tutto.
 
@@ -729,65 +774,69 @@ tutto.
 Il terzo membro della famiglia, il naive Bayes (il Bayes ingenuo
 dell'esperimento sugli ensemble), assume che dentro ogni classe le
 caratteristiche siano indipendenti, $p(\mathbf{x}\mid y) = \prod_j p(x_j \mid
-y)$. L'ipotesi è quasi sempre falsa, eppure per classificare spesso incide poco,
-per una ragione che si può dire con precisione.
+y)$. L'ipotesi è quasi sempre falsa; eppure per classificare spesso incide
+poco, per una ragione che si può dire con precisione.
 
 `````{tab} Elementare
 
-Descrivere una classe con centro e forma ha bisogno di molti numeri: la forma
-dice anche come le caratteristiche vanno insieme (se le monete più pesanti sono
-anche più larghe), e con venti caratteristiche le coppie da guardare sono $20
-\times 19 / 2 = 190$. Tante da imparare.
+Descrivere una classe con centro e forma ha bisogno di molti numeri, perché la
+forma dice anche come le caratteristiche vanno insieme (se le monete più
+pesanti sono anche più larghe). Con venti caratteristiche le
+coppie da guardare sono $20 \times 19 / 2 = 190$: tante da imparare.
 
 Il naive Bayes taglia corto e dichiara che quelle relazioni non esistono:
 dentro una classe, ogni caratteristica è indipendente dalle altre. Peso e
-diametro non si sanno l'uno dell'altro. Così di ogni classe basta imparare, una
-caratteristica per volta, una media e una dispersione. Poi la moneta nuova si
-giudica su ogni caratteristica separatamente, e i giudizi che ne escono si
-moltiplicano fra loro.
+diametro non si sanno l'uno dell'altro. Così di ogni classe basta
+imparare, una caratteristica per volta, una media e una dispersione. Poi la
+moneta nuova si giudica su ogni caratteristica separatamente, e i giudizi che
+ne escono si moltiplicano fra loro.
 
 L'ipotesi è quasi sempre falsa, e non un po’: in un'email le parole «offerta» e
 «gratis» si tirano dietro a vicenda, in una moneta peso e diametro pure. Il nome
 lo ammette: *naive* vuol dire ingenuo.
 
 Funziona lo stesso, perché al classificatore non serve avere ragione sulle
-probabilità: gli basta mettere le classi nel giusto ordine. Può sbagliare di
-brutto sul «quanto» (dirà $0{,}999$ dove il vero è $0{,}7$, perché contando due
-volte prove che erano la stessa prova si convince troppo) e azzeccare comunque
-il «quale». Domingos e Pazzani hanno studiato questo fenomeno nel 1997
+probabilità: gli basta mettere le classi nel giusto ordine. Può
+sbagliare di brutto sul «quanto» (dirà $0{,}999$ dove il vero è $0{,}7$,
+perché contando due volte prove che erano la stessa prova si convince troppo)
+e azzeccare comunque il «quale».
+
+Domingos e Pazzani hanno studiato questo fenomeno nel 1997
 {cite}`domingos1997optimality`, mostrando che l'insieme dei casi in cui il
 naive Bayes è ottimo è molto più grande di quello in cui la sua ipotesi è vera.
 
-Il corollario pratico tocca chi usa questi modelli. Le probabilità del naive
-Bayes non si usano come probabilità. Come classifica sono buone, come numeri no.
-Se servono probabilità di cui fidarsi (una soglia da tarare, un costo da
-calcolare) vanno ricalibrate.
+Ne segue un corollario pratico per chi usa questi modelli: le probabilità del
+naive Bayes non si usano come probabilità. Come classifica sono buone, come
+numeri no. Se servono probabilità di cui fidarsi (una soglia da tarare, un
+costo da calcolare) vanno ricalibrate.
 
 `````
 
 `````{tab} Superiore
 
-L'ipotesi è l'indipendenza condizionata delle feature data la classe:
+L'ipotesi è l’**indipendenza condizionata** delle feature data la classe:
 
 $$
 p(\mathbf{x} \mid y = k) = \prod_{j=1}^{d} p(x_j \mid y = k).
 $$
 
-Nel caso gaussiano equivale a imporre $\boldsymbol{\Sigma}_k$ diagonale, e i
-parametri di covarianza crollano da $K\,d(d+1)/2$ a $Kd$: per $d = 20$ e $K =
-2$, da $420$ a $40$. Geometricamente, le ellissi di livello hanno gli assi
-paralleli agli assi coordinati (nessuna rotazione), come mostra il terzo
-pannello di {numref}`fig-lda-qda`.
+In particolare, nel caso gaussiano equivale a imporre $\boldsymbol{\Sigma}_k$
+diagonale, e i parametri di covarianza crollano da $K\,d(d+1)/2$ a $Kd$: per
+$d = 20$ e $K = 2$, da $420$ a $40$. Geometricamente, le ellissi di livello
+hanno gli assi paralleli agli assi coordinati (nessuna rotazione), come mostra
+il terzo pannello di {numref}`fig-lda-qda`.
 
 Il risultato di Domingos e Pazzani {cite}`domingos1997optimality` è che la
 regione di ottimalità del naive Bayes sotto perdita $0$–$1$ è strettamente più
-ampia di quella in cui vale l'indipendenza condizionata: l'errore
+ampia di quella in cui vale l'indipendenza condizionata. Infatti l'errore
 sull’*ordinamento* delle posteriori è un evento più raro dell'errore sulle
 posteriori stesse, perché la funzione $\arg\max$ è invariante a un'ampia classe
-di distorsioni monotone. Le stime restano però mal calibrate, tipicamente
-sovrasicure, perché feature correlate contribuiscono evidenza ripetuta al
-prodotto: chi ha bisogno delle probabilità e non solo dell'etichetta ricalibri
-con lo scaling di Platt o con l'isotonica, che la
+di distorsioni monotone.
+
+Le stime restano però mal calibrate, tipicamente sovrasicure, perché feature
+correlate portano nel prodotto la stessa evidenza più volte. Di conseguenza, chi
+ha bisogno delle probabilità e non solo dell'etichetta ricalibri con lo scaling
+di Platt o con l'isotonica, che la
 {doc}`sezione sulle metriche </MachineLearning/metriche>` mette alla prova.
 
 Nel caso discreto (conteggi di parole) il modello prende il nome di
@@ -804,25 +853,28 @@ della famiglia generativa, non come classificatore di documenti.
 Resta la domanda che decide se questa famiglia serve ancora: con pochi dati,
 chi descrive le classi batte chi cerca il confine? Andrew Ng e Michael Jordan
 la formulano nel 2001 {cite}`ng2001discriminative`, e la risposta ha la forma
-di una gara con due tempi. Il generativo parte meglio: si avvicina al meglio
-che sa fare con un numero di esempi che cresce come $\log d$ nel numero $d$ di
-caratteristiche, contro l'ordine di $d$ della logistica. Il discriminativo
-parte peggio, ma il meglio che sa fare non è mai peggiore. Su pochi dati vince
-il primo; su tanti, il secondo, se l'ipotesi del primo è sbagliata.
+di una gara con due tempi.
+
+Il generativo parte meglio, perché si avvicina al meglio che sa fare con un
+numero di esempi che cresce come $\log d$ nel numero $d$ di caratteristiche,
+contro l'ordine di $d$ della logistica. Il discriminativo parte
+peggio, ma il meglio che sa fare non è mai peggiore. In sintesi, su pochi dati
+vince il primo; su tanti, il secondo, se l'ipotesi del primo è sbagliata.
 
 Il confronto che scelgono è il più pulito possibile: naive Bayes gaussiano
 contro regressione logistica. Nel loro naive Bayes ogni caratteristica ha una
 media per classe e una varianza sola, comune alle due classi. Con questa scelta
 la posteriore, cioè la probabilità della classe dato l'esempio, è una sigmoide
 di una funzione affine (una somma pesata delle caratteristiche più una
-costante): i due modelli arrivano alla stessa formula per decidere, e
-differiscono solo su come ne ricavano i numeri dai dati. `GaussianNB` di
-scikit-learn stima invece una varianza per classe, e il suo confine è una
-quadrica; per rifare il confronto di Ng e Jordan la varianza va messa in
-comune.
+costante), e i due modelli arrivano così alla stessa formula per decidere;
+differiscono solo su come ne ricavano i numeri dai dati.
 
-Rifacendo quel confronto con una colonna in più, la logistica come la si usa
-oggi, si vede quanto ne resta.
+`GaussianNB` di scikit-learn, invece, stima una varianza per classe, e il suo
+confine è una quadrica; per rifare il confronto di Ng e Jordan la
+varianza va messa in comune.
+
+Rifacciamo quel confronto con una colonna in più, la logistica come la si usa
+oggi, per vedere quanto ne resta.
 
 ```python
 import numpy as np
@@ -877,32 +929,36 @@ massimo teorico: 0.866
 ```
 
 La logistica senza regolarizzazione, quella del confronto originale, mostra il
-fenomeno nella forma più netta: a $m = 80$ il naive Bayes sta a $0{,}811$ e lei
+fenomeno nella forma più netta. A $m = 80$ il naive Bayes sta a $0{,}811$ e lei
 a $0{,}722$, quasi nove punti sotto; a $m = 200$ sono ancora quasi cinque; da
-$m = 600$ in poi si avvicinano fino quasi a toccarsi. Con quaranta
-caratteristiche e ottanta esempi la logistica ha due esempi per parametro, e
-con così poco non impara; il naive Bayes ne stima anche di più (centoventi: una
-media per classe e per colonna, e una varianza per colonna), ma li stima uno
-alla volta, ciascuno con tutti i dati della sua classe, e se la cava.
+$m = 600$ in poi si avvicinano fino quasi a toccarsi.
+
+Con quaranta caratteristiche e ottanta esempi, infatti, la logistica ha due
+esempi per parametro, e con così poco non impara. Il naive Bayes ne stima anche
+di più (centoventi: una media per classe e per colonna, e una varianza per
+colonna), ma li stima uno alla volta, ciascuno con tutti i dati della sua
+classe, e se la cava.
 
 La logistica come la si usa oggi, con il `penalty="l2"` che scikit-learn
-applica per default, accorcia il divario senza chiuderlo: a $m = 80$ il naive
+applica per default, accorcia il divario senza chiuderlo. A $m = 80$ il naive
 Bayes resta quattro punti sopra ($0{,}811$ contro $0{,}771$), a $m = 200$ due e
-mezzo, a $m = 600$ uno, e a $m = 2000$ ancora tre millesimi. Il fenomeno del
-2001 sopravvive ai default di oggi; la regolarizzazione ne cambia la misura, e
-il verso resta quello.
+mezzo, a $m = 600$ uno, e a $m = 2000$ ancora tre millesimi. In definitiva, il
+fenomeno del 2001 sopravvive ai default di oggi: la regolarizzazione ne cambia
+la misura, ma il verso resta quello.
 
-I dati del confronto sono stati fabbricati a feature indipendenti, nel mondo in
-cui l'ipotesi del naive Bayes è vera. Questo rende visibile il primo tempo
-della gara, la partenza rapida del generativo, e rende invisibile il secondo:
-se il modello del naive Bayes è quello giusto, i due metodi hanno lo stesso
-tetto, e quel tetto è il massimo teorico del problema ($0{,}866$ di
-accuratezza). Infatti la riga di $m = 2000$ li dà a $0{,}862$ e $0{,}859$,
-tutti e due a pochi millesimi da quel tetto: il generativo ci arriva prima, il
-discriminativo lo insegue, e il suo asintoto più alto si vede solo quando
-l'ipotesi naive è falsa. Con feature correlate l'asintoto del naive Bayes
-scende sotto il massimo teorico, e con abbastanza esempi la logistica lo
-supera: al vantaggio di stimare poco si somma il costo di un'ipotesi falsa.
+I dati del confronto sono stati fabbricati a feature indipendenti, cioè nel
+mondo in cui l'ipotesi del naive Bayes è vera. Questo rende visibile il primo
+tempo della gara, la partenza rapida del generativo, ma rende invisibile il
+secondo: se il modello del naive Bayes è quello giusto, i due metodi hanno lo
+stesso tetto, e quel tetto è il massimo teorico del problema ($0{,}866$ di
+accuratezza).
+
+Infatti la riga di $m = 2000$ li dà a $0{,}862$ e $0{,}859$, tutti e due a
+pochi millesimi da quel tetto: il generativo ci arriva prima, il discriminativo
+lo insegue, e il suo asintoto più alto si vede solo quando l'ipotesi naive è
+falsa. Con feature correlate l'asintoto del naive Bayes scende sotto
+il massimo teorico, e con abbastanza esempi la logistica lo supera: al
+vantaggio di stimare poco si somma il costo di un'ipotesi falsa.
 
 Le stesse due classi con le colonne vicine correlate, $\operatorname{corr}(x_i,
 x_j) = 0{,}3^{\lvert i-j\rvert}$, mettono l'ipotesi naive dalla parte del torto,
@@ -946,9 +1002,10 @@ tetto del naive Bayes: 0.841
 ```
 
 Il naive Bayes resta avanti finché gli esempi sono pochi ($0{,}819$ contro
-$0{,}790$ a $m = 200$), poi si ferma sotto il suo tetto, $0{,}841$: con le
-colonne correlate conta più volte la stessa prova, e la sua frontiera resta
-storta anche con infiniti dati. La logistica lo supera fra $200$ e $600$ esempi,
+$0{,}790$ a $m = 200$), poi si ferma sotto il suo tetto, $0{,}841$, perché con
+le colonne correlate conta più volte la stessa prova, e la sua frontiera resta
+storta anche con infiniti dati. La logistica lo supera fra $200$ e
+$600$ esempi,
 e a $m = 2000$ arriva a $0{,}858$, vicino al massimo teorico $0{,}863$.
 
 ## In pratica
@@ -987,18 +1044,19 @@ e sullo stesso punto lontano si dichiara sicuro al 99.99%
 ```
 
 Il punto $(14, -11)$ non ha niente a che vedere con questi dati, e la densità
-lo dice senza esitazioni. I due numeri stampati sono logaritmi, e la differenza
-fra loro è di settecentonove: il rapporto fra le due densità è $10^{308}$, un
-$1$ seguito da trecentotto zeri, e non «settecento volte meno probabile». Quel
-punto, per il modello, semplicemente non capita. La classificazione dello
-stesso punto, invece, esce al $99{,}99\%$ di sicurezza, perché una volta scelto
-da che parte della retta si trova non c'è altro da dire.
+lo dice senza esitazioni. Si noti che i due numeri stampati sono logaritmi, e
+la differenza fra loro è di settecentonove; il rapporto fra le due densità,
+quindi, è $10^{308}$, un $1$ seguito da trecentotto zeri, e non «settecento
+volte meno probabile». Quel punto, per il modello, semplicemente non capita.
 
-I due numeri vengono dallo stesso modello, addestrato una volta sola, e sono la
-ragione per cui conviene avere in casa un generativo: la sicurezza di un
-classificatore è sempre relativa alle classi che conosce, e di per sé non
-distingue «è certamente una gazza» da «non ho idea di cosa sia, ma se devo
-scegliere dico gazza». La densità, invece, fa questa distinzione.
+La classificazione dello stesso punto, invece, esce al $99{,}99\%$ di
+sicurezza, perché una volta scelto da che parte della retta si trova non c'è
+altro da dire. I due numeri vengono dallo stesso modello, addestrato una volta
+sola, e sono la ragione per cui conviene avere in casa un generativo. La
+sicurezza di un classificatore, infatti, è sempre relativa alle classi che
+conosce, e di per sé non distingue «è certamente una gazza» da «non ho idea di
+cosa sia, ma se devo scegliere dico gazza». La densità, invece, fa questa
+distinzione.
 
 Quando conviene prenderli in considerazione, in concreto:
 
@@ -1011,10 +1069,10 @@ Quando conviene prenderli in considerazione, in concreto:
 - con pochi esempi e molte colonne, che è la situazione tipica dei dati
   clinici e sperimentali: è il caso $m = 80$ del confronto con la logistica;
 - quando serve una densità per accorgersi degli esempi che non somigliano a
-  niente di visto, compito della mistura gaussiana della {doc}`sezione su
-  riduzione e clustering <riduzione-clustering>` farà per segnalare i punti
-  improbabili;
-- per schiacciare i dati in poche dimensioni senza perdere le classi: la LDA li
+  niente di visto, lo stesso uso che ne farà la mistura gaussiana della
+  {doc}`sezione su riduzione e clustering <riduzione-clustering>` per
+  segnalare i punti improbabili;
+- per ridurre i dati a poche dimensioni senza perdere le classi: la LDA li
   proietta su al più $K-1$ direzioni, con $K$ il numero delle classi, scelte
   apposta perché su quelle le classi si distinguano. È la cugina supervisionata
   dell'analisi delle componenti principali:
@@ -1032,7 +1090,7 @@ Quando conviene prenderli in considerazione, in concreto:
 - Chi sa com'è fatta ogni classe sa anche dire dove i casi sono fitti e dove
   sono radi, la stima di densità, e quindi riconoscere ciò che non somiglia a
   nessuna: un gettone fra le monete. Chi ha imparato solo il confine no. Con
-  migliaia di misure, come i puntini di una foto, quel conto può ingannarsi.
+  migliaia di misure, come i puntini di una foto, quella stima può ingannare.
 - LDA: una sola forma condivisa dalle due classi, e il confine viene una
   retta. QDA: una forma per classe, e il confine si incurva. La ricetta di
   Fisher, un numero solo mescolando le misure, dà l'inclinazione della retta;
@@ -1102,7 +1160,8 @@ Quando conviene prenderli in considerazione, in concreto:
   $\mathbf{S}_W^{-1}(\boldsymbol{\mu}_1 - \boldsymbol{\mu}_0)$, non la soglia,
   che dipende dalle priori. La LDA è anche una riduzione di dimensionalità
   supervisionata su al più $\min(K-1, d)$ direzioni, senza perdita per la
-  regola LDA; coincide con la mistura gaussiana della sezione sul clustering
+  regola LDA; coincide con la mistura gaussiana della {doc}`sezione sul clustering
+<riduzione-clustering>`
   con le variabili latenti osservate: resta il solo passo M, eseguito una
   volta.
 - Con $K \ge 3$ la regressione sulle indicatrici maschera le classi centrali;
@@ -1116,10 +1175,12 @@ Quando conviene prenderli in considerazione, in concreto:
 
 `````
 
-Il giro dei classificatori classici si chiude tornando al punto di partenza per
-un'altra strada: la regressione logistica con cui tutto era cominciato e la LDA
-di Fisher tracciano lo stesso tipo di confine e non sono lo stesso metodo,
-perché una guarda il confine e l'altra guarda le classi. La {doc}`sezione su
+La rassegna dei classificatori classici si chiude tornando al punto di
+partenza per un'altra strada: la regressione logistica con cui tutto era
+cominciato e la LDA di Fisher tracciano lo stesso tipo di confine, ma non sono
+lo stesso metodo, perché una guarda il confine e l'altra guarda le classi.
+
+La {doc}`sezione su
 riduzione e clustering <riduzione-clustering>` toglie le etichette: chiede ai
 dati quante dimensioni servano a descriverli e quali gruppi contengano,
 e ritrova le gaussiane della LDA nella mistura gaussiana, dove l'appartenenza

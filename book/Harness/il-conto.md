@@ -7,13 +7,14 @@ un albero di tentativi, un altro si scriveva la critica dei propri errori prima
 di riprovare, un terzo seguiva l'esecuzione del programma un pezzo alla volta
 per trovare dove sbagliava. Sayash Kapoor, Benedikt Stroebl, Zachary Siegel,
 Nitya Nadgir e Arvind Narayanan li hanno rimessi in fila accanto alla cosa più
-semplice che si possa fare con un modello, chiedergli di nuovo. Una loro
-strategia di base chiama GPT-4 fino a cinque volte, si ferma appena il programma
-supera i test d'esempio del problema e dal secondo tentativo alza la temperatura
-(quanto il modello si concede parole meno probabili), da zero a 0,3 e poi a 0,5,
-perché il tentativo dopo non ripeta il primo. Ogni sistema ha girato cinque
-volte su tutti i problemi, e accanto alla quota di problemi risolti gli autori
-hanno messo quanto era costato {cite}`kapoor2024agents`.
+semplice che si possa fare con un modello, chiedergli di nuovo.
+
+Una loro strategia di base chiama GPT-4 fino a cinque volte, si ferma appena il
+programma supera i test d'esempio del problema e dal secondo tentativo alza la
+temperatura (quanto il modello si concede parole meno probabili), da zero a 0,3
+e poi a 0,5, perché il tentativo dopo non ripeta il primo. Ogni sistema ha
+girato cinque volte su tutti i problemi, e accanto alla quota di problemi
+risolti gli autori hanno messo quanto era costato {cite}`kapoor2024agents`.
 
 La strategia che riprova risolveva il 93,2% dei problemi con 2,45 dollari per
 tutti e 164, ai prezzi dell'aprile 2024. Il migliore degli agenti, quello che
@@ -22,13 +23,16 @@ decimo di punto in più, meno di quanto ciascuno oscillava da un'esecuzione
 all'altra, per più del doppio della spesa. LATS, l'agente dell'albero, si
 fermava all’88,0% con 134,50 dollari, cinquantacinque volte la strategia che
 riprova; Reflexion, l'agente della critica scritta, all’87,8% con 3,90.
+
 Un'altra strategia di base partiva da un modello piccolo e saliva di modello in
 modello, fino a GPT-4, finché i test non passavano: 85,0% con 27 centesimi. Su
 due assi, costo e quota risolta, questi sistemi disegnano un **fronte di
 Pareto**, l'insieme di quelli che nessun altro batte su tutti e due gli assi
 insieme: ci stanno la scalata di modelli, la strategia che riprova e LDB,
 mentre LATS e Reflexion restano fuori, perché la strategia che riprova risolve
-di più e costa meno. Gli autori lasciano aperta la domanda se esplorare,
+di più e costa meno.
+
+Gli autori lasciano aperta la domanda se esplorare,
 criticarsi e seguire l'esecuzione servano davvero, e concludono che una quota
 di problemi risolti, riportata da sola, non distingue un'idea nuova da un
 modello chiamato più volte.
@@ -36,11 +40,13 @@ modello chiamato più volte.
 Per un agente che lavora un'ora su un repository la domanda è la stessa, e più
 acuta: il costo è quello di un compito intero, decine o centinaia di chiamate
 al modello che rileggono ciascuna il contesto accumulato, più gli strumenti, i
-tentativi falliti, i controlli. L’{doc}`anatomia dell'harness <overview>` ha
-fissato la grandezza giusta, il costo per compito risolto $c(H)/s(H)$, cioè la
-spesa media di un compito con l'harness $H$ divisa per la probabilità che
+tentativi falliti, i controlli.
+
+L’{doc}`anatomia dell'harness <overview>`
+ha fissato la grandezza giusta, il costo per compito risolto $c(H)/s(H)$, cioè
+la spesa media di un compito con l'harness $H$ divisa per la probabilità che
 riesca; il {doc}`passaggio di consegne <passaggio-di-consegne>` ha contato i
-token che una sessione rilegge, senza prezzi né cache. Il conto di un compito
+token che una sessione rilegge, senza prezzi né cache. Il costo di un compito
 diventa così un oggetto di progetto, con i suoi fattori, i suoi sconti e i loro
 contro-costi, e con una dimensione che il conto in token non vede, il tempo.
 
@@ -54,52 +60,60 @@ c \;=\; \text{richieste} \times \frac{\text{passi}}{\text{richiesta}}
 $$
 
 dove una richiesta è un messaggio dell'utente con il lavoro che l'agente fa
-prima di rispondere, un passo è un giro del ciclo (una chiamata al modello e
-l'esecuzione di ciò che chiede), e ogni rapporto è fra totali, così che il
-prodotto torna sempre: tre richieste da dieci passi, con ventimila token letti
-a passo, fanno seicentomila token. I fattori non sono indipendenti (raggruppare
-le letture toglie passi e allunga ciascuno), ma ognuno indica una leva.
+prima di rispondere, un passo è un giro del ciclo (una chiamata al
+modello e l'esecuzione di ciò che chiede), e ogni rapporto è fra totali, così
+che il prodotto torna sempre. Ad esempio, tre richieste da dieci passi, con
+ventimila token letti a passo, fanno seicentomila token. I fattori non sono
+indipendenti (raggruppare le letture toglie passi e allunga ciascuno), ma
+ognuno indica una leva.
 
 Le richieste pesano più di quanto sembri, perché dentro una sessione ognuna
 rilegge tutte quelle prima; l'utente torna quando l'agente ha capito male, si è
 fermato a metà o ha consegnato senza controllare, e un piano confermato prima di
 agire e il {doc}`collaudo <finito-vuol-dire-collaudato>` fatto da sé tolgono i
-ritorni alla radice. I passi scendono quando una chiamata fa il lavoro di più
+ritorni alla radice.
+
+I passi scendono quando una chiamata fa il lavoro di più
 chiamate (cinque file letti in un passo, un piano scritto una volta sola come
 nel metodo ReWOO della {doc}`sezione sulle architetture degli agenti
 </Agenti/architetture-e-valutazione>`, una decisione di routine scritta nel
 codice dell'harness), purché le azioni raggruppate non dipendano l'una
 dall'altra. I token per passo scendono tagliando gli esiti degli strumenti, o
 dandoli a pezzi, come chiede la {doc}`sezione sugli strumenti <gli-strumenti>`,
-e chiedendo un'uscita breve. Il prezzo scende con la cache del prefisso e con il
+e chiedendo un'uscita breve.
+
+Infine il prezzo scende con la cache del prefisso e con il
 lavoro differito, che i fornitori (le aziende che vendono l'accesso ai modelli)
 fanno pagare meno quando può aspettare ore.
 
-Prima delle leve viene la contabilità. Un conto onesto somma tutte le chiamate
-al modello: quelle dell'agente principale, e quelle del modello che pianifica,
-di quello che sceglie a chi passare il lavoro, di quello che scrive i
+Prima delle leve viene la contabilità. Un bilancio onesto somma tutte le
+chiamate al modello: quelle dell'agente principale, e quelle del modello che
+pianifica, di quello che sceglie a chi passare il lavoro, di quello che scrive i
 riassunti, di quello che controlla, degli agenti secondari a cui si delega.
 Separa i token letti dalla cache, quelli letti freschi e quelli scritti, che
 hanno prezzi diversi (i token del ragionamento, che il modello scrive prima di
 rispondere, si pagano come scritti), e aggiunge strumenti, esecuzione e tempo
 delle persone: è la somma di ciò che gli intervalli di una {doc}`traccia
-<quando-nessuno-guarda>` registrano, chiamata per chiamata. A parte sta la
-contabilità del progetto (le traiettorie, cioè le sequenze di passi di compiti
-già svolti, raccolte per addestrare un modello più piccolo, la ricerca di un
-modo di lavorare migliore, le batterie di valutazione): un modo di lavorare che
-costa mille da trovare e fa risparmiare due a compito si ripaga dopo
-cinquecento compiti.
+<quando-nessuno-guarda>` registrano, chiamata per chiamata.
+
+A parte sta la contabilità del progetto (le traiettorie, cioè le sequenze di
+passi di compiti già svolti, raccolte per addestrare un modello più piccolo, la
+ricerca di un modo di lavorare migliore, le batterie di valutazione). Ad
+esempio, un modo di lavorare che costa mille da trovare e fa risparmiare due a
+compito si ripaga dopo cinquecento compiti.
 
 ## La cache del prefisso, dal lato di chi paga
 
-Il conto del passaggio di consegne trattava ogni rilettura come se costasse
+Il calcolo del passaggio di consegne trattava ogni rilettura come se costasse
 uguale. I fornitori, invece, riusano i calcoli fatti su un prefisso già visto,
 la parte iniziale del contesto identica a quella di una richiesta di poco
 prima, e la fanno pagare una frazione del prezzo pieno: la {doc}`sezione sul
 context engineering </IngegneriaLLM/context-engineering>` ha descritto il
 meccanismo e la regola che ne segue, in testa ciò che non cambia. Per un agente
-pesa molto, perché a ogni passo il contesto è quello del passo prima più poche
-migliaia di token. Il programma del passaggio di consegne, con gli stessi
+la differenza pesa molto, perché a ogni passo il contesto è quello del passo
+prima più poche migliaia di token.
+
+Il programma del passaggio di consegne, con gli stessi
 numeri, riceve due prezzi illustrativi, perché i listini cambiano: un token
 letto dalla cache costa 0,1 di un token letto fresco, uno scritto dal modello
 5, e il costo si conta in token freschi equivalenti, cioè in token letti a
@@ -226,7 +240,9 @@ colonna «senza cache» è più alta perché ci aggiunge i token scritti, a cinq
 volte tanto. Con la cache le distanze si accorciano e l'ordine resta quello di
 prima: le due compattazioni, che senza cache costavano 2.728.000 e 2.094.000,
 costano 614.800 e 594.600, perché i token in più che la prima rilegge passano
-quasi tutti dalla cache. E basta l'ora in testa per perdere tutto: ogni
+quasi tutti dalla cache.
+
+Basta però l'ora in testa per perdere tutto: ogni
 chiamata ha un prefisso diverso fin dal primo token, e la ripartenza costa 3,8
 volte tanto, quanto costerebbe senza cache. Per la stessa ragione, con la
 cache, accorciare un esito vecchio a metà sessione, una leva della sezione
@@ -241,12 +257,13 @@ Mentre legge, l'artigiano prende appunti su un taccuino, e ogni appunto tiene
 conto dei fogli letti prima: «questa gamba va con il piano del foglio due». Il
 taccuino è la cache: finita la mossa resta sul banco, e alla mossa dopo, se i
 fogli cominciano esattamente come prima, l'artigiano non li rilegge, scorre gli
-appunti, e la bottega paga un decimo di moneta a foglio. Quei fogli uguali
-dall'inizio, in fila, sono il prefisso; a prezzo pieno si leggono solo quelli
-arrivati in fondo. Dieci fogli, nove annotati e uno nuovo, più mezzo foglio di
-risposta: nove decimi, più una moneta, più due e mezzo, fanno 4,4 monete invece
-di 12,5. Il taccuino non fa ricordare niente di nuovo; risparmia soltanto la
-rilettura.
+appunti, e la bottega paga un decimo di moneta a foglio.
+
+Quei fogli uguali dall'inizio, in fila, sono il prefisso; a prezzo pieno si
+leggono solo quelli arrivati in fondo. Dieci fogli, nove annotati e
+uno nuovo, più mezzo foglio di risposta: nove decimi, più una moneta, più due e
+mezzo, fanno 4,4 monete invece di 12,5. Il taccuino non fa ricordare niente di
+nuovo; risparmia soltanto la rilettura.
 
 Gli appunti valgono solo fino al primo foglio cambiato. Se il foglio due cambia,
 l'appunto sulla gamba non vale più, e nemmeno quelli dopo, che si appoggiavano a
@@ -256,7 +273,9 @@ in cima al primo foglio l'ora esatta fa rileggere tutto a ogni mossa: per chi
 smonta a ogni pezzo, quasi quattro volte tanto. Lo stesso, dal foglio cambiato
 in giù, se il capobottega riordina l'elenco degli attrezzi o toglie un foglio
 vecchio in mezzo alla pila per lasciarci una riga: risparmia quel foglio, e
-paga a prezzo pieno tutti quelli dopo. E il taccuino è di chi l'ha scritto, a
+paga a prezzo pieno tutti quelli dopo.
+
+E il taccuino è di chi l'ha scritto, a
 un altro artigiano non serve; resta sul banco solo qualche minuto, perché chi
 gestisce i banchi lo porta via per far posto agli altri, e se l'artigiano
 aspetta troppo che la colla asciughi non lo trova più.
@@ -269,7 +288,9 @@ attrezzi resta nell'ordine di sempre.
 Il taccuino, però, non ferma la pila: scorrere gli appunti di cento fogli costa
 dieci volte scorrere quelli di dieci, anche se finché la giornata è corta pesano
 di più i fogli nuovi e quelli scritti (una giornata doppia costa circa due volte
-e mezzo, senza taccuino più di tre volte e mezzo). E lo sgombero conviene meno:
+e mezzo, senza taccuino più di tre volte e mezzo).
+
+Anche lo sgombero conviene meno:
 fa scrivere un riassunto, pagato cinque volte e riletto a prezzo pieno, per
 risparmiare la rilettura dei fogli vecchi, che con il taccuino costava già poco.
 Sgomberare a metà tavolo o a tavolo quasi pieno costa quasi lo stesso, e con
@@ -284,7 +305,7 @@ tavolo affollato l'artigiano lavora peggio.
 
 Sia $C_t$ la sequenza di token che la chiamata $t$ manda al modello,
 $\mathrm{tok}(C_t)$ il loro numero, come nella sezione sugli strumenti, e $y_t$
-il numero di token che il modello scrive. Il servente conserva per un tempo
+il numero di token che il modello scrive. Il server conserva per un tempo
 limitato la KV cache delle chiamate recenti, come i motori di inferenza che la
 condividono fra richieste che cominciano allo stesso modo
 {cite}`zheng2024sglang`, e la chiamata $t$ ne riusa la parte iniziale comune:
@@ -303,11 +324,12 @@ $$
 
 con $\eta < 1$ il prezzo relativo di un token letto dalla cache e $\omega > 1$
 quello di un token scritto, ragionamento compreso; il programma usa
-$\eta = 0{,}1$ e $\omega = 5$. È il modello del servente, a granularità di
-token. Quello che i fornitori fatturano è più grossolano (contano il prefisso a
-blocchi, da punti dichiarati nella richiesta e sopra una lunghezza minima, e
+$\eta = 0{,}1$ e $\omega = 5$. È il modello del server, a granularità di token.
+
+Quello che i fornitori fatturano, invece, è più grossolano (contano il prefisso
+a blocchi, da punti dichiarati nella richiesta e sopra una lunghezza minima, e
 alcuni fanno pagare di più la scrittura in cache), e il modello lo trascura.
-L'organizzazione della cache nel servente, un albero dei prefissi con le sue
+L'organizzazione della cache nel server, un albero dei prefissi con le sue
 regole di sfratto, la racconterà la {doc}`sezione sulle metriche di servizio
 </MLOps/metriche-di-servizio>` nel capitolo su MLOps.
 
@@ -318,15 +340,16 @@ ogni strato, non dipendono dai token dopo $j$. E la stessa dipendenza lo
 vincola, perché dipendono da tutti i token fino a $j$: la cache di una chiamata
 precedente vale fino alla prima posizione in cui le due sequenze differiscono,
 e per nessuna dopo, qualunque sia la differenza. Un token cambiato in posizione
-$j$ costa la rilettura fresca di $\mathrm{tok}(C_t) - j + 1$ token. La chiave è
-la sequenza degli identificativi dei token: lo stesso oggetto serializzato con
-i campi in un altro ordine è un prefisso diverso. E la cache è per modello,
-perché chiavi e valori dipendono dai pesi: passare a un altro modello a metà
-traiettoria rilegge tutto a prezzo pieno.
+$j$ costa la rilettura fresca di $\mathrm{tok}(C_t) - j + 1$ token.
+
+Si noti che la chiave è la sequenza degli identificativi dei token: lo stesso
+oggetto serializzato con i campi in un altro ordine è un prefisso diverso. E la
+cache è per modello, perché chiavi e valori dipendono dai pesi: passare a un
+altro modello a metà traiettoria rilegge tutto a prezzo pieno.
 
 Con la storia accodata e una cache che non scade fra un passo e l'altro,
 $\chi_t = \mathrm{tok}(C_{t-1})$ e $\mathrm{tok}(C_t) - \chi_t = d$, la
-crescita per giro. Con $\mathrm{tok}(C_t) = \phi + t d$, come nel conto del
+crescita per giro. Con $\mathrm{tok}(C_t) = \phi + t d$, come nel calcolo del
 passaggio di consegne, e $y_t = y$ costante, la somma su $T$ chiamate è
 
 $$
@@ -341,15 +364,16 @@ costante, non l'esponente, come la {doc}`sezione sul costo del coordinamento
 </SistemiMultiAgente/costo-del-coordinamento>` dirà per una trascrizione
 condivisa fra più agenti. È una grandezza di fattura: il numero dei token da
 calcolare, che con il riuso del prefisso diventa lineare nel numero delle
-chiamate come mostrerà la sezione sulle metriche di servizio, è un'altra. Sposta
-però il punto in cui il quadrato domina: all'ordine principale il termine
-quadratico, circa $\eta d T^2/2$, raggiunge quelli lineari, circa $T(d +
-\eta\phi + \omega y)$, per $T \approx 2(d + \eta\phi + \omega y)/(\eta d)$, 40
-giri con i valori del programma; senza cache, dove anche i token nuovi di ogni
-giro stanno nel termine quadratico, il conto analogo è $2(\phi + \omega y)/d$, 5
-giri, contro i 32 che la finestra consente. Dentro la finestra, a quel prezzo,
-il costo è fatto soprattutto dei termini lineari; in una finestra dieci volte
-più grande il quadrato torna a dominare.
+chiamate come mostrerà la sezione sulle metriche di servizio, è un'altra.
+
+La cache sposta però il punto in cui il quadrato domina: all'ordine principale
+il termine quadratico, circa $\eta d T^2/2$, raggiunge quelli lineari, circa
+$T(d + \eta\phi + \omega y)$, per $T \approx 2(d + \eta\phi + \omega y)/(\eta
+d)$, 40 giri con i valori del programma; senza cache, dove anche i token nuovi
+di ogni giro stanno nel termine quadratico, il calcolo analogo è $2(\phi +
+\omega y)/d$, 5 giri, contro i 32 che la finestra consente. Dentro la finestra,
+a quel prezzo, il costo è fatto soprattutto dei termini lineari; in una
+finestra dieci volte più grande il quadrato torna a dominare.
 
 Rompe la cache tutto ciò che cambia un token prima della fine del prefisso già
 visto: un'informazione variabile in testa (l'ora, un identificativo), che porta
@@ -363,8 +387,9 @@ cambiata: in spesa conviene solo quando $\eta$ per i token tolti, sommati su
 tutte le chiamate che seguono, supera $(1 - \eta)$ per i token riletti, che si
 pagano una volta a ogni modifica. Fatta a ogni passo, la rilettura torna a ogni
 chiamata e il conto pareggia soltanto con decine di voci già accorciate;
-accorciando a blocchi, ogni tanti giri, la si paga una volta per blocco. La
-regola di progetto, fuori da questi tagli, è il log in sola aggiunta: si
+accorciando a blocchi, ogni tanti giri, la si paga una volta per blocco.
+
+La regola di progetto, fuori da questi tagli, è il log in sola aggiunta: si
 accodano voci e non se ne modificano, le correzioni sono voci nuove, le
 informazioni variabili stanno nell'ultima, la serializzazione è deterministica,
 come per il giornale dell'agente della {doc}`sezione sull'osservabilità
@@ -375,7 +400,9 @@ sua lettura fresca alla chiamata dopo, e risparmia una rilettura che costava
 già $\eta$ a token. Il costo di ogni strategia è affine in $\eta$, con pendenza
 pari ai token letti dalla cache; da qui la soglia del programma: sotto
 $\eta \approx 0{,}07$ la compattazione all'ottanta per cento, che taglia due
-volte, costa meno di quella al cinquanta, che taglia quattro. La ripartenza ha
+volte, costa meno di quella al cinquanta, che taglia quattro.
+
+La ripartenza ha
 meno token in ogni colonna e costa meno a qualunque prezzo, con l'ipotesi a suo
 favore del registro scritto dentro l'uscita dell'ultimo giro. La frequenza del
 taglio, che senza cache fissava il costo, con la cache pesa molto meno, e la
@@ -387,13 +414,15 @@ contesti lunghi più che con la spesa.
 ## Ogni risparmio ha un contro-costo
 
 Ogni leva del conto sposta una parte del costo altrove, e il risparmio che si
-vede subito non è quello che resta. La compattazione accorcia il contesto, ma
-riscrive la cache, e i file che ha tolto, se servono ancora, si rileggono con
-una chiamata in più; gli agenti secondari tengono pulito il contesto
-dell'agente principale, ma ciascuno rilegge le istruzioni e i file comuni, e
-quello che uno ha già capito l'altro lo ricapisce; un modello economico costa
-meno a passo, ma un suo passo sbagliato può aggiungerne molti dopo. Il
-risparmio netto è il lordo meno il contro-costo, e i due si misurano sugli
+vede subito non è quello che resta. Ad esempio, la compattazione accorcia il
+contesto, ma riscrive la cache, e i file che ha tolto, se servono ancora, si
+rileggono con una chiamata in più; gli agenti secondari tengono pulito il
+contesto dell'agente principale, ma ciascuno rilegge le istruzioni e i file
+comuni, e quello che uno ha già capito l'altro lo ricapisce; un modello
+economico costa meno a passo, ma un suo passo sbagliato può aggiungerne molti
+dopo.
+
+Il risparmio netto è il lordo meno il contro-costo, e i due si misurano sugli
 stessi compiti, sulle traiettorie intere: misurato sul solo passo che la leva
 tocca, il lordo è sempre positivo.
 
@@ -401,13 +430,16 @@ Il costo per compito risolto $c(H)/s(H)$, la grandezza con cui si fa il
 bilancio, va contato con cura. Al numeratore va la spesa di tutti i tentativi,
 falliti compresi, e di ogni controllo; al denominatore i compiti il cui
 risultato consegnato è davvero giusto, uno per compito, giudicati dai test del
-banco di prova e non dal verificatore dell'harness, che sbaglia. Contare i
-tentativi riusciti renderebbe gratis quelli di troppo: con tentativi da 1 che
-riescono una volta su due, chi ne fa sempre dieci spende 10 a compito e ne
-risolve quasi tutti, circa 10 per compito risolto, ma conta cinque tentativi
-riusciti a compito e figura a 2, come chi ne fa uno solo. E chi lavora deve
-saper scegliere da sé quale tentativo consegnare: se sceglie con i test nascosti
-del banco di prova, usa un controllo che nessuno ha pagato. Il rapporto, poi,
+banco di prova e non dal verificatore dell'harness, che sbaglia.
+
+Contare i tentativi riusciti renderebbe gratis quelli di troppo. Ad esempio,
+con tentativi da 1 che riescono una volta su due, chi ne fa sempre dieci spende
+10 a compito e ne risolve quasi tutti, circa 10 per compito risolto, ma conta
+cinque tentativi riusciti a compito e figura a 2, come chi ne fa uno solo. E
+chi lavora deve saper scegliere da sé quale tentativo consegnare: se sceglie
+con i test nascosti del banco di prova, usa un controllo che nessuno ha pagato.
+
+Il rapporto, poi,
 non è definito se nessun compito riesce, e non dice quali compiti sono
 cambiati. Un programma confronta due harness sugli stessi cento compiti, con
 gli esiti appaiati.
@@ -450,19 +482,23 @@ A spende 66 in più per 6 successi netti, 11,00 l'uno
 
 B costa 1,50 per successo e A 2,20: sul rapporto vince B. Ma B risolve 76
 compiti e A 82, e se il servizio chiede l'ottanta per cento di successi B ne
-resta fuori, con il rapporto migliore. Gli esiti appaiati dicono di più: B
+resta fuori, con il rapporto migliore.
+
+Gli esiti appaiati dicono di più: B
 perde dodici compiti che A risolveva e ne guadagna sei, e dodici contro sei,
 sui diciotto compiti in cui i due differiscono, è uno squilibrio che il caso
 produce spesso, come dodici teste su diciotto lanci di moneta. Il test di
 McNemar della {doc}`sezione sugli ensemble </MachineLearning/alberi-ensemble>`,
 che guarda proprio quei compiti, dà $p = 0{,}24$ (uno squilibrio così, fra due
 harness equivalenti, uscirebbe circa una volta su quattro): con cento compiti
-non si sa nemmeno se B sia peggiore. Per saperlo servono più compiti, e per
-sapere dove bisogna aprire i dodici: se sono quelli in cui il modello economico
-ha sbagliato un passo da cui dipendeva il resto, il risparmio di B viene in
-parte dall'aver rinunciato a quei compiti. I successi netti danno la domanda
-giusta: A spende 66 in più per sei successi netti, 11 ciascuno, e conviene se
-un compito riuscito vale più di 11.
+non si sa nemmeno se B sia peggiore.
+
+Per saperlo servono più compiti, e per sapere dove bisogna aprire i dodici: se
+sono quelli in cui il modello economico ha sbagliato un passo da cui dipendeva
+il resto, il risparmio di B viene in parte dall'aver rinunciato a quei compiti.
+In definitiva, i successi netti danno la domanda giusta: A spende 66 in più per
+sei successi netti, 11 ciascuno, e conviene se un compito riuscito vale più
+di 11.
 
 ## Chi chiamare, e quando smettere
 
@@ -474,7 +510,9 @@ lavoratore in più) alzi abbastanza la probabilità che il compito intero riesca
 da valere il suo prezzo. Un passo difficile su cui anche il modello forte
 sbaglia non merita il modello forte; un passo che sembra facile, ma su cui il
 modello economico sbaglia abbastanza spesso e da cui dipende tutto il resto,
-sì. Si può scegliere prima di chiamare, dai tratti del passo (un *router*);
+sì.
+
+Si può scegliere prima di chiamare, dai tratti del passo (un *router*);
 provare il modello economico e passare al forte quando un controllo lo respinge
 (una *cascata*); o guardare anche la traiettoria fin lì e il budget che resta.
 Nel conto vanno il selettore, i tentativi respinti e il lavoro di recupero.
@@ -482,15 +520,17 @@ Nel conto vanno il selettore, i tentativi respinti e il lavoro di recupero.
 Valutare una regola così è difficile. La tentazione è prendere una traiettoria
 registrata con il modello forte, sostituire la sua risposta a un passo con
 quella del modello economico, e giudicare; ma in una traiettoria vera un'azione
-diversa produce osservazioni diverse, e da lì tutto il resto. Ashritha
-Gonuguntla ha biforcato esecuzioni vere di un agente su SWE-bench Verified,
-facendole proseguire una volta con l'altro modello e una volta con lo stesso:
-con il cambio l'agente rifaceva diversamente la gran parte delle mosse
-successive, e un valutatore che ricostruiva l'esito dalle tracce registrate ha
-sbagliato proprio gli esiti che contavano {cite}`gonuguntla2026replay`. È uno
-studio piccolo, e l'autrice ne rivendica soltanto la conclusione, che il
-rigioco sbaglia; il meccanismo però non dipende dalla misura, e chiede di
-giudicare una regola facendola girare nell'ambiente fino alla fine.
+diversa produce osservazioni diverse, e da lì tutto il resto.
+
+Ashritha Gonuguntla ha biforcato esecuzioni vere di un agente su
+SWE-bench Verified, facendole proseguire una volta con l'altro modello e una
+volta con lo stesso: con il cambio l'agente rifaceva diversamente la gran parte
+delle mosse successive, e un valutatore che ricostruiva l'esito dalle tracce
+registrate ha sbagliato proprio gli esiti che contavano
+{cite}`gonuguntla2026replay`. È uno studio piccolo, e l'autrice ne rivendica
+soltanto la conclusione, che il rigioco sbaglia; il meccanismo però non dipende
+dalla misura, e chiede di giudicare una regola facendola girare nell'ambiente
+fino alla fine.
 
 Accanto alla scelta del modello c'è il limite. Un tetto per compito si mette su
 più grandezze insieme (spesa, chiamate al modello, tempo degli strumenti,
@@ -508,14 +548,17 @@ sullo stato che ha, o agire e leggere che cosa risponde l'ambiente. Alejandro
 Cuadron e colleghi hanno chiamato *overthinking* la preferenza per il primo, e
 ne hanno descritto tre forme su agenti di programmazione: pianificare senza mai
 provare, lanciare azioni in fila senza guardarne l'esito, abbandonare il
-compito. Un modello giudice, che non vedeva l'esito, ha dato a ogni traiettoria
+compito.
+
+Un modello giudice, che non vedeva l'esito, ha dato a ogni traiettoria
 un punteggio di overthinking, e su SWE-bench Verified punteggi più alti
-andavano con meno problemi risolti {cite}`cuadron2025overthinking`. Il difetto
-non sta nella lunghezza del ragionamento: lo stesso modello, con più
-ragionamento concesso, aveva punteggi più bassi e risolveva di più, il 29,1% dei
-problemi contro il 21,0%; con poco ragionamento, generare due soluzioni e
-tenere quella con il punteggio più basso ha dato il 27,3%, con una spesa
-riportata di 800 dollari contro 1.400.
+andavano con meno problemi risolti {cite}`cuadron2025overthinking`.
+
+Si noti che il difetto non sta nella lunghezza del ragionamento: lo stesso
+modello, con più ragionamento concesso, aveva punteggi più bassi e risolveva di
+più, il 29,1% dei problemi contro il 21,0%; con poco ragionamento, generare due
+soluzioni e tenere quella con il punteggio più basso ha dato il 27,3%, con una
+spesa riportata di 800 dollari contro 1.400.
 
 `````{tab} Elementare
 
@@ -524,15 +567,16 @@ l'apprendista, un artigiano alle prime armi che costa poco, o il maestro, che
 costa dieci monete in più a lavorazione; sono il modello economico e quello
 forte. Più che alla difficoltà della lavorazione, il capobottega guarda a quanto
 il maestro cambia la probabilità che il mobile venga bene, e a quanto vale il
-mobile. Un incastro regge una sedia da cinquanta monete: su dieci sedie
-l'apprendista ne fa venire bene sei, il maestro nove, cioè tre sedie e
+mobile. Un incastro regge una sedia da cinquanta monete: su dieci
+sedie l'apprendista ne fa venire bene sei, il maestro nove, cioè tre sedie e
 centocinquanta monete in più contro cento monete di maestro, e conviene. Su un
 taglio dritto l'apprendista ne fa bene novantacinque su cento e il maestro
 novantotto: centocinquanta monete contro mille, e non conviene. Su un intarsio
-che nemmeno il maestro sa fare, chiamarlo non sposta niente. E nel conto entra
-quello che viene dopo: un incastro storto fa rifare le lavorazioni che ci
-poggiano sopra, e un maestro chiamato a metà lavoro rilegge da capo tutti i
-fogli, perché il taccuino era dell'apprendista.
+che nemmeno il maestro sa fare, chiamarlo non sposta niente.
+
+Nel conto entra anche quello che viene dopo: un incastro storto fa rifare le
+lavorazioni che ci poggiano sopra, e un maestro chiamato a metà lavoro rilegge
+da capo tutti i fogli, perché il taccuino era dell'apprendista.
 
 Si può anche far provare prima l'apprendista, mettere il suo incastro sulla dima
 e chiamare il maestro solo se non passa. L'apprendista si paga sempre, il
@@ -558,20 +602,22 @@ nuovo passa la dima, e torna sempre la stessa crepa. Il capobottega la ferma, e
 chi ci lavorava scrive sul registro dov'è arrivato e la consegna com'è. La ferma
 anche quando ha speso quanto previsto per un mobile, un limite che si fissa sui
 fogli di viaggio dei mobili riusciti: se quasi tutti sono costati meno di
-trenta monete, e solo cinque su cento di più, lo si mette a sessanta. Si
-fermano così soprattutto i lavori che girano a vuoto, ma si perde anche qualche
-mobile che sarebbe riuscito poco dopo; fermarsi sul segno che il lavoro non
-avanza, come per la cassettiera, ne perde meno, se il segno è affidabile.
+trenta monete, e solo cinque su cento di più, lo si mette a sessanta.
+
+Si fermano così soprattutto i lavori che girano a vuoto, ma si perde anche
+qualche mobile che sarebbe riuscito poco dopo; fermarsi sul segno che il lavoro
+non avanza, come per la cassettiera, ne perde meno, se il segno è affidabile.
 
 E c'è l'artigiano che decide senza guardare il legno: uno progetta il taglio
 invece di provarlo, uno fa tre tagli di fila senza guardarne nessuno, uno lascia
 perdere a metà. Tutti e tre lavorano sull'idea che si sono fatti del legno
-invece che sul legno, e i loro mobili vengono peggio. Il guaio non è pensare a
-lungo: l'artigiano che ha più tempo per pensare prima di ogni taglio ci cade
-meno, e lavora meglio. Due prove con poco tempo, tenendo quella in cui ha
-guardato di più il legno, sono venute bene quasi quanto una con tutto il tempo,
-a minor prezzo; ma a scegliere fra le due c'era un'altra persona, e anche lei
-va pagata.
+invece che sul legno, e i loro mobili vengono peggio.
+
+Il guaio non è pensare a lungo: l'artigiano che ha più tempo per pensare prima
+di ogni taglio ci cade meno, e lavora meglio. Due prove con poco tempo, tenendo
+quella in cui ha guardato di più il legno, sono venute bene quasi quanto una
+con tutto il tempo, a minor prezzo; ma a scegliere fra le due c'era un'altra
+persona, e anche lei va pagata.
 
 `````
 
@@ -591,13 +637,14 @@ probabilità di successo e del costo atteso della traiettoria intera dallo stato
 del passo $t$. $\Delta c$ comprende, oltre alla differenza di prezzo fra due
 chiamate, la rilettura fresca del contesto che ogni cambio di modello impone,
 perché la cache è per modello, e con il segno opposto i passi in più che
-un'azione debole provoca dopo: per questo può essere negativa. La difficoltà
-del passo è un criterio più debole di $\Delta s$: dove la probabilità di
-successo è vicina a zero o a uno con qualunque modello, l'intervento non sposta
-niente. Nel confronto appaiato del programma $\Delta c/\Delta s = 11$ per
-compito riuscito in più, e A conviene su B se $v > 11$; ma sono stime su cento
-compiti, e il rapporto eredita l'incertezza di $\Delta s$, che il test di
-McNemar non distingue da zero.
+un'azione debole provoca dopo: per questo può essere negativa.
+
+La difficoltà del passo è un criterio più debole di $\Delta s$: dove la
+probabilità di successo è vicina a zero o a uno con qualunque modello,
+l'intervento non sposta niente. Nel confronto appaiato del programma $\Delta
+c/\Delta s = 11$ per compito riuscito in più, e A conviene su B se $v > 11$; ma
+sono stime su cento compiti, e il rapporto eredita l'incertezza di $\Delta s$,
+che il test di McNemar non distingue da zero.
 
 La cascata a due modelli con un verificatore $V$ paga sempre la chiamata
 economica, e quella forte solo dopo un rifiuto; il suo costo atteso, nella
@@ -616,12 +663,15 @@ politica $\pi_0$ è una valutazione off-policy, nel senso dei {doc}`metodi Monte
 Carlo </ReinforcementLearning/monte-carlo>`, e la sostituzione in un trascritto
 fisso non è nemmeno quella, perché tiene le osservazioni $o_{t+1}, o_{t+2},
 \dots$ generate dopo l'azione di $\pi_0$ e le attribuisce a un'azione diversa.
+
 L'importance sampling pesa ogni traiettoria con
 $\prod_i \pi(a_i \mid \text{storia}_i) / \pi_0(a_i \mid \text{storia}_i)$, e
 chiede che $\pi_0$ dia probabilità positiva a ogni azione che $\pi$ può
 scegliere, cosa che una decodifica a temperatura zero non fa; e anche dove vale,
 con azioni di centinaia di token il prodotto esplode o si annulla, la fragilità
-che quella sezione mostra. Resta la valutazione on-policy. Gonuguntla biforca
+che quella sezione mostra. Resta quindi la valutazione on-policy.
+
+Gonuguntla biforca
 le esecuzioni al 30% e al 70% della traiettoria, circa novecento in tutto, con
 due modelli aperti della stessa famiglia di taglia e quantizzazione diverse: il
 cambio riscrive fra il 61 e il 94% delle azioni successive, i cinque esiti
@@ -639,7 +689,9 @@ successo perde $P(\text{riuscita},\ c > c_{\max})$. Il tetto conviene se il
 primo termine supera $v$ volte il secondo. Si può fissare dalle tracce, per
 esempio al doppio del quantile 0,95 del costo dei compiti riusciti: una regola
 senza fonte, che vale come esempio e va ricontrollata quando cambiano il
-modello o la batteria. I criteri d'arresto sul progresso possono tagliare la
+modello o la batteria.
+
+I criteri d'arresto sul progresso possono tagliare la
 stessa coda perdendo meno riuscite, se distinguono davvero la traiettoria che
 gira a vuoto da quella lenta; quanto ci riescano si misura sulle tracce, come
 il tetto.
@@ -689,10 +741,13 @@ ancora pensando, e la lancia subito; se l'azione che il modello principale
 chiede coincide con una delle previste, il suo risultato è già pronto o in
 arrivo, altrimenti la previsione si butta, e il risultato finale resta quello
 che il modello principale avrebbe ottenuto da solo, se nel frattempo l'esito
-dello strumento non è cambiato {cite}`ye2026speculative`. La condizione è che
+dello strumento non è cambiato {cite}`ye2026speculative`.
+
+La condizione è che
 l'azione prevista non cambi niente, o si possa disfare: una lettura, una
 ricerca non lasciano tracce; una scrittura, un ordine, un messaggio mandato a
 qualcuno chiedono una copia dello stato da cui ripartire, o non si speculano.
+
 Un programma mette in fila le tre forme sullo stesso lavoro, tre letture
 indipendenti e una risposta, con tempi a numeri tondi.
 
@@ -736,7 +791,9 @@ previsione giusta con probabilità 1: passo medio 4 s, invece di 7
 
 In serie il lavoro dura 25 secondi e chiede quattro chiamate al modello;
 raggruppando le letture ne dura 11 e ne chiede due, la strada giusta quando le
-letture non dipendono l'una dall'altra. La speculazione lascia il lavoro in
+letture non dipendono l'una dall'altra.
+
+La speculazione, invece, lascia il lavoro in
 serie e ne recupera una parte: 19 secondi, con le stesse quattro chiamate, tre
 previsioni in più e una lettura buttata. Con previsioni giuste una volta su
 quattro il passo medio scende da 7 a 6,25 secondi; con previsioni sempre giuste
@@ -765,7 +822,9 @@ foglio del magazziniere; ci ripensa, scrive quello per la colla, aspetta; ci
 ripensa, scrive quello per la cerniera. Se invece scrive i tre biglietti in una
 volta, il capobottega li porta allo sportello insieme, dietro lo sportello le
 tre ricerche si fanno nello stesso momento, e l'artigiano aspetta quanto la più
-lunga. La giornata dura quanto la fila più lunga di cose che si aspettano l'una
+lunga.
+
+La giornata dura quanto la fila più lunga di cose che si aspettano l'una
 con l'altra: la vernice aspetta che la colla asciughi, e nessuna mano in più la
 fa asciugare prima; le tre gambe, invece, si carteggiano insieme.
 
@@ -784,12 +843,13 @@ già pronto, o sta arrivando; se ne scrive un altro, il foglio dell'apprendista
 si butta e il capobottega porta il biglietto giusto, e si è perso soltanto quel
 viaggio. Il mobile è lo stesso che il maestro avrebbe fatto da solo, perché sul
 tavolo arriva soltanto la risposta al biglietto che lui ha scritto, purché in
-magazzino, nel frattempo, non sia cambiato niente. Il trucco si
-fa con le richieste che in magazzino non cambiano niente, come farsi dire
-quante viti ci sono o farsi leggere un disegno. Non si fa tagliare in anticipo
-il legno buono sperando che il maestro voglia proprio quel taglio; se proprio si
-vuole anticiparlo, lo si prova su un pezzo di scarto preparato apposta, che si
-prepara anche quando la previsione è giusta.
+magazzino, nel frattempo, non sia cambiato niente.
+
+Il trucco si fa con le richieste che in magazzino non cambiano niente, come
+farsi dire quante viti ci sono o farsi leggere un disegno. Non si fa tagliare
+in anticipo il legno buono sperando che il maestro voglia proprio quel taglio;
+se proprio si vuole anticiparlo, lo si prova su un pezzo di scarto preparato
+apposta, che si prepara anche quando la previsione è giusta.
 
 Quanto si risparmia ha un tetto. Se il maestro pensa quattro minuti e la
 risposta del magazziniere ne chiede tre, con il biglietto indovinato il passo
@@ -824,10 +884,14 @@ $$
 il massimo preso su tutti i cammini del grafo. Nessuna esecuzione che aspetti i
 risultati di cui ha bisogno dura meno di $\ell_{\text{crit}}$; per scendere
 sotto bisogna indovinarli prima che arrivino, ed è la speculazione. Il rapporto
-$\sum_a \ell_a / \ell_{\text{crit}}$ è il parallelismo disponibile. Raggruppare
+$\sum_a \ell_a / \ell_{\text{crit}}$ è il parallelismo disponibile.
+
+Raggruppare
 $n$ chiamate di strumento indipendenti in un passo porta da $n + 1$ a $2$ le
 chiamate al modello che le circondano e toglie le riletture del contesto di
-quelle in mezzo, come nella misura di LLMCompiler. Affidare rami indipendenti a
+quelle in mezzo, come nella misura di LLMCompiler.
+
+Affidare rami indipendenti a
 più sottoagenti accorcia il cammino critico e alza il costo: ciascuno rilegge il
 proprio prefisso, lanciati insieme possono non trovare in cache nemmeno la
 parte comune, che il primo sta ancora calcolando, e la fusione dei risultati è
@@ -854,7 +918,9 @@ strumento o lo stesso limite di richieste. La frazione risparmiata è al più
 $q \min(\ell_{\text{s}}, \ell_{\text{m}}) / (\ell_{\text{m}} +
 \ell_{\text{s}}) \le q/2$, con l'uguaglianza per $\ell_{\text{p}} = 0$ e
 $\ell_{\text{s}} = \ell_{\text{m}}$: speculare sulla sola azione successiva può
-al massimo dimezzare un passo. Ye e colleghi ottengono lo stesso tetto in un
+al massimo dimezzare un passo.
+
+Ye e colleghi ottengono lo stesso tetto in un
 modello diverso, una catena di chiamate con latenze esponenziali e una
 previsione di un passo, e mostrano che prevedere più passi in avanti lo alza.
 Su τ-bench speculano invece sull'attesa del cliente simulato che scrive: il
@@ -874,13 +940,17 @@ principale, e per una scrittura la copia dello stato da cui ripartire),
 $c_{\text{s}}$ quello dell'esecuzione buttata e $c_{\text{r}}$ quello di
 disfarla: nullo per un'azione in sola lettura, il ritorno alla copia per una
 scrittura, senza un valore finito per un'azione che esce dal sistema e non si
-richiama, che quindi non si specula. L'idempotenza non basta: rende innocua una
-seconda esecuzione della stessa azione, non la prima esecuzione di un'azione
-sbagliata. E il risultato resta quello del modello principale solo se l'azione
-speculata si conferma quando coincide con la sua (un confronto esatto, o un
-controllo di equivalenza), se l'esito dello strumento non è cambiato fra il
-lancio anticipato e la richiesta vera, e se la lettura non ha effetti propri,
-come una quota consumata o un messaggio segnato come letto. Tempo e costo
+richiama, che quindi non si specula.
+
+L'idempotenza non basta: rende innocua una seconda esecuzione della stessa
+azione, non la prima esecuzione di un'azione sbagliata. Inoltre, il risultato
+resta quello del modello principale solo se l'azione speculata si conferma
+quando coincide con la sua (un confronto esatto, o un controllo di
+equivalenza), se l'esito dello strumento non è cambiato fra il lancio
+anticipato e la richiesta vera, e se la lettura non ha effetti propri, come una
+quota consumata o un messaggio segnato come letto.
+
+Tempo e costo
 restano due grandezze: se $v_\ell$ è il valore di un'unità di tempo d'attesa,
 la speculazione conviene quando $v_\ell\, q \min(\ell_{\text{s}},
 \ell_{\text{m}} - \ell_{\text{p}}) > \Delta c$, e sotto un vincolo di latenza,

@@ -17,32 +17,35 @@ L'idea delle GAN nasce in un bar di Montréal, «Les 3 Brasseurs», una sera del
 {cite}`giles2018ganfather`. Dottorando nel laboratorio di Yoshua Bengio, sta
 festeggiando un collega che ha appena discusso la tesi, e alcuni amici gli
 chiedono aiuto: vogliono un programma che crei fotografie da sé, e il loro
-metodo è un'analisi statistica degli elementi che compongono una fotografia
-(quanto spesso due pixel vicini hanno lo stesso colore, quali sfumature si
-accompagnano a quali), da cui costruire un'immagine nuova che li rispetti
-tutti. Sarebbe una mole di calcoli senza fine, e Goodfellow obietta che così
-non funzionerà; ma intanto gli viene un'idea diversa: e se invece di una rete
-sola se ne mettessero *due*, una a fabbricare immagini e una a smascherarle, e
-le si facesse combattere? Tornato a casa scrive il codice fino a notte fonda, e
-funziona al primo colpo. Ne esce l'articolo *Generative Adversarial Nets*
-{cite}`goodfellow2014generative`:
-*generative adversarial networks*, alla lettera reti generative avversarie,
-cioè reti che fabbricano qualcosa e che imparano a farlo sfidandosi.
+metodo è un'analisi statistica degli elementi che compongono una fotografia (ad
+esempio quanto spesso due pixel vicini hanno lo stesso colore, o quali
+sfumature si accompagnano a quali), da cui costruire un'immagine nuova che li
+rispetti tutti. Sarebbe una mole di calcoli senza fine, e Goodfellow obietta
+che così non funzionerà; ma intanto gli viene un'idea diversa: e se invece di
+una rete sola se ne mettessero *due*, una a fabbricare immagini e una a
+smascherarle, e le si facesse combattere?
+
+Tornato a casa scrive il codice fino a notte fonda, e funziona al primo colpo.
+Ne esce l'articolo *Generative Adversarial Nets*
+{cite}`goodfellow2014generative`, che introduce le **generative adversarial
+networks**, alla lettera reti generative avversarie, cioè reti che fabbricano
+qualcosa e che imparano a farlo sfidandosi.
 
 ## Generare, non classificare
 
-Abbiamo già incontrato reti che *producono* qualcosa: un modello linguistico
-scrive la parola dopo, un sintetizzatore legge un testo ad alta voce. Tutte e
-due, mentre imparavano, avevano accanto la risposta giusta: la parola che
-veniva davvero dopo, l'onda che quella frase aveva davvero. Nel sintetizzatore
-vocale, e prima ancora nei {doc}`codec neurali
+Abbiamo già incontrato reti che *producono* qualcosa, ad esempio un modello
+linguistico che scrive la parola dopo o un sintetizzatore che legge un testo ad
+alta voce. Tutte e due, mentre imparavano, avevano accanto la risposta giusta:
+la parola che veniva davvero dopo, l'onda che quella frase aveva davvero. Nel
+sintetizzatore vocale, e prima ancora nei {doc}`codec neurali
 </Audio/codec-neurali>`, c'era già una seconda rete addestrata a riconoscere i
-falsi, ma lavorava accanto al confronto con l'onda vera, non al suo posto. Chi
-deve disegnare un gatto mai esistito, invece, una risposta giusta non ce l'ha e
-non può averla: non c'è nessun originale da mettere accanto al risultato per
-vedere, punto per punto, di quanto ci si è allontanati. La domanda delle GAN è
-questa: come si insegna a una rete a fabbricare dati nuovi e plausibili quando
-non c'è niente con cui confrontarli.
+falsi, ma lavorava accanto al confronto con l'onda vera, non al suo posto.
+
+Chi deve disegnare un gatto mai esistito, invece, una risposta giusta non ce
+l'ha e non può averla, perché non c'è nessun originale da mettere accanto al
+risultato per vedere, punto per punto, di quanto ci si è allontanati. La
+domanda delle GAN è questa: come si insegna a una rete a fabbricare dati nuovi
+e plausibili quando non c'è niente con cui confrontarli.
 
 Una risposta l'ha appena data il {doc}`capitolo sui modelli latenti
 </ModelliLatenti/overview>`: si scrive la verosimiglianza
@@ -66,11 +69,12 @@ grosso ogni tanto. Ad addestramento finito la rete non cambia più, e quei
 numeri sono l'unica cosa che distingue una richiesta dall'altra: numeri diversi
 in ingresso, gatti diversi in uscita.
 
-Anche dopo, i numeri vanno tirati a sorte nello stesso modo. In addestramento
-alla rete arrivano solo manciate sorteggiate così, e lei impara a cavarsela
-dove quelle manciate cadono. Una manciata scelta a mano (numeri tutti grandi,
-o la sequenza 1, 2, 3…) cade quasi sempre in un territorio dove la rete non è mai
-stata, e l'immagine che ne esce non ha nessuna ragione di somigliare a un gatto.
+Anche dopo, i numeri vanno tirati a sorte nello stesso modo. Infatti, in
+addestramento alla rete arrivano solo manciate sorteggiate così, e lei impara a
+cavarsela dove quelle manciate cadono. Una manciata scelta a mano (numeri tutti
+grandi, o la sequenza 1, 2, 3…) cade quindi quasi sempre in un territorio dove
+la rete non è mai stata, e l'immagine che ne esce non ha nessuna ragione di
+somigliare a un gatto.
 
 `````
 
@@ -88,20 +92,21 @@ questi campioni provengono si indica con $p_G$. In generazione $\mathbf{z}$ si
 estrae dallo stesso $p_z$ dell'addestramento: $G$ è stato addestrato soltanto
 dove $p_z$ ha massa, e quando $p_z$ è la normale standard in $L$ dimensioni
 quella massa sta quasi tutta nel guscio $\lVert\mathbf{z}\rVert \approx
-\sqrt{L}$. Un $\mathbf{z}$ scelto a mano con norma molto diversa (le componenti
-$1, 2, \dots, L$, per esempio) cade dove l'uscita non è controllata.
+\sqrt{L}$. Ne segue che un $\mathbf{z}$ scelto a mano con norma molto diversa
+(le componenti $1, 2, \dots, L$, per esempio) cade dove l'uscita non è
+controllata.
 
 `````
 
 ## Due reti in competizione
 
-Le reti sono due e si addestrano l'una contro l'altra: il generatore fabbrica
-dati, il discriminatore li giudica. Il duello si è già visto al lavoro due
-volte: nei {doc}`codec neurali </Audio/codec-neurali>`, dove un discriminatore
-costringe il decoder a produrre audio che suoni vero, e nel vocoder HiFi-GAN
-della {doc}`sintesi vocale </SpeechRecognition/sintesi-vocale>`, dove i
-discriminatori sono parecchi e ascoltano l'onda ciascuno a modo suo. Smontarlo
-serve a vedere a quali condizioni un duello del genere sta in piedi.
+Le reti sono due e si addestrano l'una contro l'altra. Il generatore fabbrica
+dati, il discriminatore li giudica. Il duello è già comparso due volte: nei
+{doc}`codec neurali </Audio/codec-neurali>`, dove un discriminatore costringe
+il decoder a produrre audio che suoni vero, e nel vocoder HiFi-GAN della
+{doc}`sintesi vocale </SpeechRecognition/sintesi-vocale>`, dove i
+discriminatori sono parecchi e ascoltano l'onda ciascuno a modo suo.
+Analizzarlo serve a vedere a quali condizioni un duello del genere regge.
 
 `````{tab} Elementare
 
@@ -109,20 +114,22 @@ Un **falsario** dipinge quadri contraffatti; un **esperto d'arte** deve dire
 quali sono autentici e quali falsi. All'inizio il falsario è maldestro e
 l'esperto lo smaschera senza sforzo. Il falsario però, ogni volta che viene
 scoperto, impara qualcosa e migliora; l'esperto, di fronte a falsi sempre più
-raffinati, affina il proprio occhio. È una corsa agli armamenti: i due si
+raffinati, affina il proprio occhio. È una corsa agli armamenti, in cui i due si
 perfezionano a vicenda. Se la corsa arriva in fondo, i falsi sono così buoni
 che nemmeno l'esperto sa più distinguerli. Il **generatore** è il falsario, il
 **discriminatore** è l'esperto.
 
-Resta una domanda, il cuore del
-capitolo: il falsario impara *che cosa*? Se l'esperto si limitasse a dire
+Resta una domanda decisiva: il
+falsario impara *che cosa*? Se l'esperto si limitasse a dire
 "falso", il falsario saprebbe di aver sbagliato ma non saprebbe dove, come lo
 studente a cui il professore scrive soltanto "no" in fondo al compito, invece di
-sottolineargli le righe da rifare. L'esperto di questa storia
-è un professore che sottolinea: non dice "falso", dice "falso, e soprattutto per
-via di *questo* qui", indicando col dito, punto per punto del quadro, da che
-parte tirare. Come faccia, e perché per riuscirci debba essere una rete e non
-una persona, lo racconta la {doc}`sezione sull'addestramento avversario
+sottolineargli le righe da rifare.
+
+L'esperto di questa storia è un professore che sottolinea: non dice "falso",
+dice "falso, e soprattutto per via di *questo* qui", indicando col dito, punto
+per punto del quadro, da che parte tirare. Come faccia, e perché per riuscirci
+debba essere una rete e non una persona, lo racconta la {doc}`sezione
+sull'addestramento avversario
 </GAN/come-funziona>`.
 
 `````
@@ -130,20 +137,21 @@ una persona, lo racconta la {doc}`sezione sull'addestramento avversario
 `````{tab} Superiore
 
 Le due reti hanno ruoli antagonisti. Il **generatore** $G$ mappa un vettore di
-rumore $\mathbf{z}$ in un campione sintetico $G(\mathbf{z})$. Il **discriminatore** $D$ riceve
-un'immagine e restituisce $D(\cdot) \in [0,1]$, la probabilità stimata che sia
-reale. Si addestrano *insieme* ma con obiettivi opposti: $D$ vuole assegnare
-$1$ ai dati veri e $0$ ai falsi; $G$ vuole che $D$ assegni $1$ ai propri falsi.
-Il segnale che smaschera il falso, propagato all'indietro attraverso $D$, è lo
-stesso che insegna a $G$ come migliorarlo: è questa condivisione a saldare
-l'addestramento delle due reti in un unico ciclo di feedback.
+rumore $\mathbf{z}$ in un campione sintetico $G(\mathbf{z})$. Il
+**discriminatore** $D$ riceve un'immagine e restituisce $D(\cdot) \in [0,1]$,
+la probabilità stimata che sia reale. Si addestrano *insieme* ma con obiettivi
+opposti: $D$ vuole assegnare $1$ ai dati veri e $0$ ai falsi; $G$ vuole che $D$
+assegni $1$ ai propri falsi. Il segnale che smaschera il falso, propagato
+all'indietro attraverso $D$, è lo stesso che insegna a $G$ come migliorarlo, ed
+è questa condivisione a saldare l'addestramento delle due reti in un unico
+ciclo di feedback.
 
-Quel segnale è il perno dell'intero capitolo, e non è il verdetto. Ciò che
-risale da $D$ verso $G$ è il gradiente della loss del generatore rispetto al
-dato generato $\tilde{\mathbf{x}} = G(\mathbf{z})$, cioè $\partial
-\mathcal{L}_G / \partial \tilde{\mathbf{x}}$: non un numero ma un vettore, con
-una componente per ogni numero del dato, che dice in che verso spostare
-ciascuna di quelle componenti perché il verdetto cambi. È una direzione, non un
+Quel segnale è il perno del meccanismo, e non è il verdetto. Ciò che risale da
+$D$ verso $G$ è il gradiente della loss del generatore rispetto al dato
+generato $\tilde{\mathbf{x}} = G(\mathbf{z})$, cioè $\partial \mathcal{L}_G /
+\partial \tilde{\mathbf{x}}$: non un numero ma un vettore, con una componente
+per ogni numero del dato, che dice in che verso spostare ciascuna di quelle
+componenti perché il verdetto cambi. In altri termini, è una direzione e non un
 voto, e la sua esistenza richiede che $D$ sia derivabile rispetto al proprio
 ingresso: la {doc}`sezione sull'addestramento avversario </GAN/come-funziona>`
 riprende il punto con la regola della catena.
@@ -181,12 +189,12 @@ una sola. L'immagine però va fermata qui: in un tiro alla fune, quando nessuno
 dei due si sposta più non sta succedendo niente, mentre fra falsario ed esperto
 il pareggio è il traguardo.
 
-Il pareggio arriva quando il falsario è diventato bravissimo. Se i suoi
-quadri sono indistinguibili da quelli veri, l'esperto non ha più niente su cui
-appoggiarsi: qualunque cosa gli passi davanti, può solo tirare a indovinare,
-come a testa o croce, e indovina una volta su due. Quel 50% è il massimo che
-chiunque possa ottenere quando non c'è più niente da vedere, non un esperto che
-si è arreso.
+Il pareggio arriva quando il falsario è diventato bravissimo. Se i suoi quadri
+sono indistinguibili da quelli veri, l'esperto non ha più niente su cui
+appoggiarsi, e qualunque cosa gli passi davanti può solo tirare a indovinare,
+come a testa o croce, e indovina una volta su due. Quel 50% è il
+massimo che chiunque possa ottenere quando non c'è più niente da vedere, e non
+il segno di un esperto che si è arreso.
 
 Perché dovrebbe finire *così*, e non con l'esperto che vince sempre e il
 falsario che resta scarso per sempre? Perché l'esperto, quando boccia un
@@ -220,23 +228,23 @@ $$
 
 Qui $\mathbf{x}\sim p_{\text{dati}}$ è un campione reale, $\mathbf{z}\sim p_z$
 è il rumore in ingresso a $G$, $D(\mathbf{x})$ è la probabilità stimata che
-l'input sia autentico. Il primo termine è l'unico in cui compaiono i dati: è
-attraverso $D$ che $p_{\text{dati}}$ entra nel gioco, e $G$ la vede soltanto di
-riflesso. Il discriminatore *massimizza* $V$ (assegna probabilità alta ai veri,
-bassa ai falsi $G(\mathbf{z})$); il generatore *minimizza* il secondo termine,
-cioè spinge $D(G(\mathbf{z}))$ verso $1$. All'ottimo teorico si ha
-$p_G=p_{\text{dati}}$ e $D(\mathbf{x})=\tfrac{1}{2}$ sul supporto dei dati:
-l'esperto non sa più decidere. In pratica l'equilibrio è delicato: instabilità
-dell'addestramento e *mode collapse* (il generatore che produce sempre la
-stessa immagine vincente) sono i due grattacapi ricorrenti, e la sezione
-sull'addestramento avversario li riprende uno per uno.
+l'input sia autentico. Il primo termine è l'unico in cui compaiono i dati:
+è attraverso $D$ che $p_{\text{dati}}$ entra nel gioco, e $G$ la vede
+soltanto di riflesso. Il discriminatore *massimizza* $V$ (assegna probabilità
+alta ai veri, bassa ai falsi $G(\mathbf{z})$); il generatore *minimizza* il
+secondo termine, cioè spinge $D(G(\mathbf{z}))$ verso $1$. All'ottimo teorico
+si ha $p_G=p_{\text{dati}}$ e $D(\mathbf{x})=\tfrac{1}{2}$ sul supporto dei
+dati: il discriminatore non sa più decidere. In pratica l'equilibrio è
+delicato: instabilità dell'addestramento e **mode collapse** (il generatore che
+produce sempre la stessa immagine vincente) sono le due difficoltà ricorrenti,
+e la sezione sull'addestramento avversario li riprende uno per uno.
 
 `````
 
 ## Perché ce ne importa
 
 Le GAN hanno spostato il confine di ciò che una macchina può *fabbricare*. Da
-questa idea nascono i volti fotorealistici di persone inesistenti: la famiglia
+questa idea nascono i volti fotorealistici di persone inesistenti. La famiglia
 StyleGAN di NVIDIA {cite}`karras2019style` alimenta siti come *This Person Does
 Not Exist*, dove ogni ricarica mostra un volto sintetico che a un primo sguardo
 non si distingue da una fotografia. Da qui arrivano anche i **deepfake** (volti
@@ -258,14 +266,16 @@ avversario </GAN/come-funziona>` dice che cosa entra e che cosa esce da
 ciascuna delle due reti, che cosa l'una restituisce all'altra, e
 come dalla funzione di valore ciascuna ricavi la propria loss, cioè la misura
 del proprio errore. Poi il ciclo di addestramento a turni, scritto riga per riga
-in PyTorch, con le sue insidie: il duello che non si stabilizza, e il *mode
-collapse*, il generatore che trova un solo campione capace di ingannare il
-discriminatore e si limita a rifare quello. Da lì due domande. Come si misura
-se una GAN sta funzionando, visto che la sua loss non lo dice: con l'Inception
-Score e soprattutto con il FID, che giudicano un insieme di immagini invece di
-una sola. Poi, come si stabilizza il duello: cambiando la distanza che il gioco
-minimizza (la Wasserstein GAN), vincolando il discriminatore (il gradient
-penalty, la normalizzazione spettrale), oppure le regole dell'addestramento.
+in PyTorch, con le sue insidie: il duello che non si stabilizza e il *mode
+collapse*, cioè il generatore che trova un solo campione capace di ingannare il
+discriminatore e si limita a rifare quello.
+
+Da lì nascono due domande. La prima è come si misura se una GAN sta funzionando,
+visto che la sua loss non lo dice: si usano l'Inception Score e soprattutto il
+FID, che giudicano un insieme di immagini invece di una sola. La seconda è come
+si stabilizza il duello: cambiando la distanza che il gioco minimizza (la
+Wasserstein GAN), vincolando il discriminatore (il gradient penalty, la
+normalizzazione spettrale), oppure cambiando le regole dell'addestramento.
 
 La {doc}`sezione sulle evoluzioni </GAN/applicazioni-evoluzioni>` racconta le
 varianti che hanno fatto la storia, dalla DCGAN alle GAN condizionali fino a

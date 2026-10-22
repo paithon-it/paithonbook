@@ -6,24 +6,24 @@ ventinove restano sullo scaffale. Possedere una conoscenza e consultarla sono
 due costi diversi, e nessuno si sognerebbe di confonderli.
 
 Il Transformer della {doc}`sezione sull'architettura <architettura>` fa il
-contrario. Ogni token attraversa, a ogni strato, tutti i parametri
+contrario. Infatti ogni token attraversa, a ogni strato, tutti i parametri
 dell'attenzione e della rete feed-forward, dal primo strato all'ultimo, senza
 saltarne uno. Il calcolo in avanti per token vale circa due operazioni per
 parametro, più un termine dell'attenzione che cresce con la lunghezza del
-contesto {cite}`kaplan2020scaling`: raddoppiare i parametri raddoppia il costo
-di ogni token, in addestramento come in generazione.
+contesto {cite}`kaplan2020scaling`. Di conseguenza raddoppiare i parametri
+raddoppia il costo di ogni token, in addestramento come in generazione.
 
 Le leggi di scala della {doc}`sezione sui grandi modelli linguistici <llm>`
 dicono perché si vorrebbe crescere lo stesso: la loss di un modello di
 linguaggio scende come una legge di potenza nei parametri, nei dati e nel
 calcolo, finché nessuno dei tre fa da collo di bottiglia agli altri
 {cite}`kaplan2020scaling` {cite}`hoffmann2022training`. Il costo di ogni token,
-intanto, cresce con il modello senza sconti.
+però, cresce con il modello senza sconti.
 
 La domanda è se le due cose si possano separare: avere molti parametri con poco
 calcolo per token, aumentando la capacità senza far crescere nella stessa
-misura l'aritmetica. La risposta è la miscela di esperti (*mixture of
-experts*). È la ragione per cui di uno stesso modello si leggono due numeri di
+misura l'aritmetica. La risposta è la **miscela di esperti** (*mixture of
+experts*), ed è per questo che di uno stesso modello si leggono due numeri di
 parametri. Il costo però non sparisce: passa dal calcolo alla memoria e alla
 comunicazione.
 
@@ -39,7 +39,8 @@ nell'attenzione, contro due matrici quattro volte più grandi nella FFN,
 equivalenti a otto matrici della stessa taglia (otto contro quattro, cioè due
 terzi contro un terzo). Una linea di ricerca legge la FFN come la memoria del
 modello {cite}`geva2021transformer`, un'interpretazione sostenuta da
-esperimenti; ai fini del bilancio basta che sia il blocco più pesante.
+esperimenti; in ogni caso, ai fini del bilancio basta che sia il blocco più
+pesante.
 
 ```{figure} ../figures/mixture-of-experts.svg
 :name: fig-moe-layer
@@ -58,13 +59,13 @@ strato, o di uno ogni due) con $N$ copie indipendenti, gli *esperti*, e mettere
 davanti un piccolo **router** che per ogni token ne sceglie $k$: uno in Switch
 Transformer {cite}`fedus2022switch`, due in Mixtral {cite}`jiang2024mixtral`,
 otto su 256 in DeepSeek-V3 {cite}`liu2024deepseekv3`. L'attenzione resta
-com'era. Il modello possiede i parametri di tutti gli esperti; ogni token ne
-attraversa soltanto $k$.
+com'era. Il modello possiede i parametri di tutti gli esperti, ma ogni token
+ne attraversa soltanto $k$.
 
 Finché capacità e calcolo crescono insieme, l'unico modo di avere un modello più
 capace è pagarlo a ogni token. Lo strato di {numref}`fig-moe-layer` li separa,
-ma introduce un router, che può sbagliare, e la memoria per esperti che quasi
-sempre stanno fermi.
+ma in cambio introduce un router, che può sbagliare, e richiede memoria per
+esperti che quasi sempre stanno fermi.
 
 `````{tab} Elementare
 
@@ -116,7 +117,8 @@ diciassette; un pezzo, quando lo rilegge un redattore solo, ne costa tre.
 
 `````{tab} Superiore
 
-Calcoliamo i parametri di un modello di taglia realistica, con $d_{\text{model}} =
+Calcoliamo i parametri di un modello di taglia realistica, con
+$d_{\text{model}} =
 4096$, dimensione interna della feed-forward $d_{\text{ff}} =
 4\,d_{\text{model}} = 16384$ e $n_{\text{strati}} = 32$. Per ogni strato:
 
@@ -130,12 +132,12 @@ $$
 dove il primo termine corrisponde alle due matrici della rete feed-forward e il
 secondo alle quattro proiezioni dell'attenzione. In tutto $201{,}3$ M per
 strato, cioè $6{,}44$ miliardi di parametri sui 32 strati (embedding esclusi):
-un modello «da 7 miliardi», nel gergo corrente. La FFN è quella classica a due
-matrici; con una variante *gated* come SwiGLU le matrici diventano tre, e il
-bilancio dipende dal parametro che si fissa: a $d_{\text{ff}}$ invariato il
-primo termine aumenta della metà, mentre riducendo $d_{\text{ff}}$ a
-$\tfrac{8}{3}d_{\text{model}}$, come nella pratica corrente, resta identico. Il
-bilancio qui sviluppato usa la FFN a due matrici.
+un modello «da 7 miliardi», nel gergo corrente. Si noti che la FFN è quella
+classica a due matrici; con una variante *gated* come SwiGLU le matrici
+diventano tre, e il bilancio dipende dal parametro che si fissa: a
+$d_{\text{ff}}$ invariato il primo termine aumenta della metà, mentre riducendo
+$d_{\text{ff}}$ a $\tfrac{8}{3}d_{\text{model}}$, come nella pratica corrente,
+resta identico. Il bilancio qui sviluppato usa la FFN a due matrici.
 
 Ora sostituiamo ogni FFN con $N = 8$ esperti della stessa taglia. I parametri
 totali diventano
@@ -153,7 +155,7 @@ n_{\text{strati}}\,\bigl(k \cdot 2\,d_{\text{model}}\,d_{\text{ff}} + 4\,d_{\tex
 = 32 \times (134{,}2 + 67{,}1)\text{ M} = 6{,}44 \text{ miliardi},
 $$
 
-cioè quanto il modello denso di partenza. Quasi sei volte i
+cioè quanto il modello denso di partenza. In definitiva, quasi sei volte i
 parametri ($36{,}5 / 6{,}44 \approx 5{,}7$) a parità di aritmetica per token.
 Se la FFN fosse SwiGLU, a $d_{\text{ff}}$ invariato il rapporto salirebbe a
 $(8 \times 201{,}3 + 67{,}1)/(201{,}3 + 67{,}1) = 6{,}25$, mentre con
@@ -219,8 +221,8 @@ dicono quanta memoria serve per ospitarlo, i **parametri attivi** quanto calcolo
 costa ogni token. Mixtral 8x7B ne ha circa 47 e 13 miliardi
 {cite}`jiang2024mixtral`; un denso da 6,44 miliardi di parametri, con la FFN di
 ogni strato sostituita da otto esperti di cui uno attivo per token, ne avrebbe
-36,5 totali e 6,44 attivi. Citato isolatamente, uno dei due numeri fa credere a un
-modello molto più grande, o molto più piccolo, di quanto sia.
+36,5 totali e 6,44 attivi. Per questo, citato isolatamente, uno dei due numeri
+fa credere a un modello molto più grande, o molto più piccolo, di quanto sia.
 
 ## Come sceglie il router
 
@@ -309,10 +311,10 @@ $$
 $$
 
 dove $G(\mathbf{x})_i$ è il peso assegnato all'esperto $i$ (i pesi dei
-selezionati sommano a 1) ed $E_i(\mathbf{x})$ la sua risposta. Con i punteggi
+selezionati sommano a 1) ed $E_i(\mathbf{x})$ la sua risposta. Ad esempio,
+con i punteggi
 $\mathbf{W}_g \mathbf{x} = (2{,}0;\ 0{,}5;\ 1{,}5;\ -1{,}0)$ e $k = 2$
-sopravvivono gli
-indici 1 e 3, con
+sopravvivono gli indici 1 e 3, con
 
 $$
 G(\mathbf{x})_1 = \frac{e^{2{,}0}}{e^{2{,}0} + e^{1{,}5}} = 0{,}622,
@@ -336,8 +338,8 @@ $$
 
 Il peso è strettamente minore di $1$ e dipende dal punteggio, consentendo la
 retropropagazione del gradiente; inoltre, attraverso la normalizzazione, anche
-i punteggi degli esperti esclusi ricevono un gradiente non nullo. Le due
-scritture differiscono solo per il denominatore: $G(\mathbf{x})_i =
+i punteggi degli esperti esclusi ricevono un gradiente non nullo. Si noti che
+le due scritture differiscono solo per il denominatore: $G(\mathbf{x})_i =
 p_i(\mathbf{x}) / \sum_{j \in \text{top-}k} p_j(\mathbf{x})$, cioè la softmax
 dei $k$ punteggi sopravvissuti è la softmax su tutti divisa per la massa dei
 sopravvissuti (nell'esempio $p_1 = 0{,}53$ e $p_1 + p_3 = 0{,}85$, da cui di
@@ -355,8 +357,8 @@ ai punteggi un rumore gaussiano di ampiezza appresa, $H(\mathbf{x})_i =
 (\mathbf{W}_g\mathbf{x})_i + \varepsilon_i\,
 \operatorname{softplus}\bigl((\mathbf{W}_{\text{noise}}\mathbf{x})_i\bigr)$ con
 $\varepsilon_i \sim \mathcal{N}(0, 1)$. Il rumore serve a rendere derivabile la
-stima del carico {cite}`shazeer2017outrageously`: il numero di token che
-toccano a un esperto è un conteggio, e non è differenziabile, mentre la
+stima del carico {cite}`shazeer2017outrageously`, poiché il numero di token
+che toccano a un esperto è un conteggio, e non è differenziabile, mentre la
 probabilità che l'esperto entri fra i $k$ migliori, sotto il rumore, è una
 funzione liscia dei punteggi, e su di essa si costruisce una loss di
 bilanciamento. Di passaggio dà anche a un esperto sfavorito la possibilità di
@@ -370,11 +372,11 @@ punteggio, quasi sempre, non cambia chi entra e chi resta fuori, quindi la
 derivata della loss rispetto alla scelta è nulla. Come fa allora il router a
 imparare a smistare?
 
-Impara dai pesi della miscela, che sono continui e dipendono dai punteggi. Se
-un esperto scelto ha dato una risposta utile, l'aggiornamento ne alza il peso,
-cioè il punteggio assegnato dal router, e la volta dopo il router lo sceglierà
-più volentieri per un token simile. Il router viene corretto sul risultato
-degli esperti che ha scelto, mai direttamente sulla scelta.
+Impara dai pesi della miscela, che sono continui e dipendono dai punteggi. In
+concreto, se un esperto scelto ha dato una risposta utile, l'aggiornamento ne
+alza il peso, cioè il punteggio assegnato dal router, e la volta dopo il router
+lo sceglierà più volentieri per un token simile. Il router viene corretto sul
+risultato degli esperti che ha scelto, mai direttamente sulla scelta.
 
 Gli esperti *non* scelti non ricevono gradiente per quel token: nessuna
 correzione, nessun modo di dimostrare che avrebbero fatto meglio. Questa
@@ -538,11 +540,11 @@ resta quasi libero.
 
 ### La capacità, e i token che cadono
 
-Il bilanciamento è solo una spinta statistica: in un batch
-qualunque un esperto può comunque ricevere più token di quanti ne possa
-elaborare. Molte implementazioni fissano allora in anticipo una **capacità**,
-cioè il numero massimo di token che ciascun esperto accetta per batch: il carico
-medio, moltiplicato per un margine di sicurezza e arrotondato per eccesso,
+Il bilanciamento è solo una spinta statistica, per cui in un batch qualunque
+un esperto può comunque ricevere più token di quanti ne possa elaborare. Molte
+implementazioni fissano allora in anticipo una **capacità**, cioè il numero
+massimo di token che ciascun esperto accetta per batch: il carico medio,
+moltiplicato per un margine di sicurezza e arrotondato per eccesso,
 
 $$
 \text{capacità} = \left\lceil c\,\frac{k\,T}{N} \right\rceil,
@@ -586,7 +588,7 @@ che deve tenere corte le code.
 
 ## Il conto si sposta, non sparisce
 
-Il risparmio riguarda il calcolo, non la memoria: gli esperti che nessun token
+Il risparmio riguarda il calcolo, non la memoria. Gli esperti che nessun token
 attraversa non consumano aritmetica, ma i loro pesi devono restare caricati,
 perché il token successivo potrebbe sceglierli.
 
@@ -678,17 +680,17 @@ Questa, accanto alla qualità del modello, è la ragione economica della loss di
 bilanciamento.
 
 In inferenza, come mostra in dettaglio la {doc}`sezione su LLMOps
-</MLOps/llmops>`, la generazione è memory-bound: il tempo per token è dominato
-dal trasferimento dei pesi dalla memoria della GPU, non dall'aritmetica.
-L'efficacia della sparsità dipende dalla dimensione del batch. Con poche
-sequenze in elaborazione si leggono solo i $k$ esperti selezionati e la latenza
-per token resta quella del modello piccolo. Appena il batch cresce, token
-diversi scelgono esperti diversi. Con routing uniforme la probabilità che un
-esperto resti fuori da $T$ token è $(1 - k/N)^T$, che con $N = 8$ e $k = 2$
-scende sotto l’$1\%$ già a $T = 17$, e con i 256 esperti e $k = 8$ di
-DeepSeek-V3 a $T = 146$: la lettura torna quasi completa, e il modello si
-comporta, in banda, come i suoi $73$ GB. La sparsità del calcolo non si traduce
-automaticamente in sparsità del traffico di memoria.
+</MLOps/llmops>`, la generazione è memory-bound, ovvero il tempo per token è
+dominato dal trasferimento dei pesi dalla memoria della GPU, non
+dall'aritmetica. L'efficacia della sparsità dipende dalla dimensione del
+batch. Con poche sequenze in elaborazione si leggono solo i $k$ esperti
+selezionati e la latenza per token resta quella del modello piccolo. Appena il
+batch cresce, token diversi scelgono esperti diversi. Con routing uniforme la
+probabilità che un esperto resti fuori da $T$ token è $(1 - k/N)^T$, che con
+$N = 8$ e $k = 2$ scende sotto l’$1\%$ già a $T = 17$, e con i 256 esperti e
+$k = 8$ di DeepSeek-V3 a $T = 146$. Di conseguenza la lettura torna quasi
+completa, e il modello si comporta, in banda, come i suoi $73$ GB. La sparsità
+del calcolo non si traduce automaticamente in sparsità del traffico di memoria.
 
 Il vantaggio ritorna quando il batch è tanto grande che ogni esperto satura il
 calcolo. Un esperto che riceve $m$ token fa circa $2m$ operazioni per ogni
@@ -697,9 +699,10 @@ del {doc}`roofline </GPU/gerarchia-memoria>` (circa 300 operazioni per byte su
 una H100) quando $m$ arriva a qualche centinaio; con routing uniforme servono
 allora circa $mN/k$ token in volo per strato, un migliaio per $N/k = 4$ e quasi
 diecimila per i 256 esperti e $k = 8$ di DeepSeek-V3. È il motivo per cui un
-modello a esperti servito su larga scala spartisce gli esperti su molte schede:
-DeepSeek-V3 ne usa 32 per leggere i prompt e 320 per generare, perché a ogni
-esperto arrivi un batch abbastanza grande {cite}`liu2024deepseekv3`. Nei regimi
+modello a esperti servito su larga scala ripartisce gli esperti su molte
+schede. Ad esempio DeepSeek-V3 ne usa 32 per leggere i prompt e 320 per
+generare, perché a ogni esperto arrivi un batch abbastanza grande
+{cite}`liu2024deepseekv3`. Nei regimi
 intermedi, con batch di decine o centinaia di token, si perdono entrambi i
 vantaggi: la memoria viene letta per intero senza che il calcolo sia
 sufficiente a saturare l'hardware.
@@ -730,10 +733,11 @@ Sparsely-Gated Mixture-of-Experts Layer* di Noam Shazeer e colleghi
 {cite}`shazeer2017outrageously`, lo stesso anno di *Attention Is All You Need*
 {cite}`vaswani2017attention` e con un autore in comune. Qui il gating diventa
 sparso: si calcolano solo i $k$ esperti scelti, e la miscela smette di essere
-un modo di combinare modelli per diventare un modo di comprare parametri senza
-comprare aritmetica. Lo strato viene inserito fra strati LSTM (l'articolo esce
-a gennaio, i Transformer arriveranno cinque mesi dopo) e il modello arriva a
-contenere fino a 137 miliardi di parametri. È anche il lavoro che mette a fuoco
+un modo di combinare modelli per diventare un modo di aumentare i parametri
+senza aumentare l'aritmetica. Lo strato viene inserito fra strati LSTM
+(l'articolo esce a gennaio, i Transformer arriveranno cinque mesi dopo) e il
+modello arriva a contenere fino a 137 miliardi di parametri. È anche il lavoro
+che mette a fuoco
 lo squilibrio di carico e il collasso del router (osservato prima da Eigen,
 Ranzato e Sutskever {cite}`eigen2013learning`, che lo curavano con un tetto
 imposto a mano sulle assegnazioni) e che introduce una loss ausiliaria per
@@ -767,8 +771,9 @@ la velocità il modello adotta un formato a 16 bit, `bfloat16`, ma il router
 lavora in `float32`, a 32 bit: dei 16 bit del primo, quelli che portano le
 cifre significative sono 8, contro i 24 del secondo. Un lavoro successivo,
 ST-MoE {cite}`zoph2022stmoe`, ne spiega la ragione: l'esponenziale della
-softmax amplifica gli errori di arrotondamento. Con dieci punteggi a $128$ e
-uno a $128{,}5$, in `bfloat16` il $128{,}5$ diventa $128$, e il peso
+softmax amplifica gli errori di arrotondamento. Ad esempio, con dieci
+punteggi a $128$ e uno a $128{,}5$, in `bfloat16` il $128{,}5$ diventa $128$,
+e il peso
 dell'esperto migliore scende da $0{,}142$ a $0{,}091$. L'ordine dei punteggi
 cambia di rado; il peso che moltiplica l'uscita dell'esperto cambia di oltre un
 terzo.

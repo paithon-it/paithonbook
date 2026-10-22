@@ -7,15 +7,15 @@ tutti alla stessa domanda, e la domanda nasce da una difficoltà sola.
 Il pretesto, come l'ha definito l’{doc}`apertura del capitolo
 </AutoSupervisione/overview>`, è un compito la cui risposta sta già nei dati.
 Ma un compito costruito così ha un difetto di fabbrica: quasi sempre ammette
-una soluzione banale, che lo vince senza aver capito niente. Prendiamo due
-**viste** della stessa foto, cioè due versioni trasformate della stessa
-immagine (un ritaglio e un altro, oppure la stessa scena con i colori
+una soluzione banale, che lo vince senza aver capito niente. Prendiamo ad
+esempio due **viste** della stessa foto, cioè due versioni trasformate della
+stessa immagine (un ritaglio e un altro, oppure la stessa scena con i colori
 spostati), e chiediamo che le loro rappresentazioni coincidano. La soluzione
-banale è dare a tutte le foto la stessa rappresentazione: l'accordo è perfetto,
+banale è dare a tutte le foto la stessa rappresentazione; l'accordo è perfetto,
 la perdita è nulla, e il modello non ha guardato niente. Questa soluzione
-costante, la risposta vuota, si chiama collasso, e i {doc}`modelli a energia
-</ModelliEnergia/energia-come-compatibilita>` l'hanno già incontrata come
-un'energia bassa dappertutto, che dà ragione a ogni coppia.
+costante, la risposta vuota, si chiama **collasso**, e i {doc}`modelli a
+energia </ModelliEnergia/energia-come-compatibilita>` l'hanno già
+incontrata come un'energia bassa dappertutto, che dà ragione a ogni coppia.
 
 La domanda da porre non riguarda dunque il pretesto, ma che cosa impedisce la
 risposta vuota. Le quattro famiglie sono quattro risposte, e si ricordano
@@ -33,64 +33,66 @@ foto hanno la stessa rappresentazione, il gemello non si distingue da nessun
 rivale, e la perdita sale al valore che avrebbe tirando a caso fra i $K$
 candidati, cioè $\log K$.
 
-È la famiglia contrastiva, già trattata per intero in
+È la famiglia **contrastiva**, già trattata per intero in
 {doc}`Imparare a vedere senza etichette </VisioneArtificiale/senza-etichette>`:
 la ricetta di base, il costo dei rivali, e la coda di rivali già elaborati che
 permette di averne molti senza doverli calcolare tutti insieme. Qui interessa
 solo il posto che occupa nello schema: il collasso lo impedisce una forza che
 allontana.
 
-Il limite di questa famiglia sono i rivali: perché la perdita dica qualcosa ne
+Il limite di questa famiglia sono i rivali. Perché la perdita dica qualcosa ne
 servono migliaia, e ciascuno va elaborato dalla rete. Per questo la seconda e
 la terza famiglia hanno cercato un'altra strada. La quarta, quella che
-ricostruisce il pezzo coperto, ha un'origine indipendente: sul testo, con BERT,
-esisteva dal 2018, prima delle altre due.
+ricostruisce il pezzo coperto, ha un'origine indipendente: sul testo,
+con BERT, esisteva dal 2018, prima delle altre due.
 
 ## La seconda: rendere le due reti diverse
 
 Si tolgono i rivali, e al loro posto si mettono due reti con ruoli diversi, che
 la letteratura chiama studente e insegnante. Guardano due viste della stessa
 foto, e lo studente deve indovinare che cosa produce l'insegnante. Niente
-allontana più niente; a impedire il collasso è che le due reti non sono
-intercambiabili. Solo lo studente si corregge: la correzione, cioè il gradiente
-della perdita, scorre lungo un ramo solo, mentre l'insegnante resta fermo per
-quel passo (in gergo, *stop-gradient*). Come si rompa la simmetria cambia da
-metodo a metodo. In BYOL l'insegnante è una copia lenta dello studente, i cui
-pesi inseguono quelli dello studente con una media mobile, e solo lo studente
-ha una testa di predizione, un passaggio in più prima del confronto. In
-SimSiam le due reti hanno gli stessi pesi, e servono insieme la testa di
-predizione su un ramo e lo stop-gradient sull'altro: tolta l'una o l'altro, il
-modello collassa. In DINO le architetture sono identiche, e servono la copia
-lenta e due ritocchi all'uscita dell'insegnante: la centratura, che sottrae la
-risposta media e gli impedisce di dire sempre la stessa cosa, e l'affilatura,
-che rende la risposta più netta e gli impedisce di dire un po' di tutto.
+allontana più niente; a impedire il collasso è il fatto che
+le due reti non sono intercambiabili. Solo lo studente si corregge. La
+correzione, cioè il gradiente della perdita, scorre lungo un ramo solo, mentre
+l'insegnante resta fermo per quel passo (in gergo, *stop-gradient*). Il modo di
+rompere la simmetria cambia da metodo a metodo. In BYOL l'insegnante è una
+copia lenta dello studente, i cui pesi inseguono quelli dello studente con una
+media mobile, e solo lo studente ha una testa di predizione, un passaggio in
+più prima del confronto. In SimSiam le due reti hanno gli stessi pesi, e
+servono insieme la testa di predizione su un ramo e lo stop-gradient
+sull'altro: tolta l'una o l'altro, il modello collassa. In DINO le architetture
+sono identiche, e servono la copia lenta e due ritocchi all'uscita
+dell'insegnante: la centratura, che sottrae la risposta media e gli impedisce
+di dire sempre la stessa cosa, e l'affilatura, che rende la risposta più netta
+e gli impedisce di dire un po' di tutto.
 
-È la famiglia della distillazione, perché una rete impara dall'uscita
+È la famiglia della **distillazione**, perché una rete impara dall'uscita
 dell'altra; la tratta già {doc}`Imparare a vedere senza etichette
 </VisioneArtificiale/senza-etichette>`, con le formule di BYOL e la scena
 dell'allievo e dell'insegnante. Nello schema il collasso lo impedisce
 un'asimmetria, cioè una differenza costruttiva fra i due rami.
 
-Il posto è diverso da quello delle altre tre famiglie, perché qui la perdita
-non vieta niente. In BYOL e in SimSiam la perdita è la distanza fra la
-predizione dello studente e l'uscita dell'insegnante, normalizzate, e sulla
-soluzione costante vale zero, cioè il suo minimo: il collasso è una soluzione
-perfetta, e a tenerlo lontano non è la funzione da minimizzare ma la strada che
-l'addestramento percorre per minimizzarla. Per questo è anche la famiglia di
-cui si capisce meno *perché* funzioni: funziona, e la spiegazione è arrivata
-dopo, un pezzo alla volta e su modelli semplificati
+Il suo posto è diverso da quello delle altre tre famiglie, perché
+qui la perdita non vieta niente. In BYOL e in SimSiam la perdita è la distanza
+fra la predizione dello studente e l'uscita dell'insegnante, normalizzate, e
+sulla soluzione costante vale zero, cioè il suo minimo: il collasso è una
+soluzione perfetta, e a tenerlo lontano non è la funzione da minimizzare ma la
+strada che l'addestramento percorre per minimizzarla. Per questo è anche la
+famiglia di cui si capisce meno *perché* funzioni: funziona, e la spiegazione è
+arrivata dopo, un pezzo alla volta e su modelli semplificati
 {cite}`tian2021understanding`. La terza famiglia prende la strada opposta, e
 scrive l'anti-collasso dentro la perdita, dove si può leggere.
 
 ## La terza: vincolare le statistiche
 
-Qui si entra in materia nuova. La rappresentazione che il modello produce per
-ogni foto è un vettore $\mathbf{z}$ di $D$ numeri, le sue coordinate. Invece di
-allontanare gli esempi gli uni dagli altri, o di affidarsi a un'asimmetria fra
-i rami, la perdita guarda le statistiche di ciascuna coordinata e di ogni
-coppia di coordinate, calcolate su un batch di esempi, e impone una condizione
-che la risposta vuota non può soddisfare. È la famiglia della **riduzione di
-ridondanza**, che LeCun chiama dei metodi *regolarizzati*.
+Con la terza famiglia si entra in materia nuova. La rappresentazione che il
+modello produce per ogni foto è un vettore $\mathbf{z}$ di $D$ numeri, le sue
+coordinate. Invece di allontanare gli esempi gli uni dagli altri, o di
+affidarsi a un'asimmetria fra i rami, la perdita guarda le statistiche di
+ciascuna coordinata e di ogni coppia di coordinate, calcolate su un batch di
+esempi, e impone una condizione che la risposta vuota non può soddisfare. È la
+famiglia della **riduzione di ridondanza**, che LeCun chiama dei metodi
+*regolarizzati*.
 
 L'idea non nasce nell'informatica. In un saggio raccolto nel volume *Sensory
 Communication* del 1961 {cite}`barlow1961possible`, il neurofisiologo Horace
@@ -368,8 +370,8 @@ L'ultima famiglia non chiede al modello di riconoscere né di confrontare: gli
 copre un pezzo di dato e gli chiede di rifarlo. La risposta vuota qui non
 paga: con la stessa rappresentazione per tutte le immagini, la ricostruzione
 migliore possibile è l'immagine media, la stessa per tutte, e la perdita resta
-alta quanto le immagini sono diverse fra loro. Il collasso completo non è un
-minimo di questa perdita.
+alta quanto le immagini sono diverse fra loro. Ne segue che il collasso completo
+non è un minimo di questa perdita.
 
 È la famiglia **generativa mascherata**, già trattata due volte: sul testo, con
 l'esercizio di BERT, in {doc}`GPT, BERT, T5: tre esercizi di pre-addestramento

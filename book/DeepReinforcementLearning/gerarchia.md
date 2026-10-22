@@ -24,8 +24,8 @@ l'altra:
 ```
 
 Un agente che si muove di una casella per volta impara benissimo a raggiungere
-la casella indicata: gli serve qualche migliaio di passi. Poi si sposta il
-traguardo in un'altra stanza, e ricomincia da capo, compresa la parte che
+la casella indicata: gli serve qualche migliaio di passi. Se poi si sposta il
+traguardo in un'altra stanza, ricomincia da capo, compresa la parte che
 sapeva già a memoria: come uscire dalla stanza in cui si trova, che ha percorso
 mille volte e che non è cambiata di un pixel.
 
@@ -33,9 +33,9 @@ Il limite sta nel formato di ciò che ha imparato. L'agente ha in mano la
 tabella dei valori del {doc}`capitolo sul reinforcement learning
 </ReinforcementLearning/overview>`, un voto per ogni coppia (casella, azione),
 e quei voti dicono quanto conviene un'azione *per quel traguardo*: cambiato il
-traguardo, ogni numero è da rifare. Vorremmo salvare, invece di un'azione, un
-pezzo di comportamento: «esci da questa stanza», che vale per tutti i traguardi
-che stanno di là.
+traguardo, ogni numero è da rifare. Vorremmo quindi salvare, invece di
+un'azione, un pezzo di comportamento: «esci da questa stanza», che vale per
+tutti i traguardi che stanno di là.
 
 ## Un pezzo di comportamento che si può chiamare per nome
 
@@ -81,17 +81,17 @@ L'agente opera quindi su due livelli: una **politica sulle opzioni**
 $\pi_\Omega(\omega \mid s)$, che sceglie quale opzione avviare, e le
 sotto-politiche $\pi_\omega$, che eseguono l'opzione scelta. La differenza con
 una macro classica sta nel ciclo chiuso. Una macro è una sequenza fissa di
-azioni elementari, eseguita senza guardare; un'opzione ha una sotto-politica
-che guarda lo stato a ogni passo e una terminazione che dipende dallo stato
-(anche in modo stocastico), quindi reagisce a ciò che succede e finisce quando
-serve. La sequenza fissa resta un caso particolare, un'opzione *semi-markoviana*
-(che guarda la storia dall'avvio) in cui sotto-politica e terminazione
-dipendono soltanto da quanti passi sono trascorsi {cite}`sutton1999options`.
+azioni elementari, eseguita senza guardare; un'opzione, invece, ha una
+sotto-politica che guarda lo stato a ogni passo e una terminazione che dipende
+dallo stato (anche in modo stocastico), quindi reagisce a ciò che succede e
+finisce quando serve. La sequenza fissa resta un caso particolare, un'opzione
+*semi-markoviana* (che guarda la storia dall'avvio) in cui sotto-politica e
+terminazione dipendono soltanto da quanti passi sono trascorsi
+{cite}`sutton1999options`.
 
-Un'opzione dura però $k$ passi, con $k$
-variabile casuale: gli istanti in cui si decide non sono più equispaziati, e il
-processo visto dal livello alto è un **semi-MDP**. L'aggiornamento cambia di
-conseguenza,
+Un'opzione dura però $k$ passi, con $k$ variabile casuale. Di conseguenza gli
+istanti in cui si decide non sono più equispaziati, e il processo visto dal
+livello alto è un **semi-MDP**. Anche l'aggiornamento cambia,
 
 $$
 Q(s,\omega) \leftarrow Q(s,\omega) + \alpha
@@ -105,11 +105,11 @@ sconto e $\alpha$ il passo di apprendimento. Il salto è tutto in
 quell'esponente: lo sconto si applica $k$ volte invece di una, perché fra le
 due decisioni sono trascorsi $k$ passi e non $1$.
 
-Da qui i problemi aperti del campo: identificare i sotto-obiettivi, apprendere
-la politica sulle opzioni e le sotto-politiche. Per i sotto-obiettivi le
-risposte standard sono di specie diversa: cercare gli stati collo di bottiglia,
-per cui passano molte delle traiettorie che arrivano a destinazione (le porte
-di una pianta a stanze sono l'esempio da manuale)
+Restano così aperti i problemi del campo: identificare i sotto-obiettivi,
+apprendere la politica sulle opzioni e apprendere le sotto-politiche. Per i
+sotto-obiettivi le risposte standard sono di specie diversa: cercare gli stati
+collo di bottiglia, per cui passano molte delle traiettorie che arrivano a
+destinazione (le porte di una pianta a stanze sono l'esempio da manuale)
 {cite}`mcgovern2001automatic`; imparare abilità senza ricompensa, massimizzando
 l'informazione mutua fra l'abilità scelta e gli stati che visita
 {cite}`eysenbach2019diversity`; oppure rinunciare a sotto-obiettivi espliciti e
@@ -214,7 +214,7 @@ nello stesso banco di prova: la pianta a quattro stanze. Le opzioni sono otto: o
 porta ne ha due, una per ciascuna delle due stanze che collega. Ognuna arriva
 alla sua porta per la via più breve dentro la stanza, e finisce lì.
 
-Poi si allenano tre agenti sullo stesso problema, dando a ogni passo elementare
+Si allenano poi tre agenti sullo stesso problema, dando a ogni passo elementare
 una ricompensa di $-1$: il segno negativo spinge l'agente, nel massimizzare il
 ritorno, a trovare la strada più corta, e i valori appresi si leggono come
 «passi mancanti al traguardo, cambiati di segno». Il primo agente ha le sole
@@ -484,20 +484,20 @@ muove lungo quella direzione: il manager dice dove andare, non come.
 Le due famiglie servono soprattutto dove la ricompensa arriva di rado: una
 decisione di alto livello copre in una volta sola un tratto che a passi
 elementari richiederebbe una fortuna rara. Nella seconda famiglia, però, il
-problema si ripresenta un livello più giù. Un livello
-basso che impara a raggiungere un obiettivo ha bisogno di sapere quando ci è
-arrivato, ma il punteggio del gioco può arrivare migliaia di passi dopo, quando
-la porta attraversata è ormai lontana nel tempo. L’**h-DQN**
-{cite}`kulkarni2016hdqn` affronta questo punto: un livello alto sceglie
-un obiettivo (in un gioco, «arriva alla scala», «prendi la chiave»), un livello
-basso sceglie le azioni per raggiungerlo, e quando l'obiettivo è raggiunto
-l'agente stesso dà al livello basso un premio interno. Quel premio non entra nel
-punteggio del gioco: serve soltanto a dire al livello basso «ci sei arrivato».
-L'h-DQN, però, non trova gli obiettivi da sé: su *Montezuma's Revenge* li
-ricava da un rivelatore di oggetti scritto a mano (la scala, la chiave, la
-porta), ricevendo dall'esterno ciò che si voleva apprendere. Mostra che
-due livelli e un premio interno superano le ricompense rade quando gli obiettivi
-ci sono; trovarli resta il compito dell'altra famiglia.
+problema si ripresenta un livello più giù. Un livello basso che impara a
+raggiungere un obiettivo ha bisogno di sapere quando ci è arrivato, ma il
+punteggio del gioco può arrivare migliaia di passi dopo, quando la porta
+attraversata è ormai lontana nel tempo. L’**h-DQN** {cite}`kulkarni2016hdqn`
+affronta questo punto: un livello alto sceglie un obiettivo (in un gioco,
+«arriva alla scala», «prendi la chiave»), un livello basso sceglie le azioni
+per raggiungerlo, e quando l'obiettivo è raggiunto l'agente stesso dà al
+livello basso un premio interno. Quel premio non entra nel punteggio del gioco:
+serve soltanto a dire al livello basso «ci sei arrivato». L'h-DQN, però, non
+trova gli obiettivi da sé: su *Montezuma's Revenge* li ricava da un rivelatore
+di oggetti scritto a mano (la scala, la chiave, la porta), ricevendo
+dall'esterno ciò che si voleva apprendere. Mostra che due livelli e un premio
+interno superano le ricompense rade quando gli obiettivi ci sono; trovarli
+resta il compito dell'altra famiglia.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

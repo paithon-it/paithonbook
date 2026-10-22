@@ -125,46 +125,46 @@ ancora.
 Nel 2019 due ricercatori del Politecnico di Milano e un collega dell'università
 di Klagenfurt hanno provato a riprodurre i risultati di diciotto metodi neurali
 per la raccomandazione, presentati alle conferenze principali
-{cite}`dacrema2019are`. Solo sette si sono lasciati riprodurre con uno sforzo
-ragionevole, e sei di quei sette venivano spesso battuti da metodi molto più
-semplici: i vicini del filtraggio collaborativo classico, o cammini casuali sul
-grafo utenti-oggetti, che ricompare fra poco e che con le reti su grafo
+{cite}`dacrema2019are`. Solo sette, però, si sono lasciati riprodurre con uno
+sforzo ragionevole, e sei di quei sette venivano spesso battuti da metodi molto
+più semplici: i vicini del filtraggio collaborativo classico, o cammini casuali
+sul grafo utenti-oggetti, che ricompare fra poco e che con le reti su grafo
 condivide il disegno ma non i parametri da imparare. Il settimo batteva quei
 metodi semplici, ma non riusciva a battere in modo costante un metodo lineare
-tarato con cura. Il lavoro ha vinto il premio per il miglior articolo lungo di
-RecSys 2019, la conferenza del settore, e ha spostato la domanda che si fa a un
-risultato nuovo: non «funziona?» ma «meglio di che cosa, tarato da chi?».
+calibrato con cura. Il lavoro ha vinto il premio per il miglior articolo lungo
+di RecSys 2019, la conferenza del settore, e ha spostato la domanda che si fa a
+un risultato nuovo: non «funziona?» ma «meglio di che cosa, calibrato da chi?».
 
 L'anno dopo Steffen Rendle e colleghi hanno ripetuto la prova sul NCF, sugli
 stessi banchi di prova del paper originale {cite}`rendle2020neural`. Hanno
-trovato due cose: che il vecchio prodotto scalare, tarato con cura, batte la
+trovato due cose: che il vecchio prodotto scalare, calibrato con cura, batte la
 rete; e che per un MLP imparare a riprodurre un prodotto scalare è
 sorprendentemente difficile, e richiede molta capacità e molti dati.
 
 Il risultato non dice che le reti non servano: dice che la libertà in più va
-pagata in dati. Il prodotto scalare porta con sé un'ipotesi sul problema, che
-il punteggio sia una somma di prodotti fra componenti corrispondenti dei due
-embedding. Una rete, al suo posto, deve ricostruire quell'ipotesi dai dati, e
-in una matrice quasi vuota i dati sono pochi: un'ipotesi azzeccata, data al
-modello in partenza, vale più di molti parametri in più. È il *bias induttivo*
-incontrato nella {doc}`sezione sull'apprendimento multi-compito
+pagata in dati. Il prodotto scalare porta con sé un'ipotesi sul problema, che il
+punteggio sia una somma di prodotti fra componenti corrispondenti dei due
+embedding. Una rete, al suo posto, deve ricostruire quell'ipotesi dai dati, ma
+in una matrice quasi vuota i dati sono pochi; per questo un'ipotesi azzeccata,
+data al modello in partenza, vale più di molti parametri in più. È il *bias
+induttivo* incontrato nella {doc}`sezione sull'apprendimento multi-compito
 </DeepLearning/multi-compito>`.
 
 Il prodotto scalare ha anche un vantaggio di costo, che con la qualità non
 c'entra. Gli embedding degli oggetti non dipendono dall'utente, quindi si
 calcolano una volta, e per ogni utente basta cercare quelli con il prodotto
-scalare più alto, cosa che gli indici approssimati fanno senza scorrere tutto
-il catalogo. Una rete che riceve utente e oggetto insieme va invece valutata su
-ogni coppia: un milione di valutazioni per ogni persona che apre l'app, su un
-catalogo da un milione di titoli. Su cataloghi così a decidere se il sistema
-sta in piedi è il costo, più della qualità, e i numeri precisi stanno nel
-paragrafo sull'industria.
+scalare più alto, cosa che gli indici approssimati fanno senza scorrere tutto il
+catalogo. Una rete che riceve utente e oggetto insieme va invece valutata su
+ogni coppia: ad esempio, su un catalogo da un milione di titoli servono un
+milione di valutazioni per ogni persona che apre l'app. Su cataloghi così a
+decidere se il sistema sta in piedi è il costo, più della qualità, e i numeri
+precisi stanno nel paragrafo sull'industria.
 
-Tutto questo vale per il filtraggio collaborativo puro, cioè per modelli che
-vedono soltanto gli identificativi di utente e oggetto. Quando accanto alle
-interazioni ci sono altre informazioni (l'ora, il dispositivo, il prezzo, il
-genere, che nel gergo si chiamano *feature*), una rete può usarle
-e un prodotto scalare fra due embedding no: per questo i modelli che ordinano i
+Tutto questo vale per il filtraggio collaborativo puro, cioè per
+modelli che vedono soltanto gli identificativi di utente e oggetto. Quando
+accanto alle interazioni ci sono altre informazioni (l'ora, il dispositivo, il
+prezzo, il genere, che nel gergo si chiamano **feature**), una rete può usarle e
+un prodotto scalare fra due embedding no: per questo i modelli che ordinano i
 candidati nel secondo stadio dei sistemi industriali sono reti.
 
 ## La matrice è un grafo
@@ -173,9 +173,9 @@ C'è un secondo modo di andare oltre il prodotto scalare: dare al modello più
 dati da guardare. La matrice di interazione è il grafo bipartito utenti-oggetti
 con cui si è chiuso il {doc}`capitolo sulle reti neurali su grafo
 </GraphNeuralNetwork/overview>`, un arco per ogni cella piena, e su quel grafo
-il compito diventa la *link prediction*: prevedere gli archi che mancano. Letta
-così, la raccomandazione può propagare l'informazione lungo gli archi, oltre il
-singolo confronto fra due embedding.
+il compito diventa la **link prediction**: prevedere gli archi che mancano.
+Letta così, la raccomandazione può propagare l'informazione lungo gli archi,
+oltre il singolo confronto fra due embedding.
 
 `````{tab} Elementare
 
@@ -192,6 +192,7 @@ Vista così, la fattorizzazione guarda vicino: la scheda di ognuno riassume le
 linee che partono dal suo pallino, e per giudicare una coppia si confrontano
 quelle due schede. Non è poco (le schede sono l'idea che permette di
 confrontare due persone senza film in comune) ma è un passo solo di distanza.
+
 Il metodo dei vicini, letto sul disegno, fa tre passi:
 da te ai film che hai visto, da quei film alle persone che li hanno visti (i
 tuoi vicini), e da loro ai film che hanno visto e tu no. Non c'è ragione di
@@ -288,33 +289,36 @@ stesso modo come prova. La prima, il riesame del NCF, l'hanno fatta persone
 diverse da chi il metodo l'aveva proposto, ritarando con cura gli avversari e
 facendoli correre di nuovo. La seconda è il paper di LightGCN, in cui gli
 autori presentano la propria vittoria su NGCF, come fa chiunque pubblichi, e
-per questo da sola pesa meno. Le due vanno nella stessa direzione: NCF mette
-una rete al posto del prodotto scalare e non guadagna niente; LightGCN toglie
-la rete, tiene solo la propagazione, e batte il modello più complicato da cui è
-stato ricavato. Propagare sul grafo dà al modello un'ipotesi in più: *chi ha
-interagito con cose simili alle tue è informativo anche a più di un salto di
-distanza*. Che quest'ipotesi valga più di una fattorizzazione ben tarata, però,
-non lo dice nessuna delle due storie, e un riesame indipendente non lo conferma
-in generale. Anelli e colleghi hanno ripetuto gli esperimenti di sei modelli a
-grafo e li hanno messi accanto a metodi classici ben tarati: su alcuni dataset
-i cammini casuali, i vicini sugli utenti e un modello lineare battono NGCF e
-LightGCN, su altri il primo posto resta a un modello a grafo, e l'esito dipende
-dalla struttura dei dati {cite}`anelli2023challenging`.
+per questo da sola pesa meno.
+
+Le due vanno nella stessa direzione: NCF mette una rete al posto del prodotto
+scalare e non guadagna niente; LightGCN toglie la rete, tiene solo la
+propagazione, e batte il modello più complicato da cui è stato ricavato.
+Propagare sul grafo dà al modello un'ipotesi in più: *chi ha interagito con cose
+simili alle tue è informativo anche a più di un salto di distanza*. Che
+quest'ipotesi valga più di una fattorizzazione ben calibrata, però, non lo dice
+nessuna delle due storie, e un riesame indipendente non lo conferma in generale.
+
+Anelli e colleghi hanno ripetuto gli esperimenti di sei modelli a grafo e li
+hanno messi accanto a metodi classici ben calibrati: su alcuni dataset i cammini
+casuali, i vicini sugli utenti e un modello lineare battono NGCF e LightGCN, su
+altri il primo posto resta a un modello a grafo, e l'esito dipende dalla
+struttura dei dati {cite}`anelli2023challenging`.
 
 Il grafo permette anche una risposta parziale alla partenza a freddo, il limite
 contro cui il filtraggio collaborativo si ferma. Nella matrice un film appena
 uscito è una colonna vuota, e da una colonna vuota non si estrae niente. In un
 grafo eterogeneo, con più tipi di nodi e di archi come i {doc}`grafi di
 conoscenza </GraphNeuralNetwork/knowledge-graph>` del capitolo sulle reti su
-grafo, si aggiungono nodi per il regista, il genere, gli attori. Il film nuovo
-non ha ancora archi verso gli utenti, ma ne ha verso questi nodi, e la
-propagazione gli porta l'informazione dei film che li condividono: si presenta
-al sistema con un embedding sensato prima ancora che qualcuno lo guardi. È la
-strada dei modelli che uniscono in un solo grafo le interazioni e un grafo di
-conoscenza sugli oggetti, come KGAT {cite}`wang2019kgat`, che nel paper ne
-misura il guadagno sugli utenti con poche interazioni. NGCF e LightGCN, che
-usano il solo grafo utente-oggetto, per un film senza archi non hanno nulla da
-propagare.
+grafo, si aggiungono, ad esempio, nodi per il regista, il genere, gli attori. Il
+film nuovo non ha ancora archi verso gli utenti, ma ne ha verso questi nodi, e
+la propagazione gli porta l'informazione dei film che li condividono: si
+presenta al sistema con un embedding sensato prima ancora che qualcuno lo
+guardi. È la strada dei modelli che uniscono in un solo grafo le interazioni e
+un grafo di conoscenza sugli oggetti, come KGAT {cite}`wang2019kgat`, che nel
+paper ne misura il guadagno sugli utenti con poche interazioni. NGCF e LightGCN,
+che usano il solo grafo utente-oggetto, per un film senza archi non hanno nulla
+da propagare.
 
 La lettura come *link prediction* rende disponibile tutto l'armamentario delle
 reti su grafo. Il caso più noto in produzione, PinSage {cite}`ying2018graph`, è
@@ -516,10 +520,10 @@ recall@10 · BPR 0.738 · solo i titoli popolari 0.227
 Senza un solo voto, BPR rimette fra i primi dieci quasi tre titoli nascosti su
 quattro, più di tre volte quelli che ritrova la classifica per popolarità, e
 nessuno gli ha mai detto quanto un film piaccia: solo quali film un utente ha
-scelto. La riga della loss, detta in italiano: guarda di quanto il libro
-comprato sta sopra a quello ignorato, e trasforma quel margine in una spinta.
-Se il comprato sta già molto sopra, la spinta è quasi zero e la vetrina non si
-muove; se sta sotto, la spinta cresce, e cresce tanto più quanto è sotto.
+scelto. In altri termini, la riga della loss guarda di quanto il libro comprato
+sta sopra a quello ignorato e trasforma quel margine in una spinta. Se il
+comprato sta già molto sopra, la spinta è quasi zero e la vetrina non si muove;
+se sta sotto, la spinta cresce, e cresce tanto più quanto è sotto.
 
 `F.logsigmoid` fa in un passaggio solo due operazioni, la sigmoide e il
 logaritmo della {doc}`sezione di analisi </Matematica/analisi-ottimizzazione>`,
@@ -554,7 +558,7 @@ grande quando la probabilità si avvicina a zero.
 
 Fatti uno dopo l'altro, si inceppano. Se il libro comprato sta cento punti
 sotto quello ignorato, la sigmoide dovrebbe dare un numero con quarantatré zeri
-dopo la virgola. Per arrivarci, però, il calcolatore passa da un numero enorme,
+dopo la virgola. Per arrivarci, però, il computer passa da un numero enorme,
 di quarantaquattro cifre, che nel formato di PyTorch non ci sta: lo scrive come
 infinito, e la sigmoide esce zero. Il logaritmo di zero è infinito, e la spinta
 che dovrebbe correggere la vetrina esce `nan`, che sta per *not a number*: da
@@ -858,7 +862,9 @@ titolo del catalogo la scheda di numeri è già lì, calcolata e messa in uno
 scaffale ordinato. Conta da che cosa è fatta, quella scheda: se la si ricava
 guardando il titolo (di che parla, chi l'ha girato) allora ce l'ha anche un
 film uscito stanotte; se invece è solo un numero cresciuto a forza di visioni,
-un film che nessuno ha ancora guardato resta senza. Quando arrivi tu, si
+un film che nessuno ha ancora guardato resta senza.
+
+Quando arrivi tu, si
 calcola solo la *tua* scheda, tenendo conto anche di ciò che hai guardato oggi,
 e poi si cerca sullo scaffale quali schede di titoli le somigliano di più.
 Questa ricerca è approssimata nel senso che non le guarda tutte: sullo scaffale
@@ -877,7 +883,7 @@ decide l'ordine dei titoli che vedi.
 
 `````{tab} Superiore
 
-Il primo stadio, il *retrieval*, screma il catalogo da milioni a qualche
+Il primo stadio, il **retrieval**, screma il catalogo da milioni a qualche
 centinaio di candidati con un modello volutamente semplice. Lo schema che si è
 imposto è la **two-tower**: due reti separate producono l'una l'embedding
 dell'utente, l'altra quello dell'item a partire dalle sue feature, e il
@@ -898,7 +904,9 @@ $128 \to 64 \to 32 \to 1$ fa $128 \cdot 64 + 64 \cdot 32 + 32 = 10.272$
 moltiplicazioni per coppia: su $m = 10^7$ oggetti sono circa $10^{11}$ per ogni
 richiesta, e ancora circa $2 \cdot 10^{10}$ con il primo strato precalcolato,
 contro $6{,}4 \cdot 10^8$ del prodotto scalare esatto con $k = 64$. È
-l'argomento di costo di Rendle e colleghi {cite}`rendle2020neural`. Cercare il
+l'argomento di costo di Rendle e colleghi {cite}`rendle2020neural`.
+
+Cercare il
 massimo prodotto scalare non è però cercare il vicino più prossimo, e le due
 cose coincidono solo se gli embedding degli item hanno tutti la stessa norma.
 Il divario si colma con una componente in più {cite}`bachrach2014speeding`: con
@@ -909,7 +917,9 @@ $\lVert\tilde{\mathbf{e}}_u - \tilde{\mathbf{e}}_i\rVert^2 =
 \lVert\mathbf{e}_u\rVert^2 + M^2 - 2\,\mathbf{e}_u^\top\mathbf{e}_i$, e il
 vicino più prossimo nello spazio esteso è l'oggetto con il prodotto scalare più
 alto. Gli indici approssimati (a grafo, a quantizzazione) lavorano su questo
-spazio, o su varianti costruite apposta. Il secondo stadio, il *ranking*,
+spazio, o su varianti costruite apposta.
+
+Il secondo stadio, il **ranking**,
 applica ai soli sopravvissuti un modello ricco quanto si vuole, con centinaia
 di feature di contesto (ora, dispositivo, storia recente).
 
@@ -945,16 +955,18 @@ cambiati: consiglia benissimo la settimana scorsa.
 
 ## Suggerire o pilotare?
 
-Resta la domanda che accompagna i sistemi di raccomandazione fin dalla matrice
-vuota: un sistema che decide cosa vedi, e impara da ciò che vedi, ti sta
+C'è infine una domanda che accompagna i sistemi di raccomandazione fin dalla
+matrice vuota: un sistema che decide cosa vedi, e impara da ciò che vedi, ti sta
 *servendo* o ti sta *plasmando*? Nel 2011 l'attivista Eli Pariser ha dato un
-nome alla paura {cite}`pariser2011filter`: *filter bubble*, la bolla in cui
+nome alla paura {cite}`pariser2011filter`: **filter bubble**, la bolla in cui
 l'algoritmo, inseguendo i tuoi click, ti mostra sempre più di ciò che già
 pensi. Lo studio di Flaxman, Goel e Rao sul consumo di notizie online ha
 restituito un quadro meno netto, e per certi versi sorprendente
 {cite}`flaxman2016filter`. Non riguarda un sistema di raccomandazione
 addestrato sui click, ma i canali che ordinano gli articoli per chi legge, cioè
-i motori di ricerca e i social. Le domande che fa sono due. La prima è quanto i
+i motori di ricerca e i social.
+
+Le domande che fa sono due. La prima è quanto i
 lettori sono distanti fra loro: Flaxman e colleghi danno a ogni giornale un
 posto su una riga che va da sinistra a destra, a ogni lettore il posto medio
 dei giornali che legge, e trovano che chi arriva agli articoli dai motori di
@@ -975,10 +987,12 @@ mostrare tutto ciò che ci tiene incollati allo schermo: l'indignazione e il
 sensazionalismo compresi, se funzionano. Chi sceglie il metro su cui il sistema
 viene premiato (la funzione obiettivo, come si dice in gergo) sceglie, in
 ultima analisi, il comportamento che il sistema coltiverà nei suoi utenti, e da
-qui passa il confine tra suggerire e pilotare. Le contromisure esistono e sono
+qui passa il confine tra suggerire e pilotare.
+
+Le contromisure esistono e sono
 concrete. Si può misurare, accanto a quanto il sistema ci azzecca, anche quanto
 la lista è varia e quanto spesso fa incontrare qualcosa di buono che non si
-stava cercando, e quest'ultima si chiama *serendipità*. Si possono mettere
+stava cercando, e quest'ultima si chiama **serendipità**. Si possono mettere
 controlli espliciti nelle mani di chi il sistema lo usa. Da qualche anno c'è
 anche la legge: in Europa il Digital Services Act (all'articolo 38) impone alle
 piattaforme e ai motori di ricerca di dimensioni molto grandi di offrire, per

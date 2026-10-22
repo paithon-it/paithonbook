@@ -27,10 +27,9 @@ di descrizione pesa di più, con $\beta < 1$ di meno.
 Con la manopola si chiede all’archivista di essere ancora più
 sintetico. Con la manopola a uno siamo al patto di prima; a
 due gli si dice che ogni riga scritta costa il doppio; a quattro, il quadruplo.
-Un tetto e un prezzo, per lui, sono due modi di dare lo stesso ordine: invece di
-scrivergli sul
-contratto «non più di tre righe», si alza il prezzo della riga finché di righe
-ne scrive tre, e la manopola è quel prezzo.
+Un tetto e un prezzo, per lui, sono due modi di dare lo stesso ordine. Ad
+esempio, invece di scrivergli sul contratto «non più di tre righe», si alza il
+prezzo della riga finché di righe ne scrive tre, e la manopola è quel prezzo.
 
 L’idea è che un archivista sotto pressione debba mettersi in ordine. Se le
 righe costano care, gli conviene spenderle bene: usare una riga sola per la
@@ -42,20 +41,21 @@ righe, ne spegne qualcuna del tutto, lasciando cadere quelle che gli rendono
 meno e concentrandosi su quelle che restano. Fin qui fa il lavoro richiesto.
 
 Il lavoro ha un punto in cui si rovescia, lo stesso già segnalato per
-l’ELBO. A un archivista a cui la scrittura
-costa troppo non conviene più essere sintetico: conviene smettere di
-scrivere. Prima cadono le righe che servivano meno, poi quelle che servivano
-un po’, e alla fine consegna schede vuote. A quel punto il copista dipinge
-sempre lo stesso quadro, che è la media di tutti quelli che ha visto, e
-cambiare i numeri della scheda non cambia più niente perché non c’è più niente
-da cambiare.
+l’ELBO. Infatti, a un archivista a cui la scrittura costa troppo non conviene
+più essere sintetico: conviene smettere di scrivere. Prima cadono le righe che
+servivano meno, poi quelle che servivano un po’, e alla fine consegna schede
+vuote. A quel punto il copista dipinge sempre lo stesso quadro, che è la media
+di tutti quelli che ha visto, e cambiare i numeri della scheda non cambia più
+niente perché non c’è più niente da cambiare.
 
 A volte la manopola c’era già, con un altro nome. Certe pagelle dicono al
 copista «su ogni pixel tollero un errore di tanto»: più si tollera, meno conta
 ricostruire bene, e più pesa, al confronto, il costo della scheda, cioè quel
 «tanto» fa lo stesso lavoro della manopola. Vale finché la tolleranza la
 sceglie chi addestra; se la si lascia scegliere al copista, la manopola
-sparisce. La pagella di queste cifre giudica ogni pixel come una scommessa fra
+sparisce.
+
+La pagella di queste cifre giudica ogni pixel come una scommessa fra
 bianco e nero, e una tolleranza da regolare non ce l’ha: la manopola va messa a
 mano, e adesso la giriamo su quattro tacche.
 
@@ -96,7 +96,7 @@ numerico dipende da quella convenzione (con $-\tfrac{1}{2}\lVert\cdot\rVert^2$
 verrebbe $\sigma^2$, con la media sui pixel invece della somma $2\sigma^2/D$);
 resta invariante che $\beta$ e la varianza del rumore regolano lo stesso
 compromesso. Due riserve,
-però, e la seconda morde qui: se $\sigma^2$ viene appreso invece che
+però, e la seconda ci riguarda: se $\sigma^2$ viene appreso invece che
 fissato, il termine additivo $-\tfrac{D}{2}\log(2\pi\sigma^2)$ non è più una
 costante e quel grado di libertà sparisce; e il nostro decoder non è
 gaussiano ma di Bernoulli, cioè un $\sigma^2$ da girare non ce l’ha affatto.
@@ -188,9 +188,9 @@ stare dipende da che cosa serve.
 
 Le righe del codice si spengono, e non sempre una alla volta: da $\beta =
 0{,}5$ a $\beta = 1$ se ne spengono due, da 1 a 2 una, da 2 a 4 le ultime tre
-insieme. Già a $\beta = 1$, il VAE di prima, quattro delle otto
-righe portano zero nat: la rete ha scelto di usarne quattro. La
-dimensione effettiva del latente è quindi il numero di componenti attive,
+insieme. Si noti che già a $\beta = 1$, il VAE di prima, quattro delle otto
+righe portano zero nat: la rete ha scelto di usarne quattro. La **dimensione
+effettiva** del latente è quindi il numero di componenti attive,
 quelle con un costo di descrizione sopra zero, e la sceglie l’ottimizzazione
 in funzione di $\beta$, non chi dichiara `LATENTE = 8`; in pratica si dichiara
 un latente abbondante e si contano le righe usate. (Ogni tacca è un
@@ -200,7 +200,9 @@ crescere di $\beta$ resta.)
 
 A $\beta = 4$ l’encoder ha smesso di codificare. Costo zero su tutte le righe:
 è il collasso della posterior, arrivato non per sfortuna ma perché lo abbiamo
-comprato alzando $\beta$. Una conferma indipendente viene dalla {doc}`sezione
+provocato alzando $\beta$.
+
+Una conferma indipendente viene dalla {doc}`sezione
 su comprimere e ricostruire </ModelliLatenti/comprimere-e-ricostruire>`: la
 ricostruzione a $\beta = 4$ vale 27,1 nat, che è lo stesso costo di chi non
 guarda la cifra e dichiara per ogni pixel il grigio medio di tutte. Non è una
@@ -274,12 +276,14 @@ del codice è una direzione lungo la quale parecchie cose si muovono insieme, e
 non «lo spessore» né «l’inclinazione».
 
 Succede quasi sempre così. Chiamiamo **fattori** gli ingredienti di cui
-un dato è fatto e che si vorrebbero tenere separati: per un volto, la luce,
-quanto la testa è girata, l’espressione. La parola arriva dall’analisi
+un dato è fatto e che si vorrebbero tenere separati: ad esempio, per un volto,
+la luce, quanto la testa è girata, l’espressione. La parola arriva dall’analisi
 fattoriale di Spearman e indica le cause che
 concorrono a un effetto: i fattori di una moltiplicazione sono un’altra cosa.
 Tenerli separati si chiama in inglese *disentanglement*, il nome con cui se ne
-cerca la letteratura. Nel 2019 Francesco Locatello e colleghi hanno
+cerca la letteratura.
+
+Nel 2019 Francesco Locatello e colleghi hanno
 addestrato più di dodicimila modelli di questa famiglia, su sette insiemi di
 dati e con le varianti più diffuse, per rispondere a una domanda sola: alzare
 $\beta$, o usare le sue varianti, separa davvero i fattori? La risposta ha due
@@ -312,9 +316,10 @@ identica: se $\mathbf{R}$ è una matrice ortogonale, cioè una rotazione o una
 riflessione degli assi, $\mathbf{R}\mathbf{z}$ ha la stessa distribuzione di
 $\mathbf{z}$. Un decoder che prima di lavorare riporta indietro la rotazione,
 applicando $\mathbf{R}^\top$, produce quindi esattamente gli stessi dati, e la
-probabilità dei dati $p_\theta(\mathbf{x})$ non si sposta di un nat. Il
-teorema di Locatello e colleghi generalizza l’esempio a ogni prior a componenti
-indipendenti, $p(\mathbf{z}) = \prod_j p(z_j)$: esistono infinite
+probabilità dei dati $p_\theta(\mathbf{x})$ non si sposta di un nat.
+
+Il teorema di Locatello e colleghi generalizza l’esempio a ogni prior a
+componenti indipendenti, $p(\mathbf{z}) = \prod_j p(z_j)$: esistono infinite
 trasformazioni invertibili $f$ che lasciano invariata la distribuzione di
 $\mathbf{z}$ e in cui ogni componente di $f(\mathbf{z})$ dipende da tutte
 quelle di $\mathbf{z}$ ($\partial f_i / \partial z_j \neq 0$ quasi ovunque),
@@ -335,9 +340,9 @@ separi invece di niente; ma la PCA guarda dove i dati variano di più, e quello
 non è l’elenco degli ingredienti.
 
 La seconda parte, sperimentale, è la più scomoda. Fra i dodicimila modelli,
-a contare non era quale metodo si fosse scelto. Contavano il sorteggio con
-cui la rete era stata inizializzata, cioè i suoi numeri interni prima di
-imparare, e il valore degli iperparametri, $\beta$ compreso. Nello studio non
+a contare non era quale metodo si fosse scelto. Contavano l’inizializzazione
+casuale della rete, cioè i suoi numeri interni prima di imparare, e il valore
+degli iperparametri, $\beta$ compreso. Nello studio non
 si è trovato un criterio per sceglierli senza etichette: la selezione del
 modello senza supervisione resta un problema aperto, e per adesso si prova.
 
@@ -349,7 +354,7 @@ non quali fattori separa.
 Al codice si può chiedere anche un’altra proprietà, la più importante per i
 capitoli successivi: che invece di numeri porti simboli, presi da un elenco
 finito di cui decidiamo in anticipo soltanto la lunghezza. La macchina che lo
-fa si chiama VQ-VAE, dove VQ sta per *vector quantization*, quantizzazione
+fa si chiama **VQ-VAE**, dove VQ sta per *vector quantization*, quantizzazione
 vettoriale: ogni vettore prodotto dall’encoder viene sostituito dal più vicino
 di un dizionario finito, e il codice diventa una sequenza di indici, cioè di
 simboli.
@@ -363,13 +368,15 @@ caselle gliele contiamo noi; a riempirle, con le descrizioni-tipo che tornano
 più spesso nei quadri, pensa lui. Da lì in poi non descrive più niente: guarda
 il quadro, cerca la casella che gli somiglia di più, e scrive quel numero. La
 scheda smette di essere una fila di misure e diventa una fila di numeri di
-catalogo. La manopola non fa più presa: tutte le caselle hanno lo stesso
+catalogo.
+
+La manopola non fa più presa: tutte le caselle hanno lo stesso
 prezzo, quindi la scheda ha lo stesso prezzo comunque la si scriva.
 
-Il guadagno è enorme, e lo abbiamo già incassato due volte. Una fila di numeri di
-catalogo è, alla lettera, un testo: simboli in sequenza presi da un alfabeto
-finito, come le parole di una frase sono prese da un vocabolario. Su un testo
-fatto così si può mettere al lavoro tutta la macchina costruita per il
+Il guadagno è enorme, e lo abbiamo già incassato due volte. Infatti una fila di
+numeri di catalogo è, alla lettera, un testo: simboli in sequenza presi da un
+alfabeto finito, come le parole di una frase sono prese da un vocabolario. Su un
+testo fatto così si può mettere al lavoro tutta la macchina costruita per il
 linguaggio, quella che indovina il simbolo dopo. È il modo in cui una macchina
 genera musica, e il modo in cui genera parlato.
 
@@ -383,7 +390,9 @@ nella {doc}`sezione sui codec neurali
 dove il prontuario si chiamava tavolozza: all’indietro si fa finta che la
 scelta della casella non ci sia, e la correzione arriva all’archivista come se
 avesse consegnato la sua descrizione esatta invece della casella più vicina.
-È un’approssimazione, ma funziona. La stessa idea torna nel capitolo sulle
+È un’approssimazione, ma funziona.
+
+La stessa idea torna nel capitolo sulle
 GAN, le reti che si sfidano, che leggerai più avanti: nella {doc}`sezione sulle
 loro evoluzioni </GAN/applicazioni-evoluzioni>` serve a fare lo stesso con le
 immagini.
@@ -462,7 +471,7 @@ cui la riparametrizzazione non si applica e serve lo straight-through.
 **Nell’{doc}`offline reinforcement learning
 </DeepReinforcementLearning/offline-rl>`**, dove si impara a decidere da
 partite già giocate senza poterne giocare di nuove, per l’uso più insolito dei
-quattro: là questa macchina non serve né a generare né a comprimere, serve a
+quattro. Là questa macchina non serve né a generare né a comprimere, serve a
 recintare. Un VAE condizionato sullo stato si addestra sulle coppie di stato e
 azione dei dati, e genera le azioni plausibili in quello stato; il programma
 poi sceglie la migliore soltanto fra quelle, invece che fra tutte, così da non
@@ -483,8 +492,8 @@ sull’ELBO, lo scarto fra il prior e l’insieme vero dei codici, non si risolv
 si aggira, perché a decidere che cosa esce dal codice pensa un altro modello.
 
 **Nei {doc}`mondi in miniatura </WorldModels/mondi-in-miniatura>`**, in cui un
-programma si allena immaginando invece che giocando, per spremere un fotogramma
-di videogioco in trentadue numeri. Là conta la regolarità dello
+programma si allena immaginando invece che giocando, per comprimere un
+fotogramma di videogioco in trentadue numeri. Là conta la regolarità dello
 spazio latente: se avesse buchi, la macchina che immagina il fotogramma
 successivo produrrebbe presto un codice a cui non corrisponde nessuna immagine,
 e il sogno si spezzerebbe dopo pochi passi.

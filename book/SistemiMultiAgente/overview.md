@@ -46,7 +46,7 @@ nello spazio, con la stessa geometria con cui due occhi ricavano la profondità.
 La terza postazione serve a risolvere il problema che finora aveva reso lo
 spettacolo impossibile da misurare: capire quale puntino di una foto sia lo
 stesso uccello di quale puntino dell'altra, quando i puntini sono migliaia e si
-somigliano tutti. Fra le due postazioni lontane l'algoritmo riusciva ad
+somigliano tutti. Infatti, fra le due postazioni lontane l'algoritmo riusciva ad
 abbinare un uccello su cinque, troppo pochi; fra due vicine, che vedono quasi
 la stessa scena, nove su dieci. Due macchine vicine sono come due occhi
 quasi sovrapposti, e della profondità misurano poco: a misurarla bene serve la
@@ -88,8 +88,8 @@ ciascuno guarda gli altri.
 
 Finché la densità dello stormo resta la stessa, le due regole prevedono lo
 stesso comportamento e nessuna osservazione saprebbe distinguerle. Si separano
-quando la densità cambia, per esempio quando lo stormo si dirada per sfuggire a un
-falco, nel momento in cui restare insieme conta di più. La
+quando la densità cambia, per esempio quando lo stormo si dirada per sfuggire a
+un falco, nel momento in cui restare insieme conta di più. La
 {numref}`fig-regola-metrica-topologica` mette le due regole una accanto
 all'altra sullo stesso stormo.
 
@@ -117,15 +117,17 @@ siano finiti lontano.
 
 Meno di quanto verrebbe da dire. Il conto su una palla è scomodo e su una
 scatola no, e di quanto vada allargato lo sguardo viene identico, quindi
-facciamolo lì. Una scatola larga due metri, per due, per due contiene otto metri
-cubi. Per contenerne il doppio, sedici, non serve una scatola larga il doppio:
-quella ne conterrebbe sessantaquattro, cioè otto volte tanto, perché allargando
-il lato si allargano insieme le tre direzioni. Proviamo allora ad allargare di
-poco. Portiamo il lato da due metri a due e mezzo, un quarto in più: due e mezzo
-per due e mezzo per due e mezzo fa quindici metri cubi e sei decimi, e i sedici
-che cercavamo sono lì a un soffio. Ecco perché per ritrovare i suoi sette
-compagni in uno spazio doppio a uno storno basta allargare lo sguardo di un
-quarto: lo spazio cresce molto più in fretta della distanza.
+facciamolo lì. Una scatola larga due metri, per due, per due contiene otto
+metri cubi. Per contenerne il doppio, sedici, non serve una scatola larga il
+doppio: quella ne conterrebbe sessantaquattro, cioè otto volte tanto, perché
+allargando il lato si allargano insieme le tre direzioni.
+
+Proviamo allora ad allargare di poco. Portiamo il lato da due metri a due e
+mezzo, un quarto in più: due e mezzo per due e mezzo per due e mezzo fa
+quindici metri cubi e sei decimi, e i sedici che cercavamo sono lì a un soffio.
+Ecco perché per ritrovare i suoi sette compagni in uno spazio doppio a uno
+storno basta allargare lo sguardo di un quarto: lo spazio cresce molto più in
+fretta della distanza.
 
 Lo stormo resta unito perché la regola non parla di metri: parla di *quanti*, e
 quanti restano quanti anche quando il gruppo si allarga.
@@ -161,8 +163,9 @@ $1{,}51$ m) il raggio di interazione $r_c$ cresce con $r_1$ in modo netto
 ($R^2 = 0{,}78$), mentre il numero di vicini interagenti non mostra alcuna
 correlazione con la rarefazione ($n_c^{-1/3}$ contro $r_1$: $R^2 = 0{,}00021$).
 Il raggio segue la densità, il grado no: in media
-$n_c = 6{,}5 \pm 0{,}9$ (errore standard) {cite}`ballerini2008interaction`. Nel
-linguaggio dei grafi, quello dei {doc}`dati a grafo
+$n_c = 6{,}5 \pm 0{,}9$ (errore standard) {cite}`ballerini2008interaction`.
+
+Nel linguaggio dei grafi, quello dei {doc}`dati a grafo
 </GraphNeuralNetwork/dati-a-grafo>`, la regola metrica costruisce un grafo a
 raggio fisso e la topologica il grafo diretto degli $n_c$ vicini più prossimi,
 in cui ogni nodo sceglie i propri $n_c$ archi uscenti: il grado uscente è
@@ -180,11 +183,12 @@ accompagnano le misure gli individui sono gli stessi, e cambia soltanto la
 regola con cui ciascuno guarda i vicini: con quella topologica lo stormo
 attaccato da un predatore resta intero nell'esito più probabile, con quella
 metrica si spezza di norma in più tronconi. La bravura dei singoli conta ancora,
-ma non basta a prevedere il gruppo. Ogni sezione che segue riprende questa tesi
-su programmi invece che su uccelli. Un agente, qui, è un programma a cui si
-affida un compito e che lo porta avanti decidendo un passo alla volta
-che cosa fare; e gli stessi dieci agenti, a seconda di chi può scrivere a chi,
-formano sistemi diversi.
+ma non basta a prevedere il gruppo.
+
+Ogni sezione che segue riprende questa tesi su programmi invece che su uccelli.
+Un agente, qui, è un programma a cui si affida un compito e che lo porta
+avanti decidendo un passo alla volta che cosa fare; e gli stessi dieci agenti,
+a seconda di chi può scrivere a chi, formano sistemi diversi.
 
 ## Perché adesso
 
@@ -206,25 +210,28 @@ diversi, e la squadra c'è. Il costo vero comincia quando la squadra lavora,
 perché ogni messaggio che un agente scrive è una chiamata al modello, e ogni
 messaggio che legge si paga anche lui.
 
-Serve un esempio concreto: le prossime pagine parlano a lungo del costo di una
-squadra e della forma da darle, e un costo non dice niente finché non si sa a
-quale compito si riferisce. Prendiamo la richiesta: «apri questo file di
-vendite e dimmi quali negozi stanno peggiorando». Il coordinatore la riceve e
-tiene le fila. Il programmatore scrive il codice che apre il file e svolge
-l'analisi. Il revisore lo legge e giudica un solo aspetto: se è sicuro
-eseguirlo, cioè se non cancella niente e non combina danni. A quel punto tocca
-di nuovo al coordinatore, perché è l'unico dei tre che può toccare la macchina
-vera: gli altri due scrivono e leggono testo, lui esegue. Il risultato torna al
-programmatore, che lo interpreta, e la risposta al mittente la consegna di
-nuovo il coordinatore.
+Serve un esempio concreto: del costo di una squadra e della forma da darle si
+parla a lungo, e un costo non dice niente finché non si sa a quale compito si
+riferisce. Prendiamo la richiesta: «apri questo file di vendite e dimmi quali
+negozi stanno peggiorando».
+
+Il **coordinatore** la riceve e tiene le fila. Il **programmatore** scrive il
+codice che apre il file e svolge l'analisi. Il **revisore** lo legge e giudica
+un solo aspetto: se è sicuro eseguirlo, cioè se non cancella niente e non
+combina danni. A quel punto tocca di nuovo al coordinatore, perché è l'unico
+dei tre che può toccare la macchina vera: gli altri due scrivono e leggono
+testo, lui esegue. Il risultato torna al programmatore, che lo interpreta, e la
+risposta al mittente la consegna di nuovo il coordinatore.
 
 La squadra viene dall'articolo che presenta AutoGen {cite}`wu2024autogen`, un
 framework, cioè una libreria di programmi pronti, con cui conversazioni di
 questo genere fra agenti si scrivono in poche righe: là i tre si chiamano
 Commander, Writer e Safeguard, e interrogano un modello che ottimizza le
 consegne di una catena di fornitura (l'applicazione si chiama OptiGuide). Qui la
-domanda è un'altra, i tre ruoli sono quelli, e questa è la squadra a cui riferirsi
-ogni volta che si parla di agenti che si passano messaggi. La {doc}`sezione
+domanda è un'altra, i tre ruoli sono quelli, e questa è la squadra a cui
+riferirsi ogni volta che si parla di agenti che si passano messaggi.
+
+La {doc}`sezione
 sulle architetture degli agenti </Agenti/architetture-e-valutazione>` ha già
 descritto ruoli come questi uno per uno: il pianificatore, l'esecutore che
 svolge il lavoro e il critico che lo controlla. Qui il programmatore è
@@ -232,9 +239,9 @@ l'esecutore, il revisore è il critico, e il coordinatore pianifica e in più è
 l'unico che fa girare il codice sulla macchina; si studia che cosa
 succede quando i tre sono insieme.
 
-Definire i partecipanti è facile; la difficoltà sta altrove: in chi parla
-con chi, in chi decide quando le proposte sono in disaccordo, e in una domanda
-che con un agente solo non si pone, cioè come ci si accorge che il gruppo nel suo
+Definire i partecipanti è facile; la difficoltà sta altrove: in chi parla con
+chi, in chi decide quando le proposte sono in disaccordo, e in una domanda che
+con un agente solo non si pone, cioè come ci si accorge che il gruppo nel suo
 insieme ha sbagliato.
 
 L'ultima è la meno ovvia. Quando sbaglia un gruppo ogni singolo pezzo sembra a
@@ -291,10 +298,10 @@ P_n = \sum_{k=\lfloor n/2 \rfloor + 1}^{n} \binom{n}{k}\, p^{k} (1-p)^{\,n-k},
 $$
 
 dove $\binom{n}{k}$ conta i modi in cui $k$ votanti su $n$ possono azzeccare.
-Al crescere di $n$, $P_n \to 1$ se $p > 1/2$ e $P_n \to 0$ se $p < 1/2$; con
-$p = 0{,}7$ si ha $P_3 = 0{,}784$ e $P_9 = 0{,}901$, con $p = 0{,}4$
-$P_3 = 0{,}352$. La velocità la dà la disuguaglianza di Hoeffding: detto $S_n$
-il numero di voti corretti, per $p > 1/2$
+Al crescere di $n$, $P_n \to 1$ se $p > 1/2$ e $P_n \to 0$ se $p < 1/2$; ad
+esempio, con $p = 0{,}7$ si ha $P_3 = 0{,}784$ e $P_9 = 0{,}901$, e con
+$p = 0{,}4$ si ha $P_3 = 0{,}352$. La velocità la dà la disuguaglianza di
+Hoeffding: detto $S_n$ il numero di voti corretti, per $p > 1/2$
 
 $$
 P_n \;=\; \Pr\!\big(S_n > n/2\big) \;\ge\; 1 - e^{-2n\,(p - 1/2)^2},
@@ -325,7 +332,9 @@ protocolli e il consenso.
 I sistemi multi-agente uniscono due idee, e ne preparano una terza. Dagli
 agenti autonomi prendono il ciclo osserva-ragiona-agisci e i ruoli
 specializzati: qui diamo per acquisito il singolo agente e studiamo ciò che
-nasce quando sono molti. Dal *reinforcement learning* ereditano il processo
+nasce quando sono molti.
+
+Dal *reinforcement learning* ereditano il processo
 decisionale di Markov (MDP: si osserva uno stato, si sceglie un'azione, si
 riceve una ricompensa e si passa allo stato successivo), la *policy* $\pi$,
 cioè la regola con cui l'agente sceglie l'azione in ciascuno stato, e il
@@ -352,12 +361,12 @@ di come starebbero fidandosi l'uno dell'altro, e nessuno, muovendosi per primo,
 ci guadagna.
 
 Un sistema multi-agente allarga quella struttura: i giocatori possono essere
-dieci, e non sono per forza nemici. Imparare diventa anche più difficile, perché un
-agente solo studia in un mondo fermo mentre dieci agenti studiano in un mondo
+dieci, e non sono per forza nemici. Imparare diventa anche più difficile, perché
+un agente solo studia in un mondo fermo mentre dieci agenti studiano in un mondo
 che si muove: il «mondo» di ciascuno contiene gli altri nove, che stanno
 imparando anche loro. È come allenarsi per una gara in cui anche gli avversari
-si allenano: il mese prossimo non basterà più la preparazione che ha vinto il mese
-scorso.
+si allenano: il mese prossimo non basterà più la preparazione che ha vinto il
+mese scorso.
 
 `````
 
@@ -375,7 +384,9 @@ osserva soltanto una parte $o^i$ dello stato, e la ricompensa è comune, il
 modello diventa il Dec-POMDP (processo decisionale di Markov decentralizzato e
 parzialmente osservabile) {cite}`oliehoek2016concise`, quello della sezione su
 {doc}`imparare insieme <imparare-insieme>`, che descrive bene gli agenti
-linguistici, ciascuno dei quali vede soltanto il proprio contesto. Se $r^i = r$
+linguistici, ciascuno dei quali vede soltanto il proprio contesto.
+
+Se $r^i = r$
 per ogni $i$ il gioco è cooperativo; se $N = 2$ e $r^1 + r^2 = 0$ si ricade nel
 caso a somma zero, che è la forma minimax della GAN (con la *loss* non-saturante
 che si usa in pratica la somma non è più zero, e la {doc}`sezione su come
@@ -385,19 +396,24 @@ $(\pi^1, \dots, \pi^N)$ tale che per ogni agente $i$, ogni policy alternativa
 $\tilde{\pi}^i$ e ogni stato $s$ valga
 $V^i_{(\pi^i,\pi^{-i})}(s) \ge V^i_{(\tilde{\pi}^i,\pi^{-i})}(s)$, dove $V^i$ è
 il ritorno atteso di $i$, scontato con $\gamma$, e $\pi^{-i}$ le policy degli
-altri. Con stati e azioni finiti e ritorno scontato un equilibrio in policy
+altri.
+
+Con stati e azioni finiti e ritorno scontato un equilibrio in policy
 stazionarie esiste (per la somma zero {cite}`shapley1953stochastic`, in generale
 {cite}`fink1964equilibrium`), ma le policy sono in generale stocastiche: in
 sasso, carta e forbici l'unico equilibrio gioca ogni mossa un terzo delle volte,
-mentre con un agente solo una policy ottima deterministica c'è sempre. Di
-solito, poi, l'equilibrio non è unico e non è per forza un buon esito. Nel
+mentre con un agente solo una policy ottima deterministica c'è sempre.
+
+Di solito, poi, l'equilibrio non è unico e non è per forza un buon esito. Nel
 **dilemma del prigioniero** (ricompense $(3,3)$ se cooperano entrambi, $(5,0)$ o
 $(0,5)$ se defeziona uno solo, $(1,1)$ se defezionano entrambi) defezionare è la
 miglior risposta a qualunque mossa dell'altro: l'unico equilibrio è $(1,1)$, che
 è anche l'unico esito non **Pareto-ottimo**, cioè migliorabile per qualcuno
 senza peggiorarlo per nessuno. Nel caso cooperativo il profilo ottimo è un
 equilibrio, ma accanto a equilibri peggiori, e scegliere fra loro è un problema
-a sé. Ne segue che il caso multi-agente non è quello singolo ripetuto $N$ volte:
+a sé.
+
+Ne segue che il caso multi-agente non è quello singolo ripetuto $N$ volte:
 per l'agente $i$ l'ambiente comprende le policy $\pi^{-i}$ degli altri, che
 cambiano durante l'addestramento, quindi il processo che $i$ osserva non è
 stazionario e le garanzie di convergenza del Q-learning, che presuppongono un
@@ -407,11 +423,11 @@ MDP fisso, decadono. Lo affronta la stessa sezione su imparare insieme.
 
 ## Tre domande
 
-Il capitolo risponde a tre domande, in quest'ordine. Conviene davvero più di
-un agente, e a quale costo? Come si organizzano, cioè chi parla con chi,
-con quali messaggi e con quale regola di decisione? Possono, infine,
-imparare a coordinarsi invece di essere programmati per farlo, come gli
-storni, a cui la regola dei sei o sette vicini non l'ha insegnata nessuno?
+In questo capitolo rispondiamo a tre domande, in quest'ordine. Conviene davvero
+più di un agente, e a quale costo? Come si organizzano, cioè chi parla con chi,
+con quali messaggi e con quale regola di decisione? Possono, infine, imparare a
+coordinarsi invece di essere programmati per farlo, come gli storni, a cui la
+regola dei sei o sette vicini non l'ha insegnata nessuno?
 
 - La prima domanda è quella del costo del coordinamento: quando più agenti
   battono un singolo agente ben progettato, numeri alla mano (quante volte si

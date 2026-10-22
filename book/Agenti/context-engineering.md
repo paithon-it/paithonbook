@@ -15,8 +15,9 @@ finestra di contesto già incontrata nell’{doc}`anatomia di un agente
 volta, fissato da chi l'ha costruito (per esempio 128.000).
 
 Per chi usa un modello già addestrato senza riaddestrarlo, l'unica leva è il
-testo che gli si mette davanti: il contesto è l'interfaccia del modello, il punto
-da cui passa ogni istruzione. Nella sezione {doc}`sui grandi modelli linguistici
+testo che gli si mette davanti. In altri termini, il contesto è l'interfaccia
+del modello, il punto da cui passa ogni istruzione. Nella sezione {doc}`sui
+grandi modelli linguistici
 </Transformers/llm>` questa proprietà ha un nome inglese, *in-context learning*,
 apprendimento dal contesto: si descrive il compito nel contesto, magari con due
 esempi, e il modello lo esegue senza che i suoi pesi cambino. È un modo di
@@ -36,7 +37,7 @@ si degrada.
 Per un agente il problema è più acuto, perché il ciclo osserva → ragiona →
 agisci riempie il contesto da sé: ogni pensiero, ogni chiamata a uno strumento,
 ogni osservazione di ritorno è testo che si accumula nella *cronologia*, cioè
-l'elenco di tutto quel che si è detto e fatto finora. Con
+l'elenco di tutto quel che si è detto e fatto finora. Ad esempio, con
 osservazioni di migliaia di token bastano poche decine di passi per occuparne
 buona parte. Anche prima del limite la qualità cala, perché la capacità del
 modello di ritrovare un'informazione nel contesto diminuisce al crescere dei
@@ -54,18 +55,21 @@ una volta.
 
 Riempire la finestra ha tre costi. Il primo è la memoria: per non ricalcolare a
 ogni passo ciò che ha già letto, il modello conserva le chiavi e i valori
-dell'attenzione di tutto il contesto, il *taccuino* della {doc}`sezione
-sull'attenzione in pratica </Transformers/attenzione-in-pratica>`. Il taccuino
-cresce linearmente con i token: per il modello da sette miliardi di quella
-sezione, nella variante con tutte le teste (MHA), occupa 512 KiB a token. A
-8.192 token sono già 4 GiB contro i 13 GiB dei pesi, e a 128.000 token lo spazio
-supera di diverse volte il modello stesso. Il secondo è il tempo, perché il
-contesto va elaborato per intero prima che compaia il primo token della
-risposta. Il terzo è il denaro, perché i fornitori fanno pagare ogni token in
-ingresso e in uscita: il *costo per token*, con uno sconto sulla parte già vista
-quando si usa la cache dei prefissi, è una delle voci che LLMOps tiene sotto
-controllo. Un contesto gonfio comporta una spesa più alta e una risposta più
-lenta, e riempire la finestra fino al limite «per sicurezza» è quasi sempre
+dell'attenzione di tutto il contesto, la KV cache, cioè il *taccuino* della
+{doc}`sezione sull'attenzione in pratica </Transformers/attenzione-in-pratica>`.
+Il taccuino cresce linearmente con i token: per il modello da sette miliardi di
+quella sezione, nella variante con tutte le teste (MHA), occupa 512 KiB a token.
+A 8.192 token sono già 4 GiB contro i 13 GiB dei pesi, e a 128.000 token lo
+spazio supera di diverse volte il modello stesso.
+
+Il secondo costo è il tempo, perché il contesto va elaborato per intero prima
+che compaia il primo token della risposta. Il terzo è il denaro, perché i
+fornitori fanno pagare ogni token in ingresso e in uscita: il *costo per token*,
+con uno sconto sulla parte già vista quando si usa la cache dei prefissi, è una
+delle voci che LLMOps tiene sotto controllo.
+
+Un contesto gonfio comporta dunque una spesa più alta e una risposta più lenta,
+e riempire la finestra fino al limite «per sicurezza» è quasi sempre
 svantaggioso.
 
 La {numref}`fig-context-window` mostra come la finestra si riempie in una
@@ -127,13 +131,13 @@ bravura sta nel pescarne solo la pagina che serve adesso, invece di tenere
 tutto aperto sul tavolo (dove non ci starebbe, e dove si perderebbe nel mezzo).
 
 Nello schedario finiscono tre generi di cose, che si recuperano in modi
-diversi. I **documenti**, che si vanno a cercare come abbiamo visto parlando di
-RAG. I **riassunti** di quello che si è già detto: quando una conversazione si
-allunga troppo, invece di portarsela dietro parola per parola se ne tiene un
-sunto, che occupa una frazione dello spazio. E i **fatti sull'utente**, cioè le
-poche cose che valgono sempre (come si chiama, che lingua parla, cosa ha già
-chiesto tre volte), tenute a parte e rimesse davanti al modello quando
-c'entrano.
+diversi. Ci sono i **documenti**, che si vanno a cercare come abbiamo visto
+parlando di RAG. Ci sono poi i **riassunti** di quello che si è già detto:
+quando una conversazione si allunga troppo, invece di portarsela dietro parola
+per parola se ne tiene un sunto, che occupa una frazione dello spazio. Infine i
+**fatti sull'utente**, cioè le poche cose che valgono sempre (come si chiama,
+che lingua parla, cosa ha già chiesto tre volte), tenute a parte e rimesse
+davanti al modello quando c'entrano.
 
 Quando un lavoro è troppo grande per un tavolo solo, se ne passa un pezzo a
 un aiutante, che lo sbriga sul suo tavolo e riporta soltanto il risultato: sul
@@ -151,7 +155,9 @@ vive la finestra. La memoria a lungo termine è esterna e persistente, e la
 letteratura la organizza a livelli, come la memoria virtuale di un sistema
 operativo: in MemGPT {cite}`packer2023memgpt` la finestra è la memoria
 principale, l'archivio esterno la secondaria, e il modello stesso decide che
-cosa spostare fra le due. Tre forme ricorrono. La prima è il **database
+cosa spostare fra le due.
+
+Della memoria esterna ricorrono tre forme. La prima è il **database
 vettoriale**: i ricordi (documenti, scambi passati) vengono codificati in
 embedding e recuperati per similarità quando servono; è il RAG dei Transformer,
 letto qui come un meccanismo di memoria, non solo di recupero. La seconda è il
@@ -159,13 +165,14 @@ letto qui come un meccanismo di memoria, non solo di recupero. La seconda è il
 la si comprime in un sunto che ne conserva l'essenziale a costo di token molto
 minore, liberando finestra. La terza sono i **fatti strutturati** (preferenze,
 identità, vincoli dell'utente) tenuti a parte e reiniettati quando pertinenti.
+
 Nelle pratiche descritte da Anthropic nel 2025 {cite}`anthropic2025context` le
 stesse idee hanno nomi propri: la *compattazione* (riassumere la conversazione
 e ripartire con una finestra nuova), gli *appunti strutturati* tenuti fuori
 dalla finestra, e i *sotto-agenti*, ciascuno con una finestra sua, che
 restituiscono all'agente principale solo un riassunto del proprio lavoro. Il
-nodo difficile sta a valle dell'archivio: la **politica di ammissione**, cioè
-che cosa di tutto quel materiale merita la finestra a questo passo.
+nodo difficile, però, sta a valle dell'archivio: la **politica di ammissione**,
+cioè che cosa di tutto quel materiale merita la finestra a questo passo.
 
 `````
 
@@ -184,7 +191,7 @@ ragionamento, la chain-of-thought {cite}`wei2022chain`), è ingegneria del
 contesto: si spende una parte del budget in token di «pensiero» per ottenere
 risposte migliori. Il ragionamento occupa finestra e allunga l'attesa, e il
 guadagno misurato si concentra sui compiti matematici e simbolici
-{cite}`sprague2025cot`: altrove spesso non ripaga il costo, e va speso dove
+{cite}`sprague2025cot`; altrove spesso non ripaga il costo, e va speso dove
 serve.
 
 L'idea si può spingere oltre sui problemi che chiedono di pianificare. Invece
@@ -231,7 +238,7 @@ lo stesso modello, stima quanto prometta ciascuno stato (nel gioco del 24, tre
 giudizi «sicuro / forse / impossibile» campionati per ogni stato). La
 *ricerca* decide quali stati espandere: in ampiezza (BFS, tenendo i $b$ stati
 migliori a ogni livello) o in profondità (DFS, potando lo stato giudicato
-senza speranza e risalendo al padre). È la cosa che il filo unico non
+senza speranza e risalendo al padre). È ciò che il filo unico non
 permette: abbandonare uno stato che non promette e riprendere da uno
 precedente.
 
@@ -296,7 +303,7 @@ modello, e in quale ordine.
   contesto {cite}`anthropic2025context`. Per un agente la cronologia cresce a
   ogni passo, e la qualità cala con i token anche prima del limite (*context
   rot*).
-- La finestra è finita e costosa: ogni token pesa sul taccuino delle chiavi e
+- La finestra è finita e costosa: ogni token pesa sulla cache delle chiavi e
   dei valori (lineare nella lunghezza, 512 KiB per token per un modello da
   sette miliardi a 16 bit), sull'attesa del primo token e sul costo per token;
   le definizioni degli strumenti e la cronologia ne occupano una parte che

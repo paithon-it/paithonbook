@@ -24,8 +24,8 @@ macchina, e non come rapporti fra i valori in due istanti vicini, che è il
 modo in cui una pendenza si stima di solito.
 
 La rete diventa così una funzione di cui si conoscono, in ogni punto, il
-valore, la pendenza e la curvatura: bastano per chiederle di rispettare
-un'equazione differenziale, che parla di quelle tre grandezze e non d'altro.
+valore, la pendenza e la curvatura. Queste tre grandezze bastano per chiederle
+di rispettare un'equazione differenziale, che parla di loro e non d'altro.
 Perché la curvatura esista dappertutto, però, la curva non deve avere spigoli
 (in matematica: dev'essere derivabile due volte), e questo dipende dalla
 funzione di attivazione che la rete applica fra uno strato e l'altro: prima di
@@ -105,18 +105,22 @@ $$
 + \big(u_\theta'(0) - v_0\big)^2 \Big]}_{\text{condizioni iniziali}},
 $$
 
-dove i $t_j$ sono gli $N_c$ punti di collocazione (istanti sparsi nel
+dove i $t_j$ sono gli $N_c$ **punti di collocazione** (istanti sparsi nel
 dominio, casuali o equispaziati, nei quali esigiamo il rispetto
 dell'equazione) e $\lambda_0 > 0$ bilancia i due termini. Lo chiamiamo
 $\lambda_0$, e non $\lambda$, perché non è lo stesso peso della loss vista in
 apertura di capitolo: là $\lambda$ moltiplicava il termine di fisica, qui il
 peso sta sulle condizioni iniziali. Dove metterlo è convenzione; ciò che
-conta è il rapporto fra i termini. Per una PDE su un
+conta è il rapporto fra i termini.
+
+In generale, per una PDE su un
 dominio spaziale si aggiunge un termine identico per le condizioni al
 contorno, con punti campionati sul bordo; e se esistono misure $(t_i, u_i)$
 si aggiunge il termine dati
 $\frac{1}{N_d}\sum_{i=1}^{N_d} \big(u_\theta(t_i) - u_i\big)^2$, come nella
-loss vista in apertura di capitolo. Tutte le derivate che compaiono in
+loss vista in apertura di capitolo.
+
+Tutte le derivate che compaiono in
 $r_\theta$ (per noi $u_\theta'$ e $u_\theta''$) le fornisce la
 differenziazione automatica rispetto all'ingresso $t$: esatte, senza rapporti
 incrementali né passo di discretizzazione.
@@ -127,7 +131,9 @@ condizioni iniziali serve dunque a selezionare, dentro la famiglia delle
 soluzioni dell'equazione (per una lineare del secondo ordine come quella della
 molla che ci farà da banco di prova, uno spazio a due dimensioni), la nostra:
 senza di esso nulla distingue la traiettoria che parte da $u(0)=1$ da quella
-che se ne sta ferma a zero. Nemmeno con quel termine, però, il minimizzatore
+che se ne sta ferma a zero.
+
+Nemmeno con quel termine, però, il minimizzatore
 della loss è unico in senso stretto. Con $N_c$ punti di collocazione *finiti*,
 infinite funzioni annullano il residuo in quei punti e rispettano le due
 condizioni iniziali; la soluzione vera è l'unico minimo globale se ci si
@@ -143,27 +149,27 @@ infilare un picco di residuo nel buco fra due punti di controllo.
 Per un'equazione lineare la grandezza che controlla l'errore si scrive in una
 riga. Sia $e = u_\theta - u$ lo scarto dalla soluzione esatta della molla che
 useremo come banco di prova, $m u'' + c u' + k u = 0$, sottosmorzata. Poiché
-$u$ risolve l'equazione omogenea, lo scarto risolve
-$m e'' + c e' + k e = r_\theta$, con $e(0) = u_\theta(0) - u_0$ ed
-$e'(0) = u_\theta'(0) - v_0$, e per variazione delle costanti
-$e(t) = e_h(t) + \int_0^t G(t - s)\, r_\theta(s)\,\mathrm{d}s$, dove $e_h$ è
-la soluzione omogenea con i dati iniziali dello scarto e
-$G(\tau) = e^{-\gamma\tau}\sin(\omega_d\tau)/(m\,\omega_d)$ è la funzione di
-Green, con $\gamma$ e $\omega_d$ il tasso di decadimento e la pulsazione che il
-paragrafo «Una molla come banco di prova» ricava. Poiché $|G| \le 1/(m\,\omega_d)$,
+$u$ risolve l'equazione omogenea, lo scarto risolve $m e'' + c e' + k e =
+r_\theta$, con $e(0) = u_\theta(0) - u_0$ ed $e'(0) = u_\theta'(0) - v_0$, e
+per variazione delle costanti $e(t) = e_h(t) + \int_0^t G(t - s)\,
+r_\theta(s)\,\mathrm{d}s$, dove $e_h$ è la soluzione omogenea con i dati
+iniziali dello scarto e $G(\tau) =
+e^{-\gamma\tau}\sin(\omega_d\tau)/(m\,\omega_d)$ è la funzione di Green, con
+$\gamma$ e $\omega_d$ il tasso di decadimento e la pulsazione che il paragrafo
+«Una molla come banco di prova» ricava. Dato che $|G| \le 1/(m\,\omega_d)$,
 
 $$
 \max_{0 \le t \le T} |e(t)| \;\le\; |e(0)| + \frac{|e'(0)| + \gamma\,|e(0)|}{\omega_d}
 \;+\; \frac{1}{m\,\omega_d}\int_0^T \big|r_\theta(s)\big|\,\mathrm{d}s .
 $$
 
-L'errore è controllato dagli scarti iniziali e dall'integrale del residuo su
-tutto l'intervallo (a sua volta, per Cauchy-Schwarz, non più grande di
-$\sqrt{T\int_0^T r_\theta^2}$, la versione continua del termine di fisica),
+Ne segue che l'errore è controllato dagli scarti iniziali e dall'integrale del
+residuo su tutto l'intervallo (a sua volta, per Cauchy-Schwarz, non più grande
+di $\sqrt{T\int_0^T r_\theta^2}$, la versione continua del termine di fisica),
 non dalla media di $r_\theta^2$ sui punti di collocazione: la loss stima
-quell'integrale con $N_c$ campioni, e un picco stretto che cade fra due di
-essi pesa nell'integrale e non nella loss. La differenza fra le due quantità è
-il divario di generalizzazione della PINN.
+quell'integrale con $N_c$ campioni, e un picco stretto che cade fra due di essi
+pesa nell'integrale e non nella loss. La differenza fra le due quantità è il
+divario di generalizzazione della PINN.
 
 Perché allora in pratica si sceglie $\lambda_0$ ben maggiore di 1? La ragione
 che se ne dà non è selezionare il minimo, ma raggiungerlo: i due termini non
@@ -209,7 +215,7 @@ vincoli vengono soddisfatti.
 
 Nel primo caso il rimedio è dare voce al termine debole con un peso più grande;
 nel secondo è cambiare l'ordine in cui la discesa soddisfa i vincoli, e un peso
-sulla sola partenza non basta a imporlo. In tutti e due i casi la manopola
+sulla sola partenza non basta a imporlo. In tutti e due i casi l'iperparametro
 ($\lambda_0$, o la $\varepsilon$ dei pesi causali) si sceglie a mano, provando.
 È il primo dei limiti che la sezione su {doc}`dove la fisica aiuta e dove no
 </PINN/applicazioni-limiti>` elenca.
@@ -250,16 +256,16 @@ ferro dell’{doc}`apertura del capitolo </PINN/overview>` cambia sia lungo il
 ferro sia nel tempo, e $\partial u / \partial t$ è la sua variazione nel
 tempo a posizione fissata.
 
-Lo scarto fra i due lati dell'equazione, che il ramo in alto calcola in
-ogni punto, si chiama residuo, $r_\theta(t)$: è lo stesso oggetto che nel
+Lo scarto fra i due lati dell'equazione, che il ramo in alto calcola in ogni
+punto, si chiama **residuo**, $r_\theta(t)$: è lo stesso oggetto che nel
 racconto del compito in classe erano i punti persi per una violazione della
 regola. La media dei suoi quadrati sui punti di collocazione è il termine di
 fisica della loss, $\mathcal{L}_{\text{fisica}}$ (`loss_fisica` nel codice). Il
 quadrato serve a due cose, a contare uguale una violazione in su e una in giù,
 e a far pesare di più quelle grosse; e la conseguenza da tenere a mente è che
-la loss di fisica cresce con il quadrato della violazione. Se il residuo vale 3
-in un punto e 1 in un altro, i due contano 9 e 1: una loss cento volte più alta
-corrisponde a una violazione dieci volte più grossa.
+la loss di fisica cresce con il quadrato della violazione. Ad esempio, se il
+residuo vale 3 in un punto e 1 in un altro, i due contano 9 e 1: una loss cento
+volte più alta corrisponde a una violazione dieci volte più grossa.
 
 Lo schema è disegnato nel caso generale, quello di un'equazione con una
 coordinata di spazio e una di tempo; nel resto della sezione lavoreremo sul
@@ -381,7 +387,7 @@ Questa formula sarà la pagella con cui giudicheremo la PINN.
 Prima di scrivere la rete c'è una scelta da fare, e in ogni altro capitolo del
 libro sarebbe stata automatica. Una rete non è fatta solo di somme: fra uno
 strato e l'altro ogni numero passa attraverso una funzioncina che lo piega, la
-funzione di attivazione, che stabilisce la forma delle curve che la rete sa
+**funzione di attivazione**, che stabilisce la forma delle curve che la rete sa
 disegnare. Dalla {doc}`sezione sulle funzioni di attivazione
 </RetiNeurali/funzioni-attivazione>` in poi abbiamo usato quasi sempre la
 stessa, la ReLU, che è la scelta giusta praticamente ovunque. Qui è
@@ -430,26 +436,26 @@ La ReLU è fatta di due semirette: una rete di sole ReLU calcola una funzione
 sono un insieme di misura nulla, quindi in pratica la si legge come zero
 dappertutto). Quante siano quelle regioni, e come crescano con la profondità,
 lo conta la sezione «Quante regioni taglia una rete» del {doc}`capitolo sul
-deep learning </DeepLearning/overview>`. Nel
-nostro residuo, invece, compare
+deep learning </DeepLearning/overview>`. Nel nostro residuo, invece, compare
 $u''$: per una rete ReLU verrebbe zero ovunque autograd riesca a calcolarlo, e
 il termine principale dell'equazione diventerebbe invisibile alla loss. Il
-difetto è silenzioso. Chiedendo ad autograd la derivata seconda di una rete
-ReLU non si ottiene un errore né un `None`, si ottengono zeri, e da quegli zeri
-nessun peso riceve più una spinta: il termine c'è, allunga il calcolo e non
-muove nulla. La `tanh`, al contrario, è liscia (derivabile infinite volte, con
-derivate continue a ogni ordine) e infatti è la scelta standard delle PINN;
+difetto è silenzioso. Chiedendo ad autograd la derivata seconda di una
+rete ReLU non si ottiene un errore né un `None`, si ottengono zeri, e da quegli
+zeri nessun peso riceve più una spinta: il termine c'è, allunga il calcolo e
+non muove nulla. La `tanh`, al contrario, è liscia (derivabile infinite volte,
+con derivate continue a ogni ordine) e infatti è la scelta standard delle PINN;
 funzionano anche il seno e la softplus (una versione arrotondata della ReLU),
 perché il requisito, qui, è la regolarità. Non per questo sono intercambiabili:
 le attivazioni periodiche cambiano quali frequenze la rete impara in fretta,
 effetto di cui la sezione sui limiti si serve come rimedio.
 
-La condizione dipende dall'ordine $p$ dell'equazione: il residuo contiene
-derivate della rete fino all'ordine $p$, e l'attivazione deve averne
-altrettante continue. Con la ReLU un'equazione del primo ordine si addestra
-ancora (la derivata della rete è costante a tratti, il residuo è discontinuo
-ma il gradiente rispetto ai pesi non si annulla); dal secondo ordine in poi la
-derivata che serve vale zero quasi ovunque, come nel caso della molla.
+In generale la condizione dipende dall'ordine $p$ dell'equazione: il residuo
+contiene derivate della rete fino all'ordine $p$, e l'attivazione deve averne
+altrettante continue. Ad esempio, con la ReLU un'equazione del primo ordine si
+addestra ancora (la derivata della rete è costante a tratti, il residuo è
+discontinuo ma il gradiente rispetto ai pesi non si annulla); dal secondo
+ordine in poi la derivata che serve vale zero quasi ovunque, come nel caso
+della molla.
 
 `````
 
@@ -499,7 +505,7 @@ argomenti che il ciclo di addestramento ordinario non usa; `create_graph`
 l'abbiamo incontrato nella sezione sui tensori, per le derivate di ordine
 superiore, e nel meta-apprendimento, per la stessa ragione: tenere derivabile
 la derivata appena calcolata. Il ciclo che le contiene ripete trentamila volte
-lo stesso giro di correzione, e ciascuno di quei giri si chiama epoca:
+la stessa iterazione di correzione, e ciascuna di esse si chiama **epoca**:
 
 ```python
 for epoca in range(30_000):
@@ -713,17 +719,17 @@ l'errore grande, diventa molto più ampio.
 ## Lo stesso codice, un altro seme
 
 C'è una riga del programma che non abbiamo commentato: `torch.manual_seed(42)`,
-in cima al programma. Una rete comincia sempre con i pesi sorteggiati a caso,
-perché partendo tutti uguali i neuroni resterebbero uguali per sempre, e il
-sorteggio dipende da un numero di partenza che si chiama seme: dando lo stesso
-seme si ottiene lo stesso sorteggio, e quindi lo stesso risultato. Fissarlo è
-una cortesia al lettore, che così, rifacendo l'esperimento, ritrova i nostri
-numeri. Qui è molto di più: cambiando quel 42, cambia la conclusione. Il seme
-7, però, l'abbiamo scelto apposta fra quelli con cui la corsa fallisce, per
-guardare da vicino come fallisce. Quanto spesso succeda lo dice il confronto su
-dieci semi, e la frazione di corse che falliscono è il risultato da ricordare:
-su un'altra macchina, dove le cifre dell'addestramento cambiano, a fallire
-potrebbe essere un altro seme, ma quella frazione resta.
+in cima al programma. Una rete comincia sempre con i pesi estratti a caso,
+perché partendo tutti uguali i neuroni resterebbero uguali per sempre, e
+l'estrazione dipende da un numero di partenza che si chiama **seme**: dando lo
+stesso seme si ottiene la stessa estrazione, e quindi lo stesso risultato.
+Fissarlo è una cortesia al lettore, che così, rifacendo l'esperimento, ritrova
+i nostri numeri. Qui è molto di più: cambiando quel 42, cambia la conclusione.
+Il seme 7, però, l'abbiamo scelto apposta fra quelli con cui la corsa fallisce,
+per guardare da vicino come fallisce. Quanto spesso succeda lo dice il
+confronto su dieci semi, e la frazione di corse che falliscono è il risultato
+da ricordare: su un'altra macchina, dove le cifre dell'addestramento cambiano,
+a fallire potrebbe essere un altro seme, ma quella frazione resta.
 
 Rimettiamo l'addestramento di prima dentro una funzione, così da poterlo
 rilanciare cambiando soltanto quel numero. È lo stesso codice riga per riga,
@@ -839,8 +845,8 @@ da cui il corpo era partito.
 | 25 000 | $9{,}03 \cdot 10^{-5}$ | 0,720 |
 | 27 500 | $5{,}46 \cdot 10^{-5}$ | 0,723 |
 
-Si guardi la seconda metà della tabella, perché è il punto di tutta la
-sezione. Fra le 17 500 e le 27 500 epoche la loss di fisica si divide per
+Si guardi la seconda metà della tabella, perché contiene il nodo della
+questione. Fra le 17 500 e le 27 500 epoche la loss di fisica si divide per
 seicento, da $3{,}3 \cdot 10^{-2}$ a $5 \cdot 10^{-5}$: chiunque guardasse
 soltanto la loss direbbe che lì l'addestramento ha fatto un salto di
 qualità. Nello stesso tratto l'errore vero peggiora, da 0,43 a 0,72, cioè da
@@ -889,7 +895,7 @@ di migliaia fra le violazioni, e resta enorme.)[^risale]
 
 [^risale]: A 27 500 epoche la loss di fisica del seme 7 era
     $5{,}5 \cdot 10^{-5}$, alla fine è $4{,}8 \cdot 10^{-4}$: una discesa del
-    gradiente non scende sempre, e negli ultimi duemilacinquecento giri quel
+    gradiente non scende sempre, e nelle ultime duemilacinquecento epoche quel
     termine è risalito. Di quanto, dipende dalla macchina su cui si addestra,
     perché è una cifra che cambia da un processore all'altro; la sostanza
     non cambia.
@@ -939,7 +945,7 @@ guarda, e nulla in quel punteggio gli chiede di comportarsi anche altrove.
 
 `````{tab} Superiore
 
-Due meccanismi distinti si sommano qui, e conviene separarli.
+Si sommano qui due meccanismi distinti.
 
 Il primo è la degenerazione del termine di fisica, già annotata quando abbiamo
 scritto la loss: $u \equiv 0$ risolve l'equazione omogenea, quindi il minimo
@@ -1094,8 +1100,9 @@ peso 100: collassano 5 corse su 10 (al 95%, fra 24% e 76%)
 rapporto fra i gradienti all'avvio: mediana 2.4, rovesciato in 4 semi su 20
 ```
 
-Le due corse con la loss di fisica più bassa in assoluto sono le due
-sbagliate, e sono anche quelle che restano più lontane dai sei attraversamenti
+Le due corse con la loss di fisica più bassa in assoluto
+sono le due sbagliate, e sono anche quelle che restano più lontane dai sei
+attraversamenti
 dello zero della soluzione vera: uno e quattro, contro i cinque o sei delle
 altre. Solo il seme 42 li fa tutti. Fra le altre quattro la loss di fisica
 torna a essere una guida sensata (chi ce l'ha più bassa sbaglia meno), il che
@@ -1142,7 +1149,7 @@ sull'apprendimento, un modello si giudica su dati tenuti da parte e mai visti
 in addestramento: un punteggio calcolato dove il modello si è allenato misura
 anche quanto bene ha imparato a compiacere quel campione. C'è anche un
 rimedio economico: **ricampionare** i punti di collocazione a ogni epoca,
-cioè sorteggiarne di nuovi ogni volta, così che non esista un esame su cui
+cioè estrarne di nuovi ogni volta, così che non esista un esame su cui
 prepararsi. I punti si possono estrarre uniformi o da sequenze a bassa
 discrepanza, e anche addensare dove il residuo resta più alto
 {cite}`lu2021deepxde`; ciascuno richiede una passata in avanti e una per ogni
@@ -1231,7 +1238,9 @@ Phan-Thien nel 1994 {cite}`dissanayake1994neural`, e reti neurali messe a
 risolvere equazioni differenziali compaiono già in Lee e Kang nel 1990, con un
 impianto però diverso: lì la rete non rappresenta la soluzione come funzione
 delle coordinate, minimizza l'errore di uno schema alle differenze finite già
-discretizzato {cite}`lee1990neural`. Isaac Lagaris, Aristidis Likas e Dimitrios
+discretizzato {cite}`lee1990neural`.
+
+Isaac Lagaris, Aristidis Likas e Dimitrios
 Fotiadis, nel 1998, pubblicano la variante che di solito viene citata come
 capostipite {cite}`lagaris1998artificial`, e va distinta perché non è
 la stessa cosa: Lagaris costruisce la soluzione di prova in modo che condizioni
@@ -1245,7 +1254,9 @@ e una `tanh` lo è): niente $\lambda_0$ da scegliere, e la soluzione banale non
 formulazione del 1994, lo impone invece come penalità, una scelta che tiene il
 metodo generale (una forma così va riscritta per ogni geometria e ogni tipo di
 condizione) ma che, come abbiamo appena visto con il seme sfortunato e come
-vedremo fra i limiti, ha un costo. Nel 1994 le derivate della rete andavano
+vedremo fra i limiti, ha un costo.
+
+Nel 1994 le derivate della rete andavano
 ricavate con formule scritte a mano, caso per caso, e l'ottimizzazione girava
 su CPU dell'epoca: l'idea restò di nicchia per un quarto di secolo. Quando
 Maziar Raissi, Paris Perdikaris e George Karniadakis la rilanciano nel 2019
@@ -1256,7 +1267,7 @@ automatica in modalità inversa, disponibile in librerie generali (i lavori
 originali usano TensorFlow; qui usiamo PyTorch {cite}`paszke2019pytorch`, con
 le due chiamate a `torch.autograd.grad` della molla), e le GPU per
 l'addestramento. A volte, nella ricerca, l'idea giusta deve solo aspettare i
-suoi attrezzi.
+suoi strumenti.
 
 `````
 
@@ -1265,7 +1276,8 @@ suoi attrezzi.
 Chiudiamo con la variazione promessa in apertura di capitolo: quella su cui le
 PINN hanno costruito la loro fortuna. Finora abbiamo fatto il percorso in un
 verso: legge nota, e da lì la curva. Adesso lo percorriamo all'incontrario,
-curva osservata e da lì un pezzo di legge, e per questo si chiama problema inverso.
+curva osservata e da lì un pezzo di legge, e per questo si chiama **problema
+inverso**.
 
 Ecco la situazione. La molla è dentro una scatola chiusa e la sua rigidezza
 $k$ non la sappiamo; in compenso un sensore ci passa 25 misure della
@@ -1356,11 +1368,11 @@ E la `loss_iniziale`? Non serve più: l'ancoraggio che prima spettava alle
 condizioni di partenza ora lo danno le 25 misure, e il loro termine ne prende
 il posto, coefficiente compreso.
 
-Il metodo non cambia. La rigidezza $k$ è un parametro in più accanto ai pesi,
-e Adam lo aggiorna con la stessa regola, a partire dalla derivata
-$\partial\mathcal{L}/\partial k$ che la backpropagation fornisce insieme ai
-gradienti della rete. Curva e legge si aggiustano nello stesso ciclo, finché
-non vanno d'accordo con le osservazioni.
+Il metodo non cambia. La rigidezza $k$ è un parametro in più
+accanto ai pesi, e Adam lo aggiorna con la stessa regola, a partire dalla
+derivata $\partial\mathcal{L}/\partial k$ che la backpropagation fornisce
+insieme ai gradienti della rete. Curva e legge si aggiustano nello stesso
+ciclo, finché non vanno d'accordo con le osservazioni.
 
 Partendo dal valore volutamente sbagliato $k = 1$, la stima arriva vicino al
 valore vero $k = 4$, quello con cui avevamo fabbricato le misure: con il seme

@@ -10,26 +10,27 @@ riassemblava i pezzi in «Da quanto tempo ti senti X?», senza capire nulla del
 testo che leggeva.
 
 Prima delle reti neurali, l'NLP era in larga parte questo: schemi, regole,
-conteggi. Quegli attrezzi lavorano ancora ovunque: nel modulo di iscrizione che
+conteggi. Quegli strumenti lavorano ancora ovunque: nel modulo di iscrizione che
 segnala se l'indirizzo email non è valido, in `grep` e negli altri comandi con
 cui i programmatori setacciano i file da mezzo secolo. Servono soprattutto
-nella pulizia dei dati che precede qualunque modello (togliere le righe doppie,
-uniformare le date scritte in quattro modi, accorgersi che «Milano» e «MILANO»
-sono la stessa città). Chiedi a chi lavora nel settore quanto tempo porta via:
-nei progetti reali è spesso la fase più lunga. Prima di insegnare a una rete
-neurale a leggere, conviene imparare a usare la cassetta degli attrezzi.
+nella pulizia dei dati che precede qualunque modello (ad esempio togliere le
+righe doppie, uniformare le date scritte in quattro modi, accorgersi che
+«Milano» e «MILANO» sono la stessa città). Chiedi a chi lavora nel settore
+quanto tempo porta via: nei progetti reali è spesso la fase più lunga. Prima
+di insegnare a una rete neurale a leggere, conviene imparare a usare la
+cassetta degli attrezzi.
 
 ```{figure} ../figures/nlp-classico-era-llm.svg
 :name: fig-nlp-classico-vs-llm
 :alt: "Due catene di lavoro sovrapposte, per lo stesso risultato. In alto la strada classica, in quattro stadi: si raccolgono i dati, li si etichetta a mano, si addestra un modello, lo si valuta; il cartellino dice «settimane». In basso la strada a prompt, in tre stadi: si scrive l'istruzione con qualche esempio, risponde un modello generalista che nessuno ha addestrato per quel compito, si controlla l'uscita; il cartellino dice «ore». Sotto, tre righe mettono a confronto i costi delle due strade."
 :width: 100%
 
-Due strade per lo stesso risultato, e due conti diversi. In alto quella
+Due strade per lo stesso risultato, e due costi diversi. In alto quella
 classica: dati raccolti, etichettati a mano, un modello addestrato apposta e
 messo alla prova. In basso quella di oggi: si scrive l'istruzione in italiano,
 e risponde un modello che per quel compito non è stato addestrato. La prima
 chiede settimane prima di dare qualcosa e poi costa pochissimo a ogni testo;
-la seconda parte in poche ore e, quando il modello è un servizio, paga a ogni
+la seconda parte in poche ore e, quando il modello è un servizio, si paga a ogni
 chiamata.
 ```
 
@@ -44,7 +45,7 @@ all'elettricità.
 {numref}`fig-nlp-classico-vs-llm` mette a confronto tempi e costi, che è il
 modo in cui la scelta si presenta a chi deve consegnare un lavoro. Esiste però
 una seconda ragione per non abbandonare l'approccio classico, e riguarda gli
-attrezzi stessi: si spiegano in una riga, si ispezionano un passaggio alla
+strumenti stessi: si spiegano in una riga, si ispezionano un passaggio alla
 volta e si correggono a mano. Un modello ti dice che quell'indirizzo email è
 valido *quasi sempre*; un'espressione regolare o combacia o non combacia, e se
 sbaglia puoi aprirla e vedere dove. Quando serve sapere *perché* è uscita una
@@ -53,17 +54,18 @@ ancora loro a stare dentro i sistemi moderni.
 
 ## Le espressioni regolari: descrivere uno schema, non una parola
 
-Il primo attrezzo risponde a una domanda concreta: come si cerca in un testo
-qualcosa che non è una parola precisa ma una *forma*? Tutte le date, tutti i
-CAP, tutti gli importi in euro. La risposta sono le **espressioni regolari**
-(*regular expressions*, o *regex*): descrivono una *forma* con una riga di simboli.
+Il primo strumento risponde a una domanda concreta: come si cerca in un testo
+qualcosa che non è una parola precisa ma una *forma*? Ad esempio tutte le date,
+tutti i CAP, tutti gli importi in euro. La risposta sono le **espressioni
+regolari** (*regular expressions*, o *regex*): descrivono una *forma* con una
+riga di simboli.
 
 Le espressioni regolari nascono negli anni Cinquanta, e per un altro scopo. Il
 logico Stephen Kleene studiava i modelli matematici di neurone proposti nel
 1943 da Warren McCulloch e Walter Pitts (da cui parte il {doc}`capitolo sulle
 reti neurali </RetiNeurali/overview>`); per descrivere quali sequenze di
 segnali una rete simile potesse distinguere, Kleene introdusse questa notazione
-{cite}`kleene1956representation`. Gli attrezzi «vecchi» e quelli «nuovi» del
+{cite}`kleene1956representation`. Gli strumenti «vecchi» e quelli «nuovi» del
 NLP hanno dunque lo stesso atto di nascita.
 
 A portarle dentro i programmi fu Ken Thompson, uno dei padri del sistema
@@ -97,11 +99,11 @@ volte ci è già passata. Quindi non c'è modo di scriverne una che verifichi
 annidare quanto si vuole: dovrebbe tenere il conto di quante ne ha aperte, e
 non ha dove segnarlo. Vale per le parentesi e vale per le frasi dentro le
 frasi, che sono la stessa cosa fatta di parole: «il gatto che dorme sul divano
-che ho comprato quando…». Per quelle serviranno gli attrezzi della
+che ho comprato quando…». Per quelle serviranno gli strumenti della
 {doc}`sezione su sintassi e parsing
 </NaturalLanguageProcessing/struttura-frase>`.
 
-Lo schema è una cosa, l'attrezzo che lo esegue un'altra. `grep` legge il testo
+Lo schema è una cosa, il programma che lo esegue un'altra. `grep` legge il testo
 una volta sola, dall'inizio alla fine, ricordando soltanto il punto dello schema
 in cui si trova, e il tempo cresce come la lunghezza del testo. Altri programmi,
 fra cui il modulo di Python che si userà fra poco, lavorano per tentativi:
@@ -229,8 +231,8 @@ modelli statistici.
 
 ## Normalizzare il testo: decidere cosa è «la stessa parola»
 
-Il secondo attrezzo è meno appariscente ma altrettanto indispensabile, e parte
-da un fatto: per un calcolatore un testo è una sequenza di numeri. Lo standard
+Il secondo strumento è meno appariscente ma altrettanto indispensabile, e parte
+da un fatto: per un computer un testo è una sequenza di numeri. Lo standard
 Unicode assegna a ogni carattere dei sistemi di scrittura del mondo un numero,
 il suo *punto di codice* (*code point*), e due parole si confrontano come due
 sequenze di punti di codice.
@@ -266,7 +268,7 @@ che stanno dappertutto e proprio per questo non dicono nulla sull'argomento del
 testo. Resta il passaggio più delicato: raggruppare le forme della stessa parola.
 *Andavamo*, *andiamo* e *andrò* sono tutte facce del verbo *andare*.
 
-Per quest'ultimo compito ci sono due attrezzi. Lo **stemming** lavora di
+Per quest'ultimo compito ci sono due strumenti. Lo **stemming** lavora di
 forbici, e taglia la coda delle parole in modo puramente meccanico, secondo
 regole fisse. È rapidissimo, e su *gatto*, *gatta* e *gatti* fa centro, perché
 da tutti e tre resta *gatt*. Sui verbi irregolari invece cade proprio dove
@@ -323,7 +325,7 @@ programma compie tre operazioni, una dopo l'altra. La prima riga uniforma le
 codifiche, risolvendo il caso del `perché` scritto in due modi (`NFKC` è il
 nome della regola che ricompone lettera e accento in un carattere unico, e che
 riporta anche un esponente come `²` a un `2` normale). Poi manda tutto in
-minuscolo, e infine butta via la punteggiatura e le parole-colla. Nella terza
+minuscolo, e infine elimina la punteggiatura e le parole-colla. Nella terza
 riga, `[^\w\s]` si legge «tutto ciò che *non* è né una lettera o cifra (`\w`)
 né uno spazio (`\s`)»: il `^` dentro le parentesi quadre rovescia l'elenco, e
 quindi quel pezzo di schema aggancia la punteggiatura, apostrofo compreso. Per
@@ -360,21 +362,21 @@ nella {doc}`rappresentazione del testo
 classici: lì normalizzare bene fa la differenza tra trovare e non trovare un
 documento.
 
-Le reti neurali moderne, invece, hanno progressivamente smesso di buttare via
+Le reti neurali moderne, invece, hanno progressivamente smesso di scartare
 l'informazione, perché maiuscole, accenti e desinenze *portano significato*. In
 «Rosa è rosa» la prima parola è un nome proprio e la seconda un colore: con il
-minuscolo diventano la stessa parola, e il senso si perde. Al posto della
-potatura queste reti usano un taglio diverso, che conserva il testo com'è e lo
-spezza in unità più piccole della parola: una parola lunga e rara come
+minuscolo diventano la stessa parola, e il senso si perde. Al posto di questa
+eliminazione, le reti usano un taglio diverso, che conserva il testo com'è e
+lo spezza in unità più piccole della parola: una parola lunga e rara come
 *straordinariamente* entra nel dizionario a pezzi, quelli che ricorrono in
 molte altre parole. Come si scelgono quei pezzi, e come li sceglie un
 tokenizzatore in uso, si vede in {doc}`Come si spezza il testo
 </NaturalLanguageProcessing/tokenizzatori>`. La normalizzazione aggressiva è
-dunque un attrezzo da usare quando si conta, non un obbligo universale.
+dunque uno strumento da usare quando si conta, non un obbligo universale.
 
 ## La distanza di edit: quante mosse da una parola all'altra
 
-Il terzo attrezzo nasce da un'esperienza quotidiana: digiti «gatot» e il
+Il terzo strumento nasce da un'esperienza quotidiana: digiti «gatot» e il
 telefono capisce che intendevi «gatto». Come fa a sapere che «gatot» somiglia
 a «gatto» più che a «divano»? Serve un modo per *misurare* la distanza tra due
 parole. La misura standard porta il nome del matematico sovietico Vladimir
@@ -549,13 +551,13 @@ risalire il canale e indovinare che cosa c'era all'ingresso.
 
 Si fa in due tempi.
 
-Primo tempo: una lista corta di sospetti. Si tengono le parole del
+Nel primo tempo si compila una lista corta di sospetti: si tengono le parole del
 vocabolario a distanza di edit 1 o 2 dalla stringa digitata. Il 2 è una
 scelta pratica e non una legge di natura, e poggia su un dato: la stragrande
 maggioranza dei refusi sta a una sola mossa dalla parola giusta. Allargare a 3
 farebbe entrare migliaia di candidati per pochissimi refusi in più.
 
-Secondo tempo: il confronto fra i sospetti. A ogni candidato si danno due voti
+Nel secondo tempo si confrontano i sospetti: a ogni candidato si danno due voti
 e li si moltiplica, come si fa per due cose che devono capitare insieme. Il
 primo voto, il *modello della lingua*, dice quanto quella parola è frequente;
 il secondo, il *modello del canale*, dice quanto è facile che il rumore l'abbia
@@ -664,7 +666,7 @@ parole, cioè quante parole un programma ha sbagliato, saltato o aggiunto
 rispetto a quanto era stato detto; quel numero, diviso per le parole della
 trascrizione corretta, è il **WER**, *word error rate*, il tasso di errore per
 parola (che può superare 1, se il programma aggiunge molte parole). Chi volesse
-approfondire l'intera cassetta di questi attrezzi trova la trattazione di
+approfondire l'insieme di questi strumenti trova la trattazione di
 riferimento in Jurafsky e Martin {cite}`jurafsky2026speech`.
 
 `````{tab} Elementare

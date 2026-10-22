@@ -1,0 +1,14 @@
+# Le postille di questa pagina, una per capoverso del testo comune.
+# Ognuna vale finché la sua impronta combacia col testo del capoverso.
+- inizio: "Le garanzie viste fin qui hanno"
+  impronta: "d1b70667adfb"
+  postilla: "Per una rete, la complessità di Rademacher si stima con etichette casuali"
+- inizio: "Nel 2017 Chiyuan Zhang, Samy Bengio,"
+  impronta: "aca635037dd3"
+  postilla: "Zhang e colleghi (2017): etichette a caso imparate, generalizzazione da spiegare"
+- inizio: "Con le etichette vere la rete"
+  impronta: "656d3b86a166"
+  postilla: "Etichette vere o rimescolate: la rete impara tutto, generalizza solo con le vere"
+- inizio: "La correlazione con i segni casuali"
+  impronta: "79cd184e8662"
+  postilla: "Correlazione 1 con segni casuali: la garanzia sulla sola famiglia è vuota"

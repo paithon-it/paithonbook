@@ -1,0 +1,11 @@
+# Le postille di questa pagina, una per capoverso del testo comune.
+# Ognuna vale finché la sua impronta combacia col testo del capoverso.
+- inizio: "Un modello di linguaggio è un"
+  impronta: "613352dd66e0"
+  postilla: "Il modello continua un testo: ogni compito si riscrive come testo da finire"
+- inizio: "Come ci si sia arrivati è"
+  impronta: "0c7d07a08da8"
+  postilla: "Chi mette la lingua nel programma: prima un linguista, alla fine il testo stesso"
+- inizio: "Resta l'ultima tappa, il Transformer: è"
+  impronta: "ec22a40a5ef2"
+  postilla: "Dalla sola forma nessun significato? Tesi contestata; conoscenza reale, diversa"

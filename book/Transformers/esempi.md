@@ -1,28 +1,28 @@
 # Esempi pratici
 
-I Transformer lavorano qui su due compiti concreti: tradurre una frase e
-capire se una recensione è entusiasta o delusa.
-Sono gli stessi esempi che si incontrano ogni giorno senza pensarci (il tasto
-"traduci" sotto un post, il termometro delle recensioni di un prodotto), e non
-serve addestrare niente da zero. Qualcun altro ha già fatto la parte costosa:
-ha preso una di queste reti con i parametri ancora a caso, l'ha addestrata su
-montagne di testo per giorni interi, su una fila di processori in parallelo, e
-ne ha pubblicato i pesi, che si scaricano e si usano in poche righe. Una rete
-così, con i parametri già ottimizzati su un grande corpus, si chiama modello
-**pre-addestrato**. Hugging Face ospita il catalogo di questi modelli sul
-suo sito; la libreria che li carica e li esegue si chiama `transformers`
-{cite}`wolf2020transformers`, basata su {doc}`PyTorch </PyTorch/overview>`,
-lo strumento con cui si costruiscono le reti.
+I Transformer lavorano qui su due compiti concreti: tradurre una frase e capire
+se una recensione è entusiasta o delusa. Sono gli stessi esempi che si
+incontrano ogni giorno senza pensarci (il tasto "traduci" sotto un post, il
+termometro delle recensioni di un prodotto). Inoltre non serve addestrare
+niente da zero, perché qualcun altro ha già fatto la parte costosa: ha preso
+una di queste reti con i parametri ancora a caso, l'ha addestrata su montagne
+di testo per giorni interi, su una fila di processori in parallelo, e ne ha
+pubblicato i pesi, che si scaricano e si usano in poche righe. Una rete così,
+con i parametri già ottimizzati su un grande corpus, si chiama modello
+**pre-addestrato**. Hugging Face ospita il catalogo di questi modelli sul suo
+sito; la libreria che li carica e li esegue si chiama `transformers`
+{cite}`wolf2020transformers`, basata su {doc}`PyTorch </PyTorch/overview>`, lo
+strumento con cui si costruiscono le reti.
 
 ## Traduzione automatica
 
 È il compito per cui il Transformer è nato, e quello con cui la {doc}`sezione
-sulla struttura del Transformer <architettura>` l'ha presentato: l'encoder
+sulla struttura del Transformer <architettura>` l'ha presentato. L'encoder
 legge la frase di partenza, il decoder compone quella d'arrivo, e a ogni parola
 prodotta torna a guardare l'originale con la cross-attention della
-{doc}`sezione sull'attenzione <attenzione>`. Il decoder formula le query («che
-cosa mi serve adesso?»), mentre dall'encoder vengono le chiavi e i valori con
-cui si risponde.
+{doc}`sezione sull'attenzione <attenzione>`. In particolare, il decoder formula
+le query («che cosa mi serve adesso?»), mentre dall'encoder vengono le chiavi e
+i valori con cui si risponde.
 
 `````{tab} Elementare
 Segui il viaggio di "The cat sits on the mat". Prima la frase viene spezzata
@@ -30,10 +30,11 @@ in mattoncini (le parole o pezzi di parola: i *token*) e l'encoder la legge
 tutta, riscrivendo la lista di numeri di ogni parola in modo che si porti dentro
 anche il contesto in cui si trova. Poi il decoder comincia a scrivere in
 italiano, una parola alla volta: quando deve produrre "gatto" il suo
-evidenziatore, cioè l'attenzione, punta su "cat",
-quando produce "siede" punta su "sits". Somiglia più a un traduttore che legge
-tutta la frase, la capisce e la riscrive, che a un dizionario che sostituisce
-parola per parola. La differenza si vede con una parola ambigua: "bank"
+evidenziatore, cioè l'attenzione, punta su "cat", e quando produce "siede"
+punta su "sits". Somiglia più a un traduttore che legge tutta la frase, la
+capisce e la riscrive, che a un dizionario che sostituisce parola per parola.
+
+La differenza si vede con una parola ambigua: "bank"
 in inglese è sia la banca sia la riva del fiume, e su "The cat sits on the
 river bank" il modello scrive "sulla riva del fiume", perché la parola
 "river" era lì accanto e l'attenzione l'ha vista. Se il contesto non c'è, il
@@ -70,7 +71,7 @@ Il gatto si siede sulla banca.
 Il gatto si siede sulla riva del fiume.
 ```
 
-La terza frase è la disambiguazione lessicale in atto: un dizionario elenca
+La terza frase è la disambiguazione lessicale in atto. Un dizionario elenca
 tutti e due i significati di «bank» e lascia la scelta a chi legge, mentre qui
 è il modello a decidere in funzione del contesto: senza «river», infatti, la
 stessa frase diventa «Il gatto si siede sulla banca», il significato più
@@ -95,11 +96,10 @@ analysis*, «analisi del sentimento», e sta dietro alla percentuale di
 soddisfatti che compare sotto un prodotto in vendita.
 
 Qui il Transformer non genera nulla: *capisce* e assegna un voto, da una a
-cinque stelle, come un cliente su un sito di recensioni. Basta quindi la sola
-torre che legge: se la risposta è un voto e non una
-frase, la torre che scrive non serve e aggiungerebbe solo calcolo. In
-gergo un modello simile si chiama **encoder-only**, «solo encoder», e il
-capostipite è BERT.
+cinque stelle, come un cliente su un sito di recensioni. Basta quindi il solo
+encoder, la parte che legge: se la risposta è un voto e non una frase, il
+decoder non serve e aggiungerebbe solo calcolo. In gergo un modello simile si
+chiama **encoder-only**, «solo encoder», e il capostipite è BERT.
 
 `````{tab} Elementare
 "Mi è piaciuto moltissimo questo prodotto!" e "Una delusione totale": per te è
@@ -114,7 +114,9 @@ cento gettoni di fiducia, li sparpaglia sulle cinque caselle e poi annuncia la
 casella dove ne ha messi di più. Ottanta gettoni su una casella e venti sparsi
 altrove, oppure due caselle in testa a pochi gettoni una dall'altra: l'annuncio
 esce identico, un nome di casella e nient'altro, mentre le due situazioni non
-si somigliano. Chiedere la fila completa, casella per casella, distingue la
+si somigliano.
+
+Per questo, chiedere la fila completa, casella per casella, distingue la
 macchina sicura da quella in bilico. Nemmeno ottanta gettoni su una casella
 vogliono dire avere ragione ottanta volte su cento: se la sicurezza della
 macchina sia giustificata lo si scopre soltanto provandola su frasi di cui si
@@ -180,12 +182,14 @@ Il modello è un BERT multilingue rifinito (*fine-tuned*) su recensioni: la
 classificazione usa la rappresentazione del token speciale `[CLS]`, passata
 attraverso uno strato denso con tangente iperbolica (il *pooler* di BERT) e poi
 inviata a una testa lineare a cinque uscite (architettura encoder-only, senza
-generazione). Le prime due frasi danno il risultato atteso; la terza no, e per
-questo il codice stampa la graduatoria e non solo la vincente. Sulla terza i
-valori sono $0{,}365$ a due stelle e $0{,}336$ a tre: uno scarto di ventinove
-millesimi, l'unico caso fra le quattro frasi in cui le prime due classi
-risultano quasi appaiate. Il solo `argmax` direbbe «2 stars» e si fermerebbe
-lì, indistinguibile dai verdetti delle altre tre frasi, dove la seconda classe
+generazione).
+
+Le prime due frasi danno il risultato atteso; la terza no, e per questo il
+codice stampa la graduatoria e non solo la vincente. Sulla terza i valori sono
+$0{,}365$ a due stelle e $0{,}336$ a tre: uno scarto di ventinove millesimi,
+l'unico caso fra le quattro frasi in cui le prime due classi risultano quasi
+appaiate. Il solo `argmax` direbbe «2 stars» e si fermerebbe lì,
+indistinguibile dai verdetti delle altre tre frasi, dove la seconda classe
 resta indietro di centocinquanta millesimi o più: `top_k=None` rende visibile
 la differenza fra una classificazione netta e una in bilico.
 
@@ -216,11 +220,12 @@ L'errore dipende probabilmente dai testi in cui compare «affatto», quasi sempr
 dentro una stroncatura piena («non mi è piaciuto affatto»): il modello ne
 eredita l'associazione. È una spiegazione plausibile e non una verifica, perché
 i testi su cui questo modello è stato addestrato non si possono ispezionare:
-chi lo ha addestrato non li ha pubblicati. Dire una cosa negando il suo
-contrario richiede di comporre tre parole in un
-significato che nessuna delle tre porta con sé: l'attenzione mette «non»,
-«affatto» e «male» in contatto, ma il contatto non garantisce che la
-composizione dia il risultato giusto. Con le sole due frasi facili la
+chi lo ha addestrato non li ha pubblicati.
+
+Più in generale, dire una cosa negando il suo contrario richiede di comporre
+tre parole in un significato che nessuna delle tre porta con sé: l'attenzione
+mette «non», «affatto» e «male» in contatto, ma il contatto non garantisce che
+la composizione dia il risultato giusto. Con le sole due frasi facili la
 dimostrazione sarebbe riuscita bene e avrebbe insegnato meno: quattro frasi
 provate al volo non sono un collaudo.
 

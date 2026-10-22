@@ -12,28 +12,30 @@ sceglie azioni a caso quasi certamente non arriverà in fondo a quella catena:
 cadrà, morirà, e non vedrà mai una ricompensa da cui imparare.
 
 Il DQN vedeva benissimo lo schermo e faceva gli stessi calcoli che negli altri
-quarantotto giochi. Il problema era come si va a cercare qualcosa in un mondo
-dove le ricompense sono rade (in inglese *sparse*), cioè capitano una volta ogni
-tanto e in mezzo non c'è niente. Questo problema si chiama esplorazione.
+quarantotto giochi. Il problema era come si va a cercare qualcosa in un
+mondo dove le ricompense sono **rade** (in inglese *sparse*), cioè capitano una
+volta ogni tanto e in mezzo non c'è niente. Questo problema si chiama
+esplorazione.
 
 ## Il problema delle ricompense rade
 
 Nella maggior parte dei giochi Atari qualcosa di buono o cattivo capita a ogni
-secondo, e l'agente ha un flusso costante di segnali da cui correggersi. Quando
-invece la ricompensa arriva solo dopo lunghe sequenze di azioni giuste (la
-chiave, la porta, il livello), il segnale diventa un ago in un pagliaio.
-Finché l'agente non inciampa *per caso* in quella prima ricompensa, non ha
-nulla che gli dica in che direzione andare. Quanto sia improbabile inciamparci si
-calcola a mente: se a ogni passo ci sono otto azioni possibili e una sola è
-quella giusta, azzeccarne dieci in sequenza ha probabilità $8^{-10}$, cioè una
-su un miliardo abbondante.
+secondo, quindi l'agente ha un flusso costante di segnali da cui correggersi.
+Quando invece la ricompensa arriva solo dopo lunghe sequenze di azioni giuste
+(la chiave, la porta, il livello), il segnale diventa un ago in un pagliaio:
+finché l'agente non inciampa *per caso* in quella prima ricompensa, non ha
+nulla che gli dica in che direzione andare.
+
+Quanto sia improbabile inciamparci si calcola a mente. Se a ogni passo ci sono
+otto azioni possibili e una sola è quella giusta, azzeccarne dieci in sequenza
+ha probabilità $8^{-10}$, cioè una su un miliardo abbondante.
 
 Nel {doc}`capitolo sul reinforcement learning </ReinforcementLearning/overview>`
 abbiamo introdotto il dilemma esplorazione-sfruttamento e la strategia
-$\varepsilon$-greedy, «golosa»: con una piccola probabilità $\varepsilon$
+$\varepsilon$-greedy («golosa»): con una piccola probabilità $\varepsilon$
 sceglie un'azione a caso, il resto del tempo prende senza esitare quella di
-valore più alto. In ambienti come Montezuma, però, quella ricetta
-non basta: occorrono strategie capaci di andare oltre.
+valore più alto. In ambienti come Montezuma, però, quella strategia
+non basta: occorrono metodi capaci di andare oltre.
 
 ## Perché $\varepsilon$-greedy non basta
 
@@ -41,15 +43,15 @@ non basta: occorrono strategie capaci di andare oltre.
 
 Esplori una città enorme così: quasi sempre imbocchi la strada che ti sembra la
 migliore, e ogni venti incroci circa tiri un dado e vai dove dice lui. Andrai
-avanti e indietro nello stesso quartiere per ore: il caso non ha memoria, non sa
-quali strade hai già battuto e quali no. Per raggiungere un vicolo che sta a
-dieci svolte precise da qui dovrebbero capitarti due fortune, dieci volte in
-sequenza: che a quell'incrocio ti venga in mente di tirare il dado, e che il
-dado dica la svolta giusta. La probabilità di azzeccarle tutte è minuscola, e
-si riduce a ogni svolta che si aggiunge alla catena.
+avanti e indietro nello stesso quartiere per ore, perché il caso non ha memoria
+e non sa quali strade hai già battuto e quali no. Per raggiungere un vicolo che
+sta a dieci svolte precise da qui dovrebbero capitarti due fortune, dieci volte
+in sequenza: che a quell'incrocio ti venga in mente di tirare il dado, e che il
+dado dica la svolta giusta. La probabilità di azzeccarle
+tutte è minuscola, e si riduce a ogni svolta che si aggiunge alla catena.
 
 L'esplorazione casuale agita le mani nel buio, nei dintorni di dove sei già.
-Servirebbe un'esplorazione diretta: una spinta a puntare
+Servirebbe quindi un'esplorazione diretta: una spinta a puntare
 verso i posti che non hai *ancora* visto, invece di rimescolare a caso quelli
 di sempre.
 
@@ -59,21 +61,21 @@ di sempre.
 
 Con $\varepsilon$-greedy le azioni esplorative sono scelte in modo *uniforme e
 indipendente* dallo stato: la perturbazione è locale e non correlata nel tempo.
-Per raggiungere uno stato-obiettivo che dista $n$ azioni "insolite" dalla
-regione già visitata, la probabilità di percorrere l'intera sequenza per puro
-caso scala come $(\varepsilon/|\mathcal{A}|)^{\,n}$ e decade esponenzialmente
-in $n$. Questo è **dithering**: rumore attorno alla policy corrente, non
-ricerca strutturata.
+Di conseguenza, per raggiungere uno stato-obiettivo che dista $n$ azioni
+"insolite" dalla regione già visitata, la probabilità di percorrere l'intera
+sequenza per puro caso scala come $(\varepsilon/|\mathcal{A}|)^{\,n}$ e decade
+esponenzialmente in $n$. Questo è **dithering**: rumore attorno alla policy
+corrente, non ricerca strutturata.
 
 L'esplorazione *diretta* tiene invece conto di ciò che l'agente ha già visto e
-orienta deliberatamente il comportamento verso le regioni poco note dello spazio
-degli stati. Quando l'orientamento si estende su più passi, cioè l'agente
-accetta azioni né premiate né istruttive subito pur di arrivare dove c'è da
-imparare, si parla di *deep exploration*, che Osband e colleghi chiamano anche
-*planning to learn*, pianificare per imparare {cite}`osband2016deep`. Il modo
-più naturale per ottenerla è lasciare invariata la regola di scelta e modificare
-ciò che si ottiene: si aggiunge alla ricompensa dell'ambiente un bonus che
-premia la novità.
+orienta deliberatamente il comportamento verso le regioni poco note dello
+spazio degli stati. Quando l'orientamento si estende su più passi, cioè
+l'agente accetta azioni né premiate né istruttive subito pur di arrivare dove
+c'è da imparare, si parla di *deep exploration*, che Osband e colleghi chiamano
+anche *planning to learn*, pianificare per imparare {cite}`osband2016deep`. Il
+modo più naturale per ottenerla è lasciare invariata la regola di
+scelta e modificare ciò che si ottiene: si aggiunge alla ricompensa
+dell'ambiente un bonus che premia la novità.
 
 `````
 
@@ -82,8 +84,9 @@ premia la novità.
 L'idea più intuitiva è anche la più vecchia, e nasce ai tempi in cui i giudizi
 stavano in una tabella {cite}`sutton2018reinforcement`. Se in una certa
 situazione l'agente si è trovato poche volte, di quella situazione sa poco, e
-allora conviene andarci. Basta tenere il conto di quante volte ci è passato e
-aggiungere alla ricompensa un bonus che decresce all'aumentare delle visite.
+allora conviene andarci. Basta tenere il conteggio di quante volte ci è passato
+e aggiungere alla ricompensa un **bonus di novità**, che decresce
+all'aumentare delle visite.
 
 `````{tab} Elementare
 
@@ -92,7 +95,7 @@ museo che volevi vedere, la cena buona), e tu ci aggiungi di tasca tua un
 piccolo premio ogni volta che metti piede in un posto dove non eri mai stato,
 un premio che si spegne man mano che quel posto diventa familiare. Il primo
 giorno un quartiere ti frutta il premio pieno; dopo esserci passato cento
-volte, quasi niente. Il risultato è che vieni spinto verso l'ignoto, senza
+volte, quasi niente. In questo modo vieni spinto verso l'ignoto, senza
 bisogno di lanciare monetine.
 
 Quanto valga quel premio rispetto a una cena buona lo decidi tu, e la scelta è
@@ -100,10 +103,10 @@ delicata: alzalo troppo e girerai a vuoto per vicoli insignificanti,
 abbassalo troppo e non ti muoverai dall'isolato dell'albergo.
 
 C'è poi un modo di rompere tutto senza accorgersene, e consiste nel prendere
-appunti troppo precisi. Se segni sul taccuino la tua posizione al centimetro,
-non tornerai mai due volte nello stesso punto: ogni passo risulta inedito, ogni
-passo si prende il premio pieno, e un premio che vale uguale dappertutto non
-indica più niente.
+appunti troppo precisi. Se segni sul taccuino la tua posizione al
+centimetro, non tornerai mai due volte nello stesso punto: ogni passo risulta
+inedito, ogni passo si prende il premio pieno, e un premio che vale uguale
+dappertutto non indica più niente.
 
 `````
 
@@ -116,23 +119,23 @@ r_t^{+} = r_t + \frac{\beta}{\sqrt{N(s_t)}} ,
 $$
 
 dove $N(s_t)$ è il numero di volte in cui lo stato $s_t$ è stato visitato e
-$\beta>0$ dosa il peso della curiosità. Il bonus è alto sugli stati rari,
-tende a zero su quelli battuti: l'agente è incentivato a raggiungere le zone
-poco esplorate. Sullo stato mai visitato, $N=0$, la formula scritta così
-diverge, e nella teoria è voluto: uno stato mai visto va visitato, e basta. In
-un programma quell'infinito va smorzato, e si scrive
+$\beta>0$ dosa il peso della curiosità. Il bonus è alto sugli stati rari e
+tende a zero su quelli battuti, quindi l'agente è incentivato a raggiungere le
+zone poco esplorate. In particolare, sullo stato mai visitato, $N=0$, la formula
+scritta così diverge, e nella teoria è voluto: uno stato mai visto va visitato,
+e basta. In un programma quell'infinito va smorzato, e si scrive
 $\beta/\sqrt{N(s_t)+1}$, che è la forma implementata nel codice.
 
-Il limite è evidente in spazi grandi o continui: con osservazioni ad alta
-dimensione (i pixel di uno schermo) ogni stato è, letteralmente, unico, e
-$N(s_t)$ vale sempre $1$. Il conteggio esatto non ha senso. La soluzione sono
-gli **pseudo-conteggi**: si stima una densità $\rho(s)$ sugli stati visitati e
-se ne ricava un conteggio *effettivo* $\hat N(s)$ coerente con quanto la
-densità è "sorpresa" di rivedere $s$. Se $\rho(s)$ è la probabilità che il
-modello di densità assegna a $s$ e $\rho'(s)$ quella che gli assegnerebbe dopo
-averlo visto una volta in più (la *probabilità di ricodifica*), lo
-pseudo-conteggio è quello che fa corrispondere lo spostamento da $\rho$ a
-$\rho'$ a un'osservazione in più:
+Il limite è evidente in spazi grandi o continui. Con osservazioni ad alta
+dimensione (i pixel di uno schermo) ogni stato è, letteralmente, unico e
+$N(s_t)$ vale sempre $1$, quindi il conteggio esatto non ha senso. La soluzione
+sono gli **pseudo-conteggi**: si stima una densità $\rho(s)$ sugli stati
+visitati e se ne ricava un conteggio *effettivo* $\hat N(s)$ coerente con
+quanto la densità è "sorpresa" di rivedere $s$. Se $\rho(s)$ è la probabilità
+che il modello di densità assegna a $s$ e $\rho'(s)$ quella che gli
+assegnerebbe dopo averlo visto una volta in più (la *probabilità di
+ricodifica*), lo pseudo-conteggio è quello che fa corrispondere lo spostamento
+da $\rho$ a $\rho'$ a un'osservazione in più:
 
 $$
 \hat N(s) = \frac{\rho(s)\,\big(1-\rho'(s)\big)}{\rho'(s)-\rho(s)} .
@@ -154,9 +157,8 @@ combinando quel teorema con un risultato di Kolter e Ng).
 `````
 
 Il bonus di novità si calcola facilmente quando gli stati sono pochi e distinti.
-Il frammento seguente applica la stessa identica regola a sei stati visitati un
-numero di volte molto diverso, e mostra come il premio vada quasi tutto ai più
-rari:
+Ad esempio, la stessa identica regola applicata a sei stati visitati un numero
+di volte molto diverso mostra come il premio vada quasi tutto ai più rari:
 
 ```python
 import numpy as np
@@ -182,13 +184,15 @@ quattordici, cioè $0{,}035$: quattordici volte meno.
 Il premio scende in fretta all'inizio e piano dopo. Fra zero visite e tre il
 premio si dimezza, da $0{,}500$ a $0{,}250$, e la differenza si sente; fra
 cento e centotré scende da $0{,}0498$ a $0{,}0490$, cioè quasi niente. Ed è
-giusto così: la centesima visita a un posto insegna molto meno della prima.
+giusto così, perché la centesima visita a un posto insegna molto meno della
+prima.
 
-La regola con cui l'agente sceglie è rimasta quella di sempre, prendere
-l'azione col voto più alto. È solo il voto ad avere adesso un pezzo in più, e
-l'agente si dirige verso l'ignoto credendo di dirigersi verso il guadagno.
+Si noti che la regola con cui l'agente sceglie è rimasta quella di sempre,
+prendere l'azione col voto più alto. È solo il voto ad avere adesso un pezzo in
+più, e l'agente si dirige verso l'ignoto credendo di dirigersi verso il
+guadagno.
 
-Quando le situazioni non si possono contare si stima il conteggio: si valuta
+Quando le situazioni non si possono contare, si stima il conteggio: si valuta
 quanto una schermata assomigli a quelle già viste, e da quella somiglianza si
 ricava un conteggio finto, uno *pseudo-conteggio*, che si usa al posto di quello
 vero.
@@ -197,9 +201,9 @@ vero.
 
 Stimare un conteggio, però, è delicato. Un'idea più elegante
 ribalta la domanda: invece di chiederci *quante volte* abbiamo visto una
-situazione, chiediamoci *quanto ci sorprende*. Se non sappiamo prevedere che
-cosa succederà, di quel pezzo di mondo non abbiamo ancora capito il
-funzionamento, e lì c'è da imparare. La sorpresa
+situazione, chiediamoci *quanto ci sorprende*. Se non sappiamo
+prevedere che cosa succederà, di quel pezzo di mondo non abbiamo ancora capito
+il funzionamento, e lì c'è da imparare. La sorpresa
 diventa così una ricompensa che l'agente si dà da sé, e che si somma a quella
 che gli dà il gioco. È lo stesso genere di premio interno su cui si appoggiava
 il livello basso dell'h-DQN, nella {doc}`sezione sulla gerarchia <gerarchia>`:
@@ -228,8 +232,8 @@ cerca un altro. La **curiosità** è questo: un premio che ci si dà da soli
 per la sorpresa. L'agente si costruisce un modello di "cosa succederà se
 faccio questo"; quando il modello sbaglia la previsione, quello scarto vale
 come una piccola ricompensa, e lo tira verso l'azione che l'ha spiazzato. Il
-premio si consuma da sé: a forza di ripeterlo quel gesto diventa prevedibile,
-la sorpresa finisce, e l'agente si sposta altrove.
+premio si consuma da sé: a forza di ripeterlo quel gesto diventa
+prevedibile, la sorpresa finisce, e l'agente si sposta altrove.
 
 Presa alla lettera, però, la ricetta ha un difetto evidente. Alla
 finestra mentre piove le gocce scendono ogni volta diverse: prevederle non
@@ -266,15 +270,14 @@ appreso. Ciò che può cambiare l'osservazione è, nel lavoro, di tre specie:
 quello che l'agente controlla, quello che non controlla ma che lo influenza (un
 veicolo guidato da un altro), e quello che non controlla e non lo tocca (le
 foglie mosse dal vento). Uno spazio di feature adatto conserva le prime due e
-ignora la terza. La proprietà si ottiene addestrando
-$\phi$ con un modello di dinamica inversa,
-una rete che da $\phi(s_t)$ e $\phi(s_{t+1})$ stima l'azione $a_t$ che
-ha portato dall'uno all'altro. Così $\phi$ non ha ragione di conservare ciò che
-non influenza le azioni dell'agente e non ne è influenzato: una foglia che si
-muove per il vento non aiuta a indovinare quale tasto è stato premuto, e quindi
-esce dalla rappresentazione. Su quello spazio, un modello *forward* prevede la
-feature del prossimo stato $\hat\phi(s_{t+1})$ da $\phi(s_t)$ e dall'azione
-$a_t$; la ricompensa intrinseca è
+ignora la terza. La proprietà si ottiene addestrando $\phi$ con un modello di
+dinamica inversa, una rete che da $\phi(s_t)$ e $\phi(s_{t+1})$ stima l'azione
+$a_t$ che ha portato dall'uno all'altro. In questo modo $\phi$ non ha ragione
+di conservare ciò che non influenza le azioni dell'agente e non ne è
+influenzato: una foglia che si muove per il vento non aiuta a indovinare quale
+tasto è stato premuto, e quindi esce dalla rappresentazione. Su quello spazio,
+un modello *forward* prevede la feature del prossimo stato $\hat\phi(s_{t+1})$
+da $\phi(s_t)$ e dall'azione $a_t$; la ricompensa intrinseca è
 
 $$
 r_t^{\text{int}} = \frac{\eta}{2}\,\big\lVert \hat\phi(s_{t+1}) -
@@ -308,12 +311,12 @@ Il gioco è stato poi risolto da un'idea diversa, Go-Explore
 {cite}`ecoffet2021first`: ricordare gli stati promettenti, *tornarci* e solo da
 lì esplorare, invece di affidarsi a un bonus perché l'agente ritrovi la strada.
 Nella versione principale ci torna ripristinando lo stato salvato del
-simulatore, cioè l'accesso a cui RND rinunciava, e ricava la politica
-finale dalle traiettorie migliori, usate come dimostrazioni. Senza nessuna
-conoscenza del gioco quadruplica il miglior punteggio precedente; con poche
-informazioni date a mano (la stanza, la posizione, il livello, le chiavi) lo
-risolve per intero, arrivando in fondo al terzo livello. Una variante che torna
-agli stati promettenti con una politica condizionata all'obiettivo, senza
+simulatore, cioè l'accesso a cui RND rinunciava, e ricava la politica finale
+dalle traiettorie migliori, usate come dimostrazioni. Senza
+nessuna conoscenza del gioco quadruplica il miglior punteggio precedente; con
+poche informazioni date a mano (la stanza, la posizione, il livello, le chiavi)
+lo risolve per intero, arrivando in fondo al terzo livello. Una variante che
+torna agli stati promettenti con una politica condizionata all'obiettivo, senza
 ripristinare niente, resta comunque sopra il livello umano.
 
 La differenza fra ICM e RND sta in che cosa si predice. L'errore di un
@@ -321,14 +324,16 @@ predittore nasce dalla scarsità di dati attorno a uno stato, che è la novità 
 premiare, e dalla casualità dell'ambiente, che nessun addestramento riduce. ICM
 predice le feature dello stato successivo, imparate in modo da tenere ciò che le
 azioni dell'agente influenzano o da cui sono influenzate: filtra il rumore che
-non lo riguarda e resta esposto a quello che controlla. Un televisore con il
-telecomando, dove ogni cambio di canale dà un'immagine imprevedibile, inchioda
-l'agente davanti allo schermo. RND predice $f(s_{t+1})$ guardando $s_{t+1}$
-stesso: il bersaglio è una funzione deterministica di ciò che il predittore
-riceve, il caso della transizione non vi entra, e il rumore visto spesso diventa
-familiare come ogni altro stato. Nella pratica richiede osservazioni e ricompensa
-intrinseca normalizzate, e due teste di valore, una per ciascuna ricompensa, con
-quella intrinseca che non si azzera a fine episodio.
+non lo riguarda e resta esposto a quello che controlla. Ad esempio, un
+televisore con il telecomando, dove ogni cambio di canale dà un'immagine
+imprevedibile, inchioda l'agente davanti allo schermo.
+
+RND predice $f(s_{t+1})$ guardando $s_{t+1}$ stesso: il bersaglio è una
+funzione deterministica di ciò che il predittore riceve, per cui il caso della
+transizione non vi entra, e il rumore visto spesso diventa familiare come ogni
+altro stato. In pratica richiede osservazioni e ricompensa intrinseca
+normalizzate, e due teste di valore, una per ciascuna ricompensa, con quella
+intrinseca che non si azzera a fine episodio.
 
 `````
 
@@ -402,7 +407,7 @@ prima: visti 0.108  nuovi 0.112  lontani 1.213
 dopo : visti 0.000  nuovi 0.019  lontani 0.215
 ```
 
-Prima dell'addestramento visti e nuovi si equivalgono, com'è naturale: vengono
+Prima dell'addestramento visti e nuovi si equivalgono, perché vengono
 dalla stessa distribuzione. Dopo l'addestramento, sugli stati visti l'errore è
 sparito, sui nuovi è sceso quasi altrettanto, e sui lontani resta una decina di
 volte più alto che sui nuovi. Il predictor, cioè, generalizza: RND non premia
@@ -422,7 +427,7 @@ Esiste una lettura opposta, in cui sapere e ottenere sono la stessa cosa, e
 chiarisce parecchio anche a chi non intende seguirla. In questa lettura l'agente
 non massimizza una ricompensa: sceglie le azioni con un criterio unico, che tiene
 insieme quanto un'azione lo avvicina a ciò che preferisce e quanto gli farebbe
-imparare. Il quadro si chiama inferenza attiva e viene dalle neuroscienze
+imparare. Il quadro si chiama **inferenza attiva** e viene dalle neuroscienze
 teoriche, dove descrive percezione e azione come un unico problema
 {cite}`parr2022active`; la quantità che l'agente minimizza si chiama energia
 libera attesa, un nome preso in prestito dalla fisica, e qui importa soltanto che
@@ -512,28 +517,28 @@ Andrew Ng e colleghi, nel 1999, hanno trovato il modo di dare quegli aiuti
 senza che il dondolio possa mai convenire. Attacchi un numero a ogni stanza, la
 sua **quota**, e paghi il robot per il dislivello: la quota della stanza in cui
 arriva, meno la quota della stanza da cui viene.
-Dalla quota $3$ alla $5$ incassa $+2$; se torna sui suoi passi, $-2$. Sulla
-soglia può dondolare quanto vuole, andata e ritorno fanno zero.
+Dalla quota $3$ alla $5$ incassa $+2$; se torna sui suoi passi,
+$-2$. Sulla soglia può dondolare quanto vuole, andata e ritorno fanno zero.
 
 Per attaccare quei numeri sembra che tu debba già sapere quanto ogni stanza
 dista dall'uscita, e allora il labirinto lo avresti risolto tu al posto suo. Le
-quote, invece, non devono essere giuste: puoi misurarle in linea d'aria sulla
-pianta, ignorando i muri, e una stanza vicina all'uscita ma murata prende lo
-stesso una quota alta. Lì mandi il robot a sbattere. Con quote sensate
-impara molto più in fretta, perché a ogni passo ha un segnale invece del buio;
-con quote pessime ci mette di più. In nessuno dei due casi impara a
+quote, invece, non devono essere giuste: puoi misurarle in linea
+d'aria sulla pianta, ignorando i muri, e una stanza vicina all'uscita ma murata
+prende lo stesso una quota alta. Lì mandi il robot a sbattere. Con quote
+sensate impara molto più in fretta, perché a ogni passo ha un segnale invece
+del buio; con quote pessime ci mette di più. In nessuno dei due casi impara a
 fare la cosa sbagliata: la strada migliore per uscire resta quella di prima,
 quote o non quote.
 
 Il conto della soglia torna così tondo finché un premietto incassato fra dieci
 passi vale quanto uno incassato adesso. Di solito vale meno: come nel corridoio
 della {doc}`sezione su Dyna <model-based>`, i premi lontani si scontano. Allora
-lo sconto entra anche nel premietto, se no il dondolio torna a rendere. Si
-prende la quota della stanza in cui il robot arriva, scontata di un passo, e da
-lì si toglie, intera, la quota della stanza da cui viene. Se un passo più in là
-i premi valgono nove decimi, andare dalla quota $3$ alla $5$ frutta $0{,}9
-\times 5 - 3 = 1{,}5$ invece di $2$, e tornare indietro dà $0{,}9 \times 3 - 5
-= -2{,}3$: il giro completo lascia il robot sotto zero.
+lo sconto entra anche nel premietto, se no il dondolio torna a
+rendere. Si prende la quota della stanza in cui il robot arriva, scontata di un
+passo, e da lì si toglie, intera, la quota della stanza da cui viene. Se un
+passo più in là i premi valgono nove decimi, andare dalla quota $3$ alla $5$
+frutta $0{,}9 \times 5 - 3 = 1{,}5$ invece di $2$, e tornare indietro dà $0{,}9
+\times 3 - 5 = -2{,}3$: il giro completo lascia il robot sotto zero.
 
 Su una strada lunga le quote si cancellano ancora a due a due, ma a premi
 scontati: la quota che il robot incassa entrando in una stanza e quella che
@@ -560,19 +565,23 @@ $$
 
 con $\gamma$ il fattore di sconto. Il risultato chiave è che la policy ottima
 dell'MDP modellato coincide con quella dell'MDP originale, *per qualunque*
-$\Phi$: la garanzia deriva da un argomento telescopico. Nella somma scontata
-dei termini $F$ ogni potenziale intermedio compare una volta col segno più e
-una col segno meno, e di una traiettoria di $T$ passi sopravvivono i soli due
-termini di bordo, $-\Phi(s_0) + \gamma^{T}\Phi(s_T)$. Il secondo svanisce nei
-due casi che interessano: a orizzonte infinito con $\gamma<1$ e $\Phi$
+$\Phi$: la garanzia deriva da un argomento telescopico. Nella somma
+scontata dei termini $F$ ogni potenziale intermedio compare una volta col segno
+più e una col segno meno, e di una traiettoria di $T$ passi sopravvivono i soli
+due termini di bordo, $-\Phi(s_0) + \gamma^{T}\Phi(s_T)$. Il secondo svanisce
+nei due casi che interessano: a orizzonte infinito con $\gamma<1$ e $\Phi$
 limitata, perché $\gamma^{T}\Phi(s_T)\to 0$; nei task episodici con la
 convenzione (quella di Ng, Harada e Russell) $\Phi(s)=0$ sugli stati terminali.
 Resta allora il solo $-\Phi(s_0)$: un contributo che dipende dallo stato di
-partenza e non dal percorso, identico quindi per tutte le policy. Nel caso non
+partenza e non dal percorso, identico quindi per tutte le policy.
+
+Osserviamo che nel caso non
 scontato ($\gamma=1$, ammesso nei compiti episodici) l'argomento ha il
 corollario intuitivo della quota: un ciclo chiuso frutta zero; con $\gamma<1$ i
 cicli non sono più nulli, ma l'invarianza resta, perché a garantirla è la somma
-telescopica. L'accelerazione, invece, non è garantita: con un potenziale
+telescopica.
+
+L'accelerazione, invece, non è garantita: con un potenziale
 informativo, che somigli al valore vero degli stati, lo shaping accelera
 l'apprendimento perché rende il segnale più denso; con un potenziale mal scelto
 può rallentarlo. In nessuno dei due casi sposta l'obiettivo (si veda
@@ -647,13 +656,13 @@ l'agente disobbedisce: è che obbedisce troppo bene, alla lettera sbagliata.
 Scrivere una ricompensa che dica ciò che vogliamo (e non una sua
 approssimazione sfruttabile) è molto più difficile di quanto sembri.
 
-Qualche difesa c'è, e si vede subito fin dove arriva. All'idraulico metti nel
-contratto quali tubi non si toccano, e lui cambierà quelli rimasti. Lo paghi a
-impianto funzionante e mandi qualcuno a controllarlo un anno dopo, e adesso il
-metro è il giudizio di quella persona: resta da convincere lei. Provi a
-riformulare l'incarico in tre modi diversi per vedere se il risultato regge, e
-scopri quali formulazioni erano fragili, non come si scrive quella giusta. Chi
-progetta agenti ha in mano lo stesso repertorio, con lo stesso esito: ogni
+Qualche difesa c'è, e si vede subito fin dove arriva. All'idraulico
+metti nel contratto quali tubi non si toccano, e lui cambierà quelli rimasti.
+Lo paghi a impianto funzionante e mandi qualcuno a controllarlo un anno dopo, e
+adesso il metro è il giudizio di quella persona: resta da convincere lei. Provi
+a riformulare l'incarico in tre modi diversi per vedere se il risultato regge,
+e scopri quali formulazioni erano fragili, non come si scrive quella giusta.
+Chi progetta agenti ha in mano lo stesso repertorio, con lo stesso esito: ogni
 difesa sposta il bersaglio, nessuna chiude la partita.
 
 `````
@@ -680,7 +689,9 @@ politica) sono non hackable l'una rispetto all'altra solo se sono
 vale limitandosi alle politiche quasi ottime {cite}`skalse2022defining`.
 Togliere termini alla ricompensa per semplificarla, quindi, non basta a
 renderla sicura: o se ne preserva l'ordine esatto, o esiste una coppia di
-politiche su cui migliorare quella surrogata peggiora quella vera. Il nodo di
+politiche su cui migliorare quella surrogata peggiora quella vera.
+
+Il nodo di
 fondo (specificare compiutamente ciò che vogliamo tramite una funzione scalare)
 è il problema dell'allineamento. Il reward hacking è il punto in cui
 l'ottimizzazione tecnica incontra una questione che tecnica non è del tutto, cioè
@@ -786,8 +797,8 @@ che cosa vogliamo, invece di un accorgimento tecnico. La domanda riprende nella
 ```
 `````
 
-Fin qui la ricompensa la scriveva un programma, e si è visto che cosa succede
-quando la scrive male. Quando l'allineamento tornerà, con gli assistenti
+Fin qui la ricompensa la scriveva un programma, e si è visto che cosa
+succede quando la scrive male. Quando l'allineamento tornerà, con gli assistenti
 conversazionali della sezione {doc}`Dopo il pre-addestramento
 </Transformers/post-training>` e poi, per intero, in {doc}`Allineamento e
 governance </AIResponsabile/allineamento-e-governance>`, a dettarla saranno

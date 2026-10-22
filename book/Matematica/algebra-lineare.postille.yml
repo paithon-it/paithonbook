@@ -1,0 +1,17 @@
+# Le postille di questa pagina, una per capoverso del testo comune.
+# Ognuna vale finché la sua impronta combacia col testo del capoverso.
+- inizio: "Prima di arrivare a un modello,"
+  impronta: "c707f194d552"
+  postilla: "Dati come vettori (cliente, foto, email), impilati in matrici, trasformati"
+- inizio: "Per produrre un solo token, ad"
+  impronta: "2b9c61e43bb8"
+  postilla: "Un token in un modello da sette miliardi: oltre un milione di prodotti scalari"
+- inizio: "Un vettore descrive un esempio, ma"
+  impronta: "a29181a595a8"
+  postilla: "Matrice dei dati: una riga per esempio, una colonna per caratteristica"
+- inizio: "La matrice rifà la fila di"
+  impronta: "51a6a0e99b91"
+  postilla: "Formula chiusa per ogni mese; al dodicesimo la seconda radice quasi non pesa"
+- inizio: "L'operatore `@` è il prodotto matriciale,"
+  impronta: "4d83973a16b2"
+  postilla: "Un operatore per tre prodotti; un array a un asse solo non è né riga né colonna"

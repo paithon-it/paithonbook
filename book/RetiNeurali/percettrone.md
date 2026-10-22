@@ -6,31 +6,33 @@ modello di neurone artificiale che impara a riconoscere forme dagli esempi. Il
 *New York Times* riporta l'attesa della Marina: è l'embrione di un computer
 elettronico che un giorno saprà camminare, parlare, vedere, scrivere,
 riprodursi e avere coscienza di sé. Due anni dopo l'idea prende corpo in una
-macchina grande come un armadio, il *Mark I Perceptron*. Davanti c'è una
-griglia di quattrocento fotocellule, che è l'occhio. Le manopole, però, non
-stanno lì. Le fotocellule sono collegate a caso, con fili fissi, a un banco di
-cinquecentododici scatolette intermedie; ognuna guarda un pugno di fotocellule
-e dà il suo verdetto, e le manopole che pesano quei verdetti sono regolabili.
-Girarne una cambia quanto conta il verdetto di una scatoletta, non di un
-singolo puntino di luce. Un motorino le gira ogni volta che la macchina
-sbaglia: l'apprendimento, lì, era fatto di ferro. Il clamore era smisurato, e
-il campo l'avrebbe pagato caro. Sotto quel clamore c'era un'idea sobria e
-duratura, ancora oggi il mattone di ogni rete neurale: un neurone artificiale è
-un pezzo di aritmetica.
+macchina grande come un armadio, il *Mark I Perceptron*.
+
+Davanti c'è una griglia di quattrocento fotocellule, che è l'occhio. Le
+manopole, però, non stanno lì. Le fotocellule, infatti, sono collegate a caso,
+con fili fissi, a un banco di cinquecentododici scatolette intermedie; ognuna
+guarda un pugno di fotocellule e dà il suo verdetto, e le manopole che pesano
+quei verdetti sono regolabili. Girarne una cambia quanto conta il verdetto di
+una scatoletta, non di un singolo puntino di luce. Un motorino le gira ogni
+volta che la macchina sbaglia: l'apprendimento, lì, era fatto di ferro.
+
+Il clamore era smisurato, e il campo l'avrebbe pagato caro. Sotto quel clamore,
+tuttavia, c'era un'idea sobria e duratura, ancora oggi il mattone di ogni rete
+neurale: un neurone artificiale è un pezzo di aritmetica.
 
 ## Un neurone fatto di aritmetica
 
 Un neurone biologico riceve segnali da altri neuroni, li combina e "scarica" un
-impulso se lo stimolo complessivo supera una soglia. Rosenblatt la formalizza
-in tre operazioni: pesare gli ingressi, sommarli, decidere.
+impulso se lo stimolo complessivo supera una soglia. Rosenblatt formalizza
+questo meccanismo in tre operazioni: pesare gli ingressi, sommarli, decidere.
 
 Ogni ingresso arriva con un peso che ne misura l'importanza: il primo ingresso
-lo chiamiamo $x_1$ e il suo peso $w_1$, il secondo $x_2$ e $w_2$, e avanti così,
-con $x_i$ e $w_i$ per uno qualunque di loro. Il neurone li combina in una somma
-pesata e vi aggiunge un termine costante, il bias $b$, che sposta la soglia:
-quanto il neurone pende verso il sì prima ancora di guardare gli ingressi. Poi
-il totale passa a un'ultima operazione, che decide sì o no e si chiama
-**funzione di attivazione** ({numref}`fig-neurone`).
+lo chiamiamo $x_1$ e il suo peso $w_1$, il secondo $x_2$ e $w_2$, e avanti
+così, con $x_i$ e $w_i$ per uno qualunque di loro. Il neurone li combina in una
+somma pesata e vi aggiunge un termine costante, il **bias** $b$, che sposta la
+soglia, cioè quanto il neurone pende verso il sì prima ancora di guardare gli
+ingressi. Infine il totale passa a un'ultima operazione, che decide sì o no e
+si chiama **funzione di attivazione** ({numref}`fig-neurone`).
 
 ```{figure} ../figures/neurone-artificiale.svg
 :name: fig-neurone
@@ -46,10 +48,10 @@ contributi e aggiunge il bias $b$, la funzione di attivazione decide l'uscita.
 
 Stai per uscire di casa e devi decidere se prendere l'ombrello. Guardi due
 indizi: quanto è nuvoloso e cosa dice l'app del meteo. Dai a ciascun indizio un
-peso (l'app conta più del colore del cielo) e fai una somma: indizio per il suo
-peso, il tutto sommato. Il bias è la tua indole di partenza: un pessimista
-parte già orientato verso il "sì, prendilo". Se il totale arriva a una soglia,
-esci con l'ombrello.
+peso (l'app conta più del colore del cielo) e poi fai una somma: moltiplichi
+ogni indizio per il suo peso e sommi i risultati. Il bias è la tua indole di
+partenza; un pessimista, ad esempio, parte già orientato verso il "sì,
+prendilo". Se il totale arriva a una soglia, esci con l'ombrello.
 
 Con due ingressi la somma è semplicemente
 
@@ -110,18 +112,18 @@ l'uscita è $1$ ("sì"), altrimenti è $0$ ("no"): sommati gli indizi, o esci co
 l'ombrello o non lo prendi.
 
 Le manopole da girare sembrano di tre tipi (i pesi, il bias, la soglia), e sono
-di due. Chiedere che il totale superi $3$ è la stessa identica cosa che togliere
-$3$ dal totale e chiedere che superi lo zero. La soglia si nasconde dentro il
-bias, e da lì in avanti resta sempre lo zero: a spostare il punto in cui il
-neurone cambia idea è il bias.
+di due. Infatti chiedere che il totale superi $3$ è la stessa identica cosa che
+togliere $3$ dal totale e chiedere che superi lo zero. La soglia si nasconde
+dentro il bias, e da lì in avanti resta sempre lo zero; a spostare il punto in
+cui il neurone cambia idea è il bias.
 
-Sui numeri dell'ombrello: il bias era $0{,}5$ e la soglia $3$, quindi il bias
+Sui numeri dell'ombrello, il bias era $0{,}5$ e la soglia $3$, quindi il bias
 nuovo è $0{,}5 - 3 = -2{,}5$, e la regola diventa «esci con l'ombrello se
 $0{,}3 \cdot x_1 + 2 \cdot x_2 - 2{,}5$ è sopra lo zero». La giornata di prima
 non cambia: $0{,}3 \cdot 7 + 2 \cdot 1 - 2{,}5 = 1{,}6$, sopra zero, e
 l'ombrello lo prendi come prima.
 
-Adesso un foglio a quadretti, con la nuvolosità in orizzontale e l'app in
+Adesso prendi un foglio a quadretti, con la nuvolosità in orizzontale e l'app in
 verticale. Ogni giornata diventa un puntino, e anche l'app diventa un numero:
 $x_2 = 1$ se dice pioggia, $x_2 = 0$ se dice sereno. Segna le giornate in
 bilico, quelle in cui il totale fa zero. Sono due conti di seconda
@@ -141,10 +143,12 @@ passa sempre, quindi ne serve un terzo per controllare. Un'app più sfumata, che
 dica «metà pioggia», $x_2 = 0{,}5$, contribuisce $2 \cdot 0{,}5 = 1$, resta
 $0{,}3 \cdot x_1 + 1 - 2{,}5 = 0$, e la nuvolosità in bilico è
 $x_1 = 1{,}5 : 0{,}3 = 5$: a metà altezza e a metà fra $8{,}3$ e
-$1{,}7$, cioè sulla riga che unisce gli altri due. Da una parte di quella riga
-il neurone risponde sempre sì, dall'altra sempre no, e una terza possibilità non
-c'è. Quella riga è tutto ciò che un neurone sa disegnare: cambiare i pesi la
-inclina, cambiare il bias la sposta avanti e indietro, ma resta dritta.
+$1{,}7$, cioè sulla riga che unisce gli altri due.
+
+Da una parte di quella riga il neurone risponde sempre sì, dall'altra sempre
+no, e una terza possibilità non c'è. In altri termini, quella riga è tutto ciò
+che un neurone sa disegnare: cambiare i pesi la inclina, cambiare il bias la
+sposta avanti e indietro, ma resta dritta.
 
 `````
 
@@ -160,17 +164,19 @@ Lo zero sta con l'uno per convenzione: la funzione di Heaviside in zero si
 definisce anche $1/2$. Qui vale $1$, come in `np.where(z >= 0, 1, 0)` del
 codice, e la scelta ha un effetto che si vede subito: con i pesi e il bias a
 zero il neurone risponde $1$ a ogni ingresso, e le correzioni partono da quel sì
-indiscriminato. Due proprietà di $g$ contano più della convenzione. La prima: la
-decisione è binaria, $\hat{y}\in\{0,1\}$. La seconda avrà conseguenze pesanti
-nella {doc}`sezione sulle funzioni di attivazione
-</RetiNeurali/funzioni-attivazione>`: $g'(z)=0$ per ogni $z\neq 0$ e in $0$ la
-derivata non esiste, quindi un metodo che corregga i pesi seguendo la pendenza
-qui moltiplica per zero e non si muove.
+indiscriminato.
 
-Il neurone assegna la
-classe $1$ ai punti da un lato dell'iperpiano $\mathbf{w}^\top\mathbf{x}+b=0$ e
-la classe $0$ a quelli dall'altro. È un **classificatore lineare**: sposta il
-bias $b$ e trasli la frontiera; ruota $\mathbf{w}$ e la inclini.
+Due proprietà di $g$ contano più della convenzione. La prima è che la decisione
+è binaria, $\hat{y}\in\{0,1\}$. La seconda, che avrà conseguenze pesanti nella
+{doc}`sezione sulle funzioni di attivazione
+</RetiNeurali/funzioni-attivazione>`, è che $g'(z)=0$ per ogni $z\neq 0$ e in
+$0$ la derivata non esiste. Ne segue che un metodo che corregga i pesi seguendo
+la pendenza qui moltiplica per zero e non si muove.
+
+Il neurone assegna la classe $1$ ai punti da un lato dell'iperpiano
+$\mathbf{w}^\top\mathbf{x}+b=0$ e la classe $0$ a quelli dall'altro. È un
+**classificatore lineare**: spostando il bias $b$ si trasla la frontiera,
+ruotando $\mathbf{w}$ la si inclina.
 
 `````
 
@@ -231,34 +237,40 @@ chi segnava zero resta ferma. Si corregge chi ha parlato più forte.
 
 Il giro si moltiplica poi per un numeretto che scegli tu, il passo di
 apprendimento (in inglese *learning rate*, nel codice `eta`), che qui,
-curiosamente, decide soltanto di quanto gira la manopola. Il vicino di casa
-parte dalle stesse manopole a zero e le gira dieci volte più forte: si ritrova
-pesi dieci volte più grandi, ma il neurone guarda soltanto se il totale sta
-sopra o sotto lo zero, e un fattore dieci non sposta quel confine. Tutte le
-mattine il vicino esce di casa come te. Finché l'aritmetica è esatta, almeno: il
-calcolatore arrotonda, e ogni tanto l'ultima cifra cambia strada (il codice
-della porta AND ne mostra un caso). Il passo diventerà una scelta che conta davvero
-quando la correzione smetterà di essere fissa, nella {doc}`sezione sulla
-backpropagation </RetiNeurali/backpropagation>`.
+curiosamente, decide soltanto di quanto gira la manopola.
+
+Ad esempio, il vicino di casa parte dalle stesse manopole a zero e le gira
+dieci volte più forte: si ritrova pesi dieci volte più grandi, ma il neurone
+guarda soltanto se il totale sta sopra o sotto lo zero, e un fattore dieci non
+sposta quel confine. Tutte le mattine il vicino esce di casa come te.
+
+Vale però solo finché l'aritmetica è esatta: il computer arrotonda, e ogni
+tanto l'ultima cifra cambia strada (il codice della porta AND ne mostra un
+caso). Il passo diventerà una scelta che conta davvero quando la correzione
+smetterà di essere fissa, nella {doc}`sezione sulla backpropagation
+</RetiNeurali/backpropagation>`.
 
 La prima sera, per esteso, con le manopole tutte a zero e il passo a $0{,}1$.
 Stamattina il cielo era quasi sereno, $x_1 = 1$, e l'app diceva sereno, $x_2 =
 0$. Il totale faceva zero, e lo zero raggiunge la soglia, quindi il neurone ha
 risposto $1$: con le manopole a zero dice sì a qualunque giornata, e dovrà
-disimpararlo per prima cosa. Sei uscito con l'ombrello e c'era il sole: doveva
+disimpararlo per prima cosa.
+
+Sei uscito con l'ombrello e c'era il sole: doveva
 dire $0$. La manopola della nuvolosità scende di $0{,}1 \cdot 1 = 0{,}1$,
 quella dell'app di $0{,}1 \cdot 0 = 0$, perché l'app valeva zero, non ha detto
-niente e non paga niente: adesso segnano $-0{,}1$ e $0$. Scende di $0{,}1$
-anche il bias, da $0$ a $-0{,}1$: è una manopola attaccata a un indizio che
-vale sempre $1$, quindi parla tutte le mattine, e a ogni correzione si sposta
-del passo intero, in su se la risposta era troppo bassa e in giù se era troppo
-alta (nel codice, `b += eta * errore`).
+niente e non paga niente: adesso segnano $-0{,}1$ e $0$.
+
+Scende di $0{,}1$ anche il bias, da $0$ a $-0{,}1$: è una manopola attaccata a
+un indizio che vale sempre $1$, quindi parla tutte le mattine, e a ogni
+correzione si sposta del passo intero, in su se la risposta era troppo bassa e
+in giù se era troppo alta (nel codice, `b += eta * errore`).
 
 Poi si ricomincia, e si ripassa più volte sulle stesse giornate: ogni giro
 completo è un'epoca, le `epoche` del codice. Quante giornate sbagliate servono,
 prima che le manopole si fermino? Torna al foglio a quadretti con i puntini. Se
 fra il gruppo del sì e quello del no c'è un corridoio vuoto, prima o poi si
-fermano, e la sua larghezza decide quando. Giornate chiaramente da
+fermano, e la sua larghezza decide quando. Ad esempio, giornate chiaramente da
 ombrello o da pieno sole lasciano un corridoio comodo, e bastano poche
 correzioni; due giornate quasi identiche che vogliono risposte opposte lo
 assottigliano, e ogni volta che il corridoio si dimezza le correzioni che
@@ -266,11 +278,15 @@ possono servire diventano quattro volte tante.
 
 Largo in proporzione al disegno, però, non in centimetri. Fotocopia il foglio al
 doppio: il corridoio raddoppia, ma raddoppiano anche le distanze dei puntini, e
-il rapporto resta quello. Resterebbe uguale anche il numero di correzioni, se il
-foglio non avesse un punto fermo, l'angolo da cui si misurano i due numeri di
-ogni giornata. L’$1$ del bias non è una distanza sul foglio e la fotocopia non
-lo raddoppia, così le correzioni cambiano, e di solito crescono; restano le
-stesse soltanto se la riga passa per l'angolo, cioè senza bias. Mille giornate
+il rapporto resta quello.
+
+Resterebbe uguale anche il numero di correzioni, se il foglio non avesse un
+punto fermo, l'angolo da cui si misurano i due numeri di ogni giornata. L’$1$
+del bias non è una distanza sul foglio e la fotocopia non lo raddoppia, così le
+correzioni cambiano, e di solito crescono; restano le stesse soltanto se la
+riga passa per l'angolo, cioè senza bias.
+
+Mille giornate
 in più, purché cadano dentro lo spazio già occupato, non aggiungono una
 correzione a quelle che possono servire: conta soltanto quanto è largo il
 corridoio rispetto alla distanza del puntino più lontano dall'angolo.
@@ -299,14 +315,18 @@ aggiornamento), $+1$ o $-1$ altrimenti. Qui $\eta$ è cosmetico: partendo da
 $\mathbf{w}=\mathbf{0}$ e $b=0$ ogni aggiornamento è proporzionale a $\eta$,
 quindi cambiarlo riscala $\mathbf{w}$ e $b$ dello stesso fattore, e la
 decisione dipende solo dal segno di $\mathbf{w}^\top\mathbf{x}+b$, che un
-riscalamento positivo non tocca. Con $\eta=1$ e $\eta=7{,}3$ la porta AND esce
+riscalamento positivo non tocca.
+
+Ad esempio, con $\eta=1$ e $\eta=7{,}3$ la porta AND esce
 identica, con pesi $(2,\ 1)$ e bias $-3$ in unità di $\eta$. Il riscalamento
 vale però solo in aritmetica esatta, e con $\eta=0{,}1$ si rompe su questo
 esempio: $0{,}1$ in binario ha uno sviluppo periodico, e a un certo passo il
 totale sul caso $(1,0)$, che doveva valere zero e far scattare una correzione,
 esce $-2{,}8\cdot 10^{-17}$. Il neurone risponde $0$, nessuno corregge, e la
 corsa si ferma sulla retta $2x_1 + x_2 - 2 = 0$, che passa per $(1,0)$: separa
-solo grazie all'arrotondamento. Per questo il codice chiama `addestra` con
+solo grazie all'arrotondamento.
+
+Per questo il codice chiama `addestra` con
 $\eta = 1$, dove tutte le operazioni restano sugli interi. Anche con quel passo
 la retta trovata, $2x_1 + x_2 - 3 = 0$, passa per $(1,1)$, e la convenzione
 $g(0) = 1$ lo mette dalla parte giusta. Il codice della porta AND prova anche
@@ -321,19 +341,23 @@ separa. Rosenblatt lo dimostra in *Principles of Neurodynamics* (1962)
 {cite}`rosenblatt1962principles`, non nell'articolo del 1958 che presenta il
 modello. Il teorema dice di più di quanto sembri, nella forma che si deve a
 Novikoff {cite}`novikoff1962convergence`: il numero di correzioni, partendo da
-$\mathbf{w}=\mathbf{0}$, è al più $(R/\gamma)^2$. Qui $R = \max_i
+$\mathbf{w}=\mathbf{0}$, è al più $(R/\gamma)^2$.
+
+Qui $R = \max_i
 \lVert\mathbf{x}_i\rVert$ è la norma massima degli esempi e $\gamma$ è il
 margine geometrico del miglior separatore. Questo margine è la distanza
 dall'iperpiano al punto più vicino, cioè metà del corridoio vuoto fra le due
-classi, misurata nello stesso spazio in cui si lavora dopo aver assorbito il bias
-($\gamma = \min_i
+classi, misurata nello stesso spazio in cui si lavora dopo aver assorbito
+il bias ($\gamma = \min_i
 |\mathbf{w}^{*\top}\mathbf{x}_i|$ con $\lVert\mathbf{w}^*\rVert = 1$: senza
 quel vincolo il rapporto non sarebbe nemmeno un numero puro, perché basterebbe
 raddoppiare $\mathbf{w}^*$ per raddoppiare $\gamma$). Il limite vale per la
 versione senza bias, o con il bias assorbito come ingresso costante: è il
 trucco della {numref}`fig-neurone-con-retroazione`, l'ingresso sempre pari a
-$1$, e qui serve (assorbito il bias, quella coordinata in più entra anche in
-$R$). La dimostrazione sta in due disuguaglianze. Si scrivono le
+$1$, e qui serve (assorbito il bias, quella coordinata in più entra anche
+in $R$).
+
+La dimostrazione sta in due disuguaglianze. Si scrivono le
 etichette come $t_i = 2y_i - 1 \in \{-1,+1\}$: la $k$-esima correzione aggiunge
 $\eta\,t_i\mathbf{x}_i$ su un esempio con
 $t_i\,\mathbf{w}_{k-1}^\top\mathbf{x}_i \le 0$. Ogni correzione fa salire la
@@ -345,7 +369,9 @@ $2\eta\,t_i\,\mathbf{w}_{k-1}^\top\mathbf{x}_i$ non è positivo, e quindi
 $\lVert\mathbf{w}_k\rVert^2 \le k\eta^2R^2$. Per Cauchy-Schwarz $k\eta\gamma
 \le \mathbf{w}_k^\top\mathbf{w}^* \le \lVert\mathbf{w}_k\rVert \le
 \sqrt{k}\,\eta R$, da cui $k \le (R/\gamma)^2$: $\eta$ si semplifica, un'altra
-conferma che qui è cosmetico. In quel limite non compaiono né il numero di
+conferma che qui è cosmetico.
+
+In quel limite non compaiono né il numero di
 esempi né la dimensione: quel che conta è il rapporto fra quanto sono lontani
 gli esempi e quanto è sottile il corridoio fra le due classi (la dimensione
 rientra dentro $R$), e raddoppiare il dataset non raddoppia il numero di
@@ -354,28 +380,30 @@ della {doc}`strada larga </TeoriaApprendimento/rademacher-margine>`, qui al
 servizio di un'altra domanda: quante correzioni bastano. Il teorema, però, non
 dice l'altra metà: l'iperpiano trovato è uno qualunque fra quelli che separano,
 senza alcuna garanzia di margine, che le
-{doc}`Support Vector Machine </MachineLearning/svm>` invece cercano. Il seme
-dell'apprendimento moderno è già qui: la regola è la discesa del gradiente
-stocastica, un esempio alla volta, sul *criterio del percettrone*
+{doc}`Support Vector Machine </MachineLearning/svm>` invece cercano.
+
+Il seme dell'apprendimento moderno è già qui: la regola è la discesa del
+gradiente stocastica, un esempio alla volta, sul *criterio del percettrone*
 $\mathcal{L}(\mathbf{w}) = \sum_i
 \max\big(0,\,-t_i\,\mathbf{w}^\top\mathbf{x}_i\big)$, con $t_i = 2y_i - 1$ e il
 bias assorbito. Sugli esempi classificati bene il termine è nullo e non spinge;
 su quelli sbagliati il suo gradiente è $-t_i\mathbf{x}_i$, e un passo lungo
-$\eta$ è la correzione di Rosenblatt. Sull'angolo, dove
-$\mathbf{w}^\top\mathbf{x}_i = 0$, la regola sceglie un sottogradiente, quello
-che vuole la convenzione $g(0) = 1$: $-t_i\mathbf{x}_i$ se l'etichetta è $-1$,
-zero se è $+1$. Questo fa partire la corsa da $\mathbf{w} = \mathbf{0}$, dove
-il criterio vale già zero, il suo minimo. La loss ha una soluzione banale, e il
-separatore viene dalla dinamica, non dal minimo. Il margine della hinge,
-$\max\big(0,\,1 - t_i\,\mathbf{w}^\top\mathbf{x}_i\big)$, toglie quella
-soluzione. È una loss lineare a tratti, con un angolo dove il gradino salta: la
-discesa del gradiente su loss derivabili ovunque arriva con la backpropagation.
+$\eta$ è la correzione di Rosenblatt.
+
+Sull'angolo, dove $\mathbf{w}^\top\mathbf{x}_i = 0$, la regola sceglie un
+sottogradiente, quello che vuole la convenzione $g(0) = 1$: $-t_i\mathbf{x}_i$
+se l'etichetta è $-1$, zero se è $+1$. Questo fa partire la corsa da
+$\mathbf{w} = \mathbf{0}$, dove il criterio vale già zero, il suo minimo. Si
+noti che la loss ha una soluzione banale, e il separatore viene dalla dinamica,
+non dal minimo. Il margine della hinge, $\max\big(0,\,1 -
+t_i\,\mathbf{w}^\top\mathbf{x}_i\big)$, toglie quella soluzione. È una loss
+lineare a tratti, con un angolo dove il gradino salta: la discesa del gradiente
+su loss derivabili ovunque arriva con la backpropagation.
 
 `````
 
-Tradotta in NumPy (la libreria di calcolo della
-{doc}`sezione che porta il suo nome </Python/numpy>`), la ricetta è
-quasi identica a come l'abbiamo raccontata:
+Tradotta in NumPy (la libreria di calcolo della {doc}`sezione che porta il suo
+nome </Python/numpy>`), la regola è quasi identica a come l'abbiamo raccontata:
 
 ```python
 import numpy as np
@@ -427,9 +455,11 @@ XOR, 100 epoche: pesi [-0.1  0. ], bias 0.0, uscita [1 1 0 0]
 Con $\eta = 7{,}3$ la corsa finisce dove finiva con $\eta = 1$, pesi $(2,1)$ e
 bias $-3$ in unità di $\eta$. Con $\eta = 0{,}1$ si ferma prima, con bias $-2$:
 $0{,}1$ in binario ha uno sviluppo periodico, e sul caso $(1,0)$ il totale, che
-doveva fare zero e far scattare un'ultima correzione, esce $-2{,}8\cdot10^{-17}$
-(il `-2.8e-17` della stampa, cioè sedici zeri dopo la virgola e poi $28$, con
-il segno meno). Il neurone risponde no, nessuno corregge più, e la corsa resta
+doveva fare zero e far scattare un'ultima correzione, esce
+$-2{,}8\cdot10^{-17}$ (il `-2.8e-17` della stampa, cioè sedici zeri dopo la
+virgola e poi $28$, con il segno meno).
+
+Di conseguenza il neurone risponde no, nessuno corregge più, e la corsa resta
 dov'è: in aritmetica esatta il passo non deciderebbe niente, in macchina ogni
 tanto decide dove ci si ferma. Le ultime due righe sono lo XOR, il caso in cui
 una retta che separa non esiste.
@@ -440,13 +470,13 @@ Del muro dello XOR si racconta di solito una versione comoda e
 sbagliata.
 
 *Perceptrons*, il libro di Minsky e Papert del 1969
-{cite}`minsky1969perceptrons`, è ricordato per lo XOR ("o esclusivo",
-che vale $1$ quando i due ingressi sono diversi e $0$ quando sono uguali), e
-cioè per l'osservazione che un neurone solo non ce la fa. L'osservazione però
-non era loro: che un elemento a soglia isolato tracci una riga e nient'altro si
-sapeva da decenni, e infatti già nel 1943, in McCulloch e Pitts,
-per calcolare le funzioni logiche gli elementi si collegavano fra loro invece di
-usarne uno. Nel 1969 era materia da manuale.
+{cite}`minsky1969perceptrons`, è ricordato per lo XOR ("o esclusivo", che vale
+$1$ quando i due ingressi sono diversi e $0$ quando sono uguali), e cioè per
+l'osservazione che un neurone solo non ce la fa. L'osservazione però non era
+loro: che un elemento a soglia isolato tracci una riga e nient'altro si sapeva
+da decenni, e infatti già nel 1943, in McCulloch e Pitts, gli elementi si
+collegavano fra loro per calcolare le funzioni logiche, invece di usarne uno
+solo. Nel 1969 era materia da manuale.
 
 ```{figure} ../figures/xor-non-separabile.svg
 :name: fig-xor-non-separabile
@@ -470,13 +500,14 @@ angoli opposti del quadrato.
 Sul foglio a quadretti i quattro casi dello XOR sono gli angoli di un quadrato
 di lato $1$, e i due che vogliono uscita $1$, $(0,1)$ e $(1,0)$, stanno in
 angoli opposti. Che nessuna riga li separi si verifica in poche righe di
-calcolo. Il totale del caso $(1,1)$ è quello di $(1,0)$, più quello di $(0,1)$,
-meno quello di $(0,0)$: sommando i primi due ci sono tutti e due i pesi, come
-in $(1,1)$, ma il bias due volte; togliere il totale di $(0,0)$, che è il solo
-bias, lo riporta a una volta sola. I primi due devono stare sopra lo zero, il
-terzo sotto, e togliere un numero negativo è aggiungere: il totale di $(1,1)$
-finisce sopra lo zero per forza, e il neurone dice $1$ dove doveva dire $0$. Un
-singolo percettrone, sullo XOR, è condannato a sbagliare almeno un caso.
+calcolo. Basta osservare che il totale del caso $(1,1)$ è quello di $(1,0)$,
+più quello di $(0,1)$, meno quello di $(0,0)$: sommando i primi due ci sono
+tutti e due i pesi, come in $(1,1)$, ma il bias due volte; togliere il totale
+di $(0,0)$, che è il solo bias, lo riporta a una volta sola. I primi due devono
+stare sopra lo zero, il terzo sotto, e togliere un numero negativo è
+aggiungere: il totale di $(1,1)$ finisce sopra lo zero per forza, e il neurone
+dice $1$ dove doveva dire $0$. Un singolo percettrone, sullo XOR, è condannato
+a sbagliare almeno un caso.
 
 Adesso lascia provare alla macchina, con la regola delle correzioni, e a ogni
 caso sbagliato la riga si sposta un po’. Dopo due o tre giri completi le quattro
@@ -501,13 +532,13 @@ terza, $w_1+w_2+b\ge -b>0$, contro la quarta. Le classi $\{(0,0),(1,1)\}$ e
 $\{(0,1),(1,0)\}$ non sono divisibili da un iperpiano in $\mathbb{R}^2$. Non è
 un difetto dell'ottimizzatore, è un limite di *capacità* del modello.
 
-Lanciato `addestra` su `y_xor = np.array([0, 1, 1, 0])`, non
+Lanciando `addestra` su `y_xor = np.array([0, 1, 1, 0])` si vede che non
 converge, e fin qui è ovvio; ma nemmeno diverge, e nemmeno vaga. Le prime due
-epoche sbagliano tre esempi su quattro; dalla terza in poi li sbagliano
-tutti e quattro, tutti e quattro producono una correzione, e le quattro
-correzioni si annullano fra loro: alla fine di ogni epoca i parametri sono
-tornati dov'erano ($\mathbf{w} = (-0{,}1,\ 0)$, $b = 0$), e l'uscita
-stampata è `[1 1 0 0]` alla decima epoca come alla centesima.
+epoche sbagliano tre esempi su quattro; dalla terza in poi li sbagliano tutti e
+quattro, tutti e quattro producono una correzione, e le quattro correzioni si
+annullano fra loro: alla fine di ogni epoca i parametri sono tornati dov'erano
+($\mathbf{w} = (-0{,}1,\ 0)$, $b = 0$), e l'uscita stampata è `[1 1 0 0]` alla
+decima epoca come alla centesima.
 
 Per vedere da dove nasce il ciclo, le quattro correzioni si seguono sul foglio.
 Si parte da $\mathbf{w} = (-0{,}1,\ 0)$ e $b = 0$. Il primo esempio, $(0,0)$,
@@ -517,11 +548,13 @@ zero, e $b$ scende a $-0{,}1$. Il secondo, $(0,1)$, e il terzo, $(1,0)$,
 ricevono $0$ e dovevano ricevere $1$: ciascuno alza di $0{,}1$ il peso del
 proprio ingresso acceso, e ciascuno rialza il bias. Il quarto, $(1,1)$, riceve
 $1$ e doveva ricevere $0$: riabbassa entrambi i pesi e riporta il bias dov'era.
-Fine dell'epoca, e siamo al punto di partenza. Da fuori una risposta immobile e
-sbagliata (due casi su quattro), da dentro un ciclo. È il *perceptron cycling
-theorem*, enunciato nello stesso *Perceptrons* e dimostrato in modo completo da
-Block e Levin {cite}`block1970boundedness`, che su dati non separabili garantisce
-almeno che i pesi restino limitati.
+
+
+Alla fine dell'epoca si è tornati al punto di partenza. Da fuori una risposta
+immobile e sbagliata (due casi su quattro), da dentro un ciclo. È il
+*perceptron cycling theorem*, enunciato nello stesso *Perceptrons* e dimostrato
+in modo completo da Block e Levin {cite}`block1970boundedness`, che su dati non
+separabili garantisce almeno che i pesi restino limitati.
 
 `````
 
@@ -636,8 +669,8 @@ fra l'ingresso e l'uscita. Un secondo strato poi lavora sulle risposte del
 primo, e il confine che ne esce non è più una riga sola. Tanto basta per lo XOR.
 
 C'è però una condizione: fra uno strato e l'altro deve succedere qualcosa che
-non sia moltiplicare e sommare. Se no cento strati si schiaccerebbero in uno
-solo, capace di disegnare solo la figura di prima, cioè una
+non sia moltiplicare e sommare. Altrimenti cento strati si schiaccerebbero
+in uno solo, capace di disegnare solo la figura di prima, cioè una
 riga dritta, e lo XOR resterebbe fuori portata. Quel qualcosa da mettere in
 mezzo si chiama **non linearità**, e sono funzioni come la ReLU o la sigmoide.
 Saranno loro, insieme al percettrone multistrato (MLP) e all'algoritmo che lo
@@ -667,15 +700,14 @@ questo:
 | $(1,0)$ | $1$ | $0{,}5$ | $0{,}5$ |
 | $(1,1)$ | $0$ | $1{,}5$ | $0$ |
 
-Nelle ultime due colonne i due casi con
-risposta $1$ danno la stessa identica coppia, $(0{,}5;\ 0{,}5)$: erano due punti
-diversi e adesso sono lo stesso punto. I due casi con risposta $0$ danno
-$(0;\ 1{,}5)$ e $(1{,}5;\ 0)$, cioè due punti lontani e da parti opposte.
-Adesso prendi un foglio nuovo, mettici $h_1$ in orizzontale e $h_2$ in
-verticale, segna i tre punti: una riga sola li separa, e a tracciarla è il
-neurone di uscita. Il primo strato non ha risolto il problema: lo ha
-spostato in un posto dove era facile, come fanno gli strati
-nascosti in ogni rete.
+Si noti che nelle ultime due colonne i due casi con risposta $1$ danno la
+stessa identica coppia, $(0{,}5;\ 0{,}5)$: erano due punti diversi e adesso
+sono lo stesso punto. I due casi con risposta $0$ danno $(0;\ 1{,}5)$ e
+$(1{,}5;\ 0)$, cioè due punti lontani e da parti opposte. Adesso prendi un
+foglio nuovo, mettici $h_1$ in orizzontale e $h_2$ in verticale, segna i tre
+punti: una riga sola li separa, e a tracciarla è il neurone di uscita. Il primo
+strato non ha risolto il problema: lo ha spostato in un posto dove era facile,
+come fanno gli strati nascosti in ogni rete.
 
 ```{figure} ../figures/xor-si-piega.svg
 :name: fig-xor-si-piega

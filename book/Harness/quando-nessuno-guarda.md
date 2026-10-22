@@ -4,17 +4,19 @@ Nel progetto di OpenAI scritto da un agente, per un certo periodo la squadra ha
 dedicato ogni venerdì, un giorno su cinque della settimana, a ripulire il
 codice da quello che Lopopolo chiama, senza giri di parole, «AI slop»: la
 roba approssimativa che un agente produce quando nessuno lo corregge
-{cite}`lopopolo2026harness`. Il motivo era strutturale. Un agente imita i modi
-di fare che trova nel repository, compresi quelli storti, e con il tempo il
-codice deriva. La pulizia del venerdì non ha retto la crescita del progetto, e
-la squadra l'ha sostituita con un'altra cosa: regole scritte e compiti di
-pulizia che girano da soli, a cadenza regolare.
+{cite}`lopopolo2026harness`.
+
+Il motivo era strutturale, perché un agente imita i modi di fare che trova nel
+repository, compresi quelli storti, e con il tempo il codice deriva. Ma la
+pulizia del venerdì non ha retto la crescita del progetto, quindi la squadra
+l'ha sostituita con regole scritte e con compiti di pulizia che girano da soli,
+a cadenza regolare.
 
 È il problema di qualunque sistema che lavora quando nessuno guarda, e ha due
-facce. La prima è vedere: un agente che lavora per ore, di notte, su
+facce. La prima è vedere. Un agente che lavora per ore, di notte, su
 un'applicazione vera, ha bisogno di vedere che cosa fa l'applicazione, e chi
 lo sorveglia ha bisogno di vedere che cosa ha fatto l'agente. La seconda è
-tenere in ordine: anche quando ogni singola modifica passa i controlli, la
+tenere in ordine. Anche quando ogni singola modifica passa i controlli, la
 somma di migliaia di modifiche tende al disordine, e il disordine si copia.
 
 ## Dare occhi all'agente
@@ -22,24 +24,30 @@ somma di migliaia di modifiche tende al disordine, e il disordine si copia.
 Lo stesso gruppo di OpenAI, a un certo punto, ha scoperto che il collo di
 bottiglia non era più scrivere codice ma controllarlo: la capacità delle
 persone di provare quello che l'agente produceva. La risposta è stata rendere
-l'applicazione leggibile all'agente stesso. Più agenti lavoravano insieme,
-ciascuno sulla propria copia di lavoro del progetto (il *worktree* del
+l'applicazione leggibile all'agente stesso.
+
+In concreto, più agenti lavoravano insieme, ciascuno sulla propria copia di
+lavoro del progetto (il *worktree* del
 {doc}`loop engineering </IngegneriaLLM/loop-engineering>`), e ogni copia poteva
 avviare una sua istanza dell'applicazione, cioè una copia in funzione tutta
 sua, che l'agente guidava da solo dentro un browser, fotografando le pagine e
-leggendone la struttura. Accanto a ogni istanza girava un impianto di
-osservazione tutto suo: i **log**, cioè le righe che il programma scrive man
-mano che lavora, le **metriche**, cioè i numeri che misura su di sé (quanto ci
+leggendone la struttura.
+
+Accanto a ogni istanza girava un impianto di osservazione tutto suo, che
+comprendeva i **log**, cioè le righe che il programma scrive man mano che
+lavora, le **metriche**, cioè i numeri che misura su di sé (quanto ci
 mette a partire, quante richieste serve al secondo), e le **tracce**, cioè la
 storia di ogni singola richiesta attraverso i pezzi del sistema, divisa in
-intervalli (*span*), uno per passaggio. L'agente interrogava log e metriche
+intervalli (*span*), uno per passaggio.
+
+L'agente interrogava log e metriche
 con i loro linguaggi di interrogazione, come si interroga un database, e a
 fine compito tutto veniva smontato, così che il compito dopo partisse da un
 impianto pulito {cite}`lopopolo2026harness`.
 
 Con quegli occhi, richieste che prima non si potevano fare diventano
-trattabili: «l'avvio del servizio deve completarsi in meno di 800
-millisecondi», «nessun intervallo dei quattro percorsi critici di un utente
+trattabili, ad esempio «l'avvio del servizio deve completarsi in meno di 800
+millisecondi» e «nessun intervallo dei quattro percorsi critici di un utente
 deve superare i due secondi» (per un negozio, percorsi come cercare un
 prodotto o pagare). Sono frasi che un agente può verificare da sé, interrogando
 le metriche e le tracce. Lopopolo racconta di singole esecuzioni dell'agente
@@ -51,30 +59,36 @@ dormono.
 L'altra faccia è vedere che cosa succede dentro il sistema che l'agente
 costruisce o mantiene, quando qualcosa va storto senza fare rumore. I guasti
 peggiori di un sistema che risponde con un modello non sono gli errori, che
-fermano tutto e si notano, ma le risposte plausibili e sbagliate. Un archivio
-di documenti interrogato per somiglianza, come quello del {doc}`RAG
+fermano tutto e si notano, ma le risposte plausibili e sbagliate.
+
+Un archivio di documenti interrogato per somiglianza, come quello del {doc}`RAG
 </Transformers/rag>`, ne offre un esempio classico. I documenti sono stati
 trasformati mesi fa da un codificatore in vettori, cioè in liste di numeri
 tutte della stessa lunghezza, e una domanda trova i documenti i cui vettori
 somigliano al suo, confrontandoli numero per numero; il confronto, però, ha
-senso solo fra liste della stessa lunghezza. Un giorno il codificatore delle
-domande viene aggiornato a una versione che produce liste di un'altra
-lunghezza, e da quel momento nessuna domanda trova più niente. Se il codice di
-ricerca, per non bloccarsi su un documento malformato, salta in silenzio i
-vettori che non si possono confrontare, il servizio non si rompe: risponde
-gentilmente che non ha trovato documenti pertinenti.
+senso solo fra liste della stessa lunghezza.
+
+Un giorno il codificatore delle domande viene aggiornato a una versione che
+produce liste di un'altra lunghezza, e da quel momento nessuna domanda trova
+più niente. Se il codice di ricerca, per non bloccarsi su un documento
+malformato, salta in silenzio i vettori che non si possono confrontare, il
+servizio non si rompe, e risponde gentilmente che non ha trovato documenti
+pertinenti.
 
 Lo smaschera un **giornale degli eventi**, che non va confuso con il registro
-di avanzamento delle sessioni: lo scrive il programma, a ogni fase, e non il
-modello. Servono due condizioni. Gli eventi devono essere **strutturati**,
+di avanzamento delle sessioni, perché lo scrive il programma, a ogni fase, e
+non il modello.
+
+Servono due condizioni. Gli eventi devono essere **strutturati**,
 scritti con campi fissi e non come frasi libere, così che un programma (o un
 agente) li possa filtrare e contare; e siccome nel giornale finiscono,
 mescolati, gli eventi di tutte le richieste, ogni evento deve portare
 l'identificativo della richiesta a cui appartiene, così che se ne possa
-seguire una da capo a fondo attraverso le fasi. Un programma costruisce il
-guasto in miniatura, con una domanda sui resi e un archivio di mille
-documenti, e stampa prima la risposta che vede l'utente, poi il giornale di
-quella richiesta.
+seguire una da capo a fondo attraverso le fasi.
+
+Un programma costruisce il guasto in miniatura, con una domanda sui resi e un
+archivio di mille documenti, e stampa prima la risposta che vede l'utente, poi
+il giornale di quella richiesta.
 
 ```python
 import itertools
@@ -136,20 +150,23 @@ Non ho trovato documenti pertinenti.
 si azzera in «recupero»: domanda da 4 numeri, archivio da 8
 ```
 
-Chi legge la sola risposta non ha niente da obiettare: può darsi davvero che
-nell'archivio non ci sia niente sui resi. Chi segue la richiesta `r1` nel
+Chi legge la sola risposta non ha niente da obiettare, perché può darsi davvero
+che nell'archivio non ci sia niente sui resi. Chi segue la richiesta `r1` nel
 giornale vede invece che mille documenti sono stati esaminati e nessuno era
-confrontabile, e che il motivo sta nella fase di recupero: la domanda è un
-vettore di quattro numeri, i documenti scartati sono vettori di otto. Due
-scelte rendono possibile la diagnosi, e stanno tutte e due nel codice che
-circonda il modello. Il giornale lo scrive il codice a ogni fase, che qualcuno
-se ne ricordi o no, e registra quanto entra e quanto esce, il che trova il
-punto in cui il conteggio va a zero qualunque sia la causa; il campo con le
-lunghezze ne dà anche il perché. E i campi sono quelli di un formato fisso, che
-un agente può interrogare con la stessa facilità di una persona. Il caso più
-insidioso, due codificatori diversi che producono vettori della stessa
-lunghezza, questo giornale non lo vedrebbe: lo vede solo un giornale che
-registra anche quale versione del codificatore ha prodotto ciascun vettore.
+confrontabile, e che il motivo sta nella fase di recupero, dove la domanda è un
+vettore di quattro numeri e i documenti scartati sono vettori di otto.
+
+Due scelte rendono possibile la diagnosi, e stanno tutte e due nel codice che
+circonda il modello. La prima è che il giornale lo scrive il codice a ogni
+fase, che qualcuno se ne ricordi o no, e registra quanto entra e quanto esce,
+il che trova il punto in cui il conteggio va a zero qualunque sia la causa; il
+campo con le lunghezze ne dà anche il perché. La seconda è che i campi sono
+quelli di un formato fisso, che un agente può interrogare con la stessa
+facilità di una persona.
+
+Il caso più insidioso, due codificatori diversi che producono vettori della
+stessa lunghezza, questo giornale non lo vedrebbe, e lo vede solo un giornale
+che registra anche quale versione del codificatore ha prodotto ciascun vettore.
 
 `````{tab} Elementare
 
@@ -179,6 +196,7 @@ Le righe non le scrive l'artigiano quando gli viene in mente: su ogni banco
 c'è un contapezzi che conta da solo i pezzi che entrano e quelli che escono, e
 stampa la riga. Così sono annotate anche le cose che nessuno pensava di dover
 annotare, ed è da quelle che si capisce un guasto che nessuno aveva previsto.
+
 Si stampa a inchiostro: nessuno cancella la riga di un altro banco, e la sera
 si può ripercorrere il viaggio dell'ordine banco per banco, com'è andato
 davvero. Il raccoglitore non lo legge solo il proprietario: lo legge anche
@@ -201,33 +219,37 @@ Una traccia, nel senso dei sistemi distribuiti, è un albero di intervalli
 identificativo, quello del genitore, un nome, un inizio, una fine e degli
 attributi. Il modello è quello di Dapper, il sistema di tracciamento di Google
 {cite}`sigelman2010dapper`, reso poi standard da progetti aperti come
-OpenTelemetry. Per un agente la corrispondenza è diretta: una sessione è una
-traccia, un passo del ciclo è un intervallo, una chiamata a uno strumento o al
-modello è un intervallo figlio, con attributi come i token letti e scritti,
-l'esito, la durata. La traccia di un agente ReAct, la successione di pensieri,
-azioni e osservazioni del {doc}`capitolo sugli agenti
+OpenTelemetry.
+
+Per un agente la corrispondenza è diretta. Una sessione è una traccia, un passo
+del ciclo è un intervallo, una chiamata a uno strumento o al modello è un
+intervallo figlio, con attributi come i token letti e scritti, l'esito, la
+durata. La traccia di un agente ReAct, la successione di pensieri, azioni e
+osservazioni del {doc}`capitolo sugli agenti
 </Agenti/agenti-e-tool-use>`, è il caso di un albero con un solo ramo. Nel
 giornale della richiesta `r1` l'identificativo è la traccia nella sua forma
 minima, e le fasi sono gli intervalli, senza tempi né gerarchia.
 
 Con questa rappresentazione «dove si è perso il segnale» diventa
-un'interrogazione: si cerca il primo intervallo il cui attributo (qui il numero
-di candidati compatibili) cade a zero, e lo si confronta con il proprio
-ingresso e con l'intervallo che gli ha passato i dati. È l'operazione che una
-persona farebbe a occhio, resa eseguibile da un programma, e quindi da un
-agente che diagnostica un fallimento sulle tracce, come chiede l'attribuzione
-dei fallimenti dell’{doc}`anatomia dell'harness <overview>`.
+un'interrogazione. Si cerca il primo intervallo il cui
+attributo (qui il numero di candidati compatibili) cade a zero, e lo si
+confronta con il proprio ingresso e con l'intervallo che gli ha passato i dati.
+In altri termini, è l'operazione che una persona farebbe a occhio, resa
+eseguibile da un programma, e quindi da un agente che diagnostica un fallimento
+sulle tracce, come chiede l'attribuzione dei fallimenti dell’{doc}`anatomia
+dell'harness <overview>`.
 
 Per il giornale dell'agente valgono due condizioni. La prima riguarda la
 posizione. L'harness sta sull'unico canale fra il modello e il mondo, la
 sequenza dei contesti montati, delle azioni e delle osservazioni
-$(C_{k,t}, a_{k,t}, o_{k,t})$: un giornale scritto lì è completo per
+$(C_{k,t}, a_{k,t}, o_{k,t})$, per cui un giornale scritto lì è completo per
 costruzione rispetto a ciò che l'agente ha visto e fatto, mentre uno scritto
 dal modello contiene ciò che il modello ha scelto di annotare. Ed è
 indipendente da chi viene osservato, come il metro della {doc}`sezione sul
 collaudo <finito-vuol-dire-collaudato>`. Per il codice dell'applicazione, come
 il servizio dell'esempio, la stessa completezza si ottiene imponendo eventi
 strutturati con un controllo statico, che è ciò che fa la squadra di Lopopolo.
+
 La seconda condizione è che il giornale sia accodato e non riscritto, una
 sequenza di tuple $(k, t, C_{k,t}, a_{k,t}, o_{k,t})$ in cui ogni passo
 aggiunge senza modificare. Permette di ripercorrere a posteriori che cosa il
@@ -237,47 +259,54 @@ perché $a \sim P_\theta$ è un campionamento, a meno di registrare anche le
 uscite del modello e di rieseguire soltanto il resto.
 
 Le metriche esposte all'agente trasformano un requisito di prestazione in un
-predicato, con una cautela. Una latenza è una variabile aleatoria, e «avvio in
-meno di 800 millisecondi» va posto su un quantile, stimato su $n$ prove a
-carico noto, del tipo $q_{0{,}95} < 0{,}8\ \text{s}$; «nessun intervallo oltre
-i due secondi» è un massimo, la statistica più sensibile al rumore. Lopopolo
-le presenta come richieste che diventano trattabili per l'agente, non come
-cancelli, e dichiara di tenere al minimo i cancelli che bloccano
-l'integrazione: le prove instabili si rilanciano, invece di fermare tutto.
+predicato, con una cautela. Una latenza è una variabile aleatoria, quindi
+«avvio in meno di 800 millisecondi» va posto su un quantile, stimato su $n$
+prove a carico noto, del tipo $q_{0{,}95} < 0{,}8\ \text{s}$; «nessun
+intervallo oltre i due secondi» è un massimo, la statistica più sensibile al
+rumore. Lopopolo le presenta come richieste che diventano trattabili per
+l'agente, non come cancelli, e dichiara di tenere al minimo i cancelli che
+bloccano l'integrazione: le prove instabili si rilanciano, invece di fermare
+tutto.
 
 `````
 
 ## L'entropia, e la pulizia che non finisce
 
 Il disordine che cresce da solo, quando nessuno lo contrasta, ha un nome preso
-dalla fisica, entropia, e Lopopolo lo usa in questo senso largo. Che serva
-pulire vale per qualunque codice scritto da un agente. Un agente impara dal
-contesto, e il contesto è il repository: quando scrive codice nuovo, imita i
-modi di fare che vede intorno, quelli buoni e quelli cattivi. Una scorciatoia
-lasciata una volta diventa un esempio, l'esempio diventa un'abitudine, e
-l'abitudine si moltiplica a ogni sessione. Lopopolo lo chiama deriva
-{cite}`lopopolo2026harness`.
+dalla fisica, **entropia**, e Lopopolo lo usa in questo senso largo. Che serva
+pulire vale per qualunque codice scritto da un agente.
+
+Infatti un agente impara dal contesto, e il contesto è il repository, quindi
+quando scrive codice nuovo imita i modi di fare che vede intorno, quelli buoni
+e quelli cattivi. Una scorciatoia lasciata una volta diventa un esempio,
+l'esempio diventa un'abitudine, e l'abitudine si moltiplica a ogni sessione.
+Lopopolo lo chiama **deriva** {cite}`lopopolo2026harness`.
 
 La risposta della sua squadra ha due parti. La prima è scrivere nel repository
 dei «principi d'oro», regole meccaniche e perentorie: preferire le librerie di
 funzioni condivise a quelle che ogni agente si scrive a mano, così che una
 regola stia in un posto solo; non indovinare la forma dei dati, ma controllarla
 nel punto in cui entrano, o usare librerie che dichiarano i tipi, così che
-l'agente non possa costruire per sbaglio su una forma supposta. La seconda è
-la pulizia continua: a cadenza regolare dei compiti in sottofondo, eseguiti da
-agenti, cercano gli scostamenti dai principi, aggiornano un documento che dà un
-voto di qualità a ogni parte del prodotto, e aprono richieste di modifica
-piccole e mirate, che per lo più si rivedono in meno di un minuto e si
-integrano da sole. Il debito tecnico, scrive Lopopolo, è come un prestito a
+l'agente non possa costruire per sbaglio su una forma supposta.
+
+La seconda è la pulizia continua: a cadenza regolare dei compiti in sottofondo,
+eseguiti da agenti, cercano gli scostamenti dai principi, aggiornano un
+documento che dà un voto di qualità a ogni parte del prodotto, e aprono
+richieste di modifica piccole e mirate, che per lo più si rivedono in meno di
+un minuto e si integrano da sole.
+
+Il debito tecnico, scrive Lopopolo, è come un prestito a
 interesse alto: conviene quasi sempre ripagarlo un poco alla volta, di
 continuo, invece di lasciarlo crescere e affrontarlo a ondate dolorose; e
 così gli schemi storti si trovano e si correggono ogni giorno, invece di
 lasciarli diffondere per giorni o settimane.
 
-Un modello a numeri tondi fa vedere che cosa conta. Segue la frazione del
+Un modello a numeri tondi fa vedere che cosa conta. Calcola la frazione del
 codice che segue uno schema storto, sessione dopo sessione, in due mondi: uno
 in cui una scorciatoia si copia in proporzione a quanto è diffusa, e uno in cui
-si copia più volentieri, per contagio. La pulizia corregge a ogni passaggio una
+si copia più volentieri, per contagio.
+
+La pulizia corregge a ogni passaggio una
 parte del codice storto, e la sua forza si misura con la **permanenza**, cioè
 quante sessioni resta in media uno schema storto prima di essere corretto. Il
 programma stampa il disordine medio per quattro permanenze, poi confronta, a
@@ -349,7 +378,9 @@ senza pulizia, dopo 600 sessioni: 1,000 e 1,000
 Con la copia in proporzione il disordine cresce più o meno come la
 permanenza; con il contagio cresce più in fretta, e a permanenza venti supera
 la metà del codice, perché uno schema che resta più a lungo viene anche
-copiato più a lungo. A parità di permanenza la pulizia a ondate lascia quasi
+copiato più a lungo.
+
+A parità di permanenza la pulizia a ondate lascia quasi
 lo stesso disordine medio della continua, ma a dente di sega, con picchi più
 alti. Senza pulizia, in tutti e due i mondi, il codice finisce storto per
 intero. La {numref}`fig-harness-deriva` mostra le due pulizie sessione dopo
@@ -370,9 +401,10 @@ un passaggio e l'altro e ricade. Con il contagio tutto il disegno sale.
 In bottega gli artigiani si copiano, e non lo fanno apposta: è il modo più
 naturale di imparare il mestiere di quella bottega. Se un giorno qualcuno fa
 un incastro alla svelta, con due chiodi invece della coda di rondine, e lo
-lascia lì, l'artigiano di domani lo vede e pensa che qui si fa così. Se nessuno
-copiasse, i chiodi sarebbero soltanto quelli delle giornate storte, pochi e
-sparsi; con la copia, un incastro con i chiodi non sparisce più, e ogni
+lascia lì, l'artigiano di domani lo vede e pensa che qui si fa così.
+
+Se nessuno copiasse, i chiodi sarebbero soltanto quelli delle giornate storte,
+pochi e sparsi; con la copia, un incastro con i chiodi non sparisce più, e ogni
 giornata storta ne aggiunge altri. E i chiodi si copiano anche più volentieri
 degli incastri buoni, perché fanno prima: dopo un mese sono dappertutto.
 
@@ -381,7 +413,9 @@ incastri. Ma la bottega lavora di più ogni settimana, e in un giorno solo non
 ce la fa più. Allora cambia metodo, con due mosse che lavorano su due cose
 diverse. Scrive sul cartello due regole d'oro, «gli incastri si fanno con le
 sagome della bottega, mai a occhio» e «si misura il legno prima di tagliarlo,
-mai dopo», e così di chiodi ne nascono meno. E assume un artigiano notturno che
+mai dopo», e così di chiodi ne nascono meno.
+
+E assume un artigiano notturno che
 ogni notte gira per la bottega con le regole in mano: non fa in tempo a rifarli
 tutti, ma ogni notte ne trova e ne rifà una parte, piccolo lavoro per piccolo
 lavoro, e per ognuno lascia un biglietto. I lavori sono così piccoli che
@@ -395,7 +429,9 @@ intorno a dieci, perché un chiodo resta lì in media dieci giorni. È questa la
 misura che conta: quanti chiodi ci sono dipende da quanti ne nascono e da
 quanto a lungo ciascuno resta prima di essere rifatto. E finché resta, chi
 passa lo copia: un chiodo che resta il doppio non lascia il doppio dei chiodi,
-ne lascia di più, perché nel frattempo ha fatto figli. Una pulizia del venerdì
+ne lascia di più, perché nel frattempo ha fatto figli.
+
+Una pulizia del venerdì
 che lasciasse ogni chiodo, in media, altrettanto a lungo darebbe più o meno lo
 stesso disordine, ma tutto concentrato a fine settimana: il giovedì la bottega
 è piena di chiodi e chi arriva ne trova di più da copiare, e il venerdì il
@@ -429,12 +465,14 @@ b^{*} = \frac{\lambda\,\varepsilon}{\lambda\,\varepsilon + \gamma},
 $$
 
 che con i valori del programma ($\lambda = 0{,}2$, $\varepsilon = 0{,}1$,
-$\gamma = 0{,}1$) vale $0{,}02/0{,}12 \approx 0{,}167$. L'imitazione si vede per
-differenza: senza di essa il codice riscritto devierebbe solo con probabilità
-$\varepsilon$, e la frazione si fermerebbe a $\lambda\varepsilon/(\lambda +
-\gamma)$, che senza pulizia vale $\varepsilon$; con l'imitazione e senza
-pulizia tende a uno, perché lo schema copiato non si diluisce e ogni sessione
-ne aggiunge. La copia in proporzione, però, non moltiplica: con
+$\gamma = 0{,}1$) vale $0{,}02/0{,}12 \approx 0{,}167$. L'imitazione si vede
+per differenza: senza di essa il codice riscritto devierebbe solo con
+probabilità $\varepsilon$, e la frazione si fermerebbe a
+$\lambda\varepsilon/(\lambda + \gamma)$, che senza pulizia vale $\varepsilon$;
+con l'imitazione e senza pulizia tende a uno, perché lo schema copiato non si
+diluisce e ogni sessione ne aggiunge.
+
+Si noti però che la copia in proporzione non moltiplica, perché con
 $\varepsilon = 0$ un seme di deviazione resta com'è. Il «si moltiplica» chiede
 una copia che amplifica, come $h(b) = b + \kappa\, b(1 - b)$ con $\kappa > 0$,
 la scorciatoia copiata più spesso di quanto sia frequente; allora, con
@@ -454,19 +492,22 @@ La pulizia continua dà $\bar{W} = 1/\gamma$, e con $A = \lambda\varepsilon(1 -
 b)$ la legge ritrova $b^{*}$; una pulizia a ondate che ogni $P$ sessioni
 corregge la frazione $\Gamma$ dà $\bar{W} \approx P/\Gamma - P/2$, perché ogni
 deviazione aspetta in media mezzo periodo la prima ondata (nel programma, che
-corregge alla fine del periodo, $P/\Gamma - (P - 1)/2$). Con la copia in
-proporzione $A$ non dipende da quanto le deviazioni restano, e $\bar{b}$ cresce
-come $\bar{W}$ finché $b$ è piccolo. Con il contagio $A$ cresce con $b$, perché
-ogni sessione di permanenza è anche una sessione in cui la deviazione viene
-copiata: $\bar{b}$ cresce più in fretta di $\bar{W}$, e per
+corregge alla fine del periodo, $P/\Gamma - (P - 1)/2$).
+
+Con la copia in proporzione $A$ non dipende da quanto le deviazioni restano, e
+$\bar{b}$ cresce come $\bar{W}$ finché $b$ è piccolo. Con il contagio $A$
+cresce con $b$, perché ogni sessione di permanenza è anche una sessione in cui
+la deviazione viene copiata: $\bar{b}$ cresce più in fretta di $\bar{W}$, e per
 $\bar{W} > 1/(\lambda\kappa)$ il disordine invade anche senza errori nuovi. A
 parità di $\bar{W}$ le due pulizie danno quasi la stessa media, esattamente la
 stessa nel caso lineare, e le ondate un dente di sega con picchi sopra la
-media. È la forma del *compound* con cui Lopopolo descrive il debito tecnico:
+media.
+
+È la forma del *compound* con cui Lopopolo descrive il debito tecnico:
 a contare è la permanenza, e una squadra di capacità fissa la allunga man mano
 che il codice cresce, che è come falliva la pulizia del venerdì. I principi
 scritti abbassano $\varepsilon$, e $\kappa$ se rendono la scorciatoia meno
-facile da copiare; la pulizia in sottofondo accorcia $\bar{W}$. Ed è un
+facile da copiare; la pulizia in sottofondo accorcia $\bar{W}$. Resta però un
 modello, con parametri non misurati, che assume codice riscritto a caso, copia
 che pesca da tutto il repository, dimensioni e parametri costanti e
 correzioni perfette.
@@ -476,8 +517,10 @@ correzioni perfette.
 Anche l'harness, a sua volta, accumula. Ogni componente aggiunto per riparare
 un guasto resta lì quando il guasto non c'è più, e l’{doc}`anatomia
 dell'harness <overview>` ha già detto come si pota: togliendo un componente e
-guardando che cosa succede (in gergo, un'ablazione), a ogni cambio di modello
-e con le cautele del caso. Rajasekaran, nel suo harness a tre agenti (uno che
+guardando che cosa succede (in gergo, un'ablazione), a ogni cambio di
+modello e con le cautele del caso.
+
+Rajasekaran, nel suo harness a tre agenti (uno che
 pianifica il progetto, uno che lo costruisce, uno che lo valuta), ci è arrivato
 per tentativi quando è uscito un modello più recente. Il primo taglio, radicale
 e fatto tutto insieme, non riproduceva i risultati, e non lasciava capire quali
@@ -485,7 +528,9 @@ pezzi reggessero il resto; allora ha tolto un componente alla volta, guardando
 l'esito di una costruzione per volta, senza ripetizioni. Ha tolto la divisione
 del lavoro in tappe, ha tenuto il pianificatore, senza il quale il costruttore
 faceva un prodotto più povero di quello chiesto, e ha spostato il valutatore a
-un solo controllo finale {cite}`rajasekaran2026harness`. Un harness che nessuno
+un solo controllo finale {cite}`rajasekaran2026harness`.
+
+Un harness che nessuno
 pota diventa un altro deposito di regole scadute, come il manuale unico che la
 {doc}`sezione sul repository come memoria <il-repository-come-memoria>`
 sconsiglia.

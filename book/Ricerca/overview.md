@@ -16,9 +16,9 @@ Una cassa di ingranaggi e contatti elettrici, in una sala di Parigi, nel 1914,
 gioca a scacchi da sola davanti al pubblico. Dentro non c’è nessuno, a
 differenza del famoso Turco, l’automa che più di un secolo prima aveva girato
 l’Europa con un giocatore in carne e ossa nascosto nel mobile. L’ha costruita
-due anni prima l’ingegnere spagnolo Leonardo Torres Quevedo, e riconosce dove
-sono i pezzi, muove i propri e non ha bisogno di nessuno che le dica che cosa
-fare.
+due anni prima l’ingegnere spagnolo Leonardo Torres Quevedo. La macchina
+riconosce dove sono i pezzi, muove i propri e non ha bisogno di nessuno che le
+dica che cosa fare.
 
 Gioca una situazione sola, e non è l’inizio della partita ma la sua coda,
 quella che negli scacchi si chiama **finale**: da una parte re e torre,
@@ -27,20 +27,23 @@ qualunque posizione, e lo scacco matto (il re avversario attaccato, senza
 nessun modo di sottrarsi) lo dà sempre. Non sempre in fretta: ci mette più
 mosse del necessario, a volte più delle cinquanta senza catture né mosse di
 pedone oltre le quali il regolamento permette di chiedere la patta, cioè il
-pareggio. La macchina ignora il regolamento, e al matto arriva lo stesso. Ci
-riesce senza guardare avanti: non immagina le mosse dell’avversario, non prova
-continuazioni, non valuta niente. Legge la posizione dei tre pezzi e applica una
-regola fissa, scritta a mano dentro gli ingranaggi, del tipo «se il re nemico
-sta in questa fascia, porta la torre una riga più in là». Quella regola esiste
-perché re e torre contro re è un problema abbastanza piccolo da avere una
-ricetta: qualcuno l’ha trovata, l’ha scritta, e la macchina la esegue.
+pareggio. La macchina ignora il regolamento, e al matto arriva lo stesso.
 
-Per la partita intera, di ricetta non ce n’è. Nessuno sa scrivere una regola
-che, guardando una posizione qualunque di scacchi, dica quale mossa fare.
-Bisogna allora immaginare, come fa un giocatore umano davanti alla scacchiera:
-se muovo qui lui risponde là, e allora io potrei… Immaginare in modo ordinato
-è una delle idee fondanti dell’intelligenza artificiale, e ha un nome asciutto:
-**ricerca**. Un programma che cerca lavora
+Ci riesce senza guardare avanti: non immagina le mosse dell’avversario, non
+prova continuazioni, non valuta niente. Legge la posizione dei tre pezzi e
+applica una regola fissa, scritta a mano dentro gli ingranaggi, del tipo «se il
+re nemico sta in questa fascia, porta la torre una riga più in là». Quella
+regola esiste perché re e torre contro re è un problema abbastanza piccolo da
+avere una ricetta: qualcuno l’ha trovata, l’ha scritta, e la macchina la
+esegue.
+
+Per la partita intera, di ricetta non ce n’è. Nessuno sa scrivere una
+regola che, guardando una posizione qualunque di scacchi, dica quale mossa
+fare. Bisogna allora immaginare, come fa un giocatore umano davanti alla
+scacchiera: se muovo qui lui risponde là, e allora io potrei…
+
+Immaginare in modo ordinato è una delle idee fondanti dell’intelligenza
+artificiale, e prende il nome di **ricerca**. Un programma che cerca lavora
 senza bersaglio: non ha esempi da imitare, non impara niente, e tutta la sua
 forza sta nel guardare avanti fra le mosse possibili.
 
@@ -57,20 +60,22 @@ scacchi, per il navigatore satellitare e per quel rompicapo di plastica in cui
 si fanno scivolare delle tessere numerate dentro una cornice.
 
 Serve dire in che situazione ci si trova, e quella descrizione si chiama
-stato: la posizione di tutti i pezzi sulla scacchiera, l’incrocio in cui
-ci si trova, la disposizione delle tessere. Serve dire che cosa si può
-fare, cioè quali mosse sono ammesse in quello stato e in quale stato portano.
-E serve sapere quando si è arrivati, cioè riconoscere lo stato di fine.
+**stato**: negli scacchi la posizione di tutti i pezzi sulla scacchiera, per il
+navigatore l’incrocio raggiunto, nel rompicapo la disposizione delle tessere.
+Serve dire che cosa si può fare, cioè quali mosse sono ammesse in quello stato
+e in quale stato portano. E serve sapere quando si è arrivati, cioè
+riconoscere lo stato di fine.
 
-Da qui l’oggetto che nasce è sempre lo stesso. Dallo stato di partenza si
+Da questi elementi nasce sempre lo stesso oggetto. Dallo stato di partenza si
 dipartono tante linee quante sono le mosse possibili; da ciascuno degli stati
 che ne escono, altrettante; e così via. È un albero, la stessa forma degli
 {doc}`alberi decisionali </MachineLearning/alberi-ensemble>`, e ogni punto che
-ci sta dentro è un nodo: uno stato, raggiunto per un cammino preciso. È un
-albero capovolto rispetto a quelli veri: la radice sta in cima, e in fondo,
-alla punta di ogni ramo, ci sono le foglie, i nodi da cui non si va più avanti
-(negli scacchi, le partite finite). Ogni cammino dalla radice a una foglia è un
-futuro possibile.
+ci sta dentro è un nodo: uno stato, raggiunto per un cammino preciso.
+
+Rispetto agli alberi veri, questo è capovolto. La radice sta in cima, e in
+fondo, alla punta di ogni ramo, ci sono le foglie, cioè i nodi da cui non si va
+più avanti (negli scacchi, le partite finite). Ogni cammino dalla radice a una
+foglia è un futuro possibile.
 
 `````{tab} Elementare
 
@@ -81,26 +86,27 @@ scivolare una tessera per volta nel buco.
 Lo stato è come stanno adesso le tessere. Le mosse sono le tessere che
 in questo momento confinano con la casella vuota, e sono due, tre o quattro a
 seconda di dove il buco si trova. Ogni mossa si può scrivere come una regola
-con un prima e un dopo: se il buco sta accanto al 7, il 7 ci può scivolare
-dentro, e dopo il buco sta dove stava il 7. Lo stato di fine è i numeri in
-ordine.
+con un prima e un dopo: ad esempio, se il buco sta accanto al 7, il 7 ci può
+scivolare dentro, e dopo il buco sta dove stava il 7. Lo stato di fine è
+quello con i numeri in ordine.
 
-Adesso disegna, su un foglio e senza toccare il rompicapo: sai in anticipo come
-restano le tessere dopo una mossa, senza farla, e lo sai per tutte le mosse che
-vuoi. In cima metti la situazione di partenza. Sotto, un riquadro per ciascuna
-mossa che puoi fare: mettiamo che siano tre, e che restino tre a ogni riga. La
-riga dopo ne ha nove, quella dopo ancora ventisette, la quarta ottantuno. Dopo
-quattro righe hai disegnato centoventi riquadri e non sei arrivato da nessuna
-parte: la soluzione, per un rompicapo mescolato bene, sta una ventina di mosse
-più in basso.
+Adesso disegna, su un foglio e senza toccare il rompicapo. Puoi farlo perché
+sai in anticipo come restano le tessere dopo una mossa, senza farla, e lo sai
+per tutte le mosse che vuoi. In cima metti la situazione di partenza. Sotto, un
+riquadro per ciascuna mossa che puoi fare: mettiamo che siano tre, e che
+restino tre a ogni riga. La riga dopo ne ha nove, quella dopo ancora
+ventisette, la quarta ottantuno. Dopo quattro righe hai disegnato centoventi
+riquadri e non sei arrivato da nessuna parte: la soluzione, per un rompicapo
+mescolato bene, sta una ventina di mosse più in basso.
 
 Parecchi di quei riquadri sono lo stesso rompicapo disegnato due volte. Fai
 scivolare il 7 nel buco, poi rimettilo dov’era: le tessere stanno come
 stavano. Sul foglio però sono due riquadri lontani fra loro, e sotto a
-ciascuno ricominci da capo a disegnare tutto quello che viene dopo. Le
-situazioni diverse in cui il rompicapo può trovarsi sono tante, ma sono un
-numero fisso. I riquadri sul foglio no: ogni situazione ne prende uno per
-ogni strada che ci arriva, e di strade se ne possono inventare quante si vuole.
+ciascuno ricominci da capo a disegnare tutto quello che viene dopo.
+
+Le situazioni diverse in cui il rompicapo può trovarsi sono tante, ma sono un
+numero fisso. I riquadri sul foglio no: ogni situazione ne prende uno per ogni
+strada che ci arriva, e di strade se ne possono inventare quante si vuole.
 
 Quel disegno è l’albero, e non lo si costruisce mai tutto. Se ne costruisce un
 pezzetto, si guarda, si decide da che parte continuare.
@@ -109,44 +115,46 @@ pezzetto, si guarda, si decide da che parte continuare.
 
 `````{tab} Superiore
 
-Un **problema di ricerca** è definito da cinque componenti: lo spazio degli
-stati $\mathcal{S}$; lo stato iniziale $s_0 \in \mathcal{S}$; l’insieme delle
-azioni ammesse $\mathcal{A}(s)$ per ogni stato; una funzione di transizione
-$\mathrm{ris}(s, a)$ che dice in quale stato si finisce; e un test di arrivo,
-che nei giochi si chiama test di terminazione. Se le azioni hanno costi diversi
-si aggiunge $c(s, a, s')$, il costo del passo. Una **soluzione** è una
-sequenza di azioni che porta da $s_0$ a uno stato che passa il test; il suo
-costo è la somma dei costi dei passi, e $C^*$ indica il costo minimo fra tutte
-le soluzioni.
+**Definizione (problema di ricerca).** Un problema di ricerca è definito da
+cinque componenti: lo spazio degli stati $\mathcal{S}$; lo stato iniziale
+$s_0 \in \mathcal{S}$; l’insieme delle azioni ammesse $\mathcal{A}(s)$ per ogni
+stato; una funzione di transizione $\mathrm{ris}(s, a)$ che dice in quale stato
+si finisce; e un test di arrivo, che nei giochi si chiama test di terminazione.
+Se le azioni hanno costi diversi si aggiunge $c(s, a, s')$, il costo del passo.
+Una **soluzione** è una sequenza di azioni che porta da $s_0$ a uno stato che
+passa il test; il suo costo è la somma dei costi dei passi, e $C^*$ indica il
+costo minimo fra tutte le soluzioni.
 
-Qui gli stati sono *atomici*: l’algoritmo li genera e li confronta, ma non ne
-guarda la struttura. La pianificazione in senso stretto li descrive invece in
-forma *fattorizzata*: uno stato è l’insieme dei fatti che vi sono veri, e
-un’azione ha precondizioni, i fatti che devono valere per eseguirla, ed
-effetti, i fatti che aggiunge e quelli che toglie; il linguaggio di
-riferimento si chiama PDDL. Da quella descrizione il pianificatore ricava
-stime indipendenti dal dominio, per esempio contando i passi di un
-problema in cui le precondizioni si ignorano {cite}`russell2020artificial`,
-ma la ricerca che le usa è la stessa.
+Osserviamo che in questa definizione gli stati sono *atomici*: l’algoritmo li
+genera e li confronta, ma non ne guarda la struttura. La pianificazione in
+senso stretto li descrive invece in forma *fattorizzata*: uno stato è l’insieme
+dei fatti che vi sono veri, e un’azione ha **precondizioni** (i fatti che
+devono valere per eseguirla) ed **effetti** (i fatti che aggiunge e quelli che
+toglie). Il linguaggio di riferimento si chiama PDDL. Da quella descrizione il
+pianificatore ricava stime indipendenti dal dominio, per esempio contando i
+passi di un problema in cui le precondizioni si ignorano
+{cite}`russell2020artificial`, ma la ricerca che le usa è la stessa.
 
 Dalla definizione di problema discende l’**albero di ricerca**, che non va
 confuso con lo spazio degli stati. Lo spazio degli stati è un grafo: uno stesso
 stato si può raggiungere per strade diverse, e la stessa posizione può
 ripresentarsi (è una trasposizione, approfondita nella {doc}`sezione sui giochi
 </Ricerca/giocare-contro-qualcuno>`). L’albero di ricerca è invece
-l’oggetto che l’algoritmo srotola: un suo **nodo** contiene uno stato, il nodo
-da cui viene e il costo $g(n)$ del cammino fin lì, e due nodi diversi possono
-contenere lo stesso stato, uno per ogni cammino che ci arriva; se nello spazio
-ci sono cicli, l’albero è infinito. Anche il grafo cresce in modo esponenziale
-con la dimensione del problema: il rompicapo delle otto tessere ha 181.440
-stati raggiungibili, quello delle quindici più di diecimila miliardi. L’albero
-lo supera di tanto quanto sono numerose le strade verso uno stesso stato.
+l’oggetto che l’algoritmo srotola. Un suo **nodo** contiene uno stato, il nodo
+da cui viene e il costo $g(n)$ del cammino fin lì, e due nodi
+diversi possono contenere lo stesso stato, uno per ogni cammino che ci arriva;
+se nello spazio ci sono cicli, l’albero è infinito.
+
+Anche il grafo cresce in modo esponenziale con la dimensione del problema. Il
+rompicapo delle otto tessere, ad esempio, ha 181.440 stati raggiungibili,
+quello delle quindici più di diecimila miliardi. L’albero lo supera di tanto
+quanto sono numerose le strade verso uno stesso stato.
 
 Le due misure che governano il costo sono il **fattore di ramificazione** $b$,
 cioè quante mosse ci sono in media in uno stato, e la **profondità**, che
 conviene distinguere in due: $d$ è quella a cui sta la soluzione, $m$ quella
 massima dell’albero. Un albero completo fino a profondità $d$ ha circa $b^d$
-nodi: il numero dei nodi si moltiplica a ogni livello, e non si somma.
+nodi, perché il numero dei nodi si moltiplica a ogni livello, e non si somma.
 
 `````
 
@@ -160,6 +168,7 @@ trentacinque {cite}`russell2020artificial`, e una partita dura in media
 un’ottantina di mosse contando quelle di tutti e due i giocatori. L’albero
 completo di una partita ha quindi qualcosa come trentacinque elevato a ottanta
 nodi.
+
 Le cifre si contano in due righe, e accanto si mette la stima degli atomi
 dell’universo osservabile, attorno a un 1 seguito da ottanta zeri.
 
@@ -177,9 +186,9 @@ print(f"10^80 ne ha {cifre_atomi}: {cifre_albero - cifre_atomi} in meno")
 ```
 
 Un 3 seguito da altre centoventitré cifre è un numero senza riscontro
-fisico: se ogni atomo dell’universo fosse un calcolatore che
-esamina una posizione al secondo dal Big Bang a oggi, l’albero degli scacchi
-non sarebbe stato sfiorato.
+fisico: se ogni atomo dell’universo fosse un computer che esamina una
+posizione al secondo dal Big Bang a oggi, l’albero degli scacchi non sarebbe
+stato sfiorato.
 
 Il problema, allora, è guardare pochissimo di quell’albero e decidere bene lo
 stesso. Le strade sono due. La prima è guardare nel posto giusto, e per farlo
@@ -200,8 +209,8 @@ cifre diventano centoventiquattro.
 
 Il numero di destra in {numref}`fig-albero-futuri` è il motivo per cui nessun
 algoritmo di ricerca costruisce l’albero intero, salvo dove il gioco è
-abbastanza piccolo da permetterselo, come il tris: si sceglie quale pezzetto
-costruire.
+abbastanza piccolo da permetterselo, come il tris; negli altri casi si sceglie
+quale pezzetto costruire.
 
 ## Che cosa si sa del mondo
 
@@ -211,13 +220,14 @@ mondo e da quanto il mondo è grande, ed è la stessa domanda che separa la
 ricerca dal {doc}`reinforcement learning </ReinforcementLearning/overview>`,
 l’apprendimento per rinforzo.
 
-Il mondo è noto, ed è piccolo. Si sa dove porta ogni mossa e quanto paga, e
-questo sapere ha un nome, il *modello* del mondo. Allora si possono passare in
-rassegna tutti gli stati e calcolare per ciascuno il suo valore, cioè quanto ci
-si può aspettare di guadagnare da lì in avanti giocando bene: se il mondo è un
-labirinto, si segna accanto a ogni casella quanto conviene trovarcisi. È la
-programmazione dinamica, e il reinforcement learning comincia da qui, nella
-sezione su {doc}`MDP e funzioni valore </ReinforcementLearning/mdp-valore>`.
+Il mondo è noto, ed è piccolo. Si sa dove porta ogni mossa e quale ricompensa
+dà, e questo sapere ha un nome, il *modello* del mondo. Allora si possono
+passare in rassegna tutti gli stati e calcolare per ciascuno il suo valore,
+cioè quanto ci si può aspettare di guadagnare da lì in avanti giocando bene. Se
+il mondo è un labirinto, ad esempio, si segna accanto a ogni casella quanto
+conviene trovarcisi. È la programmazione dinamica, e il reinforcement learning
+comincia da qui, nella sezione su
+{doc}`MDP e funzioni valore </ReinforcementLearning/mdp-valore>`.
 
 Il mondo è noto, ed è enorme. Gli stati sono più di quanti se ne possano
 passare in rassegna, e allora si guarda in avanti dallo stato in cui ci si
@@ -226,15 +236,15 @@ rompicapo delle tessere, ne esce il piano intero; dove non si raggiunge, come
 negli scacchi, ne esce la mossa da fare adesso, e alla mossa dopo si
 ricomincia. È il campo della ricerca in avanti.
 
-Il mondo non è noto. Nessuno dice dove porta una mossa né quanto paga, e
-bisogna provare e vedere come va. È il reinforcement learning senza modello,
-quello dei metodi Monte Carlo e delle differenze temporali, che nel capitolo
-sul reinforcement learning arriva dopo il caso a modello noto.
+Il mondo non è noto. Nessuno dice dove porta una mossa né quale ricompensa dà,
+quindi bisogna provare e vedere come va. È il reinforcement learning senza
+modello, quello dei metodi Monte Carlo e delle differenze temporali, che nel
+capitolo sul reinforcement learning arriva dopo il caso a modello noto.
 
 ## Dall’albero dei futuri alle sue potature
 
-La strada comincia da un mondo senza avversari, dove l’unico nemico è la
-dimensione: si cerca a tentoni, si misura il costo, e si introduce la novità
+In questo capitolo si parte da un mondo senza avversari, dove l’unico nemico è
+la dimensione: si cerca a tentoni, si misura il costo, e si introduce la novità
 che cambia di più le proporzioni, una stima di quanto manca alla fine. Ne esce
 un algoritmo del 1968, A\* (si legge «a stella»), con la condizione precisa che
 la stima deve rispettare per non far sbagliare strada. È ancora oggi alla
@@ -242,12 +252,12 @@ base della ricerca di percorsi, dai videogiochi ai navigatori, che lo
 affiancano a calcoli fatti in anticipo.
 
 Poi dall’altra parte del tavolo si siede un avversario. Ne escono il modo di
-ragionare sui giochi a due, che si chiama minimax, la potatura che permette di
-ignorare interi rami senza guardarli, e il difetto di ogni ricerca che si ferma
-a una profondità fissa e lì deve giudicare la posizione a occhio, l’effetto
-orizzonte: il disastro che sta un passo oltre l’ultima mossa guardata. In fondo
-c’è un gioco di fiammiferi, il Nim, in cui quel difetto non esiste, perché chi
-vince si legge dalla posizione senza guardare avanti.
+ragionare sui giochi a due, che si chiama minimax, e la potatura che permette
+di ignorare interi rami senza guardarli. Ne esce anche il difetto di ogni
+ricerca che si ferma a una profondità fissa e lì deve giudicare la posizione a
+occhio, l’effetto orizzonte: il disastro che sta un passo oltre l’ultima mossa
+guardata. Segue un gioco di fiammiferi, il Nim, in cui quel difetto non
+esiste, perché chi vince si legge dalla posizione senza guardare avanti.
 
 Alla fine si mettono in chiaro le ipotesi che la ricerca ha dato per scontate,
 e si tolgono una per volta: ognuna, mancando, porta a un metodo diverso, e la

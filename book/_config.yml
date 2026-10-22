@@ -47,10 +47,6 @@ html:
   baseurl : "https://book.paithon.it/main"
   home_page_in_navbar: false
   use_multitoc_numbering: false
-  extra_navbar: |
-      <div>
-          <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="paithon.it" data-color="#B5532C" data-emoji="🍕"  data-font="Cookie" data-text="Offrimi una pizza" data-outline-color="#1A1A1A" data-font-color="#ffffff" data-coffee-color="#C9A961" ></script>
-      </div>
 
 sphinx:
   config:
@@ -77,6 +73,8 @@ sphinx:
     - pt-formato.css
     # La ricerca che risponde mentre si scrive. Vedi `_static/pt-ricerca.js`.
     - pt-ricerca.css
+    # Le postille: il segno accanto al capoverso. Vedi _static/pt-postille.js.
+    - pt-postille.css
     html_js_files:
     - https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js
     - custom.js
@@ -85,6 +83,8 @@ sphinx:
     # testa) perche' ne rifa' `highlightSearchWords`: vedi il commento in
     # cima al file.
     - pt-ricerca.js
+    # Le postille: il segno accanto al capoverso. Vedi _static/pt-postille.js.
+    - pt-postille.js
     # Lo scambio di tema per la stampa. Sta nel brand perche' serve identico
     # al sito, che nasce scuro come il libro: il CSS da solo non arriva alla
     # tavolozza del codice, che pende da data-theme.
@@ -252,6 +252,8 @@ sphinx:
       preamble: \usepackage{paithon}
     latex_additional_files:
     - _stampa/paithon.sty
+    # Le postille a margine, che `paithon.sty` carica.
+    - _stampa/ptpostille.sty
     # Il marchio in copertina, gia' convertito in PDF: non passa dal
     # convertitore delle figure, perche' non sta nell'albero del documento
     # ma lo chiama una macro. Si rifa' con lo stesso Chromium quando cambia
@@ -290,12 +292,17 @@ sphinx:
   # `pt_stampa` e' l'estensione della stampa: converte le figure con Chromium,
   # da' un nome alle tab dei due livelli, sostituisce le animazioni con i fermi
   # immagine. Si accende solo per il builder LaTeX.
+  # `pt_postille` aggancia le postille ai capoversi del testo comune: sul sito
+  # un `<aside>` che apre `_static/pt-postille.js`, in stampa una nota a
+  # margine (`_stampa/ptpostille.sty`). Le postille stanno nei file
+  # `pagina.postille.yml`, accanto alle pagine.
   local_extensions:
     pt_conteggi: _ext
     pt_meta: _ext
     pt_figure: _ext
     pt_scuro: _ext
     pt_stampa: _ext
+    pt_postille: _ext
 
 # `sphinx-jupyterbook-latex` resta ACCESA, ma le si disfano tre cose.
 #

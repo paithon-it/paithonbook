@@ -1,0 +1,14 @@
+# Le postille di questa pagina, una per capoverso del testo comune.
+# Ognuna vale finché la sua impronta combacia col testo del capoverso.
+- inizio: "Il determinante è più vecchio della"
+  impronta: "892de1c9c2c1"
+  postilla: "Determinanti con Seki (1683) e Leibniz; la parola matrice è di Sylvester, 1850"
+- inizio: "Per un secolo e mezzo, quindi,"
+  impronta: "5859efa2725a"
+  postilla: "Nato per dire se c'è una sola soluzione; Lagrange, 1773, lo lega a un volume"
+- inizio: "Una rete neurale ordinaria, invece, in"
+  impronta: "c04277a1e5f4"
+  postilla: "ReLU: determinante zero su intere regioni, il cambio di variabile non si applica"
+- inizio: "I flussi calcolano la probabilità esatta"
+  impronta: "b614d568e3f5"
+  postilla: "Flussi e autoregressivi danno la probabilità; altri un limite inferiore; GAN no"

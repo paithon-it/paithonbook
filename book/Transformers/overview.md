@@ -40,22 +40,22 @@ intermedi, e il passo $t$ non comincia finché il passo $t-1$ non è finito.
 `````{tab} Elementare
 Un romanzo letto attraverso una fessura che scopre una parola alla volta, con
 tutto il resto da tenere a memoria: dopo dieci pagine, quanto ricordi della
-prima? È il problema delle reti ricorrenti: sui testi lunghi il ricordo
-dell'inizio sbiadisce. Il taccuino della LSTM aiuta parecchio: ci scrivi solo
-l'essenziale e cancelli il resto. Ma la pagina è una sola, e a furia di
-aggiungere e cancellare resta sempre meno di ciò che c'era all'inizio. Il
-secondo problema è la fila: se puoi leggere solo una parola alla volta, non
-puoi farti aiutare, e cento amici non leggono un libro più in fretta di te se
-il libro va comunque letto in fila.
+prima? È il problema delle reti ricorrenti: sui testi lunghi il
+ricordo dell'inizio sbiadisce. Il taccuino della LSTM aiuta parecchio, perché ci
+scrivi solo l'essenziale e cancelli il resto. Ma la pagina è una sola, e a
+furia di aggiungere e cancellare resta sempre meno di ciò che c'era
+all'inizio. Il secondo problema è la fila: se puoi leggere solo una parola alla
+volta, non puoi farti aiutare, e cento amici non leggono un libro più in fretta
+di te se il libro va comunque letto in fila.
 
-Il Transformer rompe la fessura: guarda tutta la frase insieme, e per ogni
-parola decide a quali altre parole prestare attenzione. In "Il gatto nero
-salta sul muro", mentre elabora "salta" può guardare direttamente "gatto" (chi
-è che salta?) senza passare per un riassunto sbiadito. Siccome ogni parola
-viene elaborata insieme alle altre, il lavoro si può dividere, e i cento amici
-servono eccome. È soprattutto questo ad aver fatto crescere i modelli fino
-alle dimensioni di oggi: leggersi una biblioteca intera diventa una faccenda
-di quanti amici riesci a chiamare.
+Il Transformer rompe la fessura, perché guarda tutta la frase insieme e per
+ogni parola decide a quali altre parole prestare attenzione. Ad esempio, in "Il
+gatto nero salta sul muro", mentre elabora "salta" può guardare direttamente
+"gatto" (chi è che salta?) senza passare per un riassunto sbiadito. Siccome
+ogni parola viene elaborata insieme alle altre, il lavoro si può dividere, e i
+cento amici servono eccome. È soprattutto questo ad aver fatto crescere i
+modelli fino alle dimensioni di oggi: leggersi una biblioteca intera diventa
+una faccenda di quanti amici riesci a chiamare.
 
 Dividere il lavoro però non lo fa sparire, e il costo sta nelle coppie. Ogni
 parola guarda ogni altra, quindi dieci parole fanno cento sguardi e cento
@@ -77,26 +77,26 @@ intrinsecamente sequenziale: il passo $t$ richiede il passo $t-1$, e l'hardware
 parallelo (le GPU) resta sottoutilizzato in addestramento.
 
 Nel Transformer la self-attention collega ogni coppia di posizioni in un solo
-passo, con lunghezza di cammino $O(1)$, e l'elaborazione di tutte le posizioni è un
-prodotto tra matrici, parallelizzabile per costruzione. Questa seconda
-proprietà, più ancora della prima, ha cambiato la scala dei modelli:
+passo, con lunghezza di cammino $O(1)$, e l'elaborazione di tutte le
+posizioni è un prodotto tra matrici, parallelizzabile per costruzione. Questa
+seconda proprietà, più ancora della prima, ha cambiato la scala dei modelli:
 addestrare su corpora enormi è diventato una questione di hardware, non di
-architettura. A questo vantaggio corrisponde un costo quadratico rispetto alla
-lunghezza della sequenza, analizzato nel {doc}`confronto coi modelli precedenti
-<confronti>`.
+architettura. A questo vantaggio corrisponde però un costo quadratico
+rispetto alla lunghezza della sequenza, analizzato nel {doc}`confronto coi
+modelli precedenti <confronti>`.
 `````
 
 ## Dal meccanismo ai modelli
 
-Dentro un Transformer ci sono prodotti fra
-matrici, una softmax, normalizzazioni e piccole reti applicate a ogni
-posizione, disposti in un ordine preciso: su una frase di tre parole si
-possono calcolare con carta e penna.
+Dentro un Transformer ci sono prodotti fra matrici, una softmax,
+normalizzazioni e piccole reti applicate a ogni posizione, disposti in un
+ordine preciso. Per questo, su una frase di tre parole, si possono calcolare
+con carta e penna.
 
-Il capitolo segue l'ordine dell'articolo del 2017. Si comincia dal meccanismo
-di attenzione e dalla sua forma con le matrici, poi si monta l’architettura
-completa, cioè come i blocchi di attenzione diventano una rete. Segue il
-confronto con i modelli precedenti, le reti ricorrenti, compresi i
+In questo capitolo seguiamo l'ordine dell'articolo del 2017. Si comincia dal
+meccanismo di attenzione e dalla sua forma con le matrici, poi si monta
+l’architettura completa, cioè come i blocchi di attenzione diventano una rete.
+Segue il confronto con i modelli precedenti, le reti ricorrenti, compresi i
 punti dove il Transformer è più debole; poi l'attenzione mentre il modello
 genera una parola per volta, che cosa si conserva da un token al successivo e
 con quale costo; e due esempi da eseguire.
@@ -105,10 +105,10 @@ Su quell'architettura sono cresciuti i modelli che si usano oggi: le famiglie
 GPT, BERT e T5 e l'estensione alle immagini; una rete sola addestrata su cento
 lingue, che si può rifinire in inglese e usare in italiano; i grandi modelli
 linguistici, con le leggi di scala, la scelta della parola da scrivere e il
-modo di valutarli; i modelli a esperti, che hanno moltissimi parametri ma per
-ogni parola ne usano una piccola parte; il post-training, che trasforma un
-completatore di frasi in un assistente che risponde; il retrieval, con cui un
-modello consulta dei documenti prima di scrivere. Chiude uno sguardo alle
+modo di valutarli. Seguono i modelli a esperti, che hanno moltissimi parametri
+ma per ogni parola ne usano una piccola parte; il post-training, che trasforma
+un completatore di frasi in un assistente che risponde; il retrieval, con cui
+un modello consulta dei documenti prima di scrivere. Chiude uno sguardo alle
 tendenze e ai limiti.
 
 `````{tab} Elementare

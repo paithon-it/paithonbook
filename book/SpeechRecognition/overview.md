@@ -12,21 +12,24 @@
 :alt: Un microfono d'epoca sull'asta, con le onde della voce che diventano una fila di punti.
 ```
 
-Nel 1952, nei laboratori della Bell Telephone, un apparecchio ingombrante
-fatto di valvole e relè (l'elettronica di allora: bulbi di vetro
-incandescenti e interruttori che scattano da soli) imparò a riconoscere le
-cifre da zero a nove
-pronunciate ad alta voce. Lo chiamarono poi **Audrey**, e aveva un limite
-quasi comico: funzionava con un solo parlante, che poteva parlare a velocità
-normale ma doveva staccare nettamente una cifra dall'altra, con una pausa in
-mezzo. Attaccate, non le riconosceva più. Settant'anni dopo
-diciamo "metti la sveglia alle sette" al telefono mentre carichiamo la
+Nel 1952, nei laboratori della Bell Telephone, un apparecchio ingombrante fatto
+di valvole e relè (l'elettronica di allora, con i suoi bulbi di vetro
+incandescenti e gli interruttori che scattano da soli) imparò a riconoscere le
+cifre da zero a nove pronunciate ad alta voce. Lo chiamarono poi **Audrey**, e
+aveva un limite quasi comico: funzionava con un solo parlante, che poteva
+parlare a velocità normale ma doveva staccare nettamente una cifra dall'altra,
+con una pausa in mezzo. Se erano attaccate, non le riconosceva più. Settant'anni
+dopo diciamo "metti la sveglia alle sette" al telefono mentre carichiamo la
 lavastoviglie, e la frase diventa testo (e poi azione) in una frazione di
-secondo. In mezzo c'è la storia dell’ASR (*Automatic Speech Recognition*),
-il riconoscimento vocale automatico.
+secondo. In mezzo c'è la storia dell’ASR (*Automatic Speech Recognition*), il
+riconoscimento vocale automatico.
 
 Gli strumenti per trattare il suono li ha già costruiti il {doc}`capitolo
-sull'audio </Audio/overview>`; qui servono sulla voce.
+sull'audio </Audio/overview>`; qui servono sulla voce. In questo capitolo
+definiamo il compito, vediamo perché è difficile e ripercorriamo la storia da
+Audrey a Whisper; descriviamo poi le tappe che il suono attraversa dal
+microfono al testo e chiudiamo con i luoghi in cui il riconoscimento vocale si
+incontra.
 
 ## Che cosa fa, in fondo
 
@@ -41,8 +44,8 @@ di registrazione diventano una ventina di parole, e nessuno ti dice quanti
 centesimi di secondo tocchino a ciascuna. Dove il parlato è impastato torni
 indietro, riascolti, provi due letture possibili e scrivi quella che ti
 convince di più. Il riconoscitore vocale fa lo stesso: in ingresso l'onda
-sonora catturata dal microfono, in uscita del testo. Del significato non
-capisce niente, e si ferma alle lettere giuste.
+sonora catturata dal microfono, in uscita del testo. Del
+significato non capisce niente, e si ferma alle lettere giuste.
 
 `````
 
@@ -56,10 +59,10 @@ $$
 \hat{W} = \arg\max_{W} P(W \mid \mathbf{X}).
 $$
 
-Qui $\mathbf{X}$ è tipicamente lunga centinaia o migliaia di passi (uno ogni
-dieci millisecondi circa), mentre $W$ conta poche decine di parole: input e
-output hanno lunghezze molto diverse e non allineate una-a-una. Gestire questo
-disallineamento temporale è il cuore tecnico del problema.
+Si noti che $\mathbf{X}$ è tipicamente lunga centinaia o migliaia di passi
+(uno ogni dieci millisecondi circa), mentre $W$ conta poche decine di parole:
+input e output hanno lunghezze molto diverse e non allineate una-a-una.
+Gestire questo disallineamento temporale è il cuore tecnico del problema.
 
 `````
 
@@ -67,14 +70,18 @@ disallineamento temporale è il cuore tecnico del problema.
 
 Nessuno pronuncia due volte la stessa parola allo stesso modo. La voce cambia
 con la persona (timbro, accento, velocità), con lo stato d'animo, con il
-raffreddore. C'è il rumore di fondo: traffico, musica, altre voci
-sovrapposte. C'è la **coarticolazione**, il fenomeno per cui i suoni si
-contaminano a vicenda: la "n" di *un cane* non è la stessa "n" di *un pane*,
-perché la bocca si sta già preparando al suono che segue. E ci sono gli
-**omofoni**: *l'ago* e *lago* suonano identici, e solo il contesto della frase
-dice quale sia quello giusto. Un microfono non "vede" gli spazi tra le parole:
-il parlato è un flusso continuo, e trovare dove finisce una parola e inizia
-l'altra è già metà del lavoro.
+raffreddore. Poi c'è il rumore di fondo: traffico, musica, altre voci
+sovrapposte.
+
+A questo si aggiunge la **coarticolazione**, il fenomeno per cui i suoni si
+contaminano a vicenda. Ad esempio, la "n" di *un cane* non è la stessa "n" di
+*un pane*, perché la bocca si sta già preparando al suono che segue. E ci sono
+gli **omofoni**: *l'ago* e *lago* suonano identici, e solo il contesto della
+frase dice quale sia quello giusto.
+
+Infine, un microfono non "vede" gli spazi tra le parole: il parlato è un flusso
+continuo, e trovare dove finisce una parola e inizia l'altra è già metà del
+lavoro.
 
 ## Da Audrey a Whisper: una breve storia
 
@@ -83,26 +90,27 @@ tenevano in memoria una registrazione di ogni parola del loro piccolo
 vocabolario e cercavano quella più simile al suono appena arrivato,
 allungandolo o comprimendolo nel tempo per farlo combaciare. L'operazione ha
 un nome che ogni tanto si incontra ancora, *dynamic time warping*, «deformare
-il tempo». Andava bene per pochissime parole e un solo parlante: aggiungerne
-una voleva dire registrarla.
+il tempo». Andava bene per pochissime parole e un solo parlante, perché
+aggiungerne una voleva dire registrarla.
 
 Il salto di qualità, preparato negli anni Settanta all'IBM e a Carnegie Mellon
 e diventato la norma nel decennio seguente, arrivò da due idee, non da macchine
-più potenti. La prima: smettere di ragionare per parole intere e ragionare per
-**fonemi**, i suoni minimi che distinguono una parola dall'altra (*pane* e
-*cane* differiscono per uno solo). Le parole di una lingua sono centinaia di
-migliaia, i fonemi qualche decina, e una parola mai sentita prima è comunque
-fatta di fonemi già sentiti. La seconda: dividere il lavoro in due pareri.
+più potenti. La prima fu smettere di ragionare per parole intere e ragionare
+per **fonemi**, i suoni minimi che distinguono una parola dall'altra (*pane* e
+*cane* differiscono per uno solo). Infatti le parole di una lingua sono
+centinaia di migliaia, i fonemi qualche decina, e una parola mai sentita prima
+è comunque fatta di fonemi già sentiti. La seconda fu dividere il lavoro in due
+pareri.
 
 `````{tab} Elementare
 
 Un pezzo del sistema giudica *quanto questo suono somiglia alla parola
-«cane»*; un altro pezzo, che
-ha letto montagne di testo italiano, giudica *quanto è plausibile la frase «il
-cane abbaia» rispetto a «il cane abbaglia»*. La trascrizione finale è quella
-che supera il giudizio di entrambi: se uno dei due la boccia, è fuori, per
-quanto l'altro la lodi. Per questo il contesto risolve gli omofoni: il suono
-non basta, serve sapere quali frasi hanno senso.
+«cane»*; un altro pezzo, che ha letto montagne di testo italiano, giudica
+*quanto è plausibile la frase «il cane abbaia» rispetto a «il cane
+abbaglia»*. La trascrizione finale è quella che supera il giudizio di entrambi;
+se uno dei due la boccia, è fuori, per quanto l'altro la lodi. Ecco perché il
+contesto risolve gli omofoni: il suono non basta, serve sapere quali frasi
+hanno senso.
 
 `````
 
@@ -138,18 +146,22 @@ dove l'emissione di ogni stato è una mistura di $M$ gaussiane (GMM) con
 covarianze $\boldsymbol{\Sigma}_{jm}$ diagonali. Gli stati dei trifoni sono
 decine di migliaia, troppi per stimarli uno per uno: per questo si raggruppano
 con alberi di decisione fonetici e si addestrano con l'algoritmo EM di
-Baum-Welch. In decodifica la somma su $Q$ diventa il massimo di Viterbi, e in
-questa fase il modello di linguaggio entra elevato a un peso, $P(W)^{\lambda}$
-con $\lambda$ di solito fra $5$ e $15$. Il peso serve perché il modello
-acustico moltiplica le densità di centinaia di frame come se fossero
-indipendenti, mentre frame vicini si somigliano molto: i suoi punteggi escono
+Baum-Welch.
+
+In decodifica la somma su $Q$ diventa il massimo di Viterbi, e in questa fase
+il modello di linguaggio entra elevato a un peso, $P(W)^{\lambda}$ con
+$\lambda$ di solito fra $5$ e $15$. Il peso serve perché il modello acustico
+moltiplica le densità di centinaia di frame come se fossero indipendenti,
+mentre frame vicini si somigliano molto; di conseguenza i suoi punteggi escono
 fuori scala rispetto a quelli del linguaggio, e $\lambda$ li riequilibra. Il
 modello di linguaggio $P(W)$ assegna una probabilità a priori alle frasi
-($n$-grammi, oggi reti neurali) e disambigua gli omofoni. Dal
-2012 le reti neurali profonde sostituiscono le GMM nel modello acustico
-{cite}`hinton2012deep`: su una prova di conversazioni telefoniche (Switchboard,
-RT03S), con le stesse trecento ore circa di addestramento, l'errore sulle
-parole scende dal $27{,}4\%$ del sistema a GMM al $18{,}5\%$, un terzo in meno.
+($n$-grammi, oggi reti neurali) e disambigua gli omofoni.
+
+Dal 2012 le reti neurali profonde sostituiscono le GMM nel modello acustico
+{cite}`hinton2012deep`. Ad esempio, su una prova di conversazioni telefoniche
+(Switchboard, RT03S), con le stesse trecento ore circa di addestramento,
+l'errore sulle parole scende dal $27{,}4\%$ del sistema a GMM al $18{,}5\%$, un
+terzo in meno.
 
 `````
 
@@ -161,56 +173,64 @@ trent'anni, dagli anni Ottanta al 2010 circa, e la sigla che lo designa nei
 testi di quel periodo è **HMM-GMM**: due modelli già incontrati, che qui
 lavorano in coppia.
 
-Il primo, l'HMM («modello di Markov nascosto»), descrive una parola come una
-fila di stati che non si vedono: ogni fonema ne ha tre, il suo attacco, il suo
-centro e la sua coda, e la voce passa dall'uno all'altro senza che nessuno lo
-osservi. Si osservano soltanto i *frame*, le fettine di suono lunghe pochi
-centesimi di secondo in cui il segnale viene tagliato (ne comincia una ogni
-dieci millisecondi), e da quelli si risale agli stati. È la stessa macchina di
+Il primo, l'HMM («modello di Markov nascosto»), descrive una parola come
+una fila di stati che non si vedono. Ogni fonema ne ha tre, il suo attacco, il
+suo centro e la sua coda, e la voce passa dall'uno all'altro senza che nessuno
+lo osservi.
+
+Si osservano soltanto i *frame*, le fettine di suono lunghe pochi centesimi di
+secondo in cui il segnale viene tagliato (ne comincia una ogni dieci
+millisecondi), e da quelli si risale agli stati. È la stessa macchina di
 {doc}`POS tagging ed entità </NaturalLanguageProcessing/etichettare-sequenze>`,
 dove gli stati nascosti erano le categorie grammaticali e quello che si
 osservava erano le parole.
 
-Il secondo, la GMM (mistura di gaussiane), dice che aspetto hanno i frame che
-ciascuno stato produce. Ogni frame è ridotto a un vettore di poche decine di
-misure, e la «a» di mille persone diverse non dà mai lo stesso vettore: dà una
-nuvola di vettori vicini, fitta attorno a un centro e sempre più rada man mano
-che ci si allontana. Una gaussiana è la curva che descrive una nuvola così, e
-dove la nuvola è storta se ne sommano parecchie: è lo strumento di
+Il secondo, la GMM (mistura di gaussiane), dice che aspetto hanno i frame
+che ciascuno stato produce. Ogni frame è ridotto a un vettore di poche decine
+di misure, e la «a» di mille persone diverse non dà mai lo stesso vettore: dà
+una nuvola di vettori vicini, fitta attorno a un centro e sempre più rada man
+mano che ci si allontana.
+
+Una gaussiana è la curva che descrive una nuvola così, e dove la nuvola è
+storta se ne sommano parecchie. È lo stesso strumento di
 {doc}`Riduzione e clustering </MachineLearning/riduzione-clustering>`, dove
-serviva a trovare gruppi nei dati, e qui ogni stato dell'HMM ha la sua.
+serviva a trovare gruppi nei dati; qui ogni stato dell'HMM ha la sua.
 
 L'ultimo salto è l'approccio **end-to-end** ("da un capo all'altro"): una sola
 rete neurale che impara direttamente il passaggio dall'audio al testo, senza
-scomporre a mano acustica e linguaggio. Tecniche come la CTC
-(*Connectionist Temporal Classification* {cite}`graves2006connectionist`) e i
-modelli con attenzione (una parte della rete ascolta tutto, l'altra
-scrive, e mentre scrive torna a guardare il punto dell'audio che le serve:
-quel tornare a guardare è l'attenzione) hanno reso possibile addestrare
-l'intero sistema da coppie (audio, testo). Il trasduttore è nato dalla CTC per
-aggiungerle ciò che le manca, la memoria del testo già scritto, senza
-toglierle l'andatura frame per frame che permette di trascrivere mentre si
-parla. Le tratta una per una la sezione {doc}`I modelli di riconoscimento
-</SpeechRecognition/modelli-asr>`.
+scomporre a mano acustica e linguaggio.
+
+Tecniche come la CTC (*Connectionist Temporal Classification*
+{cite}`graves2006connectionist`) e i modelli con attenzione (una parte della
+rete ascolta tutto, l'altra scrive, e mentre scrive torna a guardare il punto
+dell'audio che le serve: quel tornare a guardare è l'attenzione) hanno reso
+possibile addestrare l'intero sistema da coppie (audio, testo). Il trasduttore è
+nato dalla CTC per aggiungerle ciò che le manca, la memoria del testo già
+scritto, senza toglierle l'andatura frame per frame che permette di trascrivere
+mentre si parla. Le tratta una per una la sezione {doc}`I modelli di
+riconoscimento </SpeechRecognition/modelli-asr>`.
 
 L'esempio più noto è Whisper di OpenAI (2022): con un unico modello trascrive
 quasi cento lingue, italiano compreso, e traduce in inglese il parlato delle
 altre. È stato addestrato su circa 680.000 ore di audio multilingue: per farsi
 un'idea, sono quasi settantotto anni di parlato ininterrotto, giorno e notte,
-senza una pausa. Il modello alla sua base è un Transformer, l'architettura
-del {doc}`capitolo sui Transformer </Transformers/overview>`, montata in due
-metà: un *encoder*, che ascolta l'audio e lo riassume, e un *decoder*, che da
-quel riassunto scrive il testo.
+senza una pausa.
+
+Il modello alla sua base è un Transformer, l'architettura del {doc}`capitolo
+sui Transformer </Transformers/overview>`, montata in due metà: un *encoder*,
+che ascolta l'audio e lo riassume, e un *decoder*, che da quel riassunto scrive
+il testo.
 
 ## La catena di montaggio, passo per passo
 
 Dal microfono al testo il suono passa per alcune tappe, sempre le stesse
-({numref}`fig-asr-pipeline`). Nei sistemi end-to-end di oggi il modello
-acustico e il modello di linguaggio sono finiti dentro un'unica rete e non si
-vedono più dall'esterno, mentre l'estrazione delle feature resta un calcolo
-fisso, fatto prima che il suono entri nella rete; i nomi delle tappe però sono
-rimasti in uso. La catena nel suo insieme, in inglese, è la *pipeline* del
-riconoscimento vocale.
+({numref}`fig-asr-pipeline`).
+
+Nei sistemi end-to-end di oggi il modello acustico e il modello di linguaggio
+sono finiti dentro un'unica rete e non si vedono più dall'esterno, mentre
+l'estrazione delle feature resta un calcolo fisso, fatto prima che il suono
+entri nella rete; i nomi delle tappe però sono rimasti in uso. La catena nel
+suo insieme, in inglese, è la *pipeline* del riconoscimento vocale.
 
 ```{figure} ../figures/asr-pipeline.svg
 :name: fig-asr-pipeline
@@ -238,12 +258,12 @@ sui suoni gravi e le più a destra sugli acuti. Le fettine si prendono
 accavallate, così una consonante a cavallo di un taglio non va persa. Questa
 sequenza di istantanee sonore è lo spettrogramma costruito passo per
 passo in {doc}`Dal suono alle feature </Audio/dal-suono-alle-feature>`, e il
-modello acustico ascolta questo al posto dell'onda. Un tempo lo riceveva
-anche più
-spremuto, una dozzina di numeri per fettina, perché lavorava bene solo con
-poche misure che non si ripetessero fra loro, e le bande vicine dello
-spettrogramma salgono e scendono quasi insieme; oggi le reti se lo prendono
-così com'è.
+modello acustico ascolta questo al posto dell'onda.
+
+Un tempo lo riceveva anche più spremuto, una dozzina di numeri per fettina,
+perché lavorava bene solo con poche misure che non si ripetessero fra loro, e
+le bande vicine dello spettrogramma salgono e scendono quasi insieme; oggi le
+reti se lo prendono così com'è.
 
 `````
 
@@ -255,9 +275,9 @@ spettrogramma log-mel costruito in
 $\mathbf{X}$ che entra nel modello acustico. I sistemi classici applicavano un
 ultimo passaggio, la trasformata coseno discreta (DCT), che decorrelava i
 coefficienti e riduceva ogni frame a una dozzina di MFCC (*Mel-Frequency
-Cepstral Coefficients*, una quarantina con le derivate prima e seconda):
-serviva alle covarianze diagonali delle GMM; i sistemi neurali end-to-end,
-Whisper compreso, non lo fanno più.
+Cepstral Coefficients*, una quarantina con le derivate prima e seconda).
+Serviva alle covarianze diagonali delle GMM, mentre i sistemi neurali
+end-to-end, Whisper compreso, non lo fanno più.
 
 `````
 
@@ -272,10 +292,10 @@ che "capisce" il parlato: una volta che la voce è diventata testo, tocca agli
 strumenti del linguaggio naturale interpretarne il significato. Ma quel primo,
 difficile passo (dall'onda alla parola) comincia sempre qui.
 
-Resta un passaggio in cui si sbaglia ancora, ogni giorno, sotto i nostri occhi: i
-sottotitoli automatici che scrivono una parola per un'altra, o che riempiono
-di frasi inventate un pezzo di video in cui nessuno parla, sono la parte
-visibile di limiti precisi, che {doc}`I modelli di riconoscimento
+Resta un passaggio in cui si sbaglia ancora, ogni giorno, sotto i nostri
+occhi: i sottotitoli automatici che scrivono una parola per un'altra, o che
+riempiono di frasi inventate un pezzo di video in cui nessuno parla, sono la
+parte visibile di limiti precisi, che {doc}`I modelli di riconoscimento
 </SpeechRecognition/modelli-asr>` racconta uno per uno.
 
 Il viaggio ha anche un ritorno: {doc}`La voce sintetica

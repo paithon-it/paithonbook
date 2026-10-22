@@ -1,0 +1,122 @@
+/*
+ * PAITHON BOOK: LE POSTILLE
+ *
+ * Il segno che apre la postilla sta a destra della prima riga del capoverso,
+ * nello spazio fra la colonna e l'indice della pagina: sul sito ce ne sono
+ * almeno 32px a ogni larghezza, e il segno col suo stacco ne usa 29. Dove non
+ * li trova, il capoverso si stringe e il segno gli sta dentro
+ * (`pt-con-postilla--stretto`, lo decide lo script). Col mouse si vede
+ * quando ci si passa sopra; con le dita quando il capoverso attraversa la riga
+ * di lettura (lo decide `pt-postille.js`), e solo allora si puo' toccare: un
+ * segno invisibile non deve prendersi un tocco.
+ *
+ * La postilla aperta sta sotto il capoverso e spinge giu' il testo che segue.
+ */
+.pt-con-postilla {
+  position: relative;
+}
+
+.pt-postilla__segno {
+  position: absolute;
+  left: calc(100% + 5px);
+  top: calc((var(--pt-postilla-riga, 1.7em) - 24px) / 2);
+  box-sizing: border-box;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--pt-fg-subtle);
+  background: var(--pt-bg-elev);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity var(--pt-transition-fast),
+              border-color var(--pt-transition-fast);
+}
+
+/* Dove fra la colonna e il bordo dello schermo non c'e' posto per il segno. */
+.pt-con-postilla--stretto {
+  padding-right: 29px;
+}
+
+.pt-con-postilla--stretto > .pt-postilla__segno {
+  left: auto;
+  right: 0;
+}
+
+/* Il margine a zero contro la regola del sito che ne da' uno a ogni immagine
+   dell'articolo: senza, il marchio scende sotto il suo cerchio. */
+.pt-postilla__segno img {
+  display: block;
+  width: 14px;
+  height: 14px;
+  margin: 0;
+}
+
+@media (hover: hover) {
+  .pt-con-postilla:hover > .pt-postilla__segno {
+    opacity: 1;
+  }
+}
+
+@media (hover: none) {
+  .pt-postilla__segno {
+    pointer-events: none;
+  }
+
+  .pt-con-postilla.pt-in-lettura > .pt-postilla__segno,
+  .pt-postilla__segno[aria-expanded="true"] {
+    pointer-events: auto;
+  }
+}
+
+.pt-postilla__segno:focus-visible,
+.pt-postilla__segno[aria-expanded="true"],
+.pt-con-postilla.pt-in-lettura > .pt-postilla__segno {
+  opacity: 1;
+}
+
+.pt-postilla__segno[aria-expanded="true"] {
+  border-color: var(--pt-accent-3);
+}
+
+.pt-postilla__segno:focus-visible {
+  outline: 2px solid var(--pt-accent-3);
+  outline-offset: 2px;
+}
+
+aside.pt-postilla {
+  margin: -0.55em 0 1.3em;
+  max-width: 40ch;
+  font-size: 0.86em;
+  font-style: italic;
+  line-height: 1.45;
+  color: var(--pt-fg-muted);
+}
+
+aside.pt-postilla[hidden] {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pt-postilla__segno {
+    transition: none;
+  }
+}
+
+/* Il segno in linea, dove la pagina d'apertura spiega le postille. */
+.pt-postilla-inline img {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin: 0;
+  vertical-align: -0.15em;
+}
+
+@media print {
+  .pt-postilla__segno,
+  aside.pt-postilla {
+    display: none !important;
+  }
+}

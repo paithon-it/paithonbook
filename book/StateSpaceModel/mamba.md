@@ -5,7 +5,7 @@ ricorrenza lineare a stato fisso,
 $\mathbf{h}_t = \bar{\mathbf{A}}\,\mathbf{h}_{t-1} + \bar{\mathbf{B}}\,x_t$
 con uscita $y_t = \mathbf{C}\,\mathbf{h}_t$, che si calcola come ricorrenza per
 generare e come convoluzione per addestrare. È una macchina potente e a lungo
-raggio, con un limite di fondo: è **invariante nel tempo**.
+raggio, ma con un limite di fondo: è **invariante nel tempo**.
 
 Un SSM *lineare e tempo-invariante* (LTI) usa le stesse tre regole a ogni
 passo: la stessa $\bar{\mathbf{A}}$ per il decadimento dello stato, la stessa
@@ -14,11 +14,12 @@ invarianza a dare a S4 la forma convoluzionale, con un unico filtro
 $\bar{\mathbf{K}}$ valido per tutta la sequenza, e ne è anche il limite:
 l'aggiornamento dello stato non dipende da ciò che entra, quindi il modello non
 può decidere, in base al contenuto, che cosa trattenere e che cosa lasciar
-cadere. Tratta allo stesso modo la parola importante e quella di riempimento.
+cadere. In altri termini, tratta allo stesso modo la parola importante e quella
+di riempimento.
 
 L'idea di Mamba, proposta da Albert Gu e Tri Dao alla fine del 2023
-{cite}`gu2023mamba`, è rendere l'SSM **selettivo**: le regole della ricorrenza
-diventano funzioni di ciò che entra, così che il modello possa decidere, parola
+{cite}`gu2023mamba`, è rendere l'SSM **selettivo**, cioè far dipendere le regole
+della ricorrenza da ciò che entra, così che il modello possa decidere, parola
 per parola, che cosa propagare e che cosa dimenticare. È lo stesso passaggio
 che, nella {doc}`sezione sulla scrittura in memoria
 </AttenzioneLineare/scrivere-nella-memoria>` dell'attenzione lineare, separava
@@ -35,9 +36,10 @@ di selezione, calcolato con uno scan», e non indica il successore di S5, che è
 il modello di un altro gruppo.
 
 Se le regole cambiano a ogni parola, il sistema non è più invariante nel tempo
-e non ha più un filtro unico: la forma «tutto insieme», che rendeva veloce
-l'addestramento di S4, non si può più usare. Per lavorare in parallelo servirà
-un'altra strada, lo *scan*. Vediamo prima il guadagno, che ripaga il sacrificio.
+e non ha più un filtro unico; di conseguenza la forma «tutto insieme», che
+rendeva veloce l'addestramento di S4, non si può più usare. Per lavorare in
+parallelo servirà un'altra strada, lo *scan*. Vediamo prima il guadagno, che
+ripaga il sacrificio.
 
 `````{tab} Elementare
 
@@ -58,12 +60,12 @@ traccia e la sua testa resta com'era. Con il solo intervallo ottiene tutte e due
 le cose che gli servono: «di questo mi ricorderò» e «questo non l'ho nemmeno
 visto». È l'intervallo $\Delta$ della vasca, e Mamba lo sceglie a ogni parola.
 
-Questo meccanismo apre la porta a un tipo di ragionamento che un
-tornello non potrà mai fare, quello che dipende dal contenuto. Prendi il
-gioco del «copia solo le parole in maiuscolo» in mezzo a un fiume di parole
+Questo meccanismo apre la porta a un tipo di ragionamento che un tornello non
+potrà mai fare, quello che dipende dal contenuto. Prendi il gioco
+del «copia solo le parole in maiuscolo» in mezzo a un fiume di parole
 minuscole: serve decidere, parola per parola, se questa va tenuta o buttata. Un
-sistema che tratta tutti i token allo stesso modo fallisce; uno che sa scegliere,
-no.
+sistema che tratta tutti i token allo stesso modo fallisce; uno che sa
+scegliere, no.
 
 Se ne accorge la fila fuori. Un tornello lo si regola la mattina, a
 locale vuoto: una regolazione sola, buona per tutti quelli che arriveranno,
@@ -135,8 +137,8 @@ $$
 
 cioè un cancello di interpolazione come nelle RNN a cancelli (è il Teorema 1
 del paper): con $g_t \to 1$ lo stato si azzera e vi si scrive $x_t$, con $g_t
-\to 0$ lo stato resta e $x_t$ è ignorato. L'identità richiede lo ZOH applicato
-anche a $B$; con la semplificazione di Eulero dell'implementazione,
+\to 0$ lo stato resta e $x_t$ è ignorato. Si noti che l'identità richiede lo ZOH
+applicato anche a $B$; con la semplificazione di Eulero dell'implementazione,
 $\bar{B}_t = \Delta_t$, i due coefficienti non sommano più a uno.
 
 Si perde l'invarianza temporale: non esiste più un unico
@@ -153,10 +155,12 @@ concettuale. Il gioco delle parole da copiare e di quelle da lasciar cadere è
 il compito di *selective copying*. Nella sua versione classica, con le parole
 da copiare a distanze fisse, un SSM invariante nel tempo se la cava contando il
 tempo, con un filtro della lunghezza giusta; il selective copying rende casuali
-le distanze e toglie la scorciatoia. Lì il nucleo di S4 senza blocco si ferma
-al 18 per cento di risposte esatte, e dentro i blocchi di H3 o di Mamba a circa
-il 57; il nucleo selettivo arriva al 97 anche senza blocco e sopra il 99 dentro
-un blocco {cite}`gu2023mamba`. Lo stesso vale per le *induction heads*
+le distanze e toglie la scorciatoia. In questo compito il nucleo di S4 senza
+blocco si ferma al 18 per cento di risposte esatte, e dentro i blocchi di H3 o
+di Mamba a circa il 57; il nucleo selettivo arriva al 97 anche senza blocco e
+sopra il 99 dentro un blocco {cite}`gu2023mamba`.
+
+Lo stesso vale per le *induction heads*
 {cite}`olsson2022induction`, le teste di induzione incontrate fra i
 {doc}`grandi modelli linguistici </Transformers/llm>`: il meccanismo con cui un
 modello, visto una volta lo schema «A è seguito da B», lo completa la volta
@@ -173,21 +177,23 @@ del paper).
 
 ## Lo scan hardware-aware
 
-Rinunciare alla convoluzione sembra un disastro per l'efficienza: la forma
-«tutto insieme» era ciò che rendeva S4 addestrabile in fretta. La ricorrenza
-lineare, però, ha una proprietà che le ricorrenze non lineari non hanno, come
-anticipava la {doc}`sezione sui modelli di sequenza
+Rinunciare alla convoluzione sembra un disastro per l'efficienza, perché
+la forma «tutto insieme» era ciò che rendeva S4 addestrabile in fretta. La
+ricorrenza lineare, però, ha una proprietà che le ricorrenze non lineari non
+hanno, come anticipava la {doc}`sezione sui modelli di sequenza
 </NaturalLanguageProcessing/modelli-sequenza>`: comporre due passi dà ancora un
 passo dello stesso tipo, descritto dagli stessi numeri. Applicare $h \mapsto
 a_1 h + b_1$ e poi $h \mapsto a_2 h + b_2$ equivale ad applicare $h \mapsto
 (a_2 a_1)\,h + (a_2 b_1 + b_2)$, quindi fondere due passi si riduce a una
 moltiplicazione e una somma. In una ricorrenza non lineare, come $h \mapsto
 \tanh(w\,h + u_t)$, la composta di due passi non ha una forma così compatta, e
-fonderli non fa risparmiare niente. A questa proprietà, la *chiusura*, si
-affianca l’**associatività**, che vale per ogni composizione di funzioni:
-raggruppare i passi in un modo o nell'altro dà lo stesso risultato. Insieme
-autorizzano a fondere i passi a coppie, poi a gruppi di quattro, di otto,
-invece di percorrerli uno dopo l'altro da sinistra a destra.
+fonderli non fa risparmiare niente.
+
+A questa proprietà, la *chiusura*, si affianca l’**associatività**, che vale
+per ogni composizione di funzioni: raggruppare i passi in un modo o nell'altro
+dà lo stesso risultato. Insieme, le due proprietà autorizzano a fondere i passi
+a coppie, poi a gruppi di quattro, di otto, invece di percorrerli uno dopo
+l'altro da sinistra a destra.
 
 Questo è il *parallel scan*, dove «scan» è la passata che percorre la sequenza
 accumulando i risultati parziali. In fila, $L$ passi chiedono $L$ turni uno
@@ -198,9 +204,9 @@ L$ e in quella più efficiente resta dell'ordine di $L$, come nella versione
 sequenziale: è il compromesso tipico del calcolo parallelo, più conti (o almeno
 non meno) in cambio di meno attesa.
 
-Ogni turno tiene occupati migliaia di core della GPU: quelli generici, però,
-non le sue unità dedicate a moltiplicare matrici, i *tensor core*, e da
-qui partirà Mamba-2. La convoluzione se n'è andata, ma il
+Ogni turno tiene occupati migliaia di core della GPU, ma sono quelli generici,
+non le sue unità dedicate a moltiplicare matrici, i *tensor core*: da qui
+partirà Mamba-2. La convoluzione se n'è andata, ma il
 parallelismo resta.
 
 La {numref}`fig-scan-parallelo` mette le due strade sullo stesso orologio.
@@ -232,7 +238,9 @@ grafica conserva i dati, la sua
 Mille numeri alla lavagna, e una classe che deve sommarli. Un ragazzo solo
 parte dal primo e va avanti, quasi mille addizioni una dopo l'altra, e nessuno
 può aiutarlo, perché per fare la somma di adesso deve aspettare quella di
-prima. La classe invece lavora tutta insieme: al primo giro ognuno somma al
+prima.
+
+La classe invece lavora tutta insieme: al primo giro ognuno somma al
 suo numero quello del compagno che lo precede, al secondo quello di due
 posti prima, al terzo quello di quattro, e a ogni giro raddoppia il tratto di
 lavagna che ciascuno si è già messo dentro. Dopo dieci giri si è in fondo,
@@ -332,9 +340,9 @@ discretizzazione e la ricorrenza tramite il parallel scan, e riporta in HBM
 soltanto l'output $\mathbf{y}$ di dimensione $(\texttt{batch}, L, D)$. Lo stato espanso
 non viene mai scritto nella memoria lenta: nasce e muore in SRAM.
 
-Il peso dello stato espanso si calcola subito. In Mamba-130M ($D = 768$,
-fattore di espansione $E = 2$, quindi 1536 canali interni, e $N = 16$), per una
-sola sequenza e un solo strato:
+Il peso dello stato espanso si calcola subito. Ad esempio, in Mamba-130M ($D =
+768$, fattore di espansione $E = 2$, quindi 1536 canali interni, e $N = 16$),
+per una sola sequenza e un solo strato:
 
 ```python
 # lo stato espanso di uno strato di Mamba-130M: D = 768, E = 2, N = 16
@@ -350,20 +358,21 @@ L =    2048: stato espanso     201 MB, ingresso    13 MB (float32)
 L = 1048576: stato espanso  103079 MB, ingresso  6442 MB (float32)
 ```
 
-Lo stato espanso è $N = 16$ volte l'ingresso: duecento megabyte a 2048 token,
-più di cento gigabyte a un milione. In operazioni, invece, la ricorrenza ne fa
-$O(LDN)$ e la convoluzione $O(LD \log L)$, quindi per $N$ piccolo e sequenze
-lunghe la ricorrenza può costare perfino meno {cite}`gu2023mamba`: rinunciando
-alla convoluzione si perde il parallelismo, non il lavoro.
+Lo stato espanso è $N = 16$ volte l'ingresso, cioè duecento megabyte a 2048
+token, più di cento gigabyte a un milione. In operazioni, invece, la ricorrenza
+ne fa $O(LDN)$ e la convoluzione $O(LD \log L)$, quindi per $N$ piccolo e
+sequenze lunghe la ricorrenza può costare perfino meno
+{cite}`gu2023mamba`: rinunciando alla convoluzione si perde il parallelismo,
+non il lavoro.
 
 A questo si aggiunge la **ricomputazione** (*recomputation*).
 Nell'addestramento, il passo all'indietro (*backward*) ha bisogno degli stati
 intermedi $\mathbf{h}_t$ per calcolare i gradienti; salvarli tutti costerebbe
 memoria quanto materializzare lo stato espanso. Mamba non li salva: li
-ricalcola durante il backward, rifacendo la ricorrenza. È lo stesso baratto di
-{doc}`FlashAttention </GPU/flash-attention>` e del *gradient checkpointing* (si
-spende un po’ di calcolo in più per risparmiare molta memoria), e permette al
-selective scan di avere lo stesso profilo di memoria di un'implementazione
+ricalcola durante il backward, rifacendo la ricorrenza. È lo stesso compromesso
+di {doc}`FlashAttention </GPU/flash-attention>` e del *gradient checkpointing*
+(si spende un po’ di calcolo in più per risparmiare molta memoria), e permette
+al selective scan di avere lo stesso profilo di memoria di un'implementazione
 ottimizzata dell'attenzione, senza mai pagare il costo dello stato espanso in
 HBM.
 
@@ -400,7 +409,7 @@ Il ciclo `for` è la forma ricorrente, quella dell'inferenza: costo e memoria
 costanti per token, un aggiornamento dopo l'altro. Quel ciclo, però, si può
 evitare in due modi, e li proviamo entrambi.
 
-Il primo riprende la discretizzazione: se le regole non cambiano da un
+Il primo riprende la discretizzazione. Se le regole non cambiano da un
 passo all'altro, lo stesso risultato si ottiene con un filtro unico che scorre
 sulla sequenza. Congeliamo allora i tre parametri che dipendevano dal token
 ($\mathbf{B}_t$, $\mathbf{C}_t$ e $\Delta_t$), costruiamo quel filtro e
@@ -477,8 +486,8 @@ ciclo vs scan parallelo, scarto massimo sotto 1e-12: True
 ```
 
 In tutti e due i confronti lo scarto resta al livello degli arrotondamenti
-della doppia precisione, ben sotto $10^{-12}$: le forme messe a paragone
-calcolano la stessa funzione. È, ancora una volta, la doppia natura che
+della doppia precisione, ben sotto $10^{-12}$, segno che le forme messe a
+paragone calcolano la stessa funzione. È, ancora una volta, la doppia natura che
 accomuna tutta questa famiglia di modelli: una forma parallela per addestrare
 in fretta, una forma ricorrente a costo costante per generare.
 
@@ -491,8 +500,9 @@ cancello d'uscita: due rami che si moltiplicano elemento per elemento, e uno
 regola quanto dell'altro passa, lo stesso schema del gate d'uscita della cella
 mLSTM nella {doc}`sezione sulle architetture lineari
 </AttenzioneLineare/architetture-lineari>`. Il secondo è il *gated MLP*, la
-variante con cancello dello strato che nei Transformer segue l'attenzione. Il
-cancello del blocco agisce posizione per posizione; la selezione, che agisce
+variante con cancello dello strato che nei Transformer segue l'attenzione.
+
+Il cancello del blocco agisce posizione per posizione; la selezione, che agisce
 lungo la sequenza, sta dentro l'SSM, in $\Delta_t$, $\mathbf{B}_t$ e
 $\mathbf{C}_t$. Il blocco è l'unico tipo della rete, ripetuto decine di volte
 con una normalizzazione e una connessione residua, dove i Transformer
@@ -527,6 +537,7 @@ lungo quanto il testo a cui Mamba ha rinunciato), poi un ammorbidimento
 passato. La seconda copia prende una scorciatoia con un solo ammorbidimento e
 diventa un cancello: alla fine i due rami si reincontrano e il cancello regola
 quanto del ramo principale lasciar passare, moltiplicandoli insieme.
+
 Un'ultima proiezione rimette il pezzo nella forma di partenza, e il pezzo
 originale, portato in cima da un passaggio a parte, ci si somma: le lavorazioni
 aggiungono al pezzo invece di sostituirlo. Un solo tipo di stazione, ripetuto
@@ -639,10 +650,11 @@ potenza. Inoltre lo stato di dimensione fissa, che è la forza di Mamba in
 efficienza, resta il suo limite quando serve ritrovare un dettaglio preciso in
 un contesto molto lungo. Il primo lo scioglie Mamba-2, che riscrive lo scan
 come una moltiplicazione di matrici; il secondo lo allenta soltanto, perché con
-i tensor core uno stato più grande costa poco, ma nessuno stato di taglia fissa
-lo toglie, come dice {doc}`Panorama e
-limiti </StateSpaceModel/panorama-e-limiti>`. Riscrivendo lo scan, Mamba-2
-trova anche una parentela precisa con
+i tensor core uno stato più grande costa poco, ma nessuno stato di taglia
+fissa lo toglie, come dice {doc}`Panorama e
+limiti </StateSpaceModel/panorama-e-limiti>`.
+
+Riscrivendo lo scan, Mamba-2 trova anche una parentela precisa con
 l'attenzione: un SSM a transizione scalare calcola la stessa funzione di
 un'attenzione lineare mascherata, e su quel gradino le due famiglie si
 incontrano.

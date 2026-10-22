@@ -5,14 +5,15 @@ machine learning (oggi si chiama NeurIPS), Ali Rahimi ritirò un premio per un
 lavoro di dieci anni prima e ne approfittò per dire qualcosa di scomodo: «il
 machine learning è diventato alchimia».
 
-Non ce l'aveva con i risultati, che ci sono: ce l'aveva con le fondamenta.
-Facciamo funzionare le cose, disse, senza sapere *perché* funzionino, e
-portò tre esempi. Uno era un problemino minuscolo su cui la discesa del
-gradiente si pianta prima di arrivare in fondo, con ancora sotto i piedi un
-terreno in pendenza. Un altro era un ingrediente che a quel tempo tutti
-mettevano nelle reti e di cui, a suo dire, «come disciplina non sappiamo quasi
-niente»: la *batch normalization* (la racconta la {doc}`sezione su come far
-funzionare le reti profonde </DeepLearning/ottimizzazione-regolarizzazione>`).
+Non ce l'aveva con i risultati, che ci sono, ma con le fondamenta. Facciamo
+funzionare le cose, disse, senza sapere *perché* funzionino, e portò tre
+esempi. Uno era un problemino minuscolo su cui la discesa del gradiente si
+pianta prima di arrivare in fondo, con ancora sotto i piedi un terreno in
+pendenza. Un altro era un ingrediente che a quel tempo tutti mettevano nelle
+reti e di cui, a suo dire, «come disciplina non sappiamo quasi niente»: la
+*batch normalization* (la racconta la {doc}`sezione su come far funzionare le
+reti profonde </DeepLearning/ottimizzazione-regolarizzazione>`).
+
 Il terzo era la storia di un sistema che si era rotto senza che nessuno capisse
 perché: qualcuno aveva cambiato il modo di arrotondare i numeri dentro una
 libreria, e l'errore era passato da meno del 25% a quasi il 99%. La
@@ -20,38 +21,42 @@ spiegazione, arrivata dopo, smentisce a metà l'aneddoto: quell'arrotondamento
 portava a uno un numero che doveva restare appena sotto, e da lì usciva una
 divisione per zero. Un difetto del programma, quindi, non del metodo.
 
-Gli **iperparametri**, in quel discorso, non erano nominati nemmeno una volta.
-Se l'alchimia si vede a occhio nudo da qualche parte, si vede in loro: ricette
-tramandate di laboratorio in laboratorio, dosi aggiustate a occhio, risultati
-che arrivano senza che nessuno sappia spiegare fino in fondo perché.
+Gli iperparametri, in quel discorso, non erano nominati nemmeno una volta.
+Eppure, se l'alchimia si vede a occhio nudo da qualche parte, si vede in loro:
+ricette tramandate di laboratorio in laboratorio, dosi aggiustate a occhio,
+risultati che arrivano senza che nessuno sappia spiegare fino in fondo perché.
 
-Un iperparametro è una grandezza che si fissa prima di cominciare e che
+Un **iperparametro** è una grandezza che si fissa prima di cominciare e che
 l'addestramento non modifica; nel gergo di laboratorio si chiama anche
-manopola. Fra quelli già incontrati ci sono la lunghezza del passo della
-discesa del gradiente (il *learning rate* $\eta$, introdotto con la regressione
-lineare) e la forza del freno alla memorizzazione (la $\lambda$, la lettera
-greca *lambda*, della regolarizzazione vista insieme all'overfitting). Altri
-verranno: la profondità massima di un albero di decisione, il numero di strati
-di una rete.
+manopola.
+
+Fra quelli già incontrati ci sono la lunghezza del passo della discesa del
+gradiente (il *learning rate* $\eta$, introdotto con la regressione lineare) e
+la forza del freno alla memorizzazione (la $\lambda$, la lettera greca
+*lambda*, della regolarizzazione vista insieme all'overfitting). Ne verranno
+altri, ad esempio la profondità massima di un albero di decisione e il numero
+di strati di una rete.
 
 Non vanno confusi con i parametri, che sono i numeri interni aggiustati
-dall'addestramento. Gli iperparametri restano dove li abbiamo messi, e dalla
-loro scelta dipende molto la qualità del risultato. La {doc}`sezione su
-overfitting e validazione </MachineLearning/overfitting-validazione>` ha già
-stabilito su quali dati giudicare questa scelta: il validation set, o meglio la
-cross-validation, mai il test. Resta da stabilire come esplorare lo spazio delle
-combinazioni: girare le manopole a mano finché «funziona» è l'alchimia di cui
-parlava Rahimi, mentre farlo per bene è un problema di ricerca (*search*) con
+dall'addestramento. Gli iperparametri, invece, restano dove li abbiamo messi, e
+dalla loro scelta dipende molto la qualità del risultato.
+
+La {doc}`sezione su overfitting e validazione
+</MachineLearning/overfitting-validazione>` ha già stabilito su quali dati
+giudicare questa scelta: il validation set, o meglio la cross-validation, mai
+il test. Resta da stabilire come esplorare lo spazio delle combinazioni.
+Regolare gli iperparametri a mano finché «funziona» è l'alchimia di cui parlava
+Rahimi, mentre farlo per bene è un problema di ricerca (*search*) con
 algoritmi, costi e trappole propri.
 
 ## Provarle tutte: la grid search
 
 L'idea più naturale è la forza bruta: per ogni iperparametro si sceglie una
 manciata di valori candidati e si prova ogni combinazione, tenendo quella con il
-punteggio di validazione migliore. È la *grid search*, la ricerca a griglia:
-esaustiva entro la griglia e facile da parallelizzare, perché ogni combinazione
-è indipendente dalle altre e si può valutare su un altro
-calcolatore. Il difetto è il costo, che cresce esponenzialmente con il numero di
+punteggio di validazione migliore. È la **grid search**, o ricerca a griglia,
+che è esaustiva entro la griglia e facile da parallelizzare, perché ogni
+combinazione è indipendente dalle altre e si può valutare su un altro computer.
+Ha però un difetto, il costo, che cresce esponenzialmente con il numero di
 iperparametri.
 
 `````{tab} Elementare
@@ -59,12 +64,14 @@ iperparametri.
 Chi regola una macchina del caffè professionale ha davanti quattro manopole
 (macinatura, temperatura, pressione, tempo di estrazione), ognuna con cinque
 livelli. Per assaggiare tutte le combinazioni servono $5 \times 5 \times 5
-\times 5 = 625$ caffè. Siccome un solo assaggio può ingannare (magari quella
-tazzina è venuta bene per caso, o è capitata a un cliente che il caffè lo
-prende amaro comunque), ogni regolazione va giudicata da cinque clienti
-diversi, uno per tavolo, e conta come è andata in media: è la cross-validation,
-che a turno tiene da parte un blocco di dati diverso e giudica su quello.
-Quindi $625 \times 5 = 3\,125$ caffè.
+\times 5 = 625$ caffè.
+
+Siccome un solo assaggio può ingannare (magari quella tazzina è venuta bene per
+caso, o è capitata a un cliente che il caffè lo prende amaro comunque), ogni
+regolazione va giudicata da cinque clienti diversi, uno per tavolo, e conta
+come è andata in media. È la cross-validation, che a turno tiene da parte un
+blocco di dati diverso e giudica su quello. I caffè diventano quindi $625
+\times 5 = 3\,125$.
 
 Se ogni «caffè» è un addestramento da due minuti, sono
 $3\,125 \times 2 = 6\,250$ minuti, cioè quattro giorni e un terzo di macchina
@@ -73,21 +80,21 @@ moltiplicano ancora per cinque e i giorni diventano quasi ventidue. È
 l’**esplosione combinatoria**: ogni manopola in più *moltiplica* le
 prove, non le somma.
 
-Anche i cinque livelli si scelgono uno per uno. Per il tempo di estrazione
-bastano passi uguali (venti, venticinque, trenta, trentacinque, quaranta
-secondi). Per la macinatura serve un altro passo, e si procede dimezzando,
-dalla grana del sale grosso a quella della farina: un millimetro, mezzo, un
-quarto, un ottavo, un sedicesimo. A passi uguali di un quarto di millimetro
-i livelli sarebbero invece uno, tre quarti, mezzo, un quarto e zero: quattro
-assaggi nella parte grossa, e fra il quarto di millimetro e la farina nemmeno
-uno.
+Anche i cinque livelli si scelgono uno per uno. Per il tempo di estrazione, ad
+esempio, bastano passi uguali (venti, venticinque, trenta, trentacinque,
+quaranta secondi). Per la macinatura serve un altro passo, e si procede
+dimezzando, dalla grana del sale grosso a quella della farina: un millimetro,
+mezzo, un quarto, un ottavo, un sedicesimo. A passi uguali di un quarto di
+millimetro i livelli sarebbero invece uno, tre quarti, mezzo, un quarto e zero:
+quattro assaggi nella parte grossa, e fra il quarto di millimetro e la farina
+nemmeno uno.
 
 Il calcolo si legge anche al contrario. Se il pomeriggio basta per venticinque
 combinazioni, e ognuna si porta dietro i suoi cinque assaggi, con due manopole
 restano cinque livelli per ciascuna, che è una prova seria; con quattro
 manopole restano poco più di due livelli a testa, cioè il minimo, il massimo e
-niente in mezzo. La griglia dà il meglio quando le manopole da girare sono una
-o due.
+niente in mezzo. La griglia, quindi, dà il meglio quando le manopole da girare
+sono una o due.
 
 `````
 
@@ -97,60 +104,63 @@ Con $d$ iperparametri e $n$ valori candidati ciascuno, la griglia è il prodotto
 cartesiano $\Lambda = \Lambda_1 \times \dots \times \Lambda_d$ con $|\Lambda| =
 n^d$ configurazioni; scriveremo $\boldsymbol{\lambda} \in \Lambda$ per una
 singola configurazione, cioè l'intero vettore di iperparametri, di cui la forza
-di regolarizzazione $\lambda$ è una componente. Con $k$-fold cross-validation il
-costo sale a $k \cdot n^d$ addestramenti: esponenziale in $d$. A parità di
-budget la risoluzione per dimensione è scarsa, $n = |\Lambda|^{1/d}$: con nove
-prove in due dimensioni si vedono appena tre valori per asse. La grid search
-resta ragionevole per $d \le 2$, e ha il pregio che i punti, indipendenti tra
-loro, si valutano in parallelo; per i parametri di scala, come il learning rate
-e la forza di regolarizzazione, i candidati vanno disposti in progressione
-geometrica ($10^{-4}, 10^{-3}, \dots$).
+di regolarizzazione $\lambda$ è una componente.
+
+Con $k$-fold cross-validation il costo sale a $k \cdot n^d$ addestramenti, cioè
+è esponenziale in $d$. Inoltre, a parità di budget, la risoluzione per
+dimensione è scarsa, $n = |\Lambda|^{1/d}$: con nove prove in due dimensioni,
+ad esempio, si vedono appena tre valori per asse. Per questo motivo la grid
+search resta ragionevole per $d \le 2$, e ha il pregio che i punti,
+indipendenti tra loro, si valutano in parallelo. Per i parametri di scala, come
+il learning rate e la forza di regolarizzazione, i candidati vanno disposti in
+progressione geometrica ($10^{-4}, 10^{-3}, \dots$).
 
 `````
 
 ## Il caso batte la griglia: la random search
 
 La prima alternativa sembra una resa: estrarre le combinazioni a caso dentro gli
-stessi intervalli, invece di disporle in griglia. Nel 2012 James Bergstra e
-Yoshua Bengio mostrarono che la ricerca casuale trova modelli buoni quanto
-quelli della griglia, o migliori, in una frazione del tempo
-{cite}`bergstra2012random`. Il motivo è empirico: nei loro esperimenti, per la
-maggior parte dei dataset contavano poche manopole, e non si sa in anticipo
-quali.
+stessi intervalli, invece di disporle in griglia. Eppure nel 2012 James
+Bergstra e Yoshua Bengio mostrarono che questa **ricerca casuale** (*random
+search*) trova modelli buoni quanto quelli della griglia, o migliori, in una
+frazione del tempo {cite}`bergstra2012random`. Il motivo è empirico: nei loro
+esperimenti, per la maggior parte dei dataset contavano pochi iperparametri, e
+non si sa in anticipo quali.
 
-{numref}`fig-grid-vs-random` mostra il caso più semplice, due sole manopole di
-cui una decisiva e l'altra ininfluente. Il quadrato è lo spazio delle prove
-possibili, una manopola per lato, e ogni pallino è una prova. La curva a
-campana disegnata sopra il quadrato dice come va il punteggio al variare della
-manopola che conta: più in alto, meglio è, e il colmo della campana è il valore
-che stiamo cercando.
+{numref}`fig-grid-vs-random` mostra il caso più semplice, due soli
+iperparametri, di cui uno decisivo e l'altro ininfluente. Il quadrato è lo
+spazio delle prove possibili, con un iperparametro per lato, e ogni pallino è
+una prova. La curva a campana disegnata sopra il quadrato dice come va il
+punteggio al variare dell'iperparametro che conta: più in alto, meglio è, e il
+colmo della campana è il valore che stiamo cercando.
 
 ```{figure} ../figures/grid-vs-random.svg
 :name: fig-grid-vs-random
 :alt: Due pannelli affiancati. In ciascuno, un quadrato rappresenta lo spazio di due iperparametri e una curva a campana sopra il quadrato mostra come il punteggio dipende dal solo iperparametro importante, sull'asse orizzontale. A sinistra nove punti in griglia tre per tre si proiettano su appena tre posizioni dell'asse orizzontale; a destra nove punti casuali si proiettano su nove posizioni distinte, e uno cade quasi sul massimo della curva.
 :width: 95%
 
-Nove prove in griglia (a sinistra) si affacciano su appena tre valori della
-manopola che conta, perché tre a tre stanno in colonna. Nove prove casuali (a
-destra) ne toccano nove diversi, e una finisce a un passo dal colmo della
-campana.
+Nove prove in griglia (a sinistra) si affacciano su appena tre valori
+dell'iperparametro che conta, perché tre a tre stanno in colonna. Nove prove
+casuali (a destra) ne toccano nove diversi, e una finisce a un passo dal colmo
+della campana.
 ```
 
 `````{tab} Elementare
 
 Su una vecchia radio la stazione si trova girando la sintonia; il volume, per
-trovarla, non conta nulla. Hai nove tentativi. Se li disponi in una griglia
-$3 \times 3$, di frequenze ne provi tre soltanto: ogni colonna ripete la stessa
+trovarla, non conta nulla. Hai nove tentativi. Se li disponi in una griglia $3
+\times 3$, di frequenze ne provi tre soltanto: ogni colonna ripete la stessa
 sintonia a tre volumi diversi, e due tentativi su tre sono buttati. Nove
-tentativi a caso toccano nove frequenze tutte diverse, e non serve sapere in
-anticipo quale manopola conti, perché il sorteggio gira tutte le manopole
-insieme.
+tentativi a caso, invece, toccano nove frequenze tutte diverse, e non serve
+sapere in anticipo quale manopola conti, perché il sorteggio gira tutte le
+manopole insieme.
 
 Con più tentativi la probabilità si calcola. Se la stazione si sente su un
 ventesimo della scala, un tentativo a caso la manca diciannove volte su venti;
 ma se i tentativi sono sessanta, la probabilità di mancarla tutte le volte
 scende sotto il cinque per cento, e novantacinque volte su cento almeno uno
-cade dentro. Il calcolo resta lo stesso con due manopole e con venti.
+cade dentro. Si noti che il calcolo resta lo stesso con due manopole e con
+venti.
 
 Tutto però dipende da quanto è larga la stazione. Se si sente su un centesimo
 di scala invece che su un ventesimo, gli stessi sessanta tentativi la trovano
@@ -159,31 +169,34 @@ qualcosa di abbastanza largo da essere incontrato per sbaglio.
 
 Conta anche come si sorteggia. Con una manopola che lavora per divisioni, come
 la macinatura del caffè, si tira a sorte prima la fascia (i millesimi, i
-centesimi, i decimi) e poi il punto dentro la fascia. Sorteggiando alla cieca
-un numero fra un millesimo e uno, novantanove volte su cento esce qualcosa
-sopra il centesimo, e nessuno prova le grane fini.
+centesimi, i decimi) e poi il punto dentro la fascia. Altrimenti, sorteggiando
+alla cieca un numero fra un millesimo e uno, novantanove volte su cento esce
+qualcosa sopra il centesimo, e nessuno prova le grane fini.
 
 `````
 
 `````{tab} Superiore
 
-L'argomento formale è la proiezione: se l'errore di validazione dipende in modo
+L'argomento formale è la proiezione. Se l'errore di validazione dipende in modo
 apprezzabile solo da un piccolo sottoinsieme delle $d$ dimensioni (*low
 effective dimensionality*), una griglia di $N$ punti ne proietta appena
 $N^{1/d}$ distinti su ciascun asse, mentre $N$ punti casuali ne proiettano $N$
-{cite}`bergstra2012random`. C'è poi, valida in ogni dimensione, una semplice
-contabilità del volume: se esiste una regione «buona» che copre il 5% del
-volume dello spazio di ricerca, la probabilità che $N$ estrazioni indipendenti
-la manchino tutte è $(1-0{,}05)^N = 0{,}95^N$; quindi la probabilità di
-centrarla almeno una volta è il complementare, $1 - 0{,}95^N$, che per $N = 60$
-vale $0{,}954$: sessanta prove la centrano novantacinque volte su cento, in
-qualunque dimensione. Se la regione buona copre l'1% del volume, le stesse
-sessanta prove la centrano con probabilità $1 - 0{,}99^{60} = 0{,}453$. (Vale
-*se* una tale regione esiste ed è così larga: è un'ipotesi sul problema, non
-una promessa.) In pratica contano anche le distribuzioni: per i parametri di
-scala si campiona in **log-uniforme**, cioè uniforme sull'esponente, così che
-il learning rate cada tra $10^{-5}$ e $10^{-4}$ con la stessa probabilità con
-cui cade tra $10^{-2}$ e $10^{-1}$.
+{cite}`bergstra2012random`.
+
+C'è poi, valida in ogni dimensione, una semplice contabilità del volume. Se
+esiste una regione «buona» che copre il 5% del volume dello spazio di ricerca,
+la probabilità che $N$ estrazioni indipendenti la manchino tutte è
+$(1-0{,}05)^N = 0{,}95^N$; quindi la probabilità di centrarla almeno una volta
+è il complementare, $1 - 0{,}95^N$, che per $N = 60$ vale $0{,}954$. In altri
+termini, sessanta prove la centrano novantacinque volte su cento, in qualunque
+dimensione. Se la regione buona copre l'1% del volume, le stesse sessanta prove
+la centrano con probabilità $1 - 0{,}99^{60} = 0{,}453$. (Vale *se* una tale
+regione esiste ed è così larga: è un'ipotesi sul problema, non una promessa.)
+
+In pratica contano anche le distribuzioni: per i parametri di scala si campiona
+in **log-uniforme**, cioè uniforme sull'esponente, così che il learning rate
+cada tra $10^{-5}$ e $10^{-4}$ con la stessa probabilità con cui cade tra
+$10^{-2}$ e $10^{-1}$.
 
 `````
 
@@ -191,15 +204,15 @@ cui cade tra $10^{-2}$ e $10^{-1}$.
 
 Griglia e ricerca casuale dedicano lo stesso budget a ogni candidato, anche a
 quelli che dopo poche epoche sono già chiaramente scadenti. I metodi
-*multi-fidelity*, a più livelli di fedeltà, ribaltano la logica: valutano tutti
-i candidati con un budget piccolo, per esempio poche epoche, e concedono un
-budget maggiore solo ai migliori; la valutazione breve è una versione poco
-fedele di quella completa, e la selezione ha la forma di un torneo a
-eliminazione diretta.
+**multi-fidelity**, a più livelli di fedeltà, ribaltano la logica: valutano
+tutti i candidati con un budget piccolo, per esempio poche epoche, e concedono
+un budget maggiore solo ai migliori. In altri termini, la valutazione breve è
+una versione poco fedele di quella completa, e la selezione ha la forma di un
+torneo a eliminazione diretta.
 
 Il budget si misura in epoche, cioè in passate complete sull'insieme di
 addestramento (introdotte nella {doc}`sezione su overfitting e validazione
-</MachineLearning/overfitting-validazione>`): un
+</MachineLearning/overfitting-validazione>`). Un
 addestramento serio ne fa decine o centinaia, e il costo di una ricerca è la
 somma delle epoche spese.
 
@@ -218,14 +231,15 @@ mai. In tutto quattrocentocinque epoche.
 
 `````{tab} Elementare
 
-Un torneo di tennis non fa giocare cento partite a ogni iscritto: fa giocare a
-tutti *una* partita, e solo chi vince continua. Il *successive halving* fa lo
-stesso con le combinazioni di manopole: parti con 81 candidate e concedi a
-ciascuna una
-sola epoca di addestramento; le 27 migliori ne ricevono tre; le 9 migliori
-nove; le 3 migliori ventisette; la finalista arriva a 81. Il nome parla di
-dimezzare perché la prima versione a ogni turno ne buttava via la metà; quante
-ne passano è una manopola, e la scelta più comune è quella di qui, una su tre.
+Un torneo di tennis non fa giocare cento partite a ogni iscritto, ma fa giocare
+a tutti *una* partita, e solo chi vince continua. Il **successive halving** fa
+lo stesso con le combinazioni di manopole. Ad esempio, parti con 81 candidate e
+concedi a ciascuna una sola epoca di addestramento; le 27 migliori ne ricevono
+tre, le 9 migliori nove, le 3 migliori ventisette, e la finalista arriva a 81.
+
+Il nome parla di dimezzare perché la prima versione a ogni turno ne buttava via
+la metà; quante ne passano è una manopola, e la scelta più comune è quella di
+qui, una su tre.
 
 Ogni turno costa quanto gli altri, perché a ogni giro i
 sopravvissuti si riducono a un terzo e le epoche a testa si triplicano:
@@ -238,44 +252,50 @@ C'è però un rischio, e nel torneo si vede bene: la giocatrice che ha bisogno d
 un set per scaldarsi perde il primo turno e torna a casa, anche se sulla
 distanza le avrebbe battute tutte. Le combinazioni di manopole si comportano
 allo stesso modo: certe partono piano e finirebbero forte, i "diesel", e un
-primo turno di una sola epoca le manda fuori per questo. Hyperband
-copre il rischio organizzando più tornei con regole diverse: alcuni spietati
-(tantissimi iscritti, primo turno brevissimo), altri clementi (pochi iscritti,
-tanto tempo a testa fin dall'inizio). Nessuno sa in anticipo quale sia il
-regolamento giusto. Provarli tutti richiede qualche torneo invece di uno, e in
-cambio il vincitore è vicino a quello del torneo giusto, scelto
-col senno di poi.
+primo turno di una sola epoca le manda fuori per questo.
+
+**Hyperband** copre il rischio organizzando più tornei con regole diverse:
+alcuni spietati (tantissimi iscritti, primo turno brevissimo), altri clementi
+(pochi iscritti, tanto tempo a testa fin dall'inizio). Nessuno, infatti, sa in
+anticipo quale sia il regolamento giusto. Provarli tutti richiede qualche
+torneo invece di uno, e in cambio il vincitore è vicino a quello del torneo
+giusto, scelto col senno di poi.
 
 `````
 
 `````{tab} Superiore
 
-Il *successive halving* è di Karnin, Koren e Somekh (ICML 2013)
+Il **successive halving** è di Karnin, Koren e Somekh (ICML 2013)
 {cite}`karnin2013almost`, che lo introdussero per il bandit stocastico a pura
 esplorazione; Jamieson e Talwalkar {cite}`jamieson2016non` lo portano agli
 iperparametri senza modificarlo, e ne riscrivono l'analisi per il caso
 non stocastico, dove i punteggi parziali non sono più estrazioni da una
 distribuzione. La forma con un fattore di eliminazione qualsiasi, invece della
 metà secca, è di Hyperband {cite}`li2018hyperband`, e qui si usa quella.
-Con fattore di eliminazione $\eta$ (tipicamente 3; è la lettera dell'articolo di
-Hyperband, e qui non è il tasso di apprendimento): date $n$ configurazioni con
-budget iniziale $r$ ciascuna (epoche, o frazione del dataset), a ogni round
-si tengono le migliori $1/\eta$ e si moltiplica per $\eta$ il budget individuale. I
-round sono $\lfloor \log_\eta n \rfloor + 1$ e ognuno costa circa $n \cdot r$:
-per $n=81$, $r=1$, $\eta=3$, 405 epoche-modello contro le $81 \times 81 =
-6\,561$ della valutazione completa. L'analisi inquadra il problema come
-*best-arm identification* in un bandit non stocastico (la famiglia di problemi
-della {doc}`sezione sui banditi </ReinforcementLearning/banditi>`, dove ogni
-configurazione è una leva e addestrarla per un'epoca è un tiro): basta che le
-classifiche parziali siano abbastanza indicative di quelle finali. L'ipotesi è
-fragile, perché una configurazione a convergenza lenta viene eliminata nei
-primi round. Hyperband {cite}`li2018hyperband` aggira il dilemma tra
-molte configurazioni e molto budget per testa eseguendo $s_{\max}+1$ istanze di
-successive halving (i *bracket*, $s_{\max} = \lfloor \log_\eta R \rfloor$ con
-$R$ budget massimo per configurazione), dalla più aggressiva ($\sim
-\eta^{s_{\max}}$ configurazioni con budget iniziale $R/\eta^{s_{\max}}$) alla
-più conservativa, poche configurazioni a budget pieno; la garanzia teorica è
-restare entro fattori logaritmici dal bracket migliore col senno di poi.
+
+Consideriamo un fattore di eliminazione $\eta$ (tipicamente 3; è la lettera
+dell'articolo di Hyperband, e qui non è il tasso di apprendimento). Date $n$
+configurazioni con budget iniziale $r$ ciascuna (epoche, o frazione del
+dataset), a ogni round si tengono le migliori $1/\eta$ e si moltiplica per
+$\eta$ il budget individuale. I round sono $\lfloor \log_\eta n \rfloor + 1$ e
+ognuno costa circa $n \cdot r$; per $n=81$, $r=1$, $\eta=3$, ad esempio, si
+spendono 405 epoche-modello contro le $81 \times 81 = 6\,561$ della valutazione
+completa.
+
+L'analisi inquadra il problema come *best-arm identification* in un bandit non
+stocastico (la famiglia di problemi della {doc}`sezione sui banditi
+</ReinforcementLearning/banditi>`, dove ogni configurazione è una leva e
+addestrarla per un'epoca è un tiro): basta che le classifiche parziali siano
+abbastanza indicative di quelle finali. L'ipotesi è fragile, perché una
+configurazione a convergenza lenta viene eliminata nei primi round.
+
+Hyperband {cite}`li2018hyperband` aggira il dilemma tra molte configurazioni e
+molto budget per testa eseguendo $s_{\max}+1$ istanze di successive halving (i
+*bracket*, $s_{\max} = \lfloor \log_\eta R \rfloor$ con $R$ budget massimo per
+configurazione), dalla più aggressiva ($\sim \eta^{s_{\max}}$ configurazioni
+con budget iniziale $R/\eta^{s_{\max}}$) alla più conservativa, poche
+configurazioni a budget pieno; la garanzia teorica è restare entro fattori
+logaritmici dal bracket migliore col senno di poi.
 
 `````
 
@@ -286,77 +306,85 @@ validazione smette di migliorare.
 
 Il successive halving è **sincrono**: per decidere chi passa il turno aspetta
 che tutte le prove del turno siano finite. Su una macchina sola non cambia
-niente; su cento macchine, novantanove restano ferme ad aspettare la più lenta.
+niente, ma su cento macchine novantanove restano ferme ad aspettare la più
+lenta.
+
 La versione **asincrona**, ASHA {cite}`li2020system`, toglie la barriera
-cambiando il criterio di promozione: invece di chiedere «sei fra le migliori
+cambiando il criterio di promozione. Invece di chiedere «sei fra le migliori
 tre di nove?», a cui si può rispondere solo a turno completo, chiede «rispetto
-alle prove già finite, sei nel primo terzo?». Una prova che supera il controllo
-viene promossa subito, e la macchina che si libera prende il lavoro successivo.
-Lo svantaggio è che si decide con informazione incompleta, e si può promuovere
-una prova che un confronto completo avrebbe scartato.
+alle prove già finite, sei nel primo terzo?». In questo modo una prova che
+supera il controllo viene promossa subito, e la macchina che si libera prende
+il lavoro successivo. Lo svantaggio è che si decide con informazione
+incompleta, e si può promuovere una prova che un confronto completo avrebbe
+scartato.
 
 ## Cercare con giudizio: l'ottimizzazione bayesiana
 
 Griglia, caso e tornei condividono un ultimo difetto, il più profondo: ogni
-prova ignora ciò che le precedenti hanno scoperto. Se dieci esperimenti hanno
-già mostrato che con un passo troppo lungo l'errore, invece di scendere,
-schizza fuori controllo, l'undicesimo estratto a caso può cascarci di nuovo. Quando
-succede, si dice che il modello *diverge*: rimbalza da un fianco all'altro
-della valle e se ne allontana. L’**ottimizzazione bayesiana**
-{cite}`snoek2012practical` tratta la ricerca degli iperparametri come un
-problema di apprendimento a sua volta: impara a prevedere *quale punteggio darà
-una combinazione di manopole prima di provarla*, e usa quella previsione per
-decidere dove provare. Si finisce così con due modelli in scena, uno dentro
-l'altro: il modello da addestrare, e un secondo che studia il primo
-dall'esterno. Il nome «bayesiana», dal reverendo Thomas Bayes, viene dal modo
-in cui il secondo aggiorna le sue convinzioni ogni volta che arriva una prova
-nuova.
+prova ignora ciò che le precedenti hanno scoperto. Se ad esempio dieci
+esperimenti hanno già mostrato che con un passo troppo lungo l'errore, invece
+di scendere, schizza fuori controllo, l'undicesimo estratto a caso può cascarci
+di nuovo. Quando succede, si dice che il modello *diverge*: rimbalza da un
+fianco all'altro della valle e se ne allontana.
+
+L’**ottimizzazione bayesiana** {cite}`snoek2012practical` tratta invece la
+ricerca degli iperparametri come un problema di apprendimento a sua volta:
+impara a prevedere *quale punteggio darà una combinazione di iperparametri
+prima di provarla*, e usa quella previsione per decidere dove provare. Si
+finisce così con due modelli in scena, uno dentro l'altro: il modello da
+addestrare, e un secondo che studia il primo dall'esterno. Il nome «bayesiana»,
+dal reverendo Thomas Bayes, viene dal modo in cui il secondo aggiorna le sue
+convinzioni ogni volta che arriva una prova nuova.
 
 `````{tab} Elementare
 
 Tre pozzi scavati, e il quarto dove? Non a caso: ogni trivellazione costa cara,
-il geologo che cerca l'acqua può permettersene poche, e prima di scegliere
-disegna una mappa ("qui l'acqua c'era a dieci metri, là il terreno era secco"),
-completa di zone d'ombra dove non sa ancora nulla. Il quarto pozzo va
-dove la *promessa*
-è massima: un po’ dove la mappa dice bene (sfruttare ciò che sa), un po’ dove
-la mappa è bianca (esplorare ciò che ignora). Cercare quel punto sulla carta
-costa qualche ora di matita, e la carta si fruga tutta prima di montare la
-sonda.
+e il geologo che cerca l'acqua può permettersene poche. Per questo, prima di
+scegliere, disegna una mappa ("qui l'acqua c'era a dieci metri, là il terreno
+era secco"), completa di zone d'ombra dove non sa ancora nulla.
+
+Il quarto pozzo va dove la *promessa* è massima: un po’ dove la mappa dice bene
+(sfruttare ciò che sa), un po’ dove la mappa è bianca (esplorare ciò che
+ignora). Cercare quel punto sulla carta costa qualche ora di matita, e la carta
+si fruga tutta prima di montare la sonda.
 
 L'ottimizzazione bayesiana funziona così: dopo ogni addestramento aggiorna la
 sua mappa del punteggio e sceglie la combinazione successiva chiedendosi *di
 quanto mi aspetto di battere il mio record, se provo qui?* La domanda ha un
 nome, **miglioramento atteso** (*expected improvement*), e da sola tiene insieme
-le due esigenze. Un pozzo peggiore del migliore già scavato
-non conta come una perdita: nel calcolo vale zero, perché il record resta quello
-di prima. La risposta è alta dove la mappa promette bene, e anche dove la mappa
-è bianca, perché lì il record potrebbe essere battuto di parecchio. È bassa,
-quasi zero, dove il terreno è stato già scavato e si è rivelato secco: là
-non c'è più niente da sapere e niente da sperare, e il metodo smette di andarci
-senza che nessuno glielo debba dire.
+le due esigenze.
+
+Si noti che un pozzo peggiore del migliore già scavato non conta come una
+perdita: nel calcolo vale zero, perché il record resta quello di prima. La
+risposta è alta dove la mappa promette bene, e anche dove la mappa è bianca,
+perché lì il record potrebbe essere battuto di parecchio. È bassa, quasi zero,
+dove il terreno è stato già scavato e si è rivelato secco: là non c'è più
+niente da sapere e niente da sperare, e il metodo smette di andarci senza che
+nessuno glielo debba dire.
 
 La mappa però resta una scommessa, e sul campo si vede dove cede. Serve un
 pozzo alla volta, perché la carta si aggiorna solo quando l'acqua si vede, e
-se dieci squadre partono insieme nove scavano su una carta vecchia. La mappa,
-inoltre, è disegnata credendo che il sottosuolo cambi con dolcezza, poco per
-volta da un punto al vicino. Se sotto c'è una faglia, a due passi dal pozzo
-buono il terreno è secco, e la carta continuerà a promettere acqua dove non ce
-n'è.
+se dieci squadre partono insieme nove scavano su una carta vecchia.
+
+La mappa, inoltre, è disegnata credendo che il sottosuolo cambi con dolcezza,
+poco per volta da un punto al vicino. Se sotto c'è una faglia, a due passi dal
+pozzo buono il terreno è secco, e la carta continuerà a promettere acqua dove
+non ce n'è.
 
 `````
 
 `````{tab} Superiore
 
-Due ingredienti. Il **modello surrogato** è una distribuzione di probabilità
-sulla funzione ignota $f(\boldsymbol{\lambda})$ (l'errore di validazione della
-configurazione $\boldsymbol{\lambda}$) aggiornata dopo ogni osservazione; il
-surrogato standard è il processo gaussiano {cite}`rasmussen2006gaussian`, che
-per ogni $\boldsymbol{\lambda}$ fornisce una media $\mu(\boldsymbol{\lambda})$ e
-una deviazione standard $\sigma(\boldsymbol{\lambda})$: la stima e la sua
-incertezza. (La {doc}`sezione sui processi gaussiani <processi-gaussiani>` lo
-tratta per esteso.) La **funzione di acquisizione** traduce stima e incertezza
-in una decisione; la più usata è l’*expected improvement*:
+Il metodo ha due ingredienti. Il **modello surrogato** è una distribuzione di
+probabilità sulla funzione ignota $f(\boldsymbol{\lambda})$ (l'errore di
+validazione della configurazione $\boldsymbol{\lambda}$) aggiornata dopo ogni
+osservazione; il surrogato standard è il processo gaussiano
+{cite}`rasmussen2006gaussian`, che per ogni $\boldsymbol{\lambda}$ fornisce una
+media $\mu(\boldsymbol{\lambda})$ e una deviazione standard
+$\sigma(\boldsymbol{\lambda})$: la stima e la sua incertezza. (La {doc}`sezione
+sui processi gaussiani <processi-gaussiani>` lo tratta per esteso.) La
+**funzione di acquisizione** traduce stima e incertezza in una decisione; la
+più usata è l’*expected improvement*:
 
 $$
 \mathrm{EI}(\boldsymbol{\lambda}) = \mathbb{E}\big[\max\big(0,\; f_{\min} - f(\boldsymbol{\lambda})\big)\big],
@@ -376,26 +404,30 @@ dove $\gamma$ è il miglioramento rispetto al record, misurato in deviazioni
 standard del surrogato (niente a che vedere con il $\gamma$ del kernel RBF, che
 compare nella {doc}`sezione sul kernel trick <svm-kernel>`: è la stessa lettera
 con un significato diverso), e $\Phi$ e $\varphi$ sono la funzione di
-ripartizione e la densità della normale standard. La formula premia sia
-$\mu(\boldsymbol{\lambda})$ basso (sfruttamento) sia
-$\sigma(\boldsymbol{\lambda})$ alto (esplorazione); la prossima prova è
+ripartizione e la densità della normale standard. Osserviamo che la formula
+premia sia $\mu(\boldsymbol{\lambda})$ basso (sfruttamento) sia
+$\sigma(\boldsymbol{\lambda})$ alto (esplorazione). La prossima prova è
 $\boldsymbol{\lambda}_{\text{next}} = \arg\max_{\boldsymbol{\lambda}}
-\mathrm{EI}(\boldsymbol{\lambda})$: un'ottimizzazione a sua volta, ma sul
-surrogato, che risponde in millisecondi. I limiti sono la natura essenzialmente
-sequenziale del metodo (ogni scelta attende l'esito della precedente), la
-dipendenza dalle ipotesi del surrogato, a cominciare dalla scelta del kernel, e
-il costo del surrogato stesso: l'inferenza esatta di un processo gaussiano su
-$n$ prove costa $O(n^3)$, un costo trascurabile con qualche centinaio di prove
-ma proibitivo con decine di migliaia. Per questo il surrogato più diffuso in
-pratica è un altro, il *Tree-structured Parzen Estimator* (TPE)
-{cite}`bergstra2011algorithms`, campionatore di default di Optuna. Divide le
-prove in buone e cattive secondo un quantile del punteggio, stima la densità
-delle configurazioni in ciascun gruppo,
+\mathrm{EI}(\boldsymbol{\lambda})$, cioè un'ottimizzazione a sua volta, ma sul
+surrogato, che risponde in millisecondi.
+
+I limiti sono la natura essenzialmente sequenziale del metodo (ogni scelta
+attende l'esito della precedente), la dipendenza dalle ipotesi del surrogato, a
+cominciare dalla scelta del kernel, e il costo del surrogato stesso:
+l'inferenza esatta di un processo gaussiano su $n$ prove costa $O(n^3)$, un
+costo trascurabile con qualche centinaio di prove ma proibitivo con decine di
+migliaia.
+
+Per questo il surrogato più diffuso in pratica è un altro, il *Tree-structured
+Parzen Estimator* (TPE) {cite}`bergstra2011algorithms`, campionatore di default
+di Optuna. Il TPE divide le prove in buone e cattive secondo un quantile del
+punteggio, stima la densità delle configurazioni in ciascun gruppo,
 $p_{\text{buone}}(\boldsymbol{\lambda})$ e
 $p_{\text{cattive}}(\boldsymbol{\lambda})$, e propone la configurazione che
-massimizza il loro rapporto; sotto quel modello è la stessa scelta che
-massimizza l'expected improvement, e si adatta con naturalezza a spazi misti di
-variabili continue, intere e categoriche, dove un kernel è scomodo.
+massimizza il loro rapporto. Sotto quel modello è la stessa scelta che
+massimizza l'expected improvement; inoltre il TPE si adatta con naturalezza a
+spazi misti di variabili continue, intere e categoriche, dove un kernel è
+scomodo.
 
 `````
 
@@ -405,13 +437,15 @@ scikit-learn offre le due strategie di base con la stessa forma d'uso:
 `GridSearchCV` e `RandomizedSearchCV` racchiudono in un solo oggetto il ciclo
 «prova una combinazione, valutala in cross-validation, tieni la migliore», e lo
 ripetono da soli. Le proviamo su un classificatore SVC, una *support vector
-machine*, che qui usiamo come scatola nera: ci basta sapere che ha due manopole
-delicate, `C` e `gamma`. Sono entrambe **parametri di scala**, cioè conta il
-loro ordine di grandezza, non la differenza fra un valore e l'altro: fra
-$0{,}001$ e $0{,}01$ c'è lo stesso salto che fra $1$ e $10$, mentre fra $1$ e
-$1{,}5$ non c'è quasi niente. Per questo i loro valori si provano
-moltiplicandoli per dieci ogni volta invece che sommando una costante. (Il
-dataset è quello delle cifre manoscritte incluso in scikit-learn.)
+machine*, che qui usiamo come scatola nera: ci basta sapere che ha due
+iperparametri delicati, `C` e `gamma`.
+
+Sono entrambi **parametri di scala**, cioè conta il loro ordine di grandezza,
+non la differenza fra un valore e l'altro. Ad esempio, fra $0{,}001$ e $0{,}01$
+c'è lo stesso salto che fra $1$ e $10$, mentre fra $1$ e $1{,}5$ non c'è quasi
+niente. Per questo i loro valori si provano moltiplicandoli per dieci ogni
+volta invece che sommando una costante. (Il dataset è quello delle cifre
+manoscritte incluso in scikit-learn.)
 
 ```python
 from scipy.stats import loguniform
@@ -460,45 +494,46 @@ caso: 0.9889 ± 0.0051
 
 La griglia è avanti di poco: $0{,}9896$ con ottanta addestramenti contro
 $0{,}9889$ con cento. Lo scarto è di sette decimillesimi, meno di quanto
-ciascun punteggio oscilla passando da un blocco di dati all'altro, e per questo
-il codice stampa anche l'oscillazione: senza, un pareggio si legge come una
-vittoria. Il pareggio era atteso, perché il sorteggio guadagna
-dove le manopole sono tante e quasi tutte ininfluenti, e qui sono due, e
-contano tutte e due.
+ciascun punteggio oscilla passando da un blocco di dati all'altro. Per questo il
+codice stampa anche l'oscillazione: senza, un pareggio si legge come una
+vittoria. Il pareggio era atteso, perché la ricerca casuale guadagna dove gli
+iperparametri sono tanti e quasi tutti ininfluenti, mentre qui sono due, e
+contano tutti e due.
 
-`loguniform` sorteggia l'esponente e non il valore, e lo si usa ogni volta che
-si sceglie un learning rate. Invece di estrarre un numero a caso fra
+`loguniform` estrae a caso l'esponente e non il valore, e lo si usa ogni volta
+che si sceglie un learning rate. Invece di estrarre un numero a caso fra
 $0{,}00001$ e $1$, che nel $99\%$ dei casi supererebbe $0{,}01$, si estrae un
 numero a caso fra $-5$ e $0$, poniamo $-3{,}2$, e si usa $10^{-3{,}2}$. Così
 ogni ordine di grandezza ha le stesse probabilità degli altri.
 
-scikit-learn implementa
-anche il successive halving (`HalvingGridSearchCV` e `HalvingRandomSearchCV`,
-ancora marcati come sperimentali); per l'ottimizzazione bayesiana e i tornei
-in versione moderna la libreria di riferimento è Optuna, in cui lo spazio
-di ricerca si descrive direttamente nel codice e le prove peggiori vengono
-interrotte in corsa.
+scikit-learn implementa anche il successive halving (`HalvingGridSearchCV` e
+`HalvingRandomSearchCV`, ancora marcati come sperimentali). Per
+l'ottimizzazione bayesiana e i tornei in versione moderna la libreria di
+riferimento è Optuna, in cui lo spazio di ricerca si descrive direttamente nel
+codice e le prove peggiori vengono interrotte in corsa.
 
 ### Una manopola alla volta: la curva di validazione
 
-Prima di cercare in più dimensioni si può guardare una manopola sola. La
+Prima di cercare in più dimensioni si può guardare una dimensione sola. La
 **curva di validazione** riporta, al variare di un iperparametro e con tutto il
 resto fermo, il punteggio sugli esempi di addestramento e quello di
-validazione. È parente delle
-{doc}`curve di apprendimento </MachineLearning/overfitting-validazione>`, che
-sull'asse orizzontale hanno invece il numero di esempi, e risponde a un'altra
-domanda: non se servono dati, ma dove mettere la manopola.
+validazione. È parente delle {doc}`curve di apprendimento
+</MachineLearning/overfitting-validazione>`, che sull'asse orizzontale hanno
+invece il numero di esempi, e risponde a un'altra domanda: non se servono dati,
+ma quale valore dare all'iperparametro.
 
 `````{tab} Elementare
 
 Si gira la manopola dal minimo al massimo, e a ogni posizione si segnano due
 voti: quello sugli esempi di studio e quello sugli esempi di prova (non quelli
-d'esame, che restano chiusi). Il disegno che esce dice da che parte si sbaglia.
-Dove i due voti sono bassi tutti e due, il modello è troppo rigido per il
-problema, e sbaglia anche dove ha studiato. Dove il voto di studio è pieno e
-quello di prova crolla, il modello sta imparando a memoria. In mezzo c'è la
-posizione giusta, quella con il voto di prova più alto, e la distanza fra i due
-voti dice quanto si è vicini al precipizio.
+d'esame, che restano chiusi).
+
+Il disegno che esce dice da che parte si sbaglia. Dove i due voti sono bassi
+tutti e due, il modello è troppo rigido per il problema, e sbaglia anche dove
+ha studiato. Dove il voto di studio è pieno e quello di prova crolla, il
+modello sta imparando a memoria. In mezzo c'è la posizione giusta, quella con
+il voto di prova più alto, e la distanza fra i due voti dice quanto si è vicini
+al precipizio.
 
 Il limite è nel «tutto il resto fermo». Le manopole non sono indipendenti: la
 posizione migliore di una dipende da dove stanno le altre, e girandole una alla
@@ -516,22 +551,26 @@ Per una coordinata $\lambda_j$ della configurazione, con le altre fissate, la
 curva di validazione riporta $\hat{E}_{\text{train}}(\lambda_j)$ e
 $\hat{E}_{\text{val}}(\lambda_j)$, stimati in cross-validation; la curva di
 apprendimento riporta invece gli stessi due errori in funzione della taglia $m$
-del training, a configurazione fissata. Nella regione di bias alto i due errori
-sono entrambi alti e vicini; in quella di varianza alta l'errore di
-addestramento è piccolo e il divario grande; il minimo di
-$\hat{E}_{\text{val}}$ è il compromesso della curva a U, letto su un asse
-concreto. In scikit-learn la calcola `validation_curve`, che di default riporta
-il punteggio del modello e non l'errore: per un classificatore è l'accuratezza,
-cioè $1 - \hat{E}$ con la perdita 0-1, e il compromesso diventa un massimo. Due
-limiti: la curva è una sezione dello spazio degli iperparametri, condizionata
-ai valori fissati degli altri, quindi non vede le interazioni (il $\gamma$
-migliore di una SVM dipende da $C$); e scegliere $\lambda_j$ guardando la curva
-consuma la validazione come qualunque ricerca, con l'ottimismo della vincitrice
-di una ricerca, che le avvertenze sull'ottimismo della scelta misurano.
+del training, a configurazione fissata.
+
+Nella regione di bias alto i due errori sono entrambi alti e vicini; in quella
+di varianza alta l'errore di addestramento è piccolo e il divario grande; il
+minimo di $\hat{E}_{\text{val}}$ è il compromesso della curva a U, letto su un
+asse concreto. In scikit-learn la calcola `validation_curve`, che di default
+riporta il punteggio del modello e non l'errore. Per un classificatore il
+punteggio è l'accuratezza, cioè $1 - \hat{E}$ con la perdita 0-1, e il
+compromesso diventa quindi un massimo.
+
+La curva ha due limiti. È una sezione dello spazio degli iperparametri,
+condizionata ai valori fissati degli altri, quindi non vede le interazioni (il
+$\gamma$ migliore di una SVM dipende da $C$). Inoltre scegliere $\lambda_j$
+guardando la curva consuma la validazione come qualunque ricerca, con
+l'ottimismo della vincitrice di una ricerca, che le avvertenze sull'ottimismo
+della scelta misurano.
 
 `````
 
-Facciamo girare il `gamma` della stessa SVM sulle cifre manoscritte, da
+Facciamo variare il `gamma` della stessa SVM sulle cifre manoscritte, da
 $10^{-6}$ a $10^{-1}$, con `C` fermo a $10$, e stampiamo per ogni valore
 l'accuratezza media sugli esempi di addestramento e su quelli di validazione
 dei cinque blocchi.
@@ -562,63 +601,72 @@ gamma 1e-01: addestramento 1.000, validazione 0.106
 
 Con `gamma` piccolo il modello è troppo liscio: $0{,}914$ sugli esempi di
 addestramento e $0{,}908$ in validazione, vicini e bassi. Salendo, tutti e due
-i voti crescono fino a $10^{-3}$, dove la validazione tocca il massimo,
-$0{,}988$, con l'addestramento già al completo: è il valore che la griglia aveva
-scelto, e il voto è in linea con il suo $0{,}9896$. Oltre, l'addestramento resta
-a $1{,}000$ e la validazione crolla, a $0{,}840$ e poi a $0{,}106$, quasi il
-caso su dieci cifre: ogni esempio di addestramento è diventato un'isola, e il
-modello non riconosce più niente che non abbia già visto.
+i punteggi crescono fino a $10^{-3}$, dove la validazione tocca il massimo,
+$0{,}988$, con l'addestramento già al completo. Si noti che è il valore che la
+griglia aveva scelto, e il punteggio è in linea con il suo $0{,}9896$.
+
+Oltre questo valore l'addestramento resta a $1{,}000$ e la validazione crolla,
+a $0{,}840$ e poi a $0{,}106$, quasi il caso su dieci cifre: ogni esempio di
+addestramento è diventato un'isola, e il modello non riconosce più
+niente che non abbia già visto.
 
 ## Tre avvertenze: costo, riproducibilità e ottimismo della scelta
 
-La prima è il costo. Se ogni combinazione si giudica in cross-validation su
-cinque blocchi, non costa un addestramento ma cinque, e quel fattore lo decide
-il modo di giudicare, non il modo di cercare: nessun algoritmo di ricerca lo
-toglie, e a toglierlo è semmai la scelta di giudicare su una validazione sola,
-la stessa usata per contare le quattrocentocinque epoche del torneo.
+La prima avvertenza riguarda il costo. Se ogni combinazione si giudica in
+cross-validation su cinque blocchi, non costa un addestramento ma cinque, e
+quel fattore dipende dal modo di giudicare, non dal modo di cercare. Nessun
+algoritmo di ricerca, quindi, lo toglie, e a toglierlo è semmai la scelta di
+giudicare su una validazione sola, la stessa usata per contare le
+quattrocentocinque epoche del torneo.
+
 Griglia e caso hanno almeno il vantaggio di spalmarsi su tante macchine senza
 sforzo; l'ottimizzazione bayesiana no, perché è fatta per scegliere la prossima
 prova dopo aver visto l'esito della precedente. Esistono varianti che ne
 lanciano un gruppo alla volta (già Snoek e colleghi ne proponevano una
 {cite}`snoek2012practical`), ma ogni prova, presa da sola, rende meno.
 
-La seconda è la riproducibilità. Un computer non sa tirare a caso:
-produce numeri che *sembrano* casuali partendo da un numero iniziale, il
-**seme** (in inglese *seed*, il `random_state` di scikit-learn). A parità di
-seme, di versioni delle librerie e di macchina la sequenza di numeri «a caso» è
-la stessa, e con essa il risultato; fra versioni o processori diversi le ultime
-cifre possono cambiare, perché anche l'ordine delle somme in virgola mobile
-dipende dall'hardware, e per questo si dichiarano anche le versioni. Con il seme
-non fissato l'esito cambia a ogni esecuzione, e allora nessuno può ripetere il
-tuo esperimento, nemmeno tu. Alla stessa famiglia appartiene un'altra
-dimenticanza: dire «il metodo A batte il metodo B» senza dichiarare in quale
-intervallo si è cercato e quante prove si sono fatte vale come aneddoto e non
-come confronto, perché a parità di tempo il verdetto può capovolgersi.
+La seconda avvertenza riguarda la riproducibilità. Un computer non sa tirare a
+caso: produce numeri che *sembrano* casuali partendo da un numero iniziale, il
+**seme** (in inglese *seed*, il `random_state` di scikit-learn).
+
+A parità di seme, di versioni delle librerie e di macchina la sequenza di
+numeri «a caso» è la stessa, e con essa il risultato. Fra versioni o processori
+diversi, però, le ultime cifre possono cambiare, perché anche l'ordine delle
+somme in virgola mobile dipende dall'hardware, e per questo si dichiarano anche
+le versioni. Con il seme non fissato l'esito cambia a ogni esecuzione, e allora
+nessuno può ripetere il tuo esperimento, nemmeno tu.
+
+Alla stessa famiglia appartiene un'altra dimenticanza: dire «il metodo A batte
+il metodo B» senza dichiarare in quale intervallo si è cercato e quante prove
+si sono fatte vale come aneddoto e non come confronto, perché a parità di tempo
+il verdetto può capovolgersi.
 
 La terza avvertenza riguarda l'ottimismo della scelta.
 
 `````{tab} Elementare
 
 Se mille persone lanciano una moneta dieci volte, una decina di loro farà nove
-teste. Nessuna di quelle dieci ha un dono: sono le più fortunate di mille. Lo
-stesso vale per le configurazioni: il punteggio di validazione della vincitrice
-di una ricerca con centinaia di prove è in parte merito e in parte fortuna, e
-tende a essere troppo ottimista. Più a lungo cerchi, più il validation set
-si consuma, come il test set che avevi giurato di non sbirciare. Il
-rimedio è lo stesso di sempre: il numero da raccontare al mondo si misura una
-sola volta, alla fine, sul test rimasto intatto.
+teste. Nessuna di quelle dieci ha un dono: sono le più fortunate di mille.
+
+Lo stesso vale per le configurazioni: il punteggio di validazione della
+vincitrice di una ricerca con centinaia di prove è in parte merito e in parte
+fortuna, e tende a essere troppo ottimista. Più a lungo cerchi, più il
+validation set si consuma, come il test set che avevi giurato di non sbirciare.
+Il rimedio è lo stesso di sempre: il numero da raccontare al mondo si misura
+una sola volta, alla fine, sul test rimasto intatto.
 
 Due accorgimenti aiutano. Il primo costa poco: raccontare, accanto al
 punteggio della vincitrice, quanto quel punteggio cambia da un blocco all'altro
 dei cinque. Un primo posto vinto per un soffio, con cinque numeri molto diversi
-fra loro, è un primo posto di rumore. Il secondo costa di più, e serve quando
-il giudizio riguarda il modo di scegliere e non la singola configurazione: la
-ricerca si rifà da capo cinque volte, su cinque spezzoni diversi di dati, e
-ogni vincitrice viene misurata sullo spezzone che la sua ricerca non ha mai
-visto. Il costo si moltiplica: la ricerca intera, con tutte le sue combinazioni
-e i suoi cinque assaggi ciascuna, va rifatta dentro ognuno dei cinque giri
-esterni, e le $3\,125$ tazzine della macchina del caffè diventano $15\,625$,
-senza sconti.
+fra loro, è un primo posto di rumore.
+
+Il secondo costa di più, e serve quando il giudizio riguarda il modo di
+scegliere e non la singola configurazione: la ricerca si rifà da capo cinque
+volte, su cinque spezzoni diversi di dati, e ogni vincitrice viene misurata
+sullo spezzone che la sua ricerca non ha mai visto. Il costo si moltiplica: la
+ricerca intera, con tutte le sue combinazioni e i suoi cinque assaggi ciascuna,
+va rifatta dentro ognuno dei cinque giri esterni, e le $3\,125$ tazzine della
+macchina del caffè diventano $15\,625$, senza sconti.
 
 `````
 
@@ -634,19 +682,21 @@ $$
 $$
 
 cioè il punteggio della vincitrice è ottimista in media anche se nessuna stima,
-presa da sola, lo è: selezionando la migliore si eredita anche il suo errore di
-stima favorevole. Aggiungere configurazioni non può abbassare il membro di
-sinistra, quindi a parità di vero massimo la distorsione non diminuisce con
-$N$. In altre parole, una ricerca abbastanza lunga fa overfitting *sul
-validation set* {cite}`cawley2010overfitting`. L'ottimismo ha un ordine di
-grandezza: per la disuguaglianza dell'unione il limite superiore allo scarto
-cresce come $\sqrt{\log N}$ nel numero $N$ di configurazioni confrontate, come
-mostra la {doc}`sezione sulla concentrazione </Matematica/concentrazione>`. Le
-contromisure: riservare il test a un'unica valutazione finale; riportare media
-e deviazione standard sui fold, non il solo massimo; nei confronti
-metodologici, usare la *nested cross-validation* (un anello esterno per la
-stima onesta dell'errore, un anello interno per la selezione degli
-iperparametri) accettandone il costo, che è il prodotto dei due anelli.
+presa da sola, lo è. Selezionando la migliore, infatti, si eredita anche il suo
+errore di stima favorevole. Aggiungere configurazioni non può abbassare il
+membro di sinistra, quindi a parità di vero massimo la distorsione non
+diminuisce con $N$. In altre parole, una ricerca abbastanza lunga fa
+overfitting *sul validation set* {cite}`cawley2010overfitting`.
+
+L'ottimismo ha un ordine di grandezza: per la disuguaglianza dell'unione il
+limite superiore allo scarto cresce come $\sqrt{\log N}$ nel numero $N$ di
+configurazioni confrontate, come mostra la {doc}`sezione sulla concentrazione
+</Matematica/concentrazione>`. Per difendersene si riserva il test a
+un'unica valutazione finale, si riportano media e deviazione standard sui
+fold, non il solo massimo, e nei confronti metodologici si usa la **nested
+cross-validation** (un anello esterno per la stima onesta dell'errore, un
+anello interno per la selezione degli iperparametri), accettandone il costo,
+che è il prodotto dei due anelli.
 
 `````
 
@@ -682,18 +732,18 @@ voto della vincitrice, in media: 0.5695 (sempre sopra 0,5: True)
 stima annidata, in media: 0.5160 (errore standard 0.014)
 ```
 
-Il voto della vincitrice supera il caso in tutti e dieci gli archivi, e in media
-dice $0{,}5695$, quasi sette punti oltre il limite che nessun modello può
-superare: è il premio della ricerca, non del modello. La stima annidata scende a
-$0{,}5160$, con un errore standard di $0{,}014$: poco più di un errore standard
-sopra il caso, cioè compatibile con il caso, e il resto è rumore di
-stima su archivi di duecento righe.
+Il voto della vincitrice supera il caso in tutti e dieci gli archivi, e in
+media vale $0{,}5695$, quasi sette punti oltre il limite che nessun modello può
+superare: è il premio della ricerca, non del modello. La stima annidata,
+invece, scende a $0{,}5160$, con un errore standard di $0{,}014$: poco più di
+un errore standard sopra il caso, cioè compatibile con il caso, e il resto è
+rumore di stima su archivi di duecento righe.
 
-Una ricerca degli iperparametri è essa stessa un addestramento, e come ogni
-addestramento può adattarsi ai dati che ha visto. Dichiarare spazio di ricerca,
-budget e semi, e tenere il test chiuso fino all'ultimo, ne fa una procedura il
-cui risultato altri possono ripetere e controllare: è la parte di metodo che
-mancava all'alchimia di cui parlava Rahimi.
+In definitiva, una ricerca degli iperparametri è essa stessa un addestramento,
+e come ogni addestramento può adattarsi ai dati che ha visto. Dichiarare spazio
+di ricerca, budget e semi, e tenere il test chiuso fino all'ultimo, ne fa una
+procedura il cui risultato altri possono ripetere e controllare: è la parte di
+metodo che mancava all'alchimia di cui parlava Rahimi.
 
 `````{tab} Elementare
 

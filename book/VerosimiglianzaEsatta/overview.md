@@ -18,15 +18,16 @@ quelle che gli abbiamo fatto finora. Non «fammi un volto», ma: prendi *questa*
 fotografia, guardala, e dimmi quanto è probabile che una fotografia così venga
 fuori dal mondo che hai imparato.
 
-Il generatore non ha uno sportello a cui rivolgere quella domanda. Il falsario
-ha imparato a produrre, non a valutare: il numero che misura quanto un dato è
-plausibile non compare da nessuna parte nel suo addestramento, e non c'è modo
-di estrarlo dai suoi pesi. Il {doc}`capitolo sui modelli di diffusione
-</ModelliDiffusione/overview>`, appena chiuso, sta un gradino più in là: lì quel
-numero esiste, ma non è la grandezza che il modello ottimizza. In teoria ottimizza
-un limite inferiore, una stima prudente che sta sotto il valore vero; in
-pratica nemmeno quello, ma una sua versione ripesata, che dà campioni migliori
-e non è più un limite.
+Il generatore, però, non ha uno sportello a cui rivolgere quella domanda. Il
+falsario ha imparato a produrre, non a valutare: il numero che misura quanto un
+dato è plausibile non compare da nessuna parte nel suo addestramento, e non c'è
+modo di estrarlo dai suoi pesi.
+
+Il {doc}`capitolo sui modelli di diffusione </ModelliDiffusione/overview>`,
+appena chiuso, sta un gradino più in là: lì quel numero esiste, ma non è la
+grandezza che il modello ottimizza. In teoria ottimizza un limite inferiore, una
+stima prudente che sta sotto il valore vero; in pratica nemmeno quello, ma una
+sua versione ripesata, che dà campioni migliori e non è più un limite.
 
 La terza risposta è una famiglia di modelli in cui quel numero è esatto per
 costruzione e un solo passaggio della rete lo calcola. Il numero ha tre
@@ -43,11 +44,12 @@ Verosimiglianza è una parola dei {doc}`richiami di probabilità e statistica
 </Matematica/probabilita-statistica>`, dove serviva a scegliere i parametri:
 fissati i dati, quanto è probabile ciò che si è visto se il modello fosse
 questo, letto come funzione dei parametri $\theta$. Qui la si guarda dall'altro
-capo. Fissato il modello $p_\theta$, la verosimiglianza di un dato $\mathbf{x}$
-è il numero $p_\theta(\mathbf{x})$ che il modello gli assegna, letto come
-«quanto mi aspettavo di vedere un dato così»: alto se il dato è di quelli su
-cui il modello avrebbe scommesso, basso se lo coglie di sorpresa. Il nome è
-scomodo e il concetto no: è un voto, e a differenza dell'energia del
+capo. Fissato il modello $p_\theta$, la **verosimiglianza** di un dato
+$\mathbf{x}$ è il numero $p_\theta(\mathbf{x})$ che il modello gli assegna,
+letto come «quanto mi aspettavo di vedere un dato così»: alto se il dato è di
+quelli su cui il modello avrebbe scommesso, basso se lo coglie di sorpresa.
+
+Il nome è scomodo e il concetto no: è un voto, e a differenza dell'energia del
 {doc}`capitolo sui modelli a energia </ModelliEnergia/overview>` è
 **normalizzato**, cioè sommato su tutti i dati possibili fa uno.
 Quando il dato è fatto di numeri continui la somma diventa un integrale, e
@@ -79,44 +81,50 @@ campioni e nient'altro, e la probabilità non compare in nessuna delle sue
 formule. È il caso delle GAN, di cui si dice che definiscono una **densità
 implicita**: il modello è una procedura per estrarre campioni, e la densità
 $p(\mathbf{x})$ non è scritta da nessuna parte. Può anche non esistere affatto.
-Se il generatore parte da un latente con meno numeri di quanti ne abbia
-un'immagine, le immagini che produce stanno tutte su una varietà di dimensione
-più bassa, una superficie senza spessore dentro lo spazio delle immagini, e su
-una superficie senza spessore una densità, che è probabilità per unità di
-volume, non si può definire (la {doc}`sezione sull'addestramento avversario
-</GAN/come-funziona>` incontra lo stesso fatto quando il duello si inceppa). Del
-modello si possono stimare alcune proprietà generando tanti campioni e
+Ad esempio, se il generatore parte da un latente con meno numeri di quanti ne
+abbia un'immagine, le immagini che produce stanno tutte su una varietà di
+dimensione più bassa, una superficie senza spessore dentro lo spazio delle
+immagini, e su una superficie senza spessore una densità, che è probabilità per
+unità di volume, non si può definire (la {doc}`sezione sull'addestramento
+avversario </GAN/come-funziona>` incontra lo stesso fatto quando il duello si
+inceppa).
+
+Del modello si possono però stimare alcune proprietà generando tanti campioni e
 misurandoli, come fa il FID, che confronta le statistiche di un mucchio di
 immagini generate con quelle di un mucchio di immagini vere; la probabilità di
 un singolo dato no.
 
-La seconda risposta è che il modello ce l'ha approssimata. Ha di che parlare
-di probabilità, ma quel che ottimizza e quel che sa dire è un surrogato. I VAE,
+La seconda risposta è che il modello ce l'ha approssimata. Ha di che parlare di
+probabilità, ma quel che ottimizza e quel che sa dire è un surrogato. I VAE,
 gli autoencoder variazionali del capitolo sui modelli latenti, danno un limite
 inferiore, l’{doc}`ELBO </ModelliLatenti/il-salto-probabilistico>` (il limite
 inferiore sull'evidenza, cioè sulla verosimiglianza): si sa che il valore vero
 sta più in alto, non di quanto. I modelli a energia danno il voto a meno di una
 costante che nessuno conosce: bastano per dire quale di due dati è più
-plausibile, non per stampare una percentuale. I modelli di diffusione
-addestrano su una versione ripesata dello stesso genere di limite; nella loro
-formulazione continua il valore esatto si può ottenere {cite}`song2021score`,
-ma passando per la soluzione di un'equazione differenziale e per una stima
-a campione di un termine troppo oneroso da calcolare per intero, cioè con un
-lavoro che nessuno fa a ogni immagine.
+plausibile, non per stampare una percentuale.
+
+I modelli di diffusione, infine, si addestrano su una versione ripesata dello
+stesso genere di limite; nella loro formulazione continua il valore esatto si
+può ottenere {cite}`song2021score`, ma passando per la soluzione di
+un'equazione differenziale e per una stima a campione di un termine troppo
+oneroso da calcolare per intero, cioè con un lavoro che nessuno fa a ogni
+immagine.
 
 La terza risposta è che il modello ce l'ha esatta. Restituisce
 $\log p(\mathbf{x})$, il logaritmo della probabilità del dato, in un passaggio
 solo. Si lavora sul logaritmo perché la probabilità di un'immagine intera è un
 numero con migliaia di zeri dopo la virgola, e il logaritmo lo rende
-maneggevole e trasforma i prodotti di probabilità in somme. Due strade portano
-lì. La prima scrive la probabilità del dato come
-prodotto di probabilità condizionate, un valore alla volta, ciascuno sapendo
-quelli che lo precedono: sono i modelli autoregressivi, già incontrati sul
-testo e sull'audio e applicati qui alle immagini. La seconda costruisce
-una trasformazione invertibile che porta i dati su una distribuzione di base
-nota, di solito una gaussiana, e ricava la probabilità con un cambio di
-variabile: sono i flussi normalizzanti, e la parola «flusso» è la stessa del
-*flusso rettificato* con cui il capitolo sui modelli di diffusione genera immagini.
+maneggevole e trasforma i prodotti di probabilità in somme.
+
+Due strade portano a questo risultato. La prima scrive la probabilità del dato
+come prodotto di probabilità condizionate, un valore alla volta, ciascuno
+sapendo quelli che lo precedono: sono i modelli autoregressivi, già incontrati
+sul testo e sull'audio e applicati qui alle immagini. La seconda costruisce una
+trasformazione invertibile che porta i dati su una distribuzione di base nota,
+di solito una gaussiana, e ricava la probabilità con un cambio di variabile:
+sono i flussi normalizzanti, e la parola «flusso» è la stessa del
+*flusso rettificato* con cui il capitolo sui modelli di diffusione genera
+immagini.
 
 ## Il prezzo
 
@@ -126,7 +134,7 @@ con il tempo di generazione.
 
 Un modello autoregressivo deve garantire che ogni valore dipenda soltanto da
 quelli che lo precedono. Il testo un ordine ce l'ha per natura; un'immagine no,
-quindi lo si fissa, e poi il divieto va imposto dentro una rete convoluzionale,
+quindi lo si fissa. Il divieto va poi imposto dentro una rete convoluzionale,
 che per costruzione guarda in tutte le direzioni. Il costo maggiore arriva
 quando si genera, perché si procede un valore alla volta: una fotografia a
 colori di $256 \times 256$ pixel ha quasi duecentomila valori, e chiede
@@ -136,11 +144,13 @@ Un flusso paga altrove. Perché la trasformazione si possa invertire ogni strato
 dev'essere invertibile, e questo esclude molti strati comuni, a cominciare da
 quelli che riducono la dimensione, come il *pooling* e le proiezioni su meno
 coordinate, e dalle attivazioni che mandano punti diversi nello stesso valore,
-come la ReLU, che manda a zero tutti i negativi. Un flusso
-conserva il numero di coordinate: entra con un milione di numeri ed esce con un
-milione di numeri. Per lavorare su qualcosa di più piccolo deve farsi mettere
-davanti un compressore, come succede nella diffusione latente, e la
-probabilità esatta vale allora per la versione compressa, non per l'immagine.
+come la ReLU, che manda a zero tutti i negativi.
+
+Di conseguenza un flusso conserva il numero di coordinate: entra con un milione
+di numeri ed esce con un milione di numeri. Per lavorare su qualcosa di più
+piccolo deve farsi mettere davanti un compressore, come succede nella
+diffusione latente, e la probabilità esatta vale allora per la versione
+compressa, non per l'immagine.
 
 `````{tab} Elementare
 
@@ -211,14 +221,14 @@ probabilità esatta vale allora per la versione compressa, non per l'immagine.
 
 ## Due meccanismi, e un bilancio
 
-Le immagini autoregressive sono il tema di {doc}`Un pixel alla volta
-<pixel-per-pixel>`: l'ordine su una griglia di pixel, la convoluzione che guarda
-solo i pixel già letti e il difetto che quel vincolo porta con sé, il punto
-cieco. {doc}`I flussi normalizzanti <flussi>` hanno per matematica il cambio di
-variabile per le densità e il vincolo di invertibilità, che gli strati di
-accoppiamento soddisfano con un determinante il cui costo in generale cresce
-come il cubo del numero di coordinate e che qui si riduce a una somma. {doc}`A
-che serve saperlo <a-che-serve>` chiude con gli impieghi del numero (comprimere,
-scegliere fra ipotesi, riconoscere un dato anomalo), con il fallimento
-istruttivo che ha smontato il più ovvio di questi e con il ponte verso il *flow
-matching* che la diffusione ha già usato.
+In questo capitolo le immagini autoregressive sono il tema di {doc}`Un pixel
+alla volta <pixel-per-pixel>`: l'ordine su una griglia di pixel, la
+convoluzione che guarda solo i pixel già letti e il difetto che quel vincolo
+porta con sé, il punto cieco. {doc}`I flussi normalizzanti <flussi>` hanno per
+matematica il cambio di variabile per le densità e il vincolo di invertibilità,
+che gli strati di accoppiamento soddisfano con un determinante il cui costo in
+generale cresce come il cubo del numero di coordinate e che qui si riduce a una
+somma. Infine {doc}`A che serve saperlo <a-che-serve>` chiude con gli impieghi
+del numero (comprimere, scegliere fra ipotesi, riconoscere un dato anomalo),
+con il fallimento istruttivo che ha smontato il più ovvio di questi e con il
+ponte verso il *flow matching* che la diffusione ha già usato.

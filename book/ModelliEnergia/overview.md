@@ -91,32 +91,31 @@ nell'acqua, perché raffreddando piano gli atomi hanno il tempo di sistemarsi
 bene. Su questa regola di accettazione sono costruite le macchine di Boltzmann.
 
 La seconda parola presa in prestito dalla fisica è temperatura, la «T» del
-disegno. Non c'è niente di caldo e nessun termometro:
-$T > 0$ è il parametro che decide quanto spesso si accetta una mossa che alza
-l'energia. Per $T \to 0$ si scende soltanto; per $T$ grande quasi ogni mossa
-passa, e la pallina salta dappertutto. La sezione sulle macchine di Boltzmann
-le fa fare un mestiere in più: trasformare le altezze del paesaggio in
-probabilità.
+disegno. Non c'è niente di caldo e nessun termometro: $T > 0$ è il parametro
+che decide quanto spesso si accetta una mossa che alza l'energia. Per
+$T \to 0$ si scende soltanto; per $T$ grande quasi ogni mossa passa, e la
+pallina salta dappertutto. La sezione sulle macchine di Boltzmann le fa fare
+un compito in più: trasformare le altezze del paesaggio in probabilità.
 
 Quella seconda mossa, che accetta di risalire, anticipa una differenza che
-attraversa i modelli a energia. Un classificatore o un regressore *ottimizzano*,
-cioè cercano la risposta migliore e si fermano lì, come la rete di Hopfield. Dalla
-macchina di Boltzmann in poi i modelli a energia *campionano*: producono una
-risposta alla volta, estratta in modo che a lungo andare le risposte buone
-escano spesso, quelle mediocri ogni tanto e quelle assurde quasi mai, con la
-frequenza che il paesaggio prescrive. Per riuscirci devono accettare di
-peggiorare per un tratto, perché è l'unico modo di uscire da una valle e
-vederne un'altra. Campionano anche i modelli autoregressivi, i flussi e i
-modelli di diffusione; questi ultimi lo fanno con una dinamica affine a quella
-che si incontra qui.
+attraversa i modelli a energia. Un classificatore o un regressore, ad esempio,
+*ottimizzano*, cioè cercano la risposta migliore e si fermano lì, come la rete
+di Hopfield. Dalla macchina di Boltzmann in poi i modelli a energia
+*campionano*: producono una risposta alla volta, estratta in modo che a lungo
+andare le risposte buone escano spesso, quelle mediocri ogni tanto e quelle
+assurde quasi mai, con la frequenza che il paesaggio prescrive. Per riuscirci
+devono accettare di peggiorare per un tratto, perché è l'unico modo di uscire
+da una valle e vederne un'altra. Campionano anche i modelli autoregressivi, i
+flussi e i modelli di diffusione; questi ultimi lo fanno con una dinamica
+affine a quella che si incontra qui.
 
 Un modello probabilistico assegna a ogni configurazione $\mathbf{x}$ una
 probabilità $p(\mathbf{x}) \ge 0$, e le probabilità di tutte le configurazioni
-devono sommare a uno (integrare a uno, se le configurazioni sono continue):
-per valutarne una sola bisogna quindi tener conto di tutte le altre. Un modello
-a energia rinuncia a questo vincolo. Assegna a ogni configurazione (un'immagine,
-una frase, uno stato della rete) un'energia, e chiede soltanto che quelle
-sensate stiano in basso e le altre in alto.
+devono sommare a uno (integrare a uno, se le configurazioni sono continue): per
+valutarne una sola bisogna quindi tener conto di tutte le altre. Un modello a
+energia, invece, rinuncia a questo vincolo. Assegna a ogni configurazione
+(un'immagine, una frase, uno stato della rete) un'energia, e chiede soltanto
+che quelle sensate stiano in basso e le altre in alto.
 
 `````{tab} Elementare
 
@@ -133,12 +132,12 @@ significa scavare il paesaggio finché le valli non stanno nei punti giusti.
 Le percentuali, dalla carta, si ricavano. Scuotila e lascia girare la pallina
 per un'ora: quanto forte scuoti è la temperatura, e con scossoni forti la
 pallina salta dappertutto, con scossoni deboli resta nei fondovalle. Tocca un
-po’ tutti i punti, ma in quelli bassi si trattiene molto
-più a lungo che in cima, e quel «molto più a lungo» è una percentuale. Altezze e
-frequenze dicono la stessa cosa in due lingue. La traduzione, però, si paga. Se
-ti chiedessi «quante probabilità ci sono che dietro l'angolo ci sia un gatto?»
-e volessi una percentuale onesta, dovrei aver messo in conto tutto quello che
-un gatto non è: cani, biciclette, cassonetti, qualunque cosa esista. Per dire
+po’ tutti i punti, ma in quelli bassi si trattiene molto più a lungo che in
+cima, e quel «molto più a lungo» è una percentuale. Altezze e frequenze dicono
+la stessa cosa in due lingue. La traduzione, però, si paga. Se ti
+chiedessi «quante probabilità ci sono che dietro l'angolo ci sia un gatto?» e
+volessi una percentuale onesta, dovrei aver messo in conto tutto quello che un
+gatto non è: cani, biciclette, cassonetti, qualunque cosa esista. Per dire
 «70%» di una risposta bisogna aver pesato tutte le altre, e una carta così
 grande, disegnata come capita, nessuno riesce a misurarla tutta. Ci si riesce
 solo se la carta è disegnata apposta in modo che le percentuali sommino a cento
@@ -183,7 +182,7 @@ struttura lo permette: in una gaussiana; in un modello autoregressivo o in un
 flusso, che sono normalizzati per costruzione grazie ai vincoli
 sull'architettura che la verosimiglianza esatta impone; in una rete binaria
 abbastanza piccola da sommarne tutti i $2^N$ stati. Per un'energia scelta senza
-vincoli sull'architettura, su un $\mathbf{x}$ ad alta dimensione come
+vincoli sull'architettura, invece, su un $\mathbf{x}$ ad alta dimensione come
 un'immagine, nessuno la sa calcolare, e «modello a energia» in senso stretto
 designa questo caso. Gran parte della letteratura sui modelli a energia
 riguarda ciò che si può fare senza $Z(\theta)$, e l'osservazione, tutt'altro
@@ -196,8 +195,9 @@ che ovvia, che moltissimi compiti non ne hanno mai avuto bisogno.
 Lo stesso oggetto continua a riaffiorare sotto nomi diversi, e finché lo si
 incontra un pezzo per volta non lo si riconosce.
 
-I modelli di diffusione imparano, per ogni livello di rumore, la pendenza di un
-paesaggio: è il punteggio (*score*) del {doc}`capitolo sulla diffusione
+I modelli di diffusione imparano, per ogni livello di rumore, la
+pendenza di un paesaggio: è il punteggio (*score*) del {doc}`capitolo sulla
+diffusione
 </ModelliDiffusione/sde-e-ode>`, e generare vuol dire attraversare quella
 successione di paesaggi, dal più liscio al più dettagliato. Le architetture che
 il {doc}`capitolo sui world model </WorldModels/overview>` chiama **JEPA**
@@ -213,7 +213,7 @@ l'argomento disteso sta nel documento di posizione del 2022
 {cite}`lecun2022path`.
 
 Diffusione, JEPA, Hopfield moderne, il programma di LeCun: sembrano quattro
-argomenti distinti, e hanno in comune un punteggio da minimizzare invece di
+argomenti distinti, ma hanno in comune un punteggio da minimizzare invece di
 normalizzare (per la diffusione con una riserva, che la sezione sulla
 funzione di partizione rende precisa). La {doc}`sezione sui paesaggi di oggi
 </ModelliEnergia/paesaggi-di-oggi>` li riprende uno per uno.

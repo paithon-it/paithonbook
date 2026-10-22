@@ -35,18 +35,20 @@ generale al particolare, e ne sono venute fuori 632 categorie: dal latrato di un
 cane al colpo di tosse, dal fruscio della pioggia al suono di una chitarra
 elettrica. Poi hanno riempito quelle caselle ritagliando frammenti da dieci
 secondi da video di YouTube ed etichettandoli a mano, e oggi i frammenti
-raccolti sono oltre due milioni. Non tutte le caselle si sono riempite: alcune
-sono soltanto rami dell'albero, che raggruppano altre voci senza descrivere un
-suono; altre sono state tenute fuori dall'etichettatura perché troppo oscure o
-troppo facili da confondere; per altre ancora non si sono trovate abbastanza
-registrazioni. Nella raccolta che si scarica le categorie sono 527.
+raccolti sono oltre due milioni.
+
+Non tutte le caselle si sono riempite. Alcune sono soltanto rami dell'albero,
+che raggruppano altre voci senza descrivere un suono; altre sono state tenute
+fuori dall'etichettatura perché troppo oscure o troppo facili da confondere;
+per altre ancora non si sono trovate abbastanza registrazioni. Per questo,
+nella raccolta che si scarica, le categorie sono 527.
 
 Un catalogo così fitto presuppone che i suoni diversi dalle parole si lascino
-distinguere l'uno dall'altro, e in effetti la sorgente lascia nel segnale
-tracce regolari di timbro, di ritmo e di durata. Un temporale ha un suo
+distinguere l'uno dall'altro, e in effetti la sorgente lascia nel segnale tracce
+regolari di timbro, di ritmo e di durata. Un temporale, ad esempio, ha un suo
 andamento; un motore che si sta guastando ha un suono storto, ma riconoscibile.
-Rispetto a una lingua mancano un vocabolario di unità dotate di significato e
-una sintassi che le combini.
+Rispetto a una lingua, invece, mancano un vocabolario di unità dotate di
+significato e una sintassi che le combini.
 
 Il {doc}`riconoscimento vocale </SpeechRecognition/overview>` tratta il caso
 della voce, dal parlato al testo e ritorno (ascoltare e parlare). Qui il campo
@@ -145,12 +147,12 @@ compresa. I suoi pezzi sono questi:
 - la scala mel e gli MFCC, che riscrivono e riassumono quell'immagine secondo
   la risoluzione dell'orecchio.
 
-Lo spettrogramma log-mel ricorre in quasi tutti i modelli per l'audio: uno
-spettrogramma con le frequenze riscritte sulla scala mel, più fitta sui suoni
-gravi e più rada sugli acuti come l'orecchio, e con le intensità passate al
-logaritmo, così che un sussurro e un urlo stiano sulla stessa scala. Lo si
-tratta come un'immagine a un canale, e vale identico per il canto di un merlo,
-per un accordo di chitarra, per il fragore di un temporale.
+In particolare, lo spettrogramma log-mel ricorre in quasi tutti i modelli per
+l'audio: uno spettrogramma con le frequenze riscritte sulla scala mel, più
+fitta sui suoni gravi e più rada sugli acuti come l'orecchio, e con le
+intensità passate al logaritmo, così che un sussurro e un urlo stiano sulla
+stessa scala. Lo si tratta come un'immagine a un canale, e vale identico per il
+canto di un merlo, per un accordo di chitarra, per il fragore di un temporale.
 
 ## L'idea nuova: l'audio come sequenza di token
 
@@ -180,27 +182,28 @@ spettrogramma.
 ```
 
 C'è infatti un secondo modo di guardare l'audio, che accomuna tutti questi
-modelli. Poggia sulla distinzione fra discreto e continuo,
-la stessa che {doc}`Probabilità e statistica
-</Matematica/probabilita-statistica>` usa per separare le due specie di
-variabile aleatoria, applicata qui a un segnale. Una grandezza è discreta se
-assume valori separati, presi da un insieme finito o al più numerabile: le
-ventuno lettere dell'alfabeto, fra la A e la B delle quali non si infila nulla.
-È continua se può assumere ogni valore di un intervallo, come la pressione
-dell'aria in un istante, o una sfumatura di grigio.
+modelli. Poggia sulla distinzione fra discreto e continuo, la stessa che
+{doc}`Probabilità e statistica </Matematica/probabilita-statistica>` usa per
+separare le due specie di variabile aleatoria, applicata qui a un segnale. Una
+grandezza è **discreta** se assume valori separati, presi da un insieme finito o
+al più numerabile: le ventuno lettere dell'alfabeto, fra la A e la B delle quali
+non si infila nulla. È **continua** se può assumere ogni valore di un
+intervallo, come la pressione dell'aria in un istante, o una sfumatura di
+grigio.
 
 Un testo nasce discreto, perché è fatto di lettere. Un suono nasce continuo:
 l'onda di pressione che arriva all'orecchio non ha né scalini nel tempo né
-scalini nel valore. Dentro un calcolatore, però, quell'onda non c'è più. Quello
+scalini nel valore. Dentro un computer, però, quell'onda non c'è più. Quello
 che c'è è una fila di numeri interi presi da un elenco chiuso: ogni misura si
 scrive con sedici risposte sì/no, cioè sedici *bit*, e siccome ogni risposta
-raddoppia i casi possibili, ciascuna vale uno fra 65.536 livelli. Ogni livello
-è una lettera possibile, e un alfabeto, dunque, ce l'abbiamo già. È però
-l'alfabeto sbagliato, per due ragioni: le lettere sono troppe (65.536 contro una
-ventina), e arrivano troppo fitte, perché per il parlato si prendono sedicimila
-misure al secondo, contro le poche parole al secondo di chi parla. Da dove
-vengano i sedici bit e le sedicimila misure lo racconta {doc}`Dal suono alle
-feature </Audio/dal-suono-alle-feature>`.
+raddoppia i casi possibili, ciascuna vale uno fra 65.536 livelli.
+
+Ogni livello è una lettera possibile, e un alfabeto, dunque, ce l'abbiamo già. È
+però l'alfabeto sbagliato, per due ragioni: le lettere sono troppe (65.536
+contro una ventina), e arrivano troppo fitte, perché per il parlato si prendono
+sedicimila misure al secondo, contro le poche parole al secondo di chi parla. Da
+dove vengano i sedici bit e le sedicimila misure lo racconta {doc}`Dal suono
+alle feature </Audio/dal-suono-alle-feature>`.
 
 Lo spettrogramma di {numref}`fig-whisper-pipeline` il problema non lo risolve,
 lo sposta: le sue caselle sono numeri con la virgola, e di elenco chiuso non
@@ -209,10 +212,11 @@ ciò che fa l'encoder del disegno). Un modello che *scrive* un simbolo alla volt
 deve invece assegnare una probabilità a ciascun simbolo possibile della
 posizione successiva, e una probabilità così si distribuisce soltanto su un
 elenco: è la softmax dei modelli di linguaggio, che vuole un vocabolario finito.
+
 Si può generare anche senza alfabeto, predicendo direttamente numeri continui,
 oppure partendo da rumore e ripulendolo un passo alla volta: sono altre strade,
 e {doc}`la sezione sulla generazione </Audio/generazione-audio>` ne incontra
-una. La domanda del capitolo è allora questa: esiste per il suono un alfabeto
+una. La domanda è allora questa: esiste per il suono un alfabeto
 abbastanza piccolo da imparare e abbastanza lento da arrivare in fondo a un
 brano? Se esiste, tutto l'armamentario costruito per il linguaggio diventa di
 colpo applicabile al suono.
@@ -269,9 +273,9 @@ $k_i \in \{1, \dots, K\}$, esattamente la stessa forma di un testo tokenizzato (
 i codec a più codebook ogni passo porta più di un indice, e la fila diventa un
 fascio di file parallele: è materia della sezione sui codec). Quanto si accorci
 la fila lo decide il rapporto fra la frequenza di campionamento e quella dei
-latenti: un codec come EnCodec, a $24$ kHz, produce $75$ latenti al secondo,
-uno ogni $320$ campioni, e trenta secondi di audio passano da $720\,000$
-campioni a $L = 2250$ passi.
+latenti. Ad esempio, un codec come EnCodec, a $24$ kHz, produce $75$ latenti al
+secondo, uno ogni $320$ campioni, e trenta secondi di audio passano da
+$720\,000$ campioni a $L = 2250$ passi.
 
 Da lì il collegamento con i modelli linguistici è diretto: un Transformer
 autoregressivo può modellare
@@ -283,7 +287,7 @@ $$
 dove $k_i$ è il token audio in posizione $i$ e ogni fattore è una softmax sulle
 $K$ voci del codebook: la stessa fattorizzazione, parola per parola, del
 {doc}`capitolo sui Transformer </Transformers/overview>`, con i token audio al
-posto delle parole. È la ricetta dietro sistemi come AudioLM e MusicLM: prima
+posto delle parole. È lo schema dietro sistemi come AudioLM e MusicLM: prima
 si impara un *alfabeto* del suono, poi ci si scrive sopra con un modello di
 linguaggio. Le due difficoltà (costruire un buon alfabeto che perda poco
 fedeltà, e modellare bene sequenze di token lunghissime) sono i due nodi che i
@@ -291,15 +295,15 @@ codec neurali e i modelli di generazione devono sciogliere.
 
 `````
 
-Il testo *nasce* discreto: le
-lettere e le parole sono già simboli, l'alfabeto ce lo dà la lingua. L'audio
-no: è un'onda continua, e l'alfabeto sonoro non esiste in natura; va costruito,
-e costruirlo è già un problema di apprendimento difficile. Un alfabeto troppo
-povero rende il suono metallico e irriconoscibile; e più lo si vuole fedele,
-più lunga diventa la fila di token da scrivere e da leggere, finché nessun
-modello ci arriva in fondo. Il compromesso lo gestiscono i codec neurali, e per
-questo la loro costruzione precede la generazione: senza un
-buon alfabeto, non c'è nulla su cui scrivere.
+Il testo *nasce* discreto: le lettere e le parole sono già simboli, e
+l'alfabeto ce lo dà la lingua. L'audio no: è un'onda continua, e l'alfabeto
+sonoro non esiste in natura; va costruito, e costruirlo è già un problema di
+apprendimento difficile. Un alfabeto troppo povero rende il suono metallico e
+irriconoscibile; d'altra parte, più lo si vuole fedele, più lunga diventa la
+fila di token da scrivere e da leggere, finché nessun modello ci arriva in
+fondo. Il compromesso lo gestiscono i codec neurali, e per questo la loro
+costruzione precede la generazione: senza un buon alfabeto, non c'è nulla su
+cui scrivere.
 
 ## Dal riconoscere al generare
 
@@ -315,7 +319,7 @@ l'alfabeto, e infine scriverci sopra suono nuovo.
   il suono *senza che nessuno gli dica mai cosa sta ascoltando*, sfruttando le
   montagne di audio che nessuno ha mai trascritto. È la strada che wav2vec 2.0 e
   i suoi parenti hanno percorso sulla voce.
-- **Codec neurali**, l'alfabeto sonoro di cui abbiamo appena parlato: come una
+- **Codec neurali**, l'alfabeto sonoro dei token: come una
   rete impara a comprimere l'audio in pochi token e a ricostruirlo, fondendo
   compressione e apprendimento.
 - **Generazione audio e musica**: scrivere suono nuovo. Prima un campione alla
@@ -387,6 +391,6 @@ sia un'immagine tempo–frequenza o un alfabeto di token.
 `````
 
 Si comincia dal basso, cioè da che cosa diventa un suono quando entra in un
-calcolatore: misure, livelli, frequenze, e l'immagine che le mette in fila. È
+computer: misure, livelli, frequenze, e l'immagine che le mette in fila. È
 la sezione {doc}`Dal suono alle feature </Audio/dal-suono-alle-feature>`, e
 tutto ciò che segue, compreso l'alfabeto che si sta cercando, ci si appoggia.

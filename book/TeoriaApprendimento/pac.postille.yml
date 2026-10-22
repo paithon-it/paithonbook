@@ -1,0 +1,14 @@
+# Le postille di questa pagina, una per capoverso del testo comune.
+# Ognuna vale finché la sua impronta combacia col testo del capoverso.
+- inizio: "La definizione di Valiant, nella forma"
+  impronta: "fe582e7f4eb8"
+  postilla: "Tolleranza sull'errore e confidenza, che lascia fuori i campioni più sfortunati"
+- inizio: "L'errore vero di una soglia $t$"
+  impronta: "681dc8a2bc22"
+  postilla: "Per scoprire una soglia cattiva fra le compatibili si guardano le due estreme"
+- inizio: "La {numref}`fig-soglie-sopravvivono` mostra una sola estrazione."
+  impronta: "13eec556bcbe"
+  postilla: "Per le mille soglie il limite chiede 225 esempi, 231 nella forma esponenziale"
+- inizio: "Eppure un centinaio di esempi basta"
+  impronta: "a409bb179aa2"
+  postilla: "Con diecimila soglie servono 104 esempi, due in più: le vicine contano come una"

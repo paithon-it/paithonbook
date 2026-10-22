@@ -32,6 +32,19 @@ Quando una cifra aumenta, quelle alla sua destra tornano a zero. Una versione
 che contiene sia sezioni nuove sia correzioni prende il numero della modifica
 maggiore, e ogni versione corrisponde a una pubblicazione.
 
+(v1-17-0)=
+
+## 1.17.0 · 22 ottobre 2026
+
+### Sezioni nuove
+
+- **Le postille.** Accanto a molti capoversi una riga dice di che cosa parla il capoverso: sul sito la apre il segno a margine, nel PDF sta nel margine esterno, in corsivo.
+
+### Correzioni
+
+- **Prosa rivista in tutto il libro.** Frasi più dirette e capoversi più corti, i passaggi fra un'idea e l'altra detti in chiaro, e nei titoli e nei rimandi il nome che il libro dà alle cose al posto dell'immagine.
+- **Correzioni di teoria in più capitoli.** Fra le altre: il rumore che DBSCAN lascia fuori dai gruppi, la disuguaglianza dell'unione nei limiti PAC, la quota che il label smoothing divide fra le classi, i tensor core e l'underflow in bfloat16.
+
 (v1-16-1)=
 
 ## 1.16.1 · 20 ottobre 2026

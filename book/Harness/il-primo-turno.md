@@ -1,31 +1,34 @@
 # Il primo turno: preparare prima di costruire
 
-Che cosa fa un agente di programmazione nella prima ora di un progetto vuoto, se
-gli si chiede il prodotto finito? Scrive il prodotto: pagine, pulsanti, la
+Che cosa fa un agente di programmazione nella prima ora di un progetto vuoto,
+se gli si chiede il prodotto finito? Scrive il prodotto: pagine, pulsanti, la
 logica del carrello. Nessuno gli ha chiesto di rendere il progetto avviabile
 con un comando, controllabile con un altro, descritto in un elenco di cose da
-fare, e lui non lo fa, o lo fa di sfuggita. È il primo dei guasti che Young
-aveva visto: l'agente che prova a fare tutto in un colpo, esaurisce la finestra
-a metà, e lascia alla sessione dopo un prodotto iniziato su fondamenta che
-nessuno ha verificato.
+fare, e lui non lo fa, o lo fa di sfuggita. È il primo dei guasti che
+Young aveva visto: l'agente che prova a fare tutto in un colpo, esaurisce la
+finestra a metà, e lascia alla sessione dopo un prodotto iniziato su fondamenta
+che nessuno ha verificato.
 
 Nell'harness di Young il compito della prima sessione non è scrivere il
 prodotto {cite}`young2025harnesses`. È una sessione dello stesso agente, con le
 stesse istruzioni di sistema (quelle fisse che il modello riceve in testa a
 ogni sessione), gli stessi strumenti e lo stesso harness di tutte le altre;
-cambia soltanto il primo messaggio, che le affida un altro mestiere: preparare
-il terreno. Ne escono quattro oggetti. Uno script, `init.sh`, che avvia
-l'applicazione in prova, sulla macchina di lavoro. Un file di avanzamento, in
-cui la prima sessione scrive che cosa ha preparato e ogni sessione dopo
-annoterà che cosa ha fatto. Un **elenco delle funzionalità**, nel caso del
-clone di `claude.ai` più di duecento, ciascuna segnata come non ancora
-riuscita. E un primo salvataggio del progetto nella storia di git, con i file
-creati fin lì. Nel codice d'esempio che Anthropic ha pubblicato, la prima
-sessione, se le avanza tempo, può anche cominciare la prima funzionalità
-{cite}`anthropic2025autonomouscoding`; ma il suo mestiere è un altro, e da quel
-momento in poi le sessioni sono tutte uguali fra loro, e diverse dalla prima.
+cambia soltanto il primo messaggio, che le affida un altro compito: preparare
+il terreno.
 
-## Due mestieri diversi
+Ne escono quattro oggetti. Il primo è uno script, `init.sh`, che avvia
+l'applicazione in prova, sulla macchina di lavoro. Il secondo è un file di
+avanzamento, in cui la prima sessione scrive che cosa ha preparato e ogni
+sessione dopo annoterà che cosa ha fatto. Il terzo è un **elenco delle
+funzionalità**, nel caso del clone di `claude.ai` più di duecento, ciascuna
+segnata come non ancora riuscita. Il quarto è un primo salvataggio del progetto
+nella storia di git, con i file creati fin lì. Nel codice d'esempio che
+Anthropic ha pubblicato, la prima sessione, se le avanza tempo, può anche
+cominciare la prima funzionalità {cite}`anthropic2025autonomouscoding`; ma il
+suo compito è un altro, e da quel momento in poi le sessioni sono tutte uguali
+fra loro, e diverse dalla prima.
+
+## Due compiti diversi
 
 Preparare e costruire hanno obiettivi diversi. Chi prepara deve arrivare a un
 ambiente che parte, a dei controlli che girano, a una descrizione completa di
@@ -35,13 +38,14 @@ tentato in un colpo, e le sessioni successive che spendono il loro tempo a
 capire come rimettere in piedi l'applicazione. È ragionevole aspettarsi anche
 un guasto più sottile, quello delle scelte implicite: se nessuno ha fissato
 quale strumento si usa per i test, una sessione ne sceglie uno e la successiva,
-non trovandolo scritto, può sceglierne un altro. È la decisione non scritta che
-ogni sessione indovina di nuovo, la stessa del {doc}`repository come memoria
+non trovandolo scritto, può sceglierne un altro. In altri termini, è la
+decisione non scritta che ogni sessione indovina di nuovo, la stessa del
+{doc}`repository come memoria
 <il-repository-come-memoria>`, applicata alle fondamenta.
 
 Separare le due fasi ha un costo, e conviene guardarlo in faccia: la prima
-sessione non produce niente che un utente possa vedere. Si ripaga se il lavoro
-dura abbastanza.
+sessione non produce niente che un utente possa vedere. Il costo si ripaga,
+però, se il lavoro dura abbastanza.
 
 `````{tab} Elementare
 
@@ -80,7 +84,7 @@ mattine lavorano con la stessa macchina, la stessa colla e lo stesso foglio.
 
 `````{tab} Superiore
 
-Si fissi una convenzione sugli indici: $\mathbf{p}_k$, $R_k$ e $c_k$ sono
+Fissiamo una convenzione sugli indici: $\mathbf{p}_k$, $R_k$ e $c_k$ sono
 l'elenco degli esiti, il registro e il commit *alla fine* della sessione $k$.
 La sessione d'inizializzazione $k = 0$ ha le stesse istruzioni $I$, lo stesso
 catalogo $\mathcal{T}$ e lo stesso codice del ciclo delle altre; cambiano il
@@ -102,12 +106,12 @@ di cominciare. Separare $k = 0$ toglie alle sessioni successive due compiti,
 ricostruire come si avvia e come si controlla il progetto e decidere che cosa
 resta da fare, che altrimenti ciascuna rifarebbe da capo, con esiti diversi.
 
-Il costo si ammortizza. Senza una fase separata, ogni sessione paga un costo di
-ricostruzione $\rho_k$ (in token o in tempo) prima di poter lavorare; con la
-fase separata si paga una volta $\kappa_0$, e poi a ogni sessione soltanto la
-lettura dell'elenco e del registro. Se $\bar{\rho}$ è il risparmio netto medio
-per sessione (la ricostruzione evitata, meno la lettura che si fa comunque),
-la fase separata conviene quando il compito dura più di
+Il costo si ammortizza. Senza una fase separata, ogni sessione paga
+un costo di ricostruzione $\rho_k$ (in token o in tempo) prima di poter
+lavorare; con la fase separata si paga una volta $\kappa_0$, e poi a ogni
+sessione soltanto la lettura dell'elenco e del registro. Se $\bar{\rho}$ è il
+risparmio netto medio per sessione (la ricostruzione evitata, meno la lettura
+che si fa comunque), la fase separata conviene quando il compito dura più di
 
 $$
 K^{*} = \frac{\kappa_0}{\bar{\rho}}
@@ -116,13 +120,14 @@ $$
 sessioni. Per un compito di una sola sessione la fase non conviene mai: la
 sessione $0$ ricostruisce l'ambiente almeno una volta, come qualunque sessione,
 e in più scrive l'elenco e il registro, quindi $\kappa_0 > \bar{\rho}$ e
-$K^{*} > 1$. È un modello, non una misura, con due riserve. Il confronto è fatto
-a parità di esito, mentre senza la fase separata l'esito cambia: una sessione
-che ricostruisce l'ambiente può ricostruirlo diverso, e verosimilmente il
-beneficio principale sta lì, nella coerenza, più che nei token. E $\bar{\rho}$
-non cresce per forza con il progetto: la ricostruzione evitata cresce, ma
-cresce anche la lettura di un registro che si allunga a ogni sessione e di un
-elenco di duecento voci, che vale migliaia di token.
+$K^{*} > 1$. È un modello, non una misura, con due riserve. La prima è che il
+confronto è fatto a parità di esito, mentre senza la fase separata l'esito
+cambia: una sessione che ricostruisce l'ambiente può ricostruirlo diverso, e
+verosimilmente il beneficio principale sta lì, nella coerenza, più che nei
+token. La seconda riguarda $\bar{\rho}$, che non cresce per forza con il
+progetto: la ricostruzione evitata cresce, ma cresce anche la lettura di un
+registro che si allunga a ogni sessione e di un elenco di duecento voci, che
+vale migliaia di token.
 
 `````
 
@@ -156,29 +161,30 @@ potrebbe essere questa.
 
 Ciascuna delle scelte di quel formato ha la sua ragione.
 
-Le voci nascono tutte false. L'elenco è così la definizione di «finito» per
-l'intero progetto, scritta prima di cominciare: il lavoro è concluso quando
-tutte le voci passano, e una sessione che si guarda intorno e vede molto codice
-scritto ha davanti il conto delle voci ancora false, cioè molte meno ragioni
-per concludere che il progetto sia fatto. È la difesa diretta contro la
-vittoria dichiarata.
+Anzitutto, le voci nascono tutte false. L'elenco è così la definizione di
+«finito» per l'intero progetto, scritta prima di cominciare: il lavoro è
+concluso quando tutte le voci passano, e una sessione che si guarda intorno e
+vede molto codice scritto ha davanti il conto delle voci ancora false, cioè
+molte meno ragioni per concludere che il progetto sia fatto. È la difesa
+diretta contro la vittoria dichiarata.
 
-Le sessioni successive possono cambiare un campo solo, `passes`. Le istruzioni
-di Young lo dicono senza mezzi termini: togliere o modificare i test, cioè le
-voci e i loro passi di prova, è inaccettabile, perché potrebbe portare a
-funzionalità mancanti o difettose. Nel codice d'esempio la lista dei divieti è
-esplicita: non togliere voci, non riscrivere descrizioni o passi, non unirle,
-non riordinarle {cite}`anthropic2025autonomouscoding`. Senza questo vincolo, un
-modo rapido di far sembrare completo un elenco sarebbe accorciarlo.
+In secondo luogo, le sessioni successive possono cambiare un campo solo,
+`passes`. Le istruzioni di Young lo dicono senza mezzi termini: togliere o
+modificare i test, cioè le voci e i loro passi di prova, è inaccettabile, perché
+potrebbe portare a funzionalità mancanti o difettose. Nel codice d'esempio la
+lista dei divieti è esplicita: non togliere voci, non riscrivere descrizioni o
+passi, non unirle, non riordinarle {cite}`anthropic2025autonomouscoding`. Senza
+questo vincolo, un modo rapido di far sembrare completo un elenco sarebbe
+accorciarlo.
 
-Il formato è JSON e non un testo libero, e la ragione dichiarata è empirica:
-Young osserva che il modello tende meno a modificare o a riscrivere in modo
-inappropriato un file JSON che uno in Markdown. È un'osservazione su un
+In terzo luogo, il formato è JSON e non un testo libero, e la ragione dichiarata
+è empirica: Young osserva che il modello tende meno a modificare o a riscrivere
+in modo inappropriato un file JSON che uno in Markdown. È un'osservazione su un
 comportamento, non una legge; ma un formato con campi fissi ha anche una
 conseguenza che un testo libero non ha: si confronta a macchina, voce per voce e
 campo per campo.
 
-La granularità, infine, conta quanto il formato. Una voce deve stare in una
+La **granularità**, infine, conta quanto il formato. Una voce deve stare in una
 sessione e deve potersi provare da utente. «Realizzare il carrello» è troppo
 grande: non sta in una sessione e non dice quando è finita. «Aggiungere il campo
 quantità alla tabella del carrello» è troppo piccola, e non si prova da utente.
@@ -269,14 +275,14 @@ possa essere una verifica e non un'opinione.
 
 Nell'harness di Young il vincolo sull'elenco è affidato alle istruzioni: il
 modello è pregato, con parole forti, di toccare soltanto `passes`. Un harness
-può fare di più, e farlo rispettare con un controllo. Il programma confronta
-l'elenco com'era nell'ultimo salvataggio con quello che la sessione lascia, e
-lo rifiuta se è cambiato qualcosa oltre ai valori vero o falso dei campi
-`passes`: una voce tolta o aggiunta, due voci con la stessa descrizione, una
-voce spostata, un campo aggiunto o tolto, una descrizione o un passo di prova
-riscritti. Lo si prova su due sessioni finte, una onesta e una che, davanti al
-carrello che non funziona, toglie la voce del pagamento e ammorbidisce la prova
-del carrello.
+può fare di più, e farlo rispettare con un controllo. In concreto, il programma
+confronta l'elenco com'era nell'ultimo salvataggio con quello che la sessione
+lascia, e lo rifiuta se è cambiato qualcosa oltre ai valori vero o falso dei
+campi `passes`: una voce tolta o aggiunta, due voci con la stessa descrizione,
+una voce spostata, un campo aggiunto o tolto, una descrizione o un passo di
+prova riscritti. Lo si prova su due sessioni finte, una onesta e una che,
+davanti al carrello che non funziona, toglie la voce del pagamento e
+ammorbidisce la prova del carrello.
 
 ```python
 import copy
@@ -359,17 +365,17 @@ sessione furba: avanzamento 1/2, RIFIUTATA
 ```
 
 La sessione furba, letta dal solo contatore, sembra andata meglio: una voce su
-due invece di una su tre. È il contatore ingenuo, quello che conta sull'elenco
-com'è adesso, e il codice d'esempio di Anthropic misura l'avanzamento proprio
-così; per questo il confronto con l'elenco salvato serve. Il cancello ferma la
-sessione furba per la ragione giusta, nominando la voce sparita e il passo di
-prova indebolito. Due condizioni lo rendono una garanzia e non un controllo di
-cortesia: l'elenco di partenza va letto dalla storia di git, dove la sessione
-non può riscriverlo, e il controllo lo lancia il ciclo a fine sessione, non
-l'agente quando gli pare. E il controllo non sa se il carrello funziona
-davvero: a deciderlo, cioè a scrivere il valore di `passes`, è il collaudo da
-utente. Il controllo sa soltanto che nessuno ha spostato il metro mentre
-misurava.
+due invece di una su tre. È il **contatore ingenuo**, quello che conta
+sull'elenco com'è adesso, e il codice d'esempio di Anthropic misura
+l'avanzamento proprio così; per questo il confronto con l'elenco salvato serve.
+Il cancello ferma la sessione furba per la ragione giusta, nominando la voce
+sparita e il passo di prova indebolito. Due condizioni lo rendono una garanzia
+e non un controllo di cortesia: l'elenco di partenza va letto dalla storia di
+git, dove la sessione non può riscriverlo, e il controllo lo lancia il ciclo a
+fine sessione, non l'agente quando gli pare. E il controllo
+non sa se il carrello funziona davvero: a deciderlo, cioè a scrivere il valore
+di `passes`, è il collaudo da utente. Il controllo sa soltanto che nessuno ha
+spostato il metro mentre misurava.
 
 `````{tab} Elementare
 

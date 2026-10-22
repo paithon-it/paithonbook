@@ -1,0 +1,17 @@
+# Le postille di questa pagina, una per capoverso del testo comune.
+# Ognuna vale finché la sua impronta combacia col testo del capoverso.
+- inizio: "Un modello addestrato in modo supervisionato"
+  impronta: "d5c3845dc8fb"
+  postilla: "Il punteggio del pretesto non dice se la rappresentazione sia utile"
+- inizio: "Le {doc}`quattro famiglie </AutoSupervisione/famiglie>` hanno chiamato"
+  impronta: "aa4fbdd18210"
+  postilla: "Collasso dimensionale: rappresentazioni diverse, ma su poche direzioni"
+- inizio: "La perdita con cui si addestrano"
+  impronta: "1bb11b92b76b"
+  postilla: "InfoNCE e informazione mutua: un legame che, da solo, non spiega tutto"
+- inizio: "In SimCLR {cite}`chen2020simple`, presentato in {doc}`Imparare"
+  impronta: "172de4906cc8"
+  postilla: "Con un batch di 4096, tetto di circa tredici bit contro i dieci di mille classi"
+- inizio: "Alle due domande, che cosa può"
+  impronta: "a17226be9e3a"
+  postilla: "Il collasso si vede dalla forma del batch; la qualità solo da un compito a valle"

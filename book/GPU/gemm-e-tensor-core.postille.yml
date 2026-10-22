@@ -1,0 +1,17 @@
+# Le postille di questa pagina, una per capoverso del testo comune.
+# Ognuna vale finché la sua impronta combacia col testo del capoverso.
+- inizio: "Il GEMM è uno dei kernel"
+  impronta: "55075ffc10bc"
+  postilla: "GEMM è ottimizzatissimo: nelle reti quasi tutte le operazioni sono di quel tipo"
+- inizio: "Le operazioni da fare si contano:"
+  impronta: "892bde40595d"
+  postilla: "Il problema della versione ingenua sono i byte da muovere più delle operazioni"
+- inizio: "Il triplo ciclo su tessere è"
+  impronta: "f6677c923e1a"
+  postilla: "Il tiling vale su ogni macchina: cambiano chi calcola e dove sta la tessera"
+- inizio: "Quasi certamente non scriverai mai a"
+  impronta: "61c01d4e9113"
+  postilla: "Librerie pronte, cuBLAS e cuDNN; e CUTLASS e Triton, che quel codice lo generano"
+- inizio: "Il tiling, insomma, avvicina i due"
+  impronta: "a643f4e7329b"
+  postilla: "Per i tensor core al tiling si aggiunge il riuso in cache L2 e nei registri"

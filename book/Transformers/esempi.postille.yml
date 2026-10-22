@@ -1,0 +1,17 @@
+# Le postille di questa pagina, una per capoverso del testo comune.
+# Ognuna vale finché la sua impronta combacia col testo del capoverso.
+- inizio: "I Transformer lavorano qui su due"
+  impronta: "ccf1af912e6b"
+  postilla: "Pre-addestrato: parametri già ottimizzati da altri su un grande corpus"
+- inizio: "È il compito per cui il"
+  impronta: "730fca441d36"
+  postilla: "Traduzione: il decoder pone le query, dall'encoder vengono chiavi e valori"
+- inizio: "Qui il Transformer non genera nulla:"
+  impronta: "4a1262b6dce5"
+  postilla: "Se la risposta è un voto, il decoder non serve: aggiungerebbe solo calcolo"
+- inizio: "Le quattro frasi sono una lode,"
+  impronta: "06904be1934c"
+  postilla: "Due stelle a «non è affatto male», tre quasi alla pari: due modi di sbagliare"
+- inizio: "Più in generale, dire una cosa"
+  impronta: "02b53fa54d64"
+  postilla: "Il contatto fra «non», «affatto» e «male» non garantisce la composizione giusta"

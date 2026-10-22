@@ -2,94 +2,106 @@
 
 Ogni tanto arriva una tecnologia che non risolve un problema, ma cambia il
 modo in cui si risolvono tutti gli altri: la macchina a vapore, l'elettricità,
-il computer, Internet. Gli economisti le chiamano tecnologie di uso generale
-(*general-purpose technologies*) {cite}`bresnahan1995general`. Non
+il computer, Internet. Gli economisti le chiamano **tecnologie di uso
+generale** (*general-purpose technologies*) {cite}`bresnahan1995general`. Non
 fanno una cosa sola, e si riconoscono dal numero di settori che finiscono per
 attraversare. Molti collocano l'intelligenza artificiale fra queste tecnologie,
 e la formula più fortunata è di Andrew Ng:
 
 > L'intelligenza artificiale è la nuova elettricità.
 
-È uno slogan, e come tutti gli slogan funziona perché elimina le sfumature. Ng
-insegna all'Università di Stanford ed è autore di alcuni fra i corsi di machine
-learning più seguiti al mondo. Nell'intervento del 2017 da cui la formula è
-presa, il ragionamento per esteso dice qualcosa di più preciso: «proprio come
-l'elettricità ha trasformato quasi tutto cento anni fa, oggi faccio davvero
-fatica a pensare a un settore che l'AI non trasformerà nei prossimi anni»
-{cite}`ng2017electricity`. È una previsione, non un bilancio, e come tutte le
-previsioni andrà verificata; ma c'è già qualche esempio concreto.
+È uno slogan, e come tutti gli slogan funziona perché elimina le
+sfumature. Ng insegna all'Università di Stanford ed è autore di alcuni fra i
+corsi di machine learning più seguiti al mondo.
 
-Il primo riguarda l'elettricità vera e propria. I servizi online girano nei
-*data center* (centri di elaborazione dati), capannoni pieni di server accesi
-giorno e notte. Il calore va smaltito di continuo, e il raffreddamento pesa
-molto sui consumi di energia. Già nel 2016 DeepMind, il laboratorio di ricerca
-sull'intelligenza artificiale di Google, aveva usato le proprie reti neurali
-per ridurre fino al 40% l'energia usata per raffreddare i data center
-dell'azienda {cite}`evans2016deepmind`.
+Nell'intervento del 2017 da cui la formula è presa, però, il ragionamento per
+esteso dice qualcosa di più preciso: «proprio come l'elettricità ha trasformato
+quasi tutto cento anni fa, oggi faccio davvero fatica a pensare a un settore
+che l'AI non trasformerà nei prossimi anni» {cite}`ng2017electricity`. È una
+previsione, non un bilancio, e come tutte le previsioni andrà verificata; ma
+c'è già qualche esempio concreto.
+
+Il primo esempio riguarda l'elettricità vera e propria. I servizi online girano
+nei **data center** (centri di elaborazione dati), capannoni pieni di
+server accesi giorno e notte. Il calore va smaltito di continuo, per cui il
+raffreddamento pesa molto sui consumi di energia. Già nel 2016 DeepMind, il
+laboratorio di ricerca sull'intelligenza artificiale di Google, aveva usato le
+proprie reti neurali per ridurre fino al 40% l'energia usata per raffreddare i
+data center dell'azienda {cite}`evans2016deepmind`.
 
 Quel 40%, però, riguarda la sola voce del raffreddamento, e nello stesso
 annuncio c'è un altro numero. Un centro del genere consuma parecchio oltre ai
 computer: le ventole, le luci, e l'energia che si disperde negli impianti
 elettrici. Chi gestisce questi centri misura il peso di quel contorno con il
-PUE (*power usage effectiveness*), il rapporto fra l'energia totale del centro
-e quella assorbita dai soli server: un PUE di $1{,}1$, per esempio, vuol dire
-che il contorno consuma un decimo di quanto consumano i server. Su quel
-contorno, che è una fetta più larga del solo condizionamento, il calo
-dichiarato fu del 15%. È il 15% del contorno e non dell'energia totale: un
-numero meno spettacolare, ma più indicativo.
+**PUE** (*power usage effectiveness*), cioè il rapporto fra l'energia totale
+del centro e quella assorbita dai soli server. Un PUE di $1{,}1$, per esempio,
+vuol dire che il contorno consuma un decimo di quanto consumano i server.
 
-Il secondo è in medicina. Una rete neurale addestrata su più di novantamila
-tracciati, raccolti da oltre cinquantamila pazienti, riconosce le aritmie
-cardiache da un elettrocardiogramma a una sola derivazione registrato da un
-monitor portatile. Sul punteggio F1 (una misura fra $0$ e $1$ che premia chi
-trova le aritmie senza dare troppi falsi allarmi), la rete fa meglio del
-cardiologo medio ($0{,}837$ contro $0{,}780$, su un insieme di prova di alcune
-centinaia di tracciati) {cite}`hannun2019cardiologist`. Il confronto si fa
-così: un gruppo di cardiologi discute i tracciati finché non converge su una
-risposta, e quella diventa la risposta giusta; poi gli stessi tracciati vanno
-ad altri cardiologi, che li leggono da soli, e si guarda quante volte ciascuno
-di loro dà la risposta giusta e quante volte la dà la rete. Chi fissa la
-risposta giusta e chi viene misurato non sono le stesse persone, o il confronto
-non direbbe niente. La rete è opera del gruppo di Andrew Ng, lo stesso della
-«nuova elettricità».
+Su quel contorno, che è una fetta più larga del solo condizionamento, il calo
+dichiarato fu del 15%. Si noti che è il 15% del contorno, e non dell'energia
+totale: un numero meno spettacolare, ma più indicativo.
 
-Il terzo è AlphaFold, sempre di DeepMind, che ha imparato a prevedere la forma
-tridimensionale delle proteine {cite}`jumper2021highly`. Il problema era
-questo: una proteina è una catena di amminoacidi, e quella catena si ripiega su
-se stessa fino ad assumere una forma tridimensionale precisa, che ne decide la
-funzione. La sequenza si legge in laboratorio con relativa facilità; la forma
-in cui si ripiegherà, no, e capire come si passasse dall'una all'altra era un
-problema aperto da mezzo secolo. Conoscerla permette agli scienziati di
-comprendere il ruolo di una proteina all'interno del corpo, e di studiare le
-malattie che si ritiene siano causate da proteine «mal ripiegate», come
-l'Alzheimer, il Parkinson e la fibrosi cistica.
+Il secondo esempio viene dalla medicina. Una rete neurale addestrata su più di
+novantamila tracciati, raccolti da oltre cinquantamila pazienti, riconosce le
+aritmie cardiache da un elettrocardiogramma a una sola derivazione registrato
+da un monitor portatile. Sul **punteggio F1** (una misura fra $0$ e $1$ che
+premia chi trova le aritmie senza dare troppi falsi allarmi), la rete fa meglio
+del cardiologo medio ($0{,}837$ contro $0{,}780$, su un insieme di prova di
+alcune centinaia di tracciati) {cite}`hannun2019cardiologist`.
+
+Per il confronto, un gruppo di cardiologi discute i tracciati finché non
+converge su una risposta, e quella diventa la risposta giusta. Gli stessi
+tracciati vanno poi ad altri cardiologi, che li leggono da soli, e si guarda
+quante volte ciascuno di loro dà la risposta giusta e quante volte la dà la
+rete. Chi fissa la risposta giusta e chi viene misurato non sono le
+stesse persone, altrimenti il confronto non direbbe niente. La rete è opera del
+gruppo di Andrew Ng, lo stesso della «nuova elettricità».
+
+Il terzo esempio è AlphaFold, sempre di DeepMind, che ha imparato a prevedere
+la forma tridimensionale delle proteine {cite}`jumper2021highly`. Una proteina
+è una catena di amminoacidi, e quella catena si ripiega su se stessa fino ad
+assumere una forma tridimensionale precisa, che ne decide la funzione. La
+sequenza si legge in laboratorio con relativa facilità; la forma in cui si
+ripiegherà, no, e capire come si passasse dall'una all'altra era un problema
+aperto da mezzo secolo.
+
+Conoscere la forma permette agli scienziati di comprendere il ruolo di una
+proteina all'interno del corpo, e di studiare le malattie che si ritiene siano
+causate da proteine «mal ripiegate», come l'Alzheimer, il Parkinson e la
+fibrosi cistica.
 
 Dall'elenco, invece, va tolto un esempio che ci finisce sempre dentro senza
 appartenergli: i robot chirurgici che assistono il medico in sala operatoria.
-La precisione di quelle incisioni non viene dall'apprendimento: la macchina
-toglie il tremore della mano e riduce il gesto in scala, così che a un
+La precisione di quelle incisioni, infatti, non viene dall'apprendimento. La
+macchina toglie il tremore della mano e riduce il gesto in scala, così che a un
 centimetro percorso dalla mano del chirurgo corrispondano pochi millimetri
 percorsi dalla punta dello strumento, in un rapporto che il chirurgo sceglie. È
-meccanica e controllo, cioè bella ingegneria, e in questa funzione non c'è
+meccanica e controllo, cioè buona ingegneria, e in questa funzione non c'è
 nessun modello che abbia imparato qualcosa dai dati.
 
 Distinguere ciò che una macchina ha imparato dalla buona ingegneria serve anche
-contro due reazioni opposte che questa tecnologia raccoglie: l'entusiasmo che
-le attribuisce qualunque cosa e il timore che la immagina fuori controllo.
-Nascono tutte e due dal non sapere che cosa ci sia dentro, e il rimedio è lo
-stesso: guardare. Nessuno può elencare tutte le regole che un modello grande si
-è dato, ma si può misurare che cosa sbaglia e su quali casi, e si può coprire un
-pezzo alla volta la fotografia che gli si dà da guardare, per scoprire quale
-pezzo gli fa cambiare risposta. È una disciplina a sé, con il suo
-capitolo: {doc}`Interpretabilità </Interpretabilita/overview>`. Guardare non
-porta a concludere che non c'è niente di cui preoccuparsi (qualche problema è
-reale, e a quelli è dedicato il {doc}`capitolo sull'AI responsabile
-</AIResponsabile/overview>`), ma a sapere quali.
+contro due reazioni opposte che questa tecnologia suscita: l'entusiasmo che le
+attribuisce qualunque cosa e il timore che la immagina fuori controllo.
+Nascono tutte e due dal non sapere che cosa ci sia dentro, e per questo il
+rimedio è lo stesso: guardare.
 
-Si comincia dagli attrezzi: {doc}`Python </Python/overview>`, il linguaggio in
-cui è scritto il codice, e la {doc}`matematica </Matematica/overview>` che serve
-davvero (chi ha in mano frazioni, potenze e percentuali impara il resto strada
-facendo). Poi si entra nel merito con il
+Nessuno può elencare tutte le regole che un modello grande si è dato. Si può
+però misurare che cosa sbaglia e su quali casi, e si può coprire un pezzo alla
+volta la fotografia che gli si dà da guardare, per scoprire quale pezzo gli fa
+cambiare risposta. È una disciplina a sé, con il suo capitolo:
+{doc}`Interpretabilità </Interpretabilita/overview>`.
+
+Guardare non porta a concludere che non c'è niente di cui
+preoccuparsi (qualche problema è reale, e a quelli è dedicato il
+{doc}`capitolo sull'AI responsabile </AIResponsabile/overview>`), ma a sapere
+quali.
+
+Si comincia dagli strumenti: {doc}`Python </Python/overview>`, il linguaggio
+in cui è scritto il codice, e la {doc}`matematica </Matematica/overview>` che
+serve davvero (chi ha in mano frazioni, potenze e percentuali impara il resto
+strada facendo).
+
+Poi si entra nel merito con il
 {doc}`machine learning </MachineLearning/overview>`, cioè l'apprendimento dagli
 esempi, e con le {doc}`reti neurali </RetiNeurali/overview>`, che oggi si usano
 per immagini, testo e suono. Da lì il percorso si allarga: il
@@ -161,10 +173,10 @@ all'AI responsabile.
   del {doc}`capitolo sul machine learning </MachineLearning/overview>`.
 - Le eccezioni sono istruttive: le GAN sostituiscono la minimizzazione con
   l'equilibrio di un gioco fra due reti, i metodi non parametrici (k-NN) non
-  hanno parametri da stimare per addestramento, perché al posto dei parametri
-  conservano i dati (restano però da scegliere degli iperparametri, come il
-  numero di vicini). E la cornice ha una crepa nota, il *reward hacking*: $J$ è
-  il punteggio scritto da noi, non l'obiettivo vero.
+  hanno parametri da stimare per addestramento, perché al posto dei
+  parametri conservano i dati (restano però da scegliere degli iperparametri,
+  come il numero di vicini). E la cornice ha una crepa nota, il
+  *reward hacking*: $J$ è il punteggio scritto da noi, non l'obiettivo vero.
 - Il formalismo del reinforcement learning: un agente in uno stato $s_t$
   sceglie $a_t$ secondo una policy $\pi(a \mid s)$, riceve $r_{t+1}$, e
   massimizza il ritorno scontato $\mathbb{E}_{\pi}[\sum_t \gamma^t r_{t+1}]$,

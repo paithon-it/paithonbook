@@ -1,0 +1,8 @@
+# Le postille di questa pagina, una per capoverso del testo comune.
+# Ognuna vale finché la sua impronta combacia col testo del capoverso.
+- inizio: "C'è però un altro modo di"
+  impronta: "2e00dd3811b8"
+  postilla: "Complessità di Rademacher: un margine ampio conta più del numero di coordinate"
+- inizio: "Il tetto $1/\\sqrt{m}$, anzi, in mille"
+  impronta: "f2e59228114c"
+  postilla: "Tetto quasi toccato in mille dimensioni; nel piano la media resta un po' sotto"

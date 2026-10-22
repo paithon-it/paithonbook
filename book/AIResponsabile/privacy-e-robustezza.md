@@ -23,9 +23,9 @@ costruiscono dentro l'addestramento.
 ## I modelli ricordano più di quanto vorremmo
 
 Un modello comprime i dati che ha letto, e comprimendo impara a rispondere su
-casi che nei dati non c'erano. L'addestramento però abbassa l'errore sui
-singoli esempi, e a volte ne conserva uno per intero invece di riassumerlo,
-soprattutto se è raro o ripetuto. Quando quell'esempio contiene
+casi che nei dati non c'erano. L'addestramento però abbassa l'errore sui singoli
+esempi, e a volte ne conserva uno per intero invece di riassumerlo, soprattutto
+se è raro o ripetuto. Di conseguenza, quando quell'esempio contiene
 un'informazione personale, la memorizzazione diventa una falla di privacy.
 
 In Europa questo non è solo un problema tecnico, perché esiste una legge che
@@ -60,30 +60,29 @@ percorso.
 ```
 
 Il punto che {numref}`fig-flusso-dati-personali` rende difficile da aggirare è
-la seconda stazione, dove i dati diventano pesi: i milioni di numeri
-interni che l'addestramento aggiusta un pochino alla volta finché il modello
-non funziona. Nelle altre stazioni un dato è un dato, sta in un archivio, si
-trova e si cancella. Nei pesi non c'è più, e c'è ancora: è stato sciolto
-dentro quei milioni di numeri, e a addestramento finito, per toglierlo con
-certezza, bisogna riaddestrare senza di lui. Il riaddestramento si può
-rendere meno caro, dividendo i dati in blocchi addestrati separatamente
-e rifacendo solo il blocco che conteneva il dato da togliere
-{cite}`bourtoule2021machine`; ci sono poi metodi approssimati che ritoccano i
-pesi senza ripartire da zero: per i modelli lineari la rimozione si può
-certificare {cite}`guo2020certified`, per le reti profonde della loro riuscita
-esistono misure, non prove.
-È il motivo per cui il diritto alla cancellazione, che esiste ed è esercitabile,
-è tecnicamente scomodo nel punto in cui servirebbe di più. La
-conseguenza pratica per chi usa questi sistemi è meno consolante di quanto
-piacerebbe: si può chiedere a un fornitore di cancellare i propri dati dagli
-archivi e dallo storico delle conversazioni, e in Europa il fornitore deve
-rispondere; ma se quei dati sono già finiti dentro un modello addestrato, quel
-modello resta com'è. Se poi il modello stesso contenga ancora dati personali è
-una domanda che si decide caso per caso. Per il Comitato europeo per la
-protezione dei dati un modello addestrato su dati personali non è sempre
-anonimo: lo è soltanto se la probabilità di estrarne quei dati, direttamente o
-interrogandolo, è trascurabile {cite}`edpb2024opinion28`. Gli attacchi di
-estrazione e di appartenenza sono il modo di misurarla.
+la seconda stazione, dove i dati diventano pesi: i milioni di numeri interni che
+l'addestramento aggiusta un pochino alla volta finché il modello non funziona.
+Nelle altre stazioni un dato è un dato, sta in un archivio, si trova e si
+cancella. Nei pesi non c'è più, e c'è ancora: è stato sciolto dentro quei
+milioni di numeri. Di conseguenza, a addestramento finito, per toglierlo con
+certezza bisogna riaddestrare senza di lui. Il riaddestramento si può rendere
+meno caro, dividendo i dati in blocchi addestrati separatamente e rifacendo solo
+il blocco che conteneva il dato da togliere {cite}`bourtoule2021machine`; ci
+sono poi metodi approssimati che ritoccano i pesi senza ripartire da zero: per i
+modelli lineari la rimozione si può certificare {cite}`guo2020certified`, per le
+reti profonde della loro riuscita esistono misure, non prove. È il motivo per
+cui il diritto alla cancellazione, che esiste ed è esercitabile, è tecnicamente
+scomodo nel punto in cui servirebbe di più. La conseguenza pratica per chi usa
+questi sistemi è meno consolante di quanto piacerebbe: si può chiedere a un
+fornitore di cancellare i propri dati dagli archivi e dallo storico delle
+conversazioni, e in Europa il fornitore deve rispondere; ma se quei dati sono
+già finiti dentro un modello addestrato, quel modello resta com'è. Se poi il
+modello stesso contenga ancora dati personali è una domanda che si decide caso
+per caso. Per il Comitato europeo per la protezione dei dati un modello
+addestrato su dati personali non è sempre anonimo: lo è soltanto se la
+probabilità di estrarne quei dati, direttamente o interrogandolo, è trascurabile
+{cite}`edpb2024opinion28`. Gli attacchi di estrazione e di appartenenza sono il
+modo di misurarla.
 
 `````{tab} Elementare
 
@@ -92,12 +91,12 @@ all'esame non ragiona: se gli capita una domanda vista in aula, recita la
 pagina. Molti modelli fanno qualcosa di simile con gli esempi rari o ripetuti:
 non ne colgono la regola, li imparano a pappagallo così come sono. Ne seguono
 due problemi. Il primo: dando al modello l'inizio di una frase che c'era nei
-dati, questo può completarla *identica*; se in quei dati c'era il tuo
-indirizzo, può ripeterlo. Il secondo, più sottile: anche senza fargli sputare
-nulla, si può spesso indovinare *se una certa persona era nei dati* di
-addestramento, osservando che il modello è stranamente sicuro sugli esempi che
-ha già visto. È come capire che uno studente ha già visto un compito perché lo
-svolge troppo in fretta e senza esitazioni. Sapere «Tizio era nel dataset
+dati, questo può completarla *identica*; se in quei dati c'era il tuo indirizzo,
+può ripeterlo. Il secondo, più sottile: anche senza fargli sputare nulla, si può
+spesso indovinare *se una certa persona era nei dati* di addestramento,
+osservando che il modello è stranamente sicuro sugli esempi che ha già visto. È
+come capire che uno studente ha già visto un compito perché lo svolge troppo in
+fretta e senza esitazioni. Sapere, ad esempio, che «Tizio era nel dataset
 dell'ospedale» può essere di per sé un'informazione sensibile.
 
 Più memoria ha lo studente, più pagine recita: i modelli grandi si portano
@@ -110,24 +109,26 @@ in un solo documento, se lì si ripete molte volte, per restare impressa.
 
 I due attacchi hanno nomi precisi. Il **membership inference attack**,
 introdotto per i modelli di apprendimento da Shokri e colleghi
-{cite}`shokri2017membership`, decide se un
-dato campione $\mathbf{x}$ apparteneva o meno all'insieme di addestramento,
-sfruttando il divario di comportamento del modello tra ciò che ha visto e ciò
-che non ha visto: una loss più bassa, o una confidenza più alta, sugli esempi
-di training. Nel loro lavoro quel divario non si legge con una soglia: si
-addestrano modelli-ombra su dati di cui si conosce l'appartenenza, e sulle loro
-uscite si addestra il classificatore che poi decide. Un attacco del genere
-non si giudica dalla sua accuratezza media: Carlini e colleghi
-{cite}`carlini2022membership` chiedono di riportare il tasso di veri positivi a
-un tasso di falsi positivi molto basso, per esempio lo $0{,}1\%$, perché un
-attacco appena sopra il caso in media può riconoscere con certezza pochi
-membri, e lì sta il rischio per la persona. Il loro attacco, LiRA, confronta la
-loss dell'esempio con quella di modelli-ombra addestrati con e senza di lui, in
-un test del rapporto di verosimiglianza. La causa più comune del
-divario è l’*overfitting* della {doc}`sezione su sovradattamento e validazione
-</MachineLearning/overfitting-validazione>`, qui
-riletto come vulnerabilità (più un modello si adatta ai singoli esempi, più li
-lascia riconoscere), ma gli autori avvertono che non è l'unica.
+{cite}`shokri2017membership`, decide se un dato campione $\mathbf{x}$
+apparteneva o meno all'insieme di addestramento, sfruttando il divario di
+comportamento del modello tra ciò che ha visto e ciò che non ha visto: una loss
+più bassa, o una confidenza più alta, sugli esempi di training. Nel loro lavoro
+quel divario non si legge con una soglia: si addestrano modelli-ombra su dati di
+cui si conosce l'appartenenza, e sulle loro uscite si addestra il classificatore
+che poi decide.
+
+Un attacco del genere non si giudica dalla sua accuratezza media: Carlini e
+colleghi {cite}`carlini2022membership` chiedono di riportare il tasso di veri
+positivi a un tasso di falsi positivi molto basso, per esempio lo $0{,}1\%$,
+perché un attacco appena sopra il caso in media può riconoscere con certezza
+pochi membri, e lì sta il rischio per la persona. Il loro attacco, LiRA,
+confronta la loss dell'esempio con quella di modelli-ombra addestrati con e
+senza di lui, in un test del rapporto di verosimiglianza. La causa più comune
+del divario è l’*overfitting* della {doc}`sezione su sovradattamento e
+validazione </MachineLearning/overfitting-validazione>`, qui riletto come
+vulnerabilità (più un modello si adatta ai singoli esempi, più li lascia
+riconoscere), ma gli autori avvertono che non è l'unica.
+
 L’**estrazione di dati di addestramento** è più aggressiva: Carlini e colleghi
 {cite}`carlini2021extracting` mostrarono che da GPT-2 si potevano recuperare
 *verbatim* sequenze memorizzate (nomi, recapiti, frammenti di codice) presenti
@@ -138,20 +139,20 @@ nessuno. La memorizzazione cresce con la dimensione del modello e con le
 ripetizioni, anche dentro un solo documento, e gli autori avvertono che un
 corpus deduplicato per documento o per paragrafo può contenere ancora molte
 ripetizioni: un problema strutturale dei grandi modelli linguistici, non un bug
-isolato. Serve quindi una nozione di
-privacy che sia una *garanzia matematica*, non un rammendo a posteriori.
+isolato. Serve quindi una nozione di privacy che sia una *garanzia matematica*,
+non un rammendo a posteriori.
 
 `````
 
 ## Togliere il nome non basta
 
-Prima di una garanzia matematica viene in mente una soluzione più semplice,
-che per questo va guardata bene: se il problema è che i dati sono
-di qualcuno, si tolgono i nomi. Il GDPR ha una parola per questa operazione,
-*pseudonimizzazione*: al posto del nome e del codice fiscale si mette un
-codice, e la tabella che collega il codice alla persona si conserva a parte.
-Per il regolamento, però, i dati pseudonimizzati restano dati personali, perché
-con le informazioni aggiuntive la persona si ritrova; ne escono soltanto i dati
+Prima di una garanzia matematica viene in mente una soluzione più semplice, che
+per questo va guardata bene: se il problema è che i dati sono di qualcuno, si
+tolgono i nomi. Il GDPR ha una parola per questa operazione,
+**pseudonimizzazione**: al posto del nome e del codice fiscale si mette un
+codice, e la tabella che collega il codice alla persona si conserva a parte. Per
+il regolamento, però, i dati pseudonimizzati restano dati personali, perché con
+le informazioni aggiuntive la persona si ritrova; ne escono soltanto i dati
 anonimi, quelli da cui l'identificazione non è più possibile con mezzi
 ragionevoli {cite}`eugdpr2016`. La forma rigorosa del passo successivo è del
 2002 e si chiama **$k$-anonimato** {cite}`sweeney2002kanonymity`: si
@@ -183,9 +184,9 @@ che cosa conosce chi guarda.
 
 Una tabella è $k$-anonima rispetto ai quasi-identificatori se ogni loro
 combinazione di valori compare in almeno $k$ righe; le righe con la stessa
-combinazione formano una *classe di equivalenza*, e la si ottiene
-generalizzando i valori (la data in fascia, l'indirizzo in comune) o
-sopprimendo righe. Machanavajjhala e colleghi ne nominano i due attacchi
+combinazione formano una *classe di equivalenza*, e la si ottiene generalizzando
+i valori (la data in fascia, l'indirizzo in comune) o sopprimendo righe.
+Machanavajjhala e colleghi ne nominano i due attacchi
 {cite}`machanavajjhala2007ldiversity`: quello di *omogeneità*, quando tutte le
 righe di una classe hanno lo stesso valore sensibile, e quello per *conoscenza
 di sfondo*, quando l'avversario sa abbastanza da escludere alcune righe della
@@ -195,11 +196,11 @@ rappresentati» in ogni classe; la $t$-closeness di Li e colleghi
 ogni classe disti al più $t$ da quella della tabella intera, misurata con la
 distanza di trasporto (*Earth Mover's Distance*). Sono tutte proprietà della
 tabella, e tutte presuppongono di sapere quali colonne l'avversario potrà
-incrociare. Quante poche ne bastino lo mostra la stima di Sweeney sul
-censimento statunitense del 1990, per cui CAP, sesso e data di nascita
-rendono probabilmente unico l’$87\%$ della popolazione
-{cite}`sweeney2000simple`; Golle, rifacendo il conto, la porta al $61\%$ sugli
-stessi dati e al $63\%$ su quelli del 2000 {cite}`golle2006revisiting`.
+incrociare. Quante poche ne bastino lo mostra la stima di Sweeney sul censimento
+statunitense del 1990, per cui CAP, sesso e data di nascita rendono
+probabilmente unico l’$87\%$ della popolazione {cite}`sweeney2000simple`; Golle,
+rifacendo il calcolo, la porta al $61\%$ sugli stessi dati e al $63\%$ su quelli
+del 2000 {cite}`golle2006revisiting`.
 
 `````
 
@@ -215,16 +216,15 @@ gara: con otto voti, dei quali due potevano perfino essere sbagliati, e le date
 approssimate a quattordici giorni, il $99\%$ delle righe si individuava in modo
 univoco; con due voti soltanto e le date approssimate a tre giorni, il $68\%$.
 
-Quel poco si trova in rete. Su Internet Movie Database la gente vota i film
-firmando con il proprio nome, e gli autori provarono ad appaiare le due
+Quel poco si trova in rete. Su Internet Movie Database la gente vota i
+film firmando con il proprio nome, e gli autori provarono ad appaiare le due
 tabelle. Dei pochi utenti che poterono esaminare, una cinquantina (il
 regolamento del sito limitava la raccolta, e loro lo rispettarono, cosa che un
 malintenzionato non farebbe), due si appaiarono a una riga della gara staccando
 la seconda candidata di circa $28$ e $15$ deviazioni standard, mentre per quasi
 tutti gli altri il distacco non superava $2$. Loro stessi avvertono che da un
-campione così non si ricava nessuna percentuale, e l'avvertenza va
-tenuta: quel pezzo dimostra che la strada si percorre, non quanti la
-percorrerebbero.
+campione così non si ricava nessuna percentuale, e l'avvertenza va tenuta: quel
+pezzo dimostra che la strada si percorre, non quanti la percorrerebbero.
 
 ```{figure} ../figures/aggancio-che-rompe-anonimato.svg
 :name: fig-aggancio-anonimato
@@ -265,22 +265,24 @@ croce non risponde per sé: lancia una seconda volta e dice «sì» se viene tes
 «no» se viene croce. Ora, se qualcuno ha detto «sì», tu non puoi accusarlo:
 forse era solo la moneta.
 
-Eppure la percentuale vera di evasori salta fuori lo stesso, e non per magia:
-si ricava con un calcolo. Su mille persone, circa cinquecento hanno avuto testa al
+Eppure la percentuale vera di evasori salta fuori lo stesso, e non per magia: si
+ricava con un calcolo. Su mille persone, circa cinquecento hanno avuto testa al
 primo lancio e hanno detto la verità; le altre cinquecento hanno risposto a
 sorte, e di queste la metà avrà detto «sì» per puro effetto del secondo lancio,
 cioè duecentocinquanta. Se i «sì» totali sono quattrocento, quelli sinceri sono
 $400 - 250 = 150$: centocinquanta su cinquecento persone sincere, cioè il
-$30\%$. Quel $30\%$ vale per tutti e mille, perché a decidere chi sarebbe
-stato sincero è stata la moneta e non la persona: i cinquecento sinceri sono un
-campione a caso di tutto il gruppo. Il caso aggiunto apposta si chiama
-*rumore*, perché copre il segnale senza cancellarlo, come le voci di fondo di
-una stanza affollata. Il rumore si sottrae perché sappiamo *quanto* ne abbiamo
-messo, anche se non sappiamo a chi sia toccato. Si perde in precisione, perché su
-mille persone quel $30\%$ ha un errore standard di circa tre punti
-percentuali, contro un punto e mezzo della domanda diretta, se tutti
-rispondessero sinceri. Ogni individuo ha la sua *negabilità
-plausibile*; la statistica collettiva sopravvive, un po' più sfocata.
+$30\%$. Quel $30\%$ vale per tutti e mille, perché a decidere chi sarebbe stato
+sincero è stata la moneta e non la persona: i cinquecento sinceri sono un
+campione a caso di tutto il gruppo.
+
+Il caso aggiunto apposta si chiama *rumore*, perché copre il segnale senza
+cancellarlo, come le voci di fondo di una stanza affollata. Il rumore si sottrae
+perché sappiamo *quanto* ne abbiamo messo, anche se non sappiamo a chi sia
+toccato. Si perde in precisione, perché su mille persone quel $30\%$ ha un
+errore standard di circa tre punti percentuali, contro un punto e mezzo della
+domanda diretta, se tutti rispondessero sinceri. Ogni individuo ha la sua
+*negabilità plausibile*; la statistica collettiva sopravvive, un po' più
+sfocata.
 
 La privacy differenziale è questa idea resa una garanzia numerica: al risultato
 di un calcolo sui dati si aggiunge un pizzico di caso, *calibrato* in modo che
@@ -516,14 +518,14 @@ questa tecnica garantisce e ciò che le viene attribuito.
 
 ### Portare la privacy dentro l'addestramento
 
-Sporcare un conteggio è facile: è un numero solo, pubblicato una volta. Una
-rete neurale è milioni di numeri, e nessuno li pubblica: si aggiustano un
-pochino alla volta, migliaia di volte, e ogni volta guardando i dati. Ogni
-passo, quindi, è un'occasione in più di lasciare un'impronta. La ricetta che
-ha reso praticabile la privacy differenziale in questo campo è la
-**DP-SGD** di Abadi e colleghi {cite}`abadi2016deep` (le lettere stanno per
-*differentially private stochastic gradient descent*, cioè l'addestramento di
-sempre con la privacy differenziale incorporata), e cambia due cose sole.
+Sporcare un conteggio è facile: è un numero solo, pubblicato una volta. Una rete
+neurale è milioni di numeri, e nessuno li pubblica: si aggiustano un pochino
+alla volta, migliaia di volte, e ogni volta guardando i dati. Ogni passo,
+quindi, è un'occasione in più di lasciare un'impronta. Il metodo che ha reso
+praticabile la privacy differenziale in questo campo è la **DP-SGD** di Abadi e
+colleghi {cite}`abadi2016deep` (le lettere stanno per *differentially private
+stochastic gradient descent*, cioè l'addestramento di sempre con la privacy
+differenziale incorporata), e cambia due cose sole.
 
 `````{tab} Elementare
 
@@ -585,19 +587,24 @@ $$
 $$
 
 cioè il budget cresce come $q\sqrt{T}$, senza il fattore $\sqrt{\ln(T/\delta)}$
-che la composizione avanzata avrebbe aggiunto. Oggi lo stesso conto si fa di
-norma con la privacy differenziale di Rényi {cite}`mironov2017renyi`, che lo
-generalizza: un meccanismo è $(\alpha, \varepsilon_\alpha)$-RDP se la
-divergenza di Rényi di ordine $\alpha$ fra le sue uscite su dataset vicini è al
-più $\varepsilon_\alpha$; il meccanismo gaussiano con sensibilità $1$ e
-moltiplicatore $\sigma$ è $(\alpha,\ \alpha/(2\sigma^2))$-RDP per ogni
-$\alpha > 1$, la composizione somma gli $\varepsilon_\alpha$, e alla fine si
-torna a $\big(\varepsilon_\alpha + \ln(1/\delta)/(\alpha - 1),\ \delta\big)$-DP
-scegliendo l’$\alpha$ che dà il valore più piccolo. Il costo in calcolo sta nel
-clipping, che vuole i gradienti esempio per esempio e non la loro somma, con la
-memoria e il tempo del passo che crescono di conseguenza. Il **compromesso
-privacy/utilità** è concreto: Abadi e colleghi addestrano su MNIST con un
-budget dell'ordine di $\varepsilon \approx 8$ (per la precisione
+che la composizione avanzata avrebbe aggiunto.
+
+Oggi lo stesso calcolo si fa di norma con la privacy differenziale di Rényi
+{cite}`mironov2017renyi`, che lo generalizza: un meccanismo è $(\alpha,
+\varepsilon_\alpha)$-RDP se la divergenza di Rényi di ordine $\alpha$ fra le sue
+uscite su dataset vicini è al più $\varepsilon_\alpha$; il meccanismo gaussiano
+con sensibilità $1$ e moltiplicatore $\sigma$ è $(\alpha,\
+\alpha/(2\sigma^2))$-RDP per ogni $\alpha > 1$, la composizione somma gli
+$\varepsilon_\alpha$, e alla fine si torna a $\big(\varepsilon_\alpha +
+\ln(1/\delta)/(\alpha - 1),\ \delta\big)$-DP scegliendo l’$\alpha$ che dà il
+valore più piccolo.
+
+Il costo in calcolo sta nel clipping, che vuole i gradienti esempio per esempio
+e non la loro somma, con la memoria e il tempo del passo che crescono di
+conseguenza.
+
+Il **compromesso privacy/utilità** è concreto: Abadi e colleghi addestrano su
+MNIST con un budget dell'ordine di $\varepsilon \approx 8$ (per la precisione
 $(8,\,10^{-5})$-DP: è la versione rilassata $(\varepsilon,\delta)$, e il
 $\delta$ va sempre chiesto insieme all’$\varepsilon$; sui $60\,000$ esempi di
 MNIST quel $\delta$ vale $0{,}6/n$, sotto $1/n$ ma non di molto) arrivando
@@ -606,13 +613,13 @@ architettura senza privacy ($98{,}3\%$), e la qualità cala via via che si
 stringe $\varepsilon$ ($95\%$ a $\varepsilon = 2$, $90\%$ a $\varepsilon =
 0{,}5$).
 
-Con $\varepsilon \approx 8$ la garanzia formale si fa debole. Il fattore in
-gioco passa da $e^{0{,}5} \approx 1{,}65$ a $e^{8} \approx 3000$: formalmente,
-la presenza di una singola persona può moltiplicare per tremila la plausibilità
-di un esito. Le guide pratiche del settore trattano $\varepsilon \le 1$ come
-protezione forte, fino a $10$ come ragionevole per un modello addestrato, e
-oltre $10$ come una garanzia che da sola non basta a dire protetti i dati
-{cite}`ponomareva2023dpfy`. Il limite vale contro l'avversario più forte
+Con $\varepsilon \approx 8$ la garanzia formale si fa debole. Infatti il fattore
+in gioco passa da $e^{0{,}5} \approx 1{,}65$ a $e^{8} \approx 3000$:
+formalmente, la presenza di una singola persona può moltiplicare per tremila la
+plausibilità di un esito. Le guide pratiche del settore trattano $\varepsilon
+\le 1$ come protezione forte, fino a $10$ come ragionevole per un modello
+addestrato, e oltre $10$ come una garanzia che da sola non basta a dire protetti
+i dati {cite}`ponomareva2023dpfy`. Il limite vale contro l'avversario più forte
 immaginabile, e gli attacchi reali restano di norma ben sotto; ma quanto sotto
 non lo dice il teorema. Non è un difetto del lavoro di Abadi, che è esplicito
 sui suoi numeri: vale come avvertenza davanti a «questo sistema usa la privacy
@@ -625,8 +632,8 @@ produzione stanno spesso lì o sopra. Più privacy, meno accuratezza: la manopol
 ## Federated learning: portare il modello ai dati
 
 C'è una via complementare alla privacy: non proteggere l'output di un modello
-addestrato su dati raccolti in un unico posto, ma non raccoglierli affatto.
-È l'idea del *federated learning*, proposta da McMahan e colleghi
+addestrato su dati raccolti in un unico posto, ma non raccoglierli affatto. È
+l'idea del **federated learning**, proposta da McMahan e colleghi
 {cite}`mcmahan2017communication` per addestrare la tastiera predittiva di
 milioni di telefoni senza spedire a un server ciò che le persone digitano.
 
@@ -678,24 +685,22 @@ singolo. Decentrare i dati riduce il rischio, non lo azzera.
 
 ## Esempi avversari: ingannare la rete a comando
 
-Nel 2013 Szegedy e colleghi
-{cite}`szegedy2014intriguing` mostrarono sulle reti profonde per la visione una
-proprietà sconcertante, che pochi mesi prima Biggio e colleghi avevano
-descritto per classificatori più semplici, attaccandoli lungo il gradiente
-{cite}`biggio2013evasion`: si può prendere un'immagine classificata
+Nel 2013 Szegedy e colleghi {cite}`szegedy2014intriguing` mostrarono sulle reti
+profonde per la visione una proprietà sconcertante, che pochi mesi prima Biggio
+e colleghi avevano descritto per classificatori più semplici, attaccandoli lungo
+il gradiente {cite}`biggio2013evasion`: si può prendere un'immagine classificata
 correttamente, aggiungerle una perturbazione così piccola da essere invisibile
 all'occhio, e far cambiare idea alla rete con altissima sicurezza. L'anno dopo
-Goodfellow, Shlens e Szegedy spiegarono il fenomeno e ne diedero la ricetta più
-semplice
-{cite}`goodfellow2015explaining`. Il loro esempio è diventato un'icona, e lo
-riproduce schematicamente la {numref}`fig-esempio-avversario`.
+Goodfellow, Shlens e Szegedy spiegarono il fenomeno e ne diedero il metodo più
+semplice {cite}`goodfellow2015explaining`. Il loro esempio è diventato un'icona,
+e lo riproduce schematicamente la {numref}`fig-esempio-avversario`.
 
 ```{figure} ../figures/esempio-avversario.svg
 :name: fig-esempio-avversario
 :alt: Tre riquadri in fila collegati da un piu e da un uguale. Nel primo una sagoma stilizzata di panda con etichetta panda 58 per cento. Nel secondo una griglia di rumore impercettibile etichettata rho per il segno del gradiente, con sotto la spiegazione che e’ la mappa di dove spingere ogni pixel. Nel terzo la stessa identica sagoma di panda con l'etichetta errata gibbone 99 per cento in terracotta.
 :width: 100%
 
-La ricetta di un esempio avversario. All'immagine di un panda, riconosciuta con
+La logica di un esempio avversario. All'immagine di un panda, riconosciuta con
 il $57{,}7\%$ di confidenza, si somma un rumore impercettibile: il riquadro di
 mezzo è quel rumore, ed è la mappa di dove spingere ciascun pixel
 per danneggiare al massimo il modello. La *stessa* immagine viene poi
@@ -703,10 +708,10 @@ classificata «gibbone» (un primate) con il $99{,}3\%$ di confidenza. A occhio
 nudo le due immagini sono identiche.
 ```
 
-Un dettaglio passa di solito inosservato: il modello era sicuro
-al $58\%$ quando aveva ragione e lo è al $99\%$ quando ha torto. La
-confidenza che stampa non misura quanto sia affidabile, e per questo non ci si
-può appoggiare a quel numero come a una garanzia.
+Un dettaglio passa di solito inosservato: il modello era sicuro al $58\%$
+quando aveva ragione e lo è al $99\%$ quando ha torto. La confidenza che stampa
+non misura quanto sia affidabile, e per questo non ci si può appoggiare a quel
+numero come a una garanzia.
 
 La lettera greca nel riquadro di mezzo, la $\rho$ (si legge «ro»), indica di
 quanto siamo disposti a sporcare ciascun pixel: il budget della manomissione.
@@ -755,31 +760,33 @@ $$
 
 Qui $\mathbf{x}$ è l'input, $y$ l'etichetta vera, $\ell$ la loss del singolo
 esempio, $\theta$ i pesi (congelati), e $\nabla_{\mathbf{x}} \ell$ il gradiente
-della loss *rispetto all'input*; $\operatorname{sign}(\cdot)$ ne prende il
-segno componente per componente e $\rho$ è il budget di perturbazione, cioè la
-massima variazione ammessa per singola componente (una norma $\ell_\infty$: con
-il pedice la lettera indica una norma, senza pedice la loss). Prendere il solo
-segno assegna a ogni componente lo stesso spostamento $\pm\rho$, e quella
-scelta è la soluzione esatta del problema linearizzato. Al primo ordine la loss
-cresce di $\boldsymbol{\delta}^{\top}\mathbf{g}$, con $\mathbf{g} =
-\nabla_{\mathbf{x}}\ell$ e $\boldsymbol{\delta}$ la perturbazione, e fra le
-perturbazioni con $\lVert\boldsymbol{\delta}\rVert_\infty \le \rho$ il massimo
-vale $\rho\,\lVert\mathbf{g}\rVert_1$ (disuguaglianza di Hölder) e si raggiunge
-per $\boldsymbol{\delta} = \rho\,\operatorname{sign}(\mathbf{g})$. La
+della loss *rispetto all'input*; $\operatorname{sign}(\cdot)$ ne prende il segno
+componente per componente e $\rho$ è il budget di perturbazione, cioè la massima
+variazione ammessa per singola componente (una norma $\ell_\infty$: con il
+pedice la lettera indica una norma, senza pedice la loss).
+
+Prendere il solo segno assegna a ogni componente lo stesso spostamento
+$\pm\rho$, e quella scelta è la soluzione esatta del problema linearizzato. Al
+primo ordine la loss cresce di $\boldsymbol{\delta}^{\top}\mathbf{g}$, con
+$\mathbf{g} = \nabla_{\mathbf{x}}\ell$ e $\boldsymbol{\delta}$ la perturbazione,
+e fra le perturbazioni con $\lVert\boldsymbol{\delta}\rVert_\infty \le \rho$ il
+massimo vale $\rho\,\lVert\mathbf{g}\rVert_1$ (disuguaglianza di Hölder) e si
+raggiunge per $\boldsymbol{\delta} = \rho\,\operatorname{sign}(\mathbf{g})$. La
 perturbazione è quindi impercettibile per pixel e massimamente dannosa, finché
 vale l'approssimazione lineare, e il guadagno $\rho\,\lVert\mathbf{g}\rVert_1$
 cresce con la dimensione, perché somma $d$ componenti: è la spiegazione
 *lineare* di Goodfellow, Shlens e Szegedy, a cui basta che il modello sia
-abbastanza lineare attorno all'input. Nell'esempio originale bastava $\rho =
-0{,}007$ per far passare il panda ($57{,}7\%$) a gibbone ($99{,}3\%$), e gli
-autori annotano che quel valore corrisponde al bit meno significativo di una
-codifica a 8 bit *dopo la conversione in numeri reali operata dalla rete* (la
-precisazione conta, perché sul solo intervallo unitario il bit varrebbe $1/255
-\approx 0{,}004$). Il valore $0{,}007$ è il passo più
-piccolo rappresentabile *su quella scala*, non uno scelto sotto una soglia di
-percettibilità. Su un'altra scala il passo è un altro (sull'intervallo unitario,
-appunto, $0{,}004$), e infatti in letteratura gli attacchi si tarano in
-multipli di $1/255$.
+abbastanza lineare attorno all'input.
+
+Nell'esempio originale bastava $\rho = 0{,}007$ per far passare il panda
+($57{,}7\%$) a gibbone ($99{,}3\%$), e gli autori annotano che quel valore
+corrisponde al bit meno significativo di una codifica a 8 bit *dopo la
+conversione in numeri reali operata dalla rete* (la precisazione conta, perché
+sul solo intervallo unitario il bit varrebbe $1/255 \approx 0{,}004$). Il valore
+$0{,}007$ è il passo più piccolo rappresentabile *su quella scala*, non uno
+scelto sotto una soglia di percettibilità. Su un'altra scala il passo è un altro
+(sull'intervallo unitario, appunto, $0{,}004$), e infatti in letteratura gli
+attacchi si regolano in multipli di $1/255$.
 
 FGSM è un unico passo, quindi un attacco *debole*. La sua versione
 iterativa è la **Projected Gradient Descent** (PGD) di Madry e colleghi
@@ -794,24 +801,26 @@ $$
 dove $\Pi_{\mathcal{B}(\mathbf{x},\rho)}$ è la proiezione sull'insieme delle
 perturbazioni ammesse (la palla $\ell_\infty$ di raggio $\rho$ centrata in
 $\mathbf{x}$). PGD è considerato l'attacco «di primo ordine» più forte e,
-soprattutto, la base della difesa: Madry inquadra la robustezza come un
-problema **min-max**, $\min_\theta
+soprattutto, la base della difesa: Madry inquadra la robustezza come un problema
+**min-max**, $\min_\theta
 \mathbb{E}_{(\mathbf{x},y)}\big[\max_{\boldsymbol{\delta} \in
 \mathcal{B}(\mathbf{0},\rho)} \ell(\theta, \mathbf{x}+\boldsymbol{\delta},
-y)\big]$, in cui l'attaccante (il $\max$ interno, risolto da PGD) e il
-difensore (il $\min$ esterno, l'addestramento) giocano l'uno contro l'altro.
+y)\big]$, in cui l'attaccante (il $\max$ interno, risolto da PGD) e il difensore
+(il $\min$ esterno, l'addestramento) giocano l'uno contro l'altro.
+
 Che si possa addestrare con il gradiente calcolato nel punto trovato
 dall'attacco lo giustifica il teorema di Danskin, per funzioni con derivata
 continua (una rete con ReLU, a rigore, non lo è): se il massimo interno fosse
 risolto esattamente, quel gradiente sarebbe una direzione di discesa del
-problema esterno. Il costo è di $K$ passi di PGD per ogni passo di
-addestramento, circa $K+1$ volte l'addestramento normale; e il compromesso è
-misurabile. Su CIFAR-10 con $\rho = 8/255$ la rete di Madry e colleghi (una
-ResNet allargata dieci volte) classifica correttamente il $45{,}8\%$ degli
-esempi attaccati con PGD a $20$ passi, con pieno accesso al modello, e
-l’$87{,}3\%$ di quelli intatti; la stessa architettura addestrata normalmente
-arriva al $95{,}2\%$ sugli intatti ma, sotto lo stesso attacco, crolla al
-$3{,}5\%$.
+problema esterno.
+
+Il costo è di $K$ passi di PGD per ogni passo di addestramento, circa $K+1$
+volte l'addestramento normale; e il compromesso è misurabile. Su CIFAR-10 con
+$\rho = 8/255$ la rete di Madry e colleghi (una ResNet allargata dieci volte)
+classifica correttamente il $45{,}8\%$ degli esempi attaccati con PGD a $20$
+passi, con pieno accesso al modello, e l’$87{,}3\%$ di quelli intatti; la stessa
+architettura addestrata normalmente arriva al $95{,}2\%$ sugli intatti ma, sotto
+lo stesso attacco, crolla al $3{,}5\%$.
 
 `````
 
@@ -840,23 +849,25 @@ frase si può dire con altre parole. Un modello allenato contro i tocchi
 minuscoli non è per questo robusto a nessuna di quelle.
 
 Difendersi dagli esempi avversari somiglia a una rincorsa continua. Si propone
-una difesa, sembra funzionare, e poco dopo qualcuno trova un attacco nuovo che la
-aggira. Molte protezioni annunciate negli anni si sono rivelate illusorie, e
+una difesa, sembra funzionare, e poco dopo qualcuno trova un attacco nuovo che
+la aggira. Molte protezioni annunciate negli anni si sono rivelate illusorie, e
 quasi sempre per lo stesso motivo: non fermavano l'avversario, gli rendevano
 solo difficile capire da che parte spingere. Quando qualcuno ha trovato il modo
 di capirlo lo stesso sono cadute quasi tutte: di nove difese presentate a un
 convegno del 2018, sette si basavano su quel trucco, e sei sono state aggirate
 del tutto. È una *corsa agli armamenti*, e al momento non esiste una difesa
-definitiva. L'unica garanzia solida viene dalla **robustezza certificata**, che
-non promette «nessuno passerà» ma dimostra, con un teorema, che *dentro un
-raggio preciso* attorno a un'immagine nessuna manomissione può cambiare la
-risposta. Il modo più usato per ottenerla fa votare la macchina: le si mostrano
-tante copie dell'immagine sporcate a caso, e la risposta è quella che vince più
-spesso. Se la vittoria è netta, nessuna manomissione dentro il raggio la può
-ribaltare. Il raggio però è piccolo, e il metodo si paga due volte: quando il
-voto è incerto la macchina preferisce tacere, e la garanzia vale salvo una
-piccola probabilità di errore, che sceglie chi certifica. È molto più di un
-«finora nessuno c'è riuscito».
+definitiva.
+
+L'unica garanzia solida viene dalla **robustezza certificata**, che non promette
+«nessuno passerà» ma dimostra, con un teorema, che *dentro un raggio preciso*
+attorno a un'immagine nessuna manomissione può cambiare la risposta. Il modo più
+usato per ottenerla fa votare la macchina: le si mostrano tante copie
+dell'immagine sporcate a caso, e la risposta è quella che vince più spesso. Se
+la vittoria è netta, nessuna manomissione dentro il raggio la può ribaltare. Il
+raggio però è piccolo, e il metodo si paga due volte: quando il voto è incerto
+la macchina preferisce tacere, e la garanzia vale salvo una piccola probabilità
+di errore, che sceglie chi certifica. È molto più di un «finora nessuno c'è
+riuscito».
 
 Un secondo modo di attaccare prende di mira i compiti di scuola del modello
 anziché il modello finito. Chi riesce a infilare esempi propri nei dati con cui
@@ -881,10 +892,10 @@ robusto a $\rho = 8/255$ non è per questo robusto a nessuna di quelle. Ne segue
 che «robusto» è sempre una proprietà relativa a un perimetro dichiarato e a un
 attacco misurato, mai un attributo del modello.
 
-Molte difese euristiche proposte dopo il 2015 sono state poi aggirate: Athalye
-e colleghi {cite}`athalye2018obfuscated` mostrarono che davano una falsa
-sicurezza per *gradient masking* (offuscavano il gradiente invece di rimuovere
-la vulnerabilità) e cadevano appena l'attaccante lo ricostruiva. L'adversarial
+Molte difese euristiche proposte dopo il 2015 sono state poi aggirate: Athalye e
+colleghi {cite}`athalye2018obfuscated` mostrarono che davano una falsa sicurezza
+per *gradient masking* (offuscavano il gradiente invece di rimuovere la
+vulnerabilità) e cadevano appena l'attaccante lo ricostruiva. L'adversarial
 training con PGD è tra i pochi ad aver retto, entro la palla in cui è stato
 misurato, e il numero che lo misura dipende dall'attacco: AutoAttack
 {cite}`croce2020reliable`, un insieme di attacchi senza parametri da tarare,
@@ -893,8 +904,9 @@ l'accuratezza robusta dichiarata. Che accuratezza e robustezza tirino in versi
 opposti, poi, non è solo un limite degli algoritmi: Tsipras e colleghi
 {cite}`tsipras2019robustness` costruiscono una distribuzione semplice in cui
 ogni classificatore molto accurato ha per forza un'accuratezza robusta bassa.
+
 In parallelo si è sviluppata la **robustezza certificata**, che fornisce
-garanzie dimostrabili: il *randomized smoothing* di Cohen e colleghi
+garanzie dimostrabili: il **randomized smoothing** di Cohen e colleghi
 {cite}`cohen2019certified`, per esempio, costruisce da qualsiasi classificatore
 $f$ una versione «lisciata»,
 
@@ -939,19 +951,20 @@ per degradare il modello o piazzarvi una **backdoor**; un innesco segreto (un
 piccolo adesivo su un segnale stradale, una parola-chiave in un testo) che, se
 presente, fa scattare a comando una risposta scelta dall'attaccante, mentre su
 tutti gli altri input il modello si comporta normalmente {cite}`gu2017badnets`.
-Per questo la provenienza dei dati di addestramento va presa sul serio. Con i
-modelli di linguaggio, che si addestrano su testo raccolto dal web, la minaccia
-si fa concreta. Carlini e colleghi mostrano che avvelenare una raccolta di quel
-tipo è alla portata di un avversario con pochi mezzi: basta ricomprare i domini
-scaduti a cui un elenco di indirizzi ancora rimanda, o modificare una pagina
-poco prima che venga fotografata, e con una sessantina di dollari si sarebbe
-controllato lo $0{,}01\%$ di una grande raccolta di immagini con didascalia
-{cite}`carlini2024poisoning`. E Souly e colleghi trovano che per impiantare una
-backdoor semplice (testo senza senso dopo una parola d'innesco) servono circa
-250 documenti avvelenati da 600 milioni a 13 miliardi di parametri, benché il
-modello più grande veda più di venti volte i dati puliti del più piccolo
-{cite}`souly2025poisoning`. A decidere è il numero assoluto dei campioni
-avvelenati, e la loro frazione conta poco.
+Per questo la provenienza dei dati di addestramento va presa sul serio.
+
+Con i modelli di linguaggio, che si addestrano su testo raccolto dal web, la
+minaccia si fa concreta. Carlini e colleghi mostrano che avvelenare una raccolta
+di quel tipo è alla portata di un avversario con pochi mezzi: basta ricomprare i
+domini scaduti a cui un elenco di indirizzi ancora rimanda, o modificare una
+pagina poco prima che venga fotografata, e con una sessantina di dollari si
+sarebbe controllato lo $0{,}01\%$ di una grande raccolta di immagini con
+didascalia {cite}`carlini2024poisoning`. E Souly e colleghi trovano che per
+impiantare una backdoor semplice (testo senza senso dopo una parola d'innesco)
+servono circa 250 documenti avvelenati da 600 milioni a 13 miliardi di
+parametri, benché il modello più grande veda più di venti volte i dati puliti
+del più piccolo {cite}`souly2025poisoning`. A decidere è il numero assoluto dei
+campioni avvelenati, e la loro frazione conta poco.
 
 `````
 
@@ -988,17 +1001,16 @@ La filigrana su un testo è uno sbilanciamento. Nessuna parola, presa da sola,
 è sospetta: è la proporzione sull'intero brano a non essere quella del caso.
 ```
 
-La regola del gioco è più semplice di quanto la
-{numref}`fig-watermarking-testo` faccia sospettare. Prima di
-scrivere ogni parola, il modello tira a sorte: divide in due metà tutte le
-parole che potrebbe usare, chiama «verdi» quelle di una metà e «rosse» quelle
-dell'altra, e poi sceglie un po’ più spesso del normale fra le verdi. Il
-sorteggio sembra casuale ma non lo è: come i dadi di un videogioco, esce da un
-calcolo che parte da un numero segreto, e chi conosce quel numero rifà la
-stessa identica sequenza di sorteggi tutte le volte che vuole. Così chi vuole
-controllare un testo rifà tutti i sorteggi, riconta le parole verdi e vede se
-sono troppe. In un testo scritto da una persona sarebbero circa la metà, perché
-quel sorteggio la persona non lo conosceva.
+La regola del gioco è più semplice di quanto la {numref}`fig-watermarking-testo`
+faccia sospettare. Prima di scrivere ogni parola, il modello tira a sorte:
+divide in due metà tutte le parole che potrebbe usare, chiama «verdi» quelle di
+una metà e «rosse» quelle dell'altra, e poi sceglie un po’ più spesso del
+normale fra le verdi. Il sorteggio sembra casuale ma non lo è: come i dadi di un
+videogioco, esce da un calcolo che parte da un numero segreto, e chi conosce
+quel numero rifà la stessa identica sequenza di sorteggi tutte le volte che
+vuole. Così chi vuole controllare un testo rifà tutti i sorteggi, riconta le
+parole verdi e vede se sono troppe. In un testo scritto da una persona sarebbero
+circa la metà, perché quel sorteggio la persona non lo conosceva.
 
 Il limite sta nel fatto che si misura una proporzione, quindi serve abbastanza
 testo perché lo sbilanciamento si distingua dal caso. Su una frase corta non
@@ -1122,7 +1134,7 @@ costo di far passare il sintetico per autentico.
 
 `````
 
-## Le trenta dita, in pratica
+## Un attacco FGSM in pratica
 
 Il fenomeno si osserva già con il più semplice dei classificatori, una
 regressione logistica giocattolo (un
@@ -1132,8 +1144,8 @@ particolare, sono numeri estratti a caso, e le due risposte possibili si
 chiamano $0$ e $1$: fai conto che $1$ voglia dire «pratica da approvare».
 L'esperimento: scegliamo un caso che il modello azzecca, poi spostiamo ogni
 caratteristica di un soffio, tutte nel verso che danneggia di più il modello
-(trenta piccole spinte concordi, invisibili una per una: sono le dita del
-titolo), e guardiamo la predizione ribaltarsi.
+(trenta piccole spinte concordi, invisibili una per una),
+e guardiamo la predizione ribaltarsi.
 
 L'esempio non è scelto a mano: il programma prende il primo caso che il modello
 classifica correttamente con una fiducia fra l’$85$ e il $95$ per cento. Su un
@@ -1209,16 +1221,17 @@ soglia di fiducia: 0.9717
 su 500 esempi nuovi, ribaltati 174 dei 434 classificati bene (40%)
 ```
 
-Il modello passa da una fiducia dell’$89\%$ nella risposta giusta a una
-risposta sbagliata. Nella quarta riga la spinta complessiva vale $0{,}82$
-contro il $6{,}00$ dell'esempio di partenza, meno di un settimo. Le spinte però
-non si sommano in modo lineare: $0{,}82$ non è trenta volte $0{,}15$, che
-farebbe $4{,}5$. Le trenta spinte sono concordi nel verso, perché ciascuna fa
-salire l'errore, ma ciascuna muove una caratteristica diversa, cioè agisce
-lungo un asse diverso, e spostamenti lungo assi diversi si compongono come nel
-teorema di Pitagora: elevando al quadrato, sommando e poi facendo la radice. Il
-conto si rifà a mano: $0{,}15$ al quadrato fa $0{,}0225$, moltiplicato per
-trenta fa $0{,}675$, e la radice di $0{,}675$ è $0{,}82$.
+Il modello passa da una fiducia dell’$89\%$ nella risposta giusta a una risposta
+sbagliata. Nella quarta riga la spinta complessiva vale $0{,}82$
+contro il $6{,}00$ dell'esempio di partenza, meno di un settimo.
+
+Le spinte però non si sommano in modo lineare: $0{,}82$ non è trenta volte
+$0{,}15$, che farebbe $4{,}5$. Le trenta spinte sono concordi nel verso, perché
+ciascuna fa salire l'errore, ma ciascuna muove una caratteristica diversa, cioè
+agisce lungo un asse diverso, e spostamenti lungo assi diversi si compongono
+come nel teorema di Pitagora: elevando al quadrato, sommando e poi facendo la
+radice. Il conto si rifà a mano: $0{,}15$ al quadrato fa $0{,}0225$,
+moltiplicato per trenta fa $0{,}675$, e la radice di $0{,}675$ è $0{,}82$.
 
 L'ultima riga dice quanto l'esempio sia rappresentativo. Su cinquecento
 esempi nuovi, mai visti in addestramento, una spinta di questa taglia ribalta

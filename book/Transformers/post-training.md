@@ -5,9 +5,9 @@ mare». Una risposta perfettamente plausibile è: «disse la maestra alla classe
 richiudendo il registro». Sembra una presa in giro e non lo è: il modello ha
 trattato la tua richiesta come una battuta pronunciata da qualcuno dentro un
 racconto, e ne ha scritto il seguito. Non è un errore, è
-il compito che gli abbiamo insegnato. Un modello pre-addestrato completa il
-testo nel modo più probabile, e sul web una frase così compare più spesso in
-mezzo a una scena scolastica che in cima a una poesia. GPT-3
+il compito che gli abbiamo insegnato. Infatti un modello pre-addestrato
+completa il testo nel modo più probabile, e sul web una frase così compare più
+spesso in mezzo a una scena scolastica che in cima a una poesia. GPT-3
 {cite}`brown2020language` era questo: un completatore geniale,
 capace di proseguire qualunque testo, ma senza la minima nozione di cosa
 significhi *rispondere* a qualcuno.
@@ -19,23 +19,23 @@ in un assistente. La prova più eloquente sta nell'articolo su InstructGPT
 {cite}`ouyang2022training`, il modello che ha preceduto ChatGPT: davanti a
 valutatori umani, le risposte di un modello da 1,3 miliardi di parametri
 passato per il post-training venivano *preferite* a quelle del GPT-3 da 175
-miliardi, un modello più di cento volte più grande. Il confronto, però,
-si giocava sulle richieste che arrivavano all'interfaccia
+miliardi, un modello più di cento volte più grande.
+
+Il confronto, però, si giocava sulle richieste che arrivavano all'interfaccia
 pubblica, lo stesso tipo di istruzioni su cui il modello piccolo era stato
-rifinito. Su altri banchi di prova il gigante resta avanti. La tesi
-dell'articolo sta nella sua prima riga: ingrandire un modello non lo rende, di
-per sé, più capace di seguire le intenzioni di chi lo usa.
+rifinito. Su altri banchi di prova il gigante resta avanti. La
+tesi dell'articolo sta nella sua prima riga: ingrandire un modello non lo
+rende, di per sé, più capace di seguire le intenzioni di chi lo usa.
 
 La procedura, schematizzata in {numref}`fig-post-training-pipeline`, ha due
 fasi principali. L’*instruction tuning* insegna il formato delle risposte con
-esempi svolti; l'apprendimento dalle preferenze affina le risposte con i
+esempi svolti; poi l'apprendimento dalle preferenze affina le risposte con i
 giudizi delle persone, per due strade: l'RLHF, che passa da un modello
 addestrato a dare voti, e la DPO, che salta quel modello. Prima di
-esplorarle si apre un problema di memoria: come rifinire un modello i cui
-parametri non entrano in quella disponibile, ostacolo che si supera con LoRA.
-In coda, un terzo modo, più recente: spendere più
-calcolo *al momento della risposta*, facendo «ragionare» il modello prima di
-produrla.
+esplorarle si apre un problema di memoria: come rifinire un modello i
+cui parametri non entrano in quella disponibile. Lo risolve LoRA. In coda c'è
+un terzo modo, più recente: spendere più calcolo *al momento della risposta*,
+facendo «ragionare» il modello prima di produrla.
 
 ```{figure} ../figures/post-training-pipeline.svg
 :name: fig-post-training-pipeline
@@ -63,17 +63,17 @@ testo. L'instruction tuning gli insegna che quel testo era un ordine.
 ```
 
 La differenza mostrata in {numref}`fig-instruction-tuning` è la ragione per
-cui il post-training esiste: un modello che completa e un assistente che esegue
-sanno quasi le stesse cose, e si distinguono soprattutto per come interpretano
-la richiesta. È l’*ipotesi dell'allineamento superficiale*
+cui il post-training esiste. Infatti un modello che completa e un assistente
+che esegue sanno quasi le stesse cose, e si distinguono soprattutto per come
+interpretano la richiesta: è l’*ipotesi dell'allineamento superficiale*
 {cite}`zhou2023lima`.
 
 Il primo passo si chiama **SFT** (*supervised fine-tuning*), o *instruction
 tuning*. Si raccoglie un dataset di coppie (istruzione, risposta) scritte da
-persone, come «Riassumi questo articolo» seguito da un buon riassunto, oppure
-«Traduci in inglese: il gatto nero salta sul muro» seguito da *«The black cat
-jumps on the wall»*. L'addestramento del modello prosegue poi su questi esempi,
-con la stessa tecnica del pre-addestramento.
+persone, ad esempio «Riassumi questo articolo» seguito da un buon riassunto,
+oppure «Traduci in inglese: il gatto nero salta sul muro» seguito da *«The
+black cat jumps on the wall»*. L'addestramento del modello prosegue poi su
+questi esempi, con la stessa tecnica del pre-addestramento.
 
 `````{tab} Elementare
 
@@ -146,31 +146,34 @@ giusta da fargli copiare.
 Proprio qui la SFT si ferma. Per andare oltre serve un'osservazione quasi
 banale: per un essere umano giudicare è più facile che scrivere. Pochi di
 noi saprebbero comporre una bella poesia sul mare; quasi tutti, davanti a due
-poesie, sanno dire quale preferiscono. Il post-training moderno è costruito
-su questa asimmetria.
+poesie, sanno dire quale preferiscono. Il post-training moderno è quindi
+costruito su questa asimmetria.
 
 ## Adattare senza riaddestrare tutto: LoRA
 
 Prima di passare ai giudizi, va affrontato un problema pratico che la SFT e i
-metodi successivi danno per risolto: rifinire un modello significa aggiornarne
-i parametri, e il costo in memoria è alto.
+metodi successivi danno per risolto. Rifinire un modello significa infatti
+aggiornarne i parametri, e il costo in memoria è alto.
 
-Un modello «da sette miliardi» ha sette miliardi di parametri, e ciascuno, nel
-formato a 32 bit in cui si tiene mentre impara, occupa quattro byte: 28 GB solo
-per tenerlo fermo. Per farlo imparare con l'ottimizzatore Adam, però, servono
-altre tre copie della stessa dimensione: il gradiente, che dice di quanto e in
-che direzione andrebbe corretto ogni parametro, e le due medie mobili di Adam.
-Una traccia le correzioni recenti (il verso in cui si sta andando), l'altra la
-loro grandezza al quadrato (l'ampiezza delle correzioni su ciascun parametro);
-insieme dicono quali parametri muovere con decisione e quali con prudenza. In
-tutto quattro copie, cioè 16 byte per parametro: $7 \times 10^9 \times 16 =
+Consideriamo un modello «da sette miliardi». Ha sette miliardi di parametri, e
+ciascuno, nel formato a 32 bit in cui si tiene mentre impara, occupa quattro
+byte: 28 GB solo per tenerlo fermo. Per farlo imparare con l'ottimizzatore
+Adam, però, servono altre tre copie della stessa dimensione: il gradiente, che
+dice di quanto e in che direzione andrebbe corretto ogni parametro, e le due
+medie mobili di Adam. Una traccia le correzioni recenti (il verso in cui si sta
+andando), l'altra la loro grandezza al quadrato (l'ampiezza delle correzioni su
+ciascun parametro); insieme dicono quali parametri muovere con decisione e
+quali con prudenza.
+
+In tutto, quindi, quattro copie, cioè 16 byte per
+parametro: $7 \times 10^9 \times 16 =
 112$ GB, prima ancora delle attivazioni.
 
 E tutto questo deve stare nella memoria delle schede grafiche, non nel disco,
 dove cento gigabyte non sono niente. Una scheda da centro di calcolo come la
-H100 ne ha 80, la H200 141; quelle di consumo, molti meno. Fuori dai centri di
-calcolo, per un modello che in questo campo è fra i piccoli, quasi nessuno può
-permetterselo.
+H100 ne ha 80, la H200 141; quelle di consumo, molti meno. Fuori
+dai centri di calcolo, per un modello che in questo campo è fra i
+piccoli, quasi nessuno può permetterselo.
 
 ```{figure} ../figures/lora-fine-tuning-efficiente.svg
 :name: fig-lora
@@ -197,9 +200,9 @@ Un architetto che deve cambiare dieci cose in una pianta già disegnata appoggia
 sul foglio un lucido, e ci disegna le modifiche. La pianta di sotto resta
 intatta.
 
-Dentro la rete quella pianta esiste. I numeri stanno in tabelle,
-righe e colonne come un foglio di calcolo (in matematica si chiamano
-*matrici*), e una tabella sola può essere quattromila righe per quattromila
+Dentro la rete quella pianta esiste. I numeri stanno in tabelle, righe e
+colonne come un foglio di calcolo (in matematica si chiamano *matrici*), e una
+tabella sola può essere quattromila righe per quattromila
 colonne, cioè sedici milioni di caselle. Riscriverle tutte per adattare il
 modello a un compito nuovo è fuori portata, e da qui viene il lucido.
 
@@ -215,14 +218,16 @@ dosi, $(1, 2, 3)$: moltiplicate nel modo standard (il prodotto di matrici della
 {doc}`sezione di algebra lineare </Matematica/algebra-lineare>`), danno una
 tabella tre per tre con le righe $(4, 5, 6)$, $(8, 10, 12)$ e $(12, 15, 18)$,
 cioè la stessa riga presa una, due e tre volte. Nove caselle calcolate a
-partire da sei numeri. Sul foglio vero le strisce sono due, sottili: una alta
+partire da sei numeri.
+
+Sul foglio vero le strisce sono due, sottili: una alta
 otto e larga quattromila, con le otto righe di partenza, e una alta quattromila
 e larga otto, con le otto dosi di ciascuna delle quattromila righe. Il loro
 prodotto è un foglio quattromila per quattromila, la misura esatta della
 pianta, e ci si appoggia sopra; ma i tratti da disegnare sono $4000 \times 8 +
 8 \times 4000 = 64\,000$ invece di sedici milioni, cioè lo $0{,}4\%$. Il numero di
-colonne è la manopola, e si chiama rango: più è alto, più ricca può
-essere la correzione, e più tratti ci sono da disegnare.
+colonne è un iperparametro da scegliere e si chiama **rango**: più è alto, più
+ricca può essere la correzione, e più tratti ci sono da disegnare.
 
 All'inizio il lucido è bianco: finché non ci metti un tratto, sotto si vede
 la pianta di prima. L'adattamento parte dal
@@ -236,8 +241,8 @@ Quello $0{,}4\%$ vale per una tabella sola. Nello studio i fogli sono tanti, e
 sul modello intero dipende da quanti se ne coprono: con il lucido sui soli
 fogli che il lavoro originale preferiva si ridisegna meno di un numero su mille,
 con un lucido su ogni foglio, come serve per avvicinarsi a una riscrittura
-completa, qualcosa di più, ma sempre una piccola frazione. L'archivio pesa
-megabyte invece di gigabyte.
+completa, qualcosa di più, ma sempre una piccola frazione. Quindi l'archivio
+pesa megabyte invece di gigabyte.
 
 E le quattro copie dell'ottimizzatore tornano una. Correzioni e medie servono
 soltanto ai numeri che si muovono, e qui a muoversi sono le due strisce: delle
@@ -276,7 +281,8 @@ qui è $\rho$ perché $r$ è la ricompensa dell'RLHF.
 
 Solo $\mathbf{A}$ e $\mathbf{B}$ ricevono gradiente. I parametri addestrabili
 passano da $dk$ a
-$\rho(d+k)$: per $d=k=4096$ e $\rho=8$ si scende da $16{,}8$ milioni a
+$\rho(d+k)$. Ad esempio, per $d=k=4096$ e $\rho=8$ si scende da $16{,}8$
+milioni a
 $65\,536$ per
 matrice, lo $0{,}39\%$. All'inizio $\mathbf{A}$ è inizializzata casualmente e
 $\mathbf{B}$ a zero,
@@ -354,7 +360,7 @@ artificiale in mezzo (il *modello di ricompensa*) deduce il resto.
 ```
 
 Il passaggio decisivo di {numref}`fig-preferenze-umane` è il modello di
-ricompensa in mezzo. Senza questo modello ogni passo di addestramento
+ricompensa in mezzo. Infatti, senza questo modello ogni passo di addestramento
 richiederebbe un giudizio umano, cosa impraticabile; con il modello di
 ricompensa i confronti servono ad addestrare una volta sola un giudice
 artificiale, che poi lavora quanto serve. La tecnica si chiama RLHF
@@ -391,8 +397,9 @@ raddoppiare la panna inganna il giudice, e finisce per servire piatti assurdi
 che «prendono voti alti» ma che nessun cliente vero vorrebbe. La ricetta di
 partenza, poi, qualcosa di buono ce l'aveva già: rifarla da zero per rincorrere
 il voto significa perdere per strada anche il sapere che c'era dentro. La
-regola del «resta vicino alla ricetta» tiene la creatività al guinzaglio, e il
-guinzaglio ha una lunghezza che si sceglie: corto, e il piatto cambia appena;
+regola del «resta vicino alla ricetta» tiene la creatività al
+guinzaglio, e il guinzaglio ha una lunghezza che si sceglie: corto, e il piatto
+cambia appena;
 lungo, e il cuoco osa di più rischiando di più.
 
 `````
@@ -430,10 +437,10 @@ In InstructGPT ogni annotatore ordina $K$ risposte allo stesso prompt, con $K$
 da 4 a 9, e i $\binom{K}{2}$ confronti risultanti formano un solo elemento del
 batch, ciascuno con peso $1/\binom{K}{2}$: rimescolati singolarmente nel
 dataset, confronti così correlati facevano sovradattare il reward model in una
-sola passata. La loss vede solo differenze: sommare a $r_\phi$ una qualunque
-funzione del solo prompt non la cambia, e per questo il punteggio va tarato a
-parte prima del rinforzo. La stessa invarianza ricompare nella derivazione
-della DPO.
+sola passata. Si noti che la loss vede solo differenze: sommare a $r_\phi$ una
+qualunque funzione del solo prompt non la cambia, e per questo il punteggio va
+tarato a parte prima del rinforzo. La stessa invarianza ricompare nella
+derivazione della DPO.
 
 Fase 2: la policy. Il modello di linguaggio diventa una *policy*
 $\pi_\theta$ nel senso del reinforcement learning (il prompt è lo stato, la
@@ -539,7 +546,7 @@ KL ha una
 soluzione ottima in forma chiusa. Invertendola, la ricompensa si scrive come
 $\beta\log(\pi^*/\pi_{\text{ref}})$, cioè come il logaritmo di quanto la policy
 ottima ha aumentato la probabilità della risposta rispetto al riferimento, più un
-termine dipendente soltanto dalla domanda. Confrontando due
+termine dipendente soltanto dalla domanda. Quindi, confrontando due
 risposte alla stessa domanda, quel termine si cancella, e resta soltanto il
 movimento rispetto al riferimento. Il metodo si chiama **DPO** (*Direct
 Preference Optimization*, ottimizzazione diretta delle preferenze).
@@ -550,12 +557,15 @@ Torniamo in cucina. Il metodo classico prevedeva due tempi: prima addestrare un
 giudice artificiale sui confronti degli assaggiatori, poi far cucinare il cuoco
 per il giudice. La DPO si accorge che il giro è più lungo del necessario: il
 cuoco può saltare il giudice e imparare direttamente dai confronti, perché il
-voto del giudice è già scritto nel cuoco. Quanto un piatto gli piace si legge
-da quanto ha cambiato idea su di lui rispetto alla ricetta di partenza: se
-prima lo preparava una volta su cento e adesso tre, quel piatto gli piace; se
+voto del giudice è già scritto nel cuoco. In altri termini, quanto un piatto
+gli piace si legge da quanto ha cambiato idea su di lui rispetto alla ricetta
+di partenza: se prima lo preparava una volta su cento e adesso tre, quel piatto
+gli piace; se
 un altro, per la stessa cena, passa da due volte su cento a una, no. Quanto sia
 impegnativa la cena in sé, un pranzo per due o un banchetto, pesa uguale sui
-due piatti, e nel confronto sparisce. Per ogni coppia già valutata (piatto
+due piatti, e nel confronto sparisce.
+
+Per ogni coppia già valutata (piatto
 preferito, piatto scartato), il cuoco ritocca la propria ricetta in modo da
 avvicinarla di un passo al piatto preferito e allontanarla da quello scartato.
 E il ritocco è dosato con intelligenza: se il cuoco *già* favorisce il piatto
@@ -565,9 +575,11 @@ invece è ancora in pareggio, o peggio sta dalla parte sbagliata, la correzione
 gradimento di ciascuno: può finire che il cuoco creda un po’ meno in tutti e
 due, purché nello scartato creda molto meno. Anche la regola d'oro sopravvive,
 incorporata nel metodo: i ritocchi si misurano sempre *rispetto alla ricetta di
-partenza*, così il cuoco migliora senza stravolgere. Stessa destinazione
-dell'RLHF sulla carta, e senza il cantiere. Nei fatti le due strade non
-finiscono nello stesso punto, e la ragione principale è questa: qui il cuoco
+partenza*, così il cuoco migliora senza stravolgere.
+
+Stessa destinazione dell'RLHF sulla carta, e senza il cantiere. Nei fatti
+le due strade non finiscono nello stesso punto, e la ragione
+principale è questa: qui il cuoco
 impara da un quaderno di confronti raccolti una volta per tutte, mentre nel
 metodo classico il palato artificiale è lì, in cucina, e assaggia anche i
 piatti che il cuoco inventa oggi. Un quaderno alle domande nuove non risponde,
@@ -599,8 +611,9 @@ $$
 \end{aligned}
 $$
 
-Il secondo addendo non dipende da $\pi$, e la KL è nulla se e solo se
-$\pi = \pi^*$ (disuguaglianza di Gibbs): il massimo sta in $\pi^*$. Invertendo
+Osserviamo che il secondo addendo non dipende da $\pi$, e la KL è nulla se e
+solo se $\pi = \pi^*$ (disuguaglianza di Gibbs): il massimo sta in $\pi^*$.
+Invertendo
 la relazione, la
 ricompensa si può scrivere in funzione della policy ottima:
 $r(x,y) = \beta \log \frac{\pi^*(y \mid x)}{\pi_{\text{ref}}(y \mid x)} +
@@ -611,7 +624,9 @@ tutte le risposte, dunque dipende solo dal prompt; poiché $y_w$ e $y_l$
 condividono lo stesso prompt $x$, i due termini $\beta\log Z(x)$ coincidono e
 si elidono nella differenza richiesta dal modello di Bradley–Terry. È l'unico
 punto in cui $Z(x)$ compare: una somma di fatto intrattabile svanisce prima
-ancora di dover essere calcolata. Il secondo passaggio è meno visibile e più
+ancora di dover essere calcolata.
+
+Il secondo passaggio è meno visibile e più
 importante: la relazione appena scritta dice che qualunque ricompensa è
 rappresentabile come $\beta\log(\pi/\pi_{\text{ref}})$ per una qualche policy,
 a meno di una funzione del solo $x$. Si può allora smettere di parametrizzare
@@ -648,19 +663,20 @@ $$
 $$
 
 ogni coppia pesa quanto la ricompensa implicita la ordina male, e i confronti
-già «vinti» contribuiscono poco. La loss chiede solo che il margine cresca, non
-che la preferita diventi più probabile: in pratica possono scendere tutte e
-due, la scartata di più {cite}`pal2024smaug`. Se le preferenze sono
-deterministiche (e con un solo giudizio per coppia, nei dati lo sono sempre),
-il margine ottimo è infinito qualunque sia $\beta$, e il vincolo verso il
-riferimento smette di trattenere; più le preferenze vi si avvicinano, meno
+già «vinti» contribuiscono poco. La loss chiede solo che il margine
+cresca, non che la preferita diventi più probabile: in pratica possono scendere
+tutte e due, la scartata di più {cite}`pal2024smaug`. Inoltre, se le preferenze
+sono deterministiche (e con un solo giudizio per coppia, nei dati lo sono
+sempre), il margine ottimo è infinito qualunque sia $\beta$, e il vincolo verso
+il riferimento smette di trattenere; più le preferenze vi si avvicinano, meno
 trattiene. È il difetto da cui parte IPO {cite}`azar2023general`.
-Niente reward model esplicito, niente campionamento, niente PPO: un normale
-addestramento supervisionato su coppie. L'equivalenza con l'RLHF è esatta
-solo in quel limite non parametrico, e sulla distribuzione delle coppie
-raccolte: con una policy parametrica e coppie fissate una volta per tutte (la
-DPO non campiona mai da $\pi_\theta$, il PPO sì) i due metodi in pratica
-divergono, ed è qui che va cercata la differenza fra i loro risultati.
+
+In sintesi, niente reward model esplicito, niente campionamento, niente PPO: la
+DPO è un normale addestramento supervisionato su coppie. L'equivalenza con
+l'RLHF è esatta solo in quel limite non parametrico, e sulla distribuzione
+delle coppie raccolte: con una policy parametrica e coppie fissate una volta
+per tutte (la DPO non campiona mai da $\pi_\theta$, il PPO sì) i due metodi in
+pratica divergono, ed è qui che va cercata la differenza fra i loro risultati.
 
 `````
 
@@ -668,15 +684,17 @@ La loss DPO è così compatta che si scrive in poche righe. La funzione
 `dpo_loss` riceve quattro tensori di log-probabilità totali, $\log\pi(y\mid x)
 = \sum_t \log\pi(y_t\mid x, y_{<t})$: quelle che la policy $\pi_\theta$ assegna
 alla risposta preferita e a quella scartata, e quelle che assegna il
-riferimento $\pi_{\text{ref}}$. Il logaritmo, già incontrato nella {doc}`teoria
+riferimento $\pi_{\text{ref}}$.
+
+Il logaritmo, già incontrato nella {doc}`teoria
 dell'informazione </Matematica/teoria-informazione>`, trasforma il prodotto
 delle probabilità dei token in una somma: per una risposta lunga quel prodotto
 può scendere sotto il più piccolo numero rappresentabile in `float32`, la somma
 dei logaritmi no. Poiché le probabilità sono inferiori a uno, i loro logaritmi
 risultano tutti negativi: più il valore è vicino allo zero, più il modello
-assegna probabilità elevata alla sequenza. Un valore di $-11{,}9$ indica una
-risposta più probabile di una da $-12{,}3$, così come una temperatura di $-3$
-gradi è più alta di una di $-8$.
+assegna probabilità elevata alla sequenza. Ad esempio, un valore di $-11{,}9$
+indica una risposta più probabile di una da $-12{,}3$, così come una
+temperatura di $-3$ gradi è più alta di una di $-8$.
 
 ```python
 import torch
@@ -723,12 +741,13 @@ quattro la preferita ha guadagnato rispetto al riferimento più della scartata;
 durante un addestramento vero la loss scende man mano che quei margini
 crescono.
 
-Nella prima coppia la policy, in assoluto, considera più probabile la risposta
-*scartata* ($-11{,}9$ contro $-12{,}3$, perché il valore più vicino a zero
-indica la probabilità più alta). Alla DPO non interessa il valore assoluto,
-bensì lo spostamento rispetto al riferimento: la risposta preferita guadagna
-terreno (da $-12{,}5$ a $-12{,}3$, cioè $+0{,}2$) e quella scartata ne perde
-(da $-11{,}7$ a $-11{,}9$, cioè $-0{,}2$), aprendo un margine complessivo di
+Si noti che nella prima coppia la policy, in assoluto, considera più probabile
+la risposta *scartata* ($-11{,}9$ contro $-12{,}3$, perché il valore più vicino
+a zero indica la probabilità più alta). Alla DPO non interessa il valore
+assoluto, bensì lo spostamento rispetto al riferimento: la risposta preferita
+guadagna terreno (da $-12{,}5$ a $-12{,}3$, cioè $+0{,}2$) e quella scartata
+ne perde (da $-11{,}7$ a $-11{,}9$, cioè $-0{,}2$), aprendo un margine
+complessivo di
 $0{,}4$ a favore della prima. La coppia si muove dunque nella direzione
 corretta, anche se il divario è ancora contenuto. Nella quarta coppia, invece,
 i due movimenti si equivalgono ($+0{,}3$ e $+0{,}3$): la policy è in pareggio
@@ -810,15 +829,15 @@ ragionamento simbolico), a partire da una certa taglia del modello.
 
 `````{tab} Elementare
 
-È la regola che conosci dal compito di matematica: «mostra i passaggi». Alla
-domanda «un treno parte alle 9:47 e arriva alle 11:23: quanto dura il viaggio?»,
-sparare il risultato a colpo d'occhio fa sbagliare spesso. Scrivere i passaggi
-porta quasi sempre alla risposta giusta: da 9:47 a 10:00 sono 13 minuti, poi
-un'ora fino alle 11:00, poi altri 23; totale 96 minuti, cioè 1 ora e 36. Con i
-modelli funziona allo stesso modo: se l'esempio che gli mostri
-contiene i passaggi, o se glieli chiedi esplicitamente, il modello li scrive e
-sbaglia meno, perché ogni passaggio può appoggiarsi ai precedenti invece di
-indovinare tutto in un colpo.
+È la regola che conosci dal compito di matematica: «mostra i passaggi». Ad
+esempio, alla domanda «un treno parte alle 9:47 e arriva alle 11:23: quanto
+dura il viaggio?», sparare il risultato a colpo d'occhio fa sbagliare spesso.
+Scrivere i passaggi porta quasi sempre alla risposta giusta: da 9:47 a 10:00
+sono 13 minuti, poi un'ora fino alle 11:00, poi altri 23; totale 96 minuti,
+cioè 1 ora e 36. Con i modelli funziona allo stesso modo: se l'esempio che gli
+mostri contiene i passaggi, o se glieli chiedi esplicitamente, il modello li
+scrive e sbaglia meno, perché ogni passaggio può appoggiarsi ai precedenti
+invece di indovinare tutto in un colpo.
 
 Il limite, in classe, si vede benissimo: «mostra i passaggi» aiuta chi i
 passaggi li sa fare. Chiederli a un bambino che non ha ancora imparato a
@@ -833,8 +852,10 @@ Un raffinamento semplice: fargli risolvere lo stesso problema più volte per
 strade diverse e prendere la risposta più votata, come rifare il calcolo delle
 ore in tre modi e fidarsi del numero che salta fuori più spesso. Ogni tentativo
 in più costa, e quanto convenga farne dipende da quanto è difficile la domanda.
-I modelli «ragionanti» usciti tra il 2024 e il 2025 spingono l'idea fino in
-fondo: sono addestrati a produrre, prima di ogni risposta, una lunga brutta
+
+Infine, i modelli «ragionanti» usciti tra il 2024 e il 2025 spingono l'idea
+fino in fondo: sono addestrati a produrre, prima di ogni risposta, una lunga
+brutta
 copia di passaggi, che costa tempo e calcolo in più, ripagati soprattutto in
 matematica e programmazione, dove la risposta si può verificare senza bisogno
 di qualcuno che dica se gli piace.
@@ -850,7 +871,9 @@ dimensione (nelle loro prove, circa 100 miliardi di parametri) le catene non
 aiutano o peggiorano le prestazioni, mentre con PaLM da 540 miliardi di
 parametri otto esempi con catena bastarono a superare, sul benchmark di
 problemi aritmetici GSM8K, persino un GPT-3 rifinito ad hoc con verificatore
-{cite}`wei2022chain`. Il dato sperimentale è solido; sulla parola «emergente»
+{cite}`wei2022chain`.
+
+Il dato sperimentale è solido; sulla parola «emergente»
 vale però l'avvertenza della sezione sulle {doc}`abilità emergenti <llm>`:
 GSM8K si misura in *exact match* sul numero finale, cioè con la metrica
 tutto-o-niente che trasforma miglioramenti lisci in gradini
@@ -859,8 +882,9 @@ catene generate dai modelli piccoli sono spesso incoerenti, oltre che sbagliate
 nel risultato: la discontinuità, se c'è, è nella *procedura* prima che nel
 punteggio.
 
-La *self-consistency* aggiunge un passo: si campionano $n$ catene indipendenti,
-con risposte finali $a_1, \dots, a_n$, e si sceglie $\hat{a} = \arg\max_a
+La **self-consistency** aggiunge un passo: si campionano $n$ catene
+indipendenti, con risposte finali $a_1, \dots, a_n$, e si sceglie
+$\hat{a} = \arg\max_a
 \sum_{i=1}^{n} \mathbb{1}[a_i = a]$, cioè la risposta più votata
 {cite}`wang2023selfconsistency`, a un costo lineare in $n$. Quanto rendano
 questi modi di spendere calcolo dipende dalla difficoltà del prompt: Snell e
@@ -876,12 +900,15 @@ DeepSeek-R1 a pesi aperti (gennaio 2025) {cite}`guo2025deepseek`,
 interiorizzano la catena. Il cuore del metodo è l'addestramento con
 reinforcement learning su problemi a risposta verificabile (correttezza del
 risultato matematico, superamento dei test per il codice), dove la ricompensa
-non richiede giudizi umani. DeepSeek-R1-Zero usa soltanto quello, a partire dal
-modello di base e senza SFT preliminare, e mostra comportamenti di
-auto-verifica e di ripensamento dei propri passaggi; DeepSeek-R1 lo integra in
-una procedura a più fasi, con campionamento a rifiuto, SFT e dati non di
-ragionamento che lo riallineano alle preferenze umane. L'algoritmo è GRPO
-{cite}`shao2024deepseekmath`, un PPO senza critico: per ogni prompt $x$ si
+non richiede giudizi umani. In particolare, DeepSeek-R1-Zero usa soltanto
+quello, a partire dal modello di base e senza SFT preliminare, e mostra
+comportamenti di auto-verifica e di ripensamento dei propri passaggi;
+DeepSeek-R1 lo integra in una procedura a più fasi, con campionamento a
+rifiuto, SFT e dati non di ragionamento che lo riallineano alle preferenze
+umane.
+
+L'algoritmo è **GRPO** {cite}`shao2024deepseekmath`, un PPO senza critico: per
+ogni prompt $x$ si
 campiona dalla policy precedente $\pi_{\theta_{\text{old}}}$ un gruppo di $G$
 risposte $y_1, \dots, y_G$, se ne calcolano le ricompense $r_1, \dots, r_G$, e
 il vantaggio di ciascuna è la sua ricompensa standardizzata dentro il gruppo,
@@ -934,7 +961,9 @@ dicono meno. Un modello messo a inseguire quel voto impara la prolissità e la
 sicurezza esibita *prima ancora* dell'utilità, perché sono più facili da
 produrre e prendono lo stesso voto; in tre contesti diversi buona parte del
 guadagno di ricompensa dell'RLHF si spiega con la sola lunghezza delle risposte
-{cite}`singhal2024long`. Gao e colleghi hanno misurato l'effetto sostituendo le
+{cite}`singhal2024long`.
+
+Gao e colleghi hanno misurato l'effetto sostituendo le
 persone con un reward model fisso, preso come giudice «vero»: in funzione di
 $\kappa = \sqrt{D_{\mathrm{KL}}(\pi_\theta \,\|\, \pi_{\text{ref}})}$, la
 distanza dalla policy di partenza, la ricompensa vera segue $\kappa\,(a -
@@ -983,14 +1012,16 @@ torna sopra per esteso.
 
 C'è poi un interrogativo che nessun addestramento può chiudere. Tutto questo
 lavoro serve a far sì che un modello si comporti come vorremmo; si chiama
-allineamento, cioè rendere il comportamento del modello conforme a ciò che le
-persone considerano utile e accettabile. A quel punto, però, la domanda
+**allineamento**, cioè rendere il comportamento del modello conforme a ciò
+che le persone considerano utile e accettabile. A quel punto, però, la domanda
 diventa: allineato a chi? In InstructGPT le «preferenze umane» erano quelle di
 una squadra di circa quaranta collaboratori, per lo più anglofoni che vivevano
 negli Stati Uniti o nel Sud-Est asiatico, reclutati per dare quei giudizi
 secondo linee guida scritte dai ricercatori, e d'accordo fra loro in circa tre
 casi su quattro; gli autori stessi precisano di non considerare quel gruppo la
-fonte giusta di preferenze {cite}`ouyang2022training`. Da allora una parte del
+fonte giusta di preferenze {cite}`ouyang2022training`.
+
+Da allora una parte del
 giudizio è passata ad altri modelli, che applicano principi scritti (la
 Constitutional AI {cite}`bai2022constitutional`, ripresa nel {doc}`capitolo
 sull'AI responsabile </AIResponsabile/allineamento-e-governance>`), o a

@@ -57,10 +57,10 @@ Il secondo è muovere qualcosa con le parole. «Vorrei prenotare un tavolo per
 domani» cambia il mondo mentre lo dice: prima non c'era nessuna richiesta per
 domani sera, dopo c'è. E ogni battuta fa una mossa diversa. «Buonasera» saluta,
 «Quanti siete?» chiede, «Quattro» informa, «lo prendiamo» impegna il cliente a
-farsi trovare lì domani alle otto. La forma della frase inganna. «Avete un
-tavolo per domani sera?» è costruita come una domanda da sì o no, e il
-ristoratore che rispondesse «Sì» e restasse zitto avrebbe capito tutte le
-parole e sbagliato la mossa.
+farsi trovare lì domani alle otto. La forma della frase inganna.
+«Avete un tavolo per domani sera?» è costruita come una domanda da sì o no, e il
+ristoratore che rispondesse «Sì» e restasse zitto avrebbe capito tutte le parole
+e sbagliato la mossa.
 
 Il terzo è controllare di essersi capiti. Quel «Mh-mh» non aggiunge niente alla
 prenotazione, dice «ti sto seguendo, continua». Dieci secondi di ristoratore
@@ -96,50 +96,50 @@ brevissime in ogni lingua studiata. Stivers e colleghi
 {cite}`stivers2009universals` misurano 208 ms di media su dieci lingue, con
 medie per lingua che vanno da 7 a 469 ms: l'universale che il lavoro dimostra è
 la brevità, non un valore fisso. Queste pause sono troppo brevi per
-pianificare da zero: il parlante pianifica *mentre* l'altro parla. Per un sistema
-vocale è un vincolo concreto: l’*endpointing* deve distinguere una pausa da una
-cessione del turno.
+pianificare da zero, quindi il parlante pianifica *mentre* l'altro parla. Per
+un sistema vocale è un vincolo concreto: l’*endpointing* deve
+distinguere una pausa da una cessione del turno.
 
 **Atti linguistici** (*speech acts*). Austin {cite}`austin1962how` (*How to Do
 Things with Words*, 1962) osservò che gli enunciati *eseguono* azioni; una
 tassonomia corrente {cite}`bach1979linguistic` distingue **constativi**
 (affermare), **direttivi** (chiedere), **commissivi** (promettere, accettare) e
-**riconoscimenti** (ringraziare). «Sai l'ora?» è un atto *indiretto*: forma
-interrogativa sì/no, funzione direttiva. Un sistema di dialogo deve classificare
-l'atto, non solo la forma.
+**riconoscimenti** (ringraziare). Ad esempio, «Sai l'ora?» è un atto
+*indiretto*, con forma interrogativa sì/no e funzione direttiva. Un sistema di
+dialogo deve classificare l'atto, non solo la forma.
 
 **Grounding**. Herbert Clark {cite}`clark1996using` descrive la conversazione
 come costruzione incrementale di un *common ground*, l'insieme delle conoscenze
 mutuamente accettate. Ogni contributo va *radicato* attraverso segnali di
 continuità («mh-mh», i *backchannel*), ripetizioni e riformulazioni. Un sistema
 che non conferma mai risulta inaffidabile; uno che conferma ogni dato,
-esasperante: la politica di conferma è una scelta di progetto.
+esasperante. La politica di conferma è dunque una scelta di progetto.
 
 **Implicature e anafora**. Grice {cite}`grice1975logic` formulò le massime
 conversazionali (quantità, qualità, relazione, modo) da cui i parlanti derivano
-i sottintesi:
-«Quanti siete?» «Quattro» funziona perché la risposta dà esattamente
-l'informazione richiesta. E i legami anaforici («ne», «lo») attraversano i
-turni: risolverli richiede uno stato del dialogo (entità menzionate,
-impegni presi, dati accettati). Conclusione operativa: un interlocutore non è
-una funzione ultima-frase → risposta, ma una macchina con memoria.
+i sottintesi. Per esempio, «Quanti siete?» «Quattro» funziona perché la
+risposta dà esattamente l'informazione richiesta. E i legami anaforici («ne»,
+«lo») attraversano i turni: risolverli richiede uno stato del dialogo (entità
+menzionate, impegni presi, dati accettati). Conclusione operativa: un
+interlocutore non è una funzione ultima-frase → risposta, ma una macchina con
+memoria.
 
 `````
 
 ## Tre famiglie di interlocutori artificiali
 
-In sessant'anni i sistemi di dialogo si sono organizzati in tre famiglie:
-quelli che rispondono **per regole**, quelli che compilano **moduli**, quelli
-che **generano** la risposta parola per parola. Non è solo una successione
-storica: tutte e tre sono vive, spesso dentro lo stesso prodotto. Accanto alla
+In sessant'anni i sistemi di dialogo si sono organizzati in tre famiglie: quelli
+che rispondono **per regole**, quelli che compilano **moduli**, quelli che
+**generano** la risposta parola per parola. Non è solo una successione storica,
+perché tutte e tre sono vive, spesso dentro lo stesso prodotto. Accanto alla
 terza ne è cresciuta una parente, i sistemi *a recupero*, che non scrivono la
 risposta ma la scelgono: fra milioni di battute già dette da persone pescano
 quella che si accorda meglio con la conversazione, e una rete addestrata allo
 scopo assegna un punteggio a ogni coppia di conversazione e risposta candidata.
-Lowe e colleghi ne fecero un banco di prova sulle chat di assistenza tecnica
-del sistema operativo Ubuntu {cite}`lowe2015ubuntu`. Non inventano parole,
-perché ogni risposta l'ha scritta qualcuno, ma possono solo ripetere ciò che è
-già stato detto.
+Lowe e colleghi ne fecero un banco di prova sulle chat di assistenza tecnica del
+sistema operativo Ubuntu {cite}`lowe2015ubuntu`. Non inventano parole, perché
+ogni risposta l'ha scritta qualcuno, ma possono solo ripetere ciò che è già
+stato detto.
 
 ```{figure} ../figures/tre-famiglie-dialogo.svg
 :name: fig-tre-famiglie-dialogo
@@ -152,7 +152,8 @@ quando la battuta esce dal previsto.
 ```
 
 Il confronto di {numref}`fig-tre-famiglie-dialogo` mostra che cosa separa i tre
-approcci: come e dove viene conservata la memoria di quanto è stato detto.
+approcci, cioè come e dove viene conservata la memoria di quanto è stato
+detto.
 
 ### Lo specchio di regole: dentro ELIZA
 
@@ -264,8 +265,9 @@ caselle ancora vuote, e se in una battuta sola dici «un tavolo per quattro
 domani alle otto» ne riempie tre in un colpo senza richiederle, anche in un
 ordine diverso da quello del foglio. Ogni casella accetta solo certe cose, e
 questo gli semplifica la vita: dove c'è scritto quanti si mette un numero, dove
-c'è scritto che giorno si mette un giorno, e «domani» è un giorno buono. Il
-modulo è anche la sua memoria: a metà conversazione, quello che gli hai detto
+c'è scritto che giorno si mette un giorno, e «domani» è un giorno buono.
+
+Il modulo è anche la sua memoria: a metà conversazione, quello che gli hai detto
 sta scritto lì. Il ristoratore della telefonata lavorava così, e la penultima
 battuta era lui che si rileggeva le caselle a voce alta. Quando l'ultima è
 piena, la pratica parte.
@@ -283,12 +285,14 @@ fine giornata le pratiche chiuse si contano, e il modulo si può perfino
 confrontare battuta dopo battuta con quello giusto, dove basta una casella
 sbagliata perché quella battuta conti come un errore. Sono tre buone ragioni per
 tenerselo, ed è per queste che il modulo è sopravvissuto a tutto quello che è
-venuto dopo. Il prezzo si paga
-appena si esce dalle caselle: alla domanda «secondo lei si sta meglio dentro o
-fuori?» una persona improvvisa una risposta, chi va avanti a caselle resta
-zitto, perché quella risposta non ha una casella dove andare. Per questo gli
-assistenti vocali sono bravissimi dentro i loro moduli (meteo, timer,
-chiamate) e cadono nel vuoto un millimetro fuori.
+venuto dopo.
+
+Il prezzo si paga appena si esce dalle caselle: alla domanda
+«secondo lei si sta meglio dentro o fuori?» una persona improvvisa una
+risposta, chi va avanti a caselle resta zitto, perché quella risposta non ha
+una casella dove andare. Per questo gli assistenti vocali sono bravissimi
+dentro i loro moduli (meteo, timer, chiamate) e cadono nel vuoto un millimetro
+fuori.
 
 `````
 
@@ -297,8 +301,9 @@ chiamate) e cadono nel vuoto un millimetro fuori.
 Un frame è una struttura dati con **slot** tipizzati; a ogni slot sono
 associati una domanda per elicitarlo e vincoli sul valore (LUOGO: città; DATA:
 anche relativa, «domani»; PERSONE: intero). Il dialogo è governato dal
-riempimento: domande per gli slot vuoti, riempimenti multipli in un turno,
-anche fuori ordine (*iniziativa mista*), azione a modulo completo. Nel 1977 GUS
+riempimento: il sistema pone domande per gli slot vuoti, accetta riempimenti
+multipli in un turno, anche fuori ordine (*iniziativa mista*), e agisce a
+modulo completo. Nel 1977 GUS
 gestiva già date relative, ellissi e semplici anafore.
 
 L'erede moderno è l'architettura a stato di dialogo, una catena di
@@ -319,10 +324,10 @@ componenti specializzati:
 4. NLG: genera la risposta, spesso ancora per *template* riempiti con i
    valori degli slot.
 
-I punti di forza spiegano la longevità: comportamento controllabile (nessuna
-risposta inventata), errori localizzabili, successo del compito misurabile.
-Il limite è speculare: fuori dai frame previsti il sistema non ha nulla da
-dire.
+I punti di forza spiegano la longevità: il comportamento è controllabile
+(nessuna risposta inventata), gli errori sono localizzabili, il successo del
+compito è misurabile. Il limite è speculare: fuori dai frame previsti il sistema
+non ha nulla da dire.
 
 `````
 
@@ -343,7 +348,9 @@ ingrandita fino a scrivere non la prossima parola ma l'intera prossima
 dei film. E ingrandita anche dal lato dell'ascolto: prima di scrivere si
 rilegge tutta la conversazione, dalla prima battuta all'ultima, perché la
 risposta giusta dipende da quello che è stato detto venti righe fa. Funziona,
-ed è già sorprendente. Ma se insegni a un modello a dare *la risposta più
+ed è già sorprendente.
+
+Ma se insegni a un modello a dare *la risposta più
 probabile*, impara le risposte che vanno bene ovunque («Non lo so», «Va bene»,
 «Dipende»), le più probabili proprio perché compatibili con tutto:
 l'interlocutore più evasivo del mondo. Un rimedio c'è: invece della risposta
@@ -623,8 +630,8 @@ attaccati a ogni parola, come scatole e come frecce.
 `````
 
 Al {doc}`capitolo sui Transformer </Transformers/overview>` passano pezzi
-precisi: il testo spezzato in token e rappresentato da embedding, la
-previsione della parola successiva e il meccanismo di attenzione nato nella
-traduzione. Restano aperti i problemi che nessuna architettura risolve da sola: che
-cosa conta come risposta giusta quando le risposte accettabili sono molte, e
-come si valuta una macchina che parla.
+precisi: il testo spezzato in token e rappresentato da embedding, la previsione
+della parola successiva e il meccanismo di attenzione nato nella traduzione.
+Restano aperti i problemi che nessuna architettura risolve da sola: che cosa
+conta come risposta giusta quando le risposte accettabili sono molte, e come si
+valuta una macchina che parla.

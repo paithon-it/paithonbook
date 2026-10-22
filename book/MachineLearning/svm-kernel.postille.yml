@@ -1,0 +1,17 @@
+# Le postille di questa pagina, una per capoverso del testo comune.
+# Ognuna vale finché la sua impronta combacia col testo del capoverso.
+- inizio: "La SVM del massimo margine traccia"
+  impronta: "d165ef461aff"
+  postilla: "Frontiera dritta in uno spazio più grande, senza mai calcolare la trasformazione"
+- inizio: "Il nome *kernel* ha parecchi omonimi,"
+  impronta: "616acff54f6f"
+  postilla: "Unico parente la regressione a nucleo: stessa campana, qui come prodotto scalare"
+- inizio: "C'è un'ultima variante, e risponde a"
+  impronta: "c59f91366932"
+  postilla: "Novelty detection (dati tutti normali) e anomaly detection (anomalie già dentro)"
+- inizio: "La prima è standardizzare le feature."
+  impronta: "9c56ac76cafd"
+  postilla: "Senza standardizzare domina la colonna dai numeri grandi; testo sparso per righe"
+- inizio: "La seconda riguarda i numeri grandi."
+  impronta: "398291594b5a"
+  postilla: "Esempi doppi, lavoro per quattro o per otto; SMO aggiorna due moltiplicatori"

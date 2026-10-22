@@ -26,8 +26,9 @@ $$
 
 dove $r_{ui}$ è il voto che l'utente $u$ ha dato al film $i$, $\hat{r}_{ui}$ la
 previsione e $\mathcal{K}$ l'insieme dei voti su cui si misura. Il quadrato fa
-pesare gli errori grandi più dei piccoli: con due previsioni sbagliate di 1 e
-di 3 stelle si ottiene $\sqrt{(1^2 + 3^2)/2} = \sqrt{5} \approx 2{,}24$, più
+pesare gli errori grandi più dei piccoli. Ad esempio, con due previsioni
+sbagliate di 1 e di 3 stelle si ottiene
+$\sqrt{(1^2 + 3^2)/2} = \sqrt{5} \approx 2{,}24$, più
 della media semplice degli errori, che sarebbe 2. La radice riporta il
 risultato in stelle, e la {doc}`sezione sulle metriche
 </MachineLearning/metriche>` lo definisce per esteso. Su questo metro l'errore
@@ -51,22 +52,22 @@ la soglia superata per un soffio. Il margine fu sottile anche in gara, perché i
 rivali di *The Ensemble* erano arrivati allo stesso punteggio ma avevano
 consegnato venti minuti più tardi.
 
-Poi viene l'ironia. Quella soluzione da un milione di dollari non fu mai adottata
-così com'era. Era un mosaico di oltre cento modelli combinati, e Netflix
-scrisse che il guadagno di precisione misurato non sembrava giustificare il
-lavoro di ingegneria che serviva a portarlo in produzione, a farlo girare ogni
-giorno per i clienti veri {cite}`amatriain2012beyond`. Nel frattempo il
-business stava migrando dai DVD allo streaming, dove prevedere il voto in
-stelle conta meno di prevedere che cosa guarderai stasera. In produzione
-finirono invece i due modelli migliori della squadra che nel 2007 aveva vinto
-il primo premio intermedio, e nessuno dei due era nato per l'occasione. Il
-primo è la macchina di Boltzmann ristretta, una rete neurale degli anni Ottanta
-che Salakhutdinov, Mnih e Hinton applicarono ai voti di Netflix
+Poi viene l'ironia. Quella soluzione da un milione di dollari non fu mai
+adottata così com'era. Era infatti un mosaico di oltre cento modelli combinati,
+e Netflix scrisse che il guadagno di precisione misurato non sembrava
+giustificare il lavoro di ingegneria che serviva a portarlo in produzione, a
+farlo girare ogni giorno per i clienti veri {cite}`amatriain2012beyond`. Nel
+frattempo il business stava migrando dai DVD allo streaming, dove prevedere il
+voto in stelle conta meno di prevedere che cosa guarderai stasera. In produzione
+finirono invece i due modelli migliori della squadra che nel 2007 aveva vinto il
+primo premio intermedio, e nessuno dei due era nato per l'occasione. Il primo è
+la macchina di Boltzmann ristretta, una rete neurale degli anni Ottanta che
+Salakhutdinov, Mnih e Hinton applicarono ai voti di Netflix
 {cite}`salakhutdinov2007restricted`; la {doc}`sezione sulle macchine di
 Boltzmann </ModelliEnergia/boltzmann>` racconta com'è fatta. Il secondo è la
 **fattorizzazione di matrici**, che qui fa da protagonista
 {cite}`koren2009matrix`: approssima la matrice dei voti con il prodotto di due
-matrici molto più piccole, e la gara le diede la ricetta di addestramento con
+matrici molto più piccole, e la gara le diede la procedura di addestramento con
 cui è arrivata fino a oggi, la discesa del gradiente sui soli voti noti che
 Simon Funk descrisse in un post del dicembre 2006 {cite}`funk2006netflix`.
 
@@ -141,12 +142,13 @@ dichiarazioni: puoi *dire* che ami i documentari, ma la cronologia rivela le
 serie poliziesche. Ha però un difetto: è ambiguo. Un click non è una promozione
 (magari il film ti ha deluso), e un film ignorato non è una bocciatura: forse
 non l'hai mai visto passare. Nei sistemi veri è l'implicito a farla da padrone,
-perché ce n'è tantissimo; ma l'ambiguità impone più cautela. Cambia anche la
-domanda, perché non ci sono stelle da prevedere. Una strada è segnare ogni
-titolo con un sì o con un no, guardato o non guardato, e fidarsi poco dei no e
-molto dei sì ripetuti: una serie vista fino in fondo dice più di un click.
-L'altra è rinunciare al voto e decidere soltanto quale titolo mettere in cima
-alla vetrina.
+perché ce n'è tantissimo; ma l'ambiguità impone più cautela.
+
+Cambia anche la domanda, perché non ci sono stelle da prevedere. Una strada è
+segnare ogni titolo con un sì o con un no, guardato o non guardato, e fidarsi
+poco dei no e molto dei sì ripetuti: una serie vista fino in fondo dice più di
+un click. L'altra è rinunciare al voto e decidere soltanto quale titolo mettere
+in cima alla vetrina.
 
 `````
 
@@ -156,12 +158,15 @@ Il feedback esplicito produce una matrice di voti $\mathbf{R}$ con entrate
 $r_{ui}$ su scala ordinale (ad esempio $1$–$5$): segnale ad alta qualità ma
 estremamente scarso, e per di più **non mancante a caso**
 {cite}`marlin2009collaborative`; gli utenti votano soprattutto ciò che hanno
-scelto di consumare, quindi le celle osservate sono un campione distorto. Il
-feedback implicito produce eventi con un solo verso (l'interazione c'è stata),
-in forma di presenza, conteggio o durata: click, acquisti, minuti di visione.
-Copertura enormemente maggiore, ma niente segnale negativo esplicito. L'assenza
-di interazione confonde due casi indistinguibili («non gli piace» e «non l'ha
-mai visto») e la formulazione del problema cambia di conseguenza. Non c'è più
+scelto di consumare, quindi le celle osservate sono un campione distorto.
+
+Il feedback implicito produce eventi con un solo verso (l'interazione c'è
+stata), in forma di presenza, conteggio o durata: click, acquisti, minuti di
+visione. Copertura enormemente maggiore, ma niente segnale negativo esplicito.
+L'assenza di interazione confonde due casi indistinguibili («non gli piace» e
+«non l'ha mai visto») e la formulazione del problema cambia di conseguenza.
+
+Non c'è più
 un voto su cui fare regressione: o si fa regressione su una preferenza binaria,
 pesata da una confidenza che cresce con le interazioni (è iALS
 {cite}`hu2008collaborative`, nella sezione sul {doc}`filtraggio collaborativo
@@ -186,13 +191,15 @@ stesso dato del grafo bipartito con cui si è chiuso il {doc}`capitolo sulle
 reti neurali su grafo </GraphNeuralNetwork/overview>`, utenti da una parte e
 film dall'altra, scritto come tabella: un arco diventa una cella piena, e al
 grafo si torna nella sezione sulla {doc}`raccomandazione neurale
-<raccomandazione-neurale>`. La matrice è quasi tutta vuota. Nel Netflix Prize i
-100 milioni di voti sembrano tanti, ma la tabella completa avrebbe
-$480.000 \times 17.770 \approx 8{,}5$ miliardi di celle. La frazione di celle
-piene si chiama densità, e lì valeva l’1,2%: cento milioni su otto miliardi e
-mezzo. Nei cataloghi industriali di oggi, con milioni di oggetti, si scende
-facilmente sotto lo 0,1%. Quel vuoto si chiama **sparsità**, e raccomandare
-consiste nel prevedere le celle vuote.
+<raccomandazione-neurale>`.
+
+La matrice è quasi tutta vuota. Nel Netflix Prize i 100 milioni di voti sembrano
+tanti, ma la tabella completa avrebbe $480.000 \times 17.770 \approx 8{,}5$
+miliardi di celle. La frazione di celle piene si chiama densità, e lì valeva
+l’1,2%: cento milioni su otto miliardi e mezzo. Nei cataloghi industriali di
+oggi, con milioni di oggetti, si scende facilmente sotto lo 0,1%. Questo vuoto
+prende il nome di **sparsità**, e raccomandare consiste nel prevedere le celle
+vuote.
 
 ```{figure} ../figures/matrice-utenti-film.svg
 :name: fig-matrice-utenti-film
@@ -245,7 +252,9 @@ cameriere lo nomina sempre. Il rimedio è contare ogni ordinazione al contrario
 di quanto spesso quel piatto veniva proposto: le cinquanta del risotto valgono
 un duecentesimo l'una, l'unica della zuppa vale mezzo, e in testa passa la
 zuppa, cioè il ristorante che si sarebbe visto se il cameriere avesse proposto
-tutto allo stesso modo. Questo rimedio ha due debolezze. Un piatto che il
+tutto allo stesso modo.
+
+Questo rimedio ha due debolezze. Un piatto che il
 cameriere non nomina mai resta a zero, e nessun peso lo recupera. La zuppa, poi,
 sta in testa grazie a un cliente solo: se quell'unico cliente avesse scelto
 altro, sarebbe in fondo. Per questo lo si corregge in due modi: a nessuna
@@ -306,13 +315,14 @@ di molta meno varianza.
 
 ## Chiedere all'amico giusto
 
-Il percorso va dall'idea classica a quella neurale. Comincia da un'idea che
-usiamo tutti i giorni, chiedere all'amico giusto, e il filtraggio collaborativo
-la rende calcolabile. La versione che confronta le righe della matrice si arena
-sul vuoto; se ne esce riassumendo ogni utente e ogni film in un vettore di
-pochi numeri, un *embedding*, e prevedendo il voto con il prodotto scalare dei
-due. È la fattorizzazione di matrici, che al Netflix Prize si dimostrò
-superiore ai metodi a vicinato e si scrive in PyTorch in una ventina di righe.
+Il percorso va dall'idea classica a quella neurale. Comincia
+da un'idea che usiamo tutti i giorni, chiedere all'amico giusto, e il filtraggio
+collaborativo la rende calcolabile. La versione che confronta le righe della
+matrice si arena sul vuoto; se ne esce riassumendo ogni utente e ogni film in un
+vettore di pochi numeri, un *embedding*, e prevedendo il voto con il prodotto
+scalare dei due. È la fattorizzazione di matrici, che al Netflix Prize si
+dimostrò superiore ai metodi a vicinato e si scrive in PyTorch in una ventina di
+righe.
 
 Poi entrano le reti neurali. Il prodotto scalare è un'operazione elementare,
 moltiplicare e sommare, e la domanda è ovvia: una rete farebbe meglio? Nel

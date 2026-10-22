@@ -21,7 +21,7 @@ della sezione e URL), non si ridistribuisce il testo.
 
 ## Fondamenta
 
-- [Introduzione](https://book.paithon.it/main/Introduzione/overview.html): Joseph Weizenbaum era un informatico tedesco emigrato negli Stati Uniti e professore al MIT. Nel 1966 presentò al mondo ELIZA, il capostipite dei chatbot: un programma con cui si poteva conversare…
+- [Introduzione](https://book.paithon.it/main/Introduzione/overview.html): Joseph Weizenbaum era un informatico tedesco emigrato negli Stati Uniti e professore al MIT. Nel 1966 presentò al mondo ELIZA, il capostipite dei chatbot, cioè un programma con cui si poteva…
   - [Il primo programma](https://book.paithon.it/main/Introduzione/massimo_comune_divisore.html)
   - [Che cosa si può calcolare](https://book.paithon.it/main/Introduzione/calcolabile.html)
   - [Robotica e AI](https://book.paithon.it/main/Introduzione/applicazioni.html)
@@ -45,7 +45,7 @@ della sezione e URL), non si ridistribuisce il testo.
 
 ## Imparare dai dati
 
-- [Machine Learning](https://book.paithon.it/main/MachineLearning/overview.html): Nel 1959 un ingegnere dell'IBM di nome Arthur Samuel pubblicò un articolo dal titolo modesto (Some Studies in Machine Learning Using the Game of Checkers ) che oggi suona profetico.
+- [Machine Learning](https://book.paithon.it/main/MachineLearning/overview.html): Nel 1959 Arthur Samuel, un ingegnere dell'IBM, pubblicò un articolo dal titolo modesto, Some Studies in Machine Learning Using the Game of Checkers , che oggi suona profetico.
   - [Apprendimento supervisionato](https://book.paithon.it/main/MachineLearning/apprendimento-supervisionato.html)
   - [Overfitting e validazione](https://book.paithon.it/main/MachineLearning/overfitting-validazione.html)
   - [Valutare un modello](https://book.paithon.it/main/MachineLearning/metriche.html)
@@ -104,7 +104,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Architetture storiche](https://book.paithon.it/main/DeepLearning/architetture-storiche.html)
   - [Una rete, molti compiti](https://book.paithon.it/main/DeepLearning/multi-compito.html)
   - [Imparare a imparare](https://book.paithon.it/main/DeepLearning/meta-apprendimento.html)
-- [Visione artificiale](https://book.paithon.it/main/VisioneArtificiale/overview.html): Un lavoro per l'estate: tanto doveva bastare, secondo il piano che Seymour Papert scrisse al MIT nel 1966, il Summer Vision Project, perché un gruppo di studenti costruisse un sistema capace di…
+- [Visione artificiale](https://book.paithon.it/main/VisioneArtificiale/overview.html): Un lavoro per l'estate: secondo il piano che Seymour Papert scrisse al MIT nel 1966, il Summer Vision Project, tanto doveva bastare perché un gruppo di studenti costruisse un sistema capace di…
   - [Classificazione e transfer learning](https://book.paithon.it/main/VisioneArtificiale/classificazione-transfer.html)
   - [Data augmentation](https://book.paithon.it/main/VisioneArtificiale/data-augmentation.html)
   - [Imparare senza etichette](https://book.paithon.it/main/VisioneArtificiale/senza-etichette.html)
@@ -215,7 +215,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Imparare senza etichette](https://book.paithon.it/main/Audio/rappresentazioni-auto-supervisionate.html)
   - [Codec neurali](https://book.paithon.it/main/Audio/codec-neurali.html)
   - [Generare suono e musica](https://book.paithon.it/main/Audio/generazione-audio.html)
-- [Speech Recognition](https://book.paithon.it/main/SpeechRecognition/overview.html): Nel 1952, nei laboratori della Bell Telephone, un apparecchio ingombrante fatto di valvole e relè (l'elettronica di allora: bulbi di vetro incandescenti e interruttori che scattano da soli) imparò a…
+- [Speech Recognition](https://book.paithon.it/main/SpeechRecognition/overview.html): Nel 1952, nei laboratori della Bell Telephone, un apparecchio ingombrante fatto di valvole e relè (l'elettronica di allora, con i suoi bulbi di vetro incandescenti e gli interruttori che scattano da…
   - [I modelli di riconoscimento](https://book.paithon.it/main/SpeechRecognition/modelli-asr.html)
   - [Sintesi vocale](https://book.paithon.it/main/SpeechRecognition/sintesi-vocale.html)
 

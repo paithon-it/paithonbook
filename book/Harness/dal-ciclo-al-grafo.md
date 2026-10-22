@@ -5,12 +5,14 @@ caselle. Quello di Young ha due caselle: il primo turno, e poi la sessione di
 lavoro che torna su sé stessa finché l'elenco non è finito. Quello di
 Rajasekaran ne ha tre: il pianificatore che scrive la descrizione del prodotto,
 il costruttore che lavora una tappa alla volta, il valutatore che lo rimanda
-indietro finché la tappa non passa. Caselle e frecce, in matematica, formano un
-*grafo* (niente a che vedere con i grafici delle funzioni): le caselle sono i
-*nodi*, le frecce gli *archi*. Il disegno smette di essere un disegno quando le
-caselle diventano pezzi di programma, le frecce regole scritte su quale casella
-viene dopo, e i dati del lavoro, quelli che passano da una casella all'altra,
-uno stato salvato a ogni passo.
+indietro finché la tappa non passa.
+
+Caselle e frecce, in matematica, formano un **grafo** (niente a che vedere con
+i grafici delle funzioni): le caselle sono i **nodi**, le frecce gli **archi**.
+Il disegno smette di essere un disegno quando le caselle diventano pezzi di
+programma, le frecce regole scritte su quale casella viene dopo, e i dati del
+lavoro, quelli che passano da una casella all'altra, uno stato salvato a ogni
+passo.
 
 ## Percorsi scritti e percorsi scelti
 
@@ -18,8 +20,10 @@ Il {doc}`capitolo sugli agenti </Agenti/overview>` ha già distinto, con Erik
 Schluntz e Barry Zhang, i *workflow* (i flussi di lavoro), in cui il modello e
 gli strumenti seguono percorsi decisi in anticipo nel codice, dagli *agenti*,
 in cui è il modello a scegliere da sé i passi e gli strumenti
-{cite}`schluntz2024agents`. Qui «agente» ha questo senso stretto, il modello
-che sceglie; l'harness intorno resta. Dei workflow l'articolo descrive cinque
+{cite}`schluntz2024agents`. Qui «agente» ha questo senso stretto, cioè il
+modello che sceglie; l'harness intorno resta.
+
+Dei workflow l'articolo descrive cinque
 schemi, ciascuno fatto di *chiamate*, cioè di richieste al modello. Nella
 concatenazione l'uscita di una chiamata diventa l'ingresso della successiva,
 con dei controlli programmati fra un passo e l'altro (i *cancelli*).
@@ -31,19 +35,21 @@ dividere il compito, le affida ad altre chiamate e ne mette insieme i
 risultati. Nel valutatore con ottimizzatore una chiamata produce e migliora la
 risposta, un'altra la giudica e la rimanda indietro, in un ciclo. Il consiglio
 dell'articolo è di cercare la soluzione più semplice possibile, e di aggiungere
-complessità soltanto quando serve. Sulle librerie di programmi che costruiscono
-questi schemi per conto tuo è prudente: rendono facile cominciare, ma mettono
-codice in mezzo che nasconde che cosa si chiede al modello e che cosa
-risponde, e chi le usa farebbe bene a capire il codice che c'è sotto.
+complessità soltanto quando serve.
 
-Un harness per un lavoro lungo mescola le due famiglie. La routine del
-{doc}`passaggio di consegne <passaggio-di-consegne>` è un percorso scritto:
+Sulle librerie di programmi che costruiscono questi schemi per conto tuo
+l'articolo è prudente: rendono facile cominciare, ma mettono codice in mezzo
+che nasconde che cosa si chiede al modello e che cosa risponde, e chi le usa
+farebbe bene a capire il codice che c'è sotto.
+
+Un harness per un lavoro lungo mescola le due famiglie. Ad esempio, la routine
+del {doc}`passaggio di consegne <passaggio-di-consegne>` è un percorso scritto:
 avvia, scegli la voce, lavora, collauda, salva, sempre in quest'ordine. Dentro
 la casella «lavora», però, c'è un agente, che decide da sé quali file aprire e
 quali comandi lanciare. Il ciclo fra costruttore e valutatore di Rajasekaran è
-il valutatore con ottimizzatore, con il contratto di tappa fissato prima. Più
-che scegliere fra percorso scritto e agente, si tratta di decidere dove passa
-il confine fra ciò che decide il codice e ciò che decide il modello.
+il valutatore con ottimizzatore, con il contratto di tappa fissato prima.
+Quindi, più che scegliere fra percorso scritto e agente, si tratta di decidere
+dove passa il confine fra ciò che decide il codice e ciò che decide il modello.
 
 `````{tab} Elementare
 
@@ -94,18 +100,23 @@ con gli archi condizionali; si possono provare uno per uno, e il numero di
 chiamate è limitato, finché i nodi non contengono a loro volta un agente. In un
 agente il limite è soltanto il tetto ai passi del ciclo, e i percorsi fino al
 tetto non si elencano. In entrambi i casi i nodi che chiamano un modello sono
-aleatori, e l'affidabilità si stima campionando. Che una catena di passi
-riesca con il prodotto delle probabilità dei passi, se sono indipendenti, e che
-un cancello trasformi un errore silenzioso in uno rilevato, che si può
-ritentare, è il conto del {doc}`loop engineering
-</IngegneriaLLM/loop-engineering>`. Il voto fra $m$ esecuzioni, con due esiti
-possibili, $m$ dispari e la stessa probabilità $q > 1/2$ di essere giuste, alza
-la probabilità che la maggioranza abbia ragione se gli errori sono
-indipendenti (il teorema di Condorcet, che il {doc}`capitolo sui sistemi
-multi-agente </SistemiMultiAgente/protocolli-e-consenso>` tratta per esteso);
-con errori correlati può persino andare peggio di una esecuzione sola, e le
+aleatori, e l'affidabilità si stima campionando.
+
+Che una catena di passi riesca con il prodotto delle probabilità dei passi, se
+sono indipendenti, e che un cancello trasformi un errore silenzioso in uno
+rilevato, che si può ritentare, è il calcolo del {doc}`loop engineering
+</IngegneriaLLM/loop-engineering>`.
+
+Il voto fra $m$ esecuzioni, con due esiti possibili, $m$ dispari e la stessa
+probabilità $q > 1/2$ di essere giuste, alza la probabilità che la maggioranza
+abbia ragione se gli errori sono indipendenti (il teorema di Condorcet, che il
+{doc}`capitolo sui sistemi multi-agente
+</SistemiMultiAgente/protocolli-e-consenso>` tratta per esteso); con errori
+correlati può persino andare peggio di una esecuzione sola, e le
 esecuzioni dello stesso modello sullo stesso ingresso tendono a sbagliare
-insieme. La regola di cominciare dal sistema più semplice si legge così: ogni
+insieme.
+
+La regola di cominciare dal sistema più semplice si legge così: ogni
 nodo e ogni arco in più sono un'ipotesi su che cosa il modello non sa fare da
 solo, come ogni componente dell'harness, e un posto in più in cui il sistema
 può rompersi.
@@ -115,24 +126,28 @@ può rompersi.
 ## Il grafo come struttura dati
 
 Per un lavoro lungo il grafo ha quattro ingredienti. I nodi sono funzioni che
-leggono lo stato e restituiscono un aggiornamento, non lo stato intero: un
-nodo tocca soltanto i campi di cui è responsabile, e non può rimettere per
-sbaglio un valore vecchio negli altri. Gli archi sono fissi o condizionali: un
-arco condizionale guarda lo stato e sceglie il nodo successivo, ed è così che
-si scrive un ciclo, come il ritorno dal collaudo alla costruzione, con un
-tetto ai tentativi perché finisca. Lo stato è un insieme di campi, e ogni
-campo ha la sua regola di fusione, cioè il modo in cui l'aggiornamento di un
-nodo si unisce a ciò che c'era: il registro si accoda, un contatore si somma,
-un esito si sostituisce. Senza regola, un nodo che restituisce la sua riga di
-registro cancellerebbe tutte le righe di prima. E c'è il **punto salvato**:
-dopo ogni passo lo stato, insieme al nodo da cui ripartire, si scrive in un
-archivio, sotto l'identificativo del filo di lavoro (in inglese *thread*), cioè
-di quella singola esecuzione del grafo, come un ordine che attraversa la
-bottega; ne possono girare molti insieme, ciascuno con il suo stato. Così un
-guasto non costringe a ricominciare da capo, e un filo che deve fermarsi ore
-ad aspettare una persona non perde niente nel frattempo. Un nodo può essere
-un passo di pochi secondi o una sessione intera; la grana la decide quanto
-costa rifare un nodo interrotto.
+leggono lo stato e restituiscono un aggiornamento, non lo stato intero. Un nodo
+tocca soltanto i campi di cui è responsabile, e non può rimettere per sbaglio
+un valore vecchio negli altri. Gli archi sono fissi o condizionali. Un arco
+condizionale guarda lo stato e sceglie il nodo successivo, ed è così che si
+scrive un ciclo, come il ritorno dal collaudo alla costruzione, con un tetto ai
+tentativi perché finisca.
+
+Lo stato è un insieme di campi, e ogni campo ha la sua regola di fusione, cioè
+il modo in cui l'aggiornamento di un nodo si unisce a ciò che c'era: il
+registro si accoda, un contatore si somma, un esito si sostituisce. Senza
+regola, infatti, un nodo che restituisce la sua riga di registro cancellerebbe
+tutte le righe di prima.
+
+Il quarto ingrediente è il **punto salvato**: dopo ogni passo lo stato, insieme
+al nodo da cui ripartire, si scrive in un archivio, sotto l'identificativo del
+**filo di lavoro** (in inglese *thread*), cioè di quella singola esecuzione del
+grafo; ne possono girare molti insieme, ciascuno con il suo stato. Così un
+guasto non costringe a ricominciare da capo, e un filo che deve fermarsi ore ad
+aspettare una persona non perde niente nel frattempo.
+
+Un nodo può essere un passo di pochi secondi o una sessione intera; la
+granularità dipende da quanto costa rifare un nodo interrotto.
 
 Sono le idee su cui si reggono le librerie per costruire agenti come grafi, che
 permettono anche rami paralleli, cioè più nodi attivi nello stesso passo. In
@@ -140,10 +155,12 @@ LangGraph, per esempio, un *checkpointer* salva lo stato del grafo a ogni passo
 sotto un identificativo di thread, e da lì il grafo riprende dopo
 un'interruzione o dopo un guasto; se in un passo alcuni nodi falliscono e altri
 no, le scritture di quelli riusciti si conservano, e alla ripresa non si
-rifanno {cite}`langgraph2026checkpointers`. Un motore minimo, in Python puro,
+rifanno {cite}`langgraph2026checkpointers`.
+
+Un motore minimo, in Python puro,
 fa vedere tutto questo su un lavoro di quattro nodi (pianifica, costruisci,
 collauda, rilascia), con un ciclo fra collaudo e costruzione e il rilascio ai
-clienti segnato come irreversibile. Il guasto è simulato: al primo passaggio
+clienti segnato come irreversibile. Il guasto è simulato. Al primo passaggio
 dal collaudo il nodo si interrompe, come farebbe una macchina che si spegne.
 Ripreso, il collaudo fallisce, si torna alla costruzione, e il secondo
 collaudo passa; a quel punto il filo si ferma davanti al rilascio, che senza
@@ -263,11 +280,12 @@ registro del filo:
    rilasciato ai clienti
 ```
 
-Dopo il guasto il filo non riparte da capo: l'ultimo punto salvato dice
-«ripartire dal collaudo, con un tentativo già costruito», e pianificazione e
-costruzione non si rifanno. Il collaudo, però, si rifà, perché si era
-interrotto proprio lì: un passo interrotto a metà si esegue di nuovo per
-intero. Il ciclo fra collaudo e costruzione si chiude al secondo tentativo, e
+Si noti che dopo il guasto il filo non riparte da capo: l'ultimo punto salvato
+dice «ripartire dal collaudo, con un tentativo già costruito», e pianificazione
+e costruzione non si rifanno. Il collaudo, però, si rifà, perché si era
+interrotto proprio lì: un passo interrotto a metà si esegue di nuovo per intero.
+
+Il ciclo fra collaudo e costruzione si chiude al secondo tentativo, e
 il filo si ferma da solo davanti al rilascio, finché qualcuno non approva
 proprio quel nodo; l'approvazione finisce nel registro. Il guasto, invece, nel
 registro non c'è: è successo fra due punti salvati, e lo vede soltanto chi
@@ -318,17 +336,19 @@ Il banco della spedizione ha anche un'altra regola, che non c'entra con i
 guasti: lì l'ordine si ferma e aspetta la firma del proprietario, perché un
 mobile spedito non torna indietro. Il proprietario non firma tutto, non ne
 avrebbe il tempo: firma dove uno sbaglio costerebbe più del tempo che gli
-serve per guardare, e quasi sempre è dove lo sbaglio non si rimedia. E il
-collaudatore lavora a un banco suo, con davanti il mobile e il foglio delle
-prove concordate, ma con la colonna delle note di chi l'ha costruito coperta:
-così non eredita i suoi ragionamenti. Le idee che ha in comune con lui, perché
-vengono dalla stessa scuola, se le porta dietro lo stesso.
+serve per guardare, e quasi sempre è dove lo sbaglio non si rimedia.
+
+Infine, il collaudatore lavora a un banco suo, con davanti il mobile e il
+foglio delle prove concordate, ma con la colonna delle note di chi l'ha
+costruito coperta: così non eredita i suoi ragionamenti. Le idee che ha in
+comune con lui, perché vengono dalla stessa scuola, se le porta dietro lo
+stesso.
 
 `````
 
 `````{tab} Superiore
 
-Si fissino la semantica del passo e quella della ripresa. Lo stato è un
+Fissiamo la semantica del passo e quella della ripresa. Lo stato è un
 insieme di campi, $S = (S^{(1)}, \dots, S^{(J)})$, e ogni campo ha
 un'operazione di fusione $\mathrm{fondi}_j$; un nodo $u$ restituisce un
 aggiornamento parziale $\mathrm{agg}_u(S)$, un valore per una parte dei campi,
@@ -340,8 +360,9 @@ u_{t+1} = \delta(u_t, S_{t+1}),
 $$
 
 con la fusione applicata campo per campo; dopo il passo si scrive il punto
-salvato $(u_{t+1}, S_{t+1})$ sotto l'identificativo del filo. Con i rami
-paralleli il passo ha un insieme di nodi attivi $\mathcal{U}_t$, gli
+salvato $(u_{t+1}, S_{t+1})$ sotto l'identificativo del filo.
+
+Con i rami paralleli il passo ha un insieme di nodi attivi $\mathcal{U}_t$, gli
 aggiornamenti di tutti si fondono, e $\delta$ restituisce l'insieme dei
 successori: è il *super-step* di LangGraph. Perché il risultato non dipenda
 dall'ordine di arrivo basta che gli aggiornamenti commutino; succede se
@@ -351,39 +372,48 @@ ordine fissato; la sostituzione, con due rami che scrivono lo stesso campo,
 non si ammette, e LangGraph la rifiuta.
 
 La ripresa dopo un guasto riparte dall'ultimo punto salvato, e dà al nodo in
-corso una semantica *almeno una volta*: se si è interrotto dopo aver prodotto un
-effetto esterno ma prima che il punto fosse scritto, alla ripresa lo produce di
-nuovo. Vale a una condizione, che il punto si scriva in un archivio durevole e
-in modo sincrono, prima di passare al nodo dopo: un dizionario in memoria, come
-quello del motore, sparisce con il processo. Una semantica *esattamente una
-volta* per gli effetti esterni chiede qualcosa in più dal lato di chi li riceve.
-O nodi idempotenti, la proprietà che si chiede agli {doc}`strumenti
+corso una semantica **almeno una volta**: se si è interrotto dopo aver prodotto
+un effetto esterno ma prima che il punto fosse scritto, alla ripresa lo produce
+di nuovo. Vale a una condizione, che il punto si scriva in un archivio durevole
+e in modo sincrono, prima di passare al nodo dopo: un dizionario in memoria,
+come quello del motore, sparisce con il processo.
+
+Una semantica **esattamente una volta** per gli effetti esterni chiede qualcosa
+in più dal lato di chi li riceve. O nodi idempotenti, la proprietà che si
+chiede agli {doc}`strumenti
 <gli-strumenti>`, cioè tali che eseguirli due volte equivalga a eseguirli una; o
 una chiave d'idempotenza derivata da filo e passo, che il servizio esterno usa
-per riconoscere la ripetizione (e che conserva per un tempo limitato, quindi una
-ripresa molto tardiva la può superare); o un'intenzione con un identificativo,
-scritta nello stato prima dell'effetto, che alla ripresa si confronta con lo
-stato del servizio esterno. L'intenzione da sola dice soltanto che l'effetto
-forse c'è stato. C'è poi l'ambiente: il nodo che lavora sui file cambia il
+per riconoscere la ripetizione (e che conserva per un tempo limitato, quindi
+una ripresa molto tardiva la può superare); o un'intenzione con un
+identificativo, scritta nello stato prima dell'effetto, che alla ripresa si
+confronta con lo stato del servizio esterno. Osserviamo che l'intenzione da
+sola dice soltanto che l'effetto forse c'è stato.
+
+C'è poi l'ambiente: il nodo che lavora sui file cambia il
 disco, che il punto salvato non contiene, quindi alla ripresa lo stato è quello
 di prima e i file no, ed è un'altra ragione per riportarli al commit dell'ultimo
-punto, come nel passaggio di consegne. La terminazione di un grafo con cicli si
-garantisce con una variante intera, limitata dal basso, che decresce a ogni giro
-e che i nodi non possono scrivere, qui $\text{TETTO} - \text{tentativi}$, come
-il tetto del ciclo del loop engineering; non copre le riprese, perché un guasto
-che si ripete sempre fa ripartire il filo senza che la variante scenda, e serve
-un tetto anche ai tentativi per nodo.
+punto, come nel passaggio di consegne.
+
+La terminazione di un grafo con cicli si garantisce con una variante intera,
+limitata dal basso, che decresce a ogni iterazione e che i nodi non possono
+scrivere, qui $\text{TETTO} - \text{tentativi}$, come il tetto del ciclo del
+loop engineering; non copre le riprese, perché un guasto che si ripete sempre
+fa ripartire il filo senza che la variante scenda, e serve un tetto anche ai
+tentativi per nodo.
 
 Un nodo irreversibile si comporta come un nodo il cui ingresso arriva da fuori:
-il grafo scrive il punto salvato, si ferma, e riprende quando l'approvazione
-di quel nodo, in quel filo, c'è. È la persona come nodo, con una latenza e una
-capacità limitate. Nel progetto di Lopopolo, man mano che il codice cresceva,
+il grafo scrive il punto salvato, si ferma, e riprende quando l'approvazione di
+quel nodo, in quel filo, c'è. In altri termini, è la persona come nodo, con una
+latenza e una capacità limitate.
+
+Nel progetto di Lopopolo, ad esempio, man mano che il codice cresceva,
 il collo di bottiglia è diventato proprio la capacità delle persone di
 controllare {cite}`lopopolo2026harness`, e le interruzioni vanno dove conviene
 revisionare: la condizione del loop engineering, $c_{\text{rev}} <
 p_{\text{err}}\, c_{\text{err}}$, con $c_{\text{err}}$ il danno dell'errore
 lasciato passare, tutto il danno se l'effetto non si disfa; e con una capacità
 finita, nell'ordine di $p_{\text{err}}\, c_{\text{err}} / c_{\text{rev}}$.
+
 Infine, un nodo di verifica con un contesto proprio, montato con le istruzioni
 e il catalogo degli strumenti del valutatore, l'artefatto e il contratto,
 $C_{\text{val}} = \mathrm{monta}(I_{\text{val}}, \mathcal{T}_{\text{val}},
@@ -397,9 +427,9 @@ contratto, che in Rajasekaran propone chi costruisce.
 
 Il grafo non rende il modello più capace: dà un posto, in un disegno che si può
 leggere, provare e riprendere dopo un guasto, a ciò che sta attorno al modello.
-In un harness lo stato del grafo non sostituisce lo stato persistente delle
-sessioni: il registro e gli esiti ne sono campi, il commit è un effetto
-esterno, e come tale va trattato alla ripresa.
+Si noti che in un harness lo stato del grafo non sostituisce lo stato
+persistente delle sessioni: il registro e gli esiti ne sono campi, il commit è
+un effetto esterno, e come tale va trattato alla ripresa.
 
 `````{tab} Elementare
 

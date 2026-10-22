@@ -587,6 +587,20 @@ In $x = 0$ la funzione non è derivabile (il grafico ha un punto angoloso); il s
 
 `````
 
+:::{only} html
+Accanto a molti capoversi, quando ci passi sopra o ci arrivi scorrendo, compare
+un piccolo cerchio col triangolo del libro, <span class="pt-postilla-inline"
+aria-hidden="true"><img class="dark-light"
+src="_static/brand/logos/paithon-mark.svg" alt=""></span>: premuto, apre la
+postilla, una riga che dice di che cosa parla quel capoverso. La postilla si
+apre sotto il testo, e lo stesso gesto la richiude.
+:::
+
+:::{only} latex
+Nel margine esterno, accanto a molti capoversi, c'è una postilla: una riga in
+corsivo che dice di che cosa parla il capoverso.
+:::
+
 ---
 
 ## Supporta il progetto
@@ -596,9 +610,8 @@ una mano:
 
 :::{only} html
 - Metti una ⭐ e condividi il progetto GitHub [Paithon Book](https://github.com/paithon-it/paithonbook)
-- Supporta il progetto per contribuire al suo sviluppo ❤️ <span style="display: inline-block; vertical-align: middle;">
-    <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="paithon.it" data-color="#B5532C" data-emoji="🔋"  data-font="Cookie" data-text="Ricarica la mia energia" data-outline-color="#1A1A1A" data-font-color="#ffffff" data-coffee-color="#C9A961" ></script>
-</span>
+- Supporta il progetto per contribuire al suo sviluppo ❤️
+  <a class="btn btn-primary pt-sostieni" href="https://buymeacoffee.com/paithon.it">🔋 Ricarica la mia energia</a>
 
 - Aiutami a scoprire errori e migliorare il progetto: selezionando un pezzo di
   testo in qualunque pagina compare un pulsante che apre una segnalazione (una

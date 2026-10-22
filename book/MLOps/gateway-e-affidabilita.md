@@ -23,15 +23,16 @@ solo, e quasi mai direttamente. In mezzo c'è un **gateway**, una porta unica da
 cui passano tutte le chiamate, e dietro stanno i modelli: repliche proprie,
 servizi di terzi raggiunti via rete. Il gateway ha quattro funzioni. Decide chi
 passa e quanto, decide che cosa fare quando un modello non risponde, sceglie a
-quale modello mandare ciascuna richiesta, e registra che cosa succede. Il
-limite, i ritentativi e il ripiego su un altro modello sono meccanismi di difesa
-e di recupero, e il caso di AT&T dice perché vanno progettati con cura: quando
-sbagliano, sbagliano moltiplicando.
+quale modello mandare ciascuna richiesta, e registra che cosa succede.
+
+Il limite, i ritentativi e il ripiego su un altro modello sono meccanismi di
+difesa e di recupero, e il caso di AT&T dice perché vanno progettati con cura:
+quando sbagliano, sbagliano moltiplicando.
 
 ## Chi passa, e quanto
 
 Un servizio con capacità finita deve difendersi da chi chiede troppo, anche in
-buona fede, come un programma che per un errore ripete la stessa chiamata
+buona fede, ad esempio un programma che per un errore ripete la stessa chiamata
 senza fermarsi. Il limite di frequenza (**rate limit**) fissa quanto ciascuno
 può chiedere, e per un modello linguistico si scrive in due unità, richieste al
 minuto e token al minuto, perché una richiesta da dieci token e una da
@@ -113,12 +114,12 @@ più, e un cliente in errore che manda richieste senza sosta degrada il
 servizio di tutti gli altri.
 
 Il tasso però non basta, perché con un LLM una richiesta lunga occupa il
-servente molto più di una breve. Si aggiunge allora un limite $L_{\max}$ sulle
+server molto più di una breve. Si aggiunge allora un limite $L_{\max}$ sulle
 richieste in volo. Per la legge di Little, la stessa che in {doc}`Quante
 repliche accendere </MLOps/capacita-e-costo>` dà il bersaglio dell'autoscaler,
 il tasso medio ammesso è $L_{\max}/W$, con $W$ la permanenza media: quando il
-servente rallenta, $W$ cresce e il limite ammette meno richieste. Quelle oltre
-il limite si respingono subito (*load shedding*) invece di accodarle, così che
+server rallenta, $W$ cresce e il limite ammette meno richieste. Quelle oltre
+il limite si respingono subito (**load shedding**) invece di accodarle, così che
 la coda non cresca nel momento in cui la capacità manca.
 
 `````
@@ -153,7 +154,9 @@ Le difese stanno in parte da chi chiama e in parte dallo studio. Chi chiama può
 aspettare prima di riprovare, e aspettare ogni volta di più: un quarto d'ora,
 poi mezz'ora, poi un'ora. Non tutti lo stesso minuto, o alle otto e un quarto
 richiamano tutti insieme e si ricomincia: ciascuno aggiunge un po’ di caso alla
-sua attesa. La segreteria può mettere un tetto ai messaggi ripetuti, e se
+sua attesa.
+
+La segreteria può mettere un tetto ai messaggi ripetuti, e se
 superano uno ogni dieci messaggi nuovi smette di registrarli, perché oltre quel
 punto ripetere non aiuta nessuno. Quando è piena da troppo tempo può rispondere
 con un avviso che chiude subito, «prenotazioni sospese fino alle dieci», senza
@@ -178,7 +181,7 @@ A = \sum_{i=0}^{k} p^{\,i} = \frac{1 - p^{k+1}}{1 - p},
 $$
 
 che vale circa 1 per $p$ piccolo e tende a $k + 1$ per $p \to 1$, e il carico
-offerto al servente è $A\lambda$. Per un guasto isolato, con $p$ piccolo e
+offerto al server è $A\lambda$. Per un guasto isolato, con $p$ piccolo e
 indipendente dal carico, il ritentativo è quasi gratuito e recupera quasi
 tutte le richieste. In un guasto da sovraccarico $p$ dipende invece dal carico
 stesso: più tentativi allungano la coda, la coda fa scadere più tentativi, i
@@ -187,22 +190,24 @@ $k = 3$ moltiplica per quattro il carico quando la capacità manca, e
 può tenere il sistema in sovraccarico anche dopo che la causa scatenante è
 sparita. È un **guasto metastabile** {cite}`bronson2021metastable`: allo stesso
 carico nominale il sistema ha due equilibri, e un'eccitazione transitoria lo
-sposta dal buono al cattivo. Il servente lavora a pieno, e quasi tutto il
+sposta dal buono al cattivo. Il server lavora a pieno, e quasi tutto il
 suo lavoro va a tentativi che il cliente ha già abbandonato: goodput prossimo a
 zero con il throughput al massimo.
 
 Le difese agiscono sui termini di $A$ e sull'anello. L'attesa esponenziale fra
-i tentativi, con una componente casuale (*backoff* con *jitter*: prima del
+i tentativi, con una componente casuale (**backoff** con *jitter*: prima del
 ritentativo $i \ge 1$ si attende un tempo uniforme in $[0, \min(t_{\max}, t_0
 2^{i-1})]$, con $t_0$ l'attesa di base e $t_{\max}$ il tetto), diluisce nel
 tempo il carico dei ritentativi e ne decorrela gli istanti: senza la parte
 casuale, i clienti falliti insieme ritentano insieme e ricreano il picco a ogni
-scadenza. È il *full jitter*. Nel confronto di Brooker, le tre varianti con una
+scadenza. È il *full jitter*.
+
+Nel confronto di Brooker, le tre varianti con una
 componente casuale battono tutte quella che ne è priva. Fra loro, quella che
 tiene fissa metà dell'attesa (l’*equal jitter*) è la peggiore, mentre fra il
 full jitter e il *decorrelated jitter*, che allarga l'intervallo a partire
 dall'attesa precedente, la scelta resta aperta {cite}`brooker2015backoff`. Se
-il servente ha risposto 429 indicando quando riprovare (l'intestazione
+il server ha risposto 429 indicando quando riprovare (l'intestazione
 `Retry-After`), quell'indicazione viene prima del backoff. Un budget di
 ritentativi, per esempio non più del 10% delle richieste nuove applicato con un
 token bucket, impone $A \le 1{,}1$ qualunque sia $p$, e rompe l'anello; lo si
@@ -213,8 +218,8 @@ destinazione: sopra una soglia passa allo stato *aperto* e fa fallire subito
 ogni chiamata senza inoltrarla, dopo un intervallo ne lascia passare una sola
 (stato *semiaperto*), e torna *chiuso* se va a buon fine. Toglie carico a chi è
 già in difficoltà, e restituisce l'errore in millisecondi invece che allo
-scadere di un timeout. L'ultima difesa sta dal lato del servente: se ogni
-richiesta porta con sé la propria scadenza e il servente scarta senza eseguirle
+scadere di un timeout. L'ultima difesa sta dal lato del server: se ogni
+richiesta porta con sé la propria scadenza e il server scarta senza eseguirle
 quelle già scadute (la *propagazione della scadenza*), sparisce il lavoro speso
 per nessuno, che è il combustibile della metastabilità.
 
@@ -224,7 +229,7 @@ e un timeout sul totale la interromperebbe regolarmente, trasformando una
 risposta sana in un ritentativo che rifà il prefill da capo. Una chiamata che
 genera testo non si può ritentare in modo trasparente dopo che i primi token
 sono già arrivati all'utente: il ritentativo va fatto prima del primo token, o
-bisogna saper riprendere lo stream. Ritentare una richiesta che il servente
+bisogna saper riprendere lo stream. Ritentare una richiesta che il server
 stava già generando fa pagare due volte: il lavoro del primo tentativo, e
 presso un fornitore anche i suoi token, è speso per nessuno.
 
@@ -303,23 +308,28 @@ aspettava ancora: prima del guasto, nei trenta secondi dopo, fra trenta e
 novanta secondi dopo, e fra quattro e cinque minuti dopo. L'ultima è quanto
 resta in fila quando la simulazione si ferma.
 
-Senza ritentativi il servizio si riprende senza interventi. A guasto finito in
-fila ci sono ottocento tentativi che, quando il modello li raggiunge, nessuno
-aspetta più, e il modello li smaltisce con un margine di venti al secondo
-(cento contro ottanta). Finché la fila vale più di due secondi d'attesa, cioè
-per una trentina di secondi, lavora a vuoto: ogni risposta arriva a qualcuno
-che se n'è già andato. Poi le risposte utili tornano a ottanta. Con tre
-ritentativi il servizio non si riprende più ({numref}`fig-tempesta-che-resta`).
-Ogni richiesta che trova la fila lunga scade, e scadendo ne genera un'altra,
-fino a quattro tentativi: 320 al secondo contro una capacità di 100. La fila
-cresce senza fine (68.192 tentativi quando la simulazione si ferma), il modello
-lavora al massimo e le risposte utili sono zero, con il guasto finito da cinque
-minuti. È lo stato che si chiama metastabile: la causa è sparita, ma il sistema
-resta bloccato in una condizione che si autoalimenta, e ci resta finché
-qualcuno non spegne i ritentativi o non taglia il traffico. Ed era esposto
-molto prima degli ottanta al secondo: con tre ritentativi basta che le
-richieste nuove superino le 25 al secondo perché un guasto abbastanza lungo
-porti i tentativi oltre la capacità, 25 per quattro tentativi, cioè 100.
+Senza ritentativi il servizio si riprende senza interventi. Infatti, a guasto
+finito in fila ci sono ottocento tentativi che, quando il modello li raggiunge,
+nessuno aspetta più, e il modello li smaltisce con un margine di venti al
+secondo (cento contro ottanta). Finché la fila vale più di due secondi
+d'attesa, cioè per una trentina di secondi, lavora a vuoto: ogni risposta
+arriva a qualcuno che se n'è già andato. Poi le risposte utili tornano a
+ottanta.
+
+Con tre ritentativi il servizio non si riprende più
+({numref}`fig-tempesta-che-resta`). Ogni richiesta che trova la fila
+lunga scade, e scadendo ne genera un'altra, fino a quattro tentativi: 320 al
+secondo contro una capacità di 100. La fila cresce senza fine (68.192 tentativi
+quando la simulazione si ferma), il modello lavora al massimo e le risposte
+utili sono zero, con il guasto finito da cinque minuti. È lo stato che si
+chiama metastabile: la causa è sparita, ma il sistema resta bloccato in una
+condizione che si autoalimenta, e ci resta finché qualcuno non spegne i
+ritentativi o non taglia il traffico.
+
+Si noti che il sistema era esposto molto prima degli ottanta al secondo: con
+tre ritentativi basta che le richieste nuove superino le 25 al secondo perché
+un guasto abbastanza lungo porti i tentativi oltre la capacità, 25 per quattro
+tentativi, cioè 100.
 
 ```{figure} ../figures/tempesta-che-resta.svg
 :name: fig-tempesta-che-resta
@@ -338,18 +348,19 @@ ritentativi sono in media otto al secondo, dopo una prima raffica grande quanto
 la scorta, il carico resta sotto la capacità, e la fila si svuota. Si svuota
 più piano che senza ritentativi (38,4 risposte utili al secondo fra trenta e
 novanta secondi, contro 80,3), perché anche i ritentativi permessi aggiungono
-lavoro. Il vantaggio di ritentare comunque un poco si vede quando un tentativo
-fallisce per caso e non per la ressa, un evento che la simulazione non
-contempla: lì il secondo tentativo passa quasi sempre, mentre senza ritentativi
-quella risposta andrebbe persa. L'attesa che cresce e l'avviso che chiude
-subito non sono nella simulazione; agiscono sugli stessi numeri, diluendo i
-ritentativi nel tempo o togliendoli del tutto. Scartare i tentativi scaduti fa
-meglio di tutto il resto. Il modello non spende un istante per chi non aspetta
-più, i ritentativi trovano la fila corta, e nei trenta secondi dopo il guasto
-le risposte utili sono 89,5 al secondo, più delle ottanta richieste nuove che
-arrivano: oltre a loro il modello serve, con il suo margine di venti al
-secondo, anche i ritentativi di chi era rimasto senza risposta durante il
-guasto e aspetta ancora.
+lavoro. D'altra parte, il vantaggio di ritentare comunque un poco si vede
+quando un tentativo fallisce per caso e non per la ressa, un evento che la
+simulazione non contempla: lì il secondo tentativo passa quasi sempre, mentre
+senza ritentativi quella risposta andrebbe persa. L'attesa che cresce e
+l'avviso che chiude subito non sono nella simulazione; agiscono sugli stessi
+numeri, diluendo i ritentativi nel tempo o togliendoli del tutto.
+
+Scartare i tentativi scaduti fa meglio di tutto il resto. Infatti il modello
+non spende un istante per chi non aspetta più, i ritentativi trovano la fila
+corta, e nei trenta secondi dopo il guasto le risposte utili sono 89,5 al
+secondo, più delle ottanta richieste nuove che arrivano: oltre a loro il
+modello serve, con il suo margine di venti al secondo, anche i ritentativi di
+chi era rimasto senza risposta durante il guasto e aspetta ancora.
 
 ## A quale modello
 
@@ -378,13 +389,13 @@ Tutti passano prima dall'ambulatorio veloce, e il medico generico prova a
 risolvere; se capisce che il caso lo supera, manda il paziente dallo
 specialista. La decisione arriva dopo una visita, quindi è più informata, e lo
 specialista vede solo i casi difficili. In cambio, chi arriva allo specialista
-ha pagato due visite e ha aspettato due volte. Se il generico costa un decimo
-dello specialista e risolve otto casi su dieci, cento pazienti costano cento
-visite dal generico, che valgono quanto dieci dallo specialista, più le venti
-visite dallo specialista di chi non è stato risolto: trenta in tutto, meno di
-un terzo delle cento che servirebbero mandando tutti da lui. Conviene finché il
-generico sa riconoscere i casi che non sa risolvere; uno che si crede bravo e
-non manda mai nessuno costa poco e sbaglia molto.
+ha pagato due visite e ha aspettato due volte. Ad esempio, se il generico costa
+un decimo dello specialista e risolve otto casi su dieci, cento pazienti
+costano cento visite dal generico, che valgono quanto dieci dallo specialista,
+più le venti visite dallo specialista di chi non è stato risolto: trenta in
+tutto, meno di un terzo delle cento che servirebbero mandando tutti da lui.
+Conviene finché il generico sa riconoscere i casi che non sa risolvere; uno che
+si crede bravo e non manda mai nessuno costa poco e sbaglia molto.
 
 Poi c'è il caso in cui lo specialista non c'è. Il turno salta, il reparto
 chiude, e il paziente va mandato in un altro ospedale. Qui il criterio smette
@@ -427,7 +438,9 @@ $$
 e la latenza si compone allo stesso modo: la cascata paga sempre $c_1$, e a chi
 viene inoltrato fa pagare tutte le chiamate precedenti. Conviene quando $u_1$ è
 alto e il punteggiatore ha pochi falsi positivi, cioè accetta di rado risposte
-sbagliate, che sono l'errore che la cascata non recupera. Con due modelli, e
+sbagliate, che sono l'errore che la cascata non recupera.
+
+Con due modelli, e
 trascurando il costo del punteggiatore, la cascata costa meno che mandare tutto
 al secondo se $c_1 + (1-u_1)c_2 < c_2$, cioè se $u_1 > c_1/c_2$.
 
@@ -512,7 +525,7 @@ il primo token, con $t_{\text{rete}}$ i due tratti di rete, l'andata della
 richiesta e il ritorno del primo token al cliente. È il TTFT visto dal cliente,
 come in {doc}`Misurare un servizio </MLOps/metriche-di-servizio>`; la somma
 $t_{\text{coda}} + t_{\text{prefill}}$ è il tratto che la replica può misurare
-in autonomia, il TTFT lato servente. Il TPOT è la durata dello span di decode
+in autonomia, il TTFT lato server. Il TPOT è la durata dello span di decode
 divisa per $N_{\text{out}} - 1$. La p99 aggregata dice che uno dei termini è
 cresciuto; la traccia dice quale.
 
@@ -522,8 +535,8 @@ in coda (*tail-based*), deciso a traccia completa, trattiene tutte le lente e
 tutte quelle in errore, con l'onere di tenere in memoria gli span finché la
 richiesta non finisce. Gli attributi propri di un LLM sono il modello e la sua
 versione, $N_{\text{in}}$ e $N_{\text{out}}$, i token trovati nella cache del
-prefisso, l'indice del tentativo e l'eventuale destinazione di ripiego: senza gli
-ultimi due, una tempesta di ritentativi appare nelle metriche come un aumento
+prefisso, l'indice del tentativo e l'eventuale destinazione di ripiego: senza
+gli ultimi due, una tempesta di ritentativi appare nelle metriche come un aumento
 del traffico offerto, e la diagnosi va nel verso sbagliato. Il testo di prompt e
 risposte può contenere dati personali, e si registra solo dove le regole sulla
 loro protezione lo consentono, di solito ridotto o cifrato.
@@ -554,7 +567,9 @@ trecento persone ci passano in tre minuti. Il guasto finto, invece, tocca
 pochi: si fa trovare chiusa una scala a una classe sola, mentre tutte le altre
 escono come sempre, così la ressa nei corridoi è quella vera e, se qualcosa va
 storto, il problema resta confinato. C'è anche un modo di fermare tutto se la
-prova degenera. Si cambia anche l'evento, perché gli incendi non scelgono il
+prova degenera.
+
+Si cambia anche l'evento, perché gli incendi non scelgono il
 momento comodo: un anno l'allarme suona mentre la scala principale è chiusa per
 lavori, un altro durante la ricreazione. Poi la si ripete, perché la scuola
 cambia (un'aula nuova, un corridoio chiuso) e il piano valido l'anno scorso può
@@ -585,7 +600,9 @@ prerilasciabile, la perdita di una zona. Si eseguono gli esperimenti in
 produzione, perché solo lì il carico ha la sua distribuzione vera. Infine li si
 automatizza perché girino con continuità, dato che il sistema cambia e la
 confidenza guadagnata ieri invecchia. L'ipotesi è falsificata se lo stato
-stazionario differisce fra i due gruppi. Per contenere il rischio l'articolo
+stazionario differisce fra i due gruppi.
+
+Per contenere il rischio l'articolo
 limita l'esperimento a una piccola percentuale degli utenti; la pratica
 successiva ne ha fatto un principio, il *raggio d'impatto* minimo, con un
 arresto automatico legato allo stato stazionario.
@@ -658,7 +675,7 @@ giorni cattivi.
   il limite si allarga degli avanzi delle prenotazioni aperte. Secchi per
   cliente e per modello, su richieste e su token, danno l'isolamento; un limite
   $L_{\max}$ sulle richieste in volo ammette in media $L_{\max}/W$ richieste al
-  secondo, e si stringe quando il servente rallenta.
+  secondo, e si stringe quando il server rallenta.
 - Con probabilità di fallimento $p$ e $k$ ritentativi i tentativi per
   richiesta sono $A = (1-p^{k+1})/(1-p)$, che tende a $k+1$ nel sovraccarico:
   la retroazione può rendere il guasto metastabile

@@ -1,0 +1,14 @@
+# Le postille di questa pagina, una per capoverso del testo comune.
+# Ognuna vale finché la sua impronta combacia col testo del capoverso.
+- inizio: "Verso la metà degli anni Novanta,"
+  impronta: "0f984080037e"
+  postilla: "MNIST: 70.000 cifre scritte a mano, 60.000 per addestrare e 10.000 per provare"
+- inizio: "In PyTorch qualunque pezzo di rete"
+  impronta: "0ba52101c82b"
+  postilla: "Il modello si scrive come una normale classe Python, non come un elenco a parte"
+- inizio: "Il metodo `__init__` (il costruttore, eseguito"
+  impronta: "5dd871e832cb"
+  postilla: "Il costruttore apre con la riga che prepara gli elenchi interni: senza, errore"
+- inizio: "Un modello appena creato parte da"
+  impronta: "f69c62026f61"
+  postilla: "La loss di partenza è un punto di riferimento: chi non scende da lì non impara"

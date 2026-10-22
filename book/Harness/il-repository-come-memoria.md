@@ -101,29 +101,29 @@ $$
 
 con $0{,}9^{10} \approx 0{,}35$: è l'aritmetica della moltiplicazione degli
 errori che il {doc}`loop engineering </IngegneriaLLM/loop-engineering>` applica
-ai passi di un giro, spostata dai passi alle sessioni. Due ipotesi del conto
-vanno discusse. L’*indipendenza*: una sessione che legge il codice scritto
-dalle precedenti tende a imitarne le scelte. Con sessioni scambiabili e
-positivamente correlate, scrivendo $Q$ per la probabilità di fedeltà comune a
-tutte le sessioni (aleatoria, di media $q$), la probabilità di restare fedeli è
+ai passi di un giro, spostata dai passi alle sessioni. Due ipotesi del calcolo
+vanno discusse. L’*indipendenza*: una sessione che legge il codice scritto dalle
+precedenti tende a imitarne le scelte. Con sessioni scambiabili e positivamente
+correlate, scrivendo $Q$ per la probabilità di fedeltà comune a tutte le
+sessioni (aleatoria, di media $q$), la probabilità di restare fedeli è
 $\mathbb{E}[Q^K] \ge (\mathbb{E}[Q])^K = q^K$ per la disuguaglianza di Jensen,
 quindi $q^K$ è un limite inferiore; ma la stessa correlazione alza la
 probabilità che tutte sbaglino allo stesso modo, una volta che una scelta
 sbagliata è entrata nel codice. L'imitazione non migliora $q$, concentra
 l'errore. Il *$q$ costante*: in realtà $q$ dipende da $d$. Per le scelte
 convenzionali, che il modello ricava dal pre-addestramento e dal codice, è
-vicino a uno; per quelle idiosincratiche, le pratiche non standard del
-progetto, può essere vicino a zero, e per loro $q^K$ crolla. Sono le decisioni
-da scrivere.
+vicino a uno; per quelle idiosincratiche, le pratiche non standard del progetto,
+può essere vicino a zero, e per loro $q^K$ crolla. Sono le decisioni da
+scrivere.
 
 Scrivere $d$ in $\mathcal{K}_{\text{repo}}$ porta $q$ vicino a uno a tre
 condizioni: che il documento venga caricato quando serve, che venga seguito, e
-che resti vero. Il conto, d'altra parte, non contiene i meccanismi che
+che resti vero. Il calcolo, d'altra parte, non contiene i meccanismi che
 recuperano un errore prima che entri nella storia, la verifica e la revisione.
 Ne segue anche il ruolo della prova della sessione nuova: verifica una
 condizione necessaria (le cinque risposte stanno in $\mathcal{K}_{\text{repo}}$
 e si raggiungono a basso costo), non una sufficiente, perché un documento può
-esserci e mentire, ed è il caso peggiore, giacché l'agente lo segue. Tenere
+esserci e mentire, ed è il caso peggiore, poiché l'agente lo segue. Tenere
 quella conoscenza nel repository, e non in un sistema accanto, ha infine una
 ragione di versione: una decisione e il codice che la applica cambiano nello
 stesso commit, e la storia dice quale versione della regola valeva per quale
@@ -146,40 +146,44 @@ passaggio, fra le regole di progetto; qui diventa la porta di tutto il
 repository.
 
 La tentazione, a ogni errore dell'agente, è aggiungere una riga a quel file, e
-il file cresce fino a diventare un manuale. La squadra di Lopopolo ha provato
-la strada del file unico e grande, e racconta come fallisce. Il contesto è una
-risorsa scarsa, e un file enorme sfratta il compito, il codice e i documenti
-che servono davvero, così l'agente o perde un vincolo importante o comincia a
-inseguire quelli sbagliati. Troppe indicazioni smettono di indicare: quando
-tutto è «importante», niente lo è, e l'agente finisce per attaccarsi alla
+il file cresce fino a diventare un manuale. La squadra di Lopopolo ha provato la
+strada del file unico e grande, e racconta come fallisce. Il contesto è una
+risorsa scarsa, e un file enorme toglie spazio al compito, al codice e ai
+documenti che servono davvero, così l'agente o perde un vincolo importante o
+comincia a inseguire quelli sbagliati. Troppe indicazioni smettono di indicare:
+quando tutto è «importante», niente lo è, e l'agente finisce per attaccarsi alla
 regola che ha sotto gli occhi invece di cercare quella che serve. Il manuale
-invecchia subito, diventa un cimitero di regole scadute di cui l'agente non sa
+invecchia subito, diventa un accumulo di regole scadute di cui l'agente non sa
 quali valgano ancora, e le persone smettono di aggiornarlo. E non si presta ai
 controlli meccanici (che cosa copre, se è aggiornato, chi ne risponde, se i
-rimandi tengono): è un blocco di prosa {cite}`lopopolo2026harness`. A questo si
-aggiunge l'effetto di posizione che la sezione sul context engineering discute:
-misurato sul recupero di informazioni, con modelli del 2023, un modello usa
-peggio ciò che sta a metà di un testo lungo {cite}`liu2024lost`. Sulle regole
-di un file d'istruzioni l'effetto non è stato misurato, e il file sta comunque
-in testa al contesto; ma una regola sepolta alla riga cinquecento di un file di
-mille è il caso su cui non conviene scommettere.
+rimandi tengono): è un blocco di prosa {cite}`lopopolo2026harness`.
+
+A questo si aggiunge l'effetto di posizione che la sezione sul context
+engineering discute: misurato sul recupero di informazioni, con modelli del
+2023, un modello usa peggio ciò che sta a metà di un testo lungo
+{cite}`liu2024lost`. Sulle regole di un file d'istruzioni l'effetto non è stato
+misurato, e il file sta comunque in testa al contesto; ma una regola sepolta
+alla riga cinquecento di un file di mille è il caso su cui non conviene
+scommettere.
 
 La riparazione è trattare il file come un **indice** e non come un manuale. Nel
 repository di Lopopolo `AGENTS.md` è lungo un centinaio di righe e fa
 soprattutto da mappa, con i rimandi alle fonti di verità più profonde; il resto
 vive in una cartella `docs/` organizzata, con i documenti sull'architettura e
 sul progetto, i piani di lavoro in corso e conclusi con le decisioni prese, le
-specifiche del prodotto e i riferimenti. Un indice di questo tipo dice che
-cos'è il progetto, quali comandi lo avviano e lo controllano, quali poche
-regole non si violano mai, e dove guardare per tutto il resto, come nella
+specifiche del prodotto e i riferimenti. Un indice di questo tipo dice che cos'è
+il progetto, quali comandi lo avviano e lo controllano, quali poche regole non
+si violano mai, e dove guardare per tutto il resto, come nella
 {numref}`fig-harness-indice`. Conviene che descriva i documenti, cioè ciò che
-dal codice non si ricava, più che il codice stesso, che l'agente sa esplorare
-da sé. L'agente parte da un punto d'ingresso piccolo e stabile, e impara dove
-guardare dopo: è quella che nel disegno delle interfacce si chiama
-**divulgazione progressiva** (*progressive disclosure*), mostrare subito il
-poco che serve a tutti, e il resto quando serve. È una pratica raccontata da
-chi l'ha adottata, non un risultato misurato contro un gruppo di confronto, e
-le misure del 2026 ne mostrano i limiti.
+dal codice non si ricava, più che il codice stesso, che l'agente sa esplorare da
+sé.
+
+L'agente parte da un punto d'ingresso piccolo e stabile, e impara dove guardare
+dopo: è quella che nel disegno delle interfacce si chiama **divulgazione
+progressiva** (*progressive disclosure*), mostrare subito il poco che serve a
+tutti, e il resto quando serve. È una pratica raccontata da chi l'ha adottata,
+non un risultato misurato contro un gruppo di confronto, e le misure del 2026 ne
+mostrano i limiti.
 
 ```{figure} ../figures/harness-indice-schedario.svg
 :name: fig-harness-indice
@@ -212,11 +216,11 @@ dentro ci sono regole di tre anni fa, quando la bottega usava un'altra vernice:
 l'artigiano non sa che sono scadute, e le segue.
 
 Il cartello ha un punto debole suo, e conviene saperlo. Funziona solo se le
-etichette dei cassetti sono chiare. Un cassetto con scritto «varie» non lo apre
-nessuno, e la regola che ci sta dentro, per quell'artigiano, è come se non
-fosse scritta. Al contrario, un'etichetta troppo vaga fa aprire il cassetto
-anche quando non serve, e la mattina si allunga. Per le regole che non si
-possono mancare, quindi, il cassetto non basta: vanno sul cartello stesso, in
+etichette dei cassetti sono chiare. Un cassetto con scritto «varie»
+non lo apre nessuno, e la regola che ci sta dentro, per quell'artigiano, è come
+se non fosse scritta. Al contrario, un'etichetta troppo vaga fa aprire il
+cassetto anche quando non serve, e la mattina si allunga. Per le regole che non
+si possono mancare, quindi, il cassetto non basta: vanno sul cartello stesso, in
 alto. Nel file di un agente l'etichetta del cassetto è la riga che, accanto al
 nome di ogni documento, dice che cosa contiene e quando aprirlo.
 
@@ -237,10 +241,10 @@ $$
 \mathbb{E}[L] = L_0 + \sum_{j=1}^{m} \tilde{p}_j L_j .
 $$
 
-Il risparmio rispetto al monolite è $\sum_j (1 - \tilde{p}_j) L_j$ per
-sessione. La formula, presa da sola, premia proprio il guasto da temere: se
+Il risparmio rispetto al monolite è $\sum_j (1 - \tilde{p}_j) L_j$ per sessione.
+Si noti che la formula, presa da sola, premia proprio il guasto da temere: se
 l'instradamento peggiora, $r_j$ scende, $\mathbb{E}[L]$ scende con lui, e il
-«risparmio» sale. Il conto completo ha un termine di perdita: con $C_j$ il
+«risparmio» sale. Il calcolo completo ha un termine di perdita: con $C_j$ il
 danno atteso di una regola mancata e $c_g$ il costo di un giro di strumento per
 aprire un documento, l'indice conviene se
 
@@ -271,22 +275,23 @@ molte sessioni, e usano modelli del 2025; dicono comunque una cosa più scomoda 
 più utile di «scrivilo bene».
 
 Gloaguen e colleghi hanno messo quattro agenti di programmazione davanti a
-compiti presi da progetti esistenti, in tre condizioni: senza file
-d'istruzioni (loro lo chiamano file di contesto), con un file scritto da un
-modello, e, nei progetti che lo avevano, con quello scritto dagli sviluppatori
+compiti presi da progetti esistenti, in tre condizioni: senza file d'istruzioni
+(loro lo chiamano file di contesto), con un file scritto da un modello, e, nei
+progetti che lo avevano, con quello scritto dagli sviluppatori
 {cite}`gloaguen2026agentsmd`. I file scritti da un modello hanno cambiato di
 poco la quota di compiti riusciti, mezzo punto e due punti percentuali in meno
-nei due gruppi di prova: differenze così piccole che potrebbero essere dovute
-al caso. Il costo di ogni esecuzione, cioè quanto si paga per il lavoro del
+nei due gruppi di prova: differenze così piccole che potrebbero essere dovute al
+caso. Il costo di ogni esecuzione, cioè quanto si paga per il lavoro del
 modello, è invece salito in media del 20% e del 23%, e questo aumento non è
-dovuto al caso. Quelli scritti dagli sviluppatori hanno alzato la quota di 2,4
-punti in media, anche questi troppo pochi per escludere il caso, e il costo in
-media del 19%, con grandi differenze da un agente all'altro; in compenso hanno
-fatto meglio dei file scritti da un modello, ed è l'unica differenza di
-successo dello studio che il caso non spiega. Gli agenti seguivano le
-istruzioni, e proprio per questo facevano più passi: più test, più
-esplorazione. Le panoramiche del progetto, la parte che quasi tutte le guide
-raccomandano, non aiutavano.
+dovuto al caso.
+
+Quelli scritti dagli sviluppatori hanno alzato la quota di 2,4 punti in media,
+anche questi troppo pochi per escludere il caso, e il costo in media del 19%,
+con grandi differenze da un agente all'altro; in compenso hanno fatto meglio dei
+file scritti da un modello, ed è l'unica differenza di successo dello studio che
+il caso non spiega. Gli agenti seguivano le istruzioni, e proprio per questo
+facevano più passi, in particolare più test e più esplorazione. Le panoramiche
+del progetto, la parte che quasi tutte le guide raccomandano, non aiutavano.
 
 Due risultati spostano la lettura. Dove dal progetto si toglieva ogni altra
 documentazione, il file scritto da un modello migliorava il successo di 2,7

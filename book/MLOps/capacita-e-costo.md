@@ -16,10 +16,10 @@ viste); prima del fischio finale alle centrali si chiede di produrre sotto il
 massimo, così che abbiano margine da dare subito; e nel Galles la centrale di
 Dinorwig, che tiene l'acqua in un lago in cima a una montagna e la fa cadere
 quando serve, con le turbine già in rotazione passa da zero a 1.320 megawatt in
-dodici secondi. Tanta preparazione ha una ragione semplice. La corrente va
-prodotta nell'istante in cui la si consuma, e una centrale a carbone spenta ha
-bisogno di ore per arrivare a regime: accesa quando la domanda arriva, arriva
-tardi.
+dodici secondi. Tanta preparazione ha una ragione semplice. Infatti la
+corrente va prodotta nell'istante in cui la si consuma, e una centrale a
+carbone spenta ha bisogno di ore per arrivare a regime: accesa quando la
+domanda arriva, arriva tardi.
 
 Un servizio che risponde con un modello ha lo stesso problema, con una
 differenza che lo peggiora. Le sue centrali sono schede prese a nolo a ore, e
@@ -28,7 +28,9 @@ ragiona è la **replica**, una copia completa del servizio: il modello caricato
 sulle sue schede, raggiungibile al suo indirizzo (*endpoint*), pronto a
 rispondere. Il traffico non è mai piatto (di giorno cresce, di notte cala, e
 ogni tanto qualcosa lo fa saltare), e quante repliche tenere accese è una
-decisione che si prende di continuo. Per prenderla bene servono quattro cose:
+decisione che si prende di continuo.
+
+Per prenderla bene servono quattro cose:
 quanto traffico sostiene una replica, che cosa guardare per capire che ne
 servono di più, quanto tempo passa fra chiederne una e averla, e quanto costa
 ogni token quando le repliche sono accese, che dipende anche da quanta parte di
@@ -70,11 +72,12 @@ formando, e contando abbastanza clienti da non farsi ingannare da una mezz'ora
 fortunata. Finché il bancone sta dietro agli arrivi la quota resta alta; poi, a
 un certo ritmo, precipita, perché da lì in avanti la fila si allunga senza più
 recuperare. La capacità è l'ultimo ritmo prima del crollo, e la si prende con
-un margine sotto, perché lì vicino basta una mattina storta. E i clienti finti
-devono comprare come quelli veri: dieci persone che chiedono una rosetta
-ciascuna non dicono niente di un sabato con le torte da ritirare (con i
-modelli, cento domande di una riga non dicono niente di un giorno di documenti
-da riassumere).
+un margine sotto, perché lì vicino basta una mattina storta.
+
+Inoltre i clienti finti devono comprare come quelli veri: dieci persone che
+chiedono una rosetta ciascuna non dicono niente di un sabato con le torte da
+ritirare (con i modelli, cento domande di una riga non dicono niente di un
+giorno di documenti da riassumere).
 
 La prova con gli amici resta quella giusta in un caso solo: quando i clienti
 sono sempre gli stessi dieci, e ciascuno torna solo dopo essere stato
@@ -120,19 +123,24 @@ $$
 $$
 
 con la quota fissata dalla promessa. È la variante duale del goodput, quella
-con cui il servizio si dimensiona. Tre condizioni la rendono significativa. La
-conformità a un $\lambda$ dato dipende dalla distribuzione congiunta delle
-lunghezze di prompt e risposte, quindi lo sweep si fa rigiocando un campione
-del traffico vero e non richieste tutte uguali. A ogni $\lambda$ si scartano i
-secondi di riscaldamento, in cui la coda si sta ancora formando, e si misura su
-una finestra di almeno qualche migliaio di richieste: la conformità è una
-frequenza, e su 200 richieste una quota del 90% ha uno scarto tipo di
-$\sqrt{0{,}9 \cdot 0{,}1/200} \approx 2$ punti. Vicino a $\mu^\ast$ la curva
+con cui il servizio si dimensiona. Tre condizioni la rendono significativa. In
+primo luogo, la conformità a un $\lambda$ dato dipende dalla distribuzione
+congiunta delle lunghezze di prompt e risposte, quindi lo sweep si fa
+rigiocando un campione del traffico vero e non richieste tutte uguali. In
+secondo luogo, a ogni $\lambda$ si scartano i secondi di riscaldamento, in cui
+la coda si sta ancora formando, e si misura su una finestra di almeno qualche
+migliaio di richieste: la conformità è una frequenza, e su 200 richieste una
+quota del 90% ha uno scarto tipo di $\sqrt{0{,}9 \cdot 0{,}1/200} \approx 2$
+punti.
+
+Infine, vicino a $\mu^\ast$ la curva
 di conformità è ripida: nella coda M/M/1, con $\mu$ il tasso di servizio grezzo
 della replica, il tempo di permanenza è esponenziale di parametro $\mu-\lambda$,
 la conformità a una soglia $\tau$ vale $1 - e^{-(\mu-\lambda)\tau}$, e quindi
 $\mu^\ast = \mu - \ln 10/\tau$ per la quota del 90%. Per questo si opera a una
-frazione di $\mu^\ast$, non a $\mu^\ast$. La M/M/1 resta un modello
+frazione di $\mu^\ast$, non a $\mu^\ast$.
+
+La M/M/1 resta un modello
 didattico: serve una richiesta alla volta con tempi esponenziali, mentre una
 replica con batching continuo ne serve molte insieme e deve rispettare due
 soglie, su TTFT e TPOT. Dà la forma della curva, ripida vicino alla
@@ -151,8 +159,10 @@ Una volta misurata la capacità, la regola sembra ovvia. Se arrivano $\lambda$
 richieste al secondo (il tasso d'arrivo) e una replica ne serve $\mu^\ast$ (la
 capacità appena misurata, con l'asterisco a ricordare il tetto per le
 promesse), servono in tutto $\lambda/\mu^\ast$ repliche, arrotondando per
-eccesso: sessanta richieste al secondo con repliche da otto fanno 7,5, cioè
-otto repliche. Il problema è che $\lambda$ non si conosce in anticipo. Il
+eccesso: ad esempio, sessanta richieste al secondo con repliche da otto fanno
+7,5, cioè otto repliche.
+
+Il problema è che $\lambda$ non si conosce in anticipo. Il
 sistema che decide quante repliche tenere accese si chiama **autoscaler**, e lo
 stima da qualcos'altro: ogni pochi secondi legge una grandezza, la confronta
 con un bersaglio, e aggiunge o toglie repliche. È un anello di controllo
@@ -177,7 +187,9 @@ Con un modello va nello stesso modo, e peggio. Il contatore d'uso della scheda
 segna per quanto tempo c'è almeno un calcolo in corso, piccolo o grande che
 sia. Con il mazzo continuo, appena c'è una richiesta sola, un calcolo in corso
 c'è sempre: il contatore segna il pieno sia con una conversazione aperta sia
-con sessanta. A fare da frequenza sono due numeri. Il primo è la fila, le
+con sessanta.
+
+A fare da frequenza sono due numeri. Il primo è la fila, le
 richieste che aspettano un posto nel mazzo: se cresce, arriva più di quanto si
 serva. Il secondo è quante richieste sono aperte in tutto, in fila o già in
 lavorazione: sale e scende con il traffico anche quando la fila è vuota, e dice
@@ -190,7 +202,9 @@ sceglie a caso: è quante ne tiene aperte una replica che lavora alla sua
 capacità, misurata con la prova del panettiere, meno il margine. Se con quattro
 repliche ce ne sono ottanta aperte, venti ciascuna, cioè il doppio, se ne
 chiedono otto; se ce ne sono dieci e mezza ciascuna, appena sopra le dieci, non
-si muove niente. Salire si sale subito, perché ogni minuto di ritardo è un
+si muove niente.
+
+Salire si sale subito, perché ogni minuto di ritardo è un
 minuto di clienti in coda; scendere si scende piano, dopo aver visto il
 traffico basso per qualche minuto consecutivo, perché chi spegnesse a ogni calo
 passerebbe la giornata a spegnere e riaccendere. Chi ha già chiesto tre
@@ -488,11 +502,12 @@ servono a stare fermi. Lo fa senza margine, perché al picco quelle otto
 lavorano al 94%; con la stessa mira dell’80% dell'autoscaler ne servirebbero
 dieci.
 
-Inseguire il traffico dimezza le ore pagate, 94,4, e l'uso sale attorno al 74%;
-l'evento delle nove arriva tutto insieme, e ogni minuto di avvio diventa un
-minuto scoperto: con un avvio da un minuto se ne perde uno, con otto se ne
-perdono otto ({numref}`fig-repliche-in-ritardo`). Lo 0,63% delle richieste
-della giornata trova la porta stretta, e le ore pagate restano le stesse.
+Inseguire il traffico dimezza le ore pagate, 94,4, e l'uso sale attorno al 74%.
+Tuttavia l'evento delle nove arriva tutto insieme, e ogni minuto di avvio
+diventa un minuto scoperto: con un avvio da un minuto se ne perde uno, con otto
+se ne perdono otto ({numref}`fig-repliche-in-ritardo`). Lo 0,63% delle
+richieste della giornata trova la porta stretta, e le ore pagate restano le
+stesse.
 
 Tre repliche di scorta, accese per tutta la giornata, riducono il danno allo
 0,05% con 72 ore in più (166,4 contro 94,4, cioè tre repliche per
@@ -533,7 +548,9 @@ Con le schede il calcolo è lo stesso, e per questo nella giornata simulata la
 colonna dell'uso conta più delle altre. Prendiamo una replica su una scheda
 sola, che costa due euro l'ora (un numero messo lì per fare l'esempio, non un
 listino) e che, piena, genera 2.560 token al secondo: in un'ora ne produce 9,2
-milioni, e il milione le costa 2 diviso 9,2, circa 21,7 centesimi. Se lavora al
+milioni, e il milione le costa 2 diviso 9,2, circa 21,7 centesimi.
+
+Se la replica lavora al
 36%, come chi tiene accese tutto il giorno le repliche del picco, gli stessi
 due euro si dividono per poco più di un terzo dei token, e il milione costa
 21,7 diviso 0,36, cioè 60 centesimi. Nessuno ha cambiato modello né scheda:
@@ -550,7 +567,7 @@ che risponde, il lavoro in corso sono le conversazioni aperte con tutti i loro
 appunti: se la scheda sparisce, quelle risposte vanno ricominciate su un'altra,
 e chi aspettava aspetta il doppio.
 
-Il conto è fra lo sconto e il lavoro da rifare. Con uno sconto del 60% si paga
+Si confronta lo sconto con il lavoro da rifare. Con uno sconto del 60% si paga
 il 40% del prezzo, cioè 0,4; se il 10% del lavoro va buttato, ne arriva a buon
 fine il 90%, cioè 0,9. Un token servito costa allora 0,4 diviso 0,9 del prezzo
 pieno, il 44%, e conviene. Con uno sconto del 20% e metà del lavoro buttato fa
@@ -637,9 +654,9 @@ il furgone dei cuscini dal peso lo troverebbe sfruttato al 5% e scriverebbe
 «spreco». Avrebbe torto, perché non ci sta un cuscino in più.
 
 Una scheda ha gli stessi due limiti, i due tetti visti con la
-{doc}`memoria della GPU </GPU/gerarchia-memoria>`. I chili
-sono i calcoli che sa fare in un secondo; lo spazio è quanti numeri riesce a farsi
-arrivare dalla memoria in un secondo. Addestrare un modello, o leggere un prompt
+{doc}`memoria della GPU </GPU/gerarchia-memoria>`. I chili sono i calcoli che
+sa fare in un secondo; lo spazio è quanti numeri riesce a farsi arrivare dalla
+memoria in un secondo. Addestrare un modello, o leggere un prompt
 lungo, è un carico di mattoni: tanti conti per ogni numero portato, e il limite
 è il peso. Generare una parola alla volta è un carico di piume: per ogni parola
 si rilegge tutto il modello e ci si fa sopra pochissimi conti, e il limite è lo
@@ -654,7 +671,9 @@ guadagnare è la seconda.
 
 Si guadagna comprimendo le piume, cioè scrivendo i numeri del modello con meno
 cifre: il carico è sempre lo stesso modello, ma occupa meno spazio, e ogni
-viaggio, cioè ogni parola, dura meno. L'altra strada sembrerebbe quella di
+viaggio, cioè ogni parola, dura meno.
+
+L'altra strada sembrerebbe quella di
 caricare più richieste nello stesso giro, ma funziona a metà. Il modello,
 riletto una volta, serve a tutte, e su quella parte il carico si fa più denso,
 mentre ogni richiesta porta con sé i propri appunti, che vanno riletti anche
@@ -810,8 +829,8 @@ diviso per quanto bene la scheda viene sfruttata dentro ogni passo.
 ```
 `````
 
-Il conto delle repliche dà per scontato che, una volta accese, funzionino. In
-produzione non è così: un fornitore rallenta, una replica muore a metà di una
-risposta, un cliente manda in un minuto il traffico di un'ora. Che cosa si
-mette fra le applicazioni e i modelli per resistere a tutto questo è l'argomento di
-{doc}`Davanti ai modelli </MLOps/gateway-e-affidabilita>`.
+Il calcolo delle repliche dà per scontato che, una volta accese, funzionino.
+In produzione, però, non è così: un fornitore rallenta, una replica muore a
+metà di una risposta, un cliente manda in un minuto il traffico di un'ora. Che
+cosa si mette fra le applicazioni e i modelli per resistere a tutto questo è
+l'argomento di {doc}`Davanti ai modelli </MLOps/gateway-e-affidabilita>`.

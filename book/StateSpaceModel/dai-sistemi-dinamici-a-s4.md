@@ -53,8 +53,8 @@ quella che passa per la vasca.
 Quanto in fretta il livello scende, a rubinetto chiuso, dipende da quanto è
 aperto lo scarico: largo, e la vasca dimentica in un minuto; stretto, e si
 ricorda per un'ora; tappato, e non dimentica più niente, perché tutta l'acqua
-che hai versato resta lì. Calare non è l'unica possibilità: spingi
-l'acqua verso un capo e per qualche secondo ondeggia avanti e indietro prima di
+che hai versato resta lì. Calare non è l'unica possibilità. Se spingi
+l'acqua verso un capo, per qualche secondo ondeggia avanti e indietro prima di
 quietarsi. Ci sono poi sistemi che crescono da soli, come il microfono
 avvicinato troppo alla cassa che lo amplifica: il fischio sale finché qualcuno
 non lo allontana. Un sistema del genere, lasciato in pace, cala, ondeggia o
@@ -63,9 +63,9 @@ cresce, e a deciderlo è la sua regola interna, non chi lo alimenta.
 Un'eco in una valle funziona allo stesso modo: gridi (ingresso), il suono
 rimbomba e si spegne gradualmente (stato che decade), e senti una versione
 attenuata e ritardata del grido (uscita). In tutti questi casi lo stato
-è una fotografia compatta del passato: sapendo il livello dell'acqua *adesso* e
-cosa farai col rubinetto *da adesso in poi*, sai prevedere il futuro senza
-riavvolgere tutta la storia.
+è una fotografia compatta del passato: sapendo il livello dell'acqua
+*adesso* e cosa farai col rubinetto *da adesso in poi*, sai prevedere il futuro
+senza riavvolgere tutta la storia.
 
 `````
 
@@ -116,11 +116,11 @@ di campioni, prenderà il nome di $x_t$.
 
 `````
 
-Finora tutto è continuo, con il tempo che scorre senza gradini. Eppure una frase
-è una sequenza di token (i pezzetti in cui il testo viene diviso, i «passi» di
-cui parlavamo) e un segnale audio è una sequenza di campioni, dati discreti, uno
-dopo l'altro. Per usare questo sistema su una sequenza dobbiamo prima tradurlo
-dal continuo al discreto.
+Finora tutto è continuo, con il tempo che scorre senza gradini. Eppure una
+frase è una sequenza di token (i pezzetti in cui il testo viene diviso, i
+«passi» di cui parlavamo) e un segnale audio è una sequenza di campioni, dati
+discreti, uno dopo l'altro. Per usare questo sistema su una sequenza dobbiamo
+dunque prima tradurlo dal continuo al discreto.
 
 ## Dal continuo al discreto
 
@@ -134,8 +134,8 @@ Non esiste un solo modo di discretizzare. Fra una misura e l'altra non si
 osserva niente, e ogni regola ricostruisce l'intervallo con un'ipotesi diversa;
 S4 e Mamba ne usano due, che non vanno scambiate. S4 usa la *trasformazione
 bilineare*, che stima con la regola del trapezio quanto lo stato cala durante
-il salto in assenza di ingresso. Mamba usa lo *zero-order hold* (in sigla ZOH),
-che tiene l'ingresso fermo per tutto il salto e quel calo lo integra
+il salto in assenza di ingresso. Mamba, invece, usa lo *zero-order hold* (in
+sigla ZOH), che tiene l'ingresso fermo per tutto il salto e quel calo lo integra
 esattamente.
 
 `````{tab} Elementare
@@ -250,7 +250,7 @@ sequenza in un colpo.
 È la stessa doppia natura del {doc}`capitolo sull'attenzione lineare
 </AttenzioneLineare/overview>`, dove un unico calcolo si poteva leggere in due
 modi, "passo dopo passo" oppure "tutto insieme". Qui le due forme tornano, con
-un attrezzo diverso per il «tutto insieme», un filtro.
+uno strumento diverso per il «tutto insieme», un filtro.
 
 Da un lato la forma ricorrente, in cui parti dallo stato, aggiungi il nuovo
 ingresso, ottieni il nuovo stato, leggi l'uscita e ripeti. Un token alla volta,
@@ -270,7 +270,7 @@ non i numeri del filtro, che sono tanti quanto il testo è lungo. Quei numeri,
 uno per posizione, dicono quanto una parola di venti o di mille passi fa conta
 ancora sull'uscita di adesso: nella vasca dei due litri al minuto erano 1, 0,5,
 0,25, 0,125 (quanto pesa ancora un getto entrato adesso, un minuto fa, due,
-tre). Inoltre una convoluzione si calcola in un colpo solo, in
+tre). Inoltre, una convoluzione si calcola in un colpo solo, in
 parallelo su tutta la sequenza, come richiedono le GPU in addestramento.
 
 In pratica si addestra in forma convoluzionale (veloce, parallela) e si fa
@@ -294,7 +294,7 @@ $$
 $$
 
 Ogni passo costa $O(N^2)$ (o $O(N)$ se $\bar{\mathbf{A}}$ è diagonale) e la
-memoria è $O(N)$, costante nella lunghezza della sequenza: è l'inferenza a
+memoria è $O(N)$, costante nella lunghezza della sequenza; è l'inferenza a
 costo fisso per token tipica delle RNN.
 
 La forma convoluzionale si ottiene sostituendo ripetutamente la ricorrenza
@@ -321,7 +321,7 @@ $j$ passi fa pesa ancora sull'uscita di adesso: è la memoria del sistema, e
 decade con le potenze $\bar{\mathbf{A}}^{\,j}$.
 
 L'equivalenza $ \text{ricorrenza} \equiv \text{convoluzione} $ vale solo perché
-$\bar{\mathbf{A}}, \bar{\mathbf{B}}, \mathbf{C}$ sono costanti nel tempo: è la
+$\bar{\mathbf{A}}, \bar{\mathbf{B}}, \mathbf{C}$ sono costanti nel tempo. È la
 tempo-invarianza a garantire che il kernel $\bar{\mathbf{K}}$ sia unico e
 fisso. Quando, con Mamba, faremo dipendere questi parametri dall'ingresso, il
 sistema cesserà di essere LTI, il kernel di convoluzione fisso svanirà, e
@@ -361,8 +361,8 @@ numeri (in S4, $N = 64$ per canale). Resta da capire perché uno stato così
 piccolo dovrebbe ricordare qualcosa avvenuto migliaia di passi prima.
 
 Con una transizione scalare $\bar{a} \in (0,1)$, il contributo di un ingresso
-di $k$ passi fa pesa $\bar{a}^{\,k}$. Con $\bar{a} = 0{,}9$, che come
-decadimento è già lento, dopo cinquanta passi ne resta $0{,}9^{50} \approx
+di $k$ passi fa pesa $\bar{a}^{\,k}$. Ad esempio, con $\bar{a} = 0{,}9$, che
+come decadimento è già lento, dopo cinquanta passi ne resta $0{,}9^{50} \approx
 0{,}005$, cioè mezzo per cento, e dopo cento $0{,}9^{100} \approx 2{,}7 \cdot
 10^{-5}$, mezzo per cento di mezzo per cento. È lo stesso decadimento
 esponenziale che mette in difficoltà le RNN classiche, in avanti per il ricordo
@@ -402,9 +402,10 @@ comunque scomporre in due pezzi. Nel primo ogni riga della pagina si aggiorna
 per conto suo, senza guardare le altre, e per righe così l'elenco dei pesi si
 scrive con una formula, tutto in una volta. Il secondo è un ritocco piccolo,
 fatto di pochi ingredienti, che lega le righe fra loro, e un ritocco così si
-sistema alla fine con un solo conto in più. L'elenco intero esce in blocco. La
-memoria gliela dà la pagina di partenza, la velocità la scomposizione: senza
-tutt'e due sarebbe rimasto un esercizio.
+sistema alla fine con un solo conto in più. L'elenco intero esce in blocco.
+
+In sintesi, la memoria gliela dà la pagina di partenza e la velocità la
+scomposizione: senza tutt'e due sarebbe rimasto un esercizio.
 
 Con tutt'e due è il primo modello che risolve **Path-X**, la prova più dura del
 *Long Range Arena*, la gara sulle dipendenze a lunghissimo raggio. Si guarda
@@ -440,7 +441,7 @@ modo meno sbagliato possibile, tutto il segnale visto fin lì. La variante
 tutta la storia, e per costruzione è robusta alla scala temporale:
 l'operatore originale è tempo-variante (il suo passo è $1/t$, non $\Delta$) e
 non ha alcun iperparametro di scala, tanto che dilatare l'ingresso dilata
-semplicemente l'uscita. Attenzione a cosa si eredita e cosa no: S4 prende la
+semplicemente l'uscita. Si noti che cosa si eredita e che cosa no: S4 prende la
 *matrice* LegS, non quella robustezza, perché la congela dentro un sistema LTI
 con passo $\Delta$ costante. Lì la scala temporale torna a essere fissata da
 $\Delta$, che infatti non si sceglie a caso ma si inizializza su una gamma
@@ -484,7 +485,7 @@ $\mathbf{P}\mathbf{Q}^{\top}$ una correzione di rango basso ($\mathbf{P}$ e
 $\mathbf{Q}$ sono matrici «alte e strette»). Coniugando con $\mathbf{V}$ ci si
 riduce alla forma *diagonale più basso rango* (DPLR), $\boldsymbol{\Lambda} -
 \tilde{\mathbf{P}}\tilde{\mathbf{Q}}^{*}$, che è quella su cui l'algoritmo
-lavora. Attenzione a chi sono gli autovalori: $\boldsymbol{\Lambda}$ raccoglie
+lavora. Si noti quali autovalori sono in gioco: $\boldsymbol{\Lambda}$ raccoglie
 gli autovalori della parte normale, non quelli di $\mathbf{A}$, e per la
 HiPPO-LegS i due insiemi non si somigliano affatto (gli autovalori di
 $\mathbf{A}$ sono reali, $-1, \dots, -N$; quelli di $\boldsymbol{\Lambda}$
@@ -532,9 +533,9 @@ S4 mostrò che uno stato piccolo, ben costruito, gestisce le sequenze lunghe
 meglio dell'attenzione; sul linguaggio restava indietro di poco, con una
 perplessità su WikiText-103 di 20,95 contro i 20,51 del Transformer di cui
 aveva sostituito l'attenzione {cite}`gu2022s4`. Mamba sarà il primo modello
-senza attenzione a pareggiare in perplessità una ricetta di Transformer molto
-curata, la Transformer++ {cite}`gu2023mamba`. Fra i due stanno alcuni lavori
-del 2022 e del 2023, ciascuno su un pezzo del problema.
+senza attenzione a pareggiare in perplessità una configurazione di Transformer
+molto curata, la Transformer++ {cite}`gu2023mamba`. Fra i due stanno alcuni
+lavori del 2022 e del 2023, ciascuno su un pezzo del problema.
 
 `````{tab} Elementare
 
@@ -546,8 +547,8 @@ del precedente. Il fatto è che due passi consecutivi si possono fondere in un
 passo solo, che fa il lavoro di tutti e due; e le fusioni di coppie diverse non
 si aspettano fra loro, quindi si possono fare tutte nello stesso momento. Un
 giro dimezza i passi rimasti, il giro dopo li dimezza ancora, e in una manciata
-di giri si è arrivati in fondo. Il conto per esteso lo fa Mamba, che eredita lo
-stesso trucco.
+di giri si è arrivati in fondo. Il calcolo per esteso lo fa Mamba, che eredita
+lo stesso trucco.
 
 **H3** (2023) affronta invece la memoria «a richiamo»: ritrovare più avanti
 un'informazione già letta ("chi era il soggetto di quella frase?"). I modelli di
@@ -615,8 +616,8 @@ l'aggiunta di pochissimi strati di attenzione, gli ibridi basati su H3
 arrivano a taglie fino a 2,7 miliardi di parametri e competono con
 i Transformer.
 
-Hyena (Poli, Massaroli et al., ICML 2023, {cite}`poli2023hyena`) tira una
-riga di sintesi: se l'ingrediente utile è una convoluzione lunga, la si può
+Hyena (Poli, Massaroli et al., ICML 2023, {cite}`poli2023hyena`) trae la
+conclusione: se l'ingrediente utile è una convoluzione lunga, la si può
 apprendere direttamente. Hyena impila **convoluzioni lunghe implicite**
 (filtri lunghi quanto la sequenza, ma parametrizzati da una piccola rete
 invece che memorizzati numero per numero) alternate a un gating controllato
@@ -631,12 +632,12 @@ compare come termine di confronto, non come ingrediente {cite}`gu2023mamba`.
 Restava un limite comune a tutti. Il nucleo che accumula il passato (la
 ricorrenza di S4 e S5, la convoluzione lunga di Hyena) è LTI: aggiorna lo stato
 con la stessa regola per ogni token, incapace di *scegliere* che cosa ricordare
-in base al contenuto. Chi legge una parola importante e chi legge una virgola
-aggiornano lo stato con la stessa regola fissa. I cancelli di H3 e di Hyena
-dipendono dai dati, ma agiscono posizione per posizione e non lungo la
-sequenza: non decidono che cosa entra nello stato e che cosa ne esce. Rompere
-il vincolo (rendere il nucleo tempo-variante, capace di selezionare) è il passo
-che porta a {doc}`Mamba </StateSpaceModel/mamba>`.
+in base al contenuto. In altri termini, chi legge una parola importante e chi
+legge una virgola aggiornano lo stato con la stessa regola fissa. I cancelli di
+H3 e di Hyena dipendono dai dati, ma agiscono posizione per posizione e non
+lungo la sequenza: non decidono che cosa entra nello stato e che cosa ne esce.
+Rompere il vincolo (rendere il nucleo tempo-variante, capace di selezionare) è
+il passo che porta a {doc}`Mamba </StateSpaceModel/mamba>`.
 
 `````{tab} Elementare
 

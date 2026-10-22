@@ -13,14 +13,14 @@ punteggio.
 
 ## Il collasso non è uno solo
 
-Le {doc}`quattro famiglie </AutoSupervisione/famiglie>` hanno chiamato
-collasso la risposta vuota, cioè la stessa rappresentazione per ogni dato. È il
-**collasso completo**, e in quella forma è facile da riconoscere: se ne
+Le {doc}`quattro famiglie </AutoSupervisione/famiglie>` hanno chiamato collasso
+la risposta vuota, cioè la stessa rappresentazione per ogni dato. È il
+**collasso completo**, e in quella forma è facile da riconoscere, perché se ne
 accorgerebbe chiunque guardasse due rappresentazioni. Ne esiste però una
 versione meno visibile, il **collasso dimensionale**, già intravista con la
-regola della varietà: le rappresentazioni cambiano da un dato all'altro, ma
-occupano soltanto poche delle direzioni disponibili, e il punteggio del
-pretesto non se ne accorge.
+regola della varietà. In questo caso le rappresentazioni cambiano da un dato
+all'altro, ma occupano soltanto poche delle direzioni disponibili, e il
+punteggio del pretesto non se ne accorge.
 
 `````{tab} Elementare
 
@@ -31,29 +31,30 @@ Il collasso dimensionale, che si può chiamare anche parziale, è più subdolo. 
 schede sono diverse fra loro, quindi a prima vista tutto funziona; solo che,
 guardandole tutte insieme, ci si accorge che cambiano in pochi modi soltanto. È
 come avere otto manopole, sei delle quali sono incollate insieme in modo che,
-girandone una, girano tutte e sei. Le manopole che si muovono in modo
-indipendente sono tre (le due libere e il blocco delle sei incollate), e tre
-sono le **direzioni** in cui la scheda può cambiare: i modi indipendenti di
-cambiarla sono meno degli otto che hai pagato. Il modello non ti mente: ti dà
-meno di quanto sembra.
+girandone una, girano tutte e sei.
+
+Le manopole che si muovono in modo indipendente sono quindi tre (le due
+libere e il blocco delle sei incollate), e tre sono le **direzioni** in cui la
+scheda può cambiare: i modi indipendenti di cambiarla sono meno degli otto che
+hai pagato. Il modello non ti mente: ti dà meno di quanto sembra.
 
 Per scoprirlo si contano, su tante schede insieme, le manopole che si muovono
 in modo indipendente. Contarle non basta: otto manopole libere che girano a
 caso, come un rumore, sono tutte indipendenti e non descrivono niente. Nemmeno
 i metodi che giocano con i rivali ne sono esenti.
 
-Perché è insidioso: il punteggio del pretesto può essere ottimo lo stesso. Se il
-gioco che gli abbiamo dato si vince con tre direzioni, tre direzioni gli bastano,
-e non ha nessun motivo di produrne otto. Il difetto salta fuori dopo, quando quel
-riassunto lo si vuole usare per un compito diverso da quello per cui è stato
-addestrato, e le direzioni mancanti erano quelle che servivano.
+È insidioso perché il punteggio del pretesto può essere ottimo lo stesso. Se il
+gioco che gli abbiamo dato si vince con tre direzioni, tre direzioni gli
+bastano, e non ha nessun motivo di produrne otto. Il difetto salta fuori solo
+dopo, quando quel riassunto lo si vuole usare per un compito diverso da quello
+per cui è stato addestrato, e le direzioni mancanti erano quelle che servivano.
 
 Contro il collasso dimensionale serve la regola della varietà, quella che
 chiede che le otto caselle dicano otto cose diverse; e va chiesta nel modo
 giusto. Pretendere che ogni casella si muova abbastanza da una foto all'altra
-non basta: due caselle incollate insieme si muovono tutte e due, e il controllo
-passa. Se ne accorge solo chi le guarda a due a due, e fa pagare ogni coppia
-che dice la stessa cosa.
+non basta, perché due caselle incollate insieme si muovono tutte e due, e il
+controllo passa. Se ne accorge solo chi le guarda a due a due, e fa pagare ogni
+coppia che dice la stessa cosa.
 
 `````
 
@@ -73,10 +74,14 @@ osservano nei metodi senza negativi accanto al collasso completo
 {cite}`hua2021feature`. Si diagnostica sullo spettro della matrice di
 covarianza delle rappresentazioni: se gli autovalori decadono bruscamente e
 solo $r$ di essi sono sensibilmente diversi da zero, le direzioni
-effettivamente usate sono $r$. Una misura riassuntiva comoda è la **dimensione
+effettivamente usate sono $r$.
+
+Una misura riassuntiva comoda è la **dimensione
 effettiva**, per esempio $\big(\sum_i \lambda_i\big)^2 / \sum_i \lambda_i^2$ con
 $\lambda_i$ gli autovalori, che vale $D$ se lo spettro è piatto e crolla se è
-concentrato. Una variante entropica, il rango effettivo, è diventata uno
+concentrato.
+
+Una variante entropica, il **rango effettivo**, è diventata uno
 strumento di selezione senza etichette: RankMe calcola
 $\exp\big(-\sum_k p_k \log p_k\big)$ con
 $p_k = \varsigma_k / \sum_l \varsigma_l + \varepsilon$, dove $\varsigma_k$ sono
@@ -84,13 +89,15 @@ i valori singolari della matrice delle rappresentazioni e $\varepsilon$ una
 piccola costante, e mostra che, confrontando esecuzioni diverse dello stesso
 metodo a incorporamento congiunto, il valore segue da vicino la prestazione a
 valle, tanto da servire a scegliere gli iperparametri senza etichette
-{cite}`garrido2023rankme`. Gli stessi autori ne segnalano i limiti: un rango alto
+{cite}`garrido2023rankme`.
+
+Gli stessi autori ne segnalano i limiti: un rango alto
 è una condizione necessaria e non sufficiente (un rumore casuale ha rango
 pieno e non serve a niente), e il numero va usato solo fra esecuzioni dello
 stesso metodo, perché il rango non è l'unica cosa che decide la prestazione.
 
-I due indici non si confrontano fra loro. Per una $\mathbf{Z}$ centrata gli
-autovalori della covarianza e i valori singolari sono legati da
+I due indici non si confrontano fra loro. Infatti, per una $\mathbf{Z}$
+centrata, gli autovalori della covarianza e i valori singolari sono legati da
 $\lambda_k = \varsigma_k^2/(N-1)$: la dimensione effettiva pesa lo spettro dei
 $\lambda_k$, RankMe quello delle loro radici, che è più piatto, e sullo stesso
 spettro il secondo dà sempre un numero almeno pari al primo.
@@ -108,11 +115,13 @@ concentrato non è altro che una covarianza di rango deficiente, cioè coordinat
 fortemente dipendenti fra loro, e una condizione coordinata per coordinata non
 basta a escluderlo: il termine di varianza di VICReg tiene la deviazione
 standard di ogni coordinata sopra una soglia, e due coordinate identiche la
-superano tutte e due pur portando una direzione sola. Il regime dimensionale lo
+superano tutte e due pur portando una direzione sola.
+
+Il regime dimensionale lo
 contrastano i termini che guardano le coppie, cioè gli elementi fuori dalla
 diagonale della cross-correlazione di Barlow Twins e il termine di covarianza
 di VICReg; il regime costante lo fermano gli altri due, la varianza e la
-diagonale. Due tipi di vincolo per due collassi diversi.
+diagonale. In sintesi, servono due tipi di vincolo per due collassi diversi.
 
 `````
 
@@ -140,11 +149,11 @@ quanti rivali ci sono nel gruppo.
 
 Il compito è ritrovare il gemello in mezzo a un gruppo di candidati. Anche
 riuscendoci sempre, abbiamo dimostrato soltanto di saper scegliere fra quei
-candidati: quanto basta per vincere quel gioco, non un briciolo di più. Se i
-candidati sono otto, il massimo che quel gioco può certificare è la capacità di
-distinguere fra otto, cioè tre domande da sì o no, tre bit; se il modello ne
-sapesse mille volte tanto, il gioco non se ne accorgerebbe, perché ha finito le
-domande da fare.
+candidati: quanto basta per vincere quel gioco, non un briciolo di più. Ad
+esempio, se i candidati sono otto, il massimo che quel gioco può certificare è
+la capacità di distinguere fra otto, cioè tre domande da sì o no, tre bit; se
+il modello ne sapesse mille volte tanto, il gioco non se ne accorgerebbe,
+perché ha finito le domande da fare.
 
 Con un modello che indovina sempre, cioè al meglio delle sue possibilità, ciò
 che il gioco può certificare cresce col numero dei rivali e si ferma lì: otto
@@ -193,7 +202,9 @@ forma rigorosa Ben Poole e colleghi {cite}`poole2019variational`. Il critico
 che lo rende più stretto è il rapporto di densità
 $f^*(\mathbf{x}, \mathbf{y}) = \log p(\mathbf{y} \mid \mathbf{x}) / p(\mathbf{y})$,
 a meno di una funzione della sola $\mathbf{x}$, e con quello il limite tende a
-$I$ quando $K$ cresce. La disuguaglianza però è saturata da $\log K$: la
+$I$ quando $K$ cresce.
+
+La disuguaglianza però è saturata da $\log K$: la
 perdita non è mai negativa, quindi anche con $\mathcal{L}_{\text{NCE}} = 0$ la
 quantità certificata non supera $\log K$. Finché $\log K$ sta sopra $I$ il
 limite stringe; se l'informazione mutua vera è molto maggiore (e fra due viste
@@ -207,7 +218,9 @@ $K$ dei candidati, e con lui il batch da cui si pescano, entra nella
 *garanzia*, non solo nel costo, e per questo in questi metodi i batch sono
 enormi. La seconda riguarda l'interpretazione e pesa di più: la massimizzazione
 dell'informazione mutua non può essere la spiegazione del successo di questi
-metodi. Due risultati lo mostrano direttamente. Michael Tschannen e colleghi
+metodi.
+
+Due risultati lo mostrano direttamente. Michael Tschannen e colleghi
 prendono encoder invertibili, che per costruzione conservano tutta
 l'informazione mutua, e trovano che la qualità delle rappresentazioni cambia lo
 stesso, durante l'addestramento e al variare dell'architettura; e mostrano che
@@ -219,7 +232,9 @@ ipotesi sulla distribuzione, e con alta confidenza, può superare l'ordine di
 $\log M$ se lo si stima da $M$ campioni {cite}`mcallester2020formal`. Il
 risultato vale per qualunque stimatore, e dice che il tetto $\log K$ è il
 limite di ogni certificazione di informazione a partire da un numero finito di
-esempi, a cui l'InfoNCE è soggetta come ogni altro stimatore. La distillazione
+esempi, a cui l'InfoNCE è soggetta come ogni altro stimatore.
+
+La distillazione
 asimmetrica e la riduzione di ridondanza, che non stimano $I$ in nessun modo,
 completano il quadro. I metodi riusciti hanno in comune un'invarianza imposta
 più un meccanismo che vieta la risposta vuota, non una quantità informativa
@@ -270,9 +285,11 @@ for k in (8, 64, 512, 4096):
               4096     0.0000              12.00      12.00
 ```
 
-Le due colonne di destra coincidono riga per riga: con un giudice che riconosce
-sempre il gemello la perdita è nulla e il numero certificato è $\log_2 K$, dove
-$K$ sono i candidati. In SimCLR {cite}`chen2020simple`, presentato in
+Le due colonne di destra coincidono riga per riga, perché con un giudice che
+riconosce sempre il gemello la perdita è nulla e il numero certificato è
+$\log_2 K$, dove $K$ sono i candidati.
+
+In SimCLR {cite}`chen2020simple`, presentato in
 {doc}`Imparare a vedere senza etichette </VisioneArtificiale/senza-etichette>`,
 un batch da $N = 4096$ immagini ne mette in campo $2N$ viste, e i candidati per
 ciascuna sono le altre $2N - 1$, cioè $K = 8191$. Il tetto è allora tredici bit
@@ -354,7 +371,9 @@ un rilevatore, e questo scarto è un dato, non un contrattempo: dice che il
 pretesto ha selezionato un tipo di informazione e non un altro. Le sonde
 possono perfino ordinare gli stessi metodi al contrario: il MAE sta sotto i
 contrastivi con la sonda lineare e sopra di loro dopo la rifinitura completa
-{cite}`he2022masked`. E il protocollo della sonda fa parte del risultato: lo
+{cite}`he2022masked`.
+
+Anche il protocollo della sonda fa parte del risultato: lo
 strato da cui si leggono le rappresentazioni (nei modelli generativi il
 migliore sta a metà rete, e le sonde di iGPT {cite}`chen2020generative` lo
 cercano strato per strato: scegliere l'ultimo strato fa perdere più di due

@@ -23,7 +23,7 @@ Arago: Le Verrier ha scoperto un pianeta «sulla punta della penna».
 
 Per quasi due secoli la scienza ha funzionato così: leggi di natura scritte
 come equazioni differenziali (regole compatte su come cambiano le cose) e
-risolte, a mano finché si è potuto, poi al calcolatore. Previsioni del tempo,
+risolte, a mano finché si è potuto, poi al computer. Previsioni del tempo,
 gallerie del vento, reattori nucleari: sotto c'è sempre un'equazione.
 
 Il machine learning visto finora ha lavorato quasi sempre dall'altra parte:
@@ -43,11 +43,16 @@ Nessuna, poi, dà il valore vero: ogni strumento aggiunge un errore casuale, un
 po’ sopra o un po’ sotto, e di misure fatte così si dice che sono rumorose. La
 domanda, allora: e se si potessero usare *entrambi*?
 
+In questo capitolo vediamo come si uniscono le due strade. Partiamo da che cosa
+dice un'equazione differenziale e da come la risolvono i metodi classici;
+poi addestriamo una rete a rispettarla e vediamo che cosa se ne ricava;
+infine diciamo con onestà dove le PINN convengono e dove no.
+
 ## Una regola che dice come cambiano le cose
 
 Un'equazione differenziale, si è detto, è una regola su come cambiano le cose.
-Il modo in cui lo fa, però, spiazza: non dice mai *quanto vale* la grandezza che ci
-interessa, dice soltanto *di quanto sta cambiando*. Sembra pochissimo, eppure
+Il modo in cui lo fa, però, spiazza: non dice mai *quanto vale* la grandezza che
+ci interessa, dice soltanto *di quanto sta cambiando*. Sembra pochissimo, eppure
 per ricostruire l'intera storia basta.
 
 `````{tab} Elementare
@@ -59,10 +64,12 @@ corsa quando scotta, piano da tiepido, e da fermo quando è arrivato alla
 temperatura dell'aria intorno.
 
 La regola parla solo del *cambiamento*, eppure da lì si ricostruisce tutta la
-storia. Caffè a 80 °C, stanza a 20 °C, e ogni minuto il caffè perde un decimo
-della differenza: la differenza è 60, quindi scende di 6 gradi e va a 74 °C; poi
-la differenza è 54, perde 5,4 e arriva a 68,6 °C; poi 63,7 °C, e così via, in
-una curva ripida all'inizio e sempre più piatta. Un'equazione differenziale è
+storia. Ad esempio, caffè a 80 °C, stanza a 20 °C, e ogni minuto il caffè perde
+un decimo della differenza: la differenza è 60, quindi scende di 6 gradi e va a
+74 °C; poi la differenza è 54, perde 5,4 e arriva a 68,6 °C; poi 63,7 °C, e
+così via, in una curva ripida all'inizio e sempre più piatta.
+
+In sostanza, un'equazione differenziale è
 questo: una regola sul cambiamento che, partendo da una condizione iniziale (80
 °C al minuto zero), inchioda tutto il futuro. Senza quel numero di partenza le
 curve che obbediscono alla regola sarebbero infinite: l'80 sceglie la nostra.
@@ -79,7 +86,7 @@ volta lungo una fitta rete di puntini. La rete di puntini si chiama
 sono istanti, uno ogni minuto; per una sbarra di ferro scaldata a un capo sono
 anche punti lungo il ferro, perché lì la temperatura cambia da posto a posto
 oltre che da un momento all'altro. Più fitti stanno, più il risultato è
-preciso e più conti servono: noi ne abbiamo fatti tre a mano, un calcolatore
+preciso e più conti servono: noi ne abbiamo fatti tre a mano, un computer
 ne fa miliardi.
 
 Due cose lo mettono in difficoltà. La griglia va tagliata su misura per la
@@ -126,11 +133,13 @@ classe per classe, e per le equazioni di Navier–Stokes in tre dimensioni
 l'esistenza globale di soluzioni regolari è ancora un problema aperto, uno dei
 sette problemi del millennio del Clay Mathematics Institute. Pochissime
 equazioni ammettono soluzioni in forma chiusa; per le altre si passa al
-calcolatore, nello spirito dei {doc}`richiami di analisi numerica
+computer, nello spirito dei {doc}`richiami di analisi numerica
 </Matematica/analisi-numerica>`: là abbiamo accettato numeri a precisione
 finita, qui si accetta un continuo fatto a punti (una **griglia** su $x$ e $t$,
 con le derivate rimpiazzate da **differenze finite**, rapporti incrementali a
-passo piccolo ma non nullo). Più fitta la griglia, migliore l'approssimazione e
+passo piccolo ma non nullo).
+
+In generale, più fitta è la griglia, migliore è l'approssimazione e
 più oneroso il calcolo: proibitivo quando le variabili indipendenti sono molte,
 perché con $n$ nodi per variabile i nodi sono $n^d$ in $d$ variabili, e crescono
 esponenzialmente con la dimensione. Su una geometria irregolare il problema è di
@@ -191,14 +200,16 @@ della strada misurata sotto i piedi, non su tutta la salita.
 
 Le penalità dei due esaminatori si sommano in un punteggio unico, quella
 loss che ci accompagna da inizio libro, e la rete ritocca i suoi pesi, i
-numeri interni che l'addestramento regola, per farlo calare. Quanto conta
-ciascuno dei due lo decidiamo noi: se il secondo esaminatore urla dieci volte
-più forte, la curva si scosta dalle misure pur di non contraddire la regola, e
-le tre letture del termometro non contano quasi più. Con le dosi giuste, dove
-ci sono dati comanda il righello, dove non ce ne sono comanda la fisica, e la
-curva ha molto meno spazio per inventare. Qualche spazio però le resta: il
-secondo esaminatore guarda solo gli istanti su cui punta il dito, e in mezzo a
-due di quegli istanti la curva è libera di fare una gobba che nessuno vede.
+numeri interni che l'addestramento regola, per farlo calare.
+
+Quanto conta ciascuno dei due lo decidiamo noi: ad esempio, se il secondo
+esaminatore urla dieci volte più forte, la curva si scosta dalle misure pur di
+non contraddire la regola, e le tre letture del termometro non contano quasi
+più. Con le dosi giuste, dove ci sono dati comanda il righello, dove non ce ne
+sono comanda la fisica, e la curva ha molto meno spazio per inventare. Qualche
+spazio però le resta: il secondo esaminatore guarda solo gli istanti su cui
+punta il dito, e in mezzo a due di quegli istanti la curva è libera di fare una
+gobba che nessuno vede.
 
 `````
 
@@ -230,10 +241,12 @@ dove $(x_i, t_i, u_i)$ sono le $N_d$ misure disponibili, incluse le
 condizioni iniziali e al contorno quando prescrivono il valore di $u$; i
 $(x_j, t_j)$ sono $N_c$ **punti di collocazione**
 estratti a caso nel dominio (nessuna griglia) e $\lambda$ bilancia i due
-termini. La differenziazione automatica calcola le derivate di $u_\theta$ rispetto
-agli *ingressi*: è la
+termini. La differenziazione automatica calcola le derivate di $u_\theta$
+rispetto agli *ingressi*: è la
 regola della catena della backpropagation applicata a $x$ e $t$ anziché ai
-pesi {cite}`rumelhart1986learning`. In PyTorch è una chiamata a
+pesi {cite}`rumelhart1986learning`.
+
+In PyTorch è una chiamata a
 `torch.autograd.grad` {cite}`paszke2019pytorch`: derivate esatte a meno della
 precisione di macchina, senza differenze finite e senza passo di
 discretizzazione da scegliere.
@@ -247,11 +260,11 @@ Dirichlet, la derivata normale per una di Neumann, come un flusso imposto agli
 estremi della sbarra) si aggiunge un termine per ogni richiesta, e il residuo
 $\mathcal{N}[u_\theta]$ resta una composizione di derivate della rete anche
 quando l'operatore non è lineare: per l'equazione di Burgers è $\partial_t
-u_\theta + u_\theta\,\partial_x u_\theta - \nu\,\partial_{xx} u_\theta$. Il
-coefficiente $\lambda$, infine, non è un numero puro: il residuo dell'equazione
-del calore si misura in $[u]/[t]$, uno scarto sui dati in $[u]$, quindi
-$\lambda$ ha le dimensioni di $[t]^2$ e il suo valore buono cambia con le unità
-scelte. È una delle ragioni per cui le PINN si addestrano di norma
+u_\theta + u_\theta\,\partial_x u_\theta - \nu\,\partial_{xx} u_\theta$. Si
+noti infine che il coefficiente $\lambda$ non è un numero puro: il residuo
+dell'equazione del calore si misura in $[u]/[t]$, uno scarto sui dati in $[u]$,
+quindi $\lambda$ ha le dimensioni di $[t]^2$ e il suo valore buono cambia con
+le unità scelte. È una delle ragioni per cui le PINN si addestrano di norma
 sull'equazione adimensionalizzata, con $u$, $x$ e $t$ riportati a scale
 caratteristiche di ordine uno.
 
@@ -259,9 +272,9 @@ caratteristiche di ordine uno.
 
 ## Perché ci interessa
 
-Tre proprietà rendono la ricetta interessante. La prima viene dall'assenza di
+Tre proprietà rendono interessante il metodo. La prima viene dall'assenza di
 una griglia; la seconda e la terza dal fatto che misure e legge stanno nella
-stessa loss. In più, alla fine dell'addestramento resta una funzione definita
+stessa loss. Inoltre, alla fine dell'addestramento resta una funzione definita
 in ogni punto del dominio, a cui si può chiedere il valore anche dove nessun
 punto di collocazione è caduto, e con il valore le derivate. Il valore fra due
 nodi, a dire il vero, lo sa dare anche un solutore classico, ricostruendolo per
@@ -288,7 +301,7 @@ variabili. Lì servono metodi che la griglia non la usano: la PINN è uno, la
 media su cammini casuali della {doc}`sezione sulle equazioni come medie
 </PINN/equazioni-come-medie>` ne è un altro. Che una rete ci arrivi, però,
 non è automatico: con molte variabili i risultati si ottengono con varianti
-costruite apposta, non con la ricetta base, e la ricerca è ancora in corso
+costruite apposta, non con il metodo base, e la ricerca è ancora in corso
 {cite}`hu2024tackling`.
 
 La seconda proprietà è quella dei dati scarsi. Dove il laboratorio arriva
@@ -311,7 +324,9 @@ domanda del medico legale (a che ora il decesso, data la temperatura del
 corpo?) ed era la domanda di Le Verrier: dai disturbi nell'orbita di Urano,
 dov'è il pianeta che non vedo? Anche i metodi classici sanno rispondere, e
 bene: per farlo hanno procedure loro, collaudate, che però vanno riscritte da
-capo, da specialisti, per ogni singola equazione. Per una PINN il
+capo, da specialisti, per ogni singola equazione.
+
+Per una PINN, invece, il
 pezzo di regola che manca è semplicemente un numero in più da addestrare, dello
 stesso tipo dei pesi che la rete già regola: lo si aggiusta finché
 fisica e misure non vanno d'accordo. Purché le misure lo dicano: se quella
@@ -378,11 +393,13 @@ sedici.
 La promessa ha le sue condizioni, e chi lo applica le conosce in anticipo. La
 più stretta lega fra loro i due passi della sbarra: se si dimezzano i
 passettini lungo il ferro, quelli nel tempo vanno divisi per quattro. Chi non
-lo fa vede uno sbaglio minuscolo crescere da solo. Un puntino con un
+lo fa vede uno sbaglio minuscolo crescere da solo. Ad esempio, un puntino con un
 grado di troppo, al passo dopo ne ha uno di meno, e i suoi due vicini uno di
 troppo; al passo dopo ancora ne ha tre di troppo, e i vicini due di meno. Lo
 sbaglio cambia segno da un puntino all'altro e cresce a ogni passo, finché il
-calcolo restituisce temperature che nessun termometro vedrà mai. Se poi la
+calcolo restituisce temperature che nessun termometro vedrà mai.
+
+Se poi la
 storia da ricostruire fa un salto netto invece di scorrere liscia, accorciare i
 passi aiuta molto meno: lo sbaglio scende ancora, ma a ogni dimezzamento si
 riduce appena.
@@ -404,17 +421,20 @@ l'errore scende come $O(h^p)$ al raffinarsi del passo $h$. Il teorema ha le
 sue ipotesi, e senza di quelle la garanzia non vale: lo schema dev'essere
 consistente e stabile (il teorema di equivalenza di Lax), e la soluzione
 esatta abbastanza regolare, perché su un urto l'ordine effettivo crolla a uno
-o meno, qualunque sia $p$. La stabilità ha spesso una forma esplicita: lo schema
+o meno, qualunque sia $p$.
+
+La stabilità ha spesso una forma esplicita: lo schema
 esplicito alle differenze centrate per il calore,
 $u_i^{n+1} = u_i^n + \rho\,(u_{i+1}^n - 2u_i^n + u_{i-1}^n)$ con
 $\rho = \alpha\,\Delta t/\Delta x^2$, è stabile solo per $\rho \le 1/2$.
 Infittire in spazio senza ridurre $\Delta t$ in proporzione a $\Delta x^2$
 porta $\rho$ oltre la soglia, e il modo a scacchiera, che a ogni passo è
-moltiplicato per $1 - 4\rho < -1$, esplode. Sono
-ipotesi verificabili in anticipo, mentre la discesa del gradiente su una loss
-non convessa si ferma in un minimo locale qualsiasi e non promette nulla. Una
-PINN può richiedere minuti di addestramento dove un
-solutore maturo impiega millisecondi, e a volte fallisce senza preavviso
+moltiplicato per $1 - 4\rho < -1$, esplode.
+
+Queste ipotesi sono verificabili in anticipo, mentre la discesa del gradiente su
+una loss non convessa si ferma in un minimo locale qualsiasi e non promette
+nulla. Una PINN può richiedere minuti di addestramento dove un solutore maturo
+impiega millisecondi, e a volte fallisce senza preavviso
 {cite}`karniadakis2021physics`.
 
 `````
@@ -428,12 +448,13 @@ la rete, la misura di quanto viola la regola, il punteggio che mette insieme i
 due controlli, e infine il problema inverso, con un pezzo di legge che fingeremo
 di non conoscere. Per le equazioni che diffondono, la {doc}`sezione sulle
 equazioni come medie </PINN/equazioni-come-medie>` offre una lettura che aggira
-la griglia calcolando la soluzione come media su cammini casuali. La
-{doc}`sezione su dove la fisica aiuta </PINN/applicazioni-limiti>` chiude sulle
-applicazioni (il sangue nelle arterie, i materiali), sulla mappa dei limiti
-(quando le PINN convengono, quando no) e sugli operatori neurali: reti che
-imparano il procedimento invece di un singolo problema, la stessa idea che,
-appresa dai soli dati, fa girare i modelli meteo neurali.
+la griglia calcolando la soluzione come media su cammini casuali.
+
+La {doc}`sezione su dove la fisica aiuta </PINN/applicazioni-limiti>`
+chiude sulle applicazioni (il sangue nelle arterie, i materiali), sulla mappa
+dei limiti (quando le PINN convengono, quando no) e sugli operatori neurali:
+reti che imparano il procedimento invece di un singolo problema, la stessa
+idea che, appresa dai soli dati, fa girare i modelli meteo neurali.
 
 `````{tab} Elementare
 

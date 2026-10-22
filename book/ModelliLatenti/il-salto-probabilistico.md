@@ -6,14 +6,13 @@ obiettivo, la sola ricostruzione, non dice niente su come si dispongono i
 codici, e da un latente così non si sa pescare.
 
 Si cambia allora obiettivo, e in modo radicale. La domanda nuova è: quanto era
-probabile che uscisse questa cifra? Cioè si massimizza $\log
+probabile che uscisse questa cifra? In altri termini, si massimizza $\log
 p_\theta(\mathbf{x})$, la log-verosimiglianza dei dati sotto il modello a
 variabile latente dell’apertura del capitolo. A prima vista sembra un
 peggioramento, perché $p_\theta(\mathbf{x})$ è l’integrale che non si sa
-calcolare. Il resto della sezione racconta come mai è invece la domanda giusta,
-e come mai la regola che all’autoencoder mancava, quella su dove vanno messi i
-codici, non bisogna aggiungerla: nasce dal tentativo di approssimare
-quell’integrale.
+calcolare. Vedremo perché è invece la domanda giusta, e perché la regola che
+all’autoencoder mancava, quella su dove vanno messi i codici, non bisogna
+aggiungerla: nasce dal tentativo di approssimare quell’integrale.
 
 Il percorso è in quattro passi: l’integrale che non si può calcolare; la
 distribuzione di proposta $q_\phi(\mathbf{z} \mid \mathbf{x})$, che dice dove
@@ -81,10 +80,10 @@ a 40.
 
 `````
 
-Il modello del blocco che segue è un giocattolo, scelto apposta perché la
+Il modello dell’esperimento è un giocattolo, scelto apposta perché la
 risposta giusta si conosce in anticipo e ci si può confrontare invece di
-fidarsi. La causa nascosta è un vettore sorteggiato attorno allo zero, il dato
-è quella causa più un po’ di scarto sorteggiato anche lui, e in un caso così
+fidarsi. La causa nascosta è un vettore estratto a caso attorno allo zero, il
+dato è quella causa più un po’ di scarto estratto anch’esso, e in un caso così
 semplice la probabilità del dato si sa scrivere con carta e penna.
 
 Nella tabella «dimensioni» indica quanti numeri ha la causa nascosta, da uno a
@@ -143,17 +142,19 @@ dimensioni  log p(x) vero    stimato   errore   peso del piu grosso
         40         -46.98     -57.04   -10.06                35.1%
 ```
 
-Con una causa nascosta da un numero solo, centomila sorteggi danno la risposta
+Con una causa nascosta da un numero solo, centomila campioni danno la risposta
 esatta a due cifre decimali. Con quaranta numeri sbagliano di dieci nat, cioè
-stimano una probabilità ventiduemila volte più piccola di quella vera.
-L’errore, salendo di dimensione, è tutto dalla stessa parte: per difetto. Con
-poche dimensioni la stima oscilla ancora nei due versi (a cinque il segno è
-positivo per un centesimo), ma la spinta verso il basso diventa schiacciante
-quando le dimensioni crescono. La colonna a destra dice perché: su centomila
-sorteggi, uno solo si prende il trentacinque per cento del totale. Non stiamo
-facendo una media, stiamo aspettando un colpo di fortuna.
+stimano una probabilità ventiduemila volte più piccola di quella vera. Si noti
+che l’errore, salendo di dimensione, è tutto dalla stessa parte: per
+difetto. Con poche dimensioni la stima oscilla ancora nei due versi (a cinque
+il segno è positivo per un centesimo), ma la spinta verso il basso diventa
+schiacciante quando le dimensioni crescono.
 
-Il latente delle nostre cifre ha otto numeri soltanto. Quello di
+La colonna a destra dice perché: su centomila campioni, uno solo si prende il
+trentacinque per cento del totale. Non stiamo facendo una media, stiamo
+aspettando un colpo di fortuna.
+
+Il latente delle nostre cifre ha otto numeri soltanto; quello di
 {doc}`Stable Diffusion </ModelliDiffusione/stable-diffusion>`, il modello che
 disegna un’immagine a partire da una frase scritta e gira su un computer di
 casa, ne ha sedicimila.
@@ -162,22 +163,22 @@ casa, ne ha sedicimila.
 
 Se il problema è che si pesca nel posto sbagliato, la soluzione è pescare nel
 posto giusto, e il posto giusto dipende dal dato: sono i valori del latente
-compatibili con *questa* cifra, cioè la posterior
+compatibili con *questa* cifra, cioè la **posterior**
 $p_\theta(\mathbf{z} \mid \mathbf{x})$ (dall’inglese, «ciò che viene dopo»:
 la conoscenza sulla causa nascosta dopo aver visto il dato, come il prior è
 quella che si ha prima). Calcolarla non si può, ma la si può approssimare con
 una rete che guarda $\mathbf{x}$ e propone una distribuzione sul latente:
 l’encoder, che qui si scrive $q_\phi(\mathbf{z} \mid \mathbf{x})$.
 
-Si procede così. Invece di sorteggiare dal prior, si sorteggia da
-$q_\phi(\mathbf{z} \mid \mathbf{x})$, e si corregge la stima pesando ogni
-campione per il rapporto fra la probabilità che aveva sotto il modello e quella
-che aveva sotto la proposta. È il campionamento per importanza, lo stesso
-*importance sampling* dei {doc}`metodi Monte Carlo
-</ReinforcementLearning/monte-carlo>` del reinforcement learning: se la
-proposta somiglia alla posterior i pesi sono quasi uguali, e la stima ha poca
-varianza. L’encoder ha la stessa funzione di quello dell’autoencoder semplice,
-con una differenza sola: non propone un codice, propone una zona.
+In pratica, invece di campionare dal prior, si campiona da $q_\phi(\mathbf{z}
+\mid \mathbf{x})$, e si corregge la stima pesando ogni campione per il rapporto
+fra la probabilità che aveva sotto il modello e quella che aveva sotto la
+proposta. È il **campionamento per importanza**, lo stesso *importance sampling*
+dei {doc}`metodi Monte Carlo </ReinforcementLearning/monte-carlo>` del
+reinforcement learning: se la proposta somiglia alla posterior i pesi sono quasi
+uguali, e quindi la stima ha poca varianza. L’encoder ha la stessa funzione di
+quello dell’autoencoder semplice, con una differenza sola: non propone un
+codice, propone una zona.
 
 `````{tab} Elementare
 
@@ -223,7 +224,7 @@ sempre.)
 La via più battuta per arrivare all’ELBO passa dalla disuguaglianza di Jensen.
 Qui si segue quella di Kingma e Welling {cite}`kingma2019introduction`, che di
 disuguaglianze non ne usa nessuna: scrive un’identità esatta e legge il limite
-fra i suoi addendi. Costa un passaggio in più e restituisce ciò che l’altra
+fra i suoi addendi. Richiede un passaggio in più, ma restituisce ciò che l’altra
 strada perde per via, cioè non soltanto che il limite sta sotto, ma *di
 quanto*.
 
@@ -261,13 +262,14 @@ che il modello dichiara impossibili. Qui la condizione vale sempre: la
 posterior vera è proporzionale a
 $p_\theta(\mathbf{x} \mid \mathbf{z})\, p(\mathbf{z})$, e con un prior
 gaussiano e una verosimiglianza positiva ovunque nessuno dei due fattori si
-annulla.) I due addendi hanno un
-nome: il primo è l’ELBO (*evidence lower bound*, limite inferiore
-dell’evidenza), il secondo è la divergenza di Kullback–Leibler fra la posterior
-approssimata e quella vera. L’ordine degli argomenti, con $q_\phi$ a sinistra,
-lo decide il campionamento: i valori attesi si prendono rispetto a $q_\phi$
-perché da $q_\phi$ si sa campionare, mentre l’ordine inverso chiederebbe
-campioni dalla posterior vera, che è l’oggetto ignoto. Quindi
+annulla.)
+
+I due addendi hanno un nome: il primo è l’ELBO (*evidence lower bound*, limite
+inferiore dell’evidenza), il secondo è la divergenza di Kullback–Leibler fra la
+posterior approssimata e quella vera. L’ordine degli argomenti, con $q_\phi$ a
+sinistra, lo decide il campionamento: i valori attesi si prendono rispetto a
+$q_\phi$ perché da $q_\phi$ si sa campionare, mentre l’ordine inverso
+chiederebbe campioni dalla posterior vera, che è l’oggetto ignoto. Quindi
 
 $$
 \log p_\theta(\mathbf{x}) = \mathcal{E}_{\theta,\phi}(\mathbf{x})
@@ -459,6 +461,7 @@ posterior specifica di quel dato invece che con il codice comune
 $p(\mathbf{z})$. Il negativo dell’ELBO si legge allora come un costo di
 descrizione totale, i nat spesi per la scheda più quelli spesi per rifare il
 dato a partire dalla scheda, ma a una condizione che la lettura ingenua salta.
+
 Chi trasmette un $\mathbf{z}$ pescato da $q_\phi(\mathbf{z} \mid \mathbf{x})$
 con il codice $p(\mathbf{z})$ spende in media $\mathbb{E}_{q_\phi}[-\log
 p(\mathbf{z})]$, cioè la divergenza più l’entropia $H(q_\phi)$; il sovrapprezzo
@@ -643,28 +646,29 @@ una proprietà notevole: la sua varianza tende a zero man mano che la posterior
 approssimata si avvicina a quella vera. È lo stimatore detto *sticking the
 landing* {cite}`roeder2017sticking`.
 
-L’alternativa è lo stimatore a punteggio, $\nabla_\phi
-\mathbb{E}_{q_\phi}[f] = \mathbb{E}_{q_\phi}[f(\mathbf{z})\, \nabla_\phi \log
-q_\phi(\mathbf{z} \mid \mathbf{x})]$, che è il gradiente di policy di REINFORCE
-incontrato nella {doc}`sezione sul gradiente di policy
-</DeepReinforcementLearning/policy-gradient>`. Anche quello è non distorto, e
-ha il vantaggio decisivo di funzionare su variabili discrete, dove la
-riparametrizzazione non si applica. Paga in varianza, e quel costo si misura.
+L’alternativa è lo stimatore a punteggio, $\nabla_\phi \mathbb{E}_{q_\phi}[f] =
+\mathbb{E}_{q_\phi}[f(\mathbf{z})\, \nabla_\phi \log q_\phi(\mathbf{z} \mid
+\mathbf{x})]$, che è il gradiente di policy di REINFORCE incontrato nella
+{doc}`sezione sul gradiente di policy
+</DeepReinforcementLearning/policy-gradient>`. Anche quello è non distorto, e ha
+il vantaggio decisivo di funzionare su variabili discrete, dove la
+riparametrizzazione non si applica. Ha però una varianza maggiore, e la
+differenza si misura.
 
 `````
 
 I due metodi si mettono alla prova su un caso minuscolo in cui la risposta
-giusta si conosce in anticipo, così non si tratta di fidarsi. Il gioco è
-questo: si sorteggia un numero attorno a un centro (qui il centro vale 2), si
-guarda il suo quadrato, e ci si chiede di quanto cambierebbe la media di quel
-quadrato se il centro si spostasse. La risposta esatta si sa: la media del
-quadrato vale il quadrato del centro più uno (l’uno è quanto
-balla il sorteggio), quindi spostando il centro di un pochino la media cambia
-del doppio del centro. Con dei numeri: col centro a 2 la media del quadrato è
-$2 \times 2 + 1 = 5$; col centro a 2,01 è $2{,}01 \times 2{,}01 + 1 = 5{,}0401$.
-Il centro si è mosso di un centesimo e la media di quattro centesimi, quattro
-volte tanto. Col centro a 2, la risposta è 4. Vediamo quanto ci si
-avvicinano i due metodi, e soprattutto con quanta mano ferma.
+giusta si conosce in anticipo, così non si tratta di fidarsi. Il gioco è questo:
+si estrae a caso un numero attorno a un centro (qui il centro vale 2), si guarda
+il suo quadrato, e ci si chiede di quanto cambierebbe la media di quel quadrato
+se il centro si spostasse. La risposta esatta si sa: la media del quadrato vale
+il quadrato del centro più uno (l’uno è quanto balla il sorteggio), quindi
+spostando il centro di un pochino la media cambia del doppio del centro. Ad
+esempio, col centro a 2 la media del quadrato è $2 \times 2 + 1 = 5$; col centro
+a 2,01 è $2{,}01 \times 2{,}01 + 1 = 5{,}0401$. Il centro si è mosso di un
+centesimo e la media di quattro centesimi, quattro volte tanto. Col centro a 2,
+la risposta è 4. Vediamo quanto ci si avvicinano i due metodi, e soprattutto con
+quale variabilità.
 
 ```python
 import torch
@@ -708,12 +712,13 @@ print(f"\nla varianza del secondo e' {(punteggio.var() / riparametrizzato.var())
 la varianza del secondo e' 22 volte quella del primo, 9.5 con la linea di base
 ```
 
-Tutti e due i metodi puntano al valore giusto, 4: nessuno dei due imbroglia. La
-differenza è la mano, che nel secondo trema molto di più, e a dirlo è la
-deviazione standard, cioè quanto una singola risposta balla attorno al
-valore giusto: 2,0 per il primo metodo, 9,3 per il secondo. Il numero in
+Tutti e due i metodi puntano al valore giusto, 4, e nessuno dei due imbroglia.
+La differenza sta nella variabilità, che nel secondo è molto maggiore, e a
+dirlo è la deviazione standard, cioè quanto una singola risposta balla attorno
+al valore giusto: 2,0 per il primo metodo, 9,3 per il secondo. Il numero in
 fondo eleva al quadrato quelle due, che è il passaggio con cui si arriva alla
-varianza: 9,3 al quadrato contro 2 al quadrato, cioè ventidue volte tanto.
+varianza, e ne esce 9,3 al quadrato contro 2 al quadrato, cioè ventidue volte
+tanto.
 
 A parità di precisione, una varianza ventidue volte maggiore impone ventidue
 volte i campioni. Lo stimatore a punteggio ha un rimedio classico, la linea di
@@ -891,13 +896,13 @@ quattro cifre pescate dal prior e decodificate
    -#*.      -#=       .*%:        #-
 ```
 
-Il blocco stampa il grigio medio che il decoder dichiara per ciascun pixel, non
-un sorteggio: sorteggiando uscirebbe sale e pepe, quindi una parte della
+Il codice stampa il grigio medio che il decoder dichiara per ciascun pixel, non
+un campione: campionando uscirebbe sale e pepe, quindi una parte della
 morbidezza che si vede dipende da come si disegna e non solo dal modello.
 
-Non sono capolavori: grosse, un po’ molli, e su qualcuna si esita fra due
-cifre. Conta la loro origine: vengono da quattro file di otto numeri
-sorteggiate da una gaussiana dichiarata in partenza, e da nient’altro.
+Non sono capolavori (grosse, un po’ molli, e su qualcuna si esita fra due
+cifre), ma conta la loro origine: vengono da quattro file di otto numeri
+estratte da una gaussiana dichiarata in partenza, e da nient’altro.
 All’autoencoder semplice una
 gaussiana si era dovuta adattare
 ai codici a cose fatte, sperando che ci somigliassero, e il buco si era aperto
@@ -1003,15 +1008,16 @@ vuoti, quindi, è soprattutto la larghezza delle zone attorno a ciascun centro,
 che il costo di descrizione impedisce di stringere, più che una disposizione
 più fitta dei centri.
 
-La seconda colonna è la conseguenza: una cifra vera dista dalla sua vicina
+La seconda colonna è la conseguenza. Una cifra vera dista dalla sua vicina
 1,01; una cifra inventata dal VAE dista 1,09, cioè l’otto per cento in più;
 una inventata dall’autoencoder dista 1,62, cioè più del sessanta per cento in
 più. Con questo metro un dato inventato dal VAE sta alle cifre vere quasi
-quanto una cifra vera sta alle altre; uno inventato dall’autoencoder no. Il
-metro però ha un punto cieco, e l’ultima riga della tabella lo mostra: la media
-di cinque cifre vere della stessa classe, una cifra sfocata che nessuno ha mai
-scritto, dista dalla cifra vera più vicina 0,98, meno di quanto due cifre vere
-vicine distino fra loro (1,01). La distanza euclidea premia la media, e la
+quanto una cifra vera sta alle altre; uno inventato dall’autoencoder no.
+
+Il metro però ha un punto cieco, e l’ultima riga della tabella lo mostra: la
+media di cinque cifre vere della stessa classe, una cifra sfocata che nessuno ha
+mai scritto, dista dalla cifra vera più vicina 0,98, meno di quanto due cifre
+vere vicine distino fra loro (1,01). La distanza euclidea premia la media, e la
 media è il difetto che questa famiglia si porta dietro: la tabella dice che il
 VAE pesca dove il decoder è stato, non che le sue cifre siano nitide.
 
@@ -1090,9 +1096,10 @@ i dati ci sono diverge, mentre il costo di metterne dove i dati non ci sono è
 mite: il modello ottimale è quindi più disperso dei dati, e su immagini «più
 disperso» si legge come sfocato. È la spiegazione che danno Kingma e Welling
 {cite}`kingma2019introduction`, i quali osservano anche che il rimedio non è
-cambiare obiettivo ma rendere più flessibili la posterior o il decoder. A
-questa causa se ne somma una seconda, che sta nella verosimiglianza scelta: con
-$p_\theta(\mathbf{x} \mid \mathbf{z})$ fattorizzata sui pixel, tutto ciò che
+cambiare obiettivo ma rendere più flessibili la posterior o il decoder.
+
+A questa causa se ne somma una seconda, che sta nella verosimiglianza scelta:
+con $p_\theta(\mathbf{x} \mid \mathbf{z})$ fattorizzata sui pixel, tutto ciò che
 $\mathbf{z}$ non determina viene trattato come rumore indipendente pixel per
 pixel, e la media $\mathbb{E}[\mathbf{x} \mid \mathbf{z}]$ che si disegna è una
 media su tutte le immagini compatibili con quel codice, sfocata per
@@ -1138,7 +1145,7 @@ sui modelli di diffusione, mostra come lo si aggiri in pratica invece di
 risolverlo.
 
 Una semplificazione va dichiarata. La verosimiglianza usata è una Bernoulli per
-pixel applicata a livelli di grigio continui, che è la ricetta consueta su
+pixel applicata a livelli di grigio continui, che è la scelta consueta su
 questi dati e non è una densità normalizzata su $[0,1]$: il numero stampato
 come ELBO è quindi un ELBO rispetto a quel modello, non rispetto a una densità
 propria. La correzione esiste, si chiama Bernoulli continua

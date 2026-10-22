@@ -19,13 +19,15 @@ Nel 2020 Maziar Raissi, Alireza Yazdani e George Karniadakis pubblicano su
 *Science* un metodo, *Hidden Fluid Mechanics*, che ricostruisce velocità e
 pressione a partire dalle sole immagini del tracciante
 {cite}`raissi2020hidden`. Alla rete si danno le immagini (nell'articolo sono
-simulate al calcolatore, e portano solo il tracciante: nessun sensore di
+simulate al computer, e portano solo il tracciante: nessun sensore di
 pressione da nessuna parte) e le si impone di rispettare tre leggi: l'equazione
 che dice come il tracciante viene trasportato e si sparge, le equazioni di
 Navier–Stokes, che descrivono il moto di un fluido, e l'incomprimibilità. La
 rete, per essere coerente con quelle leggi *e* con il filmato, è costretta a
 ricostruire i **campi** che nel filmato non ci sono: velocità e, soprattutto,
-pressione. (Un campo, qui, è semplicemente una grandezza che ha un valore in
+pressione.
+
+(Un campo, qui, è semplicemente una grandezza che ha un valore in
 ogni punto dello spazio e in ogni istante: la velocità del sangue in quel
 punto, la pressione in quel punto.)
 
@@ -97,15 +99,17 @@ costante additiva.
 
 `````
 
-Restano i dislivelli di pressione, che sono comunque moltissimo: da lì, e dal
-modo in cui il sangue scorre rasente alla parete, si capisce dove la parete è
-sollecitata di più. Su una simulazione di aneurisma intracranico il metodo
-ricostruisce la pressione senza che nessuna misura di pressione gli sia mai
-stata data. Che il flusso dell'esperimento fosse simulato al calcolatore è
-insieme la condizione della prova e la sua debolezza, e gli autori la mettono
-fra i propri limiti: solo con dati fabbricati la risposta vera si conosce e si
-può controllare se la ricostruzione sia corretta, ma quei dati sono più puliti
-di qualunque risonanza.
+Restano comunque i dislivelli di pressione, che già dicono moltissimo: da lì,
+e dal modo in cui il sangue scorre rasente alla parete, si capisce dove la
+parete è sollecitata di più. Su una simulazione di aneurisma intracranico il
+metodo ricostruisce la pressione senza che nessuna misura di pressione gli
+sia mai stata data.
+
+Il fatto che il flusso dell'esperimento fosse simulato al computer è insieme la
+condizione della prova e la sua debolezza, e gli autori la mettono fra i propri
+limiti: infatti solo con dati fabbricati la risposta vera si conosce e si può
+controllare se la ricostruzione sia corretta, ma quei dati sono più puliti di
+qualunque risonanza.
 
 Leggere il non misurabile a partire dal misurabile è la vera ragione per
 studiare le PINN, molto più che rifare il lavoro dei solutori classici, che lo
@@ -136,7 +140,7 @@ la dose ignota diventa un numero in più che l'addestramento regola insieme ai
 pesi, finché fisica e osservazioni non vanno d'accordo.
 
 Indovinare le dosi da un assaggio, del resto, non l'ha inventato la rete. Al
-calcolatore lo si fa da decenni con altri metodi, spesso spendendo meno. Della
+computer lo si fa da decenni con altri metodi, spesso spendendo meno. Della
 PINN conta che il modo di procedere resta lo stesso, qualunque assaggio
 capiti in mano.
 
@@ -144,9 +148,9 @@ capiti in mano.
 
 `````{tab} Superiore
 
-Nel problema diretto l'equazione e i suoi dati al contorno sono noti e si
+Nel **problema diretto** l'equazione e i suoi dati al contorno sono noti e si
 cerca la soluzione $u$: è tipicamente *ben posto* nel senso di Hadamard
-(esistenza, unicità, dipendenza continua dai dati). Nel problema inverso
+(esistenza, unicità, dipendenza continua dai dati). Nel **problema inverso**
 parte della soluzione è osservata (spesso su pochi punti e con rumore) e
 l'incognita è un ingrediente dell'equazione stessa: un coefficiente, un
 termine sorgente, una condizione al contorno. Questi problemi sono
@@ -247,7 +251,7 @@ resto, e non c'è niente che lo segnali.
 sismogrammi (i tracciati registrati in superficie dai rilevatori di
 vibrazioni) è un inverso da manuale, e ci si è provato anche con le PINN.
 Resta un campo di ricerca attivo più che una tecnologia
-consolidata: quello stesso problema ha già i suoi metodi classici, che in
+consolidata, poiché quello stesso problema ha già i suoi metodi classici, che in
 inglese si chiamano *full-waveform inversion* (simulano le onde in un modello
 del sottosuolo e lo correggono finché i sismogrammi calcolati coincidono con
 quelli registrati), e sono maturi e difficili da battere.
@@ -358,7 +362,9 @@ dove il massimo e la media (la barra) sono presi sulle componenti del gradiente
 rispetto ai pesi e $\rho = 0{,}9$ (nel lavoro originale è $\alpha$, che in
 questa pagina è il parametro fisico ignoto): i termini di dati, che sono quelli
 da rialzare, vengono portati alla scala del termine di fisica. Costa una
-backward in più per termine. Un'altra strada, dello stesso gruppo, dà a ogni
+backward in più per termine.
+
+Un'altra strada, dello stesso gruppo, dà a ogni
 termine, fisica compresa, un peso inversamente proporzionale alla traccia del
 suo blocco del nucleo tangente neurale, $\lambda_i = \mathrm{Tr}(\mathbf{K}) /
 \mathrm{Tr}(\mathbf{K}_{ii})$ {cite}`wang2022when`. Qui $\mathbf{K}$ ha
@@ -368,11 +374,14 @@ interni), e $\mathbf{K}_{ii}$ è il blocco dei punti del termine $i$. Nel regime
 di rete larga gli scarti evolvono sotto il flusso del gradiente come
 $\dot{\mathbf{f}} = -\mathbf{K}\,\mathbf{f}$, e la media degli autovalori del
 blocco, $\mathrm{Tr}(\mathbf{K}_{ii})/n_i$, è la velocità media con cui
-converge il termine $i$: il peso riequilibra queste velocità. Un'altra ancora
-dà un peso a ogni singolo punto e lo fa girare all'addestramento, ma in
-*salita*, come un problema di punto di sella in cui la rete minimizza e i pesi
+converge il termine $i$: il peso riequilibra queste velocità.
+
+Una terza strada assegna un peso a ogni singolo punto e lo addestra in
+*salita*: è un problema di punto di sella in cui la rete minimizza e i pesi
 massimizzano, così che i punti dove il residuo resta alto contino sempre di più
-(le *self-adaptive PINN* {cite}`mcclenny2023self`). Peggio: il termine fisico
+(le *self-adaptive PINN* {cite}`mcclenny2023self`).
+
+Un ulteriore ostacolo è che il termine fisico
 contiene operatori differenziali di ordine alto (derivate seconde, a volte
 quarte) che rendono il problema mal condizionato, nel senso preciso dei
 {doc}`richiami di analisi numerica </Matematica/analisi-numerica>`, e la
@@ -459,8 +468,8 @@ rapida: esaurito il transitorio, la soluzione di un problema stiff è liscia e a
 bassa frequenza, e per questo i metodi impliciti possono
 farci passi enormi. Si costruisce senza fatica un problema la cui rigidezza
 cresce di cinque ordini di grandezza mentre il contenuto in frequenza della
-soluzione non si muove di un millimetro. Alle PINN i problemi stiff danno
-comunque filo da torcere, ma per la ragione vista poco sopra, non per lo
+soluzione non si muove di un millimetro. I problemi stiff restano
+comunque difficili per le PINN, ma per la ragione vista poco sopra, non per lo
 spectral bias. Wang, Teng e Perdikaris misurano una rigidezza diversa da quella
 dell'equazione: quella del flusso del gradiente nello {doc}`spazio dei
 parametri </RetiNeurali/backpropagation>`, cioè dell'equazione $\dot\theta =
@@ -480,8 +489,8 @@ C'è poi un caso, il più duro, che lo spectral bias non copre affatto: quando l
 soluzione ha una discontinuità vera, come l'urto di una legge di conservazione
 non viscosa. Lì l'equazione in forma forte non ha nessuna soluzione classica,
 perché la soluzione vera sull'urto non è derivabile; la rete, che è liscia per
-costruzione, un residuo lo calcola lo stesso, e il difetto sta tutto qui. Non è
-che impari piano, è che il problema che sta minimizzando non è quello giusto.
+costruzione, un residuo lo calcola lo stesso, e il difetto sta tutto qui. La
+rete non impara piano: minimizza un problema che non è quello giusto.
 La strada, in quel caso, è riscrivere il vincolo in forma **debole**: invece di
 chiedere $\mathcal{N}[u_\theta] = 0$ punto per punto, si chiede che il residuo
 sia ortogonale a una famiglia di funzioni test, $\int_\Omega
@@ -544,27 +553,27 @@ oltre. Man mano che il fronte avanza, i pesi si accendono un istante dopo
 l'altro.
 ```
 
-Resta il confronto onesto con i solutori classici, da ripetere senza
-sconti. Prendiamo un problema *standard*: equazione nota, forma regolare,
-nessun dato sperimentale da tenere insieme alla legge. Lì il metodo a
-passettini visto in apertura di capitolo, fatto bene, è più rapido di ordini
-di grandezza ed è più preciso: nei confronti sistematici con gli elementi
-finiti le PINN non lo battono né nel tempo per arrivare alla soluzione né
-nell'accuratezza {cite}`grossmann2024can`. Ne esistono due versioni mature, e
-conviene avere i nomi: le differenze finite mettono i puntini in righe e
-colonne regolari, gli elementi finiti ritagliano la regione in tanti
-triangoli (o tetraedri, nello spazio) e sanno quindi seguire una forma
-qualsiasi.
+Resta il confronto onesto con i solutori classici, da ripetere senza sconti.
+Prendiamo un problema *standard*: equazione nota, forma regolare, nessun dato
+sperimentale da tenere insieme alla legge. Lì il metodo a passettini visto in
+apertura di capitolo, fatto bene, è più rapido di ordini di grandezza ed è più
+preciso: nei confronti sistematici con gli elementi finiti le PINN non lo
+battono né nel tempo per arrivare alla soluzione né nell'accuratezza
+{cite}`grossmann2024can`. Ne esistono due versioni mature: le differenze finite
+mettono i puntini in righe e colonne regolari, gli elementi finiti ritagliano
+la regione in tanti triangoli (o tetraedri, nello spazio) e sanno quindi
+seguire una forma qualsiasi.
 
 Il metodo a passettini porta in dote anche qualcosa che a una rete addestrata
 manca del tutto: si dimostra, sotto ipotesi che si sanno controllare prima di
-partire, che infittendo i puntini l'errore scende, e pure di quanto. Una PINN
-che impiega minuti dove un solutore maturo impiega millisecondi, e che ogni
-tanto fallisce senza preavviso, è un passo indietro. Il vantaggio delle PINN,
-quando c'è, sta in tre casi: quando misure e leggi vanno usate insieme per
-rispondere alla stessa domanda; quando la risposta dipende da così tante
-grandezze che i puntini da mettere sarebbero più di quanti un calcolatore ne
-possa tenere; e quando il problema è inverso.
+partire, che infittendo i puntini l'errore scende, e pure di quanto.
+
+Una PINN che impiega minuti dove un solutore maturo impiega millisecondi, e che
+ogni tanto fallisce senza preavviso, è un passo indietro. In definitiva il
+vantaggio delle PINN, quando c'è, sta in tre casi: quando misure e leggi vanno
+usate insieme per rispondere alla stessa domanda; quando la risposta dipende da
+così tante grandezze che i puntini da mettere sarebbero più di quanti un
+computer ne possa tenere; e quando il problema è inverso.
 
 ## Oltre le PINN: imparare il mestiere, non il compito
 
@@ -583,7 +592,9 @@ condizioni al contorno. Che cosa la scalda dall'interno, per esempio una
 resistenza elettrica infilata dentro che la percorre tutta: è la sorgente, e
 dove non scalda niente vale zero, che è pur sempre un valore deciso prima. Di
 che materiale è fatta, infine, cioè quanto in fretta il calore ci corre dentro:
-sono i coefficienti dell'equazione. Cambia uno solo dei cinque, sposta la
+sono i coefficienti dell'equazione.
+
+Cambia uno solo dei cinque, sposta la
 fiamma o passa dal ferro al rame, e si riaddestra da capo.
 
 Messi sul disegno, {numref}`fig-quattro-ingredienti`, quattro dei cinque
@@ -669,7 +680,7 @@ un'inferenza fino a circa tre ordini di grandezza più rapida dei solutori
 tradizionali; il cronometro nel corpo, sul confronto con il pseudospettrale, dà
 440 volte.
 
-Quella cifra però va presa con le stesse pinze che si usano qui sulle PINN. Il
+Quella cifra va però letta con la stessa cautela che si applica alle PINN. Il
 confronto non è a parità di accuratezza: il solutore pseudospettrale è quello
 che ha *generato* i dati di addestramento, e nella tabella dell'accuratezza
 dello stesso articolo l'errore relativo dell'operatore alle due viscosità più
@@ -684,12 +695,14 @@ gli altri.
 
 `````
 
-Ed eccoci al meteo. I modelli neurali di previsione globale, quelli che danno
+Torniamo ora al meteo. I modelli neurali di previsione globale, quelli che danno
 dieci giorni di tempo su tutto il pianeta in meno di un minuto, là dove i
 centri di calcolo tradizionali integrano le equazioni per ore su un
 supercomputer, sono costruiti nello stesso spirito: reti che hanno imparato *il
 metodo*, cioè come l'atmosfera passa da uno stato al successivo, invece della
-singola risposta. Le architetture variano. GraphCast è una rete a grafo su una
+singola risposta.
+
+Le architetture variano. GraphCast è una rete a grafo su una
 maglia che avvolge la sfera {cite}`lam2023graphcast`; FourCastNet discende dal
 Fourier Neural Operator {cite}`pathak2022fourcastnet`, che lavora scomponendo
 in onde quel che vede: come un accordo si scompone nelle note che lo formano,
@@ -707,14 +720,16 @@ previsione lontano nel tempo; e il fatto che, non avendo nessuna legge dentro,
 un modello del genere può restituire uno stato dell'atmosfera che la fisica non
 ammetterebbe.
 
-Poi c'è una prudenza diversa, che riguarda i numeri di targa e vale ben oltre
+Una seconda cautela, diversa, riguarda i numeri di targa e vale ben oltre
 il meteo. Restiamo sul Fourier Neural Operator, ma questa volta non sui modelli
 meteo: sul problema di prova su cui quella famiglia si è fatta conoscere, un
 fluido in due dimensioni. Nel riassunto dell'articolo che lo propone si legge
 «fino a tre ordini di grandezza più rapido dei solutori tradizionali», cioè
 mille volte; qualche pagina dopo, nello stesso articolo, il cronometro dice
 quattrocentoquaranta. In quel confronto il metodo classico lavorava molto più
-fine, cioè stava dando una risposta più precisa. Quando altri sono andati a
+fine, cioè stava dando una risposta più precisa.
+
+Quando altri sono andati a
 rifarlo a parità di precisione, chiedendo cioè ai due la stessa accuratezza e
 poi cronometrando, il vantaggio è sceso a sette volte {cite}`mcgreivy2024weak`,
 e per giunta con la rete su una scheda grafica contro un portatile. Sette volte
@@ -726,7 +741,7 @@ comprando.
 
 Le PINN valgono, alla fine, più come *simbolo* che come tecnica, e il simbolo
 è questo: non chiedono di scegliere fra la conoscenza umana e i dati. Per
-secoli la scienza ha scritto leggi e le ha risolte al calcolatore; nel
+secoli la scienza ha scritto leggi e le ha risolte al computer; nel
 decennio abbondante che va dalla svolta del deep learning, attorno al 2012, a
 oggi, il machine learning ha spesso fatto l'opposto, lasciando che la
 struttura venisse dai dati, con vincoli leggeri come le simmetrie delle

@@ -8,14 +8,14 @@ quasi tutta la potenza di calcolo: su una A100, 312 mila miliardi di operazioni
 al secondo in mezza precisione, contro 19,5 mila miliardi delle unità generiche
 in `float32`. Le operazioni elemento per elemento e le somme girano invece sulle
 unità generiche, e lo scan di Mamba-1 è fatto di operazioni di questo
-tipo: i tensor core restano inutilizzati.
+tipo, quindi i tensor core restano inutilizzati.
 
 Mamba-2, di Tri Dao e Albert Gu {cite}`dao2024mamba2`, risponde con un
-risultato teorico e uno pratico. Il primo: per una classe precisa di SSM,
-quelli in cui la transizione è uno scalare per l'identità, la ricorrenza e
-un'attenzione lineare mascherata (la formula dei Transformer senza la softmax)
-calcolano la stessa funzione; le due famiglie si incontrano su quel gradino, e
-fuori da lì restano parenti. Il secondo: da quella equivalenza discende un
+risultato teorico e uno pratico. Il primo afferma che, per una classe
+precisa di SSM, quelli in cui la transizione è uno scalare per l'identità,
+la ricorrenza e un'attenzione lineare mascherata (la formula dei Transformer
+senza la softmax) calcolano la stessa funzione; le due famiglie si incontrano
+su quel gradino, e fuori da lì restano parenti. Il secondo ne discende: un
 algoritmo fatto quasi tutto di moltiplicazioni di matrici, che riporta il
 calcolo sui tensor core.
 
@@ -33,8 +33,8 @@ Il titolo del loro articolo, *Transformers are SSMs*, è programmatico e più
 largo del teorema che contiene, e fa da rovescio a *Transformers are RNNs*
 {cite}`katharopoulos2020transformers`, incontrato nel capitolo sull'attenzione
 lineare. Lì avevamo tolto dall'attenzione il pezzo più oneroso e trovato sotto
-una rete ricorrente a stato fisso;
-qui si parte dall'altro capo, da un sistema dinamico misurato a intervalli, e
+una rete ricorrente a stato fisso.
+Qui si parte dall'altro capo, da un sistema dinamico misurato a intervalli, e
 si arriva a un'attenzione lineare.
 
 `````{tab} Elementare
@@ -75,8 +75,8 @@ grande tabella dei confronti. La tabella non si riempie tutta, però. La metà
 che confronterebbe una parola con quelle che vengono dopo di lei resta a zero,
 perché nessuno può leggere il futuro; e ogni confronto che resta viene
 moltiplicato per quanto del ricordo è sopravvissuto da lì fin qui, così le
-parole lontane pesano meno di quelle vicine. Il secondo modo è quello su cui le
-GPU rendono di più.
+parole lontane pesano meno di quelle vicine. Dei due modi, il secondo è quello
+su cui le GPU rendono di più.
 
 `````
 
@@ -145,8 +145,8 @@ futuro (triangolo superiore) e pesa il passato con i prodotti degli scalari
 $a_t$. Il paper di Mamba-2 chiama $\mathbf{L}$ questa maschera; qui la
 chiamiamo $\mathbf{M}$ perché in questo capitolo $L$ è la lunghezza della
 sequenza (il numero di posizioni, come nell'attenzione), e le due cose
-comparirebbero nella stessa formula. Questa è un'attenzione lineare mascherata.
-Dell'attenzione dei Transformer,
+comparirebbero nella stessa formula. Questa, in altri termini, è un'attenzione
+lineare mascherata. Dell'attenzione dei Transformer,
 $\mathrm{softmax}(\mathbf{Q}\mathbf{K}^\top/\sqrt{d_k})\mathbf{V}$
 {cite}`vaswani2017attention`, tiene i punteggi $\mathbf{Q}\mathbf{K}^\top$ (qui
 $\mathbf{C}\mathbf{B}^\top$) e toglie la softmax. La maschera $\mathbf{M}$ non
@@ -189,7 +189,9 @@ fissa addestrata in parallelo e usata passo dopo passo, e una sola differenza:
 come il passato sbiadisce quando arriva il presente. C'era chi non dimenticava
 niente, chi sbiadiva tutta la memoria della stessa quantità, chi ne sbiadiva
 ogni colonna al suo ritmo, e chi cancellava in modo mirato la vecchia voce che
-stava per essere riscritta. Mamba-2 stava sul secondo gradino, quello della
+stava per essere riscritta.
+
+Mamba-2 stava sul secondo gradino, quello della
 transizione $\alpha_t\mathbf{I}$, il decadimento scalare ricalcolato a ogni
 parola. Arrivando dai sistemi dinamici invece che dall'attenzione, con la
 transizione scalare ci si ritrova su quello stesso gradino. Lì la stessa
@@ -201,9 +203,10 @@ un'uguaglianza. Sugli altri, le due famiglie restano parenti.
 
 ## Perché conviene: i tensor core
 
-La dualità sarebbe solo un'eleganza teorica se non pagasse in velocità. Paga, e
-la chiave è una rinuncia. In Mamba-1 ogni casella della memoria sbiadiva a
-velocità propria; Mamba-2 impone che sbiadiscano tutte alla stessa. È una
+La dualità sarebbe solo un'eleganza teorica se non desse un vantaggio in
+velocità. Lo dà, e la chiave è una rinuncia. In Mamba-1 ogni casella della
+memoria decadeva a velocità propria; Mamba-2 impone che decadano tutte alla
+stessa. È una
 perdita di espressività, cioè di cose che il modello sa distinguere, e i due
 paper la riconoscono: gli autori di Mamba-2 la giudicano piccola e la pagano
 volentieri, perché in cambio l'algoritmo si scrive quasi tutto come prodotto di
@@ -221,8 +224,9 @@ vai molto più veloce.
 I tensor core della GPU sono quella pressa: sanno fare un'operazione sola,
 moltiplicare tabelle di numeri, e la fanno a velocità impressionante. Lo scan
 di Mamba-1, fatto di operazioni una-alla-volta, li teneva spenti. La rinuncia
-di Mamba-2 dà ai conti la «forma standard» che la pressa accetta. Il modello
-lavora per canali, i numeri con cui è scritta ogni parola, e ogni
+di Mamba-2 dà ai conti la «forma standard» che la pressa accetta.
+
+Il modello lavora per canali, i numeri con cui è scritta ogni parola, e ogni
 canale ha il suo pezzo di memoria, la sua schiera di vasche; invece di lasciare
 che ogni canale dimentichi a modo suo, si chiede a un intero gruppo di canali
 di dimenticare tutti alla stessa velocità. Basta questo, e il calcolo di tutto
@@ -264,11 +268,11 @@ un piccolo prodotto di matrici per ciclo: su una GPU moderna lì
 risiede la stragrande maggioranza dei FLOP disponibili. Un *selective scan* come
 quello di Mamba-1 è invece una ricorrenza associativa fatta di moltiplicazioni
 elemento per elemento e somme: parallelizzabile in $O(\log L)$ passi, ma su unità
-generiche, molto meno dense di FLOP. Sta usando la frazione lenta della GPU.
+generiche, molto meno dense di FLOP. Usa, cioè, la frazione lenta della GPU.
 
 Con la transizione $\bar{\mathbf{A}}_t = a_t \mathbf{I}$ l'algoritmo pratico
 non forma l'intera matrice lunghezza per lunghezza (sarebbe $O(L^2)$ in
-memoria). Si adotta una **decomposizione a blocchi** (*chunked scan*): la
+memoria). Si adotta invece una **decomposizione a blocchi** (*chunked scan*): la
 sequenza si spezza in blocchi di lunghezza $Q$ (la lettera è quella del paper,
 e non c'entra con le query $\mathbf{Q}$, che essendo una matrice restano in
 grassetto); dentro ciascun blocco si calcola la forma quadratica,
@@ -301,11 +305,11 @@ $O(L\,N^2)$. Rispetto alla forma quadratica, che di operazioni ne fa $O\big(L^2
 (N+P)\big)$, è un guadagno enorme; rispetto alla ricorrenza pura non si
 risparmia nulla, anzi con blocchi lunghi si fanno più operazioni. Il punto sta
 nel farne di un tipo diverso, non nel farne meno: tutte moltiplicazioni di
-matrici, cioè lavoro che la pressa accetta. Ne seguono due conseguenze di
+matrici, cioè lavoro adatto ai tensor core. Ne seguono due conseguenze di
 progetto: la struttura è multi-head come l'attenzione (dimensione di testa
 $P$ tipicamente $64$ o $128$), e lo stato può crescere di un ordine di
 grandezza (da $N=16$ in Mamba-1 a $N$ dell'ordine di $64$–$256$ e oltre in
-Mamba-2), perché una memoria più grande, ora, non costa in velocità. Uno stato
+Mamba-2), perché una memoria più grande, ora, non rallenta il calcolo. Uno stato
 più capiente è direttamente più memoria associativa: meno *crosstalk*, richiamo
 più preciso.
 
@@ -313,11 +317,11 @@ più preciso.
 
 Mamba-1 aveva reso l'SSM selettivo pagando con lo scan. Mamba-2 recupera il
 parallelismo pieno delle matrici accettando una transizione di stato (il modo
-in cui lo stato sbiadisce) più semplice, e può permetterselo perché la dualità
+in cui lo stato decade) più semplice, e può permetterselo perché la dualità
 gli garantisce che quella forma più semplice è un'attenzione lineare
 mascherata, e come tale si calcola a prodotti di matrici. È il compromesso
 tipico di questa famiglia: qualche grado di libertà in meno sulla transizione,
-cioè meno modi di sbiadire, in cambio di forme parallele che sfruttano le GPU.
+cioè meno modi di decadere, in cambio di forme parallele che sfruttano le GPU.
 
 ## Mamba-3
 
@@ -359,10 +363,14 @@ una volta per tutte a metà e metà, ma a ogni passo, in base a ciò che legge,
 con un peso che va da zero a uno (il trapezio della geometria, che fa la media,
 è il caso particolare in cui i due estremi pesano uguale). La stima è la più
 precisa quando i due estremi pesano quasi uguale, e lontano da lì torna
-grossolano quanto i rettangoli. Gli autori hanno provato a inchiodare il peso a
+grossolano quanto i rettangoli.
+
+Gli autori hanno provato a inchiodare il peso a
 metà: la stima a metà e metà fa già meglio di quella a rettangoli, e lasciare
 libero il peso guadagna ancora qualcosa. Le differenze sono piccole, e il paper
-non dice di quanto cambierebbero rifacendo la prova. C'è poi una conseguenza
+non dice di quanto cambierebbero rifacendo la prova.
+
+C'è poi una conseguenza
 pratica, che viene dalla forma della regola più che dalla sua precisione.
 Mamba-1 e Mamba-2 avevano bisogno, prima del cuore selettivo, di una **piccola
 convoluzione causale** (un mini-filtro che mescola qualche parola vicina) per
@@ -408,23 +416,28 @@ $O(\Delta_t^3)$ a condizione che $\lambda_t$ resti vicino a $1/2$ (precisamente
 $\lambda_t = 1/2 + O(\Delta_t)$); fuori da quella condizione il metodo resta
 del prim'ordine, con una costante che cresce come $\lvert 1/2 - \lambda_t
 \rvert$ e che ai due estremi $\lambda_t \in \{0, 1\}$ vale quanto quella di
-Eulero. Il paper riporta che imporre quella condizione peggiora i risultati: a
+Eulero.
+
+Il paper riporta che imporre quella condizione peggiora i risultati: a
 440 milioni di parametri la perplessità è 15,72 con il peso appreso, 15,76 con
 il peso fisso a $1/2$ e 15,81 con la regola di Eulero (una cifra per riga,
 senza barre d'errore). Il second'ordine quindi paga, ma meno del peso scelto
-dal modello. La trasformazione bilineare di S4 approssima l'esponenziale di
+dal modello.
+
+La trasformazione bilineare di S4 approssima l'esponenziale di
 $\mathbf{A}$; qui il trapezio agisce sul termine d'ingresso data-dipendente, e
 la transizione resta esponenziale. Resta esatta, però, finché $A_t$ non dipende
 dal token: in Mamba-3, dove dipende, il paper approssima separatamente i due
-integrali, e il second'ordine riguarda il solo termine d'ingresso. La
-conseguenza riportata nel paper è che la **short causal convolution** posta
+integrali, e il second'ordine riguarda il solo termine d'ingresso.
+
+La conseguenza riportata nel paper è che la **short causal convolution** posta
 prima dell'SSM (presente in tutti i blocchi Mamba precedenti come
 stabilizzatore) diventa opzionale: insieme a un termine di bias esplicito su
 $\mathbf{B}$ e $\mathbf{C}$, la discretizzazione più fine recupera l'effetto di
 mescolamento locale che quel filtro forniva; il paper avverte che i due oggetti
 restano distinti, perché la convoluzione corta agisce su $x_t$ fuori dalla
-ricorrenza e questa sul prodotto $\mathbf{B}_t x_t$ dentro. Vanno insieme, i
-due ingredienti, e il paper li toglie uno per volta: con la discretizzazione
+ricorrenza e questa sul prodotto $\mathbf{B}_t x_t$ dentro. I due ingredienti
+vanno insieme, e il paper li toglie uno per volta: con la discretizzazione
 nuova ma senza i bias la qualità cala, e senza nessuno dei due cala ancora.
 
 `````
@@ -432,7 +445,7 @@ nuova ma senza i bias la qualità cala, e senza nessuno dei due cala ancora.
 Il peso $\lambda_t$, un numero fra zero e uno, decide quanto contano i due
 estremi dell'intervallo. {numref}`fig-trapezio-e-il-peso` confronta tre pesi su
 un solo passo di una curva di prova: non misura Mamba-3, misura la regola di
-quadratura che Mamba-3 usa. Allontanarsi dalla metà costa quasi uguale
+quadratura che Mamba-3 usa. Allontanarsi dalla metà dà un errore quasi uguale
 dalle due parti: il peso zero, che guarda soltanto il campione precedente,
 sbaglia quanto il peso uno di Mamba-2 a meno di un decimo, e il minimo cade
 quasi a metà.
@@ -472,7 +485,9 @@ contare qualcosa che si ripete a cicli (come le ore su un
 quadrante, dove dopo il dodici si ricomincia), seguire uno stato che si
 alterna. Una memoria che sa solo sbiadire fatica; una che sa ruotare può,
 letteralmente, «girare la lancetta» a ogni passo e ricordare a che punto del
-ciclo si trova. Sulle parentesi si vede bene: basta che a ogni parentesi la
+ciclo si trova.
+
+Sulle parentesi si vede bene: basta che a ogni parentesi la
 lancetta faccia mezzo giro, e dopo un numero pari di parentesi è tornata
 al punto di partenza, dopo un numero dispari è dalla parte opposta
 del quadrante. Le due situazioni si distinguono a colpo d'occhio, mentre una
@@ -554,7 +569,7 @@ e la successiva resta quasi la stessa.
 `````{tab} Superiore
 
 Mamba-2 e i suoi predecessori sono, nella loro forma base, sistemi a singolo
-ingresso e singola uscita (SISO): ogni canale evolve con un proprio stato,
+ingresso e singola uscita (**SISO**): ogni canale evolve con un proprio stato,
 indipendente, e $\mathbf{B}_t$ e $\mathbf{C}_t$ sono vettori. Mamba-3 propone
 una formulazione MIMO (*multi-input multi-output*, come per S5), in cui più
 ingressi e più uscite condividono lo stesso stato attraverso matrici
@@ -568,7 +583,9 @@ $\mathbf{B}_t \in \mathbb{R}^{N}$. Nel MIMO di rango $R$, $\mathbf{x}_t \in
 $\mathbf{C}_t$): la scrittura $\mathbf{x}_t\mathbf{B}_t^\top$ diventa una somma
 di $R$ prodotti esterni, cioè un prodotto fra matrici; lo stato resta $P \times
 N$, le operazioni del passo crescono di un fattore $R$ e la quantità di byte
-letti, dominata dallo stato, resta quasi invariata. L'effetto tecnico è
+letti, dominata dallo stato, resta quasi invariata.
+
+L'effetto tecnico è
 aumentare l’intensità aritmetica (il numero di operazioni per ogni byte letto
 dalla memoria), e questo tiene occupati i tensor core. Per un passo di
 decodifica SISO questa intensità vale circa 2,5 operazioni per byte, contro le

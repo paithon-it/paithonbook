@@ -2,20 +2,20 @@
 
 Quando pronunciamo una parola non facciamo altro che spingere aria. Le corde
 vocali vibrano, l'aria si comprime e si dirada (si *rarefà*, dicono i fisici), e
-un'onda di pressione viaggia
-fino al timpano di chi ascolta, o alla membrana di un microfono. Negli anni
+un'onda di pressione viaggia fino al timpano di chi ascolta, o alla membrana di
+un microfono. Negli anni
 Quaranta, ai Bell Labs, il gruppo guidato da Ralph Potter costruì il *sound
 spectrograph*, una macchina che trasformava quest'onda in un'immagine
 {cite}`koenig1946sound`; e le immagini che ne uscivano le chiamò *visible
 speech*, "parola visibile", riprendendo il titolo dell'alfabeto fonetico che
 Alexander Melville Bell aveva pubblicato ottant'anni prima
-{cite}`potter1947visible`. È esattamente il percorso che
-compie oggi *qualsiasi* sistema che lavora sull'audio (riconoscere una voce,
-un canto, un allarme) prima ancora di provare a capire *cosa* quel suono
-significhi: trasformare un'onda in numeri, e i numeri in un'immagine su cui un
-modello sa lavorare.
+{cite}`potter1947visible`. È esattamente il percorso che compie oggi
+*qualsiasi* sistema che lavora sull'audio (riconoscere una voce, un canto, un
+allarme) prima ancora di provare a capire *cosa* quel suono significhi:
+trasformare un'onda in numeri, e i numeri in un'immagine su cui un modello sa
+lavorare.
 
-Le *feature* sono le grandezze numeriche con cui si descrive un esempio a un
+Le **feature** sono le grandezze numeriche con cui si descrive un esempio a un
 modello. Per un suono vanno dai campioni dell'onda fino allo spettrogramma
 log-mel, e quali scegliere dipende da che cosa il modello deve riconoscere.
 
@@ -24,22 +24,23 @@ log-mel, e quali scegliere dipende da che cosa il modello deve riconoscere.
 Un microfono trasforma la variazione di pressione dell'aria in un segnale
 elettrico: una membrana si sposta seguendo la pressione, e il suo spostamento
 diventa una tensione che si può misurare. Quel movimento è un'oscillazione, e
-la membrana non fa che ricopiare quella dell'aria: quante volte al secondo
-l'aria si comprime e si dirada si chiama **frequenza**. Si misura in hertz
-(Hz), e mille hertz fanno un kilohertz (kHz). Una frequenza alta dà un suono
-acuto, una bassa un suono grave: il la del diapason oscilla 440 volte al
-secondo, cioè 440 Hz, e la stessa nota un'ottava sopra ne fa il doppio, 880.
+la membrana non fa che ricopiare quella dell'aria. Il numero di volte al
+secondo in cui l'aria si comprime e si dirada si chiama **frequenza**, e si
+misura in hertz (Hz); mille hertz fanno un kilohertz (kHz). Una frequenza alta
+dà un suono acuto, una bassa un suono grave. Ad esempio, il la del diapason
+oscilla 440 volte al secondo, cioè 440 Hz, e la stessa nota un'ottava sopra
+ne fa il doppio, 880.
 
-Per portare quell'oscillazione dentro un calcolatore la si misura a intervalli
+Per portare quell'oscillazione dentro un computer la si misura a intervalli
 regolari. Ciascuna misura è un **campione**: il valore del segnale in un
 istante preciso, e prenderle si dice campionare. (Il termine ha qui un senso
 diverso da quello della statistica, dove un campione è un gruppo di esempi
 estratti da una popolazione.) Un suono digitale è una fila di campioni, e
 restano due scelte: quanti prenderne al secondo, cioè la *frequenza di
 campionamento*, e con quanta finezza scrivere ciascuno, cioè la *risoluzione*,
-contata in bit. Alla prima risponde il teorema di Nyquist.
-Per la seconda la risposta abituale è sedici bit per campione: sedici risposte
-sì/no, e siccome ogni risposta raddoppia i casi possibili, 65.536 livelli. Il
+contata in bit. Alla prima risponde il teorema di Nyquist. Per la seconda la
+risposta abituale è sedici bit per campione: sedici risposte sì/no che, siccome
+ogni risposta raddoppia i casi possibili, danno 65.536 livelli. Il
 gradino fra due livelli vicini è allora un sessantacinquemillesimo
 dell'escursione, e in un ascolto normale l'orecchio non lo coglie; a otto bit
 sarebbe un duecentocinquantaseiesimo, e un suono debole ci finirebbe sotto.
@@ -68,11 +69,11 @@ righello, e le tacche sono in numero fisso, deciso una volta per tutte.
 
 Il suono è un segnale continuo $x(t)$: l'ampiezza dell'onda di pressione in
 funzione del tempo. La digitalizzazione compie due operazioni. Il
-campionamento discretizza il tempo, misurando $x$ a intervalli regolari
-$T_s$ e ottenendo la sequenza $x[n] = x(nT_s)$. La quantizzazione discretizza
-l'ampiezza su un numero finito di livelli: con
-la codifica PCM a $b = 16$ bit ogni campione è un intero su $2^{16} = 65536$
-valori. Un secondo di audio "CD" è quindi, per ogni canale, un vettore di
+**campionamento** discretizza il tempo, misurando $x$ a intervalli regolari
+$T_s$ e ottenendo la sequenza $x[n] = x(nT_s)$. La **quantizzazione**
+discretizza l'ampiezza su un numero finito di livelli. Con la codifica PCM a
+$b = 16$ bit ogni campione è un intero su $2^{16} = 65536$ valori. Un secondo
+di audio "CD" è quindi, per ogni canale, un vettore di
 $44\,100$ interi.
 
 Il campionamento, sotto le ipotesi del teorema che segue, non perde niente; la
@@ -87,10 +88,11 @@ $$
 \mathrm{SNR} = 10\log_{10}\frac{A^2/2}{\Delta^2/12} = 6{,}02\,b + 1{,}76\ \text{dB},
 $$
 
-circa $98$ dB a $16$ bit e $50$ a $8$: ogni bit vale sei decibel. Il conto però
-è a piena scala. Il rumore $\Delta^2/12$ resta lo stesso qualunque sia il
-segnale, quindi un suono dieci volte più debole perde $20$ dB di SNR, e un
-sussurro a $8$ bit finisce sotto il rumore del gradino; a livelli così bassi
+circa $98$ dB a $16$ bit e $50$ a $8$: ogni bit vale sei decibel. Il calcolo
+però è a piena scala. Il rumore $\Delta^2/12$ resta lo stesso
+qualunque sia il segnale, quindi un suono dieci volte più debole perde $20$ dB
+di SNR, e un sussurro a $8$ bit finisce sotto il rumore del gradino; a livelli
+così bassi
 l'errore smette anche di somigliare a un rumore indipendente, e il modello
 uniforme non vale più. È il difetto che la compansione $\mu$-law di
 {doc}`Generare suono e musica </Audio/generazione-audio>` corregge, spendendo i
@@ -128,9 +130,11 @@ doppio delle volte rispetto alla vibrazione più rapida che vogliamo catturare.
 Il doppio ha una ragione: per accorgersi che qualcosa sale e scende bisogna
 sorprenderlo almeno due volte a ogni giro, una mentre è su e una mentre è giù.
 Chi guarda una volta sola per giro lo ritrova sempre allo stesso punto, e lo
-vede fermo, come la ruota. L'orecchio umano arriva a circa 20.000
-oscillazioni al secondo, quindi servono più di 40.000 misure al secondo: i CD
-ne fanno 44.100, che stanno larghi apposta. Per la voce al telefono ne bastano
+vede fermo, come la ruota.
+
+Ad esempio, l'orecchio umano arriva a circa 20.000 oscillazioni al secondo,
+quindi servono più di 40.000 misure al secondo: i CD ne fanno 44.100, che
+stanno larghi apposta. Per la voce al telefono ne bastano
 8.000, perché la linea toglie, prima di misurare, le oscillazioni sopra le
 3.400 al secondo, e sotto quella soglia la voce "vive" quasi tutta; il margine
 fra il doppio di 3.400 e gli 8.000 c'è perché nessun filtro taglia di netto.
@@ -170,13 +174,14 @@ $$
 un'interpolazione con un nucleo che si estende all'infinito nei due versi:
 esatta in teoria, approssimata con un filtro troncato in pratica. Se invece il
 segnale contiene componenti oltre la soglia, esse si "ripiegano" su frequenze
-più basse generando l'aliasing: un coseno a frequenza $f$ dà gli stessi
+più basse generando l'aliasing. Infatti un coseno a frequenza $f$ dà gli stessi
 campioni di un coseno a $|f - k f_s|$ per ogni intero $k$, quindi dopo il
-campionamento è indistinguibile dalla sua immagine nella banda $[0, f_s/2]$ (un
-tono a $5$ kHz campionato a $8$ kHz dà esattamente gli stessi campioni di un
-tono a $3$ kHz). Sono artefatti irreversibili. Per questo si applica un filtro
-anti-aliasing (passa-basso) *prima* di campionare. La voce viene tipicamente
-trattata a $f_s = 16\,\text{kHz}$, un buon compromesso tra fedeltà e peso.
+campionamento è indistinguibile dalla sua immagine nella banda $[0, f_s/2]$ (ad
+esempio un tono a $5$ kHz campionato a $8$ kHz dà esattamente gli stessi
+campioni di un tono a $3$ kHz). Sono artefatti irreversibili. Per questo si
+applica un filtro anti-aliasing (passa-basso) *prima* di campionare. La voce
+viene tipicamente trattata a $f_s = 16\,\text{kHz}$, un buon compromesso tra
+fedeltà e peso.
 
 `````
 
@@ -186,9 +191,11 @@ La lista di campioni ha un nome, **forma d'onda**, e corrisponde al disegno che
 farebbe un sismografo: quanto era in avanti o indietro la membrana, istante per
 istante. Dice *quando* il suono è forte o debole, ma non di quali "note" è
 fatto, e proprio quella composizione distingue una "a" da una "i", o la voce
-di una persona da un'altra. Il cambio di punto di vista che la rende leggibile
-è la **trasformata di Fourier**. Nella forma che usa un calcolatore, la
-*trasformata di Fourier discreta* (DFT), prende $N$ campioni $x[0], \dots,
+di una persona da un'altra.
+
+Il cambio di punto di vista che la rende leggibile è la **trasformata di
+Fourier**. Nella forma che usa un computer, la **trasformata di Fourier
+discreta** (DFT) prende $N$ campioni $x[0], \dots,
 x[N-1]$ e restituisce $N$ coefficienti
 
 $$
@@ -199,15 +206,17 @@ Si legge così. Per ogni $k$ si prende un'oscillazione che compie
 esattamente $k$ giri negli $N$ campioni, cioè di frequenza $k\,f_s/N$ hertz; la si
 confronta con il segnale moltiplicando campione per campione, e si somma. Se il
 segnale contiene quell'oscillazione i prodotti vanno d'accordo e la somma è
-grande; se non la contiene si compensano, e la somma resta vicina a zero. Il
-fattore $e^{-i\theta} = \cos\theta - i\sin\theta$ porta insieme un coseno e un
-seno della stessa frequenza, e per questo $X[k]$ è un numero complesso: il suo
-modulo $|X[k]|$ dice quanta parte di quella frequenza c'è nel segnale, il suo
-angolo, la *fase*, dice a che punto della propria oscillazione si trova
+grande; se non la contiene si compensano, e la somma resta vicina a zero.
+
+Il fattore $e^{-i\theta} = \cos\theta - i\sin\theta$ porta insieme un coseno
+e un seno della stessa frequenza, e per questo $X[k]$ è un numero complesso:
+il suo modulo $|X[k]|$ dice quanta parte di quella frequenza c'è nel segnale,
+il suo angolo, la *fase*, dice a che punto della propria oscillazione si trova
 (modulo e angolo sono quelli dei numeri complessi incontrati con le
-{doc}`catene di Markov </Matematica/catene-di-markov>`). L'algoritmo con cui la
-si calcola in pratica, la FFT (*Fast Fourier Transform*), richiede
-$O(N\log N)$ operazioni invece delle $N^2$ della somma scritta così.
+{doc}`catene di Markov </Matematica/catene-di-markov>`).
+
+La DFT si calcola in pratica con la **FFT** (*Fast Fourier Transform*), che
+richiede $O(N\log N)$ operazioni invece delle $N^2$ della somma scritta così.
 
 `````{tab} Elementare
 
@@ -243,8 +252,9 @@ $$
 perché per $k \ne k'$ la somma è una serie geometrica di ragione
 $e^{\,i\,2\pi(k-k')/N} \ne 1$ che compie un numero intero di giri e si annulla.
 Formano quindi una base, e $X[k] = \langle \mathbf{x}, \boldsymbol{\phi}_k
-\rangle$ è la coordinata di $\mathbf{x}$ lungo la $k$-esima: la DFT è un cambio
-di base ortogonale, a meno del fattore $\sqrt{N}$ (come le basi ortonormali di
+\rangle$ è la coordinata di $\mathbf{x}$ lungo la $k$-esima. In altri termini,
+la DFT è un cambio di base ortogonale, a meno del fattore $\sqrt{N}$ (come le
+basi ortonormali di
 {doc}`Ortogonalità e proiezioni </Matematica/ortogonalita-proiezioni>`). Ne
 seguono l'inversa,
 
@@ -255,14 +265,16 @@ $$
 e la conservazione dell'energia (identità di Parseval),
 $\sum_n |x[n]|^2 = \frac{1}{N}\sum_k |X[k]|^2$, che giustifica il nome di
 *spettro di potenza* per $|X[k]|^2$. L'inversa ha bisogno dei coefficienti
-complessi, modulo e fase: con i soli moduli il cambio di base non si inverte.
+complessi, modulo e fase, perché con i soli moduli il cambio di base non si
+inverte.
+
 Se $x$ è reale vale poi $X[N-k] = \overline{X[k]}$, quindi metà dei
 coefficienti ripete l'altra metà e bastano i primi $\lfloor N/2 \rfloor + 1$,
 che coprono le frequenze da $0$ a $f_s/2$: oltre la frequenza di Nyquist lo
 spettro di un segnale campionato è la copia speculare di quello sotto, la
-stessa piega dell'aliasing. Con $N = 400$ a $16$ kHz sono $201$ righe spaziate
-di $40$ Hz, da $0$ a $8$ kHz, e sono le righe che `librosa` calcola
-prima di applicare il banco mel.
+stessa piega dell'aliasing. Ad esempio, con $N = 400$ a $16$ kHz sono $201$
+righe spaziate di $40$ Hz, da $0$ a $8$ kHz, e sono le righe che `librosa`
+calcola prima di applicare il banco mel.
 
 `````
 
@@ -271,7 +283,9 @@ prima di applicare il banco mel.
 C'è un problema: i moduli $|X[k]|$ della trasformata di un intero file dicono
 *quali* frequenze ci sono, ma non *quando*. L'informazione sui tempi non è
 persa e sta nelle fasi di tutti i coefficienti insieme, in una forma che non
-si legge; e una frase è fatta di suoni che cambiano di continuo. La soluzione è
+si legge; e una frase è fatta di suoni che cambiano di continuo.
+
+La soluzione è
 tagliare l'audio in finestre brevi (20–40 millisecondi), calcolare la
 trasformata di ciascuna, e affiancare i risultati. È la trasformata di Fourier
 a finestre brevi, che in letteratura si trova sempre con la sigla inglese:
@@ -280,12 +294,12 @@ tabella, è lo **spettrogramma**: un'immagine con il tempo sull'asse
 orizzontale, la frequenza su quello verticale, e l'intensità di ciascuna
 frequenza resa dal colore ({numref}`fig-onda-spettrogramma`).
 
-Di ogni frequenza l'immagine tiene il modulo, quanta ce n'è, e butta via la
-fase. Senza la fase dall'immagine non si risale al suono in modo univoco: per
-riaverlo la fase va stimata, per esempio per tentativi successivi con
-l'algoritmo di Griffin e Lim {cite}`griffin1984signal`, oppure fatta produrre a
-una rete addestrata apposta, un *vocoder*. Per riconoscere un suono non serve;
-servirà quando si vorrà produrne uno.
+Si noti che di ogni frequenza l'immagine tiene il modulo, quanta ce n'è, e
+butta via la fase. Senza la fase dall'immagine non si risale al suono in modo
+univoco: per riaverlo la fase va stimata, per esempio per tentativi successivi
+con l'algoritmo di Griffin e Lim {cite}`griffin1984signal`, oppure fatta
+produrre a una rete addestrata apposta, un *vocoder*. Per riconoscere un suono
+non serve; servirà quando si vorrà produrne uno.
 
 ```{figure} ../figures/onda-spettrogramma.svg
 :name: fig-onda-spettrogramma
@@ -322,8 +336,9 @@ frequenze e male gli istanti, perché dentro ci finiscono due note; una corta fa
 il contrario. Non esiste una lunghezza che vinca su tutti e due i fronti, quindi
 sceglierla è una decisione di progetto.
 
-Nel disegno la finestra è gonfia in mezzo e va a zero ai bordi, invece del
-rettangolo che la parola «finestrella» lascerebbe immaginare. Tagliare di netto
+Nel disegno la finestra è gonfia in mezzo e va a zero ai bordi,
+invece del rettangolo che la parola «finestrella» lascerebbe immaginare.
+Tagliare di netto
 un pezzo di onda creerebbe due gradini artificiali agli estremi, e la
 trasformata leggerebbe quei gradini come frequenze che nel suono non ci sono.
 Smussando i bordi il taglio diventa una dissolvenza e il difetto quasi
@@ -387,28 +402,31 @@ essa avanza da una colonna alla successiva, $m$ l'indice della colonna e $k$
 quello del bin di frequenza. La finestra di Hann, nella forma periodica che
 usano `librosa` e `scipy`, è $w[n] = \tfrac12\big(1 - \cos\frac{2\pi
 n}{N}\big)$ per $0 \le n < N$, e lo spettrogramma di potenza è
-$S[m,k] = |X[m,k]|^2$: è la matrice da cui parte tutto il resto della pagina.
+$S[m,k] = |X[m,k]|^2$: è la matrice da cui partono le feature che seguono.
+
 Con frequenza di campionamento $f_s$ la trasformata restituisce bin spaziati di
 $f_s/N$ hertz e una colonna ogni $H/f_s$ secondi. Sono i passi con cui
 *campioniamo* il piano tempo-frequenza, e non vanno confusi con la
 risoluzione: infittirli (zero-padding in frequenza, $H$ più piccolo nel tempo)
-non aggiunge informazione, la interpola soltanto. La risoluzione vera dipende
-dalla lunghezza della finestra (a parità di forma, solo da quella), e ha un
-limite che nessuna scelta di parametri aggira. Per il parlato la scelta
-standard è una finestra di 25 ms e un passo di 10 ms (a 16 kHz sono
-$N = 400$ campioni e $H = 160$, cioè
-`n_fft=400` e `hop_length=160` per `librosa`), perché i fonemi durano decine di
-millisecondi e una finestra più lunga ne mescolerebbe due.
+non aggiunge informazione, la interpola soltanto.
+
+La risoluzione vera dipende dalla lunghezza della finestra (a parità di forma,
+solo da quella), e ha un limite che nessuna scelta di parametri aggira. Per il
+parlato la scelta standard è una finestra di 25 ms e un passo di 10 ms
+(a 16 kHz sono $N = 400$ campioni e $H = 160$, cioè `n_fft=400` e
+`hop_length=160` per `librosa`), perché i fonemi durano decine di millisecondi
+e una finestra più lunga ne mescolerebbe due.
 
 Con modulo e fase la STFT si inverte: si antitrasforma ogni colonna, la si
 rimoltiplica per la finestra, si sommano i pezzi sovrapposti e si divide per
 $\sum_m w^2[n - mH]$. Basta che quella somma non si annulli (la condizione
 detta NOLA, *nonzero overlap-add*), e con la finestra di Hann e un passo più
-corto della finestra all'interno del segnale non si annulla mai. Con il solo
-modulo, cioè con lo spettrogramma, l'inversione è invece un problema mal
-posto: si cerca un segnale la cui STFT abbia quel modulo, e l'algoritmo di
+corto della finestra all'interno del segnale non si annulla mai.
+
+Con il solo modulo, cioè con lo spettrogramma, l'inversione è invece un problema
+mal posto: si cerca un segnale la cui STFT abbia quel modulo, e l'algoritmo di
 Griffin e Lim lo fa alternando una stima della fase e la ricostruzione che le
-corrisponde, con un errore che non cresce da un giro all'altro ma senza
+corrisponde, con un errore che non cresce da un'iterazione all'altra ma senza
 garanzia di ritrovare l'originale {cite}`griffin1984signal`.
 
 Il compromesso è teorico e non pratico: viene dalla relazione di
@@ -437,9 +455,11 @@ bocca e la gola, facendo da cassa di risonanza come il corpo di una chitarra,
 rinforzano più delle vicine. Cambiano a seconda di come teniamo lingua e labbra,
 e per questo distinguono una "a" da una "i". Si chiamano **formanti**, e
 sono il primo esempio di una struttura che si vede nell'immagine del suono e non
-nell'onda. Un modello può quindi trattare lo spettrogramma come
-un'immagine a un canale, con le reti convoluzionali o con i Transformer a
-tessere. Con una riserva, che {doc}`la sezione sulla classificazione
+nell'onda.
+
+Un modello può quindi trattare lo spettrogramma come un'immagine a un canale,
+con le reti convoluzionali o con i Transformer a tessere. Con una riserva, che
+{doc}`la sezione sulla classificazione
 </Audio/classificazione-audio>` riprende: i due assi non si equivalgono, perché
 spostare un motivo nel tempo lo lascia uguale, mentre spostarlo in frequenza ne
 cambia l'altezza.
@@ -484,11 +504,13 @@ a un'altra cosa ancora. Quelle macchine trattavano ciascuno dei 13 numeri per
 conto suo, come se non avesse niente a che fare con gli altri, e per non
 sbagliare avevano bisogno di numeri che non si somigliassero. Le righe vicine
 dell'immagine invece si somigliano parecchio, e l'ultimo passaggio del
-riassunto le rimescola apposta, finché quella somiglianza sparisce. Le reti di
-oggi non hanno quel bisogno e si fermano un passo prima, all'immagine riletta a
-orecchio. Il rimescolamento anzi le danneggerebbe: una rete convoluzionale
-guarda insieme le righe vicine, come guarda insieme i pixel vicini di una foto,
-e dopo il rimescolamento due righe vicine non parlano più di frequenze vicine.
+riassunto le rimescola apposta, finché quella somiglianza sparisce.
+
+Le reti di oggi non hanno quel bisogno e si fermano un passo prima,
+all'immagine riletta a orecchio. Il rimescolamento anzi le danneggerebbe: una
+rete convoluzionale guarda insieme le righe vicine, come guarda insieme i pixel
+vicini di una foto, e dopo il rimescolamento due righe vicine non parlano più
+di frequenze vicine.
 
 Resta il nome che ricorre dappertutto: **log-mel**.
 La parte «mel» è la riscrittura delle frequenze a orecchio. La parte «log» è la
@@ -496,13 +518,15 @@ stessa idea applicata alle *intensità*: fra un sussurro e un concerto
 l'energia del suono cambia di cento milioni di volte, e sulla stessa immagine
 il sussurro sparirebbe sotto il concerto. Allora le intensità si
 schiacciano, in modo che passare da 1 a 10 conti quanto passare da 10 a 100 e
-da 100 a 1.000. È il trucco dei decibel, la scala con cui si misurano i rumori:
+da 100 a 1.000.
+
+È il trucco dei decibel, la scala con cui si misurano i rumori:
 ogni volta che l'energia si moltiplica per dieci si salgono dieci gradini, e
 cento milioni, che sono otto moltiplicazioni per dieci, fanno ottanta gradini.
 È la distanza fra 30 decibel (un sussurro) e 110 (un concerto), due numeri
-vicini per due mondi lontanissimi. Uno spettrogramma log-mel è l'immagine del
-suono con le frequenze riscritte a orecchio e le intensità schiacciate allo
-stesso modo.
+vicini per due mondi lontanissimi. In definitiva, uno spettrogramma log-mel è
+l'immagine del suono con le frequenze riscritte a orecchio e le intensità
+schiacciate allo stesso modo.
 
 `````
 
@@ -529,6 +553,7 @@ kHz, 40 bande) la decima banda è centrata a 594 Hz con la formula HTK e a 736
 Hz con quella di Slaney, il 24 % più in alto. I centri si leggono da
 `librosa.mel_frequencies(n_mels=42, fmax=8000, htk=…)[1:-1]`, perché per 40
 bande triangolari servono 42 frequenze e le due estreme sono bordi, non centri.
+
 È una differenza che va dichiarata quando si confrontano due sistemi, motivo
 per cui l'esempio passa `htk=True`: i centri delle bande diventano quelli della
 formula di HTK, che rispetta il riferimento, $2595\log_{10}(1 + 1000/700)
@@ -538,10 +563,11 @@ formula di HTK, che rispetta il riferimento, $2595\log_{10}(1 + 1000/700)
 riprodurlo fedelmente va passato anche `norm=None`.
 
 La pipeline degli MFCC {cite}`davis1980comparison` parte dallo spettro di
-potenza $S[m,k]$ di una colonna della STFT e fa tre passi. Un banco di $J$
-filtri triangolari $H_j[k]$, con i centri spaziati uniformemente sulla scala
-mel, ne raccoglie l'energia per banda, $E_j = \sum_k H_j[k]\,S[m,k]$. Il
-logaritmo delle energie di banda, $\log E_j$, imita la percezione
+potenza $S[m,k]$ di una colonna della STFT e fa tre passi. Prima, un banco di
+$J$ filtri triangolari $H_j[k]$, con i centri spaziati uniformemente sulla scala
+mel, ne raccoglie l'energia per banda, $E_j = \sum_k H_j[k]\,S[m,k]$.
+
+Poi il logaritmo delle energie di banda, $\log E_j$, imita la percezione
 dell'intensità secondo la scala dei decibel: per una potenza $P$ rispetto a un
 riferimento $P_0$ il livello è $10\log_{10}(P/P_0)$ dB, per un'ampiezza $A$,
 che entra nella potenza al quadrato, $20\log_{10}(A/A_0)$, e
@@ -565,14 +591,16 @@ cosa precisa e datata. I sistemi GMM-HMM modellavano ogni stato con gaussiane a
 covarianza diagonale, per costo e per scarsità di dati, e una covarianza
 diagonale su feature correlate è un modello sbagliato; le bande mel si
 sovrappongono, quindi correlate lo sono parecchio. Decorrelare le rendeva
-lecite. Caduta l'ipotesi, è caduta la ragione: una rete non chiede feature
+lecite.
+
+Caduta l'ipotesi, è caduta la ragione: una rete non chiede feature
 scorrelate, e la DCT le nuoce, perché mescolando tutte le bande in
 ogni coefficiente distrugge la località in frequenza su cui una convoluzione
 lavora. Per questo dagli anni Dieci si è tornati allo spettrogramma log-mel
 grezzo, mentre i 13 MFCC restano una feature d'archivio, ancora comoda dove
 serve un vettore piccolo (HuBERT li usa proprio per il primo raggruppamento).
 
-Da qui in poi le strade si dividono. I modelli che prevedono un'etichetta o del
+A questo punto le strade si dividono. I modelli che prevedono un'etichetta o del
 testo partono dal log-mel (come AST, che ne usa 128 bande, o Whisper, che ne
 usa 80 e 128 nelle versioni più recenti). Quelli che generano del *suono*
 lavorano invece sui campioni, o ci ritornano con una rete addestrata apposta
@@ -588,8 +616,10 @@ La forma d'onda grezza è enorme (decine di migliaia di numeri al secondo) e
 piena di variazioni che, per riconoscere un suono, non contano: il volume a cui
 la frase è stata registrata, o uno scarto di due millesimi di secondo sul suo
 inizio. Lo spettrogramma log-mel ne toglie di mezzo una parte, ciascuna per una
-ragione precisa. Uno spostamento più corto della finestra cambia quasi soltanto
-le fasi, e le fasi nell'immagine non ci sono più. Un cambio di volume
+ragione precisa.
+
+Anzitutto, uno spostamento più corto della finestra cambia quasi soltanto le
+fasi, e le fasi nell'immagine non ci sono più. Un cambio di volume
 moltiplica tutte le energie per lo stesso fattore, e dopo il logaritmo diventa
 uno spostamento costante di tutta l'immagine, che una rete assorbe facilmente.
 La scala mel, infine, riduce il numero di righe e tiene la risoluzione dove
@@ -606,7 +636,7 @@ in input proprio uno spettrogramma log-mel. La scala mel, ispirata al nostro
 orecchio, resta il punto di partenza più diffuso anche nell'era del deep
 learning.
 
-Nella parola *feature*, quella del titolo, cambia chi sceglie. Fin dal
+Nella parola *feature* cambia chi sceglie. Fin dal
 {doc}`capitolo sul machine learning </MachineLearning/overview>` le feature
 erano *scelte da noi*: qualcuno decideva quali numeri estrarre da ogni esempio,
 e quella decisione era metà del lavoro. D'ora in poi saranno quasi
@@ -667,12 +697,14 @@ MFCC dall'onda:  (13, 94)
 Le prime due tabelle escono con lo stesso numero di colonne, 301: tre secondi a
 una colonna ogni 10 millisecondi fanno 300 colonne, più una, perché `librosa`
 centra la prima finestra sull'istante zero. Sono allineate finestra per
-finestra, quindi si possono affiancare e dare al modello insieme. La terza riga
-mostra che cosa succede chiamando `mfcc(y=...)` invece di `mfcc(S=...)`:
-`librosa` rifà lo spettrogramma con il suo passo predefinito, una colonna ogni
-512 campioni, e le colonne diventano 94, su un asse dei tempi diverso da quello
-delle altre due. Affiancarle darebbe un errore di dimensione, o peggio, se le
-lunghezze per caso coincidessero, due tabelle che parlano di istanti diversi.
+finestra, quindi si possono affiancare e dare al modello insieme.
+
+La terza riga mostra che cosa succede chiamando `mfcc(y=...)` invece di
+`mfcc(S=...)`: `librosa` rifà lo spettrogramma con il suo passo predefinito,
+una colonna ogni 512 campioni, e le colonne diventano 94, su un asse dei tempi
+diverso da quello delle altre due. Affiancarle darebbe un errore di dimensione,
+o peggio, se le lunghezze per caso coincidessero, due tabelle che parlano di
+istanti diversi.
 
 `````{tab} Elementare
 

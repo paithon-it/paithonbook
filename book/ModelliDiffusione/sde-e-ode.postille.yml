@@ -1,0 +1,14 @@
+# Le postille di questa pagina, una per capoverso del testo comune.
+# Ognuna vale finché la sua impronta combacia col testo del capoverso.
+- inizio: "Nel 1982 Brian Anderson, ingegnere del"
+  impronta: "ca9298446eb9"
+  postilla: "Anderson, 1982: il ritorno è l'equazione dell'andata più un termine correttivo"
+- inizio: "Quel termine correttivo è il gradiente"
+  impronta: "cf25067aca41"
+  postilla: "Il punteggio, verso i dati più fitti: DDPM lo stima, a meno di un fattore"
+- inizio: "Passare dai mille passi di DDPM"
+  impronta: "050a242b35b3"
+  postilla: "Il tempo continuo unifica le due tradizioni e offre una strada deterministica"
+- inizio: "Chi legge il codice di più"
+  impronta: "458832f76b18"
+  postilla: "Quattro uscite: cambiano condizionamento e pesi della loss, non cosa s'impara"

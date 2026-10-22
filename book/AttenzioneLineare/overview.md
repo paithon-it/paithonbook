@@ -33,8 +33,8 @@ come una rete ricorrente. Il Transformer, che aveva appena spodestato le reti
 ricorrenti, ricade così in una di loro.
 
 L'attenzione dei {doc}`Transformer </Transformers/overview>` ha due costi. Il
-primo, appena visto, nasce dal fatto che ogni parola guarda tutte le altre, quindi
-raddoppiando la lunghezza del testo il lavoro quadruplica. È il costo
+primo, appena visto, nasce dal fatto che ogni parola guarda tutte le altre:
+raddoppiando la lunghezza del testo, il lavoro quadruplica. È il costo
 *quadratico*, che si scrive $O(n^2)$, con $n$ il numero di token (un token è
 quasi sempre una parola o un pezzo di parola): dieci volte il testo, cento volte
 il lavoro.
@@ -51,7 +51,7 @@ a limitare quanto testo un modello riesce a tenere aperto.
 
 La provocazione di Katharopoulos indica una via per aggirare tutti e due i
 conti. Se l'attenzione, cambiata la somiglianza, è una rete ricorrente, allora
-la si può calcolare come una *ricorrenza*, cioè aggiornando a ogni token una
+la si può calcolare come una **ricorrenza**, cioè aggiornando a ogni token una
 memoria di dimensione fissa, lo *stato* $\mathbf{S}_t$, a partire da com'era
 al token prima. Il lavoro torna a crescere in modo *lineare*, cioè proporzionale
 alla lunghezza (il doppio di testo, il doppio di lavoro), e la memoria non
@@ -69,9 +69,9 @@ e nessun passo la libera.
 
 {numref}`fig-kv-cache-cresce` mostra la KV cache che cresce un token dopo
 l'altro, cioè il secondo costo, quello della generazione.
-Una ricorrenza a stato fisso non fa crescere niente e comprime il passato in una
-memoria di taglia costante; la domanda diventa quanto si perde nel
-comprimerlo.
+Una ricorrenza a stato fisso, invece, non fa crescere niente e comprime il
+passato in una memoria di taglia costante; la domanda diventa quanto si perde
+nel comprimerlo.
 
 ## Il compromesso che tutti inseguono
 
@@ -118,15 +118,16 @@ dimensione $d$ costa invece $O(n d^2)$, lineare in $n$, e quello stato non
 cresce mai; ma il passo $t$ dipende dal passo $t-1$: niente parallelismo lungo
 la sequenza.
 
-L'attenzione lineare vive nel punto d'incontro: espone due forme
+L'attenzione lineare vive nel punto d'incontro, perché espone due forme
 equivalenti dello stesso calcolo. Una forma *parallela*, per addestrare
 sull'intera sequenza sfruttando le GPU (in pratica spezzata a blocchi di $B$
 token, per tenere il costo lineare); e una forma *ricorrente*, per generare a
-costo e memoria costanti per token: senza una *cache* che cresce. La tabella
-mette i costi a confronto per il solo mescolamento fra token, con una testa di
-dimensione $d$ (le proiezioni che producono query, chiavi e valori costano lo
-stesso in tutti i casi); i «passi in sequenza» sono quelli che devono
-aspettare il precedente, cioè il lavoro che una GPU non può fare insieme.
+costo e memoria costanti per token: senza una *cache* che cresce. La
+tabella mette i costi a confronto per il solo mescolamento fra token, con una
+testa di dimensione $d$ (le proiezioni che producono query, chiavi e valori
+costano lo stesso in tutti i casi); i «passi in sequenza» sono quelli che
+devono aspettare il precedente, cioè il lavoro che una GPU non può fare
+insieme.
 
 | | addestramento: lavoro | addestramento: passi in sequenza | generazione: lavoro per token | generazione: memoria |
 | :--- | :--- | :--- | :--- | :--- |
@@ -211,14 +212,15 @@ chiave con cui si scrive è diversa da quella con cui si cancella.
 
 ## Una memoria di taglia fissa
 
-Il percorso ha tre tappe. La prima, {doc}`dalla softmax alla ricorrenza
+In questo capitolo il percorso ha tre tappe. La prima, {doc}`dalla softmax alla
+ricorrenza
 </AttenzioneLineare/dalla-softmax-alla-ricorrenza>`, mostra che cosa va
 cambiato nella somiglianza fra query e chiave (il *trucco del kernel*) perché
-il lavoro smetta di crescere col quadrato della lunghezza, come il calcolo
-diventi una ricorrenza con uno stato di dimensione fissa, e perché uno stato
-che sa soltanto sommare si confonde presto: le scritte si sovrappongono fin da
-subito, e bastano poche voci perché non ci si legga più niente di preciso. La
-seconda, {doc}`scrivere meglio nella memoria
+il lavoro smetta di crescere col quadrato della lunghezza; spiega poi come il
+calcolo diventi una ricorrenza con uno stato di dimensione fissa, e perché uno
+stato che sa soltanto sommare si confonde presto: le scritte si sovrappongono
+fin da subito, e bastano poche voci perché non ci si legga più niente di
+preciso. La seconda, {doc}`scrivere meglio nella memoria
 </AttenzioneLineare/scrivere-nella-memoria>`, porta i due rimedi: il *gate*,
 che lascia sbiadire ciò che è vecchio, e la *delta rule*, che prima di scrivere
 corregge ciò che c'è già. Li riassume in una tabella in cui i modelli si

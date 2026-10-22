@@ -39,16 +39,16 @@ $\mathbf{x}_t$, e lo stato del passo precedente $\mathbf{h}_{t-1}$, che
 all'inizio della sequenza è $\mathbf{h}_0$, di solito un vettore di zeri. Così
 $\mathbf{h}_t$ riassume tutto ciò che la rete ha letto fino a quel momento,
 senza limiti fissi alla lunghezza del contesto. Si dice nascosto perché resta
-dentro la rete: la risposta $\hat{\mathbf{y}}_t$ se ne ricava a parte.
+dentro la rete, mentre la risposta $\hat{\mathbf{y}}_t$ se ne ricava a parte.
 
 La funzione che calcola $\mathbf{h}_t$ da $\mathbf{x}_t$ e da $\mathbf{h}_{t-1}$
 si chiama **cella**, e i suoi pesi sono gli stessi a ogni passo. Per vederlo si
 «srotola» la rete nel tempo, come in {numref}`fig-rnn-srotolata`: una copia
 della cella per ogni passo, ciascuna collegata alla successiva dallo stato. Le
-copie sono un modo di disegnare il calcolo, non reti diverse: la cella è una
-sola, con gli stessi pesi al passo 3 e al passo tremila. Ecco perché una rete
-ricorrente resta piccola anche su testi lunghissimi: allungare il testo allunga
-il disegno, non la rete.
+copie sono un modo di disegnare il calcolo, non reti diverse:
+la cella è una sola, con gli stessi pesi al passo 3 e al passo tremila. Ecco
+perché una rete ricorrente resta piccola anche su testi lunghissimi: allungare
+il testo allunga il disegno, non la rete.
 
 ```{figure} ../figures/rnn-srotolata.svg
 :name: fig-rnn-srotolata
@@ -69,28 +69,27 @@ Un foglietto accanto al libro, su cui scrivi riga dopo riga un riassunto di ciò
 che è successo finora. Per ogni nuova frase fai sempre lo stesso gesto: guardi
 la frase, guardi il foglietto, e riscrivi il foglietto aggiornato. Il foglietto
 è lo stato nascosto; il gesto che ripeti è la cella della RNN. È «la stessa
-mano» che lavora a ogni riga, per questo la rete ha bisogno di pochi parametri
+mano» che lavora a ogni riga, e per questo la rete ha bisogno di pochi parametri
 anche per testi lunghissimi: non impara un gesto diverso per ogni parola, ne
 impara uno solo e lo riusa.
 
-Quello che consegni però è un'altra cosa. A ogni riga, appena hai aggiornato il
-foglietto, ci butti sopra un occhio e dici la tua, quale parola verrà o di che
-cosa parla la frase. Quella è la risposta, e la ricavi dal foglietto con un
-secondo gesto, più corto del primo. Il foglietto resta un appunto privato.
+Quello che consegni, però, è un'altra cosa. A ogni riga, appena hai aggiornato
+il foglietto, ci butti sopra un occhio e dici la tua: quale parola verrà, o di
+che cosa parla la frase. Quella è la risposta, e la ricavi dal foglietto con un
+secondo gesto, più corto del primo, mentre il foglietto resta un appunto
+privato.
 
 E la mano come impara a fare meglio? Ogni tanto ti fermi, confronti le risposte
 che hai dato con quello che il libro diceva davvero, e ripercorri le righe
 all'indietro per capire in quale punto il gesto ti ha portato fuori strada.
-Ripercorrerle tutte vorrebbe dire tenere mille righe sotto gli occhi insieme, e
-sul tavolo non ci stanno. Allora si lavora a blocchi, per esempio di trenta
-righe. Correggi
-la mano guardando quelle trenta, poi riparti dal foglietto così com'è, senza
-più tornare su come ci sei arrivato.
+Ripercorrerle tutte, però, vorrebbe dire tenere mille righe sotto gli occhi
+insieme, e sul tavolo non ci stanno. Per questo si lavora a blocchi, per esempio
+di trenta righe: correggi la mano guardando quelle trenta, poi riparti dal
+foglietto così com'è, senza più tornare su come ci sei arrivato.
 
-Il prezzo di questa scorciatoia è chiaro. Il foglietto non
-viene azzerato al confine fra un blocco e il successivo: passa di là com'è, e
-in avanti la lettura non si interrompe mai. A fermarsi al confine è la
-correzione. Così la
+Il prezzo di questa scorciatoia è chiaro. Il foglietto non viene azzerato al
+confine fra un blocco e il successivo: passa di là com'è, e in avanti la lettura
+non si interrompe mai. A fermarsi al confine è la correzione. Così la
 mano non impara mai a legare una cosa di riga cinque con una di riga sessanta,
 perché quando c'è da correggere quel legame riga cinque non è più sul tavolo.
 
@@ -115,10 +114,10 @@ Qui $\mathbf{h}_t \in \mathbb{R}^d$ è lo stato nascosto, con $d$ scelto da chi
 costruisce la rete, $\mathbf{x}_t$ è l'input al passo $t$ e
 $\hat{\mathbf{y}}_t$ la distribuzione sul vocabolario, mentre
 $\mathbf{W}_{hh}, \mathbf{W}_{xh}, \mathbf{W}_{hy}$ sono matrici di pesi e
-$\mathbf{b}_h, \mathbf{b}_y$ i bias. Il punto cruciale è che queste matrici non
-dipendono da $t$: sono *condivise* su tutta la sequenza (*weight sharing*).
-L'addestramento avviene con la *backpropagation through time*, cioè la
-retropropagazione applicata alla rete srotolata.
+$\mathbf{b}_h, \mathbf{b}_y$ i bias. Si noti che queste matrici non dipendono da
+$t$: sono *condivise* su tutta la sequenza (*weight sharing*). L'addestramento
+avviene con la **backpropagation through time**, cioè la retropropagazione
+applicata alla rete srotolata.
 
 Usata come modello di linguaggio sulla frase $w_1, \dots, w_n$, la rete riceve
 come $\mathbf{x}_t$ l'embedding di $w_t$, e $\hat{\mathbf{y}}_t$ stima
@@ -158,9 +157,9 @@ l'addestramento in memoria.
 ## Dipendenze a lungo termine: il gradiente che svanisce
 
 Sulla carta una RNN può collegare la prima parola all'ultima; in pratica impara
-a farlo male. Nella frase «Le chiavi che ho lasciato ieri sul tavolo della
-cucina di mia nonna… sono sparite» il verbo si accorda con «chiavi», e fra le
-due ci sono undici parole. Una rete ricorrente può rappresentare queste
+a farlo male. Ad esempio, nella frase «Le chiavi che ho lasciato ieri sul tavolo
+della cucina di mia nonna… sono sparite» il verbo si accorda con «chiavi», e fra
+le due ci sono undici parole. Una rete ricorrente può rappresentare queste
 **dipendenze a lungo termine**; il difficile è insegnargliele. Perché l'errore
 sul verbo corregga il modo in cui la rete ha trattato «chiavi», il gradiente
 (il segnale di correzione che risale all'indietro) deve ripercorrere una
@@ -194,13 +193,14 @@ a lungo termine.
 
 Ogni tanto capita il rovescio. Un gesto che a ogni riga allunga la freccia
 invece di accorciarla la fa crescere mentre risale, finché quello che arriva in
-cima è uno strattone che scompone la mano invece di aggiustarla. Che un gesto,
-preso da solo, sappia allungare è necessario ma non basta: un gesto può
-allungare la freccia in una direzione e il successivo accorciarla proprio in
-quella, e allora i due si compensano. Per sapere se lo strattone arriva bisogna
-seguirli nell'ordine in cui si presentano. Per lo strattone il rimedio è
-semplice: se la freccia arriva più lunga di una misura fissata, la si accorcia
-a quella misura prima di usarla, senza cambiarne la direzione. Per lo
+cima è uno strattone che scompone la mano invece di aggiustarla.
+
+Che un gesto, preso da solo, sappia allungare è necessario ma non basta: un
+gesto può allungare la freccia in una direzione e il successivo accorciarla
+proprio in quella, e allora i due si compensano. Per sapere se lo strattone
+arriva bisogna seguirli nell'ordine in cui si presentano. Per lo strattone il
+rimedio è semplice: se la freccia arriva più lunga di una misura fissata, la si
+accorcia a quella misura prima di usarla, senza cambiarne la direzione. Per lo
 smorzamento no: serve un foglio diverso.
 
 `````
@@ -227,15 +227,18 @@ non supera $1$ vale $\big\|\partial \mathbf{h}_t / \partial
 spettrale: se il massimo valore singolare di $\mathbf{W}_{hh}$ è minore di $1$
 il gradiente svanisce in modo esponenziale (*vanishing gradient*), e la
 diagonale, che tende a zero quando le unità saturano, lo spinge ancora più giù.
-Il maggiorante non dice invece quando il gradiente esplode: un valore singolare
-maggiore di $1$ è condizione necessaria, non sufficiente
+
+Il maggiorante non dice invece quando il gradiente esplode: un valore
+singolare maggiore di $1$ è condizione necessaria, non sufficiente
 {cite}`pascanu2013difficulty`. Per l'esplosione lo stesso lavoro propone di
 tagliare la norma del gradiente (*gradient clipping*; Mikolov lo faceva già,
 componente per componente): detto $\mathbf{g}$ il gradiente di tutti i
 parametri messi in fila, se $\|\mathbf{g}\| > \tau$ si riscala $\mathbf{g}
 \leftarrow \tau\,\mathbf{g}/\|\mathbf{g}\|$ (in PyTorch
 `torch.nn.utils.clip_grad_norm_`), che cura l'esplosione e non tocca la
-scomparsa. I limiti della rete ricorrente «semplice» sulle sequenze lunghe sono
+scomparsa.
+
+I limiti della rete ricorrente «semplice» sulle sequenze lunghe sono
 analizzati già nella tesi di Sepp Hochreiter del 1991
 {cite}`hochreiter1991untersuchungen`, e dimostrati da Yoshua Bengio, Patrice
 Simard e Paolo Frasconi nel 1994 {cite}`bengio1994learning`; il loro risultato
@@ -258,30 +261,32 @@ $\mathbf{h}_t$, che si ricalcola da capo a ogni passo, la LSTM tiene un secondo
 vettore, lo **stato di cella** $\mathbf{c}_t$, che a ogni passo non viene
 riscritto ma ritoccato: una parte del vecchio contenuto si cancella, una parte
 di contenuto nuovo si aggiunge, e il resto passa com'è. Quello che ci si scrive
-può quindi sopravvivere a cento parole di distanza. Tre **cancelli** (*gate*)
-dosano questi ritocchi. Un cancello è un vettore di numeri fra zero e uno, uno
-per componente, che moltiplica ciò che passa: a uno lascia passare tutto, a
-zero niente, nel mezzo una parte. Quei numeri non sono fissati una volta per
-tutte: li calcola la rete a ogni passo, dalla parola nuova e dallo stato
-precedente, con pesi che si imparano come tutti gli altri. Il cancello di
-dimenticanza $\mathbf{f}_t$ decide quanto conservare del vecchio
-$\mathbf{c}_{t-1}$, quello d'ingresso quanto contenuto nuovo scrivere, quello
-d'uscita quanto di $\mathbf{c}_t$ mostrare in $\mathbf{h}_t$.
+può quindi sopravvivere a cento parole di distanza.
+
+Tre **cancelli** (*gate*) dosano questi ritocchi. Un cancello è un vettore di
+numeri fra zero e uno, uno per componente, che moltiplica ciò che passa: a uno
+lascia passare tutto, a zero niente, nel mezzo una parte. Quei numeri non sono
+fissati una volta per tutte: li calcola la rete a ogni passo, dalla parola nuova
+e dallo stato precedente, con pesi che si imparano come tutti gli altri. In
+particolare, il cancello di dimenticanza $\mathbf{f}_t$ decide quanto conservare
+del vecchio $\mathbf{c}_{t-1}$, quello d'ingresso quanto contenuto nuovo
+scrivere, quello d'uscita quanto di $\mathbf{c}_t$ mostrare in $\mathbf{h}_t$.
 
 Il cancello di dimenticanza, però, nel lavoro del 1997 non c'era: i cancelli
 erano due, d'ingresso e d'uscita, e lo stato di cella si aggiornava solo per
 addizione, senza poter mai essere svuotato. Arriva tre anni dopo, con Felix
 Gers, Jürgen Schmidhuber e Fred Cummins {cite}`gers2000learning`, e nasce da un
-difetto scoperto all'uso. Su una sequenza che non finisce, e che quindi non
-azzera mai lo stato, $\mathbf{c}_t$ cresce senza fermarsi. La lettura si
-satura: il valore passa per la $\tanh$ (nella forma di oggi), che comprime ogni
-numero fra $-1$ e $1$, e con $\mathbf{c}_t$ molto grande ne esce sempre un
-estremo, qualunque cosa ci sia scritta. La cella smette di
-distinguere un contenuto dall'altro e torna a comportarsi come una ricorrente
-qualunque. Su un testo che finisce va bene lo stesso; su un flusso che non
-finisce mai (una trasmissione, un sensore, una conversazione senza fine) è
-fatale. La forma con tre cancelli è quella che oggi si chiama LSTM senz'altra
-specificazione.
+difetto scoperto all'uso.
+
+Su una sequenza che non finisce, e che quindi non azzera mai lo stato,
+$\mathbf{c}_t$ cresce senza fermarsi. La lettura si satura: il valore passa per
+la $\tanh$ (nella forma di oggi), che comprime ogni numero fra $-1$ e $1$, e con
+$\mathbf{c}_t$ molto grande ne esce sempre un estremo, qualunque cosa ci sia
+scritta. La cella smette di distinguere un contenuto dall'altro e torna a
+comportarsi come una ricorrente qualunque. Su un testo che finisce va bene lo
+stesso; su un flusso che non finisce mai (una trasmissione, un sensore, una
+conversazione senza fine) è fatale. La forma con tre cancelli è quella che oggi
+si chiama LSTM senz'altra specificazione.
 
 ```{figure} ../figures/lstm-gru-cancelli-memoria.svg
 :name: fig-cella-lstm
@@ -297,18 +302,20 @@ i nomi inglesi dei cancelli che cancellano, scrivono e leggono.
 ```
 
 Il dettaglio decisivo di {numref}`fig-cella-lstm` è la linea orizzontale che
-attraversa la cella quasi indisturbata: è lo stato di cella $\mathbf{c}_t$, che
-da un passo all'altro viene soltanto moltiplicato per il cancello di
-dimenticanza $\mathbf{f}_t$ e sommato a un contenuto nuovo. Il gradiente che
-risale lungo quella linea incontra quindi, a ogni passo, un solo fattore, e la
-rete calcola quel fattore a partire dall'ingresso: dove deve ricordare, può
-tenerlo quasi a uno. Dopo cento passi un fattore $0{,}999$ lascia passare il
-$90\%$ del segnale ($0{,}999^{100} \approx 0{,}905$), mentre un fattore $0{,}9$
-ne conserva appena $0{,}9^{100} \approx 0{,}000027$. Nella rete semplice,
-invece, il gradiente passa a ogni passo per la stessa matrice di pesi
-$\mathbf{W}_{hh}$ e per la derivata della $\tanh$, la funzione che schiaccia lo
-stato fra $-1$ e $1$, e nessun cancello decide, parola per parola, dove
-lasciarlo passare.
+attraversa la cella quasi indisturbata, cioè lo stato di cella
+$\mathbf{c}_t$, che da un passo all'altro viene soltanto moltiplicato per il
+cancello di dimenticanza $\mathbf{f}_t$ e sommato a un contenuto nuovo. Il
+gradiente che risale lungo quella linea incontra quindi, a ogni passo, un solo
+fattore, e la rete calcola quel fattore a partire dall'ingresso: dove deve
+ricordare, può tenerlo quasi a uno. Ad esempio, dopo cento passi un fattore
+$0{,}999$ lascia passare il $90\%$ del segnale
+($0{,}999^{100} \approx 0{,}905$), mentre un fattore $0{,}9$ ne conserva appena
+$0{,}9^{100} \approx 0{,}000027$.
+
+Nella rete semplice, invece, il gradiente passa a ogni passo per la stessa
+matrice di pesi $\mathbf{W}_{hh}$ e per la derivata della $\tanh$, la funzione
+che schiaccia lo stato fra $-1$ e $1$, e nessun cancello decide, parola per
+parola, dove lasciarlo passare.
 
 `````{tab} Elementare
 
@@ -342,25 +349,22 @@ risale lungo il taccuino attraversa cento aggiunte e arriva com'era partita.
 L'unica moltiplicazione è la prima manopola, e finché resta spalancata
 moltiplica per uno.
 
-Nella prima versione, del
-1997, le manopole erano due, annota e mostra. Quella che dimentica sembrava
-superflua (perché mai insegnare a una memoria a cancellarsi?) e fu aggiunta solo
-tre anni dopo, quando ci si accorse che su un testo che non finisce mai il
-taccuino si carica di segni sempre più calcati, uno sopra l'altro, finché a
-leggerlo è tutto nero e una riga non si distingue più dall'altra. Saper
-dimenticare,
-si scoprì, è parte del saper ricordare.
+Nella prima versione, del 1997, le manopole erano due, annota e mostra. Quella
+che dimentica sembrava superflua (perché mai insegnare a una memoria a
+cancellarsi?) e fu aggiunta solo tre anni dopo, quando ci si accorse che su un
+testo che non finisce mai il taccuino si carica di segni sempre più calcati, uno
+sopra l'altro, finché a leggerlo è tutto nero e una riga non si distingue più
+dall'altra. Saper dimenticare, si scoprì, è parte del saper ricordare.
 
 Esiste anche una versione più snella della stessa idea, proposta nel 2014 da
 Kyunghyun Cho e colleghi e chiamata **GRU** (*Gated Recurrent Unit*, «unità
-ricorrente a cancelli»). Le
-manopole sono due invece di tre, e taccuino e foglietto dei riassunti diventano
-un foglio solo. Una sola manopola decide insieme quanto
-tenere del vecchio e quanto scrivere del nuovo, perché lo spazio è uno: quello
-che lasci al vecchio lo togli al nuovo. L'altra decide quanto del vecchio
-guardare mentre prepari l'appunto. Meno pezzi, meno numeri da imparare, e
-spesso risultati altrettanto buoni. Le due sigle compaiono quasi sempre
-appaiate, LSTM e GRU: sono due tagli dello stesso vestito.
+ricorrente a cancelli»). Le manopole sono due invece di tre, e taccuino e
+foglietto dei riassunti diventano un foglio solo. Una sola manopola decide
+insieme quanto tenere del vecchio e quanto scrivere del nuovo, perché lo spazio
+è uno: quello che lasci al vecchio lo togli al nuovo. L'altra decide quanto del
+vecchio guardare mentre prepari l'appunto. Meno pezzi, meno numeri da imparare,
+e spesso risultati altrettanto buoni. In pratica le due sigle compaiono quasi
+sempre appaiate, LSTM e GRU: sono due tagli dello stesso vestito.
 
 `````
 
@@ -372,7 +376,7 @@ prodotti da una sigmoide $\sigma$; nella formulazione del 1997 erano due,
 *input* $\mathbf{i}_t$ e *output* $\mathbf{o}_t$, e la memoria si aggiornava
 per pura addizione, senza poter mai essere svuotata: $\mathbf{c}_t =
 \mathbf{c}_{t-1} + \mathbf{i}_t \odot \tilde{\mathbf{c}}_t$, con
-$\tilde{\mathbf{c}}_t$ la memoria candidata, definita poco più avanti. La
+$\tilde{\mathbf{c}}_t$ la memoria candidata. La
 versione con il *forget gate* $\mathbf{f}_t$ {cite}`gers2000learning` è la
 forma canonica adottata oggi:
 
@@ -402,13 +406,17 @@ dipendenza da $\mathbf{h}_{t-1}$ dei gate e della candidata, $\partial
 diagonale che la rete porta vicino a $1$ quando deve ricordare, al posto del
 fattore $\mathrm{diag}(1 - \mathbf{h}_s \odot \mathbf{h}_s)\,\mathbf{W}_{hh}$
 della rete semplice, dove la matrice è la stessa a ogni passo e nessun cancello
-tiene la diagonale vicina a $1$. Nel 1997 quel fattore era l'identità per
+tiene la diagonale vicina a $1$.
+
+Nel 1997 quel fattore era l'identità per
 costruzione, il *constant error carousel* di Hochreiter e Schmidhuber; per la
 stessa ragione conviene inizializzare a $1$ il bias di $\mathbf{f}_t$, che con
 i pesi piccoli di partenza terrebbe il cancello intorno a $0{,}5$ e
 dimezzerebbe il gradiente a ogni passo: Jozefowicz e colleghi lo raccomandano
 notando che pochi lo facevano {cite}`jozefowicz2015empirical`, e `nn.LSTM` di
-PyTorch non lo fa da sé. La **GRU** (*Gated Recurrent Unit*,
+PyTorch non lo fa da sé.
+
+La **GRU** (*Gated Recurrent Unit*,
 {cite}`cho2014learning`) fonde stato e memoria in un solo vettore e usa due
 gate, *update* $\mathbf{z}_t$ e *reset* $\mathbf{r}_t$:
 
@@ -426,6 +434,7 @@ L'update gate svolge insieme la funzione del forget e dell'input della LSTM,
 con somma vincolata a uno; il reset decide quanta parte dello stato passato
 entra nella candidata. Questa è la forma di Cho e colleghi, in cui il reset
 agisce su $\mathbf{h}_{t-1}$ prima del prodotto con la matrice.
+
 L'implementazione `nn.GRU` di PyTorch applica invece il reset dopo la
 moltiplicazione lineare: spezzata $\mathbf{W}_h$ nel blocco $\mathbf{U}_h$ che
 moltiplica lo stato e nel blocco $\mathbf{V}_h$ che moltiplica l'ingresso,
@@ -442,11 +451,12 @@ rete semplice ha un blocco, la GRU tre e la LSTM quattro, quindi la GRU ha tre
 quarti dei parametri della LSTM a parità di dimensione. Il costo per passo
 cresce nello stesso rapporto, $O(d(d + d_x))$ per blocco, e la
 retropropagazione su $n$ passi tiene in memoria $O(n\,d)$ attivazioni, che è la
-ragione del troncamento a blocchi. I confronti sistematici non
-danno un vincitore netto: il verdetto fra le due cambia con il compito e con
-l'inizializzazione del forget gate {cite}`jozefowicz2015empirical`, e legare
-forget e input come fa la GRU non peggiora la LSTM in modo significativo
-{cite}`greff2017lstm`.
+ragione del troncamento a blocchi.
+
+I confronti sistematici non danno un vincitore netto: il verdetto fra le due
+cambia con il compito e con l'inizializzazione del forget gate
+{cite}`jozefowicz2015empirical`, e legare forget e input come fa la GRU non
+peggiora la LSTM in modo significativo {cite}`greff2017lstm`.
 
 `````
 
@@ -465,7 +475,9 @@ la frase, un passo dopo l'altro, e restituisce lo stato di ogni passo (la cella
 di un passo solo, in PyTorch, è `nn.LSTMCell`). `nn.Linear` trasforma l'ultimo
 stato nei due punteggi del verdetto, uno per classe: è la regressione logistica
 della sezione sulla classificazione, applicata al riassunto della frase invece
-che al sacchetto di parole. Siccome i tre strati ricorrenti (`nn.RNN`,
+che al sacchetto di parole.
+
+Siccome i tre strati ricorrenti (`nn.RNN`,
 `nn.LSTM` e `nn.GRU`) condividono l'interfaccia, per passare dall'uno all'altro
 basta cambiare il nome della classe; l'unica differenza è lo stato finale, che
 per la LSTM è una coppia, $(\mathbf{h}, \mathbf{c})$.
@@ -487,12 +499,12 @@ class ClassificatoreSentiment(nn.Module):
         return self.out(h[:, -1])  # ultimo passo -> logit per CrossEntropyLoss
 ```
 
-Il blocco nasconde però una semplificazione che in un programma reale produce
-errori: `h[:, -1]` prende l'ultimo posto della fila. In un mini-batch le frasi
-hanno lunghezze diverse, e per metterle in una tabella sola le si allunga tutte
-alla stessa misura con dei riempitivi (il *padding*). L'ultimo posto letto è
-allora l'ultimo riempitivo, non l'ultima parola, e lo stato estratto dipende da
-quanti riempitivi si sono aggiunti.
+Il classificatore nasconde però una semplificazione che in un programma reale
+produce errori: `h[:, -1]` prende l'ultimo posto della fila. In un mini-batch
+le frasi hanno lunghezze diverse, e per metterle in una tabella sola le si
+allunga tutte alla stessa misura con dei riempitivi (il *padding*). L'ultimo
+posto letto è allora l'ultimo riempitivo, non l'ultima parola, e lo stato
+estratto dipende da quanti riempitivi si sono aggiunti.
 
 Il rimedio è indicare alla rete la lunghezza effettiva di ciascuna frase. In
 PyTorch lo si fa impacchettando il mini-batch con `pack_padded_sequence`, a cui
@@ -501,17 +513,18 @@ ordinate dalla più lunga alla più corta). La rete restituisce allora, come
 secondo valore, lo stato finale `h_n` (per la LSTM la coppia `h_n, c_n`), che
 per ciascuna frase si arresta all'ultima parola reale. Lo si legge come
 `h_n[-1]`: il primo indice di `h_n` scorre sugli strati della rete, anche con
-`batch_first=True`, e `-1` prende l'ultimo. Prendere invece `h[:, -1]` dopo
-aver srotolato l'uscita con `pad_packed_sequence` darebbe un vettore di zeri
-per ogni frase più corta delle altre. Senza impacchettare, lo stato corretto si
-ricava, frase per frase, alla posizione dell'ultima parola effettiva, cioè alla
-sua lunghezza meno uno.
+`batch_first=True`, e `-1` prende l'ultimo.
+
+Prendere invece `h[:, -1]` dopo aver srotolato l'uscita con
+`pad_packed_sequence` darebbe un vettore di zeri per ogni frase più corta delle
+altre. Senza impacchettare, lo stato corretto si ricava, frase per frase, alla
+posizione dell'ultima parola effettiva, cioè alla sua lunghezza meno uno.
 
 Il ciclo di addestramento è quello della {doc}`sezione sul training loop
-</PyTorch/addestramento>`. Provare costa una parola: si scambia `nn.LSTM` con
-`nn.RNN` o con `nn.GRU`, e il resto del programma non cambia di una riga.
-Cambia invece il numero dei pesi, che con le dimensioni del classificatore si
-conta così:
+</PyTorch/addestramento>`. Provare costa una parola: si scambia
+`nn.LSTM` con `nn.RNN` o con `nn.GRU`, e il resto del programma non cambia di
+una riga. Cambia invece il numero dei pesi, che con le dimensioni del
+classificatore si conta così:
 
 ```python
 from torch import nn
@@ -541,8 +554,8 @@ Per qualche anno, grosso modo fra il 2013 e il 2017, LSTM e GRU sono state
 l'architettura di riferimento per la traduzione automatica, il riconoscimento
 vocale e la generazione di testo. Accanto alle difficoltà nell'apprendere
 dipendenze a lungo termine, restava però un limite computazionale: lo stato al
-passo $t$ dipende da quello al passo $t-1$, impedendo l'esecuzione in parallelo
-dei passi di una sequenza.
+passo $t$ dipende da quello al passo $t-1$, e ciò impedisce di eseguire in
+parallelo i passi di una sequenza.
 
 `````{tab} Elementare
 
@@ -589,7 +602,9 @@ molto lunghe. Con stato di dimensione $d$ la complessità è di $O(n\,d^2)$
 operazioni in $O(n)$ passi sequenziali; l'autoattenzione richiede $O(n^2 d)$
 operazioni, ma in $O(1)$ passi sequenziali e con un cammino di lunghezza $O(1)$
 fra due posizioni qualsiasi, e costa meno finché $n$ resta sotto $d$
-{cite}`vaswani2017attention`. La sequenzialità, del resto, è un vincolo delle
+{cite}`vaswani2017attention`.
+
+La sequenzialità, del resto, è un vincolo delle
 ricorrenze non lineari. Se l'aggiornamento è lineare in $\mathbf{h}_{t-1}$,
 $\mathbf{h}_t = \mathbf{A}_t\mathbf{h}_{t-1} + \mathbf{b}_t$ con $\mathbf{A}_t$
 e $\mathbf{b}_t$ che dipendono solo dall'ingresso, due passi consecutivi si
@@ -602,9 +617,9 @@ $O(d^3)$. È la strada presa dai {doc}`modelli a spazio di stati
 
 `````
 
-## Dove ci porta tutto questo
+## Dalle ricorrenze all'attenzione
 
-Le celle ricorrenti che abbiamo costruito qui sono i mattoni del passo
+Le celle ricorrenti (RNN, LSTM, GRU) sono i mattoni del passo
 successivo: mettere due RNN una di fronte all'altra (una che legge, una che
 scrive) e farle tradurre una frase intera. È la storia della {doc}`traduzione
 con le reti <seq2seq-traduzione>`: in quell'ambito, per superare i limiti di

@@ -1,22 +1,22 @@
 # Tensori e autograd
 
 Dentro PyTorch ogni cosa è un tensore: l'immagine da classificare, la frase
-tradotta in numeri, e ognuno dei numeri che la rete si tiene dentro e che
-impara col tempo, i suoi pesi. Accanto ai tensori vive il secondo protagonista,
+tradotta in numeri e ognuno dei numeri che la rete si tiene dentro e che impara
+col tempo, i suoi pesi. Accanto ai tensori vive il secondo protagonista,
 più discreto ma decisivo: **autograd**, il meccanismo che registra le
-operazioni mentre vengono eseguite e ne calcola le derivate, e senza il quale
-una rete non potrebbe imparare.
+operazioni mentre vengono eseguite e ne calcola le derivate. Senza autograd una
+rete non potrebbe imparare.
 
 ## Che cos'è un tensore
 
-Abbiamo già incontrato scalari, vettori e matrici nella {doc}`sezione di
-algebra lineare </Matematica/algebra-lineare>`: un numero solo, una fila di
-numeri, una tabella di numeri. Il tensore è semplicemente il passo successivo,
-la stessa idea portata avanti finché si vuole: si continua ad aggiungere
-direzioni lungo cui i numeri si dispongono, e ciascuna di quelle direzioni si
-chiama **asse**. La parola qui ha un significato diverso da quello dei grafici:
-sull'asse di un grafico si legge un valore, lungo l'asse di un tensore si conta
-una posizione.
+Nella {doc}`sezione di algebra lineare </Matematica/algebra-lineare>` abbiamo
+già incontrato scalari, vettori e matrici, cioè un numero solo, una fila di
+numeri e una tabella di numeri. Il tensore è semplicemente il passo successivo,
+la stessa idea portata avanti finché si vuole. Si continuano ad aggiungere
+direzioni lungo cui i numeri si dispongono, e ciascuna di queste direzioni si
+chiama **asse**. La parola qui ha un significato diverso da quello che ha nei
+grafici: sull'asse di un grafico si legge un valore, mentre lungo l'asse di un
+tensore si conta una posizione.
 
 ```{figure} ../figures/tensori-scala.svg
 :name: fig-tensori-scala
@@ -43,29 +43,31 @@ coordinate da dare per pescare uno dei numeri che ci sono dentro
   per il verde, una per il blu) ha tre assi.
 
 Gli assi si contano in un modo solo: sono le coordinate che devi dare per
-arrivare a un numero preciso. Per il voto di uno studente basta la posizione
-nella fila, una coordinata sola. Per un pixel della foto a colori ne servono
-tre: quale colore, quale riga, quale colonna. Per la temperatura nessuna,
-perché il numero è uno solo.
+arrivare a un numero preciso. Per il voto di uno studente, ad esempio, basta la
+posizione nella fila, una coordinata sola. Per un pixel della foto a colori ne
+servono tre: quale colore, quale riga, quale colonna. Per la temperatura
+nessuna, perché il numero è uno solo.
 
 Ci sono due termini che conviene conoscere in inglese perché si trovano così
 nei testi e nel codice: il numero di assi, che molti testi chiamano **rank** (in
 PyTorch lo si legge con `ndim`), e le lunghezze lungo ciascun asse, che formano
-la **shape** (la "forma", `shape` nel codice). Una foto a colori
-$256 \times 256$ è, in PyTorch, un tensore di shape $(3, 256, 256)$: rank 3, e
-i tre colori vengono scritti per primi, prima delle due misure della griglia.
-È una convenzione, non una legge di natura (altre librerie mettono i colori in
-fondo), e conviene saperlo perché quando la forma non torna il primo sospetto è
-averla invertita.
+la **shape** (la "forma", `shape` nel codice).
+
+Una foto a colori $256 \times 256$ è, in PyTorch, un tensore di shape
+$(3, 256, 256)$, quindi di rank 3, e i tre colori vengono scritti per primi,
+prima delle due misure della griglia. È una convenzione, non una legge di
+natura (altre librerie mettono i colori in fondo), e conviene saperlo perché
+quando la forma non torna il primo sospetto è averla invertita.
 
 La scala non si ferma alla foto singola. Le immagini si passano alle reti a
 mazzetti, trentadue per volta (nel codice il mazzetto si chiama *batch*), e il
-mazzetto porta con sé il suo asse: la shape
-diventa $(32, 3, 256, 256)$, quattro coordinate per arrivare a un pixel (quale
-foto, quale colore, quale riga, quale colonna). È la forma con cui si lavora
-tutti i giorni. Una cosa sola resta uguale a ogni gradino della scala: dentro un
-tensore i numeri sono tutti dello stesso tipo, tutti interi o tutti con la
-virgola, e non si mescolano.
+batch porta con sé il suo asse: la shape diventa $(32, 3, 256, 256)$, quattro
+coordinate per arrivare a un pixel (quale foto, quale colore, quale riga, quale
+colonna). È la forma con cui si lavora tutti i giorni.
+
+Una cosa sola resta uguale a ogni gradino della scala: dentro un tensore i
+numeri sono tutti dello stesso tipo, tutti interi o tutti con la virgola, e non
+si mescolano.
 
 `````
 
@@ -77,26 +79,28 @@ attributi:
 
 - il **rank** (o numero di assi), $r$, che in PyTorch si legge con `t.ndim` o
   `t.dim()` e che non va confuso con il rango di una matrice, cioè il numero
-  delle sue righe linearmente indipendenti: una matrice $3 \times 3$ ha rank 2
-  come tensore e può avere rango 1;
+  delle sue righe linearmente indipendenti (una matrice $3 \times 3$ ha rank 2
+  come tensore e può avere rango 1);
 - la **shape** $(n_1, n_2, \dots, n_r)$, la dimensione lungo ciascun asse
   (`t.shape`).
 
 Scalare, vettore e matrice sono i casi $r = 0, 1, 2$. Nel deep learning si
-lavora costantemente con rank più alti: in PyTorch un *batch* di immagini RGB è
-un tensore $(B, C, H, W)$ ed è quindi di rank 4. Gli assi sono gli esempi del
-batch, i canali, l'altezza e la larghezza (la documentazione di PyTorch scrive
-$N$ per il primo asse); è l'ordine *channels-first*, diverso dal $(B, H, W, C)$
-di altre librerie. A differenza dell'oggetto matematico "tensore" (che porta
-con sé regole di trasformazione tra sistemi di coordinate), qui il termine
-indica soltanto la struttura dati: un array $n$-dimensionale con un `dtype`
-omogeneo (`float32`, `int64`, …).
+lavora costantemente con rank più alti. In PyTorch, ad esempio, un *batch* di
+immagini RGB è un tensore $(B, C, H, W)$ ed è quindi di rank 4: i suoi assi
+sono gli esempi del batch, i canali, l'altezza e la larghezza (la
+documentazione di PyTorch scrive $N$ per il primo asse). Questo ordine si
+chiama *channels-first*, ed è diverso dal $(B, H, W, C)$ di altre librerie.
+
+A differenza dell'oggetto matematico "tensore" (che porta con sé regole di
+trasformazione tra sistemi di coordinate), qui il termine indica soltanto la
+struttura dati: un array $n$-dimensionale con un `dtype` omogeneo (`float32`,
+`int64`, …).
 
 `````
 
 ## Creare tensori e farci i conti
 
-Un tensore si può fabbricare in tre modi: scrivendo i numeri a mano in una
+Un tensore si può creare in tre modi: scrivendo i numeri a mano in una
 lista Python, chiedendo a PyTorch di riempirlo (con `zeros`, `ones` o `randn`),
 oppure partendo da un array di NumPy, la libreria di calcolo numerico della
 {doc}`sezione su NumPy </Python/numpy>`. Con quest'ultima PyTorch va d'accordo
@@ -121,14 +125,14 @@ torch.randn(3, 3)        # sorteggiati da una normale standard, N(0, 1)
 torch.arange(0, 10, 2)   # da 0 a 10 di 2 in 2, 10 escluso: tensor([0, 2, 4, 6, 8])
 ```
 
-Le ultime quattro righe fabbricano tensori pieni senza che si debba scrivere i
-numeri a mano, e la terza, `randn`, è quella che serve ai pesi: una rete parte
-da valori sorteggiati, e `randn` li estrae da una normale standard
+Le ultime quattro righe creano tensori pieni senza che si debba scrivere i
+numeri a mano. La terza, `randn`, è quella che serve ai pesi, perché una rete
+parte da valori casuali e `randn` li estrae da una normale standard
 $\mathcal{N}(0, 1)$, centrata sullo zero e con deviazione standard uno.
 
 Sui tensori valgono le operazioni dell'algebra lineare che già conosciamo
-(somma, prodotto per scalare, prodotto fra matrici) e ogni riga viene eseguita
-nell'istante in cui la scrivi, come in NumPy:
+(somma, prodotto per scalare, prodotto fra matrici), e ogni riga viene eseguita
+nell'istante in cui la scrivi, come in NumPy.
 
 ```python
 a = torch.tensor([1., 2., 3.])
@@ -146,24 +150,26 @@ a.reshape(3, 1)  # nuova forma: gli stessi numeri in colonna, 3x1
 I numeri escono già scritti, e così ogni passaggio si controlla come su una
 calcolatrice, senza "avviare" nulla.
 
-Il simbolo `@` è quello del prodotto fra matrici, e su due semplici file di
-numeri come queste fa l'operazione più semplice che quel prodotto sappia fare, cioè
-moltiplicarle a due a due e sommare tutto ($1 \cdot 10 + 2 \cdot 20 + 3 \cdot
-30 = 140$); è il prodotto scalare, e il calcolo è scritto per esteso nel
+Il simbolo `@` indica il prodotto fra matrici. Su due vettori come questi fa
+l'operazione più semplice che quel prodotto sappia fare, cioè moltiplica i
+numeri a due a due e somma tutto ($1 \cdot 10 + 2 \cdot 20 + 3 \cdot
+30 = 140$). È il prodotto scalare, e il calcolo è scritto per esteso nel
 commento apposta perché lo si possa rifare.
 
 Il broadcasting, che conosciamo già da NumPy, funziona allo stesso modo. Se
 scrivi `a + 5`, PyTorch somma $5$ a *ciascuno* dei tre numeri, come un
 insegnante che aggiunge lo stesso bonus a tutti i compiti della classe senza
-riscrivere la regola una volta per studente: il risultato è `tensor([6., 7.,
-8.])`. Vale anche fra due tensori, purché le forme si possano affiancare: una
-tabella di tre righe per quattro colonne più una fila di quattro numeri va
-bene, e la fila si ripete su ciascuna delle tre righe. L'appaiamento si fa a
-partire dall'ultimo asse, quello delle colonne, e va all'indietro: quindi alla
-stessa tabella una fila di *tre* numeri non si somma, anche se le righe sono
-tre, perché le colonne sono quattro e la fila si affianca a quelle. Sommare una
-fila di tre numeri a una di quattro, di nuovo, non si può: PyTorch si ferma con
-un errore.
+riscrivere la regola una volta per studente, e il risultato è
+`tensor([6., 7., 8.])`.
+
+Lo stesso meccanismo vale anche fra due tensori, purché le forme si possano
+affiancare. Ad esempio, una tabella di tre righe per quattro colonne più una
+fila di quattro numeri va bene, e la fila si ripete su ciascuna delle tre
+righe. L'appaiamento parte dall'ultimo asse, quello delle colonne, e va
+all'indietro; quindi alla stessa tabella una fila di *tre* numeri non si somma,
+anche se le righe sono tre, perché le colonne sono quattro e la fila si
+affianca a quelle. Anche sommare una fila di tre numeri a una di quattro non si
+può, e PyTorch si ferma con un errore.
 
 I numeri di un tensore sono disposti uno dopo l'altro, come le lettere di un
 testo scritto su una striscia di carta senza interruzioni; la forma è soltanto
@@ -175,17 +181,19 @@ copiarsela, con l'avvertenza che chi la cambia da una parte la cambia per
 tutti.
 
 Per cambiare forma PyTorch ha due comandi, `reshape` e `view`, e la striscia
-spiega perché. Ci sono riletture che dalla striscia non si ricavano. Prendi le
-righe di quel testo una sì e una no: quelle scartate sono ancora lì, in mezzo
-alle altre. Tagliare in due metà ciascuna riga rimasta si può, e rimettere
-insieme le due metà pure, perché ogni riga è tutta attaccata; leggere il tutto
-come un'unica riga continua no, perché fra un pezzo e il successivo c'è la roba
-che hai saltato. Per il taglio basta dare la forma nuova, senza toccare niente;
-per la riga continua i numeri vanno ricopiati altrove. `reshape` ricopia in
-silenzio quando serve, `view` pretende di non ricopiare e, quando non può, si
-ferma con un errore invece di farlo di nascosto. Di solito va bene `reshape`;
-`view` si sceglie quando si vuole la certezza che la striscia sia la stessa, e
-che cambiando un numero da una parte cambi anche dall'altra.
+spiega perché. Ci sono infatti riletture che dalla striscia non si ricavano.
+Prendi le righe di quel testo una sì e una no: quelle scartate sono ancora lì,
+in mezzo alle altre. Tagliare in due metà ciascuna riga rimasta si può, e
+rimettere insieme le due metà pure, perché ogni riga è tutta attaccata; leggere
+il tutto come un'unica riga continua no, perché fra un pezzo e il successivo
+c'è la roba che hai saltato.
+
+Per il taglio basta dare la forma nuova, senza toccare niente; per la riga
+continua i numeri vanno ricopiati altrove. `reshape` ricopia in silenzio quando
+serve, `view` pretende di non ricopiare e, quando non può, si ferma con un
+errore invece di farlo di nascosto. Di solito va bene `reshape`; `view` si
+sceglie quando si vuole la certezza che la striscia sia la stessa, e che
+cambiando un numero da una parte cambi anche dall'altra.
 
 `````
 
@@ -193,29 +201,30 @@ che cambiando un numero da una parte cambi anche dall'altra.
 
 Fra NumPy e PyTorch il passaggio sulla CPU non copia: `torch.from_numpy(arr)`
 e `t.numpy()` restituiscono un tensore e un array che condividono la stessa
-memoria, quindi modificare l'uno modifica l'altro; `torch.tensor(arr)` invece
-copia. `t.numpy()` vuole un tensore sulla CPU e fuori dal grafo di autograd,
-quindi la forma completa è `t.detach().cpu().numpy()`, come nella sezione sui
+memoria, per cui modificare l'uno modifica l'altro, mentre `torch.tensor(arr)`
+copia. `t.numpy()` vuole un tensore sulla CPU e fuori dal grafo di autograd;
+la forma completa è quindi `t.detach().cpu().numpy()`, come nella sezione sui
 {doc}`tre errori più comuni <errori-comuni>`.
 
-Le regole di broadcasting sono le
-stesse di NumPy, gli assi si allineano da destra e le dimensioni compatibili
-(uguali, o pari a 1) si espandono virtualmente: una matrice $(3, 4)$ più un
-vettore $(4,)$ produce una $(3, 4)$. Il prodotto matriciale è `@` (ovvero
-`torch.matmul`), con la stessa semantica di NumPy anche sui vettori rank-1:
-`a @ b` tra due vettori è direttamente il prodotto scalare, senza bisogno di
-reshape.
+Le regole di broadcasting sono le stesse di NumPy: gli assi si allineano da
+destra e le dimensioni compatibili (uguali, o pari a 1) si espandono
+virtualmente. Ad esempio, una matrice $(3, 4)$ più un vettore $(4,)$ produce
+una $(3, 4)$. Il prodotto matriciale è `@` (ovvero `torch.matmul`), con la
+stessa semantica di NumPy anche sui vettori rank-1; in particolare, `a @ b` tra
+due vettori è direttamente il prodotto scalare, senza bisogno di reshape.
 
-Il metodo `reshape` restituisce una **vista** (stessa memoria,
-solo un modo diverso di leggerla) quando la disposizione dei dati lo permette,
-e altrimenti copia senza avvisare; `t.view(...)` la vista la pretende, e solleva
-un errore invece di copiare quando non può darla. La condizione non è la
-contiguità, come si legge spesso: è che la nuova forma sia compatibile con gli
-**stride** esistenti, cioè con i passi con cui si cammina lungo ciascun asse.
-Spezzare o fondere assi già contigui fra loro riesce anche su un tensore non
-contiguo: se `x` è $(8,4)$ e `y = x[::2]` (quindi $(4,4)$ con stride $(8,1)$,
-non contigua), `y.view(4, 2, 2)` passa e condivide la memoria, mentre
-`y.view(16)` solleva un errore.
+Il metodo `reshape` restituisce una **vista** (stessa memoria, solo un modo
+diverso di leggerla) quando la disposizione dei dati lo permette, e altrimenti
+copia senza avvisare, mentre `t.view(...)` pretende la vista e, quando non può
+darla, solleva un errore invece di copiare.
+
+La condizione per ottenere la vista non è la contiguità, come si legge spesso:
+è che la nuova forma sia compatibile con gli **stride** esistenti, cioè con i
+passi con cui si cammina lungo ciascun asse. Di conseguenza, spezzare o fondere
+assi già contigui fra loro riesce anche su un tensore non contiguo: se `x` è
+$(8,4)$ e `y = x[::2]` (quindi $(4,4)$ con stride $(8,1)$, non
+contigua), `y.view(4, 2, 2)` passa e condivide la memoria, mentre `y.view(16)`
+solleva un errore.
 
 ```python
 x = torch.arange(32.).reshape(8, 4)   # contigua
@@ -239,17 +248,20 @@ False
 Il messaggio d'errore lo dice per esteso, e alla lettera suona così: *view
 size is not compatible with input tensor's size and stride (at least one
 dimension spans across two contiguous subspaces). Use `.reshape(...)`
-instead.* Molte operazioni esistono in variante *in-place* col suffisso
-underscore (`t.add_(1)`, `t.zero_()`): risparmiano memoria ma
+instead.*
+
+Molte operazioni esistono anche in variante *in-place*, col suffisso
+underscore (`t.add_(1)`, `t.zero_()`); queste varianti risparmiano memoria, ma
 vanno evitate sui tensori tracciati da autograd.
 
 `````
 
 ## Lo stesso codice su CPU e GPU
 
-Ogni tensore vive su un *device*. Di default è la CPU; spostarlo su una GPU
-(se c'è) è una chiamata a `.to()`, e il resto del codice resta quello, a patto
-che i tensori che lavorano insieme stiano sullo stesso dispositivo.
+Ogni tensore vive su un **device**, cioè su un dispositivo di calcolo. Di
+default è la CPU; per spostarlo su una GPU (se c'è) basta una chiamata a
+`.to()`, e il resto del codice resta quello, a patto che i tensori che lavorano
+insieme stiano sullo stesso dispositivo.
 
 ```python
 # se una scheda grafica c'è usa quella, altrimenti la CPU
@@ -265,11 +277,11 @@ print(prodotto.shape, prodotto.device)
 La prima riga è un modo compatto di scrivere una scelta, e si legge da
 sinistra: prendi `"cuda"` *se* c'è una scheda utilizzabile, *altrimenti*
 `"cpu"`. È l'istruzione con cui comincia quasi ogni programma PyTorch. L'ultima
-riga stampa dove il risultato è finito: `cpu` su una macchina senza scheda
+riga stampa dove è finito il risultato: `cpu` su una macchina senza scheda
 grafica, `cuda:0` su un computer con una scheda NVIDIA.
 
 La matrice è di mille per mille perché su matrici piccole la differenza fra i
-due dispositivi non si vede: il vantaggio della scheda grafica comincia quando
+due dispositivi non si vede; il vantaggio della scheda grafica comincia quando
 i calcoli da fare sono tanti.
 
 `````{tab} Elementare
@@ -281,14 +293,16 @@ centinaia di volte più veloce, perché una GPU è nata per fare migliaia di
 piccole operazioni in parallelo (in origine, i pixel dei videogiochi).
 
 Due tensori lavorano insieme soltanto se stanno sullo stesso dispositivo, e se
-non ci stanno bisogna prima spostarne uno. Il trasloco ha un costo: il
+non ci stanno bisogna prima spostarne uno. Il trasloco, però, ha un costo: il
 passaggio fra la memoria del computer e quella della scheda è stretto rispetto
 alla velocità con cui la scheda esegue i calcoli, quindi chi porta i numeri
 avanti e indietro a ogni riga consuma nel viaggio più di quanto guadagni nel
 calcolo, come attraversare la cucina con una cassa per ogni singolo
-ingrediente. Ecco perché PyTorch non trasloca i dati di propria iniziativa e
-preferisce fermarsi con un errore: il viaggio devi deciderlo tu, e devi poterlo
-vedere scritto.
+ingrediente.
+
+Ecco perché PyTorch non trasloca i dati di propria iniziativa e preferisce
+fermarsi con un errore: il viaggio devi deciderlo tu, e devi poterlo vedere
+scritto.
 
 `````
 
@@ -296,23 +310,27 @@ vedere scritto.
 
 Il pattern idiomatico è definire `device` una volta all'inizio e spostare
 modello e batch con `.to(device)`; su Apple Silicon il device si chiama
-`"mps"`. Operazioni tra tensori su device diversi sollevano un errore esplicito
-(nessun trasferimento implicito, che nasconderebbe costi: su una scheda
-discreta il passaggio attraversa il bus PCIe ed è lento rispetto al calcolo,
-mentre su Apple Silicon la memoria è unificata ma l'uso misto non è comunque
-consentito). L'eccezione sono i tensori a zero assi che stanno sulla CPU: un
-numero solo, lì, viene trattato come uno scalare e combinato senza errori con
-un tensore che sta altrove, mentre lo stesso numero dentro un tensore a un asse
-solleva un errore. Il contrario non vale: uno scalare a zero assi che sta sulla
-scheda grafica, sommato a un tensore sulla CPU, solleva anch'esso un errore. Le
-stesse moltiplicazioni tra matrici che scriviamo qui sono, sull'hardware,
+`"mps"`. Operazioni tra tensori su device diversi sollevano un errore
+esplicito, perché PyTorch non fa trasferimenti impliciti, che nasconderebbero
+dei costi. Su una scheda discreta, infatti, il passaggio attraversa il bus PCIe
+ed è lento rispetto al calcolo, mentre su Apple Silicon la memoria è unificata
+ma l'uso misto non è comunque consentito.
+
+L'eccezione sono i tensori a zero assi che stanno sulla CPU: un numero solo,
+lì, viene trattato come uno scalare e combinato senza errori con un tensore che
+sta altrove, mentre lo stesso numero dentro un tensore a un asse solleva un
+errore. Il contrario non vale: uno scalare a zero assi che sta sulla scheda
+grafica, sommato a un tensore sulla CPU, solleva anch'esso un errore.
+
+Le stesse moltiplicazioni tra matrici che scriviamo qui sono, sull'hardware,
 migliaia di prodotti scalari eseguiti in parallelo dai kernel di cuBLAS (le
-convoluzioni passano invece da cuDNN): è il motivo per cui le GPU (nate per la
-grafica) sono diventate lo strumento del deep learning. Il codice resta lo
-stesso, a parte gli spostamenti con `.to()`; cambiano la velocità e, di
-pochissimo, i numeri. Le somme si fanno in un altro ordine, e sulle GPU NVIDIA
-da Ampere in poi le convoluzioni usano di default il formato TF32, che
-arrotonda gli ingressi a dieci bit di mantissa
+convoluzioni passano invece da cuDNN), ed è il motivo per cui le GPU, nate per
+la grafica, sono diventate lo strumento del deep learning.
+
+Il codice resta lo stesso, a parte gli spostamenti con `.to()`; cambiano la
+velocità e, di pochissimo, i numeri. Le somme, infatti, si fanno in un altro
+ordine, e sulle GPU NVIDIA da Ampere in poi le convoluzioni usano di default
+il formato TF32, che arrotonda gli ingressi a dieci bit di mantissa
 (`torch.backends.cudnn.conv.fp32_precision` vale `"tf32"`). Perciò la
 documentazione di PyTorch avverte che fra CPU e GPU i risultati possono
 differire anche con lo stesso seme.
@@ -321,19 +339,22 @@ differire anche con lo stesso seme.
 
 ## Autograd: la derivata calcolata da sola
 
-Addestrare una rete significa modificare i suoi parametri $\theta$ (i pesi di
-cui si diceva in apertura) finché l'errore che commette, la loss
-$\mathcal{L}(\theta)$, non diventa piccolo.
+Addestrare una rete significa modificare i suoi parametri $\theta$, cioè i
+pesi, finché l'errore che commette, la loss $\mathcal{L}(\theta)$, non diventa
+piccolo.
 
 Per sapere in che verso modificare ciascun parametro serve il gradiente
 $\nabla_\theta\mathcal{L}$, che raccoglie le derivate parziali
 $\partial\mathcal{L}/\partial\theta_k$, una per parametro. È di nuovo una
 derivata, ma stavolta a spostarsi di poco è il parametro, non più il dato che
-entra: la $k$-esima dice che cosa succede alla loss se si alza appena il solo
-parametro $\theta_k$, se sale o scende e di quanto. Chi vuole meno errore
-sposta ogni parametro dalla parte in cui la loss scende, cioè contro il segno
-della sua derivata. Calcolarle a mano per una rete con milioni di pesi è
-impensabile, e qui entra la differenziazione automatica (*autodiff*).
+entra. In particolare, la $k$-esima dice che cosa succede alla loss se si alza
+appena il solo parametro $\theta_k$, se sale o scende e di quanto. Per
+ridurre l'errore, quindi, si sposta ogni parametro dalla parte in cui la loss
+scende, cioè contro il segno della sua derivata.
+
+Calcolare a mano queste derivate per una rete con milioni di pesi è
+impensabile, ed è qui che entra in gioco la differenziazione automatica
+(*autodiff*).
 
 ```{figure} ../figures/extra-backpropagation-spiegata.svg
 :name: fig-autograd-due-passate
@@ -347,9 +368,9 @@ correzione per ogni peso incontrato.
 
 La {numref}`fig-autograd-due-passate` lascia fuori un fatto che spiega un
 comportamento di PyTorch altrimenti sorprendente: per poter tornare indietro,
-l'andata deve ricordare. Una rete è una composizione di strati, ognuno dei
-quali trasforma l'uscita del precedente, e il calcolo dall'ingresso all'uscita
-è la passata in avanti (*forward pass*).
+l'andata deve ricordare. Una rete è una composizione di strati,
+ognuno dei quali trasforma l'uscita del precedente, e il calcolo
+dall'ingresso all'uscita è la passata in avanti (*forward pass*).
 
 Durante la passata in avanti autograd conserva i valori intermedi di ogni
 strato, le attivazioni, perché la passata all'indietro li rileggerà per
@@ -357,10 +378,10 @@ calcolare le derivate. La memoria occupata durante l'andata cresce quindi con
 la profondità della rete e con il numero di esempi che la attraversano
 insieme.
 
-Ecco come si accende tutto questo, sull'esempio più piccolo possibile: un solo
-numero al posto di una rete, così si può controllare il risultato a mente. La
-prima riga chiede a PyTorch di tenere d'occhio `x`; le due dopo eseguono un calcolo
-e chiedono la strada del ritorno.
+Vediamo come si attiva questo meccanismo sull'esempio più piccolo possibile,
+un solo numero al posto di una rete, così si può controllare il risultato
+a mente. La prima riga chiede a PyTorch di tenere d'occhio `x`; le due dopo
+eseguono un calcolo e chiedono la strada del ritorno.
 
 ```python
 x = torch.tensor(3.0, requires_grad=True)   # "osserva questo tensore"
@@ -373,10 +394,10 @@ y.backward()              # passata all'indietro
 x.grad                    # la derivata di y in x=3  ->  tensor(8.)
 ```
 
-In quell'espressione `x` compare in due punti, una volta al quadrato e una volta
-moltiplicata per due, e i due punti sono due strade separate che partono e
-arrivano nello stesso posto: la {numref}`fig-nastro-autograd` le percorre nei
-due sensi.
+In quell'espressione `x` compare in due punti, una volta al quadrato e una
+volta moltiplicata per due, e i due punti sono due strade separate che
+partono e arrivano nello stesso posto. La {numref}`fig-nastro-autograd` le
+percorre nei due sensi.
 
 ```{figure} ../figures/nastro-si-riavvolge.svg
 :name: fig-nastro-autograd
@@ -399,55 +420,60 @@ da quel numero finisce sul nastro. `y.backward()` lo riavvolge e lascia in
 quell'ingresso.
 
 Il riavvolgimento riesce perché sul nastro non c'è mai un calcolo difficile,
-solo operazioni elementari: un'elevazione al quadrato, una moltiplicazione, una
-somma. Di ognuna la derivata si sa a memoria, come una tabellina. Il
+solo operazioni elementari come un'elevazione al quadrato, una moltiplicazione,
+una somma. Di ognuna la derivata si sa a memoria, come una tabellina. Il
 registratore parte dalla fine con un $1$ in mano, perché se il risultato si
 sposta di un poco, si sposta di quel poco; poi, per ogni operazione che
 rilegge, moltiplica il numero che ha per la derivata di quell'operazione e
-passa il prodotto a quella prima. All'inizio del nastro ha in mano la derivata
-dell'intero calcolo, e ci arriva rileggendo soltanto le operazioni eseguite,
-una alla volta. Le operazioni annotate, con le frecce
-che dicono quale risultato entra in quale operazione, formano il *grafo* di cui
-si parlava presentando PyTorch: una fila, finché ogni numero serve una volta
-sola, che si biforca appena un numero entra in due operazioni.
+passa il prodotto a quella prima. Quando arriva all'inizio del nastro ha in
+mano la derivata dell'intero calcolo, ottenuta rileggendo soltanto le
+operazioni eseguite, una alla volta.
+
+Le operazioni annotate, con le frecce che dicono quale risultato entra in quale
+operazione, formano il *grafo* computazionale: una fila, finché ogni numero
+serve una volta sola, che si biforca appena un numero entra in due operazioni.
 
 Nel conto $y = x^2 + 2x$ con $x$ che vale $3$, dal nastro esce $8$. Quasi lo
-stesso numero viene a mano spostando $x$ da $3$ a $3{,}01$: $y$ sale da $15$ a
-$15{,}0801$, cioè di $0{,}0801$ per uno spostamento di $0{,}01$, otto volte
-tanto e un centesimo. Quel centesimo di troppo è lo spostamento che non era
-abbastanza piccolo: partendo da $3{,}001$ scende a un millesimo, e più lo si
-accorcia più il rapporto si avvicina a otto tondo. Dal nastro invece esce
-l'otto senza approssimazioni, e nessuno ha scritto la formula della derivata.
+stesso numero viene a mano spostando $x$ da $3$ a $3{,}01$: $y$ sale da
+$15$ a $15{,}0801$, cioè di $0{,}0801$ per uno spostamento di $0{,}01$, otto
+volte tanto e un centesimo. Quel centesimo di troppo viene dallo spostamento,
+che non era abbastanza piccolo: partendo da $3{,}001$ scende a un millesimo, e
+più lo si accorcia più il rapporto si avvicina a otto tondo. Dal nastro invece
+esce l'otto senza approssimazioni, e nessuno ha scritto la formula della
+derivata.
 
 Il verso del riavvolgimento decide il costo. Il nastro si riavvolge una volta
-sola, e da quel giro esce l'effetto di tutti i pesi insieme: mille pesi o un
-milione, il giro resta uno. Chi non ha il registratore fa il contrario:
-sposta di poco un peso, rifà tutto il calcolo in avanti, guarda di quanto si è
-spostato il risultato, poi ricomincia con il peso dopo. Ne escono risposte solo
-approssimate, come l'otto e un centesimo di prima, e un giro a testa. Con un
-milione di pesi, un giro contro un milione di giri è la distanza fra un
-addestramento che si può fare e uno che non si può.
+sola, e da quella passata all'indietro esce l'effetto di tutti i pesi insieme:
+mille pesi o un milione, la passata resta una. Chi non ha il registratore fa il
+contrario: sposta di poco un peso, rifà tutto il calcolo in avanti, guarda di
+quanto si è spostato il risultato, poi ricomincia con il peso dopo. Ne escono
+risposte solo approssimate, come l'otto e un centesimo di prima, e una passata
+a testa. Con un milione di pesi, una passata contro un milione di passate è la
+distanza fra un addestramento che si può fare e uno che non si può.
 
 Un numero può comparire in più punti dello stesso conto, e allora sul nastro
 compare più volte. Il registratore non ne sceglie uno: per ogni punto scrive di
 quanto quel punto ha spostato il risultato, e alla fine somma i pezzi, $6$ dal
 quadrato e $2$ dal doppio. Somma anche nel taccuino su cui deposita, `x.grad`,
 ma per un'altra ragione: PyTorch è fatto così, e il taccuino non si cancella
-automaticamente. Capita a tutti la prima volta: rifai il
-calcolo da capo, richiedi la derivata senza aver svuotato `x.grad`, e ti
-ritrovi in mano $16$ invece di $8$. Nel ciclo di addestramento lo si azzera
-prima di ogni passo.
+automaticamente.
+
+Capita a tutti la prima volta: rifai il calcolo da capo, richiedi la derivata
+senza aver svuotato `x.grad`, e ti ritrovi in mano $16$ invece di $8$. Per
+questo, nel ciclo di addestramento, lo si azzera prima di ogni passo.
 
 Il nastro invece si consuma mentre lo riavvolgi, perché il viaggio di ritorno
-cancella gli appunti presi all'andata. Riavvolgere due volte lo stesso giro non
-si può, a meno di chiedere prima che gli appunti restino, e allora occupano
-memoria fino alla fine: non lo si chiede per abitudine. Il registratore, poi,
-scrive soltanto dove gli è stato detto di guardare: sui numeri dichiarati la
-derivata si trova, sui risultati calcolati per strada non c'è niente.
+cancella gli appunti presi all'andata. Lo stesso nastro, quindi, non si
+riavvolge due volte, a meno di chiedere prima che gli appunti restino, e allora
+occupano memoria fino alla fine: non lo si chiede per abitudine.
 
-Infine, il registratore rilegge alcune operazioni senza cavarne niente.
-Arrotondare a un numero intero, o scegliere il più grande di una fila:
-spostando di poco l'ingresso, l'uscita non si muove, quindi la derivata è zero,
+Il registratore, poi, scrive soltanto dove gli è stato detto di guardare: sui
+numeri dichiarati la derivata si trova, sui risultati calcolati per strada non
+c'è niente.
+
+Infine, il registratore rilegge alcune operazioni senza cavarne niente, ad
+esempio arrotondare a un numero intero o scegliere il più grande di una fila.
+Spostando di poco l'ingresso, l'uscita non si muove, quindi la derivata è zero,
 e chi sta prima di quell'operazione non riceve nessuna indicazione su come
 correggersi.
 
@@ -481,39 +507,47 @@ l'algoritmo di {doc}`backpropagation </RetiNeurali/backpropagation>`.
 
 Nella forma vettoriale ci sono due cose che una catena a un solo cammino non
 direbbe, e sono le due che contano nella pratica. La prima è la trasposta: la
-modalità reverse non costruisce mai la Jacobiana, calcola direttamente il
+modalità reverse non costruisce mai la Jacobiana, ma calcola direttamente il
 prodotto fra la sua trasposta e il vettore che arriva da valle (un
 *vector-Jacobian product*, uno per nodo). Se $\mathbf{J}$ è la Jacobiana
 dell'intera funzione, dai $p$ parametri alle sue $q$ uscite, una passata
-all'indietro dà un prodotto $\mathbf{v}^\top \mathbf{J}$, cioè una combinazione
-delle righe di $\mathbf{J}$ per ogni vettore $\mathbf{v}$ scelto in partenza:
-per averla tutta ne servirebbero $q$, e con la loss $q = 1$, quindi ne basta
-una, al costo di un piccolo multiplo della passata in avanti, qualunque sia il
-numero $p$ dei parametri. Il multiplo si conta su uno strato lineare, che
-riceve $\mathbf{X} \in \mathbb{R}^{B \times d}$ ($B$ esempi da $d$ numeri) e
-restituisce $\mathbf{X}\mathbf{W}^\top$, con $\mathbf{W} \in \mathbb{R}^{u
-\times d}$: la passata in avanti costa $2Bdu$ operazioni in virgola mobile,
-quella all'indietro due prodotti dello stesso costo, il gradiente rispetto ai
-pesi $\mathbf{G}^\top\mathbf{X}$ e quello rispetto all'ingresso
-$\mathbf{G}\mathbf{W}$, dove $\mathbf{G} \in \mathbb{R}^{B \times u}$ è il
-gradiente che arriva da valle. Il ritorno costa quindi circa il doppio
-dell'andata, e un passo di addestramento circa il triplo della sola passata in
-avanti. La modalità diretta fa il calcolo simmetrico, un prodotto
+all'indietro dà un prodotto $\mathbf{v}^\top \mathbf{J}$, cioè una
+combinazione delle righe di $\mathbf{J}$, per ogni vettore $\mathbf{v}$ scelto
+in partenza. Per avere tutta la Jacobiana ne servirebbero quindi $q$; con la
+loss, però, $q = 1$, e ne basta una, al costo di un piccolo multiplo della
+passata in avanti, qualunque sia il numero $p$ dei parametri.
+
+Per contare il multiplo consideriamo uno strato lineare, che riceve
+$\mathbf{X} \in \mathbb{R}^{B \times d}$ ($B$ esempi da $d$ numeri) e
+restituisce $\mathbf{X}\mathbf{W}^\top$, con
+$\mathbf{W} \in \mathbb{R}^{u \times d}$. La passata in avanti costa $2Bdu$
+operazioni in virgola mobile, e quella all'indietro richiede due prodotti dello
+stesso costo: il gradiente rispetto ai pesi $\mathbf{G}^\top\mathbf{X}$ e
+quello rispetto all'ingresso $\mathbf{G}\mathbf{W}$, dove
+$\mathbf{G} \in \mathbb{R}^{B \times u}$ è il gradiente che arriva da valle. Il
+ritorno costa quindi circa il doppio dell'andata, e un passo di addestramento
+circa il triplo della sola passata in avanti.
+
+La modalità diretta fa il calcolo simmetrico, un prodotto
 $\mathbf{J}\mathbf{u}$ per passata (un *Jacobian-vector product*,
-`torch.func.jvp`), e per il gradiente ne vorrebbe $p$, una per parametro; le
+`torch.func.jvp`), e per il gradiente ne vorrebbe $p$, una per parametro. Le
 differenze finite, che spostano un parametro alla volta e rifanno il calcolo,
-ne vorrebbero $p + 1$ e darebbero in più soltanto una stima. Il vettore di
-partenza, con la loss, è $\partial \mathcal{L}/\partial \mathcal{L} = 1$, e
-`backward()` lo fornisce automaticamente; su un tensore $\mathbf{y}$ non
-scalare si rifiuta di partire («*grad can be implicitly created only for scalar
-outputs*») finché non glielo si passa: `y.backward(gradient=v)` calcola
+ne vorrebbero $p + 1$ e darebbero in più soltanto una stima.
+
+Con la loss il vettore di partenza è
+$\partial \mathcal{L}/\partial \mathcal{L} = 1$, e `backward()` lo fornisce
+automaticamente; su un tensore $\mathbf{y}$ non scalare, invece, si rifiuta di
+partire («*grad can be implicitly created only for scalar outputs*») finché non
+glielo si passa: `y.backward(gradient=v)` calcola
 $\mathbf{v}^\top\, \partial \mathbf{y}/\partial \mathbf{x}$.
 
 La seconda è la sommatoria: un parametro che alimenta più rami riceve un
 contributo per ramo, e i contributi si sommano dentro la stessa `backward()`,
 prima di arrivare in `.grad`. È il punto in cui il grafo smette di essere una
-catena. L'accumulo fra chiamate diverse è un'altra cosa, e dipende da una
-scelta di progetto: `.grad` si aggiorna con `+=` e non con `=`. Così due
+catena.
+
+L'accumulo fra chiamate diverse è un'altra cosa, e dipende da una scelta di
+progetto: `.grad` si aggiorna con `+=` e non con `=`. Così due
 `backward()` successive, anche su forward diversi, danno per linearità il
 gradiente della somma delle due loss, e si possono accumulare gradienti su più
 passate; in compenso il training loop deve azzerarli a ogni passo. Ripetere la
@@ -537,42 +571,43 @@ tensor(16.)
 RuntimeError
 ```
 
-La ragione dell'errore mostra che cosa fa `backward()`: percorrendo
-il grafo libera i valori intermedi salvati durante l'andata, quelli della
-{numref}`fig-autograd-due-passate`. Il grafo resta, i valori salvati per
-percorrerlo no. Conservarli è `retain_graph=True`, e serve tutte
-le volte che da una sola passata in avanti partono due passate all'indietro
-(due loss che pescano da un tronco comune, il generatore di una GAN che
-alimenta due obiettivi); richiede memoria, quindi non si usa per abitudine.
+La ragione dell'errore mostra che cosa fa `backward()`: percorrendo il grafo,
+libera i valori intermedi salvati durante l'andata, quelli della
+{numref}`fig-autograd-due-passate`. Il grafo resta, ma i valori salvati per
+percorrerlo no. Per conservarli si passa `retain_graph=True`, che serve tutte
+le volte che da una sola passata in avanti partono due passate all'indietro (ad
+esempio due loss che pescano da un tronco comune, o il generatore di una GAN
+che alimenta due obiettivi); richiede memoria, quindi non si usa per abitudine.
 
-Il gradiente si deposita solo sulle foglie del grafo, i tensori
-creati da noi con `requires_grad=True`, e i parametri di un modello lo sono
-tutti. Su un tensore intermedio, cioè prodotto da un'operazione, `.grad`
-resta `None` con tanto di avviso: per leggerlo a metà strada si chiama
-`y.retain_grad()` prima del backward.
+Il gradiente si deposita solo sulle **foglie** del grafo, i tensori creati da
+noi con `requires_grad=True`, e i parametri di un modello lo sono tutti. Su un
+tensore intermedio, cioè prodotto da un'operazione, `.grad` resta `None` con
+tanto di avviso; per leggerlo a metà strada si chiama `y.retain_grad()` prima
+del backward.
 
-Il blocco
-`with torch.no_grad():` sospende la registrazione, indispensabile in
-valutazione, quando i gradienti non servono e il grafo sarebbe solo memoria
-sprecata. `t.detach()` restituisce una vista del tensore staccata dal
-grafo, e le operazioni in-place sui tensori tracciati vanno evitate perché
-possono invalidare i valori salvati per la passata a ritroso. PyTorch se ne
-accorge: ogni tensore porta un *version counter*, e se un valore salvato è
-stato modificato dopo il salvataggio la `backward()` solleva un errore invece di
-consegnare un gradiente sbagliato.
+Il blocco `with torch.no_grad():` sospende la registrazione, ed è
+indispensabile in valutazione, quando i gradienti non servono e il grafo
+sarebbe solo memoria sprecata. `t.detach()` restituisce una vista del tensore
+staccata dal grafo.
+
+Le operazioni in-place sui tensori tracciati vanno evitate, perché possono
+invalidare i valori salvati per la passata a ritroso. PyTorch se ne accorge
+grazie al *version counter* che ogni tensore porta con sé, e se un valore
+salvato è stato modificato dopo il salvataggio la `backward()` solleva un errore
+invece di consegnare un gradiente sbagliato.
 
 Non tutte le operazioni lasciano passare il gradiente. `t.item()` restituisce
 un numero Python, e lì il grafo finisce; `argmax`, gli indici e i confronti
 producono tensori interi o booleani, senza gradiente; `torch.round` e
 `torch.floor` hanno derivata nulla quasi ovunque, e PyTorch restituisce $0$.
 Una rete con una di queste operazioni in mezzo non riceve segnale nei
-parametri a monte: la si sostituisce con un'approssimazione liscia (la softmax
-al posto dell’`argmax`, per esempio) o con uno stimatore apposito, come lo
-*straight-through estimator*.
+parametri a monte, e per questo l'operazione si sostituisce con
+un'approssimazione liscia (la softmax al posto dell’`argmax`, per esempio) o
+con uno stimatore apposito, come lo *straight-through estimator*.
 
 Le derivate di ordine superiore si ottengono costruendo il grafo anche per il
-gradiente: `torch.autograd.grad` con `create_graph=True` restituisce una
-derivata che si può derivare di nuovo, e `torch.func.grad` e
+gradiente. In particolare, `torch.autograd.grad` con `create_graph=True`
+restituisce una derivata che si può derivare di nuovo, e `torch.func.grad` e
 `torch.func.hessian` fanno lo stesso con una sintassi funzionale.
 
 ```python
@@ -590,24 +625,26 @@ print(g.item(), g2.item())
 I valori salvati per il ritorno sono il costo in memoria della modalità
 reverse, e con reti profonde e batch grandi superano la memoria dei pesi (il
 calcolo sta nella {doc}`sezione sulla backpropagation
-</RetiNeurali/backpropagation>`). Il baratto opposto, memoria
-contro calcolo, è il *gradient checkpointing*:
+</RetiNeurali/backpropagation>`). Il compromesso opposto, memoria contro
+calcolo, è il *gradient checkpointing*:
 `torch.utils.checkpoint.checkpoint(blocco, x, use_reentrant=False)` non
 conserva le attivazioni interne del blocco e le ricalcola durante il ritorno,
 richiedendo una passata in avanti in più per quel blocco. L'argomento
-`use_reentrant` va scritto: la libreria avvisa finché non lo si passa
-esplicito, e la variante consigliata è `False`.
+`use_reentrant` va scritto, perché la libreria avvisa finché non lo si passa
+esplicito; la variante consigliata è `False`.
 
 `````
 
 Resta il caso in cui autograd non serve, che è il più comune di tutti: il
 modello ha finito di imparare e lo si sta soltanto usando. Gli si dà una foto,
-lui risponde, e nessuno ha intenzione di correggere niente. Lì i valori
-intermedi conservati per il ritorno sono memoria sprecata, e si può dire in
-anticipo di non conservarli: è il comando `torch.no_grad()`, che si scrive
-attorno al pezzo di codice da cui non ci si aspetta nessuna correzione e che
-impedisce al grafo di formarsi. `no_grad()` evita che la memoria si riempia, ma
-non svuota quella già piena. Lo useremo a ogni valutazione, e la sezione sul
+risponde, e nessuno ha intenzione di correggere niente.
+
+In questo caso i valori intermedi conservati per il ritorno sono memoria
+sprecata, e si può dire in anticipo di non conservarli con il comando
+`torch.no_grad()`, che si scrive attorno al pezzo di codice da cui non ci si
+aspetta nessuna correzione e che impedisce al grafo di formarsi.
+`no_grad()` evita che la memoria si riempia, ma non svuota quella già piena. Lo
+useremo a ogni valutazione, e la sezione sul
 {doc}`training loop <addestramento>` ne mostra anche la variante più stretta,
 `torch.inference_mode()`.
 
@@ -633,7 +670,7 @@ e la sezione sui {doc}`moduli <moduli>` non fa che comporli.
   formula scritta a mano.
 - Il gradiente depositato si somma a quello già presente, quindi prima di ogni
   passo va azzerato; e il nastro si consuma riavvolgendolo, quindi lo stesso
-  giro non si riavvolge due volte.
+  nastro non si riavvolge due volte.
 ```
 `````
 

@@ -7,12 +7,14 @@ ottiene senza scomporre niente, con il cambio di variabile per le densità.
 L'idea è questa. Invece di descrivere la distribuzione dei dati, che è
 complicatissima, si cerca una funzione invertibile $f$ che porti i dati su una
 distribuzione di base semplice, di solito una gaussiana standard, di cui si
-conosce la densità $p_Z$. Una $f$ così serve a due cose. Per valutare un dato
+conosce la densità $p_Z$.
+
+Una $f$ così serve a due cose. Anzitutto, per valutare un dato
 $\mathbf{x}$ si calcola $\mathbf{z} = f(\mathbf{x})$, si legge
 $p_Z(\mathbf{z})$ e si corregge per quanto $f$ ha dilatato o contratto lo
-spazio attorno a $\mathbf{x}$. Per generare si estrae $\mathbf{z}$ dalla
-gaussiana e si calcola $f^{-1}(\mathbf{z})$, e il risultato è un dato nuovo.
-Questa famiglia si chiama dei **flussi normalizzanti**.
+spazio attorno a $\mathbf{x}$. In secondo luogo, per generare si estrae
+$\mathbf{z}$ dalla gaussiana e si calcola $f^{-1}(\mathbf{z})$, e il risultato
+è un dato nuovo. Questa famiglia si chiama dei **flussi normalizzanti**.
 
 La parola «flusso» è la stessa del *flusso rettificato* con cui genera immagini
 il {doc}`capitolo sui modelli di diffusione </ModelliDiffusione/overview>`.
@@ -20,40 +22,46 @@ Nella {doc}`sezione sul flow matching
 </ModelliDiffusione/flow-matching>` un flusso è la mappa con cui un campo di
 velocità trasporta i punti dello spazio, e la parentela con le trasformazioni
 invertibili dei flussi normalizzanti è più stretta di quanto il vocabolario
-lasci pensare: la ricostruisce la sezione {doc}`A che serve saperlo
+lasci pensare, e la ricostruisce la sezione {doc}`A che serve saperlo
 <a-che-serve>`.
 
 ## Il fattore che nessuno si aspetta
 
 La matematica sta in una formula, e si capisce in una dimensione. Sia $z$
 distribuita in modo uniforme fra 0 e 1: la sua densità vale 1 dappertutto lì
-dentro, e l'area sotto la curva fa 1, come deve. Densità e probabilità non sono
-sinonimi, e conviene tenerle separate da subito: la densità è l'altezza della
-curva in un punto, la probabilità è l'area sotto la curva in un tratto. La
-trasformazione $x = 3z + 1$ manda l'intervallo $[0, 1]$ in $[1, 4]$, tre volte
-più lungo, con la stessa probabilità totale, quindi la densità di $x$ vale
-$1/3$: stirando, la densità si divide per lo stiramento.
+dentro, e l'area sotto la curva fa 1, come deve.
+
+Densità e probabilità non sono sinonimi, e conviene tenerle separate da subito:
+la densità è l'altezza della curva in un punto, la probabilità è l'area sotto la
+curva in un tratto. La trasformazione $x = 3z + 1$ manda l'intervallo $[0, 1]$
+in $[1, 4]$, tre volte più lungo, con la stessa probabilità totale, quindi la
+densità di $x$ vale $1/3$. In altri termini, stirando, la densità si divide per
+lo stiramento.
 
 Un flusso pone la domanda nel verso opposto, e lì sta la trappola. La sua $f$ va
 dai dati alla base, e la densità che si conosce è quella d'arrivo, $p_Z$.
 Nell'esempio il dato è $x$, e la funzione che lo riporta sull'uniforme è
-$f(x) = (x - 1)/3$, che contrae di tre volte: la densità di $x$ è quella della
-base nel punto d'arrivo, 1, moltiplicata per $\lvert f'(x) \rvert = 1/3$.
-In generale, per una $f$ invertibile e derivabile con continuità,
+$f(x) = (x - 1)/3$, che contrae di tre volte. La densità di $x$ è quindi quella
+della base nel punto d'arrivo, 1, moltiplicata per
+$\lvert f'(x) \rvert = 1/3$. In generale, per una $f$ invertibile e derivabile
+con continuità,
 
 $$
 p_X(\mathbf{x}) = p_Z\big(f(\mathbf{x})\big)\,
 \left\lvert \det \mathbf{J}_f(\mathbf{x}) \right\rvert ,
 $$
 
-dove $\mathbf{J}_f$ è la jacobiana di $f$, la matrice delle derivate parziali
-$\partial f_i / \partial x_j$, che dice di quanto si sposta ogni coordinata
-d'uscita quando si sposta di poco ogni coordinata d'ingresso; il valore
-assoluto del suo determinante dice di quante volte cambia il volume attorno al
-punto. A differenza del caso lineare, il fattore dipende dal punto: $f$ può
+dove $\mathbf{J}_f$ è la jacobiana di $f$, la matrice delle derivate
+parziali $\partial f_i / \partial x_j$, che dice di quanto si sposta ogni
+coordinata d'uscita quando si sposta di poco ogni coordinata d'ingresso; il
+valore assoluto del suo determinante dice di quante volte cambia il volume
+attorno al punto.
+
+A differenza del caso lineare, il fattore dipende dal punto: $f$ può
 dilatare in una direzione e contrarre in un'altra, e farlo in modo diverso da
-un punto all'altro. Senza il fattore l'area sotto la curva non fa più uno, e
-una funzione la cui area non fa uno non è una densità di probabilità.
+un punto all'altro. Senza il fattore l'area sotto la curva non fa
+più uno, e una funzione la cui area non fa uno non è una densità di
+probabilità.
 
 Il nome della famiglia viene da qui, e l'aggettivo circola con due letture.
 Danilo Rezende e Shakir Mohamed {cite}`rezende2015variational`, che l'hanno
@@ -62,19 +70,22 @@ trasformata in una più complessa applicando una successione di trasformazioni
 invertibili finché non si raggiunge la complessità desiderata», cioè nel senso
 della generazione, e spiegano il nome con il risultato: in fondo alla catena si
 ottiene ancora una densità normalizzata, la cui area fa uno, grazie al fattore.
+
 Nei lavori di Esteban Tabak e colleghi sulla stima di densità
 {cite}`tabak2010density,tabak2013family`, da cui il principio viene e che
 Rezende e Mohamed citano quando lo introducono, «normalizzare» indica invece
-portare i dati verso la normale, cioè verso la gaussiana: è il senso opposto,
-il senso che si percorre per calcolare la probabilità. «Flusso» è il paragone
-con un fluido, perché la nuvola dei dati non salta da una forma all'altra, si
-sposta un poco alla volta, una trasformazione dopo l'altra.
+portare i dati verso la normale, cioè verso la gaussiana. È il senso opposto,
+quello che si percorre per calcolare la probabilità.
+
+Quanto a «flusso», è il paragone con un fluido, perché la nuvola dei dati non
+salta da una forma all'altra, si sposta un poco alla volta, una trasformazione
+dopo l'altra.
 
 Con l'uniforme il calcolo si fa a mente. Su una curva che non è piatta il
-controllo si fa numericamente. Si stira di tre volte una gaussiana, se ne
-misura la densità contando i punti e la si confronta con due candidate, la
-densità della base nel punto $f(x) = (x - 1)/3$ in cui $f$ porta $x$, con il
-fattore $1/3$ e senza.
+controllo si fa numericamente. Si stira di tre volte una gaussiana,
+se ne misura la densità contando i punti e la si confronta con due candidate,
+cioè la densità della base nel punto $f(x) = (x - 1)/3$ in cui $f$ porta $x$,
+con il fattore $1/3$ e senza.
 
 ```python
 import numpy as np
@@ -121,10 +132,11 @@ area sotto la candidata senza il fattore: 3.000
 area sotto la candidata con il fattore:   1.000
 ```
 
-Senza il fattore la candidata ha la forma giusta e l'altezza sbagliata: si
-scosta dalla curva misurata fino a 0,27, e la sua area fa 3. Con il fattore lo
-scarto scende a 0,002, che è il rumore di un conteggio su due milioni di punti,
-e l'area fa 1. È il fattore a fare della formula una densità.
+Senza il fattore la candidata ha la forma giusta ma l'altezza sbagliata. Si
+scosta dalla curva misurata fino a 0,27, e la sua area fa 3. Con il fattore,
+invece, lo scarto scende a 0,002, che è il rumore di un conteggio su due
+milioni di punti, e l'area fa 1. In definitiva, è il fattore a fare della
+formula una densità.
 
 `````{tab} Elementare
 
@@ -133,9 +145,10 @@ d'acqua alto un centimetro steso su un tavolo lungo un metro. La si stira: la
 si moltiplica per tre e le si aggiunge uno, così finisce fra 1 e 4. L'acqua è
 la stessa, non se n'è persa né aggiunta una goccia; il tavolo è diventato
 tre volte più lungo, e la stessa acqua su un tavolo tre volte più lungo sta
-tre volte più bassa: un terzo di centimetro. L'altezza dell'acqua in un punto
-è la densità; l'acqua che sta sopra un tratto di tavolo è la probabilità di
-quel tratto, e in tutto fa sempre uno.
+tre volte più bassa, cioè a un terzo di centimetro.
+
+L'altezza dell'acqua in un punto è la densità; l'acqua che sta sopra un tratto
+di tavolo è la probabilità di quel tratto, e in tutto fa sempre uno.
 
 Un flusso fa la domanda nel verso opposto. Conosce l'altezza dell'acqua sul
 tavolo d'arrivo, la nuvola semplice, e vuole quella sul tavolo di partenza,
@@ -143,43 +156,48 @@ dove stanno le fotografie. La regola si legge allora in italiano, senza
 formule: *la densità di una fotografia è la densità del punto dove la
 fotografia finisce, moltiplicata per quanto la macchina ha stirato lo spazio lì
 attorno*. Il «moltiplicata» sorprende, e su quel punto tutti sbagliano.
-Se la macchina prende un pezzetto piccolo di fotografie e lo stira su una zona
-grande della nuvola, quel pezzetto si porta a casa tutta l'acqua di quella zona
-e la tiene in poco posto: lì l'acqua è alta, e quelle fotografie sono
-probabili. Se invece lo schiaccia in un puntino, si accontenta dell'acqua di un
-puntino, e lì le fotografie sono rare. Nel verso della generazione la macchina
-lavora all'inverso, e la regola si capovolge con lei: si divide, come sul
-tavolo allungato.
+
+Se la macchina prende un pezzetto piccolo di fotografie e lo stira
+su una zona grande della nuvola, quel pezzetto si porta a casa tutta l'acqua di
+quella zona e la tiene in poco posto: lì l'acqua è alta, e quelle fotografie
+sono probabili. Se invece lo schiaccia in un puntino, si accontenta dell'acqua
+di un puntino, e lì le fotografie sono rare. Nel verso della generazione la
+macchina lavora all'inverso, e la regola si capovolge con lei: si divide, come
+sul tavolo allungato.
 
 Quanto la macchina ha stirato lo dice il determinante, che abbiamo già
 incontrato nei {doc}`richiami di matematica
-</Matematica/determinante-e-volume>`: di quante volte una trasformazione cambia
-l'area di un quadratino, il volume di un cubetto, e in mille dimensioni la
-stessa cosa senza più niente da disegnare. Lo si calcola da una tabella con una
-riga per ogni numero che esce dalla macchina e una colonna per ogni numero che
-entra, che in ogni casella dice di quanto si sposta quel numero d'uscita se si
-sposta di pochissimo quel numero d'ingresso: è la jacobiana. Passando per due
-trasformazioni in successione le variazioni si moltiplicano: un'area che triplica e
-poi raddoppia è cresciuta sei volte.
+</Matematica/determinante-e-volume>`, cioè di quante volte una trasformazione
+cambia l'area di un quadratino, il volume di un cubetto, e in mille dimensioni
+la stessa cosa senza più niente da disegnare.
+
+Lo si calcola da una tabella con una riga per ogni numero che esce dalla
+macchina e una colonna per ogni numero che entra, che in ogni casella dice di
+quanto si sposta quel numero d'uscita se si sposta di pochissimo quel numero
+d'ingresso: è la jacobiana. Passando per due trasformazioni in successione le
+variazioni si moltiplicano: un'area che triplica e poi raddoppia è cresciuta sei
+volte.
 
 Rispetto ai richiami cambia un aspetto. Là il quadretto poteva stare
 dovunque sul foglio e il numero era sempre quello, perché lo stiramento era lo
 stesso dappertutto. Una macchina che raddrizza le fotografie schiaccia in un
-punto e allarga in quello a fianco: il numero è quello del punto in cui si sta
-guardando, e cambia se ci si sposta. Per addestrarla la si regola finché le
-fotografie vere, portate sulla nuvola e corrette per lo stiramento, finiscono
-dove l'acqua è più alta.
+punto e allarga in quello a fianco, quindi il numero è quello del punto in cui
+si sta guardando, e cambia se ci si sposta. Per addestrarla la si regola
+finché le fotografie vere, portate sulla nuvola e corrette per lo stiramento,
+finiscono dove l'acqua è più alta.
 
 Due cose, poi, una macchina così non le può fare. La prima è buttare via: se
 all'andata lasciasse per strada anche un solo numero, al ritorno dovrebbe
 inventarselo, e quella che esce non sarebbe più la fotografia che era entrata.
 Per questo un flusso esce con tanti numeri quanti ne sono entrati.
+
 La seconda è schiacciare fino a zero, anche in un punto solo. Elevare al cubo,
-per esempio, vicino allo zero schiaccia sempre di più: il tratto fra 0 e 0,1
+per esempio, vicino allo zero schiaccia sempre di più. Il tratto fra 0 e 0,1
 finisce fra 0 e 0,001, cento volte più corto, e le fotografie di quel tratto
 raccolgono l'acqua di un tratto cento volte più corto. Proprio nello zero lo
-stiramento vale zero: una fotografia che cade lì non raccoglie acqua per
-niente, e per riportarla indietro la macchina dovrebbe stirare all'infinito.
+stiramento vale zero, per cui una fotografia che cade lì non raccoglie acqua
+per niente, e per riportarla indietro la macchina dovrebbe stirare
+all'infinito.
 
 Il determinante è caro da calcolare: con il metodo generale servono
 all'incirca tante operazioni quanto è il cubo del lato della tabella. La
@@ -210,13 +228,17 @@ $\lvert\det\mathbf{J}_{\mathbf{f}}\rvert$; qui si conosce la densità del punto
 d'arrivo $\mathbf{z}$ e si risale a quella di partenza, quindi si moltiplica.
 Le due sono la stessa identità, perché $\mathbf{J}_{f^{-1}}(\mathbf{z}) =
 \mathbf{J}_f(\mathbf{x})^{-1}$, e scritta nel verso della generazione lo stesso
-termine cambia segno. Per una $f$ invertibile e $C^1$ l'ipotesi sull'inversa
-equivale a $\det\mathbf{J}_f \neq 0$ ovunque: $x \mapsto x^3$ la viola in $0$,
+termine cambia segno.
+
+Per una $f$ invertibile e $C^1$ l'ipotesi sull'inversa equivale a
+$\det\mathbf{J}_f \neq 0$ ovunque. Ad esempio, $x \mapsto x^3$ la viola in $0$,
 dove la densità del modello si annulla e la jacobiana dell'inversa diverge. Il
 valore assoluto serve perché il determinante è con segno (dice anche se la
 trasformazione ribalta l'orientamento), mentre interessa solo il rapporto fra i
-volumi. Componendo più trasformazioni i logaritmi si sommano, per cui in pratica si
-scrive tutto in scala logaritmica: una successione $f =
+volumi.
+
+Componendo più trasformazioni i logaritmi si sommano, per cui in pratica si
+scrive tutto in scala logaritmica. Una successione $f =
 f_K \circ \dots \circ f_1$ dà
 
 $$
@@ -233,11 +255,13 @@ Si addestra per massima verosimiglianza. Minimizzare la log-verosimiglianza
 negativa media su $m$ esempi, $\mathcal{L} = -\frac{1}{m}\sum_{i=1}^{m} \log
 p_X(\mathbf{x}^{(i)})$, equivale nel limite di molti dati a minimizzare
 $D_{\mathrm{KL}}(p_{\text{dati}}\,\|\,p_X)$, perché le due quantità differiscono
-per l'entropia dei dati, che non dipende dai parametri. Con una base gaussiana
-standard il latente è definito a meno di una rotazione: per $\mathbf{R}$
-ortogonale, $\mathbf{R} f$ è un flusso con la stessa verosimiglianza, perché
-$p_Z$ è invariante per rotazioni e $\lvert\det\mathbf{R}\rvert = 1$. È la
-stessa non identificabilità già incontrata nei {doc}`modelli latenti
+per l'entropia dei dati, che non dipende dai parametri.
+
+Si noti che con una base gaussiana standard il latente è definito a meno di una
+rotazione. Per $\mathbf{R}$ ortogonale, $\mathbf{R} f$ è un flusso con la
+stessa verosimiglianza, perché $p_Z$ è invariante per rotazioni e
+$\lvert\det\mathbf{R}\rvert = 1$. È la stessa non identificabilità già
+incontrata nei {doc}`modelli latenti
 </ModelliLatenti/il-latente-che-si-usa>`.
 
 Due vincoli discendono da qui, ed entrambi pesano. Il primo è che $f$
@@ -245,10 +269,10 @@ dev'essere invertibile, quindi in particolare $D_{\text{ingresso}} =
 D_{\text{uscita}}$: un flusso non riduce la dimensione, mai. Il secondo è il
 costo: il determinante di una matrice $D \times D$ costa $\mathcal{O}(D^3)$ con i
 metodi generali, e $D$ qui è il numero di pixel per canali.
-Per $32 \times 32$ in scala di grigi, $D = 1024$ e servono $1024^3 \approx
-10^9$ operazioni per ogni immagine e a ogni passo di addestramento, con
-l'aggravante che serve anche il gradiente di quel determinante: il calcolo è
-impraticabile.
+Per $32 \times 32$ in scala di grigi, $D = 1024$ e servono
+$1024^3 \approx 10^9$ operazioni per ogni immagine e a ogni passo di
+addestramento, con l'aggravante che serve anche il gradiente di quel
+determinante: il calcolo è impraticabile.
 
 `````
 
@@ -258,18 +282,19 @@ La via d'uscita è cambiare la domanda. Invece di calcolare in fretta il
 determinante di una matrice qualunque, si costruisce $f$ in modo che la sua
 jacobiana sia triangolare, e il determinante si legga sulla diagonale.
 
-La ricetta si chiama **strato di accoppiamento** (*coupling layer*). Si dividono
-le coordinate, cioè i numeri della fotografia, in due gruppi,
+La costruzione si chiama **strato di accoppiamento** (*coupling layer*). Si
+dividono le coordinate, cioè i numeri della fotografia, in due gruppi,
 $\mathbf{x} = (\mathbf{x}_a, \mathbf{x}_b)$, non per forza metà e metà. Il
-primo gruppo passa invariato. Il secondo viene scalato e traslato, cioè
-moltiplicato per un numero e spostato di un altro, coordinata per coordinata, e
-quei numeri li calcola una rete che legge il primo gruppo. Da uno strato al
-successivo i ruoli si alternano, così che ogni coordinata prima o poi venga
-trasformata e prima o poi faccia da guida.
+primo gruppo passa invariato.
+
+Il secondo viene scalato e traslato, cioè moltiplicato per un numero e spostato
+di un altro, coordinata per coordinata, e quei numeri li calcola una rete che
+legge il primo gruppo. Da uno strato al successivo i ruoli si alternano, così
+che ogni coordinata prima o poi venga trasformata e prima o poi faccia da guida.
 
 L'idea è del 2014, di NICE {cite}`dinh2015nice`, dove però il secondo gruppo
-veniva soltanto traslato e non scalato: una traslazione non cambia i volumi,
-quindi quegli strati il fattore non lo toccavano affatto, e a cambiarlo restava
+veniva soltanto traslato e non scalato. Una traslazione non cambia i volumi,
+quindi quegli strati non toccavano affatto il fattore, e a cambiarlo restava
 un solo strato di scala in cima alla pila. La scala, che fa variare il
 fattore, arriva con RealNVP {cite}`dinh2017density`, e il flusso sulle due lune
 usa questa forma.
@@ -277,35 +302,39 @@ usa questa forma.
 Tre proprietà discendono tutte insieme: si torna indietro senza invertire la
 rete, il fattore di stiramento si legge sulle scale, e la rete che le decide può
 essere complicata quanto si vuole. È per questo che l'accoppiamento è diventato
-la ricetta più usata per un determinante a buon mercato, anche se non l'unica:
+la soluzione più usata per un determinante a buon mercato, anche se non l'unica:
 i flussi autoregressivi e quelli continui sono altre due.
 
 `````{tab} Elementare
 
 Una fotografia è una fila di numeri, uno per pixel, e la macchina la taglia in
 due parti, qui a metà. La prima passa com'è. Una rete la guarda e decide, per
-ogni numero dell'altra metà, di quanto moltiplicarlo e di quanto spostarlo: se
-per un pixel dice «per 2, più 3», un 4 diventa 11. Il moltiplicatore non può
-mai essere zero, perché al ritorno si dovrebbe dividere per zero: la rete non
-lo sceglie direttamente, ne sceglie l'esponente, e il moltiplicatore che ne
-esce è sempre positivo. Per tornare indietro non serve capire la rete. La
-prima metà è arrivata intatta: la si rilegge, si chiede di nuovo alla rete i
-suoi due numeri, che sono gli stessi dell'andata, e si disfa l'operazione, 11 meno
-3 fa 8, diviso 2 fa 4. Per questo la rete non deve saper andare al contrario e
-può essere complicata quanto si vuole: la macchina si rovescia per come i pezzi
-sono montati, non per il pezzo che impara.
+ogni numero dell'altra metà, di quanto moltiplicarlo e di quanto spostarlo. Ad
+esempio, se per un pixel dice «per 2, più 3», un 4 diventa 11.
+
+Il moltiplicatore non può mai essere zero, perché al ritorno si dovrebbe
+dividere per zero: la rete non lo sceglie direttamente, ne sceglie l'esponente,
+e il moltiplicatore che ne esce è sempre positivo.
+
+Per tornare indietro non serve capire la rete. La prima metà è arrivata intatta,
+quindi la si rilegge, si chiede di nuovo alla rete i suoi due numeri, che sono
+gli stessi dell'andata, e si disfa l'operazione: 11 meno 3 fa 8, diviso 2 fa 4.
+Per questo la rete non deve saper andare al contrario e può essere complicata
+quanto si vuole: la macchina si rovescia per come i pezzi sono montati, non per
+il pezzo che impara.
 
 Il fattore di stiramento, che si calcolava con un miliardo di operazioni, qui si
-ricava subito. Torniamo al tavolo e all'acqua. Lungo la prima metà il tavolo non si
-allarga, perché quei numeri non si muovono. Lungo l'altra si allarga di quanto
-dice la moltiplicazione: un pixel moltiplicato per 2 raddoppia il suo pezzo di
-tavolo, e lo spostamento non allarga niente, come spingere il tavolo senza
-cambiarne la misura. L'acqua si abbassa soltanto per le moltiplicazioni, e il
-fattore è il loro prodotto: un pixel moltiplicato per 2 e un altro per 3
-allargano il tavolo di 2 per 3, cioè 6 volte. Sono numeri che la rete ha appena
-dato, comunque complicato sia il modo in cui li ha calcolati, e sulla figurina
-di 32 pixel per lato fanno cinquecentododici moltiplicazioni invece di un
-miliardo.
+ricava subito. Torniamo al tavolo e all'acqua. Lungo la prima metà il tavolo
+non si allarga, perché quei numeri non si muovono. Lungo l'altra si allarga di
+quanto dice la moltiplicazione. Un pixel moltiplicato per 2
+raddoppia il suo pezzo di tavolo, mentre lo spostamento non allarga niente,
+come spingere il tavolo senza cambiarne la misura.
+
+L'acqua si abbassa soltanto per le moltiplicazioni, e il fattore è quindi il
+loro prodotto: un pixel moltiplicato per 2 e un altro per 3 allargano il tavolo
+di 2 per 3, cioè 6 volte. Sono numeri che la rete ha appena dato,
+comunque complicato sia il modo in cui li ha calcolati, e sulla figurina di 32
+pixel per lato fanno cinquecentododici moltiplicazioni invece di un miliardo.
 
 `````
 
@@ -329,38 +358,43 @@ triangolare a blocchi. Il blocco in basso a sinistra, l'unico che contiene le
 derivate delle reti, non entra nel determinante, quindi
 $\log\lvert\det\mathbf{J}\rvert = \sum_j s_j(\mathbf{x}_a)$; e l'inversa,
 $\mathbf{x}_b = \big(\mathbf{z}_b - \mathbf{t}(\mathbf{z}_a)\big) \odot
-\exp\big(-\mathbf{s}(\mathbf{z}_a)\big)$, costa quanto l'andata. RealNVP
-{cite}`dinh2017density` alterna partizioni a scacchiera e per canali, e a ogni
+\exp\big(-\mathbf{s}(\mathbf{z}_a)\big)$, costa quanto l'andata.
+
+RealNVP {cite}`dinh2017density` alterna partizioni a scacchiera e per canali,
+e a ogni
 scala fa uscire metà delle coordinate verso il latente (l'architettura
 *multi-scala*), così che gli strati più profondi lavorano su tensori più
 piccoli.
 
 La scala $\exp(\mathbf{s})$ è sempre positiva, quindi lo strato è sempre
 invertibile, ma non ha limiti: su dati veri una $\mathbf{s}$ che cresce senza
-freno può destabilizzare l'addestramento, e le implementazioni la vincolano. Il
-codice sulle due lune la passa per una $\tanh$, che tiene ogni scala fra
-$e^{-1}$ ed $e$; l'implementazione di Glow usa una sigmoide, che permette al
-volume soltanto di diminuire {cite}`nalisnick2019do`. Né la forma
-affine è l'unica possibile: le spline razionali-quadratiche monotone
-{cite}`durkan2019neural` danno trasformazioni coordinata per coordinata più
-flessibili, invertibili in forma chiusa, con la stessa jacobiana triangolare.
+freno può destabilizzare l'addestramento, e le implementazioni la vincolano. Ad
+esempio, il codice sulle due lune la passa per una $\tanh$, che tiene ogni scala
+fra $e^{-1}$ ed $e$; l'implementazione di Glow usa una sigmoide, che permette al
+volume soltanto di diminuire {cite}`nalisnick2019do`.
+
+Né la forma affine è l'unica possibile: le spline
+razionali-quadratiche monotone {cite}`durkan2019neural` danno trasformazioni
+coordinata per coordinata più flessibili, invertibili in forma chiusa, con la
+stessa jacobiana triangolare.
 
 Uno strato di accoppiamento è poi un caso particolare di una famiglia più
-larga, i flussi autoregressivi. Se ogni coordinata è scalata e traslata in
+larga, i **flussi autoregressivi**. Se ogni coordinata è scalata e traslata in
 funzione di tutte quelle che la precedono,
 $z_i = x_i\,e^{s_i(\mathbf{x}_{<i})} + t_i(\mathbf{x}_{<i})$, la jacobiana è
-triangolare e il determinante resta il prodotto delle scale;
-l'accoppiamento è il caso in cui le coordinate del secondo gruppo dipendono
+triangolare e il determinante resta il prodotto delle scale.
+L'accoppiamento è il caso in cui le coordinate del secondo gruppo dipendono
 soltanto da quelle del primo, e fra loro no. È la fattorizzazione di
 {doc}`un pixel alla volta <pixel-per-pixel>` riletta come flusso (il MAF di
 Papamakarios e colleghi {cite}`papamakarios2017masked`): valutare costa un
-passaggio, generare ne costa $D$, il numero di coordinate. L'IAF
-{cite}`kingma2016improved` scambia i due costi, ma solo per i propri campioni:
-genera in un passaggio, valuta in un passaggio la densità dei punti che ha appena
-generato (di cui conosce già la $\mathbf{z}$), e su un dato qualsiasi ne
-spende $D$. Per questo si usa come distribuzione approssimante nell'inferenza
-variazionale, dove servono i propri campioni e le loro densità, più che
-come stimatore di densità.
+passaggio, generare ne costa $D$, il numero di coordinate.
+
+L'IAF {cite}`kingma2016improved` scambia i due costi, ma solo per i propri
+campioni: genera in un passaggio, valuta in un passaggio la densità dei punti
+che ha appena generato (di cui conosce già la $\mathbf{z}$), e su un dato
+qualsiasi ne spende $D$. Per questo si usa come distribuzione approssimante
+nell'inferenza variazionale, dove servono i propri campioni e le loro densità,
+più che come stimatore di densità.
 
 `````
 
@@ -497,31 +531,35 @@ Le cinque misure dicono cinque cose diverse.
 
 La prima mostra che la trasformazione si inverte: andata e ritorno riportano al
 punto di partenza con un errore di poco più di un milionesimo, che è il rumore
-dei numeri a trentadue bit e non un'approssimazione del metodo. La seconda e la
-terza sono quelle che importano alla verosimiglianza esatta, e vanno lette
-insieme: la densità del modello, integrata numericamente su una griglia che la
-copre tutta, fa uno, e non perché qualcuno l'abbia normalizzata a mano. Fa uno
-perché il cambio di variabile lo garantisce, e la terza misura lo mostra
-togliendo il fattore dagli stessi identici pesi: senza, l'area scende a 0,24, e
-una curva la cui area non fa uno non è una densità di probabilità. Nel valore
-0,24 non c'è niente da leggere, dipende dal flusso che è uscito da questo
-addestramento; l'unica cosa che conta è che non faccia uno. Fare uno distingue
-questa famiglia da quella del {doc}`capitolo sui modelli a energia
-</ModelliEnergia/overview>`, dove quel conto non si può fare e tutto il
-capitolo gira attorno a come evitarlo. Le ultime due dicono che il modello ha
-imparato dove stanno i dati: sulle lune assegna una log-densità media di circa
-$-1{,}3$, a punti presi a caso nel quadrato circa $-169$. La differenza, quasi
-168, è in nat, l'unità del logaritmo naturale: un nat è un fattore $e \approx
-2{,}7$, e 168 nat sono un fattore $e^{168}$, che in base dieci ha più di
-settanta zeri. In scala normale, cioè, la densità tipica sulle lune sta più di
-settanta ordini di grandezza sopra quella di un punto preso a caso.
+dei numeri a trentadue bit e non un'approssimazione del metodo.
+
+La seconda e la terza sono quelle che importano alla verosimiglianza esatta, e
+vanno lette insieme. La densità del modello, integrata numericamente su una
+griglia che la copre tutta, fa uno, e non perché qualcuno l'abbia normalizzata
+a mano. Fa uno perché il cambio di variabile lo garantisce, e la terza misura lo
+mostra togliendo il fattore dagli stessi identici pesi: senza, l'area scende a
+0,24, e una curva la cui area non fa uno non è una densità di probabilità.
+
+Nel valore 0,24 non c'è niente da leggere, dipende dal flusso che è uscito da
+questo addestramento; l'unica cosa che conta è che non faccia uno. Fare uno
+distingue questa famiglia da quella del {doc}`capitolo sui modelli a energia
+</ModelliEnergia/overview>`, dove quel calcolo non si può fare e tutto il
+capitolo gira attorno a come evitarlo.
+
+Le ultime due misure dicono che il modello ha imparato dove stanno i dati: sulle
+lune assegna una log-densità media di circa $-1{,}3$, a punti presi a caso nel
+quadrato circa $-169$. La differenza, quasi 168, è in nat, l'unità del
+logaritmo naturale. Un nat è un fattore $e \approx 2{,}7$, e 168 nat sono un
+fattore $e^{168}$, che in base dieci ha più di settanta zeri. In scala normale,
+cioè, la densità tipica sulle lune sta più di settanta ordini di grandezza
+sopra quella di un punto preso a caso.
 
 I numeri si possono anche guardare. La {numref}`fig-flusso-lune` segue gli
 stessi punti mentre attraversano i sei accoppiamenti e mostra un fatto che i
 numeri stampati non rendono visibile. A ogni passo si muove una sola delle due
-coordinate e l'altra resta dov'è, il vincolo da cui il determinante viene
-gratis. Nel mezzo la
-nuvola si allarga a più del doppio, e poi si richiude sulla gaussiana.
+coordinate e l'altra resta dov'è, ed è il vincolo da cui il determinante viene
+gratis. Nel mezzo la nuvola si allarga a più del doppio e poi si richiude sulla
+gaussiana.
 
 La figura guarda dall'alto la gaussiana d'arrivo e la disegna con i punti che
 ci finiscono dentro: una macchia tonda attorno all'origine, fitta al centro e
@@ -546,49 +584,59 @@ Fra RealNVP e i flussi che hanno fatto notizia c'è un passo, e lo fa **Glow**
 {cite}`kingma2018glow`. Cambia il modo in cui le coordinate si rimescolano fra
 uno strato di accoppiamento e il successivo. In RealNVP la divisione in due
 gruppi è fissa (a scacchiera o per canali) e i gruppi si scambiano a turni
-alterni: una scelta decisa da chi progetta, uguale per tutti i dati, che ai
-dati non si adatta. Glow mette fra uno strato e l'altro una **convoluzione
-invertibile $1 \times 1$**, cioè una matrice $\mathbf{W}$ di $c \times c$ pesi
-applicata ai $c$ canali di ogni pixel, che generalizza la permutazione e si
-impara insieme al resto. Il guadagno lo misurano gli autori confrontando i due
-modelli interi: su CIFAR-10, una raccolta di piccole fotografie a colori, il
-costo passa dai $3{,}49$ bit per dimensione di RealNVP (quanti bit servono in
-media per scrivere ciascun numero dell'immagine: meno è meglio) ai $3{,}35$ di
-Glow, che però cambia anche la normalizzazione interna e divide le coordinate
-soltanto per canali. Il miglioramento fra i due modelli interi, quindi, non va
-attribuito alla sola convoluzione, il cui effetto gli autori misurano a parte,
-a parità del resto. Con la stessa ricetta escono i volti a $256 \times 256$
-del 2018, addestrati su immagini ridotte a 5 bit per canale, quelli che si
-trasformano l'uno nell'altro tirando una riga nello spazio latente.
+alterni; è una scelta decisa da chi progetta, uguale per tutti i dati, che ai
+dati non si adatta.
+
+Glow mette fra uno strato e l'altro una **convoluzione invertibile
+$1 \times 1$**, cioè una matrice $\mathbf{W}$ di $c \times c$ pesi applicata ai
+$c$ canali di ogni pixel, che generalizza la permutazione e si impara insieme al
+resto.
+
+Gli autori misurano il guadagno confrontando i due modelli interi. Su CIFAR-10,
+una raccolta di piccole fotografie a colori, il costo passa dai $3{,}49$ bit per
+dimensione di RealNVP (quanti bit servono in media per scrivere ciascun numero
+dell'immagine: meno è meglio) ai $3{,}35$ di Glow, che però cambia anche la
+normalizzazione interna e divide le coordinate soltanto per canali. Il
+miglioramento fra i due modelli interi, quindi, non va attribuito alla sola
+convoluzione, il cui effetto gli autori misurano a parte, a parità del resto.
+
+Con la stessa architettura escono i volti a $256 \times 256$ del 2018,
+addestrati su immagini ridotte a 5 bit per canale, quelli che si trasformano
+l'uno nell'altro tirando una riga nello spazio latente.
 
 Sulle immagini, però, i flussi sono rimasti per anni dietro la diffusione nella
 qualità dei campioni, e il vincolo di partenza lo spiega meno di quanto sembri.
 Una trasformazione invertibile conserva la dimensione, quindi un flusso sui
 pixel di una fotografia di $512 \times 512$ a colori lavora su 786.432 numeri,
-senza poterne buttare via uno. La dimensione però la conserva anche la
-diffusione: il latente rumoroso ha la forma di quello pulito, e i 16.384 numeri
-della diffusione latente (quarantotto volte meno, il fattore già contato nella
-{doc}`sezione su Stable Diffusion </ModelliDiffusione/stable-diffusion>`) li
-ottiene l'autoencoder, la rete che comprime e ricostruisce, messo davanti. Lo
-stesso autoencoder si può mettere davanti a un flusso, e la verosimiglianza
-vale allora per il latente e non più per l'immagine, come nel trasloco sui
-token di {doc}`un pixel alla volta <pixel-per-pixel>`.
+senza poterne buttare via uno.
 
-Il costo vero del vincolo è l'espressività di ogni strato: un accoppiamento,
+Anche la diffusione, però, conserva la dimensione: il latente rumoroso ha la
+forma di quello pulito, e i 16.384 numeri della diffusione latente (quarantotto
+volte meno, il fattore già contato nella
+{doc}`sezione su Stable Diffusion </ModelliDiffusione/stable-diffusion>`) li
+ottiene l'autoencoder, la rete che comprime e ricostruisce, messo davanti.
+Lo stesso autoencoder si può mettere davanti a un flusso, e la
+verosimiglianza vale allora per il latente e non più per l'immagine, come nel
+trasloco sui token di {doc}`un pixel alla volta <pixel-per-pixel>`.
+
+Il costo vero del vincolo è l'espressività di ogni strato. Un accoppiamento,
 invertibile e con un determinante che si legge, deforma poco, e per piegare una
 gaussiana in una distribuzione di fotografie ne servono pile lunghe e costose.
 Il divario era quindi di architettura più che di famiglia, e lo mostrano due
-lavori del 2025 dello stesso gruppo. TarFlow {cite}`zhai2025tarflow` sostituisce
-gli accoppiamenti con strati autoregressivi fatti di blocchi Transformer, lavora
-direttamente sui pixel e riporta $2{,}99$ bit per dimensione su ImageNet a
-$64 \times 64$, meno di tutti i modelli di diffusione e autoregressivi con cui
-si confronta; addestrato con rumore gaussiano sui pixel e ripulito alla fine,
-produce campioni che gli autori giudicano di qualità paragonabile a quella della
-diffusione. STARFlow {cite}`gu2025starflow` porta la stessa idea nel latente di
-un autoencoder. Il prezzo si sposta: uno strato autoregressivo si
-valuta in un passaggio ma si inverte una posizione alla volta, e la generazione
-torna sequenziale. È il prezzo dell'esattezza, e si paga in profondità o in
-tempo di generazione, più che in dimensione.
+lavori del 2025 dello stesso gruppo.
+
+TarFlow {cite}`zhai2025tarflow` sostituisce gli accoppiamenti con strati
+autoregressivi fatti di blocchi Transformer, lavora direttamente sui pixel e
+riporta $2{,}99$ bit per dimensione su ImageNet a $64 \times 64$, meno di tutti
+i modelli di diffusione e autoregressivi con cui si confronta; addestrato con
+rumore gaussiano sui pixel e ripulito alla fine, produce campioni che gli autori
+giudicano di qualità paragonabile a quella della diffusione.
+
+STARFlow {cite}`gu2025starflow` porta la stessa idea nel latente di un
+autoencoder. Il prezzo si sposta, perché uno strato autoregressivo si valuta in
+un passaggio ma si inverte una posizione alla volta, e la generazione torna
+sequenziale. È il prezzo dell'esattezza, e si paga in profondità o in tempo di
+generazione, più che in dimensione.
 
 `````{tab} Elementare
 

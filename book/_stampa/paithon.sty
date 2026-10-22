@@ -38,6 +38,8 @@
 \definecolor{ptOcra}{HTML}{C9A961}
 \definecolor{ptNero}{HTML}{1A1A1A}
 \definecolor{ptCrema}{HTML}{F8F5EE}
+%% L'inchiostro medio delle postille a margine, da --pt-illus-ink-medio.
+\definecolor{ptInchiostroMedio}{HTML}{5E5852}
 
 \color{ptNero}
 
@@ -52,6 +54,11 @@
 \geometry{a4paper,
   inner=26mm, outer=32mm, top=28mm, bottom=30mm,
   marginparwidth=22mm, marginparsep=5mm, headsep=8mm}
+
+%% Le postille a margine stanno nella colonna dichiarata qui sopra
+%% (`marginparwidth`): la nota e il registro delle sue posizioni sono in
+%% `ptpostille.sty`.
+\RequirePackage{ptpostille}
 
 \linespread{1.08}
 

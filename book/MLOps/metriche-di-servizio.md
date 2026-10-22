@@ -137,7 +137,9 @@ seconda di come il modello è stato addestrato a spezzarle. Un lettore adulto
 legge tre o quattro parole al secondo, quindi sta consumando qualcosa come
 4,5-10 token al secondo. Un sistema che ne consegna 40 va dunque da quattro a
 nove volte più veloce di chi legge, e accelerare ancora non si vede: le parole
-erano già lì prima che l'occhio le raggiungesse. Il TTFT invece si sente sempre,
+erano già lì prima che l'occhio le raggiungesse.
+
+Il TTFT, invece, si sente sempre,
 perché è tempo in cui sullo schermo non succede niente, e le soglie di Nielsen
 dicono quanto: sotto il decimo di secondo l'attesa passa inosservata, oltre il
 secondo il filo del pensiero comincia a spezzarsi. È il primo criterio di
@@ -395,8 +397,8 @@ spettacolare senza che nessun utente veda il testo scorrere più in fretta.
 
 `````
 
-Si vede su due configurazioni dello stesso sistema, con le promesse fissate a
-500 ms sul TTFT e 50 ms sul TPOT.
+Ad esempio, si possono confrontare due configurazioni dello stesso sistema, con
+le promesse fissate a 500 ms sul TTFT e 50 ms sul TPOT.
 
 La prima serve batch da 16 richieste: ne smaltisce 20,0 al secondo e ne tiene
 il 92,5% dentro entrambe le promesse, quindi il goodput è
@@ -436,16 +438,16 @@ disegno).
 
 Il divario di {numref}`fig-costo-per-caso-uso` riguarda i token e non i
 listini: il costo dipende da quanti token servono, cioè da quanto testo entra e
-quanto ne esce, e lo decide la forma della richiesta. Classificare una frase
-manda poche parole e ne riceve una; riassumere un documento lungo ne manda
-migliaia; una conversazione le rimanda tutte a ogni turno. I token che si
+quanto ne esce, e lo decide la forma della richiesta. Ad esempio, classificare
+una frase manda poche parole e ne riceve una; riassumere un documento lungo ne
+manda migliaia; una conversazione le rimanda tutte a ogni turno. I token che si
 pagano sono esattamente gli stessi che occupano lo spazio che il modello ha per
 leggere, riempiono la KV cache e allungano l'attesa: chi ne fa risparmiare uno
 risparmia insieme denaro, memoria e tempo.
 
 ## Le medie mentono, e qui in tre modi
 
-I percentili li abbiamo imparati in
+Abbiamo già incontrato i percentili in
 {doc}`Servire un modello </MLOps/deployment-e-serving>`: la p95 è il tempo
 entro cui è servito il 95% delle richieste, la p99 quello entro cui ne è
 servito il 99%, e la promessa si scrive su quelli e non sulla media. Da qui in
@@ -500,7 +502,7 @@ totale diventa ventidue, cioè il $10\%$ in più, non il $200\%$ che quel passo
 ha subìto in sé. Lì a sfondare la promessa è il totale, che di suo è venti
 volte più grande di un passo solo.
 
-La terza si vede sulle due configurazioni di poco fa. Con batch da 64 il TTFT
+La terza si vede sulle due configurazioni confrontate. Con batch da 64 il TTFT
 medio è 457 ms, dentro l'obiettivo di 500: a guardare la media, la promessa è
 mantenuta. La p95 però è 729 ms, ben oltre. La simulazione conta anche le
 richieste che sforano il mezzo secondo: con batch da 64 sono il 33,4%, una su
@@ -596,7 +598,7 @@ di un fattore $(n+1)/2$.
 
 `````
 
-Una cautela va aggiunta, perché riguarda la sicurezza e non le prestazioni. Se
+Il riuso ha però un rischio che riguarda la sicurezza e non le prestazioni. Se
 la cache dei prefissi è condivisa fra clienti diversi, il comportamento del
 servente rivela che cosa contiene. Un prefisso già in cache ha un TTFT più
 basso: chi attacca manda un testo scelto da lui, cronometra la prima parola e,
@@ -614,7 +616,7 @@ sull'AI responsabile tratta in
 {doc}`Privacy e robustezza </AIResponsabile/privacy-e-robustezza>` (decidere
 dall'esterno se un dato era presente), con il prompt di un altro cliente al
 posto dell'esempio di addestramento. Le difese sono di progetto, e non si
-ottengono tarando un parametro: si partiziona la cache per cliente, e si
+ottengono regolando un parametro: si partiziona la cache per cliente, e si
 condividono solo i prefissi dichiaratamente pubblici, tipicamente l'istruzione
 di sistema del prodotto.
 
@@ -761,10 +763,10 @@ della soglia imposta alla pausa fra un token e l'altro.
 ## Misurare in venti righe
 
 I numeri delle due configurazioni vengono da una simulazione di venti righe.
-Per ogni richiesta arrivata in dieci secondi estrae a sorte un TTFT e un TPOT,
+Per ogni richiesta arrivata in dieci secondi estrae a caso un TTFT e un TPOT,
 li confronta con le due promesse (gli SLO di {doc}`Servire un modello
 </MLOps/deployment-e-serving>`, che nel codice sono `SLO_TTFT` e `SLO_TPOT`) e
-ne ricava throughput, goodput e percentili. I tempi si sorteggiano da una
+ne ricava throughput, goodput e percentili. I tempi sono estratti da una
 distribuzione **lognormale**, la riga `rng.lognormal`: quella di una grandezza
 il cui logaritmo segue la curva a campana. È una scelta comune per i tempi di
 servizio, perché ammassa le richieste attorno a un valore tipico, ne lascia
@@ -803,22 +805,23 @@ batch 16     20.0     18.5     92.5%     3.5%      297    285    486    530
 batch 64     32.0     15.8     49.4%    33.4%      457    429    729    893
 ```
 
-È la tabella delle due configurazioni commentate prima. Le sue due colonne di
-percentuali contano cose diverse. `conformi` è la
-quota di richieste che rispettano tutte e due le promesse, quella sul primo
-token e quella sul ritmo; `TTFT>SLO` guarda solo la prima e conta chi la sfora,
-comunque vada il ritmo. Per questo a batch da 64 si legge sia «una su tre sfora
-il mezzo secondo» sia «una su due non è a posto»: sono due bocciature diverse,
-e la seconda comprende la prima.
+La tabella riporta le due configurazioni già confrontate. Le sue due colonne di
+percentuali contano cose diverse: `conformi` è la quota di richieste che
+rispettano tutte e due le promesse, quella sul primo token e quella sul ritmo;
+`TTFT>SLO` guarda solo la prima e conta chi la sfora, comunque vada il ritmo.
+Per questo a batch da 64 si legge sia «una su tre sfora il mezzo secondo» sia
+«una su due non è a posto»: sono due bocciature diverse, e la seconda comprende
+la prima.
 
-Le stesse venti righe, girate su misure vere invece che su numeri sorteggiati,
-e ripetute a ogni finestra di dieci secondi, sono lo scheletro di un cruscotto:
-throughput, goodput e percentili bastano per sapere se un servizio che genera
-testo sta funzionando, pur con un'avvertenza sui percentili alti. In una
-finestra di dieci secondi a venti richieste al secondo ci sono duecento
-richieste, e la p99 poggia sulle due o tre più lente: da una finestra all'altra
-oscilla parecchio anche se niente è cambiato. Per sorvegliarla servono finestre
-che contengano migliaia di richieste, più lunghe o sommate su più repliche.
+Le stesse venti righe, girate su misure vere invece che su numeri estratti a
+caso, e ripetute a ogni finestra di dieci secondi, sono lo scheletro di un
+cruscotto: throughput, goodput e percentili bastano per sapere se un servizio
+che genera testo sta funzionando, pur con un'avvertenza sui percentili alti. Ad
+esempio, in una finestra di dieci secondi a venti richieste al secondo ci sono
+duecento richieste, e la p99 poggia sulle due o tre più lente: da una finestra
+all'altra oscilla parecchio anche se niente è cambiato. Per sorvegliarla
+servono finestre che contengano migliaia di richieste, più lunghe o sommate su
+più repliche.
 
 ## Che cosa vuol dire funzionare
 
@@ -826,9 +829,9 @@ Queste metriche sono la definizione operativa di che cosa sia, per questo
 servizio, funzionare, e non contabilità da presentare a fine mese. Sceglierle
 equivale a decidere quali richieste contano e quali no, e ogni ottimizzazione
 successiva si muoverà nella direzione che quella scelta indica. Un sistema
-tarato sul throughput diventerà bravissimo a servire molte richieste male; uno
-tarato sul TTFT medio diventerà bravissimo a nascondere la coda lenta a chi
-guarda i grafici. È lo stesso avvertimento già dato sulle metriche di un
+calibrato sul throughput diventerà bravissimo a servire molte richieste male;
+uno calibrato sul TTFT medio diventerà bravissimo a nascondere la coda lenta a
+chi guarda i grafici. È lo stesso avvertimento già dato sulle metriche di un
 classificatore e sui surrogati del giudizio umano: ottimizzare contro una
 misura sbagliata non produce un fallimento rumoroso, produce un successo
 apparente.

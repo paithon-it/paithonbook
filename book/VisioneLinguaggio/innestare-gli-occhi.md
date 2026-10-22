@@ -20,10 +20,11 @@ la torre di immagini di un modello contrastivo come CLIP
 {cite}`radford2021learning`, trasformano una fotografia in una griglia di
 vettori, uno per patch, che ne codifica il contenuto (ai connettori servono
 queste feature delle patch, in genere del penultimo strato, e non il solo
-vettore finale con cui CLIP confronta le didascalie). I modelli di linguaggio
-scrivono, seguono un'istruzione, argomentano. Nessuno dei due svolge il compito
-dell'altro, e nessuno dei due è economico: dietro ciascuno ci sono mesi di
-calcolo su cluster di GPU.
+vettore finale con cui CLIP confronta le didascalie).
+
+I modelli di linguaggio, invece, scrivono, seguono un'istruzione, argomentano.
+Nessuno dei due svolge il compito dell'altro, e nessuno dei due è economico:
+dietro ciascuno ci sono mesi di calcolo su cluster di GPU.
 
 Addestrare da zero un unico modello che veda e parli sarebbe la soluzione
 pulita, ma è fuori portata per quasi tutti. La domanda diventa allora un'altra:
@@ -32,23 +33,25 @@ pulita, ma è fuori portata per quasi tutti. La domanda diventa allora un'altra:
 > comincino a parlarsi?
 
 Non è solo una questione di soldi. C'è una seconda ragione per lasciare fermi i
-pesi che esistono già. Un modello di linguaggio riaddestrato su qualche milione
+pesi che esistono già: un modello di linguaggio riaddestrato su qualche milione
 di didascalie perde per strada una parte delle capacità che aveva con il testo
-puro: impara una competenza nuova cancellandone una vecchia. È la dimenticanza
-catastrofica, già incontrata nella {doc}`sezione sui modelli multilingua
-</Transformers/multilingua>`. Congelare dà anche una garanzia sul
-comportamento che si vuole conservare, oltre al risparmio.
+puro, perché impara una competenza nuova cancellandone una vecchia. È la
+dimenticanza catastrofica, già incontrata nella {doc}`sezione sui modelli
+multilingua </Transformers/multilingua>`. Congelare dà quindi anche una
+garanzia sul comportamento che si vuole conservare, oltre al risparmio.
 
 ## Che cosa deve fare, di preciso, il connettore
 
-Il pezzo in mezzo si chiama **connettore** e deve fare due cose insieme. La
-prima è cambiare spazio: il modello di linguaggio lavora su vettori di
+Il pezzo in mezzo si chiama **connettore** e deve fare due cose insieme.
+
+La prima è cambiare spazio: il modello di linguaggio lavora su vettori di
 $\mathbb{R}^{d_t}$, le righe della sua matrice di embedding, mentre l'encoder
 visivo produce vettori di $\mathbb{R}^{d_v}$, con $d_v$ in genere diverso da
 $d_t$; e i due spazi si sono formati separatamente, quindi nessuna coordinata
-dell'uno corrisponde a una dell'altra. La seconda è decidere quanti vettori
-consegnare: ognuno occupa nella sequenza una posizione, come una parola, e
-quella posizione si paga in calcolo e in memoria.
+dell'uno corrisponde a una dell'altra.
+
+La seconda è decidere quanti vettori consegnare: ognuno occupa nella sequenza
+una posizione, come una parola, e quella posizione richiede calcolo e memoria.
 
 `````{tab} Elementare
 
@@ -61,46 +64,50 @@ un'altra convenzione, come un menu in una lingua straniera, dove i piatti ci
 sono tutti e nessuna parola combacia: tradurre è il primo compito. Il secondo è
 decidere quante liste consegnare, e qui servono numeri veri.
 
-Un encoder molto usato lavora su immagini da $336 \times 336$ puntini e le
-taglia in tessere da $14 \times 14$: siccome $336 : 14 = 24$, ne stanno 24 per
-riga e 24 per colonna, cioè $24 \times 24 = 576$ tessere, e quindi 576 liste di
-numeri. Allega quell'immagine a una domanda di venti parole. La sequenza che
-entra nel modello di linguaggio è fatta di 596 pezzi, e 576 su 596 sono
-immagine: il 97%. La tua domanda è una briciola dentro un contesto quasi
-interamente occupato dalla foto.
+Un encoder molto usato lavora su immagini da $336 \times 336$
+puntini e le taglia in tessere da $14 \times 14$: siccome $336 : 14 = 24$,
+ne stanno 24 per riga e 24 per colonna, cioè $24 \times 24 = 576$ tessere, e
+quindi 576 liste di numeri. Allega quell'immagine a una domanda di venti
+parole. La sequenza che entra nel modello di linguaggio è fatta di 596 pezzi, e
+576 su 596 sono immagine: il 97%. In pratica, la tua domanda è una briciola
+dentro un contesto quasi interamente occupato dalla foto.
 
 Il costo dell'attenzione, il meccanismo con cui ogni pezzo guarda tutti gli
 altri, cresce come il quadrato della lunghezza della sequenza (è il conto fatto
 nella {doc}`sezione sul meccanismo di attenzione </Transformers/attenzione>`:
-se i pezzi raddoppiano, le coppie da confrontare quadruplicano). Se al posto di
-576 tessere ne passassimo 32 (un numero adottato da modelli reali), la sequenza
-scenderebbe da 596 a 52 pezzi, cioè undici volte e mezzo più corta; e siccome i
-confronti vanno col quadrato, undici e mezzo per undici e mezzo fa circa
-centotrenta volte meno confronti.
+se i pezzi raddoppiano, le coppie da confrontare quadruplicano).
+
+Se al posto di 576 tessere ne passassimo 32 (un numero adottato da modelli
+reali), la sequenza scenderebbe da 596 a 52 pezzi, cioè undici volte e mezzo
+più corta; e siccome i confronti vanno col quadrato, undici e mezzo per
+undici e mezzo fa circa centotrenta volte meno confronti.
 
 Vale però la regola della {doc}`pagina di apertura
 </VisioneLinguaggio/overview>`: i confronti sono solo una parte del lavoro.
-Dopo aver guardato gli altri, ogni pezzo attraversa da solo una lunga catena di
-calcoli, che cresce quanto i pezzi, e in un modello di linguaggio grande, a
-seicento pezzi, pesa una quarantina di volte più dei confronti. Il conto vero
-cala quindi di undici volte e mezzo, non di centotrenta, e il quadrato
-comincerebbe a comandare solo quando i pezzi si contano a decine di migliaia.
+Infatti, dopo aver guardato gli altri, ogni pezzo attraversa da solo una lunga
+catena di calcoli, che cresce quanto i pezzi, e in un modello di linguaggio
+grande, a seicento pezzi, pesa una quarantina di volte più dei confronti.
+
+Il conto vero cala quindi di undici volte e mezzo, non di centotrenta, e
+il quadrato comincerebbe a comandare solo quando i pezzi si contano a decine di
+migliaia.
 
 Per questo «quanti» pesa lo stesso: ogni tessera occupa un posto, i posti sono
 contati, e mentre scrive la risposta, parola dopo parola, il modello tiene il
 taccuino già visto fra i Transformer, con due righe per ogni pezzo che ha
-letto: 576 tessere sono 576 coppie di righe in più. Il risparmio ottenuto
-comprimendo ha come contropartita l'informazione dell'immagine che viene
-scartata.
+letto: 576 tessere sono 576 coppie di righe in più. D'altra parte, il
+risparmio ottenuto comprimendo ha come contropartita l'informazione
+dell'immagine che viene scartata.
 
 `````
 
 `````{tab} Superiore
 
-L'encoder produce $\mathbf{Z} \in \mathbb{R}^{N \times d_v}$, con $N$ il numero di patch
-e $d_v$ la dimensione delle sue feature; il modello di linguaggio consuma
-sequenze di vettori in $\mathbb{R}^{d_t}$, dove $d_t$ è la dimensione dei suoi
-embedding. Un connettore è una funzione appresa
+L'encoder produce $\mathbf{Z} \in \mathbb{R}^{N \times d_v}$, con $N$ il
+numero di patch e $d_v$ la dimensione delle sue feature; il modello di
+linguaggio consuma sequenze di vettori in $\mathbb{R}^{d_t}$, dove $d_t$ è la
+dimensione dei suoi embedding. Un connettore è una funzione
+appresa
 
 $$
 g_\theta : \mathbb{R}^{N \times d_v} \longrightarrow \mathbb{R}^{M \times d_t},
@@ -116,15 +123,19 @@ $T$ token, il costo dell'attenzione per strato è $O\big((M+T)^2 d_t\big)$, e la
 memoria della {doc}`KV cache </Transformers/attenzione-in-pratica>` cresce
 linearmente in $M+T$ per ogni strato e ogni testa. Con i valori dell'esempio
 numerico, $N = 576$ e $T = 20$: passare da $M = 32$ a $M = N$ moltiplica il
-termine quadratico per $(596/52)^2 \approx 131$. Quel $131$ però non è il
-rapporto fra i due costi: a $M + T \approx 600$ e $d_t = 4096$ il termine
-quadratico vale il $2{,}4\%$ del blocco (è il conto $4(M+T)^2 d_t$ contro $24
+termine quadratico per $(596/52)^2 \approx 131$.
+
+Si noti però che quel $131$ non è il rapporto fra i due costi: a
+$M + T \approx 600$ e $d_t = 4096$ il termine quadratico vale il $2{,}4\%$ del
+blocco (è il calcolo $4(M+T)^2 d_t$ contro $24
 (M+T) d_t^2$ che la {doc}`sezione sulla risoluzione
 </VisioneLinguaggio/risoluzione-e-dettaglio>` fa per esteso), e i FLOP totali
-per strato scendono di $11{,}7$ volte, cioè quanto la sequenza. A queste
-lunghezze pesano soprattutto il contesto occupato e la KV cache, che crescono
-linearmente: per un modello da sette miliardi di parametri con attenzione
-multi-testa (32 strati, $d_t = 4096$, mezza precisione) un token costa $2 \cdot
+per strato scendono di $11{,}7$ volte, cioè quanto la sequenza.
+
+Di conseguenza, a queste lunghezze pesano soprattutto il contesto occupato e la
+KV cache, che crescono linearmente: per un modello da sette miliardi di
+parametri con attenzione multi-testa (32 strati, $d_t = 4096$, mezza precisione)
+un token occupa $2 \cdot
 32 \cdot 4096 \cdot 2$ byte, cioè $0{,}5$ MiB, e quindi 596 token pesano circa
 300 MiB per richiesta contro i 26 MiB di 52 (con l'attenzione a gruppi di query
 i numeri scendono del rapporto fra le teste). È per questo che la compressione,
@@ -137,7 +148,7 @@ quando si può fare, rende praticabile allegare un'immagine a ogni richiesta.
 Tre soluzioni hanno lasciato il segno, e si presentano in ordine di
 complessità decrescente, che per questi sistemi coincide con l'ordine di
 uscita: Flamingo nel 2022, BLIP-2 e LLaVA nel 2023. L'idea della proiezione
-semplice però è più vecchia di tutti e tre: un prefisso visivo, cioè dei
+semplice però è più vecchia di tutti e tre: un **prefisso visivo**, cioè dei
 vettori d'immagine messi davanti al testo, ottenuto con una proiezione lineare
 verso un modello di linguaggio congelato, esisteva già nel 2021
 {cite}`tsimpoukelli2021multimodal`, e a imporla è stata la dimostrazione, con
@@ -193,24 +204,26 @@ entra a volume pieno, e più di così non lo si può amplificare.
 Ogni strato nuovo è collegato così, anzi due volte, perché è fatto di due
 pezzi, uno che va a guardare l'immagine e uno che rielabora il materiale
 raccolto: ciascuno ha il suo volume, un unico numero che moltiplica l'uscita
-del pezzo prima che si sommi al resto, e che parte da zero. Al primo istante
-l'immagine non influenza nulla e il modello si comporta identico a com'era; poi
-l'addestramento scopre che alzare il volume conviene, perché aiuta a indovinare
-le parole giuste, e lo alza gradualmente.
+del pezzo prima che si sommi al resto, e che parte da zero. Al
+primo istante l'immagine non influenza nulla e il modello si comporta identico a
+com'era; poi l'addestramento scopre che alzare il volume conviene, perché aiuta
+a indovinare le parole giuste, e lo alza gradualmente.
 
 Resta il problema di quante liste di numeri consegnare. Un'immagine ne dà
-centinaia, un video ne dà centinaia per ogni fotogramma, e gli strati nuovi
-dovrebbero confrontarsi con tutte a ogni piano del modello, a un costo che
-cresce con la durata del video. Il pezzo che se ne occupa, il Perceiver
-Resampler, ne fa uscire sempre 64, qualunque sia il materiale che entra, e da
-lì in poi il costo non dipende più dal formato. Le 64 liste in uscita
-corrispondono a 64 domande fisse che il Resampler ha imparato a fare in
-addestramento. Per ciascuna domanda guarda tutto il materiale che è entrato,
-prende soprattutto dai pezzi che rispondono meglio, e scrive la risposta nella
-sua lista: la lista numero uno è sempre la risposta alla domanda numero uno, per
-una foto come per un'ora di video. È un modulo prestampato con 64 righe, una
-per domanda, non un imbuto tarato su una quantità: che il materiale sia poco o
-tanto, cambia solo dove ciascuna riga va a pescare.
+centinaia, un video ne dà centinaia per ogni fotogramma, e gli
+strati nuovi dovrebbero confrontarsi con tutte a ogni piano del modello, a un
+costo che cresce con la durata del video. Il pezzo che se ne occupa, il
+**Perceiver Resampler**, ne fa uscire sempre 64, qualunque sia il materiale che
+entra, e da lì in poi il costo non dipende più dal formato.
+
+Le 64 liste in uscita corrispondono a 64 domande fisse che il Resampler ha
+imparato a fare in addestramento. Per ciascuna domanda guarda tutto il
+materiale che è entrato, prende soprattutto dai pezzi che rispondono meglio, e
+scrive la risposta nella sua lista. In altri termini, la lista numero uno è
+sempre la risposta alla domanda numero uno, per una foto come per un'ora di
+video. È un modulo prestampato con 64 righe, una per domanda, non un imbuto
+tarato su una quantità: che il materiale sia poco o tanto, cambia solo dove
+ciascuna riga va a pescare.
 
 Tutto questo, gli strati nuovi più il Resampler, pesa miliardi di parametri,
 cioè di numeri da imparare: è un modello dentro il modello.
@@ -235,8 +248,9 @@ segue). Poiché $\tanh(0) = 0$, alla prima iterazione ogni blocco
 aggiunto è esattamente l'identità: la funzione calcolata dalla rete è, token per
 token, quella del modello di partenza. L'inizializzazione è quindi
 esatta e non soltanto «piccola», e si parte da un punto di cui si conoscono
-le prestazioni; $\tanh$ dà un gate limitato in $(-1, 1)$, che non fa
-esplodere il ramo nuovo quando $\alpha$ cresce. Lo stesso schema avvolge il
+le prestazioni. Osserviamo inoltre che $\tanh$ dà un gate limitato in
+$(-1, 1)$, che non fa esplodere il ramo nuovo quando $\alpha$ cresce. Lo stesso
+schema avvolge il
 blocco feed-forward che accompagna la cross-attention, da cui il nome *gated
 cross-attention dense*.
 
@@ -249,7 +263,9 @@ appiattite in un'unica sequenza e già proiettate in $\mathbb{R}^{N \times d}$
 feature dev'essere la stessa dei latenti), con i latenti stessi, che quindi
 calcolano l'attenzione anche su di sé: $\mathbf{R} = \mathrm{XAttn}(\mathbf{L},
 [\mathbf{Z}; \mathbf{L}]) \in \mathbb{R}^{K \times d}$, ripetuta per qualche
-strato con un feed-forward dopo ciascuno. Qualunque sia $N$ (una sola immagine,
+strato con un feed-forward dopo ciascuno.
+
+Qualunque sia $N$ (una sola immagine,
 oppure le feature spazio-temporali di un video) l'uscita ha sempre $K$ righe, e
 il costo a valle diventa indipendente dalla risoluzione e dalla durata: è
 questa, nel lavoro, la ragione del Resampler, perché le cross-attention
@@ -257,7 +273,7 @@ accetterebbero un numero qualunque di chiavi e valori, ma a un costo che cresce
 con $N$ a ogni strato in cui compaiono. Il costo del Resampler è
 $O\big(K(N+K)d\big)$ per strato, lineare in $N$.
 
-Il conto dei parametri, però, è severo: gli strati aggiunti sono blocchi di
+Il costo in parametri, però, è severo: gli strati aggiunti sono blocchi di
 attenzione a dimensione piena distribuiti lungo tutta la pila, e nella variante
 più grande la differenza fra il totale dichiarato (ottanta miliardi di
 parametri) e il modello di linguaggio congelato su cui poggia (settanta) è
@@ -279,33 +295,37 @@ un normale prefisso di token.
 
 È la stessa idea del modulo prestampato, con due differenze: le righe sono 32,
 e il riassunto non entra dentro il modello di linguaggio ma gli viene messo
-davanti, come le prime parole della domanda. Un assistente, davanti a qualunque
-fotografia, compila sempre lo stesso questionario di 32 domande. Le domande non
+davanti, come le prime parole della domanda.
+
+Un assistente, davanti a qualunque fotografia, compila sempre lo stesso
+questionario di 32 domande. Le domande non
 gliele detta nessuno: se le è scritte durante l'addestramento, tenendo quelle
 le cui risposte servivano di più a chi poi doveva parlare dell'immagine, e
 guardandole tutte insieme perché non finissero a chiedere due volte la stessa
-cosa. Potrebbero essere «che oggetti ci sono» o «dove stanno l'uno rispetto
-all'altro», e cose senza nome che a noi non verrebbero in mente.
+cosa. Potrebbero essere «che oggetti ci sono» o «dove stanno l'uno
+rispetto all'altro», e cose senza nome che a noi non verrebbero in mente.
 
 Le ha scritte in due tempi. Prima con le foto e le loro didascalie, correggendo
 le domande finché dalle risposte si riusciva a risalire alla didascalia giusta,
 o a scriverla: è il gioco del «chi va con chi» della sezione sull'allineamento,
 più un dettato. Solo dopo le risposte sono andate a chi doveva scriverci sopra.
-Saltando la prima lezione, le domande imparerebbero soltanto dall'uso che il
-modello di linguaggio riesce a farne, e nelle prove degli autori il risultato
-peggiora molto: con uno dei due modelli di linguaggio provati, anzi, peggiora
-via via che lo studio va avanti.
+Saltando la prima lezione, infatti, le domande imparerebbero soltanto
+dall'uso che il modello di linguaggio riesce a farne, e nelle prove degli
+autori il risultato peggiora molto: con uno dei due modelli di linguaggio
+provati, anzi, peggiora via via che lo studio va avanti.
 
-Davanti a ogni nuova foto pone le 32 domande, la guarda per rispondere e consegna
-32 risposte: da lì in poi il modello di linguaggio ha in mano solo quelle, la
-foto non la vede più.
+Davanti a ogni nuova foto pone le 32 domande, la guarda per rispondere e
+consegna 32 risposte: da lì in poi il modello di linguaggio ha in mano solo
+quelle, la foto non la vede più.
 
 Il guadagno si legge nei numeri. L'encoder qui produce 257 liste per ogni foto:
 l'immagine è da 224 puntini di lato, le tessere da 14, quindi 16 per riga e 16
 per colonna fanno 256 tessere, più una lista che riassume l'intera fotografia.
-(Su un'immagine da 336 puntini, e senza contare la lista di riassunto, le
-tessere erano 576: il numero cambia con la foto e con la tessera, non è mai
-fisso.) Da 257 si scende a 32, otto volte meno, e ciascuna risposta è anche più
+(Su un'immagine da 336 puntini, e senza contare la lista di
+riassunto, le tessere erano 576: il numero cambia con la foto e con la tessera,
+non è mai fisso.)
+
+Da 257 si scende quindi a 32, otto volte meno, e ciascuna risposta è anche più
 corta, 768 numeri invece dei 1024 con cui l'encoder descrive una tessera: in
 tutto passano $32 \times 768$ numeri contro $257 \times 1024$, circa undici
 volte meno.
@@ -337,22 +357,26 @@ e $\mathbf{W}_{\text{proj}} \in \mathbb{R}^{768 \times d_t}$ una proiezione line
 porta le uscite nella dimensione degli embedding del modello di linguaggio. Il
 collo di bottiglia è dimensionato apposta: con un ViT-L/14 le feature visive
 sono $257 \times 1024$, l'uscita è $32 \times 768$, cioè un fattore $10{,}7$ in
-meno di numeri. Le query non possono portarsi dietro tutto, e sono costrette a
-selezionare.
+meno di numeri. Le query non possono quindi conservare tutta l'informazione, e
+sono costrette a selezionare.
 
 L'addestramento avviene in due fasi, e la prima serve a decidere che cosa
 selezionare: il Q-Former è collegato al solo encoder visivo e ottimizza tre
 obiettivi congiunti (contrastivo fra immagine e testo, generazione di testo
-condizionata all'immagine, classificazione binaria di appaiamento). In questa
-fase il Q-Former ha anche una metà testuale, che condivide con le query gli
+condizionata all'immagine, classificazione binaria di appaiamento).
+
+In questa fase il Q-Former ha anche una metà testuale, che condivide con le
+query gli
 strati di self-attention, e i tre obiettivi differiscono soltanto per la
 maschera: nel contrastivo query e testo non si vedono, e la somiglianza è il
 massimo sulle 32 query; nella generazione il testo vede le query e sé stesso in
 modo causale, le query non vedono il testo; nell'appaiamento si vedono tutti.
 Le query sono così costrette a raccogliere dall'immagine ciò che serve a
 scrivere il testo, perché il testo può arrivare all'immagine soltanto
-attraverso di loro. Solo nella seconda fase l'uscita viene proiettata e data al
-modello di linguaggio congelato, con la sola loss di modellazione del
+attraverso di loro.
+
+Solo nella seconda fase l'uscita viene proiettata e data al modello di
+linguaggio congelato, con la sola loss di modellazione del
 linguaggio. Senza la prima fase il Q-Former si addestra soltanto attraverso il
 modello di linguaggio congelato, come il Perceiver Resampler di Flamingo, e
 nelle prove degli autori le prestazioni sulle domande visive a zero esempi
@@ -375,9 +399,9 @@ Una matrice è una tabella di conversione, e non fa niente di più misterioso di
 una ricetta a dosi fisse: ogni numero che esce è una miscela sempre uguale dei
 numeri che entrano, con le dosi decise una volta per tutte durante
 l'addestramento. Qui la lista che entra è la descrizione di una tessera come
-l'ha prodotta
-l'encoder (1024 numeri), quella che esce è un token nel formato che il modello
-di linguaggio si aspetta (4096 numeri). Una tessera entra, un token esce:
+l'ha prodotta l'encoder (1024 numeri), quella che esce è un token nel formato
+che il modello di linguaggio si aspetta (4096 numeri). Una tessera entra, un
+token esce:
 nessuna selezione, nessun riassunto, nessuna domanda decisa in anticipo.
 
 Quanto costa una tabella del genere? Ha una casella per ogni coppia
@@ -385,8 +409,10 @@ Quanto costa una tabella del genere? Ha una casella per ogni coppia
 quattro milioni di caselle, e ogni casella è un parametro, un numero che
 l'addestramento regola. Il modello di linguaggio a cui si salda ha sette
 miliardi di parametri, quindi la saldatura pesa lo $0{,}06\%$ del pezzo che
-collega, sei centesimi di punto percentuale. Una versione successiva, LLaVA-1.5
-{cite}`liu2024improved`, mette due tabelle in sequenza invece di una, e guarda le
+collega, sei centesimi di punto percentuale.
+
+Una versione successiva, LLaVA-1.5 {cite}`liu2024improved`, mette due tabelle in
+sequenza invece di una, e guarda le
 immagini da $336$ puntini invece che da $224$: è quella da 576 tessere. La
 prima tabella resta quella di prima, da $1024 \times 4096$; la seconda parte da
 un token già tradotto, quindi è da $4096 \times 4096$, quattro volte più
@@ -409,9 +435,10 @@ $\mathbf{H}_v \in \mathbb{R}^{N \times d_t}$ sono i token visivi, che vivono nel
 spazio degli embedding di parola. La mappa è lineare e applicata patch per
 patch: nessuna interazione fra le righe, nessuna riduzione di $N$.
 
-Con $d_v = 1024$ (un ViT-L/14) e $d_t = 4096$ (un modello di linguaggio da sette
-miliardi di parametri), $\mathbf{W}$ ha $1024 \times 4096 \approx 4{,}2$ milioni
-di parametri, cioè lo 0,06% del modello che serve. Una versione successiva,
+Ad esempio, con $d_v = 1024$ (un ViT-L/14) e $d_t = 4096$ (un modello di
+linguaggio da sette miliardi di parametri), $\mathbf{W}$ ha
+$1024 \times 4096 \approx 4{,}2$ milioni di parametri, cioè lo 0,06% del
+modello che serve. Una versione successiva,
 LLaVA-1.5 {cite}`liu2024improved`, sostituisce la mappa lineare con un
 percettrone a due strati (`Linear` $\to$ GELU $\to$ `Linear`), che porta il
 connettore a circa 21 milioni di parametri, cioè lo $0{,}3\%$ del totale, e
@@ -466,12 +493,14 @@ cui si conosce la domanda.
 
 `````{tab} Superiore
 
-Il punto riguarda il condizionamento, cioè che cosa si sa del compito nel
+Il punto riguarda il **condizionamento**, cioè che cosa si sa del compito nel
 momento in cui si sceglie che cosa tenere. Un connettore con $M \ll N$ è un
 canale a capacità fissa, e la funzione $g_\theta$ che decide che cosa passa
 viene appresa marginalizzando sulla distribuzione dei compiti visti in
-addestramento: produce il riassunto ottimo *in media*. All'inferenza però il
-compito è la domanda che l'utente ha scritto, e non più una variabile
+addestramento: produce il riassunto ottimo *in media*.
+
+All'inferenza però il compito è la domanda che l'utente ha scritto, e non più
+una variabile
 aleatoria, e il connettore non la vede: i token visivi si calcolano prima di
 leggere il prompt (nel Q-Former per costruzione, dato che le query sono
 parametri). L'informazione scartata è irrecuperabile, e lo è prima che il
@@ -481,8 +510,9 @@ Con $M = N$ e una mappa iniettiva, invece, nessuna informazione viene scartata a
 monte: la selezione è delegata all'attenzione del modello di linguaggio, che
 opera con query derivate dal testo (quindi condizionate alla domanda) e
 agisce a ogni strato e in ogni testa, non una volta sola. La compressione non
-sparisce, cambia posto: da preprocessing fisso diventa attenzione dinamica. Il
-principio generale è che quando il collo di bottiglia è informativo e non
+sparisce, cambia posto: da preprocessing fisso diventa attenzione dinamica.
+
+Il principio generale è che quando il collo di bottiglia è informativo e non
 computazionale, la selezione va rimandata al punto del sistema in cui è
 disponibile il massimo condizionamento; è la stessa logica per cui il collo di
 bottiglia del seq2seq classico è stato sciolto dall'attenzione di Bahdanau
@@ -494,13 +524,16 @@ la toglie passando l'istruzione dentro il Q-Former insieme alle query. A parità
 di numero di token, le ablazioni sistematiche {cite}`mckinzie2024mm1`
 trovano che il tipo di connettore conta poco, mentre contano l'encoder, la
 risoluzione e quanti token visivi arrivano; la ragione di principio vale quindi
-soprattutto contro la compressione, più che a favore della matrice. La
-cross-attention non è sparita: Llama 3 la inserisce dopo ogni quarto strato del
-modello di linguaggio, circa cento miliardi di parametri nella versione da 405
-{cite}`grattafiori2024llama3`, e NVLM, confrontando le due architetture a
+soprattutto contro la compressione, più che a favore della matrice.
+
+La cross-attention non è sparita: Llama 3 la inserisce dopo ogni quarto strato
+del modello di linguaggio, circa cento miliardi di parametri nella versione da
+405 {cite}`grattafiori2024llama3`, e NVLM, confrontando le due architetture a
 parità di condizioni, la trova più efficiente sulle immagini ad alta
 risoluzione, mentre la versione a soli token è più accurata sull'OCR
-{cite}`dai2024nvlm`. Quanto ai token visivi, su immagini ad alta risoluzione,
+{cite}`dai2024nvlm`.
+
+Quanto ai token visivi, su immagini ad alta risoluzione,
 su documenti e sui video il contesto e la KV cache si riempiono per primi, e
 oltre i $6 d_t$ token prevale il termine quadratico dell'attenzione. Lì il
 collo di bottiglia torna a essere *computazionale* e la compressione torna
@@ -512,9 +545,9 @@ visivi sarebbero troppi.
 
 ## Due tempi, in quest'ordine
 
-Resta da dire come si addestra il connettore: in due tempi, con la stessa loss,
-due insiemi di dati e due insiemi di parametri addestrati. È la ricetta del
-primo LLaVA, dove saltare la prima fase faceva perdere qualche punto.
+Il connettore si addestra in due tempi, con la stessa loss, due insiemi di dati
+e due insiemi di parametri addestrati. È la ricetta del primo LLaVA, dove
+saltare la prima fase faceva perdere qualche punto.
 
 **Primo tempo, allineamento delle feature.** Si congela tutto e si addestra il
 solo connettore su coppie immagine-didascalia, con l'obiettivo di sempre di un
@@ -594,13 +627,16 @@ dialoghi, 23 000 descrizioni, 77 000 ragionamenti).
 
 È un caso di dati sintetici che ha funzionato, e per una ragione precisa: il
 compito non era procurarsi conoscenza nuova (quella stava già nelle
-annotazioni) ma un formato, insegnare che a una domanda si risponde. Il limite
-sta in una frase: il generatore l'immagine non l'ha mai vista. Le lacune di
-didascalie e riquadri non finiscono nei dati, mentre le invenzioni del
+annotazioni) ma un formato, insegnare che a una domanda si risponde.
+
+Il limite sta in una frase: il generatore l'immagine non l'ha mai vista. Le
+lacune di didascalie e riquadri non finiscono nei dati, mentre le invenzioni del
 generatore dentro un ragionamento plausibile ci finiscono come se fossero vere.
 Chi si addestra su quel materiale ne eredita lo stile, e con lo stile la
-sicurezza con cui il generatore afferma cose che non poteva sapere. Nelle prove
-di HalluciDoctor, rifinito su quei 158 000 esempi, MiniGPT-4 nomina almeno un
+sicurezza con cui il generatore afferma cose che non poteva sapere.
+
+Ad esempio, nelle prove di HalluciDoctor, rifinito su quei 158 000 esempi,
+MiniGPT-4 nomina almeno un
 oggetto inesistente nel 35,0% delle descrizioni dettagliate e mPLUG-Owl nel
 32,6%; con i dati prima ripuliti delle affermazioni che le immagini non
 confermano le quote scendono al 19,6% e al 22,2% {cite}`yu2024hallucidoctor`.
@@ -679,7 +715,9 @@ segue che i 576 token ricevono le posizioni unidimensionali della sequenza, in
 ordine raster (riga dopo riga), e la griglia $24 \times 24$ arriva al modello
 solo perché le feature dell'encoder portano già la posizione di ogni patch.
 Qwen2-VL {cite}`wang2024qwen2vl` estende per questo la RoPE a tre componenti,
-tempo, altezza e larghezza. La seconda riguarda `etichette`: nelle posizioni
+tempo, altezza e larghezza.
+
+La seconda riguarda `etichette`: nelle posizioni
 visive e in quelle dell'istruzione va messo il valore che segnala «ignora» (in
 PyTorch, `-100`), perché quei token il modello deve leggerli senza essere
 penalizzato per non saperli generare.
@@ -702,7 +740,7 @@ simboli di un vocabolario, così che il modello possa anche *scriverne*? È la
 L'altra domanda riguarda il dettaglio: 576 token bastano per riconoscere una
 scena, non per leggere una tabella stampata dentro la fotografia, e
 moltiplicarli occupa contesto e KV cache in misura lineare, con il fattore
-quadratico che si aggiunge oltre qualche decina di migliaia di token. Il conto
+quadratico che si aggiunge oltre qualche decina di migliaia di token. Il costo
 del dettaglio, nella {doc}`sezione che porta quel nome
 </VisioneLinguaggio/risoluzione-e-dettaglio>`, è il vero limite pratico dei
 sistemi descritti finora.

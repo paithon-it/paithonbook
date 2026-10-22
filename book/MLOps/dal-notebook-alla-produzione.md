@@ -34,7 +34,7 @@ senza sorprese, c'è quindi un abisso. Il primo tratto, dalle celle agli script
 che si rieseguono uguali, l'ha percorso la sezione {doc}`Dal notebook agli
 script </PyTorch/dal-notebook-agli-script>` del capitolo su PyTorch; il
 resto spetta all’MLOps. Qui si vede che cosa cambia passando «dal mio
-computer» al mondo, e con quali attrezzi si attraversa il divario.
+computer» al mondo, e con quali strumenti si attraversa il divario.
 
 ## Il divario ricerca–produzione
 
@@ -220,7 +220,7 @@ A questi si aggiungono l’ambiente (le versioni esatte di Python e delle
 librerie, congelate tramite `pip freeze > requirements.txt`, un *lockfile* o
 un'immagine container, perché una versione minore diversa può cambiare i
 risultati) e la configurazione: gli iperparametri e, cruciali, i semi casuali.
-Il punto delicato è che `git` da solo non basta: è pensato per file di testo
+Tuttavia `git` da solo non basta, perché è pensato per file di testo
 piccoli e confrontabili, mentre dati e modelli sono grandi, binari e opachi.
 Versionarli dentro un repository lo gonfia e lo rende inutilizzabile; per
 questo si versiona nel repository un *puntatore* (l'hash, un percorso
@@ -230,7 +230,7 @@ all'archivio) e si tiene l'artefatto vero altrove.
 
 Il seme casuale merita una riga a parte, perché è la fonte di riproducibilità
 più facile da dimenticare e più economica da fissare. Il computer i dadi li
-tira per finta: segue una lista di numeri preparata in anticipo, e il seme
+tira per finta: segue una lista di numeri preparata in anticipo, e il **seme**
 è il punto della lista da cui parte. Fissarlo vuol dire far uscire sempre gli
 stessi dadi. I dadi si tirano almeno in tre punti: quando i dati si
 dividono fra addestramento e prova, quando i pesi della rete ricevono i loro
@@ -262,35 +262,35 @@ def fissa_seed(seed: int = 42) -> None:
 Fissare il seme è il primo passo, non l'ultimo. Restano di mezzo le versioni
 delle librerie, che cambiando cambiano i risultati, e un fatto sorprendente
 dell'aritmetica dei calcolatori: sommare gli stessi numeri in ordine diverso
-non dà esattamente lo stesso totale. Sui numeri con la virgola del
-calcolatore (la *virgola mobile*, qui in doppia precisione, lo standard IEEE
-754) l'addizione non è associativa: in Python `(0.1 + 0.2) + 0.3` dà
-`0.6000000000000001`, mentre `0.1 + (0.2 + 0.3)` dà `0.6` tondo. Gli addendi
-sono gli stessi, il totale no. Il motivo è che ogni somma viene arrotondata
-alle 53 cifre binarie di precisione del formato, e un arrotondamento fatto
-prima o dopo non lascia lo stesso residuo.
+non dà esattamente lo stesso totale.
 
-Ora, l'ordine in cui una libreria combina milioni di numeri non è sempre lo
-stesso: dipende da quanti esempi viaggiano insieme, da quale ricetta interna la
-libreria sceglie per quella forma di dati, da quanti processori se lo dividono.
-Le ultime cifre ballano. In produzione ballano di più, perché lì quanti esempi
-viaggiano insieme lo decide il servizio momento per momento: è il *batching
-dinamico* di {doc}`Servire un modello </MLOps/deployment-e-serving>`, che a
-questa ripetibilità rinuncia per scelta.
+Ad esempio, sui numeri con la virgola del computer (la *virgola mobile*, qui in
+doppia precisione, lo standard IEEE 754) l'addizione non è associativa: in
+Python `(0.1 + 0.2) + 0.3` dà `0.6000000000000001`, mentre `0.1 + (0.2 + 0.3)`
+dà `0.6` tondo. Gli addendi sono gli stessi, il totale no. Il motivo è che ogni
+somma viene arrotondata alle 53 cifre binarie di precisione del formato, e un
+arrotondamento fatto prima o dopo non lascia lo stesso residuo.
 
-Conviene allora distinguere due promesse diverse, perché costano diversamente.
+Inoltre l'ordine in cui una libreria combina milioni di numeri non è sempre lo
+stesso: dipende da quanti esempi viaggiano insieme, da quale procedura interna
+la libreria sceglie per quella forma di dati, da quanti processori se lo
+dividono. Le ultime cifre ballano. In produzione ballano di più, perché lì
+quanti esempi viaggiano insieme lo decide il servizio momento per momento: è il
+*batching dinamico* di {doc}`Servire un modello </MLOps/deployment-e-serving>`,
+che a questa ripetibilità rinuncia per scelta.
+
+Distinguiamo allora due promesse diverse, perché costano diversamente.
 
 La prima è la **riproducibilità bit a bit**: due esecuzioni che danno numeri
-identici fino all'ultima cifra. Si può avere, ma si paga. Bisogna dare un seme
-a ogni sorgente di casualità, chiedere esplicitamente alla libreria di usare
-solo procedimenti che a parità di ingressi danno sempre la stessa uscita
+identici fino all'ultima cifra. Si può avere, ma a un prezzo. Bisogna dare un
+seme a ogni sorgente di casualità, chiedere esplicitamente alla libreria di
+usare solo procedimenti che a parità di ingressi danno sempre la stessa uscita
 (`torch.use_deterministic_algorithms(True)`, con `cudnn.benchmark` spento e, su
 GPU, la variabile `CUBLAS_WORKSPACE_CONFIG`), seminare anche i processi che
 caricano i dati, e accettare di andare più piano: il dettaglio sta in {doc}`Dal
 notebook agli script </PyTorch/dal-notebook-agli-script>`. La garanzia vale su
 una macchina sola: quel comando vieta i procedimenti ballerini di *quel*
-calcolatore, non l'ordine in cui due processori diversi sommano gli stessi
-numeri.
+computer, non l'ordine in cui due processori diversi sommano gli stessi numeri.
 
 La seconda è la **riproducibilità statistica**: i numeri possono differire
 nell'ultima cifra, purché ogni metrica resti dentro la variabilità che si osserva
@@ -308,9 +308,9 @@ significato.
 Durante l'esplorazione non si prova una configurazione sola: se ne provano
 decine, poi centinaia. Si cambia la velocità con cui il modello impara, si
 cambia la forma della rete, si cambia quali informazioni le si danno in pasto:
-sono gli iperparametri, le manopole che decide una persona e che il modello
-non impara da sé. Senza un registro, dopo una settimana, nessuno ricorda più
-*quale* combinazione aveva dato quel 94%.
+sono gli iperparametri, cioè le impostazioni che decide una persona e che il
+modello non impara da sé. Senza un registro, infatti, dopo una settimana
+nessuno ricorda più *quale* combinazione aveva dato quel 94%.
 
 La cura è segnare ogni prova: che cosa si era impostato prima di lanciarla e
 com'è andata dopo. In gergo si chiama **experiment tracking**, e una singola
@@ -324,8 +324,9 @@ peggio. Dopo cento giri hai un numero buono in mano e non sai più a quale
 combinazione appartenga: rifarlo a memoria non funziona, perché le prove si
 somigliano tutte.
 
-La cura è un'abitudine, più che un attrezzo. Prima di lanciare una prova, scrivere
-da qualche parte che cosa si è impostato; a prova finita, scrivere com'è andata.
+La cura è un'abitudine, più che uno strumento. Prima di lanciare una prova,
+scrivere da qualche parte che cosa si è impostato; a prova finita, scrivere
+com'è andata.
 «Da qualche parte» è un posto che sopravvive alla chiusura del
 programma, non una cella del notebook.
 
@@ -341,7 +342,7 @@ addestramento) e danno due codici diversi, quindi i numeri vanno scritti sempre
 allo stesso modo, o si rifà una prova credendo che sia nuova. Un codice corto
 ha anche un limite: su qualche migliaio di prove due codici uguali per caso non
 escono praticamente mai, su milioni sì, e chi ne accumula tante lo tiene più
-lungo. È lo stesso attrezzo che serve a mettere un cartellino a un intero
+lungo. È lo stesso strumento che serve a mettere un cartellino a un intero
 archivio di dati.
 
 `````
@@ -435,7 +436,9 @@ salti qualche fondamenta, e per un po’ la casa sta in piedi. Ogni scorciatoia,
 però, è un prestito: prima o poi va restituito, con gli interessi, sotto forma
 di crepe da riparare. L'immagine con cui lo stesso gruppo l'aveva detto l'anno
 prima è rimasta: il machine learning è la carta di credito ad alto tasso del
-debito tecnico. Oggi basta un notebook e qualche riga scritta di fretta per
+debito tecnico.
+
+Oggi basta un notebook e qualche riga scritta di fretta per
 collegare fra loro i pezzi già pronti che si sono messi insieme: righe che non
 fanno niente di intelligente, servono solo a far combaciare l'uscita di un
 pezzo con l'ingresso del successivo. Si scrivono in un pomeriggio, poi vanno
@@ -471,7 +474,7 @@ Sculley e colleghi catalogano le forme di debito specifiche dell'ML, tra cui:
   è l'ordine di grandezza a cui vogliono che si pensi, più che una misura.
 - **Pipeline jungles**: trasformazioni dei dati che si stratificano fino a
   diventare grovigli impossibili da modificare in sicurezza.
-- **Configuration debt**: la proliferazione di manopole (iperparametri,
+- **Configuration debt**: la proliferazione di impostazioni (iperparametri,
   opzioni, soglie) senza controllo né validazione.
 - **Data dependencies**, le dipendenze dai dati sono più insidiose di quelle
   dal codice, perché sono *silenziose*: nessun compilatore si lamenta se una
@@ -492,9 +495,9 @@ affidabile, in ogni momento, con un comando invece che con un rito manuale.
 
 `````
 
-Nessuno di questi attrezzi (le versioni conservate di codice, dati e modello, il
-registro delle prove, i controlli contro il debito) è un fine in sé. Servono a
-uno scopo: far sì che il modello del notebook di stamattina (quello
+Nessuno di questi strumenti (le versioni conservate di codice, dati e modello,
+il registro delle prove, i controlli contro il debito) è un fine in sé. Servono
+a uno scopo: far sì che il modello del notebook di stamattina (quello
 che «funzionava sul mio computer») continui a funzionare domani, sul computer di
 tutti, e che tra sei mesi qualcuno possa capire *perché* funzionava e rifarlo
 daccapo. È il passaggio dalla dimostrazione al prodotto: meno spettacolare della

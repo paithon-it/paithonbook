@@ -13,21 +13,22 @@ modelli trasparenti </Interpretabilita/modelli-trasparenti-e-importanza>`),
 addestrata sulle venti foto; riceveva in ingresso le attivazioni del primo
 strato di max-pooling di Inception, una rete per immagini già addestrata da
 altri e lasciata com'era {cite}`ribeiro2016why`. La scorciatoia («c'è neve →
-lupo») l'aveva imparata la regressione logistica, non la rete sotto. Un modello
-così si può derivare da capo a capo, e i metodi che seguono le derivate ci
-avrebbero lavorato bene. LIME non ne aveva bisogno, perché gli bastano le
-risposte, e funziona perciò anche dove aprire non si può.
+lupo») l'aveva imparata la regressione logistica, non la rete sotto.
+
+Un modello così si può derivare da capo a capo, quindi i metodi che
+seguono le derivate ci avrebbero lavorato bene. LIME non ne aveva bisogno,
+perché gli bastano le risposte, e funziona perciò anche dove aprire non si può.
 
 Quando il modello lo abbiamo in mano e dentro c'è una rete neurale con tutti i
 suoi numeri, si può smettere di bussare da fuori e guardare che cosa succede lì
-dentro. Qualche attrezzo che guarda dentro l'abbiamo già usato (l'importanza da
+dentro. Qualche strumento che guarda dentro l'abbiamo già usato (l'importanza da
 impurità legge i tagli di un albero, TreeSHAP ne sfrutta la forma), ma erano
 alberi, e un albero si legge.
 
 I modelli trasparenti si spiegano da soli: un modello a somma consegna un
 numero per ogni colonna, e quel numero *è* la spiegazione. Una rete neurale ha
 milioni di numeri intrecciati, e nessuno di essi, preso da solo, dice qualcosa
-di sensato. Bisogna cambiare domanda. Non «quanto pesa questa colonna in
+di sensato. Bisogna quindi cambiare domanda. Non «quanto pesa questa colonna in
 generale?», ma «quanto ha contribuito *questo* pezzo dell'ingresso a *questa*
 risposta?». La quota di merito che si assegna a ciascun pezzo dell'ingresso si
 chiama **attribuzione**, e per calcolarla serve uno strumento già usato per un
@@ -45,11 +46,13 @@ rete, e l'uscita da guardare è la perdita: spostare i pesi nel verso che la fa
 scendere *è* l'addestramento, con la {doc}`backpropagation
 </RetiNeurali/backpropagation>`. Qui la stessa backpropagation si prosegue fino
 all'ingresso, con i pesi fermi, e l'uscita da guardare è il punteggio che la
-rete assegna alla risposta che ha scelto. Se la rete sceglie fra mille risposte
-possibili (cane, gatto, camion: si chiamano le classi), è il punteggio di
-quella classe, prima della softmax. Il gradiente rispetto ai pixel è una mappa
-grande quanto l'immagine, che dice quanto ciascun pixel conta per quel
-punteggio. Si chiama mappa di **salienza**, da ciò che «salta all'occhio» (in
+rete assegna alla risposta che ha scelto. Se, ad esempio, la rete sceglie fra
+mille risposte possibili (cane, gatto, camion: si chiamano le classi), è il
+punteggio di quella classe, prima della softmax.
+
+Il gradiente rispetto ai pixel è una mappa grande quanto l'immagine, che dice
+quanto ciascun pixel conta per quel punteggio. Si chiama mappa di
+**salienza**, da ciò che «salta all'occhio» (in
 inglese *saliency map*, il nome con cui compare nei programmi), e fu proposta
 da Simonyan, Vedaldi e Zisserman nel 2014 {cite}`simonyan2014deep`.
 
@@ -112,7 +115,9 @@ $$
 con $\sigma$ fra il 10 e il 20% dell'escursione dei pixel e $N \approx 50$: è la
 stima Monte Carlo del gradiente di $S_c$ convoluto con una gaussiana, cioè di
 una versione lisciata della funzione, e costa $N$ passate avanti e indietro
-invece di una; la mappa è poi il modulo di $\hat{\mathbf{M}}$. L'altra variante,
+invece di una; la mappa è poi il modulo di $\hat{\mathbf{M}}$.
+
+L'altra variante,
 che tornerà nei controlli di sanità, è **gradient $\odot$ input**,
 $\mathbf{X} \odot \partial S_c/\partial\mathbf{X}$: per un modello lineare senza
 bias restituisce esattamente il contributo $w_i x_i$ di ciascun ingresso, ed
@@ -124,7 +129,7 @@ integrazione, valutato all'arrivo.
 
 ## Grad-CAM: dove guarda la rete
 
-La salienza lavora sui pixel e paga in rumore. Un'alternativa più stabile
+La salienza lavora sui pixel e ne sconta il rumore. Un'alternativa più stabile
 rinuncia alla risoluzione fine e chiede una cosa più grossolana ma più
 robusta: in quale *regione* dell'immagine la rete ha trovato le prove della sua
 decisione? È l'idea di **Grad-CAM** (*Gradient-weighted Class Activation
@@ -155,11 +160,13 @@ spiegando la risposta «cane», i faretti sul muso e sulle orecchie pesano tanto
 e quelli sull'erba pesano zero. Sovrapposti alla foto, danno una macchia calda
 (una *heatmap*) che dice *dove* sta ciò che ha spinto la rete a dire «cane».
 Dove i faretti tirano verso una risposta diversa la macchia resta fredda: la
-mappa tiene le prove a favore e non quelle contro. È grossolana (la risoluzione
-è quella dell'ultimo strato, non dei pixel) ma pulita, e serve alla diagnosi:
-su un modello che avesse imparato a guardare lo sfondo, la macchia calda
-dovrebbe cadere sullo sfondo. Il rilevatore di lupi fu smascherato con LIME; che
-Grad-CAM avrebbe acceso la neve è una previsione, non un risultato.
+mappa tiene le prove a favore e non quelle contro.
+
+È grossolana (la risoluzione è quella dell'ultimo strato, non dei pixel) ma
+pulita, e serve alla diagnosi: su un modello che avesse imparato a guardare lo
+sfondo, la macchia calda dovrebbe cadere sullo sfondo. Il rilevatore di lupi fu
+smascherato con LIME; che Grad-CAM avrebbe acceso la neve è una previsione, non
+un risultato.
 
 `````
 
@@ -260,9 +267,11 @@ la riga dopo somma le mappe con quei pesi e con `relu` butta via i contributi
 negativi, tenendo solo le zone che *sostengono* la risposta; l'ultima porta i
 valori fra $0$ e $1$ per poterli disegnare (il $10^{-8}$ evita una divisione per
 zero nel caso, raro ma possibile su una classe non predetta, in cui `relu`
-azzeri tutta la mappa). Qui l'immagine è rumore tirato a caso (`torch.randn`):
-basta a controllare le forme dei numeri, ma non dà una mappa da guardare. Su
-una vera foto di cane ci si aspetta la macchia calda sul muso, e su un modello
+azzeri tutta la mappa).
+
+Qui l'immagine è rumore tirato a caso (`torch.randn`): basta a controllare
+le forme dei numeri, ma non dà una mappa da guardare. Su una vera
+foto di cane ci si aspetta la macchia calda sul muso, e su un modello
 che avesse imparato la scorciatoia della neve la si aspetterebbe sulla neve:
 è l'uso diagnostico per cui il metodo è fatto, e su una foto vera va provato,
 non dato per scontato.
@@ -398,7 +407,9 @@ C'è però un limite, e sta dove il metodo si presta a essere letto per più di
 quel che promette. La completezza vale per qualunque baseline. Gli assiomi
 vincolano come si ripartisce il salto $f(\mathbf{x}) - f(\mathbf{x}')$, non da
 dove il salto parte, e la scelta di $\mathbf{x}'$ resta il grado di libertà
-principale del metodo. Due conseguenze concrete. La prima è che il fattore
+principale del metodo.
+
+Due conseguenze concrete. La prima è che il fattore
 $(x_i - x'_i)$ davanti all'integrale azzera per costruzione l'attribuzione di
 ogni componente che coincide con la baseline: con la baseline nera ogni pixel
 nero riceve esattamente zero, per definizione e non per misura, mentre in una
@@ -410,7 +421,9 @@ $\mathbf{w} = (2,-1)$ e $\mathbf{x} = (2,1)$, spostando la baseline da $(0,0)$
 a $(2,0)$ l'attribuzione della componente con il peso maggiore passa da
 $1{,}327$ a esattamente $0$, e con la baseline $(-1,2)$ la seconda componente
 prende segno positivo invece che negativo; in tutti e tre i casi la completezza
-è verificata al quarto decimale. Gli autori osservano che per la maggior parte
+è verificata al quarto decimale.
+
+Gli autori osservano che per la maggior parte
 delle reti si può scegliere una baseline dal punteggio quasi nullo (per le
 immagini, il nero), e allora le attribuzioni si leggono come una ripartizione
 dell'uscita fra gli ingressi che ignora la baseline. Consigliano poi di
@@ -440,7 +453,7 @@ deve arrivare. La curva del disegno è quella di un neurone che satura, la stess
 forma della sigmoide, e i numeri sono calcolati su di essa.
 ```
 
-Il disegno di {numref}`fig-gradienti-integrati` mostra due cose che il conto
+Il disegno di {numref}`fig-gradienti-integrati` mostra due cose che il calcolo
 non fa vedere.
 
 La prima è l'effetto della saturazione. Sulla curva della figura la pendenza
@@ -455,7 +468,9 @@ due cose. Che la riga sia il posto giusto è un teorema, la completezza: se si
 misura la pendenza in *ogni* punto del cammino, la somma fa esattamente il
 salto di fiducia fra partenza e arrivo, purché la curva sia derivabile quasi
 ovunque. Che ci arrivi una somma di otto sole tappe, invece, non lo garantisce
-niente. Lungo ogni tappa la pendenza cala, e bisogna decidere in che punto
+niente.
+
+Lungo ogni tappa la pendenza cala, e bisogna decidere in che punto
 misurarla. Nel disegno la si misura a metà, e il totale, $0{,}999356$, si
 scosta dal valore vero, $0{,}999329$, di appena $0{,}000027$. Misurandola
 all'inizio di ogni tappa, dove la salita è più ripida, la si sopravvaluterebbe
@@ -464,18 +479,20 @@ esatta vale per teorema, quella a otto tappe è un'approssimazione.
 
 ## Integrated Gradients coi numeri: un esempio eseguibile
 
-Il conto della completezza si può rifare su un esempio che gira. La funzione
+Il calcolo della completezza si può rifare su un esempio che gira. La funzione
 che segue non è quella della figura: ha due variabili invece di una, così da
 avere due attribuzioni da guardare, e satura per costruzione. È un neurone
 solo, $f(\mathbf{x}) = \tanh(\mathbf{w}^\top \mathbf{x})$ con $\mathbf{w} = (2,
 -1)$: la somma pesata dei due ingressi passata nella tangente iperbolica
-$\tanh$, una curva a esse come la sigmoide, che però va da $-1$ a $1$. Nel
-punto $\mathbf{x} = (2, 1)$ la somma pesata vale $2 \cdot 2 - 1 \cdot 1 = 3$ e
+$\tanh$, una curva a esse come la sigmoide, che però va da $-1$ a $1$.
+
+Nel punto $\mathbf{x} = (2, 1)$ la somma pesata vale
+$2 \cdot 2 - 1 \cdot 1 = 3$ e
 $\tanh 3 \approx 0{,}995$: siamo sul tratto piatto, e il gradiente, $(1 -
 \tanh^2 3)\,\mathbf{w}$ per la regola della catena, è quasi nullo. Un solo
 gradiente direbbe che nessuno dei due ingressi conta; i gradienti integrati,
 partendo dalla baseline tutta a zero, recuperano l'intero contributo. In fondo
-il blocco rifà il conto con due baseline diverse.
+il blocco rifà il calcolo con due baseline diverse.
 
 ```python
 import numpy as np
@@ -619,7 +636,9 @@ due conti cominciano a dare meriti diversi, pur sommando entrambi alla stessa
 vittoria. Chi divide all’indietro guarda come è organizzata la squadra, mentre
 chi la accompagna da vuota a completa guarda solo i risultati: due squadre
 organizzate in modo diverso, che vincono però sempre allo stesso modo, dai
-gradienti integrati ricevono gli stessi meriti, dalla propagazione no. Le tre
+gradienti integrati ricevono gli stessi meriti, dalla propagazione no.
+
+Le tre
 risposte non si contraddicono, perché rispondono a domande diverse. Il
 gradiente parla dei ritocchi, l’occlusione dell’assenza di un giocatore, la
 propagazione di come spartire il risultato rispetto alla squadra vuota. La
@@ -637,17 +656,20 @@ f(\mathbf{x}_{[i \leftarrow \bar{x}_i]})$, dove sulle immagini si sostituisce un
 pezza di pixel invece di una componente; è agnostica rispetto al modello, costa
 una passata in avanti per pezza, e non gode di completezza, perché in presenza
 di interazioni $\sum_i a_i \neq f(\mathbf{x}) - f(\bar{\mathbf{x}})$.
+
 **LRP** {cite}`bach2015pixel` ridistribuisce il punteggio dall’uscita
 all’ingresso con regole locali; nella regola $\varepsilon$, per uno strato con
 pre-attivazioni $z_j = \sum_i x_i w_{ij}$,
 $R_i = \sum_j \frac{x_i w_{ij}}{z_j + \varepsilon\,\mathrm{sign}(z_j)}\,R_j$,
 che senza bias e con $\varepsilon \to 0$ conserva la somma delle rilevanze
 strato per strato; la rilevanza $R_i$ di un ingresso è la sua attribuzione
-$a_i$. **DeepLIFT** {cite}`shrikumar2017learning` confronta ogni
+$a_i$.
+
+**DeepLIFT** {cite}`shrikumar2017learning` confronta ogni
 attivazione con la sua attivazione di riferimento (quella prodotta dalla
 baseline), e nella regola *Rescale* sostituisce la derivata di ogni
 non-linearità con il rapporto incrementale
-$\big(f(z) - f(\bar z)\big)/(z - \bar z)$, sicché su un neurone solo
+$\big(f(z) - f(\bar z)\big)/(z - \bar z)$, quindi su un neurone solo
 $a_i = w_i (x_i - \bar{x}_i)\,\big(f(z) - f(\bar z)\big)/(z - \bar z)$; in una
 rete a strati senza interazioni moltiplicative vale per costruzione
 $\sum_i a_i = f(\mathbf{x}) - f(\bar{\mathbf{x}})$, ma Ancona e colleghi
@@ -665,7 +687,9 @@ baseline nulla, coincidono anche con i gradienti integrati
 $a_i = \frac{w_i x_i}{z}\tanh(z)$, perché
 $\int_0^1 \tanh'(\alpha z)\,d\alpha = \tanh(z)/z$ è proprio il rapporto
 incrementale di DeepLIFT. Il gradiente per ingresso vale invece
-$w_i x_i \tanh'(z)$, che in saturazione tende a zero. Su più strati IG si
+$w_i x_i \tanh'(z)$, che in saturazione tende a zero.
+
+Su più strati IG si
 separa da LRP e DeepLIFT per l'invarianza all'implementazione: è fatto di
 gradienti, che la rispettano per la regola della catena, mentre gli altri due
 sostituiscono le derivate con rapporti incrementali calcolati strato per
@@ -688,7 +712,7 @@ sfocata) cambia le attribuzioni.
 
 `````
 
-Il conto prende il neurone dell’esempio eseguibile e calcola le attribuzioni
+Il calcolo prende il neurone dell’esempio eseguibile e calcola le attribuzioni
 delle tre famiglie, con la loro somma accanto alla differenza
 $f(\mathbf{x}) - f(\mathbf{0})$ che i metodi completi devono restituire.
 
@@ -877,7 +901,9 @@ il filtro si accende di più: i cinque più accesi su mille. Quei punti formano
 una zona, e la si confronta con la zona colorata di ogni concetto. Si contano i
 punti che le due zone hanno in comune e si dividono per tutti i punti che le
 due coprono insieme: se ne hanno trenta in comune e insieme ne coprono cento,
-il punteggio è trenta su cento. Il concetto che ne ha in comune di più, se
+il punteggio è trenta su cento.
+
+Il concetto che ne ha in comune di più, se
 supera una soglia, dà il nome al filtro: «rilevatore di cani», «rilevatore di
 erba». Due filtri possono avere lo stesso nome, e quello che si conta, per dire
 quanto uno strato è leggibile, è quanti nomi diversi ci compaiono.
@@ -891,15 +917,19 @@ distinguere un cane da un gatto.
 
 Il nome dice però meno di quanto sembri. Viene dall'archivio, e un concetto che
 l'archivio non contiene non si può trovare, quindi un filtro senza nome può
-fare benissimo qualcosa. Si può poi rimescolare uno strato. Al posto di due
-filtri A e B se ne mettono due nuovi, «A più B» e «A meno B»: sembrano diversi,
+fare benissimo qualcosa.
+
+Si può poi rimescolare uno strato. Ad esempio, al posto di due filtri
+A e B se ne mettono due nuovi, «A più B» e «A meno B»: sembrano diversi,
 ma sommandoli e sottraendoli si ritrovano A e B tali e quali, quindi la rete sa
 le stesse cose. Nessuno dei due nuovi, però, si accende più sui soli cani.
 Rimescolando così tutti i filtri di uno strato, in un esperimento degli stessi
 autori su una rete che riconosce luoghi, i nomi diversi che si riescono a dare
 calano di quattro quinti: i nomi dipendono da come il sapere è spartito fra i
 filtri, non soltanto da che cosa la rete sa (e c'è chi, per questo, cerca i
-concetti in una combinazione di filtri invece che in uno solo). Un filtro che
+concetti in una combinazione di filtri invece che in uno solo).
+
+Un filtro che
 si accende sui cani, inoltre, non dimostra che la rete lo usi per dire «cane»:
 magari si accende sul pelo, e la rete lo usa per dire «animale». Per saperlo
 bisogna spegnerlo e guardare che cosa cambia.
@@ -930,19 +960,25 @@ $$
 
 e l'unità è un rilevatore del concetto di punteggio massimo se questo supera
 $0{,}04$ (la soglia sposta quante unità passano, ma gli autori riportano che
-l'ordine fra le reti resta lo stesso). Il numero di rilevatori unici diventa
+l'ordine fra le reti resta lo stesso).
+
+Il numero di rilevatori unici diventa
 così una misura dell'interpretabilità di uno strato, confrontabile fra
 architetture e regimi di addestramento: gli strati alti hanno più rilevatori di
 oggetti, l'addestramento auto-supervisionato ne produce meno, e la batch
 normalization, scrivono gli autori, sembra ridurre l'interpretabilità in modo
-sensibile. Il risultato più istruttivo è negativo: applicando allo strato conv5
+sensibile.
+
+Il risultato più istruttivo è negativo: applicando allo strato conv5
 di un'AlexNet addestrata su Places205 una rotazione ortogonale casuale, che
 lascia intatto il potere discriminante della rappresentazione, i rilevatori
 unici calano dell'80%. L'interpretabilità misurata così dipende dalla base,
 cioè dall'allineamento dei concetti con le singole unità, e non è una proprietà
 dell'informazione contenuta. È lo stesso problema, visto da un altro lato, che
 l'interpretabilità meccanicistica chiama *sovrapposizione* (*superposition*):
-niente obbliga i concetti a stare ciascuno su un asse. I limiti sono quelli
+niente obbliga i concetti a stare ciascuno su un asse.
+
+I limiti sono quelli
 della definizione, cioè la copertura dell'archivio, una soglia scelta a mano, e
 una misura di co-occorrenza e non di causalità, che il lavoro successivo dello
 stesso gruppo affronta intervenendo: spegne unità in un classificatore e misura
@@ -1005,12 +1041,12 @@ residuali della {doc}`sezione sulla struttura del Transformer
 </Transformers/architettura>`). Quindi i pesi di un singolo strato raccontano
 solo un pezzo del viaggio: per sapere quanto ogni parola d'ingresso ha
 influenzato il risultato in cima bisogna seguire l'intero percorso, scorciatoie
-comprese, piano dopo piano. Gli strumenti che fanno questo conto si chiamano
+comprese, piano dopo piano. Gli strumenti che fanno questo calcolo si chiamano
 **attention rollout** e **attention flow**, e restituiscono una mappa sulle
 parole di partenza, spesso più sensata di quella del singolo strato.
 
 Rollout e flow dicono quanto ogni parola ha pesato sul risultato. C'è poi un
-attrezzo che risponde a un'altra domanda: se a un certo piano della rete è
+strumento che risponde a un'altra domanda: se a un certo piano della rete è
 scritta una data informazione, per esempio se una parola è un nome o un verbo.
 È il probing (sondaggio): si prova a leggere quell'informazione da lì con lo
 strumento più semplice che c'è, un piccolo classificatore addestrato apposta.
@@ -1018,10 +1054,10 @@ Se ci riesce, l'informazione a quel piano c'è; se fallisce, non c'è, o non è
 scritta in modo semplice. Che ci sia, però, non vuol dire che la rete la usi:
 per saperlo bisogna toglierla e guardare se la risposta cambia.
 
-Uno strumento di lettura troppo bravo rischia di indovinare da sé ciò che
-doveva soltanto leggere, e per accorgersene gli si dà un compito finto. A ogni
-parola del vocabolario si appiccica un'etichetta tirata a sorte, una volta per
-tutte, e da lì in avanti quella parola porta sempre quella. Nella rete
+Uno strumento di lettura troppo bravo rischia di indovinare da sé ciò che doveva
+soltanto leggere, e per accorgersene gli si dà un compito finto. Ad esempio, a
+ogni parola del vocabolario si appiccica un'etichetta tirata a sorte, una volta
+per tutte, e da lì in avanti quella parola porta sempre quella. Nella rete
 quell'informazione non è scritta da nessuna parte, perché è stata inventata
 adesso; però uno strumento abbastanza bravo può impararla a memoria, parola per
 parola. Se lo strumento riesce nel compito finto quasi come in quello vero, sul
@@ -1051,7 +1087,9 @@ $$
 dove $\mathbf{W}^{(l)}_{\text{att}}$ è la matrice di attenzione grezza dello
 strato $l$, mediata sulle teste (gli autori, per semplicità, non le trattano
 separatamente), $\mathbf{I}$ l'identità e $\mathbf{R}^{(l)}$ la matrice
-corretta. I due mezzi hanno due ruoli distinti. Che i coefficienti sommino a
+corretta.
+
+I due mezzi hanno due ruoli distinti. Che i coefficienti sommino a
 uno è una necessità: le righe dell'attenzione e quelle dell'identità sommano a
 uno, e una loro combinazione convessa conserva la proprietà, così che il
 prodotto delle $\mathbf{R}^{(l)}$ resti una matrice stocastica per righe. Che
@@ -1060,7 +1098,9 @@ quello dell'attenzione pesano lo stesso, e nulla nel Transformer lo garantisce
 (dopo la normalizzazione e la proiezione d'uscita le norme dei due rami possono
 differire di molto). La scelta $\lambda\,\mathbf{W}^{(l)}_{\text{att}} +
 (1-\lambda)\,\mathbf{I}$ con $\lambda \neq \tfrac{1}{2}$ è normalizzata
-altrettanto bene, e dà un rollout diverso. Si moltiplicano poi le
+altrettanto bene, e dà un rollout diverso.
+
+Si moltiplicano poi le
 $\mathbf{R}^{(l)}$ fra loro per ottenere quanto di ogni token di ingresso è
 finito in ogni posizione all'altezza voluta. È l’attention rollout, che con $L$
 strati e $T$ token costa $L$ prodotti di matrici $T \times T$, cioè
@@ -1085,19 +1125,25 @@ per distinguere le due cose servono interventi sulle attivazioni, come il
 probing *amnesico* di Elazar e colleghi, che rimuove la proprietà dalla
 rappresentazione e misura quanto cambia il comportamento del modello, e che
 trova l'accuratezza del probe scorrelata dall'importanza della proprietà per il
-compito {cite}`elazar2021amnesic`. Il probe lineare è la proposta di Alain e
+compito {cite}`elazar2021amnesic`.
+
+Il probe lineare è la proposta di Alain e
 Bengio {cite}`alain2017understanding`, che lo motivano con la separabilità
 lineare e con la convessità del problema di addestramento. L'avvertenza che ne
 delimita l'uso è invece di Hewitt e Liang {cite}`hewitt2019control`, e va
 attribuita a loro: un probe troppo potente rischia di *imparare* lui la
-proprietà invece di limitarsi a leggerla. La loro proposta per accorgersene
+proprietà invece di limitarsi a leggerla.
+
+La loro proposta per accorgersene
 sono i *control task*: a ogni *tipo* di parola si assegna un'etichetta
 sorteggiata una volta per tutte (ogni occorrenza di «cane» riceve sempre la
 stessa, con la stessa distribuzione delle etichette vere), e si addestra lo
 stesso probe su questo compito. L'etichetta di controllo, lungi dall'essere
 rumore, è una funzione deterministica dell'identità della parola, che un probe
 può imparare solo memorizzando il vocabolario e non leggendo una proprietà
-linguistica nella rappresentazione. La **selectivity** è la differenza fra
+linguistica nella rappresentazione.
+
+La **selectivity** è la differenza fra
 l'accuratezza sul compito vero e quella sul controllo: alta, il probe legge;
 bassa, il probe risolve da sé. Gli autori trovano che probe più capaci dei
 lineari raggiungono accuratezze simili sulla parte del discorso con selectivity
@@ -1165,7 +1211,9 @@ per tutte e tre: accesa per un gatto, ci rimetterebbe anche un po’ di
 automobile e di verde, e per correggerla servirebbero altre caselle accese, e
 la regola del «poche per volta» penalizza proprio questo. Una casella che fa
 una cosa sola ricostruisce quella cosa da sola, e il posto abbondante serve
-perché ce ne sia una per ogni cosa. È la stessa idea della rete, rovesciata: la
+perché ce ne sia una per ogni cosa.
+
+È la stessa idea della rete, rovesciata: la
 rete mescola i concetti perché ha poco spazio, e se lo può permettere perché
 ogni concetto compare di rado (una foto con un gatto, un'automobile e il colore
 verde tutti insieme capita poco); lo sparse autoencoder li separa dando spazio
@@ -1200,8 +1248,9 @@ reti di visione. Nei Transformer il circuito più studiato è la *induction head
 basso, che scrive in ogni posizione l'identità del token precedente, e la
 seconda, che cerca nel contesto un token uguale a quello corrente e ne copia il
 successore, completando lo schema $[A][B]\dots[A] \to [B]$; la sua comparsa
-durante l'addestramento coincide con un salto nell'apprendimento in contesto. Lo
-strumento che trasforma un'ipotesi così in una prova è l’*activation
+durante l'addestramento coincide con un salto nell'apprendimento in contesto.
+
+Lo strumento che trasforma un'ipotesi così in una prova è l’*activation
 patching*: si esegue il modello su un ingresso pulito e su uno corrotto che ne
 cambia la risposta, si sostituisce nella corsa corrotta l'attivazione di un
 solo componente con quella della corsa pulita, e si misura quanta risposta
@@ -1216,11 +1265,12 @@ fondo da Elhage e colleghi nei *Toy Models of Superposition* (Anthropic, 2022)
 {cite}`elhage2022toy`: una rete con $n$ neuroni può rappresentare molte più di
 $n$ feature sfruttando direzioni quasi ortogonali in $\mathbb{R}^n$, purché
 ciascuna feature sia rara. La conseguenza pratica è la polisemanticità: un
-singolo neurone risponde a stimoli non correlati, e diventa illeggibile. Bricken
-e colleghi, in *Towards Monosemanticity* (Anthropic, 2023), affrontano il
-problema con uno **sparse autoencoder** {cite}`bricken2023monosemanticity`: le
-attivazioni $\mathbf{x} \in \mathbb{R}^{n}$ di uno strato vengono ricodificate
-in un dizionario **sovracompleto** di $F \gg n$ unità,
+singolo neurone risponde a stimoli non correlati, e diventa illeggibile.
+
+Bricken e colleghi, in *Towards Monosemanticity* (Anthropic, 2023), affrontano
+il problema con uno **sparse autoencoder** {cite}`bricken2023monosemanticity`:
+le attivazioni $\mathbf{x} \in \mathbb{R}^{n}$ di uno strato vengono
+ricodificate in un dizionario **sovracompleto** di $F \gg n$ unità,
 
 $$
 \mathbf{f}(\mathbf{x}) = \mathrm{ReLU}\big(\mathbf{W}_e(\mathbf{x} -
@@ -1235,7 +1285,9 @@ rimpicciolendo le attivazioni e ingrandendo le colonne. Ogni colonna di
 $\mathbf{W}_d$ è la direzione di una feature nello spazio delle attivazioni, e
 $f_i(\mathbf{x})$ dice quanta ce n'è; nel lavoro di Bricken il rapporto $F/n$
 va da 1 a 256, sullo strato MLP da 512 neuroni di un Transformer a uno strato
-solo. La norma $L_1$ è un surrogato della sparsità vera, e ha un prezzo noto:
+solo.
+
+La norma $L_1$ è un surrogato della sparsità vera, e ha un prezzo noto:
 schiaccia verso zero anche le attivazioni che dovrebbero restare grandi
 (*shrinkage*). Le varianti successive lo evitano fissando la sparsità
 direttamente: il TopK tiene accese, per ogni esempio, solo le $k$ unità più
@@ -1243,7 +1295,9 @@ attive, $\mathbf{f}(\mathbf{x}) = \mathrm{TopK}\big(\mathbf{W}_e(\mathbf{x} -
 \mathbf{b}_d)\big)$, ed è stato portato fino a 16 milioni di latenti sulle
 attivazioni di GPT-4 {cite}`gao2024scaling`; il JumpReLU sostituisce la ReLU
 con una soglia appresa e ottimizza direttamente la norma $L_0$
-{cite}`rajamanoharan2024jumping`. Un SAE si valuta con tre numeri: la sparsità
+{cite}`rajamanoharan2024jumping`.
+
+Un SAE si valuta con tre numeri: la sparsità
 media $L_0 = \mathbb{E}\,\lVert \mathbf{f}(\mathbf{x}) \rVert_0$, l'errore di
 ricostruzione (di solito normalizzato con quello di chi predice sempre
 l'attivazione media) e la perdita del modello quando la ricostruzione
@@ -1256,8 +1310,10 @@ Il campo è nascente, e la sua frontiera non passa dove si tende a metterla. La
 tecnica ha superato la prova della scala: Templeton e colleghi
 {cite}`templeton2024scaling` hanno addestrato autoencoder sparsi fino a decine
 di milioni di feature sulle attivazioni interne di un modello linguistico di
-produzione, non di un giocattolo di laboratorio. Non ha superato la prova
-dell’affidabilità: Chanin e colleghi, nel 2024, hanno documentato modi
+produzione, non di un giocattolo di laboratorio.
+
+Non ha superato la prova dell’affidabilità: Chanin e colleghi,
+nel 2024, hanno documentato modi
 sistematici in cui un latente apparentemente monosemantico non si accende
 proprio dove dovrebbe, perché un latente più specifico ne ha assorbito i casi
 (lo chiamano *feature absorption*), e che il fenomeno non si risolve cambiando
@@ -1265,6 +1321,7 @@ la dimensione del dizionario o il grado di sparsità
 {cite}`chanin2024absorption`. La sovrapposizione resta una spiegazione teorica
 solida del *perché* i neuroni siano illeggibili; che gli sparse autoencoder
 siano *la* cura è ancora un programma di ricerca, non un risultato acquisito.
+
 Il passo successivo va dalle feature ai circuiti: Lindsey e colleghi, nel 2025,
 sostituiscono gli MLP di un modello linguistico di produzione con un
 *transcoder* fra strati (30 milioni di feature in tutto) e costruiscono, per un

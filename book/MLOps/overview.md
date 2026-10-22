@@ -32,11 +32,17 @@ rassegna di casi reali lo ricostruisce progetto per progetto, e mostra quanti
 ostacoli costellino *ogni* tappa del percorso che porta un modello dal
 prototipo al servizio: raccogliere e verificare i dati, consegnare il modello
 al mondo reale (il *deployment*), sorvegliarlo, mantenerlo
-{cite}`paleyes2022challenges`. In laboratorio i modelli predicono bene; in
-produzione nessuno aveva pensato a come alimentarli, aggiornarli, tenerli
-d'occhio. Quel «tutto il resto» ha ormai un nome, **MLOps**: *ML* per machine
-learning, *Ops* per le operazioni, cioè l'esercizio quotidiano di ciò che è in
-funzione.
+{cite}`paleyes2022challenges`. In altre parole, in laboratorio i modelli
+predicono bene, mentre in produzione nessuno aveva pensato a come alimentarli,
+aggiornarli, tenerli d'occhio. Quel «tutto il resto» ha ormai un nome,
+**MLOps**: *ML* per machine learning, *Ops* per le operazioni, cioè
+l'esercizio quotidiano di ciò che è in funzione.
+
+In questo capitolo seguiamo il modello fuori dal laboratorio. Vediamo perché
+l'addestramento è solo una parte piccola del sistema, che cosa si intende per
+MLOps e perché il ciclo di vita di un modello è un anello e non una linea;
+chiariamo poi perché il notebook non basta, e infine scorriamo le sezioni che
+affrontano una per una le tappe dell'anello.
 
 ## Il modello è la parte piccola del sistema
 
@@ -44,9 +50,11 @@ L'errore di prospettiva è comprensibile: nei primi passi, «fare
 machine learning» significa scegliere un modello, addestrarlo e misurarne
 l'accuratezza. Tutto questo si sperimenta in un **notebook**, un documento
 interattivo fatto di pezzetti di programma (le *celle*) che si eseguono uno
-alla volta, con il risultato mostrato subito sotto ciascuno. È comodo per
-sperimentare, e di solito il modello nasce lì. Sul proprio computer il
-lavoro sembra finito quando la metrica sui dati di prova è buona.
+alla volta, con il risultato mostrato subito sotto ciascuno.
+
+Il notebook è comodo per sperimentare, e di solito il modello nasce lì. Sul
+proprio computer il lavoro sembra finito quando la metrica sui dati di prova è
+buona.
 
 Un modello che nessuno usa non serve a niente, e la distanza fra
 «funziona nel mio notebook» e «funziona per migliaia di persone, ogni giorno,
@@ -63,20 +71,24 @@ conti che tornano.
 Il modello addestrato è il piatto: la ricetta funziona. MLOps è tutto il resto
 del ristorante, e in un ristorante i guai vengono quasi sempre dal magazzino che
 si svuota, dal fornitore che cambia gli ingredienti, dalla cucina che va tenuta
-pulita ogni giorno, più che dalla ricetta. Per aprire un mese
-prima hai comprato un freezer di seconda mano: il giorno che lo installi non lo
-paghi, lo paghi ogni sera d'estate in cui si ferma e il piatto migliore del
-mondo resta in cucina. Le scorciatoie della fretta si pagano a rate, per anni.
+pulita ogni giorno, più che dalla ricetta.
+
+Ad esempio, per aprire un mese prima hai comprato un freezer di seconda mano:
+il giorno che lo installi non lo paghi, lo paghi ogni sera d'estate in cui si
+ferma e il piatto migliore del mondo resta in cucina. Le scorciatoie della
+fretta si pagano a rate, per anni.
 
 Questa cucina ha una complicazione che una vera non ha: le sue ricette formano
 un equilibrio solo, con le dosi di tutti i piatti tarate insieme sugli
 ingredienti che c'erano, invece di essere scritte una per piatto. Se il
 fornitore cambia i pomodori e si ritarano le ricette sui pomodori nuovi (per il
 modello, lo si riaddestra), si ritarano tutte, e le dosi si spostano anche nei
-piatti che il pomodoro non lo contengono affatto. Anche senza ritarare niente
-il pomodoro nuovo cambia ogni piatto in cui entra, di una quantità che dipende
-da tutti gli altri ingredienti del piatto, che con lui si mescolano. Per questo
-un impianto del genere si tiene d'occhio invece di darlo per finito.
+piatti che il pomodoro non lo contengono affatto.
+
+Anche senza ritarare niente il pomodoro nuovo cambia ogni piatto in cui entra,
+di una quantità che dipende da tutti gli altri ingredienti del piatto, che con
+lui si mescolano. Per questo un impianto del genere si tiene d'occhio invece di
+darlo per finito.
 
 `````
 
@@ -99,8 +111,10 @@ ingresso, aggiungerne o toglierne uno, ritoccare un iperparametro: al
 riaddestramento successivo ognuna di queste modifiche ripesa tutte le altre,
 perché i pesi di tutte le feature si stimano insieme, e una feature che cambia
 ridistribuisce il contributo di quelle correlate con lei, come i coefficienti
-di una regressione con predittori correlati. A modello fermo cambia soltanto
-l'ingresso, ma l'effetto sull'uscita dipende ancora dai valori di tutte le
+di una regressione con predittori correlati.
+
+A modello fermo cambia soltanto l'ingresso, ma l'effetto sull'uscita dipende
+ancora dai valori di tutte le
 altre feature, salvo nei modelli additivi, dove ogni feature contribuisce per
 conto suo. In tutti e due i casi le predizioni si spostano in modi non locali e
 difficili da prevedere. È l'opposto della modularità a cui l'ingegneria del
@@ -115,23 +129,26 @@ Il nome ricalca **DevOps**. Chi costruisce software si divideva in due mondi
 separati: chi scrive i programmi (*Dev*, lo sviluppo) e chi li tiene in
 funzione (*Ops*, le operazioni). DevOps è il modo di lavorare con cui quei due
 mondi hanno smesso di essere separati, e il patto è che tutto ciò che sta in
-mezzo diventi automatico e tracciato. Si conserva ogni versione del programma,
-non soltanto l'ultima. A ogni modifica, senza che nessuno lo chieda, un
-computer di servizio riprende il programma, gli fa passare tutte le prove e, se
-le supera, lo pubblica al posto della versione di prima: quel meccanismo si
-chiama **CI/CD**, dalle iniziali inglesi di «integrazione e distribuzione
-continue», cioè controllo e pubblicazione che avvengono di continuo invece che
-una volta ogni tanto. Infine si sorveglia ciò che è in funzione. Il risultato è
-che pubblicare una versione nuova diventa un'operazione ordinaria invece che una
-notte in bianco.
+mezzo diventi automatico e tracciato.
+
+In concreto, si conserva ogni versione del programma, non soltanto l'ultima. A
+ogni modifica, senza che nessuno lo chieda, un computer di servizio riprende il
+programma, gli fa passare tutte le prove e, se le supera, lo pubblica al posto
+della versione di prima: quel meccanismo si chiama **CI/CD**, dalle iniziali
+inglesi di «integrazione e distribuzione continue», cioè controllo e
+pubblicazione che avvengono di continuo invece che una volta ogni tanto. Infine
+si sorveglia ciò che è in funzione. Il risultato è che pubblicare una versione
+nuova diventa un'operazione ordinaria invece che una notte in bianco.
 
 MLOps prende quella cultura e la porta al ciclo di vita del machine learning
 {cite}`kreuzberger2023machine`, con una complicazione in più che è il cuore di
 tutto. Nel software classico si conserva versione per versione un solo
 artefatto, il codice; qui i pezzi che compongono il lavoro finito (gli
 **artefatti**) sono tre: il codice, i dati e il modello addestrato. Due dei tre
-non sono testo. Gli strumenti con cui il software tiene la propria cronologia
-da decenni sono fatti apposta per il testo: sanno dire quale riga è cambiata
+non sono testo.
+
+Infatti gli strumenti con cui il software tiene la propria cronologia da
+decenni sono fatti apposta per il testo: sanno dire quale riga è cambiata
 fra ieri e oggi. Su una cartella di immagini, o sul file che contiene i pesi
 del modello (i milioni di numeri che l'addestramento ha aggiustato, e in cui
 consiste ciò che il modello ha imparato), quel confronto non ha senso: sono
@@ -199,8 +216,10 @@ Qui sta la differenza più importante con il software che si consegna una volta
 sola: un modello in produzione è un processo da tenere in vita più che un
 risultato da archiviare. Siamo abituati a pensare al machine learning come a
 una linea retta: si raccolgono i dati, si addestra, si valuta, si consegna.
-Fine. La consegna è il punto in cui il modello incontra il mondo reale,
-e il mondo reale cambia. Un modello in produzione va sorvegliato, perché prima
+Fine. La consegna è il punto in cui il modello incontra il mondo
+reale, e il mondo reale cambia.
+
+Un modello in produzione va sorvegliato, perché prima
 o poi i dati che incontra smettono di somigliare a quelli su cui è stato
 addestrato. Quello spostamento, che può essere lento o improvviso
 {cite}`gama2014survey`, ha un nome inglese, *drift*, che si traduce con deriva:
@@ -208,7 +227,7 @@ addestrato. Quello spostamento, che può essere lento o improvviso
 </MachineLearning/dati-che-cambiano>`, lì misurato con gli strumenti della
 statistica, qui affrontato da chi il servizio lo deve tenere acceso. Quando
 succede, si torna all'inizio: nuovi dati, nuovo addestramento. Il percorso si
-chiude in un **anello** ({numref}`fig-mlops-ciclo-vita`).
+chiude quindi in un **anello** ({numref}`fig-mlops-ciclo-vita`).
 
 ```{figure} ../figures/mlops-ciclo-vita.svg
 :name: fig-mlops-ciclo-vita
@@ -294,7 +313,7 @@ l'anello: da lì si ricomincia.
 
 Quattro caselle su cinque vengono *dopo* il notebook, una proporzione da
 tenere a mente. Costruire il modello sta tutto nella prima: la teoria e gli
-attrezzi con cui si addestra una rete, come quelli di {doc}`PyTorch
+strumenti con cui si addestra una rete, come quelli di {doc}`PyTorch
 </PyTorch/overview>`, sono il bagaglio con cui si parte. Il notebook che
 addestra una rete e ne stampa il voto è la riga di partenza, e da lì in poi
 comincia tutto il resto.

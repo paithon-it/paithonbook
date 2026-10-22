@@ -15,8 +15,8 @@ prima di provare a prevederle.
 
 ## Scomporre una serie: trend, stagionalità, residuo
 
-Il primo strumento, più vecchio dei calcolatori, è la **decomposizione**: separare
-una serie nei suoi ingredienti. Ce ne sono tre, e la
+Il primo strumento, più vecchio dei calcolatori, è la **decomposizione**:
+separare una serie nei suoi ingredienti. Ce ne sono tre, e la
 {numref}`fig-serie-decomposizione` li mostra impilati sotto la serie di
 partenza, sullo stesso asse del tempo.
 
@@ -169,8 +169,9 @@ $$
 S^{\text{add}} = (20-45,\ 45-45,\ 80-45,\ 35-45) = (-25,\ 0,\ +35,\ -10).
 $$
 
-Questi scarti sommano a zero: sono scarti *dalla media*, e per definizione di
-media gli scarti positivi pareggiano quelli negativi. La stagionalità
+Si noti che questi scarti sommano a zero, perché sono scarti *dalla media* e,
+per definizione di media, quelli positivi pareggiano quelli negativi. La
+stagionalità
 moltiplicativa è invece il rapporto rispetto al livello:
 
 $$
@@ -195,7 +196,8 @@ sarebbe $82 - (45 + 35) = 2$.
 Le due forme sono poi la stessa scomposizione misurata su due scale, e a
 passare dall'una all'altra basta cambiare unità: contare in percentuali invece
 che in euro trasforma una moltiplicazione in una somma, e il logaritmo fa
-questo: in base dieci il logaritmo di 10 è 1, di 100 è 2, di 1000 è 3, cioè
+proprio questo. In base dieci il logaritmo di 10 è 1, di 100 è 2, di 1000 è 3,
+cioè
 ogni volta che si moltiplica per dieci il logaritmo aggiunge uno. Portata sui
 logaritmi, la stagione della gelateria smette di moltiplicare per $1{,}78$ e
 torna ad aggiungere sempre la stessa cifra. Box e Jenkins presero questa strada
@@ -209,7 +211,7 @@ L’{doc}`apertura del capitolo </SerieTemporali/overview>` ha presentato la
 **stazionarietà** con l'immagine del fiume stabile. Detta per esteso: una serie
 è stazionaria quando il valore attorno a cui balla, l'ampiezza con cui balla e
 il modo in cui due giorni si somigliano restano gli stessi lungo tutta la
-serie. L'ultimo punto è decisivo, e va detto con precisione: due
+serie. L'ultimo punto è decisivo: due
 istanti si somigliano in base a quanto distano fra loro, non a quando cadono
 nel calendario.[^senso-debole]
 
@@ -242,11 +244,10 @@ stessa lettera indica altrove il gradiente, e qui non c'entra, nemmeno quando
 porta un pedice, come nella differenza stagionale.
 
 Sulla serie $100, 110, 120, 130$, che cresce di $10$ a ogni passo, la
-differenziata è $10, 10, 10$: la salita è sparita, resta una costante. Il
-meccanismo si vede benissimo, quindi l'esempio è utile. Su una serie liscia
-come quella si vede soltanto il meccanismo: le serie vere hanno degli scossoni,
-e sono gli scossoni a decidere se differenziare sia la scelta giusta o quella
-sbagliata.
+differenziata è $10, 10, 10$: la salita è sparita, resta una costante. Su una
+serie liscia come quella si vede benissimo il meccanismo, ma soltanto quello:
+le serie vere hanno degli scossoni, e sono gli scossoni a decidere se
+differenziare sia la scelta giusta o quella sbagliata.
 
 Una serie che ha una tendenza ce l'ha di uno di due tipi, e i due chiedono due
 cure diverse. Una tendenza è **deterministica** (la parola dice che la regola è
@@ -290,13 +291,15 @@ passa tutte e due le prove, il resto, tolto il livello, non ha più niente
 dentro, e la serie era una passeggiata aleatoria.
 
 Sapere di averne una davanti serve soprattutto a non farsi ingannare da un
-grafico. La previsione a un passo di una passeggiata aleatoria è, per
-costruzione, l'ultimo valore osservato: disegnata sopra la serie vera, la curva
-prevista la ricalca con un giorno di ritardo, e sembra bravissima. Non ha
+grafico. Ad esempio, la previsione a un passo di una passeggiata aleatoria è,
+per costruzione, l'ultimo valore osservato: disegnata sopra la serie vera, la
+curva prevista la ricalca con un giorno di ritardo, e sembra bravissima. Non ha
 imparato niente, e la prova sta nel fatto che quella previsione è la più
 semplice delle linee di base, «ripeti l'ultimo valore», che la
 {doc}`sezione sulla validazione </SerieTemporali/validazione-e-feature>`
-chiamerà *naive*. Su una serie del genere l'unica previsione onesta a
+chiamerà *naive*.
+
+Su una serie del genere l'unica previsione onesta a
 orizzonte lungo è una retta che parte dall'ultimo valore osservato, piatta se
 la serie non ha una spinta di fondo e inclinata di quella spinta se ce l'ha.
 Attorno, una banda d'incertezza che si allarga come la radice di quanti passi si
@@ -397,8 +400,8 @@ Il $-0{,}50$ dipende da un'ipotesi: che intorno alla retta ci sia rumore
 scossoni si somigliano già fra loro, differenziare ne cancella una parte e il
 numero sale verso lo zero.
 
-Le due operazioni non sono intercambiabili: ciascuna guasta il caso che
-l'altra risolve.
+In sintesi le due operazioni non sono intercambiabili: ciascuna guasta il
+caso che l'altra risolve.
 
 Per la stagionalità si usa la **differenziazione stagionale** $\nabla_m x_t =
 x_t - x_{t-m}$, dove $m$ è la lunghezza del ciclo (12 per dati mensili, 7 per
@@ -1033,7 +1036,8 @@ $$
 
 dove $\hat{L}$ è la verosimiglianza massimizzata e $k$ il numero di parametri.
 Il primo termine penalizza la complessità, il secondo premia l'aderenza: è lo
-stesso compromesso bias-varianza del capitolo sul Machine Learning, espresso in
+stesso compromesso bias-varianza del {doc}`capitolo sul Machine Learning
+</MachineLearning/overview>`, espresso in
 valuta di verosimiglianza invece che di errore su un set di validazione. Il
 BIC di Schwarz {cite}`schwarz1978estimating` ($k\ln n - 2\ln\hat L$, con $n$ il
 numero di osservazioni) penalizza
@@ -1052,8 +1056,8 @@ Athanasopoulos raccomanda sugli ARIMA e che le loro librerie usano di default
 parametri la differenza è di sette centesimi; con quaranta, e sei parametri,
 supera le due unità e cambia la scelta.
 
-Una nota che vale più della formula: l'AIC è una quantità relativa. Il suo
-valore assoluto non significa nulla, contano solo le differenze
+Si noti che l'AIC è una quantità relativa. Il suo valore assoluto non
+significa nulla, contano solo le differenze
 $\Delta_i = \mathrm{AIC}_i - \mathrm{AIC}_{\min}$, e la convenzione d'uso ha
 una lettura precisa: $e^{-\Delta_i/2}$ è la verosimiglianza relativa del
 modello $i$ rispetto al migliore, quindi a $\Delta = 2$ vale $0{,}37$ e il
@@ -1260,7 +1264,9 @@ terzo a $+1{,}5$, e il vero ARMA(2,1) arriva quinto a $+1{,}8$: dal primo
 all'ultimo di questi, tutti stanno dentro le due unità sotto le quali l'AIC non
 indica una preferenza. L'AIC non ha scartato il modello vero, l'ha messo nella
 stessa nuvola d'indifferenza degli altri, il che con seicento osservazioni è la
-verità. Delle sedici stime, una non è arrivata a convergenza, l'ARMA(3,3): il
+verità.
+
+Delle sedici stime, una non è arrivata a convergenza, l'ARMA(3,3): il
 suo AIC non è affidabile, e qui non cambia niente solo perché sta lontano dalla
 testa della classifica.
 
@@ -1578,22 +1584,24 @@ rumore attorno a un livello fisso, e che differenziarla era di troppo.
 
 ## Lo stato che non si vede: il filtro di Kalman
 
-Nel lisciamento esponenziale la manopola $\alpha$ è stata finora una scelta di
-gusto: più grande, e la stima insegue ogni sussulto; più piccola, e reagisce in
-ritardo. Il filtro di Kalman la ricava invece da due incertezze dichiarate:
+Nel lisciamento esponenziale il parametro $\alpha$ è stato finora una scelta
+di gusto: più grande, e la stima insegue ogni sussulto; più piccolo, e reagisce
+in ritardo. Il filtro di Kalman lo ricava invece da due incertezze dichiarate:
 quanto si muove la grandezza che si vuole conoscere, e quanto sbaglia lo
 strumento che la misura. Viene dall'ingegneria dei sistemi di controllo, e
 poggia sul modello a spazio di stato della {doc}`sezione sui sistemi dinamici
 </StateSpaceModel/dai-sistemi-dinamici-a-s4>`: lo stato, una manciata di
 variabili che non si osservano, evolve nel tempo, e la misura ne dà
-un'immagine rumorosa. Rudolf Kálmán pubblicò la ricetta per aggiornare la
+un'immagine rumorosa.
+
+Rudolf Kálmán pubblicò il metodo per aggiornare la
 stima dello stato a ogni misura nuova nel 1960 {cite}`kalman1960new`; il ciclo
 su cui poggia (prevedere lo stato, guardare la misura, correggere) l'avevano
 già scritto l'astronomo danese Thorvald Thiele nel 1880 e, alla fine degli anni
 Cinquanta, Ruslan Stratonovich e Peter Swerling {cite}`russell2020artificial`,
 e il nome è rimasto a Kálmán perché è la sua versione che l'ingegneria ha
-adottato. Il lisciamento esponenziale ne è un caso particolare, e la sua
-manopola, vista da lì, smette di essere una questione di gusto.
+adottato. Il lisciamento esponenziale ne è un caso particolare, e il suo
+parametro, visto da lì, smette di essere una questione di gusto.
 
 `````{tab} Elementare
 
@@ -1723,7 +1731,7 @@ La quantità $x_t - \hat{\ell}_{t|t-1}$ è l’**innovazione**, cioè la parte d
 misura che il modello non aveva previsto, e $K_t \in (0,1)$ dice quanta parte
 di quella sorpresa entra nella stima. Il guadagno è grande quando l'incertezza
 sulla previsione supera quella della misura, e piccolo nel caso opposto: è un
-rapporto fra i gradi di fiducia, non una costante da tarare.
+rapporto fra i gradi di fiducia, non una costante da calibrare.
 
 La garanzia è forte. Sotto linearità e rumore
 gaussiano, $\hat{\ell}_t$ è la media della distribuzione a posteriori dello
@@ -1877,7 +1885,7 @@ stime: dal centesimo passo in poi la differenza non supera $0{,}0000000002$, e
 il numero stampato accanto, $0{,}8$ elevato a cento, è dello stesso ordine non
 per caso. Le due ricorsioni partono da punti diversi, e la distanza fra loro si
 riduce di un fattore $0{,}8$ a ogni passo: è la memoria dell'inizio che si
-esaurisce, non l'arrotondamento del calcolatore. Sul valore vero, che qui si
+esaurisce, non l'arrotondamento del computer. Sul valore vero, che qui si
 conosce perché è stato generato apposta, lo scarto quadratico medio della
 misura grezza è $0{,}9752$ e quello del filtro $0{,}4171$, contro un valore
 teorico a regime di $0{,}4472$: meno della metà, senza guardare nemmeno un dato
@@ -1895,7 +1903,7 @@ $0{,}9752$), mentre l'altro resta appena sotto ($0{,}9551$). Il sordo è anche
 il più insidioso dei due, perché produce una curva liscia e convincente che si
 allontana dalla realtà con calma.
 
-La stessa ricetta vale ben oltre il lisciamento esponenziale, quindi sta in
+La stessa procedura vale ben oltre il lisciamento esponenziale, quindi sta in
 mezzo ai modelli classici. Scritto in forma di spazio di stato, anche un ARIMA
 ha uno stato nascosto e una misura rumorosa: il filtro passa una volta sui
 dati, calcola dalle innovazioni quanto quel modello è d'accordo con la serie
@@ -1910,7 +1918,9 @@ Le competizioni M di Spyros Makridakis, quelle presentate nell'apertura,
 misurano da quarant'anni come se la cavano i metodi statistici semplici (ARIMA,
 Holt-Winters e le loro medie) contro metodi più complessi, e per molti anni li
 hanno visti vincere; nella M4 del 2018 vinse un ibrido, che di quei metodi
-conservava un pezzo. La quinta edizione, la M5 del 2020, ha spostato il quadro
+conservava un pezzo.
+
+La quinta edizione, la M5 del 2020, ha spostato il quadro
 in un punto preciso. Le serie erano quarantaduemila, le vendite giornaliere dei
 negozi Walmart, organizzate a piramide: il singolo prodotto in un negozio, poi
 il reparto, il negozio, lo stato, e ogni livello è la somma di quelli sotto
@@ -1929,7 +1939,9 @@ Le ragioni per cui i classici restano così difficili da battere sono tre. La
 rumore, e rincorrere il rumore è il modo migliore di sbagliare sul futuro,
 perché il rumore di domani non è quello di ieri. Quel poco che impara, allora,
 ha buone probabilità di valere anche sui giorni che non ha visto, e questo vale
-pure quando la serie è corta o disturbata. La **frugalità di dati**: gran parte
+pure quando la serie è corta o disturbata.
+
+La **frugalità di dati**: gran parte
 delle serie reali (le vendite mensili di un prodotto, i pazienti di un reparto)
 hanno poche decine o centinaia di osservazioni, troppo poche per addestrare una
 rete affamata di dati, più che sufficienti per un ARIMA. Terza,
@@ -2099,8 +2111,8 @@ cresce da meno di un sesto dell'errore standard a quasi la metà.
 
 `````
 
-Con questo abbiamo la cassetta degli attrezzi classica: decomposizione per
-capire, ARIMA e Holt-Winters per prevedere, ACF e PACF per diagnosticare. La
+Con questo abbiamo gli strumenti classici: decomposizione per capire, ARIMA e
+Holt-Winters per prevedere, ACF e PACF per diagnosticare. La
 {doc}`sezione su validazione e feature </SerieTemporali/validazione-e-feature>`
 affronta la domanda finora lasciata da parte, cioè come si valida un modello di
 serie temporale senza barare col futuro, e poi come si trasformano le serie in

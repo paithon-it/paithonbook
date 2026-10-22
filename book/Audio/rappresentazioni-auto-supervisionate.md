@@ -25,14 +25,17 @@ per uno.
 Una rappresentazione è *migliore* di un'altra quando mette vicini i frammenti
 che si somigliano nel suono e lontani quelli diversi. Ogni vettore è un punto
 in uno spazio da qualche centinaio di dimensioni (una per numero): le «s»
-stanno in una regione, le «a» in un'altra, i colpi di tamburo altrove. Il
-criterio pratico è il *sondaggio lineare* di {doc}`Imparare a vedere senza
+stanno in una regione, le «a» in un'altra, i colpi di tamburo altrove.
+
+Il criterio pratico è il *sondaggio lineare* di {doc}`Imparare a vedere senza
 etichette </VisioneArtificiale/senza-etichette>`, trasportato sul suono. La
 rappresentazione si congela, cioè non la si ritocca più, e sopra le si addestra
 un classificatore lineare, che separa le classi con un taglio dritto: se le
 classi che interessano («che vocale è?», «che strumento sta suonando?») si
-separano così, la rappresentazione le contiene già in forma pronta. Anche lo
-spettrogramma (e con lui la scala mel e gli MFCC) della sezione {doc}`Dal suono
+separano così, la rappresentazione le contiene già in forma pronta.
+
+Anche lo spettrogramma (e con lui la scala mel e gli MFCC) della
+sezione {doc}`Dal suono
 alle feature
 </Audio/dal-suono-alle-feature>` era una rappresentazione, ma l'avevamo
 disegnata noi; qui la costruisce il modello.
@@ -47,25 +50,26 @@ dei grandi modelli pre-addestrati come BERT. Nell'audio lo stesso passaggio è
 arrivato fra il 2018 e il 2020: la *Contrastive Predictive Coding*
 {cite}`oord2018representation` ha dato la perdita, wav2vec
 {cite}`schneider2019wav2vec` l'ha applicata al parlato, e wav2vec 2.0 ha
-aggiunto il mascheramento e le unità discrete. È la storia che segue.
+aggiunto il mascheramento e le unità discrete. Ne ripercorriamo i passaggi.
 
 ## Il problema delle etichette
 
-Il problema è di conti, e si fa in fretta. Un'ora di parlato richiede a un
-trascrittore diverse ore di lavoro; le ore di parlato che servirebbero sono
-migliaia; e per una lingua parlata da poche persone quel lavoro non lo ha fatto
-mai nessuno e non lo farà. Le etichette, cioè le risposte giuste scritte da
-un umano accanto a ogni esempio, sono il fattore che limita tutto il resto.
+Il problema è di conti, e si fa in fretta. Un'ora di parlato
+richiede a un trascrittore diverse ore di lavoro; le ore di parlato che
+servirebbero sono migliaia; e per una lingua parlata da poche persone quel
+lavoro non lo ha fatto mai nessuno e non lo farà. Le etichette, cioè le
+risposte giuste scritte da un umano accanto a ogni esempio, sono quindi il
+fattore che limita tutto il resto.
 
 La via d'uscita è spezzare l'apprendimento in due tempi. Prima il
 *pre-addestramento*, una lunga fase su una massa enorme di audio senza
-risposte, con un obiettivo costruito dai dati stessi; poi il *fine-tuning*, una
-breve rifinitura sul compito vero con le poche etichette che si hanno. È la
+risposte, con un obiettivo costruito dai dati stessi; poi il *fine-tuning*,
+una breve rifinitura sul compito vero con le poche etichette che si hanno. È la
 stessa procedura dei modelli linguistici del {doc}`capitolo sui Transformer
 </Transformers/overview>`, e del *transfer learning* della visione artificiale.
 La prima fase è quella costosa (la versione grande di wav2vec 2.0, il modello
 che segue, ha occupato 128 GPU per più di due giorni, e per più di cinque
-sull'archivio di audio più grande {cite}`baevski2020wav2vec`), e il suo
+sull'archivio di audio più grande {cite}`baevski2020wav2vec`), ma il suo
 risultato si riusa per un compito dopo l'altro.
 
 `````{tab} Elementare
@@ -112,10 +116,10 @@ learning nella visione, trasferita al dominio del suono.
 
 Il sondaggio lineare ha però un'ipotesi taciuta: *quale* strato si sonda.
 $F_\theta$ è una pila di strati, e ciascuno dà una rappresentazione diversa.
-In wav2vec 2.0 gli ultimi strati tornano a somigliare all'ingresso, perché
-l'obiettivo di pre-addestramento chiede di riconoscere il segnale coperto,
-mentre l'informazione fonetica e lessicale si concentra negli strati intermedi
-{cite}`pasad2021layer`. Per questo la valutazione standard,
+In wav2vec 2.0, ad esempio, gli ultimi strati tornano a somigliare
+all'ingresso, perché l'obiettivo di pre-addestramento chiede di riconoscere il
+segnale coperto, mentre l'informazione fonetica e lessicale si concentra negli
+strati intermedi {cite}`pasad2021layer`. Per questo la valutazione standard,
 SUPERB {cite}`yang2021superb`, tiene congelato l'encoder e addestra, insieme
 alla testa del compito, una somma pesata delle uscite di tutti gli strati: la
 rappresentazione «giusta» la sceglie il compito.
@@ -126,7 +130,7 @@ rappresentazione «giusta» la sceglie il compito.
 
 Il modello che rende questa idea pienamente convincente per il parlato è
 **wav2vec 2.0**, di Alexei Baevski e colleghi a Facebook AI (il laboratorio
-che oggi si chiama Meta AI) nel 2020 {cite}`baevski2020wav2vec`. La ricetta
+che oggi si chiama Meta AI) nel 2020 {cite}`baevski2020wav2vec`. Lo schema
 ricalca il «gioco della parola coperta» che nel testo ha reso grande BERT (il
 *cloze test*, riempire il buco in una frase) ma applicato a pezzetti di suono
 invece che a parole ({numref}`fig-wav2vec-parte-coperta`).
@@ -154,12 +158,16 @@ un'impresa disperata. Il modello ha davanti un elenco di pezzetti-tipo, una
 specie di alfabeto sonoro: ognuno si chiama **unità**. Le lettere di questo
 alfabeto sono molto più fini di quelle di una lingua: ognuna copre due
 centesimi di secondo, meno di quanto duri una vocale pronunciata intera, quindi
-per dire una «a» ce ne vogliono parecchie in successione. L'elenco lo
+per dire una «a» ce ne vogliono parecchie in successione.
+
+L'elenco lo
 costruisce il modello stesso, ma come fa a scriverlo, se non sa ancora niente
 del suono? Lo scrive male, all'inizio, e lo riscrive man mano che impara, come
 chi ascolta una lingua straniera e all'inizio non sa quali suoni facciano
 differenza: lo scopre ascoltando, e intanto continua ad ascoltare con
-l'orecchio che ha. Sotto la parte coperta c'è una di quelle unità, e il gioco è
+l'orecchio che ha.
+
+Sotto la parte coperta c'è una di quelle unità, e il gioco è
 indovinare quale: gli si mette davanti quella giusta insieme a un centinaio di
 unità sbagliate (i «distrattori») e deve solo riconoscerla. È un test a
 risposta multipla, e per rispondere bene l'orecchio è costretto a capire come è
@@ -194,10 +202,12 @@ Transformer $g$ legge $\mathbf{Z}$
 $\mathbf{C} = (\mathbf{c}_1, \dots, \mathbf{c}_T)$, in cui ogni $\mathbf{c}_t$
 tiene conto dell'intera frase. In
 parallelo, un modulo di quantizzazione sostituisce ogni $\mathbf{z}_t$ con una
-voce di un dizionario appreso (in gergo, *product quantization*: due codebook
+voce di un dizionario appreso (in gergo, **product quantization**: due codebook
 da 320 voci ciascuno, e le due voci scelte si concatenano). Piccoli sono i due
 codebook, non l'alfabeto che ne esce: le combinazioni possibili sono
-$320^2 = 102\,400$. La concatenazione passa poi per una trasformazione lineare,
+$320^2 = 102\,400$.
+
+La concatenazione passa poi per una trasformazione lineare,
 che è il passaggio che la porta nello stesso spazio di $\mathbf{c}_t$ e senza
 il quale il confronto fra i due non si potrebbe nemmeno fare;
 il risultato è il bersaglio discreto $\mathbf{q}_t$, cioè il modo di darsi un
@@ -227,8 +237,8 @@ $$
 
 In avanti si usa la voce $\arg\max_v p_{g,v}$, cioè un vettore one-hot;
 all'indietro si propaga il gradiente delle $p_{g,v}$ morbide, come se il
-one-hot fosse la $p_{g,v}$ stessa. È lo *straight-through*, che rende
-derivabile una scelta discreta, e a questo punto $\tau$ conta: più è bassa, più le
+one-hot fosse la $p_{g,v}$ stessa. È lo **straight-through**, che rende
+derivabile una scelta discreta; a questo punto $\tau$ conta: più è bassa, più le
 $p_{g,v}$ morbide somigliano al one-hot che sostituiscono.
 
 L'obiettivo è **contrastivo**. Per ogni passo mascherato $t$, dato il vettore
@@ -256,15 +266,18 @@ $\kappa$ è la temperatura del contrastivo, e il nome è quello del paper, che
 aveva già riservato $\tau$ per la Gumbel-softmax. Altrove la stessa temperatura
 si indica spesso con $\tau$, creando possibile confusione. La perdita è il meno
 logaritmo di una softmax, e scende quando il modello assegna a $\mathbf{q}_t$
-la probabilità più alta. Il nome viene dall'informazione mutua: con $N = K + 1$
+la probabilità più alta.
+
+Il nome InfoNCE viene dall'informazione mutua: con $N = K + 1$
 candidati vale $I(\mathbf{c}_t; \mathbf{q}_t) \ge \log N - \mathcal{L}_m$
 {cite}`oord2018representation`, quindi minimizzare $\mathcal{L}_m$ alza un
 limite inferiore dell'informazione che il contesto porta sull'unità coperta. Il
 limite però non supera $\log N$, cioè $\log 101 \approx 4{,}6$ nat con $K =
-100$: più distrattori lo alzano, e richiedono più calcolo. Accanto le sta il
-termine di diversità, e la ragione la dà il paper: se il dizionario collassa su
-poche voci, il bersaglio e i distrattori diventano la stessa cosa e il compito
-degenera. La perdita completa è
+100$: più distrattori lo alzano, e richiedono più calcolo.
+
+Alla perdita si affianca il termine di diversità, e la ragione la dà il
+paper: se il dizionario collassa su poche voci, il bersaglio e i distrattori
+diventano la stessa cosa e il compito degenera. La perdita completa è
 
 $$
 \mathcal{L} = \mathcal{L}_m + \alpha\,\mathcal{L}_d,
@@ -277,11 +290,14 @@ dove $\bar{\mathbf{p}}_g$ è la softmax dei logit del gruppo $g$ mediata sui
 frame del batch, $H$ l'entropia e $\alpha = 0{,}1$: minimizzare $\mathcal{L}_d$
 equivale a massimizzare l'entropia dell'uso medio, che tocca il massimo $\log V$
 quando le $V$ voci sono scelte con la stessa frequenza. La misura è di batch:
-al singolo frame si chiede una scelta netta, al batch di spenderle tutte. Il
-mascheramento ha due numeri soli: si estrae come inizio di un tratto il
+al singolo frame si chiede una scelta netta, al batch di spenderle tutte.
+
+Il mascheramento ha due numeri soli: si estrae come inizio di un tratto il
 $6{,}5\%$ dei passi, e da ciascuno si coprono i dieci successivi, con
-sovrapposizioni ammesse, sicché resta coperto circa il $49\%$ dei passi, in
-tratti lunghi in media $299$ ms. A valle, con una testa CTC su pochissime
+sovrapposizioni ammesse, quindi resta coperto circa il $49\%$ dei passi, in
+tratti lunghi in media $299$ ms.
+
+A valle, con una testa CTC su pochissime
 etichette, la versione grande di wav2vec 2.0 raggiunge un tasso di errore sulle
 parole (in sigla WER, *word error rate*: la quota di parole da correggere,
 metrica che il capitolo sullo Speech Recognition spiegherà da capo) di
@@ -300,7 +316,9 @@ segno dell'inadeguatezza del modello acustico preso isolatamente); con un modell
 di lingua a 4-grammi si passa
 a $6{,}6/10{,}3$, e solo con quello Transformer si arriva a $4{,}8/8{,}2$. Fra il
 primo e l'ultimo l'errore si divide per otto sul test pulito e per quasi cinque
-su quello difficile. Il pre-addestramento risolve il problema
+su quello difficile.
+
+In definitiva, il pre-addestramento risolve il problema
 delle etichette acustiche, non sostituisce il modello di lingua: è una
 distinzione che il capitolo sullo Speech Recognition riprende quando
 elenca i pezzi di una pipeline di riconoscimento.
@@ -315,7 +333,9 @@ contestuale $\mathbf{c}$, si usa la similarità del coseno di
 {doc}`Rappresentare il testo </NaturalLanguageProcessing/rappresentare-testo>`,
 la stessa che là confrontava due parole: 1 quando i due vettori puntano nella
 stessa direzione, 0 quando sono perpendicolari, $-1$ quando puntano in versi
-opposti. I cinque punteggi, divisi per la temperatura $\kappa$, passano poi per
+opposti.
+
+I cinque punteggi, divisi per la temperatura $\kappa$, passano poi per
 una softmax, che li riscala in modo che sommino a uno: si leggono come la
 fiducia che il modello mette su ciascun candidato, e il meno logaritmo di
 quella del candidato giusto è la perdita $\mathcal{L}_m$, calcolata per un
@@ -362,7 +382,7 @@ scelto: 0 (0 = unita' giusta)
 perdita L_m: 0.398
 ```
 
-L'unità giusta vince, ma il margine merita uno sguardo: si prende due terzi
+L'unità giusta vince, ma di poco: si prende due terzi
 della probabilità, e un distrattore pescato a caso se ne prende un quarto. La
 perdita vale $0{,}398$, contro il $\log 5 \approx 1{,}609$ di un modello che
 puntasse a caso su cinque candidati. Il margine stretto ha una causa precisa: i
@@ -405,15 +425,16 @@ pezzetti-tipo fra cui il modello deve riconoscere quello giusto lo produce un
 quantizzatore che si addestra insieme al resto. Se quell'elenco, il
 *codebook*, si riduce a poche voci, bersaglio e distrattori coincidono e il
 compito diventa banale; una penalità apposta, il termine di diversità, lo
-impedisce, ma è un equilibrio da tenere mentre l'elenco si muove. Nel 2021
-Wei-Ning Hsu e colleghi, sempre a Facebook AI, propongono con **HuBERT**
-(*Hidden-Unit BERT*) {cite}`hsu2021hubert` di fissare i bersagli prima
-dell'addestramento, come aveva già fatto DiscreteBERT con le unità di un
+impedisce, ma è un equilibrio da tenere mentre l'elenco si muove.
+
+Nel 2021 Wei-Ning Hsu e colleghi, sempre a Facebook AI, propongono con
+**HuBERT** (*Hidden-Unit BERT*) {cite}`hsu2021hubert` di fissare i bersagli
+prima dell'addestramento, come aveva già fatto DiscreteBERT con le unità di un
 quantizzatore pre-addestrato {cite}`baevski2020effectiveness`, e di cambiarne
-la fonte: il modello si dà da
-sé delle **pseudo-etichette**, raggruppando le feature dell'audio, e impara a
-predirle sui tratti coperti, come BERT predice la parola mascherata. Il giro
-completo, con i numeri delle due passate, è in {numref}`fig-anello-hubert`.
+la fonte: il modello si dà da sé delle **pseudo-etichette**, raggruppando le
+feature dell'audio, e impara a predirle sui tratti coperti, come BERT predice
+la parola mascherata. Il ciclo completo, con i numeri delle due passate, è in
+{numref}`fig-anello-hubert`.
 
 ```{figure} ../figures/anello-hubert.svg
 :name: fig-anello-hubert
@@ -454,7 +475,9 @@ HuBERT alterna due passi. **Passo di clustering** (offline): si estraggono
 feature dall'audio e le si raggruppa con un semplice k-means, ottenendo per
 ogni frame (una posizione della finestra che scorre sul segnale) un'etichetta
 discreta $u_t \in \{1, \dots, C\}$, l’«unità nascosta», dove $C$ è il numero di
-cluster ed è l'intero inventario discreto. Questa lettera viene dal paper e
+cluster ed è l'intero inventario discreto.
+
+Questa lettera viene dal paper e
 distingue l'inventario totale dalla $V$ di wav2vec 2.0, che indica le voci di *uno*
 solo dei codebook (lì l'inventario totale è il prodotto dei due, con oltre
 centomila combinazioni, mentre qui corrisponde al solo $C$). Inoltre $u_t$ è un
@@ -463,14 +486,18 @@ wav2vec 2.0 che rappresenta l'uscita dell'encoder, cioè l'ingresso della
 quantizzazione e non il bersaglio. Il bersaglio di wav2vec 2.0 è
 $\mathbf{q}_t$, anch'esso discreto: la differenza fra i due metodi sta in chi
 lo fissa e quando, un quantizzatore addestrato insieme al modello là, un
-k-means rifatto fuori linea qui. Nella prima iterazione le feature sono 39
+k-means rifatto fuori linea qui.
+
+Nella prima iterazione le feature sono 39
 coefficienti per frame, i 13 MFCC con le loro derivate prime e seconde,
 raggruppati in cento cluster; nella seconda, le uscite del sesto strato del
 Transformer della prima iterazione, raggruppate in cinquecento. Le versioni
 LARGE e X-LARGE non ripartono da zero: si raggruppano le uscite del nono strato
 del BASE di seconda iterazione, e sono quindi, a tutti gli effetti, una terza
-iterazione. **Passo di predizione mascherata**: si sceglie come inizio di un
-tratto l'8 % dei frame e se ne coprono i dieci successivi (la stessa ricetta di
+iterazione.
+
+**Passo di predizione mascherata**: si sceglie come inizio di un
+tratto l'8 % dei frame e se ne coprono i dieci successivi (lo stesso schema di
 wav2vec 2.0, con un'altra proporzione); sull'insieme $M$ dei frame mascherati
 si addestra il modello, alla BERT, a predire le pseudo-etichette:
 
@@ -493,8 +520,9 @@ Il metodo funziona pur partendo da etichette rozze, perché conta la
 *coerenza* del clustering e non la sua correttezza: se il k-means assegna lo
 stesso simbolo a frame acusticamente simili, predire quel simbolo forza il
 modello a modellare la struttura del segnale. L'iterazione chiude il cerchio:
-rappresentazioni migliori $\to$ cluster migliori $\to$ bersagli migliori. A
-parità di condizioni HuBERT sta appaiato a wav2vec 2.0 nei regimi a basse
+rappresentazioni migliori $\to$ cluster migliori $\to$ bersagli migliori.
+
+A parità di condizioni HuBERT sta appaiato a wav2vec 2.0 nei regimi a basse
 risorse su Librispeech: a dieci minuti di etichette fa $4{,}7/7{,}6$ contro
 $4{,}8/8{,}2$, cioè un decimo di punto sul pulito e sei decimi sul difficile, e
 a cento ore gli autori stessi dichiarano due casi in cui resta indietro di un
@@ -522,7 +550,9 @@ riconoscimento vocale, in sigla **ASR**, dall'inglese *automatic speech
 recognition*, a cui è dedicato il capitolo sullo Speech Recognition. Servono
 soprattutto dove le trascrizioni scarseggiano: una lingua parlata da poche
 persone, un dialetto, un ambito specialistico di cui nessuno ha mai raccolto
-registrazioni annotate. Si parte da un encoder che ha ascoltato decine di
+registrazioni annotate.
+
+In pratica, si parte da un encoder che ha ascoltato decine di
 migliaia di ore senza etichette e gli si mostrano le poche ore trascritte che
 esistono: con un'ora sola di trascrizioni wav2vec 2.0 supera il miglior
 risultato ottenuto fino ad allora con cento ore, e con dieci minuti, più un
@@ -545,7 +575,9 @@ Due seguiti di HuBERT mostrano dove la ricetta si allarga. **WavLM**
 sovrappone all'enunciato un rumore o un secondo enunciato e chiede di predire
 le unità di quello principale, così che il modello impari a distinguere chi
 parla da ciò che gli sta intorno; addestrato su 94.000 ore, alla sua
-pubblicazione ha dato i risultati migliori su SUPERB. **BEATs** porta lo schema
+pubblicazione ha dato i risultati migliori su SUPERB.
+
+**BEATs** porta lo schema
 all'audio generale. Copre tre tessere dello spettrogramma su quattro, e il
 bersaglio non viene da un k-means sugli MFCC ma da un *tokenizzatore acustico*
 che si addestra a sua volta, per distillazione dal modello dell'iterazione
@@ -566,16 +598,18 @@ risale al suono, e l'alfabeto con cui il suono si rifà è un altro, quello dei
 Queste rappresentazioni codificano soprattutto il contenuto acustico e
 fonetico del segnale: quali suoni ci sono, in che ordine, con che timbro. È ciò
 che il gioco della parte coperta premia, perché indovinare un'unità coperta non
-chiede di capire che cosa la frase voglia dire. Il significato non ne resta
-escluso del tutto: con una testa addestrata sopra, gli stessi encoder
-riconoscono l'intenzione di una richiesta o i dati da estrarne (sono compiti
-semantici di SUPERB), e le analisi strato per strato trovano informazione
-sulle parole negli strati intermedi {cite}`pasad2021layer`. È però un significato
-che va estratto con delle etichette, o affidato a un modello di lingua; il
-pre-addestramento garantisce l'orecchio. L'ironia di una frase, che
-dipende dal contesto e da come la si dice, non è detto che stia in una
-rappresentazione addestrata a indovinare suoni. Il pre-addestramento audio
-risolve il problema delle etichette, non quello della comprensione.
+chiede di capire che cosa la frase voglia dire.
+
+Il significato non ne resta escluso del tutto: con una testa addestrata sopra,
+gli stessi encoder riconoscono l'intenzione di una richiesta o i dati da
+estrarne (sono compiti semantici di SUPERB), e le analisi strato per strato
+trovano informazione sulle parole negli strati intermedi
+{cite}`pasad2021layer`. È però un significato che va estratto con delle
+etichette, o affidato a un modello di lingua; il pre-addestramento garantisce
+l'orecchio. L'ironia di una frase, che dipende dal contesto e da come la si
+dice, non è detto che stia in una rappresentazione addestrata a indovinare
+suoni. Il pre-addestramento audio risolve il problema delle etichette, non
+quello della comprensione.
 
 `````{tab} Elementare
 
@@ -590,9 +624,10 @@ risolve il problema delle etichette, non quello della comprensione.
   finiscano vicini.
 - wav2vec 2.0 gioca al gioco della parola coperta: nasconde dei tratti di
   audio e chiede di riconoscere quello giusto in mezzo a un centinaio di
-  distrattori, come un test a crocette. Con dieci minuti di parlato trascritto
-  arriva dove prima servivano cento ore, purché ad aiutarlo ci sia anche un
-  modello che sa com'è fatta la lingua.
+  distrattori, come un test a crocette. Con un'ora sola di parlato trascritto
+  fa meglio di quanto prima si otteneva con cento ore; con dieci minuti, se lo
+  aiuta un modello che sa com'è fatta la lingua, sbaglia meno di cinque parole
+  su cento.
 - HuBERT cambia gioco: si inventa un alfabeto provvisorio raggruppando i
   suoni che si somigliano, poi si allena a indovinare *quale simbolo* stava
   sotto la parte coperta, e ogni tanto rifà l'alfabeto meglio di prima. Non

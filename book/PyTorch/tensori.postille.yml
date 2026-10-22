@@ -1,0 +1,14 @@
+# Le postille di questa pagina, una per capoverso del testo comune.
+# Ognuna vale finché la sua impronta combacia col testo del capoverso.
+- inizio: "Dentro PyTorch ogni cosa è un"
+  impronta: "8d0de1cfa210"
+  postilla: "Autograd registra le operazioni e ne dà le derivate: senza, niente apprendimento"
+- inizio: "Nella {doc}`sezione di algebra lineare </Matematica/algebra-lineare>`"
+  impronta: "85748a2ac170"
+  postilla: "Il tensore aggiunge assi a scalare, vettore e matrice; l'asse conta posizioni"
+- inizio: "Per sapere in che verso modificare"
+  impronta: "85abe8ed7839"
+  postilla: "Per ridurre la loss, ogni parametro si sposta contro il segno della sua derivata"
+- inizio: "In questo caso i valori intermedi"
+  impronta: "9bc7318407c1"
+  postilla: "Spegnere il grafo evita di riempire la memoria, ma non svuota quella già piena"

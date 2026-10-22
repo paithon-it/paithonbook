@@ -1,0 +1,14 @@
+# Le postille di questa pagina, una per capoverso del testo comune.
+# Ognuna vale finché la sua impronta combacia col testo del capoverso.
+- inizio: "I bit sono le cifre binarie"
+  impronta: "1b5fbd442371"
+  postilla: "I byte dei pesi seguono i bit per peso, e niente obbliga a fermarsi ai sedici"
+- inizio: "I formati portano il nome che"
+  impronta: "89e91edb5f31"
+  postilla: "Da non starci a starci quattro volte e mezzo: stessi parametri con meno cifre"
+- inizio: "Le tre leve si vedono meglio"
+  impronta: "7b125c542988"
+  postilla: "Le tre leve su una matrice di pesi: valori, elementi non nulli, forma"
+- inizio: "C'è poi una quarta strada per"
+  impronta: "40f754ebeec6"
+  postilla: "Calcoli già fatti, richieste insieme, bozze: altrove, il modello non cambia"

@@ -1,0 +1,79 @@
+%% Le postille in stampa: una nota nel margine esterno, accanto alla prima
+%% riga del capoverso che accompagna.
+%%
+%% `\ptPostilla{impronta}{testo}` sta in testa al capoverso e
+%% `\ptFineCapoverso{impronta}` in fondo; li mette `_ext/pt_postille.py`, col
+%% testo gia' protetto per LaTeX. La nota esce in Inter corsivo 7 su 8,5, color
+%% inchiostro medio, a bandiera col bordo dritto verso il testo: a sinistra
+%% sulle pagine pari, a destra sulle dispari.
+%%
+%% `marginfix` tiene ogni nota dentro la pagina: una nota che in fondo alla
+%% pagina non ci starebbe la sposta in su invece di farla uscire dal blocco del
+%% testo. Spostata, pero', non sta piu' accanto al suo capoverso, e LaTeX non lo
+%% segnala. Per questo ogni nota scrive in `\jobname.ptp` dove sono finiti
+%% l'inizio e la fine del suo capoverso e la prima e l'ultima riga della nota,
+%% e `scripts/genera-pdf.py` li confronta dopo la build.
+%%
+%% Le righe del file: `fondoblocco <dimensione>`, una volta; poi
+%% `<che cosa> <impronta> <pagina> <y>`, con la pagina contata dall'inizio del
+%% file e la y in sp, misurata dal fondo della pagina sulla linea di base. La
+%% pagina la conta il pacchetto, con un contatore che sale a ogni pagina
+%% spedita: il numero stampato in pagina non serve, perche' la parte iniziale
+%% e' in cifre romane.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{ptpostille}[2026/10/20 Postille a margine]
+\RequirePackage{xcolor}
+\RequirePackage{marginfix}
+\RequirePackage{ragged2e}
+
+\ifdefined\pdfsavepos
+  \let\pt@salva\pdfsavepos
+  \let\pt@ultimay\pdflastypos
+\else
+  \let\pt@salva\savepos
+  \let\pt@ultimay\lastypos
+\fi
+
+\newcount\pt@pagina
+\AddToHook{shipout/before}{\global\advance\pt@pagina\@ne}
+
+\newwrite\pt@posizioni
+\AtBeginDocument{%
+  \immediate\openout\pt@posizioni=\jobname.ptp\relax
+  \immediate\write\pt@posizioni{fondoblocco \the\dimexpr\paperheight-1in
+    -\voffset-\topmargin-\headheight-\headsep-\textheight\relax}%
+}
+
+\newcommand\pt@segna[2]{%
+  \pt@salva\write\pt@posizioni{#2 #1 \the\pt@pagina\space\the\pt@ultimay}}
+
+%% `\linespread{1}`: l'allargamento dell'interlinea che vale per il testo non
+%% vale per la nota, che resta 7 su 8,5.
+\newcommand\ptPostillaStile{%
+  \linespread{1}\fontsize{7}{8.5}\selectfont\itshape\color{ptInchiostroMedio}}
+
+%% La prima riga della nota sta sulla prima riga del capoverso. `marginfix`
+%% mette la cima della nota dove sta la cima dello strut della riga di testo,
+%% contata dal fondo della riga: la linea di base della nota dipenderebbe dalle
+%% lettere della sua prima riga e da quanto scende la riga di testo. Lo strut
+%% in testa al capoverso fissa la discesa della riga, e il filetto invisibile in
+%% testa alla nota, alto quanto lo strut meno la sua discesa, porta la prima
+%% linea di base della nota sulla linea di base del testo.
+%%
+%% Il `\par` sta dentro il gruppo perche' un capoverso prende l'interlinea in
+%% vigore quando finisce: chiuso dopo il gruppo, la nota avrebbe l'interlinea
+%% del testo invece di 8,5 pt, e sarebbe alta una volta e mezza.
+\newdimen\pt@alzata
+\newcommand\pt@testanota{%
+  \pt@alzata\dimexpr\ht\strutbox-\dp\strutbox\relax}
+\newcommand\pt@primariga{%
+  \leavevmode\vrule\@width\z@\@height\pt@alzata\@depth\z@\relax}
+\newcommand\ptPostilla[2]{%
+  \leavevmode\strut\pt@segna{#1}{inizio}%
+  \marginpar[{\pt@testanota\ptPostillaStile\RaggedLeft
+      \pt@primariga\pt@segna{#1}{cima}#2\pt@segna{#1}{fondo}\par}]%
+    {{\pt@testanota\ptPostillaStile\RaggedRight
+      \pt@primariga\pt@segna{#1}{cima}#2\pt@segna{#1}{fondo}\par}}%
+}
+
+\newcommand\ptFineCapoverso[1]{\pt@segna{#1}{fine}}

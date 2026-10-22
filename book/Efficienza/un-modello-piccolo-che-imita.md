@@ -7,18 +7,18 @@ sarebbe potuta prendere per un 8».
 
 Il secondo maestro ha detto la stessa cosa del primo più qualcos’altro, e quel
 qualcos’altro non riguarda quella cifra soltanto: riguarda come sono fatte le
-cifre. Che 7 e 1 si somiglino, e 7 e 8 no, il maestro l’ha imparato in anni di
-cifre lette, e l’etichetta «7» non lo trasmette.
+cifre. Il maestro ha imparato in anni di cifre lette che 7 e 1 si somigliano e
+7 e 8 no; l’etichetta «7» non lo trasmette.
 
 La distillazione è il modo di passare quel sapere a un modello piccolo, e la
 domanda interessante è che cosa passi, oltre all’etichetta.
 
 ## Che cosa c’è dentro un «quasi»
 
-Le due leve precedenti stringevano un modello già fatto. Qui si fa un’altra
-cosa: si costruisce un modello nuovo, piccolo fin dall’inizio, e lo si addestra
-anche sulle risposte che darebbe il modello grande, dubbi compresi, oltre che
-sulle risposte giuste.
+La quantizzazione e la potatura stringono un modello già fatto. La
+distillazione fa un’altra cosa: costruisce un modello nuovo, piccolo fin
+dall’inizio, detto **studente**, e lo addestra sulle risposte giuste ma anche
+su quelle che darebbe il modello grande, il **maestro**, dubbi compresi.
 
 `````{tab} Elementare
 
@@ -30,11 +30,11 @@ restano un borbottio che nessuno sente.
 
 Allora gli si mette davanti una manopola, e più la si alza più lui si dilunga.
 A uno parla come sempre. A quattro, quel «0,9999» diventa «0,9 sul
-sette, 0,09 sull’uno, 0,001 sull’otto», il sette resta il primo e affiora la
+sette, 0,09 sull’uno, 0,001 sull’otto»; il sette resta il primo, ma affiora la
 forma del dubbio, come le ombre di una fotografia troppo contrastata quando le
-si schiarisce. Girata a fondo rovina tutto, perché ogni cifra gli sembra
-plausibile e non si capisce più quale avesse scelto. La manopola si chiama
-**temperatura**.
+si schiarisce. Girata a fondo, la manopola rovina tutto, perché ogni cifra gli
+sembra plausibile e non si capisce più quale avesse scelto. Questa manopola si
+chiama **temperatura**.
 
 Dall’altra parte del banco il modello piccolo, lo studente, impara a
 riconoscere le cifre. Ascolta due voci, il registro (dove qualcuno ha scritto
@@ -43,11 +43,13 @@ tre al registro. La proporzione si sceglie: meno ci si fida del maestro, più
 parti tornano al registro.
 
 La temperatura però vale per tutti e due, e alzandola si dilunga anche lo
-studente: le due risposte si somigliano di più, e la correzione che lo studente
-riceve si fa fiacca proprio mentre gli si mostrano le sfumature. Per rimetterla
-in forza la si moltiplica per il quadrato della temperatura: a quattro, per
-sedici. Il quadrato però è il conto giusto solo con la temperatura molto alta;
-a quattro la correzione si era indebolita di meno, e moltiplicata per sedici
+studente. Le due risposte quindi si somigliano di più, e la correzione che lo
+studente riceve si fa fiacca proprio mentre gli si mostrano le sfumature. Per
+rimetterla in forza la si moltiplica per il quadrato della temperatura: a
+quattro, per sedici.
+
+Ma il quadrato è il fattore giusto solo con la temperatura molto alta. A
+quattro la correzione si era indebolita di meno, e moltiplicata per sedici
 esce più forte di com’era. Così lo studente ascolta il maestro più delle sette
 parti su dieci che gli erano state assegnate. Funziona lo stesso, perché la
 proporzione la si ritocca guardando come vanno le cose; ma chi crede di averla
@@ -55,17 +57,19 @@ messa a sette contro tre ha in mano un numero che non descrive la situazione
 in classe.
 
 Una cifra con la sola etichetta insegna un fatto, che quel disegno è un sette.
-Col commento del maestro ne insegna dieci, quanto somiglia a ciascuna delle
-dieci cifre.
+Col commento del maestro, invece, ne insegna dieci, cioè quanto somiglia a
+ciascuna delle dieci cifre.
 
 Il guadagno grosso però è meno elegante, e sta nella pila dei fogli che in
 fondo all’aula nessuno ha mai etichettato. Il maestro li commenta uno per uno,
 e allo studente quei commenti valgono quanto gli altri. Etichettare costa, i
-fogli no: per questo la distillazione si usa più di quanto la si spieghi. Il
-maestro però può commentare bene soltanto quello che ha imparato: uno che ha
-visto le stesse poche etichette dello studente non ha niente da aggiungere.
+fogli no, e per questo la distillazione si usa più di quanto la si spieghi.
 
-Se il maestro è convinto che una certa quattro malfatta sia un nove, lo
+Il maestro però può commentare bene soltanto quello che ha
+imparato: uno che ha visto le stesse poche etichette dello studente non ha
+niente da aggiungere.
+
+Se il maestro è convinto che un certo quattro malfatto sia un nove, lo
 studente ne prende la convinzione, perché gliela sente ripetere con tutte le
 sue sfumature, e al maestro dà più retta che al registro: sette parti contro
 tre. Un maestro sbagliato fa peggio di nessun maestro.
@@ -85,8 +89,9 @@ $$
 Con $T = 1$ si ha la softmax ordinaria; per $T > 1$ la distribuzione si
 appiattisce e i rapporti fra le probabilità piccole diventano numericamente
 significativi; per $T \to \infty$ tende all’uniforme. Le probabilità così
-ottenute dal modello grande sono i **bersagli morbidi**. La temperatura alta
-serve solo in addestramento: a inferenza lo studente torna a $T = 1$.
+ottenute dal modello grande sono i **bersagli morbidi**. Si noti che la
+temperatura alta serve solo in addestramento: a inferenza lo studente torna a
+$T = 1$.
 
 Lo studente si addestra minimizzando una combinazione:
 
@@ -100,8 +105,8 @@ calcolata a $T = 1$ e non alla temperatura della distillazione, e il secondo
 termine è la divergenza di Kullback-Leibler fra la distribuzione morbida del
 maestro e quella dello studente, calcolate entrambe alla stessa temperatura.
 La KL differisce dall’entropia incrociata con i bersagli del maestro per
-l’entropia del maestro, che non dipende dallo studente: le due danno lo stesso
-gradiente.
+l’entropia del maestro, che non dipende dallo studente; di conseguenza le due
+danno lo stesso gradiente.
 
 Nel codice dell’esperimento $\alpha = 0{,}7$ e $T = 4$.
 
@@ -111,45 +116,48 @@ ottiene $\partial \mathrm{KL}/\partial z^s_i = (p^s_i - p^t_i)/T$, cioè un solo
 $1/T$. Il secondo compare linearizzando $p^s_i - p^t_i$, e la linearizzazione
 chiede due cose, non una: temperatura alta rispetto ai logit, e logit a
 media nulla su ciascun esempio. È il regime in cui il lavoro originale la
-ricava, e lì moltiplicare per $T^2$ mantiene il termine morbido sulla scala di
-quello duro, così si può cambiare $T$ senza riaggiustare $\alpha$. In quel
-limite il gradiente è $(z^s_i - z^t_i)/(K T^2)$, con $K$ il numero delle
-classi, cioè quello dell’errore quadratico fra i logit dello studente e quelli
-del maestro: la regressione sui logit con cui Ba e Caruana addestravano i loro
-modelli imitatori {cite}`ba2014deep` è un caso limite della distillazione.
+ricava; lì moltiplicare per $T^2$ mantiene il termine morbido sulla scala di
+quello duro, e quindi si può cambiare $T$ senza riaggiustare $\alpha$.
+
+In quel limite il gradiente è $(z^s_i - z^t_i)/(K T^2)$, con $K$ il
+numero delle classi, cioè quello dell’errore quadratico fra i logit dello
+studente e quelli del maestro. Ne segue che la regressione sui logit con cui
+Ba e Caruana addestravano i loro modelli imitatori {cite}`ba2014deep` è un
+caso limite della distillazione.
 
 Fuori da quel regime il compenso è approssimativo, e il regime buono è più
-lontano di quanto sembri. Sul maestro che il codice sulle cifre addestra
-(logit con scarto tipico intorno a undici), con lo studente appena creato e il
-gradiente della divergenza preso rispetto ai suoi logit su tutti gli esempi,
-l’esponente locale $\kappa$ di $\|\nabla\| \propto T^{-\kappa}$ vale $1{,}01$
-fra $T=1$ e $T=2$ e $1{,}13$ fra $2$ e $4$, e supera $2$ soltanto fra $8$ e
-$16$ (lo misura il codice che fa variare la temperatura). A $T=4$, cioè
-alla temperatura che il codice usa, moltiplicare per $T^2$ sovracompensa di
-3,6 volte. Il risultato dell’esperimento è buono lo stesso, perché $\alpha$
-assorbe il resto; ma è il genere di dettaglio che distingue una ricetta
-applicata da una capita.
+lontano di quanto sembri. Consideriamo il maestro che il codice sulle cifre
+addestra (logit con scarto tipico intorno a undici), lo studente appena creato
+e il gradiente della divergenza preso rispetto ai suoi logit su tutti gli
+esempi. In queste condizioni l’esponente locale $\kappa$ di
+$\|\nabla\| \propto T^{-\kappa}$ vale $1{,}01$ fra $T=1$ e $T=2$ e $1{,}13$
+fra $2$ e $4$, e supera $2$ soltanto fra $8$ e $16$ (lo misura il codice che
+fa variare la temperatura). In particolare, a $T=4$, cioè alla temperatura che
+il codice usa, moltiplicare per $T^2$ sovracompensa di 3,6 volte. Il risultato
+dell’esperimento è buono lo stesso, perché $\alpha$ assorbe il resto.
 
 Dove stia il guadagno è meno ovvio di quanto si racconti di solito.
 L’argomento tradizionale è che i bersagli morbidi trasportino informazione
-sulla struttura delle classi (la «conoscenza oscura»: quali classi il maestro
-confonde e quali no) e che questa informazione agisca come un regolarizzatore,
-riducendo la varianza dello studente. Il secondo argomento sta nella stessa
-pagina del lavoro originale, che lo prende da Buciluă, Caruana e
-Niculescu-Mizil {cite}`bucilua2006model`, e si cita molto meno: i bersagli
-morbidi si possono calcolare su dati non etichettati, e questo sposta il
-problema da «quanti esempi ho» a «quanti esempi il maestro può commentare».
-L’esperimento sulle cifre misura il secondo, il solo che si riesce a
-mostrare in modo pulito su un dataset piccolo, e mostra anche quanto tutti e
-due dipendano da quello che il maestro ha visto.
+sulla struttura delle classi (la cosiddetta **conoscenza oscura**: quali classi
+il maestro confonde e quali no) e che questa informazione agisca come un
+regolarizzatore, riducendo la varianza dello studente.
+
+Il secondo argomento sta nella stessa pagina del lavoro originale, che lo
+prende da Buciluă, Caruana e Niculescu-Mizil {cite}`bucilua2006model`, e si
+cita molto meno: i bersagli morbidi si possono calcolare su dati non
+etichettati, e questo sposta il problema da «quanti esempi ho» a «quanti
+esempi il maestro può commentare». L’esperimento sulle cifre misura il
+secondo, il solo che si riesce a mostrare in modo pulito su un dataset
+piccolo, e mostra anche quanto tutti e due dipendano da quello che il maestro
+ha visto.
 
 Il principio ha varianti che la stessa formula non scrive: far imitare allo
 studente anche gli strati intermedi del maestro (FitNets
 {cite}`romero2015fitnets`), addestrarlo sulle sequenze che il maestro genera
 invece che sulle sole distribuzioni parola per parola {cite}`kim2016sequence`,
-distillare già nel preaddestramento, come fa DistilBERT, che toglie a BERT il
-40% dei parametri conservandone il 97% delle capacità di comprensione del
-linguaggio, con il 60% di velocità in più {cite}`sanh2019distilbert`.
+e distillare già nel preaddestramento. È quello che fa DistilBERT, che toglie a
+BERT il 40% dei parametri conservandone il 97% delle capacità di comprensione
+del linguaggio, con il 60% di velocità in più {cite}`sanh2019distilbert`.
 
 `````
 
@@ -158,8 +166,9 @@ linguaggio, con il 60% di velocità in più {cite}`sanh2019distilbert`.
 Il maestro è una rete larga, addestrata su tutte le etichette. Lo studente è
 una rete minuscola, e vede pochissime etichette: centoventi esempi su
 ottocentonovantotto. La domanda è che cosa cambi se, oltre a quelle centoventi
-etichette, allo studente si lasciano leggere anche i commenti del maestro
-su tutti gli esempi, compresi quelli di cui non ha l’etichetta.
+etichette, allo studente si lasciano leggere anche i commenti del maestro,
+cioè le sue risposte a temperatura alta, su tutti gli esempi, compresi quelli
+di cui non ha l’etichetta.
 
 ```python
 import torch
@@ -275,23 +284,25 @@ studente, maestro su tutti gli 898 95.8%   (tre semi: 96.1, 95.4, 95.9)
 lo studente ha 249 volte meno parametri del maestro
 ```
 
-Cinque punti e mezzo fra lo studente senza maestro e quello col maestro su
-tutti gli esempi, da 90,2 a 95,8, con tre semi che dicono la stessa cosa. Lo
-studente col maestro arriva a un punto dal maestro stesso, avendo in mano
+Fra lo studente senza maestro e quello col maestro su tutti gli esempi ci sono
+cinque punti e mezzo, da 90,2 a 95,8, e i tre semi dicono la stessa cosa. Lo
+studente col maestro arriva a un punto dal maestro stesso, pur avendo
 duecentoquarantanove volte meno parametri e centoventi etichette invece di
 ottocentonovantotto.
 
-La riga di mezzo serve più delle altre, perché separa due cose che di
-solito si raccontano come una sola. Con il maestro che commenta soltanto i
-centoventi esempi che lo studente ha già etichettati si guadagnano 2,4 punti:
+La condizione di mezzo serve più delle altre, perché separa due cose che di
+solito si raccontano come una sola. Quando il maestro commenta soltanto i
+centoventi esempi che lo studente ha già etichettati, si guadagnano 2,4 punti:
 sono i dubbi, cioè sapere che un certo sette somigliava a un uno e non a un
-otto, così come li ha imparati un maestro che di etichette ne ha viste
-ottocentonovantotto. Lasciando al maestro commentare anche gli altri
-settecentosettantotto, che lo studente non può usare perché non ne ha
-l’etichetta, se ne guadagnano altri 3,2. Quindi la spiegazione bella («il
-maestro dice dieci cose per esempio invece di una») è vera e vale meno della
-metà del risultato. L’altra metà è più prosaica: il maestro trasforma esempi di
-cui lo studente non ha l’etichetta in esempi utilizzabili.
+otto, così come li ha imparati un maestro che ha visto ottocentonovantotto
+etichette. Se poi il maestro commenta anche gli altri settecentosettantotto,
+che lo studente non può usare perché non ne ha l’etichetta, se ne guadagnano
+altri 3,2.
+
+Quindi la spiegazione elegante («il maestro dice dieci cose per esempio invece
+di una») è vera, ma vale meno della metà del risultato. L’altra metà è più
+prosaica: il maestro trasforma esempi di cui lo studente non ha l’etichetta in
+esempi utilizzabili.
 
 Tutti e due i guadagni, però, dipendono da quanto il maestro ne sa più dello
 studente, e lo si vede cambiando maestro: uno addestrato sulle stesse
@@ -320,17 +331,21 @@ sui primi 449 esempi               94.0%     90.2%     92.0%     93.5%
 su tutti, studente con tutte       96.9%     95.7%     95.8%     95.8%
 ```
 
-Con un maestro che ha visto soltanto le centoventi etichette dello studente i
-commenti non portano niente, né sugli esempi etichettati né sugli altri: i
-dubbi di un maestro valgono quello che il maestro sa in più. Con un maestro che
-non ha mai visto la seconda metà dei dati, i due guadagni scendono da 2,4 e 3,2
-a 1,8 e 1,5, e il secondo più del primo, perché il maestro di prima aveva visto
-le etichette di quegli esempi e i suoi commenti in parte le passavano allo
-studente: la cifra che il conto attribuisce ai dati non etichettati è un tetto.
-Le due cose insieme fanno la distillazione, e chi ne racconta solo la prima
-attribuisce a un meccanismo elegante un guadagno che viene soprattutto da un
-meccanismo banale. La riga dello studente con tutte le etichette dice che cosa
-questa prova non dimostra, cioè che imitare sia meglio che imparare: con tutte le
+Con un maestro che ha visto soltanto le centoventi etichette dello studente, i
+commenti non portano niente, né sugli esempi etichettati né sugli altri. In
+altre parole, i dubbi di un maestro valgono quello che il maestro sa in più.
+
+Con un maestro che non ha mai visto la seconda metà dei dati, i due guadagni
+scendono da 2,4 e 3,2 a 1,8 e 1,5, e il secondo più del primo, perché il
+maestro di prima aveva visto le etichette di quegli esempi e i suoi commenti in
+parte le passavano allo studente. Per questo motivo la quota che la
+scomposizione attribuisce ai dati non etichettati è un tetto. Le due cose
+insieme fanno la distillazione, e chi ne racconta solo la prima attribuisce a
+un meccanismo elegante un guadagno che viene soprattutto da un meccanismo
+banale.
+
+Il caso dello studente con tutte le etichette dice infine che cosa questa prova
+non dimostra, cioè che imitare sia meglio che imparare: con tutte le
 ottocentonovantotto etichette lo studente arriva al 95,7% da solo, e il maestro
 non aggiunge più niente.
 
@@ -361,18 +376,19 @@ studente senza maestro 90.2%, col maestro sui 120 63.0%, su tutti 81.2%
 ```
 
 Lo studente finisce sotto lo studente senza maestro, e di molto quando il
-maestro commenta proprio i suoi centoventi esempi: lì le etichette giuste
-pesano tre parti su dieci e i commenti sbagliati sette, e vincono i commenti.
-Un maestro sbagliato fa peggio di nessun maestro, almeno con le proporzioni di
-questo codice; dando al maestro un peso più piccolo il registro conterebbe di
-più.
+maestro commenta proprio i suoi centoventi esempi. Lì, infatti, le etichette
+giuste pesano tre parti su dieci e i commenti sbagliati sette, e vincono i
+commenti. Un maestro sbagliato fa peggio di nessun maestro, almeno con le
+proporzioni di questo codice; dando al maestro un peso più piccolo, le
+etichette conterebbero di più.
 
-Un ultimo conto riguarda la ricetta. Il termine del maestro, alzando la
-temperatura, si indebolisce, e il codice lo rimette in forza moltiplicandolo per
-$T^2$, cioè per sedici. Se la spinta che il maestro dà allo studente scendesse
-come $1/T^2$, l’esponente che si legge raddoppiando la temperatura
-varrebbe 2. Lo si misura sullo studente appena creato, prima di ogni
-addestramento.
+Un’ultima verifica riguarda la formula della perdita. Alzando la temperatura il
+termine del maestro si indebolisce, e il codice lo rimette in forza
+moltiplicandolo per $T^2$, cioè per sedici. Se la spinta che il maestro dà
+allo studente (la norma del gradiente del termine morbido rispetto ai logit
+dello studente) scendesse come $1/T^2$, l’esponente che si legge raddoppiando
+la temperatura varrebbe 2. Lo misuriamo sullo studente appena creato, prima di
+ogni addestramento.
 
 ```python
 import math
@@ -412,10 +428,10 @@ la stessa, moltiplicata per 16: 3.64
 ```
 
 Fino a $T = 4$ la spinta scende quasi come $1/T$ e non come $1/T^2$, e
-l’esponente arriva a 2 solo fra 8 e 16. Alla temperatura del codice il fattore
-sedici porta la spinta a 3,6 volte quella di partenza invece che alla stessa:
-lo studente ascolta il maestro più delle sette parti su dieci che il codice gli
-assegna.
+l’esponente arriva a 2 solo fra 8 e 16. Alla temperatura del codice, quindi,
+il fattore sedici porta la spinta a 3,6 volte quella di partenza invece che
+alla stessa. In altri termini, lo studente ascolta il maestro più delle sette
+parti su dieci che il codice gli assegna.
 
 `````{tab} Elementare
 
@@ -471,16 +487,16 @@ assegna.
   quello duro.
 - La distillazione è l’unica delle tre leve in cui l’architettura finale si
   sceglie invece di ereditarla: la quantizzazione restituisce la rete che ha
-  ricevuto con altri numeri dentro, la potatura la stessa rete con dei buchi, o
-  con qualche riga in meno dove il taglio è strutturato.
+  ricevuto con i suoi numeri rappresentati su meno bit, la potatura la stessa
+  rete con dei pesi azzerati, o con qualche riga in meno dove il taglio è
+  strutturato.
 ```
 
 `````
 
-Della distillazione resta questo: il maestro passa allo studente più di quanto
-dica l’etichetta, ma soltanto quello che sa in più, e il guadagno grosso viene
-dagli esempi che può commentare anche senza etichetta. Con lei le tre leve del
-capitolo finiscono, e hanno in comune che riguardano tutte il modello, quanto
-spazio occupa e quanti conti chiede. Perché questo non basti a farlo rispondere
-in fretta lo spiega la sezione {doc}`«Starci non è rispondere»
-<far-rispondere-in-fretta>`.
+In sintesi, il maestro passa allo studente più di quanto dica l’etichetta, ma
+soltanto quello che sa in più, e il guadagno grosso viene dagli esempi che può
+commentare anche senza etichetta. Con la distillazione le tre leve finiscono, e
+hanno in comune che riguardano tutte il modello, quanto spazio occupa e quanti
+calcoli chiede. Perché questo non basti a farlo rispondere in fretta lo
+spiega la sezione {doc}`«Starci non è rispondere» <far-rispondere-in-fretta>`.

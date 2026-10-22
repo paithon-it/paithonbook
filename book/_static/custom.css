@@ -420,6 +420,58 @@ pre code {
   line-height: 1.7;
 }
 
+/* ===== CODICE: la tavolozza del brand =====
+ * I colori del codice sono quelli del brand (`--pt-code-*`), gli stessi
+ * degli articoli del sito: sei ruoli presi dai colori dell'interfaccia, che
+ * si ribaltano col tema da soli e stanno sopra 5:1 sul fondo dei blocchi
+ * (`--bg-code`) in tutti e due i temi. Prima c'era la tavolozza di default
+ * del tema (a11y-high-contrast): viola, verde e blu sul chiaro, e sullo
+ * scuro commenti giallo acceso e stringhe verde lime su un riquadro grigio.
+ *
+ * Il selettore ripete `html[data-theme]` perche' `pygments.css` scrive
+ * `html[data-theme="light"] .highlight .k`: stessa specificita', e vince chi
+ * viene dopo, cioe' questo foglio. Le classi sono elencate una per una,
+ * senza uno `span` che prenda tutto, perche' le uscite dei notebook possono
+ * portare i colori ANSI, che non sono di Pygments. Le classi generiche dei
+ * diff e delle console (`.gd`, `.gi`, ...) restano al tema: nel libro ci
+ * sono solo un prompt e un'uscita. In stampa i token tornano chiari col
+ * brand, e il codice li segue. */
+html[data-theme] .highlight {
+  background: transparent;
+  color: var(--pt-code-fg);
+}
+
+html[data-theme] .highlight :is(.n, .p, .o, .w, .nb, .bp, .nn, .nf, .fm, .nc,
+    .ne, .nt, .na, .nv, .vc, .vg, .vi, .vm, .nl, .no, .py, .err, .go) {
+  color: var(--pt-code-fg);
+}
+
+html[data-theme] .highlight :is(.k, .kn, .kc, .kd, .kp, .kr, .kt, .ow) {
+  color: var(--pt-code-kw);
+}
+
+html[data-theme] .highlight :is(.s, .s1, .s2, .sa, .sb, .sc, .sd, .se, .sh,
+    .si, .sx, .sr, .ss, .dl) {
+  color: var(--pt-code-str);
+}
+
+html[data-theme] .highlight :is(.c, .c1, .ch, .cm, .cs, .cp, .cpf) {
+  color: var(--pt-code-com);
+  font-style: italic;
+}
+
+html[data-theme] .highlight .gp {
+  color: var(--pt-code-com);
+}
+
+html[data-theme] .highlight :is(.m, .mi, .mf, .mb, .mh, .mo, .il) {
+  color: var(--pt-code-num);
+}
+
+html[data-theme] .highlight .nd {
+  color: var(--pt-code-dec);
+}
+
 /* Jupyter cell styling */
 .cell {
   margin: 2rem 0;
@@ -858,13 +910,6 @@ nav a {
   }
 }
 
-/* Il bottone di sostegno non detta la larghezza della pagina, mai. */
-.bmc-btn,
-.bmc-btn-container,
-[data-name="bmc-button"] {
-  max-width: 100% !important;
-}
-
 /* ===== ANIMAZIONI E TRANSIZIONI ===== */
 @keyframes fadeIn {
   from {
@@ -1132,15 +1177,18 @@ footer {
   text-align: center;
 }
 
-/* ===== SPECIAL: Buy me a coffee button ===== */
-.bmc-btn {
-  box-shadow: var(--shadow-md) !important;
-  transition: transform var(--transition-fast) !important;
-}
-
-.bmc-btn:hover {
-  transform: translateY(-3px) !important;
-  box-shadow: var(--shadow-lg) !important;
+/* ===== SOSTEGNO: il bottone della landing =====
+ * Un link, non lo script di Buy Me a Coffee: quello caricava codice di terzi
+ * e, a sua volta, il font Cookie da Google, a ogni lettore della landing.
+ * Il colore del testo va ripetuto sull'hover: `a:hover` lo porterebbe al
+ * terracotta scuro, cioe' al colore del fondo del bottone. */
+a.btn.pt-sostieni,
+a.btn.pt-sostieni:hover {
+  display: inline-block;
+  margin: 0.4rem 0 0.2rem;
+  color: var(--pt-on-accent);
+  border-bottom: none;
+  text-decoration: none;
 }
 
 /* ============================================================

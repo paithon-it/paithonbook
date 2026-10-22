@@ -92,10 +92,9 @@ serve l'online.
 
 Batch e online sono i due estremi più frequenti
 ({numref}`fig-mlops-serving`): stessa scatola «modello» al
-centro, priorità opposte ai due lati. Le due priorità hanno un nome. La
-latenza è il tempo che passa fra la domanda
-e la risposta; il throughput è quante risposte il sistema riesce a sfornare
-in un secondo.
+centro, priorità opposte ai due lati. Le due priorità hanno un nome: la
+**latenza** è il tempo che passa fra la domanda e la risposta, mentre il
+**throughput** è quante risposte il sistema riesce a sfornare in un secondo.
 
 ```{figure} ../figures/mlops-serving.svg
 :name: fig-mlops-serving
@@ -119,7 +118,7 @@ Serve una parola in più, perché uno sportello ha un indirizzo. L'indirizzo
 preciso a cui si bussa si chiama **endpoint**, che alla lettera è «il capo
 della linea»: l'API è lo sportello, l'endpoint è la targa con il numero civico.
 
-Solo che l'indirizzo, da solo, non basta: dietro ci dev'essere una macchina su
+Ma l'indirizzo, da solo, non basta: dietro ci dev'essere una macchina su
 cui il modello gira, e il software di quella macchina deve essere lo stesso
 ovunque, altrimenti si torna al «sul mio computer funzionava». La risposta
 standard è chiudere il modello dentro una scatola che contiene anche tutto ciò
@@ -127,9 +126,9 @@ che gli serve per funzionare: il sistema, l'interprete Python, la versione
 esatta di ogni libreria, e spesso i pesi. Sigillata la scatola, il software
 dentro è lo stesso su qualunque computer. Restano fuori due cose, che la
 scatola prende in prestito dal computer che la ospita: il nucleo del sistema
-operativo e l'hardware. Un'immagine costruita per un tipo di processore non
-gira su un altro senza un emulatore, e una scheda grafica la si usa con il
-driver installato sulla macchina, non con uno portato da casa.
+operativo e l'hardware. Ad esempio, un'immagine costruita per un tipo di
+processore non gira su un altro senza un emulatore, e una scheda grafica la si
+usa con il driver installato sulla macchina, non con uno portato da casa.
 
 Le tre parole che servono per parlarne sono in
 {numref}`fig-immagine-container-volume`. La scatola sigillata, che nessuno
@@ -157,7 +156,8 @@ e questo torna utile quando si sostituisce un modello con uno nuovo: permette
 di tenere in piedi due versioni del modello nello stesso momento, o di
 spegnere in un istante quella nuova se si comporta male.
 
-Chi chiama non sa e non deve sapere che dentro c'è una rete neurale: vede solo
+Chi chiama non sa e non deve sapere che dentro c'è una rete
+neurale: vede solo
 un servizio che, dati certi ingressi, restituisce una previsione. Dietro lo
 sportello c'è un programma che tiene il modello acceso in memoria e gli passa
 le domande man mano che arrivano: si chiama **model server**.
@@ -308,14 +308,15 @@ solo predizioni sbagliate. L'errore si fa sentire solo quando per canale resta
 un valore solo (una `BatchNorm1d` su un batch di uno, o una `BatchNorm2d` su
 mappe $1\times1$ con un batch di uno): lì la statistica del batch non descrive
 più niente e il modulo si rifiuta di calcolarla; il dropout invece tace sempre.
-In modalità di addestramento la BatchNorm aggiorna anche `running_mean` e
+Inoltre, in modalità di addestramento la BatchNorm aggiorna anche
+`running_mean` e
 `running_var` con i dati di produzione, perfino dentro `torch.no_grad()`, che
 spegne i gradienti e non le statistiche: il modello in memoria si sposta a ogni
 richiesta, e non è più il modello che è stato validato.
 
 La seconda, `torch.no_grad()`, disattiva la costruzione del grafo delle
 operazioni che l’*autograd* userebbe per la retropropagazione. In inferenza
-quel grafo non serve, e costruirlo costa memoria e tempo a ogni richiesta;
+quel grafo non serve, e costruirlo richiede memoria e tempo a ogni richiesta;
 `torch.inference_mode()` è la variante più aggressiva della stessa rinuncia, che
 disattiva anche il version counter dei tensori.
 
@@ -333,36 +334,36 @@ comune con le {doc}`prestazioni in PyTorch </PyTorch/prestazioni>`: meno numeri
 da spostare, più velocità.
 
 La prima leva è il **batching dinamico**, e qui la parola *batch* torna con un
-significato diverso da quello del regime batch: qui è il mazzetto di richieste
+significato diverso da quello del regime batch: qui è il gruppo di richieste
 che il server mette insieme prima di passarle al modello. Il motivo è che la
 scheda grafica che esegue i calcoli (la GPU) è costruita per eseguire migliaia
 di operazioni identiche nello stesso istante, e a servirle una richiesta per
 volta la si tiene quasi ferma: è il punto su cui è costruito il {doc}`capitolo
 sulle GPU </GPU/overview>`. Il server allora accumula per qualche millisecondo
-le richieste che arrivano, ne fa un mazzetto e lo passa al modello in un colpo
+le richieste che arrivano, ne fa un gruppo e lo passa al modello in un colpo
 solo. Chi era arrivato per primo aspetta quei pochi millisecondi in più; in
 cambio, nello stesso secondo, il sistema ne serve molte di più.
 
 Il batching dinamico ha anche un effetto che i tempi non mostrano. Il modo in
 cui una libreria somma i numeri dipende dalla forma dei dati che le arrivano, e
-la forma qui la decide quante richieste capitano nello stesso mazzetto: due
-chiamate identiche, finite in mazzetti diversi, possono differire nelle ultime
+la forma qui la decide quante richieste capitano nello stesso gruppo: due
+chiamate identiche, finite in gruppi diversi, possono differire nelle ultime
 cifre {cite}`he2025nondeterminism`. È la ripetibilità bit a bit alla quale il
 servizio rinuncia, come avvertiva {doc}`Dal notebook alla produzione
 </MLOps/dal-notebook-alla-produzione>`. Per i modelli che generano testo, poi,
-il mazzetto si ricompone a ogni token invece di chiudersi e riaprirsi a ogni
+il gruppo si ricompone a ogni token invece di chiudersi e riaprirsi a ogni
 richiesta: è il *continuous batching* di {doc}`LLMOps </MLOps/llmops>`.
 
 La seconda leva è ridurre la precisione dei numeri, cioè scriverli con meno
-cifre. Dentro un calcolatore ogni informazione è fatta di cifre binarie, i
+cifre. Dentro un computer ogni informazione è fatta di cifre binarie, i
 *bit*, che valgono zero o uno, e un numero con la virgola di solito ne occupa
 trentadue. Scendendo a sedici (è la scrittura che il capitolo PyTorch chiamava
 `float16`, e usarla per una parte dei calcoli e non per tutti è la *precisione
 mista* che là serviva ad addestrare più in fretta) si dimezza lo spazio
 occupato, e con esso la quantità di byte da far scorrere fra memoria e
-processore: i numeri restano tanti quanti erano, sono più corti. Con mazzetti
+processore: i numeri restano tanti quanti erano, sono più corti. Con gruppi
 piccoli è proprio lo scorrere dei byte il collo di bottiglia, e dimezzarli dimezza
-quasi il tempo; con mazzetti grandi il limite diventa il calcolo, e il guadagno
+quasi il tempo; con gruppi grandi il limite diventa il calcolo, e il guadagno
 si riduce. In cambio si perde qualche cifra dopo la virgola, e con `float16`
 anche un pezzo di intervallo: il numero più grande che si scrive è $65\,504$, e
 dove i valori lo superano si usa il `bfloat16` del capitolo PyTorch, che tiene
@@ -373,7 +374,7 @@ La terza leva spinge oltre, fino agli interi: la quantizzazione a
 della seconda leva, perché è la stessa leva spinta più in là: in tutte e due si
 decide quanti bit dare a ogni numero, e il confronto si fa sempre con i
 trentadue di partenza, sedici bit due volte più leggeri, otto bit quattro
-volte. Con quelli del batching, invece, si combinano, perché mazzetti più
+volte. Con quelli del batching, invece, si combinano, perché gruppi più
 grandi e numeri più corti sono due guadagni indipendenti.
 
 `````{tab} Elementare
@@ -530,7 +531,7 @@ guadagnare in capacità. Dove fermarsi lo decide il bersaglio che il team si è
 dato (lo SLO) e non la curva, e per questo lo SLO si sceglie prima.
 
 Quel vincolo, che il sistema stia già smaltendo le richieste alla velocità con
-cui arrivano, merita il suo paragrafo, perché la curva da sola inganna. Il
+cui arrivano, va chiarito, perché la curva da sola inganna. Il
 tempo segnato sull'asse orizzontale è la latenza *di servizio*: quanto ci mette
 il modello a rispondere una volta che alla richiesta è arrivato il turno.
 L'utente, però, vive l'attesa nella fila sommata al servizio, e la fila non
@@ -538,9 +539,9 @@ compare nella curva.
 
 Tenendo conto della fila, le situazioni sono tre. Finché la capacità del servizio
 non copre il carico, cioè finché le richieste arrivano più in fretta di quanto
-escano, la fila cresce senza limite, e ingrandire il mazzetto migliora tutte e
+escano, la fila cresce senza limite, e ingrandire il gruppo migliora tutte e
 due le grandezze: alza il throughput e accorcia l'attesa. Quando la capacità ha
-superato il carico comincia il compromesso vero: un mazzetto più grande serve
+superato il carico comincia il compromesso vero: un gruppo più grande serve
 qualcosa in più e fa aspettare qualcosa in più. Nel tratto piatto della curva,
 infine, la capacità non cresce più e si allunga soltanto l'attesa. È anche la
 ragione per cui in un servizio molto sollecitato il batching dinamico non è un
@@ -615,12 +616,15 @@ distribuzione, la p99, la p99.9: è ciò che governa l'esperienza reale sotto
 carico, perché in un sistema che compone più servizi anche una piccola
 frazione di richieste lente si propaga e degrada l'insieme. Se una richiesta
 attraversa $k$ chiamate indipendenti, ciascuna lenta con probabilità $p$, è
-lenta con probabilità $1-(1-p)^k$: con $p = 0{,}05$ e $k = 3$ è il 14%, con
-$p = 0{,}01$ e $k = 100$ chiamate in parallelo il 63% {cite}`dean2013tail`. Uno
-SLO serio si
-scrive sui percentili alti: «p99 sotto i 200 ms», non «latenza media 80 ms»,
-che nasconde la coda. Uno SLO del $99{,}9\%$ definisce anche il suo
-complemento, il **budget d'errore**: $1 - 0{,}999$ degli eventi della finestra
+lenta con probabilità $1-(1-p)^k$: ad esempio, con $p = 0{,}05$ e $k = 3$ è
+il 14%, con $p = 0{,}01$ e $k = 100$ chiamate in parallelo il 63%
+{cite}`dean2013tail`.
+
+Uno SLO serio si scrive sui percentili alti: «p99 sotto i 200 ms», non
+«latenza media 80 ms», che nasconde la coda.
+
+Uno SLO del $99{,}9\%$ definisce anche il suo complemento, il
+**budget d'errore**: $1 - 0{,}999$ degli eventi della finestra
 può violare la soglia, cioè una richiesta su mille, o $43{,}2$ minuti di
 indisponibilità su trenta giorni. Il budget si spende: il rapporto fra il
 tasso di violazioni osservato e $1-\text{SLO}$ (il *burn rate*) dice a che
@@ -633,27 +637,32 @@ Il secondo numero da promettere è il throughput sostenibile (richieste al
 secondo), e lo lega alla latenza la legge di Little, $L = \lambda W$: il numero
 medio di richieste nel sistema è il tasso d'arrivo per il tempo medio di
 permanenza, qualunque sia la distribuzione (è la stessa legge del
-{doc}`capitolo sulle GPU </GPU/overview>`), purché il sistema sia stabile. Con
-arrivi poissoniani, un servente solo esponenziale di tasso $\mu$ e la fila
+{doc}`capitolo sulle GPU </GPU/overview>`), purché il sistema sia stabile.
+
+Come esempio, con
+arrivi poissoniani, un server solo esponenziale di tasso $\mu$ e la fila
 servita in ordine d'arrivo (la coda M/M/1 FIFO) il tempo di permanenza è
 esponenziale di parametro $\mu-\lambda$, quindi $W = 1/(\mu-\lambda)$ e $p_{99}
 = \ln(100)\,W \approx 4{,}6\,W$, che vale solo se $\rho = \lambda/\mu < 1$. A
 $\mu = 100$ richieste al secondo, $W$ passa da 20 ms a $\lambda=50$, a 100 ms a
 $\lambda=90$, a un secondo a $\lambda=99$: la latenza cresce piano finché il
-carico è basso, esplode vicino a $\rho=1$, e oltre non esiste più. Il batching
-cambia modello, perché il servente lavora a mazzi (è una coda a servizio di
-gruppo), e tira in due versi: alza la capacità, cioè $\mu$, che allontana il
-muro, e fa aspettare ogni richiesta finché il suo mazzo non è pieno e poi per
-tutta la sua durata. Finché la capacità non copre il carico vince il primo
-effetto, e un mazzo più grande migliora tutte e due le grandezze; oltre quel
-punto vince il secondo, e batch più grandi alzano il throughput ma allungano la
-p99 (sono le tre situazioni della curva). Il terzo numero è economico, il
+carico è basso, esplode vicino a $\rho=1$, e oltre non esiste più.
+
+Il batching cambia modello, perché il server lavora a gruppi (è una coda a
+servizio di gruppo), e tira in due versi: alza la capacità, cioè $\mu$, che
+allontana il muro, e fa aspettare ogni richiesta finché il suo gruppo non è
+pieno e poi per tutta la sua durata. Finché la capacità non copre il carico
+vince il primo effetto, e un gruppo più grande migliora tutte e due le
+grandezze; oltre quel punto vince il secondo, e batch più grandi alzano il
+throughput ma allungano la p99 (sono le tre situazioni della curva).
+
+Il terzo numero è economico, il
 **costo per richiesta**, che spesso è il vero vincolo di progetto. Con il
 batching una richiesta non occupa l'hardware da sola, quindi il suo costo è il
 prezzo orario diviso per le richieste servite in un'ora, $c = \text{prezzo
 orario}/(3600\,X)$ con $X$ il throughput in richieste al secondo; moltiplicare
 il prezzo per il tempo di calcolo della singola richiesta lo sovrastimerebbe di
-un fattore pari alla taglia del mazzo. È per questo che il batching lo abbassa.
+un fattore pari alla taglia del gruppo. È per questo che il batching lo abbassa.
 Un modello che rispetta lo SLO ma costa dieci volte troppo
 per richiesta non si può mettere in produzione {cite}`huyen2022designing`.
 
@@ -705,7 +714,7 @@ misurare prima di fidarsi.
   (la quantizzazione, come una GIF che usa 256 colori invece di milioni senza
   togliere un pixel). Quattro volte più leggero, un pizzico meno preciso, da
   misurare ogni volta.
-- Servire a mazzi fa aspettare di più ogni singola richiesta, ma finché il
+- Servire a gruppi fa aspettare di più ogni singola richiesta, ma finché il
   servizio non sta dietro alle richieste fa aspettare tutti di meno, come il
   forno che con l'infornata grande smaltisce la fila.
 - Non si promette il tempo medio di risposta, che non lo vive quasi

@@ -1,0 +1,11 @@
+# Le postille di questa pagina, una per capoverso del testo comune.
+# Ognuna vale finché la sua impronta combacia col testo del capoverso.
+- inizio: "L'equivalenza di {numref}`fig-rnn-srotolamento` è anche la"
+  impronta: "b1f36062ed90"
+  postilla: "Nelle ricorrenti la parola lontana attraversa una catena di passaggi simili"
+- inizio: "Il Transformer rende al meglio quando"
+  impronta: "01f75de5cebb"
+  postilla: "Ricorrenti ragionevoli dove memoria e calcolo per parola devono restare costanti"
+- inizio: "Come idea, però, non sono tramontate:"
+  impronta: "d0225d0d7912"
+  postilla: "Idea ricorrente senza costo quadratico: attenzioni lineari e state space model"

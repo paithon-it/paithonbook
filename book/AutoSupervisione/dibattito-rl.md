@@ -6,13 +6,12 @@ capitoli, {doc}`Reinforcement Learning </ReinforcementLearning/overview>` e
 {doc}`Deep Reinforcement Learning </DeepReinforcementLearning/overview>`. La
 critica va presa sul serio, perché a muoverla sono ricercatori del campo, e
 perché l'argomento che le sta sotto è quello dei bit nell’{doc}`apertura del
-capitolo </AutoSupervisione/overview>`: quanto è grande la correzione che il
-modello riceve.
+capitolo </AutoSupervisione/overview>`, cioè quanto è grande la correzione che
+il modello riceve.
 
-Le posizioni che seguono sono di
-persone in attività su una questione aperta, e ciascuna va attribuita a chi
-l'ha sostenuta. La cautela serve, perché due di queste tesi si
-somigliano abbastanza da essere scambiate.
+Le posizioni che seguono sono di persone in attività su una questione aperta,
+e ciascuna va attribuita a chi l'ha sostenuta. La cautela serve, perché due
+di queste tesi si somigliano abbastanza da essere scambiate.
 
 ## L'argomento, in due mosse
 
@@ -20,8 +19,8 @@ Le critiche all'apprendimento per rinforzo «puro» (cioè usato da solo per
 costruire un sistema a partire da zero) sono quattro. Due riguardano la
 scarsità del segnale, che porta pochissima informazione, e l'assegnazione del
 credito, cioè il dover dividere quel poco fra tutte le decisioni che l'hanno
-preceduto; e vanno viste come due parti dello stesso ragionamento, non come
-obiezioni separate.
+preceduto. Queste due vanno viste come parti dello stesso ragionamento, non
+come obiezioni separate.
 
 Le altre due sono la ricompensa scritta male e
 ottimizzata alla lettera (nel {doc}`capitolo sul deep reinforcement
@@ -41,13 +40,14 @@ giornata intera. Se invece qualcuno ti avesse commentato ogni singolo
 avvistamento, avresti ricevuto migliaia di volte più informazione.
 
 La seconda obiezione è più insidiosa, e non riguarda la quantità: riguarda il
-fatto che quella frase, per essere utile, va distribuita. Nella giornata hai
-fatto centinaia di cose. Hai preso il sentiero giusto, ti sei fermato troppo
-presto a una radura, hai avuto la pazienza di aspettare mezz'ora sotto un
-faggio, e a un certo punto hai fatto rumore e hai fatto volare via tutto. Alla
-fine il giudizio è positivo. Impari che la giornata è andata bene e, non
-sapendo distinguere, tendi a ripetere tutto, compresa la sosta inutile e il
-rumore.
+fatto che quella frase, per essere utile, va distribuita. Nella giornata hai fatto
+centinaia di cose. Ad esempio hai preso il sentiero giusto, ti sei fermato
+troppo presto a una radura, hai avuto la pazienza di aspettare mezz'ora sotto
+un faggio, e a un certo punto hai fatto rumore e hai fatto volare via tutto.
+
+Alla fine il giudizio è positivo, quindi impari che la giornata è andata bene
+e, non sapendo distinguere, tendi a ripetere tutto, compresa la sosta inutile e
+il rumore.
 
 Rimediare si può, in parte. Confronta la giornata con le tue solite, e un
 «bene» come quello di sempre smette di giustificare tutto. Fatti accompagnare
@@ -55,8 +55,8 @@ da qualcuno che, dopo tante uscite, provi a dirti come sta andando mentre
 ancora cammini. Dai più peso alle azioni compiute poco prima di un avvistamento
 riuscito che a quelle di sei ore prima, perché a quella distanza la colpa e il
 merito si perdono comunque. Sono rimedi veri e aiutano a smistare, ma nemmeno
-chi ti accompagna ha sentito altro che la frase della sera: nessuno di quei
-rimedi inventa un'informazione che nessuno ha dato.
+chi ti accompagna ha sentito altro che la frase della sera:
+nessuno di quei rimedi inventa un'informazione che nessuno ha dato.
 
 Le due obiezioni si moltiplicano invece di sommarsi. Poca informazione sarebbe
 già un problema; poca informazione, e da spalmare su centinaia di decisioni che
@@ -77,10 +77,12 @@ esempio, e anche contando l'entropia reale del testo, fra $2 \cdot 10^4$ e $4
 \cdot 10^4$ bit, restano quattro ordini di grandezza. È il rapporto che stampa
 il programma dell’{doc}`apertura del capitolo
 </AutoSupervisione/overview>`.
+
 Campionare più risposte allo stesso problema, come fanno i metodi a gruppi
-della {doc}`sezione sul post-addestramento </Transformers/post-training>`,
-moltiplica i bit per problema al più per il numero delle risposte, ma non
-cambia la conclusione, perché ciascuna risposta riceve ancora un voto solo.
+della
+{doc}`sezione sul post-addestramento </Transformers/post-training>`, moltiplica
+i bit per problema al più per il numero delle risposte, ma non cambia la
+conclusione, perché ciascuna risposta riceve ancora un voto solo.
 
 Il secondo argomento è strutturale e riguarda l’**assegnazione del credito**
 (*credit assignment*). Un ritorno osservato $R$ alla fine di una traiettoria
@@ -88,7 +90,7 @@ $\tau = (s_0, a_0, \dots, s_{T-1}, a_{T-1})$ non dice quale delle $T$ azioni
 abbia contribuito. Nella forma più semplice del gradiente di policy, con la
 ricompensa soltanto alla fine dell'episodio e senza sconto (il caso della
 ricompensa verificabile), il ritorno accumulato dal passo $t$ in poi è lo
-stesso numero $R$ per ogni $t$, e la stima del gradiente diventa
+stesso numero $R$ per ogni $t$, per cui la stima del gradiente diventa
 
 $$
 \nabla_\theta J(\theta) \;\approx\;
@@ -98,19 +100,21 @@ $$
 
 dove $M$ è il numero di traiettorie campionate e $J(\theta)$ il ritorno atteso
 della politica. Lo scalare $R^{(m)}$ è uno per traiettoria, e moltiplica il
-gradiente di ogni azione di quella traiettoria: le azioni buone e quelle
-cattive di un episodio riuscito ricevono lo stesso coefficiente, tutte spinte
-verso l'alto. Con ricompense passo per passo i ritorni dal passo $t$ in poi
-differirebbero da un passo all'altro, ma resterebbero comunque somme di tutte
-le ricompense che seguono. La sezione su {doc}`REINFORCE e actor-critic
+gradiente di ogni azione di quella traiettoria; di conseguenza le azioni buone
+e quelle cattive di un episodio riuscito ricevono lo stesso coefficiente, tutte
+spinte verso l'alto.
+
+Con ricompense passo per passo i ritorni dal passo $t$ in poi differirebbero da
+un passo all'altro, ma resterebbero comunque somme di tutte le ricompense che
+seguono. La sezione su {doc}`REINFORCE e actor-critic
 </DeepReinforcementLearning/policy-gradient>` mostra come si attenua il
 problema (una linea di base per ridurre la varianza, un critico che stima il
 vantaggio azione per azione, lo sconto che accorcia l'orizzonte di
 attribuzione), e sono attenuazioni vere; ma nessuna di esse fabbrica
 informazione che nel segnale non c'era.
 
-I due argomenti si compongono: pochi bit, da distribuire per giunta su un numero
-di decisioni che cresce con la lunghezza dell'episodio.
+I due argomenti si compongono: pochi bit, da distribuire per giunta su un
+numero di decisioni che cresce con la lunghezza dell'episodio.
 
 `````
 
@@ -133,26 +137,26 @@ l'agente ha sbagliato, e ricevono la stessa spinta di tutti gli altri.
 ## Che cosa propone LeCun al suo posto
 
 Per LeCun la conseguenza di questo argomento non è che il rinforzo sia inutile,
-ma che sia nel posto sbagliato: va bene per rifinire una policy, cioè la regola
-con cui un agente sceglie che cosa fare, quando la comprensione del mondo è già
-stata costruita altrove, e non va bene come modo di costruirla.
+ma che sia nel posto sbagliato: va bene per rifinire una policy, cioè la
+regola con cui un agente sceglie che cosa fare, quando la comprensione del mondo
+è già stata costruita altrove, e non va bene come modo di costruirla.
 
 Nel {doc}`capitolo sui modelli a energia </ModelliEnergia/overview>` c'è
 l'elenco delle quattro rinunce che LeCun ripete nelle sue conferenze, e la
-quarta dice: abbandonare l'apprendimento per rinforzo in favore del **controllo
-predittivo basato su modello**, cioè costruirsi un modello di come va il mondo,
-pianificare dentro quello, e ricorrere ai tentativi soltanto per correggere il
-modello quando la previsione sbaglia.
+quarta dice di abbandonare l'apprendimento per rinforzo in favore del
+**controllo predittivo basato su modello**, cioè costruirsi un modello di come
+va il mondo, pianificare dentro quello, e ricorrere ai tentativi soltanto per
+correggere il modello quando la previsione sbaglia.
 
-L'argomento dei bit, nell'apertura, spiega quella rinuncia. Se ogni
-interazione col mondo vero paga pochi bit, allora un sistema che impara
+L'argomento dei bit, nell'apertura, spiega quella rinuncia. Infatti, se ogni
+interazione col mondo vero restituisce pochi bit, allora un sistema che impara
 *soltanto* interagendo è condannato a un numero di interazioni che nessun corpo
 fisico può permettersi; se invece la comprensione del mondo si costruisce
 guardando, cioè con un segnale grande quanto il dato, l'interazione serve solo
 là dove la previsione fallisce, ed è pochissima. È la stessa aritmetica, letta
 come progetto di macchina.
 
-È una posizione dentro un dibattito aperto, non un risultato: dice come
+È una posizione dentro un dibattito aperto, non un risultato, perché dice come
 andrebbe costruita una macchina, e le macchine costruite così non sono ancora
 quelle che funzionano meglio. La {doc}`via di LeCun </WorldModels/jepa>`, nel
 capitolo sui world model, la prende sul serio in questi termini.
@@ -218,8 +222,9 @@ campo abbia bisogno di qualcosa in più.
 ## Un'attribuzione da rimettere a posto
 
 Accanto alla critica di Karpathy ce n'è un'altra, abbastanza vicina da essere
-scambiata con la sua, e tenerle distinte serve: si fa presto ad attribuire una
-posizione a chi non l'ha espressa, solo perché il racconto suona plausibile.
+scambiata con la sua, e tenerle distinte serve, perché si fa presto ad
+attribuire una posizione a chi non l'ha espressa, solo perché il racconto suona
+plausibile.
 
 La tesi è questa: l'apprendimento per rinforzo applicato ai modelli linguistici
 non aggiungerebbe capacità nuove, si limiterebbe a restringere e selezionare
@@ -227,8 +232,8 @@ percorsi di ragionamento che il modello aveva già acquisito nel
 pre-addestramento.
 
 È una tesi tecnica precisa, formulata da Yang Yue e colleghi
-{cite}`yue2025rlvr` in un lavoro dell'aprile 2025: una misura e non
-un'opinione, e il modo in cui è fatta è la parte interessante.
+{cite}`yue2025rlvr` in un lavoro dell'aprile 2025. Si tratta di una misura e non
+di un'opinione, e il modo in cui è fatta è la parte interessante.
 
 `````{tab} Elementare
 
@@ -245,15 +250,16 @@ misure degli autori il sorpasso arriva già a qualche decina o qualche centinaio
 di tentativi, non a numeri irraggiungibili.
 
 La lettura degli autori è che l'addestramento non abbia quasi mai insegnato
-qualcosa di nuovo: abbia reso più probabili alcune strade che il modello sapeva
-già percorrere, e nel farlo abbia reso improbabili le altre. Il modello è
-diventato più preciso e più ristretto.
+qualcosa di nuovo, ma abbia reso più probabili alcune strade che il modello
+sapeva già percorrere, e nel farlo abbia reso improbabili le altre. In
+definitiva il modello è diventato più preciso e più ristretto.
 
 La conclusione non va portata oltre la misura, e gli autori sono i primi a
 dirlo. Il trucco delle tante risposte non si può spingere all'infinito: se i
 tentativi fossero un numero assurdo, prima o poi anche battendo i tasti a caso
-salterebbe fuori la risposta giusta, e il confronto non direbbe più niente. La
-misura riguarda il modo in cui questo addestramento si faceva nella primavera
+salterebbe fuori la risposta giusta, e il confronto non direbbe più niente.
+
+La misura riguarda il modo in cui questo addestramento si faceva nella primavera
 del 2025, non un limite di principio. Un lavoro di poche settimane dopo,
 infatti, allungando di molto l'addestramento e variando i problemi, ha trovato
 un modello che risolve problemi su cui quello di partenza non riesce mai,
@@ -265,8 +271,8 @@ comunque si insista.
 
 Il protocollo è il **pass@$k$**: la probabilità che almeno una fra $k$ risposte
 campionate indipendentemente alla stessa domanda sia corretta. È una misura del
-confine delle capacità, non della loro affidabilità: per $k = 1$ premia chi
-azzecca al primo colpo, per $k$ grande premia chi *possiede* la soluzione da
+confine delle capacità, non della loro affidabilità. Infatti per $k = 1$ premia
+chi azzecca al primo colpo, per $k$ grande premia chi *possiede* la soluzione da
 qualche parte nella propria distribuzione, anche se raramente. Non lo si stima
 con $k$ tentativi soli, che darebbero una stima molto variabile: per ogni
 problema si campionano $n \ge k$ risposte, di cui $c$ corrette, e si usa lo
@@ -280,7 +286,7 @@ $$
 mediato sui problemi; nel lavoro di Yue e colleghi $n$ è il $k$ più grande
 delle curve, cioè 128, 256 o 1024.
 
-Il risultato, nelle parole della versione finale dell'articolo (RLVR è il
+Il risultato, nelle parole della versione finale dell'articolo (**RLVR** è il
 rinforzo con ricompensa verificabile, quella che un controllo automatico
 assegna senza il giudizio di nessuno): «l'addestramento attuale suscita di rado
 schemi di ragionamento fondamentalmente nuovi. Mentre i modelli addestrati con
@@ -288,35 +294,41 @@ RLVR superano i loro modelli base per valori più piccoli di $k$ (per esempio
 $k=1$), i modelli base ottengono un punteggio pass@$k$ più alto quando $k$ è
 grande» {cite}`yue2025rlvr`. La prima versione, dell'aprile 2025, era più
 netta sul primo punto («non» suscita) e più cauta sul secondo (punteggio
-«paragonabile o perfino più alto»). Gli autori osservano inoltre che il confine
+«paragonabile o perfino più alto»).
+
+Gli autori osservano inoltre che il confine
 delle capacità di ragionamento spesso si restringe al procedere
 dell'addestramento. Sui problemi di matematica i modelli base sono Qwen2.5 da
 7, 14 e 32 miliardi di parametri e LLaMA-3.1-8B, confrontati con le loro
 versioni addestrate con GRPO; un confronto a parte riesegue sei algoritmi
 diffusi di RLVR nelle stesse condizioni, e li trova simili fra loro. Si
 campiona a temperatura $0{,}6$, con top-$p$ $0{,}95$ e fino a $16\,384$ token
-per risposta. Le curve pubblicate arrivano al più a $k = 1024$, e il sorpasso
+per risposta.
+
+Le curve pubblicate arrivano al più a $k = 1024$, e il sorpasso
 non richiede di arrivare fin lì: avviene «man mano che $k$ cresce fino a decine
 o centinaia», e sul banco di prova Minerva, con il modello da 32 miliardi di
 parametri, a $k = 128$ il modello base risolve circa il 9% di problemi in più
 di quello addestrato.
 
-Tre avvertenze, e le pone il lavoro stesso. La prima: la misura riguarda gli
-schemi di ragionamento accessibili per campionamento, quindi la conclusione è
-sulla distribuzione del modello base, non sull'impossibilità in linea di
-principio. La seconda: il pass@$k$ non si estrapola all'infinito, e sono gli
-autori a dirlo, perché «con un $k$ astronomicamente grande perfino il
+Tre avvertenze, e le pone il lavoro stesso. La prima è che la misura riguarda
+gli schemi di ragionamento accessibili per campionamento, quindi la conclusione
+è sulla distribuzione del modello base, non sull'impossibilità in linea di
+principio. La seconda è che il pass@$k$ non si estrapola all'infinito, e sono
+gli autori a dirlo, perché «con un $k$ astronomicamente grande perfino il
 campionamento uniforme sul dizionario dei token inciamperebbe nel percorso di
-ragionamento corretto». La terza: il titolo è una domanda, e la risposta che dà
-è sull'impostazione di addestramento corrente, con gli algoritmi e i benchmark
-esaminati. Trasformarla in «il rinforzo non serve» è un salto che il lavoro non
-autorizza.
+ragionamento corretto». La terza è che il titolo è una domanda, e la risposta
+che dà è sull'impostazione di addestramento corrente, con gli algoritmi e i
+benchmark esaminati. Trasformarla in «il rinforzo non serve» è un salto che il
+lavoro non autorizza.
 
 L'impostazione corrente, però, ha una data. Sei settimane dopo la prima
 versione, ProRL {cite}`liu2025prorl` risponde esplicitamente a Yue e colleghi,
 attribuendo il loro risultato a due limiti di metodo: problemi quasi solo di
 matematica, su cui i modelli sono spesso già addestrati fin troppo, e
-addestramenti di poche centinaia di passi. ProRL ne fa più di duemila, tiene
+addestramenti di poche centinaia di passi.
+
+ProRL ne fa più di duemila, tiene
 sotto controllo la divergenza da una politica di riferimento che di tanto in
 tanto viene aggiornata, e allarga i compiti a codice, problemi scientifici,
 rompicapi logici e istruzioni da seguire; ne ricava un modello da un miliardo e
@@ -324,13 +336,14 @@ mezzo di parametri che supera il modello di partenza su un ampio intervallo di
 $k$, compresi problemi su cui il modello di partenza fallisce «qualunque sia il
 numero di tentativi». Riconosce anche che su alcune prove di matematica il suo
 modello ha un confine uguale o più stretto di quello di partenza, come avevano
-osservato Yue e colleghi. Le due misure non si contraddicono su un fatto:
-dicono che la risposta dipende da quanto, e su che cosa, si addestra, e la
-domanda resta aperta.
+osservato Yue e colleghi.
+
+Le due misure non si contraddicono su un fatto: dicono che la risposta dipende
+da quanto, e su che cosa, si addestra, e la domanda resta aperta.
 
 `````
 
-Le due posizioni sono compatibili e vanno tenute distinte: Karpathy dice che il
+Le due posizioni sono compatibili e vanno tenute distinte. Karpathy dice che il
 segnale è povero e mal distribuito; Yue e colleghi misurano che, con
 l'impostazione della primavera del 2025, il confine delle capacità non si
 allarga. Questa seconda tesi non è di Karpathy, e chi le fonde gli
@@ -340,30 +353,34 @@ soluzioni che una persona potrebbe non trovare.
 
 ## E chi non è d'accordo
 
-Fermarsi alle critiche darebbe un'impressione falsa: mentre si discuteva di
-ciliegine l'apprendimento per rinforzo ha ottenuto due risultati grossi, e non
-si possono ignorare.
+Fermarsi alle critiche darebbe un'impressione falsa, perché mentre si discuteva
+di ciliegine l'apprendimento per rinforzo ha ottenuto due risultati grossi, e
+non si possono ignorare.
 
-La prima è che gli assistenti conversazionali che tutti usano sono rifiniti
+Il primo è che gli assistenti conversazionali che tutti usano sono rifiniti
 così. La {doc}`sezione sul post-addestramento </Transformers/post-training>`
-mostra il conto: un modello piccolo ma rifinito sulle preferenze umane
+mostra il confronto: un modello piccolo ma rifinito sulle preferenze umane
 batteva, nel giudizio delle persone, un modello più di cento volte più grande.
 Se il rinforzo è una ciliegina, è una ciliegina che ha cambiato il sapore della
 torta (e oggi parte di quell'effetto si ottiene anche senza rinforzo, con
 l'ottimizzazione diretta delle preferenze che la stessa sezione racconta).
 
-La seconda è più recente e più diretta al punto. I modelli cosiddetti
+Il secondo è più recente e più diretto al punto. I modelli cosiddetti
 «ragionanti» si addestrano col rinforzo su problemi a risposta verificabile (la
 correttezza di un risultato matematico, il superamento di una batteria di test
 per il codice), dove la ricompensa non richiede il giudizio di nessuno. Lì non
 solo il metodo funziona, ma fa emergere comportamenti che non erano stati
-programmati, come rileggere i propri passaggi e cambiare strada. Il resoconto è
+programmati, come rileggere i propri passaggi e cambiare strada.
+
+Il resoconto è
 quello del lavoro su DeepSeek-R1, uscito come rapporto tecnico nel gennaio 2025
 e in forma estesa su *Nature* nel settembre dello stesso anno
 {cite}`guo2025deepseek`, e il comportamento compare nella variante addestrata
 con il solo rinforzo a partire dal modello base. Se quel comportamento nasca
 dal rinforzo o fosse già in germe nel modello base è la questione di Yue e
-colleghi. L'osservazione convive senza contraddizione con il loro risultato, e
+colleghi.
+
+Quell'osservazione convive senza contraddizione con il loro risultato, e
 le due cose insieme dicono una terza cosa: l'addestramento sposta massa di
 probabilità verso strade che pagano, e questo è utilissimo e non è la stessa
 cosa che insegnare una strada nuova.
@@ -408,7 +425,7 @@ soltanto *informazione*. Solo dopo, sapendo che giorno è, va al bar giusto, e
 quella seconda azione è quella che gli porta la cosa che voleva.
 
 Le due azioni valgono per ragioni diverse: la prima risolve un'incertezza,
-la seconda realizza una preferenza. Ed è qui il punto: un sistema che sappia
+la seconda realizza una preferenza. Un sistema che sappia
 valutare solo la seconda non ha modo di scegliere il calendario, perché il
 calendario non porta caffè. Può solo tirare a caso fra i due bar, e come dicono
 gli autori, spesso il caffè non se lo beve.
@@ -417,8 +434,9 @@ Il rinforzo classico è in quella situazione. La ricompensa dice quanto ti è
 andata bene, non quanto hai imparato; e per questo, quando l'esplorazione serve,
 gliela si deve pagare a parte, con un premio aggiunto apposta. Nell'inferenza
 attiva il valore di sapere è già dentro la quantità da minimizzare, accanto al
-valore di ottenere, e si conta nella stessa moneta: nessuno deve decidere a
-parte quanto valga un'occhiata al calendario rispetto a un sorso di caffè.
+valore di ottenere, e si conta nella stessa moneta, per cui nessuno deve
+decidere a parte quanto valga un'occhiata al calendario rispetto a un sorso
+di caffè.
 
 Il dosaggio fra guardare e prendere, però, non sparisce. Se in città aprisse un
 terzo bar, mai provato, entrarci gli porterebbe informazione e forse nessun
@@ -451,12 +469,15 @@ D_{\mathrm{KL}}\big[\,Q(\tilde{s}\mid\tilde{o},\pi)\,\big\|\,Q(\tilde{s}\mid\pi)
 \Big]
 $$
 
-è il guadagno di informazione atteso, cioè di quanto quelle osservazioni
+è il **guadagno di informazione** atteso, cioè di quanto quelle osservazioni
 ridurrebbero l'incertezza sugli stati, e $C$ codifica le preferenze
-dell'agente, cioè quali osservazioni si aspetta di incontrare. Quel $C$ è la
-lettera con cui la letteratura dell'inferenza attiva scrive le preferenze, e
-non è il compressore $C$ di «Capire è accorciare». Minimizzare $G$ significa
-massimizzare tutti e due i pezzi insieme. La scomposizione usa per la
+dell'agente, cioè quali osservazioni si aspetta di incontrare.
+
+Quel $C$ è la lettera con cui la letteratura dell'inferenza attiva
+scrive le preferenze, e non è il compressore $C$ di «Capire è accorciare».
+Minimizzare $G$ significa massimizzare tutti e due i pezzi insieme.
+
+La scomposizione usa per la
 previsione congiunta di stati e osservazioni la forma $Q(\tilde{o}, \tilde{s}
 \mid \pi) = Q(\tilde{s} \mid \pi)\, P(\tilde{o} \mid \tilde{s})$, che è quella
 che gli autori le danno; con la stessa forma $G$ si riscrive anche come rischio
@@ -468,7 +489,9 @@ bilanciare esplorazione e sfruttamento con un coefficiente scelto a mano.
 Poiché «l'utilità e il valore dell'informazione emergono come due componenti
 dell'energia libera attesa», entrambe «sono al servizio dell'ottimizzazione
 della stessa funzione» {cite}`parr2022active`: i due valori si misurano nella
-stessa unità, il nat. Il bilanciamento però non sparisce, e gli stessi autori
+stessa unità, il nat.
+
+Il bilanciamento però non sparisce, e gli stessi autori
 scrivono che è il peso relativo dei due termini a decidere se il comportamento
 è prevalentemente esplorativo o di sfruttamento. Quel peso dipende da quanto
 sono nette le preferenze. Scrivendole come $P(\tilde{o} \mid C) \propto
@@ -483,8 +506,8 @@ valore pragmatico, quel che resta, cambiato di segno, «è variamente noto come
 sorpresa bayesiana attesa o motivazione intrinseca», che è la curiosità che la
 {doc}`sezione sull'esplorazione
 </DeepReinforcementLearning/esplorazione-e-ricompensa>` costruisce come bonus
-aggiunto. Il che dice in che rapporto stanno le due letture: non sono in
-concorrenza, una è il caso particolare dell'altra.
+aggiunto. Ne segue che le due letture non sono in concorrenza: una è il caso
+particolare dell'altra.
 
 `````
 
@@ -601,7 +624,8 @@ quella domanda si apre il {doc}`capitolo sui world model
 
 Se ne ricava un criterio: per giudicare un modo di addestrare si guarda prima
 quanta informazione porta il segnale su cui poggia, e fra quante scelte quel
-poco va poi diviso. Nel {doc}`capitolo sui world model </WorldModels/overview>` il
-segnale resta la previsione, ma cambia l'oggetto: si prevede la
-rappresentazione invece dei pixel e, per chi deve agire, come cambia il mondo
-dopo un'azione, invece di ricostruire la parte coperta di un dato.
+poco va poi diviso. Nel
+{doc}`capitolo sui world model </WorldModels/overview>` il segnale resta la
+previsione, ma cambia l'oggetto: si prevede la rappresentazione invece dei pixel
+e, per chi deve agire, come cambia il mondo dopo un'azione, invece di
+ricostruire la parte coperta di un dato.

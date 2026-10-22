@@ -6,9 +6,9 @@ il nome: dice *quale* uomo ho visto. Ma le etichette del {doc}`POS tagging
 <etichettare-sequenze>`, da sole, qui non bastano. Ausiliare, verbo, articolo,
 nome, preposizione, articolo, nome: il POS tagging produce la stessa identica
 sequenza per entrambe le letture. In «La vecchia porta la sbarra» l'ambiguità
-viveva al piano delle categorie grammaticali; qui vive un piano più su. Le due
-letture sono due strutture diverse costruite con gli stessi mattoni, e non due
-sfumature dello stesso significato.
+viveva al piano delle categorie grammaticali; qui vive un piano più su. In
+altre parole, le due letture sono due strutture diverse costruite con
+gli stessi mattoni, e non due sfumature dello stesso significato.
 
 La disciplina che studia queste strutture è la **sintassi**; costruirle
 automaticamente si chiama **parsing**, o analisi sintattica, e un programma che
@@ -22,7 +22,7 @@ dipende, con una freccia che porta il nome della relazione. Dicono cose
 diverse: i costituenti mostrano quali parole formano un blocco, le dipendenze
 quale parola regge quale. Dai primi si passa alle seconde con regole che
 indicano, in ogni blocco, la parola principale; il passaggio inverso non è
-univoco. Il NLP li usa tutti e due.
+univoco. Nella pratica il NLP li usa tutti e due.
 
 ## Scatole dentro scatole: i costituenti
 
@@ -179,12 +179,12 @@ diretto si chiamava `dobj`, e `obl` non esisteva perché `nmod` copriva entrambi
 i ruoli.
 
 Perché due formalismi? Le dipendenze pagano meglio nelle lingue a ordine
-flessibile. L'italiano ammette «Il binocolo l'ho visto io» o «Sul muro salta,
-il gatto nero»: una grammatica a costituenti deve prevedere regole per ogni
-permutazione, mentre l'albero a dipendenze resta *lo stesso*; cambia solo
-l'ordine lineare in cui le parole compaiono, non la struttura. È uno dei motivi
-per cui il progetto UD ha scelto le dipendenze come base comune per annotare
-con gli stessi criteri più di centocinquanta lingue, dall'italiano al
+flessibile. L'italiano, ad esempio, ammette «Il binocolo l'ho visto io» o «Sul
+muro salta, il gatto nero»: una grammatica a costituenti deve prevedere regole
+per ogni permutazione, mentre l'albero a dipendenze resta *lo stesso*; cambia
+solo l'ordine lineare in cui le parole compaiono, non la struttura. È uno dei
+motivi per cui il progetto UD ha scelto le dipendenze come base comune per
+annotare con gli stessi criteri più di centocinquanta lingue, dall'italiano al
 finlandese al giapponese: il suo obiettivo dichiarato è una rappresentazione in
 cui costruzioni simili restino parallele da una lingua all'altra, nonostante le
 differenze di ordine, di morfologia e di parole funzionali
@@ -302,26 +302,26 @@ with syntactic ambiguity or how to put the block in the box on the table*
 {cite}`church1982coping`. Come mettere il blocco nella scatola sul tavolo: ma
 il tavolo sostiene la scatola, o è lì che va messo il blocco?
 
-Una frase di giornale può avere *migliaia* di alberi
-grammaticalmente leciti, quasi tutti assurdi per un lettore umano ma
-impeccabili per la grammatica, che non ne giudica la plausibilità; e nessun
-parser può elencarli uno per uno. Servono allora due mosse. La
-prima è condividere i pezzi comuni a molte analisi, cioè la programmazione
-dinamica, già incontrata con la griglia della distanza di edit e con
-l'algoritmo di Viterbi: risolvere una volta sola ogni pezzo che servirà più
-volte, e conservarne il risultato. La seconda è scegliere fra le analisi, e nella
-forma più semplice si fa contando. In un insieme di frasi già analizzate a mano
-si guarda quante volte è stata usata ciascuna regola di montaggio, rispetto
-alle altre regole che costruiscono lo stesso tipo di blocco, e quella frequenza
-diventa la probabilità della regola; un albero vale il prodotto delle
-probabilità delle sue regole, e vince il più probabile. È una **grammatica
-context-free probabilistica** (PCFG). Le sue probabilità, però, stanno sulle
-regole, che parlano di categorie: le due letture del binocolo usano le stesse
-parole, e a separarle restano le sole regole che agganciano un complemento al
-verbo o al nome. La PCFG sceglie l'aggancio da quelle frequenze, e darebbe lo
-stesso verdetto a «con il cappello», cioè sbaglia proprio dove a decidere sono
-le parole. Al posto dei conteggi si può mettere una rete neurale, che guarda
-anche le parole e non solo le categorie.
+Una frase di giornale può avere *migliaia* di alberi grammaticalmente leciti,
+quasi tutti assurdi per un lettore umano ma impeccabili per la grammatica, che
+non ne giudica la plausibilità; e nessun parser può elencarli uno per uno.
+Servono allora due mosse. La prima è condividere i pezzi comuni a molte
+analisi, cioè la programmazione dinamica, già incontrata con la griglia della
+distanza di edit e con l'algoritmo di Viterbi: risolvere una volta sola ogni
+pezzo che servirà più volte, e conservarne il risultato. La seconda è scegliere
+fra le analisi, e nella forma più semplice si fa contando. In un insieme di
+frasi già analizzate a mano si guarda quante volte è stata usata ciascuna
+regola di montaggio, rispetto alle altre regole che costruiscono lo stesso tipo
+di blocco, e quella frequenza diventa la probabilità della regola; un albero
+vale il prodotto delle probabilità delle sue regole, e vince il più probabile.
+È una **grammatica context-free probabilistica** (PCFG). Le sue probabilità,
+però, stanno sulle regole, che parlano di categorie: le due letture del
+binocolo usano le stesse parole, e a separarle restano le sole regole che
+agganciano un complemento al verbo o al nome. La PCFG sceglie l'aggancio da
+quelle frequenze, e darebbe lo stesso verdetto a «con il cappello», cioè
+sbaglia proprio dove a decidere sono le parole. Perciò, al posto dei conteggi,
+si può mettere una rete neurale, che guarda anche le parole e non solo le
+categorie.
 
 ## Costruire l'albero senza provarle tutte
 
@@ -412,7 +412,9 @@ binari su $n$ foglie è il numero di Catalan $C_{n-1} =
 \frac{1}{n}\binom{2(n-1)}{n-1}$, dove le foglie non sono le parole ma i pezzi
 da imparentesare (il verbo, il sintagma nominale, e un sintagma preposizionale
 per ogni complemento); cresce come $4^{n}$ a meno di un fattore polinomiale, e
-l'enumerazione è fuori discussione. CKY riempie una tabella triangolare
+l'enumerazione è fuori discussione.
+
+Al suo posto CKY riempie una tabella triangolare
 indicizzata dagli intervalli della frase: $T[i,j]$ è l'insieme delle categorie
 che possono coprire le parole dalla posizione $i$ alla $j$ (esclusa), calcolato
 dal corto verso il lungo. Il caso base è dato dagli intervalli di una parola
@@ -452,7 +454,9 @@ sono tre: `shift` (sposta la prossima parola sulla pila), `left-arc` e
 `right-arc` (creano un arco etichettato tra le due parole in cima e ne
 rimuovono la dipendente). La configurazione finale ha il buffer vuoto e sulla
 pila la sola radice, e una frase di $n$ parole ci arriva in circa $2n$ mosse:
-costo lineare. Un classificatore sceglie la mossa sullo stato corrente; dalla
+costo lineare.
+
+Un classificatore sceglie la mossa sullo stato corrente; dalla
 svolta neurale {cite}`chen2014fast` i tratti simbolici sono rimpiazzati dagli
 embedding delle parole su pila e buffer, dati in ingresso a un MLP. La
 decodifica greedy propaga gli errori; beam search e modelli globali attenuano
@@ -463,7 +467,9 @@ score*, la quota di parole agganciate alla testa giusta) analizzando più di
 mille frasi al secondo. L'arc-standard produce soltanto alberi proiettivi,
 quindi sulle lingue a ordine libero sbaglia per costruzione gli archi che si
 incrociano; una quarta mossa, `swap`, li recupera riordinando pila e buffer
-{cite}`nivre2009non`. La seconda strategia è il parsing **basato su grafi**: si
+{cite}`nivre2009non`.
+
+La seconda strategia è il parsing **basato su grafi**: si
 assegna un punteggio $s(h, d)$ a ogni arco possibile dalla testa $h$ al
 dipendente $d$ e si cerca l'albero di punteggio massimo, con l'algoritmo di
 Eisner in $O(n^3)$ nel caso proiettivo e con quello di Chu–Liu/Edmonds in
@@ -600,15 +606,15 @@ fosse già, e che alla sonda sia bastato andarla a leggere.
 
 Più semplice, però, non vuol dire unica, e Hewitt e Liang
 {cite}`hewitt2019control` hanno mostrato perché. Si assegna a ogni parola del
-vocabolario un'etichetta sorteggiata una volta per tutte, senza nessun senso
-grammaticale («gatto» riceve sempre la 7, «muro» sempre la 3), e si addestra la
-stessa sonda a ripeterla: sui vettori di un modello di linguaggio una sonda
-lineare ci riesce in buona parte, e una un po' più grande quasi del tutto,
-perché basta riconoscere la parola. Il loro controllo confronta
-allora la riuscita della sonda sul compito vero con quella sul compito
-sorteggiato: solo lo scarto fra le due dice quanto la sonda legge davvero nelle
-attivazioni, invece di imparare a memoria il vocabolario. Il metodo è raccontato
-per esteso nella {doc}`sezione sull'interpretabilità
+vocabolario un'etichetta casuale, scelta una volta per tutte, senza nessun
+senso grammaticale («gatto» riceve sempre la 7, «muro» sempre la 3), e si
+addestra la stessa sonda a ripeterla: sui vettori di un modello di linguaggio
+una sonda lineare ci riesce in buona parte, e una un po' più grande quasi del
+tutto, perché basta riconoscere la parola. Il loro controllo confronta allora
+la riuscita della sonda sul compito vero con quella sul compito a etichette
+casuali: solo lo scarto fra le due dice quanto la sonda legge davvero nelle
+attivazioni, invece di imparare a memoria il vocabolario. Il metodo è
+raccontato per esteso nella {doc}`sezione sull'interpretabilità
 </Interpretabilita/attribuzione-e-meccanicistica>`.
 
 Hewitt e Manning {cite}`hewitt2019structural` cercano una trasformazione
@@ -718,8 +724,8 @@ diventa un problema a sé.
 - I LLM non costruiscono alberi mentre leggono (su richiesta generano un albero
   come semplice testo, senza garanzia che sia ben formato), ma il probing
   suggerisce che una parte della struttura sintattica emerga nelle loro
-  rappresentazioni, a patto di controllare con compiti sorteggiati che la sonda
-  non stia solo memorizzando; il parsing esplicito resta utile alla
+  rappresentazioni, a patto di controllare con compiti a etichette casuali che
+  la sonda non stia solo memorizzando; il parsing esplicito resta utile alla
   linguistica, a qualche sistema di correzione grammaticale e alle lingue con
   scarse risorse.
 ```

@@ -2,43 +2,48 @@
 
 C'è una differenza sottile ma decisiva tra due previsioni del tempo. «Domani 24
 gradi» è una cifra secca: sembra sicura, ma non dice nulla su quanto fidarsi.
-«Domani tra 21 e 27» dice di meno e comunica di più: oltre alla stima, dichiara
-*quanto il modello non sa*. Quasi tutti i modelli visti finora (la retta di best
-fit, la regressione logistica, il k-NN) restituiscono una stima puntuale. La
+«Domani tra 21 e 27» dice di meno ma comunica di più, perché oltre alla stima
+dichiara *quanto il modello non sa*.
+
+Quasi tutti i modelli visti finora (la retta di best fit, la regressione
+logistica, il k-NN) restituiscono una stima puntuale, cioè la cifra secca. La
 regressione logistica dice anche quanto è sicura della classe, ma nessuno dei
 tre dice quanto il modello stesso è incerto sulla funzione che ha imparato,
 un'incertezza che dovrebbe crescere lontano dai dati. Il **processo gaussiano**
 (*Gaussian process*, GP) restituisce la stima insieme a questa incertezza.
 
-La grandezza da prevedere (la temperatura in ogni
-punto di una regione, per esempio) è una funzione sconosciuta $f(\mathbf{x})$.
-In probabilità un *processo* è una famiglia di quantità casuali, una per ogni
-punto: qui, per ogni punto $\mathbf{x}$, il valore $f(\mathbf{x})$. *Gaussiano*
-perché i valori in un qualunque gruppo di punti, presi insieme, si
-distribuiscono secondo la curva a campana di Gauss, con un valore centrale e un
-margine attorno.
+La grandezza da prevedere (ad esempio la temperatura in ogni punto di una
+regione) è una funzione sconosciuta $f(\mathbf{x})$. In probabilità si chiama
+**processo** una famiglia di quantità casuali, una per ogni punto; nel nostro
+caso, per ogni punto $\mathbf{x}$, la quantità casuale è il valore
+$f(\mathbf{x})$. Il processo si dice *gaussiano* perché i valori in un
+qualunque gruppo di punti, presi insieme, si distribuiscono secondo la curva a
+campana di Gauss, con un valore centrale e un margine attorno.
 
 L'idea ha più di una radice. La previsione con processi gaussiani risale almeno
 a Kolmogorov (1941) e a Wiener (1949), che la studiavano sulle serie temporali,
 cioè su misure prese una dopo l'altra nel tempo {cite}`rasmussen2006gaussian`.
+
 Un'altra radice, indipendente, viene dalle miniere. Nel 1951 Danie Krige, un
 giovane ingegnere sudafricano, affrontava il problema più costoso delle miniere
 d'oro del Witwatersrand: ogni carotaggio (un pozzo di assaggio per misurare la
 concentrazione del minerale) costava una fortuna, e i punti campionati erano per
 forza pochi e sparsi. Come stimare quanto oro c'è *tra* un pozzo e l'altro?
 Krige propose di usare medie pesate dei campioni vicini, con pesi scelti in modo
-statistico. Nei primi anni Sessanta il matematico francese Georges Matheron
-formalizzò il metodo e, in suo onore, lo battezzò *kriging*, il nome che
-porta ancora in geostatistica. Nel machine learning la stessa matematica è
-arrivata dalla statistica bayesiana con il nome che aveva in probabilità, e oggi è
-un modello standard per la regressione con incertezza
+statistico.
+
+Nei primi anni Sessanta il matematico francese Georges Matheron formalizzò il
+metodo e, in suo onore, lo battezzò *kriging*, il nome che porta ancora in
+geostatistica. Nel machine learning, invece, la stessa matematica è arrivata
+dalla statistica bayesiana con il nome che aveva in probabilità, e oggi è un
+modello standard per la regressione con incertezza
 {cite}`rasmussen2006gaussian`.
 
 ## Una distribuzione sulle curve, non una sola
 
-La regressione lineare restituisce *una* retta, quella
-di best fit. Il processo gaussiano restituisce una distribuzione su tutte le
-funzioni compatibili con i dati, ciascuna con la sua plausibilità.
+La regressione lineare restituisce *una* retta, quella di best fit. Il processo
+gaussiano, invece, restituisce una distribuzione su tutte le funzioni
+compatibili con i dati, ciascuna con la sua plausibilità.
 
 `````{tab} Elementare
 
@@ -46,19 +51,21 @@ Sopra un tavolo sta teso un fascio di fili elastici, ognuno una possibile curva
 "vera", un modo in cui il mondo potrebbe comportarsi. Prima di misurare
 qualsiasi cosa i fili si affollano attorno alla stessa altezza in ogni punto
 del tavolo, moltissimi vicini a quella quota, pochi scostati parecchio,
-pochissimi in cima o in fondo. Punta il dito su un punto qualunque del tavolo e
-guarda soltanto le altezze dei fili lì sopra. La loro forma è la campana.
-Puntane tre insieme, prendi da ogni filo la terna di altezze, e ritrovi la
-stessa storia. Vale per una manciata qualsiasi di punti, e questa regolarità
-dà il nome al metodo.
+pochissimi in cima o in fondo.
+
+Punta il dito su un punto qualunque del tavolo e guarda soltanto le altezze dei
+fili lì sopra. La loro forma è la campana. Se poi ne punti tre insieme e prendi
+da ogni filo la terna di altezze, ritrovi la stessa storia. Vale per una
+manciata qualsiasi di punti, ed è questa regolarità a dare il nome al metodo.
 
 Ogni misura che facciamo è un chiodo piantato nel tavolo, e da quel momento i
-fili devono passare lì vicino, quasi toccarlo, e chi passa lontano esce di
-scena. Vicino ai chiodi il fascio è costretto, i fili quasi si sovrappongono;
-lontano dai chiodi si riapre a ventaglio, perché nulla lo vincola. I chiodi
-però non cambiano la natura del fascio. Anche dopo, in ogni punto del tavolo,
-le altezze si affollano attorno a un centro con la loro campana; solo che il
-centro si è spostato sui dati e la campana si è ristretta.
+fili devono passare lì vicino, quasi toccarlo; chi passa lontano esce di scena.
+Vicino ai chiodi il fascio è costretto, i fili quasi si sovrappongono; lontano
+dai chiodi si riapre a ventaglio, perché nulla lo vincola.
+
+I chiodi però non cambiano la natura del fascio. Anche dopo, in ogni punto del
+tavolo, le altezze si affollano attorno a un centro con la loro campana; solo
+che il centro si è spostato sui dati e la campana si è ristretta.
 
 La previsione del processo gaussiano è doppia: *dove passa in media il fascio*
 (la stima) e *quanto è largo lì* (l'incertezza). È la previsione
@@ -77,31 +84,33 @@ $$
 
 dove $\mu(\mathbf{x})$ è la funzione media (spesso posta a zero dopo aver
 centrato i dati) e $k(\mathbf{x}, \mathbf{x}')$ è la funzione di covarianza, o
-kernel. La proprietà che lo definisce: per *qualunque* insieme finito di $q$
-punti $\mathbf{x}_1, \dots, \mathbf{x}_q$, il vettore dei valori
+kernel. La proprietà che lo definisce è che, per *qualunque* insieme finito di
+$q$ punti $\mathbf{x}_1, \dots, \mathbf{x}_q$, il vettore dei valori
 $\big(f(\mathbf{x}_1), \dots, f(\mathbf{x}_q)\big)$ ha distribuzione gaussiana
 multivariata, con medie $\mu(\mathbf{x}_i)$ e covarianze $k(\mathbf{x}_i,
-\mathbf{x}_j)$. È un *prior* sulle funzioni: prima di vedere i dati, tutte le
-curve coerenti con il kernel sono possibili; condizionare sulle osservazioni
-restringe la distribuzione, e il risultato è ancora un processo gaussiano
-{cite}`rasmussen2006gaussian`.
+\mathbf{x}_j)$. È un *prior* sulle funzioni: prima di vedere
+i dati, tutte le curve coerenti con il kernel sono possibili. Condizionando
+sulle osservazioni la distribuzione si restringe, e il risultato è ancora un
+processo gaussiano {cite}`rasmussen2006gaussian`.
 
 Non ogni funzione $k$ va bene: perché quelle covarianze definiscano una
 gaussiana per ogni scelta di punti, ogni matrice $[k(\mathbf{x}_i,
 \mathbf{x}_j)]_{ij}$ deve essere simmetrica e semidefinita positiva, la stessa
-condizione vista in {doc}`Il kernel trick <svm-kernel>`. Il legame con i
-modelli già visti si vede dal lato dei pesi: se $f(\mathbf{x}) =
+condizione vista in {doc}`Il kernel trick <svm-kernel>`.
+
+Il legame con i modelli già visti si vede dal lato dei pesi. Se $f(\mathbf{x}) =
 \boldsymbol{\phi}(\mathbf{x})^\top\mathbf{w}$ con $\mathbf{w} \sim
 \mathcal{N}(\mathbf{0}, \boldsymbol{\Sigma}_p)$, allora $f$ è un processo
 gaussiano con $k(\mathbf{x},\mathbf{x}') =
 \boldsymbol{\phi}(\mathbf{x})^\top\boldsymbol{\Sigma}_p\,\boldsymbol{\phi}(\mathbf{x}')$,
-e con $\boldsymbol{\phi}(\mathbf{x}) = \mathbf{x}$ è la regressione lineare
-bayesiana: anche su una retta si può tenere una distribuzione invece di una
-stima sola. Un kernel come l'RBF corrisponde a infinite funzioni di base, e il
-processo gaussiano lavora direttamente con il kernel, come la SVM. La media a
-posteriori coincide con la *kernel ridge regression* (la regressione ridge con
-il kernel trick) con penalità $\lambda = \sigma_n^2$, se la perdita è la somma
-dei quadrati degli errori: il processo gaussiano aggiunge la covarianza
+e con $\boldsymbol{\phi}(\mathbf{x}) = \mathbf{x}$ si ottiene la regressione
+lineare bayesiana. In altri termini, anche su una retta si può tenere una
+distribuzione invece di una stima sola. Un kernel come l'RBF corrisponde a
+infinite funzioni di base, quindi il processo gaussiano lavora direttamente con
+il kernel, come la SVM. La media a posteriori coincide con la *kernel ridge
+regression* (la regressione ridge con il kernel trick) con penalità
+$\lambda = \sigma_n^2$, se la perdita è la somma dei quadrati degli errori:
+il processo gaussiano aggiunge la covarianza
 {cite}`rasmussen2006gaussian`.
 
 `````
@@ -109,12 +118,12 @@ dei quadrati degli errori: il processo gaussiano aggiunge la covarianza
 ## Il kernel: chi è vicino si somiglia
 
 Che cosa rende lisce, e non frastagliate, le curve che il modello considera
-possibili? La risposta sta nella funzione di covarianza $k(\mathbf{x},
+possibili? La risposta sta nella **funzione di covarianza** $k(\mathbf{x},
 \mathbf{x}')$, il *kernel*, una regola che dice quanto i valori della funzione
 in due punti $\mathbf{x}$ e $\mathbf{x}'$ devono somigliarsi (con media nulla è
 l'unica cosa da specificare). La regolarità delle curve è quella imposta dal
-kernel. È lo stesso oggetto del {doc}`kernel trick <svm-kernel>`, usato qui come
-covarianza.
+kernel. È lo stesso oggetto del {doc}`kernel trick <svm-kernel>`, usato qui
+come covarianza.
 
 `````{tab} Elementare
 
@@ -124,46 +133,49 @@ di duecento chilometri, quella lettura ci dice ormai poco. Il kernel mette la
 faccenda in numeri fra 0 e 1, quasi 1 per due città a un passo e quasi 0 per
 due lontanissime.
 
-Una manopola, il raggio d'influenza, decide fin dove arriva una lettura. Corto,
-Modena non impegna Bologna, che resta libera di segnare qualunque cosa, e fra
-un termometro e l'altro la curva zigzaga. Lungo, Modena tiene stretta Bologna e
-Bologna tiene Ferrara, e una catena del genere non fa scatti bruschi, per cui
-ne escono curve morbide e distese.
+Una manopola, il raggio d'influenza, decide fin dove arriva una lettura. Se il
+raggio è corto, Modena non impegna Bologna, che resta libera di segnare
+qualunque cosa, e fra un termometro e l'altro la curva zigzaga. Se è lungo,
+Modena tiene stretta Bologna e Bologna tiene Ferrara; una catena del genere non
+fa scatti bruschi, per cui ne escono curve morbide e distese.
 
 Le distanze si contano in raggi, e con un raggio di quaranta chilometri Bologna
 sta a distanza $1$. La somiglianza cala come una campana: si prende la distanza
 in raggi, la si eleva al quadrato, se ne prende la metà e la si mette
-all'esponente con il segno meno, $e^{-d^2/2}$ (con $e \approx 2{,}718$). A
-Bologna, distanza $1$, vale $e^{-0{,}5} \approx 0{,}61$; a ottanta chilometri,
-distanza $2$, $e^{-2} \approx 0{,}14$; a centoventi, distanza $3$, $e^{-4{,}5}
-\approx 0{,}01$, e Ancona è fuori. A un raggio pieno la somiglianza è ancora
-sopra la metà, a tre raggi è praticamente sparita. La campana scende dolce
-vicino, ma oltre qualche raggio l'influenza di un termometro si spegne quasi
-del tutto.
+all'esponente con il segno meno, $e^{-d^2/2}$ (con $e \approx 2{,}718$).
+
+A Bologna, distanza $1$, vale $e^{-0{,}5} \approx 0{,}61$; a ottanta
+chilometri, distanza $2$, $e^{-2} \approx 0{,}14$; a centoventi, distanza $3$,
+$e^{-4{,}5} \approx 0{,}01$, e Ancona è fuori. In altre parole, a un raggio
+pieno la somiglianza è ancora sopra la metà, mentre a tre raggi è praticamente
+sparita. La campana scende dolce vicino, ma oltre qualche raggio l'influenza di
+un termometro si spegne quasi del tutto.
 
 Una seconda manopola, l'ampiezza, dice quanto ballano le letture: un grado di
-scarto o dieci. Non giriamo a mano nessuna delle due; i
-termometri che abbiamo già ne scelgono la posizione, provando e dando un voto.
+scarto o dieci. Non giriamo a mano nessuna delle due; i termometri che abbiamo
+già ne scelgono la posizione, provando e dando un voto.
 
 Il voto tira in due versi. Col raggio cortissimo ogni città è libera dalle
 altre, e il modello andrebbe bene con qualsiasi tabella di temperature, anche
 quaranta gradi a Modena e zero a Bologna. Chi accetta tutto non ha indovinato
 niente, e il voto lo punisce. Col raggio lunghissimo mezza Italia dovrebbe
-segnare la stessa cifra, e le nostre letture dicono di no, e il voto punisce
-anche questo. Così una parte del voto premia chi spiega le nostre letture,
-l'altra toglie punti a chi avrebbe spiegato altrettanto bene troppe tabelle
-diverse dalla nostra. Vince una posizione di mezzo.
+segnare la stessa cifra; le nostre letture dicono di no, e il voto punisce
+anche questo.
+
+Così una parte del voto premia chi spiega le nostre letture, l'altra toglie
+punti a chi avrebbe spiegato altrettanto bene troppe tabelle diverse dalla
+nostra. Vince una posizione di mezzo.
 
 Le posizioni buone però sono più di una, e chi gira la manopola sempre nello
-stesso verso si ferma sulla prima. Per questo il giro si rifà cinque volte, da
-posizioni sorteggiate, tenendo il voto più alto.
+stesso verso si ferma sulla prima. Per questo la ricerca si rifà cinque volte,
+partendo da posizioni sorteggiate, e si tiene il voto più alto.
 
 Sotto tutto c'è un'ipotesi, che il tempo cambi sempre dolcemente da una città
 all'altra. Su un valico, sulla costa, sul bordo di un temporale non è vero:
 cinque gradi se ne vanno in due chilometri, e il fascio non sa fare quel salto.
-Ci passa in mezzo con una rampa, e non avverte. La banda si stringe dove i
-termometri sono fitti, non dove le loro letture ci hanno sorpreso. Sopra il
-valico, con due misure lì accanto, resta stretta e sbagliata.
+Ci passa in mezzo con una rampa, e non avverte. La banda, infatti, si stringe
+dove i termometri sono fitti, non dove le loro letture ci hanno sorpreso.
+Sopra il valico, con due misure lì accanto, resta stretta e sbagliata.
 
 `````
 
@@ -176,25 +188,27 @@ k(\mathbf{x}, \mathbf{x}') = \sigma_f^2
 \exp\!\left(-\frac{\lVert \mathbf{x} - \mathbf{x}'\rVert^2}{2\ell^2}\right),
 $$
 
-dove $\sigma_f^2$ è la varianza di segnale (l'ampiezza tipica delle
+dove $\sigma_f^2$ è la **varianza di segnale** (l'ampiezza tipica delle
 oscillazioni delle funzioni campionate) e $\ell$ è la **lunghezza-scala**
 (*lengthscale*; qui $\ell$ è una lunghezza, non la perdita su un esempio
 indicata altrove con la stessa lettera): l'unità in cui il kernel misura le
 distanze. A distanza $\ell$ due valori sono ancora ben correlati, e la
-correlazione diventa trascurabile solo verso $3\ell$. È lo stesso kernel del
-{doc}`kernel trick <svm-kernel>`, con $\gamma = 1/(2\ell^2)$: la larghezza che
-là si chiamava $\sigma$ qui si chiama $\ell$. In scikit-learn la si passa come
-`length_scale` $=\ell$ a `RBF`, mentre `SVC` vuole `gamma` $=1/(2\ell^2)$. Con
-$\ell = 1$ due punti a distanza $1$ hanno correlazione $e^{-0{,}5} \approx
-0{,}61$; a distanza $3$, $e^{-4{,}5} \approx 0{,}01$. Una $\ell$ piccola
-produce funzioni nervose che dimenticano in fretta; una $\ell$ grande, funzioni
-lisce e a lungo raggio. Con input di scale diverse si usa una lunghezza-scala
+correlazione diventa trascurabile solo verso $3\ell$.
+
+È lo stesso kernel del {doc}`kernel trick <svm-kernel>`, con
+$\gamma = 1/(2\ell^2)$: la larghezza che là si chiamava $\sigma$ qui si chiama
+$\ell$. In scikit-learn la si passa come `length_scale` $=\ell$ a `RBF`, mentre
+`SVC` vuole `gamma` $=1/(2\ell^2)$. Con $\ell = 1$, ad esempio, due punti a
+distanza $1$ hanno correlazione $e^{-0{,}5} \approx 0{,}61$; a distanza $3$,
+$e^{-4{,}5} \approx 0{,}01$. Una $\ell$ piccola produce funzioni che variano
+rapidamente e si decorrelano in fretta; una $\ell$ grande, funzioni lisce e
+correlate a lungo raggio. Con input di scale diverse si usa una lunghezza-scala
 per dimensione (*automatic relevance determination*; in scikit-learn
 `RBF(length_scale=[…])`).
 
-Il kernel RBF genera funzioni infinitamente
-derivabili: un'ipotesi di regolarità forte, che Stein giudica irrealistica per
-molti processi fisici. L'alternativa standard è la famiglia di Matérn, con un
+Il kernel RBF genera funzioni infinitamente derivabili, cioè impone
+un'ipotesi di regolarità forte, che Stein giudica irrealistica per molti
+processi fisici. L'alternativa standard è la famiglia di Matérn, con un
 parametro di regolarità $\nu$: le funzioni sono $j$ volte derivabili in media
 quadratica se e solo se $\nu > j$, e l'RBF è il limite $\nu \to \infty$. I due
 casi più usati hanno forma chiusa, con $r = \lVert\mathbf{x} -
@@ -207,11 +221,11 @@ k_{5/2}(r) = \sigma_f^2\Big(1+\frac{\sqrt5\,r}{\ell}+\frac{5r^2}{3\ell^2}\Big)e^
 $$
 
 (`Matern(nu=1.5)` e `Matern(nu=2.5)` in scikit-learn)
-{cite}`rasmussen2006gaussian`. Nessun kernel stazionario rappresenta un salto
-vero, come quello di un valico: servono kernel che cambiano con la posizione, o
-un modello con un punto di rottura.
+{cite}`rasmussen2006gaussian`. Nessun kernel stazionario, però, rappresenta un
+salto vero, come quello di un valico: servono kernel che cambiano con la
+posizione, o un modello con un punto di rottura.
 
-Gli iperparametri $(\sigma_f, \ell)$ non si fissano a mano: si stimano
+Gli iperparametri $(\sigma_f, \ell)$ non si fissano a mano, ma si stimano
 massimizzando la **verosimiglianza marginale** dei dati, cosa che
 `scikit-learn` fa durante il `fit`. Il criterio è il logaritmo della densità di
 $\mathbf{y}$ dopo aver marginalizzato la funzione:
@@ -227,26 +241,30 @@ $$
 dove $\mathbf{K}$ è la matrice del kernel fra i punti di addestramento
 ($K_{ij} = k(\mathbf{x}_i, \mathbf{x}_j)$), $\sigma_n^2$ la varianza del
 **rumore di misura** (da non confondere con la $\sigma_f^2$ di segnale del
-kernel), $\mathbf{I}$ la matrice identità e $m$ il numero di esempi. La formula
-discende da $\mathbf{y} = \mathbf{f} + \boldsymbol{\varepsilon}$, con
-$\mathbf{f} \sim \mathcal{N}(\mathbf{0}, \mathbf{K})$ e un rumore
+kernel), $\mathbf{I}$ la matrice identità e $m$ il numero di esempi.
+
+La formula discende da $\mathbf{y} = \mathbf{f} + \boldsymbol{\varepsilon}$,
+con $\mathbf{f} \sim \mathcal{N}(\mathbf{0}, \mathbf{K})$ e un rumore
 $\boldsymbol{\varepsilon} \sim \mathcal{N}(\mathbf{0}, \sigma_n^2\mathbf{I})$
-indipendente: la somma di due gaussiane indipendenti dà $\mathbf{y} \sim
+indipendente. La somma di due gaussiane indipendenti dà infatti $\mathbf{y} \sim
 \mathcal{N}(\mathbf{0}, \mathbf{K} + \sigma_n^2\mathbf{I})$, e la formula è il
 logaritmo di questa densità. Se $\sigma_n$ non è fissato, entra anch'esso fra
 gli iperparametri.
 
-Il primo termine premia l'aderenza ai dati, il secondo (il logaritmo del
-determinante) penalizza i kernel «capaci», quelli che ammettono troppe funzioni
-diverse. È il rasoio di Occam scritto dentro il criterio: la complessità è già
-penalizzata nella stima degli iperparametri, e non serve un validation set per
-sceglierli. Non sostituisce il giudizio sul modello finito: massimizzare la
-verosimiglianza marginale può sovradattare quando gli iperparametri sono molti
-e i dati pochi {cite}`rasmussen2006gaussian`, e non protegge da un kernel mal
-scelto. In pratica la funzione non è concava negli iperparametri e ha massimi
-locali {cite}`rasmussen2006gaussian`, per cui l'ottimizzazione si fa ripartire
-cinque volte da inizializzazioni sorteggiate (`n_restarts_optimizer=5` in
-`scikit-learn`, il cui valore predefinito è zero) tenendo il massimo più alto.
+Il primo termine premia l'aderenza ai dati, mentre il secondo (il logaritmo del
+determinante) penalizza i kernel «capaci», quelli che ammettono troppe
+funzioni diverse. È il rasoio di Occam scritto dentro il criterio: la
+complessità è già penalizzata nella stima degli iperparametri, e non serve un
+validation set per sceglierli.
+
+Il criterio non sostituisce però il giudizio sul modello finito: massimizzare
+la verosimiglianza marginale può sovradattare quando gli iperparametri sono
+molti e i dati pochi {cite}`rasmussen2006gaussian`, e non protegge da un kernel
+mal scelto. In pratica la funzione non è concava negli iperparametri
+e ha massimi locali {cite}`rasmussen2006gaussian`, per cui l'ottimizzazione si
+fa ripartire cinque volte da inizializzazioni casuali (`n_restarts_optimizer=5`
+in `scikit-learn`, il cui valore predefinito è zero) e si tiene il massimo più
+alto.
 
 `````
 
@@ -254,27 +272,30 @@ cinque volte da inizializzazioni sorteggiate (`n_restarts_optimizer=5` in
 
 La previsione passa dal **prior**, la distribuzione sulle funzioni prima di
 vedere una sola misura, al **posteriore**, quella che resta dopo aver
-condizionato sulle osservazioni, ed è il posteriore valutato nei punti che
-interessano.
+condizionato sulle osservazioni. In concreto, la previsione è il posteriore
+valutato nei punti che interessano.
 
 `````{tab} Elementare
 
 Ogni punto osservato *stringe* il fascio lì vicino. Le curve che non passano
-nei paraggi vengono scartate, quelle che restano sono quasi d'accordo tra loro,
+nei paraggi vengono scartate; quelle che restano sono quasi d'accordo tra loro,
 e la banda d'incertezza si riduce a un filo. Lontano dai punti (tra un dato e
 l'altro, o fuori dalla zona esplorata) sopravvivono curve molto diverse, e la
-banda si riapre. Il risultato, per ogni punto in cui vogliamo una previsione,
-sono due numeri, e nessuno dei due si cerca per tentativi. Piantati i chiodi e
-fissate le manopole, escono da un calcolo diretto.
+banda si riapre.
+
+Il risultato, per ogni punto in cui vogliamo una previsione, sono due numeri, e
+nessuno dei due si cerca per tentativi. Piantati i chiodi e fissate le
+manopole, escono da un calcolo diretto.
 
 Il primo numero è la stima, e si ottiene come faceva Krige nelle miniere,
 prendendo le misure che abbiamo, ciascuna con un peso, e sommandole. Il kernel
 decide i pesi, che non guardano solo quanto ogni misura è vicina al punto che
 ci interessa, ma anche quanto le misure si somigliano fra loro. Due termometri
-nella stessa piazza dicono quasi la stessa cosa, e insieme non contano il
-doppio di uno. Per prevedere a Bologna, il termometro di Modena conta più di
-tutti gli altri. Lontano da tutti i termometri i pesi si spengono, e la stima
-torna al valore da cui il modello era partito prima di misurare.
+nella stessa piazza, ad esempio, dicono quasi la stessa cosa, e insieme non
+contano il doppio di uno. Per prevedere a Bologna, il termometro di Modena
+conta più di tutti gli altri. Lontano da tutti i termometri, infine, i pesi si
+spengono, e la stima torna al valore da cui il modello era partito prima di
+misurare.
 
 Il secondo numero è la larghezza del fascio, e si ottiene per sottrazione. Si
 parte da quanto eravamo ignoranti prima di misurare, cioè dall'apertura del
@@ -284,12 +305,14 @@ c'è niente da togliere, e si torna all'apertura di partenza.
 
 Se la stima è 24 gradi e la banda va da 21 a 27, il modello sta dicendo: «quasi
 certamente la temperatura vera è lì in mezzo». Quella banda risponde alla
-domanda «quanti gradi ci sono ora a Bologna». C'è una domanda vicina,
-«quanto segnerà il termometro che ci piazzo domani», e la banda che le risponde
-è più larga, perché porta con sé anche lo sbaglio dello strumento. La
-differenza si vede nel caso estremo. Su una città dove abbiamo cento misure la
-banda sulla temperatura vera si assottiglia fino quasi a sparire, mentre quella
-sulla lettura di domani non scende mai sotto l'errore del termometro.
+domanda «quanti gradi ci sono ora a Bologna».
+
+C'è però una domanda vicina, «quanto segnerà il termometro che ci piazzo
+domani», e la banda che le risponde è più larga, perché porta con sé anche lo
+sbaglio dello strumento. La differenza si vede nel caso estremo. Su una città
+dove abbiamo cento misure la banda sulla temperatura vera si assottiglia fino
+quasi a sparire, mentre quella sulla lettura di domani non scende mai sotto
+l'errore del termometro.
 
 Una banda larghissima è il modello che alza la mano e ammette
 di non avere dati per rispondere.
@@ -329,26 +352,29 @@ punti di addestramento ($K_{ij} = k(\mathbf{x}_i, \mathbf{x}_j)$), $\mathbf{K}_*
 \in \mathbb{R}^{m \times m_*}$ quella tra addestramento e punti nuovi,
 $\mathbf{K}_{**}$ quella tra i punti nuovi, $\sigma_n^2$ la varianza del rumore
 di misura, $\mathbf{y}$ il vettore delle osservazioni e $\mathbf{I}$ la matrice
-identità. La media è un predittore lineare,
-$\boldsymbol{\mu}_* = \mathbf{W}^\top\mathbf{y}$ con $\mathbf{W} =
-(\mathbf{K}+\sigma_n^2\mathbf{I})^{-1}\mathbf{K}_*$: il kriging di Krige, nella
-variante a media nota. I pesi non misurano soltanto la vicinanza: tengono conto
-di quanto le osservazioni sono correlate fra loro, possono essere negativi e non
-sommano a uno. Lontano dai dati $\mathbf{K}_* \to \mathbf{0}$ e la media torna a
-quella del prior, zero: per questo, nell'esempio con la sinusoide, a $x =
-8{,}0$ la media vale $+0{,}12$, e non un valore vicino a $\sin 8 \approx
-0{,}99$, che resta comunque dentro la banda. Il prior a media nulla è una
-scelta: con `normalize_y=True` scikit-learn centra le osservazioni, e lontano
-dai dati la stima torna alla loro media.
+identità.
 
-La covarianza $\boldsymbol{\Sigma}_*$ è
-la varianza del prior ($\mathbf{K}_{**}$) *meno* l'informazione che le
-osservazioni danno sulla funzione, e non dipende da $\mathbf{y}$: a
-iperparametri fissati la banda dice dove si è misurato, non che cosa si è
-misurato, e una misura sorprendente non la allarga
-{cite}`rasmussen2006gaussian`. Vicino ai dati la sottrazione toglie quasi tutto
-e l'incertezza crolla; lontano non sottrae nulla e si torna all'incertezza del
-prior.
+La media è un predittore lineare,
+$\boldsymbol{\mu}_* = \mathbf{W}^\top\mathbf{y}$ con $\mathbf{W} =
+(\mathbf{K}+\sigma_n^2\mathbf{I})^{-1}\mathbf{K}_*$, cioè il kriging di Krige
+nella variante a media nota. Si noti che i pesi non misurano soltanto la
+vicinanza: tengono conto di quanto le osservazioni sono correlate fra loro,
+possono essere negativi e non sommano a uno.
+
+Lontano dai dati $\mathbf{K}_* \to \mathbf{0}$ e la media torna a quella del
+prior, zero. Per questo, nell'esempio con la sinusoide, a $x =
+8{,}0$ la media vale $+0{,}12$, e non un valore vicino a $\sin 8 \approx
+0{,}99$, che resta comunque dentro la banda. Il prior a media nulla, d'altra
+parte, è una scelta: con `normalize_y=True` scikit-learn centra le
+osservazioni, e lontano dai dati la stima torna alla loro media.
+
+La covarianza $\boldsymbol{\Sigma}_*$ è la varianza del prior
+($\mathbf{K}_{**}$) *meno* l'informazione che le osservazioni danno sulla
+funzione, e non dipende da $\mathbf{y}$. A iperparametri fissati, quindi, la
+banda dice dove si è misurato, non che cosa si è misurato, e una misura
+sorprendente non la allarga {cite}`rasmussen2006gaussian`. Vicino ai dati la
+sottrazione toglie quasi tutto e l'incertezza crolla; lontano non sottrae
+nulla e si torna all'incertezza del prior.
 
 La banda al 95% sulla funzione, punto per punto, è $\boldsymbol{\mu}_* \pm
 2\sqrt{\operatorname{diag}(\boldsymbol{\Sigma}_*)}$ (per ogni $\mathbf{x}_*$
@@ -356,23 +382,26 @@ preso da solo, non per la curva intera). È quella che `scikit-learn`
 restituisce con `return_std=True` quando il rumore entra da `alpha`, come
 nell'esempio con la sinusoide; se il kernel contiene un `WhiteKernel`, la
 deviazione standard restituita include già il rumore ed è quella per una nuova
-osservazione. La banda al 95% non va confusa con l'intervallo su una nuova
-osservazione: lì al posteriore sulla funzione va aggiunto il rumore di misura,
-cioè $\boldsymbol{\mu}_* \pm
+osservazione.
+
+La banda al 95% non va confusa con l'intervallo su una nuova osservazione, per
+il quale al posteriore sulla funzione va aggiunto il rumore di misura, cioè
+$\boldsymbol{\mu}_* \pm
 2\sqrt{\operatorname{diag}(\boldsymbol{\Sigma}_*) + \sigma_n^2}$. Dove le
-misure si infittiscono la prima si assottiglia fino quasi a sparire, mentre la
+misure si infittiscono la prima si restringe fino quasi a sparire, mentre la
 seconda non scende mai sotto $\sigma_n$. Se la domanda è «che valore misurerò
-domani» serve la seconda; se è «quanto vale la grandezza vera», la prima. Per
-la classificazione la verosimiglianza non è più gaussiana e il posteriore non
-ha forma chiusa: servono approssimazioni (Laplace, *expectation propagation*),
-e `GaussianProcessClassifier` di scikit-learn usa quella di Laplace
-{cite}`rasmussen2006gaussian`.
+domani» serve la seconda; se è «quanto vale la grandezza vera», la prima.
+
+Per la classificazione la verosimiglianza non è più gaussiana e il posteriore
+non ha forma chiusa: servono approssimazioni (Laplace, *expectation
+propagation*), e `GaussianProcessClassifier` di scikit-learn usa quella di
+Laplace {cite}`rasmussen2006gaussian`.
 
 `````
 
-La {numref}`fig-processo-gaussiano` mostra il meccanismo: la banda si stringe
+La {numref}`fig-processo-gaussiano` mostra il meccanismo. La banda si stringe
 sui punti osservati fin quasi a toccarli (quasi, perché ogni punto è una misura
-sola, e rumorosa: più misure nello stesso punto la stringerebbero ancora) e si
+sola, e rumorosa; più misure nello stesso punto la stringerebbero ancora) e si
 riapre nel vuoto fra due misure e ai bordi, dove i dati mancano.
 
 ```{figure} ../figures/processo-gaussiano.svg
@@ -435,14 +464,18 @@ dentro».
 Le tre righe stampate mostrano tre gradini. A $x = 1{,}5$, accanto a un dato
 osservato, la banda è strettissima ($\pm 0{,}20$). A $x = 3{,}0$ siamo ancora
 *dentro* l'intervallo esplorato, ma in mezzo a un buco: fra $1{,}62$ e $3{,}64$
-l'elenco dei punti misurati non ne ha nessuno, e $3{,}0$ cade in quel vuoto. La
-banda si allarga già a $\pm 0{,}36$, quasi il doppio, pur restando utile. A $x
-= 8{,}0$, fuori dall'intervallo dei dati, la banda arriva a $\pm
-1{,}38$, vicina all'ampiezza del prior, $2\sigma_f = 2 \cdot 0{,}706 \approx
-1{,}41$ (dal kernel stimato, che il programma stampa): lontano dai dati il
-modello torna all'incertezza di partenza, e lo dichiara. L'incertezza non
-distingue «dentro» da «fuori» l'intervallo esplorato: dipende soprattutto dalla
-distanza dai dati più vicini.
+l'elenco dei punti misurati non ne ha nessuno, e $3{,}0$ cade in quel vuoto.
+Qui la banda si allarga già a $\pm 0{,}36$, quasi il doppio, pur restando
+utile.
+
+A $x = 8{,}0$, fuori dall'intervallo dei dati, la banda arriva a
+$\pm 1{,}38$, vicina all'ampiezza del prior,
+$2\sigma_f = 2 \cdot 0{,}706 \approx 1{,}41$ (dal kernel stimato, che il
+programma stampa): lontano dai dati il modello torna all'incertezza di
+partenza, e lo dichiara.
+
+In generale, l'incertezza non distingue «dentro» da «fuori» l'intervallo
+esplorato: dipende soprattutto dalla distanza dai dati più vicini.
 
 ## Costo computazionale, e dove conviene
 
@@ -452,32 +485,34 @@ ne limita l'uso ai problemi con pochi dati.
 `````{tab} Elementare
 
 Il processo gaussiano non si costruisce un riassunto dei dati da consultare
-poi, e tiene *tutte* le osservazioni. Prima di rispondere le confronta tutte a
+poi, ma tiene *tutte* le osservazioni. Prima di rispondere le confronta tutte a
 due a due, come un medico che, prima di aprire l'ambulatorio, rileggesse e
-mettesse a confronto le cartelle di tutti i pazienti mai avuti; e poi, a ogni
-visita, confronta il paziente nuovo con ciascuna cartella. Con qualche
+mettesse a confronto le cartelle di tutti i pazienti mai avuti, e poi, a ogni
+visita, confrontasse il paziente nuovo con ciascuna cartella. Con qualche
 centinaio di pazienti funziona benissimo; verso le decine di migliaia comincia
 a non stare più in piedi, e sopra servono scorciatoie o molte schede grafiche.
 
-La preparazione pesa più di quanto l'immagine suggerisca.
-Confrontare tutte le coppie è già un lavoro che cresce col quadrato del numero
-di pazienti: raddoppiandoli, le coppie quadruplicano. Le somiglianze però non si
-guardano una per una, vanno risolte tutte insieme, come un sistema di equazioni
-in cui ogni riga tira le altre, e questo aggiunge un fattore. Il lavoro cresce
-così col cubo: raddoppiare i dati lo moltiplica per otto ($2 \times 2 \times
-2$), e passare da mille a diecimila punti lo moltiplica per mille. Dopo la
-preparazione ogni risposta richiede molto meno: per la stima il lavoro cresce
-come il numero dei pazienti, per la banda come il suo quadrato. È la
-preparazione a impedire che si addestri un processo gaussiano sulle foto di
-tutto internet.
+La preparazione pesa più di quanto l'immagine suggerisca. Confrontare tutte le
+coppie è già un lavoro che cresce col quadrato del numero di pazienti:
+raddoppiandoli, le coppie quadruplicano. Le somiglianze però non si guardano
+una per una, ma vanno risolte tutte insieme, come un sistema di equazioni in
+cui ogni riga tira le altre, e questo aggiunge un fattore. Il lavoro cresce
+così col cubo: raddoppiare i dati lo moltiplica per otto
+($2 \times 2 \times 2$), e passare da mille a diecimila punti lo moltiplica
+per mille.
+
+Finita la preparazione, ogni risposta richiede molto meno: per la stima il
+lavoro cresce come il numero dei pazienti, per la banda come il suo quadrato.
+È la preparazione a impedire che si addestri un processo gaussiano sulle foto
+di tutto internet.
 
 Una scorciatoia esiste, ed è il riassunto che il metodo si rifiutava di fare:
 invece di tenere tutte le cartelle se ne scelgono un centinaio, casi
 rappresentativi a cui ricondurre gli altri, e il calcolo torna abbordabile. A
-rimetterci è l'ingrediente per cui si era scelto questo modello: le stime
-restano buone, le bande d'incertezza diventano meno affidabili. Resta poi la
-scommessa di partenza, la regola di somiglianza adottata, che è un'ipotesi sul
-mondo e va verificata sul mondo.
+rimetterci, però, è l'ingrediente per cui si era scelto questo modello: le
+stime restano buone, mentre le bande d'incertezza diventano meno affidabili.
+Resta poi la scommessa di partenza, la regola di somiglianza adottata, che è
+un'ipotesi sul mondo e va verificata sul mondo.
 
 `````
 
@@ -488,25 +523,31 @@ Il collo di bottiglia è la fattorizzazione di Cholesky di $\mathbf{K} +
 peggiore dell’$O(m^2)$–$O(m^3)$ visto per la SVM con kernel. Fatta una volta,
 ogni previsione costa $O(m)$ per la media e $O(m^2)$ per la varianza. Con la
 fattorizzazione esatta il limite pratico è di qualche decina di migliaia di
-punti, e lo si sposta in due modi. Le approssimazioni *sparse* riassumono il
-dataset con $u \ll m$ punti induttori e scendono a $O(m\,u^2)$
-{cite}`titsias2009variational`, ma sacrificano proprio il punto di forza del
-modello, la qualità delle incertezze. I metodi iterativi tengono il modello
-esatto e sostituiscono Cholesky con il gradiente coniugato, che chiede soltanto
+punti, e lo si sposta in due modi.
+
+Le approssimazioni *sparse* riassumono il dataset con $u \ll m$ punti
+induttori e scendono a $O(m\,u^2)$ {cite}`titsias2009variational`, ma
+sacrificano proprio il punto di forza del modello, la qualità delle
+incertezze. I metodi iterativi, invece, tengono il modello esatto e
+sostituiscono Cholesky con il gradiente coniugato, che chiede soltanto
 prodotti per $\mathbf{K}$: su più GPU hanno addestrato processi gaussiani
-esatti su oltre un milione di punti {cite}`wang2019exact`. A ciò si aggiunge la
-sensibilità alla scelta del kernel, che incorpora ipotesi forti (con l'RBF, la
-regolarità infinita, che Matérn allenta) da verificare sul problema reale.
+esatti su oltre un milione di punti {cite}`wang2019exact`.
+
+A ciò si aggiunge la sensibilità alla scelta del kernel, che incorpora ipotesi
+forti (con l'RBF, la regolarità infinita, che Matérn allenta) da verificare
+sul problema reale.
 
 `````
 
 Il suo territorio, allora, è l'opposto del big data, cioè pochi dati costosi.
 Esperimenti di laboratorio dove ogni misura vale una giornata di lavoro,
 simulazioni ingegneristiche da ore di calcolo l'una, prove sul campo che non si
-possono ripetere. È il caso dell’ottimizzazione
-bayesiana degli iperparametri {cite}`snoek2012practical`, dove ogni "dato" è un
-intero addestramento e il processo gaussiano fa da mappa (stima più incertezza)
-per decidere quale configurazione provare dopo. {doc}`Trovare gli iperparametri
+possono ripetere.
+
+È anche il caso dell’ottimizzazione bayesiana degli iperparametri
+{cite}`snoek2012practical`, dove ogni "dato" è un intero addestramento e il
+processo gaussiano, con la sua stima e la sua incertezza, serve a decidere
+quale configurazione provare dopo. {doc}`Trovare gli iperparametri
 <iperparametri>` racconta quel meccanismo dal lato di chi lo usa: il processo
 gaussiano è il surrogato classico, quello di Snoek e coautori, anche se Optuna
 di default ne usa un altro, il TPE, che costa meno quando le prove sono
@@ -564,11 +605,11 @@ migliaia.
 
 `````
 
-Fin qui la forma del modello l'abbiamo scelta noi, una per problema: una retta,
+Fin qui abbiamo scelto noi la forma del modello, una per problema: una retta,
 un albero, un margine massimo, una distribuzione sulle funzioni, dei gruppi
-trovati senza etichette. Dove esisteva una risposta giusta, l'errore misurato
-sugli esempi è stato preso come stima dell'errore su quelli nuovi, e anche la
-banda di un processo gaussiano vale soltanto se il kernel è adatto ai dati. La
-{doc}`teoria dell'apprendimento </TeoriaApprendimento/overview>` dice a quali
-condizioni la stima dell'errore si può credere, con quanti esempi e per
+trovati senza etichette. Dove esisteva una risposta giusta, abbiamo preso
+l'errore misurato sugli esempi come stima dell'errore su quelli nuovi, e anche
+la banda di un processo gaussiano vale soltanto se il kernel è adatto ai dati.
+La {doc}`teoria dell'apprendimento </TeoriaApprendimento/overview>` dice a
+quali condizioni la stima dell'errore si può credere, con quanti esempi e per
 quali famiglie di modelli.

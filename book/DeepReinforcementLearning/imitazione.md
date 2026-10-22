@@ -7,29 +7,28 @@ di una telecamera e la lettura di un telemetro laser (uno strumento che misura
 a che distanza sono le cose), e restituiva l'angolo di sterzata
 {cite}`pomerleau1989alvinn`. Non aveva imparato per tentativi ed errori, il che
 sarebbe stato imprudente su una strada vera: era stato addestrato a
-riprodurre, per ogni immagine di strada, l'angolo di sterzata corretto. Gli
-si mostrava la risposta giusta e lo si correggeva finché non la indovinava, che
-è il modo di imparare più comune di tutti e si chiama apprendimento
-supervisionato.
+riprodurre, per ogni immagine di strada, l'angolo di sterzata corretto. In
+altri termini, gli si mostrava la risposta giusta e lo si correggeva finché non
+la indovinava: è il modo di imparare più comune di tutti, e si chiama
+apprendimento supervisionato.
 
 C'è un dettaglio di quella storia che sembra un'inezia ed è invece tutto il
 problema, arrivato con vent'anni di anticipo sulla sua formalizzazione. Le
-immagini su cui ALVINN imparò, nel lavoro del 1989, erano simulate. Quando
-Pomerleau passò alle registrazioni di un guidatore vero, due anni dopo, si trovò
-davanti a un ostacolo che dovette aggirare a mano: un guidatore bravo non esce
-mai dalla corsia, quindi nelle sue registrazioni non ci sono fotogrammi che
-mostrino come si rimedia a un'auto storta. Dovette fabbricarli deformando le
-foto buone per ottenerne altre scattate come se l'auto fosse un po’ fuori centro
-{cite}`pomerleau1991efficient`. Quel lavoro in più non fu un capriccio: fu la
-sola cosa che tenne il furgone in carreggiata.
+immagini su cui ALVINN imparò, nel lavoro del 1989, erano simulate. Quando però
+Pomerleau passò alle registrazioni di un guidatore vero, due anni dopo, si
+trovò davanti a un ostacolo che dovette aggirare a mano: un guidatore bravo non
+esce mai dalla corsia, quindi nelle sue registrazioni non ci sono fotogrammi
+che mostrino come si rimedia a un'auto storta. Dovette fabbricarli deformando
+le foto buone per ottenerne altre scattate come se l'auto fosse un po’ fuori
+centro {cite}`pomerleau1991efficient`. Quel lavoro in più non fu un capriccio:
+fu la sola cosa che tenne il furgone in carreggiata.
 
-L'imitazione è l'idea più ovvia di tutte, e per questo
-bisogna capire perché non basta. Nei capitoli precedenti l'agente impara
-da una ricompensa, e la ricompensa è la parte difficile: scriverla per una
-guida sicura o per una risposta utile è un problema aperto. Se però qualcuno
-sa già fare il compito, quel problema si può aggirare. Non gli si chiede di
-scrivere una funzione di ricompensa: gli si
-chiede di mostrare come fare.
+L'imitazione è l'idea più ovvia di tutte, e per questo bisogna capire perché non
+basta. Nei capitoli precedenti l'agente impara da una ricompensa, e la
+ricompensa è la parte difficile: scriverla per una guida sicura o per una
+risposta utile è un problema aperto. Se però qualcuno sa già fare il compito,
+quel problema si può aggirare. Non gli si chiede di scrivere una
+funzione di ricompensa: gli si chiede di mostrare come fare.
 
 ## Clonare un comportamento è apprendimento supervisionato
 
@@ -57,18 +56,18 @@ lì il metodo non aveva ancora un nome. Nella stessa sezione il nome c'era già:
 prima della fase a rinforzo, a un assistente conversazionale si fanno leggere
 risposte scritte da persone, e gli si insegna a scriverne di simili.
 
-I pregi sono seri. È stabile, perché è addestramento
+I pregi sono seri. Innanzitutto è stabile, perché è addestramento
 supervisionato ordinario: nessuno dei tormenti visti fin qui nei metodi che
 imparano dei voti, cioè il bersaglio che si sposta mentre lo insegui e i voti
 che crescono senza fermarsi della triade fatale.
-È efficiente, perché ogni dimostrazione insegna qualcosa subito, mentre un
+Poi è efficiente, perché ogni dimostrazione insegna qualcosa subito, mentre un
 agente che esplora butta via migliaia di tentativi. Ed è sicura, perché non
 serve far provare al sistema azioni a caso nel mondo vero.
 
 C'è però una condizione che nessuno scrive, perché sembra ovvia: che le
 situazioni da affrontare domani siano quelle dell'elenco di oggi. A sceglierle
-non è il mondo. Dove ci si trova un istante dopo dipende dall'azione appena
-fatta, e le azioni di chi ha imparato non sono quelle dell'esperto.
+non è il mondo. Infatti dove ci si trova un istante dopo dipende dall'azione
+appena fatta, e le azioni di chi ha imparato non sono quelle dell'esperto.
 
 `````
 
@@ -84,8 +83,8 @@ $$
 
 con $\ell$ la cross-entropia per azioni discrete o l'errore quadratico per
 azioni continue. Non compaiono ricompense, non compare l'equazione di Bellman,
-non compare il bootstrapping: è regressione o classificazione, con la stabilità
-e gli strumenti già noti che ne conseguono.
+non compare il bootstrapping: è regressione o classificazione,
+con la stabilità e gli strumenti già noti che ne conseguono.
 
 Lo stesso schema compare in tre punti. Nella {doc}`sezione sulla ricerca ad
 albero Monte Carlo <mcts-alphago>`, la rete di policy di AlphaGo è
@@ -97,10 +96,10 @@ componente supervisionata del Decision Transformer adotta la stessa formulazione
 condizionata sul ritorno desiderato.
 
 L'assunzione nascosta, che è tutto il problema, è quella di ogni apprendimento
-supervisionato: dati indipendenti e identicamente distribuiti. Qui non lo
-sono, perché gli stati che l'agente incontrerà dipendono dalle azioni che
-avrà scelto. La distribuzione degli stati è indotta dalla politica e non
-fissata dal mondo, e quella dell'allievo non è quella del maestro.
+supervisionato: dati indipendenti e identicamente distribuiti. Qui invece non
+lo sono, perché gli stati che l'agente incontrerà dipendono dalle
+azioni che avrà scelto. La distribuzione degli stati è indotta dalla politica e
+non fissata dal mondo, e quella dell'allievo non è quella del maestro.
 
 `````
 
@@ -134,10 +133,12 @@ Allora lo fai salire accanto a te, e guidi tu. Dove ti impianti gli chiedi che
 cosa avrebbe fatto lì, e la sua risposta va nel quaderno con le registrazioni
 vecchie. Giro dopo giro il quaderno si riempie delle strade che percorri tu, e
 si smette quando non finisci più in posti nuovi. Si chiama **DAgger**, da
-*Dataset Aggregation*, «accumulare dati». Alla fine non tieni per forza il
-guidatore dell'ultimo giro: provi su una strada mai fatta quello di ogni giro,
-e tieni il migliore. Il conto lo paghi in ore del pilota, che deve stare lì a
-rispondere: l'archivio delle vecchie registrazioni non basta più.
+*Dataset Aggregation*, «accumulare dati».
+
+Alla fine non tieni per forza il guidatore dell'ultimo giro: provi su una
+strada mai fatta quello di ogni giro, e tieni il migliore. Il conto lo paghi in
+ore del pilota, che deve stare lì a rispondere: l'archivio delle vecchie
+registrazioni non basta più.
 
 Oltre un certo punto, però, nemmeno il pilota serve più. Finché le ruote sono
 sull'asfalto, storte quanto vuoi, lui sa raddrizzare, e uno sbaglio isolato
@@ -153,16 +154,20 @@ guidare, e qui si va nel verso opposto. È più laborioso e si trasferisce megli
 se la strada cambia un poco: un obiettivo lo porti altrove, una collezione di
 reazioni no. Il difetto è che di obiettivi che spiegano quella guida ce n'è
 un'infinità. Il più sfacciato non chiede niente: se ogni viaggio vale zero, il
-pilota è perfetto insieme a chiunque altro. Nemmeno pretendere di più basta.
+pilota è perfetto insieme a chiunque altro.
+
+Nemmeno pretendere di più basta.
 Chiedi che tutti i viaggi possibili restino nello stesso ordine, dal migliore
 al peggiore, e ne sopravvivono ancora infiniti: quelli che ripetono la stessa
 cosa in un'altra unità di misura, come contare in euro invece che in centesimi,
-e quelli che spargono lungo la strada premietti che si annullano fra loro. Si
-dà a ogni città una quota (Torino 3, Milano 5, Bologna 4) e a ogni tappa si
-incassa la differenza: da Torino a Milano più due, da Milano a Bologna meno
-uno. Comunque si vada da Torino a Bologna, quei premietti sommano a più uno, la
-quota d'arrivo meno quella di partenza, e quindi non cambiano quale viaggio sia
-il migliore. Guardando solo come guida, sceglierne uno non si può.
+e quelli che spargono lungo la strada premietti che si annullano fra loro.
+
+Ad esempio, si dà a ogni città una quota (Torino 3, Milano 5, Bologna 4) e a
+ogni tappa si incassa la differenza: da Torino a Milano più due, da Milano a
+Bologna meno uno. Comunque si vada da Torino a Bologna, quei premietti sommano
+a più uno, la quota d'arrivo meno quella di partenza, e quindi non cambiano
+quale viaggio sia il migliore. Guardando solo come guida, sceglierne uno non si
+può.
 
 `````
 
@@ -201,19 +206,22 @@ $$
 
 dove $C$ è il costo atteso di una politica sull'orizzonte $T$, cioè un danno da
 contenere e non un ritorno da massimizzare: per questo $C(\hat\pi)$ sta a
-sinistra della disuguaglianza (nel lavoro originale è chiamato $J$). Quanto a
-$\epsilon_N$, è l'errore della migliore politica *col senno di poi* e non
-l’$\epsilon$ misurato sotto la distribuzione dell'esperto: misurato sulla media
-di tutte le distribuzioni di stati accumulate negli $N$ giri; è piccolo solo
-se la classe di politiche ne contiene una che imita l'esperto anche sugli stati
-che le politiche apprese visitano. Che le politiche prodotte si avvicinino a
-quel valore non è garantito a priori: lo assicura il fatto che le iterazioni si
-comportino come un algoritmo *no-regret*, cioè a rimpianto medio che tende a
-zero nel senso dell'apprendimento online (la sezione «Imparare un esempio alla
-volta» di {doc}`Quando i dati cambiano </MachineLearning/dati-che-cambiano>`),
-e servono $N$ dell'ordine di $u\,T$ (a meno di fattori logaritmici) perché il
-resto sia $O(1)$. La
-garanzia, poi, copre la migliore delle politiche prodotte lungo la sequenza e
+sinistra della disuguaglianza (nel lavoro originale è chiamato $J$).
+
+Quanto a $\epsilon_N$, è l'errore della migliore politica *col senno di poi* e
+non l’$\epsilon$ misurato sotto la distribuzione dell'esperto: misurato sulla
+media di tutte le distribuzioni di stati accumulate nelle $N$ iterazioni; è
+piccolo solo se la classe di politiche ne contiene una che imita l'esperto
+anche sugli stati che le politiche apprese visitano. Che le politiche prodotte
+si avvicinino a quel valore non è garantito a priori: lo assicura il fatto che
+le iterazioni si comportino come un algoritmo *no-regret*, cioè a rimpianto
+medio che tende a zero nel senso dell'apprendimento online (la sezione
+«Imparare un esempio alla volta» di
+{doc}`Quando i dati cambiano </MachineLearning/dati-che-cambiano>`), e servono
+$N$ dell'ordine di $u\,T$ (a meno di fattori logaritmici) perché il resto sia
+$O(1)$.
+
+La garanzia, poi, copre la migliore delle politiche prodotte lungo la sequenza e
 non necessariamente l'ultima; per questo in pratica si sceglie su
 un insieme di validazione quale tenere.
 
@@ -221,16 +229,18 @@ Quanto a $u$, misura di quanto un singolo errore può peggiorare il
 costo-per-andare dell'esperto. Nei compiti recuperabili $u$ è $O(1)$ e la
 garanzia è effettivamente lineare; ma se un errore porta in uno stato da cui
 non si torna (l'auto ribaltata nel fosso, che nessuna sterzata riporta in
-corsia) $u$ può crescere come $T$, e si torna al quadrato. L'ipotesi va tenuta
-in mente davanti a un caso concreto: uno scarto che, lasciato a sé, cresce a
-ogni passo, e un controllore esperto che lo riporta verso lo zero da qualunque
-punto, moltiplicandolo per $0{,}85$ ogni volta. Lì l'ipotesi è soddisfatta, e
-non per caso: un errore isolato costa una quantità limitata e indipendente
-dall'orizzonte, e pochi giri di DAgger bastano a tornare al livello
-dell'esperto. Nei compiti non recuperabili, invece, DAgger raccoglie comunque
-gli stati pertinenti, ma non garantisce che da essi si possa rientrare.
+corsia) $u$ può crescere come $T$, e si torna al quadrato.
 
-Serve un esperto interrogabile durante l'addestramento,
+L'ipotesi va tenuta in mente davanti a un caso concreto: uno scarto che,
+lasciato a sé, cresce a ogni passo, e un controllore esperto che lo riporta
+verso lo zero da qualunque punto, moltiplicandolo per $0{,}85$ ogni volta. Lì
+l'ipotesi è soddisfatta, e non per caso: un errore isolato costa una quantità
+limitata e indipendente dall'orizzonte, e poche iterazioni di DAgger bastano a
+tornare al livello dell'esperto. Nei compiti non recuperabili, invece, DAgger
+raccoglie comunque gli stati pertinenti, ma non garantisce che da essi si possa
+rientrare.
+
+Si noti che serve un esperto interrogabile durante l'addestramento,
 non solo un archivio di registrazioni. Nella maggior parte dei casi pratici
 quell'esperto è una persona, e il costo si sposta dai dati al tempo umano.
 
@@ -246,11 +256,11 @@ fase supervisionata: il modello di ricompensa addestrato sulle preferenze è una
 ricompensa inferita dal comportamento umano.
 
 L'RL inverso classico richiede di risolvere un problema di RL completo a ogni
-aggiornamento della ricompensa candidata. GAIL {cite}`ho2016generative` toglie il
-ciclo interno dando all'imitazione la forma di una GAN: un discriminatore
-$D(s,a)$ impara a separare le coppie della politica da quelle dell'esperto, e la
-politica si addestra con un metodo a gradiente di policy usando $-\log D(s,a)$
-come ricompensa,
+aggiornamento della ricompensa candidata. **GAIL** {cite}`ho2016generative`
+toglie il ciclo interno dando all'imitazione la forma di una GAN: un
+discriminatore $D(s,a)$ impara a separare le coppie della politica da quelle
+dell'esperto, e la politica si addestra con un metodo a gradiente di policy
+usando $-\log D(s,a)$ come ricompensa,
 
 $$
 \min_\pi \max_D \; \mathbb{E}_{\pi}\big[\log D(s,a)\big] +
@@ -275,7 +285,9 @@ d'arrivo, una ridistribuzione fra gli stati d'arrivo che non ne cambia il
 valore atteso. Ng, Harada e Russell {cite}`ng1999policy` dimostrano che quel
 termine di shaping è innocuo; che l'ambiguità si fermi lì è un risultato
 recente sull'identificabilità della ricompensa
-{cite}`skalse2023misspecification`. La proprietà ricompare nella {doc}`sezione
+{cite}`skalse2023misspecification`.
+
+La proprietà ricompare nella {doc}`sezione
 sull'esplorazione
 <esplorazione-e-ricompensa>`, dove si dimostra che aggiungere alla ricompensa un
 termine della forma $\gamma\Phi(s')-\Phi(s)$ lascia invariata la policy ottima,
@@ -284,7 +296,7 @@ permettendo di guidare l'agente senza alterare l'obiettivo; nell'RL inverso,
 letta al rovescio, definisce l'ambiguità che il metodo non può sciogliere.
 
 Nella pratica l'ambiguità si risolve imponendo un criterio di preferenza.
-L'apprendimento per apprendistato di Abbeel e Ng
+L’**apprendimento per apprendistato** di Abbeel e Ng
 {cite}`abbeel2004apprenticeship` rinuncia a trovare una ricompensa unica:
 individua una politica i cui valori attesi delle caratteristiche,
 $\boldsymbol{\mu}(\pi)=
@@ -294,8 +306,8 @@ ricompensa lineare nelle caratteristiche,
 $r(s)=\mathbf{w}^{\top}\boldsymbol{\phi}(s)$ con $\lVert\mathbf{w}\rVert_1\le
 1$, lo scarto fra i valori delle due politiche non supera
 $\lVert\boldsymbol{\mu}(\pi)-\boldsymbol{\mu}(\pi^\star)\rVert_\infty$
-(disuguaglianza di Hölder). L'RL
-inverso a massima entropia di Ziebart e colleghi {cite}`ziebart2008maximum`
+(disuguaglianza di Hölder). L’**RL inverso a massima
+entropia** di Ziebart e colleghi {cite}`ziebart2008maximum`
 sceglie invece, fra le distribuzioni sulle traiettorie che rispettano quel
 vincolo, quella di entropia massima, che nel caso deterministico è
 $P(\tau)\propto\exp\big(\mathbf{w}^{\top}\mathbf{f}(\tau)\big)$ con
@@ -446,13 +458,13 @@ allontana da ciò che la clonazione conosce. La folata, che vale $4{,}0$,
 scaraventa l'auto in quella regione instabile.
 
 Il risultato: dopo la folata l'esperto torna a $0{,}071$ e la clonazione
-finisce a $74{,}6$. Mille volte più lontano dal centro della corsia, partendo
-da un errore per passo pari a zero.
+finisce a $74{,}6$, cioè mille volte più lontano dal centro della corsia,
+partendo da un errore per passo pari a zero.
 
 Poi i tre giri di DAgger: $0{,}102$, $0{,}077$, $0{,}082$. Riportare l'esperto
 a etichettare gli stati in cui era finito l'allievo basta a tornare al livello
-del maestro. Non sono cambiati il modello, il modo di misurare l'errore o il
-procedimento di ottimizzazione: sono cambiate le situazioni incluse negli
+del maestro. Non sono cambiati il modello, il modo di misurare l'errore
+o il procedimento di ottimizzazione: sono cambiate le situazioni incluse negli
 esempi.
 
 ### Che cosa questo esperimento dimostra, e che cosa no
@@ -478,21 +490,24 @@ che in un colpo solo lo scaraventa a quattro volte il bordo della fascia.
 Nel caso della guida, invece, l'allievo esce dalla fascia per accumulo
 graduale, un errore alla volta. Qui il calcolo dà un risultato sorprendente. Le
 occasioni di sbagliare sono tante quanti i passi del percorso; e ogni singolo
-errore non si paga una volta sola, perché lascia l'allievo in una zona che non
-conosce per tutti i passi rimanenti. Tanti errori possibili, e ciascuno che si
-paga a lungo: le due quantità si moltiplicano invece di sommarsi, e il danno,
-nel caso peggiore, cresce come il quadrato della durata del percorso anziché in
-modo proporzionale: su un tragitto dieci volte più lungo non decuplica, si
-moltiplica per cento. Questo scenario peggiore è reale, anche se dove un errore
-si riassorbe il danno torna a crescere in proporzione.
+errore non pesa una volta sola, perché lascia l'allievo in una zona che non
+conosce per tutti i passi rimanenti.
 
-Qui la spinta iniziale è un espediente, il modo più rapido di mettere l'allievo
-dove non è mai stato per mostrare cosa succede una volta che ci si trova. Quello
-che l'esperimento dimostra, e lo dimostra bene, è la seconda metà del
-ragionamento: fuori dalle situazioni che il maestro ha mostrato l'allievo
-sbaglia in modo sistematico, e su un sistema instabile sbagliare in modo
-sistematico è irrecuperabile. La prima metà, cioè che a portarlo fuori bastino
-i suoi stessi errori, resta un risultato teorico, e questo codice non la prova.
+Tanti errori possibili, e ciascuno che pesa a lungo: le due quantità si
+moltiplicano invece di sommarsi, e il danno, nel caso peggiore, cresce come il
+quadrato della durata del percorso anziché in modo proporzionale: su un
+tragitto dieci volte più lungo non decuplica, si moltiplica per cento. Questo
+scenario peggiore è reale, anche se dove un errore si riassorbe il danno torna
+a crescere in proporzione.
+
+Nell'esperimento la spinta iniziale è un espediente, il modo più rapido di
+mettere l'allievo dove non è mai stato per mostrare cosa succede una volta che
+ci si trova. Quello che l'esperimento dimostra, e lo dimostra bene, è la
+seconda metà del ragionamento: fuori dalle situazioni che il maestro ha
+mostrato l'allievo sbaglia in modo sistematico, e su un sistema instabile
+sbagliare in modo sistematico è irrecuperabile. La prima metà, cioè che a
+portarlo fuori bastino i suoi stessi errori, resta un risultato teorico, e
+questo codice non la prova.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -552,10 +567,10 @@ i suoi stessi errori, resta un risultato teorico, e questo codice non la prova.
   vale a patto che il compito sia recuperabile, altrimenti la costante $u$
   del bound cresce con $T$ e si torna al quadrato.
 - L’RL inverso risolve lo stesso problema per un'altra strada: impara la
-  ricompensa invece della politica. Costa di più ed è più trasferibile,
-  perché una ricompensa descrive l'obiettivo mentre una politica descrive solo
-  delle reazioni. È la ragione per cui l'RLHF non si ferma alla fase
-  supervisionata. È però mal posto: dalla sola politica osservata le
+  ricompensa invece della politica. Costa di più ed è più
+  trasferibile, perché una ricompensa descrive l'obiettivo mentre una politica
+  descrive solo delle reazioni. È la ragione per cui l'RLHF non si ferma alla
+  fase supervisionata. È però mal posto: dalla sola politica osservata le
   ricompense compatibili formano un poliedro (inclusa quella nulla), e anche
   imponendo di preservare l'ordinamento di *tutte* le politiche restano una
   scala positiva, un termine di shaping potential-based e una ridistribuzione

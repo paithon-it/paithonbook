@@ -1,23 +1,25 @@
 # Pandas e Matplotlib: dati e visualizzazione
 
 Prima di addestrare un modello c'è il lavoro sui dati, che nella pratica
-occupa gran parte del tempo di chi fa machine learning: prendere dati grezzi
-(l'esportazione degli ordini dal gestionale di un'azienda, uno storico di
-vendite, il registro di alcuni sensori) e portarli in una forma pulita,
-ordinata, esplorabile. In Python gli strumenti quasi obbligati sono due:
-**Pandas** per manipolare le tabelle e **Matplotlib** per disegnarle. NumPy dà
-l'array; Pandas ci mette sopra le etichette e le colonne, come un foglio di
-calcolo programmabile; Matplotlib mostra i dati in un grafico.
+occupa gran parte del tempo di chi fa machine learning. Si tratta di prendere
+dati grezzi (l'esportazione degli ordini dal gestionale di un'azienda, uno
+storico di vendite, il registro di alcuni sensori) e di portarli in una forma
+pulita, ordinata, esplorabile. In Python gli strumenti quasi obbligati sono
+due: **Pandas** per manipolare le tabelle e **Matplotlib** per disegnarle.
+NumPy dà l'array; Pandas ci mette sopra le etichette e le colonne, come un
+foglio di calcolo programmabile; Matplotlib mostra i dati in un grafico.
 
 ## Series e DataFrame: la tabella come oggetto
 
-Pandas ruota attorno a due strutture. Una **Series** è una colonna: una
-sequenza di valori con un'etichetta ciascuno (l’*indice*). Un **DataFrame** è
-una tabella intera: tante Series affiancate che condividono lo stesso indice
-di riga. La parola *indice* qui cambia significato rispetto a
-NumPy: là era il numero della posizione (`x[0]`, il primo), qui è
-un'etichetta attaccata alla riga, che può benissimo essere una data o un nome
-e che resta la stessa anche se le righe si riordinano.
+Pandas ruota attorno a due strutture. Una **Series** è una colonna, cioè una
+sequenza di valori con un'etichetta ciascuno (l’**indice**). Un
+**DataFrame** è una tabella intera, formata da tante Series affiancate che
+condividono lo stesso indice di riga.
+
+Si noti che la parola *indice* cambia significato rispetto a NumPy. Là era il
+numero della posizione (`x[0]`, il primo); qui è un'etichetta attaccata alla
+riga, che può benissimo essere una data o un nome e che resta la stessa anche
+se le righe si riordinano.
 
 ```{figure} ../figures/pandas-series-dataframe.svg
 :name: fig-series-dataframe
@@ -55,19 +57,21 @@ df = pd.DataFrame({
 Quello fra le graffe è un dizionario, lo stesso delle {doc}`basi del linguaggio
 </Python/basi>`: le chiavi diventano i nomi delle colonne, e il valore di
 ciascuna è la lista dei dati di quella colonna, dall'alto in basso. Ogni
-colonna è una Series; tutte insieme formano la tabella. Dentro una colonna i
-valori sono di norma tutti della stessa specie, numeri con numeri e testo con
-testo: è la stessa regola dell'array di NumPy, applicata una colonna per volta,
-e permette a Pandas di affidare i calcoli a NumPy. Il vantaggio rispetto a
-Excel è che ogni operazione è ripetibile e documentata: la scrivi una volta e
-la riesegui su un milione di righe senza cambiare nulla.
+colonna è una Series, e tutte insieme formano la tabella.
+
+Dentro una colonna i valori sono di norma tutti della stessa specie, numeri
+con numeri e testo con testo: è la stessa regola dell'array di NumPy,
+applicata una colonna per volta, e permette a Pandas di affidare i calcoli a
+NumPy. Il vantaggio rispetto a Excel è che ogni operazione è ripetibile e
+documentata: la scrivi una volta e la riesegui su un milione di righe senza
+cambiare nulla.
 
 L'altra differenza da Excel sta nelle etichette di riga. Pandas ragiona con
 quelle: se accosti due elenchi di clienti scritti in ordine diverso, le righe
 si appaiano per etichetta, come quando si confrontano due registri cercando lo
 stesso nome su entrambi. Se un nome compare in un registro solo, nella
-casella accanto resta un buco, non il dato di un altro cliente: un buco si
-vede subito, uno scambio di persona no.
+casella accanto resta un buco, non il dato di un altro cliente. Un buco,
+infatti, si vede subito, uno scambio di persona no.
 
 `````
 
@@ -76,19 +80,23 @@ vede subito, uno scambio di persona no.
 Un `DataFrame` è una collezione di `Series` allineate su un `Index` comune. Ogni
 colonna ha un proprio `dtype` omogeneo (`int64`, `float64`, `str`, `category`,
 `datetime64`), il che permette a Pandas di appoggiarsi a NumPy per le operazioni
-vettoriali colonna per colonna. Il dtype del testo è cambiato di recente, e la
-rete è piena di materiale che descrive ancora quello vecchio. Da pandas 3.0 una
-colonna di testo ha dtype `str`, che con `pyarrow` installato è sostenuto da
-Arrow ed è molto più compatto e veloce del vecchio `object`, in cui ogni cella
-era un oggetto Python a sé. Senza `pyarrow` il dtype è lo stesso, ma i dati
-restano oggetti Python. `object` esiste ancora e resta il dtype delle colonne
-che mescolano tipi; non è più quello del testo. L'indice è una struttura
-etichettata (anche gerarchica, `MultiIndex`) usata per l'allineamento
-automatico, e il numero di riga ne è solo il caso più semplice. Quando sommi due
-Series, Pandas non allinea per posizione ma per etichetta, inserendo `NaN` dove
-le etichette non combaciano: comportamento che evita i disallineamenti tipici
-degli array grezzi, dove due vettori si sommano per posizione anche quando le
-righe non si corrispondono.
+vettoriali colonna per colonna.
+
+Il dtype del testo, in particolare, è cambiato di recente, e la rete è piena di
+materiale che descrive ancora quello vecchio. Da pandas 3.0 una colonna di
+testo ha dtype `str`, che con `pyarrow` installato è sostenuto da Arrow ed è
+molto più compatto e veloce del vecchio `object`, in cui ogni cella era un
+oggetto Python a sé. Senza `pyarrow` il dtype è lo stesso, ma i dati restano
+oggetti Python. Il dtype `object` esiste ancora e resta quello delle colonne
+che mescolano tipi, ma non è più quello del testo.
+
+L'indice è una struttura etichettata (anche gerarchica, `MultiIndex`) usata
+per l'allineamento automatico, e il numero di riga ne è solo il caso più
+semplice. Quando sommi due Series, ad esempio, Pandas non allinea per
+posizione ma per etichetta, e inserisce `NaN` dove le etichette non
+combaciano. In questo modo evita i disallineamenti tipici degli array grezzi,
+dove due vettori si sommano per posizione anche quando le righe non si
+corrispondono.
 
 `````
 
@@ -96,13 +104,15 @@ righe non si corrispondono.
 
 Nella realtà non digiti i dati a mano: li carichi. Il formato più comune è il
 **CSV** (un semplice file di testo con i valori separati da virgole, il formato
-in cui quasi ogni programma sa esportare una tabella); la funzione `read_csv`
-lo legge in una riga, riconoscendo tipi e intestazioni. Il CSV che Excel
-produce in Italia usa spesso il punto e virgola come separatore e la virgola
-per i decimali, e si legge dichiarandolo, `read_csv("file.csv", sep=";",
-decimal=",")`. Se il file ha lettere accentate ed è stato salvato come «CSV»
-semplice (non «CSV UTF-8»), è in codifica Windows, e serve anche
-`encoding="cp1252"`: senza, `read_csv` si ferma con un `UnicodeDecodeError`.
+in cui quasi ogni programma sa esportare una tabella), e la funzione
+`read_csv` lo legge in una riga, riconoscendo tipi e intestazioni.
+
+Il CSV che Excel produce in Italia, però, usa spesso il punto e virgola
+come separatore e la virgola per i decimali; in questo caso lo si legge
+dichiarandolo, `read_csv("file.csv", sep=";", decimal=",")`. Se il file ha
+lettere accentate ed è stato salvato come «CSV» semplice (non «CSV UTF-8»), è
+in codifica Windows, e serve anche `encoding="cp1252"`; senza questa opzione
+`read_csv` si ferma con un `UnicodeDecodeError`.
 
 Fabbrichiamo al volo un file su cui provare, così ogni numero che segue
 si può rifare:
@@ -121,11 +131,11 @@ pd.DataFrame({
 ```
 
 Da questo punto in avanti `df` è la tabella caricata dal file, non più quella
-scritta a mano: il nome resta lo stesso perché `df` (da *dataframe*) è la sigla
-convenzionale per la tabella su cui si sta lavorando. La tabella usata negli
-esempi ha sei clienti e quattro colonne
-(`nome`, `eta`, `citta`, `spesa`), con un paio di caselle lasciate vuote di
-proposito, perché i dati veri sono quasi sempre così.
+scritta a mano. Il nome resta lo stesso perché `df` (da *dataframe*) è la
+sigla convenzionale per la tabella su cui si sta lavorando. La tabella usata
+negli esempi ha sei clienti e quattro colonne (`nome`, `eta`, `citta`,
+`spesa`), con un paio di caselle lasciate vuote di proposito, perché i dati
+veri sono quasi sempre così.
 
 Tre comandi bastano per il primo sguardo, a cominciare da `head()`.
 
@@ -146,16 +156,17 @@ print(df.head())   # prime 5 righe: uno sguardo veloce
 4  Elena  52.0  Milano  310.0
 ```
 
-Oltre ai dati si notano due cose. La colonna senza intestazione a sinistra, con
-0, 1, 2, 3, 4, è l’indice: le etichette di riga che pandas ha inserito perché
-il file non ne aveva. I due `NaN` sono le caselle vuote. Sono anche il
-motivo per cui l'età compare come 34.0 invece che come 34: una casella vuota
-non è un numero intero, e per tenerla in colonna insieme agli altri pandas
-converte l'intera colonna in numeri con la virgola.
+Oltre ai dati, osserviamo due cose. La colonna senza intestazione a sinistra,
+con 0, 1, 2, 3, 4, è l’indice, cioè le etichette di riga che pandas ha
+inserito perché il file non ne aveva. I due `NaN` sono le caselle vuote, e
+sono anche il motivo per cui l'età compare come 34.0 invece che come 34. Una
+casella vuota, infatti, non è un numero intero, e per tenerla in colonna
+insieme agli altri pandas converte l'intera colonna in numeri con la virgola.
 
-Gli altri due riassumono la tabella: `info()` elenca le colonne con il loro
-tipo e quante caselle sono piene, `describe()` calcola le statistiche delle
-colonne numeriche. Il tipo di ogni colonna si può leggere a parte:
+Gli altri due comandi riassumono la tabella: `info()` elenca le colonne con il
+loro tipo e quante caselle sono piene, mentre `describe()` calcola le
+statistiche delle colonne numeriche. Il tipo di ogni colonna si può anche
+leggere a parte:
 
 ```python
 print(df.dtypes)
@@ -177,20 +188,20 @@ df.describe()    # media, deviazione standard, minimo, massimo e quartili
 ```
 
 Questi tre metodi aprono quasi ogni analisi. `head()` mostra che aspetto hanno
-i dati; `info()` dice quanti sono e dove ci sono buchi (valori mancanti);
+i dati; `info()` dice quanti sono e dove ci sono buchi, cioè valori mancanti;
 `describe()` dà, per ogni colonna numerica, il conteggio, la media, la
 deviazione standard (quanto i valori si sparpagliano attorno alla media), il
 minimo, il massimo e i quartili (i valori che dividono i dati in quattro fette
-uguali). Prima di costruire un modello bastano a scoprire colonne vuote, tipi
-sbagliati e valori impossibili.
+uguali). Prima di costruire un modello, quindi, bastano a scoprire colonne
+vuote, tipi sbagliati e valori impossibili.
 
 ## Selezionare, filtrare, creare colonne
 
-Una volta caricata la tabella, la si interroga. Selezionare una colonna,
-tenere solo le righe che soddisfano una condizione, calcolare una nuova
-colonna a partire dalle altre: sono le tre operazioni che si ripetono
-di continuo. Nell'esempio la colonna nuova è la spesa con l'IVA, l'imposta
-del 22 per cento: moltiplicare per 1,22 la aggiunge.
+Una volta caricata la tabella, la si interroga. Le operazioni che si ripetono
+di continuo sono tre: selezionare una colonna, tenere solo le righe che
+soddisfano una condizione e calcolare una nuova colonna a partire dalle altre.
+Nell'esempio la colonna nuova è la spesa con l'IVA, l'imposta del 22 per
+cento, che si aggiunge moltiplicando per 1,22.
 
 ```python
 df["spesa"]                    # una colonna (Series)
@@ -204,9 +215,11 @@ Il filtro è l'operazione più importante delle tre. `df["eta"] > 30` non
 restituisce un numero: restituisce una colonna di `True`/`False`, una per riga.
 Mettendola tra parentesi quadre, chiedi a Pandas di tenere solo le righe in cui
 il valore è `True`. È come applicare un colino: la condizione decide cosa passa
-e cosa resta fuori. Puoi combinarne più d'una con `&` («e») e `|` («o»), e ogni
-condizione va chiusa fra parentesi sue, altrimenti Python legge la riga in un
-altro modo e risponde con un errore:
+e cosa resta fuori.
+
+Puoi combinarne più d'una con `&` («e») e `|` («o»), e ogni condizione va
+chiusa fra parentesi sue, altrimenti Python legge la riga in un altro modo e
+risponde con un errore:
 
 ```python
 df[(df["eta"] > 30) & (df["citta"] == "Milano")]
@@ -224,11 +237,12 @@ df[df["eta"] > 30]["spesa"] = 0       # scrive sulla ciotola, non sulla pentola
 
 In NumPy la riga `x[x > 25] = 0`, con una sola coppia di quadre, scriveva
 sull'originale; qui le coppie di quadre sono due, una dopo l'altra: la prima
-fabbrica la ciotola, la seconda ci scrive dentro. Pandas segnala il problema con un
-avviso che, in mezzo a mille righe di uscita,
-non legge nessuno. Per scrivere sulla tabella originale c'è un attrezzo
-apposta, `.loc`, che sceglie le righe e le cambia lì dove stanno. Fra le sue
-quadre si scrive prima la condizione sulle righe e poi il nome della colonna:
+fabbrica la ciotola, la seconda ci scrive dentro. Pandas segnala il problema
+con un avviso che, in mezzo a mille righe di uscita, non legge nessuno.
+
+Per scrivere sulla tabella originale c'è uno strumento apposta, `.loc`, che
+sceglie le righe e le cambia lì dove stanno. Fra le sue quadre si scrive prima
+la condizione sulle righe e poi il nome della colonna. Ad esempio,
 `df.loc[df["eta"] > 30, "spesa"] = 0` azzera la spesa di chi ha più di
 trent'anni sulla tabella vera, e non su una ciotola a parte.
 
@@ -236,37 +250,41 @@ trent'anni sulla tabella vera, e non su una ciotola a parte.
 
 `````{tab} Superiore
 
-Il filtro booleano è *boolean masking*: la Series di condizione è un vettore
-di `bool` che indicizza il DataFrame, come in NumPy. Le condizioni
-si combinano con gli operatori bit a bit `&`, `|`, `~` (non con `and`/`or`
-Python, che non sono vettorizzati), e le parentesi sono obbligatorie per via
-della precedenza degli operatori. Per selezioni miste per etichetta e
-posizione esistono gli accessor `.loc[righe, colonne]` (per etichetta) e
-`.iloc[...]` (per posizione intera), che restano il modo canonico e non
-ambiguo di indicizzare. Con una differenza rispetto alle fette di Python e
-NumPy: nelle fette per etichetta di `.loc` il secondo estremo è incluso
-(`df.loc[0:2]` restituisce tre righe), mentre `.iloc[0:2]`, per posizione, ne
-restituisce due.
+Il filtro booleano è il cosiddetto *boolean masking*, in cui la Series di
+condizione è un vettore di `bool` che indicizza il DataFrame, come in NumPy.
+Le condizioni si combinano con gli operatori bit a bit `&`, `|`, `~` (non con
+`and`/`or` di Python, che non sono vettorizzati), e le parentesi sono
+obbligatorie per via della precedenza degli operatori.
+
+Per selezioni miste per etichetta e posizione esistono gli accessor
+`.loc[righe, colonne]` (per etichetta) e `.iloc[...]` (per posizione intera),
+che restano il modo canonico e non ambiguo di indicizzare. Si noti, però, una
+differenza rispetto alle fette di Python e NumPy: nelle fette per etichetta di
+`.loc` il secondo estremo è incluso (`df.loc[0:2]` restituisce tre righe),
+mentre `.iloc[0:2]`, per posizione, ne restituisce due.
 
 Da qui la regola che evita l'errore più frequente: per *leggere* va bene
-qualunque forma, per scrivere si usa `.loc`. `df[df["eta"] > 30]` è un oggetto
-nuovo, quindi `df[df["eta"] > 30]["spesa"] = 0` modifica quello e lascia `df`
-com'era. Pandas 3 lo segnala con un `ChainedAssignmentError` che, malgrado il
-nome, viene *emesso* come avviso e non *sollevato* come errore: il programma
-non si ferma, e la modifica che credevi di aver fatto non c'è. In uno script
-che filtra gli avvisi, o in un notebook con mille righe di output,
-l'assegnazione sbagliata passa in silenzio. Chi vuole che il programma si fermi
-può promuovere l'avviso a errore vero con `warnings.simplefilter("error",
-pd.errors.ChainedAssignmentError)`, che è una riga da mettere in cima a uno
-script che tratta dati veri. La forma che funziona è una sola,
-`df.loc[df["eta"] > 30, "spesa"] = 0`, perché seleziona e assegna in un passo
-solo. Nota per chi cerca in rete: con il Copy-on-Write, predefinito da pandas
-3, il vecchio `SettingWithCopyWarning` non esiste più e la copia non scrive mai
+qualunque forma, per scrivere si usa `.loc`. Infatti `df[df["eta"] > 30]` è un
+oggetto nuovo, quindi `df[df["eta"] > 30]["spesa"] = 0` modifica quello e
+lascia `df` com'era. Pandas 3 lo segnala con un `ChainedAssignmentError` che,
+malgrado il nome, viene *emesso* come avviso e non *sollevato* come errore: il
+programma non si ferma, e la modifica che credevi di aver fatto non c'è. In
+uno script che filtra gli avvisi, o in un notebook con mille righe di output,
+l'assegnazione sbagliata passa in silenzio.
+
+Chi vuole che il programma si fermi può promuovere l'avviso a errore vero con
+`warnings.simplefilter("error", pd.errors.ChainedAssignmentError)`, che è una
+riga da mettere in cima a uno script che tratta dati veri. La forma che
+funziona è una sola, `df.loc[df["eta"] > 30, "spesa"] = 0`, perché seleziona
+e assegna in un passo solo.
+
+Nota per chi cerca in rete: con il Copy-on-Write, predefinito da pandas 3, il
+vecchio `SettingWithCopyWarning` non esiste più e la copia non scrive mai
 sull'originale, quindi il classico «a volte funziona» dei tutorial di due anni
 fa non descrive più niente. Con il Copy-on-Write ogni oggetto derivato si
 comporta come una copia indipendente, e i dati si copiano solo quando
 qualcuno scrive. Per lo stesso motivo i metodi di Pandas restituiscono un
-oggetto nuovo e lasciano quello di partenza com'è: `df.dropna()` e
+oggetto nuovo e lasciano quello di partenza com'è; ad esempio, `df.dropna()` e
 `df["eta"].fillna(...)` non cambiano `df` finché il risultato non viene
 assegnato (`df = df.dropna()`).
 
@@ -275,9 +293,10 @@ assegnato (`df = df.dropna()`).
 ## Raggruppare e aggregare
 
 La domanda che quasi ogni analisi finisce per porsi è: *quanto vale questa
-grandezza, suddivisa per categoria?* Spesa media per città, numero di ordini
-per mese, errore medio per classe. È il pattern **split-apply-combine**: dividi
-i dati in gruppi, applichi una funzione a ciascuno, ricomponi il risultato.
+grandezza, suddivisa per categoria?* Si pensi, ad esempio, alla spesa media per
+città, al numero di ordini per mese, all'errore medio per classe. È il pattern
+**split-apply-combine**: dividi i dati in gruppi, applichi una funzione a
+ciascuno, ricomponi il risultato.
 
 ```{figure} ../figures/pandas-selezione-filtri-groupby.svg
 :name: fig-split-apply-combine
@@ -318,69 +337,74 @@ Il secondo esempio calcola due riassunti in una volta e dà a ciascuno il nome
 che si vuole: a sinistra dell'uguale il nome della colonna che uscirà, a destra
 la coppia «da quale colonna prendere i valori, quale calcolo applicare».
 
-Le tre città escono in ordine alfabetico, e non nell'ordine in cui compaiono
-nel file: `groupby` ordina le chiavi, a meno che non gli si dica `sort=False`.
+Si noti che le tre città escono in ordine alfabetico, e non nell'ordine in cui
+compaiono nel file, perché `groupby` ordina le chiavi, a meno che non gli si
+dica `sort=False`.
 
 Napoli risponde `NaN`. Le funzioni di riassunto di pandas saltano le caselle
-vuote: una colonna con due numeri e un buco fa la media dei due. Ma il suo
-unico cliente ha la spesa mancante, e una media senza nemmeno un valore da
-mediare non esiste.
+vuote, per cui una colonna con due numeri e un buco fa la media dei due. Ma
+l'unico cliente di Napoli ha la spesa mancante, e una media senza nemmeno un
+valore da mediare non esiste.
 
 L'ultimo passaggio di {numref}`fig-split-apply-combine` si tende
 a dimenticare: dopo un `groupby` la colonna di raggruppamento diventa
-l'indice, e smette di essere una colonna. Da lì in poi una riga si chiama con
-la sua etichetta, non con il valore di una colonna. Questo spiega gran
-parte dei `KeyError` che arrivano dopo un raggruppamento, dove `KeyError` è
-l'errore con cui Python dice «questo nome qui dentro non c'è»: chiedere la
-colonna `"citta"` al risultato di un raggruppamento per città è il modo più
-rapido di provocarlo. Sulla tabella di partenza, che il raggruppamento non
-tocca, quella colonna c'è ancora. Per tenere la città come colonna nel
-risultato si chiede `as_index=False` (`df.groupby("citta",
-as_index=False)["spesa"].mean()`), oppure si richiama `.reset_index()` sul
-risultato.
+l'indice, e smette di essere una colonna. Da lì in poi, quindi, una riga si
+chiama con la sua etichetta, non con il valore di una colonna.
+
+Questo spiega gran parte dei `KeyError` che arrivano dopo un raggruppamento
+(`KeyError` è l'errore con cui Python dice «questo nome qui dentro non c'è»).
+Chiedere la colonna `"citta"` al risultato di un raggruppamento per città, ad
+esempio, è il modo più rapido di provocarlo; sulla tabella di partenza, che il
+raggruppamento non tocca, quella colonna c'è ancora. Per tenere la città come
+colonna nel risultato si chiede `as_index=False`
+(`df.groupby("citta", as_index=False)["spesa"].mean()`), oppure si richiama
+`.reset_index()` sul risultato.
 
 `````{tab} Elementare
 
 `groupby("citta")` mette in scatole separate tutte le righe di Milano, tutte
 quelle di Torino, e così via. Poi `.mean()` calcola la media dentro ogni
-scatola. Il risultato è una tabellina con una riga per città: il riassunto che
-cercavi. In Excel la stessa cosa si fa con le *tabelle pivot*, trascinando
-colonne con il mouse; qui è una riga di codice, che si rilegge e si riesegue.
+scatola. Il risultato è una tabellina con una riga per città, cioè il
+riassunto che cercavi. In Excel la stessa cosa si fa con le *tabelle pivot*,
+trascinando colonne con il mouse; qui è una riga di codice, che si rilegge e
+si riesegue.
 
 `````
 
 `````{tab} Superiore
 
 Concettualmente `groupby` partiziona le righe secondo una o più chiavi e
-applica a ogni gruppo $g$ una funzione di aggregazione. Per la media, sul
-gruppo con valori $\{x_1,\dots,x_{n_g}\}$:
+applica a ogni gruppo $g$ una funzione di aggregazione. Per la media, ad
+esempio, sul gruppo con valori $\{x_1,\dots,x_{n_g}\}$:
 
 $$
 \bar{x}_g = \frac{1}{n_g}\sum_{i=1}^{n_g} x_i ,
 $$
 
-dove $n_g$ conta i valori presenti nel gruppo, e non le sue righe: con
+dove $n_g$ conta i valori presenti nel gruppo, e non le sue righe, poiché con
 `skipna=True`, che è il default, `mean` scarta i mancanti prima di sommare e
-prima di dividere. Su un gruppo che non ha nemmeno un valore la somma vale zero
-e il divisore pure, e quello zero diviso zero dà il `NaN` di Napoli. Oltre a
-`mean` sono disponibili `sum`, `count`, `std`, `min`, `max`, `median` e
-funzioni arbitrarie via `agg`/`apply`. `std` di pandas divide per $n_g - 1$
-(`ddof=1`, come `describe()`), mentre `np.std` divide per $n_g$ (`ddof=0`): le
-due non coincidono sugli stessi dati. Le aggregazioni nominate con una
-stringa (`"mean"`, `"sum"`) girano in codice compilato, mentre una funzione
-Python passata ad `apply` viene chiamata una volta per gruppo, o per riga con
-`axis=1`, e rimette nel ciclo l'interprete che la vettorizzazione aveva tolto.
-Il metodo `agg` con argomenti nominati (*named aggregation*) produce colonne
-dal nome esplicito, rendendo il risultato pronto per un report o per un
-incrocio con un'altra tabella (il `merge`, l'equivalente pandas della `JOIN`
-dei database).
+prima di dividere. Così, su un gruppo che non ha nemmeno un valore, la somma
+vale zero e il divisore pure, e quello zero diviso zero dà il `NaN` di Napoli.
+
+Oltre a `mean` sono disponibili `sum`, `count`, `std`, `min`, `max`, `median`
+e funzioni arbitrarie via `agg`/`apply`. In particolare, `std` di pandas divide
+per $n_g - 1$ (`ddof=1`, come `describe()`), mentre `np.std` divide per $n_g$
+(`ddof=0`); di conseguenza le due non coincidono sugli stessi dati.
+
+Le aggregazioni nominate con una stringa (`"mean"`, `"sum"`) girano in codice
+compilato, mentre una funzione Python passata ad `apply` viene chiamata una
+volta per gruppo, o per riga con `axis=1`, e rimette nel ciclo l'interprete
+che la vettorizzazione aveva tolto. Il metodo `agg` con argomenti nominati
+(*named aggregation*) produce colonne dal nome esplicito, rendendo il
+risultato pronto per un report o per un incrocio con un'altra tabella (il
+`merge`, l'equivalente pandas della `JOIN` dei database).
 
 L'incrocio appaia le righe di due tabelle che hanno lo stesso valore in una
-colonna, e `how` decide che cosa fare di quelle senza corrispondenza: `inner`
-le scarta da tutte e due le parti, `left` tiene tutte le righe della tabella di
-sinistra e riempie con `NaN` le colonne dell'altra, `right` fa il contrario,
-`outer` tiene tutto. Con una tabella di regioni che non conosce Napoli e
-conosce Roma:
+colonna, e il parametro `how` decide che cosa fare di quelle senza
+corrispondenza: `inner` le scarta da tutte e due le parti, `left` tiene tutte
+le righe della tabella di sinistra e riempie con `NaN` le colonne dell'altra,
+`right` fa il contrario, `outer` tiene tutto. Consideriamo una tabella di
+regioni che non conosce Napoli e conosce Roma:
 
 ```python
 regioni = pd.DataFrame({"citta": ["Milano", "Torino", "Roma"],
@@ -412,11 +436,11 @@ doppie.
 
 I dati reali sono quasi sempre incompleti: un campo non compilato, un sensore
 spento, una risposta saltata. Pandas rappresenta questi buchi con `NaN` (*Not a
-Number*), e non si possono ignorare. Le funzioni di riassunto di pandas, si
-è visto, saltano le caselle vuote; ma un calcolo fatto casella per casella
-(sommare due colonne, moltiplicare per un prezzo) si porta dietro il buco:
-dove c'era una casella vuota il risultato è di nuovo vuoto, e ogni colonna che
-nasce da quella si ritrova lo stesso buco.
+Number*), e non si possono ignorare. Le funzioni di riassunto di pandas
+saltano le caselle vuote, ma un calcolo fatto casella per casella (sommare
+due colonne, moltiplicare per un prezzo) si porta dietro il buco. In altri
+termini, dove c'era una casella vuota il risultato è di nuovo vuoto, e ogni
+colonna che nasce da quella si ritrova lo stesso buco.
 
 ```{figure} ../figures/gestire-dati-mancanti.svg
 :name: fig-dati-mancanti
@@ -433,15 +457,15 @@ acquisti dà 347 di spesa invece dei 159,25 della media.
 
 Nei tre modi di {numref}`fig-dati-mancanti` resta fuori una cosa: che una
 casella vuota è essa stessa un'informazione. Se manca perché il sensore era
-spento, è un
-caso; se manca perché la domanda era imbarazzante, il fatto che manchi dice
-qualcosa, e riempirla con la media cancella proprio quel qualcosa.
+spento, ad esempio, è un caso; se manca perché la domanda era imbarazzante, il
+fatto che manchi dice qualcosa, e riempirla con la media cancella proprio quel
+qualcosa.
 
 `````{tab} Elementare
 
 Hai due strade. Puoi buttare via le righe incomplete, oppure riempirle
-con un valore ragionevole, la media della colonna o la sua mediana (il valore
-che sta in mezzo quando li si mette in fila):
+con un valore ragionevole, la media della colonna o la sua **mediana** (il
+valore che sta in mezzo quando li si mette in fila):
 
 ```python
 df.isna().sum()              # quanti buchi per colonna?
@@ -450,34 +474,34 @@ df["eta"].fillna(df["eta"].median())   # riempi con la mediana
 ```
 
 Quale delle due strade prendere dipende da *perché* quel dato manca, e non
-esiste una risposta valida sempre. La quantità dà solo un'indicazione grossa:
-con il 2% dei dati mancante scartare le righe costa poco, con il 40% di una
-colonna mancante buttarla via distruggerebbe informazione. Ma è la ragione
-della mancanza a decidere.
+esiste una risposta valida sempre. La quantità dà solo un'indicazione grossa.
+Con il 2% dei dati mancante, ad esempio, scartare le righe costa poco, mentre
+con il 40% di una colonna mancante buttarla via distruggerebbe informazione.
+Ma è la ragione della mancanza a decidere.
 
 Riempire ha comunque un limite: mettere in tanti buchi lo stesso numero rende
 i dati più uniformi del vero. In una classe dove agli assenti di un compito si
 assegna il voto medio dei presenti, la media non cambia, ma i voti sembrano
 più simili fra loro di quanto siano.
 
-Il terzo pannello di {numref}`fig-dati-mancanti` mostra una via più raffinata:
-invece di mettere lo stesso valore dappertutto, si *indovina* quello che manca
-guardando le altre colonne della stessa riga (conoscendo età e città di un
-cliente si può stimare quanto avrebbe speso). È più laborioso, e si fa con un
-modello, e dove collocare questo passaggio nel lavoro lo spiega la
-{doc}`sezione su overfitting e validazione
+Il terzo pannello di {numref}`fig-dati-mancanti` mostra una via più raffinata.
+Invece di mettere lo stesso valore dappertutto, si *indovina* quello che manca
+guardando le altre colonne della stessa riga. Conoscendo età e città di un
+cliente, ad esempio, si può stimare quanto avrebbe speso. Il procedimento è
+più laborioso e si fa con un modello; dove collocare questo passaggio nel
+lavoro lo spiega la {doc}`sezione su overfitting e validazione
 </MachineLearning/overfitting-validazione>`.
 
-C'è però una cautela, che riguarda il
-*quando* e non il *come*. Quando si costruisce un modello, i dati si dividono
-in due mucchi: uno con cui il modello impara (*training set*) e uno, tenuto da
-parte e mai guardato, con cui alla fine lo si giudica (*test set*). È l'unico
-modo di sapere se ha imparato o se ha soltanto memorizzato gli esempi che gli
-abbiamo dato. Anche la mediana con cui riempi i buchi va calcolata
-solo sul primo mucchio: se la calcoli su tutti i dati, un pezzetto di
-quello che il modello dovrà indovinare gli è già passato sotto gli occhi, e il
-voto d'esame diventa più alto di quanto meriti. Questo errore si chiama
-*data leakage*.
+C'è però una cautela, che riguarda il *quando* e non il *come*. Quando si
+costruisce un modello, i dati si dividono in due mucchi: uno con cui il
+modello impara (*training set*) e uno, tenuto da parte e mai guardato, con cui
+alla fine lo si giudica (*test set*). È l'unico modo di sapere se il modello
+ha imparato o se ha soltanto memorizzato gli esempi che gli abbiamo dato.
+
+Anche la mediana con cui riempi i buchi, quindi, va calcolata solo sul primo
+mucchio. Se la calcoli su tutti i dati, un pezzetto di quello che il
+modello dovrà indovinare gli è già passato sotto gli occhi, e il voto d'esame
+diventa più alto di quanto meriti. Questo errore si chiama *data leakage*.
 
 `````
 
@@ -489,27 +513,31 @@ si nota da `df.dtypes`); le colonne di date usano `NaT`, i dtype *nullable* di
 Pandas usano `pd.NA`, e il nuovo dtype `str` di pandas 3 continua a usare
 `nan`, così `isna()` risponde come sempre.
 
-La strategia dipende dal meccanismo di mancanza (MCAR, MAR, MNAR, nella
+La strategia dipende dal **meccanismo di mancanza** (MCAR, MAR, MNAR, nella
 tradizione che nasce con Rubin {cite}`rubin1976inference` e prende questa
-forma a tre nei lavori successivi), cioè da che cosa determina la probabilità che
-un valore manchi. In MCAR (*missing completely at random*) non dipende né dai
-valori osservati né da quelli mancanti: un sensore che salta qualche lettura
-per un guasto casuale. In MAR (*missing at random*) dipende solo da quanto è
-stato osservato: i sensori più vecchi, di cui l'età è registrata, saltano più
-letture. In MNAR (*missing not at random*) dipende dal valore mancante stesso:
-chi guadagna di più dichiara meno spesso il reddito. Se i dati sono MCAR è
-garantito che eliminare le righe incomplete non introduca distorsioni (a costo
-di perdere informazione), e in una regressione l'eliminazione resta lecita
-anche quando la mancanza dipende solo dalle covariate e non dalla risposta.
-Con MAR l'eliminazione può distorcere le stime, mentre l'imputazione multipla
-e i metodi di massima verosimiglianza, se il modello è scritto bene, restano
-validi; con MNAR servono ipotesi esplicite sul meccanismo, perché i dati da
-soli non lo rivelano. L'imputazione con media o mediana è
-semplice ma comprime la varianza e ignora le correlazioni tra variabili;
-alternative più fedeli sono l'imputazione tramite modello (es. $k$-NN o
-regressione, `sklearn.impute.KNNImputer`) o l'imputazione multipla. Regola
-d'oro: qualsiasi imputazione va stimata solo sul training set e poi applicata
-al test set, per non far trapelare informazione (*data leakage*).
+forma a tre nei lavori successivi), cioè da che cosa determina la probabilità
+che un valore manchi. In MCAR (*missing completely at random*) la probabilità
+non dipende né dai valori osservati né da quelli mancanti; è il caso di un
+sensore che salta qualche lettura per un guasto casuale. In MAR (*missing at
+random*) dipende solo da quanto è stato osservato; ad esempio, i sensori più
+vecchi, di cui l'età è registrata, saltano più letture. In MNAR (*missing not
+at random*) dipende dal valore mancante stesso, come quando chi guadagna di
+più dichiara meno spesso il reddito.
+
+Se i dati sono MCAR è garantito che eliminare le righe incomplete non
+introduca distorsioni (a costo di perdere informazione), e in una regressione
+l'eliminazione resta lecita anche quando la mancanza dipende solo dalle
+covariate e non dalla risposta. Con MAR l'eliminazione può distorcere le
+stime, mentre l'imputazione multipla e i metodi di massima verosimiglianza, se
+il modello è scritto bene, restano validi. Con MNAR, infine, servono ipotesi
+esplicite sul meccanismo, perché i dati da soli non lo rivelano.
+
+L'imputazione con media o mediana è semplice, ma comprime la varianza e
+ignora le correlazioni tra variabili; alternative più fedeli sono
+l'imputazione tramite modello (ad esempio $k$-NN o regressione,
+`sklearn.impute.KNNImputer`) o l'imputazione multipla. In ogni caso vale la
+regola d'oro: qualsiasi imputazione va stimata solo sul training set e poi
+applicata al test set, per non far trapelare informazione (*data leakage*).
 
 `````
 
@@ -522,8 +550,8 @@ costruì apposta perché, misurate, risultassero gemelle: le medie e le
 varianze di $x$ coincidono, le altre misure a meno di qualche millesimo.
 
 Le misure su cui risultano gemelle sono le stesse che si prendono davanti a
-qualunque tabella nuova, e si rifanno in poche
-righe con i dati pubblicati da Anscombe nel 1973:
+qualunque tabella nuova, e si rifanno in poche righe con i dati pubblicati da
+Anscombe nel 1973:
 
 ```python
 import numpy as np
@@ -554,16 +582,17 @@ III     9.00  11.00   7.5000  4.1226  0.8163   y = 3.002 + 0.500 x
  IV     9.00  11.00   7.5009  4.1232  0.8165   y = 3.002 + 0.500 x
 ```
 
-La **media** è il valore attorno a cui i numeri si dispongono: si sommano e si
-divide per quanti sono. In orizzontale ($x$) vale $9$ in tutte e quattro;
-in verticale ($y$) vale $7{,}50$, e a separarle è il quarto decimale.
+La **media** è il valore attorno a cui i numeri si dispongono, e si ottiene
+sommandoli e dividendo per quanti sono. In orizzontale ($x$) vale $9$ in tutte
+e quattro le raccolte; in verticale ($y$) vale $7{,}50$, e a separarle è il
+quarto decimale.
 
-La **varianza** misura lo sparpagliamento attorno a quella media: piccola se i
-valori stanno tutti lì vicino, grande se sono sparsi ai due estremi. Si calcola
-come la media dei quadrati delle distanze dalla media, dividendo però per $n-1$
-invece che per $n$ (è il `ddof=1` del codice). In orizzontale è identica in
-tutte e quattro; in verticale le quattro differiscono al terzo decimale, che è
-già più in là di dove si guarda.
+La **varianza** misura lo sparpagliamento attorno a quella media, ed è piccola
+se i valori stanno tutti lì vicino, grande se sono sparsi ai due estremi. Si
+calcola come la media dei quadrati delle distanze dalla media, dividendo però
+per $n-1$ invece che per $n$ (è il `ddof=1` del codice). In orizzontale è
+identica in tutte e quattro; in verticale le quattro differiscono al terzo
+decimale, che è già più in là di dove si guarda.
 
 La **correlazione** (di Pearson) è un numero fra $-1$ e $1$ che misura quanto
 le due grandezze crescono insieme lungo una retta; vale $0$ quando non c'è
@@ -572,27 +601,29 @@ quattro disegni stanno per mostrarlo. Nelle quattro raccolte vale $0{,}816$
 fino alla terza cifra decimale.
 
 La **retta di regressione**, infine, è quella che passa più vicino possibile a
-tutti i punti insieme, nel senso dei minimi quadrati: rende minima la somma dei
-quadrati delle distanze verticali fra i punti e la retta. In tutte e quattro è
-la stessa:
+tutti i punti insieme, nel senso dei minimi quadrati, cioè rende minima la
+somma dei quadrati delle distanze verticali fra i punti e la retta. In tutte e
+quattro è la stessa:
 
 $$
 \hat{y} = 3 + 0{,}5\,x .
 $$
 
 Il cappuccio sopra la $y$ vuol dire «valore *previsto* dalla retta», da tenere
-distinto dal valore misurato, e la distinzione fra i due è quella su cui si
-misura ogni modello supervisionato. Un calcolo solo basta a fissare
-l'idea: nel primo insieme, dove $x$ vale $10$, la retta prevede $\hat{y} = 3 +
-0{,}5 \cdot 10 = 8$, mentre il punto misurato per quella $x$ vale $8{,}04$. La
-differenza fra i due, qui quattro centesimi, è l’**errore** su quel punto:
-la quantità che ogni modello cercherà di rendere piccola.
+distinto dal valore misurato; la distinzione fra i due, infatti, è quella su
+cui si misura ogni modello supervisionato.
+
+Per fissare l'idea consideriamo il primo insieme. Dove $x$ vale $10$, la retta
+prevede $\hat{y} = 3 + 0{,}5 \cdot 10 = 8$, mentre il punto misurato per
+quella $x$ vale $8{,}04$. La differenza fra i due, qui quattro centesimi, è
+l’**errore** su quel punto, cioè la quantità che ogni modello cercherà di
+rendere piccola.
 
 Costruire quattro insiemi di dati che coincidono su tutte e quattro queste
-misure è un lavoro di precisione: sono fabbricati apposta
-{cite}`anscombe1973graphs`, e sulla carta restano indistinguibili. Ma basta
-disegnarli ({numref}`fig-anscombe`) per scoprire che raccontano quattro storie
-completamente diverse.
+misure è un lavoro di precisione. Quelli di Anscombe, infatti, sono fabbricati
+apposta {cite}`anscombe1973graphs`, e sulla carta restano indistinguibili.
+Ma basta disegnarli ({numref}`fig-anscombe`) per scoprire che raccontano
+quattro storie completamente diverse.
 
 ```{figure} ../figures/quartetto-anscombe.svg
 :name: fig-anscombe
@@ -608,16 +639,16 @@ comune.
 Il primo è lineare; il secondo è una curva che una retta descrive
 male; il terzo è una retta rovinata da un solo valore anomalo (un *outlier*);
 il quarto ha tutti i punti su una verticale, tranne uno che da solo determina
-la pendenza. Nessuna
-di queste patologie emerge dai numeri riassuntivi: solo l'occhio le coglie.
+la pendenza. Nessuna di queste patologie emerge quindi dai numeri riassuntivi:
+solo l'occhio le coglie.
 
 ## Matplotlib: tre grafici per guardare i dati
 
 Per disegnare i dati serve Matplotlib. Tre grafici bastano per l'esplorazione
 iniziale: la dispersione per due variabili, l’istogramma per la
-distribuzione di una, la linea per un andamento nel tempo. («Variabile»,
-qui, non è la variabile di Python: in statistica è una grandezza misurata, cioè
-una colonna della tabella.)
+distribuzione di una, la linea per un andamento nel tempo. Si noti che qui
+«variabile» non è la variabile di Python: in statistica è una grandezza
+misurata, cioè una colonna della tabella.
 
 ```{figure} ../figures/matplotlib-anatomia-figura.svg
 :name: fig-anatomia-figura
@@ -634,12 +665,13 @@ metodi appartengono ai secondi.
 I nomi di {numref}`fig-anatomia-figura` si imparano prima di scrivere il primo
 grafico, dato che la documentazione di Matplotlib li dà per noti. Un errore
 tipico dei primi tempi (chiamare un metodo sulla Figure anziché sugli Axes)
-diventa evidente appena si capisce che sono due oggetti distinti. Nelle righe
-`plt.qualcosa` non compaiono né l'una né gli altri, per scelta: quelle funzioni
-lavorano sulla figura *corrente*, quella aperta in quel momento, e per un
-grafico veloce va benissimo. Quando i grafici diventano due o più, o quando li
-si vuole affiancare, si prendono i due oggetti per nome e si chiamano i metodi
-su `ax`.
+diventa evidente appena si capisce che sono due oggetti distinti.
+
+Nelle righe `plt.qualcosa` non compaiono né l'una né gli altri, per scelta:
+quelle funzioni lavorano sulla figura *corrente*, quella aperta in quel
+momento, e per un grafico veloce va benissimo. Quando però i grafici
+diventano due o più, o quando li si vuole affiancare, si prendono i due
+oggetti per nome e si chiamano i metodi su `ax`.
 
 ```python
 import matplotlib.pyplot as plt
@@ -666,15 +698,18 @@ plt.show()
 ```
 
 `plt.figure()` e `plt.show()` hanno compiti diversi. `plt.figure()` apre un
-foglio nuovo: qui non sarebbe indispensabile, perché `plt.show()` chiude i
-fogli che ha appena mostrato, ma serve ogni volta che si preparano più grafici
-prima di mostrarli, altrimenti i disegni finiscono tutti sullo stesso foglio.
-`plt.show()` mostra i fogli aperti: in uno script fa comparire la finestra, in
-un notebook la cella mostra il grafico da sola, e la riga si scrive lo stesso
-per abitudine e perché in un file `.py` senza non si vedrebbe niente.
+foglio nuovo. In questo esempio non sarebbe indispensabile, perché
+`plt.show()` chiude i fogli che ha appena mostrato, ma serve ogni volta che si
+preparano più grafici prima di mostrarli, altrimenti i disegni finiscono tutti
+sullo stesso foglio.
 
-Quanto ai *bins* dell'istogramma, sono le barre in cui l'intervallo dei valori
-viene diviso: cambiarne il numero cambia il disegno, e vale la prova di due o
+`plt.show()` mostra i fogli aperti: in uno script fa comparire la finestra,
+mentre in un notebook la cella mostra il grafico da sola. La riga si scrive lo
+stesso, sia per abitudine sia perché in un file `.py`, senza, non si vedrebbe
+niente.
+
+I **bins** dell'istogramma sono le barre in cui l'intervallo dei valori viene
+diviso. Cambiarne il numero cambia il disegno, e vale la prova di due o
 tre valori diversi, perché troppo poche barre nascondono la forma e troppe la
 sbriciolano.
 

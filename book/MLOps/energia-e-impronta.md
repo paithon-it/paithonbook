@@ -1,6 +1,6 @@
 # Il conto in energia
 
-Di un modello si dichiara quasi tutto: il numero di parametri, i FLOP di una
+Di un modello si dichiara quasi tutto: il numero di parametri, i **FLOP** di una
 passata (le singole operazioni aritmetiche, cioè moltiplicazioni e somme),
 l'accuratezza, i millisecondi che impiega a rispondere. Quasi mai si dichiara
 quanta elettricità consuma.
@@ -8,8 +8,9 @@ quanta elettricità consuma.
 Il costo energetico del calcolo è una domanda vecchia quanto i chip; sui
 modelli di linguaggio l'hanno posta nel 2019 Strubell, Ganesh e McCallum,
 provando a mettere un numero sull'addestramento {cite}`strubell2019energy`.
-Alcuni di quei numeri sono stati poi corretti. La loro stima per la ricerca
-automatica dell'architettura dell'Evolved Transformer supponeva che ogni
+Alcuni di quei numeri sono stati poi corretti. In particolare, la loro stima
+per la ricerca automatica dell'architettura dell'Evolved Transformer
+supponeva che ogni
 candidato fosse addestrato a grandezza piena, mentre la ricerca vera usava un
 compito ridotto; ricalcolate sul compito ridotto, sull'hardware e sul centro
 dati effettivi, le emissioni sono risultate 88 volte più basse (un fattore 18,7
@@ -34,9 +35,10 @@ Verrebbe da pensare che l'energia se ne vada nei conti: più moltiplicazioni,
 più corrente. Quasi sempre, invece, la corrente serve ad altro.
 
 I valori vengono da una tabella dell'ingegnere Mark Horowitz, di Stanford, e due
-righe bastano. Una moltiplicazione con la somma che la segue, dentro il
-processore, usa poco meno di cinque picojoule. Per prendere un numero dalla
-memoria che sta fuori dal chip ne servono circa 640, più di cento volte tanto.
+righe bastano. Ad esempio, una moltiplicazione con la somma che la segue,
+dentro il processore, usa poco meno di cinque picojoule. Per prendere un
+numero dalla memoria che sta fuori dal chip ne servono circa 640, più di cento
+volte tanto.
 Il picojoule è troppo piccolo per essere immaginato; conta il rapporto fra i
 due valori.
 
@@ -49,16 +51,20 @@ Da questi due valori non segue ancora dove finisca la bolletta. Il chip è un
 tavolo di lavoro e la memoria di fuori l'armadio in fondo alla stanza, come
 nella gerarchia di memoria di una GPU: chi attraversa la stanza per copiare un
 numero solo passa la giornata in piedi, chi torna con un foglio da cui ricava
-trecento conti non si accorge nemmeno del tragitto. Dividendo 640 per poco meno
-di cinque si trova la soglia: circa centoquaranta conti per ogni numero preso da
+trecento conti non si accorge nemmeno del tragitto.
+
+Dividendo 640 per poco meno di cinque si trova dunque la soglia: circa
+centoquaranta conti per ogni numero preso da
 fuori (il valore preciso dipende dal chip e da quante cifre ha ogni numero).
 Sotto la soglia la corrente se ne va soprattutto nei viaggi alla memoria; sopra,
 nei conti.
 
 Generare una parola alla volta sta molto sotto la soglia, perché il
-calcolatore rilegge tutti i pesi del modello per produrne una sola. Servire
+computer rilegge tutti i pesi del modello per produrne una sola. Servire
 molte persone insieme divide quella lettura fra tutte, ma gli appunti di ogni
-conversazione vanno riletti comunque uno per uno. Tagliare i viaggi conta quindi
+conversazione vanno riletti comunque uno per uno.
+
+Tagliare i viaggi conta quindi
 più di ogni altra cosa, e le tecniche del capitolo sulle GPU servono a questo:
 tenere i dati vicino al processore, fare più operazioni in un passaggio solo
 invece di andare e tornare. Lì i viaggi frenavano il tempo, qui frenano la
@@ -85,7 +91,7 @@ densità dei transistor è migliorata più in fretta dell'energia per bit
 trasportato.
 
 Il rapporto fra due costi unitari non basta a stabilire dove finisce l'energia di
-un carico: serve l'intensità aritmetica del modello roofline, cioè le
+un carico: serve l’**intensità aritmetica** del modello roofline, cioè le
 operazioni eseguite per ogni byte letto, la stessa grandezza con cui
 {doc}`Misurare un servizio </MLOps/metriche-di-servizio>` ha distinto prefill e
 decode. L'energia per byte e quella per operazione si pareggiano attorno ai
@@ -144,10 +150,12 @@ con $N_p$ i parametri, $M_w$ i byte dei pesi, $m_{\text{kv}}$ i byte di KV
 cache per token, ed $e_{\text{byte}}$, $e_{\text{FLOP}}$ l'energia per byte
 letto dalla DRAM e per operazione. Il termine dei pesi si divide per il batch,
 quello della cache no, con la stessa struttura dell'intensità $I(b)$ di
-{doc}`Quante repliche accendere </MLOps/capacita-e-costo>`. Si prendano
+{doc}`Quante repliche accendere </MLOps/capacita-e-costo>`.
+
+Ad esempio, si prendano
 $e_{\text{byte}} = 80$ pJ (la DRAM con interfaccia migliorata) ed
 $e_{\text{FLOP}} = 0{,}75$ pJ (aritmetica a 16 bit), e un modello da $N_p =
-7\cdot10^9$ parametri ($M_w = 14$ GB). A $b = 1$ la lettura dei pesi costa
+7\cdot10^9$ parametri ($M_w = 14$ GB). A $b = 1$ la lettura dei pesi richiede
 circa 1,1 J per token, contro una decina di millijoule di aritmetica: cento
 volte tanto. A $b = 64$ scende a circa 17,5 mJ, e a quel punto pesa la cache,
 che con contesti di duemila token e 128 KiB per token aggiunge circa 21 mJ a
@@ -159,6 +167,7 @@ di lavoro è la potenza media dell'acceleratore per il tempo di esecuzione:
 l'approssimazione è grossolana perché la potenza dipende da *che cosa* si
 calcola, ma si misura con strumenti già disponibili (`nvidia-smi` espone la
 potenza istantanea della GPU, i contatori RAPL l'energia consumata dalla CPU).
+
 A preventivo si parte dai FLOP: un addestramento esegue circa $6N_pD$ FLOP
 ($N_p$ parametri e $D$ token; la
 {doc}`sezione sui grandi modelli linguistici </Transformers/llm>` scrive la
@@ -251,15 +260,15 @@ raffreddamento); $I_{\text{rete}}$ è la leva di chi sceglie dove e
 quando eseguire, e varia di oltre un ordine di grandezza fra reti diverse,
 e di alcune volte fra ore diverse della stessa rete.
 
-Il PUE è un rapporto di struttura, annualizzato: riguarda tutto l'edificio su
-tutto l'anno. Moltiplicarlo per l’$E_{\text{IT}}$ di *un* singolo carico di
-lavoro presuppone che il contorno cresca in proporzione al carico, mentre una
-quota rilevante (illuminazione, gruppi di continuità a vuoto, ventilazione di
-base) è fissa: il PUE **marginale** di un lavoro aggiuntivo è di norma più basso
-di quello medio, e la formula sovrastima. In direzione opposta, il PUE non copre
-né le perdite di trasmissione della rete elettrica né il consumo d'acqua. Va
-bene per l'ordine di grandezza, non per confrontare due lavori sulla stessa
-macchina.
+Si noti che il PUE è un rapporto di struttura, annualizzato: riguarda tutto
+l'edificio su tutto l'anno. Moltiplicarlo per l’$E_{\text{IT}}$ di *un* singolo
+carico di lavoro presuppone che il contorno cresca in proporzione al carico,
+mentre una quota rilevante (illuminazione, gruppi di continuità a vuoto,
+ventilazione di base) è fissa: il PUE **marginale** di un lavoro aggiuntivo è di
+norma più basso di quello medio, e la formula sovrastima. In direzione opposta,
+il PUE non copre né le perdite di trasmissione della rete elettrica né il
+consumo d'acqua. Va bene per l'ordine di grandezza, non per confrontare due
+lavori sulla stessa macchina.
 
 Anche $I_{\text{rete}}$ va scelto, perché per lo stesso carico se ne possono
 prendere tre valori. C'è la media annuale della rete in cui sta il centro dati
@@ -301,8 +310,8 @@ a chi gestisce l'infrastruttura.
 ## Addestrare una volta, servire un miliardo di volte
 
 Addestrare e rispondere si confrontano sull'intera vita del modello, e il
-confronto si falsa per un errore di prospettiva: l'addestramento si vede, la
-somma delle risposte no.
+confronto si falsa per un errore di prospettiva, poiché l'addestramento si
+vede e la somma delle risposte no.
 
 L'addestramento è un'energia che si spende una volta sola: grande, visibile,
 misurabile, databile in un articolo scientifico. Una risposta ha un'energia
@@ -326,7 +335,7 @@ arriva al decimo giorno, e dopo due anni l'addestramento pesa poco più dell'uno
 per cento del totale. Un valore universale del pareggio non esiste: dipende da
 quanto è grande il modello, da quante richieste riceve e da quanto a lungo resta
 in servizio, e va calcolato caso per caso. Un dato misurato però c'è, e va nella
-stessa direzione: nei centri dati di Google, in una settimana d'aprile del 2019,
+stessa direzione. Nei centri dati di Google, in una settimana d'aprile del 2019,
 del 2020 e del 2021, circa tre quinti dell'energia spesa per il machine learning
 (ricerca, sviluppo e produzione compresi) andavano a rispondere e due quinti ad
 addestrare {cite}`patterson2022plateau`. Ne discende un ordine di priorità, da
@@ -343,7 +352,7 @@ calcolato (il riuso del prefisso di {doc}`Misurare un servizio
 prima; qui riducono anche l'energia per richiesta.
 
 Se ne aggiunge una, la più radicale, perché non alleggerisce il modello ma lo
-sostituisce. Si chiama distillazione e consiste nell'addestrare un modello
+sostituisce. Si chiama **distillazione** e consiste nell'addestrare un modello
 piccolo a imitare le risposte di uno grande, per poi mandare in servizio
 soltanto il piccolo. È descritta in {doc}`Un modello piccolo che imita
 </Efficienza/un-modello-piccolo-che-imita>`, nel capitolo sull'efficienza.
@@ -459,9 +468,10 @@ dell'edificio, perché non la sceglie chi costruisce il modello ma chi
 costruisce il centro dati.
 
 L'efficienza, da sola, non basta a ridurre i consumi totali. Quando un servizio
-costa meno, se ne usa di più: è l'effetto di rimbalzo, detto anche paradosso di
-Jevons, dall'economista che nel 1865 notò come le macchine a vapore più
-efficienti avessero fatto crescere il consumo di carbone in Inghilterra invece
+costa meno, se ne usa di più. È l’**effetto di rimbalzo**, detto anche
+paradosso di Jevons, dall'economista che nel 1865 notò come le macchine a
+vapore più efficienti avessero fatto crescere il consumo di carbone in
+Inghilterra invece
 di ridurlo. Nella corsa alla scala degli ultimi anni il risparmio
 sull'addestramento è stato spesso reinvestito in modelli più grandi anziché
 incassato. Non è però una legge, e c'è almeno un caso, e non piccolo, in cui

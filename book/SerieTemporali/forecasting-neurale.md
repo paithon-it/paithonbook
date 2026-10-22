@@ -3,8 +3,8 @@
 Nella seconda metà degli anni Dieci, in Amazon si presentava un problema di scala
 brutale: prevedere la domanda di *milioni* di prodotti, ognuno
 con la sua piccola storia di vendite (spesso corta, spesso a scatti, a volte
-fatta di zeri interrotti da un picco). La ricetta classica direbbe: un modello
-ARIMA per prodotto. Ma stimarne milioni è impraticabile, e la maggior
+fatta di zeri interrotti da un picco). La soluzione classica sarebbe un modello
+ARIMA per prodotto, ma stimarne milioni è impraticabile, e la maggior
 parte di quelle serie è troppo breve e rumorosa perché un modello su misura ci
 capisca qualcosa. Nel 2017 un gruppo di ricercatori dell'azienda mise al centro
 un'altra prospettiva {cite}`salinas2020deepar`: e se, invece di un modello per
@@ -17,9 +17,9 @@ stampato su una rivista scientifica solo tre anni dopo, nel 2020.)
 
 Le sezioni sui {doc}`modelli classici </SerieTemporali/componenti-e-classici>`
 e sulla {doc}`validazione </SerieTemporali/validazione-e-feature>` hanno
-costruito la cassetta degli attrezzi classica (ARIMA, Holt-Winters) e hanno
+presentato gli strumenti classici (ARIMA, Holt-Winters) e hanno
 insistito su un punto scomodo: quei metodi di mezzo secolo fa restano una linea
-di base durissima da battere. Tocca ora alle reti neurali: quando
+di base durissima da battere. Passiamo ora alle reti neurali: vediamo quando
 conviene, come si sono evolute dalle reti ricorrenti alle convoluzioni causali
 fino ai Transformer, e dove stanno arrivando oggi con i *foundation model*. Il
 criterio resta lo stesso: il deep learning non è un miglioramento automatico.
@@ -57,7 +57,9 @@ Poi c'è la terza famiglia. I metodi classici e le reti provano a
 indovinare, ciascuno a modo suo, la regola con cui un giorno genera il
 successivo; la terza sta in mezzo, e su moltissimi problemi aziendali basta.
 Prende il calendario e ci disegna sopra una curva, somma di pezzi che si
-guardano uno per uno. Il primo è una tendenza di fondo a linea spezzata (una
+guardano uno per uno.
+
+Il primo pezzo è una tendenza di fondo a linea spezzata (una
 retta che ogni tanto cambia pendenza, come una strada che sale e a un certo
 punto sale meno; dove cambiarla lo decide guardando i dati). Il secondo è una o
 più stagionalità, disegnate con le poche onde regolari (seno e coseno) che la
@@ -88,10 +90,12 @@ Il vantaggio strutturale è il modello globale: un'unica funzione
 parametrica $f_\theta$ addestrata sull'intero insieme di $N$ serie
 $\{\mathbf{x}^{(i)}_{1:T_i}\}_{i=1}^N$, in luogo di $N$ modelli locali
 indipendenti.
-Con $N$ grande, $\theta$ vede molti più esempi e può permettersi capacità che
-una singola serie non giustificherebbe, catturando pattern condivisi
+Poiché $N$ è grande, $\theta$ vede molti più esempi e può permettersi
+capacità che una singola serie non giustificherebbe, catturando pattern condivisi
 (stagionalità tipiche, effetti di calendario) e regolarizzando le serie corte
-con quelle lunghe. Le altre tre leve sono la non linearità (mappe che un
+con quelle lunghe.
+
+Le altre tre leve sono la non linearità (mappe che un
 ARMA lineare non rappresenta), le covariate esogene $\mathbf{z}_t$
 integrate nell'input,
 $\hat{x}_{t+1} = f_\theta(\mathbf{x}_{1:t}, \mathbf{z}_{1:t+1})$, e l'uscita
@@ -107,7 +111,9 @@ capacità, e i metodi statistici (robusti, frugali, interpretabili) tengono il
 campo, come mostrano le competizioni M raccontate in {doc}`Il futuro nei numeri
 </SerieTemporali/overview>`. Il modello globale non è una prerogativa delle
 reti: lo è altrettanto un albero potenziato su feature ritardate e covariate,
-il tipo di modello che ha vinto la M5. Una rete conviene rispetto all'albero
+il tipo di modello che ha vinto la M5.
+
+Una rete conviene rispetto all'albero
 quando servono un'uscita probabilistica per costruzione, sequenze lunghe con
 una struttura da imparare, o molti ingressi di tipo diverso; altrimenti
 l'albero globale è la linea di base da battere. La regola resta quella: si
@@ -130,19 +136,24 @@ venticinque per default e sparsi nel primo 80% della storia, con un prior di
 Laplace sulle variazioni di pendenza, cioè una regolarizzazione L1 che ne
 spegne la maggior parte; la sua scala (`changepoint_prior_scale`, $0{,}05$ per
 default) regola il compromesso fra una tendenza rigida e una che insegue il
-rumore. Il resto della formula: $s$ una somma di serie di Fourier troncate a
-$K$ armoniche (le stesse colonne $\sin(2\pi kt/m)$ e $\cos(2\pi kt/m)$ della
+rumore.
+
+Per gli altri termini, $s$ è una somma di serie di Fourier troncate a $K$
+armoniche (le stesse colonne $\sin(2\pi kt/m)$ e $\cos(2\pi kt/m)$ della
 sezione sulle feature, il che permette di sovrapporre più periodi e di regolare
-la flessibilità scegliendo $K$); $h$ gli effetti puntuali su date dichiarate (è
-la notazione dell'articolo: $h(t)$ è una funzione del tempo, non l'orizzonte di
-previsione che $h$ indica altrove); e $\varepsilon_t$ il residuo. Il modello è
+la flessibilità scegliendo $K$); $h$ raccoglie gli effetti puntuali su date
+dichiarate (è la notazione dell'articolo: $h(t)$ è una funzione del tempo, non
+l'orizzonte di previsione che $h$ indica altrove); e $\varepsilon_t$ è il
+residuo.
+
+Il modello è
 scritto in forma bayesiana, ma di norma la stima si ferma al massimo a
 posteriori invece di campionare l'intera distribuzione. Anche gli intervalli
 non vengono da una formula chiusa: si ottengono simulando in avanti cambi di
 pendenza con la stessa frequenza e la stessa ampiezza di quelli visti nel
 passato, che è un'ipotesi forte, dichiarata come tale dagli autori.
 
-A distinguerla dalle altre due, più della formula, è che $y$ è una regressione
+Più della formula, a distinguerla dalle altre due è che $y$ è una regressione
 sul tempo, non sui valori passati: non c'è nessuno stato, nessuna dipendenza
 fra $y(t)$ e $y(t-1)$. È una curva interpolata e non un processo stocastico. Da
 qui vengono insieme il pregio (i dati mancanti non rompono niente, perché non
@@ -234,9 +245,9 @@ ricorrenza. La prima risposta viene dalle convoluzioni.
 
 Una convoluzione è l'operazione della {doc}`sezione sulle reti
 convoluzionali </DeepLearning/reti-convoluzionali>`: una piccola finestra che
-scorre sui dati e a ogni posizione fa sempre lo stesso conto, prendere i valori
-che ha sotto, pesarli e sommarli. Là scorreva su un'immagine, qui scorre su una
-fila di giorni. Il vantaggio, rispetto a una rete che legge un giorno per
+scorre sui dati e a ogni posizione fa sempre lo stesso calcolo, prendere i
+valori che ha sotto, pesarli e sommarli. Là scorreva su un'immagine, qui scorre
+su una fila di giorni. Il vantaggio, rispetto a una rete che legge un giorno per
 volta, è che tutte le posizioni si possono calcolare insieme, perché
 nessuna aspetta il risultato di un'altra.
 
@@ -272,16 +283,17 @@ campo recettivo, e cresce in modo esponenziale con la profondità.
 
 `````{tab} Elementare
 
-La storia della serie è un diario, una pagina per giorno. Dieci
-strati bastano per tenere d'occhio più di mille pagine, e nessuno di essi
-sbircia una pagina non ancora scritta. Guardare soltanto
-all'indietro è la causalità. Coprire tanti giorni con pochi strati, invece, è
-questione di salti che si allargano. Diamo a ogni strato una finestra da due
-giorni, che è la scelta più piccola possibile: il primo guarda ieri e oggi, il
-secondo salta di due giorni, il terzo di quattro, il quarto di otto. I salti
-sommati fanno $1 + 2 + 4 + 8 = 15$ giorni, più oggi fa sedici; con dieci
-strati si passano i mille. È la dilatazione, e con finestre più larghe di due
-la copertura cresce ancora. Il sedicesimo giorno indietro, però, con quattro
+La storia della serie è un diario, una pagina per giorno. Dieci strati bastano
+per tenere d'occhio più di mille pagine, e nessuno di essi sbircia una pagina
+non ancora scritta. Guardare soltanto all'indietro è la causalità. Coprire
+tanti giorni con pochi strati, invece, è questione di salti che si allargano.
+Ad esempio, diamo a ogni strato una finestra da due giorni, che è la scelta più
+piccola possibile: il primo guarda ieri e oggi, il secondo salta di due giorni,
+il terzo di quattro, il quarto di otto. I salti sommati fanno $1 + 2 + 4 + 8 =
+15$ giorni, più oggi fa sedici; con dieci strati si passano i mille. È la
+dilatazione, e con finestre più larghe di due la copertura cresce ancora.
+
+Il sedicesimo giorno indietro, però, con quattro
 strati non c'è: non sbiadito, assente del tutto, e nessuna finestra di ingresso
 più lunga glielo fa comparire. Per guardare più indietro si aggiunge uno
 strato, o si allarga la finestra di ciascuno.
@@ -322,14 +334,14 @@ $$
 r = 1 + (k-1)\sum_{\ell=0}^{L-1} 2^{\ell} = 1 + (k-1)\,(2^{L}-1),
 $$
 
-cioè cresce esponenzialmente con la profondità $L$: con $k=2$ e $L=3$ si
-ha $r = 8$, come in figura; con $k=3$ e $L=6$ si arriva a $r = 127$ istanti.
-La formula vale per una convoluzione per livello, che è la forma della TCN in
-PyTorch; l'implementazione originale di Bai e colleghi ne mette due per
-blocco residuo, e allora il campo recettivo quasi raddoppia,
-$1 + 2(k-1)(2^L-1)$, che è il doppio meno uno: quel $127$ diventa $253$. Chi
-applica la formula sbagliata a una TCN vera ne sottostima il campo recettivo di
-quasi un fattore due.
+cioè cresce esponenzialmente con la profondità $L$: con $k=2$ e $L=3$ si ha $r
+= 8$, come in figura; con $k=3$ e $L=6$ si arriva a $r = 127$ istanti. Si noti
+che la formula vale per una convoluzione per livello, che è la forma della TCN
+in PyTorch; l'implementazione originale di Bai e colleghi ne mette due per
+blocco residuo, e allora il campo recettivo quasi raddoppia, $1 +
+2(k-1)(2^L-1)$, che è il doppio meno uno: quel $127$ diventa $253$. Chi applica
+la formula sbagliata a una TCN vera ne sottostima il campo recettivo di quasi
+un fattore due.
 
 In pratica ogni blocco aggiunge una connessione residua (nello spirito delle
 ResNet) per addestrare pile profonde senza che il gradiente svanisca. Qui
@@ -345,7 +357,7 @@ $t-1$ anche qui.
 
 Il punto di rottura c'è, di specie diversa da quello delle RNN: una ricorrente
 sbiadisce la memoria lontana, una TCN la taglia di netto. Oltre $r$ istanti non
-arriva niente, mai, per costruzione. Allungare la finestra di
+arriva niente, mai, per costruzione. Di conseguenza, allungare la finestra di
 ingresso oltre il campo recettivo non serve a nulla, e per guardare più
 indietro si aggiungono strati o si allarga il filtro.
 
@@ -377,8 +389,9 @@ pioggia». DeepAR fa lo stesso con le vendite. A ogni passo, invece di sputare
 una cifra, descrive un ventaglio di futuri plausibili: il valore più
 probabile e quanto ci si può discostare. Un bollettino così si giudica da
 quanta probabilità aveva assegnato all'esito che poi si è verificato: alzare quel
-punteggio, su tutte le serie insieme, è tutto l'addestramento della rete. Ogni
-serie, prima di entrare, passa dalla bilancia: la si divide per la propria
+punteggio, su tutte le serie insieme, è tutto l'addestramento della rete.
+
+Ogni serie, prima di entrare, passa dalla bilancia: la si divide per la propria
 media, e alla fine la previsione si rimoltiplica per quella. Senza, il prodotto
 da trentamila pezzi al giorno coprirebbe quello da tre, e la rete imparerebbe
 soltanto dal più grande.
@@ -389,7 +402,9 @@ punto di partenza del tiro successivo) e poi legge il ventaglio. Il valore che
 sta in mezzo, con metà delle storie sotto e metà sopra, è la **mediana** e fa da
 previsione; scartando poi il 10% delle storie più basse e il 10% delle più alte,
 quelle che restano formano la **banda di incertezza**, dentro cui cadono otto
-storie su dieci. Questo modo di procedere, tirare un valore e ripartire da lì,
+storie su dieci.
+
+Questo modo di procedere, tirare un valore e ripartire da lì,
 si chiama campionamento ancestrale, perché ogni valore estratto è l'antenato di
 quelli che vengono dopo di lui.
 
@@ -415,7 +430,9 @@ dove $\mathbf{h}^{(i)}_t$ è lo stato nascosto della LSTM per la serie $i$,
 $\boldsymbol{\lambda}^{(i)}_t$ i parametri d'emissione che ne discendono
 (quindi anch'essi propri di quella serie) e $\theta$ i parametri *condivisi*
 fra tutte le serie: minimizzare $\mathcal{L}$ equivale a massimizzare la
-verosimiglianza dei dati. Fra addestramento e inferenza c'è un'asimmetria che
+verosimiglianza dei dati.
+
+Fra addestramento e inferenza c'è un'asimmetria che
 la formula non mostra: in addestramento lo stato $\mathbf{h}_t$ si calcola dal
 valore osservato del passo prima, in inferenza da quello appena campionato. È
 il *teacher forcing* della {doc}`sezione sul seq2seq
@@ -425,7 +442,7 @@ effetti negativi nel forecasting, a differenza di quanto è stato riportato per
 il linguaggio, e di aver provato varianti dello *scheduled sampling* senza
 guadagni di accuratezza e con una convergenza più lenta.
 
-La loss è la ricetta di
+La loss è quella descritta in
 {doc}`Da dove viene la loss </RetiNeurali/da-dove-viene-la-loss>`, applicata a
 un passo temporale alla volta.
 
@@ -437,7 +454,9 @@ distribuzione che esce vengono riportati alla scala di partenza, ciascuno con
 la sua regola: la media si moltiplica per $\nu_i$, la dispersione della
 binomiale negativa si divide per $\sqrt{\nu_i}$. Senza, una serie da trentamila
 unità e una da tre non possono stare nella stessa rete, e la seconda sparisce
-nel gradiente della prima. Alla scala si affianca un secondo accorgimento, che
+nel gradiente della prima.
+
+Alla scala si affianca un secondo accorgimento, che
 pesa quanto il primo: la scala pareggia le ampiezze, il sorteggio decide quante
 volte una serie viene guardata. Le finestre di addestramento si estraggono con
 probabilità proporzionale alla scala della serie, e non in modo uniforme,
@@ -549,7 +568,9 @@ Nel giocattolo la regola è così semplice che quei cinque intervalli si potrebb
 calcolare anche con carta e penna, senza generare nessuna storia, e infatti i
 due calcoli coincidono a meno di tre centesimi (lo scarto più grande, al quinto
 giorno, è $3{,}166$ contro $3{,}194$): la differenza che resta è il tremolio del
-sorteggio, non un difetto del metodo. Generare tante storie a caso e leggere il
+sorteggio, non un difetto del metodo.
+
+Generare tante storie a caso e leggere il
 ventaglio che ne viene si chiama metodo Monte Carlo, come il casinò, e nella
 rete vera è l'unica strada praticabile, perché il calcolo passa per una LSTM e
 per gli intervalli non esiste una formula chiusa. Il ventaglio, in ogni caso, è
@@ -604,7 +625,9 @@ variante *interpretabile* la base è vincolata (polinomi di grado basso per il
 trend, termini di Fourier per la stagionalità), così che i blocchi, raccolti in
 due gruppi, restituiscano una componente leggibile ciascuno; in quella
 *generica* la base è appresa liberamente, e lì di componenti statistiche
-innestate non ce n'è nessuna: solo strati densi. Nel gruppo della tendenza il
+innestate non ce n'è nessuna: solo strati densi.
+
+Nel gruppo della tendenza il
 forecast di un blocco è $\hat{\mathbf{y}}^{(b)} =
 \mathbf{T}\,\mathbf{c}^{(b)}$, con $\mathbf{T} = [\mathbf{1}, \mathbf{t},
 \dots, \mathbf{t}^p]$, $\mathbf{t} = (0, 1, \dots, h-1)^\top / h$ e $p$ piccolo
@@ -726,7 +749,9 @@ passata, $h$ l'orizzonte e $\mathbf{W}$ la matrice appresa, e la variante
 DLinear decompone prima la
 serie in trend e stagionalità e applica una mappa a ciascuna componente. Su
 nove dataset di forecasting a lungo orizzonte quella famiglia eguaglia o supera
-i Transformer dedicati. Il protocollo va detto, perché sta in appendice e
+i Transformer dedicati.
+
+Il protocollo va detto, perché sta in appendice e
 cambia la lettura del confronto: nella tabella principale i modelli lineari
 ricevono una finestra passata di $336$ istanti e i Transformer di $96$. Gli
 autori lo giustificano con la prova sulla lunghezza della finestra passata, e i
@@ -775,7 +800,9 @@ codificatore-decodificatore LSTM tratta il contesto vicino e un'attenzione
 multi-testa interpretabile quello lontano; e l'uscita è un insieme di quantili,
 addestrati con la pinball loss della sezione sulla validazione sommata sui
 livelli $\tau$, quindi senza assumere una famiglia di distribuzioni, a
-differenza di DeepAR. L'interpretabilità viene dalla selezione delle variabili,
+differenza di DeepAR.
+
+L'interpretabilità viene dalla selezione delle variabili,
 dalla scomposizione dell'importanza per tipo di ingresso e da pesi di
 attenzione ispezionabili. Su quest'ultimo punto vale la cautela della
 {doc}`sezione su attribuzione e meccanicistica

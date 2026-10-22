@@ -1,43 +1,47 @@
 # Dalla softmax alla ricorrenza
 
 Le {doc}`reti ricorrenti </NaturalLanguageProcessing/modelli-sequenza>` che i
-{doc}`Transformer </Transformers/overview>` hanno sostituito non pagavano
-nessuno dei due conti dell'attenzione, né il lavoro che cresce come $O(n^2)$
-nel numero $n$ dei token né la {doc}`KV
-cache </Transformers/attenzione-in-pratica>` che si allunga a ogni token
-generato: leggevano in sequenza, a costo lineare, con uno stato di dimensione
-fissa. Le si era abbandonate per un difetto altrettanto grave, la
-sequenzialità: ogni passo aspetta il precedente, e le GPU, fatte per eseguire
-molti conti insieme, durante l'addestramento restano in gran parte ferme. La
-domanda è se si possano avere le due cose: il parallelismo dei Transformer
-quando il modello impara, e il costo fisso per token delle reti ricorrenti
-quando scrive. La risposta parte da un'osservazione algebrica elementare sulla
-somiglianza fra query e chiave, un raccoglimento a fattor comune.
+{doc}`Transformer </Transformers/overview>` hanno sostituito non comportavano
+nessuno dei due costi dell'attenzione, né il lavoro che cresce come $O(n^2)$ nel
+numero $n$ dei token né la {doc}`KV cache </Transformers/attenzione-in-pratica>`
+che si allunga a ogni token generato: leggevano in sequenza, a costo lineare,
+con uno stato di dimensione fissa. Tuttavia le si era abbandonate per un difetto
+altrettanto grave, la sequenzialità: ogni passo aspetta il precedente, e le GPU,
+fatte per eseguire molti calcoli insieme, durante l'addestramento restano in
+gran parte ferme.
+
+La domanda è quindi se si possano avere le due cose: il parallelismo dei
+Transformer quando il modello impara, e il costo fisso per token delle reti
+ricorrenti quando scrive. La risposta parte da un'osservazione algebrica
+elementare sulla somiglianza fra query e chiave, un raccoglimento a fattor
+comune.
 
 ## Il trucco del kernel: una somiglianza che si scompone
 
 L'ostacolo sta nella softmax, e più precisamente nel suo esponenziale. Per
 calcolare l'attenzione si misura quanto ogni parola somiglia a ogni altra, con
 il punteggio $\mathbf{q}_i^\top\mathbf{k}_j$ fra la query dell'una e la chiave
-dell'altra, e la softmax ne prende l'esponenziale prima di normalizzare: ne
-esce una tabella con una riga e una colonna per ciascuna parola, mille parole e
-un milione di caselle. A imporre la tabella è la forma di quella somiglianza.
-La funzione $\exp(\mathbf{q}_i^\top\mathbf{k}_j)$ non si scompone in un fattore
-che dipende soltanto dalla query e in uno che dipende soltanto dalla chiave,
-quindi ogni casella va calcolata per la propria coppia. La normalizzazione,
-cioè la divisione per la somma della riga che trasforma i punteggi in pesi,
-non c'entra: la si conserva anche senza tabella, con un secondo accumulatore.
+dell'altra, e la softmax ne prende l'esponenziale prima di normalizzare: ne esce
+una tabella con una riga e una colonna per ciascuna parola (ad esempio, con
+mille parole, un milione di caselle).
+
+A imporre la tabella è la forma di quella somiglianza. La funzione
+$\exp(\mathbf{q}_i^\top\mathbf{k}_j)$ non si scompone in un fattore che dipende
+soltanto dalla query e in uno che dipende soltanto dalla chiave, quindi ogni
+casella va calcolata per la propria coppia. Si noti che la normalizzazione, cioè
+la divisione per la somma della riga che trasforma i punteggi in pesi, non
+c'entra: la si conserva anche senza tabella, con un secondo accumulatore.
 
 La via d'uscita è cambiare la misura di somiglianza: ne serve una che si
 scomponga in un fattore dipendente solo dalla query e in uno dipendente solo
-dalla chiave, $\phi(\mathbf{q})^\top\phi(\mathbf{k})$. Una misura così si
-chiama *kernel*, come nelle {doc}`SVM </MachineLearning/svm-kernel>`, cioè una
-funzione che dà un numero per ogni coppia di vettori; con il filtro delle
+dalla chiave, $\phi(\mathbf{q})^\top\phi(\mathbf{k})$. Una misura così si chiama
+*kernel*, come nelle {doc}`SVM </MachineLearning/svm-kernel>`, cioè una
+funzione che dà un numero per ogni coppia di vettori. Con il filtro delle
 {doc}`reti convoluzionali </DeepLearning/reti-convoluzionali>` e con il
 {doc}`programma che gira sulla GPU </GPU/kernel-e-cuda>` ha in comune soltanto
 il nome. Con un kernel che si scompone il prodotto fra matrici si può
-ri-associare, e il numero di operazioni scende da $O(n^2 d)$ a $O(n d^2)$, con
-$d$ la dimensione di query e chiavi.
+ri-associare, e il numero di operazioni scende da $O(n^2 d)$ a
+$O(n d^2)$, con $d$ la dimensione di query e chiavi.
 
 `````{tab} Elementare
 
@@ -54,44 +58,51 @@ lì in poi quanto io do retta a te è il numero del mio cartellino d'ascolto per
 quello del tuo cartellino da oratore. Il peso *si spezza* in due, un pezzo mio
 e uno tuo, e per conoscerlo non serve più incontrarsi.
 
-Anna, Bruno e Carla hanno da dire tre numeri: $2$, $5$ e $3$. Davide li
-ascolta, e con la vecchia regola doveva incontrarli uno per uno; dagli incontri
-uscivano tre pesi diversi, poniamo $1$, $6$ e $8$, e il suo totale era
-$1\times 2 + 6\times 5 + 8\times 3$: tre conversazioni, tre caselle della
-tabella grande. Con i cartellini, invece, Anna e Bruno parlano con il
-cartellino $1$, Carla con il $3$, e Davide ascolta con il $3$: i suoi pesi sono
-$3$, $3$ e $9$, e il totale è $3\times 2 + 3\times 5 + 9\times 3 = 48$. Lo
-stesso $48$ si ottiene in un altro ordine. Chi parla moltiplica prima quello
-che ha da dire per il proprio cartellino da oratore (Anna e Bruno consegnano
-$2$ e $5$, Carla $3\times 3 = 9$), e Davide moltiplica la somma per il suo
-cartellino d'ascolto: $3\times(2+5+9) = 3\times 16 = 48$. È il raccoglimento a
-fattor comune di seconda media. Quel $16$ non dipende da chi ascolta: chi
-ascolta col cartellino $7$ farà $7\times 16$, chi col $4$ farà $4\times 16$.
+Anna, Bruno e Carla hanno da dire tre numeri: $2$, $5$ e $3$. Davide li ascolta,
+e con la vecchia regola doveva incontrarli uno per uno; dagli incontri uscivano
+tre pesi diversi, poniamo $1$, $6$ e $8$, e il suo totale era $1\times 2 +
+6\times 5 + 8\times 3$: tre conversazioni, tre caselle della tabella grande. Con
+i cartellini, invece, Anna e Bruno parlano con il cartellino $1$, Carla con il
+$3$, e Davide ascolta con il $3$: i suoi pesi sono $3$, $3$ e $9$, e il totale è
+$3\times 2 + 3\times 5 + 9\times 3 = 48$. Lo stesso $48$ si ottiene in un altro
+ordine.
 
-Allora il $16$ si calcola una volta sola. All'ingresso c'è un **registro**, che
+Chi parla moltiplica prima quello che ha da dire per il proprio cartellino da
+oratore (Anna e Bruno consegnano $2$ e $5$, Carla $3\times 3 = 9$), e Davide
+moltiplica la somma per il suo cartellino d'ascolto: $3\times(2+5+9) = 3\times
+16 = 48$. È il raccoglimento a fattor comune di seconda media. Quel
+$16$ non dipende da chi ascolta: chi ascolta col cartellino $7$ farà $7\times
+16$, chi col $4$ farà $4\times 16$.
+
+Quindi il $16$ si calcola una volta sola. All'ingresso c'è un **registro**, che
 è lo stato di taglia fissa: chi entra ci somma il proprio contributo, sempre
 nelle stesse caselle, e chi vuole farsi un'idea non gira più per la sala, legge
 il totale e lo moltiplica per il proprio cartellino d'ascolto. Le persone
 restano mille, il registro è uno solo, e lo si aggiorna una volta per ciascuna,
-cioè mille aggiornamenti invece di mezzo milione di conversazioni. Ogni scrittura
-sul registro è fatta di tante somme quante sono le sue caselle, e il loro numero
-non cambia man mano che la sala si riempie: raddoppia la gente e raddoppiano gli
-aggiornamenti, mentre le conversazioni diventerebbero quattro volte tante.
+cioè mille aggiornamenti invece di mezzo milione di conversazioni.
 
-I numeri sui cartellini possono essere piccolissimi, mai negativi, se no chi
-entra toglierebbe dal registro ciò che gli altri ci hanno scritto, invece di
-aggiungercisi. C'è poi un secondo conto da tenere. I pesi di Davide ($3$, $3$ e
-$9$) devono diventare le fette di una torta, che messe insieme fanno la torta
-intera, come faceva la softmax: per questo accanto al registro sta un secondo
-foglio, più corto, dove chi entra somma soltanto il proprio cartellino da
-oratore, $1 + 1 + 3 = 5$. Davide moltiplica anche quello per il suo $3$, trova
-$15$, che è il totale dei suoi pesi, e divide: $48 / 15 = 3{,}2$. Ne
-esce una media pesata di ciò che i tre avevano da dire ($2$, $5$ e $3$), e non
-una somma che si gonfia man mano che entra gente. Se il cartellino d'ascolto di
-Davide valesse zero, anche il secondo foglio moltiplicato per lui darebbe zero,
-e per zero non si può dividere, e il meccanismo si pianta. A zero ci si
-arriva anche senza volerlo: un cartellino piccolissimo, scritto con le poche
-cifre che la macchina tiene, diventa zero.
+Ogni scrittura sul registro è fatta di tante somme quante sono le sue caselle, e
+il loro numero non cambia man mano che la sala si riempie: raddoppia la gente e
+raddoppiano gli aggiornamenti, mentre le conversazioni diventerebbero quattro
+volte tante.
+
+I numeri sui cartellini possono essere piccolissimi, ma mai negativi, perché
+altrimenti chi entra toglierebbe dal registro ciò che gli altri ci hanno
+scritto, invece di aggiungercisi.
+
+C'è poi un secondo conto da tenere. I pesi di Davide ($3$, $3$ e $9$) devono
+diventare le fette di una torta, che messe insieme fanno la torta intera, come
+faceva la softmax: per questo accanto al registro sta un secondo foglio, più
+corto, dove chi entra somma soltanto il proprio cartellino da oratore, $1 + 1 +
+3 = 5$. Davide moltiplica anche quello per il suo $3$, trova $15$, che è il
+totale dei suoi pesi, e divide: $48 / 15 = 3{,}2$. Ne esce una media pesata di
+ciò che i tre avevano da dire ($2$, $5$ e $3$), e non una somma che si gonfia
+man mano che entra gente. Se il cartellino d'ascolto di Davide valesse zero,
+anche il secondo foglio moltiplicato per lui darebbe zero, e per zero non si può
+dividere, quindi il meccanismo si pianta.
+
+A zero ci si arriva anche senza volerlo: un cartellino piccolissimo, scritto con
+le poche cifre che la macchina tiene, diventa zero.
 
 Un modo di misurare la somiglianza che si spezza così, un pezzo per chi ascolta
 e uno per chi parla, in matematica si chiama *kernel*, la stessa parola delle
@@ -135,9 +146,9 @@ $$
 dove $\phi$ è una **feature map** applicata a ciascun vettore, riga per riga
 sulle matrici di query e chiavi. In generale è una $\phi: \mathbb{R}^d \to
 \mathbb{R}^C$, che può cambiare dimensione: $C$ è la dimensione dello spazio di
-feature ed è un parametro libero (il Performer ne sceglie 256 di *random
-features*), e da essa dipende la taglia della memoria. Il nome *trucco del
-kernel* va letto al rovescio rispetto alla SVM: là il kernel trick evita di
+feature ed è un parametro libero (ad esempio il Performer ne sceglie 256 di
+*random features*), e da essa dipende la taglia della memoria. Il nome *trucco
+del kernel* va letto al rovescio rispetto alla SVM: là il kernel trick evita di
 costruire $\phi$, perché $k(\mathbf{x},\mathbf{z}) =
 \phi(\mathbf{x})^\top\phi(\mathbf{z})$ si calcola direttamente sulle coordinate
 originali; qui il kernel esatto impedisce di riordinare il calcolo, e la $\phi$
@@ -165,28 +176,28 @@ dimensione $d$ e una $\phi$ che non cambia dimensione ($C = d$), così che lo
 stato sia una $d \times d$: è il caso della feature map che sceglieremo fra
 poco, ma non il caso generale.
 
-Le due strade hanno costi diversissimi. Calcolare tutti i prodotti
+Le due strade hanno costi molto diversi. Calcolare tutti i prodotti
 $\phi(\mathbf{q}_i)^\top \phi(\mathbf{k}_j)$ è la matrice $n \times n$, costo
-$O(n^2 d)$; costruire $\mathbf{S}$ una volta e applicarla a ogni query ha
-costo $O(n d^2)$: una matrice $d \times d$ al posto di una $n \times n$. Quando $n
-\gg d$ (sequenze lunghe), la seconda vince nettamente: si passa da
-$O(n^2 d)$ a $O(n d^2)$, cioè da quadratico a lineare nella lunghezza (lo
-stesso $O(n d^2)$ delle ricorrenti che avevamo incontrato nel {doc}`confronto
-fra Transformer e RNN </Transformers/confronti>`). In forma matriciale
-compatta, per tutte le query insieme, è l'identità
+$O(n^2 d)$; costruire $\mathbf{S}$ una volta e applicarla a ogni query ha costo
+$O(n d^2)$: una matrice $d \times d$ al posto di una $n \times n$. Quando $n \gg
+d$ (sequenze lunghe), la seconda vince nettamente: si passa da $O(n^2 d)$ a $O(n
+d^2)$, cioè da quadratico a lineare nella lunghezza (lo stesso $O(n d^2)$ delle
+ricorrenti che avevamo incontrato nel {doc}`confronto fra Transformer e RNN
+</Transformers/confronti>`). In forma matriciale compatta, per tutte le query
+insieme, è l'identità
 
 $$
 \big(\phi(\mathbf{Q})\,\phi(\mathbf{K})^\top\big)\,\mathbf{V} = \phi(\mathbf{Q})\,\big(\phi(\mathbf{K})^\top \mathbf{V}\big),
 $$
 
-la stessa $\text{softmax}(\mathbf{Q}\mathbf{K}^\top)\mathbf{V}$ del capitolo
-sui Transformer con $\phi(\mathbf{Q})\,\phi(\mathbf{K})^\top$ al posto
+la stessa $\text{softmax}(\mathbf{Q}\mathbf{K}^\top)\mathbf{V}$ del capitolo sui
+Transformer con $\phi(\mathbf{Q})\,\phi(\mathbf{K})^\top$ al posto
 dell'esponenziale dei punteggi e senza normalizzazione: senza l'esponenziale il
 prodotto si può ri-associare, e si calcola prima $\phi(\mathbf{K})^\top
-\mathbf{V}$, la matrice piccola. Qui i token stanno
-sulle righe di $\mathbf{Q}$, $\mathbf{K}$ e $\mathbf{V}$, quindi la matrice
-piccola $\phi(\mathbf{K})^\top \mathbf{V}$ è $d \times d_v$, cioè
-$\mathbf{S}^\top$ e non $\mathbf{S}$.
+\mathbf{V}$, la matrice piccola. Si noti che qui i token stanno sulle righe di
+$\mathbf{Q}$, $\mathbf{K}$ e $\mathbf{V}$, quindi la matrice piccola
+$\phi(\mathbf{K})^\top \mathbf{V}$ è $d \times d_v$, cioè $\mathbf{S}^\top$ e
+non $\mathbf{S}$.
 
 Resta da scegliere $\phi$. Serve una feature map che dia somiglianze positive
 (perché i pesi si comportino come quelli di una media), e Katharopoulos et al.
@@ -201,9 +212,11 @@ aritmetica esatta: per $x<0$ vale $\exp(x)$, ma il calcolo passa da $-1 +
 \exp(x)$, e in `float32` quella somma arrotonda a $-1$ appena $\exp(x)$ scende
 sotto $2^{-25}$, cioè da $x = -25\ln 2 \approx -17{,}33$ in giù. Da lì $\phi$
 vale zero, e un denominatore che si azzera è il modo tipico in cui questa
-implementazione si rompe. La softmax aveva anche un denominatore che
-normalizzava i pesi: lo si conserva come un secondo accumulatore $\mathbf{z} =
-\sum_j \phi(\mathbf{k}_j)$, e la lettura *normalizzata* diventa $\mathbf{o}_i =
+implementazione si rompe.
+
+La softmax aveva anche un denominatore che normalizzava i pesi: lo si conserva
+come un secondo accumulatore $\mathbf{z} = \sum_j \phi(\mathbf{k}_j)$, e la
+lettura *normalizzata* diventa $\mathbf{o}_i =
 \mathbf{S}\,\phi(\mathbf{q}_i) \,/\, \big(\mathbf{z}^\top
 \phi(\mathbf{q}_i)\big)$.
 
@@ -213,10 +226,10 @@ normalizzava i pesi: lo si conserva come un secondo accumulatore $\mathbf{z} =
 
 Fin qui le parole erano tutte disponibili insieme. Nella generazione vale una
 condizione in più: ogni token vede soltanto quelli che lo precedono, e
-l'attenzione si dice *causale*. Allora non c'è più un'unica matrice
+l'attenzione si dice *causale*. Di conseguenza non c'è più un'unica matrice
 $\mathbf{S}$, calcolata alla fine, ma una successione $\mathbf{S}_t$, in cui
-ogni token aggiunge il proprio contributo a quanto accumulato dai precedenti,
-e le dimensioni restano quelle. Uno stato che si aggiorna così, un passo alla
+ogni token aggiunge il proprio contributo a quanto accumulato dai precedenti, e
+le dimensioni restano quelle. Uno stato che si aggiorna così, un passo alla
 volta e a partire da com'era al passo prima, è una *ricorrenza*: il nome delle
 reti che i Transformer avevano mandato in pensione.
 
@@ -224,18 +237,18 @@ reti che i Transformer avevano mandato in pensione.
 
 A una riunione lunga si prendono appunti in due modi.
 
-Il primo è la KV cache dei Transformer: ogni volta che qualcuno parla,
-aggiungi uno scontrino alla pila. Non butti via niente, e questo è comodo (hai
-tutto) ma la pila cresce, e a fine giornata occupa mezzo tavolo. Ogni parola
-nuova ne aggiunge un'altra.
+Il primo è la KV cache dei Transformer: ogni volta che qualcuno parla, aggiungi
+uno scontrino alla pila. Non butti via niente, e questo è comodo (hai tutto), ma
+la pila cresce, e a fine giornata occupa mezzo tavolo. Ogni parola nuova ne
+aggiunge un'altra.
 
-Il secondo è un foglio-registro di dimensione fissa. Non aggiungi
-scontrini: aggiorni le stesse caselle. Quando qualcuno parla, sommi il suo
-contributo al contenuto già scritto, e il foglio resta un foglio, sempre lo
-stesso, che tu sia alla decima o alla decimillesima parola. Per rispondere a
-una domanda leggi il foglio, non rovisti nella pila. Il foglio, però, non
-ricorda chi ha parlato per primo: $2 + 5$ fa $7$ come $5 + 2$, e l'ordine degli
-interventi resta soltanto se qualcuno l'ha scritto dentro quello che dice.
+Il secondo è un foglio-registro di dimensione fissa. Non aggiungi scontrini:
+aggiorni le stesse caselle. Quando qualcuno parla, sommi il suo contributo al
+contenuto già scritto, e il foglio resta un foglio, sempre lo stesso, che tu sia
+alla decima o alla decimillesima parola. Per rispondere a una domanda leggi il
+foglio, non rovisti nella pila. Il foglio, però, non ricorda chi ha
+parlato per primo: $2 + 5$ fa $7$ come $5 + 2$, e l'ordine degli interventi
+resta soltanto se qualcuno l'ha scritto dentro quello che dice.
 
 L'attenzione lineare tiene questo foglio. Ecco perché la memoria non
 cresce: qualunque sia la lunghezza del testo, il foglio (negli articoli si
@@ -271,18 +284,19 @@ key già scritta.
 
 Il normalizzatore $\mathbf{z}_t$ di Katharopoulos fa della lettura una media
 pesata, di cui $\mathbf{z}_t^\top \phi(\mathbf{q}_t)$ è il denominatore; la
-positività di $\phi$ serve a lui: con pesi positivi il denominatore
-non cambia segno e non si annulla. I lavori successivi lo abbandonano. Schlag e
-colleghi lo giudicano instabile, perché è una somma di termini positivi che
-cresce a ogni passo, e normalizzano invece per somma le chiavi e le query
-trasformate {cite}`schlag2021linear`; le architetture più recenti eliminano il
-denominatore e mettono una normalizzazione sull'uscita. Senza denominatore la
-positività non serve più: la lettura $\mathbf{S}_t\,\phi(\mathbf{q}_t)$ è una
-combinazione lineare dei value, con pesi
-$\phi(\mathbf{k}_i)^\top\phi(\mathbf{q}_t)$ che possono avere segno, e la scala
-la riporta la normalizzazione in uscita. È la scelta di RetNet e di GLA, che
-pongono $\phi$ uguale all'identità {cite}`sun2023retnet,yang2024gla`; è anche
-la scelta delle formule successive: $\phi$ assorbita nelle proiezioni che
+positività di $\phi$ serve a lui: con pesi positivi il denominatore non cambia
+segno e non si annulla.
+
+I lavori successivi lo abbandonano. Schlag e colleghi lo giudicano instabile,
+perché è una somma di termini positivi che cresce a ogni passo, e normalizzano
+invece per somma le chiavi e le query trasformate {cite}`schlag2021linear`; le
+architetture più recenti eliminano il denominatore e mettono una normalizzazione
+sull'uscita. Senza denominatore la positività non serve più: la lettura
+$\mathbf{S}_t\,\phi(\mathbf{q}_t)$ è una combinazione lineare dei value, con
+pesi $\phi(\mathbf{k}_i)^\top\phi(\mathbf{q}_t)$ che possono avere segno, e la
+scala la riporta la normalizzazione in uscita. È la scelta di RetNet e di GLA,
+che pongono $\phi$ uguale all'identità {cite}`sun2023retnet,yang2024gla`; è
+anche la scelta delle formule successive: $\phi$ assorbita nelle proiezioni che
 producono query e chiavi, e nessun $\mathbf{z}_t$.
 
 Questa ricorrenza è una RNN, con due differenze rispetto alle celle dei
@@ -300,8 +314,8 @@ L'aggiornamento ha costo $O(d^2)$ per token e la memoria è costante: la matrice
 *Transformers are RNNs* {cite}`katharopoulos2020transformers`: sotto una certa
 scelta della somiglianza, un Transformer *è* una rete ricorrente.
 
-Una conseguenza dell'accumulo puro: come l’{doc}`attenzione senza codifiche
-posizionali </Transformers/attenzione>`, lo stato
+Una conseguenza dell'accumulo puro è che, come l’{doc}`attenzione senza
+codifiche posizionali </Transformers/attenzione>`, lo stato
 $\mathbf{S}_t=\sum_{i\le t}\mathbf{v}_i\,\phi(\mathbf{k}_i)^\top$ non dipende
 dall'ordine dei token passati, perché la somma è commutativa. L'ordine entra
 solo se è già scritto nei vettori $\mathbf{q}$ e $\mathbf{k}$ (con una codifica
@@ -324,10 +338,10 @@ parola somma la propria informazione sotto la propria etichetta, e che si
 rilegge facendole una domanda.
 ```
 
-Come mostra {numref}`fig-attenzione-lineare-ricorrenza`, i due schemi
-conservano il passato in modi opposti: la KV cache tiene tutte le coppie
-chiave-valore e paga con una memoria che cresce; lo stato le comprime in una
-matrice di taglia fissa, e la compressione perde informazione.
+Come mostra {numref}`fig-attenzione-lineare-ricorrenza`, i due schemi conservano
+il passato in modi opposti: la KV cache tiene tutte le coppie chiave-valore, ma
+al prezzo di una memoria che cresce; lo stato le comprime in una matrice di
+taglia fissa, e la compressione perde informazione.
 
 ## Addestrare in parallelo, generare in ricorrenza
 
@@ -352,11 +366,11 @@ letta, ma le caselle restano quelle. Alla quinta parola la tabella è grande
 quanto alla prima.
 ```
 
-La {numref}`fig-stato-ricorrente` mostra la parte economica del patto: la
-memoria non cresce. Mostra però anche il rovescio: in ogni casella si sommano i
-contributi di token diversi, e alla rilettura si separano di nuovo soltanto se
-le loro chiavi sono quasi perpendicolari fra loro (*ortogonali*); altrimenti si
-mescolano. È il limite dell'accumulo.
+La {numref}`fig-stato-ricorrente` mostra il vantaggio dello stato di taglia
+fissa: la memoria non cresce. Mostra però anche il rovescio: in ogni casella
+si sommano i contributi di token diversi, e alla rilettura si separano di nuovo
+soltanto se le loro chiavi sono quasi perpendicolari fra loro (*ortogonali*);
+altrimenti si mescolano. È il limite dell'accumulo.
 
 `````{tab} Elementare
 
@@ -377,13 +391,14 @@ Le due forme danno lo stesso risultato, e lo si controlla con i tre della sala,
 che lasciano nel registro $2$, $5$ e $9$. Una parola alla volta, il registro
 passa da $2$ a $2 + 5 = 7$ e poi a $7 + 9 = 16$, e dopo ogni ingresso c'è un
 totale da leggere: $2$, $7$ e $16$. Tutto insieme, ogni posto calcola il suo
-totale sommando i contributi di chi è entrato prima di lui:
-il primo trova $2$, il secondo $2 + 5 = 7$, il terzo $2 + 5 + 9 = 16$. Stessi
-numeri, e nessuno ha aspettato nessuno. Si usa allora ciascuna forma dove
-conviene: il modello si allena con quella che sfrutta tutte le unità di
-calcolo insieme, e scrive con quella che occupa sempre la stessa memoria. La KV
-cache dei Transformer, al contrario, obbliga a trascinare una pila che si
-allunga a ogni parola generata.
+totale sommando i contributi di chi è entrato prima di lui: il primo trova $2$,
+il secondo $2 + 5 = 7$, il terzo $2 + 5 + 9 = 16$. Stessi numeri, e nessuno ha
+aspettato nessuno.
+
+Si usa allora ciascuna forma dove conviene: il modello si allena con quella che
+sfrutta tutte le unità di calcolo insieme, e scrive con quella che occupa sempre
+la stessa memoria. La KV cache dei Transformer, al contrario, obbliga a
+trascinare una pila che si allunga a ogni parola generata.
 
 La forma tutta insieme, fatta così, ha però un costo nascosto. Il terzo posto
 somma tre contributi, il millesimo ne somma mille, e in tutto sono di nuovo
@@ -396,18 +411,19 @@ tanti quante le parole.
 C'è una seconda strada, che sembra risolvere tutto e consiste nel costruire
 esplicitamente quei registri intermedi, uno per parola, e dare a ognuna delle
 dieci persone quello da cui comincia il suo capitolo, così nessuno aspetta
-nessuno. I conti da fare restano proporzionali alla lunghezza, ma con un testo
+nessuno. I calcoli da fare restano proporzionali alla lunghezza, ma con un testo
 di ottomila parole i fogli da scrivere, tenere da parte e rileggere sono
 ottomila invece di uno, e il tempo che se ne va a spostarli si mangia il
 guadagno di lavorare in dieci.
 
-La strada che si prende in pratica sta in mezzo, e si lavora **a blocchi**: si
-taglia il testo in pezzi, e dentro ogni pezzo si fa tutto insieme, dove la
-tabella è piccola perché le parole sono poche; poi il registro passa da un
-pezzo al successivo. In fila
-vanno i pezzi, che sono pochi e grossi; il grosso del lavoro, quello dentro ai
-pezzi, resta in parallelo. Il risultato non cambia, e i blocchi torneranno in
-tutti i modelli che seguono.
+La strada che si prende in pratica sta in mezzo, e si lavora **a blocchi**, cioè
+si taglia il testo in pezzi, e dentro ogni pezzo si fa tutto insieme, dove la
+tabella è piccola perché le parole sono poche; poi il registro passa da un pezzo
+al successivo.
+
+In fila vanno i pezzi, che sono pochi e grossi; il grosso del lavoro, quello
+dentro ai pezzi, resta in parallelo. Il risultato non cambia, e i blocchi
+torneranno in tutti i modelli che seguono.
 
 Fare meno conti, però, non rende subito più veloce il modello. Su
 un testo corto un'attenzione dei Transformer scritta con cura vince ancora,
@@ -428,32 +444,36 @@ azzera il resto. Qui la maschera moltiplica: la maschera additiva dei
 Transformer, con $-\infty$ sui collegamenti vietati, funziona solo perché la
 softmax trasforma $-\infty$ in un peso nullo, e senza softmax un $-\infty$
 romperebbe la somma invece di toglierne un termine. La forma mascherata è
-parallela come un Transformer, ma la maschera impedisce di
-ri-associare il prodotto e si torna a pagare $O(n^2 d)$. L'alternativa è
-srotolare la somma cumulativa $\mathbf{S}_t = \sum_{i\le t}
+parallela come un Transformer, ma la maschera impedisce di ri-associare il
+prodotto, e il costo torna a essere $O(n^2 d)$.
+
+L'alternativa è srotolare la somma cumulativa $\mathbf{S}_t = \sum_{i\le t}
 \mathbf{v}_i\,\phi(\mathbf{k}_i)^\top$ come *prefix sum* (una somma
 progressiva): l'operazione è associativa, quindi si calcola con uno *scan*
 parallelo a costo $O(n d^2)$, lineare. L'ostacolo qui non è il numero di
-operazioni ma la memoria: uno scan pretende di materializzare tutti gli $n$
-stati intermedi $d \times d$, cioè $O(n d^2)$ di memoria contro gli $O(d^2)$
+operazioni ma la memoria, perché uno scan pretende di materializzare tutti gli
+$n$ stati intermedi $d \times d$, cioè $O(n d^2)$ di memoria contro gli $O(d^2)$
 della forma ricorrente, e il traffico da e verso la memoria della GPU vanifica
-il guadagno del parallelismo (con $n = 8192$ e $d = 64$ per testa sono più di
-33 milioni di valori per testa e per strato, contro i 4096 dello stato).
-Nessuna delle due forme dà insieme le due cose. Katharopoulos e colleghi
-addestrano con la forma ricorrente, scritta come kernel per GPU
-sequenziale nel tempo ma parallelo su tutto il resto. Riscrivono inoltre il
-gradiente come somma cumulativa, così da non conservare nessuno stato
-intermedio. La conciliazione usata in seguito è il calcolo a blocchi
-(*chunkwise*), proposto da Hua e colleghi nel 2022 {cite}`hua2022flash`:
-parallelo dentro ogni blocco, ricorrente fra un blocco e l'altro, con costo
-$O(nBd + nd^2)$ per blocchi di ampiezza $B$, cioè lineare in $n$. I due addendi
-di un blocco, $B^2 d$ per la parte parallela e $B d^2$ per leggere e aggiornare
-lo stato, si equivalgono a $B \approx d$, dove il totale è $O(n d^2)$ come
-nella forma ricorrente; blocchi più grandi aumentano il lavoro dentro il blocco
-e diminuiscono i passi in sequenza, che sono $n/B$. Nelle misure di GLA il
-blocco è di 64 token, con teste di dimensione 64 {cite}`yang2024gla`. RetNet e
-DeltaNet lo riprendono, la prima nella {doc}`sezione sulle architetture lineari
-</AttenzioneLineare/architetture-lineari>` e la seconda in quella sulla
+il guadagno del parallelismo (con $n = 8192$ e $d = 64$ per testa sono più di 33
+milioni di valori per testa e per strato, contro i 4096 dello stato). Nessuna
+delle due forme dà insieme le due cose.
+
+Katharopoulos e colleghi addestrano con la forma ricorrente, scritta come kernel
+per GPU, sequenziale nel tempo ma parallelo su tutto il resto. Riscrivono
+inoltre il gradiente come somma cumulativa, così da non conservare nessuno stato
+intermedio.
+
+La conciliazione usata in seguito è il calcolo a blocchi (**chunkwise**),
+proposto da Hua e colleghi nel 2022 {cite}`hua2022flash`: parallelo dentro ogni
+blocco, ricorrente fra un blocco e l'altro, con costo $O(nBd + nd^2)$ per
+blocchi di ampiezza $B$, cioè lineare in $n$. I due addendi di un blocco, $B^2
+d$ per la parte parallela e $B d^2$ per leggere e aggiornare lo stato, si
+equivalgono a $B \approx d$, dove il totale è $O(n d^2)$ come nella forma
+ricorrente; blocchi più grandi aumentano il lavoro dentro il blocco e
+diminuiscono i passi in sequenza, che sono $n/B$. In particolare, nelle misure
+di GLA il blocco è di 64 token, con teste di dimensione 64 {cite}`yang2024gla`.
+RetNet e DeltaNet lo riprendono, la prima nella {doc}`sezione sulle architetture
+lineari </AttenzioneLineare/architetture-lineari>` e la seconda in quella sulla
 {doc}`scrittura nella memoria </AttenzioneLineare/scrivere-nella-memoria>`.
 
 «Lineare», però, non garantisce di essere subito più veloce. L'attenzione
@@ -461,19 +481,20 @@ softmax ha implementazioni molto curate nel traffico di memoria, e il punto di
 pareggio dipende dall'implementazione. In addestramento, l'algoritmo a blocchi
 di GLA, che cura quel traffico, supera FlashAttention-2 già su sequenze di 1000
 token, mentre la stessa forma a blocchi scritta senza curarlo è nettamente più
-lenta {cite}`yang2024gla`; l'algoritmo a blocchi di Mamba-2 (detto SSD)
-pareggia FlashAttention-2 intorno ai 2000 token e la supera di sei volte a 16
-000 {cite}`dao2024mamba2`. Per questo buona parte del lavoro su queste
+lenta {cite}`yang2024gla`; l'algoritmo a blocchi di Mamba-2 (detto SSD) pareggia
+FlashAttention-2 intorno ai 2000 token e la supera di sei volte a 16 000
+{cite}`dao2024mamba2`. Per questo motivo buona parte del lavoro su queste
 architetture è lavoro di implementazione, più che di formule.
 
 In inferenza autoregressiva si usa la forma ricorrente: si aggiorna
-$\mathbf{S}_t$ sul posto e si legge $\mathbf{o}_t$, con costo $O(d^2)$ per
-token e memoria $O(d^2)$ costante. Nessuna KV cache che si allunga: lo stato è
-sempre la stessa matrice $d \times d$. In un Transformer la cache cresce di una
-coppia $(\mathbf{k}_t, \mathbf{v}_t)$ per token e per strato, e il costo di
-generare l’$n$-esimo token sale con la lunghezza del prefisso; qui resta
-piatto. Per testa, lo stato occupa $d^2$ numeri e la KV cache $2nd$: a memoria
-la ricorrenza conviene da $n > d/2$ (32 token con $d = 64$), a lavoro per token
+$\mathbf{S}_t$ sul posto e si legge $\mathbf{o}_t$, con costo $O(d^2)$ per token
+e memoria $O(d^2)$ costante. Nessuna KV cache che si allunga: lo stato è sempre
+la stessa matrice $d \times d$. In un Transformer la cache cresce di una coppia
+$(\mathbf{k}_t, \mathbf{v}_t)$ per token e per strato, e il costo di generare
+l’$n$-esimo token sale con la lunghezza del prefisso; qui resta piatto.
+
+Per testa, lo stato occupa $d^2$ numeri e la KV cache $2nd$: a memoria la
+ricorrenza conviene da $n > d/2$ (32 token con $d = 64$), a lavoro per token
 ($O(d^2)$ contro $O(nd)$) da $n > d$. Con chiavi e valori condivisi fra più
 teste (GQA, MLA) la cache è più piccola e il pareggio si sposta in avanti. Per
 un modello intero il gruppo di MiniMax colloca il pareggio teorico a qualche
@@ -547,14 +568,15 @@ perché un'informazione non occupa una casella: quando la scrivi si spalma su
 tutto il foglio, e la successiva si spalma sopra di lei. Prendi un foglio
 piccolo, trentadue righe per trentadue colonne (nei modelli veri il lato va da
 sessantaquattro a duecentocinquantasei), che ha più di mille caselle, ma le
-etichette che riesce a tenere separate sono trentadue, cioè il suo lato. La
-ragione sta nelle etichette. Ognuna è una fila di trentadue numeri, cioè una
-direzione, e due etichette non si pestano i piedi solo se le loro direzioni
-sono del tutto perpendicolari, come i tre spigoli che si incontrano in un
-angolo della stanza. Nella stanza di direzioni così ce ne sono tre; con file
-di trentadue numeri ce ne stanno trentadue, e non una di più. Le altre caselle
-non fanno posto a etichette nuove; servono a scrivere, accanto a ciascuna
-delle trentadue, un'informazione di trentadue numeri.
+etichette che riesce a tenere separate sono trentadue, cioè il suo lato.
+
+La ragione sta nelle etichette. Ognuna è una fila di trentadue numeri, cioè una
+direzione, e due etichette non si pestano i piedi solo se le loro direzioni sono
+del tutto perpendicolari, come i tre spigoli che si incontrano in un angolo
+della stanza. Nella stanza di direzioni così ce ne sono tre; con file di
+trentadue numeri ce ne stanno trentadue, e non una di più. Le altre caselle non
+fanno posto a etichette nuove; servono a scrivere, accanto a ciascuna delle
+trentadue, un'informazione di trentadue numeri.
 
 Trentadue è già il caso migliore, che nella pratica non capita, perché le
 etichette non le sceglie nessuno apposta distinte, le assegna il modello, e due
@@ -578,44 +600,46 @@ tenere il foglio piccolo e imparare a scriverci meglio.
 
 `````{tab} Superiore
 
-Il limite è di capacità e discende dalla dimensione finita. Lo
-stato $\mathbf{S}$ è una matrice $d \times d$: in uno spazio di dimensione $d$ non
+Il limite è di capacità e discende dalla dimensione finita. Lo stato
+$\mathbf{S}$ è una matrice $d \times d$: in uno spazio di dimensione $d$ non
 esistono più di $d$ vettori mutuamente ortogonali. È la capacità delle memorie
-associative lineari, di cui
-$\mathbf{S} = \sum_j \mathbf{v}_j\,\phi(\mathbf{k}_j)^\top$ è la *regola di
-covarianza*. Le reti di Hopfield moderne, la cui regola di aggiornamento
-coincide con l'attenzione softmax, hanno invece una capacità che cresce in
-modo esponenziale con $d$, perché conservano i ricordi uno per uno invece di
-sommarli, come fa la KV cache (il confronto sta nel capitolo sui modelli a
-energia, in {doc}`Paesaggi di oggi </ModelliEnergia/paesaggi-di-oggi>`).
-Se le key $\phi(\mathbf{k}_1), \dots$ fossero ortogonali e di
-norma uno, leggere con $\phi(\mathbf{q})$ recupererebbe il value giusto pulito
-fino a $d$ associazioni; ma le key le
-produce una proiezione lineare, non un'ortogonalizzazione, e con chiavi
-casuali il **crosstalk** (le briciole degli altri value che il retrieval
-raccoglie insieme a quello cercato) non compare a una soglia: cresce da subito
-come $\sqrt{N/d}$ con il numero $N$ di associazioni scritte. A $N \approx d$
-l'interferenza vale ormai quanto il valore cercato. In $d=32$, con chiavi
-gaussiane riportate a norma unitaria e value gaussiani, l'errore relativo medio
-del richiamo (media su tutte le chiavi scritte e su duemila estrazioni) è
-$0{,}99$ a $N=d$ e $0{,}46$ a $N=d/4$, in accordo con l'andamento atteso
-$\sqrt{(N-1)/d}$ ($0{,}98$ a $N=d$), cioè $\sqrt{N/d}$ a meno del contributo
-della chiave che si sta interrogando; la stessa misura con value di norma
-unitaria, nella {doc}`sezione sui limiti degli State Space Model
-</StateSpaceModel/panorama-e-limiti>`, dà $0{,}98$, e il centesimo di scarto
-viene dal modo di stimarla. Il richiamo pulito vuole quindi
-$N$ ben minore di $d$, non $N \le d$. Ed essendo la transizione l'identità, non
-c'è modo di dimenticare: una scrittura spuria fatta all'inizio resta a
-disturbare per sempre. La capacità finita è una delle ragioni per cui
-l'attenzione lineare pura resta indietro rispetto all'attenzione softmax sui
-compiti di richiamo preciso: quanto si richiama cresce con la dimensione dello
-stato {cite}`arora2024based`. Un'altra, indipendente dalla capacità, è che i
-pesi dell'attenzione lineare sono meno concentrati di quelli della softmax,
-che può dare quasi tutto il peso a poche chiavi {cite}`zhang2024hedgehog`.
+associative lineari, di cui $\mathbf{S} = \sum_j
+\mathbf{v}_j\,\phi(\mathbf{k}_j)^\top$ è la *regola di covarianza*. Le reti di
+Hopfield moderne, la cui regola di aggiornamento coincide con l'attenzione
+softmax, hanno invece una capacità che cresce in modo esponenziale con $d$,
+perché conservano i ricordi uno per uno invece di sommarli, come fa la KV cache
+(il confronto sta nel capitolo sui modelli a energia, in {doc}`Paesaggi di oggi
+</ModelliEnergia/paesaggi-di-oggi>`).
+
+Se le key $\phi(\mathbf{k}_1), \dots$ fossero ortogonali e di norma uno, leggere
+con $\phi(\mathbf{q})$ recupererebbe il value giusto pulito fino a $d$
+associazioni; ma a produrre le key è una proiezione lineare, non
+un'ortogonalizzazione, e con chiavi casuali il **crosstalk** (le briciole degli
+altri value che il retrieval raccoglie insieme a quello cercato) non compare a
+una soglia: cresce da subito come $\sqrt{N/d}$ con il numero $N$ di associazioni
+scritte. A $N \approx d$ l'interferenza vale ormai quanto il valore cercato. Ad
+esempio, in $d=32$, con chiavi gaussiane riportate a norma unitaria e value
+gaussiani, l'errore relativo medio del richiamo (media su tutte le chiavi
+scritte e su duemila estrazioni) è $0{,}99$ a $N=d$ e $0{,}46$ a $N=d/4$, in
+accordo con l'andamento atteso $\sqrt{(N-1)/d}$ ($0{,}98$ a $N=d$), cioè
+$\sqrt{N/d}$ a meno del contributo della chiave che si sta interrogando; la
+stessa misura con value di norma unitaria, nella {doc}`sezione sui limiti degli
+State Space Model </StateSpaceModel/panorama-e-limiti>`, dà $0{,}98$, e il
+centesimo di scarto viene dal modo di stimarla. Il richiamo pulito vuole quindi
+$N$ ben minore di $d$, non $N \le d$.
+
+Inoltre, poiché la transizione è l'identità, non c'è modo di dimenticare, e una
+scrittura spuria fatta all'inizio resta a disturbare per sempre. La capacità
+finita è una delle ragioni per cui l'attenzione lineare pura resta indietro
+rispetto all'attenzione softmax sui compiti di richiamo preciso: quanto si
+richiama cresce con la dimensione dello stato {cite}`arora2024based`. Un'altra,
+indipendente dalla capacità, è che i pesi dell'attenzione lineare sono meno
+concentrati di quelli della softmax, che può dare quasi tutto il peso a poche
+chiavi {cite}`zhang2024hedgehog`.
 
 `````
 
-Il conto si rifà in poche righe: si riempie una memoria $32\times32$ con $N$
+Il calcolo si rifà in poche righe: si riempie una memoria $32\times32$ con $N$
 associazioni, la si rilegge con le stesse chiavi con cui è stata scritta, e si
 guarda di quanto la risposta si discosta dal valore giusto.
 
@@ -648,11 +672,11 @@ N=32  errore relativo medio = 0.99   (andamento atteso ~0.98)
 ```
 
 I rimedi che conservano la taglia fissa dello stato sono due: un *gate* di
-dimenticanza (in italiano un cancello, come nelle LSTM), che fa sbiadire ciò
-che è scritto da tempo, e la *delta rule* (regola delta), che prima di
-scrivere interroga lo stato con la chiave e vi annota soltanto la differenza
-fra il valore che ne ricava e quello giusto. Li sviluppa {doc}`scrivere meglio
-nella memoria </AttenzioneLineare/scrivere-nella-memoria>`.
+dimenticanza (in italiano un cancello, come nelle LSTM), che attenua ciò che è
+scritto da tempo, e la *delta rule* (regola delta), che prima di scrivere
+interroga lo stato con la chiave e vi annota soltanto la differenza fra il
+valore che ne ricava e quello giusto. Li sviluppa {doc}`scrivere meglio nella
+memoria </AttenzioneLineare/scrivere-nella-memoria>`.
 
 `````{tab} Elementare
 

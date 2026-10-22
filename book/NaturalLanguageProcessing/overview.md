@@ -26,9 +26,9 @@ esistano.
 
 Il **Natural Language Processing** (NLP, elaborazione del linguaggio naturale)
 è la disciplina che insegna ai calcolatori a leggere, capire e produrre testo.
-"Naturale" per distinguerlo dai linguaggi *artificiali* come Python: li abbiamo
-progettati noi perché ogni istruzione abbia un solo significato, a differenza
-dell'italiano o dell'inglese.
+Si dice «naturale» per distinguerlo dai linguaggi *artificiali* come Python: li
+abbiamo progettati noi perché ogni istruzione abbia un solo significato, a
+differenza dell'italiano o dell'inglese.
 
 ## Perché il linguaggio è così difficile
 
@@ -47,7 +47,7 @@ già stato detto: in «Marco ha preso il libro e l'ha letto», quel «l’» è 
 libro, ma per saperlo bisogna ricordarsi la prima metà della frase. Questo
 rimando all'indietro ha un nome, l’**anafora**: nel dialogo, ad esempio, le
 parole piccole recuperano il significato non dalla stessa frase, ma da una
-battuta detta prima da un'altra persona. Infine l’ironia: se dico «che bella
+battuta detta prima da un'altra persona. Infine c'è l’ironia: se dico «che bella
 giornata» mentre diluvia, intendo l'esatto contrario. Nessuna di queste cose è
 scritta nelle parole: sta tra le righe, dove le macchine si perdono.
 
@@ -80,7 +80,7 @@ La difficoltà del linguaggio si può decomporre in alcuni fenomeni ricorrenti:
 La conseguenza pratica è che il testo non determina la propria
 interpretazione: la stessa stringa ne ammette più d'una, e quale valga dipende
 dal contesto e da ciò che chi legge sa del mondo. Nessuna regola scritta a mano
-copre tutti i casi: perciò il NLP moderno stima dai dati una distribuzione
+copre tutti i casi, e perciò il NLP moderno stima dai dati una distribuzione
 sulle interpretazioni, $P(\text{interpretazione} \mid \text{testo},
 \text{contesto})$, da cui sceglie la più probabile.
 
@@ -88,7 +88,7 @@ sulle interpretazioni, $P(\text{interpretazione} \mid \text{testo},
 
 ## I compiti tipici
 
-Il NLP non è un problema unico ma una famiglia di compiti; quattro tornano di
+Il NLP non è un problema unico ma una famiglia di compiti, e quattro tornano di
 continuo.
 
 - Classificazione e analisi del sentimento (*sentiment analysis*): assegnare
@@ -111,17 +111,17 @@ Sono compiti diversi, e per decenni li hanno risolti programmi diversi: uno
 per lo spam, uno per la traduzione, uno per le entità. I grandi modelli di
 linguaggio li hanno quasi unificati, grazie a un principio semplice.
 
-Un modello di linguaggio è un programma che nessuno ha scritto istruzione per
-istruzione. Lo si addestra su un'enorme raccolta di documenti a prevedere come
-prosegua un testo; di solito un secondo addestramento, basato sugli esempi e
-sulle preferenze di valutatori umani, gli insegna poi a seguire le istruzioni.
-La sua funzione resta continuare un testo, e allora si riscrive ogni compito in
-modo che la risposta sia la continuazione. Non gli si chiede «questa email è
-spam?»: gli si dà da finire un testo che dice «Email: *vinci subito un premio*.
-Questa email è spam? Risposta:», e la parola con cui continua è il verdetto.
-Non gli si chiede di tradurre: gli si dà «Italiano: *il gatto nero salta sul
-muro*. Inglese:». Il programma e i suoi parametri restano gli stessi; cambia
-soltanto il testo che gli si mette davanti.
+Un modello di linguaggio è un programma che nessuno ha scritto istruzione
+per istruzione. Lo si addestra su un'enorme raccolta di documenti a prevedere
+come prosegua un testo; di solito un secondo addestramento, basato sugli esempi
+e sulle preferenze di valutatori umani, gli insegna poi a seguire le
+istruzioni. La sua funzione resta continuare un testo, perciò si riscrive ogni
+compito in modo che la risposta sia la continuazione. Ad esempio, non gli si
+chiede «questa email è spam?»: gli si dà da finire un testo che dice «Email:
+*vinci subito un premio*. Questa email è spam? Risposta:», e la parola con cui
+continua è il verdetto. Non gli si chiede di tradurre: gli si dà «Italiano: *il
+gatto nero salta sul muro*. Inglese:». Il programma e i suoi parametri restano
+gli stessi; cambia soltanto il testo che gli si mette davanti.
 
 ## Una parabola storica: dalle regole ai Transformer
 
@@ -149,13 +149,13 @@ da linguisti. Funzionava su frasi semplici, ma le eccezioni dell'italiano sono
 infinite e le regole diventavano ingestibili.
 
 Seconda tappa, i conteggi. Invece di dire alla macchina *come* funziona la
-lingua, le si dà da leggere montagne di testo lasciando che noti le
-regolarità: dopo "buon" viene spesso "giorno", raramente "sasso". Con la
-diffusione di internet il testo da leggere è diventato praticamente infinito.
-Il testo grezzo però non bastava per ogni compito: per insegnare alla
-macchina a riconoscere i verbi, qualcuno doveva prima segnarli a mano in
-migliaia di frasi, e per la traduzione servivano testi già tradotti da persone.
-Il lavoro a mano si era soltanto spostato, dallo scrivere le regole al
+lingua, le si dà da leggere montagne di testo lasciando che noti le regolarità:
+dopo "buon" viene spesso "giorno", raramente "sasso". Con la diffusione di
+internet il testo da leggere è diventato praticamente infinito. Il testo
+grezzo, però, non bastava per ogni compito: per insegnare alla macchina a
+riconoscere i verbi, qualcuno doveva prima segnarli a mano in migliaia di
+frasi, e per la traduzione servivano testi già tradotti da persone. Il
+lavoro a mano si era soltanto spostato, dallo scrivere le regole al
 preparare gli esempi.
 
 Terza tappa, la mappa delle parole. Qui i programmi hanno cominciato a
@@ -209,15 +209,16 @@ La traiettoria del NLP attraversa quattro fasi ({numref}`fig-nlp-storia`):
    lungo raggio. Da qui BERT, la famiglia GPT e i moderni *large language
    model*.
 
-Il filo conduttore è una progressiva riduzione della conoscenza linguistica
-inserita a mano in favore di rappresentazioni apprese direttamente dal testo.
+In sintesi, il filo conduttore è una progressiva riduzione della conoscenza
+linguistica inserita a mano in favore di rappresentazioni apprese direttamente
+dal testo.
 
 `````
 
-## Dagli attrezzi alle reti
+## Dagli strumenti alle reti
 
-Si parte dalla cassetta degli attrezzi classica: cercare in un testo tutti i
-pezzi che hanno una certa forma (le *espressioni regolari*), ripulirlo perché
+In questo capitolo partiamo dagli strumenti classici: cercare in un testo tutti
+i pezzi che hanno una certa forma (le *espressioni regolari*), ripulirlo perché
 due varianti della stessa parola non contino come vocaboli diversi (la
 *normalizzazione*), misurare quanto due parole si somigliano (la *distanza di
 edit*, quella che sta dietro al correttore del telefono). Poi il testo diventa
@@ -247,18 +248,19 @@ Con i numeri in mano affrontiamo i compiti, uno alla volta.
 - Parlare con le macchine: dialogo e chatbot, che chiude il cerchio aperto
   da ELIZA nell'Introduzione.
 
-Ovunque, esempi in Python su `scikit-learn` e PyTorch, tenendo l'italiano come
-lingua di lavoro.
+Tutti gli esempi sono in Python su `scikit-learn` e PyTorch, e l'italiano
+resta la lingua di lavoro.
 
 Resta l'ultima tappa, il Transformer: è l'architettura che ha ridefinito non
 solo il NLP ma buona parte dell'AI contemporanea. Da un calcolatore che nel
 1954 arrancava su una sessantina di frasi si arriva così a modelli che oggi
 traducono, riassumono e conversano, e la domanda se «capiscano» resta aperta.
-Un modello addestrato soltanto su testo non ha mai visto un gatto, aperto una
-porta o avuto fretta: della parola *gatto* sa soltanto dove compare rispetto a
-tutte le altre, ma non sa nulla di ciò a cui si riferisce. Che dalla sola forma
-delle frasi non si possa arrivare al significato è una tesi, sostenuta da Emily
-Bender e Alexander Koller {cite}`bender2020climbing` e contestata da altri, e i
-modelli che ricevono anche immagini e suoni la mettono alla prova. Ciò che sa
-un modello di solo testo resta comunque una conoscenza reale e misurabile, di
-tipo diverso dalla nostra.
+Un modello addestrato soltanto su testo non ha mai
+visto un gatto, aperto una porta o avuto fretta: della parola *gatto* sa
+soltanto dove compare rispetto a tutte le altre, ma non sa nulla di ciò a cui
+si riferisce. Che dalla sola forma delle frasi non si possa arrivare al
+significato è una tesi, sostenuta da Emily Bender e Alexander Koller
+{cite}`bender2020climbing` e contestata da altri, e i modelli che ricevono
+anche immagini e suoni la mettono alla prova. Ciò che sa un modello di solo
+testo resta comunque una conoscenza reale e misurabile, di tipo diverso dalla
+nostra.

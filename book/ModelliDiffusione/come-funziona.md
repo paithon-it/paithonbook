@@ -12,13 +12,14 @@ Adesso ripetiamo il gioco per mille livelli di rovina, dalla grana appena
 percettibile al pulviscolo che ha inghiottito tutto. Mille non è un numero
 sacro (con DDIM si scende a un centinaio, o a venti) ma è quello del lavoro che
 ha reso famoso il metodo, e per adesso teniamolo. Chi sa rispondere a *ogni*
-livello ha in mano qualcosa di più di un restauratore: ha una scala. Può
-prendere del pulviscolo qualsiasi, dirsi «questo è il livello mille», chiedersi
-quanto disturbo c'è sopra, toglierne un pochino e ritrovarsi al livello 999; e
-così, gradino dopo gradino, arrivare al livello zero, che è quello senza
-disturbo. Sotto quel pulviscolo non c'era nessuna fotografia, eppure alla fine
-della scala c'è una fotografia nuova; e quale fotografia esca lo decide il
-pulviscolo di partenza, sorteggiato e sempre diverso.
+livello ha in mano qualcosa di più di un restauratore: ha una scala.
+
+In concreto, può prendere del pulviscolo qualsiasi, dirsi «questo è il livello
+mille», chiedersi quanto disturbo c'è sopra, toglierne un pochino e ritrovarsi
+al livello 999; e così, gradino dopo gradino, arrivare al livello zero, che è
+quello senza disturbo. Sotto quel pulviscolo non c'era nessuna fotografia,
+eppure alla fine della scala c'è una fotografia nuova; e quale fotografia esca
+lo decide il rumore di partenza, estratto a caso e sempre diverso.
 
 Lo smontiamo in due parti: il verso facile, che rovina la fotografia, e il
 verso difficile, che si impara. La {numref}`fig-diffusione-processo` è la mappa
@@ -38,18 +39,18 @@ dire dove sta il disturbo.
 ## L'andata: rovinare con metodo
 
 Il processo in avanti non si impara: è una ricetta fissa, la esegue un
-generatore di numeri casuali. È però una distruzione *dosata*, non qualsiasi: i
-dosaggi sono scelti con cura, perché è su di essi che il ritorno farà
-affidamento.
+generatore di numeri casuali. È però una distruzione *dosata*, non
+qualsiasi: i dosaggi sono scelti con cura, perché è su di essi che il ritorno
+farà affidamento.
 
-L'ingrediente è sempre lo stesso: numeri sorteggiati dalla campana di Gauss, la
-distribuzione normale incontrata nei richiami di statistica. È la curva che
-descrive il modo più comune in cui i valori si distribuiscono attorno a una
-media: quasi tutti vicini allo zero, qualcuno un po’ più in là, quasi nessuno
-lontanissimo. La scelta non è di comodo, perché questa curva ha una proprietà
-rara: sommare mille sorteggi da una campana di Gauss dà ancora un sorteggio da
-una campana di Gauss, solo più larga. È su questo che poggia tutto il resto
-della sezione.
+L'ingrediente è sempre lo stesso: numeri estratti a caso dalla campana di
+Gauss, la distribuzione normale incontrata nei richiami di
+statistica. È la curva che descrive il modo più comune in cui i valori si
+distribuiscono attorno a una media: quasi tutti vicini allo zero, qualcuno un
+po’ più in là, quasi nessuno lontanissimo. La scelta non è di comodo, perché
+questa curva ha una proprietà rara: sommare mille numeri estratti da una
+campana di Gauss dà ancora un numero estratto da una campana di Gauss, solo più
+larga. È su questo che poggia tutto il resto della sezione.
 
 `````{tab} Elementare
 
@@ -72,7 +73,9 @@ due operazioni:
 Il numero 0,99 non è lo stesso a tutti i passi. Al passo 1 la ricetta ha la
 mano leggerissima, un fattore di 0,99995, cioè quasi 1, che non si vede
 nemmeno; poi cala, fino a 0,99 al passo 1000. Prendiamo 0,99 come campione
-perché è il più marcato, quello in cui l'effetto si vede meglio. Il sorteggio
+perché è il più marcato, quello in cui l'effetto si vede meglio.
+
+Il sorteggio
 può dare numeri negativi, quindi il pixel può scendere sotto lo zero o salire
 sopra l'uno. Non è un errore: da qui in avanti la griglia è una lista di numeri
 su cui si lavora, e tornerà un'immagine da mostrare solo alla fine del viaggio
@@ -91,6 +94,7 @@ $0{,}8 \times 0{,}99^{1000}$, tre centomillesimi e mezzo: nulla. Nella ricetta
 vera il fattore è più gentile all'inizio, e del pixel sopravvive circa un
 centocinquantesimo, mezzo centesimo su 0,8. Ed è successo a *tutti* i pixel
 insieme: la foto è diventata pulviscolo che non ricorda niente di ciò che era.
+
 Questa ricetta, però, il caffè lo toglie perfino troppo presto: al passo 700 del
 pixel resta l'8%, e gli ultimi passi versano latte nel latte, tanto che se ne
 potrebbe saltare fino a un quinto senza perdere granché; per questo le ricette
@@ -100,7 +104,9 @@ lungo tutta la catena.
 Per capire da dove escono 0,99 e 0,14 bisogna lasciare la tazza, che a questo
 punto smette di somigliare alla cosa vera. In una tazza vera, se togli 0,01 di
 caffè versi 0,01 di latte; nella ricetta di latte se ne versa quattordici volte
-tanto, e la tazza non trabocca. Il rumore sorteggiato, infatti, non si accumula
+tanto, e la tazza non trabocca.
+
+Il rumore sorteggiato, infatti, non si accumula
 come una quantità ordinaria. Fai mille passi da un metro tutti nella stessa
 direzione e ti ritrovi a un chilometro; falli in direzioni sorteggiate a caso e
 ti ritrovi a una trentina di metri, perché ogni passo disfa in parte quello di
@@ -174,9 +180,9 @@ indipendenti è ancora gaussiana (richiami di statistica): componendo un passo
 dopo l'altro, i coefficienti del segnale si moltiplicano e la varianza si
 accumula secondo la ricorrenza $v_t = \alpha_t\, v_{t-1} + \beta_t$ (ogni
 iniezione viene attenuata da tutti i passi successivi, non sommata tale e
-quale), la cui soluzione è appunto $1-\bar{\alpha}_t$. Su due passi il calcolo
-è immediato: il rumore di $\mathbf{x}_t$ scritto in funzione di
-$\mathbf{x}_{t-2}$ è
+quale), la cui soluzione è appunto $1-\bar{\alpha}_t$. Su due passi, ad
+esempio, il calcolo è immediato: il rumore di $\mathbf{x}_t$ scritto in
+funzione di $\mathbf{x}_{t-2}$ è
 $\sqrt{\alpha_t(1-\alpha_{t-1})}\,\boldsymbol{\epsilon}_{t-1} +
 \sqrt{1-\alpha_t}\,\boldsymbol{\epsilon}_t$, gaussiano di varianza $\alpha_t -
 \alpha_t\alpha_{t-1} + 1 - \alpha_t = 1 - \alpha_t\alpha_{t-1}$, mentre il
@@ -191,7 +197,7 @@ $\mathbf{x}_T$ è rumore gaussiano puro, indipendente dal dato di partenza.
 
 `````
 
-La catena ha una scorciatoia, la forma chiusa
+La catena ha una scorciatoia, la **forma chiusa**
 $q(\mathbf{x}_t \mid \mathbf{x}_0)$, che si legge «$q$ di $\mathbf{x}_t$ dato
 $\mathbf{x}_0$»: la distribuzione del fotogramma al livello $t$, sapendo da
 quale fotografia si è partiti, scritta con una formula sola invece che come
@@ -223,7 +229,7 @@ catena: già alla 450 del disegno è rimasto un terzo, e da lì in poi la manopo
 aggiunge poco perché non c'è quasi più niente da coprire.
 ```
 
-Il ritorno, la parte difficile, la figura non lo mostra, e non per
+La figura non mostra il ritorno, la parte difficile, e non per
 dimenticanza: percorrere quei sei riquadri da destra a sinistra è il compito
 che nessuna formula sa svolgere, e per questo serve una rete.
 
@@ -239,7 +245,7 @@ Diffusion Probabilistic Models*, «modelli probabilistici di diffusione che
 tolgono il rumore».)
 
 Il rumore da indicare è quello della forma chiusa, il $\boldsymbol{\epsilon}$
-con cui la manopola è arrivata alla tacca $t$ in un colpo solo, e la risposta
+con cui l'andata è arrivata al livello $t$ in un colpo solo, e la risposta
 è una mappa del disturbo, un numero per pixel.
 
 `````{tab} Elementare
@@ -274,15 +280,17 @@ l'altra: dà la risposta migliore che può, e sbaglia un po’.
 
 La differenza la fa il voto, che conta tutte le carte allo stesso modo: uno
 sbaglio da un centesimo pesa uguale sulla carta del passo 10 e su quella del
-passo 1000. Solo che uno sbaglio sul disturbo e uno sbaglio sulla foto non
-valgono uguale, e il cambio fra i due varia lungo la scala. Sulla carta del
-passo 1000 del disegno sopravvivono poco più di sei millesimi: per ricavare la
-foto dal disturbo bisogna dividere per sei millesimi, cioè moltiplicare per
-quasi centosessanta, e uno sbaglio da un centesimo sul disturbo diventa uno
-sbaglio di più di un'unità e mezza sulla foto. Sulla carta del passo 1 il cambio
-va al contrario: di disturbo ne è stato aggiunto appena un centesimo, e per
-ricavarlo dalla foto bisogna dividere per quel centesimo, quindi uno sbaglio
-piccolo sulla foto diventa cento volte più grosso sul disturbo.
+passo 1000. Uno sbaglio sul disturbo e uno sbaglio sulla foto, però, non
+valgono uguale, e il cambio fra i due varia lungo la scala. Ad esempio, sulla
+carta del passo 1000 del disegno sopravvivono poco più di sei millesimi: per
+ricavare la foto dal disturbo bisogna dividere per sei millesimi, cioè
+moltiplicare per quasi centosessanta, e uno sbaglio da un centesimo sul
+disturbo diventa uno sbaglio di più di un'unità e mezza sulla foto.
+
+Sulla carta del passo 1 il cambio va al contrario: di disturbo ne è stato
+aggiunto appena un centesimo, e per ricavarlo dalla foto bisogna dividere per
+quel centesimo, quindi uno sbaglio piccolo sulla foto diventa cento volte più
+grosso sul disturbo.
 
 Scegliere che cosa scrivere sul retro, quindi, vuol dire scegliere quali carte
 pesano. Con il disturbo sul retro il voto è severo con le carte poco rovinate,
@@ -299,10 +307,10 @@ cambio.
 
 `````{tab} Superiore
 
-Da qui in avanti questa rete si chiamerà $\boldsymbol{\epsilon}_\theta$, che è il nome che
-le dà la letteratura: la lettera greca epsilon è il rumore, il pedice theta
-ricorda che dietro c'è una rete con dei pesi da imparare. Scritta con gli
-ingressi accanto, $\boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)$ si legge «il rumore che la rete
+Questa rete si indica con $\boldsymbol{\epsilon}_\theta$, il nome che le dà la
+letteratura: la lettera greca epsilon è il rumore, il pedice theta ricorda che
+dietro c'è una rete con dei pesi da imparare. Scritta con gli ingressi accanto,
+$\boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)$ si legge «il rumore che la rete
 stima nell'immagine $\mathbf{x}_t$, sapendo che siamo al passo $t$».
 
 Il processo inverso è modellato da una gaussiana con media appresa:
@@ -396,13 +404,14 @@ le parametrizzazioni differiscono soltanto per quel peso.
 ## Generare: il viaggio dal rumore all'immagine
 
 Finito l'addestramento, il generatore è pronto. Non serve nessuna foto di
-partenza: si sorteggia rumore puro, $\mathbf{x}_T \sim \mathcal{N}(\mathbf{0},
-\mathbf{I})$, e si percorre la catena all'indietro, un gradino alla volta, con
-una valutazione della rete per gradino. Ogni gradino ha tre componenti: la
+partenza: si estrae a caso rumore puro,
+$\mathbf{x}_T \sim \mathcal{N}(\mathbf{0}, \mathbf{I})$, e si percorre la catena
+all'indietro, un gradino alla volta, con una valutazione della rete per
+gradino. Ogni gradino ha tre componenti: la
 **correzione**, che sottrae una frazione del rumore stimato dalla rete; la
 **riscalatura**, che moltiplica tutto quello che resta per $1/\sqrt{\alpha_t}$,
-un numero appena sopra 1 (si alza il volume); e il **rimescolamento**, che
-somma rumore appena sorteggiato.
+un numero appena sopra 1 (si alza il volume); e il **rimescolamento**,
+che somma rumore appena estratto a caso.
 
 ```{figure} ../figures/diffusione-denoising.gif
 :name: fig-diffusione-denoising
@@ -410,16 +419,16 @@ somma rumore appena sorteggiato.
 :width: 70%
 
 Il processo inverso su una cifra: a ogni passo la rete dice dov'è il disturbo,
-se ne toglie un pezzetto, si alza il volume di quel che resta e se ne rimette
-del nuovo. Nessuno ha disegnato il 3: è emerso da mille rimescolamenti.
+se ne toglie un pezzetto, si amplifica quel che resta e se ne rimette del
+nuovo. Nessuno ha disegnato il 3: è emerso da mille rimescolamenti.
 ```
 
 La {numref}`fig-diffusione-denoising` comprime in pochi passi ciò che nel DDPM
-originale ne richiede mille. Il meccanismo vero, però, non è una ripulitura
-progressiva: per quasi tutto il viaggio il rumore rimescolato è molto più
-grande di quello sottratto, e l'immagine emerge per un'altra via. Si vede anche
-nella clip, dove il disturbo non cala in modo liscio ma resta lì a lungo e se
-ne va tardi.
+originale ne richiede mille. Il meccanismo vero, però, non è una
+ripulitura progressiva: per quasi tutto il viaggio il rumore rimescolato è
+molto più grande di quello sottratto, e l'immagine emerge per un'altra via. Si
+vede anche nella clip, dove il disturbo non cala in modo liscio ma resta lì a
+lungo e se ne va tardi.
 
 `````{tab} Elementare
 
@@ -469,14 +478,18 @@ centocinquanta volte tutto quello che sta sullo schermo. È il fattore
 dell'andata rovesciato (là del pixel sopravviveva un centocinquantesimo, qui si
 torna a grandezza piena), e ingrandisce il disegno che si va formando e insieme
 il disturbo che lo copre. Sul disturbo, però, e solo su di lui, lavora anche la
-scheggia. Al passo 500 il livello di disturbo è 0,9599: il volume lo alza di
+scheggia.
+
+Ad esempio, al passo 500 il livello di disturbo è 0,9599: il volume lo alza di
 cinque millesimi, la scheggia lo abbassa di poco più di un centesimo, e la
 manciata nuova lo rialza di altri cinque millesimi, molto meno del suo decimo,
 perché va in una direzione a caso e si somma male a quello che c'era. Il saldo
 lo porta a 0,9595: quattro decimillesimi in meno, un'inezia, ma sempre dallo
 stesso lato. Mille inezie dallo stesso lato ribaltano il bilancio, e alla fine
 il disturbo è cento volte più piccolo di com'era, invece che centocinquanta
-volte più grande. Questo bilancio vale finché la rete indovina il disturbo,
+volte più grande.
+
+Questo bilancio vale finché la rete indovina il disturbo,
 cioè per quasi tutta la catena; negli ultimi passi il disturbo rimasto è così
 sottile che la rete sbaglia di quasi quanto il disturbo stesso, e la scheggia
 smette di puntare dritta.
@@ -541,7 +554,7 @@ affatto. La ripulitura arriva dunque a pesare quanto il rimescolamento soltanto
 alla fine, quando l'immagine è già decisa.
 
 Il livello di rumore scende poco per volta, per il modo in cui i tre contributi
-si compongono e non per la loro taglia. Il conto che segue suppone una rete
+si compongono e non per la loro taglia. Il calcolo che segue suppone una rete
 perfetta, $\boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t) =
 \boldsymbol{\epsilon}$, cioè il passo di DDPM applicato a un $\mathbf{x}_t$ di
 cui si conosce l'origine: è il solo modo di separare segnale e rumore, e
@@ -556,8 +569,8 @@ $0{,}1002$, perché è indipendente e si somma in varianza). Netto: $-0{,}0004$,
 quattro decimillesimi, contro un $\sigma_t$ di $0{,}1$. La correzione vince un
 tiro alla fune contro le altre due mosse, e lo vince di pochissimo.
 
-Il segnale, invece, la riscalatura lo amplifica e nessuno degli altri due
-termini lo tocca, e $\sqrt{\bar{\alpha}_t} \to \sqrt{\bar{\alpha}_{t-1}}$ a
+La riscalatura, invece, amplifica il segnale, che nessuno degli altri due
+termini tocca, e $\sqrt{\bar{\alpha}_t} \to \sqrt{\bar{\alpha}_{t-1}}$ a
 ogni passo. Dalla coda della catena a $t = 1$ il rapporto fra l'ampiezza del
 segnale e quella del rumore passa da $\sqrt{\bar{\alpha}_T /
 (1-\bar{\alpha}_T)} = 0{,}0064$ a $\sqrt{\bar{\alpha}_1 / (1-\bar{\alpha}_1)} =
@@ -575,7 +588,7 @@ mosse, e la {doc}`sezione sui campionatori veloci
 </ModelliDiffusione/campionatori-veloci>` tiene la stessa scelta quando ne
 prende il logaritmo.
 
-Una precisazione su che cosa sia il «segnale» quando si genera, perché la
+Quando si genera, il «segnale» ha un significato diverso, perché la
 scomposizione appena fatta è quella delle marginali $q(\mathbf{x}_t \mid
 \mathbf{x}_0)$ e presuppone un $\mathbf{x}_0$ che in generazione non esiste
 ancora. In $\mathbf{x}_T$ non c'è nessuna immagine sepolta: il campionatore la
@@ -618,6 +631,7 @@ mondo esiste davvero, quando inventa inventerà cose del genere.
 Applicata alla nostra catena di mille passi, dopo un bel po’ di conti, quella
 idea si riduce a «misura la distanza fra il disturbo indicato e quello vero»,
 un livello di rovina alla volta. Con un dettaglio che DDPM aggiunge di suo.
+
 Fatti i conti, i mille livelli non contano uguale: nel voto che il principio
 detta, quelli quasi puliti, dove ripulire è facile, peserebbero una cinquantina
 di volte più di quelli pieni di rumore. DDPM li fa contare tutti uguali, e così
@@ -781,11 +795,13 @@ rimescola.
 Mille passi per un'immagine sono tanti, e la prima scorciatoia importante non
 si fa attendere: arriva a meno di quattro mesi da DDPM, nell'ottobre del 2020,
 e sono i *Denoising Diffusion Implicit Models* (DDIM) di Jiaming Song, Chenlin
-Meng e Stefano Ermon {cite}`song2021denoising`. La promessa è notevole: lo
-stesso identico modello già addestrato, nessun riaddestramento, e campioni
-di qualità paragonabile in un centinaio di passi invece di mille, o anche in
-venti se si accetta di perdere qualcosa: dieci volte più veloce nel primo caso,
-cinquanta nel secondo, ed è l'intervallo dichiarato dagli autori.
+Meng e Stefano Ermon {cite}`song2021denoising`.
+
+La promessa è notevole: lo stesso identico modello già addestrato, nessun
+riaddestramento, e campioni di qualità paragonabile in un centinaio di passi
+invece di mille, o anche in venti se si accetta di perdere qualcosa.
+La generazione è quindi dieci volte più veloce nel primo caso, cinquanta nel
+secondo, ed è l'intervallo dichiarato dagli autori.
 
 `````{tab} Elementare
 
@@ -801,7 +817,9 @@ sì, ma di *quella* procedura, e DDIM ne usa un'altra, in cui il passo non è un
 sorteggio ma un calcolo: da un punto si va in un punto solo, deciso. Non si sta
 eseguendo male DDPM, si sta eseguendo bene qualcos'altro. Quella procedura, non
 dovendo imitare passo per passo una catena, si può percorrere saltando: qualche
-decina di fermate scelte (venti, cinquanta, cento) invece di mille. Saltare e
+decina di fermate scelte (venti, cinquanta, cento) invece di mille.
+
+Saltare e
 scuotere, però, vanno d'accordo male. Su un salto lungo lo scossone va dosato
 per tutto il tratto saltato, e diventa troppo grosso perché le poche correzioni
 rimaste lo riassorbano. Quindi meno scossoni ha la procedura, meglio sopporta i
@@ -900,7 +918,9 @@ pixel, «questo è cellula, questo è sfondo»; il nostro restauratore le fa far
 la stessa identica operazione, ma la risposta ora è «ecco quanto rumore c'è su
 questo pixel». Il suo trucco è guardare la foto due volte: prima si allontana,
 e da lontano il pulviscolo sparisce e restano le forme grandi; poi si
-riavvicina per scrivere la risposta punto per punto. Siccome allontanandosi i
+riavvicina per scrivere la risposta punto per punto.
+
+Siccome allontanandosi i
 dettagli minuti andrebbero perduti (e il disturbo è fatto di dettagli minuti),
 la rete tiene dei ponti diretti fra la fase in cui si allontana e quella in cui
 si riavvicina, che li traghettano intatti. A mezza distanza, e solo lì, si
@@ -954,16 +974,15 @@ frase. Era già successo nella visione, con i Vision Transformer
 Tutto il meccanismo sta in poche decine di righe di PyTorch, a patto di
 scegliere dati abbastanza piccoli da vederci dentro. Useremo punti del piano
 disposti a spirale: ogni «dato» qui non è una fotografia da un milione di
-numeri ma una coppia di coordinate, cioè due numeri soltanto. La ricetta
-dell'andata li disperderà in una nuvola informe, e la rete imparerà a
-ridisporli in spirale. Gli ingredienti sono gli stessi delle immagini; cambia
-solo la taglia.
+numeri ma una coppia di coordinate, cioè due numeri soltanto. L'andata li
+disperderà in una nuvola informe, e la rete imparerà a ridisporli in spirale.
+Gli ingredienti sono gli stessi delle immagini; cambia solo la taglia.
 
 I quattro blocchi sono, nell'ordine, i quattro pezzi del meccanismo: i dati
 con la forma chiusa dell'andata, la rete $\boldsymbol{\epsilon}_\theta$, il ciclo
 che minimizza $\mathcal{L}_{\text{semplice}}$ e il campionamento ancestrale.
 
-Prima i dati e la ricetta dell'andata:
+Prima i dati e l'andata:
 
 ```python
 import numpy as np
@@ -1005,19 +1024,19 @@ cui $\mathrm{Var}(\mathbf{x}_t) = 1$ a ogni passo. I punti della spirale hanno
 invece una deviazione standard di circa mezza unità per coordinata, cioè una
 varianza attorno a un quarto (nella tazza di caffè e latte, una tazza che parte
 mezza vuota). Il segnale è quindi più debole del previsto a ogni livello, e il
-rumore lo copre a livelli più bassi di quelli su cui lo schedule è tarato. Qui
-non fa danno, perché la spirale riemerge lo stesso; in Stable Diffusion sì, e
-il rimedio, una moltiplicazione che riporta i dati alla scala giusta, diventa
-una costante scritta dentro il modello.
+rumore lo copre a livelli più bassi di quelli su cui lo schedule è calibrato.
+Qui non fa danno, perché la spirale riemerge lo stesso; in Stable Diffusion sì,
+e il rimedio, una moltiplicazione che riporta i dati alla scala giusta,
+diventa una costante scritta dentro il modello.
 
 Poi la rete. La U-Net qui non serve, perché i dati non sono immagini: basta la
 rete più semplice che c'è, qualche strato di neuroni uno dopo l'altro, che in
-gergo si chiama MLP. Il numero del passo entra come l'etichetta attaccata alla
-foto per indicarne il livello di rovina, appesa in coda alle due coordinate.
-Solo che un numero da 0 a 999, scritto così com'è, una rete lo legge male; lo
-si riscrive allora come una fila di numeri fra $-1$ e $1$, ricavati da seni e
-coseni, cioè un *embedding sinusoidale*, lo stesso trucco degli encoding di
-posizione dei Transformer:
+gergo si chiama MLP. Il numero del passo entra come l'etichetta attaccata
+alla foto per indicarne il livello di rovina, appesa in coda alle due
+coordinate. Una rete, però, legge male un numero da 0 a 999 scritto così
+com'è; lo si riscrive allora come una fila di numeri fra $-1$ e
+$1$, ricavati da seni e coseni, cioè un **embedding sinusoidale**, lo stesso
+trucco degli encoding di posizione dei Transformer:
 
 ```python
 def embedding_tempo(t, dim=16):
@@ -1125,12 +1144,12 @@ stato vicino a zero, non una volta e mezza il secondo). Punti *nuovi*, quindi,
 non copie dei duemila di partenza.
 
 Due avvertenze pratiche prima di lasciare il giocattolo. La prima: il ciclo di
-addestramento fa trentamila giri, che sono i giri dell'allenamento e non hanno
-niente a che vedere con i mille livelli di rovina (a ogni giro se ne pesca uno
-solo, a caso). Trentamila giri da 256 punti fanno quasi otto milioni di carte
-del mazzo. Servono tutti: con poche migliaia di giri la forma esce appena
-abbozzata. La seconda: in tutto è questione di meno di un minuto su un
-portatile.
+addestramento fa trentamila iterazioni, che sono quelle dell'allenamento e non
+hanno niente a che vedere con i mille livelli di rovina (a ogni iterazione se
+ne pesca uno solo, a caso). Trentamila iterazioni da 256 punti fanno quasi otto
+milioni di carte del mazzo. Servono tutte: con poche migliaia di iterazioni la
+forma esce appena abbozzata. La seconda: in tutto è questione di meno di un
+minuto su un portatile.
 
 Restano due esperimenti istruttivi. Il primo è interrompere il campionamento a
 metà strada, per vedere la forma «mezza decisa»; il secondo è passare da questi
@@ -1138,7 +1157,7 @@ punti alle immagini, dove l'unica modifica sostanziale è sostituire l'MLP con
 una U-Net e le coppie di coordinate con griglie di pixel: schedule, voto e
 cicli restano gli stessi, salvo le forme dei tensori (in `rumorizza` il
 coefficiente va allargato a `(B, 1, 1, 1)` invece che a `(B, 1)`, e `campiona`
-sorteggia griglie `(n, 3, H, W)` invece di coppie).
+estrae griglie `(n, 3, H, W)` invece di coppie).
 
 `````{tab} Elementare
 

@@ -16,9 +16,9 @@ L'importanza delle feature risponde a una domanda globale: da quali colonne dei
 dati dipende il modello, *in media*? Chi si vede negare un prestito, però, non
 chiede una media: chiede «perché *la mia* domanda?». È una domanda **locale**,
 perché riguarda una risposta sola e non l'intero comportamento del modello. I
-modi di risponderle sono i tre attrezzi che si incontrano più spesso, LIME,
-SHAP e le spiegazioni controfattuali, e altre due forme, la regola e ciò che
-manca, abbastanza diverse dalle prime da meritarsi un paragrafo ciascuna.
+modi di risponderle più diffusi sono tre: LIME, SHAP e le spiegazioni
+controfattuali. Ne esistono poi altre due forme, la regola e ciò che manca,
+abbastanza diverse dalle prime da meritarsi un paragrafo ciascuna.
 
 ## Perché proprio *questa* risposta
 
@@ -26,8 +26,8 @@ manca, abbastanza diverse dalle prime da meritarsi un paragrafo ciascuna.
 
 Torniamo al modello che decide i prestiti, e immaginiamo che a Maria l'abbia
 rifiutato. Sapere che «in generale il reddito conta molto» non le serve: è una
-statistica sul modello, non una risposta sul suo caso. Maria vuole sapere
-cosa, *nella sua pratica*, ha spinto verso il no (il reddito, i debiti in
+statistica sul modello, non una risposta sul suo caso. Maria vuole sapere cosa,
+*nella sua pratica*, ha spinto verso il no (ad esempio il reddito, i debiti in
 corso, un ritardo di pagamento di due anni fa?) e magari quanto ciascuna cosa
 ha pesato.
 
@@ -39,7 +39,7 @@ restare semplice *attorno a un punto*: come una strada di montagna piena di
 curve che, guardata da vicino su pochi metri, sembra dritta. Quel pezzo dritto
 vale soltanto lì: dieci tornanti dopo non descrive più niente, e nessuno
 gli chiede di farlo. Su questa idea («complicato ovunque, semplice qui
-accanto») si basano gli attrezzi per rispondere a Maria.
+accanto») si basano gli strumenti per rispondere a Maria.
 
 `````
 
@@ -64,7 +64,7 @@ o sotto un riferimento.
 
 ## LIME: un modello semplice, ritagliato attorno al punto
 
-Il primo attrezzo è **LIME** (*Local Interpretable Model-agnostic
+Il primo strumento è **LIME** (*Local Interpretable Model-agnostic
 Explanations*) proposto nel 2016 da Marco Tulio Ribeiro, Sameer Singh e Carlos
 Guestrin {cite}`ribeiro2016why`, gli stessi dell'esperimento del riconoscitore di
 lupi che in realtà guardava la neve, raccontato in {doc}`Aprire la scatola nera
@@ -89,17 +89,20 @@ che vanno ugualmente bene si prende quella con meno voci.
 C'è però una regola in più, che fa tutto il lavoro: i fantasmi più simili alla
 pratica vera di Maria contano di più nella somma, quelli lontani quasi niente.
 Una somma così, in cui ogni voce entra con un'importanza sua, si dice pesata.
-Quando i dati stanno in una tabella, però, i fantasmi non nascono vicini a
-Maria: LIME li fabbrica pescando per ogni casella un valore a caso fra quelli
-degli altri clienti, e quindi escono sparsi un po' dappertutto. A renderli
-«vicini» è solo il peso, che fa contare poco quelli lontani. Più caselle ha la
-pratica, più è raro che un fantasma pescato così somigli a Maria in tutte: la
-somma finisce per poggiare su una manciata di fantasmi con un peso non
-trascurabile.
+Quando i dati stanno in una tabella, però, i fantasmi non nascono
+vicini a Maria: LIME li fabbrica pescando per ogni casella un valore a caso fra
+quelli degli altri clienti, e quindi escono sparsi un po' dappertutto.
 
-I numeri di quella somma *sono* la spiegazione: «il reddito basso ha spinto
-verso il no di tanto, i debiti di tanto, l'anzianità di lavoro ha spinto un po’
-verso il sì». Se il modello vero è una strada di montagna, LIME appoggia un
+A renderli «vicini» è solo il peso, che fa contare poco quelli lontani. Più
+caselle ha la pratica, più è raro che un fantasma pescato così somigli a Maria
+in tutte: la somma finisce per poggiare su una manciata di fantasmi con un peso
+non trascurabile.
+
+I numeri di quella somma *sono* la spiegazione: ad esempio «il reddito basso
+ha spinto verso il no di tanto, i debiti di tanto, l'anzianità di lavoro ha
+spinto un po’ verso il sì».
+
+Se il modello vero è una strada di montagna, LIME appoggia un
 righello sull'asfalto nel punto in cui ti trovi. Il righello non racconta la
 strada, ma della salita sotto i tuoi piedi ti dice tutto. Quanto prenderlo lungo
 lo decidi tu, e si sbaglia in due modi: lungo, scavalca un tornante e dà una
@@ -113,15 +116,15 @@ pezzetti spento. Gli spegnimenti che fanno cambiare idea al modello indicano i
 pezzi su cui la risposta si appoggiava, e le macchie colorate che smascherarono
 il riconoscitore di lupi sono nate così.
 
-Un avvertimento, però, prima di fidarsene troppo. Di scelte, in tutto questo, ce
-ne sono parecchie, e nessuna la suggeriscono i dati: quanti fantasmi fabbricare,
-quanto largo prendere il «qui vicino», e, se al posto della pratica di Maria c'è
-una fotografia, in quali pezzi spezzettarla prima di spegnerli a turno. Ognuna di
-quelle scelte sposta i numeri della spiegazione. In più i fantasmi si fabbricano
-a caso, quindi rilanciando LIME sullo stesso caso escono numeri un po’ diversi:
-si dice che il metodo è **instabile**. Per sapere quanto, lo si rilancia una
-decina di volte e si guarda se in cima alla spiegazione restano sempre le
-stesse voci.
+Un avvertimento, però, prima di fidarsene troppo. Di scelte, in tutto questo,
+ce ne sono parecchie, e nessuna la suggeriscono i dati: quanti fantasmi
+fabbricare, quanto largo prendere il «qui vicino», e, se al posto della pratica
+di Maria c'è una fotografia, in quali pezzi spezzettarla prima di spegnerli a
+turno. Ognuna di quelle scelte sposta i numeri della spiegazione. In più i
+fantasmi si fabbricano a caso, quindi rilanciando LIME sullo stesso caso escono
+numeri un po’ diversi: si dice che il metodo è **instabile**. Per sapere
+quanto, lo si rilancia una decina di volte e si guarda se in cima alla
+spiegazione restano sempre le stesse voci.
 
 `````
 
@@ -145,7 +148,7 @@ surrogato $g$ non vive nello spazio dell'input. Vive in una
 assenza di $d'$ componenti: segmenti contigui di pixel (*superpixel*) per le
 immagini, parole per il testo, intervalli di valore per le colonne numeriche. Le
 perturbazioni si ottengono spegnendo a caso alcune di quelle componenti,
-non muovendo i valori originali; così LIME si applica a
+non muovendo i valori originali. Così, ad esempio, LIME si applica a
 un'immagine: nell'esperimento degli husky la macchia di neve che tutti hanno
 visto è un gruppo di superpixel acceso, non un insieme di pixel scelti uno per
 uno.
@@ -156,14 +159,15 @@ campione con un kernel esponenziale
 $\pi_{\mathbf{x}_0}(\mathbf{z}) =
 \exp\!\big(-d(\mathbf{x}_0, \mathbf{z})^2 / \sigma^2\big)$
 che decade con la distanza $d$, e si adatta una regressione lineare pesata. I
-coefficienti appresi sono le attribuzioni. Conviene guardare da vicino dove
-entra la località, perché non è dove ci si aspetta: nell'implementazione
+coefficienti appresi sono le attribuzioni.
+
+La località, però, non entra dove ci si aspetta. Nell'implementazione
 tabellare degli autori i campioni non si generano attorno a $\mathbf{x}_0$, ma
 dalla distribuzione marginale del training set (l'opzione
 `sample_around_instance` è falsa per default, e le colonne continue vengono per
 giunta discretizzate in quartili prima di essere perturbate). La vicinanza a
-$\mathbf{x}_0$ la introduce soltanto il peso $\pi_{\mathbf{x}_0}$, a valle. La
-conseguenza è concreta: la fedeltà locale dipende da quanti dei punti generati
+$\mathbf{x}_0$ la introduce soltanto il peso $\pi_{\mathbf{x}_0}$, a valle. Di
+conseguenza la fedeltà locale dipende da quanti dei punti generati
 globalmente cadono vicino a $\mathbf{x}_0$, e in alta dimensione sono
 pochi.
 
@@ -184,15 +188,21 @@ di $\lVert \boldsymbol{\phi}(\mathbf{x}_i) -
 \rVert_2$ sui punti $\mathbf{x}_j$ di una piccola palla attorno a
 $\mathbf{x}_i$, e trovano che i metodi diffusi per lo più non la soddisfano, e
 quelli per perturbazione come LIME e SHAP meno ancora di quelli a gradiente
-{cite}`alvarezmelis2018robustness`. Secondo, la larghezza del vicinato $\sigma$
+{cite}`alvarezmelis2018robustness`.
+
+Secondo, la larghezza del vicinato $\sigma$
 è un iperparametro senza una regola universale: un intorno troppo ampio
 linearizza una zona in cui $f$ non è affatto lineare (bassa fedeltà), uno
-troppo stretto lascia troppo pochi campioni informativi. Terzo, e più insidioso
-perché non si presenta nemmeno come un parametro da tarare: la spiegazione
+troppo stretto lascia troppo pochi campioni informativi.
+
+Terzo, e più insidioso perché non si presenta nemmeno come un parametro da
+regolare: la spiegazione
 dipende da come si è deciso di segmentare l'input, cioè da quali sono le
 componenti che si accendono e si spengono. Cambia la segmentazione, cambia la
 spiegazione, e la segmentazione la sceglie chi usa lo strumento. La spiegazione
-dipende quindi da scelte che l'utente raramente controlla. Esiste poi un quarto
+dipende quindi da scelte che l'utente raramente controlla.
+
+Esiste poi un quarto
 limite, che nasce dal campionamento e vale anche per KernelSHAP, la stima per
 campionamento dei valori di Shapley che arriva con SHAP: i punti perturbati
 cadono in buona parte fuori dal supporto dei dati, e un modello li può
@@ -211,7 +221,9 @@ fondamenti più solidi, sapendo che l'ultimo dei quattro insidia anche quello.
 LIME risponde alla domanda, ma il modo in cui lo fa poggia su una lunga catena
 di scelte fatte da chi lo usa: quanti casi-fantasma fabbricare, quanto contare
 quelli lontani, come spezzettare l'ingresso. Rilanciandolo si ottengono numeri
-un po’ diversi. Serve un metodo in cui il modo di dividere il merito sia
+un po’ diversi.
+
+Serve un metodo in cui il modo di dividere il merito sia
 fissato prima, da proprietà dichiarate: a fornirlo è la teoria dei giochi
 cooperativi, con la formula di Shapley del 1953. Le colonne sono i giocatori, e
 il guadagno da spartire non è il punteggio che il modello ha dato a Maria, ma
@@ -225,7 +237,7 @@ niente» di una colonna.
 `````{tab} Elementare
 
 Il punto delicato è che i giocatori non agiscono da soli: contano anche le
-combinazioni. Prendiamo due colonne sole, per tenere il conto piccolo: il
+combinazioni. Prendiamo due colonne sole, per tenere piccolo il calcolo: il
 *reddito* e i *pagamenti passati*, cioè se in passato il cliente ha pagato
 puntuale. Il modello dà a ogni cliente un punteggio da 0 a 100, e sopra i 35 il
 prestito è approvato. Senza sapere niente del nostro cliente parte dalla
@@ -267,9 +279,9 @@ dei due arriva secondo in metà degli ordini, e intasca quei dieci una volta su
 due: cinque a testa. Infatti il reddito prende 25, i suoi 20 più cinque, e i
 pagamenti 15, i loro 10 più cinque.
 
-Per tutto il conto al modello sono bastati quattro punteggi, uno per ogni gruppo
-di colonne che conosce: nessuna, solo il reddito, solo i pagamenti, tutte e due.
-Ogni colonna in più raddoppia i gruppi da provare.
+Per tutto il calcolo al modello sono bastati quattro punteggi, uno per ogni
+gruppo di colonne che conosce: nessuna, solo il reddito, solo i pagamenti,
+tutte e due. Ogni colonna in più raddoppia i gruppi da provare.
 
 Resta in sospeso che cosa voglia dire che il modello «conosce solo il reddito».
 Il modello vuole tutte le sue caselle piene, e quella dei pagamenti non la si
@@ -286,11 +298,12 @@ ripartizione della distanza *da quella risposta lì*, cambiano anche loro.
 Il modo di dividere segue quattro richieste di buon senso, e ognuna ha il suo
 nome. Che la somma torni senza avanzi, come qui $25 + 15 = 50 - 10$, è
 l’**efficienza**. Che due colonne che fanno lo stesso mestiere ricevano lo
-stesso merito è la **simmetria**. Nel conto intero reddito e pagamenti non
+stesso merito è la **simmetria**. Nel calcolo completo reddito e pagamenti non
 fanno lo stesso mestiere (da soli valgono 20 e 10), e infatti prendono 25 e 15;
 lo fanno dentro l'interazione, dove nessuno dei due vale niente senza l'altro,
 e per questo quei dieci punti si sono divisi a metà. Che una colonna che non
 aggiunge mai niente, in nessun ordine, prenda zero è il **giocatore nullo**.
+
 Poi c'è l’**additività**, la meno intuitiva delle quattro e la più utile: se il
 punteggio del cliente fosse la somma di due punteggi calcolati a parte, il
 merito di una colonna sul totale sarebbe la somma dei due meriti che si prende
@@ -347,8 +360,8 @@ pongono problemi matematici i cui rimedi aggiungono complessità (per esempio il
 ragionamento causale), e che non rispondono in modo naturale alle domande che
 una persona pone a una spiegazione {cite}`kumar2020problems`.
 
-Un'avvertenza che la letteratura ha imparato a proprie spese: la funzione $v$
-non è data, va scelta, e la scelta conta. Le feature fuori da $S$ si
+La funzione $v$ non è data: va scelta, e la scelta conta. Le feature fuori da
+$S$ si
 possono marginalizzare sulla loro distribuzione (variante *interventista*),
 condizionare a quelle presenti (variante *condizionale*) o fissare a un
 riferimento $r$ (variante *baseline*, dove $v(\varnothing) = f(r)$): le tre
@@ -357,8 +370,9 @@ scelte producono attribuzioni diverse per lo stesso modello e lo stesso punto
 ripartire, dato il gioco; cambiare $v$ è cambiare gioco, e nessun
 assioma dice quale dei tre sia quello da giocare. Non è un difetto della
 formula: ripropone il bivio fra spiegare il modello e spiegare il mondo, già
-incontrato in {doc}`Aprire la scatola nera </Interpretabilita/overview>`. La
-variante interventista risponde a «su che cosa si appoggia *questo modello*»,
+incontrato in {doc}`Aprire la scatola nera </Interpretabilita/overview>`.
+
+La variante interventista risponde a «su che cosa si appoggia *questo modello*»,
 quella condizionale a «che cosa dice *il dato*», e sono due domande diverse a
 cui è giusto rispondere con due numeri diversi. Janzing,
 Minorics e Blöbaum leggono la variante interventista in termini causali:
@@ -388,7 +402,9 @@ con trenta colonne, oltre un miliardo. L'idea di usarli per spiegare la
 singola predizione, stimandoli su un campione di ordini estratti a caso invece
 che su tutti, è di Erik Štrumbelj e Igor Kononenko, che la proposero nel 2010
 {cite}`strumbelj2010efficient` e la estesero nel 2014
-{cite}`strumbelj2014explaining`. Nel 2017 Scott Lundberg e Su-In Lee
+{cite}`strumbelj2014explaining`.
+
+Nel 2017 Scott Lundberg e Su-In Lee
 {cite}`lundberg2017unified` hanno messo sei metodi esistenti, LIME e DeepLIFT
 compresi, dentro una sola famiglia, quella che spiega una risposta come somma
 di contributi delle feature (**SHAP**, *SHapley Additive exPlanations*), e
@@ -448,7 +464,7 @@ ai minimi quadrati converge ai valori di Shapley; è la scelta di pesi che
 distingue SHAP da LIME, i cui pesi euristici non hanno questa garanzia.
 
 A pesi giusti, però, resta da calcolare la funzione valore, e lì la garanzia si
-assottiglia. KernelSHAP approssima $v(S) = \mathbb{E}\big[f(\mathbf{x}) \mid
+indebolisce. KernelSHAP approssima $v(S) = \mathbb{E}\big[f(\mathbf{x}) \mid
 \mathbf{x}_S\big]$ con l'attesa marginale, sostituendo le feature assenti
 con valori pescati da un insieme di riferimento: è l'ipotesi di indipendenza
 fra le feature, dichiarata da Lundberg e Lee nel passaggio in cui derivano
@@ -456,10 +472,11 @@ l'approssimazione {cite}`lundberg2017unified`. Quando le feature sono correlate
 le due quantità divergono {cite}`aas2021explaining`, e la divergenza non è
 piccola: su due colonne quasi identiche di cui il modello ne usa una sola, la
 versione marginale dà tutto il merito alla colonna usata e zero all'altra,
-mentre quella condizionale lo ripartisce fra le due. È ancora il bivio fra
-spiegare il modello e spiegare il mondo, e qui produce l'equivoco più comune:
-KernelSHAP restituisce sistematicamente la prima risposta, mentre chi la legge
-crede spesso di star leggendo la seconda.
+mentre quella condizionale lo ripartisce fra le due.
+
+È ancora il bivio fra spiegare il modello e spiegare il mondo, e qui produce
+l'equivoco più comune: KernelSHAP restituisce sistematicamente la prima
+risposta, mentre chi la legge crede spesso di star leggendo la seconda.
 
 TreeSHAP (introdotto in un lavoro successivo degli stessi autori
 {cite}`lundberg2020local`) elimina
@@ -475,7 +492,9 @@ Il vantaggio teorico dei valori di Shapley, e quindi di ogni loro
 calcolo esatto, è la **consistenza**. Se si modifica il modello così che una
 feature contribuisca di più in ogni coalizione, il suo valore SHAP non può
 diminuire; è una monotonia che l'importanza da impurità della sezione sui
-modelli trasparenti *non* garantisce. Oltre al waterfall (una predizione), i
+modelli trasparenti *non* garantisce.
+
+Oltre al waterfall (una predizione), i
 grafici tipici sono il *force plot*, che dispone gli stessi contributi come
 forze contrapposte lungo una retta, e soprattutto il **beeswarm**: impilando i
 valori SHAP di migliaia di istanze, una riga per feature, si ricostruisce una
@@ -517,15 +536,16 @@ perché la prossima volta sia un sì?». È la spiegazione **controfattuale**,
 formalizzata nel 2017 da Sandra Wachter, Brent Mittelstadt e Chris Russell
 {cite}`wachter2017counterfactual` come risposta al dibattito sul «diritto alla
 spiegazione» del GDPR, di cui si è detto in {doc}`Aprire la scatola nera
-</Interpretabilita/overview>`. Gli autori
-sostenevano che un diritto vincolante a farsi spiegare il funzionamento del
-modello il GDPR non lo dà, e proponevano il controfattuale come la spiegazione
-che serve comunque all'interessato: capire la decisione, contestarla e sapere
-che cosa cambiare, senza aprire il modello. Nel 2025 la Corte di giustizia,
-con la sentenza C-203/22, ha indicato che può essere appropriato, per
-rispettare i requisiti di trasparenza e intelligibilità, dire all'interessato
-in che misura una variazione dei suoi dati avrebbe portato a un risultato
-diverso.
+</Interpretabilita/overview>`.
+
+Gli autori sostenevano che un diritto vincolante a farsi spiegare il
+funzionamento del modello il GDPR non lo dà, e proponevano il controfattuale
+come la spiegazione che serve comunque all'interessato: capire la decisione,
+contestarla e sapere che cosa cambiare, senza aprire il modello. Nel 2025 la
+Corte di giustizia, con la sentenza C-203/22, ha indicato che può essere
+appropriato, per rispettare i requisiti di trasparenza e intelligibilità, dire
+all'interessato in che misura una variazione dei suoi dati avrebbe portato a un
+risultato diverso.
 
 `````{tab} Elementare
 
@@ -543,9 +563,10 @@ di cambiare l'età non ha senso, perché non è una leva su cui puoi agire. Il b
 controfattuale è il consiglio minimo, concreto e onesto che ti mette dalla parte
 giusta della decisione.
 
-«Minimo» però va misurato voce per voce: mille euro sul reddito di un anno sono
-un'inezia, mille euro sulla rata del mese sono un'altra storia. Conta anche
-quante caselle si toccano: una sola la si cambia, dodici insieme no.
+«Minimo» però va misurato voce per voce: ad esempio, mille euro sul reddito di
+un anno sono un'inezia, mille euro sulla rata del mese sono un'altra storia.
+Conta anche quante caselle si toccano: una sola la si cambia, dodici insieme
+no.
 
 La stessa ricerca serve anche a chi ha l'intenzione opposta. Trovare il ritocco
 più piccolo che ribalta la risposta di un modello è l'operazione di chi vuole
@@ -616,11 +637,13 @@ La ricerca ne trova una sola, e sempre sulla stessa voce, per come conta il
 costo. Ogni voce si misura in «quanto si sposta rispetto a quanto varia di
 solito fra le persone», e così misurato ogni passo verso il sì ha un costo
 diverso a seconda della voce: per Maria il reddito è la voce dove il sì costa
-meno. Mescolare le voci non aiuta, perché ogni pezzo di strada fatto con la
-rata ha un costo maggiore dello stesso pezzo fatto con il reddito; conviene fare
-tutta la strada col reddito. Chiedendo tre risposte senza chiedere che siano
-diverse, se ne avrebbero tre versioni della stessa: seimila euro in più, o
-qualche centinaio sopra.
+meno.
+
+Mescolare le voci non aiuta, perché ogni pezzo di strada fatto con la rata ha
+un costo maggiore dello stesso pezzo fatto con il reddito; conviene fare tutta
+la strada col reddito. Per questo, chiedendo tre risposte senza chiedere che
+siano diverse, se ne avrebbero tre versioni della stessa: seimila euro in più,
+o qualche centinaio sopra.
 
 Per avere tre strade diverse bisogna premiare la differenza. Si dà un voto
 all’insieme delle risposte: vicine alla situazione reale, sì, ma anche
@@ -672,10 +695,14 @@ minimo sta su un vertice, e si muove la sola voce che sposta il logit al costo
 più basso, cioè quella con $|w_j|\,\mathrm{MAD}_j$ massimo; vale con voci
 continue, senza vincoli di intervallo attivi e senza pareggi fra i
 $|w_j|\,\mathrm{MAD}_j$. La risposta è sempre la stessa leva, e $k$ risposte
-senza il termine di diversità ne sono $k$ varianti. Resta aperto un aspetto che
+senza il termine di diversità ne sono $k$ varianti.
+
+Resta aperto un aspetto che
 il determinante non vede: due controfattuali diversi possono essere entrambi
 irrealizzabili, e la diversità misurata sulle voci non dice niente sulle
-dipendenze fra le voci stesse. Il controfattuale vale poi per il modello che lo
+dipendenze fra le voci stesse.
+
+Il controfattuale vale poi per il modello che lo
 ha prodotto. Modelli quasi equivalenti sui dati, l'effetto Rashomon,
 possono trattare diversamente la stessa persona, e un controfattuale valido per
 uno non esserlo per un altro, o per lo stesso modello riaddestrato: Pawelczyk,
@@ -755,7 +782,9 @@ La leva più economica è il reddito, da $24$ a $30$ migliaia di euro, e da sola
 l'intero risultato del controfattuale più vicino. Le tre varianti del
 reddito stanno più vicine in media, $0{,}8125$ contro $1{,}0833$, ma la loro
 diversità è quasi nulla, $0{,}0130$ contro $0{,}7554$, e l’obiettivo, che si
-minimizza, le scarta: $1{,}3099$ contro $0{,}7863$. Il primo termine
+minimizza, le scarta: $1{,}3099$ contro $0{,}7863$.
+
+Il primo termine
 dell'obiettivo, la perdita a cerniera, punisce chi non ha passato il confine
 con un margine e non si annulla per nessuno: si azzera solo
 quando il punteggio supera $1$, e le leve si fermano esattamente a zero, dove
@@ -791,8 +820,10 @@ rata non pagata, la copertura è del 20%.
 Le due tirano in direzioni opposte: più condizioni si aggiungono, più la regola
 diventa infallibile e meno gente ci ricade sotto. Dieci condizioni: quasi sempre
 esatta, e buona quasi per nessuno. Una condizione sola: buona per molti, e
-sbaglia spesso. Un buon anchor vale per più gente possibile senza
-scendere sotto la precisione richiesta, e di solito è anche il più corto. Su una
+sbaglia spesso. In pratica un buon anchor vale per più gente possibile senza
+scendere sotto la precisione richiesta, e di solito è anche il più corto.
+
+Su una
 fotografia la faccenda si complica: prima ancora di scrivere una regola bisogna
 decidere che cosa sia una condizione, cioè tornare a spezzettare l'immagine come
 fa LIME.
@@ -874,11 +905,11 @@ riconoscerebbe come un otto.
 
 È la differenza fra dire «è un tre per via di questi tratti» e «è un tre e non
 un otto perché manca questo». La seconda frase è il modo in cui le persone
-spiegano le cose, e in medicina è la forma standard del ragionamento: un medico
-che esclude l'influenza non guarda solo ai sintomi che il paziente ha, guarda
-anche a quelli che non ha (febbre alta sì, ma nessun dolore muscolare e nessuna
-tosse). Una diagnosi poggia tanto sui sintomi presenti quanto su quelli attesi
-e assenti.
+spiegano le cose, e in medicina è la forma standard del ragionamento. Ad
+esempio, un medico che esclude l'influenza non guarda solo ai sintomi che il
+paziente ha, guarda anche a quelli che non ha (febbre alta sì, ma nessun dolore
+muscolare e nessuna tosse). Una diagnosi poggia tanto sui sintomi presenti
+quanto su quelli attesi e assenti.
 
 `````
 
@@ -994,7 +1025,7 @@ f(x) - f(base):     4.0
 Tre numeri: $1{,}5$, $2{,}0$ e $0{,}5$. Da dove escono? Verrebbe da aspettarsi
 $1$ e $2$, che sono i due numeri scritti nella formula, e niente per la terza
 colonna, che un numero suo non ce l'ha. Il modo più pulito di capire perché non
-è così è rifare il conto con carta e penna, usando le quattro proprietà, una
+è così è rifare il calcolo con carta e penna, usando le quattro proprietà, una
 dopo l'altra.
 
 Si comincia dall’additività, quella dei due punteggi calcolati a parte: un
@@ -1008,7 +1039,7 @@ nell'ordine.
   $(1,\;0,\;0)$.
 - $2\,x_1$ da solo. Stessa cosa, ma il salto è di $2$, e tocca alla seconda
   colonna. Meriti: $(0,\;2,\;0)$.
-- $x_0 x_2$ da solo. Qui serve il conto vero. Questo addendo vale $1$ se le
+- $x_0 x_2$ da solo. Qui serve il calcolo vero. Questo addendo vale $1$ se le
   colonne $0$ e $2$ sono accese entrambe, e $0$ in tutti gli altri casi; la
   colonna $1$ non lo tocca mai, quindi è un giocatore nullo e la si può
   togliere di mezzo, restando con un gioco a due giocatori come quello dei
@@ -1025,16 +1056,16 @@ formula non aveva un numero suo, prende comunque mezzo punto: se l'è guadagnato
 tutto nell'interazione.
 
 La simmetria è entrata nel terzo pezzo, e solo lì: dentro $x_0x_2$ le due
-colonne fanno lo stesso mestiere, da qui il mezzo punto a testa, mentre
-nel conto intero no, e infatti prendono $1{,}5$ e $0{,}5$. L'additività
+colonne hanno lo stesso ruolo, da qui il mezzo punto a testa, mentre
+nel calcolo completo no, e infatti prendono $1{,}5$ e $0{,}5$. L'additività
 permette di spezzare, e solo dopo aver spezzato la simmetria si può usare, nel
 pezzo in cui vale.
 
 Resta l’efficienza, che è quella che il programma verifica nelle
 ultime due righe: $1{,}5 + 2{,}0 + 0{,}5 = 4{,}0$, che è
-esattamente la risposta vera meno la risposta base. Il conto torna.
+esattamente la risposta vera meno la risposta base. Il calcolo torna.
 
-Un'ultima nota sul costo: la stessa fatica si può contare in due modi, gli
+Quanto al costo, il lavoro si può contare in due modi, gli
 ordini di ingresso oppure i gruppi di colonne da provare, e crescono a valanga
 tutti e due. Qui gli ordini sono sei e i gruppi otto. Con dieci colonne gli
 ordini superano i tre milioni; con venti sono più di due miliardi di miliardi;

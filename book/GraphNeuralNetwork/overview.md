@@ -20,19 +20,22 @@ ponte una e una sola volta. Nessuno ci riusciva, ma nessuno sapeva dire se
 fosse impossibile o solo difficile.
 
 A rispondere fu il matematico svizzero Leonhard Euler, che cominciò buttando
-via la mappa. Le distanze, la forma delle
-isole, la lunghezza dei ponti: niente di tutto questo contava. Contava solo
-*quale lembo di terra fosse collegato a quale*. Euler ridusse allora la città
-a quattro lettere, una per lembo di terra, e a sette ponti fra quelle lettere,
-e su quello scheletro dimostrò che la passeggiata non poteva esistere. Chi
-entra in un lembo di terra passando su un ponte ne deve prendere un altro per
-uscirne, quindi i ponti di ogni lembo vanno a coppie, salvo quello da cui si
-parte e quello in cui si arriva. I lembi con un numero dispari di ponti
-possono essere al massimo due, allora; a Königsberg erano quattro su quattro.
+via la mappa. Le distanze, la forma delle isole, la lunghezza dei ponti:
+niente di tutto questo contava. Contava solo *quale lembo di terra fosse
+collegato a quale*. Euler ridusse allora la città a quattro lettere, una per
+lembo di terra, e a sette ponti fra quelle lettere, e su quello scheletro
+dimostrò che la passeggiata non poteva esistere.
+
+Il ragionamento è breve. Chi entra in un lembo di terra passando su un ponte
+ne deve prendere un altro per uscirne, quindi i ponti di ogni lembo vanno a
+coppie, salvo quello da cui si parte e quello in cui si arriva. I lembi con un
+numero dispari di ponti possono essere al massimo due; a Königsberg erano
+quattro su quattro.
+
 Nel suo articolo non ci sono punti e linee, quelli che oggi chiamiamo **nodi**
 e **archi**: la parola *grafo* la introdurrà nel 1878 il matematico inglese
 James Joseph Sylvester, che la prese dai diagrammi con cui i chimici
-disegnavano le molecole. L'astrazione però è di Euler, e
+disegnavano le molecole. L'astrazione, però, è di Euler, e
 il suo articolo, *Solutio Problematis ad Geometriam Situs Pertinentis*, letto
 all'Accademia di San Pietroburgo nel 1735 e stampato sei anni dopo, è
 considerato l'atto di nascita della **teoria dei grafi**: la matematica delle
@@ -51,6 +54,11 @@ provati {cite}`stokes2020deep`. L'hanno chiamata halicin, in omaggio a HAL
 9000, il computer di *2001: Odissea nello spazio*. Il filo che unisce i sette
 ponti di Königsberg a un antibiotico del XXI secolo ha un nome: le **reti
 neurali su grafo** (*Graph Neural Networks*, GNN).
+
+In questo capitolo vediamo perché i grafi richiedono un'architettura propria,
+in che cosa consiste l'idea del message passing e quali domande permette di
+porre a un grafo. Le sezioni successive sviluppano il meccanismo, i knowledge
+graph e le architetture che ne derivano.
 
 ## Né griglia né sequenza
 
@@ -86,7 +94,7 @@ quello scheletro, qualunque cosa rappresenti.
 
 Come mostra {numref}`fig-grafo-esempi`, se spogliamo questi oggetti delle loro
 apparenze resta la stessa figura astratta. Da qui il problema tecnico: un
-grafo è ostico da dare in ingresso a una rete neurale ordinaria, per tre
+grafo è difficile da dare in ingresso a una rete neurale ordinaria, per tre
 motivi.
 
 `````{tab} Elementare
@@ -119,18 +127,18 @@ non è né una griglia né una sequenza, e serve un'idea nuova.
 
 `````{tab} Superiore
 
-Formalmente un grafo è una coppia $G = (V, E)$, dove $V$ è l'insieme dei nodi e
-$E \subseteq V \times V$ quello degli archi. Lo si rappresenta spesso con la
-**matrice di adiacenza** $\mathbf{A} \in \{0,1\}^{N \times N}$ (con $N = |V|$),
-in cui $A_{ij} = 1$ se esiste l'arco $(i,j)$. Questa rappresentazione dipende
-dall’ordine con cui numeriamo i nodi. Rietichettare i nodi con una permutazione
-$\mathbf{P}$ trasforma $\mathbf{A}$ in $\mathbf{P} \mathbf{A} \mathbf{P}^\top$
-senza cambiare il grafo. Un modello sensato deve quindi essere **invariante
-alla permutazione** (se produce un'etichetta per l'intero grafo, non deve
-cambiare quando rinumeriamo i nodi) o **equivariante** (se produce un'etichetta
-per ogni nodo, le etichette devono seguire la permutazione). Questa è la
-simmetria che le CNN hanno per la traslazione e che le GNN devono avere per la
-permutazione.
+**Definizione (grafo).** Un grafo è una coppia $G = (V, E)$, dove $V$ è
+l'insieme dei nodi e $E \subseteq V \times V$ quello degli archi. Lo si
+rappresenta spesso con la **matrice di adiacenza** $\mathbf{A} \in \{0,1\}^{N
+\times N}$ (con $N = |V|$), in cui $A_{ij} = 1$ se esiste l'arco $(i,j)$. Si
+noti che questa rappresentazione dipende dall’ordine con cui numeriamo i nodi:
+infatti rietichettare i nodi con una permutazione $\mathbf{P}$ trasforma
+$\mathbf{A}$ in $\mathbf{P} \mathbf{A} \mathbf{P}^\top$ senza cambiare il
+grafo. Un modello sensato deve quindi essere **invariante alla permutazione**
+(se produce un'etichetta per l'intero grafo, non deve cambiare quando
+rinumeriamo i nodi) o **equivariante** (se produce un'etichetta per ogni nodo,
+le etichette devono seguire la permutazione). Questa è la simmetria che le CNN
+hanno per la traslazione e che le GNN devono avere per la permutazione.
 
 A ciò si aggiungono due irregolarità che rompono le architetture a griglia: il
 grado dei nodi è variabile ($\deg(v)$ diverso da nodo a nodo), quindi non
@@ -149,14 +157,13 @@ Il rimedio si enuncia in una frase:
 > che lo descrive, e costruirla facendo circolare l'informazione lungo gli
 > archi: ogni nodo ascolta i suoi vicini e si aggiorna, e si ricomincia.
 
-Quella fila di numeri si chiama rappresentazione del nodo, la parola
-che con i grafi torna più spesso, e indica sempre la fila di
-numeri con cui il modello descrive un nodo in un certo momento. All'inizio non
-contiene niente di speciale, sono le informazioni che sul nodo abbiamo già noi
-(per una persona l'età, per un atomo il tipo di elemento); a ogni giro di
-ascolto diventa qualcosa di più.
+Quella fila di numeri si chiama **rappresentazione** del nodo, e indica sempre
+la fila di numeri con cui il modello descrive un nodo in un certo momento.
+All'inizio non contiene niente di speciale: sono le informazioni che sul nodo
+abbiamo già noi (per una persona l'età, per un atomo il tipo di elemento); a
+ogni passo di ascolto diventa qualcosa di più.
 
-Il resto è la macchina di sempre. Ogni operazione di un giro è derivabile
+Il resto è la macchina di sempre. Ogni operazione di un passo è derivabile
 (quasi ovunque, nel caso del massimo), quindi la rete si addestra
 dall'ingresso all'uscita con la retropropagazione e la discesa del gradiente
 della {doc}`sezione sulla backpropagation </RetiNeurali/backpropagation>`,
@@ -173,14 +180,16 @@ ciascuno di loro ha in quel momento e le riduce a una sola, per esempio
 facendone la media. Di quanto ha sentito gli resta quell'unica impressione
 d'insieme, e chi ha parlato per primo non lascia traccia, perché una media non
 sa in che ordine le sono arrivati i numeri. Poi il nodo mescola quell'unica
-fila con quella che aveva già. La regola per ascoltare e per aggiornarsi è una
+fila con quella che aveva già.
+
+La regola per ascoltare e per aggiornarsi è una
 sola, la stessa per il più popolare e per il più schivo, e la stessa a ogni
 cena nuova. Dopo un giro, ogni nodo ha assorbito qualcosa dagli amici diretti;
 dopo due giri, anche dagli amici degli amici; e così l'informazione si diffonde
 per la rete come una voce che circola. Alla fine, la fila di numeri di ogni
 nodo descrive ormai il nodo
 *immerso nel suo pezzo di mondo*. Questo passaparola tra vicini ha un nome
-(**message passing**, «scambio di messaggi») ed è il cuore del capitolo.
+(**message passing**, «scambio di messaggi») ed è il cuore delle reti su grafo.
 
 `````
 
@@ -207,16 +216,18 @@ espressività che la {doc}`sezione sulle architetture
 Weisfeiler-Lehman. $\mathrm{AGGREGATE}$ è
 un'operazione che non cambia se i vicini le arrivano in un altro ordine (una
 somma, una media, un massimo), proprio perché i vicini non hanno un ordine
-canonico; e mangia un numero variabile di vettori restituendone sempre uno
-solo, che è ciò che rende il modello indipendente dalla taglia del grafo.
-Dopo $K$ passi, $\mathbf{h}_v^{(K)}$ dipende soltanto dal sottografo entro
-distanza $K$ da $v$. Le funzioni $\mathrm{AGGREGATE}$ e $\mathrm{UPDATE}$ sono
-reti neurali con parametri $\theta$ condivisi da tutti i nodi, e questa
-condivisione, unita all'indifferenza all'ordine di $\mathrm{AGGREGATE}$,
-garantisce l'equivarianza alla permutazione; gli stessi parametri valgono anche
-da un grafo all'altro, e permettono di addestrare su certi grafi e
-usare il modello su altri. La sezione sul message passing sviscera questo
-schema e ne ricava l'incarnazione più celebre, la *Graph Convolutional
+canonico; e accetta in ingresso un numero variabile di vettori
+restituendone sempre uno solo, che è ciò che rende il modello indipendente
+dalla taglia del grafo.
+
+Si noti che dopo $K$ passi, $\mathbf{h}_v^{(K)}$ dipende soltanto dal
+sottografo entro distanza $K$ da $v$. Le funzioni $\mathrm{AGGREGATE}$ e
+$\mathrm{UPDATE}$ sono reti neurali con parametri $\theta$ condivisi da tutti i
+nodi, e questa condivisione, unita all'indifferenza all'ordine di
+$\mathrm{AGGREGATE}$, garantisce l'equivarianza alla permutazione; gli stessi
+parametri valgono anche da un grafo all'altro, e permettono di addestrare su
+certi grafi e usare il modello su altri. La sezione sul message passing svolge
+questo schema e ne ricava l'incarnazione più celebre, la *Graph Convolutional
 Network* (GCN).
 
 `````
@@ -224,14 +235,14 @@ Network* (GCN).
 L'idea non è nuova, e ha una storia in buona parte italiana. La
 prima forma sono le *reti neurali ricorsive* di fine anni Novanta, nei lavori
 di Alessandro Sperduti e Antonina Starita (1997) e di Paolo Frasconi, Marco Gori
-e Sperduti (1998). Trattavano però soltanto grafi senza giri chiusi, in cui gli
+e Sperduti (1998). Trattavano però soltanto grafi senza cicli, in cui gli
 archi hanno un verso e, seguendo le frecce, non si torna mai al punto di
 partenza: un albero genealogico sì, una rete di amicizie no. Un grafo
-qualunque si tratta solo dalla metà degli anni Duemila, e per due strade italiane
-che nel 2009 escono a pochi mesi l'una dall'altra sulla stessa rivista: il
-modello del gruppo di Siena di Franco Scarselli e Marco Gori
+qualunque si tratta solo dalla metà degli anni Duemila, e per due strade
+italiane che nel 2009 escono a pochi mesi l'una dall'altra sulla stessa
+rivista: il modello del gruppo di Siena di Franco Scarselli e Marco Gori
 {cite}`scarselli2009graph` e la rete di Alessio Micheli, a Pisa
-{cite}`micheli2009neural`. Centrale, l'idea, lo è diventata solo nell'ultimo
+{cite}`micheli2009neural`. L'idea è diventata centrale solo nell'ultimo
 decennio, quando si è capito come farla girare in fretta anche su grafi enormi
 {cite}`hamilton2020graph`.
 
@@ -334,10 +345,12 @@ capitoli sulle immagini, a dati che una griglia non la formano.
 Questo modo di guardare le cose ha un nome, *geometric deep learning*, cioè
 l'apprendimento profondo visto dalla parte della geometria
 {cite}`bronstein2021geometric`. Parte da una domanda sola: che cosa si può fare
-a un dato senza cambiarne il significato? Un'immagine spostata di un pixel
-contiene sempre lo stesso gatto; una frase pronunciata un minuto più tardi è
-sempre la stessa frase; un grafo con i nodi rinumerati è sempre lo stesso
-grafo. Queste trasformazioni che non cambiano la risposta si chiamano
+a un dato senza cambiarne il significato? Ad esempio, un'immagine spostata di
+un pixel contiene sempre lo stesso gatto; una frase pronunciata un minuto più
+tardi è sempre la stessa frase; un grafo con i nodi rinumerati è sempre lo
+stesso grafo.
+
+Queste trasformazioni che non cambiano la risposta si chiamano
 **simmetrie** del dato, e una volta elencate dicono come deve essere fatta la
 rete che ci lavora sopra. Se la risposta riguarda il dato intero, applicare la
 simmetria prima della rete non deve cambiarla; se ha una posizione
@@ -356,7 +369,9 @@ utenti, mai fra due prodotti), si dice **bipartito**. La *link prediction* su
 questo grafo è, letteralmente, il problema della raccomandazione: prevedere gli
 archi che ancora non ci sono. Ed è la lettura che mette a disposizione della
 raccomandazione tutto l'armamentario delle reti su grafo, portata in produzione
-da alcuni grandi servizi. Non è però la definizione del problema, e la
+da alcuni grandi servizi.
+
+Non è però la definizione del problema, e la
 {doc}`sezione sulla raccomandazione neurale
 </SistemiRaccomandazione/raccomandazione-neurale>` riprende il filo da vicino,
 dicendo anche perché i sistemi in produzione restano organizzati attorno

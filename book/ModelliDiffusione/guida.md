@@ -7,9 +7,9 @@ si genera senza indicare che cosa. L'altro, quando si chiede una categoria, è
 un'aggiunta che a leggerla sembra un espediente: su ImageNet $256\times256$
 l'architettura senza aggiunte arriva a un FID di $10{,}94$, peggio dei $6{,}95$
 di BigGAN-deep, la migliore GAN di allora, e con l'aggiunta scende a $4{,}59$.
-Si addestra un classificatore a riconoscere le categorie su immagini rumorose,
-e durante la generazione si spinge l'immagine, a ogni passo, nella direzione
-che al classificatore piace di più.
+In pratica si addestra un classificatore a riconoscere le categorie su immagini
+rumorose, e durante la generazione si spinge l'immagine, a ogni passo, nella
+direzione che al classificatore piace di più.
 
 L'espediente discendeva da una riga di teorema di Bayes, e quella riga tiene
 insieme tutti i modi di dire a un modello che cosa generare: come gli si chiede
@@ -45,21 +45,22 @@ La seconda ricetta, quella che si usa oggi, si accorge che il riconoscitore si
 può togliere: la stessa rete, interrogata due volte (con e senza la richiesta),
 fornisce la differenza fra le due bussole senza bisogno di nessun altro pezzo.
 La {doc}`sezione su Stable Diffusion </ModelliDiffusione/stable-diffusion>` la
-racconta per esteso, compreso il motivo per cui il classificatore si può togliere.
+racconta per esteso, compreso il motivo per cui il classificatore si può
+togliere.
 
 Un punto resta in ombra. La riga di Bayes dice di sommare le due bussole così
 come sono; nella pratica la seconda si moltiplica per sette, o per dieci. Quel
-numero si chiama forza della guida, il conto non lo prevede, ed è stato aggiunto
-perché funziona. Che cosa faccia alla distribuzione dei risultati si può
-misurare invece che raccontare.
+numero si chiama peso della guida, il conto non lo prevede, ed è stato
+aggiunto perché funziona. Che cosa faccia alla distribuzione dei risultati
+si può misurare invece che raccontare.
 
 `````
 
 `````{tab} Superiore
 
 Dal teorema di Bayes, $p(\mathbf{x}\mid c)\propto p(\mathbf{x})\,p(c\mid
-\mathbf{x})$, e prendendo il gradiente del logaritmo rispetto a $\mathbf{x}$ la
-costante di normalizzazione sparisce:
+\mathbf{x})$, segue che, prendendo il gradiente del logaritmo rispetto a
+$\mathbf{x}$, la costante di normalizzazione sparisce:
 
 $$
 \nabla_{\mathbf{x}}\log p_t(\mathbf{x}\mid c)
@@ -68,8 +69,8 @@ $$
 $$
 
 Il primo termine è il punteggio che il modello già conosce; il secondo è
-l'unica cosa che il condizionamento aggiunge. Tutte le tecniche di guida sono
-modi diversi di procurarsi quel secondo termine.
+l'unica cosa che il condizionamento aggiunge. Di conseguenza tutte le tecniche
+di guida sono modi diversi di procurarsi quel secondo termine.
 
 **Classifier guidance** {cite}`dhariwal2021diffusion`. Si addestra un
 classificatore $p_\psi(c\mid
@@ -80,10 +81,10 @@ $$
 - s\,\sigma_t\,\nabla_{\mathbf{x}}\log p_\psi(c\mid\mathbf{x}_t,t),
 $$
 
-con $s$ la forza. Il fattore $\sigma_t$ converte fra punteggio e predizione del
+con $s$ il peso. Il fattore $\sigma_t$ converte fra punteggio e predizione del
 rumore. Il requisito del classificatore addestrato sul rumore è la parte
-scomoda: un classificatore ordinario ha gradienti privi di senso su un ingresso
-fuori distribuzione.
+scomoda, poiché un classificatore ordinario ha gradienti privi di senso su un
+ingresso fuori distribuzione.
 
 **Classifier-free guidance** {cite}`ho2022classifier`. Si osserva che, per la
 stessa riga di Bayes,
@@ -104,8 +105,8 @@ questo meno uno), la combinazione è $(1-w)\,\mathbf{s}_\varnothing +
 w\,\mathbf{s}_c$, il punteggio formale di $p(\mathbf{x}\mid
 c)^w\,p(\mathbf{x})^{1-w} \propto p(\mathbf{x})\,p(c\mid\mathbf{x})^w$: per
 $w > 1$ l'esponente della non condizionata è negativo, e questa si chiama
-estrapolazione. La guida costa due valutazioni della rete per passo, e si può
-anche distillare nel modello: una rete che riceve $w$ come ingresso e
+**estrapolazione**. La guida costa due valutazioni della rete per passo, e si
+può anche distillare nel modello: una rete che riceve $w$ come ingresso e
 restituisce in una sola valutazione la predizione guidata
 {cite}`meng2023distillation`, che è la strada dei generatori a pochi passi.
 
@@ -136,8 +137,8 @@ Il banco di prova è quello della {doc}`sezione sul limite continuo
 di deviazione $0{,}5$ attorno al suo centro, $-1{,}5$ o $+1{,}5$, così si può
 misurare anche di quanto la guida restringe la distribuzione. Il punteggio
 condizionato e quello libero (la miscela delle due classi) hanno forma chiusa,
-quindi si misura la guida e non gli errori di una rete: nella
-scena delle bussole, sono le due bussole esatte.
+quindi si misura la guida e non gli errori di una rete, perché i due punteggi
+che si sommano sono esatti.
 
 ```python
 import numpy as np
@@ -196,12 +197,12 @@ for forza in (1.0, 3.0, 7.5):
 `````{tab} Elementare
 
 I dati veri, per la classe scelta, hanno centro in $1{,}5$ e larghezza $0{,}5$.
-Con la forza a uno il campionatore li ritrova ($1{,}499$ e $0{,}498$: il
+Con il peso a uno il campionatore li ritrova ($1{,}499$ e $0{,}498$: il
 millesimo che manca è l'errore dei passi finiti): è la prova che il calcolo
 è corretto.
 
 C'è poi una formula che circola e che dice quanto la guida dovrebbe spostare le
-cose. Applicata a questo caso, prevede che alzando la forza fino a sette e
+cose. Applicata a questo caso, prevede che alzando il peso fino a sette e
 mezzo il centro si sposti di otto millesimi e la larghezza cali di un
 centesimo, cioè quasi niente.
 
@@ -214,10 +215,11 @@ uno su sessanta.
 Il secondo effetto è il più visibile in pratica e si chiama «sovracottura»:
 colori più saturi del vero, contrasti più duri, composizioni tutte uguali. Qui
 i numeri stanno al posto dei pixel, e uscire dalla zona dei dati equivale a
-mettere colori più accesi di quanti se ne trovino nelle foto vere. A forza
-sette e mezzo, che è il valore con cui Stable Diffusion esce di serie, i
-campioni non vengono dalla distribuzione dei dati con quell'etichetta: vengono
-da una distribuzione più stretta della metà e centrata un'unità più in là.
+mettere colori più accesi di quanti se ne trovino nelle foto vere. In
+particolare, a peso sette e mezzo, che è il valore con cui Stable Diffusion
+esce di serie, i campioni non vengono dalla distribuzione dei dati con
+quell'etichetta: vengono da una distribuzione più stretta della metà e centrata
+un'unità più in là.
 
 Le cure che si usano derivano tutte da questa lettura. Si può rimettere in
 scala l'immagine guidata, riportandone l'ampiezza a quella che aveva la bussola
@@ -241,12 +243,12 @@ proposito.
 La colonna di destra è la distribuzione inclinata $q_w \propto p\,p(c\mid
 \cdot)^w$ calcolata per quadratura sulla stessa griglia.
 
-Per $w=1$ le due colonne coincidono, come devono: la guida a uno è il
+Per $w=1$ le due colonne coincidono, come devono, poiché la guida a uno è il
 campionamento dalla condizionata.
 
-Per $w>1$ divergono, e non di poco. Il campionatore produce media $2{,}57$ e
-deviazione $0{,}247$ a $w=7{,}5$, contro $1{,}508$ e $0{,}490$ della
-distribuzione inclinata: la media è spostata di più di due deviazioni
+Per $w>1$ divergono, e non di poco. Ad esempio, a $w=7{,}5$ il campionatore
+produce media $2{,}57$ e deviazione $0{,}247$, contro $1{,}508$ e $0{,}490$
+della distribuzione inclinata: la media è spostata di più di due deviazioni
 standard dei dati veri, e la larghezza è dimezzata. La guida applicata lungo
 la traiettoria non campiona dalla distribuzione inclinata, e la formula che
 si cita per giustificarla descrive un oggetto diverso da quello che si ottiene.
@@ -278,10 +280,10 @@ Le mitigazioni in uso derivano tutte da questa diagnosi:
   cambiare quasi niente nel risultato. È la mitigazione con il miglior rapporto
   fra guadagno e costo, perché è gratuita.
 
-La guida non è però un errore da correggere a ogni costo:
-senza di essa i modelli condizionati al testo producono immagini che seguono la
-richiesta troppo poco per essere utili, e i punteggi percettivi con guida sono
-molto migliori. Lo scambio è deliberato.
+La guida non è però un errore da correggere a ogni costo, perché senza di essa
+i modelli condizionati al testo producono immagini che seguono la richiesta
+troppo poco per essere utili, e i punteggi percettivi con guida sono molto
+migliori. Lo scambio è deliberato.
 
 `````
 
@@ -294,18 +296,18 @@ Chiede solo che ci sia un modo di dire quanto un'immagine è vicina a quello
 che si vuole, e che quel modo si possa derivare, cioè che sappia rispondere
 alla domanda «in che direzione ritoccare i pixel per migliorare un po'?».
 
-Quel modo può essere qualsiasi cosa. La somiglianza a una fotografia di
-riferimento, la fedeltà a un disegno di contorni, il rispetto di una palette di
-colori, l'assenza di volti riconoscibili, il verdetto di un modello che valuta
-la qualità estetica; e fuori dalle immagini, l'energia di una molecola o
-l'aderenza a una legge fisica. Nessuna di queste richiede di toccare il modello
-generativo. Si paga però al momento di generare: per sapere in che direzione
-ritoccare i pixel bisogna ripercorrere la rete all'indietro, e un passo guidato
-la attraversa due volte invece di una, all'andata e al ritorno: siccome il
-modello non si sta addestrando, il ritorno costa quanto l'andata, e il passo
-costa il doppio.
+Quel modo può essere qualsiasi cosa. Ad esempio, la somiglianza a una
+fotografia di riferimento, la fedeltà a un disegno di contorni, il rispetto di
+una palette di colori, l'assenza di volti riconoscibili, il verdetto di un
+modello che valuta la qualità estetica; e fuori dalle immagini, l'energia di una
+molecola o l'aderenza a una legge fisica. Nessuna di queste richiede di toccare
+il modello generativo. Si paga però al momento di generare. Per sapere in che
+direzione ritoccare i pixel bisogna ripercorrere la rete all'indietro, e un
+passo guidato la attraversa due volte invece di una, all'andata e al ritorno.
+Siccome il modello non si sta addestrando, il ritorno costa quanto l'andata, e
+il passo costa il doppio.
 
-Un accorgimento fa la differenza fra funzionare e non funzionare: la misura va
+Un accorgimento fa la differenza fra funzionare e non funzionare. La misura va
 applicata non all'immagine rumorosa che si ha in mano, ma alla stima
 dell'immagine pulita che il modello sa già produrre in ogni istante. Un
 misuratore di qualità estetica davanti a un'immagine mezza distrutta risponde a
@@ -316,18 +318,19 @@ riaddestrarlo, passa da quella stima.
 
 C'è un caso in cui questa sola idea copre una famiglia intera di problemi.
 Ricostruire la parte mancante di una foto, tirar fuori i dettagli da
-un'immagine troppo piccola, rimettere a fuoco una foto mossa, ricostruire una TAC
-dalle sue proiezioni: sono tutte la stessa domanda, «quale immagine, passata
+un'immagine troppo piccola, rimettere a fuoco una foto mossa, ricostruire una
+TAC dalle sue proiezioni: sono tutte la stessa domanda, «quale immagine, passata
 attraverso questo apparecchio, avrebbe dato la misura che ho in mano?». Cambia
 l'apparecchio, non il procedimento, e il modello di diffusione fa da memoria di
 com'è fatta un'immagine plausibile.
 
-Il limite è che questa è un'approssimazione, non un calcolo esatto: la stima
-dell'immagine pulita è una media su tutti i finali possibili, e all'inizio del
-percorso quella media è sfocata e la spinta è imprecisa. Chiedendo troppo si
-ottengono immagini che soddisfano la misura e non somigliano più a niente,
-perché la spinta ha portato fuori dal territorio delle immagini plausibili;
-chiedendo troppo poco, immagini bellissime che la misura non la rispettano.
+Il limite è che questa è un'approssimazione, non un calcolo esatto. Infatti la
+stima dell'immagine pulita è una media su tutti i finali possibili, e
+all'inizio del percorso quella media è sfocata e la spinta è imprecisa.
+Chiedendo troppo si ottengono immagini che soddisfano la misura e non
+somigliano più a niente, perché la spinta ha portato fuori dal territorio delle
+immagini plausibili; chiedendo troppo poco, immagini bellissime che la misura
+non la rispettano.
 
 `````
 
@@ -374,8 +377,9 @@ tutti con lo stesso codice e un $\mathbf{A}$ diverso. Il modello di diffusione
 fa da prior, e il risultato è un campionamento approssimato dalla posteriore
 $p(\mathbf{x}\mid\mathbf{y})$.
 
-Il limite è quello dello scambio fra funzione e media, e va riportato: si sta
-campionando da un'approssimazione della posteriore, non dalla posteriore. Con
+Il limite è quello dello scambio fra funzione e media, e va riportato. In altri
+termini, si sta campionando da un'approssimazione della posteriore, non dalla
+posteriore. Con
 $\eta$ grande il campione soddisfa il vincolo e lascia la varietà dei dati; con
 $\eta$ piccolo resta plausibile e non soddisfa il vincolo. Il compromesso non
 ha una scelta canonica.
@@ -418,7 +422,8 @@ se premia le immagini con molti dettagli, impara a riempirle di dettagli
 inutili. Nel secondo metodo il giudice non c'è, ma il voto sì, nascosto dentro
 le coppie: la preferenza raccolta è quella di chi ha guardato, e il modello
 impara a piacere a quelle persone in quelle condizioni. Il fenomeno ha un nome,
-reward hacking, e lo racconta per esteso la {doc}`sezione sull'esplorazione e
+reward hacking, e lo racconta per esteso la
+{doc}`sezione sull'esplorazione e
 la ricompensa
 </DeepReinforcementLearning/esplorazione-e-ricompensa>`.
 
@@ -444,20 +449,21 @@ rapporto delle verosimiglianze fra modello corrente e modello di riferimento,
 senza addestrare un modello di ricompensa. La versione per la diffusione
 sostituisce la log-verosimiglianza (intrattabile) con il suo limite
 variazionale {cite}`wallace2024diffusion`, ottenendo un obiettivo che si valuta
-su un singolo passo di rumore sorteggiato, cioè senza percorrere la traiettoria.
+su un singolo passo di rumore campionato, cioè senza percorrere la traiettoria.
 Il costo per coppia resta quello di un addestramento ordinario moltiplicato per
 le quattro valutazioni di rete che servono: due modelli, quello corrente e
 quello di riferimento, su due immagini.
 
-Il fallimento tipico è il *reward hacking*. Il modello di ricompensa è una
-funzione appresa su una distribuzione di immagini, e l'ottimizzazione la porta
+Il fallimento tipico è il *reward hacking*. Infatti il modello di ricompensa è
+una funzione appresa su una distribuzione di immagini, e l'ottimizzazione la
+porta
 fuori da quella distribuzione, dove il punteggio è alto e la qualità no; nella
 seconda famiglia la ricompensa non è un modello a parte ma resta implicita nel
 rapporto di verosimiglianze, e il difetto si sposta sulle preferenze raccolte
 invece di sparire. Le contromisure standard sono un termine di regolarizzazione
 verso il modello di partenza (una divergenza KL, con il suo coefficiente), il
 rimescolamento periodico dei dati di preferenza, e l'interruzione anticipata
-guidata da una valutazione indipendente. Nessuna delle tre elimina il problema:
+guidata da una valutazione indipendente. Nessuna delle tre elimina il problema;
 lo rallentano soltanto.
 
 `````
@@ -467,7 +473,7 @@ lo rallentano soltanto.
 Se il danno si concentra in un tratto del percorso, spegnere la guida lì non
 aggiunge calcolo e recupera buona parte del danno. Per scoprire quale sia il
 tratto la si accende in uno solo per volta e si guarda di quanto ci si è
-spostati alla fine. Le finestre vanno prese della stessa ampiezza, se no si
+spostati alla fine. Le finestre vanno prese della stessa ampiezza, altrimenti si
 confonde la durata con il livello di rumore.
 
 ```python
@@ -511,23 +517,25 @@ for da, a in ((0.8, 1.0), (0.6, 0.8), (0.4, 0.6), (0.2, 0.4), (0.0, 0.2)):
 
 La misura dà un risultato netto e ha un limite.
 
-Il risultato netto è che il danno si fa a metà strada. Accesa soltanto nel primo
-quinto, dove il rumore è massimo, la guida sposta il centro di $0{,}161$;
-soltanto nell'ultimo, dove i dati sono vicini, di $0{,}046$; nella fascia fra
-$0{,}4$ e $0{,}6$ di $0{,}699$. Lo spostamento (la colonna «scarto») va di pari
-passo con la distanza fra le due bussole (la colonna «divario»): $0{,}028$ nel
-primo quinto, $0{,}027$ nell'ultimo, $0{,}203$ in mezzo. La ragione è tutta lì:
-a rumore massimo l'immagine è ancora tutta grana, la classe non si vede, le due
-bussole indicano quasi la stessa direzione, e moltiplicare per sette e mezzo
-una differenza che è quasi zero non sposta niente; alla fine il soggetto è
-ormai deciso e di nuovo le due coincidono. In mezzo divergono, e la
-moltiplicazione per sette e mezzo produce uno spostamento grande.
+Il risultato netto è che il danno si fa a metà strada. Infatti, accesa soltanto
+nel primo quinto, dove il rumore è massimo, la guida sposta il centro
+di $0{,}161$; soltanto nell'ultimo, dove i dati sono vicini, di $0{,}046$; nella
+fascia fra $0{,}4$ e $0{,}6$ di $0{,}699$. Lo spostamento (la colonna «scarto»)
+va di pari passo con la distanza fra i due punteggi (la colonna «divario»):
+$0{,}028$ nel primo quinto, $0{,}027$ nell'ultimo, $0{,}203$ in mezzo.
 
-Le cinque righe non si sommano, e non devono: $0{,}161$ più $0{,}530$ e via
-dicendo fa più di $1{,}070$. Un campione spinto fuori strada in una finestra
-viene poi in parte ritirato verso il mucchio dalla bussola libera nelle
-finestre seguenti, quindi le spinte si mangiano fra loro invece di
-accumularsi.
+La ragione è tutta lì: a rumore massimo l'immagine è ancora tutta grana, la
+classe non si vede, i due punteggi indicano quasi la stessa direzione, e
+moltiplicare per sette e mezzo una differenza che è quasi zero non sposta
+niente. Alla fine il soggetto è ormai deciso e di nuovo i due punteggi
+coincidono. In mezzo divergono, e la moltiplicazione per sette e mezzo produce
+uno spostamento grande.
+
+Si noti che le cinque righe non si sommano, e non devono: $0{,}161$ più
+$0{,}530$ e via dicendo fa più di $1{,}070$. Un campione spinto fuori strada in
+una finestra viene poi in parte ritirato verso la distribuzione dei dati dal
+punteggio libero nelle finestre seguenti, quindi le spinte si compensano fra
+loro invece di accumularsi.
 
 Il banco, però, non dice dove convenga accendere la guida nei modelli veri.
 Chi la usa sui modelli veri fa l'opposto di quanto suggeriscono questi numeri:
@@ -549,7 +557,7 @@ sola per classe non lo può mostrare affatto.
   credibili» più la direzione verso «cose che sembrano gatti». Il primo pezzo
   il modello lo sa; il secondo è tutto quello che il condizionamento aggiunge.
 - Quella riga autorizza a sommare le due bussole così come sono. Alzare la
-  forza della guida oltre l'uno spinge oltre quanto il conto autorizza, e ha
+  peso della guida oltre l'uno spinge oltre quanto il conto autorizza, e ha
   un effetto misurabile: sul banco di prova la distribuzione si restringe alla
   metà e il suo centro finisce nella coda, dove di esempi ce n'era uno su
   sessanta.

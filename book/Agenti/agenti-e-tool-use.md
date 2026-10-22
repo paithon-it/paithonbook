@@ -5,19 +5,19 @@ può saperlo. Se gli chiedi di moltiplicare $4831$ per $7092$ senza scrivere i
 passaggi, il risultato vero è $34\,261\,452$, ma a colpo d'occhio può restituire
 un numero plausibile, della stessa lunghezza e con le cifre giuste all'inizio e
 alla fine, come $34\,281\,452$, con l'errore nascosto in mezzo, dove nessuno lo
-cerca. Se gli chiedi che cosa è successo ieri, ti descrive con sicurezza un
-mondo fermo alla fine dell'addestramento. Un LLM, per quanto grande, conosce
-soltanto il testo su cui è stato addestrato, e i conti lunghi li sbaglia come
-chi li fa a mente, se non scrive i passaggi.
+cerca. Se gli chiedi che cosa è successo ieri, ti descrive con
+sicurezza un mondo fermo alla fine dell'addestramento. In sintesi, un LLM, per
+quanto grande, conosce soltanto il testo su cui è stato addestrato, e i conti
+lunghi li sbaglia come chi li fa a mente, se non scrive i passaggi.
 
 Può però emettere, invece della risposta, una richiesta («esegui questa
 moltiplicazione», «apri questa pagina», «che ore sono?») che un programma
-esegue al posto suo, e poi usare il risultato. È il tool use dell’{doc}`anatomia
-di un agente </Agenti/overview>`. Il modello è quello del {doc}`capitolo sui
-Transformer </Transformers/overview>`, addestrato prima a completare il testo e
-poi a eseguire consegne, e guidato dal *prompt*. Gli si aggiungono degli
-strumenti, il permesso di usarli e un ciclo che lo fa osservare, decidere e
-agire finché il compito è chiuso.
+esegue al posto suo, e poi usare il risultato. È il tool use
+dell’{doc}`anatomia di un agente </Agenti/overview>`. Il modello è quello del
+{doc}`capitolo sui Transformer </Transformers/overview>`, addestrato prima a
+completare il testo e poi a eseguire consegne, e guidato dal *prompt*. Gli
+si aggiungono degli strumenti, il permesso di usarli e un ciclo
+che lo fa osservare, decidere e agire finché il compito è chiuso.
 
 ## Il tool use: chiamare funzioni
 
@@ -54,22 +54,22 @@ strumento, con questi argomenti», `tool_result` è «ecco che cosa ha risposto 
 strumento». Altri fornitori chiamano in altro modo gli stessi due oggetti
 (l'API di OpenAI, per esempio, `function_call` e `function_call_output`). La
 divisione dei compiti che il disegno mostra rende il tool use potente e
-governabile insieme: il modello propone, il codice dispone. Chi ospita il
-modello decide quali funzioni esistono, le valida prima di eseguirle e può
-rifiutarsi; al modello spetta soltanto la richiesta.
+governabile insieme: il modello propone, il codice dispone.
+Chi ospita il modello decide quali funzioni esistono, le valida prima di
+eseguirle e può rifiutarsi; al modello spetta soltanto la richiesta.
 
 `````{tab} Elementare
 
 Il foglietto del cuoco, in un ufficio, diventa un modulo con le caselle. Sulla
-scrivania di un dirigente competente non c'è nessun attrezzo: c'è un blocco di
-moduli. La calcolatrice, il telefono e lo schedario stanno nella stanza
-accanto, dove lavora un addetto. Alla domanda «quanto fa il totale della
-commessa?» il dirigente non azzarda una cifra e non si alza a fare il conto:
-riempie un modulo, lo passa di là, e aspetta. Il foglio con il risultato torna
-sulla scrivania, fra le carte che rilegge prima di decidere.
+scrivania di un dirigente competente non c'è nessuno strumento: c'è un blocco
+di moduli. La calcolatrice, il telefono e lo schedario stanno nella stanza
+accanto, dove lavora un addetto. Alla domanda «quanto fa il totale
+della commessa?» il dirigente non azzarda una cifra e non si alza a fare il
+conto: riempie un modulo, lo passa di là, e aspetta. Il foglio con il
+risultato torna sulla scrivania, fra le carte che rilegge prima di decidere.
 
 Il tool use è questo giro. Al modello diamo un blocco di moduli, uno per
-attrezzo, e ognuno dice tre cose: come si chiama («calcolatrice»), a che cosa
+strumento, e ognuno dice tre cose: come si chiama («calcolatrice»), a che cosa
 serve («fa i conti esatti») e quali caselle riempire perché la richiesta si
 possa eseguire («il conto da fare»). Sulla riga che dice a che cosa serve il
 modello sceglie: un modulo intestato «pratiche varie» non lo prende in mano
@@ -126,19 +126,20 @@ restituire i risultati insieme. La forma esatta dei messaggi (i nomi dei campi,
 se gli argomenti arrivano come oggetto o come stringa JSON da decodificare, in
 quale messaggio rientra il risultato) cambia da un fornitore all'altro e da una
 versione all'altra delle API, e si legge nella documentazione prima di scrivere
-codice; il giro resta lo stesso. La capacità di scegliere lo strumento e
-compilarne gli argomenti nel formato giusto si ottiene per due strade:
-addestrando il modello su tracce di chiamate già fatte, oppure mostrandogliene
-qualcuna nel prompt (allo schema ReAct che il ciclo dell'agente userà ne
-bastano da uno a sei, secondo il compito). L'addestramento rende la capacità
-più affidabile. Il modello resta
+codice; il meccanismo resta lo stesso.
+
+La capacità di scegliere lo strumento e compilarne gli argomenti nel formato
+giusto si ottiene per due strade: addestrando il modello su tracce di chiamate
+già fatte, oppure mostrandogliene qualcuna nel prompt (allo schema ReAct che il
+ciclo dell'agente userà ne bastano da uno a sei, secondo il compito).
+L'addestramento rende la capacità più affidabile. In ogni caso il modello resta
 un generatore di testo: «chiamare uno strumento» consiste nel generare una
 particolare sequenza di token che il runtime riconosce e interpreta come una
 chiamata.
 
 Se la sequenza emessa non rispetta lo schema, i rimedi sono due. Il primo è
 validarla a valle e restituire l'errore al modello come osservazione, perché la
-corregga al giro dopo. Il secondo è il *decoding vincolato*: a ogni passo si
+corregga al giro dopo. Il secondo è il **decoding vincolato**: a ogni passo si
 mettono a $-\infty$ i logit dei token che porterebbero la chiamata fuori dalla
 grammatica dello schema, e la chiamata è valida per costruzione. Garantisce la
 forma, non il contenuto: un argomento può essere sintatticamente perfetto e
@@ -149,9 +150,9 @@ programma sa leggere </IngegneriaLLM/prompt-engineering>`.
 
 Quel catalogo va scritto a mano, e riscritto per ogni sistema esterno a cui si
 vuole collegare l'agente: l'archivio dell'azienda, il calendario, il gestore dei
-file. Con due o tre sistemi il lavoro è accettabile. Con venti conviene un
-accordo su una lingua unica con cui chiedere a ciascun sistema «che strumenti
-hai?» e «esegui questo».
+file. Con due o tre sistemi il lavoro è accettabile. Con venti, invece,
+conviene un accordo su una lingua unica con cui chiedere a ciascun sistema «che
+strumenti hai?» e «esegui questo».
 
 Un accordo del genere è un **protocollo**, come quello per cui due computer che
 non si sono mai visti riescono a scambiarsi una pagina web. Per gli strumenti di
@@ -191,10 +192,10 @@ il sistema all'altra estremità, e non più chi costruisce l'agente.
 
 Prima delle prese standard, ogni stampante aveva il suo cavo e il suo
 programma, e ogni computer doveva imparare a parlare con ciascuna. Con tre
-computer e dieci periferiche, trenta collegamenti da costruire uno per uno.
-Con una porta uguale per tutti, ogni fabbricante adatta la sua periferica alla
-porta una volta sola, ogni computer impara la porta una volta sola, e i
-collegamenti da costruire scendono a tredici.
+computer e dieci periferiche, ad esempio, ci sono trenta collegamenti da
+costruire uno per uno. Con una porta uguale per tutti, ogni fabbricante adatta
+la sua periferica alla porta una volta sola, ogni computer impara la porta una
+volta sola, e i collegamenti da costruire scendono a tredici.
 
 Quando attacchi una periferica nuova, il computer le chiede «chi sei e che
 cosa sai fare?», e lei risponde con la sua scheda: stampo, scansiono, ecco che
@@ -259,9 +260,9 @@ testo e la generazione riparte da lì, come se il numero l'avesse scritto lui.
 
 In {numref}`fig-toolformer` la chiamata sta dentro la frase, e il suo risultato
 ($0{,}29$) rientra nel testo subito prima della parola che lo commenta
-($29\%$). Quel punto fornisce a Toolformer il criterio di apprendimento: il
-modello misura quanto gli riesce facile scrivere le parole che seguono, una volta
-con il risultato della chiamata davanti e una volta senza. La facilità si misura
+($29\%$). Da qui nasce il criterio di apprendimento di Toolformer: il modello
+misura quanto gli riesce facile scrivere le parole che seguono, una volta con il
+risultato della chiamata davanti e una volta senza. La facilità si misura
 con la probabilità che il modello assegna alle parole che nel testo originale
 seguono: con il numero giusto davanti «29%» diventa quasi obbligato, senza
 resta incerto. Se la differenza fra le due prove supera una soglia, la chiamata
@@ -281,8 +282,8 @@ fatti). Durante la prova la chiamata e il suo risultato li annota in cima al
 foglio, come un promemoria, e non ancora dentro la frase. Poi copre il seguito
 e prova a indovinarlo due volte: una con il promemoria lì in cima, una senza.
 Il «29%» di prima lo mostra bene: con «0,29» sotto gli occhi, viene quasi da
-sé. Se il salto di facilità è grosso, l'attrezzo lì serviva; se è piccolo, non
-conta.
+sé. Se il salto di facilità è grosso, lo strumento lì serviva; se è piccolo,
+non conta.
 
 Due cautele tengono onesta la misura. Prova anche a infilare la chiamata
 lasciando vuoto il posto del risultato: se le parole dopo diventano facili lo
@@ -291,9 +292,9 @@ che vengono subito dopo, non tutto il resto del foglio.
 
 Le chiamate promosse le tiene e le riscrive dentro la frase, al posto giusto;
 le altre le butta. Sul quaderno di esercizi che ne esce ci studia sopra.
-Nessun insegnante gli ha detto dove mettere gli attrezzi: l'ha scoperto
-misurando quanto lo aiutavano. Un attrezzo alla volta, però: cercare un numero
-da qualche parte e poi usarlo nel conto, quello non lo impara.
+Nessun insegnante gli ha detto dove mettere gli strumenti: l'ha scoperto
+misurando quanto lo aiutavano. Uno strumento alla volta, però: cercare un
+numero da qualche parte e poi usarlo nel conto, quello non lo impara.
 
 `````
 
@@ -369,17 +370,17 @@ pensiero perché la prima osservazione, la domanda dell'utente, è già lì.
 :alt: "Il ciclo ReAct come sequenza verticale: un PENSIERO («mi serve il film d'esordio del regista, lo cerco»), un'AZIONE (cerca con il nome del regista), un'OSSERVAZIONE («ha esordito con “titolo del film”: manca l'anno»); poi un secondo giro con un nuovo pensiero, l'azione di cercare il titolo del film e l'osservazione «uscito nel 1994, ora posso rispondere». Una parentesi laterale marca un giro del ciclo."
 :width: 62%
 
-Due giri di ReAct su una domanda che nessuna singola ricerca risolve. Ogni
-osservazione non chiude il problema: lo restringe, e il pensiero successivo
-riparte da lì.
+Due giri di ReAct su una domanda che nessuna singola ricerca risolve.
+Ogni osservazione non chiude il problema: lo restringe, e il pensiero
+successivo riparte da lì.
 ```
 
 La domanda dell'esempio in {numref}`fig-react` è di quelle che sembrano
 banali: «in che anno è uscito il film d'esordio di quel regista?». Per
 rispondere servono due fatti, e il secondo si può cercare solo dopo aver
 ottenuto il primo: finché non so *quale* sia il film d'esordio, non ho niente
-da cercare. Un sistema che agisse una volta sola resterebbe fermo al primo
-giro, perché non saprebbe ancora cosa chiedere.
+da cercare. Un sistema che agisse una volta sola resterebbe fermo alla
+prima iterazione, perché non saprebbe ancora cosa chiedere.
 
 Il pensiero esplicito svolge le funzioni elencate nell’{doc}`anatomia di un
 agente </Agenti/overview>`: scompone il compito, estrae da un'osservazione la
@@ -413,9 +414,8 @@ soltanto gli appunti che il detective ha davanti quando sceglie la mossa dopo.
 La forza del metodo sta nell'alternanza. Un detective che ragionasse soltanto,
 senza mai chiedere niente a nessuno, costruirebbe teorie eleganti e magari
 sbagliate. Uno che chiedesse a caso, senza ragionare, si perderebbe tra mille
-indizi inutili.
-ReAct fa fare al modello tutti e due i mestieri: pensa per decidere dove
-guardare, guarda per correggere ciò che pensa.
+indizi inutili. ReAct fa quindi fare al modello tutti e due i mestieri: pensa
+per decidere dove guardare, guarda per correggere ciò che pensa.
 
 Controllare ogni intuizione prima di proseguire ha però un effetto collaterale.
 Il detective fa meno voli di fantasia e finisce per pensare di meno: la mossa
@@ -454,10 +454,11 @@ Action: Answer[9 anni, dal 2017]
 ```
 
 Ogni *Observation* è testo prodotto dall'esterno e non campionato dal modello:
-ancora il ragionamento a fatti recuperati e ne limita la deriva. Le cifre che
-seguono sono tutte dell'articolo
-originale, con PaLM-540B e pochi esempi nel prompt (2022). Sui compiti
-interattivi come ALFWorld (eseguire istruzioni in un ambiente simulato) e
+ancora il ragionamento a fatti recuperati e ne limita la deriva.
+
+Le cifre che seguono sono tutte dell'articolo originale, con PaLM-540B e pochi
+esempi nel prompt (2022). Sui compiti interattivi come ALFWorld (eseguire
+istruzioni in un ambiente simulato) e
 WebShop (navigare un sito per acquistare) il ragionamento intercalato
 all'azione batte nettamente la stessa politica privata dei pensieri: su
 ALFWorld il miglior risultato su sei prove sale dal 45% al 71% dei compiti
@@ -480,10 +481,12 @@ ripassa a ReAct quando il solo ragionamento, provato più volte, non fa
 convergere la maggioranza delle prove sulla stessa risposta.
 
 Il costo è in token e in latenza, perché ogni pensiero è testo generato in più;
-in cambio la traccia è ispezionabile, un vantaggio operativo. *Leggibile* non
-vuol dire però *fedele*: la catena di pensieri è testo generato come tutto il
-resto, e può razionalizzare a posteriori una scelta compiuta per motivi che non
-scrive {cite}`turpin2023unfaithful`; peggio, nelle misure di Lanham e colleghi
+in cambio la traccia è ispezionabile, un vantaggio operativo.
+
+*Leggibile* non vuol dire però *fedele*: la catena di pensieri è testo generato
+come tutto il resto, e può razionalizzare a posteriori una scelta compiuta per
+motivi che non scrive {cite}`turpin2023unfaithful`; peggio, nelle misure di
+Lanham e colleghi
 (2023) la fedeltà del ragionamento esplicito tende a calare al crescere della
 scala del modello, sulla maggior parte dei compiti provati
 {cite}`lanham2023faith`. Le due misure sono su modelli che non ragionano a
@@ -515,9 +518,10 @@ occhi.
 
 Un buon studente, dopo un compito andato male, non riprova identico: rilegge
 l'errore e se lo dice a parole, «ho sbagliato perché ho applicato la formula
-prima di convertire le unità; la prossima volta converto per prima cosa». Quella frase, appuntata a margine, alla prova
-successiva vale più di mille esercizi ripetuti a testa bassa, perché indirizza
-il tentativo nuovo lontano dallo stesso scoglio.
+prima di convertire le unità; la prossima volta converto per prima cosa».
+Quella frase, appuntata a margine, alla prova successiva vale più di mille
+esercizi ripetuti a testa bassa, perché indirizza il tentativo nuovo lontano
+dallo stesso scoglio.
 
 Reflexion dà all'agente questo quaderno di margine. Quando un tentativo
 fallisce, il modello genera una piccola auto-critica in linguaggio naturale
@@ -525,8 +529,8 @@ fallisce, il modello genera una piccola auto-critica in linguaggio naturale
 tentativo seguente. Non cambia un solo peso della rete: cambia solo ciò che il
 modello *legge* prima di riprovare. Eppure spesso basta, perché l'errore che
 prima era invisibile ora è scritto nero su bianco all'inizio della pagina.
-Rileggere il compito sbagliato senza dirsi perché aiuta meno: la differenza la fa
-la frase sul perché. Sul margine c'è posto per poche note, le
+Rileggere il compito sbagliato senza dirsi perché aiuta meno: la differenza la
+fa la frase sul perché. Sul margine c'è posto per poche note, le
 ultime due o tre; le più vecchie si cancellano.
 
 Che il compito sia andato male, però, deve dirlo qualcun altro: il professore,
@@ -550,10 +554,12 @@ contesto del tentativo successivo, e che tiene soltanto le ultime $\Omega$
 riflessioni (di solito da una a tre) per stare nella finestra. Il confronto che
 isola la riflessione non è con il tentativo senza memoria, ma con la sola
 memoria della traiettoria fallita, senza critica: su cento domande di HotpotQA
-la riflessione aggiunge circa otto punti assoluti. Le cifre che seguono sono
-dell'articolo originale (2023), con GPT-4 sui compiti di programmazione, e gli
-autori non offrono garanzie: tutto dipende da quanto il modello sa valutarsi
-{cite}`shinn2023reflexion`. Gli autori misurano il *pass@1*, cioè la quota di
+la riflessione aggiunge circa otto punti assoluti.
+
+Le cifre che seguono sono dell'articolo originale (2023), con GPT-4 sui compiti
+di programmazione, e gli autori non offrono garanzie: tutto dipende da quanto il
+modello sa valutarsi {cite}`shinn2023reflexion`. Gli autori misurano il
+*pass@1*, cioè la quota di
 problemi risolti con l'unica soluzione consegnata alla fine. Il ciclo interno
 gira su test che il modello si scrive da sé, non su quelli veri del benchmark:
 per questo la soluzione conta come unico tentativo e si può ancora parlare di
@@ -600,7 +606,8 @@ propria risposta senza alcun riscontro esterno (l'auto-correzione che chiamano
 Per mettere insieme i componenti nel modo più semplice si scrive un mini-agente
 ReAct in puro Python, eseguibile senza connessione a internet e senza installare
 niente. La **traccia** è l'elenco di quello che è successo finora, un blocco per
-giro (che cosa è stato chiesto, che cosa è tornato): è la memoria dell'agente.
+iterazione (che cosa è stato chiesto, che cosa è tornato): è la memoria
+dell'agente.
 
 Per isolare il *ciclo* si sostituisce il modello con un **LLM finto**: poche
 righe di regole scritte a mano che, data una traccia, producono sempre lo stesso
@@ -674,9 +681,9 @@ pensiero e l'azione da compiere (l'azione è una coppia: nome dello strumento e
 argomento). `esegui_strumento` fa eseguire l'azione e, se lo strumento segnala
 un errore (un conto scritto male, una divisione per zero, uno strumento che non
 esiste), lo trasforma in un'osservazione invece di fermare tutto: il modello la
-leggerà al giro dopo e deciderà che cosa fare. `esegui_agente` è il ciclo che
-alterna decisione ed esecuzione. La struttura è quella di un agente reale, con
-la sola differenza che qui il «modello» è una regola scritta a mano.
+leggerà all'iterazione dopo e deciderà che cosa fare. `esegui_agente` è il
+ciclo che alterna decisione ed esecuzione. La struttura è quella di un agente
+reale, con la sola differenza che qui il «modello» è una regola scritta a mano.
 
 ```python
 # --- l'LLM finto: deterministico, a regole ---
@@ -754,8 +761,8 @@ L'esecuzione stampa la traccia completa: i tre `Thought`, le due chiamate agli
 strumenti con le rispettive `Observation`, e la risposta finale. Il ciclo gira
 tre volte ({numref}`fig-ciclo-agente`) e i tre passi sono sempre gli stessi; a
 cambiare è il contesto, cioè ciò che il modello legge prima di scegliere
-l'azione successiva, che a ogni giro si allunga di un blocco: la chiamata fatta
-e la sua risposta.
+l'azione successiva, che a ogni iterazione si allunga di un blocco: la chiamata
+fatta e la sua risposta.
 
 ```{figure} ../figures/ciclo-agente.svg
 :name: fig-ciclo-agente
@@ -772,8 +779,9 @@ passi.
 La traccia è scritta da regole, quindi non dice niente su come si comporterebbe
 un modello vero: mostra la struttura del ciclo. Il «modello» propone una mossa,
 il sistema la esegue con uno strumento vero, e ciò che torna entra nella
-traccia del giro seguente. Sostituisci `llm_finto` con un vero LLM a cui passi,
-a ogni giro, la traccia accumulata e il catalogo degli strumenti, e hai (nella
+traccia dell'iterazione seguente. Sostituisci `llm_finto` con un vero LLM a cui
+passi, a ogni iterazione, la traccia accumulata e il catalogo degli strumenti, e
+hai (nella
 sua ossatura essenziale) lo stesso ciclo che muove gli assistenti capaci di
 navigare il web, eseguire codice e interrogare un archivio di dati.
 
@@ -802,16 +810,16 @@ per compito e non per comodità.
   risultato, che il modello ritrova davanti al giro dopo.
 - Ogni strumento si presenta con un modulo: come si chiama, a cosa serve, e
   cosa bisogna infilarci dentro perché funzioni. Il modello impara a scegliere
-  l'attrezzo giusto e a riempire bene il modulo. Toolformer
+  lo strumento giusto e a riempire bene il modulo. Toolformer
   {cite}`schick2023toolformer` lo impara perfino da solo, come il ragazzo
   che scopre quando gli conviene la calcolatrice: prova a infilare una chiamata
   qua e là e tiene quelle che lo aiutano a indovinare meglio le parole
   successive.
 - Quando i sistemi esterni da collegare diventano venti, riscrivere il
   catalogo per ognuno non è più praticabile, e ci si accorda su un modo unico di
-  chiedere «che attrezzi hai?» ed «esegui questo». Quell'accordo si chiama
+  chiedere «che strumenti hai?» ed «esegui questo». Quell'accordo si chiama
   protocollo, la stessa idea per cui due computer che non si sono mai visti si
-  scambiano una pagina web; per gli attrezzi di un modello il più diffuso è
+  scambiano una pagina web; per gli strumenti di un modello il più diffuso è
   MCP, presentato da Anthropic nel 2024. A parlarlo è l'applicazione che ospita
   il modello, non il modello, e la scheda con cui uno strumento si presenta la
   scrive chi lo fornisce: va letta con sospetto.
@@ -889,7 +897,8 @@ per compito e non per comodità.
   modello, può confermare l'errore o peggiorare una risposta giusta.
 - Il ciclo dell'agente (osserva, pensa, agisci, ripeti fino alla risposta)
   è la stessa ossatura del mini-agente di poche decine di righe e degli
-  assistenti che navigano il web ed eseguono codice; la differenza è la robustezza attorno.
+  assistenti che navigano il web ed eseguono codice; la differenza è la
+  robustezza attorno.
 ```
 
 `````

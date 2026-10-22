@@ -1,26 +1,28 @@
 # Catene di Markov: la matrice che si applica per sempre
 
-Per mescolare bene un mazzo di cinquantadue carte servono sette mescolate:
-lo dimostra un risultato di matematica pura, al quale nel gennaio del 1990 il
-*New York Times* dedicò un articolo. Dave Bayer e Persi
-Diaconis avevano studiato che cosa succede a un mazzo mescolato alla maniera
-dei croupier, dividendolo in due e facendo cadere le carte a intreccio. Avevano
-scoperto un fenomeno inatteso: fino a quattro mescolate la distanza fra la
-distribuzione dei mazzi ottenuti e quella di un mazzo sorteggiato a caso,
-misurata in variazione totale, resta praticamente uguale a uno (chi conosce la
-procedura riconosce quasi sempre un mazzo così mescolato). Alla settima scende
-per la prima volta sotto la metà, e da lì in poi si dimezza a ogni mescolata
-{cite}`bayer1992trailing`. Fra il mazzo ancora riconoscibile e quello
-indistinguibile da uno casuale non c'è una salita graduale, c'è una soglia, e
-sta fra la quinta mescolata e la settima.
+Per mescolare bene un mazzo di cinquantadue carte servono sette mescolate. Lo
+dimostra un risultato di matematica pura, al quale nel gennaio del 1990 il
+*New York Times* dedicò un articolo. Dave Bayer e Persi Diaconis avevano
+studiato che cosa succede a un mazzo mescolato alla maniera dei croupier,
+dividendolo in due e facendo cadere le carte a intreccio, e avevano scoperto un
+fenomeno inatteso.
 
-Quel risultato riguarda un mazzo di carte, e la struttura è quella di una
-catena di Markov. Un mazzo mescolato è uno stato; la mescolata è una regola che
-porta da uno stato al successivo, con un po' di caso; e la domanda «dopo quante
-volte non si distingue più da un mazzo qualsiasi?» riguarda la velocità con cui
-la catena si avvicina all'equilibrio. Per quasi tutte le catene il secondo
-autovalore della matrice che descrive la regola ne governa la velocità; il
-mazzo è uno dei casi in cui quel numero da solo non basta.
+Fino a quattro mescolate la distanza fra la distribuzione dei mazzi ottenuti e
+quella di un mazzo in ordine casuale, misurata in variazione totale, resta
+praticamente uguale a uno. In altri termini, chi conosce la procedura riconosce
+quasi sempre un mazzo così mescolato. Alla settima la distanza scende per la
+prima volta sotto la metà, e da lì in poi si dimezza a ogni mescolata
+{cite}`bayer1992trailing`. Fra il mazzo ancora riconoscibile e quello
+indistinguibile da uno casuale, quindi, non c'è una salita graduale, c'è una
+soglia, e sta fra la quinta mescolata e la settima.
+
+Quel risultato riguarda un mazzo di carte, ma la sua struttura è quella di una
+catena di Markov. Un mazzo mescolato, infatti, è uno stato; la mescolata è una
+regola che porta da uno stato al successivo, con un po' di caso; e la domanda
+«dopo quante volte non si distingue più da un mazzo qualsiasi?» riguarda la
+velocità con cui la catena si avvicina all'equilibrio. Per quasi tutte le
+catene il secondo autovalore della matrice che descrive la regola ne governa la
+velocità; il mazzo è uno dei casi in cui quel numero da solo non basta.
 
 ## Il patto: domani dipende solo da oggi
 
@@ -32,18 +34,18 @@ sei arrivato, se hai fatto un percorso fortunato o disastroso, se hai già perso
 tre turni. Tutta la tua storia è riassunta da un solo dato, la casella.
 
 Questo è il **patto di Markov**, e i sistemi che lo rispettano si chiamano
-catene di Markov. È una restrizione seria, e per questo porta
-lontano: un sistema che ricorda tutto è impossibile da studiare, uno che
-ricorda solo dove si trova si maneggia con l'algebra lineare.
+**catene di Markov**. È una restrizione seria, e proprio per questo porta
+lontano. Un sistema che ricorda tutto è impossibile da studiare, mentre uno
+che ricorda solo dove si trova si maneggia con l'algebra lineare.
 
 Un accorgimento torna utile in continuazione. Se il gioco avesse
 una regola del tipo «chi è già finito in prigione una volta, la seconda volta
 esce subito», il patto sarebbe rotto: la casella da sola non basterebbe più a
 decidere il futuro. Basta però cambiare che cosa si chiama stato. Invece della
 sola casella si prende la coppia (casella, sei già stato in prigione?), e il
-patto torna valido, con il doppio degli stati. Quasi ogni sistema si può
-rendere markoviano allargando la definizione di stato, ma gli
-stati si moltiplicano.
+patto torna valido, con il doppio degli stati. In generale, quasi ogni sistema
+si può rendere markoviano allargando la definizione di stato, ma gli stati si
+moltiplicano.
 
 Descritto il gioco, si vuole sapere dove si finisce. Non in che
 casella cadrai tu stasera, che dipende dai dadi, ma come si distribuiscono i
@@ -55,8 +57,9 @@ Nei conti la distribuzione è un vettore: una lista di numeri, uno per casella
 (la frazione di giocatori che sta lì). Le regole del gioco stanno in una
 tabella di numeri, la **matrice di transizione**, con una colonna per ogni
 casella di partenza e dentro le probabilità di arrivare in ciascuna casella. Un
-turno di gioco è la tabella moltiplicata per la lista: per ogni casella
-d'arrivo si fa uno scontrino, probabilità per quota di giocatori, e si somma.
+turno di gioco è la tabella moltiplicata per la lista. In concreto, per ogni
+casella d'arrivo si fa uno scontrino, probabilità per quota di giocatori, e si
+somma.
 
 `````
 
@@ -74,11 +77,11 @@ cioè il futuro è condizionatamente indipendente dal passato, dato il
 presente. I numeri $P_{ij}$ formano la **matrice di transizione**
 $\mathbf{P}\in\mathbb{R}^{n\times n}$.
 
-I testi si dividono su una convenzione. Qui
-$\mathbf{P}$ è **stocastica per colonne**: $P_{ij}$ è la probabilità di andare
-in $i$ partendo da $j$, quindi ogni colonna è una distribuzione di
-probabilità e somma a $1$. Con questa scelta lo stato del sistema è un vettore
-colonna $\mathbf{x}_t\in\mathbb{R}^n$ di probabilità, e l'evoluzione è la
+I testi si dividono su una convenzione, e noi prendiamo $\mathbf{P}$
+**stocastica per colonne**: $P_{ij}$ è la probabilità di andare in $i$
+partendo da $j$, quindi ogni colonna è una distribuzione di probabilità e somma
+a $1$. Con questa scelta lo stato del sistema è un vettore colonna
+$\mathbf{x}_t\in\mathbb{R}^n$ di probabilità, e l'evoluzione è la
 moltiplicazione a sinistra:
 
 $$
@@ -89,17 +92,17 @@ $$
 
 Molti testi di probabilità adottano la convenzione trasposta (righe
 stocastiche, vettori riga, $\boldsymbol{\pi}_{t+1} = \boldsymbol{\pi}_t
-\mathbf{P}$): confrontando una formula con la sua fonte conviene guardare da
-che parte sta la somma a uno.
+\mathbf{P}$), e confrontando una formula con la sua fonte conviene guardare
+da che parte sta la somma a uno.
 
 L'ipotesi di Markov è meno restrittiva di quanto sembri, per via
-dell’allargamento dello stato: un processo che dipende dagli ultimi $k$
-istanti diventa markoviano prendendo come stato la $k$-upla degli ultimi $k$
-valori, al costo di $n^k$ stati. È la costruzione dei modelli linguistici
-che condizionano ogni parola alle $k$ precedenti (gli $n$-gram, dove $n=k+1$
-conta le parole della finestra e non gli stati), e la stessa con cui un
-problema di decisione in cui conta la storia recente si riporta a un processo
-decisionale di Markov.
+dell’allargamento dello stato. Un processo che dipende dagli ultimi $k$
+istanti, infatti, diventa markoviano prendendo come stato la $k$-upla degli
+ultimi $k$ valori, al costo di $n^k$ stati. È la costruzione dei modelli
+linguistici che condizionano ogni parola alle $k$ precedenti (gli $n$-gram,
+dove $n=k+1$ conta le parole della finestra e non gli stati), e la stessa con
+cui un problema di decisione in cui conta la storia recente si riporta a un
+processo decisionale di Markov.
 
 `````
 
@@ -135,9 +138,9 @@ ne escono si pareggiano.
 
 La distribuzione stazionaria, però, si può trovare risolvendo, invece che
 aspettando. Cercare una distribuzione che la regola lascia identica a sé stessa
-equivale a cercare una direzione che la matrice non devia: un autovettore con
-fattore di allungamento uguale a uno. È una delle venature del legno di una
-matrice: qui la venatura che conta è quella che non si allunga né si accorcia,
+equivale a cercare una direzione che la matrice non devia, cioè un autovettore
+con fattore di allungamento uguale a uno. È una delle venature del legno di una
+matrice; qui la venatura che conta è quella che non si allunga né si accorcia,
 e il sistema ci scivola sopra e ci resta.
 
 `````
@@ -152,14 +155,16 @@ $$
 $$
 
 il che la rende un autovettore di $\mathbf{P}$ relativo all'autovalore $1$.
-L'autovalore $1$ esiste sempre: le colonne di $\mathbf{P}$ sommano a $1$,
-quindi $\mathbf{1}^\top\mathbf{P} = \mathbf{1}^\top$, e $\mathbf{1}$ è
+L'autovalore $1$ esiste sempre. Le colonne di $\mathbf{P}$, infatti, sommano a
+$1$, quindi $\mathbf{1}^\top\mathbf{P} = \mathbf{1}^\top$, e $\mathbf{1}$ è
 autovettore sinistro con autovalore $1$; poiché $\mathbf{P}$ e
 $\mathbf{P}^\top$ hanno lo stesso spettro, esiste anche l'autovettore destro.
-Questo ragionamento non garantisce che l'autovettore si possa scegliere a
-componenti non negative, e quindi normalizzare a una distribuzione: lo
-garantisce la parte del teorema di Perron-Frobenius che vale per ogni matrice a
-entrate non negative, e senza di essa l'autovettore potrebbe avere segni misti.
+
+Osserviamo però che questo ragionamento non garantisce che l'autovettore si
+possa scegliere a componenti non negative, e quindi normalizzare a una
+distribuzione: lo garantisce la parte del teorema di Perron-Frobenius che vale
+per ogni matrice a entrate non negative, e senza di essa l'autovettore potrebbe
+avere segni misti.
 
 Vale inoltre $|\lambda|\le 1$ per ogni autovalore. Gli autovettori non sono
 distribuzioni, quindi l'argomento deve valere per vettori qualsiasi: una
@@ -186,26 +191,28 @@ mentre il flusso complessivo si pareggia. Una condizione più forte, il
 **bilancio dettagliato** $P_{ij}\pi_j = P_{ji}\pi_i$, chiede che si pareggi
 ogni singola coppia di stati. È sufficiente per la stazionarietà, e lo si vede
 sommando su $j$: $\sum_j P_{ij}\pi_j=\pi_i\sum_j P_{ji}=\pi_i$. Non è
-necessaria, ma è comoda: per costruire una catena con una stazionaria assegnata
-basta imporre una condizione locale fra coppie di stati, senza risolvere nessun
-sistema. È la proprietà su cui si costruiscono i campionatori usati nelle
-{doc}`macchine di Boltzmann </ModelliEnergia/boltzmann>`. Una catena che la
-soddisfa si dice *reversibile*, e ne segue un fatto spettrale: posto
+necessaria, ma è comoda, perché per costruire una catena con una stazionaria
+assegnata basta imporre una condizione locale fra coppie di stati, senza
+risolvere nessun sistema. È la proprietà su cui si costruiscono i campionatori
+usati nelle {doc}`macchine di Boltzmann </ModelliEnergia/boltzmann>`.
+
+Una catena che soddisfa il bilancio dettagliato si dice **reversibile**, e ne
+segue un fatto spettrale: posto
 $\mathbf{D}=\operatorname{diag}(\boldsymbol{\pi})$, con $\pi_i>0$, la matrice
 $\mathbf{D}^{-1/2}\mathbf{P}\mathbf{D}^{1/2}$ è simmetrica, quindi gli
-autovalori di $\mathbf{P}$ sono tutti reali. Gli autovalori complessi della
-catena del PageRank, e la rotazione che producono, sono la firma di una catena
-non reversibile.
+autovalori di $\mathbf{P}$ sono tutti reali. Per questo gli autovalori
+complessi della catena del PageRank, e la rotazione che producono, sono la
+firma di una catena non reversibile.
 
 `````
 
-## Quando la meta è una sola
+## Quando la distribuzione stazionaria è una sola
 
 Per una catena finita una distribuzione stazionaria esiste sempre. È unica se
-la catena è **irriducibile** (da ogni stato si può arrivare a ogni altro), e la
-distribuzione al tempo $t$ converge a essa da qualunque partenza se la catena
-è anche **aperiodica** (non ha un ritmo fisso). Le due condizioni si capiscono
-meglio guardando come si rompono.
+la catena è **irriducibile** (da ogni stato si può arrivare a ogni altro). Se
+la catena è anche **aperiodica** (non ha un ritmo fisso), la distribuzione al
+tempo $t$ converge a essa da qualunque partenza. Le due condizioni si
+capiscono meglio guardando come si rompono.
 
 `````{tab} Elementare
 
@@ -220,11 +227,13 @@ Seconda condizione: non deve esserci un ritmo fisso. Due stanze sono
 collegate da una porta girevole che a ogni passo obbliga a cambiare stanza.
 Partendo dalla prima sarai nella seconda a ogni turno dispari e nella prima a
 ogni turno pari, per sempre: la distribuzione oscilla fra due valori e non si
-assesta mai, anche se la media sul lungo periodo è metà e metà. Basta una sola
-possibilità di restare fermi, o due giri di ritorno le cui lunghezze non
-abbiano divisori in comune (uno di due passi e uno di tre, per esempio), per
-rompere il ritmo e far convergere tutto. Un solo giro di tre passi non basta:
-la distribuzione gira fra tre valori, come fra due nella porta girevole.
+assesta mai, anche se la media sul lungo periodo è metà e metà.
+
+Basta una sola possibilità di restare fermi, o due giri di ritorno le cui
+lunghezze non abbiano divisori in comune (uno di due passi e uno di tre, per
+esempio), per rompere il ritmo e far convergere tutto. Un solo giro di tre
+passi, invece, non basta: la distribuzione gira fra tre valori, come fra due
+nella porta girevole.
 
 Con tutte e due le condizioni la garanzia è forte: esiste una sola distribuzione
 di equilibrio, e la catena ci arriva da qualunque punto di partenza. La
@@ -270,7 +279,9 @@ distribuzione al tempo $t$, non a quella delle medie nel tempo: la catena che
 salta fra due stati ha le medie giuste anche se la sua distribuzione oscilla.
 Il teorema ergodico, non la convergenza di $\mathbf{P}^t\mathbf{x}_0$,
 giustifica un campionatore MCMC, che stima un valore atteso con la media
-lungo una sola traiettoria. La catena *pigra* $\tfrac12(\mathbf{I}+\mathbf{P})$
+lungo una sola traiettoria.
+
+La catena *pigra* $\tfrac12(\mathbf{I}+\mathbf{P})$
 si usa soprattutto nelle dimostrazioni: sposta lo spettro nel disco di centro
 $\tfrac12$ e raggio $\tfrac12$, che tocca il bordo solo in $1$, al costo di
 dimezzare circa il gap.
@@ -279,28 +290,28 @@ dimezzare circa il gap.
 
 ## Quanto ci si mette: il secondo autovalore
 
-Sapere che la catena converge non basta: la regola si applica un numero finito
-di volte, e serve sapere dopo quante. Il modulo del secondo autovalore,
+Sapere che la catena converge non basta, perché la regola si applica un numero
+finito di volte e serve sapere dopo quante. Il modulo del secondo autovalore,
 $|\lambda_2|$, dà la velocità asintotica di avvicinamento all'equilibrio; il
 tempo di mescolamento misura invece quanti passi servono.
 
 `````{tab} Elementare
 
 Lo scarto fra la distribuzione di adesso e quella di equilibrio, a lungo
-andare, si accorcia a ogni passo della stessa frazione, almeno in media: come
+andare, si accorcia a ogni passo della stessa frazione, almeno in media. È come
 un libretto di risparmio al contrario, che ogni giorno perde la stessa quota.
-Se ogni passo dimezza lo scarto, dopo dieci passi ne resta circa un millesimo,
-perché un mezzo moltiplicato per sé stesso dieci volte fa uno su 1024. Fra due
-passi vicini il rapporto può anche oscillare, e allora a essere costante è la
-media su molti passi: è quella la velocità della catena.
+Ad esempio, se ogni passo dimezza lo scarto, dopo dieci passi ne resta circa un
+millesimo, perché un mezzo moltiplicato per sé stesso dieci volte fa uno
+su 1024. Fra due passi vicini il rapporto può anche oscillare, e allora a
+essere costante è la media su molti passi: è quella la velocità della catena.
 
-Quella frazione è un numero che si legge nella matrice: il secondo dei suoi
-fattori di allungamento, il più grande dopo l'uno che tiene ferma la
+Quella frazione è un numero che si legge nella matrice, ed è il secondo dei
+suoi fattori di allungamento, il più grande dopo l'uno che tiene ferma la
 distribuzione di equilibrio. Se è piccolo si arriva in fretta, se è vicino a
 uno ci si mette moltissimo. Poiché lo scarto si moltiplica per quella frazione,
-il numero di passi non cresce in proporzione alla precisione voluta: ogni cifra
-decimale in più aggiunge sempre lo stesso numero di passi, quale che sia la
-cifra.
+il numero di passi non cresce in proporzione alla precisione voluta. In altre
+parole, ogni cifra decimale in più aggiunge sempre lo stesso numero di passi,
+quale che sia la cifra.
 
 Il mazzo di carte è un caso speciale. Il ritmo regolare vale comunque a lungo
 andare, ma prima di arrivarci il passaggio dal mescolato male al mescolato bene
@@ -327,8 +338,8 @@ $$
 $$
 
 e lo scarto decade geometricamente con ragione $|\lambda_2|$. La scrittura
-$O(|\lambda_2|^t)$ presuppone però che $\mathbf{P}$ sia diagonalizzabile: se
-$\lambda_2$ ha un blocco di Jordan di taglia $m$ lo scarto va come
+$O(|\lambda_2|^t)$ presuppone però che $\mathbf{P}$ sia diagonalizzabile. Se
+$\lambda_2$ ha un blocco di Jordan di taglia $m$, lo scarto va come
 $t^{m-1}|\lambda_2|^t$, con la stessa ragione asintotica ma con un
 transitorio polinomiale davanti. La quantità
 
@@ -355,18 +366,18 @@ $$
 $$
 
 con $|\lambda_2|$ il più grande modulo fra gli autovalori diversi da $1$ e
-$\pi_{\min}=\min_i\pi_i$. Il fattore $\log(1/\pi_{\min})$ non è innocuo: con la
-stazionaria uniforme sui $52!$ ordini di un mazzo vale circa $156$ (il
-mescolamento a intreccio non è reversibile, e la stima non gli si applica alla
-lettera, ma l'effetto del numero degli stati è quello). Per una catena non
-reversibile, come la matrice di Google, lo spettro da solo non basta nemmeno a
-questa maggiorazione, perché conta anche quanto sono vicini fra loro gli
-autovettori.
+$\pi_{\min}=\min_i\pi_i$. Il fattore $\log(1/\pi_{\min})$ non è innocuo. Ad
+esempio, con la stazionaria uniforme sui $52!$ ordini di un mazzo vale circa
+$156$ (il mescolamento a intreccio non è reversibile, e la stima non gli si
+applica alla lettera, ma l'effetto del numero degli stati è quello). Per una
+catena non reversibile, come la matrice di Google, lo spettro da solo non basta
+nemmeno a questa maggiorazione, perché conta anche quanto sono vicini fra loro
+gli autovettori.
 
 Il logaritmo dice che guadagnare una cifra decimale richiede sempre lo stesso
 numero di passi, e il fattore davanti dice quanti. Se $\lambda_2$ è complesso,
 il decadimento è geometrico soltanto in modulo, con una rotazione sovrapposta.
-Il rapporto fra due passi consecutivi oscilla, e la stima onesta di
+Di conseguenza il rapporto fra due passi consecutivi oscilla, e la stima di
 $|\lambda_2|$ si prende come media geometrica su molti passi. Un gap piccolo
 (una catena quasi riducibile, con due gruppi di stati collegati da pochi
 passaggi) rende il mescolamento lentissimo, la difficoltà tipica dei
@@ -378,14 +389,15 @@ resta vicina al massimo per un tempo, poi cala a zero in una finestra molto più
 stretta del tempo stesso. Per il mescolamento a intreccio di $n$ carte, con
 $k=\tfrac32\log_2 n+\theta$ mescolate, la distanza in variazione totale tende a
 $1-2\Phi\!\big(-2^{-\theta}/(4\sqrt3)\big)$, con $\Phi$ la funzione di
-ripartizione normale {cite}`bayer1992trailing`. Il centro della finestra è
+ripartizione normale {cite}`bayer1992trailing`.
+
+Per un mazzo di cinquantadue carte il centro della finestra è
 $\tfrac32\log_2 52\approx8{,}55$, dove la distanza vale ancora circa $0{,}11$;
 scende sotto $1/2$ per $\theta\approx-2{,}2$, quindi a $k\approx6{,}3$; per
 questo la settima mescolata è la prima sotto la metà (valori esatti:
-$0{,}614$ alla sesta, $0{,}334$ alla settima). Il decadimento geometrico
-descritto sopra vale sempre asintoticamente, ma nella finestra del cutoff
-descrive male ciò che si osserva, e quindi la sola conoscenza di
-$|\lambda_2|$ a volte non basta.
+$0{,}614$ alla sesta, $0{,}334$ alla settima). Il decadimento geometrico vale
+sempre asintoticamente, ma nella finestra del cutoff descrive male ciò che si
+osserva, e quindi la sola conoscenza di $|\lambda_2|$ a volte non basta.
 
 `````
 
@@ -398,8 +410,9 @@ si ordinano i risultati di una ricerca.
 
 Immagina qualcuno che naviga a caso: apre una pagina, sceglie a caso uno dei
 link che ci trova, ci va, e ricomincia. Dopo moltissimi salti, la frazione di
-tempo che passa su ciascuna pagina è la sua importanza. Una pagina è importante
-se molte pagine importanti la linkano. La definizione sembra circolare, ma è
+tempo che passa su ciascuna pagina è la sua importanza. In altre parole, una
+pagina è importante se molte pagine importanti la linkano. La definizione
+sembra circolare, ma è
 quella di una distribuzione stazionaria, e ha una soluzione sola.
 
 Il navigatore così com'è si incastra però in due modi, e le due condizioni
@@ -430,7 +443,7 @@ $$
 \mathbf{G} = d\,\mathbf{M} + \frac{1-d}{n}\,\mathbf{1}\mathbf{1}^\top ,
 $$
 
-con $d\approx 0{,}85$ il fattore di smorzamento e $n$ il numero di pagine.
+con $d\approx 0{,}85$ il **fattore di smorzamento** e $n$ il numero di pagine.
 Il secondo termine è il teletrasporto uniforme; le pagine senza link uscenti si
 trattano a parte, sostituendo la loro colonna nulla con la distribuzione
 uniforme.
@@ -445,26 +458,30 @@ $$
 |\lambda_2(\mathbf{G})| \;\le\; d ,
 $$
 
-indipendentemente da come è fatto il grafo dei link. Lo smorzamento, che
-sembrava una toppa modellistica, si rivela così una garanzia di convergenza a
-velocità nota. Il limite si dimostra come per $|\lambda|\le1$. Sia
+indipendentemente da come è fatto il grafo dei link. Lo smorzamento, introdotto
+come correzione del modello, si rivela così una garanzia di convergenza a
+velocità nota.
+
+Il limite si dimostra con lo stesso argomento usato per $|\lambda|\le1$. Sia
 $\lambda\ne1$ un autovalore di $\mathbf{G}$ con autovettore $\mathbf{v}$. Da
 $\mathbf{1}^\top\mathbf{G}=\mathbf{1}^\top$ segue
 $\lambda\,\mathbf{1}^\top\mathbf{v}=\mathbf{1}^\top\mathbf{G}\mathbf{v}=\mathbf{1}^\top\mathbf{v}$,
 quindi $\mathbf{1}^\top\mathbf{v}=0$ e il termine di teletrasporto si annulla:
 $\mathbf{G}\mathbf{v}=d\,\mathbf{M}\mathbf{v}$. Allora
 $|\lambda|\,\lVert\mathbf{v}\rVert_1=d\,\lVert\mathbf{M}\mathbf{v}\rVert_1\le
-d\,\lVert\mathbf{v}\rVert_1$, perché $\mathbf{M}$ è stocastica per colonne. Lo
-stesso passaggio dà, per ogni scarto $\mathbf{r}$ con
+d\,\lVert\mathbf{v}\rVert_1$, perché $\mathbf{M}$ è stocastica per colonne.
+
+Lo stesso passaggio dà, per ogni scarto $\mathbf{r}$ con
 $\mathbf{1}^\top\mathbf{r}=0$, $\lVert\mathbf{G}\mathbf{r}\rVert_1\le
-d\,\lVert\mathbf{r}\rVert_1$: con $d=0{,}85$ ogni iterazione taglia almeno il
-$15\%$ dello scarto misurato come somma degli scostamenti (in altre norme il
-singolo passo può anche peggiorare). Vale $|\lambda_2|=d$ se $\mathbf{M}$ ha
-almeno due sottoinsiemi chiusi irriducibili {cite}`haveliwala2003second`; nel
-web di quattro pagine dell'esempio, $|\lambda_2|=0{,}601<d$. Servono circa 43
-iterazioni per ridurre lo scarto di un fattore $10^3$ e 114 per un fattore
-$10^8$; ciascuna è un prodotto matrice-vettore sparso, di costo proporzionale
-al numero di link.
+d\,\lVert\mathbf{r}\rVert_1$. Con $d=0{,}85$, quindi, ogni iterazione taglia
+almeno il $15\%$ dello scarto misurato come somma degli scostamenti (in altre
+norme il singolo passo può anche peggiorare). Servono circa 43 iterazioni per
+ridurre lo scarto di un fattore $10^3$ e 114 per un fattore $10^8$; ciascuna è
+un prodotto matrice-vettore sparso, di costo proporzionale al numero di link.
+
+Vale $|\lambda_2|=d$ se $\mathbf{M}$ ha almeno due sottoinsiemi chiusi
+irriducibili {cite}`haveliwala2003second`; nel web di quattro pagine
+dell'esempio, invece, $|\lambda_2|=0{,}601<d$.
 
 `````
 
@@ -496,11 +513,11 @@ for passo in range(1, 41):
 print(np.round(x, 4), np.abs(x - pi).max() < 1e-9)   # stesso risultato -> True
 ```
 
-I due metodi danno lo stesso vettore: il primo scompone la matrice nei suoi
+I due metodi danno lo stesso vettore. Il primo scompone la matrice nei suoi
 autovalori e autovettori (`eig`), il secondo la applica quaranta volte a una
 distribuzione uniforme, e dopo quaranta passi lo scarto massimo è sotto
 $10^{-9}$. La pagina $D$, che nessuna pagina linka, prende il $3{,}75\%$, pari
-a $(1-d)/n$: quel poco le arriva soltanto dal teletrasporto.
+a $(1-d)/n$, perché quel poco le arriva soltanto dal teletrasporto.
 
 Il secondo autovalore si legge nella stessa decomposizione, e dice quanto in
 fretta la seconda strada converge.
@@ -526,17 +543,21 @@ print(round((scarti[34] / scarti[14]) ** (1 / 20), 4))   # -> 0.601
 ```
 
 Il rapporto fra due scarti consecutivi oscilla con periodo quattro, fra
-$0{,}425$ e $0{,}85$. Lo spiegano i due autovalori stampati sopra,
-$-0{,}425\pm0{,}425\mathrm{j}$, numeri complessi (in Python $\mathrm{j}$ è
-l'unità immaginaria, la radice di $-1$). Moltiplicare per un numero complesso
-contrae di un fattore, il *modulo*, e ruota di un angolo, l’*argomento*. Qui il
-modulo è $0{,}601$ e l'angolo tre ottavi di giro, perciò a ogni passo lo scarto
-si accorcia e gira. Dopo quattro passi ha girato di un giro e mezzo e punta nel
-verso opposto, e una misura della lunghezza non distingue un vettore dal suo
-opposto: per questo il ritmo è di quattro passi. Su venti passi, cinque
-periodi, la rotazione non cambia più la lunghezza e resta la sola contrazione:
-la media geometrica dei rapporti dà $0{,}601=|\lambda_2|$. La velocità di
-convergenza si misura su questo inviluppo, mai su un passo solo.
+$0{,}425$ e $0{,}85$. Lo spiegano i due autovalori
+$-0{,}425\pm0{,}425\mathrm{j}$, che sono numeri complessi (in Python
+$\mathrm{j}$ è l'unità immaginaria, la radice di $-1$).
+
+Moltiplicare per un numero complesso contrae di un fattore, il *modulo*, e
+ruota di un angolo, l’*argomento*. Qui il modulo è $0{,}601$ e l'angolo tre
+ottavi di giro, perciò a ogni passo lo scarto si accorcia e gira. Dopo quattro
+passi ha girato di un giro e mezzo e punta nel verso opposto, e una misura
+della lunghezza non distingue un vettore dal suo opposto: per questo il ritmo è
+di quattro passi.
+
+Su venti passi, cioè cinque periodi, la rotazione non cambia più la lunghezza e
+resta la sola contrazione, tanto che la media geometrica dei rapporti dà
+$0{,}601=|\lambda_2|$. In definitiva, la velocità di convergenza si misura su
+questo inviluppo, mai su un passo solo.
 
 ## In pratica, con NumPy
 
@@ -564,9 +585,10 @@ print(np.round(np.linalg.lstsq(A, b, rcond=None)[0], 4))   # -> [0.8333 0.1667]
 ```
 
 Il sistema è sovradeterminato (tre equazioni, due incognite) e si risolve con i
-minimi quadrati della sezione sulle proiezioni: la riga di normalizzazione
-aggiunta in fondo sceglie, fra gli infiniti multipli
-dell'autovettore, l'unico che sia una distribuzione.
+minimi quadrati della {doc}`sezione sulle proiezioni
+</Matematica/ortogonalita-proiezioni>`. La riga di normalizzazione
+aggiunta in fondo sceglie, fra gli infiniti multipli dell'autovettore, l'unico
+che sia una distribuzione.
 
 ## Le catene di Markov sotto altri nomi
 
@@ -576,7 +598,9 @@ di Markov sulle parole, con lo stato allargato alle ultime $n-1$. I
 reinforcement learning sono catene in cui a ogni passo qualcuno sceglie
 un'azione; fissata la regola di scelta, il valore di ogni stato risolve un
 sistema lineare come quelli della {doc}`sezione sui sistemi lineari
-</Matematica/sistemi-lineari>`[^bellman]. I campionatori delle {doc}`macchine di
+</Matematica/sistemi-lineari>`[^bellman].
+
+I campionatori delle {doc}`macchine di
 Boltzmann </ModelliEnergia/boltzmann>` costruiscono una catena apposta perché
 la sua stazionaria sia la distribuzione che si vuole campionare, e ne aspettano
 il mescolamento. Anche il processo di andata dei {doc}`modelli di diffusione

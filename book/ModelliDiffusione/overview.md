@@ -29,14 +29,14 @@ Thermodynamics* {cite}`sohl2015deep`. L'ispirazione viene dalla termodinamica
 di non equilibrio e l'idea è di un'eleganza spudorata: se distruggere è facile
 e costruire da zero non lo sa fare nessuno, filmiamo la distruzione e
 insegniamo a una rete a proiettare il film al contrario. Prendi una fotografia
-e aggiungile del rumore, cioè numeri sorteggiati a caso che si sommano ai
+e aggiungile del rumore, cioè numeri estratti a caso che si sommano ai
 colori veri e li sporcano di puntini: un pizzico alla volta, finché non resta
 che pulviscolo. Questo è il verso facile, la goccia che si disperde. Poi
 addestra una rete a percorrere la pellicola all'indietro, un fotogramma per
-volta. Se impara bene, potrà partire da rumore puro, sorteggiato di nuovo e mai
-visto prima, e riavvolgerla fino a un'immagine che non è mai esistita. Non è la
-stessa foto che torna indietro: il sorteggio di partenza è diverso ogni volta,
-e da un pulviscolo diverso esce un'immagine diversa.
+volta. Se impara bene, potrà partire da rumore puro, estratto di nuovo e mai
+visto prima, e riavvolgerla fino a un'immagine che non è mai esistita. Non
+è la stessa foto che torna indietro: il rumore di partenza è diverso
+ogni volta, e da un pulviscolo diverso esce un'immagine diversa.
 
 «Rumore» è il termine tecnico e compare nelle formule; a parole diremo anche
 disturbo, pulviscolo o sporco, ma indicano sempre la stessa quantità. Si
@@ -46,8 +46,8 @@ chiamano modelli di **diffusione** per la goccia d'inchiostro: il verso facile
 ## Il film proiettato al contrario
 
 Un modello di diffusione vive quindi di due processi, uno l'inverso dell'altro.
-L’**andata** non si impara: è una ricetta fissa che a ogni passo sbiadisce un
-pochino la fotografia e le getta sopra un pizzico di rumore casuale (sono due
+L’**andata** non si impara: è una ricetta fissa che a ogni passo attenua un
+poco la fotografia e le aggiunge un pizzico di rumore casuale (sono due
 le operazioni, e perché servano entrambe lo mostra la {doc}`sezione su come
 funziona la diffusione </ModelliDiffusione/come-funziona>`). Il **ritorno** è
 l'unica parte che si apprende e si riduce a una domanda sola: guardando un
@@ -57,19 +57,19 @@ Alla rete non si chiede il pizzico dell'ultimo passo, ma tutto il rumore che la
 ricetta ha steso dalla fotografia pulita fino al livello di rovina $t$, che
 nelle formule si indica con $\boldsymbol{\epsilon}$. Non coincide con la
 differenza fra il fotogramma e l'originale, perché nel frattempo anche la
-fotografia è sbiadita: è la parte del fotogramma che dalla fotografia non
-viene. La risposta ha la forma dell'immagine, un valore per punto: è una mappa
-del rumore, non un'immagine. Passare da quella mappa a un'immagine è meno
-intuitivo di quanto sembri, e ne tratta la stessa sezione.
+fotografia si è attenuata: è la parte del fotogramma che dalla
+fotografia non viene. La risposta ha la forma dell'immagine, un valore per
+punto: è una mappa del rumore, non un'immagine. Passare da quella mappa a
+un'immagine è meno intuitivo di quanto sembri, e ne tratta la stessa sezione.
 
 `````{tab} Elementare
 
 Prendi una fotografia e rovinala in mille passi: al passo 10 si nota
 appena una grana fine, al passo 500 le forme si indovinano a fatica, al
 passo 1.000 è rumore puro, come un televisore senza segnale. Questo è il verso
-facile: lo fa un dado, non serve intelligenza. Mille passi e non tre, perché
-ciascuno sia minuscolo: una foto ridotta a pulviscolo in un colpo solo non la
-rimette a posto nessuno, mentre fra due fotogrammi vicini c'è pochissima
+facile: lo fa un dado, non serve intelligenza. Mille passi e non tre,
+perché ciascuno sia minuscolo: una foto ridotta a pulviscolo in un colpo solo
+non la rimette a posto nessuno, mentre fra due fotogrammi vicini c'è pochissima
 strada da rifare.
 
 Ora la parte furba. Non chiediamo alla rete l'impossibile («da questo
@@ -180,7 +180,7 @@ un compito facile, e la difficoltà si distribuisce sull'intera catena.
 
 La figura mette in evidenza anche un costo, che tornerà in tutto il capitolo.
 Se la generazione è una catena di centinaia di passi, ogni passo richiede una
-risposta della rete: per una immagine bisogna interrogarla centinaia di volte,
+risposta della rete: per un'immagine bisogna interrogarla centinaia di volte,
 non una. Passare alla rete un fotogramma rumoroso con il suo livello di rovina
 e leggerne la risposta è **una valutazione della rete** (in inglese le NFE,
 *number of function evaluations*), e il numero di valutazioni misura il costo
@@ -210,9 +210,9 @@ Imagen (maggio, annunciato ma non accessibile al pubblico), Midjourney apre la
 beta a tutti (luglio) e soprattutto, in agosto, arriva Stable Diffusion: nato
 dai *latent diffusion models* (modelli che diffondono non l'immagine ma una sua
 versione compressa) del gruppo di Björn Ommer a Monaco di Baviera
-{cite}`rombach2022high` e rilasciato con i pesi aperti: i pesi sono i milioni
-di numeri che una rete si ritrova dentro dopo l'addestramento, cioè tutto
-quello che ha imparato, e rilasciarli vuol dire mettere in rete un file che
+{cite}`rombach2022high` e rilasciato con i pesi aperti. I pesi sono i
+milioni di numeri che una rete si ritrova dentro dopo l'addestramento, cioè
+tutto quello che ha imparato; rilasciarli vuol dire mettere in rete un file che
 chiunque può scaricare e far girare a casa propria. Per la prima volta si può
 scrivere «un gatto nero che salta sul muro, in stile acquerello» e vedere
 l'immagine materializzarsi sul proprio computer, non nel data center di qualcun
@@ -236,13 +236,13 @@ rumore lo aggiunge, è una ricetta fissa e si può calcolare.
 L'asimmetria di {numref}`fig-dal-rumore-all-immagine` è la ragione per cui il
 metodo funziona. Poiché l'andata è nota, da ogni singola fotografia si possono
 fabbricare gratis quanti esempi di allenamento si vuole: si sceglie un livello
-di rovina fra i mille, si sorteggia il rumore, lo si stende sopra, e si ha una
+di rovina fra i mille, si campiona il rumore, lo si stende sopra, e si ha una
 domanda («quanto rumore c'è qui sopra?») di cui si conosce già la risposta. Il
-sorteggio è diverso ogni volta, quindi la stessa fotografia allo stesso livello
+campione è diverso ogni volta, quindi la stessa fotografia allo stesso livello
 non dà mai due volte lo stesso esercizio, e gli esercizi non finiscono mai. Il
 ritorno diventa così un problema come quelli del {doc}`capitolo sul machine
-learning </MachineLearning/overview>`: domande di cui si conosce già la risposta giusta, tante quante ne
-servono.
+learning </MachineLearning/overview>`: domande di cui si conosce già la
+risposta giusta, tante quante ne servono.
 
 Il capitolo sulle GAN si è chiuso, nella {doc}`sezione sulle loro evoluzioni
 </GAN/applicazioni-evoluzioni>`, con il passaggio di testimone del 2021
@@ -259,7 +259,7 @@ che inganna sempre l'esperto e mettersi a rifare quello per sempre (il *mode
 collapse* del capitolo scorso, la fine della varietà).
 
 Il modello di diffusione, invece, è un artigiano solitario con un compito
-umile: guarda il quadro sporco e dimmi dov'è lo sporco, mille volte. Niente
+umile: guardare il quadro sporco e dire dov'è lo sporco, mille volte. Niente
 avversario, niente equilibri delicati: imparare è come studiare da un libro di
 esercizi con le soluzioni in fondo, perché la risposta giusta la conosciamo
 sempre. E siccome deve saper rispondere su *ogni* foto dell'archivio, non può
@@ -323,7 +323,7 @@ stabilità dell'addestramento e in copertura della varietà. Da lì in poi, buon
 parte del lavoro sulla diffusione è servito ad accorciare quel costo, e nel
 farlo ha spesso rimesso in gioco un discriminatore, che è il nome tecnico
 dell'esperto d'arte del capitolo sulle GAN: il duello è rientrato come
-attrezzo di servizio dentro una macchina che di suo non ne ha bisogno, invece
+strumento di servizio dentro una macchina che di suo non ne ha bisogno, invece
 di sparire. L'impianto dei generatori di immagini arrivati al pubblico dal 2022
 in poi, però, è questo e non quello, e per questo il capitolo lo smonta pezzo
 per pezzo.
@@ -334,10 +334,10 @@ Tre tappe portanti. Prima la meccanica di base: i due processi di DDPM
 {cite}`ho2020denoising` visti da vicino, come si dà un voto alla rete quando
 sbaglia la sua risposta, che rete sia (una vecchia conoscenza della visione
 artificiale) e tutto il meccanismo in miniatura, funzionante, in poche righe di
-Python. Poi il salto di scala: come si può far lavorare la rete non sulla
-fotografia ma su una sua versione compressa decine di volte, che è il segreto
-per cui Stable Diffusion {cite}`rombach2022high` gira su un computer di casa, e
-come si fa a ordinargli che cosa disegnare scrivendolo a parole. Infine
+Python. Poi il salto di scala: come si può far lavorare la rete non
+sulla fotografia ma su una sua versione compressa decine di volte, che è il
+segreto per cui Stable Diffusion {cite}`rombach2022high` gira su un computer di
+casa, e come si fa a ordinargli che cosa disegnare scrivendolo a parole. Infine
 l'incontro con i Transformer {cite}`vaswani2017attention`, quelli del
 capitolo che porta il loro nome: si può buttare via la rete di visione e
 mettere al suo posto uno di loro {cite}`peebles2023scalable`? La risposta è sì,

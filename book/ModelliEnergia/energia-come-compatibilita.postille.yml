@@ -1,0 +1,14 @@
+# Le postille di questa pagina, una per capoverso del testo comune.
+# Ognuna vale finché la sua impronta combacia col testo del capoverso.
+- inizio: "L'idea è di una generalità spiazzante."
+  impronta: "b92fd4ae7c74"
+  postilla: "Energia a una coppia: bassa se la risposta è compatibile con ciò che c'è davanti"
+- inizio: "La memoria di Hopfield rientra nella"
+  impronta: "b015a928c793"
+  postilla: "L'indizio decide la partenza; la risposta è la valle raggiunta, non la più bassa"
+- inizio: "Il collasso, cioè l'energia bassa dappertutto"
+  impronta: "1f024387d21f"
+  postilla: "Con un modello qualunque è la funzione di perdita a decidere se può collassare"
+- inizio: "La prima regola della rassegna è"
+  impronta: "b4165602832f"
+  postilla: "Abbassare l'energia solo sui dati non protegge, salvo architetture speciali"

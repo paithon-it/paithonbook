@@ -15,15 +15,16 @@ rimpicciolire era la rete, qui la rete resta grande uguale e a ridursi è il
 numero di passi. Qui non si percorre meglio la traiettoria, che era la strada
 della {doc}`sezione sui campionatori veloci
 </ModelliDiffusione/campionatori-veloci>`, e ha un limite pratico:
-si cambia l'oggetto che si impara. Non tutte le ricette che seguono hanno un
-maestro da imitare, ma tutte fanno questo, e oggi un'immagine può uscire da
+si cambia l'oggetto che si impara. Non tutti i metodi che seguono hanno un
+maestro da imitare, ma tutti fanno questo, e oggi un'immagine può uscire da
 una sola valutazione della rete.
 
 ## Insegnare a fare in un passo quello che il maestro fa in due
 
 `````{tab} Elementare
 
-La ricetta più diretta è anche la prima che ha funzionato, e sta in una riga:
+Il metodo più diretto, la **distillazione progressiva**, è anche il primo che
+ha funzionato, e sta in una riga:
 si prende il modello che sa fare mille passi e, in un punto qualsiasi del
 percorso, gli si fanno fare due passi consecutivi; poi si addestra un secondo
 modello ad arrivare nello stesso posto con un passo solo. Imparato questo su
@@ -44,7 +45,8 @@ Ho riportano che il costo per arrivare a quattro passi non supera quello di
 addestrare il modello di partenza. Il metodo converte tempo di generazione in
 tempo di addestramento, a un cambio conveniente, e per questo si è diffuso.
 
-Inoltre, il modo in cui la rete descrive la propria risposta diventa decisivo.
+Inoltre, il modo in cui la rete descrive la propria risposta diventa
+decisivo.
 Chiedendole «qual era il disturbo?» si ottiene una risposta da cui l'immagine
 va ancora ricavata, e all'inizio del ritorno quel passaggio è disastroso: lì
 dell'immagine è rimasto quasi niente, quindi per tirarla fuori bisogna dividere
@@ -88,12 +90,12 @@ $\mathbf{v}$-prediction. Nelle loro prove funzionano tutte le combinazioni
 proposte, tranne la predizione di $\boldsymbol{\epsilon}$ pesata con lo SNR
 troncato, che diverge.
 
-Terminato il giro, lo studente diventa il maestro e si ripete: $K$ giri
-riducono i passi di un fattore $2^K$, quindi dieci giri portano da $1024$ a
-$1$.
+Terminata l'iterazione, lo studente diventa il maestro e si ripete: $K$
+iterazioni riducono i passi di un fattore $2^K$, quindi dieci iterazioni
+portano da $1024$ a $1$.
 
-La parametrizzazione è decisiva. Con passi lunghi, a $t$ grande è l'immagine
-ricavata dal rumore predetto ad avere varianza esplosiva, perché lì
+La parametrizzazione è decisiva. Infatti, con passi lunghi, a $t$ grande è
+l'immagine ricavata dal rumore predetto ad avere varianza esplosiva, perché lì
 $\alpha_t\to 0$ e ricostruire $\hat{\mathbf{x}}_0 =
 (\mathbf{x}_t-\sigma_t\hat{\boldsymbol{\epsilon}})/\alpha_t$ amplifica ogni
 errore di $\hat{\boldsymbol{\epsilon}}$ di $1/\alpha_t$; all'altro estremo vale
@@ -112,8 +114,8 @@ mille passi e diventa dominante con uno.
 
 Il limite del metodo è strutturale: lo studente insegue le traiettorie del
 maestro, quindi ne eredita gli errori e niente lo spinge oltre. Il tetto è la
-qualità del maestro, e ogni giro se ne allontana un poco, perché ogni nuovo
-studente somma il proprio errore di approssimazione a quello ereditato: la
+qualità del maestro, e ogni iterazione se ne allontana un poco, perché ogni
+nuovo studente somma il proprio errore di approssimazione a quello ereditato: la
 perdita resta piccola finché i passi sono qualche unità, e diventa netta
 scendendo a due e a uno.
 
@@ -136,7 +138,7 @@ singoli casi e più forte nell'insieme, e ha una conseguenza notevole: uno
 studente così può risultare migliore del maestro, perché non è obbligato a
 riprodurne gli errori.
 
-Come si misuri se due mucchi di immagini sono distribuiti allo stesso modo è il
+Come si misuri se due insiemi di immagini sono distribuiti allo stesso modo è il
 problema tecnico, e le risposte sono due. La prima usa un giudice che impara a
 distinguere le immagini vere da quelle dello studente, che è l'idea delle
 {doc}`reti avversarie </GAN/overview>`. La seconda, più stabile, confronta le
@@ -229,7 +231,7 @@ funzione da imparare. Si chiede a una rete di rispondere «dove si va a finire
 da qui», e si pretende che risponda la stessa cosa per tutti i punti di una
 stessa traiettoria. Una rete che soddisfa questa richiesta è, per definizione,
 un generatore a un passo: le si dà un rumore qualsiasi e risponde direttamente
-l'immagine. Una rete così si chiama *consistency model*, modello di
+l'immagine. Una rete così si chiama **consistency model**, modello di
 consistenza.
 
 La cosa notevole è che la richiesta si può imporre senza sapere quale sia la
@@ -237,10 +239,10 @@ risposta giusta. Basta prendere due punti vicini della stessa traiettoria e
 chiedere che la rete risponda uguale su tutti e due; ripetuto su tante coppie,
 questo incolla insieme la risposta lungo tutta la traiettoria. Se i due punti
 vicini li ricava un maestro con un suo passo, la rete non ha modo di uscire
-più precisa di quel passo. L'ancora che impedisce alla rete di rispondere sempre la
-stessa cosa (una risposta che soddisferebbe la richiesta e sarebbe inutile) è
-il punto di arrivo, dove la risposta giusta si conosce: a rumore zero,
-l'immagine è quella che si sta guardando.
+più precisa di quel passo. L'ancora che impedisce alla rete di rispondere
+sempre la stessa cosa (una risposta che soddisferebbe la richiesta e sarebbe
+inutile) è il punto di arrivo, dove la risposta giusta si conosce: a rumore
+zero, l'immagine è quella che si sta guardando.
 
 `````
 
@@ -299,9 +301,9 @@ Il campionamento a un passo è $\mathbf{x}_\varepsilon =
 \mathbf{f}_\phi(\mathbf{x}_T,T)$. Quello a pochi passi alterna salto e
 re-iniezione di rumore: si salta a $\hat{\mathbf{x}}_0$, si riporta il
 risultato a un livello di rumore intermedio $\tau_k$, preso da una sequenza
-decrescente fissata in partenza, sommando rumore sorteggiato, e si salta di
-nuovo. Due o quattro giri di questo tipo recuperano gran parte del divario con
-il maestro, e questo è il regime d'uso di questi modelli.
+decrescente fissata in partenza, sommando rumore campionato, e si salta di
+nuovo. Due o quattro iterazioni di questo tipo recuperano gran parte del
+divario con il maestro, e questo è il regime d'uso di questi modelli.
 
 `````
 
@@ -323,12 +325,12 @@ matematica, si chiama integrale). Le altre due famiglie imparano invece qualcosa
 che contiene già la somma fatta: la destinazione, oppure la velocità media su
 un tratto lungo.
 
-La velocità media spiega il guadagno.
-Andando da Milano a Roma la velocità istantanea cambia di continuo, e per
-sapere dove si arriva bisogna seguirla minuto per minuto; ma se qualcuno ti
-dice la velocità media dell'intero viaggio, la destinazione la calcoli con una
-moltiplicazione. Un passo solo, e il risultato è esatto invece che
-approssimato, perché la media è definita così.
+La velocità media spiega il guadagno. Ad esempio, andando da Milano a Roma la
+velocità istantanea cambia di continuo, e per sapere dove si arriva bisogna
+seguirla minuto per minuto; ma se qualcuno ti dice la velocità media
+dell'intero viaggio, la destinazione la calcoli con una moltiplicazione. Un
+passo solo, e il risultato è esatto invece che approssimato, perché la media è
+definita così.
 
 Da qui la famiglia generale, che invece di una destinazione sola impara la
 mappa fra due istanti qualsiasi: dove si arriva partendo da qui a
@@ -482,7 +484,7 @@ dichiarano.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- La prima ricetta è la distillazione progressiva: uno studente impara a fare
+- Il primo metodo è la distillazione progressiva: uno studente impara a fare
   in un passo il lavoro che il maestro fa in due, poi diventa maestro a sua
   volta. Dieci giri portano da mille passi a uno, e arrivare a quattro passi
   costa quanto addestrare il modello di partenza; lo studente però non può
@@ -513,8 +515,8 @@ dichiarano.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Distillazione progressiva: lo studente riproduce in un passo due passi
-  DDIM del maestro, e si itera; $K$ giri dividono i passi per $2^K$. Vuole una
+- Distillazione progressiva: lo studente riproduce in un passo due passi DDIM
+  del maestro, e si itera; $K$ iterazioni dividono i passi per $2^K$. Vuole una
   parametrizzazione ben condizionata a entrambi gli estremi, di solito la
   $\mathbf{v}$-prediction, e un programma di rumore a SNR terminale nullo; ha
   come tetto la qualità del maestro.

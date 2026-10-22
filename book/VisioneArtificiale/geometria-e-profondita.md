@@ -29,17 +29,19 @@ una tecnica insegnabile.
 La geometria del foro di Brunelleschi è quella del modello di fotocamera che
 usiamo ancora oggi. L'obiettivo di vetro del telefono non cambia le carte in
 tavola: serve a far entrare più luce di quanta ne passi da un buco di spillo, e
-i raggi che passano per il suo centro non vengono deviati, così che quel centro
+poiché i raggi che passano per il suo centro non vengono deviati, quel centro
 fa la parte del foro.
 
-Il foro porta con sé un problema di fondo. Un punto del mondo, per dire
-dov'è, ha bisogno di tre numeri: quanto a destra, quanto in alto, quanto
+Il foro, però, porta con sé un problema di fondo. Per dire dov'è, un punto del
+mondo ha bisogno di tre numeri: quanto a destra, quanto in alto, quanto
 lontano. Un punto sulla foto ne ha due, la riga e la colonna del suo pixel.
 Proiettare significa quindi buttare via un numero per ogni punto, e quel numero
-è la distanza. Finora si trattava di stabilire che *cosa* c'è in un'immagine, e
-dove sta nel piano della foto; qui si tratta di stabilire dove si trova nello
-spazio, e la domanda è più difficile di quanto sembri, perché quel numero
-nell'immagine non c'è più: cercarlo meglio non serve a niente.
+è la distanza.
+
+Finora si trattava di stabilire che *cosa* c'è in un'immagine, e dove sta nel
+piano della foto; qui si tratta di stabilire dove si trova nello spazio. La
+domanda è più difficile di quanto sembri, perché quel numero nell'immagine non
+c'è più, e quindi cercarlo meglio non serve a niente.
 
 ## La proiezione perde una dimensione
 
@@ -53,18 +55,18 @@ passando per il foro, e da lì colpisce il foglio in un solo posto. Ogni
 punto del mondo, quindi, ha il suo pixel, e per questo la foto assomiglia
 alla scena.
 
-Il legame funziona in un senso solo. Un punto del mondo dà un
-pixel, ma un pixel non dà un punto del mondo: tutti i punti allineati con il
-foro, il vicino e quello dieci metri più in là, colpiscono lo stesso identico
-posto sul foglio. È il motivo per cui nelle foto ricordo si può "reggere" la
-Torre di Pisa con una mano: la mano è vicina, la torre è lontana, ma dal punto
-di vista dell'obiettivo sono allineate, e la foto non conosce la differenza.
+Il legame, però, funziona in un senso solo. Un punto del mondo dà un pixel, ma
+un pixel non dà un punto del mondo, perché tutti i punti allineati con il foro,
+il vicino e quello dieci metri più in là, colpiscono lo stesso identico posto
+sul foglio. Per questo motivo nelle foto ricordo si può "reggere" la Torre di
+Pisa con una mano: la mano è vicina e la torre è lontana, ma dal punto di vista
+dell'obiettivo sono allineate, e la foto non conosce la differenza.
 
-Un oggetto piccolo e vicino e uno grande e lontano fanno lo stesso pixel. La
-distanza non è nascosta nell'immagine, è andata perduta nel momento dello
-scatto. Per riaverla bisogna rimetterla da fuori, e ci sono tre modi: guardare
-la scena da un secondo punto, muoversi e guardare come le cose scorrono, o
-mettere in campo la conoscenza che si ha di com'è fatto il mondo.
+In altre parole, un oggetto piccolo e vicino e uno grande e lontano fanno lo
+stesso pixel. La distanza non è nascosta nell'immagine, è andata perduta nel
+momento dello scatto. Per riaverla bisogna rimetterla da fuori, e ci sono tre
+modi: guardare la scena da un secondo punto, muoversi e guardare come le cose
+scorrono, o mettere in campo la conoscenza che si ha di com'è fatto il mondo.
 
 `````
 
@@ -79,8 +81,8 @@ u = f\,\frac{X}{Z} + c_x, \qquad v = f\,\frac{Y}{Z} + c_y,
 $$
 
 dove $f$ è la lunghezza focale espressa in pixel e $(c_x, c_y)$ è il punto
-principale, cioè dove l'asse ottico buca il sensore. Le coordinate omogenee si
-usano perché rendono la proiezione lineare:
+principale, cioè dove l'asse ottico interseca il sensore. Le coordinate
+omogenee si usano perché rendono la proiezione lineare:
 
 $$
 \tilde{\mathbf{u}} \sim \mathbf{K}\,[\mathbf{R} \mid \mathbf{t}]\,
@@ -95,40 +97,44 @@ fotocamera) e $[\mathbf{R} \mid \mathbf{t}]$ gli **estrinseci** (dov'è e come
 fattore di scala: per tornare ai pixel si divide per la terza componente.
 
 Quella divisione distrugge l'informazione. La mappa $(X,Y,Z) \mapsto
-(u,v)$ non è invertibile: l'insieme dei punti che finiscono nello stesso pixel
-è l'intera semiretta uscente dal centro ottico, e $\mathbf{p}$ e $\lambda
-\mathbf{p}$ con $\lambda > 0$ sono indistinguibili. Un'immagine determina una
-direzione per ogni pixel, mai una posizione.
+(u,v)$ non è invertibile, perché l'insieme dei punti che finiscono nello stesso
+pixel è l'intera semiretta uscente dal centro ottico, e $\mathbf{p}$ e $\lambda
+\mathbf{p}$ con $\lambda > 0$ sono indistinguibili. In altri termini,
+un'immagine determina una direzione per ogni pixel, mai una posizione.
 
-Le fotocamere vere aggiungono due complicazioni che in pratica si misurano e
+Le fotocamere vere aggiungono due complicazioni, che in pratica si misurano e
 si tolgono. La prima è la **distorsione dell'obiettivo**, che curva le rette
 soprattutto verso i bordi e si modella con pochi coefficienti radiali e
-tangenziali. La seconda riguarda i valori dei pixel: i numeri nel file
+tangenziali.
+
+La seconda riguarda i valori dei pixel: i numeri nel file
 non sono proporzionali alla luce entrata, perché in mezzo c'è una
 codifica **gamma** (grossolanamente $I_{\text{file}} \approx I_{\text{luce}}
-^{1/2{,}2}$ per sRGB). Ha una conseguenza pratica che va ben oltre la
-geometria: mediare, sfocare o comporre immagini sui valori codificati è
+^{1/2{,}2}$ per sRGB). Questa codifica ha una conseguenza pratica che va ben
+oltre la geometria: mediare, sfocare o comporre immagini sui valori codificati è
 sbagliato in senso fisico, e va fatto dopo averli riportati in scala lineare
 {cite}`szeliski2022computer`.
 
 `````
 
 Prima di qualunque misura sulla scena la fotocamera va misurata, e le grandezze
-sono tre. Quanto ingrandisce, cioè quanti pixel occupa nella foto un oggetto
-largo un metro che sta a un metro di distanza: si chiama **focale**, dipende
-dall'obiettivo, e la distanza va detta perché lo stesso oggetto, più lontano,
-occupa meno pixel. Dove cade il punto in cui l'asse dell'obiettivo buca il
-sensore, che uno immaginerebbe al centro della foto e che nella pratica quasi
-mai lo è, perché sensore e lente vengono incollati da una macchina con la sua
-tolleranza. Infine, di quanto quell'obiettivo incurva le linee rette, cosa che
-si vede soprattutto ai bordi. Quei numeri, presi insieme, descrivono com'è
-fatta la fotocamera e si chiamano i suoi **parametri intrinseci**; ricavarli si
-chiama **calibrazione**, e si fa mostrando alla fotocamera un oggetto di cui si
-conoscono le misure, tipicamente una scacchiera stampata, e guardando come
-viene deformata. Senza quelle misure i numeri dei pixel non si traducono in
-direzioni, e nessuna delle ricostruzioni che seguono può dare una risposta
-metrica. Per i metri, poi, serve in più una lunghezza nota, come la distanza
-fra i due obiettivi di una telecamera stereo.
+da misurare sono tre. La prima è quanto ingrandisce, cioè quanti pixel occupa
+nella foto un oggetto largo un metro che sta a un metro di distanza. Si chiama
+**focale** e dipende dall'obiettivo; la distanza va detta perché lo stesso
+oggetto, più lontano, occupa meno pixel. La seconda è dove cade il punto in cui
+l'asse dell'obiettivo buca il sensore: uno lo immaginerebbe al centro della
+foto, ma nella pratica quasi mai lo è, perché sensore e lente vengono incollati
+da una macchina con la sua tolleranza. La terza, infine, è di quanto
+quell'obiettivo incurva le linee rette, cosa che si vede soprattutto ai bordi.
+
+Quei numeri, presi insieme, descrivono com'è fatta la fotocamera e si chiamano
+i suoi **parametri intrinseci**. Ricavarli si chiama **calibrazione**, e si fa
+mostrando alla fotocamera un oggetto di cui si conoscono le misure, tipicamente
+una scacchiera stampata, e guardando come viene deformata. Senza quelle misure
+i numeri dei pixel non si traducono in direzioni, e quindi nessuna delle
+ricostruzioni che seguono può dare una risposta metrica. Per i metri, poi,
+serve in più una lunghezza nota, come la distanza fra i due obiettivi di una
+telecamera stereo.
 
 ## Trovare la stessa cosa in due foto
 
@@ -146,13 +152,15 @@ vista, la luce, forse l'ora del giorno.
 
 La soluzione trovata negli anni Ottanta e Novanta mette insieme tre passaggi.
 Il primo è scegliere i punti facili da ritrovare, e non tutti lo sono allo
-stesso modo. Un pezzetto di cielo azzurro non serve a niente, perché tutte le
-sue parti si somigliano, e nella seconda foto un pezzetto di cielo vale
-l'altro. Il bordo di un tetto va meglio, ma solo a metà: se il pezzetto che
-stai guardando scivola in su o in giù te ne accorgi subito, perché il bordo
-esce dall'inquadratura; se scivola lungo il tetto non te ne accorgi affatto,
-perché in quella direzione il bordo è uguale a sé stesso. Uno spigolo, dove due
-bordi si incontrano, è quello buono: da qualunque parte lo si sposti, qualcosa
+stesso modo. Un pezzetto di cielo azzurro, per esempio, non serve a niente,
+perché tutte le sue parti si somigliano, e nella seconda foto un pezzetto di
+cielo vale l'altro.
+
+Il bordo di un tetto va meglio, ma solo a metà: se il pezzetto che stai
+guardando scivola in su o in giù te ne accorgi subito, perché il bordo esce
+dall'inquadratura; se scivola lungo il tetto non te ne accorgi affatto, perché
+in quella direzione il bordo è uguale a sé stesso. Uno spigolo, dove due bordi
+si incontrano, è quello buono: da qualunque parte lo si sposti, qualcosa
 cambia.
 
 Il secondo passaggio è descrivere ogni punto scelto con una piccola scheda
@@ -160,8 +168,9 @@ segnaletica, costruita in modo da non cambiare se l'immagine viene ingrandita,
 ruotata o schiarita. Poi si confrontano le schede.
 
 Il terzo è buttare via gli accoppiamenti sbagliati, che ci saranno di sicuro;
-basta un errore grosso per rovinare un calcolo fatto sulla media. Il rimedio si
-chiama **consenso**. Si cerca la posizione reciproca delle due
+basta un errore grosso per rovinare un calcolo fatto sulla media.
+
+Il rimedio si chiama **consenso**. Si cerca la posizione reciproca delle due
 fotocamere, cioè la regola che dice dove deve cadere, nella seconda foto, il
 gemello di ogni punto della prima. Invece di usare tutti gli accoppiamenti, se
 ne prendono a caso quanti bastano a fissare quella regola, si calcola la regola
@@ -171,10 +180,10 @@ sostenitori. Chi sbaglia non ha compagni, e resta escluso.
 
 Quel «quanti bastano» va preso alla lettera, perché un punto in più da estrarre
 si paga caro. La regola ha sette numeri liberi, e ogni accoppiamento ne fissa
-uno: ne servono sette. Se metà degli accoppiamenti è sbagliata, un gruppetto di
-sette punti presi a caso è tutto buono una volta su centoventotto; uno di otto,
-una volta su duecentocinquantasei. Stessa fiducia nel risultato, il doppio dei
-tentativi.
+uno, per cui ne servono sette. Se metà degli accoppiamenti è sbagliata, un
+gruppetto di sette punti presi a caso è tutto buono una volta su
+centoventotto; uno di otto, una volta su duecentocinquantasei. A parità di
+fiducia nel risultato, quindi, serve il doppio dei tentativi.
 
 `````
 
@@ -182,8 +191,8 @@ tentativi.
 
 I tre pezzi hanno nomi precisi ed età ben definita.
 
-Il rilevatore: quello di angoli proposto da Harris e Stephens (1988) valuta
-la matrice di autocorrelazione dei gradienti in un intorno,
+**Il rilevatore.** Harris e Stephens (1988) propongono un rilevatore di angoli
+che valuta la matrice di autocorrelazione dei gradienti in un intorno,
 
 $$
 \mathbf{M} = \sum_{w} \begin{pmatrix} I_x^2 & I_x I_y \\ I_x I_y & I_y^2
@@ -195,62 +204,67 @@ pixel di una finestra $w$ attorno al punto (di solito pesata da una gaussiana).
 Il rilevatore cerca i punti dove entrambi gli autovalori sono grandi
 (variazione in ogni direzione, cioè un angolo), distinguendoli da quelli dove
 uno solo lo è (un bordo, ambiguo lungo la sua direzione)
-{cite}`harris1988combined`. Il contributo dell'articolo è farlo senza
-calcolarli: la risposta $R = \det(\mathbf{M}) - k\,\mathrm{tr}(\mathbf{M})^2$
-(con $k \approx 0{,}04$) dice la stessa cosa a costo di quattro moltiplicazioni
-e di nessuna radice quadrata, perché $\det(\mathbf{M}) = \lambda_1\lambda_2$ e
+{cite}`harris1988combined`.
+
+Il contributo dell'articolo è farlo senza calcolare gli autovalori. La risposta
+$R = \det(\mathbf{M}) - k\,\mathrm{tr}(\mathbf{M})^2$
+(con $k \approx 0{,}04$) dice infatti la stessa cosa a costo di quattro
+moltiplicazioni e di nessuna radice quadrata, perché
+$\det(\mathbf{M}) = \lambda_1\lambda_2$ e
 $\mathrm{tr}(\mathbf{M}) = \lambda_1 + \lambda_2$. Guardare direttamente
 $\min(\lambda_1, \lambda_2)$ è invece la variante di Shi e Tomasi (1994), che è
 un rilevatore diverso.
 
-Il descrittore: SIFT di David Lowe cerca gli estremi di una differenza di
+**Il descrittore.** SIFT di David Lowe cerca gli estremi di una differenza di
 gaussiane su più scale, il che dà la posizione e la scala, assegna
 un'orientazione dominante e costruisce un vettore di 128 numeri fatto di
-istogrammi di gradienti orientati, normalizzato. Invarianza a scala e
-rotazione per costruzione, robustezza all'illuminazione per normalizzazione
-{cite}`lowe2004distinctive`.
+istogrammi di gradienti orientati, normalizzato. L'invarianza a scala e
+rotazione si ottiene per costruzione, la robustezza all'illuminazione con la
+normalizzazione {cite}`lowe2004distinctive`.
 
-La stima robusta: RANSAC di Fischler e Bolles (1981) campiona il minimo numero
-di corrispondenze necessarie a determinare il modello (quattro per
+**La stima robusta.** RANSAC di Fischler e Bolles (1981) campiona il minimo
+numero di corrispondenze necessarie a determinare il modello (quattro per
 un'omografia[^omografia]; sette per la matrice fondamentale, che di gradi di
 libertà ne ha sette, o cinque per l'essenziale se le fotocamere sono
-calibrate), conta gli *inlier* entro una soglia, e itera. Con una frazione $w$
-di corrispondenze buone e un modello che ne richiede $s$, la probabilità di
-aver estratto almeno un campione interamente pulito in $N$ tentativi è
-$1 - (1 - w^s)^N$: si sceglie $N$ per portarla dove serve
-{cite}`fischler1981random`.
-Il minimo conta perché $s$ sta all'esponente: con $w =
-0{,}5$ e obiettivo $0{,}99$ servono circa $1177$ tentativi con $s = 8$, $588$
-con $s = 7$ e $146$ con $s = 5$. Usare l'algoritmo a otto punti dentro RANSAC,
-come si legge spesso, raddoppia i campioni necessari.
+calibrate), conta gli *inlier* entro una soglia, e itera.
+
+Con una frazione $w$ di corrispondenze buone e un modello che ne richiede $s$,
+la probabilità di aver estratto almeno un campione interamente pulito in $N$
+tentativi è $1 - (1 - w^s)^N$, e si sceglie $N$ per portarla dove serve
+{cite}`fischler1981random`. Il minimo conta perché $s$ sta all'esponente. Ad
+esempio, con $w = 0{,}5$ e obiettivo $0{,}99$ servono circa $1177$ tentativi
+con $s = 8$, $588$ con $s = 7$ e $146$ con $s = 5$. Usare l'algoritmo a otto
+punti dentro RANSAC, come si legge spesso, raddoppia quindi i campioni
+necessari.
 
 `````
 
-Trovare punti facili da ritrovare, descriverli con una scheda che non cambia
-al variare dell'immagine e scartare gli accoppiamenti sbagliati sono tre pezzi
-di ingegneria costruiti a mano in vent'anni di lavoro. Per riconoscere gli
-oggetti si è smesso di scrivere le regole e si è cominciato a farle imparare
-alle reti; qui la storia è andata solo a metà. Esistono rilevatori e
-descrittori appresi, addestrati apposta a ritrovare gli stessi punti fra
-fotografie diverse, ma le schede disegnate a mano restano il punto di partenza
-di strumenti di ricostruzione molto usati {cite}`schoenberger2016structure`, e
-gli accoppiamenti sbagliati si scartano ancora con il consenso.
+Trovare punti facili da ritrovare (il rilevatore), descriverli in modo che la
+descrizione non cambi al variare dell'immagine (il descrittore) e scartare gli
+accoppiamenti sbagliati sono tre pezzi di ingegneria costruiti a mano in
+vent'anni di lavoro. Per riconoscere gli oggetti si è smesso di scrivere le
+regole e si è cominciato a farle imparare alle reti; qui la storia è andata
+solo a metà. Esistono infatti rilevatori e descrittori appresi, addestrati
+apposta a ritrovare gli stessi punti fra fotografie diverse, ma i descrittori
+disegnati a mano restano il punto di partenza di strumenti di ricostruzione
+molto usati {cite}`schoenberger2016structure`, e gli accoppiamenti sbagliati si
+scartano ancora con il consenso.
 
 La geometria, invece, è rimasta dov'era. Le formule che legano due fotografie
 della stessa scena furono dimostrate fra il 1981 e i primi anni Novanta, e si
-usano oggi identiche, perché sono teoremi e non ricette che funzionano più o
-meno bene. Le reti hanno sostituito una parte fragile di quella catena, ma
-non le parti dimostrate.
+usano oggi identiche, perché sono teoremi e non regole empiriche che funzionano
+più o meno bene. Le reti hanno sostituito una parte fragile di quella catena,
+ma non le parti dimostrate.
 
 ## Il vincolo epipolare: da un piano a una retta
 
-Cercare le corrispondenze senza vincoli sarebbe proibitivo: ogni pixel della
-prima immagine andrebbe confrontato con tutti i pixel della seconda, e siccome
-i pixel sono un milione per parte i confronti sarebbero mille miliardi (per
-questo si dice che il costo è *quadratico*: raddoppiando i pixel, il lavoro
-quadruplica). Non è così, perché una proprietà geometrica permette di cercare
-lungo una linea sola invece che su tutta la superficie della seconda immagine,
-e riduce la ricerca di una dimensione: da un piano a una retta.
+Cercare le corrispondenze senza vincoli sarebbe proibitivo, perché ogni pixel
+della prima immagine andrebbe confrontato con tutti i pixel della seconda.
+Siccome i pixel sono un milione per parte, i confronti sarebbero mille
+miliardi (per questo si dice che il costo è *quadratico*: raddoppiando i pixel,
+il lavoro quadruplica). Non è così, perché una proprietà geometrica permette
+di cercare lungo una linea sola invece che su tutta la superficie della seconda
+immagine, e riduce la ricerca di una dimensione: da un piano a una retta.
 
 ```{figure} ../figures/vincolo-epipolare.svg
 :name: fig-vincolo-epipolare
@@ -276,26 +290,28 @@ ciascuna rotaia, nella foto, è ancora dritta. Il motivo è che tutti i punti
 della retta e il foro della seconda fotocamera stanno su uno stesso piano, come
 un foglio di carta teso che passa per il foro, e quel foglio incontra il foglio
 di fondo della scatola lungo una linea dritta. La prospettiva schiaccia le
-distanze; le rette le lascia dritte. Le linee che si incurvano ai bordi di certe
-foto le piega l'obiettivo vero con i suoi difetti: è quella la distorsione che la
-misura della fotocamera serve a togliere.
+distanze; le rette le lascia dritte.
 
-Quindi: il punto che cerchi nella seconda foto, qualunque sia la profondità
+Se in certe foto le linee si incurvano ai bordi, a piegarle è l'obiettivo vero
+con i suoi difetti: è quella la distorsione che la misura della fotocamera
+serve a togliere.
+
+Quindi il punto che cerchi nella seconda foto, qualunque sia la profondità
 vera, sta su una retta ben precisa, che si può calcolare in anticipo
 conoscendo solo la posizione reciproca delle due fotocamere. Quella retta si
 chiama **retta epipolare**, e l’*epipolo* da cui prende il nome è il punto in
 cui ciascuna fotocamera vedrebbe l'altra. Non devi cercare in
 tutta l'immagine, devi cercare lungo una riga.
 
-È il passaggio che rende praticabile tutto il resto. Milioni di candidati
-diventano qualche centinaio, e a lavorare è una legge geometrica che vale
-sempre, per qualsiasi scena, non un modello di come sono fatte le cose.
+È il passaggio che rende praticabile tutto il resto. Milioni di candidati,
+infatti, diventano qualche centinaio, e a lavorare è una legge geometrica che
+vale sempre, per qualsiasi scena, non un modello di come sono fatte le cose.
 
 La legge si può usare anche al contrario. Se le fotocamere sono misurate, da
 abbastanza coppie di punti corrispondenti si ricava la loro posizione
 reciproca: di quanto è girata la seconda rispetto alla prima, e in che
 direzione si è spostata. Di quanto si sia spostata, invece, le foto da sole non
-lo dicono: la scala resta da fissare con qualcosa che venga da fuori.
+lo dicono, e la scala resta quindi da fissare con qualcosa che venga da fuori.
 
 `````
 
@@ -305,18 +321,21 @@ Il piano che contiene i due centri ottici e il punto $\mathbf{p}$ si chiama
 **piano epipolare**; la sua intersezione con ciascun piano immagine è la
 retta epipolare corrispondente. Tutte le rette epipolari di un'immagine
 passano per uno stesso punto, l’**epipolo**, che è la proiezione dell'altro
-centro ottico e può cadere fuori dall'immagine. Va all'infinito quando la
-**base**, cioè il segmento che unisce i due centri ottici, è parallela
-al piano immagine: è il caso della coppia stereo affiancata, e per
-questo rettificare una coppia consiste nel mandare gli
-epipoli all'infinito. Non c'entra il parallelismo fra gli assi ottici: due
-fotocamere con assi perfettamente paralleli che si muovono *in avanti* hanno
-l'epipolo dentro l'immagine, nel punto da cui la scena sembra espandersi (è il
-caso di ogni telecamera montata su un'auto). La condizione va poi verificata su
-un'immagine alla volta, perché i piani immagine sono due: ruotando verso
-l'interno una sola delle due fotocamere, con la base laterale di prima, il suo
-piano smette di essere parallelo alla base e il suo epipolo torna a distanza
-finita, mentre l'altro resta all'infinito.
+centro ottico e può cadere fuori dall'immagine.
+
+L'epipolo va all'infinito quando la **base**, cioè il segmento che unisce i due
+centri ottici, è parallela al piano immagine. È il caso della coppia stereo
+affiancata, e per questo rettificare una coppia consiste nel mandare gli
+epipoli all'infinito. Il parallelismo fra gli assi ottici, invece, non c'entra:
+due fotocamere con assi perfettamente paralleli che si muovono *in avanti*
+hanno l'epipolo dentro l'immagine, nel punto da cui la scena sembra espandersi
+(è il caso di ogni telecamera montata su un'auto).
+
+La condizione va poi verificata su un'immagine alla volta, perché i piani
+immagine sono due. Se, ad esempio, si ruota verso l'interno una sola delle due
+fotocamere, con la base laterale di prima, il suo piano smette di essere
+parallelo alla base e il suo epipolo torna a distanza finita, mentre l'altro
+resta all'infinito.
 
 In coordinate normalizzate, con fotocamere calibrate, il vincolo si scrive con
 la **matrice essenziale** $\mathbf{E} = [\mathbf{t}]_\times \mathbf{R}$,
@@ -331,8 +350,8 @@ Qui $\tilde{\mathbf{x}}_L$ e $\tilde{\mathbf{x}}_R$ sono i punti corrispondenti
 nelle due immagini, in coordinate omogenee normalizzate (i pixel moltiplicati
 per $\mathbf{K}^{-1}$), e $(\mathbf{R}, \mathbf{t})$ porta le coordinate della
 prima fotocamera in quelle della seconda,
-$\mathbf{p}_R = \mathbf{R}\,\mathbf{p}_L + \mathbf{t}$: è la convenzione della
-proiezione scritta sopra quando la prima fotocamera sta nell'origine del mondo.
+$\mathbf{p}_R = \mathbf{R}\,\mathbf{p}_L + \mathbf{t}$. È la convenzione del
+modello stenopeico quando la prima fotocamera sta nell'origine del mondo.
 
 In pixel, con fotocamere non calibrate, lo stesso vincolo passa per la
 **matrice fondamentale** $\mathbf{F} = \mathbf{K}_R^{-\top}\,
@@ -345,11 +364,13 @@ $$
 dove $[\mathbf{t}]_\times$ è la matrice antisimmetrica associata al prodotto
 vettoriale per $\mathbf{t}$. Il prodotto $\mathbf{F}\tilde{\mathbf{x}}_L$ è
 la retta epipolare nella seconda immagine, scritta come terna di coefficienti
-$(a,b,c)$ dell'equazione $au + bv + c = 0$: il vincolo dice semplicemente che
+$(a,b,c)$ dell'equazione $au + bv + c = 0$, e il vincolo dice semplicemente che
 $\tilde{\mathbf{x}}_R$ le appartiene. $\mathbf{F}$ ha rango 2, sette gradi di
-libertà e un fattore di scala libero {cite}`hartley2004multiple`. Da otto o
-più corrispondenze la si stima con un sistema lineare: ogni coppia dà
-un'equazione lineare nei nove elementi di $\mathbf{F}$, e impilandole si ottiene
+libertà e un fattore di scala libero {cite}`hartley2004multiple`.
+
+Da otto o più corrispondenze la si stima con un sistema lineare. Ogni coppia,
+infatti, dà un'equazione lineare nei nove elementi di $\mathbf{F}$, e
+impilandole si ottiene
 $\mathbf{A}\mathbf{f} = \mathbf{0}$. La soluzione ai minimi quadrati con
 $\lVert\mathbf{f}\rVert = 1$ è il vettore singolare destro di $\mathbf{A}$
 associato al valore singolare più piccolo (è la SVD della
@@ -368,18 +389,20 @@ $\mathbf{U}\mathbf{W}^\top\mathbf{V}^\top$, dove $\mathbf{W}$ è la rotazione di
 $90^\circ$ attorno all'asse $z$ (con il segno scelto perché $\det\mathbf{R} =
 +1$), e $\mathbf{t} = \pm\mathbf{u}_3$, la terza colonna di $\mathbf{U}$. Solo
 una soluzione, quella giusta, mette i punti triangolati davanti a entrambe le
-fotocamere (è il vincolo di *cheirality*). La traslazione resta nota solo a
-meno di scala, perché il vincolo è omogeneo in $\mathbf{E}$: è l'ambiguità di
-scala della *structure from motion*. La stima degenera in due casi: se la scena
-è piana, perché le corrispondenze sono legate da un'omografia e non bastano a
-fissare $\mathbf{E}$; e se la fotocamera ruota senza traslare, perché allora
+fotocamere (è il vincolo di *cheirality*).
+
+Si noti che la traslazione resta nota solo a meno di scala, perché il vincolo è
+omogeneo in $\mathbf{E}$; è l'ambiguità di scala della *structure from
+motion*. La stima degenera in due casi: se la scena è piana, perché le
+corrispondenze sono legate da un'omografia e non bastano a fissare
+$\mathbf{E}$; e se la fotocamera ruota senza traslare, perché allora
 $\mathbf{t} = \mathbf{0}$ ed $\mathbf{E}$ è nulla {cite}`hartley2004multiple`.
 
 In pratica si rettificano le due immagini, cioè si applica a ciascuna
 un'omografia che porta gli epipoli all'infinito. Dopo la rettificazione le
 rette epipolari sono orizzontali e allineate fra le due immagini, e la ricerca
-della corrispondenza diventa uno scorrimento lungo la stessa riga di pixel:
-è la ragione per cui le telecamere stereo si montano affiancate e allineate.
+della corrispondenza diventa uno scorrimento lungo la stessa riga di pixel.
+È per questo che le telecamere stereo si montano affiancate e allineate.
 
 `````
 
@@ -387,10 +410,12 @@ della corrispondenza diventa uno scorrimento lungo la stessa riga di pixel:
 
 Il caso più comodo è quello in cui tutte le rette epipolari sono orizzontali e
 la riga numero cento della prima immagine corrisponde alla riga numero cento
-della seconda: allora per cercare il gemello basta scorrere una riga di pixel.
-Quel caso lo si ottiene in due modi, montando le due fotocamere affiancate e
-ben allineate, oppure raddrizzando le immagini dopo, con un calcolo che le
-deforma quel tanto che basta a metterle in quella posizione. In tutti e due i
+della seconda: allora per cercare il gemello basta scorrere una riga di
+pixel. Quel caso si ottiene in due modi, montando le due fotocamere affiancate
+e ben allineate, oppure raddrizzando le immagini dopo, con un calcolo che le
+deforma quel tanto che basta a metterle in quella posizione.
+
+In tutti e due i
 casi si dice che le immagini sono **rettificate**, e da lì la geometria si
 riduce a una formula sola, $Z = fB/d$, che lega la profondità $Z$ alla focale
 $f$, alla distanza $B$ fra le due fotocamere e allo spostamento $d$ di un punto
@@ -405,22 +430,24 @@ chiama **disparità**, e la sua misura è la misura della distanza. Vicino,
 salto grande; lontano, salto piccolo; infinitamente lontano, nessun salto.
 
 La relazione è un'inversa, non una proporzione: raddoppiando la distanza il
-salto si dimezza. Su una telecamera con trenta centimetri fra i due obiettivi e
-una focale di $700$ pixel (un oggetto largo un metro, a un metro, ne occupa
-$700$), un oggetto a un metro salta $700 \times 0{,}30 = 210$ pixel, a due metri
-$105$, a quattro metri $52{,}5$, a otto metri poco più di $26$. I valori
-dipendono dalla focale e dalla distanza fra gli obiettivi; il
+salto si dimezza. Ad esempio, su una telecamera con trenta centimetri fra i due
+obiettivi e una focale di $700$ pixel (un oggetto largo un metro, a un metro,
+ne occupa $700$), un oggetto a un metro salta $700 \times 0{,}30 = 210$ pixel,
+a due metri $105$, a quattro metri $52{,}5$, a otto metri poco più di $26$. I
+valori dipendono dalla focale e dalla distanza fra gli obiettivi; il
 dimezzarsi a ogni raddoppio, invece, vale sempre.
 
-Ha due conseguenze che si toccano con mano. La prima è che la visione stereo è
-precisa da vicino e vaga da lontano: con quella telecamera, mezzo pixel di salto
-misurato male vale un centimetro a due metri e sei metri a cinquanta. La seconda
-riguarda le leve su cui si può agire, e sono due: allontanare le telecamere fra
-loro ingrandisce i salti e quindi la precisione, ma restringe la zona che
-entrambe vedono; e lo stesso fa lo zoom, che ingrandisce i salti e insieme
-rimpicciolisce la porzione di mondo inquadrata. È il compromesso che decide come
-si costruisce una telecamera stereo, e vale anche per i nostri occhi, a sei
-centimetri l'uno dall'altro.
+Questa relazione ha due conseguenze che si toccano con mano. La prima è che la
+visione stereo è precisa da vicino e vaga da lontano: con quella telecamera,
+mezzo pixel di salto misurato male vale un centimetro a due metri e sei metri a
+cinquanta.
+
+La seconda riguarda le leve su cui si può agire, e sono due: allontanare le
+telecamere fra loro ingrandisce i salti e quindi la precisione, ma restringe la
+zona che entrambe vedono; e lo stesso fa lo zoom, che ingrandisce i salti e
+insieme rimpicciolisce la porzione di mondo inquadrata. È il compromesso che
+decide come si costruisce una telecamera stereo, e vale anche per i nostri
+occhi, a sei centimetri l'uno dall'altro.
 
 C'è un caso in cui il metodo fallisce del tutto: un muro bianco. Se lungo la
 riga da esplorare tutti i pixel si somigliano, non c'è modo di dire quale
@@ -430,11 +457,12 @@ a una retta; su quella retta, però, ci vuole qualcosa da riconoscere.
 Chi vuole la distanza di ogni singolo pixel se la cava aggiungendo qualcosa che
 la geometria non contiene: la scommessa che le superfici siano per lo più
 lisce, cioè che due pixel vicini stiano quasi sempre più o meno alla stessa
-distanza. Il muro bianco viene riempito così, tirando dentro le distanze
-misurate sui suoi bordi, dove qualcosa da riconoscere c'era. È una scommessa
-che di solito paga, e che a volte fa danni: davanti a una vetrata, o al bordo di
-un tavolo che si affaccia sul vuoto, smussa in una rampa dolce un salto che
-nella realtà è netto.
+distanza. In questo modo il muro bianco si riempie tirando dentro le distanze
+misurate sui suoi bordi, dove qualcosa da riconoscere c'era.
+
+È una scommessa che di solito paga, e che a volte fa danni: davanti a una
+vetrata, o al bordo di un tavolo che si affaccia sul vuoto, smussa in una rampa
+dolce un salto che nella realtà è netto.
 
 `````
 
@@ -453,14 +481,15 @@ $$
 Z = \frac{f B}{d}.
 $$
 
-Le due conseguenze si leggono derivando: $\partial Z / \partial d = -fB/d^2 =
+Le conseguenze si leggono derivando: $\partial Z / \partial d = -fB/d^2 =
 -Z^2/(fB)$. Per un errore di disparità $\delta d$ l'errore in profondità è
-$\delta Z \approx Z^2\,\delta d/(fB)$: cresce con il quadrato della profondità,
-e si riduce allargando la base o allungando la focale. Con $f = 700$ pixel e
-$B = 0{,}30$ m, cioè $fB = 210$, un errore di mezzo pixel vale
-$4 \cdot 0{,}5/210 \approx 0{,}01$ m a $2$ m e $2500 \cdot 0{,}5/210 \approx 6$
-m a $50$ m. È il motivo
-per cui la disparità (che è proporzionale a $1/Z$) è spesso una
+$\delta Z \approx Z^2\,\delta d/(fB)$, che cresce con il quadrato della
+profondità e si riduce allargando la base o allungando la focale. Ad esempio,
+con $f = 700$ pixel e $B = 0{,}30$ m, cioè $fB = 210$, un errore di mezzo pixel
+vale $4 \cdot 0{,}5/210 \approx 0{,}01$ m a $2$ m e
+$2500 \cdot 0{,}5/210 \approx 6$ m a $50$ m.
+
+Per questo motivo la disparità (che è proporzionale a $1/Z$) è spesso una
 parametrizzazione numericamente migliore della profondità stessa: campionarla
 uniformemente significa campionare finemente il vicino e grossolanamente il
 lontano, che è dove serve precisione.
@@ -470,35 +499,37 @@ tassonomia classica {cite}`scharstein2002taxonomy` distingue quattro pezzi:
 una misura di somiglianza fra finestre (differenze assolute, correlazione
 normalizzata, *census transform*), un'aggregazione spaziale, un'ottimizzazione
 globale con un termine di regolarità che favorisce disparità localmente
-costanti, e un raffinamento sub-pixel. Nel raffinamento entra di solito anche
-il controllo incrociato (*left-right check*): la disparità si calcola due
-volte, prendendo come riferimento prima l'immagine sinistra e poi la destra, e
-si scartano i pixel su cui le due stime non si corrispondono. Restano fuori
-soprattutto le occlusioni, dove un punto visto da una sola fotocamera non ha un
-gemello a cui tornare. Il termine di regolarità tappa i buchi
-nelle zone senza tessitura applicando un prior sulla forma delle superfici, che
-non fa parte della geometria. Le reti moderne lo sostituiscono con un prior
-appreso da grandi collezioni di scene.
+costanti, e un raffinamento sub-pixel.
+
+Nel raffinamento entra di solito anche il controllo incrociato (*left-right
+check*): la disparità si calcola due volte, prendendo come riferimento prima
+l'immagine sinistra e poi la destra, e si scartano i pixel su cui le due stime
+non si corrispondono. Restano fuori soprattutto le occlusioni, dove un punto
+visto da una sola fotocamera non ha un gemello a cui tornare. Il termine di
+regolarità, invece, colma i vuoti nelle zone senza tessitura applicando un
+prior sulla forma delle superfici, che non fa parte della geometria. Le reti
+moderne lo sostituiscono con un prior appreso da grandi collezioni di scene.
 
 `````
 
 ## Quando di mezzo c'è il tempo: il flusso ottico
 
 La visione stereo confronta due immagini prese nello stesso istante da posizioni
-diverse. Il **flusso ottico** confronta due immagini prese in istanti diversi e
-stima per ogni pixel di quanto si è spostato. Misura il moto relativo, e non si
-chiede se a muoversi sia la scena o la fotocamera: se tutta la scena rigida
-scorre verso sinistra, o se la telecamera si sposta verso destra, la ripresa è
-la stessa.
+diverse. Il **flusso ottico** confronta due immagini prese in istanti diversi
+e stima per ogni pixel di quanto si è spostato. Misura il moto
+relativo, e non si chiede se a muoversi sia la scena o la fotocamera, perché se
+tutta la scena rigida scorre verso sinistra, o se la telecamera si sposta verso
+destra, la ripresa è la stessa.
 
 È lo stesso problema di corrispondenza di prima, ma il vincolo epipolare qui in
-generale non c'è. La riga su cui cercare si poteva calcolare perché sapevamo
-dove stavano le due fotocamere, mentre adesso non sappiamo di quanto si è
-mossa la nostra, e per giunta la scena può cambiare forma da sola: una
-bandiera, un viso, dell'acqua. Quando invece la scena è rigida, cioè si
-muove tutta d'un pezzo, e il movimento della fotocamera è noto, la retta
-epipolare ricompare, e permette di ricavare la profondità da un video preso
-camminando.
+generale non c'è. Nella stereo, infatti, la riga su cui cercare si poteva
+calcolare perché sapevamo dove stavano le due fotocamere, mentre adesso non
+sappiamo di quanto si è mossa la nostra, e per giunta la scena può cambiare
+forma da sola: una bandiera, un viso, dell'acqua.
+
+Quando invece la scena è rigida, cioè si muove tutta d'un pezzo, e il
+movimento della fotocamera è noto, la retta epipolare ricompare, e permette di
+ricavare la profondità da un video preso camminando.
 
 `````{tab} Elementare
 
@@ -512,17 +543,17 @@ Per misurare quello scorrimento bisogna ritrovare, nel fotogramma dopo, il
 pezzo di scena che nel primo aveva un certo colore. Sotto c'è una promessa: che
 lo stesso pezzo di scena si presenti con lo stesso colore da un fotogramma al
 successivo. Il mondo di solito la mantiene; quando la rompe, il metodo
-fallisce. Una nuvola copre il sole: la piazza si scurisce tutta insieme, non si
-è mosso niente, e il calcolo vede movimento dappertutto. Fa lo stesso effetto
-l'ombra di una persona che scivola su un muro fermo.
+fallisce. Se per esempio una nuvola copre il sole, la piazza si scurisce tutta
+insieme: non si è mosso niente, eppure il calcolo vede movimento dappertutto.
+Fa lo stesso effetto l'ombra di una persona che scivola su un muro fermo.
 
-C'è poi un limite curioso, e si chiama problema dell'apertura. Punta un tubo di
-cartone stretto verso un palo che si muove: dentro il tubo si vede solo un
-bordo che scivola, e da lì non si può dire se il palo va di lato o anche in
+C'è poi un limite curioso, e si chiama **problema dell'apertura**. Punta un
+tubo di cartone stretto verso un palo che si muove: dentro il tubo si vede solo
+un bordo che scivola, e da lì non si può dire se il palo va di lato o anche in
 diagonale, perché scivolando lungo sé stesso non produce alcun cambiamento
-visibile. Guardando un pezzo di bordo, il movimento lungo il bordo è
-invisibile. Serve uno spigolo, o serve mettere insieme l'indizio che danno le
-zone vicine.
+visibile. In altre parole, guardando un pezzo di bordo, il movimento lungo il
+bordo è invisibile. Per vederlo serve uno spigolo, o serve mettere insieme
+l'indizio che danno le zone vicine.
 
 `````
 
@@ -539,10 +570,10 @@ $$
 
 dove $(\dot{x}, \dot{y})$ è il flusso incognito, cioè la velocità con cui
 l'immagine del punto scorre sul sensore, e $I_x, I_y, I_t$ sono le derivate
-dell'immagine nelle due direzioni e nel tempo. È un'equazione in due
-incognite per ogni
-pixel: da qui il problema dell'apertura, in forma algebrica. Solo la
-componente del flusso parallela al gradiente è determinata.
+dell'immagine nelle due direzioni e nel tempo. È un'equazione in due incognite
+per ogni pixel, e da qui viene, in forma algebrica, il **problema
+dell'apertura**: solo la componente del flusso parallela al gradiente è
+determinata.
 
 Le due soluzioni storiche, entrambe del 1981, chiudono il sistema in modi
 diversi. **Lucas e Kanade** assumono flusso costante in una finestra e
@@ -551,21 +582,22 @@ matrice da invertire è la stessa $\mathbf{M}$ di Harris, e il flusso è ben
 determinato solo dove c'è un angolo {cite}`lucas1981iterative`. **Horn
 e Schunck** aggiungono invece un termine globale di regolarità che penalizza
 le variazioni del flusso, ottenendo una stima densa
-{cite}`horn1981determining`. Dato locale più prior di regolarità: è la stessa
-struttura della stereo densa, e la stessa che ritroveremo nei metodi appresi.
+{cite}`horn1981determining`. La struttura, un dato locale più un prior di
+regolarità, è la stessa della stereo densa, e la ritroveremo nei metodi
+appresi.
 
-I metodi appresi conservano quella struttura invece di buttarla. **RAFT**
-costruisce esplicitamente il volume di correlazione fra tutte le coppie di
-pixel (il "dato") e poi lo interroga con un aggiornamento ricorrente che
-raffina il campo di flusso un passo alla volta (il "prior")
-{cite}`teed2020raft`: i due pezzi si riconoscono uno per uno nella tassonomia
-di quarant'anni prima. L'architettura è nuova, l'anatomia del problema è
-quella del 1981.
+I metodi appresi, infatti, conservano quella struttura invece di
+abbandonarla. **RAFT** costruisce esplicitamente il volume di correlazione fra
+tutte le coppie di pixel (il "dato") e poi lo interroga con un aggiornamento
+ricorrente che raffina il campo di flusso un passo alla volta (il "prior")
+{cite}`teed2020raft`, e i due pezzi si riconoscono uno per uno nella
+tassonomia di quarant'anni prima. L'architettura è nuova, ma l'anatomia del
+problema è quella del 1981.
 
 `````
 
-Il tubo di cartone è il problema dell'apertura: guardando un pezzo di bordo si
-misura soltanto la parte del movimento che attraversa il bordo, e quella che
+In sintesi, nel problema dell'apertura, guardando un pezzo di bordo si misura
+soltanto la parte del movimento che attraversa il bordo, mentre quella che
 scivola lungo il bordo non si vede. {numref}`fig-apertura-flusso` lo fa vedere
 muoversi: il palo si sposta, e la finestrella di sinistra non riesce a dire di
 quanto.
@@ -590,15 +622,17 @@ Sembra un errore di undici pixel su novantasei, poco più del dieci per cento,
 ma quegli undici non sono l'errore. La freccia misurata e la freccia che manca
 per arrivare al movimento vero stanno ad angolo retto fra loro, e due frecce ad
 angolo retto non si sommano come si sommano i numeri: si sommano come i cateti
-di un triangolo rettangolo, con Pitagora. Quella che manca è lunga 45 pixel, e
-infatti $\sqrt{85^2 + 45^2} = \sqrt{9250} = 96{,}2$, cioè i novantasei di
-partenza a meno degli arrotondamenti. Si perde quasi la metà del movimento, non
-un decimo, e la perdita sfugge perché sta in una direzione diversa da quella
-che si misura.
+di un triangolo rettangolo, con Pitagora.
 
-Quei 45 pixel sono scivolati lungo il bordo, dove il
-palo, muovendosi, non cambia niente di ciò che si vede: la finestrella non li
-può recuperare per quanto la si guardi bene, perché non hanno lasciato traccia.
+Quella che manca è lunga 45 pixel, e infatti
+$\sqrt{85^2 + 45^2} = \sqrt{9250} = 96{,}2$, cioè i novantasei di partenza a
+meno degli arrotondamenti. In definitiva si perde quasi la metà del movimento,
+non un decimo, e la perdita sfugge perché sta in una direzione diversa da
+quella che si misura.
+
+Quei 45 pixel sono scivolati lungo il bordo, dove il palo, muovendosi, non
+cambia niente di ciò che si vede. La finestrella non li può recuperare per
+quanto la si guardi bene, perché non hanno lasciato traccia.
 Per questo la finestra di Lucas e Kanade va messa dove c'è uno
 spigolo: non perché lì l'immagine sia più nitida, ma perché uno spigolo ha due
 bordi in due direzioni diverse, e quello che scivola lungo il primo si vede
@@ -610,18 +644,20 @@ Da dove escono l'85 e il 45, se il movimento è di 96? Dall'inclinazione del
 palo, che nel disegno è di 62 gradi. In un triangolo rettangolo con un angolo di
 62 gradi, il lato opposto a quell'angolo è sempre $0{,}883$ volte il lato più
 lungo, e il lato accanto $0{,}469$ volte: sono due numeri fissi per
-quell'angolo, e una calcolatrice li dà con i tasti «sin» e «cos». Il pezzo che
-sopravvive è $96 \times 0{,}883$, quasi $85$; il pezzo che si perde è $96 \times
-0{,}469$, poco più di $45$. Un palo verticale avrebbe i due fattori $1$ e $0$
-(il movimento orizzontale si misurerebbe tutto); un palo orizzontale $0$ e $1$
-(non se ne misurerebbe niente).
+quell'angolo, e una calcolatrice li dà con i tasti «sin» e «cos».
+
+Il pezzo che sopravvive è quindi $96 \times 0{,}883$, quasi $85$; il pezzo che
+si perde è $96 \times 0{,}469$, poco più di $45$. Un palo verticale avrebbe i
+due fattori $1$ e $0$ (il movimento orizzontale si misurerebbe tutto); un palo
+orizzontale $0$ e $1$ (non se ne misurerebbe niente).
 
 `````
 
 `````{tab} Superiore
 
-I due fattori sono $\sin 62^\circ = 0{,}883$ e $\cos 62^\circ = 0{,}469$: la
-componente normale al bordo vale $96 \sin 62^\circ = 84{,}8$ pixel e quella
+I due fattori di proiezione sono $\sin 62^\circ = 0{,}883$ e
+$\cos 62^\circ = 0{,}469$; la componente normale al bordo vale
+$96 \sin 62^\circ = 84{,}8$ pixel e quella
 tangenziale $96 \cos 62^\circ = 45{,}1$. Solo la prima è determinata
 dall'equazione del flusso, perché è la proiezione del moto sul gradiente
 dell'immagine, e il gradiente è per costruzione ortogonale al bordo. La seconda
@@ -631,17 +667,20 @@ sta nel nucleo dell'equazione, dove il vincolo non dice nulla.
 
 ## Molte viste: structure from motion e SLAM
 
-Con due immagini, e con le fotocamere calibrate, si
-ricava la forma della scena ma non la sua taglia. Nel caso dei due occhi la
-distanza fra loro la conoscevamo, e da lì venivano i metri. Se invece le due
-foto le ha scattate una persona camminando, di quanto abbia camminato non lo sa
-nessuno, e allora un palazzo fotografato da lontano e un plastico fotografato
-da vicino danno le stesse due immagini. A rompere il pareggio
-dev'essere qualcosa che viene da fuori: un oggetto di misura nota inquadrato
-nella scena, oppure una **centralina inerziale**, il sensorino che nel telefono
-si accorge degli spostamenti e delle rotazioni e che, sommando istante per
-istante le accelerazioni che misura, sa dire di quanti centimetri ci si è
-mossi. Con molte immagini si può fare di più, e il problema prende il nome di
+Con due immagini, e con le fotocamere calibrate, si ricava la forma della scena
+ma non la sua taglia. Nel caso dei due occhi conoscevamo la distanza fra loro,
+e da lì venivano i metri. Se invece una persona ha scattato le due foto
+camminando, nessuno sa di quanto abbia camminato, e allora un palazzo
+fotografato da lontano e un plastico fotografato da vicino danno le stesse due
+immagini.
+
+A rompere il pareggio dev'essere qualcosa che viene da fuori: un oggetto di
+misura nota inquadrato nella scena, oppure una **centralina inerziale**, il
+sensore che nel telefono si accorge degli spostamenti e delle rotazioni e che,
+sommando istante per istante le accelerazioni che misura, sa dire di quanti
+centimetri ci si è mossi.
+
+Con molte immagini si può fare di più, e il problema prende il nome di
 **structure from motion**: stimare insieme *dove erano le fotocamere* e
 *dov'erano i punti*, avendo solo le foto.
 
@@ -656,17 +695,18 @@ Si fa a tentativi organizzati: si parte da due foto, si stima una soluzione
 approssimata, si aggiungono le altre una alla volta, e ogni tanto si aggiusta
 tutto insieme minimizzando un unico errore, la distanza fra dove ogni punto
 appare nelle foto e dove il modello attuale dice che dovrebbe apparire.
-Quasi sempre un punto non compare in gran parte delle foto, e l'aggiustamento
-usa soltanto quelle in cui c'è. Quando la distanza è
-piccola per ogni punto, in ognuna delle foto che lo contengono, la
-ricostruzione è coerente.
+Quasi sempre un punto non compare in gran parte delle foto, e
+l'aggiustamento usa soltanto quelle in cui c'è. Quando la distanza è piccola
+per ogni punto, in ognuna delle foto che lo contengono, la ricostruzione è
+coerente.
 
 L'ordine in cui si procede ha una ragione. L'aggiustamento sa solo scendere:
 prende la sistemazione che ha fra le mani e la ritocca finché ogni altro
-ritocco peggiora le cose. Partendo da una disposizione a caso si finisce in una
-sistemazione tutta sbagliata da cui nessun ritocco fa uscire, con le fotocamere
-messe dove non erano e i punti piazzati di conseguenza, a dar loro ragione. Le
-due foto iniziali servono a partire già abbastanza vicini alla risposta giusta.
+ritocco peggiora le cose. Partendo da una disposizione a caso, quindi, si
+finisce in una sistemazione tutta sbagliata da cui nessun ritocco fa uscire,
+con le fotocamere messe dove non erano e i punti piazzati di conseguenza, a
+dar loro ragione. Le due foto iniziali servono a partire già abbastanza vicini
+alla risposta giusta.
 
 Quando lo stesso calcolo si fa in tempo reale, mentre il dispositivo si muove,
 si chiama **SLAM**, sigla di *simultaneous localization and mapping*, cioè
@@ -693,14 +733,16 @@ dove $\pi$ è la proiezione, $\mathbf{u}_{ij}$ è dove il punto $i$ è stato
 *osservato* nell'immagine $j$, e $m_{ij}$ vale 1 se quell'osservazione esiste e
 0 altrimenti. La minimizzazione congiunta si chiama **bundle adjustment** e si
 risolve con Levenberg-Marquardt sfruttando la struttura sparsa del problema.
+
 Ogni residuo dipende da un punto solo e da una fotocamera sola, quindi nella
 matrice normale il blocco dei punti è diagonale a blocchi $3 \times 3$ e si
-elimina per complemento di Schur {cite}`triggs2000bundle`: resta un sistema
+elimina per complemento di Schur {cite}`triggs2000bundle`. Resta un sistema
 ridotto nelle sole fotocamere, di dimensione proporzionale al loro numero, che
 con un solutore denso ha un costo cubico in quel numero a ogni iterazione.
 Poiché ogni punto compare in poche immagini, è sparso anche il blocco che lega
-punti e fotocamere. Il problema è non
-convesso e serve una buona inizializzazione, che è il motivo per cui le
+punti e fotocamere.
+
+Il problema è non convesso e serve una buona inizializzazione; per questo le
 pipeline procedono in modo incrementale invece di ottimizzare tutto da subito
 {cite}`schoenberger2016structure`. La soluzione è definita a
 meno di una similarità (sette gradi di libertà: rotazione, traslazione,
@@ -710,8 +752,9 @@ Quel «a meno di una similarità» vale però solo con gli intrinseci noti. Senz
 calibrazione l'ambiguità è molto più larga: si ottiene una ricostruzione
 *proiettiva*, che non conserva né gli angoli né i rapporti fra lunghezze e
 somiglia a guardare il palazzo attraverso una deformazione prospettica
-arbitraria. Per riportarla a una forma metrica bisogna stimare gli intrinseci a
-posteriori (**auto-calibrazione**), un'altra ragione per calibrare prima.
+arbitraria. Per riportarla a una forma metrica bisogna quindi stimare gli
+intrinseci a posteriori (**auto-calibrazione**), un'altra ragione per calibrare
+prima.
 
 `````
 
@@ -720,13 +763,13 @@ La geometria a più viste sembra la parte più tecnica, ma serve subito dopo. Le
 vengono calcolate da una ricostruzione *structure from motion* insieme ai
 punti, e sono l'ingresso dei metodi della {doc}`sezione sul rendering neurale
 <rendering-neurale>`, che ricostruiscono una scena dalle sue fotografie. Quei
-metodi non controllano le pose che ricevono: se sono sbagliate, la
+metodi, però, non controllano le pose che ricevono: se sono sbagliate, la
 ricostruzione esce confusa, e il difetto non sta nella rete.
 
 ## Profondità da una sola immagine
 
-Da un'immagine sola la profondità è matematicamente
-indeterminata: è andata perduta nello scatto e nessun calcolo la rimette.
+Da un'immagine sola la profondità è matematicamente indeterminata, perché è
+andata perduta nello scatto e nessun calcolo la rimette.
 Eppure noi la vediamo, guardando una fotografia con un occhio solo, e da qualche
 anno la vedono anche le reti. La contraddizione è solo apparente, e il perché
 mostra dove finisce la geometria.
@@ -740,11 +783,11 @@ se convergono è per prospettiva, sai che il cielo è dietro, sai che se un
 oggetto ne copre un altro sta davanti, sai che la foschia sbianca il lontano.
 
 Una rete addestrata su milioni di foto con la profondità misurata impara la
-stessa cosa: non calcola, riconosce. Ha visto abbastanza scene da sapere come
-si dispongono di solito. È un'ottima cosa, ma ha un limite preciso: essendo un
-ricordo statistico e non una misura, si può ingannare. Una fotografia di una
-fotografia viene letta come una scena vera, e un plastico ben fatto viene letto
-come un palazzo.
+stessa cosa: non calcola, riconosce. Ha visto infatti abbastanza scene da
+sapere come si dispongono di solito. È un'ottima cosa, ma ha un limite preciso:
+essendo un ricordo statistico e non una misura, si può ingannare. Una
+fotografia di una fotografia, ad esempio, viene letta come una scena vera, e un
+plastico ben fatto viene letto come un palazzo.
 
 C'è poi un limite che viene dalla geometria: la foto, da sola, non dà la scala.
 Una rete addestrata a ordinare la scena dal vicino al lontano dice senza
@@ -753,31 +796,35 @@ metri o a cento, né di quante volte l'una sia più lontana dell'altra. A dirlo
 può essere soltanto la conoscenza del mondo, come la taglia di una porta o
 di un'auto, e allora la risposta vale quanto quel ricordo: un plastico fatto
 bene la manda fuori strada di tante volte quante il plastico è più piccolo del
-vero. Per lo stesso motivo, in addestramento la rete non viene giudicata
-sulle distanze assolute: prima si portano risposta e verità alla stessa unità
-di misura, e solo dopo si confrontano.
+vero.
+
+Per lo stesso motivo, in addestramento la rete non viene giudicata sulle
+distanze assolute: prima si portano risposta e verità alla stessa unità di
+misura, e solo dopo si confrontano.
 
 `````
 
 `````{tab} Superiore
 
-Il problema è mal posto in senso stretto: infinite scene generano la stessa
-immagine, e la classe di ambiguità include almeno la scala globale. Un modello
-monoculare non risolve la geometria: stima soltanto una statistica della
-distribuzione della profondità data l'immagine, quella che la loss premia (la
-media con l'errore quadratico, la mediana con quello assoluto). Da qui la
-distinzione fra la profondità relativa (l'ordinamento, oppure l'inversa della
-profondità a meno di scala e offset, che è ciò che predice MiDaS) e la
-profondità metrica (in metri). Dalla profondità relativa non si ricavano
-nemmeno i rapporti fra le distanze, perché uno spostamento costante della
-disparità non equivale a uno spostamento costante della profondità. La seconda
-chiede che il prior contenga anche le taglie degli oggetti e che la focale sia
-nota o stimata, perché la stessa scena ripresa con un grandangolo o con un
-teleobiettivo suggerisce distanze diverse; con più viste bastano invece la base
-nota o un sensore inerziale.
+Il problema è mal posto in senso stretto, perché infinite scene generano la
+stessa immagine, e la classe di ambiguità include almeno la scala globale. Un
+modello monoculare, quindi, non risolve la geometria: stima soltanto una
+statistica della distribuzione della profondità data l'immagine, quella che la
+loss premia (la media con l'errore quadratico, la mediana con quello
+assoluto).
 
-La loss deve ignorare le grandezze che l'immagine non determina. Eigen e colleghi
-(2014) usano un errore logaritmico invariante a scala: con
+Da qui la distinzione fra la profondità relativa (l'ordinamento, oppure
+l'inversa della profondità a meno di scala e offset, che è ciò che predice
+MiDaS) e la profondità metrica (in metri). Dalla profondità relativa non si
+ricavano nemmeno i rapporti fra le distanze, perché uno spostamento costante
+della disparità non equivale a uno spostamento costante della profondità. La
+profondità metrica chiede che il prior contenga anche le taglie degli oggetti e
+che la focale sia nota o stimata, perché la stessa scena ripresa con un
+grandangolo o con un teleobiettivo suggerisce distanze diverse; con più viste
+bastano invece la base nota o un sensore inerziale.
+
+La loss deve ignorare le grandezze che l'immagine non determina. Ad esempio,
+Eigen e colleghi (2014) usano un errore logaritmico invariante a scala: con
 $e_i = \log \hat{y}_i - \log y_i^*$ sugli $n$ pixel validi,
 
 $$
@@ -787,30 +834,34 @@ $$
 Per $\lambda = 1$ è la varianza degli $e_i$, e la loss non cambia se si
 moltiplica per una costante la profondità predetta, perché il logaritmo della
 costante si somma a ogni $e_i$; con $\lambda = 0{,}5$, il valore usato
-nell'addestramento, resta un po' di informazione sulla scala assoluta. Per la
-profondità relativa si aggiunge l'invarianza all'offset: prima di confrontare,
-la predizione $\mathbf{d}$ si allinea al bersaglio $\mathbf{d}^*$ con la scala
-$s$ e lo scarto $t$ che minimizzano $\sum_i (s\,d_i + t - d^*_i)^2$, e la loss
-misura l'errore che resta dopo l'allineamento.
+nell'addestramento, resta un po' di informazione sulla scala assoluta.
 
-Il progresso decisivo è venuto soprattutto dai dati. **MiDaS** mostra
-che mescolando dataset molto diversi (scansioni 3D, stereo da film, ricostruzioni
+Per la profondità relativa si aggiunge l'invarianza all'offset: prima di
+confrontare, la predizione $\mathbf{d}$ si allinea al bersaglio $\mathbf{d}^*$
+con la scala $s$ e lo scarto $t$ che minimizzano
+$\sum_i (s\,d_i + t - d^*_i)^2$, e la loss misura l'errore che resta dopo
+l'allineamento.
+
+Il progresso decisivo è venuto soprattutto dai dati. **MiDaS** mostra che
+mescolando dataset molto diversi (scansioni 3D, stereo da film, ricostruzioni
 *structure from motion*, sintetici), ognuno con la sua nozione di profondità e
 la sua scala, si ottiene un modello che generalizza a scene mai viste. La
 chiave è una loss invariante a scala e offset, che permette di sommare
 gradienti provenienti da sorgenti non commensurabili
-{cite}`ranftl2022towards`. **Depth Anything** spinge la stessa strategia sul
-non etichettato, usando un modello maestro per pseudo-etichettare milioni di
-immagini {cite}`yang2024depth`.
+{cite}`ranftl2022towards`. **Depth Anything** estende la stessa strategia ai
+dati non etichettati, usando un modello maestro per pseudo-etichettare milioni
+di immagini {cite}`yang2024depth`.
 
-La geometria dà vincoli esatti ma
-insufficienti, l'apprendimento dà un prior sufficiente ma fallibile, e i
-sistemi che funzionano li usano entrambi. Uno stereo appreso mantiene la
-ricerca lungo la retta epipolare e impara solo la parte ambigua; una pipeline
-di ricostruzione usa la profondità monoculare per inizializzare e la geometria
-multi-vista per correggerla. C'è anche chi sposta il confine ancora più in là: reti
-addestrate su moltissime scene che da una coppia di fotografie non calibrate
-regrediscono direttamente mappe di punti 3D, da cui si ricavano focale e pose
+In definitiva, la geometria dà vincoli esatti ma insufficienti, l'apprendimento
+dà un prior sufficiente ma fallibile, e i sistemi che funzionano li usano
+entrambi. Uno stereo appreso, per esempio, mantiene la ricerca lungo la retta
+epipolare e impara solo la parte ambigua; una pipeline di ricostruzione usa la
+profondità monoculare per inizializzare e la geometria multi-vista per
+correggerla.
+
+C'è anche chi sposta il confine ancora più in là: reti addestrate su
+moltissime scene che da una coppia di fotografie non calibrate stimano
+direttamente mappe di punti 3D, da cui si ricavano focale e pose
 {cite}`wang2024dust3r`. Un prior appreso prende così il posto della catena di
 corrispondenze, consenso e bundle adjustment.
 
@@ -820,12 +871,14 @@ corrispondenze, consenso e bundle adjustment.
 
 Le due affermazioni centrali della geometria si controllano con un calcolo,
 senza addestrare niente. Costruiamo una scena finta di cui conosciamo le
-risposte e proiettiamola in due fotocamere. La prima è quella del dito davanti
-al naso: se misuro di quanto un punto salta fra la prima e la seconda immagine,
-posso risalire a quanto è lontano. La seconda è quella della retta: il punto
-che nella prima immagine sta in un certo posto, nella seconda deve cadere su
-una riga precisa, calcolabile in anticipo. Se sono vere, il computer deve
-ridarci i numeri esatti da cui siamo partiti.
+risposte e proiettiamola in due fotocamere.
+
+La prima affermazione riguarda la disparità: se misuriamo di quanto un punto si
+sposta fra la prima e la seconda immagine, possiamo risalire a quanto è
+lontano. La seconda riguarda la retta epipolare: il punto che nella prima
+immagine sta in un certo posto, nella seconda deve cadere su una retta precisa,
+calcolabile in anticipo. Se sono vere, il computer deve ridarci i numeri esatti
+da cui siamo partiti.
 
 ```python
 import numpy as np
@@ -871,23 +924,26 @@ errore massimo sotto 1e-12: True
 righe uguali (rettificato): True
 ```
 
-Le due file di numeri coincidono, e l'errore massimo sta sotto $10^{-12}$ metri:
-cioè zero, a meno degli arrotondamenti che il computer fa quando scrive un
-numero con la virgola. La profondità si ottiene moltiplicando
-la focale (quanto la fotocamera ingrandisce, qui $700$) per la base (la distanza
-fra le due fotocamere, qui $30$ centimetri) e dividendo per il salto misurato:
+Le due file di numeri coincidono, e l'errore massimo sta sotto $10^{-12}$
+metri, cioè è zero a meno degli arrotondamenti che il computer fa quando scrive
+un numero con la virgola. La profondità si ottiene moltiplicando la focale
+(quanto la fotocamera ingrandisce, qui $700$) per la base (la distanza fra le
+due fotocamere, qui $30$ centimetri) e dividendo per la disparità misurata:
 $Z = fB/d$. È un'identità.
+
 La riga `righe uguali` conferma la seconda affermazione: con le due fotocamere
 affiancate e allineate, il gemello di un pixel sta sulla stessa riga dell'altra
 immagine, così che a cercarlo basta scorrere quella.
 
-Ora il caso generale, con la seconda fotocamera ruotata di otto gradi attorno
-alla verticale, come due telecamere puntate un po’ l'una verso l'altra. Qui non
-c'è più nessuna riga comoda, ma la retta esiste ancora. Il programma raccoglie
-la posizione reciproca delle due fotocamere in una tabella di tre righe per tre
-colonne, la matrice fondamentale (nel codice `F`): moltiplicata per un pixel
-della prima immagine, dà i tre coefficienti $a$, $b$, $c$ della retta $au + bv +
-c = 0$ su cui cercarlo nella seconda. Poi verifica, punto per punto, se il pixel
+Consideriamo ora il caso generale, con la seconda fotocamera ruotata di otto
+gradi attorno alla verticale, come due telecamere puntate un po’ l'una verso
+l'altra. Qui non c'è più nessuna riga comoda, ma la retta esiste ancora. Il
+programma raccoglie la posizione reciproca delle due fotocamere nella matrice
+fondamentale (nel codice `F`), di tre righe per tre colonne: moltiplicata per
+un pixel della prima immagine, dà i tre coefficienti $a$, $b$, $c$ della retta
+$au + bv + c = 0$ su cui cercarlo nella seconda.
+
+Poi verifica, punto per punto, se il pixel
 della seconda immagine cade sulla retta o fuori. Quel «quanto fuori» è il
 residuo, lo stesso nome che nella {doc}`sezione su ortogonalità e proiezioni
 </Matematica/ortogonalita-proiezioni>` porta lo scarto fra un punto e la sua
@@ -935,8 +991,8 @@ residuo 0,3 in pixel       : 706
 
 Il residuo resta sotto $10^{-12}$, cioè ancora una volta zero. Per leggerlo in
 pixel va diviso per la lunghezza dei due primi coefficienti della retta,
-$\sqrt{a^2+b^2}$, che qui sta fra $4{,}1 \cdot 10^{-4}$ e $4{,}4 \cdot 10^{-4}$:
-è quella divisione a trasformare un numero algebrico in una distanza. Dividerlo
+$\sqrt{a^2+b^2}$, che qui sta fra $4{,}1 \cdot 10^{-4}$ e $4{,}4 \cdot 10^{-4}$.
+È quella divisione a trasformare un numero algebrico in una distanza. Dividerlo
 invece per la lunghezza di tutti e tre i coefficienti darebbe un numero da
 centotrenta a quattrocento volte più piccolo, secondo il punto, e senza
 significato.
@@ -944,9 +1000,11 @@ significato.
 Come termine di paragone, un residuo di $0{,}3$ varrebbe settecento pixel fuori
 posto, più dell'intera larghezza dell'immagine, che nel programma è di
 seicentoquaranta (il centro sta a $320$). Il residuo trovato, diviso per la
-lunghezza dei primi due coefficienti, sta sotto un miliardesimo di pixel: per
-ognuno degli otto punti, il pixel nella seconda immagine sta sulla retta
-calcolata dalla prima. Nessuna rete, nessun dato: è un'identità algebrica che
+lunghezza dei primi due coefficienti, sta invece sotto un miliardesimo di
+pixel; in altri termini, per ognuno degli otto punti, il pixel nella seconda
+immagine sta sulla retta calcolata dalla prima.
+
+Nessuna rete, nessun dato: è un'identità algebrica che
 dipende solo da come è fatta la proiezione, e per questo questa parte della
 visione artificiale non è invecchiata.
 

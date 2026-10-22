@@ -35,17 +35,20 @@ servono per scriverlo. La sezione {doc}`Teoria dell'informazione
 </Matematica/teoria-informazione>` la ricava dal teorema di Shannon: il numero
 di bit che serve per scrivere un messaggio con il codice migliore possibile è
 $-\log_2 p$, dove $p$ è la probabilità che il modello assegna a quel messaggio.
-La formula si legge con due conti a mente: se il modello dava all'evento
+La formula si legge con due calcoli a mente: se il modello dava all'evento
 arrivato una probabilità su due, servirebbe un bit; una su otto, tre bit; una
 su mille, circa dieci. Se lo dava per quasi certo, al 99%, bastano un centesimo
-e mezzo di bit. L'ha resa operativa {doc}`A che serve saperlo, e dove sbaglia
+e mezzo di bit.
+
+La formula diventa operativa in {doc}`A che serve saperlo, e dove sbaglia
 </VerosimiglianzaEsatta/a-che-serve>`: un modello che sa dire $p(\mathbf{x})$,
 cioè quanto è probabile un dato, è un compressore, non per analogia, e infatti
 quella famiglia di modelli si misura in bit per dimensione, cioè in quanti bit
 servono in media per ogni singolo numero del dato.
 
-Il secondo è che la perdita che il pre-addestramento di un modello generativo
-minimizza, la cross-entropia, è quel numero di bit sommato su tutto il testo:
+Il secondo fatto è che la perdita che il pre-addestramento di un modello
+generativo minimizza, la cross-entropia, è quel numero di bit sommato su tutto
+il testo:
 ogni parola che il modello dava per improbabile, e che invece arriva, ne
 richiede molti. Minimizzare la cross-entropia su un corpus e minimizzare la
 lunghezza del file compresso sono la stessa istruzione scritta in due gerghi.
@@ -63,7 +66,7 @@ provato a leggerla come una teoria dell'intelligenza.
 
 ## Un fondo esiste, e non tutti lo toccano
 
-Prima della teoria, un esperimento breve che si può rilanciare.
+Prima della teoria, vediamo un esperimento breve che si può rilanciare.
 Costruiamo una lingua con una regola sola: quattro lettere, due «vocali» e due
 «consonanti», e dopo una consonante arriva quasi sempre una vocale. La tabella
 delle transizioni è fatta in modo che le quattro lettere escano ugualmente
@@ -166,10 +169,10 @@ zlib                        1.8010
 lzma                        1.6885
 ```
 
-Tre numeri in più servono a leggere bene quelle righe: di quanto oscilla, da un
-testo sorteggiato all'altro, il costo di chi la regola la conosce; dopo quante
-lettere i due modelli che imparano arrivano vicino al fondo; e quanto prevede
-la teoria classica che si spenda per imparare.
+Per leggere bene queste misure servono altri tre numeri: di quanto oscilla, da
+un testo campionato all'altro, il costo di chi la regola la conosce; dopo
+quante lettere i due modelli che imparano arrivano vicino al fondo; e quanto
+prevede la teoria classica che si spenda per imparare.
 
 ```python
 # Di quanto oscilla il costo medio dell'oracolo da un testo sorteggiato
@@ -210,9 +213,9 @@ ordine 2: entro 0.05 dal fondo dopo 3535 lettere, prezzo previsto 0.0021
 ```
 
 Il **fondo** è la sorpresa media di una lettera sapendo quale l'ha preceduta, e
-non è un risultato sperimentale: si calcola dalla tabella. Nessun codice, per
-quanto ingegnoso, spende in media meno di $1{,}4367$ bit per lettera su testi
-sorteggiati da questa lingua.
+non è un risultato sperimentale: si calcola dalla tabella. Nessun
+codice, per quanto ingegnoso, spende in media meno di $1{,}4367$ bit per
+lettera su testi estratti da questa lingua.
 
 È un limite in media sulla sorgente, non un limite su *questa* stringa. Chi
 avesse in mano queste duecentomila lettere le scriverebbe in un programma di
@@ -258,8 +261,8 @@ regola la trova solo chi ha la forma giusta per ospitarla.
 `````{tab} Superiore
 
 L'oracolo conosce la catena di Markov e non impara niente, eppure spende
-$1{,}4398$, tre millesimi sopra il fondo. È la fluttuazione del sorteggio: lo
-scarto tipico del costo medio su $N = 2 \cdot 10^5$ lettere è $0{,}0023$ bit
+$1{,}4398$, tre millesimi sopra il fondo. È la fluttuazione del campionamento:
+lo scarto tipico del costo medio su $N = 2 \cdot 10^5$ lettere è $0{,}0023$ bit
 (deviazione standard del costo per lettera divisa per $\sqrt{N}$; la
 correlazione fra costi vicini, che qui è piccola, la si trascura), e tre
 millesimi stanno dentro poco più di uno scarto. Chi confronta un modello
@@ -352,7 +355,7 @@ somigliano: stessa lunghezza, stessa aria di disordine, e in tutti e due le
 dieci cifre compaiono all'incirca lo stesso numero di volte. Se li giudichi
 guardandoli, sono la stessa cosa.
 
-Adesso però prova a dettarli al telefono a qualcuno che ha un calcolatore.
+Adesso però prova a dettarli al telefono a qualcuno che ha un computer.
 Per il primo foglio bastano poche parole: «stampa il primo milione di cifre di
 pi greco», e c'è una ricetta di qualche riga che le produce tutte. Per il
 secondo non c'è niente di meglio che leggergliele una per una: nessuna ricetta
@@ -375,7 +378,7 @@ diverse: in media danno quasi lo stesso numero, quando l'urna è semplice da
 descrivere, ma su un foglio preciso possono essere lontanissimi.
 
 La dettatura corta si può anche leggere come una scommessa. Se una scimmia
-battesse ricette a caso sulla tastiera del calcolatore, il foglio di $\pi$
+battesse ricette a caso sulla tastiera del computer, il foglio di $\pi$
 uscirebbe molto più spesso di quello dell'urna, perché basta azzeccare una
 ricetta corta; e quanto è probabile che un foglio esca così corrisponde, a
 meno di poco, a quanto è corta la sua dettatura. Indovinare e accorciare sono
@@ -383,7 +386,7 @@ di nuovo la stessa cosa.
 
 Due obiezioni, con la loro risposta corta.
 
-Il calcolatore dell'amico: la misura dipenderà da quello. Sì, ma di pochissimo:
+Il computer dell'amico: la misura dipenderà da quello. Sì, ma di pochissimo:
 se il suo parla un'altra lingua, gli detti prima le istruzioni per capire la
 mia, e quelle sono sempre le stesse, comunque sia lungo il foglio.
 
@@ -394,7 +397,7 @@ può battere la dettatura più corta: è già una dettatura, con tutte le voci
 contate.
 
 C'è però un limite, e lo stabilisce un teorema: quella lunghezza non si può
-calcolare. Non serve un calcolatore più grosso: un programma che, preso un
+calcolare. Non serve un computer più grosso: un programma che, preso un
 foglio qualsiasi, dica qual è la ricetta più corta che lo produce non esiste e
 non può esistere. Per esserne sicuri bisognerebbe provarle tutte, e certe
 ricette non finiscono mai. Quindi il fondo c'è, ma è un metro contro cui
@@ -462,7 +465,7 @@ nozioni diverse di informazione, una per singolo oggetto e l'altra per
 distribuzione, e su una sorgente semplice come la lingua a quattro lettere si
 toccano; è la ragione per cui lì il fondo di Shannon e il fondo algoritmico
 raccontano la stessa storia, e insieme la ragione per cui su *una* stringa
-sorteggiata possono divergere di molto.
+estratta a caso possono divergere di molto.
 
 Il legame con la previsione ha un enunciato preciso, il teorema di codifica di
 Levin. La probabilità a priori universale di $x$, $m(x) = \sum_{p \,:\, U(p) =
@@ -506,8 +509,8 @@ raffinato {cite}`grunwald2004tutorial`.
 `````
 
 La dettatura più corta è il rasoio di Occam in una forma che si può mettere in
-un programma: fra due spiegazioni degli stessi dati vince quella che si detta
-in meno parole. La {doc}`sezione sull'overfitting
+un programma. In altri termini, fra due spiegazioni degli stessi dati vince
+quella che si detta in meno parole. La {doc}`sezione sull'overfitting
 </MachineLearning/overfitting-validazione>` aveva enunciato il rasoio come
 massima («a parità di spiegazione, vince la più semplice») e poi l'aveva reso
 operativo con la regolarizzazione, che penalizza i pesi grandi. La complessità
@@ -535,12 +538,12 @@ intelligenza. Qualcuno l'ha preso alla lettera.
 Matt Mahoney lo propose come test in un intervento del 1999 il cui titolo è
 già l'argomento: la compressione di testo come prova per l'intelligenza
 artificiale {cite}`mahoney1999text`. Il ragionamento è che per
-predire la parola successiva in un testo scritto da persone bisogna sapere di che
-cosa parla, quindi un compressore che batte tutti gli altri su testo naturale
-deve avere dentro qualcosa che somigli a una conoscenza del mondo.
+predire la parola successiva in un testo scritto da persone bisogna sapere di
+che cosa parla, quindi un compressore che batte tutti gli altri su testo
+naturale deve avere dentro qualcosa che somigli a una conoscenza del mondo.
 
-Nel 2006 Marcus Hutter ci ha messo i soldi. Il premio che porta il suo nome
-paga chi comprime un ritaglio di Wikipedia meglio di chi l'ha preceduto:
+Nel 2006 Marcus Hutter ha finanziato un premio, che porta il suo nome e paga
+chi comprime un ritaglio di Wikipedia meglio di chi l'ha preceduto:
 all'inizio cento megabyte, dal 2020 un miliardo di byte, in un file che si
 chiama `enwik9`. Il montepremi è passato da cinquantamila a cinquecentomila
 euro, nominali: chi accorcia il record dell’$x\%$ ne riceve l’$x\%$, cioè
@@ -630,7 +633,9 @@ debole: mancava.
 Si comincia da un caso in cui la garanzia c'è. Esiste un modo di imparare
 senza etichette che, come il supervisionato, *deve* funzionare, e il suo
 esempio più antico è il cifrario a sostituzione, quello in cui a ogni lettera
-se ne mette un'altra. Nessuno ti dà la chiave. Eppure su un messaggio
+se ne mette un'altra. Nessuno ti dà la chiave.
+
+Eppure su un messaggio
 abbastanza lungo la chiave si trova lo stesso, perché la lingua in chiaro ha le
 sue abitudini (certe lettere frequenti, certe coppie che ricorrono, certe altre
 che non compaiono mai) e c'è un solo modo di rimettere le lettere a posto che
@@ -639,13 +644,15 @@ imparare: ti è bastato pretendere che il risultato somigliasse a della
 lingua vera.
 
 Il procedimento si generalizza, e si chiama **far combaciare le
-distribuzioni**. Prendi due mucchi di dati che non si corrispondono, per
+distribuzioni**. Prendi due raccolte di dati che non si corrispondono, per
 esempio frasi inglesi da una parte e frasi francesi dall'altra, che non sono le
 traduzioni le une delle altre; poi cerca la trasformazione che, applicata al
-primo mucchio, produce qualcosa che statisticamente somiglia al secondo. Detta
-così sembra una pretesa debole, e invece con frasi lunghe è durissima: le
+prima raccolta, produce qualcosa che statisticamente somiglia alla seconda.
+Detta così sembra una pretesa debole, e invece con frasi lunghe è durissima: le
 condizioni da rispettare sono tantissime, e possono bastare a determinare quasi
-del tutto la trasformazione. Sutskever racconta di esserci arrivato in modo
+del tutto la trasformazione.
+
+Sutskever racconta di esserci arrivato in modo
 indipendente nel 2015 e di essersene entusiasmato per questo: era la prima
 volta che di apprendimento non supervisionato si poteva dire qualcosa di
 matematicamente serio.
@@ -896,12 +903,12 @@ completamente si arriva al $99{,}0\%$, ma quello diventa addestramento con le
 etichette invece che un sondaggio, e non dimostra la stessa cosa.)
 
 Sutskever lo presenta come una prova di principio costosa, non come un metodo
-pratico. Il modello che dà quel $96{,}3\%$ ha un miliardo e quattrocento
-milioni di parametri e lavora sui 32 pixel per lato che CIFAR-10 ha di suo. Su
-ImageNet, dove le immagini vanno rimpicciolite per entrare nel contesto, lo
-stesso modello arriva al $69{,}0\%$ di sondaggio lineare solo comprimendo
-l'ingresso e concatenando le uscite di più strati: vicino ai metodi contrastivi
-dell'epoca, ma sotto i migliori.
+pratico. Infatti il modello che dà quel $96{,}3\%$ ha un miliardo e
+quattrocento milioni di parametri e lavora sui 32 pixel per lato che CIFAR-10 ha
+di suo. Su ImageNet, dove le immagini vanno rimpicciolite per entrare nel
+contesto, lo stesso modello arriva al $69{,}0\%$ di sondaggio lineare solo
+comprimendo l'ingresso e concatenando le uscite di più strati: vicino ai metodi
+contrastivi dell'epoca, ma sotto i migliori.
 
 Resta un pezzo che la teoria non spiega, e Sutskever lo dice in chiaro: la
 compressione non richiede affatto che le rappresentazioni interne diventino
@@ -924,7 +931,7 @@ rispondendo a una domanda, aggiunge che lo stesso sospetto dovrebbe valere per
 i modelli di diffusione, il che, se vero, rende il mistero più grande invece
 che più piccolo.
 
-Una nota sulla fonte, che è di un tipo raro. Quello di Berkeley è un intervento
+La fonte è di un tipo raro. Quello di Berkeley è un intervento
 parlato, seguito dalle domande del pubblico, non un articolo sottoposto a
 revisione: le sue formule stanno in diapositive commentate a voce, e alcune
 affermazioni sui limiti della teoria (il costo di calcolo, i modelli di
@@ -949,7 +956,7 @@ quasi soltanto su testo, e gli ha fatto fare il compressore: il modello dice
 quanto si aspetta ogni pezzo, e un congegno trasforma le sue attese in bit,
 come nella regola delle sorprese (pezzo atteso, pochi bit; pezzo inatteso,
 tanti). Sul gigabyte di Wikipedia il file scende a meno di un decimo, dove
-`gzip`, il compressore che c'è su ogni calcolatore, si ferma a quasi la metà: è
+`gzip`, il compressore che c'è su ogni computer, si ferma a quasi la metà: è
 testo, il suo terreno, anche se un po' di quella Wikipedia l'aveva già letta
 durante l'addestramento.
 
@@ -1025,9 +1032,9 @@ negativo perché a meno bit corrisponde un modello migliore.
 
 `````
 
-Il secondo risultato è bello, e va letto con precisione. Dice che, dentro la
+Il secondo risultato è notevole, e va letto con precisione. Dice che, dentro la
 famiglia dei modelli linguistici di oggi, la compressione è un ottimo
-termometro: un numero che si ottiene da testo grezzo, senza etichette e senza
+indicatore: un numero che si ottiene da testo grezzo, senza etichette e senza
 costruire una prova d'esame, e che ordina i modelli come li ordinerebbero dodici
 prove d'esame. Non dice che comprimere *sia* essere intelligenti, per la stessa
 ragione per cui il fatto che le persone alte pesino di più non rende l'altezza
@@ -1039,9 +1046,9 @@ L'obiezione più seria, che è anche il punto in cui l'argomento si separa dalle
 sue versioni entusiaste, è che un compressore va spedito insieme al file,
 altrimenti chi riceve non sa decomprimere. Nei conti di Delétang e colleghi e
 di Huang e colleghi il modello resta fuori, e i loro sono «bit per carattere» a
-modello dato. Nella lingua a quattro lettere, invece, lo era, perché il modello
-imparava leggendo e chi riceve poteva rifare gli stessi conteggi. Se lo si
-conta anche negli altri, il risultato cambia molto.
+modello dato. Nella lingua a quattro lettere, invece, era incluso, perché il
+modello imparava leggendo e chi riceve poteva rifare gli stessi conteggi. Se lo
+si conta anche negli altri, il risultato cambia molto.
 
 `````{tab} Elementare
 
@@ -1206,9 +1213,9 @@ punto risolto.
 
 Gli altri quattro sono quelli soliti.
 
-La contabilità, di cui tratta la sezione sul prezzo del modello: senza specificare
-chi paga il modello, «comprime meglio» non è un'affermazione con un valore di
-verità.
+La contabilità, di cui tratta la sezione sul prezzo del modello: senza
+specificare chi paga il modello, «comprime meglio» non è un'affermazione con un
+valore di verità.
 
 Il fondo non è calcolabile. La complessità di Kolmogorov non è una procedura,
 quindi non esiste modo
@@ -1230,22 +1237,25 @@ chi ha proposto una definizione alternativa. Nella lettura di François Chollet,
 l'intelligenza non è un'abilità ma l’efficienza con cui si acquistano abilità
 nuove, misurata tenendo conto dell'esperienza e delle conoscenze pregresse
 che sono servite
-{cite}`chollet2019measure`. Con quel metro, un sistema che ha letto tutto
+{cite}`chollet2019measure`.
+
+Con quel metro, un sistema che ha letto tutto
 internet e comprime benissimo può avere un'intelligenza bassa, perché ha pagato
 carissima ogni abilità che ha; e la prova che Chollet ha costruito su questa
 definizione chiede di risolvere problemi mai visti con pochissimi
 esempi. Le due letture non si contraddicono su nessun fatto: contraddicono
-l'una il vocabolario dell'altra, e conviene tenere presente che quando due
-persone discutono se un modello sia intelligente, spesso stanno usando due
-metri diversi senza dirlo.
+l'una il vocabolario dell'altra, e quando due persone discutono se un modello
+sia intelligente, spesso usano due metri diversi senza dirlo.
 
 Resta un punto che nessuna delle due letture nega, e forse è la conclusione più
 solida. Quanto ci si avvicini al fondo di una sorgente dipende da chi comprime,
-e l'esperimento d'apertura lo ha misurato quattro volte sulla stessa lingua.
+e l'esperimento sulla lingua a quattro lettere lo ha misurato quattro volte.
 Che un fondo ci sia, invece, e che stia sotto la dimensione dei dati grezzi,
 non dipende da nessuno: lo dice la riga dei dati casuali, quel $100{,}8\%$,
 dove il fondo coincide con il grezzo e non c'è niente da guadagnare per
-nessuno. Se l'universo che ci circonda non fosse pieno di regolarità, saremmo
+nessuno.
+
+Se l'universo che ci circonda non fosse pieno di regolarità, saremmo
 tutti in quella riga lì, e nessuna intelligenza di nessun tipo sarebbe
 possibile. La comprimibilità, prima che una proprietà della mente che comprime,
 è una proprietà del mondo: che comprimere funzioni è, prima di tutto,

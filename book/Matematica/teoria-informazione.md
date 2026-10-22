@@ -1,18 +1,18 @@
 # Teoria dell'informazione: misurare la sorpresa
 
-Nel luglio del 1948, sul *Bell System Technical Journal*, un ingegnere
-trentaduenne dei Bell Labs di nome Claude Shannon pubblica *A Mathematical
-Theory of Communication* {cite}`shannon1948mathematical`. L'articolo definisce
-la quantità di informazione di un messaggio a partire dalla probabilità della
-sorgente che lo produce, e ne fissa l'unità di misura, il **bit**: contrazione
-di *binary digit*, parola che Shannon attribuisce al collega John Tukey e che
-proprio in quell'articolo compare a stampa per la prima volta.
+Nel luglio del 1948, sul *Bell System Technical Journal*, Claude Shannon, un
+ingegnere trentaduenne dei Bell Labs, pubblica *A Mathematical Theory of
+Communication* {cite}`shannon1948mathematical`. L'articolo definisce la
+quantità di informazione di un messaggio a partire dalla probabilità della
+sorgente che lo produce, e ne fissa l'unità di misura, il **bit**. È una
+contrazione di *binary digit*, parola che Shannon attribuisce al collega John
+Tukey e che proprio in quell'articolo compare a stampa per la prima volta.
 
 Nello stesso articolo la grandezza centrale della teoria prende il nome che ha
-ancora oggi, **entropia**, lo stesso della termodinamica: è il nome che von
+ancora oggi, **entropia**, lo stesso della termodinamica; è il nome che von
 Neumann avrebbe suggerito a Shannon, come racconta l'aneddoto
 nell’{doc}`apertura del capitolo <overview>`. Dall'entropia e dalla divergenza
-di Kullback e Leibler (1951) si ricava la *cross-entropy*, la funzione di
+di Kullback e Leibler (1951) si ricava poi la *cross-entropy*, la funzione di
 errore con cui si addestra la maggior parte dei classificatori, i modelli che
 scelgono fra alternative (gatto o cane, spam o no).
 
@@ -32,53 +32,58 @@ Shannon trasformò l'intuizione in un numero, e il gioco delle venti domande fa
 vedere come. Uno pensa a un oggetto, l'altro può chiedere solo cose con
 risposta sì o no. Chi gioca bene sceglie domande che dimezzano ogni volta le
 possibilità rimaste, e in venti mosse arriva a distinguere più di un milione di
-oggetti, perché $2^{20} \approx 1{,}05$ milioni. Chi gioca male ("è un
-carciofo?", "è un trapano?") non esaurisce nemmeno il contenuto di un cassetto.
-Una domanda che dimezza le possibilità rimaste è l'unità di misura della
-sorpresa, e si chiama bit.
+oggetti, perché $2^{20} \approx 1{,}05$ milioni.
 
-Il bit è l'esponente del due. Due alternative fanno $1$ bit perché $2^1 = 2$;
-quattro ne fanno $2$ perché $2^2 = 4$; otto ne fanno $3$. L'esito di una moneta
-equa (testa o croce, 50 e 50) vale quindi 1 bit: una domanda secca,
-e la risposta è trovata.
+Chi gioca male ("è un carciofo?", "è un trapano?"), invece, non esaurisce
+nemmeno il contenuto di un cassetto. Una domanda che dimezza le possibilità
+rimaste è l'unità di misura della sorpresa, e si chiama bit.
 
-Due monete lanciate insieme danno quattro esiti, che richiedono due domande: le
+Il bit, in altri termini, è l'esponente del due. Due alternative fanno $1$ bit
+perché $2^1 = 2$; quattro ne fanno $2$ perché $2^2 = 4$; otto ne fanno $3$.
+L'esito di una moneta equa (testa o croce, 50 e 50) vale quindi 1 bit: una
+domanda secca, e la risposta è trovata.
+
+Due monete lanciate insieme danno quattro esiti, che richiedono due domande. Le
 possibilità si moltiplicano, le domande si sommano. Un bit di sorpresa più un
 bit di sorpresa fanno due bit, e questo vale per qualunque coppia di eventi che
 non si influenzano a vicenda.
 
-Un dado onesto ha sei facce, e sei sta in mezzo fra quattro e otto: fra $2$ e
-$3$ bit. Il numero esatto è l'esponente a cui va elevato $2$ per ottenere $6$:
-circa $2{,}585$. Un esponente con la virgola sembra non avere senso
-(moltiplicare il due per sé stesso due volte e mezza?), e invece ne ha uno
-preciso: l'elevamento a potenza si estende agli esponenti con la virgola in
-modo che continui a valere la regola di sempre, per cui sommando gli esponenti
-si moltiplicano i risultati. Con quella regola $2^{0{,}5}$ è $\sqrt 2 \approx
-1{,}41$, il numero che moltiplicato per sé stesso dà $2$, e $2^{2{,}585}$ è il
-numero fra $2^2 = 4$ e $2^3 = 8$ che fa $6$.
+Un dado onesto ha sei facce, e sei sta in mezzo fra quattro e otto, per cui un
+tiro vale fra $2$ e $3$ bit. Il numero esatto è l'esponente a cui va elevato
+$2$ per ottenere $6$, e vale circa $2{,}585$.
 
-Che cosa promette, però, quel $2{,}585$? Le domande si contano
-intere, quindi su un tiro solo la strategia migliore ne consuma in media due e
-due terzi, un po’ più di quel numero: due facce si isolano con due domande, le
-altre quattro con tre, e $(2+2+3+3+3+3)/6 = 16/6$. Il resto si recupera facendo
-domande su più tiri insieme. Due tiri hanno trentasei esiti, e con le domande
-giuste sulla coppia ventotto esiti si isolano con cinque domande e otto con sei:
-in media $188/36 \approx 5{,}22$ domande, $2{,}61$ per tiro. Allungando la
-partita la media per tiro scende ancora, fino a $2{,}585$, e sotto non va. Sono
+Un esponente con la virgola sembra non avere senso (moltiplicare il due per sé
+stesso due volte e mezza?), e invece ne ha uno preciso. L'elevamento a potenza
+si estende agli esponenti con la virgola in modo che continui a valere la
+regola di sempre, per cui sommando gli esponenti si moltiplicano i risultati.
+Con quella regola $2^{0{,}5}$ è $\sqrt 2 \approx 1{,}41$, il numero che
+moltiplicato per sé stesso dà $2$; allo stesso modo $2^{2{,}585}$ è il numero
+fra $2^2 = 4$ e $2^3 = 8$ che fa $6$.
+
+Che cosa promette, però, quel $2{,}585$? Le domande si contano intere, quindi
+su un tiro solo la strategia migliore ne consuma in media due e due terzi, un
+po’ più di quel numero. Due facce, infatti, si isolano con due domande e le
+altre quattro con tre, e $(2+2+3+3+3+3)/6 = 16/6$.
+
+Il resto si recupera facendo domande su più tiri insieme. Due tiri, ad
+esempio, hanno trentasei esiti, e con le domande giuste sulla coppia ventotto
+esiti si isolano con cinque domande e otto con sei; in media servono
+$188/36 \approx 5{,}22$ domande, $2{,}61$ per tiro. Allungando la partita
+la media per tiro scende ancora, fino a $2{,}585$, e sotto non va. Sono questi
 i «2,6 bit» del dado: non il costo di una partita, ma il fondo a cui si arriva
 allungandola.
 
 Con una moneta sbilanciata il calcolo è lo stesso, con un'avvertenza: al posto
-del numero di alternative si mette uno diviso la probabilità. Una moneta
-truccata dà testa $9$ volte su $10$. La testa è "un'alternativa su $1/0{,}9 =
-1{,}11$": quasi nessuna domanda, $0{,}15$ bit, come ci si aspetta. La croce è
-"una su $1/0{,}1 = 10$", quanto un dado a dieci facce, e vale $3{,}32$ bit:
-rara, e perciò molto informativa.
+del numero di alternative si mette uno diviso la probabilità. Prendi una
+moneta truccata che dà testa $9$ volte su $10$. La testa è "un'alternativa su
+$1/0{,}9 = 1{,}11$": quasi nessuna domanda, $0{,}15$ bit, come ci si
+aspetta. La croce, invece, è "una su $1/0{,}1 = 10$", quanto un dado a dieci
+facce, e vale $3{,}32$ bit: rara, e perciò molto informativa.
 
-Una calcolatrice dà quei due esponenti, e si controllano andando nel verso
-facile: si eleva il due. Se $0{,}15$ è giusto, $2^{0{,}15}$ deve fare $1{,}11$,
-e infatti fa $1{,}11$. Se $3{,}32$ è giusto, $2^{3{,}32}$ deve fare $10$: sta
-fra $2^3 = 8$ e $2^4 = 16$, e viene $9{,}99$.
+Una calcolatrice dà quei due esponenti, e per controllarli basta andare nel
+verso facile ed elevare il due. Se $0{,}15$ è giusto, $2^{0{,}15}$ deve fare
+$1{,}11$, e infatti fa $1{,}11$. Se $3{,}32$ è giusto, $2^{3{,}32}$ deve fare
+$10$: sta fra $2^3 = 8$ e $2^4 = 16$, e viene $9{,}99$.
 
 `````
 
@@ -90,28 +95,31 @@ $$
 I(x) = -\log_2 p(x),
 $$
 
-dove il segno meno rende la quantità non negativa (i logaritmi di numeri fra $0$ e
-$1$ sono negativi) e la base $2$ fissa l'unità di misura in bit. La forma
-logaritmica è obbligata: è l'unica forma continua (a meno della base) che rende
-la sorpresa additiva per eventi indipendenti; se $p(x,y)=p(x)\,p(y)$, allora
-$I(x,y)=I(x)+I(y)$, perché il logaritmo trasforma i prodotti in somme.
-L'ipotesi di continuità serve: l'equazione funzionale $f(pq)=f(p)+f(q)$ ha
-anche soluzioni patologiche, che però si costruiscono solo rinunciando a ogni
-regolarità (continuità, monotonia o misurabilità).
+dove il segno meno rende la quantità non negativa (i logaritmi di numeri fra
+$0$ e $1$ sono negativi) e la base $2$ fissa l'unità di misura in bit.
 
-Esempi: moneta equa, $I=-\log_2 0{,}5 = 1$ bit; una faccia del dado,
+La forma logaritmica è obbligata, poiché è l'unica forma continua (a meno della
+base) che rende la sorpresa additiva per eventi indipendenti: se
+$p(x,y)=p(x)\,p(y)$, allora $I(x,y)=I(x)+I(y)$, perché il logaritmo trasforma i
+prodotti in somme. Si noti che l'ipotesi di continuità serve, dato che
+l'equazione funzionale $f(pq)=f(p)+f(q)$ ha anche soluzioni patologiche, che
+però si costruiscono solo rinunciando a ogni regolarità (continuità, monotonia
+o misurabilità).
+
+**Esempi.** Moneta equa, $I=-\log_2 0{,}5 = 1$ bit; una faccia del dado,
 $I=-\log_2 \tfrac{1}{6} \approx 2{,}585$ bit; testa con la moneta truccata,
 $I=-\log_2 0{,}9 \approx 0{,}152$ bit; croce con la stessa moneta,
 $I=-\log_2 0{,}1 \approx 3{,}322$ bit. Con il logaritmo naturale al posto di
-$\log_2$ l'unità si chiama *nat*: è la convenzione usata dalle loss di PyTorch.
+$\log_2$ l'unità si chiama *nat*, ed è la convenzione usata dalle loss di
+PyTorch.
 
 `````
 
 ## L'entropia: la sorpresa media
 
-Un singolo esito ha una sorpresa; una *sorgente* di esiti (una moneta, un
-dado, una lingua) ha una sorpresa media. È l'entropia: quanto ci
-aspettiamo di essere sorpresi, in media, a ogni estrazione
+Un singolo esito ha una sorpresa, mentre una *sorgente* di esiti (una moneta,
+un dado, una lingua) ha una sorpresa media. Questa media è l'entropia, cioè
+quanto ci aspettiamo di essere sorpresi, in media, a ogni estrazione
 ({numref}`fig-entropia-monete`).
 
 ```{figure} ../figures/entropia-monete.svg
@@ -128,16 +136,17 @@ $\pi$ indica il pi greco: «$H = 1$ bit» si legge «l'entropia di questa moneta
 
 `````{tab} Elementare
 
-Riprendiamo la moneta truccata: testa 9 volte su 10. Nove lanci su dieci la
-sorpresa è quasi nulla (0,15 bit), una volta su dieci è grande (3,32 bit). La
-media pesata fa $0{,}9 \times 0{,}15 + 0{,}1 \times 3{,}32 \approx 0{,}47$ bit
-per lancio: meno della metà del bit pieno della moneta equa. Ha senso: una
-moneta prevedibile ci sorprende poco, e infatti "produce" poca informazione.
+Riprendiamo la moneta truccata, che dà testa 9 volte su 10. Nove lanci su
+dieci la sorpresa è quasi nulla (0,15 bit), mentre una volta su dieci è grande
+(3,32 bit). La media pesata fa $0{,}9 \times 0{,}15 + 0{,}1 \times 3{,}32
+\approx 0{,}47$ bit per lancio, meno della metà del bit pieno della moneta
+equa. Il risultato ha senso: una moneta prevedibile ci sorprende poco, e
+quindi "produce" poca informazione.
 
 In generale l'entropia è massima quando tutto è ugualmente
 possibile (massima incertezza: 1 bit per la moneta equa, circa 2,6 bit per il
 dado onesto) e scende verso zero man mano che un esito diventa dominante.
-Una moneta con due teste ha entropia zero: nessuna sorpresa, mai.
+Al limite, una moneta con due teste ha entropia zero: nessuna sorpresa, mai.
 
 `````
 
@@ -151,21 +160,24 @@ H(p) = -\sum_{i=1}^{n} p_i \log_2 p_i ,
 $$
 
 dove i termini con $p_i=0$ valgono $0$ per convenzione (coerente col limite
-$p\log p \to 0$). Verifiche: moneta equa,
+$p\log p \to 0$).
+
+**Verifiche.** Moneta equa,
 $H = -(0{,}5\log_2 0{,}5 + 0{,}5\log_2 0{,}5) = 1$ bit; moneta truccata con
 $p=0{,}9$, $H \approx 0{,}9\cdot 0{,}152 + 0{,}1\cdot 3{,}322 \approx 0{,}469$
 bit; dado equo, $H = \log_2 6 \approx 2{,}585$ bit.
 
-Due proprietà strutturali: $H(p)\ge 0$, con uguaglianza solo per distribuzioni
-degeneri (un esito certo); e $H(p)\le \log_2 n$, con uguaglianza solo per la
-distribuzione uniforme. L'entropia è quindi una misura di *incertezza*: nulla
-quando l'esito è scritto, massima quando le $n$ alternative sono equiprobabili.
+Osserviamo due proprietà strutturali. La prima è $H(p)\ge 0$, con uguaglianza
+solo per distribuzioni degeneri (un esito certo); la seconda è
+$H(p)\le \log_2 n$, con uguaglianza solo per la distribuzione uniforme.
+L'entropia è quindi una misura di *incertezza*: nulla quando l'esito è
+scritto, massima quando le $n$ alternative sono equiprobabili.
 
-Entrambe valgono nel discreto, e nel continuo la prima cade. L'analogo per una
-densità, l’*entropia differenziale* $h(f) = -\int f\log_2 f$, può essere
-negativo appena la densità si concentra: $h(\mathcal{N}(0,1)) = +2{,}05$ bit,
-ma $h(\mathcal{N}(0,\,0{,}1^2)) = -1{,}27$. La divergenza KL, invece, resta
-$\ge 0$ in entrambi i casi, e anche per questo è lei l'oggetto su cui si
+Entrambe valgono nel discreto, mentre nel continuo la prima cade. L'analogo per
+una densità, l’*entropia differenziale* $h(f) = -\int f\log_2 f$, può infatti
+essere negativo appena la densità si concentra: $h(\mathcal{N}(0,1)) = +2{,}05$
+bit, ma $h(\mathcal{N}(0,\,0{,}1^2)) = -1{,}27$. La divergenza KL, invece,
+resta $\ge 0$ in entrambi i casi, e anche per questo è lei l'oggetto su cui si
 costruisce.
 
 `````
@@ -173,11 +185,11 @@ costruisce.
 ## Confrontare distribuzioni: cross-entropia e divergenza KL
 
 Nel machine learning le distribuzioni in gioco sono due. La prima, $p$, è la
-distribuzione vera dei dati, quanto spesso nel mondo esce ciascuna risposta:
-con la moneta truccata la conosciamo, perché l'abbiamo truccata noi; con le
-foto di gatti no. La seconda, $q$, è quella che il modello assegna, e
+distribuzione vera dei dati, cioè quanto spesso nel mondo esce ciascuna
+risposta. Con la moneta truccata la conosciamo, perché l'abbiamo truccata noi;
+con le foto di gatti no. La seconda, $q$, è quella che il modello assegna, e
 differisce da $p$ finché il modello non ha imparato (e in generale anche dopo).
-Serve una misura di quanto $q$ si discosta da $p$.
+Serve quindi una misura di quanto $q$ si discosta da $p$.
 
 ```{figure} ../figures/cross-entropy-kl-divergence.svg
 :name: fig-cross-entropia-kl
@@ -193,25 +205,25 @@ si legge «rispetto a»). Lo spazio bianco fra le due curve è un promemoria
 visivo, non la misura esatta dello scarto. Il punto segnato sulla coda di
 sinistra è invece il caso peggiore, quello in cui la realtà ogni tanto produce
 una parola a cui il modello aveva assegnato una probabilità quasi nulla: la
-sorpresa lì è massima, e per questo la scritta accanto dice che il conto
+sorpresa lì è massima, e per questo la scritta accanto dice che la KL
 «esplode».
 ```
 
 `````{tab} Elementare
 
 Il codice Morse assegna il segnale più corto (un punto) alla E, che in inglese
-è la lettera più frequente: le scorciatoie migliori vanno alle cose più comuni,
-così i messaggi restano brevi. Se telegrafi in italiano usando il Morse *tarato
-sull'inglese*, l'alfabeto funziona ancora, ma le frequenze sono diverse: ogni
-tanto un carattere per noi comunissimo si porta dietro un codice lungo, e in
-media si spreca.
+è la lettera più frequente. In generale le scorciatoie migliori vanno alle cose
+più comuni, così i messaggi restano brevi. Se telegrafi in italiano usando il
+Morse *tarato sull'inglese*, l'alfabeto funziona ancora, ma le frequenze sono
+diverse: ogni tanto un carattere per noi comunissimo si porta dietro un
+codice lungo, e in media si spreca.
 
 La **cross-entropia** è la lunghezza media dei tuoi messaggi quando usi il
 codice pensato per la lingua sbagliata: le lettere arrivano secondo la realtà
-($p$), le scorciatoie sono ottimizzate per la convinzione del modello ($q$).
-La **divergenza di Kullback–Leibler** è lo spreco puro: i bit pagati in più
-rispetto al codice giusto. È zero solo se $q$ indovina esattamente $p$, e non
-è simmetrica: sbagliare codice in un verso non spreca quanto sbagliarlo
+($p$), mentre le scorciatoie sono ottimizzate per la convinzione del modello
+($q$). La **divergenza di Kullback–Leibler** è lo spreco puro: i bit pagati in
+più rispetto al codice giusto. È zero solo se $q$ indovina esattamente $p$, e
+non è simmetrica: sbagliare codice in un verso non spreca quanto sbagliarlo
 nell'altro.
 
 `````
@@ -224,7 +236,7 @@ $$
 H(p,q) = -\sum_i p_i \log_2 q_i ,
 $$
 
-la sorpresa media che *proviamo* usando le probabilità sbagliate $q$
+cioè la sorpresa media che *proviamo* usando le probabilità sbagliate $q$
 mentre gli esiti escono secondo $p$. La **divergenza di Kullback–Leibler**
 {cite}`kullback1951information` è l'eccesso rispetto al minimo possibile:
 
@@ -234,53 +246,59 @@ $$
 
 dove la disuguaglianza (di Gibbs) vale sempre, con uguaglianza se e solo se
 $p=q$. La prova è la disuguaglianza di Jensen applicata al logaritmo, che è
-concavo. Sommando sui soli $i$ con $p_i>0$,
+concavo. Sommando sui soli $i$ con $p_i>0$ si ha
 
 $$
 -D_{KL}(p\,\|\,q)=\sum_i p_i\log_2\frac{q_i}{p_i}
 \le\log_2\sum_i p_i\frac{q_i}{p_i}\le\log_2 1=0 .
 $$
 
-La stessa formula, con $q$ uniforme su $n$ esiti, dà $D_{KL}(p\,\|\,u)=\log_2
-n-H(p)\ge 0$, da cui il tetto $H(p)\le\log_2 n$. Dalla formula si legge anche
-dove la divergenza smette di essere finita: se per qualche esito $p_i>0$ e
-$q_i=0$, il termine $p_i\log_2(p_i/q_i)$ vale $+\infty$. Un modello che dà
-probabilità zero a un esito che accade paga una sorpresa infinita. Esempio con
-le nostre monete: se la realtà è la moneta truccata ($p = (0{,}9;\, 0{,}1)$) e
-il modello la crede equa, $H(p,q)=1$ bit e $D_{KL} = 1 - 0{,}469 \approx
-0{,}531$ bit. Nel verso opposto (realtà equa, modello convinto del trucco)
-$H(p,q) \approx 1{,}737$ bit e $D_{KL} \approx 0{,}737$ bit. I due valori
-differiscono: la KL è asimmetrica, $D_{KL}(p\,\|\,q) \ne D_{KL}(q\,\|\,p)$ in
-generale, e non soddisfa la disuguaglianza triangolare. Non è una distanza in
-senso matematico, per quanto la si usi come misura di dissimilarità.
+In particolare, la stessa formula con $q$ uniforme su $n$ esiti dà
+$D_{KL}(p\,\|\,u)=\log_2 n-H(p)\ge 0$, da cui il tetto $H(p)\le\log_2 n$.
+Dalla formula si legge anche dove la divergenza smette di essere finita: se per
+qualche esito $p_i>0$ e $q_i=0$, il termine $p_i\log_2(p_i/q_i)$ vale
+$+\infty$. Un modello che dà probabilità zero a un esito che accade paga una
+sorpresa infinita.
+
+**Esempio.** Con le nostre monete, se la realtà è la moneta truccata
+($p = (0{,}9;\, 0{,}1)$) e il modello la crede equa, $H(p,q)=1$ bit e
+$D_{KL} = 1 - 0{,}469 \approx 0{,}531$ bit. Nel verso opposto (realtà equa,
+modello convinto del trucco) $H(p,q) \approx 1{,}737$ bit e
+$D_{KL} \approx 0{,}737$ bit. I due valori differiscono: la KL è asimmetrica,
+$D_{KL}(p\,\|\,q) \ne D_{KL}(q\,\|\,p)$ in generale, e non soddisfa la
+disuguaglianza triangolare. Non è quindi una distanza in senso matematico, per
+quanto la si usi come misura di dissimilarità.
 
 Il legame fra cross-entropia e lunghezza dei codici è un teorema. Per la
 disuguaglianza di Kraft esiste un codice prefisso con lunghezze $\ell_i$ se e
 solo se $\sum_i 2^{-\ell_i}\le 1$. Scegliendo $\ell_i=\lceil-\log_2 q_i\rceil$
 la condizione è soddisfatta, e se gli esiti escono secondo $p$ la lunghezza
-media sta fra $H(p,q)$ e $H(p,q)+1$ bit. Con $q=p$ è il teorema della codifica
-di sorgente di Shannon, $H(p)\le\mathbb{E}[\ell]<H(p)+1$ per il codice
-migliore; con $q\ne p$ il sovrapprezzo rispetto al codice giusto è
-$D_{KL}(p\,\|\,q)$, a meno di quel bit di arrotondamento, che si diluisce
-codificando i simboli a blocchi. $H(p,q)$ è quindi, a meno di quel bit, la
-lunghezza media dei messaggi scritti con il codice tarato sulla distribuzione
-sbagliata.
+media sta fra $H(p,q)$ e $H(p,q)+1$ bit.
+
+Con $q=p$ si ritrova il teorema della codifica di sorgente di Shannon,
+$H(p)\le\mathbb{E}[\ell]<H(p)+1$ per il codice migliore. Con $q\ne p$, invece,
+il sovrapprezzo rispetto al codice giusto è $D_{KL}(p\,\|\,q)$, a meno di quel
+bit di arrotondamento, che si diluisce codificando i simboli a blocchi. In
+definitiva, $H(p,q)$ è, a meno di quel bit, la lunghezza media dei messaggi
+scritti con il codice tarato sulla distribuzione sbagliata.
 
 `````
 
 La cross-entropia e la divergenza KL, le due misure di
 {numref}`fig-cross-entropia-kl`, differiscono per $H(p)$, l'entropia della
-distribuzione vera, che non dipende dal modello: minimizzare l'una o l'altra
-rispetto ai parametri dà quindi lo stesso modello. La cross-entropia ha in più
-un vantaggio pratico: $H(p,q)=\mathbb{E}_{x\sim p}[-\log q(x)]$ si stima dai
-campioni, con $-\frac1N\sum_{j=1}^{N}\log q(x_j)$ sugli $N$ esempi $x_j$
-estratti da $p$, senza mai scrivere $p$: ogni foto etichettata «gatto» è un
-esito estratto dalla realtà, e la media sugli esempi porta con sé $p$ nelle
-frequenze con cui gli esiti compaiono. La divergenza KL contiene invece $H(p)$, che
-dai soli esempi non si calcola direttamente. Di solito si hanno gli esempi e
-non la legge che li ha prodotti.
+distribuzione vera, che non dipende dal modello. Per questo motivo minimizzare
+l'una o l'altra rispetto ai parametri dà lo stesso modello.
 
-## Il ponte con l'apprendimento
+La cross-entropia ha però un vantaggio pratico in più:
+$H(p,q)=\mathbb{E}_{x\sim p}[-\log q(x)]$ si stima dai campioni, con
+$-\frac1N\sum_{j=1}^{N}\log q(x_j)$ sugli $N$ esempi $x_j$ estratti da $p$,
+senza mai scrivere $p$. Ogni foto etichettata «gatto», infatti, è un esito
+estratto dalla realtà, e la media sugli esempi porta con sé $p$ nelle
+frequenze con cui gli esiti compaiono. La divergenza KL contiene invece
+$H(p)$, che dai soli esempi non si calcola direttamente; e di solito si hanno
+gli esempi, non la legge che li ha prodotti.
+
+## La cross-entropia come funzione di perdita
 
 Da qui viene la cross-entropia come funzione di perdita.
 
@@ -290,20 +308,23 @@ Quando una rete neurale impara a classificare, a ogni esempio le si fa una sola
 domanda: *quanto ti sorprende la risposta giusta?* Se il modello dava al gatto
 il 90% di probabilità e l'immagine era un gatto, la sorpresa è piccola e la
 correzione minima; se gli dava il 2%, la sorpresa è enorme e la correzione
-energica. Addestrare significa girare le manopole dei parametri per rendere la
-risposta giusta sempre meno sorprendente. La «punizione» media sul campione è
-la cross-entropia, la lunghezza media dei messaggi nel Morse tarato male: il
-modello smette di sprecare quando il suo codice (le sue probabilità) combacia
-con la realtà.
+energica.
 
-Smettere di sprecare, però, non porta a costo zero: anche col
-codice giusto i telegrammi hanno una lunghezza. Se una foto sfocata può essere
-gatto o cane, nessuna manopola rende certa la risposta; quella sorpresa che
-resta è l'incertezza dei dati stessi, e la paga anche il modello perfetto. La
-stessa manovra ha infine un terzo nome: scegliere i parametri sotto i quali
-gli esempi raccolti risultano i più plausibili. Sorprendersi poco della
-risposta giusta e trovare plausibili gli esempi raccolti sono la stessa
-regolazione delle manopole, vista da due lati.
+Addestrare significa quindi girare le manopole dei parametri per rendere la
+risposta giusta sempre meno sorprendente. La «punizione» media sul campione è
+la cross-entropia, la lunghezza media dei messaggi nel Morse tarato male,
+e il modello smette di sprecare quando il suo codice (le sue probabilità)
+combacia con la realtà.
+
+Smettere di sprecare, però, non porta a costo zero, perché anche col codice
+giusto i telegrammi hanno una lunghezza. Se una foto sfocata può essere gatto
+o cane, nessuna scelta dei parametri rende certa la risposta; quella sorpresa
+che resta è l'incertezza dei dati stessi, e la paga anche il modello perfetto.
+
+La stessa manovra ha infine un terzo nome: scegliere i parametri sotto i quali
+gli esempi raccolti risultano i più plausibili. In altre parole, sorprendersi
+poco della risposta giusta e trovare plausibili gli esempi raccolti sono la
+stessa regolazione dei parametri, vista da due lati.
 
 `````
 
@@ -316,54 +337,61 @@ $$
 H(p, q_\theta) = H(p) + D_{KL}(p\,\|\,q_\theta)
 $$
 
-e $H(p)$ non dipende da $\theta$: il minimo teorico della loss non è zero ma
-l'entropia dei dati, la loro incertezza irriducibile.
+e $H(p)$ non dipende da $\theta$. Il minimo teorico della loss, quindi, non è
+zero ma l'entropia dei dati, la loro incertezza irriducibile.
 
-Il simbolo $p$ copre due cose diverse. Se $p$ è la distribuzione condizionata
-vera del processo che genera i dati, il pavimento è la sua entropia media sugli
-ingressi, $\mathbb{E}_{\mathbf{x}}\big[H(p(\cdot\mid\mathbf{x}))\big]$,
-positiva appena l'etichetta non è una funzione deterministica dell'ingresso (la
-foto sfocata), e nessun modello scende sotto. Se invece $p$ è il bersaglio
-empirico di un singolo esempio («questa immagine è un gatto» con probabilità
-$1$ e tutto il resto a zero), allora $H(p) = 0$ e il pavimento è zero. Le due
-affermazioni convivono, e spiegano un fatto che si osserva addestrando. Anche
-la loss di *validazione* si calcola su bersagli certi, un'etichetta per
+Si noti che il simbolo $p$ copre due cose diverse. Se $p$ è la distribuzione
+condizionata vera del processo che genera i dati, il pavimento è la sua
+entropia media sugli ingressi,
+$\mathbb{E}_{\mathbf{x}}\big[H(p(\cdot\mid\mathbf{x}))\big]$, positiva appena
+l'etichetta non è una funzione deterministica dell'ingresso (la foto sfocata),
+e nessun modello scende sotto. Se invece $p$ è il bersaglio empirico di un
+singolo esempio («questa immagine è un gatto» con probabilità $1$ e tutto il
+resto a zero), allora $H(p) = 0$ e il pavimento è zero.
+
+Le due affermazioni convivono, e spiegano un fatto che si osserva addestrando.
+Anche la loss di *validazione* si calcola su bersagli certi, un'etichetta per
 esempio; ma su esempi nuovi la sua media tende a
 $\mathbb{E}_{\mathbf{x}}\big[H(p(\cdot\mid\mathbf{x}))+D_{KL}\big(p(\cdot\mid\mathbf{x})\,\|\,q_\theta(\cdot\mid\mathbf{x})\big)\big]$,
-il pavimento vero più l'errore del modello (in bit: la loss delle librerie usa
-il logaritmo naturale, e misura le stesse quantità in nat, moltiplicate per
-$\ln 2$). Sul *training* set, invece, un modello abbastanza ricco può dare
-probabilità quasi $1$ all'etichetta che ogni esempio ha ricevuto, rumore
-compreso: la loss scende quasi a zero perché il modello ha memorizzato quelle
-estrazioni, non perché il processo sia diventato certo.
+il pavimento vero più l'errore del modello (la formula è in bit, mentre la loss
+delle librerie usa il logaritmo naturale e misura le stesse quantità in nat,
+moltiplicate per $\ln 2$). Sul *training* set, invece, un modello abbastanza
+ricco può dare probabilità quasi $1$ all'etichetta che ogni esempio ha
+ricevuto, rumore compreso, e la loss scende quasi a zero perché il modello ha
+memorizzato quelle estrazioni, non perché il processo sia diventato certo.
 
 Inoltre, sulla distribuzione empirica del training set la cross-entropia
 coincide con la log-verosimiglianza negativa media: minimizzarla *è* la stima
 di massima verosimiglianza della {doc}`sezione su probabilità e statistica
 </Matematica/probabilita-statistica>`. Le tre prospettive (minimizzare la
 cross-entropia, avvicinare $q_\theta$ a $p$ nel senso della KL, massimizzare la
-verosimiglianza) sono la stessa operazione. È ciò che fa `nn.CrossEntropyLoss`:
-la loss di un esempio è $\ell=-\log \hat{y}_c$ (dove $\hat{y}_c$ è la
-probabilità che il modello assegna alla classe corretta $c$), e $\mathcal{L}$ è
-la sua media sugli esempi. La sezione {doc}`Da dove viene la loss
-</RetiNeurali/da-dove-viene-la-loss>` mostra che questa funzione di perdita
-esce da una distribuzione categorica sull'uscita, e non è una scelta a sé.
+verosimiglianza) sono la stessa operazione. È ciò che fa
+`nn.CrossEntropyLoss`: la loss di un esempio è $\ell=-\log \hat{y}_c$ (dove
+$\hat{y}_c$ è la probabilità che il modello assegna alla classe corretta $c$),
+e $\mathcal{L}$ è la sua media sugli esempi. La sezione
+{doc}`Da dove viene la loss </RetiNeurali/da-dove-viene-la-loss>` mostra che
+questa funzione di perdita esce da una distribuzione categorica sull'uscita, e
+non è una scelta a sé.
 
 `````
 
 ## Due variabili: entropia condizionata e informazione mutua
 
-Fin qui una variabile alla volta. Nel machine learning le variabili sono
-almeno due, l'ingresso $X$ e l'etichetta $Y$, e interessa quanto conoscere la
-prima riduca, in media, l'incertezza sulla seconda. L’**entropia
-condizionata** $H(Y\mid X)$ è l'incertezza che resta su $Y$ dopo aver
-osservato $X$, mediata sui valori di $X$; la differenza fra prima e dopo,
+Finora abbiamo considerato una variabile alla volta. Nel machine learning,
+però, le variabili sono almeno due, l'ingresso $X$ e l'etichetta $Y$, e ci
+chiediamo quanto conoscere la prima riduca, in media, l'incertezza sulla
+seconda.
+
+L’**entropia condizionata** $H(Y\mid X)$ è l'incertezza che resta su $Y$ dopo
+aver osservato $X$, mediata sui valori di $X$; la differenza fra prima e dopo,
 
 $$
 I(X;Y) = H(Y) - H(Y\mid X),
 $$
 
-è l’**informazione mutua**. Ricompare con altri nomi: è l’*information gain*
+è l’**informazione mutua**.
+
+L'informazione mutua ricompare con altri nomi: è l’*information gain*
 con cui un {doc}`albero di decisione </MachineLearning/alberi-ensemble>`
 sceglie la domanda, è la base dell'NMI (*normalized mutual information*) che
 confronta due {doc}`raggruppamenti
@@ -376,45 +404,48 @@ l’{doc}`apprendimento auto-supervisionato
 Un amico tira un dado e, prima di mostrarlo, ti dice soltanto «è uscito un
 numero pari». Prima della frase le facce possibili erano sei, circa $2{,}585$
 bit di incertezza; dopo sono tre, $2$, $4$ e $6$, e restano circa $1{,}585$
-bit. La frase dell'amico valeva la differenza, un bit: è l'informazione mutua
-fra «pari o dispari» e la faccia del dado.
+bit. La frase dell'amico valeva quindi la differenza, un bit: è
+l'informazione mutua fra «pari o dispari» e la faccia del dado.
 
 Le domande si possono anche mettere in fila. Per scoprire la faccia si chiede
 prima se è pari (un bit), poi quale delle tre rimaste (un bit e mezzo
-abbondante): in tutto $2{,}585$, come prima. L'incertezza su tutte e due le
-cose insieme è quella sulla prima più quella che resta sulla seconda, una volta
-saputa la prima. Il ragionamento si può anche rovesciare: chi vede la faccia sa
-anche se è pari, quindi sapere la faccia toglie tutta l'incertezza sulla
-parità, che era un bit. Quanto l'una dice dell'altra non dipende da quale si
-guarda per prima.
+abbondante), e in tutto si arriva a $2{,}585$, come prima. In generale,
+l'incertezza su tutte e due le cose insieme è quella sulla prima più quella
+che resta sulla seconda, una volta saputa la prima.
+
+Il ragionamento si può anche rovesciare. Chi vede la faccia sa anche se è
+pari, quindi sapere la faccia toglie tutta l'incertezza sulla parità, che era
+un bit. Quanto l'una dice dell'altra non dipende da quale si guarda per prima.
 
 Se invece l'amico ti dice che tempo fa a Roma, non ti dice niente del dado:
 dopo la frase le facce sono ancora sei, e l'informazione mutua è zero.
 Succede sempre così quando le due cose non hanno niente a che fare l'una con
 l'altra, e solo allora.
 
-Il punto delicato sta in due parole, «in media». Un esame per una
-malattia che colpisce una persona su cento: prima dell'esame il dubbio è minimo,
-quasi certamente sei sano (circa $0{,}08$ bit). Se l'esame risulta positivo, la
-probabilità di essere malato sale a una su sei, e il dubbio cresce otto volte, a
-$0{,}65$ bit: quella notizia ti ha confuso le idee invece di schiarirle. Ma un
-positivo capita di rado, e un negativo, che capita quasi sempre, lo riduce quasi
-a zero. Contando tutte e due le risposte con la loro frequenza, l'esame dimezza
-l'incertezza: dopo restano $0{,}04$ bit. Una singola notizia può aumentare il
-dubbio; una fonte di notizie, in media, non lo aumenta mai.
+Il punto delicato sta in due parole, «in media». Considera un esame per una
+malattia che colpisce una persona su cento. Prima dell'esame il dubbio è
+minimo, perché quasi certamente sei sano (circa $0{,}08$ bit). Se l'esame
+risulta positivo, la probabilità di essere malato sale a una su sei, e il
+dubbio cresce otto volte, a $0{,}65$ bit: quella notizia ti ha confuso le idee
+invece di schiarirle.
+
+Ma un positivo capita di rado, e un negativo, che capita quasi sempre, riduce
+il dubbio quasi a zero. Contando tutte e due le risposte con la loro
+frequenza, l'esame dimezza l'incertezza: dopo restano $0{,}04$ bit. Una
+singola notizia può aumentare il dubbio; una fonte di notizie, in media, non
+lo aumenta mai.
 
 Le notizie non si moltiplicano passando di bocca in bocca. Se l'amico
 riferisce la sua frase a un terzo, e il terzo la riferisce a te, del dado puoi
-sapere al massimo quel bit, e spesso meno, se per strada la frase si storpia:
-nessun passaparola aggiunge sul dado qualcosa che la prima frase non
-dicesse.
+sapere al massimo quel bit, e spesso meno, se per strada la frase si storpia.
+Nessun passaparola aggiunge sul dado qualcosa che la prima frase non dicesse.
 
 `````
 
 `````{tab} Superiore
 
-Per due variabili discrete con distribuzione congiunta $p(x,y)$, l'entropia
-congiunta è $H(X,Y)=-\sum_{x,y}p(x,y)\log_2 p(x,y)$ e l'entropia condizionata
+Per due variabili discrete con distribuzione congiunta $p(x,y)$, l’**entropia
+congiunta** è $H(X,Y)=-\sum_{x,y}p(x,y)\log_2 p(x,y)$ e l'entropia condizionata
 è la media delle entropie delle condizionate,
 
 $$
@@ -423,9 +454,9 @@ H(Y\mid X)=\sum_x p(x)\,H(Y\mid X=x)
 $$
 
 Da $p(x,y)=p(x)\,p(y\mid x)$ segue la **regola della catena**
-$H(X,Y)=H(X)+H(Y\mid X)$, e scrivendola nei due versi
-$I(X;Y)=H(Y)-H(Y\mid X)=H(X)-H(X\mid Y)=H(X)+H(Y)-H(X,Y)$: l'informazione
-mutua è simmetrica. Sul dado, con $X$ la parità e $Y$ la faccia,
+$H(X,Y)=H(X)+H(Y\mid X)$, e scrivendola nei due versi si ottiene
+$I(X;Y)=H(Y)-H(Y\mid X)=H(X)-H(X\mid Y)=H(X)+H(Y)-H(X,Y)$, quindi l'informazione
+mutua è simmetrica. Sul dado, ad esempio, con $X$ la parità e $Y$ la faccia,
 $H(Y)=\log_2 6$, $H(Y\mid X)=\log_2 3$, $H(X\mid Y)=0$, e da tutti e due i
 lati $I=1$ bit.
 
@@ -438,24 +469,28 @@ I(X;Y)=D_{KL}\big(p(x,y)\,\|\,p(x)\,p(y)\big)
 $$
 
 quindi per la disuguaglianza di Gibbs è non negativa, e nulla se e solo se $X$
-e $Y$ sono indipendenti. Ne segue $H(Y\mid X)\le H(Y)$: condizionare non
-aumenta l'entropia *in media*. Per un singolo valore invece $H(Y\mid X=x)>H(Y)$
-è possibile, e un esame diagnostico lo mostra: con $Y$ lo stato di salute e $X$
-l'esito dell'esame, prevalenza $0{,}01$, sensibilità $0{,}99$ e falsi positivi
-al $5\%$, $H(Y)\approx 0{,}081$ bit, $H(Y\mid X=+)\approx 0{,}650$, $H(Y\mid
-X)\approx 0{,}040$ e $I(X;Y)\approx 0{,}041$ bit. Allo stesso modo la quantità
-dentro il valore atteso, l’**informazione mutua puntuale**
+e $Y$ sono indipendenti. Ne segue $H(Y\mid X)\le H(Y)$, cioè condizionare non
+aumenta l'entropia *in media*.
+
+Per un singolo valore, invece, $H(Y\mid X=x)>H(Y)$ è possibile, come mostra un
+esame diagnostico. Siano $Y$ lo stato di salute e $X$ l'esito dell'esame, con
+prevalenza $0{,}01$, sensibilità $0{,}99$ e falsi positivi al $5\%$; allora
+$H(Y)\approx 0{,}081$ bit, $H(Y\mid X=+)\approx 0{,}650$, $H(Y\mid X)\approx
+0{,}040$ e $I(X;Y)\approx 0{,}041$ bit. Allo stesso modo la quantità dentro il
+valore atteso, l’**informazione mutua puntuale**
 $\operatorname{pmi}(x,y)=\log_2\frac{p(x,y)}{p(x)\,p(y)}$, può essere negativa,
 mentre la sua media non lo è mai {cite}`cover2006elements`.
 
-Due fatti servono per gli usi successivi. La **disuguaglianza dell'elaborazione
-dei dati**: se $X\to Y\to Z$ è una catena di Markov (come un dato, la sua
-rappresentazione e una funzione di quella rappresentazione), allora $I(X;Z)\le
-I(X;Y)$, e nessuna elaborazione di $Y$ crea informazione su $X$ che $Y$ non
-avesse. Il secondo riguarda la stima: su variabili continue e ad alta
-dimensione l'informazione mutua non si calcola, si maggiora o si minora con
-stimatori variazionali, e l'InfoNCE dell'auto-supervisione ne dà un minorante
-che non supera $\log N$, con $N$ il numero di esempi a confronto.
+Due fatti servono per gli usi successivi. Il primo è la **disuguaglianza
+dell'elaborazione dei dati**: se $X\to Y\to Z$ è una catena di Markov (come un
+dato, la sua rappresentazione e una funzione di quella rappresentazione),
+allora $I(X;Z)\le I(X;Y)$, e nessuna elaborazione di $Y$ crea informazione
+su $X$ che $Y$ non avesse.
+
+Il secondo riguarda la stima. Su variabili continue e ad alta dimensione
+l'informazione mutua non si calcola, ma si maggiora o si minora con stimatori
+variazionali; l'InfoNCE dell'auto-supervisione, in particolare, ne dà un
+minorante che non supera $\log N$, con $N$ il numero di esempi a confronto.
 
 ```python
 import numpy as np
@@ -506,12 +541,13 @@ aggiunge niente all'entropia: la dice in facce invece che in bit, e le facce
 raddoppiano dove i bit crescono di uno.
 ```
 
-La perplessità è l'esponenziale dell'entropia: riporta l'incertezza al numero
+La perplessità è l'esponenziale dell'entropia, e riporta l'incertezza al numero
 di alternative equiprobabili che darebbero la stessa entropia. Per la moneta
-equa $2^1 = 2$ facce, per quella truccata $2^{0{,}47} \approx 1{,}4$, e in
-{numref}`fig-perplessita-righello` sono lo stesso punto letto sui due bordi. Un
-valore non intero ha un senso preciso: $2^{0{,}47}\approx1{,}4$, poco meno di
-$2^{0{,}5}\approx1{,}41$, corrisponde a meno di due alternative effettive.
+equa, ad esempio, $2^1 = 2$ facce, per quella truccata $2^{0{,}47} \approx
+1{,}4$, e in {numref}`fig-perplessita-righello` sono lo stesso punto letto sui
+due bordi. Anche un valore non intero ha un senso preciso:
+$2^{0{,}47}\approx1{,}4$, poco meno di $2^{0{,}5}\approx1{,}41$, corrisponde a
+meno di due alternative effettive.
 
 `````{tab} Elementare
 
@@ -521,8 +557,8 @@ facce» lo è. La **perplessità** fa questa traduzione: riconverte l'entropia n
 incertezza. Vale 2 per la moneta equa, 6 per il dado onesto, circa 1,4 per la
 moneta truccata (quasi nessun dubbio, poco più di un'alternativa secca). Un
 modello di linguaggio con perplessità 20 è incerto a ogni parola *come se*
-tirasse un dado a 20 facce. Meno facce, modello più sicuro: la perplessità va
-fatta scendere, e sotto $1$ (nessun dubbio) non può andare.
+tirasse un dado a 20 facce. Meno facce, modello più sicuro: la
+perplessità va fatta scendere, e sotto $1$ (nessun dubbio) non può andare.
 
 `````
 
@@ -534,19 +570,21 @@ $$
 \mathrm{PP}(p) = 2^{H(p)},
 $$
 
-l'esponenziale dell'entropia nella stessa base del logaritmo. Per la
-distribuzione uniforme su $n$ esiti, $\mathrm{PP} = 2^{\log_2 n} = n$: il
-numero di alternative, appunto. Per le nostre sorgenti: $2^{1}=2$ (moneta
-equa), $2^{\log_2 6}=6$ (dado), $2^{0{,}469}\approx 1{,}38$ (moneta truccata).
+l'esponenziale dell'entropia nella stessa base del logaritmo. In
+particolare, per la distribuzione uniforme su $n$ esiti
+$\mathrm{PP} = 2^{\log_2 n} = n$, che è appunto il numero di alternative. Per
+le nostre sorgenti si ottiene $2^{1}=2$ (moneta equa), $2^{\log_2 6}=6$
+(dado), $2^{0{,}469}\approx 1{,}38$ (moneta truccata).
+
 Un modello $q$ valutato su un testo $w_1,\dots,w_T$ ha perplessità
 $\mathrm{PP}=2^{H(p,q)}$, con $H(p,q)\approx-\frac1T\sum_{t=1}^{T}\log_2
 q(w_t\mid w_{<t})$, e quindi $\mathrm{PP}=\big(\prod_{t}q(w_t\mid
 w_{<t})\big)^{-1/T}$: la media geometrica degli inversi delle probabilità
-assegnate alle parole che sono occorse. Si minimizza, e il suo
-pavimento è $1$ (probabilità $1$ a ogni parola occorsa). Nei modelli di
-linguaggio si usa la perplessità *per parola*: la {doc}`sezione sui modelli
-n-gram </NaturalLanguageProcessing/modelli-ngram>` la riprende numeri alla
-mano.
+assegnate alle parole che sono occorse. La perplessità di un modello si
+minimizza, e il suo pavimento è $1$ (probabilità $1$ a ogni parola occorsa).
+Nei modelli di linguaggio si usa la perplessità *per parola*: la {doc}`sezione
+sui modelli n-gram </NaturalLanguageProcessing/modelli-ngram>` la riprende
+numeri alla mano.
 
 `````
 
@@ -563,42 +601,49 @@ $$
 h = \lim_{n\to\infty}\frac{H(X_1,\dots,X_n)}{n},
 $$
 
-definita come la sorpresa media di un simbolo dato tutto ciò che lo precede. Se i
-simboli sono indipendenti, $h$ coincide con la $H$ di un simbolo solo; se c'è
-memoria, $h$ è più piccola, e l'entropia calcolata sulle sole frequenze dei
-simboli (quella *di ordine zero*) sovrastima il limite. Una lingua ha memoria:
-dopo una «q» arriva quasi sempre una «u», dopo «il gatto ne» le continuazioni
-plausibili sono poche.
+definita come la sorpresa media di un simbolo dato tutto ciò che lo precede.
+
+Se i simboli sono indipendenti, $h$ coincide con la $H$ di un simbolo solo; se
+c'è memoria, $h$ è più piccola, e l'entropia calcolata sulle sole
+frequenze dei simboli (quella *di ordine zero*) sovrastima il limite. Una
+lingua, ad esempio, ha memoria: dopo una «q» arriva quasi sempre una «u», e
+dopo «il gatto ne» le continuazioni plausibili sono poche.
 
 La differenza si vede su una sorgente con memoria costruita apposta, di cui si
 conosce la struttura. Si estraggono a caso ventimila parole da un elenco di sei
 e si mettono una dietro l'altra. La sorgente vera produce $\log_2 6 \approx
 2{,}6$ bit ogni volta che sceglie una parola, e siccome le parole sono lunghe
 in media poco più di cinque caratteri, ne produce meno di mezzo bit per
-carattere. Contando invece soltanto quanto è frequente ciascuna lettera, senza
+carattere.
+
+Contando invece soltanto quanto è frequente ciascuna lettera, senza
 accorgersi che le lettere arrivano in gruppi obbligati, la sorpresa media sale
 a $3{,}36$ bit a carattere. Passato lo stesso testo a `gzip`, un compressore
 qualunque, il file esce a circa $0{,}8$ bit a carattere, un quarto di quel
-presunto limite invalicabile. Nessun teorema è violato: gzip sfrutta la
-ridondanza fra un carattere e il successivo, che quel calcolo ignorava, e resta
-comunque sopra il mezzo bit della sorgente vera, perché un compressore generico
-scopre la struttura dal testo e non la conosce in anticipo.
+presunto limite invalicabile.
+
+Nessun teorema è violato. Infatti gzip sfrutta la ridondanza fra un carattere
+e il successivo, che quel calcolo ignorava, e resta comunque sopra il mezzo bit
+della sorgente vera, perché un compressore generico scopre la struttura dal
+testo e non la conosce in anticipo.
 
 Nel 1951 Shannon stimò l'entropia per simbolo dell'inglese scritto in circa un
 bit per lettera {cite}`shannon1951prediction`, un valore che va confrontato con
 i quasi $5$ bit che darebbero ventisei lettere equiprobabili tenendo conto solo
-di quante sono. Uno zip comprime bene un testo perché quella ridondanza c'è tutta,
-e non guadagna più niente su un file già compresso, da cui è stata tolta.
+di quante sono. Uno zip comprime bene un testo perché quella ridondanza c'è
+tutta, e non guadagna più niente su un file già compresso, da cui è stata
+tolta.
 
-Un compressore assegna codici corti ai simboli frequenti; un modello che
+Un compressore assegna codici corti ai simboli frequenti, mentre un modello che
 predice il simbolo successivo dà probabilità più precise, condizionate a ciò
 che è appena stato letto. Con la codifica aritmetica un modello $q$ scrive un
 testo $x_1\dots x_T$ in circa $-\sum_{t=1}^{T}\log_2 q(x_t\mid x_{<t})$ bit,
-$T$ volte la sua cross-entropia per simbolo: dove il modello indovina, la
-sorpresa è quasi zero e non c'è quasi niente da scrivere. Predire bene e
-comprimere bene sono lo stesso problema, e la perdita con cui si addestra un
-modello linguistico è, a meno della base del logaritmo, la lunghezza media per
-simbolo del testo compresso con lui.
+$T$ volte la sua cross-entropia per simbolo. Dove il modello indovina, la
+sorpresa è quasi zero e non c'è quasi niente da scrivere.
+
+Predire bene e comprimere bene sono quindi lo stesso problema, e la perdita
+con cui si addestra un modello linguistico è, a meno della base del logaritmo,
+la lunghezza media per simbolo del testo compresso con lui.
 
 ## In pratica, con NumPy
 
@@ -725,8 +770,8 @@ print(f"{h_zero:.2f}  {gzip_per_carattere:.2f}")
 ```
 `````
 
-Tutto questo conta in bit. Anche la memoria del calcolatore si conta in bit, le
-cifre binarie, e lì il numero di cifre è fissato una volta per tutte: un numero
-reale deve starci dentro comunque. Che cosa si perde nel farcelo entrare, e
-come si evita che la perdita cresca durante un calcolo, è l'argomento
-dell’{doc}`analisi numerica <analisi-numerica>`.
+Tutto questo si misura in bit. Anche la memoria del computer si conta in bit,
+le cifre binarie, ma lì il numero di cifre è fissato una volta per tutte, e un
+numero reale deve starci dentro comunque. Che cosa si perde nel farcelo
+entrare, e come si evita che la perdita cresca durante un calcolo, è
+l'argomento dell’{doc}`analisi numerica <analisi-numerica>`.

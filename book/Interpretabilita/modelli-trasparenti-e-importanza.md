@@ -22,10 +22,10 @@ costruzione, così semplice che la sua logica si legge a occhio nudo. La seconda
 è tenere il modello com'è, anche se dentro ha milioni di numeri e non si legge
 affatto, e interrogarlo da fuori: gli si passano dei casi, si guardano le
 risposte, e si deduce il resto. È la scatola nera della storia degli asmatici;
-un modello che si legge, per contrasto, si dice scatola bianca.
+un modello che si legge, per contrasto, si dice **scatola bianca**.
 
 La prima strada si percorre tutta; della seconda si prende il primo
-attrezzo che vi si incontra: una classifica delle colonne dei dati,
+strumento che vi si incontra: una classifica delle colonne dei dati,
 ordinate per quanto pesano sulle risposte. Le colonne di una tabella di dati si
 chiamano feature, e quella classifica si chiama quindi **importanza delle
 feature**. Per un panorama sistematico dell'intero campo il riferimento è il
@@ -39,10 +39,10 @@ colonna, la moltiplica per un numero suo, e somma tutto. Sono i due modelli
 incontrati nella {doc}`sezione sull'apprendimento supervisionato
 </MachineLearning/apprendimento-supervisionato>` con i nomi di regressione
 lineare (quando la risposta è una quantità, un prezzo) e regressione logistica
-(quando è un sì o un no). Quei numeri, uno per colonna, si chiamano pesi (o, con
-la parola che si usa più spesso in statistica, **coefficienti**: sono la stessa
-cosa), e una somma fatta così si dice pesata. Quei pesi sono l'intero calcolo
-del modello: nessun altro passaggio è nascosto da qualche parte.
+(quando è un sì o un no). Quei numeri, uno per colonna, si chiamano **pesi**
+(o, con la parola che si usa più spesso in statistica, **coefficienti**: sono
+la stessa cosa), e una somma fatta così si dice pesata. Quei pesi sono l'intero
+calcolo del modello: nessun altro passaggio è nascosto da qualche parte.
 
 ```{figure} ../figures/regressione-lineare.svg
 :name: fig-retta-residui
@@ -145,14 +145,15 @@ $$
 $$
 
 dove $R_j^2$ è il coefficiente di determinazione della regressione di $x_j$
-sulle altre feature. Il secondo fattore è il *variance inflation factor*: con
-$R_j^2 = 0{,}99$ la varianza del coefficiente è cento volte quella che avrebbe
-con feature scorrelate, e il segno stesso di $\hat{w}_j$ può cambiare da un
-campione all'altro mentre la predizione resta stabile, perché i dati
-determinano bene la somma degli effetti, non la loro spartizione. È la stessa
-multicollinearità che rende preziosa la regolarizzazione Ridge e Lasso della
-{doc}`sezione sull'overfitting </MachineLearning/overfitting-validazione>`, che
-accettano una stima distorta in cambio di una varianza minore.
+sulle altre feature. Il secondo fattore è il *variance inflation factor*: ad
+esempio, con $R_j^2 = 0{,}99$ la varianza del coefficiente è cento volte quella
+che avrebbe con feature scorrelate, e il segno stesso di $\hat{w}_j$ può
+cambiare da un campione all'altro mentre la predizione resta stabile, perché i
+dati determinano bene la somma degli effetti, non la loro spartizione. È la
+stessa multicollinearità che rende preziosa la regolarizzazione Ridge e Lasso
+della {doc}`sezione sull'overfitting
+</MachineLearning/overfitting-validazione>`, che accettano una stima distorta
+in cambio di una varianza minore.
 
 Che cosa voglia dire «trasparente» lo precisa Lipton {cite}`lipton2018mythos`,
 che ne distingue tre livelli: un modello è *simulabile* se una persona può
@@ -169,10 +170,10 @@ interpretabili di per sé.
 La trasparenza non finisce con i modelli lineari. Gli alberi di decisione,
 studiati nella {doc}`sezione su alberi e metodi ensemble
 </MachineLearning/alberi-ensemble>`, sono l'altro archetipo di «scatola
-bianca»: si parte dalla domanda in cima (che si chiama radice, perché
+bianca»: si parte dalla domanda in cima (che si chiama **radice**, perché
 l'albero si disegna capovolto, con le foglie in basso) e a ogni risposta si
 scende di un ramo, fino a una casella finale che porta la decisione (una
-foglia). Quel percorso *è* la spiegazione.
+**foglia**). Quel percorso *è* la spiegazione.
 
 ```{figure} ../figures/alberi-di-decisione.svg
 :name: fig-albero-percorso
@@ -271,9 +272,12 @@ per unità, come in una ricevuta. I punti li sceglie la regola del Lasso. Ogni
 punto assegnato ha un costo, uguale per il primo e per l'ultimo, e lo si
 assegna solo se migliora le risposte più di quanto costa; a una frase che aiuta
 poco, allora, non conviene darne nemmeno uno, e chi non serve riceve zero punti
-e sparisce dall'elenco. Quanto conta una frase dipende sia dai suoi punti sia da
+e sparisce dall'elenco.
+
+Quanto conta una frase dipende sia dai suoi punti sia da
 quanti clienti riguarda. Una frase vera per tutti dà a tutti gli stessi punti e
 non distingue nessuno, una vera per un cliente su mille ne sposta uno solo.
+
 Resta una ricevuta corta, e le frasi con più di una condizione dicono le cose
 che nessun termine per colonna saprebbe dire, come «l'età conta solo se il
 reddito è basso».
@@ -313,7 +317,9 @@ $s \sim U(0,1)$), e mette il termine lineare alla pari con un indicatore davanti
 alla penalità. Le regole invece si lasciano come sono, di proposito, e così a
 parità di effetto sulle previsioni paga di più, perché le serve un coefficiente
 più grande, una regola con supporto vicino a $0$ o a $1$, che è stimata su pochi
-esempi. L'insieme di alberi viene da un procedimento che gli autori chiamano
+esempi.
+
+L'insieme di alberi viene da un procedimento che gli autori chiamano
 ISLE, di cui il gradient boosting è un caso, con sottocampionamento e un numero
 di foglie casuale per albero, e i coefficienti si stimano con una penalità L1,
 
@@ -325,17 +331,21 @@ con $\ell$ il costo di una previsione e $\lambda$ scelto per validazione
 incrociata. L'importanza di una regola di supporto $s_k$ (la frazione di esempi
 su cui è vera) è $|a_k|\sqrt{s_k(1 - s_k)}$, cioè il coefficiente per la
 deviazione standard dell'indicatore; quella di un termine lineare è $|b_j|$ per
-la deviazione standard di $l_j$. Le regole con due o più condizioni sono le
-interazioni, e si leggono direttamente. I limiti vengono dal Lasso e dalla base.
+la deviazione standard di $l_j$.
+
+Le regole con due o più condizioni sono le
+interazioni, e si leggono direttamente.
+
+I limiti vengono dal Lasso e dalla base.
 Il Lasso restringe i coefficienti verso lo zero, e fra regole quasi collineari
-(o fra un termine lineare e le regole a soglia sulla stessa colonna) spartisce
+(o fra un termine lineare e le regole a soglia sulla stessa colonna) ripartisce
 il peso in modo instabile da un campione all'altro; la base è fatta di gradini e
 di rette, e una funzione vera liscia e curva chiede molte regole, cioè una lista
 lunga.
 
 `````
 
-Il blocco costruisce dati in cui la risposta nasconde una regola a soglia fra
+Il programma costruisce dati in cui la risposta nasconde una regola a soglia fra
 due colonne, che quando è vera aggiunge $3$, più una terza colonna che conta in
 proporzione, $2$ per unità, e un rumore. Addestra un {doc}`gradient boosting
 </MachineLearning/alberi-ensemble>` (alberi costruiti uno dopo l'altro,
@@ -473,13 +483,13 @@ modello trasparente all'altezza del modello che lì va più forte.
 Sulle tabelle il modello da battere è di solito il boosting: centinaia di
 alberi costruiti uno dopo l'altro, ciascuno a correggere gli errori dei
 precedenti, e nessuno sa leggerlo. Lo si può però costringere a lavorare in un
-altro modo. A ogni giro un alberello minuscolo che guarda una colonna sola, a
-turno: prima l'età, poi il reddito, poi la pressione, e di nuovo da capo. Alla
-fine tutti gli alberelli dell'età si sommano in una curva sola, quanto pesa
-l'età a ogni età, e lo stesso per ogni colonna. È di nuovo una ricevuta, una
-voce per colonna, solo che al posto del cartellino fisso c'è una curva; ci si
-aggiungono poche voci a due colonne, per le coppie che contano insieme,
-scelte provandole tutte in fretta.
+altro modo. A ogni iterazione un alberello minuscolo che guarda una colonna
+sola, a turno: prima l'età, poi il reddito, poi la pressione, e di nuovo da
+capo. Alla fine tutti gli alberelli dell'età si sommano in una curva sola,
+quanto pesa l'età a ogni età, e lo stesso per ogni colonna. È di nuovo una
+ricevuta, una voce per colonna, solo che al posto del cartellino fisso c'è una
+curva; ci si aggiungono poche voci a due colonne, per le coppie che contano
+insieme, scelte provandole tutte in fretta.
 
 Con un modello di questo tipo Caruana e colleghi sono tornati sui pazienti con
 la polmonite e l'asma: la voce dell'asma abbassava il rischio, si vedeva a
@@ -489,7 +499,7 @@ Ne segue un consiglio pratico, di buon senso: parti dal modello trasparente e
 misura quanto perdi passando a uno più complicato, invece di darlo
 per scontato. Se la differenza è minima, la chiarezza è un guadagno netto, e lo
 è soprattutto dove una decisione sbagliata ha un costo umano. Se invece la
-scatola nera è necessaria, gli attrezzi che la interrogano da fuori danno una
+scatola nera è necessaria, gli strumenti che la interrogano da fuori danno una
 stima di come si comporta, non la regola con cui decide.
 
 `````
@@ -644,14 +654,18 @@ secondo: la permutazione crea combinazioni irrealistiche (un'altezza da adulto
 con un peso da bambino) su cui il modello viene interrogato fuori dal supporto
 dei dati, e l'errore così gonfiato può *sovrastimare* l'importanza delle
 feature coinvolte {cite}`hooker2021unrestricted`: la stessa patologia di
-estrapolazione che affligge il *Partial Dependence Plot* (PDP). I due problemi
+estrapolazione che affligge il *Partial Dependence Plot* (PDP).
+
+I due problemi
 non si correggono insieme: permutare $x_j$ *dentro* gruppi di righe simili
 (permutazione condizionata) toglie di mezzo le combinazioni irrealistiche, ma
 accentua la sottostima, perché a ciascuna delle due colonne gemelle resta
 soltanto l'informazione che aggiunge all'altra. La sottostima pesa su chi
 chiede «quanta informazione porta *questa colonna*»; a chi chiede «di che cosa
 ha bisogno *questo modello*» quel valore basso risponde il vero. Sono le due
-domande del bivio fra spiegare il modello e spiegare il mondo. Il rimedio
+domande del bivio fra spiegare il modello e spiegare il mondo.
+
+Il rimedio
 pratico alla sottostima è l'importanza *di gruppo*: si applica la stessa
 permutazione delle righe a tutte le colonne di un gruppo correlato e si legge
 l'importanza dell'insieme, che non dipende da come il modello si è spartito il
@@ -763,7 +777,9 @@ Rispetto alla permutation importance, la MDI ha due svantaggi: è legata alla
 struttura interna del modello (vale solo per gli alberi) ed è misurata sui dati
 di addestramento. La permutazione, calcolata su un *hold-out*, è model-agnostic
 e riflette la generalizzazione; è la stima che la sezione sugli alberi e gli
-ensemble già raccomandava di preferire. Nemmeno la permutazione, però, esce
+ensemble già raccomandava di preferire.
+
+Nemmeno la permutazione, però, esce
 indenne dal lavoro di Strobl. Calcolata come nelle foreste di Breiman, sugli
 esempi rimasti fuori dal campione bootstrap di ciascun albero, sulle colonne
 inutili ha media vicina a zero, come deve, ma una dispersione che cresce con il
@@ -806,7 +822,7 @@ resta piatta e ti fa credere che l'età non conti. Il rimedio è la curva
 disegni *una curva per ogni cliente*. Un fascio di curve che vanno in direzioni
 diverse rivela subito che l'effetto non è uguale per tutti.
 
-C'è un secondo limite, più insidioso, e per quello esiste un attrezzo diverso.
+C'è un secondo limite, più insidioso, e per quello esiste uno strumento diverso.
 Riscrivere a tutti la stessa età va bene finché l'età non è legata ad altro; ma
 se due colonne vanno sempre insieme (l'altezza e il peso, per dire) riscriverne
 una sola fabbrica persone che non esistono, alte due metri e pesanti cinquanta
@@ -869,14 +885,18 @@ f\big(z_{h-1,j},\, \mathbf{x}_{-j}^{(i)}\big) \Big],
 $$
 
 dove $h_j(v)$ è l'intervallo che contiene $v$; gli si sottrae poi la media sugli
-esempi, così che l'effetto medio sia nullo. Ogni esempio viene spostato solo
+esempi, così che l'effetto medio sia nullo.
+
+Ogni esempio viene spostato solo
 fino ai bordi del proprio intervallo, mai fino a un valore lontano, e lì sta la
 protezione dall'estrapolazione; il limite è una curva che dipende dal numero di
 intervalli e che, con pochi esempi per intervallo, si fa rumorosa. È la scelta
 da preferire quando le feature sono marcatamente correlate. Costa anche meno:
 PDP e ICE su una griglia di $G$ valori interrogano il modello $G\,m$ volte,
 l'ALE $2m$ volte, perché ogni esempio si porta soltanto ai due estremi del suo
-intervallo. La curva ALE di primo ordine descrive però l'effetto principale di
+intervallo.
+
+La curva ALE di primo ordine descrive però l'effetto principale di
 $x_j$, e le interazioni con un'altra feature chiedono gli effetti di secondo
 ordine, definiti dagli stessi autori su coppie di feature. La scelta fra i due
 non oppone un metodo giusto a uno sbagliato, e ripropone il bivio fra spiegare
@@ -897,7 +917,7 @@ chiama `diabetes`. È una tabella di 442 righe, una per paziente diabetico, e
 dieci colonne di misure cliniche: l'età, il sesso, l'indice di massa corporea
 (`bmi`), la pressione (`bp`) e sei valori del sangue, chiamati da `s1` a `s6`.
 La cosa da prevedere, in ogni riga, è quanto la malattia sarà progredita dopo un
-anno; la colonna da prevedere si chiama, in gergo, il target, e il
+anno; la colonna da prevedere si chiama, in gergo, il **target**, e il
 modello non la riceve in ingresso.
 
 I 442 pazienti li dividiamo in un insieme di addestramento, circa il 70% (309
@@ -1012,7 +1032,7 @@ cioè quanti ne contiene ciascuna nelle 309 righe su cui gli alberi sono
 cresciuti: 309 la prima, un valore diverso per ogni riga, due la seconda. È la
 distorsione verso le colonne con tanti valori, misurata invece che affermata.
 
-Il rimescolamento, sulle stesse due colonne inventate, dà $+0{,}004$ e
+Il rimescolamento, invece, sulle stesse due colonne inventate, dà $+0{,}004$ e
 $-0{,}002$: zero entrambe, come dev'essere. Su questo non si fa ingannare dal
 numero di valori, perché non guarda le soglie: guarda soltanto se il modello
 peggiora. Il numero di valori si vede semmai nell'oscillazione, $\pm 0{,}012$
@@ -1095,7 +1115,9 @@ restare senza nessuna delle dieci foto scelte: ognuna ne rappresenta in media un
 migliaio, e a ogni passo una foto in più fra i cani abbassa la differenza più di
 una foto fra i rari. Le critiche puntano lì. Mostrare solo i
 prototipi darebbe un'idea troppo pulita dell'archivio: le critiche dicono dove
-la sintesi tace. Le critiche, poi, si vogliono diverse fra loro, perché tre
+la sintesi tace.
+
+Le critiche, poi, si vogliono diverse fra loro, perché tre
 foto dello stesso animale raro direbbero tre volte la stessa cosa. Si guarda
 anche il verso opposto, le zone dove la selezione promette più foto di quante
 l'archivio ne abbia.
@@ -1129,15 +1151,18 @@ costante $k^*$ e termini fuori diagonale fra $0$ e $k^*/(n^3 + 2n^2 - 2n - 3)$,
 e ne ricavano, con il risultato classico sulle funzioni submodulari
 {cite}`nemhauser1978analysis`, che la scelta avida arriverebbe almeno a
 $1 - 1/e \approx 0{,}63$ del valore ottimo di $J$ fra gli insiemi della stessa
-taglia. Quella condizione però fa del nucleo quasi l'identità (con un nucleo
-gaussiano chiede una larghezza sotto la distanza fra i due punti più vicini
-divisa per circa $\sqrt{2\ln n^3}$), e lì $J(Z) = k^*\,(2/n - 1/|Z|)$ a meno di
-$O(k^* n^{-3})$, per qualunque $Z$. Gli insiemi della stessa taglia si
-equivalgono, e per $|Z| < n/2$ il valore è negativo, sotto $J(\emptyset) = 0$:
-la monotonia cade al primo passo, e un rapporto fra due valori negativi non
-promette niente. Nell'uso la scelta avida è un'euristica senza garanzia, che gli
-autori difendono col buon comportamento pratico dell'avido sui problemi
-submodulari. Le critiche vengono dalla **funzione testimone**,
+taglia.
+
+Quella condizione però fa del nucleo quasi l'identità (con un nucleo gaussiano
+chiede una larghezza sotto la distanza fra i due punti più vicini divisa per
+circa $\sqrt{2\ln n^3}$), e lì $J(Z) = k^*\,(2/n - 1/|Z|)$ a meno di $O(k^*
+n^{-3})$, per qualunque $Z$. Gli insiemi della stessa taglia si equivalgono, e
+per $|Z| < n/2$ il valore è negativo, sotto $J(\emptyset) = 0$: la monotonia
+cade al primo passo, e un rapporto fra due valori negativi non promette niente.
+Nell'uso, quindi, la scelta avida è un'euristica senza garanzia, che gli autori
+difendono col buon comportamento pratico dell'avido sui problemi submodulari.
+
+Le critiche vengono dalla **funzione testimone**,
 
 $$
 \psi(\mathbf{x}) = \frac{1}{n}\sum_{i} k(\mathbf{x}, \mathbf{x}_i)
@@ -1151,10 +1176,14 @@ riprodurre le proporzioni dei dati, non di coprirne lo spazio: un gruppo piccolo
 può restare senza prototipi, perché ogni prototipo in più dove la massa è grande
 abbassa $\mathrm{MMD}^2$ di più (un clustering che minimizza le distanze, come
 il $k$-means, al gruppo lontano un centro lo darebbe), e lì $\psi$ è positiva e
-grande. Il lavoro originale sceglie un insieme di critiche $C$ che
+grande.
+
+Il lavoro originale sceglie un insieme di critiche $C$ che
 massimizza $\sum_{\mathbf{x} \in C} |\psi(\mathbf{x})|$ più il log-determinante
 del nucleo ristretto a $C$, un termine che le vuole diverse fra loro; i due
-termini si sommano senza un peso, e la scelta è di nuovo avida. La matrice del
+termini si sommano senza un peso, e la scelta è di nuovo avida.
+
+La matrice del
 nucleo costa $O(n^2)$ valutazioni, e la larghezza decide tutto: troppo larga e
 ogni insieme sembra rappresentativo, troppo stretta e nessuno lo è. Negli
 esperimenti degli autori il parametro del nucleo si sceglie con la validazione
@@ -1162,11 +1191,11 @@ incrociata del classificatore al prototipo più vicino.
 
 `````
 
-Il blocco rifà la scena in piccolo, con punti su un piano al posto delle foto:
+Il programma rifà la scena in piccolo, con punti su un piano al posto delle foto:
 due gruppi grandi di duecento punti e uno raro di venti. Il «vicino» è una
 campana: due punti coincidenti si somigliano per $1$, e la somiglianza cala in
 fretta man mano che si allontanano (è il nucleo gaussiano, con larghezza
-$\sigma = 1$). Il blocco sceglie dieci prototipi uno alla volta, ogni volta
+$\sigma = 1$). Il programma sceglie dieci prototipi uno alla volta, ogni volta
 il punto che abbassa di più la differenza (la scelta che si dice *avida*: prende
 il meglio subito, senza guardare avanti), e poi cerca le critiche in due modi.
 Prima i tre punti dove la funzione testimone è più alta, cioè dove i dati
@@ -1254,10 +1283,10 @@ muove di qualche centesimo. La prima critica resta nel gruppo raro, la seconda
 va in un punto dove la testimone è negativa, cioè dove i prototipi promettono
 più punti di quanti ce ne siano, e la terza in un gruppo grande.
 
-Prototipi e critiche, insieme, sono un riassunto onesto di un insieme di dati:
-i primi dicono che cosa c'è di tipico, le seconde dove la sintesi tace. Sul
-gruppo raro conviene guardare che cosa risponde un modello, prima di
-fidarsene.
+Prototipi e critiche, insieme, sono un riassunto onesto di un
+insieme di dati: i primi dicono che cosa c'è di tipico, le seconde dove la
+sintesi tace. Sul gruppo raro conviene guardare che cosa risponde un modello,
+prima di fidarsene.
 
 ## Che una feature conti, non come, né perché
 
@@ -1271,7 +1300,7 @@ quella colonna sia la causa di niente. Attenzione a questa parola, che somiglia
 a un'altra molto frequente in statistica: «casuale» vuol dire tirato a sorte,
 «causale» che una cosa ne provoca un'altra, e noi neghiamo la seconda.
 
-Un esempio, e sta tutto nella storia degli asmatici. Là l'asma
+Ad esempio, nella storia degli asmatici l'asma
 risultava importante, e chi avesse letto quel numero come una causa avrebbe
 concluso che l'asma protegge dalla polmonite. La causa vera erano le cure
 intensive; l'asma era soltanto la colonna che, nei dati, viaggiava insieme a

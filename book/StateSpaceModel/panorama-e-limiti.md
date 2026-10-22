@@ -22,8 +22,8 @@ con una query $\mathbf{q}_t$, come nella {doc}`sezione dalla softmax alla
 ricorrenza </AttenzioneLineare/dalla-softmax-alla-ricorrenza>`. Prima di
 scrivere, lo stato viene moltiplicato per un fattore, la **transizione**: è lì
 che passa quasi tutta la differenza fra queste architetture. Da RetNet a
-Mamba-2 cambiano la forma di quel fattore e il fatto che dipenda o no
-dall'ingresso.
+Mamba-2 cambiano la forma di quel fattore e il fatto che
+dipenda o no dall'ingresso.
 
 `````{tab} Elementare
 
@@ -34,15 +34,15 @@ di più. Il foglio ha un numero fisso di caselle, e la voce nuova si somma a ci�
 che c'è già, lasciando un segno in tutte le caselle; prima di sommarla, però,
 il passato viene sbiadito un po’.
 
-Quasi tutte le architetture dell'attenzione lineare e degli SSM sono un
-apparecchio solo, con poche manopole. Il corpo della macchina è sempre lo
-stesso: una memoria che a ogni parola scrive una nuova voce e ne rilegge le
+Quasi tutte le architetture dell'attenzione lineare e degli SSM
+sono un apparecchio solo, con poche manopole. Il corpo della macchina è sempre
+lo stesso: una memoria che a ogni parola scrive una nuova voce e ne rilegge le
 vecchie. Cambiare architettura non cambia la macchina: gira tre manopole, e
 ognuna si paga con qualcosa.
 
-La prima decide **quanto è grande** la memoria. Con più caselle ci
-stanno più voci senza pestarsi i piedi. Il conto arriva a ogni parola: le caselle
-si toccano tutte, una per una, sia per scrivere sia per rileggere, quindi un
+La prima decide **quanto è grande** la memoria. Con più caselle ci stanno più
+voci senza pestarsi i piedi. Il conto arriva a ogni parola: le caselle si
+toccano tutte, una per una, sia per scrivere sia per rileggere, quindi un
 foglio più capiente è più oneroso. Quanto di più, dipende da come si fanno i
 conti: una macchina che li fa in blocco, come Mamba-2 con la sua pressa, si
 permette un foglio molto più grande senza rallentare.
@@ -55,13 +55,16 @@ tutto senza guardare che cosa butta via, cancellare di mira tiene in ordine una
 voce sola. Non sbiadire affatto non significa tenere tutto: le caselle
 restano quelle, le voci continuano ad ammucchiarsi una sopra l'altra, e più se
 ne ammucchiano meno pulita torna ciascuna. Anche questa manopola si paga, in
-velocità. Un calcolatore di oggi ha migliaia di piccoli operai che lavorano
-fianco a fianco, e rende quando gli si dà un lavoro grosso solo invece di mille
-lavoretti uno dopo l'altro. Con una regola di sbiadire semplice, uguale per
-tutte le caselle, l'apparecchio sbriga la pagina intera in una volta e li tiene
-occupati tutti; più la regola guarda al dettaglio della singola voce, più quel
-lavoro in blocco si spezzetta, e chi resta senza il suo pezzo aspetta fermo. In
-cambio si ottiene un registro tenuto in ordine, e riletture più precise.
+velocità.
+
+Il motivo è che un calcolatore di oggi ha migliaia di piccoli operai che
+lavorano fianco a fianco, e rende quando gli si dà un lavoro grosso solo invece
+di mille lavoretti uno dopo l'altro. Con una regola di sbiadire semplice, uguale
+per tutte le caselle, l'apparecchio sbriga la pagina intera in una volta e li
+tiene occupati tutti; più la regola guarda al dettaglio della singola voce, più
+quel lavoro in blocco si spezzetta, e chi resta senza il suo pezzo aspetta
+fermo. In cambio si ottiene un registro tenuto in ordine, e riletture più
+precise.
 
 La terza manopola decide se queste scelte sono **fisse**, uguali
 per ogni parola, o se invece è la parola stessa a deciderle, momento per
@@ -96,12 +99,12 @@ $$
 
 dove $\mathbf{q}_t, \mathbf{k}_t, \mathbf{v}_t$ sono query, chiave e valore del
 token $t$ (gli stessi introdotti nell'attenzione dei Transformer) e
-$\mathbf{v}_t \mathbf{k}_t^\top$ è la nuova coppia scritta in memoria. La
-transizione moltiplica a destra, e il lato conta: con lo stato fatto di colonne
-indicizzate dalle chiavi, è da quel lato che il fattore agisce sui canali di
-chiave (e che $\mathbf{I} - \beta_t \mathbf{k}_t \mathbf{k}_t^\top$ cancella la
-traccia lasciata da $\mathbf{k}_t$); a sinistra sbiadirebbe i canali dei
-valori, che è un'altra cosa. Nelle sezioni su {doc}`S4
+$\mathbf{v}_t \mathbf{k}_t^\top$ è la nuova coppia scritta in memoria. Si noti
+che la transizione moltiplica a destra e che il lato conta: con lo stato fatto
+di colonne indicizzate dalle chiavi, è da quel lato che il fattore agisce sui
+canali di chiave (e che $\mathbf{I} - \beta_t \mathbf{k}_t \mathbf{k}_t^\top$
+cancella la traccia lasciata da $\mathbf{k}_t$); a sinistra sbiadirebbe i
+canali dei valori, che è un'altra cosa. Nelle sezioni su {doc}`S4
 </StateSpaceModel/dai-sistemi-dinamici-a-s4>` e su {doc}`Mamba
 </StateSpaceModel/mamba>` la stessa transizione compariva a sinistra,
 $\mathbf{h}_t = \bar{\mathbf{A}}\mathbf{h}_{t-1} + \dots$, e non è una
@@ -121,18 +124,18 @@ $D$ canali e stato $N$ per canale:
 | Mamba (scan selettivo) | $O(LDN)$ | $O(DN)$ | $O(DN)$ |
 | Mamba-2 (SSD a blocchi) | $O(LDN)$, quasi tutto in prodotti di matrici | $O(DN)$ | $O(DN)$ |
 
-Le ultime due righe hanno lo stesso ordine: Mamba-2 non fa meno operazioni,
-le fa sui tensor core, e per questo può permettersi un $N$ di un ordine
-di grandezza più grande. La tabella dice come il costo cresce, e non quale
-modello sia più veloce: lo decidono le costanti e l'hardware.
+Le ultime due righe hanno lo stesso ordine: Mamba-2 non fa meno operazioni, le
+fa sui tensor core, e per questo può permettersi un $N$ di un ordine di
+grandezza più grande. In altri termini, la tabella dice come il costo cresce, e
+non quale modello sia più veloce: lo decidono le costanti e l'hardware.
 
 Gli assi di progetto sono tre, e ciascuno ha i suoi vantaggi e i suoi svantaggi.
 
 **1. La dimensione dello stato.** Quanto è grande $d$ (o, per gli SSM, la
 dimensione $N$ dello stato per canale). Uno stato più grande è una memoria più
-capiente (più coppie chiave-valore ci stanno senza pestarsi i piedi) ma costa
-più calcolo e più memoria a ogni passo, $O(d^2)$ per l'aggiornamento. È la
-manopola della capacità grezza.
+capiente (più coppie chiave-valore ci stanno senza interferire) ma costa
+più calcolo e più memoria a ogni passo, $O(d^2)$ per l'aggiornamento. È l'asse
+della capacità grezza.
 
 **2. La struttura della transizione.** È la vera firma di ogni architettura, e
 la tabella unificante della {doc}`sezione sulle architetture lineari
@@ -162,47 +165,50 @@ puro (identità, non si dimentica nulla) al decadimento scalare uniforme, a
 quello diagonale per-canale, alla correzione mirata di Householder che
 *cancella* la vecchia associazione prima di scrivere la nuova, fino alla
 combinazione dei due (decadimento globale *più* correzione mirata) del Gated
-DeltaNet {cite}`yang2024gateddelta`. La fila però non è una scala regolare: i
-primi tre gradini sono nidificati
+DeltaNet {cite}`yang2024gateddelta`.
+
+La fila però non è una scala regolare: i primi tre gradini sono nidificati
 (ciascuno contiene il precedente come caso particolare), mentre il decadimento
 diagonale e la correzione mirata di Householder sono capacità complementari, e
 il Gated DeltaNet unisce la seconda al decadimento *scalare*, lasciando fuori
 quello per canale (i suoi due casi limite sono discussi nella {doc}`sezione
-sulla scrittura in memoria </AttenzioneLineare/scrivere-nella-memoria>`). Lungo
-tutta la catena, però, il
-conto è lo stesso: si paga in complessità della transizione (via via più
-difficile da rendere parallelizzabile) ciò che si guadagna in *recall*
-preciso. Non in *state tracking*. Grazzi e colleghi {cite}`grazzi2025unlocking`
-dimostrano che una ricorrenza lineare a precisione finita, le cui transizioni
-hanno autovalori tutti positivi, non risolve nemmeno la parità (dire se in una
-stringa di bit gli uni sono pari o dispari); con gli intervalli dichiarati per
-$\alpha_t$ e $\beta_t$ è il caso di ogni gradino della fila. La cura è una
-riga: $\beta_t \in (0,2)$ invece di $(0,1)$, così che l'autovalore
-$1-\beta_t\lVert\mathbf{k}_t\rVert^2$ possa scendere fino a $-1$ (e, per
-Mamba, $\bar a_t \in (-1,1)$). Con transizioni che sono prodotti di fattori di
-questo tipo, ciascuno con autovalori in $[-1,1]$, una pila di ricorrenze
-lineari, con tanti strati quanti ne chiede l'automa, riconosce qualunque
-linguaggio regolare; per contare modulo $3$ serve invece un autovalore non
-reale, e una transizione triangolare a elementi reali non basta. È lo stesso
-segno meno, insieme a una transizione che copia una colonna dello stato su
-un'altra, che dà la sua capacità a RWKV-7, e l'autovalore non reale è
-l'esigenza a cui Mamba-3 risponde con le rotazioni. Il limite ha anche una forma
-di complessità: a precisione logaritmica e con un numero fisso di strati, gli
-SSM di S4 (transizione costante) e di Mamba (transizione diagonale) calcolano
-solo funzioni in $\mathsf{TC}^0$, e se
+sulla scrittura in memoria </AttenzioneLineare/scrivere-nella-memoria>`).
+
+Lungo tutta la catena il conto è lo stesso: si paga in complessità della
+transizione (via via più difficile da rendere parallelizzabile) ciò che si
+guadagna in *recall* preciso. Non in *state tracking*. Grazzi e colleghi
+{cite}`grazzi2025unlocking` dimostrano che una ricorrenza lineare a precisione
+finita, le cui transizioni hanno autovalori tutti positivi, non risolve nemmeno
+la parità (dire se in una stringa di bit gli uni sono pari o dispari); con gli
+intervalli dichiarati per $\alpha_t$ e $\beta_t$ è il caso di ogni gradino
+della fila. La cura è una riga: $\beta_t \in (0,2)$ invece di $(0,1)$, così che
+l'autovalore $1-\beta_t\lVert\mathbf{k}_t\rVert^2$ possa scendere fino a $-1$
+(e, per Mamba, $\bar a_t \in (-1,1)$).
+
+Con transizioni che sono prodotti di fattori di questo tipo, ciascuno con
+autovalori in $[-1,1]$, una pila di ricorrenze lineari, con tanti strati quanti
+ne chiede l'automa, riconosce qualunque linguaggio regolare; per contare modulo
+$3$ serve invece un autovalore non reale, e una transizione triangolare a
+elementi reali non basta. È lo stesso segno meno, insieme a una transizione che
+copia una colonna dello stato su un'altra, che dà la sua capacità a RWKV-7, e
+l'autovalore non reale è l'esigenza a cui Mamba-3 risponde con le rotazioni.
+
+Il limite ha anche una forma di complessità: a precisione logaritmica e con un
+numero fisso di strati, gli SSM di S4 (transizione costante) e di Mamba
+(transizione diagonale) calcolano solo funzioni in $\mathsf{TC}^0$, e se
 $\mathsf{TC}^0 \neq \mathsf{NC}^1$ non possono comporre permutazioni di cinque
 elementi (la parola nel gruppo $S_5$, un problema $\mathsf{NC}^1$-completo)
-{cite}`merrill2024illusion`; la {doc}`sezione sulle architetture lineari
-</AttenzioneLineare/architetture-lineari>` riprende il quadro.
+{cite}`merrill2024illusion`; la {doc}`sezione sulle architetture
+lineari </AttenzioneLineare/architetture-lineari>` riprende il quadro.
 
-**3. Il grado di dipendenza dai dati.** La transizione può essere fissa
-(scelta a priori, uguale per ogni token, come il $\gamma$ di RetNet o il
-decadimento della RWKV-4) oppure dipendente dai dati, generata dall'input
-token per token, come in GLA, DeltaNet e Mamba {cite}`gu2023mamba`. La
-dipendenza dai dati è ciò che compra il *ragionamento basato sul contenuto*:
-decidere cosa tenere e cosa lasciar cadere in base a *ciò che si legge*, non
-solo a quanto tempo è passato. È il salto che separa un metal detector
-regolato una volta per tutte da una guardia che valuta caso per caso.
+**3. Il grado di dipendenza dai dati.** La transizione può essere fissa (scelta
+a priori, uguale per ogni token, come il $\gamma$ di RetNet o il decadimento
+della RWKV-4) oppure dipendente dai dati, generata dall'input token per token,
+come in GLA, DeltaNet e Mamba {cite}`gu2023mamba`. La dipendenza dai dati è ciò
+che rende possibile il *ragionamento basato sul contenuto*: decidere cosa
+tenere e cosa lasciar cadere in base a *ciò che si legge*, non solo a quanto
+tempo è passato. È il salto che separa un metal detector regolato una volta
+per tutte da una guardia che valuta caso per caso.
 
 Su questa mappa gli SSM non sono un'isola, anche se non vi rientrano tutti allo
 stesso modo. Mamba-1 nella forma $\mathbf{S}_{t-1}(\text{transizione}_t)$ non
@@ -229,9 +235,9 @@ famiglie si incontrano su quel gradino, e fuori da lì restano parenti.
 ## Il collo di bottiglia dello stato fisso
 
 Il limite è strutturale: uno stato di taglia fissa non può contenere una
-quantità di informazione che cresce con la lunghezza del contesto. Si vede nel
-ritrovare alla lettera, in un contesto lunghissimo, un dettaglio letto
-centinaia di pagine prima; nel gergo del campo è il *recall associativo
+quantità di informazione che cresce con la lunghezza del contesto. Si vede
+nel ritrovare alla lettera, in un contesto lunghissimo, un dettaglio
+letto centinaia di pagine prima; nel gergo del campo è il *recall associativo
 esatto*: data una chiave, restituire il valore che le era stato associato.
 
 ```{figure} ../figures/interferenza-da-subito.svg
@@ -266,18 +272,21 @@ ogni pagina, finché quel pochino diventa troppo per la domanda che gli stai
 facendo. Quando le voci ammucchiate sono più o meno tante quante le caselle,
 rileggi per metà la voce che cercavi e per metà le briciole di tutte le altre.
 Il conto sta in {numref}`fig-interferenza-da-subito`, e mostra che
-l'interferenza cresce già molto prima. Il quaderno costa pochissimo: resta
-sempre dello stesso spessore per quante pagine tu legga. Per lo stesso motivo
-non può contenere tutto: se dopo mille pagine ti chiedo di citare a memoria una
-frase precisa di pagina 900, il quaderno ti dà il senso generale, non le parole
-esatte. Le hai riassunte, non trascritte. Che sia così lo si misura con due
-prove fatte apposta: nascondere una frase in un testo lunghissimo e chiedere di
-ripescarla alla lettera (è *l'ago nel pagliaio*), oppure riempire la memoria di
-centinaia di coppie nome-numero e chiedere a bruciapelo il numero di un nome
-qualsiasi. L'abilità più comune, indovinare la parola che viene dopo, non lo
-rivela: un modello a quaderno ci riesce perfino meglio di uno a biblioteca
-della stessa taglia, e intanto sbaglia quando gli chiedi di ricopiare una
-pagina.
+l'interferenza cresce già molto prima.
+
+Il quaderno costa pochissimo: resta sempre dello stesso spessore per quante
+pagine tu legga. Per lo stesso motivo non può contenere tutto: se dopo mille
+pagine ti chiedo di citare a memoria una frase precisa di pagina 900, il
+quaderno ti dà il senso generale, non le parole esatte. Le hai riassunte, non
+trascritte.
+
+Che sia così lo si misura con due prove fatte apposta: nascondere una frase in
+un testo lunghissimo e chiedere di ripescarla alla lettera (è *l'ago nel
+pagliaio*), oppure riempire la memoria di centinaia di coppie nome-numero e
+chiedere a bruciapelo il numero di un nome qualsiasi. L'abilità più comune,
+indovinare la parola che viene dopo, non lo rivela: un modello a quaderno ci
+riesce perfino meglio di uno a biblioteca della stessa taglia, e intanto sbaglia
+quando gli chiedi di ricopiare una pagina.
 
 Non tutti i quaderni si tengono allo stesso modo, e si vede: chi cancella la
 voce vecchia prima di metterci la nuova, invece di lasciare che le scritte si
@@ -347,8 +356,8 @@ chiave-valore per l'attenzione, uno stato di taglia fissa per gli altri):
 niente impedisce di mescolare strati dei due tipi, pochi di attenzione dove
 serve ripescare un dettaglio preciso e molti lineari o SSM per il resto. Sono
 le architetture ibride, e ricorrono in gran parte dei lavori recenti. Il costo
-quadratico non sparisce, e lo paga una minoranza di strati, e
-finché il contesto non diventa smisurato pesa poco sul totale.
+quadratico non sparisce, ma lo paga una minoranza di strati e,
+finché il contesto non diventa smisurato, pesa poco sul totale.
 
 `````{tab} Elementare
 
@@ -379,19 +388,19 @@ due tipi di memoria sono bravi in cose diverse, conviene tenerli insieme.
 `````{tab} Superiore
 
 L'idea compare, con dosaggi diversi, in gran parte dei lavori recenti, e i suoi
-autori se la passano dichiarandolo: il Gated DeltaNet scrive di seguire Griffin
-e Samba, e Mamba-2 cita Jamba. Ed è più vecchia di Mamba: già H3, fra il 2022 e
-il 2023, con due soli strati di attenzione superava il Transformer sullo stesso
-corpus {cite}`fu2023h3`. Jamba (AI21 Labs, 2024) intervalla strati di
-attenzione e strati Mamba nel rapporto 1:7, con esperti selettivi
-(*mixture-of-experts*) a strati alterni; ha 52 miliardi di parametri, di cui 12
-attivi per token, e gestisce contesti fino a 256 mila token con una cache
-chiave-valore otto volte più piccola di quella di un Transformer comparabile
-{cite}`lieber2024jamba`. Samba {cite}`ren2024samba` (Microsoft, 2024; ICLR
-2025) combina strati Mamba con strati di attenzione a finestra scorrevole
-(*sliding-window attention*): l'attenzione locale copre il contesto
+autori dichiarano da chi l'hanno presa: il Gated DeltaNet scrive di seguire
+Griffin e Samba, e Mamba-2 cita Jamba. L'idea è più vecchia di Mamba: già H3,
+fra il 2022 e il 2023, con due soli strati di attenzione superava il
+Transformer sullo stesso corpus {cite}`fu2023h3`. Jamba (AI21 Labs, 2024)
+intervalla strati di attenzione e strati Mamba nel rapporto 1:7, con esperti
+selettivi (*mixture-of-experts*) a strati alterni; ha 52 miliardi di parametri,
+di cui 12 attivi per token, e gestisce contesti fino a 256 mila token con una
+cache chiave-valore otto volte più piccola di quella di un Transformer
+comparabile {cite}`lieber2024jamba`. Samba {cite}`ren2024samba` (Microsoft,
+2024; ICLR 2025) combina strati Mamba con strati di attenzione a finestra
+scorrevole (*sliding-window attention*): l'attenzione locale copre il contesto
 ravvicinato, Mamba porta la memoria a lungo raggio, e insieme estrapolano a
-lunghezze molto oltre quella di addestramento. La stessa ricetta appare come
+lunghezze molto oltre quella di addestramento. Lo stesso schema appare come
 variante ibrida sia del Gated DeltaNet {cite}`yang2024gateddelta` (combinato
 con attenzione a finestra scorrevole o con strati Mamba-2) sia di Mamba-2
 {cite}`dao2024mamba2`, il cui articolo studia esplicitamente l'aggiunta di
@@ -401,14 +410,14 @@ pochi strati di attenzione a uno stack SSM e trova il punto migliore intorno al
 La tendenza è la stessa in tutti questi lavori, e il messaggio è più solido e
 più modesto di «l'ibrido vince sempre». I due ingredienti hanno punti di forza
 complementari (recall verbatim l'uno, costo e memoria costanti l'altro), e i
-confronti controllati dicono che mescolarli in proporzione sbilanciata paga.
-Nello studio più ampio, a 8 miliardi di parametri e 3,5 mila miliardi di token
-di addestramento, un ibrido con il 43% di strati Mamba-2, il 7% di attenzione e
-il 50% di MLP supera il Transformer di pari taglia in tutti e dodici i compiti
-standard provati, di 2,65 punti in media, mentre i Mamba puri restano indietro
-dove serve copiare o imparare dal contesto {cite}`waleffe2024empirical`. È il
-motivo per cui la ricetta ricompare, con dosaggi diversi, in architetture per
-il resto lontanissime fra loro.
+confronti controllati dicono che mescolarli in proporzione sbilanciata paga. Ad
+esempio, nello studio più ampio, a 8 miliardi di parametri e 3,5 mila miliardi
+di token di addestramento, un ibrido con il 43% di strati Mamba-2, il 7% di
+attenzione e il 50% di MLP supera il Transformer di pari taglia in tutti e
+dodici i compiti standard provati, di 2,65 punti in media, mentre i Mamba puri
+restano indietro dove serve copiare o imparare dal contesto
+{cite}`waleffe2024empirical`. È il motivo per cui lo schema ricompare, con
+dosaggi diversi, in architetture per il resto lontanissime fra loro.
 
 `````
 
@@ -457,7 +466,7 @@ stesso scheletro sotto il prossimo nome che farà rumore.
   dimenticare nulla, sbiadire tutto in blocco, sbiadire colonna per colonna,
   oppure cancellare di mira la vecchia voce che sta per essere riscritta); e se
   queste scelte sono fisse per ogni parola oppure decise dalla parola stessa,
-  che è ciò che compra il ragionamento basato sul contenuto. Sbiadire e
+  che è ciò che rende possibile il ragionamento basato sul contenuto. Sbiadire e
   cancellare di mira la vecchia voce fanno cose diverse, e c'è
   un'architettura che le usa tutt'e due insieme, il Gated DeltaNet. È
   DeltaNet con in più la manopola dello sbiadire.
@@ -512,15 +521,16 @@ stesso scheletro sotto il prossimo nome che farà rumore.
   canale a canale (per Mamba-1 un gate elemento per elemento, $\mathbf{S}_t =
   \mathbf{G}_t \odot \mathbf{S}_{t-1} + \dots$), che nessun fattore a destra
   riproduce; è Mamba-2 a riportare l'SSM nella forma.
-- Tre manopole di progetto: la dimensione dello stato (capacità), la
-  struttura della transizione ($\mathbf{I} \to \alpha_t \mathbf{I} \to
-  \mathrm{Diag}(\boldsymbol{\alpha}_t) \to \mathbf{I}-\beta_t \mathbf{k}_t \mathbf{k}_t^\top
-  \to \alpha_t(\mathbf{I}-\beta_t \mathbf{k}_t \mathbf{k}_t^\top)$, via via più
-  ricca, ma non è una scala in cui ogni gradino contiene il precedente:
-  decadimento per canale e cancellazione mirata fanno cose diverse, e l'ultimo
-  gradino unisce quest'ultima con il decadimento globale, non con quello
-  per canale), e quanto dipende dai dati (fisso o generato
-  dall'input, che compra il ragionamento basato sul contenuto).
+- Tre assi di progetto: la dimensione dello stato (capacità), la struttura
+  della transizione ($\mathbf{I} \to \alpha_t \mathbf{I} \to
+  \mathrm{Diag}(\boldsymbol{\alpha}_t) \to \mathbf{I}-\beta_t \mathbf{k}_t
+  \mathbf{k}_t^\top \to \alpha_t(\mathbf{I}-\beta_t \mathbf{k}_t
+  \mathbf{k}_t^\top)$, via via più ricca, ma non è una scala in cui ogni
+  gradino contiene il precedente: decadimento per canale e cancellazione mirata
+  fanno cose diverse, e l'ultimo gradino unisce quest'ultima con il decadimento
+  globale, non con quello per canale), e quanto dipende dai dati (fisso o
+  generato dall'input, che rende possibile il ragionamento basato sul
+  contenuto).
 - La dualità SSD di Mamba-2 {cite}`dao2024mamba2` dimostra che un SSM a
   transizione scalare ($\alpha_t \mathbf{I}$) calcola la stessa
   funzione di un'attenzione lineare mascherata: le due famiglie si incontrano
@@ -534,7 +544,7 @@ stesso scheletro sotto il prossimo nome che farà rumore.
   haystack*, MQAR) e sulla copia (errore $> 1 - |\mathcal{S}|/|\Sigma|^L$
   per uno stato con $|\mathcal{S}|$ configurazioni): a costo del calcolo
   quadratico. La perplessità non lo rivela.
-- Gli ibridi sono la ricetta che ricorre in gran parte dei lavori recenti:
+- Gli ibridi sono lo schema che ricorre in gran parte dei lavori recenti:
   pochi strati di attenzione piena intervallati a molti strati lineari o SSM
   (Jamba {cite}`lieber2024jamba`, Samba {cite}`ren2024samba`, le varianti
   ibride di

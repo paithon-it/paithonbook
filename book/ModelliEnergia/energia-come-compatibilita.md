@@ -6,15 +6,15 @@ fa il percorso inverso rispetto a Hopfield: invece di costruire una rete a
 energia, mostra che *quasi ogni modello di apprendimento può essere letto come
 una funzione di energia*.
 
-La ricetta è di una generalità spiazzante. Invece di dare un'energia a una
+L'idea è di una generalità spiazzante. Invece di dare un'energia a una
 configurazione sola, la si dà a una coppia: da una parte quello che si ha
 davanti (una foto, una frase, il presente), dall'altra una risposta possibile
 (la parola che descrive la foto, la traduzione della frase, il fotogramma
 successivo). Energia bassa se i due sono **compatibili**, cioè se stanno bene
-insieme; alta se non c'entrano niente l'uno con l'altra. Una foto di gatto con
-la parola «gatto» sta in basso; la stessa foto con la parola «aeroplano» sta
-in alto. In simboli si scrive $E(\mathbf{x}, y)$, dove $\mathbf{x}$ è quello
-che si ha davanti e $y$ la risposta candidata.
+insieme; alta se non c'entrano niente l'uno con l'altra. Ad esempio, una foto
+di gatto con la parola «gatto» sta in basso; la stessa foto con la parola
+«aeroplano» sta in alto. In simboli si scrive $E(\mathbf{x}, y)$, dove
+$\mathbf{x}$ è quello che si ha davanti e $y$ la risposta candidata.
 
 Rispondere, allora, significa cercare la risposta che rende l'energia minima;
 imparare significa dare forma al paesaggio, abbassare l'energia delle
@@ -23,16 +23,15 @@ cornice molto più larga di quel che sembra, e toglie un vincolo pesante.
 
 `````{tab} Elementare
 
-A una festa a coppie c’è un buttafuori. Il suo compito è
-giudicare la coppia che ha davanti: questi due stanno bene insieme, passano;
-questi due no. Non gli serve conoscere tutte le persone della città, né
-compilare la classifica di tutti gli abbinamenti possibili con le percentuali
-esatte che sommano a cento. Gli basta un giudizio, coppia per coppia. Un
-modello a energia è questo buttafuori: dare la *probabilità* di ogni risposta
-possibile, come fanno i modelli probabilistici, è un lavoro immane, perché per
-dire «70%» su una risposta devi aver messo in conto tutte le altre; dire
-«questa coppia sì, quella no» è enormemente più economico, e per moltissimi
-compiti è sufficiente.
+A una festa a coppie c’è un buttafuori. Il suo compito è giudicare la coppia
+che ha davanti: questi due stanno bene insieme, passano; questi due no. Non gli
+serve conoscere tutte le persone della città, né compilare la classifica di
+tutti gli abbinamenti possibili con le percentuali esatte che sommano a cento.
+Gli basta un giudizio, coppia per coppia. Un modello a energia è questo
+buttafuori: dare la *probabilità* di ogni risposta possibile,
+come fanno i modelli probabilistici, è un lavoro immane, perché per dire «70%»
+su una risposta devi aver messo in conto tutte le altre; dire «questa coppia
+sì, quella no» è enormemente più economico, e per moltissimi compiti basta.
 
 Rispondere è un altro lavoro. Portagli una persona sola e chiedigli con
 chi dovrebbe entrare: adesso deve scorrere la fila e tenersi il migliore che
@@ -52,8 +51,8 @@ bassa.
 
 C'è poi un pericolo, e ha un nome preciso: il collasso. Il buttafuori pigro
 ha scoperto la scorciatoia perfetta: dire sempre sì. Chiunque si presenti,
-passa. Nessuna coppia si lamenta mai, e il suo giudizio non vale più niente. Se
-durante l'addestramento premi il modello solo quando dà energia bassa alle
+passa. Nessuna coppia si lamenta mai, ma il suo giudizio non vale più niente.
+Se durante l'addestramento premi il modello solo quando dà energia bassa alle
 coppie giuste, la soluzione più comoda è dare energia bassa a tutto. I rimedi
 sono due: si può istruire il buttafuori, oppure
 cambiargli la porta.
@@ -119,7 +118,7 @@ tende al minimo {cite}`lecun2006tutorial`.
 `````
 
 Due modelli già incontrati rientrano in questa cornice, in modi diversi. La
-macchina di Boltzmann è il caso facile: sull'energia si costruisce una
+macchina di Boltzmann è il caso facile, perché sull'energia si costruisce una
 probabilità, cioè il passaggio da cui la cornice si libera.
 
 La memoria di Hopfield rientra nella cornice con una differenza. La sua
@@ -131,7 +130,7 @@ indizio le si desse.
 
 Che la risposta possa non essere la migliore in assoluto non è un difetto, e
 l'articolo stesso lo mette in conto: in molte situazioni reali un
-modello che va a cercarsi la risposta ne trova una approssimata, che può
+modello che cerca la risposta ne trova una approssimata, che può
 essere il fondovalle più basso di tutti oppure no.
 
 ## Il collasso, e le due famiglie di rimedi
@@ -146,9 +145,9 @@ qualunque, sono loro a decidere se il collasso è possibile oppure no.
 
 L'articolo di LeCun le passa in rassegna una per una e per ciascuna dice una
 cosa sola: con quale dislivello fra una coppia giusta e una sbagliata quella
-regola basta a tenere lontano il collasso. Quel dislivello ha un nome, margine:
-una superficie piatta non ha dislivelli, quindi una regola che ne pretende uno
-qualunque la rifiuta per costruzione.
+regola basta a tenere lontano il collasso. Quel dislivello si chiama
+**margine**. Una superficie piatta non ha dislivelli, quindi una regola che ne
+pretende uno qualunque la rifiuta per costruzione.
 
 La prima regola della rassegna è anche la più ingenua, quella che si limita ad
 abbassare l'energia sui dati veri senza mai guardare nient'altro. Alla voce
@@ -181,14 +180,14 @@ lavoro del rispondere, e va rifatto a ogni passo dell'addestramento. Il difetto
 quanto rispondere a una domanda.
 
 Il secondo: cambiare la porta invece di istruire il buttafuori. Se al posto
-della porta c'è una fessura, di là non passa una folla qualunque cosa lui dica:
-si costruisce il modello in modo che il numero di risposte a cui *può* dare
-energia bassa sia limitato in partenza. Un modo concreto è obbligarlo a
-riassumere ogni coppia in un disegno di dieci tratti e a lasciarla entrare solo
-se, dal riassunto, riesce a rifarla somigliante. Con dieci tratti si rifanno
-bene le coppie viste mille volte, e tutte le altre vengono male per forza:
-anche volendo, non può dire di sì a tutti. Nessun controesempio da andare a
-cercare.
+della porta c'è una fessura, di là non passa una folla qualunque cosa lui dica.
+In altri termini, si costruisce il modello in modo che il numero di risposte a
+cui *può* dare energia bassa sia limitato in partenza. Un modo concreto è
+obbligarlo a riassumere ogni coppia in un disegno di dieci tratti e a lasciarla
+entrare solo se, dal riassunto, riesce a rifarla somigliante. Con dieci tratti
+si rifanno bene le coppie viste mille volte, e tutte le altre vengono male per
+forza: anche volendo, non può dire di sì a tutti. Nessun controesempio da
+andare a cercare.
 
 Il primo metodo non regge quando le risposte possibili sono tantissime (per una
 foto sono più di quante se ne possano contare), e su questo argomento poggia la
@@ -213,17 +212,17 @@ $$
 \ell = \max\!\big(0,\; m + E_\theta(\mathbf{x}, y) - E_\theta(\mathbf{x}, \bar{y})\big),
 $$
 
-dove $m > 0$ è il margine preteso fra coppia giusta e coppia sbagliata. C'è
-un costo che di solito non si dichiara: $\bar{y}$ è a sua volta un
-$\arg\min$ su $\mathcal{Y}$, cioè un'inferenza completa a ogni passo di
-addestramento. I difetti dei metodi contrastivi sono quindi due: in alta
-dimensione i controesempi non bastano mai, e trovarne uno *buono* costa quanto
-rispondere. La massima verosimiglianza appartiene alla stessa famiglia: il suo
-termine contrastivo è la log-partizione, che solleva l'energia di *ogni*
-risposta con forza proporzionale alla sua verosimiglianza, e nel limite $\beta
-\to \infty$ la loss NLL degenera nella loss del percettrone generalizzata, che
-ne solleva una sola, quella a energia minima {cite}`lecun2006tutorial`.
-Contrastive divergence, NCE e le loss a margine sono tutte varianti di una
+dove $m > 0$ è il margine preteso fra coppia giusta e coppia sbagliata. C'è un
+costo che di solito non si dichiara: $\bar{y}$ è a sua volta un $\arg\min$ su
+$\mathcal{Y}$, cioè un'inferenza completa a ogni passo di addestramento. I
+difetti dei metodi contrastivi sono quindi due: in alta dimensione i
+controesempi non bastano mai, e trovarne uno *buono* costa quanto rispondere.
+La massima verosimiglianza appartiene alla stessa famiglia: il suo termine
+contrastivo è la log-partizione, che solleva l'energia di *ogni* risposta con
+forza proporzionale alla sua verosimiglianza, e nel limite $\beta \to \infty$
+la loss NLL degenera nella loss del percettrone generalizzata, che ne solleva
+una sola, quella a energia minima {cite}`lecun2006tutorial`. Contrastive
+divergence, NCE e le loss a margine sono tutte varianti di una
 stessa domanda: di quali risposte alzare l'energia, e con che forza. Nella
 tabella delle loss del tutorial la energy loss ha margine «none», il
 percettrone generalizzato e LVQ2 hanno margine nullo, e tutte le altre (la
@@ -243,12 +242,12 @@ di sparsità, quantizzazione dei codici (il {doc}`VQ-VAE dei codec neurali
 o decorrelazione alle rappresentazioni. L'intuizione è che un modello con pochi
 gradi di libertà non *può* dare energia bassa a tutto, e allora non serve alcun
 controesempio a impedirglielo. È la famiglia su cui LeCun scommette per i world
-model. Lì la variabile latente $\mathbf{z}$ assorbe la parte imprevedibile
-della risposta, e l'energia della coppia è il minimo su $\mathbf{z}$ visto
-sopra: limitare il contenuto informativo di $\mathbf{z}$ è a sua volta un
-vincolo di volume. La
-{doc}`sezione sulla JEPA </WorldModels/jepa>` ne scrive l'energia e mostra come
-si difende dal collasso senza fabbricare un solo controesempio.
+model. Nei world model la variabile latente $\mathbf{z}$ assorbe la parte
+imprevedibile della risposta, e l'energia della coppia è il minimo su
+$\mathbf{z}$ visto sopra: limitare il contenuto informativo di $\mathbf{z}$ è a
+sua volta un vincolo di volume. La {doc}`sezione sulla JEPA
+</WorldModels/jepa>` ne scrive l'energia e mostra come si difende dal collasso
+senza fabbricare un solo controesempio.
 
 `````
 
@@ -297,9 +296,9 @@ quattro, e la sezione sui {doc}`paesaggi di oggi
 - Due famiglie di rimedi: contrastivi (alzare l'energia su risposte
   sbagliate, a partire dalla *most offending incorrect answer*) e
   regolarizzati/architetturali (limitare per costruzione il volume dello
-  spazio a bassa energia). I primi pagano due volte in alta dimensione,
-  perché i controesempi non bastano mai e ciascuno costa un'inferenza; i
-  secondi sono la scommessa di LeCun per i world model.
+  spazio a bassa energia). I primi pagano due volte in alta
+  dimensione, perché i controesempi non bastano mai e ciascuno costa
+  un'inferenza; i secondi sono la scommessa di LeCun per i world model.
 - Vista da qui, la massima verosimiglianza è un metodo contrastivo: solleva
   l'energia di tutte le risposte, pesandole con la loro probabilità. Da cui
   il costo, e da cui l'idea di sostituirla.

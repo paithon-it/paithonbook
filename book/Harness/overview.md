@@ -19,22 +19,24 @@ finestra di contesto, il testo che un modello riesce a leggere in una volta. In
 Anthropic l'hanno affidata a un agente di programmazione: un modello di punta
 (Justin Young, che ha raccontato l'esperimento nel novembre 2025, cita Claude
 Opus 4.5) dentro un ciclo che gli permetteva di leggere e scrivere i file del
-progetto, lanciare comandi e ripartire quando la finestra era piena, passando al
-giro successivo un riassunto di quello che era successo. Young elenca che cosa
-è andato storto {cite}`young2025harnesses`.
+progetto, lanciare comandi e ripartire quando la finestra era piena, passando
+alla sessione successiva un riassunto di quello che era successo. Young elenca
+che cosa è andato storto {cite}`young2025harnesses`.
 
 L'agente ha provato a fare tutto in un colpo: ha esaurito la finestra a metà di
-una funzionalità e ha lasciato al giro dopo un lavoro iniziato, senza una riga
-che dicesse fin dove era arrivato. Più avanti una sessione nuova, ripartita da
-zero, si è guardata intorno, ha visto che molto era già stato fatto, e ha
-dichiarato il progetto concluso. Altre volte l'agente ha segnato come finite
-delle funzionalità che aveva controllato soltanto a pezzi, con i test del codice
-o con una richiesta diretta al server, senza mai usarle come le userebbe una
-persona davanti allo schermo. E ha chiuso delle sessioni lasciando
-l'applicazione rotta, così che il giro successivo spendeva il suo tempo a capire
-che cosa fosse successo e a rimetterla in piedi. Il riassunto non bastava: lo
-scriveva il modello di getto, quando la finestra era piena, decidendo da sé che
-cosa tenere, e non sempre consegnava al giro dopo istruzioni chiare.
+una funzionalità e ha lasciato alla sessione successiva un lavoro iniziato,
+senza una riga che dicesse fin dove era arrivato. Più avanti una sessione
+nuova, ripartita da zero, si è guardata intorno, ha visto che molto era già
+stato fatto, e ha dichiarato il progetto concluso. Altre volte l'agente ha
+segnato come finite delle funzionalità che aveva controllato soltanto a pezzi,
+con i test del codice o con una richiesta diretta al server, senza mai usarle
+come le userebbe una persona davanti allo schermo. E ha chiuso delle sessioni
+lasciando l'applicazione rotta, così che la sessione successiva spendeva il suo
+tempo a capire che cosa fosse successo e a rimetterla in piedi.
+
+Il riassunto non bastava: lo scriveva il modello di getto,
+quando la finestra era piena, decidendo da sé che cosa tenere, e non sempre
+consegnava alla sessione successiva istruzioni chiare.
 
 La soluzione ha lasciato il modello com'era e ha cambiato quello che c'era
 attorno, compreso uno strumento in più per provare l'applicazione dentro un
@@ -43,13 +45,15 @@ diverso da tutte le altre e un prompt scritto apposta, ha preparato il terreno:
 un comando per avviare l'applicazione, un elenco di oltre duecento
 funzionalità da realizzare, tutte segnate come non ancora riuscite, un file in
 cui ogni sessione annota che cosa ha fatto, e una prima versione del progetto
-salvata nella sua storia. Da lì in poi ogni sessione ha seguito la stessa
-routine: rileggere dove si era arrivati, scegliere una sola funzionalità fra
-quelle mancanti, lavorarci, provarla da utente, salvare il lavoro con una
-descrizione e aggiornare il file delle annotazioni. Young non riporta un clone
-finito né un numero: riporta che le sessioni smettevano di dover indovinare che
-cosa fosse successo, e che gli strumenti per provare l'applicazione da utente
-hanno migliorato nettamente i risultati.
+salvata nella sua storia.
+
+Da lì in poi ogni sessione ha seguito la stessa routine: rileggere dove si era
+arrivati, scegliere una sola funzionalità fra quelle mancanti, lavorarci,
+provarla da utente, salvare il lavoro con una descrizione e aggiornare il file
+delle annotazioni. Young non riporta un clone finito né un numero:
+riporta che le sessioni smettevano di dover indovinare che cosa fosse successo,
+e che gli strumenti per provare l'applicazione da utente hanno migliorato
+nettamente i risultati.
 
 Quell'insieme di file, comandi, controlli e abitudini che circonda il modello
 si chiama **harness**. In inglese la parola indica i finimenti del cavallo, ciò
@@ -57,36 +61,41 @@ che collega la forza dell'animale al carro e permette di guidarla; e da
 decenni, nel gergo di chi collauda il software, un *test harness* è l'impianto
 che fa girare un programma sotto prova e ne raccoglie gli esiti. Detto di un
 agente, l'harness è tutto ciò che, nel sistema costruito attorno a un modello,
-non è il modello. Il {doc}`loop engineering </IngegneriaLLM/loop-engineering>`
-chiudeva l'elenco dei suoi attrezzi (la sveglia che fa partire il ciclo, la
-copia dei file su cui ogni giro lavora, i file in cui il ciclo tiene memoria)
-chiamandoli *scaffolding*, la struttura attorno al modello. L'harness
-engineering prende sul serio quella struttura: ne fa un oggetto di progetto, da
-misurare componente per componente, e porta al centro la domanda che la memoria
-esterna del ciclo aveva appena toccato, cioè che cosa resta, e in che forma,
-quando la finestra si svuota.
+non è il modello.
+
+Il {doc}`loop engineering </IngegneriaLLM/loop-engineering>` chiudeva l'elenco
+dei suoi componenti (la sveglia che fa partire il ciclo, la copia dei file su
+cui ogni giro lavora, i file in cui il ciclo tiene memoria) chiamandoli
+*scaffolding*, la struttura attorno al modello. L'harness engineering, invece,
+prende sul serio quella struttura: ne fa un oggetto di progetto, da misurare
+componente per componente, e porta al centro la domanda che la memoria esterna
+del ciclo aveva appena toccato, cioè che cosa resta, e in che forma, quando la
+finestra si svuota.
 
 Un compito lungo, per un agente, si spezza in sessioni, e ogni sessione comincia
 con una finestra vuota. Quello che sopravvive è soltanto ciò che è stato scritto
 fuori: nei file del progetto, nella cartella che git custodisce con la storia di
 tutte le sue versioni (il *repository*), nei controlli che qualcuno ha
-preparato. I guasti di Young danno l'ordine al percorso. Contro la sessione che
-non sa dove si era arrivati c'è {doc}`il repository come memoria
+preparato.
+
+In questo capitolo i guasti di Young danno l'ordine al percorso. Contro la
+sessione che non sa dove si era arrivati c'è {doc}`il repository come memoria
 <il-repository-come-memoria>`; contro il lavoro fatto tutto in un colpo, la
 preparazione del {doc}`primo turno <il-primo-turno>` e la sua lista delle
-funzionalità; contro il giro che lascia il progetto in disordine, il
+funzionalità; contro la sessione che lascia il progetto in disordine, il
 {doc}`passaggio di consegne <passaggio-di-consegne>`; contro la vittoria
 dichiarata e il «fatto» senza prova, {doc}`il collaudo
 <finito-vuol-dire-collaudato>`. Uno dei rimedi di Young era uno strumento in
 più, e {doc}`gli strumenti <gli-strumenti>` hanno un progetto loro: che cosa
 l'agente può chiedere, che cosa gli torna indietro, fin dove arriva un errore.
-Restano le cose che nessun guasto singolo mostra: che cosa succede a un sistema
-che lavora {doc}`quando nessuno guarda <quando-nessuno-guarda>`, quanto costa e
-quanto dura un compito, cioè il suo {doc}`conto <il-conto>`, come si disegna un
-lavoro che ha bisogno di più di un ciclo, una mappa di passi collegati da frecce
-che si chiama {doc}`grafo <dal-ciclo-al-grafo>`, e che cosa succede quando a
-scrivere e a provare l'harness è un altro programma, che lo {doc}`riscrive
-<l-harness-che-si-riscrive>`.
+
+Restano poi le cose che nessun guasto singolo mostra: che cosa succede a un
+sistema che lavora {doc}`quando nessuno guarda <quando-nessuno-guarda>`, quanto
+costa e quanto dura un compito, cioè il suo {doc}`conto <il-conto>`, come si
+disegna un lavoro che ha bisogno di più di un ciclo, una mappa di passi
+collegati da frecce che si chiama {doc}`grafo <dal-ciclo-al-grafo>`, e che cosa
+succede quando a scrivere e a provare l'harness è un altro programma, che lo
+{doc}`riscrive <l-harness-che-si-riscrive>`.
 
 ## Che cosa c'è attorno al modello
 
@@ -101,7 +110,9 @@ l'applicazione avviata; spesso si ricostruisce a ogni sessione, e allora a
 sopravvivere è la ricetta scritta per ricostruirlo. Lo **stato** è ciò che si
 scrive apposta per la sessione dopo: un file di avanzamento, l'elenco delle
 funzionalità, la storia delle versioni. La **verifica** è l'insieme dei
-controlli che decidono se una cosa è fatta. A tenerli insieme c'è il ciclo, che
+controlli che decidono se una cosa è fatta.
+
+A tenerli insieme c'è il ciclo, che
 il loop engineering ha già progettato: è lui che a ogni passo monta il
 contesto, passa le richieste del modello agli strumenti e ne raccoglie gli
 esiti.
@@ -110,10 +121,10 @@ L’{doc}`anatomia di un agente </Agenti/overview>` divideva un agente in quattr
 parti (modello, strumenti, ciclo di controllo, memoria), con l'ambiente
 attorno: era la fotografia di un agente mentre lavora. I cinque sottosistemi
 tagliano lungo un altro asse, perché guardano anche quello che esiste quando
-nessun agente sta girando. La memoria a lungo termine dell'anatomia qui è lo
-stato; quella a breve, la finestra, non è un sottosistema ma il foglio su cui
-il ciclo scrive a ogni passo; istruzioni e verifica sono le due parti che
-l'anatomia non nominava.
+nessun agente sta girando. La memoria a lungo termine
+dell'anatomia qui è lo stato; quella a breve, la finestra, non è un
+sottosistema ma il foglio su cui il ciclo scrive a ogni passo; istruzioni e
+verifica sono le due parti che l'anatomia non nominava.
 
 ```{figure} ../figures/harness-anatomia.svg
 :name: fig-harness-anatomia
@@ -125,11 +136,13 @@ finestra di contesto; il modello che la legge e i cinque riquadri pieni
 restano quando la sessione finisce, ed è da loro che la sessione dopo riparte.
 ```
 
-Nella {numref}`fig-harness-anatomia` si leggono già i guasti dell'esperimento. Le
-frecce che entrano nella finestra sono quelle che il prossimo giro riceve: se
-le istruzioni sono confuse o lo stato non dice dove si era arrivati, il modello
-riparte da un'ipotesi. La freccia che va dalla verifica allo stato è quella
-che dovrebbe scrivere «fatto». Nell'harness di Young quel segno lo metteva
+Nella {numref}`fig-harness-anatomia` si leggono già i guasti dell'esperimento.
+Le frecce che entrano nella finestra sono quelle che la prossima sessione
+riceve: se le istruzioni sono confuse o lo stato non dice dove si era arrivati,
+il modello riparte da un'ipotesi.
+
+La freccia che va dalla verifica allo stato è quella che dovrebbe scrivere
+«fatto». Nell'harness di Young quel segno lo metteva
 l'agente stesso, ma soltanto dopo aver provato la funzionalità da utente: a
 tenere lontana la vittoria dichiarata era l'obbligo della prova, non chi
 scriveva il segno. Fare scrivere il segno a un controllo che non è il modello,
@@ -150,6 +163,7 @@ parete, ciascuno al suo gancio, e accanto un foglio con quelli che un
 apprendista può prendere da solo e quelli per cui deve chiedere: gli strumenti,
 con i loro permessi. Rimangono il banco, il legno in magazzino, la corrente che
 arriva alle macchine: l'ambiente, il posto dove il lavoro succede davvero.
+
 Rimangono il registro e il foglio dell'ordine, con le voci già fatte spuntate:
 lo stato. E rimane la dima, la sagoma su cui ogni pezzo va appoggiato prima di
 dirsi finito: la verifica. A tenere insieme tutto c'è il capobottega, che ogni
@@ -161,16 +175,20 @@ Metti lo stesso artigiano in due botteghe. Nella prima il cartello non c'è, gli
 attrezzi stanno in un mucchio, il registro è vuoto e nessuno controlla: lavora
 con le stesse mani, e a sera hai tre pezzi cominciati e nessuno finito. Nella
 seconda consegna il pezzo giusto. Le mani erano le stesse, è cambiata la
-bottega. Attento però a come fai il confronto. Lo hanno fatto davvero: lo
+bottega.
+
+Attento però a come fai il confronto. Lo hanno fatto davvero: lo
 stesso modello ha lavorato venti minuti in una bottega spoglia e sei ore in una
 attrezzata, e la seconda ha consegnato un gioco che funzionava, la prima no.
 Ma la seconda aveva avuto diciotto volte il tempo e più di venti volte la
-spesa, e così non sai quanto del risultato sia merito della bottega e quanto
+spesa, e quindi non sai quanto del risultato sia merito della bottega e quanto
 del tempo e dei soldi.
 
 La bottega non insegna a intagliare. Se l'artigiano non sa usare lo scalpello,
 nessun cartello glielo insegna; la dima può solo scartare i pezzi storti e
-farli rifare, che è già molto, ma costa. E quando assumi artigiani più bravi,
+farli rifare, che è già molto, ma costa.
+
+E quando assumi artigiani più bravi,
 qualche precauzione smette di servire: la prova sulla dima, che si faceva a
 ogni pezzo, diventa una prova sola a fine lavoro. A volte, invece, con
 artigiani nuovi ne serve una che prima non ti era venuta in mente. Ogni cosa
@@ -208,10 +226,13 @@ raccolte nella sessione: un'azione vietata non resta senza esito, il rifiuto
 torna nel contesto. Il permesso si giudica sulla chiamata (lo strumento con i
 suoi argomenti), non sul solo strumento. Se la finestra si riempie, è
 $\mathrm{monta}$ a comprimere la cronologia in un riassunto, la compattazione.
+
 La politica del sistema è dunque $\pi_{\theta,H}(a \mid x, M_k,
 \text{storia}) = P_\theta(a \mid \mathrm{monta}(\dots))$, composta con il
 filtro dei permessi: la stessa distribuzione del modello, condizionata da ciò
-che $H$ le mette davanti. A fine sessione lo stato si aggiorna con le
+che $H$ le mette davanti.
+
+A fine sessione lo stato si aggiorna con le
 modifiche $D_k$ che superano la verifica, $M_{k+1} = \mathrm{scrivi}(M_k,
 D_k)$ con $V(D_k) = 1$. $V$ può essere un predicato deterministico (una suite
 di test, un controllo dei tipi) oppure un giudice che è a sua volta una
@@ -231,16 +252,20 @@ l'esperimento in una direzione: lo stesso ciclo minimo, con $H$ fissato a
 grandi linee (le misure usano versioni diverse dello stesso agente minimo) e
 $\theta$ che cambia, andava nel 2025 dal 9% al 74% delle correzioni riuscite su
 cinquecento segnalazioni ripulite di SWE-bench, con la riserva sulla
-contaminazione che quella sezione discute. L'esperimento inverso, $\theta$
-fissato e $H$ che cambia, è il terreno dell'harness engineering, ed è più
-difficile da fare pulito di quanto sembri. Rajasekaran riporta lo stesso
-modello e lo stesso prompt in un'esecuzione singola da 20 minuti e circa 9
-dollari, il cui gioco non funzionava, e in un harness a tre agenti da 6 ore e
-circa 200 dollari, il cui gioco funzionava {cite}`rajasekaran2026harness`; ma
-insieme all'harness cambiano la spesa (di più di venti volte) e il tempo (di
-diciotto), la prova è una sola, e il giudizio «funzionava» è dell'autore. Dice
-che il compito, con quell'harness, è riuscito; non quanto dell'esito si debba a
-$H$ e quanto al budget. C'è poi una ragione più profonda per cui i due fattori
+contaminazione che quella sezione discute.
+
+L'esperimento inverso, $\theta$ fissato e $H$ che cambia, è il terreno
+dell'harness engineering, ed è più difficile da fare pulito di quanto sembri.
+Ad esempio, Rajasekaran riporta lo stesso modello e lo stesso prompt in
+un'esecuzione singola da 20 minuti e circa 9 dollari, il cui gioco non
+funzionava, e in un harness a tre agenti da 6 ore e circa 200 dollari, il cui
+gioco funzionava {cite}`rajasekaran2026harness`; ma insieme all'harness
+cambiano la spesa (di più di venti volte) e il tempo (di diciotto), la prova è
+una sola, e il giudizio «funzionava» è dell'autore. Dice che il compito, con
+quell'harness, è riuscito; non quanto dell'esito si debba a $H$ e quanto al
+budget.
+
+C'è poi una ragione più profonda per cui i due fattori
 non si separano del tutto: i fornitori addestrano i propri modelli sugli
 strumenti del proprio harness, e un confronto a $H$ fissato favorisce il
 modello addestrato per quell’$H$.
@@ -250,6 +275,7 @@ insegna al modello ciò che non sa, ma un controllo con la possibilità di
 rifare alza il tasso di successo di qualunque modello che riesca con una
 probabilità fra zero e uno. Ogni componente di $H$ codifica un'ipotesi su che
 cosa il modello non sa fare da solo, e il suo valore dipende da $\theta$.
+
 Rajasekaran ne dà due casi: il valutatore separato, che vale il suo costo
 finché il compito sta oltre ciò che il modello fa in modo affidabile da solo e
 che con un modello più recente ha ridotto a un solo controllo a fine lavoro; e
@@ -273,7 +299,9 @@ ingegneri, poi diventati sette. Ryan Lopopolo, che lo ha raccontato nel
 febbraio 2026, scrive che all'inizio si andava più piano del previsto, e non
 perché il modello non ne fosse capace: l'ambiente era descritto troppo poco, e
 all'agente mancavano gli strumenti e la struttura per avvicinarsi a un
-obiettivo grande {cite}`lopopolo2026harness`. Quando qualcosa falliva, la
+obiettivo grande {cite}`lopopolo2026harness`.
+
+Quando qualcosa falliva, la
 riparazione non era quasi mai chiedergli di impegnarsi di più. Era chiedersi
 quale capacità gli mancasse, e come fargliela vedere (un documento, uno
 strumento, un messaggio d'errore che spiega che cosa fare) e insieme renderla
@@ -283,13 +311,15 @@ avverte che la capacità dell'agente di portare a termine da solo una
 funzionalità dipende dalla struttura di quel repository, e non va data per
 generalizzabile senza un investimento simile.
 
-È il gesto diagnostico dell'harness engineering. Un fallimento si attribuisce a
-uno dei cinque sottosistemi (l'istruzione che mancava, lo strumento che non
-c'era, l'ambiente che non partiva, lo stato che non diceva dove si era
-arrivati, il controllo che non ha fermato l'errore), si ripara lì, e si
-riprova. Cambiare modello resta un'ipotesi, ma viene dopo le altre, perché è la
-sola che non dice niente su che cosa mancasse; ci si arriva quando nessuna
-riparazione dell'harness basta. Il gesto ha un rovescio, che si dimentica più
+Questo è il gesto diagnostico dell'harness engineering. Un fallimento si
+attribuisce a uno dei cinque sottosistemi (l'istruzione che mancava, lo
+strumento che non c'era, l'ambiente che non partiva, lo stato che non diceva
+dove si era arrivati, il controllo che non ha fermato l'errore), si ripara lì,
+e si riprova. Cambiare modello resta un'ipotesi, ma viene dopo le altre, perché
+è la sola che non dice niente su che cosa mancasse; ci si arriva quando nessuna
+riparazione dell'harness basta.
+
+Il gesto ha un rovescio, che si dimentica più
 spesso: ogni componente aggiunto costa (testo da leggere a ogni sessione, cioè
 token, poi tempo e cose da tenere aggiornate), e un harness cresciuto per
 accumulo va potato con lo stesso metodo con cui è cresciuto, togliendo un
@@ -308,7 +338,9 @@ Poi c'è la domanda contraria: la prova sulla dima serve ancora, o è solo tempo
 perso? Per saperlo la salti per due settimane su metà dei lavori e conti i
 pezzi sbagliati nelle due metà. Tre trappole ti aspettano. Se in ogni metà hai
 fatto cinque pezzi e uno è venuto storto, non hai imparato niente: con così
-pochi pezzi può essere il caso, e ne servono centinaia. Se poi i controlli
+pochi pezzi può essere il caso, e ne servono centinaia.
+
+Se poi i controlli
 sono due, la dima al banco e un'occhiata del capobottega prima della consegna,
 togliendone uno alla volta non vedi niente, perché l'altro ripara; toglili
 insieme e i pezzi storti escono. Prova uno alla volta e concluderai che nessuno
@@ -375,25 +407,32 @@ fallibile.
 
 Ogni componente ha anche un costo, e $\Delta s_h$ (una differenza di
 probabilità) non si confronta con un costo in token o in tempo senza un cambio
-di unità: la grandezza giusta è il costo per compito risolto, $c(H)/s(H)$. Il
-caso misurato più istruttivo riguarda proprio le istruzioni. Gloaguen e
-colleghi hanno confrontato quattro agenti di programmazione con e senza un file
-di contesto del repository {cite}`gloaguen2026agentsmd`. I file scritti da un
-modello hanno cambiato la quota di problemi risolti di $-0{,}5$ e $-2$ punti
-percentuali nei due insiemi di prova, differenze non distinguibili dallo zero,
-e hanno alzato il costo d'inferenza del 20% e del 23%; quelli scritti dagli
-sviluppatori l'hanno alzata di $2{,}4$ punti in media, anch'essi senza
-significatività, con un costo fino al 19% più alto. Su quella misura il costo
-per problema risolto sale in tutti e tre i casi. Ma lo stesso lavoro mostra le
+di unità: la grandezza giusta è il costo per compito risolto, $c(H)/s(H)$.
+
+Il caso misurato più istruttivo riguarda proprio le
+istruzioni. Gloaguen e colleghi hanno confrontato quattro agenti di
+programmazione con e senza un file di contesto del repository
+{cite}`gloaguen2026agentsmd`. I file scritti da un modello hanno cambiato la
+quota di problemi risolti di $-0{,}5$ e $-2$ punti percentuali nei due insiemi
+di prova, differenze non distinguibili dallo zero, e hanno alzato il costo
+d'inferenza del 20% e del 23%; quelli scritti dagli sviluppatori l'hanno alzata
+di $2{,}4$ punti in media, anch'essi senza significatività, con un costo fino
+al 19% più alto. Su quella misura il costo per problema risolto sale in tutti e
+tre i casi.
+
+Ma lo stesso lavoro mostra le
 cautele di sopra all'opera. Togliendo dal repository ogni altra documentazione,
 i file generati da un modello hanno migliorato il successo di $2{,}7$ punti in
 media: erano ridondanti con la documentazione che c'era già, cioè l'effetto
 quasi nullo era un'interazione, non un'inutilità. E l'effetto dei file degli
 sviluppatori cambia segno da un modello all'altro, da circa $-3$ a circa $+8$
 punti: $\Delta s_h$ è funzione di $\theta$, e ogni cambio di modello riapre il
-conto. Sull'efficienza, un'altra misura trova invece che il file accorcia i
+conto.
+
+Sull'efficienza, un'altra misura trova invece che il file accorcia i
 tempi; la {doc}`sezione sul repository come memoria
 <il-repository-come-memoria>` mette i due risultati uno accanto all'altro.
+
 Rajasekaran riassume la disciplina in una convinzione personale, non in una
 misura: al migliorare dei modelli lo spazio delle combinazioni interessanti di
 un harness non si restringe, si sposta {cite}`rajasekaran2026harness`.
@@ -404,7 +443,9 @@ Detto così, l'harness potrebbe sembrare un altro nome del ciclo, e in parte lo
 è: il capobottega del loop engineering teneva già un registro e controllava il
 pezzo finito. L'harness engineering sposta lo sguardo dal capobottega agli
 oggetti che maneggia, il cartello, il registro, la dima, il banco, e li tratta
-come componenti da progettare e da misurare uno per uno. Si guastano in modi
+come componenti da progettare e da misurare uno per uno.
+
+Si guastano però in modi
 diversi: un ciclo con un buon controllo finale e un limite ai tentativi,
 lanciato in un repository che non dice dove si era arrivati, rifà ogni volta
 da capo la stessa esplorazione, e la paga ogni volta in token.

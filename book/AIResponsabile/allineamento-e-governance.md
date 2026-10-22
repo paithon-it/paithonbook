@@ -37,7 +37,8 @@ Quando ottimizzi un **surrogato** del tuo vero obiettivo, e spingi abbastanza,
 il surrogato continua a salire mentre l'obiettivo vero smette di salire e può
 scendere. Il surrogato, o *proxy*, è un'imitazione di ciò che volevamo: un
 numero che gli somiglia abbastanza da poterlo misurare, e che non è la cosa
-vera. Il punteggio del videogioco era il surrogato di «vinci la gara».
+vera. Ad esempio, il punteggio del videogioco era il surrogato di «vinci la
+gara».
 
 ```{figure} ../figures/problema-allineamento.svg
 :name: fig-problema-allineamento
@@ -176,7 +177,9 @@ giudice automatico che dà un voto.
 La **qualità vera** di una risposta dipende dal suo merito e dalla sua
 lunghezza, due numeri anche loro fra zero e uno, e la lunghezza aiuta fino a un
 certo punto e poi stanca chi legge: una risposta troppo lunga vale meno, e non
-solo agli occhi del giudice. Il **premio alla lunghezza** è il difetto del
+solo agli occhi del giudice.
+
+Il **premio alla lunghezza** è il difetto del
 giudice, che vede il merito ma ci somma un bonus per le righe in più, un bonus
 che cresce senza fermarsi: è la deformazione che i giudici automatici ereditano
 dalle persone da cui hanno imparato. Il **tremolio**, infine, è l'errore
@@ -249,11 +252,12 @@ due colonne spiegano perché: salgono tutte e due, e a un certo punto quanto il
 lettore guadagna con l'una non copre più quanto perde con l'altra. Il merito
 delle risposte scelte va da $0{,}499$ a $0{,}953$ e si arena, perché non può
 superare uno: fra cento candidati e mille guadagna appena diciannove millesimi.
+
 La lunghezza sale ancora, da $0{,}501$ a $0{,}885$, e a quel livello ogni passo
 in più toglie molto più di quanto il merito aggiunga, perché la risposta è già
-ben oltre la misura che a chi legge fa comodo. Da lì in poi il giudice ottiene
-pochissimo merito in più insieme a molta lunghezza in più, e non lo sa: nel suo
-voto la lunghezza è sempre un pregio.
+ben oltre la misura che a chi legge fa comodo. Quindi, da lì in poi, il giudice
+ottiene pochissimo merito in più insieme a molta lunghezza in più, e non lo sa:
+nel suo voto la lunghezza è sempre un pregio.
 
 L'ultima riga stampata mostra l'effetto del tremolio. Con lo stesso difetto e
 senza errori casuali, a mille candidati la qualità vera scende a $0{,}087$
@@ -267,12 +271,16 @@ curve della {numref}`fig-reward-hacking`, nella {doc}`sezione su
 esplorazione e ricompensa
 </DeepReinforcementLearning/esplorazione-e-ricompensa>`: il voto sale sempre,
 la qualità vera sale, si ferma e scende. La figura dà la forma, la tabella le
-cifre e la pressione a cui succede. Finché la pressione è bassa, il surrogato e
+cifre e la pressione a cui succede.
+
+Finché la pressione è bassa, il surrogato e
 l'obiettivo vero indicano quasi la stessa direzione. Alzandola, la ricerca del
 massimo si sposta là dove il giudice sbaglia di più, e da lì in poi ogni punto
-guadagnato sul voto lo paga chi legge. Oltre un certo punto il sistema peggiora
-mentre il suo punteggio migliora. Non è vero che ottimizzare di più sia sempre
-meglio, e vale ben oltre questo giocattolo. Gao, Schulman e Hilton misurano lo
+guadagnato sul voto lo sconta chi legge. Oltre un certo punto il sistema
+peggiora mentre il suo punteggio migliora. Non è vero che ottimizzare di più
+sia sempre meglio, e vale ben oltre questo giocattolo.
+
+Gao, Schulman e Hilton misurano lo
 stesso andamento su modelli di ricompensa veri {cite}`gao2023scaling`, usando
 come metro non le persone ma un modello grande tenuto per buono, perché
 raccogliere abbastanza giudizi umani costava troppo: la salita, il massimo e la
@@ -281,7 +289,7 @@ difetto del giudice e la pressione.
 
 ## Allineare gli LLM
 
-Come si orienta, in concreto, un modello di linguaggio? La ricetta per intero
+Come si orienta, in concreto, un modello di linguaggio? Il procedimento completo
 è nella {doc}`sezione sul post-training </Transformers/post-training>`;
 l'allineamento poggia su due passaggi di quella pipeline e su un terzo metodo
 che li affianca.
@@ -377,11 +385,13 @@ Il riassunto abituale della DPO, «stessa destinazione, due tappe in meno», fa
 credere che tolte le tappe il viaggio resti lo stesso. Il lavoro dimostra
 soltanto che i due metodi, portati fino in fondo, arrivano allo stesso punto
 migliore. Non dimostra che ci arrivino per la stessa strada né che sbaglino
-nello stesso modo, e una differenza c'è. Nella ricetta col giudice il modello
+nello stesso modo, e una differenza c'è.
+
+Infatti, nella procedura col giudice il modello
 produce, mentre impara, risposte nuove e se le fa valutare; la DPO legge
 soltanto le coppie raccolte in partenza, e su ciò che sta fuori da quelle non
 viene mai messa alla prova. Ha quindi modi di sbagliare suoi, e non versioni
-attenuate di quelli della ricetta con il giudice: Xu e colleghi mostrano che
+attenuate di quelli della procedura con il giudice: Xu e colleghi mostrano che
 può finire su risposte che nelle coppie raccolte non c'erano, e che rende tanto
 peggio quanto più le risposte del modello si allontanano da quelle dei dati di
 preferenza {cite}`xu2024dpo`.
@@ -890,9 +900,11 @@ sistemi molto più capaci di quelli attuali, e sostiene che prevenirli richieda
 di cominciare adesso: la dichiarazione del Center for AI Safety del 2023 chiede di
 trattare il rischio di estinzione dovuto all'AI come una priorità globale,
 accanto alle pandemie e alla guerra nucleare {cite}`cais2023statement`, e sulla
-stessa linea stanno Bengio e colleghi {cite}`bengio2024managing`. La
-disputa non si chiude adesso, e le due posizioni non si escludono: un ponte va
-progettato sia contro le crepe di oggi sia contro il terremoto che forse verrà.
+stessa linea stanno Bengio e colleghi {cite}`bengio2024managing`.
+
+La disputa non si chiude adesso, e le due posizioni non si escludono: un ponte
+va progettato sia contro le crepe di oggi sia contro il terremoto che forse
+verrà.
 Le separa il giudizio su quali danni siano più probabili e più gravi, e su
 quante risorse di ricerca e di regolazione spettino a ciascuno; quel giudizio
 dipende da valori oltre che da stime.
@@ -905,7 +917,9 @@ DPO, Constitutional AI, red teaming, evals), ma nessuna garanzia sul risultato.
 Una tensione strutturale attraversa tutte queste tecniche, e nessuna l'ha
 sciolta: le stesse capacità che rendono utile un modello lo rendono difficile
 da controllare, e più il sistema è potente, più grave può essere il divario fra
-ciò che gli chiediamo e ciò che fa. Le regole, l'AI Act in testa, provano a
+ciò che gli chiediamo e ciò che fa.
+
+Le regole, l'AI Act in testa, provano a
 guadagnare tempo e a fissare responsabilità mentre la ricerca insegue. Il campo
 è in movimento e non ha soluzioni definitive; come per l'equità, *quanto*
 controllo pretendere e *a quali* valori allineare sono decisioni che spettano a

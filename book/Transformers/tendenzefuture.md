@@ -8,18 +8,20 @@ ma al crescere delle dimensioni richiede sempre più calcolo e più memoria.
 
 ## Dove punta la ricerca
 
-I cantieri aperti sono questi. Fare di più con meno: i grandi modelli
-consumano molto calcolo e molta memoria, e buona parte della ricerca punta a
-ridurne il costo, fino a farli stare in un telefono invece che in un centro di
-calcolo. Unire i sensi: modelli che leggono, guardano e ascoltano insieme, come
-l'assistente a cui mostri una foto e fai una domanda a voce. Superare i limiti
-dell'architettura stessa: nell'attenzione piena ogni token si confronta con
-ogni altro, e su una sequenza di $n$ token il costo cresce come $n^2$, quindi
-raddoppiando la lunghezza i confronti quadruplicano; questo spinge a cercare
-modi più economici di far comunicare le parti di un testo. Due filoni
-attraversano tutti questi cantieri: il post-training, che è diventato una fase
-standard dell'addestramento, e il calcolo che si adatta alla difficoltà della
-domanda.
+I cantieri aperti sono tre. Il primo è fare di più con meno: i grandi modelli
+consumano molto calcolo e molta memoria, per cui buona parte della ricerca
+punta a ridurne il costo, fino a farli stare in un telefono invece che in un
+centro di calcolo. Il secondo è unire i sensi: modelli che leggono, guardano e
+ascoltano insieme, come l'assistente a cui mostri una foto e fai una domanda a
+voce.
+
+Il terzo è superare i limiti dell'architettura stessa. Nell'attenzione piena
+ogni token si confronta con ogni altro, e su una sequenza di $n$ token il costo
+cresce come $n^2$, quindi raddoppiando la lunghezza i confronti
+quadruplicano. Questo spinge a cercare modi più economici di far comunicare le
+parti di un testo. Due filoni attraversano tutti questi cantieri: il
+post-training, che è diventato una fase standard dell'addestramento, e il
+calcolo che si adatta alla difficoltà della domanda.
 
 Fra i modi di fare di più con meno c'è la distillazione
 {cite}`hinton2015distilling`, che invece di alleggerire un modello ne addestra
@@ -45,10 +47,10 @@ che rende visibili le probabilità piccole.
 Gli altri modi di rimpicciolire un modello sono due: scrivere ogni numero con
 {doc}`meno cifre </Efficienza/meno-bit>`, e togliere i
 {doc}`numeri che contano poco </Efficienza/meno-pesi>`. Detti così sembrano
-gratuiti, ma non lo sono: arrotondare ogni
-numero a quattro bit, cioè a soli sedici valori possibili, senza altri
-accorgimenti, sposta di quasi un quinto l'uscita di uno strato, e una rete a cui si
-tolgono nove pesi su dieci smette di funzionare finché non la si riaddestra.
+gratuiti, ma non lo sono. Ad esempio, arrotondare ogni numero a quattro bit,
+cioè a soli sedici valori possibili, senza altri accorgimenti, sposta di quasi
+un quinto l'uscita di uno strato; e una rete a cui si tolgono nove pesi su dieci
+smette di funzionare finché non la si riaddestra.
 
 C'è poi una strada che non rimpicciolisce niente. Il modello resta grosso, ma
 per ogni parola ne accende soltanto una parte, come una redazione che manda
@@ -61,7 +63,9 @@ lineare </AttenzioneLineare/overview>` e con i {doc}`modelli a spazio di stato
 </StateSpaceModel/overview>`. Una terza strada,
 {doc}`FlashAttention </GPU/flash-attention>`, non tocca il meccanismo e cambia
 il modo di eseguirlo: calcola lo stesso risultato a blocchi, senza scrivere in
-memoria la tabella intera dei confronti. Sul fronte dei sensi si costruiscono
+memoria la tabella intera dei confronti.
+
+Sul fronte dei sensi si costruiscono
 mappe del significato condivise, dove una foto di gatto e la parola «gatto»
 cadono vicine. Ci si arriva mostrando al modello milioni di immagini con la
 didascalia che le accompagna, e chiedendogli di tenere vicine le coppie giuste
@@ -70,30 +74,30 @@ dannosi con il post-training.
 `````
 
 `````{tab} Superiore
-Sul fronte dell'efficienza: la {doc}`distillazione
+Sul fronte dell'efficienza rientrano la {doc}`distillazione
 </Efficienza/un-modello-piccolo-che-imita>`, la {doc}`quantizzazione
 </Efficienza/meno-bit>` (pesi a 8 o 4 bit invece che a 32, dove a quattro bit
 la perdita smette di essere trascurabile e servono metodi che facciano più che
 arrotondare), la {doc}`potatura </Efficienza/meno-pesi>`, e le architetture
 {doc}`mixture of experts <mixture-of-experts>`, che attivano solo una frazione
-dei parametri per ogni token. Sul fronte del contesto lungo: le attenzioni
+dei parametri per ogni token. Per il contesto lungo ci sono le attenzioni
 {doc}`sparse <confronti>` e {doc}`lineari </AttenzioneLineare/overview>`, le
 ottimizzazioni di memoria come {doc}`FlashAttention </GPU/flash-attention>`, e
 gli {doc}`state space model </StateSpaceModel/overview>` (Mamba).
-Sul fronte multimodale: spazi di rappresentazione condivisi tra testo, immagini
-e audio, a partire da CLIP {cite}`radford2021learning`, addestrato in modo
-contrastivo su coppie immagine-didascalia; la {doc}`sezione su un solo spazio
-per immagini e parole </VisioneLinguaggio/allineare-due-spazi>` lo costruisce
-per esteso. Si aggiunge l'allineamento (RLHF, DPO), trattato nel
+Sul fronte multimodale ci sono spazi di rappresentazione condivisi tra testo,
+immagini e audio, a partire da CLIP {cite}`radford2021learning`, addestrato in
+modo contrastivo su coppie immagine-didascalia; la {doc}`sezione su un solo
+spazio per immagini e parole </VisioneLinguaggio/allineare-due-spazi>` lo
+costruisce per esteso. Si aggiunge l'allineamento (RLHF, DPO), trattato nel
 {doc}`post-training <post-training>`.
 `````
 
 ## Pensare più a lungo sulle cose difficili
 
 Un Transformer standard spende lo stesso calcolo su ogni token, facile o
-difficile che sia: sessanta strati, sessanta passaggi. L'idea di togliere quel
-vincolo risale al 2018. Per anni non ha preso piede, poi è tornata da una strada
-diversa.
+difficile che sia: con sessanta strati, ad esempio, i passaggi sono sempre
+sessanta. L'idea di togliere quel vincolo risale al 2018. Per anni non ha
+preso piede, poi è tornata da una strada diversa.
 
 `````{tab} Elementare
 
@@ -105,8 +109,8 @@ difficili ci fermiamo a pensare.
 
 Nel 2018 Mostafa Dehghani e colleghi provarono a rifare il palazzo, e lo
 chiamarono Universal Transformer. Le sessanta stanze sono tutte diverse, e un
-paio in più non si aggiungono: quel numero è murato. Se invece la stanza fosse una
-sola, e ci si rientrasse? I giri li deciderebbe la domanda: due per «due più
+paio in più non si aggiungono: quel numero è murato. Se invece la stanza fosse
+una sola, e ci si rientrasse? I giri li deciderebbe la domanda: due per «due più
 due», venti per il rompicapo. A ogni giro un bigliettino può dire «io ho
 finito», e resta lì com'è mentre gli altri continuano.
 
@@ -126,27 +130,30 @@ volontà. È vera, ma con una condizione che quasi nessuno legge: giri quanti ne
 servono, senza tetto. A quella condizione mantiene la stessa promessa anche il
 palazzo di sessanta piani, se la risposta che esce dal tetto si rimette al
 pianterreno quante volte si vuole (lo fa un modello che scrive una parola alla
-volta) e se le operazioni si eseguono senza mai arrotondare. Con le operazioni
-arrotondate, come nei modelli veri, il palazzo che risponde al primo passaggio
-sa fare poco; ogni giro in più gli aggiunge potenza, e con abbastanza giri
-arriva a risolvere i problemi che si risolvono in un tempo ragionevole. A
-decidere è il numero di giri concessi, più della forma dell'edificio.
+volta) e se le operazioni si eseguono senza mai arrotondare.
 
-La stanza sola non prese piede: sessanta giri durano quanto sessanta stanze,
-perché il lavoro è lo stesso, ma i mobili da scegliere sono quelli di una
-stanza sola, e a parità di spesa si impara meno. Intanto tirare su palazzi più
-alti funzionava benissimo.
+Se invece le operazioni sono arrotondate, come nei modelli veri, il palazzo
+che risponde al primo passaggio sa fare poco; ogni giro in più gli aggiunge
+potenza, e con abbastanza giri arriva a risolvere i problemi che si risolvono
+in un tempo ragionevole. A decidere è il numero di giri concessi, più della
+forma dell'edificio.
+
+La stanza sola, però, non prese piede: sessanta giri durano quanto sessanta
+stanze, perché il lavoro è lo stesso, ma i mobili da scegliere sono quelli di
+una stanza sola, e a parità di spesa si impara meno. Intanto tirare su palazzi
+più alti funzionava benissimo.
 
 È tornata da una strada inattesa. Anche i modelli che «ragionano» prima di
 rispondere spendono di più sulle domande difficili, ma invece di girare a porta
 chiusa scrivono i passaggi su un foglio, una riga alla volta. Ogni riga va
 prodotta e poi riletta, e questo allunga il lavoro; in compenso si insegna
-meglio, perché esistono montagne di quaderni con i passaggi svolti. Dal
-2024 è tornata anche la porta chiusa: c'è chi addestra i modelli a fare i loro
-giri senza scrivere niente. Quale strada convenga resta aperto: la porta chiusa
-non riempie fogli, il foglio lascia una traccia da leggere. Che la traccia
-racconti quanto è successo nella stanza, però, non è detto, e quando lo si
-è misurato spesso non lo racconta.
+meglio, perché esistono montagne di quaderni con i passaggi svolti.
+
+Dal 2024 è tornata anche la porta chiusa: c'è chi addestra i modelli a fare i
+loro giri senza scrivere niente. Quale strada convenga resta aperto: la porta
+chiusa non riempie fogli, il foglio lascia una traccia da leggere. Che la
+traccia racconti quanto è successo nella stanza, però, non è detto, e quando lo
+si è misurato spesso non lo racconta.
 
 `````
 
@@ -184,23 +191,25 @@ softmax) è Turing-completo, con precisione aritmetica arbitraria e un numero
 illimitato di passi di decodifica. Quell'ultima ipotesi coincide con la
 generazione autoregressiva, la strada che percorrono oggi i modelli lasciati
 scrivere finché serve. I due risultati non si contraddicono, perché cambiano le
-ipotesi. Il numero di passi conta più del vincolo sui pesi, e l'espressività di
-un'architettura non si può separare dalle sue ipotesi.
+ipotesi. In definitiva, il numero di passi conta più del vincolo sui pesi, e
+l'espressività di un'architettura non si può separare dalle sue ipotesi.
 
 La teoria successiva dà a questa conclusione una forma quantitativa. Con una
 precisione aritmetica finita un Transformer di profondità costante è molto più
 debole: con una precisione logaritmica nel numero di token si simula con
 circuiti a soglia di profondità costante, la classe $\mathsf{TC}^0$, e se
 $\mathsf{L} \neq \mathsf{P}$ non sa nemmeno risolvere con esattezza equazioni
-lineari {cite}`merrill2023parallelism`. La catena di pensiero allarga
-l'espressività in proporzione ai passi: con $T$ passi, un Transformer di
+lineari {cite}`merrill2023parallelism`.
+
+La catena di pensiero, invece, allarga l'espressività in proporzione ai passi:
+con $T$ passi, un Transformer di
 profondità costante, precisione costante e dimensione d'embedding
 $O(\log n)$ risolve ogni problema calcolabile da circuiti booleani di
 dimensione $T$ {cite}`li2024chain`, e con un numero polinomiale di passi di
 decodifica, sotto una lieve generalizzazione della pre-normalizzazione,
 riconosce esattamente i problemi risolvibili in tempo polinomiale
-{cite}`merrill2024expressive`. Il calcolo al momento della risposta acquista
-espressività, al costo di un token per ciascun passo.
+{cite}`merrill2024expressive`. In altri termini, il calcolo al momento della
+risposta acquista espressività, al costo di un token per ciascun passo.
 
 L'idea del calcolo condizionato è tornata da più parti. Dal lato dei token, i
 modelli «ragionanti» della {doc}`sezione sul post-training <post-training>` (o1
@@ -211,13 +220,17 @@ latente, Coconut {cite}`hao2024training` (dicembre 2024) rimette in ingresso
 l'ultimo stato nascosto invece di decodificarlo in una parola, e il modello a
 profondità ricorrente di Geiping e colleghi {cite}`geiping2025scaling`
 (febbraio 2025), da 3,5 miliardi di parametri, itera un blocco al momento
-dell'inferenza senza dati speciali di catene. Dentro i Transformer il calcolo
-condizionato riemerge anche per un'altra via: Mixture-of-Depths
+dell'inferenza senza dati speciali di catene.
+
+Dentro i Transformer il calcolo condizionato riemerge anche per un'altra via:
+Mixture-of-Depths
 {cite}`raposo2024mixture` (aprile 2024) decide con un top-$k$ per ciascuno
 strato, come il router della {doc}`sezione sui modelli a
 esperti <mixture-of-experts>`, quali token debbano attraversarlo, così che la
-spesa totale resti fissata mentre quella per singolo token varia. Fra la via
-latente e quella in token il confronto resta aperto: il calcolo latente non
+spesa totale resti fissata mentre quella per singolo token varia.
+
+Fra la via latente e quella in token il confronto resta aperto: il calcolo
+latente non
 produce token da scrivere e rileggere, e le iterazioni possono condividere la KV
 cache, ma non è ispezionabile; quello in token genera più testo, si addestra con
 la supervisione esistente e lascia una traccia che si può leggere.
@@ -254,12 +267,12 @@ addestrati su raccolte grandi quanto tutto quel testo, se le tendenze restano
 quelle; fra le vie d'uscita indicate ci sono i dati sintetici, il
 trasferimento da domini ricchi di dati e un uso più efficiente dei dati
 {cite}`villalobos2022run`. I corpora portano con sé, inoltre, le distorsioni
-sistematiche dei testi scritti online, i bias, che i modelli assorbono insieme
-al resto.
+sistematiche dei testi scritti online, i bias, che i modelli assorbono
+insieme al resto.
 
 Da quei dati il modello impara a stimare la probabilità di un testo, e qui sta
-il terzo limite, l'affidabilità. Le allucinazioni (risposte fluenti ma false)
-hanno una causa nell'obiettivo stesso: il pre-addestramento premia la
+il terzo limite, l'affidabilità. Le allucinazioni (risposte fluenti ma
+false) hanno una causa nell'obiettivo stesso: il pre-addestramento premia la
 verosimiglianza, e un'affermazione falsa e fluente non si distingue da un fatto
 se i dati non offrono un modo di farlo. La valutazione fa il resto, perché la
 maggior parte dei benchmark dà zero punti a un «non lo so» e premia così chi
@@ -283,8 +296,8 @@ senza prove resta un errore, e negarglieli senza prove lo è altrettanto.
 Il Transformer riunisce idee che c'erano già: l'attenzione fra le parole viene
 dalla traduzione automatica neurale {cite}`bahdanau2015neural`, gli embedding
 dalle rappresentazioni distribuite del testo, e la discesa del gradiente, che
-sistema i parametri un passo alla volta, è ancora più antica. Risale al 2017 l'idea
-di farne l'unico meccanismo con cui le posizioni comunicano
+sistema i parametri un passo alla volta, è ancora più antica. Risale al 2017
+l'idea di farne l'unico meccanismo con cui le posizioni comunicano
 {cite}`vaswani2017attention`. Su larga scala i salti sono venuti più da quanto
 calcolo e quanti dati si sono potuti spendere che da pezzi nuovi: la loss
 scende in modo regolare al crescere di parametri, dati e calcolo
@@ -336,15 +349,15 @@ la scala ha reso evidenti.
   e audio). Si aggiunge l’allineamento (RLHF, DPO).
 - Il calcolo condizionato all'ingresso: l’*Universal Transformer*
   {cite}`dehghani2019universal` lega i pesi fra le iterazioni e vi integra
-  l’*Adaptive Computation Time* {cite}`graves2016adaptive`, che a ogni giro assegna
-  a ogni posizione una probabilità di arresto. La Turing-completezza che ne
-  segue vale sotto ipotesi, e quella che pesa è il numero di passi non
-  limitato a priori.
+  l’*Adaptive Computation Time* {cite}`graves2016adaptive`, che a ogni
+  iterazione assegna a ogni posizione una probabilità di arresto. La
+  Turing-completezza che ne segue vale sotto ipotesi, e quella che pesa è il
+  numero di passi non limitato a priori.
 - Lo stesso filone è tornato da due parti: i modelli che ragionano allungano la
   generazione e scrivono i passi, e la teoria lega l'espressività al numero di
   passi {cite}`merrill2024expressive`; il ragionamento latente
-  {cite}`hao2024training` itera senza scrivere i passi. Si paga in token
-  prodotti, si guadagna una traccia leggibile, che però non è necessariamente
+  {cite}`hao2024training` itera senza scrivere i passi. Il costo sono i token
+  prodotti, il guadagno è una traccia leggibile, che però non è necessariamente
   fedele al calcolo svolto {cite}`turpin2023unfaithful`.
 - Limiti aperti: il costo quadratico $O(n^2)$ dell'attenzione piena e la KV
   cache, che cresce linearmente con i token generati; costi di calcolo e di
@@ -362,7 +375,7 @@ la scala ha reso evidenti.
 `````
 
 Il costo quadratico nella lunghezza del testo e la {doc}`KV cache
-<attenzione-in-pratica>`, il taccuino delle chiavi e dei valori che non smette
+<attenzione-in-pratica>`, il taccuino delle chiavi e dei valori, che non smette
 di crescere, restano i due limiti dell'attenzione piena, e da lì riparte il
 {doc}`capitolo sull'attenzione lineare
 </AttenzioneLineare/overview>`.

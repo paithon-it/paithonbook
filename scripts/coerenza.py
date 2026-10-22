@@ -15,6 +15,9 @@ pena toglierle di mezzo prima di rileggere:
   codifica   pagine del toc con gli a capo CRLF o con un BOM in testa: non si
              vedono in nessun editor, e una patch fatta su testo a capo LF su
              quelle righe non si applica
+  esterni    script e fogli di stile presi da un altro dominio, in una pagina
+             o in _config.yml: un terzo che vede ogni lettore e cambia cio'
+             che gira sulla pagina (un esempio in un blocco di codice no)
   landing   schede di intro.md che non corrispondono ai capitoli del _toc.yml,
              o a cui manca il collegamento al proprio capitolo in PDF
              (mancanti, di troppo, fuori ordine, o col numero scritto a mano)
@@ -39,7 +42,9 @@ pena toglierle di mezzo prima di rileggere:
              e con un diff che il render puo' vedere: la clip online non e'
              quella che il sorgente descrive
   palette    colori fuori palette nelle figure scritte a mano (quelle generate
-             le rifiuta gia' `scrivi()` in paithon_svg.py)
+             le rifiuta gia' `scrivi()` in paithon_svg.py). La palette e'
+             quella del brand, `figure/palette.json` nel submodule: senza il
+             submodule l'asse si ferma e lo dice
   ambiente   scene Manim che l'ambiente di oggi non saprebbe piu' rendere
   lineette   i due travestimenti della lineetta che `CONTRIBUTING.md` vieta:
              la doppia `--` e il trattino singolo spaziato
@@ -64,7 +69,7 @@ pena toglierle di mezzo prima di rileggere:
              nella Superiore), solo elenco: quasi ogni forma ha anche un
              uso giusto, e a decidere e' chi legge
   enfasi     il neretto per mille parole di prosa, capitolo per capitolo,
-             contro il tetto di cinque. Non giudica QUALE marcatura sia
+             contro il tetto di otto. Non giudica QUALE marcatura sia
              giusta (i due assi in fondo a questa nota ci hanno provato e
              sono affogati nel rumore): conta, e la soglia e' decisa altrove.
              `aggiornamenti.md` sta fuori, ed e' scritto nell'uscita: la
@@ -77,6 +82,14 @@ pena toglierle di mezzo prima di rileggere:
              contrario, «vedremo» verso un capitolo gia' letto). L'ordine di
              lettura sta nel _toc.yml, il link risolve benissimo e nessuna
              build se ne accorge
+  postille   le postille dei capoversi (`pagina.postille.yml`, accanto alla
+             pagina): ferma un file illeggibile o senza la sua pagina, una
+             postilla oltre gli 80 caratteri, con marcature o lineette,
+             doppia, o su un capoverso sotto le 60 parole; elenca soltanto le
+             postille spente (il capoverso e' cambiato, o e' finito in una
+             scheda), le ambigue, le forme fisse e il conto per capitolo. Le
+             spente non fermano niente: una correzione del testo spegne
+             la postilla del capoverso che tocca, e non va bloccata
 
   scripts/coerenza.py            # tutto
   scripts/coerenza.py --solo numref,cite
@@ -121,7 +134,7 @@ import re
 import shutil
 import subprocess
 import sys
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 
 QUI = Path(__file__).resolve().parent.parent
@@ -496,7 +509,7 @@ _FAMIGLIE = [
         r"\bvale la pena\b", r"\bva detta la cosa\b", r"\bva detto che\b",
         r"\buna premessa, che\b", r"\buna parola sui simboli\b",
         r"\bdue cose vanno dette\b", r"\b(?:il motivo|ed) è istruttivo\b",
-        r"\bsembra pedante e non lo è\b", r"\bsi noti\b",
+        r"\bsembra pedante e non lo è\b",
         r"\bfermiamoci un attimo\b", r"\bdose di onestà\b",
         r"\bil punto è che\b"), False, set()),
     ("calco", _forme(
@@ -803,6 +816,67 @@ def chiavi_bib() -> set[str]:
     return chiavi
 
 
+# ------------------------------------------------------------------ postille
+# Le postille dei capoversi del testo comune. La definizione di capoverso e
+# l'impronta stanno in `book/_ext/pt_postille_testo.py`, accanto all'estensione
+# che le aggancia, e si importano da li' anche quando `--radice` punta a un
+# libro finto: il modulo e' codice, il libro finto e' testo. In stampa una
+# postilla di 80 caratteri occupa cinque righe di margine, e un capoverso sotto
+# le sessanta parole e' piu' basso di lei: la nota scenderebbe accanto al
+# capoverso dopo.
+POSTILLA_MAX_CARATTERI = 80
+POSTILLA_MIN_PAROLE = 60
+_EXT = Path(__file__).resolve().parent.parent / "book" / "_ext"
+
+_CATEGORIE_POSTILLE = {
+    "illeggibile": "file di postille illeggibili",
+    "senza_pagina": "file di postille senza la loro pagina nel toc",
+    "doppia": "postille doppie nello stesso file",
+    "da_riscrivere": "postille da riscrivere (lunghezza, marcature, lineette)",
+    "corto": f"postille su capoversi sotto le {POSTILLA_MIN_PAROLE} parole",
+    "spenta": "postille spente (da rileggere e riconfermare)",
+    "ambigua": "postille ambigue (lo stesso capoverso due volte)",
+    "forme": "forme da rivedere nelle postille",
+    "conto": "postille per capitolo (accese, spente, candidati senza)",
+}
+_POSTILLE_SOLO_ELENCO = ("spenta", "ambigua", "forme", "conto")
+
+# Le due lineette scritte in ASCII, che l'asse `lineette` cerca nella prosa e
+# l'asse `postille` nel testo delle postille.
+_RX_LINEETTA_DOPPIA = re.compile(r"(?<![-\w])--(?![-\w])|(?<=\w)--(?=\w)")
+_RX_LINEETTA_SINGOLA = re.compile(r"(?<=\w) - (?=\w)")
+_RX_MARCATURA = re.compile(r"[`$*_{}\[\]<>|\\]|https?://")
+
+
+def postille_testo():
+    """Il modulo condiviso delle postille."""
+    if str(_EXT) not in sys.path:
+        sys.path.insert(0, str(_EXT))
+    import pt_postille_testo
+    return pt_postille_testo
+
+
+def parole_di_prosa(testo: str) -> int:
+    """Le parole di un capoverso, senza codice, matematica e indirizzi."""
+    return len(re.findall(r"\w+", _maschera_prosa(testo)))
+
+
+def postilla_da_rifiutare(testo: str) -> str | None:
+    """Che cosa non va in una postilla, o None se va bene."""
+    if not testo.strip():
+        return "è vuota"
+    if "\n" in testo:
+        return "va a capo"
+    if len(testo) > POSTILLA_MAX_CARATTERI:
+        return f"ha {len(testo)} caratteri, oltre gli {POSTILLA_MAX_CARATTERI}"
+    if _RX_MARCATURA.search(testo):
+        return "contiene una marcatura (formule, codice, link, neretto o corsivo)"
+    if (chr(0x2014) in testo or _RX_LINEETTA_DOPPIA.search(testo)
+            or _RX_LINEETTA_SINGOLA.search(testo)):
+        return "contiene una lineetta"
+    return None
+
+
 def main():
     global QUI, LIBRO
     ap = argparse.ArgumentParser()
@@ -818,11 +892,11 @@ def main():
         LIBRO = QUI / "book"
     VOCI.clear()
     attivi = set(args.solo.split(",")) if args.solo else {
-        "numref", "cite", "ref", "figure", "toc", "codifica", "landing",
-        "animazioni",
+        "numref", "cite", "ref", "figure", "toc", "codifica", "esterni",
+        "landing", "animazioni",
         "schede", "ricordare", "simboli", "avanti", "palette", "clip", "ambiente",
         "lineette", "stampa", "verso", "matematica", "doppioni",
-        "contrapposizioni", "enfasi", "frasi"}
+        "contrapposizioni", "enfasi", "frasi", "postille"}
 
     testi = sorgenti()
     problemi = defaultdict(list)
@@ -969,6 +1043,34 @@ def main():
             if difetti:
                 problemi["pagine con a capo CRLF o un BOM"].append(
                     f"{p.relative_to(LIBRO).as_posix()}: {', '.join(difetti)}")
+
+    if "esterni" in attivi:
+        # Il libro carica font e script da se': i font stanno nel brand, e la
+        # CDN di Google e' uscita apposta. Uno script o un foglio di stile di
+        # un altro dominio, scritto in una pagina o in `_config.yml`, rimette
+        # in mezzo un terzo che riceve l'indirizzo di ogni lettore e puo'
+        # cambiare cio' che gira sulla pagina senza passare da qui. Il bottone
+        # di Buy Me a Coffee lo faceva sulla landing, e il suo script si
+        # portava dietro il font Cookie da Google. La build non protesta e la
+        # pagina si vede bene. Un link normale verso un altro sito va bene: lo
+        # segue chi ci clicca. Gli esempi dentro un blocco di codice non
+        # girano, quindi la posizione si guarda sulla maschera: un `<` che li'
+        # e' diventato spazio sta nel codice. L'esca e' `strumenti/esca-esterni.py`.
+        rx_est = re.compile(
+            r"<(?:script|link)\b[^>]*?\b(?:src|href)\s*=\s*[\"']?"
+            r"((?:https?:)?//[^\"'\s>]+)", re.I)
+        config = LIBRO / "_config.yml"
+        da_guardare = [("_config.yml", t, t) for t in
+                       [config.read_text(encoding="utf-8")] if config.is_file()]
+        da_guardare += [(nome, t, _maschera_prosa(t))
+                        for nome, t in testi.items() if nome.endswith(".md")]
+        for nome, t, maschera in da_guardare:
+            for m in rx_est.finditer(t):
+                if maschera[m.start()] != "<":
+                    continue
+                riga = t.count("\n", 0, m.start()) + 1
+                problemi["script e fogli di stile da un altro dominio"].append(
+                    f"{Path(nome).as_posix()}:{riga}: {m.group(1)}")
 
     if "landing" in attivi:
         # La griglia della landing e' l'indice del libro scritto a mano: i
@@ -1374,8 +1476,23 @@ def main():
         # `--pt-fg-muted` e' una decisione del repository `brand`, non di
         # questo. Finche' non e' presa, farla fallire qui vorrebbe dire tenere
         # il controllo rosso per una cosa che da qui non si puo' chiudere.
-        AMMESSI = {"#B5532C", "#2D5A5C", "#C9A961", "#1A1A1A", "#F8F5EE",
-                   "#5A524A", "#E2DCC9", "#C5BEAA", "#FFFFFF"}
+        #
+        # E la palette e' quella del brand, letta dal submodule: i `colori` di
+        # `figure/palette.json` e i loro `sinonimi`, gli stessi che
+        # `genera-figure-scure.py` sa portare sullo scuro. Qui ce n'era una
+        # copia di nove colori, ferma a prima che il brand li scrivesse, e
+        # l'elenco dava per «fuori palette» sei colori che il brand ammette.
+        # Senza il submodule l'asse non sa cosa ammettere: lo dice e conta,
+        # invece di passare in silenzio. L'esca e' `strumenti/esca-palette.py`.
+        mappa = LIBRO / "_static" / "brand" / "figure" / "palette.json"
+        if mappa.is_file():
+            brand = json.loads(mappa.read_text(encoding="utf-8"))
+            AMMESSI = {c.upper() for c in (*brand["colori"], *brand["sinonimi"])}
+        else:
+            AMMESSI = None
+            problemi["palette del brand mancante (git submodule update "
+                     "--init book/_static/brand)"].append(
+                str(mappa.relative_to(QUI)))
         rx_col = re.compile(r"#[0-9A-Fa-f]{6}")
         fuori = defaultdict(int)
         for p in sorted((LIBRO / "figures").glob("*.svg")):
@@ -1384,6 +1501,8 @@ def main():
                 problemi["lineette dentro le figure"].append(p.name)
             if "<script" in t:
                 problemi["script dentro le figure"].append(p.name)
+            if AMMESSI is None:
+                continue
             for c in {x.upper() for x in rx_col.findall(t)} - AMMESSI:
                 fuori[c] += 1
         # A pari merito, in ordine alfabetico: l'insieme dei colori di una
@@ -1581,8 +1700,8 @@ def main():
         # matematica in linea che va a capo non si vede guardando una riga per
         # volta: la mascheratura sta in `_maschera_prosa`, che la fa **una
         # volta sola**.
-        doppia = re.compile(r"(?<![-\w])--(?![-\w])|(?<=\w)--(?=\w)")
-        singola = re.compile(r"(?<=\w) - (?=\w)")
+        doppia = _RX_LINEETTA_DOPPIA
+        singola = _RX_LINEETTA_SINGOLA
         di_tabella = re.compile(r"^\s*\|[\s|:-]+\|\s*$")
         di_trattini = re.compile(r"^\s*-{3,}\s*$")
         segno_di_elenco = re.compile(r"^\s*[-*+]\s")
@@ -1701,9 +1820,11 @@ def main():
                                 " aggiornamenti.md esclusa: e' generata)"] + trovate
 
     if "enfasi" in attivi:
-        # Il tetto e' scritto in `CONTRIBUTING.md`: **cinque marcature di
-        # enfasi ogni mille parole di prosa**. Il neretto marca un termine,
-        # non il ritmo del ragionamento.
+        # Il tetto e' scritto in `CONTRIBUTING.md`: **otto marcature di
+        # enfasi ogni mille parole di prosa**. Il neretto marca un termine
+        # dove viene definito, e le etichette di un blocco (Definizione,
+        # Esempio, Osservazione) che fanno da appiglio all'occhio; non marca
+        # il ritmo del ragionamento.
         #
         # Questo asse non giudica **quale** marcatura sia giusta, e non e' una
         # rinuncia: i due assi provati e scartati che stanno in cima a questo
@@ -1717,7 +1838,7 @@ def main():
         # glob, e il conto stampa quante pagine ha letto: un conteggio senza
         # il suo denominatore non e' una misura, e zero e' l'unico numero che
         # non si verifica da se'.
-        TETTO = 5.0
+        TETTO = 8.0
         # `aggiornamenti.md` sta fuori, e l'esclusione e' **dichiarata**: la
         # scrive `scripts/genera-aggiornamenti.py` dal registro delle
         # versioni, e il suo neretto e' il titolo di ciascuna voce, cioe'
@@ -1777,10 +1898,10 @@ def main():
             if parole < MINIMO:
                 continue
             tasso = 1000 * marcature / parole
-            misura("enfasi", "enfasi oltre il tetto di cinque per mille",
+            misura("enfasi", "enfasi oltre il tetto di otto per mille",
                    gruppo, round(tasso, 3), TETTO, tasso > TETTO)
             if tasso > TETTO:
-                problemi["enfasi oltre il tetto di cinque per mille"].append(
+                problemi["enfasi oltre il tetto di otto per mille"].append(
                     f"{gruppo}: {tasso:.2f} per mille ({marcature} marcature"
                     f" su {parole} parole di prosa, tetto {TETTO:.0f})")
 
@@ -2104,6 +2225,106 @@ def main():
                      messaggio=f"un rimando in avanti, da rileggere: "
                                f"«{m.group(0).strip()[:110]}»")
 
+    if "postille" in attivi:
+        # Ferma soltanto cio' che sta nel file delle postille. Una postilla
+        # spenta, o finita in una scheda, si elenca: la spegne chi corregge il
+        # capoverso, e una correzione dell'autore non va bloccata da una riga
+        # che non ha scritto lui.
+        pp = postille_testo()
+        cat = _CATEGORIE_POSTILLE
+        pagine_toc = {str(p.relative_to(LIBRO)): p for p in pagine_del_toc()}
+        conti: dict[str, list[int]] = {}
+        for file in sorted(LIBRO.rglob("*" + pp.ESTENSIONE)):
+            if "_build" in file.parts or "_static" in file.parts:
+                continue
+            nome_file = str(file.relative_to(LIBRO))
+            pagina = nome_file[: -len(pp.ESTENSIONE)] + ".md"
+            if pagina not in pagine_toc:
+                problemi[cat["senza_pagina"]].append(f"{nome_file}  ->  {pagina}")
+                voce("postille", cat["senza_pagina"], nome_file, identita=pagina,
+                     messaggio=f"la pagina {pagina} non è nel _toc.yml")
+                continue
+            try:
+                voci = pp.leggi_postille(file)
+            except ValueError as errore:
+                problemi[cat["illeggibile"]].append(f"{nome_file}: {errore}")
+                voce("postille", cat["illeggibile"], nome_file, identita=nome_file,
+                     messaggio=f"il file delle postille non si legge: {errore}")
+                continue
+            capoversi = pp.capoversi(pagine_toc[pagina].read_text(encoding="utf-8"))
+            per_impronta = defaultdict(list)
+            for c in capoversi:
+                per_impronta[c.impronta].append(c)
+            quante = Counter(v.impronta for v in voci)
+            for v in voci:
+                dove = f"{pagina}: «{v.inizio}»"
+                trovati = per_impronta.get(v.impronta, [])
+                riga = trovati[0].riga if len(trovati) == 1 else None
+                if quante[v.impronta] > 1:
+                    problemi[cat["doppia"]].append(dove)
+                    voce("postille", cat["doppia"], pagina, riga=riga,
+                         identita=v.impronta,
+                         messaggio="due postille per lo stesso capoverso")
+                rifiuto = postilla_da_rifiutare(v.postilla)
+                if rifiuto:
+                    problemi[cat["da_riscrivere"]].append(f"{dove}: {rifiuto}")
+                    voce("postille", cat["da_riscrivere"], pagina, riga=riga,
+                         identita=v.impronta, messaggio=f"la postilla {rifiuto}")
+                for _, famiglia, forma in frasi_da_rivedere(v.postilla):
+                    problemi[cat["forme"]].append(f"{dove}: {famiglia}: «{forma}»")
+                    voce("postille", cat["forme"], pagina, riga=riga,
+                         identita=forma, messaggio=f"{famiglia}: «{forma}»")
+                if not trovati:
+                    problemi[cat["spenta"]].append(f"{dove}: il capoverso è cambiato")
+                    voce("postille", cat["spenta"], pagina, identita=v.impronta,
+                         messaggio=f"postilla spenta: «{v.inizio}» è cambiato")
+                    continue
+                if len(trovati) > 1:
+                    righe = ", ".join(str(c.riga) for c in trovati)
+                    problemi[cat["ambigua"]].append(f"{dove}: righe {righe}")
+                    voce("postille", cat["ambigua"], pagina, identita=v.impronta,
+                         messaggio=f"lo stesso capoverso alle righe {righe}")
+                    continue
+                c = trovati[0]
+                if c.zona != pp.COMUNE:
+                    problemi[cat["spenta"]].append(
+                        f"{dove}: il capoverso ora sta in {c.zona}")
+                    voce("postille", cat["spenta"], pagina, riga=c.riga,
+                         identita=v.impronta,
+                         messaggio=f"postilla spenta: il capoverso ora sta in {c.zona}")
+                    continue
+                parole = parole_di_prosa(c.testo)
+                if parole < POSTILLA_MIN_PAROLE:
+                    problemi[cat["corto"]].append(
+                        f"{pagina}:{c.riga}  «{v.inizio}» ({parole} parole)")
+                    voce("postille", cat["corto"], pagina, riga=c.riga,
+                         identita=v.impronta,
+                         messaggio=f"il capoverso ha {parole} parole, "
+                                   f"sotto le {POSTILLA_MIN_PAROLE}")
+            accese, spente = pp.abbina(capoversi, voci)
+            capitolo = pagina.split("/")[0]
+            conto = conti.setdefault(capitolo, [0, 0])
+            conto[0] += len(accese)
+            conto[1] += len(spente)
+        for capitolo, (n_accese, n_spente) in sorted(conti.items()):
+            senza = 0
+            for nome, p in pagine_toc.items():
+                if p.suffix != ".md" or nome.split("/")[0] != capitolo:
+                    continue
+                file = pp.file_delle_postille(p)
+                try:
+                    voci = pp.leggi_postille(file) if file.is_file() else []
+                except ValueError:
+                    voci = []
+                capoversi = pp.capoversi(p.read_text(encoding="utf-8"))
+                accese, _ = pp.abbina(capoversi, voci)
+                senza += sum(1 for c in capoversi
+                             if c.zona == pp.COMUNE and c.riga not in accese
+                             and parole_di_prosa(c.testo) >= POSTILLA_MIN_PAROLE)
+            problemi[cat["conto"]].append(
+                f"{capitolo}: {n_accese} accese, {n_spente} spente, "
+                f"{senza} capoversi candidati senza postilla")
+
     # `ordine` non e' solo l'ordine di stampa: e' anche il filtro. Una chiave
     # che non compare qui verrebbe calcolata e poi buttata via in silenzio, e
     # per questo in fondo le chiavi senza posto si stampano lo stesso.
@@ -2130,7 +2351,7 @@ def main():
               "lineette scritte in ASCII (-- oppure - )",
               "«non e' X, e' Y» oltre il tetto di due",
               "«non e' X, e' Y» oltre il tetto (da leggere)",
-              "enfasi oltre il tetto di cinque per mille",
+              "enfasi oltre il tetto di otto per mille",
               "termini in neretto in piu' di un capitolo (da leggere)",
               "frasi scritte due volte",
               "«Da ricordare» fuori dalle schede",
@@ -2139,6 +2360,9 @@ def main():
               "ambiente delle clip cambiato",
               "lineette dentro le figure",
               "script dentro le figure",
+              "script e fogli di stile da un altro dominio",
+              "palette del brand mancante (git submodule update "
+              "--init book/_static/brand)",
               "colori fuori palette (decisione del repo brand)",
               "fermi immagine mancanti",
               "fermi immagine senza impronta",
@@ -2162,6 +2386,8 @@ def main():
                    "«non e' X, e' Y» oltre il tetto (da leggere)",
                    "«Da ricordare» fuori dalle schede",
                    "forme da rivedere («La frase» di CONTRIBUTING.md)"}
+    ordine += list(_CATEGORIE_POSTILLE.values())
+    solo_elenco |= {_CATEGORIE_POSTILLE[k] for k in _POSTILLE_SOLO_ELENCO}
     totale = 0
     for k in ordine:
         v = problemi.get(k)

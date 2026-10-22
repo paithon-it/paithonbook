@@ -19,15 +19,15 @@ scopo del duello.
 ## DCGAN: dare occhi alla rete
 
 La prima GAN usava soprattutto strati completamente connessi
-(*fully-connected*), in cui ogni numero in uscita dipende da tutti i numeri in
-entrata: per uno strato così un'immagine è un vettore senza struttura spaziale,
-e che due pixel siano vicini non entra nel calcolo. Nelle immagini naturali,
-invece, pixel vicini sono fortemente correlati (un pezzo di cielo è azzurro
-tutto intorno), e le convoluzioni sfruttano questa struttura per
+(*fully-connected*), cioè strati in cui ogni numero in uscita dipende da tutti i
+numeri in entrata: per uno strato così un'immagine è un vettore senza struttura
+spaziale, e che due pixel siano vicini non entra nel calcolo. Nelle immagini
+naturali, invece, pixel vicini sono fortemente correlati (un pezzo di cielo è
+azzurro tutto intorno), e le convoluzioni sfruttano questa struttura per
 costruzione. Una variante convoluzionale c'era già nel paper del 2014, ma
-addestrarla era instabile e mancava una ricetta riproducibile; la ricetta
-arriva a fine 2015 con la **DCGAN** (*Deep Convolutional GAN*) di Radford, Metz
-e Chintala {cite}`radford2016unsupervised`.
+addestrarla era instabile e mancava una ricetta riproducibile; la ricetta arriva
+a fine 2015 con la **DCGAN** (*Deep Convolutional GAN*) di Radford, Metz e
+Chintala {cite}`radford2016unsupervised`.
 
 `````{tab} Elementare
 L'idea è dare alla rete lo strumento giusto per "vedere": far scorrere sopra
@@ -50,11 +50,11 @@ il passaggio successivo ne mette quattro, e quanto ciascuno debba essere chiaro
 o scuro lo dicono i filtri. Con questa architettura le immagini smettono di
 essere macchie e cominciano ad avere bordi netti e coerenza.
 
-Su quel pugno di numeri di partenza si può fare aritmetica. Si prendono i
-numeri che hanno fatto tre uomini con gli occhiali, si tolgono quelli di tre
-uomini senza, si aggiungono quelli di tre donne senza: esce una donna con gli
-occhiali. Con un esemplare solo per gruppo l'operazione fallisce, perché «occhiali»
-sta in una zona di quei numeri e non in un punto preciso.
+Su quel pugno di numeri di partenza si può fare aritmetica. Ad esempio, si
+prendono i numeri che hanno fatto tre uomini con gli occhiali, si tolgono quelli
+di tre uomini senza, si aggiungono quelli di tre donne senza: esce una donna con
+gli occhiali. Con un esemplare solo per gruppo l'operazione fallisce, perché
+«occhiali» sta in una zona di quei numeri e non in un punto preciso.
 `````
 
 `````{tab} Superiore
@@ -86,7 +86,10 @@ rappresentazione, non una tabella di memorizzazione.
 
 ## Conditional GAN: prendere il controllo
 
-Una GAN base genera "qualcosa di plausibile", ma non possiamo chiederle *cosa*. La **conditional GAN** {cite}`mirza2014conditional`, proposta già a fine 2014, pochi mesi dopo il paper originale, aggiunge il timone: si passa alla rete anche un'etichetta, e la generazione la rispetta.
+Una GAN base genera "qualcosa di plausibile", ma non possiamo chiederle
+*che cosa*. La **conditional GAN** {cite}`mirza2014conditional`, proposta già a
+fine 2014, pochi mesi dopo il paper originale, aggiunge il controllo: oltre al
+rumore si passa alla rete anche un'etichetta, e la generazione la rispetta.
 
 `````{tab} Elementare
 Insieme ai numeri casuali forniamo un'informazione in più: "voglio un 7",
@@ -150,7 +153,7 @@ classificatori d’immagini, affrontano il problema uno dopo l’altro. La **SAG
 dentro il generatore e il discriminatore {cite}`zhang2019self`; **BigGAN**, di
 Brock, Donahue e Simonyan, prende la SAGAN come punto di partenza, la
 ingrandisce, e introduce un modo di scegliere al momento del campionamento
-quanto le immagini debbano essere belle e quanto varie: il *truncation trick*
+quanto le immagini debbano essere belle e quanto varie: il **truncation trick**
 {cite}`brock2019large`.
 
 `````{tab} Elementare
@@ -183,7 +186,7 @@ lì che la rete si è esercitata di più. Al momento di generare, invece, BigGAN
 ripesca ogni numero che esce da una soglia, finché non ci rientra: le immagini
 che nascono da numeri tranquilli sono le più tipiche. Abbassando la soglia ogni
 immagine diventa più bella e tutte insieme più simili, fino a disegnare sempre
-lo stesso cane della classe. Diventa una manopola fra qualità e varietà, da
+lo stesso cane della classe. Diventa così una manopola fra qualità e varietà, da
 girare dopo l’addestramento.
 
 La manopola ha un punto debole, che sta nella fila intera. Durante
@@ -297,7 +300,7 @@ controllo.
 StyleGAN non "disegna" il volto tutto in una volta: lo costruisce a livelli, dal
 grossolano al fine. Gli strati iniziali decidono posa e forma del viso, quelli
 intermedi i lineamenti, quelli finali dettagli come lentiggini e ciocche di
-capelli. A ogni livello consegna uno "stile", che è una fila di cursori: una
+capelli. A ogni livello consegna uno **stile**, che è una fila di cursori: una
 manciata di numeri che invece di stare tutta all'ingresso arriva al singolo
 livello e decide come quel livello lavorerà. I cursori non escono grezzi dai
 numeri casuali di partenza: fra i due c'è una piccola rete che li traduce, e
@@ -342,8 +345,8 @@ siano correlati. In generazione si usa il *truncation trick* di BigGAN,
 spostato in $\mathcal{W}$:
 $\mathbf{w}' = \bar{\mathbf{w}} + \psi\,(\mathbf{w} - \bar{\mathbf{w}})$, con
 $\bar{\mathbf{w}}$ la media degli stili e $\psi < 1$, che avvicina i campioni
-alle regioni dense e ottiene fedeltà a scapito della varietà. Il FID quella
-rinuncia la fa pagare: nel confronto di Kynkäänniemi e colleghi
+alle regioni dense e ottiene fedeltà a scapito della varietà. Il FID
+registra quella rinuncia: nel confronto di Kynkäänniemi e colleghi
 {cite}`kynkaanniemi2019improved` la configurazione di StyleGAN più troncata, con
 volti belli e tutti simili, ha un FID di $91{,}7$ contro il $4{,}5$ di quella
 ottimizzata per il FID.
@@ -392,8 +395,8 @@ soluzione è una **dissolvenza**: per un po’ l'immagine che esce è una miscel
 fra quella del gradino vecchio (semplicemente ingrandita) e quella del gradino
 nuovo, e il peso della miscela scivola da zero
 a uno nel corso dell'addestramento. All'inizio comanda il vecchio, alla fine il
-nuovo, e in mezzo non c'è nessun salto. Lo stesso, specularmente, dalla parte
-del discriminatore. Nessuno dei due si sveglia una mattina in un mondo diverso.
+nuovo, e in mezzo non c'è nessun salto. Lo stesso vale, specularmente, per il
+discriminatore.
 
 `````{tab} Elementare
 
@@ -715,9 +718,9 @@ ritradurre deve riportare al punto di partenza.
 `````{tab} Elementare
 CycleGAN impara a trasformare foto in quadri di Monet (e viceversa) senza mai
 vedere una foto e il suo quadro corrispondente: gli bastano due mucchi
-separati, tante foto e tanti Monet. Il trucco è il vincolo di andata e ritorno:
-se prendo una foto, la converto in "stile Monet" e poi la riconverto in foto,
-devo ritrovare la foto di partenza.
+separati, tante foto e tanti Monet. Il trucco è il **vincolo di andata e
+ritorno**: se prendo una foto, la converto in "stile Monet" e poi la riconverto
+in foto, devo ritrovare la foto di partenza.
 
 Detta così, la regola sembra avere una scappatoia grande come una casa: al
 traduttore converrebbe non cambiare niente, restituire la foto tale e quale e
@@ -727,11 +730,18 @@ addestrato a distinguere i veri Monet dai finti Monet. Chi non dipinge viene
 smascherato da lui. Le due regole si tengono a vicenda: l'esperto obbliga a
 cambiare stile, il ciclo obbliga a non stravolgere il contenuto.
 
-Resta una scappatoia più fine, e i falsari la trovano. Si può dipingere un Monet vero e nasconderci dentro la foto, in una trama di puntini troppo debole perché l'occhio la veda: al ritorno il compagno rilegge la trama e ricostruisce la foto identica. L'esperto è contento e il giro si chiude, ma nessuno ha promesso che nel quadro ci siano gli stessi alberi della foto. Un andata e ritorno perfetto non dimostra che il soggetto abbia fatto il viaggio.
+Resta una scappatoia più fine, e i falsari la trovano. Si può dipingere un Monet
+vero e nasconderci dentro la foto, in una trama di puntini troppo debole perché
+l'occhio la veda: al ritorno il compagno rilegge la trama e ricostruisce la foto
+identica. L'esperto è contento e il giro si chiude, ma nessuno ha promesso che
+nel quadro ci siano gli stessi alberi della foto. Un andata e ritorno perfetto
+non dimostra che il soggetto abbia fatto il viaggio.
 `````
 
 `````{tab} Superiore
-Si addestrano due generatori, $G:\mathcal{X}\to\mathcal{Y}$ e $F:\mathcal{Y}\to\mathcal{X}$, con due discriminatori. Oltre alle due perdite avversarie si aggiunge la **cycle-consistency loss**:
+Si addestrano due generatori, $G:\mathcal{X}\to\mathcal{Y}$ e
+$F:\mathcal{Y}\to\mathcal{X}$, con due discriminatori. Oltre alle due perdite
+avversarie si aggiunge la **cycle-consistency loss**:
 
 $$
 \mathcal{L}_{\text{cyc}}=\mathbb{E}_{\mathbf{x}}\big\lVert F(G(\mathbf{x}))-\mathbf{x}\big\rVert_1
@@ -762,7 +772,7 @@ non è di per sé una garanzia di fedeltà.
 L'onda applicativa è stata vasta, e tre usi mostrano bene che cosa una GAN sa
 fare e dove si ferma.
 
-Il primo è la super-risoluzione. SRGAN {cite}`ledig2017photo` ricostruisce
+Il primo è la **super-risoluzione**. SRGAN {cite}`ledig2017photo` ricostruisce
 dettagli plausibili in immagini a bassa risoluzione, e da lì vengono il
 restauro fotografico e l’*upscaling*, l'ingrandimento di un'immagine senza che
 diventi sgranata. La parola «plausibili» va presa alla lettera, e indica il
@@ -771,7 +781,7 @@ non li recupera, li inventa in modo verosimile. Su una foto di famiglia è una
 scelta estetica; su una lastra medica o su un fotogramma di sorveglianza è una
 trappola, perché il risultato ha l'aria di un'informazione e non lo è.
 
-Il secondo è la generazione di dati sintetici: volti, lastre mediche, scene
+Il secondo è la generazione di **dati sintetici**: volti, lastre mediche, scene
 stradali con cui addestrare altri modelli quando i dati reali sono scarsi o
 sensibili. Con due avvertenze. Un dato sintetico eredita le distorsioni di chi
 l'ha generato (i *bias*: se il generatore ha visto soltanto volti chiari,
@@ -789,19 +799,19 @@ direttamente il grafo di una molecola, cioè i suoi atomi e i legami fra loro, e
 affianca alla loss avversaria un obiettivo di apprendimento per rinforzo che
 premia le proprietà chimiche desiderate; sulla raccolta QM9 produce composti
 validi quasi nel cento per cento dei casi, e soffre di *mode collapse* come le
-sorelle che generano immagini.
+GAN che generano immagini.
 
 Nell’arte, nel 2018, il ritratto *Edmond de Belamy*, prodotto con una GAN dal
 collettivo francese Obvious, fu battuto da Christie's per 432.500 dollari, con
 una stima di partenza di 7.000–10.000: la casa d'aste lo presentava come il
 primo ritratto generato da un algoritmo mai arrivato all'asta. Il dibattito
-sull'autorialità dell'arte generativa si aprì in quell'occasione, e con un'ironia
-utile: buona parte del codice era di Robbie Barrat, un altro artista, che
-l'aveva pubblicato con una licenza aperta, compreso il programma con cui
+sull'autorialità dell'arte generativa si aprì in quell'occasione, e con
+un'ironia utile: buona parte del codice era di Robbie Barrat, un altro artista,
+che l'aveva pubblicato con una licenza aperta, compreso il programma con cui
 Obvious aveva raccolto da WikiArt i quindicimila ritratti dell'addestramento
-{cite}`vincent2018borrowed`; Obvious lo riconobbe pubblicamente. La domanda
-"di chi è l'opera" nasce già con due risposte possibili prima ancora di
-arrivare alla macchina.
+{cite}`vincent2018borrowed`; Obvious lo riconobbe pubblicamente. La domanda "di
+chi è l'opera" nasce già con due risposte possibili prima ancora di arrivare
+alla macchina.
 
 ## VQ-GAN: il duello che fabbrica un alfabeto
 
@@ -819,26 +829,26 @@ elenco finito, purché non troppo lunga: così scrive testo, e così, nella
 ha scritto musica. Un'immagine non è né l'una né l'altra cosa. Non è un elenco
 finito, perché i suoi puntini sono numeri che variano con continuità; e non è
 corta, perché di puntini ce ne sono centinaia di migliaia. Servono due
-riduzioni, e per tutte e due il libro ha già gli attrezzi: un autoencoder
+riduzioni, e per tutte e due il libro ha già gli strumenti: un autoencoder
 per accorciare, e un codebook per rendere finito, cioè la tavolozza di
 pezzetti-tipo dei codec audio, quella del VQ-VAE {cite}`oord2017neural`.
 
-Le due riduzioni, però, si mordono la coda. Un Transformer paga
-l'attenzione col quadrato della lunghezza della fila (fila doppia, conto
-quadruplo), quindi la fila va accorciata tanto; ma comprimere tanto, con una
-rete addestrata a somigliare all'originale puntino per puntino, produce
+Le due riduzioni, però, si ostacolano a vicenda. Nel Transformer il costo
+dell'attenzione cresce col quadrato della lunghezza della fila (fila doppia,
+costo quadruplo), quindi la fila va accorciata tanto; ma comprimere tanto, con
+una rete addestrata a somigliare all'originale puntino per puntino, produce
 immagini sfocate, perché la strada più sicura per somigliare a tutto è fare la
-media di tutto. È qui che entra il duello. Patrick Esser, Robin Rombach e
-Björn Ommer {cite}`esser2021taming` cambiano due cose al compressore. Primo: al
-posto del confronto puntino per puntino mettono un giudizio percettivo, che
-misura la somiglianza come la valuterebbe un occhio (due fili d'erba
-diversi nello stesso prato sono la stessa cosa, una scritta storta no).
-Secondo: gli mettono contro un discriminatore. A quel punto il compressore non
-può più cavarsela con la media, perché una media il discriminatore la
-riconosce, e con lo stesso accorciamento le immagini tornano nitide: un'immagine
-di $256 \times 256$ pixel si riduce a una fila di $256$ simboli, che un
-Transformer digerisce senza fatica. Da lì in poi generare un'immagine è, alla
-lettera, scrivere una frase di 256 parole.
+media di tutto. È qui che entra il duello. Patrick Esser, Robin Rombach e Björn
+Ommer {cite}`esser2021taming` cambiano due cose al compressore. Primo: al posto
+del confronto puntino per puntino mettono un giudizio percettivo, che misura la
+somiglianza come la valuterebbe un occhio (due fili d'erba diversi nello stesso
+prato sono la stessa cosa, una scritta storta no). Secondo: gli mettono contro
+un discriminatore. A quel punto il compressore non può più cavarsela con la
+media, perché una media il discriminatore la riconosce, e con lo stesso
+accorciamento le immagini tornano nitide: un'immagine di $256 \times 256$ pixel
+si riduce a una fila di $256$ simboli, che un Transformer gestisce senza fatica.
+Da lì in poi generare un'immagine è, alla lettera, scrivere una frase di 256
+parole.
 
 `````{tab} Elementare
 
@@ -925,11 +935,11 @@ disciplina il latente) è quella con cui è addestrato l'autoencoder di Stable
 Diffusion, e non per caso, dato che Esser, Rombach e Ommer sono tutti e tre
 fra i suoi autori; là però il latente resta continuo, perché il termine che
 disciplina è una KL leggera invece di una quantizzazione, e a comporre non
-pensa un Transformer autoregressivo ma la diffusione. VQ-GAN è la fucina in cui
-quella ricetta è stata forgiata. Il secondo: l'idea di trattare un'immagine
+pensa un Transformer autoregressivo ma la diffusione. VQ-GAN è il lavoro in cui
+quella ricetta è stata messa a punto. Il secondo: l'idea di trattare un'immagine
 come una sequenza di simboli non è nuova per chi legge, perché la {doc}`sezione
 sulla fusione precoce </VisioneLinguaggio/fusione-precoce-tardiva>` l'ha già
-usata per i generatori multimodali; qui se ne vede l'officina, cioè da dove
+usata per i generatori multimodali; qui se ne vede la costruzione, cioè da dove
 arriva l'alfabeto e con quale costo lo si fabbrica.
 
 `````
@@ -945,19 +955,23 @@ della GAN). La ragione per cui il passaggio è stato così rapido, però, sta ne
 due difetti delle GAN. Un modello di diffusione si addestra minimizzando una
 loss di regressione, con un bersaglio che non dipende da un'altra rete, e
 quindi senza un duello da tenere in equilibrio; e copre i modi della
-distribuzione molto meglio di una GAN. L'idea è opposta a quella avversaria: si
-aggiunge a un'immagine rumore gaussiano in quantità crescente, si addestra una
-rete a stimarlo, e si genera partendo da puro rumore e togliendolo un passo
-alla volta. («Rumore» è la stessa parola usata finora, ma qui indica altro: non
-i numeri casuali in ingresso al generatore, bensì la grana sparsa sopra
-un'immagine.) Su questa base nascono Stable Diffusion {cite}`rombach2022high` e
-DALL·E 2 (OpenAI, 2022): a entrambi si descrive a parole la scena desiderata
-("un gatto nero seduto su un muro al tramonto") e loro lo disegnano; così la
-generazione di immagini su richiesta è arrivata al grande pubblico. Stable
-Diffusion in più toglie il rumore non dall'immagine a grandezza naturale ma da
-un latente, una sua versione compressa che occupa molta meno memoria: è la
-ragione per cui gira anche su un computer di casa. Del meccanismo parla il
-{doc}`capitolo sui modelli di diffusione </ModelliDiffusione/overview>`.
+distribuzione molto meglio di una GAN.
+
+L'idea è opposta a quella avversaria: si aggiunge a un'immagine rumore gaussiano
+in quantità crescente, si addestra una rete a stimarlo, e si genera partendo da
+puro rumore e togliendolo un passo alla volta. («Rumore» è la stessa parola
+usata finora, ma qui indica altro: non i numeri casuali in ingresso al
+generatore, bensì la grana sparsa sopra un'immagine.) Su questa base nascono
+Stable Diffusion {cite}`rombach2022high` e DALL·E 2 (OpenAI, 2022): a entrambi
+si descrive a parole la scena desiderata ("un gatto nero seduto su un muro al
+tramonto") e loro lo disegnano; così la generazione di immagini su richiesta è
+arrivata al grande pubblico.
+
+Stable Diffusion, in più, toglie il rumore non dall'immagine a grandezza
+naturale ma da un latente, una sua versione compressa che occupa molta meno
+memoria: è la ragione per cui gira anche su un computer di casa. Del meccanismo
+parla il {doc}`capitolo sui modelli di diffusione
+</ModelliDiffusione/overview>`.
 
 Le GAN non sono scomparse, e il primo motivo è la velocità: una GAN produce
 l'immagine in un colpo solo, un unico passaggio attraverso il generatore,

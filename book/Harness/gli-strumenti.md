@@ -1,39 +1,46 @@
 # Gli strumenti: l'interfaccia fra l'agente e il computer
 
 Un gruppo di Princeton ha messo un modello di linguaggio davanti alla riga di
-comando di un computer, la *shell*, e gli ha chiesto di correggere segnalazioni
-di errore vere, quelle del banco di prova SWE-bench che la {doc}`sezione sulla
-valutazione degli agenti </Agenti/architetture-e-valutazione>` ha già
-presentato. Il modello sapeva scrivere codice, ma usava male la macchina. Per
-guardarsi intorno apriva cartelle ed elencava file uno alla volta; le ricerche
-con `grep`, il comando che cerca una parola nei file, gli restituivano a volte
-pagine di righe che non c'entravano; per modificare un file doveva riscriverlo
-da capo o sostituire testo riga per riga, e se la modifica rompeva il codice
-nessuno glielo diceva. John Yang, Carlos E. Jimenez e i loro colleghi ne hanno
+comando di un computer, la **shell**, e gli ha chiesto di correggere
+segnalazioni di errore vere, quelle del banco di prova SWE-bench che la
+{doc}`sezione sulla valutazione degli agenti
+</Agenti/architetture-e-valutazione>` ha già presentato. Il modello sapeva
+scrivere codice, ma usava male la macchina. Per guardarsi intorno apriva
+cartelle ed elencava file uno alla volta; le ricerche con `grep`, il comando che
+cerca una parola nei file, gli restituivano a volte pagine di righe che non
+c'entravano; per modificare un file doveva riscriverlo da capo o sostituire
+testo riga per riga, e se la modifica rompeva il codice nessuno glielo diceva.
+
+Da queste difficoltà John Yang, Carlos E. Jimenez e i loro colleghi hanno
 ricavato l'idea che dà il titolo al lavoro: un modello che usa un computer è un
 utente di genere nuovo, e lavora meglio con un'interfaccia pensata per lui che
-con una pensata per le persone. L'hanno chiamata **interfaccia agente-computer**
-(*agent-computer interface*, ACI): i comandi che il modello può dare, il modo in
-cui gli vengono descritti, la forma in cui il computer gli risponde e quanto
-delle risposte passate gli resta davanti {cite}`yang2024sweagent`.
+con una pensata per le persone. L'hanno chiamata **interfaccia
+agente-computer** (*agent-computer interface*, ACI): i comandi che il modello
+può dare, il modo in cui gli vengono descritti, la forma in cui il computer gli
+risponde e quanto delle risposte passate gli resta davanti
+{cite}`yang2024sweagent`.
 
 Il loro agente, SWE-agent, aggiunge alla shell pochi comandi: un visualizzatore
 che mostra un file cento righe alla volta, con i numeri di riga e quante ne
 restano sopra e sotto; una ricerca che restituisce al più cinquanta risultati e,
 se ce ne sono di più, chiede una domanda più precisa; una modifica che
-sostituisce un intervallo di righe e viene scartata se il linter (il programma
-che segnala ciò che viola una regola, già incontrato nel {doc}`collaudo
-<finito-vuol-dire-collaudato>`) ci trova un errore. Quando un comando non stampa
-niente, il modello riceve una frase che lo dice, e delle risposte passate gli
-restano per intero solo le ultime cinque. Con lo stesso modello (GPT-4 Turbo) e
-sulle stesse trecento segnalazioni, un sottoinsieme che si chiama SWE-bench
-Lite, SWE-agent ne risolveva il 18,0%, un agente con la sola shell l’11,0%;
-togliendo a SWE-agent il solo comando di modifica si scendeva al 10,3%, quasi
-come con la sola shell (31 segnalazioni contro 33). Ogni configurazione ridotta
-è stata provata una volta, mentre quella intera, provata sei volte, ha oscillato
-fra il 17,33% e il 18,67%: una differenza di pochi punti può essere fortuna, ed
-è la cautela che l’{doc}`anatomia dell'harness <overview>` chiede a chi toglie
-un componente alla volta per misurarne il peso.
+sostituisce un intervallo di righe e viene scartata se il linter (il
+programma che segnala ciò che viola una regola, già incontrato nel
+{doc}`collaudo <finito-vuol-dire-collaudato>`) ci trova un errore. Quando un
+comando non stampa niente, il modello riceve una frase che lo dice, e delle
+risposte passate gli restano per intero solo le ultime cinque.
+
+Con lo stesso modello (GPT-4 Turbo) e sulle stesse trecento segnalazioni, un
+sottoinsieme che si chiama SWE-bench Lite, SWE-agent ne risolveva il 18,0%, un
+agente con la sola shell l’11,0%; togliendo a SWE-agent il solo comando di
+modifica si scendeva al 10,3%, quasi come con la sola shell (31 segnalazioni
+contro 33).
+
+Si noti che ogni configurazione ridotta è stata provata una volta, mentre quella
+intera, provata sei volte, ha oscillato fra il 17,33% e il 18,67%: una
+differenza di pochi punti può essere fortuna, ed è la cautela che
+l’{doc}`anatomia dell'harness <overview>` chiede a chi toglie un componente alla
+volta per misurarne il peso.
 
 Il modello era lo stesso in tutte le prove, con gli stessi pesi, i numeri
 imparati nell'addestramento; cambiavano i comandi, le loro descrizioni, le
@@ -41,6 +48,7 @@ risposte e quanto ne restava nel contesto, cioè quasi tutto il sottosistema che
 l'anatomia chiama strumenti, più un pezzo del lavoro con cui il ciclo monta il
 contesto. Gli strumenti sono le operazioni che il modello può chiedere al
 programma che lo ospita, con le regole che dicono quali può chiedere da solo.
+
 Come funziona una singola chiamata (il modello scrive il nome dello strumento e
 i valori, il programma esegue e restituisce il risultato) lo ha mostrato il
 {doc}`ciclo dell'agente </Agenti/agenti-e-tool-use>`. La domanda dell'harness è
@@ -50,17 +58,17 @@ codice e fin dove deve poter arrivare ciò che fanno.
 ## Uno strumento è un pezzo di contesto
 
 Le definizioni degli strumenti, cioè il nome, la descrizione e l'elenco dei
-valori che ciascuno accetta, entrano nel contesto a ogni passo, che lo strumento
-serva o no; e ciò che uno strumento restituisce entra nel contesto e ci resta,
-riletto a ogni passo successivo. Progettare gli strumenti vuol dire progettare
-il contesto. Ken Aizawa, che ha raccolto le lezioni di Anthropic sugli strumenti
-per agenti, comincia da un errore che dice frequente: trasformare in strumenti,
-una per una, le funzioni che un servizio offre agli altri programmi
-{cite}`anthropic2025tools`. Un programma può scorrere una rubrica di mille
-contatti uno alla volta, perché la sua memoria costa poco; un agente a cui
-`elenca_contatti` restituisce la rubrica intera la deve leggere tutta, e spende
-il contesto in nomi che non c'entrano. Lo strumento adatto all'agente è
-`cerca_contatti`.
+valori che ciascuno accetta, entrano nel contesto a ogni passo, che lo
+strumento serva o no; e ciò che uno strumento restituisce entra nel contesto e
+ci resta, riletto a ogni passo successivo. Progettare gli strumenti vuol dire
+progettare il contesto. Ken Aizawa, che ha raccolto le lezioni di Anthropic
+sugli strumenti per agenti, comincia da un errore che dice frequente:
+trasformare in strumenti, una per una, le funzioni che un servizio offre agli
+altri programmi {cite}`anthropic2025tools`. Ad esempio, un programma può
+scorrere una rubrica di mille contatti uno alla volta, perché la sua memoria
+costa poco; un agente a cui `elenca_contatti` restituisce la rubrica intera la
+deve leggere tutta, e spende il contesto in nomi che non c'entrano. Lo
+strumento adatto all'agente è `cerca_contatti`.
 
 Ne vengono alcuni principi. Pochi strumenti, perché ogni definizione in più è
 testo da rileggere e da scegliere a sproposito: fra i guasti del {doc}`context
@@ -71,13 +79,14 @@ distinto, perché quelli che si sovrappongono confondono l'agente su quale usare
 e costruiti per lo scopo, come un `cerca_log` che di un log, il registro delle
 righe che un programma scrive mentre lavora, restituisce le sole righe
 pertinenti, al posto di un `leggi_log` che lo restituisce tutto
-{cite}`anthropic2025tools`. Un `cerca_ordini(cliente)` dice da sé a che cosa
-serve; un `esegui_sql(query)`, che esegue qualunque interrogazione al database,
-lascia all'agente il lavoro di scriverla giusta e la libertà di scriverla
-sbagliata. Nomi e descrizioni, infine, sono un prompt: la descrizione si scrive
-come per un collega appena arrivato, e i nomi dei valori senza ambiguità,
-`id_utente` e non `utente`, che potrebbe essere un nome, un indirizzo o un
-numero.
+{cite}`anthropic2025tools`.
+
+Un `cerca_ordini(cliente)` dice da sé a che cosa serve; un
+`esegui_sql(query)`, che esegue qualunque interrogazione al database, lascia
+all'agente il lavoro di scriverla giusta e la libertà di scriverla sbagliata.
+Nomi e descrizioni, infine, sono un prompt: la descrizione si scrive come per un
+collega appena arrivato, e i nomi dei valori senza ambiguità, `id_utente` e non
+`utente`, che potrebbe essere un nome, un indirizzo o un numero.
 
 ## Che cosa torna indietro
 
@@ -95,27 +104,29 @@ tipico è il vuoto. `grep`, quando finisce, restituisce un numero che dice com'�
 andata, il codice d'uscita: 1 se non ha trovato niente, 2 se qualcosa è andato
 storto, per esempio un file che non esiste, e allora scrive anche un messaggio
 d'errore, su un canale a parte. Uno strumento che passa al modello soltanto
-l'uscita normale riduce i due casi alla stessa risposta vuota, e l'agente legge
-«niente da trovare» dove c'era un guasto. Per questo SWE-agent dice quando un
-comando è riuscito senza stampare niente, e MCP, il protocollo con cui
-un'applicazione parla con i suoi strumenti, chiede che l'errore di uno strumento
-torni al modello dentro la risposta, segnato come errore, perché altrove il
-modello non lo vedrebbe {cite}`mcp2025specification`. La stessa ambiguità vive
-nei valori: un'ora scritta senza fuso orario sposta di ore un lavoro
-programmato, e la toglie un'uscita che dichiara di ogni valore il tipo, con il
-fuso o l'unità di misura. E un errore che dice soltanto «argomento non valido»
-lascia indovinare, mentre uno che nomina il valore sbagliato, quello atteso e
-una chiamata giusta d'esempio dice che cosa fare, come i messaggi che insegnano
-del collaudo.
+l'uscita normale riduce quindi i due casi alla stessa risposta vuota, e
+l'agente legge «niente da trovare» dove c'era un guasto. Per questo SWE-agent
+dice quando un comando è riuscito senza stampare niente, e MCP, il protocollo
+con cui un'applicazione parla con i suoi strumenti, chiede che l'errore di uno
+strumento torni al modello dentro la risposta, segnato come errore, perché
+altrove il modello non lo vedrebbe {cite}`mcp2025specification`.
+
+La stessa ambiguità vive nei valori: un'ora scritta senza fuso
+orario sposta di ore un lavoro programmato, e la toglie un'uscita che dichiara
+di ogni valore il tipo, con il fuso o l'unità di misura. Anche un errore che
+dice soltanto «argomento non valido» lascia indovinare, mentre uno che nomina il
+valore sbagliato, quello atteso e una chiamata giusta d'esempio dice che cosa
+fare, come i messaggi che insegnano del collaudo.
 
 Resta la ripetizione. Un ciclo ritenta: una chiamata il cui esito non arriva,
 per un tempo scaduto o una connessione caduta, viene mandata di nuovo, e lo
-strumento non sa se è una richiesta nuova o la stessa ripetuta. Uno strumento
-**idempotente**, che eseguito due volte con gli stessi valori lascia le cose
-come eseguito una volta, si può ritentare senza pensarci; uno che aggiunge,
-sottrae o spedisce ha bisogno di un modo per riconoscere la ripetizione, che la
-{doc}`sezione sul grafo <dal-ciclo-al-grafo>` riprenderà, con le chiavi
-d'idempotenza, per la ripresa dopo un guasto.
+strumento non sa se è una richiesta nuova o la stessa ripetuta.
+
+Uno strumento **idempotente**, che eseguito due volte con gli stessi valori
+lascia le cose come eseguito una volta, si può ritentare senza pensarci; uno
+che aggiunge, sottrae o spedisce ha bisogno di un modo per riconoscere la
+ripetizione, che la {doc}`sezione sul grafo <dal-ciclo-al-grafo>` riprenderà,
+con le chiavi d'idempotenza, per la ripresa dopo un guasto.
 
 Un programma confronta, a numeri tondi, tre uscite di un log di quattromila
 righe con un solo errore, alla riga 2.731: il log intero, le prime cento righe,
@@ -205,17 +216,18 @@ mossa rilegge tutto quello che c'è sopra.
 Sul tavolo c'è anche l'elenco degli attrezzi: una voce per attrezzo, con il
 nome, a che cosa serve e che cosa scrivere sul biglietto. Si rilegge a ogni
 mossa, anche le voci che quel giorno non servono, e quaranta voci costano ogni
-volta più di dodici. Se due voci si somigliano, «cerca un pezzo» e «trova in
-magazzino», l'artigiano a volte sceglie quella sbagliata, e torna una risposta
-che non serviva.
+volta più di dodici. Se due voci si somigliano, per esempio «cerca un pezzo» e
+«trova in magazzino», l'artigiano a volte sceglie quella sbagliata, e torna una
+risposta che non serviva.
 
 Una mattina chiede le viti da quattro millimetri. Un magazziniere sbrigativo
 gliene rovescia sul tavolo quattromila, e da lì in poi le quattromila viti si
 riguardano a ogni mossa. Un altro gliene porta venti e basta, e l'artigiano
 crede che siano tutte. Il magazziniere bravo ne porta venti con una nota in
 cima: «Attenzione, una scatola ha le viti difettose. Ce ne sono altre 3.980 in
-tre cassetti: chiedimi il cassetto, o dimmi la lunghezza che ti serve.» E
-siccome una risposta arrivata alle nove si rilegge fino a sera, il capobottega
+tre cassetti: chiedimi il cassetto, o dimmi la lunghezza che ti serve.»
+
+Siccome una risposta arrivata alle nove si rilegge fino a sera, il capobottega
 tiene ogni risposta sul tavolo soltanto per le cinque mosse dopo il suo arrivo;
 poi la toglie, e lascia una riga: «qui c'era l'elenco delle viti».
 
@@ -265,7 +277,9 @@ gli strumenti si usino o no; la cache del prefisso ne abbassa il prezzo, ma non
 libera la finestra e non toglie la confusione, che Breunig osserva al crescere
 del numero $|\mathcal{T}|$ degli strumenti. Un'osservazione costa la sua
 lunghezza per i passi che restano, $(T - i)\,\mathrm{tok}(o_{k,i})$, quindi di
-più quando arriva presto. Le leve sono due. Un'uscita limitata in tutto a
+più quando arriva presto.
+
+Le leve sono due. Un'uscita limitata in tutto a
 $\mathrm{tok}_{\max}$ token, con il numero degli elementi omessi e un cursore
 per la pagina dopo, costa al più $(T - i)\,\mathrm{tok}_{\max}$, e se tiene una
 parte degli elementi li sceglie in ordine d'informazione, gli errori prima e con
@@ -291,8 +305,9 @@ $$
 
 d'informazione sull'esito, l'incertezza che resta su $Y$ quando l'osservazione è
 vuota, pesata per la sua probabilità. In media la perdita è piccola se il guasto
-è raro, ma il guasto, quando c'è, riceve la risposta pensata per il vuoto. Un
-campo senza unità o senza fuso è lo stesso difetto sui valori, e uno schema
+è raro, ma il guasto, quando c'è, riceve la risposta pensata per il vuoto.
+
+Un campo senza unità o senza fuso è lo stesso difetto sui valori, e uno schema
 d'uscita tipato separa gli esiti che lo schema distingue: MCP prevede un
 `outputSchema` per il risultato strutturato e il campo `isError` per l'errore
 dello strumento {cite}`mcp2025specification`. All'estremo opposto, come nel
@@ -326,45 +341,54 @@ scrittura dell'altro.
 ## Trovare il codice e modificarlo
 
 Fra gli strumenti di un agente di programmazione, quelli che usa più spesso
-servono a trovare il codice e a cambiarlo. La ricerca di una parola nei file,
-`grep` e simili, non ha niente da preparare e vede sempre il progetto com'è, ma
-trova la parola e non l'idea (chi cerca `timeout` non trova `scadenza`), e ogni
-tentativo costa un passo. Un indice preparato prima, che può cercare anche per
-significato, risponde in fretta, ma va rifatto quando il codice cambia, e
-rimasto indietro indica codice che non c'è più. Un *language server*, un
-programma che legge il codice come lo legge il linguaggio e sa dire dove nasce
-ogni nome e chi lo usa, distingue due nomi uguali che la ricerca di una parola
-confonde, al prezzo di un programma in più sempre acceso. E quando c'è un
-errore, il punto di partenza più preciso è il suo messaggio, che dice in quale
-file e in quale riga il programma si è fermato. Anche la ricerca ha la sua
-interfaccia: gli autori di SWE-agent ne hanno provata una costruita come quelle
-dei programmi per le persone, che mostra un risultato alla volta, e con tutto il
-resto di SWE-agent al suo posto ha fatto peggio che lasciare all'agente la sola
-ricerca della shell, il 12,0% contro il 15,7%, perché davanti a molti risultati
-l'agente li guardava tutti, uno per uno, finché non finivano i soldi a
-disposizione o lo spazio nel contesto {cite}`yang2024sweagent`.
+servono a trovare il codice e a cambiarlo. Per trovarlo ci sono quattro vie.
+La ricerca di una parola nei file, `grep` e simili,
+non ha niente da preparare e vede sempre il progetto com'è, ma trova la parola
+e non l'idea (chi cerca `timeout` non trova `scadenza`), e ogni tentativo costa
+un passo. Un indice preparato prima, che può cercare anche per significato,
+risponde in fretta, ma va rifatto quando il codice cambia, e rimasto indietro
+indica codice che non c'è più. Un **language server**, un programma che legge il
+codice come lo legge il linguaggio e sa dire dove nasce ogni nome e chi lo usa,
+distingue due nomi uguali che la ricerca di una parola confonde, al prezzo di
+un programma in più sempre acceso. Infine, quando c'è un errore, il punto di
+partenza più preciso è il suo messaggio, che dice in quale file e in quale riga
+il programma si è fermato.
+
+Anche la ricerca ha la sua interfaccia: gli autori di SWE-agent ne hanno
+provata una costruita come quelle dei programmi per le persone, che mostra un
+risultato alla volta, e con tutto il resto di SWE-agent al suo posto ha fatto
+peggio che lasciare all'agente la sola ricerca della shell, il 12,0% contro il
+15,7%, perché davanti a molti risultati l'agente li guardava tutti, uno per
+uno, finché non finivano i soldi a disposizione o lo spazio nel contesto
+{cite}`yang2024sweagent`.
 
 Trovata la riga, bisogna cambiarla, e il formato della modifica decide due cose
 che tirano in versi opposti: quante righe il modello deve scrivere, e quanto è
 probabile che la modifica tocchi soltanto ciò che doveva. Nella riscrittura
 intera il modello riscrive il file: si applica sempre, ma le righe da scrivere
-crescono con il file, e quelle da non toccare possono cambiare senza che nessuno
-l'abbia chiesto. Il diff unificato, il formato con cui le persone si scambiano
-le modifiche, porta le righe tolte, quelle aggiunte e qualche riga di contorno:
-chi lo applica cerca il contorno vicino al numero di riga indicato, quindi regge
-se il file si è allungato o accorciato altrove, ma se è cambiato proprio il
-contorno non combacia, e un applicatore tollerante, che si accontenta di un
-contorno simile, può metterlo nel punto sbagliato. Il cerca e sostituisci porta
-un'ancora, un pezzo di testo che deve comparire nel file esattamente com'è, e il
-testo che la sostituisce: le righe da scrivere crescono con la modifica e non
-con il file, e la modifica fallisce se l'ancora è ambigua, vecchia o ha gli
-spazi sbagliati. Nella modifica strutturale, un'operazione sull'albero
-sintattico, lo schema a rami in cui il linguaggio scompone il programma, il
-modello nomina che cosa fare (rinomina questo parametro) e uno strumento che
-conosce le regole del linguaggio la esegue: non produce codice scritto male, ma
-esiste solo per le operazioni che lo strumento conosce, e una rinomina verso un
-nome già usato, se lo strumento non lo controlla, sbaglia senza dirlo. Un
-programma conta le righe da scrivere su un file di 120 righe, ventiquattro
+crescono con il file, e quelle da non toccare possono cambiare senza che
+nessuno l'abbia chiesto.
+
+Il **diff unificato**, il formato con cui le persone si scambiano le modifiche,
+porta le righe tolte, quelle aggiunte e qualche riga di contorno: chi lo applica
+cerca il contorno vicino al numero di riga indicato, quindi regge se il file si
+è allungato o accorciato altrove, ma se è cambiato proprio il contorno non
+combacia, e un applicatore tollerante, che si accontenta di un contorno simile,
+può metterlo nel punto sbagliato.
+
+Il cerca e sostituisci porta un’**ancora**, un pezzo di testo che deve
+comparire nel file esattamente com'è, e il testo che la sostituisce: le righe
+da scrivere crescono con la modifica e non con il file, e la modifica fallisce
+se l'ancora è ambigua, vecchia o ha gli spazi sbagliati.
+
+Nella modifica strutturale, un'operazione sull'albero sintattico, lo
+schema a rami in cui il linguaggio scompone il programma, il modello nomina che
+cosa fare (rinomina questo parametro) e uno strumento che conosce le regole del
+linguaggio la esegue: non produce codice scritto male, ma esiste solo per le
+operazioni che lo strumento conosce, e una rinomina verso un nome già usato, se
+lo strumento non lo controlla, sbaglia senza dirlo.
+
+Un programma conta le righe da scrivere su un file di 120 righe, ventiquattro
 funzioni da cinque righe, in cui si rinomina il parametro di una funzione sola.
 
 ```python
@@ -442,13 +466,15 @@ Resta un rischio che nessun formato toglie da solo. Fra la lettura del file e la
 modifica possono passare molti passi, e il file può cambiare: un'altra sessione
 al lavoro in parallelo, un comando lanciato nel frattempo, una persona. Se
 l'ancora compare comunque una volta sola, la modifica si applica a un testo che
-il modello non ha mai visto. La difesa si chiama **confronto e scambio**
-(*compare-and-swap*): lo strumento ricorda, per ogni sessione, l'impronta del
-file letto, un numero calcolato dal contenuto (con la funzione SHA-256) che
-basta un carattere diverso a cambiare, e al momento di scrivere sostituisce il
-testo vecchio con il nuovo solo se l'impronta di adesso è la stessa. Un altro
-programma scrive uno strumento così, con messaggi d'errore che dicono come
-rimediare, e lo prova con due sessioni, A e B, sullo stesso file.
+il modello non ha mai visto.
+
+La difesa si chiama **confronto e scambio** (*compare-and-swap*): lo strumento
+ricorda, per ogni sessione, l'impronta del file letto, un numero calcolato dal
+contenuto (con la funzione SHA-256) che basta un carattere diverso a cambiare, e
+al momento di scrivere sostituisce il testo vecchio con il nuovo solo se
+l'impronta di adesso è la stessa. Un altro programma scrive uno strumento così,
+con messaggi d'errore che dicono come rimediare, e lo prova con due sessioni, A
+e B, sullo stesso file.
 
 ```python
 import hashlib
@@ -543,11 +569,12 @@ dei due punti), e ciascun rifiuto dice che cosa fare. Poi B cambia la funzione
 `tassa_23`, e la modifica di A viene rifiutata perché il file non è più quello
 che A ha letto: un falso allarme, perché `tassa_23` sta lontano da `tassa_10`,
 ed è il prezzo di un controllo sull'intero file, che non sa quali cambiamenti
-contano. Dopo una nuova lettura la modifica passa. L'ultima riga mostra il
-prezzo di registrare la scrittura di A come una sua lettura, che serve a fare
-più modifiche di fila senza rileggere: A non ha ricevuto l'esito e ritenta, e lo
-strumento trova l'ancora sparita e consiglia di ricopiarla, cioè di cercare un
-errore che non c'è.
+contano. Dopo una nuova lettura la modifica passa.
+
+L'ultima riga mostra il prezzo di registrare la scrittura di A come una sua
+lettura, che serve a fare più modifiche di fila senza rileggere: A non ha
+ricevuto l'esito e ritenta, e lo strumento trova l'ancora sparita e consiglia di
+ricopiarla, cioè di cercare un errore che non c'è.
 
 `````{tab} Elementare
 
@@ -589,12 +616,16 @@ Quando dà una copia, poi, il magazziniere ne tiene una fotocopia con il nome
 dell'artigiano, e prima di scrivere confronta il foglio con la fotocopia di chi
 ha mandato il biglietto. Se non sono uguali, il foglio è cambiato dopo che
 l'artigiano l'ha letto, e il biglietto guarda un foglio che non c'è più: «è
-cambiato, rileggilo». Un pomeriggio l'artigiano dell'altro banco corregge lo
+cambiato, rileggilo».
+
+Un pomeriggio l'artigiano dell'altro banco corregge lo
 scaffale ventitré, e il biglietto del nostro artigiano viene rifiutato per
 niente: costa una copia in più. Confrontando solo le righe attorno alla frase il
 rifiuto inutile sparirebbe, ma con lui anche quello utile: se l'altro avesse
 cambiato nome a un pezzo che la riga nuova nomina, nessuno se ne accorgerebbe
-fino alla dima. E il confronto regge solo se tutti scrivono passando dallo
+fino alla dima.
+
+Il confronto regge però solo se tutti scrivono passando dallo
 sportello: una correzione che il proprietario fa a penna proprio mentre il
 magazziniere scrive va persa, perché il magazziniere ricopia il foglio come
 l'aveva confrontato.
@@ -637,7 +668,9 @@ sola che non fallisce mai in modo visibile, ed è la meno robusta: se ognuna
 delle $n_f - m$ righe ricopiate esce alterata con probabilità $p_{\text{alt}}$,
 indipendentemente dalle altre, il file resta intatto fuori dalla modifica con
 probabilità $(1 - p_{\text{alt}})^{n_f - m}$, che cala con la lunghezza del file
-e non con quella della modifica. L'operazione sull'albero garantisce un file
+e non con quella della modifica.
+
+L'operazione sull'albero garantisce un file
 sintatticamente valido, non un programma corretto: una rinomina verso un nome
 già usato, se lo strumento non controlla le collisioni, dà codice ben formato e
 sbagliato. SWE-agent aggiunge una postcondizione, che il file che esce dalla
@@ -655,11 +688,14 @@ impronte *su quale versione*. Confronto e scrittura devono formare un'operazione
 indivisibile, o si ricade nella corsa fra verifica e uso (*time-of-check to
 time-of-use*), e l'indivisibilità si ottiene soltanto fra scrittori che
 cooperano, per esempio con un lucchetto sul file: la shell dello stesso agente o
-una persona nell'editor la aggirano. Il confronto sull'intero file produce falsi
+una persona nell'editor la aggirano.
+
+Il confronto sull'intero file produce falsi
 conflitti, come quello su `tassa_23`; restringerlo alla regione dell'ancora li
 toglie, ma lascia passare i conflitti semantici, come una funzione rinominata
 altrove che la riga nuova chiama ancora, che il confronto sull'intero file ferma
 solo se stanno nello stesso file e che in generale spettano al collaudo.
+
 Registrare come letta la propria scrittura costa due cose. Ritentata dopo un
 esito perso, la modifica non trova più l'ancora, e il rifiuto, che lascia
 l'ambiente com'era, manda il modello a cercare un errore che non ha fatto; e se
@@ -673,13 +709,13 @@ trovato è l'unico entro una soglia stretta.
 ## La shell e il raggio d'azione
 
 Fra gli strumenti di un agente di programmazione ce n'è quasi sempre uno che li
-contiene tutti: la shell, che esegue un comando qualunque. Una chiamata sola può
-mettere in fila più comandi e ripeterli, e fa in un passo quello che con
-strumenti separati chiede molti giri; tutto ciò che è installato sulla macchina,
-i file, la rete, gli altri programmi, diventa un'azione possibile; e i file
-scritti e i programmi avviati restano dopo la chiamata. Ne segue il **raggio
-d'azione** (in inglese *blast radius*, il raggio dell'esplosione): l'agente può
-fare tutto ciò che può fare la shell, anche per sbaglio.
+contiene tutti: la shell, che esegue un comando qualunque. Una chiamata sola
+può mettere in fila più comandi e ripeterli, e fa in un passo quello che con
+strumenti separati chiede molte chiamate; tutto ciò che è installato sulla
+macchina, i file, la rete, gli altri programmi, diventa un'azione possibile; e
+i file scritti e i programmi avviati restano dopo la chiamata. Ne segue il
+**raggio d'azione** (in inglese *blast radius*, il raggio dell'esplosione):
+l'agente può fare tutto ciò che può fare la shell, anche per sbaglio.
 
 Philipp Schmid, che ogni tanto ricostruisce da capo un harness per vedere che
 cosa si può togliere, nel settembre 2026 ha raccontato di averlo ridotto alla
@@ -688,18 +724,19 @@ sugli stessi compiti di programmazione, di una configurazione con strumenti
 separati per leggere, scrivere, modificare e cercare i file
 {cite}`schmid2026bash`. È l'osservazione di un praticante, senza numeri: lui
 stesso, pochi mesi prima, consigliava di partire da strumenti dedicati, e
-SWE-agent con GPT-4 Turbo trovava la sola shell all’11,0% contro il 18,0%. Le
-due cose non si contraddicono per forza: i modelli sono diversi, e soprattutto
-la shell di SWE-agent era nuda, mentre attorno a quella di Schmid l'harness fa
-il lavoro degli strumenti dedicati: taglia l'uscita dicendo come chiederne un
-pezzo, restituisce di ogni comando il codice d'uscita e la durata, ferma con
-regole scritte fuori dal modello i percorsi vietati, la rete e le azioni
-distruttive. Resta a parte soltanto lo strumento che mostra le immagini, che il
-testo non trasporta.
+SWE-agent con GPT-4 Turbo trovava la sola shell all’11,0% contro il 18,0%.
+
+Le due cose non si contraddicono per forza: i modelli sono diversi, e
+soprattutto la shell di SWE-agent era nuda, mentre attorno a quella di Schmid
+l'harness fa il lavoro degli strumenti dedicati: taglia l'uscita dicendo come
+chiederne un pezzo, restituisce di ogni comando il codice d'uscita e la durata,
+ferma con regole scritte fuori dal modello i percorsi vietati, la rete e le
+azioni distruttive. Resta a parte soltanto lo strumento che mostra le immagini,
+che il testo non trasporta.
 
 Fra queste protezioni, quella che non dipende da che cosa dice il comando è il
-recinto, la *sandbox*: i comandi girano in uno spazio chiuso, che contiene i
-file del progetto e nient'altro e non raggiunge la rete, e l'agente chiede
+**recinto**, la *sandbox*: i comandi girano in uno spazio chiuso, che contiene
+i file del progetto e nient'altro e non raggiunge la rete, e l'agente chiede
 un'approvazione soltanto per uscirne. Lo usava già l'harness di Young, che
 lasciava all'agente modificare soltanto i file della sua cartella ({doc}`il
 passaggio di consegne <passaggio-di-consegne>`). L'approvazione costa il tempo
@@ -716,6 +753,7 @@ comportamento autonomo dove non serve aumenta i modi di attaccarlo senza
 aggiungere niente {cite}`owasp2025agentic`. Per gli strumenti chiede permessi
 decisi strumento per strumento: interrogazioni in sola lettura per un database,
 nessun diritto di spedire o cancellare per uno strumento che riassume la posta.
+
 Che cosa succede quando dati privati, testo di estranei e un canale verso
 l'esterno stanno nello stesso sistema lo tratterà la {doc}`sezione sulla
 sicurezza dei modelli di linguaggio </AIResponsabile/sicurezza-llm>`, nel
@@ -794,16 +832,18 @@ a = (j, \mathbf{u}),\ j \in \mathcal{T},\
 $$
 
 con $\mathcal{R}^{*}_{\text{auto}}(E)$ quello raggiungibile in un numero
-qualunque di passi. Se un'osservazione contiene testo scritto da un avversario,
-$P_\theta(\cdot \mid C_{k,t})$ ne dipende, e nel caso peggiore il modello emette
-qualunque azione; ma il permesso lo valuta il codice sulla chiamata, non il
-modello sull'intenzione, e gli stati che l'attacco produce senza approvazione
-restano in $\mathcal{R}^{*}_{\text{auto}}(E)$, comunque il modello sia stato
-convinto. Conta la chiusura in più passi, non il singolo strumento: un catalogo
-che permette di scrivere un file e di lanciare i test permette, in due passi, di
-eseguire un programma qualunque. E la granularità conta perché l'OWASP attacca i
-permessi agli strumenti {cite}`owasp2025agentic`: uno strumento largo, quindi,
-non si restringe senza giudicarne l'argomento.
+qualunque di passi.
+
+Se un'osservazione contiene testo scritto da un avversario, $P_\theta(\cdot
+\mid C_{k,t})$ ne dipende, e nel caso peggiore il modello emette qualunque
+azione; ma il permesso lo valuta il codice sulla chiamata, non il modello
+sull'intenzione, e gli stati che l'attacco produce senza approvazione restano
+in $\mathcal{R}^{*}_{\text{auto}}(E)$, comunque il modello sia stato convinto.
+Conta la chiusura in più passi, non il singolo strumento. Ad esempio, un
+catalogo che permette di scrivere un file e di lanciare i test permette, in due
+passi, di eseguire un programma qualunque. E la granularità conta perché
+l'OWASP attacca i permessi agli strumenti {cite}`owasp2025agentic`: uno
+strumento largo, quindi, non si restringe senza giudicarne l'argomento.
 
 Con la shell, giudicare l'argomento vuol dire giudicare un programma. «Non
 scrive fuori dalla cartella del progetto» e «non apre connessioni» sono
@@ -814,7 +854,9 @@ programma che apre una connessione solo dopo aver simulato una macchina
 qualunque la apre se e solo se quella macchina si arresta. Un filtro sul testo
 del comando è quindi permissivo, e lascia passare un `rm` costruito in una
 variabile o un programma scritto su file ed eseguito dopo, oppure eccessivo, e
-rifiuta comandi innocui. Il recinto sposta la garanzia dal giudicare il
+rifiuta comandi innocui.
+
+Il recinto sposta la garanzia dal giudicare il
 programma al confinarne gli effetti. Scritto l'ambiente come $E =
 (E^{\text{dentro}}, E^{\text{fuori}})$, i file del progetto e tutto il resto
 (gli altri file, le credenziali, i sistemi raggiungibili dalla rete), il recinto

@@ -15,28 +15,29 @@ operazione che il modello ha chiesto al programma di eseguire per lui: una
 ricerca sul web, un calcolo, una domanda a un archivio. In fondo, ultima, c'è
 la breve frase dell'utente.
 
-Quella frase è la punta dell'iceberg; sotto c'è tutto il carico montato dal
-programma, il *payload*. Il nome che Karpathy ha appoggiato nel 2025, *context
-engineering*, è il nome del lavoro di montarlo {cite}`karpathy2025context`, e
-sposta l'oggetto del lavoro: non più la singola frase ma il governo
+Quella frase è la punta dell'iceberg: sotto c'è tutto il carico montato dal
+programma, il *payload*. Il lavoro di montarlo ha il nome che Karpathy ha
+appoggiato nel 2025, *context engineering* {cite}`karpathy2025context`, e quel
+nome sposta l'oggetto del lavoro: non più la singola frase ma il governo
 dell'intero contesto che riempie la finestra a ogni passo.
 
-Dal singolo messaggio si passa così alla finestra intera, da progettare come
-un sistema. Cole Medin, che queste applicazioni le costruisce, lo dice con uno
+Dal singolo messaggio si passa così alla finestra intera, da progettare come un
+sistema. Cole Medin, che queste applicazioni le costruisce, lo dice con uno
 slogan {cite}`medin2025contextintro`: il prompt engineering bada alla
 formulazione furba di una richiesta, il context engineering è un sistema
 completo (documentazione, esempi, regole, schemi da seguire, prove di
 collaudo), e i due stanno fra loro come un *post-it* e una sceneggiatura. Un
 post-it dice cosa fare in una riga; una sceneggiatura dà a ogni scena il
-contesto per recitarla bene. È un'affermazione di chi costruisce, non un
-risultato misurato.
+contesto per recitarla bene. È un'affermazione di chi
+costruisce, non un risultato misurato.
 
 La {doc}`sezione sul contesto come interfaccia </Agenti/context-engineering>`
 ha guardato la finestra di un agente: quanto se ne mangiano gli strumenti e la
 traccia, quanto costa riempirla, dove si tengono i ricordi che non ci stanno.
-Qui il contesto si tratta nel suo insieme: come lo si pensa (una scala di
-complessità), come lo si monta dentro un budget, quali mosse lo governano,
-come si guasta, e come lo si rende una procedura ripetibile.
+Qui, invece, il contesto si tratta nel suo insieme: come lo si pensa (una
+scala di complessità), come lo si monta dentro un budget, quali mosse lo
+governano, come si guasta, e come lo si rende una procedura
+ripetibile.
 
 ## Una scala di complessità: dagli atomi agli organi
 
@@ -64,14 +65,14 @@ risultato. La scala di Kim ha ancora due gradini: sopra gli organi mette gli
 schemi di ragionamento da riusare («scomponi il problema», «verifica il
 risultato»); in cima, l'idea di trattare tutto il contesto come un tutto
 continuo invece che come pezzi distinti, che per ora è un'idea di ricerca e non
-un attrezzo.
+uno strumento.
 
 Della biologia serve soltanto l'idea che il contesto
-non è tutto uguale, che ce n'è di semplice come un atomo e di complesso come
-un corpo, e che l'altezza dice dove intervenire quando qualcosa va storto. Un
-compito che sta negli atomi si aggiusta riscrivendo la frase; uno che sta
-negli organi si aggiusta solo decidendo meglio che cosa entra e che cosa esce
-a ogni passo.
+non è tutto uguale: ce n'è di semplice come un atomo e di complesso come
+un corpo, e l'altezza dice dove intervenire quando qualcosa va storto. Ad
+esempio, un compito che sta negli atomi si aggiusta riscrivendo la frase; uno
+che sta negli organi si aggiusta solo decidendo meglio che cosa entra e che
+cosa esce a ogni passo.
 
 `````
 
@@ -91,7 +92,7 @@ contesto deve contenere e coordinare:
 I quattro livelli corrispondono a pratiche consolidate: gli esempi *few-shot*
 sono lo stesso condizionamento visto nella {doc}`sezione sul prompt engineering
 <prompt-engineering>`; la memoria persistente, gli strumenti e la divisione del
-lavoro fra più agenti sono il pane degli agenti. La scala della fonte ne ha
+lavoro fra più agenti sono materia degli agenti. La scala della fonte ne ha
 altri due. Il quinto, i «sistemi neurali», raccoglie gli strumenti cognitivi,
 schemi di ragionamento messi nel contesto, e ha almeno una misura alle spalle,
 quella di Ebouky e colleghi che chiude il discorso sul PRP. Il sesto modella il
@@ -102,8 +103,9 @@ una misura: resta fuori da questo discorso.
 
 La scala non è solo ordine mentale: dice anche dove va speso lo sforzo. Un
 compito semplice vive negli atomi e nelle molecole, e lì un buon prompt basta.
-Un agente vive negli organi: lì il collo di bottiglia diventa amministrare i
-testi in ingresso e in uscita dalla finestra a ogni giro, invece della frase.
+Un agente vive negli organi: lì il collo di bottiglia diventa
+amministrare i testi in ingresso e in uscita dalla finestra a ogni passo,
+invece della frase.
 
 ## Montare il contesto dentro un budget
 
@@ -149,11 +151,11 @@ si accentua man mano che il contesto si allunga. Sono misure su modelli del
 2023: quanto pesi la posizione dipende dal modello, mentre il calo con la
 lunghezza del contesto lo ritrova anche il *context rot* di cui parla Anthropic
 nel 2025 {cite}`anthropic2025context`. Due implicazioni operative dirette.
-Primo: allungare il contesto non è un pasto gratis; più passaggi si infilano,
-più è probabile seppellire quello giusto in una zona cieca. Secondo: l'ordine
+Primo: allungare il contesto ha un costo, perché più passaggi si infilano, più
+è probabile seppellire quello giusto in una zona cieca. Secondo: l'ordine
 conta. Se recuperiamo dei passaggi (per esempio con un sistema RAG) e ne
 conosciamo la rilevanza stimata, conviene collocare i più importanti in testa o
-in coda, non nel ventre molle del contesto.
+in coda, non nella zona centrale del contesto.
 
 `````
 
@@ -229,7 +231,7 @@ problema parte l'MMR.
 
 `````
 
-Ecco il montatore del contesto in puro Python, nessuna libreria, il conteggio
+Ecco il montatore del contesto in puro Python, senza librerie, con il conteggio
 dei token approssimato contando le parole, così che il meccanismo resti in
 piena vista. Una cautela: nel budget entrano anche
 i marcatori che il montaggio aggiunge (`[fonte 0.95]` e simili). Sono
@@ -350,12 +352,13 @@ cioè un quattordici per cento in più di quanto sembrava di aver speso. È il
 tipo di sforamento che si scopre tardi, quando il modello tronca la risposta a
 metà.
 
-Alla selezione per sola rilevanza manca però un occhio: i passaggi più
-rilevanti per la stessa domanda tendono a somigliarsi fra loro, e un budget
-speso su due passaggi quasi uguali è mezzo budget. Il correttivo classico si
-chiama **maximal marginal relevance** (MMR) {cite}`carbonell1998use`, e a ogni
-giro non prende il passaggio più rilevante: prende il passaggio che offre il
-miglior compromesso fra rilevanza e novità rispetto a ciò che è già entrato.
+Alla selezione per sola rilevanza manca però un controllo sulla ridondanza: i
+passaggi più rilevanti per la stessa domanda tendono a somigliarsi fra loro, e
+un budget speso su due passaggi quasi uguali è mezzo budget. Il correttivo
+classico si chiama **maximal marginal relevance** (MMR)
+{cite}`carbonell1998use`, e a ogni passo non prende il passaggio più rilevante:
+prende il passaggio che offre il miglior compromesso fra rilevanza e novità
+rispetto a ciò che è già entrato.
 
 `````{tab} Elementare
 
@@ -373,15 +376,15 @@ c'entra $0{,}9$ ma assomiglia $0{,}9$ a uno già dentro vale $0{,}45 - 0{,}45 =
 0$; uno che c'entra $0{,}6$ e non assomiglia a niente vale $0{,}3 - 0 = 0{,}3$,
 e passa avanti al primo.
 
-Quanto pesare i due voti è una manopola. Tutta dalla parte della pertinenza e
-si torna a scegliere come prima, con il rischio che i tre articoli dicano la
-stessa cosa tre volte.
+Quanto pesare i due voti è un iperparametro, una manopola da regolare. Tutta
+dalla parte della pertinenza e si torna a scegliere come prima, con il rischio
+che i tre articoli dicano la stessa cosa tre volte.
 
 `````
 
 `````{tab} Superiore
 
-A ogni giro si sceglie il passaggio che massimizza
+A ogni passo si sceglie il passaggio che massimizza
 
 $$
 \lambda \,\mathrm{sim}(d, q) \;-\; (1-\lambda) \max_{d' \in S} \mathrm{sim}(d, d'),
@@ -389,9 +392,9 @@ $$
 
 dove $d$ è il passaggio candidato, $q$ la domanda e $S$ i passaggi già
 scelti: la somiglianza con la domanda meno la somiglianza con il più
-vicino fra i già scelti, pesate da un $\lambda$ fra zero e uno (al primo giro
+vicino fra i già scelti, pesate da un $\lambda$ fra zero e uno (al primo passo
 $S$ è vuoto e quel massimo vale zero).
-Il secondo termine compra la novità: un passaggio rilevantissimo ma fotocopia
+Il secondo termine premia la novità: un passaggio rilevantissimo ma fotocopia
 di uno già dentro perde il posto a favore di uno un po’ meno rilevante che
 aggiunge qualcosa. Con $\lambda = 1$ si torna alla pura rilevanza. La
 somiglianza è quella dell'archivio vettoriale, cioè il coseno fra due vettori
@@ -413,7 +416,7 @@ politiche sono più ricche. Le scelte di fondo, però, restano quelle tre.
 
 Più si sale di scala, più il contesto va amministrato invece che scritto e
 basta. Una divisione comoda raccoglie le tattiche in quattro sole mosse: l'ha
-proposta nel luglio 2025 LangChain, una delle cassette di attrezzi già pronti
+proposta nel luglio 2025 LangChain, uno dei framework già pronti
 con cui questi sistemi si costruiscono {cite}`langchain2025context`. Non è
 l'unica in circolazione: le pratiche descritte da Anthropic nel 2025, già
 incontrate nella {doc}`sezione sul contesto come interfaccia
@@ -490,7 +493,7 @@ database vettoriale e i fatti strutturati sono *write* quando si archivia e
 *select* quando si ripesca; il riassunto progressivo, cioè la compattazione, è
 *compress*; i sotto-agenti sono *isolate*; e la politica di ammissione, che
 decide che cosa di quel materiale merita la finestra a questo passo, è
-*select*. Il montatore del contesto ne esegue due sotto il cofano, *select* (i
+*select*. Il montatore del contesto ne esegue due al suo interno, *select* (i
 passaggi per rilevanza, finché il budget basta) e una forma grezza di
 *compress* (il troncamento dell'ultimo passaggio), e aggiunge una scelta che le
 quattro mosse non coprono: *dove* mettere ciò che è entrato, con il passaggio
@@ -509,7 +512,7 @@ token, e il meccanismo è lo stesso con cui i motori di inferenza condividono la
 KV cache fra richieste che cominciano allo stesso modo {cite}`zheng2024sglang`.
 Ne segue una regola di montaggio: in testa ciò che non cambia (istruzioni,
 descrizioni degli strumenti, documenti fissi), in fondo ciò che cambia a ogni
-giro, perché un'informazione variabile messa in testa invalida la cache di
+passo, perché un'informazione variabile messa in testa invalida la cache di
 tutto il testo che la segue. I fornitori (Anthropic e OpenAI, per esempio)
 vendono questo riuso come *prompt caching*, a prezzo ridotto sul prefisso
 riletto; tariffe e durate
@@ -626,7 +629,7 @@ e quanto devono aspettarsi.
 
 `````
 
-Il conto prende un documento da duecentomila token, pezzi da seimila e
+Il calcolo prende un documento da duecentomila token, pezzi da seimila e
 riassunti da cinquecento, e conta le chiamate delle due strategie, livello per
 livello, e i turni che devono aspettarsi l’un l’altro.
 

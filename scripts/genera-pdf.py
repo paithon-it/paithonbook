@@ -273,6 +273,60 @@ def troppo_larghe(testo: str, tex: pathlib.Path) -> list[str]:
     return fuori
 
 
+# Le postille a margine (`_stampa/ptpostille.sty`) scrivono in `<nome>.ptp` dove
+# sono finiti l'inizio e la fine del loro capoverso e la prima e l'ultima riga
+# della nota. Una nota che non parte dalla prima riga del suo capoverso, o che
+# scende sotto l'ultima, sta accanto al testo sbagliato: `marginfix` la tiene
+# dentro la pagina e LaTeX non avvisa, quindi lo dice questo confronto. Le y si
+# misurano dal fondo della pagina, in sp, sulla linea di base.
+#
+# Le note che non partono dalla prima riga sono il prezzo delle note fitte: in
+# fondo a una pagina piena `marginfix` le impila, e la nota sale o scende di
+# qualche riga. Si contano in una riga sola, con le prime chiavi, perche' un
+# elenco che a ogni build ne riporta una per riga smette di essere letto, e con
+# lui gli errori veri che gli stanno accanto. Una per riga restano quelle che
+# scendono sotto il loro capoverso o escono dal blocco del testo.
+TOLLERANZA_POSTILLE = 2.0   # punti
+
+
+def postille_fuori_posto(ptp: pathlib.Path) -> list[str]:
+    """Le postille che nella pagina composta non stanno accanto al loro capoverso."""
+    if not ptp.exists():
+        return []
+    fondo_blocco, posti = None, {}
+    for riga in ptp.read_text(encoding="utf-8", errors="ignore").splitlines():
+        parti = riga.split()
+        if len(parti) == 2 and parti[0] == "fondoblocco":
+            fondo_blocco = float(parti[1].removesuffix("pt"))
+        elif len(parti) == 4:
+            cosa, chiave, pagina, y = parti
+            posti[(chiave, cosa)] = (int(pagina), int(y) / 65536)
+    guai, spostate = [], []
+    for chiave in sorted({k for k, _ in posti}):
+        p = {c: posti.get((chiave, c)) for c in ("inizio", "cima", "fondo", "fine")}
+        if None in p.values():
+            guai.append(f"postilla {chiave}: posizioni incomplete in {ptp.name}")
+            continue
+        (pi, yi), (pc, yc), (_, yf), (pe, ye) = p["inizio"], p["cima"], p["fondo"], p["fine"]
+        if pc != pi or abs(yc - yi) > TOLLERANZA_POSTILLE:
+            spostate.append((chiave, pi, yc - yi))
+        elif pe == pi and yf < ye - TOLLERANZA_POSTILLE:
+            guai.append(f"postilla {chiave} (pagina {pi} del PDF): scende "
+                        f"{ye - yf:.1f} pt sotto il suo capoverso")
+        elif (pe > pi and fondo_blocco is not None
+              and yf < fondo_blocco - TOLLERANZA_POSTILLE):
+            guai.append(f"postilla {chiave} (pagina {pi} del PDF): esce dal "
+                        f"blocco del testo")
+    if spostate:
+        quante = len(spostate)
+        massimo = max(abs(s) for _, _, s in spostate)
+        prime = ", ".join(f"{k} a pagina {p} ({s:+.1f} pt)" for k, p, s in spostate[:5])
+        guai.insert(0, f"{quante} {'postilla' if quante == 1 else 'postille'}: la nota "
+                       f"non parte dalla prima riga del suo capoverso, spostata fino a "
+                       f"{massimo:.1f} pt ({prime}{', ...' if quante > 5 else ''})")
+    return guai
+
+
 def compila(cartella: pathlib.Path, passate: int = 3,
             nome: str = NOME) -> pathlib.Path:
     """LuaLaTeX, N passate. Torna il PDF."""
@@ -925,6 +979,7 @@ def main() -> None:
     pdf = compila(cartella, passate=passate, nome=nome)
 
     guai = errori_veri(cartella / f"{nome}.log")
+    guai += postille_fuori_posto(cartella / f"{nome}.ptp")
     ricompatta(pdf)
     racconta(pdf)
 

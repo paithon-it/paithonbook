@@ -7,19 +7,19 @@ la pressione. Lo hanno chiamato *AI Clinician*
 paziente in terapia intensiva, quanti liquidi e quanto farmaco
 somministrare per sostenere la pressione.
 
-Quel sistema non ha mai provato una terapia su un malato vero: ha imparato
+Quel sistema non ha mai provato una terapia su un malato vero, ma ha imparato
 guardando l'archivio dei ricoveri passati, con le decisioni prese dai medici e
-ciò che ne è seguito. È l'unica strada possibile, del resto. Nessun comitato
-etico autorizzerebbe un agente a somministrare farmaci «a caso» per esplorare,
-come fa il Q-learning in un videogioco; e nessuno lo lascerebbe sterzare a caso
-al volante di un'auto, o proporre acquisti assurdi a milioni di utenti per
-misurarne la reazione.
+ciò che ne è seguito. Del resto è l'unica strada possibile, perché nessun
+comitato etico autorizzerebbe un agente a somministrare farmaci «a caso» per
+esplorare, come fa il Q-learning in un videogioco. Allo stesso modo, nessuno lo
+lascerebbe sterzare a caso al volante di un'auto, o proporre acquisti assurdi a
+milioni di utenti per misurarne la reazione.
 
-Eppure gli agenti dei capitoli precedenti imparano proprio così: provando,
-sbagliando, esplorando. Il **reinforcement learning offline** (o *batch
-RL*) affronta il caso opposto e più scomodo: imparare la migliore strategia
-possibile *senza mai interagire con l'ambiente*, disponendo solo di un
-registro di esperienze già accadute {cite}`levine2020offline`.
+Eppure gli agenti del Q-learning e del gradiente di policy imparano proprio
+così: provando, sbagliando, esplorando. Il **reinforcement learning offline**
+(o *batch RL*) affronta il caso opposto e più scomodo: imparare la migliore
+strategia possibile *senza mai interagire con l'ambiente*, disponendo solo di
+un registro di esperienze già accadute {cite}`levine2020offline`.
 
 ## Imparare da un archivio, non dall'esperienza
 
@@ -32,11 +32,11 @@ da lì devi tirar fuori la ricetta migliore, senza poter provare nulla di
 persona.
 
 L'RL offline è la seconda situazione. Qualcuno, in passato, ha agito
-nell'ambiente seguendo una sua strategia (un medico, un guidatore, un vecchio
-algoritmo di raccomandazione) e ha lasciato un diario: «in questa situazione
-ho fatto questo, ed è successo quello». L'agente riceve solo il diario. Non
-può tornare indietro a chiedere «e se avessi fatto diversamente?». Deve
-cavarsela con ciò che è scritto.
+nell'ambiente seguendo una sua strategia (ad esempio un medico, un guidatore o
+un vecchio algoritmo di raccomandazione) e ha lasciato un diario: «in questa
+situazione ho fatto questo, ed è successo quello». L'agente riceve solo il
+diario. Non può tornare indietro a chiedere «e se avessi fatto diversamente?»,
+quindi deve cavarsela con ciò che è scritto.
 
 `````
 
@@ -49,23 +49,28 @@ $$
 $$
 
 raccolto da una o più **policy comportamentali** $\pi_\beta$ (di cui in genere
-non conosciamo la forma esplicita) e mai più ampliato: non c'è alcuna nuova
-interazione con l'ambiente durante l'addestramento. L'obiettivo resta quello
-consueto (trovare una policy $\pi$ che massimizzi il ritorno atteso scontato
-$\mathbb{E}\big[\sum_t \gamma^t r_t\big]$) ma va raggiunto *dentro il
-supporto* di $\mathcal{D}$. Il setting online concede qualcosa che qui manca:
-il Q-learning e i metodi a gradiente di policy visti fin qui presuppongono di
-poter *provare* le proprie ipotesi, e sono le prove a correggere le stime
-sbagliate. Togliere le prove cambia la natura del problema, e cambia anche il
-collaudo: una policy appresa offline va valutata sull'archivio (*off-policy
-evaluation*). La stima più semplice ripesa i ritorni osservati con il rapporto
+non conosciamo la forma esplicita) e mai più ampliato; in altri termini,
+durante l'addestramento non c'è alcuna nuova interazione con l'ambiente.
+L'obiettivo resta quello consueto (trovare una policy $\pi$ che massimizzi il
+ritorno atteso scontato $\mathbb{E}\big[\sum_t \gamma^t r_t\big]$), ma va
+raggiunto *dentro il supporto* di $\mathcal{D}$.
+
+Il setting online concede qualcosa che qui manca. Il Q-learning e i metodi a
+gradiente di policy visti fin qui presuppongono infatti di poter *provare* le
+proprie ipotesi, e sono le prove a correggere le stime sbagliate. Togliere le
+prove cambia la natura del problema, e cambia anche la valutazione: una
+policy appresa offline va valutata sull'archivio, ed è il problema della
+**off-policy evaluation**.
+
+La stima più semplice ripesa i ritorni osservati con il rapporto
 di importance sampling della {doc}`sezione sui metodi Monte Carlo
 </ReinforcementLearning/monte-carlo>`, $\prod_t \pi(a_t\mid
-s_t)/\pi_\beta(a_t\mid s_t)$, che richiede di conoscere $\pi_\beta$ e ha una
-varianza che esplode con l'orizzonte; l'alternativa, stimare $Q^\pi$ sui dati
-(*fitted Q evaluation*), eredita l'errore di estrapolazione descritto in «Il
-buco nero delle azioni mai viste». La valutazione di *AI Clinician* ricorreva
-all'importance sampling, e per questo è stata criticata: il metodo dà un peso
+s_t)/\pi_\beta(a_t\mid s_t)$, ma richiede di conoscere $\pi_\beta$ e ha una
+varianza che esplode con l'orizzonte. L'alternativa, cioè stimare $Q^\pi$ sui
+dati (*fitted Q evaluation*), eredita l'errore di estrapolazione descritto in
+«Il buco nero delle azioni mai viste». La valutazione di *AI Clinician*
+ricorreva all'importance sampling, e per questo è stata criticata: il metodo dà
+un peso
 quasi nullo alle traiettorie in cui la policy appresa fa qualcosa di molto
 diverso dai medici, quale che ne fosse l'esito per il paziente
 {cite}`jeter2019ai`.
@@ -77,31 +82,35 @@ Verrebbe da pensare che sia facile, per una ragione già vista nella
 bersaglio stima il valore della policy greedy mentre i dati possono venire da
 un'altra policy. Se sa fare questo, dovrebbe saper imparare anche da partite
 giocate da altri e finite da un pezzo: basterebbe addestrarlo sull'archivio
-$\mathcal{D}$ invece che sulle esperienze fresche. Fatto così, però, può
-fallire gravemente. Fujimoto e colleghi lo mostrano su un compito di controllo
-continuo, perfino quando l'archivio è generato da un agente che impara con
-successo da quelle stesse esperienze {cite}`fujimoto2019off`; con archivi
-enormi e vari, come i cinquanta milioni di transizioni accumulati da un DQN in
-tutto il suo addestramento su un gioco Atari, gli stessi metodi possono invece
-superare, sulla maggior parte dei giochi, l'agente che li ha prodotti
-{cite}`agarwal2020optimistic`. Capire *quando* e *perché* l'archivio fa fallire
-il metodo è il cuore di tutto l'argomento.
+$\mathcal{D}$ invece che sulle esperienze fresche.
+
+Fatto così, però, il metodo può fallire gravemente. Fujimoto e colleghi lo
+mostrano su un compito di controllo continuo, perfino quando l'archivio è
+generato da un agente che impara con successo da quelle stesse esperienze
+{cite}`fujimoto2019off`. Con archivi enormi e vari, invece, come i cinquanta
+milioni di transizioni accumulati da un DQN in tutto il suo addestramento su un
+gioco Atari, gli stessi metodi possono superare, sulla maggior parte dei
+giochi, l'agente che li ha prodotti {cite}`agarwal2020optimistic`. Capire
+*quando* e *perché* l'archivio fa fallire il metodo è il cuore di tutto
+l'argomento.
 
 ## Il buco nero delle azioni mai viste
 
 Il colpevole è la differenza fra le azioni presenti nell'archivio e quelle che
-l'agente, imparando, vorrebbe compiere: la stessa frattura vista
-nell'imitazione quando l'allievo usciva dalla fascia dimostrata. Ha un nome
-tecnico: **distributional shift**, lo spostamento di distribuzione.
+l'agente, imparando, vorrebbe compiere. È la stessa frattura vista
+nell'imitazione, quando l'allievo usciva dalla fascia dimostrata, e ha un nome
+tecnico: **distributional shift**, cioè spostamento di distribuzione.
 
 `````{tab} Elementare
 
 Torniamo ai quaderni della nonna. Immagina che nei suoi decenni ai fornelli
-non abbia *mai* messo il peperoncino in un piatto. Nel diario, alla voce
-«peperoncino», non c'è nulla. Ora, se ti chiedessero «quanto sarebbe buono
+non abbia *mai* messo il peperoncino in un piatto. Nel diario, quindi, alla
+voce «peperoncino» non c'è nulla. Se ora ti chiedessero «quanto sarebbe buono
 questo risotto con tre cucchiai di peperoncino?», la risposta onesta è «non ne
-ho idea». Un modello ingenuo, però, quando deve indovinare tira comunque un
-numero, e a volte, per puro caso della sua matematica interna, tira un numero
+ho idea».
+
+Un modello ingenuo, però, quando deve indovinare tira comunque un numero, e a
+volte, per puro caso della sua matematica interna, tira un numero
 *altissimo*. «Risotto al peperoncino: buonissimo, dieci e lode.»
 
 L'agente sceglie sempre l'azione col voto più alto. Se un voto gonfiato per
@@ -114,40 +123,43 @@ si provano, l'errore viene smascherato; qui resta e fa danni.
 
 `````{tab} Superiore
 
-Il target del Q-learning è $y = r + \gamma \max_{a'} Q_\theta(s', a')$. Il
-problema è l'operatore $\max_{a'}$: spazia su *tutte* le azioni, comprese quelle
-che $\pi_\beta$ non ha mai eseguito in $s'$. Su quelle azioni
-*out-of-distribution* (OOD) la rete $Q_\theta$ non ha mai visto dati e non fa
-che estrapolare; i suoi errori di estrapolazione sono casuali, ma il $\max$ non
-è casuale: seleziona sistematicamente i valori più alti, cioè le
-sovrastime. Il target risulta gonfiato, la policy insegue quelle azioni
-fantasma, e per bootstrapping il valore inflazionato si propaga all'indietro
-agli altri stati.
+Consideriamo il target del Q-learning,
+$y = r + \gamma \max_{a'} Q_\theta(s', a')$. Il problema è l'operatore
+$\max_{a'}$, che spazia su *tutte* le azioni, comprese quelle che $\pi_\beta$
+non ha mai eseguito in $s'$. Su quelle azioni **out-of-distribution** (OOD) la
+rete $Q_\theta$ non ha mai visto dati e non fa che estrapolare. I suoi errori
+di estrapolazione sono casuali, ma il $\max$ non è casuale: seleziona
+sistematicamente i valori più alti, cioè le sovrastime. Di conseguenza il
+target risulta gonfiato, la policy insegue quelle azioni OOD e, per
+bootstrapping, il valore inflazionato si propaga all'indietro agli altri stati.
 
-Nel RL online questo circolo si interrompe: eseguendo l'azione sopravvalutata
-si osserva la ricompensa vera, bassa, e la stima si corregge. Offline il
-correttivo non arriva mai (non c'è nuova interazione) e l'errore può crescere
-senza freni. Fujimoto e colleghi {cite}`fujimoto2019off` hanno mostrato che
-questo **extrapolation error** è la ragione per cui gli algoritmi off-policy
-standard possono crollare su dati fissi: DDPG addestrato su un archivio di un
+Nel RL online questo circolo si interrompe, perché eseguendo l'azione
+sopravvalutata si osserva la ricompensa vera, bassa, e la stima si corregge.
+Offline il correttivo non arriva mai (non c'è nuova interazione), per cui
+l'errore può crescere senza freni.
+
+Fujimoto e colleghi hanno mostrato che questo **extrapolation error** è la
+ragione per cui gli algoritmi off-policy standard possono crollare su dati
+fissi {cite}`fujimoto2019off`. Ad esempio, DDPG addestrato su un archivio di un
 milione di transizioni resta molto sotto l'agente che lo ha raccolto, anche
 quando i due imparano dagli stessi dati, e le sue stime oscillano o divergono.
-Non è però un limite inevitabile: Agarwal e colleghi
-{cite}`agarwal2020optimistic` mostrano che su archivi grandi e vari (tutta
-l'esperienza di un DQN, cinquanta milioni di transizioni per gioco) QR-DQN e
-REM, due varianti di DQN che stimano rispettivamente una distribuzione di
-ritorni e un insieme di teste di valore, addestrati offline superano il DQN
-completamente addestrato sulla maggior parte dei giochi Atari. Quanto conta
-l'estrapolazione dipende da quanto l'archivio copre le azioni che la policy
-appresa vorrà fare. Le tecniche che seguono hanno lo stesso obiettivo, che è
-non fidarsi delle azioni fuori dal supporto dei dati.
+Il limite, però, non è inevitabile. Agarwal e colleghi mostrano che su archivi
+grandi e vari (tutta l'esperienza di un DQN, cinquanta milioni di transizioni
+per gioco) QR-DQN e REM, due varianti di DQN che stimano rispettivamente una
+distribuzione di ritorni e un insieme di teste di valore, addestrati offline
+superano il DQN completamente addestrato sulla maggior parte dei giochi Atari
+{cite}`agarwal2020optimistic`.
+
+In generale, quanto conta l'estrapolazione dipende da quanto l'archivio copre
+le azioni che la policy appresa vorrà fare. I rimedi hanno tutti lo stesso
+obiettivo, cioè non fidarsi delle azioni fuori dal supporto dei dati.
 
 `````
 
 Prima dei rimedi, il fenomeno si vede in miniatura. L'azione è un numero solo,
 da $-1$ a $+1$: la posizione dello sterzo. Il voto vero di ogni posizione lo
-conosciamo noi: è costruito come una multa: misura quanto ci si allontana
-dalla posizione perfetta, col segno cambiato. La
+conosciamo noi, perché lo costruiamo come una multa: misura quanto ci si
+allontana dalla posizione perfetta, col segno cambiato. La
 posizione perfetta è $+0{,}3$, e lì la multa è nulla e il voto vale $0$; ogni
 altra posizione paga qualcosa, tanto più quanto più è lontana. Zero è il
 massimo, insomma, e tutti gli altri voti sono numeri negativi.
@@ -200,32 +212,33 @@ vincolato : a*=-0.21  Q_stimato=-0.25  Q_vero=-0.26
 retta     : a*=+1.00  Q_stimato=+2.06  Q_vero=-0.49
 ```
 
-Il voto più alto cade sullo sterzo tutto a destra, dove nessuno ha mai messo
-piede: lì la curva promette $+30{,}1$, e il valore vero è $-0{,}49$, mentre il voto
-migliore possibile vale zero.
+Dall'uscita si vede che il voto più alto cade sullo sterzo tutto a destra, dove
+nessuno ha mai messo piede: lì la curva promette $+30{,}1$, e il valore vero è
+$-0{,}49$, mentre il voto migliore possibile vale zero.
 
 ```{figure} ../figures/supporto-dei-dati.svg
 :name: fig-supporto-dei-dati
 :alt: "Grafico del voto in funzione della posizione dello sterzo, da meno uno a più uno. Una fascia ocra copre il tratto da −1,00 a −0,20, il supporto dei dati, e dentro ci sono i quaranta punti osservati. La curva teal del voto vero è una parabola che ha il suo massimo, zero, in +0,30, cerchiato perché quella mossa nell’archivio non c’è. La curva terracotta stimata sui quaranta punti li segue dentro la fascia, e appena ne esce impenna e lascia il riquadro, salendo fino a +30,1 in più uno, dove il voto vero è −0,49. Cercando il massimo dentro la fascia si sceglie invece −0,21, dove stima −0,25 e valore vero −0,26 coincidono."
 :width: 92%
 
-Dentro la fascia ocra, dove si trovano i quaranta punti, la curva stimata e quella
-vera si sovrappongono; appena fuori la stimata impenna e lascia il riquadro.
+Dentro la fascia ocra, dove si trovano i quaranta punti, la curva stimata e
+quella vera si sovrappongono; appena fuori la stimata impenna e lascia il riquadro.
 Cercare il voto più alto su tutto l'asse porta allo sterzo tutto a destra, con
 una promessa di $+30{,}1$ a fronte di un valore vero di $-0{,}49$; cercarlo
 dentro la fascia porta a $-0{,}21$, dove promessa e valore coincidono.
 ```
 
 Non c'è niente di misterioso, e {numref}`fig-supporto-dei-dati` fa vedere dove
-succede. Una curva passa docilmente in mezzo ai quaranta punti che ha, e fuori
-da quel tratto prosegue come le pare: non ha più nessun dato che la trattenga,
-e le basta una piccola pendenza sbagliata al bordo per schizzare in alto nel
-giro di un intervallo. La flessibilità decide quanto forte è lo schizzo, non se
-ci sarà: rifacendo lo stesso calcolo con una retta al posto della curva, il voto
-più alto cade di nuovo sullo sterzo tutto a destra, con una promessa di
-$+2{,}06$ dove il migliore possibile vale zero. Si sarebbe al riparo soltanto
-scegliendo la forma giusta, che qui è la parabola; ma la forma
-giusta è quella che non si conosce, perché è ciò che si sta cercando.
+succede. Infatti una curva passa docilmente in mezzo ai quaranta punti che ha,
+e fuori da quel tratto prosegue come le pare: non ha più nessun dato che la
+trattenga, e le basta una piccola pendenza sbagliata al bordo per schizzare in
+alto nel giro di un intervallo. La flessibilità decide quanto forte è lo
+schizzo, non se ci sarà. Rifacendo, ad esempio, lo stesso calcolo con una retta
+al posto della curva, il voto più alto cade di nuovo sullo sterzo tutto a
+destra, con una promessa di $+2{,}06$ dove il migliore possibile vale zero. Si
+sarebbe al riparo soltanto scegliendo la forma giusta, che qui è la parabola;
+ma la forma giusta è quella che non si conosce, perché è ciò che si sta
+cercando.
 
 Vincolando invece la ricerca alla zona che i dati coprono (il loro
 **supporto**, che con quaranta punti è il tratto che li racchiude) si sceglie
@@ -237,9 +250,9 @@ compromesso di continuo.
 
 ## BCQ: restare vicini a ciò che è stato visto
 
-L'idea, suggerita dall'esempio, è semplice: se il problema nasce
-dall'attribuire un voto ad azioni mai provate, allora conviene escluderle: il
-voto più alto si cerca soltanto fra le azioni che compaiono nell'archivio.
+L'idea, suggerita dall'esempio, è semplice. Se il problema nasce
+dall'attribuire un voto ad azioni mai provate, conviene escluderle, cioè
+cercare il voto più alto soltanto fra le azioni che compaiono nell'archivio.
 
 A farlo nel controllo continuo, con le reti profonde e per dati fissi, è
 **BCQ** (*Batch-Constrained deep Q-learning*) di Scott Fujimoto, David Meger e
@@ -295,10 +308,10 @@ superare in ampiezza $\Phi$, e $n$ il numero di azioni candidate (nel lavoro $n
 si ricade nella clonazione comportamentale, con $\Phi$ pari all'intera ampiezza
 delle azioni e $n \to \infty$ torna il Q-learning su tutto lo spazio.
 
-Lo stesso insieme di candidati serve a costruire il bersaglio, e così la
-propagazione dell'errore si interrompe. Con $a'_i \sim G_\omega(s')$,
-$\tilde a_i = a'_i + \xi_\phi(s', a'_i, \Phi)$ e due reti $Q_{\theta_1}$,
-$Q_{\theta_2}$ (con le rispettive copie ritardate $\theta'_j$),
+Lo stesso insieme di candidati serve a costruire il bersaglio, e in questo modo
+la propagazione dell'errore si interrompe. In particolare, con $a'_i \sim
+G_\omega(s')$, $\tilde a_i = a'_i + \xi_\phi(s', a'_i, \Phi)$ e due reti
+$Q_{\theta_1}$, $Q_{\theta_2}$ (con le rispettive copie ritardate $\theta'_j$),
 
 $$
 y = r + \gamma \max_{i}\Big[\lambda \min_{j=1,2} Q_{\theta'_j}(s', \tilde a_i)
@@ -308,7 +321,8 @@ $$
 dove $\lambda$ regola quanto pesa l'incertezza sui passi futuri (nel lavoro
 $\lambda = 0{,}75$; con $\lambda = 1$ è il *clipped double Q-learning*).
 L'operatore di massimizzazione non può più cadere nelle
-regioni fantasma: sceglie il meglio *tra ciò che si sarebbe davvero potuto fare*.
+regioni OOD, perché sceglie il meglio *tra ciò che si sarebbe davvero potuto
+fare*.
 
 `````
 
@@ -339,7 +353,8 @@ CQL aggiunge due spinte. Abbassa i voti delle ricette che nel diario non
 compaiono, e alza quelli delle ricette che vi figurano. Ne esce un sistema di
 voti *conservativo*, pessimista su tutto ciò che non ha visto.
 
-Quanto forte spinge è una manopola, e la si gira a mano. Girata
+Quanto forte spinge è una manopola (in gergo, un iperparametro), e la si gira
+a mano. Girata
 poco, la prudenza resta un'inclinazione: un piatto mai assaggiato che il
 critico si figura strepitoso può ancora finire in cima alla lista. Girata a
 fondo, tutto ciò che non è documentato sprofonda, e allora il critico dai
@@ -397,14 +412,15 @@ punto per punto (la singola stima $Q(s,a)$ può ancora eccedere quella vera), e
 per gli stati mai visti non è garantito affatto.
 
 La prudenza sull'ignoto poggia quindi su una garanzia formale, ma con limiti di
-validità precisi. L'enunciato principale riguarda il caso tabellare, e vale per
-un $\alpha$ abbastanza grande rispetto all'errore di campionamento, che dipende
-da quante volte la coppia $(s,a)$ compare nel dataset. In appendice gli autori
-estendono il risultato agli approssimatori lineari e alle reti nel regime del
-*neural tangent kernel*, cioè con le caratteristiche di fatto congelate: due
-ipotesi che una rete addestrata normalmente non soddisfa. L'analisi di CQL con
-reti profonde vere è lasciata a lavori futuri; nella pratica il metodo opera
-come un'euristica efficace, motivata dal risultato teorico nei casi ideali.
+validità precisi. In particolare, l'enunciato principale riguarda il caso
+tabellare, e vale per un $\alpha$ abbastanza grande rispetto all'errore di
+campionamento, che dipende da quante volte la coppia $(s,a)$ compare nel
+dataset. In appendice gli autori estendono il risultato agli approssimatori
+lineari e alle reti nel regime del *neural tangent kernel*, cioè con le
+caratteristiche di fatto congelate: due ipotesi che una rete addestrata
+normalmente non soddisfa. L'analisi di CQL con reti profonde vere è lasciata a
+lavori futuri; nella pratica il metodo opera come un'euristica efficace,
+motivata dal risultato teorico nei casi ideali.
 
 `````
 
@@ -473,7 +489,7 @@ $$
 V(s') - Q(s,a)\big)^2\Big].
 $$
 
-Dove $\tau \in (0,1)$ è l’expectile (in pratica $\tau \approx 0{,}7$–$0{,}9$;
+Qui $\tau \in (0,1)$ è l’expectile (in pratica $\tau \approx 0{,}7$–$0{,}9$;
 questo $\tau$ è il livello dell'asimmetria, e non ha niente a che vedere né con
 la traiettoria né con il peso dello scorrimento di DDPG): la perdita
 asimmetrica $L_2^\tau$ pesa di più i residui positivi, spingendo $V$ verso
@@ -494,13 +510,13 @@ campione.
 
 `````
 
-Il nucleo di IQL, in PyTorch, sta in poche righe. È una misura d'errore
-volutamente asimmetrica: con `tau=0.8` una stima per difetto viene penalizzata
-quattro volte più di una stima per eccesso ($0{,}8$ contro $0{,}2$). Poiché
-l'errore per difetto ha un peso quadruplo, il valore stimato si colloca sopra
-la media dei voti osservati, pur senza raggiungere il migliore: con valori
-distribuiti uniformemente fra $0$ e $1$ la stima si attesta a $0{,}667$, e si
-avvicina al massimo solo quando $\tau$ tende a $1$.
+Il nucleo di IQL, in PyTorch, sta in poche righe. È una misura
+d'errore volutamente asimmetrica: con `tau=0.8` una stima per difetto viene
+penalizzata quattro volte più di una stima per eccesso ($0{,}8$ contro
+$0{,}2$). Poiché l'errore per difetto ha un peso quadruplo, il valore stimato
+si colloca sopra la media dei voti osservati, pur senza raggiungere il
+migliore: con valori distribuiti uniformemente fra $0$ e $1$ la stima si
+attesta a $0{,}667$, e si avvicina al massimo solo quando $\tau$ tende a $1$.
 
 ```python
 import torch
@@ -598,10 +614,11 @@ ritorno eguaglia il Decision Transformer {cite}`emmons2022rvs`.
 `````
 
 Il Decision Transformer non è sempre il migliore, e il caso in cui perde si
-capisce: se nell'archivio non c'è una sola partita andata a finire bene, ha ben
-poco da recitare, perché riproduce per lo più partite che ha visto. Gli autori
-osservano che può chiedere anche più del massimo registrato, ma lo presentano
-come qualcosa che riesce soltanto in alcuni giochi {cite}`chen2021decision`.
+capisce: se nell'archivio non c'è una sola partita andata a finire bene,
+ha ben poco da recitare, perché riproduce per lo più partite che ha visto. Gli
+autori osservano che può chiedere anche più del massimo registrato, ma lo
+presentano come qualcosa che riesce soltanto in alcuni giochi
+{cite}`chen2021decision`.
 
 CQL e IQL stimano invece i voti, e questo dà loro un potere in più: sanno
 «ricucire». Un voto sta attaccato a una singola mossa in una singola
@@ -634,14 +651,14 @@ Quei confronti formano un archivio, che resta fermo mentre l'addestramento va
 avanti. Ouyang e colleghi scrivono però che i due passi (raccogliere confronti
 e ottimizzare) si possono iterare di continuo, tornando dalle persone a
 chiedere nuovi giudizi sulle risposte della versione migliore del momento. Si
-raccoglie dunque a tornate, e fra una tornata e l'altra il giudice non cambia
-di una virgola, mentre il grosso dei confronti su cui è stato costruito viene
+raccoglie dunque a tornate, e fra una tornata e l'altra il giudice resta
+identico, mentre il grosso dei confronti su cui è stato costruito viene
 da risposte di versioni precedenti.
 
 Tanto basta perché l'RLHF erediti le tensioni dell'apprendimento offline. Il
 modello si allontana dalle risposte che le persone hanno giudicato, e
 là dove nessuno ha giudicato niente il giudice automatico è più facile da
-imbrogliare: è di nuovo la situazione del risotto al peperoncino. Il rimedio è
+imbrogliare: è di nuovo il problema delle azioni fuori dai dati. Il rimedio è
 della stessa famiglia: al punteggio che il modello cerca di far salire si
 sottrae una penalità che cresce con la distanza dalle risposte di partenza,
 così che allontanarsi resta possibile ma sempre meno conveniente.
@@ -706,8 +723,8 @@ possiamo fidarci di ciò che non abbiamo mai visto?
   expectile e non interroga mai azioni fuori dai dati
   {cite}`kostrikov2022offline`.
 - Il Decision Transformer riformula l'RL come modellazione di sequenze:
-  condiziona sul *return-to-go* desiderato e predice l'azione con un Transformer,
-  in modo puramente supervisionato {cite}`chen2021decision`.
+  condiziona sul *return-to-go* desiderato e predice l'azione con un
+  Transformer, in modo puramente supervisionato {cite}`chen2021decision`.
 - I dati di preferenza dell’RLHF sono anch'essi un dataset raccolto a
   tornate e fermo fra una tornata e l'altra: il modello di ricompensa viene
   interrogato fuori dal suo supporto e si lascia sfruttare

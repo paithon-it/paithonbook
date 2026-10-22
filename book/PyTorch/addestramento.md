@@ -2,36 +2,36 @@
 
 Le cinque righe del ciclo mostrato in fondo alla {doc}`sezione sulla
 backpropagation </RetiNeurali/backpropagation>` tornano, identiche, in ogni
-progetto PyTorch: dal tutorial per principianti al codice che addestra i grandi
+progetto PyTorch, dal tutorial per principianti al codice che addestra i grandi
 modelli linguistici. Sono il **training loop**, e il fatto che si scrivano *a
 mano* non è una dimenticanza della libreria: è una presa di posizione. Dove
 altri framework nascondono l'addestramento dietro un unico comando, PyTorch
-preferisce che ogni passo (previsione, errore, gradiente, correzione) resti
-visibile e modificabile. È più codice, ma è *tuo*: quando vorrai cambiare
+preferisce infatti che ogni passo (previsione, errore, gradiente, correzione)
+resti visibile e modificabile. È più codice, ma è *tuo*: quando vorrai cambiare
 qualcosa nel modo di apprendere, saprai dove mettere le mani.
 
-## Il rito: i cinque passi
+## Il training loop: i cinque passi
 
-Qui le si riprende una alla volta, e poi le si mette al lavoro su un problema
-vero, le cifre scritte a mano. Prima, due parole che nel codice compaiono
-senza presentazioni.
+Riprendiamo le cinque righe una alla volta, e poi le mettiamo al lavoro su un
+problema vero, le cifre scritte a mano. Prima chiariamo due parole che nel
+codice compaiono senza presentazioni.
 
-L’ottimizzatore è l'oggetto che a ogni giro corregge i pesi del modello usando
-il gradiente. Il suo iperparametro principale è il learning rate, $\eta$ nelle
-formule (in italiano si dice anche, più brevemente, il passo): il fattore per
-cui il gradiente viene moltiplicato prima di essere sottratto dai pesi. Se è
-troppo piccolo la loss scende lentamente, e nel tempo dato può non arrivare in
-fondo; se è troppo grande la discesa scavalca il punto buono, oscilla, o
-diverge.
+L’ottimizzatore è l'oggetto che a ogni iterazione del ciclo corregge i pesi del
+modello usando il gradiente. Il suo iperparametro principale è il learning
+rate, $\eta$ nelle formule (in italiano si dice anche, più brevemente, il
+passo), cioè il fattore per cui il gradiente viene moltiplicato prima di essere
+sottratto dai pesi. Se è troppo piccolo, la loss scende lentamente e nel tempo
+dato può non arrivare in fondo; se è troppo grande, la discesa scavalca il
+punto buono, oscilla o diverge.
 
-Di ottimizzatori ce ne sono parecchi, e per adesso ne bastano due. Il più
+Di ottimizzatori ce ne sono parecchi, ma per adesso ne bastano due. Il più
 semplice è quello del ciclo visto con la backpropagation, la discesa stocastica
-del gradiente (SGD, dall'inglese *stochastic gradient descent*): «stocastica»
-perché a ogni giro il gradiente si calcola su un mini-batch di esempi
-sorteggiati invece che su tutti quanti. SGD usa lo stesso passo per tutti i
-pesi. Adam invece adatta il passo di ciascun peso, a partire da due medie
-mobili dei suoi gradienti, e di solito è il primo che si prova
-({numref}`fig-adam-passo-per-peso`). Il nome non è di persona: sta per
+del gradiente (SGD, dall'inglese *stochastic gradient descent*). Si chiama
+«stocastica» perché a ogni iterazione il gradiente si calcola su un mini-batch
+di esempi estratti a caso, invece che su tutti quanti. SGD usa lo stesso passo
+per tutti i pesi. Adam invece adatta il passo di ciascun peso, a partire da due
+medie mobili dei suoi gradienti, e di solito è il primo che si prova
+({numref}`fig-adam-passo-per-peso`). Il nome, che non è di persona, sta per
 *adaptive moment estimation*.
 
 ```{figure} ../figures/adam-ottimizzatore.svg
@@ -44,15 +44,15 @@ sceglie una diversa per ogni parametro, in base a quanto è costante la
 direzione in cui quel parametro viene spinto.
 ```
 
-La conseguenza pratica: con SGD il learning rate va tarato con cura, perché è
-uno solo per tutti i pesi; Adam è meno sensibile alla scala dei gradienti,
-perché ciascun peso riscala il suo passo, ma $\eta$ resta anche per lui
-l'iperparametro più importante.
+La conseguenza pratica è che con SGD il learning rate va tarato con cura,
+perché è uno solo per tutti i pesi. Adam è meno sensibile alla scala dei
+gradienti, perché ciascun peso riscala il suo passo, ma $\eta$ resta anche per
+lui l'iperparametro più importante.
 
 Nel codice i componenti hanno il nome inglese: `criterion` è la funzione di
 perdita (la *loss*, qui chiamata anche «criterio»: tre nomi per un oggetto
 solo); `dataloader` è l'oggetto che consegna gli esempi a mini-batch, uno per
-giro; `optimizer` è l'ottimizzatore appena presentato.
+iterazione; `optimizer` è l'ottimizzatore.
 
 ```{code-block} python
 :class: pt-non-eseguibile
@@ -65,18 +65,20 @@ for X_batch, y_batch in dataloader:
     optimizer.step()                    # 5. aggiorna i pesi
 ```
 
-Il terzo passo azzera i gradienti del giro precedente, ed evita la somma vista
-con autograd (il $16$ al posto dell’$8$): `backward()` aggiunge i gradienti
-nuovi a quelli che trova in `p.grad` invece di sostituirli, e senza
-`zero_grad()` l'aggiornamento del secondo giro userebbe anche il gradiente del
-primo. La somma diventa utile quando la si vuole: chi ha una macchina piccola
-accumula i gradienti di più mini-batch prima di un solo aggiornamento, per
-simulare un batch più grande, come riprende la sezione su [replicare un
-paper](replicare-un-paper.md). Quanto alla posizione, `zero_grad()` va dopo lo
-`step()` del giro precedente e prima del `backward()` attuale: all'inizio del
-giro, come qui, o subito dopo lo `step()`, il risultato è lo stesso.
+Il terzo passo azzera i gradienti dell'iterazione precedente, ed evita così la
+somma vista con autograd (il $16$ al posto dell’$8$). Infatti `backward()`
+aggiunge i gradienti nuovi a quelli che trova in `p.grad` invece di
+sostituirli, e senza `zero_grad()` l'aggiornamento della seconda iterazione
+userebbe anche il gradiente della prima. La somma diventa utile quando la si
+vuole: ad esempio, chi ha una macchina piccola accumula i gradienti di più
+mini-batch prima di un solo aggiornamento, per simulare un batch più grande,
+come riprende la sezione su [replicare un paper](replicare-un-paper.md).
 
-Quelle cinque righe dicono l'ordine, non il movimento:
+Quanto alla posizione, `zero_grad()` va dopo lo `step()` dell'iterazione
+precedente e prima del `backward()` attuale. All'inizio dell'iterazione, come
+qui, o subito dopo lo `step()`, il risultato è lo stesso.
+
+Quelle cinque righe dicono l'ordine, non il movimento; per questo
 {numref}`fig-ciclo-addestramento` le fa girare tre volte, cioè su tre
 mini-batch uno dopo l'altro, e mostra a ogni passo che cosa cambia dentro il
 modello.
@@ -99,32 +101,36 @@ Guardi la domanda e provi a rispondere (passo 1, la previsione). Giri la carta
 e confronti con la risposta giusta: quanto eri lontano? (passo 2, l'errore).
 Butti via gli appunti del giro precedente (passo 3), capisci *in che
 direzione* hai sbagliato, troppo alto? troppo basso? (passo 4), e aggiusti di
-conseguenza il tuo modo di rispondere, un poco alla volta (passo 5). Poi passi
-al mazzetto successivo, e quando hai ripassato l'intero mazzo una volta, hai
-completato quella che si chiama un’epoca. Ripetuto per migliaia di carte
-ed epoche, questo giro è tutto ciò che serve a una rete per imparare.
+conseguenza il tuo modo di rispondere, un poco alla volta (passo 5).
+
+Poi passi al mazzetto successivo, e quando hai ripassato l'intero mazzo una
+volta hai completato quella che si chiama un’epoca. Ripetuto per migliaia di
+carte ed epoche, questo giro è tutto ciò che serve a una rete per imparare.
 
 A guardarlo da vicino, il terzo passo non cancella gli appunti riga per riga:
 toglie il foglio dal tavolo, e un foglio nuovo arriva solo quando si torna a
 scrivere. Per questo chi vuole controllare gli appunti di un giro, per esempio
 per vedere se una carta ha lasciato traccia, deve guardarli subito dopo averli
-scritti: dopo il terzo passo sul tavolo non c'è niente, nemmeno un foglio
-bianco. Dove il foglio non c'è non si corregge niente: un peso che in un giro
-non ha lasciato appunti resta com'era.
+scritti, perché dopo il terzo passo sul tavolo non c'è niente, nemmeno un
+foglio bianco. Dove il foglio non c'è non si corregge niente: un peso che in un
+giro non ha lasciato appunti resta com'era.
 
-Il foglio si cambia a ogni giro, tranne quando si vuole sommare di proposito. Il
-caso classico è il tavolo piccolo. Ci stanno otto carte per volta, ma vuoi
-decidere la correzione su trentadue perché su più carte si sbaglia di meno: fai
-quattro mazzetti da otto, scrivi gli appunti di tutti e quattro sullo stesso
-foglio, uno sotto l'altro, e alla fine correggi una volta sola, dividendo per
-quattro la somma; solo allora cambi foglio. Chi cambia foglio a
-ogni mazzetto si corregge su otto carte credendo di averne guardate trentadue,
-il ripasso fila liscio uguale e non arriva nessun avviso.
+Il foglio si cambia a ogni giro, tranne quando si vuole sommare di proposito.
+Il caso classico è il tavolo piccolo: ci stanno otto carte per volta, ma vuoi
+decidere la correzione su trentadue, perché su più carte si sbaglia di meno.
+Allora fai quattro mazzetti da otto, scrivi gli appunti di tutti e quattro
+sullo stesso foglio, uno sotto l'altro, e alla fine correggi una volta sola,
+dividendo per quattro la somma; solo allora cambi foglio.
+
+Chi cambia foglio a ogni mazzetto si corregge su otto carte credendo di averne
+guardate trentadue, e intanto il ripasso fila liscio uguale, senza nessun
+avviso.
 `````
 
 `````{tab} Superiore
-Il loop realizza un passo di discesa del gradiente su mini-batch. Con
-$\mathcal{L}$ la loss media sul batch e $\theta$ i parametri:
+Il loop realizza un passo di discesa del gradiente su mini-batch. Indichiamo
+con $\mathcal{L}$ la loss media sul batch e con $\theta$ i parametri;
+l'aggiornamento è
 
 $$
 \theta \leftarrow \theta - \eta \, \nabla_{\theta} \mathcal{L},
@@ -132,57 +138,63 @@ $$
 
 dove $\eta$ è il *learning rate*. `loss.backward()` calcola
 $\nabla_{\theta}\mathcal{L}$ via autograd e lo deposita in `p.grad` per ogni
-parametro; `optimizer.step()` applica l'aggiornamento, e la formula esatta
+parametro; `optimizer.step()` applica l'aggiornamento, la cui formula esatta
 dipende dall'ottimizzatore: la discesa semplice per `optim.SGD`, stime adattive
 dei momenti per `optim.Adam` {cite}`kingma2015adam`, fra gli ottimizzatori più
 usati, anche se nessuno è il migliore in generale {cite}`goodfellow2016deep`.
-`zero_grad()` è necessario perché autograd accumula i gradienti a ogni
-`backward()`: senza, ogni passo userebbe la somma di tutti i gradienti
-precedenti.
 
-Il nome `zero_grad()` però dice meno di quanto il metodo faccia. Da PyTorch 2.0
-il default è `set_to_none=True`, quindi `p.grad` non diventa un tensore di
-zeri: diventa `None`. È un risparmio (nessuna memoria tenuta occupata da
-gradienti che non ci sono, e un'operazione in meno per parametro) ed è una
-trappola per chi va a controllare i gradienti nel posto sbagliato: un `assert
-p.grad is not None` scritto dopo l'azzeramento fallisce su tutti i parametri, e
-quel controllo va messo subito dopo il `backward()`. La differenza si vede
-anche nei pesi: un parametro con `p.grad` a `None` viene saltato da `step()`,
-mentre con un gradiente nullo un ottimizzatore che ha uno stato (il momento di
-SGD, le medie di Adam) lo muove comunque, per inerzia. Succede ai parametri che
-in un giro non partecipano al calcolo, come un ramo di `if` non preso o uno
-strato congelato a metà addestramento.
+`zero_grad()` è necessario perché autograd accumula i gradienti a ogni
+`backward()`; senza, ogni passo userebbe la somma di tutti i gradienti
+precedenti. Il nome `zero_grad()`, però, dice meno di quanto il metodo faccia.
+Da PyTorch 2.0 il default è `set_to_none=True`, quindi `p.grad` non diventa un
+tensore di zeri, ma `None`.
+
+È un risparmio (nessuna memoria tenuta occupata da gradienti che non ci sono, e
+un'operazione in meno per parametro), ma è anche una trappola per chi va a
+controllare i gradienti nel posto sbagliato: un `assert p.grad is not None`
+scritto dopo l'azzeramento fallisce su tutti i parametri, e quel controllo va
+messo subito dopo il `backward()`.
+
+La differenza si vede anche nei pesi. Un parametro con `p.grad` a `None` viene
+saltato da `step()`, mentre con un gradiente nullo un ottimizzatore che ha uno
+stato (il momento di SGD, le medie di Adam) lo muove comunque, per inerzia.
+Succede ai parametri che in un'iterazione non partecipano al calcolo, come un
+ramo di `if` non preso o uno strato congelato a metà addestramento.
 
 L'ordine di `forward`, `backward` e `step` è fisso per costruzione, e
 `zero_grad()` va fra uno `step()` e il `backward()` successivo; tutto il resto
-è normale Python, e le aggiunte hanno un posto preciso. Il *gradient clipping*
-(`torch.nn.utils.clip_grad_norm_`) sta fra `backward()` e `step()`; lo
-*scheduler* del learning rate si avanza dopo `optimizer.step()`, e al contrario
-PyTorch avvisa; con la *mixed precision* le chiamate diventano
-`scaler.scale(loss).backward()`, `scaler.unscale_(optimizer)` prima del
-clipping, `scaler.step(optimizer)` e `scaler.update()`. L'eccezione all'ordine
-è una sola, l’**accumulo dei gradienti**, il modo di simulare un batch
-grande su una macchina piccola descritto in [replicare un
-paper](replicare-un-paper.md): lì si eseguono $k$ `backward()` e un solo
-`step()`, quindi l'azzeramento esce dal giro e si fa una volta ogni $k$
-micro-batch. Rispettare l'ordine solito lì è l'errore: il codice gira identico,
-e la matematica no. L'accumulo coincide con il batch grande vero a meno
-dell'arrotondamento in virgola mobile, ma richiede tre condizioni. Primo, ogni
-loss va divisa per $k$ prima del `backward()`: con `reduction="mean"` ogni
-micro-batch restituisce già una media, e sommarne $k$ dà $k$ volte il
-gradiente. Secondo, i micro-batch devono avere tutti la stessa dimensione.
-Terzo, nel modello non devono esserci strati che si tarano sul batch, come la
-batch norm, che continuerebbe a vedere il singolo micro-batch. Un accumulo con
-lo `zero_grad()` a ogni micro-batch conserva soltanto il gradiente dell'ultimo
+è normale Python, e le aggiunte hanno un posto preciso. In particolare, il
+*gradient clipping* (`torch.nn.utils.clip_grad_norm_`) sta fra `backward()` e
+`step()`; lo *scheduler* del learning rate si avanza dopo `optimizer.step()`, e
+nell'ordine inverso PyTorch avvisa; con la *mixed precision* le
+chiamate diventano `scaler.scale(loss).backward()`,
+`scaler.unscale_(optimizer)` prima del clipping, `scaler.step(optimizer)` e
+`scaler.update()`.
+
+L'eccezione all'ordine è una sola, l’**accumulo dei gradienti**, il modo di
+simulare un batch grande su una macchina piccola descritto in [replicare un
+paper](replicare-un-paper.md). Lì si eseguono $k$ `backward()` e un solo
+`step()`, quindi l'azzeramento non si fa più a ogni iterazione, ma una volta
+ogni $k$ micro-batch. Rispettare l'ordine solito, in questo caso, è l'errore:
+il codice gira identico, ma la matematica no. Un accumulo con lo `zero_grad()`
+a ogni micro-batch, infatti, conserva soltanto il gradiente dell'ultimo
 micro-batch, senza un messaggio d'errore.
+
+L'accumulo coincide con il batch grande vero a meno dell'arrotondamento in
+virgola mobile, ma richiede tre condizioni. Primo, ogni loss va divisa per $k$
+prima del `backward()`: con `reduction="mean"` ogni micro-batch restituisce già
+una media, e sommarne $k$ dà $k$ volte il gradiente. Secondo, i micro-batch
+devono avere tutti la stessa dimensione. Terzo, nel modello non devono esserci
+strati che si tarano sul batch, come la batch norm, che continuerebbe a vedere
+il singolo micro-batch.
 `````
 
 ## `Dataset` e `DataLoader`: la catena di rifornimento
 
-Il gradiente non si calcola di norma né sull'intero dataset né su un esempio
-solo, ma su un mini-batch: un gruppo di esempi, da qualche decina a qualche
-migliaio secondo il problema. A prepararli ci pensano due classi di
-`torch.utils.data`.
+Di norma il gradiente non si calcola né sull'intero dataset né su un esempio
+solo, ma su un mini-batch, cioè su un gruppo di esempi, da qualche decina a
+qualche migliaio secondo il problema. A preparare i mini-batch ci pensano due
+classi di `torch.utils.data`.
 
 ```python
 from torch.utils.data import DataLoader
@@ -202,11 +214,12 @@ test_loader = DataLoader(test_data, batch_size=256)
 I due `DataLoader` differiscono per una ragione sola: in valutazione nessun
 peso viene aggiornato. Il rimescolamento serve in addestramento perché i
 mini-batch siano campioni diversi a ogni epoca, e il modello non si abitui a un
-ordine; in valutazione l'ordine non conta. La dimensione del mini-batch, in
-addestramento, è anche la frequenza degli aggiornamenti: con 64 si corregge una
-volta ogni 64 immagini. In valutazione non c'è niente da correggere, e la si
-sceglie solo in base alla memoria: un batch più grande vale soltanto più
-velocità.
+ordine; in valutazione l'ordine non conta.
+
+Per la stessa ragione cambia la dimensione del mini-batch. In addestramento è
+anche la frequenza degli aggiornamenti: con 64 si corregge una volta ogni 64
+immagini. In valutazione non c'è niente da correggere, quindi la si sceglie
+solo in base alla memoria, e un batch più grande dà soltanto più velocità.
 
 `````{tab} Elementare
 Il `Dataset` è la dispensa: sa quanti esempi ci sono e sa consegnarti
@@ -221,14 +234,15 @@ mettono di più.
 
 I vassoi servono perché un esempio alla volta è uno spreco, con la GPU ferma ad
 aspettare, e tutti insieme non entrano in memoria. Il mini-batch è la via di
-mezzo che tiene i fornelli sempre occupati. Un vassoio dice quasi quanto
-direbbe il dataset intero. Assaggiare un cucchiaio dice quanto sale c'è in
-tutta la pentola, con la risposta giusta in media e un po’ di scarto da un
-cucchiaio all'altro. Allo stesso modo sessantaquattro esempi indicano la
-direzione in cui correggersi quasi come la indicherebbero tutti e sessantamila,
-e sbandano un poco a ogni giro. Lo sbandamento riduce la precisione, e in
-cambio scuote la discesa quel tanto che basta a non farla restare ferma dove il
-terreno è quasi piatto.
+mezzo che tiene i fornelli sempre occupati.
+
+Inoltre un vassoio dice quasi quanto direbbe il dataset intero. Assaggiare un
+cucchiaio, ad esempio, dice quanto sale c'è in tutta la pentola, con la
+risposta giusta in media e un po’ di scarto da un cucchiaio all'altro. Allo
+stesso modo sessantaquattro esempi indicano la direzione in cui correggersi
+quasi come la indicherebbero tutti e sessantamila, e sbandano un poco a ogni
+giro. Lo sbandamento riduce la precisione, e in cambio scuote la discesa quel
+tanto che basta a non farla restare ferma dove il terreno è quasi piatto.
 `````
 
 `````{tab} Superiore
@@ -238,37 +252,43 @@ immagini, un database) diventa una sorgente per il `DataLoader`, che aggiunge
 campionamento (`shuffle=True` rimescola gli indici a ogni epoca), *batching*
 (impila gli esempi lungo il primo asse: qui tensori $(64, 1, 28, 28)$), e
 caricamento parallelo (`num_workers`) con memoria *page-locked*
-(`pin_memory=True`). Questa memoria è la premessa del trasferimento asincrono
-verso la GPU, non l'asincronia: quest'ultima richiede anche `non_blocking=True`
-nel `.to()`, come spiega la sezione sulle [prestazioni](prestazioni.md). La
-`transform` `ToTensor()` converte le immagini PIL in tensori `float32` con
-valori in $[0, 1]$ e layout channels-first $(C, H, W)$; per MNIST si può
+(`pin_memory=True`). Si noti che questa memoria è la premessa del trasferimento
+asincrono verso la GPU, non l'asincronia: quest'ultima richiede anche
+`non_blocking=True` nel `.to()`, come spiega la sezione sulle
+[prestazioni](prestazioni.md).
+
+La `transform` `ToTensor()` converte le immagini PIL in tensori `float32` con
+valori in $[0, 1]$ e layout channels-first $(C, H, W)$. Per MNIST si può
 aggiungere `transforms.Normalize((0.1307,), (0.3081,))` (media e deviazione
 standard del dataset), cioè la standardizzazione delle feature della
-{doc}`sezione sulle SVM </MachineLearning/svm-kernel>` applicata ai pixel: su
-ingressi non centrati la discesa del gradiente trova una valle più stretta e
-procede a zigzag. Per le fotografie, l'operazione è descritta nella sezione sui
-{doc}`dati su misura <dati-su-misura>`. Statisticamente, con esempi estratti in
-modo uniforme, il gradiente su un mini-batch di $B$ esempi è una stima non
-distorta del gradiente sull'intero insieme di $m$ esempi, con covarianza
-$\boldsymbol{\Sigma}/B$, dove $\boldsymbol{\Sigma}$ è la covarianza dei
-gradienti dei singoli esempi (va moltiplicata per $(m-B)/(m-1)$ quando si
-estrae senza reimmissione, come fa `shuffle=True` dentro un'epoca). Il rumore
-scende quindi come $1/\sqrt{B}$: quadruplicare il batch lo dimezza. È il
-limite, e in parte il segreto, della discesa *stocastica*.
+{doc}`sezione sulle SVM </MachineLearning/svm-kernel>` applicata ai pixel. Su
+ingressi non centrati, infatti, la discesa del gradiente trova una valle più
+stretta e procede a zigzag. Per le fotografie, l'operazione è descritta nella
+sezione sui {doc}`dati su misura <dati-su-misura>`.
+
+Statisticamente, con esempi estratti in modo uniforme, il gradiente su un
+mini-batch di $B$ esempi è una stima non distorta del gradiente sull'intero
+insieme di $m$ esempi, con covarianza $\boldsymbol{\Sigma}/B$, dove
+$\boldsymbol{\Sigma}$ è la covarianza dei gradienti dei singoli esempi (va
+moltiplicata per $(m-B)/(m-1)$ quando si estrae senza reimmissione, come fa
+`shuffle=True` dentro un'epoca). Il rumore scende quindi come $1/\sqrt{B}$: ad
+esempio, quadruplicare il batch lo dimezza. È il limite, e in parte il segreto,
+della discesa *stocastica*.
 `````
 
 ## MNIST da cima a fondo
 
 Mettiamo insieme gli strumenti costruiti finora: tensori, modello, loss, dati.
-Questo è un programma completo che scarica MNIST, addestra il percettrone
+Ne risulta un programma completo, che scarica MNIST, addestra il percettrone
 multistrato della sezione sui [moduli](moduli.md) e lo valuta su immagini mai
-viste, una volta prima di cominciare e poi a ogni epoca. Contiene due chiamate
-nuove, `model.train()` e `model.eval()`, che mettono il modello in modalità di
-addestramento o di valutazione, cioè gli dicono se sta imparando o se deve
-soltanto rispondere, e il blocco `torch.no_grad()`, già incontrato fra i
-tensori, che sospende la costruzione del grafo. Il paragrafo «Studiare e dare
-l'esame» se ne occupa per esteso.
+viste, una volta prima di cominciare e poi a ogni epoca.
+
+Il programma contiene due chiamate nuove, `model.train()` e `model.eval()`, che
+mettono il modello in **modalità di addestramento** o in **modalità di
+valutazione**, cioè gli dicono se sta imparando o se deve soltanto rispondere.
+C'è poi il blocco `torch.no_grad()`, già incontrato fra i tensori, che sospende
+la costruzione del grafo. Il paragrafo «Studiare e dare l'esame» se ne occupa
+per esteso.
 
 ```python
 import torch
@@ -339,25 +359,28 @@ punteggio più alto, cioè la cifra che il modello ha scelto (`dim` sta per
 punteggi, perché il primo, `dim=0`, è quello delle immagini). Il confronto
 `== y` mette a fianco la risposta vera e produce una colonna di sì e no, cioè
 di valori booleani; `.sum()` conta i sì (che valgono uno) e `.item()` estrae
-quel conteggio come numero Python normale, da poter sommare al totale. Sono le
-quattro operazioni con cui si calcola l'accuratezza, il rapporto fra i sì e il
-totale: la quota di risposte giuste. La riga della loss fa un calcolo
-simile: moltiplica la media del batch per il numero delle sue immagini, perché
-l'ultimo batch ne ha meno degli altri e alla fine si vuole la media su tutte
-(i passaggi per esteso sono nella sezione {doc}`dal notebook agli script
-<dal-notebook-agli-script>`).
+quel conteggio come numero Python normale, da poter sommare al totale.
 
-Prima di cominciare, con i pesi sorteggiati, la loss sul test vale circa
+Sono le quattro operazioni con cui si calcola l'accuratezza, il
+rapporto fra i sì e il totale: la quota di risposte giuste. La riga della loss
+fa un calcolo simile: moltiplica la media del batch per il numero delle sue
+immagini, perché l'ultimo batch ne ha meno degli altri e alla fine si vuole la
+media su tutte (i passaggi per esteso sono nella sezione {doc}`dal notebook
+agli script <dal-notebook-agli-script>`).
+
+Prima di cominciare, con i pesi estratti a caso, la loss sul test vale circa
 $2{,}3$, il $\ln 10$ di chi tira a indovinare fra dieci cifre, e l'accuratezza
-è di circa un decimo: è il punto di partenza di cui parlava la sezione sui
-moduli. Dopo cinque epoche la loss è scesa sotto $0{,}1$ e l'accuratezza
-arriva attorno al 97%: novantasette cifre su cento lette correttamente da
-$101\,770$ numeri che prima di partire erano casuali. Quanto ci vuole dipende
-dalla macchina. Con un modello di poco più di centomila parametri il tempo se
-ne va soprattutto nel `DataLoader`, che a ogni epoca converte in tensori
-sessantamila immagini: anche su un processore normale sono alcune decine di
-secondi. Il vantaggio di una scheda grafica cresce con la taglia del modello, e
-la sezione sulle [prestazioni](prestazioni.md) spiega da dove viene.
+è di circa un decimo: è il punto di partenza di cui parlava la {doc}`sezione
+sui moduli <moduli>`. Dopo cinque epoche la loss è scesa sotto $0{,}1$ e
+l'accuratezza arriva attorno al 97%: novantasette cifre su cento lette
+correttamente da $101\,770$ numeri che prima di partire erano casuali.
+
+Quanto ci vuole dipende dalla macchina. Con un modello di poco più di centomila
+parametri il tempo se ne va soprattutto nel `DataLoader`, che a ogni epoca
+converte in tensori sessantamila immagini: anche su un processore normale sono
+alcune decine di secondi. Il vantaggio di una scheda grafica cresce con la
+taglia del modello, e la sezione sulle [prestazioni](prestazioni.md) spiega da
+dove viene.
 
 ## Studiare e dare l'esame: `train()` ed `eval()`
 
@@ -377,19 +400,21 @@ grandi di solito i numeri che ricevono, per rimetterli in scala prima di
 passarli avanti (è la *batch norm*, di cui parla lo stesso capitolo). Studiando
 prendono quella misura sul mazzetto che hanno davanti; all'esame usano la media
 che si sono annotati durante il ripasso. In tutti e due i casi rimettono in
-scala, e cambia soltanto da dove viene il metro. Per questo all'esame basta
-anche una carta sola, perché il metro è già annotato, mentre durante lo studio
-quella stessa carta sola blocca tutto: da una misura sola non si capisce quanto
-le cose varino, e il programma si ferma e lo dice invece di tirare a
-indovinare.
+scala, e cambia soltanto da dove viene il metro.
+
+Per questo all'esame basta anche una carta sola, perché il metro è già
+annotato, mentre durante lo studio quella stessa carta sola blocca tutto: da
+una misura sola non si capisce quanto le cose varino, e il programma si ferma e
+lo dice invece di tirare a indovinare.
 
 Il blocco `torch.no_grad()` dice al registratore dei gradienti di spegnersi:
-durante l'esame non si prende appunti per migliorare, si risponde soltanto, e
-senza il registratore acceso tutto è più veloce e leggero. I due interruttori
-sono distinti, e nessuno dei due sostituisce l'altro: spegnere il registratore
-lascia accesi i trucchi dello studio, e dichiarare l'esame lascia acceso il
-registratore. Chi ne fa uno solo o riempie fogli che nessuno leggerà, o dà
-l'esame con qualche appunto ancora coperto.
+durante l'esame non si prendono appunti per migliorare, si risponde soltanto, e
+senza il registratore acceso tutto è più veloce e leggero.
+
+I due interruttori sono distinti, e nessuno dei due sostituisce l'altro:
+spegnere il registratore lascia accesi i trucchi dello studio, e dichiarare
+l'esame lascia acceso il registratore. Chi ne fa uno solo o riempie fogli che
+nessuno leggerà, o dà l'esame con qualche appunto ancora coperto.
 `````
 
 `````{tab} Superiore
@@ -400,14 +425,14 @@ valutazione) sono i due casi principali. Di che cosa facciano, e
 perché aiutino, si occupa il capitolo sul deep learning in [ottimizzazione e
 regolarizzazione](../DeepLearning/ottimizzazione-regolarizzazione.md); qui
 serve solo sapere che hanno due comportamenti e che l'interruttore è questo.
-Attenzione a come si dice, perché la
-formulazione sbrigativa («`eval()` spegne dropout e batch norm») è falsa per la
-seconda: in `eval()` il dropout diventa l'identità, la batch norm
-invece continua a normalizzare, solo che usa le medie mobili accumulate invece
-delle statistiche del batch corrente. Una `nn.BatchNorm1d(3)` che ha visto in
-`train()` cento mini-batch con media attorno a $10$ restituisce in `eval()`
-uscite di media vicina a zero (con `momentum=0.1` le medie mobili si assestano
-in alcune decine di passi):
+
+Si noti che la formulazione sbrigativa («`eval()` spegne dropout e batch
+norm») è falsa per la seconda: in `eval()` il dropout diventa l'identità,
+mentre la batch norm continua a normalizzare, solo che usa le medie mobili
+accumulate al posto delle statistiche del batch corrente. Ad esempio, una
+`nn.BatchNorm1d(3)` che ha visto in `train()` cento mini-batch con media
+attorno a $10$ restituisce in `eval()` uscite di media vicina a zero (con
+`momentum=0.1` le medie mobili si assestano in alcune decine di passi):
 
 ```python
 torch.manual_seed(0)
@@ -426,32 +451,37 @@ ingresso 10.0, uscita 0.0
 La differenza non è terminologica: chi crede che `eval()` disattivi la batch
 norm non capisce perché un modello valutato con un batch da un solo esempio
 funzioni benissimo in `eval()` (le medie mobili non dipendono dal batch) e in
-`train()` invece non parta affatto. Non con un `nan`, come si legge spesso:
-con un'eccezione esplicita, `ValueError: Expected more than 1 value per
-channel when training`, che una `nn.BatchNorm1d(3)` solleva su un ingresso di
-forma $(1, 3)$. Il messaggio è più utile della leggenda, perché
-chi lo incontra riconosce il caso senza doverlo dedurre: con un esempio solo
-la varianza per canale non è stimabile, e la libreria preferisce fermarsi
-piuttosto che normalizzare per qualcosa che non ha calcolato. Dove invece i
-valori per canale sono più di uno il calcolo si esegue e `nan` non ne esce: un
-ingresso $(1, 3, 5)$, o l'immagine $(1, 3, 4, 4)$ di una `nn.BatchNorm2d`,
-passano senza errori, e su un ingresso costante l'uscita è zero, o un residuo
-minuscolo di arrotondamento, e non `nan`, perché l’$\varepsilon$ che si somma al
-denominatore impedisce che si divida zero per zero.
+`train()` invece non parta affatto. Non si ferma con un `nan`, come si
+legge spesso, ma con un'eccezione esplicita, `ValueError: Expected more than 1
+value per channel when training`, che una `nn.BatchNorm1d(3)` solleva su un
+ingresso di forma $(1, 3)$.
 
-`torch.no_grad()` è un context manager che sospende la
-costruzione del grafo autograd: non vengono salvati i valori intermedi per un
-`backward()` che non arriverà mai. Il risparmio di memoria cresce con
-la profondità della rete, e l'esecuzione accelera quando il modello risponde e
-basta, senza più imparare niente. In gergo questa fase si chiama
-*inferenza*, parola presa in prestito dalla statistica che qui indica soltanto
-un modello già addestrato messo in uso, senza nessun ragionamento dentro.
-Sono due meccanismi indipendenti e servono entrambi: `eval()` senza
-`no_grad()` dà predizioni corrette ma spreca memoria; `no_grad()` senza
-`eval()` lascia il dropout acceso e falsa le predizioni. Il nostro MLP non ha
-né dropout né batch norm, quindi qui `eval()` è tecnicamente superfluo, ma
-scriverlo sempre è un'abitudine che evita bug sottili appena il modello
-cresce. Quando si fa soltanto inferenza esiste una forma più stretta di
+Il messaggio è più utile della leggenda, perché chi lo incontra riconosce il
+caso senza doverlo dedurre: con un esempio solo la varianza per canale non è
+stimabile, e la libreria preferisce fermarsi piuttosto che normalizzare per
+qualcosa che non ha calcolato. Dove invece i valori per canale sono più di uno,
+il calcolo si esegue e `nan` non ne esce: un ingresso $(1, 3, 5)$, o l'immagine
+$(1, 3, 4, 4)$ di una `nn.BatchNorm2d`, passano senza errori, e su un ingresso
+costante l'uscita è zero, o un residuo minuscolo di arrotondamento, e non
+`nan`, perché l’$\varepsilon$ che si somma al denominatore impedisce che si
+divida zero per zero.
+
+`torch.no_grad()` è un context manager che sospende la costruzione del grafo
+autograd: non vengono salvati i valori intermedi per un `backward()` che non
+arriverà mai. Il risparmio di memoria cresce con la profondità della rete, e
+l'esecuzione accelera quando il modello risponde e basta, senza più imparare
+niente. In gergo questa fase si chiama **inferenza**, parola presa in prestito
+dalla statistica che qui indica soltanto un modello già addestrato messo in
+uso, senza nessun ragionamento dentro.
+
+`eval()` e `no_grad()` sono due meccanismi indipendenti, e servono entrambi:
+`eval()` senza `no_grad()` dà predizioni corrette ma spreca memoria;
+`no_grad()` senza `eval()` lascia il dropout acceso e falsa le predizioni. Il
+nostro MLP non ha né dropout né batch norm, quindi qui `eval()` è tecnicamente
+superfluo, ma scriverlo sempre è un'abitudine che evita bug sottili appena il
+modello cresce.
+
+Quando si fa soltanto inferenza esiste una forma più stretta di
 `no_grad()`, `torch.inference_mode()`, che oltre a non registrare rinuncia
 anche al *version counter* e al tracciamento delle viste: è leggermente più
 veloce, ma i tensori che produce non possono poi rientrare in un grafo
@@ -464,9 +494,9 @@ Il numero stampato a fine epoca dice se il modello generalizza, cioè se
 risponde bene su immagini che non ha mai visto, o se sta imparando a memoria le
 sue. Usarlo per decidere, però, ha un costo. Nel programma su MNIST gli insiemi
 di dati sono due, addestramento e test, e a fine epoca abbiamo guardato il
-test. Se in base a quel numero decido quando fermarmi o che cosa cambiare,
-quelle immagini hanno partecipato alle mie decisioni, e il numero che mi danno
-non stima più l'errore su dati mai visti.
+test. Se in base a quel numero decidiamo quando fermarci o che cosa cambiare,
+quelle immagini hanno partecipato alle nostre decisioni, e il numero che ci
+danno non stima più l'errore su dati mai visti.
 
 Per questo in un progetto serio gli insiemi sono tre, come nella
 {doc}`sezione su overfitting e validazione
@@ -476,8 +506,8 @@ epoca per decidere (gli iperparametri, il momento di fermarsi), e queste
 decisioni lo consumano un poco, perché ogni scelta presa guardandolo lo
 avvicina all'addestramento. L'insieme di test si tocca una volta sola, alla
 fine, e dà la stima onesta. Nel programma su MNIST ne abbiamo usati due per non
-appesantire il codice, scorciatoia comune negli esempi: fuori dagli esempi, il
-terzo insieme si ritaglia.
+appesantire il codice, una scorciatoia comune negli esempi; fuori dagli esempi,
+il terzo insieme si ritaglia.
 
 ```{figure} ../figures/curve-overfitting-validazione.svg
 :name: fig-curve-overfitting
@@ -494,29 +524,31 @@ Guarda le due curve in {numref}`fig-curve-overfitting`. Attenzione al verso:
 qui in verticale c'è l’errore, quindi *scendere* è migliorare. La curva
 dell'addestramento è come i compiti fatti a casa: l'errore cala sempre, perché
 il modello rivede gli stessi esercizi. Quella della validazione è la
-simulazione d'esame con domande nuove. All'inizio scendono insieme, segno che
-il modello sta imparando. Poi quella della validazione tocca il fondo e
-ricomincia a salire, mentre quella dell'addestramento continua a scendere: da
-lì in avanti il modello non sta più imparando, sta imparando a memoria (è
-l’overfitting incontrato nel capitolo sul machine learning). Conviene fermarsi
-nel punto più basso della validazione, e tenere da parte la copia del modello
-salvata in quel momento. La distanza fra le due curve è la spia da guardare:
-finché resta stretta il ripasso serve a qualcosa, e quando si allarga il
-modello sta lavorando per i compiti a casa e non per l'esame. Fermarsi è il
-rimedio più immediato. L'altro è rendergli lo studio un po’ più difficile
-mentre impara, e lo racconta il capitolo sul deep learning.
+simulazione d'esame con domande nuove.
 
-Nel programma di poco fa niente di tutto questo c'è: cinque epoche e via,
-perché su MNIST cinque epoche non bastano a mandare a memoria sessantamila
-immagini. Aggiungerlo però richiede solo un `if`: a ogni epoca si guarda il
-numero della validazione, se è il migliore finora si salva una copia del
-modello, e se non migliora per un po’ di epoche consecutive si esce dal ciclo.
-Salvare quella copia richiede una riga sola, ma è importante che cosa ci si
-mette dentro.
+All'inizio scendono insieme, segno che il modello sta imparando. Poi quella
+della validazione tocca il fondo e ricomincia a salire, mentre quella
+dell'addestramento continua a scendere: da lì in avanti il modello non sta più
+imparando, sta imparando a memoria (è l’overfitting incontrato nel capitolo sul
+machine learning). Conviene fermarsi nel punto più basso della validazione, e
+tenere da parte la copia del modello salvata in quel momento.
+
+La distanza fra le due curve è la spia da guardare: finché resta stretta il
+ripasso serve a qualcosa, e quando si allarga il modello sta lavorando per i
+compiti a casa e non per l'esame. Fermarsi è il rimedio più immediato. L'altro
+è rendergli lo studio un po’ più difficile mentre impara, e lo racconta il
+capitolo sul deep learning.
+
+Nel programma su MNIST niente di tutto questo c'è: cinque epoche e via, perché
+cinque epoche non bastano a mandare a memoria sessantamila immagini.
+Aggiungerlo però richiede solo un `if`: a ogni epoca si guarda il numero della
+validazione, se è il migliore finora si salva una copia del modello, e se non
+migliora per un po’ di epoche consecutive si esce dal ciclo. Salvare quella
+copia richiede una riga sola, ma è importante che cosa ci si mette dentro.
 `````
 
 `````{tab} Superiore
-Nel loop esplicito la diagnosi è immediata: si ritaglia un set di
+Nel loop esplicito la diagnosi è immediata. Si ritaglia un insieme di
 validazione (ad esempio con
 `torch.utils.data.random_split(train_data, [55000, 5000])`), a fine epoca si
 misura $\mathcal{L}_{\text{val}}$, e l’*early stopping* è un `if`: se la
@@ -552,49 +584,54 @@ model.load_state_dict(torch.load("migliore.pt"))   # i pesi dell'epoca migliore
 ```
 
 Ciò che Keras offre come callback preconfezionate, in PyTorch è una decina di
-righe di controllo di flusso; in cambio, nessun limite: fermarsi su una metrica
-composta o salvare solo a condizioni particolari sono varianti banali dello
-stesso `if`. Riprendere da un checkpoint richiede invece un'accortezza: va
-salvato anche lo stato dell'ottimizzatore. Il divario
-$\mathcal{L}_{\text{val}} - \mathcal{L}_{\text{train}}$ resta la bussola: se si
-allarga, servono i freni (`nn.Dropout`, o il *weight decay*, che in
-`optim.Adam` si chiede con `weight_decay` ed è una penalità L2 aggiunta al
-gradiente, diversa dal decadimento disaccoppiato di `optim.AdamW`), che
-approfondiremo in [ottimizzazione e
+righe di controllo di flusso; in cambio non ci sono limiti, e fermarsi su una
+metrica composta o salvare solo a condizioni particolari sono varianti banali
+dello stesso `if`. Riprendere da un checkpoint richiede invece un'accortezza:
+va salvato anche lo stato dell'ottimizzatore.
+
+Il divario $\mathcal{L}_{\text{val}} - \mathcal{L}_{\text{train}}$ resta la
+grandezza da sorvegliare: se si allarga, serve la regolarizzazione
+(`nn.Dropout`, o il *weight decay*, che in `optim.Adam` si chiede con
+`weight_decay` ed è una penalità L2 aggiunta al gradiente, diversa dal
+decadimento disaccoppiato di `optim.AdamW`), che approfondiremo in
+[ottimizzazione e
 regolarizzazione](../DeepLearning/ottimizzazione-regolarizzazione.md).
 `````
 
 ## Salvare il lavoro: lo `state_dict`
 
 Un modello addestrato va messo al sicuro. In PyTorch non si salva l'oggetto
-modello: si salva il suo **`state_dict`**, cioè l'elenco di tutti i suoi numeri
-con accanto il nome del pezzo a cui appartengono (in Python un elenco fatto
-così, dove a ogni nome corrisponde un valore, si chiama *dizionario*). Dentro
-ci sono i pesi imparati e anche i *buffer*: numeri che fanno parte
-dello stato del modello senza essere parametri, quindi senza gradiente, e che
-l'ottimizzatore non tocca. Il caso tipico sono le medie della batch norm,
+modello, ma il suo **`state_dict`**, cioè l'elenco di tutti i suoi numeri con
+accanto il nome del pezzo a cui appartengono (in Python un elenco fatto così,
+dove a ogni nome corrisponde un valore, si chiama *dizionario*).
+
+Dentro ci sono i pesi imparati e anche i **buffer**, cioè numeri che fanno
+parte dello stato del modello senza essere parametri, quindi senza gradiente, e
+che l'ottimizzatore non tocca. Il caso tipico sono le medie della batch norm,
 misurate sui dati invece che ricavate dall'errore (le incontreremo nella
 {doc}`sezione sulla normalizzazione
-</DeepLearning/ottimizzazione-regolarizzazione>`); ma sono buffer anche le
-costanti che il modello si porta dietro, come una maschera. Nel file finiscono
-anche loro.
+</DeepLearning/ottimizzazione-regolarizzazione>`). Sono buffer, però, anche
+le costanti che il modello si porta dietro, come una maschera. Nel file
+finiscono anche loro.
 
-Il motivo per cui non si salva l'oggetto intero è pratico. Salvare l'oggetto
-è affidarlo a `pickle`, il modulo di Python che trasforma oggetti in
-byte, e `pickle` non scrive nel file il codice della classe: scrive il suo nome
-e il modulo in cui sta, più i valori dei suoi attributi. Al ricaricamento
-Python va a cercare quella classe per nome nel tuo codice, che intanto cambia:
-se il file con la classe è stato spostato o rinominato il modello non si
-ricostruisce, e se la classe ha ora un `forward` diverso si ricostruisce
-diverso. Salvando solo i numeri, il file resta leggibile finché sai ricostruire
-l'architettura, e l'architettura è scritta nel codice, dove si può leggere e
-correggere. C'è anche una ragione di sicurezza. Un file di `pickle` non
-contiene soltanto dati: contiene le istruzioni per ricostruire gli oggetti, e
-chi lo prepara può farci eseguire, al momento del ricaricamento, qualunque
-comando sul computer di chi lo apre. Per questo da PyTorch 2.6 `torch.load`
-accetta di default solo tensori, numeri, stringhe e contenitori di questi
-(`weights_only=True`), e un modello salvato intero, al ricaricamento, si ferma
-con un errore.
+Il motivo per cui non si salva l'oggetto intero è pratico. Salvare l'oggetto,
+infatti, vuol dire affidarlo a `pickle`, il modulo di Python che trasforma
+oggetti in byte, e `pickle` non scrive nel file il codice della classe, ma il
+suo nome e il modulo in cui sta, più i valori dei suoi attributi.
+
+Al ricaricamento Python va a cercare quella classe per nome nel tuo codice, che
+intanto cambia: se il file con la classe è stato spostato o rinominato, il
+modello non si ricostruisce, e se la classe ha ora un `forward` diverso, si
+ricostruisce diverso. Salvando solo i numeri, il file resta leggibile finché
+sai ricostruire l'architettura, e l'architettura è scritta nel codice, dove si
+può leggere e correggere.
+
+C'è anche una ragione di sicurezza. Un file di `pickle` non contiene soltanto
+dati, ma anche le istruzioni per ricostruire gli oggetti, e chi lo prepara può
+farci eseguire, al momento del ricaricamento, qualunque comando sul computer di
+chi lo apre. Per questo da PyTorch 2.6 `torch.load` accetta di default solo
+tensori, numeri, stringhe e contenitori di questi (`weights_only=True`), e un
+modello salvato intero, al ricaricamento, si ferma con un errore.
 
 ```python
 torch.save(model.state_dict(), "mnist_mlp.pt")     # salva i numeri
@@ -627,8 +664,10 @@ La ragione è che Adam, mentre corregge i pesi, si costruisce una memoria di
 come si sono mossi finora; questa memoria gli permette di dare a ciascun peso
 il passo giusto, e in particolare di accorciarlo man mano che ci si avvicina.
 SGD, il più spartano dei due, quella memoria non ce l'ha, e con lui la ripresa
-cambia poco. Ricaricare i pesi e ripartire con un ottimizzatore appena creato è
-come rimettere qualcuno alla guida nel punto in cui lo avevi lasciato, ma senza
+cambia poco.
+
+Ricaricare i pesi e ripartire con un ottimizzatore appena creato è come
+rimettere qualcuno alla guida nel punto in cui lo avevi lasciato, ma senza
 dirgli che sta arrivando in curva: la posizione è giusta, la velocità no,
 perché è troppa.
 
@@ -649,32 +688,37 @@ perché un file per riprendere è un fascicolo, con dentro più di un documento.
 `````
 
 `````{tab} Superiore
-Con SGD nudo la questione è marginale; con `optim.Adam`, quello del programma
-su MNIST, i momenti *sono* stato. Sono due medie mobili tenute per ogni peso:
-$m \leftarrow \beta_1 m + (1-\beta_1)\,g$ per i gradienti e $v \leftarrow
-\beta_2 v + (1-\beta_2)\,g^2$ per i loro quadrati, con $g$ il gradiente. Qui
-$m$ è la notazione di Kingma e Ba per il primo momento, non il numero di esempi
-del paragrafo sul `DataLoader`, e di default $\beta_1 = 0{,}9$ e $\beta_2 =
-0{,}999$ (memorie di circa dieci e mille passi). Il passo aggiornato è
-$\eta\,\hat{m}/(\sqrt{\hat{v}}+\varepsilon)$, dove $\hat{m}$ e $\hat{v}$ sono
-le due medie corrette per il bias ($m$ e $v$ divisi per $1-\beta_1^t$ e
-$1-\beta_2^t$) ed $\varepsilon$ evita la divisione per zero. Ripartire senza di
-esse non riprende la stessa traiettoria. Su qualunque
-problema la correzione del bias riparte da $t = 1$, dove dà $\hat{m} = g$ e
-$\hat{v} = g^2$, quindi il rapporto $\hat{m}/(\sqrt{\hat{v}} + \varepsilon)$
-vale $\pm 1$ per costruzione e il primo aggiornamento sposta ogni coordinata di
-$\eta$, a meno del minuscolo $\varepsilon$. A regime il rapporto però non ha
-$1$ per tetto. Gli autori indicano come caso estremo un gradiente grande dopo
-una lunga serie di gradienti nulli, che con i valori di default dà
-$(1-\beta_1)/\sqrt{1-\beta_2} \approx 3{,}16$ {cite}`kingma2015adam`; ma
-nemmeno quello è un tetto, se i passi sono abbastanza. Con gradienti che
-crescono del $2\%$ a ogni passo il rapporto vale $2{,}28$ dopo $200$ passi,
-$4{,}26$ dopo $1000$ e $4{,}99$ dopo $2000$, e continua a salire; nessuna
-sequenza di gradienti, per quanti passi duri, lo porta oltre
-$(1-\beta_1)\big/\sqrt{(1-\beta_2)(1-\beta_1^2/\beta_2)} \approx 7{,}27$ (è la
-disuguaglianza di Cauchy-Schwarz applicata alle due medie), e ci si avvicina
-solo con gradienti che crescono di circa l’$11\%$ a passo per migliaia di
-passi.
+Con SGD semplice la questione è marginale; con `optim.Adam`, quello del
+programma su MNIST, i momenti *sono* stato. Sono due medie mobili tenute per
+ogni peso: $m \leftarrow \beta_1 m + (1-\beta_1)\,g$ per i gradienti e $v
+\leftarrow \beta_2 v + (1-\beta_2)\,g^2$ per i loro quadrati, con $g$ il
+gradiente. Qui $m$ è la notazione di Kingma e Ba per il primo momento, non il
+numero di esempi del paragrafo sul `DataLoader`, e di default $\beta_1 = 0{,}9$
+e $\beta_2 = 0{,}999$ (memorie di circa dieci e mille passi).
+
+Il passo aggiornato è $\eta\,\hat{m}/(\sqrt{\hat{v}}+\varepsilon)$, dove
+$\hat{m}$ e $\hat{v}$ sono le due medie corrette per il bias ($m$ e $v$ divisi
+per $1-\beta_1^t$ e $1-\beta_2^t$) ed $\varepsilon$ evita la divisione per
+zero. Ripartire senza di esse non riprende la stessa traiettoria. In
+particolare, su qualunque problema la correzione del bias riparte da $t = 1$,
+dove dà $\hat{m} = g$ e $\hat{v} = g^2$; quindi il rapporto
+$\hat{m}/(\sqrt{\hat{v}} + \varepsilon)$ vale $\pm 1$ per costruzione e il
+primo aggiornamento sposta ogni coordinata di $\eta$, a meno del minuscolo
+$\varepsilon$.
+
+A regime, però, il rapporto non ha $1$ per tetto. Gli autori indicano come caso
+estremo un gradiente grande dopo una lunga serie di gradienti nulli, che con i
+valori di default dà $(1-\beta_1)/\sqrt{1-\beta_2} \approx 3{,}16$
+{cite}`kingma2015adam`; ma nemmeno quello è un tetto, se i passi sono
+abbastanza.
+
+Ad esempio, con gradienti che crescono del $2\%$ a ogni passo il rapporto vale
+$2{,}28$ dopo $200$ passi, $4{,}26$ dopo $1000$ e $4{,}99$ dopo $2000$, e
+continua a salire. Tuttavia nessuna sequenza di gradienti, per quanti passi
+duri, lo porta oltre $(1-\beta_1)\big/\sqrt{(1-\beta_2)(1-\beta_1^2/\beta_2)}
+\approx 7{,}27$ (è la disuguaglianza di Cauchy-Schwarz applicata alle due
+medie), e ci si avvicina solo con gradienti che crescono di circa l’$11\%$ a
+passo per migliaia di passi.
 
 ```python
 import math
@@ -705,11 +749,12 @@ contrario: $|\hat{m}|$ cala più in fretta di $\sqrt{\hat{v}}$, e il passo della
 corsa non interrotta è più corto di $\eta$. Ricaricando lo stato, invece, il
 passo coincide con quello della traiettoria mai interrotta.
 
-Di quanto sia più lungo dipende dal problema, perciò va misurato su un caso
-preciso: una quadratica $\mathcal{L}(\theta) = \frac{1}{2}\|\theta\|^2$ con
-cento parametri inizializzati da una normale standard, venti passi di Adam con
-$\eta = 0{,}1$, e poi la ripresa. La misura è la media quadratica dello
-spostamento al primo passo dopo la ripresa.
+Di quanto sia più lungo il passo della ripresa senza stato dipende dal
+problema, perciò va misurato su un caso preciso. Consideriamo una quadratica
+$\mathcal{L}(\theta) = \frac{1}{2}\|\theta\|^2$ con cento parametri
+inizializzati da una normale standard, venti passi di Adam con $\eta = 0{,}1$,
+e poi la ripresa; la misura è la media quadratica dello spostamento al primo
+passo dopo la ripresa.
 
 ```python
 import torch
@@ -741,9 +786,9 @@ senza stato: 0.1000
 con lo stato: 0.0294
 ```
 
-Senza lo stato il passo è $\eta$, come previsto; ricaricandolo è
-$0{,}0294$, un fattore $3{,}4$, e nessun messaggio d'errore né con lo stato né
-senza. Il valore cambia col seme, il verso no.
+Senza lo stato il passo è $\eta$, come previsto; ricaricandolo è $0{,}0294$,
+$3{,}4$ volte più corto, e non compare nessun messaggio d'errore, né con
+lo stato né senza. Il valore cambia col seme, il verso no.
 
 Lo stesso vale per ciò che ha uno `state_dict` e che il ciclo tocca: lo
 *scheduler* del learning rate e il `GradScaler` della precisione mista. Non lo
@@ -752,10 +797,10 @@ richiamare `set_epoch`, né i generatori casuali, il cui stato
 (`torch.get_rng_state()`) va salvato a parte se si vuole riprendere con la
 stessa sequenza. Un checkpoint completo è un dizionario, non un tensore.
 
-Al ricaricamento si inciampa in tre punti. Di default ogni tensore torna sul
+Al ricaricamento ci sono tre insidie. Di default ogni tensore torna sul
 dispositivo da cui era partito, quindi un file salvato dalla GPU, aperto dove
 la GPU non c'è, solleva un errore finché non si scrive `torch.load(percorso,
-map_location="cpu")`. Le chiavi dello `state_dict` portano il prefisso
+map_location="cpu")`. Inoltre le chiavi dello `state_dict` portano il prefisso
 `module.` se il modello era avvolto in `nn.DataParallel` o in
 `DistributedDataParallel`, e `_orig_mod.` se era passato da `torch.compile`:
 `load_state_dict` solleva `Missing key(s)` e `Unexpected key(s)` finché il
@@ -788,7 +833,7 @@ Il numero stampato dice che cosa c'era da salvare. Lo `state_dict`
 dell'ottimizzatore ha due chiavi: in `state` c'è la memoria accumulata su
 ciascuno dei quattro tensori di parametri (i pesi e i bias dei due strati), in
 `param_groups` ci sono le impostazioni, il learning rate per primo. Un
-ottimizzatore appena creato ha `state` vuoto, e salvarlo vorrebbe dire
+ottimizzatore appena creato ha `state` vuoto, quindi salvarlo vorrebbe dire
 ripartire senza memoria.
 
 Questo dizionario (pesi, stato dell'ottimizzatore, epoca) è la forma minima del

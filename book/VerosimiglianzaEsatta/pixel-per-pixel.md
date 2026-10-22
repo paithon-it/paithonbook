@@ -1,19 +1,19 @@
 # Un pixel alla volta
 
-Generare un pezzo alla volta si è già visto. Il {doc}`capitolo sui
-Transformer </Transformers/overview>` scrive testo una parola alla volta;
-quello sull'audio produce suono un simbolo alla volta, e prima ancora, con
-WaveNet, un campione d'onda alla volta. La ricetta è sempre la stessa: si mette
-il dato in fila, si insegna alla rete a indovinare il pezzo successivo dati i
-precedenti, e la probabilità dell'intero è il prodotto delle probabilità dei
-pezzi, ciascuna presa sapendo i pezzi che vengono prima. È la regola della
-catena della probabilità: se la prima parola di una frase ha probabilità un
+Generare un pezzo alla volta si è già visto. Il {doc}`capitolo sui Transformer
+</Transformers/overview>` scrive testo una parola alla volta; quello sull'audio
+produce suono un simbolo alla volta, e prima ancora, con WaveNet, un campione
+d'onda alla volta. Lo schema è sempre lo stesso: si mette il dato in fila, si
+insegna alla rete a indovinare il pezzo successivo dati i precedenti, e la
+probabilità dell'intero è il prodotto delle probabilità dei pezzi, ciascuna
+presa sapendo i pezzi che vengono prima. È la regola della catena della
+probabilità. Ad esempio, se la prima parola di una frase ha probabilità un
 decimo e la seconda, sapendo la prima, un mezzo, la coppia ha probabilità un
 ventesimo. Nessuna approssimazione: quel prodotto *è* la probabilità, non una
 sua stima, e ogni fattore è una probabilità vera perché è una scelta fra un
 numero finito di possibilità, con i pesi che sommano a uno.
 
-La stessa ricetta si applica a un'immagine, e ha una storia più lunga dei
+Lo stesso schema si applica a un'immagine, e ha una storia più lunga dei
 modelli che l'hanno resa celebre. Le reti che scrivono la probabilità
 di un dato a molte dimensioni come prodotto di condizionali risalgono almeno ai
 primi anni Novanta; nel 2011 il NADE di Hugo Larochelle e Iain Murray ne fa un
@@ -33,20 +33,19 @@ sta nella seconda.
 
 ## Primo: un ordine
 
-Una frase un ordine ce l'ha, un'immagine no. Bisogna sceglierne uno e non
-cambiarlo più: si va riga per riga, da sinistra a destra, come quando si
+Una frase un ordine ce l'ha, un'immagine no. Bisogna dunque sceglierne uno e
+non cambiarlo più: si va riga per riga, da sinistra a destra, come quando si
 legge, e dentro un pixel a colori si mette anche un ordine fra i tre canali,
-cioè fra il rosso, il verde e il blu.
-La scelta è arbitraria e nessuno pretende che sia la migliore: pretende solo di
-essere fissa, perché è rispetto a essa che «prima» e «dopo» vogliono dire
-qualcosa.
+cioè fra il rosso, il verde e il blu. La scelta è arbitraria e nessuno pretende
+che sia la migliore: pretende solo di essere fissa, perché è rispetto a essa
+che «prima» e «dopo» vogliono dire qualcosa.
 
-Fatto questo, la probabilità di un'immagine è il prodotto delle probabilità
-dei suoi pixel, ciascuna presa sapendo tutti i pixel che nella lettura vengono
-prima, cioè condizionata a quelli. Per una figurina di $32 \times 32$ in bianco
-e nero sono 1.024 fattori, uno per pixel, e ciascuno è una distribuzione su 256
-livelli di grigio: una probabilità vera, che somma a uno, e non un punteggio da
-normalizzare in un secondo tempo.
+Fatto questo, la probabilità di un'immagine è il prodotto delle probabilità dei
+suoi pixel, ciascuna presa sapendo tutti i pixel che nella lettura vengono
+prima, cioè condizionata a quelli. Ad esempio, per una figurina di $32 \times
+32$ in bianco e nero sono 1.024 fattori, uno per pixel, e ciascuno è una
+distribuzione su 256 livelli di grigio: una probabilità vera, che somma a uno,
+e non un punteggio da normalizzare in un secondo tempo.
 
 ## Secondo: una convoluzione che guarda solo indietro
 
@@ -54,8 +53,8 @@ Qui arriva l'ostacolo, e ha una forma precisa. Il {doc}`capitolo sul deep
 learning </DeepLearning/overview>` ha spiegato perché su un'immagine si usa una
 convoluzione e non uno strato denso: la convoluzione calcola l'uscita in un
 punto con un filtro, un quadratino di pesi che guarda un intorno del pixel,
-cioè i vicini in tutte le direzioni. Qui «tutte le direzioni» è ciò che non
-si può ammettere. L'intorno comprende anche pixel che nell'ordine di
+cioè i vicini in tutte le direzioni. Qui «tutte le direzioni» è ciò che non si
+può ammettere. Infatti l'intorno comprende anche pixel che nell'ordine di
 lettura vengono dopo, e se nel prevedere un pixel la rete li vede, il prodotto
 dei condizionali non è più una probabilità.
 
@@ -71,10 +70,10 @@ valore da indovinare: se restasse accesa, la rete imparerebbe in pochi passi
 di addestramento a copiare la risposta dalla domanda, e avremmo un modello con
 verosimiglianza perfetta e utilità nulla. Il primo strato usa quindi la maschera
 di **tipo A**, che spegne anche il centro, cinque caselle su nove. Dal secondo
-strato in poi la casella centrale contiene il risultato che lo strato precedente ha
-calcolato lì a partire dai soli pixel già letti, perché il pixel vero la
-maschera di tipo A gliel'aveva tolto. Spegnerla sarebbe uno spreco, e si lascia
-accesa: è la maschera di **tipo B**, che di caselle ne spegne quattro.
+strato in poi la casella centrale contiene il risultato che lo strato
+precedente ha calcolato lì a partire dai soli pixel già letti, perché il pixel
+vero gliel'aveva tolto la maschera di tipo A. Spegnerla sarebbe uno spreco, e
+si lascia accesa: è la maschera di **tipo B**, che di caselle ne spegne quattro.
 
 ## Il codice, e una sorpresa
 
@@ -168,8 +167,8 @@ campo visivo con 24 strati ('#' visto, '.' passato mai visto, ' ' futuro):
 ```
 
 La prima colonna dei numeri è la buona notizia, e va letta come una prova: a
-qualunque profondità, nessun pixel del futuro contribuisce all'uscita. Le
-maschere rispettano l'ordine di lettura.
+qualunque profondità, nessun pixel del futuro contribuisce all'uscita. In altri
+termini, le maschere rispettano l'ordine di lettura.
 
 La seconda colonna è la sorpresa. Con sei strati ventiquattro pixel del passato
 restano fuori, perché la rete non arriva ancora così lontano e una profondità
@@ -212,18 +211,18 @@ solo la riga corrente fino al pixel. La verticale passa la sua uscita
 all'orizzontale e mai il contrario, perché il ritorno porterebbe nella
 verticale pixel che nell'ordine vengono dopo; la predizione esce
 dall'orizzontale. Il campo resta finito e cresce con la profondità come prima,
-ma senza più buchi. La verosimiglianza migliora, e il merito va diviso: lo
-stesso lavoro cambia anche le funzioni di attivazione.
+ma senza più buchi. La verosimiglianza migliora, ma il merito va diviso, perché
+lo stesso lavoro cambia anche le funzioni di attivazione.
 
 `````{tab} Elementare
 
-Una parola coperta in mezzo a una pagina, e il permesso di leggere tutto
-quello che viene prima: il gioco è indovinarla, e poi la seguente, fino in
-fondo. Il voto della pagina intera è il prodotto dei voti delle singole parole:
-se la prima la indovini con probabilità un mezzo e la seconda, sapendo la
-prima, con probabilità un terzo, le due insieme valgono un sesto. Per dare il
-voto a una pagina già scritta basta un giro, perché le parole ci sono tutte e
-si possono coprire e indovinare insieme; per scriverne una nuova bisogna
+Una parola coperta in mezzo a una pagina, e il permesso di leggere tutto quello
+che viene prima: il gioco è indovinarla, e poi la seguente, fino in fondo. Il
+voto della pagina intera è il prodotto dei voti delle singole parole. Ad
+esempio, se la prima la indovini con probabilità un mezzo e la seconda, sapendo
+la prima, con probabilità un terzo, le due insieme valgono un sesto. Per dare
+il voto a una pagina già scritta basta un giro, perché le parole ci sono tutte
+e si possono coprire e indovinare insieme; per scriverne una nuova bisogna
 indovinare una parola, scriverla, e solo dopo passare alla seguente.
 
 Perché nessuno bari, gli occhiali che ti danno guardano soltanto all'indietro.
@@ -244,8 +243,8 @@ prova, e su un'immagine vera il triangolo cieco è molto più largo. È il punto
 cieco, e lì la profondità non serve più a niente, perché il limite sta nella
 forma dello strumento e si sposta soltanto cambiando quella. La riparazione
 del 2016 è mettere due finestre al posto di una: una guarda tutte le righe di
-sopra da un lato all'altro, l'altra la riga corrente da sinistra. Ciò che vede la
-prima si passa alla seconda, e mai al rovescio: al rovescio la prima si
+sopra da un lato all'altro, l'altra la riga corrente da sinistra. Ciò che vede
+la prima si passa alla seconda, e mai al rovescio: al rovescio la prima si
 ritroverebbe davanti pezzi che non ha il diritto di vedere, e il gioco
 tornerebbe truccato.
 
@@ -277,15 +276,15 @@ tutto ciò che precede che si abbrevia $\mathbf{x}_{<i}$, e $D$ il numero di
 valori che compongono il dato: $n^2$ per un'immagine $n \times n$ in scala di
 grigi, $3n^2$ a colori quando, come in PixelRNN e PixelCNN, i tre canali stanno
 ordinati dentro ciascun pixel. Ogni fattore è una categorica su 256 livelli,
-quindi normalizzata per costruzione: $\log p(\mathbf{x})$ è esatta e si
-ottiene in un solo passaggio in avanti, perché durante l'addestramento tutti i
-contesti sono disponibili insieme (*teacher forcing*). È l'asimmetria
-caratteristica della famiglia: valutare costa un passaggio, campionare ne costa
-$D$. I $D$ passaggi sono $D$ valutazioni complete della rete solo se a ogni
-passo si ricalcola tutto: conservando le attivazioni già calcolate, ogni passo
-aggiorna soltanto ciò che il valore nuovo cambia, e su PixelCNN++ la
-generazione accelera fino a 183 volte {cite}`ramachandran2017fast`. Il numero
-di passi in sequenza resta $D$.
+quindi normalizzata per costruzione: $\log p(\mathbf{x})$ è esatta e si ottiene
+in un solo passaggio in avanti, perché durante l'addestramento tutti i contesti
+sono disponibili insieme (*teacher forcing*). È l'asimmetria caratteristica
+della famiglia: valutare costa un passaggio, campionare ne costa $D$. I
+$D$ passaggi sono $D$ valutazioni complete della rete solo se a ogni passo si
+ricalcola tutto: conservando le attivazioni già calcolate, ogni passo aggiorna
+soltanto ciò che il valore nuovo cambia, e su PixelCNN++ la generazione
+accelera fino a 183 volte {cite}`ramachandran2017fast`. Il numero di passi in
+sequenza resta $D$.
 
 L'ordine di scansione è una scelta che conta. Per un modello perfetto ogni
 ordine dà la stessa $p(\mathbf{x})$, perché la regola della catena vale in
@@ -385,8 +384,8 @@ Chameleon nella {doc}`sezione sulla fusione precoce
 </VisioneLinguaggio/fusione-precoce-tardiva>`.
 
 Nel trasloco si perde la verosimiglianza dell'immagine: quella che si
-calcola sui token è la verosimiglianza dei token. Il passaggio dai pixel
-al catalogo perde informazione, e il numero non dice più niente su ciò che si è
+calcola sui token è la verosimiglianza dei token. Il passaggio dai pixel al
+catalogo perde informazione, e il numero non dice più niente su ciò che si è
 perso. Chi vuole $\log p$ dell'immagine vera deve restare sui pixel o cambiare
 famiglia, con i {doc}`flussi normalizzanti </VerosimiglianzaEsatta/flussi>`.
 
@@ -408,11 +407,11 @@ famiglia, con i {doc}`flussi normalizzanti </VerosimiglianzaEsatta/flussi>`.
   di pixel che vengono prima e che la rete non guarderà mai, per quanto la
   si faccia profonda. Si chiama punto cieco, e non si cura con la
   profondità: si cura cambiando la forma della finestra, cioè mettendone due.
-- Generare è lentissimo, perché va fatto un pixel alla volta: su
-  una fotografia sono quasi duecentomila passaggi, contro l'unico di una GAN.
-  Per questo oggi la stessa idea si applica a pezzi più grossi dei pixel (i
-  simboli di catalogo del VQ-GAN), dove i passaggi diventano poche centinaia. Nel
-  trasloco il numero esatto vale allora per i simboli e non più per l'immagine.
+- Generare è lentissimo, perché va fatto un pixel alla volta: su una fotografia
+  sono quasi duecentomila passaggi, contro l'unico di una GAN. Per questo oggi
+  la stessa idea si applica a pezzi più grossi dei pixel (i simboli di catalogo
+  del VQ-GAN), dove i passaggi diventano poche centinaia. Nel trasloco il
+  numero esatto vale allora per i simboli e non più per l'immagine.
 ```
 
 `````

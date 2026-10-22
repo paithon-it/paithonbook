@@ -4,21 +4,21 @@ Un notebook è il quaderno interattivo con cui si lavora quasi sempre
 quando si sperimenta: una pagina divisa in celle, ciascuna con dentro un
 pezzo di codice, che si eseguono una alla volta premendo un tasto e che
 lasciano il risultato stampato lì sotto. La comodità è enorme: si
-prova una riga, si guarda il numero, si cambia. Il difetto nasce dalla stessa
-libertà, perché le celle si possono eseguire in qualunque ordine, anche in uno
-diverso da quello in cui sono scritte.
+prova una riga, si guarda il numero, si cambia. Il difetto, però, nasce dalla
+stessa libertà, perché le celle si possono eseguire in qualunque ordine, anche
+in uno diverso da quello in cui sono scritte.
 
 Un esperimento utile sul tuo notebook preferito è premere *Restart & Run All*,
 cioè «ricomincia da zero ed esegui tutto in ordine», e guardare che cosa
-succede. Molto spesso non
-succede niente di buono. La cella 43 usa una variabile definita nella cella 12,
-che nel frattempo è stata cancellata; la funzione buona è la terza versione,
-ma le prime due sono ancora lì sotto; il modello che ha dato il risultato
-migliore è stato addestrato con un learning rate che nessuno ha annotato, e
-che ora non è più nel codice. La {numref}`fig-notebook-fuori-ordine` mette i
-due ordini a confronto, quello dei clic e quello delle righe. Il notebook ha
-fatto da laboratorio, e a un certo punto il laboratorio va
-trasformato in un prodotto.
+succede. Molto spesso non succede niente di buono. La cella 43, ad esempio, usa
+una variabile definita nella cella 12, che nel frattempo è stata cancellata; la
+funzione buona è la terza versione, ma le prime due sono ancora lì sotto; il
+modello che ha dato il risultato migliore è stato addestrato con un learning
+rate che nessuno ha annotato, e che ora non è più nel codice.
+
+La {numref}`fig-notebook-fuori-ordine` mette a confronto i due ordini, quello
+dei clic e quello delle righe. Il notebook ha fatto da laboratorio, e a un
+certo punto il laboratorio va trasformato in un prodotto.
 
 ```{figure} ../figures/notebook-fuori-ordine.svg
 :name: fig-notebook-fuori-ordine
@@ -38,50 +38,54 @@ aggiungere strumenti, bastano cinque file di Python semplice e un comando che
 si lancia dal terminale, cioè quella finestra in cui, invece di cliccare, si
 scrivono comandi e il computer risponde. È il primo passo verso la «messa in
 produzione» di un modello, cioè metterlo al lavoro per qualcuno che non l'ha
-scritto: la {doc}`sezione dal notebook alla
-produzione </MLOps/dal-notebook-alla-produzione>`, nel capitolo sull'MLOps,
-riprende il discorso da qui.
+scritto. Il discorso prosegue nella {doc}`sezione dal notebook alla
+produzione </MLOps/dal-notebook-alla-produzione>`, nel capitolo sull'MLOps.
 
 ## Il laboratorio e il prodotto
 
 `````{tab} Elementare
 Un notebook è una cucina di prova: assaggi, aggiungi, ributti, tieni tre
 pentole sul fuoco. È lo strumento giusto per capire se un'idea funziona, perché
-non ti obbliga a essere ordinato. La pentola, invece, non resta. Nella pagina
-salvata ci sono i piatti riusciti e i numerini che dicono in che ordine hai
-acceso i fornelli l'ultima volta; non che cosa bolliva dentro, e nemmeno le
-prove che nel frattempo hai buttato via. Uno script è invece la ricetta
-scritta: chiunque la legga ottiene lo stesso piatto, nello stesso ordine, senza
-doverti chiedere niente.
+non ti obbliga a essere ordinato.
+
+La pentola, però, non resta. Nella pagina salvata ci sono i piatti riusciti e i
+numerini che dicono in che ordine hai acceso i fornelli l'ultima volta; non che
+cosa bolliva dentro, e nemmeno le prove che nel frattempo hai buttato via. Uno
+script è invece la ricetta scritta: chiunque la legga ottiene lo stesso piatto,
+nello stesso ordine, senza doverti chiedere niente.
 
 Il segnale che è arrivato il momento di passare dall'uno all'altro è sempre lo
-stesso: quando cominci a rilanciare la stessa cosa cambiando un numero. Cinque
-prove con cinque learning rate diversi, fatte modificando a mano una cella,
-sono cinque esecuzioni di cui domani non ricorderai la differenza. Le stesse
-cinque prove lanciate da terminale con `--lr 0.01`, `--lr 0.001` e così via
-restano scritte nella cronologia del terminale: sono un esperimento, non un
-ricordo.
+stesso: quando cominci a rilanciare la stessa cosa cambiando un numero. Ad
+esempio, cinque prove con cinque learning rate diversi, fatte modificando a
+mano una cella, sono cinque esecuzioni di cui domani non ricorderai la
+differenza. Le stesse cinque prove lanciate da terminale con `--lr 0.01`,
+`--lr 0.001` e così via restano scritte nella cronologia del terminale: sono un
+esperimento, non un ricordo.
 
 Una ricetta scritta si maneggia poi in modi che una cucina non permette. Metti
 accanto quella di ieri e quella di oggi, e in una riga vedi che cosa è
 cambiato, il sale da cinque grammi a otto; due fotografie della cucina a fine
 serata non te lo direbbero mai, e il file del notebook, che si porta dentro
 anche tutti i piatti usciti dal forno, somiglia più alle fotografie che alla
-ricetta. La ricetta puoi consegnarla a qualcuno che la esegue ogni mattina alle
-sei senza che tu sia lì. Si può anche provare un passaggio solo, la salsa,
+ricetta.
+
+La ricetta puoi consegnarla a qualcuno che la esegue ogni mattina alle
+sei senza che tu sia lì. E puoi provarne anche un passaggio solo, la salsa,
 senza cucinare tutta la cena, perché quel passaggio sta scritto a parte.
 `````
 
 `````{tab} Superiore
 La differenza sostanziale è tra **stato implicito** e **stato esplicito**. Nel
-notebook lo stato vive nel kernel: il documento salvato registra per ogni cella
-il numero della sua ultima esecuzione, non la storia delle esecuzioni né le
-celle nel frattempo cancellate. Perciò il documento non basta a dire come si
+notebook lo stato vive nel kernel, e il documento salvato registra per ogni
+cella il numero della sua ultima esecuzione, non la storia delle esecuzioni né
+le celle nel frattempo cancellate. Perciò il documento non basta a dire come si
 riottengono i suoi output. Un notebook è riproducibile solo se lo si riesegue
 da kernel pulito, dall'alto in basso, e nulla nel file garantisce che sia
-andata così. Uno script ha un unico punto d'ingresso, un ordine totale delle
-istruzioni, e tutto ciò che varia passa dagli argomenti della riga di comando:
-input, output e parametri sono dichiarati.
+andata così.
+
+Uno script, invece, ha un unico **punto d'ingresso**, un ordine totale delle
+istruzioni, e tutto ciò che varia passa dagli argomenti della riga di comando.
+In altri termini, input, output e parametri sono dichiarati.
 
 Ne discendono tre vantaggi immediati per lo script: si mette sotto
 controllo di versione in modo leggibile (il `.ipynb` è un JSON con dentro gli
@@ -92,10 +96,10 @@ eseguire tutto il resto.
 
 ## Cinque file, cinque responsabilità
 
-La divisione che segue è quella del capitolo *PyTorch Going Modular* del
+La divisione in cinque file è quella del capitolo *PyTorch Going Modular* del
 corso di Daniel Bourke (*Learn PyTorch for Deep Learning*): i nomi dei file
-sono i suoi, quelli delle funzioni sono adattati. Non c'è nulla di magico: è la
-stessa struttura del capitolo, resa file.
+sono i suoi, quelli delle funzioni sono adattati. Non c'è nulla di magico,
+perché è la stessa struttura del capitolo, tradotta in file.
 
 ```text
 progetto/
@@ -106,8 +110,8 @@ progetto/
 └── train.py          # il punto d'ingresso: mette insieme gli altri quattro
 ```
 
-Il pezzo centrale è `engine.py`: il training loop della sezione
-[sull'addestramento](addestramento.md), estratto in due funzioni che non sanno
+Il pezzo centrale è `engine.py`, cioè il training loop della sezione
+[sull'addestramento](addestramento.md) estratto in due funzioni che non sanno
 nulla del problema specifico e che quindi si riusano ovunque.
 
 ```python
@@ -154,26 +158,31 @@ def passo_valutazione(modello, loader, criterio, device):
 
 Un primo dettaglio è la moltiplicazione `* X.size(0)`. Serve perché la loss
 restituita da PyTorch è già una media sul batch, cioè sugli esempi che hanno
-appena attraversato la rete, e la media delle medie non è la media. Con i
-numeri: due batch, il primo con dieci esempi che sbagliano in media di $1$, il
-secondo con due esempi che sbagliano in media di $4$. La media vera sui dodici
-esempi è $(10 \cdot 1 + 2 \cdot 4)/12 = 1{,}5$; la media delle due medie è
-$(1 + 4)/2 = 2{,}5$, cioè due terzi più alta del vero, perché conta i due
-esempi del secondo batch come se fossero dieci. Moltiplicare ciascuna media per
-il numero di esempi del suo batch, sommare, e dividere alla fine per il totale
-rimette le cose a posto. Avere batch di dimensioni diverse capita quasi sempre:
-a meno di chiedere il contrario, il `DataLoader` consegna anche l'ultimo batch,
-più piccolo degli altri quando gli esempi non si dividono in parti uguali.
+appena attraversato la rete, e la media delle medie non è la media.
+
+Prendiamo due batch, il primo con dieci esempi che sbagliano in media di $1$
+e il secondo con due esempi che sbagliano in media di $4$. La media vera sui
+dodici esempi è $(10 \cdot 1 + 2 \cdot 4)/12 = 1{,}5$; la media delle due
+medie è $(1 + 4)/2 = 2{,}5$, cioè due terzi più alta del vero, perché
+conta i due esempi del secondo batch come se fossero dieci.
+
+Moltiplicare ciascuna media per il numero di esempi del suo batch, sommare, e
+dividere alla fine per il totale rimette le cose a posto. E avere batch di
+dimensioni diverse capita quasi sempre, poiché, a meno di chiedere il
+contrario, il `DataLoader` consegna anche l'ultimo batch, più piccolo degli
+altri quando gli esempi non si dividono in parti uguali.
 
 Il secondo dettaglio è la riga `@torch.no_grad()` scritta sopra la seconda
-funzione. Quella chiocciola in Python si chiama decoratore: è una riga che
-avvolge la funzione e ne cambia il comportamento senza toccarne il corpo. Qui
-dice che dentro la funzione autograd non registra il grafo dei calcoli (il
+funzione. Quella chiocciola in Python si chiama decoratore, ed è una riga che
+avvolge la funzione e ne cambia il comportamento senza toccarne il corpo.
+
+Qui dice che dentro la funzione autograd non registra il grafo dei calcoli (il
 «registratore» della sezione [sui tensori](tensori.md), che serve a
-ripercorrere i calcoli all'indietro), e in valutazione il grafo non serve, perché
-nessun peso viene corretto. Il decoratore risparmia anche di doversi
-ricordare, a ogni chiamata, il blocco `with torch.no_grad():` che fa la stessa
-cosa a mano. La funzione *è* una valutazione, e non può essere altro.
+ripercorrere i calcoli all'indietro). In valutazione, infatti, il grafo non
+serve, perché nessun peso viene corretto. Il decoratore risparmia anche di
+doversi ricordare, a ogni chiamata, il blocco `with torch.no_grad():` che fa la
+stessa cosa a mano. In questo modo la funzione *è* una valutazione, e non può
+essere altro.
 
 ## Il punto d'ingresso
 
@@ -181,18 +190,19 @@ cosa a mano. La funzione *è* una valutazione, e non può essere altro.
 concreti. Tutto ciò che potrebbe cambiare da un esperimento all'altro diventa
 un argomento della riga di comando.
 
-Leggendolo si incontrano dei nomi che qui non sono scritti da nessuna parte,
-`data_setup.crea_dataloader` e `model_builder.CNNSemplice`: vengono dagli altri
-due file, quelli che costruiscono i `DataLoader` e il modello. Nel primo ci
-sono le cose della sezione [sui dati](dati-su-misura.md); nel secondo c'è un
-`nn.Module` come quello della sezione [sui moduli](moduli.md), con una rete
+Leggendolo si incontrano dei nomi di cui non si vede il codice,
+`data_setup.crea_dataloader` e `model_builder.CNNSemplice`, che vengono dagli
+altri due file, quelli che costruiscono i `DataLoader` e il modello. Nel primo
+ci sono le cose della sezione [sui dati](dati-su-misura.md); nel secondo c'è
+un `nn.Module` come quello della sezione [sui moduli](moduli.md), con una rete
 convoluzionale al posto dei soli strati `nn.Linear` (la CNN del nome è la
-sigla inglese di rete convoluzionale). Le convoluzioni arrivano più avanti,
-nella {doc}`sezione sulle reti convoluzionali
-</DeepLearning/reti-convoluzionali>`: qui basta sapere che `CNNSemplice` è un
-modulo che trasforma immagini in punteggi. È il punto della divisione in
-file: `train.py` non ha bisogno di sapere come sono fatti dentro,
-gli basta chiamarli per nome.
+sigla inglese di rete convoluzionale).
+
+Le convoluzioni arrivano più avanti, nella {doc}`sezione sulle reti
+convoluzionali </DeepLearning/reti-convoluzionali>`; per ora basta sapere che
+`CNNSemplice` è un modulo che trasforma immagini in punteggi. Ed è proprio lo
+scopo della divisione in file: `train.py` non ha bisogno di sapere come sono
+fatti dentro, gli basta chiamarli per nome.
 
 ```{code-block} python
 :class: pt-non-eseguibile
@@ -246,11 +256,11 @@ if __name__ == "__main__":      # eseguito solo se si lancia questo file
 A trasportare i valori da fuori a dentro il programma è `argparse`, la parte di
 Python che legge le parole scritte nel terminale dopo il nome del file e le
 consegna al codice sotto forma di numeri e di testo. Ogni `add_argument`
-dichiara una manopola: come si chiama da fuori (`--lr`), di che tipo è il
-valore, e quanto vale se nessuno la tocca. In quest'ultimo campo si incontra
-`1e-3`, che è il modo in cui i programmi scrivono $0{,}001$: si legge «uno per
-dieci alla meno tre», cioè uno diviso mille. Da terminale, un esperimento
-diventa quindi una riga:
+dichiara un argomento: come si chiama da fuori (`--lr`), di che tipo è il
+valore, e quanto vale se nessuno lo specifica. In quest'ultimo campo si
+incontra `1e-3`, che è il modo in cui i programmi scrivono $0{,}001$ e si legge
+«uno per dieci alla meno tre», cioè uno diviso mille. Da terminale, un
+esperimento diventa quindi una riga:
 
 ```bash
 python train.py --dati dati/ --epoche 20 --lr 0.001
@@ -272,29 +282,30 @@ l'addestramento, e Python fermerebbe tutto con un errore.
 
 Le manopole da terminale bastano finché sono una manciata. Quando diventano
 quaranta, con degli incastri (se il modello è questo, quell'altra manopola non
-ha senso) e con valori che cambiano da un computer all'altro, la riga
-da scrivere diventa lunga un metro. Allora si scrivono tutte su un foglio, un
-file di configurazione, che si tiene insieme al codice. Il foglio ricorda meglio
-della cronologia del terminale, che appartiene a quella macchina e a
+ha senso) e con valori che cambiano da un computer all'altro, la riga da
+scrivere diventa lunga un metro. Allora si scrivono tutte su un foglio, un
+**file di configurazione**, che si tiene insieme al codice. Il foglio ricorda
+meglio della cronologia del terminale, che appartiene a quella macchina e a
 quell'utente e col tempo si accorcia, mentre il foglio resta lì e chiunque può
 rileggerlo.
 
-L'ultima riga di `main()` salva più dei soli pesi: insieme a quelli
-finiscono nel file i nomi delle classi, tutte le manopole con cui è stato
-lanciato l'esperimento, e la memoria dell'ottimizzatore vista nella sezione sul
-[training loop](addestramento.md). Questo salvataggio distingue un modello utile da
-un file misterioso: fra sei mesi quel `.pt` non direbbe né che cosa
+L'ultima riga di `main()` salva più dei soli pesi: insieme a quelli finiscono
+nel file i nomi delle classi, tutte le manopole con cui è stato lanciato
+l'esperimento, e la memoria dell'ottimizzatore vista nella sezione sul
+[training loop](addestramento.md). Questo salvataggio distingue un modello
+utile da un file misterioso: fra sei mesi quel `.pt` non direbbe né che cosa
 predice, né come è stato ottenuto, né da dove ripartire.
 
 Nel file, però, ci vanno numeri e parole e nient'altro. Dentro un file si può
 mettere un biglietto oppure un congegno: il biglietto lo legge chiunque lo
-trovi, il congegno deve essere messo in funzione perché dica qualcosa. Un file
-di questo genere può contenere un congegno, cioè delle istruzioni: aprirlo
-significa eseguirle sul proprio computer, quindi fidarsi di chi l'ha spedito.
-Da qualche versione, quando PyTorch ne apre uno, prende i numeri e le parole e
-si ferma davanti al resto, a meno di dichiarare esplicitamente nella riga che
-lo apre che di quel file ci si fida. Le manopole quindi finiscono lì dentro
-come un semplice elenco di nomi e valori.
+trovi, il congegno deve essere messo in funzione perché dica qualcosa.
+
+Un file di questo genere può contenere un congegno, cioè delle istruzioni:
+aprirlo significa eseguirle sul proprio computer, quindi fidarsi di chi l'ha
+spedito. Ecco perché, da qualche versione, quando PyTorch ne apre uno,
+prende i numeri e le parole e si ferma davanti al resto, a meno di dichiarare
+esplicitamente nella riga che lo apre che di quel file ci si fida. Le manopole
+quindi finiscono lì dentro come un semplice elenco di nomi e valori.
 `````
 
 `````{tab} Superiore
@@ -308,13 +319,13 @@ produzione](../MLOps/dal-notebook-alla-produzione.md).
 
 Da PyTorch 2.6 `torch.load` usa `weights_only=True` come default, quindi un
 file che contiene oggetti Python arbitrari va ricaricato con
-`weights_only=False`. È meglio però salvarlo con dentro solo tipi elementari, come
-qui: `vars(args)` è un dizionario di stringhe e numeri e non un `Namespace`,
-per questo.
+`weights_only=False`. È meglio però salvarlo con dentro solo tipi elementari,
+ed è per questo che `train.py` passa `vars(args)`, un dizionario di stringhe e
+numeri, e non un `Namespace`.
 `````
 
-Ecco la funzione di salvataggio. Raccoglie ciò che un file deve contenere
-per riprendere il lavoro (un **checkpoint**, nel gergo): i pesi, lo stato
+La funzione di salvataggio raccoglie ciò che un file deve contenere per
+riprendere il lavoro (un **checkpoint**, nel gergo), cioè i pesi, lo stato
 dell'ottimizzatore, l'epoca raggiunta, i nomi delle classi e la configurazione.
 
 ```python
@@ -351,10 +362,12 @@ Il salvataggio parte da un modello vivo e produce numeri, e sembra facile; il
 ricaricamento deve fare il contrario, e i numeri non dicono in che
 forma andavano rimessi. Questa asimmetria, disegnata in
 {numref}`fig-serializzazione`, è una fonte frequente di errori di
-ricaricamento. Per questo motivo la configurazione viaggia nello stesso
-file dei pesi: dentro c'è anche il seme, che di quella configurazione è una
-voce come le altre. I due passaggi del ricaricamento, in codice, sono la
-ricostruzione del modello dalla configurazione e il caricamento dei pesi:
+ricaricamento. Per questo motivo la configurazione viaggia nello stesso file
+dei pesi, e dentro c'è anche il seme, che di quella configurazione è una voce
+come le altre.
+
+I due passaggi del ricaricamento, in codice, sono la ricostruzione del modello
+dalla configurazione e il caricamento dei pesi:
 
 ```{code-block} python
 :class: pt-non-eseguibile
@@ -372,26 +385,26 @@ def carica_modello(percorso, device="cpu"):
     return modello.eval(), stato["classi"]
 ```
 
-`map_location` dice dove mettere i tensori mentre li legge: senza, un file
+`map_location` dice dove mettere i tensori mentre li legge; senza, un file
 salvato da una scheda grafica non si apre su una macchina che non ce l'ha. La
-funzione restituisce il modello già in `eval()`, pronto a rispondere; per
-riprendere l'addestramento servono anche `stato["ottimizzatore"]` e
+funzione restituisce il modello già in `eval()`, pronto a rispondere, mentre
+per riprendere l'addestramento servono anche `stato["ottimizzatore"]` e
 `stato["epoca"]`, come nella sezione sul training loop.
 
 ## Riproducibilità: fissare il caso
 
 Un risultato che cambia a ogni esecuzione, e che nessuno può rifare uguale, non
 si può controllare. Il minimo per fissare il caso sta in poche righe ed è la
-funzione che `train.py` chiama per prima, prima ancora di costruire il modello
-e i `DataLoader`: se si fissa il caso dopo aver sorteggiato i pesi, non si è
-fissato niente.
+prima funzione che `train.py` chiama, ancora prima di costruire il modello e i
+`DataLoader`, perché se si fissa il caso dopo aver inizializzato i pesi non si
+è fissato niente.
 
-Il seme è quello già incontrato nella {doc}`sezione su NumPy </Python/numpy>`:
-il numero da cui parte la formula che produce una sequenza che *sembra*
+Il seme è quello già incontrato nella {doc}`sezione su NumPy </Python/numpy>`,
+cioè il numero da cui parte la formula che produce una sequenza che *sembra*
 casuale. Stesso seme, stesso punto di partenza, stessa sequenza, e quindi
-stessi pesi iniziali e stesso ordine di mescolamento dei dati: sulla stessa
-macchina e con le stesse versioni delle librerie, lo stesso risultato, salvo
-le ultime cifre dei calcoli fatti su una scheda grafica.
+stessi pesi iniziali e stesso ordine di mescolamento dei dati. Sulla stessa
+macchina e con le stesse versioni delle librerie si ottiene così lo stesso
+risultato, salvo le ultime cifre dei calcoli fatti su una scheda grafica.
 
 Le righe sono tre perché ogni libreria ha la sua sequenza, e vanno avvisate
 tutte: quella di Python, quella di NumPy (che tante librerie di dati usano) e
@@ -412,21 +425,23 @@ def fissa_seme(seme: int = 42) -> None:
 
 `````{tab} Elementare
 Il seme dice da quale foglio di estrazioni leggere, e quel foglio è già scritto
-riga per riga. Chi riparte dallo stesso foglio pesca gli stessi numeri nello
-stesso ordine, e rifà lo stesso esperimento fino allo stesso numero finale. Un
-foglio solo, però, può essere fortunato, e allora non dice se il modello è
+riga per riga. Chi riparte dallo stesso foglio, quindi, pesca gli stessi numeri
+nello stesso ordine, e rifà lo stesso esperimento fino allo stesso numero
+finale.
+
+Un foglio solo, però, può essere fortunato, e allora non dice se il modello è
 buono. Né dice se una modifica l'ha migliorato: cambi il learning rate, e anche
 con lo stesso foglio il modello percorre un'altra strada, così uno scarto
 piccolo può venire dal foglio più che dal learning rate. Per saperlo rifai la
 prova con tre o cinque fogli diversi, confronti le medie, e magari anche quanto
 ballano i valori.
 
-Nessun foglio garantisce le ultime cifre. Una somma lunga,
-fatta in ordini diversi, dà totali diversi, e non serve sbagliare niente,
-basta che a ogni passaggio si arrotondi. Un conto in banca tiene i centesimi, e
+Nessun foglio garantisce le ultime cifre. Una somma lunga, fatta in ordini
+diversi, dà totali diversi, e non serve sbagliare niente, basta che a ogni
+passaggio si arrotondi. Un conto in banca, ad esempio, tiene i centesimi e
 matura quattro decimi di centesimo di interessi al giorno. Accreditati giorno
-per giorno, spariscono ogni volta nell'arrotondamento, e dopo un anno il saldo è
-quello di partenza; sommati prima fra loro fanno un euro e quarantasei, e il
+per giorno, spariscono ogni volta nell'arrotondamento, e dopo un anno il saldo
+è quello di partenza; sommati prima fra loro fanno un euro e quarantasei, e il
 saldo si muove. Stessi numeri, ordine diverso, totale diverso.
 
 Una scheda grafica lavora così, spezzando la somma fra migliaia di
@@ -441,40 +456,44 @@ Per questo ci sono due interruttori. Il primo,
 `torch.use_deterministic_algorithms(True)`, pretende che le somme si facciano
 sempre nello stesso ordine. Il secondo, `torch.backends.cudnn.benchmark`, va
 lasciato spento, com'è di partenza. Acceso, fa provare alla macchina più modi
-di fare lo stesso conto e tiene il più veloce; quale vinca dipende da com'è
-messa la scheda quella sera, e la gara rende soltanto se poi lo stesso conto si
-ripete mille volte identico. Con tutti e due gli interruttori i numeri tornano
-uguali fino all'ultima cifra. Sulla scheda grafica serve anche un'impostazione
-in più per le moltiplicazioni, scritta fuori dal programma, senza la quale il
-primo interruttore ferma tutto alla prima. Il determinismo ha due conseguenze:
-di qualche operazione la versione ordinata non esiste e il programma si ferma
-avvisando, il resto va più piano. È un compromesso che si accetta quando si dà
-la caccia a un errore e serve sapere che fra due esecuzioni cambia soltanto
-la modifica fatta.
+di fare lo stesso calcolo e tiene il più veloce; quale vinca dipende da com'è
+messa la scheda quella sera, e la gara rende soltanto se poi lo stesso calcolo
+si ripete mille volte identico.
+
+Con tutti e due gli interruttori i numeri tornano uguali fino all'ultima cifra.
+Sulla scheda grafica serve anche un'impostazione in più per le moltiplicazioni,
+scritta fuori dal programma, senza la quale il primo interruttore ferma tutto
+alla prima. Il determinismo ha due conseguenze: di
+qualche operazione la versione ordinata non esiste e il programma si ferma
+avvisando, mentre il resto va più piano. È un compromesso che si accetta quando
+si dà la caccia a un errore e serve sapere che fra due esecuzioni cambia
+soltanto la modifica fatta.
 
 Poi ci sono gli aiutanti che preparano i vassoi. A ciascuno PyTorch consegna da
-sé un foglio diverso, e lo stesso da una sera all'altra: così i ritagli e gli
+sé un foglio diverso, e lo stesso da una sera all'altra, così i ritagli e gli
 specchi cambiano da un aiutante all'altro e si ripetono uguali a ogni
-esecuzione. Un generatore di numeri a caso creato nel tuo codice, invece, è un
-foglio che PyTorch non conosce. Se lo prepari una volta sola, fuori dalla parte
-che costruisce il singolo esempio, ogni aiutante ne riceve una fotocopia e la
-legge dalla prima riga: tutti pescano gli stessi numeri nello stesso ordine, e i
-vassoi si somigliano tutti. Il rimedio è dare a ciascuno il suo foglio, scritto
-quando l'aiutante comincia a lavorare.
+esecuzione.
+
+Un generatore di numeri a caso creato nel tuo codice, invece, è un foglio che
+PyTorch non conosce. Se lo prepari una volta sola, fuori dalla parte che
+costruisce il singolo esempio, ogni aiutante ne riceve una fotocopia e la legge
+dalla prima riga, quindi tutti pescano gli stessi numeri nello stesso ordine e
+i vassoi si somigliano tutti. Il rimedio è dare a ciascuno il suo foglio,
+scritto quando l'aiutante comincia a lavorare.
 
 Anche un sorteggio che conta, come la divisione dei dati, merita un foglio tutto
 suo. Se pesca da quello comune, basta che qualcuno aggiunga un'estrazione prima
 di lui perché le righe scalino di un posto, e la divisione cambia senza che
 nessuno l'abbia toccata. Fra versioni diverse delle librerie, poi, o fra
-macchine diverse, nemmeno lo stesso seme promette gli stessi numeri: chi riporta
-un risultato scrive anche con quali versioni l'ha ottenuto.
+macchine diverse, nemmeno lo stesso seme promette gli stessi numeri, e per
+questo chi riporta un risultato scrive anche con quali versioni l'ha ottenuto.
 `````
 
 `````{tab} Superiore
 Fissare i semi rende riproducibile la sequenza pseudocasuale, ma non basta a
-garantire risultati bit-identici su GPU: molti kernel CUDA usano riduzioni
-atomiche il cui ordine di somma varia tra esecuzioni, e in virgola mobile
-l'addizione non è associativa. Il determinismo completo si chiede
+garantire risultati bit-identici su GPU. Molti kernel CUDA, infatti, usano
+riduzioni atomiche il cui ordine di somma varia tra esecuzioni, e in virgola
+mobile l'addizione non è associativa. Il determinismo completo si chiede quindi
 esplicitamente, con un costo in prestazioni:
 
 ```{code-block} python
@@ -487,26 +506,29 @@ torch.backends.cudnn.benchmark = False     # niente autotuning degli algoritmi
 
 `cudnn.benchmark = True` (spento di default, si accende per le prestazioni)
 prova più algoritmi di convoluzione e sceglie il più veloce per quella forma di
-input: è ottimo quando le forme sono costanti, controproducente quando cambiano
-di continuo, e non deterministico in entrambi i casi. Anche i `DataLoader` con
-più worker richiedono attenzione, ma non per i tre generatori di prima, che il
-loader stesso semina, uno per worker, a partire dal seme globale. Servono
-`generator` e `worker_init_fn` per gli oggetti che il loader non conosce,
-tipicamente un `np.random.Generator` costruito al caricamento del modulo, che
-altrimenti viene copiato identico in ogni processo.
+input. È ottimo quando le forme sono costanti, controproducente quando cambiano
+di continuo, e non deterministico in entrambi i casi.
 
-`fissa_seme`, d'altra parte, è il minimo. Le estrazioni che non devono
-dipendere dallo stato globale ricevono un generatore esplicito
+Anche i `DataLoader` con più worker richiedono attenzione, ma non per i tre
+generatori di prima, che il loader stesso semina, uno per worker, a partire dal
+seme globale. Servono `generator` e `worker_init_fn` per gli oggetti che il
+loader non conosce, tipicamente un `np.random.Generator` costruito al
+caricamento del modulo, che altrimenti viene copiato identico in ogni processo.
+
+`fissa_seme` è soltanto il minimo. Le estrazioni che non devono dipendere dallo
+stato globale ricevono un generatore esplicito
 (`torch.Generator().manual_seed(seme)` a `random_split`,
-`np.random.default_rng(seme)` al posto di `np.random.seed`); l'ordine di
-iterazione degli insiemi di stringhe dipende da `PYTHONHASHSEED`, che va
-fissato nell'ambiente prima di avviare l'interprete. Nemmeno così il risultato
-è garantito fra versioni di PyTorch, fra commit o fra piattaforme, e la
-documentazione di PyTorch lo dice esplicitamente (*Reproducibility*): chi
-pubblica una tabella di risultati scrive anche con quali versioni l'ha
-prodotta. In pratica, nella ricerca si punta alla riproducibilità *statistica*
-(stessa distribuzione di risultati su più semi) e si riserva il determinismo
-bit-a-bit ai casi in cui serve, come il debugging di una regressione.
+`np.random.default_rng(seme)` al posto di `np.random.seed`). Inoltre l'ordine
+di iterazione degli insiemi di stringhe dipende da `PYTHONHASHSEED`, che va
+fissato nell'ambiente prima di avviare l'interprete.
+
+Nemmeno così il risultato è garantito fra versioni di PyTorch, fra commit o fra
+piattaforme, e la documentazione di PyTorch lo dice esplicitamente
+(*Reproducibility*). Per questo chi pubblica una tabella di risultati scrive
+anche con quali versioni l'ha prodotta. In pratica, nella ricerca si punta alla
+**riproducibilità statistica** (stessa distribuzione di risultati su più semi)
+e si riserva il determinismo bit-a-bit ai casi in cui serve, come il debugging
+di una regressione.
 `````
 
 ## Quando *non* modularizzare
@@ -521,12 +543,13 @@ ripaga quando qualcosa si ripete, e non prima.
 La regola pratica è quella delle **tre volte**: la prima volta si scrive nel
 notebook; la seconda si copia e incolla, borbottando; la terza si estrae una
 funzione. Il numero conta meno del borbottio, che è il segnale vero, e la
-misura è quella piccola: una funzione, non un file. I file vengono dopo, e
-ciascuno nasce quando le funzioni che ospita formano un compito a sé
-(preparare i dati, costruire il modello, addestrare). Il passaggio non è mai
-tutto-o-niente: si può tenere il notebook come interfaccia di esplorazione e
-importarvi `engine.py`, ottenendo il meglio delle due cose (grafici e assaggi
-nel notebook, logica stabile e testabile nei file).
+misura è quella piccola, cioè una funzione e non un file.
+
+I file vengono dopo, e ciascuno nasce quando le funzioni che ospita formano un
+compito a sé (preparare i dati, costruire il modello, addestrare). Il passaggio
+non è mai tutto-o-niente. Si può, ad esempio, tenere il notebook come
+interfaccia di esplorazione e importarvi `engine.py`, ottenendo il meglio delle
+due cose (grafici e assaggi nel notebook, logica stabile e testabile nei file).
 
 Cinque file, un comando, un seme fissato: è il minimo perché un esperimento
 smetta di essere un ricordo.
@@ -575,13 +598,13 @@ smetta di essere un ricordo.
   solo non permette di riprendere.
 - Fissare i semi rende ripetibile un'esecuzione; per confrontare due
   configurazioni si ripete con più semi (riproducibilità statistica). Il
-  determinismo bit-a-bit su GPU si chiede a parte e si paga in prestazioni, e
-  niente è garantito fra versioni e piattaforme.
+  determinismo bit-a-bit su GPU si chiede a parte e si paga in
+  prestazioni, e niente è garantito fra versioni e piattaforme.
 - Non modularizzare troppo presto: la regola delle tre volte.
 ```
 `````
 
 Ripetibilità e verifica servono anche nel lavoro opposto: rifare
-l'esperimento di qualcun altro partendo da un articolo scientifico, dove
+l'esperimento di qualcun altro partendo da un paper, dove
 nessuno ha preparato né gli script né i semi. È il {doc}`metodo per replicare
 un paper <replicare-un-paper>`.

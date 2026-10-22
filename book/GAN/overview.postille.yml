@@ -1,0 +1,17 @@
+# Le postille di questa pagina, una per capoverso del testo comune.
+# Ognuna vale finché la sua impronta combacia col testo del capoverso.
+- inizio: "Abbiamo già incontrato reti che *producono*"
+  impronta: "6b910cdf944d"
+  postilla: "Finora la risposta giusta c'era, anche dove una seconda rete già cercava i falsi"
+- inizio: "Chi deve disegnare un gatto mai"
+  impronta: "d24f72bd7883"
+  postilla: "Senza un originale da confrontare: come si insegna a fabbricare dati plausibili?"
+- inizio: "Una risposta l'ha appena data il"
+  impronta: "b7614c9b1662"
+  postilla: "Niente verosimiglianza, né un suo limite: una seconda rete dice se ci crede"
+- inizio: "Le reti sono due e si"
+  impronta: "bda909a5e3c9"
+  postilla: "Generatore e discriminatore: il duello c'era già nei codec e in HiFi-GAN"
+- inizio: "Le GAN hanno spostato il confine"
+  impronta: "48a1f6d55f8a"
+  postilla: "Le GAN hanno portato volti fotorealistici, deepfake e arte generata"

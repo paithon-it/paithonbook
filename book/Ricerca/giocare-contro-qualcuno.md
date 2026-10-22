@@ -5,16 +5,17 @@ parte, il labirinto non si riorganizza per dispetto.
 
 Con un avversario davanti cambia tutto, e cambia in un punto solo: metà delle
 mosse non le scelgo io. L’albero è lo stesso, i rami sono gli stessi, ma un
-livello sì e uno no li sceglie qualcuno con interessi opposti ai miei. Non
-posso più chiedermi «qual è la strada migliore»: devo chiedermi «qual è la
-mossa che vale qualcosa anche contro la risposta peggiore».
+livello sì e uno no li sceglie qualcuno con interessi opposti ai miei. Quindi
+non posso più chiedermi «qual è la strada migliore», ma devo chiedermi «qual è
+la mossa che vale qualcosa anche contro la risposta peggiore».
 
 ## Ragionare all’indietro dalla fine
 
-Il modo di rispondere si chiama **minimax**, e il nome sono le sue due metà:
-c’è un punteggio solo sul tavolo, e uno dei due giocatori cerca di portarlo al
-massimo mentre l’altro cerca di portarlo al minimo. Un punto guadagnato da me è
-un punto perso da lui, e nessuna mossa conviene a tutti e due.
+Il modo di rispondere si chiama **minimax**, e il nome ne contiene le due metà:
+sul tavolo c’è un punteggio solo, e uno dei due giocatori cerca di portarlo al
+massimo mentre l’altro cerca di portarlo al minimo. Un punto
+guadagnato da me è un punto perso da lui, e nessuna mossa conviene a tutti e
+due.
 
 `````{tab} Elementare
 
@@ -27,9 +28,9 @@ Ho tre mosse. Se gioco la prima, lui può rispondere in tre modi, che portano a
 Se gioco la terza, portano a 14, 5 e 2.
 
 Adesso l’istinto sbagliato: «gioco la terza, che porta a 14». No. Il 14 non lo
-sceglierei io, lo sceglierebbe lui, e lui vuole il numero più piccolo: davanti
-alla mia terza mossa risponderebbe con il 2. Quindi la mia terza mossa non vale
-14, vale 2.
+sceglierei io, lo sceglierebbe lui, e siccome lui vuole il numero più piccolo,
+davanti alla mia terza mossa risponderebbe con il 2. Quindi la mia terza mossa
+non vale 14, vale 2.
 
 Rifacciamo il calcolo come va fatto, dal basso. La prima mossa vale il minimo
 fra 3, 12 e 8, cioè 3. La seconda vale il minimo fra 2, 4 e 6, cioè 2. La terza
@@ -43,16 +44,16 @@ sceglierlo non sono io. Si parte dalle foglie e si risale un livello alla
 volta, alternando «prendi il massimo» e «prendi il minimo».
 
 Questo ragionamento dà per scontato che lui giochi sempre la risposta migliore.
-Contro qualcuno che si distrae la terza mossa potrebbe fruttare 14, ma il 14
-non viene nemmeno considerato: si tiene il 3 sicuro. Chi ragiona così gioca
-contro il miglior avversario possibile, anche quando dall’altra parte c’è un
-principiante che gli regalerebbe la partita.
+Contro qualcuno che si distrae, ad esempio, la terza mossa potrebbe fruttare
+14, ma il 14 non viene nemmeno considerato, e si tiene il 3 sicuro. Chi
+ragiona così gioca contro il miglior avversario possibile, anche quando
+dall’altra parte c’è un principiante che gli regalerebbe la partita.
 
 Presuppone anche di poter arrivare in fondo. Nel nostro alberello la partita
-finiva dopo due mosse e il punteggio era scritto. In un gioco vero il fondo
-resta fuori portata: se ogni mossa ne apre trenta e si guardano dieci mosse per
-parte, le partite da srotolare sono trenta elevato a venti, un numero di trenta
-cifre.
+finiva dopo due mosse e il punteggio era scritto. In un gioco vero, invece, il
+fondo resta fuori portata. Se ogni mossa ne apre trenta e si guardano dieci
+mosse per parte, le partite da srotolare sono trenta elevato a venti, un numero
+di trenta cifre.
 
 Per non srotolarle tutte ci sono più strade, e non si equivalgono. Si possono
 saltare i rami che di sicuro non cambiano la risposta, e non si perde niente.
@@ -64,7 +65,7 @@ prima della fine e si dà un voto alla posizione, e il voto può sbagliare.
 
 `````{tab} Superiore
 
-Si consideri un gioco a due giocatori, deterministico, a somma zero e a
+Consideriamo un gioco a due giocatori, deterministico, a somma zero e a
 informazione perfetta, in cui cioè ciascuno vede tutta la posizione (concetto
 diverso dall’«informazione completa» della teoria dei giochi, che riguarda il
 conoscere i guadagni dell’avversario). Il valore minimax di uno stato $s$ è
@@ -82,40 +83,44 @@ $$
 dove $u(s)$ è l’**utilità** dello stato terminale letta dal punto di vista di
 chi massimizza, $\mathcal{A}(s)$ le mosse legali e $\mathrm{ris}(s,a)$ lo stato
 che ne segue. Il valore così definito si ottiene se entrambi giocano in modo
-ottimo da lì alla fine, e l’ipotesi è forte: contro un avversario che sbaglia,
-minimax non sfrutta gli errori quanto potrebbe, perché sceglie la mossa
-migliore contro la risposta migliore e non quella che guadagna di più dalla
-risposta probabile.
+ottimo da lì alla fine, e l’ipotesi è forte. Contro un avversario che sbaglia,
+infatti, minimax non sfrutta gli errori quanto potrebbe, perché sceglie la
+mossa migliore contro la risposta migliore e non quella che guadagna di più
+dalla risposta probabile.
 
 L’algoritmo è una visita in profondità che scende fino alle foglie e risale
 combinando. Costa $O(b^m)$ in tempo, con $b$ il numero di mosse legali per
 posizione e $m$ la profondità dell’albero, e $O(bm)$ in memoria. Su un gioco
 vero è impraticabile per lo stesso motivo dell’{doc}`albero dei futuri
-</Ricerca/overview>`: agli scacchi $35^{80}$. L’idea si fa risalire a un
-lavoro di Ernst Zermelo sugli scacchi del 1912, e il teorema del minimax, per
-cui ogni gioco a due a somma zero ha un valore se si ammettono strategie che
-tirano a sorte, è di John von Neumann, del 1928 {cite}`russell2020artificial`.
+</Ricerca/overview>` (agli scacchi $35^{80}$).
+
+L’idea si fa risalire a un lavoro di Ernst Zermelo sugli scacchi del 1912, e il
+teorema del minimax, per cui ogni gioco a due a somma zero ha un valore se si
+ammettono strategie miste, che tirano a sorte, è di John von Neumann, del 1928
+{cite}`russell2020artificial`.
 
 Minimax non è un’euristica e non approssima niente: dato l’albero completo, il
-valore che restituisce è esatto. Evitare di costruire quell’albero si può fare
-in più modi, che non vanno confusi. La potatura alfa-beta calcola lo stesso
-valore guardando meno, e non perde niente. La potatura in avanti (*forward
-pruning*) scarta le mosse che sembrano cattive senza averlo dimostrato:
-risparmia molto di più, e può sbagliare. La funzione di valutazione calcola un
-valore diverso, perché quello vero è fuori portata, e perde esattezza. La
-potatura in avanti è la *strategia di tipo B* del primo articolo su un
-calcolatore che gioca a scacchi, scritto da Claude Shannon nel 1950: segue
-soltanto le linee promettenti, mentre quella di *tipo A* guarda tutte le mosse
-fino a una profondità fissa e giudica le foglie con una funzione di valutazione
-{cite}`shannon1950programming`.
+valore che restituisce è esatto. Per evitare di costruire quell’albero ci sono
+più modi, che non vanno confusi. La potatura alfa-beta calcola lo stesso
+valore guardando meno, e non perde niente. La **potatura in avanti**
+(*forward pruning*) scarta le mosse che sembrano cattive senza averlo
+dimostrato. Risparmia molto di più, ma può sbagliare. La funzione di
+valutazione, infine, calcola un valore diverso, perché quello vero è fuori
+portata, e perde esattezza.
+
+La potatura in avanti è la *strategia di tipo B* del primo articolo su un
+calcolatore che gioca a scacchi, scritto da Claude Shannon nel 1950. Questa
+strategia segue soltanto le linee promettenti, mentre quella di *tipo A*
+guarda tutte le mosse fino a una profondità fissa e giudica le foglie con una
+funzione di valutazione {cite}`shannon1950programming`.
 
 `````
 
-L’albero si può percorrere fino in fondo su un gioco piccolo, il tris: tre
-caselle per lato, quello che si gioca sul tovagliolo e che in molte regioni si
-chiama filetto. Le partite possibili sono abbastanza poche da esaminarle tutte,
-e il risultato è noto a chiunque lo abbia giocato a lungo: giocando bene tutti
-e due, finisce sempre in parità.
+Su un gioco piccolo, però, l’albero si può percorrere fino in fondo. È il caso
+del tris, tre caselle per lato, quello che si gioca sul tovagliolo e che in
+molte regioni si chiama filetto. Le partite possibili sono abbastanza poche da
+esaminarle tutte, e il risultato è noto a chiunque lo abbia giocato a lungo:
+giocando bene tutti e due, finisce sempre in parità.
 
 ```python
 VINCENTI = [(0,1,2), (3,4,5), (6,7,8), (0,3,6),
@@ -155,13 +160,14 @@ esito con gioco perfetto: 0
 partite portate fino in fondo: 255168
 ```
 
-Lo zero è la patta, la risposta giusta. Il numero che segue conta partite
-intere, non *posizioni diverse* (un gioco da nove caselle ne ha molte meno):
-sono duecentocinquantacinquemila partite giocate una per una dalla prima mossa
-all’ultima, meno delle $9! = 362\,880$ sequenze con cui si possono riempire
-nove caselle, perché una partita si ferma appena qualcuno allinea tre simboli,
-anche a tabellone mezzo vuoto. È l’albero dei futuri in miniatura, piccolo da
-srotolare tutto e già grande da mostrare il problema.
+Lo zero è la patta, la risposta giusta. Il secondo numero conta partite
+intere, non *posizioni diverse* (un gioco da nove caselle ne ha molte meno).
+Sono duecentocinquantacinquemila partite giocate una per una dalla
+prima mossa all’ultima, meno delle $9! = 362\,880$ sequenze con cui si possono
+riempire nove caselle, perché una partita si ferma appena qualcuno allinea tre
+simboli, anche a tabellone mezzo vuoto. È l’albero dei futuri in miniatura,
+abbastanza piccolo da srotolarlo tutto e già abbastanza grande da mostrare il
+problema.
 
 ## Smettere di guardare: la potatura
 
@@ -179,12 +185,14 @@ quella mossa vale 3. Adesso so una cosa che non mollo più: qualunque cosa
 succeda, non accetterò meno di 3.
 
 Passo alla mia seconda mossa. Scopro la prima risposta di lui: 2. Mi fermo qui,
-perché ho già finito di ragionare. Lui, su questa mossa, prenderà il minimo fra
-2 e le altre due che non ho ancora guardato: quindi al massimo prenderà 2, e
-forse meno. Comunque vada, questa mossa non vale più di 2, cioè meno del 3 che
-ho già in tasca. Le altre due risposte non le guardo nemmeno: non c’è nessun
-numero che possano contenere capace di farmi cambiare idea. Anche se ci fosse
-un milione, lui non me lo lascerebbe prendere.
+perché ho già finito di ragionare.
+
+Lui, su questa mossa, prenderà il minimo fra 2 e le altre due che non ho
+ancora guardato, quindi al massimo prenderà 2, e forse meno. Comunque vada,
+questa mossa non vale più di 2, cioè meno del 3 che ho già in tasca. Per
+questo le altre due risposte non le guardo nemmeno: nessun numero che possano
+contenere mi farebbe cambiare idea. Anche se ci fosse un milione, lui non me lo
+lascerebbe prendere.
 
 Passo alla terza. Scopro 14: non basta a decidere, perché lui prenderà il
 minimo e potrebbe esserci di peggio. Scopro 5: idem. Scopro 2: adesso so che
@@ -199,13 +207,15 @@ che la produce è una sola, quella che ci si dice guardando la seconda mossa:
 nemmeno».
 
 Per esteso si chiama potatura *alfa-beta*, dai nomi di due segnalibri. Il
-primo è il mio: il 3 che ho già in tasca. Il secondo è il suo, e
+primo è il mio, cioè il 3 che ho già in tasca. Il secondo è il suo, e
 nell’alberello non serve, perché sotto le sue risposte ci sono solo foglie;
-serve un piano più giù. Se dopo la sua risposta toccasse di nuovo a me, lui
-avrebbe già in tasca il meno che è costretto a concedermi su un’altra delle sue
-risposte, e appena io trovassi lì sotto una mossa che mi dà di più, smetterebbe
-lui di guardare quel ramo: non me lo lascerebbe mai raggiungere. È lo stesso
-taglio, a parti rovesciate.
+serve un piano più giù.
+
+Se dopo la sua risposta toccasse di nuovo a me, lui avrebbe già in tasca il
+meno che è costretto a concedermi su un’altra delle sue risposte. Appena io
+trovassi lì sotto una mossa che mi dà di più, smetterebbe lui di guardare quel
+ramo, perché non me lo lascerebbe mai raggiungere. È lo stesso taglio, a parti
+rovesciate.
 
 Quanto si pota dipende dall’ordine in cui si guardano le mosse, e in pratica
 questo conta moltissimo. Se la mossa buona capita per prima, tutte le altre si
@@ -224,9 +234,11 @@ $\alpha$, il migliore che chi massimizza si è già assicurato lungo il cammino
 corrente, e $\beta$, il migliore per chi minimizza. La regola è simmetrica: in
 un nodo di massimo si interrompe l’esplorazione dei figli non appena il valore
 corrente arriva a $\beta$ o lo supera; in un nodo di minimo, non appena scende
-ad $\alpha$ o sotto. Sono le due condizioni `v >= beta` e `v <= alfa`, e il
-caso di uguaglianza conta: un valore uguale al limite basta già a escludere il
-ramo, perché chi sta sopra non ne ricaverebbe più di quanto si è già assicurato
+ad $\alpha$ o sotto.
+
+Sono le due condizioni `v >= beta` e `v <= alfa`, e il caso di
+uguaglianza conta: un valore uguale al limite basta già a escludere il ramo,
+perché chi sta sopra non ne ricaverebbe più di quanto si è già assicurato
 altrove. Con la disuguaglianza stretta i tagli sulle parità non scatterebbero,
 e nel tris, dove le patte sono la norma, il risparmio calerebbe di molto.
 
@@ -242,30 +254,35 @@ $$
 
 e siccome $z \le 2 < 3$ il massimo vale 3 indipendentemente da $x$ e $y$.
 
-Il calcolo mostra il caso; il teorema sta in un invariante. Chiamata su uno stato
-$s$ con la finestra $(\alpha, \beta)$, la ricerca restituisce un valore $v$
-tale che: se $\alpha < v < \beta$, allora $v = \mathrm{minimax}(s)$; se
-$v \le \alpha$, allora $\mathrm{minimax}(s) \le v$; se $v \ge \beta$, allora
-$\mathrm{minimax}(s) \ge v$. Alla radice la finestra contiene tutti i valori
-possibili, quindi il valore è esatto; i tagli sono le uscite in cui $v$ è
-soltanto un limite, e chi sta sopra lo scarta perché non può migliorare quello
-che ha già. È la dimostrazione di Knuth e Moore {cite}`knuth1975analysis`, e
-dice che alfa-beta restituisce sempre lo stesso valore di minimax alla radice.
+Il calcolo verifica un caso particolare. In generale, la correttezza discende
+da un invariante. Chiamata su uno stato $s$ con la finestra $(\alpha, \beta)$,
+la ricerca restituisce un valore $v$ tale che: se $\alpha < v < \beta$, allora
+$v = \mathrm{minimax}(s)$; se $v \le \alpha$, allora
+$\mathrm{minimax}(s) \le v$; se $v \ge \beta$, allora
+$\mathrm{minimax}(s) \ge v$.
+
+Alla radice la finestra contiene tutti i valori possibili, quindi il valore è
+esatto; i tagli sono le uscite in cui $v$ è soltanto un limite, e chi sta sopra
+lo scarta perché non può migliorare quello che ha già. È la dimostrazione di
+Knuth e Moore {cite}`knuth1975analysis`, e dice che alfa-beta restituisce
+sempre lo stesso valore di minimax alla radice.
 
 Il guadagno dipende dall’ordinamento delle mosse. Nel caso migliore, cioè
 esaminando per prima la mossa migliore in ogni nodo, su un albero uniforme di
 ramificazione $b$ e profondità $m$ alfa-beta esamina esattamente
 $b^{\lfloor m/2 \rfloor} + b^{\lceil m/2 \rceil} - 1$ foglie, cioè
-$O(b^{m/2})$ invece di $O(b^m)$ {cite}`knuth1975analysis`: il fattore di
-ramificazione effettivo diventa $\sqrt{b}$, che agli scacchi vuol dire circa 6
-invece di 35, ossia la possibilità di guardare il doppio più a fondo nello
-stesso tempo. Con ordinamento casuale, e per $b$ moderati, si scende a circa
-$O(b^{3m/4})$ {cite}`russell2020artificial`. Pearl ha mostrato che fra gli
-algoritmi che cercano a profondità fissa alfa-beta è asintoticamente ottimo
-{cite}`pearl1982solution`. Il fattore $\sqrt{b}$ è però il limite della
-potatura esatta, e i programmi di scacchi più forti scendono sotto 3 perché le
-aggiungono quella in avanti: la mossa nulla, la riduzione delle mosse tardive,
-la potatura di futilità {cite}`russell2020artificial`.
+$O(b^{m/2})$ invece di $O(b^m)$ {cite}`knuth1975analysis`. In altri termini,
+il fattore di ramificazione effettivo diventa $\sqrt{b}$, che agli scacchi
+vuol dire circa 6 invece di 35, ossia la possibilità di guardare il doppio più
+a fondo nello stesso tempo. Con ordinamento casuale, e per $b$ moderati, si
+scende a circa $O(b^{3m/4})$ {cite}`russell2020artificial`.
+
+Pearl ha mostrato che fra gli algoritmi che cercano a profondità fissa
+alfa-beta è asintoticamente ottimo {cite}`pearl1982solution`. Il fattore
+$\sqrt{b}$ è però il limite della potatura esatta, e i programmi di scacchi
+più forti scendono sotto 3 perché le aggiungono quella in avanti: la mossa
+nulla, la riduzione delle mosse tardive, la potatura di futilità
+{cite}`russell2020artificial`.
 
 Perciò, nei programmi di gioco, l’ordinamento delle mosse fa parte
 dell’algoritmo. Le tecniche classiche sono due. Una è provare per prime, in un
@@ -281,9 +298,10 @@ profonde.
 
 `````
 
-{numref}`fig-alfabeta-pota` rifà la potatura dell’alberello mentre avviene, e
-fa vedere il momento in cui si spengono le due risposte della seconda mossa
-che non serve guardare, cosa che su un disegno fermo non si vedrebbe.
+{numref}`fig-alfabeta-pota` rifà la potatura dell’albero d’esempio mentre
+avviene, e fa vedere il momento in cui si spengono le due risposte della
+seconda mossa che non serve guardare, cosa che su un disegno fermo non si
+vedrebbe.
 
 ```{figure} ../figures/alfabeta-pota.svg
 :name: fig-alfabeta-pota
@@ -297,7 +315,7 @@ spegne: non serve guardarlo, perché a sceglierlo sarebbe l’avversario e
 l’avversario prenderà comunque il minimo.
 ```
 
-Il conto sul tris si rifà identico, con alfa-beta al posto di minimax.
+Il calcolo sul tris si rifà identico, con alfa-beta al posto di minimax.
 
 ```python
 guardate["alfabeta"] = 0
@@ -340,12 +358,13 @@ rapporto: 34.8 volte meno
 
 Stessa risposta, quasi trentacinque volte meno lavoro. Non si è rinunciato a
 niente, perché i rami non guardati erano rami di cui si era dimostrato, senza
-guardarli, che non potevano cambiare la conclusione. È lo stesso genere di
-risparmio di A\* con una stima che non esagera, ed è il contrario di quello che
-si ottiene con un giudizio messo al posto della risposta. È il contrario anche
-della {doc}`potatura dei pesi di una rete </Efficienza/meno-pesi>`, che ha lo
-stesso nome: là si toglie qualcosa che contribuiva un poco, e qualcosa si
-perde.
+guardarli, che non potevano cambiare la conclusione.
+
+È lo stesso genere di risparmio di A\* con un’euristica ammissibile, ed è il
+contrario di quello che si ottiene con un giudizio messo al posto della
+risposta. È il contrario anche della {doc}`potatura dei pesi di una rete
+</Efficienza/meno-pesi>`, che ha lo stesso nome: là si toglie qualcosa che
+contribuiva un poco, e qualcosa si perde.
 
 Quanto conta l’ordine si misura sul tris, guardando le caselle in un ordine
 diverso senza cambiare il gioco.
@@ -408,10 +427,12 @@ venti ordini a caso: da 2603 a 13358, e 1 su 20 batte il ragionato
 
 Il peggiore dei tre ordini fa guardare quasi sei volte più foglie del migliore,
 sullo stesso gioco, con lo stesso algoritmo e con la stessa risposta in fondo.
-L’ordine ragionato non è lontano dal migliore che si trovi a tentativi: mettere
-per primi il centro e gli angoli significa provare prima le caselle che nel
-tris contano di più, e dei venti ordini pescati a caso uno solo fa meglio. I
-programmi di scacchi usano lo stesso principio in un altro modo: prima della
+L’ordine ragionato non è lontano dal migliore che si trovi a tentativi, e dei
+venti ordini estratti a caso uno solo fa meglio. Mettere per primi il centro e
+gli angoli, infatti, significa provare prima le caselle che nel tris contano
+di più.
+
+I programmi di scacchi usano lo stesso principio in un altro modo: prima della
 ricerca vera ne fanno una corta, di poche mosse, e ne usano il risultato per
 decidere in che ordine guardare. Quanto si pota dipende quindi dall’ordine
 scelto, e va misurato su quello.
@@ -424,9 +445,9 @@ all’albero non c’è nessun numero da leggere.
 
 Allora si fa come fa da sempre un giocatore umano: si guarda avanti finché si
 può, ci si ferma, e si dà un giudizio sulla posizione a cui si è arrivati,
-senza giocarla fino in fondo. Quel giudizio è una **funzione di valutazione**,
-e prende il posto del punteggio vero. È qui che la ricerca smette di essere
-esatta.
+senza giocarla fino in fondo. Quel giudizio è una **funzione di
+valutazione**, e prende il posto del punteggio vero. È qui che la ricerca
+smette di essere esatta.
 
 `````{tab} Elementare
 
@@ -444,39 +465,44 @@ invece di tirare avanti; poi ragiona all’indietro da quei voti, non dai
 punteggi veri.
 
 Un foglietto del genere deve compilarsi in un attimo, perché di posizioni ne
-passano milioni. A partita finita deve coincidere col risultato, vinta o persa
-senza sfumature. Solo se chi esce col voto più alto vince più spesso ci si può
-fidare del foglietto.
+passano milioni. A partita finita, poi, deve coincidere col risultato, vinta o
+persa senza sfumature. Solo se chi esce col voto più alto vince più spesso ci
+si può fidare del foglietto.
 
 Il foglietto, però, ipotizza che i contributi siano indipendenti: conta i pezzi
 su una riga e i pedoni su un’altra, come se ciascuno valesse a prescindere
-dagli altri. Un alfiere chiuso dietro i propri pedoni non va da nessuna parte e
-in partita vale poco, ma sul foglietto vale quanto uno libero. Grossolana
-com’è, l’ipotesi si accetta, perché un voto approssimato che arriva subito
-serve più di uno giusto che non arriva mai. I programmi più forti di oggi, del
-resto, non scrivono più il foglietto a mano: lo fanno compilare a una piccola
-rete che ha visto milioni di posizioni e ha imparato che un alfiere chiuso vale
-poco. Il modo di guardare avanti è rimasto lo stesso.
+dagli altri. Un alfiere chiuso dietro i propri pedoni, ad esempio, non va da
+nessuna parte e in partita vale poco, ma sul foglietto vale quanto uno libero.
+Grossolana com’è, l’ipotesi si accetta, perché un voto approssimato che arriva
+subito serve più di uno giusto che non arriva mai.
+
+I programmi più forti di oggi, del resto, non scrivono più il foglietto a mano:
+lo fanno compilare a una piccola rete che ha visto milioni di posizioni e ha
+imparato che un alfiere chiuso vale poco. Il modo di guardare avanti è rimasto
+lo stesso.
 
 Agli scacchi, al foglietto basta mettere le posizioni nell’ordine giusto. A
 backgammon no: lì le mosse possibili le decidono i dadi, ogni tiro moltiplica
 le strade da guardare, e dove tocca ai dadi il programma fa la media dei voti,
-pesata su quanto è probabile ciascun tiro. Una media tiene conto delle distanze
-fra i voti, non solo del loro ordine. Con due tiri alla pari, una mossa che
-porta a posizioni da 6 e da 6 batte una che porta a 10 e a 1, perché 6 supera
-5,5; ma se il foglietto dà i punti al quadrato, che non cambia l’ordine, le
-medie fanno 36 contro 50,5, e vince l’altra.
+pesata su quanto è probabile ciascun tiro.
+
+Una media tiene conto delle distanze fra i voti, non solo del loro ordine. Con
+due tiri alla pari, ad esempio, una mossa che porta a posizioni da 6 e da 6
+batte una che porta a 10 e a 1, perché 6 supera 5,5; ma se il foglietto dà i
+punti al quadrato, che non cambia l’ordine, le medie fanno 36 contro 50,5, e
+vince l’altra.
 
 Fermarsi sempre alla stessa distanza produce l’**effetto orizzonte**. Il mio
 alfiere è chiuso in trappola, e comunque giochi fra sei mosse me lo prendono;
-io guardo avanti otto mosse, quella perdita la vedo, e mi pesa. Allora do
-scacco al suo re con un pedone, cioè lo attacco, e lui è obbligato a mettersi
-al riparo: lo fa mangiandomi il pedone. Ogni scacco gli costa una mossa, e io
-lo rifaccio con tre pedoni, uno dopo l’altro: la cattura dell’alfiere slitta a
-sette mosse, a otto, a nove, fuori dal mio orizzonte. Guardo di nuovo,
-l’alfiere è salvo, e concludo che regalare pedoni sia un’ottima idea. Il
-disastro sta ancora là, appena oltre il punto in cui smetto di guardare, e i
-pedoni sono persi.
+io guardo avanti otto mosse, quella perdita la vedo, e mi pesa.
+
+Allora do scacco al suo re con un pedone, cioè lo attacco, e lui è obbligato a
+mettersi al riparo: lo fa mangiandomi il pedone. Ogni scacco gli costa una
+mossa, e io lo rifaccio con tre pedoni, uno dopo l’altro, così la cattura
+dell’alfiere slitta a sette mosse, a otto, a nove, fuori dal mio orizzonte.
+Guardo di nuovo, l’alfiere è salvo, e concludo che regalare pedoni sia
+un’ottima idea. Il disastro sta ancora là, appena oltre il punto in cui smetto
+di guardare, e i pedoni sono persi.
 
 Un rimedio a metà lo conosce ogni giocatore. Se dove arrivo i pezzi si stanno
 ancora mangiando a vicenda, lì non mi fermo. Tiro avanti finché le acque non si
@@ -489,9 +515,11 @@ Allora tengo da parte ogni posizione già esaminata col voto che ne era uscito, 
 me lo riprendo quando la stessa scacchiera ricapita per un’altra strada, purché
 quella volta, da lì, avessi guardato avanti almeno quanto devo guardare adesso.
 Agli scacchi questo può bastare per scendere fino al doppio più a fondo nello
-stesso tempo. Il voto messo da parte, però, non sa per che strada ci sono
-arrivato, e la strada conta: ripetendo le mosse, o dopo troppe mosse senza
-catture, il regolamento può chiudere la partita patta.
+stesso tempo.
+
+Il voto messo da parte, però, non sa per che strada ci sono arrivato, e la
+strada conta, perché ripetendo le mosse, o dopo troppe mosse senza catture, il
+regolamento può chiudere la partita patta.
 
 Per certe posizioni il programma non ricorre a nessun giudizio: le prime mosse
 della partita vengono da un libro di aperture, i finali con pochi pezzi da una
@@ -503,8 +531,8 @@ finali fino a sette pezzi.
 
 `````{tab} Superiore
 
-Si sostituisce l’utilità terminale $u(s)$ con una valutazione $\mathrm{ev}(s)$
-e il test di terminazione con un **test di taglio**, ottenendo il minimax
+Sostituiamo l’utilità terminale $u(s)$ con una valutazione $\mathrm{ev}(s)$ e
+il test di terminazione con un **test di taglio**, e otteniamo il minimax
 euristico
 
 $$
@@ -522,32 +550,37 @@ soluzione), e il taglio scatta quando $k$ arriva al limite fissato o la
 posizione è comunque terminale.
 
 Perché $\mathrm{ev}$ sia utile deve concordare con $u$ sugli stati terminali,
-essere calcolabile in fretta, ed essere correlata alla probabilità di vittoria. Per
-decenni è stata quasi sempre una somma pesata di caratteristiche della
+essere calcolabile in fretta, ed essere correlata alla probabilità di vittoria.
+Per decenni è stata quasi sempre una somma pesata di caratteristiche della
 posizione (materiale, struttura pedonale, sicurezza del re), il che assume
 implicitamente che i loro contributi siano indipendenti: un’ipotesi falsa (il
-valore di un alfiere dipende da com’è la struttura pedonale) e utile lo
-stesso. Dal 2020 i programmi di scacchi più forti a ricerca alfa-beta valutano
-invece con una piccola rete neurale (NNUE), addestrata su milioni di posizioni
-e costruita per aggiornarsi in fretta a ogni mossa: la ricerca è rimasta la
-stessa, e la valutazione si impara.
+valore di un alfiere dipende da com’è la struttura pedonale) e tuttavia utile.
 
-Nei giochi con il caso (il backgammon, dove i dadi decidono quali mosse sono
-possibili) fra i livelli dei due giocatori si inseriscono i **nodi di caso**, e
-lì la ricorsione prende il valore atteso: $\mathrm{expectiminimax}(s) =
+Dal 2020 i programmi di scacchi più forti a ricerca alfa-beta valutano invece
+con una piccola rete neurale (NNUE), addestrata su milioni di posizioni e
+costruita per aggiornarsi in fretta a ogni mossa. La ricerca è
+rimasta la stessa, e la valutazione si impara.
+
+Nei giochi con il caso (ad esempio il backgammon, dove i dadi decidono quali
+mosse sono possibili) fra i livelli dei due giocatori si inseriscono i
+**nodi di caso**, e lì la ricorsione prende il valore atteso:
+$\mathrm{expectiminimax}(s) =
 \sum_{e} P(e)\, \mathrm{expectiminimax}(\mathrm{ris}(s,e))$, dove $e$ corre
 sugli esiti possibili del caso e $P(e)$ è la loro probabilità; nei livelli dei
-giocatori restano il massimo e il minimo. Il costo sale a $O(b^m n^m)$, con $n$
-il numero di esiti distinti, e la valutazione deve soddisfare una condizione
-più forte: senza caso conta solo l'ordine dei valori di $\mathrm{ev}$, e una
-trasformazione monotona non cambia la mossa scelta; con il caso si fanno medie,
-contano le distanze, e $\mathrm{ev}$ deve essere una trasformazione affine
-positiva della probabilità di vittoria {cite}`russell2020artificial`.
+giocatori restano il massimo e il minimo.
+
+Il costo sale a $O(b^m n^m)$, con $n$ il numero di esiti distinti, e la
+valutazione deve soddisfare una condizione più forte. Senza caso, infatti,
+conta solo l'ordine dei valori di $\mathrm{ev}$, e una trasformazione monotona
+non cambia la mossa scelta; con il caso si fanno medie, contano le distanze, e
+$\mathrm{ev}$ deve essere una trasformazione affine positiva della probabilità
+di vittoria {cite}`russell2020artificial`.
 
 Né la ricerca né la valutazione servono dove si può consultare. Le aperture si
-giocano con un libro, e i finali con una tabella: l’analisi retrograda, che
-risale a Bellman (1965), parte dalle posizioni finali e procede all’indietro, e
-tabula il valore e la mossa migliore di ogni posizione. Thompson e Stiller
+giocano con un libro, e i finali con una tabella, costruita con l’**analisi
+retrograda**. Questo metodo, che risale a Bellman (1965), parte dalle
+posizioni finali, procede all’indietro e tabula il valore e la mossa migliore
+di ogni posizione. Thompson e Stiller
 l’hanno fatto per tutti i finali fino a cinque pezzi, e dal 2012 le tabelle
 arrivano a sette, per 140 terabyte. Stiller trovò anche un finale in cui il
 matto forzato richiede 262 mosse, più delle cinquanta che il regolamento
@@ -582,28 +615,30 @@ Due complicazioni sporcano la teoria pulita nei programmi veri:
 
 Messe accanto, la potatura e la funzione di valutazione sono di natura opposta.
 La potatura spegne rami di cui si è dimostrato che non possono cambiare la
-risposta, e la lascia intatta. La funzione di valutazione sostituisce una
-risposta vera con un giudizio, e ne deriva l’effetto orizzonte, che colpisce
-ogni ricerca ferma a una profondità fissa, per quanto ben programmata, perché
-nasce dal taglio stesso.
+risposta, e la lascia intatta. La funzione di valutazione, invece, sostituisce
+una risposta vera con un giudizio, e ne deriva l’effetto orizzonte, che
+colpisce ogni ricerca ferma a una profondità fissa, per quanto ben programmata,
+perché nasce dal taglio stesso.
 
 ## Quando il giudizio è esatto: il Nim
 
 L’effetto orizzonte ha una sola origine: la funzione di valutazione è una
 stima, e la ricerca si ferma dove deve fidarsi di lei. Esistono però giochi in
-cui il giudizio sulla posizione si può scrivere esatto: lì non resta niente da
-guardare oltre, e basta scegliere, fra le proprie mosse, quella che lascia
-all’avversario una posizione persa.
+cui il giudizio sulla posizione si può scrivere esatto. In quei giochi non
+resta niente da guardare oltre, e basta scegliere, fra le proprie mosse, quella
+che lascia all’avversario una posizione persa.
 
 Il caso da manuale è il **Nim**. Sul tavolo stanno alcuni mucchi di oggetti; chi
 muove sceglie un mucchio e ne toglie quanti vuole, almeno uno e al più tutto il
 mucchio; chi prende l’ultimo vince. Nel 1901 il matematico americano Charles
 Bouton ne pubblicò la teoria completa, e gli diede il nome con cui lo
-conosciamo {cite}`bouton1901nim`. La teoria guarda soltanto quanti oggetti ha
-ogni mucchio, la sua *taglia*: si scrivono le taglie in binario e se ne fa lo
-XOR, l’«o esclusivo» della {doc}`sezione sul percettrone
-</RetiNeurali/percettrone>`, colonna per colonna. Se il risultato è zero, chi
-deve muovere perde contro un avversario che non sbaglia; altrimenti vince.
+conosciamo {cite}`bouton1901nim`.
+
+La teoria guarda soltanto quanti oggetti ha ogni mucchio, cioè la sua
+*taglia*. Si scrivono le taglie in binario e se ne fa lo XOR, l’«o esclusivo»
+della {doc}`sezione sul percettrone </RetiNeurali/percettrone>`, colonna per
+colonna. Se il risultato è zero, chi deve muovere perde contro un avversario
+che non sbaglia; altrimenti vince.
 
 `````{tab} Elementare
 
@@ -620,11 +655,13 @@ compare un numero pari di volte, e questa non lo è: restano spaiati il 2, il 4 
 l’8. Guardare colonna per colonna se il conteggio è pari o dispari è lo XOR.
 
 Il modo di giocare diventa allora una frase sola: lascia sempre il tavolo in
-pari. Si guarda il pacchetto spaiato più grosso, qui l’8, e si prende un
-mucchio che lo contiene, qui l’unico, quello da 8. Quel mucchio si rifà da capo
-passando in rassegna le misure spaiate: quelle che ha le perde, quelle che non
-ha le riceve. Il mucchio da 8 perde l’8 e riceve il 4 e il 2, cioè diventa un
-mucchio da 6: si tolgono due fiammiferi, e sul tavolo restano 3, 5 e 6, che
+pari. Per farlo si guarda il pacchetto spaiato più grosso, qui l’8, e si prende
+un mucchio che lo contiene, qui l’unico, quello da 8. Quel mucchio si rifà da
+capo passando in rassegna le misure spaiate: quelle che ha le perde, quelle che
+non ha le riceve.
+
+Il mucchio da 8, quindi, perde l’8 e riceve il 4 e il 2, cioè diventa un
+mucchio da 6. Si tolgono due fiammiferi, e sul tavolo restano 3, 5 e 6, che
 fanno 2 + 1, 4 + 1 e 4 + 2, ogni misura due volte.
 
 La mossa si può fare sempre, perché il mucchio scelto perde il suo pacchetto
@@ -635,8 +672,10 @@ togliere fiammiferi è una mossa legale.
 L’avversario, davanti a un tavolo in pari, non può fare lo stesso. Qualunque
 cosa tolga, tocca un mucchio solo, e quel mucchio cambia taglia, quindi cambia
 almeno un pacchetto: una misura che c’era sparisce, o una che non c’era compare.
-Negli altri mucchi quella misura è rimasta com’era, e il suo conto cambia di
-uno: da pari diventa dispari. Allora tocca di nuovo a me, e lo rimetto in pari.
+Negli altri mucchi quella misura è rimasta com’era, e il suo conto cambia
+di uno: da pari diventa dispari. Allora tocca di nuovo a me, e lo rimetto in
+pari.
+
 Il tavolo vuoto è in pari (zero pacchetti per ogni misura, e zero è pari), e
 siccome in pari lo lascio sempre io, l’ultimo fiammifero lo prendo io.
 
@@ -658,12 +697,14 @@ Una posizione del Nim è una $r$-upla di interi non negativi
 $(x_1, \dots, x_r)$, e una mossa sostituisce un solo $x_i$ con un
 $x_i' < x_i$. Il gioco è finito, perché la somma delle taglie scende a ogni
 mossa, e si gioca in *convenzione normale*: chi non ha mosse, cioè chi si
-trova davanti a tutti zeri, perde. Le posizioni si dividono allora in due
-classi, definite per induzione dal fondo: una posizione è P (vince il
-giocatore *precedente*, quello che l’ha lasciata) se tutte le sue mosse portano
-in posizioni N, ed è N (vince chi muove, il *next*) se almeno una mossa porta
-in una posizione P. È minimax con utilità $\pm 1$, scritto per classi invece
-che per valori.
+trova davanti a tutti zeri, perde.
+
+Le posizioni si dividono allora in due classi, definite per induzione dal
+fondo: una posizione è P (vince il giocatore *precedente*, quello che l’ha
+lasciata) se tutte le sue mosse portano in posizioni N, ed è N (vince chi
+muove, il *next*) se almeno una mossa porta in una posizione P. In altri
+termini, è minimax con utilità $\pm 1$, scritto per classi invece che per
+valori.
 
 Sia $t = x_1 \oplus x_2 \oplus \cdots \oplus x_r$ la *somma di Nim*, lo XOR
 bit a bit delle taglie. Il teorema di Bouton {cite}`bouton1901nim` dice che la
@@ -683,15 +724,16 @@ proprietà che caratterizzano le posizioni P:
 Per induzione sulla somma delle taglie, le posizioni con $t = 0$ sono
 esattamente le P.
 
-Letto con gli occhi della ricerca, il test $t \neq 0$ è una funzione di
-valutazione *esatta*: in ogni stato dice quello che direbbe minimax, cioè se
-vince chi muove, senza visitare niente. Con una valutazione esatta basta una
-ricerca a profondità uno: si provano le $\sum_i x_i$ mosse e si tiene una che
-porta a $t' = 0$, e l’effetto orizzonte non ha dove nascere. Il Nim permette
-anche di meglio, perché la dimostrazione costruisce la mossa (il bit più alto di
-$t$, un mucchio che lo ha acceso, $x_i \oplus t$) in $O(r \log \max_i x_i)$
-operazioni sui bit, contro una visita di un albero che ha $\prod_i (x_i + 1)$
-stati distinti e molti più nodi.
+Dal punto di vista della ricerca, il test $t \neq 0$ è una funzione di
+valutazione *esatta*, perché in ogni stato dice quello che direbbe minimax,
+cioè se vince chi muove, senza visitare niente. Con una valutazione esatta
+basta una ricerca a profondità uno: si provano le $\sum_i x_i$ mosse e si
+tiene una che porta a $t' = 0$, e l’effetto orizzonte non ha dove nascere.
+
+Il Nim permette anche di meglio, perché la dimostrazione costruisce la mossa
+(il bit più alto di $t$, un mucchio che lo ha acceso, $x_i \oplus t$) in
+$O(r \log \max_i x_i)$ operazioni sui bit, contro una visita di un albero che
+ha $\prod_i (x_i + 1)$ stati distinti e molti più nodi.
 
 Il teorema vale nella convenzione normale. Nella variante *misère*, in cui chi
 prende l’ultimo perde, la classificazione cambia soltanto sulle posizioni in
@@ -700,7 +742,7 @@ mucchi da uno, e non più quella con un numero pari.
 
 `````
 
-Il conto rifà minimax su tutte le posizioni piccole e lo confronta con la
+Il calcolo rifà minimax su tutte le posizioni piccole e lo confronta con la
 regola, poi misura su un caso solo che cosa la regola risparmia.
 
 ```python
@@ -778,19 +820,20 @@ oggetti.
 ## Ogni gioco imparziale è un mucchio di Nim
 
 Il Nim sembra un caso fortunato, un gioco con un trucco tutto suo. Se non lo
-fosse, se un’intera famiglia di giochi fosse fatta di Nim travestiti, un
+fosse, cioè se un’intera famiglia di giochi fosse fatta di Nim travestiti, un
 tavolo con dieci mucchi di uno stesso gioco, che ha centinaia di migliaia di
 posizioni diverse, si giudicherebbe con una manciata di numeri e uno XOR. Un
 teorema dimostrato in modo indipendente da Roland Sprague nel 1935-36 e da
 Patrick Grundy nel 1939 dice che è così: ogni gioco di quella famiglia si
 comporta, posizione per posizione, come un mucchio di Nim di una taglia che si
-sa calcolare {cite}`sprague1936mathematische,grundy1939mathematics`. La
-famiglia è quella dei giochi **imparziali**: le mosse possibili dipendono dalla
-posizione e non da chi deve muovere, ogni partita finisce, e chi resta senza
-mosse perde. La taglia di quel mucchio si chiama **numero di Grundy** della
-posizione, e si calcola dal fondo con una regola sola: è il più piccolo numero
-che manca fra quelli delle posizioni in cui si può andare (in inglese *minimum
-excludant*, abbreviato in mex).
+sa calcolare {cite}`sprague1936mathematische,grundy1939mathematics`.
+
+La famiglia è quella dei giochi **imparziali**, in cui le mosse possibili
+dipendono dalla posizione e non da chi deve muovere, ogni partita finisce, e
+chi resta senza mosse perde. La taglia di quel mucchio si chiama **numero di
+Grundy** della posizione, e si calcola dal fondo con una regola sola: è il più
+piccolo numero che manca fra quelli delle posizioni in cui si può andare (in
+inglese *minimum excludant*, abbreviato in mex).
 
 `````{tab} Elementare
 
@@ -807,31 +850,32 @@ lo 0: il 4 prende 0. Da lì la fila si ripete, 1, 2, 3, 0, 1, 2, 3, 0.
 
 L’etichetta 0 vuol dire che chi deve muovere perde. Prova con quattro
 fiammiferi: qualunque cosa togli, uno, due o tre, l’altro prende il resto e
-vince. Da un’etichetta 0 non si arriva mai a un’altra etichetta 0 (se ci si
-arrivasse, lo 0 non mancherebbe), e da un’etichetta diversa da 0 c’è sempre una
-mossa verso uno 0. Vale lo schema del tavolo in pari: chi ci si trova davanti
-può solo uscirne, e l’altro ce lo riporta.
+vince. In generale, da un’etichetta 0 non si arriva mai a un’altra etichetta 0
+(se ci si arrivasse, lo 0 non mancherebbe), e da un’etichetta diversa da 0 c’è
+sempre una mossa verso uno 0. Vale lo schema del tavolo in pari: chi ci si
+trova davanti può solo uscirne, e l’altro ce lo riporta.
 
 Per uno, due e tre fiammiferi l’etichetta coincide con i fiammiferi; dal
-quattro in poi no, e da lì si capisce che cosa dice. Il mucchio da sei ha
-etichetta 2, e si comporta in tutto come un mucchio di Nim da due. Dal Nim da
-due si va a uno o a zero, e restare a due non si può. Dal sei si va al cinque,
-al quattro e al tre, che hanno etichetta 1, 0 e 3: ci sono l’1 e lo 0, come nel
-Nim da due, e il 2 manca, come nel Nim da due. In più c’è il 3, una salita che
-il Nim da due non ha, ma salire non serve: dal tre l’avversario toglie un
-fiammifero e torna al due, che ha di nuovo etichetta 2.
+quattro in poi no, e da lì si capisce che cosa dice. Il mucchio da sei, ad
+esempio, ha etichetta 2, e si comporta in tutto come un mucchio di Nim da due.
 
-Le etichette servono a giocare con più giochi sullo stesso
-tavolo, muovendo a ogni turno in uno solo, a scelta. Accanto al mucchio «togli
-uno, due o tre» da sei fiammiferi metti un mucchio di Nim da due: le etichette
-sono 2 e 2, spezzate in pacchetti fanno coppia, il tavolo è in pari, e chi
-deve muovere perde. Non c’è stato bisogno di guardare nemmeno una mossa.
+Dal Nim da due si va a uno o a zero, e restare a due non si può. Dal sei si va
+al cinque, al quattro e al tre, che hanno etichetta 1, 0 e 3: ci sono l’1 e lo
+0, come nel Nim da due, e il 2 manca, come nel Nim da due. In più c’è il 3,
+una salita che il Nim da due non ha, ma salire non serve: dal tre l’avversario
+toglie un fiammifero e torna al due, che ha di nuovo etichetta 2.
+
+Le etichette servono a giocare con più giochi sullo stesso tavolo, muovendo a
+ogni turno in uno solo, a scelta. Accanto al mucchio «togli uno, due o tre» da
+sei fiammiferi metti un mucchio di Nim da due: le etichette sono 2 e 2,
+spezzate in pacchetti fanno coppia, il tavolo è in pari, e chi deve muovere
+perde. Non c’è stato bisogno di guardare nemmeno una mossa.
 
 Le etichette si scrivono una volta sola, una per taglia, e da lì in poi
 qualunque tavolo fatto di quei mucchi si giudica con i pacchetti, senza
 esplorare le combinazioni. Su un mucchio da solo, però, scrivere l’etichetta
-costa quanto guardare tutte le sue mosse: il risparmio arriva quando i mucchi
-sono tanti.
+costa quanto guardare tutte le sue mosse, quindi il risparmio arriva quando i
+mucchi sono tanti.
 
 Il trucco si ferma davanti al tris. Le etichette si scrivono guardando dove si
 può andare, e nel tris dove si può andare dipende da chi muove: le caselle
@@ -875,18 +919,19 @@ $g(s) = 0$. Ne seguono tre fatti.
   a $r$ mucchi è la somma di $r$ mucchi singoli, e la regola di Bouton ne è il
   caso particolare.
 
-Nel gioco della sottrazione con mosse $\{1, 2, 3\}$ la ricorsione dà
-$g(n) = n \bmod 4$, e con mosse $\{1, \dots, q\}$ dà $n \bmod (q + 1)$.
+Nel gioco della sottrazione con mosse $\{1, 2, 3\}$, ad esempio, la ricorsione
+dà $g(n) = n \bmod 4$, e con mosse $\{1, \dots, q\}$ dà $n \bmod (q + 1)$.
 
 Calcolare $g$ su una componente equivale a visitarne il grafo degli stati, come
-farebbe minimax con una tabella delle trasposizioni: su un gioco che non si
-spezza in parti indipendenti il teorema non fa risparmiare niente. Il risparmio
-sta nella somma. Con $r$ componenti da $N$ stati ciascuna lo spazio degli stati
-della somma ha $N^r$ elementi; se le componenti sono copie dello stesso gioco e
-l’ordine non conta, quelli davvero diversi sono $\binom{N+r-1}{r}$, che è
-comunque un polinomio di grado $N - 1$ in $r$. I numeri di Grundy da calcolare,
-invece, sono al più $rN$, e appena $N$ per copie dello stesso gioco, qualunque
-sia $r$; lo XOR ricompone il valore.
+farebbe minimax con una tabella delle trasposizioni; quindi, su un gioco che
+non si spezza in parti indipendenti, il teorema non fa risparmiare niente.
+
+Il risparmio sta nella somma. Con $r$ componenti da $N$ stati ciascuna lo
+spazio degli stati della somma ha $N^r$ elementi; se le componenti sono copie
+dello stesso gioco e l’ordine non conta, quelli davvero diversi sono
+$\binom{N+r-1}{r}$, che è comunque un polinomio di grado $N - 1$ in $r$. I
+numeri di Grundy da calcolare, invece, sono al più $rN$, e appena $N$ per
+copie dello stesso gioco, qualunque sia $r$; lo XOR ricompone il valore.
 
 Il teorema cade per i giochi *partigiani*, in cui $\mathcal{A}(s)$ dipende da
 chi muove: il tris, gli scacchi, il go. Quando un gioco partigiano si spezza in
@@ -899,7 +944,7 @@ loro resta l’albero.
 
 `````
 
-Il conto scrive la fila dei numeri di Grundy, una taglia dopo l’altra, con la
+Il calcolo scrive la fila dei numeri di Grundy, una taglia dopo l’altra, con la
 regola del mex; poi mette un mucchio «togli 1, 2 o 3» accanto a un mucchio di
 Nim e confronta lo XOR dei due numeri con minimax sulla coppia, e in fondo
 conta le posizioni di un tavolo con dieci mucchi.
@@ -953,15 +998,18 @@ dieci mucchi «togli 1, 2 o 3» fino a 12: 137858491849 configurazioni,
 
 La fila ripete 0, 1, 2, 3, e sulle centosessantanove coppie lo XOR dei due
 numeri dice chi vince come minimax. Il mucchio da sei e il mucchio di Nim da
-due hanno lo stesso numero, lo XOR è zero e chi muove perde. Le ultime due
-righe sono il guadagno della somma. Dieci mucchi dello stesso gioco formano più
-di centotrentasette miliardi di configurazioni, e seicentoquarantaseimila se
-non si distingue l’ordine dei mucchi, come fa già `vince_chi_muove`, che ordina
-i mucchi prima di guardarli. Quel numero però cresce con i mucchi, mentre per
-giudicare tutte le posizioni bastano tredici numeri e uno XOR, che i mucchi
-siano dieci o cento. Il tris e gli scacchi restano fuori da questa famiglia, e
-per loro resta tutto quello che si è visto fin qui: l’albero, la potatura, il
-giudizio a occhio con il suo orizzonte.
+due hanno lo stesso numero, lo XOR è zero e chi muove perde.
+
+Le ultime due righe sono il guadagno della somma. Dieci mucchi
+dello stesso gioco formano più di centotrentasette miliardi di configurazioni,
+e seicentoquarantaseimila se non si distingue l’ordine dei mucchi, come fa già
+`vince_chi_muove`, che ordina i mucchi prima di guardarli. Quel numero però
+cresce con i mucchi, mentre per giudicare tutte le posizioni bastano tredici
+numeri e uno XOR, che i mucchi siano dieci o cento.
+
+Il tris e gli scacchi sono fuori da questa famiglia, e per loro restano
+l’albero, la potatura e la funzione di valutazione, con il suo effetto
+orizzonte.
 
 `````{tab} Elementare
 
@@ -971,7 +1019,7 @@ giudizio a occhio con il suo orizzonte.
   per farci del male. Il valore di una posizione non è il numero più alto che
   ci si vede sotto: è quello che si ottiene supponendo che da lì in poi
   giochino bene tutti e due.
-- Il conto si chiama minimax, e si fa all’indietro, dalle foglie alla radice,
+- Il calcolo si chiama minimax, e si fa all’indietro, dalle foglie alla radice,
   alternando «prendi il massimo» dove tocca a me e «prendi il minimo» dove
   tocca a lui.
 - La potatura (per esteso, potatura alfa-beta) è la frase «questa strada è già

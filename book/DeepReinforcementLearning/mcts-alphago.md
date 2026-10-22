@@ -6,61 +6,65 @@ Un giocatore forte, invece, prima di muovere prova qualche continuazione e ne
 valuta l'esito.
 
 Quel calcolo ha un algoritmo, la ricerca ad albero Monte Carlo (*Monte Carlo
-tree search*, MCTS). Torna in AlphaGo e nei suoi successori, AlphaZero e
-MuZero, e in alcuni esperimenti sui modelli linguistici (i programmi che
-scrivono testo, come quelli dietro agli assistenti conversazionali) che
-esplorano più ragionamenti prima di rispondere. A ogni bivio dell'albero si
-ripresenta il dilemma della {doc}`sezione sui bandit
-</ReinforcementLearning/banditi>`: provare ciò che promette o ciò che si
-conosce poco.
+tree search*, MCTS). Torna in AlphaGo e nei suoi successori, AlphaZero e MuZero,
+e in alcuni esperimenti sui modelli linguistici (i programmi che scrivono testo,
+come quelli dietro agli assistenti conversazionali) che esplorano più
+ragionamenti prima di rispondere.
+
+A ogni bivio dell'albero si ripresenta il dilemma della {doc}`sezione sui bandit
+</ReinforcementLearning/banditi>`: provare ciò che promette o ciò che si conosce
+poco.
 
 La {doc}`sezione sulle tre cose che la ricerca dava per scontate
-</Ricerca/quando-il-mondo-non-si-conosce>` aveva lasciato la questione a
-questo punto: la ricerca classica, per fermarsi a metà albero, ha bisogno di
-una formula che dia un voto alla posizione, e nel Go nessuno è mai riuscito a
+</Ricerca/quando-il-mondo-non-si-conosce>` aveva lasciato la questione a questo
+punto. La ricerca classica, per fermarsi a metà albero, ha bisogno di una
+formula che dia un voto alla posizione, e nel Go nessuno è mai riuscito a
 scriverla a mano. La via d'uscita era smettere di giudicare e mettersi a
-contare, cioè giocare da lì un mucchio di partite a caso e guardare come
-finiscono: un'idea semplice, che però va organizzata, perché le partite
-possibili sono troppe per giocarle tutte.
+contare, cioè giocare da lì molte partite a caso e guardare come finiscono. È
+un'idea semplice, ma va organizzata, perché le partite possibili sono troppe per
+giocarle tutte.
 
 `````{tab} Elementare
 
 Una fila di leve, e dietro ognuna una stanza con un'altra fila di leve. Si tira,
 si passa di là, si tira ancora, e si va avanti finché una porta dà sull'uscita,
-dove si scopre di aver vinto o perso. Le strade sono troppe: agli scacchi, dopo
-tre mosse a testa, i seguiti sono milioni, e nel Go molti di più. Conviene andare
-a fondo solo dove rende, ma per sapere dove rende bisognerebbe esserci già stati.
-È il dilemma delle slot machine, i «bandit a più braccia» (una slot machine è un
-bandito con una leva sola, e qui di leve ce ne sono tante), che si ripresenta in
-ogni stanza.
+dove si scopre di aver vinto o perso. Le strade sono troppe. Agli scacchi, per
+esempio, dopo tre mosse a testa i seguiti sono milioni, e nel Go molti di più.
+
+Conviene andare a fondo solo dove rende, ma per sapere dove rende bisognerebbe
+esserci già stati. È il dilemma delle slot machine, i «bandit a più braccia»
+(una slot machine è un bandito con una leva sola, e qui di leve ce ne sono
+tante), che si ripresenta in ogni stanza.
 
 Chi esplora si porta un blocchetto di foglietti. Ne appende uno accanto a ogni
 leva che prova, e ci tiene due cose: una tacca per ogni volta che l'ha tirata, e
 come è andata in media da lì in avanti. Poi torna all'ingresso e ricomincia,
 migliaia di volte.
 
-Ogni giro ha quattro passi. Finché trova foglietti, sceglie la leva che mette
-d'accordo il buon rendimento e le poche tacche (la **selezione**); quanto pesi
-la curiosità rispetto al rendimento è una manopola, e si regola prima di
-cominciare. Alla prima leva senza foglietto ne appende uno bianco
-(l’**espansione**). Da lì tira a casaccio e in fretta fino all'uscita, solo per
-vedere come va a finire (la **simulazione**). Poi rifà la strada al contrario e
-segna l'esito su ogni foglietto incontrato (la **risalita**). Le stanze sono a
-turno, una sua e una di chi gioca contro, e per l'altro una vincita è una
-perdita: sui suoi foglietti lo stesso esito si segna al rovescio.
+Ogni giro ha quattro passi. Per prima cosa, finché trova foglietti, sceglie la
+leva che mette d'accordo il buon rendimento e le poche tacche (la
+**selezione**); quanto pesi la curiosità rispetto al rendimento è una manopola,
+e si regola prima di cominciare. Poi, alla prima leva senza foglietto, ne
+appende uno bianco (l’**espansione**). Da lì tira a casaccio e in fretta fino
+all'uscita, solo per vedere come va a finire (la **simulazione**). Infine rifà
+la strada al contrario e segna l'esito su ogni foglietto incontrato (la
+**risalita**).
 
-Dopo qualche migliaio di giri le stanze non risultano battute allo stesso modo, e
-di proposito: certi corridoi hanno foglietti fitti per venti stanze consecutive,
-altri una tacca sola sulla prima leva.
+Le stanze sono a turno, una sua e una di chi gioca contro, e per l'altro una
+vincita è una perdita: sui suoi foglietti lo stesso esito si segna al rovescio.
 
-Alla fine si tira la leva con più tacche, e non quella con la media
-migliore. Una media alta può venire da due colpi fortunati; una leva tirata mille
-volte ha resistito a mille occasioni di essere abbandonata.
+Dopo qualche migliaio di giri le stanze non risultano battute allo stesso modo,
+e di proposito: certi corridoi hanno foglietti fitti per venti stanze
+consecutive, altri una tacca sola sulla prima leva.
 
-Con un consiglio si arriva prima. All'ingresso c'è chi conosce il posto e segna,
-a occhio, le due o tre leve da provare per prime; i primi giri seguono quei segni
-invece di trattare tutte le leve alla pari. Poi il consiglio si diluisce
-man mano che le tacche si accumulano: dopo mille tiri su una leva, il
+Alla fine si tira la leva con più tacche, e non quella con la media migliore,
+perché una media alta può venire da due colpi fortunati, mentre una leva tirata
+mille volte ha resistito a mille occasioni di essere abbandonata.
+
+Con un consiglio si arriva prima. All'ingresso c'è chi conosce il posto e
+segna, a occhio, le due o tre leve da provare per prime; i primi giri seguono
+quei segni invece di trattare tutte le leve alla pari. Poi il consiglio si
+diluisce man mano che le tacche si accumulano: dopo mille tiri su una leva, il
 rendimento osservato pesa più di qualunque impressione a prima vista.
 
 C'è un caso in cui tutto si impianta: la leva che porta al premio grosso ma le
@@ -68,8 +72,9 @@ prime tre volte, per sfortuna, non dà niente. Il foglietto dice tre tacche e tr
 volte male, quindi la leva scivola in fondo alla lista, e per riportarla su
 servono moltissimi altri giri. Continuando all'infinito salta fuori, ma
 «all'infinito» può voler dire un numero di giri che nessuno ha il tempo di fare.
-La leva più tirata è la più solida fra quelle guardate, e delle stanze in cui non
-si è mai entrati non si sa niente.
+
+In definitiva, la leva più tirata è la più solida fra quelle guardate, e delle
+stanze in cui non si è mai entrati non si sa niente.
 
 `````
 
@@ -88,35 +93,37 @@ a^\star = \arg\max_a \left[\, Q(s,a) + c \sqrt{\frac{\ln N(s)}{N(s,a)}}
 \,\right],
 $$
 
-dove $N(s)$ è il numero di visite al nodo, $N(s,a)$ quelle al figlio,
-$Q(s,a) = W(s,a)/N(s,a)$ la media dei ritorni osservati passando di lì e
-$c>0$ la costante che decide quanto pesa il secondo termine. È
-letteralmente UCB1, la formula della
-{doc}`sezione sui bandit </ReinforcementLearning/banditi>`, applicata a ogni
-bivio: stesso ottimismo di fronte all'incertezza, stesso decadimento
-logaritmico. Il contributo di UCT è mostrare che, applicandola ricorsivamente,
-la stima alla radice converge al valore ottimo: lo scarto della stima va come
-$O(\log n / n)$ e la probabilità di scegliere alla radice un'azione non ottima
-tende a zero con velocità polinomiale nel numero $n$ di simulazioni. Sono
-garanzie asintotiche, da prendere alla lettera: valgono nel limite, non nel caso
-peggiore. Coquelin e Munos
-{cite}`coquelin2007bandit` mostrarono l'anno dopo che in alberi profondi e
-ostili l'ottimismo di UCT può richiedere un numero di simulazioni che cresce
-come una torre di esponenziali, alta quanto la profondità, prima che la ricerca
-trovi il ramo buono. Proposero una variante in cui l'intervallo di confidenza
-è moltiplicato per un fattore che cresce esponenzialmente con la profondità, e
-che dà una garanzia sul caso peggiore.
+dove $N(s)$ è il numero di visite al nodo, $N(s,a)$ quelle al figlio, $Q(s,a) =
+W(s,a)/N(s,a)$ la media dei ritorni osservati passando di lì e $c>0$ la costante
+che decide quanto pesa il secondo termine. È letteralmente UCB1, la
+formula della {doc}`sezione sui bandit </ReinforcementLearning/banditi>`,
+applicata a ogni bivio: stesso ottimismo di fronte all'incertezza, stesso
+decadimento logaritmico.
+
+Il contributo di UCT è mostrare che, applicandola ricorsivamente, la stima alla
+radice converge al valore ottimo: lo scarto della stima va come $O(\log n / n)$
+e la probabilità di scegliere alla radice un'azione non ottima tende a zero con
+velocità polinomiale nel numero $n$ di simulazioni. Sono garanzie asintotiche,
+da prendere alla lettera: valgono nel limite, non nel caso peggiore.
+
+Coquelin e Munos {cite}`coquelin2007bandit` mostrarono l'anno dopo che
+in alberi profondi e ostili l'ottimismo di UCT può richiedere un numero di
+simulazioni che cresce come una torre di esponenziali, alta quanto la
+profondità, prima che la ricerca trovi il ramo buono. Proposero una variante in
+cui l'intervallo di confidenza è moltiplicato per un fattore che cresce
+esponenzialmente con la profondità, e che dà una garanzia sul caso peggiore.
 
 La risalita aggiorna $N$ e $W$ lungo il cammino; nei giochi a due giocatori il
 ritorno si alterna di segno a ogni livello, poiché il guadagno di un giocatore
-corrisponde alla perdita dell'avversario. A ricerca finita, alla radice si
-gioca l'azione più visitata e non quella con $Q(s,a)$ massimo: un conteggio è
-meno sensibile di una media alla manciata di ritorni fortunati che l'ha
-gonfiata.
+corrisponde alla perdita dell'avversario.
+
+A ricerca finita, alla radice si gioca l'azione più visitata e non quella con
+$Q(s,a)$ massimo: un conteggio è meno sensibile di una media alla manciata di
+ritorni fortunati che l'ha gonfiata.
 
 AlphaGo e i suoi successori cambiano due dei quattro passi introducendo le reti
-neurali. Il termine di esplorazione diventa **PUCT**, pesato da una probabilità
-a priori fornita dalla rete di policy,
+neurali. Il primo cambiamento riguarda il termine di esplorazione, che diventa
+**PUCT**, pesato da una probabilità a priori fornita dalla rete di policy,
 
 $$
 U(s,a) = c_{\text{puct}}\, P(s,a)\,
@@ -125,9 +132,9 @@ $$
 
 così che la ricerca guardi per prime le mosse che la rete considera plausibili
 invece di trattarle tutte alla pari; $c_{\text{puct}}$ ha qui il ruolo che $c$
-aveva in UCT. La probabilità a priori pesa soprattutto all'inizio: il
+aveva in UCT. La probabilità a priori pesa soprattutto all'inizio, perché il
 denominatore $1 + N(s,a)$ ne diluisce il contributo man mano che le visite vere
-si accumulano, e da lì in poi a decidere è $Q(s,a)$. (In AlphaGo, nel 2016, $N$
+si accumulano; da lì in poi a decidere è $Q(s,a)$. (In AlphaGo, nel 2016, $N$
 conta soltanto i rollout, introdotti più sotto; in AlphaGo Zero conta tutte le
 visite. MuZero moltiplica il termine per un fattore che cresce, lentamente, col
 logaritmo delle visite al nodo.)
@@ -145,15 +152,16 @@ dove $z_L$ è l'esito della simulazione, giocata fino in fondo con una policy
 veloce, e $\lambda = 0{,}5$, il peso con cui si mescolano i due giudizi (la
 notazione riprende l'articolo originale e non ha legami con il $\lambda$ della
 *generalized advantage estimation* incontrata col {doc}`gradiente di policy
-<policy-gradient>`). In gergo quella simulazione rapida si chiama *rollout*,
-termine derivato dal backgammon, dove per valutare una posizione la si giocava
-fino alla fine molte volte con i dadi tirati a caso
-{cite}`sutton2018reinforcement`; la strategia veloce che la guida è la *rollout
-policy*. Rete di valore e simulazione hanno quindi lo stesso peso. La
-simulazione casuale sparisce del tutto solo con AlphaGo Zero (2017), dove la
-sola rete di valore è sufficiente: è la stessa tappa in cui spariscono le
-partite umane, perché la ricerca guidata dalle sole reti produce da sé i dati
-con cui le reti si addestrano.
+<policy-gradient>`).
+
+In gergo quella simulazione rapida si chiama **rollout**, termine derivato dal
+backgammon, dove per valutare una posizione la si giocava fino alla fine molte
+volte con i dadi tirati a caso {cite}`sutton2018reinforcement`; la strategia
+veloce che la guida è la *rollout policy*. Rete di valore e simulazione hanno
+quindi lo stesso peso. La simulazione casuale sparisce del tutto solo con
+AlphaGo Zero (2017), dove la sola rete di valore è sufficiente: è la stessa
+tappa in cui spariscono le partite umane, perché la ricerca guidata dalle sole
+reti produce da sé i dati con cui le reti si addestrano.
 
 Con AlphaGo Zero {cite}`silver2017mastering` la ricerca fa anche da maestro
 alla rete di policy. La distribuzione delle visite alla radice,
@@ -167,33 +175,34 @@ $$
 c\,\lVert\theta\rVert^2 ,
 $$
 
-dove $z \in \{-1, +1\}$ è l'esito della partita di self-play e $c$ il peso
-della regolarizzazione. Alla radice il prior riceve del rumore di Dirichlet,
-senza il quale la ricerca tornerebbe sempre sulle mosse che la rete preferisce
-già. Il termine PUCT di AlphaGo Zero, a differenza di UCB1, non ha il
+dove $z \in \{-1, +1\}$ è l'esito della partita di self-play e $c$ il peso della
+regolarizzazione. Alla radice il prior riceve del rumore di Dirichlet, senza il
+quale la ricerca tornerebbe sempre sulle mosse che la rete preferisce già.
+
+Il termine PUCT di AlphaGo Zero, a differenza di UCB1, non ha il
 logaritmo e non eredita la garanzia di UCT: è un'euristica tarata sui dati, e
 sullo stesso albero profondo e ostile di Coquelin e Munos anche le varianti di
 AlphaGo e AlphaZero possono richiedere un numero di simulazioni doppiamente
 esponenziale nella profondità prima di raggiungere la foglia migliore
 {cite}`orseau2024super`. MCTS, in questa lettura, è un operatore di
-miglioramento della policy: lo stesso ruolo che nella
-programmazione dinamica ha il passo di *policy improvement*, ottenuto con la
-ricerca invece che con un massimo esatto.
+miglioramento della policy: lo stesso ruolo che nella programmazione dinamica ha
+il passo di *policy improvement*, ottenuto con la ricerca invece che con un
+massimo esatto.
 
 `````
 
 L'idea è più generale dei giochi da tavolo: quando si può simulare, si può
-pensare. Il programma MuZero {cite}`schrittwieser2020mastering`, per esempio,
-la usa senza conoscere le regole del gioco: impara un modello dalle partite. Il
+pensare. Il programma MuZero {cite}`schrittwieser2020mastering`, per esempio, la
+usa senza conoscere le regole del gioco: impara un modello dalle partite. Il
 modello conserva una rappresentazione interna, il minimo necessario per
 pianificare, senza ridisegnare la scacchiera pezzo per pezzo. La {doc}`sezione
-sul RL basato su modello
-<model-based>` ci torna sopra. Ai modelli linguistici l'idea è stata applicata
-anche alla lettera: una ricerca ad albero fra i passi possibili di un
-ragionamento, con una rete addestrata a giudicare quali promettono. I modelli
-che ragionano a lungo e di cui si conosce la ricetta, però, si addestrano per
-lo più con il gradiente di policy, su ragionamenti scritti un passo dopo
-l'altro, senza albero.
+sul RL basato su modello <model-based>` ci torna sopra.
+
+Ai modelli linguistici l'idea è stata applicata anche alla lettera: una ricerca
+ad albero fra i passi possibili di un ragionamento, con una rete addestrata a
+giudicare quali promettono. I modelli che ragionano a lungo e di cui si conosce
+la procedura, però, si addestrano per lo più con il gradiente di policy, su
+ragionamenti scritti un passo dopo l'altro, senza albero.
 
 ## In pratica: le visite si concentrano
 
@@ -215,8 +224,8 @@ volta il *seme*, cioè il numero da cui parte il sorteggio. Dentro un computer
 il caso è una sequenza calcolata e non vero caso, che dipende tutta da quel
 numero iniziale: cambiarlo è il modo di rifare l'esperimento daccapo. Di ciò
 che ne esce non si guarda un singolo risultato: si guardano il valore di mezzo
-(la mediana: la metà delle sessanta prove sta sotto, l'altra metà sopra) e gli
-estremi.
+(la mediana: la metà delle sessanta prove sta sotto, l'altra metà sopra)
+e gli estremi.
 
 ```python
 import math
@@ -326,15 +335,18 @@ Su sessanta semi, però, quella quota ha mediana $50{,}5\%$ e oscilla fra il
 $16\%$ e l’$89\%$; scartando le quindici prove più basse e le quindici più alte,
 le trenta di mezzo stanno fra il $33\%$ e il $60\%$. Le visite al ramo giusto
 hanno mediana $1582$ e vanno da $593$ a $1965$, cioè il $1922$ del seme $7$ è
-vicino al massimo osservato. In nove semi su sessanta il ramo più visitato alla
-radice non contiene la foglia migliore. Guardati da vicino, però,
-quei nove sono pareggi e non errori. Là dove la regola «si gioca la mossa
-più visitata» sceglie l'altro ramo, la foglia migliore lo batte di $0{,}004$,
-contro lo $0{,}032$ mediano su tutte e sessanta le prove: la ricerca sta
-scegliendo fra due rami che valgono quasi lo stesso. Che «si gioca la mossa
-più visitata» resti una regola pratica, e non una certezza, non lo dicono
-questi nove semi: lo dice il fatto che la garanzia di UCT vale soltanto alla
-lunga, con un numero di simulazioni che cresce senza limite.
+vicino al massimo osservato.
+
+In nove semi su sessanta il ramo più visitato alla radice non contiene la foglia
+migliore. Guardati da vicino, però, quei nove sono pareggi e non errori. Là dove
+la regola «si gioca la mossa più visitata» sceglie l'altro ramo, la foglia
+migliore lo batte di $0{,}004$, contro lo $0{,}032$ mediano su tutte e sessanta
+le prove: la ricerca sta scegliendo fra due rami che valgono quasi lo stesso.
+
+Che «si gioca la mossa più visitata» resti una regola pratica, e non una
+certezza, non lo dicono questi nove semi: lo dice il fatto che la garanzia di
+UCT vale soltanto alla lunga, con un numero di simulazioni che cresce senza
+limite.
 
 La quota oscilla, la forma no: l'albero cresce storto su tutti e sessanta i
 semi, e mai una volta le visite si distribuiscono uniformemente. Ma se avessimo
@@ -353,8 +365,8 @@ che le usava entrambe per esplorare in profondità solo le linee più sensate.
 
 Per giudicare una posizione raggiunta in fondo alla ricerca, AlphaGo (2016) non
 si affidava soltanto alla rete di valore: ne faceva la media, a parti uguali,
-con l'esito di una partita tirata avanti alla svelta fino alla fine. Con AlphaGo
-Zero, l'anno dopo, basterà la rete.
+con l'esito di una partita giocata rapidamente fino alla fine. Con AlphaGo Zero,
+l'anno dopo, basterà la rete.
 
 ```{figure} ../figures/alphago-2016.svg
 :name: fig-alphago
@@ -369,32 +381,35 @@ ricerca al self-play non c'era ancora: lo introduce AlphaGo Zero.
 
 Il ciclo di {numref}`fig-alphago` è il motivo per cui i successori di AlphaGo
 poterono fare a meno delle partite umane, e poggia su un fatto semplice: la
-ricerca gioca meglio delle due reti che la guidano. La rete propone guardando
-la sola posizione; la ricerca, prima di decidere, prova migliaia di
-continuazioni (AlphaGo Zero ne fa $1600$ per mossa, circa quattro decimi di
-secondo di calcolo). Con abbastanza simulazioni la mossa che esce dalla ricerca
-è migliore di quella che la rete avrebbe scelto senza ricerca, e diventa un
-esempio su cui la rete può allenarsi.
+ricerca gioca meglio delle due reti che la guidano. Infatti la rete propone
+guardando la sola posizione, mentre la ricerca, prima di decidere, prova
+migliaia di continuazioni (AlphaGo Zero ne fa $1600$ per mossa, circa quattro
+decimi di secondo di calcolo). Con abbastanza simulazioni la mossa che esce
+dalla ricerca è migliore di quella che la rete avrebbe scelto senza ricerca, e
+diventa un esempio su cui la rete può allenarsi.
 
-È una fonte di supervisione interna: non serve un maestro, basta giocare
-contro sé stessi e imparare da dove la ricerca ha portato. Nel 2016 AlphaGo non
-chiudeva il ciclo: le partite contro sé stesso le giocava la sola rete di
-policy, senza ricerca, e la ricerca entrava soltanto nelle partite vere. La
-rete di policy aveva imparato prima a imitare le partite umane e poi si era
-affinata contro sé stessa; la rete di valore si era allenata soltanto su
-posizioni prese da quelle partite di self-play, perché sulle partite umane, dove
-posizioni consecutive quasi identiche condividono lo stesso esito, imparava a
-memoria i risultati invece di stimarli.
+È una fonte di supervisione interna: non serve un maestro, basta giocare contro
+sé stessi e imparare da dove la ricerca ha portato.
+
+Nel 2016 AlphaGo non chiudeva il ciclo: le partite contro sé stesso le giocava
+la sola rete di policy, senza ricerca, e la ricerca entrava soltanto nelle
+partite vere. La rete di policy aveva imparato prima a imitare le partite umane
+e poi si era affinata contro sé stessa; la rete di valore si era allenata
+soltanto su posizioni prese da quelle partite di self-play, perché sulle partite
+umane, dove posizioni consecutive quasi identiche condividono lo stesso esito,
+imparava a memoria i risultati invece di stimarli.
 
 Un anno dopo, **AlphaGo Zero** {cite}`silver2017mastering` elimina persino le
-partite umane: parte dalle sole regole del Go e impara *tabula rasa*, dal
-nulla, soltanto affrontando copie di sé, fino a battere nettamente la versione
-che aveva sconfitto Lee Sedol. Nel 2018 **AlphaZero** {cite}`silver2018general`
-generalizza la ricetta: lo stesso programma, senza ritocchi per gioco,
-padroneggia Go, scacchi e shogi (gli scacchi giapponesi), e in tutti e tre batte
-il programma più forte del momento; nel Go, quel programma è il suo stesso
-predecessore. Mostra che cosa nasce dall'unione di apprendimento per rinforzo,
-ricerca ad albero e reti profonde.
+partite umane: parte dalle sole regole del Go e impara *tabula rasa*, dal nulla,
+soltanto affrontando copie di sé, fino a battere nettamente la versione che
+aveva sconfitto Lee Sedol.
+
+Nel 2018 **AlphaZero** {cite}`silver2018general` generalizza il metodo: lo
+stesso programma, senza ritocchi per gioco, padroneggia Go, scacchi e shogi (gli
+scacchi giapponesi), e in tutti e tre batte il programma più forte del momento;
+nel Go, quel programma è il suo stesso predecessore. AlphaZero mostra che cosa
+nasce dall'unione di apprendimento per rinforzo, ricerca ad albero e reti
+profonde.
 
 ## Un ultimo salto: allineare i modelli linguistici
 
@@ -421,20 +436,22 @@ quell'ordine in un punteggio che l'ottimizzazione sa usare.
 ```
 
 Nel primo riquadro di {numref}`fig-instructgpt`, alle persone si chiede di
-ordinare, non di valutare. Confrontare due risposte è un giudizio che gli
-esseri umani danno con buona coerenza fra loro; assegnare un voto da uno a
-dieci molto meno, e su scale diverse. Nell’**RLHF** (*Reinforcement Learning
-from Human Feedback*, cioè apprendimento per rinforzo dal giudizio umano;
-{cite}`christiano2017deep`, {cite}`ouyang2022training`) le risposte del modello
-sono l'azione, i valutatori umani indicano quali preferiscono, e le loro
-preferenze addestrano un *modello di ricompensa*, che da lì in poi assegna il
-premio a ogni risposta. Con PPO si ritocca poi la policy del modello (la sua
-tendenza a produrre certe risposte), verso ciò che gli umani apprezzano, e una
-penalità tiene la policy vicina al modello di partenza; la misura di quella
-distanza (la divergenza di Kullback-Leibler) e gli altri dettagli si trovano
-nella {doc}`sezione sul post-addestramento </Transformers/post-training>`. La
-stessa famiglia di metodi che ha affinato la policy di AlphaGo orienta oggi un
-assistente verso le risposte che le persone preferiscono.
+ordinare, non di valutare. Confrontare due risposte è un giudizio che gli esseri
+umani danno con buona coerenza fra loro; assegnare un voto da uno a dieci molto
+meno, e su scale diverse.
+
+Nell’**RLHF** (*Reinforcement Learning from Human Feedback*, cioè apprendimento
+per rinforzo dal giudizio umano; {cite}`christiano2017deep`,
+{cite}`ouyang2022training`) le risposte del modello sono l'azione, i valutatori
+umani indicano quali preferiscono, e le loro preferenze addestrano un *modello
+di ricompensa*, che da lì in poi assegna il premio a ogni risposta. Con PPO si
+ritocca poi la policy del modello (la sua tendenza a produrre certe risposte),
+verso ciò che gli umani apprezzano, e una penalità tiene la policy vicina al
+modello di partenza; la misura di quella distanza (la divergenza di
+Kullback-Leibler) e gli altri dettagli si trovano nella {doc}`sezione sul
+post-addestramento </Transformers/post-training>`. La stessa famiglia di metodi
+che ha affinato la policy di AlphaGo orienta oggi un assistente verso le
+risposte che le persone preferiscono.
 
 La figura comincia dagli ordinamenti, ma prima c'è un passo che non mostra: il
 modello viene addestrato a imitare risposte scritte da persone, cioè a copiare

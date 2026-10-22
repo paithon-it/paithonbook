@@ -31,8 +31,8 @@ latente $\mathbf{z}$ più piccolo (la «scheda» compatta di Stable Diffusion), 
 il processo di rumore lavora su $\mathbf{z}$, non sui pixel
 {cite}`rombach2022high`. A cambiare è solo la rete
 $\boldsymbol{\epsilon}_\theta(\mathbf{z}_t, t)$ che stima il rumore a ogni
-passo: via la U-Net, dentro un Transformer. L'obiettivo di addestramento e il
-campionatore restano identici.
+passo: via la U-Net, dentro un Transformer. L'obiettivo di
+addestramento e il campionatore restano identici.
 
 Un Transformer, però, elabora sequenze di vettori, i token, mentre il latente
 è un tensore $4\times32\times32$ organizzato in griglia. Come si passa
@@ -53,28 +53,33 @@ Il Vision Transformer ci ha insegnato il trucco per trasformare una griglia in
 una frase: tagliarla in tessere, come un mosaico, e disporle in sequenza come
 se fossero parole. Qui le tessere sono quadratini di 2 caselle per lato, quindi
 ne vengono $32 : 2 = 16$ per lato e $16 \times 16 = 256$ in tutto: una "frase"
-di 256 parole. Con un'accortezza: mettendo le tessere in fila si perderebbe
-l'informazione su dove stavano nella griglia, e allora a ciascuna si appiccica
-un'etichetta che dice da che riga e da che colonna viene. Quanto grosse
-tagliare le tessere è una scelta: a 4 caselle per lato le parole sarebbero 64
-invece di 256, e leggerle costerebbe quattro volte meno. È la manopola con cui
-si decide quanto far lavorare la torre.
+di 256 parole.
+
+C'è però un'accortezza: mettendo le tessere in fila si perderebbe
+l'informazione su dove stavano nella griglia, quindi a ciascuna si appiccica
+un'etichetta che dice da che riga e da che colonna viene.
+
+Quanto grosse tagliare le tessere è una scelta: a 4 caselle per lato le parole
+sarebbero 64 invece di 256, e leggerle costerebbe quattro volte meno. È la
+manopola con cui si decide quanto far lavorare la torre.
 
 Da qui in poi il lavoro lo conosciamo dal capitolo sui Transformer: la torre,
 con i suoi piani (in gergo si chiamano blocchi). Le tessere prendono il posto
 che là avevano le parole: duecentocinquantasei in fila, e a ogni piano
 ognuna si porta dietro i suoi appunti, una lista di numeri lunga sempre uguale.
-A ogni piano, ogni tessera guarda *tutte* le altre (per capire quanto rumore
-c'è sull'orecchio del gatto aiuta guardare anche la tessera con la coda,
-dall'altra parte della scheda) e poi rielabora i propri appunti. All'ultimo
+A ogni piano, ogni tessera guarda *tutte* le altre (ad esempio, per capire
+quanto rumore c'è sull'orecchio del gatto aiuta guardare anche la tessera con
+la coda, dall'altra parte della scheda) e poi rielabora i propri appunti.
+All'ultimo
 piano, ogni tessera riconsegna la propria porzione di rumore stimato, e le
 porzioni ricomposte formano la mappa completa: la torre, tutta insieme, *è* il
-restauratore, e quella mappa è la sua risposta a ogni passo di pulitura. La
-differenza con la U-Net è di principio: le convoluzioni, cioè il modo di
+restauratore, e quella mappa è la sua risposta a ogni passo di pulitura.
+
+La differenza con la U-Net è di principio. Le convoluzioni, cioè il modo di
 guardare che rende una rete di visione una rete di visione, davano la
-precedenza ai vicini di casa per costruzione; il Transformer non privilegia
-nessuno, e dove conviene guardare lo impara durante l'addestramento, tessera
-per tessera.
+precedenza ai vicini di casa per costruzione; il Transformer, invece, non
+privilegia nessuno, e dove conviene guardare lo impara durante
+l'addestramento, tessera per tessera.
 
 `````
 
@@ -96,13 +101,15 @@ originale, anche i parametri della covarianza), riassemblata poi in un tensore
 della stessa forma dell'ingresso: la rete resta una
 $\boldsymbol{\epsilon}_\theta(\mathbf{z}_t, t)$, cambia solo ciò che ha dentro.
 
-Il lato $p$ della patch è la manopola del calcolo: con $p = 2$ i token sono $N
+Il lato $p$ della patch è l'iperparametro che regola il calcolo: con $p = 2$ i
+token sono $N
 = 256$, con $p = 4$ sono 64, con $p = 8$ sono 16. Dimezzare $p$ quadruplica i
-token e con essi il costo di una passata a parità di parametri: nel paper la
-taglia XL passa da 29,1 Gflops con $p = 4$ a 118,6 con $p = 2$, cioè un fattore
-$4{,}08$, e non di più. Il termine quadratico dell'attenzione c'è, ma a queste
-lunghezze di sequenza è piccolo: per blocco pesa $2N^2 d$ contro i $12Nd^2$
-delle proiezioni e dell'MLP, cioè un rapporto $N/(6d)$ che per DiT-XL/2, dove
+token e con essi il costo di una passata a parità di parametri. Ad esempio, nel
+paper la taglia XL passa da 29,1 Gflops con $p = 4$ a 118,6 con $p = 2$, cioè
+un fattore $4{,}08$, e non di più. Il termine quadratico dell'attenzione c'è,
+ma a queste lunghezze di sequenza è piccolo: per blocco pesa $2N^2 d$ contro i
+$12Nd^2$ delle proiezioni e dell'MLP, cioè un rapporto $N/(6d)$ che per
+DiT-XL/2, dove
 la larghezza è $d = 1152$, fa $256/(6 \cdot 1152) \approx 3{,}7\%$ del termine
 lineare, e quindi il $3{,}6\%$ del totale. Il rapporto però cresce con il
 quadrato del lato: alla stessa larghezza, $512$ pixel portano $N$ a $1024$ e il
@@ -118,9 +125,10 @@ la nomenclatura del paper: quattro taglie (DiT-S, B, L, XL) per tre patch (/8,
 
 Manca un pezzo. Alla rete bisogna dire due cose che non stanno nell'immagine:
 *a che punto della scala* sta lavorando (il numero del passo) e *che cosa* deve
-disegnare (nel DiT originale la categoria dell'oggetto, nei suoi discendenti un
-testo). Le due insieme si chiamano **condizionamento**: le informazioni che
-orientano il lavoro senza far parte di ciò su cui si lavora. Il nome viene
+disegnare (nel DiT originale la categoria dell'oggetto, nei suoi
+discendenti un testo). Le due insieme si chiamano **condizionamento**: le
+informazioni che orientano il lavoro senza far parte di ciò su cui si lavora.
+Il nome viene
 dalla probabilità condizionata, e il legame è letterale, perché ciò che la rete
 impara è la distribuzione delle immagini *data* la richiesta.
 
@@ -151,6 +159,7 @@ come spostarne il tono: cambiano il materiale che quella metà ha davanti da
 leggere. La terza è all'uscita, e dice quanto di ciò che la metà ha prodotto va
 aggiunto a quello che c'era prima: a fondo scala interviene a piena forza, a
 zero il suo lavoro resta nel cassetto e il segnale in arrivo prosegue intatto.
+
 Le istruzioni dipendono dal momento: se siamo ai primi passi della pulitura
 (quasi tutto rumore) o agli ultimi ritocchi, se si sta disegnando un gatto o un
 faro.
@@ -161,10 +170,13 @@ piani lavorano lo stesso, solo che nessuno li ascolta, e da lì imparano: a fine
 giornata si guarda quanto sarebbe servito dare retta a ciascuno, e ognuno alza
 la propria manopola di conseguenza. Sembra pigrizia, ma è il modo più stabile
 di cominciare: nessun piano rovina il lavoro degli altri prima di aver imparato
-il proprio. È lo stesso trucco delle manopole a zero con cui ControlNet, nella
+il proprio.
+
+È lo stesso trucco delle manopole a zero con cui ControlNet, nella
 {doc}`sezione su Stable Diffusion
 </ModelliDiffusione/stable-diffusion>`, affianca l'apprendista al restauratore:
-un pezzo nuovo che all'inizio tace, e impara da quanto sarebbe servito ascoltarlo.
+un pezzo nuovo che all'inizio tace, e impara da quanto sarebbe servito
+ascoltarlo.
 
 `````
 
@@ -196,7 +208,9 @@ $\boldsymbol{\alpha}_c$ è un *gate* che dosa il contributo del sotto-strato
 prima della somma residua. Il pedice $c$ non è decorativo e va letto:
 $\boldsymbol{\alpha}_c, \boldsymbol{\beta}_c, \boldsymbol{\gamma}_c$ vengono
 dal condizionamento e non hanno niente a che vedere con $\alpha_t$ e $\beta_t$,
-che in questo capitolo sono lo schedule del rumore. Il suffisso *zero* riguarda
+che in questo capitolo sono lo schedule del rumore.
+
+Il suffisso *zero* riguarda
 l'inizializzazione. Azzerare $\boldsymbol{\alpha}_c$ è sufficiente, perché con
 il gate a zero il ramo residuo non passa, e il blocco è l’identità qualunque
 cosa facciano scala e traslazione. Il paper dichiara azzerato quello;
@@ -207,17 +221,23 @@ gradiente del gate no, perché vale il prodotto scalare fra ciò che il
 sotto-strato ha prodotto e la direzione in cui l'uscita andrebbe spostata: il
 blocco impara quanto aprirsi pur non contribuendo ancora, e la rete, che
 comincia come un tubo vuoto, riceve gradiente su tutti i gate insieme.
-Nell'implementazione di riferimento succede dal secondo passo, perché anche lo
-strato d'uscita parte da zero e al primo passo si muove solo lui; nel `MiniDiT`
-di «Un DiT in miniatura», che quello strato non lo azzera, succede dal primo,
-come mostra la sua ultima stampa. L'idea di modulare le normalizzazioni ha un
+
+Nell'implementazione di riferimento questo succede dal secondo passo, perché
+anche lo strato d'uscita parte da zero e al primo passo si muove solo lui; nel
+`MiniDiT` di «Un DiT in miniatura», che quello strato non lo azzera, succede
+dal primo, come mostra la sua ultima stampa.
+
+L'idea di modulare le normalizzazioni ha un
 precedente illustre che conosciamo: l'AdaIN con cui StyleGAN
-{cite}`karras2019style` inietta lo stile nel generatore. Nelle ablazioni del
+{cite}`karras2019style` inietta lo stile nel generatore.
+
+Nelle ablazioni del
 paper adaLN-zero batte sia i token in-context sia la cross-attention, e lo fa
 con meno calcolo: $118{,}6$ Gflops contro i $119{,}4$ dell'in-context e i
 $137{,}6$ della cross-attention, che è un sedici per cento in più. In Gflops,
-quindi, le manopole aggiungono quasi niente, perché sono vettori e non token da
-far partecipare all'attenzione. In parametri no: gli MLP di modulazione sono
+quindi, la modulazione aggiunge quasi niente, perché è fatta di vettori e non di
+token da far partecipare all'attenzione. In parametri no: gli MLP di
+modulazione sono
 $226$ dei $675$ milioni di DiT-XL/2, cioè un terzo della rete, e il confronto
 delle ablazioni corre a passi di addestramento pari, non a parametri pari.
 
@@ -236,9 +256,9 @@ calcolo speso) {cite}`kaplan2020scaling,hoffmann2022training`.
 
 Si misurano tre grandezze. Il lavoro si conta in Gflops, i miliardi di
 operazioni che costa una passata della rete, dall'ingresso all'uscita; la
-grandezza in parametri, i numeri interni della rete; la qualità con il FID, una
-distanza fra il mucchio delle immagini generate e quello delle vere: più è
-basso, meglio è.
+grandezza in parametri, cioè i numeri interni della rete; la qualità con il
+FID, una distanza fra l'insieme delle immagini generate e quello delle vere:
+più è basso, meglio è.
 
 Non ne segue che l'architettura non conti più, che è la conclusione più facile
 da trarre e la sbagliata. Lo stesso lavoro contiene anche delle *ablazioni*
@@ -248,22 +268,25 @@ tutt'altro che marginale; adaLN-zero vince quel confronto con meno calcolo
 degli altri due. Le due affermazioni stanno insieme senza contraddirsi, a patto
 di enunciarle con precisione: fra modelli costruiti tutti allo stesso modo, il
 calcolo predice la qualità meglio della sola taglia o del solo numero di
-tessere. Come è fatto un piano della torre resta una scelta, e una scelta
-sbagliata abbassa la qualità; la regolarità indica dove spendere il prossimo
-Gflop, non che l'ingegneria sia finita.
+tessere. D'altra parte, come è fatto un blocco del Transformer resta una
+scelta, e una scelta sbagliata abbassa la qualità; la regolarità indica dove
+spendere il prossimo Gflop, non che l'ingegneria sia finita.
 
 In cima alla curva sta il modello più grande con le tessere più piccole, che
-nel paper si chiama DiT-XL/2 (XL è la taglia della torre, il 2 è il lato della
-tessera in caselle): un Transformer da 675 milioni di numeri interni che genera
+nel paper si chiama DiT-XL/2 (XL è la taglia della rete, il 2 è il lato della
+tessera in caselle). È un Transformer da 675 milioni di parametri che genera
 immagini a partire dalla categoria richiesta («un cane», «un faro»). Con la
 classifier-free guidance e dopo sette milioni di passi di addestramento, il
 modello arriva a un FID di $2{,}27$ su ImageNet $256\times256$. Questo
 punteggio ne fa il migliore fra i modelli di diffusione allora noti, mettendolo
-alla pari con la GAN più forte del momento, StyleGAN-XL ($2{,}30$). Per
-confronto, il latent diffusion di Rombach e colleghi {cite}`rombach2022high` si
-fermava a $3{,}60$ con $103{,}6$ Gflops (contro i $118{,}6$ di DiT), mentre la
+alla pari con la GAN più forte del momento, StyleGAN-XL ($2{,}30$).
+
+Per confronto, il latent diffusion di Rombach e colleghi {cite}`rombach2022high`
+si fermava a $3{,}60$ con $103{,}6$ Gflops (contro i $118{,}6$ di DiT),
+mentre la
 U-Net sui pixel di Dhariwal e Nichol {cite}`dhariwal2021diffusion` arrivava a
 $3{,}94$ con 742 Gflops, e a $4{,}59$ con 1120 nella versione a stadio unico.
+
 La U-Net, dunque, non era essenziale. Il suo vantaggio di partenza (sapere già
 in fabbrica che i pixel vicini contano più di quelli lontani) si può comprare
 con dati e calcolo, e a calcolo quasi pari il Transformer arriva più in alto;
@@ -291,9 +314,10 @@ conta come quel lavoro sia stato speso; che chi lavora di più faccia meglio
 sarebbe ovvio. Una torre piccola che legge tante tessere e una torre grande che
 ne legge poche, se fanno la stessa quantità di lavoro, arrivano più o meno allo
 stesso punto, e la coppia che Peebles e Xie mettono a confronto è fatta così.
+
 Le due manopole che puoi girare (la taglia della torre e la misura delle
 tessere) diventano una sola davanti al risultato, e restano due davanti al
-calcolatore: una torre grande e una fila lunga di tessere non gli chiedono la
+computer: una torre grande e una fila lunga di tessere non gli chiedono la
 stessa memoria né la stessa attesa. Si gira allora la manopola più adatta alla
 propria macchina, tanto a decidere il risultato sarà il totale.
 
@@ -324,9 +348,9 @@ fino a sette milioni di passi, cioè diciassette volte e mezzo il budget della
 curva.
 
 Il meccanismo che resta, e che ha superato la prova del tempo, è più modesto e
-più utile dell'enunciato forte: fissato il disegno del blocco, i Gflops
-predicono la qualità meglio del numero di parametri. Il paper misura una
-correlazione forte, $-0{,}93$ fra Gflops e FID, e una correlazione forte
+più utile dell'enunciato forte: fissato il disegno del blocco,
+i Gflops predicono la qualità meglio del numero di parametri. Il paper misura
+una correlazione forte, $-0{,}93$ fra Gflops e FID, e una correlazione forte
 ammette eccezioni. Le eccezioni hanno un nome: sono le tessere da otto caselle,
 un terzo della famiglia. A Gflops quasi uguali ($1{,}41$ contro $1{,}42$)
 DiT-S/4 fa $100{,}4$ e DiT-B/8 fa $122{,}7$; e il caso che non lascia scampo è
@@ -335,14 +359,14 @@ punti di FID più indietro ($106{,}4$ contro $68{,}4$). La coppia che il paper
 porta come esempio, DiT-S/2 contro DiT-B/4 ($68{,}40$ e $68{,}38$), è fra
 quelle che si equivalgono.
 
-E due delimitazioni sulle manopole. Profondità e larghezza l'esperimento non le
-separa mai, perché le quattro taglie le fissano insieme seguendo le
+E due delimitazioni sugli iperparametri. Profondità e larghezza l'esperimento
+non le separa mai, perché le quattro taglie le fissano insieme seguendo le
 configurazioni del Vision Transformer: ciò che viene messo a confronto è la
 taglia contro il lato della tessera. Profondità, larghezza e lato della tessera
 non si equivalgono in memoria né in latenza. Si può pianificare meno di quanto
 dica l'enunciato forte: dentro la parte della famiglia in cui la regola tiene
-si sceglie la manopola che conviene sull'hardware disponibile, sapendo che a
-decidere sarà il totale.
+si sceglie l'iperparametro che conviene sull'hardware disponibile, sapendo
+che a decidere sarà il totale.
 
 `````
 
@@ -359,20 +383,22 @@ Sul piano dell'architettura il rapporto dichiara poco, e in modo preciso. Sora
 «è un diffusion transformer». I video vengono compressi da una rete in schede,
 come le fotografie in Stable Diffusion, e le schede vengono tagliate in
 **spacetime patches**, tessere che si estendono nello spazio *e nel tempo*: un
-quadratino di immagine per un pezzetto di durata. Quelle tessere vengono messe
-in fila e date da leggere alla torre come prima. L'addestramento avviene su
-video e immagini di durate, risoluzioni e proporzioni diverse. La qualità
-cresce poi «sensibilmente» al crescere del lavoro speso ad addestrare: il
-confronto mostrato è fra lo stesso modello addestrato con il lavoro base, poi
-con quattro volte tanto, poi con trentadue volte tanto. Questo lavoro si misura
-in un altro modo rispetto ai dodici DiT: là si contavano le operazioni di una
-passata sola e la qualità era un numero, il FID; qui si conta il calcolo speso
-per addestrare, e i tre filmati si confrontano a occhio. Sono due facce della
-stessa regolarità, le leggi di scala dei modelli di linguaggio, misurate su due
-assi diversi. La ricetta DiT viene estesa di una dimensione: dove il Vision
-Transformer affettava un'immagine, qui si affetta un blocco di fotogrammi.
+quadratino di immagine per un pezzetto di durata. Quelle tessere vengono
+messe in fila e date da leggere a un Transformer come prima. L'addestramento
+avviene su video e immagini di durate, risoluzioni e proporzioni diverse.
 
-Il rapporto *non* dice quanti numeri interni abbia il modello, su quali dati
+La qualità cresce poi «sensibilmente» al crescere del lavoro speso ad
+addestrare: il confronto mostrato è fra lo stesso modello addestrato con il
+lavoro base, poi con quattro volte tanto, poi con trentadue volte tanto. Questo
+lavoro si misura in un altro modo rispetto ai dodici DiT. Là si contavano le
+operazioni di una passata sola e la qualità era un numero, il FID; qui si conta
+il calcolo speso per addestrare, e i tre filmati si confrontano a occhio. Sono
+due facce della stessa regolarità, le leggi di scala dei modelli di linguaggio,
+misurate su due assi diversi. L'impostazione DiT viene estesa di una dimensione:
+dove il Vision Transformer affettava un'immagine, qui si affetta un blocco di
+fotogrammi.
+
+Il rapporto *non* dice quanti parametri abbia il modello, su quali dati
 sia stato addestrato, come sia fatto nel dettaglio. È un documento aziendale
 con dimostrazioni scelte da chi lo ha scritto, non un articolo scientifico che
 altri ricercatori abbiano controllato prima della pubblicazione.
@@ -389,11 +415,12 @@ tessere del Vision Transformer, passate per DiT, sono arrivate al cinema.
 
 ## Due corsie e linee dritte: MM-DiT e rectified flow
 
-Il 2024 è anche l'anno in cui la ricetta DiT arriva ai modelli di punta che
-disegnano su richiesta. Patrick Esser, Robin Rombach e il resto del gruppo di
-Stable Diffusion pubblicano il lavoro dietro **Stable Diffusion 3**
+Il 2024 è anche l'anno in cui l'architettura DiT arriva ai modelli di punta
+che disegnano su richiesta. Patrick Esser, Robin Rombach e il resto del gruppo
+di Stable Diffusion pubblicano il lavoro dietro **Stable Diffusion 3**
 {cite}`esser2024scaling`, presentato a ICML 2024 e premiato tra i migliori
-articoli della conferenza. Le novità sono tre, in ordine di profondità crescente.
+articoli della conferenza. Le novità sono tre, in ordine di profondità
+crescente.
 
 La prima è l'architettura, battezzata **MM-DiT** (*multimodal DiT*, dove le due
 modalità sono appunto il testo e l'immagine), e riguarda il rapporto fra le
@@ -403,13 +430,15 @@ leggerlo era la rete di CLIP {cite}`radford2021learning`, un modello del
 addestrato a mettere in corrispondenza immagini e didascalie; trasformava la
 richiesta una volta per tutte in una sequenza di vettori, e da lì in poi la
 U-Net poteva soltanto *consultarla* tramite cross-attention: l'informazione
-andava in un senso solo. In MM-DiT il testo e l'immagine diventano due file di
-tessere alla pari: due corsie che conservano ciascuna i propri pesi ma si
-incontrano nell'attenzione, così che a ogni piano della torre le parole
-guardino le tessere dell'immagine e viceversa. La famiglia arriva fino a 8
-miliardi di numeri interni, e la scala si comporta anche qui in modo regolare e
-prevedibile. L'impostazione ha fatto scuola: la riprende, tra gli altri, FLUX
-(2024), del gruppo di autori originali di Stable Diffusion.
+andava in un senso solo.
+
+In MM-DiT il testo e l'immagine diventano due sequenze di token alla pari: due
+corsie che conservano ciascuna i propri pesi ma si incontrano nell'attenzione,
+così che a ogni blocco le parole guardino le tessere dell'immagine e
+viceversa. La famiglia arriva fino a 8 miliardi di parametri, e la scala si
+comporta anche qui in modo regolare e prevedibile. L'impostazione ha fatto
+scuola: la riprende, tra gli altri, FLUX (2024), del gruppo di autori originali
+di Stable Diffusion.
 
 `````{tab} Elementare
 
@@ -484,7 +513,7 @@ flow** {cite}`liu2023rectified`, letteralmente «flusso raddrizzato», che è un
 variante particolare di una famiglia di metodi più generale, il *flow matching*
 di Yaron Lipman e colleghi {cite}`lipman2023flow`, che la {doc}`sezione
 dedicata </ModelliDiffusione/flow-matching>` ha già presentato. Ci interessa
-per un effetto: cambia quante fermate servono nel viaggio dal rumore
+per un effetto: cambia quanti passi servono nel viaggio dal rumore
 all'immagine.
 
 ```{figure} ../figures/flow-matching-traiettorie-dritte.svg
@@ -499,7 +528,7 @@ tanti e piccoli.
 
 {numref}`fig-traiettorie-dritte` mostra la differenza e dice dove sta il
 guadagno: nel tempo necessario a produrre l'immagine, non nella sua qualità. Il
-numero di fermate necessarie dipende soprattutto da quanto la strada curvi, e
+numero di passi necessari dipende soprattutto da quanto la strada curvi, e
 meno da quanto la meta sia lontana (su una retta un solo passo arriva dove deve
 arrivare): raddrizzarla non cambia dove si arriva, cambia quante volte bisogna
 fermarsi a chiedere la direzione.
@@ -580,14 +609,18 @@ velocità di tutte le coppie $(\mathbf{x}_0, \boldsymbol{\epsilon})$ le cui
 interpolazioni passano di lì: le traiettorie marginali non sono rette, e
 risultano molto meno curve di quelle dell'ODE associata alla diffusione
 variance-preserving, e l'errore di discretizzazione a parità di passi è più
-piccolo. Il flow matching di Lipman e colleghi {cite}`lipman2023flow` mostra
+piccolo.
+
+Il flow matching di Lipman e colleghi {cite}`lipman2023flow` mostra
 inoltre che la famiglia dei cammini gaussiani è generale e include i cammini
 della diffusione come caso particolare: DDPM diventa un punto in uno spazio di
 scelte progettuali. Esser e colleghi {cite}`esser2024scaling` confrontano
 sistematicamente le varianti e adottano il rectified flow con un campionamento
 di $t$ concentrato sugli istanti intermedi, i più difficili (una logit-normale
 centrata su $t = 0{,}5$): in pratica Stable Diffusion 3 genera in poche decine
-di passi. Il *reflow*, cioè la rettificazione ripetuta, riaddestra sulle coppie
+di passi.
+
+Il *reflow*, cioè la rettificazione ripetuta, riaddestra sulle coppie
 generate, raddrizza ancora le traiettorie e in Liu e colleghi porta al passo
 singolo. Stable Diffusion 3 non lo fa: addestra un flusso rettificato una volta
 sola.
@@ -597,15 +630,15 @@ sola.
 ## Un DiT in miniatura
 
 Come per la spirale di punti con cui abbiamo smontato DDPM, il modo migliore di
-fissare l'architettura è costruirla in piccolo. Il codice che segue è un DiT
+fissare l'architettura è costruirla in piccolo. Costruiamo quindi un DiT
 completo ma in miniatura: si taglia una scheda finta in tessere, le si fa
-passare per i piani della torre con l'attenzione e le manopole della regia, e si
-ricompone il risultato. Le stampe da guardare sono quattro: la forma del
-risultato, il numero di pesi, la prova che le manopole partono da zero
-e quali manopole cominciano a muoversi per prime. Non c'è
-addestramento (servirebbero i dati e le ore di calcolo su GPU) ma tutte le
-misure tornano, e il ciclo di addestramento sarebbe *lo stesso* visto per DDPM:
-cambia solo la rete interrogata.
+passare per i blocchi del Transformer con l'attenzione e la modulazione del
+condizionamento, e si ricompone il risultato. Le stampe da guardare sono
+quattro: la forma del risultato, il numero di pesi, la prova che i parametri di
+modulazione partono da zero e quali di essi cominciano a muoversi per primi.
+Non c'è addestramento (servirebbero i dati e le ore di calcolo su GPU), ma tutte
+le misure tornano, e il ciclo di addestramento sarebbe *lo stesso* visto per
+DDPM: cambia solo la rete interrogata.
 
 ```python
 import math
@@ -691,27 +724,25 @@ print([int(v > 0) for v in g])                 # [0, 0, 1, 0, 0, 1]: i due gate
 ```
 
 Le ultime due stampe dicono più delle prime due. La prima stampa le misure del
-risultato, e resterebbe identica anche togliendo tutti e quattro i piani della
-torre, o cambiando il passo e la classe: dice che i tubi sono collegati, non
-che l'acqua ci passi giusta. La seconda conta i numeri interni, e almeno
-cambierebbe togliendo dei piani, ma non distingue una rete che funziona da una
-rotta.
+risultato, e resterebbe identica anche togliendo tutti e quattro i blocchi, o
+cambiando il passo e la classe: dice che i tubi sono collegati, non che l'acqua
+ci passi giusta. La seconda conta i parametri, e almeno cambierebbe togliendo
+dei blocchi, ma non distingue una rete che funziona da una rotta.
 
-La terza stampa controlla la promessa di adaLN-zero. Le manopole partono da
-zero, quindi ogni piano dovrebbe restituire il proprio ingresso, per qualunque
-istruzione arrivi dalla regia: la differenza fra uscita e ingresso deve essere
-zero, e la riga stampa zero. Chi scrive codice fa di solito questo controllo a
-mente (in gergo un *desk-check*); qui è eseguibile, e se quello zero smette di
-uscire l'inizializzazione si è rotta. La quarta controlla l'altra metà della
-promessa: dopo un passo all'indietro, delle sei manopole del primo piano
-ricevono una correzione soltanto le due d'uscita, quelle che dosano quanto il
-piano si fa sentire. Le altre quattro restano ferme finché le prime due sono a
-zero, perché il lavoro del piano non arriva ancora all'uscita.
+La terza stampa controlla la promessa di adaLN-zero. I parametri di modulazione
+partono da zero, quindi ogni blocco dovrebbe restituire il proprio ingresso, per
+qualunque condizionamento arrivi: la differenza fra uscita e ingresso deve
+essere zero, e la riga stampa zero. Chi scrive codice fa di solito questo
+controllo a mente (in gergo un *desk-check*); qui è eseguibile, e se quello zero
+smette di uscire l'inizializzazione si è rotta. La quarta controlla l'altra metà
+della promessa: dopo un passo all'indietro, dei sei parametri di modulazione del
+primo blocco ricevono una correzione soltanto i due gate, quelli che dosano
+quanto il blocco contribuisce. Gli altri quattro restano fermi finché i primi
+due sono a zero, perché il lavoro del blocco non arriva ancora all'uscita.
 
 Il DiT vero differisce dal nostro nei numeri (nella taglia più grande, 28
-piani e appunti da 1152 numeri per tessera, contro i nostri 4 e 128), nel fatto
-che
-predice, accanto al rumore, anche quanta incertezza lasciarsi attorno a ogni
+blocchi e una dimensione di 1152 per token, contro i nostri 4 e 128), nel fatto
+che predice, accanto al rumore, anche quanta incertezza lasciarsi attorno a ogni
 passo (i parametri della covarianza), e nel modo di dire a ogni tessera dove si
 trova nella griglia, che nel DiT è una tabella di posizioni fissata in partenza
 invece dei nostri numeri appresi. La logica è la stessa.
@@ -721,7 +752,7 @@ invece dei nostri numeri appresi. La logica è la stessa.
 Addestrare questi modelli è fuori dalla portata individuale, e la direzione è
 quella di un rincaro: già lo Stable Diffusion del 2022 chiedeva le
 centocinquantamila ore di calcolo che sappiamo, i suoi successori a miliardi di
-numeri interni ne chiedono un multiplo che nessuno dichiara, e su Sora OpenAI
+parametri ne chiedono un multiplo che nessuno dichiara, e su Sora OpenAI
 non pubblica né costi né dimensioni. La grandezza è diventata un ingrediente
 della ricetta, e le curve di Peebles e Xie la misurano.
 
@@ -735,9 +766,11 @@ Nel 2015 la diffusione nasce da un'analogia termodinamica; nel 2024 genera un
 minuto di video da una frase. In mezzo non c'è un colpo di genio isolato: ci
 sono quattro mattoni presi da scaffali diversi. L'autoencoder variazionale è
 del 2014, ed era nato per inventare immagini nuove e non per comprimerle,
-sorteggiando una scheda a caso e facendola ridipingere al copista. Qui gli
-tocca il ruolo del compressore, e a inventare pensa qualcun altro. La U-Net è
-del 2015 ed era nata per i microscopi {cite}`ronneberger2015u`. L'attenzione
+campionando una scheda a caso e facendola ridipingere al copista. Qui gli
+tocca il ruolo del compressore, e a inventare pensa qualcun altro.
+
+La U-Net è del 2015 ed era nata per i microscopi
+{cite}`ronneberger2015u`. L'attenzione
 nasce nel 2014 per tradurre da una lingua all'altra {cite}`bahdanau2015neural`
 e diventa protagonista nel 2017 {cite}`vaswani2017attention`. Le tessere sono
 quelle di un Vision Transformer del 2021 nato per riconoscere il contenuto
@@ -806,8 +839,8 @@ in anni diversi.
   disegno vincente è anche fra i più economici in Gflops.
 - Sora {cite}`brooks2024video` dichiara un diffusion transformer su
   *spacetime patches* di video compressi, con qualità che cresce col calcolo
-  speso ad addestrare, che è un asse diverso da quello dei dodici DiT: la
-  ricetta DiT estesa al tempo. Se ciò faccia dei video
+  speso ad addestrare, che è un asse diverso da quello dei dodici DiT:
+  l'architettura DiT estesa al tempo. Se ciò faccia dei video
   generativi dei "simulatori di mondo" è la domanda del capitolo sui World
   Model.
 - Stable Diffusion 3 {cite}`esser2024scaling` cambia tre cose: l'MM-DiT
@@ -830,7 +863,7 @@ La ricetta si riassume in tre operazioni (comprimere, sporcare di rumore,
 insegnare a ripulire), e l'abitudine con cui l'abbiamo letta, cercare
 nell'architettura nuova i mattoni vecchi, tornerà utile quando Sora ricomparirà
 fra i {doc}`simulatori del mondo </WorldModels/simulatori-e-dibattito>`. Il
-rectified flow riduce il numero di fermate raddrizzando la strada, cioè
+rectified flow riduce il numero di passi raddrizzando la strada, cioè
 cambiando il modello. La {doc}`sezione sui campionatori veloci
 </ModelliDiffusione/campionatori-veloci>` pone la domanda inversa: quanto si
 può ridurre il numero di passi con la rete che si ha già, senza riaddestrare

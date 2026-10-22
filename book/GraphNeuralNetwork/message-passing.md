@@ -109,7 +109,7 @@ $U_k \colon \mathbb{R}^{F_{k-1}} \times \mathbb{R}^{F_m} \to \mathbb{R}^{F_k}$,
 dove $F_0 = F$ è il numero di feature d'ingresso e $F_e$ quello delle feature
 d'arco. Il $\bigoplus$ opera componente per componente su un numero variabile
 di vettori tutti della stessa lunghezza $F_m$ e ne restituisce uno solo, sempre
-di lunghezza $F_m$, e così il grado variabile non rompe le
+di lunghezza $F_m$; di conseguenza il grado variabile non rompe le
 dimensioni.
 (Attenzione al simbolo: qui $\bigoplus$ è l'aggregazione, mentre nel resto del
 libro $\oplus$ indica la concatenazione, che in questo capitolo si scrive
@@ -120,10 +120,10 @@ $\hat{y}_G = R\big(\{\, \mathbf{h}_v^{(K)} : v \in V \,\}\big)$.
 
 L'invarianza di $\bigoplus$ è ciò che garantisce l’equivarianza alla
 permutazione anticipata nell'introduzione: rinumerare i nodi non cambia i
-messaggi, perché una somma non ha un primo addendo. Ed è la stessa forma
-astratta («aggrega dai vicini, poi aggiorna») dello schema
-$\mathrm{AGGREGATE}$/$\mathrm{UPDATE}$ visto in apertura del capitolo, qui
-resa esplicita nelle sue tre componenti: la funzione messaggio $M_k$ e
+messaggi, perché una somma non ha un primo addendo. Ed è la
+stessa forma astratta («aggrega dai vicini, poi aggiorna») dello schema
+$\mathrm{AGGREGATE}$/$\mathrm{UPDATE}$ visto in apertura del capitolo, qui resa
+esplicita nelle sue tre componenti: la funzione messaggio $M_k$ e
 l'aggiornamento $U_k$, che si apprendono, e l'aggregazione $\bigoplus$, che è
 fissata (somma, media o massimo).
 
@@ -225,13 +225,14 @@ $$
 $$
 
 dove $\tilde{d}_v$ è il grado di $v$ in $\tilde{\mathbf{A}}$. È un caso
-particolare della MPNN a tre condizioni. L'insieme su cui corre $\bigoplus$
-include il nodo stesso. La funzione messaggio è lineare, $M(\mathbf{h}_v,
-\mathbf{h}_u, e_{vu}) = e_{vu}\,\mathbf{W}^{(l)\top}\mathbf{h}_u$, con il peso
-$e_{vu} = 1/\sqrt{\tilde{d}_v\,\tilde{d}_u}$ passato come feature dell'arco,
-perché i gradi non sono argomenti di $M$ in nessun altro modo. L'aggregazione
-è la somma semplice e l'aggiornamento è la non-linearità $\sigma$
-applicata al solo messaggio aggregato: la normalizzazione sta nel messaggio, e
+particolare della MPNN, a tre condizioni. Primo, l'insieme su cui corre
+$\bigoplus$ include il nodo stesso. Secondo, la funzione messaggio è lineare,
+$M(\mathbf{h}_v, \mathbf{h}_u, e_{vu}) =
+e_{vu}\,\mathbf{W}^{(l)\top}\mathbf{h}_u$, con il peso $e_{vu} =
+1/\sqrt{\tilde{d}_v\,\tilde{d}_u}$ passato come feature dell'arco, perché i
+gradi non sono argomenti di $M$ in nessun altro modo. Terzo, l'aggregazione è
+la somma semplice e l'aggiornamento è la non-linearità $\sigma$ applicata al
+solo messaggio aggregato: la normalizzazione sta nel messaggio, e
 l'aggregazione non ne sa niente.
 
 La simmetria promessa nella sezione «Il mondo come grafo» qui si dimostra in
@@ -251,7 +252,7 @@ perché $\mathbf{P}^\top\mathbf{P} = \mathbf{I}$ e $\sigma$ agisce elemento per
 elemento: uno strato GCN è equivariante alla permutazione, e quindi lo è una
 pila di strati.
 
-Il costo, con $\hat{\mathbf{A}}$ sparsa e $|E|$ archi: calcolare
+Quanto al costo, con $\hat{\mathbf{A}}$ sparsa e $|E|$ archi, calcolare
 $\mathbf{H}^{(l)}\mathbf{W}^{(l)}$ costa $O(N F_l F_{l+1})$ e moltiplicarne il
 risultato per $\hat{\mathbf{A}}$ costa $O(|E|\,F_{l+1})$; nell'ordine opposto,
 $(\hat{\mathbf{A}}\mathbf{H}^{(l)})\mathbf{W}^{(l)}$, la propagazione costa
@@ -267,7 +268,7 @@ campionamento dei vicini.
 
 Il calcolo di uno strato su un grafo minimo mostra che cosa fanno i pesi. Il
 grafo è una catena di quattro nodi
-(1–2–3–4), ciascuno con un solo numero sulla scheda invece di una
+(1–2–3–4), ciascuno con un solo numero come feature invece di una
 fila, cioè $\mathbf{X} = (1,\, 2,\, 3,\, 4)^\top$. (La $\top$ in alto indica
 solo che quei quattro numeri vanno letti in colonna, uno per nodo, invece che
 in riga: è una convenzione di scrittura e non cambia niente.)
@@ -276,7 +277,7 @@ Dei tre passaggi ne teniamo uno solo. La ricetta di riscrittura e il ritocco
 finale li mettiamo a riposo (in formule, $\mathbf{W} = \mathbf{I}$ e
 $\sigma$ uguale all'identità: due modi di dire «per stavolta, lascia le cose
 come stanno»), così si vede l'effetto della sola raccolta dei
-bigliettini.
+messaggi.
 
 Ogni collegamento porta un peso, e il peso è tanto più piccolo quanti più
 vicini hanno i due nodi che collega, contando anche il cappio che ciascuno ha
@@ -366,7 +367,7 @@ esempio $0{,}333 \cdot 3 = 0{,}999$ e non $1{,}000$), e non ha sbagliato niente.
 
 Il risultato è
 $\mathbf{H}' \approx (1{,}316,\, 2{,}075,\, 3{,}300,\, 3{,}225)^\top$, e
-racconta bene cosa fa la GCN: i quattro valori si stringono. Partivano da
+racconta bene cosa fa la GCN: i quattro valori si stringono. Infatti partivano da
 $1$ e arrivavano a $4$, tre punti fra il più basso e il più alto; adesso vanno
 da $1{,}32$ a $3{,}30$, due punti scarsi. Il nodo 1, che valeva $1$, sale a
 $1{,}316$ perché è tirato in alto dal vicino 2; il nodo 4, che valeva $4$,
@@ -386,16 +387,16 @@ succedere, giro dopo giro, su questi stessi quattro numeri.
 
 Nel conto appena fatto ogni collegamento portava un suo peso, e i pesi erano
 tutti più piccoli di uno: qualcosa è stato diviso. Perché? Perché non sommare e
-basta i bigliettini dei vicini?
+basta i messaggi dei vicini?
 
 `````{tab} Elementare
 
-Un riassunto fatto con la sola somma, senza dividere niente. Un nodo con dieci
-amici riceve dieci bigliettini e li somma: un numerone. Un nodo con due amici
-ottiene un numero piccolo. Dopo qualche giro, i nodi «popolari» hanno valori
-enormi e quelli isolati valori minuscoli, per il solo fatto di avere più o meno
-connessioni e non perché contino di più. La rete finirebbe per confondere
-«essere importante» con «avere tanti amici».
+Un riassunto fatto con la sola somma, senza dividere niente. Ad esempio, un
+nodo con dieci amici riceve dieci bigliettini e li somma: un numerone. Un nodo
+con due amici ottiene un numero piccolo. Dopo qualche giro, i nodi «popolari»
+hanno valori enormi e quelli isolati valori minuscoli, per il solo fatto di
+avere più o meno connessioni e non perché contino di più. La rete finirebbe per
+confondere «essere importante» con «avere tanti amici».
 
 Con la divisione tornano tutti più o meno sulla stessa scala: dieci opinioni o
 due, conta soprattutto il tenore. (Più o meno: nella catena di poco fa i pesi
@@ -444,14 +445,13 @@ strato dopo strato, è il guadagno della normalizzazione *in quanto tale*
 rispetto a $\tilde{\mathbf{A}}$ nuda (che sui nodi ad alto grado amplifica i
 valori in modo incontrollato): è il collegamento diretto con il problema dei
 gradienti nelle reti profonde, discusso nella {doc}`sezione sulla
-backpropagation </RetiNeurali/backpropagation>`; è
-la sola cosa che Kipf e Welling rivendicano quando chiamano *renormalization
-trick* il passaggio da
+backpropagation </RetiNeurali/backpropagation>`. È la sola cosa che Kipf e
+Welling rivendicano quando chiamano *renormalization trick* il passaggio da
 $\mathbf{I}_N + \mathbf{D}^{-1/2}\mathbf{A}\,\mathbf{D}^{-1/2}$, che ha
 autovalori in $[0,2]$, alla forma
 $\tilde{\mathbf{D}}^{-1/2}\tilde{\mathbf{A}}\tilde{\mathbf{D}}^{-1/2}$ con
-$\tilde{\mathbf{D}}$ calcolata su $\tilde{\mathbf{A}}$, cappi inclusi.
-Attenzione a non leggerci più di quanto ci sia: scala stabile non equivale a
+$\tilde{\mathbf{D}}$ calcolata su $\tilde{\mathbf{A}}$, cappi inclusi. Attenzione
+a non leggerci più di quanto ci sia: scala stabile non equivale a
 informazione conservata, perché tutto ciò che non giace lungo l'autovettore
 dominante svanisce comunque.
 
@@ -633,10 +633,11 @@ $$
 
 La matrice fra parentesi ha autovalori in $[0, 2]$ e applicarla ripetutamente
 fa esplodere i valori: da qui il *renormalization trick*, cioè sostituirla con
-$\hat{\mathbf{A}} = \tilde{\mathbf{D}}^{-1/2}\tilde{\mathbf{A}}\tilde{\mathbf{D}}^{-1/2}$
-dove $\tilde{\mathbf{A}} = \mathbf{A} + \mathbf{I}_N$ e $\tilde{\mathbf{D}}$ è
-la matrice dei gradi di $\tilde{\mathbf{A}}$. È la formula della GCN, e il
-conto rimasto in sospeso è saldato: la normalizzazione simmetrica è quel che
+$\hat{\mathbf{A}} =
+\tilde{\mathbf{D}}^{-1/2}\tilde{\mathbf{A}}\tilde{\mathbf{D}}^{-1/2}$ dove
+$\tilde{\mathbf{A}} = \mathbf{A} + \mathbf{I}_N$ e $\tilde{\mathbf{D}}$ è la
+matrice dei gradi di $\tilde{\mathbf{A}}$. È la formula della GCN, e si
+chiude la questione rimasta in sospeso: la normalizzazione simmetrica è quel che
 resta di una convoluzione spettrale dopo due approssimazioni, e non una scelta
 di comodo.
 
@@ -760,7 +761,7 @@ molte volte. Non c'è
 nessun errore di programmazione da andare a cercare. C'è da decidere quanti
 strati mettere, oppure da cambiare filtro.
 
-Il conto sta in poche righe, e stampa insieme i quattro valori giro dopo giro
+Il calcolo sta in poche righe, e stampa insieme i quattro valori giro dopo giro
 con la loro energia, i quattro autovalori e il divario che si consuma.
 
 ```python
@@ -930,7 +931,7 @@ $$
 $$
 
 dove $y_{vc}$ è l'etichetta one-hot del nodo $v$ per la classe $c$ e $C$ il
-numero di classi. Il punto sottile è che $\mathbf{z}_v$ dipende, tramite
+numero di classi. Si noti che $\mathbf{z}_v$ dipende, tramite
 $\hat{\mathbf{A}}$, dalle feature dell'intero vicinato a due salti: il
 gradiente di $\mathcal{L}$ fluisce quindi indietro anche attraverso nodi non
 etichettati, che partecipano all'addestramento pur senza comparire
@@ -984,7 +985,7 @@ sedici feature appena spostate secondo la comunità, e cinque etichette note per
 comunità. Lo stesso addestramento si fa due volte, con $\hat{\mathbf{A}}$ e con
 la matrice identità al suo posto, cioè con ogni nodo che ascolta soltanto sé
 stesso: è la stessa rete, privata del grafo. L'esperimento si ripete con tre
-semi, perché il grafo, le feature e i pesi iniziali sono sorteggiati, e da
+semi, perché il grafo, le feature e i pesi iniziali sono casuali, e da
 un'estrazione sola non si capisce se l'ordine si conserva.
 
 ```python

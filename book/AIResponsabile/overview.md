@@ -28,13 +28,13 @@ per essere più imparziale di un giudice in carne e ossa, aveva ereditato un
 pregiudizio.
 
 Nessuno aveva scritto quel pregiudizio, che stava nei dati. Un sistema del
-genere non impara chi ha commesso un reato, perché quel dato non esiste in
-nessun archivio: impara chi è stato arrestato, che è un'altra cosa. Se in un
-quartiere passano più pattuglie, lì risultano più reati anche quando non ce ne
-sono di più, e chi ci abita entra nello storico con più precedenti. Il modello
-legge quel registro e ne ricava una regolarità vera sui dati e ingiusta sulle
-persone. Un metro storto dà numeri storti, per quanto corretta sia l'aritmetica
-che ci si fa sopra.
+genere, infatti, non impara chi ha commesso un reato, perché quel dato non
+esiste in nessun archivio: impara chi è stato arrestato, che è un'altra cosa.
+Ad esempio, se in un quartiere passano più pattuglie, lì risultano più reati
+anche quando non ce ne sono di più, e chi ci abita entra nello storico con più
+precedenti. Il modello legge quel registro e ne ricava una regolarità vera sui
+dati e ingiusta sulle persone. Un metro storto dà numeri storti, per quanto
+corretta sia l'aritmetica che ci si fa sopra.
 
 Un anno prima, in un laboratorio del MIT, la ricercatrice Joy Buolamwini si
 era imbattuta in un problema più intimo: i sistemi commerciali di analisi del
@@ -197,7 +197,7 @@ dell'intelligenza artificiale», quella dei film. C'è chi ritiene che un giorno
 una macchina molto più capace di noi possa
 sfuggirci di mano in modo irreparabile: è il **rischio esistenziale**, e sulle
 sue probabilità le opinioni degli esperti vanno da «è fantascienza» a «bisogna
-fermare tutto». Qui non ne parliamo, e non perché sia una domanda sciocca: di
+fermare tutto». Qui non ne parliamo, e non perché sia una domanda sciocca. Di
 quella probabilità non esiste una misura su cui gli esperti concordino, mentre i
 danni di cui ci occupiamo si misurano adesso, e per loro esistono metriche e
 correzioni. Il dibattito fra le due preoccupazioni,
@@ -269,10 +269,10 @@ Prima l’equità e i *bias*, cioè i pregiudizi sistematici: da dove nascono
 *misura* e quali tecniche provano a ridurli, senza illudersi che esista una
 cura definitiva. Per misurarli bastano le quattro caselle della matrice di
 confusione di {doc}`Valutare un modello </MachineLearning/metriche>`: veri
-positivi, falsi positivi, falsi negativi, veri negativi. La differenza è una
-sola: la tabella si compila *separatamente per ogni
-gruppo di persone*, e poi si confrontano. Da lì escono i due numeri attorno a
-cui gira tutto il capitolo: quanti dei casi positivi il sistema riconosce (il
+positivi, falsi positivi, falsi negativi, veri negativi. L'unica
+differenza è che la tabella si compila *separatamente per ogni gruppo di
+persone*, e poi le tabelle si confrontano. Ne escono i due numeri attorno a cui
+gira tutto il capitolo: quanti dei casi positivi il sistema riconosce (il
 tasso di veri positivi) e quanti allarmi dà, per errore, sui casi negativi (il
 tasso di falsi positivi).
 
@@ -310,8 +310,8 @@ meglio di una motivazione scritta, perché sembra non avere un autore. Ricordare
 questo passaggio chiarisce che «come rendo equo il modello» non è sempre la
 prima domanda: a volte lo è «questo compito va dato a un modello?», e la
 risposta legittima può essere no. Non è una domanda che si chiude con una
-metrica, ma lasciarla fuori significa dare per scontata proprio la decisione
-che ha causato tutto il resto.
+metrica, ma lasciarla fuori significa dare per
+scontata proprio la decisione che ha causato tutto il resto.
 
 `````{tab} Elementare
 

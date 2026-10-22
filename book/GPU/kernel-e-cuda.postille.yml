@@ -1,0 +1,17 @@
+# Le postille di questa pagina, una per capoverso del testo comune.
+# Ognuna vale finché la sua impronta combacia col testo del capoverso.
+- inizio: "Scrivi `c = a + b`"
+  impronta: "7217a6d0b588"
+  postilla: "Una somma in GPU su un milione di elementi: un kernel, su altrettanti esecutori"
+- inizio: "Il kernel, dunque, si scrive per"
+  impronta: "6ec1ebe0e7b2"
+  postilla: "Stesso codice su dati diversi: ogni esecutore ricava prima il proprio numero"
+- inizio: "Nel 2019 Philippe Tillet ha proposto"
+  impronta: "daff75ad9710"
+  postilla: "Triton ragiona a tessere; la versione scritta dentro Python è del 2021"
+- inizio: "Perché prendersi la briga di scrivere"
+  impronta: "5f4a5cf73e4d"
+  postilla: "Eager esegue ogni operazione appena la incontra: tre operazioni, tre kernel"
+- inizio: "Quando i kernel rimasti sono tanti"
+  impronta: "8a0a96484430"
+  postilla: "Quando i kernel sono tanti e piccoli comanda il lancio: rimedio, i CUDA Graphs"

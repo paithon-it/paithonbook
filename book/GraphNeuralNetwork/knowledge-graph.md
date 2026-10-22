@@ -42,25 +42,24 @@ film, proteine, prodotti) e gli archi sono fatti. Le cose si chiamano
 **entità**, e la parola indica soltanto questo. Nodi di specie diverse,
 archi di specie diverse: un grafo **eterogeneo**.
 
-Sopra le triple sta di solito un regolamento: Torino è una città, una città è
-un luogo abitato, un luogo abitato è un luogo; e «sindaco-di» parte da una
-persona e arriva a un luogo abitato. Serve a buttare fuori le triple che
+Sopra le triple sta di solito un regolamento. Ad esempio, Torino è una città,
+una città è un luogo abitato, un luogo abitato è un luogo; e «sindaco-di» parte
+da una persona e arriva a un luogo abitato. Serve a buttare fuori le triple che
 sgarrano (nessuno è sindaco di un fiume) e a leggere fatti che nessuno ha
 scritto: se Torino è una città allora è un luogo, e quell'arco non c'è bisogno
 di scriverlo.
 
 C'è poi una differenza che sembra filosofica e invece decide come si progetta
-tutto il resto. In un knowledge graph, un arco che non c'è dice «non lo
-so», non «è falso». Nessuno ha scritto tutti i fatti veri del mondo, e
-nessuno mai lo farà: l'assenza di (Torino, gemellata-con, Salt Lake City) non è
+tutto il resto. In un knowledge graph, un arco che non c'è dice «non lo so»,
+non «è falso». Nessuno ha scritto tutti i fatti veri del mondo, e nessuno mai
+lo farà; per questo l'assenza di (Torino, gemellata-con, Salt Lake City) non è
 una smentita, è un silenzio.
 
-Decide come si addestra un modello che
-impari a indovinare i fatti mancanti, cioè gli archi veri che nessuno ha
-ancora scritto. Per imparare a distinguere il vero dal falso a un modello
-servono esempi delle due specie; qui gli esempi di fatti veri abbondano, e di
-fatti falsi non ce n'è nemmeno uno, perché nessuno si mette a scrivere le cose
-che non sono successe.
+La stessa differenza decide come si addestra un modello che impari a indovinare
+i fatti mancanti, cioè gli archi veri che nessuno ha ancora scritto. Infatti,
+per imparare a distinguere il vero dal falso, a un modello servono esempi delle
+due specie; qui gli esempi di fatti veri abbondano, e di fatti falsi non ce n'è
+nemmeno uno, perché nessuno si mette a scrivere le cose che non sono successe.
 
 `````
 
@@ -94,8 +93,9 @@ reciproci, $\mathrm{MRR} = \frac{1}{|\mathcal{T}|}\sum_{q \in \mathcal{T}}
 $\mathrm{rank}_q \le k$ (di solito $k$ vale 1, 3 o 10); per entrambe, più alto
 è meglio. L'impostazione *filtrata* toglie dalla graduatoria le altre entità
 che formano triple vere già note, perché un modello che mette al primo posto
-un'altra risposta giusta non va punito {cite}`bordes2013translating`. Il
-protocollo ha anche una storia: nei banchi FB15k e WN18 molte triple di test
+un'altra risposta giusta non va punito {cite}`bordes2013translating`.
+
+Il protocollo ha anche una storia: nei banchi FB15k e WN18 molte triple di test
 erano l'inversa di una tripla d'addestramento, tanto che una regola banale, che
 rovescia le triple note, metteva la risposta giusta al primo posto nel 95% dei
 casi su WN18 e nel 66% su FB15k, alla pari con i modelli migliori di allora, e
@@ -105,10 +105,10 @@ le versioni ripulite FB15k-237 e WN18RR sono nate per toglierla
 Un'ultima trappola riguarda i pareggi. Un modello che dà lo stesso punteggio a
 molte entità mette la risposta vera al primo posto se i pari merito si
 risolvono a suo favore, quindi il rango va calcolato dichiarando dove la si
-colloca fra i pari (in testa, in coda o a caso). Sun e colleghi hanno trovato
-modelli (ConvKB e CapsE) che su FB15k-237 assegnavano alla tripla vera lo
-stesso punteggio di 125 e 197 candidate in media, e dovevano a questo una parte
-del vantaggio pubblicato {cite}`sun2020reevaluation`.
+colloca fra i pari (in testa, in coda o a caso). Ad esempio, Sun e colleghi
+hanno trovato modelli (ConvKB e CapsE) che su FB15k-237 assegnavano alla tripla
+vera lo stesso punteggio di 125 e 197 candidate in media, e dovevano a questo
+una parte del vantaggio pubblicato {cite}`sun2020reevaluation`.
 
 `````
 
@@ -123,11 +123,12 @@ nominano qualcosa. Si chiama **riconoscimento delle entità nominate**, e lo
 tratta la sezione
 {doc}`POS tagging ed entità </NaturalLanguageProcessing/etichettare-sequenze>`.
 
-Il secondo è capire *quale* cosa. Trovato «Torino» in una frase non si sa
-ancora se sia la città, la squadra, il comune omonimo in un altro paese o la
-persona con quel cognome; a deciderlo è il resto della frase, perché «Torino ha
-battuto la Juve» e «Torino è bagnata dal Po» parlano di due nodi diversi.
-Agganciare un nome al nodo giusto si chiama **collegamento delle entità**.
+Il secondo è capire *quale* cosa. Trovato «Torino» in una frase
+non si sa ancora se sia la città, la squadra, il comune omonimo in un altro
+paese o la persona con quel cognome; a deciderlo è il resto della frase, perché
+«Torino ha battuto la Juve» e «Torino è bagnata dal Po» parlano di due nodi
+diversi. Agganciare un nome al nodo giusto si chiama **collegamento delle
+entità**.
 
 Il terzo, e in pratica il più costoso, è il gemello del secondo: capire che
 «F.C. Juventus», «Juventus Football Club» e «la Juve» sono un nodo solo, e che
@@ -139,15 +140,15 @@ del proprio lavoro.
 L'ultimo gradino è l’**estrazione di relazioni**: dedurre dal testo che fra due
 entità esiste un certo legame. Oggi la si affida spesso a un grande modello di
 linguaggio, con i problemi di affidabilità che la {doc}`sezione sui limiti dei
-modelli di linguaggio </Transformers/tendenzefuture>` ha già discusso: un
-modello che inventa una tripla plausibile e falsa la inserisce nel grafo con la
-stessa sicurezza con cui inserisce quelle vere.
+modelli di linguaggio </Transformers/tendenzefuture>` ha già discusso;
+infatti un modello che inventa una tripla plausibile e falsa la inserisce nel
+grafo con la stessa sicurezza con cui inserisce quelle vere.
 
 ## Entità come punti, relazioni come frecce
 
 Un grafo di fatti si può interrogare come un database, e per molte domande è la
-scelta giusta. Prevedere i fatti mancanti richiede di trasformarlo in numeri,
-e qui succede qualcosa di familiare.
+scelta giusta. Per prevedere i fatti mancanti, però, occorre trasformarlo in
+numeri, e qui succede qualcosa di familiare.
 
 `````{tab} Elementare
 
@@ -178,19 +179,25 @@ aveva già diventa lo scarto richiesto, senza che una freccia sia stata puntata
 meglio. Per questo, a ogni passata, i punti vengono rimessi tutti alla stessa
 distanza dal centro.
 
-Alcuni fatti una freccia non li sa raccontare. Una freccia porta da un punto a
-un solo punto, mentre «ha-recitato-in» lega un attore a decine di film: il
-modello se la cava ammucchiando quei film nello stesso punto, dove diventano
-indistinguibili. Altre relazioni valgono nei due sensi: l'Italia «confina-con»
-la Francia, e la Francia con l'Italia. La stessa freccia dovrebbe portare di là
-e riportare indietro, e l'unica che ci riesce è quella lunga zero, che lascia i
-due paesi nello stesso punto. Altre ancora si ereditano lungo la catena: se sei
+Alcuni fatti una freccia non li sa raccontare. Il primo caso sono le relazioni
+che legano un'entità a molte altre: una freccia porta da un punto a un solo
+punto, mentre «ha-recitato-in» lega un attore a decine di film, e il modello se
+la cava ammucchiando quei film nello stesso punto, dove diventano
+indistinguibili.
+
+Il secondo caso sono le relazioni che valgono nei due sensi: l'Italia
+«confina-con» la Francia, e la Francia con l'Italia. La stessa freccia dovrebbe
+portare di là e riportare indietro, e l'unica che ci riesce è quella lunga
+zero, che lascia i due paesi nello stesso punto.
+
+Il terzo caso sono le relazioni che si ereditano lungo la catena: se sei
 antenato di mio nonno sei antenato anche mio. La stessa freccia deve valere
 tanto per un passo quanto per due, ma una che sposta di tre, fatta due volte,
-sposta di sei: di nuovo vale soltanto la freccia lunga zero. Incatenare frecce
-*diverse*, invece, funziona benissimo: «fratello-di» seguita da «madre-di» dà
-«zio-di», e per ottenerlo si sommano le due frecce. La somma si rompe
-soltanto quando la relazione da incatenare è sempre la stessa.
+sposta di sei: di nuovo vale soltanto la freccia lunga zero.
+
+Incatenare frecce *diverse*, invece, funziona benissimo: «fratello-di» seguita
+da «madre-di» dà «zio-di», e per ottenerlo si sommano le due frecce. La somma
+si rompe soltanto quando la relazione da incatenare è sempre la stessa.
 
 Da quei guai è nata una lunga discendenza di modelli che al posto della freccia
 mettono un'altra trasformazione, e ognuno rimedia a un caso e ne rompe un
@@ -208,8 +215,8 @@ C'è infine una via del tutto diversa: portare su un grafo di fatti il
 passaparola fra vicini. Qui gli archi non sono tutti uguali, e un
 bigliettino che arriva lungo un «è nato a» non va letto come uno che arriva
 lungo un «ha diretto»: serve una ricetta di riscrittura per ogni tipo di arco,
-e con mille tipi ne servirebbero mille, che per non pagarle tutte si preparano
-mescolando poche ricette di base. In cambio la fila di numeri di un'entità si
+e con mille tipi ne servirebbero mille. Per non prepararle tutte, si mescolano
+poche ricette di base. In cambio la fila di numeri di un'entità si
 calcola da quel che le sta intorno, invece di impararla a memoria. Con un
 limite: se l'entità non porta con sé niente di proprio, il punto di partenza
 resta imparato a memoria come prima, e di un'entità appena arrivata non si
@@ -257,7 +264,8 @@ un problema di discriminazione.
 C'è poi un vincolo che sembra implementativo e non lo è: gli embedding delle
 entità vanno rinormalizzati a $\lVert \mathbf{e} \rVert_2 = 1$, e nell'algoritmo
 del paper la riga sta all'inizio di ogni iterazione, non a fine
-addestramento. Senza, il modello ha una scappatoia banale, cioè far crescere le
+addestramento. Senza questa rinormalizzazione il modello ha una scappatoia
+banale, cioè far crescere le
 norme finché la loss scende senza che nessuna relazione sia stata imparata.
 
 I limiti di una traslazione sono espressivi, non implementativi. Le relazioni
@@ -293,7 +301,9 @@ $f(h,r,t) = \mathrm{Re}\big(\sum_k h_k r_k \bar{t}_k\big)$: il coniugato
 $\bar{t}_k$ rompe la simmetria, la parte immaginaria di $\mathbf{r}$ dosa quanto
 la relazione è antisimmetrica, e l'inversa di una relazione si ottiene
 coniugandone il vettore. La composizione, in quella stessa tassonomia, resta
-fuori tanto da DistMult quanto da ComplEx. RotatE fa di ogni relazione una
+fuori tanto da DistMult quanto da ComplEx.
+
+Infine, RotatE fa di ogni relazione una
 rotazione componente per componente,
 $f(h,r,t) = -\lVert \mathbf{h} \odot \mathbf{r} - \mathbf{t} \rVert$, con
 $\odot$ il prodotto elemento per elemento e
@@ -354,14 +364,16 @@ già qualcosa. A che cosa serve però un grafo di fatti, quando la domanda arriv
 da fuori? A tre cose, e sono tre cose che un archivio di documenti non sa
 fare.
 
-La prima è comporre. Se il grafo contiene «il regista di questo film è X»
-e «X è nato in questa città», la domanda «in che città è nato il regista di
+La prima è comporre. Ad esempio, se il grafo contiene «il regista di questo film
+è X» e «X è nato in questa città», la domanda «in che città è nato il regista di
 questo film» si risponde percorrendo due archi. Il modo usuale di rispondere a
 una domanda su un archivio di testi è invece cercare i brani più somiglianti
 alla domanda e passarli a un modello di linguaggio: è il retrieval
 denso della {doc}`sezione su retrieval e RAG </Transformers/rag>`, dove i
 brani non si confrontano parola per parola: ciascuno diventa una
-fila di numeri e si cercano le file più vicine. Se nessun documento contiene
+fila di numeri e si cercano le file più vicine.
+
+Se nessun documento contiene
 entrambi i fatti, la ricerca per somiglianza di solito non porta davanti al
 modello tutti e due i brani, perché ciascuno somiglia alla domanda solo a
 metà, e il modello non può metterli insieme. Recuperare in più passi, usando
@@ -390,15 +402,15 @@ brani di testo si recupera un **sottografo**, cioè il pezzetto di grafo
 attorno alle cose nominate nella domanda, e lo si mette davanti al modello
 insieme alla domanda. Le varianti differiscono per come si sceglie il
 pezzetto e per come lo si riscrive in frasi (un grafo va disteso in una fila di
-parole prima di poterlo dare a un modello che legge testo). Con lo stesso nome
-circola anche un'idea diversa: il grafo lo costruisce un modello di linguaggio
-a partire dai documenti, lo divide in comunità di entità e scrive un riassunto
-di ciascuna, per rispondere a domande che riguardano l'intera raccolta («quali
-sono i temi principali?») invece di un fatto preciso {cite}`edge2024graphrag`.
+parole prima di poterlo dare a un modello che legge testo).
+
+Con lo stesso nome circola anche un'idea diversa: il grafo lo costruisce un
+modello di linguaggio a partire dai documenti, lo divide in comunità di entità
+e scrive un riassunto di ciascuna, per rispondere a domande che riguardano
+l'intera raccolta («quali sono i temi principali?») invece di un fatto preciso
+{cite}`edge2024graphrag`.
 
 ## Quando conviene, e quando no
-
-L'onestà dovuta, perché su questo tema si sente molto entusiasmo.
 
 Un knowledge graph è caro da costruire e caro da tenere aggiornato. Ogni
 fatto del mondo che cambia è un arco da correggere, e un grafo non manutenuto

@@ -1,0 +1,17 @@
+# Le postille di questa pagina, una per capoverso del testo comune.
+# Ognuna vale finché la sua impronta combacia col testo del capoverso.
+- inizio: "Irénée-Jules Bienaymé pubblica nel 1853 la"
+  impronta: "8fba6964cae7"
+  postilla: "Bienaymé nel 1853; Čebyšëv la ritrova quattordici anni dopo"
+- inizio: "Chi lavora con i dati ne"
+  impronta: "5119ebfb2e26"
+  postilla: "Valgono per ogni numero di prove, non in approssimazione come il limite centrale"
+- inizio: "La disuguaglianza di Markov usa la"
+  impronta: "2645bc2f872b"
+  postilla: "Markov sul quadrato dello scarto dà Čebyšëv; lo stesso trucco serve in Hoeffding"
+- inizio: "Il limite di Čebyšëv alla probabilità"
+  impronta: "e5881b85e252"
+  postilla: "Intervallo noto: calo esponenziale, e più sicurezza si chiede, più si guadagna"
+- inizio: "Le garanzie di Markov, di Čebyšëv"
+  impronta: "f651806de9bc"
+  postilla: "Molte varianti sullo stesso insieme di prova: la migliore risulta sovrastimata"

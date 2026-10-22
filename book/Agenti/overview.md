@@ -21,21 +21,22 @@ codice del progetto, e il sistema deve produrre la correzione.
 
 A giudicare la correzione sono i **test** del progetto, gli stessi che a suo
 tempo avevano approvato la modifica scritta da uno sviluppatore. Sono di due
-specie: quelli che falliscono finché l'errore c'è e passano a errore corretto, e
-quelli che passavano già e devono continuare a passare, così che la correzione
-non rompa altro. Il sistema non li vede, e la segnalazione conta come risolta
-solo se li supera tutti. Nessun completamento di testo, per scorrevole che sia,
-chiude un compito simile in una sola generazione: bisogna trovare i file giusti,
-provare una modifica, leggere il messaggio d'errore e correggere. Nell'articolo
-che presentava il banco, nell'ottobre 2023, il migliore dei modelli provati,
-Claude 2, ne risolveva l'1,96%. Anche la misura richiedeva cautela, come mostra
-la {doc}`sezione sul valutare un agente </Agenti/architetture-e-valutazione>`:
-rileggendo a mano i successi del sistema che nel 2024 guidava la classifica, una
-parte consistente non corrispondeva a una vera correzione.
+specie: quelli che falliscono finché l'errore c'è e passano a errore corretto,
+e quelli che passavano già e devono continuare a passare, così che la
+correzione non rompa altro. Si noti che il sistema non li vede, e la
+segnalazione conta come risolta solo se li supera tutti. Nessun completamento
+di testo, per scorrevole che sia, chiude un compito simile in una sola
+generazione, perché bisogna trovare i file giusti, provare una modifica,
+leggere il messaggio d'errore e correggere. Nell'articolo che presentava il
+banco, nell'ottobre 2023, il migliore dei modelli provati, Claude 2, ne
+risolveva l'1,96%. Anche la misura richiedeva cautela, come mostra la
+{doc}`sezione sul valutare un agente </Agenti/architetture-e-valutazione>`:
+rileggendo a mano i successi del sistema che nel 2024 guidava la classifica,
+una parte consistente non corrispondeva a una vera correzione.
 
 Che un modello possa agire, del resto, lo ha già mostrato la {doc}`sezione sul
 passaggio dalla percezione
-all'azione </VisioneLinguaggio/vedere-quel-che-non-ce>`: un braccio robotico
+all'azione </VisioneLinguaggio/vedere-quel-che-non-ce>`, con un braccio robotico
 comandato a token, che interviene fisicamente nel mondo, ma l'obiettivo lo
 riceve da qualcun altro («prendi la tazza»).
 
@@ -49,12 +50,18 @@ Un modello, nel senso del {doc}`capitolo sui Transformer
 </Transformers/overview>`, è la rete che dato un testo ne predice la
 continuazione. Un agente è un *sistema* costruito attorno a un modello: un
 programma che osserva l'ambiente, fa scegliere al modello l'azione successiva,
-la esegue, osserva l'esito e ricomincia. L’ambiente è tutto ciò su cui l'agente
-può intervenire e da cui riceve informazioni: pagine web, file di un computer,
-servizi a cui si può rivolgere una richiesta. Il modello sceglie l'azione. Il
-resto è il programma che prepara il contesto (il testo che il modello legge
-prima di scegliere: la richiesta, le azioni già compiute, i loro esiti), esegue
-l'azione scelta, ne raccoglie l'esito e decide quando fermarsi.
+la esegue, osserva l'esito e ricomincia. L’ambiente è tutto ciò su cui
+l'agente può intervenire e da cui riceve informazioni: pagine web, file di un
+computer,
+servizi a cui si può rivolgere una richiesta. Il modello
+sceglie l'azione, mentre il resto è il programma che prepara il **contesto** (il
+testo che il modello legge prima di scegliere: la richiesta, le azioni già
+compiute, i loro esiti), esegue l'azione scelta, ne raccoglie l'esito e decide
+quando fermarsi.
+
+In questo capitolo vediamo come si passa dal completamento di testo all'agire,
+da quali componenti è fatto un agente, perché i modelli linguistici lo rendono
+possibile solo ora e da quali sistemi più antichi discende.
 
 ## Dal completare testo all'agire
 
@@ -86,16 +93,17 @@ cercare.
 
 Quello che un modello sa sta nei suoi pesi, fissati dall'addestramento e
 invariati finché lo si usa: è la sua *memoria parametrica*, e aggiornarla
-richiede un nuovo addestramento. La RAG sposta una parte della conoscenza in un
-archivio esterno, una memoria non parametrica, che si corregge e si aggiorna
-senza toccare i pesi.
+richiede un nuovo addestramento. La RAG, invece, sposta una parte della
+conoscenza in un archivio esterno, una memoria non parametrica, che si corregge
+e si aggiorna senza toccare i pesi.
 
 Il completamento di testo non basta, perché agire richiede più mosse in
-sequenza, ciascuna scelta in base all'esito della precedente. Comprare un
-biglietto significa cercare i treni, confrontare gli orari, scegliere, pagare,
-ricevere la conferma e, se il treno scelto risulta pieno, tornare indietro e
-riprovare. Una risposta scritta in una sola generazione non può contenere quel
-ritorno, perché l'esito della mossa non esiste ancora quando la si scrive.
+sequenza, ciascuna scelta in base all'esito della precedente. Ad esempio,
+comprare un biglietto significa cercare i treni, confrontare gli orari,
+scegliere, pagare, ricevere la conferma e, se il treno scelto risulta pieno,
+tornare indietro e riprovare. Una risposta scritta in una sola generazione non
+può contenere quel ritorno, perché l'esito della mossa non esiste ancora quando
+la si scrive.
 
 Questa alternanza (una mossa, il suo esito, la mossa seguente decisa alla luce
 dell'esito) è il **ciclo** dell'agente.
@@ -139,8 +147,8 @@ modello. È la stessa nozione di policy vista nel capitolo sul reinforcement
 learning, ma qui lo «stato» è una sequenza di testo (il contesto accumulato: la
 richiesta, le mosse fatte, i loro risultati) e l’«azione» è, tipicamente,
 l'invocazione di uno strumento oppure la risposta finale. Lo $s_t$ non è lo
-stato del mondo, che l'agente non vede: è la storia di ciò che ha osservato e
-fatto, quindi il problema è un {doc}`POMDP
+stato del mondo, che l'agente non vede, ma la storia di ciò che ha osservato e
+fatto; il problema è quindi un {doc}`POMDP
 </ReinforcementLearning/mdp-valore>`, in cui la storia completa è sufficiente
 per decidere, purché rientri nella finestra. Quando il contesto viene troncato
 o riassunto, come nella {doc}`sezione sul contesto
@@ -170,11 +178,11 @@ istruzioni in linguaggio naturale: non si aggiornano i pesi, si scrive il
 
 Al ciclo si aggiunge spesso un'istruzione: far «ragionare ad alta voce» il
 modello prima di agire. Invece di passare subito all'azione, il modello scrive
-il proprio ragionamento (*«prima di correggere devo capire quale pezzo del
-programma ha segnalato l'errore»*) e solo dopo sceglie l'azione. La catena di
-ragionamento scritta si chiama chain-of-thought {cite}`wei2022chain`, e nel
-capitolo sui Transformer ha fatto salire il numero di risposte giuste sui
-problemi che richiedono più passaggi.
+il proprio ragionamento (ad esempio *«prima di correggere devo capire quale
+pezzo del programma ha segnalato l'errore»*) e solo dopo sceglie l'azione. La
+catena di ragionamento scritta si chiama chain-of-thought
+{cite}`wei2022chain`, e nel capitolo sui Transformer ha fatto salire il numero
+di risposte giuste sui problemi che richiedono più passaggi.
 
 Il guadagno è però più circoscritto di quanto si dica: una rassegna dei
 risultati di oltre cento studi lo trova concentrato sui compiti
@@ -220,10 +228,10 @@ risposta.
 ```
 
 Come mostra {numref}`fig-agente-anatomia`, il modello non agisce mai sul mondo
-direttamente: lo fa attraverso gli strumenti, e l'esito di ogni azione rientra
+direttamente, ma attraverso gli strumenti, e l'esito di ogni azione rientra
 nel contesto come osservazione. Il punto più delicato è l'uso degli strumenti
-(in inglese **tool use**): un modello che produce soltanto testo deve riuscire a
-mettere in esecuzione una funzione.
+(in inglese **tool use**), poiché un modello che produce soltanto testo deve
+riuscire a mettere in esecuzione una funzione.
 
 `````{tab} Elementare
 
@@ -275,8 +283,8 @@ richiesta *e* la risposta, e prosegue il ragionamento.
 Due conseguenze pratiche. Primo: la separazione è netta, il modello *propone*,
 il runtime *dispone*; l'esecuzione effettiva (con i suoi permessi, i suoi
 limiti, i suoi controlli di sicurezza) resta fuori dal modello, e in quel punto
-si bloccano le azioni pericolose. Secondo: ogni chiamata è del testo che entra
-e del testo che esce, e quindi consuma finestra di contesto; un loop lungo la
+si bloccano le azioni pericolose. Secondo: ogni chiamata è testo che entra
+e testo che esce, e quindi consuma finestra di contesto; un loop lungo la
 riempie in fretta, e da questo problema parte la {doc}`sezione sul contesto
 </Agenti/context-engineering>`.
 
@@ -292,7 +300,7 @@ di un agente logico basato su obiettivi {cite}`russell2020artificial`.
 Osservava la stanza, pianificava le azioni con il pianificatore STRIPS
 {cite}`fikes1971strips`, le eseguiva e ne sorvegliava l'esito, rifacendo il
 piano quando il mondo non era come previsto. Le sue regole e i suoi simboli
-erano scritti a mano da un programmatore, e non poteva interpretare una
+erano scritti a mano da un programmatore, perciò non poteva interpretare una
 consegna che nessuno avesse già tradotto in simboli.
 
 Gli agenti *basati su LLM* (*large language model*) nascono solo ora perché
@@ -347,11 +355,11 @@ senza garanzia di funzionare altrove.
 Il secondo è strutturale: gli errori si sommano lungo il ciclo. Se ogni passo
 sbaglia con probabilità $p$ e gli errori sono indipendenti, cioè sbagliare un
 passo non rende più probabile sbagliare il successivo, la probabilità di
-attraversare $n$ passi senza errori è $(1-p)^n$. Con $p = 0{,}1$ e $n = 10$
-fa $0{,}9^{10} \approx 0{,}35$: su cento tentativi il primo passo ne lascia
-passare novanta, il secondo ottantuno, il terzo circa settantatré, e dopo dieci
-passi ne restano trentacinque. L'indipendenza è un'ipotesi comoda e poco
-realistica, e la {doc}`sezione sul valutare un agente
+attraversare $n$ passi senza errori è $(1-p)^n$. Ad esempio, con $p = 0{,}1$ e
+$n = 10$ fa $0{,}9^{10} \approx 0{,}35$: su cento tentativi il primo passo ne
+lascia passare novanta, il secondo ottantuno, il terzo circa settantatré, e
+dopo dieci passi ne restano trentacinque. L'indipendenza è un'ipotesi comoda e
+poco realistica, e la {doc}`sezione sul valutare un agente
 </Agenti/architetture-e-valutazione>` mostra che cosa cambia quando cade. Ne segue
 che non basta riuscire un passo, bisogna riuscirne molti di seguito, e per
 questo i compiti lunghi come quelli di SWE-bench {cite}`jimenez2024swebench`

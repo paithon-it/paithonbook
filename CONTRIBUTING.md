@@ -212,7 +212,8 @@ legge per anni. Qui si spiega come funziona un meccanismo; le notizie stanno su
 La correttezza è la soglia d'ingresso, non il traguardo: una pagina può essere
 tutta vera e restare illeggibile. Il traguardo è che uno se la legga di fila,
 senza fermarsi. Il metro è un buon articolo divulgativo, non una dispensa
-universitaria.
+universitaria; la lingua è quella di un buon manuale italiano, dove ogni frase
+dice che ruolo ha e come si lega alla precedente («La frase», più sotto).
 
 Queste cinque cose sono **difetti**, non questioni di gusto:
 
@@ -266,9 +267,11 @@ analogie: **non marca tipograficamente il ritmo del proprio ragionamento**. Da
 lì questi tetti, che sono vincoli e non preferenze.
 
 - **Niente grassetto su una parola-funzione** (*non*, *solo*, *due*, *mai*,
-  *sempre*). Il grassetto presenta un termine al suo primo uso, una volta
-  sola, e non avvolge mai una frase intera. Il tetto è **cinque marcature
-  ogni mille parole di prosa**, per capitolo, e lo conta
+  *sempre*). Il grassetto presenta un termine dove viene definito, una volta
+  sola, e non avvolge mai una frase intera; fanno da appiglio all'occhio
+  anche le etichette in testa a un blocco autonomo (**Definizione.**,
+  **Esempio.**, **Osservazione.**). Il tetto è **otto marcature ogni mille
+  parole di prosa**, per capitolo, e lo conta
   `python3 scripts/coerenza.py --solo enfasi`: lo stesso comando elenca i
   termini marcati in più di un capitolo, che sono da leggere e non da
   correggere a occhi chiusi (il *peso* di una rete e il *peso* di un campione
@@ -345,8 +348,27 @@ un'altra pagina la si linka.
 
 **Le formule d'annuncio** sono più di quelle elencate: «conviene dirlo
 subito», «va detta la cosa che», «una premessa, che qui conta più del solito»,
-«due cose vanno dette», «il punto è che», «si noti», «attenzione a»,
-«fermiamoci un attimo». Si tolgono, e la frase quasi sempre si chiude meglio.
+«due cose vanno dette», «il punto è che», «fermiamoci un attimo». Si
+tolgono, e la frase quasi sempre si chiude meglio. Non sono formule d'annuncio
+i **segnali di percorso** («ad esempio», «si noti che», «osserviamo che», «in
+altri termini», «in particolare»): quelli non avvisano che un fatto sta
+arrivando, dicono che ruolo ha il fatto che segue nella stessa frase.
+
+**Le frasi si legano.** Una frase dopo l'altra, legate solo dai due punti,
+lasciano a chi legge il compito di ricostruire la relazione: è la fatica che
+rende pesante una pagina tutta vera. La relazione si scrive con il connettivo
+che la dice («poiché», «infatti», «quindi», «pertanto», «tuttavia»,
+«inoltre», «ovvero», «di conseguenza»), e un capoverso porta un'idea sola: un
+esempio, la sua lettura e la regola generale sono tre capoversi. Il rovescio
+è il tic della prosa generata, e si evita allo stesso modo: un connettivo sta
+dove la relazione c'è e si sa dire quale sia, e due frasi di fila non aprono
+con lo stesso.
+
+**Il termine, non l'immagine; la parola corrente, non quella rara.** Fuori
+dalla scheda Elementare l'oggetto si chiama col suo nome tecnico:
+«iperparametro» e non «manopola», «campionare» e non «sorteggiare», «server»
+e non «servente», «strumento» e non «attrezzo». Via anche le congiunzioni
+letterarie («giacché», «sicché», «siffatto»): «poiché», «quindi», «tale».
 
 **I calchi dall'inglese**, che chi legge molti articoli non sente più:
 «cade fuori dal conto» (*falls out*: «esce dal conto»), «non compra la strada
@@ -382,6 +404,50 @@ dimostrarla», «quasi certamente») né aggiungere un'affermazione («a ogni
 passo», «sempre»). È il modo più comune in cui una correzione di prosa diventa
 un errore di fatto.
 
+## Le postille
+
+Accanto ai capoversi del testo comune può esserci una postilla: una riga che
+dice di che cosa parla il capoverso. Sul sito si apre sotto il capoverso,
+premendo il segno che compare accanto alla sua prima riga; nel PDF sta nel
+margine esterno. Le postille non stanno nella pagina ma in un file accanto,
+con lo stesso nome e l'estensione `.postille.yml`
+(`backpropagation.postille.yml` accanto a `backpropagation.md`), e ognuna
+porta l'impronta del capoverso che accompagna.
+
+Se proponi una postilla, valgono queste regole:
+
+1. al massimo 80 caratteri, testo semplice: niente formule, codice, link,
+   citazioni, neretto o corsivo, e la lettera che fa da variabile in una formula
+   (k, n, T, epsilon) è una formula anche scritta a parole: la postilla nomina
+   la cosa («la temperatura», «il numero di vicini»). Restano i nomi che
+   contengono una lettera (k-means, Q-learning, U-Net) e le etichette (il caso
+   A, il modulo V);
+2. dice di che cosa parla il capoverso, con le sue parole. Se afferma qualcosa,
+   si porta dietro le condizioni del capoverso (il «vale finché»); se non ci
+   stanno, nomina invece di affermare. È la regola del «Da ricordare», che non
+   deve promettere più della pagina;
+3. non dice niente che il capoverso non dica, e non lo dice più forte: non
+   toglie una riserva e non aggiunge un'affermazione;
+4. usa solo parole che il lettore ha già incontrato a quel punto del libro,
+   meglio se dentro il capoverso stesso;
+5. non ripete la prima frase del capoverso, che il lettore ha appena letto;
+6. niente chiusa ad aforisma, formule d'annuncio, calchi o lineette; niente
+   «tu» né «noi»: la postilla nomina, non parla al lettore;
+7. non contraddice il «Da ricordare» della pagina, e non lo ricopia.
+
+Non tutti i capoversi ne hanno una: restano senza i capoversi di racconto,
+dove conta l'aneddoto intero, le transizioni, e il capoverso che il titolo
+appena sopra già nomina.
+
+**Se correggi un capoverso che ha una postilla, non devi fare niente.**
+L'impronta non combacia più, e la postilla smette di comparire, sul sito e nel
+PDF, finché chi cura il libro non la rilegge accanto al capoverso nuovo: una
+postilla rimasta accanto a un testo cambiato potrebbe dire una cosa che il
+testo non dice più. Il controllo è `python3 scripts/coerenza.py --solo
+postille`: ferma un file che non si legge, una postilla troppo lunga o con
+delle marcature, una postilla su un capoverso troppo corto, ed elenca le
+postille spente senza fermare niente.
+
 ## Le regole che gli script controllano
 
 Buona parte di quello che sta qui sopra la controlla una macchina, e i
@@ -394,7 +460,7 @@ la mappa fra il comando e la regola che fa rispettare.
 | `coerenza.py --solo cite` | citazioni senza voce in `book/references.bib`, che spariscono dalla pagina senza nessun avviso |
 | `coerenza.py --solo numref,ref,figure,toc` | target rotti, `:name:` duplicati, figure mai richiamate, file fuori dal `_toc.yml` |
 | `coerenza.py --solo lineette` | i due travestimenti in ASCII della lineetta, la doppia `--` e il trattino singolo spaziato |
-| `coerenza.py --solo enfasi` | il tetto di cinque marcature ogni mille parole di prosa, capitolo per capitolo, e i termini marcati in più di un capitolo |
+| `coerenza.py --solo enfasi` | il tetto di otto marcature ogni mille parole di prosa, capitolo per capitolo, e i termini marcati in più di un capitolo |
 | `coerenza.py --solo contrapposizioni` | i «non è X, è Y» oltre le due per capitolo |
 | `coerenza.py --solo frasi` | le forme fisse di «La frase»: il libro che parla di sé, le formule d'annuncio, i calchi, il parlato nella scheda Superiore (un elenco da leggere: quasi ogni forma ha anche un uso giusto) |
 | `coerenza.py --solo simboli` | una lettera che riceve due glosse diverse nello stesso capitolo |

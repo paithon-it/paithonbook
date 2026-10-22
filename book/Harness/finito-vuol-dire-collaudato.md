@@ -4,10 +4,10 @@ Rajasekaran parte da una tendenza che scrive in chiaro: chiesto di giudicare il
 lavoro che ha prodotto, un agente tende a lodarlo con sicurezza, anche quando a
 una persona la qualità sembra chiaramente mediocre {cite}`rajasekaran2026harness`.
 La sua risposta è stata separare i ruoli, un agente che costruisce e uno che
-valuta. Non perché il valutatore separato fosse imparziale per natura: è un
-modello anche lui, incline alla generosità verso il testo di un modello, e
-appena messo al lavoro trovava problemi veri, poi si convinceva da solo che non
-fossero gravi, e approvava; tendeva a provare l'applicazione in superficie,
+valuta. Il valutatore separato, però, non è imparziale per natura: è un modello
+anche lui, incline alla generosità verso il testo di un modello. Appena messo al
+lavoro trovava problemi veri, poi si convinceva da solo che non fossero gravi,
+e approvava. Tendeva inoltre a provare l'applicazione in superficie,
 senza spingersi nei casi limite (un carrello vuoto, un prezzo a zero, un nome
 lunghissimo), e i difetti più sottili spesso passavano. Ma rendere scettico un
 valutatore separato si è rivelato molto più trattabile che rendere critico chi
@@ -16,48 +16,55 @@ chi costruisce ha qualcosa di concreto su cui correggersi.
 
 Lo stesso guasto ha già dato una regola al {doc}`loop engineering
 </IngegneriaLLM/loop-engineering>`: chi propone non può essere anche chi
-approva, e un cancello di verifica la fa rispettare. Su un lavoro lungo, però,
-il problema cambia forma in due punti. Il primo è *che cosa* si verifica: una
-funzionalità di un'applicazione vera non è una funzione del codice (un pezzetto
-di programma che fa un calcolo) con i suoi test, ma un pezzo che deve
-funzionare insieme agli altri, come lo userebbe una persona. Il secondo è *nel
-tempo*: in un lavoro che dura centinaia di sessioni, chi scrive «fatto»
-sull'elenco, e chi controlla il controllore, diventano scelte da fare nel
-progettare l'harness. Fra i guasti dell'esperimento di Young ce n'erano due di
-questa famiglia, la vittoria dichiarata da una sessione che vedeva molto codice
-scritto, e le funzionalità segnate come finite dopo averle provate soltanto a
-pezzi.
+approva, e un cancello di verifica la fa rispettare.
+
+Su un lavoro lungo, però, il problema cambia forma in due punti. Il primo è
+*che cosa* si verifica: una funzionalità di un'applicazione vera non è una
+funzione del codice (un pezzetto di programma che fa un calcolo) con i suoi
+test, ma un pezzo che deve funzionare insieme agli altri, come lo userebbe una
+persona. Il secondo è *nel tempo*: in un lavoro che dura centinaia di sessioni,
+chi scrive «fatto» sull'elenco, e chi controlla il controllore, diventano
+scelte da fare nel progettare l'harness. Fra i guasti
+dell'esperimento di Young ce n'erano due di questa famiglia, la vittoria
+dichiarata da una sessione che vedeva molto codice scritto, e le funzionalità
+segnate come finite dopo averle provate soltanto a pezzi.
 
 ## Il collaudo da utente
 
 Nell'esperimento di Young l'agente segnava le funzionalità come finite dopo
-averle controllate con i test d'unità (le prove automatiche che verificano un
-pezzo di codice da solo) o con una richiesta mandata direttamente al server, il
-programma che sta dietro le pagine, senza mai provarle da un capo all'altro
+averle controllate con i **test d'unità** (le prove automatiche che verificano
+un pezzo di codice da solo) o con una richiesta mandata direttamente al server,
+il programma che sta dietro le pagine, senza mai provarle da un capo all'altro
 {cite}`young2025harnesses`. La riparazione è stata dargli gli strumenti per
 usare l'applicazione come un utente, cioè per guidare un browser: aprire le
-pagine, premere i pulsanti, leggere quello che compare. Con l'istruzione
-esplicita di usarli, l'agente verificava per lo più bene le funzionalità da un
-capo all'altro, e trovava difetti che dal codice non si vedevano; Young scrive
-che questi strumenti hanno migliorato nettamente i risultati. Lo stesso
-articolo nomina il limite: il browser automatico non vedeva i riquadri d'avviso
-del browser stesso, le finestrelle del tipo «Sei sicuro? OK, Annulla», e le
-funzionalità che ne dipendevano erano, di conseguenza, più difettose delle
-altre. Il collaudo vede soltanto quello che i suoi strumenti gli fanno vedere.
+pagine, premere i pulsanti, leggere quello che compare.
+
+Con l'istruzione esplicita di usarli, l'agente verificava per lo più bene le
+funzionalità da un capo all'altro, e trovava difetti che dal codice non si
+vedevano; Young scrive che questi strumenti hanno migliorato nettamente i
+risultati. Lo stesso articolo nomina il limite: il browser automatico non
+vedeva i riquadri d'avviso del browser stesso, cioè le finestrelle del tipo
+«Sei sicuro? OK, Annulla», e le funzionalità che ne dipendevano erano, di
+conseguenza, più difettose delle altre. In altri termini, il collaudo vede
+soltanto quello che i suoi strumenti gli fanno vedere.
 
 Un test d'unità isola il pezzo che prova, e quando il pezzo ha bisogno di un
-altro pezzo lo sostituisce con una controfigura, scritta per comportarsi come
-il test si aspetta. Il confine fra i pezzi, il test lo vede soltanto attraverso
+altro pezzo lo sostituisce con una **controfigura**, scritta per comportarsi
+come il test si aspetta. Il test vede il confine fra i pezzi soltanto attraverso
 la controfigura: se chi l'ha scritta condivide la convinzione del pezzo che si
 prova, il difetto di confine passa, e succede facilmente quando pezzo e
-controfigura nascono nella stessa sessione. I difetti di confine hanno qualche
-forma ricorrente. Due componenti si scambiano un dato con convenzioni diverse,
-un formato o un'unità di misura (centesimi contro euro), o un percorso di file
-scritto in un modo dove l'altro lo vuole in un altro. Un componente cambia uno
-stato, cioè un dato tenuto in memoria, e un altro continua a leggerlo vecchio.
-Una risorsa, come un file o una connessione a un database, viene aperta da uno
-e mai chiusa, finché quelle disponibili non finiscono. E il comportamento
-cambia dall'ambiente di prova a quello vero. Il primo caso sta in un programma,
+controfigura nascono nella stessa sessione.
+
+I **difetti di confine** hanno qualche forma ricorrente. Anzitutto, due
+componenti si scambiano un dato con convenzioni diverse, un formato o un'unità
+di misura (centesimi contro euro), o un percorso di file scritto in un modo
+dove l'altro lo vuole in un altro. Poi un componente cambia uno stato, cioè un
+dato tenuto in memoria, e un altro continua a leggerlo vecchio. Una risorsa,
+come un file o una connessione a un database, viene aperta da uno e mai chiusa,
+finché quelle disponibili non finiscono. Infine il comportamento cambia
+dall'ambiente di prova a quello vero.
+
+Il primo caso sta in un programma,
 nel negozio online del {doc}`repository come memoria
 <il-repository-come-memoria>`: un carrello e la sua pagina, scritti in due
 sessioni diverse, ciascuno con il suo test che passa; poi il collaudo che li
@@ -133,7 +140,9 @@ guaio: il carrello conta in centesimi, la pagina crede di ricevere euro, e la
 controfigura del carrello usata nel test della pagina ha preso per buona la
 convinzione della pagina. Solo montando i due pezzi veri e guardando lo
 schermo, come farebbe chi compra, la tazza costa millenovecentonovantanove
-euro. La funzione che chiude la voce mostra l'altra metà della lezione: il
+euro.
+
+La funzione che chiude la voce mostra l'altra metà della lezione: il
 campo `passes` lo scrive l'esito del collaudo di quella voce, e la
 dichiarazione dell'agente («fatto, i test passano») non entra nemmeno nel
 conto. Nell'harness di Young il segno lo metteva l'agente, ma solo dopo la
@@ -159,12 +168,12 @@ era sbagliato il punto in cui si toccano, e la cassa finta, fatta con le idee
 di chi provava le ante, non poteva accorgersene.
 
 Anche chi collauda, cioè chi prova il mobile montato prima della consegna, ha i
-suoi limiti, e vanno saputi. Apre le ante e guarda, ma se la serratura si prova
-con una chiave che a lui non hanno dato, la serratura non la prova: è lì che
-finiranno i difetti. E la casella «fatto» sul foglio dell'ordine si spunta
-soltanto con il collaudo passato: la parola dell'artigiano non basta. Meglio
-ancora se a spuntarla è il collaudo stesso, così non dipende dalla buona
-volontà di nessuno.
+suoi limiti, e vanno saputi. Apre le ante e guarda, ma se la
+serratura si prova con una chiave che a lui non hanno dato, la serratura non la
+prova: è lì che finiranno i difetti. E la casella «fatto» sul foglio
+dell'ordine si spunta soltanto con il collaudo passato: la parola
+dell'artigiano non basta. Meglio ancora se a spuntarla è il collaudo stesso,
+così non dipende dalla buona volontà di nessuno.
 
 Il collaudo intero, però, costa: montare la libreria e provarla richiede
 mezz'ora, misurare un pezzo un minuto. Per questo la bottega fa prima le prove
@@ -200,8 +209,10 @@ $$
 
 con le $\psi_i$ intese su tutto il dominio d'ingresso. Nell'esempio del
 carrello le $\psi$ valgono per entrambi i componenti con le loro controfigure,
-mentre $\hat{u} \simeq u$ è falsa sull'unità di misura del totale. Il collaudo
-da capo a capo valuta $V_i$ sui componenti montati, e toglie l'ipotesi di
+mentre $\hat{u} \simeq u$ è falsa sull'unità di misura del totale.
+
+Il collaudo
+da capo a capo valuta $V_i$ sui componenti montati, e quindi toglie l'ipotesi di
 fedeltà per tutto ciò che monta davvero; la conserva per ciò che resta
 simulato, l'ambiente di prova e i servizi esterni finti, ed è lì che vive la
 dipendenza dall'ambiente. Fra i due estremi stanno i test che controllano la
@@ -214,7 +225,9 @@ risorse, ambiente.
 Il collaudo da utente ha un limite di osservabilità e uno di costo. $V_i$ si
 valuta su ciò che gli strumenti del collaudo espongono, e ciò che non
 espongono resta non verificato (i riquadri d'avviso nativi del browser,
-invisibili all'automazione usata da Young). E un collaudo da capo a capo è più
+invisibili all'automazione usata da Young).
+
+Quanto al costo, un collaudo da capo a capo è più
 lento e più fragile di un test d'unità. Se tutti i controlli girano sempre,
 l'ordine decide solo quanto presto si scopre un guasto: con l'arresto al primo
 fallimento e controlli indipendenti, il costo atteso è minimo ordinandoli per
@@ -231,23 +244,28 @@ utente a ogni sessione.
 
 Un cancello che dice soltanto «no» costringe chi è stato respinto a indovinare
 perché. Il loop engineering ne ha già fatto una regola, il motivo del rifiuto
-passato al giro successivo; nel repository di Lopopolo la stessa idea è scesa
+passato al giro successivo.
+
+Nel repository di Lopopolo la stessa idea è scesa
 fino ai controlli automatici del codice. La squadra usa dei linter propri,
 cioè programmi che leggono il codice e segnalano ciò che viola una regola,
-generati anch'essi dall'agente; e siccome sono fatti su misura, i loro
+generati anch'essi dall'agente. Poiché sono fatti su misura, i loro
 messaggi d'errore si scrivono come si vuole, e la squadra ci ha messo dentro le
-istruzioni per riparare: il messaggio entra nel contesto dell'agente, e
-l'agente sa che cosa fare {cite}`lopopolo2026harness`.
+istruzioni per riparare: il messaggio entra nel contesto dell'agente, che
+quindi sa che cosa fare {cite}`lopopolo2026harness`.
 
 La disciplina poggia su due principi. Il primo è far rispettare delle
 invarianti, cioè delle proprietà che devono valere sempre, senza prescrivere
 come si scrive il codice: l'agente deve controllare la forma dei dati nel punto
-in cui entrano nel sistema, ma la libreria con cui farlo la sceglie lui. Il
-codice di ogni area del prodotto, poi, è diviso in strati fissi, dai tipi dei
+in cui entrano nel sistema, ma sceglie lui la libreria con cui farlo.
+
+Il codice di ogni area del prodotto, poi, è diviso in strati fissi, dai tipi dei
 dati, in fondo, fino all'interfaccia che l'utente vede, in cima, e ogni strato
 può usare soltanto quelli che lo precedono, mai quelli dopo; un controllo
 automatico rifiuta tutto il resto, così che una modifica all'interfaccia non
-possa rompere il modo in cui i dati sono definiti. Il secondo principio è che
+possa rompere il modo in cui i dati sono definiti.
+
+Il secondo principio è che
 il gusto delle persone entra nel sistema una volta e poi vale sempre: i
 commenti delle revisioni, le richieste di modifica per riordinare il codice, i
 difetti visti dagli utenti diventano documentazione o controlli automatici, e
@@ -304,10 +322,14 @@ e le funzioni trasversali (autenticazione, connettori, telemetria) entrano da
 un'unica interfaccia {cite}`lopopolo2026harness`. La fonte parla di un insieme
 limitato di archi ammessi, quindi la regola vera è più stretta della
 disuguaglianza, che ammetterebbe ogni arco in avanti e i cicli dentro uno
-strato: è un sottoinsieme fissato delle coppie $(h(x), h(y))$. Si verifica in
+strato: è un sottoinsieme fissato delle coppie $(h(x), h(y))$.
+
+La regola si verifica in
 tempo lineare nella dimensione del grafo, se le dipendenze si estraggono
 staticamente dal codice, e non dice niente su come è scritto ciascun modulo:
-vincola la struttura, non l'implementazione. La promozione di una regola dalla
+vincola la struttura, non l'implementazione.
+
+La promozione di una regola dalla
 documentazione al codice trasforma un vincolo che l'agente rispetta con una
 certa probabilità, se lo carica e lo segue, in un predicato che ogni modifica
 deve soddisfare per entrare.
@@ -330,14 +352,18 @@ più noti dell'apprendimento profondo, ha pubblicato `autoresearch`, un piccolo
 impianto in cui un agente fa esperimenti per conto suo, di notte,
 sull'addestramento di un modello di linguaggio in miniatura, un piccolo
 programma che impara a prevedere il pezzo di testo successivo
-{cite}`karpathy2026autoresearch`. I file sono tre, e il progetto sta in chi può
+{cite}`karpathy2026autoresearch`.
+
+I file sono tre, e il progetto sta in chi può
 toccare quale. `prepare.py` contiene i dati, il modo di leggerli e la funzione
 di valutazione, e le istruzioni dicono che è in sola lettura; `train.py`
 contiene il modello, l'ottimizzatore e il ciclo di addestramento, ed è l'unico
 file che l'agente modifica; `program.md` contiene le istruzioni per l'agente, e
-lo scrive la persona. Ogni esperimento dura cinque minuti di addestramento, così
+lo scrive la persona.
+
+Ogni esperimento dura cinque minuti di addestramento, così
 che un modello più grande ma più lento non vinca soltanto perché ha avuto più
-tempo, e si giudica su una sola grandezza, la `val_bpb`: quanti bit servono in
+tempo. Si giudica poi su una sola grandezza, la `val_bpb`: quanti bit servono in
 media per ogni carattere di un testo che il modello non ha visto durante
 l'addestramento (più il modello prevede bene, meno ne servono). Le istruzioni
 dicono di tenere un cambiamento se la misura scende e di scartarlo altrimenti,
@@ -347,12 +373,14 @@ indietro, è l'agente stesso.
 
 La partizione, però, è dichiarata più che imposta. Che `prepare.py` resti
 intatto lo chiede un'istruzione, e nel repository non c'è un controllo che lo
-verifichi. Ed è meno netta di come sembra: la funzione di valutazione sta in
+verifichi.
+
+È anche meno netta di come sembra: la funzione di valutazione sta in
 `prepare.py`, ma per calcolare la perdita chiama il modello definito in
 `train.py`, e anche il ciclo che misura i cinque minuti e la riga che stampa la
-misura stanno in `train.py`. Fissi, fuori dalla portata dell'agente, restano i
-dati di validazione e il conto che trasforma la perdita in bit per carattere;
-la perdita di ogni token la calcola il file che l'agente scrive.
+misura stanno in `train.py`. Restano fissi, fuori dalla portata dell'agente, i
+dati di validazione e il calcolo che trasforma la perdita in bit per carattere;
+il file che l'agente scrive, invece, calcola la perdita di ogni token.
 
 `````{tab} Elementare
 
@@ -374,7 +402,9 @@ Due cose, però, possono tradirla. Se la macchina di prova sta sul banco
 dell'artigiano, e il cartello «non toccare» è l'unica cosa che la protegge,
 basta una notte storta perché venga regolata; e se la punta che gratta la
 vernice la sceglie lui insieme alla ricetta, la prova non è più del tutto del
-proprietario. E una sola grattata su una tavoletta può ingannare: due
+proprietario.
+
+Inoltre, una sola grattata su una tavoletta può ingannare: due
 tavolette con la stessa vernice non resistono mai esattamente uguale, e una
 ricetta può vincere per caso. A forza di tenere le ricette che vincono per un
 soffio, sempre sulla stessa tavoletta, la bottega rischia di ritrovarsi con
@@ -391,9 +421,11 @@ $\mathcal{W} \cap \mathcal{V} = \varnothing$: se l'intersezione non è vuota,
 l'agente può aumentare il valore del predicato di successo cambiando il
 predicato invece del prodotto. È la manomissione dello strumento di misura, il
 *reward tampering* che il {doc}`primo turno <il-primo-turno>` distingue dalla
-legge di Goodhart, la quale resta anche con l'intersezione vuota: il
-cricchetto descritto più sotto ne è un esempio, con l'adattamento ai dati di
-validazione. Esclusa dalla definizione deve restare la sola parte del calcolo
+legge di Goodhart, la quale resta anche con l'intersezione vuota: la
+regola con cui `autoresearch` tiene o scarta un cambiamento ne è un esempio,
+con l'adattamento ai dati di validazione.
+
+Esclusa dalla definizione deve restare la sola parte del calcolo
 che è l'oggetto stesso, e qui `autoresearch` è istruttivo: il modello misurato
 calcola una parte della propria misura. Dichiarati, $\mathcal{W} =
 \{\texttt{train.py}\}$ e $\mathcal{V} \subseteq \{\texttt{prepare.py}\}$;
@@ -408,12 +440,16 @@ Lo schema dell'esperimento è un *ratchet*, un cricchetto: idealizzando la
 regola di `program.md`, si accetta una modifica se $\text{bpb}(\text{nuovo}) <
 \text{bpb}(\text{corrente})$, altrimenti si torna allo stato precedente; nella
 regola vera entrano anche il criterio di semplicità e la memoria della scheda
-grafica, che resta un vincolo morbido, e la decisione la prende l'agente. Il
+grafica, che resta un vincolo morbido, e a decidere è l'agente.
+
+Il
 budget fisso per esperimento, cinque minuti di orologio, rende la misura
 confrontabile fra esperimenti che cambiano l'architettura o l'ottimizzatore: si
 confrontano modelli allenati con la stessa spesa, non con lo stesso numero di
 passi. Lo paga in rumore, perché il numero di passi in cinque minuti cambia con
-il carico della macchina anche a seme fisso. Il cricchetto ha i suoi limiti
+il carico della macchina anche a seme fisso.
+
+Il cricchetto ha i suoi limiti
 noti: è una ricerca locale e avida, che non accetta un peggioramento
 temporaneo; su una misura rumorosa accetta miglioramenti dovuti al caso; e il
 valore corrente, scelto come il minimo di molte estrazioni rumorose sullo
@@ -425,9 +461,10 @@ adatta ai dati di validazione man mano che sceglie.
 ## Chi controlla il controllore
 
 Il valutatore di Rajasekaran era un modello, e per farlo funzionare è servita
-una taratura. Il metodo era semplice e faticoso: leggere i resoconti del
+una **taratura**. Il metodo era semplice e faticoso: leggere i resoconti del
 valutatore, trovare i punti in cui il suo giudizio si allontanava da quello
 dell'autore, e riscrivere le istruzioni per correggere quel genere di errore.
+
 Dopo qualche giro il valutatore giudicava in un modo che l'autore trovava
 ragionevole, e qualche difetto restava comunque scoperto
 {cite}`rajasekaran2026harness`. Per le valutazioni di gusto (il disegno di
@@ -437,7 +474,9 @@ alle istruzioni degli esempi con il punteggio spiegato voce per voce.
 Il valutatore giudicava ogni tappa del lavoro su quattro criteri fissi: quanto
 il prodotto fosse completo, se funzionasse, come fosse disegnato, com'era
 scritto il codice. Ciascuno aveva una soglia, e una sola soglia mancata bastava
-a respingere la tappa. Prima di ogni tappa, poi, chi costruisce e chi valuta
+a respingere la tappa.
+
+Prima di ogni tappa, poi, chi costruisce e chi valuta
 stipulavano un **contratto**: chi costruisce proponeva che cosa avrebbe
 consegnato e con quali comportamenti verificabili lo si sarebbe provato, chi
 valuta rivedeva la proposta, e i due ripetevano finché non erano d'accordo,
@@ -462,7 +501,9 @@ Per sapere se le istruzioni nuove funzionano, il proprietario non le prova sui
 pezzi su cui le ha scritte: tiene da parte qualche pezzo che il collaudatore
 non ha mai visto, e guarda come lo giudica. E sta attento anche all'errore
 opposto, il collaudatore diventato troppo severo, che fa rifare pezzi buoni e
-fa girare la bottega a vuoto. Dopo qualche settimana il collaudatore giudica in
+fa girare la bottega a vuoto.
+
+Dopo qualche settimana il collaudatore giudica in
 modo più vicino al proprietario, ma non uguale: qualche difetto gli sfugge
 ancora, e su duecento pezzi anche un collaudatore quasi sempre giusto ne lascia
 passare qualcuno. E siccome gli artigiani, giorno dopo giorno, imparano che
@@ -471,7 +512,9 @@ pezzi fatti per piacergli.
 
 Il collaudatore guarda sempre quattro cose, con un minimo per ciascuna: che il
 mobile sia completo, che funzioni, che sia bello, che sia fatto bene dentro; se
-una sola è sotto il minimo, il pezzo torna indietro. E prima di cominciare un
+una sola è sotto il minimo, il pezzo torna indietro.
+
+Prima di cominciare un
 pezzo, artigiano e collaudatore si mettono d'accordo per iscritto su come lo si
 proverà: «lo scaffale regge i volumi dell'enciclopedia, i più pesanti, per una
 notte intera; le ante si chiudono da sole; il cassetto scorre fino in fondo».
@@ -490,18 +533,24 @@ L'indulgenza descritta da Rajasekaran è un $\alpha$ alto. Per la sessione dopo
 conta $P(\text{difettoso} \mid \text{approvato})$, che dipende anche dalla
 frequenza dei difetti; e su un elenco lungo anche un $\alpha$ piccolo lascia,
 fra le voci «fatte», qualche voce difettosa: la vittoria dichiarata per
-accumulo. La taratura che Rajasekaran descrive è l'ottimizzazione di un prompt
+accumulo.
+
+La taratura che Rajasekaran descrive è l'ottimizzazione di un prompt
 su un insieme di casi etichettati da una persona, cioè un addestramento senza
 gradiente, e ne eredita il rischio classico: un valutatore aggiustato sui casi
 che si sono letti può adattarsi a quelli, e i suoi tassi vanno misurati su casi
 tenuti da parte; misurati fuori dal ciclo, poi, possono sottostimare $\alpha$
 dentro il ciclo, dove chi costruisce si corregge proprio contro quel
-valutatore. I due errori hanno costi diversi. $\alpha$ lascia passare un
+valutatore.
+
+I due errori hanno costi diversi. $\alpha$ lascia passare un
 difetto, che la sessione dopo eredita come lavoro concluso. $\beta$ fa rifare un
 lavoro buono: senza un tetto servono in media $1/(1 - \beta)$ tentativi, con un
 tetto di $n$ la voce resta aperta con probabilità $\beta^n$, ed è una stima
 ottimistica, perché gli errori dello stesso giudice sullo stesso lavoro sono
-correlati. La {doc}`sezione sulle architetture degli agenti
+correlati.
+
+La {doc}`sezione sulle architetture degli agenti
 </Agenti/architetture-e-valutazione>` discute lo stesso strumento, il modello
 che giudica un modello, dal lato della valutazione, compresa la sua tendenza a
 preferire i testi simili ai propri.
@@ -514,7 +563,9 @@ pesata; ma con $K$ criteri e tassi $\beta_j$ indipendenti un lavoro buono viene
 respinto con probabilità $1 - \prod_j (1 - \beta_j)$, che con ventisette
 criteri binari e $\beta_j = 0{,}02$ fa circa $0{,}42$. Il contratto di tappa fissa
 invece, prima della produzione, l'insieme dei comportamenti da provare,
-ciascuno con esito sì o no. Che fissarlo prima aiuti anche contro l'indulgenza
+ciascuno con esito sì o no.
+
+Che fissarlo prima aiuti anche contro l'indulgenza
 è un ragionamento in più rispetto alla fonte, e vale per i criteri binari: lì
 riconoscere il difetto equivale a respingere, e il valutatore non può
 riconoscerlo e poi minimizzarlo. Su un criterio a punteggio l'indulgenza agisce

@@ -8,11 +8,11 @@ scritto che serviva l'attenzione, torna sulla stessa formula per dire che, al
 momento di generare, basta una sola testa per le chiavi. La formula resta
 quella; cambiano la memoria occupata e il modo di eseguirla.
 
-Lo stesso strato di attenzione gira in due modalità, con tutta la sequenza
-insieme in addestramento o un token alla volta in generazione, e i costi delle
-due sono molto diversi. Separarle serve a leggere con precisione ciò che si
-dice sui costi dell'attenzione (che sia quadratica, che richieda molta
-memoria, che le teste condivise facciano risparmiare).
+Lo stesso strato di attenzione gira in due modalità: con tutta la sequenza
+insieme in addestramento, o un token alla volta in generazione. I costi delle
+due sono molto diversi, ed è per questo che separarle serve a leggere con
+precisione ciò che si dice sui costi dell'attenzione (che sia quadratica, che
+richieda molta memoria, che le teste condivise facciano risparmiare).
 
 ## Addestrare e generare: due regimi della stessa formula
 
@@ -84,21 +84,21 @@ Formalmente, $\mathbf{k}_j = \mathbf{W}^{K\top} \mathbf{h}_j^{(\ell)}$ con
 $\mathbf{h}_j^{(\ell)} = f^{(\ell)}(\mathbf{x}_{1:j})$, indipendente da
 $\mathbf{x}_{>j}$.
 
-Anche la query $\mathbf{q}_t$ è determinata appena il token $t$ è elaborato,
-ma non si conserva: serve a calcolare la riga $t$ della matrice dei pesi, viene
-consumata in quel prodotto e nessuna query successiva la rilegge. Chiavi e
-valori si distinguono dalla query per il riuso, non per la stabilità: tutte le
-query che verranno li rileggeranno. Conservare $\mathbf{Q}$ sarebbe occupare
-memoria per un oggetto che nessuno consulterà più.
+Anche la query $\mathbf{q}_t$ è determinata appena il token $t$ è
+elaborato, ma non si conserva: serve a calcolare la riga $t$ della matrice dei
+pesi, viene consumata in quel prodotto e nessuna query successiva la rilegge.
+Chiavi e valori si distinguono dalla query per il riuso, non per la stabilità:
+tutte le query che verranno li rileggeranno. Conservare $\mathbf{Q}$ sarebbe
+occupare memoria per un oggetto che nessuno consulterà più.
 
-La garanzia vale per l'attenzione causale. In un encoder bidirezionale la
-rappresentazione di ogni posizione, dal secondo strato in su, dipende anche da
-ciò che viene dopo, quindi aggiungere un token invalida le chiavi e i valori
-già calcolati a quei livelli (al primo strato dipendono soltanto dall'embedding
-del loro token). Un caso a parte è la cross-attention di un modello
-encoder-decoder: chiavi e valori vengono dall'uscita dell'encoder, che si
-calcola una volta sola, e restano fissi per tutta la generazione, una cache che
-non cresce.
+Si noti che la garanzia vale per l'attenzione causale. In un encoder
+bidirezionale la rappresentazione di ogni posizione, dal secondo strato in su,
+dipende anche da ciò che viene dopo, quindi aggiungere un token invalida le
+chiavi e i valori già calcolati a quei livelli (al primo strato dipendono
+soltanto dall'embedding del loro token). Un caso a parte è la cross-attention
+di un modello encoder-decoder: chiavi e valori vengono dall'uscita
+dell'encoder, che si calcola una volta sola, e restano fissi per tutta la
+generazione, una cache che non cresce.
 `````
 
 ## La cache KV, come struttura dati
@@ -131,14 +131,16 @@ millesima si confronta con mille righe, la duemillesima con duemila. Dire che
 il taccuino rende la scrittura gratuita significa guardare solo la metà che si
 risparmia.
 
-Resta lo spazio, che si vede subito sul taccuino di una conversazione lunga. Un
-palazzo moderno, molto più alto di quello del 2017, ha trentadue piani con
-trentadue lettori per piano: circa mille taccuini, ciascuno con due righe per
-ogni parola scritta, e ogni riga è fatta di centoventotto numeri da due byte.
-Mille per due per centoventotto per due fa circa mezzo megabyte a parola, e una
-conversazione da ottomila parole ne occupa più di quattro gigabyte. A ogni
-parola nuova quel materiale va riletto tutto, insieme ai numeri del modello. A
-questo punto la domanda diventa dove tenere i taccuini.
+Resta lo spazio, che si vede subito sul taccuino di una conversazione lunga. Ad
+esempio, un palazzo moderno, molto più alto di quello del 2017, ha trentadue
+piani con trentadue lettori per piano: circa mille taccuini, ciascuno con due
+righe per ogni parola scritta, e ogni riga è fatta di centoventotto numeri da
+due byte. Mille per due per centoventotto per due fa circa mezzo megabyte a
+parola, e una conversazione da ottomila parole ne occupa più di quattro
+gigabyte.
+
+A ogni parola nuova quel materiale va riletto tutto, insieme ai numeri del
+modello. A questo punto la domanda diventa dove tenere i taccuini.
 `````
 
 `````{tab} Superiore
@@ -178,8 +180,8 @@ d^2)$ per strato, contro l’$O(n^3 d + n^2 d^2)$ di un forward rifatto da capo 
 ogni passo.
 
 La cache riusa le proiezioni passate e non abolisce l'interazione con il
-prefisso: l'affermazione «la cache rende la decodifica a costo costante» è
-falsa per l'attenzione densa.
+prefisso; di conseguenza l'affermazione «la cache rende la decodifica a costo
+costante» è falsa per l'attenzione densa.
 
 In decodifica domina la lettura della memoria, non il calcolo. Con una
 richiesta per volta, ogni token generato rilegge dalla memoria tutti i pesi del
@@ -241,12 +243,12 @@ cache dopo sei token: (6, 4) (6, 4)
 le due strade coincidono: True
 ```
 
-La maschera dipende dalle due lunghezze, $L$
-query e $S$ chiavi: nel caso quadrato dà il solito triangolo, con una query sola
-non vieta niente. Questo allineamento a destra, necessario per generare (nel
-codice `diagonal=S - L + 1`), permette alla stessa funzione di servire entrambi i
-regimi. Le uniche righe che scrivono nella cache sono le due che la
-allungano; della query $\mathbf{q}_t$ non resta traccia.
+Si noti che la maschera dipende dalle due lunghezze, $L$ query e $S$ chiavi:
+nel caso quadrato dà il solito triangolo, con una query sola non vieta niente.
+Questo allineamento a destra, necessario per generare (nel codice
+`diagonal=S - L + 1`), permette alla stessa funzione di servire entrambi i
+regimi. Le uniche righe che scrivono nella cache sono le due che la allungano;
+della query $\mathbf{q}_t$ non resta traccia.
 
 ## Quante teste per le chiavi: da MHA a MLA
 
@@ -359,22 +361,22 @@ $(d_c + d_k^R)\,n_{\text{strati}}$ elementi per token.
 | MQA | $2\,n_{\text{strati}}\,d_k$ | una |
 | MLA | $(d_c + d_k^R)\,n_{\text{strati}}$ | altra formulazione |
 
-Con i valori di DeepSeek-V2 ($d_c = 4 d_k$, $d_k^R = d_k/2$) la cache di MLA
-equivale a quella di un GQA con 2,25 gruppi. MLA non è riducibile a un GQA con
-meno teste, perché cambia l'oggetto conservato e l'algebra delle proiezioni
-usata in inferenza. Gli stessi autori misurano che, con modelli densi da circa
-7 miliardi di parametri, su BBH, MMLU, C-Eval e CMMLU MHA supera GQA con otto
-gruppi e MQA (su MMLU 45,2 contro 41,2 e 37,9): condividere le teste ha un
-costo in qualità, che i benchmark difficili mostrano. Sulla qualità di MLA
-riportano che, con una cache pari al 14% (scala piccola) e al 4% (scala grande)
-di quella di MHA, l'architettura supera MHA su quattro benchmark e due scale di
-modelli a esperti (con la sola eccezione di C-Eval sulla scala piccola). È un
-risultato di chi ha progettato il modello, e l'implementazione è più complessa,
-fra RoPE disaccoppiata e assorbimento delle matrici.
+In particolare, con i valori di DeepSeek-V2 ($d_c = 4 d_k$, $d_k^R = d_k/2$) la
+cache di MLA equivale a quella di un GQA con 2,25 gruppi. MLA non è riducibile
+a un GQA con meno teste, perché cambia l'oggetto conservato e l'algebra delle
+proiezioni usata in inferenza. Gli stessi autori misurano che, con modelli
+densi da circa 7 miliardi di parametri, su BBH, MMLU, C-Eval e CMMLU MHA supera
+GQA con otto gruppi e MQA (su MMLU 45,2 contro 41,2 e 37,9): condividere le
+teste ha un costo in qualità, che i benchmark difficili mostrano. Sulla qualità
+di MLA riportano che, con una cache pari al 14% (scala piccola) e al 4% (scala
+grande) di quella di MHA, l'architettura supera MHA su quattro benchmark e due
+scale di modelli a esperti (con la sola eccezione di C-Eval sulla scala
+piccola). È un risultato di chi ha progettato il modello, e l'implementazione è
+più complessa, fra RoPE disaccoppiata e assorbimento delle matrici.
 
-Nessuna delle tre varianti tocca il numero di teste di query, e con esso la
-molteplicità dei sottospazi in cui il modello calcola le compatibilità: si
-condivide o si comprime la rappresentazione conservata.
+Si noti che nessuna delle tre varianti tocca il numero di teste di query, e con
+esso la molteplicità dei sottospazi in cui il modello calcola le compatibilità:
+si condivide o si comprime la rappresentazione conservata.
 `````
 
 Per un modello di taglia ordinaria (trentadue strati, trentadue teste di query,
@@ -414,15 +416,15 @@ MLA   (d_c = 4 d_k, d_R = d_k/2)           36        0.28         2.1%
 pesi del modello: 13.0 GiB
 ```
 
-Una sola conversazione da ottomila token occupa 4 GiB, contro i 13 dei pesi:
-con quattro richieste servite insieme la cache supera il modello, e già con
-una, a finestra piena, quasi un quarto dei byte da rileggere a ogni token
-generato è cache. Il caso GQA spiega perché questa variante si trovi in quasi
-tutti i modelli recenti, il caso MLA perché si sia cambiata la formulazione
-dell'attenzione per un problema di memoria. Il caso MHA, in cui ogni testa di
-query tiene le sue chiavi, viene ripreso nella {doc}`sezione sui grandi modelli
-linguistici <llm>` per analizzare un modello da sette miliardi di parametri:
-mezzo megabyte a token.
+In concreto, una sola conversazione da ottomila token occupa 4 GiB, contro i 13
+dei pesi: con quattro richieste servite insieme la cache supera il modello, e
+già con una, a finestra piena, quasi un quarto dei byte da rileggere a ogni
+token generato è cache. Il caso GQA spiega perché questa variante si trovi in
+quasi tutti i modelli recenti, il caso MLA perché si sia cambiata la
+formulazione dell'attenzione per un problema di memoria. Il caso MHA, in cui
+ogni testa di query tiene le sue chiavi, viene ripreso nella {doc}`sezione sui
+grandi modelli linguistici <llm>` per analizzare un modello da sette miliardi di
+parametri: mezzo megabyte a token.
 
 ## Che cosa è quadratico, e di quale risorsa si parla
 
@@ -435,11 +437,15 @@ Il **lavoro aritmetico** dell'attenzione densa su una sequenza di lunghezza
 $n$, cioè quante moltiplicazioni e somme richiede, ha un termine $O(n^2 d)$ per
 strato, che cresce come il quadrato della lunghezza: è una proprietà
 dell'operazione, perché le coppie query-chiave sono $n^2$ e vanno calcolate
-tutte. La **memoria intermedia materializzata**, cioè quanti numeri si tengono
+tutte.
+
+La **memoria intermedia materializzata**, cioè quanti numeri si tengono
 scritti tutti insieme a metà del calcolo, è una proprietà dell'implementazione:
 un'implementazione ingenua scrive la matrice $n \times n$ dei punteggi, e
 allora anche lo spazio è quadratico; una che non la scrive tutta insieme non lo
-è. Il **traffico di memoria**, cioè quanti byte si spostano fra la memoria
+è.
+
+Il **traffico di memoria**, cioè quanti byte si spostano fra la memoria
 grande e lenta della scheda grafica e quella piccola e veloce dove si eseguono
 i calcoli, è una terza grandezza ancora, e sulle schede di oggi decide spesso
 il tempo di esecuzione, a parità di operazioni da compiere.
@@ -511,7 +517,7 @@ intensità servono a decidere le proporzioni e poi escono di scena, mentre va
 consegnata la miscela delle informazioni, che ha tutt'altra forma e tutt'altro
 significato. Il terzo è confrontare due misure di memoria senza dire che cosa
 comprendono: i numeri del modello, il tabellone di passaggio, i taccuini e
-tutto ciò che il calcolatore tiene aperto per lavorare sono voci distinte, e
+tutto ciò che il computer tiene aperto per lavorare sono voci distinte, e
 due conti che non dichiarano quali voci includono non si possono paragonare.
 `````
 
@@ -574,11 +580,11 @@ $d_{\text{model}} = 512$, otto teste lavorano in dimensione 64 e trentadue in
 dimensione 16. Oltre una certa soglia lo spazio di ciascuna testa diventa
 troppo ristretto per rappresentare una compatibilità utile, e il guadagno di
 varietà viene superato dalla perdita di risoluzione. Il numero di teste è un
-compromesso da tarare sul modello, non una quantità da massimizzare. L'articolo
-del 2017 lo misura a calcolo costante (Tabella 3, righe A): con una testa sola
-il BLEU scende da 25,8 a 24,9, con sedici resta 25,8, con trentadue ridiscende
-a 25,4. Su un modello già addestrato molte teste si tolgono con perdite
-trascurabili {cite}`michel2019sixteen`.
+compromesso da calibrare sul modello, non una quantità da massimizzare.
+L'articolo del 2017 lo misura a calcolo costante (Tabella 3, righe A): con una
+testa sola il BLEU scende da 25,8 a 24,9, con sedici resta 25,8, con trentadue
+ridiscende a 25,4. Su un modello già addestrato molte teste si tolgono con
+perdite trascurabili {cite}`michel2019sixteen`.
 
 «I pesi di attenzione sono la spiegazione.» È la frase più diffusa e la più
 delicata, perché quei pesi sono facili da visualizzare: sono distribuzioni

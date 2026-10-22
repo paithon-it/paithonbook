@@ -3,21 +3,20 @@
 Le poche pagine che Rumelhart, Hinton e Williams pubblicano su *Nature* nel
 1986, *"Learning representations by back-propagating errors"*
 {cite}`rumelhart1986learning`, sono il testo che mostra al mondo come una rete
-neurale possa correggere i propri errori, un esempio alla volta: la stessa ricetta
-con cui ancora oggi imparano modelli da miliardi di parametri.
+neurale possa correggere i propri errori, un esempio alla volta. È la stessa
+procedura con cui ancora oggi imparano modelli da miliardi di parametri.
 
-L'algoritmo però non era nuovo. Le sue radici stanno in un'idea più generale, la
-**differenziazione automatica**: far calcolare a un programma, oltre al
+L'algoritmo però non era nuovo. Le sue radici stanno in un'idea più generale,
+la **differenziazione automatica**: far calcolare a un programma, oltre al
 risultato, anche di quanto quel risultato cambierebbe muovendo ciascuno dei
-suoi ingressi. A pubblicarne per primo la forma generale è il
-finlandese Seppo Linnainmaa, nella tesi di laurea del 1970
-{cite}`linnainmaa1970taylor`, che uscirà in inglese soltanto sei anni dopo. Paul
-Werbos ne propone l'uso per le reti neurali nella tesi di dottorato del 1974
-{cite}`werbos1974beyond`, e la applica a una rete in un lavoro del 1982
-{cite}`werbos1982applications`. Prima ancora, nei primi anni Sessanta, chi
-calcolava le traiettorie di volo migliori (il controllo ottimo) faceva già un
-conto all'indietro dello stesso genere, su grandezze che cambiano con continuità
-invece che a strati.
+suoi ingressi. A pubblicarne per primo la forma generale è il finlandese Seppo
+Linnainmaa, nella tesi di laurea del 1970 {cite}`linnainmaa1970taylor`, che
+uscirà in inglese soltanto sei anni dopo. Paul Werbos ne propone l'uso per le
+reti neurali nella tesi di dottorato del 1974 {cite}`werbos1974beyond`, e la
+applica a una rete in un lavoro del 1982 {cite}`werbos1982applications`. Prima
+ancora, nei primi anni Sessanta, chi calcolava le traiettorie di volo migliori
+(il controllo ottimo) faceva già un calcolo all'indietro dello stesso genere,
+su grandezze che cambiano con continuità invece che a strati.
 
 L'idea sta in due movimenti. In avanti la rete produce una
 risposta; all'indietro misura di quanto ha sbagliato e distribuisce la
@@ -78,9 +77,9 @@ neurali <overview>`, $g$ è l'attivazione degli strati nascosti (per esempio la
 ReLU, $g(z)=\max(0,z)$) e $\varphi$ quella dello strato d'uscita, che di norma
 è un'altra: softmax per la classificazione, identità per la regressione;
 $\sigma$ resta il nome della sigmoide. L'uscita finale è la previsione
-$\hat{\mathbf{y}} = \mathbf{a}^{[L]}$. Ogni strato non è che il prodotto
-matrice-vettore già incontrato in algebra lineare, "avvolto" in una non
-linearità.
+$\hat{\mathbf{y}} = \mathbf{a}^{[L]}$. In altri termini, ogni strato non è che
+il prodotto matrice-vettore già incontrato in algebra lineare, "avvolto" in una
+non linearità.
 
 Fissare le forme dei tensori rende verificabile a mano
 ogni formula che segue, a partire dalla
@@ -111,7 +110,7 @@ derivate.
 
 La loss è il totale delle multe del gioco dei gettoni, e quando la risposta è un
 numero, con la campana, la multa è la distanza al quadrato fra la risposta della
-rete e la verità. Con i soldi si vede bene. La rete deve stimare il
+rete e la verità. Con i soldi si vede bene. Ad esempio, la rete deve stimare il
 valore di una casa che vale davvero 200.000 €, e ne prevede 170.000: l'errore è
 di 30.000, e al quadrato fa $30.000 \times 30.000 = 900$ milioni. Sbagliare di
 60.000, il doppio, dà $3.600$ milioni, quattro volte tanto: raddoppiare l'errore
@@ -184,12 +183,12 @@ oltre mille miliardi.
 
 Che per la classificazione si «preferisca» la cross-entropia ha una ragione in
 più di quella probabilistica da cui la si è ricavata, e questa è meccanica:
-riguarda il gradiente. Prendiamo il caso più piccolo, una
-sola uscita sigmoide $\hat{y} = \sigma(z)$, e scriviamo la MSE su quel singolo
-esempio con un $\tfrac{1}{2}$ davanti. Quel mezzo non c'era nella definizione di
-poco fa ed è messo qui apposta, perché si semplifica con il $2$ che scende
-derivando: chi rifà il calcolo partendo dalla definizione ottiene lo stesso
-risultato moltiplicato per $2$, un fattore costante che cambia i numeri e non la
+riguarda il gradiente. Consideriamo il caso più piccolo, cioè una sola uscita
+sigmoide $\hat{y} = \sigma(z)$, e scriviamo la MSE su quel singolo esempio con
+un $\tfrac{1}{2}$ davanti. Quel mezzo non c'era nella definizione di poco fa ed
+è messo qui apposta, perché si semplifica con il $2$ che scende derivando: chi
+rifà il calcolo partendo dalla definizione ottiene lo stesso risultato
+moltiplicato per $2$, un fattore costante che cambia i numeri e non la
 direzione. Con questa scrittura la derivata rispetto a $z$ porta un fattore
 $\sigma'(z)$:
 
@@ -199,7 +198,7 @@ $$
 $$
 
 Il fattore $\sigma'(z) = \sigma(z)(1-\sigma(z))$ vale quasi zero agli estremi,
-cioè quando il neurone è sicuro e sbagliato: il modello che ha torto marcio è
+cioè quando il neurone è sicuro e sbagliato. Il modello che ha torto marcio è
 quello che impara più lentamente, il contrario di quanto servirebbe. Sostituiamo
 allora la MSE con la cross-entropia dello stesso caso a due classi, la
 cross-entropia binaria: è quella di poco fa quando le classi sono due e
@@ -230,10 +229,10 @@ attivazione, a decidere se il gradiente sopravvive.
 
 ## L'idea della backpropagation
 
-Sappiamo di quanto la rete ha sbagliato. La domanda vera è quanto cambierebbe la
-loss muovendo di poco ciascun peso, cioè la derivata parziale
+Sappiamo di quanto la rete ha sbagliato. La domanda vera è quanto cambierebbe
+la loss muovendo di poco ciascun peso, cioè la derivata parziale
 $\partial\mathcal{L}/\partial w$ per ogni peso $w$: è la «colpa» del peso, nel
-senso preciso di quanto l'errore dipende da lui. La backpropagation calcola
+senso preciso di quanto l'errore dipende da lui. La **backpropagation** calcola
 tutte queste derivate insieme, ripercorrendo la rete a ritroso.
 
 ```{figure} ../figures/rete-forward-backward.svg
@@ -356,7 +355,7 @@ $$
 \boldsymbol{\delta}^{[l]} = \left(\mathbf{W}^{[l+1]}\right)^{\!\top} \boldsymbol{\delta}^{[l+1]} \;\odot\; g'\!\left(\mathbf{z}^{[l]}\right).
 $$
 
-Lo stesso conto dà i gradienti che servono per aggiornare i parametri:
+Lo stesso calcolo dà i gradienti che servono per aggiornare i parametri:
 $z^{[l]}_i$ dipende da $W^{[l]}_{ij}$ solo attraverso il prodotto
 $W^{[l]}_{ij}\,a^{[l-1]}_j$, quindi
 $\partial\ell/\partial W^{[l]}_{ij} = \delta^{[l]}_i\,a^{[l-1]}_j$.
@@ -396,9 +395,11 @@ una passata dà la derivata lungo *quella* direzione, e per il gradiente
 completo servono $d$ passate, una per parametro. Nel **modo inverso** si
 propaga all'indietro dall'uscita, e una passata sola le dà tutte quante. Quando
 l'uscita è una sola (la loss è uno scalare) e gli ingressi sono milioni, il
-verso conveniente è ovviamente il secondo, e il gradiente si ottiene con un
-multiplo costante del lavoro della funzione, qualunque sia il numero di
-parametri: è il *cheap gradient principle*. Sull'MLP la costante si conta. Su
+verso conveniente è il secondo, e il gradiente si ottiene con un multiplo
+costante del lavoro della funzione, qualunque sia il numero di parametri: è il
+*cheap gradient principle*.
+
+Sull'MLP la costante si conta. Su
 un mini-batch di $B$ esempi messi in colonna,
 $\mathbf{A}^{[l-1]}\in\mathbb{R}^{n_{l-1}\times B}$, l'andata di uno strato è
 un prodotto $\mathbf{W}^{[l]}\mathbf{A}^{[l-1]}$, circa $2\,n_l n_{l-1} B$
@@ -417,13 +418,13 @@ Il ritorno però ha un costo in memoria. Per calcolare $\partial\ell/\partial
 serve l'attivazione $\mathbf{a}^{[l-1]}$: il forward deve quindi conservare le
 attivazioni di tutti gli strati finché il gradiente non torna indietro a
 prenderle. È l'unica voce che cresce con la profondità e insieme con la
-dimensione del batch, mentre i pesi restano gli stessi. Quanto pesi rispetto al
-modello si stima a mente, su una rete di venti strati da $512$ unità. I pesi
-sono venti matrici $512\times512$. Le attivazioni trattenute sono venti vettori
-da $512$ numeri per ciascun esempio del batch, cioè l'ingresso di ogni strato
-(l'attivazione dell'ultimo non serve a nessun gradiente). Con $B$ esempi per
-batch il rapporto è quindi circa $B/512$, a meno dei bias e di ciò che serve
-trattenere per le derivate delle attivazioni. A batch $32$ le attivazioni
+dimensione del batch, mentre i pesi restano gli stessi. Si può stimare a mente
+quanto pesino rispetto al modello, su una rete di venti strati da $512$ unità.
+I pesi sono venti matrici $512\times512$. Le attivazioni trattenute sono venti
+vettori da $512$ numeri per ciascun esempio del batch, cioè l'ingresso di ogni
+strato (l'attivazione dell'ultimo non serve a nessun gradiente). Con $B$ esempi
+per batch il rapporto è quindi circa $B/512$, a meno dei bias e di ciò che
+serve trattenere per le derivate delle attivazioni. A batch $32$ le attivazioni
 pesano un sedicesimo del modello, a batch $512$ lo pareggiano e a batch $2048$
 pesano quattro volte tanto, cioè sessantaquattro volte più che a batch $32$ per
 un batch sessantaquattro volte più grande. Da qui il *gradient checkpointing*,
@@ -445,20 +446,21 @@ schermo è il prodotto che si allunga, e ogni suo fattore è il contributo di un
 strato.
 ```
 
-La {numref}`fig-backpropagation-animata` fa vedere anche perché questo calcolo è
-sostenibile: un modello grosso si addestra ripetendo il giro milioni di volte,
-quindi dal tempo di un giro dipende la possibilità stessa di addestrarlo. Il
-ritorno dura più o meno quanto un paio di andate; una rete di cento strati
-impiega più tempo di una da dieci, ma il *rapporto* fra ritorno e andata resta
-lo stesso, perché niente viene ricalcolato da capo: a ogni strato si aggiunge
-soltanto un fattore a un prodotto che esiste già. È la regola della catena della
-{doc}`sezione su analisi e ottimizzazione </Matematica/analisi-ottimizzazione>`,
-applicata a ritroso.
+La {numref}`fig-backpropagation-animata` fa vedere anche perché questo calcolo
+è sostenibile: un modello grosso si addestra ripetendo la passata milioni di
+volte, quindi dal tempo di una passata dipende la possibilità stessa di
+addestrarlo. Infatti il ritorno dura più o meno quanto un paio di andate; una
+rete di cento strati impiega più tempo di una da dieci, ma il *rapporto* fra
+ritorno e andata resta lo stesso, perché niente viene ricalcolato da capo: a
+ogni strato si aggiunge soltanto un fattore a un prodotto che esiste già. È la
+regola della catena della {doc}`sezione su analisi e ottimizzazione
+</Matematica/analisi-ottimizzazione>`, applicata a ritroso.
 
 ## Aggiornare i pesi: discesa del gradiente e learning rate
 
 Le derivate parziali della loss rispetto a tutti i parametri, messe in un
-vettore, formano il gradiente $\nabla_\theta\mathcal{L}$: la backpropagation lo
+vettore, formano il **gradiente** $\nabla_\theta\mathcal{L}$: la
+backpropagation lo
 calcola, la discesa del gradiente lo usa, e sono la prima e la seconda metà
 dello stesso procedimento. La «colpa» di un peso e la sua pendenza sono quindi due
 nomi della stessa cosa: quanto l'errore sale o scende per ogni passettino che
@@ -489,15 +491,14 @@ fare un passo nella direzione più ripida verso il basso. Ripeti, passo dopo
 passo.
 
 Quanto è lungo il passo lo decidono due cose insieme: la pendenza che senti
-sotto i piedi, e un moltiplicatore fisso che scegli tu, il learning rate
+sotto i piedi, e un moltiplicatore fisso che scegli tu, il **learning rate**
 (di solito un numero piccolo, $0{,}01$ o $0{,}001$). La pendenza è quella che
-accorcia i passi vicino al fondo, come nella
-{numref}`fig-discesa-passi`; il moltiplicatore è la manopola che hai in mano.
-Con un moltiplicatore troppo grande scavalchi la valle e rimbalzi avanti e
-indietro senza arrivare mai; con uno troppo piccolo scendi lentissimo, e rischi
-di fermarti nel primo avvallamento che incontri credendolo il fondo, con i
-passi ormai troppo corti per uscirne. Trovare un buon moltiplicatore è una delle
-scelte che più contano.
+accorcia i passi vicino al fondo, come nella {numref}`fig-discesa-passi`; il
+moltiplicatore è la manopola che hai in mano. Con un moltiplicatore troppo
+grande scavalchi la valle e rimbalzi avanti e indietro senza arrivare mai; con
+uno troppo piccolo scendi lentissimo, e rischi di fermarti nel primo
+avvallamento che incontri credendolo il fondo, con i passi ormai troppo corti
+per uscirne. Trovare un buon moltiplicatore è una delle scelte che più contano.
 
 Quel moltiplicatore non deve restare lo stesso per tutta la discesa, e nemmeno
 essere identico in ogni direzione. Chi
@@ -518,15 +519,15 @@ $$
 $$
 
 dove $\theta$ sono i parametri, $\nabla_{\theta}\mathcal{L}$ il gradiente
-calcolato dalla backpropagation ed $\eta > 0$ il learning rate (o tasso di
+calcolato dalla backpropagation ed $\eta > 0$ il **learning rate** (o tasso di
 apprendimento). La curvatura fissa il confine fra un passo troppo lungo e uno
 accettabile: vicino a un minimo, dove la loss è quasi una quadratica con
 hessiana $\mathbf{H}$, la discesa converge se $\eta <
 2/\lambda_{\max}(\mathbf{H})$ e diverge lungo la direzione più curva appena
 $\eta$ supera quella soglia, che è la stessa del lemma di discesa di
 {doc}`Analisi e ottimizzazione
-</Matematica/analisi-ottimizzazione>`. Un $\eta$ troppo piccolo rende la
-convergenza lentissima o la blocca in un minimo mediocre. Gli
+</Matematica/analisi-ottimizzazione>`. Al contrario, un $\eta$ troppo piccolo rende
+la convergenza lentissima o la blocca in un minimo mediocre. Gli
 ottimizzatori moderni aggiungono memoria delle direzioni già prese (Momentum,
 che però conserva un solo $\eta$ per tutti i parametri), un passo diverso per
 ciascun parametro (RMSProp), o tutte e due le cose (Adam
@@ -547,8 +548,9 @@ di {doc}`Analisi e ottimizzazione </Matematica/analisi-ottimizzazione>`.
 Calcolare il gradiente su *tutti* i dati a ogni passo sarebbe accuratissimo ma
 lentissimo. In pratica l'insieme dei dati si divide in piccoli gruppi, i
 **mini-batch** (per esempio 32 o 64 esempi per volta): per ciascuno si fa
-un'andata, un ritorno e un aggiornamento dei pesi. Un giro completo su tutti i
-mini-batch è un’epoca, e un addestramento ne conta decine o centinaia.
+un'andata, un ritorno e un aggiornamento dei pesi. Una passata completa su
+tutti i mini-batch è un’**epoca**, e un addestramento ne conta decine o
+centinaia.
 
 Ogni mini-batch però è solo un campione dei dati, preso a caso, quindi il
 gradiente che vi si calcola è una stima: giusta in media, perché la media su
@@ -564,7 +566,9 @@ profonde in cui la discesa si può fermare credendo di essere arrivata in fondo;
 ma nelle reti profonde quelle conche sono rare {cite}`dauphin2014identifying`.
 Serve piuttosto a staccarsi dai tratti piatti e dalle selle di poco fa, dove la
 pendenza vera è quasi zero. Senza rumore dalle selle si esce lo stesso, ma con
-calma. Un algoritmo perfettamente preciso, con un passo abbastanza piccolo e
+calma.
+
+Un algoritmo perfettamente preciso, con un passo abbastanza piccolo e
 partito da un punto a caso, esce da ogni sella vera, cioè da una sella dove in
 almeno una direzione il terreno scende curvando verso il basso
 {cite}`lee2016gradient`; il numero di passi, però, può crescere
@@ -581,17 +585,19 @@ rete non ha mai visto. Il fenomeno è documentato {cite}`keskar2017large`; la
 spiegazione, invece, è contestata, benché continui a essere ripetuta come assodata.
 
 L'obiezione è che "larga" e "stretta", misurate così, non dicono niente sul
-modello. In una rete con la ReLU si possono moltiplicare per dieci i pesi di uno
-strato, bias compreso, e dividere per dieci soltanto i pesi dello strato dopo,
-lasciandone il bias dov'era. La rete calcola la stessa identica funzione, perché la
-ReLU lascia passare i fattori positivi (dieci volte l'ingresso dà dieci volte
-l'uscita): quel dieci attraversa lo strato e si semplifica con la
-divisione per dieci che trova subito dopo. Il bias del secondo strato resta
-fermo perché non moltiplica niente: si aggiunge alla fine, e il dieci da
-correggere lì non ci passa. Stessa funzione, stesse previsioni, ma i pesi adesso
-sono altri numeri, e attorno a quei numeri la valle può essere stretta quanto si
-vuole. Una valle è stretta quando basta spostare i pesi di pochissimo perché
-l'errore salga. I pesi del secondo strato sono appena stati divisi per dieci:
+modello. Ad esempio, in una rete con la ReLU si possono moltiplicare per dieci
+i pesi di uno strato, bias compreso, e dividere per dieci soltanto i pesi dello
+strato dopo, lasciandone il bias dov'era. La rete calcola la stessa identica
+funzione, perché la ReLU lascia passare i fattori positivi (dieci volte
+l'ingresso dà dieci volte l'uscita): quel dieci attraversa lo strato e si
+semplifica con la divisione per dieci che trova subito dopo. Il bias del
+secondo strato resta fermo perché non moltiplica niente: si aggiunge alla fine,
+e il dieci da correggere lì non ci passa. Stessa funzione, stesse previsioni,
+ma i pesi adesso sono altri numeri, e attorno a quei numeri la valle può essere
+stretta quanto si vuole. Una valle è stretta quando basta spostare i pesi di
+pochissimo perché l'errore salga.
+
+I pesi del secondo strato sono appena stati divisi per dieci:
 sono dieci volte più piccoli, quindi uno spostamento della stessa misura di
 prima adesso pesa dieci volte di più (un centesimo, su un peso che
 valeva uno, era l'uno per cento; su un peso che vale un decimo è il dieci per
@@ -730,32 +736,34 @@ più forte: allora $\lVert\prod_l \mathbf{J}^{[l]}\,\mathbf{v}\rVert \ge \prod_l
 \sigma_{\min}(\mathbf{J}^{[l]})\, \lVert\mathbf{v}\rVert$ e la norma non può
 che crescere.
 
-Sulle reti fatte con la ReLU, però, quella garanzia non si applica mai. La
+Sulle reti fatte con la ReLU quella garanzia non si applica mai. La
 Jacobiana di uno strato del genere azzera le righe delle unità spente, e su uno
 strato che non allarga ne basta una sola perché $\sigma_{\min}$ valga zero: in
 uno strato da $64$ unità con ingressi casuali le spente sono decine, e il
 prodotto si ritrova $\sigma_{\min}=0$ per costruzione. La condizione è
 sufficiente e non necessaria, e su queste reti è vacua: non esiste una garanzia
-per l'esplosione che sia comoda e valida per ogni ingresso. In media, però, il
-calcolo si può fare, e vale nei due versi insieme. In una rete ReLU con pesi
-indipendenti di varianza $\kappa\cdot 2/n$ la norma quadratica del gradiente
-cambia in media di un fattore $\kappa$ a ogni strato attraversato, quindi
-all'inizializzazione svanisce per $\kappa<1$ ed esplode per $\kappa>1$, come
-$\kappa^{L/2}$ in norma: su cinquanta strati, $1{,}2^{25}\approx 95$. È la
-condizione $\tfrac{1}{2}\,n\,\mathrm{Var}[w]=1$ di He {cite}`he2015delving`, e
-l'inizializzazione la sceglie per evitare entrambi i difetti in partenza.
-L'inizializzazione non controlla l'addestramento: lungo la traiettoria la loss
-può presentare pareti ripidissime che nessuna analisi a priori prevede,
-soprattutto nelle reti ricorrenti {cite}`pascanu2013difficulty`. In questi casi
-l'esplosione si contiene quando accade, con il *gradient clipping*, che taglia
-la norma del gradiente sopra una soglia.
+per l'esplosione che sia comoda e valida per ogni ingresso.
+
+In media, però, il calcolo si può fare, e vale nei due versi insieme. In una
+rete ReLU con pesi indipendenti di varianza $\kappa\cdot 2/n$ la norma
+quadratica del gradiente cambia in media di un fattore $\kappa$ a ogni strato
+attraversato, quindi all'inizializzazione svanisce per $\kappa<1$ ed esplode
+per $\kappa>1$, come $\kappa^{L/2}$ in norma: su cinquanta strati,
+$1{,}2^{25}\approx 95$. È la condizione $\tfrac{1}{2}\,n\,\mathrm{Var}[w]=1$ di
+He {cite}`he2015delving`, e l'inizializzazione la sceglie per evitare entrambi
+i difetti in partenza. Tuttavia l'inizializzazione non controlla
+l'addestramento: lungo la traiettoria la loss può presentare pareti ripidissime
+che nessuna analisi a priori prevede, soprattutto nelle reti ricorrenti
+{cite}`pascanu2013difficulty`. In questi casi l'esplosione si contiene quando
+accade, con il *gradient clipping*, che taglia la norma del gradiente sopra una
+soglia.
 
 L'analisi è quella resa celebre da Hochreiter
 {cite}`hochreiter1991untersuchungen` e da Bengio {cite}`bengio1994learning`
-sulle reti ricorrenti. I rimedi standard: attivazioni ReLU al posto della
-sigmoide {cite}`glorot2011deep`, inizializzazione accorta dei pesi
-({cite}`glorot2010understanding`, {cite}`he2015delving`), batch
-normalization {cite}`ioffe2015batch`, connessioni residue delle ResNet
+sulle reti ricorrenti. I rimedi standard sono le attivazioni ReLU al posto della
+sigmoide {cite}`glorot2011deep`, un'inizializzazione accorta dei pesi
+({cite}`glorot2010understanding`, {cite}`he2015delving`), la batch
+normalization {cite}`ioffe2015batch`, le connessioni residue delle ResNet
 {cite}`he2016deep` e, appunto, il *gradient clipping*. Sono queste tecniche ad
 aver reso addestrabili reti da centinaia di strati.
 

@@ -19,8 +19,8 @@ Adesso possiamo dire com'è andata. Sono passati
 {{ n_capitoli_meno_uno_lettere }} capitoli, dall'algebra lineare alle reti che
 generano immagini, dagli alberi di decisione agli agenti che usano strumenti,
 dal codice che fa correre una scheda grafica alle domande su chi risponde
-quando un modello sbaglia. Dei meccanismi non è rimasto quasi niente di
-prodigioso: guardati da vicino, sono conti.
+quando un modello sbaglia. In definitiva, dei meccanismi non è rimasto quasi
+niente di prodigioso: guardati da vicino, sono conti.
 
 Ora abbiamo ciò che all'inizio mancava: gli strumenti per capire come
 funzionano queste macchine e per distinguere ciò che sanno fare da ciò che
@@ -34,21 +34,21 @@ disegno che i singoli capitoli, da vicino, non lasciavano intravedere.
 
 Ripercorso per domande, e non capitolo per capitolo, il cammino è cominciato
 dai mattoni: vettori, matrici, derivate, probabilità. Non erano un rito
-d'iniziazione, ma il vocabolario di tutto il resto. Un neurone calcola un
-prodotto scalare fra ingressi e pesi, lo stesso conto dello scontrino alla
-cassa, ci somma un termine fisso, il bias, e passa il risultato per una
-funzione non lineare: $g(\mathbf{w}^\top\mathbf{x}+b)$. L'apprendimento è una
-discesa del gradiente: a ogni passo i parametri si spostano nella direzione
-opposta al gradiente della perdita, quella in cui l'errore scende più in
-fretta. Un modello probabilistico risponde con una distribuzione invece che con un
-valore solo: un elenco di risposte possibili, ciascuna con la probabilità che
-il modello le assegna.
+d'iniziazione, ma il vocabolario di tutto il resto. Ad esempio, un neurone
+calcola un prodotto scalare fra ingressi e pesi, lo stesso conto dello
+scontrino alla cassa, ci somma un termine fisso, il bias, e passa il risultato
+per una funzione non lineare: $g(\mathbf{w}^\top\mathbf{x}+b)$. L'apprendimento
+è una discesa del gradiente: a ogni passo i parametri si spostano nella
+direzione opposta al gradiente della perdita, quella in cui l'errore scende
+più in fretta. Infine un modello probabilistico risponde con una distribuzione
+invece che con un valore solo, cioè con un elenco di risposte possibili,
+ciascuna con la probabilità che il modello le assegna.
 
-Da lì il machine learning classico ci ha insegnato la disciplina su cui
-poggia tutto il resto: tenere separati i dati su cui si impara da quelli su cui si
-misura, tenere d'occhio l'overfitting (imparare a memoria gli esempi visti, e
-restare poi senza risposta davanti a uno nuovo), misurare con onestà. La
-separazione vale identica per un modello con dieci parametri (le manopole che
+Da lì il machine learning classico ci ha insegnato la disciplina su cui poggia
+tutto il resto: tenere separati i dati su cui si impara da quelli su cui si
+misura, tenere d'occhio l’**overfitting** (imparare a memoria gli esempi visti,
+e restare poi senza risposta davanti a uno nuovo), misurare con onestà. Questa
+separazione vale identica per un modello con dieci parametri (i valori che
 l'addestramento regola) e per uno con mille miliardi. Il modo in cui
 l'overfitting si presenta, invece, cambia: nei modelli molto grandi la curva a U
 dell'errore lascia il posto alla {ref}`doppia discesa <sec-doppia-discesa>`.
@@ -57,7 +57,7 @@ chiude su una domanda ancora senza risposta completa, cioè perché un modello c
 di imparare a memoria qualunque cosa vada bene lo stesso su esempi nuovi.
 
 Le reti neurali hanno cambiato la scala e ci hanno costretti a guardare
-anche sotto il cofano. Con [PyTorch](../PyTorch/addestramento.md) abbiamo
+anche l’implementazione. Con [PyTorch](../PyTorch/addestramento.md) abbiamo
 impilato strati e scritto a mano il ciclo di addestramento (il *training
 loop*); studiando la [GPU](../GPU/gerarchia-memoria.md) abbiamo visto perché
 una moltiplicazione di matrici è veloce solo se i numeri arrivano dalla memoria
@@ -207,7 +207,7 @@ noiose: come si dividono i dati, che cosa succede quando cambiano sotto i
 piedi, chi li ha lasciati e se era d'accordo. Un modello addestrato su dati
 storti impara la stortura con tutta la precisione di cui è capace.
 
-Le rappresentazioni apprese sono il cuore, e il deep learning le ha cambiate
+Le **rappresentazioni apprese** sono il cuore, e il deep learning le ha cambiate
 più di ogni altra cosa: le caratteristiche con cui un modello descrive un
 esempio oggi le trova l'addestramento, uno strato dopo l'altro, e non più una
 persona.
@@ -267,7 +267,7 @@ state imparate: le ha scritte a mano il progettista prima che l'ottimizzazione
 cominciasse.
 `````
 
-L’ottimizzazione è il motore che rende possibile tutto questo: apprendere
+L’**ottimizzazione** è il motore che rende possibile tutto questo: apprendere
 significa, quasi sempre, cercare i parametri che minimizzano una funzione di
 perdita, cioè una misura dell'errore.
 
@@ -651,7 +651,7 @@ attorno al rinforzo](../AutoSupervisione/dibattito-rl.md)). Il resto non si
 stabilisce discutendone: si guarda che cosa succede quando la partita si
 sposta all'aperto.
 
-Fuori il quadro si rovescia, e lo si osserva da decenni. Un
+Fuori il quadro si rovescia, e lo si osserva da decenni. Ad esempio, un
 computer ha battuto il campione del mondo di scacchi nel 1997; costruire il
 braccio che sposta i pezzi sulla scacchiera è rimasta la parte difficile. Nel
 1988 Hans Moravec lo mise così: dare a un computer le prestazioni di un adulto
@@ -694,13 +694,14 @@ braccio si consuma, i sensori vedono il mondo con il loro rumore, e una caduta
 non si annulla premendo un tasto. Non è una previsione sulla robotica: spiega
 perché lì ogni tentativo costa più che al chiuso, e un giorno costerà meno solo
 se uno di quei pezzi sarà cambiato. Il simulatore è una strada che c'è già. Il
-robot impara in un mondo finto, dove le prove sono infinite e le cadute non
-rompono niente, e un robot a quattro zampe arriva così a camminare sul terreno
-piano in meno di quattro minuti di addestramento, e su terreno accidentato in
-venti {cite}`rudin2022learning`. Il costo allora si sposta nello scarto fra
-simulatore e mondo, il *sim-to-real gap*: attriti, ritardi dei motori e rumore
-dei sensori che il simulatore non riproduce mai del tutto ([sezione sul
-controllo continuo](../DeepReinforcementLearning/controllo-continuo.md)).
+robot, infatti, impara in un mondo finto, dove le prove sono infinite e le
+cadute non rompono niente, e un robot a quattro zampe arriva così a camminare
+sul terreno piano in meno di quattro minuti di addestramento, e su terreno
+accidentato in venti {cite}`rudin2022learning`. Il costo allora si sposta nello
+scarto fra simulatore e mondo, il *sim-to-real gap*: attriti, ritardi dei
+motori e rumore dei sensori che il simulatore non riproduce mai del tutto
+([sezione sul controllo
+continuo](../DeepReinforcementLearning/controllo-continuo.md)).
 
 Quello che resta nostro non è un elenco di compiti, perché un elenco si erode,
 uno alla volta, ogni volta che un pezzo di mondo diventa numeri e qualcun altro
@@ -722,7 +723,7 @@ abbiamo: se il punteggio è «quanti minuti resti a guardare», diventerà bravo
 tenerti lì, e ci riuscirà. Se quello sia il numero giusto da far salire non lo
 decide l'ottimizzazione: il punteggio glielo dà qualcun altro, e quando è solo
 un sostituto di ciò che si voleva, spingerlo al massimo finisce per
-tradirlo. È la legge di Goodhart ([sezione su allineamento e
+tradirlo. È la **legge di Goodhart** ([sezione su allineamento e
 governance](../AIResponsabile/allineamento-e-governance.md)).
 
 Sapere dove si sta giocando è anche il modo migliore per leggere la prossima
@@ -805,9 +806,9 @@ non è opzionale.
 Verificare, però, non è possibile a tutti allo stesso modo, e la domanda che
 si fa di rado è chi sia nella posizione di accorgersene. Dipende da come il
 modello viene messo a disposizione, e i modi sono due. Di alcuni modelli si
-possono scaricare i pesi, cioè i numeri che l'addestramento ha regolato, le
-manopole di prima: sono un file che chiunque può tenersi, e quindi misurarne i
-difetti, sondarlo, smentirlo. Altri si raggiungono solo attraverso
+possono scaricare i **pesi**, cioè i numeri che l’addestramento ha regolato:
+sono un file che chiunque può tenersi, e quindi misurarne i difetti, sondarlo,
+smentirlo. Altri si raggiungono solo attraverso
 un'interfaccia, cioè mandando domande al server di chi li possiede e ricevendo
 risposte: quelli si verificano solo con il permesso di quel qualcuno, e quel
 permesso può essere tolto. È una questione di chi può sapere cosa, non di
@@ -888,13 +889,14 @@ integralmente e gratuitamente online. Sono tutti in inglese, come quasi tutta
 la letteratura di questo campo: è una delle ragioni per cui questo libro esiste
 in italiano.
 
-Poi mettiti alla prova. Kaggle è il sito dove chiunque può misurarsi su un
+Poi mettiti alla prova. **Kaggle** è il sito dove chiunque può misurarsi su un
 problema di dati vero, con una classifica e il codice degli altri partecipanti
 sotto gli occhi. Partecipa a una competizione: è il modo più rapido per vedere
 la differenza fra un modello che gira sul tuo computer e un modello che funziona
-su dati che non hai scelto tu. Contribuisci a un progetto open source, cioè a
-un programma il cui codice è pubblico e chiunque può migliorarlo. Tieni anche un
-quaderno degli esperimenti falliti, che insegnano più dei successi.
+su dati che non hai scelto tu. Contribuisci a un progetto **open source**,
+cioè a un programma il cui codice è pubblico e chiunque può migliorarlo.
+Tieni anche un quaderno degli esperimenti falliti, che insegnano più dei
+successi.
 
 :::{only} html
 E torna qui: questa versione del libro si aggiorna, e i capitoli nascono anche

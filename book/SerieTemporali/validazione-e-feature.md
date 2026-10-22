@@ -14,7 +14,7 @@ di informazione dai dati su cui il modello sarà giudicato verso quelli su cui
 impara. Qui la fuga ha una direzione sua, dal futuro verso il passato, e per
 questo si dice *leakage temporale*.
 
-Trend, stagionalità e autocorrelazione dicono che cos'è una serie; a decidere
+Trend, stagionalità e autocorrelazione dicono che cos'è una serie, ma a decidere
 se una previsione vale qualcosa sono altre due domande: come le si dà un voto
 senza barare col futuro, e come si rappresenta il tempo perché un normale
 modello tabellare (uno che vuole una tabella di righe, come la regressione o
@@ -22,9 +22,9 @@ gli alberi) possa impararlo. Le colonne di quella tabella si chiamano
 feature.
 
 Il modo di valutare che vedremo si chiama **backtesting** e consiste, come dice
-il nome, nel provare all'indietro. Si finge di essere in un giorno del passato,
-si prevede quello che sarebbe successo dopo, e si confronta con quello che è
-successo davvero; poi si sposta in avanti quel giorno, e si rifà.
+il nome, nel provare all'indietro. In pratica si finge di essere in un giorno
+del passato, si prevede quello che sarebbe successo dopo, e si confronta con
+quello che è successo davvero; poi si sposta in avanti quel giorno, e si rifà.
 
 ## Perché mescolare i dati è un errore
 
@@ -34,7 +34,7 @@ alla fine e che prima non si tocca. Prima di dividerli si mescolano, perché un
 ordine già presente nel file (tutte le foto di gatti in fondo, per esempio)
 renderebbe i tre insiemi diversi per costruzione. La *k-fold cross-validation*
 ripete la divisione più volte, tenendo da parte ogni volta una fetta diversa, e
-fa la media degli errori: il voto che ne esce è più stabile.
+fa la media degli errori; in questo modo il voto che ne esce è più stabile.
 
 Con le serie temporali, invece, è il rimescolamento a falsare la misura.
 
@@ -60,7 +60,7 @@ per uno; nel dubbio, prima e dopo non si mescolano.
 
 `````{tab} Superiore
 
-Il problema è che gli esempi di una serie sono ordinati e fortemente
+Il motivo è che gli esempi di una serie sono ordinati e fortemente
 autocorrelati, quindi tutt'altro che indipendenti. Uno split casuale, o una
 k-fold con shuffle, mette nel training istanti $t+1, t+3, \dots$ e nel
 validation l'istante $t$: il modello osserva valori *successivi* all'istante
@@ -89,13 +89,13 @@ casi più comuni, resta la regola temporale.
 ## Validazione temporale: lo split cronologico
 
 La cura è semplice da enunciare: rispettare la freccia del tempo. Ci si allena
-sul passato, si verifica sul futuro, mai il contrario. Un taglio solo, però, non
-basta, perché darebbe un voto solo, misurato su una manciata di
-giorni: se in quei giorni è capitato un fatto strano (una nevicata, uno
-sciopero), il voto racconta la nevicata e non il modello. Meglio tagliare in
-molti punti diversi e fare la media dei voti. È il backtesting dell'apertura, e
-gli altri due nomi con cui lo si incontra sono **walk-forward** e valutazione
-«su **origine mobile**»: tre nomi per lo stesso metodo
+sul passato, si verifica sul futuro, mai il contrario. Un taglio solo, però,
+non basta, perché darebbe un voto solo, misurato su una manciata di giorni: se
+in quei giorni è capitato un fatto strano (una nevicata, uno sciopero), il voto
+racconta la nevicata e non il modello. Conviene allora tagliare in molti punti
+diversi e fare la media dei voti. È il backtesting dell'apertura, e gli altri
+due nomi con cui lo si incontra sono **walk-forward** e valutazione «su
+**origine mobile**»: tre nomi per lo stesso metodo
 {cite}`hyndman2021forecasting`.
 
 `````{tab} Elementare
@@ -110,8 +110,9 @@ studia, più contesto ha.
 
 Con la **finestra scorrevole** (*rolling*), tieni invece una finestra di
 lunghezza fissa che scivola in avanti: sempre, per esempio, gli ultimi dodici
-mesi. Utile quando il passato troppo lontano non è più rappresentativo: le
-abitudini d'acquisto di dieci anni fa dicono poco su quelle di oggi.
+mesi. Questa scelta è utile quando il passato troppo lontano non è più
+rappresentativo: ad esempio, le abitudini d'acquisto di dieci anni fa dicono
+poco su quelle di oggi.
 
 In entrambi i casi il pezzo di prova (il *test*) sta sempre a destra di quello
 d'allenamento (il *train*), cioè nel futuro, come mostra la
@@ -175,24 +176,26 @@ mattoni di base, e la differenza fra i due sta tutta in come trattano gli
 errori grandi.
 
 Il MAE (errore assoluto medio) è la media dei valori assoluti degli errori, e
-si esprime nell'unità della serie: un giorno sbagliato di tre gradi in più e
-uno sbagliato di tre in meno valgono uguale. L’RMSE (la radice dell'errore
+si esprime nell'unità della serie: ad esempio, un giorno sbagliato di tre gradi
+in più e uno sbagliato di tre in meno valgono uguale.
+
+L’RMSE (la radice dell'errore
 quadratico medio, già incontrata con il Netflix Prize nel {doc}`capitolo sui
 sistemi di raccomandazione </SistemiRaccomandazione/overview>`) eleva gli
 errori al quadrato prima di mediarli, e così pesa di più quelli grandi: un
 errore di otto contribuisce con sessantaquattro, uno di due con quattro, sedici
 volte meno.
 
-Due modelli che il MAE giudica identici: uno sbaglia di due gradi tutti e
-quattro i giorni, l'altro ne azzecca tre e sbaglia di otto il quarto. MAE due
-contro due, pari. Con l'RMSE il primo fa
-$\sqrt{(4+4+4+4)/4} = \sqrt{4} = 2$ e il secondo
-$\sqrt{(0+0+0+64)/4} = \sqrt{16} = 4$: il doppio, perché quel giorno sbagliato
-di molto gli altri tre non lo compensano.
+Per vederlo, consideriamo due modelli che il MAE giudica identici: uno sbaglia
+di due gradi tutti e quattro i giorni, l'altro ne azzecca tre e sbaglia di otto
+il quarto. MAE due contro due, pari. Con l'RMSE, invece, il primo fa
+$\sqrt{(4+4+4+4)/4} = \sqrt{4} = 2$ e il secondo $\sqrt{(0+0+0+64)/4} =
+\sqrt{16} = 4$, cioè il doppio, perché quel giorno sbagliato di molto gli altri
+tre non lo compensano.
 
-Entrambi, però, dipendono dall'unità di misura della serie: un MAE di 500 è
-ottimo per il PIL, disastroso per la temperatura. Servono numeri che si possano
-confrontare fra serie diverse.
+Entrambi, però, dipendono dall'unità di misura della serie. Ad esempio, un MAE
+di 500 è ottimo per il PIL e disastroso per la temperatura. Servono numeri che
+si possano confrontare fra serie diverse.
 
 `````{tab} Elementare
 
@@ -200,14 +203,14 @@ Il primo tentativo è misurare l'errore in percentuale: sbagliare di 500 su 50
 000 è l’1%, su 500 è il 100%. Questa è la **MAPE**, l'errore percentuale medio.
 Comoda da spiegare, ma con tre difetti seri, e il primo si vede sulla
 temperatura: una percentuale ha senso solo dove lo zero della scala è uno zero
-vero, e in gradi Celsius non lo è, sicché lo stesso errore di un grado vale il
+vero, e in gradi Celsius non lo è, quindi lo stesso errore di un grado vale il
 5% a venti gradi e il 50% a due. Gli altri due riguardano la formula. Se il
 valore vero è zero (un giorno senza vendite), si divide per zero e la metrica
-esplode. Ed è asimmetrica: prevedere troppo alto o troppo basso non pesa
-uguale. Col valore vero a 100, se prevedi 0 hai sbagliato del 100%, il massimo
-possibile per difetto, perché sotto lo zero non si va. Se prevedi 1000, hai
-sbagliato del 900%, e non c'è nessun tetto. Sbagliare per eccesso pesa quindi
-di più, e alla lunga la metrica premia i modelli timidi.
+esplode. Il terzo difetto è l'asimmetria: prevedere troppo alto o troppo basso
+non pesa uguale. Col valore vero a 100, se prevedi 0 hai sbagliato del 100%, il
+massimo possibile per difetto, perché sotto lo zero non si va. Se prevedi 1000,
+hai sbagliato del 900%, e non c'è nessun tetto. Sbagliare per eccesso pesa
+quindi di più, e alla lunga la metrica premia i modelli timidi.
 
 La strada che funziona è un'altra: invece di guardare l'errore in sé, si guarda
 quante volte è più grande dell'errore di qualcuno che non fa niente di
@@ -265,7 +268,7 @@ negative la sottostima ($\hat{y}_t<y_t$) è limitata al $100\%$, la sovrastima
 no, così la metrica favorisce chi sottoprevede.
 
 La sMAPE mette la somma dei due valori al denominatore, e con il nome promette
-di aver corretto l'asimmetria. In realtà la rovescia: a parità di errore
+di aver corretto l'asimmetria. In realtà la rovescia, poiché a parità di errore
 assoluto penalizza di più chi sottoprevede. Con $y=100$ e uno scarto di $50$
 vale il $66{,}7\%$ per difetto contro il $40\%$ per eccesso, e il divario
 cresce con l'errore. Nella forma qui scritta, con i valori assoluti al
@@ -338,7 +341,7 @@ sotto, tanto da spingere $\hat{y}_\tau$ verso il vero quantile $\tau$-esimo dell
 distribuzione. Mediata su più livelli, approssima un punteggio proprio per
 l'intera previsione probabilistica {cite}`hyndman2021forecasting`.
 
-Il fattore due che in molte scritture moltiplica i due rami qui non c'è:
+Il fattore due che in molte scritture moltiplica i due rami qui non c'è, ma
 ometterlo è una convenzione e non altera la definizione. Hyndman e
 Athanasopoulos lo tengono, e annotano che spesso si omette. Raddoppiare ogni
 perdita non sposta il minimo né l'ordine fra due modelli, ma raddoppia le
@@ -349,9 +352,9 @@ punteggio proprio significa che è minimizzata in media dalla distribuzione
 vera, e quindi che serve benissimo come funzione di costo in addestramento e
 come criterio di confronto complessivo. Premia insieme la calibrazione (la
 banda contiene la quota di casi che dichiara) e la **finezza** (la banda è
-stretta), e non sa dire quale delle due manca. Il conto si fa contro una
+stretta), e non sa dire quale delle due manca. Lo mostra un calcolo contro una
 gaussiana vera, con tre previsori che azzeccano tutti la mediana e sbagliano
-solo la larghezza, e mediando i nove decili.
+solo la larghezza, mediando i nove decili.
 
 ```python
 import numpy as np
@@ -517,15 +520,15 @@ parametri stimati, l'ordine del modello scelto e la persistenza nel futuro
 delle regolarità del passato {cite}`hyndman2021forecasting`. È la parentesi
 che l’{doc}`apertura del capitolo </SerieTemporali/overview>` ha lasciato
 aperta, là dove dice che una previsione seria porta con sé la propria
-incertezza: qui ci sono gli attrezzi per chiuderla.
+incertezza: qui ci sono gli strumenti per chiuderla.
 
 Prima però va detto per bene che cosa promette una forbice, perché è una
 promessa precisa e si può controllare. Quando un modello dice «fra 22 e 26,
 all'80%» sta dicendo: se ripetessi questa previsione mille volte, il valore
 vero cadrebbe al suo interno ottocento volte. È un calcolo che il modello ha
-fatto, non una speranza, e poggia su ipotesi. Due si possono guardare da vicino
-con un esperimento: che i parametri siano noti invece che stimati, e che gli
-scarti si distribuiscano secondo la gaussiana della {doc}`sezione su
+fatto, non una speranza, e poggia su ipotesi. Due di esse si possono guardare
+da vicino con un esperimento: che i parametri siano noti invece che stimati, e
+che gli scarti si distribuiscano secondo la gaussiana della {doc}`sezione su
 probabilità e statistica </Matematica/probabilita-statistica>`. Nessuna delle
 due è vera, e non sbagliano nello stesso verso.
 
@@ -579,13 +582,13 @@ giusta, e la copertura effettiva sta sotto il livello dichiarato
 calare della lunghezza della storia e al crescere dell'orizzonte, perché
 l'errore sui parametri si compone a ogni passo.
 
-La seconda è che i residui siano gaussiani. Quelli delle serie vere sono di solito
-leptocurtici: a parità di varianza hanno più massa al centro *e* più massa
-nelle code, e a diradarsi sono le zone intermedie. La conseguenza sui quantili
-non ha un verso unico. Su una $t$ di Student a quattro gradi di libertà,
-riscalata alla stessa deviazione standard della gaussiana (è la forma con cui
-si modellano di solito i rendimenti finanziari), la banda gaussiana dichiarata
-all'80% copre l'85,6% e quella dichiarata al 99% copre il 97,8%:
+La seconda è che i residui siano gaussiani. Quelli delle serie vere, invece,
+sono di solito leptocurtici: a parità di varianza hanno più massa al centro *e*
+più massa nelle code, e a diradarsi sono le zone intermedie. La conseguenza sui
+quantili non ha un verso unico. Su una $t$ di Student a quattro gradi di
+libertà, riscalata alla stessa deviazione standard della gaussiana (è la forma
+con cui si modellano di solito i rendimenti finanziari), la banda gaussiana
+dichiarata all'80% copre l'85,6% e quella dichiarata al 99% copre il 97,8%:
 sovracopertura sulle bande strette, sottocopertura su quelle larghe, e il
 pareggio attorno al 95%.
 
@@ -610,10 +613,10 @@ La buona notizia è che tutto questo si misura, e la misura ha un nome,
 quante volte il valore osservato è caduto dentro la banda, e si
 confronta con il livello dichiarato.
 
-Si usa la stessa serie della sezione sui modelli classici, quella in cui il
-valore di domani è il 60% di quello di oggi più quattro, più una scossa
-casuale. I due numeri del modello (il 60% e il quattro) si ricavano dalla
-storia con la retta dei minimi quadrati, come là, e la prova si ripete
+Per l'esperimento si usa la stessa serie della sezione sui modelli classici,
+quella in cui il valore di domani è il 60% di quello di oggi più quattro, più
+una scossa casuale. I due numeri del modello (il 60% e il quattro) si ricavano
+dalla storia con la retta dei minimi quadrati, come là, e la prova si ripete
 ventimila volte. Le scosse sono gaussiane, oppure a code pesanti: una $t$ di
 Student a quattro gradi di libertà riscalata alla stessa varianza, cioè la
 stessa agitazione media con salti rari e grandi. La banda si guarda a due
@@ -767,9 +770,9 @@ sé stesse, e bastano due o tre coppie per disegnare quasi ogni stagionalità
 liscia. Il nome viene da Joseph Fourier, il matematico che all'inizio
 dell'Ottocento mostrò come scomporre così una curva periodica.
 
-Un problema resta sul confine fra i giorni d'allenamento e quelli di prova.
-Mettiamo che la prima previsione vera si faccia la sera di un lunedì, a vendite
-del lunedì già note, e chieda quelle del lunedì dopo. Fra le righe
+Un problema resta sul confine fra i giorni d'allenamento e quelli di prova. Per
+vederlo, mettiamo che la prima previsione vera si faccia la sera di un lunedì,
+a vendite del lunedì già note, e chieda quelle del lunedì dopo. Fra le righe
 d'allenamento, quella del lunedì precedente chiede le vendite di questo lunedì:
 la sera della previsione sono già note, e la riga resta. Le sei righe dopo, da
 martedì a domenica, chiedono invece di giorni che quella sera non sono ancora
@@ -805,11 +808,11 @@ Il target della riga $t$ è $y_{t+h}$ per l'orizzonte $h$ desiderato. A quel
 punto qualunque regressore tabellare (dai modelli lineari al gradient
 boosting) diventa un modello di forecasting.
 
-Il divieto vale anche per le trasformazioni: media, deviazione, minimo e
-massimo usati per scalare le colonne vanno stimati sul solo training di quel
-giro e poi applicati al test, mai calcolati sull'intera serie. Uno
-`StandardScaler` applicato prima dello split ricade nello stesso errore
-dell'analista con la curva liscia come una pista da sci.
+Il divieto di usare il futuro vale anche per le trasformazioni: media,
+deviazione, minimo e massimo usati per scalare le colonne vanno stimati sul
+solo training di quella iterazione e poi applicati al test, mai calcolati
+sull'intera serie. Uno `StandardScaler` applicato prima dello split ricade
+nello stesso errore dell'analista con la curva liscia come una pista da sci.
 
 Il taglio, poi, può violare da sé la regola «netta» del confine temporale, al
 bordo. Se si costruisce la tabella sull'intera serie e poi si divide train e

@@ -44,15 +44,15 @@ passi.
 `````{tab} Elementare
 
 Segui il livello dell'acqua in una vasca mentre entra ed esce di continuo. Non
-ti serve ricordare ogni singola goccia, ti basta un numero, quanta acqua c'è
+ti serve ricordare ogni singola goccia: ti basta un numero, quanta acqua c'è
 adesso. Quel numero si porta dietro tutta la storia e si chiama stato.
 
-Le cose che lo muovono restano sempre le stesse. Dal rubinetto entra acqua e
-il livello sale. Dallo scarico socchiuso ne esce, e più acqua c'è più in
-fretta cala, così ogni minuto ne resta una frazione di quella che c'era. Sul
-fianco della vasca un galleggiante muove un ago su una scala graduata, e quello
-che l'ago segna è la tua risposta a chi chiede. Che cosa entra, quanto resta di
-ciò che c'era, che cosa se ne legge, e la regola non ha altri pezzi.
+Le cose che lo muovono restano sempre le stesse. Dal rubinetto entra acqua e il
+livello sale. Dallo scarico socchiuso ne esce, e più acqua c'è più in fretta
+cala, così ogni minuto ne resta una frazione di quella che c'era. Sul fianco
+della vasca un galleggiante muove un ago su una scala graduata, e quello che
+l'ago segna è la tua risposta a chi chiede. In breve: che cosa entra, quanto
+resta di ciò che c'era, che cosa se ne legge, e la regola non ha altri pezzi.
 
 Resta da scegliere ogni quanto guardare. L'acqua scorre senza interruzione e tu
 segni l'ago una volta al minuto, quindi di ciò che accade fra una segnatura e
@@ -60,11 +60,11 @@ l'altra hai solo la ricostruzione. Segnando fitto ti sfugge poco di quanto è
 entrato; segnando di rado può passare un getto intero senza che tu lo veda, e la
 ricostruzione esce grossolana.
 
-Metti che dal rubinetto entrino due litri al minuto e che lo scarico porti via
-ogni minuto metà dell'acqua che trova. Parti da vasca vuota e segui l'ago:
-zero, due, tre (metà di due, più i due che entrano), 3,5, 3,75, 3,875. Il
-livello sale sempre più piano e si assesta sui quattro litri. Ogni getto
-intanto sbiadisce, e di quello entrato cinque minuti fa resta un
+Metti che dal rubinetto entrino due litri al minuto e che lo
+scarico porti via ogni minuto metà dell'acqua che trova. Parti da vasca vuota e
+segui l'ago: zero, due, tre (metà di due, più i due che entrano), 3,5, 3,75,
+3,875. Il livello sale sempre più piano e si assesta sui quattro litri. Ogni
+getto intanto sbiadisce, e di quello entrato cinque minuti fa resta un
 trentaduesimo, di quello di mezz'ora fa meno di un miliardesimo.
 
 Uno *state space model* fa questo con una sequenza. Dentro il modello una
@@ -90,10 +90,10 @@ scivola di un posto e copre sei getti: alla somma si aggiunge in coda 0,0625,
 il getto più vecchio sbiadito cinque volte, e si arriva a 3,9375. La vasca dice
 lo stesso: metà di 3,875, più i due litri nuovi. Siccome nessun minuto aspetta
 il risultato di un altro, il filtro si fa scorrere su tutta la sequenza in un
-colpo solo. Sono lo stesso calcolo visto da due lati, la **doppia natura** del
-modello. Lo si addestra nel secondo modo, veloce perché fa tutti i passi
-insieme, e lo si usa nel primo, economico perché a ogni parola gli basta il
-riassunto di prima.
+colpo solo. Sono quindi lo stesso calcolo visto da due lati, la **doppia
+natura** del modello. Lo si addestra nel secondo modo, veloce perché fa tutti i
+passi insieme, e lo si usa nel primo, economico perché a ogni parola gli basta
+il riassunto di prima.
 
 Tutto questo sta in piedi finché nessuno tocca il rubinetto e lo scarico. Se
 qualcuno stesse alla vasca a girarli minuto per minuto, regolandoli in base
@@ -106,8 +106,8 @@ un'altra strada.
 
 `````{tab} Superiore
 
-Il mattone è un sistema lineare a tempo continuo che mappa un ingresso $u(t)$ in
-un'uscita $y(t)$ attraverso uno stato latente $\mathbf{h}(t)$:
+Il mattone di base è un sistema lineare a tempo continuo che mappa un ingresso
+$u(t)$ in un'uscita $y(t)$ attraverso uno stato latente $\mathbf{h}(t)$:
 
 $$
 \mathbf{h}'(t) = \mathbf{A}\, \mathbf{h}(t) + \mathbf{B}\, u(t), \qquad y(t) = \mathbf{C}\, \mathbf{h}(t).
@@ -119,19 +119,19 @@ l'uscita. Per usarlo su una sequenza discreta lo si discretizza con un passo
 $\Delta$, ottenendo una ricorrenza $\mathbf{h}_t = \bar{\mathbf{A}}\,
 \mathbf{h}_{t-1} + \bar{\mathbf{B}}\, x_t$, dove $x_t$ è l'ingresso campionato
 al passo $t$ e $\bar{\mathbf{A}}, \bar{\mathbf{B}}$ sono le versioni discrete
-di $\mathbf{A}$ e $\mathbf{B}$. Finché i parametri sono
-costanti nel tempo, questa ricorrenza ha una doppia natura. Si può calcolare
-passo per passo come una RNN (inferenza a costo costante *per token*) oppure, a
-stato iniziale nullo, tutta in una volta come una convoluzione (addestramento
-parallelo). È la stessa doppia natura parallelo/ricorrente che muove il
-{doc}`capitolo sull'attenzione lineare </AttenzioneLineare/overview>`,
-raggiunta però dalla teoria dei segnali. Quanto al passo $\Delta$, fissa un
-baratto fra memoria e ingresso. Con $\mathbf{A}$ stabile (autovalori a parte
-reale negativa) e la discretizzazione *zero-order hold*, che tiene l'ingresso
-costante dentro il passo (un'ipotesi tanto più grossolana quanto più il passo è
-lungo), $\bar{\mathbf{A}} = \exp(\Delta\mathbf{A})$ tende all'identità per
-$\Delta \to 0$: lo stato si conserva e l'ingresso, scalato da $\bar{\mathbf{B}}
-\approx \Delta\mathbf{B}$, conta poco. Per $\Delta$ grande, al contrario,
+di $\mathbf{A}$ e $\mathbf{B}$. Finché i parametri sono costanti nel tempo,
+questa ricorrenza ha una doppia natura. Si può calcolare passo per passo come
+una RNN (inferenza a costo costante *per token*) oppure, a stato iniziale
+nullo, tutta in una volta come una convoluzione (addestramento parallelo). È la
+stessa doppia natura parallelo/ricorrente che muove il {doc}`capitolo
+sull'attenzione lineare </AttenzioneLineare/overview>`, raggiunta però dalla
+teoria dei segnali. Quanto al passo $\Delta$, fissa un baratto fra memoria e
+ingresso. Infatti, con $\mathbf{A}$ stabile (autovalori a parte reale negativa)
+e la discretizzazione *zero-order hold*, che tiene l'ingresso costante dentro
+il passo (un'ipotesi tanto più grossolana quanto più il passo è lungo),
+$\bar{\mathbf{A}} = \exp(\Delta\mathbf{A})$ tende all'identità per $\Delta \to
+0$: lo stato si conserva e l'ingresso, scalato da $\bar{\mathbf{B}} \approx
+\Delta\mathbf{B}$, conta poco. Per $\Delta$ grande, al contrario,
 $\bar{\mathbf{A}}$ tende a zero: il passato si dimentica in fretta e domina
 l'ingresso corrente. Tolta l'invarianza nel tempo, con $\bar{\mathbf{A}}_t$ e
 $\bar{\mathbf{B}}_t$ diversi a ogni passo (come quando $\Delta$ dipende
@@ -177,8 +177,8 @@ il filtro fisso della forma convoluzionale, che un modello selettivo non ha
 più.
 ```
 
-{numref}`fig-attenzione-vs-ssm` mostra il guadagno, un costo proporzionale a
-$n$ invece che a $n^2$. Uno stato di taglia fissa deve prima o poi dimenticare
+{numref}`fig-attenzione-vs-ssm` mostra il guadagno, un costo proporzionale a $n$
+invece che a $n^2$. Ma uno stato di taglia fissa deve prima o poi dimenticare
 qualcosa. La selettività, il rombo sul lato destro, decide *che cosa* scrivere
 nello stato e che cosa lasciar cadere, in funzione di ciò che sta arrivando; ma
 non allarga lo stato, cambia come se ne usa lo spazio. Il tetto resta, e lo

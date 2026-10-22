@@ -16,10 +16,10 @@ fondo.
 Prima di tradurre, un modello deve saper *parlare* la lingua d'arrivo. Lo
 strumento è il modello di linguaggio che conosciamo dalla {doc}`sezione sugli
 *n-gram* <modelli-ngram>`: un sistema che, data una sequenza di parole, assegna
-una probabilità
-alla parola successiva (la tastiera che dopo «a domani e buona» suggerisce
-«serata» e quasi mai «carburatore»). La novità è *chi* fa la scommessa: non
-più una tabella di conteggi, ma una rete ricorrente con la sua memoria.
+una probabilità alla parola successiva (la tastiera che dopo «a domani e
+buona» suggerisce «serata» e quasi mai «carburatore»). La novità è *chi* fa la
+scommessa: non più una tabella di conteggi, ma una rete ricorrente con la sua
+memoria.
 
 `````{tab} Elementare
 
@@ -72,10 +72,10 @@ $$
 H = -\frac{1}{n} \sum_{t=1}^{n} \log_2 P(w_t \mid w_{<t}),
 $$
 
-dove $H$ è la cross-entropia media sul testo di test. La perplessità è il
-numero di alternative equiprobabili tra cui il modello «esita» a ogni passo:
-un modello perfetto avrebbe $\mathrm{PP}=1$, uno che tira a caso su un
-vocabolario di $50\,000$ parole avrebbe $\mathrm{PP}=50\,000$.
+dove $H$ è la cross-entropia media sul testo di test. In altri termini, la
+perplessità è il numero di alternative equiprobabili tra cui il modello «esita»
+a ogni passo: un modello perfetto avrebbe $\mathrm{PP}=1$, uno che tira a caso
+su un vocabolario di $50\,000$ parole avrebbe $\mathrm{PP}=50\,000$.
 
 `````
 
@@ -85,10 +85,11 @@ Prima di tradurre una frase bisogna leggerla tutta, e avendola tutta la si può
 leggere nei due versi: è ciò che manca alla rete che riceve la frase di
 partenza. Le RNN dei {doc}`modelli di sequenza
 <modelli-sequenza>` leggono da sinistra a destra. Ma il senso di una parola
-dipende anche da ciò che viene *dopo*: in «La pesca era la sua passione» e «La
-pesca era matura», al momento in cui leggi «pesca» non puoi ancora sapere se si
-parla di ami o di frutta. Lo scopri solo alla fine. Da qui un'idea degli anni
-Novanta {cite}`schuster1997bidirectional`: le **RNN bidirezionali**.
+dipende anche da ciò che viene *dopo*. Ad esempio, in «La pesca era la sua
+passione» e «La pesca era matura», al momento in cui leggi «pesca» non puoi
+ancora sapere se si parla di ami o di frutta: lo scopri solo alla fine. Da qui
+un'idea degli anni Novanta {cite}`schuster1997bidirectional`: le **RNN
+bidirezionali**.
 
 `````{tab} Elementare
 
@@ -180,13 +181,15 @@ genera la frase d'arrivo una parola per volta.
 Un anno prima, Nal Kalchbrenner e Phil Blunsom
 {cite}`kalchbrenner2013recurrent` avevano già proposto di comprimere l'intera
 frase in un vettore per ricavarne la traduzione con una rete ricorrente, usando
-però una rete convoluzionale come encoder. La forma interamente ricorrente
-arriva nel 2014 con due lavori. Quello di Kyunghyun Cho e colleghi a Montréal
-{cite}`cho2014learning`, lo stesso articolo in cui nasce la GRU, non traduce
-ancora da solo: usa l'encoder–decoder come aiutante di un traduttore
-statistico, per dare un punteggio alle coppie di frammenti di frase che quel
-traduttore tiene in tabella. Quello di Ilya Sutskever, Oriol Vinyals e Quoc Le
-a Google {cite}`sutskever2014sequence` lo usa invece per tradurre da solo.
+però una rete convoluzionale come encoder.
+
+La forma interamente ricorrente arriva nel 2014 con due lavori. Quello di
+Kyunghyun Cho e colleghi a Montréal {cite}`cho2014learning`, lo stesso articolo
+in cui nasce la GRU, non traduce ancora da solo: usa l'encoder–decoder come
+aiutante di un traduttore statistico, per dare un punteggio alle coppie di
+frammenti di frase che quel traduttore tiene in tabella. Quello di Ilya
+Sutskever, Oriol Vinyals e Quoc Le a Google {cite}`sutskever2014sequence` lo
+usa invece per tradurre da solo.
 
 Il decoder, mentre scrive, fa esattamente quello che fa un modello di
 linguaggio: scommette sulla parola successiva. Con una differenza: la sua
@@ -205,11 +208,10 @@ decoder cominci a scrivere: fra i due passa solo quel vettore, e nient'altro.
 ```
 
 Il «nient'altro» di {numref}`fig-encoder-decoder` è il fatto da cui discende
-tutto il resto della storia. Quel vettore di
-contesto è una fila di numeri di lunghezza decisa in anticipo, mille per
-esempio, e resta di mille numeri sia che la frase da tradurre abbia cinque
-parole sia che ne abbia cinquanta: nessuno spazio in più per le frasi lunghe,
-per quanto ce ne sarebbe bisogno.
+tutto il resto della storia. Quel vettore di contesto è una fila di numeri
+di lunghezza decisa in anticipo (mille, ad esempio), e resta di mille numeri sia
+che la frase da tradurre abbia cinque parole sia che ne abbia cinquanta: non c'è
+nessuno spazio in più per le frasi lunghe, per quanto ce ne sarebbe bisogno.
 
 Mentre legge, l'encoder produce un riassunto dopo ogni parola: uno
 dopo «il», uno dopo «il gatto», uno dopo «il gatto nero», e così via fino in
@@ -227,10 +229,14 @@ contesto è ciò che gli resta in testa, il decoder è la resa in inglese.
 
 Nell'articolo di Google c'è un dettaglio curioso: far sentire all'interprete la
 frase al contrario («muro sul salta nero gatto Il») migliorava nettamente le
-traduzioni. Perché? Così l’*inizio* della frase, la prima cosa che dovrà dire, è
+traduzioni.
+
+Perché? Così l’*inizio* della frase, la prima cosa che dovrà dire, è
 l'ultima che ha sentito, ed è il ricordo più fresco. Il trucco tradisce il
 difetto di fondo: se la resa dipende da che cosa ha sentito per ultimo, la
-memoria unica è stretta. Nello stesso anno, a Montréal, chi misurò interpreti di
+memoria unica è stretta.
+
+Nello stesso anno, a Montréal, chi misurò interpreti di
 questo tipo senza il trucco li trovò bravi sulle frasi brevi e sempre più in
 difficoltà man mano che il discorso si allungava, perché tutto non entra in un
 solo ricordo. Quello di Google, con il trucco e un cervello molto grande,
@@ -240,26 +246,29 @@ reggeva anche le frasi lunghe.
 corregge un compito: si mette per iscritto quello che l'interprete ha detto
 accanto alla versione di un traduttore in carne e ossa, e si contano le parole
 che coincidono, poi le coppie, le terne e le quaterne di parole consecutive, che
-dicono se anche l'ordine è giusto. Un interprete furbo potrebbe imbrogliare in
-due modi, e il correttore li para tutti e due. Chi dicesse «il il il il» avrebbe
-quattro parole su quattro presenti nella versione del traduttore: allora ogni
+dicono se anche l'ordine è giusto.
+
+Un interprete furbo potrebbe imbrogliare in due modi, e il correttore li para
+tutti e due. Chi dicesse «il il il il» avrebbe quattro parole su
+quattro presenti nella versione del traduttore: allora ogni
 parola vale al massimo quante volte compare là dentro, e le ripetizioni in più
 non contano. Chi dicesse due parole sole, scelte bene, avrebbe tutto giusto
 senza aver tradotto: allora chi resta più corto del traduttore paga una
 penalità, tanto più pesante quanto più è corto. Questo voto si chiama **BLEU**,
-ed è quello con cui la traduzione automatica ha fatto i conti per vent'anni. Nel
-2014 le reti di Google (cinque, addestrate ciascuna per conto suo e fatte votare
-insieme su ogni traduzione) superano di poco il sistema statistico preso come
-termine di paragone, e restano sotto ai sistemi migliori dell'anno. La
+ed è quello con cui la traduzione automatica ha fatto i conti per vent'anni.
+
+Nel 2014 le reti di Google (cinque, addestrate ciascuna per conto suo e fatte
+votare insieme su ogni traduzione) superano di poco il sistema statistico preso
+come termine di paragone, e restano sotto ai sistemi migliori dell'anno. La
 traduzione neurale non ha ancora vinto; ha fatto vedere che può.
 
 Il correttore, però, è di grana grossa. Lo si fa lavorare su un pacco intero di
 frasi, perché i voti dei quattro conteggi si moltiplicano fra loro, e su una
 frase corta basta una quaterna mancata per azzerare tutto. Non conosce i
-sinonimi: l'interprete che dice «automobile» dove il traduttore ha scritto
-«macchina» perde punti pur avendo ragione. Cambia voto secondo come conta le
-parole (se «l'uomo» ne fa una o due), quindi due voti si confrontano solo se
-dati con le stesse regole e gli stessi traduttori accanto. E cerca nella
+sinonimi: ad esempio, l'interprete che dice «automobile» dove il traduttore ha
+scritto «macchina» perde punti pur avendo ragione. Cambia voto secondo come
+conta le parole (se «l'uomo» ne fa una o due), quindi due voti si confrontano
+solo se dati con le stesse regole e gli stessi traduttori accanto. E cerca nella
 versione del traduttore le parole dell'interprete, quindi castiga chi si inventa
 un pezzo, mentre chi salta un capoverso lo castiga poco, solo con la penalità
 sulla lunghezza.
@@ -318,8 +327,10 @@ $$
 $$
 
 dove $p_n$ è la precisione clippata degli $n$-grammi e $w_n = 1/4$ il peso
-uniforme dei quattro ordini. Per leggere i punteggi di Sutskever servono anche
-i limiti della metrica. BLEU è definito sul corpus e non sulla singola frase:
+uniforme dei quattro ordini.
+
+Per leggere i punteggi di Sutskever servono anche i limiti della metrica. BLEU è
+definito sul corpus e non sulla singola frase:
 le $p_n$ si accumulano su tutto il test set, e su una frase sola un 4-gramma
 mancante manda il punteggio a zero. Inoltre, dipende dalla tokenizzazione e dal
 numero di riferimenti, tanto che due punteggi si confrontano solo a protocollo
@@ -345,7 +356,7 @@ $$
 dove $R$ è il riassunto di riferimento, $g_n$ i suoi $n$-grammi,
 $\mathrm{Count}(g_n)$ quante volte $g_n$ compare in $R$ e
 $\mathrm{Count}_{\text{match}}(g_n)$ quante di quelle occorrenze si ritrovano
-nel candidato. Detto a parole: BLEU conta quanti $n$-grammi del candidato
+nel candidato. In altri termini, BLEU conta quanti $n$-grammi del candidato
 stanno nel riferimento, ROUGE quanti $n$-grammi del riferimento stanno nel
 candidato.
 
@@ -354,8 +365,10 @@ normale. BLEU taglia il conteggio del candidato sul massimo fra i riferimenti;
 la ROUGE-N originale somma invece numeratore e denominatore su tutti i
 riferimenti, assegnando così maggior peso agli $n$-grammi condivisi da più
 di loro, mentre il pacchetto dell'autore impiega un terzo criterio (il
-massimo delle ROUGE calcolate a coppie). Con il candidato «il gatto dorme» e i
-due riferimenti «il gatto dorme» e «il cane», BLEU conta $3$ unigrammi su $3$
+massimo delle ROUGE calcolate a coppie).
+
+Ad esempio, con il candidato «il gatto dorme» e i due riferimenti «il gatto
+dorme» e «il cane», BLEU conta $3$ unigrammi su $3$
 (ciascuno tagliato alla sua occorrenza massima in un riferimento), la ROUGE-1
 originale ne somma $3 + 1 = 4$ su $5$ parole di riferimento, e il massimo a
 coppie del pacchetto dà $1$: nessuna delle tre formule si ottiene dall'altra
@@ -383,14 +396,18 @@ contro il $33{,}3$ del sistema statistico a frasi di riferimento. Quel $33{,}3$
 era $37{,}0$; la rete pura non lo raggiunge, e ci si avvicina ($36{,}5$) solo
 quando la si usa per riordinare le mille ipotesi prodotte dal sistema
 statistico. Nel 2014 il neurale non ha ancora vinto: la data del sorpasso è
-il 2016. L'efficacia dell'inversione dell'ordine delle parole sorgente è
+il 2016.
+
+L'efficacia dell'inversione dell'ordine delle parole sorgente è
 confermata sperimentalmente: leggere la frase al contrario fa scendere la
 perplessità di test da $5{,}8$ a $4{,}7$ e salire il BLEU da $25{,}9$ a
 $30{,}6$. Gli autori, che dichiarano di non averne una spiegazione completa, lo
 attribuiscono alle molte dipendenze brevi introdotte fra le prime parole di $x$
-e le prime di $y$, che semplificano l'ottimizzazione. Ma il limite strutturale
-resta: qualunque sia $n$, tutta l'informazione su $x$ deve passare per un
-vettore di dimensione fissa. Con un encoder–decoder di questo tipo la qualità
+e le prime di $y$, che semplificano l'ottimizzazione.
+
+Ma il limite strutturale resta: qualunque sia $n$, tutta l'informazione su $x$
+deve passare per un vettore di dimensione fissa. Con un encoder–decoder di
+questo tipo la qualità
 cala rapidamente al crescere della lunghezza della frase, come misurano nello
 stesso anno Cho e colleghi {cite}`cho2014properties` (su modelli addestrati con
 frasi fino a trenta parole) e come mostra la curva di RNNencdec nella figura 2
@@ -445,16 +462,16 @@ $\mathbf{h}_1, \dots, \mathbf{h}_6$: lo spessore di ogni freccia è il peso di
 attenzione, massimo su «gatto», e $\mathbf{c}_3$ è la media pesata degli stati.
 ```
 
-Nella {numref}`fig-seq2seq-attenzione`, i cui pesi sono disegnati a scopo
-illustrativo e non calcolati da un modello, mentre produce *«cat»* il decoder dà
-il peso più alto a «gatto» ($0{,}62$), un peso ancora apprezzabile a «nero»
-($0{,}20$) e poco al resto. A ogni passo il profilo cambia: per *«wall»* il peso
-maggiore andrà su «muro».
+I pesi della {numref}`fig-seq2seq-attenzione` sono disegnati a scopo
+illustrativo e non calcolati da un modello. Nella figura, mentre produce
+*«cat»*, il decoder dà il peso più alto a «gatto» ($0{,}62$), un peso ancora
+apprezzabile a «nero» ($0{,}20$) e poco al resto. A ogni passo il profilo
+cambia: per *«wall»* il peso maggiore andrà su «muro».
 
-I pesi di attenzione non vanno confusi con i pesi della rete. Quelli della
-rete, le matrici apprese durante l'addestramento, restano fissi una volta
-addestrato il modello; gli $\alpha_{ij}$ si calcolano invece dall'ingresso, e
-cambiano per ogni parola prodotta.
+Si noti che i pesi di attenzione non vanno confusi con i pesi della rete.
+Quelli della rete, le matrici apprese durante l'addestramento, restano fissi
+una volta addestrato il modello; gli $\alpha_{ij}$ si calcolano invece
+dall'ingresso, e cambiano per ogni parola prodotta.
 
 Cade così il collo di bottiglia del vettore unico: nessuna sequenza di
 numeri a lunghezza fissa deve più contenere l'intera frase. Resta invece
@@ -525,8 +542,10 @@ legge in un verso solo). La seconda è la forma bilineare $e_{ij} =
 \mathbf{s}_i^{\top}\mathbf{W}_a\mathbf{h}_j$, che non impone tale vincolo e in
 cui $\mathbf{W}_a$ è una matrice diversa da quella dell'attenzione additiva. È
 l'attenzione *moltiplicativa*, la famiglia da cui deriverà quella adottata nei
-Transformer. La matrice dei pesi $\alpha_{ij}$, visualizzata, si legge di
-solito come una mappa di allineamento fra le due frasi, appresa senza alcuna
+Transformer.
+
+La matrice dei pesi $\alpha_{ij}$, visualizzata, si legge di solito come una
+mappa di allineamento fra le due frasi, appresa senza alcuna
 supervisione esplicita. Di solito e non sempre: misurata contro un allineatore
 automatico su sei coppie di lingue, la sovrapposizione sta fra il $72$ e il
 $78\%$ in cinque casi e crolla al $15\%$ sul tedesco-inglese, che gli autori
@@ -556,9 +575,11 @@ Adesso si mescola. Per la prima casella: $0{,}10 \times 2 + 0{,}70 \times 0 +
 0{,}20 \times 1 = 3{,}0$. Per la terza: $0{,}10 \times 1 + 0{,}70 \times 2 +
 0{,}20 \times 0 = 1{,}5$. Il risultato è una fila di numeri nuova, `0,4 · 3,0 ·
 1,5`, e si vede a occhio che somiglia molto al secondo riassunto e poco agli
-altri: è il riassunto che il decoder aveva pesato di più. Questa operazione,
-mescolare più file di numeri dando a ciascuna un peso, si chiama media pesata,
-ed è il modo in cui l'attenzione legge gli stati; i pesi si calcolano a parte.
+altri: è infatti il riassunto che il decoder aveva pesato di più.
+
+L'operazione di mescolare più file di numeri dando a ciascuna un peso si chiama
+media pesata, ed è il modo in cui l'attenzione legge gli stati; i pesi, invece,
+si calcolano a parte.
 La fila che ne esce va al decoder, che la usa per scrivere la parola
 successiva: al posto del solito vettore di contesto sempre uguale, ne riceve
 uno fatto apposta per il passo che sta facendo.
@@ -577,7 +598,7 @@ Il decoder scrive una parola alla volta, e decide ciascuna parola guardando
 quella che l'ha preceduta. Quale, però? In fase di addestramento le candidate
 sono due: la parola che il decoder ha appena prodotto e quella presente a quel
 punto nella traduzione di riferimento, e le due possono non coincidere.
-Prendere la seconda si chiama *teacher forcing*, alla lettera «imporre quella
+Prendere la seconda si chiama **teacher forcing**, alla lettera «imporre quella
 del maestro». Durante la generazione, però, la traduzione di riferimento non
 c'è, e il decoder continua dalle parole che ha prodotto, compresi i suoi
 errori: lo scarto fra le due situazioni si chiama **exposure bias**.
@@ -678,7 +699,7 @@ cade la dipendenza dal campionamento: nessun passo deve attendere che il
 precedente estragga un token. Su una RNN resta la dipendenza dallo stato, cioè
 $m$ passi in sequenza, e il guadagno è che le proiezioni ingresso-stato si
 fanno tutte insieme in un unico prodotto di matrici. Nelle architetture
-Transformer, dove la causalità è imposta da una maschera e non da una
+Transformer, invece, dove la causalità è imposta da una maschera e non da una
 ricorrenza, cade anche la dipendenza dallo stato: un solo passaggio in avanti
 per l'intera frase.
 
@@ -699,7 +720,9 @@ comportamentale Ross e Bagnell stabiliscono il limite: un modello che sbaglia
 con probabilità $\epsilon$ per passo sotto la distribuzione dei dati può
 accumulare, su un orizzonte di $m$ passi, un costo $O(\epsilon\,m^2)$ invece
 dell’$O(\epsilon\,m)$ di un problema supervisionato ordinario, ed è un limite
-stretto {cite}`ross2010efficient`. Il meccanismo: la distribuzione condizionata
+stretto {cite}`ross2010efficient`.
+
+Il meccanismo: la distribuzione condizionata
 $P_\theta(y_i \mid y_{<i}, x)$ è stimata accuratamente dove i prefissi
 abbondano, cioè sul supporto dei dati; fuori di lì non c'è nessuna garanzia,
 perché i dati non permettono di distinguere fra ipotesi che coincidono sul
@@ -742,13 +765,16 @@ Quanto costi l'exposure bias si può misurare senza addestrare niente, contando
 quante parole il modello sbaglia quando riparte ogni volta dall'inizio giusto e
 quante quando continua dalle sue. Serve una lingua giocattolo di dieci parole,
 numerate da 0 a 9, in cui l'unica sequenza valida è contare: dopo lo 0 viene 1,
-dopo il 7 viene 8, dopo il 9 si ricomincia da 0. E serve un modello che, come i
-decoder veri, guardi due parole per scegliere la terza, mentre a questa lingua
-ne basterebbe una: è questa sovrabbondanza a creare coppie di parole che i dati
-non contengono mai, come «3 7». Sulle coppie che i dati contengono il modello
-sbaglia una volta su cento; sulle altre tira a caso fra le dieci parole. La
-regola, là, varrebbe identica: sono i dati a non dire quale regola sia. Nei
-dati, dopo «3 4» viene sempre «5», che è insieme la parola dopo il 4 e la
+dopo il 7 viene 8, dopo il 9 si ricomincia da 0.
+
+Serve poi un modello che, come i decoder veri, guardi due parole per scegliere
+la terza, mentre a questa lingua ne basterebbe una: è questa sovrabbondanza a
+creare coppie di parole che i dati non contengono mai, come «3 7». Sulle coppie
+che i dati contengono il modello sbaglia una volta su cento; sulle altre tira a
+caso fra le dieci parole. La regola, là, varrebbe identica: sono i dati a non
+dire quale regola sia.
+
+Nei dati, dopo «3 4» viene sempre «5», che è insieme la parola dopo il 4 e la
 seconda dopo il 3; le due regole si separano solo su una coppia come «3 7», dove
 la prima direbbe «8» e la seconda «5», e quella coppia nei dati non c'è. Le
 ultime due righe stampate sono la controprova: lo stesso calcolo con un modello
@@ -842,9 +868,10 @@ Resta un problema che finora abbiamo dato per scontato. A ogni passo il decoder
 non produce una parola: produce una distribuzione $P(y_i \mid y_{<i}, x)$ su
 tutto il vocabolario, decine di migliaia di probabilità la cui somma è uno. Per
 ottenere una frase serve una regola di decodifica, e la più semplice è la
-ricerca *greedy*, che a ogni passo prende la parola più probabile: come l'agente
-avido della {doc}`sezione sui banditi </ReinforcementLearning/banditi>`,
-massimizza il guadagno immediato. Ma la parola migliore *adesso* non porta
+ricerca **greedy**, che a ogni passo prende la parola più probabile: come
+l'agente avido della
+{doc}`sezione sui banditi </ReinforcementLearning/banditi>`, massimizza il
+guadagno immediato. Ma la parola migliore *adesso* non porta
 sempre alla frase migliore *alla fine*.
 
 A indicare al decoder quando fermarsi è un token speciale del vocabolario: il
@@ -858,7 +885,7 @@ finché qualcuno non lo interrompe.
 
 Un vocabolario da cinquantamila parole apre cinquantamila strade a ogni passo, e
 dopo dieci passi le frasi che si possono comporre sono un numero di
-quarantasette cifre: nessun calcolatore le percorrerà mai tutte per tenere la
+quarantasette cifre: nessun computer le percorrerà mai tutte per tenere la
 migliore. La frase si costruisce allora bivio per bivio, e la sola domanda è
 quanto guardare avanti prima di impegnarsi.
 
@@ -905,13 +932,14 @@ del primo bivio. Con due, o con dieci, la strada migliore in assoluto può
 restare fuori lo stesso: se parte da un cartello che sembrava mediocre, è stata
 abbandonata lì, e nessuno torna indietro a riprenderla. Ogni esploratore in più
 costa un cammino da seguire fino in fondo, e la sorpresa è che oltre una certa
-quota la traduzione non migliora, peggiora. La penalità di lunghezza attenua il
-guaio delle frasi corte ma non lo toglie, perché a preferirle è il modello
-stesso: più esploratori si mandano, più è facile che uno trovi una frase corta
-che al modello piace più di tutte. Se si potessero provare proprio tutte le
-strade, per molte frasi quella preferita dal modello sarebbe la traduzione
-vuota. In traduzione di esploratori ne bastano quasi sempre una manciata, e non
-più di qualche decina.
+quota la traduzione non migliora, peggiora.
+
+La penalità di lunghezza attenua il guaio delle frasi corte ma non lo toglie,
+perché a preferirle è il modello stesso: più esploratori si mandano, più è
+facile che uno trovi una frase corta che al modello piace più di tutte. Se si
+potessero provare proprio tutte le strade, per molte frasi quella preferita dal
+modello sarebbe la traduzione vuota. In traduzione di esploratori ne bastano
+quasi sempre una manciata, e non più di qualche decina.
 
 Mandare esploratori a cercare la strada migliore ha senso quando una traduzione
 giusta c'è. In una chiacchierata o in un racconto la strada preferita dal
@@ -937,10 +965,11 @@ e trattiene le migliori $k$ (con $k=1$ si torna alla greedy). Il costo
 computazionale per passo è pari a $k$ volte quello della ricerca greedy,
 intermedio tra la scelta greedy e la ricerca esaustiva. Non è una ricerca
 esatta: l'ottimo globale può sfuggire al fascio, e allargare $k$ riduce gli
-errori di ricerca senza migliorare la traduzione oltre un certo punto. Koehn e
-Knowles misurano che «in quasi tutti i casi si trovano traduzioni peggiori
-oltre un'ampiezza ottima», che sulle otto coppie di lingue che provano va da
-$4$ a circa $30$. La causa è che con il fascio largo vincono le traduzioni
+errori di ricerca senza migliorare la traduzione oltre un certo punto.
+
+Koehn e Knowles misurano che «in quasi tutti i casi si trovano traduzioni
+peggiori oltre un'ampiezza ottima», che sulle otto coppie di lingue che provano
+va da $4$ a circa $30$. La causa è che con il fascio largo vincono le traduzioni
 corte {cite}`koehn2017six`. La normalizzazione per lunghezza attenua il
 fenomeno senza toglierlo (l'ampiezza ottima sale fra $30$ e $50$, ma oltre la
 qualità cala ancora). Lo conferma una ricerca esatta: Stahlberg e Byrne trovano
@@ -948,9 +977,11 @@ che per il $51{,}8\%$ delle frasi del test WMT'15 inglese→tedesco la traduzion
 di punteggio massimo, per un Transformer base, è quella vuota
 {cite}`stahlberg2019nmt`. Il difetto sta nell'obiettivo: la verosimiglianza del
 modello favorisce sequenze troppo brevi, e un fascio stretto compensa
-involontariamente questo errore. Un dettaglio pratico: essendo una somma di
-logaritmi negativi, il punteggio penalizza le frasi lunghe, e il decoder
-tenderebbe a traduzioni troppo corte. Si corregge con una **length penalty**,
+involontariamente questo errore.
+
+Si noti che, essendo una somma di logaritmi negativi, il punteggio
+penalizza le frasi lunghe, e il decoder tenderebbe a traduzioni troppo corte.
+Si corregge con una **length penalty**,
 per esempio dividendo il punteggio per $|y|^{\alpha}$ con $\alpha \approx
 0{,}6$–$0{,}7$. Il sistema di traduzione di Google {cite}`wu2016google` parte
 proprio da questa euristica e la sostituisce poi con una variante appena più
@@ -1005,9 +1036,10 @@ diventata una delle cose che un modello generalista sa fare. La terza tappa
 segna invece il momento in cui la traduzione neurale arriva in produzione.
 
 Nel settembre 2016 Google annuncia GNMT (*Google Neural Machine Translation*)
-{cite}`wu2016google`, un encoder–decoder con attenzione costruito sulla ricetta
-appena vista, con gli accorgimenti necessari per operare su larga scala: encoder e
-decoder sono pile di otto strati LSTM legati da connessioni residue, e le parole
+{cite}`wu2016google`, un encoder–decoder con attenzione costruito
+sull'architettura di Bahdanau, con gli accorgimenti necessari per operare su
+larga scala: encoder e decoder sono pile di otto strati LSTM legati da
+connessioni residue, e le parole
 sono suddivise in unità più piccole, i *wordpiece*. L'idea dell'impilamento è
 che il primo strato legge le parole, il secondo legge quello che ha capito il
 primo, e così via, ogni piano un po’ più astratto del precedente.
@@ -1021,15 +1053,19 @@ Il confronto con il sistema precedente è affidato a persone, non a un punteggio
 calcolato da un programma (l'articolo riporta anche il BLEU sui banchi di prova
 pubblici). Per ogni frase i valutatori danno un voto da 0 a 6 a tre traduzioni
 messe fianco a fianco: quella del sistema statistico, quella di GNMT e quella
-di un traduttore umano che conosce bene le due lingue. GNMT recupera fra il 58%
-(inglese→cinese) e l'87% (inglese→spagnolo) della distanza fra il sistema
-statistico e il traduttore umano, a seconda della coppia di lingue. Gli autori
+di un traduttore umano che conosce bene le due lingue.
+
+GNMT recupera fra il 58% (inglese→cinese) e l'87% (inglese→spagnolo) della
+distanza fra il sistema statistico e il traduttore umano, a seconda della coppia
+di lingue. Gli autori
 la chiamano riduzione degli errori, e nell'abstract la riassumono in un 60%
-medio. La misura vale per le frasi su cui è fatta: 500 per coppia di lingue,
-isolate, prese da Wikipedia e da siti di notizie, e che gli autori stessi
-definiscono semplici. Da quel momento le reti ricorrenti che abbiamo studiato
-traducono ogni giorno per un servizio di massa, e non sono le sole: altri
-sistemi neurali entrano in produzione negli stessi mesi {cite}`koehn2017six`.
+medio. Si noti che la misura vale per le frasi su cui è fatta: 500 per coppia
+di lingue, isolate, prese da Wikipedia e da siti di notizie, e che gli autori
+stessi definiscono semplici.
+
+Da quel momento le reti ricorrenti che abbiamo studiato traducono ogni giorno
+per un servizio di massa, e non sono le sole: altri sistemi neurali entrano in
+produzione negli stessi mesi {cite}`koehn2017six`.
 
 Lo sviluppo successivo è ripreso nella {doc}`sezione sui modelli multilingue
 </Transformers/multilingua>`. Pochi mesi dopo, invece di un

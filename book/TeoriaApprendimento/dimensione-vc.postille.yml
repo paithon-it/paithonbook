@@ -1,0 +1,14 @@
+# Le postille di questa pagina, una per capoverso del testo comune.
+# Ognuna vale finché la sua impronta combacia col testo del capoverso.
+- inizio: "Le soglie su un segmento sono"
+  impronta: "1720ee63b38a"
+  postilla: "Si contano le dicotomie: due soglie uguali su quegli esempi sono una regola sola"
+- inizio: "La dimensione VC serve perché mette"
+  impronta: "bdd400c53963"
+  postilla: "Lemma di Sauer: oltre la dimensione VC le dicotomie crescono come potenza fissa"
+- inizio: "Le ultime righe dicono che cosa"
+  impronta: "13d8b5e9e632"
+  postilla: "Garanzia VC per le rette: larga, perché vale anche per la distribuzione peggiore"
+- inizio: "La garanzia della dimensione VC ha"
+  impronta: "6e1271ca0d96"
+  postilla: "Strada larga o retta rasente ai punti: stessa dimensione VC, stessa garanzia"

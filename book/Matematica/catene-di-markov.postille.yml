@@ -1,0 +1,14 @@
+# Le postille di questa pagina, una per capoverso del testo comune.
+# Ognuna vale finché la sua impronta combacia col testo del capoverso.
+- inizio: "Fino a quattro mescolate la distanza"
+  impronta: "8097bafd5e32"
+  postilla: "Fra la quinta e la settima mescolata una soglia, non una salita graduale"
+- inizio: "Quel risultato riguarda un mazzo di"
+  impronta: "2be1ef16884c"
+  postilla: "Il secondo autovalore, di solito decisivo, per il mazzo da solo non basta"
+- inizio: "Moltiplicare per un numero complesso contrae"
+  impronta: "ddd250110e9f"
+  postilla: "Dopo quattro passi lo scarto punta al contrario, e la lunghezza non lo distingue"
+- inizio: "I campionatori delle {doc}`macchine di Boltzmann"
+  impronta: "52c647099941"
+  postilla: "Macchine di Boltzmann, catena apposta; diffusione, catena continua da risalire"

@@ -48,14 +48,16 @@ corrispondenti sono perpendicolari. Il nome tecnico è **ortogonali**, dal greco
 per «ad angolo retto»: spostarsi lungo una delle due non ti sposta di un
 millimetro lungo l'altra.
 
-Un esempio con due frecce sul foglio: $(3, 0)$ punta a destra, $(0, 5)$ punta
-in alto, il loro prodotto scalare fa $3\cdot 0 + 0\cdot 5 = 0$. Quanto vai a
-est e quanto vai a nord sono due calcoli separati, e ciascuno si fa senza
-guardare l'altro. Si è tentati di concludere, sbagliando, che due grandezze
-misurate lungo direzioni perpendicolari non abbiano niente da dirsi.
-Quattro punti sulla carta, $(-2,4)$, $(-1,1)$, $(1,1)$ e $(2,4)$, hanno la
-colonna delle posizioni verso est ($-2$, $-1$, $1$, $2$) perpendicolare a
-quella delle posizioni verso nord ($4$, $1$, $1$, $4$): il prodotto scalare fa
+Ad esempio, sul foglio la freccia $(3, 0)$ punta a destra e la freccia
+$(0, 5)$ punta in alto, e il loro prodotto scalare fa
+$3\cdot 0 + 0\cdot 5 = 0$. In altre parole, quanto vai a est e quanto vai a
+nord sono due calcoli separati, e ciascuno si fa senza guardare l'altro.
+
+Si è tentati di concludere, sbagliando, che due grandezze misurate lungo
+direzioni perpendicolari non abbiano niente da dirsi. Prendi quattro punti
+sulla carta, $(-2,4)$, $(-1,1)$, $(1,1)$ e $(2,4)$. La colonna delle posizioni
+verso est ($-2$, $-1$, $1$, $2$) è perpendicolare a quella delle posizioni
+verso nord ($4$, $1$, $1$, $4$): il prodotto scalare fa
 $-8-1+1+8=0$, e infatti la retta che meglio lega il nord all'est è piatta, non
 sale e non scende. Eppure il nord è deciso per intero dall'est, perché ne è il
 quadrato. Perpendicolare vuol dire che le due grandezze non vanno d'accordo in
@@ -63,23 +65,24 @@ linea retta, non che fra loro non ci sia nessun legame.
 
 Quando in un gruppo le direzioni sono tutte perpendicolari a due a due, e
 lunghe uno, il gruppo si dice **ortonormale** e diventa comodissimo, perché
-ogni direzione si interroga separatamente. Per sapere quanto di una certa
-direzione c'è dentro un vettore basta fare il prodotto scalare con quella
-direzione, senza sapere niente delle altre: gli assi di una carta stradale
-funzionano così, «quanto a est» si legge senza guardare «quanto a nord».
+ogni direzione si interroga separatamente. In particolare, per sapere quanto
+di una certa direzione c'è dentro un vettore basta fare il prodotto scalare con
+quella direzione, senza sapere niente delle altre: gli assi di una carta
+stradale funzionano così, «quanto a est» si legge senza guardare «quanto a
+nord».
 
 Con direzioni oblique il gioco si rompe. Se due assi formano un angolo di trenta
 gradi, chiedere «quanto ce n'è del primo?» dà una risposta che dipende da quanto
 ce n'è del secondo, e per districarli tocca risolvere un sistema. Ecco perché,
-quando si può scegliere, si scelgono assi perpendicolari: fanno risparmiare quel
-sistema.
+quando si può scegliere, si scelgono assi perpendicolari, che fanno
+risparmiare quel sistema.
 
 Un secondo motivo, meno ovvio, pesa di più quando a calcolare è una
 macchina. Girare la carta stradale, tenendo i due assi perpendicolari fra loro,
 non cambia nessuna distanza e nessun angolo: le città restano lontane
-quanto prima, e cambiano solo le loro coordinate. Un cambio di assi
-perpendicolari non ingrandisce e non schiaccia nulla, quindi non amplifica gli
-errori di arrotondamento: per questo le librerie costruiscono con
+quanto prima, e cambiano solo le loro coordinate. In generale, un cambio di
+assi perpendicolari non ingrandisce e non schiaccia nulla, quindi non
+amplifica gli errori di arrotondamento; per questo le librerie costruiscono con
 trasformazioni di questo tipo (rotazioni e riflessioni) i loro algoritmi di
 calcolo con le matrici.
 
@@ -97,13 +100,15 @@ $$
 $$
 
 dove $\delta_{ij}$ è il simbolo di Kronecker. Un insieme ortonormale è sempre
-linearmente indipendente: prendendo il prodotto scalare di una combinazione
-nulla con $\mathbf{q}_i$ resta $c_i = 0$. L'ortogonalità è una proprietà di
-vettori fissati. Per due variabili aleatorie centrate l'analogo è
-$\mathbb{E}[XY]=0$, cioè covarianza nulla, e la {doc}`sezione su probabilità e
+linearmente indipendente, poiché, prendendo il prodotto scalare di una
+combinazione nulla con $\mathbf{q}_i$, resta $c_i = 0$.
+
+L'ortogonalità è una proprietà di vettori fissati. Per due variabili aleatorie
+centrate l'analogo è $\mathbb{E}[XY]=0$, cioè covarianza nulla, e la
+{doc}`sezione su probabilità e
 statistica <probabilita-statistica>` mostra che non implica l'indipendenza:
-$X$ simmetrica attorno a zero, con momento terzo finito, e $Y=X^2$ sono
-incorrelate e legate da una funzione.
+ad esempio, $X$ simmetrica attorno a zero, con momento terzo finito, e $Y=X^2$
+sono incorrelate e legate da una funzione.
 
 La comodità operativa sta tutta in una formula. Se $\{\mathbf{q}_i\}$ è una
 base ortonormale di un sottospazio e $\mathbf{v}$ appartiene a quel
@@ -121,15 +126,18 @@ $\mathbf{v}\in\mathbb{R}^n$).
 
 Una matrice quadrata $\mathbf{Q}$ le cui colonne sono ortonormali si dice
 **ortogonale** e soddisfa $\mathbf{Q}^\top\mathbf{Q}=\mathbf{I}$, quindi
-$\mathbf{Q}^{-1}=\mathbf{Q}^\top$: l'inversa si ottiene trasponendo, senza
-calcoli. Le trasformazioni ortogonali conservano prodotti scalari, lunghezze e
-angoli ($\lVert\mathbf{Q}\mathbf{x}\rVert_2 = \lVert\mathbf{x}\rVert_2$), cioè
-sono rotazioni e riflessioni. Sono anche perfettamente condizionate: indicato
-con $\kappa_2(\mathbf{A})=\sigma_{\max}/\sigma_{\min}$ il numero di
-condizionamento (il rapporto fra il massimo e il minimo allungamento), per una
-matrice ortogonale tutti i valori singolari valgono uno e quindi
-$\kappa_2(\mathbf{Q})=1$. Per questo le librerie costruiscono la QR e la SVD
-con matrici ortogonali.
+$\mathbf{Q}^{-1}=\mathbf{Q}^\top$; in altri termini, l'inversa si ottiene
+trasponendo, senza calcoli. Le trasformazioni ortogonali conservano prodotti
+scalari, lunghezze e angoli
+($\lVert\mathbf{Q}\mathbf{x}\rVert_2 = \lVert\mathbf{x}\rVert_2$), cioè sono
+rotazioni e riflessioni.
+
+Sono anche perfettamente condizionate. Indicato
+con $\kappa_2(\mathbf{A})=\sigma_{\max}/\sigma_{\min}$ il
+numero di condizionamento (il rapporto fra il massimo e il minimo
+allungamento), per una matrice ortogonale tutti i valori singolari valgono
+uno, e quindi $\kappa_2(\mathbf{Q})=1$. Per questo le librerie
+costruiscono la QR e la SVD con matrici ortogonali.
 
 `````
 
@@ -148,22 +156,23 @@ tavolo è più corta della matita e sta tutta sul tavolo: è la parte della mati
 che il tavolo «vede». La parte che sparisce è quella verticale, perpendicolare
 al tavolo.
 
-Ogni vettore si spacca in modo unico in un pezzo che sta nella direzione scelta
-e in uno che le è perpendicolare, e i due pezzi non si parlano. Il primo si chiama
-proiezione, il secondo scarto (o residuo).
+In generale, ogni vettore si spacca in modo unico in un pezzo che sta nella
+direzione scelta e in uno che le è perpendicolare, e i due pezzi non si
+parlano. Il primo si chiama proiezione, il secondo **scarto** (o **residuo**).
 
 Usi già questo principio tutti i giorni senza saperlo. Hai misurato cinque
 volte la stessa cosa, e devi riassumere i cinque numeri in uno solo. La lista
 delle cinque misure è un vettore in uno spazio a cinque dimensioni; i vettori
 «tutte e cinque le misure uguali fra loro» formano una direzione sola, quella
 di $(1,1,1,1,1)$. Il numero unico che rappresenta meglio le cinque misure è il
-punto di quella direzione più vicino alla lista vera, cioè la sua ombra. Il
-calcolo dà la media aritmetica: la media è l'ombra delle misure sulla direzione
-in cui sono tutte uguali. Lo scarto, la parte che l'ombra non registra, è la
-lista delle differenze fra ciascuna misura e la media, ed essendo
-perpendicolare a $(1,1,1,1,1)$ ha somma zero. Per questo gli scarti dalla media
-si compensano sempre, un fatto che di solito si impara come una curiosità e che
-qui diventa geometria.
+punto di quella direzione più vicino alla lista vera, cioè la sua ombra.
+
+Il calcolo dà la media aritmetica; in altri termini, la media è l'ombra delle
+misure sulla direzione in cui sono tutte uguali. Lo scarto, la parte che
+l'ombra non registra, è la lista delle differenze fra ciascuna misura e la
+media, ed essendo perpendicolare a $(1,1,1,1,1)$ ha somma zero. Per questo gli
+scarti dalla media si compensano sempre, un fatto che di solito si impara come
+una curiosità e che qui diventa geometria.
 
 Ne segue anche che la lunghezza al quadrato dello scarto è la
 somma dei quadrati delle differenze dalla media, la quantità che in statistica
@@ -184,7 +193,7 @@ $$
 $$
 
 dove il coefficiente $c=(\mathbf{a}^\top\mathbf{b})/(\mathbf{a}^\top\mathbf{a})$
-si ricava imponendo che il residuo $\mathbf{r}=\mathbf{b}-c\,\mathbf{a}$ sia
+si ricava imponendo che il **residuo** $\mathbf{r}=\mathbf{b}-c\,\mathbf{a}$ sia
 ortogonale ad $\mathbf{a}$:
 
 $$
@@ -199,7 +208,8 @@ Pitagora: $\lVert\mathbf{b}\rVert^2 =
 \lVert\operatorname{proj}_{\mathbf{a}}(\mathbf{b})\rVert^2 +
 \lVert\mathbf{r}\rVert^2$.
 
-Con $\mathbf{a}=\mathbf{1}=(1,\dots,1)^\top\in\mathbb{R}^n$ si ottiene
+In particolare, con $\mathbf{a}=\mathbf{1}=(1,\dots,1)^\top\in\mathbb{R}^n$ si
+ottiene
 
 $$
 c = \frac{\mathbf{1}^\top\mathbf{y}}{\mathbf{1}^\top\mathbf{1}}
@@ -209,9 +219,9 @@ $$
 cioè la media campionaria, e il residuo $\mathbf{y}-\bar{y}\mathbf{1}$ ha per
 costruzione somma nulla. La sua norma al quadrato è
 $\sum_i (y_i-\bar{y})^2 = n\,\hat{\sigma}^2$, con $\hat{\sigma}^2$ la varianza
-calcolata dividendo per $n$. La media è quindi il coefficiente dell'ombra
-lungo $\mathbf{1}$, e la varianza è la lunghezza al quadrato di ciò che resta
-divisa per $n$: la
+calcolata dividendo per $n$. La media è quindi il coefficiente della proiezione
+lungo $\mathbf{1}$, e la varianza è la norma al quadrato del residuo divisa
+per $n$. La
 {doc}`sezione su probabilità e statistica </Matematica/probabilita-statistica>`
 le ritroverà per la via probabilistica, e i due calcoli danno gli stessi
 numeri.
@@ -240,10 +250,11 @@ spiega la {doc}`sezione di analisi numerica </Matematica/analisi-numerica>`.
 
 ## Proiettare su un piano, e perché quella è la risposta migliore
 
-Una direzione sola basta di rado. Il caso che interessa è quello in cui le
-direzioni disponibili sono parecchie, e tutte le loro combinazioni formano un
-sottospazio: nel linguaggio della
-{doc}`sezione sui sistemi lineari <sistemi-lineari>`, l’immagine di una matrice.
+Una direzione sola basta di rado. Il caso che interessa è quello in
+cui le direzioni disponibili sono parecchie, e tutte le loro combinazioni
+formano un sottospazio, che nel linguaggio della
+{doc}`sezione sui sistemi lineari <sistemi-lineari>` è l’immagine di una
+matrice.
 
 ```{figure} ../figures/proiezione-minimi-quadrati.svg
 :name: fig-proiezione
@@ -252,8 +263,9 @@ sottospazio: nel linguaggio della
 
 Il vettore dei dati $\mathbf{b}$ sporge fuori dal piano delle combinazioni
 possibili, e nessuna combinazione delle colonne lo raggiunge. Il punto del piano
-più vicino è la sua ombra $\mathbf{p}$: qualunque altro punto del piano forma
-con $\mathbf{b}$ l'ipotenusa di un triangolo rettangolo, e quindi dista di più.
+più vicino è la sua proiezione $\mathbf{p}$, poiché qualunque altro punto del
+piano forma con $\mathbf{b}$ l'ipotenusa di un triangolo rettangolo, e quindi
+dista di più.
 ```
 
 `````{tab} Elementare
@@ -268,28 +280,30 @@ preparare, quella che gli somiglia di più.
 {numref}`fig-proiezione` disegna la scena. Il piano è il repertorio, la freccia
 che sporge è il colore chiesto, e la sua ombra a picco sul piano è la risposta.
 Che l'ombra sia il punto più vicino, e non un altro punto del piano, si vede
-con il teorema di Pitagora: per un punto qualsiasi del repertorio diverso
-dall'ombra, la distanza dal colore chiesto è l'ipotenusa di un triangolo
-rettangolo che ha per cateto la distanza minima, ed è quindi più lunga.
+con il teorema di Pitagora. Infatti, per un punto qualsiasi del repertorio
+diverso dall'ombra, la distanza dal colore chiesto è l'ipotenusa di un
+triangolo rettangolo che ha per cateto la distanza minima, ed è quindi più
+lunga.
 
 Ne segue una regola pratica. Quando la soluzione migliore è stata trovata,
 l'errore che resta è perpendicolare a tutto ciò che si poteva fare. Se non lo
 fosse, l'errore avrebbe una componente lungo una direzione disponibile, e
-spostandosi un po' in quella direzione si farebbe meglio: segno che non si era
+spostandosi un po' in quella direzione si farebbe meglio, segno che non si era
 ancora al minimo. Errore perpendicolare e minimo raggiunto sono quindi la
 stessa condizione.
 
-La stessa geometria ha altre due conseguenze. La prima: rifare l'ombra di
+La stessa geometria ha altre due conseguenze. La prima è che rifare l'ombra di
 un'ombra non cambia niente, perché l'ombra sta già distesa sul piano e la sua
-ombra è sé stessa. La seconda riguarda una scelta finora implicita. Sommare i
-quadrati degli scarti, invece dei loro valori assoluti, è una decisione con una
-conseguenza: un errore doppio pesa quattro volte, quindi un solo dato molto
-sbagliato tira la risposta verso di sé molto più di dieci dati sbagliati di
-poco. In compenso i quadrati danno l'ombra, cioè una risposta con una formula
-chiusa e una geometria limpida, mentre i valori assoluti non hanno né l'una né
-l'altra.
+ombra è sé stessa.
 
-Per questa strada il problema dell'orbita di Cerere si chiude, rifatto
+La seconda riguarda una scelta finora implicita. Sommare i quadrati degli
+scarti, invece dei loro valori assoluti, è una decisione con una conseguenza:
+un errore doppio pesa quattro volte, quindi un solo dato molto sbagliato tira
+la risposta verso di sé molto più di dieci dati sbagliati di poco. In compenso
+i quadrati danno l'ombra, cioè una risposta con una formula chiusa e una
+geometria limpida, mentre i valori assoluti non hanno né l'una né l'altra.
+
+In questo modo il problema dell'orbita di Cerere si chiude, rifatto
 con la regola dei quadrati. Finché i ritocchi sono piccoli, le orbite che si
 ottengono ritoccando quella di partenza stanno su un piano; le misure di Piazzi
 sono la freccia che sporge, e l'orbita migliore è la sua ombra: quella che
@@ -312,19 +326,23 @@ $$
 **Teorema della proiezione.** Il minimo si raggiunge quando il residuo
 $\mathbf{r}=\mathbf{b}-\mathbf{A}\hat{\mathbf{x}}$ è ortogonale a
 $\operatorname{im}(\mathbf{A})$, cioè a tutte le colonne insieme:
-$\mathbf{A}^\top\mathbf{r}=\mathbf{0}$. La condizione è sufficiente: se
+$\mathbf{A}^\top\mathbf{r}=\mathbf{0}$.
+
+La condizione è sufficiente. Infatti, se
 $\mathbf{r}\perp\operatorname{im}(\mathbf{A})$, per ogni $\mathbf{x}$ vale
 $\mathbf{A}\mathbf{x}-\mathbf{b}=\mathbf{A}(\mathbf{x}-\hat{\mathbf{x}})-\mathbf{r}$
 con i due addendi ortogonali, quindi
 $\lVert\mathbf{A}\mathbf{x}-\mathbf{b}\rVert_2^2=\lVert\mathbf{A}(\mathbf{x}-\hat{\mathbf{x}})\rVert_2^2+\lVert\mathbf{r}\rVert_2^2\ge\lVert\mathbf{r}\rVert_2^2$,
-con uguaglianza se e solo se $\mathbf{A}\mathbf{x}=\mathbf{A}\hat{\mathbf{x}}$:
-il minimo è raggiunto, e il vettore $\mathbf{A}\hat{\mathbf{x}}$ è unico. La
-condizione è anche necessaria: la derivata di
+con uguaglianza se e solo se $\mathbf{A}\mathbf{x}=\mathbf{A}\hat{\mathbf{x}}$.
+Il minimo è dunque raggiunto, e il vettore $\mathbf{A}\hat{\mathbf{x}}$ è
+unico.
+
+La condizione è anche necessaria. La derivata di
 $\lVert\mathbf{A}\mathbf{x}-\mathbf{b}\rVert_2^2$ in $\hat{\mathbf{x}}$ lungo
 $\mathbf{A}^\top\mathbf{r}$ vale $-2\lVert\mathbf{A}^\top\mathbf{r}\rVert_2^2$,
-negativa se $\mathbf{A}^\top\mathbf{r}\neq\mathbf{0}$, e allora un piccolo
-passo in quella direzione riduce l'errore. Sviluppando si ottengono le
-**equazioni normali**
+negativa se $\mathbf{A}^\top\mathbf{r}\neq\mathbf{0}$, e allora un
+piccolo passo in quella direzione riduce l'errore. Sviluppando la condizione si
+ottengono le **equazioni normali**
 
 $$
 \mathbf{A}^\top\mathbf{A}\,\hat{\mathbf{x}} = \mathbf{A}^\top\mathbf{b},
@@ -343,8 +361,9 @@ matrice che soddisfa $\mathbf{P}^2=\mathbf{P}$ (proiettare due volte è come
 proiettare una volta) e $\mathbf{P}^\top=\mathbf{P}$, le due proprietà che
 caratterizzano i proiettori ortogonali.
 
-La stessa condizione si ricava per via analitica annullando il gradiente di
-$\lVert\mathbf{A}\mathbf{x}-\mathbf{b}\rVert^2$, e le due strade coincidono:
+La stessa condizione si ricava anche per via analitica, annullando il gradiente
+di $\lVert\mathbf{A}\mathbf{x}-\mathbf{b}\rVert^2$, e le due strade coincidono,
+poiché la condizione
 $\nabla_{\mathbf{x}}\lVert\mathbf{A}\mathbf{x}-\mathbf{b}\rVert^2 =
 2\mathbf{A}^\top(\mathbf{A}\mathbf{x}-\mathbf{b}) = \mathbf{0}$ dà
 letteralmente l'ortogonalità del residuo. Il gradiente arriva nella
@@ -362,23 +381,26 @@ varianza minima (teorema di Gauss-Markov).
 Se il rango non è pieno, la soluzione di minimo esiste ancora ma non è unica:
 le soluzioni differiscono per elementi di $\ker(\mathbf{A})$, e la convenzione
 è scegliere quella di norma minima (ciò che restituisce `numpy.linalg.lstsq`).
-Il minimo dei quadrati è però una scelta, non un obbligo: minimizzare la somma dei
-valori assoluti stima una mediana condizionata invece di una media, ed è meno
-sensibile ai valori anomali, come spiega la stessa sezione su da dove viene la
-loss.
+
+Il minimo dei quadrati è però una scelta, non un obbligo: minimizzare la
+somma dei valori assoluti stima una mediana condizionata invece di una media,
+ed è meno sensibile ai valori anomali, come spiega la stessa sezione su da dove
+viene la loss.
 
 Nel problema di Cerere le equazioni non sono lineari nei sei elementi
-dell'orbita. Si linearizza attorno all'orbita di partenza, si risolve ai minimi
-quadrati il sistema lineare per le correzioni e si ripete con l'orbita
-corretta: è il metodo di Gauss–Newton.
+dell'orbita. Si linearizza quindi attorno all'orbita di partenza, si risolve
+ai minimi quadrati il sistema lineare per le correzioni e si ripete con
+l'orbita corretta. Il procedimento prende il nome di metodo di Gauss–Newton.
 
 `````
 
 Con questa lettura la regressione lineare, la retta che meglio lega una
-grandezza a un'altra, smette di essere una formula da ricordare. Ecco lo stesso
-calcolo su cinque appartamenti di cui si conoscono i metri quadri e il prezzo.
-Ogni retta è una combinazione di due colonne, quella tutta di uni (che dà il
-punto di partenza) e quella dei metri quadri (che dà la pendenza), e la migliore
+grandezza a un'altra, smette di essere una formula da ricordare.
+
+Consideriamo, ad esempio, cinque appartamenti di cui si conoscono i metri
+quadri e il prezzo. Ogni retta è una combinazione di due colonne, quella tutta
+di uni (che dà l'intercetta, il punto di partenza della retta) e quella dei
+metri quadri (che dà la pendenza), e la migliore
 si trova risolvendo le equazioni normali
 $\mathbf{A}^\top\mathbf{A}\hat{\mathbf{x}}=\mathbf{A}^\top\mathbf{b}$, cioè la
 perpendicolarità del residuo scritta come sistema.
@@ -402,32 +424,33 @@ print(np.round(residuo, 3))          # -> [ 0.152  1.175 -3.802  3.222 -0.747]
 
 La retta trovata dice che un appartamento parte da circa ventisettemila euro e
 ne guadagna circa duemiladuecento per metro quadro. La verifica che conta è il
-prodotto $\mathbf{A}^\top\mathbf{r}$: il residuo, moltiplicato per le due
-colonne, dà zero in tutte e due le direzioni, e quello zero dice che nessun
-ritocco dei due coefficienti potrebbe ridurre l'errore.
+prodotto $\mathbf{A}^\top\mathbf{r}$. Il residuo, moltiplicato per le due
+colonne, dà zero in tutte e due le direzioni, e quello zero dice che
+nessuna modifica dei due coefficienti potrebbe ridurre l'errore.
 
 ## Rendere perpendicolari le colonne: Gram-Schmidt e QR
 
 Le equazioni normali sono la formula con cui si capisce il problema. Per
-calcolare si preferisce di norma un'altra strada, perché elevano al quadrato il
-numero di condizionamento di $\mathbf{A}$.
+calcolare si preferisce di norma un'altra strada, perché elevano al quadrato
+il numero di condizionamento di $\mathbf{A}$.
 
 `````{tab} Elementare
 
-Il problema è quello degli assi obliqui di poco fa, portato all'estremo. Se due
-colonne puntano quasi nella stessa direzione (i metri quadri e il numero di
-stanze di un appartamento, che crescono insieme), distinguere il contributo
-dell'una da quello dell'altra diventa un esercizio di equilibrismo: basta uno
+Il problema è quello degli assi obliqui, portato all'estremo. Se due colonne
+puntano quasi nella stessa direzione (i metri quadri e il numero di stanze di
+un appartamento, che crescono insieme), distinguere il contributo dell'una da
+quello dell'altra diventa un esercizio di equilibrismo. Basta infatti uno
 spostamento minimo dei dati perché le due dosi cambino tantissimo pur dando
 quasi lo stesso risultato.
 
-C'è un numero che misura questo equilibrismo, il numero di condizionamento, e
-più è grande più i conti sono delicati. Le equazioni normali, però,
-non lavorano sulla tabella dei dati ma su un'altra, ottenuta moltiplicandola per
-sé stessa con righe e colonne scambiate (la sua trasposta), e in quel passaggio il
-numero viene elevato al quadrato: un problema un po' delicato diventa molto
-delicato, e uno molto delicato diventa impossibile. Sull'esempio degli
-appartamenti si passa da circa trecentocinquanta a più di centoventimila.
+C'è un numero che misura questo equilibrismo, il
+**numero di condizionamento**, e più è grande più i conti sono delicati. Le
+equazioni normali, però, non lavorano sulla tabella dei dati ma su un'altra,
+ottenuta moltiplicandola per sé stessa con righe e colonne scambiate (la sua
+trasposta), e in quel passaggio il numero viene elevato al quadrato, per cui
+un problema un po' delicato diventa molto delicato, e uno molto delicato
+diventa impossibile. Sull'esempio degli appartamenti si passa da circa
+trecentocinquanta a più di centoventimila.
 
 Il rimedio è doppio. La prima parte è una precauzione senza spesa: togliere a
 ogni colonna di dati la propria media, e se serve dividerla per la propria
@@ -442,11 +465,12 @@ usarle. Si prende la prima direzione così com'è; alla seconda si toglie la sua
 ombra sulla prima, e quel che resta è perpendicolare alla prima; alla terza si
 tolgono le ombre sulle prime due, e così via. Alla fine si hanno direzioni
 perpendicolari che descrivono lo stesso repertorio di prima, e su assi
-perpendicolari l'equilibrismo sparisce. È il procedimento che porta il nome
-di Gram e Schmidt; il suo risultato, scritto come prodotto di una matrice a
-colonne perpendicolari per una a scaletta, si chiama scomposizione QR, e le
-librerie serie la calcolano con un altro procedimento, meno soggetto agli
-errori.
+perpendicolari l'equilibrismo sparisce.
+
+Questo procedimento porta il nome di Gram e Schmidt. Il suo risultato,
+scritto come prodotto di una matrice a colonne perpendicolari per una a
+scaletta, si chiama **scomposizione QR**, e le librerie serie la calcolano con
+un altro procedimento, meno soggetto agli errori.
 
 `````
 
@@ -466,7 +490,7 @@ $$
 
 dove la sommatoria toglie ad $\mathbf{a}_k$ le sue proiezioni su tutte le
 direzioni già ortonormalizzate. Raccogliendo i coefficienti si ottiene la
-**fattorizzazione QR**
+**scomposizione QR**
 
 $$
 \mathbf{A} = \mathbf{Q}\mathbf{R},
@@ -482,7 +506,9 @@ $$
 $$
 
 un sistema triangolare che si risolve per sostituzione all'indietro in
-$\Theta(n^2)$. Il costo dominante è la fattorizzazione: circa $2mn^2-\tfrac23
+$\Theta(n^2)$.
+
+Il costo dominante è quindi la fattorizzazione: circa $2mn^2-\tfrac23
 n^3$ operazioni con le riflessioni di Householder, contro circa $mn^2+\tfrac13
 n^3$ delle equazioni normali risolte con la fattorizzazione di Cholesky
 {cite}`golub2013matrix`; per $m\gg n$ la QR costa il doppio, e in cambio non
@@ -504,10 +530,13 @@ $\kappa_2(\mathbf{A})^2\tan\theta$, con $\theta$ l'angolo fra $\mathbf{b}$ e
 l'immagine di $\mathbf{A}$, quando non lo è {cite}`higham2002accuracy`. La
 {doc}`sezione di analisi numerica
 </Matematica/analisi-numerica>` spiega che cosa quella grandezza misura e
-perché le cifre si perdono. In pratica: `numpy.linalg.lstsq` non forma mai
+perché le cifre si perdono.
+
+In pratica, `numpy.linalg.lstsq` non forma mai
 $\mathbf{A}^\top\mathbf{A}$, e usa la decomposizione ai valori singolari, che è
-ancora più cauta. Il condizionamento di $\mathbf{A}$ dipende anche dalle unità:
-scalare le colonne a norma unitaria è quasi ottimo fra le scalature diagonali
+ancora più cauta. Si noti che il condizionamento di $\mathbf{A}$ dipende anche
+dalle unità di misura: scalare le colonne a norma unitaria è quasi ottimo fra
+le scalature diagonali
 (per il teorema di van der Sluis, $\kappa_2$ resta entro un fattore $\sqrt n$
 dal minimo), e centrare le colonne dei dati riparametrizza l'intercetta senza
 cambiare le predizioni.
@@ -564,32 +593,35 @@ Nel 1936 Carl Eckart e Gale Young pubblicano su *Psychometrika*, una rivista di
 misurazione psicologica, un teorema che a loro serviva per l'analisi fattoriale,
 il metodo con cui gli psicologi riassumono i punteggi di molti test in pochi
 fattori
-{cite}`eckart1936approximation`. Oggi questo teorema sta sotto la riduzione delle
-dimensioni, sotto il modo in cui si decide quante direzioni di una tabella
-contano davvero, e sotto ogni stima di quanto si perde comprimendo. Erhard
+{cite}`eckart1936approximation`. Oggi questo teorema è alla base della riduzione
+delle dimensioni, del modo in cui si decide quante direzioni di una tabella
+contano davvero, e di ogni stima di quanto si perde comprimendo. Erhard
 Schmidt lo aveva dimostrato ventinove anni prima, in tedesco e per le equazioni
-integrali {cite}`schmidt1907theorie`: per questo il teorema porta anche il suo
-nome. Il teorema
-dice che, quando di una tabella si può tenere solo un pezzo, esiste un pezzo
-migliore di tutti gli altri; e dice, prima ancora di costruirlo, quanto si
-sbaglia a tenere quello.
+integrali {cite}`schmidt1907theorie`, e per questo il teorema porta anche il
+suo nome.
+
+Il teorema dice che, quando di una tabella si può tenere solo un pezzo, esiste
+un pezzo migliore di tutti gli altri; e dice, prima ancora di costruirlo,
+quanto si sbaglia a tenere quello.
 
 Il problema è quello lasciato aperto dalla {doc}`sezione sui sistemi lineari
 </Matematica/sistemi-lineari>`, dove una matrice di rango basso si riscriveva
-come il passaggio attraverso una strettoia a poche corsie. Nei dati veri la
-strettoia esatta non c'è quasi mai: c'è una matrice in cui poche direzioni
-contano molto e le altre quasi niente. Data $\mathbf{A}$ di rango $r$ e un
-intero $k<r$, qual è la matrice $\mathbf{B}$ di rango al più $k$ più vicina ad
-$\mathbf{A}$, e a che distanza sta?
+come il passaggio attraverso un collo di bottiglia di poche dimensioni. Nei
+dati veri il collo di bottiglia esatto non c'è quasi mai: c'è una matrice in
+cui poche
+direzioni contano molto e le altre quasi niente. Data $\mathbf{A}$ di rango $r$
+e un intero $k<r$, ci chiediamo quindi qual è la matrice $\mathbf{B}$ di rango
+al più $k$ più vicina ad $\mathbf{A}$, e a che distanza sta.
 
 La risposta passa per la decomposizione ai valori singolari, che scrive
 $\mathbf{A}=\sum_i\sigma_i\mathbf{u}_i\mathbf{v}_i^\top$, somma di matrici di
 rango uno pesate dai valori singolari $\sigma_i$. La matrice più vicina tiene i
-primi $k$ pezzi, quelli di peso maggiore, e scarta gli altri. Non è ovvio che
-sia così: le matrici di rango $k$ sono infinite, e nulla garantisce a priori che
-la più vicina ad $\mathbf{A}$ si ottenga troncando questa somma. L'errore, poi,
-si legge nei pesi scartati: $\sqrt{\sum_{i>k}\sigma_i^2}$ in norma di Frobenius,
-$\sigma_{k+1}$ in norma spettrale.
+primi $k$ termini, quelli con i valori singolari maggiori, e scarta gli altri.
+Non è ovvio che sia così, poiché le matrici di rango $k$ sono infinite, e nulla
+garantisce a priori che la più vicina ad $\mathbf{A}$ si ottenga troncando
+questa somma. L'errore, poi, si legge nei valori singolari scartati:
+$\sqrt{\sum_{i>k}\sigma_i^2}$ in norma di Frobenius, $\sigma_{k+1}$ in norma
+spettrale.
 
 `````{tab} Elementare
 
@@ -610,36 +642,39 @@ un'etichetta con il suo peso, un numero da leggere che non ha niente a che
 vedere con i pesi che si regolano in una rete. Il peso misura due cose
 insieme: quanta parte del catalogo quella premiscela spiega, e di quanto ogni
 litro versato sposta il colore. Le etichette dicono $10$, $6$, $2$,
-$0{,}5$ e $0{,}2$: un litro della prima muove le tinte cinquanta volte più di
-un litro dell'ultima.
+$0{,}5$ e $0{,}2$: un litro della prima muove le tinte
+cinquanta volte più di un litro dell'ultima.
 
 Il titolare mette sullo scaffale le prime due e rimanda indietro le altre tre;
 nessun'altra coppia, comunque mescolata, avvicinerebbe il catalogo più di
 questa. Quanto sbaglierà lo legge prima di aprire un barattolo, sulle etichette
 rimandate indietro, che dicono $2$, $0{,}5$ e $0{,}2$: le eleva al
 quadrato ($4$, $0{,}25$ e $0{,}04$), le somma e prende la radice, come nel
-teorema di Pitagora con più di due lati. Vengono $2{,}07$. Lo stesso calcolo su
-tutte e cinque le etichette dà la grandezza dell'intero catalogo, $11{,}84$, e
-il rapporto fra i due dice che con due barattoli invece di cinque si sbaglia del
-diciassette e mezzo per cento. Anche la tinta più sfortunata ha un tetto:
-nessuna sbaglia più dell'etichetta più alta fra quelle rimandate indietro, cioè
-più di $2$.
+teorema di Pitagora con più di due lati. Vengono $2{,}07$.
 
-Il garzone che per fretta tiene la prima e la terza rimanda indietro il $6$, il
-$0{,}5$ e lo $0{,}2$: Pitagora dà poco più di $6$, e lo sbaglio quasi triplica.
-Sullo sbaglio complessivo l'ordine delle etichette lascia in sospeso un caso
-solo, due etichette con lo stesso numero: allora nessuno decide quale delle due
-premiscele tenere, e vanno bene tutte e due.
+Lo stesso calcolo su tutte e cinque le etichette dà la grandezza dell'intero
+catalogo, $11{,}84$, e il rapporto fra i due dice che con due barattoli invece
+di cinque si sbaglia del diciassette e mezzo per cento. Anche la tinta più
+sfortunata ha un tetto: nessuna sbaglia più dell'etichetta più alta fra
+quelle rimandate indietro, cioè più di $2$.
+
+Il garzone che per fretta tiene la prima e la terza rimanda indietro il $6$, lo
+$0{,}5$ e lo $0{,}2$, quindi Pitagora dà poco più di $6$ e lo sbaglio quasi
+triplica. Sullo sbaglio complessivo l'ordine delle etichette lascia in sospeso
+un caso solo, due etichette con lo stesso numero: allora nessuno decide quale
+delle due premiscele tenere, e vanno bene tutte e due.
 
 Quel catalogo, però, era fatto apposta per essere compresso. Se le cinque
-etichette dicessero tutte $3$, rimandarne indietro tre lascerebbe uno sbaglio di
-più del settantasette per cento, e la risposta onesta al titolare sarebbe che
-gli servono cinque barattoli. L'altro limite è più insidioso, perché il
-calcolo riesce lo stesso e il risultato non serve. Il procedimento rende piccolo lo
-sbaglio di tutto il catalogo, e va bene finché le tinte contano uguale: se una è
-il colore del marchio di un cliente e deve venire perfetta, la coppia migliore è
-un'altra, e il procedimento non la trova. Lo stesso succede quando del catalogo
-si conosce solo un pezzo, con delle caselle lasciate in bianco: le etichette
+etichette dicessero tutte $3$, ad esempio, rimandarne indietro tre lascerebbe
+uno sbaglio di più del settantasette per cento, e la risposta onesta al
+titolare sarebbe che gli servono cinque barattoli.
+
+L'altro limite è più insidioso, perché il calcolo riesce lo stesso e il
+risultato non serve. Il procedimento rende piccolo lo sbaglio di tutto il
+catalogo, e va bene finché le tinte contano uguale. Se però una è il colore del
+marchio di un cliente e deve venire perfetta, la coppia migliore è un'altra, e
+il procedimento non la trova. Lo stesso succede quando del catalogo si conosce
+solo un pezzo, con delle caselle lasciate in bianco, perché le etichette
 andrebbero calcolate su qualcosa che non si ha.
 
 `````
@@ -651,7 +686,7 @@ valori singolari $\mathbf{A} = \mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^\top$.
 Scrivendo $\mathbf{u}_i$ e $\mathbf{v}_i$ per le colonne di $\mathbf{U}$ e
 $\mathbf{V}$, cioè per i vettori singolari sinistri e destri (ortonormali,
 perché le due matrici sono ortogonali), la stessa decomposizione si legge come
-somma di $r$ pezzi di rango uno,
+somma di $r$ termini di rango uno,
 
 $$
 \mathbf{A} = \sum_{i=1}^{r} \sigma_i\,\mathbf{u}_i\mathbf{v}_i^\top ,
@@ -677,17 +712,18 @@ $$
 
 dove $\lVert\cdot\rVert_F$ è la norma di Frobenius (la radice della somma dei
 quadrati di tutti gli elementi) e $\lVert\cdot\rVert_2$ la norma spettrale,
-cioè l'allungamento massimo già incontrato. Eckart e Young dimostrano il caso
+cioè l'allungamento massimo. Eckart e Young dimostrano il caso
 di Frobenius {cite}`eckart1936approximation`; Mirsky, nel 1960, mostra che lo
 stesso $\mathbf{A}_k$ minimizza qualunque norma invariante per trasformazioni
 ortogonali {cite}`mirsky1960symmetric`, cioè che il troncamento non è una
-risposta tarata su un modo particolare di misurare l'errore.
+risposta legata a un modo particolare di misurare l'errore.
 
 L'unicità invece dipende dalla norma, e le due non vanno confuse. In
-norma di Frobenius il minimo è unico se e solo se $\sigma_k > \sigma_{k+1}$: a
-valori singolari pari il sottospazio da tenere non è determinato. In norma
-spettrale di minimi ce ne sono quasi sempre infiniti, perché conta solo il
-residuo più grande: per $\mathbf{A} = \operatorname{diag}(2,1)$ e $k=1$ ogni
+norma di Frobenius il minimo è unico se e solo se $\sigma_k > \sigma_{k+1}$:
+a valori singolari pari il sottospazio da tenere non è determinato. In
+norma spettrale i minimi sono quasi sempre infiniti, perché conta solo il
+residuo più grande. Ad esempio, per $\mathbf{A} = \operatorname{diag}(2,1)$ e
+$k=1$ ogni
 $\mathbf{B} = \operatorname{diag}(c,0)$ con $c\in[1,3]$ ha rango uno e lascia
 $\lVert\mathbf{A}-\mathbf{B}\rVert_2 = 1 = \sigma_2$, mentre in Frobenius solo
 $c=2$ è ottimo.
@@ -695,13 +731,13 @@ $c=2$ è ottimo.
 Per la norma spettrale la dimostrazione è un conteggio di dimensioni, e
 mostra da dove venga $\sigma_{k+1}$. Se
 $\operatorname{rank}(\mathbf{B})\le k$ allora $\dim\ker(\mathbf{B})\ge n-k$;
-lo span di $\mathbf{v}_1,\dots,\mathbf{v}_{k+1}$ ha dimensione $k+1$; siccome
+lo span di $\mathbf{v}_1,\dots,\mathbf{v}_{k+1}$ ha dimensione $k+1$; poiché
 $(n-k)+(k+1)>n$, la formula di Grassmann
-($\dim(U\cap W)\ge\dim U+\dim W-n$) dà un'intersezione non banale, e se ne
-prende un vettore unitario $\mathbf{w}$. Allora $(\mathbf{A}-\mathbf{B})
-\mathbf{w} = \mathbf{A}\mathbf{w}$, e siccome $\mathbf{w}$ vive nello span dei
-primi $k+1$ vettori singolari destri, che sono ortonormali, per l'identità di
-Parseval $\sum_{i\le k+1}(\mathbf{v}_i^\top\mathbf{w})^2 =
+($\dim(U\cap W)\ge\dim U+\dim W-n$) dà un'intersezione non banale, e ne
+prendiamo un vettore unitario $\mathbf{w}$. Allora $(\mathbf{A}-\mathbf{B})
+\mathbf{w} = \mathbf{A}\mathbf{w}$, e siccome $\mathbf{w}$ appartiene
+allo span dei primi $k+1$ vettori singolari destri, che sono ortonormali, per
+l'identità di Parseval $\sum_{i\le k+1}(\mathbf{v}_i^\top\mathbf{w})^2 =
 \lVert\mathbf{w}\rVert_2^2 = 1$, e quindi
 
 $$
@@ -711,10 +747,13 @@ $$
 = \sigma_{k+1}^2 .
 $$
 
-Siccome $\lVert\mathbf{A}-\mathbf{B}\rVert_2 \ge \lVert(\mathbf{A}-\mathbf{B})
-\mathbf{w}\rVert_2$ per definizione di norma spettrale, nessuna matrice di rango
-$k$ scende sotto $\sigma_{k+1}$, e il troncamento ci arriva. Ne discende
-anche un controllo riga per riga, utile quando le righe
+D'altra parte,
+$\lVert\mathbf{A}-\mathbf{B}\rVert_2 \ge \lVert(\mathbf{A}-\mathbf{B})
+\mathbf{w}\rVert_2$ per definizione di norma spettrale; pertanto nessuna
+matrice di rango $k$ scende sotto $\sigma_{k+1}$, e il troncamento raggiunge
+proprio questo valore.
+
+Ne discende anche un controllo riga per riga, utile quando le righe
 sono i casi di una tabella: la riga $j$-esima di $\mathbf{A}-\mathbf{A}_k$ ha
 norma $\lVert(\mathbf{A}-\mathbf{A}_k)^\top\mathbf{e}_j\rVert_2 \le
 \lVert\mathbf{A}-\mathbf{A}_k\rVert_2 = \sigma_{k+1}$, dove $\mathbf{e}_j$ è il
@@ -728,39 +767,44 @@ fattore costante (che non cambia gli autovettori); la strada spettrale e quella
 dei valori singolari danno quindi gli stessi assi, e la {doc}`sezione sulla
 riduzione di dimensionalità </MachineLearning/riduzione-clustering>` percorre
 la prima. Senza il centraggio si ottiene invece il migliore sottospazio
-passante per l'origine, che in generale è un altro. Il rango numerico è lo
-stesso troncamento letto al contrario: azzerare i $\sigma_i$ sotto una soglia
-$\tau$ significa sostituire $\mathbf{A}$ con il troncamento che dista da essa
-meno di $\tau$ in norma spettrale (in Frobenius la distanza è
-$\sqrt{\sum_{i>k}\sigma_i^2}$ e può superare $\tau$ quanto si vuole). Un
-collo di bottiglia lineare addestrato su un errore quadratico ha in
-$\mathbf{A}_k$ il proprio ottimo globale.
+passante per l'origine, che in generale è un altro.
 
-La forma della superficie attorno a quell'ottimo è un fatto in più, e si deve a
-Baldi e Hornik {cite}`baldi1989neural`. Il loro risultato poggia su due
+Il rango numerico è lo stesso troncamento letto al contrario: azzerare i
+$\sigma_i$ sotto una soglia $\tau$ significa sostituire $\mathbf{A}$ con il
+troncamento che dista da essa meno di $\tau$ in norma spettrale (in Frobenius
+la distanza è $\sqrt{\sum_{i>k}\sigma_i^2}$ e può superare $\tau$ quanto si
+vuole).
+
+Infine, un collo di bottiglia lineare addestrato su un errore quadratico ha in
+$\mathbf{A}_k$ il proprio ottimo globale. La forma della superficie attorno a
+quell'ottimo è un fatto in più, e si deve a Baldi e Hornik
+{cite}`baldi1989neural`. Il loro risultato poggia su due
 ipotesi, la covarianza di rango pieno e i suoi autovalori tutti distinti. Gli
 autori le danno per poco restrittive, e nel 1989 lo erano. Su quella superficie
 non ci sono minimi locali spuri, perché ogni altro punto critico è una sella,
-cioè un punto da cui si scende in una direzione e si sale in un'altra. La
-soluzione è determinata solo a meno di un cambio di base nello spazio compresso
-di mezzo, il *latente*, $\mathbf{W}_2 = \mathbf{V}_k\mathbf{C}$ e $\mathbf{W}_1
-= \mathbf{C}^{-1}\mathbf{V}_k^\top$ con $\mathbf{C}$ invertibile qualunque. Un
-autoencoder lineare ritrova quindi il sottospazio della PCA e non i suoi assi.
-Non ne segue che la discesa del gradiente ci arrivi, e gli autori lo scrivono:
-una superficie senza minimi locali lascia comunque il modo di incagliarsi in
-una sella. Aggiungono però che in pratica non capita quasi mai, perché la
-direzione calcolata su pochi campioni non è il gradiente vero. Oggi l'ipotesi
-del rango pieno cade spesso: ogni volta che i casi sono meno delle
-caratteristiche, e anche quando i casi bastano ma le direzioni vere sono poche,
-come sul catalogo di quaranta tinte e dodici pigmenti, che ha cinque pesi non
-nulli.
+cioè un punto da cui si scende in una direzione e si sale in un'altra.
+
+La soluzione è determinata solo a meno di un cambio di base nello spazio
+compresso di mezzo, il *latente*, $\mathbf{W}_2 = \mathbf{V}_k\mathbf{C}$ e
+$\mathbf{W}_1 = \mathbf{C}^{-1}\mathbf{V}_k^\top$ con $\mathbf{C}$ invertibile
+qualunque. Un autoencoder lineare ritrova quindi il sottospazio della PCA e
+non i suoi assi.
+
+Non ne segue che la discesa del gradiente raggiunga l'ottimo, e gli autori lo
+scrivono: una superficie senza minimi locali lascia comunque il modo di
+incagliarsi in una sella. Aggiungono però che in pratica non capita quasi
+mai, perché la direzione calcolata su pochi campioni non è il gradiente vero.
+Si noti che oggi l'ipotesi del rango pieno cade spesso: ogni volta che
+i casi sono meno delle caratteristiche, e anche quando i casi bastano ma le
+direzioni vere sono poche, come in una matrice di quaranta righe e dodici
+colonne che ha cinque valori singolari non nulli.
 
 Il troncamento ha due limiti precisi. Se lo spettro non decade il teorema resta
 vero e diventa inutile: con tutti i $\sigma_i$ uguali l'errore relativo del
 troncamento è $\sqrt{(r-k)/r}$, cioè quasi tutto. Inoltre il teorema vale per
-la norma di Frobenius su tutte le celle: se la somma corre su un sottoinsieme di
-celle (le sole osservate) o pesa le celle in modo diverso, il minimo smette di
-essere il troncamento e il problema perde la soluzione in forma chiusa. È la
+la norma di Frobenius su tutte le celle; se la somma corre su un sottoinsieme
+di celle (le sole osservate) o pesa le celle in modo diverso, il minimo smette
+di essere il troncamento e il problema perde la soluzione in forma chiusa. È la
 ragione per cui la fattorizzazione delle matrici di valutazioni si stima per
 discesa del gradiente invece che con una decomposizione, come racconta la
 {doc}`sezione sul filtraggio collaborativo
@@ -768,8 +812,9 @@ discesa del gradiente invece che con una decomposizione, come racconta la
 
 `````
 
-Il teorema si mette alla prova costruendo una tabella di cui si conoscono i
-pesi in anticipo, e guardando se l'errore del troncamento cade dove promesso.
+Per mettere alla prova il teorema costruiamo una matrice di cui si conoscono in
+anticipo i valori singolari, e verifichiamo che l'errore del troncamento cada
+dove previsto.
 
 ```python
 import numpy as np
@@ -829,23 +874,26 @@ print(round(np.linalg.norm(Z - Z_k, 'fro') / np.linalg.norm(Z, 'fro'), 4),
 0.7746 0.1749
 ```
 
-Lo sbaglio complessivo coincide con la radice della somma dei quadrati dei pesi
-scartati, e quello sulla riga peggiore sta sotto $\sigma_{k+1}$. Tenere la
-prima e la terza direzione invece delle prime due lo triplica quasi, e nessuna
-delle duemila alternative vicine scende sotto il minimo: più si avvicinano alla
-coppia migliore, più il loro sbaglio si stringe verso quello. Con i pesi tutti
-uguali, invece, due direzioni su cinque perdono il $77{,}5\%$ della tabella
-contro il $17{,}5\%$ dei pesi decrescenti: lì non c'è niente da comprimere.
+L'errore complessivo coincide con la radice della somma dei quadrati dei valori
+singolari scartati, e quello sulla riga peggiore sta sotto $\sigma_{k+1}$.
+Tenere la prima e la terza direzione invece delle prime due lo triplica quasi, e
+nessuna delle duemila alternative vicine scende sotto il minimo: più si
+avvicinano alla coppia migliore, più il loro errore si stringe verso quello.
+
+Con i valori singolari tutti uguali, invece, due direzioni su cinque perdono il
+$77{,}5\%$ della matrice contro il $17{,}5\%$ dello spettro decrescente: lì
+non c'è niente da comprimere.
 
 ## Quando le soluzioni ugualmente buone sono più di una
 
-Finora il minimo dei quadrati aveva una soluzione sola. C'è però un caso in cui
-ne ha infinite, e capita ogni volta che le colonne di $\mathbf{A}$ sono
-linearmente dipendenti: una grandezza misurata due volte in unità diverse, un
-totale registrato accanto ai suoi addendi, una variabile indicatrice per ogni
-categoria più l'intercetta. Nei dati veri è frequente, e ancora più frequente è
-la sua versione approssimata. Un metodo che davanti a infinite risposte si
-ferma non serve a niente; ne serve uno che ne scelga una e dica quale.
+Finora il minimo dei quadrati aveva una soluzione sola. C'è però un caso in
+cui ne ha infinite, e capita ogni volta che le colonne di $\mathbf{A}$
+sono linearmente dipendenti: ad esempio, una grandezza misurata due volte in
+unità diverse, un totale registrato accanto ai suoi addendi, una variabile
+indicatrice per ogni categoria più l'intercetta. Nei dati veri è frequente, e
+ancora più frequente è la sua versione approssimata. Un metodo che davanti a
+infinite risposte si ferma non serve a niente; ne serve uno che ne scelga una e
+dica quale.
 
 `````{tab} Elementare
 
@@ -859,21 +907,21 @@ colore chiesto.
 
 Fra risposte che valgono uguale bisogna sceglierne una, e il bancone suggerisce
 la regola: si spalma invece di concentrare. Si sommano i quadrati delle dosi e
-si tiene la ricetta che dà il totale più piccolo. Mezzo e mezzo dà $0{,}25 +
-0{,}25$, cioè $0{,}50$; il litro secco dà $1$, il doppio. Sono gli stessi
-quadrati apparsi parlando di ombre, e penalizzano chi esagera in un
-punto solo. È una convenzione, e nessuno vieta al titolare di preferirne
-un'altra, ma le librerie di calcolo usate nel libro restituiscono questa senza
-dichiararlo.
+si tiene la ricetta che dà il totale più piccolo. Ad esempio, mezzo e mezzo
+dà $0{,}25 + 0{,}25$, cioè $0{,}50$; il litro secco dà $1$, il doppio. Sono
+gli stessi quadrati che danno l'ombra, e penalizzano chi esagera in un punto
+solo. È una convenzione, e nessuno vieta al titolare di preferirne un'altra, ma
+le librerie di calcolo che usiamo restituiscono questa senza dichiararlo.
 
 Il modo di ottenerla è quello del catalogo, letto al contrario. Là ogni
 premiscela aveva un peso, che diceva quanto un litro di quella premiscela
 sposta il colore; qui si parte dallo spostamento che serve e si cerca il litro,
 quindi si divide per il peso invece di moltiplicare. Una premiscela pesante
-sposta molto, e ne bastano poche gocce; una leggera ne vuole litri. Una
-premiscela di peso zero non sposta niente: qualunque dose se ne metta il colore
-non cambia, e la si lascia fuori dalla ricetta. Se i barattoli sono tutti
-diversi la ricetta buona è una sola, e la procedura restituisce quella.
+sposta molto, e ne bastano poche gocce; una leggera ne vuole litri. In
+particolare, una premiscela di peso zero non sposta niente: qualunque dose se
+ne metta il colore non cambia, e la si lascia fuori dalla ricetta. Se i
+barattoli sono tutti diversi la ricetta buona è una sola, e la procedura
+restituisce quella.
 
 Una seconda strada mostra che la regola non è arbitraria. Si chiede al calcolo
 di non esagerare con le dosi, mettendo una penale sui litri usati, e poi si
@@ -883,12 +931,14 @@ alleggerendo ancora, la raggiunge.
 Il vantaggio della regola si vede quando i due barattoli sono quasi uguali e non
 del tutto. In senso stretto la ricetta migliore torna allora a essere una sola,
 e prescrive decine di migliaia di litri dal primo barattolo e, dal secondo, una
-dose negativa: vernice da togliere, un'operazione che in bottega non esiste. La
-differenza fra i due barattoli è più piccola dell'imprecisione con cui li si è
-misurati, e il calcolo risponde a una domanda che nessuno ha posto. Occorre
-dichiararlo: si fissa una soglia sotto la quale due barattoli si considerano lo
-stesso barattolo, e la ricetta torna quella di bottega. È lo stesso metodo del
-catalogo: buttare via le premiscele di peso trascurabile.
+dose negativa: vernice da togliere, un'operazione che in bottega non esiste.
+
+La differenza fra i due barattoli è più piccola dell'imprecisione con
+cui li si è misurati, e il calcolo risponde a una domanda che nessuno ha posto.
+Occorre quindi dichiararlo: si fissa una soglia sotto la quale due barattoli si
+considerano lo stesso barattolo, e la ricetta torna quella di bottega. È lo
+stesso metodo del catalogo, cioè buttare via le premiscele di peso
+trascurabile.
 
 `````
 
@@ -914,7 +964,7 @@ colonne allora $\mathbf{A}^{+} =
 (\mathbf{A}^\top\mathbf{A})^{-1}\mathbf{A}^\top$, cioè la formula delle
 equazioni normali.
 
-La pseudoinversa serve a questo: $\hat{\mathbf{x}} =
+Nei minimi quadrati il vettore $\hat{\mathbf{x}} =
 \mathbf{A}^{+}\mathbf{b}$ è, fra tutti i minimizzatori di
 $\lVert\mathbf{A}\mathbf{x}-\mathbf{b}\rVert_2$, quello di norma
 $\lVert\mathbf{x}\rVert_2$ minima. Le due situazioni si leggono insieme: con
@@ -924,7 +974,7 @@ proiezione; con un nucleo non banale i minimizzatori formano
 $\hat{\mathbf{x}}+\ker(\mathbf{A})$ e la pseudoinversa sceglie il
 rappresentante ortogonale al nucleo.
 
-C'è anche un ponte con la regolarizzazione:
+La pseudoinversa è legata anche alla regolarizzazione:
 
 $$
 \lim_{\lambda\to 0^{+}}
@@ -935,7 +985,7 @@ $$
 Il termine $\lambda\mathbf{I}$ è la penalità ridge, che limita la grandezza
 dei coefficienti e che la
 {doc}`sezione su overfitting e validazione
-</MachineLearning/overfitting-validazione>` tratta per esteso: farla svanire
+</MachineLearning/overfitting-validazione>` tratta per esteso. Farla svanire
 porta alla soluzione di norma minima, il che dà alla pseudoinversa una lettura
 statistica, quella di limite di un modello regolarizzato invece che di ripiego
 algebrico.
@@ -944,21 +994,23 @@ L'applicazione $\mathbf{A}\mapsto\mathbf{A}^{+}$ non è continua dove il rango
 cambia. Se un valore singolare vale $\varepsilon$ invece di zero
 il suo reciproco vale $1/\varepsilon$, e la soluzione di norma minima esplode;
 il limite per $\varepsilon\to 0$ di quelle soluzioni non è la soluzione della
-matrice di rango carente. Per questo tutte le implementazioni troncano:
-`numpy.linalg.pinv` azzera i $\sigma_i$ sotto `rcond` volte $\sigma_{\max}$,
+matrice di rango carente.
+
+Per questo tutte le implementazioni troncano. `numpy.linalg.pinv`, ad
+esempio, azzera i $\sigma_i$ sotto `rcond` volte $\sigma_{\max}$,
 cioè calcola la pseudoinversa di un troncamento $\mathbf{A}_k$ invece che di
 $\mathbf{A}$. Il legame con il teorema di Schmidt-Eckart-Young-Mirsky è
 letterale: la sola pseudoinversa numericamente sensata è quella di un
 troncamento. Il nome del parametro dichiara la scelta, perché `rcond` è il
-reciproco del condizionamento che si accetta: fissarlo a $10^{-4}$
-vuol dire scartare ogni direzione il cui valore singolare sta sotto
+reciproco del condizionamento che si accetta; fissarlo a $10^{-4}$, per
+esempio, vuol dire scartare ogni direzione il cui valore singolare sta sotto
 $10^{-4}\sigma_{\max}$, cioè per cui $\sigma_{\max}/\sigma_i>10^{4}$.
 
 `````
 
-All'esempio degli appartamenti basta aggiungere una colonna che ne ripete
-un'altra, il numero di stanze contato come un venticinquesimo dei metri
-quadri, per avere un sistema con infinite risposte ugualmente buone.
+Per avere un sistema con infinite risposte ugualmente buone basta aggiungere
+all'esempio degli appartamenti una colonna che ne ripete un'altra,
+il numero di stanze contato come un venticinquesimo dei metri quadri.
 
 ```python
 import numpy as np
@@ -992,16 +1044,18 @@ print(np.round(np.linalg.pinv(A3, rcond=1e-4) @ prezzo, 4))
 
 I due vettori `x` e `alt` lasciano lo stesso errore, $5{,}17627$ tutti e due, e
 la misura che li distingue, la radice della somma dei quadrati dei coefficienti,
-vale $27{,}02$ per il primo e $201{,}98$ per il secondo: la pseudoinversa
-restituisce il primo. La penalità ridge ci arriva da fuori, e la distanza dalla
-soluzione parsimoniosa scende da $20{,}31$ a $8{,}3\cdot 10^{-5}$ mentre la
-penalità si alleggerisce di sei ordini di grandezza. La matrice `A3`, che
-differisce dalla precedente per un milionesimo, viene contata come se le sue tre
-colonne portassero informazioni distinte, e la soluzione più
-parsimoniosa passa a coefficienti dell'ordine del milione. Dichiarando una
-soglia si torna, a meno di due milionesimi, a quella di prima. Per questo
-`lstsq` accetta un `rcond`; il valore predefinito è comunque una soglia, scelta
-da chi ha scritto la libreria e non da chi la usa.
+vale $27{,}02$ per il primo e $201{,}98$ per il secondo; la pseudoinversa
+restituisce il primo. La penalità ridge arriva alla stessa soluzione per
+un'altra via, e la distanza dalla soluzione parsimoniosa scende da $20{,}31$ a
+$8{,}3\cdot 10^{-5}$ mentre la penalità si alleggerisce di sei ordini di
+grandezza.
+
+La matrice `A3`, invece, differisce dalla precedente per un milionesimo, ma
+viene contata come se le sue tre colonne portassero informazioni distinte, e
+la soluzione più parsimoniosa passa a coefficienti dell'ordine del milione.
+Dichiarando una soglia si torna, a meno di due milionesimi, a quella di prima.
+Per questo `lstsq` accetta un `rcond`; il valore predefinito è comunque una
+soglia, scelta da chi ha scritto la libreria e non da chi la usa.
 
 ## In molte dimensioni quasi tutto è perpendicolare
 
@@ -1012,29 +1066,30 @@ davanti.
 
 `````{tab} Elementare
 
-Sul foglio, due frecce con direzioni sorteggiate a caso sono quasi allineate (o
+Sul foglio, due frecce con direzioni scelte a caso sono quasi allineate (o
 quasi opposte) molto più spesso che quasi perpendicolari. Salendo di dimensione
 la faccenda cambia, e cambia in fretta. In uno spazio a mille dimensioni due
-direzioni prese a caso sono quasi sempre quasi perpendicolari: il loro prodotto
-scalare, misurato su vettori di lunghezza uno, si aggira intorno a due
+direzioni prese a caso sono quasi sempre quasi perpendicolari. Il loro prodotto
+scalare, misurato su vettori di lunghezza uno, si aggira infatti intorno a due
 centesimi e mezzo, mentre nello spazio a tre dimensioni si aggira intorno a
 mezzo.
 
-La ragione si intuisce contando le occasioni di essere diversi. Perché due
-frecce puntino nella stessa direzione devono andare d'accordo su tutte le
-coordinate contemporaneamente; con mille coordinate sorteggiate a caso, che
+La ragione si intuisce contando le occasioni di essere diversi. Per puntare
+nella stessa direzione, due frecce devono andare d'accordo su tutte le
+coordinate contemporaneamente; con mille coordinate scelte a caso, che
 vadano d'accordo su tutte è un colpo di fortuna astronomico, e la somma dei
 mille contributi (metà positivi, metà negativi) si compensa quasi
 perfettamente.
 
 La conseguenza pratica cambia il modo di pensare agli spazi grandi. In mille
 dimensioni si possono sistemare molte più di mille direzioni tutte quasi
-perpendicolari fra loro: rinunciando alla perpendicolarità esatta e
-accontentandosi di «quasi», la capienza esplode. È l'ipotesi con cui si spiega
-come una rete possa tenere in uno spazio di poche migliaia di dimensioni molti
-più concetti: a ciascuno toccherebbe una lista di numeri sua, cioè una direzione
-sua, e finché le direzioni restano quasi perpendicolari i concetti si
-confonderebbero poco. La {doc}`sezione sull'interpretabilità meccanicistica
+perpendicolari fra loro; in altre parole, rinunciando alla perpendicolarità
+esatta e accontentandosi di «quasi», la capienza esplode. È l'ipotesi con cui
+si spiega come una rete possa tenere in uno spazio di poche migliaia di
+dimensioni molti più concetti: a ciascuno toccherebbe una lista di numeri sua,
+cioè una direzione sua, e finché le direzioni restano quasi perpendicolari i
+concetti si confonderebbero poco. La
+{doc}`sezione sull'interpretabilità meccanicistica
 </Interpretabilita/attribuzione-e-meccanicistica>` racconta che cosa succede
 quando invece si disturbano.
 
@@ -1054,8 +1109,8 @@ Siano $\mathbf{u},\mathbf{v}$ due vettori unitari indipendenti e uniformi sulla
 sfera $S^{d-1}$. Il loro coseno $\mathbf{u}^\top\mathbf{v}$ ha media nulla e
 varianza $1/d$, quindi la sua deviazione standard è $1/\sqrt{d}$; per $d$
 grande il valore atteso del modulo tende a $\sqrt{2/(\pi d)}\approx
-0{,}8/\sqrt{d}$, mentre in tre dimensioni vale esattamente $1/2$. La concentrazione
-è esponenziale: per ogni $\varepsilon>0$
+0{,}8/\sqrt{d}$, mentre in tre dimensioni vale esattamente $1/2$. La
+concentrazione è esponenziale: per ogni $\varepsilon>0$
 
 $$
 \Pr\big[\,|\mathbf{u}^\top\mathbf{v}| > \varepsilon\,\big]
@@ -1065,16 +1120,17 @@ $$
 e da questa stima, con l'unione sulle coppie, segue che si possono collocare
 $N$ direzioni con coseni tutti sotto $\varepsilon$ finché
 $N \lesssim e^{d\varepsilon^2/4}$, cioè un numero esponenziale nella
-dimensione. La stessa stima sta alla base del lemma di Johnson-Lindenstrauss sulle
-proiezioni casuali che quasi conservano le distanze.
+dimensione. La stessa stima sta alla base del lemma di Johnson-Lindenstrauss
+sulle proiezioni casuali che quasi conservano le distanze.
 
 Le conseguenze per il deep learning sono due, e vanno tenute insieme. La prima
 è che uno spazio di rappresentazione a $d$ dimensioni ospita molte più di $d$
-feature distinguibili, purché si accetti una sovrapposizione piccola: è
-l'ipotesi della sovrapposizione, che la {doc}`sezione
+feature distinguibili, purché si accetti una sovrapposizione piccola; si
+tratta dell’**ipotesi della sovrapposizione**, che la {doc}`sezione
 sull'interpretabilità meccanicistica
-</Interpretabilita/attribuzione-e-meccanicistica>` discute per esteso. La
-seconda è un avvertimento sulla geometria dell'alta dimensione: l'intuizione
+</Interpretabilita/attribuzione-e-meccanicistica>` discute per esteso.
+
+La seconda è un avvertimento sulla geometria dell'alta dimensione: l'intuizione
 tridimensionale sbaglia sistematicamente, e le quantità che sembrano tipiche
 (distanze, angoli, volumi vicino alla superficie) si concentrano attorno a
 valori che nel piano non si osservano mai.
@@ -1103,32 +1159,33 @@ for d in (3, 100, 1000):
 :alt: "Tre istogrammi affiancati, con la stessa scala verticale da zero a cento per cento, mostrano come si distribuisce il coseno fra due direzioni sorteggiate a caso. A sinistra, in tre dimensioni, le venti fasce sono tutte alte uguali, un tappeto piatto al cinque per cento: ogni angolo è ugualmente probabile, e il coseno medio vale zero virgola cinquanta. Al centro, in cento dimensioni, le fasce calano da sinistra a destra e dopo la sesta non ce n'è quasi più nessuna: il coseno medio vale zero virgola zero otto. A destra, in mille dimensioni, resta un picco solo appoggiato allo zero, alto quasi il novanta per cento, e il coseno medio vale zero virgola zero tre. Sotto ogni istogramma, la quota di coppie con coseno sotto un decimo: dieci per cento in tre dimensioni, sessantotto in cento, novantanove virgola otto in mille."
 :width: 100%
 
-Il coseno fra due direzioni sorteggiate a caso, misurato su tremila direzioni
+Il coseno fra due direzioni estratte a caso, misurato su tremila direzioni
 per ogni spazio e diviso in venti fasce. In tre dimensioni le fasce sono tutte
 ugualmente piene, cioè fra due direzioni può capitare qualunque angolo; in
 mille ne resta piena una sola, appoggiata allo zero, e il 99,8% delle coppie
 sta sotto un decimo.
 ```
 
-La media da sola non distingue una distribuzione che si è spostata da una che si è
-stretta, e {numref}`fig-quasi-perpendicolari` fa vedere che è la seconda.
-Si sorteggiano tremila direzioni in mille dimensioni, cioè tre volte più direzioni
-che dimensioni: fra i quattro milioni e mezzo di coppie possibili la più
-allineata di tutte ha coseno $0{,}166$, che è un angolo di poco più di ottanta
-gradi. Le stesse tremila direzioni in tre dimensioni danno invece coseno
-massimo $1{,}0$: là dentro non c'è posto, e due finiscono per sovrapporsi.
+La media da sola non distingue una distribuzione che si è spostata da una che
+si è stretta, e {numref}`fig-quasi-perpendicolari` fa vedere che è la seconda.
+Consideriamo tremila direzioni estratte a caso in mille dimensioni, cioè tre
+volte più direzioni che dimensioni. Fra i quattro milioni e mezzo di coppie
+possibili, la più allineata di tutte ha coseno $0{,}166$, che corrisponde a un
+angolo di poco più di ottanta gradi. Le stesse tremila direzioni in tre
+dimensioni danno invece coseno massimo $1{,}0$, poiché là dentro non c'è posto
+e due finiscono per sovrapporsi.
 
 La stessa capienza rende plausibile un'operazione che a prima vista sembra
 sconsiderata: sommare due informazioni diverse dentro gli stessi numeri invece
-di tenerle in caselle separate. Se le due liste puntano in direzioni quasi
-perpendicolari la somma le contiene tutte e due, e ciascuna sporca l'altra di
+di tenerle in caselle separate. Se i due vettori puntano in direzioni quasi
+perpendicolari la somma li contiene tutti e due, e ciascuno disturba l'altro di
 poco (in mille dimensioni, di quei due centesimi e mezzo), quindi una rete può
-imparare a tenerle distinte. Lo fa il Transformer, che somma all'embedding
+imparare a tenerli distinti. Ad esempio, il Transformer somma all'embedding
 di una parola la codifica della sua posizione, come racconta la {doc}`sezione
-sull'architettura del Transformer </Transformers/architettura>`; gli autori lo
-motivano con la dimensione (le due liste hanno la stessa lunghezza
-$d_{\text{model}}$, e quindi si possono sommare) {cite}`vaswani2017attention`,
-non con la perpendicolarità.
+sull'architettura del Transformer </Transformers/architettura>`; gli autori
+lo motivano con la dimensione (i due vettori hanno lo stesso numero
+di componenti, $d_{\text{model}}$, e quindi si possono sommare)
+{cite}`vaswani2017attention`, non con la perpendicolarità.
 
 ## In pratica, con NumPy
 
@@ -1150,9 +1207,9 @@ np.linalg.pinv(A)                      # la pseudoinversa, troncata a rcond
 ```
 
 Il proiettore costruito per esteso vale come esercizio e mai come codice di
-produzione: costa $\Theta(m^2 n)$, e l'inversa che compare nella sua formula è
-quella di $\mathbf{A}^\top\mathbf{A}$, il passaggio che eleva al
-quadrato il condizionamento. Nel lavoro vero si usa `lstsq`, e se serve la
+produzione, poiché costa $\Theta(m^2 n)$, e l'inversa che compare nella sua
+formula è quella di $\mathbf{A}^\top\mathbf{A}$, il passaggio che eleva al
+quadrato il condizionamento. Nelle applicazioni si usa `lstsq`, e se serve la
 proiezione la si ottiene come `A @ coefficienti`.
 
 `````{tab} Elementare
@@ -1184,7 +1241,7 @@ proiezione la si ottiene come `A @ coefficienti`.
   scritto nei pesi scartati: quadrato di ciascuno, somma, radice. Vale anche
   caso per caso, perché nessuna riga sbaglia più del peso più grosso fra quelli
   buttati. Se i pesi sono tutti simili non c'è niente da guadagnare, e se
-  alcune caselle mancano il conto non vale più.
+  alcune caselle mancano il calcolo non vale più.
 - Quando le ricette ugualmente buone sono più di una, si tiene quella che
   spalma le dosi invece di concentrarle, cioè quella con la somma dei quadrati
   più piccola. Due direzioni quasi identiche vanno contate come una sola, sotto
@@ -1247,5 +1304,5 @@ pseudoinversa quello in cui sono troppo pochi, due casi che la {doc}`sezione
 sui sistemi lineari </Matematica/sistemi-lineari>` aveva descritto soltanto; i
 valori singolari, ordinati, hanno detto che cosa tenere quando non si può
 tenere tutto. Resta da vedere come una trasformazione lineare cambia le aree e
-i volumi: lo dice un numero solo, il determinante, che misura quanto una
+i volumi, e lo dice un numero solo, il determinante, che misura quanto una
 trasformazione gonfia o comprime lo spazio su cui lavora.

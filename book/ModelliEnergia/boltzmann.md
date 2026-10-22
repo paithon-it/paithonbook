@@ -4,7 +4,7 @@ La pallina di Hopfield ha un difetto di fabbrica: può solo scendere. Se
 l'indizio la deposita sul pendio sbagliato, finisce nella valle sbagliata (o
 in un ricordo fantasma) e da lì non esce più.
 
-Un limite più profondo è che la rete *ricorda* ma non *inventa*. Le sue
+Un limite più profondo è che la rete *ricorda* ma non *inventa*. Infatti le sue
 venticinque caselle coincidono una a una con le venticinque caselle del
 disegno da ricordare, e non gliene resta nessuna libera per annotarsi qualcosa
 di suo, per esempio che nelle tre lettere le caselle accese sono sempre nove
@@ -15,14 +15,16 @@ Ai due limiti risponde la **macchina di Boltzmann**, che aggiunge alla rete di
 Hopfield due ingredienti: la temperatura (la scossa della ricottura simulata,
 presentata nell’{doc}`apertura sui modelli a energia </ModelliEnergia/overview>`)
 e i **neuroni nascosti**,
-le caselle libere per gli appunti. Si chiamano così perché non si vedono
+le caselle libere per gli appunti.
+
+Si chiamano così perché non si vedono
 né in entrata né in uscita, come i neuroni degli strati intermedi di una rete,
 mentre le caselle su cui si posano i dati si dicono per contrasto visibili.
-Il nome compare già nel 1983, in un lavoro di Scott Fahlman, Geoffrey Hinton e
-Terrence Sejnowski {cite}`fahlman1983massively`; l'articolo che ne fissa
-l'algoritmo di apprendimento,
-quello di cui si parla qui, è del 1985 e porta la firma di David Ackley,
-Hinton e Sejnowski
+
+Il nome della macchina compare già nel 1983, in un lavoro di Scott Fahlman,
+Geoffrey Hinton e Terrence Sejnowski {cite}`fahlman1983massively`; l'articolo
+che ne fissa l'algoritmo di apprendimento, quello di cui si parla qui, è del
+1985 e porta la firma di David Ackley, Hinton e Sejnowski
 {cite}`ackley1985learning`.
 
 Il nome è un omaggio a Ludwig Boltzmann, uno dei padri della meccanica
@@ -37,12 +39,12 @@ caldo. Sono le stesse proporzioni, con la stessa formula.
 Quel tempo è una probabilità. Se la rete può arrivare da ogni configurazione a
 ogni altra (con la temperatura sopra zero è così), la frazione di tempo che
 passa in una regione dello spazio degli stati tende, a lungo andare, alla
-probabilità $P$ di quella regione: osservandola a intervalli regolari un
-milione di volte e trovandola trentamila volte in fondo a una certa valle, la
-probabilità di quella valle è circa il 3%. È la porta da cui un'altezza diventa
-una probabilità, e il pedaggio da pagare per attraversarla è la funzione di
-partizione, a cui è intitolata
-{doc}`Oltre la partizione </ModelliEnergia/oltre-la-partizione>`.
+probabilità $P$ di quella regione. Ad esempio, osservandola a intervalli
+regolari un milione di volte e trovandola trentamila volte in fondo a una certa
+valle, la probabilità di quella valle è circa il 3%. È la porta da cui
+un'altezza diventa una probabilità, e il pedaggio da pagare per attraversarla è
+la funzione di partizione, a cui è intitolata {doc}`Oltre la partizione
+</ModelliEnergia/oltre-la-partizione>`.
 
 `````{tab} Elementare
 
@@ -61,36 +63,40 @@ nessuna casella del dato e servono alla rete per annotare regolarità sue
 Imparare diventa un confronto fra due modi di stare al mondo. Nella *veglia* la
 macchina guarda i dati veri e segna quali coppie di caselle si accendono
 insieme. Le coppie, e non altro: i suoi legami collegano due caselle per volta,
-e non sa segnare altro. Una regola come «nella riga in cima le caselle accese
+e non sa segnare altro.
+
+Una regola come «nella riga in cima le caselle accese
 sono sempre in numero pari» riguarda cinque caselle insieme, e con legami a due
 a due non si scrive. Si vede già con tre caselle: i modi di accenderne un
 numero pari sono quattro (nessuna, la prima e la seconda, la prima e la terza,
 la seconda e la terza). Guardando soltanto la prima e la seconda, in quei
 quattro disegni sono accese insieme una volta, spente insieme una volta, e
 discordi due volte, come se le avessi tirate a sorte con due
-monete; e lo stesso vale per ogni altra coppia. I legami, che guardano due
-caselle alla volta, non hanno niente da segnare.
+monete; e lo stesso vale per ogni altra coppia. Quindi i legami, che
+guardano due caselle alla volta, non hanno niente da segnare.
 
 È qui che i taccuini si guadagnano il posto. Ogni taccuino ha un legame con
 ciascuna casella del disegno, e può imparare ad accendersi quando ne vede
-accese almeno un certo numero: uno da una in su, uno da due in su, e così via.
-Dai taccuini accesi si legge quante caselle sono accese, e quindi se sono pari:
-una regolarità che riguarda parecchie caselle insieme la macchina la impara
-appoggiandola lì. Nel *sogno* la si lascia inventare configurazioni per conto
-suo, e si segna la stessa cosa.
+accese almeno un certo numero: uno da una in su, uno da due in su, e
+così via. Dai taccuini accesi si legge quante caselle sono accese, e quindi se
+sono pari. Così la macchina impara una regolarità che riguarda parecchie
+caselle insieme, appoggiandola ai taccuini. Nel *sogno* la si lascia inventare
+configurazioni per conto suo, e si segna la stessa cosa.
 
 Poi si ritoccano i legami, e ritoccare un legame vuol dire deformare il
-paesaggio: sono i legami a decidere l'altezza di ogni punto. Rinforzare quello
-che si vede da svegli abbassa il terreno sotto i dati veri; indebolire quello
-che si vede solo in sogno lo alza sotto le fantasie. Un solo ritocco, guardato
-da due parti. Si smette quando i sogni sono indistinguibili dalla veglia:
-quello che la macchina si immagina ha le stesse regolarità di quello che ha
-visto.
+paesaggio, perché sono i legami a decidere l'altezza di ogni punto. Rinforzare
+quello che si vede da svegli abbassa il terreno sotto i dati veri; indebolire
+quello che si vede solo in sogno lo alza sotto le fantasie. Un solo ritocco,
+guardato da due parti. Si smette quando i sogni sono indistinguibili dalla
+veglia, cioè quando quello che la macchina si immagina ha le stesse regolarità
+di quello che ha visto.
 
 Il problema è il tempo. Per sognare bene bisogna lasciarla scuotere finché le
 proporzioni non smettono di cambiare, cioè finché altre mille occhiate non
 spostano più i conteggi: solo allora si è fotografato il paesaggio e non un
-pezzo di passeggiata, e quel momento arriva tardissimo. Nella macchina del 1985
+pezzo di passeggiata, e quel momento arriva tardissimo.
+
+Nella macchina del 1985
 anche la veglia era carissima, perché i taccuini sono collegati anche fra loro:
 nessuno può decidere se accendersi finché non sa che cosa stanno facendo gli
 altri. Anche con i dati veri sotto gli occhi, quindi, bisognava aspettare che
@@ -114,19 +120,19 @@ dove $h_i = \sum_{j \neq i} w_{ij} s_j$ è il campo locale, $\sigma$ la
 Il fattore 2 non è un refuso e non è universale, perché viene dalla convenzione
 $s_i \in \{-1,+1\}$ degli spin, quella con cui la {doc}`sezione sulla memoria
 associativa </ModelliEnergia/memoria-associativa>` ha scritto l'energia;
-Hopfield, nel 1982, usava $\{0,1\}$. Il conto è il rapporto di Gibbs fra i due
-stati possibili del neurone, che con quella convenzione valgono $E(s_i = \pm 1) =
-\mp h_i + \text{cost}$, e quindi distano $\Delta E = 2h_i$:
+Hopfield, nel 1982, usava $\{0,1\}$. Il calcolo è il rapporto di Gibbs fra i
+due stati possibili del neurone, che con quella convenzione valgono
+$E(s_i = \pm 1) = \mp h_i + \text{cost}$, e quindi distano $\Delta E = 2h_i$:
 
 $$
 P(s_i = +1) = \frac{e^{h_i/T}}{e^{h_i/T} + e^{-h_i/T}}
 = \frac{1}{1 + e^{-2h_i/T}} .
 $$
 
-È quel salto di $2h_i$, e non $h_i$, a produrre il 2. Chi confronta con
-altre fonti tenga d'occhio la convenzione: l'articolo originale di Ackley,
-Hinton e Sejnowski usa unità in $\{0,1\}$, dove il salto è $h_i$ e la formula
-è $\sigma(h_i/T)$ senza il fattore, la stessa forma delle condizionali
+È quel salto di $2h_i$, e non $h_i$, a produrre il 2. Chi confronta con altre
+fonti tenga d'occhio la convenzione. Ad esempio, l'articolo originale di
+Ackley, Hinton e Sejnowski usa unità in $\{0,1\}$, dove il salto è $h_i$ e la
+formula è $\sigma(h_i/T)$ senza il fattore, la stessa forma delle condizionali
 dell'RBM, che compaiono con la contrastive divergence.
 
 Per $T \to 0$ si ritrova l'aggiornamento deterministico di Hopfield; per $T$
@@ -142,8 +148,10 @@ Z = \sum_{\mathbf{s}'} e^{-E(\mathbf{s}')/T},
 $$
 
 dove $Z$ (la funzione di partizione) somma su tutti i $2^N$ stati possibili.
-Rende la rete un vero modello probabilistico, e il suo calcolo diventa
-proibitivo. Anche qui le ipotesi vanno dette, perché sono quattro e sono tutte
+Questa somma rende la rete un vero modello probabilistico, ma il suo calcolo
+diventa proibitivo.
+
+Anche qui le ipotesi vanno dette, perché sono quattro e sono tutte
 necessarie. I pesi devono restare simmetrici: senza $w_{ij} = w_{ji}$ la
 dinamica ha in generale una distribuzione stazionaria diversa da questa, e di
 solito senza forma chiusa (qui la simmetria ha una funzione diversa da quella
@@ -157,7 +165,9 @@ bilancio dettagliato; con una scansione in ordine fisso (o per permutazioni,
 come nel codice della memoria di Hopfield) resta l'invarianza ma la catena
 composta non è reversibile. La temperatura dev'essere $T > 0$ (a $T = 0$ la
 catena si inchioda nel primo minimo). E ogni neurone va visitato infinitamente
-spesso. I neuroni si dividono in visibili (dove si presentano i dati) e
+spesso.
+
+I neuroni si dividono in visibili (dove si presentano i dati) e
 nascosti (variabili latenti che catturano regolarità di ordine superiore).
 L'apprendimento massimizza la verosimiglianza dei dati sui visibili, e il
 gradiente ha una forma di contrasto di rara eleganza:
@@ -169,12 +179,16 @@ $$
 
 dove $\langle \cdot \rangle$ è il valore atteso (le parentesi angolari sono la
 notazione dei fisici per l’$\mathbb{E}[\cdot]$ del resto del libro, e qui si
-tengono perché è così che la formula si trova in letteratura). Il primo
+tengono perché è così che la formula si trova in letteratura).
+
+Il primo
 termine è la correlazione media tra i neuroni $i$ e $j$ con i
 visibili bloccati sui dati (fase positiva, la «veglia»), e il secondo la
 stessa correlazione con la rete libera di campionare da sé (fase negativa,
 il «sogno»). Il «$\propto$» nasconde un $1/T$: il tasso di apprendimento
-effettivo dipende dalla temperatura a cui si raccolgono le statistiche. La
+effettivo dipende dalla temperatura a cui si raccolgono le statistiche.
+
+La
 derivazione è quella che {doc}`Oltre la partizione
 </ModelliEnergia/oltre-la-partizione>` svolge per un'energia qualunque,
 applicata due volte:
@@ -190,7 +204,9 @@ non è solo il secondo termine: lo sono tutti e due. Con i visibili
 bloccati sui dati la media $\langle s_i s_j \rangle_{\text{dati}}$ non ha
 forma chiusa, perché le unità nascoste sono interconnesse fra loro, e va
 stimata anch'essa portando una catena all'equilibrio, per *ogni* vettore
-d'addestramento. Ackley, Hinton e Sejnowski, nell'esperimento 40-10-40 del
+d'addestramento.
+
+Ackley, Hinton e Sejnowski, nell'esperimento 40-10-40 del
 loro articolo, ricuociono la rete una volta con ciascuno dei quaranta vettori
 bloccati e altrettante volte senza bloccare niente, per ogni passo di
 gradiente: ottanta ricotture per un solo aggiornamento dei pesi. La fase
@@ -209,10 +225,12 @@ scrive: una differenza fra due divergenze di Kullback e Leibler, la misura
 (costruita nel {doc}`capitolo sulla teoria dell'informazione
 </Matematica/teoria-informazione>`) di quanto una distribuzione si discosta da
 un'altra, $\mathrm{KL}(p_0 \,\|\, p_\theta) - \mathrm{KL}(p_k \,\|\,
-p_\theta)$. Qui $p_\theta$ è la distribuzione del modello, $p_0$ quella dei
+p_\theta)$.
+
+Qui $p_\theta$ è la distribuzione del modello, $p_0$ quella dei
 dati e $p_k$ quella del sogno abbreviato, cioè degli stati in cui arriva la
 rete lasciata evolvere per $k$ passi partendo dai dati. Dentro c'è il contrasto
-fra veglia e sogno. In breve, si rinuncia al sogno completo: invece di lasciar
+fra veglia e sogno. In breve, si rinuncia al sogno completo. Invece di lasciar
 sognare la macchina finché il sogno non si assesta, la si fa partire da un dato
 vero e le si concede un istante solo di fantasia.
 
@@ -221,8 +239,9 @@ vero e le si concede un istante solo di fantasia.
 Si bara in due modi. Il primo è non lasciar sognare la macchina fino in
 fondo: la si fa partire da un dato vero e le si concede un istante solo di
 fantasia. Il sogno che ne esce è appena abbozzato, costa un attimo invece di
-un'eternità, ma basta. Il
-difetto è prevedibile: partendo sempre da cose vere, la macchina non va mai a
+un'eternità, ma basta.
+
+Il difetto è prevedibile: partendo sempre da cose vere, la macchina non va mai a
 curiosare nelle regioni in cui si sbaglia di grosso, e quelle regioni restano
 sbagliate perché nessuno ci va ad alzare il terreno.
 
@@ -236,7 +255,9 @@ La scorciatoia, però, non è gratuita. Di solito, quando una macchina impara,
 c'è un numero che dice quanto sta sbagliando. Non è l'energia: l'energia è il
 voto dato a una singola risposta, questo è un voto dato all'intera macchina, e
 lo si guarda una volta ogni tanto. Imparare è farlo calare: finché
-cala si è sulla strada giusta, e quando smette si è arrivati. Quel numero, qui,
+cala si è sulla strada giusta, e quando smette si è arrivati.
+
+Quel numero, qui,
 resta fuori portata: calcolarlo vorrebbe dire misurare il paesaggio intero, il
 conto di cui si occupa la sezione {doc}`Oltre la partizione
 </ModelliEnergia/oltre-la-partizione>`. Lo si può soltanto stimare, con
@@ -245,7 +266,8 @@ due macchine a lavoro finito. I ritocchi del sogno abbreviato somigliano a
 quelli che farebbero scendere quel numero, ma non sono i suoi, e nel caso più
 studiato si è dimostrato che non sono nemmeno la discesa di nessun altro
 numero. Nessuno può garantire che la macchina stia andando verso qualcosa
-invece che in tondo. In pratica, sulle reti di allora, funzionava benissimo.
+invece che in tondo. In pratica, sulle reti di allora, funzionava
+benissimo.
 
 `````
 
@@ -271,7 +293,9 @@ condizionale si fattorizza:
 $p(h_j = 1 \mid \mathbf{v}) = \sigma\big(b_j + (\mathbf{W}^\top \mathbf{v})_j\big)$
 e $p(v_i = 1 \mid \mathbf{h}) = \sigma\big(a_i + (\mathbf{W}\mathbf{h})_i\big)$,
 la sigmoide senza fattore 2 delle unità in $\{0,1\}$. Quindi la fase positiva ha
-forma chiusa, e ogni strato si campiona in blocco, in parallelo. Il gradiente
+forma chiusa, e ogni strato si campiona in blocco, in parallelo.
+
+Il gradiente
 della log-verosimiglianza rispetto ai pesi è
 $\mathbb{E}_{\text{dati}}\big[\mathbf{v}\,\mathbb{E}[\mathbf{h} \mid
 \mathbf{v}]^\top\big] -
@@ -286,11 +310,11 @@ $$
 \hat{\mathbf{h}}^{(t)} = \sigma\big(\mathbf{b} + \mathbf{W}^\top \mathbf{v}^{(t)}\big).
 $$
 
-Per $k \to \infty$ si ritrova il gradiente esatto; a $k$ finito
-l'aggiornamento trascura il termine che nasce dal fatto che anche $p_k$ dipende
-dai parametri. Costa $O(k \, n_v n_h)$ per esempio di addestramento. È l'RBM a
-riparare la metà cara di cui sopra; la contrastive divergence accorcia
-l'altra.
+Per $k \to \infty$ si ritrova il gradiente esatto; a $k$ finito l'aggiornamento
+trascura il termine che nasce dal fatto che anche $p_k$ dipende dai parametri.
+Costa $O(k \, n_v n_h)$ per esempio di addestramento. L'RBM ripara la fase
+positiva, la metà cara da rifare dato per dato; la contrastive divergence
+accorcia l'altra.
 
 Nell'RBM le nascoste si sommano via una alla volta, e la marginale dei visibili
 è $p(\mathbf{v}) = e^{-F(\mathbf{v})}/Z$ con l’*energia libera*
@@ -304,7 +328,9 @@ che si calcola in $O(n_v n_h)$. Da lì i gradienti rispetto alle soglie hanno la
 stessa forma di contrasto: $\mathbb{E}_{\text{dati}}[\mathbf{v}] -
 \mathbb{E}_{p}[\mathbf{v}]$ per $\mathbf{a}$ e
 $\mathbb{E}_{\text{dati}}[\hat{\mathbf{h}}] - \mathbb{E}_{p}[\mathbf{h}]$ per
-$\mathbf{b}$. Fuori portata resta soltanto $Z$, che somma $e^{-F}$ su $2^{n_v}$
+$\mathbf{b}$.
+
+Fuori portata resta soltanto $Z$, che somma $e^{-F}$ su $2^{n_v}$
 configurazioni (o, simmetricamente, su $2^{n_h}$ configurazioni delle
 nascoste): si calcola esattamente in $O(2^{\min(n_v, n_h)}\, n_v n_h)$ finché
 il minimo dei due resta sotto una ventina di unità, e oltre si stima, per
@@ -314,17 +340,19 @@ perché la log-verosimiglianza che la contrastive divergence non segue si può
 misurare solo passando da $Z$.
 
 Quell'aggiornamento va descritto con precisione, perché due proprietà diverse
-si confondono con facilità. Una stima *distorta* del gradiente della
-log-verosimiglianza l'aggiornamento lo è per costruzione: la fase negativa
-esatta viene sostituita da una catena fermata dopo un passo, e la sostituzione
-introduce una distorsione. Quello che non è, è il gradiente *esatto* di
-qualche funzione. Sutskever e Tieleman ne danno due dimostrazioni, attribuendo
-il risultato a Tieleman (2007), per l'aggiornamento CD1 *noiseless* (cioè con
-le attese calcolate esattamente, non stimate) su RBM binarie
-{cite}`sutskever2010convergence`. Il perimetro finisce lì, e sono loro a
-dirlo: non sono riusciti a escludere che CD stia comunque minimizzando
-qualcosa per altra via, e chiudono scrivendo che dimostrare la convergenza di
-CD resta un problema aperto. Si può poi costruire un termine di penalità
+si confondono con facilità. L'aggiornamento è per costruzione una stima
+*distorta* del gradiente della log-verosimiglianza: la fase negativa esatta
+viene sostituita da una catena fermata dopo un passo, e la sostituzione
+introduce una distorsione. Non è invece il gradiente *esatto* di qualche
+funzione. Sutskever e Tieleman ne danno due dimostrazioni, attribuendo il
+risultato a Tieleman (2007), per l'aggiornamento CD1 *noiseless* (cioè con le
+attese calcolate esattamente, non stimate) su RBM binarie
+{cite}`sutskever2010convergence`. Il perimetro finisce lì, e sono loro a dirlo:
+non sono riusciti a escludere che CD stia comunque minimizzando qualcosa per
+altra via, e chiudono scrivendo che dimostrare la convergenza di CD resta un
+problema aperto.
+
+Si può poi costruire un termine di penalità
 (artificioso, ma legittimo) che lo fa ciclare all'infinito invece di fermarsi,
 mentre con la penalità $L^2$ di tutti i giorni gli stessi autori dimostrano
 che un punto fisso esiste per le macchine di Boltzmann completamente visibili;
@@ -406,7 +434,9 @@ quelle che stanno in mezzo.
 Nella rete ristretta ogni strada fra due taccuini passa per le caselle dei dati.
 Con i dati davanti, allora, i taccuini non si dicono niente, e per questo
 ognuno decide da sé; lo stesso vale al contrario, per le caselle, quando i
-taccuini sono fissati. Non bisogna però leggerci più di questo. Senza guardare i
+taccuini sono fissati.
+
+Non bisogna però leggerci più di questo. Senza guardare i
 dati i taccuini non sono affatto indipendenti: se due taccuini sono legati alla
 stessa casella, uno acceso rende più probabile che quella casella sia accesa, e
 la casella accesa rende più probabile che si accenda anche l’altro. Il
@@ -416,7 +446,9 @@ arriva mai più forte, e di solito arriva più debole.
 
 Il disegno dice anche come è fatto il paesaggio. L’altezza di un punto si
 calcola sommando dei pezzi, e ogni pezzo può guardare soltanto caselle che si
-toccano tutte a due a due. Prendi tre caselle legate a triangolo. Nella
+toccano tutte a due a due.
+
+Prendi tre caselle legate a triangolo. Nella
 macchina di Boltzmann i pezzi sono tre, uno per legame: uno guarda la prima e
 la seconda casella, uno la seconda e la terza, uno la prima e la terza, e
 ciascuno abbassa o alza il paesaggio secondo come stanno le sue due. Siccome le
@@ -449,7 +481,9 @@ p(\mathbf{s}) = \frac{1}{Z} \prod_{C \in \mathcal{C}} \psi_C(\mathbf{s}_C)
 $$
 
 cioè un modello a energia con un termine per cricca e la sua funzione di
-partizione {cite}`hastie2009elements`. Il grafo non fissa però l’ordine delle
+partizione {cite}`hastie2009elements`.
+
+Il grafo non fissa però l’ordine delle
 interazioni: su un triangolo stanno sia tre potenziali a coppie sia uno solo a
 tre. La macchina di Boltzmann è la scelta a coppie, la più parsimoniosa, con un
 parametro per legame: $E(\mathbf{s}) = -\sum_{(i,j) \in E} w_{ij}\, s_i s_j$ più
@@ -468,21 +502,24 @@ p(\mathbf{h}) \propto e^{\mathbf{b}^{\!\top}\mathbf{h}}
 $$
 
 e ogni fattore dipende da tutte le $h_j$ legate alla visibile $i$: le nascoste
-si accoppiano attraverso le visibili che condividono. Quanto la dipendenza si
-attenui lungo un cammino il grafo non lo determina. Su un albero, dove il
+si accoppiano attraverso le visibili che condividono.
+
+Il grafo non determina quanto la dipendenza si attenui lungo un
+cammino. Su un albero, dove il
 cammino fra due nodi è unico, ogni nodo intermedio li separa, e l’informazione
 mutua non può crescere allontanandosi (è la disuguaglianza di elaborazione dei
 dati); con cicli e accoppiamenti forti questa garanzia non c’è.
 
 `````
 
-Il conto prende una rete ristretta minuscola, tre visibili e due nascosti, con
-i legami scelti a mano: il primo visibile è legato a tutti e due i nascosti, il
-secondo solo al primo, il terzo solo al secondo. Con così poche variabili la
-distribuzione si calcola per intero, $Z$ compresa, e le indipendenze si misurano
-invece di supporle. La misura è la correlazione, che vale zero quando una
-variabile non dice niente dell’altra, uno quando si accendono e si spengono
-sempre insieme, e negativa quando vanno in senso opposto.
+Il calcolo parte da una rete ristretta minuscola, tre visibili e due nascosti,
+con i legami scelti a mano: il primo visibile è legato a tutti e due i
+nascosti, il secondo solo al primo, il terzo solo al secondo. Con così poche
+variabili la distribuzione si calcola per intero, $Z$ compresa, e le
+indipendenze si misurano invece di supporle. La misura è la correlazione, che
+vale zero quando una variabile non dice niente dell’altra, uno quando si
+accendono e si spengono sempre insieme, e negativa quando vanno in senso
+opposto.
 
 ```python
 import itertools
@@ -530,7 +567,9 @@ visibili 2 e 3, nascosti ignorati: 0.065
 Con i visibili fissati la correlazione fra i due nascosti è zero anche nel
 caso peggiore, cioè nella combinazione di visibili accesi e spenti in cui si
 allontana di più da zero; e lo stesso vale per i visibili 1 e 2 con i nascosti
-fissati. Ignorando i visibili, i due nascosti si correlano a 0,277, perché sono
+fissati.
+
+Ignorando invece i visibili, i due nascosti si correlano a 0,277, perché sono
 legati allo stesso primo visibile; ignorando i nascosti, i visibili 1 e 2 si
 correlano a 0,256, perché condividono il primo nascosto. I visibili 2 e 3 non
 hanno nessun vicino in comune, e la strada più corta fra loro passa per tutti e
@@ -541,10 +580,12 @@ La coppia RBM più contrastive divergence rimise in moto il deep learning a
 metà anni Duemila, quando addestrare reti profonde sembrava
 impossibile {cite}`hinton2006fast`. L'idea era di preparare la rete uno strato
 alla volta, senza etichette, prima di addestrarla tutta insieme: è il
-*pre-training*, e la ricetta si chiamava *greedy layer-wise*, cioè avida,
+*pre-training*, e la procedura si chiamava *greedy layer-wise*, cioè avida,
 strato per strato. Si addestra una RBM sui dati; la si congela, e i suoi
 nascosti, accesi o spenti dai dati, diventano i visibili di una seconda RBM, e
-così via; solo alla fine si rifinisce l’intera rete con le etichette. Bengio e
+così via; solo alla fine si rifinisce l’intera rete con le etichette.
+
+Bengio e
 colleghi mostrarono che lo schema funziona anche con gli autoencoder, le reti
 che imparano a ricostruire i propri dati, al posto delle RBM
 {cite}`bengio2007greedy`. Erhan e colleghi misero alla prova il perché, e

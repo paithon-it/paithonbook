@@ -1,0 +1,14 @@
+# Le postille di questa pagina, una per capoverso del testo comune.
+# Ognuna vale finché la sua impronta combacia col testo del capoverso.
+- inizio: "Il procedimento che il manuale insegna"
+  impronta: "0b5a35dc760f"
+  postilla: "Eliminazione di Gauss: il procedimento del manuale cinese, con quantità negative"
+- inizio: "Oggi una libreria esegue il calcolo"
+  impronta: "38461d88e000"
+  postilla: "Nessuna soluzione o infinite: i due casi tipici del machine learning"
+- inizio: "Nel problema del grano e nella"
+  impronta: "3688399d6e1b"
+  postilla: "Mille punti col rumore: nessuna retta esatta; più parametri che esempi: infinite"
+- inizio: "`lstsq` invece non si ferma mai:"
+  impronta: "33c7dea6c719"
+  postilla: "Norma minima o errore minimo: risponde sempre, e il caso resta da riconoscere"

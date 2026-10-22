@@ -38,7 +38,7 @@ cinque casi, e perché funzionano senza che nessuno etichetti niente?
 
 ## Un compito la cui risposta è già nei dati
 
-Il nome è **apprendimento auto-supervisionato**, e la definizione, che
+Il nome è **apprendimento auto-supervisionato**. La definizione, che
 {doc}`Imparare a vedere senza etichette </VisioneArtificiale/senza-etichette>`
 ha già dato per le immagini, sta in una riga: si costruisce un compito, il
 pretesto (*pretext task*), il cui bersaglio si ricava dal dato con
@@ -49,12 +49,13 @@ costruirsi per riuscirci.
 La prima differenza con l'apprendimento supervisionato dei capitoli precedenti
 sta in chi scrive la risposta giusta. Là la scriveva una persona, esempio per
 esempio; qui la si ricava dal dato stesso: quale parola avevo coperto, quale
-pezzo di immagine avevo ritagliato, quale fotogramma viene dopo. Nei modelli
-che indovinano la parola coperta o la parola successiva il resto non cambia: la
-rete è quella del supervisionato, la perdita è la stessa cross-entropia, e il
-bersaglio prende il posto dell'etichetta. Nei metodi che confrontano due
-versioni della stessa immagine cambiano invece anche la perdita e
-l'architettura, ed è la materia delle {doc}`quattro famiglie
+pezzo di immagine avevo ritagliato, quale fotogramma viene dopo.
+
+Nei modelli che indovinano la parola coperta o la parola successiva il resto
+non cambia: la rete è quella del supervisionato, la perdita è la stessa
+cross-entropia, e il bersaglio prende il posto dell'etichetta. Nei metodi che
+confrontano due versioni della stessa immagine cambiano invece anche la perdita
+e l'architettura, ed è la materia delle {doc}`quattro famiglie
 </AutoSupervisione/famiglie>`. In tutti i casi la risposta c'era già, e la si è
 solo nascosta per un momento.
 
@@ -117,9 +118,9 @@ Ne vengono tre conti, che danno tetti e non misure:
   per l'intera traiettoria, comunque lunga sia.
 
 L'ultima riga decide, e per il denominatore più che per la dimensione del
-numero: nel supervisionato e nell'auto-supervisionato il bersaglio si misura
-per esempio o per token, nel rinforzo per episodio. Un episodio può durare un
-passo oppure diecimila.
+numero. Infatti, nel supervisionato e nell'auto-supervisionato il bersaglio si
+misura per esempio o per token, nel rinforzo per episodio, e un episodio può
+durare un passo oppure diecimila.
 
 `````
 
@@ -311,13 +312,14 @@ dopo.
 Cinque pretesti diversi e un meccanismo solo, con il linguaggio che ci arriva
 per due strade, la parola coperta e la parola successiva. La colonna di mezzo
 cambia sempre; quella di destra dice quasi sempre la stessa cosa, una
-rappresentazione: il vettore $\mathbf{h} = f_\theta(\mathbf{x})$ che la parte
-di rete chiamata encoder, $f_\theta$, calcola da ogni dato $\mathbf{x}$, e che
-i compiti successivi usano come ingresso. Quando il pretesto si scarta, si
-tiene l'encoder. Fa eccezione il modello di linguaggio che indovina la parola
-successiva: lì il pretesto coincide con l'uso, perché generare un testo
-equivale a prevederne la parola dopo, e del modello si tiene tutto, testa di
-previsione compresa.
+rappresentazione, cioè il vettore $\mathbf{h} = f_\theta(\mathbf{x})$ che la
+parte di rete chiamata encoder, $f_\theta$, calcola da ogni dato $\mathbf{x}$,
+e che i compiti successivi usano come ingresso.
+
+Quando il pretesto si scarta, si tiene l'encoder. Fa eccezione il modello di
+linguaggio che indovina la parola successiva: lì il pretesto coincide con l'uso,
+perché generare un testo equivale a prevederne la parola dopo, e del modello si
+tiene tutto, testa di previsione compresa.
 
 Una riga della tabella sta sul confine. Nell'allineamento fra immagini e
 didascalie la risposta giusta non l'ha ricavata una regola meccanica: la

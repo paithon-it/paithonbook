@@ -17,20 +17,22 @@ modello di linguaggio. A ripeterlo da anni, con poche variazioni, in conferenze
 e interviste, non è uno scettico qualsiasi ma Yann LeCun, premio Turing 2018 e
 uno dei padri del deep learning. Mentre mezzo mondo si stupiva di ciò che sanno
 scrivere i grandi modelli di linguaggio, uno dei loro nonni intellettuali
-indicava un gatto. È una provocazione calcolata, e va presa sul serio: che cosa
-sa fare, un gatto? Non risolve integrali e non scrive sonetti;
-però salta sul mobile calibrando la traiettoria al primo colpo, prevede da che
-parte sbucherà il gomitolo rotolato sotto il divano, e se una mossa è finita
-male non la ripete tale e quale.
+indicava un gatto.
+
+È una provocazione calcolata, e va presa sul serio: che cosa sa fare, un gatto?
+Non risolve integrali e non scrive sonetti, ma salta sul mobile calibrando la
+traiettoria al primo colpo, prevede da che parte sbucherà il gomitolo rotolato
+sotto il divano, e se una mossa è finita male non la ripete tale e quale.
 
 Prima del gatto c'è il bambino. A pochi mesi di vita un neonato si stupisce
 quando un giocattolo nascosto da uno schermo, una volta abbassato lo schermo,
 non c'è più; entro il primo anno si stupisce se un oggetto resta sospeso a
 mezz'aria invece di cadere. Lo stupore si misura da quanto a lungo guarda la
-scena impossibile rispetto a una possibile (è il metodo della *violazione
-dell'aspettativa*), e misura l'attesa, non la sua origine. Nessuno
-gli ha spiegato la permanenza degli oggetti o la gravità, e nessuno gli ha
-mostrato milioni di esempi etichettati; quanto di quell'attesa venga dal
+scena impossibile rispetto a una possibile (è il metodo della **violazione
+dell'aspettativa**), e misura l'attesa, non la sua origine.
+
+Nessuno gli ha spiegato la permanenza degli oggetti o la gravità, e nessuno gli
+ha mostrato milioni di esempi etichettati; quanto di quell'attesa venga dal
 guardare e quanto sia già lì alla nascita, però, gli psicologi dello sviluppo
 lo discutono, e c'è chi sostiene che i primi sistemi con cui il bambino si
 rappresenta gli oggetti siano innati {cite}`spelke2007core`. LeCun scommette
@@ -38,14 +40,17 @@ sulla prima lettura: guardando, il bambino si costruisce dentro qualcosa che
 gli permette di *aspettarsi* il mondo, cioè un modello.
 
 Il gatto che calcola il salto e il bambino che guarda lo schermo fanno la
-stessa cosa: a ogni istante il mondo dice loro se avevano previsto bene, un
-segnale ricchissimo e gratuito, il genere di informazione che il
+stessa cosa: a ogni istante il mondo dice loro se avevano previsto bene.
+È un segnale ricchissimo e gratuito, il genere di informazione che il
 {doc}`dibattito sul rinforzo </AutoSupervisione/dibattito-rl>` ha messo al
 centro del confronto. Per le macchine lo stesso insegnamento può venire da un
 **world model** (modello del mondo): un sistema che impara da sé ad aspettarsi
 ciò che segue e confronta l'attesa con ciò che accade. È un tentativo in corso,
 e quanto sia il pezzo mancante dell'intelligenza artificiale resta una
 questione aperta.
+
+In questo capitolo vediamo perché un modello del genere serve, come lo si
+costruisce e quali discussioni suscita.
 
 ## Un modello in scala ridotta della realtà
 
@@ -55,31 +60,33 @@ fulminante, *The Nature of Explanation* {cite}`craik1943nature`: se un
 organismo porta nella testa «un "modello in scala ridotta" della realtà
 esterna e delle proprie possibili azioni», scrive, allora può «provare diverse
 alternative, concludere quale sia la migliore e reagire alle situazioni future
-prima che si presentino». Craik morì due anni dopo, a trentun anni, ma quella
-pagina è considerata l'atto di nascita dei *modelli mentali* nelle scienze
-cognitive, e resta la definizione più limpida di world model: un simulatore
-interno che serve a prevedere («cosa succede se lascio il bicchiere?») e quindi
-a pianificare, senza dover provare tutto nel mondo reale.
+prima che si presentino».
+
+Craik morì due anni dopo, a trentun anni, ma quella pagina è considerata l'atto
+di nascita dei *modelli mentali* nelle scienze cognitive, e resta la definizione
+più limpida di world model: un simulatore interno che serve a prevedere («cosa
+succede se lascio il bicchiere?») e quindi a pianificare, senza dover provare
+tutto nel mondo reale.
 
 Il termine «simulatore» ha due sensi. Il simulatore di volo su cui si
-esercitano i piloti l'hanno scritto degli ingegneri, un'equazione dell'aria
-alla volta, e anche questo è un modello del mondo nel senso di Craik. Nella
-letteratura che segue, però, «world model» indica un simulatore *appreso*: le
-regole le ricava dai dati, e resta sempre una copia approssimata. Serve alla
-stessa cosa (esercitarsi senza conseguenze), ma sbaglia per ragioni diverse: un
-simulatore scritto a mano sbaglia dove le sue equazioni semplificano, uno
-appreso dove i dati non l'hanno mai portato. Che forma prendano quegli sbagli lo
-racconta la {doc}`sezione sui mondi in miniatura
+esercitano i piloti, ad esempio, l'hanno scritto degli ingegneri, un'equazione
+dell'aria alla volta, e anche questo è un modello del mondo nel senso di Craik.
+Nella letteratura che segue, però, «world model» indica un simulatore
+*appreso*: le regole le ricava dai dati, e resta sempre una copia approssimata.
+Serve alla stessa cosa (esercitarsi senza conseguenze), ma sbaglia per ragioni
+diverse: un simulatore scritto a mano sbaglia dove le sue equazioni
+semplificano, uno appreso dove i dati non l'hanno mai portato. Che forma
+prendano quegli sbagli lo racconta la {doc}`sezione sui mondi in miniatura
 </WorldModels/mondi-in-miniatura>`.
 
 `````{tab} Elementare
 
-Lo usi già, questo simulatore. Quando giochi a scacchi, prima di toccare il
-pezzo ragioni così: «se sposto la torre lì, lui la mangia con l'alfiere...
-allora no», e la mossa cattiva muore nella tua testa, senza costarti la
-partita. Quando parcheggi, giri il volante e *vedi già* l'arco che il paraurti
-disegnerà: se l'auto immaginata finisce sul marciapiede, correggi prima che ci
-finisca quella vera.
+Lo usi già, questo simulatore. Quando giochi a scacchi, ad esempio, prima di
+toccare il pezzo ragioni così: «se sposto la torre lì, lui la mangia con
+l'alfiere... allora no», e la mossa cattiva muore nella tua testa, senza
+costarti la partita. Quando parcheggi, giri il volante e *vedi già* l'arco che
+il paraurti disegnerà: se l'auto immaginata finisce sul marciapiede, correggi
+prima che ci finisca quella vera.
 
 Guarda però che cosa ti serve, per prevedere quell'arco. Del cortile ti arriva
 un'immagine, quella che passa dal finestrino, e di quell'immagine tieni tre
@@ -115,15 +122,18 @@ dalle transizioni osservate; spesso si apprende anche un modello della
 ricompensa $r_\theta(s_t, a_t)$. Un modello così abilita tre operazioni:
 predizione (srotolare traiettorie future senza toccare l'ambiente),
 pianificazione (cercare, tra le traiettorie immaginate, quella con il ritorno
-più alto) e simulazione di alternative («e se agissi diversamente?»). Su
-quest'ultima serve una precisazione da manuale di causalità: ri-simulare da
+più alto) e simulazione di alternative («e se agissi diversamente?»).
+
+Su quest'ultima serve una precisazione da manuale di causalità: ri-simulare da
 $s_t$ con un'altra azione è, nel lessico di Pearl, un *intervento* nel modello;
 il controfattuale in senso stretto («cosa *sarebbe* successo in *quella*
 traiettoria») chiederebbe invece di tenere fisso il caso già uscito (di riusare
 cioè la stessa realizzazione del rumore esogeno di quella traiettoria, non di
 ri-estrarlo) e di ri-simulare cambiando la sola azione; le due cose coincidono
-quando la dinamica è deterministica. Nel mondo reale, però, lo stato non si
-osserva. Si osservano pixel, suoni, letture di sensori: un'osservazione
+quando la dinamica è deterministica.
+
+Nel mondo reale, però, lo stato non si osserva. Si osservano pixel, suoni,
+letture di sensori: un'osservazione
 $\mathbf{x}_t$ ad alta dimensione e piena di dettagli irrilevanti. I world
 model moderni imparano perciò due oggetti distinti: un codice compatto della
 singola osservazione, $\mathbf{z}_t = f_\phi(\mathbf{x}_t)$ con $f_\phi$ un
@@ -144,20 +154,22 @@ fuori) è una delle domande centrali dell'intero campo.
 
 ## Immaginare costa meno che provare
 
-La prima ragione per volere un world model si chiama efficienza nei campioni
-(*sample efficiency*): quante interazioni con l'ambiente servono per imparare un
-compito. Il {doc}`capitolo sul Deep Reinforcement
+La prima ragione per volere un world model si chiama
+efficienza nei campioni (*sample efficiency*): quante interazioni con
+l'ambiente servono per imparare un compito.
+Il {doc}`capitolo sul Deep Reinforcement
 Learning </DeepReinforcementLearning/overview>` ne ha mostrato il limite. Il DQN
 arrivava al livello di un collaudatore umano professionista su molti dei 49
 giochi Atari del confronto, ma dopo decine di milioni di fotogrammi per titolo,
 più di un mese di gioco senza mai staccare; il collaudatore con cui era
-misurato si era esercitato circa due ore per gioco {cite}`mnih2015human`. Il
-vocabolario per questa differenza esiste da decenni
+misurato si era esercitato circa due ore per gioco {cite}`mnih2015human`.
+
+Il vocabolario per questa differenza esiste da decenni
 {cite}`sutton2018reinforcement`. I metodi *model-free* imparano valori o
 strategia direttamente dall'esperienza, e ogni aggiornamento consuma
-interazione vera; i metodi *model-based* imparano anche un modello di come
-l'ambiente risponde alle azioni, e lo usano per pianificare o per generare
-esperienza simulata, che consuma soltanto calcolo.
+interazione vera. I metodi *model-based*, d'altra parte, imparano anche un
+modello di come l'ambiente risponde alle azioni, e lo usano per pianificare o
+per generare esperienza simulata, che consuma soltanto calcolo.
 
 `````{tab} Elementare
 
@@ -196,33 +208,37 @@ iteration faceva sul modello vero) o per generare esperienza sintetica su
 cui allenare valori e policy (l'architettura Dyna di Sutton, che già nel 1990
 alternava passi vissuti e passi immaginati {cite}`sutton1990integrated`, e che
 la {doc}`sezione sul reinforcement learning basato su modello
-</DeepReinforcementLearning/model-based>` tratta per esteso). Il limite è il
-*model bias*. Se la dinamica vera è $L$-Lipschitz nello stato e il modello
-sbaglia al più di $\epsilon$ in ogni stato raggiunto, a parità di azioni lo
-scarto $e_k$ fra stato immaginato e stato vero soddisfa
-$e_k \le \epsilon + L\,e_{k-1}$ con $e_0 = 0$, quindi
-$e_k \le \epsilon \sum_{i=0}^{k-1} L^{i}$: cresce esponenzialmente per $L > 1$,
-linearmente per $L = 1$, e resta sotto $\epsilon/(1-L)$ per $L < 1$ (la
-derivazione, con i suoi limiti, è nella sezione appena citata). Peggio, una
-policy ottimizzata dentro il modello impara a sfruttarne i difetti (*model
-exploitation*), ottenendo ritorni immaginari che l'ambiente vero non paga. Gran
-parte della ricerca sui world model negozia questo compromesso: quanta fiducia
-concedere al sogno, e per quanti passi.
+</DeepReinforcementLearning/model-based>` tratta per esteso).
+
+Il limite è il *model bias*. Se la dinamica vera è $L$-Lipschitz nello stato e
+il modello sbaglia al più di $\epsilon$ in ogni stato raggiunto, a parità di
+azioni lo scarto $e_k$ fra stato immaginato e stato vero soddisfa $e_k \le
+\epsilon + L\,e_{k-1}$ con $e_0 = 0$, quindi $e_k \le \epsilon \sum_{i=0}^{k-1}
+L^{i}$: cresce esponenzialmente per $L > 1$, linearmente per $L = 1$, e resta
+sotto $\epsilon/(1-L)$ per $L < 1$ (la derivazione, con i suoi limiti, è nella
+sezione appena citata).
+
+Peggio, una policy ottimizzata dentro il modello impara a sfruttarne i difetti
+(*model exploitation*), ottenendo ritorni immaginari che l'ambiente vero non
+paga. Per questo gran parte della ricerca sui world model negozia un
+compromesso: quanta fiducia concedere al sogno, e per quanti passi.
 
 `````
 
 C'è poi una seconda ragione, meno contabile e più profonda. Il **senso comune**
 che LeCun rivendica al gatto non è un elenco di fatti, ma un repertorio di
 previsioni: le cose non sostenute cadono, ciò che è nascosto continua a
-esistere, i liquidi si versano, gli oggetti spinti si muovono. È la *fisica
-intuitiva* che il neonato dell'incipit costruisce guardando, senza etichette, e
+esistere, i liquidi si versano, gli oggetti spinti si muovono. È la **fisica
+intuitiva** che il neonato costruisce guardando, senza etichette, e
 il segnale di cui si nutre è la sorpresa, nell'accezione introdotta
 dall’{doc}`apertura del capitolo sull'auto-supervisione
 </AutoSupervisione/overview>`: quanto era improbabile, per il modello che il
-bambino si è fatto, l'evento che poi accade. È una lezione auto-supervisionata,
-perché il bersaglio non lo scrive nessuno: è il futuro stesso che arriva. Se il
-senso comune è fatto così, inseguirlo significa costruire macchine che imparano
-a prevedere il mondo, non a memorizzarlo.
+bambino si è fatto, l'evento che poi accade.
+
+È una lezione auto-supervisionata, perché il bersaglio non lo scrive
+nessuno: è il futuro stesso che arriva. Se il senso comune è fatto così,
+inseguirlo significa costruire macchine che imparano a prevedere il mondo, non a
+memorizzarlo.
 
 ## La scommessa di LeCun (e chi non è d'accordo)
 
@@ -233,8 +249,9 @@ risultati, cioè il disegno di come andrebbe costruita una macchina che agisce
 in autonomia nel mondo. Il disegno è fatto di pezzi che si passano il
 lavoro: uno guarda, uno ricorda, uno propone la mossa, uno pianifica provando
 le alternative. Al centro c'è un modello del mondo, imparato guardando e senza
-etichette. La tesi
-ha una faccia costruttiva (come *dovrebbe* essere fatta un'intelligenza
+etichette.
+
+La tesi ha una faccia costruttiva (come *dovrebbe* essere fatta un'intelligenza
 artificiale che capisce il mondo) e una polemica: i modelli di linguaggio
 autoregressivi, addestrati solo a indovinare la parola successiva, per quanto
 grandi non basteranno. LeCun ha legato a questa tesi anche la propria carriera:
@@ -257,11 +274,12 @@ basata sulle precedenti; se una scommessa introduce uno sbaglio (un
 personaggio che cambia nome, un bicchiere che cade verso l'alto) le parole
 dopo costruiscono sopra lo sbaglio, e più la storia è lunga più è probabile
 che deragli. Mettiamo che vada storta una parola su cento: dopo cinquecento
-parole, di cento racconti così ne resta in piedi meno di uno. Secondo LeCun,
-a un sistema simile manca il cinema interiore del gatto: non immagina la
-scena, non prova le alternative nella testa, non ha mai visto un bicchiere
-cadere; ha solo letto miliardi di frasi e sceglie la parola più plausibile
-dopo le altre.
+parole, di cento racconti così ne resta in piedi meno di uno.
+
+Secondo LeCun, a un sistema simile manca il cinema interiore del gatto: non
+immagina la scena, non prova le alternative nella testa, non ha mai visto un
+bicchiere cadere; ha solo letto miliardi di frasi e sceglie la parola più
+plausibile dopo le altre.
 
 Questa è però una *posizione* nel dibattito scientifico, non una verità
 assodata. Altri ricercatori rispondono che per indovinare bene la parola
@@ -287,18 +305,21 @@ dall'insieme delle continuazioni accettabili è $\epsilon$, sempre la stessa e
 indipendente da quanto è già stato scritto, e se l'errore non è
 recuperabile, la probabilità che una sequenza di $n$ token resti accettabile
 decade come $(1-\epsilon)^n$: con $\epsilon = 0{,}01$ e $n = 500$ ne resta
-appena $0{,}99^{500} \approx 0{,}007$, meno dell'1%. Le obiezioni colpiscono
-proprio le ipotesi: gli errori non sono né indipendenti né irrecuperabili (i
-modelli, empiricamente, si correggono), e nulla fissa $\epsilon$ costante al
-crescere di scala e addestramento {cite}`kaplan2020scaling`. Esperimenti di
-*probing*, inoltre, indicano che un GPT a 8 strati addestrato soltanto su
-sequenze di mosse dell'Otello (20 milioni di partite sintetiche) sviluppa una
-rappresentazione interna dello stato della scacchiera, e che intervenire su di
-essa cambia le mosse proposte {cite}`li2023emergent`: un world model implicito,
-per quanto rudimentale, emerso dalla sola predizione del token successivo, in
-un mondo di 64 caselle con regole fisse. Misure e limiti sono nella
-{doc}`sezione sui simulatori e il dibattito
-</WorldModels/simulatori-e-dibattito>`. La proposta alternativa di
+appena $0{,}99^{500} \approx 0{,}007$, meno dell'1%.
+
+Le obiezioni colpiscono proprio le ipotesi: gli errori non sono né indipendenti
+né irrecuperabili (i modelli, empiricamente, si correggono), e nulla fissa
+$\epsilon$ costante al crescere di scala e addestramento
+{cite}`kaplan2020scaling`. Esperimenti di *probing*, inoltre, indicano che un
+GPT a 8 strati addestrato soltanto su sequenze di mosse dell'Otello (20 milioni
+di partite sintetiche) sviluppa una rappresentazione interna dello stato della
+scacchiera, e che intervenire su di essa cambia le mosse proposte
+{cite}`li2023emergent`: un world model implicito, per quanto rudimentale, emerso
+dalla sola predizione del token successivo, in un mondo di 64 caselle con regole
+fisse. Misure e limiti sono nella {doc}`sezione sui simulatori e il dibattito
+</WorldModels/simulatori-e-dibattito>`.
+
+La proposta alternativa di
 {cite}`lecun2022path` (predire non nello spazio dei token o dei pixel ma in
 uno spazio di rappresentazioni astratte, con architetture *joint-embedding*
 addestrate a energia) è ciò che studia la {doc}`sezione sulla JEPA
@@ -310,7 +331,7 @@ addestrate a energia) è ciò che studia la {doc}`sezione sulla JEPA
 ## Quattro risposte alla stessa domanda
 
 Come si dà a una macchina un modello del mondo, e che cosa ci deve stare
-dentro? Le risposte che il capitolo segue vengono da strade diverse.
+dentro? Le risposte sono quattro, e vengono da strade diverse.
 
 La prima sono i mondi in miniatura. Nel 2018 David Ha e Jürgen Schmidhuber
 addestrano un agente a schivare palle di fuoco in un livello di *Doom*, e lo
@@ -319,6 +340,7 @@ del gioco che il programma si è costruito da sé, guardando partite giocate a
 caso. A far proseguire la partita sognata è una rete ricorrente, che legge un
 fotogramma compresso alla volta portandosi dietro un riassunto di quel che ha
 visto, e la policy dell'agente si allena lì dentro senza toccare il gioco vero.
+
 Dal 2020 quella linea di ricerca arriva ai Dreamer di Danijar Hafner e
 colleghi. DreamerV3, uscito su *Nature* nel 2025 {cite}`hafner2023mastering`,
 ottiene un diamante in *Minecraft* senza dimostrazioni umane: il primo
@@ -354,9 +376,9 @@ aspettative.
 Ultima risposta, i simulatori generativi di video: Sora di OpenAI, presentato
 nel febbraio 2024 come passo verso «simulatori di mondo»
 {cite}`brooks2024video`, e la famiglia Genie di Google DeepMind, che dal 2024
-genera ambienti in cui si può giocare {cite}`bruce2024genie`. Con loro arriva la
-domanda con cui il capitolo si chiude, e che resta del tutto aperta: generare
-video plausibili significa aver capito la fisica, o soltanto saperla imitare?
+genera ambienti in cui si può giocare {cite}`bruce2024genie`. Con loro arriva
+una domanda che resta del tutto aperta: generare video plausibili significa aver
+capito la fisica, o soltanto saperla imitare?
 
 `````{tab} Elementare
 

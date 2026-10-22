@@ -1,39 +1,39 @@
 # Ridurre le dimensioni e trovare gruppi: l'apprendimento non supervisionato
 
-Finora abbiamo sempre avuto un maestro alle spalle. La regressione, la
-classificazione, gli alberi e gli ensemble: ogni esempio arrivava con la sua
+Finora abbiamo sempre avuto un maestro alle spalle. Nella regressione, nella
+classificazione, negli alberi e negli ensemble ogni esempio arrivava con la sua
 risposta giusta accanto (il prezzo della casa, l'etichetta «spam» o «non
 spam»). Era l'apprendimento *supervisionato*, il primo dei {doc}`tre modi di
-imparare <overview>`. Quelle etichette, però,
-sono un lusso: qualcuno le ha dovute scrivere, una per una. La
-stragrande maggioranza dei dati che il mondo produce (foto, transazioni,
-segnali di sensori, log di navigazione) arriva muta, senza nessuna
-risposta allegata.
+imparare <overview>`. Quelle etichette, però, sono un lusso, perché qualcuno le
+ha dovute scrivere una per una. La stragrande maggioranza dei dati che il mondo
+produce (foto, transazioni, segnali di sensori, log di navigazione) arriva
+muta, senza nessuna risposta allegata.
 
-Questo è il territorio dell’apprendimento non supervisionato: si danno al
-modello solo gli input, e gli si chiede di scoprirvi una struttura nascosta.
+Questo è il territorio dell’apprendimento non supervisionato, in cui al modello
+si danno solo gli input e gli si chiede di scoprirvi una struttura nascosta.
 Due domande, soprattutto, si possono porre a dati senza etichette. La prima:
 *questi dati hanno bisogno di tutte queste dimensioni, o si possono comprimere
 senza perdere l'essenziale?* È la **riduzione della dimensionalità**. La
 seconda: *ci sono gruppi naturali là dentro, famiglie di esempi che si
 somigliano tra loro?* È il **clustering**. Una terza: *quanto è probabile
-questo dato?* È la stima della densità: le misture gaussiane rispondono a
+questo dato?* È la stima della densità, e le misture gaussiane rispondono a
 questa e alla seconda insieme.
 
 ## Quando avere troppe dimensioni è un problema
 
 Si penserebbe che più informazioni su ogni esempio (più colonne, più misure, più
-caratteristiche) siano sempre meglio. A parità di esempi non è così: in uno
-spazio ad alta dimensione il volume da coprire cresce più in fretta dei dati, e
-la geometria cambia in modi che l'intuizione, formata su due o tre dimensioni,
-non prevede. Il fenomeno si chiama **maledizione della dimensionalità** (*curse
-of dimensionality*), con il nome che gli diede Richard Bellman studiando la
-programmazione dinamica {cite}`bellman1957dynamic`.
+caratteristiche) siano sempre meglio. A parità di esempi non è così. In uno
+spazio ad alta dimensione, infatti, il volume da coprire cresce più in fretta
+dei dati, e la geometria cambia in modi che l'intuizione, formata su due o tre
+dimensioni, non prevede. Il fenomeno si chiama **maledizione della
+dimensionalità** (*curse of dimensionality*), con il nome che gli diede Richard
+Bellman studiando la programmazione dinamica {cite}`bellman1957dynamic`.
 
 Il primo effetto riguarda il volume. La sfera inscritta in un cubo si prende il
 $78{,}5\%$ del quadrato in due dimensioni, il $52{,}4\%$ del cubo in tre e lo
-$0{,}25\%$ in dieci, e la quota tende a zero al crescere della dimensione: quasi
-tutto il volume del cubo sta fuori dalla sfera, dalle parti dei vertici.
+$0{,}25\%$ in dieci, e la quota tende a zero al crescere della dimensione. In
+altri termini, quasi tutto il volume del cubo sta fuori dalla sfera, dalle
+parti dei vertici.
 
 ```{figure} ../figures/maledizione-dimensionalita.svg
 :name: fig-maledizione-dimensionalita
@@ -48,54 +48,56 @@ niente.
 
 L'esempio di {numref}`fig-maledizione-dimensionalita` mostra che in tante
 dimensioni il volume sta lontano dal centro. Il secondo effetto riguarda le
-distanze. Con $d$ dimensioni, il quadrato della distanza fra due punti è una
-somma di $d$ termini, uno per coordinata; se le coordinate sono indipendenti, la
-somma ha media proporzionale a $d$ e deviazione standard proporzionale a
-$\sqrt{d}$, quindi lo scarto relativo cala come $1/\sqrt{d}$: al crescere di $d$
-le distanze fra le coppie diventano quasi uguali in proporzione.
+distanze. Con $d$ dimensioni il quadrato della distanza fra due punti è una
+somma di $d$ termini, uno per coordinata. Se le coordinate sono indipendenti,
+la somma ha media proporzionale a $d$ e deviazione standard proporzionale a
+$\sqrt{d}$, quindi lo scarto relativo cala come $1/\sqrt{d}$. Di conseguenza,
+al crescere di $d$ le distanze fra le coppie diventano quasi uguali in
+proporzione.
 
-Quando l'effetto c'è, ne risente ogni algoritmo basato sulle distanze: «il
-vicino più vicino» smette di voler dire qualcosa, perché la differenza fra il
-primo e il centesimo vicino, in proporzione alla loro distanza, si assottiglia
-fino a sparire.
+Quando l'effetto c'è, ne risente ogni algoritmo basato sulle distanze. In
+particolare «il vicino più vicino» smette di voler dire qualcosa, perché la
+differenza fra il primo e il centesimo vicino, in proporzione alla loro
+distanza, si riduce fino a sparire.
 
 `````{tab} Elementare
 
 Prima di tutto, di quali dimensioni stiamo parlando? Delle colonne della
 tabella: in {doc}`Apprendimento supervisionato
 <apprendimento-supervisionato>` ogni colonna è una direzione dello spazio e
-ogni riga un punto. Se di ogni cliente registriamo età, reddito, spese mensili e
-altre novantasette misure, quel cliente è un punto in uno spazio a cento
-dimensioni. Non lo possiamo disegnare, ma i conti (distanze comprese) si fanno
-identici a quelli su un foglio.
+ogni riga un punto. Ad esempio, se di ogni cliente registriamo età, reddito,
+spese mensili e altre novantasette misure, quel cliente è un punto in uno
+spazio a cento dimensioni. Non lo possiamo disegnare, ma i conti (distanze
+comprese) si fanno identici a quelli su un foglio.
 
-Immagina allora di cercare un amico, sapendo che le persone sono sempre
-mille: cambia solo il posto in cui stanno. In una strada (una dimensione)
-è facile: mille persone in una strada sono una folla, il tuo amico ti è
-addosso. In una piazza (due dimensioni) le stesse mille persone sono
-sparpagliate, e devi guardarti attorno. In un grattacielo (tre dimensioni)
-mille persone sono quasi nessuno: due o tre per piano. Aggiungi una dimensione,
-cioè una colonna, e il posto disponibile si gonfia ancora, mentre le persone
-restano mille: in dieci, cento, mille dimensioni lo spazio è così vasto che
-tutti sono lontanissimi da tutti, e la parola «vicino» perde senso. Il tuo
-amico è lontano, e lo sono anche tutti gli altri in modo così simile che
-sapere chi è il più vicino non ti aiuta a trovarlo.
+Immagina allora di cercare un amico, sapendo che le persone sono sempre mille:
+cambia solo il posto in cui stanno. In una strada (una dimensione) è facile,
+perché mille persone in una strada sono una folla e il tuo amico ti è addosso.
+In una piazza (due dimensioni) le stesse mille persone sono sparpagliate, e
+devi guardarti attorno. In un grattacielo (tre dimensioni) mille persone sono
+quasi nessuno, due o tre per piano.
+
+Aggiungi una dimensione, cioè una colonna, e il posto disponibile si gonfia
+ancora, mentre le persone restano mille. In dieci, cento, mille dimensioni lo
+spazio è così vasto che tutti sono lontanissimi da tutti, e la parola «vicino»
+perde senso. Il tuo amico è lontano, e lo sono anche tutti gli altri, in modo
+così simile che sapere chi è il più vicino non ti aiuta a trovarlo.
 
 L'altro effetto, ancora più controintuitivo, è quello della figura: in tante
-dimensioni quasi tutto lo spazio si accalca sui bordi. Il calcolo si può rifare a
-mano su una scatola. Prendi una scatola di lato $1$ e stacca da ogni parete un
-guscio spesso un decimo. Dentro resta una scatola più piccola, di
-lato $0{,}8$ (un decimo tolto da un lato e uno dall'altro), e quanto spazio
-occupa lo dice una potenza: in una dimensione $0{,}8$; in due $0{,}8 \times
-0{,}8 = 0{,}64$; in dieci $0{,}8$ moltiplicato per sé stesso dieci volte, cioè
+dimensioni quasi tutto lo spazio si accalca sui bordi. Il calcolo si può rifare
+a mano su una scatola. Prendi una scatola di lato $1$ e stacca da ogni parete
+un guscio spesso un decimo. Dentro resta una scatola più piccola, di lato
+$0{,}8$ (un decimo tolto da un lato e uno dall'altro), e quanto spazio occupa
+lo dice una potenza: in una dimensione $0{,}8$; in due $0{,}8 \times 0{,}8 =
+0{,}64$; in dieci $0{,}8$ moltiplicato per sé stesso dieci volte, cioè
 $0{,}11$.
 
 Il guscio è tutto il resto: il $20\%$ in una dimensione, il $36\%$ in due, e già
-l’$89\%$ in dieci. In cento dimensioni il cuore è praticamente zero: nessun
-punto sta «nel mezzo», stanno tutti appiccicati alle pareti. In un
+l’$89\%$ in dieci. In cento dimensioni il cuore è praticamente zero, quindi
+nessun punto sta «nel mezzo» e stanno tutti appiccicati alle pareti. In un
 mondo così svuotato e spinto ai margini, gli algoritmi che si fidano delle
 distanze («chi è vicino a chi») vanno in crisi. Da qui l'idea di ridurre le
-dimensioni: togliere direzioni tenendo solo ciò che conta.
+dimensioni, cioè di togliere direzioni tenendo solo ciò che conta.
 
 `````
 
@@ -103,11 +105,13 @@ dimensioni: togliere direzioni tenendo solo ciò che conta.
 
 La sfera inscritta nell'ipercubo unitario $[0,1]^d$ ha raggio $1/2$ e volume
 $V_d\,2^{-d}$, con $V_d = \pi^{d/2}/\Gamma(d/2+1)$ il volume della sfera di
-raggio $1$: la frazione del cubo che occupa vale $\pi/4 \approx 0{,}785$ per
+raggio $1$. La frazione del cubo che occupa vale $\pi/4 \approx 0{,}785$ per
 $d=2$, $\pi/6 \approx 0{,}524$ per $d=3$, $\pi^5/(120\cdot 2^{10}) \approx
-0{,}0025$ per $d=10$, e tende a zero. Un conto più elementare porta alla stessa
-conclusione. Consideriamo l'ipercubo unitario $[0,1]^d$ e il guscio dei punti
-che distano meno di $\varepsilon = 0{,}1$ da almeno una faccia. Il «cuore»
+0{,}0025$ per $d=10$, e tende a zero.
+
+Un calcolo più elementare porta alla stessa conclusione. Consideriamo
+l'ipercubo unitario $[0,1]^d$ e il guscio dei punti che distano meno di
+$\varepsilon = 0{,}1$ da almeno una faccia. Il «cuore»
 interno è un cubo di lato $1 - 2\varepsilon = 0{,}8$, di volume $0{,}8^{\,d}$;
 la frazione di volume nel guscio è quindi
 
@@ -116,11 +120,11 @@ $$
 $$
 
 Per $d=1$ vale $0{,}2$; per $d=10$ vale $1 - 0{,}8^{10} \approx 0{,}89$; per
-$d=100$ vale $1 - 0{,}8^{100} \approx 1 - 2\cdot 10^{-10}$, ossia
-praticamente $1$. All'aumentare di $d$ il volume fugge verso la superficie.
+$d=100$ vale $1 - 0{,}8^{100} \approx 1 - 2\cdot 10^{-10}$, ossia praticamente
+$1$. All'aumentare di $d$ il volume fugge verso la superficie.
 
-Parallelamente le distanze si concentrano. Si fissino $m$ punti e un punto di
-interrogazione (quello di cui si cercano i vicini) indipendente da loro: se la
+Parallelamente le distanze si concentrano. Fissiamo $m$ punti e un punto di
+interrogazione (quello di cui si cercano i vicini) indipendente da loro. Se la
 varianza relativa della distanza, $\operatorname{Var}(\operatorname{dist}) /
 \mathbb{E}[\operatorname{dist}]^2$, tende a zero con $d$ (è il caso di
 coordinate indipendenti e identicamente distribuite con momenti finiti), allora
@@ -132,14 +136,15 @@ $$
 \frac{\operatorname{dist}_{\max} - \operatorname{dist}_{\min}}{\operatorname{dist}_{\min}} \xrightarrow[d\to\infty]{\;P\;} 0 .
 $$
 
-Se le coordinate sono tutte copie l'una dell'altra i punti stanno su una retta e
-l'effetto non c'è: conta la dimensione intrinseca dei dati, che per dati reali è
-spesso molto minore di $d$, e lì $k$-NN e il clustering per distanza funzionano.
-Dove l'effetto c'è, il punto più vicino e il più lontano sono quasi
-equidistanti, la nozione di «vicinanza» perde contrasto, e con essa vacillano
-$k$-NN, il clustering per distanza e la stima di densità {cite}`geron2022hands`.
-La risposta è cercare un sottospazio di dimensione $q \ll d$ che conservi
-l'informazione utile: è la riduzione della dimensionalità.
+Si noti che se le coordinate sono tutte copie l'una dell'altra i punti stanno
+su una retta, e l'effetto non c'è. Conta infatti la dimensione intrinseca dei
+dati, che per dati reali è spesso molto minore di $d$, e lì $k$-NN e il
+clustering per distanza funzionano. Dove l'effetto c'è, il punto più vicino e
+il più lontano sono quasi equidistanti, la nozione di «vicinanza» perde
+contrasto, e con essa vacillano $k$-NN, il clustering per distanza e la stima
+di densità {cite}`geron2022hands`. La riduzione della dimensionalità risponde
+cercando un sottospazio di dimensione $q \ll d$ che conservi l'informazione
+utile.
 
 `````
 
@@ -150,32 +155,33 @@ componenti principali** (*Principal Component Analysis*, PCA), le cui radici
 risalgono a Karl Pearson {cite}`pearson1901lines` nel 1901 e a Harold Hotelling
 {cite}`hotelling1933analysis` nel 1933. L'idea è semplice: tra tutte le
 direzioni possibili nello spazio dei dati, lungo alcune i punti si sparpagliano
-molto, cioè hanno varianza grande, lungo altre restano quasi fermi. La PCA
-assume che la varianza sia il segnale: tiene le direzioni a varianza grande,
-perpendicolari fra loro, e proietta i dati su quelle, cioè di ogni punto
-conserva soltanto le coordinate lungo quelle direzioni. L'assunzione vale
-quando il segnale ha varianza maggiore del rumore; non è una garanzia, perché
-la PCA non guarda le etichette, e una direzione a varianza piccola può essere
-quella che separa le classi.
+molto, cioè hanno varianza grande, mentre lungo altre restano quasi fermi.
+
+La PCA assume che la varianza sia il segnale. Per questo motivo tiene le
+direzioni a varianza grande, perpendicolari fra loro, e proietta i dati su
+quelle, cioè di ogni punto conserva soltanto le coordinate lungo quelle
+direzioni. L'assunzione vale quando il segnale ha varianza maggiore del rumore,
+ma non è una garanzia, perché la PCA non guarda le etichette, e una direzione a
+varianza piccola può essere quella che separa le classi.
 
 `````{tab} Elementare
 
 Uno stormo di uccelli, fotografato da lontano. Se lo stormo è disteso
 in lunghezza, la fotografia più informativa la scatti di lato, cogliendo la
-direzione in cui gli uccelli sono più sparpagliati: da quella prospettiva
+direzione in cui gli uccelli sono più sparpagliati, perché da quella prospettiva
 distingui bene chi è avanti e chi è indietro. Fotografarlo di punta, invece, li
 schiaccerebbe tutti in un mucchietto indistinto.
 
 La PCA fa lo stesso con i dati. Cerca la direzione lungo cui i punti
-sono più dispersi (la chiama *prima componente principale*), perché è lì
+sono più dispersi (la chiama **prima componente principale**), perché è lì
 che si nasconde la maggior parte delle differenze tra un esempio e l'altro.
 
-Prima di scattare, però, ci si mette d'accordo sul metro. Se dello stormo misuri
-la lunghezza in metri e l'altezza in centimetri, i numeri diranno che gli
-uccelli sono sparpagliatissimi in altezza, e sarà soltanto colpa delle unità:
-due direzioni si possono confrontare quando le misure stanno sulla stessa scala.
-Anche lo sparpagliamento si conta a partire dal centro dello stormo, non da un
-punto qualsiasi del cielo.
+Prima di scattare, però, ci si mette d'accordo sul metro. Se dello stormo
+misuri la lunghezza in metri e l'altezza in centimetri, i numeri diranno che
+gli uccelli sono sparpagliatissimi in altezza, e sarà soltanto colpa delle
+unità. Due direzioni, infatti, si possono confrontare quando le misure stanno
+sulla stessa scala. Anche lo sparpagliamento si conta a partire dal centro
+dello stormo, non da un punto qualsiasi del cielo.
 
 Trovata la prima direzione, ne cerca una seconda, e qui c'è un vincolo:
 dev'essere perpendicolare alla prima. La ragione è che due direzioni non
@@ -196,20 +202,20 @@ numeri soltanto, quasi senza perdite.
 
 La «dispersione» è la varianza, la stessa parola usata parlando del compromesso
 bias-varianza. Non indica però la stessa cosa, e tenere separati i due usi
-evita un equivoco. Là la varianza era l'irrequietezza di un *modello*: quanto
-cambiano le sue risposte se lo riaddestriamo su un campione diverso. Qui è una
-proprietà dei *dati*, e non c'è nessun modello in giro: quanto sono
-sparpagliati i punti lungo una direzione. Stessa parola perché il calcolo è lo
-stesso (quanto le cose si scostano dalla loro media).
+evita un equivoco. Là la varianza era l'irrequietezza di un *modello*, cioè
+quanto cambiano le sue risposte se lo riaddestriamo su un campione diverso. Qui
+è una proprietà dei *dati*, e non c'è nessun modello in giro: è quanto sono
+sparpagliati i punti lungo una direzione. La parola è la stessa perché il
+calcolo è lo stesso (quanto le cose si scostano dalla loro media).
 
 `````
 
 `````{tab} Superiore
 
-Sia $\mathbf{X} \in \mathbb{R}^{m \times d}$ la matrice dei dati, con le feature già
-centrate (media di colonna nulla) e, di norma, standardizzate (varianza
-unitaria, così che una feature misurata in metri non domini una misurata in
-chilometri). La dispersione dei dati è riassunta dalla **matrice di
+Sia $\mathbf{X} \in \mathbb{R}^{m \times d}$ la matrice dei dati, con le
+feature già centrate (media di colonna nulla) e, di norma, standardizzate
+(varianza unitaria, così che una feature misurata in metri non domini una
+misurata in chilometri). La dispersione dei dati è riassunta dalla **matrice di
 covarianza**
 
 $$
@@ -230,14 +236,16 @@ e le direzioni cercate sono gli autovettori di $\mathbf{C}$, e la varianza
 catturata da ciascuna è il corrispondente autovalore $\lambda$. Ordinando gli
 autovalori $\lambda_1 \ge \lambda_2 \ge \dots \ge \lambda_d \ge 0$, la prima
 componente principale è l'autovettore di $\lambda_1$, la seconda quello di
-$\lambda_2$, e così via; e si possono sempre scegliere ortogonali fra loro,
-perché $\mathbf{C}$ è simmetrica. Con autovalori distinti sono ortogonali per
-forza; se un autovalore è ripetuto, il teorema spettrale garantisce che una
-base ortonormale del suo autospazio esiste, e ogni implementazione ne
-restituisce una. Ogni $\mathbf{u}_j$ relativo a un autovalore semplice resta
-però definito a meno del segno, perché $-\mathbf{u}_j$ ha lo stesso autovalore:
-due implementazioni possono restituire la stessa componente ribaltata, e con
-lei tutte le proiezioni su quell'asse.
+$\lambda_2$, e così via. Poiché $\mathbf{C}$ è simmetrica, le componenti si
+possono sempre scegliere ortogonali fra loro. Con autovalori distinti sono
+ortogonali per forza; se un autovalore è ripetuto, il teorema spettrale
+garantisce che una base ortonormale del suo autospazio esiste, e ogni
+implementazione ne restituisce una.
+
+Ogni $\mathbf{u}_j$ relativo a un autovalore semplice resta però
+definito a meno del segno, perché $-\mathbf{u}_j$ ha lo stesso autovalore. Due
+implementazioni, quindi, possono restituire la stessa componente ribaltata, e
+con lei tutte le proiezioni su quell'asse.
 
 Proiettare su $\mathbf{u}_1, \dots, \mathbf{u}_q$ (con $q \ll d$) dà la
 rappresentazione ridotta $\mathbf{Z} = \mathbf{X}\,\mathbf{U}_q$, dove
@@ -251,26 +259,26 @@ proiettata (la domanda di Hotelling) e minimizzare l'errore di ricostruzione
 Eckart e Young {cite}`eckart1936approximation` nessun'altra approssimazione di
 rango $q$ fa meglio.
 
-In pratica la
-matrice di covarianza non si forma: si calcola la decomposizione a valori
-singolari $\mathbf{X} = \mathbf{P}\,\mathbf{S}\,\mathbf{U}^{\!\top}$, in cui le
+In pratica la matrice di covarianza non si forma, e si calcola invece la
+decomposizione a valori singolari
+$\mathbf{X} = \mathbf{P}\,\mathbf{S}\,\mathbf{U}^{\!\top}$, in cui le
 colonne di $\mathbf{U}$ sono gli $\mathbf{u}_j$ e $\lambda_j = s_j^2/m$,
 al costo di $O(m\,d\,\min(m,d))$, o molto meno con le versioni randomizzate
 quando servono poche componenti.
 
 `````
 
-Lo stesso meccanismo si vede su un esempio minuscolo: quattro punti in due
-dimensioni, da proiettare su una sola.
+Vediamo lo stesso meccanismo su un esempio minuscolo, quattro punti in due
+dimensioni da proiettare su una sola.
 
 `````{tab} Elementare
 
 Disegna quattro punti su un foglio a quadretti: $(2,2)$ e $(-2,-2)$ sulla
 diagonale che sale, $(1,-1)$ e $(-1,1)$ su quella che scende. Lo «stormo» è
-chiaramente più allungato lungo la diagonale che sale: i due punti che ci
-stanno sopra sono i più lontani dal centro.
+chiaramente più allungato lungo la diagonale che sale, perché i due punti che
+ci stanno sopra sono i più lontani dal centro.
 
-Misurare la dispersione lungo una direzione consiste nel fare l'ombra di ogni
+Misurare la dispersione lungo una direzione vuol dire fare l'ombra di ogni
 punto su quella direzione (come nel corridoio delle SVM) e guardare quanto le
 quattro ombre si allontanano dal centro. Conta la distanza dell'ombra dal
 centro, non quella del punto.
@@ -281,17 +289,17 @@ $(-2,-2)$, hanno l'ombra su sé stessi, e distano dal centro $\sqrt{2^2+2^2} =
 traverso* a quella diagonale, e la loro ombra cade al centro, a distanza $0$,
 anche se il punto è lontano. La dispersione è la media dei quadrati di quelle
 quattro distanze, e vale $(8 + 0 + 8 + 0)/4 = 4$. (Si contano i quadrati, come
-per la retta di best fit: le posizioni delle ombre prese con il segno, da una
-parte e dall'altra del centro, si cancellerebbero; e con i quadrati le
+per la retta di best fit, perché le posizioni delle ombre prese con il segno,
+da una parte e dall'altra del centro, si cancellerebbero; e con i quadrati le
 direzioni perpendicolari si sommano, per Pitagora.)
 
 Lungo la diagonale che scende succede il contrario. Adesso sono $(1,-1)$
 e $(-1,1)$ a starci sopra, con distanza $\sqrt{1^2+1^2} = \sqrt2$, e $(2,2)$ e
-$(-2,-2)$ a cadere sul centro: $(0+2+0+2)/4 = 1$.
+$(-2,-2)$ a cadere sul centro, e la dispersione vale $(0+2+0+2)/4 = 1$.
 
 Le due direzioni sono perpendicolari, quindi per Pitagora il quadrato della
 distanza di ogni punto dal centro è la somma dei quadrati delle sue due ombre,
-e la dispersione totale è la somma delle due: $4 + 1 = 5$. Lo conferma il
+e la dispersione totale è la somma delle due, $4 + 1 = 5$. Lo conferma il
 calcolo diretto con le distanze dei quattro punti dal centro, $(8 + 2 + 8 +
 2)/4 = 5$. Già la prima direzione ne cattura $4$, cioè l’$80\%$.
 
@@ -338,18 +346,19 @@ $$
 \lambda_1 = 4, \qquad \lambda_2 = 1 .
 $$
 
-La loro somma è la traccia di $\mathbf{C}$, $2{,}5 + 2{,}5 = 5$: la dispersione
-totale si ripartisce fra le due direzioni, senza perdite e senza doppi conteggi.
-Gli autovettori corrispondenti sono $\mathbf{u}_1 = \tfrac{1}{\sqrt2}(1, 1)$ (la
-diagonale che sale) e $\mathbf{u}_2 = \tfrac{1}{\sqrt2}(1, -1)$. La varianza
-spiegata dalla prima componente è
+La loro somma è la traccia di $\mathbf{C}$, $2{,}5 + 2{,}5 = 5$; in altri
+termini, la dispersione totale si ripartisce fra le due direzioni, senza
+perdite e senza doppi conteggi. Gli autovettori corrispondenti sono
+$\mathbf{u}_1 = \tfrac{1}{\sqrt2}(1, 1)$ (la diagonale che sale) e
+$\mathbf{u}_2 = \tfrac{1}{\sqrt2}(1, -1)$. La varianza spiegata dalla prima
+componente è
 
 $$
 \frac{\lambda_1}{\lambda_1 + \lambda_2} = \frac{4}{4 + 1} = 0{,}8,
 $$
 
-l'80%: proiettando su $\mathbf{u}_1$ soltanto, buttiamo via una dimensione ma
-conserviamo i quattro quinti della dispersione. La proiezione di ogni punto è
+l'80%. Proiettando su $\mathbf{u}_1$ soltanto, quindi, scartiamo una dimensione
+ma conserviamo i quattro quinti della dispersione. La proiezione di ogni punto è
 il prodotto scalare con $\mathbf{u}_1$:
 
 $$
@@ -360,15 +369,14 @@ $$
 $$
 
 I due punti «fuori diagonale» collassano a $0$ (stavano interamente lungo la
-direzione scartata $\mathbf{u}_2$), mentre i due «in diagonale» conservano tutta la
-loro distanza.
+direzione scartata $\mathbf{u}_2$), mentre i due «in diagonale» conservano
+tutta la loro distanza.
 
 `````
 
-La {numref}`fig-pca-proiezione` mostra la stessa idea su una
-nuvola più fitta: l'asse lungo è la prima componente, quello corto la
-seconda, e proiettare significa lasciar cadere ogni punto perpendicolarmente
-sull'asse lungo.
+La {numref}`fig-pca-proiezione` mostra la stessa idea su una nuvola più fitta.
+L'asse lungo è la prima componente, quello corto la seconda, e proiettare
+significa lasciar cadere ogni punto perpendicolarmente sull'asse lungo.
 
 ```{figure} ../figures/pca-proiezione.svg
 :name: fig-pca-proiezione
@@ -383,12 +391,14 @@ PC1 comprime i dati da due dimensioni a una, perdendo poco.
 In concreto, la PCA serve a comprimere i dati (meno numeri da salvare e da
 passare ai modelli), a visualizzare in due o tre dimensioni dataset con
 centinaia di feature, e a ripulirli dal rumore (*denoising*) se il segnale ha
-varianza maggiore del rumore. Proiettando sulle prime componenti si scarta il
-rumore che cade nelle altre; il rumore che cade nelle prime resta, perché la
-PCA non lo distingue dal segnale. Il limite di fondo è che la PCA è lineare:
-ruota e proietta lungo assi dritti. Se i dati stanno vicino a una superficie
-curva di dimensione più bassa, una *varietà*, la proiezione sovrappone punti
-che sulla superficie sono lontani. L'esempio classico è lo *Swiss roll*, un
+varianza maggiore del rumore. Proiettando sulle prime componenti, infatti, si
+scarta il rumore che cade nelle altre, mentre il rumore che cade nelle prime
+resta, perché la PCA non lo distingue dal segnale.
+
+Il limite di fondo è che la PCA è lineare, cioè ruota e proietta lungo assi
+dritti. Se i dati stanno vicino a una superficie curva di dimensione più bassa,
+detta **varietà**, la proiezione sovrappone punti che sulla superficie sono
+lontani. L'esempio classico è lo *Swiss roll*, un
 foglio avvolto a spirale in tre dimensioni, come un rotolo di pasta. Per questi
 casi servono metodi non lineari: t-SNE e UMAP per la visualizzazione, il kernel
 PCA {cite}`scholkopf1998nonlinear` e Isomap {cite}`tenenbaum2000global` per la
@@ -400,24 +410,29 @@ sono lineari.
 
 La PCA ha un secondo limite, che con la curvatura non ha niente a che fare.
 Cerca le direzioni in cui i dati variano di più, e le coordinate dei punti
-lungo quelle direzioni sono *incorrelate*: quando una sale, l'altra non tende
-né a salire né a scendere. Incorrelato, però, non equivale a indipendente: un
-numero preso a caso fra $-1$ e $1$ e il suo quadrato sono incorrelati, eppure
-conoscere il primo dice tutto del secondo. Sono incorrelati perché un numero e
-il suo opposto hanno lo stesso quadrato: mentre il numero sale da $-1$ a $1$,
-il quadrato prima scende e poi risale, e nel complesso non tende a salire con
-lui né a scendere. Quando i dati nascono mescolando segnali indipendenti fra
-loro, le *sorgenti*, la PCA restituisce altre miscele. Colin Cherry chiamò
-problema del *cocktail party* la capacità di isolare la voce di una persona
-mentre altre parlano insieme {cite}`cherry1953experiments`; nella versione per
-le macchine due persone parlano nella stessa stanza, due microfoni in punti
-diversi registrano ciascuno un miscuglio delle due voci, e si vogliono riavere
-le voci separate senza sapere come i microfoni le hanno mescolate. L’**analisi
-delle componenti indipendenti** (*Independent Component Analysis*, ICA) risolve
-questo problema sotto ipotesi precise. È nata a metà degli anni Ottanta con la
-separazione cieca delle sorgenti di Hérault, Jutten e Ans, pubblicata per
-esteso da Jutten e Hérault {cite}`jutten1991blind`, e Comon l'ha messa in forma
-{cite}`comon1994independent`.
+lungo quelle direzioni sono *incorrelate*, cioè quando una sale l'altra non
+tende né a salire né a scendere. Incorrelato, però, non equivale a
+indipendente. Ad esempio, un numero preso a caso fra $-1$ e $1$ e il suo
+quadrato sono incorrelati, eppure conoscere il primo dice tutto del secondo.
+
+Sono incorrelati perché un numero e il suo opposto hanno lo stesso quadrato:
+mentre il numero sale da $-1$ a $1$, il quadrato prima scende e poi risale, e
+nel complesso non tende a salire con lui né a scendere. Quando
+i dati nascono mescolando segnali indipendenti fra loro, le **sorgenti**, la
+PCA restituisce altre miscele.
+
+Colin Cherry chiamò problema del *cocktail party* la capacità di isolare la
+voce di una persona mentre altre parlano insieme {cite}`cherry1953experiments`.
+Nella versione per le macchine due persone parlano nella stessa stanza, due
+microfoni in punti diversi registrano ciascuno un miscuglio delle due voci, e
+si vogliono riavere le voci separate senza sapere come i microfoni le hanno
+mescolate.
+
+L’**analisi delle componenti indipendenti** (*Independent Component Analysis*,
+ICA) risolve questo problema sotto ipotesi precise. È nata a metà degli anni
+Ottanta con la separazione cieca delle sorgenti di Hérault, Jutten e Ans,
+pubblicata per esteso da Jutten e Hérault {cite}`jutten1991blind`, e Comon l'ha
+messa in forma {cite}`comon1994independent`.
 
 `````{tab} Elementare
 
@@ -425,12 +440,14 @@ Due microfoni in una stanza, e ognuno sente le due voci insieme, in proporzioni
 diverse. Anna e Bruno parlano allo stesso volume; il primo microfono sente Anna
 intera e metà di Bruno, il secondo metà di Anna e Bruno intero. Al mixer puoi
 alzare o abbassare ciascuna registrazione e sommarle, anche col segno meno, e
-la combinazione giusta cancella una voce. Il primo meno metà del secondo fa
-(Anna più metà di Bruno) meno (un quarto di Anna più metà di Bruno), cioè tre
-quarti di Anna e niente Bruno. Nessuno però ti dice quanto ogni microfono sente
-dell'altra voce (qui la metà). La PCA sceglie la combinazione in cui il suono è
-più forte, cioè più sparpagliato, che qui è la somma dei due microfoni: una
-volta e mezza Anna più una volta e mezza Bruno, un altro miscuglio.
+la combinazione giusta cancella una voce. Il primo meno metà del
+secondo fa (Anna più metà di Bruno) meno (un quarto di Anna più metà di Bruno),
+cioè tre quarti di Anna e niente Bruno.
+
+Nessuno però ti dice quanto ogni microfono sente dell'altra voce (qui la
+metà). La PCA sceglie la combinazione in cui il suono è più forte, cioè più
+sparpagliato, che qui è la somma dei due microfoni: una volta e mezza Anna più
+una volta e mezza Bruno, un altro miscuglio.
 
 Per riconoscere una voce sola, l'ICA prende in prestito i dadi del
 {doc}`teorema del limite centrale </Matematica/probabilita-statistica>`, dove
@@ -438,18 +455,21 @@ si conta quante volte esce ogni totale. Un dado dà una forma piatta, la somma
 di due dadi un triangolo (il 7 esce sei volte più spesso del 2), quella di
 dieci già una campana. Sommare cose indipendenti, di norma, porta verso la
 campana, che è anche la forma del rumore di fondo, somma di mille piccoli
-suoni. Con una registrazione si fa lo stesso conto: è una linea che sale e
-scende attorno allo zero, come in un messaggio vocale, e si conta quante volte
-sta a ciascun livello, senza guardare in che ordine ci arriva. Una voce sta
-quasi sempre vicino allo zero, nelle pause, e ogni tanto schizza lontano, nei
-picchi: il disegno è una punta stretta con le code lunghe. Dalla campana ci si
-può allontanare anche dall'altra parte: un fischio che oscilla regolare, o un
-segnale che salta fra due soli valori, sta più spesso vicino ai suoi due
-estremi che vicino allo zero, e il suo disegno è largo e senza punta, con la
-maggior parte dei valori ai due bordi. Da una parte o dall'altra, due segnali
-mescolati somigliano già di più alla campana. Allora, fra tutte le combinazioni
-del mixer, si cerca quella che le somiglia *di meno*, ed è quella in cui è
-rimasta una voce sola.
+suoni.
+
+Con una registrazione si fa lo stesso conto. Una registrazione è una linea che
+sale e scende attorno allo zero, come in un messaggio vocale, e si conta quante
+volte sta a ciascun livello, senza guardare in che ordine ci arriva. Una voce
+sta quasi sempre vicino allo zero, nelle pause, e ogni tanto schizza lontano,
+nei picchi, per cui il disegno è una punta stretta con le code lunghe.
+
+Dalla campana ci si può allontanare anche dall'altra parte:
+un fischio che oscilla regolare, o un segnale che salta fra due soli valori,
+sta più spesso vicino ai suoi due estremi che vicino allo zero, e il suo
+disegno è largo e senza punta, con la maggior parte dei valori ai due bordi. Da
+una parte o dall'altra, due segnali mescolati somigliano già di più alla
+campana. Allora, fra tutte le combinazioni del mixer, si cerca quella che le
+somiglia *di meno*, ed è quella in cui è rimasta una voce sola.
 
 La ricerca si fa in due tempi. Nel primo la PCA prende la somma e la differenza
 dei due microfoni, che non salgono e scendono insieme, e le porta allo stesso
@@ -478,72 +498,79 @@ all'orecchio suona identico. Nessuno dice quale voce sia la prima.
 Il trucco si rompe in tre casi. Se le voci fossero due soffi di rumore a forma
 di campana, a ogni posizione della manopola uscirebbe la stessa campana, e
 l'ICA ne sceglierebbe una a caso. Se nella stanza entra Carla e i microfoni
-restano due, una combinazione cancella una voce sola: con due microfoni e tre
-voci ne restano due mescolate. Infine, il calcolo suppone che ogni microfono
-senta le voci nello stesso istante; nella stanza vera il suono arriva un po’
-prima al microfono più vicino, con l'eco ogni microfono sente anche le voci di
-un attimo prima, e allora il miscuglio non è più una semplice somma.
+restano due, una combinazione cancella una voce sola, quindi con due microfoni
+e tre voci ne restano due mescolate. Infine, il calcolo suppone che ogni
+microfono senta le voci nello stesso istante; nella stanza vera il suono arriva
+un po’ prima al microfono più vicino, con l'eco ogni microfono sente anche le
+voci di un attimo prima, e allora il miscuglio non è più una semplice somma.
 
 `````
 
 `````{tab} Superiore
 
-Il modello è $\mathbf{x} = \mathbf{A}\mathbf{s}$: $n$ sorgenti $\mathbf{s} \in
-\mathbb{R}^n$ a componenti indipendenti, altrettanti sensori, e $\mathbf{A}$
-quadrata e invertibile, la *matrice di miscelazione*. Gli $m$ campioni di
-$\mathbf{x}$ si trattano come estrazioni indipendenti: l'ordine nel tempo non
-conta, e di ogni sorgente conta soltanto la distribuzione dei valori. Con più
-sensori che sorgenti basta che $\mathbf{A}$ abbia rango pieno di colonna, e la
-PCA riduce prima a $n$ dimensioni; con meno sensori che sorgenti nessuna matrice
-le ricostruisce tutte. Comon ha dimostrato che, se al più una delle componenti
-di $\mathbf{s}$ è gaussiana, $\mathbf{A}$ è identificabile a meno di una
-permutazione e di una scala delle sue colonne {cite}`comon1994independent`:
+Consideriamo il modello $\mathbf{x} = \mathbf{A}\mathbf{s}$, con $n$ sorgenti
+$\mathbf{s} \in \mathbb{R}^n$ a componenti indipendenti, altrettanti sensori, e
+$\mathbf{A}$ quadrata e invertibile, la *matrice di miscelazione*. Gli $m$
+campioni di $\mathbf{x}$ si trattano come estrazioni indipendenti, quindi
+l'ordine nel tempo non conta e di ogni sorgente conta soltanto la distribuzione
+dei valori. Con più sensori che sorgenti basta che $\mathbf{A}$ abbia rango
+pieno di colonna, e la PCA riduce prima a $n$ dimensioni; con meno sensori che
+sorgenti nessuna matrice le ricostruisce tutte.
+
+Comon ha dimostrato che, se al più una delle componenti di $\mathbf{s}$ è
+gaussiana, $\mathbf{A}$ è identificabile a meno di una permutazione e di una
+scala delle sue colonne {cite}`comon1994independent`. In altri termini,
 ordine, ampiezza e segno delle sorgenti restano indeterminati, il resto no.
 
-Il primo passo è lo **sbiancamento**, la PCA con le componenti riscalate a
-varianza unitaria: $\mathbf{z} =
+Il primo passo è lo **sbiancamento**, cioè la PCA con le componenti riscalate
+a varianza unitaria: $\mathbf{z} =
 \boldsymbol{\Lambda}^{-1/2}\mathbf{U}^\top(\mathbf{x} - \boldsymbol{\mu})$, con
 $\boldsymbol{\mu} = \mathbb{E}[\mathbf{x}]$ e
 $\mathbf{U}\boldsymbol{\Lambda}\mathbf{U}^\top$ la decomposizione della
-covarianza. Dopo, $\mathbb{E}[\mathbf{z}\mathbf{z}^\top] = \mathbf{I}$, e se le
-sorgenti hanno varianza unitaria (lo si può sempre supporre, perché la loro
-scala è comunque indeterminata e finisce nelle colonne di $\mathbf{A}$) la
-miscela residua $\mathbf{z} = \tilde{\mathbf{A}}\mathbf{s}$ ha
-$\tilde{\mathbf{A}}\tilde{\mathbf{A}}^\top = \mathbf{I}$: resta da trovare una
-rotazione, cioè $n(n-1)/2$ angoli invece degli $n^2$ numeri di una matrice
-qualunque (le riflessioni le assorbe l'indeterminazione di segno). Qui la
-gaussiana fa eccezione: una gaussiana sbiancata è isotropa, ogni rotazione la
-lascia identica, e nessun criterio che guardi la distribuzione dei valori può
-sceglierne una. Con una sola sorgente gaussiana la rotazione è fissata lo
-stesso, dalle altre $n-1$ direzioni per ortogonalità; con due o più resta
-libera la rotazione nel loro sottospazio. Se invece le sorgenti hanno spettri
-diversi, l'ordine nel tempo basta a separarle anche gaussiane, con le sole
-covarianze a ritardo {cite}`belouchrani1997blind`: è un altro modello, che
-l'ICA non usa.
+covarianza. Dopo lo sbiancamento vale
+$\mathbb{E}[\mathbf{z}\mathbf{z}^\top] = \mathbf{I}$, e se le sorgenti hanno
+varianza unitaria (lo si può sempre supporre, perché la loro scala è comunque
+indeterminata e finisce nelle colonne di $\mathbf{A}$) la miscela residua
+$\mathbf{z} = \tilde{\mathbf{A}}\mathbf{s}$ ha
+$\tilde{\mathbf{A}}\tilde{\mathbf{A}}^\top = \mathbf{I}$. Resta quindi da
+trovare una rotazione, cioè $n(n-1)/2$ angoli invece degli $n^2$ numeri di una
+matrice qualunque (l'indeterminazione di segno assorbe le riflessioni).
+
+Qui la gaussiana fa eccezione. Una gaussiana sbiancata, infatti, è isotropa,
+ogni rotazione la lascia identica, e nessun criterio che guardi la
+distribuzione dei valori può sceglierne una. Con una sola sorgente gaussiana la
+rotazione è fissata lo stesso, dalle altre $n-1$ direzioni per ortogonalità;
+con due o più resta libera la rotazione nel loro sottospazio. Se invece le
+sorgenti hanno spettri diversi, l'ordine nel tempo basta a separarle anche
+gaussiane, con le sole covarianze a ritardo {cite}`belouchrani1997blind`, ma è
+un altro modello, che l'ICA non usa.
 
 La rotazione si trova massimizzando la non gaussianità delle proiezioni
 $y = \mathbf{w}^\top\mathbf{z}$ con $\|\mathbf{w}\| = 1$, che hanno media
 nulla e varianza unitaria. L'intuizione viene dal {doc}`teorema del limite
 centrale </Matematica/probabilita-statistica>`: una combinazione di sorgenti
 indipendenti è di solito più vicina a una gaussiana delle sorgenti che mescola
-{cite}`hyvarinen2000independent`. Le misure usuali sono il valore assoluto (o il
-quadrato) della curtosi, $|\mathbb{E}[y^4] - 3|$, perché una sorgente può stare
-dall'una o dall'altra parte della gaussiana (una sinusoide ha curtosi
-$-1{,}5$, un segnale che salta fra $\pm 1$ ha $-2$, una laplaciana $+3$), e la
-negentropia $J(y) = h(y_{\mathcal{N}}) - h(y)$, dove $h$ è
-l’{doc}`entropia differenziale </Matematica/teoria-informazione>` e
-$y_{\mathcal{N}}$ una gaussiana con la stessa varianza di $y$. La negentropia è
-la divergenza KL fra $y$ e quella gaussiana, quindi mai negativa e nulla solo
-per la gaussiana, e rende esatta l'intuizione. Per la disuguaglianza della
-potenza entropica, se $y = \sum_i q_i s_i$ con $\sum_i q_i^2 = 1$, vale
-$J(y) \le \sum_i q_i^2 J(s_i) \le \max_i J(s_i)$: una miscela non supera mai la
-sorgente più lontana dalla gaussiana, e può invece superare una sorgente quasi
-gaussiana, che è la ragione del «di solito». In pratica la negentropia si
-approssima, a meno di una costante positiva, con
+{cite}`hyvarinen2000independent`.
+
+Le misure usuali sono il valore assoluto (o il quadrato) della curtosi,
+$|\mathbb{E}[y^4] - 3|$, perché una sorgente può stare dall'una o dall'altra
+parte della gaussiana (una sinusoide ha curtosi $-1{,}5$, un segnale che salta
+fra $\pm 1$ ha $-2$, una laplaciana $+3$), e la negentropia $J(y) =
+h(y_{\mathcal{N}}) - h(y)$, dove $h$ è l’{doc}`entropia differenziale
+</Matematica/teoria-informazione>` e $y_{\mathcal{N}}$ una gaussiana con la
+stessa varianza di $y$.
+
+La negentropia è la divergenza KL fra $y$ e quella gaussiana, quindi mai
+negativa e nulla solo per la gaussiana, e rende esatta l'intuizione. Per la
+disuguaglianza della potenza entropica, infatti, se $y = \sum_i q_i s_i$ con
+$\sum_i q_i^2 = 1$, vale $J(y) \le \sum_i q_i^2 J(s_i) \le \max_i J(s_i)$: una
+miscela non supera mai la sorgente più lontana dalla gaussiana, e può invece
+superare una sorgente quasi gaussiana, che è la ragione del «di solito».
+
+In pratica la negentropia si approssima, a meno di una costante positiva, con
 $\big(\mathbb{E}[G(y)] - \mathbb{E}[G(y_{\mathcal{N}})]\big)^2$ e
 $G(u) = \log\cosh u$, che cresce più piano della quarta potenza e risente meno
-di una manciata di campioni nelle code. L'algoritmo FastICA
-aggiorna
+di una manciata di campioni nelle code. L'algoritmo FastICA aggiorna
 
 $$
 \mathbf{w} \leftarrow \mathbb{E}\big[\mathbf{z}\,g(\mathbf{w}^\top\mathbf{z})\big]
@@ -557,28 +584,32 @@ vincolato $\mathbb{E}[\mathbf{z}\,g(\mathbf{w}^\top\mathbf{z})] =
 \beta\,\mathbf{w}$, in cui lo jacobiano $\mathbb{E}[\mathbf{z}\mathbf{z}^\top
 g'(\mathbf{w}^\top\mathbf{z})]$ si approssima con
 $\mathbb{E}[g'(\mathbf{w}^\top\mathbf{z})]\,\mathbf{I}$ perché i dati sono
-sbiancati; sotto il modello converge in modo cubico, o almeno quadratico
+sbiancati. Sotto il modello converge in modo cubico, o almeno quadratico
 {cite}`hyvarinen2000independent`, e ogni passo ha costo $O(mn)$ per componente.
+
 Lo stesso problema scritto come massima verosimiglianza, o come massimo
 passaggio di informazione in una rete (l’*infomax* di Bell e Sejnowski
 {cite}`bell1995information`), porta alla stessa famiglia di soluzioni, a una
 condizione: la non linearità della rete dev'essere la funzione di ripartizione
 della densità supposta per le sorgenti, e occorre soltanto indovinarne il tipo,
-sub o super gaussiano. La sigmoide logistica di Bell e Sejnowski le suppone
-super gaussiane, e su una sinusoide e un'onda quadra, che sono sub gaussiane,
-la separazione fallisce; l'infomax esteso di Lee, Girolami e Sejnowski la
-ripara stimando il tipo di ciascuna sorgente {cite}`lee1999independent`. Il
-modello chiede miscele istantanee: con ritardi ed eco la miscela diventa una
+sub o super gaussiano.
+
+La sigmoide logistica di Bell e Sejnowski le suppone super gaussiane, per cui
+su una sinusoide e un'onda quadra, che sono sub gaussiane, la separazione
+fallisce; l'infomax esteso di Lee, Girolami e Sejnowski la ripara stimando il
+tipo di ciascuna sorgente {cite}`lee1999independent`. Il modello, infine,
+chiede miscele istantanee: con ritardi ed eco la miscela diventa una
 convoluzione, e servono varianti convolutive.
 
 `````
 
 L'esperimento mescola due segnali, uno che oscilla e uno che salta fra due
 valori, come farebbero due microfoni, e misura quanto la PCA e l'ICA li
-ritrovano con la correlazione, in valore assoluto, fra ogni voce vera e la stima
-che le somiglia di più: $1$ indica una voce ritrovata, a meno di volume e segno.
-Poi ripete venti volte la separazione con voci diverse, e venti volte con due
-voci gaussiane, cioè due soffi di rumore a forma di campana.
+ritrovano con la correlazione, in valore assoluto, fra ogni voce vera e la
+stima che le somiglia di più. Il valore $1$ indica una voce ritrovata, a meno
+di volume e segno. Poi ripete venti volte la separazione con voci diverse, e
+venti volte con due voci gaussiane, cioè due soffi di rumore a forma di
+campana.
 
 ```python
 import warnings
@@ -630,29 +661,29 @@ voci non gaussiane: separate tutte e venti? True; la peggiore: 1.00
 voci gaussiane: separate tutte e venti? False; la peggiore: 0.72
 ```
 
-La PCA restituisce due miscugli, con una correlazione di 0,81 e 0,85 con le voci
-vere; l'ICA le ritrova intere in tutte e venti le miscele. Con due voci
+La PCA restituisce due miscugli, con una correlazione di 0,81 e 0,85 con le
+voci vere; l'ICA le ritrova intere in tutte e venti le miscele. Con due voci
 gaussiane, invece, la peggiore delle venti scende a 0,72. Il valore più basso
 che quella misura può dare è $1/\sqrt{2} \approx 0{,}71$, quello di stime
-ruotate di 45° che prendono le due voci in parti uguali: 0,72 è a un passo da
+ruotate di 45° che prendono le due voci in parti uguali, e 0,72 è a un passo da
 lì. L'algoritmo si ferma su una rotazione qualunque, perché non ce n'è una
 migliore delle altre.
 
 Resta il limite da cui si era partiti. PCA e ICA sanno soltanto ruotare,
-riscalare e proiettare: se la struttura interessante dei dati è curva, nessuna
-delle due la stende.
+riscalare e proiettare, quindi se la struttura interessante dei dati è curva
+nessuna delle due la stende.
 
 ## t-SNE e UMAP: vedere in due dimensioni ciò che vive in mille
 
 Quando lo scopo è guardare dati ad alta dimensione (non passarli a un altro
-modello, ma disegnarli su uno schermo), la PCA può non bastare: una proiezione
-lineare in due dimensioni sovrappone punti che in origine sono lontani.
-**t-SNE** (*t-distributed Stochastic Neighbor Embedding*, van der Maaten e
-Hinton, 2008) {cite}`maaten2008visualizing` e **UMAP** (*Uniform Manifold
-Approximation and Projection*, McInnes, Healy e Melville, 2018)
+modello, ma disegnarli su uno schermo), la PCA può non bastare, perché una
+proiezione lineare in due dimensioni sovrappone punti che in origine sono
+lontani. **t-SNE** (*t-distributed Stochastic Neighbor Embedding*, van der
+Maaten e Hinton, 2008) {cite}`maaten2008visualizing` e **UMAP** (*Uniform
+Manifold Approximation and Projection*, McInnes, Healy e Melville, 2018)
 {cite}`mcinnes2018umap` sono trasformazioni non lineari pensate per la
-visualizzazione: scelgono la posizione dei punti nel piano in modo da conservare
-i vicinati, non le distanze.
+visualizzazione, che scelgono la posizione dei punti nel piano in modo da
+conservare i vicinati, non le distanze.
 
 ```{figure} ../figures/tsne-umap.svg
 :name: fig-tsne-umap
@@ -673,18 +704,19 @@ gruppi non sono misure.
 Su un foglio, la mappa delle amicizie di una scuola non si disegna con il
 righello. Non ti interessa la distanza reale tra le case: ti interessa che chi è
 amico finisca vicino sul foglio, e chi non si conosce finisca lontano.
-t-SNE e UMAP fanno questo con i dati: prendono punti che vivono in uno spazio
-con tante dimensioni e li dispongono in due, cercando di mettere accanto i
-punti che erano vicini in origine. Il risultato sono mappe bellissime, dove
+t-SNE e UMAP fanno lo stesso con i dati. Prendono punti che vivono in uno
+spazio con tante dimensioni e li dispongono in due, cercando di mettere accanto
+i punti che erano vicini in origine. Il risultato sono mappe bellissime, dove
 categorie diverse (cifre scritte a mano, tipi di cellule, generi musicali) si
 separano in isole ben distinte.
 
-Chi sia «amico» non lo decide una soglia uguale per tutti: c'è il ragazzino
-che frequenta trenta persone e quello che ne frequenta tre. Si stabilisce in
-partenza quanti compagni stretti contare, all'incirca, e attorno a ciascuno si
-allarga o si stringe il cerchio finché ne stanno dentro quel tanto. Poi si
-mettono d'accordo le due versioni: se lui la considera un'amica e lei lo
-considera un conoscente, sul foglio finisce una via di mezzo fra le due.
+Chi sia «amico» non lo decide una soglia uguale per tutti, perché c'è il
+ragazzino che frequenta trenta persone e quello che ne frequenta tre. Per
+questo si stabilisce in partenza quanti compagni stretti contare, all'incirca,
+e attorno a ciascuno si allarga o si stringe il cerchio finché ne stanno dentro
+quel tanto. Poi si mettono d'accordo le due versioni: se lui la considera
+un'amica e lei lo considera un conoscente, sul foglio finisce una via di mezzo
+fra le due.
 
 Il foglio, poi, è piccolo, e tutte le distanze insieme non possono tornare.
 Pretendere che anche le lontananze siano fedeli vorrebbe dire stringere tutti
@@ -696,12 +728,12 @@ più in qua o un po’ più in là conta poco, e il disegno li sistema come gli
 torna comodo.
 
 Su queste mappe, però, non fidarti delle distanze grandi: due isole lontane sul
-foglio non sono necessariamente più diverse di due isole vicine, l'algoritmo
-non lo garantisce. Non fidarti nemmeno della grandezza delle isole né di quanto
-sono fitte: un gruppo disegnato grande e sparso può in realtà essere compatto
-quanto uno disegnato piccolo. Sono strumenti per *vedere* se esistono dei
-gruppi, non per *misurare* quanto distano o quanto sono grandi. Ottimi per
-l'occhio, pessimi per il righello.
+foglio non sono necessariamente più diverse di due isole vicine, perché
+l'algoritmo non lo garantisce. Non fidarti nemmeno della grandezza delle isole
+né di quanto sono fitte: un gruppo disegnato grande e sparso può in realtà
+essere compatto quanto uno disegnato piccolo. Sono strumenti per *vedere* se
+esistono dei gruppi, non per *misurare* quanto distano o quanto sono grandi.
+Ottimi per l'occhio, pessimi per il righello.
 
 `````
 
@@ -710,26 +742,30 @@ l'occhio, pessimi per il righello.
 t-SNE modella le vicinanze come probabilità. Nello spazio originale la
 somiglianza tra i punti $i$ e $j$ è una gaussiana sulla loro distanza,
 $p_{j\mid i} \propto \exp(-\lVert \mathbf{x}_i - \mathbf{x}_j\rVert^2 /
-2\sigma_i^2)$, con $\sigma_i$ tarato localmente da un iperparametro, la
-*perplexity*: $\sigma_i$ si cerca per bisezione finché $2^{H(P_i)}$ vale la
-perplexity scelta, dove $H(P_i)$ è l'entropia in bit della distribuzione
-$p_{\cdot\mid i}$ dei vicini di $i$; la perplexity fa quindi da numero efficace
-di vicini. Queste condizionate non sono simmetriche ($p_{j\mid i} \neq p_{i\mid
+2\sigma_i^2)$, con $\sigma_i$ calibrato localmente da un iperparametro, la
+**perplexity**. In particolare, $\sigma_i$ si cerca per bisezione finché
+$2^{H(P_i)}$ vale la perplexity scelta, dove $H(P_i)$ è l'entropia in bit della
+distribuzione $p_{\cdot\mid i}$ dei vicini di $i$; la perplexity fa quindi da
+numero efficace di vicini.
+
+Queste condizionate non sono simmetriche ($p_{j\mid i} \neq p_{i\mid
 j}$, perché $\sigma_i$ e $\sigma_j$ differiscono) e vengono simmetrizzate in
 una congiunta, $p_{ij} = (p_{j\mid i} + p_{i\mid j})/2m$, dove $m$ è il numero
 di esempi. Quella simmetrizzazione dà il *symmetric SNE*, cioè una variante del
-SNE originale di Hinton e Roweis; la vera differenza arriva con la $t$ del
+SNE originale di Hinton e Roweis. La vera differenza arriva con la $t$ del
 nome: nello spazio ridotto, al posto di un'altra gaussiana, t-SNE usa una $t$
 di Student a un grado di libertà (con code pesanti, che evitano l'affollamento
 al centro), $q_{ij} \propto (1 + \lVert \mathbf{z}_i -
 \mathbf{z}_j\rVert^2)^{-1}$, e dispone i punti $\mathbf{z}_i$ minimizzando la
 divergenza di Kullback–Leibler $\mathrm{KL}(P \Vert Q)$ tra le due
-distribuzioni congiunte. Poiché la KL pesa molto le vicinanze e poco le
-lontananze, t-SNE preserva la struttura locale ma distorce quella globale:
-distanze tra cluster, densità e dimensioni apparenti sui grafici non sono
-quantitativamente affidabili. Il calcolo esatto ha costo $O(m^2)$ per
-iterazione; scikit-learn usa di default l'approssimazione di Barnes e Hut, che
-scende a $O(m\log m)$.
+distribuzioni congiunte.
+
+Poiché la KL pesa molto le vicinanze e poco le lontananze, t-SNE preserva la
+struttura locale ma distorce quella globale. Di conseguenza, distanze tra
+cluster, densità e dimensioni apparenti sui grafici non sono quantitativamente
+affidabili. Il calcolo esatto ha costo $O(m^2)$ per iterazione, mentre
+scikit-learn usa di default l'approssimazione di Barnes e Hut, che scende a
+$O(m\log m)$.
 
 UMAP parte da fondamenta diverse (una costruzione su grafi e topologia) ma
 persegue un obiettivo simile; in pratica è più veloce, scala meglio a milioni
@@ -738,10 +774,11 @@ punto, però, Kobak e Linderman {cite}`kobak2021initialization` hanno mostrato
 che il divario si annulla inizializzando t-SNE con la PCA invece che a caso.
 L’inizializzazione, più dell'algoritmo, decide quindi quanto sopravvive della
 struttura globale. In scikit-learn `init="pca"` è il default dalla versione
-1.2, quindi il rimedio è già acceso. Resta comunque lo stesso monito per
-entrambi: sono strumenti di visualizzazione, non di analisi metrica. Entrambi
-vanno usati per *esplorare*, mai per concludere che «questo gruppo è il doppio
-più lontano di quell'altro».
+1.2, quindi il rimedio è già attivo.
+
+Resta comunque lo stesso monito per entrambi: sono strumenti di
+visualizzazione, non di analisi metrica. Entrambi vanno usati per *esplorare*,
+mai per concludere che «questo gruppo è il doppio più lontano di quell'altro».
 
 `````
 
@@ -750,19 +787,20 @@ più lontano di quell'altro».
 Sì: guardare se un mucchio di dati ha una struttura a gruppi prima di
 metterci un modello; guardare le rappresentazioni interne di una rete neurale,
 cioè gli elenchi di numeri con cui la rete descrive ogni esempio dentro di sé
-(si chiamano *embedding*), per capire cosa ha imparato;
-presentare a un
+(si chiamano *embedding*), per capire cosa ha imparato; presentare a un
 pubblico la forma di dati che nessuno può visualizzare, come le immagini di
-cifre scritte a mano di $28 \times 28$ pixel: sono $784$ pixel per immagine, e
+cifre scritte a mano di $28 \times 28$ pixel, che hanno $784$ pixel ciascuna, e
 quindi $784$ colonne, cioè $784$ dimensioni.
 
 No: come passaggio preparatorio prima di un classificatore. Per quello serve la
-PCA, per due ragioni. Si applica a dati nuovi ripetendo la stessa identica
-trasformazione, una proiezione lineare; t-SNE non ha una trasformazione da
-applicare (i punti nuovi chiedono un nuovo calcolo su tutto l'insieme, che
-restituirebbe un'altra mappa), e UMAP ne ha una approssimata, che colloca i
-punti nuovi in una mappa già fissata. La PCA sa anche tornare indietro,
-ricostruendo i dati di partenza dalle poche direzioni tenute. La ricostruzione è
+PCA, per due ragioni. La prima è che si applica a dati nuovi ripetendo la
+stessa identica trasformazione, una proiezione lineare, mentre t-SNE non ha una
+trasformazione da applicare (i punti nuovi chiedono un nuovo calcolo su tutto
+l'insieme, che restituirebbe un'altra mappa), e UMAP ne ha una approssimata,
+che colloca i punti nuovi in una mappa già fissata.
+
+La seconda è che la PCA sa anche tornare indietro, ricostruendo i dati di
+partenza dalle poche direzioni tenute. La ricostruzione è
 approssimata, perché l'informazione scartata è persa (nell'esempio dei
 quattro punti era il $20\%$), ma ha la stessa forma di prima e un errore che
 si conosce in anticipo, la varianza delle direzioni scartate. In t-SNE l'inversa
@@ -780,10 +818,10 @@ Cambiamo domanda. Non più «come comprimo i dati» ma «ci sono gruppi naturali
 dentro». Il clustering cerca di dividere gli esempi in famiglie di simili
 (clienti simili, documenti sullo stesso tema, pixel dello stesso oggetto) senza
 che nessuno abbia mai detto quali famiglie esistano. È il gemello non
-supervisionato della classificazione: anche qui, alla fine, ogni esempio esce
-con un'etichetta attaccata; ma nella classificazione le etichette venivano da
-noi, mentre qui le inventa l'algoritmo, che può solo dire «questo sta con
-quest'altro», non come si chiami il gruppo.
+supervisionato della classificazione, perché anche qui, alla fine, ogni esempio
+esce con un'etichetta attaccata. Nella classificazione, però, le etichette
+venivano da noi, mentre qui le inventa l'algoritmo, che può solo dire «questo
+sta con quest'altro», non come si chiami il gruppo.
 
 Il metodo più celebre è **k-means**, il cui algoritmo è dovuto a Stuart Lloyd
 (formulato ai Bell Labs nel 1957, pubblicato nel 1982) {cite}`lloyd1982least`;
@@ -791,8 +829,8 @@ il nome «$k$-means» compare in James MacQueen nel 1967
 {cite}`macqueen1967some`. L'algoritmo ripete due operazioni finché nulla cambia.
 
 Il **centroide** di un gruppo è la media dei suoi punti, coordinata per
-coordinata: in generale un punto dello spazio che non coincide con nessun dato.
-Nei disegni si segna con una x.
+coordinata, e in generale è un punto dello spazio che non coincide con nessun
+dato. Nei disegni si segna con una x.
 
 ```{figure} ../figures/k-means-raggruppare-senza-etichette.svg
 :name: fig-kmeans-migrazione
@@ -800,13 +838,13 @@ Nei disegni si segna con una x.
 :width: 100%
 
 Le due fasi di k-means, ripetute. Ogni punto va al centroide più vicino, poi
-ogni centroide va nel mezzo dei punti che gli sono toccati: da un inizio a
-caso si arriva ai gruppi in poche iterazioni.
+ogni centroide va nel mezzo dei punti che gli sono toccati. In questo modo, da
+un inizio a caso si arriva ai gruppi in poche iterazioni.
 ```
 
 Il primo pannello di {numref}`fig-kmeans-migrazione` mostra dove sta la
-fragilità dell'algoritmo: le due x di partenza sono scelte a caso, e partenze
-diverse possono portare a gruppi diversi.
+fragilità dell'algoritmo. Le due x di partenza, infatti, sono scelte a caso, e
+partenze diverse possono portare a gruppi diversi.
 
 `````{tab} Elementare
 
@@ -828,15 +866,18 @@ precisa. Misura la scomodità: per ogni persona la distanza dal suo ritrovo
 moltiplicata per sé stessa, e poi tutte sommate; così una persona lasciata
 lontanissima pesa più di dieci lasciate un po’ scomode. L'assegnazione non può
 farla salire: ognuno passa al ritrovo più vicino, quindi cammina meno di prima,
-o uguale. Nemmeno lo spostamento la fa salire, perché fra tutti i punti in cui
-potresti piantare un ritrovo, il centro è il punto che la rende minima per il
-suo gruppo. Da un punto qualsiasi, infatti, il totale è quello dal centro più
-un pezzo in più, che vale il numero di persone del gruppo moltiplicato per il
-quadrato della distanza dal centro, e si annulla solo nel centro. Ogni volta
-che qualcuno cambia ritrovo la scomodità scende in senso stretto, quindi una
-sistemazione già vista non può tornare. Poiché le sistemazioni possibili, per
-quante siano, sono in numero finito, prima o poi nessuno cambia più gruppo e i
-centri si fermano.
+o uguale.
+
+Nemmeno lo spostamento la fa salire, perché fra tutti i punti in cui potresti
+piantare un ritrovo, il centro è il punto che la rende minima per il suo
+gruppo. Da un punto qualsiasi, infatti, il totale è quello dal centro più un
+pezzo in più, che vale il numero di persone del gruppo moltiplicato per il
+quadrato della distanza dal centro, e si annulla solo nel centro.
+
+Ogni volta che qualcuno cambia ritrovo la scomodità scende in senso stretto,
+quindi una sistemazione già vista non può tornare. Poiché le sistemazioni
+possibili, per quante siano, sono in numero finito, prima o poi nessuno cambia
+più gruppo e i centri si fermano.
 
 Fermarsi, però, non garantisce di aver trovato la sistemazione più comoda:
 garantisce che nessuno guadagna a cambiare ritrovo di sua iniziativa, e che
@@ -861,8 +902,8 @@ $$
 dove $c_i \in \{1, \dots, k\}$ è il cluster assegnato al punto $\mathbf{x}_i$ e
 $C_j = \{i : c_i = j\}$ l'insieme dei punti finiti nel cluster $j$ (niente a
 che vedere con la matrice di covarianza $\mathbf{C}$ della PCA: qui la lettera
-indica un'altra cosa). L'algoritmo
-di Lloyd minimizza $\mathcal{L}$ alternando due passi di coordinate:
+indica un'altra cosa). L'algoritmo di Lloyd minimizza $\mathcal{L}$ alternando
+due passi di coordinate:
 
 $$
 \textbf{assegnazione:}\quad
@@ -879,18 +920,20 @@ C_j}\lVert\mathbf{x}_i-\boldsymbol{\mu}_j\rVert^2 +
 |C_j|\,\lVert\boldsymbol{\mu}_j-\mathbf{p}\rVert^2$, minimo in
 $\mathbf{p}=\boldsymbol{\mu}_j$. Le assegnazioni possibili sono in numero finito
 (al più $k^m$) e, se a parità di distanza un punto resta dov'è, nessuna si
-ripresenta: la procedura si ferma in un numero finito di passi, in un minimo
-locale che dipende dall'inizializzazione. Il costo è $O(m\,k\,d)$ per
-iterazione; le iterazioni sono poche in pratica, ma nel caso peggiore crescono
-in modo esponenziale con $m$ anche nel piano {cite}`vattani2011kmeans`. Il
-minimo globale non si sa trovare in tempo polinomiale: il problema è
-NP-difficile già con due gruppi, in dimensione arbitraria {cite}`aloise2009np`.
-k-means++ ha una garanzia sulla sola inizializzazione: l'inerzia attesa è al più
-$8(\ln k+2)$ volte quella ottima {cite}`arthur2007kmeanspp`.
+ripresenta. Di conseguenza la procedura si ferma in un numero finito di passi,
+in un minimo locale che dipende dall'inizializzazione.
+
+Il costo è $O(m\,k\,d)$ per iterazione. In pratica le iterazioni sono poche, ma
+nel caso peggiore crescono in modo esponenziale con $m$ anche nel piano
+{cite}`vattani2011kmeans`. Il minimo globale non si sa trovare in tempo
+polinomiale; il problema, infatti, è NP-difficile già con due gruppi, in
+dimensione arbitraria {cite}`aloise2009np`. k-means++ ha una garanzia sulla
+sola inizializzazione: l'inerzia attesa è al più $8(\ln k+2)$ volte quella
+ottima {cite}`arthur2007kmeanspp`.
 
 `````
 
-Seguiamo una manciata di iterazioni a mano. Sei punti in due dimensioni,
+Seguiamo a mano una manciata di iterazioni su sei punti in due dimensioni, con
 $k = 2$:
 
 $$
@@ -898,7 +941,7 @@ A(1,1),\ B(1,2),\ C(2,1),\ D(8,8),\ E(9,8),\ F(8,9).
 $$
 
 Nelle formule il centroide si scrive con la lettera greca *mi* in grassetto,
-$\boldsymbol{\mu}$: in statistica quella lettera indica da sempre una media, e
+$\boldsymbol{\mu}$. In statistica quella lettera indica da sempre una media, e
 il grassetto ricorda che non è un numero solo, ma un punto con tutte le sue
 coordinate. Calcoliamo le distanze fra due punti con Pitagora, come sul
 foglio a quadretti: differenza delle ascisse e delle ordinate, ciascuna al
@@ -910,13 +953,13 @@ $\boldsymbol{\mu}_2 = (2,1)$, entrambi in mezzo al gruppo di sinistra.
 Nella prima assegnazione ogni punto va al centroide più vicino. $A$ e $B$
 finiscono in $\boldsymbol{\mu}_1$. $C$ finisce in $\boldsymbol{\mu}_2$ perché
 ci coincide, distanza zero. Anche $D$, $E$ ed $F$, lontanissimi da tutti e due,
-finiscono in $\boldsymbol{\mu}_2$: per un soffio, ma ci finiscono. La distanza
-di $D(8,8)$, calcolata con Pitagora, è $\sqrt{(8-2)^2+(8-1)^2} = \sqrt{85}
-\approx 9{,}2$ da $\boldsymbol{\mu}_2 = (2,1)$, contro $\sqrt{(8-1)^2+(8-1)^2}
-= \sqrt{98} \approx 9{,}9$ da $\boldsymbol{\mu}_1 = (1,1)$; per $E$ ed $F$ i
-due numeri sono $9{,}9$ contro $10{,}6$ e $10{,}0$ contro $10{,}6$. Gruppi:
-$\{A, B\}$ attorno a $\boldsymbol{\mu}_1$, $\{C, D, E, F\}$ attorno a
-$\boldsymbol{\mu}_2$.
+finiscono in $\boldsymbol{\mu}_2$, per un soffio ma ci finiscono. La distanza
+di $D(8,8)$, ad esempio, calcolata con Pitagora, è $\sqrt{(8-2)^2+(8-1)^2} =
+\sqrt{85} \approx 9{,}2$ da $\boldsymbol{\mu}_2 = (2,1)$, contro
+$\sqrt{(8-1)^2+(8-1)^2} = \sqrt{98} \approx 9{,}9$ da $\boldsymbol{\mu}_1 =
+(1,1)$, mentre per $E$ ed $F$ i due numeri sono $9{,}9$ contro $10{,}6$ e
+$10{,}0$ contro $10{,}6$. I gruppi sono $\{A, B\}$ attorno a
+$\boldsymbol{\mu}_1$ e $\{C, D, E, F\}$ attorno a $\boldsymbol{\mu}_2$.
 
 Nel primo aggiornamento ricalcoliamo i centri come media:
 
@@ -929,18 +972,17 @@ $$
 
 Alla seconda assegnazione $C(2,1)$ dista $\sqrt{1{,}25} \approx 1{,}12$ da
 $\boldsymbol{\mu}_1 = (1;\,1{,}5)$ ma ben $\approx 7{,}3$ da $\boldsymbol{\mu}_2
-= (6{,}75;\,6{,}5)$: cambia gruppo e passa con $A$ e $B$. I punti $D, E, F$
-restano con $\boldsymbol{\mu}_2$. Adesso i gruppi sono $\{A, B, C\}$ e $\{D, E,
-F\}$: i due gruppi «veri».
+= (6{,}75;\,6{,}5)$, quindi cambia gruppo e passa con $A$ e $B$. I punti
+$D, E, F$ restano con $\boldsymbol{\mu}_2$, e adesso i gruppi sono
+$\{A, B, C\}$ e $\{D, E, F\}$, cioè i due gruppi «veri».
 
 Il secondo aggiornamento dà
 $\boldsymbol{\mu}_1 = (\tfrac{4}{3}; \tfrac{4}{3}) \approx (1{,}33; 1{,}33)$ e
 $\boldsymbol{\mu}_2 = (\tfrac{25}{3}; \tfrac{25}{3}) \approx (8{,}33; 8{,}33)$.
-Alla terza
-iterazione nessun punto cambia più gruppo: l'algoritmo è a convergenza.
-La partenza sbagliata si è corretta in due passi
-({numref}`fig-kmeans-converge`): l'unico momento in cui succede qualcosa di non
-ovvio è quando $C$ cambia gruppo, e da lì in poi non si muove più niente.
+Alla terza iterazione nessun punto cambia più gruppo, e l'algoritmo è a
+convergenza. In definitiva, la partenza sbagliata si è corretta in due passi
+({numref}`fig-kmeans-converge`), e l'unico momento in cui succede qualcosa di
+non ovvio è quando $C$ cambia gruppo; da lì in poi non si muove più niente.
 
 ```{figure} ../figures/kmeans-converge.svg
 :name: fig-kmeans-converge
@@ -949,7 +991,7 @@ ovvio è quando $C$ cambia gruppo, e da lì in poi non si muove più niente.
 
 I due passi sui sei punti dell'esempio: ogni punto prende il colore del
 centroide più vicino, poi ogni centroide si sposta nella media dei suoi punti.
-Al secondo giro $C$ cambia gruppo, e da lì non si muove più niente.
+Alla seconda iterazione $C$ cambia gruppo, e da lì non si muove più niente.
 ```
 
 ### Quante famiglie? Scegliere k
@@ -960,31 +1002,34 @@ aiutano a sceglierlo.
 `````{tab} Elementare
 
 Il **metodo del gomito** (*elbow*). Provi diversi valori di $k$ e, per
-ciascuno, misuri quanto sono «larghe» le famiglie che ne escono: è la stessa
-scomodità di poco fa, le distanze dal proprio centro moltiplicate ciascuna per
-sé stessa e poi sommate. Poi metti quei risultati su un grafico: $k$ in
-orizzontale, la larghezza in verticale. La curva scende sempre, perché più
-centri ci sono e più ognuno è vicino ai suoi, e al limite con un centro per
-punto la somma è zero; ma a un certo punto smette di scendere ripida e prosegue
-quasi piatta. Il grafico fa una piega, come un braccio piegato, e quello è il
-gomito. Il $k$ del gomito è di solito una buona scelta: da lì in poi aggiungere
-gruppi non serve quasi più a niente. Il limite è che tocca a te riconoscere la
-piega: certe curve scendono lisce, senza nessun angolo, e davanti allo stesso
-grafico due persone scelgono due $k$ diversi.
+ciascuno, misuri quanto sono «larghe» le famiglie che ne escono. È la stessa
+scomodità di poco fa, cioè le distanze dal proprio centro moltiplicate
+ciascuna per sé stessa e poi sommate. Poi metti quei risultati su un grafico:
+$k$ in orizzontale, la larghezza in verticale.
+
+La curva scende sempre, perché più centri ci sono e più ognuno è vicino ai
+suoi, e al limite con un centro per punto la somma è zero; ma a un certo punto
+smette di scendere ripida e prosegue quasi piatta. Il grafico fa una piega,
+come un braccio piegato, e quello è il gomito. Il $k$ del gomito è di solito
+una buona scelta, perché da lì in poi aggiungere gruppi non serve quasi più a
+niente. Il limite è che tocca a te riconoscere la piega: certe curve scendono
+lisce, senza nessun angolo, e davanti allo stesso grafico due persone scelgono
+due $k$ diversi.
 
 La **silhouette** (si legge *siluèt*, e in francese significa «profilo», perché
 misura quanto un gruppo è ben ritagliato). Per ogni punto si misurano due
 distanze medie: quanto dista, in media, dai compagni del suo gruppo, e quanto
 dista, in media, dai membri del gruppo estraneo più vicino. Poi si fa la
 differenza fra la seconda e la prima e la si divide per la più grande delle
-due, così il risultato sta sempre fra $-1$ e $+1$. Un valore vicino a $+1$
-indica che il punto è molto più vicino ai suoi che agli altri ed è ben
-piazzato; attorno a zero, che sta sul confine; negativo, che in media è più
-vicino al gruppo accanto che al suo e probabilmente sta nel gruppo sbagliato.
-La media su tutti i punti dice quanto è «pulita» la partizione: si sceglie il
-$k$ che la rende più alta. I due grafici si leggono in versi opposti: la
-larghezza del gomito scende sempre, e si cerca la piega; la silhouette si cerca
-al massimo.
+due, così il risultato sta sempre fra $-1$ e $+1$.
+
+Un valore vicino a $+1$ indica che il punto è molto più vicino ai suoi che agli
+altri ed è ben piazzato; attorno a zero, che sta sul confine; negativo, che in
+media è più vicino al gruppo accanto che al suo e probabilmente sta nel gruppo
+sbagliato. La media su tutti i punti dice quanto è «pulita» la partizione, e si
+sceglie il $k$ che la rende più alta. I due grafici si leggono in
+versi opposti: la larghezza del gomito scende sempre, e si cerca la piega; la
+silhouette si cerca al massimo.
 
 `````
 
@@ -992,7 +1037,7 @@ al massimo.
 
 Il metodo del gomito osserva l’inerzia $\mathcal{L}(k)$ in funzione di $k$
 e cerca il punto di rendimento decrescente (la curvatura massima), un criterio
-utile ma soggettivo. La silhouette lo rende quantitativo: per il punto $i$,
+utile ma soggettivo. La silhouette lo rende quantitativo. Per il punto $i$,
 detta $a_i$ la distanza media dai punti del suo cluster e $b_i$ la distanza
 media minima verso un altro cluster,
 
@@ -1011,18 +1056,21 @@ minimizza distanze quadrate da un centro, e questo gli fa assumere gruppi
 compatti, di forma sferica e di dimensione simile. Le zone che i centroidi si
 spartiscono sono poliedri convessi separati da iperpiani (in due dimensioni, gli
 assi dei segmenti che uniscono due centroidi); le forme allungate o concentriche
-vengono quindi tagliate di traverso. L'obiettivo inoltre non è convesso:
-l'algoritmo si ferma in un {doc}`minimo locale
-</Matematica/analisi-ottimizzazione>`, un assetto che nessun piccolo spostamento
-migliora, pur non essendo il migliore possibile, e quale minimo trovi dipende
-dall'inizializzazione. Il rimedio standard è **k-means++**
-{cite}`arthur2007kmeanspp`, che sorteggia ancora i centroidi iniziali, ma con
-probabilità proporzionale al quadrato della distanza dal centroide già scelto
-più vicino, così che partano lontani tra loro: è l'inizializzazione predefinita
-di scikit-learn. Il secondo rimedio è ripetere l'algoritmo da più partenze e
-tenere la soluzione con la somma delle distanze quadrate più bassa. Questo va
-chiesto esplicitamente (in scikit-learn con `n_init`), perché con k-means++ il
-valore predefinito fa una partenza sola.
+vengono quindi tagliate di traverso.
+
+Inoltre l'obiettivo non è convesso, per cui l'algoritmo si ferma in un
+{doc}`minimo locale </Matematica/analisi-ottimizzazione>`, un assetto che
+nessun piccolo spostamento migliora, pur non essendo il migliore possibile, e
+quale minimo trovi dipende dall'inizializzazione. Il rimedio standard è
+**k-means++** {cite}`arthur2007kmeanspp`, che estrae ancora a caso i centroidi
+iniziali, ma con probabilità proporzionale al quadrato della distanza dal
+centroide già scelto più vicino, così che partano lontani tra loro. È
+l'inizializzazione predefinita di scikit-learn.
+
+Il secondo rimedio è ripetere l'algoritmo da più partenze e tenere la soluzione
+con la somma delle distanze quadrate più bassa. Questo va chiesto
+esplicitamente (in scikit-learn con `n_init`), perché con k-means++ il valore
+predefinito fa una partenza sola.
 
 ## DBSCAN: seguire la densità, non i centri
 
@@ -1036,56 +1084,64 @@ sono separate da zone quasi vuote.
 
 Guarda le luci di una città dall'aereo di notte. Non ti servono dei «centri»
 per riconoscere i quartieri: li vedi come zone fitte di luci, separate da
-buio. Un lampione isolato in campagna resta un puntino
-sperduto. DBSCAN ragiona così. Ha due manopole: un raggio di vicinato
-(quanto vicini devono stare due punti per dirsi «vicini») e un numero minimo
-di vicini perché una zona conti come densa. Con queste, parte da un punto in
-una zona affollata e «cresce» il cluster contagiando i vicini, e i vicini dei
-vicini, finché la densità resta alta. Quando i punti si diradano, il cluster
-finisce. Proprio sull'orlo c'è un caso a metà: il lampione che di vicini ne ha
-pochi, troppo pochi perché da lui il quartiere continui a crescere, ma che sta
-a un passo da uno che ne ha tanti. Quello nel quartiere entra lo stesso, e ne
-segna il bordo.
+buio. Un lampione isolato in campagna resta un puntino sperduto.
+
+DBSCAN ragiona così. Ha due manopole: un raggio di vicinato (quanto vicini
+devono stare due punti per dirsi «vicini») e un numero minimo di vicini perché
+una zona conti come densa. Con queste, parte da un punto in una zona affollata
+e «cresce» il cluster contagiando i vicini, e i vicini dei vicini, finché la
+densità resta alta. Quando i punti si diradano, il cluster finisce.
+
+Proprio sull'orlo c'è un caso a metà: il lampione che di vicini ne ha pochi,
+troppo pochi perché da lui il quartiere continui a crescere, ma che sta a un
+passo da uno che ne ha tanti. Quello nel quartiere entra lo stesso, e ne segna
+il bordo.
 
 Due regali rispetto a k-means. Primo: non devi dire quanti gruppi cerchi
 (li scopre lui, contando le zone dense). Secondo: i punti isolati, quelli in
-mezzo al buio, non vengono forzati dentro a nessun gruppo: DBSCAN li marca
+mezzo al buio, non vengono forzati dentro a nessun gruppo, e DBSCAN li marca
 come rumore. E poiché segue la forma della densità, riconosce famiglie di
-qualunque sagoma: anche due lune intrecciate, dove k-means fallisce
+qualunque sagoma, anche due lune intrecciate, dove k-means fallisce
 miseramente ({numref}`fig-clustering-metodi`).
 
 Il limite sta tutto nelle manopole. Il raggio lo scegli una volta e vale per
-l'intera foto: se nello stesso scatto ci sono una metropoli fittissima e un
-paese di poche case, un valore buono per tutti e due non c'è. Stretto
+l'intera foto, quindi se nello stesso scatto ci sono una metropoli fittissima e
+un paese di poche case, un valore buono per tutti e due non c'è. Se è stretto
 abbastanza da tenere distinti i quartieri della metropoli, il paese non risulta
-mai abbastanza fitto e finisce tutto nel rumore; largo abbastanza da vedere il
-paese, la metropoli diventa una macchia sola. Per orientarsi si sceglie prima
-il numero minimo di vicini, per esempio cinque, e poi si guarda, lampione per
-lampione, quanto dista il suo quinto vicino. Ordinate dalla più piccola alla
-più grande, quelle distanze a un certo punto fanno un salto: lì passa il
-confine fra il fitto e il rado, e lì conviene mettere il raggio.
+mai abbastanza fitto e finisce tutto nel rumore; se è largo abbastanza da
+vedere il paese, la metropoli diventa una macchia sola.
+
+Per orientarsi si sceglie prima il numero minimo di vicini, per esempio
+cinque, e poi si guarda, lampione per lampione, quanto dista il suo quinto
+vicino. Ordinate dalla più piccola alla più grande, quelle distanze a un certo
+punto fanno un salto: lì passa il confine fra il fitto e il rado, e lì conviene
+mettere il raggio.
 
 `````
 
 `````{tab} Superiore
 
-DBSCAN è governato da due parametri: il raggio $\varepsilon$ e la soglia
+DBSCAN è governato da due parametri, il raggio $\varepsilon$ e la soglia
 $\mathrm{minPts}$. Un punto è **core** se nel suo intorno di raggio
 $\varepsilon$ cadono almeno $\mathrm{minPts}$ punti (sé stesso incluso). Un
 cluster è un insieme massimale di punti *connessi per densità*: due punti core
 appartengono allo stesso cluster se raggiungibili tramite una catena di punti
 core a distanza $\le \varepsilon$; i punti non-core nell'intorno di un core
 sono di **bordo** e vi si aggregano; tutti gli altri sono rumore, e non
-appartengono ad alcun cluster. Il numero di cluster $k$ non è un parametro:
-emerge dai dati. In compenso la scelta di $\varepsilon$ è delicata. Una regola
-pratica è ispezionare il grafico delle distanze al $\mathrm{minPts}$-esimo
-vicino, ordinate, e cercarne il gomito. Inoltre DBSCAN soffre quando i cluster
-hanno densità molto diverse tra loro: un $\varepsilon$ unico non può adattarsi
-a tutte. La risposta standard è HDBSCAN {cite}`campello2013density`, che
-considera tutti i raggi insieme, costruisce la gerarchia dei cluster al variare
-della densità e tiene i più persistenti (in scikit-learn dalla versione 1.3). E
-un dettaglio rende l'esito dipendente dall'ordine dei dati: un punto di bordo
-raggiungibile da due cluster finisce in quello visitato per primo.
+appartengono ad alcun cluster.
+
+Il numero di cluster $k$, quindi, non è un parametro, ma emerge dai dati. In
+compenso la scelta di $\varepsilon$ è delicata, e una regola pratica è
+ispezionare il grafico delle distanze al $\mathrm{minPts}$-esimo vicino,
+ordinate, e cercarne il gomito.
+
+Inoltre DBSCAN soffre quando i cluster hanno densità molto diverse tra loro,
+perché un $\varepsilon$ unico non può adattarsi a tutte. La risposta standard è
+HDBSCAN {cite}`campello2013density`, che considera tutti i raggi insieme,
+costruisce la gerarchia dei cluster al variare della densità e tiene i più
+persistenti (in scikit-learn dalla versione 1.3). Un dettaglio, infine, rende
+l'esito dipendente dall'ordine dei dati: un punto di bordo raggiungibile da due
+cluster finisce in quello visitato per primo.
 
 `````
 
@@ -1101,10 +1157,10 @@ gerarchico: lì il numero di gruppi lo decide l'altezza a cui si taglia.
 ```
 
 La categoria «rumore» in {numref}`fig-dbscan-dendrogramma` è la differenza
-pratica più importante rispetto a k-means. Là ogni punto finisce per forza in
-un gruppo, anche quello isolato in mezzo al nulla, che trascina il centroide;
-qui un punto può restare fuori, e i cluster non vengono deformati da chi non
-c'entra.
+pratica più importante rispetto a k-means. In k-means, infatti, ogni punto
+finisce per forza in un gruppo, anche quello isolato in mezzo al nulla, che
+trascina il centroide; qui invece un punto può restare fuori, e i cluster non
+vengono deformati da chi non c'entra.
 
 ```{figure} ../figures/clustering-metodi.svg
 :name: fig-clustering-metodi
@@ -1117,7 +1173,7 @@ DBSCAN segue la densità, ricostruisce le due forme curve e isola il rumore.
 ```
 
 Il confronto di {numref}`fig-clustering-metodi` non premia un metodo in
-assoluto: k-means è veloce, gestisce anche milioni di punti e va bene quando i
+assoluto. k-means è veloce, gestisce anche milioni di punti e va bene quando i
 gruppi sono compatti e tondeggianti; DBSCAN brilla su forme irregolari e in
 presenza di rumore, ma teme le densità disomogenee.
 
@@ -1125,33 +1181,35 @@ C'è poi un'asimmetria che si sente il giorno dopo, quando il raggruppamento va
 usato. k-means lascia in mano i suoi $k$ centroidi, e un punto che arriva domani
 si colloca confrontandolo con quelli; DBSCAN non lascia niente di simile, perché
 l'appartenenza dipende da quanti vicini ha il punto, e per contarli servono i
-dati di partenza. In scikit-learn la differenza si vede nell'interfaccia:
-`KMeans` ha un metodo `predict`, `DBSCAN` ha soltanto `fit_predict`, e per
-collocare un punto nuovo si addestra un classificatore per vicinanza (un $k$-NN)
-sui soli punti core, quelli nel folto di un gruppo, con l'etichetta che hanno
+dati di partenza.
+
+In scikit-learn la differenza si vede nell'interfaccia, perché `KMeans` ha un
+metodo `predict` mentre `DBSCAN` ha soltanto `fit_predict`. Per collocare un
+punto nuovo si addestra quindi un classificatore per vicinanza (un $k$-NN) sui
+soli punti core, quelli nel folto di un gruppo, con l'etichetta che hanno
 ricevuto {cite}`geron2022hands`.
 
 Una terza via, utile quando si vuole *esplorare* la struttura a diversi livelli
-di dettaglio, è il **clustering gerarchico**: invece di fissare i gruppi in un
-colpo solo, costruisce un albero di fusioni progressive; si parte da ogni punto
-come cluster a sé e si fondono via via i più vicini. L'albero risultante si
-chiama **dendrogramma** ed è quello di destra in
-{numref}`fig-dbscan-dendrogramma`: in basso i punti presi uno per uno, e
-salendo le fusioni via via più grandi. L'altezza a cui due rami si uniscono
+di dettaglio, è il **clustering gerarchico**, che invece di fissare i gruppi in
+un colpo solo costruisce un albero di fusioni progressive: si parte da ogni
+punto come cluster a sé e si fondono via via i più vicini. L'albero risultante
+si chiama **dendrogramma** ed è quello di destra in
+{numref}`fig-dbscan-dendrogramma`, con in basso i punti presi uno per uno e,
+salendo, le fusioni via via più grandi. L'altezza a cui due rami si uniscono
 dice quanto erano distanti i due gruppi al momento di fondersi: le fusioni
 facili stanno in basso, quelle forzate in alto.
 
 Ecco perché si può «tagliare» l'albero a un'altezza qualunque: tagliare in
 basso tiene solo le parentele strette, e i gruppi vengono tanti e piccoli;
 tagliare in alto accetta anche le parentele alla lontana, e i gruppi diventano
-pochi e grandi. Il numero di gruppi si decide così *dopo* aver visto la
-struttura, invece che prima, e nessun livello è giusto in assoluto: dipende
+pochi e grandi. In questo modo il numero di gruppi si decide *dopo* aver visto
+la struttura, invece che prima, e nessun livello è giusto in assoluto: dipende
 dalla domanda.
 
 Per fondere due gruppi bisogna dire quanto distano, e quando contengono molti
-punti la risposta non è unica: la fissa il **criterio di collegamento**
-(*linkage*), e i più usati sono quattro, *single*, *complete*, *average* e
-*Ward*.
+punti la risposta non è unica. Il **criterio di collegamento** (*linkage*)
+fissa questa risposta, e i più usati sono quattro, *single*, *complete*,
+*average* e *Ward*.
 
 `````{tab} Elementare
 
@@ -1210,15 +1268,16 @@ quadratico e memoria lineare {cite}`sibson1973slink`.
 
 `````
 
-In pratica: `single` se ti aspetti strutture allungate, a filo, `Ward` come
-punto di partenza ragionevole in tutti gli altri casi.
+In pratica, `single` va bene se ti aspetti strutture allungate, a filo, e
+`Ward` è un punto di partenza ragionevole in tutti gli altri casi.
 
 ## Misture gaussiane: dal gruppo alla distribuzione
 
 I metodi di raggruppamento k-means, DBSCAN e gerarchico assegnano ogni punto a
-un gruppo, senza dire con quanta sicurezza. Una mistura gaussiana gli assegna
-una probabilità per ciascun gruppo, e di ogni gruppo impara, oltre al centro,
-la forma: la sua matrice di covarianza.
+un gruppo (DBSCAN lascia fuori il rumore), senza dire con quanta sicurezza.
+Una mistura gaussiana, invece, gli assegna una probabilità per ciascun gruppo,
+e di ogni gruppo impara, oltre al centro, la forma, cioè la sua matrice di
+covarianza.
 
 `````{tab} Elementare
 
@@ -1271,8 +1330,8 @@ campane si impone una larghezza minima.
 
 `````{tab} Superiore
 
-Un modello di mistura gaussiana (*Gaussian Mixture Model*, GMM) è un
-modello generativo: assume che ogni punto sia stato prodotto scegliendo
+Un **modello di mistura gaussiana** (*Gaussian Mixture Model*, GMM) è un
+modello generativo, cioè assume che ogni punto sia stato prodotto scegliendo
 prima una componente e poi campionando dalla sua gaussiana. La densità è
 
 $$
@@ -1291,10 +1350,10 @@ $$
 \mathcal{N}(\mathbf{x}^{(i)} \mid \boldsymbol{\mu}_k, \boldsymbol{\Sigma}_k).
 $$
 
-Il logaritmo di una somma non si separa, e annullando il gradiente non si
+Il logaritmo di una somma non si separa, quindi annullando il gradiente non si
 ottiene una forma chiusa. Il rimedio è introdurre una **variabile latente**
 $z^{(i)} \in \{1,\dots,K\}$, l'identità della componente che ha generato il
-punto: se le $z^{(i)}$ fossero note, la stima sarebbe immediata.
+punto. Se le $z^{(i)}$ fossero note, infatti, la stima sarebbe immediata.
 
 L'algoritmo EM, formalizzato da Dempster, Laird e Rubin nel 1977
 {cite}`dempster1977maximum`, alterna due passi.
@@ -1336,31 +1395,35 @@ $$
 \end{gathered}
 $$
 
-e siccome la KL non è mai negativa, $\mathcal{E}$ sta sotto la
+e poiché la KL non è mai negativa, $\mathcal{E}$ sta sotto la
 log-verosimiglianza. Il passo E prende come $q$ la posteriore, cioè le
-responsabilità $\gamma_{ik}$: la KL si annulla e il limite tocca la
+responsabilità $\gamma_{ik}$, per cui la KL si annulla e il limite tocca la
 verosimiglianza nel $\theta$ corrente. Il passo M massimizza $\mathcal{E}$ in
 $\theta$, e allora $\log p(\mathbf{X}\mid\theta_{\text{nuovo}}) \ge
 \mathcal{E}(q,\theta_{\text{nuovo}}) \ge \mathcal{E}(q,\theta_{\text{vecchio}})
-= \log p(\mathbf{X}\mid\theta_{\text{vecchio}})$. La monotonia non garantisce
-l'ottimo globale e nemmeno un massimo locale: il punto a cui si arriva è in
-generale un punto stazionario. La verosimiglianza è multimodale, e da
-inizializzazioni diverse si arriva a soluzioni diverse; per questo si
-inizializza tipicamente con k-means e si riparte più volte, e in scikit-learn
-le ripartenze vanno chieste con `n_init`, il cui valore predefinito è $1$.
+= \log p(\mathbf{X}\mid\theta_{\text{vecchio}})$.
+
+La monotonia non garantisce l'ottimo globale e nemmeno un massimo
+locale: il punto a cui si arriva è in generale un punto stazionario. La
+verosimiglianza è multimodale, e da inizializzazioni diverse si arriva a
+soluzioni diverse. Per questo si inizializza tipicamente con k-means e si
+riparte più volte, e in scikit-learn le ripartenze vanno chieste con `n_init`,
+il cui valore predefinito è $1$.
 
 Con una covarianza propria per ogni componente (piena, diagonale o sferica),
 però, quell'ottimo globale non è nemmeno un obiettivo sensato: la
-verosimiglianza è illimitata superiormente. Basta una componente che si stringe
-attorno a un singolo punto, con la sua covarianza che tende a zero, mentre le
-altre continuano a spiegare tutti gli altri punti: la densità in quel punto
-tende a $+\infty$, e con lei la verosimiglianza, mentre il modello non ha
-imparato assolutamente niente. Con una covarianza condivisa fra le componenti
-(`covariance_type="tied"`) non succede, perché stringerla penalizzerebbe tutti i
-punti. Quel massimo è una **degenerazione**, e va impedita: le implementazioni
-aggiungono una piccola quantità sulla diagonale delle covarianze, che tiene le
-componenti larghe abbastanza da non collassare (in scikit-learn è `reg_covar`,
-di default $10^{-6}$).
+verosimiglianza è illimitata superiormente. Basta infatti una componente che si
+stringe attorno a un singolo punto, con la sua covarianza che tende a zero,
+mentre le altre continuano a spiegare tutti gli altri punti. La densità in quel
+punto tende allora a $+\infty$, e con lei la verosimiglianza, mentre il modello
+non ha imparato assolutamente niente. Con una covarianza condivisa fra le
+componenti (`covariance_type="tied"`) non succede, perché stringerla
+penalizzerebbe tutti i punti.
+
+Quel massimo è una **degenerazione**, e va impedita: le
+implementazioni aggiungono una piccola quantità sulla diagonale delle
+covarianze, che tiene le componenti larghe abbastanza da non collassare (in
+scikit-learn è `reg_covar`, di default $10^{-6}$).
 
 Il modello si presta a due letture. La prima: k-means è il caso limite di EM su
 una mistura con covarianze $\sigma^2\mathbf{I}$ e $\sigma^2 \to 0$, dove le
@@ -1369,18 +1432,18 @@ di quella morbida, e la preferenza di k-means per gruppi sferici è scritta in
 quella $\mathbf{I}$. La seconda: essendo generativo, un GMM restituisce una
 densità, quindi serve anche a ciò che il clustering non fa, cioè segnalare i
 punti improbabili. È uno dei rilevatori di anomalie di riferimento, e
-riaggancia {doc}`Quando i dati cambiano <dati-che-cambiano>`.
+{doc}`Quando i dati cambiano <dati-che-cambiano>` ci tornerà sopra.
 
-Poiché il modello ha una verosimiglianza, il numero di componenti si sceglie con
-un criterio di informazione invece che a occhio. **BIC** e **AIC** sommano a
-$-2$ volte la log-verosimiglianza una penalità sul numero di parametri
+Poiché il modello ha una verosimiglianza, il numero di componenti si sceglie
+con un criterio di informazione invece che a occhio. **BIC** e **AIC** sommano
+a $-2$ volte la log-verosimiglianza una penalità sul numero di parametri
 ($\lvert\theta\rvert\log m$ per il BIC, $2\lvert\theta\rvert$ per l'AIC, con
 $\lvert\theta\rvert$ il numero di parametri liberi), e si prende il $K$ che li
-minimizza: il primo termine premia chi spiega bene i dati (cambiato di segno,
-quindi minimizzarlo vuol dire massimizzare la verosimiglianza), il secondo fa
-pagare i parametri usati per farlo. È la convenzione di `GaussianMixture.bic`, e
-una risposta più difendibile del gomito o della silhouette, che sono
-diagnostiche geometriche senza un modello sotto.
+minimizza. Il primo termine premia chi spiega bene i dati (cambiato di segno,
+quindi minimizzarlo vuol dire massimizzare la verosimiglianza), mentre il
+secondo penalizza i parametri usati per farlo. È la convenzione di
+`GaussianMixture.bic`, e una risposta più difendibile del gomito o della
+silhouette, che sono diagnostiche geometriche senza un modello sotto.
 
 `````
 
@@ -1389,12 +1452,14 @@ variabile che renderebbe facile la stima non si osserva, la si stima a
 parametri fissi, si riaggiornano i parametri a stima fissa, e si alterna*.
 
 Ne ritrovi tre casi. Il primo è {doc}`Speech Recognition
-</SpeechRecognition/overview>`: i sistemi che per trent'anni hanno trascritto il
-parlato usavano misture gaussiane come queste, e le addestravano con
-EM. Il secondo è {doc}`Oltre il BPE </NaturalLanguageProcessing/oltre-il-bpe>`:
-la tokenizzazione *unigram* sceglie i pezzi in cui tagliare le parole senza
-sapere in anticipo come vadano tagliate, e il motore è di nuovo EM. Il terzo
-sono i modelli latenti: il {doc}`capitolo che li tratta
+</SpeechRecognition/overview>`, dove i sistemi che per trent'anni hanno
+trascritto il parlato usavano misture gaussiane come queste, e le addestravano
+con EM. Il secondo è {doc}`Oltre il BPE
+</NaturalLanguageProcessing/oltre-il-bpe>`, dove la tokenizzazione *unigram*
+sceglie i pezzi in cui tagliare le parole senza sapere in anticipo come vadano
+tagliate, e il motore è di nuovo EM.
+
+Il terzo sono i modelli latenti: il {doc}`capitolo che li tratta
 </ModelliLatenti/overview>` riprende la mistura gaussiana come il caso più
 semplice di un modello che spiega i dati con una causa che non si osserva, e la
 sezione su {doc}`ELBO e riparametrizzazione
@@ -1403,8 +1468,8 @@ variabile nascosta con una rete che impara a farlo.
 
 ## In pratica, con scikit-learn
 
-Come per l'apprendimento supervisionato, in scikit-learn ogni tecnica è poche
-righe, con la solita interfaccia `fit` (qui spesso `fit_transform` per chi
+Come per l'apprendimento supervisionato, in scikit-learn ogni tecnica sta in
+poche righe, con la solita interfaccia `fit` (qui spesso `fit_transform` per chi
 trasforma i dati, o `fit_predict` per chi assegna etichette di cluster):
 
 ```python
@@ -1441,30 +1506,32 @@ etichette_db = db.fit_predict(X_std)   # -1 marca il rumore
 ```
 
 Le prime due componenti si prendono il $55\%$ e il $38\%$ della dispersione, il
-$93\%$ in tutto. Tre punti stanno sempre su un piano, quindi due direzioni
-bastano a contenere i tre centri, e le altre tre dimensioni portano soltanto la
-dispersione interna ai gruppi. Quante componenti tenere, in generale, si decide
-fissando la quota di varianza da conservare (`PCA(n_components=0.95)` sceglie da
-sé quante ne servono per il $95\%$) o cercando il gomito nella curva delle
-quote.
+$93\%$ in tutto. Tre punti stanno sempre su un piano, quindi due
+direzioni bastano a contenere i tre centri, e le altre tre dimensioni portano
+soltanto la dispersione interna ai gruppi. Quante componenti tenere, in
+generale, si decide fissando la quota di varianza da conservare
+(`PCA(n_components=0.95)` sceglie da sé quante ne servono per il $95\%$) o
+cercando il gomito nella curva delle quote.
 
-Due dettagli che fanno la differenza in pratica. La standardizzazione prima di
-una PCA o di un clustering per distanza va fatta quando le feature hanno unità
-o scale diverse (è lo stormo misurato in metri e in centimetri): senza, quella
-con la scala numerica più ampia domina il conto. Quando le feature sono
-omogenee, come i pixel di un'immagine, la varianza relativa è già informazione,
-e standardizzare la cancella. Il secondo riguarda le etichette restituite dal
-clustering, che sono arbitrarie: il «cluster 0» di k-means non ha alcun
-significato intrinseco, è solo un nome; due esecuzioni possono scambiare i
-numeri senza che nulla sia cambiato.
+Due dettagli fanno la differenza in pratica. Il primo è la standardizzazione
+prima di una PCA o di un clustering per distanza, che va fatta quando le
+feature hanno unità o scale diverse (è lo stormo misurato in metri e in
+centimetri); senza, quella con la scala numerica più ampia domina il calcolo.
+Quando le feature sono omogenee, come i pixel di un'immagine, la varianza
+relativa è già informazione, e standardizzare la cancella.
+
+Il secondo riguarda le etichette restituite dal clustering, che sono
+arbitrarie. Il «cluster 0» di k-means, ad esempio, non ha alcun significato
+intrinseco ed è solo un nome; due esecuzioni possono scambiare i numeri
+senza che nulla sia cambiato.
 
 La differenza fra la risposta secca di k-means («sei del gruppo 1») e quella
 sfumata della mistura («sei del gruppo 1 al $70\%$») non è teorica: si vede su
 due gruppi allungati e vicini, il caso in cui il solo centro non basta.
 
 Nell'esperimento le due nuvole sono generate da noi, quindi conosciamo
-il gruppo di ogni punto. L'algoritmo non vede queste etichette: servono dopo,
-come le soluzioni in fondo a un eserciziario, per contare quanti punti ha
+il gruppo di ogni punto. L'algoritmo non vede queste etichette, che servono
+dopo, come le soluzioni in fondo a un eserciziario, per contare quanti punti ha
 assegnato al gruppo giusto. È un indice esterno, e {doc}`Valutare un
 raggruppamento <valutare-un-raggruppamento>` ne dice il perché e i limiti: con
 due gruppi basta l'accordo a meno di uno scambio dei nomi, con più gruppi si usa
@@ -1515,28 +1582,30 @@ punti su cui il modello resta incerto: 5 su 600
   k=5  BIC=   4078.2
 ```
 
-I numeri stampati sono la quota di punti finiti nel gruppo giusto: $1$
-sarebbe perfetto, e $0{,}5$ è quanto prende chi tira a caso, perché con due
+I numeri stampati sono la quota di punti finiti nel gruppo giusto. Il valore
+$1$ sarebbe perfetto, e $0{,}5$ è quanto prende chi tira a caso, perché con due
 gruppi indovinare a caso ne azzecca metà.
 
-k-means si ferma a $0{,}663$, poco sopra il tirare a caso: le due nuvole
-sono allungate, e la frontiera a metà strada fra i due centri le taglia di
-traverso. La mistura arriva a $0{,}997$, perché ha imparato che i gruppi sono
-larghi in una direzione e stretti nell'altra. Restano cinque punti su
-seicento su cui il modello non si sbilancia oltre il 90%, e sono quelli in
-mezzo, dove l'incertezza è reale.
+k-means si ferma a $0{,}663$, poco sopra il tirare a caso. Le due nuvole,
+infatti, sono allungate, e la frontiera a metà strada fra i due centri le
+taglia di traverso. La mistura arriva invece a $0{,}997$, perché ha imparato
+che i gruppi sono larghi in una direzione e stretti nell'altra. Restano cinque
+punti su seicento su cui il modello non si sbilancia oltre il 90%, e sono
+quelli in mezzo, dove l'incertezza è reale.
 
-Poi c'è il BIC (*Bayesian Information Criterion*): $-2\log L +
-\lvert\theta\rvert\log m$, con $L$ la verosimiglianza dei dati,
+Consideriamo infine il BIC (*Bayesian Information Criterion*), cioè
+$-2\log L + \lvert\theta\rvert\log m$, con $L$ la verosimiglianza dei dati,
 $\lvert\theta\rvert$ il numero di parametri e $m$ quello degli esempi. Il primo
 termine scende quando la mistura spiega meglio i dati, il secondo sale con i
 parametri. Per $k$ gaussiane in due dimensioni i parametri sono
 $\lvert\theta\rvert = 6k-1$ (due coordinate del centro e tre numeri della forma
-per ciascuna, più i $k-1$ pesi liberi): oltre il numero giusto di gruppi, ogni
+per ciascuna, più i $k-1$ pesi liberi), e oltre il numero giusto di gruppi ogni
 gruppo in più pesa nella penalità più di quanto aggiunga alla verosimiglianza.
-È il rasoio di Occam scritto come penalità. Il BIC si minimizza, e qui tocca il
-minimo a $k=2$: con un modello probabilistico sotto, il numero dei gruppi si
-sceglie con un criterio invece che con un giudizio a occhio su un grafico.
+È il rasoio di Occam scritto come penalità.
+
+Il BIC si minimizza, e qui tocca il minimo a $k=2$. Con un modello
+probabilistico sotto, il numero dei gruppi si sceglie con un criterio
+invece che con un giudizio a occhio su un grafico.
 
 `````{tab} Elementare
 

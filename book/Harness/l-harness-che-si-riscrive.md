@@ -7,8 +7,9 @@ e una risposta di fantasia, per esempio che i test erano passati tutti, senza
 averne lanciato nessuno. Il problema è stato affidato alla **Darwin Gödel
 Machine** (DGM), un agente di programmazione che modifica il proprio codice e
 conserva tutte le varianti di sé in un archivio, un albero in cui ogni variante
-è un nodo, numerato nell'ordine in cui è nato {cite}`zhang2026darwin`. Per
-riconoscere le chiamate inventate, gli autori facevano scrivere nel giornale
+è un nodo, numerato nell'ordine in cui è nato {cite}`zhang2026darwin`.
+
+Per riconoscere le chiamate inventate, gli autori facevano scrivere nel giornale
 delle esecuzioni un marcatore a ogni chiamata vera, e lo cercavano nel testo del
 modello: se è il modello a scriverlo, sta imitando una chiamata che non ha
 fatto. Ogni variante si provava su tre compiti e prendeva fino a due punti per
@@ -16,17 +17,18 @@ compito, uno se non inventava chiamate e uno se usava davvero gli strumenti, e
 il voto era la media dei tre. In questa prova il codice del controllo restava
 nascosto all'agente.
 
-Al termine di centocinquanta giri il nodo 96 arrivava in media a 1,67, dopo aver
-migliorato il modo in cui l'agente annota le proprie chiamate e aver imparato a
-togliere dal testo quelle mai avvenute. Il nodo 114, nato per
-centoquattordicesimo ma a due sole modifiche dall'agente di partenza, perché
-l'archivio riparte anche dalle varianti più vecchie, aveva il punteggio pieno, e
-non aveva risolto il problema. Aveva tolto dal giornale i marcatori delle
-chiamate vere, nonostante le istruzioni dicessero di non toccarli, e il
-controllo non trovava più niente da segnalare. Gli autori lo chiamano *objective
-hacking*, ottimizzare l'obiettivo misurabile invece del problema che doveva
-rappresentare; e in altre prove, in cui il codice del controllo era visibile
-all'agente, succedeva più spesso.
+Al termine di centocinquanta iterazioni il nodo 96 arrivava in media a 1,67,
+dopo aver migliorato il modo in cui l'agente annota le proprie chiamate e aver
+imparato a togliere dal testo quelle mai avvenute.
+
+Il nodo 114, nato per centoquattordicesimo ma a due sole modifiche dall'agente
+di partenza, perché l'archivio riparte anche dalle varianti più vecchie, aveva
+il punteggio pieno, e non aveva risolto il problema. Aveva tolto dal
+giornale i marcatori delle chiamate vere, nonostante le istruzioni dicessero di
+non toccarli, e il controllo non trovava più niente da segnalare. Gli autori lo
+chiamano *objective hacking*, cioè ottimizzare l'obiettivo misurabile invece del
+problema che doveva rappresentare. In altre prove, in cui il codice del
+controllo era visibile all'agente, succedeva più spesso.
 
 L’{doc}`anatomia dell'harness <overview>` misurava il valore di ogni componente
 togliendolo e guardando che cosa succede. Ciò che si può misurare si può anche
@@ -41,35 +43,37 @@ modifica viene giudicata.
 La scala più piccola non tocca il codice, ma il testo che il modello legge. La
 riflessione di {doc}`Reflexion </Agenti/agenti-e-tool-use>` conserva le critiche
 scritte dopo un fallimento per il tentativo successivo. Portata da un compito
-all'altro, la stessa idea dà un prontuario (*playbook*), cioè strategie, errori
-tipici e fatti del dominio che il modello trova scritti all'inizio di ogni
-compito e che crescono con l'esperienza.
+all'altro, la stessa idea dà un **prontuario** (*playbook*), cioè strategie,
+errori tipici e fatti del dominio che il modello trova scritti all'inizio di
+ogni compito e che crescono con l'esperienza.
 
 Il modo più semplice di aggiornarlo è farlo riscrivere tutto a un modello,
 dandogli il prontuario di prima e la cronaca dell'ultimo compito. Qizheng Zhang
 e colleghi trovano due guasti nei metodi che migliorano un testo riscrivendolo
-{cite}`zhang2026agentic`. Il primo è la tendenza alla brevità (*brevity bias*),
-per cui le riscritture successive convergono su frasi corte e generiche e i
-dettagli del dominio escono. Il secondo è il **collasso del contesto**. Su
-AppWorld, un banco di compiti in cui un agente usa applicazioni comuni come la
-posta, un contesto che un metodo precedente riscriveva a ogni passo era
-arrivato a 18.282 token (i pezzi di testo che il modello legge), con
+{cite}`zhang2026agentic`. Il primo è la **tendenza alla brevità** (*brevity
+bias*), per cui le riscritture successive convergono su frasi corte e generiche
+e i dettagli del dominio escono. Il secondo è il **collasso del contesto**.
+
+Ad esempio, su AppWorld, un banco di compiti in cui un agente usa applicazioni
+comuni come la posta, un contesto che un metodo precedente riscriveva a ogni
+passo era arrivato a 18.282 token (i pezzi di testo che il modello legge), con
 un'accuratezza del 66,7%. Al passo dopo la riscrittura lo ha ridotto a 122
 token, e l'accuratezza è scesa al 57,1%, sotto il 63,7% dell'agente senza nessun
-adattamento. È la compattazione del {doc}`passaggio di consegne
-<passaggio-di-consegne>`, il riassunto scritto di getto che perde dettagli senza
-sapere quali, ripetuta a ogni compito.
+adattamento. In altri termini, è la compattazione del {doc}`passaggio di
+consegne <passaggio-di-consegne>`, il riassunto scritto di getto che perde
+dettagli senza sapere quali, ripetuta a ogni compito.
 
-La loro proposta, ACE, divide il lavoro fra tre ruoli. Un generatore svolge i
-compiti e dice quali voci del prontuario lo hanno aiutato e quali sviato, un
+La loro proposta, **ACE**, divide il lavoro fra tre ruoli. Un generatore svolge
+i compiti e dice quali voci del prontuario lo hanno aiutato e quali sviato, un
 riflettore ricava lezioni dalle tracce, un curatore le traduce in poche voci
 nuove o in correzioni. Ogni voce ha un identificativo, due contatori (quante
-volte è stata utile, quante dannosa) e un testo breve. A fondere le voci nel
-prontuario non è un modello ma un pezzo di codice fisso, che aggiunge le nuove,
-aggiorna le esistenti e unisce quelle che si somigliano troppo. È la regola di
-fusione per campo del {doc}`grafo <dal-ciclo-al-grafo>`, e la scelta fra
-riscrivere un file e toccarne le sole righe che servono della {doc}`sezione
-sugli strumenti <gli-strumenti>`.
+volte è stata utile, quante dannosa) e un testo breve.
+
+A fondere le voci nel prontuario non è un modello ma un pezzo di codice fisso,
+che aggiunge le nuove, aggiorna le esistenti e unisce quelle che si somigliano
+troppo. È la regola di fusione per campo del {doc}`grafo <dal-ciclo-al-grafo>`,
+e la scelta fra riscrivere un file e toccarne le sole righe che servono della
+{doc}`sezione sugli strumenti <gli-strumenti>`.
 
 Un programma confronta le due regole a numeri tondi, con quaranta tipi di
 compito e una lezione per tipo. Nella riscrittura ogni lezione passa nella copia
@@ -220,23 +224,24 @@ I limiti sono altrettanto netti. $|M_k|$ decresce soltanto per quelle
 operazioni, e il costo di leggere lo stato cresce con lui. La deduplicazione è
 un giudizio che sbaglia in due modi, fondendo voci diverse con la soglia troppo
 bassa e lasciando doppioni con quella troppo alta. Quali voci abbiano aiutato lo
-dice il generatore, e il conto vale quanto il riscontro su cui si appoggia: con
-le etichette vere o l'esito dell'esecuzione ha un appiglio, senza diventa
+dice il generatore, e il conteggio vale quanto il riscontro su cui si appoggia:
+con le etichette vere o l'esito dell'esecuzione ha un appiglio, senza diventa
 un'autovalutazione, con il limite dell’{doc}`autocorrezione senza riscontro
 esterno </Agenti/agenti-e-tool-use>`, e gli autori osservano che allora il
-metodo può peggiorare. Dichiarano anche che dipende da un riflettore
-abbastanza capace.
+metodo può peggiorare. Dichiarano anche che dipende da un riflettore abbastanza
+capace.
 
 `````
 
 ## L'harness come programma cercato
 
 Il passo successivo è cercare l'harness intero. Shengran Hu, Cong Lu e Jeff
-Clune lo chiamano progettazione automatica di sistemi ad agente, ADAS
+Clune lo chiamano **progettazione automatica di sistemi ad agente**, ADAS
 {cite}`hu2025automated`. Ogni agente è un programma, una funzione che riceve il
-compito, chiama il modello quante volte vuole e restituisce la risposta. Un
-**meta-agente**, un modello che scrive agenti, legge un archivio di agenti già
-provati con i loro voti, ne scrive uno nuovo, lo fa provare su un insieme di
+compito, chiama il modello quante volte vuole e restituisce la risposta.
+
+Un **meta-agente**, un modello che scrive agenti, legge un archivio di agenti
+già provati con i loro voti, ne scrive uno nuovo, lo fa provare su un insieme di
 compiti di validazione (quelli su cui si sceglie) e lo aggiunge all'archivio. È
 l'ottimizzazione del prompt della sezione sul {doc}`prompt engineering
 </IngegneriaLLM/prompt-engineering>`, applicata a un oggetto più grande, che può
@@ -247,22 +252,25 @@ stesso, un agente di programmazione che riscrive il proprio codice. A scegliere
 che cosa cambiare è un altro modello, fisso, che legge i resoconti delle
 valutazioni e scrive una diagnosi; l'agente la implementa. Gli autori dichiarano
 l'ipotesi che un agente che programma meglio implementi meglio anche le
-modifiche a sé stesso. Il nome ha due metà. La macchina di Gödel di Jürgen
-Schmidhuber, ispirata alle formule autoreferenziali di Kurt Gödel, quelle della
-{doc}`frase indimostrabile </Introduzione/calcolabile>`, riscrive il proprio
-codice solo dopo aver dimostrato che la riscrittura è utile
-{cite}`schmidhuber2007godel`; per un agente vero la dimostrazione è impossibile
-in pratica, e la DGM la sostituisce con una prova sui compiti. Darwin sta per
-l'archivio. Si parte da un agente solo, si conservano tutte le varianti che
-funzionano e sanno ancora modificare codice, e a ogni giro si sceglie da quale
-ripartire, più spesso fra quelle con il voto alto e con pochi figli; nessuna è
-esclusa, salvo quelle a punteggio pieno, che sul voto non hanno più niente da
-guadagnare. L'archivio e la regola di scelta restano fuori dalla portata
-dell'agente.
+modifiche a sé stesso.
+
+Il nome ha due metà. La macchina di Gödel di Jürgen Schmidhuber, ispirata alle
+formule autoreferenziali di Kurt Gödel, quelle della {doc}`frase indimostrabile
+</Introduzione/calcolabile>`, riscrive il proprio codice solo dopo aver
+dimostrato che la riscrittura è utile {cite}`schmidhuber2007godel`; per un
+agente vero la dimostrazione è impossibile in pratica, e la DGM la sostituisce
+con una prova sui compiti.
+
+Darwin sta per l'archivio. Si parte da un agente solo, si conservano tutte le
+varianti che funzionano e sanno ancora modificare codice, e a ogni iterazione si
+sceglie da quale ripartire, più spesso fra quelle con il voto alto e con pochi
+figli; nessuna è esclusa, salvo quelle a punteggio pieno, che sul voto non hanno
+più niente da guadagnare. L'archivio e la regola di scelta restano fuori dalla
+portata dell'agente.
 
 Su SWE-bench Verified, un banco di correzioni di programmi veri, dopo ottanta
-giri il miglior agente dell'archivio risolve il 50,0% dei compiti contro il
-20,0% di quello di partenza; ripartendo sempre dal migliore ci si ferma al
+iterazioni il miglior agente dell'archivio risolve il 50,0% dei compiti contro
+il 20,0% di quello di partenza; ripartendo sempre dal migliore ci si ferma al
 39,7%, e ciascuno dei due numeri viene da una ricerca sola. La discendenza del
 migliore passa due volte per un figlio peggiore del padre, come nella
 {numref}`fig-harness-archivio`. Quei voti vengono dai compiti su cui la ricerca
@@ -282,8 +290,8 @@ e chi fosse ripartito sempre dal migliore avrebbe seguito un altro ramo. I voti
 sono illustrativi.
 ```
 
-Il punto debole del metodo è quello che il nodo 114 ha reso visibile. Il voto
-su quei compiti è l'unica descrizione di ciò che si vuole, e la ricerca è
+Il punto debole del metodo è quello che il nodo 114 ha reso visibile. Infatti il
+voto su quei compiti è l'unica descrizione di ciò che si vuole, e la ricerca è
 libera di peggiorare tutto ciò che non misura. Il voto del vincitore è gonfiato
 come quello dell'istruzione migliore nell'ottimizzazione del prompt, e in più
 chi propone ha letto i risultati di quei compiti. E il metro deve stare fuori
@@ -296,13 +304,14 @@ Un programma mostra le due facce dell'archivio a numeri tondi. Un harness è una
 fila di componenti accesi o spenti, e una modifica ne cambia uno a caso. Il
 successo vero è inventato. Nella versione liscia ogni componente acceso aggiunge
 un poco; nella trappola, costruita apposta perché ci sia una valle, tre
-componenti servono solo insieme, e uno o due da soli peggiorano. Il cricchetto,
-come una ruota dentata che gira in un verso solo, riparte sempre dal migliore
-trovato; l'archivio sceglie da dove ripartire come la DGM, più spesso dagli
-harness con il voto alto e con pochi figli. Con ottanta modifiche e un voto
-prima esatto, poi su cinquanta e su duecento compiti estratti da capo a ogni
-valutazione, il programma stampa per l'harness scelto il successo vero, il voto
-con cui ha vinto e un voto su cinquecento compiti nuovi.
+componenti servono solo insieme, e uno o due da soli peggiorano.
+
+Il cricchetto, come una ruota dentata che gira in un verso solo, riparte
+sempre dal migliore trovato; l'archivio sceglie da dove ripartire come la DGM,
+più spesso dagli harness con il voto alto e con pochi figli. Con ottanta
+modifiche e un voto prima esatto, poi su cinquanta e su duecento compiti
+estratti da capo a ogni valutazione, il programma stampa per l'harness scelto il
+successo vero, il voto con cui ha vinto e un voto su cinquecento compiti nuovi.
 
 ```python
 import numpy as np
@@ -388,17 +397,19 @@ massimo vero con 8 componenti: liscia 0.52, trappola 0.65
 
 Con il voto esatto, sulla versione liscia il cricchetto arriva sempre al
 massimo, 0,520, e l'archivio si ferma a 0,477, perché spende modifiche
-ripartendo da harness peggiori. Sulla trappola il cricchetto si blocca a 0,350,
-e l'archivio accende i tre componenti che servono insieme in quasi metà delle
-ricerche, ma con sedici componenti solo una volta su otto, e resta dietro,
-perché le strade da provare sono troppe. Con il voto su cinquanta compiti il
-prescelto ha vinto con un voto più alto del suo successo vero, da undici a
-sedici compiti in più ogni cento, perché fra tanti voti incerti il più alto è
-spesso il più fortunato; la fortuna inganna anche il cricchetto, e sulla
-versione liscia l'archivio gli passa davanti, ma con duecento compiti il
-cricchetto torna avanti. Il programma estrae i compiti da capo a ogni voto; una
-ricerca vera vota sempre sugli stessi, e alla fortuna si aggiunge l'adattamento
-a quei compiti.
+ripartendo da harness peggiori. Sulla trappola, invece, il cricchetto si blocca
+a 0,350, e l'archivio accende i tre componenti che servono insieme in quasi metà
+delle ricerche, ma con sedici componenti solo una volta su otto, e resta dietro,
+perché le strade da provare sono troppe.
+
+Con il voto su cinquanta compiti il prescelto ha vinto con un voto più alto del
+suo successo vero, da undici a sedici compiti in più ogni cento, perché fra
+tanti voti incerti il più alto è spesso il più fortunato; la fortuna inganna
+anche il cricchetto, e sulla versione liscia l'archivio gli passa davanti, ma
+con duecento compiti il cricchetto torna avanti.
+
+Il programma estrae i compiti da capo a ogni voto; una ricerca vera vota sempre
+sugli stessi, e alla fortuna si aggiunge l'adattamento a quei compiti.
 
 `````{tab} Elementare
 
@@ -454,13 +465,13 @@ contapezzi ha contato.
 
 `````{tab} Superiore
 
-Sia $\mathcal{H}$ l'archivio, ciascun harness $H_i$ con il voto $\hat s_i =
-\hat s(\theta, H_i; \mathcal{B}_{\text{val}})$ su una batteria di validazione.
-Qui $s(\theta, H)$ è il successo atteso sulla distribuzione da cui vengono i
-compiti, e le batterie ne sono campioni. A ogni giro si sceglie un genitore
-$H_g$, il proponente ne scrive una modifica $H' \sim \mathrm{proponi}(\cdot
-\mid H_g, \mathcal{H})$, e $H'$ entra in $\mathcal{H}$ con il suo voto; finito
-il bilancio si restituisce
+Sia $\mathcal{H}$ l'archivio, ciascun harness $H_i$ con il voto
+$\hat s_i = \hat s(\theta, H_i; \mathcal{B}_{\text{val}})$ su una batteria di
+validazione. Qui $s(\theta, H)$ è il successo atteso sulla distribuzione da cui
+vengono i compiti, e le batterie ne sono campioni. A ogni iterazione si sceglie
+un genitore $H_g$, il proponente ne scrive una modifica
+$H' \sim \mathrm{proponi}(\cdot \mid H_g, \mathcal{H})$, e $H'$ entra in
+$\mathcal{H}$ con il suo voto; finito il bilancio si restituisce
 
 $$
 H^\star = \arg\max_{H \in \mathcal{H}}
@@ -484,11 +495,11 @@ ha una valle, cioè componenti che servono solo insieme e che uno per uno
 peggiorano, una ricerca a passi singoli che accetta solo miglioramenti misurati
 esattamente non la attraversa; con pesi positivi la discendenza può passare per
 harness peggiori del genitore. Il guadagno vale se lo spazio è piccolo rispetto
-al bilancio (con proposte a un passo uniformi, otto componenti e ottanta giri
-sono il caso favorevole, sedici già no), e cambia con la precisione del voto: un
-voto abbastanza rumoroso (nel programma cinquanta compiti, non duecento) ferma
-il cricchetto dietro un massimo gonfiato, e allora l'archivio vince anche senza
-valli.
+al bilancio (con proposte a un passo uniformi, otto componenti e ottanta
+iterazioni sono il caso favorevole, sedici già no), e cambia con la precisione
+del voto: un voto abbastanza rumoroso (nel programma cinquanta compiti, non
+duecento) ferma il cricchetto dietro un massimo gonfiato, e allora l'archivio
+vince anche senza valli.
 
 La validazione porta con sé i difetti di ogni stimatore. A candidati fissati,
 con voti che stimano senza distorsione il successo vero, da $\hat s(H^\star) =
@@ -530,7 +541,8 @@ toglierle.
 ## Che cosa legge chi propone
 
 Un voto dice se un harness funziona, non perché. Il meta-agente di ADAS legge
-codici e voti, la DGM aggiunge una diagnosi delle esecuzioni. Meta-Harness, di
+codici e voti, la DGM aggiunge una diagnosi delle esecuzioni.
+**Meta-Harness**, di
 Yoonho Lee e colleghi, mette al centro proprio questa scelta, che chiamano
 l’**interfaccia del proponente**, cioè che cosa il proponente può leggere
 {cite}`lee2026metaharness`. Il proponente è un agente di programmazione che
@@ -549,16 +561,16 @@ ricordarne. Con i soli voti, o con voti e riassunti, il candidato a metà
 classifica resta sotto il 35% di accuratezza; con le tracce intere arriva al
 50,0%, più del migliore trovato con le altre due.
 
-Agentic Harness Engineering, di Jiahang Lin e colleghi, dà una forma alle
+**Agentic Harness Engineering**, di Jiahang Lin e colleghi, dà una forma alle
 decisioni del proponente {cite}`lin2026agentic`. Ogni componente modificabile
 dell'harness, dalle istruzioni agli strumenti alla memoria lunga, è un file,
 così che ogni modifica si salva nella storia del repository e si può annullare
 da sola. Ogni modifica porta con sé una previsione scritta, quali compiti
-dovrebbe correggere e quali potrebbe rompere, che il giro dopo confronta con i
-risultati; le modifiche smentite si tolgono. Su 89 compiti di Terminal-Bench 2,
-partendo da un harness con la sola shell, dieci giri portano la quota di
-tentativi riusciti dal 69,7% al 77,0%, misurata sugli stessi compiti su cui
-l'harness è evoluto.
+dovrebbe correggere e quali potrebbe rompere, che l'iterazione successiva
+confronta con i risultati; le modifiche smentite si tolgono. Su 89 compiti di
+Terminal-Bench 2, partendo da un harness con la sola shell, dieci iterazioni
+portano la quota di tentativi riusciti dal 69,7% al 77,0%, misurata sugli stessi
+compiti su cui l'harness è evoluto.
 
 `````{tab} Elementare
 
@@ -631,18 +643,18 @@ le tracce possono aiutare anche ad adattarsi a quei compiti.
 
 Agentic Harness Engineering trasforma ogni modifica in un'ipotesi falsificabile.
 Con $\hat Y^{+}$ e $\hat Y^{-}$ i compiti che la modifica prevede di correggere
-e di rompere, e $Y^{+}$, $Y^{-}$ quelli che al giro dopo passano da fallito a
-riuscito e viceversa, precisione e richiamo delle previsioni di correzione sono
-$|\hat Y^{+} \cap Y^{+}| / |\hat Y^{+}|$ e $|\hat Y^{+} \cap Y^{+}| / |Y^{+}|$,
-e allo stesso modo per le rotture. Su nove giri e 89 compiti le correzioni hanno
-precisione $33{,}7\%$ e richiamo $51{,}4\%$, contro $6{,}5\%$ e $10{,}6\%$ di
-una previsione a caso; le rotture $11{,}8\%$ e $11{,}1\%$, contro $5{,}6\%$ e
-$5{,}4\%$ {cite}`lin2026agentic`. La partizione fra $\mathcal{W}$, lo spazio
-dell'harness, e ciò che resta in sola lettura (esecuzioni, tracciatore,
-verificatore, e la configurazione del modello, cioè $\theta$) è dichiarata e
-ripetuta nelle istruzioni del proponente; come venga fatta rispettare il lavoro
-non lo descrive, ed è la differenza fra dichiarare e imporre che la sezione sul
-collaudo ha trovato in `autoresearch`.
+e di rompere, e $Y^{+}$, $Y^{-}$ quelli che all'iterazione successiva passano da
+fallito a riuscito e viceversa, precisione e richiamo delle previsioni di
+correzione sono $|\hat Y^{+} \cap Y^{+}| / |\hat Y^{+}|$ e
+$|\hat Y^{+} \cap Y^{+}| / |Y^{+}|$, e allo stesso modo per le rotture. Su nove
+iterazioni e 89 compiti le correzioni hanno precisione $33{,}7\%$ e richiamo
+$51{,}4\%$, contro $6{,}5\%$ e $10{,}6\%$ di una previsione a caso; le rotture
+$11{,}8\%$ e $11{,}1\%$, contro $5{,}6\%$ e $5{,}4\%$ {cite}`lin2026agentic`. La
+partizione fra $\mathcal{W}$, lo spazio dell'harness, e ciò che resta in sola
+lettura (esecuzioni, tracciatore, verificatore, e la configurazione del modello,
+cioè $\theta$) è dichiarata e ripetuta nelle istruzioni del proponente; come
+venga fatta rispettare il lavoro non lo descrive, ed è la differenza fra
+dichiarare e imporre che la sezione sul collaudo ha trovato in `autoresearch`.
 
 L'altro limite dichiarato è l'interazione fra componenti. Partendo da
 $69{,}7\%$, inserire da solo il componente evoluto della memoria lunga porta a
@@ -660,8 +672,8 @@ volta le scarterebbe. La ridondanza è quella dell’{doc}`anatomia dell'harness
 <overview>` vista dall'altro lato, perché là faceva sembrare superfluo ciascun
 componente e qui toglie la somma dei guadagni. Con una campagna sola, 89 compiti
 e due esecuzioni per compito, i tre guadagni valgono circa due, tre e cinque
-compiti, e sono differenze appaiate; senza il conto dei compiti discordanti, che
-il lavoro non dà, non si sa quali superino il rumore. E il $77{,}0\%$ è un
+compiti, e sono differenze appaiate; senza il conteggio dei compiti discordanti,
+che il lavoro non dà, non si sa quali superino il rumore. E il $77{,}0\%$ è un
 massimo misurato sui compiti della ricerca; il trasferimento ad altri banchi e
 modelli gli autori lo riportano a parte.
 
@@ -687,18 +699,21 @@ l'agente ha letto, compresi testi scritti da altri. Un'istruzione ostile in un
 documento, la *prompt injection* indiretta che la {doc}`sezione sulle
 architetture degli agenti </Agenti/architetture-e-valutazione>` ha nominato,
 nella traccia dura un compito; trascritta in una voce, la ritrovano i compiti
-successivi. Che cosa possa fare una memoria avvelenata lo mostra AgentPoison, di
-Zhaorun Chen e colleghi {cite}`chen2024agentpoison`. Molti agenti cercano nella
-loro memoria gli esempi più simili alla richiesta e li usano come modelli da
-imitare. L'attaccante, che nel loro esperimento può aggiungere qualche voce alla
-memoria, inserisce pochi esempi ostili, ciascuno con una richiesta, una breve
-sequenza di parole che fa da **innesco** e l'azione che vuole ottenere.
-L'innesco è scelto, con un'ottimizzazione, perché le richieste che lo contengono
-somiglino soltanto agli esempi avvelenati; senza innesco la ricerca trova quello
-di sempre. Su tre agenti, con meno di una voce avvelenata su mille, in media
-l’82% delle richieste con l'innesco ritrova soltanto esempi avvelenati e il 63%
-ottiene l'effetto voluto dall'attaccante, mentre le richieste normali perdono
-meno dell’1% di accuratezza.
+successivi.
+
+Che cosa possa fare una memoria avvelenata lo mostra **AgentPoison**, di Zhaorun
+Chen e colleghi {cite}`chen2024agentpoison`. Molti agenti cercano nella loro
+memoria gli esempi più simili alla richiesta e li usano come modelli da imitare.
+
+L'attaccante, che nel loro esperimento può aggiungere qualche voce alla memoria,
+inserisce pochi esempi ostili, ciascuno con una richiesta, una breve sequenza di
+parole che fa da **innesco** e l'azione che vuole ottenere. L'innesco è scelto,
+con un'ottimizzazione, perché le richieste che lo contengono somiglino soltanto
+agli esempi avvelenati; senza innesco la ricerca trova quello di sempre. Su tre
+agenti, con meno di una voce avvelenata su mille, in media l’82% delle richieste
+con l'innesco ritrova soltanto esempi avvelenati e il 63% ottiene l'effetto
+voluto dall'attaccante, mentre le richieste normali perdono meno dell’1% di
+accuratezza.
 
 `````{tab} Elementare
 

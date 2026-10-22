@@ -6,9 +6,10 @@ Il criterio della frequenza ha un limite che si vede bene nell’{doc}`esempio
 svolto </NaturalLanguageProcessing/tokenizzatori>` con le cinque parole. BPE ha
 fuso per prima la coppia `ss` perché la `s` è una lettera comunissima e le
 doppie italiane sono ovunque: la coppia è frequente soprattutto perché i suoi
-pezzi lo sono. Ma "frequente" e "significativo" non sono la stessa cosa. In
-quel corpus la `a` compare *solo* dopo la `b`: `ba` è una coppia rara in
-assoluto (8 occorrenze contro 25), ma è una coppia che non capita mai per caso.
+pezzi lo sono. Ma "frequente" e "significativo" non sono la stessa cosa. Ad
+esempio, in quel corpus la `a` compare *solo* dopo la `b`: `ba` è una coppia
+rara in assoluto (8 occorrenze contro 25), ma è una coppia che non capita mai
+per caso.
 
 Da qui il criterio alternativo di **WordPiece**, introdotto da Mike Schuster e
 Kaisuke Nakajima nel 2012 per la ricerca vocale in giapponese e coreano
@@ -28,23 +29,24 @@ molto più raro in assoluto, eppure ogni volta che leggi «minerale» prima c'er
 «acqua». La seconda coppia dice qualcosa; la prima è rumore di fondo.
 
 WordPiece, almeno nella versione che si insegna di solito, fa questa
-distinzione. (È una ricostruzione fatta da chi l'ha studiato, perché la ricetta
-con cui Google ha addestrato BERT non è mai stata pubblicata.) Invece di
-chiedersi «quante volte questi due pezzi si trovano attaccati?», si chiede: «si
-trovano attaccati più di quanto capiterebbe per caso?». Il conto è semplice: si
-prende quante volte la coppia compare e la si divide per quanto sono comuni i
-due pezzi presi singolarmente. Un pezzo che è dappertutto viene penalizzato, e
-le sue coppie devono essere molto frequenti per vincere.
+distinzione. (È una ricostruzione fatta da chi l'ha studiato, perché la
+procedura con cui Google ha addestrato BERT non è mai stata pubblicata.) Invece
+di chiedersi «quante volte questi due pezzi si trovano attaccati?», si chiede:
+«si trovano attaccati più di quanto capiterebbe per caso?». Il calcolo è
+semplice: si prende quante volte la coppia compare e la si divide per quanto
+sono comuni i due pezzi presi singolarmente. Un pezzo che è dappertutto viene
+penalizzato, e le sue coppie devono essere molto frequenti per vincere.
 
 Nel nostro corpus di cinque parole, con questo criterio, la prima fusione non è
 più `ss` ma `ba`, e il calcolo si può rifare a mano con due divisioni. Nei 146
 caratteri del corpus la `s` compare 50 volte e la coppia `ss` 25: il punteggio è
 25 diviso (50 per 50), cioè 0,01. La `b` compare 11 volte, la `a` 8 e la coppia
 `ba` 8: il punteggio è 8 diviso (11 per 8), cioè circa 0,09, nove volte tanto.
-La `s` è talmente diffusa che le sue coppie non stupiscono nessuno, mentre la
-`a`, che si presenta sempre e solo dopo la `b`, è una compagnia troppo fedele
-per essere una coincidenza. BPE premia ciò che ricorre, WordPiece premia ciò
-che sta insieme per una ragione.
+
+Il motivo è che la `s` è talmente diffusa che le sue coppie non stupiscono
+nessuno, mentre la `a`, che si presenta sempre e solo dopo la `b`, è una
+compagnia troppo fedele per essere una coincidenza. BPE premia ciò che ricorre,
+WordPiece premia ciò che sta insieme per una ragione.
 
 Questo criterio, però, non guarda quanto lavoro farà la fusione. Torna al
 giornale e mettiamo che «acqua» compaia 40 volte e «minerale» 12, sempre
@@ -53,13 +55,14 @@ preceduto da «acqua»: il punteggio della coppia è 12 diviso (40 per 12), cio�
 ciascuna, sempre una di seguito all'altra, come il nome e il cognome di un tale
 che il giornale nomina in due righe e mai più: il punteggio è 2 diviso (2 per
 2), cioè 0,5, venti volte tanto. Vincono loro, e incollarle accorcia il giornale
-in due punti invece che in dodici. Il criterio misura quanto una coppia è
-sorprendente, non quante volte tornerà utile, e giudica come se dovesse servire
-una volta sola. Nel corpus delle cinque parole si vede già in piccolo: `et`, che
-compare 5 volte, passa davanti a `ro`, che ne compare 14. Il criterio originale
-di WordPiece contava quel lavoro, e sulle cinque parole avrebbe scelto
-ancora `ss`: incollare le due *s* toglie dal corpus venticinque pezzi in un
-colpo solo.
+in due punti invece che in dodici.
+
+Il criterio misura quanto una coppia è sorprendente, non quante
+volte tornerà utile, e giudica come se dovesse servire una volta sola. Nel
+corpus delle cinque parole si vede già in piccolo: `et`, che compare 5 volte,
+passa davanti a `ro`, che ne compare 14. Il criterio originale di WordPiece
+contava quel lavoro, e sulle cinque parole avrebbe scelto ancora `ss`: incollare
+le due *s* toglie dal corpus venticinque pezzi in un colpo solo.
 
 `````
 
@@ -67,23 +70,24 @@ colpo solo.
 
 Nel lavoro originale, a ogni passo si aggiunge al vocabolario la fusione di due
 unità esistenti che aumenta di più la verosimiglianza dei dati sotto il modello
-di linguaggio. Nella forma in cui l'algoritmo si è poi diffuso quel modello è
-un unigramma, cioè un modello che assegna a una segmentazione $x = (x_1, \dots,
+di linguaggio. Nella forma in cui l'algoritmo si è poi diffuso quel modello è un
+**unigramma**, cioè un modello che assegna a una segmentazione $x = (x_1, \dots,
 x_n)$ la probabilità $P(x) = \prod_{i=1}^{n} p(x_i)$ con $p$ stimata per
 frequenza relativa. Sotto questo modello il guadagno di log-verosimiglianza di
 una fusione si calcola ricontando i simboli dopo averla eseguita. Quando la
 fusione consuma una piccola parte delle occorrenze dei suoi pezzi, il guadagno
 vale circa $\mathrm{freq}(ab)\,\bigl(\mathrm{PMI}(a,b) - 1\bigr)$, dove
 $\mathrm{PMI}(a,b)$ è l’**informazione mutua puntuale** fra i due simboli in
-logaritmo naturale: l'espressione pesa quindi anche *quante volte* la fusione
-si applica. L'implementazione con cui Google ha addestrato il vocabolario di
-BERT non è mai stata pubblicata, e il criterio che circola è una ricostruzione
-dalla letteratura, proposta nel corso di Hugging Face sui tokenizzatori. La
-loro libreria `tokenizers` non la usa: il suo addestratore WordPiece fonde per
-frequenza, come BPE, e aggiunge soltanto il prefisso `##` ai pezzi non
-iniziali. La ricostruzione lascia cadere il peso e valuta il guadagno *per
-occorrenza*, un'euristica ispirata alla verosimiglianza più che una sua
-conseguenza:
+logaritmo naturale: l'espressione pesa quindi anche *quante volte* la fusione si
+applica.
+
+L'implementazione con cui Google ha addestrato il vocabolario di BERT non è mai
+stata pubblicata, e il criterio che circola è una ricostruzione dalla
+letteratura, proposta nel corso di Hugging Face sui tokenizzatori. La loro
+libreria `tokenizers` non la usa: il suo addestratore WordPiece fonde per
+frequenza, come BPE, e aggiunge soltanto il prefisso `##` ai pezzi non iniziali.
+La ricostruzione lascia cadere il peso e valuta il guadagno *per occorrenza*,
+un'euristica ispirata alla verosimiglianza più che una sua conseguenza:
 
 $$
 (a^\star, b^\star) \;=\;
@@ -92,15 +96,16 @@ $$
 
 dove $\mathrm{freq}(a)$ è il numero di occorrenze del simbolo $a$ nel corpus
 segmentato allo stato corrente e $\mathrm{freq}(ab)$ quello della coppia
-adiacente. È una trasformazione monotona dell'informazione mutua puntuale
-(PMI): passando dalle frequenze assolute a quelle relative, il rapporto diventa
+adiacente. È una trasformazione monotona dell'informazione mutua puntuale (PMI):
+passando dalle frequenze assolute a quelle relative, il rapporto diventa
 $\frac{p(ab)}{p(a)\,p(b)}$ a meno di un fattore che dipende solo dalla taglia
 del corpus, quindi costante entro un singolo passo e ininfluente
-sull’$\arg\max$. Quel rapporto è l'esponenziale della PMI fra $a$ e $b$,
-definita come il logaritmo del rapporto stesso, $\mathrm{PMI}(a,b) = \log
+sull’$\arg\max$.
+
+Si noti che quel rapporto è l'esponenziale della PMI fra $a$ e $b$, definita
+come il logaritmo del rapporto stesso, $\mathrm{PMI}(a,b) = \log
 \frac{p(ab)}{p(a)\,p(b)}$: il rapporto vale $1$ (e la PMI zero) quando i due
-simboli si incontrano come farebbero per caso, più di $1$ quando si
-attirano.
+simboli si incontrano come farebbero per caso, più di $1$ quando si attirano.
 
 Sul corpus giocattolo dell'esempio svolto, al primo passo (frequenze dei
 simboli: `s` 50, `o` 44, `t` 14, `r` 14, `b` 11, `a` 8, `e` 5, su 146
@@ -202,19 +207,20 @@ perché vale quando la fusione consuma una piccola parte delle occorrenze dei
 suoi pezzi, e la fusione di `ss` le consuma tutte.
 
 Sul piano pratico, nell'implementazione resa popolare da BERT i pezzi non
-iniziali portano il prefisso `##`, così che `bassetto` sia scomposto in `bass`
-e `##etto`. In questo modo la ricomposizione è priva di ambiguità, poiché
-`##etto` non coincide con il token `etto` a inizio parola: la distinzione fra
-prefissi e suffissi è codificata nel vocabolario, non ricostruita a valle (il
-lavoro del 2012 otteneva lo stesso effetto con un marcatore di spazio attaccato
-alle unità). BERT usa un vocabolario di circa $30\,000$ token così costruiti.
+iniziali portano il prefisso `##`, così che `bassetto` sia scomposto in `bass` e
+`##etto`. In questo modo la ricomposizione è priva di ambiguità, poiché `##etto`
+non coincide con il token `etto` a inizio parola: la distinzione fra prefissi e
+suffissi è codificata nel vocabolario, non ricostruita a valle (il lavoro del
+2012 otteneva lo stesso effetto con un marcatore di spazio attaccato alle
+unità). BERT usa un vocabolario di circa $30\,000$ token così costruiti.
+
 In fase di codifica, inoltre, quella implementazione non replica una lista di
 fusioni ma applica una scansione greedy del prefisso più lungo presente nel
-vocabolario: differenza sottile che può produrre segmentazioni diverse da
-quelle che l'applicazione di BPE darebbe a parità di vocabolario. Diverso è
-anche il fallimento: se da un certo punto della parola nessun prefisso sta nel
-vocabolario, l'implementazione di BERT restituisce `[UNK]` per la parola
-intera, e non per il solo pezzo mancante.
+vocabolario: differenza sottile che può produrre segmentazioni diverse da quelle
+che l'applicazione di BPE darebbe a parità di vocabolario. Diverso è anche il
+fallimento: se da un certo punto della parola nessun prefisso sta nel
+vocabolario, l'implementazione di BERT restituisce `[UNK]` per la parola intera,
+e non per il solo pezzo mancante.
 
 `````
 
@@ -261,10 +267,12 @@ ricorrono un po’, molte più di quante ne servano. Ogni perlina ha un punteggi
 e un modo di infilare una parola vale il prodotto dei punteggi delle sue
 perline. Se `gatt` vale 0,02 e `ino` 0,05, *gattino* infilata come `gatt`+`ino`
 vale 0,001; se `gat` vale 0,01 e `tino` 0,02, infilata come `gat`+`tino` vale
-0,0002, e il primo modo vince. I punteggi si scoprono usando le perline: si
-infilano tutte le frasi del testo in tutti i modi possibili, ciascuno pesato
-con il suo valore, si conta quanto è servita ogni perlina, quei conti diventano
-i punteggi nuovi, e si ricomincia finché non cambiano più.
+0,0002, e il primo modo vince.
+
+I punteggi si scoprono usando le perline: si infilano tutte le frasi del testo
+in tutti i modi possibili, ciascuno pesato con il suo valore, si conta quanto è
+servita ogni perlina, quei conti diventano i punteggi nuovi, e si ricomincia
+finché non cambiano più.
 
 Poi si toglie. Per ogni perlina si guarda quanto peggiorerebbero le collane del
 testo se mancasse, e a ogni giro si butta una parte di quelle di cui si sente
@@ -273,12 +281,14 @@ di loro qualche collana non si infilerebbe più. Si rifà il giro finché nella
 scatola resta il numero di perline che ci si era prefissi.
 
 Davanti a una parola nuova non si ripetono incollaggi: si cerca il modo di
-infilarla con il punteggio più alto. Siccome ogni modo ha il suo punteggio, in
-allenamento si può anche pescare a sorte fra i modi migliori, dando più
-biglietti a quelli col punteggio più alto, così che il modello veda la stessa
-parola infilata in modi diversi senza affezionarsi a uno solo. Quanti biglietti
-in più dare ai migliori lo regola una manopola: girata al massimo vince sempre
-il primo modo, girata al minimo tutti hanno le stesse possibilità.
+infilarla con il punteggio più alto.
+
+Siccome ogni modo ha il suo punteggio, in allenamento si può anche pescare a
+sorte fra i modi migliori, dando più biglietti a quelli col punteggio più alto,
+così che il modello veda la stessa parola infilata in modi diversi senza
+affezionarsi a uno solo. Quanti biglietti in più dare ai migliori lo regola una
+manopola (un iperparametro): girata al massimo vince sempre il primo modo,
+girata al minimo tutti hanno le stesse possibilità.
 
 Resta un buco. Le perline sono fatte delle lettere già viste, e le lettere del
 mondo sono oltre centomila: nessun corpus le contiene tutte. Un ideogramma raro,
@@ -296,9 +306,9 @@ e «sconosciuto» esce dal dizionario.
 Il rovescio sta nella lunghezza della collana. Una lettera accentata
 sono due perline, un ideogramma tre, un'emoji quattro; se quelle sequenze non
 ricorrono abbastanza da meritarsi una perlina loro, vanno infilate una alla
-volta, e un solo ideogramma giapponese può richiedere più pezzi di un'intera parola
-inglese. Il conto arriva alle lingue che nel mucchio di testo di partenza
-c'erano poco.
+volta, e un solo ideogramma giapponese può richiedere più pezzi di un'intera
+parola inglese. Il conto arriva alle lingue che nel mucchio di testo di
+partenza c'erano poco.
 
 `````
 
@@ -322,46 +332,48 @@ $$
 $$
 
 dove $s$ è il testo grezzo e $\mathrm{norm}$ la normalizzazione scelta. È la
-proprietà che gli autori chiamano tokenizzazione *lossless*, e che nelle
-pipeline basate su tokenizzatori dipendenti dalla lingua non è garantita,
-perché la detokenizzazione è lì una collezione di regole ad hoc. Lo spazio,
-però, resta un confine anche qui: con l'impostazione predefinita
+proprietà che gli autori chiamano tokenizzazione **lossless**, e che nelle
+pipeline basate su tokenizzatori dipendenti dalla lingua non è garantita, perché
+la detokenizzazione è lì una collezione di regole ad hoc.
+
+Lo spazio, però, resta un confine anche qui: con l'impostazione predefinita
 (`split_by_whitespace=True`) l'addestramento divide il testo sugli spazi prima
 di contare, e nessun pezzo attraversa un `▁`; solo spegnendola compaiono pezzi
-come `▁sul▁muro`. Per le lingue senza spazi la «parola» diventa la frase
-intera, e il parametro `max_sentencepiece_length` limita la lunghezza dei pezzi.
+come `▁sul▁muro`. Per le lingue senza spazi la «parola» diventa la frase intera,
+e il parametro `max_sentencepiece_length` limita la lunghezza dei pezzi.
 
 Il secondo piano è l'algoritmo di costruzione del vocabolario. SentencePiece
 offre BPE, ma la sua scelta predefinita è il modello unigram
 {cite}`kudo2018subword`, che procede al contrario: si parte da un vocabolario
 candidato ampio $V$ e lo si pota. A $V$ fissato, il modello è lo stesso
-unigramma già incontrato con WordPiece, cioè assegna a una segmentazione
-$x = (x_1,\dots,x_n)$ di una stringa la probabilità
-$P(x) = \prod_{i=1}^{n} p(x_i)$,
+unigramma già incontrato con WordPiece, cioè assegna a una segmentazione $x =
+(x_1,\dots,x_n)$ di una stringa la probabilità $P(x) = \prod_{i=1}^{n} p(x_i)$,
 ma qui la verosimiglianza di una stringa $s$ è la somma su tutte le
-segmentazioni possibili, $P(s) = \sum_{x \in S(s)} P(x)$. Le $p(x_i)$ si
-stimano con
-l'algoritmo EM (lo stesso delle misture gaussiane della {doc}`sezione su
-riduzione e clustering </MachineLearning/riduzione-clustering>`: qui la
-variabile nascosta, quella che renderebbe facile la stima, è la
-segmentazione e non l'identità della componente); poi, per ogni token, si
-calcola quanto la verosimiglianza totale calerebbe rimuovendolo, e si tiene
-soltanto la frazione più utile (nel lavoro originale l'80%). I caratteri
-singoli non si tolgono mai: sono loro a garantire che ogni stringa del corpus
-resti segmentabile. Il vocabolario candidato di partenza è l'unione dei
-caratteri e delle sottostringhe più frequenti del corpus, estratte con un
-array dei suffissi, e va scelto ben più grande della taglia finale.
-Si itera fino alla taglia voluta. La segmentazione di una stringa nuova è
-quella di massima probabilità, trovata con Viterbi in tempo lineare nella
-lunghezza. Due proprietà distinguono unigram da BPE. La prima: è un modello
-probabilistico, quindi sa dire *quanto* una segmentazione è buona e
-campionarne di alternative: nella *subword regularization*
-{cite}`kudo2018subword` si prendono le $l$ segmentazioni migliori e se ne
-estrae una con probabilità proporzionale a $P(x)^{\alpha}$, dove $\alpha > 0$
-regola quanto la scelta si concentra (con $\alpha$ grande tende alla
-segmentazione di Viterbi, con $\alpha$ piccolo si avvicina all'uniforme), e
-addestrare su segmentazioni diverse della stessa frase fa da regolarizzatore.
-La seconda: non dipende da un ordine di fusioni.
+segmentazioni possibili, $P(s) = \sum_{x \in S(s)} P(x)$.
+
+Le $p(x_i)$ si stimano con l'algoritmo EM (lo stesso delle misture gaussiane
+della {doc}`sezione su riduzione e clustering
+</MachineLearning/riduzione-clustering>`: qui la variabile nascosta, quella che
+renderebbe facile la stima, è la segmentazione e non l'identità della
+componente); poi, per ogni token, si calcola quanto la verosimiglianza totale
+calerebbe rimuovendolo, e si tiene soltanto la frazione più utile (nel lavoro
+originale l'80%). I caratteri singoli non si tolgono mai: sono loro a garantire
+che ogni stringa del corpus resti segmentabile.
+
+Il vocabolario candidato di partenza è l'unione dei caratteri e delle
+sottostringhe più frequenti del corpus, estratte con un array dei suffissi, e va
+scelto ben più grande della taglia finale. Si itera fino alla taglia voluta. La
+segmentazione di una stringa nuova è quella di massima probabilità, trovata con
+Viterbi in tempo lineare nella lunghezza.
+
+Due proprietà distinguono unigram da BPE. La prima: è un modello probabilistico,
+quindi sa dire *quanto* una segmentazione è buona e campionarne di alternative:
+nella **subword regularization** {cite}`kudo2018subword` si prendono le $l$
+segmentazioni migliori e se ne estrae una con probabilità proporzionale a
+$P(x)^{\alpha}$, dove $\alpha > 0$ regola quanto la scelta si concentra (con
+$\alpha$ grande tende alla segmentazione di Viterbi, con $\alpha$ piccolo si
+avvicina all'uniforme), e addestrare su segmentazioni diverse della stessa frase
+fa da regolarizzatore. La seconda: non dipende da un ordine di fusioni.
 
 Un'ulteriore tecnica, che SentencePiece non ha inventato ma che si combina con
 le prime due, è il **BPE a livello di byte**, adottato da GPT-2
@@ -369,40 +381,45 @@ le prime due, è il **BPE a livello di byte**, adottato da GPT-2
 oltre centomila, un alfabeto di base già proibitivo) ma alla codifica UTF-8 del
 testo. L'alfabeto di base ha allora esattamente $|\Sigma| = 256$ elementi, e il
 tasso di `<UNK>` è zero per costruzione, su qualunque input: testo, codice
-sorgente, perfino dati binari. Il limite è che un carattere fuori ASCII occupa
-da 2 a 4 byte: se le sue sequenze non sono abbastanza frequenti da meritare una
-fusione, un singolo ideogramma può richiedere più token di una parola inglese
-intera. La copertura universale comporta sequenze più lunghe, soprattutto per
-le lingue meno rappresentate nel corpus di addestramento del tokenizzatore. Il
-vocabolario di GPT-2 conta 50 257 voci: i 256 byte, 50 000 fusioni e un simbolo
-di fine testo. Prima di fondere, un'espressione regolare separa lettere, cifre
-e punteggiatura, così che nessuna fusione attraversi due categorie, con
+sorgente, perfino dati binari.
+
+Il limite è che un carattere fuori ASCII occupa da 2 a 4 byte: se le sue
+sequenze non sono abbastanza frequenti da meritare una fusione, un singolo
+ideogramma può richiedere più token di una parola inglese intera. La copertura
+universale comporta sequenze più lunghe, soprattutto per le lingue meno
+rappresentate nel corpus di addestramento del tokenizzatore.
+
+Il vocabolario di GPT-2 conta 50 257 voci: i 256 byte, 50 000 fusioni e un
+simbolo di fine testo. Prima di fondere, un'espressione regolare separa lettere,
+cifre e punteggiatura, così che nessuna fusione attraversi due categorie, con
 un'eccezione che gli autori dichiarano: lo spazio che precede una parola le
 resta attaccato, da cui derivano i token con lo spazio in testa. Anche le
-contrazioni inglesi (`'s`, `'ll`, `'re`) si staccano a parte. SentencePiece
-elimina gli `<unk>` in un altro modo, con l'opzione `byte_fallback`,
-disattivata per impostazione predefinita. In sua assenza, i caratteri che
-coprono l'ultimo $0{,}05\%$ del corpus (`character_coverage=0.9995`) diventano
-`<unk>`; con l'opzione attiva vengono invece codificati con i rispettivi byte,
-mentre il vocabolario continua a impiegare sotto-parole di caratteri per tutto
-il resto.
+contrazioni inglesi (`'s`, `'ll`, `'re`) si staccano a parte.
+
+SentencePiece elimina gli `<unk>` in un altro modo, con l'opzione
+`byte_fallback`, disattivata per impostazione predefinita. In sua assenza, i
+caratteri che coprono l'ultimo $0{,}05\%$ del corpus
+(`character_coverage=0.9995`) diventano `<unk>`; con l'opzione attiva vengono
+invece codificati con i rispettivi byte, mentre il vocabolario continua a
+impiegare sotto-parole di caratteri per tutto il resto.
 
 `````
 
 ## Quattro conseguenze che incontrerai davvero
 
-Fin qui la meccanica. Il tokenizzatore sembra un dettaglio della preparazione
-dei dati, ma le sue scelte arrivano fino a chi usa un modello di linguaggio:
-nei numeri, che si spezzano in modo irregolare; nel costo delle lingue diverse
-dall'inglese; negli spazi, che cambiano la sequenza in ingresso; e nel
-vocabolario, che una volta scelto non si cambia più.
+Il tokenizzatore sembra un dettaglio della preparazione dei dati, ma le sue
+scelte arrivano fino a chi usa un modello di linguaggio: nei numeri, che si
+spezzano in modo irregolare; nel costo delle lingue diverse dall'inglese; negli
+spazi, che cambiano la sequenza in ingresso; e nel vocabolario, che una volta
+scelto non si cambia più.
 
 Primo: i numeri si spezzano in modo irregolare, e l'aritmetica ne soffre.
 Le fusioni si scelgono per frequenza, e le cifre non fanno eccezione. Le
 sequenze numeriche comuni sul web (gli anni recenti, i numeri tondi, `100`,
 `000`, le cifre singole) si guadagnano un token tutto loro; quelle rare no.
 
-L'effetto si vede confrontando numeri quasi identici con il tokenizzatore di GPT-2:
+L'effetto si vede confrontando numeri quasi identici con il tokenizzatore di
+GPT-2:
 
 ```python
 from transformers import AutoTokenizer
@@ -421,17 +438,20 @@ for numero in [" 2021", " 2022", " 2023", " 2024"]:
 2024: [' 2024']
 ```
 
-Quattro anni consecutivi, e il 2023 è l'unico a non avere un token suo: esce come
-`20` più `23`. Due numeri della stessa lunghezza vengono così tagliati in modo
-diverso: la cifra delle migliaia, che nel primo caso sta dentro un pezzo unico,
-nel secondo apre il pezzo `20`. Adesso pensa a come si fa una somma in colonna
-a scuola: si incolonnano le unità sotto le unità, le decine sotto le decine,
-perché ogni cifra vale secondo il posto che occupa (è il *valore posizionale*).
-Chiedere a un modello di sommare due numeri lunghi significa chiedergli di
-incolonnare cifre che nella sua rappresentazione non sono incolonnate affatto,
-perché è stato tagliato tutto secondo la frequenza e non secondo il posto.
-Questo fattore non spiega tutti gli errori di calcolo dei modelli, ma
-il peso della rappresentazione dei numeri è misurato: con i numeri spezzati in
+Dei quattro anni consecutivi, il 2023 è l'unico che non ha un token suo: esce
+come `20` più `23`. Due numeri della stessa lunghezza vengono così tagliati in
+modo diverso: la cifra delle migliaia, che nel primo caso sta dentro un pezzo
+unico, nel secondo apre il pezzo `20`.
+
+Adesso pensa a come si fa una somma in colonna a scuola: si incolonnano le unità
+sotto le unità, le decine sotto le decine, perché ogni cifra vale secondo il
+posto che occupa (è il *valore posizionale*). Chiedere a un modello di sommare
+due numeri lunghi significa chiedergli di incolonnare cifre che nella sua
+rappresentazione non sono incolonnate affatto, perché è stato tagliato tutto
+secondo la frequenza e non secondo il posto.
+
+Questo fattore non spiega tutti gli errori di calcolo dei modelli, ma il peso
+della rappresentazione dei numeri è misurato: con i numeri spezzati in
 sottoparole un modello non impara a sommare numeri di cinque cifre, mentre con
 le posizioni delle cifre dichiarate arriva a sommare quelli di sessanta
 {cite}`nogueira2021investigating`. Inoltre, cambiare il verso in cui si
@@ -479,7 +499,7 @@ forme: *gatto*, *gatta*, *gatti*, *gatte*, *gattino*, *gattini* sono sei parole
 distinte, ciascuna più rara dell'inglese *cat*, che sta al posto di quasi
 tutte. Più rara vuol dire meno probabile che si meriti un token suo.
 
-E in che valuta si paga? In tre.
+Il costo si misura in tre modi.
 
 - In denaro. I servizi che danno accesso a un modello di linguaggio fanno
   pagare un tanto a token. La stessa richiesta scritta in italiano costa dunque
@@ -511,76 +531,83 @@ spalle. La prima è comunissima, perché quasi sempre *gatto* è preceduto da un
 spazio; la seconda è rara, perché ricorre solo dove *gatto* attacca senza
 spazio davanti, cioè quasi mai.
 
-Se il prompt finisce con uno spazio, quello spazio è già stato consumato: al
-modello tocca continuare con un token *senza* barretta iniziale, cioè la
-variante rara su cui ha molta meno esperienza. Un solo carattere invisibile in
-coda alla richiesta, e la risposta può peggiorare senza che si capisca il
-perché. La fragilità non è del modello: gli hai dato in ingresso una sequenza
-diversa da quella che credevi.
+Ad esempio, se il prompt finisce con uno spazio, quello spazio è già stato
+consumato: al modello tocca continuare con un token *senza* barretta iniziale,
+cioè la variante rara su cui ha molta meno esperienza. Un solo carattere
+invisibile in coda alla richiesta, e la risposta può peggiorare senza che si
+capisca il perché. La fragilità non è del modello: gli hai dato in ingresso una
+sequenza diversa da quella che credevi.
 
 Quarto: il vocabolario si fissa prima dell'addestramento e non si cambia dopo.
 Questa è la conseguenza più vincolante, e riguarda la struttura interna del
 modello. In ingresso c'è la *matrice di embedding* $\mathbf{E} \in
-\mathbb{R}^{|V| \times d}$, con una riga per ogni token del vocabolario: la
-riga contiene i $d$ numeri con cui quel pezzo di parola viene rappresentato. In
+\mathbb{R}^{|V| \times d}$, con una riga per ogni token del vocabolario: la riga
+contiene i $d$ numeri con cui quel pezzo di parola viene rappresentato. In
 uscita c'è la proiezione finale $\mathbf{W}_{\text{out}} \in \mathbb{R}^{d
 \times |V|}$, con una colonna per ogni token, che dà a ciascun pezzo un
-punteggio per decidere quale scrivere; nei modelli a pesi condivisi coincide
-con $\mathbf{E}^\top$. Aggiungere un token al vocabolario richiede allora una
-riga e una colonna in più, vuote, in due tabelle che l'addestramento ha già
-riempito: numeri che nessun gradiente ha mai regolato, in mezzo a numeri
-regolati per mesi. E cambiare la segmentazione di un token esistente è peggio,
-perché tutto ciò che il modello ha imparato su quella riga si riferisce ormai a
-un'altra cosa. Il tokenizzatore è quindi parte del modello quanto i suoi pesi,
-si distribuisce insieme a essi, e se il dominio d'uso non era rappresentato nel
-corpus su cui è stato costruito (una lingua minore, la notazione chimica, un
-linguaggio di programmazione poco diffuso) quel testo resterà frammentato per
-tutta la vita del modello. Si può porre rimedio solo riaddestrando, o almeno
-estendendo il vocabolario e riadattando gli embedding nuovi: operazioni
-entrambe costose, motivo per cui il tokenizzatore si sceglie all'inizio e con
-cura.
+punteggio per decidere quale scrivere; nei modelli a pesi condivisi coincide con
+$\mathbf{E}^\top$.
+
+Aggiungere un token al vocabolario richiede allora una riga e una colonna in
+più, vuote, in due tabelle che l'addestramento ha già riempito: numeri che
+nessun gradiente ha mai regolato, in mezzo a numeri regolati per mesi. E
+cambiare la segmentazione di un token esistente è peggio, perché tutto ciò che
+il modello ha imparato su quella riga si riferisce ormai a un'altra cosa.
+
+Il tokenizzatore è quindi parte del modello quanto i suoi pesi, si distribuisce
+insieme a essi, e se il dominio d'uso non era rappresentato nel corpus su cui è
+stato costruito (una lingua minore, la notazione chimica, un linguaggio di
+programmazione poco diffuso) quel testo resterà frammentato per tutta la vita
+del modello. Si può porre rimedio solo riaddestrando, o almeno estendendo il
+vocabolario e riadattando gli embedding nuovi: operazioni entrambe costose,
+motivo per cui il tokenizzatore si sceglie all'inizio e con cura.
 
 ## Un'idea che vale oltre il testo
 
-Un tokenizzatore costruisce un alfabeto discreto, cioè fatto di pezzi separati
-e contabili, come le lettere di un alfabeto e non come le sfumature di un
-colore: un insieme finito di simboli in cui qualunque testo in ingresso si
-possa scrivere e da cui qualunque testo in uscita si possa ricomporre. Per un
-modello *autoregressivo*, che scrive un pezzo per volta guardando quelli che ha
-già scritto, è l'alfabeto delle sue scommesse; per un encoder come BERT, che
-legge la frase intera, è l'alfabeto in cui legge. Per il testo quell'alfabeto
-era già disponibile nei caratteri, e il lavoro è stato scegliere i
-raggruppamenti giusti.
+Un tokenizzatore costruisce un alfabeto discreto, cioè fatto di pezzi separati e
+contabili, come le lettere di un alfabeto e non come le sfumature di un colore:
+un insieme finito di simboli in cui qualunque testo in ingresso si possa
+scrivere e da cui qualunque testo in uscita si possa ricomporre.
+
+Per un modello *autoregressivo*, che scrive un pezzo per volta guardando quelli
+che ha già scritto, è l'alfabeto delle sue scommesse; per un encoder come BERT,
+che legge la frase intera, è l'alfabeto in cui legge. Per il testo
+quell'alfabeto era già disponibile nei caratteri, e il lavoro è stato scegliere
+i raggruppamenti giusti.
 
 Altri segnali non hanno un alfabeto discreto. L'audio è un'onda continua, e per
 darlo a un modello autoregressivo bisogna prima ottenere dei simboli. Il metodo
-è la *quantizzazione vettoriale*: si costruisce un catalogo (*codebook*) di
-vettori campione, per esempio mille, si scorre la registrazione un pezzetto
-alla volta e a ogni pezzetto si assegna il numero del vettore del catalogo che
-gli somiglia di più {cite}`oord2017neural`. L'onda diventa così una sequenza di
-numeri fra uno e mille, cioè un testo in un alfabeto di mille lettere. Quando
-una rete neurale impara il catalogo e il modo di riassumere ogni pezzetto, il
-sistema si chiama *codec neurale*, a cui il capitolo sull'audio dedica
-{doc}`una sezione </Audio/codec-neurali>`. Il problema è lo stesso della
-tokenizzazione del testo, la soluzione è diversa perché diversa è la materia
+è la **quantizzazione vettoriale**: si costruisce un catalogo (*codebook*) di
+vettori campione, per esempio mille, si scorre la registrazione un pezzetto alla
+volta e a ogni pezzetto si assegna il numero del vettore del catalogo che gli
+somiglia di più {cite}`oord2017neural`. L'onda diventa così una sequenza di
+numeri fra uno e mille, cioè un testo in un alfabeto di mille lettere.
+
+Quando una rete neurale impara il catalogo e il modo di riassumere ogni
+pezzetto, il sistema si chiama *codec neurale*, a cui il capitolo sull'audio
+dedica {doc}`una sezione </Audio/codec-neurali>`. Il problema è lo stesso della
+tokenizzazione del testo; la soluzione è diversa, perché diversa è la materia
 prima.
 
 E la domanda che resta aperta, in entrambi i casi, è se il testo e il suono
-debbano passare per dei simboli scelti prima dell'addestramento. Per il testo
-la strada senza tokenizzatore esiste già. ByT5 legge e scrive direttamente i
-byte con cui il testo è codificato (nella codifica standard, UTF-8)
+debbano passare per dei simboli scelti prima dell'addestramento. Per il testo la
+strada senza tokenizzatore esiste già. ByT5 legge e scrive direttamente i byte
+con cui il testo è codificato (nella codifica standard, UTF-8)
 {cite}`xue2022byt5`, con sequenze in media circa quattro volte più lunghe di
 quelle a sotto-parole, da due volte e mezzo per il maltese a nove per il khmer.
-I modelli successivi riducono questo divario raggruppando i byte dentro la
-rete: in blocchi di lunghezza fissa (MEGABYTE {cite}`yu2023megabyte`) oppure in
+
+I modelli successivi riducono questo divario raggruppando i byte dentro la rete:
+in blocchi di lunghezza fissa (MEGABYTE {cite}`yu2023megabyte`) oppure in
 blocchi che si allungano dove il byte successivo è facile da indovinare e si
 accorciano dove è incerto (il Byte Latent Transformer {cite}`pagnoni2024byte`,
 che misura quell'incertezza con un piccolo modello addestrato a parte). Il
 taglio resta, ma non sta più in un vocabolario fissato prima: nel primo caso è
 una regola, nel secondo lo decide un modello, che però non si impara insieme al
-resto della rete, e gli autori lo indicano come direzione futura. Se il
-tokenizzatore resiste, la ragione è economica più che teorica: i simboli
-accorciano le sequenze, e la lunghezza delle sequenze è ciò che si paga.
+resto della rete, e gli autori lo indicano come direzione futura.
+
+In definitiva, se il tokenizzatore resiste, la ragione è economica più che
+teorica: i simboli accorciano le sequenze, e la lunghezza delle sequenze è ciò
+che si paga.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

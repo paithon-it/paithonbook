@@ -10,25 +10,30 @@ una folla di granelli così si allarga secondo la stessa equazione che descrive
 il calore in una sbarra, con una distanza tipica dal punto di partenza che
 cresce come la radice del tempo (in un tempo quattro volte più lungo si va
 lontano il doppio, in uno nove volte più lungo il triplo)
-{cite}`einstein1905bewegung`. Da una parte un'equazione alle derivate parziali,
+{cite}`einstein1905bewegung`.
+
+Da una parte un'equazione alle derivate parziali,
 che lega il modo in cui il calore cambia nel tempo a come è distribuito nello
 spazio; dall'altra una folla di cammini casuali: da allora sono la stessa cosa,
 letta da due parti. La densità della folla obbedisce all'equazione del calore,
 e la temperatura in un punto è una media fatta sulla folla.
 
-Le {doc}`PINN </PINN/overview>` hanno lasciato una questione in sospeso. Le griglie
+Le {doc}`PINN </PINN/overview>` hanno lasciato una questione in sospeso.
+Le griglie
 dei metodi classici diventano proibitive quando le variabili sono molte,
 perché i nodi crescono in modo esponenziale con la dimensione, e la molla ha
 appena mostrato quanto sia fragile una rete che minimizza il residuo in un
-campione di punti. Per una famiglia intera di equazioni, quelle che diffondono
-(che spargono una grandezza come il calore si sparge in una sbarra), la
-lettura dal lato dei cammini offre un'altra strada. La formula di
-**Feynman-Kac** scrive la soluzione in un punto come una media su cammini
-casuali, e una media non ha bisogno di una griglia: si stima sorteggiando, e
-l'errore della stima scende con il numero di cammini sorteggiati alla stessa
-velocità in qualunque dimensione, cioè qualunque sia il numero delle variabili.
-Su quella media si possono anche addestrare delle reti, il cui errore però ha
-altre parti, e lì la dimensione può rientrare.
+campione di punti.
+
+Per una famiglia intera di equazioni, quelle che diffondono (che spargono una
+grandezza come il calore si sparge in una sbarra), la lettura dal lato dei
+cammini offre un'altra strada. La formula di **Feynman-Kac** scrive la
+soluzione in un punto come una media su cammini casuali, e una media non ha
+bisogno di una griglia, perché si stima campionando: l'errore della stima
+scende con il numero di cammini estratti alla stessa velocità in qualunque
+dimensione, cioè qualunque sia il numero delle variabili. Si possono poi
+addestrare delle reti su quella media, ma il loro errore ha altre parti, e lì
+la dimensione può rientrare.
 
 ## Il calore come media dei cammini
 
@@ -46,12 +51,14 @@ a meno dell'equazione. Da $x$ si fanno partire tanti camminatori ubriachi: a
 ogni istante ciascuno fa un passettino a caso, a destra o a sinistra, tanti a
 destra quanti a sinistra in media. Al tempo $t$ ci si ferma, si legge la
 temperatura *iniziale* nel punto in cui è arrivato ogni camminatore, e si fa la
-media. Quella media è la temperatura in $x$ al tempo $t$: se tre camminatori
-arrivano dove all'inizio c'erano $10$, $20$ e $30$ gradi, la stima è $20$. I
-camminatori fanno all'indietro il viaggio del calore: il calore che al tempo
-$t$ si trova in $x$ è arrivato da tutti quei punti, e siccome un passo a caso
-verso destra è probabile quanto uno verso sinistra, la strada da $x$ a un
-punto è probabile quanto quella dal punto a $x$.
+media. Quella media è la temperatura in $x$ al tempo $t$. Ad esempio, se tre
+camminatori arrivano dove all'inizio c'erano $10$, $20$ e $30$ gradi, la stima
+è $20$.
+
+I camminatori fanno all'indietro il viaggio del calore: il
+calore che al tempo $t$ si trova in $x$ è arrivato da tutti quei punti, e
+siccome un passo a caso verso destra è probabile quanto uno verso sinistra, la
+strada da $x$ a un punto è probabile quanto quella dal punto a $x$.
 
 Si capisce perché la media funziona. Più passa il tempo, più i camminatori si
 allontanano, e la media mescola le temperature iniziali di tratti sempre più
@@ -60,7 +67,9 @@ distanza a cui arrivano cresce come la radice del tempo, come aveva visto
 Einstein; detto meglio, il quadrato della distanza percorsa vale in media
 $2\alpha t$, quindi cresce in proporzione al tempo e alla diffusività
 $\alpha$, e in una sbarra che conduce bene i camminatori arrivano lontano in
-poco tempo. Da qui un calcolo che si fa a mano. Con la temperatura iniziale
+poco tempo.
+
+C'è un calcolo che si fa a mano. Con la temperatura iniziale
 uguale al quadrato della posizione, il camminatore partito da $x$ arriva in
 $x$ più il suo spostamento, e la media del quadrato è il quadrato di $x$ più
 la media del quadrato dello spostamento (il termine misto si annulla, perché
@@ -70,13 +79,15 @@ $0{,}3^2 + 0{,}5 = 0{,}59$: all'inizio in $0{,}3$ c'erano $0{,}09$ gradi, e il
 calore è arrivato dai tratti più caldi ai lati. Duecento camminatori danno una
 media di $0{,}599$ ({numref}`fig-cammini-che-fanno-la-media`).
 
-La ricetta si allarga ad altre sbarre. Se agli estremi la temperatura è tenuta
+Il metodo si allarga ad altre sbarre. Se agli estremi la temperatura è tenuta
 fissa, un camminatore che tocca un estremo si ferma lì e riporta quella
 temperatura. Se lungo la sbarra un tratto assorbe calore (un pezzo bagnato,
 che l'acqua raffredda), ogni camminatore parte con un gettone che vale 1 e
 che perde valore per ogni istante passato in quel tratto: chi non ci passa
 torna con il gettone intero, chi ci resta a lungo con mezzo gettone, e nella
-media la sua temperatura conta la metà. La ricetta non sa trattare
+media la sua temperatura conta la metà.
+
+Il metodo, però, non sa trattare
 le sbarre in cui il calore prodotto dipende dalla temperatura in un modo
 che non è una proporzione fissa, come una reazione chimica che si accende solo
 oltre una certa temperatura: lì, per sapere quanto vale il gettone,
@@ -98,7 +109,7 @@ u(\mathbf{x}, t) = \mathbb{E}\big[\varphi\big(\mathbf{x} + \sqrt{2\alpha}\,\math
 \qquad \mathbf{Z} \sim \mathcal{N}(\mathbf{0}, \mathbf{I}_d).
 $$
 
-La dimostrazione passa per il lemma di Itô. Fissati $\mathbf{x}$ e $t$, il
+**Dimostrazione.** Applichiamo il lemma di Itô. Fissati $\mathbf{x}$ e $t$, il
 processo $v_s = u\big(\mathbf{x} + \sqrt{2\alpha}\,\mathbf{W}_s,\ t - s\big)$,
 per $0 \le s \le t$, ha differenziale $\mathrm{d}v_s = \big(\alpha\Delta u -
 \partial_t u\big)\,\mathrm{d}s + \sqrt{2\alpha}\,\nabla u \cdot
@@ -124,25 +135,26 @@ u(\mathbf{x}, t) = \mathbb{E}\Big[\varphi(\mathbf{X}_t)\,
 \qquad \mathbf{X}_s = \mathbf{x} + \sqrt{2\alpha}\,\mathbf{W}_s .
 $$
 
-Con una deriva e una diffusione generiche il moto browniano diventa la
+In generale, con una deriva e una diffusione il moto browniano diventa la
 soluzione di un'equazione differenziale stocastica, quella delle {doc}`SDE
 della diffusione </ModelliDiffusione/sde-e-ode>`, e l'operatore $\alpha\Delta$
 il suo generatore infinitesimale (l'operatore che dà la derivata in tempo delle
 medie $\mathbb{E}[f(\mathbf{X}_t)]$); con condizioni di Dirichlet sul bordo di
 un dominio il cammino si ferma al tempo di uscita e riporta il valore al bordo.
-Le due letture dell'apertura sono due equazioni diverse e duali: la densità
-$p_t$ del processo obbedisce all'equazione di Fokker-Planck, quella in avanti
-già scritta per le SDE della diffusione (con deriva nulla e $g^2 = 2\alpha$
-coincide con l'equazione del calore), mentre la formula di Feynman-Kac risolve
-l'equazione all'indietro di Kolmogorov, quella delle medie. Per il calore
-coincidono perché il nucleo è simmetrico, $p_t(\mathbf{x}, \mathbf{y}) =
+
+Le due letture dell'apertura sono due equazioni diverse e duali: la
+densità $p_t$ del processo obbedisce all'equazione di Fokker-Planck, quella in
+avanti già scritta per le SDE della diffusione (con deriva nulla e $g^2 =
+2\alpha$ coincide con l'equazione del calore), mentre la formula di Feynman-Kac
+risolve l'equazione all'indietro di Kolmogorov, quella delle medie. Per il
+calore coincidono perché il nucleo è simmetrico, $p_t(\mathbf{x}, \mathbf{y}) =
 p_t(\mathbf{y}, \mathbf{x})$; con una deriva generica no.
 
-La rappresentazione vale per equazioni *lineari* paraboliche (ed ellittiche, con
-i tempi di uscita). Per quelle semilineari, $\partial_t u = \alpha\Delta u +
-F(u, \nabla u)$ con $u(\cdot, 0) = \varphi$, la media semplice non basta, e
-serve una coppia di equazioni stocastiche all'indietro. Posti $Y_s =
-u(\mathbf{X}_s, t - s)$ e $\boldsymbol{\zeta}_s = \sqrt{2\alpha}\,\nabla
+La rappresentazione vale per equazioni *lineari* paraboliche (ed
+ellittiche, con i tempi di uscita). Per quelle semilineari, $\partial_t u =
+\alpha\Delta u + F(u, \nabla u)$ con $u(\cdot, 0) = \varphi$, la media semplice
+non basta, e serve una coppia di equazioni stocastiche all'indietro. Posti $Y_s
+= u(\mathbf{X}_s, t - s)$ e $\boldsymbol{\zeta}_s = \sqrt{2\alpha}\,\nabla
 u(\mathbf{X}_s, t - s)$, lo stesso lemma di Itô dà
 
 $$
@@ -152,7 +164,9 @@ $$
 $$
 
 con $Y_0 = u(\mathbf{x}, t)$; per $F = 0$ resta la martingala di prima, e la
-formula di Feynman-Kac. Il metodo deep BSDE {cite}`han2018solving` tratta $Y_0$
+formula di Feynman-Kac.
+
+Il metodo deep BSDE {cite}`han2018solving` tratta $Y_0$
 come un parametro, rappresenta $\boldsymbol{\zeta}_s$ con una rete a ogni passo
 della discretizzazione in tempo, simula in avanti e minimizza
 $\mathbb{E}\big|Y_t^\theta - \varphi(\mathbf{X}_t)\big|^2$; provato in cento
@@ -184,11 +198,13 @@ cento. La media si stima con $N$ cammini indipendenti, e l'errore della stima
 scende come $\sigma/\sqrt{N}$, come per ogni media di campioni indipendenti
 (è la {doc}`legge dei grandi numeri </Matematica/probabilita-statistica>`),
 cioè come uno diviso la radice del numero di cammini: cento volte più cammini,
-un errore dieci volte più piccolo. Il numeratore $\sigma$ è la deviazione
+un errore dieci volte più piccolo.
+
+Il numeratore $\sigma$ è la deviazione
 standard di $\varphi$ nei punti di arrivo, cioè quanto sono sparse le
 temperature che i camminatori riportano; la dimensione dello spazio può
 renderlo più grande o più piccolo, ma non entra nella velocità con cui l'errore
-scende. Entra nel costo di ogni cammino, che in $d$ dimensioni sorteggia $d$
+scende. Entra invece nel costo di ogni cammino, che in $d$ dimensioni estrae $d$
 numeri: il lavoro totale cresce come $N\,d$, lineare nella dimensione, dove una
 griglia a dieci nodi (i puntini) per lato ne ha $10^d$.
 
@@ -203,13 +219,13 @@ cento volte di più. Non dipende da quante cose si annotano di ciascuno, l'età,
 la regione, la professione, il numero di scarpe: annotarne di più allunga un po’
 il lavoro per ogni persona, ma non chiede più persone.
 
-Una griglia, invece, è un censimento per caselle. Dieci classi d'età per dieci
-regioni per dieci professioni fanno mille caselle, e in ogni casella serve
-qualcuno; con dieci cose da annotare le caselle diventano dieci miliardi. I
-camminatori sono il sondaggio, e le variabili del problema sono le cose
-annotate di ciascuno: ogni camminatore sorteggia un passo per ogni direzione,
-il suo costo cresce con le direzioni, e l'errore della media resta governato da
-quanti camminatori si fanno partire.
+Una griglia, invece, è un censimento per caselle. Ad esempio, dieci classi
+d'età per dieci regioni per dieci professioni fanno mille caselle, e in ogni
+casella serve qualcuno; con dieci cose da annotare le caselle diventano dieci
+miliardi. I camminatori sono il sondaggio, e le variabili del problema sono le
+cose annotate di ciascuno: ogni camminatore estrae a caso un passo per ogni
+direzione, il suo costo cresce con le direzioni, e l'errore della media resta
+governato da quanti camminatori si fanno partire.
 
 Il sondaggio però ha due limiti. Dà la temperatura in un punto solo, e per
 averla in un altro bisogna rifarlo. Se una corrente spinge i camminatori in
@@ -236,16 +252,16 @@ $\varphi = \|\mathbf{x}\|^2$, $\|\mathbf{x}\| = 1$ e $2\alpha t = 1/2$ vale
 $\sigma^2 = 2 + d/2$, lineare in $d$.
 
 L'equazione del calore è il caso fortunato, perché $\mathbf{X}_t$ si campiona
-esattamente in un passo. Con una deriva e una diffusione che dipendono dal
-punto il cammino si integra a passo $h$ con lo schema di Eulero-Maruyama, che
-ha ordine debole uno {cite}`kloeden1992numerical`: l'errore ha una parte
-statistica, $\sigma/\sqrt{N}$, e una sistematica, $O(h)$, e ogni cammino
-richiede almeno $d\,t/h$ operazioni. Bilanciando le due parti ($N \sim
-\sigma^2\varepsilon^{-2}$, $h \sim \varepsilon$) il costo per una tolleranza
-$\varepsilon$ diventa $O(d\,\varepsilon^{-3})$: peggio del caso esatto, ma
-ancora lineare in $d$, e con l'esponente di $1/\varepsilon$ che non dipende
-dalla dimensione. Resta il limite strutturale: la formula dà $u$ in un punto
-per volta.
+esattamente in un passo. In generale, con una deriva e una diffusione che
+dipendono dal punto il cammino si integra a passo $h$ con lo schema di
+Eulero-Maruyama, che ha ordine debole uno {cite}`kloeden1992numerical`:
+l'errore ha una parte statistica, $\sigma/\sqrt{N}$, e una sistematica, $O(h)$,
+e ogni cammino richiede almeno $d\,t/h$ operazioni. Bilanciando le due parti
+($N \sim \sigma^2\varepsilon^{-2}$, $h \sim \varepsilon$) il costo per una
+tolleranza $\varepsilon$ diventa $O(d\,\varepsilon^{-3})$: peggio del caso
+esatto, ma ancora lineare in $d$, e con l'esponente di $1/\varepsilon$ che non
+dipende dalla dimensione. Resta il limite strutturale: la formula dà $u$ in un
+punto per volta.
 
 `````
 
@@ -285,10 +301,11 @@ esatto) addirittura scende con la dimensione, perché la dispersione di
 $\varphi$ cresce come la radice di $d$ mentre il valore esatto cresce come $d$,
 e il loro rapporto cala come $1/\sqrt{d}$: è una proprietà di
 $\varphi = \|\mathbf{x}\|^2$, non della formula, e con un'altra $\varphi$
-potrebbe salire. Il limite è che la
-formula dà la soluzione in *un* punto per volta: per averla in un'intera regione
-bisognerebbe ripetere il calcolo per ogni punto, e con molti punti si torna a
-pagare.
+potrebbe salire.
+
+Il limite è che la formula dà la soluzione in *un* punto per volta: per averla
+in un'intera regione bisognerebbe ripetere il calcolo per ogni punto, e con
+molti punti si torna a pagare.
 
 ## Una rete che impara tutte le medie insieme
 
@@ -303,7 +320,9 @@ Si pesca un punto a caso nella regione, si fa partire da lì un camminatore
 solo, e si legge la temperatura iniziale dove arriva: la rete, che per quel
 punto deve rispondere con un numero, viene punita con il quadrato della
 differenza. Un camminatore solo è una risposta rumorosissima: stesso punto,
-camminatore diverso, numero diverso. La rete però non impara un punto alla
+camminatore diverso, numero diverso.
+
+La rete però non impara un punto alla
 volta: risponde con una curva liscia, quindi l'aggiustamento fatto in un punto
 vale anche nei punti vicini. Così, da tanti punti vicini, ognuno con il suo
 camminatore, raccoglie l'effetto di tanti camminatori diversi; e siccome la
@@ -343,8 +362,9 @@ campione del cammino. Beck, Becker, Grohs, Jaafari e Jentzen parametrizzano $f$
 con una rete, stimano il rischio con minibatch di coppie $(\boldsymbol{\xi},
 Y)$ sempre nuove e lo minimizzano con la discesa del gradiente stocastica
 {cite}`beck2021solving`; sull'equazione del calore in cento dimensioni
-riportano un errore relativo $L^1$ dello $0{,}08\%$ dopo 750 000 passi. La
-varianza di $Y$ attorno a $u$ entra solo come rumore del gradiente; l'errore
+riportano un errore relativo $L^1$ dello $0{,}08\%$ dopo 750 000 passi.
+
+La varianza di $Y$ attorno a $u$ entra solo come rumore del gradiente; l'errore
 finale è quello di approssimazione e di ottimizzazione della rete, più quello
 di generalizzazione, che qui ha una forma particolare, perché ogni passo vede
 esempi nuovi invece di tornare su un campione fisso. La garanzia vale su $D$ e
@@ -417,11 +437,12 @@ altre resta il residuo, e anche lì la dimensione ha un rimedio parziale.
 La PINN del capitolo controlla l'equazione in un insieme di punti scelto una
 volta, all'inizio, e poi sempre quello, come un esame con le stesse domande a
 ogni appello; il rimedio già incontrato nella {doc}`legge dentro la loss
-</PINN/come-funziona>`, sorteggiare punti nuovi a ogni giro, è il cuore di un
+</PINN/come-funziona>`, estrarre punti nuovi a ogni iterazione, è il cuore di un
 metodo uscito qualche mese prima delle PINN. Il **metodo di Galerkin profondo**
 fa la stessa verifica pescando punti nuovi a ogni passo dell'addestramento: la
 rete non può imparare a rispondere bene solo nei punti dell'esame, perché
 l'esame cambia ogni volta. È lo stesso trucco della rete che impara la media.
+
 Resta un costo: controllare la regola obbliga a misurare quanto la curva si
 piega in ogni direzione, e le direzioni sono tante quante le dimensioni, per
 questo il rimedio è solo parziale.
@@ -440,7 +461,9 @@ non una somma su un insieme fisso (la PINN di Raissi, Perdikaris e Karniadakis
 collocazione, generato una volta con un campionamento a ipercubo latino). Gli
 autori lo
 provano su problemi fino a 200 dimensioni, fra cui le opzioni americane con
-frontiera libera. Il nome viene dal metodo di Galerkin, che proietta
+frontiera libera.
+
+Il nome viene dal metodo di Galerkin, che proietta
 l'equazione su uno spazio di funzioni. Qui lo spazio è quello delle reti, e il
 metodo non ha maglia. Il residuo va calcolato con le derivate seconde della
 rete, che in dimensione $d$ aggiungono $d$ passaggi all'indietro per il
@@ -471,7 +494,7 @@ residuo, e una rete che lo controlla in punti sempre nuovi.
 - Una rete impara la temperatura in tutta una regione ascoltando un
   camminatore solo per punto: punita col quadrato, la risposta che le conviene
   è la media.
-- La ricetta vale per le equazioni che diffondono; per le altre si controlla
+- Il metodo vale per le equazioni che diffondono; per le altre si controlla
   quanto la rete viola l'equazione, e controllarlo in punti sempre nuovi aiuta
   quando le dimensioni sono tante.
 ```
@@ -506,5 +529,5 @@ La sbarra del capitolo lascia due cose: la seconda lettura del calore, quella
 dei camminatori, e un modo di battere la dimensione che non passa per una
 griglia. È la stessa idea che torna nei limiti e nelle applicazioni di
 {doc}`dove la fisica aiuta </PINN/applicazioni-limiti>`: scegliere, fra le
-forme in cui si può scrivere lo stesso problema, quella in cui il calcolatore
-paga di meno.
+forme in cui si può scrivere lo stesso problema, quella in cui il computer
+deve fare meno lavoro.

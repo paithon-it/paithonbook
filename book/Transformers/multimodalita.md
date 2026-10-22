@@ -35,9 +35,10 @@ guardare, e ne discende il resto.
 {numref}`fig-bert-vs-gpt` mostra la differenza che conta fra i primi due: lo
 stesso tipo di blocco, con due maschere diverse. BERT usa la self-attention
 bidirezionale, quindi la rappresentazione di ogni parola dipende anche da ciò
-che viene dopo, requisito per classificare una frase, estrarne una risposta,
-confrontarla con un'altra; GPT usa la maschera causale e deve indovinare come
-si continua, l'esercizio che insegna a scrivere.
+che viene dopo: è un requisito per classificare una frase, estrarne una
+risposta o confrontarla con un'altra. GPT usa invece la maschera
+causale e deve indovinare come si continua, l'esercizio che insegna a
+scrivere.
 
 `````{tab} Elementare
 Tre studenti si preparano allo stesso esame in tre modi diversi. GPT studia
@@ -86,43 +87,47 @@ della finestra di contesto. La linea di scala arriva a GPT-3
 {cite}`brown2020language` (175 miliardi di parametri), che mostra
 l'apprendimento *in-context*: adattarsi a un compito mostrato nel prompt con
 pochi esempi svolti (*few-shot*) o soltanto descritto (*zero-shot*), senza
-aggiornare i pesi. BERT {cite}`devlin2019bert` (Google, 2018) è *encoder-only*
-e bidirezionale. Il pre-addestramento combina il *masked language modeling* (si
-sorteggia il $15\%$ dei token da predire: l’$80\%$ di quelli scelti diventa
-`[MASK]`, il $10\%$ un token a caso e il $10\%$ resta com'è) e la *next
-sentence prediction*, cioè verificare se la seconda frase segua davvero la
-prima. I modelli successivi hanno abbandonato questo secondo compito: RoBERTa
-lo elimina senza perdite sui compiti a valle, anzi migliora di poco
-{cite}`liu2019roberta`. Previo fine-tuning, BERT eccelle nei compiti di
-comprensione (classificazione, estrazione di risposte). T5
-{cite}`raffel2020exploring` (Google, 2019) mantiene l'encoder-decoder completo,
-e il suo esercizio è un *denoising*: si elimina il 15% dei token, a spezzoni
-contigui di tre in media, e ogni spezzone lascia al suo posto un solo *sentinel
-token*, unico nella sequenza; il bersaglio è la concatenazione degli spezzoni
-tolti, ciascuno preceduto dal sentinel che lo sostituiva. Il contributo che gli
-ha dato il nome sta però a valle: riformula ogni task NLP come *text-to-text*,
-mostrando che un solo formato copre traduzione, sintesi, classificazione. Il
-tratto comune è il pre-addestramento auto-supervisionato su corpora enormi,
-seguito da un adattamento leggero: il *transfer learning* già visto per le
-immagini, con una differenza, perché là il pre-addestramento era supervisionato
-e il segnale veniva dalle etichette di ImageNet.
+aggiornare i pesi.
+
+BERT {cite}`devlin2019bert` (Google, 2018) è *encoder-only* e bidirezionale. Il
+suo pre-addestramento combina il *masked language modeling* (si estrae a caso
+il $15\%$ dei token da predire: l’$80\%$ di quelli scelti diventa `[MASK]`, il
+$10\%$ un token a caso e il $10\%$ resta com'è) e la *next sentence
+prediction*, cioè verificare se la seconda frase segua davvero la prima. I
+modelli successivi hanno abbandonato questo secondo compito: RoBERTa lo elimina
+senza perdite sui compiti a valle, anzi migliora di poco
+{cite}`liu2019roberta`. Dopo il fine-tuning, BERT eccelle nei compiti di
+comprensione (classificazione, estrazione di risposte).
+
+T5 {cite}`raffel2020exploring` (Google, 2019) mantiene l'encoder-decoder
+completo, e il suo esercizio è un *denoising*: si elimina il 15% dei token, a
+spezzoni contigui di tre in media, e ogni spezzone lascia al suo posto un solo
+*sentinel token*, unico nella sequenza; il bersaglio è la concatenazione degli
+spezzoni tolti, ciascuno preceduto dal sentinel che lo sostituiva. Il
+contributo che gli ha dato il nome sta però a valle: riformula ogni task NLP
+come *text-to-text*, mostrando che un solo formato copre traduzione, sintesi,
+classificazione.
+
+Il tratto comune ai tre modelli è il pre-addestramento auto-supervisionato su
+corpora enormi, seguito da un adattamento leggero: il *transfer learning* già
+visto per le immagini, con una differenza, perché là il pre-addestramento era
+supervisionato e il segnale veniva dalle etichette di ImageNet.
 
 **ELECTRA** {cite}`clark2020electra` attacca l'inefficienza del masked language
 modeling: mascherando il $15\%$ dei token, il segnale di addestramento arriva
 solo da quel $15\%$. Sostituisce l'obiettivo con la ***replaced token
-detection***. Un
-generatore piccolo (un MLM ordinario) rimpiazza i token mascherati con
-campioni plausibili; il discriminatore, che è ELECTRA, riceve la sequenza
-così corrotta e classifica ogni posizione come originale o sostituita. Il
-segnale viene da tutta la sequenza, il compito binario è più economico del
-softmax sul vocabolario, e a valle si scarta il generatore e si rifinisce il
-discriminatore. Il guadagno misurato dagli autori riguarda interamente il
-calcolo: su larga scala ELECTRA eguaglia la resa dei modelli mascherati
-confrontabili dell'epoca con meno di un quarto del loro addestramento, e
-la versione piccola, addestrata in quattro giorni su una sola GPU, supera un
-modello autoregressivo che ne aveva consumato trenta volte tanto.
-È una vittoria di obiettivo e non di architettura: la stessa
-rete impara di più dalle stesse frasi perché le viene chiesto qualcosa su ogni
+detection***. Un generatore piccolo (un MLM ordinario) rimpiazza i token
+mascherati con campioni plausibili; il discriminatore, che è ELECTRA, riceve la
+sequenza così corrotta e classifica ogni posizione come originale o sostituita.
+Il segnale viene quindi da tutta la sequenza, il compito binario è più
+economico del softmax sul vocabolario, e a valle si scarta il generatore e si
+rifinisce il discriminatore. Il guadagno misurato dagli autori riguarda
+interamente il calcolo: su larga scala ELECTRA eguaglia la resa dei modelli
+mascherati confrontabili dell'epoca con meno di un quarto del loro
+addestramento, e la versione piccola, addestrata in quattro giorni su una sola
+GPU, supera un modello autoregressivo che ne aveva consumato trenta volte
+tanto. È dunque una vittoria di obiettivo e non di architettura: la stessa rete
+impara di più dalle stesse frasi perché le viene chiesto qualcosa su ogni
 posizione invece che su una su sette.
 
 La somiglianza con una **GAN** è dichiarata dagli autori stessi, e istruttiva
@@ -147,9 +152,9 @@ frase, e la risposta esce come testo anche quando è un voto o un'etichetta.
 ```
 
 L'idea di {numref}`fig-t5-text-to-text` è tecnicamente semplice e anticipa il
-modo in cui oggi si usano i modelli di linguaggio. Se ogni compito si può
-scrivere come testo in ingresso e testo in uscita, allora cambiare compito non
-richiede di cambiare il modello: basta cambiare il testo che gli si pone
+modo in cui oggi si usano i modelli di linguaggio. Infatti, se ogni compito si
+può scrivere come testo in ingresso e testo in uscita, allora cambiare compito
+non richiede di cambiare il modello: basta cambiare il testo che gli si pone
 davanti, cioè il prompt, con le istruzioni e i dati consegnati al modello prima
 che risponda. Il prompt può contenere la sola consegna a parole, oppure due o
 tre esercizi già svolti per mostrare al modello che cosa gli si sta chiedendo.
@@ -185,8 +190,8 @@ che guardano un pezzetto di immagine alla volta, portano scritte
 nell'architettura due ipotesi sulle immagini: che i pixel vicini siano legati
 fra loro, e che lo stesso motivo conti dovunque compaia. È il loro *bias
 induttivo*. Con le tessere messe in fila e l'attenzione su tutte, due tessere
-adiacenti e due lontanissime partono alla pari, e la struttura dello spazio va
-imparata dai dati.
+adiacenti e due lontanissime partono alla pari, per cui la struttura dello
+spazio va imparata dai dati.
 
 `````{tab} Elementare
 Per le immagini si taglia la foto in
@@ -222,21 +227,25 @@ embedding appresi ritrovano da soli la topologia bidimensionale (le patch della
 stessa riga o della stessa colonna finiscono con embedding simili), motivo per
 cui le varianti scritte a mano in due dimensioni, o relative, non offrono
 vantaggi. Già dai primi strati, inoltre, alcune teste coprono quasi tutta
-l'immagine, mentre altre restano locali. Il punto essenziale è la condizione:
-senza il *bias induttivo* di località delle CNN, il ViT dell'articolo è
-competitivo solo se pre-addestrato su dataset molto grandi (ImageNet-21k,
-JFT-300M). La soglia però si sposta con la ricetta: con data augmentation
-aggressiva, regolarizzazione e distillazione da una rete convoluzionale, DeiT
-{cite}`touvron2021training` addestra lo stesso modello sul solo ImageNet-1k. La
-località va quindi inserita nell'architettura o appresa con più dati. Sul
-fronte multimodale, **CLIP** {cite}`radford2021learning` allinea in uno spazio
-comune embedding di immagini e testi tramite addestramento contrastivo su 400
-milioni di coppie immagine-didascalia, in cui ogni immagine del batch deve
-riconoscere la propria didascalia fra tutte quelle presenti, e viceversa (la
-{doc}`sezione sull'allineamento di due spazi
-</VisioneLinguaggio/allineare-due-spazi>` ne costruisce l'obiettivo). I modelli
-generativi di immagini impiegano il Transformer in due modi distinti: DALL·E
-{cite}`ramesh2021zero` è un Transformer autoregressivo da 12 miliardi di
+l'immagine, mentre altre restano locali.
+
+Si noti che, senza il *bias induttivo* di località delle CNN, il ViT
+dell'articolo è competitivo solo se pre-addestrato su dataset molto grandi
+(ImageNet-21k, JFT-300M). La soglia però si sposta con le tecniche di
+addestramento: con data augmentation aggressiva, regolarizzazione e
+distillazione da una rete convoluzionale, DeiT {cite}`touvron2021training`
+addestra lo stesso modello sul solo ImageNet-1k. La località va quindi inserita
+nell'architettura o appresa con più dati.
+
+Sul fronte multimodale, **CLIP** {cite}`radford2021learning` allinea in uno
+spazio comune embedding di immagini e testi tramite addestramento contrastivo
+su 400 milioni di coppie immagine-didascalia, in cui ogni immagine del batch
+deve riconoscere la propria didascalia fra tutte quelle presenti, e viceversa
+(la {doc}`sezione sull'allineamento di due spazi
+</VisioneLinguaggio/allineare-due-spazi>` ne costruisce l'obiettivo).
+
+I modelli generativi di immagini impiegano il Transformer in due modi distinti:
+DALL·E {cite}`ramesh2021zero` è un Transformer autoregressivo da 12 miliardi di
 parametri che genera i token dell'immagine dopo quelli del testo, mentre la
 diffusione latente di Stable Diffusion {cite}`rombach2022high` si condiziona
 sul testo con un encoder Transformer, attraverso la cross-attention. Infine,
@@ -327,7 +336,8 @@ per tutto il resto.
 In fondo escono le coordinate di ogni perlina nello spazio, e accanto a ogni
 perlina un voto da zero a cento: quanto il programma si fida di quel pezzo di
 risposta. Sopra novanta di solito ci ha preso anche nei dettagli; dove il voto
-resta basso per un tratto lungo, spesso quel tratto non ha davvero una forma fissa.
+resta basso per un tratto lungo, spesso quel tratto non ha davvero una forma
+fissa.
 
 Tutto questo poggia sui parenti. Per una proteina rara, che esiste in poche
 specie, i cugini da confrontare sono pochi: con meno di una trentina di righe
@@ -369,7 +379,9 @@ in quel punto con la struttura sperimentale (è una stima dell'lDDT-Cα). Sopra
 catena è in genere corretto; e le regioni lunghe sotto 50 vanno lette come
 previsione di disordine più che come struttura
 {cite}`tunyasuvunakool2021highly`, un raro caso in cui l'incertezza dichiarata
-ha un significato fisico. Inoltre, dipendendo dall'MSA, il metodo è più debole
+ha un significato fisico.
+
+In secondo luogo, poiché dipende dall'MSA, il metodo è più debole
 dove l'allineamento è povero. Jumper e colleghi riportano che l'accuratezza
 cala sensibilmente quando la profondità mediana dell'allineamento scende sotto
 una trentina di sequenze, mentre oltre un centinaio i miglioramenti sono
@@ -386,10 +398,10 @@ di ricerca a servizio di consultazione.
 ## Vantaggi e sfide
 
 I vantaggi sono noti: ogni posizione raggiunge ogni altra in un solo passo,
-l'addestramento si spartisce fra migliaia di processori, una sola architettura
-serve il testo, le immagini e l'audio. Le sfide sono altrettanto concrete, e si
-sommano al costo quadratico già discusso nel
-{doc}`confronto con i modelli precedenti <confronti>`:
+l'addestramento si distribuisce fra migliaia di processori, una sola
+architettura serve il testo, le immagini e l'audio. Le sfide sono altrettanto
+concrete, e si sommano al costo quadratico già discusso nel {doc}`confronto con
+i modelli precedenti <confronti>`:
 
 - Risorse: addestrare un grande modello richiede da centinaia a decine di
   migliaia di acceleratori che lavorano insieme per settimane o mesi (la
@@ -398,9 +410,9 @@ sommano al costo quadratico già discusso nel
   solo *eseguirlo* può richiedere macchine fuori dalla portata di un
   laboratorio piccolo.
 - Dati: i *corpora* da miliardi di parole contengono errori, stereotipi e
-  contenuti tossici, e i modelli li assorbono. Se in quei testi le infermiere
-  sono sempre donne e gli ingegneri sempre uomini, il modello impara quella
-  regola come impara la grammatica: un bias dei dati diventa un bias del
+  contenuti tossici, e i modelli li assorbono. Ad esempio, se in quei testi le
+  infermiere sono sempre donne e gli ingegneri sempre uomini, il modello impara
+  quella regola come impara la grammatica: un bias dei dati diventa un bias del
   modello.
 - Affidabilità: un modello autoregressivo assegna una probabilità a ogni
   continuazione per poi generarne una, e il suo obiettivo premia la
@@ -452,7 +464,7 @@ sommano al costo quadratico già discusso nel
   BERT = encoder-only bidirezionale, forte nel capire; T5 =
   encoder-decoder, denoising a spezzoni, e ogni task riscritto come
   text-to-text.
-- La ricetta comune è pre-addestramento auto-supervisionato su corpora
+- Lo schema comune è pre-addestramento auto-supervisionato su corpora
   enormi + adattamento (fine-tuning o prompt).
 - ELECTRA mostra che l'obiettivo conta quanto l'architettura: sostituire
   qualche token e far dire alla rete, per ogni posizione, se è originale o

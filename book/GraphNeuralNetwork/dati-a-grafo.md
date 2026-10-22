@@ -5,29 +5,29 @@ telefono formano una rete di persone che, a loro volta, si
 conoscono tra loro. Una molecola è un intreccio di
 legami. Il web è un tessuto di link. La rete
 stradale di una città, i pagamenti tra conti bancari, le citazioni tra articoli
-scientifici, le proteine che interagiscono in una cellula: in tutti questi
+scientifici, le proteine che interagiscono in una cellula. In tutti questi
 casi l'informazione più preziosa sta nei collegamenti fra le cose più che
-*dentro* ciascuna. Guardare una cosa alla volta non basta:
+*dentro* ciascuna. Guardare una cosa alla volta non basta, perché
 conta anche chi le sta accanto.
 
 Le reti che abbiamo studiato finora (quelle convoluzionali per le immagini,
 quelle ricorrenti e i Transformer per il testo) sono nate per dati con una
-forma regolare: una griglia di pixel, una sequenza di parole. Un grafo non
-ha né una griglia né un ordine: è una struttura più libera e, per
-questo, più difficile da dare in ingresso a una rete neurale. Per capire come
-fare servono un vocabolario e alcuni problemi di fondo, che spiegano *perché*
-siano necessari strumenti nuovi.
+forma regolare, ad esempio una griglia di pixel o una sequenza di parole. Un
+grafo, invece, non ha né una griglia né un ordine; è una struttura più libera
+e, per questo, più difficile da dare in ingresso a una rete neurale. Per capire
+come procedere servono un vocabolario e alcuni problemi di fondo, che spiegano
+*perché* siano necessari strumenti nuovi.
 
 ## Nodi e archi: l'anatomia di un grafo
 
-Un grafo è un insieme di oggetti, i nodi, e un insieme di coppie di nodi, gli
-archi, che dicono quali oggetti sono collegati; disegnato, è un insieme di
-puntini e di linee che li uniscono. Nodi e archi bastano a descrivere la
-struttura, e tutto il resto (versi, pesi, caratteristiche) la arricchisce.
-(Chi incontra i grafi altrove li troverà chiamati anche *vertici* e *spigoli*:
-sono le stesse due cose, e qui restano nodi e archi.) La
-{numref}`fig-grafo-anatomia` mostra un grafo minuscolo, cinque nodi, che
-farà da filo conduttore per i dati a grafo.
+Un **grafo** è un insieme di oggetti, i **nodi**, e un insieme di coppie di
+nodi, gli **archi**, che dicono quali oggetti sono collegati; disegnato, è un
+insieme di puntini e di linee che li uniscono. Nodi e archi bastano a
+descrivere la struttura, e tutto il resto (versi, pesi, caratteristiche) la
+arricchisce. (Chi incontra i grafi altrove li troverà chiamati anche *vertici*
+e *spigoli*: sono le stesse due cose, e qui restano nodi e archi.) La
+{numref}`fig-grafo-anatomia` mostra un grafo minuscolo, cinque nodi, che farà
+da filo conduttore per i dati a grafo.
 
 ```{figure} ../figures/grafo-anatomia.svg
 :name: fig-grafo-anatomia
@@ -44,45 +44,47 @@ escono dal nodo 3: portano al suo vicinato, e siccome sono tre si dice che
 il nodo 3 ha grado 3.
 ```
 
-Tre termini tornano in tutto il capitolo: i
+Tre termini tornano in tutto il capitolo. I
 nodi a cui un nodo è collegato sono i suoi **vicini**, tutti insieme sono il
 suo **vicinato**, e quanti sono è il suo **grado**. Una tabella di numeri, in
-matematica, si chiama matrice: la tabella $\mathbf{A}$ è la matrice di
+matematica, si chiama matrice, e la tabella $\mathbf{A}$ è la matrice di
 adiacenza, e le due espressioni sono sinonimi.
 
 Fissiamo adesso tre distinzioni che tornano di continuo.
 
 `````{tab} Elementare
 
-Gli archi possono avere o non avere un verso. In una rete di amicizie
-l'amicizia è reciproca, se sono tuo amico, sei mio amico: gli archi non hanno
-freccia, il grafo è **non diretto**. In una rete di «chi segue chi» sui
-social, invece, posso seguire una persona che non mi segue: ogni arco ha un
-verso, il grafo è **diretto**.
+Gli archi possono avere o non avere un verso. In una rete di amicizie,
+ad esempio, l'amicizia è reciproca (se sono tuo amico, sei mio amico), quindi
+gli archi non hanno freccia e il grafo è **non diretto**. In una rete di «chi
+segue chi» sui social, invece, posso seguire una persona che non mi segue; ogni
+arco ha dunque un verso e il grafo è **diretto**.
 
 Gli archi possono anche avere un **peso**, cioè un numero che dice quanto è
-forte quel collegamento: tra due città il peso può essere la distanza in
-chilometri, tra due persone il numero di messaggi che si scambiano. Se non
-mettiamo pesi, è come dire che ogni arco vale 1: il collegamento o c'è o non
-c'è.
+forte quel collegamento. Tra due città, ad esempio, il peso può essere la
+distanza in chilometri, tra due persone il numero di messaggi che si scambiano.
+Se non mettiamo pesi, è come dire che ogni arco vale 1; in altri termini, il
+collegamento o c'è o non c'è.
 
 Infine, sia i nodi sia (a volte) gli archi portano con sé delle
 caratteristiche, in gergo *feature*: per una persona l'età e gli interessi,
 per un atomo il tipo di elemento. Nella figura sono le tre caselline accanto a
-ogni nodo, una per caratteristica. Nel disegno restano
+ogni nodo, una per caratteristica.
+
+Nel disegno restano
 vuote, perché quali numeri ci vadano dipende da che cosa sono i nodi; se
 fossero persone potrebbero esserci $14$ (gli anni), $2$ (gli sport che
 pratica), $300$ (i messaggi che manda in un giorno). Una fila di numeri come
-questa si chiama vettore: quando più avanti si legge che un nodo «diventa un
+questa si chiama **vettore**; quando più avanti si legge che un nodo «diventa un
 vettore», o che «i messaggi sono vettori», si intendono queste
 caselline. Quante siano lo si decide una volta per tutte all'inizio, e
-poi è uguale per tutti i nodi: nel disegno sono tre perché tre ci stanno nella
-pagina, in un caso vero sono decine o centinaia.
+poi è uguale per tutti i nodi. Nel disegno sono tre perché tre ci stanno nella
+pagina; in un caso vero sono decine o centinaia.
 
 Finora una cosa sola ha avuto tre nomi: fila di numeri, vettore,
 rappresentazione. Vettore è il nome dell'oggetto, una fila di numeri. La
 rappresentazione di un nodo, la parola dell'introduzione, è il vettore che
-in un certo momento descrive quel nodo: all'inizio sono le caselline
+in un certo momento descrive quel nodo; all'inizio sono le caselline
 accanto ai nodi, dopo un giro di ascolto sarà qualcos'altro. È lo stesso
 oggetto, chiamato una volta col suo nome e una volta col suo ruolo.
 
@@ -93,9 +95,9 @@ connesso a chi) e dei contenuti (cosa sono i nodi).
 
 `````{tab} Superiore
 
-Un grafo è una coppia $G = (V, E)$, dove $V$ è l'insieme dei nodi ($N = |V|$) ed
-$E \subseteq V \times V$ l'insieme degli archi. La struttura si codifica nella
-matrice di adiacenza $\mathbf{A} \in \{0,1\}^{N \times N}$:
+Formalmente, un grafo è una coppia $G = (V, E)$, dove $V$ è l'insieme dei nodi
+($N = |V|$) ed $E \subseteq V \times V$ l'insieme degli archi. La struttura si
+codifica nella matrice di adiacenza $\mathbf{A} \in \{0,1\}^{N \times N}$:
 
 $$
 A_{ij} =
@@ -125,32 +127,34 @@ $$
 D_{ii} = \deg(i) = \sum_{j} A_{ij}, \qquad D_{ij} = 0 \ \text{ per } i \neq j,
 $$
 
-dove $D_{ii}$ è quante linee escono dal nodo $i$. Per descrivere un grafo con
-feature bastano $\mathbf{A}$ e $\mathbf{X}$ (più le feature degli archi, se ci
-sono); $\mathbf{D}$ se ne ricava, e ha un nome a parte perché compare in quasi
-ogni normalizzazione del capitolo.
+dove $D_{ii}$ è il numero di archi che escono dal nodo $i$. Per descrivere un
+grafo con feature bastano $\mathbf{A}$ e $\mathbf{X}$ (più le feature degli
+archi, se ci sono). $\mathbf{D}$ se ne ricava, e ha un nome a parte
+perché compare in quasi ogni normalizzazione del capitolo.
 
 `````
 
 ## Perché i grafi mettono in crisi le reti classiche
 
 Il primo tentativo è srotolare la matrice $\mathbf{A}$, riga dopo riga, in un
-vettore di $N^2$ numeri e darlo in ingresso a una rete densa come quelle dei
-primi capitoli, che vuole appunto una sfilza di numeri lunga sempre uguale, come si
-fa con un'immagine, griglia di numeri (uno per pixel) srotolata
-allo stesso modo. Il modello si addestra, ma ha tre difetti: dipende
-dall'ordine con cui sono numerati i nodi; ha una dimensione d'ingresso fissata
-($N^2$, quindi un solo $N$); e non ha niente di simile alla finestra della
-convoluzione, che guarda i vicini di un punto con gli stessi pesi dappertutto,
-perché ogni nodo ha un numero diverso di vicini. Il primo è il più grave, e
-nasce da una libertà che griglie e sequenze non hanno: in un grafo i nodi non
-hanno un ordine.
+vettore di $N^2$ numeri e darlo in ingresso a una rete densa, come quelle dei
+primi capitoli. Una rete così vuole appunto una sfilza di numeri lunga sempre
+uguale; con un'immagine si procede allo stesso modo, e la griglia di numeri (uno
+per pixel) viene srotolata.
 
-Un'immagine è una griglia: il pixel in alto a sinistra è *sempre* in alto a
+Il modello si addestra, ma ha tre difetti. Il primo è che dipende
+dall'ordine con cui sono numerati i nodi; il secondo, che ha una dimensione
+d'ingresso fissata ($N^2$, quindi un solo $N$); il terzo, che non ha niente di
+simile alla finestra della convoluzione, che guarda i vicini di un punto con gli
+stessi pesi dappertutto, perché ogni nodo ha un numero diverso di vicini. Il
+primo difetto è il più grave, e nasce da una libertà che griglie e sequenze non
+hanno: in un grafo i nodi non hanno un ordine.
+
+Un'immagine è una griglia. Il pixel in alto a sinistra è *sempre* in alto a
 sinistra, e la convoluzione sfrutta questa regolarità. Una frase è una
-sequenza: la prima parola viene sempre prima della seconda, e i modelli per il
-testo su quell'ordine ci contano. Un grafo no: se rinumero i suoi nodi (chiamo
-«1» il nodo che prima chiamavo «3» e viceversa) è lo *stesso* grafo,
+sequenza. La prima parola viene sempre prima della seconda, e i modelli per il
+testo su quell'ordine ci contano. Un grafo no: se rinumero i suoi nodi
+(chiamo «1» il nodo che prima chiamavo «3» e viceversa) è lo *stesso* grafo,
 ma la matrice $\mathbf{A}$ cambia completamente aspetto.
 
 `````{tab} Elementare
@@ -162,15 +166,15 @@ per cognome, poi per età) stravolgerebbe la tabella, mentre la cena resta la
 stessa. Una rete che legge la tabella casella per casella vedrebbe due cene
 diverse dove ce n'è una sola.
 
-Le serve non accorgersi dell'ordine. Se la risposta è una sola per
-tutta la cena («la serata è divertente?»), deve uscire identica da tutte e due
-le tabelle; se è una per invitato, deve restare attaccata alla stessa persona:
-se prima «resta in disparte» toccava all'invitato sulla riga 3, adesso
-deve toccare a lui, su qualunque riga sia finito.
+Per questo alla rete serve non accorgersi dell'ordine. Se la risposta è una
+sola per tutta la cena («la serata è divertente?»), deve uscire identica da
+tutte e due le tabelle; se è una per invitato, deve restare attaccata alla
+stessa persona. Se prima «resta in disparte» toccava all'invitato sulla riga 3,
+adesso deve toccare a lui, su qualunque riga sia finito.
 
-Gli altri due scogli li conosci già, e pesano per la stessa ragione: una rete
-come quelle dei primi capitoli vuole in ingresso sempre la stessa quantità di
-numeri. A tavola c'è chi ha due amici e chi cento, quindi non esiste una
+Gli altri due scogli li conosci già, e pesano per la stessa ragione: una
+rete come quelle dei primi capitoli vuole in ingresso sempre la stessa quantità
+di numeri. A tavola c'è chi ha due amici e chi cento, quindi non esiste una
 finestra di misura fissa da far scorrere sui vicini; e le tavolate sono da sei
 o da sessanta, mentre le foto si possono tagliare tutte alla stessa misura.
 
@@ -204,11 +208,13 @@ rete la impari a forza di esempi) è il cuore del programma della *geometric
 deep learning* {cite}`bronstein2021geometric`, che legge sotto un'unica lente
 CNN (equivarianza a traslazione degli strati convolutivi, con l'invarianza che
 arriva solo dal pooling globale finale) e GNN (equivarianza o invarianza a
-permutazione sul grafo). A ciò si aggiungono due irregolarità: il grado
+permutazione sul grafo).
+
+A ciò si aggiungono due irregolarità: il grado
 variabile (ogni nodo ha un numero diverso di vicini, quindi niente kernel di
 dimensione fissa) e la taglia variabile ($N$ cambia da grafo a grafo,
 mentre una rete densa vuole un input di dimensione fissata). Sono
-i vincoli che il *message passing*, nella
+questi i vincoli che il *message passing*, nella
 {doc}`sezione omonima </GraphNeuralNetwork/message-passing>`, risolverà con
 un'operazione locale, condivisa e simmetrica.
 
@@ -218,7 +224,7 @@ un'operazione locale, condivisa e simmetrica.
 
 Sono i tre tipi di domanda dell'introduzione, e a uno di questi tre stampi va
 ricondotto ogni problema su grafo: si prevede qualcosa di un
-singolo nodo, di una coppia di nodi, o dell'intero grafo. La
+singolo nodo, di una coppia di nodi o dell'intero grafo. La
 {numref}`fig-grafo-tre-compiti` li mostra sullo stesso grafo.
 
 ```{figure} ../figures/grafo-tre-compiti.svg
@@ -232,21 +238,21 @@ prediction*). Grafo: prevedere una proprietà dell'intero grafo, per
 esempio se una molecola è tossica.
 ```
 
-- **Livello-nodo.** A ogni nodo si assegna un'etichetta o un valore. È il caso
-  di una rete di citazioni in cui prevediamo l'argomento di ciascun articolo,
-  o di una rete di proteine in cui si cerca la funzione di quelle che nessuno
+- **Livello-nodo.** A ogni nodo si assegna un'etichetta o un valore. Ad esempio,
+  in una rete di citazioni prevediamo l'argomento di ciascun articolo, e in
+  una rete di proteine si cerca la funzione di quelle che nessuno
   ha ancora studiato.
 - **Livello-arco.** Si prevede se un arco esiste, o esisterà, tra due nodi: la
   link prediction. È il motore del «forse conosci…» di un social e del «chi
   ha comprato questo…» di un negozio online. È anche, alla lettera, la forma
   del problema che il {doc}`capitolo sui sistemi di raccomandazione
-  </SistemiRaccomandazione/overview>` affronterà: un grafo con gli
-  utenti da una parte e i prodotti dall'altra, e consigliare un film è
-  prevedere un arco che ancora non c'è.
+  </SistemiRaccomandazione/overview>` affronterà, perché si tratta di un grafo
+  con gli utenti da una parte e i prodotti dall'altra, e consigliare un film
+  vuol dire prevedere un arco che ancora non c'è.
 - **Livello-grafo.** Si prevede una proprietà dell’*intero* grafo, riassunto in
-  un solo verdetto. L'esempio principe è la chimica: una molecola è un grafo di
-  atomi e legami, e vogliamo prevedere se è solubile, tossica, o efficace come
-  farmaco.
+  un solo verdetto. L'esempio principe è la chimica, dove una molecola è un
+  grafo di atomi e legami e vogliamo prevedere se è solubile, tossica, o
+  efficace come farmaco.
 
 C'è poi una seconda domanda, che vale allo stesso modo per tutti e tre i casi
 appena visti: quali nodi abbiamo davanti mentre il modello impara? È la
@@ -254,38 +260,40 @@ distinzione che più di ogni altra separa i metodi antichi da quelli moderni.
 
 `````{tab} Elementare
 
-Una biblioteca di articoli scientifici, in cui ogni articolo ne cita altri, e
-il tuo compito è indovinare l'argomento di ciascuno. In un caso hai già davanti
-*tutti* gli articoli, con le loro citazioni: di alcuni conosci l'argomento, di
-altri no, e devi solo riempire i buchi. Questo si dice modo **transduttivo**:
-il grafo è uno solo, fissato, e non arriverà mai nessun articolo nuovo.
+Considera una biblioteca di articoli scientifici, in cui ogni articolo ne cita
+altri, e il tuo compito è indovinare l'argomento di ciascuno. In un caso hai
+già davanti *tutti* gli articoli, con le loro citazioni; di alcuni conosci
+l'argomento, di altri no, e devi solo riempire i buchi. Questo si dice modo
+**transduttivo**: il grafo è uno solo, fissato, e non arriverà mai nessun
+articolo nuovo.
 
 In un altro caso, invece, vuoi imparare una regola che funzioni anche su
 articoli che *non hai ancora visto*, o addirittura su un'altra biblioteca. È
 il modo **induttivo**: si impara qualcosa di generale, che si applica a nodi e
 grafi mai incontrati durante l'addestramento. È la differenza tra imparare a
-memoria la mappa di una città e imparare a leggere le mappe: la seconda
-abilità funziona anche in una città nuova.
+memoria la mappa di una città e imparare a leggere le mappe, dato che la
+seconda abilità funziona anche in una città nuova.
 
 `````
 
 `````{tab} Superiore
 
-Nell'impostazione transduttiva l'addestramento e la predizione avvengono
-sullo stesso grafo fisso $G$: tutti i nodi (etichettati e non) sono noti fin
+Nell'impostazione **transduttiva** l'addestramento e la predizione avvengono
+sullo stesso grafo fisso $G$. Tutti i nodi (etichettati e non) sono noti fin
 dall'inizio, e l'obiettivo è propagare le etichette dai nodi noti a quelli
 ignoti. È il caso tipico della classificazione di nodo *semi-supervisionata*,
 ma i due aggettivi rispondono a domande diverse: semi-supervisionato dice
 quante etichette si hanno, transduttivo quali nodi si vedono durante
-l'addestramento, e le combinazioni sono tutte possibili. Nell'impostazione
-induttiva si impara invece una funzione $f$ che generalizza a nodi o
-interi grafi *mai visti* in addestramento: indispensabile quando il grafo
-evolve nel tempo (un social in cui si iscrivono nuovi utenti) o quando ogni
-esempio è un grafo distinto (un dataset di molecole). Come vedremo tra poco, i
-metodi di rappresentazione basati sui cammini casuali sono intrinsecamente
-transduttivi, e questo limite, insieme alla cecità verso le feature dei nodi, è
-ciò che le reti neurali su grafo moderne, induttive per costruzione,
-superano {cite}`hamilton2020graph`.
+l'addestramento, e le combinazioni sono tutte possibili.
+
+Nell'impostazione **induttiva** si impara invece una funzione $f$ che
+generalizza a nodi o interi grafi *mai visti* in addestramento: indispensabile
+quando il grafo evolve nel tempo (un social in cui si iscrivono nuovi utenti) o
+quando ogni esempio è un grafo distinto (un dataset di molecole). Come vedremo
+tra poco, i metodi di rappresentazione basati sui cammini casuali sono
+intrinsecamente transduttivi, e questo limite, insieme alla cecità verso le
+feature dei nodi, è ciò che le reti neurali su grafo moderne, induttive per
+costruzione, superano {cite}`hamilton2020graph`.
 
 `````
 
@@ -295,24 +303,26 @@ Prima delle reti neurali c'è un'idea più semplice,
 che per qualche anno è stata il modo migliore che si conoscesse per descrivere
 i nodi di un grafo.
 
-L'obiettivo è quello di sempre: dare a ogni nodo una fila di qualche decina di
-numeri, fatta in modo che due nodi vicini nel grafo ricevano due file che si
-somigliano, numero per numero. Un vettore costruito con questa intenzione (i
-simili vicini fra loro) ha un nome che il capitolo sul linguaggio ha già usato
-per le parole: si chiama embedding. È sempre una fila di numeri, e «embedding»
-dice a che scopo è stata costruita. Lì l'idea era che a ogni parola
+L'obiettivo è quello di sempre, cioè dare a ogni nodo una fila di qualche
+decina di numeri, fatta in modo che due nodi vicini nel grafo ricevano due file
+che si somigliano, numero per numero. Un vettore costruito con questa intenzione
+(i simili vicini fra loro) ha un nome che il capitolo sul linguaggio ha già
+usato per le parole: si chiama **embedding**. È sempre una fila di numeri, e
+«embedding» dice a che scopo è stata costruita.
+
+Nel caso delle parole l'idea era che a ogni parola
 corrispondesse un punto, e che parole di significato simile finissero vicine; e
 «vicine» va preso alla lettera, come su una mappa, solo che le coordinate non
 sono due ma qualche decina.
 
-Il trucco per ottenerlo su un grafo è sorprendente: si riusa, quasi senza
-modifiche, la stessa ricetta con cui si imparavano gli embedding delle parole.
+Il trucco per ottenerlo su un grafo è sorprendente. Si riusa, quasi senza
+modifiche, la stessa procedura con cui si imparavano gli embedding delle parole.
 
 `````{tab} Elementare
 
 Una parola si conosce dalla compagnia che frequenta, cioè dalle parole che le
-compaiono accanto nelle frasi: è l'idea con cui si imparano gli embedding delle
-parole. Un grafo non ha frasi, ma possiamo fabbricarcele: partiamo da un
+compaiono accanto nelle frasi; è l'idea con cui si imparano gli embedding delle
+parole. Un grafo non ha frasi, ma possiamo fabbricarcele. Partiamo da un
 nodo e facciamo una passeggiata a caso, saltando ogni volta a un vicino scelto
 a sorte; annotiamo i nodi che tocchiamo, in ordine. Otteniamo una sequenza
 («nodo 3, nodo 1, nodo 2, nodo 3, nodo 4…») che possiamo trattare
@@ -325,11 +335,13 @@ una fila di numeri a caso; l'algoritmo scorre le passeggiate e, ogni volta che
 due nodi compaiono a pochi passi l'uno dall'altro, avvicina un poco le loro
 file, mentre allontana un poco quelle di qualche coppia pescata a sorte. Alla
 fine i nodi che capitano spesso vicini nelle passeggiate (cioè quelli ben
-connessi tra loro) hanno file simili. È l'idea di **DeepWalk**. Una variante di
-poco successiva, **node2vec**, aggiunge due manopole per decidere *che tipo* di
-passeggiata fare: più «esploratrice», che si allontana, oppure più «pigra», che
-gironzola attorno al punto di partenza; così si può scegliere se catturare
-comunità larghe o ruoli locali.
+connessi tra loro) hanno file simili. È l'idea di **DeepWalk**.
+
+Una variante di poco successiva, **node2vec**, aggiunge due iperparametri (due
+manopole da regolare) per decidere *che tipo* di passeggiata fare: più
+«esploratrice», che si allontana, oppure più «pigra», che gironzola attorno al
+punto di partenza; così si può scegliere se catturare comunità larghe o ruoli
+locali.
 
 `````
 
@@ -338,7 +350,7 @@ comunità larghe o ruoli locali.
 DeepWalk {cite}`perozzi2014deepwalk` genera, da ogni nodo, un certo numero
 di cammini casuali di lunghezza fissa: da $v$ si passa a un vicino scelto
 uniformemente, e si itera. Ogni cammino $(v_1, v_2, \dots, v_\ell)$ è trattato
-come una «frase» e dato a skip-gram: si massimizza la probabilità dei nodi
+come una «frase» e dato a skip-gram. Si massimizza la probabilità dei nodi
 del contesto (entro una finestra) dato il nodo centrale,
 
 $$
@@ -356,8 +368,8 @@ $$
 
 con due vettori per nodo, $\mathbf{z}_i$ quando il nodo sta al centro della
 finestra e $\mathbf{u}_i$ quando fa da contesto: $\theta$ raccoglie le due
-tabelle. Il denominatore costa $O(|V|)$ per ogni coppia, e in pratica lo si
-evita con la softmax gerarchica (la scelta di DeepWalk) o con il *negative
+tabelle. Il denominatore costa $O(|V|)$ per ogni coppia, per cui in pratica lo
+si evita con la softmax gerarchica (la scelta di DeepWalk) o con il *negative
 sampling*, che invece di normalizzare spinge in alto $\mathbf{u}_j^\top
 \mathbf{z}_i$ per le coppie osservate e in basso per $b$ coppie pescate a caso.
 Con il negative sampling, e nel limite di cammini infinitamente lunghi,
@@ -370,13 +382,14 @@ $$
 $$
 
 con il logaritmo preso elemento per elemento, $\mathbf{Z}$ e $\mathbf{U}$ le due
-tabelle (una riga per nodo) e $\mathrm{vol}(G) = \sum_{ij} A_{ij}$: le potenze
+tabelle (una riga per nodo) e $\mathrm{vol}(G) = \sum_{ij} A_{ij}$; le potenze
 della matrice di transizione $\mathbf{D}^{-1}\mathbf{A}$ fino alla larghezza
 della finestra, cioè una fattorizzazione di matrici sotto un altro nome.
+
 node2vec {cite}`grover2016node2vec` rende il cammino *distorto*
-(*biased*): due iperparametri $p$ e $q$ controllano la probabilità, a ogni
-passo, di tornare indietro, restare nei paraggi o allontanarsi. Regolando $p$
-e $q$ si interpola con continuità tra un'esplorazione «in ampiezza» (di tipo
+(*biased*), perché due iperparametri $p$ e $q$ controllano la probabilità, a
+ogni passo, di tornare indietro, restare nei paraggi o allontanarsi. Regolando
+$p$ e $q$ si interpola con continuità tra un'esplorazione «in ampiezza» (di tipo
 BFS, che tende a cogliere l’*equivalenza strutturale*, nodi con ruoli simili,
 per esempio due «hub») e una «in profondità» (di tipo DFS, che esplora regioni
 più ampie e coglie l’*omofilia*, nodi della stessa comunità). In entrambi i
@@ -386,23 +399,23 @@ come per le parole.
 `````
 
 Questi metodi funzionano, e restano un buon termine di paragone contro cui
-misurare quelli nuovi; hanno tre limiti, e sono i punti che le
+misurare quelli nuovi. Hanno però tre limiti, e sono i punti che le
 reti neurali su grafo verranno a risolvere.
 
-- Sono transduttivi: si impara un elenco, un nodo per riga con
-  accanto la sua fila di numeri, e ogni riga vale per quel nodo e per nessun
-  altro. Se arriva un nodo nuovo non ha nessuna riga, e bisogna riaddestrare:
-  non c'è modo di generalizzare a un grafo mai visto.
+- Sono transduttivi: si impara un elenco, un nodo per riga con accanto la sua
+  fila di numeri, e ogni riga vale per quel nodo e per nessun altro. Se arriva
+  un nodo nuovo non ha nessuna riga, e bisogna riaddestrare, perché non c'è
+  modo di generalizzare a un grafo mai visto.
 - Ignorano le caratteristiche dei nodi: guardano solo chi è connesso a chi,
-  buttando via la tabella $\mathbf{X}$. Due nodi con le stesse connessioni ma
-  contenuti diversissimi producono le stesse passeggiate, e il metodo non ha
-  modo di distinguerli.
+  buttando via la tabella $\mathbf{X}$. Ad esempio, due nodi con le stesse
+  connessioni ma contenuti diversissimi producono le stesse passeggiate, e il
+  metodo non ha modo di distinguerli.
 - Non condividono niente fra un nodo e l'altro: ogni nodo ha la sua fila di
-  numeri, imparata a parte, e non esiste una *procedura* riusabile che,
-  dati i collegamenti e le caratteristiche, calcoli la rappresentazione di un
-  nodo qualunque. Ogni fila vale solo per il suo nodo, mentre nelle
-  reti per immagini lo stesso filtro, imparato una volta, si riusa su tutta
-  l'immagine, e questa condivisione le rende potenti.
+  numeri, imparata a parte, e non esiste una *procedura* riusabile che, dati i
+  collegamenti e le caratteristiche, calcoli la rappresentazione di un nodo
+  qualunque. Ogni fila vale solo per il suo nodo; nelle reti per immagini,
+  invece, lo stesso filtro, imparato una volta, si riusa su tutta l'immagine, e
+  questa condivisione le rende potenti.
 
 ## Verso le reti neurali su grafo
 
@@ -426,7 +439,7 @@ strati, con la stessa procedura ovunque. Ogni nodo, a ogni strato, raccoglie
 messaggi da chi gli sta intorno e li fonde con ciò che già sa. È il message
 passing, il meccanismo che dà il nome e la sostanza alle *Graph Neural
 Network*, e ha una {doc}`sezione tutta per sé
-</GraphNeuralNetwork/message-passing>`. Prima però resta da scrivere per
+</GraphNeuralNetwork/message-passing>`. Prima, però, scriviamo per
 esteso, su un grafo vero e piccolo, le tabelle di cui si è parlato fin qui.
 
 ## Un esempio numerico: dalla figura alla matrice
@@ -443,7 +456,7 @@ i risultati.
 
 Gli archi di quel grafo sono 1–2, 1–3, 2–3, 3–4 e 4–5. È un grafo non diretto
 e non pesato, quindi la matrice di adiacenza $\mathbf{A}$ è fatta di soli 0 e 1
-ed è simmetrica: la casella della riga 2 e della colonna 3 è uguale a quella
+ed è simmetrica; la casella della riga 2 e della colonna 3 è uguale a quella
 della riga 3 e della colonna 2, perché un arco senza verso si legge nei due
 sensi. Riga per riga, mettiamo un 1 dove due nodi sono collegati:
 
@@ -459,11 +472,13 @@ $$
 $$
 
 Il grado di ogni nodo è la somma della sua riga: quante linee ne escono.
-Contando i vicini: il nodo 1 ne ha 2 (il 2 e il 3), il nodo 2 ne ha 2, il nodo
+Contando i vicini, il nodo 1 ne ha 2 (il 2 e il 3), il nodo 2 ne ha 2, il nodo
 3 ne ha 3 (l'unico «snodo», evidenziato in figura), il nodo 4 ne ha 2, il nodo
 5 ne ha 1 (solo il 4). Quindi i gradi sono $(2, 2, 3, 2, 1)$, e la loro somma
-vale $2+2+3+2+1 = 10$: esattamente il doppio dei 5 archi, come dev'essere (ogni
-arco conta per i due nodi che collega). La matrice dei gradi $\mathbf{D}$ è
+vale $2+2+3+2+1 = 10$, cioè esattamente il doppio dei 5 archi, come dev'essere,
+perché ogni arco conta per i due nodi che collega.
+
+La matrice dei gradi $\mathbf{D}$ è
 diagonale, cioè ha numeri diversi da zero soltanto sulla diagonale che scende
 dall'angolo in alto a sinistra, e porta lì questi valori:
 
@@ -478,11 +493,13 @@ $$
 \end{pmatrix}.
 $$
 
-Il message passing userà di continuo un'ultima operazione:
-aggiungere a ogni nodo un arco che lo collega a sé stesso, cioè dichiarare ogni
-nodo vicino di sé. Un arco fatto così si chiama **cappio** (*self-loop*), e
-serve a far sì che, quando un nodo «ascolta» i vicini, non dimentichi sé
-stesso. In tabella significa mettere degli 1 sulla diagonale, cioè sommare la
+Il message passing userà di continuo un'ultima operazione, che consiste
+nell'aggiungere a ogni nodo un arco che lo collega a sé stesso, cioè dichiarare
+ogni nodo vicino di sé. Un arco fatto così si chiama **cappio** (*self-loop*),
+e serve a far sì che, quando un nodo «ascolta» i vicini, non dimentichi sé
+stesso.
+
+In tabella significa mettere degli 1 sulla diagonale, cioè sommare la
 tabella che ha 1 lungo la diagonale e 0 in tutte le altre caselle: quella
 tabella si chiama **matrice identità** e si indica con $\mathbf{I}$.
 
@@ -501,10 +518,10 @@ dove $\tilde{\mathbf{A}}$, la $\mathbf{A}$ con l'ondina sopra, è l'adiacenza
 «con i cappi». Ogni nodo guadagna così un vicino in più (sé stesso) e i gradi
 salgono tutti di uno: da $(2,2,3,2,1)$ a $(3,3,4,3,2)$.
 
-Resta da mostrare la proprietà promessa, la più importante di
+A questo punto resta da mostrare la proprietà promessa, la più importante di
 tutte. Torniamo a $\mathbf{A}$ e scambiamo i nomi di due nodi: chiamiamo «1»
-il nodo che finora chiamavamo «3», e viceversa. Il grafo è lo stesso, gli archi
-sono gli stessi cinque; ma la tabella diventa
+il nodo che finora chiamavamo «3», e viceversa. Il grafo è lo stesso e gli archi
+sono gli stessi cinque, ma la tabella diventa
 
 $$
 \mathbf{A}' =
@@ -518,25 +535,25 @@ $$
 $$
 
 che è un disegno di numeri completamente diverso dal primo. I gradi sono
-$(3,2,2,2,1)$: gli stessi cinque numeri di prima, in un altro ordine, come
-dev'essere, perché a cambiare sono stati i loro nomi, non i nodi. Ecco il
-problema in una tabella: due fogli con numeri diversi, e dietro un unico grafo.
-Una rete che legga il foglio riga per riga vede due cose diverse; e nessuno le
-ha detto che non lo sono.
+$(3,2,2,2,1)$: sono gli stessi cinque numeri di prima, in un altro
+ordine, come dev'essere, perché a cambiare sono stati i loro nomi, non i nodi.
+Ecco il problema in una tabella: due fogli con numeri diversi, e dietro un unico
+grafo. Una rete che legga il foglio riga per riga vede due
+cose diverse, e nessuno le ha detto che non lo sono.
 
 `````{tab} Elementare
 
 La tabella quadrata è il grafo scritto: nella casella dove la riga del nodo 2
 incrocia la colonna del nodo 3 c'è un $1$ se i due sono collegati e uno $0$ se
-non lo sono. Il grado di un nodo, cioè quanti vicini ha, non va calcolato:
+non lo sono. Il grado di un nodo, cioè quanti vicini ha, non va calcolato;
 si legge, contando gli $1$ nella sua riga.
 
 Aggiungere «i cappi» è mettere un $1$ anche là dove una riga incrocia
 la propria colonna, cioè dichiarare ogni nodo vicino di sé stesso: un vicino in
 più a testa, ed ecco perché i gradi salgono tutti di uno.
 
-Quei gradi servono subito. Quando ogni nodo ascolterà i suoi vicini, il modo
-più semplice di mettere insieme le voci è sommarle; ma il nodo 3, che
+Questi gradi serviranno subito. Quando ogni nodo ascolterà i suoi vicini, il
+modo più semplice di mettere insieme le voci è sommarle; ma il nodo 3, che
 contando sé stesso ascolta quattro voci, raccoglierebbe il doppio del nodo 5,
 che ne ascolta due, per il solo fatto di avere più conoscenze. È la riunione in
 cui chi arriva con venti amici sovrasta chi ne porta due. Il rimedio è
@@ -544,7 +561,7 @@ abbassare ogni voce secondo i gradi dei due nodi che l'arco collega, quello di
 chi parla e quello di chi ascolta; quanto, di preciso, lo dice la sezione sul
 message passing, coi numeri.
 
-Una proprietà conta più di tutte: se ai nodi si cambiano i
+Una proprietà conta più di tutte. Se ai nodi si cambiano i
 nomi, la tabella cambia da cima a fondo e il grafo no.
 
 `````

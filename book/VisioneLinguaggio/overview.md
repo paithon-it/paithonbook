@@ -83,18 +83,18 @@ di essere separate.
 La prima delle due decisioni, dare all'immagine delle unità, ha una risposta
 condivisa da quasi tutti i sistemi attuali: il Vision Transformer
 {cite}`dosovitskiy2021image`, descritto nella {doc}`sezione sulle famiglie di
-modelli </Transformers/multimodalita>`. L'immagine si divide in quadrati di
-lato fisso, le tessere (in inglese *patch*; i due termini sono sinonimi);
-ogni tessera diventa un vettore per proiezione lineare, e a ogni vettore si
-somma una codifica di posizione, che registra il posto della tessera nella
-griglia.
+modelli </Transformers/multimodalita>`. In concreto, l'immagine si divide in
+quadrati di lato fisso, le **tessere** (in inglese *patch*; i due termini sono
+sinonimi); ogni tessera diventa un vettore per proiezione lineare, e a ogni
+vettore si somma una codifica posizionale, che registra il posto della
+tessera nella griglia.
 
 ```{figure} ../figures/vit-2020.svg
 :name: fig-vit-patch-token
 :alt: "Un'immagine viene divisa in una griglia di patch quadrate; ogni patch viene appiattita e proiettata in un vettore, a cui si somma una codifica di posizione che ne registra il posto nella griglia; la sequenza risultante entra in un encoder Transformer come se fosse una frase."
 :width: 100%
 
-La codifica di posizione conserva il posto di ogni tessera nella griglia:
+La codifica posizionale conserva il posto di ogni tessera nella griglia:
 senza, la sequenza sarebbe un mucchio di tessere e l'immagine non avrebbe più
 un sopra e un sotto. Il token in testa alla fila, `CLS` (il token di classe),
 non viene da nessuna tessera e raccoglie il riassunto dell'immagine intera.
@@ -118,12 +118,12 @@ posto nel mosaico, altrimenti la rete non saprebbe quale tessera confina con
 quale. Nessuno dice alla rete che due tessere vicine vanno insieme: lo impara
 guardando foto a milioni.
 
-Il costo non cresce in proporzione al numero di tessere. Per capire ogni
-tessera il modello la confronta con tutte le altre: con 196 tessere i confronti
-sono $196 \times 196$, poco meno di quarantamila. Adesso raddoppiamo il lato
-della foto, da 224 a 448 puntini: le tessere diventano quattro volte tante
-($448 : 16 = 28$ per riga, cioè $28 \times 28 = 784$), e i confronti, che sono
-tessere per tessere, sedici volte tanti.
+Il costo non cresce in proporzione al numero di tessere. Infatti, per capire
+ogni tessera il modello la confronta con tutte le altre: con 196 tessere i
+confronti sono $196 \times 196$, poco meno di quarantamila. Adesso
+raddoppiamo il lato della foto, da 224 a 448 puntini: le tessere diventano
+quattro volte tante ($448 : 16 = 28$ per riga, cioè $28 \times 28 = 784$), e i
+confronti, che sono tessere per tessere, sedici volte tanti.
 
 I confronti però sono solo una parte del lavoro. Il resto, cioè il lavoro che
 il modello svolge su ogni tessera, cresce quanto le tessere: quattro volte, non
@@ -147,21 +147,21 @@ le righe. Le distribuzioni delle due specie di righe restano però diverse, e
 per questo, quando si innesta un encoder visivo su un modello di linguaggio,
 servirà un connettore.
 
-Ne seguono due conseguenze. La prima: il ViT ha meno bias induttivo di una
-CNN, perché località ed equivarianza alla traslazione restano soltanto negli
-strati feed-forward, applicati patch per patch, e nel taglio iniziale, mentre
+Ne seguono due conseguenze. La prima: il ViT ha meno bias induttivo di una CNN,
+perché località ed equivarianza alla traslazione restano soltanto negli strati
+feed-forward, applicati patch per patch, e nel taglio iniziale, mentre
 l'auto-attenzione è globale; la struttura bidimensionale rientra solo quando
 gli embedding di posizione si interpolano per una risoluzione diversa
-{cite}`dosovitskiy2021image`. Con pochi dati un ViT è quindi meno efficace di una
-rete convoluzionale, e il suo vantaggio compare con pre-addestramenti molto
+{cite}`dosovitskiy2021image`. Con pochi dati un ViT è quindi meno efficace di
+una rete convoluzionale, e il suo vantaggio compare con pre-addestramenti molto
 grandi (da 14 a 300 milioni di immagini nel lavoro originale). La seconda: il
 costo dell'attenzione, $O(N^2 d)$, dipende dal quadrato del numero di patch, e
 raddoppiare il lato dell'immagine quadruplica $N$ e moltiplica per sedici quel
 termine. Il resto del blocco (proiezioni e feed-forward) costa $O(N d^2)$,
 lineare in $N$; contando i FLOP, circa $4N^2 d$ contro $24 N d^2$, il termine
 quadratico supera il lineare solo per $N > 6d$, cioè oltre $4608$ patch per un
-encoder con $d = 768$. A $196$ patch l'attenzione vale circa il $4\%$ del
-blocco.
+encoder con $d = 768$. Ad esempio, a $196$ patch l'attenzione vale circa il
+$4\%$ del blocco.
 
 `````
 
@@ -181,7 +181,7 @@ imparano a mandare una foto e la sua didascalia in due punti vicini di uno
 stesso spazio di embedding, e a tenere lontane le coppie che non si
 corrispondono. È l'idea di CLIP {cite}`radford2021learning`, addestrato su 400
 milioni di coppie di immagine e testo raccolte dal web: il modello che ne esce
-non scrive una riga e misura quanto un'immagine e un testo si somigliano. Che
+non scrive una riga, ma misura quanto un'immagine e un testo si somigliano. Che
 cosa voglia dire «vicini» è meno ovvio di quel che sembra: la {doc}`sezione
 sull'allineamento </VisioneLinguaggio/allineare-due-spazi>` mostra che una foto
 è più vicina a un'altra foto che alla propria didascalia (il *modality gap*), e
@@ -190,11 +190,11 @@ confrontabili.
 
 La seconda innesta un occhio su un modello di linguaggio già addestrato, come
 si innesta un ramo su un ceppo che ha già le radici: fra un encoder visivo e il
-modello di linguaggio si mette un connettore, una funzione appresa che porta le
-feature delle patch nello spazio degli embedding del modello di linguaggio,
-dove vengono lette come token. Di norma l'encoder e il modello di linguaggio
-restano congelati e si addestra il connettore; in LLaVA, in una seconda fase,
-si riaddestra anche il modello di linguaggio.
+modello di linguaggio si mette un **connettore**, una funzione appresa che
+porta le feature delle patch nello spazio degli embedding del modello di
+linguaggio, dove vengono lette come token. Di norma l'encoder e il modello di
+linguaggio restano congelati e si addestra il connettore; in LLaVA, in una
+seconda fase, si riaddestra anche il modello di linguaggio.
 
 La terza rinuncia alla distinzione: un solo Transformer elabora tessere e
 parole fin dall'ingresso, con gli stessi pesi. Nella versione più radicale
@@ -266,7 +266,7 @@ scartata dalla quantizzazione; l'immagine può anche restare continua, come
 nella variante che genera per diffusione. In entrambi i casi il
 pre-addestramento è molto più lungo che per un connettore.
 
-Il confine fra le ultime due è meno netto di quanto la tripartizione
+Si noti che il confine fra le ultime due è meno netto di quanto la tripartizione
 suggerisca, e i sistemi reali sono spesso ibridi. Chi lavora sui modelli a
 token, poi, ne conta due sole, e chiama tardiva anche la via intermedia, perché
 come la prima tiene un encoder per modalità: è il taglio che userà la
@@ -422,7 +422,7 @@ sistema ha guardato l'immagine.
   ridotta a token di un unico vocabolario. Non si superano a vicenda: la prima
   cerca, la seconda conversa, la terza produce.
 - L'obiettivo di addestramento non obbliga il modello a guardare: quando il
-  priore linguistico (la statistica delle didascalie, appresa prima e
+  prior linguistico (la statistica delle didascalie, appresa prima e
   indipendentemente dall'immagine) basta a indovinare la didascalia, il modello
   può rispondere senza usare l'immagine. È una delle cause dell'allucinazione
   visiva, ed è un effetto dell'obiettivo, non di un caso sfortunato.

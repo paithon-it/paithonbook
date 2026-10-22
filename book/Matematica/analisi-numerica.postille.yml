@@ -1,0 +1,14 @@
+# Le postille di questa pagina, una per capoverso del testo comune.
+# Ognuna vale finché la sua impronta combacia col testo del capoverso.
+- inizio: "I punteggi grezzi che escono dagli"
+  impronta: "143eddca3703"
+  postilla: "Softmax a 32 bit: overflow sopra 88,7, evitato da una riscrittura esatta"
+- inizio: "La discesa del gradiente su una"
+  impronta: "e724244b2282"
+  postilla: "Convessa e liscia, passo piccolo: restano vicine; in una rete possono separarsi"
+- inizio: "Ne seguono tre abitudini. Un numero"
+  impronta: "65d41d441879"
+  postilla: "Cifre affidabili, confronti con tolleranza, un residuo non letto come risultato"
+- inizio: "Il **condizionamento** misura quanto un problema"
+  impronta: "087da147ac4a"
+  postilla: "Condizionamento: del problema; l'overflow della softmax è dell'algoritmo"

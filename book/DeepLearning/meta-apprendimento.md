@@ -2,30 +2,31 @@
 
 Di esempi ce ne sono dieci, e il compito è nuovo. Che cosa si fa?
 
-La risposta ovvia, dare una ripassata sui dieci esempi a una rete già
-addestrata su tutti i compiti conosciuti, funziona quando i compiti si
-somigliano molto e male quando la famiglia di compiti è varia, per una ragione
-controintuitiva: una rete addestrata su tutti i compiti insieme impara la loro
-media, e la media di una famiglia varia può non somigliare a nessuno dei suoi
-membri.
+La risposta ovvia è dare una ripassata sui dieci esempi a una rete già
+addestrata su tutti i compiti conosciuti. Questa strada funziona quando i
+compiti si somigliano molto, e funziona male quando la famiglia di compiti è
+varia, per una ragione controintuitiva: una rete addestrata su tutti i compiti
+insieme impara la loro media, e la media di una famiglia varia può non
+somigliare a nessuno dei suoi membri.
 
-Un'altra strada è il **meta-apprendimento**, cioè apprendimento
+Un'altra strada è il **meta-apprendimento**, cioè l'apprendimento
 sull'apprendimento. Invece di addestrare una rete a risolvere i compiti, la si
 addestra su una famiglia di compiti perché il compito successivo si impari in
-fretta. Si può farlo scegliendo il punto di partenza da cui bastano pochi passi
-di aggiustamento, o lo spazio in cui basta confrontare un esempio nuovo con i
-pochi a disposizione. I grandi modelli di linguaggio ne mostrano un terzo modo,
-imparare dal solo contesto della richiesta, che è materia della {doc}`sezione
-sui grandi modelli di linguaggio </Transformers/llm>`. Dei primi due, qui, si
-vede un algoritmo ciascuno: MAML e le reti prototipiche.
+fretta. Lo si può fare scegliendo il punto di partenza da cui bastano pochi
+passi di aggiustamento, oppure lo spazio in cui basta confrontare un esempio
+nuovo con i pochi a disposizione. I grandi modelli di linguaggio ne mostrano un
+terzo modo, imparare dal solo contesto della richiesta, di cui si occupa la
+{doc}`sezione sui grandi modelli di linguaggio </Transformers/llm>`. Dei
+primi due vediamo un algoritmo ciascuno, MAML e le reti prototipiche.
 
 ## La posizione di partenza, invece della risposta
 
 L'algoritmo che ha dato forma canonica a questa idea è **MAML** (da
 *Model-Agnostic Meta-Learning*, meta-apprendimento che non dipende dal
 modello). Il suo principio è nella scelta di che cosa misurare: la prestazione
-dopo l'adattamento. Richiede un calcolo in più, perché per correggere il punto
-di partenza bisogna seguire anche l'effetto dei passi di adattamento.
+dopo l'adattamento. Questa scelta richiede un calcolo in più, perché per
+correggere il punto di partenza bisogna seguire anche l'effetto dei passi di
+adattamento.
 
 `````{tab} Elementare
 
@@ -49,7 +50,7 @@ quei cinque minuti ma la posizione di partenza da cui li si era cominciati.
 Per questo l'altra strada fallisce sulle famiglie varie. Chi si esercita sempre
 e solo a suonare bene i tre strumenti che ha, senza mai provare a ripartire da
 zero su un quarto, finisce per aggiustarsi addosso una posizione buona per quei
-tre e per nient'altro: comoda, e ferma. Da lì i cinque minuti non bastano.
+tre e per nient'altro, comoda e ferma. Da lì i cinque minuti non bastano.
 
 In un caso va anche peggio, e l'esperimento sulle onde lo mostra in numeri.
 Quella posizione comoda è un compromesso, tenuto in piedi da tanti piccoli
@@ -62,11 +63,12 @@ correzioni decise in cinque minuti si avvicina.
 
 C'è però un confine netto: tutto questo vale finché il quarto strumento è
 ancora un arco. Metti in mano a quella persona una tromba, e la posizione delle
-mani non serve a niente: nel migliore dei casi è neutra, nel peggiore ha
-abitudini da disimparare, e cinque minuti diventano sei mesi. Una posizione di
-partenza è buona per una famiglia, e chi allena decide quale sia: è lui che
-sceglie da quale mucchio pescare gli strumenti dell'allenamento, e quel mucchio
-è la promessa che sta facendo.
+mani non serve a niente. Nel migliore dei casi è neutra, nel peggiore ha
+abitudini da disimparare, e cinque minuti diventano sei mesi.
+
+Una posizione di partenza, quindi, è buona per una famiglia, e chi allena
+decide quale sia: è lui che sceglie da quale mucchio pescare gli strumenti
+dell'allenamento, e quel mucchio è la promessa che sta facendo.
 
 `````
 
@@ -77,10 +79,11 @@ applica a qualunque modello addestrato per discesa del gradiente, e infatti gli
 autori lo provano su regressione, classificazione e apprendimento per
 rinforzo.
 
-Si parte da una **distribuzione di compiti** $p(\mathcal{T})$: non un compito,
-una famiglia da cui si sorteggia. L'ottimizzazione è a due livelli.
+Consideriamo una **distribuzione di compiti** $p(\mathcal{T})$: non un compito
+solo, ma una famiglia da cui i compiti si estraggono a caso.
+L'ottimizzazione è a due livelli.
 
-Il **ciclo interno** simula l'adattamento. Sorteggiato un compito
+Il **ciclo interno** simula l'adattamento. Estratto a caso un compito
 $\mathcal{T}_i$ e presi $k$ suoi esempi, si fanno uno o pochi passi di discesa
 a partire dai parametri correnti $\theta$:
 
@@ -89,8 +92,8 @@ $$
 $$
 
 dove $\alpha$ è il passo interno e $\mathcal{L}^{\text{s}}_{\mathcal{T}_i}$ la
-perdita sui $k$ esempi con cui ci si adatta. Il **ciclo esterno** aggiorna $\theta$
-guardando quanto valgono i parametri adattati, e non $\theta$ stesso:
+perdita sui $k$ esempi con cui ci si adatta. Il **ciclo esterno** aggiorna
+$\theta$ guardando quanto valgono i parametri adattati, e non $\theta$ stesso:
 
 $$
 \theta \leftarrow \theta - \beta \nabla_\theta
@@ -99,11 +102,13 @@ $$
 $$
 
 con $\beta$ il passo esterno e $\mathcal{L}^{\text{q}}_{\mathcal{T}_i}$ la
-perdita su esempi nuovi dello stesso compito: si calcola il
-gradiente rispetto a $\theta$ di una perdita valutata in $\theta_i'$, che di
-$\theta$ è funzione. Derivare attraverso il passo di adattamento chiama in
-causa le derivate seconde, il costo principale dell'algoritmo. Per un passo interno
-la regola della catena dà
+perdita su esempi nuovi dello stesso compito. Si calcola quindi il gradiente
+rispetto a $\theta$ di una perdita valutata in $\theta_i'$, che di $\theta$ è
+funzione.
+
+Derivare attraverso il passo di adattamento chiama in causa le derivate
+seconde, che sono il costo principale dell'algoritmo. Per un passo interno,
+infatti, la regola della catena dà
 
 $$
 \nabla_\theta\,\mathcal{L}^{\text{q}}_{\mathcal{T}_i}(\theta_i') = \big(\mathbf{I} - \alpha\,\nabla^2_\theta \mathcal{L}^{\text{s}}_{\mathcal{T}_i}(\theta)\big)\,\nabla_{\theta'}\mathcal{L}^{\text{q}}_{\mathcal{T}_i}(\theta')\big|_{\theta' = \theta_i'},
@@ -111,34 +116,42 @@ $$
 
 dove $\nabla^2_\theta$ è l'hessiana della perdita interna, quella di
 adattamento, mentre il gradiente a destra è della perdita esterna. L'hessiana
-non si forma mai, basta il suo prodotto per un vettore, che costa un secondo
-passaggio all'indietro; ma per derivare attraverso $m$ passi interni bisogna
-tenere in memoria il grafo di tutti e $m$, e la memoria cresce linearmente con
-$m$. La versione del primo ordine, già provata nel lavoro originale, scarta il
+non si forma mai, perché basta il suo prodotto per un vettore, che costa un
+secondo passaggio all'indietro. Per derivare attraverso $m$ passi interni,
+però, bisogna tenere in memoria il grafo di tutti e $m$, e la memoria cresce
+linearmente con $m$.
+
+La versione del primo ordine, già provata nel lavoro originale, scarta il
 termine con l'hessiana e usa
 $\nabla_{\theta'}\mathcal{L}^{\text{q}}_{\mathcal{T}_i}(\theta_i')$ come se
-$\theta_i'$ non dipendesse da $\theta$: sulle immagini gli autori la trovano
-quasi equivalente e più veloce. Reptile {cite}`nichol2018first` rinuncia anche
-a quel gradiente: fa $m > 1$ passi interni e sposta $\theta$ verso i parametri
-risultanti, $\theta \leftarrow \theta + \beta\,(\theta_i^{(m)} - \theta)$. Il
-numero di passi conta: con uno solo l'aggiornamento diventa $\theta -
-\alpha\beta\,\nabla_\theta\mathcal{L}_{\mathcal{T}_i}(\theta)$, la discesa del
-gradiente sulla perdita media dei compiti, e sono i passi successivi a
-introdurre i termini che premiano l'adattamento. Le due perdite, infine, non si
-calcolano sugli stessi esempi: quella del ciclo interno sull'insieme di
-supporto, quella del ciclo esterno sull'insieme di interrogazione. L'obiettivo
-risultante si legge «$\theta$ è un punto da cui pochi passi bastano», e non
-«$\theta$ è bravo sui compiti visti»: sono due proprietà diverse, e la prima si
-ottiene solo scrivendola nella funzione obiettivo. La promessa riguarda pochi
-passi di quella lunghezza: $\theta$ è ottimizzato per il passo $\alpha$ del
-ciclo interno, e vale per quello. Nel confronto dell'articolo, infatti, la rete
-addestrata su tutti i compiti si adatta con un passo tarato apposta, non con
-quello di MAML {cite}`finn2017maml`.
+$\theta_i'$ non dipendesse da $\theta$; sulle immagini gli autori la trovano
+quasi equivalente e più veloce.
 
-La valutazione ha una forma sua, **$N$-way $k$-shot**: si costruisce un compito
-con $N$ classi e $k$ esempi per classe, si dà al modello l’**insieme di
+Reptile {cite}`nichol2018first` rinuncia anche a quel gradiente: fa $m > 1$
+passi interni e sposta $\theta$ verso i parametri risultanti,
+$\theta \leftarrow \theta + \beta\,(\theta_i^{(m)} - \theta)$. Il numero di
+passi conta: con uno solo l'aggiornamento diventa
+$\theta - \alpha\beta\,\nabla_\theta\mathcal{L}_{\mathcal{T}_i}(\theta)$,
+la discesa del gradiente sulla perdita media dei compiti, e sono i passi
+successivi a introdurre i termini che premiano l'adattamento.
+
+Si noti, infine, che le due perdite non si calcolano sugli stessi esempi:
+quella del ciclo interno sull'insieme di supporto, quella del ciclo esterno
+sull'insieme di interrogazione.
+
+L'obiettivo risultante si legge «$\theta$ è un punto da cui pochi passi
+bastano», e non «$\theta$ è bravo sui compiti visti». Sono due proprietà
+diverse, e la prima si ottiene solo scrivendola nella funzione obiettivo. La
+promessa, però, riguarda pochi passi di quella lunghezza, perché $\theta$ è
+ottimizzato per il passo $\alpha$ del ciclo interno, e vale per quello. Nel
+confronto dell'articolo, infatti, la rete addestrata su tutti i compiti si
+adatta con un passo calibrato apposta, non con quello di MAML
+{cite}`finn2017maml`.
+
+La valutazione ha un formato suo, detto **$N$-way $k$-shot**. Si costruisce un
+compito con $N$ classi e $k$ esempi per classe, si dà al modello l’**insieme di
 supporto** (i $N \cdot k$ esempi su cui adattarsi) e lo si interroga
-sull’**insieme di interrogazione**. Si misura la prestazione
+sull’**insieme di interrogazione**. In questo modo si misura la prestazione
 dopo l'adattamento, che è una grandezza diversa dalla prestazione del
 modello, e per questo la generalizzazione ordinaria fra addestramento e prova
 non basta a descriverla.
@@ -147,26 +160,26 @@ Il punto di rottura è nella parola *distribuzione*. Tutto il metodo poggia
 sull'ipotesi che il compito di prova venga da $p(\mathcal{T})$; su un compito
 fuori distribuzione l'inizializzazione non ha nessuna ragione di essere
 migliore di una casuale, e può essere peggiore, perché codifica regolarità che
-là non valgono. Definire la famiglia è parte del progetto, non un dettaglio
-dell'esperimento.
+là non valgono. Per questo motivo definire la famiglia è parte del progetto, e
+non un dettaglio dell'esperimento.
 
-La famiglia su cui il metodo fu presentato, e quella su cui gira il codice
-dell'esperimento sulle onde, è
+La famiglia su cui il metodo fu presentato, che è anche quella usata dal
+codice dell'esperimento sulle onde, è
 $p(\mathcal{T}) = \{\,x \mapsto A\sin(x + \varphi)\,\}$ con
 $A \sim \mathcal{U}[0{,}1,\,5]$ e $\varphi \sim \mathcal{U}[0,\pi)$. La sua
-media si calcola in forma chiusa, e spiega in anticipo il termine di paragone:
-$\mathbb{E}_\varphi[\sin(x+\varphi)] = \frac{2}{\pi}\cos x$, quindi
+media si calcola in forma chiusa e spiega in anticipo il termine di paragone.
+Poiché $\mathbb{E}_\varphi[\sin(x+\varphi)] = \frac{2}{\pi}\cos x$, si ha
 
 $$
 \mathbb{E}_{\mathcal{T}}\big[f_{\mathcal{T}}(x)\big]
 = \mathbb{E}[A]\cdot\frac{2}{\pi}\cos x \approx 1{,}62\cos x ,
 $$
 
-una cosinusoide sola, di ampiezza ridotta. Della famiglia è un membro anche
-lei ($A = 1{,}62$, $\varphi = \pi/2$, tutti e due dentro il loro intervallo), ma
-uno solo, e non predice nessuno degli altri: una rete addestrata
-congiuntamente su $p(\mathcal{T})$ converge lì, e da lì tutte le altre onde
-sono lontane.
+cioè una cosinusoide sola, di ampiezza ridotta. Anche questa cosinusoide è un
+membro della famiglia ($A = 1{,}62$, $\varphi = \pi/2$, tutti e due dentro il
+loro intervallo), ma è un membro solo, e non predice nessuno degli altri. Una
+rete addestrata congiuntamente su $p(\mathcal{T})$ converge lì, e da lì tutte
+le altre onde sono lontane.
 
 `````
 
@@ -175,25 +188,24 @@ sono lontane.
 L'esperimento con cui questa idea fu presentata usa la famiglia più semplice
 che si possa disegnare: le onde, o *sinusoidi*, cioè le curve che salgono e
 scendono regolarmente, tutte della stessa forma ma ciascuna con altezza e punto
-di partenza propri. Sono un buon banco di prova perché si
-somigliano (sono tutte onde) e sono diverse (una è alta e comincia in cima,
-un'altra è bassa e comincia in fondo). Il compito è indovinare *quale* onda,
-avendone visti dieci punti.
+di partenza propri. Sono un buon banco di prova perché si somigliano (sono
+tutte onde) e allo stesso tempo sono diverse (una è alta e comincia in cima,
+un'altra è bassa e comincia in fondo). Il compito è
+indovinare *quale* onda, avendone visti dieci punti.
 
-La famiglia serve anche a far vedere in anticipo che cosa impara la rete
-allenata su tutte le onde insieme, che sarà il termine di paragone, perché la
-sua media si calcola. Sommando tutte le onde della famiglia e dividendo, resta
-un'onda sola, più bassa delle altre e sempre la stessa, che sta più o meno a
-metà strada fra tutte, e nessuna delle altre le somiglia. Chi si allena su
+Poiché la media della famiglia si calcola, si può anche vedere in anticipo che
+cosa impara la rete allenata su tutte le onde insieme, che farà da termine di
+paragone. Sommando tutte le onde della famiglia e dividendo, resta un'onda
+sola, più bassa delle altre e sempre la stessa, che sta più o meno a metà
+strada fra tutte, e nessuna delle altre le somiglia. La rete allenata su
 tutte le onde insieme converge lì.
 
-Si confrontano tre punti di partenza, dando a tutti e tre lo stesso
-adattamento, cioè cinque passi di aggiustamento sui dieci punti: una rete presa
-a caso, una allenata su tutte le onde insieme, e una meta-addestrata. Dare a
-tutti e tre lo stesso adattamento è il confronto che interessa,
-perché la domanda è da quale partenza quei passi lì funzionano. Alla rete
-allenata su tutte si dà poi una seconda possibilità, con passi più corti,
-perché il passo giusto per una partenza non è detto che lo sia per l'altra.
+Confrontiamo tre punti di partenza: una rete presa a caso, una allenata su
+tutte le onde insieme e una meta-addestrata. A tutti e tre diamo lo stesso
+adattamento, cioè cinque passi di aggiustamento sui dieci punti, perché la
+domanda è da quale partenza quei passi funzionano. Alla rete allenata su tutte
+diamo poi una seconda possibilità, con passi più corti, dato che il passo
+giusto per una partenza non è detto che lo sia per l'altra.
 
 ```python
 import torch
@@ -309,61 +321,66 @@ e' la media della famiglia: un'onda sola, di ampiezza ridotta
 ```
 
 I numeri sono errori: più sono bassi, meglio la curva prevista ricalca l'onda
-vera. La colonna da guardare per prima è quella di sinistra, la sorpresa del
-confronto. Senza adattamento la rete meta-addestrata ($1{,}60$) e quella
-allenata su tutte le onde ($1{,}88$) hanno errori vicini, e nessuna delle due è
-una buona previsione: sono due curve che non seguono nessuna onda in
-particolare, e infatti la seconda oscilla fra $-1{,}61$ e $1{,}75$, cioè attorno
-alla curva media della famiglia. Il meta-addestramento non ha prodotto un
-modello molto migliore.
+vera. La colonna da guardare per prima è quella di sinistra, che contiene la
+sorpresa del confronto. Senza adattamento la rete meta-addestrata ($1{,}60$) e
+quella allenata su tutte le onde ($1{,}88$) hanno errori vicini, e nessuna
+delle due è una buona previsione, perché sono due curve che non seguono nessuna
+onda in particolare; la seconda, infatti, oscilla fra $-1{,}61$ e $1{,}75$,
+cioè attorno alla curva media della famiglia. In altri termini, il
+meta-addestramento non ha prodotto un modello molto migliore.
 
-Cinque passi di aggiustamento sui
-dieci punti, di lunghezza $\alpha = 0{,}01$, portano la rete meta-addestrata da
-$1{,}60$ a $0{,}34$, e la migliorano in novantasette onde su cento. Portano
+Cinque passi di aggiustamento sui dieci punti, di lunghezza
+$\alpha = 0{,}01$, portano la rete meta-addestrata da $1{,}60$ a $0{,}34$, e la
+migliorano in novantasette onde su cento. Gli stessi passi portano invece
 quella allenata su tutte da $1{,}88$ a $3{,}45$, e la migliorano in trenta: da
 quella partenza, passi di quella lunghezza fanno danno. La curva media è un
 posto comodo dove stare fermi, e cinque passi decisi lanciati verso un'onda
-precisa la portano fuori di lì senza arrivare da nessuna parte. Con passi più
-corti, $\alpha = 0{,}001$, la rete allenata su tutte migliora anche lei, in
-novantanove onde su cento, ma solo da $1{,}88$ a $1{,}18$: il suo errore resta
-più di tre volte quello della rete meta-addestrata, che è stata costruita
-per far funzionare i passi lunghi.
+precisa la portano fuori di lì senza arrivare da nessuna parte.
 
-L'ottimizzazione del meta-addestramento non si vede guardando la rete ferma, ma
-solo guardando che cosa le succede quando impara, che è appunto la grandezza
-messa nella funzione obiettivo.
+Con passi più corti, $\alpha = 0{,}001$, la rete allenata su tutte migliora
+anche lei, in novantanove onde su cento, ma solo da $1{,}88$ a $1{,}18$. Il suo
+errore resta quindi più di tre volte quello della rete meta-addestrata, che è
+stata costruita per far funzionare i passi lunghi.
+
+In definitiva, ciò che il meta-addestramento ottimizza non si vede guardando
+la rete ferma, ma solo guardando che cosa le succede quando impara, che è
+appunto la grandezza messa nella funzione obiettivo.
 
 La tabella riporta mediane, e non medie, perché con passi di dimensione fissa
-capita che su qualche onda i cinque passi non convergano affatto: basta uno di
-quei casi a dominare la media di cento numeri. La riga della rete presa a caso
-sembra contraddirsi: migliora in cinquantanove casi su cento, ma la mediana
-dopo i cinque passi ($4{,}87$) è peggiore di quella di partenza ($4{,}14$).
-Le due colonne sono mediane calcolate su insiemi diversi di cento numeri, non
-la mediana delle differenze, e da una partenza casuale i miglioramenti sono
-piccoli mentre i pochi peggioramenti sono enormi.
+capita che su qualche onda i cinque passi non convergano affatto, e basta uno
+di quei casi a dominare la media di cento numeri.
 
-Il risultato dell'intero esperimento, però, dipende dal
-seme del meta-addestramento. Cambiando il `manual_seed(1)` da cui parte, la
-forma del confronto resta (con passi lunghi la rete meta-addestrata migliora e
-quella allenata su tutte peggiora), la misura no: su qualche seme, con queste
-iterazioni, il meta-addestramento riesce solo a metà, e la rete meta-addestrata
-si ferma molto più in alto di $0{,}34$, fino a finire sopra la rete allenata su
-tutte adattata a passi corti.
+La riga della rete presa a caso sembra contraddirsi: migliora in cinquantanove
+casi su cento, ma la mediana dopo i cinque passi ($4{,}87$) è peggiore di
+quella di partenza ($4{,}14$). La contraddizione è solo apparente, perché le due
+colonne sono mediane calcolate su insiemi diversi di cento numeri, e non la
+mediana delle differenze; da una partenza casuale, inoltre, i miglioramenti
+sono piccoli mentre i peggioramenti (quarantuno casi su cento) sono enormi.
+
+Il risultato dell'intero esperimento, però, dipende dal seme del
+meta-addestramento. Cambiando il `manual_seed(1)` da cui parte, la forma del
+confronto resta (con passi lunghi la rete meta-addestrata migliora e quella
+allenata su tutte peggiora), ma la misura no. Su qualche seme, con queste
+iterazioni, il meta-addestramento riesce solo a metà, e la rete
+meta-addestrata si ferma molto più in alto di $0{,}34$, fino a finire sopra la
+rete allenata su tutte adattata a passi corti.
 
 ## Confrontare invece di adattare
 
 MAML, davanti al compito nuovo, adatta: fa qualche passo di aggiustamento, cioè
 di discesa del gradiente, a partire da un punto scelto bene. Per la
-classificazione con pochi esempi c’è un’altra famiglia di metodi, che al momento
-della prova non adatta niente. Impara prima uno spazio in cui le classi si
-riconoscono per vicinanza, e il compito nuovo lo risolve confrontando. La forma
-più semplice sono le **reti prototipiche** di Snell, Swersky e Zemel
-{cite}`snell2017prototypical`: ogni classe è rappresentata dalla media dei suoi
-esempi di supporto nello spazio appreso, il suo *prototipo*, e un esempio nuovo
-va alla classe del prototipo più vicino. L’allenamento a episodi, cioè su
-compiti con $N$ classi e $k$ esempi per classe (*$N$-way $k$-shot*) sorteggiati
-come quelli della prova, viene dalle *matching networks* di Vinyals e colleghi
-{cite}`vinyals2016matching`.
+classificazione con pochi esempi c’è un’altra famiglia di metodi, che al
+momento della prova non adatta niente. Questi metodi imparano prima uno spazio
+in cui le classi si riconoscono per vicinanza, e poi risolvono il compito nuovo
+per confronto.
+
+La forma più semplice sono le **reti prototipiche** di Snell, Swersky e Zemel
+{cite}`snell2017prototypical`. Ogni classe è rappresentata dalla media dei suoi
+esempi di supporto nello spazio appreso, il suo **prototipo**, e un esempio
+nuovo va alla classe del prototipo più vicino. L’allenamento a episodi,
+cioè su compiti con $N$ classi e $k$ esempi per classe (*$N$-way $k$-shot*)
+estratti a caso come quelli della prova, viene dalle *matching networks* di
+Vinyals e colleghi {cite}`vinyals2016matching`.
 
 `````{tab} Elementare
 
@@ -371,31 +388,34 @@ Il portiere di un grande albergo ha visto passare migliaia di facce, e ha
 imparato che cosa guardare: la distanza fra gli occhi, la forma del naso e del
 mento. Ha imparato anche che cosa lasciar perdere: i capelli, che la gente
 cambia; gli occhiali, che si tolgono; la luce della hall, che non è mai la
-stessa. Stamattina arrivano cinque ospiti nuovi, e di ciascuno vede la faccia
-una volta sola, al banco. Nel pomeriggio uno rientra, e il portiere lo saluta
-per nome. Non ha imparato niente di nuovo: ha confrontato. Un portiere al primo
-giorno confronterebbe tutto, e un ospite che rientra con il cappello e il sole
-alle spalle gli sembrerebbe un’altra persona. Con i numeri, di una faccia
-si possono prendere quaranta misure, e l’occhio allenato ne guarda poche. È come
-se disponesse le facce per somiglianza, vicine quelle che si somigliano
-nelle cose che contano e lontane le altre, e questa sistemazione delle facce si
-chiama *spazio appreso*.
+stessa.
+
+Stamattina arrivano cinque ospiti nuovi, e di ciascuno vede la faccia una
+volta sola, al banco. Nel pomeriggio uno rientra, e il portiere lo saluta per
+nome. Non ha imparato niente di nuovo: ha confrontato. Un portiere al primo
+giorno confronterebbe tutto, e un ospite che rientra con il cappello e il
+sole alle spalle gli sembrerebbe un’altra persona.
+
+Con i numeri, di una faccia si possono prendere quaranta misure, e l’occhio
+allenato ne guarda poche. È come se disponesse le facce per somiglianza,
+vicine quelle che si somigliano nelle cose che contano e lontane le altre, e
+questa sistemazione delle facce si chiama **spazio appreso**.
 
 Se di un ospite ha visto la faccia più volte, se ne fa un ritratto medio, il
 suo prototipo, e chi entra va all’ospite il cui ritratto gli somiglia di più;
-con una faccia sola il ritratto è quella faccia. Fra due ospiti il confine cade
-a metà strada fra i due ritratti.
+con una faccia sola il ritratto è quella faccia. Fra due ospiti, quindi, il
+confine cade a metà strada fra i due ritratti.
 
 Quell’occhio si è allenato facendo tante volte la prova vera: cinque facce a
 caso, viste una volta (gli *esempi di supporto*), poi altre facce da assegnare.
-Ogni prova così si chiama *episodio*. Ogni volta che sbagliava, a correggersi
-non era la conoscenza di quelle cinque persone, che il giorno dopo erano
-partite, ma il modo di guardare. Per questo funziona anche con gli ospiti di
-domani, purché si distinguano per le stesse cose.
+Ogni prova così si chiama **episodio**. Quando sbagliava, a correggersi non era
+la conoscenza di quelle cinque persone, che il giorno dopo erano partite, ma il
+modo di guardare. Per questo funziona anche con gli ospiti di domani, purché si
+distinguano per le stesse cose.
 
-Davanti a due gemelle identiche che si distinguono
-soltanto per il taglio di capelli, però, il portiere guarda con grande sicurezza le
-cose sbagliate, e fa peggio del principiante, che almeno guardava tutto.
+Davanti a due gemelle identiche che si distinguono soltanto per il taglio di
+capelli, però, il portiere guarda con grande sicurezza le cose sbagliate, e fa
+peggio del principiante, che almeno guardava tutto.
 
 `````
 
@@ -420,18 +440,20 @@ p_\theta(y = j \mid \mathbf{x}) =
 $$
 
 Si minimizza $-\log p_\theta(y \mid \mathbf{x})$ sulle domande di episodi
-sorteggiati fra le classi di addestramento, nel formato $N$-way $k$-shot della
-prova come nelle matching networks {cite}`vinyals2016matching`; Snell e
+estratti a caso fra le classi di addestramento, nel formato $N$-way $k$-shot
+della prova, come nelle matching networks {cite}`vinyals2016matching`. Snell e
 colleghi trovano però utile addestrare con più classi per episodio di quante
 ne avrà la prova, e con lo stesso numero di esempi per classe
-{cite}`snell2017prototypical`. Al momento della prova non c’è nessun passo di
-gradiente, solo $N$ medie e $N$ distanze. Rispetto a MAML cambia il
-costo, perché non ci sono né ciclo interno né derivate seconde, e cambia il
-perimetro: il metodo è fatto per la classificazione, mentre MAML si applica
-anche alla regressione e al rinforzo.
+{cite}`snell2017prototypical`.
 
-Con la distanza euclidea al quadrato il classificatore è lineare nello spazio
-appreso. Posto $\mathbf{z} = f_\theta(\mathbf{x})$,
+Al momento della prova non c’è nessun passo di gradiente, ma solo $N$ medie e
+$N$ distanze. Rispetto a MAML cambia il costo, perché non ci sono né
+ciclo interno né derivate seconde, e cambia il perimetro: il metodo è fatto per
+la classificazione, mentre MAML si applica anche alla regressione e al
+rinforzo.
+
+Osserviamo che con la distanza euclidea al quadrato il classificatore è
+lineare nello spazio appreso. Posto $\mathbf{z} = f_\theta(\mathbf{x})$,
 
 $$
 -\lVert\mathbf{z} - \mathbf{c}_j\rVert^2 = 2\,\mathbf{c}_j^{\!\top}\mathbf{z}
@@ -440,19 +462,21 @@ $$
 
 e l’ultimo termine è uguale per tutte le classi, quindi il confine fra due
 classi è l’iperpiano che biseca il segmento fra i loro prototipi. La non
-linearità, se serve, sta tutta in $f_\theta$. Gli autori giustificano la media
-come prototipo con le divergenze di Bregman, di cui l’euclidea al quadrato è un
-caso, e trovano che funziona molto meglio del coseno: la ragione, che danno come
-congettura, è che il coseno non è una divergenza di Bregman. Con $k = 1$ il
-prototipo è l’esempio stesso, e a parità di distanza e di embedding il metodo
-coincide con le matching networks, che però nella forma pubblicata usano il
-coseno.
+linearità, se serve, sta tutta in $f_\theta$.
 
-Nel codice l’embedding è lineare, $f_\theta(\mathbf{x}) = \mathbf{W}\mathbf{x}$,
-e il gradiente si scrive in forma chiusa (è la ragione per cui qui non serve
-autograd). Con $\mathbf{u}_{qj}$ lo scarto fra la domanda $q$ e la media del
-supporto della classe $j$, misurati tutti e due nello spazio di partenza, il
-logit è $-\lVert\mathbf{W}\mathbf{u}_{qj}\rVert^2$ e
+Gli autori giustificano la media come prototipo con le divergenze di Bregman,
+di cui l’euclidea al quadrato è un caso, e trovano che funziona molto meglio
+del coseno; la ragione, che danno come congettura, è che il coseno non è una
+divergenza di Bregman. Con $k = 1$ il prototipo è l’esempio stesso, e a parità
+di distanza e di embedding il metodo coincide con le matching networks, che
+però nella forma pubblicata usano il coseno.
+
+Nel codice dell'esperimento l’embedding è lineare,
+$f_\theta(\mathbf{x}) = \mathbf{W}\mathbf{x}$, e il gradiente si scrive in forma
+chiusa, per cui non serve autograd. Con $\mathbf{u}_{qj}$ lo scarto fra la
+domanda $q$ e la media del supporto della classe $j$, misurati tutti e due
+nello spazio di partenza, il logit è
+$-\lVert\mathbf{W}\mathbf{u}_{qj}\rVert^2$ e
 
 $$
 \nabla_{\mathbf{W}}\mathcal{L} = -2\,\mathbf{W} \sum_{q,j} g_{qj}\,
@@ -461,11 +485,11 @@ $$
 
 dove $g_{qj}$ è la derivata della perdita rispetto al logit, cioè la
 probabilità meno l’indicatrice della classe giusta, divisa per il numero di
-domande. Imparare $\mathbf{W}$ equivale a imparare la metrica
+domande. Si noti che imparare $\mathbf{W}$ equivale a imparare la metrica
 $\mathbf{W}^{\!\top}\mathbf{W}$.
 
 Il punto di rottura è quello di MAML, spostato dall’inizializzazione allo
-spazio. $f_\theta$ impara le direzioni che separano le classi della
+spazio. La rete $f_\theta$ impara le direzioni che separano le classi della
 distribuzione di addestramento, e su classi che si separano lungo altre
 direzioni può aver schiacciato quelle che servono.
 
@@ -473,8 +497,10 @@ direzioni può aver schiacciato quelle che servono.
 
 L'esperimento costruisce una famiglia di classi in cui è chiaro che cosa c'è da
 imparare. Ogni esempio ha quaranta misure, ma le classi differiscono soltanto
-lungo quattro *direzioni*, cioè quattro combinazioni fisse di quelle misure: i
-centri delle classi stanno lungo quelle quattro, il rumore su tutte e quaranta.
+lungo quattro *direzioni*, cioè quattro combinazioni fisse di quelle misure. I
+centri delle classi stanno lungo quelle quattro, mentre il rumore sta su tutte
+e quaranta.
+
 Lo spazio appreso è una tabella di numeri, la matrice $\mathbf{W}$, che
 trasforma le quaranta misure di ogni esempio. La si allena a episodi da cinque
 classi con un esempio ciascuna (5-way 1-shot) su 64 classi, sempre con un
@@ -550,15 +576,18 @@ fattore medio: 0.53 sulle 4 direzioni che contano, 0.17 sulle altre 36
 
 Sulle classi nuove della stessa famiglia lo spazio appreso porta il
 riconoscimento da un esempio solo da 76,1% a 88,6%, e da cinque esempi da 91,2%
-a 95,6%: con un esempio solo il rumore pesa di più, e lì scartare le misure che
-non contano rende di più. I fattori medi dicono che cosa è stato imparato,
-senza che nessuno lo avesse detto alla matrice: le differenze lungo le quattro
-direzioni che contano risultano moltiplicate in media per 0,53, quelle lungo le
-altre trentasei per 0,17, cioè circa tre volte più piccole. La matrice ha
-schiacciato le direzioni che non servivano. Sulle classi dell’altra famiglia lo
-stesso schiacciamento cade sulle direzioni sbagliate, e lo spazio appreso fa
-peggio delle misure grezze: 64,7% contro 79,1% da un esempio, 80,6% contro
-92,3% da cinque.
+a 95,6%. Con un esempio solo il rumore pesa di più, e lì scartare le misure
+che non contano rende di più.
+
+I fattori medi dicono che cosa è stato imparato, senza che nessuno lo avesse
+detto alla matrice. Le differenze lungo le quattro direzioni che contano
+risultano moltiplicate in media per 0,53, quelle lungo le altre trentasei per
+0,17, cioè circa tre volte più piccole. In altri termini, la matrice ha
+schiacciato le direzioni che non servivano.
+
+Sulle classi dell’altra famiglia, invece, lo stesso schiacciamento cade sulle
+direzioni sbagliate, e lo spazio appreso fa peggio delle misure grezze: 64,7%
+contro 79,1% da un esempio, 80,6% contro 92,3% da cinque.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -572,8 +601,8 @@ peggio delle misure grezze: 64,7% contro 79,1% da un esempio, 80,6% contro
   quei passi. Si migliora quel «dopo», non il «prima».
 - La strada ovvia (allenare una rete sola su tutti i compiti insieme e poi
   ripassarla) fallisce quando la famiglia è varia, perché quella rete impara la
-  media dei compiti, e la media di solito non somiglia a nessuno di loro:
-  sulle onde della prova è un'onda bassa e sempre la stessa.
+  media dei compiti, e la media di una famiglia varia può non somigliare a
+  nessuno di loro: sulle onde della prova è un'onda bassa e sempre la stessa.
   Fallisce due volte, perché quella curva media è un posto comodo dove stare
   fermi: pochi passi decisi di aggiustamento la portano fuori di lì e la
   lasciano a metà, cioè peggiorano invece di migliorare; con passi più cauti
@@ -597,7 +626,8 @@ peggio delle misure grezze: 64,7% contro 79,1% da un esempio, 80,6% contro
   $\theta_i' = \theta - \alpha\nabla_\theta\mathcal{L}^{\text{s}}_{\mathcal{T}_i}(\theta)$,
   e il ciclo esterno aggiorna $\theta$ sul valore della perdita calcolata in
   $\theta_i'$ su esempi nuovi dello stesso compito. Derivare attraverso
-  l'adattamento chiama le derivate seconde: è il costo del metodo.
+  l'adattamento chiama in causa le derivate seconde, che sono il costo del
+  metodo.
 - L'obiettivo ottimizzato è la prestazione dopo l'adattamento, che è una
   proprietà diversa dalla prestazione tout court, e la si ottiene solo
   scrivendola nella funzione obiettivo.
@@ -621,7 +651,7 @@ Una rete profonda si porta dietro, da un compito all'altro, una scala di
 descrizioni, dal bordo grezzo alla forma intera. Le convoluzioni l'hanno
 adattata alle immagini, gli accorgimenti dell'addestramento l'hanno resa
 raggiungibile anche con molti strati, e le architetture storiche l'hanno fatta
-crescere contenendo i costi; il multi-compito la fa servire a più compiti
+crescere contenendo i costi. Il multi-compito la fa servire a più compiti
 insieme, e il meta-apprendimento la prepara perché un compito nuovo si impari
 in pochi passi, o con un semplice confronto. Il capitolo sulla {doc}`visione
 artificiale </VisioneArtificiale/overview>` la porta dentro un solo dominio, le

@@ -7,29 +7,32 @@ Gödel, annuncia di passaggio un risultato che quasi nessuno dei presenti
 raccoglie (lo capisce al volo il matematico John von Neumann). Il giorno dopo,
 nella stessa città, David Hilbert, uno dei matematici più influenti del suo
 tempo, chiude un discorso, di cui la radio trasmette la parte finale, con una
-frase che oggi è incisa sulla
-sua tomba a Gottinga: «Dobbiamo sapere, sapremo». Il risultato di Gödel,
-annunciato il giorno prima, diceva che quella promessa non si può mantenere del
-tutto: qualunque insieme di regole si scelga per dimostrare le cose dei numeri,
-purché le regole si possano elencare una per una e non si contraddicano,
-resteranno affermazioni vere che quelle regole non dimostrano.
+frase che oggi è incisa sulla sua tomba a Gottinga: «Dobbiamo sapere, sapremo».
+
+Il risultato di Gödel, annunciato il giorno prima, diceva che quella promessa
+non si può mantenere del tutto. Più precisamente, qualunque insieme di regole
+si scelga per dimostrare le cose dei numeri, purché le regole si possano
+elencare una per una e non si contraddicano, resteranno affermazioni vere che
+quelle regole non dimostrano.
 
 Hilbert chiedeva, fra le altre cose, un procedimento meccanico capace di
 decidere se un'affermazione scritta nel linguaggio della logica segue dagli
-assiomi, le verità di partenza. Davanti a un'affermazione come «ogni numero
-pari maggiore di due è la somma di due numeri primi» (la congettura di
-Goldbach), il procedimento avrebbe dovuto rispondere sì o no, sempre. Lo
-chiamava il problema della decisione, l’*Entscheidungsproblem*, e lo aveva
-posto con Wilhelm Ackermann nel 1928. Per rispondere di no bisognava prima dire
-che cosa sia un procedimento meccanico: per sostenere che nessun procedimento
-ci riesce, occorre sapere quali siano tutti. Serviva, cioè, una definizione
-precisa di algoritmo: la ricetta di {doc}`Euclide </Introduzione/overview>` ne
-è un esempio, non una definizione. La diede Alan Turing nel 1936, con una
-macchina immaginaria {cite}`turing1936computable`; quasi negli stessi mesi
-Alonzo Church ne diede un'altra, equivalente {cite}`church1936unsolvable`. Da
-allora «calcolabile» ha un significato matematico, e si può dimostrare che
-certi problemi non lo sono. Un modello che impara resta un programma, e i
-limiti dei programmi sono anche i suoi.
+**assiomi**, cioè dalle verità di partenza. Davanti a un'affermazione come
+«ogni numero pari maggiore di due è la somma di due numeri primi» (la
+congettura di Goldbach), il procedimento avrebbe dovuto rispondere sì o no,
+sempre. Hilbert lo chiamava il **problema della decisione**,
+l’*Entscheidungsproblem*, e lo aveva posto con Wilhelm Ackermann nel 1928.
+
+Per rispondere di no bisognava prima dire che cosa sia un procedimento
+meccanico, perché per sostenere che nessun procedimento ci riesce occorre
+sapere quali siano tutti. Serviva, cioè, una definizione precisa di
+algoritmo: l'algoritmo di {doc}`Euclide </Introduzione/overview>` ne è un
+esempio, non una definizione. La diede Alan Turing nel 1936, con una macchina
+immaginaria {cite}`turing1936computable`; quasi negli stessi mesi Alonzo Church
+ne diede un'altra, equivalente {cite}`church1936unsolvable`. Da allora
+«calcolabile» ha un significato matematico, e si può dimostrare che certi
+problemi non lo sono. Un modello che impara resta un programma, e i limiti
+dei programmi sono anche i suoi.
 
 ## Una macchina con un nastro e una matita
 
@@ -37,61 +40,65 @@ limiti dei programmi sono anche i suoi.
 
 Turing non pensava a un calcolatore, che nel 1936 non esisteva. Pensava a una
 persona che fa un conto con carta e matita, e si chiedeva che cosa stesse
-facendo davvero. Scrive e cancella simboli su un foglio, guarda un pezzetto di
-foglio alla volta, e decide che cosa fare dopo in base a quello che vede e a
-quello che ha in mente in quel momento. Tutto il resto, osservava, è superfluo.
+facendo davvero. La persona scrive e cancella simboli su un foglio, guarda un
+pezzetto di foglio alla volta, e decide che cosa fare dopo in base a quello che
+vede e a quello che ha in mente in quel momento. Tutto il resto, osservava, è
+superfluo.
 
-La sua macchina fa esattamente questo, ridotto all'osso. C'è un nastro lungo
-quanto serve, diviso in caselle, e in ogni casella c'è un simbolo o niente.
-C'è una testina che guarda una casella sola. Quello che la persona «ha in
-mente» diventa lo *stato* della macchina, indicato con una parola. E c'è una
-tabellina di regole, fatte tutte allo stesso modo: «se sei nello stato *vai* e
-leggi un 1, scrivi 1, spostati di una casella a destra e resta nello stato
-*vai*». Quando per la
-situazione in cui si trova non c'è nessuna regola, la macchina si ferma.
+La sua macchina fa esattamente questo, ridotto all'osso. C'è un **nastro**
+lungo quanto serve, diviso in caselle, e in ogni casella c'è un simbolo o
+niente. C'è una **testina** che guarda una casella sola. Quello che la persona
+«ha in mente» diventa lo **stato** della macchina, indicato con una parola. E
+c'è una tabellina di regole, fatte tutte allo stesso modo: «se sei nello stato
+*vai* e leggi un 1, scrivi 1, spostati di una casella a destra e resta nello
+stato *vai*». Quando per la situazione in cui si trova non c'è nessuna regola,
+la macchina si ferma.
 
-Con sei regole di questo tipo la macchina somma uno a un numero scritto in
-cifre binarie, cioè con i soli 0 e 1, dove ogni cifra vale il doppio di quella
-alla sua destra: $1011$ è otto, più zero, più due, più uno, cioè undici
-({numref}`fig-nastro-e-testina`). È l'addizione in colonna: si va all'ultima
-cifra a destra, e se sommando uno viene due (in binario $10$) si scrive 0 e si
-porta uno. La macchina, che vede una casella alla volta, deve andare a cercare
-l'ultima cifra. Le regole, dette a parole, sono queste. La testina parte sulla
-prima cifra a sinistra, nello stato *vai*. Nello stato *vai* la macchina
-riscrive la cifra che legge (uno 0 o un 1) e va a destra; quando trova la
-casella bianca torna indietro di una e passa allo stato *riporto*. Nello stato
-*riporto* un 1 diventa 0 e si va a sinistra; uno 0, o una casella bianca,
-diventa 1 e la macchina passa allo stato *fine*, per il quale non c'è nessuna
-regola, e si ferma. Da $1011$, undici, arriva così a $1100$, dodici, in otto
-passi.
+Con sei regole di questo tipo, ad esempio, la macchina somma uno a un numero
+scritto in cifre binarie, cioè con i soli 0 e 1, dove ogni cifra vale il doppio
+di quella alla sua destra: $1011$ è otto, più zero, più due, più uno, cioè
+undici ({numref}`fig-nastro-e-testina`). È l'addizione in colonna: si va
+all'ultima cifra a destra, e se sommando uno viene due (in binario $10$) si
+scrive 0 e si porta uno. La macchina, che vede una casella alla volta, deve
+andare a cercare l'ultima cifra.
 
-Il passo decisivo è un altro. Le regole di una macchina si
-possono scrivere sul nastro, come simboli fra gli altri, e Turing costruì una
-macchina che legge quelle regole e le esegue: una macchina **universale**, che
-imita qualunque altra macchina di cui le si dia la descrizione. Le sue regole
-sono poche e fisse, e dicono soltanto come leggere le regole scritte sul nastro
-e applicarle. È l'idea del
-calcolatore che esegue programmi diversi senza cambiare un filo, più di dieci
-anni prima che ne venisse costruito uno.
+Le regole, dette a parole, sono queste. La testina parte sulla prima cifra a
+sinistra, nello stato *vai*. Nello stato *vai* la macchina riscrive la cifra
+che legge (uno 0 o un 1) e va a destra; quando trova la casella bianca torna
+indietro di una e passa allo stato *riporto*. Nello stato *riporto* un 1
+diventa 0 e si va a sinistra; uno 0, o una casella bianca, diventa 1 e la
+macchina passa allo stato *fine*, per il quale non c'è nessuna regola, e si
+ferma. Da $1011$, undici, arriva così a $1100$, dodici, in otto passi.
+
+Il passo decisivo è un altro. Le regole di una macchina si possono
+scrivere sul nastro, come simboli fra gli altri, e Turing costruì una macchina
+che legge quelle regole e le esegue: una macchina **universale**, che imita
+qualunque altra macchina di cui le si dia la descrizione. Le sue regole sono
+poche e fisse, e dicono soltanto come leggere le regole scritte sul nastro e
+applicarle. È l'idea del computer che esegue programmi diversi senza cambiare
+un filo, più di dieci anni prima che ne venisse costruito uno.
 
 Resta una domanda: questa macchina così povera calcola tutto quello che si può
 calcolare con un procedimento? I linguaggi di programmazione di oggi, Python
 compreso, sanno fare le stesse cose, né una di più né una di meno, e questo si
-dimostra: ciascuno sa imitare la macchina, e la macchina sa imitare ciascuno.
-Che esista un procedimento che nessuno dei due sappia imitare non si può
-escludere con una dimostrazione, perché «procedimento» è una parola
-dell'esperienza e non della matematica; di fatto nessuno ne ha mai trovato uno.
-Un sistema che sa imitare una macchina di Turing si dice
-**Turing-completo**, con una clausola: purché gli si dia tutta la memoria che
-chiede. Un calcolatore vero ne ha una quantità finita, e davanti a
-un calcolo abbastanza lungo si ferma per esaurimento dove la macchina di
-Turing, con il suo nastro senza fine, andrebbe avanti.
+dimostra. Ciascuno, infatti, sa imitare la macchina, e la macchina sa imitare
+ciascuno. Che esista un procedimento che nessuno dei due sappia imitare,
+invece, non si può escludere con una dimostrazione, perché «procedimento» è
+una parola dell'esperienza e non della matematica; di fatto nessuno ne ha mai
+trovato uno.
+
+Un sistema che sa imitare una macchina di Turing si dice **Turing-completo**,
+con una clausola: purché gli si dia tutta la memoria che chiede. Un computer
+vero ne ha una quantità finita, e davanti a un calcolo abbastanza lungo si
+ferma per esaurimento dove la macchina di Turing, con il suo nastro senza fine,
+andrebbe avanti.
 
 `````
 
 `````{tab} Superiore
 
-Una macchina di Turing è una tupla $M=(Q,\Sigma,\Gamma,\sqcup,\delta,q_0,F)$: un
+**Definizione (macchina di Turing).** Una macchina di Turing è una tupla
+$M=(Q,\Sigma,\Gamma,\sqcup,\delta,q_0,F)$: un
 insieme finito di stati $Q$, un alfabeto finito di nastro $\Gamma$ che contiene
 il simbolo bianco $\sqcup$ e l'alfabeto d'ingresso
 $\Sigma\subseteq\Gamma\setminus\{\sqcup\}$, lo stato iniziale $q_0$, gli stati
@@ -106,33 +113,36 @@ scrivere e lo spostamento della testina. Una *configurazione* è la terna
 (stato, contenuto del nastro, posizione), e un passo di calcolo la trasforma
 secondo $\delta$; $M$ si arresta su $x$ se da $(q_0, x, 0)$ raggiunge una
 configurazione in cui $\delta$ non è definita, come accade in ogni stato di $F$.
-Una funzione $f$ è *calcolabile*
+Una funzione $f$ è **calcolabile**
 se esiste una macchina che, partendo dalla codifica di $x$ sul nastro, si
-arresta con la codifica di $f(x)$ se e solo se $f(x)$ è definita. Nell'articolo
-del 1936, ricevuto dalla London Mathematical Society il 28 maggio e letto il 12
-novembre, la prima macchina d'esempio ha quattro stati e stampa la successione
-$0\,1\,0\,1\ldots$ senza fermarsi mai. Turing li chiama *m-configurazioni* e li
-scrive in fraktur: $\mathfrak{b}$, $\mathfrak{c}$, $\mathfrak{e}$,
-$\mathfrak{k}$.
+arresta con la codifica di $f(x)$ se e solo se $f(x)$ è definita.
+
+Nell'articolo del 1936, ricevuto dalla London Mathematical Society il 28 maggio
+e letto il 12 novembre, la prima macchina d'esempio ha quattro stati e stampa
+la successione $0\,1\,0\,1\ldots$ senza fermarsi mai. Turing chiama gli stati
+*m-configurazioni* e li scrive in fraktur: $\mathfrak{b}$, $\mathfrak{c}$,
+$\mathfrak{e}$, $\mathfrak{k}$.
 
 Il risultato decisivo è la **macchina universale** $U$: codificata ogni
 macchina come stringa $\langle M\rangle$, esiste $U$ tale che
 $U(\langle M\rangle, x)$ si arresta se e solo se $M(x)$ si arresta, e in quel
-caso con la stessa uscita. Che il programma diventi un dato è lo schema
-concettuale del calcolatore a programma memorizzato.
+caso con la stessa uscita. In altri termini, il programma diventa un dato, ed
+è questo lo schema concettuale del calcolatore a programma memorizzato.
 
 La **tesi di Church-Turing** afferma che le funzioni calcolabili da un
 procedimento effettivo sono esattamente quelle calcolabili da una macchina di
 Turing, o equivalentemente $\lambda$-definibili (Church) o ricorsive generali
-(Gödel, Herbrand, Kleene). Il nome «tesi di Church» è di Kleene (1952), quello
-composto compare nel suo testo del 1967. Non è un teorema, perché uno dei due
-lati è informale; a suo favore stanno le equivalenze dimostrate fra tutti i
-formalismi proposti. Un modello è **Turing-completo** se simula ogni macchina di
-Turing; per un calcolatore fisico, che ha memoria finita, la simulazione vale
-fino all'esaurimento della memoria, e per un modello a precisione finita
-l'affermazione chiede cautela (è il caso del {doc}`Transformer
+(Gödel, Herbrand, Kleene). Il nome «tesi di Church» è di Kleene (1952), mentre
+quello composto compare nel suo testo del 1967. Non è un teorema, perché uno
+dei due lati è informale; a suo favore stanno tuttavia le equivalenze
+dimostrate fra tutti i formalismi proposti.
+
+Un modello è **Turing-completo** se simula ogni macchina di Turing. Per un
+computer fisico, che ha memoria finita, la simulazione vale fino
+all'esaurimento della memoria, e per un modello a precisione finita
+l'affermazione richiede cautela. È il caso del {doc}`Transformer
 </Transformers/tendenzefuture>`, la cui completezza è dimostrata sotto ipotesi
-di precisione e lunghezza illimitate).
+di precisione e lunghezza illimitate.
 
 `````
 
@@ -147,7 +157,7 @@ si ferma quando lo lascia su uno 0. Da $1011$ (undici) a $1100$ (dodici) in
 otto passi.
 ```
 
-Le sei regole della figura stanno nella tabellina `incremento`, una per riga: a
+Le sei regole della figura stanno nella tabella `incremento`, una per riga: a
 sinistra lo stato e il simbolo letto, a destra il simbolo da scrivere, lo
 spostamento (`+1` a destra, `-1` a sinistra, `0` fermo) e lo stato nuovo. La
 funzione `esegui` le applica finché ne trova una. Dopo la macchina che somma
@@ -215,18 +225,18 @@ macchina I dopo 16 passi: '0 1 0 1 0 1 0 1'; si è fermata? False
 ```
 
 La macchina dell'articolo di Turing, lasciata andare, scriverebbe per sempre, e
-lo si vede dalle sue quattro regole: ciascuna scrive una cifra o salta una
-casella, va a destra e passa allo stato successivo, e dall'ultimo si torna al
-primo, in cerchio, senza mai arrivare in uno stato privo di regole. Per una
-macchina qualunque, invece, sapere se si fermerà è una domanda a cui nessun
-programma sa rispondere.
+lo si vede dalle sue quattro regole. Ciascuna, infatti, scrive una cifra o
+salta una casella, va a destra e passa allo stato successivo, e dall'ultimo
+stato si torna al primo, in cerchio, senza mai arrivare in uno stato privo di
+regole. Per una macchina qualunque, invece, sapere se si fermerà è una
+domanda a cui nessun programma sa rispondere.
 
 ## La domanda che nessun programma risolve
 
 L'algoritmo di Euclide si ferma sempre, e lo si dimostra: il secondo numero
-scende a ogni passo e non può scendere per sempre. Il **problema della
-fermata** chiede se esista un procedimento che, data una macchina e il suo
-ingresso (i dati da cui parte), dica sempre se quella macchina si fermerà.
+scende a ogni passo e non può scendere per sempre. In generale, il **problema
+della fermata** chiede se esista un procedimento che, data una macchina e il
+suo ingresso (i dati da cui parte), dica sempre se quella macchina si fermerà.
 
 `````{tab} Elementare
 
@@ -237,12 +247,14 @@ sbagliare mai.
 
 Allora si può scrivere un secondo programma, il Dispetto, che fa una cosa sola.
 Un programma, come si è visto con la macchina universale, si può scrivere sul
-nastro e dare in pasto a un altro come se fosse un dato. Il Dispetto prende un
-programma, chiede al Profeta che cosa farebbe quel programma se gli si desse in
-pasto la sua stessa descrizione, e fa il contrario: se il Profeta dice «si
-ferma», il Dispetto entra in un giro senza fine; se dice «gira per sempre», il
-Dispetto si ferma subito. È costruito apposta per smentire il Profeta: è un
-programma che fa l'opposto di qualunque risposta gli venga data.
+nastro e dare in pasto a un altro come se fosse un dato.
+
+Il Dispetto prende un programma, chiede al Profeta che cosa farebbe quel
+programma se gli si desse in pasto la sua stessa descrizione, e fa il
+contrario: se il Profeta dice «si ferma», il Dispetto entra in un ciclo senza
+fine; se dice «gira per sempre», il Dispetto si ferma subito. In altre parole,
+il Dispetto è costruito apposta per smentire il Profeta, e fa l'opposto di
+qualunque risposta gli venga data.
 
 Si dia ora al Dispetto la sua stessa descrizione. Se il Profeta dice che il
 Dispetto si ferma, il Dispetto gira per sempre; se dice che gira per sempre, il
@@ -256,24 +268,26 @@ decide se un'affermazione segue dagli assiomi, basterebbe scrivergli
 l'affermazione «questa macchina, con questo ingresso, si ferma» e chiederglielo:
 sarebbe il Profeta, e il Profeta non esiste.
 
-Non vuol dire che non si sappia mai se un programma si ferma. Metà della
+Questo non vuol dire che non si sappia mai se un programma si ferma. Metà della
 domanda, anzi, è facile: se il programma si ferma, basta lasciarlo girare e
-prima o poi lo si vede. La difficoltà sta nell'altra metà, perché «non si è ancora
-fermato» non vuol dire «non si fermerà mai». Per Euclide la risposta si ottiene
-con una dimostrazione. Il Dispetto mostra che non esiste un metodo unico valido
-per tutti i programmi, e ci sono procedimenti di poche righe di cui nessuno sa
-dire se si fermino partendo da qualunque numero. Eccone uno: prendi un numero;
-se è pari dimezzalo, se è dispari triplicalo e aggiungi uno; ripeti finché
-arrivi a 1. Partendo da $27$ ci vogliono $111$ passi, salendo fino a $9232$ prima
-di scendere; nessuno ha mai trovato un numero da cui non si arrivi a 1, e
-nessuno ha mai dimostrato che non esista.
+prima o poi lo si vede. La difficoltà sta nell'altra metà, perché «non si è
+ancora fermato» non vuol dire «non si fermerà mai». Per Euclide, ad esempio, la
+risposta si ottiene con una dimostrazione.
 
-La conseguenza tocca anche i programmi che imparano. Qualunque domanda
-non banale su che cosa farà un programma ha lo stesso destino: non esiste un
-controllore universale che la risolva per tutti i programmi. Il limite vale per
-le domande sul comportamento («dirà mai una parolaccia?»), non per quelle su
-come è scritto («quante righe ha?»). Si possono controllare casi particolari, e
-lo si fa, ma la garanzia generale non c'è.
+Il Dispetto mostra però che non esiste un metodo unico valido per tutti i
+programmi, e ci sono procedimenti di poche righe di cui nessuno sa dire se si
+fermino partendo da qualunque numero. Eccone uno: prendi un numero; se è pari
+dimezzalo, se è dispari triplicalo e aggiungi uno; ripeti finché arrivi a 1.
+Partendo da $27$ ci vogliono $111$ passi, salendo fino a $9232$ prima di
+scendere; nessuno ha mai trovato un numero da cui non si arrivi a 1, e nessuno
+ha mai dimostrato che non esista.
+
+La conseguenza tocca anche i programmi che imparano. Qualunque domanda non
+banale su che cosa farà un programma ha lo stesso destino: non esiste
+un controllore universale che la risolva per tutti i programmi. Si noti che il
+limite vale per le domande sul comportamento («dirà mai una parolaccia?»), non
+per quelle su come è scritto («quante righe ha?»). Si possono controllare casi
+particolari, e lo si fa, ma la garanzia generale non c'è.
 
 `````
 
@@ -281,42 +295,46 @@ lo si fa, ma la garanzia generale non c'è.
 
 Sia $\mathrm{HALT}=\{\langle M,x\rangle : M \text{ si arresta su } x\}$.
 **Teorema** (Turing, 1936, nella forma moderna): $\mathrm{HALT}$ non è
-decidibile. Se una macchina $H$ decidesse $\mathrm{HALT}$, la macchina $D$ che
-su $\langle M\rangle$ esegue $H(\langle M,\langle M\rangle\rangle)$ e poi entra
-in un ciclo infinito se la risposta è «si arresta», e si arresta altrimenti,
-darebbe su $\langle D\rangle$ la contraddizione $D(\langle D\rangle)\downarrow
-\iff D(\langle D\rangle)\uparrow$. È la diagonale di Cantor: le macchine si
-enumerano, e $D$ differisce dalla $n$-esima sul suo stesso indice.
-$\mathrm{HALT}$ è però *semidecidibile* (ricorsivamente enumerabile): basta
-eseguire $M$ su $x$ e rispondere quando si arresta. Il complemento non lo è.
+decidibile. Infatti, se una macchina $H$ decidesse $\mathrm{HALT}$, la macchina
+$D$ che su $\langle M\rangle$ esegue $H(\langle M,\langle M\rangle\rangle)$ e
+poi entra in un ciclo infinito se la risposta è «si arresta», e si arresta
+altrimenti, darebbe su $\langle D\rangle$ la contraddizione $D(\langle
+D\rangle)\downarrow \iff D(\langle D\rangle)\uparrow$. È la diagonale di
+Cantor: le macchine si enumerano, e $D$ differisce dalla $n$-esima sul suo
+stesso indice. $\mathrm{HALT}$ è però **semidecidibile** (ricorsivamente
+enumerabile): basta eseguire $M$ su $x$ e rispondere quando si arresta. Il
+complemento non lo è.
 
-Turing formulò il risultato in altri termini: chiama *circolare* una macchina
+Turing formulò il risultato in altri termini. Chiama *circolare* una macchina
 che stampa solo un numero finito di cifre (perché si blocca, o perché continua
-a muoversi senza stamparne più) e dimostra che nessuna macchina decide, data
-una descrizione, se è quella di una macchina non circolare; la forma con
+a muoversi senza stamparne più), e dimostra che nessuna macchina decide, data
+una descrizione, se è quella di una macchina non circolare. La forma con
 l'arresto è di Kleene (1952), e il nome *halting problem* di Davis (1958).
-Dall'insolubilità segue la risposta negativa all’*Entscheidungsproblem*: una
-formula del primo ordine può codificare «$M$ si arresta su $x$», e un
-procedimento che decidesse la validità delle formule deciderebbe
-$\mathrm{HALT}$.
 
-Il **teorema di Rice** {cite}`rice1953classes` generalizza: ogni proprietà non
-banale della funzione calcolata da un programma (non del suo testo) è
-indecidibile. Non esiste quindi un verificatore generale del comportamento di
-un programma. Dall'indecidibilità della fermata segue anche che non è
-calcolabile la {doc}`complessità di Kolmogorov
-</AutoSupervisione/capire-e-accorciare>`, la lunghezza del programma più corto
-che produce una stringa. La congettura di Collatz, ancora aperta, mostra che
-l'arresto è una domanda difficile anche su programmi minuscoli: l'iterazione
-$n\mapsto n/2$ per $n$ pari, $n\mapsto 3n+1$ per $n$ dispari, raggiunge $1$ da
-ogni intero positivo? Al calcolatore è verificata per tutti gli interi fino ad
-almeno $2^{68}$ {cite}`barina2021convergence`, ma non ne esiste una
-dimostrazione.
+Dall'insolubilità della fermata segue la risposta negativa
+all’*Entscheidungsproblem*: una formula del primo ordine può codificare
+«$M$ si arresta su $x$», e un procedimento che decidesse la validità delle
+formule deciderebbe $\mathrm{HALT}$.
+
+Il **teorema di Rice** {cite}`rice1953classes` generalizza il risultato: ogni
+proprietà non banale della funzione calcolata da un programma (non del suo
+testo) è indecidibile. Non esiste quindi un verificatore generale del
+comportamento di un programma. Dall'indecidibilità della fermata segue anche
+che non è calcolabile la {doc}`complessità di Kolmogorov
+</AutoSupervisione/capire-e-accorciare>`, cioè la lunghezza del programma più
+corto che produce una stringa.
+
+La congettura di Collatz, ancora aperta, mostra che l'arresto è una domanda
+difficile anche su programmi minuscoli. Ci si chiede se l'iterazione
+$n\mapsto n/2$ per $n$ pari, $n\mapsto 3n+1$ per $n$ dispari, raggiunga $1$ da
+ogni intero positivo. La congettura è verificata al computer per tutti gli
+interi fino ad almeno $2^{68}$ {cite}`barina2021convergence`, ma non ne esiste
+una dimostrazione.
 
 `````
 
 Il calcolo di Collatz in Python conta i passi per qualche numero di partenza e
-cerca, sotto diecimila, quello che ne richiede di più.
+cerca, sotto diecimila, il numero che ne richiede di più.
 
 ```python
 def collatz(n):
@@ -341,19 +359,18 @@ partendo da 27: arriva a 1 in 111 passi, salendo fino a 9232
 sotto 10 000 il cammino più lungo parte da 6171: 261 passi
 ```
 
-Si può soltanto controllare un numero alla volta, e ogni volta si
-arriva a 1. Nessuna quantità di controlli di questo tipo diventa una
-dimostrazione.
+Si può soltanto controllare un numero alla volta, e ogni volta si arriva a 1.
+Ma nessuna quantità di controlli di questo tipo diventa una dimostrazione.
 
 ## Una frase che parla di sé
 
-Il risultato annunciato a Königsberg riguarda i sistemi formali: un elenco di
-affermazioni di partenza, gli assiomi, e di regole con cui se ne ricavano altre,
-i teoremi, in modo meccanico. Il gioco MIU di Hofstadter ne è un esempio in
-miniatura, con un solo assioma e quattro regole. Il **teorema di incompletezza**
-di Gödel {cite}`godel1931formal` dice che in ogni sistema del genere abbastanza
-ricco da contenere l'aritmetica, e che non si contraddica, esiste
-un'affermazione vera che il sistema non riesce a dimostrare.
+Il risultato annunciato a Königsberg riguarda i **sistemi formali**, cioè un
+elenco di affermazioni di partenza, gli assiomi, e di regole con cui se ne
+ricavano altre, i teoremi, in modo meccanico. Il gioco MIU di Hofstadter ne è
+un esempio in miniatura, con un solo assioma e quattro regole. Il **teorema di
+incompletezza** di Gödel {cite}`godel1931formal` dice che in ogni sistema del
+genere abbastanza ricco da contenere l'aritmetica, e che non si contraddica,
+esiste un'affermazione vera che il sistema non riesce a dimostrare.
 
 `````{tab} Elementare
 
@@ -365,40 +382,44 @@ raddoppiare (da MIU si passa a MIUIU); tre I di fila si possono sostituire con
 una U; due U di fila si possono cancellare. La domanda è: si può arrivare a MU?
 
 Si può provare a giocare per ore, e MU non arriva mai. Ma giocare non basta a
-concludere niente, perché la mossa giusta potrebbe essere la prossima. La
-risposta arriva uscendo dal gioco e guardando le regole da fuori: si contano le
-I. MI ne ha una. La prima e la quarta regola non le toccano, la seconda ne
+concludere niente, perché la mossa giusta potrebbe essere la prossima.
+
+La risposta arriva uscendo dal gioco e guardando le regole da fuori: si contano
+le I. MI ne ha una. La prima e la quarta regola non le toccano, la seconda ne
 raddoppia il numero, e il doppio di un numero è multiplo di tre solo se lo era
 già; la terza ne toglie tre, e togliere tre non cambia il resto della divisione
 per tre. Partendo da una, nessuna di queste mosse porta mai a un numero di I
-che sia multiplo di tre, e MU ne ha zero, che è
-un multiplo di tre. Quindi MU non si raggiunge. Una proprietà che nessuna
-regola può far perdere, come qui l'essere un numero di I che non è multiplo di
-tre, si chiama **invariante**.
+che sia multiplo di tre, e MU ne ha zero, che è un multiplo di tre. Quindi MU
+non si raggiunge.
+
+In generale, una proprietà che nessuna regola può far perdere, come qui
+l'essere un numero di I che non è multiplo di tre, si chiama **invariante**.
 
 Gödel traduce a sua volta le frasi in numeri, ma i suoi numeri stanno dentro il
-sistema, che può così parlare di sé. Assegna a ogni
-simbolo della matematica un numero, e a ogni frase il numero che si ottiene
-mettendo insieme quelli dei suoi simboli, in modo che dal numero si possa
-sempre risalire alla frase, come dal numero di una scheda si risale al libro
-in una biblioteca. A quel punto l'aritmetica, che parla di numeri, può parlare
-anche delle proprie frasi e delle proprie dimostrazioni: «la frase numero 12 si
-ricava dalla numero 5» diventa una relazione fra i numeri 12 e 5, che
-l'aritmetica sa scrivere. E Gödel costruisce una frase che, letta attraverso
-questa numerazione, dice: «la frase numero tale non si può dimostrare», dove
-quel numero è il suo. Che una frase possa contenere il proprio numero sembra un
+sistema, che può così parlare di sé. In concreto, assegna a ogni simbolo della
+matematica un numero, e a ogni frase il numero che si ottiene mettendo insieme
+quelli dei suoi simboli, in modo che dal numero si possa sempre risalire alla
+frase, come dal numero di una scheda si risale al libro in una biblioteca.
+
+A quel punto l'aritmetica, che parla di numeri, può parlare anche delle proprie
+frasi e delle proprie dimostrazioni. Ad esempio, «la frase numero 12 si ricava
+dalla numero 5» diventa una relazione fra i numeri 12 e 5, che l'aritmetica sa
+scrivere. Gödel costruisce allora una frase che, letta attraverso questa
+numerazione, dice: «la frase numero tale non si può dimostrare», dove quel
+numero è il suo. Che una frase possa contenere il proprio numero sembra un
 trucco. Dimostrare che è possibile è la parte tecnica del lavoro di Gödel.
 
 È il paradosso del mentitore («questa frase è falsa») con una parola cambiata:
 «falsa» diventa «non dimostrabile», e al posto della contraddizione si ottiene
-un risultato. Se la frase si potesse
-dimostrare, il sistema, che sa controllare le proprie dimostrazioni,
-dimostrerebbe anche che la frase si può dimostrare, cioè il contrario di quello
-che la frase dice: si contraddirebbe. Quindi, se il sistema non si contraddice,
-la frase non si dimostra; e siccome dice proprio questo, è vera. Una verità che
-il sistema non raggiunge. Aggiungerla alle regole non aiuta, perché il sistema
-nuovo ha la sua frase nuova. Hofstadter chiama questo tornare su sé stessi,
-salendo di livello e trovandosi al punto di partenza, uno **strano anello**.
+un risultato. Se la frase si potesse dimostrare, il sistema, che sa
+controllare le proprie dimostrazioni, dimostrerebbe anche che la frase si può
+dimostrare, cioè il contrario di quello che la frase dice: si contraddirebbe.
+Quindi, se il sistema non si contraddice, la frase non si dimostra; e siccome
+dice proprio questo, è vera. Una verità che il sistema non raggiunge.
+
+Aggiungere quella frase alle regole non aiuta, perché il sistema nuovo ha la
+sua frase nuova. Hofstadter chiama questo tornare su sé stessi, salendo di
+livello e trovandosi al punto di partenza, uno **strano anello**.
 
 Gödel dimostrò anche una seconda cosa: un sistema
 abbastanza ricco, se non si contraddice, non riesce a dimostrare di non
@@ -409,46 +430,52 @@ contraddirsi. La garanzia della propria coerenza deve venire da fuori.
 `````{tab} Superiore
 
 Sia $T$ una teoria del primo ordine con assiomi ricorsivamente enumerabili che
-interpreti l'aritmetica di Robinson. La *numerazione di Gödel* associa a ogni
-simbolo un intero positivo e a ogni sequenza di simboli $s_1\dots s_k$ il
+interpreti l'aritmetica di Robinson. La **numerazione di Gödel** associa a
+ogni simbolo un intero positivo e a ogni sequenza di simboli $s_1\dots s_k$ il
 numero
-$\prod_{i=1}^{k} p_i^{\,\#s_i}$, con $p_i$ l’$i$-esimo primo; per l'unicità
-della fattorizzazione la codifica è invertibile, e una dimostrazione, sequenza
-di formule, si codifica allo stesso modo. Il predicato «$y$ è il codice di una
-dimostrazione della formula di codice $x$» è allora rappresentabile in $T$ da
-una formula $\mathrm{Prf}_T(y,x)$, e
-$\mathrm{Prov}_T(x)\equiv\exists y\,\mathrm{Prf}_T(y,x)$. Il **lemma di
+$\prod_{i=1}^{k} p_i^{\,\#s_i}$, con $p_i$ l’$i$-esimo primo. Poiché la
+fattorizzazione è unica, la codifica è invertibile, e una dimostrazione, che è
+una sequenza di formule, si codifica allo stesso modo.
+
+Il predicato «$y$ è il codice di una dimostrazione della formula di codice
+$x$» è allora rappresentabile in $T$ da una formula $\mathrm{Prf}_T(y,x)$, e si
+pone $\mathrm{Prov}_T(x)\equiv\exists y\,\mathrm{Prf}_T(y,x)$. Il **lemma di
 diagonalizzazione** dà, per ogni formula $\varphi(x)$, un enunciato $G$ con
-$T\vdash G\leftrightarrow\varphi(\ulcorner G\urcorner)$; con
+$T\vdash G\leftrightarrow\varphi(\ulcorner G\urcorner)$. In particolare, con
 $\varphi(x)=\neg\mathrm{Prov}_T(x)$ si ottiene l'enunciato di Gödel.
 
 **Primo teorema di incompletezza.** Se $T$ è coerente, $T\nvdash G$; se $T$ è
 $\omega$-coerente, anche $T\nvdash\neg G$. Gödel dimostrò il teorema con
 l'ipotesi di $\omega$-coerenza; Rosser (1936) la ridusse alla sola coerenza con
-un enunciato modificato. **Secondo teorema.** Se $T$ è coerente, non dimostra
-l'enunciato $\mathrm{Con}_T$ che formalizza la propria coerenza, purché
-$\mathrm{Prov}_T$ sia costruito nel modo naturale, cioè soddisfi le condizioni
-di derivabilità di Hilbert, Bernays e Löb. Gödel stesso, nell'introduzione
-dell'articolo, nota l'analogia con le antinomie di Richard e del mentitore; la
-differenza è che «vero» non è definibile nell'aritmetica (Tarski), mentre
-«dimostrabile» lo è, e per questo l'antinomia diventa un teorema.
+un enunciato modificato.
+
+**Secondo teorema.** Se $T$ è coerente, non dimostra l'enunciato
+$\mathrm{Con}_T$ che formalizza la propria coerenza, purché $\mathrm{Prov}_T$
+sia costruito nel modo naturale, cioè soddisfi le condizioni di derivabilità di
+Hilbert, Bernays e Löb.
+
+Gödel stesso, nell'introduzione dell'articolo, nota l'analogia con le antinomie
+di Richard e del mentitore. La differenza è che «vero» non è definibile
+nell'aritmetica (Tarski), mentre «dimostrabile» lo è, e per questo
+l'antinomia diventa un teorema.
+
 L'incompletezza, nella forma «esiste un enunciato vero che $T$ non dimostra»,
-segue anche dall'insolubilità della fermata, e per questa via basta la coerenza.
-Se ogni enunciato vero della forma «$M$ non si arresta su $x$» fosse
-dimostrabile in $T$, si deciderebbe $\mathrm{HALT}$ simulando $M$ su $x$ e
-intanto enumerando le dimostrazioni di $T$ in cerca di quella negazione: se $M$
-si arresta lo dice la simulazione, se non si arresta la dimostrazione prima o
-poi arriva. E la risposta sarebbe giusta, perché quando $M$ si arresta
-l'enunciato che lo afferma è $\Sigma_1$ e vero, quindi dimostrabile
+segue anche dall'insolubilità della fermata, e per questa via basta la
+coerenza. Se ogni enunciato vero della forma «$M$ non si arresta su $x$» fosse
+dimostrabile in $T$, infatti, si deciderebbe $\mathrm{HALT}$ simulando $M$ su
+$x$ e intanto enumerando le dimostrazioni di $T$ in cerca di quella negazione:
+se $M$ si arresta lo dice la simulazione, se non si arresta la dimostrazione
+prima o poi arriva. E la risposta sarebbe giusta, perché quando $M$ si
+arresta l'enunciato che lo afferma è $\Sigma_1$ e vero, quindi dimostrabile
 nell'aritmetica di Robinson e in $T$, e una $T$ coerente non ne dimostra anche
 la negazione.
 
-Il sistema MIU di Hofstadter illustra il gesto metamatematico in piccolo: la
+Il sistema MIU di Hofstadter illustra in piccolo il gesto metamatematico: la
 domanda «MU è un teorema?» non si risolve derivando, ma con un invariante sul
-sistema. Il numero di I modulo $3$ vale $1$ nell'assioma; la regola che
-raddoppia manda $1\mapsto 2$ e $2\mapsto 1$, quella che toglie tre I lo
-conserva, le altre non lo toccano; resta quindi diverso da zero in ogni
-teorema, e MU, che ne ha zero, non lo è.
+sistema. Consideriamo il numero di I modulo $3$, che vale $1$ nell'assioma. La
+regola che raddoppia manda $1\mapsto 2$ e $2\mapsto 1$, quella che toglie tre I
+lo conserva e le altre non lo toccano; il numero resta quindi diverso da zero
+in ogni teorema, e MU, che ne ha zero, non lo è.
 
 `````
 
@@ -486,11 +513,12 @@ MU fra queste? False
 resti del numero di I diviso 3, su tutte: [1, 2]
 ```
 
-La ricerca non trova MU fra le 216 stringhe, e da sola non potrebbe dire di
-più: una stringa più lunga di dodici lettere, accorciata con le regole III e
-IV, potrebbe ancora arrivarci. La questione la chiude l'invariante: i resti
-stampati mostrano che su quelle 216 stringhe il resto non vale mai zero, e il
-ragionamento sulle regole dice perché non lo varrà mai, su nessuna stringa.
+La ricerca non trova MU fra le 216 stringhe, ma da sola non potrebbe dire di
+più: una stringa più lunga di dodici lettere, accorciata con le regole
+III e IV, potrebbe ancora arrivarci. L'invariante chiude la questione: i
+resti stampati mostrano che su quelle 216 stringhe il resto non vale mai zero,
+e il ragionamento sulle regole spiega perché non lo varrà mai, su nessuna
+stringa.
 
 ## Che cosa non se ne ricava
 
@@ -509,56 +537,60 @@ facciamo una cosa che la macchina non fa, e non siamo quella macchina.
 
 Il punto debole sta in «vediamo che è vera». La frase di Gödel è vera solo se
 il sistema non si contraddice mai; se il sistema si contraddicesse,
-dimostrerebbe qualunque cosa e il ragionamento cadrebbe. Nella logica, da una
-contraddizione segue qualunque affermazione. Per «vedere» che la frase è vera,
-quindi, bisogna sapere che il sistema è senza contraddizioni. E il secondo
-risultato di Gödel dice proprio che un sistema abbastanza ricco non riesce a
-dimostrarlo di sé stesso. Se la mente fosse un sistema di regole complicato
-come un cervello, nemmeno lei saprebbe dimostrare di non contraddirsi mai, e
-chi conosce un po' le persone ha buone ragioni per dubitarne.
+dimostrerebbe qualunque cosa e il ragionamento cadrebbe. Nella logica, infatti,
+da una contraddizione segue qualunque affermazione. Per «vedere» che la frase è
+vera, quindi, bisogna sapere che il sistema è senza contraddizioni.
+
+Il secondo risultato di Gödel, però, dice proprio che un sistema abbastanza
+ricco non riesce a dimostrarlo di sé stesso. Se la mente fosse un sistema di
+regole complicato come un cervello, nemmeno lei saprebbe dimostrare di non
+contraddirsi mai, e chi conosce un po' le persone ha buone ragioni per
+dubitarne.
 
 Turing aveva già risposto nel 1950, prima di Lucas. Che ogni singola macchina
 abbia dei limiti è dimostrato; che la mente umana non ne abbia è stato soltanto
 affermato. E chi trova la domanda che mette in difficoltà una macchina non ha
-battuto tutte le macchine: ce ne può essere un'altra che quella domanda la
-supera, e ne avrà una sua.
+battuto tutte le macchine: ce ne può essere un'altra che supera quella
+domanda, e ne avrà una sua.
 
 `````
 
 `````{tab} Superiore
 
-Lucas: se una mente $\mathcal{M}$ fosse una macchina, sarebbe descritta da un
-sistema formale $T_{\mathcal{M}}$; la mente riconosce come vero
-$G_{T_{\mathcal{M}}}$, che $T_{\mathcal{M}}$ non dimostra; dunque la mente
-eccede ogni macchina. Il passaggio che non regge è il secondo: $G_T$ è vero se
-$T$ è coerente, e l'argomento richiede che la mente sappia che
-$T_{\mathcal{M}}$ è coerente. Per il secondo teorema, se $T_{\mathcal{M}}$ è
-coerente non dimostra $\mathrm{Con}_{T_{\mathcal{M}}}$; l'argomento presuppone
-quindi che la mente conosca la coerenza di un sistema di complessità arbitraria
-che la descrive, cioè presuppone la conclusione. È l'obiezione di Putnam
-{cite}`putnam1960minds`, e Benacerraf {cite}`benacerraf1967god` ne ha dato la
-forma più discussa: al più, se la mente è una macchina, non può sapere quale.
+L'argomento di Lucas è il seguente: se una mente $\mathcal{M}$ fosse una
+macchina, sarebbe descritta da un sistema formale $T_{\mathcal{M}}$; la mente
+riconosce come vero $G_{T_{\mathcal{M}}}$, che $T_{\mathcal{M}}$ non dimostra;
+dunque la mente eccede ogni macchina. Il passaggio che non regge è il secondo:
+$G_T$ è vero se $T$ è coerente, e l'argomento richiede che la mente
+sappia che $T_{\mathcal{M}}$ è coerente. Per il secondo teorema, se
+$T_{\mathcal{M}}$ è coerente non dimostra $\mathrm{Con}_{T_{\mathcal{M}}}$;
+l'argomento presuppone quindi che la mente conosca la coerenza di un sistema
+di complessità arbitraria che la descrive, cioè presuppone la conclusione.
+
+È l'obiezione di Putnam {cite}`putnam1960minds`, e Benacerraf
+{cite}`benacerraf1967god` ne ha dato la forma più discussa: al più, se la mente
+è una macchina, non può sapere quale.
 
 La replica di Turing sta nell'articolo del 1950 {cite}`turing1950computing`,
 fra le obiezioni al gioco dell'imitazione (la terza, «matematica»): i limiti di
 ogni macchina *particolare* sono dimostrati, quelli dell'intelletto umano sono
-stati soltanto affermati, e quando una macchina sbaglia la domanda critica
+stati soltanto affermati, e, quando una macchina sbaglia la domanda critica,
 «potrebbero esserci uomini più bravi di qualunque macchina data, ma potrebbero
 anche esserci altre macchine più brave ancora». Hofstadter, in *Gödel, Escher,
 Bach*, giudica l'argomentazione di Lucas «erronea», ma in un modo che trova
 «affascinante».
 
-I teoremi limitativi dicono che nessun sistema formale coerente e
+In definitiva, i teoremi limitativi dicono che nessun sistema formale coerente e
 abbastanza ricco decide tutta l'aritmetica, e che nessun programma decide il
 comportamento di tutti i programmi; nulla, in essi, dimostra una differenza fra
 menti e macchine.
 
 `````
 
-Dai teoremi limitativi (così si chiamano i risultati sui limiti) resta anche una
-lezione di metodo: a volte la risposta arriva soltanto guardando il sistema da
-fuori, come l'invariante del gioco MIU ha chiuso una domanda che nessuna
-ricerca poteva chiudere.
+I risultati sui limiti prendono il nome di **teoremi limitativi**, e da essi
+resta anche una lezione di metodo: a volte la risposta arriva soltanto
+guardando il sistema da fuori, così come l'invariante del gioco MIU ha chiuso
+una domanda che nessuna ricerca poteva chiudere.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -594,15 +626,17 @@ ricerca poteva chiudere.
 ```
 `````
 
-Questi limiti non dipendono dalla potenza del calcolatore né dalla bravura di
-chi programma: valgono per ogni procedimento effettivo, compresi i programmi
-che imparano dai dati, che restano programmi. Dicono che non esiste un
-verificatore generale del comportamento di tutti i programmi; non dicono che un
-modello fissato, su ingressi di lunghezza limitata, sia impossibile da
-controllare. Si può, ma il costo è alto in generale: verificare una proprietà
-di una rete neurale con attivazioni ReLU è un problema NP-completo
-{cite}`katz2017reluplex`, cioè di quelli per cui ogni metodo noto, nel caso
-peggiore, ha un costo che cresce in modo esponenziale con la taglia della rete.
-Dentro quei confini resta un territorio vastissimo, quello delle macchine che
-si muovono nel mondo e decidono dove mettere le ruote: se ne occupa la sezione
-sulla {doc}`robotica <applicazioni>`.
+Questi limiti non dipendono dalla potenza del computer né dalla bravura di chi
+programma. Valgono infatti per ogni procedimento effettivo, compresi i
+programmi che imparano dai dati, che restano programmi. Dicono che non esiste
+un verificatore generale del comportamento di tutti i programmi; non dicono che
+un modello fissato, su ingressi di lunghezza limitata, sia impossibile da
+controllare.
+
+Un modello così si può controllare, ma il costo è alto in generale. Ad esempio,
+verificare una proprietà di una rete neurale con attivazioni ReLU è un problema
+NP-completo {cite}`katz2017reluplex`, cioè di quelli per cui ogni metodo noto,
+nel caso peggiore, ha un costo che cresce in modo esponenziale con la taglia
+della rete. Dentro quei confini resta un territorio vastissimo, quello delle
+macchine che si muovono nel mondo e decidono dove mettere le ruote: se ne
+occupa la sezione sulla {doc}`robotica <applicazioni>`.

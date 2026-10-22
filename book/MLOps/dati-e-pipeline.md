@@ -5,7 +5,7 @@ carta di credito, mentre è in funzione davanti a clienti veri. Il registro è
 quello di `git`, il programma con cui il mondo del software tiene la propria
 cronologia: ogni modifica ci finisce dentro con la sua data e il suo perché (si
 chiama *commit*). Il codice del modello è quasi fermo: qualche riga nuova al
-mese, una libreria aggiornata, una manopola ritoccata. Poi
+mese, una libreria aggiornata, un iperparametro ritoccato. Poi
 guarda i dati che quel codice ingoia: milioni di transazioni ogni giorno, mai
 due uguali, con nuovi negozi, nuovi importi, nuove truffe che ieri non
 esistevano. Il codice è la strada; i dati sono il traffico che ci passa sopra.
@@ -108,12 +108,12 @@ Un dataset pronto per l'addestramento non nasce così: è il prodotto finale di
 una catena di trasformazioni. Si estrae il dato grezzo, cioè come arriva
 dal mondo, da una o più sorgenti (un archivio, un flusso di eventi, dei file);
 si pulisce, buttando via i doppioni e sistemando le caselle vuote e i
-formati incoerenti; si costruiscono le feature, cioè le poche grandezze che
-si mettono davanti al modello al posto del dato grezzo («la spesa media
-dell'ultimo mese», «quante volte ha comprato di notte»); e solo alla fine si
-addestra. È la *pipeline* dell’anello MLOps: il dato entra
+formati incoerenti; si costruiscono le **feature**, cioè le poche grandezze che
+si mettono davanti al modello al posto del dato grezzo (ad esempio
+«la spesa media dell'ultimo mese», «quante volte ha comprato di notte»); e solo
+alla fine si addestra. È la **pipeline** dell’anello MLOps: il dato entra
 da un capo, attraversa una stazione dopo l'altra e ne esce pronto. Ognuno di
-questi passaggi si scrive con gli attrezzi per maneggiare tabelle già visti in
+questi passaggi si scrive con gli strumenti per maneggiare tabelle già visti in
 {doc}`Pandas e Matplotlib </Python/pandas-matplotlib>`.
 
 Il salto di qualità, però, è organizzativo prima che tecnico, e chiede due cose
@@ -138,11 +138,10 @@ scavalca. Ne segue che quel blocco va conservato versione per versione come il
 programma. Se cambia il modo di costruire una feature, il modello addestrato
 prima e quello addestrato dopo non stanno più guardando la stessa cosa, e
 confrontare i loro voti è come confrontare i tempi di due corse su piste di
-lunghezza diversa. Per le reti che imparano da sole le
-proprie rappresentazioni (le
-immagini, il testo) il blocco di mezzo si assottiglia, fino a ridursi alla
-normalizzazione o alla divisione in token; ma resta una trasformazione, e si
-conserva insieme al modello.
+lunghezza diversa. Per le reti che imparano da sole le proprie
+rappresentazioni (le immagini, il testo) il blocco di mezzo si riduce, fino a
+limitarsi alla normalizzazione o alla divisione in token; ma resta una
+trasformazione, e si conserva insieme al modello.
 
 `````{tab} Elementare
 
@@ -204,7 +203,7 @@ riproducibile né rilasciabile in modo affidabile.
 
 C'è una decisione che si prende all'inizio, che sembra tecnica e non lo è: come
 i dati stanno scritti su disco fra uno stadio e il successivo. La scelta più
-comune è il CSV, il modo più semplice di scrivere una tabella in un file di
+comune è il **CSV**, il modo più semplice di scrivere una tabella in un file di
 testo: una riga del file per ogni riga della tabella, e dentro ogni riga i
 valori separati da una virgola. È il formato che esce da un foglio di calcolo
 quando gli si chiede di esportare. Per le tabelle che passano da uno stadio
@@ -276,7 +275,7 @@ tipo e spesso per contenuto, il che abilita codifiche specializzate (dizionario
 per le categorie a bassa cardinalità, run-length per i valori ripetuti, delta
 per i timestamp) prima ancora della compressione generica. Rispetto al CSV
 equivalente il guadagno è di qualche volta, e a decidere quante è soprattutto
-la codifica a dizionario. Lo si misura qui su tabelle di
+la codifica a dizionario. Lo si misura su tabelle di
 duecentomila righe, con le impostazioni di serie di Pandas e PyArrow, che la
 *delta encoding* (memorizzare la differenza fra un valore e il precedente) non
 la usano: la si chiede colonna per colonna.
@@ -354,8 +353,8 @@ salti stanno fra uno e tre secondi, e a 8,1 quando arrivano fino a un minuto:
 quanto si guadagna lo decide la regolarità dei salti, perché in ogni gruppo di
 valori consecutivi ogni differenza si scrive con i bit che servono alla più
 larga del gruppo. È il caso da tenere a mente ogni volta che si dichiara che
-cosa fa uno strumento «di serie»: qui l'impostazione di serie lascia sul tavolo
-un fattore che va da poco più di tre a più di otto.
+cosa fa uno strumento «di serie»: qui l'impostazione di serie lascia
+inutilizzato un fattore che va da poco più di tre a più di otto.
 
 Il terzo è il **predicate pushdown**: Parquet memorizza per ogni gruppo di righe le
 statistiche di ciascuna colonna (minimo, massimo, conteggio dei nulli), quindi
@@ -364,10 +363,10 @@ decomprimerli.
 
 A questo si aggiunge uno schema con i tipi, che il CSV strutturalmente non
 ha. Un CSV è testo, e ogni lettore riscopre i tipi per euristica, il
-che è la sorgente di una classe intera di bug silenziosi (l'identificativo con
-gli zeri iniziali letto come intero, la data interpretata secondo la
-convenzione locale, il campo vuoto che diventa `NaN` oppure la stringa
-`"NA"` a seconda del lettore).
+che è la sorgente di una classe intera di bug silenziosi (ad esempio
+l'identificativo con gli zeri iniziali letto come intero, la data
+interpretata secondo la convenzione locale, il campo vuoto che diventa
+`NaN` oppure la stringa `"NA"` a seconda del lettore).
 
 **Apache Arrow** risolve un problema ortogonale: è una specifica di
 rappresentazione in memoria, colonnare, indipendente dal linguaggio. Il suo
@@ -461,7 +460,7 @@ con cui quel valore diventa disponibile al servizio (in Pandas,
 contano sono quelli in cui il dato è *arrivato* al sistema, non quelli in cui
 l'evento è *accaduto*. Un join sul solo tempo dell'evento rispetta $s \le t$ ma
 lascia trapelare il futuro lo stesso, perché il valore c'era già nell'archivio
-storico ma non ancora nel servizio. Un *point-in-time join* corretto è tedioso
+storico ma non ancora nel servizio. Un *point-in-time join* corretto è laborioso
 da implementare a mano ed è una delle ragioni per cui il feature store esiste
 come componente dedicato.
 
@@ -706,14 +705,14 @@ registro invece che, silenziosamente, dentro il modello.
 
 Proprio questo guardiano, però, ha due falle, e i record 5 e 6
 dell'uscita le mostrano. La prima è nel record 5. In Python il vero e il falso
-sono, sotto sotto, dei numeri: vero vale uno e falso vale zero. Ne segue che
+sono in realtà dei numeri: vero vale uno e falso vale zero. Ne segue che
 un'età scritta «vero» passa indenne da tutti e due i controlli sull'età,
 quello sul tipo (perché vero *è* un numero intero) e quello sull'intervallo
 (perché uno sta fra zero e centoventi). Il guardiano dice che va tutto bene, e
 non va bene niente. Capita ogni volta che una colonna di sì e no viene
 letta come vero-e-falso da un programma e come zero-e-uno da un altro: è la
 classe di guasti silenziosi che un CSV senza tipi dichiarati produce
-a getto continuo.
+in continuazione.
 
 La seconda falla è il rovescio della prima, nel record 6: un importo di 250
 euro scritto senza decimali è un dato valido, e il guardiano lo respinge,

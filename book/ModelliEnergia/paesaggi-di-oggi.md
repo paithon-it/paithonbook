@@ -3,23 +3,23 @@
 Le reti di Hopfield non si usano più, e nemmeno le macchine di Boltzmann
 ristrette, le RBM delle {doc}`macchine di Boltzmann
 </ModelliEnergia/boltzmann>`. Sarebbe facile
-archiviare l'energia come un pezzo di storia del deep learning, e sarebbe
-sbagliato: il modo di ragionare è rimasto, e tre luoghi diversi lo praticano
-oggi correntemente. Nel primo lo si dichiara, e sono i ricercatori che scrivono
-«modello a energia» nel titolo; negli altri due no, e sono i generatori di
-immagini e le memorie associative di oggi, che quel linguaggio lo usano senza
-nominarlo.
+archiviare l'energia come un pezzo di storia del deep learning, ma sarebbe
+sbagliato, perché il modo di ragionare è rimasto: tre luoghi diversi lo
+praticano oggi correntemente. Nel primo lo si dichiara, e sono i ricercatori
+che scrivono «modello a energia» nel titolo; negli altri due no, e sono i
+generatori di immagini e le memorie associative di oggi, che quel linguaggio lo
+usano senza nominarlo.
 
 ## Il ritorno dichiarato: modelli a energia sulle immagini
 
 L'idea di far calcolare l'energia di un'immagine a una rete convoluzionale, e
-di campionarla con la ricetta di Langevin, risale al 2016, a Jianwen Xie e
+di campionarla con la dinamica di Langevin, risale al 2016, a Jianwen Xie e
 colleghi {cite}`xie2016theory`. Il ritorno su scala arriva nel 2019, quando
 Yilun Du e Igor Mordatch mostrano che un modello a energia (in inglese
 *energy-based model*, che nella letteratura si abbrevia in **EBM**) si
 addestra su CIFAR-10, un archivio di fotografie a colori di animali e mezzi di
 trasporto, e più su fino alle immagini di ImageNet {cite}`du2019implicit`. Gli
-attrezzi sono quelli della {doc}`sezione sulla funzione di partizione
+strumenti sono quelli della {doc}`sezione sulla funzione di partizione
 </ModelliEnergia/oltre-la-partizione>`, con aggiustamenti che contano.
 
 Le immagini che ottengono sono migliori di quelle dei modelli che imparavano
@@ -38,26 +38,30 @@ immagine che le si dà, sa dire quanto in alto sta. Le risposte sbagliate su cui
 alzare il terreno se le fabbrica il modello stesso, lasciando rotolare qualche
 pallina giù per il paesaggio con addosso un po’ di rumore. Le palline di Du e
 Mordatch, però, rotolano molto e tremano pochissimo, molto meno di quanto la
-ricetta di Langevin vorrebbe, e si fermano dopo qualche decina di passi: più
+dinamica di Langevin vorrebbe, e si fermano dopo qualche decina di passi: più
 che una camminata che rispetta le proporzioni, è una discesa con un filo di
-rumore. La rete che dà i voti va tenuta a freno, perché non dia voti enormi e
-le palline non schizzino via. Le palline non ripartono da capo ogni volta: si
+rumore.
+
+La rete che dà i voti va tenuta a freno, perché non dia voti enormi e le
+palline non schizzino via. Le palline non ripartono da capo ogni volta: si
 tengono in un cesto e riprendono da dove erano arrivate, con qualcuna nuova
 buttata dentro ogni tanto. È il sogno che prosegue della macchina di
 Boltzmann, undici anni dopo e su fotografie a colori invece che su minuscole
 cifre in bianco e nero.
 
 Mescolare concetti merita due numeri, perché è la proprietà più bella e la meno
-ovvia. Si prende il paesaggio di «giovane» e quello di «sorridente» e si
-sommano le due altezze punto per punto. Una faccia giovane e imbronciata sta a
-3 nel primo paesaggio e a 10 nel secondo: sommati, 13: una cima. Una
+ovvia. Ad esempio, si prende il paesaggio di «giovane» e quello di «sorridente»
+e si sommano le due altezze punto per punto. Una faccia giovane e imbronciata
+sta a 3 nel primo paesaggio e a 10 nel secondo: sommati, 13: una cima. Una
 faccia giovane e sorridente sta a 3 e a 2: sommati, 5: ancora una valle.
 Sopravvivono insomma soltanto le conche che le due richieste hanno in comune, e
 cercare il punto più basso del paesaggio somma equivale a cercare una faccia
-giovane *e* sorridente. Il riferimento rispetto a cui 13 è una cima e 5 una
-valle è il paesaggio stesso: contano i confronti fra punti, non i numeri presi
-da soli. Per sommare due paesaggi non serve misurarli: le palline sentono
-soltanto la pendenza della somma.
+giovane *e* sorridente.
+
+Il riferimento rispetto a cui 13 è una cima e 5 una valle è il paesaggio
+stesso: contano i confronti fra punti, non i numeri presi da soli. Per sommare
+due paesaggi non serve misurarli, perché le palline sentono soltanto la
+pendenza della somma.
 
 `````
 
@@ -72,10 +76,10 @@ $$
 \qquad \boldsymbol{\omega}_k \sim \mathcal{N}(\mathbf{0}, \sigma^2 \mathbf{I}),
 $$
 
-con passo e rumore scelti indipendentemente ($\lambda = 10$,
-$\sigma = 0{,}005$), mentre la ricetta di Langevin li lega, $\lambda =
-\epsilon/2$ e $\sigma = \sqrt{\epsilon}$. Così tarata la catena è una discesa
-con un filo di rumore, fermata dopo qualche decina di passi, e non campiona
+con passo e rumore scelti indipendentemente ($\lambda = 10$, $\sigma =
+0{,}005$), mentre la dinamica di Langevin li lega, $\lambda = \epsilon/2$ e
+$\sigma = \sqrt{\epsilon}$. Con questa scelta la catena è una discesa con un
+filo di rumore, fermata dopo qualche decina di passi, e quindi non campiona
 $p_\theta$. A tenerla stabile servono una normalizzazione spettrale su ogni
 strato e una penalità $L^2$ sulla grandezza delle energie, senza le quali la
 catena diverge. Le catene ripartono per il 95% da un serbatoio di campioni
@@ -86,7 +90,7 @@ catene corte che ripartono sempre dal rumore, senza serbatoio, e trattano il
 generatore che ne esce come un oggetto a sé, lo *short-run MCMC*
 {cite}`nijkamp2019learning`.
 
-La composizione è un prodotto di esperti nel senso di Hinton
+La composizione è un **prodotto di esperti** nel senso di Hinton
 {cite}`hinton2002training`: per $K$ concetti con energie $E_k$,
 
 $$
@@ -96,14 +100,14 @@ p(\mathbf{x}) \propto \prod_{k=1}^{K} e^{-E_k(\mathbf{x})},
 $$
 
 una densità alta solo dove tutti i fattori sono alti, cioè una congiunzione.
-La
-partizione del prodotto non è il prodotto delle partizioni dei fattori; né
+
+La partizione del prodotto non è il prodotto delle partizioni dei fattori; né
 l’$\arg\min$ né la dinamica di Langevin però ne hanno bisogno: basta
 $\nabla_{\mathbf{x}} E = \sum_k \nabla_{\mathbf{x}} E_k$.
 
 `````
 
-Generare, completare, segnalare e mescolare si riducono a portarsi
+Generare, completare, segnalare e mescolare si riducono dunque a portarsi
 verso il basso. Non «nel punto più basso di tutti», che darebbe sempre
 la stessa risposta: si scende con addosso il rumore, come nella prima delle tre
 vie, e ogni volta si finisce in una valle diversa. Da un compito all'altro
@@ -160,25 +164,25 @@ che il paesaggio di una rete qualunque non sia di questi.
 
 Addestrando la stessa rete a fare bene tutte e due le cose (riconoscere la
 classe, e insieme dare energia bassa alle immagini plausibili) gli autori
-ottengono un classificatore che sbaglia con più prudenza: quando è incerto lo dice,
-riconosce le cose che non ha mai visto ed è più difficile da ingannare con
+ottengono un classificatore che sbaglia con più prudenza: quando è incerto lo
+dice, riconosce le cose che non ha mai visto ed è più difficile da ingannare con
 immagini manipolate.
 
 Il secondo compito si insegna facendo rotolare palline giù per il paesaggio,
 come nella via del campionamento, e quelle ogni tanto scappano in regioni dove
-il paesaggio non ha ancora forma: chiedere le due cose insieme rende
-l'addestramento fragile. È il difetto di famiglia dei
-modelli a energia, non di questo in particolare.
+il paesaggio non ha ancora forma, per cui chiedere le due cose insieme rende
+l'addestramento fragile. È il difetto di famiglia dei modelli a energia, non di
+questo in particolare.
 
 `````
 
 `````{tab} Superiore
 
-Sia $f_\theta(\mathbf{x}) \in \mathbb{R}^K$ il vettore dei logit di un classificatore
-a $K$ classi. La lettura usuale è
-$p_\theta(y \mid \mathbf{x}) = \operatorname{softmax}(f_\theta(\mathbf{x}))_y$. Grathwohl e
-colleghi osservano che gli stessi logit definiscono anche una densità
-congiunta, se si pone $E_\theta(\mathbf{x}, y) = -f_\theta(\mathbf{x})[y]$:
+Sia $f_\theta(\mathbf{x}) \in \mathbb{R}^K$ il vettore dei logit di un
+classificatore a $K$ classi. La lettura usuale è $p_\theta(y \mid \mathbf{x}) =
+\operatorname{softmax}(f_\theta(\mathbf{x}))_y$. Grathwohl e colleghi osservano
+che gli stessi logit definiscono anche una densità congiunta, se si pone
+$E_\theta(\mathbf{x}, y) = -f_\theta(\mathbf{x})[y]$:
 
 $$
 p_\theta(\mathbf{x}, y) = \frac{e^{f_\theta(\mathbf{x})[y]}}{Z(\theta)},
@@ -191,14 +195,18 @@ dove $\operatorname{logsumexp}_y f[y] = \log \sum_y e^{f[y]}$ è il massimo
 «ammorbidito» dei logit (vale sempre almeno quanto il più grande, e un po’ di
 più quando anche gli altri gli stanno vicino), da cui l'energia marginale
 $E_\theta(\mathbf{x}) = -\operatorname{logsumexp}_y f_\theta(\mathbf{x})[y]$
-{cite}`grathwohl2020your`. Se in un classificatore normale non la si vede mai,
-è questione di gradienti e non di assenza: la softmax è invariante alla
-traslazione dei logit, quindi la cross-entropy non vincola il loro livello
-assoluto, che resta libero di andare dove capita. L'informazione è lì (tanto
-che il logsumexp di una rete addestrata alla maniera solita si usa così com'è
-per riconoscere il fuori distribuzione, come mostrano Weitang Liu e colleghi
-nel 2020 {cite}`liu2020energy`); semplicemente nessuno le ha mai chiesto di
-essere sensata. JEM (*Joint Energy-based Model*) gliela chiede, massimizzando
+{cite}`grathwohl2020your`.
+
+Se in un classificatore normale questa energia non si vede mai, è questione di
+gradienti e non di assenza: la softmax è invariante alla traslazione dei logit,
+quindi la cross-entropy non vincola il loro livello assoluto, che resta libero
+di andare dove capita. L'informazione è lì (tanto che il logsumexp di una rete
+addestrata alla maniera solita si usa così com'è per riconoscere il fuori
+distribuzione, come mostrano Weitang Liu e colleghi nel 2020
+{cite}`liu2020energy`); semplicemente nessuno le ha mai chiesto di essere
+sensata.
+
+Il **JEM** (*Joint Energy-based Model*) gliela chiede, massimizzando
 la log-verosimiglianza congiunta nella forma $\log p_\theta(\mathbf{x}, y) =
 \log p_\theta(y \mid \mathbf{x}) + \log p_\theta(\mathbf{x})$: il primo termine
 è la solita cross-entropy cambiata di segno, il secondo è un EBM addestrato con
@@ -248,10 +256,10 @@ sempre dalla parte giusta, mentre le manciate, sorteggiate ogni volta in una
 direzione diversa, a lungo andare si disfano fra loro. Nessuno toglie un velo
 alla volta.
 
-È la pallina della ricetta di Langevin, spinta a valle e scossa insieme, con una
+È la pallina della dinamica di Langevin, spinta a valle e scossa insieme, con una
 differenza sola: il paesaggio sotto di lei cambia a ogni passo, dal più liscio
 al più dettagliato. Questo rimedia al problema della prima via. In un paesaggio
-dettagliato, con valli strette e creste alte, una pallina resterebbe
+dettagliato, infatti, con valli strette e creste alte, una pallina resterebbe
 prigioniera vicino a dove è caduta, per quanto la si scuota; partendo da quello
 liscio arriva prima nella regione giusta, dove le valli sono larghe e si passa
 dall'una all'altra, e solo dopo nei particolari.
@@ -439,10 +447,9 @@ l'energia, e l'argomento tecnico è il più solido dei quattro, con la sua
 condizione: per un'energia scelta senza vincoli sull'architettura, misurare il
 paesaggio intero, cioè calcolare la funzione di partizione che trasforma le
 altezze in probabilità, è fuori portata, e moltissimi compiti non l'hanno mai
-richiesto. Esistono modelli che la calcolano esattamente, e pagano in vincoli sulla
-forma della rete: i modelli di
-linguaggio, autoregressivi, sono modelli probabilistici e funzionano
-benissimo.
+richiesto. Esistono modelli che la calcolano esattamente e pagano in vincoli
+sulla forma della rete: i modelli di linguaggio autoregressivi, ad esempio,
+sono modelli probabilistici e funzionano benissimo.
 
 La riga sui metodi contrastivi chiede di abbandonarli in favore di quelli
 regolarizzati, ed è la scelta discussa nella {doc}`cornice di LeCun
@@ -497,7 +504,8 @@ risultati e i suoi limiti, non come una profezia.
 - Un paesaggio si può scavare anche su immagini vere, e allora un solo
   modello fa quattro mestieri: genera, completa un'immagine a cui manca un
   pezzo, segnala quello che è fuori posto e mescola concetti. Sono la stessa
-  cosa: cercare il punto più basso, con vincoli diversi.
+  cosa: scendere verso il basso con vincoli diversi, e con un po' di rumore
+  che fa finire ogni volta in una valle diversa.
 - Un classificatore è già un modello a energia senza saperlo: dal più alto
   dei punteggi che dà alle classi, corretto un poco verso l'alto quando anche
   gli altri gli stanno vicino, si ottiene quanto quell'immagine è plausibile,
@@ -537,9 +545,10 @@ risultati e i suoi limiti, non come una profezia.
 :class: important
 - Gli EBM sulle immagini {cite}`xie2016theory,du2019implicit` addestrano una
   rete come $E_\theta$ con campioni negativi da una discesa rumorosa parente di
-  Langevin (rumore tarato a parte, catene corte) e un serbatoio persistente: un
-  solo modello genera, completa, rileva anomalie e compone concetti, perché
-  sommare energie è moltiplicare densità (un prodotto di esperti).
+  Langevin (rumore calibrato a parte, catene corte) e un serbatoio
+  persistente: un solo modello genera, completa, rileva anomalie e compone
+  concetti, perché sommare energie è moltiplicare densità (un prodotto di
+  esperti).
 - JEM {cite}`grathwohl2020your`: i logit di un classificatore definiscono
   anche una densità sugli ingressi, con
   $E_\theta(\mathbf{x}) = -\operatorname{logsumexp}_y f_\theta(\mathbf{x})[y]$
