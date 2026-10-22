@@ -1,5 +1,7 @@
 # first list the packages you wish to download from PyPI
-teachbooks # depends on jupyter-book
+# Fissato come le estensioni qui sotto: un rilascio nuovo di TeachBooks cambia
+# la build, e si adotta provandolo, non quando esce.
+teachbooks==0.2.5 # depends on jupyter-book
 # numpy
 
 # docutils: la versione serve all'impaginazione della pagina di bibliografia.
@@ -12,14 +14,14 @@ teachbooks # depends on jupyter-book
 # rimanderebbe soltanto la prossima rottura a sorpresa.
 docutils==0.21.2
 
-# now list the packages (and the respective url) you wish to download from the GitLab package registry
---extra-index-url https://gitlab.tudelft.nl/api/v4/projects/17983/packages/pypi/simple  #temporarily disable
-jupyterbook_patches ~= 0.1.4  #temporarily disable
---extra-index-url https://gitlab.tudelft.nl/api/v4/projects/11239/packages/pypi/simple  #temporarily disable
-sphinx-thebe ~= 0.9.9  #temporarily disable
-
-# lastly any packages you wish to download directly from a Git repository
-download_link_replacer @ git+https://gitlab.tudelft.nl/mude/sphinx-download-link-replacer #temporarily disable
+# Le estensioni di TeachBooks vengono da PyPI e da GitHub, ciascuna fissata a
+# una versione: la build non dipende dal registro del GitLab di TU Delft, e un
+# aggiornamento di terzi non entra nel sito senza che lo si decida qui.
+# `sphinx-thebe` (il codice eseguibile nel browser, `use_thebe_lite`) e' la
+# versione di TeachBooks, che su PyPI non c'e': si prende dal loro repository,
+# al commit del tag v1.0.4.
+jupyterbook-patches==1.15.0
+sphinx-thebe @ git+https://github.com/TeachBooks/Sphinx-Thebe@1f3a80969622b7d63f48f05d8769f5cb933202a0
 
 # allows for syncronized tabs in case you’d like your tabs to shift across the page at the same time.
 sphinx-inline-tabs 
