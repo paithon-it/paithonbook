@@ -148,7 +148,7 @@ Ogni SM è una piccola macchina completa, e contiene:
 
 Gli ordini di grandezza aiutano a fissare le proporzioni, senza inseguire il
 numero esatto di un modello specifico (che cambia a ogni generazione). Una GPU
-ha da parecchie decine a oltre un centinaio di SM, e dentro ogni SM da
+ha da qualche decina a oltre un centinaio di SM, e dentro ogni SM da
 sessantaquattro a centoventotto ALU in virgola mobile a 32 bit, per un totale
 di migliaia o decine di migliaia sul chip.
 
@@ -480,9 +480,10 @@ Se ogni thread legge 4 byte, un warp in volo ne porta 128, e servono una
 quarantina abbondante di richieste pendenti per SM, più di due terzi dei 64
 warp che un SM può ospitare: occupancy alta. Se invece ogni thread
 legge un `float4` (16 byte, cioè 512 byte per warp), ne bastano una dozzina, e
-la banda si satura con meno di un quinto dei warp. Stesso kernel, stessa
-occupancy nominale, due regimi opposti: le richieste in volo vanno tenute alte,
-e ci si arriva sia con tanti warp sia con pochi warp che leggono largo.
+la banda si satura con meno di un quinto dei warp. Cambia solo la larghezza
+della lettura, e le occupancy necessarie sono opposte: le richieste in volo
+vanno tenute alte, e ci si arriva sia con tanti warp sia con pochi warp che
+leggono largo.
 
 `````
 

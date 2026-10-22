@@ -636,10 +636,11 @@ traslazione.
 ## Alla prova: duemila banchi da mille tiri
 
 Le prime quattro strategie (l'avida, quella che azzarda ogni tanto, l'ottimista
-e UCB) stanno in un programma solo, perché fra loro cambiano in due punti
-soltanto: come scelgono la leva e da quale numero partono le stime. Tre
-compaiono più di una volta, con parametri diversi: chi azzarda con due
-frequenze, l'ottimista con i due modi di fare il passo, UCB con due bonus.
+e UCB) stanno in un programma solo, perché fra loro cambiano in tre punti
+soltanto: come scelgono la leva, da quale numero partono le stime e che passo
+usano per aggiornarle. Tre di loro compaiono più di una volta, con parametri
+diversi: chi azzarda con due frequenze, l'ottimista con i due modi di fare il
+passo, UCB con due bonus.
 
 ```python
 import numpy as np

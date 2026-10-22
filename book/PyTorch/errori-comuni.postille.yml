@@ -13,7 +13,7 @@
   impronta: "07c9bfab611e"
   postilla: "Le immagini appiattite vanno dritte allo strato finale: manca quello nascosto"
 - inizio: "Il secondo errore riguarda il `dtype`,"
-  impronta: "a16e038b7b78"
+  impronta: "703ac628e420"
   postilla: "Numero per numero i tipi si adattano; nel prodotto fra matrici e negli strati no"
 - inizio: "I due messaggi vanno letti in"
   impronta: "914be79cb417"

@@ -95,9 +95,9 @@ vero è impraticabile per lo stesso motivo dell’{doc}`albero dei futuri
 </Ricerca/overview>` (agli scacchi $35^{80}$).
 
 L’idea si fa risalire a un lavoro di Ernst Zermelo sugli scacchi del 1912, e il
-teorema del minimax, per cui ogni gioco a due a somma zero ha un valore se si
-ammettono strategie miste, che tirano a sorte, è di John von Neumann, del 1928
-{cite}`russell2020artificial`.
+teorema del minimax, per cui ogni gioco finito a due a somma zero ha un valore
+se si ammettono strategie miste, che tirano a sorte, è di John von Neumann, del
+1928 {cite}`russell2020artificial`.
 
 Minimax non è un’euristica e non approssima niente: dato l’albero completo, il
 valore che restituisce è esatto. Per evitare di costruire quell’albero ci sono

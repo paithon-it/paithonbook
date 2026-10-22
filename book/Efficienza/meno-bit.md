@@ -352,7 +352,7 @@ A quattro bit il tetto a due deviazioni standard e mezzo porta l’errore dal
 18,7% all’11,4%, quasi quanto una scala ogni sessantaquattro pesi e senza
 nessuna scala in più da tenere; a tre bit fa meglio dei gruppi. A otto bit serve
 poco, perché il tetto migliore sta appena sotto il peso più grande. Il metodo
-funziona finché quello che si taglia è poco e non conta. Se invece il peso
+funziona finché quello che si taglia è poco e non conta. Se invece il valore
 più grande è proprio quello che decide il risultato, tagliarlo vuol dire
 sbagliare il numero che conta di più, ed è il caso delle componenti enormi.
 
@@ -369,7 +369,7 @@ rimedio è una scala per canale invece che per tutto lo strato.
 Sulle attivazioni dei modelli linguistici grandi, cioè sui numeri che scorrono
 da uno strato all’altro, il problema invece è molto marcato: ci sono poche
 componenti (una componente è uno dei numeri della fila che passa da uno strato
-al successivo, sempre nella stessa posizione) che arrivano a valere fino a venti
+al successivo, di solito nella stessa posizione) che arrivano a valere fino a venti
 volte tutte le altre {cite}`dettmers2022llmint8`. Nell’esperimento che segue il
 rapporto è fissato ancora più in alto, a trentasei volte, per rendere visibile
 in dieci righe un effetto che nei modelli veri si accumula su molti strati.
@@ -412,7 +412,7 @@ dei numeri, invece di arrotondarle, e l’errore passa da poco più del sette pe
 cento a due decimi. Sui modelli linguistici dai 6,7 miliardi di parametri in su
 è la differenza fra arrotondare a otto bit anche le attivazioni senza perdere
 accuratezza e perderne molta {cite}`dettmers2022llmint8`. Tenerle a parte è
-economico perché sono poche e sempre nelle stesse posizioni.
+economico perché sono poche e tendono a stare nelle stesse posizioni.
 
 `````{tab} Elementare
 
@@ -626,7 +626,7 @@ piccoli, perché tutto ciò che sta sotto $s/2$ finisce sullo zero. Il suo valor
 quadratico medio relativo è $s/(\sqrt{12}\,\sigma_w)$, cioè
 $(\max|w|/\sigma_w)/(127\sqrt{12}) \approx (\max|w|/\sigma_w)/440$. Ne segue
 che l’intero con una scala per tensore batte l’E4M3 finché il massimo resta
-sotto una dozzina di deviazioni standard, $\max|w|/\sigma_w \lesssim 11{,}7$.
+sotto una dozzina di deviazioni standard, $\max|w|/\sigma_w \lesssim 11{,}5$.
 
 Gli autori raccomandano E4M3 per pesi e attivazioni, che chiedono precisione, ed
 E5M2 per i gradienti, che chiedono intervallo. L’intervallo di un FP8 resta
@@ -689,9 +689,10 @@ tutti simili         4.6   1.04%    0.60%   2.66%   5.22%
 pochi grandi        34.5   7.83%    1.55%   2.50%   5.25%
 ```
 
-Sui pesi così come sono vince l’intero, 1,04% contro 2,66%, gli stessi numeri
-della prima tabella. Con il massimo a 4,6 deviazioni standard, infatti, il
-passo comune è fitto, e sbaglia meno delle tre cifre fisse dell’E4M3.
+Sui pesi così come sono vince l’intero, 1,04% contro 2,66%, e l’1,04% è lo
+stesso numero della prima tabella. Con il massimo a 4,6 deviazioni standard,
+infatti, il passo comune è fitto, e sbaglia meno delle tre cifre fisse
+dell’E4M3.
 
 Se un peso su cento è venti volte più grande, il massimo sale a 34,5
 deviazioni standard, sette volte e mezzo più di prima, e l’errore dell’intero a
@@ -858,10 +859,11 @@ porta il 7,83% al 2,50% quando qualche peso è grande. In nessuno di questi casi
 - L’FP8 {cite}`micikevicius2022fp8` (E4M3, massimo 448; E5M2, massimo
   $57\,344$) limita nel campo normale l’errore relativo, $2^{-(M+1)}$ con $M$ i
   bit di mantissa, dove l’`int8` limita quello assoluto; a scala unica l’`int8`
-  vince finché $\max|w|/\sigma_w \lesssim 11{,}7$ (1,04% contro 2,66%), e perde
-  con pochi valori anomali grandi (7,83% contro 2,50%), ma una scala ogni 64
-  pesi lo riporta davanti (1,55%). L’FP8 vuole una scala per tensore o per
-  blocco, e il suo vantaggio è il picco doppio dei tensor core che lo eseguono.
+  vince finché $\max|w|/\sigma_w \lesssim 11{,}5$ (sui pesi della prova 1,04%
+  contro 2,66%), e perde con pochi valori anomali grandi (7,83% contro 2,50%),
+  ma una scala ogni 64 pesi lo riporta davanti (1,55%). L’FP8 vuole una scala
+  per tensore o per blocco, e il suo vantaggio è il picco doppio dei tensor
+  core che lo eseguono.
 - Sotto gli otto bit servono metodi che non trattino l’arrotondamento come
   locale: GPTQ {cite}`frantar2023gptq` compensa sull’uscita l’errore già
   commesso, AWQ {cite}`lin2024awq` protegge i canali che moltiplicano le

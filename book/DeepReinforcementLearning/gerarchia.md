@@ -497,7 +497,8 @@ trova gli obiettivi da sé: su *Montezuma's Revenge* li ricava da un rivelatore
 di oggetti scritto a mano (la scala, la chiave, la porta), ricevendo
 dall'esterno ciò che si voleva apprendere. Mostra che due livelli e un premio
 interno superano le ricompense rade quando gli obiettivi ci sono; trovarli
-resta il compito dell'altra famiglia.
+resta il compito dei metodi che li apprendono, come l’option-critic e le
+FeUdal Networks.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

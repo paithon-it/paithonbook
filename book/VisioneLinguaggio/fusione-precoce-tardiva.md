@@ -50,7 +50,7 @@ simboli che stanno per pezzi di immagine, l'ultimo strato potrebbe pescare
 anche quelli, e quindi produrre un disegno diventerebbe *la stessa operazione*
 con cui si produce una frase. L'idea funziona, ma ha dei costi.
 
-## Un alfabeto anche per i pixel
+## Quantizzazione vettoriale: un vocabolario anche per i pixel
 
 La **quantizzazione vettoriale** (*vector quantization*) serve ogni volta che
 una grandezza continua deve entrare in un modello che lavora su simboli, cioè

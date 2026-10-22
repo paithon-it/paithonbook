@@ -378,8 +378,10 @@ alza il peso, cioè il punteggio assegnato dal router, e la volta dopo il router
 lo sceglierà più volentieri per un token simile. Il router viene corretto sul
 risultato degli esperti che ha scelto, mai direttamente sulla scelta.
 
-Gli esperti *non* scelti non ricevono gradiente per quel token: nessuna
-correzione, nessun modo di dimostrare che avrebbero fatto meglio. Questa
+I parametri degli esperti *non* scelti non ricevono gradiente per quel token:
+nessuna correzione, nessun modo di dimostrare che avrebbero fatto meglio (i loro
+punteggi nel router possono riceverne, con la softmax su tutti gli $N$, ma
+l'esperto in sé non viene toccato). Questa
 asimmetria fa risparmiare calcolo e sta all'origine del difetto tipico dei
 modelli a esperti.
 

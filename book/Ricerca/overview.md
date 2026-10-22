@@ -300,10 +300,10 @@ più grossa porta al reinforcement learning.
   supera di quanto sono numerose le strade verso uno stesso stato.
 - Le due grandezze che governano il costo sono il fattore di ramificazione $b$
   e la profondità: un albero completo fino a $d$ ha $O(b^d)$ nodi. Per gli
-  scacchi $b \approx 35$ e una partita dura in media ottanta mosse dei due
-  giocatori insieme, cioè $35^{80} \approx 3 \cdot 10^{123}$, un numero di
-  centoventiquattro cifre
-  {cite}`russell2020artificial`.
+  scacchi $b \approx 35$ {cite}`russell2020artificial` e, se si assume una
+  partita media di ottanta mosse dei due giocatori insieme, $35^{80} \approx
+  3 \cdot 10^{123}$, un numero di centoventiquattro cifre (con le cinquanta
+  mosse per giocatore di quel testo si arriva a $35^{100} \approx 10^{154}$).
 - La ricerca è pianificazione a modello noto: si assume di poter
   interrogare la funzione di transizione quante volte si vuole, a costo nullo.
   È l’ipotesi che il {doc}`capitolo sul reinforcement learning

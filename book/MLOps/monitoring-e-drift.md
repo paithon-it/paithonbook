@@ -574,7 +574,7 @@ nuova {cite}`lipton2018detecting`, come in {doc}`Quando i dati cambiano
 </MachineLearning/dati-che-cambiano>`. Il
 monitoraggio statistico è un allarme precoce, non un verdetto.
 
-### Quanta strada, e quanto bene ordina
+### Wasserstein e Gini: quanta strada, e quanto bene ordina
 
 Il KS guarda lo scarto più grande fra le due curve cumulate, e non vede
 quanto lontano i dati si sono spostati. La **distanza di Wasserstein**, già

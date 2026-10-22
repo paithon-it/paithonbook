@@ -454,13 +454,14 @@ dove $\mathbf{o}$ è la riga di uscita accumulata, cioè la somma pesata dei
 vettori $\mathbf{v}_i$, e il fattore $e^{\,m - m^{\text{new}}}$ corregge ciò
 che avevamo già sommato quando compare un massimo nuovo. Si parte da
 $m = -\infty$, $l = 0$ e $\mathbf{o} = \mathbf{0}$, e alla fine si divide,
-$\mathbf{o} \leftarrow \mathbf{o}/l$. Lo stato è di due scalari per riga, e la
-matrice $N \times N$ non viene mai scritta.
+$\mathbf{o} \leftarrow \mathbf{o}/l$. Oltre all'accumulatore $\mathbf{o}$, lo
+stato è di due scalari per riga, e la matrice $N \times N$ non viene mai
+scritta.
 
-Per il passo all'indietro basta salvarne uno, $L = m + \log l$ (il logaritmo
-della somma degli esponenziali, *logsumexp*), e da lì i pesi si ricostruiscono
-come $P_{ij} = e^{S_{ij} - L_i}$ senza rifare il massimo
-{cite}`dao2023flashattention2`.
+Per il passo all'indietro basta salvare uno scalare solo, che li combina,
+$L = m + \log l$ (il logaritmo della somma degli esponenziali, *logsumexp*), e
+da lì i pesi si ricostruiscono come $P_{ij} = e^{S_{ij} - L_i}$ senza
+rifare il massimo {cite}`dao2023flashattention2`.
 
 Una riga che finora ha visto solo punteggi mascherati, cioè posti a $-\infty$
 (una maschera di riempimento, una finestra locale), ha ancora $m = -\infty$, e
@@ -696,11 +697,11 @@ distribuito <parallelismo-distribuito>`.
   tiling di $\mathbf{Q},\mathbf{K},\mathbf{V}$ in shared memory e la
   online softmax non scrive mai la matrice $N \times N$ in HBM. Il risultato
   è esatto, non approssimato.
-- La online softmax normalizza i punteggi a blocchi tenendo due scalari di
-  stato (massimo corrente $m$ e somma corrente $l$) e ri-scalando ciò che ha
-  già sommato quando compare un massimo nuovo: dà gli stessi pesi del calcolo
-  in un colpo solo. Per il backward basta salvare il logsumexp
-  $L = m + \log l$.
+- La online softmax normalizza i punteggi a blocchi tenendo,
+  oltre all'accumulatore, due scalari di stato (massimo corrente $m$ e somma
+  corrente $l$) e ri-scalando ciò che ha già sommato quando compare un massimo
+  nuovo: dà gli stessi pesi del calcolo in un colpo solo. Per il backward basta
+  salvare il logsumexp $L = m + \log l$.
 - Non fa meno FLOP: in avanti altrettanti, e nel backward $10N^2 d_k$ contro
   $8N^2 d_k$, perché $\mathbf{S}$ e $\mathbf{P}$ non sono salvate e vanno
   ricalcolate ($+25\,\%$ sul backward; l'articolo riporta $+12{,}9\,\%$ sul

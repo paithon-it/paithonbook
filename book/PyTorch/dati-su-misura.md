@@ -783,7 +783,7 @@ I rimedi, di solito in quest'ordine:
 Più aiutanti. Alzare `num_workers`: se il problema è che nessuno prepara i
 vassoi mentre la scheda cucina, è la prima cosa da provare.
 
-Ritagliare le foto una volta sola. Se ogni epoca ridimensiona quattromila
+Ridimensionare le foto una volta sola. Se ogni epoca ridimensiona quattromila
 fotografie da dodici megapixel a 224 pixel per lato, si sta rifacendo quello
 stesso lavoro decine di volte. Farlo una volta e salvare le immagini già
 piccole su disco è un pomeriggio che si ripaga in un'ora.

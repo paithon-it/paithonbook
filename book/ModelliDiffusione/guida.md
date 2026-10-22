@@ -305,7 +305,7 @@ il modello generativo. Si paga però al momento di generare. Per sapere in che
 direzione ritoccare i pixel bisogna ripercorrere la rete all'indietro, e un
 passo guidato la attraversa due volte invece di una, all'andata e al ritorno.
 Siccome il modello non si sta addestrando, il ritorno costa quanto l'andata, e
-il passo costa il doppio.
+il passo costa quasi il doppio.
 
 Un accorgimento fa la differenza fra funzionare e non funzionare. La misura va
 applicata non all'immagine rumorosa che si ha in mano, ma alla stima
@@ -533,9 +533,9 @@ uno spostamento grande.
 
 Si noti che le cinque righe non si sommano, e non devono: $0{,}161$ più
 $0{,}530$ e via dicendo fa più di $1{,}070$. Un campione spinto fuori strada in
-una finestra viene poi in parte ritirato verso la distribuzione dei dati dal
-punteggio libero nelle finestre seguenti, quindi le spinte si compensano fra
-loro invece di accumularsi.
+una finestra viene poi in parte ritirato verso la distribuzione dei dati della
+classe, dal punteggio condizionato non amplificato, nelle finestre seguenti,
+quindi le spinte si compensano fra loro invece di accumularsi.
 
 Il banco, però, non dice dove convenga accendere la guida nei modelli veri.
 Chi la usa sui modelli veri fa l'opposto di quanto suggeriscono questi numeri:

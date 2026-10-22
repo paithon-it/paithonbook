@@ -713,12 +713,13 @@ standard della colonna. Così ogni caratteristica (*feature*) ha media
 $0$ e scala $1$. Il motivo è il condizionamento: è un intervento sul problema,
 non sull'algoritmo.
 
-Se una feature vale in migliaia di euro e un'altra in numero di stanze, i loro
-prodotti dentro la rete stanno su scale lontanissime e la superficie della
-*loss* si allunga in una valle stretta, mal condizionata. La discesa del
-gradiente vi rimbalza da una parete all'altra a zig-zag, convergendo molto
-lentamente. Standardizzare rende le curve di livello molto più tonde: il
-gradiente punta quasi dritto verso il minimo ({numref}`fig-condizionamento`).
+Se una feature vale in centinaia di migliaia di euro e un'altra in numero di
+stanze, i loro prodotti dentro la rete stanno su scale lontanissime e la
+superficie della *loss* si allunga in una valle stretta, mal condizionata. La
+discesa del gradiente vi rimbalza da una parete all'altra a zig-zag,
+convergendo molto lentamente. Standardizzare rende le curve di livello molto
+più tonde: il gradiente punta quasi dritto verso il minimo
+({numref}`fig-condizionamento`).
 
 Per misurare l'effetto con il numero di condizionamento, consideriamo un
 modello lineare con $m$ esempi e perdita

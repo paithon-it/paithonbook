@@ -559,7 +559,7 @@ migliore = cross_encoder(domanda, riordino[0])
 soglia = max(migliore / 2, 1)
 rosa = [i for i in riordino if cross_encoder(domanda, i) >= soglia]
 
-print("\nAl generatore va solo chi supera meta' del punteggio migliore:")
+print("\nAl generatore va solo chi raggiunge meta' del punteggio migliore:")
 for n, i in enumerate(rosa, 1):
     print(f"  [{n}] {passaggi[i]}")
 ```
@@ -577,7 +577,7 @@ Stadio 2 - cross-encoder (preciso, solo sui 4 candidati):
   pertinenza 0.0  Il muro portante sostiene il solaio.
   pertinenza 0.0  L'auto storica sfila per il centro.
 
-Al generatore va solo chi supera meta' del punteggio migliore:
+Al generatore va solo chi raggiunge meta' del punteggio migliore:
   [1] Il gatto nero salta sul muro del giardino.
 ```
 
@@ -600,7 +600,7 @@ la risposta.
 
 In generale, senza una soglia affidabile l'unica regola è «prendine i primi
 $k$», che riempie i posti anche con un passaggio che non risponde. Con punteggi
-separati si può fissare una soglia: qui passa chi supera metà del punteggio
+separati si può fissare una soglia: qui passa chi raggiunge metà del punteggio
 migliore, cioè $4{,}5$, e l'unico a passare è il $9$. Metà del migliore
 richiede un minimo assoluto, qui un punto: se nessun passaggio
 rispondesse, i punteggi sarebbero tutti zero e la soglia, metà di zero, li

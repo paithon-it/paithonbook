@@ -546,8 +546,8 @@ di alternative equiprobabili che darebbero la stessa entropia. Per la moneta
 equa, ad esempio, $2^1 = 2$ facce, per quella truccata $2^{0{,}47} \approx
 1{,}4$, e in {numref}`fig-perplessita-righello` sono lo stesso punto letto sui
 due bordi. Anche un valore non intero ha un senso preciso:
-$2^{0{,}47}\approx1{,}4$, poco meno di $2^{0{,}5}\approx1{,}41$, corrisponde a
-meno di due alternative effettive.
+$2^{0{,}47}\approx1{,}4$, cioè meno di due alternative effettive, perché
+l'entropia sta sotto il bit.
 
 `````{tab} Elementare
 
@@ -601,7 +601,8 @@ $$
 h = \lim_{n\to\infty}\frac{H(X_1,\dots,X_n)}{n},
 $$
 
-definita come la sorpresa media di un simbolo dato tutto ciò che lo precede.
+che per una sorgente stazionaria è la sorpresa media di un simbolo dato tutto
+ciò che lo precede.
 
 Se i simboli sono indipendenti, $h$ coincide con la $H$ di un simbolo solo; se
 c'è memoria, $h$ è più piccola, e l'entropia calcolata sulle sole
@@ -765,8 +766,8 @@ print(f"{h_zero:.2f}  {gzip_per_carattere:.2f}")
 - Il limite della compressione senza perdite è l’entropia per simbolo
   (*entropy rate*) $\lim_n H(X_1,\dots,X_n)/n$, non la $H$ di ordine zero
   calcolata sulle frequenze marginali: per una sorgente con memoria la seconda
-  sovrastima largamente, e un compressore generico la scavalca senza
-  contraddire Shannon.
+  sovrastima, anche di molto se la memoria è forte, e un compressore generico
+  la scavalca senza contraddire Shannon.
 ```
 `````
 

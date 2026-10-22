@@ -179,9 +179,9 @@ d'influenza** di ogni punto.
 `````{tab} Elementare
 
 Ogni punto è un lampione acceso di notte: illumina bene chi gli sta accanto,
-sempre meno chi si allontana, per niente chi è lontano. Il numero che il kernel
-restituisce per due punti è quanta luce dell'uno arriva all'altro; sta fra $0$
-e $1$, e vale $1$ solo per il lampione stesso.
+sempre meno chi si allontana, quasi per niente chi è lontano. Il numero che il
+kernel restituisce per due punti è quanta luce dell'uno arriva all'altro; sta
+fra $0$ e $1$, e vale $1$ solo per il lampione stesso.
 
 Chiamiamo *portata* del lampione la distanza alla quale la luce è scesa a
 $0{,}37$, poco più di un terzo, e mettiamo che sia un metro e mezzo. Chi sta a
@@ -440,7 +440,7 @@ si ripiega su modelli lineari (`LinearSVC`, `SGDClassifier`, che scalano circa
 come $O(m)$) o sugli alberi in boosting della {doc}`sezione sugli ensemble
 <alberi-ensemble>` {cite}`geron2022hands`.
 
-Le tre varianti si provano sugli stessi duecento punti, due mezzelune
+Le varianti si provano sugli stessi duecento punti, due mezzelune
 intrecciate (`make_moons`), il caso di scuola delle frontiere curve. Per
 $\gamma$ si usa il default di scikit-learn, `gamma="scale"`, che vale
 $1/(n\, \mathrm{Var}(\mathbf{X}))$ con $n$ colonne, e quindi $1/n$ dopo lo

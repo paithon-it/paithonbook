@@ -337,8 +337,9 @@ coseno negativo.
 
 Resta il problema dei pesi $\lambda_t$, insidioso perché le loss di compiti
 diversi hanno unità e scale diverse (una cross-entropia e un errore in metri
-non sono commensurabili). Inoltre cercarli a mano è un'ottimizzazione in $T-1$
-dimensioni, ciascuna delle quali richiede un addestramento.
+non sono commensurabili). Inoltre cercarli a mano è una ricerca in $T-1$
+dimensioni, in cui ogni combinazione provata richiede un addestramento
+completo.
 
 La soluzione di Kendall, Gal e Cipolla {cite}`kendall2018multi` li tratta come
 funzione dell’**incertezza omoschedastica** di ciascun compito, parametrizzata
@@ -587,8 +588,9 @@ aperto, e si procede misurando, provandoli a coppie, più che deducendolo.
   meccanica sono i gradienti in conflitto; proiettarli (PCGrad) è il
   rimedio più noto, ma che serva davvero è contestato dai confronti su larga
   scala.
-- I pesi $\lambda_t$ delle loss non sono commensurabili fra compiti; si
-  possono apprendere trattandoli come incertezza di ciascun compito
+- Le loss dei compiti non sono commensurabili fra loro, e così i pesi
+  $\lambda_t$ non si fissano a occhio; si possono apprendere trattandoli come
+  incertezza di ciascun compito
   ($\mathcal{L} = \sum_t [\mathcal{L}_t/(2\sigma_t^2) + \log\sigma_t]$ per una
   regressione, con $1/\sigma_t^2$ al posto di $1/(2\sigma_t^2)$ per una
   classificazione), invece di cercarli a mano; all'ottimo ogni compito pesa

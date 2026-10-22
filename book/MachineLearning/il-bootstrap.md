@@ -184,7 +184,7 @@ $$
 $$
 
 giustificata dal fatto che $\hat{F}_m \to F$ (Glivenko–Cantelli) e che, per
-statistiche abbastanza regolari, la legge della radice normalizzata $\sqrt
+statistiche abbastanza regolari, la legge dello scarto normalizzato $\sqrt
 m\,(\hat\theta - \theta(F))$ dipende con continuità da $F$. Di conseguenza la
 sua copia bootstrap $\sqrt m\,(\hat\theta^* - \hat\theta)$, calcolata sotto
 $\hat F_m$, ha la stessa legge limite {cite}`bickel1981some`. Basta che
@@ -428,11 +428,11 @@ quei decimi.
 
 La sotto-copertura è un fatto documentato dell'intervallo percentile, che con
 campioni piccoli e distribuzioni asimmetriche sotto-copre di poco e
-sistematicamente. Le sue varianti sono l'intervallo *basic*, che ribalta i
-quantili attorno alla stima, e il $\mathrm{BCa}$, che ne corregge i livelli. Si
-possono mettere alla prova sullo stesso esperimento, con meno prove per metodo
-perché le differenze da vedere sono più grandi, e `scipy.stats.bootstrap`
-calcola tutti e tre gli intervalli.
+sistematicamente {cite}`diciccio1996bootstrap`. Le sue varianti sono
+l'intervallo *basic*, che ribalta i quantili attorno alla stima, e il
+$\mathrm{BCa}$, che ne corregge i livelli. Si possono mettere alla prova sullo
+stesso esperimento, con meno prove per metodo perché le differenze da vedere
+sono più grandi, e `scipy.stats.bootstrap` calcola tutti e tre gli intervalli.
 
 ```python
 from scipy.stats import bootstrap as boot_scipy

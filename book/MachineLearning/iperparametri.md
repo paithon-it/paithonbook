@@ -688,15 +688,15 @@ membro di sinistra, quindi a parità di vero massimo la distorsione non
 diminuisce con $N$. In altre parole, una ricerca abbastanza lunga fa
 overfitting *sul validation set* {cite}`cawley2010overfitting`.
 
-L'ottimismo ha un ordine di grandezza: per la disuguaglianza dell'unione il
-limite superiore allo scarto cresce come $\sqrt{\log N}$ nel numero $N$ di
-configurazioni confrontate, come mostra la {doc}`sezione sulla concentrazione
-</Matematica/concentrazione>`. Per difendersene si riserva il test a
-un'unica valutazione finale, si riportano media e deviazione standard sui
-fold, non il solo massimo, e nei confronti metodologici si usa la **nested
-cross-validation** (un anello esterno per la stima onesta dell'errore, un
-anello interno per la selezione degli iperparametri), accettandone il costo,
-che è il prodotto dei due anelli.
+L'ottimismo ha un ordine di grandezza: per la disuguaglianza dell'unione, se
+le stime sono limitate o sub-gaussiane, il limite superiore allo scarto cresce
+come $\sqrt{\log N}$ nel numero $N$ di configurazioni confrontate, come mostra
+la {doc}`sezione sulla concentrazione </Matematica/concentrazione>`. Per
+difendersene si riserva il test a un'unica valutazione finale, si riportano
+media e deviazione standard sui fold, non il solo massimo, e nei confronti
+metodologici si usa la **nested cross-validation** (un anello esterno per la
+stima onesta dell'errore, un anello interno per la selezione degli
+iperparametri), accettandone il costo, che è il prodotto dei due anelli.
 
 `````
 

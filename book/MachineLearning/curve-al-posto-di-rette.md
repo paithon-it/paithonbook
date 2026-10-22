@@ -326,7 +326,7 @@ altri, che si sceglie con la cross-validation di
 {doc}`Overfitting e validazione <overfitting-validazione>`. C'è anche una
 terza via, che evita questa scelta.
 
-## La manopola che irrigidisce il legno
+## Smoothing spline: la manopola che irrigidisce il legno
 
 Invece di decidere quanti nodi usare, se ne mette uno per dato e si penalizza
 la curvatura. È l'idea della **smoothing spline**. Il listello dei cantieri ne

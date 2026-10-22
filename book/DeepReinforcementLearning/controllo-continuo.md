@@ -192,7 +192,7 @@ direzione ai parametri dell'attore.
 
 Osserviamo però che un passaggio è un'approssimazione e non un'uguaglianza. Il
 teorema, infatti, vale per stati distribuiti secondo $\rho^\mu$, cioè secondo
-la policy corrente; sostituirvi gli stati del replay buffer,
+la policy corrente; sostituirvi gli stati della memoria di replay,
 $s\sim\mathcal{D}$, raccolti da policy precedenti, rende DDPG *off-policy*
 omettendo un termine del gradiente. Funziona, ma non discende dalla regola
 della catena: è una scelta, la stessa di tutti i metodi attore-critico

@@ -47,6 +47,31 @@
 
 versioni:
 
+- versione: "1.17.2"
+  data: 2026-10-22
+  voci:
+
+  - tipo: corretto
+    testo: >
+      **Altre correzioni di teoria.** Fra le altre: la disuguaglianza di
+      Markov applicata a una funzione crescente dello scarto, il teorema del
+      minimax che vale per i giochi finiti, i pesi dell'attenzione nella
+      traduzione calcolati da una piccola rete, le matrici ortogonali della SVD
+      che comprendono anche le riflessioni.
+
+  - tipo: corretto
+    testo: >
+      **Titoli col nome delle cose.** Più sezioni nominano l'oggetto accanto
+      all'immagine che lo racconta: la smoothing spline, il modality gap, la
+      complessità di Rademacher, l'allucinazione visiva, che è anche la nuova
+      voce dell'indice.
+
+  - tipo: corretto
+    testo: >
+      **Un nome per ogni cosa.** Nel deep reinforcement learning la memoria di
+      replay e la rete-target si chiamano allo stesso modo in tutte le sezioni,
+      e nei modelli di diffusione il peso della guida non diventa più «forza».
+
 - versione: "1.17.1"
   data: 2026-10-22
   voci:

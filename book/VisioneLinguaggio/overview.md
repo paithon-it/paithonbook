@@ -365,7 +365,7 @@ sistema ha guardato l'immagine.
   quanti puntini si danno da guardare al modello, perché una foto grande occupa
   tanto posto, come la si spezza in riquadri e che cosa serve per leggere un
   documento invece di riconoscere una scena.
-- {doc}`Vedere quel che non c'è </VisioneLinguaggio/vedere-quel-che-non-ce>`:
+- {doc}`Allucinazione visiva </VisioneLinguaggio/vedere-quel-che-non-ce>`:
   un modello che parla di una fotografia senza averla guardata, come lo si
   misura, e i sistemi che dalla percezione passano all'azione.
 

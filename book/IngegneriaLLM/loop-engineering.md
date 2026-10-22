@@ -60,16 +60,16 @@ prossima azione, la compie, guarda di nuovo; avanti così finché l'oggetto è
 finito. Questo è il ciclo *interno*, quello dentro la sua testa e le sue mani,
 e dura quanto dura un lavoro.
 
-La bottega del capitolo sugli agenti divideva il lavoro fra chi costruisce e
-chi collauda; qui serve una figura in più, che nessuno dei due fa. Sopra
-l'artigiano c'è il **capobottega**. Lui non intaglia: decide *quando* si
-comincia (lunedì mattina, o ogni notte alle tre), tiene un registro di cosa è
-stato fatto, controlla il pezzo finito prima di spedirlo, e se non va lo
-rimanda indietro con un appunto. Il capobottega è il ciclo *esterno*. Il loop
-engineering progetta il capobottega: la cadenza, il registro, il controllo, la
-ripartenza, e non le singole intagliature. Un artigiano bravissimo senza
-capobottega lavora finché lo guardi; con un buon capobottega lavora anche di
-notte, e ciò che consegna è già stato controllato.
+La bottega del {doc}`capitolo sugli Agenti </Agenti/overview>` divideva il
+lavoro fra chi costruisce e chi collauda; qui serve una figura in più, che
+nessuno dei due fa. Sopra l'artigiano c'è il **capobottega**. Lui non intaglia:
+decide *quando* si comincia (lunedì mattina, o ogni notte alle tre), tiene un
+registro di cosa è stato fatto, controlla il pezzo finito prima di spedirlo, e
+se non va lo rimanda indietro con un appunto. Il capobottega è il ciclo
+*esterno*. Il loop engineering progetta il capobottega: la cadenza, il registro,
+il controllo, la ripartenza, e non le singole intagliature. Un artigiano
+bravissimo senza capobottega lavora finché lo guardi; con un buon capobottega
+lavora anche di notte, e ciò che consegna è già stato controllato.
 
 Finito un pezzo, l'artigiano se ne va, e al banco la mattina dopo ne siede un
 altro, riposato e senza un ricordo di ieri. Quanto deve sapere sta sul
@@ -504,19 +504,20 @@ valuta.
 ```
 
 Il banco di prova disegnato in {numref}`fig-swe-bench` è SWE-bench
-{cite}`jimenez2024swebench`, già incontrato nel capitolo sugli agenti. Il suo
-pregio è anche il suo limite. Un banco così misura ciò che i test sanno vedere,
-e i test non sanno vedere tutto. Ad esempio, una modifica che li supera
-lasciando dietro di sé del codice più difficile da leggere passa comunque, e nel
-punteggio non se ne trova traccia. Il danno si paga più tardi, quando qualcuno
-dovrà rimetterci le mani, e per questo chi programma lo chiama un **debito**.
+{cite}`jimenez2024swebench`, già incontrato nel
+{doc}`capitolo sugli Agenti </Agenti/overview>`. Il suo pregio è anche il suo
+limite. Un banco così misura ciò che i test sanno vedere, e i test non sanno
+vedere tutto. Ad esempio, una modifica che li supera lasciando dietro di sé del
+codice più difficile da leggere passa comunque, e nel punteggio non se ne
+trova traccia. Il danno si paga più tardi, quando qualcuno dovrà rimetterci le
+mani, e per questo chi programma lo chiama un **debito**.
 
-Dallo stesso lavoro vengono due obiezioni più dure. Rileggendo a mano le prove
-superate, Aleithan e colleghi trovano che in circa una su tre la soluzione era
-già scritta dentro la segnalazione da risolvere, cioè l'agente aveva la risposta
-sotto gli occhi insieme alla domanda (negli Agenti l'abbiamo riportata per
-esteso); e che il 31% delle correzioni accettate era sospetto, sbagliato o
-incompleto, e passava soltanto perché i test erano troppo deboli per
+Una rilettura successiva muove due obiezioni più dure. Rileggendo a mano le
+prove superate, Aleithan e colleghi trovano che in circa una su tre la
+soluzione era già scritta dentro la segnalazione da risolvere, cioè l'agente
+aveva la risposta sotto gli occhi insieme alla domanda (negli Agenti l'abbiamo
+riportata per esteso); e che il 31% delle correzioni accettate era sospetto,
+sbagliato o incompleto, e passava soltanto perché i test erano troppo deboli per
 accorgersene. Tolti i casi dubbi, il tasso di successo dell'agente che
 misuravano scende dal 12,47% al 3,97% {cite}`aleithan2024swebenchplus`.
 
@@ -772,11 +773,12 @@ differenza di una frase, va sorvegliato mentre lavora.
 - Onestà sui limiti: il comprehension debt {cite}`osmani2026comprehension`
   (i loop amplificano il giudizio
   buono *e* cattivo; chi mantiene deve leggere ciò che parte), la sicurezza
-  (permessi minimi, cancelli umani ai punti irreversibili, come nel capitolo
-  sull’AI responsabile) e il costo per giro, da mettere a budget
-  e monitorare come insegna LLMOps. Resta lo statuto delle fonti: il vocabolario
-  del loop engineering viene da chi costruisce, non da chi misura; qui si
-  riporta il meccanismo, che dura, non i nomi degli strumenti, che cambiano.
+  (permessi minimi, cancelli umani ai punti irreversibili, come nel
+  {doc}`capitolo sull’AI responsabile </AIResponsabile/overview>`) e il costo
+  per giro, da mettere a budget e monitorare come insegna LLMOps. Resta lo
+  statuto delle fonti: il vocabolario del loop engineering viene da chi
+  costruisce, non da chi misura; qui si riporta il meccanismo, che dura, non i
+  nomi degli strumenti, che cambiano.
 ```
 
 `````

@@ -489,7 +489,8 @@ va una **media mobile esponenziale** aggiornata durante l'addestramento,
 $\hat{\mu} \leftarrow (1-m)\,\hat{\mu} + m\,\mu_{\mathcal{B}}$, non la media di
 tutto ciò che si è visto. Il parametro `momentum` di
 `nn.BatchNorm2d` (default $0{,}1$) è il peso del dato nuovo, cioè
-l'opposto del $\beta_1$ di Adam, dove $0{,}9$ è il peso della storia.
+l'opposto del $\beta_1$ di Adam (l'ottimizzatore descritto più avanti),
+dove $0{,}9$ è il peso della storia.
 
 Lo stato del modulo decide quale delle due statistiche si usa: dopo
 `model.train()` lo strato normalizza con

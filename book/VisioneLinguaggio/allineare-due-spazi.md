@@ -40,8 +40,8 @@ Qui lo spazio deve contenere anche le fotografie, non soltanto le parole: la
 foto di un gatto nero su un muro deve avere con la frase «un gatto nero su un
 muro» un coseno più alto che con «una scodella di minestra». Non serve
 che i due vettori coincidano, e la distanza che resta fra le foto e le
-frasi è il *modality gap* di cui parla il paragrafo «Un solo spazio, due
-quartieri».
+frasi è il *modality gap* di cui parla il paragrafo «Modality gap: un solo
+spazio, due quartieri».
 
 L'idea, resa celebre da CLIP {cite}`radford2021learning` nel 2021, è di
 addestrare due reti separate, un encoder di immagini e un encoder di testo, a
@@ -154,8 +154,8 @@ SigLIP.
 Due encoder, una mappa sola. Le somiglianze di un gruppo di $B$ coppie formano
 una tabella $B \times B$: sulla diagonale gli abbinamenti giusti, in tutte le
 altre caselle quelli sbagliati. Il disegno a sinistra è uno schema: quanto le
-due frecce siano vicine si misura nel paragrafo «Un solo spazio, due
-quartieri», ed è meno di quel che sembra.
+due frecce siano vicine si misura nel paragrafo «Modality gap: un solo
+spazio, due quartieri», ed è meno di quel che sembra.
 ```
 
 La {numref}`fig-vlm-contrastivo` mostra la struttura che ne esce: il
@@ -165,7 +165,7 @@ niente durante il calcolo e si incontrano solo alla fine, nel prodotto scalare
 fra i due embedding, la somma dei prodotti delle loro componenti, che per
 vettori di lunghezza uno coincide con il coseno dell'angolo fra loro.
 
-## L'esame si fa in due sensi
+## La loss simmetrica: l'esame si fa in due sensi
 
 La loss deve alzare i numeri sulla diagonale e abbassare tutti gli altri. Si
 ottiene con la cross-entropy, cioè meno il logaritmo della probabilità che il
@@ -427,8 +427,8 @@ Il $0{,}07$ è un punto di partenza e non un regime di esercizio:
 nel modello pubblicato la scala appresa sta appoggiata al tetto, cioè $\tau =
 1/100 = 0{,}01$, sette volte più piccata di come è partita. L'ottimizzazione,
 lasciata libera, raggiunge il vincolo e vi si ferma; il valore raggiunto serve
-nel paragrafo «Un solo spazio, due quartieri», a spiegare perché due nuvole di
-punti restano distanti.
+nel paragrafo «Modality gap: un solo spazio, due quartieri», a spiegare perché
+due nuvole di punti restano distanti.
 
 Il secondo parametro strutturale è $B$. Il denominatore della InfoNCE somma sui
 candidati del batch: i negativi *sono* il batch, non un insieme costruito a
@@ -534,7 +534,7 @@ Mancano le etichette, il numero di classi e la testa di classificazione:
 l'unica informazione supervisionata è l'ordine delle righe, cioè il fatto che
 la didascalia $i$ stava sotto l'immagine $i$.
 
-## Un solo spazio, due quartieri
+## Modality gap: un solo spazio, due quartieri
 
 Una foto e la sua didascalia finiscono vicine nello spazio comune, ma «vicine»
 va preso con cautela: su un modello CLIP pubblico la distanza fra le due non è
@@ -760,9 +760,9 @@ ciascuna un prompt (per esempio `a photo of a {c_k}`), lo si passa nell'encoder
 di testo e si normalizza, ottenendo $\mathbf{T}_1, \dots, \mathbf{T}_K$. La
 lingua conta: il CLIP originale è addestrato e valutato su testo inglese, e con
 prompt in italiano rende molto meno, come mostra l'ultima riga del blocco di
-«Un solo spazio, due quartieri» ($0{,}70$ contro $0{,}90$ sulle stesse ottanta
-immagini); per altre lingue serve un modello multilingue, o la traduzione delle
-etichette. La predizione per un'immagine con embedding $\mathbf{I}$ è
+«Modality gap: un solo spazio, due quartieri» ($0{,}70$ contro $0{,}90$ sulle
+stesse ottanta immagini); per altre lingue serve un modello multilingue, o la
+traduzione delle etichette. La predizione per un'immagine con embedding $\mathbf{I}$ è
 
 $$
 \hat{y} = \arg\max_{k \in \{1, \dots, K\}} \; \langle \mathbf{I}, \mathbf{T}_k \rangle .

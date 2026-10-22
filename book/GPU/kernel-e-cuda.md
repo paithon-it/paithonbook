@@ -334,8 +334,10 @@ al posto delle due c'è una `fma.rn.f32` (*fused multiply-add*). È una fusione
 di un altro genere, dentro una singola istruzione invece che fra kernel. Non
 risparmia né un lancio né un viaggio in memoria, ma arrotonda una volta sola
 invece di due, quindi il numero che esce non è bit per bit quello di una
-moltiplicazione seguita da una somma. La GPU vera serve a
-misurare la velocità, non a sapere che cosa il kernel calcola.
+moltiplicazione seguita da una somma. Per questo l'interprete sulla CPU, che
+le fa con due arrotondamenti, può differire dalla GPU nell'ultima cifra. La
+GPU vera serve a misurare la velocità: che cosa il kernel calcola si vede anche
+sulla CPU, salvo quell'ultima cifra.
 
 Non tutte le operazioni sono elemento per elemento. Una **riduzione** (una
 somma, un massimo) di $K$ valori non si fa con una catena di $K-1$ somme ma ad
@@ -447,8 +449,9 @@ posto tuo, senza che tu debba scrivere niente.
 Le richieste più impegnative restano affidate agli specialisti (kernel scritti
 a mano dal costruttore della GPU), mentre tutto il contorno di operazioni
 piccole viene accorpato. Meno telefonate, meno viaggi, e lo stesso risultato
-salvo l'ultima cifra, perché eseguite in un solo kernel le operazioni
-arrotondano meno volte, e in virgola mobile ogni arrotondamento si sente.
+salvo l'ultima cifra, perché in un solo kernel il compilatore può fondere
+una moltiplicazione e una somma in un'unica operazione che arrotonda una volta
+sola, e in virgola mobile ogni arrotondamento si sente.
 
 `````
 
@@ -602,7 +605,7 @@ importante di tutti, il prodotto fra matrici, a cui è dedicata la
 - Triton {cite}`tillet2019triton`, dal 2021 scrivibile dentro Python, dà
   l'ordine a una squadra invece che al singolo esecutore. È anche la lingua in
   cui PyTorch, quando gli si chiede di ottimizzare, scrive i propri
-  kernel.
+  kernel per la GPU.
 - Ogni volta che si lancia un kernel si paga una telefonata: un costo fisso
   che c'è sia per un ordine grande sia per uno minuscolo. E a ogni telefonata i
   dati fanno un viaggio di andata e ritorno dalla memoria.

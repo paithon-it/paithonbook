@@ -790,7 +790,7 @@ quasi più.
 
 `````
 
-### Anche gli appunti con meno cifre
+### Quantizzare la KV cache: gli appunti con meno cifre
 
 I pesi non sono l'unica cosa che la scheda rilegge a ogni token. Con molte
 conversazioni aperte e contesti lunghi, la KV cache pesa quanto i pesi o di più
@@ -894,7 +894,7 @@ KIVI i compiti a contesto lungo perdono quasi niente.
 
 `````
 
-### L'altra leva: togliere pesi invece di accorciarli
+### La potatura: togliere pesi invece di accorciarli
 
 La quantizzazione scrive gli stessi pesi con meno cifre. La **potatura**
 (*pruning*) agisce diversamente: ne butta via una parte.

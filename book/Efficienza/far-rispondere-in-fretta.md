@@ -80,17 +80,18 @@ $$
 I = \frac{2 n^2 k}{n^2 b / 8} = \frac{16\,k}{b},
 $$
 
-è l’intensità aritmetica, la grandezza in ascissa del modello roofline del
-capitolo sulla GPU. Il regime in cui si cade (legati alla banda o legati al
-calcolo) dipende dal confronto fra $I$ e il rapporto fra prestazione di picco
-e banda della macchina. In particolare, con pesi in sedici bit si semplifica in
-$I = k$, che è la colonna di destra della tabella dei conti per byte.
+è l’intensità aritmetica, la grandezza in ascissa del modello roofline della
+{doc}`sezione sulla gerarchia della memoria </GPU/gerarchia-memoria>`. Il regime
+in cui si cade (legati alla banda o legati al calcolo) dipende dal confronto fra
+$I$ e il rapporto fra prestazione di picco e banda della macchina. In
+particolare, con pesi in sedici bit si semplifica in $I = k$, che è la colonna
+di destra della tabella dei conti per byte.
 
 Il calcolo dà due indicazioni. La prima è che $I$ non dipende dalla larghezza
 dello strato, ma solo perché si stanno contando i byte dei pesi e non quelli di
 ingressi e uscite, che sono $n k b / 8$ ciascuno. L’approssimazione vale quindi
 per $k \ll n$, e all’ultima riga della tabella ($k = 256$ contro $n = 4096$)
-sbaglia già del dodici per cento.
+sbaglia già del dodici e mezzo per cento.
 
 La seconda indicazione, la più utile, è che dimezzare $b$ raddoppia $I$. Di
 conseguenza, in regime legato alla banda e finché il traffico è fatto dai soli
@@ -171,10 +172,11 @@ calcolata quando la parola è stata scritta. Quindi la si conserva invece di
 rifarla, come si tiene un segnalibro per non rileggere il libro da capo a ogni
 pagina.
 
-Questo deposito si chiama cache delle chiavi e dei valori, e lo introduce la
+Questo deposito si chiama cache delle chiavi e dei valori. Ne ha già mostrato
+il peso la {doc}`sezione su FlashAttention </GPU/flash-attention>`, e la
 {doc}`sezione sui grandi modelli linguistici </Transformers/llm>`, nel capitolo
-sui Transformer (l’architettura di cui quei modelli sono fatti), perché è lì
-che si capisce che cosa siano chiavi e valori. Non risolve il problema
+sui Transformer (l’architettura di cui quei modelli sono fatti), spiega come
+funziona nella generazione. Non risolve il problema
 dell’intensità aritmetica: sposta il traffico dai pesi alla cache, che cresce a
 ogni parola scritta.
 

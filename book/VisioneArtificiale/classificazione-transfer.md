@@ -146,8 +146,9 @@ stata addestrata, e quindi sempre meno riusabili altrove.
 Che i primi strati di una CNN imparino filtri generici è un fatto osservato.
 Visualizzando i pesi degli strati iniziali {cite}`zeiler2014visualizing` si
 trovano rilevatori di bordi orientati e di macchie di colore, molto simili ai
-filtri di Gabor della corteccia visiva; salendo in profondità le unità
-rispondono a motivi via via più astratti e specifici del compito.
+filtri di Gabor, che modellano i campi recettivi della corteccia visiva
+primaria; salendo in profondità le unità rispondono a motivi via via più
+astratti e specifici del compito.
 
 Yosinski e colleghi {cite}`yosinski2014transferable` hanno quantificato questa
 *trasferibilità*, mostrando che le caratteristiche dei primi strati si
@@ -313,14 +314,14 @@ la stessa rete pre-addestrata e inizializzata a caso.
 
 ## In pratica, con PyTorch
 
-`torchvision.models`, la libreria di visione che accompagna PyTorch, include
-decine di reti già addestrate su ImageNet, pronte da scaricare. Usiamo
-ResNet-18 {cite}`he2016deep`, in cui gli strati con pesi che un'immagine
-attraversa in fila dall'ingresso all'uscita sono diciotto, cioè diciassette
-convoluzioni più la testa. Nel conteggio non entrano le tre piccole
-convoluzioni che servono soltanto ad adattare le scorciatoie della rete residua
-quando cambia la dimensione delle mappe. Compatta e collaudata, questa rete è il
-modello più leggero della sua famiglia.
+Il modulo `torchvision.models`, della libreria di visione che accompagna
+PyTorch, include decine di reti già addestrate su ImageNet, pronte da
+scaricare. Usiamo ResNet-18 {cite}`he2016deep`, in cui gli strati con pesi
+che un'immagine attraversa in fila dall'ingresso all'uscita sono diciotto,
+cioè diciassette convoluzioni più la testa. Nel conteggio non entrano le tre
+piccole convoluzioni che servono soltanto ad adattare le scorciatoie della rete
+residua quando cambia la dimensione delle mappe. Compatta e collaudata, questa
+rete è il modello più leggero della sua famiglia.
 
 Il compito è dividere le foto in cinque categorie, e iniziamo dalla feature
 extraction.

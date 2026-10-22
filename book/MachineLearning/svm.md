@@ -387,8 +387,8 @@ stretto, varianza alta; $C$ piccolo → penalità forte → margine largo, bias 
 alto. È lo stesso iperparametro $\lambda$ della {doc}`sezione sull'overfitting
 <overfitting-validazione>`, letto al contrario, con un'avvertenza di
 normalizzazione: la loss Ridge era *mediata* sugli $m$ esempi, la hinge qui è
-*sommata*, e a parità di convenzione l'identificazione esatta è
-$\lambda = 1/(2Cm)$, a meno di un fattore pari alla taglia del dataset.
+*sommata*, e a parità di convenzione l'identificazione è
+$\lambda = 1/(2Cm)$, dove $m$ è la taglia del dataset.
 
 La lettera $C$, poi, non ha lo stesso verso in tutti i testi, e confrontare
 due grafici a occhio può ingannare. Qui, in scikit-learn e in *The Elements of

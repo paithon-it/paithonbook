@@ -521,8 +521,8 @@ valore cambia se si ripete tutto; senza di esso le medie non si leggono.
 Con la stessa forma i tre valori stanno entro $\pm 0{,}003$ l'uno dall'altro,
 cioè dentro la dispersione di un singolo addestramento. Quando le classi hanno
 la stessa forma, quindi, non c'è niente da guadagnare a imparare due forme (né
-a passare a un discriminativo), e la QDA, che stima il doppio dei numeri, resta
-due millesimi sotto. Con forme diverse la QDA sta quattro punti sopra
+a passare a un discriminativo), e la QDA, che qui stima dieci numeri invece di
+sette, resta due millesimi sotto. Con forme diverse la QDA sta quattro punti sopra
 le altre due, con la deviazione più piccola di tutte: la differenza è reale.
 
 LDA e regressione logistica, poi, si muovono appaiate in tutti e due i casi,
@@ -530,9 +530,9 @@ perché tracciano lo stesso tipo di confine e differiscono solo su come ne
 stimano la posizione.
 
 Che il confine della LDA sia una retta si può verificare. Si prende il
-punteggio con cui il modello decide, si cerca la retta che meglio lo imita e si
-guarda di quanto i due si scostano nel punto peggiore; se il punteggio è una
-retta, lo scarto deve venire zero.
+punteggio con cui il modello decide, si cerca la funzione affine che meglio lo
+imita e si guarda di quanto i due si scostano nel punto peggiore; se il
+punteggio è affine, lo scarto deve venire zero.
 
 ```python
 X, y = genera(4000, True, 1)
@@ -560,7 +560,8 @@ QDA, scarto dall'affine: 7.21e+00
 Lo scarto della LDA è dell'ordine di $10^{-14}$, quello degli arrotondamenti in
 doppia precisione (l'epsilon di macchina è $2{,}2\cdot10^{-16}$, e i valori
 della funzione di decisione sono dell'ordine delle unità), cioè zero. Il
-punteggio della LDA è una retta, non si limita a somigliarle. La QDA, invece,
+punteggio della LDA è una funzione affine (il confine è la retta dove vale
+zero), non si limita a somigliare a una. La QDA, invece,
 se ne scosta di $7{,}2$: i suoi termini quadratici, stimati
 separatamente per classe, non si cancellano, e sui punti lontani dai dati
 pesano. È la stessa cosa che si

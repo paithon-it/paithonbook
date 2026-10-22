@@ -454,7 +454,7 @@ I due numeri si calcolano uno dall'altro. Il voto di una ricetta tiene conto del
 metro della situazione in cui ti lascia; il metro di una situazione esce dai
 voti delle ricette provate lì. Aggiornarli insieme, nello stesso istante, dà due
 conti che si rincorrono e non si posano più. Il rimedio è tenere sul tavolo una
-copia dei voti stampata poco prima, come la copia congelata di DQN, e
+copia dei voti stampata poco prima, come la rete-target di DQN, e
 ricalcolare il metro leggendo quella: serve qualcosa di fermo a cui appoggiarsi.
 
 Con quel metro («quanto si ottiene qui scegliendo bene fra ciò che è stato

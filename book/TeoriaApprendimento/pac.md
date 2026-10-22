@@ -85,10 +85,11 @@ centinaia di migliaia di indizi invece di centinaia, come un sondaggio a cui
 si chieda un punto percentuale di precisione ha bisogno di molti più
 intervistati di uno a cui ne bastino cinque.
 
-La ragione è la {doc}`legge dei grandi numeri
-</Matematica/probabilita-statistica>`: una percentuale stimata contando si
-stringe soltanto come la radice del numero dei dati, e per dimezzarne
-l'incertezza non basta il doppio degli indizi, ne servono quattro volte tanti.
+La ragione sta nella {doc}`sezione sulla legge dei grandi numeri
+</Matematica/probabilita-statistica>`: l'incertezza di una percentuale
+stimata contando si stringe soltanto come la radice del numero dei dati, e
+per dimezzarne l'incertezza non basta il doppio degli indizi, ne servono
+quattro volte tanti.
 
 Gli indizi, poi, devono arrivare tutti dalla stessa scena del crimine. I
 sospettati devono essere un numero finito, perché con infiniti sospettati la
@@ -411,6 +412,7 @@ contare che cosa le regole fanno sui dati.
 `````
 
 Una famiglia finita è un caso di scuola, perché le rette del piano e le
-regolazioni di una rete neurale sono infinite. Il passo che rende la teoria
-utile è accorgersi che una famiglia infinita, guardata attraverso un campione
-finito, si comporta come una famiglia finita, e misurare quanto è grande.
+regolazioni di una rete neurale, nel modello a pesi continui, sono infinite.
+Il passo che rende la teoria utile è accorgersi che una famiglia infinita,
+guardata attraverso un campione finito, si comporta come una famiglia finita,
+e misurare quanto è grande.

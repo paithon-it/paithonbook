@@ -761,7 +761,7 @@ punta: lì un peso è esattamente zero. A destra il cerchio della L2, che di
 punte non ne ha e non privilegia nessuna direzione.
 ```
 
-Un anello che si allarga incontra un rombo in una punta, come mostra
+Un anello che si allarga incontra di norma un rombo in una punta, come mostra
 {numref}`fig-l1-l2`, e le punte del rombo stanno sugli assi, cioè in punti dove
 uno dei due pesi vale esattamente zero. Succede tanto più spesso quanto più
 stretto è il tetto, e per questo la L1 azzera di più quando il freno è tirato
@@ -800,8 +800,8 @@ della cross-validation dicono quale tenere.
 Il budget ha senso se si paga per le cose giuste, e con la stessa moneta. La
 quota fissa che il modello somma a ogni previsione non si paga:
 chi prevede le temperature in gradi Kelvin, che sono i Celsius più 273, ha
-bisogno di una quota fissa più alta di 273, e se la pagasse il modello
-cambierebbe per una semplice scelta di unità.
+bisogno di una quota fissa più alta di 273 rispetto a quella in Celsius, e se
+la pagasse il modello cambierebbe per una semplice scelta di unità.
 
 La moneta, poi, è la stessa solo se le colonne stanno sulla stessa scala. Un
 reddito di $30\,000$ euro porta $30$ punti con un peso di $0{,}001$, una

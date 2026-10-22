@@ -336,7 +336,7 @@ deve soddisfare per entrare.
 
 `````
 
-## Chi può toccare il metro
+## La partizione: chi può toccare il metro
 
 Un cancello misura il lavoro con un metro, e il metro deve stare fuori dalla
 portata di chi viene misurato. Le istruzioni di Young lo dicono per le voci
@@ -458,7 +458,7 @@ adatta ai dati di validazione man mano che sceglie.
 
 `````
 
-## Chi controlla il controllore
+## La taratura del valutatore: chi controlla il controllore
 
 Il valutatore di Rajasekaran era un modello, e per farlo funzionare è servita
 una **taratura**. Il metodo era semplice e faticoso: leggere i resoconti del

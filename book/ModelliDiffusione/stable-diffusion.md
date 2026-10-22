@@ -260,7 +260,7 @@ cosa è plausibile ricostruire, il che è un'altra cosa e ha conseguenze proprie
 
 `````
 
-## La ricetta in quattro mosse
+## L'architettura di Stable Diffusion: la ricetta in quattro mosse
 
 Manca un pezzo solo, tenuto finora in disparte: il testo. Le fotografie con cui
 questi modelli si addestrano non arrivano nude, arrivano con una didascalia

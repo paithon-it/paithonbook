@@ -575,7 +575,7 @@ per il caso generale ancora non c'è.
 
 `````
 
-## Insegnare a sé stessi
+## DINO: insegnare a sé stessi
 
 C'è un terzo modo di formulare la stessa idea, e cambia l'oggetto che le due
 reti si scambiano. Al posto di un vettore da far somigliare a un altro c'è una
@@ -786,10 +786,12 @@ poco meno di un quarto, non a un sedicesimo.
 
 Gli autori misurano un pretraining da $2{,}8$ a $4{,}1$ volte più rapido
 rispetto alla stessa rete in cui l'encoder riceve anche i segnaposto delle
-patch coperte. Il guadagno resta comunque lontano dal taglio della sequenza,
-perché il numero è il tempo di addestramento nel suo complesso, e
-il decoder, che riceve la sequenza completa, dal mascheramento non guadagna
-nulla. Il compito diventa così più difficile e insieme più economico.
+patch coperte: il valore più basso con un decoder di otto blocchi su un ViT-L,
+il più alto con un decoder di un blocco su un ViT-H. Il guadagno resta sotto
+il $4{,}2$ che il conto dell'encoder prevede perché il numero è il tempo di
+addestramento nel suo complesso, e il decoder, che riceve la sequenza completa,
+dal mascheramento non guadagna nulla: più è leggero, più ci si avvicina.
+Il compito diventa così più difficile e insieme più economico.
 
 La differenza di fondo rispetto ai metodi contrastivi è dove finisce la
 difficoltà. Là stava nelle trasformazioni scelte a mano, cioè nelle invarianze
@@ -893,9 +895,11 @@ Lo svantaggio sta nei pixel, perché ricostruirli obbliga a indovinare anche il
 granello di polvere e il riflesso, cioè a spendere fatica su dettagli che a
 nessuno interessano.
 
-I predittivi stanno in mezzo. Per loro la difficoltà non sta né nelle
-trasformazioni né nella quantità coperta, ma nel modo in cui le due reti sono
-fatte diverse l'una dall'altra, e quella differenza tiene il sistema lontano
+I predittivi stanno in mezzo. Le trasformazioni le usano anche loro (BYOL
+riprende quelle di SimCLR, DINO aggiunge i ritagli piccoli), ma non bastano
+a tenere il compito difficile, e non c'è nessuna quantità coperta da regolare:
+la difficoltà sta nel modo in cui le due reti sono fatte diverse l'una
+dall'altra, e quella differenza tiene il sistema lontano
 dalla risposta vuota.
 
 Questi tre posti non esauriscono le possibilità. Ce n'è un altro,

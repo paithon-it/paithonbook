@@ -34,7 +34,7 @@ tentativi e ricompense, come il bambino in bicicletta del
 Con più agenti che imparano insieme, la prima conseguenza è che le garanzie di
 convergenza viste in quel capitolo non valgono più.
 
-## Il terreno si muove sotto i piedi
+## Non stazionarietà: il terreno si muove sotto i piedi
 
 Il reinforcement learning classico poggia su un'ipotesi precisa: l'ambiente
 è un processo decisionale di Markov **stazionario**, cioè la transizione
@@ -413,7 +413,7 @@ preferiscano B, e allora il vincolo pretende che «B, B» valga almeno quanto
 «A, A»: uno contro due, sbagliato di nuovo. In qualunque modo si diano le
 pagelle, quella tabella non si ricopia.
 
-È il caso in cui bisogna accordarsi su una convenzione arbitraria, tutti a
+È il caso in cui bisogna accordarsi su una convenzione, tutti a
 destra o tutti a sinistra, e la mossa giusta per me dipende da quella
 dell'altro. Quel calcolo dice soltanto che con questa ricetta il punteggio non
 si ricopia esatto: QMIX può ancora avvicinarsi, e non è detto che i due
@@ -558,7 +558,7 @@ funzione valore in cui la mossa migliore di un agente dipende dalle mosse degli
 altri allo stesso passo non si fattorizza in modo appropriato, e QMIX non la
 può rappresentare perfettamente (*cannot be represented perfectly*, scrivono
 gli autori), anche se la approssima meglio di VDN {cite}`rashid2018qmix`. Il
-coordinamento su una convenzione arbitraria ne è il caso da manuale. Il
+coordinamento su una convenzione comune ne è il caso da manuale. Il
 risultato si ferma qui: dice che la miscelazione monotona non riproduce quel
 valore, non che l'argmax decomposto scelga male. Se lo scelga male dipende da
 quale approssimazione monotona trovi l'addestramento, e il
@@ -1065,7 +1065,7 @@ esecuzione, quel critico non esiste più.
   voto non possa far scendere quello di squadra {cite}`rashid2018qmix`, così
   ciascuno sceglie da solo la mossa migliore. Il prezzo è che il voto di squadra
   non si riproduce più esatto là dove bisogna accordarsi su una convenzione
-  arbitraria (tutti a destra o tutti a sinistra), ed è lì che il metodo
+  comune (tutti a destra o tutti a sinistra), ed è lì che il metodo
   rischia di inciampare. Un metodo semplice, regolato con cura, va misurato
   prima di sostituirlo con uno complicato {cite}`yu2022surprising`.
 - Il self-play vale perché l'esercizio giusto se lo costruisce da solo:
@@ -1120,7 +1120,7 @@ esecuzione, quel critico non esiste più.
   ($\partial Q_{tot}/\partial Q^i \ge 0$), così l'argmax individuale coincide
   con quello congiunto (la condizione IGM, di cui la monotonia è sufficiente e
   non necessaria {cite}`son2019qtran`); il prezzo è che i giochi non monotoni
-  (accordarsi su una convenzione arbitraria) non si rappresentano esattamente.
+  (accordarsi su una convenzione comune) non si rappresentano esattamente.
   MAPPO {cite}`yu2022surprising` ricorda che un metodo semplice ben regolato va
   misurato prima di sostituirlo.
 - Il self-play vale perché il curriculum si genera da solo, restando sempre

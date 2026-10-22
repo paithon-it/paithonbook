@@ -132,9 +132,11 @@ $\det\mathbf{A} = \prod_{i=1}^{n}\lambda_i$, il prodotto degli autovalori
 contati con la loro molteplicità, e $|\det\mathbf{A}| = \prod_i \sigma_i$, il
 prodotto dei valori singolari. La seconda scrittura rende evidente il senso
 geometrico. La decomposizione ai valori singolari, infatti, dice che ogni
-trasformazione è una rotazione, poi una dilatazione lungo assi ortogonali di
-fattori $\sigma_i$, poi un'altra rotazione; le rotazioni non toccano i volumi,
-quindi il fattore di volume è il prodotto delle dilatazioni.
+trasformazione è una rotazione (se serve con una riflessione), poi una
+dilatazione lungo assi ortogonali di fattori $\sigma_i$, poi un'altra rotazione
+(anche qui, se serve, con una riflessione); queste non toccano i volumi, perché
+il loro determinante vale $\pm 1$, quindi il fattore di volume è il prodotto
+delle dilatazioni.
 
 Come diagnosi, $|\det|$ non dice nulla sul condizionamento. Una matrice
 $\operatorname{diag}(10^{-3},10^{3})$ ha determinante $1$ e conserva le aree,
@@ -325,9 +327,9 @@ proprietà matematica decide così la forma di un'architettura: la trasformazion
 Sia $\mathbf{f}:\mathbb{R}^n\to\mathbb{R}^n$ un **diffeomorfismo** (cioè
 invertibile, differenziabile con continuità e con inversa differenziabile) e
 sia $\mathbf{y}=\mathbf{f}(\mathbf{x})$. In modo equivalente, per una
-$\mathbf{f}$ invertibile di classe $C^1$, si chiede
-$\det\mathbf{J}_{\mathbf{f}}\neq 0$ in ogni punto. L'ipotesi sull'inversa
-serve. La funzione $f(x)=x^3$, ad esempio, è invertibile e derivabile, ma in
+$\mathbf{f}$ invertibile di classe $C^1$, si chiede che la matrice jacobiana
+$\mathbf{J}_{\mathbf{f}}$ (definita qui sotto) abbia
+$\det\mathbf{J}_{\mathbf{f}}\neq 0$ in ogni punto. L'ipotesi sull'inversa serve. La funzione $f(x)=x^3$, ad esempio, è invertibile e derivabile, ma in
 $0$ ha derivata nulla, e la densità trasformata vi diverge.
 
 La formula del cambio di variabile per una densità è

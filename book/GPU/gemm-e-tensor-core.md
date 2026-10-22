@@ -526,8 +526,8 @@ schiera dei banchi. Chi la inventò, alla Carnegie Mellon alla fine degli anni
 Settanta, prese il resto del nome dal cuore, perché i dati attraversano la
 scacchiera a ondate regolari come il sangue spinto dalla sistole.
 
-Capannoni del genere esistono, e sono fatti così i chip pensati apposta per
-l'intelligenza artificiale. La **TPU** di Google (*Tensor Processing Unit*,
+Capannoni del genere esistono, e sono fatti così diversi chip pensati apposta
+per l'intelligenza artificiale. La **TPU** di Google (*Tensor Processing Unit*,
 l'unità che macina tensori), ad esempio, ha una scacchiera di 256 banchi
 per 256. Il guadagno più grosso si legge sul contatore della luce, perché
 mandare un numero da un capo all'altro del chip comporta caricare e scaricare
@@ -745,7 +745,7 @@ le parole di un testo dà la {doc}`FlashAttention </GPU/flash-attention>`
 - Le due regole pratiche che restano, e che valgono anche per chi non scriverà
   mai un programma per GPU: dare alle tabelle misure tonde (multipli di 8 o
   16) e usare la mezza precisione, i numeri scritti nella metà dello
-  spazio. Sono guadagni quasi sempre gratuiti, e quando non arrivano la colpa
+  spazio. Sono guadagni quasi gratuiti, ma a volte non arrivano, e la colpa
   non è della tessera: o la tabella comincia nel punto sbagliato della memoria,
   o l'ultimo giro di lavoro lascia quasi tutte le officine a guardare.
 ```

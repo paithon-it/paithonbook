@@ -1,4 +1,4 @@
-# Molti semplici invece di pochi intelligenti
+# Sciami e simulazioni: molti semplici invece di pochi intelligenti
 
 Gli storni con cui si è aperto il capitolo non stanno risolvendo niente: volano.
 La loro regola dei sei o sette vicini serve a restare insieme sopra il posatoio,

@@ -23,7 +23,7 @@ International Conference on Computer Vision del 2023. Il seguito ne misura il
 peso: poco più di un anno dopo lo stesso Peebles, insieme a Tim Brooks, guida
 un progetto chiamato Sora.
 
-## Affettare la scheda: le tessere come parole
+## Patchify: affettare il latente in tessere come parole
 
 DiT non butta via tutto. Resta la diffusione latente di {doc}`Stable Diffusion
 </ModelliDiffusione/stable-diffusion>`: un VAE comprime l'immagine in un

@@ -7,7 +7,7 @@
   impronta: "9eeaa8dbf4d0"
   postilla: "Transfer learning: bene con poche classi stabili; a ogni classe nuova si riparte"
 - inizio: "Qui lo spazio deve contenere anche"
-  impronta: "65c23b17f318"
+  impronta: "37cd1f0b2945"
   postilla: "Foto e frase vicine nello stesso spazio, senza coincidere: resta il modality gap"
 - inizio: "L'idea, resa celebre da CLIP {cite}`radford2021learning`"
   impronta: "6e009af84ca0"

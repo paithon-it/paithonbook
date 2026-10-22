@@ -141,7 +141,7 @@ costruiscono la QR e la SVD con matrici ortogonali.
 
 `````
 
-## L'ombra di un vettore su una direzione
+## Proiezione su una direzione: l'ombra di un vettore
 
 Nella {doc}`sezione sui sistemi lineari <sistemi-lineari>` una trasformazione
 proiettava lungo raggi paralleli qualsiasi. Se i raggi sono perpendicolari al
@@ -176,9 +176,9 @@ una curiosità e che qui diventa geometria.
 
 Ne segue anche che la lunghezza al quadrato dello scarto è la
 somma dei quadrati delle differenze dalla media, la quantità che in statistica
-si chiama variabilità dei dati. Media e variabilità, che sembrano due nozioni
-separate, dicono l'una dove cade l'ombra e l'altra di quanto i dati ne
-sporgono.
+si chiama devianza (divisa per il numero di misure è la varianza). Media e
+devianza, che sembrano due nozioni separate, dicono l'una dove cade l'ombra e
+l'altra di quanto i dati ne sporgono.
 
 `````
 
@@ -1108,7 +1108,7 @@ sul foglio, conviene rifarlo con i numeri.
 Siano $\mathbf{u},\mathbf{v}$ due vettori unitari indipendenti e uniformi sulla
 sfera $S^{d-1}$. Il loro coseno $\mathbf{u}^\top\mathbf{v}$ ha media nulla e
 varianza $1/d$, quindi la sua deviazione standard è $1/\sqrt{d}$; per $d$
-grande il valore atteso del modulo tende a $\sqrt{2/(\pi d)}\approx
+grande il valore atteso del modulo è asintotico a $\sqrt{2/(\pi d)}\approx
 0{,}8/\sqrt{d}$, mentre in tre dimensioni vale esattamente $1/2$. La
 concentrazione è esponenziale: per ogni $\varepsilon>0$
 

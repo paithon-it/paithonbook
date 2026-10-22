@@ -129,7 +129,7 @@ la richiesta reale: esempi «recitati» che condizionano lo stile della risposta
 
 `````
 
-## Le due manopole del campionamento
+## Temperatura e top_p: le due manopole del campionamento
 
 Il prompt decide *cosa* chiedi; due impostazioni decidono *come* il modello
 sceglie le parole mentre risponde: la temperatura e il top_p. Il top_p è il

@@ -470,7 +470,7 @@ separate da creste lunghissime, la stessa procedura darebbe una fotografia
 sbilanciata, e nessuno se ne accorgerebbe: in alta dimensione la colonna
 «esatto» non si può stampare.
 
-## Seconda via: imparare la pendenza, non la probabilità
+## Seconda via: imparare lo score, non la probabilità
 
 Se il campionamento è costoso perché insegue le percentuali, si può cambiare
 bersaglio. Aapo Hyvärinen, nel 2005, propone di smettere di confrontare *quanta*

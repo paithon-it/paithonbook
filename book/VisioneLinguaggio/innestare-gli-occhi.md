@@ -1,4 +1,4 @@
-# Il pezzo più piccolo che si può addestrare
+# Il connettore: il pezzo più piccolo che si può addestrare
 
 Chi innesta una vite non pianta un albero nuovo. Prende un ceppo già radicato,
 scelto perché si adatta a quel terreno e resiste ai suoi parassiti, e ci salda
@@ -583,8 +583,8 @@ compito non è più quello su cui era stato addestrato.
 
 Il rischio dell'orchestra c'è, ma non è inevitabile: quando uno studio
 successivo ha provato con cura a fare le due lezioni insieme, con una buona
-ricetta, il risultato è stato lo stesso e il costo un quinto in meno. L'ordine
-in due tempi resta una cautela, da verificare caso per caso.
+ricetta, il risultato è stato lo stesso e il costo dal 20 al 25% in meno.
+L'ordine in due tempi resta una cautela, da verificare caso per caso.
 
 `````
 
@@ -829,7 +829,7 @@ sistemi descritti finora.
 - L'addestramento è in due tempi con la stessa loss: prima il solo connettore
   su coppie immagine-didascalia, poi *visual instruction tuning* con il modello
   di linguaggio scongelato. Con una buona ricetta un tempo solo rende
-  altrettanto con circa un quinto di calcolo in meno
+  altrettanto con il 20-25% di calcolo in meno
   {cite}`karamcheti2024prismatic`. I dati di istruzione del primo LLaVA furono
   generati da un modello di solo testo a partire da didascalie e riquadri: dati
   sintetici che funzionano, ma che trasmettono anche i difetti del generatore.

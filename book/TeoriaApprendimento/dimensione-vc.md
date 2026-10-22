@@ -256,12 +256,12 @@ di $d/(320\,\varepsilon^2)$ esempi con confidenza superiore a $63/64$ (Mohri e
 colleghi, teorema 3.23, per $d>1$). La costante è piccola e il bound superiore è
 largo, ma la dipendenza da $d$ è quella giusta nei due versi.
 
-Resta un compromesso, che Vapnik ha chiamato minimizzazione del rischio
-strutturale: una famiglia con $d$ più grande abbassa $\hat{R}_S$, ma alza il
-termine di complessità. È la stessa tensione fra errore di approssimazione
-ed errore di stima vista con lo {doc}`spazio delle ipotesi
+Resta un compromesso: una famiglia con $d$ più grande abbassa $\hat{R}_S$, ma
+alza il termine di complessità. È la stessa tensione fra errore di
+approssimazione ed errore di stima vista con lo {doc}`spazio delle ipotesi
 </MachineLearning/apprendimento-supervisionato>`, questa volta con un numero
-accanto.
+accanto. Vapnik l’ha affrontata con la minimizzazione del rischio strutturale,
+che sceglie la famiglia in cui la somma dei due termini è minima.
 
 `````
 

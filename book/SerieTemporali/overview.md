@@ -141,7 +141,7 @@ fra oggi e domenica devono succedere sei giorni che nessuno ha visto, e ognuno
 aggiunge la sua incertezza. Le previsioni del tempo a un giorno ci azzeccano
 quasi sempre, quelle a dieci molto meno.
 
-L'incertezza non cresce all'infinito. La temperatura di una città torna
+Non sempre l'incertezza cresce all'infinito. La temperatura di una città torna
 verso un suo valore di riposo: marzo non se ne andrà mai a cento gradi. Se a
 marzo, un anno con l'altro, si sta fra i 10 e i 18 gradi, la previsione per il
 marzo di fra dieci anni è quell'intervallo, e l'incertezza si ferma lì. Più

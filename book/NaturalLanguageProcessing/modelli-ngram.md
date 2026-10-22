@@ -73,7 +73,7 @@ linguaggio: il linguaggio si può modellare come una catena di scommesse.
 Con la classificazione a sacchetto di parole, «Il gatto nero salta sul muro» e
 «Il muro nero salta sul gatto» erano gemelli indistinguibili. Qui invece
 l'ordine torna protagonista: costruiamo la macchina più semplice che scommette
-sulla parola successiva, il modello **n-gram**, che per mezzo secolo è stato il
+sulla parola successiva, il modello **n-gram**, che per decenni è stato il
 cuore del NLP statistico. Il nome dice quanto lungo è il gruppetto di parole
 che si guarda: due, e si chiama **bigramma**; tre, e si chiama **trigramma**;
 $n$ è il numero lasciato in bianco.
@@ -449,8 +449,8 @@ continuazione. Solo il livello più alto usa i conteggi veri.
 La variante «modificata» di Chen e Goodman (tre sconti diversi a seconda che il
 conteggio valga 1, 2 o di più) è la vincitrice del loro studio, perché batte in
 modo sistematico tutti gli altri algoritmi provati. Da allora è il termine di
-confronto per ogni modello n-gram, ed è l'unico metodo implementato da KenLM,
-la libreria più usata.
+confronto per ogni modello n-gram, ed è l'unico metodo di stima implementato da
+KenLM, la libreria più usata.
 
 `````
 

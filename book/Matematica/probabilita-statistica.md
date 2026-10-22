@@ -217,8 +217,8 @@ rapporto fra i due lati tende a $1$, e a $n = 52$ la sottostima è appena dello
 $0{,}16\%$), dà per il coefficiente centrale $\binom{2m}{m} \sim 4^m/\sqrt{\pi
 m}$; in altri termini, con $n = 2m$, i soli sottoinsiemi di taglia $n/2$ sono
 $2^n$ diviso appena $\sqrt{\pi n/2}$. Enumerare i sottoinsiemi di $n$ elementi
-richiede dunque $2^n$ passi anche fermandosi a una taglia sola, e smette di
-essere praticabile già per qualche decina di elementi.
+richiede dunque un numero di passi dell'ordine di $2^n$ anche fermandosi a una
+taglia sola, e smette di essere praticabile già per qualche decina di elementi.
 
 Le grandezze definite come somme su tutti i sottoinsiemi o su tutti gli
 ordinamenti, come i valori di Shapley delle {doc}`spiegazioni locali
@@ -1707,7 +1707,8 @@ esempio, la stima è $(2 + 70)/(4 + 100) = 72/104 \approx 0{,}69$, quasi la
 proporzione osservata.
 
 Una curva si può riassumere in due modi, con il suo punto più alto o con il suo
-baricentro, e con pochi lanci i due differiscono un poco; con tanti coincidono.
+baricentro, e con pochi lanci i due differiscono un poco; con tanti quasi
+coincidono.
 Il punto più alto è la massima verosimiglianza con in più una spinta verso
 l'opinione di partenza, e la {doc}`regolarizzazione
 </MachineLearning/overfitting-validazione>`, nel capitolo sul Machine Learning,

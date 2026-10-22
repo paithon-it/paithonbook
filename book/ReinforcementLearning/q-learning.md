@@ -130,7 +130,8 @@ tante volte in ogni situazione, non una o due, perché un voto corretto due
 volte vale quanto un sorteggio. La tabella deve potersi scrivere per intero,
 riga per riga. E la frazione di sorpresa a cui si dà retta va calata man mano
 che si gioca. Il programma del labirinto la tiene ferma, e se lo può permettere
-perché in quel labirinto niente è lasciato al caso.
+perché in quel labirinto ogni mossa ha sempre lo stesso esito e il premio
+è fisso.
 
 Prendere sempre il voto più alto ha un difetto. Un voto si costruisce
 sommando una frazione di ogni sorpresa incassata fin lì, e dove il premio o

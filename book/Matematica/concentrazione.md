@@ -95,7 +95,7 @@ disuguaglianze più forti si ottengono chiedendo di sapere qualcosa in più.
 La disuguaglianza di Markov usa la sola media. Se però la si applica al
 quadrato dello scarto dalla media, $(X-\mu)^2$, che non è mai negativo e ha per
 media la varianza, si ottiene un limite che usa anche la varianza. Lo stesso
-procedimento (applicare Markov a una funzione crescente della variabile) serve
+procedimento (applicare Markov a una funzione crescente dello scarto) serve
 anche nella dimostrazione di Hoeffding, dove la funzione è un esponenziale.
 
 `````{tab} Elementare
@@ -115,9 +115,9 @@ varianza, e la frazione resta al più un nono.
 
 Ne viene una regola che si ricorda a memoria: qualunque sia la forma dei dati,
 almeno tre quarti di essi stanno entro due larghezze dalla media, e almeno otto
-su nove entro tre. Non si è chiesto niente: niente campana, niente simmetria,
-niente code sottili. Per questo la regola vale per i redditi, per i tempi di
-risposta di un server, per gli errori di un modello.
+su nove entro tre. Non si è chiesto niente sulla forma: niente campana,
+niente simmetria, niente code sottili. Per questo la regola vale per i
+redditi, per i tempi di risposta di un server, per gli errori di un modello.
 
 Non chiedere niente ha un limite, che si vede confrontando con il caso in cui
 invece si chiede molto. Se i dati seguono la curva a campana, entro due
@@ -159,10 +159,10 @@ le code esatte di una gaussiana, che valgono $0{,}0455$ e $0{,}0027$: un
 fattore cinque e mezzo nel primo caso, quarantuno nel secondo. È quanto si
 guadagna, sulle code, sapendo che la distribuzione è gaussiana.
 
-Anche questa disuguaglianza è ottimale, e il testimone è una distribuzione a tre
-punti: $X=\pm\sigma k$ ciascuno con probabilità $1/(2k^2)$ e $X=0$ con la
-probabilità restante. Media zero, varianza $\sigma^2$, e coda esattamente
-$1/k^2$.
+Anche questa disuguaglianza è ottimale, e il testimone è, per ogni
+$k\ge1$, una distribuzione a tre punti: $X=\pm\sigma k$ ciascuno con
+probabilità $1/(2k^2)$ e $X=0$ con la probabilità restante. Media zero,
+varianza $\sigma^2$, e coda esattamente $1/k^2$.
 
 Da qui la **legge dei grandi numeri** in tre righe. Per $X_1,\dots,X_n$
 indipendenti e identicamente distribuite con varianza $\sigma^2$, la media

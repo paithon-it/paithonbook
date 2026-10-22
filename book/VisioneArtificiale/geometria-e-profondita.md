@@ -429,13 +429,14 @@ salta. Ora allontanalo il più possibile: salta molto meno. Quel salto si
 chiama **disparità**, e la sua misura è la misura della distanza. Vicino,
 salto grande; lontano, salto piccolo; infinitamente lontano, nessun salto.
 
-La relazione è un'inversa, non una proporzione: raddoppiando la distanza il
-salto si dimezza. Ad esempio, su una telecamera con trenta centimetri fra i due
-obiettivi e una focale di $700$ pixel (un oggetto largo un metro, a un metro,
-ne occupa $700$), un oggetto a un metro salta $700 \times 0{,}30 = 210$ pixel,
-a due metri $105$, a quattro metri $52{,}5$, a otto metri poco più di $26$. I
-valori dipendono dalla focale e dalla distanza fra gli obiettivi; il
-dimezzarsi a ogni raddoppio, invece, vale sempre.
+La relazione è un'inversa, non una proporzione diretta: raddoppiando la
+distanza il salto si dimezza. Ad esempio, su una telecamera con trenta
+centimetri fra i due obiettivi e una focale di $700$ pixel (un oggetto largo
+un metro, a un metro, ne occupa $700$), un oggetto a un metro salta
+$700 \times 0{,}30 = 210$ pixel, a due metri $105$, a quattro metri $52{,}5$,
+a otto metri poco più di $26$. I valori dipendono dalla focale e dalla
+distanza fra gli obiettivi; il dimezzarsi a ogni raddoppio, invece, vale
+sempre.
 
 Questa relazione ha due conseguenze che si toccano con mano. La prima è che la
 visione stereo è precisa da vicino e vaga da lontano: con quella telecamera,
@@ -590,8 +591,8 @@ I metodi appresi, infatti, conservano quella struttura invece di
 abbandonarla. **RAFT** costruisce esplicitamente il volume di correlazione fra
 tutte le coppie di pixel (il "dato") e poi lo interroga con un aggiornamento
 ricorrente che raffina il campo di flusso un passo alla volta (il "prior")
-{cite}`teed2020raft`, e i due pezzi si riconoscono uno per uno nella
-tassonomia di quarant'anni prima. L'architettura è nuova, ma l'anatomia del
+{cite}`teed2020raft`, e i due pezzi si riconoscono uno per uno nello
+schema di quarant'anni prima. L'architettura è nuova, ma l'anatomia del
 problema è quella del 1981.
 
 `````

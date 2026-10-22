@@ -7,7 +7,7 @@
   impronta: "eb7793bbcb3e"
   postilla: "I thread della GPU hanno in comune con quelli di Python solo il nome"
 - inizio: "Gli ordini di grandezza aiutano a"
-  impronta: "edda7f043c4b"
+  impronta: "03aa51ebd1e5"
   postilla: "Decine o più di cento SM, ognuno con 64-128 ALU in virgola mobile a 32 bit"
 - inizio: "Da questi numeri si ricava il"
   impronta: "aff764bc2b93"

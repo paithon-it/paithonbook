@@ -614,7 +614,7 @@ sono questi:
    l'addestramento. Di solito sale piano all'inizio (il riscaldamento, in
    inglese *warmup*) e poi scende, per esempio lungo un arco di coseno fino a
    zero, e il valore di picco dipende dalla dimensione del batch. Un paper che
-   dice solo "lr $= 10^{-3}$" ne sta omettendo metà.
+   dice solo "lr $= 10^{-3}$" ne sta omettendo la maggior parte.
 3. La dimensione del batch e l'accumulo. Chi ha 8 GPU e chi ne ha una non
    stanno addestrando lo stesso modello, a meno di accumulare i gradienti.
 4. La regolarizzazione, cioè tutti i freni che si mettono apposta per rendere
@@ -638,11 +638,11 @@ quella riga può spostare il risultato quanto un cambio di architettura.
 
 Il learning rate quasi mai è un numero fisso: sale piano all'inizio (il
 *riscaldamento*) e poi scende lungo l'addestramento, quindi chi legge solo il
-valore di picco sta copiando un terzo dell'informazione. Quel valore di picco,
-poi, è tarato sul vassoio che gli autori avevano sotto mano. Se hai una GPU
-sola e il paper ne usava otto, il vassoio è molto più piccolo, la direzione in
-cui il modello si corregge viene da molti meno esempi, e lo stesso passo lungo
-di prima si dà quasi alla cieca.
+valore di picco sta copiando una piccola parte dell'informazione. Quel valore
+di picco, poi, è tarato sul vassoio che gli autori avevano sotto mano. Se hai
+una GPU sola e il paper ne usava otto, il vassoio è molto più piccolo, la
+direzione in cui il modello si corregge viene da molti meno esempi, e lo stesso
+passo lungo di prima si dà quasi alla cieca.
 
 Le strade sono due: accorciare il passo, oppure accumulare le correzioni di più
 vassoi piccoli e muoversi una volta sola, che è un modo di fingere un vassoio

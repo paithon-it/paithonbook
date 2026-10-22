@@ -723,7 +723,7 @@ Il rischio è concreto: gli
 stessi autori di GPT-3 dedicano al
 problema un'analisi accurata, e ammettono che, per un bug nella procedura di
 pulizia, parte delle sovrapposizioni tra corpus e benchmark non era stata
-rimossa {cite}`brown2020language`. Da allora il problema è solo cresciuto:
+rimossa {cite}`brown2020language`. Il problema non si chiude con quel caso:
 ogni benchmark pubblicato sul web è, per il modello successivo, potenziale
 materiale di studio.
 

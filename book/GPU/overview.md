@@ -298,7 +298,7 @@ shared memory o *tiling*, fusione dei kernel, fino alla FlashAttention
 calcoli per ogni byte e tenerlo il più vicino possibile ai core.
 `````
 
-## Un gradino alla volta
+## Dal chip al parallelismo distribuito
 
 Le sei sezioni scendono dal modo in cui una GPU esegue il codice fino a come si
 addestrano le reti che non entrano in una scheda sola.

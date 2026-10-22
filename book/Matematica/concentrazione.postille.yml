@@ -7,7 +7,7 @@
   impronta: "5119ebfb2e26"
   postilla: "Valgono per ogni numero di prove, non in approssimazione come il limite centrale"
 - inizio: "La disuguaglianza di Markov usa la"
-  impronta: "2645bc2f872b"
+  impronta: "ebe84593334e"
   postilla: "Markov sul quadrato dello scarto dà Čebyšëv; lo stesso trucco serve in Hoeffding"
 - inizio: "Il limite di Čebyšëv alla probabilità"
   impronta: "e5881b85e252"

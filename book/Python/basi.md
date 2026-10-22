@@ -69,11 +69,11 @@ type(temperatura)    # -> <class 'float'>
 type(nome)           # -> <class 'str'>
 ```
 
-La risposta nomina una *classe*. La classe di un valore è il
-suo tipo detto con la parola tecnica, e `float` è la classe di tutti i numeri
-con la virgola. La sezione sugli oggetti spiega che cosa sia una classe in
-generale e come costruirne una propria; per ora la risposta si legge «è un
-`float`».
+La risposta nomina una *classe*. La classe di un valore è il suo tipo detto con
+la parola tecnica, e `float` è la classe di tutti i numeri con la virgola. Il
+paragrafo «Un assaggio di oggetti: le classi», più avanti in questa pagina,
+spiega che cosa sia una classe in generale e come costruirne una propria; per
+ora la risposta si legge «è un `float`».
 
 Per costruire le stringhe, che tornano di continuo, ci sono le **f-string**.
 Mettendo una `f` prima delle virgolette puoi infilare direttamente il valore di
@@ -167,8 +167,8 @@ La seconda è la distinzione fra i due confronti, `is`, che chiede «sono lo
 stesso oggetto?», e `==`, che chiede «valgono la stessa cosa?». L'unico uso di
 `is` da imparare a memoria è `if x is None`. Sui numeri, infatti, `is` dà
 risultati che dipendono da come CPython riusa gli oggetti:
-`x = 1000; y = 1000; x is y` risponde `True` se le due righe stanno nello
-stesso blocco compilato e `False` se le si digita separatamente
+`x = 1000; y = 1000; x is y` risponde `True` se le due assegnazioni stanno
+nello stesso blocco compilato e `False` se le si digita separatamente
 all'interprete, e per questo non va usato così.
 
 `````

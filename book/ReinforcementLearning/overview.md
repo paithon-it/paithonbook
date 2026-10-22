@@ -315,7 +315,7 @@ Sedol al Go. Tutte e due richiedono reti profonde al posto delle tabelle, e
 aprono il {doc}`capitolo sul Deep Reinforcement Learning
 </DeepReinforcementLearning/overview>`.
 
-## Dalla leva sola al mondo che cambia
+## Dai bandit ai valori degli stati
 
 Cominciamo da una versione del problema spogliata di tutto tranne il dilemma
 fra esplorazione e sfruttamento: i bandit a più braccia, dove la situazione non

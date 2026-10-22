@@ -171,7 +171,7 @@ conseguenza la fedeltà locale dipende da quanti dei punti generati
 globalmente cadono vicino a $\mathbf{x}_0$, e in alta dimensione sono
 pochi.
 
-Tre limiti vanno dichiarati. Primo, l’instabilità: campionamento casuale e
+Quattro limiti vanno dichiarati. Primo, l’instabilità: campionamento casuale e
 scelta del kernel rendono la spiegazione sensibile ai dettagli; rieseguire LIME
 sullo stesso punto può dare coefficienti diversi, in buona parte perché i
 campioni nascono dalla distribuzione marginale e solo il peso li avvicina al
@@ -202,8 +202,8 @@ componenti che si accendono e si spengono. Cambia la segmentazione, cambia la
 spiegazione, e la segmentazione la sceglie chi usa lo strumento. La spiegazione
 dipende quindi da scelte che l'utente raramente controlla.
 
-Esiste poi un quarto
-limite, che nasce dal campionamento e vale anche per KernelSHAP, la stima per
+Quarto, e ultimo: un
+limite che nasce dal campionamento e vale anche per KernelSHAP, la stima per
 campionamento dei valori di Shapley che arriva con SHAP: i punti perturbati
 cadono in buona parte fuori dal supporto dei dati, e un modello li può
 riconoscere. Slack e colleghi {cite}`slack2020fooling` costruiscono un

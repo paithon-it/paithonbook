@@ -89,7 +89,7 @@ meno cifre, cioè arrotondati.
 
 La colonna di destra, però, conta i soli pesi. Per far girare davvero il
 modello serve dell’altro spazio, quindi la riga a sedici bit, che lascia due
-gigabyte scarsi di margine, nella pratica è più stretta di quanto sembri.
+gigabyte esatti di margine, nella pratica è più stretta di quanto sembri.
 
 ## Le tre leve
 

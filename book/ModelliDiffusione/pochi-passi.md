@@ -14,8 +14,8 @@ chiama distillazione, come nella {doc}`sezione sul modello piccolo che imita
 rimpicciolire era la rete, qui la rete resta grande uguale e a ridursi è il
 numero di passi. Qui non si percorre meglio la traiettoria, che era la strada
 della {doc}`sezione sui campionatori veloci
-</ModelliDiffusione/campionatori-veloci>`, e ha un limite pratico:
-si cambia l'oggetto che si impara. Non tutti i metodi che seguono hanno un
+</ModelliDiffusione/campionatori-veloci>` e ha un limite pratico: si cambia
+invece l'oggetto che si impara. Non tutti i metodi che seguono hanno un
 maestro da imitare, ma tutti fanno questo, e oggi un'immagine può uscire da
 una sola valutazione della rete.
 
@@ -473,7 +473,7 @@ Il secondo è la controllabilità. Le tecniche della {doc}`sezione su guida e
 allineamento </ModelliDiffusione/guida>` agiscono modificando la direzione a
 ogni passo; con un passo solo il punto in cui intervenire è uno, e la guida va
 incorporata nella distillazione invece che applicata al momento. È il motivo
-per cui un modello distillato arriva spesso con la forza della guida già
+per cui un modello distillato arriva spesso con il peso della guida già
 fissata dentro.
 
 Il terzo è che il confronto onesto si fa a parità di valutazioni della

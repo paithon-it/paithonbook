@@ -177,10 +177,11 @@ RuntimeError: expected target dtype to be Long or Byte, but got Float
 Il secondo errore riguarda il `dtype`, cioè il tipo di numero con cui il
 tensore è scritto: interi (il $3$) oppure decimali (il $3{,}0$). Quando somma o
 moltiplica due tensori numero per numero, PyTorch li converte a un tipo
-comune che li contenga tutti e due (un intero e un decimale, per esempio,
-diventano due decimali). Ma nel prodotto fra matrici e dentro gli strati `nn`
-(i casi dei due messaggi) la libreria richiede un tipo preciso, e preferisce
-fermarsi piuttosto che indovinare quale volevamo.
+comune (un intero e un decimale, per esempio, diventano due decimali, anche
+a costo di qualche cifra: `int64` e `float32` danno `float32`). Ma nel
+prodotto fra matrici e dentro gli strati `nn` (i casi dei due messaggi) la
+libreria richiede un tipo preciso, e preferisce fermarsi piuttosto che
+indovinare quale volevamo.
 
 I due messaggi vanno letti in modi diversi. Nel primo, i due tipi sono i due
 operandi nell'ordine, cioè il tensore che abbiamo passato e i pesi del modello,

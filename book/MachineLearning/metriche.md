@@ -571,7 +571,7 @@ In scikit-learn si scrive `class_weight="balanced"`, la più comoda fra le
 correzioni che toccano l'addestramento.
 
 Sul tavolo, però, le percentuali stampate sulle pratiche si gonfiano tutte
-insieme: al posto di «quattro su cento» compare «venticinque su cento», e le
+insieme: al posto di «quattro su cento» compare «ventotto su cento», e le
 frodi nel frattempo non sono aumentate. Leggerle come probabilità vere è un
 errore, e la soglia di un sospetto su cento, messa su percentuali gonfiate,
 cade nel posto sbagliato. Lo stesso gonfiaggio, tale e quale, arriva anche

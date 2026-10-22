@@ -173,7 +173,7 @@ una navicella o un mattoncino: riceve lo schermo grezzo, come lo riceve una
 persona.
 ```
 
-La memoria delle esperienze (*experience replay*, in {numref}`fig-dqn-atari`) è
+La memoria di replay (*experience replay*, in {numref}`fig-dqn-atari`) è
 uno dei due accorgimenti che rendono stabile tutto il resto, e la {doc}`sezione
 su DQN <dqn>` la racconta per esteso. In sintesi, addestrare sui fotogrammi
 nell'ordine in cui arrivano significa dare alla rete esempi consecutivi, e
@@ -212,8 +212,8 @@ La rete, infatti, si corregge inseguendo un numero che calcola lei stessa, e
 quel numero si sposta a ogni correzione: è come cercare di colpire la propria
 ombra, che si muove ogni volta che ti muovi tu. Basta poco (un ritocco alla
 velocità con cui la rete si corregge) e invece di assestarsi i suoi giudizi
-crescono senza fermarsi. Contro questo effetto servono la memoria delle
-esperienze e la copia congelata della rete.
+crescono senza fermarsi. Contro questo effetto servono la memoria di
+replay e la rete-target, una copia congelata della rete.
 
 La seconda difficoltà è che serve una quantità enorme di partite. L'agente
 impara per tentativi, e di tentativi ne vuole milioni: settimane di gioco. In
@@ -229,8 +229,8 @@ $r + \gamma \max_{a'} Q(s',a';\theta)$ si muove insieme ai pesi che stiamo
 aggiornando: la combinazione di approssimazione, bootstrapping e apprendimento
 off-policy è la celebre *deadly triad* che può causare divergenza. DQN la
 addomestica con due accorgimenti: l’experience replay (campionare a caso da un
-buffer di transizioni passate, decorrelandole) e la copia congelata $\theta^{-}$
-della rete, aggiornata di rado, che stabilizza il bersaglio.
+buffer di transizioni passate, decorrelandole) e la rete-target $\theta^{-}$,
+aggiornata di rado, che stabilizza il bersaglio.
 
 Resta il costo campionario. La versione di *Nature*, ad esempio, usava
 $50$ milioni di passi dell'agente per titolo, cioè $200$ milioni di fotogrammi
@@ -248,7 +248,7 @@ e subito dopo bisogna inventarsi il modo di contenerla.
 
 Si comincia dal DQN: la libertà è una rete al posto della tabella, e a
 contenerla sono i due accorgimenti che le impediscono di esplodere, la memoria
-delle esperienze e la copia congelata.
+di replay e la rete-target.
 
 Poi si cambia famiglia. Invece di stimare il valore di ogni azione e prendere
 la migliore, si impara direttamente la policy, la regola che dice che cosa

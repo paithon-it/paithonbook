@@ -346,7 +346,7 @@ parts:
     - file: VisioneLinguaggio/risoluzione-e-dettaglio.md
       title: Il costo del dettaglio
     - file: VisioneLinguaggio/vedere-quel-che-non-ce.md
-      title: Vedere quel che non c'è
+      title: Allucinazione visiva
 
 - caption: Lavorare con gli LLM
   chapters:

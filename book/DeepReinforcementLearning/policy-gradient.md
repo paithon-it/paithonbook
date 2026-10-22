@@ -380,7 +380,7 @@ Dall'attore-critico discendono due algoritmi che hanno fatto scuola.
 
 **A3C** fa giocare molte copie dell'agente insieme, ciascuna la propria
 partita in una copia sua del gioco {cite}`mnih2016asynchronous`. Il guadagno è
-lo stesso della memoria delle esperienze in DQN, ottenuto per un'altra strada.
+lo stesso della memoria di replay in DQN, ottenuto per un'altra strada.
 In DQN si rimescolavano esperienze pescate da momenti lontani fra loro; in A3C
 le esperienze arrivano già diverse l'una dall'altra, perché nello stesso
 istante ogni copia si trova in un punto diverso della sua partita. Di

@@ -110,9 +110,10 @@ $$
 
 dove $a_i$ è la distanza media del punto $i$ dagli altri punti del suo gruppo
 (la coesione) e $b_i$ la distanza media dai punti del gruppo diverso più vicino
-(la separazione). La silhouette del singolo punto vale $+1$ se il punto è molto
-meglio collocato dove sta, $0$ se sta sul confine, meno di zero se starebbe
-meglio altrove {cite}`rousseeuw1987silhouettes`.
+(la separazione). La silhouette del singolo punto si avvicina a $+1$ se il
+punto è molto meglio collocato dove sta (vale $+1$ solo con $a_i = 0$), $0$ se
+sta sul confine, meno di zero se starebbe meglio altrove
+{cite}`rousseeuw1987silhouettes`.
 
 Gli altri due indici usati di frequente si calcolano dai centroidi, con un
 costo lineare in $m$ invece del quadratico della silhouette, che richiede tutte
@@ -578,15 +579,15 @@ noti non sono approssimazioni imperfette di un ideale che un giorno qualcuno
 troverà: ciascuno dichiara, con la sua regola d'arresto o la sua funzione
 obiettivo, a che cosa ha rinunciato.
 
-È lo stesso Jon Kleinberg del teorema di impossibilità sull’equità discusso nel
-{doc}`capitolo sull'AI responsabile
-</AIResponsabile/equita-e-bias>`, secondo cui tre criteri ragionevoli di
+È lo stesso Jon Kleinberg del teorema di impossibilità sull’equità, che
+tratterà il {doc}`capitolo sull'AI responsabile
+</AIResponsabile/equita-e-bias>`: tre criteri ragionevoli di
 imparzialità non possono valere insieme se non in due casi particolari, la
 previsione perfetta e gruppi con la stessa frequenza di base. Sono due
 impossibilità distinte, con la stessa forma dell'argomento e lo stesso autore,
-a quindici anni di distanza; e in tutti e due i casi la conseguenza pratica è
-che la scelta va dichiarata invece che cercata, perché nessun dato la farà al
-posto nostro.
+a una quindicina d’anni di distanza; e in tutti e due i casi la conseguenza
+pratica è che la scelta va dichiarata invece che cercata, perché nessun dato la
+farà al posto nostro.
 
 Che è, poi, la storia di Plutone: alla fine si vota.
 

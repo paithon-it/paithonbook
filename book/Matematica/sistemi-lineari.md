@@ -751,7 +751,7 @@ print(np.round(x, 2), round(np.linalg.norm(A @ x - b), 2))  # e il suo residuo
 I sistemi lineari hanno dato tre domande da porre a una trasformazione: che
 cosa produce (l'immagine), che cosa perde (il nucleo), quante direzioni
 indipendenti conserva (il rango). Resta il caso più comune nei dati, quello con
-più equazioni che incognite, dove nessuna soluzione esatta esiste. In quel
+più equazioni che incognite, dove di norma una soluzione esatta non esiste. In quel
 caso, invece di cercare il punto che soddisfa
 $\mathbf{A}\mathbf{x}=\mathbf{b}$, si cerca il punto dell'immagine di
 $\mathbf{A}$ più vicino a $\mathbf{b}$, e lo trovano le proiezioni.

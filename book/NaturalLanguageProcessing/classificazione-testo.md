@@ -591,7 +591,7 @@ scambiare per una spiegazione quella che può essere una scorciatoia del
 corpus; e questa leggibilità è uno dei motivi per cui resta un riferimento
 anche nell'era dei Transformer.
 
-## Giudicare il giudice
+## Valutare un classificatore: giudicare il giudice
 
 Un classificatore di testi si valuta con gli strumenti di {doc}`Valutare un
 modello: le metriche </MachineLearning/metriche>`: la matrice di confusione,
@@ -760,9 +760,9 @@ ritorna, identico, nei {doc}`modelli n-gram
   con pochissimi esempi ma conta due volte gli indizi che viaggiano in coppia;
   il secondo se ne accorge e spartisce il peso, e vince quando gli esempi
   abbondano.
-- Per giudicare il giudice servono le misure del capitolo sul machine learning
-  (quante delle segnalazioni sono giuste, quante ne ha trovate) e non la
-  percentuale secca di risposte esatte: se lo spam è una email su cento, chi
+- Per valutare il classificatore servono le misure del capitolo sul machine
+  learning (quante delle segnalazioni sono giuste, quante ne ha trovate) e non
+  la percentuale secca di risposte esatte: se lo spam è una email su cento, chi
   risponde sempre «legittima» ne azzecca il $99\%$ senza aver fermato niente.
 - I lessici di sentiment, dizionari di parole con il loro segno, non
   chiedono nessun esempio già giudicato, ma sono ciechi al contesto e alla

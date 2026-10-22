@@ -200,7 +200,7 @@ $$
 $$
 
 dove $\mathcal{L}_{\text{contenuto}}$ misura quanto l'immagine generata si è
-allontanata dalla foto di partenza, $\mathcal{L}_{\text{stile}}$ quanto il suo
+allontanata dalla foto di contenuto, $\mathcal{L}_{\text{stile}}$ quanto il suo
 stile è ancora diverso da quello del quadro, e $\alpha$ e $\beta$ sono i due
 coefficienti che decidono a quale dei due termini dare più importanza.
 

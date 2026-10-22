@@ -484,7 +484,7 @@ terzo.
 $\tilde{\boldsymbol{\epsilon}} = \boldsymbol{\epsilon}_\varnothing +
 w\,(\boldsymbol{\epsilon}_c-\boldsymbol{\epsilon}_\varnothing)$, dove
 $\boldsymbol{\epsilon}_\varnothing$ e $\boldsymbol{\epsilon}_c$ sono la
-predizione senza e con il testo e $w$ è la forza della guida (un numero, non il
+predizione senza e con il testo e $w$ è il peso della guida (un numero, non il
 peso $w(t)$ della loss). La norma di $\tilde{\boldsymbol{\epsilon}}$ cresce
 linearmente in $w$ e la sua derivata in $\lambda$ cresce con essa.
 DPM-Solver++ {cite}`lu2022dpmpp` risolve il problema riscrivendo l'integrale

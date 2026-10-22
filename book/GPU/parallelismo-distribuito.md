@@ -40,8 +40,9 @@ per calcolare e una lunga per aggiornare. Parametro per parametro, l'inventario
   accumularsi;
 - le due **statistiche** di Adam, 4 byte l'una e quindi 8 in tutto: la media
   delle correzioni recenti (per non farsi sballottare dal singolo esempio) e una
-  misura di quanto quelle correzioni oscillano, che serve a fare passi corti
-  dove il terreno è accidentato e passi lunghi dove è liscio.
+  misura di quanto quelle correzioni sono grandi (la media dei loro quadrati),
+  che serve a fare passi corti dove il terreno è accidentato e passi lunghi dove
+  è liscio.
 
 Sommando i quattro punti, con le due statistiche contate una per una, si
 ottengono $2 + 2 + 4 + 4 + 4 = 16$ byte per parametro, dei quali i 350 GB di
@@ -222,7 +223,8 @@ cresce linearmente con $K$, e per reggerlo bisogna far crescere anche quel
 gruppo, cioè spendere macchine per il coordinamento invece che per il calcolo.
 
 L'anello, invece, non ha un centro: nessun nodo vede più traffico degli altri,
-e il costo per GPU smette di dipendere da quante sono. È la stessa ragione per
+e il volume che ciascuna GPU spedisce smette di dipendere da quante sono
+(resta la latenza, che cresce con $K$). È la stessa ragione per
 cui, nei sistemi distribuiti, si preferisce un protocollo fra pari a uno che
 passa da un coordinatore, ogni volta che il coordinatore non serve. In
 `DistributedDataParallel` questo all-reduce è eseguito *durante* il

@@ -89,9 +89,10 @@ loss* affronta in modo sistematico.
 
 Questa è la parametrizzazione di YOLO; nella famiglia Faster R-CNN il termine
 di objectness non sparisce, si sposta. Nel primo stadio, la *Region Proposal
-Network*, è una objectness: ogni ancora viene classificata in binario come
-oggetto o sfondo, e il termine di regressione è attivo solo sulle ancore
-positive. Manca invece dalla testa del secondo stadio, dove la confidenza
+Network*, è una objectness: ogni ancora (il riquadro di partenza, spiegato
+più sotto) viene classificata in binario come oggetto o sfondo, e il
+termine di regressione è attivo solo sulle ancore positive. Manca invece
+dalla testa del secondo stadio, dove la confidenza
 coincide con il punteggio softmax della classe perché lì lo sfondo è trattato
 come una classe in più.
 
@@ -391,9 +392,9 @@ Ogni $\mathbf{P}_l$ ha così la risoluzione di $\mathbf{C}_l$ e la semantica che
 scende da $\mathbf{C}_5$, a un costo molto inferiore a quello di una piramide
 d'immagine, concentrato sul livello più fine. Le teste sono condivise fra i
 livelli, come in una piramide d'immagine, perciò tutti vanno portati alla
-stessa $d$. La novità rispetto a FCN e U-Net, che hanno a loro volta un
-percorso dall'alto in basso, sta proprio nel predire da ogni livello con le
-stesse teste.
+stessa $d$. La novità rispetto a FCN e U-Net (le reti di segmentazione,
+trattate più avanti), che hanno a loro volta un percorso dall'alto in basso,
+sta proprio nel predire da ogni livello con le stesse teste.
 
 Nella RPN ogni livello ha ancore di una sola area, $32^2,
 64^2, 128^2, 256^2, 512^2$ pixel su $\mathbf{P}_2, \dots, \mathbf{P}_6$, in tre

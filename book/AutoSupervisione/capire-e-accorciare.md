@@ -1249,7 +1249,7 @@ sia intelligente, spesso usano due metri diversi senza dirlo.
 
 Resta un punto che nessuna delle due letture nega, e forse è la conclusione più
 solida. Quanto ci si avvicini al fondo di una sorgente dipende da chi comprime,
-e l'esperimento sulla lingua a quattro lettere lo ha misurato quattro volte.
+e l'esperimento sulla lingua a quattro lettere lo ha misurato sei volte.
 Che un fondo ci sia, invece, e che stia sotto la dimensione dei dati grezzi,
 non dipende da nessuno: lo dice la riga dei dati casuali, quel $100{,}8\%$,
 dove il fondo coincide con il grezzo e non c'è niente da guadagnare per

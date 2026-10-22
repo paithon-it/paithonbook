@@ -13,7 +13,7 @@
   impronta: "01093c7d712c"
   postilla: "Due motivi per decidere direttamente: azioni da dosare e policy stocastica"
 - inizio: "**A3C** fa giocare molte copie dell'agente"
-  impronta: "68d37f4803f8"
+  impronta: "e03d3bd37c4c"
   postilla: "A3C: copie in parallelo danno esperienze diverse, come la memoria di DQN"
 - inizio: "**PPO** (*Proximal Policy Optimization* {cite}`schulman2017proximal`) è"
   impronta: "f1be55b17968"

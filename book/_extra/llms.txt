@@ -177,7 +177,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Innestare gli occhi](https://book.paithon.it/main/VisioneLinguaggio/innestare-gli-occhi.html)
   - [Fusione precoce e tardiva](https://book.paithon.it/main/VisioneLinguaggio/fusione-precoce-tardiva.html)
   - [Il costo del dettaglio](https://book.paithon.it/main/VisioneLinguaggio/risoluzione-e-dettaglio.html)
-  - [Vedere quel che non c'è](https://book.paithon.it/main/VisioneLinguaggio/vedere-quel-che-non-ce.html)
+  - [Allucinazione visiva](https://book.paithon.it/main/VisioneLinguaggio/vedere-quel-che-non-ce.html)
 
 ## Lavorare con gli LLM
 

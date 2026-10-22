@@ -472,7 +472,8 @@ numeri dichiarati la derivata si trova, sui risultati calcolati per strada non
 c'è niente.
 
 Infine, il registratore rilegge alcune operazioni senza cavarne niente, ad
-esempio arrotondare a un numero intero o scegliere il più grande di una fila.
+esempio arrotondare a un numero intero o indicare la posizione del più grande
+di una fila.
 Spostando di poco l'ingresso, l'uscita non si muove, quindi la derivata è zero,
 e chi sta prima di quell'operazione non riceve nessuna indicazione su come
 correggersi.

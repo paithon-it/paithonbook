@@ -256,9 +256,10 @@ Le condizioni si combinano con gli operatori bit a bit `&`, `|`, `~` (non con
 `and`/`or` di Python, che non sono vettorizzati), e le parentesi sono
 obbligatorie per via della precedenza degli operatori.
 
-Per selezioni miste per etichetta e posizione esistono gli accessor
+Per selezionare per etichetta o per posizione esistono gli accessor
 `.loc[righe, colonne]` (per etichetta) e `.iloc[...]` (per posizione intera),
-che restano il modo canonico e non ambiguo di indicizzare. Si noti, però, una
+due strade distinte (non si mescolano nella stessa selezione), che restano il
+modo canonico e non ambiguo di indicizzare. Si noti, però, una
 differenza rispetto alle fette di Python e NumPy: nelle fette per etichetta di
 `.loc` il secondo estremo è incluso (`df.loc[0:2]` restituisce tre righe),
 mentre `.iloc[0:2]`, per posizione, ne restituisce due.
@@ -698,10 +699,10 @@ plt.show()
 ```
 
 `plt.figure()` e `plt.show()` hanno compiti diversi. `plt.figure()` apre un
-foglio nuovo. In questo esempio non sarebbe indispensabile, perché
-`plt.show()` chiude i fogli che ha appena mostrato, ma serve ogni volta che si
-preparano più grafici prima di mostrarli, altrimenti i disegni finiscono tutti
-sullo stesso foglio.
+foglio nuovo. In questo esempio non sarebbe indispensabile, perché in uno
+script `plt.show()` chiude i fogli che ha appena mostrato, ma serve ogni volta
+che si preparano più grafici prima di mostrarli, altrimenti i disegni finiscono
+tutti sullo stesso foglio.
 
 `plt.show()` mostra i fogli aperti: in uno script fa comparire la finestra,
 mentre in un notebook la cella mostra il grafico da sola. La riga si scrive lo

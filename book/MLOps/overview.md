@@ -327,7 +327,7 @@ versione dei dati ha prodotto quali pesi, così che tra sei mesi si possa capire
 *perché* una predizione è quella. Non si riaddestra da solo quando il mondo
 cambia.
 
-## L'anello, un attrezzo alla volta
+## L'anello, un nodo alla volta
 
 L'anello si percorre e se ne sciolgono i nodi, uno per uno.
 

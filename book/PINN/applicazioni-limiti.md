@@ -222,7 +222,7 @@ ottimizzatore = torch.optim.Adam(                      # ottimizzato insieme ai 
 residuo = u_t - alpha * u_xx
 ```
 
-## Cosa sanno fare, per davvero
+## Le applicazioni: dove le PINN portano un vantaggio reale
 
 Al di là dell'aneurisma, il filone ha prodotto applicazioni concrete. I casi in
 cui le PINN portano un vantaggio reale vanno tenuti separati da quelli dove
@@ -575,7 +575,7 @@ usate insieme per rispondere alla stessa domanda; quando la risposta dipende da
 così tante grandezze che i puntini da mettere sarebbero più di quanti un
 computer ne possa tenere; e quando il problema è inverso.
 
-## Oltre le PINN: imparare il mestiere, non il compito
+## Gli operatori neurali: imparare il mestiere, non il compito
 
 C'è un limite più profondo di tutti quelli visti finora, e superarlo apre la
 direzione più promettente. Una PINN risolve un problema, e uno soltanto: è

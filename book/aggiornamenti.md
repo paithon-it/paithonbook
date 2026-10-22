@@ -32,6 +32,16 @@ Quando una cifra aumenta, quelle alla sua destra tornano a zero. Una versione
 che contiene sia sezioni nuove sia correzioni prende il numero della modifica
 maggiore, e ogni versione corrisponde a una pubblicazione.
 
+(v1-17-2)=
+
+## 1.17.2 · 22 ottobre 2026
+
+### Correzioni
+
+- **Altre correzioni di teoria.** Fra le altre: la disuguaglianza di Markov applicata a una funzione crescente dello scarto, il teorema del minimax che vale per i giochi finiti, i pesi dell'attenzione nella traduzione calcolati da una piccola rete, le matrici ortogonali della SVD che comprendono anche le riflessioni.
+- **Titoli col nome delle cose.** Più sezioni nominano l'oggetto accanto all'immagine che lo racconta: la smoothing spline, il modality gap, la complessità di Rademacher, l'allucinazione visiva, che è anche la nuova voce dell'indice.
+- **Un nome per ogni cosa.** Nel deep reinforcement learning la memoria di replay e la rete-target si chiamano allo stesso modo in tutte le sezioni, e nei modelli di diffusione il peso della guida non diventa più «forza».
+
 (v1-17-1)=
 
 ## 1.17.1 · 22 ottobre 2026

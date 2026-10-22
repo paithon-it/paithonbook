@@ -1,4 +1,4 @@
-# Le tre cose che davamo per scontate
+# Le tre cose date per scontate
 
 La ricerca vista finora poggia su tre ipotesi che nessuno ha mai scritto,
 perché sembravano ovvie. Due stavano già nella {doc}`definizione di problema di

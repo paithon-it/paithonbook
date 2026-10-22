@@ -11,7 +11,7 @@ le classi, massimizzato dalla {doc}`SVM </MachineLearning/svm>`, conta più
 della dimensione dello spazio in cui si separano, cioè del numero di coordinate
 di ogni punto.
 
-## Inseguire etichette casuali
+## La complessità di Rademacher: inseguire etichette casuali
 
 `````{tab} Elementare
 
@@ -295,9 +295,9 @@ il tetto.
   della dimensione VC.
 - Per un righello che deve lasciare una strada larga conta il rapporto fra
   la larghezza della strada e l'ingombro dei punti, non il numero di
-  direzioni: è la ragione per cui la SVM, se trova una strada larga, può
-  generalizzare anche con infinite direzioni. I punti dentro la strada contano
-  come errori.
+  direzioni: è una giustificazione per cui la SVM, se trova una strada larga,
+  può generalizzare anche con infinite direzioni. I punti dentro la strada
+  contano come errori.
 ```
 `````
 
@@ -309,7 +309,8 @@ il tetto.
   $R(h)\le\hat{R}_S(h)+\mathfrak{R}_m(\mathcal{H})+\sqrt{\log(1/\delta)/(2m)}$,
   e la versione empirica con $3\sqrt{\log(2/\delta)/(2m)}$.
 - Massart: $\mathfrak{R}_m\le\sqrt{2\log\Pi_{\mathcal{H}}(m)/m}$, quindi mai
-  peggio di VC a meno delle costanti; calcolarla è in generale NP-difficile.
+  peggio di VC a meno delle costanti; calcolarla è NP-difficile per alcune
+  famiglie.
 - Lineari con $\lVert\mathbf{w}\rVert\le\Lambda$, $\lVert\mathbf{x}\rVert\le r$:
   $\hat{\mathfrak{R}}_S\le r\Lambda/\sqrt{m}$, e il bound di margine
   $R(h)\le\hat{R}_{S,\rho}(h)+2r\Lambda/(\rho\sqrt{m})+\sqrt{\log(1/\delta)/(2m)}$

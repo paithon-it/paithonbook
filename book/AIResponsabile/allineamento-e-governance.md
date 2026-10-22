@@ -934,7 +934,7 @@ noi: non c'è un teorema da dimostrare.
   lui lo fa salire: come il genio della lampada, che esaudisce le parole e non
   l'intenzione.
 - Il numero che gli diamo è sempre un’imitazione di ciò che ci interessa,
-  un *surrogato*. Spremerla all'inizio funziona, poi peggiora le cose:
+  un *surrogato*. Spremerlo all'inizio funziona, poi peggiora le cose:
   ottimizzare di più non è sempre meglio.
 - Come si orienta un modello: gli si mostrano tante coppie di risposte con
   scritto quale delle due è migliore, si addestra un giudice automatico a

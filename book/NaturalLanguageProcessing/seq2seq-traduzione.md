@@ -565,7 +565,8 @@ all'opera su tre riassunti soltanto, di tre numeri ciascuno:
 | dopo «il gatto» | `0, 4, 2` | 0,70 |
 | dopo «il gatto nero» | `1, 1, 0` | 0,20 |
 
-Il decoder determina i pesi in base a ciò che gli serve nel passo corrente.
+I pesi cambiano a ogni passo di decodifica: una piccola rete li calcola
+confrontando lo stato corrente del decoder con ciascun riassunto.
 Sono tre numeri positivi la cui somma è uno, prodotti da una softmax a partire
 da un punteggio per ogni riassunto: assegnare più peso a uno significa
 toglierne agli altri.

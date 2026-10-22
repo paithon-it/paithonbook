@@ -101,8 +101,9 @@ prima.
 
 L'instabilità non dipendeva dalla sfortuna né da un passo di apprendimento
 regolato male (il *learning rate*, cioè di quanto si spostano i pesi a ogni
-correzione). I due accorgimenti che hanno reso praticabile il metodo curano un
-difetto preciso, che ha una descrizione sorprendentemente pulita.
+correzione). I due accorgimenti che hanno reso praticabile il metodo vengono
+dopo; il difetto da cui nasce l'instabilità, intanto, ha una descrizione
+sorprendentemente pulita.
 
 `````{tab} Elementare
 
@@ -214,7 +215,7 @@ scala. Al bootstrapping si può, usando Monte Carlo, a scapito dell'efficienza
 computazionale (bisogna conservare tutto fino alla fine dell'episodio) e
 dell'efficienza nei dati. All’off-policy si può, sostituendo il Q-learning con
 Sarsa, e si perde la possibilità di imparare da un archivio di esperienze
-altrui, che è però la premessa del replay buffer.
+altrui, che è però la premessa della memoria di replay.
 
 `````
 
@@ -284,10 +285,10 @@ il bersaglio, calcolato con i pesi congelati $\theta^{-}$. Congelarli attenua il
 parole del lavoro, divergenza e oscillazioni diventano molto meno probabili.
 
 Due dettagli del lavoro su *Nature* {cite}`mnih2015human` cambiano questa
-perdita. Nel gradiente l'errore $\delta = y - Q(s,a;\theta)$ è tosato in
+perdita. Nel gradiente l'errore $\delta = y - Q(s,a;\theta)$ subisce il clipping in
 $[-1,1]$, il che equivale alla perdita di Huber, quadratica per $|\delta| \le
 1$ e lineare oltre; in questo modo un errore di cento contribuisce al
-gradiente quanto un errore di uno. E le ricompense sono tosate a $-1$,
+gradiente quanto un errore di uno. E le ricompense subiscono il clipping a $-1$,
 $0$, $+1$, perché lo stesso passo valga su giochi con scale di punteggio
 diversissime, il che impedisce però di distinguere una ricompensa piccola da
 una grande.
@@ -315,7 +316,7 @@ che la guida, tenendo fermo il secondo mentre la prima si muove
 I due accorgimenti al lavoro sullo stesso addestramento. A sinistra la memoria
 di replay: le esperienze entrano in ordine, e la manciata su cui si studia (il
 *minibatch*) le pesca a caso. A destra lo stesso valore $Q$ calcolato dalla rete
-che impara, che si muove a ogni passo, e dalla copia congelata, che resta ferma
+che impara, che si muove a ogni passo, e dalla rete-target, che resta ferma
 per un numero fisso di passi (nel disegno tre) e poi scatta a raggiungerla. La
 figura è in scala ridotta: in un addestramento vero le esperienze in memoria
 sono un milione e quelle pescate a ogni aggiornamento sono trentadue.
@@ -456,12 +457,12 @@ dov'era: si tramanda.
 
 Il rimedio si chiama **Double DQN**, e divide in due un lavoro che prima faceva
 una rete sola. Prima: la stessa rete decide qual è la mossa migliore *e* dice
-quanto vale. Dopo: la rete che sta imparando dice quale mossa, e la copia
-congelata dice quanto vale quella mossa. Che i due ruoli stiano su reti
+quanto vale. Dopo: la rete che sta imparando dice quale mossa, e la rete-target
+dice quanto vale quella mossa. Che i due ruoli stiano su reti
 diverse è tutta la sostanza: l'errore che ha fatto *sembrare* buona quella
 mossa non è lo stesso errore che poi ne *misura* il valore, così la fortuna non
-viene contata due volte. I ruoli non sono intercambiabili, perché la copia
-congelata deve dire *quanto vale*, altrimenti si perde il bersaglio fermo che
+viene contata due volte. I ruoli non sono intercambiabili, perché la rete-target
+deve dire *quanto vale*, altrimenti si perde il bersaglio fermo che
 serviva a non far esplodere l'addestramento.
 
 Attenua, però, non guarisce. Le due reti non sono estranee fra loro: una è la
@@ -539,7 +540,7 @@ bersaglio, buttando via il congelamento che era servito a stabilizzarlo.
 
 Gli autori sono prudenti sul risultato: l'algoritmo «riduce le sovrastime
 osservate», non le elimina. Il disaccoppiamento annullerebbe il bias solo con
-due stimatori indipendenti, e qui il secondo non lo è: la rete target è una
+due stimatori indipendenti, e qui il secondo non lo è: la rete-target è una
 copia ritardata del primo, scelta perché è il candidato che c'era già, e il
 lavoro stesso avverte che il disaccoppiamento non è completo.
 
@@ -701,9 +702,9 @@ restano tre limiti principali, che hanno guidato la ricerca successiva.
   chiama memoria di replay (ogni esperienza viene annotata e ripescata a
   caso, così l'agente mescola situazioni lontane invece di rileggere cento volte
   la stessa pagina) e la
-  copia congelata della rete, che tiene fermo il bersaglio abbastanza a
+  rete-target, che tiene fermo il bersaglio abbastanza a
   lungo perché lo si possa raggiungere. Nessuno dei tre ingredienti sparisce:
-  la copia congelata addolcisce il bootstrapping (correggere una stima
+  la rete-target addolcisce il bootstrapping (correggere una stima
   guardandone un'altra), mentre il quaderno toglie un difetto che nella triade
   non c'era, il rileggere la stessa pagina; sull'off-policy,
   semmai, tira dall'altra parte, perché i ricordi vengono da partite giocate
@@ -711,7 +712,7 @@ restano tre limiti principali, che hanno guidato la ricerca successiva.
 - Prendere sempre il voto più alto gonfia i voti: fra tante stime sporcate
   da un errore, la più alta è quasi sempre una stima fortunata, non la mossa
   migliore. Il Double DQN attenua il difetto facendo dire *quale mossa*
-  alla rete che impara e *quanto vale* alla copia congelata; non lo elimina,
+  alla rete che impara e *quanto vale* alla rete-target; non lo elimina,
   perché le due reti sono parenti strette.
 - Due migliorie con un'idea ciascuna: si ripassa più spesso ciò che ha
   sorpreso (contando un po’ meno i ripassi pescati apposta, per non farsi

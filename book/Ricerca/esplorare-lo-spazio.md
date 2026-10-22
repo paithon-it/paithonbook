@@ -383,7 +383,8 @@ poco più alti {cite}`russell2020artificial`. Sul rompicapo delle otto tessere,
 con $d = 20$, vale circa $1{,}64$ senza stima, $1{,}42$ con le
 tessere fuori posto e $1{,}22$ con la distanza a isolati.
 
-Con un’euristica consistente A\* è anche *ottimamente efficiente*
+Con un’euristica consistente (definita poco più sotto) A\* è anche
+*ottimamente efficiente*
 {cite}`dechter1985generalized`: ogni algoritmo che estende cammini dalla
 radice, usa la stessa euristica e garantisce una soluzione ottima deve aprire
 tutti i nodi con $f(n) < C^*$, perché ciascuno potrebbe stare su un cammino

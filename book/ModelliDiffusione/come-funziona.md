@@ -900,7 +900,7 @@ associata alla SDE di {cite}`song2021score`.
 
 `````
 
-## Chi indovina il disturbo? Una vecchia conoscenza
+## Chi indovina il rumore? La U-Net, una vecchia conoscenza
 
 Fin qui la rete è stata una scatola con due ingressi (l'immagine rovinata e il
 numero del passo) e un'uscita della stessa forma dell'immagine. Per

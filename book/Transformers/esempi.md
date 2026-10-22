@@ -89,7 +89,7 @@ quelli della {doc}`sezione sui moduli </PyTorch/moduli>`: con
 parametri.
 `````
 
-## Il termometro delle recensioni
+## Analisi del sentimento: il termometro delle recensioni
 
 Il secondo compito è capire l'umore di chi scrive. Si chiama *sentiment
 analysis*, «analisi del sentimento», e sta dietro alla percentuale di

@@ -234,7 +234,7 @@ tutta dentro il `Dataset`, cioè nel punto in cui le immagini vengono lette. La
 scelta delle trasformazioni segue il compito: per un classificatore di cifre o
 di cartelli stradali, ad esempio, il `RandomHorizontalFlip` va tolto.
 
-## Perché funziona: un altro modo di mettere il freno
+## Regolarizzazione sui dati: un altro modo di mettere il freno
 
 Impedire a una rete di imparare a memoria è un problema vecchio, e i freni già
 incontrati sono due: la regolarizzazione $\ell_2$, che penalizza i modelli che

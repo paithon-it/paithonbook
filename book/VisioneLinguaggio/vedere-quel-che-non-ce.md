@@ -1,4 +1,4 @@
-# La forchetta che non c'era
+# Allucinazione visiva: la forchetta che non c’era
 
 Apparecchia mezzo tavolo: un piatto, un coltello alla sua destra, un bicchiere.
 Fotografa e chiedi a un modello che vede e parla che cosa c'è sul tavolo. È

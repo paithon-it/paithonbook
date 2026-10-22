@@ -669,7 +669,7 @@ complessità: senza dire niente, tiene i pesi più piccoli di quanto sarebbero.
 È quasi sempre un bene. Infatti, con dati così facili che una linea li separa
 alla perfezione, il modello, per prendere pieni voti, non deve solo azzeccare
 le risposte, deve anche essere *sicuro*, e per essere più sicuro gli basta
-ingigantire i pesi. Un punteggio di $10$ dà una probabilità del $99{,}99\%$,
+ingigantire i pesi. Un punteggio di $10$ dà una probabilità del $99{,}995\%$,
 uno di $100$ ne dà una ancora più vicina a $1$, quindi non c'è mai un motivo
 per fermarsi, e senza freno i pesi crescono all'infinito.
 

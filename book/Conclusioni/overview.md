@@ -609,7 +609,7 @@ un modello addestrato sul solo token successivo non si costruisca già una
 rappresentazione del proprio mondo.
 `````
 
-## Il campo di casa
+## Il mondo digitale come campo di casa
 
 Prima o poi la domanda arriva, di solito a cena: è più intelligente di noi?
 

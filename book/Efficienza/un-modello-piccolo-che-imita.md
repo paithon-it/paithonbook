@@ -146,9 +146,8 @@ Il secondo argomento sta nella stessa pagina del lavoro originale, che lo
 prende da Buciluă, Caruana e Niculescu-Mizil {cite}`bucilua2006model`, e si
 cita molto meno: i bersagli morbidi si possono calcolare su dati non
 etichettati, e questo sposta il problema da «quanti esempi ho» a «quanti
-esempi il maestro può commentare». L’esperimento sulle cifre misura il
-secondo, il solo che si riesce a mostrare in modo pulito su un dataset
-piccolo, e mostra anche quanto tutti e due dipendano da quello che il maestro
+esempi il maestro può commentare». L’esperimento sulle cifre li separa e
+misura tutti e due, e mostra anche quanto dipendano da quello che il maestro
 ha visto.
 
 Il principio ha varianti che la stessa formula non scrive: far imitare allo
@@ -471,9 +470,10 @@ parti su dieci che il codice gli assegna.
   $(1-\alpha)\mathcal{L}_{\text{dura}} + \alpha T^2 \mathrm{KL}(p^t(T)\|p^s(T))$
   {cite}`hinton2015distilling`, con il termine duro a $T=1$ (e $T = 1$ anche a
   inferenza). Il fattore $T^2$ tiene i due termini sulla stessa scala solo a
-  temperatura alta rispetto ai logit, dove la distillazione diventa la
-  regressione sui logit {cite}`ba2014deep`: a $T=4$, con lo studente appena
-  creato, sovracompensa di 3,6 volte, e a riassorbire lo scarto è $\alpha$.
+  temperatura alta rispetto ai logit, con logit a media nulla, dove la
+  distillazione diventa la regressione sui logit {cite}`ba2014deep`: a $T=4$,
+  con lo studente appena creato, sovracompensa di 3,6 volte, e a riassorbire
+  lo scarto è $\alpha$.
 - L’ablazione a tre condizioni separa i due contributi: 90,2% senza maestro,
   92,6% col maestro sui soli esempi etichettati, 95,8% col maestro su tutti
   (maestro al 96,9%, addestrato su 898 etichette). Tutti e due dipendono da

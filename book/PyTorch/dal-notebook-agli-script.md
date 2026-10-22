@@ -173,7 +173,7 @@ contrario, il `DataLoader` consegna anche l'ultimo batch, più piccolo degli
 altri quando gli esempi non si dividono in parti uguali.
 
 Il secondo dettaglio è la riga `@torch.no_grad()` scritta sopra la seconda
-funzione. Quella chiocciola in Python si chiama decoratore, ed è una riga che
+funzione. In Python una riga che comincia con la chiocciola è un decoratore:
 avvolge la funzione e ne cambia il comportamento senza toccarne il corpo.
 
 Qui dice che dentro la funzione autograd non registra il grafo dei calcoli (il

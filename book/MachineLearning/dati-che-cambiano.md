@@ -465,15 +465,15 @@ Il punteggio da guardare è l'AUC della {doc}`sezione sulle metriche
 <metriche>`: con $0{,}5$ il detective non distingue le due popolazioni, cioè
 tira a indovinare, e con $1$ le separa senza errori.
 
-Un'AUC vicina a $0{,}5$ non equivale a «va tutto bene», per due ragioni. La
+Un'AUC vicina a $0{,}5$ non equivale a «va tutto bene», per tre ragioni. La
 prima è che il detective vede solo gli input, non le risposte. Per costruzione,
 quindi, non può accorgersi del cambio di regola (in cui gli input restano gli
 stessi e cambia la risposta giusta), il caso più insidioso dei tre.
 
-La seconda è che un'AUC vicina a $0{,}5$ può anche indicare che gli esempi
-nuovi sono ancora troppo pochi: uno scarto piccolo ma reale resta sotto il
-rumore di campionamento dell'AUC, e un classificatore di capacità limitata può
-non vedere un'interazione fra molte caratteristiche. Un'AUC alta è quindi un
+La seconda è che gli esempi nuovi possono essere ancora troppo pochi: uno
+scarto piccolo ma reale resta sotto il rumore di campionamento dell'AUC. La
+terza è che un classificatore di capacità limitata può non vedere
+un'interazione fra molte caratteristiche. Un'AUC alta è quindi un
 allarme attendibile, mentre un'AUC vicina a $0{,}5$ non dimostra che la
 deriva manchi.
 
@@ -570,9 +570,9 @@ ripida e non come un fondovalle piatto, la correzione si può accorciare più in
 fretta, come uno diviso il numero di email, e il rimpianto cresce appena come
 il logaritmo, cioè quasi niente.
 
-La garanzia non chiede niente alle email, e vale anche se chi le scrive prova
-apposta a ingannare il filtro, perché il paragone è sempre con il miglior
-filtro fisso su quelle stesse email.
+La garanzia della radice non chiede niente alle email, e vale anche se chi le
+scrive prova apposta a ingannare il filtro, perché il paragone è sempre con il
+miglior filtro fisso su quelle stesse email.
 
 Se poi le email vengono tutte dalla stessa urna, c'è un regalo in più.
 Fai la media dei filtri usati giorno per giorno, regola per regola (il peso
