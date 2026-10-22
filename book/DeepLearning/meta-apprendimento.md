@@ -6,8 +6,8 @@ La risposta ovvia è dare una ripassata sui dieci esempi a una rete già
 addestrata su tutti i compiti conosciuti. Questa strada funziona quando i
 compiti si somigliano molto, e funziona male quando la famiglia di compiti è
 varia, per una ragione controintuitiva: una rete addestrata su tutti i compiti
-insieme impara la loro media, e la media di una famiglia varia può non
-somigliare a nessuno dei suoi membri.
+insieme impara la loro media, e la media di una famiglia varia è vicina a
+pochi dei suoi membri e lontana da tutti gli altri.
 
 Un'altra strada è il **meta-apprendimento**, cioè l'apprendimento
 sull'apprendimento. Invece di addestrare una rete a risolvere i compiti, la si
@@ -177,7 +177,8 @@ $$
 
 cioè una cosinusoide sola, di ampiezza ridotta. Anche questa cosinusoide è un
 membro della famiglia ($A = 1{,}62$, $\varphi = \pi/2$, tutti e due dentro il
-loro intervallo), ma è un membro solo, e non predice nessuno degli altri. Una
+loro intervallo), ma è un membro solo, e predice bene soltanto i pochi che gli
+stanno vicino. Una
 rete addestrata congiuntamente su $p(\mathcal{T})$ converge lì, e da lì tutte
 le altre onde sono lontane.
 
@@ -196,9 +197,9 @@ indovinare *quale* onda, avendone visti dieci punti.
 Poiché la media della famiglia si calcola, si può anche vedere in anticipo che
 cosa impara la rete allenata su tutte le onde insieme, che farà da termine di
 paragone. Sommando tutte le onde della famiglia e dividendo, resta un'onda
-sola, più bassa delle altre e sempre la stessa, che sta più o meno a metà
-strada fra tutte, e nessuna delle altre le somiglia. La rete allenata su
-tutte le onde insieme converge lì.
+sola, sempre la stessa e più bassa della maggior parte delle altre. Sta più o
+meno a metà strada fra tutte, e per questo è vicina a poche onde e lontana da
+tutte le altre. La rete allenata su tutte le onde insieme converge lì.
 
 Confrontiamo tre punti di partenza: una rete presa a caso, una allenata su
 tutte le onde insieme e una meta-addestrata. A tutti e tre diamo lo stesso
@@ -601,8 +602,9 @@ contro 79,1% da un esempio, 80,6% contro 92,3% da cinque.
   quei passi. Si migliora quel «dopo», non il «prima».
 - La strada ovvia (allenare una rete sola su tutti i compiti insieme e poi
   ripassarla) fallisce quando la famiglia è varia, perché quella rete impara la
-  media dei compiti, e la media di una famiglia varia può non somigliare a
-  nessuno di loro: sulle onde della prova è un'onda bassa e sempre la stessa.
+  media dei compiti, e la media di una famiglia varia è vicina a pochi di
+  loro e lontana da tutti gli altri: sulle onde della prova è un'onda bassa e
+  sempre la stessa.
   Fallisce due volte, perché quella curva media è un posto comodo dove stare
   fermi: pochi passi decisi di aggiustamento la portano fuori di lì e la
   lasciano a metà, cioè peggiorano invece di migliorare; con passi più cauti

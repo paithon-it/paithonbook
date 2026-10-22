@@ -32,6 +32,14 @@ Quando una cifra aumenta, quelle alla sua destra tornano a zero. Una versione
 che contiene sia sezioni nuove sia correzioni prende il numero della modifica
 maggiore, e ogni versione corrisponde a una pubblicazione.
 
+(v1-17-1)=
+
+## 1.17.1 · 22 ottobre 2026
+
+### Correzioni
+
+- {doc}`Imparare a imparare </DeepLearning/meta-apprendimento>` (Deep Learning). **La media delle onde.** La rete allenata su tutte le onde insieme ne impara la media, che è anch'essa un'onda della famiglia: è vicina a poche e lontana da tutte le altre, non diversa da tutte.
+
 (v1-17-0)=
 
 ## 1.17.0 · 22 ottobre 2026

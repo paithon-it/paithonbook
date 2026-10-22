@@ -47,6 +47,17 @@
 
 versioni:
 
+- versione: "1.17.1"
+  data: 2026-10-22
+  voci:
+
+  - tipo: corretto
+    pagina: DeepLearning/meta-apprendimento.md
+    testo: >
+      **La media delle onde.** La rete allenata su tutte le onde insieme ne
+      impara la media, che è anch'essa un'onda della famiglia: è vicina a
+      poche e lontana da tutte le altre, non diversa da tutte.
+
 - versione: "1.17.0"
   data: 2026-10-22
   voci:

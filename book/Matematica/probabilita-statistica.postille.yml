@@ -20,7 +20,7 @@
   postilla: "L'incertezza cala con la radice delle prove: metà errore, quattro volte i dati"
 - inizio: "Bonferroni porta i falsi quasi a"
   impronta: "0cce58f61f85"
-  postilla: "Bonferroni 13 su cento, Benjamini-Hochberg 47: tre promesse, non una classifica"
+  postilla: "Tredici truccate contro quarantasette: tre promesse diverse, non una classifica"
 - inizio: "Le teste, infatti, sono un numero"
   impronta: "5538c98f1bd1"
   postilla: "Le teste sono intere: la soglia effettiva è 3,5 su cento, non 5; test prudente"
