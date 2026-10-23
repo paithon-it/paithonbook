@@ -1,43 +1,78 @@
 name: call-deploy-book
 
+# Il sito: `sphinx-build` con `book/conf.py`, e il risultato in tre posti,
+# come lo vogliono gli indirizzi gia' in giro: `/main/` (il libro), la radice
+# del dominio (una copia di `/main/`, cosi' `robots.txt`, `sitemap.xml` e
+# `llms.txt` stanno dove i motori li cercano) e `/book/` (un'altra copia, per
+# i link che puntano li'). Sono copie di file perche' Sphinx scrive link
+# relativi: la stessa pagina funziona sotto qualunque prefisso.
+
 on:
   push:
     branches:
-    - '**'
-    # If your git repository has the Jupyter Book within some-subfolder next to
-    # unrelated files, you can make this run only if a file within that specific
-    # folder (or the workflow file itself) has been modified.
-    #
+    - main
     paths:
     - book/**
+    - requirements.txt
     - .github/workflows/call-deploy-book.yml
   workflow_dispatch:
 
-jobs: 
-  call-workflow:
+# Due push ravvicinati non pubblicano insieme: il secondo aspetta il primo.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
     # Solo dal repository pubblico: in un fork, o in un'altra copia con gli
     # stessi workflow, senza questa guardia proverebbe a pubblicare Pages da
     # la', e il deploy ha una sola destinazione.
     if: github.repository == 'paithon-it/paithonbook'
-    # Ancorato a un tag, non a `@main`. Il reusable e' di terzi e `main` si
-    # muove: cinque commit fra marzo e maggio 2026, l'ultimo per cambiare la
-    # versione di un'azione di deploy. Finche' sono manutenzioni va bene, ma
-    # dentro quel workflow c'e' il comando che costruisce il libro
-    # (`teachbooks build book/`), e il giorno che TeachBooks passa a Jupyter
-    # Book 2 — che non e' un aggiornamento, e' un altro programma — la build
-    # cambierebbe senza che qui nessuno abbia toccato niente, e lo si
-    # scoprirebbe da un sito che si comporta diversamente.
-    # La v1.1.12 e' del 19 maggio 2026 ed e' esattamente quella che girava
-    # prima di questo pin: il deploy non cambia, cambia solo che da ora in poi
-    # aggiornarlo e' una decisione che si prende, non una che capita.
-    uses: TeachBooks/deploy-book-workflow/.github/workflows/deploy-book.yml@v1.1.12
-    # NIENTE `secrets: inherit`: il submodule `book/_static/brand` è PUBBLICO,
-    # quindi il checkout lo clona col GITHUB_TOKEN di default — nessun GH_PAT
-    # serve. Non ereditando i secret, il reusable non raccoglie un eventuale
-    # GH_PAT residuo (che, privo del permesso Pages, faceva fallire lo step
-    # "Include overview summary"). Il GITHUB_TOKEN di default ha `pages: write`.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      # Il sottomodulo `book/_static/brand` e' pubblico: basta il GITHUB_TOKEN.
+      - uses: actions/checkout@v7
+        with:
+          submodules: true
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Dipendenze
+        run: pip install -r requirements.txt
+
+      # Gli avvisi si leggono nel log del passo: la build non si ferma per un
+      # avviso.
+      - name: Sito
+        run: python -m sphinx -b html -d book/_build/.doctrees book book/_build/html
+
+      - name: I tre posti
+        run: |
+          mkdir -p _site
+          cp -r book/_build/html _site/main
+          cp -r book/_build/html/. _site/
+          cp -r book/_build/html _site/book
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-24.04
     permissions:
-      contents: read
       pages: write
       id-token: write
-
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

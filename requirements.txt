@@ -1,27 +1,42 @@
-# first list the packages you wish to download from PyPI
-# Fissato come le estensioni qui sotto: un rilascio nuovo di TeachBooks cambia
-# la build, e si adotta provandolo, non quando esce.
-teachbooks==0.2.5 # depends on jupyter-book
-# numpy
+# Il libro si costruisce con `sphinx-build` e `book/conf.py`, che traduce
+# `_config.yml` in configurazione di Sphinx. Ogni pacchetto e' fissato a una
+# versione: un rilascio nuovo entra nel sito quando lo si decide qui, dopo
+# averlo provato, e un intervallo aperto rimanderebbe soltanto la prossima
+# rottura a sorpresa.
 
+# Sphinx 9.0 e' l'ultima serie che gira su Python 3.11: la 9.1 vuole il 3.12,
+# la 9.2 il 3.13.
+sphinx==9.0.4
 # docutils: la versione serve all'impaginazione della pagina di bibliografia.
-# Il template TeachBooks pinnava la 0.17.1 (2021), che con il jupyter-book di
-# oggi non si risolve piu': `myst-parser` vuole docutils >= 0.18, e pip finisce
-# in ResolutionImpossible. Non e' stato un cambio nostro ad accorgersene, e' la
-# cache dell'ambiente che nel workflow ruota a settimana: finche' regge, il
-# conflitto resta invisibile, e alla prima settimana nuova il build cade.
-# Quindi versione esatta e aggiornata, non pin tolta: un intervallo aperto
-# rimanderebbe soltanto la prossima rottura a sorpresa.
-docutils==0.21.2
+docutils==0.22.4
+myst-parser==5.1.0
+myst-nb==1.4.0
+# `linkify` e' fra le estensioni di MyST in `book/conf.py`: senza questo
+# pacchetto la build si ferma.
+linkify-it-py==2.2.0
+pyyaml==6.0.3
+
+# Il tema. sphinx-book-theme fissa da se' la versione di pydata-sphinx-theme.
+sphinx-book-theme==1.4.0
+pydata-sphinx-theme==0.20.0
+
+# Le estensioni che `book/conf.py` carica sempre.
+sphinx-external-toc==1.1.0
+sphinx-design==0.7.0
+sphinx-togglebutton==0.4.5
+sphinx-copybutton==0.5.2
+sphinx-comments==0.0.3
+sphinx-jupyterbook-latex==1.0.0
+sphinxcontrib-bibtex==2.7.0
 
 # Le estensioni di TeachBooks vengono da PyPI e da GitHub, ciascuna fissata a
-# una versione: la build non dipende dal registro del GitLab di TU Delft, e un
-# aggiornamento di terzi non entra nel sito senza che lo si decida qui.
-# `sphinx-thebe` (il codice eseguibile nel browser, `use_thebe_lite`) e' la
-# versione di TeachBooks, che su PyPI non c'e': si prende dal loro repository,
-# al commit del tag v1.0.4.
+# una versione. `sphinx-thebe` (il codice eseguibile nel browser,
+# `use_thebe_lite`) e' la versione di TeachBooks, che su PyPI non c'e': si
+# prende dal loro repository, fissata a un commit perche' il repository non ha
+# tag. Il commit e' quello che nel repository precedente,
+# TeachBooks-Sphinx-Thebe, porta il tag v1.0.4.
 jupyterbook-patches==1.15.0
 sphinx-thebe @ git+https://github.com/TeachBooks/Sphinx-Thebe@1f3a80969622b7d63f48f05d8769f5cb933202a0
 
-# allows for syncronized tabs in case you’d like your tabs to shift across the page at the same time.
-sphinx-inline-tabs 
+# Le schede Elementare e Superiore.
+sphinx-inline-tabs==2025.12.21.14

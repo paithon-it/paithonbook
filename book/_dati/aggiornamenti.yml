@@ -47,6 +47,16 @@
 
 versioni:
 
+- versione: "1.17.3"
+  data: 2026-10-24
+  voci:
+
+  - tipo: impianto
+    testo: >
+      **Sito e PDF con un motore aggiornato.** L'indice a destra evidenzia la
+      sezione che stai leggendo, il selettore del tema propone anche le
+      impostazioni del sistema, e il PDF ha lo stesso contenuto in meno pagine.
+
 - versione: "1.17.2"
   data: 2026-10-22
   voci:

@@ -507,13 +507,14 @@ stampano da sé, in cima all'uscita.
 
 ## Vedere le proprie modifiche
 
-Il libro è un [Jupyter Book](https://jupyterbook.org), costruito con la
-distribuzione [TeachBooks](https://teachbooks.io) (la stessa che usa il
-deploy). In locale:
+Il libro è scritto in Markdown MyST, nel formato di
+[Jupyter Book](https://jupyterbook.org) 1 (`_config.yml` e `_toc.yml`), e si
+costruisce con [Sphinx](https://www.sphinx-doc.org): `book/conf.py` traduce la
+configurazione. È la stessa build che usa il deploy. In locale:
 
 ```bash
 pip install -r requirements.txt
-teachbooks build book      # equivale a `jupyter-book build book`
+python -m sphinx -b html book book/_build/html
 python -m http.server 8080 --directory book/_build/html
 ```
 

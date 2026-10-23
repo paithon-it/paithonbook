@@ -34,8 +34,10 @@ setaccia.
 
 ## Che cosa serve installato
 
-TeX Live (`lualatex`), Playwright con Chromium, e `jupyter-book` della serie 1
-(la 2 e' mystmd, un altro programma). Se il log si lamenta di un pacchetto TeX
+TeX Live (`lualatex`), Playwright con Chromium, e i pacchetti di
+`requirements.txt` nel Python che lancia lo script: Sphinx si chiama con
+quello stesso interprete (`sys.executable`), quindi un ambiente virtuale
+basta lanciarlo con il suo `python`. Se il log si lamenta di un pacchetto TeX
 mancante, si installa e si annota qui, perche' il prossimo che clona lo trovi
 scritto:
 
@@ -96,27 +98,15 @@ def esegui(comando: list[str], dove: pathlib.Path | None = None,
 def costruisci_tex(pulisci: bool = False) -> pathlib.Path:
     """`sphinx -b latex`. Torna la cartella che contiene il .tex.
 
-    `jupyter-book config sphinx` scrive `book/conf.py`, che non e' tracciato e
-    non deve esserlo: si cancella sempre, anche se qualcosa va storto.
+    La configurazione e' `book/conf.py`, che la ricava da `_config.yml` e
+    trova da se' le estensioni di `_ext`.
     """
-    import os
-
     if pulisci and USCITA.exists():
         shutil.rmtree(USCITA)
     TEX.mkdir(parents=True, exist_ok=True)
 
-    conf = LIBRO / "conf.py"
-    fatto = esegui(["jupyter-book", "config", "sphinx", str(LIBRO)])
-    if fatto.returncode != 0:
-        conf.unlink(missing_ok=True)
-        sys.exit(f"la configurazione non si scrive:\n{fatto.stderr}")
-
-    ambiente = dict(os.environ, PYTHONPATH=str(LIBRO / "_ext"))
-    try:
-        fatto = esegui(["python3", "-m", "sphinx", "-b", "latex",
-                        str(LIBRO), str(TEX)], ambiente=ambiente)
-    finally:
-        conf.unlink(missing_ok=True)
+    fatto = esegui([sys.executable, "-m", "sphinx", "-b", "latex",
+                    str(LIBRO), str(TEX)])
 
     sorgente = TEX / f"{NOME}.tex"
     # Si guarda il CODICE DI USCITA, non se il file c'e': quando l'estensione

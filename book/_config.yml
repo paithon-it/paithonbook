@@ -190,6 +190,15 @@ sphinx:
       article_header_end:
       - article-header-buttons.html
       - pt-livello.html
+      # La barra in cima alla pagina resta vuota: la ricerca sta nella
+      # colonna di sinistra e il tema nella barra dell'articolo. Sono i valori
+      # che sphinx-book-theme dichiara, ripetuti qui perché con
+      # pydata-sphinx-theme 0.20 la barra si riempiva lo stesso (campo di
+      # ricerca, selettore del tema) e spostava in giù tutta la pagina.
+      navbar_start: []
+      navbar_center: []
+      navbar_end: []
+      navbar_persistent: []
       use_fullscreen_button: false
       use_download_button: false
       use_edit_page_button: false
@@ -246,6 +255,10 @@ sphinx:
       # `htbp` la compilazione si ferma con «Not in outer par mode» e la
       # pagina perde pezzi.
       figure_align: H
+      # Il codice un corpo sotto il testo. Sphinx 7 lo metteva da se' con
+      # LuaLaTeX; dalla 9 il valore di partenza e' `fontsize=auto`, cioe' lo
+      # stesso corpo del testo, che allunga i blocchi e manda a capo le righe.
+      fvset: \fvset{fontsize=\small}
       # Tutto lo stile sta in `_stampa/paithon.sty`. I font invece li
       # imposta `_ext/pt_stampa.py`, che e' l'unico a sapere il percorso
       # assoluto del submodule del brand.

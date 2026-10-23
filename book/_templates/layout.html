@@ -7,13 +7,23 @@
   senza questo override quel file resta inerte, e con lui lo script del tema
   scuro di default e i meta della pagina (descrizione, Open Graph, dati
   strutturati). I font invece no: li importa `custom.css` da `brand/fonts.css`.
-  `{{ super() }}` preserva il contenuto originale del blocco;
-  l'include aggiunge il nostro in coda, ancora dentro <head> (niente flash).
+  L'include sta in coda, ancora dentro <head> (niente flash).
+
+  I meta qui sotto sono quelli del blocco del tema, scritti a mano invece di
+  `{{ super() }}`: in pydata-sphinx-theme 0.20 (nella 0.16 no) il blocco
+  carica anche l'indice della ricerca (`searchindex.js`, quasi due megabyte)
+  in ogni pagina, per una ricerca mentre si scrive che il libro fa già da sé
+  (`_static/pt-ricerca.js`), caricando l'indice quando si apre la finestra.
 
   head_custom.html è risolto dal template loader perché `_static` è in
   `templates_path` (vedi _config.yml).
 -#}
 {% block extrahead %}
-{{ super() }}
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="{{ language }}"/>
+  <meta name="docsearch:version" content="{{ version }}" />
+  {%- if last_updated %}
+    <meta name="docbuild:last-update" content="{{ last_updated | e }}"/>
+  {%- endif %}
 {% include "head_custom.html" %}
 {% endblock %}

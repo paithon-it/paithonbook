@@ -32,6 +32,14 @@ Quando una cifra aumenta, quelle alla sua destra tornano a zero. Una versione
 che contiene sia sezioni nuove sia correzioni prende il numero della modifica
 maggiore, e ogni versione corrisponde a una pubblicazione.
 
+(v1-17-3)=
+
+## 1.17.3 · 24 ottobre 2026
+
+### Impianto
+
+- **Sito e PDF con un motore aggiornato.** L'indice a destra evidenzia la sezione che stai leggendo, il selettore del tema propone anche le impostazioni del sistema, e il PDF ha lo stesso contenuto in meno pagine.
+
 (v1-17-2)=
 
 ## 1.17.2 · 22 ottobre 2026
