@@ -1133,10 +1133,22 @@ blockquote cite::before {
 
 /* ===== STRONG & EM - ENFATIZZATI ===== */
 /* Il grassetto e' il 600, come nel PDF: Inter non ha il 700, e chiederlo
-   vorrebbe dire lasciare al browser la scelta del peso. */
+   vorrebbe dire lasciare al browser la scelta del peso. Il valore sta nel
+   brand, e il sito usa lo stesso token. */
 strong, b {
-  font-weight: var(--pt-weight-semibold);
+  font-weight: var(--pt-prose-strong-weight);
   color: var(--text-color);
+}
+
+/* La matita: un tratto teal staccato dalle lettere, sotto la frase che regge
+   una sezione. In MyST si scrive `[frase]{.pt-matita}` (estensione
+   `attrs_inline`), e non `<u>`: un tag HTML nel sorgente il PDF lo perde, la
+   classe invece la raccoglie `\DUrole` in `_stampa/paithon.sty`. Colore,
+   spessore e distacco sono del brand, e il teal si ribalta col tema. */
+.pt-matita {
+  text-decoration: underline var(--pt-prose-underline-thickness)
+                   var(--pt-prose-underline-color);
+  text-underline-offset: var(--pt-prose-underline-offset);
 }
 
 /* Lo stesso per il codice dentro un link, che il tema mette in `bold`:

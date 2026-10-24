@@ -47,6 +47,16 @@
 
 versioni:
 
+- versione: "1.17.4"
+  data: 2026-10-24
+  voci:
+
+  - tipo: impianto
+    testo: >
+      **La sottolineatura a matita.** Come negli articoli del sito, un tratto
+      teal staccato dalle lettere può segnare la frase che regge una sezione,
+      una per sezione, sul sito e nel PDF.
+
 - versione: "1.17.3"
   data: 2026-10-24
   voci:

@@ -276,6 +276,15 @@ lì questi tetti, che sono vincoli e non preferenze.
   termini marcati in più di un capitolo, che sono da leggere e non da
   correggere a occhi chiusi (il *peso* di una rete e il *peso* di un campione
   sono due cose).
+- **La sottolineatura è la matita, e ce n'è una per sezione.** Si scrive
+  `[la frase che regge la sezione]{.pt-matita}` e segna la frase su cui il
+  resto della sezione si appoggia: mai un termine (quello è il grassetto), mai
+  un titolo (in stampa non si disegna). Chi legge vede il testo comune più una
+  delle due schede, quindi si conta per lettore: testo comune più Elementare
+  al massimo una, testo comune più Superiore al massimo una. Davanti alla
+  quadra l'apostrofo si scrive tipografico (`l’[…]{.pt-matita}`). E fra graffe
+  il libro non scrive nient'altro: attaccate a un codice in linea, a un link o
+  a una quadra chiusa, MyST le prende per attributi e in pagina spariscono.
 - **Al massimo due «non è X, è Y» per capitolo.** Contano anche le sorelle
   corte: «non è un dettaglio», «non è un caso», «non è teoria». Usato una
   volta è una scossa; ripetuto, diventa il ritmo di fondo della voce e smette
@@ -461,6 +470,7 @@ la mappa fra il comando e la regola che fa rispettare.
 | `coerenza.py --solo numref,ref,figure,toc` | target rotti, `:name:` duplicati, figure mai richiamate, file fuori dal `_toc.yml` |
 | `coerenza.py --solo lineette` | i due travestimenti in ASCII della lineetta, la doppia `--` e il trattino singolo spaziato |
 | `coerenza.py --solo enfasi` | il tetto di otto marcature ogni mille parole di prosa, capitolo per capitolo, e i termini marcati in più di un capitolo |
+| `coerenza.py --solo matita` | più di una sottolineatura per sezione (contata per lettore), una sottolineatura in un titolo, e le graffe che MyST prende per attributi o lascia in pagina come testo |
 | `coerenza.py --solo contrapposizioni` | i «non è X, è Y» oltre le due per capitolo |
 | `coerenza.py --solo frasi` | le forme fisse di «La frase»: il libro che parla di sé, le formule d'annuncio, i calchi, il parlato nella scheda Superiore (un elenco da leggere: quasi ogni forma ha anche un uso giusto) |
 | `coerenza.py --solo simboli` | una lettera che riceve due glosse diverse nello stesso capitolo |

@@ -58,6 +58,24 @@ sphinx:
     # `pt-formato.js` scrive a mano («Torna su») non cambiano, le imposta lui.
     language: it
 
+    # Le estensioni di MyST. Qui `sphinx.config` sostituisce la lista di
+    # `conf.py` invece di aggiungersi, quindi la si scrive per intero: le
+    # prime cinque sono quelle che jupyter-book accendeva per ogni libro.
+    # `attrs_inline` e' del libro, e serve alla matita (`[frase]{.pt-matita}`,
+    # vedi `_static/custom.css`). Vale per ogni pagina: le graffe attaccate
+    # a un codice in linea, a un link, a un'immagine o a delle parentesi
+    # quadre diventano attributi, quindi `` `x`{y} `` va scritto con uno
+    # spazio in mezzo. Delle chiavi fra le graffe la pagina tiene solo la
+    # classe e l'identificatore (`id`): un `onclick` o uno `style` docutils
+    # li butta.
+    myst_enable_extensions:
+    - colon_fence
+    - dollarmath
+    - linkify
+    - substitution
+    - tasklist
+    - attrs_inline
+
     # Ricopiata tal quale nella radice della build: robots.txt, sitemap.xml e
     # llms.txt, che li scrive `scripts/genera-radice.py` dal `_toc.yml`.
     # Arrivano alla radice del DOMINIO (dove robots.txt conta) perche' il

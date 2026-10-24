@@ -43,6 +43,28 @@
 
 \color{ptNero}
 
+%% ------------------------------------------------------------- la matita
+%% La frase che regge una sezione, in MyST `[frase]{.pt-matita}`: Sphinx la
+%% scrive `\DUrole{pt-matita}{frase}` e `\DUrole` chiama questa macro. Il
+%% tratto e' quello del sito (`--pt-prose-underline-*` del brand): staccato
+%% dalle lettere di 0.3em, spesso quanto i 2px del sito sul corpo da 18, cioe'
+%% 0.11em, che sul corpo da 10 fa 1.1pt. Il colore e' il teal della carta.
+%%
+%% `lua-ul` e non `ulem` o `soul`: quelle chiudono ogni parola in una
+%% scatola, e dentro la frase sottolineata LuaLaTeX non puo' piu' sillabare,
+%% quindi una frase lunga in un capoverso giustificato allarga gli spazi o
+%% sborda. `lua-ul` disegna il tratto sui nodi gia' composti, e la riga va a
+%% capo come le altre. Vuole `luacolor` per il colore.
+%%
+%% La macro NON e' `\protected`, al contrario di quanto vale di solito per una
+%% didascalia: il suo nome ha un trattino, e scritto nel `.aux` si rileggerebbe
+%% come `\DUrolept` seguito da `-matita`. Si espande invece in `\underLine`,
+%% che e' robusto da se'.
+\RequirePackage{luacolor}
+\RequirePackage{lua-ul}
+\expandafter\def\csname DUrolept-matita\endcsname#1{%
+  \underLine[color=ptTeal, top=-.3em, bottom=-.3em-1.1pt]{#1}}
+
 %% ------------------------------------------------------------- la pagina
 %% Il margine esterno e' piu' largo dell'interno: e' dove vanno le note e le
 %% figure strette, ed e' l'impianto della bozza.

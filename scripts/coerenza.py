@@ -77,6 +77,12 @@ pena toglierle di mezzo prima di rileggere:
              del registro. In piu', come elenco e non come errore, i termini
              marcati in piu' di un capitolo, che una rilettura a un capitolo
              per volta non puo' vedere
+  matita     la sottolineatura `[frase]{.pt-matita}`: piu' di una nella
+             stessa sezione, una matita in un titolo (si vede online e non in
+             stampa), le graffe rimaste testo perche' la quadra che apre sta
+             in un altro capoverso, e ogni altro attributo in linea, che MyST
+             si prende senza che chi scriveva lo volesse e che in pagina
+             sparisce
   verso      rimandi che vanno dalla parte sbagliata: «come abbiamo visto»
              seguito da un capitolo che il lettore non ha ancora letto (e il
              contrario, «vedremo» verso un capitolo gia' letto). L'ordine di
@@ -136,6 +142,7 @@ import subprocess
 import sys
 from collections import Counter, defaultdict
 from pathlib import Path
+from typing import NamedTuple
 
 QUI = Path(__file__).resolve().parent.parent
 LIBRO = QUI / "book"
@@ -400,7 +407,10 @@ def _maschera_prosa(testo: str, riempitivo: str = " ") -> str:
     # metacarattere di fine riga di una regex, una variabile di shell) e' testo
     # di codice, ma se la matematica passa per prima lo appaia con il dollaro
     # successivo, e tutta la prosa fra i due sparisce dagli assi.
-    for rx in (r"`[^`]*`", r"\$\$.*?\$\$", r"\$[^$]*?\$", r"https?://\S+"):
+    # L'indirizzo si ferma alla parentesi chiusa: in `[testo](https://...)`
+    # quella e' la fine del link, e un indirizzo che se la prende si prende
+    # anche cio' che le sta attaccato (la graffa di una matita, `](...)]{`).
+    for rx in (r"`[^`]*`", r"\$\$.*?\$\$", r"\$[^$]*?\$", r"https?://[^\s)]+"):
         t = re.sub(rx, lambda m: re.sub(r"[^\n]", riempitivo, m.group(0)),
                    t, flags=re.S)
     return t
@@ -533,16 +543,22 @@ _FAMIGLIE = [
 
 
 def _righe_superiore(testo: str) -> set[int]:
-    """I numeri di riga (da 1) che stanno dentro una scheda `{tab} Superiore`.
+    """I numeri di riga (da 1) dentro una scheda `{tab} Superiore`."""
+    return _righe_della_scheda(testo, "Superiore")
+
+
+def _righe_della_scheda(testo: str, nome: str) -> set[int]:
+    """I numeri di riga (da 1) che stanno dentro le schede `{tab} <nome>`.
 
     La scheda si chiude con una recinzione dello stesso numero di backtick e
     senza etichetta; i riquadri e i blocchi di codice che ci stanno dentro ne
     usano di meno, quindi non la chiudono.
     """
     dentro, aperta = set(), None
+    apertura = re.compile(r"^(`{4,})\{tab\}\s+" + re.escape(nome) + r"\b")
     for n, riga in enumerate(testo.split("\n"), 1):
         if aperta is None:
-            m = re.match(r"^(`{4,})\{tab\}\s+Superiore\b", riga)
+            m = apertura.match(riga)
             if m:
                 aperta = m.group(1)
             continue
@@ -727,6 +743,122 @@ def prosa_della_pagina(percorso: Path) -> str:
     return "\n\n".join(pezzi)
 
 
+# La matita, `[frase]{.pt-matita}`: la sola cosa che il libro scrive con gli
+# attributi in linea di MyST (`attrs_inline` in `_config.yml`). Il parser le
+# graffe le prende attaccate a una quadra chiusa, a un link, a un codice in
+# linea o a un'immagine, quindi si cercano sulla maschera piena, dove codice
+# e matematica diventano `~`: una graffa attaccata a un `~` e' attaccata a un
+# codice. Una formula seguita da una graffa sarebbe un falso positivo:
+# alla matematica MyST gli attributi non li attacca.
+CLASSE_MATITA = "pt-matita"
+_RX_ATTRIBUTI = re.compile(
+    r"(?<=[\])" + re.escape(_PIENO) + r"])\{([^{}\n]*)\}")
+_RX_RIGA_VUOTA = re.compile(r"\n[ \t]*\n")
+_RX_TITOLO = re.compile(r"^#{1,6}[ \t]+(.*)$", re.M)
+
+
+class Matita(NamedTuple):
+    inizio: int          # la quadra che apre
+    fine: int            # dopo la graffa che chiude
+    sezione: str         # il titolo sotto cui sta, "" prima del primo
+    livello: str | None  # "Elementare", "Superiore", None nel testo comune
+    nel_titolo: bool
+
+
+def attributi_in_linea(testo: str) -> list[tuple[str, int, int, int]]:
+    """Gli attributi in linea di una pagina: (tipo, inizio, graffa, fine).
+
+    `matita` e' uno `[...]{.pt-matita}` ben formato, e l'inizio e' la sua
+    quadra; `aperta` sono le graffe della matita senza la quadra che le apre
+    nello stesso capoverso, che MyST lascia in pagina come testo; `altro` e'
+    qualunque altro attributo: un refuso nella classe, o delle graffe che il
+    parser si e' preso senza che chi scriveva lo volesse, e che in pagina
+    spariscono. Le posizioni valgono sul testo, la ricerca si fa sulla
+    maschera.
+    """
+    pieno = _maschera_prosa(testo, _PIENO)
+    trovati = []
+    for m in _RX_ATTRIBUTI.finditer(pieno):
+        if (pieno[m.start() - 1] != "]"
+                or m.group(1).strip() != "." + CLASSE_MATITA):
+            trovati.append(("altro", m.start(), m.start(), m.end()))
+            continue
+        apre = _quadra_che_apre(pieno, m.start() - 1)
+        if apre is None:
+            trovati.append(("aperta", m.start(), m.start(), m.end()))
+        else:
+            trovati.append(("matita", apre, m.start(), m.end()))
+    return trovati
+
+
+def _quadra_che_apre(pieno: str, chiusa: int) -> int | None:
+    """La `[` che apre la `]` in `chiusa`, cercata fino all'inizio del
+    capoverso: uno span di MyST non attraversa una riga vuota. Le quadre di un
+    link dentro la frase si bilanciano da se', quelle con la barra davanti
+    sono testo."""
+    fondo = max((m.end() for m in _RX_RIGA_VUOTA.finditer(pieno, 0, chiusa)),
+                default=0)
+    profondita = 0
+    for i in range(chiusa, fondo - 1, -1):
+        if pieno[i] not in "[]" or (i and pieno[i - 1] == "\\"):
+            continue
+        profondita += 1 if pieno[i] == "]" else -1
+        if profondita == 0:
+            return i
+    return None
+
+
+def matite_della_pagina(testo: str) -> list[Matita]:
+    """Le matite di una pagina, con la sezione e il livello in cui stanno.
+
+    La sezione e' l'ultimo titolo prima della matita, cercato sulla maschera
+    perche' un `# commento` in un blocco di codice non e' un titolo; il
+    livello e' la scheda che la contiene, se ce n'e' una.
+    """
+    pieno = _maschera_prosa(testo, _PIENO)
+    titoli = [(m.start(), m.end(), m.group(1).strip())
+              for m in _RX_TITOLO.finditer(pieno)]
+    schede = {nome: _righe_della_scheda(testo, nome)
+              for nome in ("Elementare", "Superiore")}
+    matite = []
+    for tipo, inizio, _, fine in attributi_in_linea(testo):
+        if tipo != "matita":
+            continue
+        sopra = [t for t in titoli if t[0] <= inizio]
+        riga = testo.count("\n", 0, inizio) + 1
+        livello = next((n for n, r in schede.items() if riga in r), None)
+        matite.append(Matita(
+            inizio, fine, sopra[-1][2] if sopra else "", livello,
+            bool(sopra) and inizio < sopra[-1][1]))
+    return matite
+
+
+def matite_di_troppo(matite: list[Matita]) -> list[tuple[Matita, str]]:
+    """Le matite di una pagina che «una per sezione» non lascia passare,
+    ciascuna con la ragione da stampare.
+
+    Riceve le matite di una pagina sola, gia' senza quelle nei titoli, in
+    ordine di posizione. Una matita sta nel testo comune (`livello` None)
+    oppure in una scheda, e chi legge vede il testo comune piu' **una** delle
+    due schede: la regola si conta per lettore. In ogni sezione, testo comune
+    piu' Elementare al massimo una, e testo comune piu' Superiore al massimo
+    una. Ogni scheda puo' quindi sottolineare la sua frase, e una matita nel
+    testo comune le esclude tutte e due. Di troppo e' quella che arriva dopo
+    nella lettura.
+    """
+    troppe: dict[int, tuple[Matita, str]] = {}
+    for sezione in dict.fromkeys(m.sezione for m in matite):
+        for livello in ("Elementare", "Superiore"):
+            vista = [m for m in matite
+                     if m.sezione == sezione and m.livello in (None, livello)]
+            for m in vista[1:]:
+                troppe.setdefault(m.inizio, (m, (
+                    f"seconda matita di «{sezione or 'prima del titolo'}» per"
+                    f" chi legge in {livello}: una per sezione, e il testo"
+                    f" comune conta per tutti e due i livelli")))
+    return [troppe[k] for k in sorted(troppe)]
+
+
 @functools.lru_cache(maxsize=1)
 def _tempi_git() -> dict[str, int]:
     """{percorso relativo: data dell'ultimo commit che lo tocca}, in una passata.
@@ -896,7 +1028,7 @@ def main():
         "landing", "animazioni",
         "schede", "ricordare", "simboli", "avanti", "palette", "clip", "ambiente",
         "lineette", "stampa", "verso", "matematica", "doppioni",
-        "contrapposizioni", "enfasi", "frasi", "postille"}
+        "contrapposizioni", "enfasi", "matita", "frasi", "postille"}
 
     testi = sorgenti()
     problemi = defaultdict(list)
@@ -1947,6 +2079,62 @@ def main():
                 f"… e {due} termini marcati in due capitoli soltanto,"
                 f" contati e non elencati")
 
+    if "matita" in attivi:
+        # La matita sottolinea la frase che regge una sezione, e il brand la
+        # vuole una per sezione al massimo: una pagina con tre sottolineature
+        # non ne ha nessuna. Le altre tre categorie sono guasti di sintassi
+        # che la build non segnala: graffe che MyST si prende come attributi
+        # e che in pagina spariscono, graffe della matita rimaste testo
+        # perche' la quadra che apre sta in un altro capoverso, e la matita in
+        # un titolo, che sul sito si vede e in stampa no (Sphinx scrive le
+        # classi di un titolo nel solo HTML).
+        pagine = pagine_del_toc()
+        assert pagine, "perimetro vuoto: il _toc.yml non elenca nessuna pagina"
+        conte = 0
+        for pagina in pagine:
+            rel = pagina.relative_to(LIBRO).as_posix()
+            testo = prosa_della_pagina(pagina)
+            # In un notebook le posizioni sono quelle delle celle messe in
+            # fila, non del file: si dice la pagina e basta.
+            dove = ({"testo": testo} if pagina.suffix != ".ipynb" else {})
+
+            def segnala(categoria, inizio, fine, identita, messaggio):
+                riga = testo.count("\n", 0, inizio) + 1
+                problemi[categoria].append(f"{rel}:{riga}  {identita}")
+                if dove:
+                    voce("matita", categoria, rel, inizio=inizio, fine=fine,
+                         identita=identita, messaggio=messaggio, **dove)
+                else:
+                    voce("matita", categoria, rel, identita=identita,
+                         messaggio=messaggio)
+
+            for tipo, inizio, graffa, fine in attributi_in_linea(testo):
+                if tipo == "altro":
+                    segnala("attributi in linea che non sono la matita",
+                            inizio, fine, testo[inizio:fine],
+                            f"{testo[inizio:fine]}: MyST lo legge come "
+                            f"attributo e in pagina sparisce; il libro scrive "
+                            f"fra graffe solo {{.{CLASSE_MATITA}}}")
+                elif tipo == "aperta":
+                    segnala("matite senza la quadra che le apre",
+                            inizio, fine, testo[inizio:fine],
+                            "la quadra che apre la matita non sta nello "
+                            "stesso capoverso: in pagina restano le graffe")
+            matite = matite_della_pagina(testo)
+            conte += len(matite)
+            for m in matite:
+                if m.nel_titolo:
+                    segnala("matite in un titolo", m.inizio, m.fine,
+                            m.sezione, "una matita in un titolo si vede sul "
+                            "sito e non in stampa")
+            for m, ragione in matite_di_troppo(
+                    [m for m in matite if not m.nel_titolo]):
+                segnala("piu' di una matita nella stessa sezione",
+                        m.inizio, m.fine, m.sezione or "(prima del titolo)",
+                        ragione)
+        print(f"   (matita: {len(pagine)} pagine lette dal toc, {conte}"
+              f" matite)")
+
     if "matematica" in attivi:
         # Dentro `$...$` la tipografia italiana non vale, e nessuno se ne
         # accorge. Una sostituzione degli apostrofi ASCII con quello
@@ -2353,6 +2541,10 @@ def main():
               "«non e' X, e' Y» oltre il tetto (da leggere)",
               "enfasi oltre il tetto di otto per mille",
               "termini in neretto in piu' di un capitolo (da leggere)",
+              "attributi in linea che non sono la matita",
+              "matite senza la quadra che le apre",
+              "matite in un titolo",
+              "piu' di una matita nella stessa sezione",
               "frasi scritte due volte",
               "«Da ricordare» fuori dalle schede",
               "una lettera con due glosse nello stesso capitolo",

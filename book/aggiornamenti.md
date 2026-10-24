@@ -32,6 +32,14 @@ Quando una cifra aumenta, quelle alla sua destra tornano a zero. Una versione
 che contiene sia sezioni nuove sia correzioni prende il numero della modifica
 maggiore, e ogni versione corrisponde a una pubblicazione.
 
+(v1-17-4)=
+
+## 1.17.4 · 24 ottobre 2026
+
+### Impianto
+
+- **La sottolineatura a matita.** Come negli articoli del sito, un tratto teal staccato dalle lettere può segnare la frase che regge una sezione, una per sezione, sul sito e nel PDF.
+
 (v1-17-3)=
 
 ## 1.17.3 · 24 ottobre 2026
