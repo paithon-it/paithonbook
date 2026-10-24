@@ -594,7 +594,8 @@ aria-hidden="true"><img class="dark-light"
 src="_static/brand/logos/paithon-mark.svg" alt=""></span>: premuto, il
 capoverso sfuma e al suo posto si scrive la postilla, una riga che dice di che
 cosa parla. Tenendolo premuto la sbirci, e quando lo lasci torna il testo; un
-tocco la lascia scritta finché non lo premi di nuovo.
+tocco la lascia scritta finché non lo premi di nuovo. Sul telefono basta
+tenere premuto il capoverso, e un tocco sul capoverso la richiude.
 :::
 
 :::{only} latex

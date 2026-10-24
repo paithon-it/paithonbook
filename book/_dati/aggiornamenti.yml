@@ -51,6 +51,15 @@
 
 versioni:
 
+- versione: "1.17.6"
+  data: 2026-10-24
+  voci:
+
+  - tipo: impianto
+    testo: >
+      **Sul telefono, anche il capoverso.** Tenendo premuto il capoverso col
+      dito la postilla si scrive al suo posto, e un tocco la richiude.
+
 - versione: "1.17.5"
   data: 2026-10-24
   voci:

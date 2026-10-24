@@ -164,7 +164,60 @@
       if (apri) coppia.fissa = true;
     });
     capoverso.appendChild(segno);
+    if (DITA) tenereIlCapoverso(coppia);
     return coppia;
+  }
+
+  // Col dito il segno e' piccolo e compare solo sul capoverso della riga di
+  // lettura: anche il capoverso stesso, tenuto premuto, apre la postilla. Il
+  // dito fermo per LUNGA millisecondi la fa scrivere, e alzandolo la postilla
+  // resta, perche' il dito le starebbe sopra; un tocco sul capoverso la
+  // richiude. Se il dito si muove si sta scorrendo, e non succede niente; la
+  // pressione lunga su un link resta quella del telefono.
+  const LUNGA = 450;
+  const FERMO = 10;   // pixel di tolleranza prima di leggere uno scorrimento
+
+  function tenereIlCapoverso(coppia) {
+    const capoverso = coppia.capoverso;
+    let attesa = 0, x0 = 0, y0 = 0, apertaAlle = -Infinity;
+    function annulla() {
+      if (attesa) clearTimeout(attesa);
+      attesa = 0;
+    }
+    capoverso.addEventListener('pointerdown', function (evento) {
+      if (evento.pointerType !== 'touch' || !coppia.postilla.hidden) return;
+      if (evento.target.closest('.pt-postilla__segno, a, button')) return;
+      x0 = evento.clientX;
+      y0 = evento.clientY;
+      annulla();
+      attesa = setTimeout(function () {
+        attesa = 0;
+        const selezione = window.getSelection && window.getSelection();
+        if (selezione) selezione.removeAllRanges();
+        alterna(coppia, true);
+        coppia.fissa = true;
+        apertaAlle = performance.now();
+      }, LUNGA);
+    });
+    capoverso.addEventListener('pointermove', function (evento) {
+      if (attesa && Math.hypot(evento.clientX - x0, evento.clientY - y0) > FERMO) {
+        annulla();
+      }
+    });
+    capoverso.addEventListener('pointerup', annulla);
+    capoverso.addEventListener('pointercancel', annulla);
+    // Il menu del telefono non si apre sulla pressione che ha scritto la
+    // postilla, ne' mentre la postilla e' scritta.
+    capoverso.addEventListener('contextmenu', function (evento) {
+      if (!coppia.postilla.hidden) evento.preventDefault();
+    });
+    // Un tocco sul capoverso con la postilla scritta la richiude; non quello
+    // che arriva insieme al rilascio della pressione lunga.
+    capoverso.addEventListener('click', function (evento) {
+      if (evento.target.closest('.pt-postilla__segno')) return;
+      if (coppia.postilla.hidden || performance.now() - apertaAlle < 700) return;
+      alterna(coppia, false);
+    });
   }
 
   function seguiLaLettura(coppie) {

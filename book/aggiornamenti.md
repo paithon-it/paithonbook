@@ -35,6 +35,14 @@ che contiene sia sezioni nuove sia correzioni prende il numero della modifica
 maggiore, e ogni versione corrisponde a una pubblicazione: sotto ciascuna, il
 livello dice quale cifra è salita.
 
+(v1-17-6)=
+
+## 1.17.6 · 24 ottobre 2026
+
+### Patch
+
+- **Sul telefono, anche il capoverso.** Tenendo premuto il capoverso col dito la postilla si scrive al suo posto, e un tocco la richiude.
+
 (v1-17-5)=
 
 ## 1.17.5 · 24 ottobre 2026

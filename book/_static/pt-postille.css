@@ -105,6 +105,14 @@
               opacity var(--pt-transition-slow);
 }
 
+/* Col capoverso sfumato non si seleziona: sul telefono la pressione lunga
+   che ha scritto la postilla non deve anche selezionare il testo sotto. */
+.pt-postilla-attiva {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
 .pt-postilla-attiva,
 .pt-postilla-attiva *:not(.pt-postilla__segno):not(.pt-postilla__segno *):not(.pt-postilla__scritta):not(.pt-postilla__scritta *) {
   color: transparent !important;
