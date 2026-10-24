@@ -56,9 +56,9 @@ al volo, mentre passano.
 
 Fra il pane e il panino non si sceglie a caso. Il pane si fa la notte prima
 perché domani si vende comunque; il panino no, perché finché il cliente non
-parla non si sa che cosa metterci dentro. Quando la risposta si può preparare
-prima che serva conviene prepararla prima, e costa anche meno; se dipende da
-chi arriva, si fa sul momento.
+parla non si sa che cosa metterci dentro. [Quando la risposta si può preparare
+prima che serva conviene prepararla prima, e costa anche meno]{.pt-matita}; se
+dipende da chi arriva, si fa sul momento.
 
 `````
 
@@ -83,10 +83,10 @@ l'altro.
   spesso su finestre temporali scorrevoli, e produce output man mano. Caso d'uso:
   rilevare frodi su transazioni mentre avvengono.
 
-La scelta la detta il prodotto {cite}`huyen2022designing`, non il gusto. Se
-la previsione può essere pronta *prima* che serva, il batch è più semplice ed
-economico; se dipende da un input che esiste solo al momento della richiesta,
-serve l'online.
+La scelta la detta il prodotto {cite}`huyen2022designing`, non il gusto. [Se la
+previsione può essere pronta *prima* che serva, il batch è più semplice ed
+economico]{.pt-matita}; se dipende da un input che esiste solo al momento della
+richiesta, serve l'online.
 
 `````
 
@@ -168,21 +168,22 @@ le domande man mano che arrivano: si chiama **model server**.
 ha una sola mansione e la svolge bene. Tu non entri nel retro a rovistare tra
 le pratiche: passi il tuo modulo dalla fessura e ti torna indietro la risposta
 compilata. Lo sportello (l’API) nasconde tutto il resto, e il numero appeso
-sopra la fessura, che serve per trovarlo, è l’*endpoint*. C'è poi una
-regola di buon senso che vale oro: l'impiegato arriva la mattina, si siede *una
-volta sola* e resta lì tutto il giorno. Sarebbe assurdo se andasse a casa e
-tornasse a ogni singolo cliente. Con i modelli è identico: i pesi si caricano in
-memoria una volta all'avvio del servizio, non a ogni richiesta; caricarli costa
-secondi, e a ogni richiesta li si pagherebbe di nuovo.
+sopra la fessura, che serve per trovarlo, è l’*endpoint*. C'è poi una regola di
+buon senso che vale oro: l'impiegato arriva la mattina, si siede *una volta
+sola* e resta lì tutto il giorno. Sarebbe assurdo se andasse a casa e tornasse
+a ogni singolo cliente. Con i modelli è identico: [i pesi si caricano in
+memoria una volta all'avvio del servizio, non a ogni richiesta]{.pt-matita};
+caricarli costa secondi, e a ogni richiesta li si pagherebbe di nuovo.
 
 `````
 
 `````{tab} Superiore
 
-Il model server carica i pesi una volta all'avvio e li tiene in memoria; a
-ogni richiesta esegue solo il *forward*, in modalità inferenza. Sopra questa
-logica si appoggia un livello di trasporto (REST/JSON per semplicità, o gRPC
-per la bassa latenza e i payload binari) che però è, in sostanza, contorno.
+[Il model server carica i pesi una volta all'avvio e li tiene in
+memoria]{.pt-matita}; a ogni richiesta esegue solo il *forward*, in modalità
+inferenza. Sopra questa logica si appoggia un livello di trasporto (REST/JSON
+per semplicità, o gRPC per la bassa latenza e i payload binari) che però è, in
+sostanza, contorno.
 
 Il problema serio sta nel renderlo riproducibile, più che nell'esporlo. Un
 modello dipende da una versione precisa di PyTorch, delle librerie di
@@ -408,8 +409,8 @@ ritrovano su una manciata di gradini. La cura costa poco: gruppetti piccoli,
 ognuno con i suoi gradini, invece di una scala sola per tutti.
 
 Il patto conviene quasi sempre: l'accuratezza cala di una frazione di punto e
-il modello gira anche su un telefono. «Quasi sempre» non è «sempre», e di
-quanto cali si scopre soltanto misurandolo su quel modello.
+il modello gira anche su un telefono. [«Quasi sempre» non è «sempre», e di
+quanto cali si scopre soltanto misurandolo su quel modello]{.pt-matita}.
 
 `````
 
@@ -474,9 +475,9 @@ un pacchetto a parte, `onnxscript`, che non viene più installato insieme a
 `ModuleNotFoundError`, e la cura è installarlo (`pip install onnxscript`), non
 tornare all'esportatore vecchio.
 
-Vale infine la stessa disciplina della precisione mista: la quantizzazione va
-sempre misurata su un insieme di validazione, perché il calo di accuratezza
-dipende dal modello e non è mai garantito trascurabile a priori.
+Vale infine la stessa disciplina della precisione mista: [la quantizzazione va
+sempre misurata su un insieme di validazione]{.pt-matita}, perché il calo di
+accuratezza dipende dal modello e non è mai garantito trascurabile a priori.
 
 `````
 
@@ -574,8 +575,8 @@ quaranta minuti: sono tempi porta a porta, fila compresa, cioè l'attesa che viv
 chi aspetta. L’attesa media è
 $(80 \times 2 + 15 \times 10 + 5 \times 40)/100 = 5{,}1$ minuti. Cinque
 minuti non li aspetta nessuno: chi entra alla posta aspetta due minuti, o
-dieci, o quaranta. La media è un numero che non descrive l'esperienza di
-nessuno dei presenti.
+dieci, o quaranta. [La media è un numero che non descrive l'esperienza di
+nessuno dei presenti]{.pt-matita}.
 
 Conta la promessa sul *caso quasi peggiore*. Con questi stessi numeri si può
 dire che «novantacinque clienti su cento sono serviti entro dieci minuti»,
@@ -620,8 +621,8 @@ lenta con probabilità $1-(1-p)^k$: ad esempio, con $p = 0{,}05$ e $k = 3$ è
 il 14%, con $p = 0{,}01$ e $k = 100$ chiamate in parallelo il 63%
 {cite}`dean2013tail`.
 
-Uno SLO serio si scrive sui percentili alti: «p99 sotto i 200 ms», non
-«latenza media 80 ms», che nasconde la coda.
+[Uno SLO serio si scrive sui percentili alti]{.pt-matita}: «p99 sotto i 200
+ms», non «latenza media 80 ms», che nasconde la coda.
 
 Uno SLO del $99{,}9\%$ definisce anche il suo complemento, il
 **budget d'errore**: $1 - 0{,}999$ degli eventi della finestra

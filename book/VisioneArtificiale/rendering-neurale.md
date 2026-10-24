@@ -72,8 +72,8 @@ sfocatura.
 
 La seconda conseguenza è che la rete non è addestrata su altre scene e non "sa"
 cosa siano gli alberi o le sedie. Viene addestrata su questa scena e su
-nient'altro, a partire dalle foto che le hai dato, e quando hai finito quella
-rete *è* quella scena. È quella stanza lì, scritta in forma di
+nient'altro, a partire dalle foto che le hai dato, e [quando hai finito quella
+rete *è* quella scena]{.pt-matita}. È quella stanza lì, scritta in forma di
 pesi, e non un modello di come sono fatte le stanze.
 
 Il colore dipende anche dalla direzione, e per questo un riflesso si sposta
@@ -116,10 +116,10 @@ capacità della rete e dalla frequenza più alta della codifica d'ingresso
 originale 5 MB per scena, contro più di 15 GB per una scena sintetica con LLFF,
 il metodo a viste campionate che gli autori usano come termine di confronto).
 
-In cambio, $F_\theta$ è ottimizzata per una singola scena. In altri termini, è
+In cambio, $F_\theta$ è ottimizzata per una singola scena. In altri termini, [è
 una compressione con perdita di quel particolare insieme di fotografie, più che
-un modello che generalizza, in una forma che si può interrogare da punti di
-vista nuovi.
+un modello che generalizza]{.pt-matita}, in una forma che si può interrogare da
+punti di vista nuovi.
 
 `````
 
@@ -131,10 +131,10 @@ meccanismo e non usa una rete ma la fisica ottocentesca: la legge con cui la
 luce si spegne attraversando qualcosa di torbido, che porta i nomi di Beer e
 Lambert.
 
-Il rendering è differenziabile: autograd attraversa l'intera catena, dal pixel
-reso fino ai pesi della rete. Lungo quella strada, infatti, nessun passo fa un
-salto brusco o prende una decisione secca del tipo «qui mi fermo», che
-interromperebbe il gradiente.
+[Il rendering è differenziabile: autograd attraversa l'intera catena, dal pixel
+reso fino ai pesi della rete]{.pt-matita}. Lungo quella strada, infatti, nessun
+passo fa un salto brusco o prende una decisione secca del tipo «qui mi fermo»,
+che interromperebbe il gradiente.
 
 ```{figure} ../figures/nerf-campo-di-radianza.svg
 :name: fig-nerf-rendering
@@ -308,8 +308,8 @@ metodi successivi hanno fatto crollare.
 ## Perché serve la codifica posizionale
 
 C'è un dettaglio che, tolto, fa collassare il metodo in un'immagine sfocata,
-perché le reti fanno una gran fatica a imparare tutto ciò che cambia in fretta
-da un punto all'altro. È un limite che si incontrerà nel
+perché [le reti fanno una gran fatica a imparare tutto ciò che cambia in fretta
+da un punto all'altro]{.pt-matita}. È un limite che si incontrerà nel
 {doc}`capitolo sulle PINN </PINN/applicazioni-limiti>` (le reti a cui si
 insegna una legge fisica) davanti alle soluzioni che passano da un valore
 all'altro in uno spazio brevissimo, i cosiddetti *fronti ripidi*. Qui si
@@ -411,8 +411,8 @@ Sulla scena si appoggia una griglia, e in ogni nodo della griglia c'è un
 foglietto con sopra qualche numero. Quando si chiede il colore di un punto, non
 si costringe più la rete a ricordarsi tutto da sé, ma si vanno a leggere i
 foglietti dei nodi vicini, si mescolano fra loro secondo quanto sono vicini e si
-passa alla rete il risultato. La rete deve solo interpretare quei numeri, non
-memorizzare la scena, e quindi può essere piccolissima.
+passa alla rete il risultato. [La rete deve solo interpretare quei numeri, non
+memorizzare la scena, e quindi può essere piccolissima]{.pt-matita}.
 
 C'è anche chi ha tolto la rete del tutto, scrivendo sui foglietti direttamente
 il colore e la solidità. Funziona, ma i foglietti diventano così tanti da
@@ -477,9 +477,9 @@ velocità simili con una memoria da circa quaranta a duecento volte più piccola
 Nella tabella di confronto di Kerbl e colleghi, infatti, Plenoxels occupa fra
 2,1 e 2,7 GB per scena, Instant-NGP fra 13 e 48 MB {cite}`kerbl20233d`.
 
-In sintesi, una parte sostanziale della rappresentazione si è spostata dai pesi
-a una struttura dati esplicita e addestrabile. Il campo continuo resta, ma non
-è più tutto dentro l'MLP.
+In sintesi, [una parte sostanziale della rappresentazione si è spostata dai
+pesi a una struttura dati esplicita e addestrabile]{.pt-matita}. Il campo
+continuo resta, ma non è più tutto dentro l'MLP.
 
 `````
 
@@ -505,8 +505,8 @@ Per fare un'immagine, si spiaccica ogni granello sullo schermo, si ordinano dal
 più vicino al più lontano e si sovrappongono in quell'ordine. L'ordine conta
 perché un granello davanti nasconde in parte quello dietro, ed è la stessa
 somma pesata delle veline sul filo: chi viene prima conta pieno, chi viene dopo
-conta per quel che resta. Nessuna ricerca, nessun campionamento a vuoto, e le
-schede grafiche fanno questo tipo di lavoro da trent'anni.
+conta per quel che resta. [Nessuna ricerca, nessun campionamento a vuoto, e le
+schede grafiche fanno questo tipo di lavoro da trent'anni]{.pt-matita}.
 
 Un'approssimazione c'è, e sta nella proiezione. Un granello ovale resta un
 ovale pulito finché lo si guarda più o meno in faccia; verso i bordi
@@ -539,12 +539,12 @@ coefficienti di armoniche sferiche per il colore dipendente dalla direzione
 {cite}`kerbl20233d`.
 
 La proiezione di una gaussiana 3D sul piano immagine è ancora, con buona
-approssimazione, una gaussiana 2D, e questo fa del rendering una
-rasterizzazione invece di un *ray marching*: si ordina per profondità e si
-compone con la stessa somma $\hat{C} = \sum_i \mathbf{c}_i\, \alpha_i
-\prod_{j<i} (1 - \alpha_j)$. Qui però l'opacità non viene da una densità
-integrata lungo il raggio ma dalla gaussiana proiettata valutata nel pixel
-$\mathbf{u}$, $\alpha_i = o_i \exp\!\big(-\tfrac{1}{2}(\mathbf{u} -
+approssimazione, una gaussiana 2D, e [questo fa del rendering una
+rasterizzazione invece di un *ray marching*]{.pt-matita}: si ordina per
+profondità e si compone con la stessa somma $\hat{C} = \sum_i \mathbf{c}_i\,
+\alpha_i \prod_{j<i} (1 - \alpha_j)$. Qui però l'opacità non viene da una
+densità integrata lungo il raggio ma dalla gaussiana proiettata valutata nel
+pixel $\mathbf{u}$, $\alpha_i = o_i \exp\!\big(-\tfrac{1}{2}(\mathbf{u} -
 \boldsymbol{\mu}'_i)^\top \boldsymbol{\Sigma}'^{-1}_i (\mathbf{u} -
 \boldsymbol{\mu}'_i)\big)$, con $o_i$ l'opacità appresa e
 $\boldsymbol{\mu}'_i$, $\boldsymbol{\Sigma}'_i$ centro e covarianza proiettati.
@@ -643,11 +643,12 @@ Restano aperte, del tutto o in parte, queste questioni:
   ovvio. Lo splatting, essendo esplicito, se la cava un po’ meglio, e anche per
   questo ha avuto fortuna.
 
-Questi metodi non capiscono la scena. Non sanno che c'è una sedia, non sanno che
-il tavolo continua dietro il vaso, non sanno cosa succederebbe spingendolo.
-Sono, in definitiva, un'interpolazione straordinariamente buona fra le
-fotografie che hanno visto. La differenza fra saper rigenerare le apparenze di
-un mondo e averne un modello è il tema del {doc}`capitolo sui world model
+Questi metodi non capiscono la scena. Non sanno che c'è una sedia, non sanno
+che il tavolo continua dietro il vaso, non sanno cosa succederebbe spingendolo.
+[Sono, in definitiva, un'interpolazione straordinariamente buona fra le
+fotografie che hanno visto]{.pt-matita}. La differenza fra saper rigenerare le
+apparenze di un mondo e averne un modello è il tema del {doc}`capitolo sui
+world model
 </WorldModels/overview>`, e questi sistemi stanno tutti dalla parte delle
 apparenze.
 

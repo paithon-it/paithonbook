@@ -118,7 +118,7 @@ def costruisci() -> Figura:
         corpo.append(
             f'<text class="lbs" x="340" y="390" text-anchor="middle" '
             f'opacity="{opac}" style="animation:cnt{i} var(--d) infinite">'
-            f'giro {i + 1}</text>')
+            f'iterazione {i + 1}</text>')
 
     corpo.append('<text class="lbl" x="340" y="36" text-anchor="middle">'
                  'lo spessore è il feromone depositato</text>')
@@ -128,7 +128,8 @@ def costruisci() -> Figura:
     return Figura(
         larghezza=680, altezza=436,
         alt="Formicaio a sinistra e cibo a destra, uniti da due strade: una "
-            "lunga che sale in alto e una corta in basso. Giro dopo giro "
+            "lunga che sale in alto e una corta in basso. Iterazione dopo "
+            "iterazione "
             "entrambe si ispessiscono, perché su entrambe passano formiche, ma "
             "la corta molto più in fretta, e il divario fra le due cresce. Il "
             "contatore in basso dice quante formiche su cento scelgono la "

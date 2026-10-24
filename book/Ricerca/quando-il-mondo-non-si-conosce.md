@@ -16,8 +16,8 @@ matto o l’incrocio giusto.
 La terza è che si sappia scrivere una valutazione, cioè dare a una posizione di
 mezzo un numero sensato, anche se non esatto. Nei giochi quel numero dice chi
 sta meglio e si chiama funzione di valutazione; nella ricerca di un percorso
-dice quanto manca alla meta e si chiama euristica. Sono la stessa idea con due
-usi: un giudizio approssimato al posto di un calcolo esatto.
+dice quanto manca alla meta e si chiama euristica. [Sono la stessa idea con due
+usi: un giudizio approssimato al posto di un calcolo esatto]{.pt-matita}.
 
 Nel mondo vero ciascuna delle tre può mancare. Le togliamo nell’ordine in cui
 cadono più facilmente: prima la valutazione, poi il test di arrivo, per ultima
@@ -50,9 +50,9 @@ occupare mezza griglia. I giocatori riconoscono una posizione forte a colpo
 d’occhio, ma nessuno è riuscito a dare ai programmi una regola scritta a mano
 che la riconosca, nonostante decenni di tentativi.
 
-Senza la valutazione, quindi, tutta la macchina di minimax e potatura si
-blocca. Si guarda avanti fino al punto in cui bisogna fermarsi, e lì non c’è
-niente da leggere.
+[Senza la valutazione, quindi, tutta la macchina di minimax e potatura si
+blocca]{.pt-matita}. Si guarda avanti fino al punto in cui bisogna fermarsi, e
+lì non c’è niente da leggere.
 
 La risposta che ha sbloccato il Go si chiama **ricerca ad albero Monte Carlo**
 (*Monte Carlo tree search*, abbreviata in MCTS), e al posto della valutazione
@@ -228,12 +228,13 @@ l’altra parete, la libreria vicino alla finestra, il tavolo al centro. Tieni
 quello che rende la stanza migliore di tutti, e da lì ricominci. Funziona
 finché nessuno spostamento di un pezzo solo migliora più niente, e lì ti fermi.
 
-Non è detto che sia la stanza più bella possibile. Spostando insieme il divano
-e il tavolo magari ne verrebbe una molto migliore, ma un pezzo per volta non ci
-arrivi, perché ogni primo passo in quella direzione peggiora. A volte, poi, ti
-fermi per un’altra ragione: gli spostamenti lasciano tutti la stanza uguale, e
-non sai più da che parte andare. Il rimedio più semplice è ricominciare da una
-stanza sistemata in un altro modo, e tenere la migliore.
+[Non è detto che sia la stanza più bella possibile]{.pt-matita}. Spostando
+insieme il divano e il tavolo magari ne verrebbe una molto migliore, ma un
+pezzo per volta non ci arrivi, perché ogni primo passo in quella direzione
+peggiora. A volte, poi, ti fermi per un’altra ragione: gli spostamenti lasciano
+tutti la stanza uguale, e non sai più da che parte andare. Il rimedio più
+semplice è ricominciare da una stanza sistemata in un altro modo, e tenere la
+migliore.
 
 Un rimedio più fine è accettare ogni tanto un peggioramento. Invece di provare
 tutti gli spostamenti ne provi uno a caso: se la stanza migliora lo tieni
@@ -264,12 +265,12 @@ $$
 s \leftarrow \arg\max_{s' \in \mathcal{N}(s)} f(s'),
 $$
 
-e si ferma quando nessun vicino migliora, cioè in un massimo locale, che
-può valere molto meno di quello globale; si ferma anche sui plateau, dove i
-vicini valgono tutti uguale, e fatica sulle creste. Il rimedio più semplice è
-ripartire da stati iniziali presi a caso e tenere il migliore (*random
-restart*). Con abbastanza ripartenze, su uno spazio finito, trova l’ottimo con
-probabilità che tende a uno.
+e [si ferma quando nessun vicino migliora, cioè in un massimo locale, che può
+valere molto meno di quello globale]{.pt-matita}; si ferma anche sui plateau,
+dove i vicini valgono tutti uguale, e fatica sulle creste. Il rimedio più
+semplice è ripartire da stati iniziali presi a caso e tenere il migliore
+(*random restart*). Con abbastanza ripartenze, su uno spazio finito, trova
+l’ottimo con probabilità che tende a uno.
 
 La **ricottura simulata** (*simulated annealing*) sceglie invece un vicino $s'$
 a caso; lo accetta sempre se migliora, e se peggiora di
@@ -319,7 +320,7 @@ dà il regolamento. Non puoi provare una mossa nella tua testa, perché non sai
 dove porta. Puoi solo farla, e guardare che cosa succede. Se era una mossa
 disastrosa, il disastro resta: non c’è nessun «rimetto la torre dov’era».
 
-Di colpo sparisce l’intera costruzione fatta fin qui. Non c’è albero
+[Di colpo sparisce l’intera costruzione fatta fin qui]{.pt-matita}. Non c’è albero
 da esplorare, perché per costruire l’albero bisognerebbe sapere dove portano le
 mosse. Non c’è potatura, perché non ci sono rami. Non c’è nemmeno il modo di
 guardare avanti di un passo.
@@ -353,8 +354,8 @@ Formalmente cade la disponibilità di $\mathrm{ris}(s,a)$ e di $c(s,a,s')$. In
 altri termini, la funzione di transizione e la funzione di costo esistono ma
 non sono interrogabili, se non eseguendo l’azione e osservando l’esito. È la
 condizione dell’apprendimento per rinforzo, e la differenza operativa è
-qualitativa: la ricerca spende calcolo per guardare futuri immaginati, il
-rinforzo spende esperienza per stimare valori da futuri accaduti.
+qualitativa: [la ricerca spende calcolo per guardare futuri immaginati, il
+rinforzo spende esperienza per stimare valori da futuri accaduti]{.pt-matita}.
 
 Ricerca e rinforzo, però, non sono alternative, e lo mostrano diverse famiglie
 di metodi. Se il modello manca ma lo si può imparare, si ricade nella ricerca

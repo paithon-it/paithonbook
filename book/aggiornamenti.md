@@ -21,22 +21,37 @@ commit che le pubblica cita chi le ha segnalate.
 
 ## Il numero di versione
 
-Il numero di versione ha tre cifre, `impianto.sezioni.correzioni`:
+Il numero di versione ha tre cifre, `major.minor.patch`, come nel
+versionamento semantico del software:
 
-- la **prima** cambia con l'impianto del libro: una nuova parte nell'indice,
-  un riordino del percorso di lettura, la licenza;
-- la **seconda** con l'aggiunta di un capitolo o di una sezione;
-- la **terza** con le correzioni e le revisioni del testo esistente.
+- **major**, la prima, cambia con l'impianto del libro: una nuova parte
+  nell'indice, un riordino del percorso di lettura, la licenza;
+- **minor**, la seconda, con l'aggiunta di un capitolo o di una sezione;
+- **patch**, la terza, con le correzioni e le revisioni del testo esistente,
+  e con le migliorie al sito e al PDF.
 
 Quando una cifra aumenta, quelle alla sua destra tornano a zero. Una versione
 che contiene sia sezioni nuove sia correzioni prende il numero della modifica
-maggiore, e ogni versione corrisponde a una pubblicazione.
+maggiore, e ogni versione corrisponde a una pubblicazione: sotto ciascuna, il
+livello dice quale cifra è salita.
+
+(v1-17-5)=
+
+## 1.17.5 · 24 ottobre 2026
+
+### Patch
+
+- **Iterazione, non giro.** Fuori dalle schede Elementari la ripetizione di un procedimento si chiama iterazione, come la definisce il capitolo su Python: nel testo, nel codice, nelle figure e nelle postille.
+- **Le due schede fanno le stesse mosse.** Nella valutazione dei raggruppamenti e negli autoencoder la scheda Elementare racconta ciò che la Superiore dimostra, compreso dove ciascun risultato smette di valere.
+- {doc}`Deep Q-Network (DQN) </DeepReinforcementLearning/dqn>` (Deep Reinforcement Learning). **La figura del DQN parla come il capitolo.** Memoria di replay e rete-target, al posto di buffer e copia congelata.
+- **Una frase sottolineata per sezione.** In ogni sezione che ne ha una, la matita segna la frase su cui la sezione si regge: sul sito e nel PDF.
+- **Le postille si scrivono sul capoverso.** Premuto il segno, il capoverso sfuma e la postilla si scrive al suo posto; tenendolo premuto la si sbircia, un tocco la lascia scritta.
 
 (v1-17-4)=
 
 ## 1.17.4 · 24 ottobre 2026
 
-### Impianto
+### Patch
 
 - **La sottolineatura a matita.** Come negli articoli del sito, un tratto teal staccato dalle lettere può segnare la frase che regge una sezione, una per sezione, sul sito e nel PDF.
 
@@ -44,7 +59,7 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.17.3 · 24 ottobre 2026
 
-### Impianto
+### Patch
 
 - **Sito e PDF con un motore aggiornato.** L'indice a destra evidenzia la sezione che stai leggendo, il selettore del tema propone anche le impostazioni del sistema, e il PDF ha lo stesso contenuto in meno pagine.
 
@@ -52,7 +67,7 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.17.2 · 22 ottobre 2026
 
-### Correzioni
+### Patch
 
 - **Altre correzioni di teoria.** Fra le altre: la disuguaglianza di Markov applicata a una funzione crescente dello scarto, il teorema del minimax che vale per i giochi finiti, i pesi dell'attenzione nella traduzione calcolati da una piccola rete, le matrici ortogonali della SVD che comprendono anche le riflessioni.
 - **Titoli col nome delle cose.** Più sezioni nominano l'oggetto accanto all'immagine che lo racconta: la smoothing spline, il modality gap, la complessità di Rademacher, l'allucinazione visiva, che è anche la nuova voce dell'indice.
@@ -62,7 +77,7 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.17.1 · 22 ottobre 2026
 
-### Correzioni
+### Patch
 
 - {doc}`Imparare a imparare </DeepLearning/meta-apprendimento>` (Deep Learning). **La media delle onde.** La rete allenata su tutte le onde insieme ne impara la media, che è anch'essa un'onda della famiglia: è vicina a poche e lontana da tutte le altre, non diversa da tutte.
 
@@ -70,12 +85,9 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.17.0 · 22 ottobre 2026
 
-### Sezioni nuove
+### Minor
 
 - **Le postille.** Accanto a molti capoversi una riga dice di che cosa parla il capoverso: sul sito la apre il segno a margine, nel PDF sta nel margine esterno, in corsivo.
-
-### Correzioni
-
 - **Prosa rivista in tutto il libro.** Frasi più dirette e capoversi più corti, i passaggi fra un'idea e l'altra detti in chiaro, e nei titoli e nei rimandi il nome che il libro dà alle cose al posto dell'immagine.
 - **Correzioni di teoria in più capitoli.** Fra le altre: il rumore che DBSCAN lascia fuori dai gruppi, la disuguaglianza dell'unione nei limiti PAC, la quota che il label smoothing divide fra le classi, i tensor core e l'underflow in bfloat16.
 
@@ -83,7 +95,7 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.16.1 · 20 ottobre 2026
 
-### Correzioni
+### Patch
 
 - {doc}`Gli strumenti </Harness/gli-strumenti>` (Harness engineering). **Gli strumenti con il loro nome.** La sezione sugli strumenti di un agente si intitolava «Gli attrezzi», la parola dell'analogia della bottega: titolo e rimandi ora usano il termine del resto del libro, e la pagina ha un indirizzo nuovo.
 
@@ -91,27 +103,21 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.16.0 · 20 ottobre 2026
 
-### Sezioni nuove
+### Minor
 
 - {doc}`Gli strumenti </Harness/gli-strumenti>` (Harness engineering). **Gli strumenti di un agente.** Come si progettano le operazioni che il modello può chiedere: che cosa devono restituire, come si modifica un file senza sbagliare versione, perché la riga di comando va chiusa in un recinto.
 - {doc}`Il conto </Harness/il-conto>` (Harness engineering). **Il conto di un compito.** Quanto costa e quanto dura il lavoro di un agente: la cache del prefisso e che cosa la rompe, quale modello chiamare e quando smettere, il cammino critico e le azioni speculative; con una figura animata.
 - {doc}`L'harness che si riscrive </Harness/l-harness-che-si-riscrive>` (Harness engineering). **L'harness che si riscrive.** Quando a modificare istruzioni, strumenti e memoria è un altro programma: l'archivio delle varianti, il voto tenuto da parte, e che cosa succede se chi viene misurato può toccare il metro.
 - {doc}`Servire un agente </MLOps/servire-un-agente>` (MLOps). **Servire un agente.** Le richieste di un agente si fermano ad aspettare uno strumento: che cosa fare della memoria intanto, a chi dare la precedenza, su quale copia del modello mandarle; con una figura animata.
-
-### Correzioni
-
 - **Caratteri, colori e figure scure dal design system di paithon.it.** La pagina usa i font e l'inchiostro del sito, senza più caricarli da fuori, e figure e animazioni in tema scuro sono ridisegnate con la sua mappa di colori.
 
 (v1-15-0)=
 
 ## 1.15.0 · 18 ottobre 2026
 
-### Sezioni nuove
+### Minor
 
 - {doc}`Harness engineering </Harness/overview>`. **Nuovo capitolo: Harness engineering.** Tutto ciò che sta attorno al modello in un agente che lavora per ore: le istruzioni nel repository, il primo turno che prepara, il passaggio di consegne fra sessioni, il collaudo da utente, l'osservabilità e l'entropia, il lavoro disegnato come grafo; con tre figure animate.
-
-### Correzioni
-
 - **Prosa rivista nei capitoli su NLP e Transformer.** Frasi più dirette, termini italiani al posto dei calchi, rimandi che nominano la pagina di destinazione.
 - **Una pagina più comoda da leggere.** Corpo del testo e titoli ridisegnati, titoli di sezione in oro, indice di pagina più leggero; in apertura, quattro ingressi per scegliere da dove cominciare.
 
@@ -119,12 +125,9 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.14.3 · 14 ottobre 2026
 
-### Pagine ampliate
+### Patch
 
 - **Approfondimenti nel livello Superiore sulle serie temporali, la diffusione e la raccomandazione.** Aggiunti la regressione del test ADF, l'attenzione congiunta di MM-DiT, il teorema della distillazione di consistenza, le basi di N-BEATS e lo stimatore IPS con le sue ipotesi.
-
-### Correzioni
-
 - **Prosa più asciutta in tutti i capitoli.** Ridotti annunci e frasi accessorie; ogni cosa è indicata col suo nome e non con la posizione nella pagina; ogni rimando a un'altra sezione è un collegamento.
 - **Attribuzioni e numeri riportati alle fonti.** Corretti, fra gli altri, il cancello di dimenticanza dell'LSTM, i FID di DiT rispetto alla U-Net e il confronto fra reti su grafo nella raccomandazione.
 
@@ -132,13 +135,10 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.14.2 · 4 ottobre 2026
 
-### Pagine ampliate
+### Patch
 
 - {doc}`Detection e segmentazione </VisioneArtificiale/detection-segmentazione>` (Visione artificiale). **Piramidi di feature e segmentazione panottica.** Il rilevamento di oggetti di scala diversa nella stessa immagine e la segmentazione panottica, che unisce quella semantica e quella d'istanza.
 - {doc}`Geometria e profondità </VisioneArtificiale/geometria-e-profondita>` (Visione artificiale). **Omografia, matrice fondamentale e controllo sinistra-destra nella stereo.** Aggiunti nella sezione sulla geometria; nell'apertura del capitolo, il funzionamento del rilevatore di Canny.
-
-### Correzioni
-
 - **Revisione della prosa in tutto il libro.** Italiano più diretto, termini italiani al posto dei calchi dall'inglese, rimandi che nominano la pagina di destinazione.
 - **Affermazioni corrette in più capitoli.** Fra le altre, il costo della ricerca a griglia, le radici complesse nella diagonalizzazione, la densità di un flusso e il teorema alla base della disputa su COMPAS.
 
@@ -146,12 +146,9 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.14.1 · 3 ottobre 2026
 
-### Pagine ampliate
+### Patch
 
 - **Condizioni e casi limite nel livello Superiore.** Aggiunti condizioni, dimostrazioni e punti di rottura dei metodi: k-anonimato, rumore di Laplace, dualità di Fokker-Planck e Feynman-Kac, continuous batching, SMOTE e curva precision-recall.
-
-### Correzioni
-
 - **Revisione del testo comune ai due livelli.** Ogni concetto compare con il proprio nome e la propria notazione al primo uso, e i capitoli sono raccordati dall'apertura al congedo.
 - **Correzioni di fatto in tutto il libro.** Attribuzioni, date e affermazioni riportate alle fonti, con l'AI Act e il GDPR riletti sul testo; schede Elementari ricondotte a quanto sostiene il livello Superiore.
 - **Numeri stampati dal codice.** Nuovi blocchi per i numeri commentati nel testo, dalla regolarizzazione nei sistemi di raccomandazione ai minimi quadrati a confronto con la PINN; il lettore è chiamato «tu» in tutto il libro.
@@ -160,40 +157,31 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.14.0 · 27 settembre 2026
 
-### Sezioni nuove
+### Minor
 
 - {doc}`Capacità e costo </MLOps/capacita-e-costo>` (MLOps). **Dimensionamento delle repliche e costo per token.** Capacità di una replica, ritardo dell'autoscaler e rimedi, costo di un token e quota di scheda effettivamente utilizzata.
 - {doc}`Davanti ai modelli </MLOps/gateway-e-affidabilita>` (MLOps). **Gateway e affidabilità nell'erogazione dei modelli.** Limitazione delle richieste, ritentativi senza congestione, instradamento verso il modello adatto, tracciamento della richiesta e prove di guasto preventive.
-
-### Pagine ampliate
-
 - **Approfondimenti sull'inferenza.** Aggiunti i CUDA Graphs, Medusa ed EAGLE, la KV cache a precisione ridotta, la gestione della memoria esaurita, l'FP8 e la sparsità due su quattro.
 
 (v1-13-0)=
 
 ## 1.13.0 · 25 settembre 2026
 
-### Sezioni nuove
+### Minor
 
 - {doc}`Teoria dell'apprendimento </TeoriaApprendimento/overview>`. **Teoria dell'apprendimento: perché gli esempi bastano.** Nuovo capitolo su modello PAC, dimensione VC, complessità di Rademacher e margini, e su ciò che tali garanzie affermano, e non affermano, per le reti profonde.
 - {doc}`Che cosa si può calcolare </Introduzione/calcolabile>` (Introduzione). **Calcolabilità e problema della fermata.** Nuova sezione sulla macchina di Turing, animata, e sulle conseguenze del problema della fermata per l'intelligenza artificiale.
 - {doc}`Un'equazione come media </PINN/equazioni-come-medie>` (PINN: reti e fisica). **Equazioni alle derivate parziali come valori medi.** Nuova sezione sulla soluzione di un'equazione mediante cammini aleatori, con i cammini animati.
-
-### Pagine ampliate
-
 - **Ampliamento del capitolo sul machine learning.** Aggiunti, fra gli altri, lo spazio delle ipotesi, la logistica multinomiale e la massima entropia, la stima di densità, la LDA come regressione, l'ICA e la curva di validazione.
 - **Ampliamento del capitolo di matematica.** Aggiunti il calcolo combinatorio e il coefficiente binomiale, la trasposta, le ricorrenze lineari di Leonardo Pisano, la stima bayesiana e la derivazione del fattore di momento.
 - **Nuove sezioni in più parti del libro.** Fra le altre: perdita quadratica e media condizionata, ControlNet, autoencoder contrattivo, reti prototipiche, RuleFit, effetto Rashomon, SAGAN e BigGAN, ELMo, giochi imparziali.
-
-### Correzioni
-
 - **Correzioni di teoria in tutto il libro.** Ipotesi mancanti aggiunte alle formule, affermazioni riportate alle fonti, numeri stampati dal codice; corretti il peso sui dati iniziali nelle PINN e la garanzia di MMD-critic.
 
 (v1-12-17)=
 
 ## 1.12.17 · 23 settembre 2026
 
-### Correzioni
+### Patch
 
 - **Illustrazioni d'apertura ridisegnate.** Ognuna raffigura ora un solo oggetto, al centro della pagina, al posto di una scena composita.
 
@@ -201,7 +189,7 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.12.16 · 23 settembre 2026
 
-### Pagine ampliate
+### Patch
 
 - **Illustrazione d'apertura in ogni capitolo.** Ciascuna richiama l'aneddoto con cui il capitolo comincia, nelle cinque tinte del libro e in una versione per il tema scuro; la prefazione ne descrive le caratteristiche.
 
@@ -209,7 +197,7 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.12.15 · 22 settembre 2026
 
-### Pagine ampliate
+### Patch
 
 - **Sette figure nuove sui meccanismi.** Griglie di passi dei campionatori veloci, purga al confine fra training e test, regola di accettazione dello speculative decoding, pesi causali di una PINN, JEPA, over-squashing e randomized smoothing.
 
@@ -217,7 +205,7 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.12.14 · 22 settembre 2026
 
-### Correzioni
+### Patch
 
 - **Sei formule spezzate a capo nel punto sbagliato.** Un segno meno o più a inizio riga interrompeva un elenco o inglobava la prosa nell'equazione; corrette le pagine su bootstrap, testo, rinforzo gerarchico, limite continuo, diffusione e verosimiglianza esatta.
 
@@ -225,12 +213,9 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.12.13 · 22 settembre 2026
 
-### Pagine ampliate
+### Patch
 
 - **Formule e ipotesi nelle schede Superiori.** Dove un metodo era nominato e non scritto, compare ora la formula con le sue ipotesi: fra gli altri contrastive divergence, VICReg, DreamerV3, GATv2, privacy differenziale, randomized smoothing.
-
-### Correzioni
-
 - **Correzioni di sostanza nelle schede.** La purga toglie $h$ righe e non $h+r$; nella JEPA il collasso è evitato da stop-gradient e predictor insieme; una finestra di un token rende il watermark più robusto.
 - {doc}`La legge dentro la loss </PINN/come-funziona>` (PINN: reti e fisica). **Numeri del problema inverso stampati dal codice.** Con il programma completo la rigidezza stimata è 3,95 (3,76 con il seme 7) e lo scarto massimo dalla curva vera 0,064, in luogo di 3,92 e 0,07.
 - **Raccordo fra i capitoli.** I concetti già spiegati, fra cui il collasso, l'inferenza attiva, Dyna e la scatola nera, sono richiamati anziché ripresentati, e ogni rimando a un altro capitolo è un collegamento.
@@ -239,7 +224,7 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.12.12 · 13 settembre 2026
 
-### Correzioni
+### Patch
 
 - {doc}`I flussi normalizzanti </VerosimiglianzaEsatta/flussi>` (Verosimiglianza esatta). **Campana gaussiana nell'animazione delle due lune.** La figura mostra la gaussiana vista dall'alto, con i punti che vi cadono: la campana corrisponde alla densità lungo la dimensione che il disegno non ha.
 - **Scorrevolezza e correzioni in più capitoli.** Eliminate ripetizioni e termini usati prima della definizione; corretti, fra l'altro, la dimensione del batch in `nn.RNN`, `nn.LSTM` e `nn.GRU` e il tetto di accuratezza di 0,866.
@@ -248,7 +233,7 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.12.11 · 12 settembre 2026
 
-### Correzioni
+### Patch
 
 - **Figure a schermo intero nel tema scuro.** Nel visore la figura mantiene la resa del tema scelto: in tema scuro non compare più su fondo chiaro.
 
@@ -256,7 +241,7 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.12.10 · 11 settembre 2026
 
-### Correzioni
+### Patch
 
 - **Capoversi spezzati in elenchi.** Corretti tre capoversi in cui un a capo prima di «1.», «-» o «+» era letto come voce di elenco: ricerca casuale degli iperparametri, PINN, varianza campionaria di un MA(q).
 
@@ -264,12 +249,9 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.12.9 · 11 settembre 2026
 
-### Pagine ampliate
+### Patch
 
 - **Sette figure nuove su memoria, parallelismo e geometria ad alta dimensione.** Fra esse la memoria a stato fisso, il coseno fra direzioni casuali in tre, cento e mille dimensioni e il torneo delle configurazioni.
-
-### Correzioni
-
 - **Definizioni anticipate: «latente», «iperparametri», «message passing».** Altri termini sono spiegati dove compaiono o rinviati alla sezione che li definisce; corretti anche DBSCAN, le regole sulla potenza statistica e l'esercizio su T5.
 - **Riscontro con le fonti su BERT, SoundStream e Whisper.** Il pre-addestramento di BERT è durato quattro giorni su sedici chip, il riavvio dei codebook è di SoundStream, Whisper copre novantasei lingue oltre all'inglese.
 
@@ -277,12 +259,9 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.12.8 · 11 settembre 2026
 
-### Pagine ampliate
+### Patch
 
 - **Figure animate sui meccanismi dinamici.** Continuous batching, Q-learning, nastro di autograd e RAG originale; fra le figure ferme, il peso del trapezio in Mamba-3 e il ventaglio di previsione.
-
-### Correzioni
-
 - **Definizioni anticipate: «rollout», «autograd», «ELBO».** Altri termini sono spiegati dove compaiono o rinviati alla sezione che li definisce, fra cui «negativi», «flussi normalizzanti» e «context engineering»; aggiunte voci bibliografiche.
 - **Fonti primarie su quantizzazione, purga e pinball loss.** Il punto di svolta dei 4 bit con Dettmers e Zettlemoyer, le ipotesi di Baldi e Hornik, purga ed embargo di López de Prado, la convenzione della pinball loss.
 - **Affermazioni corrette sulle fonti.** Il divieto sulle immagini intime nel regolamento europeo ha tre rami e non due; la macchina di Boltzmann ristretta non nacque per la gara del Netflix Prize.
@@ -291,12 +270,9 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.12.7 · 10 settembre 2026
 
-### Pagine ampliate
+### Patch
 
 - **Figure animate su linee di base, campionamento, modelli latenti e Transformer.** Quattro linee di base sulla stessa serie, le due manopole del campionamento, gli assi che ruotano sulla nuvola di punti e la taratura nei due montaggi.
-
-### Correzioni
-
 - **Definizioni anticipate: «validazione», «linea di base», «kernel».** Altri termini sono spiegati dove compaiono o rinviati alla sezione che li definisce; corretta la leave-one-out, meno stabile e non più solida.
 - **Riscontro con le fonti su dimenticanza catastrofica e doppia discesa.** Corretti il rimedio alla dimenticanza catastrofica, la doppia discesa con arresto anticipato, il blocco più economico del diffusion transformer e l'accordo fra giudice automatico e umani.
 - **Un solo neretto per termine in tutto il libro.** Un termine è marcato soltanto alla prima ricorrenza; gli omonimi, la stessa parola per mestieri diversi, sono dichiarati sul posto.
@@ -305,7 +281,7 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.12.6 · 9 settembre 2026
 
-### Correzioni
+### Patch
 
 - **Correzioni di fatto in Matematica, diffusione, rinforzo profondo, GAN e PINN.** Un «92 %» dove la pagina misura 93, un «vent'anni» fra il 1994 e il 2019, affermazioni più forti delle fonti, promesse senza seguito.
 - **Neretto ridotto in tutto il libro.** Segna un termine alla prima occorrenza, salvo dove una definizione serve a un capitolo successivo; le parole non cambiano.
@@ -314,13 +290,10 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.12.5 · 8 settembre 2026
 
-### Sezioni nuove
+### Patch
 
 - {doc}`L'attenzione in pratica </Transformers/attenzione-in-pratica>` (Transformer). **L'attenzione in pratica.** Nuova sezione sui Transformer: costo della stessa formula in addestramento e in generazione, KV cache e varianti che la riducono (MQA, GQA, MLA), con i conti di memoria.
 - {doc}`Da dove viene la loss </RetiNeurali/da-dove-viene-la-loss>` (Reti neurali). **Origine della funzione di perdita.** Nuova sezione sulle reti neurali: la perdita si ricava dalla distribuzione dichiarata sull'uscita, con minimi quadrati e cross-entropy come due casi della stessa costruzione.
-
-### Correzioni
-
 - **Errori di fatto, termini anticipati e rimandi inesistenti.** Corretti un cancello attribuito al ramo sbagliato, un conto di memoria, una frase smentita dalla scheda gemella e i rimandi a sezioni che non esistono.
 - **Neretto limitato alla prima occorrenza.** Il neretto segna un termine la prima volta che compare e non ritorna; le parole non cambiano.
 
@@ -328,19 +301,16 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.12.4 · 7 settembre 2026
 
-### Correzioni
+### Patch
 
 - **Neretto ridotto in GPU, Audio, Serie temporali e reti su grafo.** Segna ora un termine alla prima occorrenza e non più clausole intere o parole comuni; le parole non cambiano.
-
-### Impianto
-
 - **Versione scura delle figure.** Ogni figura, animazioni comprese, ha una versione per il tema scuro con gli stessi colori sul fondo scuro, in luogo del rettangolo bianco; il PDF resta chiaro.
 
 (v1-12-3)=
 
 ## 1.12.3 · 2 settembre 2026
 
-### Impianto
+### Patch
 
 - **Colonna di lettura uniforme.** Anche nelle pagine senza sommario laterale (prefazione, bibliografia, indice dei termini, ricerca) larghezza e margine sinistro coincidono con quelli dei capitoli.
 - {doc}`Prefazione </prefazione>`. **Triangolo di Penrose in tema scuro.** Il segno del progetto conserva i propri colori anche nel tema scuro; il difetto era presente dalla 1.12.2.
@@ -349,13 +319,10 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.12.2 · 1 settembre 2026
 
-### Pagine ampliate
+### Patch
 
 - {doc}`Dalla softmax alla ricorrenza </AttenzioneLineare/dalla-softmax-alla-ricorrenza>` (Attenzione lineare). **Errore di richiamo calcolato dalla pagina.** Un blocco con seme proprio produce i due valori dell'errore di una memoria di taglia fissa sovraccarica, con l'andamento di confronto.
 - {doc}`Modelli trasparenti </Interpretabilita/modelli-trasparenti-e-importanza>` (Interpretabilità). **Accuratezze del confronto fra modello leggibile e opaco.** Le due accuratezze e la differenza di un punto e tre sono ora stampate dalla pagina.
-
-### Correzioni
-
 - **Correzioni a fatti, formule, citazioni e dati hardware.** Fatti storici riportati alle fonti, condizioni delle formule precisate, citazioni e numeri delle schede tecniche ricontrollati, scene riscritte perché ogni gesto corrisponda a un passaggio del conto.
 - {doc}`Introduzione </Introduzione/overview>`. **Fatti storici nell'Introduzione.** L'epigrafe è la prima riga dell'articolo del 1966, la frase di Pascal è riportata per intero, ELIZA è un capostipite dei chatbot e non il primo.
 - {doc}`Robotica e AI </Introduzione/applicazioni>` (Introduzione). **Definizione di robot secondo la norma ISO 8373.** Aggiunta la clausola sul grado di autonomia (edizione 2021); precisato che la limitatezza delle ricompense basta alla convergenza della somma scontata, ma non è necessaria.
@@ -448,7 +415,7 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.12.1 · 31 agosto 2026
 
-### Correzioni
+### Patch
 
 - **Revisione di rimandi, glosse e numeri.** Rimandi portati al bersaglio giusto, glosse riallineate alle formule che commentano e numeri verificati sui blocchi che li stampano; diradate le contrapposizioni in Matematica e nei sistemi multi-agente.
 - {doc}`L'addestramento avversario </GAN/come-funziona>` (GAN). **Discriminatore giocattolo nelle GAN.** Il gradiente è letto per ciò che indica; la conversione fra perdita e frequenza dà un minimo e non un massimo; raddrizzato un verso di metrica.
@@ -460,32 +427,23 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.12.0 · 30 agosto 2026
 
-### Sezioni nuove
+### Minor
 
 - {doc}`Imparare a imparare </DeepLearning/meta-apprendimento>` (Deep Learning). **Meta-apprendimento.** Nuova sezione: scegliere una posizione di partenza da cui pochi passi bastano su un compito mai visto, con il conto che lo dimostra.
 - {doc}`Gerarchia e opzioni </DeepReinforcementLearning/gerarchia>` (Deep Reinforcement Learning). **Apprendimento per rinforzo gerarchico.** Nuova sezione sulle opzioni, sulla scala di tempo delle decisioni e sulla ragione per cui scegliere meno spesso può far imparare di più.
-
-### Pagine ampliate
-
 - {doc}`Far funzionare le reti profonde </DeepLearning/ottimizzazione-regolarizzazione>` (Deep Learning). **Spiegazione di concetti prima solo accennati.** Label smoothing, Thompson sampling, teacher forcing ed exposure bias, test d'ipotesi e p-value con le correzioni per confronti multipli, nelle sezioni in cui servono.
 - {doc}`Componenti e modelli classici </SerieTemporali/componenti-e-classici>` (Serie temporali). **Concetti aggiunti nelle serie temporali e altrove.** L'orizzonte di un MA(q), la passeggiata aleatoria, ROUGE accanto a BLEU, il curriculum e il self-play negli agenti che imparano insieme, l'ordinamento per perdita fra le metriche.
 - {doc}`Algebra lineare </Matematica/algebra-lineare>` (Matematica). **Presupposti di matematica spiegati.** Decomposizione ai valori singolari e rango basso, calibrazione con temperature scaling, filtro di Kalman, modelli lineari generalizzati: regressione lineare, logistica e di Poisson sono la stessa macchina.
-
-### Correzioni
-
 - **Rimandi, formule e termini corretti in più capitoli.** Rimandi a destinazioni inesistenti, termini usati prima di essere spiegati, due formule errate e un'affermazione vera in aritmetica esatta ma falsa eseguendo la pagina.
 
 (v1-11-0)=
 
 ## 1.11.0 · 30 agosto 2026
 
-### Sezioni nuove
+### Minor
 
 - {doc}`Sistemi lineari </Matematica/sistemi-lineari>` (Matematica). **Cinque sezioni nuove nel capitolo di matematica.** Sistemi lineari, proiezioni e minimi quadrati, determinante come volume, disuguaglianze indipendenti dalla distribuzione e catene di Markov; il capitolo arriva a undici sezioni.
 - {doc}`Il limite continuo </ModelliDiffusione/sde-e-ode>` (Modelli di diffusione). **Diffusione: dal limite continuo alla generazione in un passo.** Sei sezioni nuove su equazioni differenziali, flow matching, campionatori veloci, generatori a un passo, condizionamento e diffusione su stati discreti.
-
-### Correzioni
-
 - {doc}`Guida e allineamento </ModelliDiffusione/guida>` (Modelli di diffusione). **Forza della guida nella diffusione.** Alzarla non equivale a campionare da una distribuzione inclinata: sul banco di prova esatto i campioni se ne discostano, e il divario si concentra a metà percorso.
 - **Diradamento della costruzione «non è X, è Y».** In tutto il libro la contrapposizione resta dove mette in guardia da un errore reale e si riduce altrove.
 
@@ -493,7 +451,7 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.10.5 · 25 agosto 2026
 
-### Correzioni
+### Patch
 
 - {doc}`Analisi e ottimizzazione </Matematica/analisi-ottimizzazione>` (Matematica). **Tre correzioni nel capitolo di matematica.** La sigmoide non restituisce probabilità con somma uno, la softmax sì; un punto di sella richiede almeno due dimensioni; il gradiente taglia ad angolo retto le curve di livello.
 - {doc}`Teoria dell'informazione </Matematica/teoria-informazione>` (Matematica). **Bit di un dado e numero di domande.** Le domande sono intere: su un tiro la strategia migliore ne usa in media due e due terzi, e solo su molti tiri si raggiungono i 2,585 bit.
@@ -506,7 +464,7 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.10.4 · 25 agosto 2026
 
-### Correzioni
+### Patch
 
 - **Codice copiabile nel PDF.** Le coppie di simboli non si uniscono più in un solo segno: `!=`, `>=` e `->` restano tali in pagina e nel testo selezionato.
 - **Distinzione dei blocchi da eseguire e da leggere.** Gli esempi con nomi di comodo, file inesistenti o modelli costruiti altrove lo dichiarano, online e in stampa.
@@ -520,7 +478,7 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.10.3 · 24 agosto 2026
 
-### Correzioni
+### Patch
 
 - {doc}`Introduzione </Introduzione/overview>`. **Definizione di intelligenza artificiale.** Riguarda i compiti per cui nessuno sa scrivere una ricetta valida nel mondo reale: esclude la lavatrice, include i sistemi esperti, il cui fallimento diventa la premessa del capitolo.
 - {doc}`Introduzione </Introduzione/overview>`. **Riordino dell'Introduzione.** Il blocco filosofico e le tre discipline sulla decisione precedono Turing; la funzione obiettivo ha una sezione propria; ARGO è motivata dall'assenza di apprendimento al suo interno.
@@ -532,12 +490,9 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.10.2 · 23 agosto 2026
 
-### Pagine ampliate
+### Patch
 
 - {doc}`Prefazione </prefazione>`. **Posizione del libro nella prefazione.** La prefazione dichiara la scelta del libro: meno fiducia nelle istruzioni scritte nel prompt, più architetture, iperparametri e funzioni di costo.
-
-### Correzioni
-
 - {doc}`Prefazione </prefazione>`. **Prefazione più concisa e riconoscimento di un debito.** Il segno del libro nomina «Gödel, Escher, Bach», da cui vengono la lettura della figura come anello che torna su sé stesso e l'idea di spiegare ogni cosa due volte.
 - **Fonti degli strumenti nominati.** PyTorch, TensorFlow, Keras e Hugging Face compaiono in bibliografia con l'articolo degli autori e un indirizzo di approfondimento.
 
@@ -545,7 +500,7 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.10.1 · 22 agosto 2026
 
-### Correzioni
+### Patch
 
 - **Corrispondenza fra i due livelli.** Nelle scene del livello Elementare sono riportate le mosse presenti solo nel Superiore: condizione di validità di una garanzia, caso di rottura del metodo, conto commentato dal testo.
 - **Errori di merito corretti.** L'indice di Davies-Bouldin si minimizza; la perplessità scende con frasi più prevedibili; la proiezione non è il prodotto scalare; `top_p` sceglie quanta classifica resta.
@@ -558,14 +513,11 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.10.0 · 20 agosto 2026
 
-### Sezioni nuove
+### Minor
 
 - {doc}`Il kernel trick </MachineLearning/svm-kernel>` (Machine Learning). **Kernel trick in una pagina propria.** La sezione sulla Support Vector Machine è divisa in due: il margine massimo da una parte; kernel trick, regressione, rilevamento di anomalie e uso con scikit-learn dall'altra.
 - {doc}`MCTS e AlphaGo </DeepReinforcementLearning/mcts-alphago>` (Deep Reinforcement Learning). **Ricerca ad albero Monte Carlo, AlphaGo e allineamento dei modelli linguistici.** Trattati in una pagina propria, separata dal gradiente di policy, che ora si conclude con PPO e con i riquadri finali.
 - {doc}`Oltre il BPE </NaturalLanguageProcessing/oltre-il-bpe>` (Natural Language Processing). **Oltre il BPE.** Nuova pagina su WordPiece, SentencePiece e tokenizzazione a byte, con quattro conseguenze pratiche: numeri spezzati, costo in token dell'italiano, spazio superfluo, vocabolario congelato. Il BPE resta nella pagina d'origine.
-
-### Pagine ampliate
-
 - {doc}`Le basi di Python </Python/basi>` (Python). **Lettura dei traceback e gestione delle eccezioni.** Le basi di Python spiegano come leggere un errore e come proteggere la riga fragile con un `try`/`except` mirato, secondo lo stile del chiedere scusa anziché del chiedere permesso.
 - **Cinque figure nuove.** Apprendimento contrastivo, spettrogramma dell'AST, parte mascherata di wav2vec, generazione audio a token; AlexNet ridisegnata con i due rami su GPU che comunicano soltanto in alcuni punti.
 
@@ -573,26 +525,20 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.9.4 · 20 agosto 2026
 
-### Pagine ampliate
+### Patch
 
 - {doc}`Deep Q-Network (DQN) </DeepReinforcementLearning/dqn>` (Deep Reinforcement Learning). **Replay con priorità e rete a due rami in DQN.** Aggiunta la sezione sulle due migliorie, con formule e fonti, la correzione dei pesi di campionamento e il richiamo a Rainbow, che le combina.
 - {doc}`Prefazione </prefazione>`. **Triangolo impossibile nella Prefazione.** Accanto al passaggio sul segno del libro è inserita l'illustrazione grande dei suoi tre tracciati, da osservare un angolo alla volta.
-
-### Correzioni
-
 - **Rifiniture di lettura.** Nelle Conclusioni ogni capitolo citato è collegato con un link alla prima occorrenza soltanto; in due aperture di «Visione e linguaggio» si entra direttamente nella scena.
 
 (v1-9-3)=
 
 ## 1.9.3 · 20 agosto 2026
 
-### Pagine ampliate
+### Patch
 
 - **Formule aggiunte.** Equazione di Bellman per Q, RoPE e RMSNorm, word2vec e GloVe, gradiente di policy con GAE, riparametrizzazione di SAC, MMR e PSI sono ora scritti per esteso.
 - {doc}`Detection e segmentazione </VisioneArtificiale/detection-segmentazione>` (Visione artificiale). **Ancore, IoU e famiglia YOLO.** Precisato che il confronto con il riquadro vero esiste solo in addestramento e che in inferenza la IoU serve a eliminare i doppioni; aggiunta la storia di YOLO, con codice.
-
-### Correzioni
-
 - {doc}`Prefazione </prefazione>`. **Correzioni in Prefazione, Conclusioni, Python, Ricerca e Visione e linguaggio.** Nella Prefazione la citazione di Anthropic rimanda al resoconto corretto e il teorema di Penrose ha due voci bibliografiche; i conti dei tre rapporti usano numeri verificati.
 - {doc}`Conclusioni </Conclusioni/overview>`. **Ripasso finale delle Conclusioni.** Allineato al libro attuale: cinque famiglie generative, capitoli recenti citati con link, rimando ad AlphaGo, coerenza fra i livelli sugli errori di un agente, riquadri prima del congedo.
 - {doc}`Esplorare lo spazio </Ricerca/esplorare-lo-spazio>` (Ricerca e pianificazione). **Parità dell'otto-tessere e attribuzioni nella Ricerca.** Corretto l'argomento di parità, che dimostrava il contrario di quanto affermava; indicati gli autori di IDA* e Monte Carlo Go, il punteggio di Deep Blue, il nome della potatura.
@@ -604,7 +550,7 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.9.2 · 20 agosto 2026
 
-### Correzioni
+### Patch
 
 - **Aperture delle schede Elementari.** Meno inviti a immaginare: le schede entrano più spesso direttamente nella scena, e le analogie restano.
 - **Immagine della catena di montaggio.** Sostituita dove era soltanto un modo di dire «una cosa dopo l'altra» da immagini scelte per il passaggio; resta dove regge, come nel capitolo sulla GPU e nella retropropagazione.
@@ -613,12 +559,9 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.9.1 · 20 agosto 2026
 
-### Pagine ampliate
+### Patch
 
 - **Diciassette voci bibliografiche.** Aggiunte le fonti di lavori già nominati nel testo, tra cui la policy iteration di Howard, TRPO, DAgger, DistMult, ComplEx e RotatE.
-
-### Correzioni
-
 - **Correzioni di formule.** Risoluzione della trasformata a finestra, matrice condivisa della GAT, perdita del VQ-VAE, costo del calcolo a blocchi di Mamba-2, reticolo del trasduttore, penalità di gradiente delle GAN.
 - **Numeri ricalcolati.** Ripartizione dei fallimenti della rete di Hopfield, punteggi di AST e V-JEPA 2, MOS di Tacotron 2, accuratezza di Hearsay-II, banda di previsione in «Forecasting neurale», ora stampata dal codice.
 - **Coerenza fra schede Elementari e Superiori.** Riallineate le schede in «Verosimiglianza esatta», «Modelli latenti» e «Costo del coordinamento»; l'apertura delle PINN non attribuisce più l'idea a un lavoro che il capitolo fa risalire al 1994.
@@ -629,12 +572,9 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.9.0 · 19 agosto 2026
 
-### Sezioni nuove
+### Minor
 
 - {doc}`Capire è accorciare </AutoSupervisione/capire-e-accorciare>` (Auto-supervisione). **Compressione e comprensione nell'auto-supervisione.** Nuova sezione sul perché prevedere bene richieda accorciare: complessità di Kolmogorov, rasoio di Occam in bit, argomento di Sutskever, misure di verifica, costo del vocabolario; con esperimento e figura animata.
-
-### Correzioni
-
 - {doc}`Capire è accorciare </AutoSupervisione/capire-e-accorciare>` (Auto-supervisione). **Correzioni nella sezione sulla compressione.** Il 99% di iGPT su CIFAR-10 riguarda la rete rifinita, non il sondaggio a rete congelata (96,3%); corretti anche verosimiglianza, argomento di Sutskever e una frase autocontraddittoria.
 - **Etichette delle figure.** In tre figure le etichette nere sono sostituite dal colore della curva corrispondente; in quella sulla compressione erano l'unica legenda.
 
@@ -642,7 +582,7 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.8.5 · 19 agosto 2026
 
-### Correzioni
+### Patch
 
 - **Ricerca con testo già presente nel campo.** Corretto il caso in cui la finestra, aperta da un vecchio collegamento o al ritorno con il browser, non mostrava risultati: cerca ora subito il testo già scritto.
 
@@ -650,19 +590,16 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.8.4 · 19 agosto 2026
 
-### Correzioni
+### Patch
 
 - **Evidenziazione dei risultati di ricerca.** L'avviso «Nascondi i risultati della ricerca» compare solo se qualcosa è stato evidenziato, con il numero di corrispondenze; corretta l'evidenziazione, che sulle versioni recenti del tema non partiva.
-
-### Impianto
-
 - **Ricerca incrementale.** I risultati compaiono a ogni tasto, raggruppati per pagina e capitolo, e portano alla singola sezione; apertura con Ctrl+K o ⌘K, navigazione da tastiera, termini evidenziati, suggerimento sui refusi.
 
 (v1-8-3)=
 
 ## 1.8.3 · 19 agosto 2026
 
-### Correzioni
+### Patch
 
 - {doc}`Analisi numerica </Matematica/analisi-numerica>` (Matematica). **Riproducibilità numerica fra calcolatori.** Corretta l'affermazione che due variabili d'ambiente rendano identiche le cifre: non vale per i prodotti fra matrici di PyTorch, quindi esecuzioni su macchine diverse si confrontano con una tolleranza.
 
@@ -670,7 +607,7 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.8.2 · 19 agosto 2026
 
-### Correzioni
+### Patch
 
 - {doc}`Python </Python/overview>`. **Definizione di SIMD.** Sciolta la sigla nel paragrafo sulla velocità di NumPy: una sola istruzione del processore che opera su più numeri insieme, quanti ne entrano nei registri.
 - {doc}`Analisi numerica </Matematica/analisi-numerica>` (Matematica). **Prerequisiti nella sezione sui due calcolatori.** Definiti SSE2, AVX2 e AVX-512 (registri da 128, 256 e 512 bit); tolto il riferimento anticipato a PyTorch; uniformata la precisione dei conti e alleggerita la chiusura.
@@ -679,12 +616,9 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.8.1 · 19 agosto 2026
 
-### Pagine ampliate
+### Patch
 
 - {doc}`Analisi numerica </Matematica/analisi-numerica>` (Matematica). **Risultati diversi dallo stesso codice su due calcolatori.** Nuova sezione: l'addizione in virgola mobile non è associativa e il kernel scelto dalla libreria fissa l'ordine delle somme; con esempio, definizione di kernel e variabili per fissare la scelta.
-
-### Correzioni
-
 - {doc}`Meno pesi </Efficienza/meno-pesi>` (Efficienza). **Potatura e quantizzazione rimisurate a kernel fissato.** Comporre le due leve costa 1,1 punti di accuratezza (prima 1,7); la rete potata del 90% ne perde meno di uno. La conclusione non cambia.
 - **Verifica dei numeri stampati nel repository pubblico.** Il confronto fra i numeri delle pagine e quelli prodotti dal codice gira ora anche sulla copia pubblicata del libro.
 
@@ -692,44 +626,32 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.8.0 · 18 agosto 2026
 
-### Sezioni nuove
+### Minor
 
 - {doc}`Spline e modelli additivi </MachineLearning/curve-al-posto-di-rette>` (Machine Learning). **Regressione spline e modelli additivi.** Nuova sezione: limiti del polinomio unico, spline con flessibilità localizzata e parametro di regolarizzazione, modelli additivi con una curva per colonna.
 - {doc}`Il bootstrap </MachineLearning/il-bootstrap>` (Machine Learning). **Il bootstrap.** Nuova sezione sul metodo di Efron (1979) per stimare l'incertezza di una misura da un solo campione, e sui casi in cui fallisce: massimo, dati non indipendenti, campione raccolto male.
 - {doc}`Modelli generativi </MachineLearning/modelli-generativi>` (Machine Learning). **Modelli generativi per la classificazione.** Nuova sezione su analisi discriminante lineare e quadratica e naive Bayes, con il confronto fra approccio generativo e discriminativo sui punti lontani dai dati osservati.
 - {doc}`Valutare un raggruppamento </MachineLearning/valutare-un-raggruppamento>` (Machine Learning). **Valutazione di un raggruppamento.** Misure di qualità del clustering: l'indice più usato può preferire la risposta sbagliata, l'indice di Rand grezzo dà 0,9 al caso; un teorema del 2002 impone di dichiarare la scelta.
-
-### Pagine ampliate
-
 - {doc}`Alberi e metodi ensemble </MachineLearning/alberi-ensemble>` (Machine Learning). **Uscite dei blocchi nel capitolo di Machine Learning.** Corretti due blocchi che misuravano i dati di un'altra pagina e un rilevatore di deriva che non segnalava scostamenti reali.
-
-### Correzioni
-
 - **Correzioni alle sezioni nuove.** Corretti l'argomento della dimostrazione di un teorema, la provenienza non omogenea del più noto insieme di dati della statistica, la conclusione di un esperimento sulla copertura e un'animazione.
 
 (v1-7-0)=
 
 ## 1.7.0 · 18 agosto 2026
 
-### Sezioni nuove
+### Minor
 
 - {doc}`Efficienza </Efficienza/overview>`. **Efficienza dei modelli.** Nuovo capitolo sulle tre leve per ridurre un modello (meno bit, meno pesi, distillazione) e sul loro costo misurato, che non sempre coincide con l'attesa.
 - {doc}`Ricerca e pianificazione </Ricerca/overview>`. **Ricerca prima dell'apprendimento.** Nuovo capitolo su albero dei futuri, stima della distanza dall'obiettivo e potatura dei rami, con le tre ipotesi che nel mondo reale spesso mancano e da cui muove il rinforzo.
 - {doc}`Modelli latenti </ModelliLatenti/overview>`. **Modelli a variabili latenti.** Nuovo capitolo: compressione con ricostruzione, rimedio ai buchi dello spazio latente (distribuzioni al posto di punti), applicazioni a codec audio, rinforzo, diffusione e world model.
-
-### Pagine ampliate
-
 - **Rimandi e spiegazioni uniche dopo l'inserimento di tre capitoli.** Aggiornati numeri e rimandi, ora per nome del capitolo; quantizzazione, potatura e biglietto della lotteria hanno una sola spiegazione, richiamata altrove.
-
-### Correzioni
-
 - **Correzioni nei capitoli nuovi.** Corretti la spiegazione elementare di A*, un conto di efficienza difforme da quello sulla GPU, un miglioramento dovuto al riavvio dell'ottimizzatore e non alla potatura, una frase imprecisa nella fonte.
 
 (v1-6-3)=
 
 ## 1.6.3 · 17 agosto 2026
 
-### Correzioni
+### Patch
 
 - **Spiegazioni elementari corrette in auto-supervisione e modelli a energia.** Il collasso è fermato dalla coerenza fra due ritagli della stessa foto, non dal richiedere di non ripetersi; la descrizione locale del paesaggio energetico lascia indeterminata un'altezza per valle.
 - **Allineamento fra livello Elementare e Superiore.** Corretti, fra gli altri, il passo di tempo dei modelli a spazio di stato, l'attenzione lineare, l'allineamento diretto e la verosimiglianza «esatta» di un flusso.
@@ -739,24 +661,18 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.6.2 · 17 agosto 2026
 
-### Pagine ampliate
+### Patch
 
 - {doc}`Prefazione </prefazione>`. **Il triangolo impossibile come segno del libro.** La Prefazione ne spiega la ragione: l'impossibilità è un teorema, i tre pezzi sono corretti e il difetto sta nella loro composizione, non in un luogo preciso.
-
-### Correzioni
-
 - **Ultime formule della prima metà e cinque numeri.** Corretti la precisione media (la definizione elementare premiava un rilevatore quasi cieco), la ripartizione «due terzi e un terzo» in una rete e tre numeri di un confronto fra inizializzazioni.
 
 (v1-6-1)=
 
 ## 1.6.1 · 17 agosto 2026
 
-### Sezioni nuove
+### Patch
 
 - {doc}`Generare suono e musica </Audio/generazione-audio>` (Audio oltre la voce). **Figura animata sulla rappresentazione dello spartito.** In «Generazione audio» mostra la griglia che cresce a ogni sedicesimo anche senza eventi, mentre la rappresentazione a eventi resta ferma e poi salta.
-
-### Correzioni
-
 - **Congedi di capitolo.** I capitoli non terminano più sull'elenco «Da ricordare»: chiude un breve raccordo che dice che cosa portare con sé e quale capitolo segue.
 - **Simboli e glosse nelle formule.** Presentati i simboli usati senza definizione, distinte le lettere con due significati nello stesso capitolo, corretta una F1 di esempio calcolata con numeri di tabelle diverse.
 - **Coerenza fra i livelli di lettura.** Riscritti i passaggi in cui la scheda Elementare affermava ciò che la Superiore smentiva, come la convergenza della discesa del gradiente da qualsiasi punto e l'assestamento graduale del percettrone.
@@ -766,19 +682,13 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.6.0 · 16 agosto 2026
 
-### Sezioni nuove
+### Minor
 
 - {doc}`Auto-supervisione </AutoSupervisione/overview>`. **Apprendimento auto-supervisionato.** Nuovo capitolo: i quattro modi di costruire il segnale senza etichette, il guasto comune (rispondere sempre la stessa cosa), i rimedi e il dibattito sul peso del rinforzo.
 - {doc}`Verosimiglianza esatta </VerosimiglianzaEsatta/overview>`. **Modelli a verosimiglianza esatta.** Nuovo capitolo sulle famiglie, autoregressive e a flussi, che assegnano un numero alla probabilità di un dato: costo e caso in cui probabilità alta e tipicità divergono.
 - {doc}`L'inferenza attiva </WorldModels/inferenza-attiva>` (World Model). **Inferenza attiva.** Sezione sull'agente che agisce per ridurre la propria sorpresa, alternativa di principio al rinforzo; il termine che nell'allineamento tiene un modello vicino a quello di partenza risulta formalmente lo stesso.
-
-### Pagine ampliate
-
 - {doc}`Evoluzioni e applicazioni </GAN/applicazioni-evoluzioni>` (GAN). **StyleGAN e quantizzazione delle immagini.** Aggiunti la separazione fra stile e contenuto, l'artefatto a goccia rimasto un anno senza spiegazione e la quantizzazione in un vocabolario di simboli, ponte verso i modelli di linguaggio.
 - {doc}`Generare suono e musica </Audio/generazione-audio>` (Audio oltre la voce). **Generazione dello spartito.** Confronto fra la rappresentazione a note e durate (venti kilobyte al minuto) e la registrazione (trenta megabyte): che cosa si guadagna, che cosa si perde, effetto della codifica sul tempo.
-
-### Correzioni
-
 - **Correzioni di numeri e formule.** Corretti, fra gli altri, un rapporto errato di cento volte, una memoria sovrastimata di otto volte e un fattore invertito in una formula, giusta nella scheda Superiore e rovesciata nell'Elementare.
 - **Apostrofi nella composizione del PDF.** Il compositore rendeva l'apostrofo a fine parola come una virgoletta doppia («un po” meno»); corretti in tutto il libro.
 - **Aperture e congedi dei capitoli.** Citazione di Galileo sostituita con il passo del Saggiatore; matematica apre con von Neumann e Shannon; corretta l'affermazione sugli agenti; i congedi sostituiscono gli elenchi finali.
@@ -787,35 +697,26 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.5.8 · 15 agosto 2026
 
-### Sezioni nuove
+### Patch
 
 - {doc}`Conclusioni </Conclusioni/overview>`. **Il vantaggio delle macchine nel mondo digitale.** Nuova sezione delle Conclusioni: la superiorità deriva dal terreno e non dall'intelligenza; restano all'uomo la responsabilità della scelta e la decisione su quale partita giocare.
-
-### Pagine ampliate
-
 - {doc}`Introduzione </Introduzione/overview>`. **I dati come scarto.** L'Introduzione presenta i dati come sottoprodotto e non come giacimento, con il parallelo dell'ossigeno, rifiuto di certi batteri che prima di diventare respiro fu un veleno.
-
-### Correzioni
-
 - **Descrizione uniforme del libro.** Copertina del PDF, anteprima di condivisione e titolo delle pagine riportano la stessa frase, prima in tre versioni; dalla home il libro si apre anche nel browser.
 
 (v1-5-7)=
 
 ## 1.5.7 · 15 agosto 2026
 
-### Pagine ampliate
+### Patch
 
 - **Lettura nel browser e DOI.** Accanto al download del PDF un secondo pulsante apre il libro pagina per pagina; il DOI, identificativo permanente, rimanda all'ultima versione depositata e fornisce la scheda per le citazioni.
-
-### Correzioni
-
 - **Riga descrittiva in copertina.** Oltre alla postilla compare la riga che dice che cos'è il libro, la stessa della home e dell'anteprima dei link.
 
 (v1-5-6)=
 
 ## 1.5.6 · 15 agosto 2026
 
-### Correzioni
+### Patch
 
 - **Grafia del nome del libro.** Il titolo si scrive Paithon Book, con le iniziali maiuscole; il logo resta minuscolo perché è un segno disegnato.
 - **Logo con il triangolo al posto della «a».** Allineato il logo del libro a quello del sito; rigenerato il file in copertina al PDF, una copia fatta a mano e mai aggiornata.
@@ -825,7 +726,7 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.5.5 · 15 agosto 2026
 
-### Correzioni
+### Patch
 
 - **Citazioni nelle didascalie del PDF.** In tre didascalie la citazione spezzava il rimando alla bibliografia nella versione a stampa; ora sta nel testo, e in un caso indica autori e anno degli insiemi di dati.
 
@@ -833,12 +734,9 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.5.4 · 15 agosto 2026
 
-### Pagine ampliate
+### Patch
 
 - {doc}`Prefazione </prefazione>`. **Perché il libro esiste oggi.** Nella Prefazione la ragione di oggi: la ripetizione irriflessiva di frasi e l'adozione di modelli senza leggerne la licenza. Chi coniò «pappagalli stocastici» nota: «la frase ha superato il paper».
-
-### Correzioni
-
 - **Leggibilità dei capitoli più tecnici.** Riscritti i passaggi più densi degli ultimi capitoli; un conto presentato come eseguibile «in due righe» è ora svolto per intero, e un'imprecisione matematica è corretta.
 - **Correzioni di fatto.** L'inganno del cavallo che sapeva contare è del 1904 (il 1907 è l'anno del libro che lo racconta); corretti il fischietto delle telefonate gratuite e un'ipotesi del teorema sull'equità.
 - **Percentuali nelle metriche di servizio.** Le due percentuali che reggevano un paragrafo sono ora prodotte dal codice con una colonna aggiunta; una delle due dipendeva da un sorteggio fortunato.
@@ -848,7 +746,7 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.5.3 · 14 agosto 2026
 
-### Correzioni
+### Patch
 
 - **Leggibilità in altri capitoli.** Riformulati i passaggi più oscuri per chi parte senza basi, fra cui quelli su GAN, reinforcement learning e attenzione lineare.
 - **Autonomia del livello Elementare.** Le pagine del percorso elementare non rimandano più a nozioni spiegate soltanto nella scheda Superiore; in un capitolo simboli e formule escono dal testo comune.
@@ -859,12 +757,9 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.5.2 · 14 agosto 2026
 
-### Pagine ampliate
+### Patch
 
 - **Tre figure nuove.** Le quattro mosse che amministrano la finestra di contesto, le tre forme di una rete multi-compito e il righello che traduce l'entropia nel numero di facce di un dado equivalente.
-
-### Correzioni
-
 - **Correzioni di sostanza in tutti i capitoli.** Fra le altre: l'asimmetria del clipping di PPO, la derivazione del gradiente della funzione di partizione, la composizione in TransE, il minimo di sei frame per «PALLA».
 - **Leggibilità dei capitoli d'apertura.** Riformulati i passaggi difficili da seguire senza basi, come un conto con il seno e gli alberi usati prima di essere definiti.
 - **Figure allineate alle didascalie.** Corretti i disegni difformi dal testo: una griglia detta quasi vuota ma piena al 72%, una scala senza tacche, una freccia delle GAN contraria alla pagina.
@@ -875,7 +770,7 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.5.1 · 13 agosto 2026
 
-### Correzioni
+### Patch
 
 - {doc}`Introduzione </Introduzione/overview>`. **Due ingressi dell'intelligenza artificiale nella vita quotidiana.** L'Introduzione distingue gli anni Dieci, in cui è entrata inosservata (traduttori, suggerimenti, volti), dal novembre 2022, quando con ChatGPT è diventata interlocutore; il salto era cominciato cinque anni prima.
 - {doc}`Introduzione </Introduzione/overview>`. **Terminologia: inverni.** Le due pause dell'AI sono chiamate «inverni», come nel capitolo sulle reti neurali, e non più «gelate».
@@ -884,29 +779,20 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.5.0 · 13 agosto 2026
 
-### Sezioni nuove
+### Minor
 
 - **Versione PDF.** Il libro è scaricabile in un unico PDF impaginato come volume, con indice, numeri di pagina e aperture di capitolo; il link nella pagina di apertura punta all'ultima edizione.
 - **Fermi immagine delle animazioni nel PDF.** Per ogni figura animata il PDF riporta tre fotogrammi (inizio, metà, fine) e l'indirizzo della pagina in cui la figura si muove.
-
-### Pagine ampliate
-
 - {doc}`Prefazione </prefazione>`. **Modalità di scrittura nella Prefazione.** La Prefazione dichiara come il libro è composto, spiega il sottotesto «due volte» e indica la scommessa che le correzioni diventino rare, versione dopo versione.
-
-### Correzioni
-
 - {doc}`Algebra lineare </Matematica/algebra-lineare>` (Matematica). **Caratteri delle figure.** Le etichette delle figure usano ora i caratteri del progetto e non quelli generici del sistema del lettore, e risultano uguali per tutti.
 - {doc}`Modelli n-gram </NaturalLanguageProcessing/modelli-ngram>` (Natural Language Processing). **Formule in stampa in «Modelli n-gram».** Corrette quattro formule che il browser tollerava e la stampa no: tre sistemi di equazioni annidati male e una formula spezzata da un a capo.
-
-### Impianto
-
 - {doc}`Prefazione </prefazione>`. **Prefazione come parte autonoma.** La Prefazione esce da «Fondamenta» e apre il libro in una nuova parte dell'indice, «Prima di cominciare».
 
 (v1-4-2)=
 
 ## 1.4.2 · 13 agosto 2026
 
-### Pagine ampliate
+### Patch
 
 - {doc}`Support Vector Machine </MachineLearning/svm>` (Machine Learning). **Derivazione della Support Vector Machine.** Nuova sezione in cinque passi, sui due livelli: larghezza del margine e forma duale in cui i dati compaiono a coppie, base del kernel trick; segue la lezione di Winston.
 - {doc}`Support Vector Machine </MachineLearning/svm>` (Machine Learning). **Note storiche nella derivazione della SVM.** Due note riprendono i salti del conto segnalati da Winston; la sezione conclude che Vapnik aveva il kernel già nella tesi degli anni Sessanta e ne capì l'importanza trent'anni dopo.
@@ -915,12 +801,9 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.4.1 · 13 agosto 2026
 
-### Pagine ampliate
+### Patch
 
 - **Sei figure animate.** Ciclo di addestramento con loss in discesa, due modi in cui il DQN rompe la correlazione, scan a raddoppio, agente con contesto crescente, spinta avversaria, residuo di una PINN.
-
-### Correzioni
-
 - **Verifica numerica delle figure animate.** Ognuna delle sei calcola i numeri che mostra e non viene generata se non coincidono con quelli del capitolo; la figura della PINN addestra davvero per trentamila epoche.
 - {doc}`Mamba </StateSpaceModel/mamba>` (State Space Model). **Scan parallelo in Mamba.** Il testo attribuiva a Blelloch le operazioni della versione in fila, ma il codice è a raddoppio e ne fa di più: si guadagna sui turni, si paga in conti.
 
@@ -928,14 +811,11 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.4.0 · 12 agosto 2026
 
-### Pagine ampliate
+### Minor
 
 - **Livello Elementare fuori dalle schede.** Didascalie, riquadri «Da ricordare» e raccordi, che usavano la lingua del livello Superiore, sono riscritti; i riquadri sono ora su entrambi i livelli.
 - **Tredici figure animate.** Ciascuna calcola i propri numeri e non viene generata se non coincidono con il testo; fra esse fusioni del BPE, k-means, online softmax di Flash Attention, rete di Hopfield.
 - **Notazione uniforme.** Il grassetto indica gli oggetti con più componenti (vettori, matrici), il tondo un numero solo: la distinzione valeva solo nei primi due capitoli.
-
-### Correzioni
-
 - **Correzioni in tutti i capitoli.** Il codice del libro viene ora eseguito e funziona.
 - **Esempi di codice corretti.** Smentiti dal codice e corretti: la frase sulla negazione, le lettere dell'esempio BPE e l'analogia «re meno uomo più donna», che dà «re» senza escludere il punto di partenza.
 - {doc}`Il filtraggio collaborativo </SistemiRaccomandazione/filtraggio-collaborativo>` (Sistemi di raccomandazione). **Valutazione nel filtraggio collaborativo.** L'esperimento misurava l'errore sui dati di addestramento; tenendo da parte un quinto dei voti l'errore passa da 0,019 a 0,418.
@@ -950,7 +830,7 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.3.0 · 11 agosto 2026
 
-### Pagine ampliate
+### Minor
 
 - {doc}`GraphSAGE, GAT e applicazioni </GraphNeuralNetwork/architetture-applicazioni>` (Graph Neural Network). **Graph Transformer.** Ogni nodo dialoga con tutti gli altri e non solo con i vicini; la codifica di posizione sul grafo generalizza quella dei Transformer, e su una fila sono onde imparentate.
 - {doc}`Confronto coi modelli precedenti </Transformers/confronti>` (Transformer). **Attenzione a costo ridotto.** Completate le tre strade (schema prefissato, scelta guidata dai dati con il Reformer, rinuncia alla softmax); aggiunti gli strati reversibili, scambio fra memoria e calcolo.
@@ -977,15 +857,12 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.2.0 · 10 agosto 2026
 
-### Sezioni nuove
+### Minor
 
 - {doc}`Geometria e profondità </VisioneArtificiale/geometria-e-profondita>` (Visione artificiale). **Geometria e profondità in visione artificiale.** Nuova sezione: modello di fotocamera, vincolo epipolare, profondità dalla disparità, flusso ottico e profondità da una sola immagine; il codice verifica i risultati invece di illustrarli.
 - {doc}`NeRF e splatting </VisioneArtificiale/rendering-neurale>` (Visione artificiale). **Rendering neurale.** NeRF e splatting gaussiano: una scena come funzione addestrata, rendering volumetrico differenziabile, ruolo della codifica posizionale (come nelle PINN) e delle pose delle fotocamere, ricavate nella sezione precedente.
 - {doc}`Una rete, molti compiti </DeepLearning/multi-compito>` (Deep Learning). **Apprendimento multi-compito.** Nuova sezione: un compito in più può aiutare o danneggiare quello di interesse; nelle misure un compito affine riduce l'errore del 65% e uno estraneo lo aumenta del 25%.
 - {doc}`Imparare guardando </DeepReinforcementLearning/imitazione>` (Deep Reinforcement Learning). **Apprendimento per imitazione.** Colma il passaggio fra rinforzo e addestramento degli assistenti conversazionali; gli errori si compongono e più il maestro è bravo meno insegna a rimediare.
-
-### Pagine ampliate
-
 - {doc}`Riduzione e clustering </MachineLearning/riduzione-clustering>` (Machine Learning). **Misture gaussiane e algoritmo EM.** Probabilità al posto di etichette, forma dei gruppi e criterio per scegliere quanti gruppi, nozioni che i capitoli su tokenizzatori e riconoscimento vocale davano per note.
 - {doc}`MCTS e AlphaGo </DeepReinforcementLearning/mcts-alphago>` (Deep Reinforcement Learning). **Ricerca ad albero Monte Carlo.** Le quattro mosse, la scelta della mossa più visitata e non di quella con la media migliore, l'identità con la formula dei bandit; già invocata per AlphaGo e MuZero.
 - {doc}`Le basi di Python </Python/basi>` (Python). **Il GIL in Python.** Perché i thread aiutano quando si attende e non quando si calcola; il capitolo su PyTorch usava il termine due volte senza introdurlo.
@@ -998,7 +875,7 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.1.7 · 9 agosto 2026
 
-### Correzioni
+### Patch
 
 - **Stampa sempre in versione chiara.** Con il tema scuro la stampa dava pagine nere e, a sfondi disattivati, testo chiarissimo su carta bianca; ora è sempre chiara e riporta entrambi i livelli.
 - **Contrasto della riga di attribuzione.** La riga con l'autore di una citazione usa il grigio del libro in entrambi i temi, perché il precedente era sotto il contrasto minimo raccomandato.
@@ -1007,7 +884,7 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.1.6 · 9 agosto 2026
 
-### Correzioni
+### Patch
 
 - **Numerazione delle figure per capitolo.** Le figure portano il numero del capitolo («Fig. 3.2») e non più la numerazione continua, arrivata a «Fig. 302»; i rimandi seguono e il numero coincide con quello dell'indice.
 - **Apertura delle figure ingrandite.** La figura ingrandita si apre alla dimensione della finestra, senza zoom, così da mostrare prima l'intero disegno.
@@ -1016,7 +893,7 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.1.5 · 9 agosto 2026
 
-### Correzioni
+### Patch
 
 - **Figure a schermo intero su telefono.** Il testo delle figure scendeva sotto i sei pixel; la figura toccata si apre ora a schermo intero alla dimensione di progetto, con zoom a due dita e trascinamento.
 
@@ -1024,7 +901,7 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.1.4 · 9 agosto 2026
 
-### Correzioni
+### Patch
 
 - **Composizione del testo sullo schermo.** Il corpo cresce con la larghezza dello schermo senza scalini, la riga resta fra trentacinque e settanta caratteri e l'interlinea ne segue la lunghezza; il testo non cambia.
 - **Colonna di lettura unica.** Testo, codice, figure e tabelle condividono lo stesso margine sinistro; sugli schermi da portatile l'indice di destra non è più tagliato.
@@ -1033,7 +910,7 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.1.3 · 8 agosto 2026
 
-### Correzioni
+### Patch
 
 - **Epigrafe di apertura.** Sostituita la frase attribuita a Marcus du Sautoy, senza fonte, con la domanda di Turing in «Computing Machinery and Intelligence» (1950): non simulare una mente adulta, ma una che impara.
 
@@ -1041,7 +918,7 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.1.2 · 8 agosto 2026
 
-### Correzioni
+### Patch
 
 - {doc}`Introduzione </Introduzione/overview>`. **Massima di Weizenbaum.** «To explain away» è reso con «dissolvere» invece della traduzione letterale, priva di senso in italiano; una nota riporta l'originale e il richiamo nelle Conclusioni è allineato.
 
@@ -1049,7 +926,7 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.1.1 · 8 agosto 2026
 
-### Correzioni
+### Patch
 
 - {doc}`Prefazione </prefazione>`. **Ultima riga della Prefazione.** La formula del 2019 «genera paura e alimenta false notizie» diventa «false speranze»: l'ignoranza sul funzionamento di una macchina produce anche l'attesa che sappia fare ciò che non sa fare.
 
@@ -1061,28 +938,19 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 È saltata fuori la bozza del 2019, quella mandata a un editore: indice di quindici capitoli e una sola parte scritta, la prefazione. Quasi tutto quello che diceva era già nel libro, sparso fra l'introduzione e la sua conclusione. Mancava la prefazione in quanto tale, cioè l'unica pagina in cui l'autore parla in prima persona.
 
-### Sezioni nuove
+### Minor
 
 - {doc}`Prefazione </prefazione>`. **Prefazione.** Nuova pagina su perché il libro esiste e perché il mancato progetto a stampa del 2019 sia stato un vantaggio: l'indice non nominava i Transformer. Non è un capitolo.
-
-### Pagine ampliate
-
 - {doc}`Conclusione </Introduzione/conclusione>` (Introduzione). **Genealogia dell'«elettricità» di Ng.** Prima della citazione di Andrew Ng sull'AI come «nuova elettricità» è inserita la genealogia a cui allude: le tecnologie che cambiano il modo di risolvere tutti gli altri problemi.
-
-### Correzioni
-
 - **Numerazione dei capitoli nell'indice.** Il numero è assegnato ai soli capitoli (la pagina degli aggiornamenti compariva come trentaquattresima) e coincide con quello delle schede in prima pagina.
 - {doc}`Conclusioni </Conclusioni/overview>`. **Citazione di Weizenbaum nelle Conclusioni.** Il richiamo cita la frase con cui si apre l'Introduzione, «si dice che spiegare significhi dissolvere», al posto di una priva di riscontro nelle fonti primarie.
-
-### Impianto
-
 - **Comando di apertura delle sezioni nell'indice.** Il controllo che apre le sezioni di un capitolo senza entrarvi, prima un'icona di dodici pixel, è ora un comando alto quanto la riga, in teal, evidenziato al passaggio.
 
 (v1-0-3)=
 
 ## 1.0.3 · 8 agosto 2026
 
-### Correzioni
+### Patch
 
 - **Storia del libro e manoscritto del 2019.** La storia presupponeva un'edizione a stampa mai uscita: il termine di riferimento per i capitoli aggiunti è il manoscritto del 2019, e questa è la prima forma pubblica del testo.
 
@@ -1090,7 +958,7 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.0.2 · 8 agosto 2026
 
-### Correzioni
+### Patch
 
 - **Data di nascita del libro.** Il libro nasce nel 2019, la versione online nel giugno 2024; la nota di copyright parte dal 2019.
 
@@ -1098,7 +966,7 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 ## 1.0.1 · 8 agosto 2026
 
-### Correzioni
+### Patch
 
 - **Titolo e descrizione per i motori di ricerca.** Bibliografia e pagina degli aggiornamenti usavano titolo e descrizione della copertina; ora ognuna ha i propri. Il difetto riguardava le voci di primo livello dell'indice, prive di capitolo sovraordinato.
 
@@ -1110,7 +978,7 @@ maggiore, e ogni versione corrisponde a una pubblicazione.
 
 La 1.0.0 non è il primo giorno del libro, che nasce nel 2019 (la storia breve è in fondo a questa pagina): è il primo giorno in cui il libro ha un numero, e il punto da cui si contano i cambiamenti. L'elenco qui sotto è il lavoro di agosto 2026, l'ultimo mese prima che il registro cominciasse.
 
-### Sezioni nuove
+### Major
 
 - {doc}`La matematica di un LLM </Matematica/matematica-llm>` (Matematica). **Matematica dei modelli linguistici.** Gli strumenti dei capitoli di matematica applicati a un token che entra in un modello e ne esce, da un'osservazione di Joseph Breeden: l'ostacolo è il vocabolario preso a prestito.
 - {doc}`I bandit a più braccia </ReinforcementLearning/banditi>` (Reinforcement Learning). **Banditi a più braccia.** Il dilemma fra esplorare e sfruttare nella forma più pura, dalla domanda posta da Thompson nel 1933 sulle sperimentazioni cliniche; precede gli MDP.
@@ -1118,9 +986,6 @@ La 1.0.0 non è il primo giorno del libro, che nasce nel 2019 (la storia breve �
 - {doc}`I knowledge graph </GraphNeuralNetwork/knowledge-graph>` (Graph Neural Network). **Knowledge graph.** Grafi i cui archi sono fatti con verso e nome, dal principio «things, not strings» di Google alle rappresentazioni di entità e relazioni.
 - {doc}`Una rete, cento lingue </Transformers/multilingua>` (Transformer). **Modelli multilingua.** Un solo modello per cento lingue: vocabolari condivisi, trasferimento fra lingue lontane e costo dello spazio comune; riprende il filo della traduzione neurale, fermo al 2016.
 - {doc}`Il conto in energia </MLOps/energia-e-impronta>` (MLOps). **Energia e impronta dei modelli.** Come si misura l'energia consumata, quasi mai dichiarata accanto a parametri, FLOP, accuratezza e latenza, e perché il valore cambia di un ordine di grandezza secondo il punto di misura.
-
-### Pagine ampliate
-
 - {doc}`Message passing </GraphNeuralNetwork/message-passing>` (Graph Neural Network). **Matrice di adiacenza normalizzata e oversmoothing.** Origine della matrice normalizzata e perché l'oversmoothing è conseguenza del message passing e non un difetto da correggere.
 - {doc}`Confronto coi modelli precedenti </Transformers/confronti>` (Transformer). **Self-attention come message passing.** Terzo filo del confronto: la self-attention è message passing su un grafo completo, e ciò collega questo capitolo a quello sulle graph neural network.
 - {doc}`L'addestramento avversario </GAN/come-funziona>` (GAN). **Valutazione delle GAN.** Come si misura una GAN, domanda lasciata aperta dall'addestramento avversario: Inception Score, FID e ciò che nessuno dei due coglie.
@@ -1128,14 +993,8 @@ La 1.0.0 non è il primo giorno del libro, che nasce nel 2019 (la storia breve �
 - {doc}`I tre errori più comuni </PyTorch/errori-comuni>` (PyTorch). **Lettura delle curve di addestramento.** Quali forme indicano overfitting, quali un learning rate errato, quali un errore nei dati.
 - {doc}`Pandas e Matplotlib </Python/pandas-matplotlib>` (Python). **Join fra tabelle.** I quattro tipi di join, usati nel capitolo senza essere spiegati.
 - **Riquadri «Da ricordare».** Ogni capitolo si chiude con un riquadro su entrambi i livelli: cinque righe per rileggerlo in un minuto o valutare se aprirlo.
-
-### Correzioni
-
 - **Correzioni generali.** Corrette date, attribuzioni, esempi numerici e notazione nei capitoli in cui servivano.
 - **Codice e notebook allineati.** Il codice dei blocchi Python è stato eseguito e i notebook del pulsante «Esegui il codice» rigenerati dalle pagine corrette, così testo e notebook coincidono.
-
-### Impianto
-
 - **Palette del tema.** Rimosso il viola residuo delle impostazioni di fabbrica nei fondini delle schede: la palette del libro vale ovunque.
 - **Pagina degli aggiornamenti e numero di versione.** Introdotta questa pagina, con il numero di versione in cima all'indice e nella prima pagina del libro.
 

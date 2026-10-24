@@ -32,13 +32,12 @@ Lo stesso blocco con due maschere: cambiano le posizioni che ogni parola può
 guardare, e ne discende il resto.
 ```
 
-{numref}`fig-bert-vs-gpt` mostra la differenza che conta fra i primi due: lo
-stesso tipo di blocco, con due maschere diverse. BERT usa la self-attention
-bidirezionale, quindi la rappresentazione di ogni parola dipende anche da ciò
-che viene dopo: è un requisito per classificare una frase, estrarne una
-risposta o confrontarla con un'altra. GPT usa invece la maschera
-causale e deve indovinare come si continua, l'esercizio che insegna a
-scrivere.
+{numref}`fig-bert-vs-gpt` mostra la differenza che conta fra i primi due: [lo
+stesso tipo di blocco, con due maschere diverse]{.pt-matita}. BERT usa la
+self-attention bidirezionale, quindi la rappresentazione di ogni parola dipende
+anche da ciò che viene dopo: è un requisito per classificare una frase,
+estrarne una risposta o confrontarla con un'altra. GPT usa invece la maschera
+causale e deve indovinare come si continua, l'esercizio che insegna a scrivere.
 
 `````{tab} Elementare
 Tre studenti si preparano allo stesso esame in tre modi diversi. GPT studia
@@ -189,9 +188,9 @@ Il passaggio di {numref}`fig-vit` ha un costo. Le reti convoluzionali del
 che guardano un pezzetto di immagine alla volta, portano scritte
 nell'architettura due ipotesi sulle immagini: che i pixel vicini siano legati
 fra loro, e che lo stesso motivo conti dovunque compaia. È il loro *bias
-induttivo*. Con le tessere messe in fila e l'attenzione su tutte, due tessere
+induttivo*. Con le tessere messe in fila e l'attenzione su tutte, [due tessere
 adiacenti e due lontanissime partono alla pari, per cui la struttura dello
-spazio va imparata dai dati.
+spazio va imparata dai dati]{.pt-matita}.
 
 `````{tab} Elementare
 Per le immagini si taglia la foto in
@@ -299,7 +298,7 @@ Gli anelli della catena, in gergo, si chiamano **residui** (termine senza alcun
 legame con la connessione residua delle reti). Due residui lontanissimi lungo
 la catena possono ritrovarsi a contatto una volta avvenuto il ripiegamento: sono
 relazioni fra elementi lontani che i filtri delle reti per immagini faticano a
-cogliere, mentre per l'attenzione ogni coppia dista un passo.
+cogliere, mentre [per l'attenzione ogni coppia dista un passo]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -415,10 +414,10 @@ i modelli precedenti <confronti>`:
   quella regola come impara la grammatica: un bias dei dati diventa un bias del
   modello.
 - Affidabilità: un modello autoregressivo assegna una probabilità a ogni
-  continuazione per poi generarne una, e il suo obiettivo premia la
-  plausibilità del testo, non la verità. Le "allucinazioni" (risposte fluenti e
-  sbagliate) sono quindi una conseguenza dell'obiettivo, come già nella
-  {doc}`matematica di un modello linguistico
+  continuazione per poi generarne una, e [il suo obiettivo premia la
+  plausibilità del testo, non la verità]{.pt-matita}. Le "allucinazioni"
+  (risposte fluenti e sbagliate) sono quindi una conseguenza dell'obiettivo,
+  come già nella {doc}`matematica di un modello linguistico
   </Matematica/matematica-llm>`. Per i fatti arbitrari, quelli che nei dati
   compaiono una volta sola, un modello pre-addestrato e ben calibrato sbaglia
   con una frequenza che, a meno di termini piccoli, non scende sotto la quota

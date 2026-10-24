@@ -60,10 +60,11 @@ Una cifra con la sola etichetta insegna un fatto, che quel disegno è un sette.
 Col commento del maestro, invece, ne insegna dieci, cioè quanto somiglia a
 ciascuna delle dieci cifre.
 
-Il guadagno grosso però è meno elegante, e sta nella pila dei fogli che in
-fondo all’aula nessuno ha mai etichettato. Il maestro li commenta uno per uno,
-e allo studente quei commenti valgono quanto gli altri. Etichettare costa, i
-fogli no, e per questo la distillazione si usa più di quanto la si spieghi.
+[Il guadagno grosso però è meno elegante, e sta nella pila dei fogli che in
+fondo all’aula nessuno ha mai etichettato]{.pt-matita}. Il maestro li commenta
+uno per uno, e allo studente quei commenti valgono quanto gli altri.
+Etichettare costa, i fogli no, e per questo la distillazione si usa più di
+quanto la si spieghi.
 
 Il maestro però può commentare bene soltanto quello che ha
 imparato: uno che ha visto le stesse poche etichette dello studente non ha
@@ -144,10 +145,10 @@ regolarizzatore, riducendo la varianza dello studente.
 
 Il secondo argomento sta nella stessa pagina del lavoro originale, che lo
 prende da Buciluă, Caruana e Niculescu-Mizil {cite}`bucilua2006model`, e si
-cita molto meno: i bersagli morbidi si possono calcolare su dati non
-etichettati, e questo sposta il problema da «quanti esempi ho» a «quanti
-esempi il maestro può commentare». L’esperimento sulle cifre li separa e
-misura tutti e due, e mostra anche quanto dipendano da quello che il maestro
+cita molto meno: [i bersagli morbidi si possono calcolare su dati non
+etichettati]{.pt-matita}, e questo sposta il problema da «quanti esempi ho» a
+«quanti esempi il maestro può commentare». L’esperimento sulle cifre li separa
+e misura tutti e due, e mostra anche quanto dipendano da quello che il maestro
 ha visto.
 
 Il principio ha varianti che la stessa formula non scrive: far imitare allo
@@ -300,8 +301,8 @@ altri 3,2.
 
 Quindi la spiegazione elegante («il maestro dice dieci cose per esempio invece
 di una») è vera, ma vale meno della metà del risultato. L’altra metà è più
-prosaica: il maestro trasforma esempi di cui lo studente non ha l’etichetta in
-esempi utilizzabili.
+prosaica: [il maestro trasforma esempi di cui lo studente non ha l’etichetta in
+esempi utilizzabili]{.pt-matita}.
 
 Tutti e due i guadagni, però, dipendono da quanto il maestro ne sa più dello
 studente, e lo si vede cambiando maestro: uno addestrato sulle stesse

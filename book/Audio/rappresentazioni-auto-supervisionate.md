@@ -61,7 +61,7 @@ lavoro non lo ha fatto mai nessuno e non lo farà. Le etichette, cioè le
 risposte giuste scritte da un umano accanto a ogni esempio, sono quindi il
 fattore che limita tutto il resto.
 
-La via d'uscita è spezzare l'apprendimento in due tempi. Prima il
+[La via d'uscita è spezzare l'apprendimento in due tempi]{.pt-matita}. Prima il
 *pre-addestramento*, una lunga fase su una massa enorme di audio senza
 risposte, con un obiettivo costruito dai dati stessi; poi il *fine-tuning*,
 una breve rifinitura sul compito vero con le poche etichette che si hanno. È la
@@ -187,8 +187,8 @@ richiedeva centinaia di ore.
 Quel numero però viene raccontato a metà. Il modello che ha imparato ad
 ascoltare non ci arriva senza aiuto: accanto a lui lavora un secondo modello, che
 non ascolta niente, sa soltanto com'è fatta la lingua e scarta le parole
-improbabili. Il risultato è della coppia. Ascoltare montagne di audio risolve
-il problema di quante trascrizioni servono; non insegna l'italiano.
+improbabili. Il risultato è della coppia. [Ascoltare montagne di audio risolve
+il problema di quante trascrizioni servono; non insegna l'italiano]{.pt-matita}.
 
 `````
 
@@ -318,8 +318,8 @@ a $6{,}6/10{,}3$, e solo con quello Transformer si arriva a $4{,}8/8{,}2$. Fra i
 primo e l'ultimo l'errore si divide per otto sul test pulito e per quasi cinque
 su quello difficile.
 
-In definitiva, il pre-addestramento risolve il problema
-delle etichette acustiche, non sostituisce il modello di lingua: è una
+In definitiva, [il pre-addestramento risolve il problema
+delle etichette acustiche, non sostituisce il modello di lingua]{.pt-matita}: è una
 distinzione che il capitolo sullo Speech Recognition riprende quando
 elenca i pezzi di una pipeline di riconoscimento.
 
@@ -461,10 +461,10 @@ affina a ogni giro, come uno schizzo ripassato più volte a matita finché il di
 emerge.
 
 Non serve che l'alfabeto sia giusto: serve che sia **coerente**, cioè che dia
-lo stesso simbolo a suoni simili. Se la stessa «sss» finisse ora sotto
-un simbolo ora sotto un altro, a caso, ti alleneresti a indovinare
-l'imprevedibile e non ne verrebbe fuori niente. Quando invece i gruppi tengono,
-azzeccare il simbolo coperto costringe a capire come è fatto il suono, anche se
+lo stesso simbolo a suoni simili. Se la stessa «sss» finisse ora sotto un
+simbolo ora sotto un altro, a caso, ti alleneresti a indovinare l'imprevedibile
+e non ne verrebbe fuori niente. Quando invece i gruppi tengono, [azzeccare il
+simbolo coperto costringe a capire come è fatto il suono]{.pt-matita}, anche se
 quei nomi te li sei inventati tu.
 
 `````
@@ -516,11 +516,12 @@ classificazione, senza distrattori né contrastivo; il coseno e la temperatura,
 però, ci sono anche qui, perché $p_\theta$ confronta l'uscita del modello con
 vettori appresi, uno per unità.
 
-Il metodo funziona pur partendo da etichette rozze, perché conta la
-*coerenza* del clustering e non la sua correttezza: se il k-means assegna lo
-stesso simbolo a frame acusticamente simili, predire quel simbolo forza il
-modello a modellare la struttura del segnale. L'iterazione chiude il cerchio:
-rappresentazioni migliori $\to$ cluster migliori $\to$ bersagli migliori.
+Il metodo funziona pur partendo da etichette rozze, perché conta la *coerenza*
+del clustering e non la sua correttezza: se il k-means assegna lo stesso
+simbolo a frame acusticamente simili, [predire quel simbolo forza il modello a
+modellare la struttura del segnale]{.pt-matita}. L'iterazione chiude il
+cerchio: rappresentazioni migliori $\to$ cluster migliori $\to$ bersagli
+migliori.
 
 A parità di condizioni HuBERT sta appaiato a wav2vec 2.0 nei regimi a basse
 risorse su Librispeech: a dieci minuti di etichette fa $4{,}7/7{,}6$ contro
@@ -608,8 +609,8 @@ trovano informazione sulle parole negli strati intermedi
 etichette, o affidato a un modello di lingua; il pre-addestramento garantisce
 l'orecchio. L'ironia di una frase, che dipende dal contesto e da come la si
 dice, non è detto che stia in una rappresentazione addestrata a indovinare
-suoni. Il pre-addestramento audio risolve il problema delle etichette, non
-quello della comprensione.
+suoni. [Il pre-addestramento audio risolve il problema delle etichette, non
+quello della comprensione]{.pt-matita}.
 
 `````{tab} Elementare
 

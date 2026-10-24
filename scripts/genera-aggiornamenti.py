@@ -61,16 +61,22 @@ PAGINA = LIBRO / "aggiornamenti.md"
 MESI = ("gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio",
         "agosto", "settembre", "ottobre", "novembre", "dicembre")
 
-# I quattro tipi di voce, nell'ordine in cui compaiono dentro una versione, e
-# l'intestazione con cui si presentano. L'ordine non e' casuale: chi torna sul
-# libro cerca prima quello che non aveva letto, poi quello che aveva letto
-# sbagliato.
-TIPI = {
-    "nuovo": "Sezioni nuove",
-    "ampliato": "Pagine ampliate",
-    "corretto": "Correzioni",
-    "impianto": "Impianto",
-}
+# I quattro tipi di voce, nell'ordine in cui compaiono dentro una versione.
+# L'ordine non e' casuale: chi torna sul libro cerca prima quello che non aveva
+# letto, poi quello che aveva letto sbagliato. In pagina il tipo non ha un
+# titolo: sotto la versione c'e' il suo livello, che dice quale cifra e' salita.
+TIPI = ("nuovo", "ampliato", "corretto", "impianto")
+
+
+def livello(numero: str, precedente: str | None) -> str:
+    """Major, Minor o Patch: la cifra piu' a sinistra che e' cambiata rispetto
+    alla versione precedente. La prima versione del registro e' Major."""
+    if precedente is None:
+        return "Major"
+    a, b = numero.split("."), precedente.split(".")
+    if a[0] != b[0]:
+        return "Major"
+    return "Minor" if a[1] != b[1] else "Patch"
 
 TESTA = """\
 <!-- GENERATO da scripts/genera-aggiornamenti.py: non modificare a mano.
@@ -96,16 +102,19 @@ commit che le pubblica cita chi le ha segnalate.
 
 ## Il numero di versione
 
-Il numero di versione ha tre cifre, `impianto.sezioni.correzioni`:
+Il numero di versione ha tre cifre, `major.minor.patch`, come nel
+versionamento semantico del software:
 
-- la **prima** cambia con l'impianto del libro: una nuova parte nell'indice,
-  un riordino del percorso di lettura, la licenza;
-- la **seconda** con l'aggiunta di un capitolo o di una sezione;
-- la **terza** con le correzioni e le revisioni del testo esistente.
+- **major**, la prima, cambia con l'impianto del libro: una nuova parte
+  nell'indice, un riordino del percorso di lettura, la licenza;
+- **minor**, la seconda, con l'aggiunta di un capitolo o di una sezione;
+- **patch**, la terza, con le correzioni e le revisioni del testo esistente,
+  e con le migliorie al sito e al PDF.
 
 Quando una cifra aumenta, quelle alla sua destra tornano a zero. Una versione
 che contiene sia sezioni nuove sia correzioni prende il numero della modifica
-maggiore, e ogni versione corrisponde a una pubblicazione.
+maggiore, e ogni versione corrisponde a una pubblicazione: sotto ciascuna, il
+livello dice quale cifra è salita.
 """
 
 CODA = """\
@@ -237,7 +246,8 @@ def riga(voce: dict, mappa: dict[str, tuple[str, str]]) -> str:
     return f"- {marca}. {testo}"
 
 
-def blocco(versione: dict, mappa: dict[str, tuple[str, str]]) -> str:
+def blocco(versione: dict, mappa: dict[str, tuple[str, str]],
+           precedente: str | None) -> str:
     numero = str(versione["versione"])
     righe = [f"({ancora(numero)})=",
              "",
@@ -253,12 +263,10 @@ def blocco(versione: dict, mappa: dict[str, tuple[str, str]]) -> str:
     if ignoti:
         raise SystemExit(f"versione {numero}: tipo sconosciuto {sorted(ignoti)}; "
                          f"i tipi sono {', '.join(TIPI)}.")
-    for tipo, intestazione in TIPI.items():
-        gruppo = [v for v in voci if v.get("tipo") == tipo]
-        if not gruppo:
-            continue
-        righe += [f"### {intestazione}", ""]
-        righe += [riga(v, mappa) for v in gruppo]
+    if voci:
+        righe += [f"### {livello(numero, precedente)}", ""]
+        for tipo in TIPI:
+            righe += [riga(v, mappa) for v in voci if v.get("tipo") == tipo]
         righe += [""]
     return "\n".join(righe)
 
@@ -273,7 +281,11 @@ def genera() -> str:
         raise SystemExit("pagine che il _toc.yml non conosce: "
                          + ", ".join(sorted(set(manca))))
 
-    pezzi = [TESTA] + [blocco(v, mappa) for v in versioni] + [CODA]
+    # il registro va dalla piu' recente alla piu' antica: la precedente di
+    # ogni versione e' quella che la segue nell'elenco
+    numeri = [str(v["versione"]) for v in versioni] + [None]
+    pezzi = ([TESTA] + [blocco(v, mappa, numeri[i + 1])
+                        for i, v in enumerate(versioni)] + [CODA])
     return "\n".join(pezzi).rstrip() + "\n"
 
 

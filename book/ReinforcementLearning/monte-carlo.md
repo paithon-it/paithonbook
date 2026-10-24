@@ -63,9 +63,9 @@ due. Con cento partite, ad esempio, il numero balla ancora parecchio, e per
 farlo ballare la metà ce ne vogliono quattrocento, non duecento.
 
 Nessuna riga del quaderno si appoggia a un'altra stima: ognuna è la somma dei
-punti che quella partita ha portato a casa. Non servono né la mappa né formule
-sull'ambiente, ma solo partite giocate e una media. Il limite è dichiarato
-subito: bisogna arrivare alla fine della partita prima di poter
+punti che quella partita ha portato a casa. [Non servono né la mappa né formule
+sull'ambiente, ma solo partite giocate e una media]{.pt-matita}. Il limite è
+dichiarato subito: bisogna arrivare alla fine della partita prima di poter
 scrivere qualsiasi cosa.
 
 `````
@@ -90,10 +90,10 @@ episodio per ogni visita contata. È il cosiddetto *constant-α MC*,
 che ha la stessa forma dell'aggiornamento TD con il ritorno intero $G_t$ come
 bersaglio.
 
-La versione a prima visita ha una giustificazione immediata. I ritorni
-raccolti sono infatti variabili aleatorie indipendenti e identicamente
-distribuite con media $V^\pi(s)$ e varianza finita, quindi per la legge dei
-grandi numeri la media converge al valore vero, e l'errore standard cala come
+La versione a prima visita ha una giustificazione immediata. I ritorni raccolti
+sono infatti variabili aleatorie indipendenti e identicamente distribuite con
+media $V^\pi(s)$ e varianza finita, quindi [per la legge dei grandi numeri la
+media converge al valore vero]{.pt-matita}, e l'errore standard cala come
 $1/\sqrt{n}$ con $n$ ritorni mediati. Ogni stima è non distorta.
 
 La variante a ogni visita è invece distorta per $n$ finito, e la spiegazione
@@ -140,12 +140,13 @@ l'iterazione dei valori e quella delle policy (*value iteration* e *policy
 iteration*), e non c'entra niente con lo scrivere programmi per il computer,
 perché per Bellman «programmazione» voleva dire pianificazione.
 
-La differenza fra la programmazione dinamica e Monte Carlo riguarda
-l'informazione necessaria più che l'efficienza. La programmazione dinamica
-guarda un passo in avanti ma in tutte le direzioni: per calcolare il valore di
-una casella tiene conto di tutte le caselle in cui quella mossa potrebbe far
-finire, dando a ciascuna un peso pari alla sua probabilità. Poiché quei pesi le
-servono, deve conoscere le probabilità; in cambio non le deve stimare.
+[La differenza fra la programmazione dinamica e Monte Carlo riguarda
+l'informazione necessaria più che l'efficienza]{.pt-matita}. La programmazione
+dinamica guarda un passo in avanti ma in tutte le direzioni: per calcolare il
+valore di una casella tiene conto di tutte le caselle in cui quella mossa
+potrebbe far finire, dando a ciascuna un peso pari alla sua probabilità. Poiché
+quei pesi le servono, deve conoscere le probabilità; in cambio non le deve
+stimare.
 
 Monte Carlo guarda in una direzione sola ma fino in fondo: segue la partita
 realmente giocata, dall'inizio alla fine dell'episodio, e ignora le strade non
@@ -281,8 +282,8 @@ numero solo, le partite non si influenzano fra loro, e la media di numeri
 indipendenti presi tutti dalla stessa distribuzione si avvicina al valore vero
 quante più partite si giocano. Quello a ogni visita conta anche i ripassaggi,
 quindi butta via meno dati, e non obbliga a tenere il conto di dove si è già
-passati. Con tante partite la scelta non cambia il risultato,
-perché tutti e due finiscono sul valore vero.
+passati. [Con tante partite la scelta non cambia il risultato,
+perché tutti e due finiscono sul valore vero]{.pt-matita}.
 
 Tutti e quattro i numeri, però, restano sotto quelli che la sezione sugli MDP
 aveva calcolato sullo stesso mondo, che erano $9$ per $s_0$ e $10$ per $s_1$.
@@ -351,8 +352,9 @@ momento sembra la migliore.
 Senza la mappa, però, cambiano due cose. In primo luogo, i valori delle caselle
 non bastano più a scegliere, perché per confrontare le mosse bisognerebbe
 sapere dove porta ciascuna, ma la mappa manca. Si stimano allora direttamente i
-valori delle mosse, la $Q^\pi(s,a)$ della sezione sugli MDP. In secondo
-luogo, il valore di una mossa si stima soltanto se quella mossa viene giocata.
+valori delle mosse, la $Q^\pi(s,a)$ della sezione sugli MDP. In secondo luogo,
+[il valore di una mossa si stima soltanto se quella mossa viene
+giocata]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -458,9 +460,9 @@ peso li inventa.
 
 Sul foglio non ci sono solo le decisioni dei giocatori: il dado che rotola, la
 carta che esce, l'avversario che sbaglia sono capitati una volta sola, identici
-per tutti e due, e nella frazione stanno sopra e sotto e si cancellano. Nel peso
+per tutti e due, e nella frazione stanno sopra e sotto e si cancellano. [Nel peso
 resta la sola parte scelta, e per questo non serve sapere niente di come
-funziona il gioco.
+funziona il gioco]{.pt-matita}.
 
 Prendi un foglio di tre mosse. Il socio sceglieva fra due mosse tirando la
 monetina, il giocatore deciso sa sempre quale vuole, e la monetina ha
@@ -516,8 +518,8 @@ $$
 $$
 
 Le probabilità di transizione si cancellano, identiche a numeratore e
-denominatore. Il correttore, quindi, non dipende dall'MDP, che non
-conosciamo, ma solo dalle due policy e dalle azioni osservate. È questo il
+denominatore. Il correttore, quindi, [non dipende dall'MDP, che non conosciamo,
+ma solo dalle due policy e dalle azioni osservate]{.pt-matita}. È questo il
 motivo per cui l'off-policy è possibile senza modello.
 
 Il peso fa un cambio di misura. Dette $P_b(\tau)$ e $P_\pi(\tau)$ le
@@ -646,10 +648,10 @@ bersaglio costruito su di esse è più basso del vero, e ogni correzione tira in
 basso più di quanto dovrebbe. Un errore con un verso non si cancella facendo la
 media di tante correzioni, e prende il nome di **distorsione**.
 
-In definitiva, è questo il costo di non aspettare la fine: numeri molto più
-stabili, ma appoggiati a un bersaglio che potrebbe non essere quello giusto.
-Nasce così l'apprendimento per **differenze temporali**, in inglese
-*temporal-difference*, che tutti abbreviano in TD.
+In definitiva, [è questo il costo di non aspettare la fine: numeri molto più
+stabili, ma appoggiati a un bersaglio che potrebbe non essere quello
+giusto]{.pt-matita}. Nasce così l'apprendimento per **differenze temporali**,
+in inglese *temporal-difference*, che tutti abbreviano in TD.
 
 Le tre famiglie si confrontano allora su tre domande:
 

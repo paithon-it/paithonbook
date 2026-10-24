@@ -63,8 +63,8 @@ Nell'apprendimento supervisionato (riconoscere gatti, filtrare lo spam) gli
 esempi erano palline pescate da un'urna, come nella {doc}`sezione sui dati che
 cambiano </MachineLearning/dati-che-cambiano>`: potevi rimescolarle a piacere
 senza perdere nulla, l'ordine non contava. Con una serie temporale non puoi. La
-temperatura di oggi somiglia a quella di ieri, quindi se mescoli le date
-distruggi l'informazione che ti serve. L'ordine *è* il dato.
+temperatura di oggi somiglia a quella di ieri, quindi [se mescoli le date
+distruggi l'informazione che ti serve]{.pt-matita}. L'ordine *è* il dato.
 
 C'è una seconda differenza. Le palline uscivano tutte dalla stessa urna,
 oggi come l'anno scorso; il negozio del diario invece cambia mentre lo guardi:
@@ -88,8 +88,8 @@ sull'ipotesi che gli esempi $(\mathbf{x}^{(i)}, y^{(i)})$ siano campionati in mo
 indipendente da un'unica distribuzione; è ciò che rende lecito mescolarli e
 separare a caso *train* e *test*. Qui l'ipotesi cade due volte: le osservazioni
 sono dipendenti ($X_t$ è correlata con $X_{t-1}, X_{t-2}, \dots$) e la loro
-distribuzione può cambiare nel tempo. Ogni tecnica del capitolo nasce per
-convivere con questa doppia rottura.
+distribuzione può cambiare nel tempo. [Ogni tecnica del capitolo nasce per
+convivere con questa doppia rottura]{.pt-matita}.
 
 `````
 
@@ -137,9 +137,9 @@ un metodo per ogni giorno della settimana, e non si porta dietro i propri
 errori.
 
 Nemmeno il metodo fatto apposta, però, indovina domenica come indovina lunedì:
-fra oggi e domenica devono succedere sei giorni che nessuno ha visto, e ognuno
-aggiunge la sua incertezza. Le previsioni del tempo a un giorno ci azzeccano
-quasi sempre, quelle a dieci molto meno.
+[fra oggi e domenica devono succedere sei giorni che nessuno ha visto, e ognuno
+aggiunge la sua incertezza]{.pt-matita}. Le previsioni del tempo a un giorno ci
+azzeccano quasi sempre, quelle a dieci molto meno.
 
 Non sempre l'incertezza cresce all'infinito. La temperatura di una città torna
 verso un suo valore di riposo: marzo non se ne andrà mai a cento gradi. Se a
@@ -197,8 +197,8 @@ veri è una questione empirica {cite}`marcellino2006comparison`.
 
 Questa distorsione va tenuta separata dalla ragione per cui l'incertezza cresce
 con l'orizzonte, che è un'altra e vale per tutte le strategie, diretta
-compresa: fra $T$ e $T+h$ cadono $h$ innovazioni ancora da osservare, e i loro
-contributi si sommano. Un processo lineare causale si scrive
+compresa: [fra $T$ e $T+h$ cadono $h$ innovazioni ancora da osservare, e i loro
+contributi si sommano]{.pt-matita}. Un processo lineare causale si scrive
 $x_t = \mu + \sum_{j\ge0}\psi_j\,\varepsilon_{t-j}$, con $\psi_0 = 1$ ed
 $\varepsilon_t$ rumore bianco di varianza $\sigma^2$ (è la sua
 rappresentazione a media mobile infinita, $\mathrm{MA}(\infty)$). A parametri
@@ -336,8 +336,8 @@ programmi di statistica disegnano quella fascia attorno allo zero nel grafico
 dei coefficienti. Il nostro $0{,}14$ cade sul bordo della fascia: è il genere
 di somiglianza che il caso da solo produce, ogni tanto, rimescolando duecento
 numeri. Di quel $0{,}94$, invece, non è rimasto niente. In altri termini, gli
-stessi identici valori, in un altro ordine, non prevedono più niente: la
-prevedibilità della serie stava nel loro ordine.
+[stessi identici valori, in un altro ordine, non prevedono più
+niente]{.pt-matita}: la prevedibilità della serie stava nel loro ordine.
 
 Tre ritardi sono tre assaggi, e il metro del caso vale per tutti: la
 {numref}`fig-copia-che-scivola` li mostra dal primo al ventiquattresimo, con la
@@ -506,11 +506,11 @@ serie insieme prevede il resto {cite}`smyl2020hybrid`. Fra i primi, a fare
 meglio dei metodi singoli, c'erano poi le combinazioni, cioè la media delle
 previsioni di più metodi messi insieme {cite}`makridakis2020m4`.
 
-Questa lezione attraversa tutte e tre le sezioni, e dice che la previsione
-seria è un numero *con la sua incertezza*. Un modello che dice «domani 24
-gradi» vale meno di uno che dice «domani fra 22 e 26 gradi, e sono sicuro
-all’80%», dove quell’80% significa che otto volte su dieci il valore vero cade
-dentro la forbice. Il secondo sa quanto poco sa.
+Questa lezione attraversa tutte e tre le sezioni, e dice che [la previsione
+seria è un numero *con la sua incertezza*]{.pt-matita}. Un modello che dice
+«domani 24 gradi» vale meno di uno che dice «domani fra 22 e 26 gradi, e sono
+sicuro all’80%», dove quell’80% significa che otto volte su dieci il valore
+vero cade dentro la forbice. Il secondo sa quanto poco sa.
 
 Su questo, però, le bande dei metodi del capitolo, come la maggior parte delle
 bande di previsione, tendono a uscire più strette del dovuto

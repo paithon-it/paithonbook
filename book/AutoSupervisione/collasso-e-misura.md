@@ -3,9 +3,9 @@
 Un modello addestrato in modo supervisionato si controlla in un attimo: gli si
 danno degli esempi che non ha mai visto, si guarda quante volte azzecca, e quel
 numero è la risposta. Un modello auto-supervisionato no. Di ogni dato produce
-soltanto una rappresentazione, e il suo punteggio (quanto bene ha risolto il
-pretesto) non dice se la rappresentazione sia utile, perché il pretesto lo
-abbiamo inventato noi e a nessuno interessa.
+soltanto una rappresentazione, e [il suo punteggio (quanto bene ha risolto il
+pretesto) non dice se la rappresentazione sia utile]{.pt-matita}, perché il
+pretesto lo abbiamo inventato noi e a nessuno interessa.
 
 Restano quindi due domande aperte. La prima: che cosa può andare storto senza
 che il punteggio se ne accorga. La seconda: con che cosa si sostituisce il
@@ -19,8 +19,8 @@ la risposta vuota, cioè la stessa rappresentazione per ogni dato. È il
 accorgerebbe chiunque guardasse due rappresentazioni. Ne esiste però una
 versione meno visibile, il **collasso dimensionale**, già intravista con la
 regola della varietà. In questo caso le rappresentazioni cambiano da un dato
-all'altro, ma occupano soltanto poche delle direzioni disponibili, e il
-punteggio del pretesto non se ne accorge.
+all'altro, ma [occupano soltanto poche delle direzioni disponibili, e il
+punteggio del pretesto non se ne accorge]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -300,8 +300,8 @@ di calcolo specializzati, e garantisce tredici bit contro i dieci di
 un'etichetta su mille classi, il caso del programma nell’{doc}`apertura del
 capitolo </AutoSupervisione/overview>`. Sono grandezze diverse, l'informazione
 fra due viste e quella di un bersaglio, ma dello stesso ordine; e che quei
-modelli imparino molto di più è fuori discussione. Quel limite non spiega,
-dunque, che cosa imparano.
+modelli imparino molto di più è fuori discussione. [Quel limite non spiega,
+dunque, che cosa imparano]{.pt-matita}.
 
 ## Con che cosa si sostituisce il punteggio
 
@@ -389,11 +389,11 @@ dataset misura la sonda quanto i metodi.
 `````
 
 Alle due domande, che cosa può andare storto e con che cosa si sostituisce il
-punteggio, la risposta è la stessa, e scomoda: non esiste un punteggio unico.
-Il collasso si vede dalla forma che prendono, tutte insieme, le
-rappresentazioni di un batch, non dal punteggio del pretesto; la qualità di una
-rappresentazione si vede solo usandola per un compito diverso da quello
-dell'addestramento. Misure riassuntive come il rango effettivo aiutano a
+punteggio, la risposta è la stessa, e scomoda: [non esiste un punteggio
+unico]{.pt-matita}. Il collasso si vede dalla forma che prendono, tutte
+insieme, le rappresentazioni di un batch, non dal punteggio del pretesto; la
+qualità di una rappresentazione si vede solo usandola per un compito diverso da
+quello dell'addestramento. Misure riassuntive come il rango effettivo aiutano a
 confrontare esecuzioni dello stesso metodo, ma nessuna sostituisce la prova su
 compiti a valle: il pretesto esiste perché il compito vero, quando si addestra,
 non lo si ha.

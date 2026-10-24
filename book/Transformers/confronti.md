@@ -31,7 +31,7 @@ lontana, e la correzione che durante l'addestramento torna verso di lei,
 attraversano quindi una catena di passaggi simili, uno per parola, e a ogni
 passaggio si moltiplicano per un fattore simile.
 
-Ripetere una moltiplicazione svuota presto un numero. Ad
+[Ripetere una moltiplicazione svuota presto un numero]{.pt-matita}. Ad
 esempio, con un fattore di $0{,}9$ per passo, dopo cento parole ne resta
 $0{,}9^{100} \approx 0{,}000027$, meno di un trentamillesimo (la
 {doc}`sezione sui modelli di sequenza
@@ -124,14 +124,13 @@ che lo definisce, far guardare ogni parola a tutte le altre.
 
 `````{tab} Elementare
 Il conto è lo stesso dei cento sguardi, con delle persone al posto delle
-parole. Quattro persone in una stanza, e ognuno deve parlare con
-ognuno: io con te, io con lui, io con lei, tu con lui, tu con lei, lui con lei.
-Sei coppie, contate
-con le dita. Senza dita: $4 \times 3 = 12$, ognuno con tutti tranne sé, e
-$12 : 2 = 6$ perché ogni coppia è stata contata due volte. In otto,
-$8 \times 7 : 2 = 28$; in mille, $1000 \times 999 : 2 = 499\,500$, quasi mezzo
-milione. Raddoppiando i presenti le chiacchiere quadruplicano, o quasi. Questa è
-la crescita al quadrato.
+parole. Quattro persone in una stanza, e ognuno deve parlare con ognuno: io con
+te, io con lui, io con lei, tu con lui, tu con lei, lui con lei. Sei coppie,
+contate con le dita. Senza dita: $4 \times 3 = 12$, ognuno con tutti tranne sé,
+e $12 : 2 = 6$ perché ogni coppia è stata contata due volte. In otto, $8 \times
+7 : 2 = 28$; in mille, $1000 \times 999 : 2 = 499\,500$, quasi mezzo milione.
+[Raddoppiando i presenti le chiacchiere quadruplicano, o quasi]{.pt-matita}.
+Questa è la crescita al quadrato.
 
 Per un Transformer i presenti sono le parole, con due usanze: si parla anche da
 soli, e ascoltare non conta come farsi ascoltare (che "salta" guardi "gatto" è
@@ -197,7 +196,7 @@ sull’{doc}`attenzione lineare </AttenzioneLineare/overview>`.
 `````
 
 `````{tab} Superiore
-La matrice di attenzione ha $n \times n$ elementi. Contando la sola
+[La matrice di attenzione ha $n \times n$ elementi]{.pt-matita}. Contando la sola
 operazione di attenzione (proiezioni escluse), il costo in tempo è
 $O(n^2 \cdot d)$ nella lunghezza $n$ della sequenza, con $d = d_{\text{model}}$,
 contro l’$O(n \cdot d^2)$ di uno strato ricorrente; la memoria per i punteggi è
@@ -309,12 +308,12 @@ materializzare la matrice di attenzione.
 Il Transformer rende al meglio quando ci sono molti dati di addestramento,
 hardware che esegue molti calcoli in parallelo invece che in sequenza (come GPU
 e TPU) e legami fra parole molto distanti da catturare: sono le condizioni in
-cui si addestrano i grandi modelli linguistici. Le architetture ricorrenti
+cui si addestrano i grandi modelli linguistici. [Le architetture ricorrenti
 restano ragionevoli dove la memoria e il calcolo per ogni parola devono restare
-costanti, con uno stato di dimensione fissa invece di una memoria che cresce
-con il testo: su un dispositivo piccolo, o davanti a un flusso che non finisce
-mai, come i sottotitoli in diretta o un traduttore che lavora mentre l'altro
-parla.
+costanti]{.pt-matita}, con uno stato di dimensione fissa invece di una memoria
+che cresce con il testo: su un dispositivo piccolo, o davanti a un flusso che
+non finisce mai, come i sottotitoli in diretta o un traduttore che lavora
+mentre l'altro parla.
 
 Come idea, però, non sono tramontate: due linee di ricerca recenti
 riportano in gioco un riassunto che si aggiorna passo per passo, come facevano

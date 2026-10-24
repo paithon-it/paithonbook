@@ -14,10 +14,10 @@ accedere nel contesto mentre lavora, di fatto, non esiste
 {cite}`lopopolo2026harness`. Le decisioni prese in un documento condiviso, in
 una chat, nella testa di qualcuno, per lui non ci sono, esattamente come non ci
 sarebbero per una persona entrata in squadra tre mesi dopo; ci sono il codice e
-i file di testo del repository, con la loro storia. Il repository diventa
-allora la fonte di verità del progetto, e tutto ciò che serve a lavorarci (che
-cosa si sta costruendo, come è organizzato, come si avvia, come si controlla, a
-che punto si è) ci va scritto dentro.
+i file di testo del repository, con la loro storia. [Il repository diventa
+allora la fonte di verità del progetto]{.pt-matita}, e tutto ciò che serve a
+lavorarci (che cosa si sta costruendo, come è organizzato, come si avvia, come
+si controlla, a che punto si è) ci va scritto dentro.
 
 ## Ciò che l'agente non vede non esiste
 
@@ -49,8 +49,8 @@ taglia bene, e la sera se ne va. Il mercoledì al banco siede l'artigiano del
 mercoledì, con le mani di quello di martedì e non la sua memoria: quella frase
 non l'ha mai sentita, e per lui non esiste. Esiste soltanto ciò che trova
 scritto in bottega, sul cartello, sul registro, nelle schede dei cassetti, più
-quello che ogni falegname sa da sé. La frase detta a voce è morta con la
-giornata di martedì.
+quello che ogni falegname sa da sé. [La frase detta a voce è morta con la
+giornata di martedì]{.pt-matita}.
 
 Il nuovo arrivato, entrando, cerca cinque cose. Che cosa si fabbrica qui. Dove
 sta che cosa. Come si accendono le macchine. Come si controlla un pezzo. Fin
@@ -86,8 +86,8 @@ catalogo degli strumenti, stato persistente, compito, e le azioni e le
 osservazioni della sessione stessa; i documenti di `docs/` vi entrano come
 osservazioni, quando l'agente li apre. Si divida la conoscenza del progetto
 $\mathcal{K}$ in $\mathcal{K}_{\text{repo}}$, ciò che il ciclo può portare in
-$C_{k,t}$, e $\mathcal{K}_{\text{fuori}}$. La politica $\pi_{\theta,H}$ non
-dipende da $\mathcal{K}_{\text{fuori}}$: una decisione $d \in
+$C_{k,t}$, e $\mathcal{K}_{\text{fuori}}$. [La politica $\pi_{\theta,H}$ non
+dipende da $\mathcal{K}_{\text{fuori}}$]{.pt-matita}: una decisione $d \in
 \mathcal{K}_{\text{fuori}}$ non viene ignorata, viene **ricampionata**. Ogni
 sessione ne costruisce una versione $\hat{d}_k$ da ciò che vede e da ciò che il
 modello sa già, perché anche i pesi $\theta$ sono un canale.
@@ -101,20 +101,20 @@ $$
 
 con $0{,}9^{10} \approx 0{,}35$: è l'aritmetica della moltiplicazione degli
 errori che il {doc}`loop engineering </IngegneriaLLM/loop-engineering>` applica
-ai passi di un giro, spostata dai passi alle sessioni. Due ipotesi del calcolo
-vanno discusse. L’*indipendenza*: una sessione che legge il codice scritto dalle
-precedenti tende a imitarne le scelte. Con sessioni scambiabili e positivamente
-correlate, scrivendo $Q$ per la probabilità di fedeltà comune a tutte le
-sessioni (aleatoria, di media $q$), la probabilità di restare fedeli è
+ai passi di un'iterazione, spostata dai passi alle sessioni. Due ipotesi del
+calcolo vanno discusse. L’*indipendenza*: una sessione che legge il codice
+scritto dalle precedenti tende a imitarne le scelte. Con sessioni scambiabili e
+positivamente correlate, scrivendo $Q$ per la probabilità di fedeltà comune a
+tutte le sessioni (aleatoria, di media $q$), la probabilità di restare fedeli è
 $\mathbb{E}[Q^K] \ge (\mathbb{E}[Q])^K = q^K$ per la disuguaglianza di Jensen,
 quindi $q^K$ è un limite inferiore; ma la stessa correlazione alza la
 probabilità che tutte sbaglino allo stesso modo, una volta che una scelta
 sbagliata è entrata nel codice. L'imitazione non migliora $q$, concentra
 l'errore. Il *$q$ costante*: in realtà $q$ dipende da $d$. Per le scelte
 convenzionali, che il modello ricava dal pre-addestramento e dal codice, è
-vicino a uno; per quelle idiosincratiche, le pratiche non standard del progetto,
-può essere vicino a zero, e per loro $q^K$ crolla. Sono le decisioni da
-scrivere.
+vicino a uno; per quelle idiosincratiche, le pratiche non standard del
+progetto, può essere vicino a zero, e per loro $q^K$ crolla. Sono le decisioni
+da scrivere.
 
 Scrivere $d$ in $\mathcal{K}_{\text{repo}}$ porta $q$ vicino a uno a tre
 condizioni: che il documento venga caricato quando serve, che venga seguito, e
@@ -146,17 +146,18 @@ passaggio, fra le regole di progetto; qui diventa la porta di tutto il
 repository.
 
 La tentazione, a ogni errore dell'agente, è aggiungere una riga a quel file, e
-il file cresce fino a diventare un manuale. La squadra di Lopopolo ha provato la
-strada del file unico e grande, e racconta come fallisce. Il contesto è una
+il file cresce fino a diventare un manuale. La squadra di Lopopolo ha provato
+la strada del file unico e grande, e racconta come fallisce. [Il contesto è una
 risorsa scarsa, e un file enorme toglie spazio al compito, al codice e ai
-documenti che servono davvero, così l'agente o perde un vincolo importante o
-comincia a inseguire quelli sbagliati. Troppe indicazioni smettono di indicare:
-quando tutto è «importante», niente lo è, e l'agente finisce per attaccarsi alla
-regola che ha sotto gli occhi invece di cercare quella che serve. Il manuale
-invecchia subito, diventa un accumulo di regole scadute di cui l'agente non sa
-quali valgano ancora, e le persone smettono di aggiornarlo. E non si presta ai
-controlli meccanici (che cosa copre, se è aggiornato, chi ne risponde, se i
-rimandi tengono): è un blocco di prosa {cite}`lopopolo2026harness`.
+documenti che servono davvero]{.pt-matita}, così l'agente o perde un vincolo
+importante o comincia a inseguire quelli sbagliati. Troppe indicazioni smettono
+di indicare: quando tutto è «importante», niente lo è, e l'agente finisce per
+attaccarsi alla regola che ha sotto gli occhi invece di cercare quella che
+serve. Il manuale invecchia subito, diventa un accumulo di regole scadute di
+cui l'agente non sa quali valgano ancora, e le persone smettono di aggiornarlo.
+E non si presta ai controlli meccanici (che cosa copre, se è aggiornato, chi ne
+risponde, se i rimandi tengono): è un blocco di prosa
+{cite}`lopopolo2026harness`.
 
 A questo si aggiunge l'effetto di posizione che la sezione sul context
 engineering discute: misurato sul recupero di informazioni, con modelli del
@@ -241,12 +242,12 @@ $$
 \mathbb{E}[L] = L_0 + \sum_{j=1}^{m} \tilde{p}_j L_j .
 $$
 
-Il risparmio rispetto al monolite è $\sum_j (1 - \tilde{p}_j) L_j$ per sessione.
-Si noti che la formula, presa da sola, premia proprio il guasto da temere: se
-l'instradamento peggiora, $r_j$ scende, $\mathbb{E}[L]$ scende con lui, e il
-«risparmio» sale. Il calcolo completo ha un termine di perdita: con $C_j$ il
-danno atteso di una regola mancata e $c_g$ il costo di un giro di strumento per
-aprire un documento, l'indice conviene se
+Il risparmio rispetto al monolite è $\sum_j (1 - \tilde{p}_j) L_j$ per
+sessione. Si noti che la formula, presa da sola, premia proprio il guasto da
+temere: se l'instradamento peggiora, $r_j$ scende, $\mathbb{E}[L]$ scende con
+lui, e il «risparmio» sale. Il calcolo completo ha un termine di perdita: con
+$C_j$ il danno atteso di una regola mancata e $c_g$ il costo di una chiamata a
+uno strumento per aprire un documento, l'indice conviene se
 
 $$
 c_{\text{tok}} \sum_j (1 - \tilde{p}_j) L_j \;>\;
@@ -313,11 +314,11 @@ spesa su compiti più grandi da una parte, il tempo su modifiche piccole
 dall'altra, e non si contraddicono: nessuna delle due dice che il file aiuti
 sempre.
 
-Messe insieme, non dicono di non scrivere il file. Dicono che il file è un
+Messe insieme, non dicono di non scrivere il file. Dicono che [il file è un
 componente come gli altri, con un costo che si paga a ogni sessione e un
-beneficio che non è garantito: va scritto con le cose che l'agente non può
-ricavare da sé (i comandi, le pratiche non standard, le regole che non si
-violano), va tenuto lontano dalle descrizioni che il codice dà già, e va
+beneficio che non è garantito]{.pt-matita}: va scritto con le cose che l'agente
+non può ricavare da sé (i comandi, le pratiche non standard, le regole che non
+si violano), va tenuto lontano dalle descrizioni che il codice dà già, e va
 provato sui compiti veri prima di crederci.
 
 ## Tenere vera la memoria
@@ -398,9 +399,10 @@ Il programma stampa soltanto; in un controllo automatico vero uscirebbe con un
 codice d'errore, e quel codice, lanciato a ogni modifica insieme ai test, è ciò
 che la ferma: un cancello come quelli del {doc}`loop engineering
 </IngegneriaLLM/loop-engineering>`. Il cancello però ha un limite preciso.
-Controlla che i documenti esistano e si raggiungano, non che dicano il vero:
-che un documento descriva ancora il codice lo può dire solo chi lo rilegge, una
-persona o un agente incaricato di farlo, che a sua volta può sbagliare.
+[Controlla che i documenti esistano e si raggiungano, non che dicano il
+vero]{.pt-matita}: che un documento descriva ancora il codice lo può dire solo
+chi lo rilegge, una persona o un agente incaricato di farlo, che a sua volta
+può sbagliare.
 
 `````{tab} Elementare
 

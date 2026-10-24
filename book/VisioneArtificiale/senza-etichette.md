@@ -33,12 +33,12 @@ l'augmentation a fabbricare la risposta giusta da cui la rete impara.
 
 Nell'apprendimento supervisionato la rete impara da etichette scritte da
 persone. Nell'apprendimento **auto-supervisionato**, invece, la risposta giusta
-si ricava dai dati stessi. Per farlo si inventa un compito, detto
-**pretesto** (*pretext task*), la cui soluzione si calcola senza che nessuno la
-scriva. Il pretesto non è lo scopo: contano le cose che il modello è costretto
-a capire per risolverlo. Quando il pretesto si butta via, ciò che il modello ha
-capito resta nell’**encoder**, cioè la parte della rete che trasforma
-l'immagine nella sua rappresentazione.
+si ricava dai dati stessi. Per farlo si inventa un compito, detto **pretesto**
+(*pretext task*), la cui soluzione si calcola senza che nessuno la scriva. [Il
+pretesto non è lo scopo: contano le cose che il modello è costretto a capire
+per risolverlo]{.pt-matita}. Quando il pretesto si butta via, ciò che il
+modello ha capito resta nell’**encoder**, cioè la parte della rete che
+trasforma l'immagine nella sua rappresentazione.
 
 La stessa idea guida il pre-addestramento dei grandi modelli di linguaggio, che
 racconterà la {doc}`sezione sui grandi modelli linguistici
@@ -110,12 +110,12 @@ istruttiva. Se invece si è di manica larga, tutti gli altri ritagli pesano un
 pochino e nessuno pesa molto, e si impara meno. La misura giusta si trova
 provando, e cambia da una raccolta di foto all'altra.
 
-Nessuno ha dovuto dire che nella foto c'era un gatto: la risposta giusta la
-conosciamo per costruzione, perché i due ritagli li abbiamo fatti noi. Eppure
-per vincere bisogna capire parecchio: che muso e coda appartengono allo stesso
-animale, che quel pelo e quel muro stanno insieme. Bisogna farsi un'idea di
-*che cosa* raffigura ogni ritaglio, perché è l'unico modo di riconoscere il
-gemello in mezzo a centonovantotto estranei.
+[Nessuno ha dovuto dire che nella foto c'era un gatto: la risposta giusta la
+conosciamo per costruzione, perché i due ritagli li abbiamo fatti
+noi]{.pt-matita}. Eppure per vincere bisogna capire parecchio: che muso e coda
+appartengono allo stesso animale, che quel pelo e quel muro stanno insieme.
+Bisogna farsi un'idea di *che cosa* raffigura ogni ritaglio, perché è l'unico
+modo di riconoscere il gemello in mezzo a centonovantotto estranei.
 
 Almeno, così sembra. In realtà c'è un modo di vincere senza aver capito niente,
 e quel modo è il problema centrale dell'apprendimento auto-supervisionato.
@@ -172,8 +172,8 @@ La perdita totale è la media di $\ell_{i,j}$ su tutte le $2N$ coppie ordinate.
 È la stessa InfoNCE che allinea immagini e didascalie nella sezione
 {doc}`Allineare due spazi </VisioneLinguaggio/allineare-due-spazi>`, con una
 differenza sostanziale: là il positivo è la didascalia scritta da una persona,
-qui è una seconda copia deformata della stessa immagine. In altri termini, la
-supervisione non viene dal linguaggio, viene dalla trasformazione.
+qui è una seconda copia deformata della stessa immagine. In altri termini, [la
+supervisione non viene dal linguaggio, viene dalla trasformazione]{.pt-matita}.
 
 Il ruolo di $\tau$ si legge nel gradiente. Posto
 $s_{ik} = \mathrm{sim}(\mathbf{z}_i, \mathbf{z}_k)$ e detto $p_{ik}$ il peso che
@@ -239,8 +239,8 @@ l'etichetta. Qui un'etichetta non c'è, e le trasformazioni non decorano il
 compito, lo definiscono. Chiedere che due viste finiscano vicine, infatti,
 significa dire al modello *a che cosa deve essere indifferente*. Ad esempio, se
 ruotiamo gli insegniamo che l'orientamento non conta; se cambiamo colore, che
-il colore non conta. L'elenco delle trasformazioni ammesse è la specifica di
-ciò che il modello considererà «la stessa cosa».
+il colore non conta. [L'elenco delle trasformazioni ammesse è la specifica di
+ciò che il modello considererà «la stessa cosa»]{.pt-matita}.
 
 La coppia che conta, negli esperimenti di SimCLR, è ritaglio casuale più
 disturbo del colore, e la ragione per cui il secondo è indispensabile è la
@@ -362,10 +362,10 @@ trasformazioni che abbiamo scelto.
 
 In SimCLR i negativi sono i compagni di batch, cioè le altre viste elaborate
 nello stesso passo. È una scelta comoda, ma diventa subito il vincolo che
-comanda su tutto. Con pochi negativi, infatti, il compito è facile e si impara
-poco: riconoscere il positivo fra tre candidati è quasi ovvio, fra quattromila
-no. Servono allora batch grandi, o molto più tempo. Gli autori misurano che a
-cento epoche i batch grandi vincono nettamente, e che allungando
+comanda su tutto. [Con pochi negativi, infatti, il compito è facile e si impara
+poco]{.pt-matita}: riconoscere il positivo fra tre candidati è quasi ovvio, fra
+quattromila no. Servono allora batch grandi, o molto più tempo. Gli autori
+misurano che a cento epoche i batch grandi vincono nettamente, e che allungando
 l'addestramento il distacco si riduce fino a sparire.
 
 Un batch grande, però, va tenuto tutto insieme nella memoria degli acceleratori
@@ -487,8 +487,8 @@ foto rivale da respingere, nessuna penalità, solo «avvicinati a lui».
 Se i due fossero alla pari la scappatoia si vedrebbe subito: intendersi su una
 riga sola, «un'immagine», da scrivere su qualunque cosa capiti sotto gli occhi.
 Schede identiche, punteggio pieno, e nessuno dei due che abbia guardato la
-foto. È il collasso, e a impedirlo qui non c'è nessuna forza che allontani: ci
-sono due dissimmetrie.
+foto. È il collasso, e [a impedirlo qui non c'è nessuna forza che allontani: ci
+sono due dissimmetrie]{.pt-matita}.
 
 La prima riguarda l'insegnante: è una copia lenta dell'allievo, con i criteri
 rimescolati poco alla volta con quelli dell'allievo di oggi, e non una seconda
@@ -544,12 +544,12 @@ viste. Il gradiente scende solo su $\theta$, mentre i parametri target seguono
 la stessa media mobile di MoCo, $\xi \leftarrow m\, \xi + (1-m)\, \theta$, con
 $m$ inizializzato a $0{,}996$ e portato verso uno durante l'addestramento.
 
-La soluzione costante, pur essendo un minimo della perdita, nelle
-configurazioni di BYOL non viene raggiunta. Quali fattori ne tengano lontana la
-dinamica lo dicono, per ora, analisi condotte su modelli lineari semplificati
-{cite}`tian2021understanding`. In queste analisi la testa di predizione, lo
-stop-gradient, la media mobile e il decadimento dei pesi intervengono tutti, e
-due asimmetrie spiccano.
+[La soluzione costante, pur essendo un minimo della perdita, nelle
+configurazioni di BYOL non viene raggiunta]{.pt-matita}. Quali fattori ne
+tengano lontana la dinamica lo dicono, per ora, analisi condotte su modelli
+lineari semplificati {cite}`tian2021understanding`. In queste analisi la testa
+di predizione, lo stop-gradient, la media mobile e il decadimento dei pesi
+intervengono tutti, e due asimmetrie spiccano.
 
 La prima è lo **stop-gradient**: il ramo target non riceve gradiente, quindi
 non può «accordarsi» con l'altro e si limita a inseguirlo in ritardo. La
@@ -622,8 +622,8 @@ uguali, «33% ciascuna», dove nessuna casella dice più delle altre. Contro que
 c'è una seconda mano sul foglio, che prima della consegna allarga le differenze.
 Dove l'insegnante aveva messo $(0{,}40;\ 0{,}35;\ 0{,}25)$, all'allievo arriva
 qualcosa di più vicino a $(0{,}49;\ 0{,}35;\ 0{,}15)$: prima casella salita,
-ultima scesa, distacco fra le due più che raddoppiato. Le due mani tirano in
-direzioni opposte e si tengono a vicenda.
+ultima scesa, distacco fra le due più che raddoppiato. [Le due mani tirano in
+direzioni opposte e si tengono a vicenda]{.pt-matita}.
 
 Poi accade qualcosa che nessuno aveva chiesto. L'allievo, dentro, taglia la
 foto in tessere e a ogni passaggio decide quanto guardare ciascuna (sono le
@@ -680,8 +680,8 @@ spinge verso la distribuzione uniforme.
 
 Lo **sharpening** fa l'opposto: la temperatura dell'insegnante è tenuta più
 bassa di quella dello studente ($0{,}04$–$0{,}07$ contro $0{,}1$), il che rende
-$P_t$ più piccata e scoraggia l'uniformità. L'equilibrio fra le due operazioni
-tiene il sistema lontano da entrambe le forme di collasso.
+$P_t$ più piccata e scoraggia l'uniformità. [L'equilibrio fra le due operazioni
+tiene il sistema lontano da entrambe le forme di collasso]{.pt-matita}.
 
 Il fenomeno più notevole non è nella perdita ma in ciò che si osserva dopo. Le
 mappe di auto-attenzione del token di classe, nell'ultimo strato di un ViT
@@ -731,8 +731,8 @@ quell'idea e disegna il contenuto delle tessere coperte.
 
 Al pezzo grosso, che è quello caro, tocca dunque un quarto del materiale, e
 finito il gioco è l'unico che si tiene: il piccolo si butta via, perché serviva
-solo a definire il compito. Nascondere tanto rende l'esercizio più difficile
-*e* più economico, cosa che quasi mai capita.
+solo a definire il compito. [Nascondere tanto rende l'esercizio più difficile
+*e* più economico]{.pt-matita}, cosa che quasi mai capita.
 
 Un costo però c'è, nella richiesta stessa di ridisegnare i pixel. Sotto
 le tessere coperte non c'è soltanto la zampa del cane: ci sono anche il
@@ -791,7 +791,7 @@ il più alto con un decoder di un blocco su un ViT-H. Il guadagno resta sotto
 il $4{,}2$ che il conto dell'encoder prevede perché il numero è il tempo di
 addestramento nel suo complesso, e il decoder, che riceve la sequenza completa,
 dal mascheramento non guadagna nulla: più è leggero, più ci si avvicina.
-Il compito diventa così più difficile e insieme più economico.
+[Il compito diventa così più difficile e insieme più economico]{.pt-matita}.
 
 La differenza di fondo rispetto ai metodi contrastivi è dove finisce la
 difficoltà. Là stava nelle trasformazioni scelte a mano, cioè nelle invarianze
@@ -825,8 +825,9 @@ tutto quello che sa fare è tracciare una linea dritta fra i riassunti che
 l'encoder produce (i gatti di qua, i cani di là), aiutandosi con le etichette
 di un insieme di foto di prova.
 
-Se un giudice così sprovveduto supera l'esame, il merito non può essere suo:
-vuol dire che nei riassunti dell'encoder gatti e cani erano già separati.
+[Se un giudice così sprovveduto supera l'esame, il merito non può essere
+suo]{.pt-matita}: vuol dire che nei riassunti dell'encoder gatti e cani erano
+già separati.
 
 C'è però un limite: l'esame promuove solo ciò che si separa con una linea
 dritta. Un encoder potrebbe aver capito tutto e averlo scritto in una forma più
@@ -846,12 +847,12 @@ retta, quando le dimensioni sono due) a separare le classi, allora
 l'informazione era già dentro la rappresentazione, e in una forma direttamente
 utilizzabile, perché il classificatore lineare non è in grado di costruirla.
 
-Il sondaggio però misura una grandezza precisa, la **separabilità lineare**,
-non tutta l'informazione presente. Un encoder può codificare il contenuto di
-un'immagine in una forma che va letta con una funzione non lineare, e la sonda
-lo penalizzerebbe. Ad esempio, i metodi generativi come il MAE tendono a fare
-peggio sotto sonda lineare che sotto fine-tuning completo, mentre per i
-contrastivi le due misure sono più allineate.
+[Il sondaggio però misura una grandezza precisa, la **separabilità lineare**,
+non tutta l'informazione presente]{.pt-matita}. Un encoder può codificare il
+contenuto di un'immagine in una forma che va letta con una funzione non
+lineare, e la sonda lo penalizzerebbe. Ad esempio, i metodi generativi come il
+MAE tendono a fare peggio sotto sonda lineare che sotto fine-tuning completo,
+mentre per i contrastivi le due misure sono più allineate.
 
 In altri termini, lo strumento incorpora un'ipotesi su come la rappresentazione
 verrà usata, e per questo gli si affianca spesso una sonda ancora più spartana,
@@ -880,8 +881,8 @@ MoCo), chi predice senza negativi (BYOL, DINO) e chi ricostruisce le parti che
 ha coperto (i modelli generativi come il MAE, chiamati così perché il loro
 compito è produrre di nuovo un pezzo di immagine) risolvono lo stesso problema:
 fabbricare un compito la cui risposta è già nei dati e che sia abbastanza
-difficile da non poter essere risolto per scorciatoia. Li distingue il punto in
-cui mettono la difficoltà.
+difficile da non poter essere risolto per scorciatoia. [Li distingue il punto in
+cui mettono la difficoltà]{.pt-matita}.
 
 I contrastivi la mettono nelle trasformazioni. Il compito è facile per
 costruzione (riconoscere il positivo) e diventa difficile perché le due viste

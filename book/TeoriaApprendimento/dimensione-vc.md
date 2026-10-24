@@ -68,11 +68,12 @@ foglio, dove le direzioni sono due e i punti tre.
 
 Viene da pensare che il numero conti le manopole di uno strumento, cioè i suoi
 parametri: il righello sul foglio ne ha tre (dove passa, quanto è inclinato, da
-che parte sta il rosso) e frantuma tre punti. Non è così. Una curva a onda con
+che parte sta il rosso) e frantuma tre punti. Non è così. [Una curva a onda con
 una manopola sola, quanto è fitta, colora in tutti i modi quanti punti si
-vuole, purché siano messi nei posti giusti, a distanze che si dimezzano a ogni
-punto. Si dimostra infatti che, stringendo l'onda del giusto, una volta sola,
-la si fa passare sopra i rossi e sotto i blu, qualunque sia la colorazione.
+vuole]{.pt-matita}, purché siano messi nei posti giusti, a distanze che si
+dimezzano a ogni punto. Si dimostra infatti che, stringendo l'onda del giusto,
+una volta sola, la si fa passare sopra i rossi e sotto i blu, qualunque sia la
+colorazione.
 
 `````
 
@@ -121,18 +122,19 @@ $\{x\mapsto\mathrm{sgn}\sin(\omega x):\omega\in\mathbb{R}\}$, ad esempio, ha un
 parametro solo e dimensione VC infinita (esempio 3.16 ed esercizio 3.20): per
 ogni $m$ i punti $x_i=2^{-i}$ si frantumano, e per le etichette
 $y_i\in\{\pm1\}$ basta $\omega=\pi\big(1+\sum_{i=1}^{m}2^{i}(1-y_i)/2\big)$. In
-altri termini, la dimensione VC misura le dicotomie che la famiglia *produce*
-sui dati, non il modo in cui è scritta.
+altri termini, [la dimensione VC misura le dicotomie che la famiglia *produce*
+sui dati, non il modo in cui è scritta]{.pt-matita}.
 
 `````
 
 ## Dal caso peggiore a un polinomio
 
 La dimensione VC serve perché mette un tetto al numero di dicotomie, e il tetto
-cambia natura: fino alla dimensione VC le dicotomie raddoppiano a ogni punto
-aggiunto, oltre crescono solo come una potenza fissa del numero di punti. È
-questo il risultato che rende la teoria utile, e ha un nome, il
-**lemma di Sauer** (un lemma è un teorema che serve a dimostrarne altri).
+cambia natura: [fino alla dimensione VC le dicotomie raddoppiano a ogni punto
+aggiunto, oltre crescono solo come una potenza fissa del numero di
+punti]{.pt-matita}. È questo il risultato che rende la teoria utile, e ha un
+nome, il **lemma di Sauer** (un lemma è un teorema che serve a dimostrarne
+altri).
 
 Ad esempio, per le soglie, che frantumano un punto solo, la potenza è la prima:
 su cento esempi le dicotomie sono centouno invece di $2^{100}$, e infinite

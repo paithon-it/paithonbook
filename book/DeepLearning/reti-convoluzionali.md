@@ -49,7 +49,8 @@ foto già viste va benissimo, sulla prima foto nuova sbanda.
 C'è poi un altro problema, più profondo. Se la rete impara a riconoscere un
 occhio quando compare in alto a sinistra, non sa nulla dello stesso occhio in
 basso a destra: per lei sono due cose diverse, perché occupano posizioni (e
-quindi pesi) diversi. Manca l'idea che *un motivo è lo stesso ovunque appaia*.
+quindi pesi) diversi. [Manca l'idea che *un motivo è lo stesso ovunque
+appaia*]{.pt-matita}.
 
 `````
 
@@ -62,9 +63,9 @@ $2\times10^{8}$ parametri, un invito all’*overfitting*.
 
 Soprattutto, lo strato denso non è **equivariante alla traslazione**. Un
 pattern spostato di un vettore $\boldsymbol{\Delta}$, infatti, attiva pesi
-diversi, perché l'indice della componente cambia. Le CNN recuperano
-l'equivarianza grazie alla sola condivisione dei pesi: se l'input si sposta,
-l'attivazione si sposta con lui.
+diversi, perché l'indice della componente cambia. [Le CNN recuperano
+l'equivarianza grazie alla sola condivisione dei pesi]{.pt-matita}: se l'input
+si sposta, l'attivazione si sposta con lui.
 
 L'equivarianza vale all'interno, con due riserve: la cornice di zeri la rompe
 sul bordo, dove il motivo perde i contributi che cadono fuori; inoltre, con un
@@ -122,11 +123,11 @@ cercatore di bordi o di macchie. Lo stampino, in altre parole, è una domanda
 che la rete impara a formulare.
 
 Lo stampino non cambia mai mentre scorre: la ricetta è la stessa in tutti i
-punti della pagina. Per questo, se sa trovare un bordo, lo trova ovunque
-nell'immagine, in alto come in basso. E ogni totale finisce sul foglio nuovo
-nel punto corrispondente: sposta il bordo di due quadretti e si sposta di due
-quadretti anche il segno che lo segnala. Questo è il trucco che mancava allo
-strato denso.
+punti della pagina. Per questo, [se sa trovare un bordo, lo trova ovunque
+nell'immagine, in alto come in basso]{.pt-matita}. E ogni totale finisce sul
+foglio nuovo nel punto corrispondente: sposta il bordo di due quadretti e si
+sposta di due quadretti anche il segno che lo segnala. Questo è il trucco che
+mancava allo strato denso.
 
 `````
 
@@ -156,11 +157,11 @@ $$
 \end{aligned}
 $$
 
-cioè filtrare l'immagine traslata dà la mappa traslata. Il passaggio sfrutta il
-fatto che $K$ è lo stesso in $(i,j)$ e in $(i-\Delta_1, j-\Delta_2)$, e che la
-somma corre su tutto il piano. Su un'immagine finita, quindi, l'uguaglianza
-vale lontano dal bordo, e con uno stride $s$ vale solo per gli spostamenti
-multipli di $s$.
+cioè [filtrare l'immagine traslata dà la mappa traslata]{.pt-matita}. Il
+passaggio sfrutta il fatto che $K$ è lo stesso in $(i,j)$ e in $(i-\Delta_1,
+j-\Delta_2)$, e che la somma corre su tutto il piano. Su un'immagine finita,
+quindi, l'uguaglianza vale lontano dal bordo, e con uno stride $s$ vale solo
+per gli spostamenti multipli di $s$.
 
 La convoluzione in senso stretto, $\sum_m\sum_n I(i-m,\,j-n)\,K(m,n)$,
 differisce dalla cross-correlazione solo per il kernel ribaltato; poiché la
@@ -232,9 +233,9 @@ chi le macchie chiare, chi una trama.
 
 Con 32 stampini sono $28 \times 32 = 896$ pesi, meno di mille, contro i milioni
 dello strato denso, e con così pochi numeri da regolare resta molto meno spazio
-per imparare le foto a memoria. Inoltre i pesi restano 896 anche su una foto
-con quattro volte i pixel, perché lo stampino non si allarga, fa solo più giri,
-mentre lo strato denso avrebbe preteso quattro volte i pesi.
+per imparare le foto a memoria. Inoltre [i pesi restano 896 anche su una foto
+con quattro volte i pixel]{.pt-matita}, perché lo stampino non si allarga, fa
+solo più giri, mentre lo strato denso avrebbe preteso quattro volte i pesi.
 
 Da 32 stampini escono 32 fogli, ed è così che si impilano gli strati. Lo
 stampino del secondo strato non scorre su un foglio solo, ma su tutti e 32
@@ -253,8 +254,8 @@ finestra piccola.
 
 Un layer convoluzionale con $F$ filtri, kernel $k\times k$ e $C$ canali in
 ingresso ha $F\,(k^2 C + 1)$ parametri, un'espressione in cui la risoluzione
-dell'immagine non compare: su una foto con quattro volte i pixel le operazioni
-quadruplicano, ma i pesi da imparare restano gli stessi.
+dell'immagine non compare: [su una foto con quattro volte i pixel le operazioni
+quadruplicano, ma i pesi da imparare restano gli stessi]{.pt-matita}.
 
 Il risparmio sui parametri, però, non va trasferito al calcolo. Le
 moltiplicazioni sono $o^2 F k^2 C$, dove $o$ è il lato della mappa d'uscita,
@@ -331,8 +332,8 @@ quasi sempre il risultato. Sfumare un poco la mappa prima di riassumerla, in
 modo che un valore forte si spanda anche sui vicini, fa assorbire una parte
 degli spostamenti che scavalcano il confine.
 
-È un baratto, non un regalo: si guadagnano leggerezza e un po’ di tolleranza,
-si perde precisione su dove le cose stanno.
+[È un baratto, non un regalo]{.pt-matita}: si guadagnano leggerezza e un po’ di
+tolleranza, si perde precisione su dove le cose stanno.
 
 `````
 
@@ -356,7 +357,7 @@ con un filtro passa-basso ignora il teorema del campionamento, e una
 traslazione di un pixel può cambiare l'uscita di molto. Vale per il max
 pooling, per il pooling medio e per la convoluzione a passo due, e filtrare
 prima di sottocampionare restituisce parte della tolleranza
-{cite}`zhang2019making`. È un baratto e non un'aggiunta gratuita.
+{cite}`zhang2019making`. [È un baratto e non un'aggiunta gratuita]{.pt-matita}.
 
 `````
 
@@ -410,8 +411,8 @@ La ReLU sta in mezzo, fra il filtro e il pooling, e rende diversi due strati
 impilati. Una convoluzione, infatti, è fatta di moltiplicazioni e somme, e
 applicarne una al risultato di un'altra, senza niente in mezzo, darebbe ancora
 moltiplicazioni e somme: una convoluzione sola, un po’ più larga. Azzerando i
-negativi, invece, la ReLU fa sì che il secondo strato veda qualcosa che il
-primo non poteva produrre.
+negativi, invece, [la ReLU fa sì che il secondo strato veda qualcosa che il
+primo non poteva produrre]{.pt-matita}.
 
 Due iperparametri governano poi lo scorrimento del filtro: lo **stride**, di
 quanti pixel salta la finestra a ogni passo, e il **padding**, la cornice di
@@ -591,11 +592,11 @@ le miscele li sommano e li sottraggono prima di moltiplicare, e così bastano
 quattro moltiplicazioni in tutto, una per quadretto della striscia.
 
 Contate tutte, però, le operazioni sono aumentate: prima sei moltiplicazioni e
-quattro somme, adesso quattro e otto. Il guadagno arriva in una rete vera, dove
-le miscele si preparano una volta e servono molte volte. Quelle di uno stampino
-si fanno una volta sola, divisioni comprese, perché lo stampino non cambia
-mentre scorre; quelle di un pezzo d'immagine servono a tutti gli stampini che
-ci passano sopra, uno per ogni foglio che esce.
+quattro somme, adesso quattro e otto. [Il guadagno arriva in una rete vera,
+dove le miscele si preparano una volta e servono molte volte]{.pt-matita}.
+Quelle di uno stampino si fanno una volta sola, divisioni comprese, perché lo
+stampino non cambia mentre scorre; quelle di un pezzo d'immagine servono a
+tutti gli stampini che ci passano sopra, uno per ogni foglio che esce.
 
 Anche l'ultimo passo, la ricomposizione che dai quattro prodotti tira fuori 14
 e 20, si può rimandare: uno stampino del secondo strato legge insieme i 32
@@ -674,12 +675,13 @@ r)$ costa $(m + r - 1)^2$ moltiplicazioni invece di $m^2 r^2$: $16$ contro $36$
 per $F(2\times2, 3\times3)$, un fattore $2{,}25$, e $36$ contro $144$ per
 $F(4\times4, 3\times3)$, un fattore $4$.
 
-Il guadagno sopravvive ai canali perché le trasformazioni si ammortizzano. Con
-$\mathbf{U}_{f,c} = \mathbf{G}\mathbf{K}_{f,c}\mathbf{G}^\top$, calcolata una
-volta per filtro, e $\mathbf{V}_{c,p} =
-\mathbf{B}^\top\mathbf{D}_{c,p}\mathbf{B}$, calcolata una volta per tessera $p$
-e canale e condivisa da tutti i filtri, la somma sui canali si fa nel dominio
-trasformato, $\mathbf{Y}_{f,p} = \mathbf{A}^\top\big[\sum_c
+[Il guadagno sopravvive ai canali perché le trasformazioni si
+ammortizzano]{.pt-matita}. Con $\mathbf{U}_{f,c} =
+\mathbf{G}\mathbf{K}_{f,c}\mathbf{G}^\top$, calcolata una volta per filtro, e
+$\mathbf{V}_{c,p} = \mathbf{B}^\top\mathbf{D}_{c,p}\mathbf{B}$, calcolata una
+volta per tessera $p$ e canale e condivisa da tutti i filtri, la somma sui
+canali si fa nel dominio trasformato, $\mathbf{Y}_{f,p} =
+\mathbf{A}^\top\big[\sum_c
 \mathbf{U}_{f,c}\odot\mathbf{V}_{c,p}\big]\mathbf{A}$, e la trasformazione
 all'indietro si esegue una volta per filtro e tessera.
 
@@ -925,9 +927,10 @@ colonna accanto fa quella dopo. Se le pagine sono tante, o gli stampini più
 d'uno, lo stesso banco tiene a portata di mano più righe, di pagine o di
 stampini diversi, e le alterna.
 
-In questo modo ogni numero lavora molte volte senza tornare in magazzino: la
-riga di stampino serve tutta la sua fila, la riga di pagina tutti i banchi di
-una diagonale, e i totali si completano passando al banco di sotto.
+In questo modo [ogni numero lavora molte volte senza tornare in
+magazzino]{.pt-matita}: la riga di stampino serve tutta la sua fila, la riga di
+pagina tutti i banchi di una diagonale, e i totali si completano passando al
+banco di sotto.
 
 Conta infatti la distanza. Nelle misure di chi ha progettato il chip, prendere
 un numero dal magazzino equivale a duecento moltiplicazioni, dal tavolo comune
@@ -968,9 +971,10 @@ filtri e canali diversi.
 
 Il criterio è energetico. Con i costi per accesso di un processo a 65 nm,
 normalizzati a una moltiplicazione-accumulo (register file 1, rete fra elementi
-2, buffer globale 6, DRAM 200), il flusso minimizza l'energia complessiva del
-movimento dei dati, invece di tenere fermo un solo tipo di dato come *weight
-stationary* e *output stationary*, o nessuno come *no local reuse*.
+2, buffer globale 6, DRAM 200), [il flusso minimizza l'energia complessiva del
+movimento dei dati]{.pt-matita}, invece di tenere fermo un solo tipo di dato
+come *weight stationary* e *output stationary*, o nessuno come *no local
+reuse*.
 
 Sugli strati convoluzionali di AlexNet, a parità di area e di numero di
 elementi, questo flusso risulta da $1{,}4$ a $2{,}5$ volte più efficiente degli

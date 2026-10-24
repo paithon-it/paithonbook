@@ -39,9 +39,9 @@ davanti.
 
 Tutte le garanzie di prima, che guardano solo quanto è capace lo studente,
 dicono quindi la stessa cosa nei due casi, cioè niente. Eppure nel primo caso
-lo studente va benissimo. La differenza, allora, non può dipendere dalla sua
+lo studente va benissimo. [La differenza, allora, non può dipendere dalla sua
 capacità: deve stare nel foglio che ha studiato e nel modo in cui lo ha
-studiato.
+studiato]{.pt-matita}.
 
 Il foglio conta anche in un modo più sottile. Nel rimescolamento qualche
 risposta è rimasta al suo posto per caso, una su dieci circa, perché dieci
@@ -103,9 +103,9 @@ su $300$ esempi, $WL\log_2 W$ vale circa un milione, costanti a parte.
 Più della larghezza dei bound, però, conta un altro fatto: sono gli stessi per
 le etichette vere e per quelle casuali, perché dipendono solo da $\mathcal{H}$
 e da $S$, e non possono distinguere il caso in cui la rete generalizza da
-quello in cui non lo fa. Una spiegazione deve quindi dipendere dall'ipotesi
+quello in cui non lo fa. [Una spiegazione deve quindi dipendere dall'ipotesi
 $h_S$ effettivamente trovata, cioè dall'algoritmo, o dalla distribuzione che ha
-prodotto le etichette.
+prodotto le etichette]{.pt-matita}.
 
 `````
 
@@ -309,9 +309,10 @@ spiegazione, e la garanzia pratica resta la misura su dati mai visti.
 `````
 
 Il bilancio, per chi deve usare questi strumenti, è netto. Per le famiglie di
-regole semplici la teoria dà un numero, e il numero è attendibile; per le reti
-dà un modo di ragionare e qualche misura che si muove nel verso giusto, e si
-continua a misurare l'errore su esempi tenuti da parte.
+regole semplici la teoria dà un numero, e il numero è attendibile; [per le reti
+dà un modo di ragionare e qualche misura che si muove nel verso
+giusto]{.pt-matita}, e si continua a misurare l'errore su esempi tenuti da
+parte.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

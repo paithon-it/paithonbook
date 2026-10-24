@@ -84,8 +84,8 @@ I formati portano il nome che hanno nel codice, `float` per la virgola mobile e
 `int` per gli interi, seguito dai bit. Le due righe agli estremi descrivono lo
 stesso modello, con gli stessi parametri, addestrato una volta sola. Nella
 prima non ci sta, mentre nell’ultima ci starebbe quattro volte e mezzo. Fra le
-due non c’è nessun addestramento in più: gli stessi parametri sono scritti con
-meno cifre, cioè arrotondati.
+due [non c’è nessun addestramento in più: gli stessi parametri sono scritti con
+meno cifre]{.pt-matita}, cioè arrotondati.
 
 La colonna di destra, però, conta i soli pesi. Per far girare davvero il
 modello serve dell’altro spazio, quindi la riga a sedici bit, che lascia due
@@ -93,9 +93,9 @@ gigabyte esatti di margine, nella pratica è più stretta di quanto sembri.
 
 ## Le tre leve
 
-Un modello troppo grande si può stringere in tre modi. Sono tre operazioni
-che agiscono su cose diverse, non la stessa idea vista da tre angoli, e per
-questo si possono usare tutte e tre insieme.
+Un modello troppo grande si può stringere in tre modi. [Sono tre operazioni che
+agiscono su cose diverse, non la stessa idea vista da tre angoli]{.pt-matita},
+e per questo si possono usare tutte e tre insieme.
 
 La prima toglie bit a ogni parametro. I parametri restano tutti, e resta la
 forma della rete; cambia solo quante cifre si tengono di ciascun numero. In

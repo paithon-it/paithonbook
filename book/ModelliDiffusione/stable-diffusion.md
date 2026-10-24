@@ -23,12 +23,12 @@ Blender, versioni modificate per ogni gusto. La generazione di immagini smette
 di essere una demo da guardare e diventa uno strumento da usare.
 
 La domanda è che cosa lo renda possibile *tecnicamente*. Non un modello più
-grande: al contrario, uno più piccolo. La diffusione smette di lavorare sui
+grande: al contrario, uno più piccolo. [La diffusione smette di lavorare sui
 pixel e si sposta su una rappresentazione compressa dell'immagine, decine di
-volte più piccola, dove ogni valutazione della rete è molto più leggera. Il
-guadagno si misura in calcoli da eseguire, cioè in secondi di attesa e in
-memoria occupata sulla GPU: con meno numeri da elaborare servono meno calcoli,
-e quindi si aspetta meno.
+volte più piccola]{.pt-matita}, dove ogni valutazione della rete è molto più
+leggera. Il guadagno si misura in calcoli da eseguire, cioè in secondi di
+attesa e in memoria occupata sulla GPU: con meno numeri da elaborare servono
+meno calcoli, e quindi si aspetta meno.
 
 La compressione la fa una rete a sé, diversa da quella che toglie il rumore, e
 la conosciamo già: è il *variational autoencoder* del {doc}`capitolo sui
@@ -75,9 +75,9 @@ nascosto) e che la rete si costruisce da sola. Lo si era incontrato anche nei
 ci sono immagini, ma la differenza maggiore sta in che cosa ci si fa.
 
 Per un codec quello spazio è un corridoio: ci si entra da una parte per
-comprimere e si esce dall'altra. Qui invece ci si va ad abitare, perché è lì che
-avverrà tutta la diffusione. Per questo l'architettura prende il nome di *latent
-diffusion models*, e Stable Diffusion ne è il figlio famoso.
+comprimere e si esce dall'altra. [Qui invece ci si va ad abitare, perché è lì
+che avverrà tutta la diffusione]{.pt-matita}. Per questo l'architettura prende
+il nome di *latent diffusion models*, e Stable Diffusion ne è il figlio famoso.
 
 ## L'archivista: il variational autoencoder
 
@@ -152,12 +152,12 @@ la scheda è una griglia di 64 caselle per lato invece delle 512 dell'immagine
 $64 \times 64 \times 4$ fa appunto 16.384.
 
 La compressione però distrugge, e quello che l'archivista non ha annotato non
-lo recupera più nessuno: la scheda è il soffitto della qualità finale. Quattro
-numeri per casella bastano per un gatto su un muro e non bastano per una
-scritta leggibile, per un volto in secondo piano o per una mano con cinque
-dita: se il copista si inventa la grana della tela nessuno se ne accorge, se si
-inventa le lettere di un'insegna se ne accorgono tutti. I successori hanno
-alzato quel soffitto mettendo più numeri per casella.
+lo recupera più nessuno: [la scheda è il soffitto della qualità
+finale]{.pt-matita}. Quattro numeri per casella bastano per un gatto su un muro
+e non bastano per una scritta leggibile, per un volto in secondo piano o per
+una mano con cinque dita: se il copista si inventa la grana della tela nessuno
+se ne accorge, se si inventa le lettere di un'insegna se ne accorgono tutti. I
+successori hanno alzato quel soffitto mettendo più numeri per casella.
 
 Il «variational» del nome, in italiano «variazionale», sta in due
 regole che tengono l'archivio in ordine: la scheda descrive una *nuvola di
@@ -247,11 +247,11 @@ ricostruzioni {cite}`rombach2022high`.
 Sarebbe però un errore liquidarlo come un dettaglio di efficienza: la
 compressione è distruttiva, e il danno è misurabile e definitivo. Tutto ciò che
 il decoder non sa ricostruire è perduto prima che la U-Net veda alcunché,
-quindi la capacità di ricostruzione dell'autoencoder è un limite superiore
-sulla qualità dell'intero sistema, che nessuna quantità di diffusione può
-superare. Rombach e colleghi lo mettono fra i limiti dichiarati del metodo, e
-la conferma più netta arriva dai loro stessi successori: a parità di $f$,
-portare i canali latenti da 4 a 16 migliora nettamente ogni misura di
+quindi [la capacità di ricostruzione dell'autoencoder è un limite superiore
+sulla qualità dell'intero sistema]{.pt-matita}, che nessuna quantità di
+diffusione può superare. Rombach e colleghi lo mettono fra i limiti dichiarati
+del metodo, e la conferma più netta arriva dai loro stessi successori: a parità
+di $f$, portare i canali latenti da 4 a 16 migliora nettamente ogni misura di
 ricostruzione, ed è una delle scelte di Stable Diffusion 3
 {cite}`esser2024scaling`, di cui tratta la {doc}`sezione sui Diffusion
 Transformer </ModelliDiffusione/diffusion-transformer>`. Le due loss aggiuntive
@@ -294,12 +294,12 @@ richiesta scritta dall'utente, che entra di lato.
 
 `````{tab} Elementare
 
-Quattro mosse. Prima: l'archivista comprime ogni fotografia dell'archivio
-di addestramento nella sua scheda; d'ora in poi si lavora solo su schede.
-Seconda: il restauratore fa il suo solito lavoro (sporca di
-rumore, impara a indicare il disturbo) ma su schede da 16.384 numeri invece che
-su quadri da 786.432, come restaurare cartoline anziché affreschi. Ogni giro di
-domanda e risposta è decine di volte più economico. Non proprio quarantotto:
+Quattro mosse. Prima: l'archivista comprime ogni fotografia dell'archivio di
+addestramento nella sua scheda; d'ora in poi si lavora solo su schede. Seconda:
+il restauratore fa il suo solito lavoro (sporca di rumore, impara a indicare il
+disturbo) ma su schede da 16.384 numeri invece che su quadri da 786.432, come
+restaurare cartoline anziché affreschi. [Ogni giro di domanda e risposta è
+decine di volte più economico]{.pt-matita}. Non proprio quarantotto:
 quarantotto dice quanti numeri in meno ci sono, non quanti conti in meno si
 fanno, e la rete delle schede è disegnata apposta per loro invece di essere
 quella dei quadri rimpicciolita.
@@ -379,9 +379,9 @@ $$
 $$
 
 dove $\mathbf{z}_t$ è il latente rumoroso al passo $t$, $\boldsymbol{\epsilon}$
-il rumore iniettato e $\tau$ il text encoder. Ogni valutazione della rete
-lavora su $16\,384$ valori invece di $786\,432$: da qui viene il vantaggio
-dello spazio latente.
+il rumore iniettato e $\tau$ il text encoder. [Ogni valutazione della rete
+lavora su $16\,384$ valori invece di $786\,432$]{.pt-matita}: da qui viene il
+vantaggio dello spazio latente.
 
 Il 48 resta però il rapporto fra i valori, non fra le operazioni.
 Il costo di una convoluzione cresce con il numero di posizioni
@@ -492,11 +492,10 @@ l'indicazione del testo nel totale pesa pochissimo. La rete tira soprattutto
 verso «un'immagine credibile», e «acquerello» è una spintarella dentro quella
 spinta grossa, che si perde per strada: il gatto viene a olio.
 
-Il colpo di
-genio è prendere quel pelo verso est e moltiplicarlo: non un passo, ma sette
-passi e mezzo verso est, e poi camminare verso nord-est. Sette e mezzo è il
-numero che Stable Diffusion usa di serie, e si chiama il **peso della guida**,
-$w$.
+Il colpo di genio è [prendere quel pelo verso est e moltiplicarlo]{.pt-matita}:
+non un passo, ma sette passi e mezzo verso est, e poi camminare verso nord-est.
+Sette e mezzo è il numero che Stable Diffusion usa di serie, e si chiama il
+**peso della guida**, $w$.
 
 A $w = 1$ non si esagera niente, e si ottiene il gatto a olio di prima. Sotto
 l'uno il modello va a briglia sciolta, con immagini varie e richiesta presa
@@ -531,8 +530,8 @@ In addestramento il condizionamento viene azzerato con probabilità fissa
 (*condition dropout*, circa $0{,}1$ in Stable Diffusion): la stessa rete
 apprende sia $\boldsymbol{\epsilon}_\theta(\mathbf{z}_t, c)$ sia il caso non
 condizionato $\boldsymbol{\epsilon}_\theta(\mathbf{z}_t, \varnothing)$, dove
-$\varnothing$ è il prompt vuoto. In inferenza le due predizioni si combinano
-per estrapolazione:
+$\varnothing$ è il prompt vuoto. [In inferenza le due predizioni si combinano
+per estrapolazione]{.pt-matita}:
 
 $$
 \tilde{\boldsymbol{\epsilon}}_\theta(\mathbf{z}_t, c) =
@@ -657,17 +656,17 @@ picco di memoria scende di molto.
 
 ## L'onda lunga dei pesi aperti
 
-Il rilascio dei pesi ha fatto qualcosa che nessuna API può fare: ha permesso a
-chiunque di *modificare* il modello. Nel giro di mesi è nato un ecosistema di
-personalizzazioni leggere. Con LoRA {cite}`hu2022lora`, una tecnica nata per
-i modelli di linguaggio, si specializza il modello su uno stile o un soggetto
-senza toccarlo tutto: accanto ai pesi originali, che restano fermi, si
-addestrano due tabelle di numeri molto più piccole che ne correggono l'uscita.
-Il file da condividere pesa qualche megabyte invece di qualche gigabyte, e per
-questo gli stili circolano come le canzoni. Con **ControlNet**
-{cite}`zhang2023adding` si vincola invece la generazione a uno schizzo, una
-posa o una mappa di profondità (un'immagine in cui ogni pixel dice quanto è
-lontano quel punto) forniti dall'utente. LoRA è la stessa tecnica del
+[Il rilascio dei pesi ha fatto qualcosa che nessuna API può fare]{.pt-matita}:
+ha permesso a chiunque di *modificare* il modello. Nel giro di mesi è nato un
+ecosistema di personalizzazioni leggere. Con LoRA {cite}`hu2022lora`, una
+tecnica nata per i modelli di linguaggio, si specializza il modello su uno
+stile o un soggetto senza toccarlo tutto: accanto ai pesi originali, che
+restano fermi, si addestrano due tabelle di numeri molto più piccole che ne
+correggono l'uscita. Il file da condividere pesa qualche megabyte invece di
+qualche gigabyte, e per questo gli stili circolano come le canzoni. Con
+**ControlNet** {cite}`zhang2023adding` si vincola invece la generazione a uno
+schizzo, una posa o una mappa di profondità (un'immagine in cui ogni pixel dice
+quanto è lontano quel punto) forniti dall'utente. LoRA è la stessa tecnica del
 {doc}`post-training dei Transformer </Transformers/post-training>`. Sono tutte
 e due il motivo per cui attorno a Stable Diffusion esiste una comunità e non
 solo un'utenza.
@@ -724,9 +723,9 @@ suoi appunti a quelli del restauratore.
 
 Su ogni ponte c'è una manopola del volume per gli appunti dell'apprendista, e
 all'inizio sono tutte a zero: sono le convoluzioni a zero. Un'altra manopola,
-anche lei a zero, dosa lo schizzo che entra nell'apprendista. Il primo giorno,
-quindi, il restauratore lavora come prima, e niente di quanto sa viene sporcato
-da un apprendista che dello schizzo non sa ancora niente.
+anche lei a zero, dosa lo schizzo che entra nell'apprendista. [Il primo giorno,
+quindi, il restauratore lavora come prima]{.pt-matita}, e niente di quanto sa
+viene sporcato da un apprendista che dello schizzo non sa ancora niente.
 
 Al primo giro di addestramento si muovono soltanto le manopole dei ponti.
 L'apprendista lavora già, perché è una copia, e i suoi appunti sono sensati:
@@ -784,14 +783,14 @@ $$
 + \mathcal{Z}\Big(\mathcal{F}\big(\mathbf{x} + \mathcal{Z}(\mathbf{c}_f;\Theta_{z1});\,\Theta_c\big);\,\Theta_{z2}\Big),
 $$
 
-e all'inizializzazione $\mathbf{y}_c = \mathcal{F}(\mathbf{x};\Theta)$: il
-modello parte esattamente dal comportamento pre-addestrato, e nei primi passi
-la copia non riceve gradienti rumorosi che ne guasterebbero i pesi, mentre il
-congelamento di $\Theta$ protegge l'originale dall'oblio e dal sovradattamento
-ai pochi esempi nuovi. Che lo zero serva lo mostra l'ablazione degli autori:
-con convoluzioni di collegamento inizializzate a caso la qualità scende a
-quella di ControlNet-lite, una variante che al posto della copia ha un solo
-strato convoluzionale per blocco, cioè la copia perde le conoscenze di
+e all'inizializzazione $\mathbf{y}_c = \mathcal{F}(\mathbf{x};\Theta)$: [il
+modello parte esattamente dal comportamento pre-addestrato]{.pt-matita}, e nei
+primi passi la copia non riceve gradienti rumorosi che ne guasterebbero i pesi,
+mentre il congelamento di $\Theta$ protegge l'originale dall'oblio e dal
+sovradattamento ai pochi esempi nuovi. Che lo zero serva lo mostra l'ablazione
+degli autori: con convoluzioni di collegamento inizializzate a caso la qualità
+scende a quella di ControlNet-lite, una variante che al posto della copia ha un
+solo strato convoluzionale per blocco, cioè la copia perde le conoscenze di
 partenza.
 
 Nulla però resta bloccato. In ogni posizione $p$ della griglia la
@@ -967,9 +966,9 @@ filigrana invisibile (un segnale nascosto nei pixel, che un programma sa
 riconoscere) nelle immagini che produceva, e ci sono standard, come le
 *Content Credentials* del consorzio C2PA, che provano a certificare l'origine
 dei contenuti. Chi possiede i pesi, però, disattiva la filigrana con una riga di
-codice, e riconoscere l'origine dopo il fatto resta una rincorsa. Sono problemi
+codice, e riconoscere l'origine dopo il fatto resta una rincorsa. [Sono problemi
 aperti nel senso pieno: tecnici solo in parte, e non risolvibili solo con la
-tecnica.
+tecnica]{.pt-matita}.
 
 `````{tab} Elementare
 

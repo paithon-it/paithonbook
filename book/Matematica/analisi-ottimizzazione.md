@@ -33,9 +33,10 @@ e giralo finché, lì attorno, righello e curva si sovrappongono: quella è la
 avanza di un passo verso destra) è la derivata in quel punto.
 
 Così, dove la curva sale ripida anche il righello è ripido, e la derivata è
-grande e positiva; dove scende, il righello punta in giù e la
-derivata è negativa. In cima a una gobba o in fondo a una conca, dove per un
-istante il terreno è piatto, il righello è orizzontale e la derivata vale zero.
+grande e positiva; dove scende, il righello punta in giù e la derivata è
+negativa. [In cima a una gobba o in fondo a una conca, dove per un istante il
+terreno è piatto, il righello è orizzontale e la derivata vale
+zero]{.pt-matita}.
 
 `````
 
@@ -52,13 +53,13 @@ limite esista, cosa che per $|x|$ in $0$ non accade. I punti in cui
 $f'(x) = 0$ si dicono **stazionari**, e possono essere massimi, minimi o flessi
 a tangente orizzontale (in più variabili, anche punti di sella).
 
-Se $f$ è derivabile in un punto interno di minimo, lì $f'(x)=0$ (teorema di
-Fermat), e la condizione è necessaria ma non sufficiente. I candidati al minimo
-di una loss sono quindi i punti stazionari più quelli in cui la derivata non
-esiste, come lo zero di una ReLU o di un valore assoluto. In quei punti le
-librerie mettono per convenzione un valore compreso fra le due derivate
-laterali (un sottogradiente); PyTorch, ad esempio, dà $0$ sia alla ReLU sia al
-valore assoluto, che in $0$ ha derivate laterali $-1$ e $+1$.
+Se $f$ è derivabile in un punto interno di minimo, [lì $f'(x)=0$ (teorema di
+Fermat), e la condizione è necessaria ma non sufficiente]{.pt-matita}. I
+candidati al minimo di una loss sono quindi i punti stazionari più quelli in
+cui la derivata non esiste, come lo zero di una ReLU o di un valore assoluto.
+In quei punti le librerie mettono per convenzione un valore compreso fra le due
+derivate laterali (un sottogradiente); PyTorch, ad esempio, dà $0$ sia alla
+ReLU sia al valore assoluto, che in $0$ ha derivate laterali $-1$ e $+1$.
 
 `````
 
@@ -127,8 +128,8 @@ Restano le pendenze, che si prendono da una tabella come si prende la formula
 dell'area del cerchio, senza dimostrarle. La pendenza di $x^2$ è $2x$, quindi
 nel punto $x=3$ la parabola sale con pendenza $6$. Quella di $e^x$ è di nuovo
 $e^x$, che è la regola del libretto detta in simboli. Per questo
-l'esponenziale rende i calcoli sopportabili: derivandolo, resta identico a sé
-stesso.
+[l'esponenziale rende i calcoli sopportabili: derivandolo, resta identico a sé
+stesso]{.pt-matita}.
 
 Infine, la pendenza del logaritmo naturale, di base $e$, è «uno diviso il
 numero a cui si è arrivati». Su un conto da $1000$ euro un euro in più sposta
@@ -150,8 +151,8 @@ $$
 Queste tre ricorrono perché l'errore quadratico medio è una
 potenza, la sigmoide $\sigma(x)=1/(1+e^{-x})$ e la softmax sono costruite
 sull'esponenziale, la log-verosimiglianza e la cross-entropy sul logaritmo.
-Osserviamo che $e^x$ coincide con la propria derivata, ed è questo a rendere
-trattabili questi calcoli.
+Osserviamo che [$e^x$ coincide con la propria derivata, ed è questo a rendere
+trattabili questi calcoli]{.pt-matita}.
 
 Valgono anche la linearità, la regola del prodotto $(fg)'=f'g+fg'$ e quella
 del quoziente $(f/g)'=(f'g-fg')/g^2$. Ne discendono le due derivate che tornano
@@ -204,12 +205,12 @@ zigzaga da una parete all'altra e avanza poco.
 
 `````{tab} Elementare
 
-La **derivata parziale** è semplice: tieni fermi tutti i parametri tranne uno
-e misura la pendenza rispetto a quello, come quando lasci ferme tutte le
-manopole di un mixer tranne una e ascolti l'effetto di quella sola. Se poi
-metti in fila tutte queste pendenze ottieni il gradiente, un vettore che punta
-nella direzione in cui il costo cresce più in fretta (la salita più ripida).
-Per *scendere*, ci basta andare nel verso opposto. In altre parole, il
+La **derivata parziale** è semplice: tieni fermi tutti i parametri tranne uno e
+misura la pendenza rispetto a quello, come quando lasci ferme tutte le manopole
+di un mixer tranne una e ascolti l'effetto di quella sola. Se poi metti in fila
+tutte queste pendenze ottieni il gradiente, un vettore che punta nella
+direzione in cui il costo cresce più in fretta (la salita più ripida). [Per
+*scendere*, ci basta andare nel verso opposto]{.pt-matita}. In altre parole, il
 gradiente dice, manopola per manopola, di quanto conviene girarla.
 
 «Più ripida» rispetto a che cosa? Confrontare le direzioni presuppone passi
@@ -272,8 +273,8 @@ le rifà a mano deve poterle concatenare senza trasposte impreviste.
 ```
 
 Il gradiente $\nabla\mathcal{L}$ indica la direzione di massima crescita di
-$\mathcal{L}$, quindi $-\nabla\mathcal{L}$ è la direzione di massima discesa,
-cioè il verso in cui muoveremo i parametri. Infatti la variazione di
+$\mathcal{L}$, quindi [$-\nabla\mathcal{L}$ è la direzione di massima discesa,
+cioè il verso in cui muoveremo i parametri]{.pt-matita}. Infatti la variazione di
 $\mathcal{L}$ nella direzione di un versore $\mathbf{u}$ (la derivata
 direzionale) è $D_\mathbf{u}\mathcal{L} = \nabla\mathcal{L}^\top\mathbf{u}$, e
 per la disuguaglianza di Cauchy–Schwarz vale
@@ -341,10 +342,10 @@ conosce solo quanto amplifica ciò che gli arriva, e il prodotto di quegli
 effetti locali dà l'effetto complessivo.
 ```
 
-L'ultima riga di {numref}`fig-regola-catena` riassume tutto in una frase: il
+L'ultima riga di {numref}`fig-regola-catena` riassume tutto in una frase: [il
 calcolo si può fare localmente, anello per anello, senza conoscere la funzione
-intera. Così il gradiente di una rete da milioni di parametri si ottiene
-in una sola passata all'indietro. Questa procedura si chiama
+intera]{.pt-matita}. Così il gradiente di una rete da milioni di parametri si
+ottiene in una sola passata all'indietro. Questa procedura si chiama
 *backpropagation*, cioè «propagazione all'indietro».
 
 `````{tab} Elementare
@@ -454,11 +455,11 @@ $\beta=0{,}9$).
 In una valle stretta la pendenza ha due parti: quella che attraversa la valle,
 che a ogni passo cambia verso perché rimbalza prima contro una parete e poi
 contro l'altra, e quella che scende lungo la valle, che punta sempre dalla
-stessa parte. Nella somma la prima parte si annulla (una volta è più uno, la
-volta dopo è meno uno), mentre la seconda si accumula. Lungo la valle, dove la
-pendenza è sempre la stessa, il passo diventa $1/(1-\beta)$ volte più lungo,
-dieci volte con $\beta=0{,}9$. In definitiva restano meno rimbalzi e più
-avanzamento.
+stessa parte. [Nella somma la prima parte si annulla (una volta è più uno, la
+volta dopo è meno uno), mentre la seconda si accumula]{.pt-matita}. Lungo la
+valle, dove la pendenza è sempre la stessa, il passo diventa $1/(1-\beta)$
+volte più lungo, dieci volte con $\beta=0{,}9$. In definitiva restano meno
+rimbalzi e più avanzamento.
 
 La sigla del disegno, **SGD**, sta per *stochastic gradient descent*, cioè
 discesa stocastica del gradiente. È la stessa discesa, con l'accorgimento che a
@@ -579,9 +580,9 @@ parte.
 Se invece il paesaggio è una catena montuosa piena
 di conche, si può finire intrappolati in una conca che non è la più profonda:
 un minimo locale, un
-buon posto ma non il migliore. Nei paesaggi delle reti grandi, però,
+buon posto ma non il migliore. [Nei paesaggi delle reti grandi, però,
 abbondano conche profonde quasi quanto la più profonda, e fermarsi in una di
-loro dà ottimi risultati.
+loro dà ottimi risultati]{.pt-matita}.
 
 `````
 
@@ -654,10 +655,10 @@ nella valle stretta, arriva prima. Si noti però che nei due estremi la radice
 è doppia, e il termine $t\,r^t$ della radice doppia aggiunge un fattore
 lineare in $t$ che il solo modulo non vede.
 
-Le loss del deep learning, poi, sono quasi sempre non convesse, e per queste non
-c'è nessuna garanzia. Empiricamente, però, per reti molto grandi i minimi
-locali "buoni" sono tantissimi e quasi equivalenti al globale, e gli ostacoli
-veri sono più i punti di sella che le conche profonde
+Le loss del deep learning, poi, sono quasi sempre non convesse, e per queste
+non c'è nessuna garanzia. Empiricamente, però, per reti molto grandi [i minimi
+locali "buoni" sono tantissimi e quasi equivalenti al globale]{.pt-matita}, e
+gli ostacoli veri sono più i punti di sella che le conche profonde
 {cite}`dauphin2014identifying`. Per questo ci si accontenta (con ottimi
 risultati) di un minimo *abbastanza buono*.
 
@@ -751,9 +752,10 @@ passi che chiederebbe il solo fattore: 35
 La discesa semplice perde un cinquantesimo della distanza a ogni passo e ne
 impiega $346$. Con il momento, invece, ogni pendenza (dalla più dolce alla più
 ripida) si accorcia dello stesso fattore a ogni passo, $9/11 \approx 0{,}8182$,
-e i passi scendono a $56$, più di sei volte meno della discesa semplice. Si
-noti che sono più dei $35$ che quel fattore da solo prometterebbe, perché nelle
-due direzioni estreme l’accorciamento parte in ritardo.
+e [i passi scendono a $56$, più di sei volte meno della discesa
+semplice]{.pt-matita}. Si noti che sono più dei $35$ che quel fattore da solo
+prometterebbe, perché nelle due direzioni estreme l’accorciamento parte in
+ritardo.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

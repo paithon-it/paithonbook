@@ -48,10 +48,11 @@ qualunque frase: ad esempio "nero" è soltanto "nero". A ogni piano otto lettori
 rileggono tutta la frase con il meccanismo di attenzione (ogni parola guarda
 tutte le altre e si arricchisce con le informazioni che raccoglie), poi
 ciascuna parola viene rielaborata a parte da una piccola rete di neuroni, e il
-risultato sale al piano di sopra. Piano dopo piano la rappresentazione di ogni
-parola si specializza: "nero" al sesto piano è diventato *il colore di quel
-gatto in quella frase*. Alla fine della salita, l'encoder consegna una versione
-della frase in cui ogni parola porta scritto addosso il suo contesto.
+risultato sale al piano di sopra. [Piano dopo piano la rappresentazione di ogni
+parola si specializza]{.pt-matita}: "nero" al sesto piano è diventato *il
+colore di quel gatto in quella frase*. Alla fine della salita, l'encoder
+consegna una versione della frase in cui ogni parola porta scritto addosso il
+suo contesto.
 
 Perché sei piani e non quattro? Come per le otto teste della sezione
 sull'attenzione, perché funzionava: è un numero provato sul campo, e i modelli
@@ -75,11 +76,11 @@ forma Post-LN dell'articolo originale, $\text{LayerNorm}(\mathbf{x} +
 di {numref}`fig-blocco-transformer`, per le ragioni esposte nella {doc}`sezione
 sull'attenzione <attenzione>`; le formule che seguono sono quelle del 2017. La
 divisione dei ruoli è netta: l'attenzione *mescola* informazione tra le
-posizioni, la FFN la *trasforma* posizione per posizione; è l'alternanza dei
+posizioni, la FFN la *trasforma* posizione per posizione; [è l'alternanza dei
 due movimenti, ripetuta per $n_{\text{strati}}$ strati, a costruire
-rappresentazioni via via più astratte. Per esteso, con $\mathbf{H}^{(0)} =
-\sqrt{d_{\text{model}}}\,\mathbf{X}_{\text{emb}} + \mathbf{PE}$, lo strato
-$\ell$ calcola
+rappresentazioni via via più astratte]{.pt-matita}. Per esteso, con
+$\mathbf{H}^{(0)} = \sqrt{d_{\text{model}}}\,\mathbf{X}_{\text{emb}} +
+\mathbf{PE}$, lo strato $\ell$ calcola
 
 $$
 \begin{aligned}
@@ -116,8 +117,8 @@ ancora scritto.
 `````{tab} Elementare
 Il decoder genera la traduzione una parola alla volta, e mentre lo fa consulta
 due fonti: le parole che ha *già scritto* (per non contraddirsi) e il testo che
-l'encoder *ha letto* (per restare fedele all'originale). C'è però una regola
-ferrea, la stessa dei compiti in classe: non si sbircia avanti.
+l'encoder *ha letto* (per restare fedele all'originale). [C'è però una regola
+ferrea, la stessa dei compiti in classe: non si sbircia avanti]{.pt-matita}.
 
 Per capire la regola serve sapere come si addestra questa macchina, che è più
 semplice di quanto sembri: le si danno milioni di frasi con accanto la
@@ -145,10 +146,10 @@ ciascuno:
 
 1. **Masked Multi-Head Self-Attention**: come la self-attention dell'encoder,
    ma con una maschera che esclude le posizioni future (somma $-\infty$ ai loro
-   punteggi prima della softmax, così che il loro peso sia zero): la posizione
-   $t$ vede solo $1, \dots, t$. È ciò che rende il modello autoregressivo, e
-   fa sì che il *meccanismo* di condizionamento sia lo stesso in addestramento
-   e in generazione;
+   punteggi prima della softmax, così che il loro peso sia zero): [la posizione
+   $t$ vede solo $1, \dots, t$]{.pt-matita}. È ciò che rende il modello
+   autoregressivo, e fa sì che il *meccanismo* di condizionamento sia lo stesso
+   in addestramento e in generazione;
 2. Cross-Attention: le query vengono dal decoder, chiavi e valori dall'output
    dell'encoder, con cui la generazione "consulta" la frase di partenza;
 3. Feed-Forward Network: identica a quella dell'encoder.
@@ -262,11 +263,11 @@ frequenza, cioè con la sua velocità; e le frequenze decrescono in progressione
 geometrica, ognuna una frazione fissa della precedente.
 
 Siccome ogni coordinata oscilla fra $-1$ e $1$, nessun valore cresce con la
-posizione. Le frequenze alte distinguono i vicini immediati, quelle basse
-dicono in quale parte della sequenza siamo: più scale insieme invece di una.
-Con $d_{\text{model}} = 512$
-la sinusoide più lenta ha un periodo di oltre sessantamila posizioni, e nessuna
-frase è abbastanza lunga perché la firma si ripeta.
+posizione. [Le frequenze alte distinguono i vicini immediati, quelle basse
+dicono in quale parte della sequenza siamo]{.pt-matita}: più scale insieme
+invece di una. Con $d_{\text{model}} = 512$ la sinusoide più lenta ha un
+periodo di oltre sessantamila posizioni, e nessuna frase è abbastanza lunga
+perché la firma si ripeta.
 
 `````{tab} Elementare
 A teatro ogni spettatore ha un posto numerato, e la stessa persona in prima
@@ -449,9 +450,9 @@ consultazione dell'altra torre, quindi lì si va a otto contro otto e la quota
 scende a metà; ma i grandi modelli linguistici di oggi tengono solo la torre
 che scrive e non consultano nessuno, e la quota torna ai due terzi.
 
-La parte più semplice della torre contiene anche la maggior parte dei numeri
-imparati, e molti ricercatori sono andati a cercare lì dove il modello conservi
-le sue conoscenze.
+[La parte più semplice della torre contiene anche la maggior parte dei numeri
+imparati]{.pt-matita}, e molti ricercatori sono andati a cercare lì dove il
+modello conservi le sue conoscenze.
 
 Questo è il piano del 2017, con tre passaggi e due moduli, e i modelli di oggi
 lo hanno ritoccato in due punti. I numeri negativi ora si scoloriscono invece
@@ -483,12 +484,12 @@ Tabella 3 dell'articolo una FFN più larga migliora i risultati a parità del
 resto, pur richiedendo più parametri (con $d_{\text{ff}} = 4096$ il BLEU sale
 da 25,8 a 26,2, mentre con $d_{\text{ff}} = 1024$ scende a 25,4).
 
-La FFN, pur essendo la parte concettualmente più semplice, contiene circa due
-terzi dei parametri di uno strato di encoder ($2\,d\,d_{\text{ff}} = 8d^2$
-contro i $4d^2$ delle quattro proiezioni dell'attenzione); negli strati di
-decoder, che hanno una seconda attenzione, la quota scende a metà. Nei grandi
-modelli linguistici, decoder-only e quindi privi di cross-attention, la quota
-della FFN torna a due terzi.
+[La FFN, pur essendo la parte concettualmente più semplice, contiene circa due
+terzi dei parametri di uno strato di encoder]{.pt-matita} ($2\,d\,d_{\text{ff}}
+= 8d^2$ contro i $4d^2$ delle quattro proiezioni dell'attenzione); negli strati
+di decoder, che hanno una seconda attenzione, la quota scende a metà. Nei
+grandi modelli linguistici, decoder-only e quindi privi di cross-attention, la
+quota della FFN torna a due terzi.
 
 Una linea di ricerca legge la FFN come una memoria chiave-valore: le
 colonne di $\mathbf{W}_1$ fanno da chiavi che si accendono su configurazioni

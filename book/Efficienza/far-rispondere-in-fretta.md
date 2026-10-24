@@ -154,9 +154,9 @@ ma perché si paga la stessa lettura di trentaquattro megabyte di pesi per una
 parola sola invece che per duecento.
 
 Per questo motivo rimpicciolire il modello aiuta anche il tempo di risposta
-(meno pesi da leggere vuol dire meno traffico), ma non basta: finché si scrive
+(meno pesi da leggere vuol dire meno traffico), ma non basta: [finché si scrive
 una parola alla volta, si è nella prima riga della tabella qualunque sia la
-dimensione del modello.
+dimensione del modello]{.pt-matita}.
 
 ## Le tre risposte, e dove stanno
 
@@ -272,15 +272,15 @@ Le tre leve del capitolo tornano inoltre, applicate al servizio, nella sezione
 
 `````
 
-Le tre leve si pagano, e il costo di ciascuna conta più dell’elenco delle
-tecniche. Arrotondare a otto bit sposta l’uscita di uno strato dell’uno per
-cento, e a quattro molto di più; soltanto la prova sul modello dice quanto
-questo costi in accuratezza. Potare novanta pesi su cento costa un punto di
-accuratezza e, sulla moltiplicazione densa che quasi tutti eseguono, non regala
-un millisecondo. Chi imita un maestro, infine, ne prende anche gli errori, e un
-maestro sbagliato fa peggio di nessuno. Il costo cambia da un modello
-all'altro, e chi adotta una di queste leve senza valutarne l'impatto sul
-modello che usa sta scegliendo alla cieca.
+[Le tre leve si pagano]{.pt-matita}, e il costo di ciascuna conta più
+dell’elenco delle tecniche. Arrotondare a otto bit sposta l’uscita di uno
+strato dell’uno per cento, e a quattro molto di più; soltanto la prova sul
+modello dice quanto questo costi in accuratezza. Potare novanta pesi su cento
+costa un punto di accuratezza e, sulla moltiplicazione densa che quasi tutti
+eseguono, non regala un millisecondo. Chi imita un maestro, infine, ne prende
+anche gli errori, e un maestro sbagliato fa peggio di nessuno. Il costo cambia
+da un modello all'altro, e chi adotta una di queste leve senza valutarne
+l'impatto sul modello che usa sta scegliendo alla cieca.
 
 Il calcolo dell’intensità aritmetica riguarda uno strato solo, e un modello
 vero ne ha decine, uno dopo l’altro. Perché una rete sia fatta di molti

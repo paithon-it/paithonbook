@@ -14,8 +14,8 @@ finire. Il modello aveva colto una correlazione vera nei dati e ne aveva tratto
 una conclusione che, usata per decidere chi mandare a casa, avrebbe ucciso. La
 storia (raccontata anni dopo da Rich Caruana e colleghi
 {cite}`caruana2015intelligible`) è diventata il manifesto di un campo: se non
-possiamo *guardare dentro* un modello, non sappiamo su quali scorciatoie si
-basa, e non possiamo fidarcene quando la posta è alta.
+possiamo *guardare dentro* un modello, [non sappiamo su quali scorciatoie si
+basa, e non possiamo fidarcene quando la posta è alta]{.pt-matita}.
 
 Ci sono due strade per capire un modello. La prima è sceglierlo trasparente per
 costruzione, così semplice che la sua logica si legge a occhio nudo. La seconda
@@ -62,10 +62,11 @@ invece, si misurano per qualunque modello, perché basta confrontare la risposta
 con la verità. Con un modello opaco non si può aprire la regola per vedere
 quale pezzo del calcolo ha prodotto quella risposta. Un modello è trasparente
 quando una persona può leggere dall'inizio alla fine la procedura con cui
-calcola la risposta, e questo vale finché il modello resta piccolo: pochi
-coefficienti, un albero poco profondo. Una somma con diecimila voci o un albero
-con trenta livelli di domande sono fatti allo stesso modo, ma nessuno li legge
-più. Trasparente, comunque, non è sinonimo di accurato.
+calcola la risposta, e [questo vale finché il modello resta
+piccolo]{.pt-matita}: pochi coefficienti, un albero poco profondo. Una somma
+con diecimila voci o un albero con trenta livelli di domande sono fatti allo
+stesso modo, ma nessuno li legge più. Trasparente, comunque, non è sinonimo di
+accurato.
 
 `````{tab} Elementare
 
@@ -578,8 +579,8 @@ Dominici l'hanno poi formalizzato per un modello qualsiasi.
 
 `````{tab} Elementare
 
-L'idea è quasi impertinente: se una colonna conta, rovinarla deve far
-crollare le risposte giuste. Prendiamo un modello che
+L'idea è quasi impertinente: [se una colonna conta, rovinarla deve far
+crollare le risposte giuste]{.pt-matita}. Prendiamo un modello che
 prevede se un cliente restituirà un prestito, e mettiamolo alla prova su 100
 clienti mai visti: indovina 90 volte su 100. Ora prendiamo una colonna sola
 (il reddito) e ne rimescoliamo i valori tra i 100 clienti: ognuno si
@@ -712,8 +713,8 @@ quasi sempre una che, per puro caso, separa un po’ i dati. Così accumula
 valori (sì/no, tre categorie) parte invece svantaggiata: ha poche soglie da
 provare.
 
-Il risultato è che l'importanza da impurità tende a gonfiare le feature
-continue o con molte categorie e a sminuire quelle a pochi valori: un
+Il risultato è che l’[importanza da impurità tende a gonfiare le feature
+continue o con molte categorie e a sminuire quelle a pochi valori]{.pt-matita}: un
 difetto strutturale, non del singolo insieme di dati. Due colonne di puro
 rumore date in pasto al modello, una con tanti valori e una con due soli, lo
 mettono in chiaro: valgono zero tutte e due, e questa misura ne premia una
@@ -755,9 +756,9 @@ con $j(v)$ la feature su cui taglia il nodo $v$ (in una foresta $n_v$ conta gli
 esempi del campione bootstrap, ripetizioni comprese). Poiché $i$ è concava,
 $\Delta i(v) \ge 0$ per ogni taglio: la MDI non può essere negativa.
 
-La MDI è distorta verso le feature ad alta cardinalità e quelle continue,
-come hanno stabilito Strobl, Boulesteix, Zeileis e Hothorn
-{cite}`strobl2007bias`, che ne identificano due sorgenti distinte.
+[La MDI è distorta verso le feature ad alta cardinalità e quelle
+continue]{.pt-matita}, come hanno stabilito Strobl, Boulesteix, Zeileis e
+Hothorn {cite}`strobl2007bias`, che ne identificano due sorgenti distinte.
 
 La prima è combinatoria: il numero di split candidati cresce con
 il numero di valori distinti, e massimizzare la riduzione d'impurità su molti
@@ -1300,16 +1301,16 @@ quella colonna sia la causa di niente. Attenzione a questa parola, che somiglia
 a un'altra molto frequente in statistica: «casuale» vuol dire tirato a sorte,
 «causale» che una cosa ne provoca un'altra, e noi neghiamo la seconda.
 
-Ad esempio, nella storia degli asmatici l'asma
-risultava importante, e chi avesse letto quel numero come una causa avrebbe
-concluso che l'asma protegge dalla polmonite. La causa vera erano le cure
-intensive; l'asma era soltanto la colonna che, nei dati, viaggiava insieme a
-quelle cure. Il modello ha visto quali cose vanno insieme, non che cosa provoca
-che cosa, e le due sono diverse ogni volta che in mezzo c'è qualcosa che nella
-tabella non compare. Confondere «colonna importante per il modello»
-con «causa del fenomeno» è l'errore che trasforma uno strumento per trovare i
-difetti in una fonte di decisioni sbagliate. L'interpretabilità apre la
-scatola: sta a noi non leggerci dentro più di quel che c'è.
+Ad esempio, nella storia degli asmatici l'asma risultava importante, e chi
+avesse letto quel numero come una causa avrebbe concluso che l'asma protegge
+dalla polmonite. La causa vera erano le cure intensive; l'asma era soltanto la
+colonna che, nei dati, viaggiava insieme a quelle cure. [Il modello ha visto
+quali cose vanno insieme, non che cosa provoca che cosa]{.pt-matita}, e le due
+sono diverse ogni volta che in mezzo c'è qualcosa che nella tabella non
+compare. Confondere «colonna importante per il modello» con «causa del
+fenomeno» è l'errore che trasforma uno strumento per trovare i difetti in una
+fonte di decisioni sbagliate. L'interpretabilità apre la scatola: sta a noi non
+leggerci dentro più di quel che c'è.
 
 `````{tab} Elementare
 

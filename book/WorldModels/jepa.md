@@ -41,13 +41,13 @@ Anche nei mondi in miniatura la previsione non avveniva sui puntini dello
 schermo: avveniva sui 32 numeri in cui V, la rete che guardava, riassumeva il
 fotogramma. Quel riassunto, però, era stato addestrato a rimettere insieme i
 puntini: era buono nella misura in cui il disegno rifatto somigliava
-all'originale. LeCun
-propone di tagliare anche quel cordone. Il futuro, osserva, ha due proprietà
-che rendono una pessima idea provare a disegnarlo: è **molteplice** (da uno
-stesso presente possono seguire tanti futuri diversi, tutti plausibili) ed è
-pieno di **dettagli irrilevanti**. Il suo esempio ricorrente è un albero in un
-video: nessun modello potrà mai prevedere la posizione esatta di ogni foglia
-mossa dal vento, e soprattutto *non serve a niente* provarci.
+all'originale. LeCun propone di tagliare anche quel cordone. Il futuro,
+osserva, [ha due proprietà che rendono una pessima idea provare a
+disegnarlo]{.pt-matita}: è **molteplice** (da uno stesso presente possono
+seguire tanti futuri diversi, tutti plausibili) ed è pieno di **dettagli
+irrilevanti**. Il suo esempio ricorrente è un albero in un video: nessun
+modello potrà mai prevedere la posizione esatta di ogni foglia mossa dal vento,
+e soprattutto *non serve a niente* provarci.
 
 `````{tab} Elementare
 
@@ -178,19 +178,20 @@ possono confrontare.
 
 La trappola è il collasso, già incontrato nella {doc}`sezione sull'energia come
 compatibilità </ModelliEnergia/energia-come-compatibilita>`: un'energia che
-vale zero per ogni coppia. Se la loss misura soltanto la distanza fra la
-rappresentazione predetta e quella del bersaglio, ha un minimo banale: due
-encoder che producono la stessa fila di numeri qualunque cosa guardino. Ne
-risultano una predizione perfetta, energia zero dappertutto e rappresentazioni
-che non distinguono un gatto da un lampadario. Per le JEPA è il pericolo numero
-uno, perché qui il bersaglio è prodotto da un encoder i cui parametri dipendono
-dalla stessa loss, mentre in un modello generativo il bersaglio è il dato
-stesso, che nessun addestramento può spostare. Nel documento del 2022 LeCun
-indica la famiglia di rimedi che preferisce, quella già incontrata fra i
-modelli a energia: invece di fabbricare risposte sbagliate da bocciare, si
-toglie al modello la possibilità stessa di dare a tutto lo stesso riassunto,
-per esempio obbligandolo a tenerli diversi fra loro. Nei sistemi JEPA costruiti
-da Meta, invece, la difesa concreta è un'altra, più semplice e più sottile.
+vale zero per ogni coppia. [Se la loss misura soltanto la distanza fra la
+rappresentazione predetta e quella del bersaglio, ha un minimo
+banale]{.pt-matita}: due encoder che producono la stessa fila di numeri
+qualunque cosa guardino. Ne risultano una predizione perfetta, energia zero
+dappertutto e rappresentazioni che non distinguono un gatto da un lampadario.
+Per le JEPA è il pericolo numero uno, perché qui il bersaglio è prodotto da un
+encoder i cui parametri dipendono dalla stessa loss, mentre in un modello
+generativo il bersaglio è il dato stesso, che nessun addestramento può
+spostare. Nel documento del 2022 LeCun indica la famiglia di rimedi che
+preferisce, quella già incontrata fra i modelli a energia: invece di fabbricare
+risposte sbagliate da bocciare, si toglie al modello la possibilità stessa di
+dare a tutto lo stesso riassunto, per esempio obbligandolo a tenerli diversi
+fra loro. Nei sistemi JEPA costruiti da Meta, invece, la difesa concreta è
+un'altra, più semplice e più sottile.
 
 I pezzi di questa difesa sono tre, e non pesano uguale
 ({numref}`fig-jepa-tre-pezzi`).
@@ -316,11 +317,11 @@ Transformer, la rete che nella {doc}`sezione sui modelli multimodali
 come le parole di una frase {cite}`dosovitskiy2021image`. Il compito è un
 indovinello: dato un solo blocco di *contesto* dell'immagine, prevedere che
 cosa c'è in quattro blocchi *bersaglio* nascosti. La novità sta in che cosa si
-prevede: non i puntini dei blocchi mancanti, ma i loro riassunti, calcolati
-dalla copia lenta dell'encoder. Quella copia prende la sigla di **EMA**
-(*exponential moving average*, media mobile esponenziale): è il nome tecnico
-per il mescolare, a ogni passo, un pochino dei numeri dell'allievo in quelli
-dell'insegnante.
+prevede: [non i puntini dei blocchi mancanti, ma i loro riassunti, calcolati
+dalla copia lenta dell'encoder]{.pt-matita}. Quella copia prende la sigla di
+**EMA** (*exponential moving average*, media mobile esponenziale): è il nome
+tecnico per il mescolare, a ogni passo, un pochino dei numeri dell'allievo in
+quelli dell'insegnante.
 
 `````{tab} Elementare
 
@@ -419,11 +420,11 @@ si estrae a caso a ogni clip. La maschera è anche generosa, perché in media
 copre circa il 90% del video, e il poco che resta non basta a completare i
 bordi di ciò che manca: per indovinare il resto bisogna aver capito la scena.
 
-Due proprietà, però, non bastano, e la differenza si paga cara.
-Coprire il 90% con tanti tubicini sottili sparsi lascia dappertutto un bordo
-da cui completare, e gli autori quella variante l'hanno provata: a riconoscere
-le azioni nei video, il modello che ne esce dà 51,5 risposte giuste su cento
-invece di 72,9 {cite}`bardes2024revisiting`. Funzionano invece blocchi
+Due proprietà, però, non bastano, e la differenza si paga cara. [Coprire il 90%
+con tanti tubicini sottili sparsi lascia dappertutto un bordo da cui
+completare]{.pt-matita}, e gli autori quella variante l'hanno provata: a
+riconoscere le azioni nei video, il modello che ne esce dà 51,5 risposte giuste
+su cento invece di 72,9 {cite}`bardes2024revisiting`. Funzionano invece blocchi
 grandi e contigui, ripetuti identici su tutta la clip, di due tipi: otto
 blocchi grandi ciascuno il 15% del fotogramma, oppure due blocchi grandi
 ciascuno il 70%; l'unione, dicono gli autori, copre in media il 90%. È la
@@ -533,14 +534,14 @@ buon motivo per diffidare di chi riassume queste cose con «ci riesce».
 La parte concettualmente nuova è **V-JEPA 2-AC** (*action-conditioned*,
 condizionato sulle azioni), quella in cui si arriva a un robot vero. Il
 meccanismo è quello della JEPA generale, montato sopra un braccio meccanico: si
-dà al robot un’**immagine-obiettivo** (la tazza sopra il piatto), il modello
+dà al robot un’**immagine-obiettivo** (la tazza sopra il piatto), [il modello
 immagina l'effetto di centinaia di comandi possibili e sceglie quello il cui
-esito previsto è più vicino all'obiettivo. Poi lo esegue, guarda com'è andata e
-ricomincia da capo, un comando alla volta. Dal progetto del 2022 la distanza è
-netta: là l'agente immaginava intere sequenze di azioni prima di muoversi, il
-robot vero ne immagina per ora una sola per volta, e già così ci mette sedici
-secondi. Immaginare prima, muovere poi: è controllo predittivo su modello, e
-questa volta il sistema controllato è un braccio robotico.
+esito previsto è più vicino all'obiettivo]{.pt-matita}. Poi lo esegue, guarda
+com'è andata e ricomincia da capo, un comando alla volta. Dal progetto del 2022
+la distanza è netta: là l'agente immaginava intere sequenze di azioni prima di
+muoversi, il robot vero ne immagina per ora una sola per volta, e già così ci
+mette sedici secondi. Immaginare prima, muovere poi: è controllo predittivo su
+modello, e questa volta il sistema controllato è un braccio robotico.
 
 `````{tab} Elementare
 
@@ -694,13 +695,13 @@ cui pesa la scommessa più grossa.
 
 ## Una scommessa aperta
 
-La via di LeCun è una linea di ricerca in corso, non un traguardo raggiunto. Le
-rappresentazioni JEPA sono competitive con i metodi concorrenti sui banchi di
-prova considerati, senza batterli sempre, e nel caso di I-JEPA contro MAE
-chiedono molto meno calcolo di pre-addestramento; V-JEPA 2-AC ha mostrato che un
-world model auto-supervisionato può guidare un braccio robotico in compiti
-semplici, con successi fra il 25% e il 100% secondo il compito.
-Dell'architettura a sei moduli del 2022 la maggior parte resta sulla
+[La via di LeCun è una linea di ricerca in corso, non un traguardo
+raggiunto]{.pt-matita}. Le rappresentazioni JEPA sono competitive con i metodi
+concorrenti sui banchi di prova considerati, senza batterli sempre, e nel caso
+di I-JEPA contro MAE chiedono molto meno calcolo di pre-addestramento; V-JEPA
+2-AC ha mostrato che un world model auto-supervisionato può guidare un braccio
+robotico in compiti semplici, con successi fra il 25% e il 100% secondo il
+compito. Dell'architettura a sei moduli del 2022 la maggior parte resta sulla
 carta: la JEPA gerarchica, cioè fatta a livelli, dove quello alto pianifica a
 grandi passi («esco di casa, vado alla stazione») e quelli sotto ne riempiono i
 dettagli, ciascuno sulla propria scala di tempo; il configuratore; il

@@ -1,4 +1,4 @@
-"""La finestra che si riempie: tre strategie per un compito di sessanta giri.
+"""La finestra che si riempie: tre strategie per sessanta iterazioni.
 
 La sezione sul passaggio di consegne fa il conto dei token letti con più
 strategie (nessuna, la compattazione, la ripartenza da capo), e il conto ha una
@@ -6,8 +6,8 @@ forma che una tabella di totali non mostra: senza strategie la linea sale
 dritta e si ferma contro il tetto della finestra; con la compattazione crolla
 al riassunto e risale fino alla soglia, due volte; con la ripartenza disegna
 denti di sega che restano bassi. Qui il tempo è il contenuto, perché le tre
-corsie avanzano insieme giro dopo giro, e la differenza fra le strategie è
-proprio in come il contesto cambia mentre il lavoro procede.
+corsie avanzano insieme un'iterazione dopo l'altra, e la differenza fra le
+strategie è proprio in come il contesto cambia mentre il lavoro procede.
 
 I numeri non sono scritti a mano: questo file **esegue il blocco di codice
 della sezione**, preso dal `.md`, e disegna le serie che ne escono.
@@ -77,9 +77,9 @@ def controlla(spazio, stampate):
     if spazio["con_compattazione"](SOGLIA)[1] != spazio["cb"]:
         raise ValueError(f"{NOME}: la corsia della compattazione non è quella "
                          f"con la soglia al {SOGLIA:.0%} che il capitolo stampa")
-    if len(spazio["ca"]) >= spazio["GIRI"]:
+    if len(spazio["ca"]) >= spazio["ITERAZIONI"]:
         raise ValueError(f"{NOME}: la prima corsia deve fermarsi prima della "
-                         f"fine, si ferma dopo {len(spazio['ca'])} giri")
+                         f"fine, si ferma dopo {len(spazio['ca'])} iterazioni")
     if spazio["volte"] != 2 or spazio["sessioni"] != 4:
         raise ValueError(f"{NOME}: la figura disegna 2 compattazioni e 4 "
                          f"sessioni, il capitolo ne fa {spazio['volte']} e "
@@ -97,7 +97,7 @@ def it(n: int) -> str:
 # Geometria
 # --------------------------------------------------------------------------
 W, H = 800, 466
-X0, X1 = 92, 760                 # l'asse dei giri
+X0, X1 = 92, 760                 # l'asse delle iterazioni
 H_CORSIA, ALTO = 96, 74          # altezza di una corsia e del suo grafico
 Y_CORSIE = [80, 212, 344]        # la y del tetto della finestra in ciascuna corsia
 RIVELA = 0.86                    # la frazione della durata in cui si scopre
@@ -107,10 +107,10 @@ def costruisci() -> Figura:
     spazio, stampate = esegui_il_capitolo()
     controlla(spazio, stampate)
 
-    giri, finestra = spazio["GIRI"], spazio["FINESTRA"]
+    iterazioni, finestra = spazio["ITERAZIONI"], spazio["FINESTRA"]
     soglia = SOGLIA * finestra
     fermo = len(spazio["ca"])
-    passo = (X1 - X0) / (giri - 1)
+    passo = (X1 - X0) / (iterazioni - 1)
 
     def px(t: float) -> float:
         return X0 + t * passo
@@ -120,7 +120,7 @@ def costruisci() -> Figura:
 
     corsie = [
         ("senza strategie", spazio["ca"], spazio["a"],
-         f"si ferma dopo {fermo} giri"),
+         f"si ferma dopo {fermo} iterazioni"),
         (f"con la compattazione all'{SOGLIA:.0%}",
          spazio["cb"], spazio["b"], f"{spazio['volte']} riassunti"),
         ("con la ripartenza a ogni funzionalità", spazio["cc"], spazio["c"],
@@ -137,7 +137,7 @@ def costruisci() -> Figura:
         (min(100.0, RIVELA * 100 + 6), "opacity:1"), (100.0, "opacity:1")]))
 
     corpo.append(f'<text class="ttl" x="{X0}" y="26">quanto testo il modello '
-                 f'rilegge a ogni giro</text>')
+                 f'rilegge a ogni iterazione</text>')
 
     for k, (nome, serie, letti, nota) in enumerate(corsie):
         y0 = Y_CORSIE[k]
@@ -168,8 +168,8 @@ def costruisci() -> Figura:
         corpo.append(f'<text class="lbl nome" x="{X0}" y="{y0 - 14}">{nome}'
                      f'</text>')
 
-        # La linea: un punto per giro. Dove il contesto crolla (riassunto o
-        # sessione nuova) la linea scende ripida fra due giri.
+        # La linea: un punto per iterazione. Dove il contesto crolla (riassunto
+        # o sessione nuova) la linea scende ripida fra due iterazioni.
         punti = [(px(t), py(y0, v)) for t, v in enumerate(serie)]
         d = "M " + " L ".join(f"{x:.1f} {y:.1f}" for x, y in punti)
         classe = ["lin-t", "lin-o", "lin-v"][k]
@@ -196,16 +196,16 @@ def costruisci() -> Figura:
             f'infinite"><text class="lbl" x="{X1}" y="{y0 + ALTO + 22}" '
             f'text-anchor="end">{nota}, letti {it(letti)} token</text></g>')
 
-    corpo.append(f'<text class="lbs" x="{X0}" y="{H - 8}">giro 1</text>')
+    corpo.append(f'<text class="lbs" x="{X0}" y="{H - 8}">iterazione 1</text>')
     corpo.append(f'<text class="lbs" x="{X1}" y="{H - 8}" text-anchor="end">'
-                 f'giro {giri}</text>')
+                 f'iterazione {iterazioni}</text>')
 
     return Figura(
         larghezza=W, altezza=H,
-        alt=f"Tre corsie, una per strategia, con i giri del compito in "
+        alt=f"Tre corsie, una per strategia, con le iterazioni del compito in "
             f"orizzontale e l'occupazione della finestra in verticale. Nella "
             f"prima, senza strategie, la linea sale dritta fino al tetto della "
-            f"finestra e si interrompe dopo {fermo} giri, dopo aver "
+            f"finestra e si interrompe dopo {fermo} iterazioni, dopo aver "
             f"letto {it(spazio['a'])} token. Nella seconda, con la "
             f"compattazione all'ottanta per cento, la linea sale fino alla "
             f"soglia, crolla al riassunto e risale, {spazio['volte']} volte, "

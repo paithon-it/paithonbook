@@ -32,9 +32,9 @@ una componente. L'insieme delle risposte su cui la distribuzione è definita è 
 suo **dominio**.
 
 Il valore singolo non sparisce: si recupera quando serve, prendendo il punto
-in cui la distribuzione dichiarata è più alta. In più si guadagna tutto
+in cui la distribuzione dichiarata è più alta. In più [si guadagna tutto
 il resto della dichiarazione, cioè quanto la rete crede a ciascuna delle altre
-risposte.
+risposte]{.pt-matita}.
 
 ## La ricetta in quattro mosse
 
@@ -100,8 +100,8 @@ calcolatore, che a quel punto lo confonde con lo zero.
 
 Per questo si passa ai logaritmi. Il logaritmo in base dieci conta gli zeri: ad
 esempio 1000 dà 3, 100 dà 2, e 1000 per 100, cioè 100 000, dà 5, cioè 3 più 2.
-Il prodotto è diventato una somma, e chi vinceva prima vince ancora, perché il
-logaritmo tiene i numeri nello stesso ordine.
+[Il prodotto è diventato una somma, e chi vinceva prima vince ancora, perché il
+logaritmo tiene i numeri nello stesso ordine]{.pt-matita}.
 
 Sotto l'uno il logaritmo diventa negativo: 1 dà zero, 0,1
 dà meno uno, 0,01 meno due. Col segno cambiato, ogni turno diventa una multa:
@@ -139,8 +139,8 @@ sull'esempio $i$ una volta noto $\mathbf{x}^{(i)}$. Su dati raccolti in serie
 è quasi sempre falsa, e a risentirne è la stima dell'incertezza, non tanto il
 centro.
 
-Il logaritmo è strettamente crescente, quindi non sposta il punto di massimo,
-e il segno meno scambia il massimo con un minimo:
+[Il logaritmo è strettamente crescente, quindi non sposta il punto di massimo,
+e il segno meno scambia il massimo con un minimo]{.pt-matita}:
 
 $$
 \mathcal{L}(\theta) = -\sum_{i=1}^{m}
@@ -180,7 +180,7 @@ La ricetta si giudica dai risultati sui casi noti, dove restituisce
 le due loss che la
 {doc}`backpropagation </RetiNeurali/backpropagation>` userà: l'errore
 quadratico per la regressione, la cross-entropia per la classificazione.
-La stessa procedura le produce entrambe, cambiando una riga sola.
+[La stessa procedura le produce entrambe, cambiando una riga sola]{.pt-matita}.
 
 ### Un numero reale: la gaussiana dà l'errore quadratico
 
@@ -210,9 +210,9 @@ scala sono gli stessi a ogni turno e per ogni rete.
 
 Quindi confrontare due reti guardando le loro multe totali equivale a
 confrontarle guardando la somma delle distanze al quadrato. In altri termini,
-chi minimizza l'errore quadratico sta giocando questo gioco con la campana, che
-lo sappia o no. Il quadrato viene di lì, dalla forma dello stampo, e punire di
-più gli sbagli grossi ne è la conseguenza.
+[chi minimizza l'errore quadratico sta giocando questo gioco con la campana,
+che lo sappia o no]{.pt-matita}. Il quadrato viene di lì, dalla forma dello
+stampo, e punire di più gli sbagli grossi ne è la conseguenza.
 
 Dove va messo, allora, il centro? Se in tre giornate con lo stesso indizio
 (poniamo tre lunedì di sole) i panini venduti sono stati $10$, $10$ e $40$, le
@@ -281,10 +281,10 @@ $$
 Il primo addendo non dipende da $\theta$ e il denominatore $2\sigma^2$ è una
 costante positiva: nessuno dei due sposta il punto di minimo. Resta $\sum_i
 (y^{(i)} - \hat y^{(i)})^2$, la somma dei quadrati dei residui. In altri
-termini, i minimi quadrati sono la log-verosimiglianza negativa di una
-gaussiana a varianza fissa, e gaussianità, indipendenza condizionata e varianza
-costante sono le ipotesi sotto cui la somma dei quadrati è la stima di massima
-verosimiglianza.
+termini, [i minimi quadrati sono la log-verosimiglianza negativa di una
+gaussiana a varianza fissa]{.pt-matita}, e gaussianità, indipendenza
+condizionata e varianza costante sono le ipotesi sotto cui la somma dei
+quadrati è la stima di massima verosimiglianza.
 
 
 Tuttavia, per giustificarla ne servono meno. Per qualunque distribuzione con
@@ -383,7 +383,7 @@ Serve quindi un passaggio che prenda i punteggi grezzi e li trasformi in una
 distribuzione legittima. Con due caselle è la sigmoide, con molte è la
 softmax, e sono quelle che la sezione sulle funzioni di attivazione mette
 in fondo a un classificatore. Adesso si vede perché stanno lì e perché sono
-quelle: sono il modo di rendere valida una distribuzione di gettoni.
+quelle: [sono il modo di rendere valida una distribuzione di gettoni]{.pt-matita}.
 
 La
 conversione si fa una volta sola: chi la rifà ridistribuisce gettoni già
@@ -462,12 +462,12 @@ ricetta ne ha appena percorso il terzo.
 ### Le risposte di altra forma: il dominio è un catalogo
 
 Errore quadratico e cross-entropia sono due voci di un elenco più lungo, e la
-ricetta le produce tutte. Da una voce all'altra cambia soltanto l'insieme
-in cui la risposta ha il permesso di cadere. Una durata non è mai negativa, una
-proporzione sta fra zero e uno, una direzione torna su sé stessa dopo un giro,
-un conteggio salta di uno in uno. Ognuna di queste forme ha almeno una
-distribuzione definita su di essa, e sceglierla è l'unico passo necessario; il
-resto della procedura non cambia di una riga.
+ricetta le produce tutte. [Da una voce all'altra cambia soltanto l'insieme in
+cui la risposta ha il permesso di cadere]{.pt-matita}. Una durata non è mai
+negativa, una proporzione sta fra zero e uno, una direzione torna su sé stessa
+dopo un giro, un conteggio salta di uno in uno. Ognuna di queste forme ha
+almeno una distribuzione definita su di essa, e sceglierla è l'unico passo
+necessario; il resto della procedura non cambia di una riga.
 
 ```{figure} ../figures/il-dominio-sceglie-la-distribuzione.svg
 :name: fig-dominio-distribuzione
@@ -520,11 +520,11 @@ Sparso largo, il mucchio copre mezzo tavolo e la verità ci cade dentro di
 sicuro, ma è così basso che anche il centro pieno frutta pochissimo. I dieci
 gettoni sono sempre dieci: allargare assottiglia.
 
-Al giocatore conviene dunque dichiarare quanto è sicuro, né più né meno. Nei
-turni facili stringe e incassa; in quelli difficili allarga e si protegge,
-accettando il mucchio basso. Lo conferma il calcolo: la larghezza che frutta di
-più è lo sbaglio tipico del giocatore, ottenuto facendo la media degli sbagli al
-quadrato e poi la radice.
+[Al giocatore conviene dunque dichiarare quanto è sicuro, né più né
+meno]{.pt-matita}. Nei turni facili stringe e incassa; in quelli difficili
+allarga e si protegge, accettando il mucchio basso. Lo conferma il calcolo: la
+larghezza che frutta di più è lo sbaglio tipico del giocatore, ottenuto facendo
+la media degli sbagli al quadrato e poi la radice.
 
 Questo gioco però ha un punto debole, e chi lo usa lo incontra. Un giocatore
 pigro può accorgersi che dichiararsi incerto costa poco e permette di smettere
@@ -571,8 +571,8 @@ $\sigma_i \to \infty$ per ogni $i$, cioè la resa incondizionata.
 Che la penalità sia tarata bene si vede fissando $\mu$ e annullando la derivata
 rispetto a $\sigma$: si ottiene $\hat\sigma^2 = (y-\mu)^2$ sul singolo punto e,
 su un gruppo di punti che condividono la stessa larghezza, la media dei
-quadrati dei residui. La larghezza ottima è lo scarto quadratico medio, cioè la
-loss chiede di dichiarare l'incertezza che si ha.
+quadrati dei residui. [La larghezza ottima è lo scarto quadratico medio, cioè la
+loss chiede di dichiarare l'incertezza che si ha]{.pt-matita}.
 
 Il singolo punto pone
 però un problema. Se la rete riesce a far coincidere $\mu_i$ con $y^{(i)}$, il

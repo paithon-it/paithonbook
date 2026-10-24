@@ -19,8 +19,8 @@ tu, sui tuoi dati.
 
 ## La convenzione delle cartelle
 
-Per le immagini esiste una convenzione che risparmia il lavoro: una cartella
-per classe, e il nome della cartella è l'etichetta.
+Per le immagini esiste una convenzione che risparmia il lavoro: [una cartella
+per classe, e il nome della cartella è l'etichetta]{.pt-matita}.
 
 ```text
 dati/
@@ -92,11 +92,11 @@ che non contiene quasi niente: fissa soltanto le due domande che si possono
 fare. Sotto ci sono le classi che scrivi tu, una per tipo di dato, e
 ciascuna risponde a quelle due domande a modo suo.
 
-Il guadagno è che il `DataLoader` non deve conoscere queste classi: gli basta
-che l'oggetto risponda alle due domande (funziona perfino con una lista
-Python, che ce l'ha già). Finché la tua classe le rispetta, per il resto di
-PyTorch è indistinguibile da `ImageFolder`, anche se legge un tipo di dato che
-chi ha scritto la libreria non aveva previsto.
+[Il guadagno è che il `DataLoader` non deve conoscere queste classi: gli basta
+che l'oggetto risponda alle due domande]{.pt-matita} (funziona perfino con una
+lista Python, che ce l'ha già). Finché la tua classe le rispetta, per il resto
+di PyTorch è indistinguibile da `ImageFolder`, anche se legge un tipo di dato
+che chi ha scritto la libreria non aveva previsto.
 
 ```python
 import pathlib
@@ -283,11 +283,11 @@ quadrato invece si ritaglia ogni volta in un punto diverso mentre si studia, e
 il margine fra 256 e 224 serve a lasciargli spazio per spostarsi, mentre
 all'esame si ritaglia sempre al centro.
 
-Chi studia su pizze ovali e poi le trova tonde alla prova ha imparato a
-riconoscere una forma che all'esame non c'è. Schiacciare in tutte e due le
-occasioni, d'altra parte, non basta a rimediare quando si parte da un modello
-che ha già studiato altrove, come si fa quasi sempre: quello le pizze le ha
-viste tonde.
+[Chi studia su pizze ovali e poi le trova tonde alla prova ha imparato a
+riconoscere una forma che all'esame non c'è]{.pt-matita}. Schiacciare in tutte
+e due le occasioni, d'altra parte, non basta a rimediare quando si parte da un
+modello che ha già studiato altrove, come si fa quasi sempre: quello le pizze
+le ha viste tonde.
 
 Un professore che racconta com'è andata la verifica non elenca ventidue voti,
 dice «due sopra la media» e «uno sotto». In questo modo i numeri diventano
@@ -362,13 +362,13 @@ valutazione è in media l’80% di come lo si vede in addestramento, e quindi
 valutare a una risoluzione più alta recupera accuratezza
 {cite}`touvron2019fixing`.
 
-Le due pipeline devono quindi condividere la geometria, o sapere dove
-non la condividono. Una deformazione presente solo in addestramento, infatti,
-è uno spostamento sistematico fra la distribuzione su cui si addestra e quella
-su cui si valuta, introdotto da chi prepara i dati. Anche una deformazione
-simmetrica ha un costo quando si parte da pesi pre-addestrati, che hanno visto
-le proporzioni vere, perché lo stesso spostamento cade allora fra i dati del
-pre-addestramento e i propri.
+[Le due pipeline devono quindi condividere la geometria, o sapere dove non la
+condividono]{.pt-matita}. Una deformazione presente solo in addestramento,
+infatti, è uno spostamento sistematico fra la distribuzione su cui si addestra
+e quella su cui si valuta, introdotto da chi prepara i dati. Anche una
+deformazione simmetrica ha un costo quando si parte da pesi pre-addestrati, che
+hanno visto le proporzioni vere, perché lo stesso spostamento cade allora fra i
+dati del pre-addestramento e i propri.
 
 Le statistiche giuste sono quelle del dataset su cui il modello è stato
 addestrato. In particolare, se si fa transfer learning da pesi ImageNet si
@@ -591,9 +591,9 @@ per frase (la stampa mostra le prime otto). La frase che ne aveva cinque, ad
 esempio, è arrivata a trentasette con trentadue zeri in coda. Gli zeri
 aggiunti sono l’**imbottitura** (in inglese *padding*).
 
-Le lunghezze vanno restituite insieme ai dati perché, dopo l'imbottitura,
-tutte le frasi del batch hanno la stessa larghezza, e gli zeri aggiunti in
-coda sono indistinguibili da parole vere. Di conseguenza, senza sapere dove
+Le lunghezze vanno restituite insieme ai dati perché, dopo l'imbottitura, tutte
+le frasi del batch hanno la stessa larghezza, e [gli zeri aggiunti in coda sono
+indistinguibili da parole vere]{.pt-matita}. Di conseguenza, senza sapere dove
 finisce la frase, il modello imparerebbe che lo zero è una parola come le
 altre, e passerebbe metà del suo tempo a studiare l'imbottitura.
 
@@ -611,9 +611,10 @@ guardare quelle che vengono dopo. Per ora basta avere in mano le lunghezze.
 ## Classi sbilanciate: campionare con criterio
 
 Se una classe ha duemila esempi e un'altra dodici, il mescolamento uniforme
-mostrerà la classe rara di rado, e il modello tende a ignorarla, perché
+mostrerà la classe rara di rado, e [il modello tende a ignorarla, perché
 rispondere sempre con la classe frequente è la strada che abbassa di più la
-loss media. Un rimedio è cambiare il modo in cui si estraggono gli esempi.
+loss media]{.pt-matita}. Un rimedio è cambiare il modo in cui si estraggono gli
+esempi.
 
 ```python
 from torch.utils.data import WeightedRandomSampler
@@ -673,10 +674,10 @@ alcune finiscono nell'addestramento e altre nel test: il modello riconosce il
 paziente invece della malattia, e il voto d'esame risulta splendido (fino al
 giorno in cui arriva un paziente nuovo).
 
-Per questo si divide per gruppo, non per esempio: tutti i dati di un paziente
-stanno o di qua o di là. Se i dati hanno una data, si divide per data, cioè si
-addestra sul passato e si valuta sul futuro, come avverrà quando il modello
-sarà in uso.
+Per questo [si divide per gruppo, non per esempio]{.pt-matita}: tutti i dati di
+un paziente stanno o di qua o di là. Se i dati hanno una data, si divide per
+data, cioè si addestra sul passato e si valuta sul futuro, come avverrà quando
+il modello sarà in uso.
 
 Conta anche come si ritaglia la parte per le prove. Se la si prende dalla
 stessa pila di foto che per lo studio vengono specchiate e schiarite, si porta
@@ -696,9 +697,9 @@ e quali alle altre.
 `````
 
 `````{tab} Superiore
-Il primo tranello è la *data leakage* da correlazione di gruppo: la divisione
-casuale assume esempi i.i.d., ipotesi violata da qualunque struttura
-gerarchica (paziente, sessione, utente, documento). La contromisura è una
+Il primo tranello è la *data leakage* da correlazione di gruppo: [la divisione
+casuale assume esempi i.i.d., ipotesi violata da qualunque struttura gerarchica
+(paziente, sessione, utente, documento)]{.pt-matita}. La contromisura è una
 **divisione per gruppi**: `GroupShuffleSplit` di scikit-learn ne calcola gli
 indici, che si passano a `torch.utils.data.Subset`.
 
@@ -750,9 +751,10 @@ sotto_val = Subset(per_prove, indici[:n_val])
 ## Il collo di bottiglia è spesso il caricamento dei dati
 
 Quando un addestramento è lento, l'istinto dice che la colpa è del modello.
-Con modelli piccoli o medi, però, la causa è spesso il caricamento dei dati:
-la GPU finisce un mini-batch e resta ferma ad aspettare il successivo. È la
-diagnosi che quasi nessuno prova per prima, e spesso è quella giusta.
+[Con modelli piccoli o medi, però, la causa è spesso il caricamento dei
+dati]{.pt-matita}: la GPU finisce un mini-batch e resta ferma ad aspettare il
+successivo. È la diagnosi che quasi nessuno prova per prima, e spesso è quella
+giusta.
 
 Se una scheda grafica c'è, per accorgersene si guarda quanto è occupata
 mentre l'addestramento gira, con il comando `nvidia-smi` scritto in un'altra

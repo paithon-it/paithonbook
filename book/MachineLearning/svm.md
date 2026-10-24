@@ -19,8 +19,8 @@ quella che lascia il corridoio più largo possibile tra le due classi.
 Il criterio si scrive in una riga. Presa una frontiera che divide le due
 classi, si misura quanto dista dall'esempio più vicino di ciascuna: questa
 distanza è il **margine**, e il corridoio che la frontiera lascia libero è
-largo il doppio. Fra tutte le frontiere possibili, la SVM prende quella di
-margine massimo.
+largo il doppio. [Fra tutte le frontiere possibili, la SVM prende quella di
+margine massimo]{.pt-matita}.
 
 Il motivo è la robustezza. Una frontiera che passa rasente agli esempi già
 visti sbaglia il primo esempio nuovo che cade poco più in là; una che li tiene
@@ -106,9 +106,10 @@ sposta la frontiera avanti o indietro. La scrittura
 $\mathbf{w}^\top \mathbf{x}$ è solo un modo compatto di dire «moltiplica a
 coppie e somma».
 
-La novità della SVM sta nel criterio con cui sceglie $\mathbf{w}$ e $b$: non
-una frontiera qualsiasi, ma quella che lascia il vuoto più ampio attorno a sé.
-Più il corridoio è largo, infatti, più il classificatore è robusto.
+La novità della SVM sta nel criterio con cui sceglie $\mathbf{w}$ e $b$: [non
+una frontiera qualsiasi, ma quella che lascia il vuoto più ampio attorno a
+sé]{.pt-matita}. Più il corridoio è largo, infatti, più il classificatore è
+robusto.
 
 Su «largo», però, serve un'intesa, perché dipende da come lo si misura e il
 righello ce lo diamo noi. Diciamo che il corridoio è la fascia dove quel conto
@@ -165,11 +166,11 @@ y_i\,(\mathbf{w}^\top \mathbf{x}_i + b) \ge 1 \ \ \forall i,
 $$
 
 dove $\mathbf{w}$ è il vettore dei pesi, $b$ il termine di bias, $\mathbf{x}_i$
-l’$i$-esimo esempio e $y_i \in \{-1,+1\}$ la sua etichetta. È un
-problema di programmazione quadratica *convesso*, con obiettivo strettamente
-convesso in $\mathbf{w}$. Di conseguenza, se i dati sono separabili la
-soluzione $(\mathbf{w}, b)$ esiste ed è unica, e non ci sono minimi locali in
-cui restare intrappolati; se non lo sono, nessuna coppia rispetta tutti i
+l’$i$-esimo esempio e $y_i \in \{-1,+1\}$ la sua etichetta. È un problema di
+programmazione quadratica *convesso*, con obiettivo strettamente convesso in
+$\mathbf{w}$. Di conseguenza, [se i dati sono separabili la soluzione
+$(\mathbf{w}, b)$ esiste ed è unica]{.pt-matita}, e non ci sono minimi locali
+in cui restare intrappolati; se non lo sono, nessuna coppia rispetta tutti i
 vincoli e il problema non ha soluzione.
 
 Sui dati separabili la regressione logistica non ha un massimo della
@@ -217,8 +218,8 @@ $(0{,}5;\ 0{,}5)$ è lungo $\sqrt{0{,}5^2 + 0{,}5^2} \approx 0{,}71$, e $2$
 diviso $0{,}71$ fa $2{,}8$, la misura di prima.
 
 E quelle due lontane? Prova a cancellarle dal foglio: il confine non si sposta
-di un millimetro, perché non toccano il corridoio. Le due case sul bordo sono
-i vettori di supporto, e sostengono l'intera soluzione.
+di un millimetro, perché non toccano il corridoio. [Le due case sul bordo sono
+i vettori di supporto, e sostengono l'intera soluzione]{.pt-matita}.
 
 `````
 
@@ -277,7 +278,7 @@ Il valore coincide con la distanza euclidea tra $\mathbf{x}_1=(0,0)$ e
 $\mathbf{x}_2=(2,2)$, che vale $\sqrt{2^2+2^2}=\sqrt{8}=2\sqrt{2}$, poiché i
 due vettori di supporto, uno per classe, si affacciano sui bordi opposti dello
 stesso corridoio. Cancellare $\mathbf{x}_3$ e $\mathbf{x}_4$ non cambia
-nulla, perché la soluzione dipende solo dai due punti sul bordo.
+nulla, perché [la soluzione dipende solo dai due punti sul bordo]{.pt-matita}.
 
 `````
 
@@ -315,14 +316,14 @@ sconfina nel prato dell'altro, non ha senso stravolgere tutto il confine per
 accontentarla: meglio tracciare comunque un bel corridoio largo e mettere in
 conto quella manciata di eccezioni.
 
-La SVM a margine morbido fa proprio questo, e mette in conto le eccezioni una
-per una, con una multa proporzionata allo sconfinamento. Chi si è spinto
-appena dentro il corridoio paga poco, chi è finito dalla parte sbagliata paga
-molto, e chi è rimasto comodamente fuori non paga niente, zero, nemmeno un
+La SVM a margine morbido fa proprio questo, e [mette in conto le eccezioni una
+per una, con una multa proporzionata allo sconfinamento]{.pt-matita}. Chi si è
+spinto appena dentro il corridoio paga poco, chi è finito dalla parte sbagliata
+paga molto, e chi è rimasto comodamente fuori non paga niente, zero, nemmeno un
 centesimo. È la riga di terracotta di {numref}`fig-tre-perdite`: scende, tocca
-lo zero sul bordo del corridoio e da lì in poi ci resta appoggiata. Alla
-fine la quantità da tenere bassa è una sola: quanto è stretto il
-corridoio, più la somma di tutte le multe.
+lo zero sul bordo del corridoio e da lì in poi ci resta appoggiata. Alla fine
+la quantità da tenere bassa è una sola: quanto è stretto il corridoio, più la
+somma di tutte le multe.
 
 Quanto pesano le multe rispetto alla larghezza lo decide una manopola, cioè un
 iperparametro, chiamato $C$:
@@ -381,10 +382,11 @@ come una confidenza. Dove serve una probabilità lo si ricalibra, e lo scaling
 di Platt della {doc}`sezione sulle metriche <metriche>` è nato per le SVM.
 
 In questa forma si legge chiaramente anche il ruolo di $C$. Il coefficiente
-della penalità $\lVert \mathbf{w}\rVert^2$ è $1/(2C)$, quindi $C$ è l'inverso
-della forza di regolarizzazione. $C$ grande → penalità debole → margine
-stretto, varianza alta; $C$ piccolo → penalità forte → margine largo, bias più
-alto. È lo stesso iperparametro $\lambda$ della {doc}`sezione sull'overfitting
+della penalità $\lVert \mathbf{w}\rVert^2$ è $1/(2C)$, quindi [$C$ è l'inverso
+della forza di regolarizzazione]{.pt-matita}. $C$ grande → penalità debole →
+margine stretto, varianza alta; $C$ piccolo → penalità forte → margine largo,
+bias più alto. È lo stesso iperparametro $\lambda$ della {doc}`sezione
+sull'overfitting
 <overfitting-validazione>`, letto al contrario, con un'avvertenza di
 normalizzazione: la loss Ridge era *mediata* sugli $m$ esempi, la hinge qui è
 *sommata*, e a parità di convenzione l'identificazione è
@@ -445,8 +447,8 @@ possiamo misurare come una distanza dalla coda. Ne esce un numero solo.
 
 Nel conto la freccia entra tutta quanta, e non solo la sua direzione; per
 questo quel numero cresce sia quando l'ombra cade più in là, sia quando la
-freccia è più lunga. Se supera una certa soglia, il punto ha attraversato la
-strada ed è un più; se resta al di qua, è un meno.
+freccia è più lunga. [Se supera una certa soglia, il punto ha attraversato la
+strada ed è un più; se resta al di qua, è un meno]{.pt-matita}.
 
 Guardiamo che cosa abbiamo appena buttato via. Della posizione del punto
 *lungo* la strada non ci importa niente, perché camminando lungo la strada non
@@ -473,9 +475,9 @@ Sia $\mathbf{w}$ un vettore perpendicolare all'asse della strada, di lunghezza
 per ora indeterminata, e sia $\mathbf{u}$ un punto di classe ignota. La
 proiezione di $\mathbf{u}$ sulla direzione di $\mathbf{w}$ vale
 $\mathbf{w}^\top\mathbf{u} / \lVert\mathbf{w}\rVert$. Poiché
-$\lVert\mathbf{w}\rVert$ è un numero positivo, confrontare quella proiezione
+$\lVert\mathbf{w}\rVert$ è un numero positivo, [confrontare quella proiezione
 con una soglia equivale a confrontare il prodotto scalare
-$\mathbf{w}^\top\mathbf{u}$ con una soglia $c$:
+$\mathbf{w}^\top\mathbf{u}$ con una soglia $c$]{.pt-matita}:
 
 $$
 \mathbf{w}^\top\mathbf{u} \ge c
@@ -509,11 +511,11 @@ tacca.
 
 Quanto vale una tacca? Lo decidiamo noi, e possiamo dire che vale $1$. Non è un
 atto di fede: ricordi che la lunghezza della freccia $\mathbf{w}$ era rimasta
-libera? Allungandola o accorciandola tutte le ombre si riscalano insieme, quindi
-fissare la tacca a $1$ è una scelta di righello, e non dice niente sui dati. Da
-qui in avanti, scelta la strada, la freccia e la soglia vengono decise insieme
-a lei: la libertà che avanzava è spesa, e la lunghezza della freccia non la
-scegliamo più noi.
+libera? Allungandola o accorciandola tutte le ombre si riscalano insieme,
+quindi [fissare la tacca a $1$ è una scelta di righello, e non dice niente sui
+dati]{.pt-matita}. Da qui in avanti, scelta la strada, la freccia e la soglia
+vengono decise insieme a lei: la libertà che avanzava è spesa, e la lunghezza
+della freccia non la scegliamo più noi.
 
 Restano due regole, una per i più e una per i meno, e portarsene dietro due è
 scomodo. Il trucco è dare a ogni casa un'etichetta numerica che vale $+1$ se è
@@ -554,8 +556,8 @@ y_i\,(\mathbf{w}^\top\mathbf{x}_i + b) - 1 = 0
 \qquad\text{per } \mathbf{x}_i \text{ sul margine.}
 $$
 
-Il valore $1$ è la normalizzazione che spende il grado di libertà residuo
-sulla scala di $(\mathbf{w}, b)$. Con quella fissata, a ogni strada
+[Il valore $1$ è la normalizzazione che spende il grado di libertà residuo
+sulla scala di $(\mathbf{w}, b)$]{.pt-matita}. Con quella fissata, a ogni strada
 corrisponde una sola coppia $(\mathbf{w}, b)$, e la lunghezza di $\mathbf{w}$
 non è più libera, e il terzo passo mostra che è proprio lei a misurare
 la strada.
@@ -586,9 +588,10 @@ indica soltanto una direzione. L'originale però resta dov'è, e
 nel risultato torna utile con la sua lunghezza.
 
 Il calcolo sta in due righe di algebra, e il risultato è sorprendente. Viene
-fuori che la larghezza della strada vale sempre $2$ diviso la lunghezza della
-freccia $\mathbf{w}$ di partenza, quella che non abbiamo accorciato. Sempre:
-delle due case, che erano il punto di partenza, non resta traccia.
+fuori che [la larghezza della strada vale sempre $2$ diviso la lunghezza della
+freccia $\mathbf{w}$]{.pt-matita} di partenza, quella che non abbiamo
+accorciato. Sempre: delle due case, che erano il punto di partenza, non resta
+traccia.
 
 La ragione è che quelle due toccano il marciapiede: hanno una tacca ciascuna,
 né più né meno, e nei passaggi i loro nomi si cancellano. Anche il $2$ viene
@@ -632,9 +635,10 @@ $$
 \text{larghezza} = \frac{2}{\lVert \mathbf{w}\rVert}.
 $$
 
-È la formula che avevamo enunciato senza prova. Massimizzare
-$2/\lVert\mathbf{w}\rVert$ equivale a massimizzare $1/\lVert\mathbf{w}\rVert$, e
-quindi a minimizzare $\lVert\mathbf{w}\rVert$, e infine, per pura comodità,
+È la formula che avevamo enunciato senza prova. [Massimizzare
+$2/\lVert\mathbf{w}\rVert$ equivale a massimizzare $1/\lVert\mathbf{w}\rVert$,
+e quindi a minimizzare $\lVert\mathbf{w}\rVert$]{.pt-matita}, e infine, per
+pura comodità,
 
 $$
 \min_{\mathbf{w},\,b}\ \tfrac{1}{2}\lVert \mathbf{w}\rVert^2
@@ -723,9 +727,9 @@ case si sommano mettendo i loro elenchi di numeri uno accanto all'altro e
 sommandoli coordinata per coordinata, come si fa con due frecce.
 
 Da un calcolo del genere poteva uscire di tutto, e di solito esce qualcosa di
-intrattabile. Invece è uscita una somma di case: la frontiera è fatta dei
-dati, e siccome i cartellini delle case lontane segnano zero, ne entrano
-soltanto quelle sul bordo.
+intrattabile. Invece è uscita una somma di case: [la frontiera è fatta dei
+dati]{.pt-matita}, e siccome i cartellini delle case lontane segnano zero, ne
+entrano soltanto quelle sul bordo.
 
 Dallo stesso terreno piatto esce una seconda condizione, molto più modesta: i
 due quartieri pagano lo stesso totale. Ad esempio, con cinque case di cui tre
@@ -782,11 +786,11 @@ $$
 \sum_{i=1}^{m}\alpha_i y_i = 0 .
 $$
 
-La prima delle due condizioni è la sorpresa: il vettore dei pesi $\mathbf{w}$
+La prima delle due condizioni è la sorpresa: [il vettore dei pesi $\mathbf{w}$
 è una combinazione lineare degli esempi di addestramento, con coefficienti
-$\alpha_i y_i$. Guardando il problema di partenza non c'era nulla che lo
-annunciasse, e invece la soluzione vive nello spazio generato dagli esempi, e la
-frontiera si scrive con i dati e con nient'altro.
+$\alpha_i y_i$]{.pt-matita}. Guardando il problema di partenza non c'era nulla
+che lo annunciasse, e invece la soluzione vive nello spazio generato dagli
+esempi, e la frontiera si scrive con i dati e con nient'altro.
 
 La seconda equazione, $\sum_i \alpha_i y_i = 0$, sembra per ora solo una
 condizione di bilanciamento fra le due classi, ma al quinto passo cancellerà
@@ -816,11 +820,12 @@ Conta il risultato, la seconda sorpresa del percorso.
 
 Dopo la sostituzione, dei dati non restano né le coordinate né le distanze
 dalla frontiera. Se ne va anche la soglia, portata via dal pareggio dei prezzi
-trovato al quarto passo. Resta una sola quantità: per ogni coppia di case,
-l'ombra dell'una sulla freccia dell'altra. Il problema da risolvere e la regola
-per classificare un punto nuovo si scrivono entrambi usando soltanto quelle
-ombre a due a due. Il problema riscritto in questa forma è il duale del
-nostro: stessa risposta, altre incognite, i cartellini al posto della freccia.
+trovato al quarto passo. Resta una sola quantità: [per ogni coppia di case,
+l'ombra dell'una sulla freccia dell'altra]{.pt-matita}. Il problema da
+risolvere e la regola per classificare un punto nuovo si scrivono entrambi
+usando soltanto quelle ombre a due a due. Il problema riscritto in questa forma
+è il duale del nostro: stessa risposta, altre incognite, i cartellini al posto
+della freccia.
 
 In altri termini, della mappa del quartiere si può buttare via tutto, tenendo
 solo una tabella che per ogni coppia di case dice quanto si «vedono». Con
@@ -876,12 +881,12 @@ $$
 \;\Longrightarrow\; \text{classe } +1 .
 $$
 
-Osserviamo che in entrambe le formule gli esempi compaiono soltanto dentro un
-prodotto scalare, $\mathbf{x}_i^\top\mathbf{x}_j$ nel problema da ottimizzare
-e $\mathbf{x}_i^\top\mathbf{u}$ nella regola di decisione. Non servono le
-coordinate, non serve la dimensione dello spazio, non serve nemmeno sapere
-che cosa siano gli $\mathbf{x}_i$: serve una tabella di prodotti scalari. Da
-questa osservazione, e da nient'altro, nasce il kernel trick.
+Osserviamo che [in entrambe le formule gli esempi compaiono soltanto dentro un
+prodotto scalare]{.pt-matita}, $\mathbf{x}_i^\top\mathbf{x}_j$ nel problema da
+ottimizzare e $\mathbf{x}_i^\top\mathbf{u}$ nella regola di decisione. Non
+servono le coordinate, non serve la dimensione dello spazio, non serve nemmeno
+sapere che cosa siano gli $\mathbf{x}_i$: serve una tabella di prodotti
+scalari. Da questa osservazione, e da nient'altro, nasce il kernel trick.
 
 Resta da dire perché il duale si *massimizzi*. Fissati gli $\alpha_i \ge 0$, il
 minimo della lagrangiana su $(\mathbf{w}, b)$ è la funzione duale
@@ -944,8 +949,9 @@ bordo spingono un quarto ciascuna, le due arretrate zero; la casa in $(0,0)$
 sta nell'origine e non sposta niente, e un quarto della casa in $(2,2)$ fa
 $(0{,}5;\ 0{,}5)$, la freccia del confine trovato prima a occhio.
 
-Per questo motivo la SVM, alla fine, si porta appresso solo i punti che
-spingono, e può dimenticare tutti gli altri, anche se erano un milione.
+Per questo motivo [la SVM, alla fine, si porta appresso solo i punti che
+spingono, e può dimenticare tutti gli altri]{.pt-matita}, anche se erano un
+milione.
 
 `````
 
@@ -961,9 +967,9 @@ $$
 $$
 
 (qui già nella forma a margine morbido, con la variabile di slack $\xi_i$; per
-il margine rigido basta porre $\xi_i = 0$). Se un punto è strettamente fuori
+il margine rigido basta porre $\xi_i = 0$). [Se un punto è strettamente fuori
 dal margine, la parentesi quadra è diversa da zero, e allora deve essere
-$\alpha_i = 0$; di conseguenza quel punto sparisce dalla somma
+$\alpha_i = 0$]{.pt-matita}; di conseguenza quel punto sparisce dalla somma
 $\mathbf{w} = \sum_i \alpha_i y_i \mathbf{x}_i$ che ricostruisce la soluzione.
 Restano solo i punti *sul* margine o dentro la fascia, che sono i vettori
 di supporto.

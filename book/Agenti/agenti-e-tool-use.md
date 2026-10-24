@@ -40,10 +40,10 @@ testo di contesto. Solo allora il modello continua.
 
 ```{figure} ../figures/function-calling-llm-strumenti.svg
 :name: fig-function-calling
-:alt: "Schema del function calling in tre passi: l'utente chiede «che tempo fa?», il modello decide se e quale strumento usare ed emette una richiesta tool_use con la funzione get_weather e l'argomento Bologna; il codice dell'applicazione esegue la funzione e restituisce un tool_result con «18 gradi, sereno»; il modello produce infine la risposta in linguaggio naturale. Il giro fra richiesta e risultato può ripetersi più volte."
+:alt: "Schema del function calling in tre passi: l'utente chiede «che tempo fa?», il modello decide se e quale strumento usare ed emette una richiesta tool_use con la funzione get_weather e l'argomento Bologna; il codice dell'applicazione esegue la funzione e restituisce un tool_result con «18 gradi, sereno»; il modello produce infine la risposta in linguaggio naturale. L'iterazione fra richiesta e risultato può ripetersi più volte."
 :width: 90%
 
-Il giro del function calling. Il modello non esegue mai niente: chiede, e
+L'iterazione del function calling. Il modello non esegue mai niente: chiede, e
 l'esecuzione resta nel codice di chi lo ospita. I passi 1 e 2 possono
 ripetersi più volte prima che arrivi la risposta finale.
 ```
@@ -54,7 +54,7 @@ strumento, con questi argomenti», `tool_result` è «ecco che cosa ha risposto 
 strumento». Altri fornitori chiamano in altro modo gli stessi due oggetti
 (l'API di OpenAI, per esempio, `function_call` e `function_call_output`). La
 divisione dei compiti che il disegno mostra rende il tool use potente e
-governabile insieme: il modello propone, il codice dispone.
+governabile insieme: [il modello propone, il codice dispone]{.pt-matita}.
 Chi ospita il modello decide quali funzioni esistono, le valida prima di
 eseguirle e può rifiutarsi; al modello spetta soltanto la richiesta.
 
@@ -139,12 +139,12 @@ chiamata.
 
 Se la sequenza emessa non rispetta lo schema, i rimedi sono due. Il primo è
 validarla a valle e restituire l'errore al modello come osservazione, perché la
-corregga al giro dopo. Il secondo è il **decoding vincolato**: a ogni passo si
-mettono a $-\infty$ i logit dei token che porterebbero la chiamata fuori dalla
-grammatica dello schema, e la chiamata è valida per costruzione. Garantisce la
-forma, non il contenuto: un argomento può essere sintatticamente perfetto e
-sbagliato. Lo tratta per esteso la {doc}`sezione sulle risposte che un
-programma sa leggere </IngegneriaLLM/prompt-engineering>`.
+corregga all'iterazione dopo. Il secondo è il **decoding vincolato**: a ogni
+passo si mettono a $-\infty$ i logit dei token che porterebbero la chiamata
+fuori dalla grammatica dello schema, e la chiamata è valida per costruzione.
+Garantisce la forma, non il contenuto: un argomento può essere sintatticamente
+perfetto e sbagliato. Lo tratta per esteso la {doc}`sezione sulle risposte che
+un programma sa leggere </IngegneriaLLM/prompt-engineering>`.
 
 `````
 
@@ -362,15 +362,15 @@ restituisce l'osservazione; il modello legge l'osservazione, genera il pensiero
 successivo, e così via, fino a produrre la risposta finale.
 
 Il ciclo osserva → ragiona → agisci e la terna pensiero, azione, osservazione
-sono lo stesso giro letto da due punti diversi: nelle tracce si parte dal
+sono la stessa iterazione letta da due punti diversi: nelle tracce si parte dal
 pensiero perché la prima osservazione, la domanda dell'utente, è già lì.
 
 ```{figure} ../figures/react-2022.svg
 :name: fig-react
-:alt: "Il ciclo ReAct come sequenza verticale: un PENSIERO («mi serve il film d'esordio del regista, lo cerco»), un'AZIONE (cerca con il nome del regista), un'OSSERVAZIONE («ha esordito con “titolo del film”: manca l'anno»); poi un secondo giro con un nuovo pensiero, l'azione di cercare il titolo del film e l'osservazione «uscito nel 1994, ora posso rispondere». Una parentesi laterale marca un giro del ciclo."
+:alt: "Il ciclo ReAct come sequenza verticale: un PENSIERO («mi serve il film d'esordio del regista, lo cerco»), un'AZIONE (cerca con il nome del regista), un'OSSERVAZIONE («ha esordito con “titolo del film”: manca l'anno»); poi una seconda iterazione con un nuovo pensiero, l'azione di cercare il titolo del film e l'osservazione «uscito nel 1994, ora posso rispondere». Una parentesi laterale marca un'iterazione del ciclo."
 :width: 62%
 
-Due giri di ReAct su una domanda che nessuna singola ricerca risolve.
+Due iterazioni di ReAct su una domanda che nessuna singola ricerca risolve.
 Ogni osservazione non chiude il problema: lo restringe, e il pensiero
 successivo riparte da lì.
 ```
@@ -395,8 +395,8 @@ affermazioni inventate e dette con sicurezza. Un'osservazione arriva
 dall'esterno, è testo che il programma ha messo davanti al modello e che il
 modello non ha generato, e i passi che la usano poggiano su un contenuto
 recuperato. Il pensiero decide quale strumento usare e come leggere il
-risultato; l'osservazione ancora il ragionamento a un contenuto effettivamente
-recuperato.
+risultato; [l'osservazione ancora il ragionamento a un contenuto effettivamente
+recuperato]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -583,21 +583,21 @@ l'auto-critica ha meno appoggio.
 
 `````
 
-In generale, l'auto-critica non è auto-correzione garantita, e tutto dipende da
-chi dice all'agente che ha sbagliato. La riflessione funziona bene quando il
-verdetto viene da fuori ed è affidabile: dei test scritti da qualcun altro che
-passano o falliscono (i test di progetto di SWE-bench sono l'esempio buono,
-perché nessuno li ha scritti per far contento l'agente), un risultato numerico
-verificabile, un obiettivo raggiunto o no nell'ambiente. Lì la critica ha un
-appiglio solido su cui costruire, anche se nemmeno i test di un progetto bastano
-sempre: fra i successi di un sistema del 2024, SWE-bench+ ne trova il 31%
-passati grazie a test troppo deboli per accorgersi dell'errore
+In generale, [l'auto-critica non è auto-correzione garantita, e tutto dipende
+da chi dice all'agente che ha sbagliato]{.pt-matita}. La riflessione funziona
+bene quando il verdetto viene da fuori ed è affidabile: dei test scritti da
+qualcun altro che passano o falliscono (i test di progetto di SWE-bench sono
+l'esempio buono, perché nessuno li ha scritti per far contento l'agente), un
+risultato numerico verificabile, un obiettivo raggiunto o no nell'ambiente. Lì
+la critica ha un appiglio solido su cui costruire, anche se nemmeno i test di
+un progetto bastano sempre: fra i successi di un sistema del 2024, SWE-bench+
+ne trova il 31% passati grazie a test troppo deboli per accorgersi dell'errore
 {cite}`aleithan2024swebenchplus`. Quando invece l'unico giudice è il modello
 stesso, senza alcun riscontro dal mondo, la situazione cambia: un modello
 convinto di una risposta sbagliata tende a produrre auto-critiche che
 *confermano* l'errore, e può perfino peggiorare una risposta che era corretta,
-«correggendola» verso il falso. Huang e colleghi {cite}`huang2024selfcorrect` lo
-misurano sui problemi di ragionamento: chiedere al modello di rivedere la
+«correggendola» verso il falso. Huang e colleghi {cite}`huang2024selfcorrect`
+lo misurano sui problemi di ragionamento: chiedere al modello di rivedere la
 propria risposta senza alcun riscontro esterno (l'auto-correzione che chiamano
 *intrinseca*) lascia invariata la quota di risposte giuste, o la abbassa.
 
@@ -620,8 +620,8 @@ Python, eseguirebbe qualunque cosa il modello scriva e non soltanto un conto. Si
 legge invece l'espressione come albero sintattico con il modulo `ast`, e la si
 calcola accettando soltanto gli operatori in elenco; ogni altra cosa viene
 respinta con un messaggio che dice che cosa non andava. Il principio vale per la
-sicurezza di ogni agente: l'output del modello è un input non fidato, e si
-tratta come il testo di uno sconosciuto.
+sicurezza di ogni agente: [l'output del modello è un input non fidato, e si
+tratta come il testo di uno sconosciuto]{.pt-matita}.
 
 ```python
 import ast
@@ -766,14 +766,14 @@ fatta e la sua risposta.
 
 ```{figure} ../figures/ciclo-agente.svg
 :name: fig-ciclo-agente
-:alt: "A sinistra il ciclo di un agente: tre caselle collegate in cerchio, pensa (Thought), agisce (Action) e osserva (Observation). L'evidenziazione gira di casella in casella: il modello pensa, chiama uno strumento, il sistema lo esegue e il risultato torna indietro. Al centro un contagiri arriva a giro 3 di 5. Al terzo giro il modello non chiama nessuno strumento: un ramo scende fuori dal cerchio verso la risposta finale, cioè che il paper è del 2017 e sono 9 anni fa nel 2026. A destra la colonna del contesto si allunga di un blocco a ogni giro: prima la sola domanda, poi la ricerca con la sua osservazione 2017, poi il calcolo con la sua osservazione 9, e una barra verticale accanto cresce insieme a loro fino a tre blocchi."
+:alt: "A sinistra il ciclo di un agente: tre caselle collegate in cerchio, pensa (Thought), agisce (Action) e osserva (Observation). L'evidenziazione gira di casella in casella: il modello pensa, chiama uno strumento, il sistema lo esegue e il risultato torna indietro. Al centro un contatore arriva all'iterazione 3 di 5. Alla terza iterazione il modello non chiama nessuno strumento: un ramo scende fuori dal cerchio verso la risposta finale, cioè che il paper è del 2017 e sono 9 anni fa nel 2026. A destra la colonna del contesto si allunga di un blocco a ogni iterazione: prima la sola domanda, poi la ricerca con la sua osservazione 2017, poi il calcolo con la sua osservazione 9, e una barra verticale accanto cresce insieme a loro fino a tre blocchi."
 :width: 100%
 
-Lo stesso giro, tre volte. A sinistra i passi che si ripetono; a destra quello
-che il modello si rilegge prima di decidere, più lungo di un blocco a ogni
-giro. Al terzo giro non serve nessuno strumento e l'agente esce dal ciclo con
-la risposta: è uno dei due modi in cui un ciclo finisce, l'altro è il limite di
-passi.
+La stessa iterazione, tre volte. A sinistra i passi che si ripetono; a destra
+quello che il modello si rilegge prima di decidere, più lungo di un blocco a
+ogni iterazione. Alla terza iterazione non serve nessuno strumento e l'agente
+esce dal ciclo con la risposta: è uno dei due modi in cui un ciclo finisce,
+l'altro è il limite di passi.
 ```
 
 La traccia è scritta da regole, quindi non dice niente su come si comporterebbe

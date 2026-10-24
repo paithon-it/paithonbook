@@ -10,7 +10,7 @@ Nel giugno 2026 Addy Osmani ha attribuito a Boris Cherny, a capo di Claude Code
 in Anthropic (un assistente di programmazione nato per il terminale: gli si
 scrive, e lui legge e modifica i file del progetto), una frase che riassume lo
 spostamento: Cherny non scrive quasi più prompt al modello, scrive **loop**
-(giri, cicli), cioè programmi che quei prompt li mandano al posto suo
+(cicli), cioè programmi che quei prompt li mandano al posto suo
 {cite}`osmani2026loop`. È uno spostamento di leva e non una provocazione. In
 altri termini, il lavoro passa dal singolo messaggio al sistema di controllo che
 attorno a quel messaggio decide quando parte, cosa gli si mette davanti, come si
@@ -46,12 +46,12 @@ ripete e ne conserva l'esito. È un annidamento e non una sostituzione, perché
 dentro c'è ancora il ciclo di prima. Cambia chi lo mette in moto e chi decide
 quando è finito, e quel «chi» non è più una persona davanti a una tastiera.
 
-L'unità di lavoro del loop engineering è il ciclo, non la richiesta: una
-sequenza che si ripete (*pianifica, esegui, verifica, rifletti*) e poi
-ricomincia, portandosi dietro ciò che ha imparato. Ha la stessa forma del ciclo
-*osserva, ragiona, agisci* con cui lavora un agente, ma sta un piano sopra: il
-loop engineering distingue due cicli annidati, uguali nella forma e diversi
-nella funzione.
+[L'unità di lavoro del loop engineering è il ciclo, non la
+richiesta]{.pt-matita}: una sequenza che si ripete (*pianifica, esegui,
+verifica, rifletti*) e poi ricomincia, portandosi dietro ciò che ha imparato.
+Ha la stessa forma del ciclo *osserva, ragiona, agisci* con cui lavora un
+agente, ma sta un piano sopra: il loop engineering distingue due cicli
+annidati, uguali nella forma e diversi nella funzione.
 
 `````{tab} Elementare
 
@@ -177,9 +177,9 @@ strumento che oggi la realizza.
   Context Protocol*). È così che il ciclo tocca il mondo invece di limitarsi a
   produrre testo.
 
-Nessuno di questi strumenti usa il modello per decidere. Sono infatti la
-struttura attorno al modello (lo *scaffolding*, in inglese) che rende ripetibile
-il suo lavoro, e che il {doc}`capitolo sull'harness
+[Nessuno di questi strumenti usa il modello per decidere]{.pt-matita}. Sono
+infatti la struttura attorno al modello (lo *scaffolding*, in inglese) che
+rende ripetibile il suo lavoro, e che il {doc}`capitolo sull'harness
 engineering </Harness/overview>` segue su lavori lunghi ore.
 
 ### Due agenti, non uno: chi fa e chi controlla
@@ -217,8 +217,8 @@ tende a preferire il testo che ha scritto lui, e lo preferisce di più quanto
 meglio lo riconosce come suo. Lo hanno misurato con un controllore separato, a
 cui non si diceva quale testo fosse suo: il proprio stile lo riconosceva lo
 stesso. Restano poi i punti ciechi comuni: ciò che il modello non sa vedere non
-lo vede nemmeno da controllore. Per questo il controllore serve a migliorare il
-lavoro, e il verdetto finale lo dà un cancello che non è un modello.
+lo vede nemmeno da controllore. Per questo [il controllore serve a migliorare il
+lavoro, e il verdetto finale lo dà un cancello che non è un modello]{.pt-matita}.
 
 `````
 
@@ -254,13 +254,14 @@ la preferenza c'è lo stesso {cite}`panickssery2024selfpreference`; il legame co
 l'auto-riconoscimento è una correlazione lineare, che i controlli degli autori
 rendono plausibile come causa senza dimostrarla.
 
-Un giudice di un'altra famiglia nel testo non si riconosce, ma gli stessi autori
-avvertono che un modello premia anche i testi che somigliano ai propri: il
-problema si sposta più che sparire. È una delle ragioni per cui, sopra il
-checker, il cancello resta deterministico; degli altri pregiudizi di un modello
-che fa da giudice, la posizione e la lunghezza, si occupa la {doc}`sezione su
-LLMOps </MLOps/llmops>`. In cambio si paga un secondo passaggio di inferenza
-(token e latenza in più) che va messo a bilancio come ogni altra spesa del loop.
+Un giudice di un'altra famiglia nel testo non si riconosce, ma gli stessi
+autori avvertono che un modello premia anche i testi che somigliano ai propri:
+il problema si sposta più che sparire. È una delle ragioni per cui, [sopra il
+checker, il cancello resta deterministico]{.pt-matita}; degli altri pregiudizi
+di un modello che fa da giudice, la posizione e la lunghezza, si occupa la
+{doc}`sezione su LLMOps </MLOps/llmops>`. In cambio si paga un secondo
+passaggio di inferenza (token e latenza in più) che va messo a bilancio come
+ogni altra spesa del loop.
 
 `````
 
@@ -268,8 +269,8 @@ LLMOps </MLOps/llmops>`. In cambio si paga un secondo passaggio di inferenza
 
 Arriviamo alla stazione che dà senso a tutte le altre: la verifica. Nel ciclo
 della {numref}`fig-loop-ciclo` è il punto in cui si decide se l'iterazione è
-riuscita, e la scelta di progetto è netta: la verifica dev'essere un cancello,
-non un augurio. Un cancello ha due stati, aperto o chiuso; non
+riuscita, e la scelta di progetto è netta: [la verifica dev'essere un cancello,
+non un augurio]{.pt-matita}. Un cancello ha due stati, aperto o chiuso; non
 esiste il «quasi passato». (In inglese si chiama *validation gate*: il cancello
 che convalida.)
 
@@ -474,7 +475,7 @@ accettato: guida-pytorch
 :alt: "Una esecuzione del ciclo genera, verifica e raffina: la stringa candidata si riscrive a ogni tentativo, il cancello resta chiuso tre volte e si apre alla quarta, e ogni rifiuto lascia la sua riga nella colonna della memoria, che non ne perde nessuna."
 :width: 100%
 
-Lo stesso ciclo, ma in esecuzione. Il candidato riparte da capo a ogni giro;
+Lo stesso ciclo, ma in esecuzione. Il candidato riparte da capo a ogni iterazione;
 i motivi del rifiuto no, si accumulano, e sono quelli che il generatore
 rilegge. Alla quarta il cancello si apre, e le tre righe restano tutte lì.
 ```
@@ -539,21 +540,21 @@ P(\text{pulito}) = (1 - p)^n,
 $$
 
 dove $n$ è il numero di passi del ciclo: moltiplicare venti volte un numero
-appena sotto l'uno porta molto più in basso di quanto sembri. Con $p = 0{,}05$ e
-$n = 20$ il risultato è $0{,}95^{20} \approx 0{,}36$: su cento giri ne arrivano
-puliti in fondo trentasei, e i restanti sessantaquattro inciampano da qualche
-parte. Un rischio del cinque per cento a ogni passo, che a leggerlo sembra poco,
-diventa la maggioranza dei giri andati storti.
+appena sotto l'uno porta molto più in basso di quanto sembri. Con $p = 0{,}05$
+e $n = 20$ il risultato è $0{,}95^{20} \approx 0{,}36$: su cento iterazioni ne
+arrivano pulite in fondo trentasei, e i restanti sessantaquattro inciampano da
+qualche parte. [Un rischio del cinque per cento a ogni passo, che a leggerlo
+sembra poco, diventa la maggioranza delle iterazioni andate storte]{.pt-matita}.
 
 Il calcolo vale però solo finché ogni passo sbaglia in modo indipendente, e nei
 loop veri non è così, perché l'avvelenamento del contesto, visto con il
 {doc}`context engineering <context-engineering>`, fa sì che uno sbaglio ne tiri
 dietro altri. Quando gli errori vengono a grappoli, e $p$ è la frequenza media
-con cui i passi sbagliano, $(1-p)^n$ sbaglia in un verso preciso: i giri puliti
-sono *di più* di quanto dica, e quelli sporchi sono più sporchi. Gli sbagli, in
-media, sono gli stessi, ma si concentrano in meno giri. Il calcolo si fa in
-poche righe, con il modello più semplice del contagio: dopo un passo sbagliato,
-il passo successivo sbaglia una volta su due.
+con cui i passi sbagliano, $(1-p)^n$ sbaglia in un verso preciso: le iterazioni
+pulite sono *di più* di quanto dica, e quelle sporche sono più sporche. Gli
+sbagli, in media, sono gli stessi, ma si concentrano in meno iterazioni. Il
+calcolo si fa in poche righe, con il modello più semplice del contagio: dopo un
+passo sbagliato, il passo successivo sbaglia una volta su due.
 
 ```python
 n, p = 20, 0.05   # venti passi, uno sbaglio ogni venti passi in media
@@ -569,24 +570,24 @@ r = 0.5
 q = p * (1 - r) / (1 - p)
 pulito_grappoli = (1 - p) * (1 - q) ** (n - 1)
 
-# gli sbagli attesi in un giro sono n * p = 1 in tutti e due i casi:
-# cambia solo come si distribuiscono fra i giri
+# gli sbagli attesi in un'iterazione sono n * p = 1 in tutti e due i casi:
+# cambia solo come si distribuiscono fra le iterazioni
 casi = (("indipendenti", pulito_indip), ("a grappoli", pulito_grappoli))
 for nome, pulito in casi:
-    print(f"{nome}: giri puliti {pulito:.2f}, "
-          f"sbagli per giro sporco {n * p / (1 - pulito):.1f}")
+    print(f"{nome}: iterazioni pulite {pulito:.2f}, "
+          f"sbagli per iterazione sporca {n * p / (1 - pulito):.1f}")
 ```
 
 ```text
-indipendenti: giri puliti 0.36, sbagli per giro sporco 1.6
-a grappoli: giri puliti 0.57, sbagli per giro sporco 2.3
+indipendenti: iterazioni pulite 0.36, sbagli per iterazione sporca 1.6
+a grappoli: iterazioni pulite 0.57, sbagli per iterazione sporca 2.3
 ```
 
-Con la stessa frequenza media, uno sbaglio ogni venti passi, i giri puliti
-salgono da 36 a 57 su cento, e ogni giro sporco porta in media 2,3 sbagli
-invece di 1,6. Per errori che si tirano dietro a vicenda la formula dei passi
-indipendenti è quindi pessimistica sulla quota di giri puliti; nasconde quanto
-vanno male i giri che vanno male.
+Con la stessa frequenza media, uno sbaglio ogni venti passi, le iterazioni
+pulite salgono da 36 a 57 su cento, e ogni iterazione sporca porta in media 2,3
+sbagli invece di 1,6. Per errori che si tirano dietro a vicenda la formula dei
+passi indipendenti è quindi pessimistica sulla quota di iterazioni pulite;
+nasconde quanto vanno male le iterazioni che vanno male.
 
 Resta il motivo per cui il cancello di verifica non è un lusso, e sta in come è
 definito quel $p$: non è la probabilità di sbagliare, è la probabilità di
@@ -596,9 +597,10 @@ guadagno su $p$ si moltiplica anche lui venti volte.
 
 Ad esempio, se il cancello porta gli sbagli che passano inosservati dal cinque
 al due per cento, cioè ne intercetta tre su cinque ($0{,}05 \cdot (1 - 0{,}6) =
-0{,}02$), i giri puliti su venti passi salgono da trentasei a sessantasette su
-cento ($0{,}98^{20} \approx 0{,}67$). Con gli errori a grappoli fa anche di più,
-perché fermando il primo sbaglio ferma quelli che si sarebbe tirato dietro.
+0{,}02$), le iterazioni pulite su venti passi salgono da trentasei a
+sessantasette su cento ($0{,}98^{20} \approx 0{,}67$). Con gli errori a
+grappoli fa anche di più, perché fermando il primo sbaglio ferma quelli che si
+sarebbe tirato dietro.
 
 Il cancello però lavora dentro il ciclo, e contro l'aritmetica c'è una seconda
 difesa che sta invece attorno: non consegnare al loop tutto il potere il primo
@@ -765,8 +767,8 @@ differenza di una frase, va sorvegliato mentre lavora.
   alla ReAct {cite}`yao2023react`), il cancello *dispone*.
 - Gli errori si moltiplicano lungo il ciclo: *se* i passi sono
   indipendenti $(1-p)^n$ decade in fretta; se l'avvelenamento del contesto li
-  correla, a parità di frequenza media $p$ la formula sottostima i giri
-  puliti e nasconde quanto sono gravi quelli sporchi. Autonomia per livelli
+  correla, a parità di frequenza media $p$ la formula sottostima le iterazioni
+  pulite e nasconde quanto sono gravi quelle sporche. Autonomia per livelli
   (Greyling): L1 solo report → L2 fix assistiti con cancello umano, finché
   $c_{\text{rev}} < p_{\text{err}}\, c_{\text{err}}$ → L3 non presidiato
   entro allow-list, con $p_{\text{err}}$ stimato per eccesso (regola del tre).
@@ -775,7 +777,7 @@ differenza di una frase, va sorvegliato mentre lavora.
   buono *e* cattivo; chi mantiene deve leggere ciò che parte), la sicurezza
   (permessi minimi, cancelli umani ai punti irreversibili, come nel
   {doc}`capitolo sull’AI responsabile </AIResponsabile/overview>`) e il costo
-  per giro, da mettere a budget e monitorare come insegna LLMOps. Resta lo
+  per iterazione, da mettere a budget e monitorare come insegna LLMOps. Resta lo
   statuto delle fonti: il vocabolario del loop engineering viene da chi
   costruisce, non da chi misura; qui si riporta il meccanismo, che dura, non i
   nomi degli strumenti, che cambiano.
@@ -786,8 +788,8 @@ differenza di una frase, va sorvegliato mentre lavora.
 Tre cerchi, uno dentro l'altro: la frase, il contesto che le sta intorno, il
 ciclo che di frasi ne produce a ripetizione. In mezzo c'è un'idea che vale ben
 oltre i modelli di linguaggio, cioè che chi propone non può essere anche chi
-approva. Finora, però, il ciclo è durato qualche giro. Quando un lavoro chiede
-ore e decine di sessioni, ciascuna con la finestra vuota, tutto quello che sta
-attorno al modello smette di essere un contorno e diventa il progetto: le
-istruzioni, la memoria su file, il passaggio fra un turno e l'altro, il
+approva. Finora, però, il ciclo è durato qualche iterazione. Quando un lavoro
+chiede ore e decine di sessioni, ciascuna con la finestra vuota, tutto quello
+che sta attorno al modello smette di essere un contorno e diventa il progetto:
+le istruzioni, la memoria su file, il passaggio fra un turno e l'altro, il
 collaudo. È il tema dell’{doc}`harness engineering </Harness/overview>`.

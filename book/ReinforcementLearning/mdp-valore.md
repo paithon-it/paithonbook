@@ -114,11 +114,11 @@ foto, e non gli serve sapere in che ordine i pezzi sono arrivati lì. La
 posizione attuale, infatti, racconta già tutto ciò che conta. Uno stato fatto
 così si dice **markoviano**.
 
-Se la foto non basta, si allarga l'inquadratura finché basta. Negli scacchi
-veri, per esempio, alla foto va aggiunta una nota ("il re non ha ancora
-mosso"), perché da essa dipende una mossa speciale, l'arrocco, in cui il re e
-la torre si scambiano di posto e che è permessa solo se nessuno dei due si è
-mai mosso prima. L'importante è che tutto il necessario stia nella foto, e
+[Se la foto non basta, si allarga l'inquadratura finché basta]{.pt-matita}.
+Negli scacchi veri, per esempio, alla foto va aggiunta una nota ("il re non ha
+ancora mosso"), perché da essa dipende una mossa speciale, l'arrocco, in cui il
+re e la torre si scambiano di posto e che è permessa solo se nessuno dei due si
+è mai mosso prima. L'importante è che tutto il necessario stia nella foto, e
 niente resti nascosto nella storia.
 
 Allargare l'inquadratura, però, non sempre si può. A carte le mani
@@ -151,9 +151,10 @@ ricompensa, condizionata a stato e azione correnti, non cambia aggiungendo
 l'intera traiettoria passata, ricompense comprese. Questa invarianza serve
 perché $r(s,a)$ sia ben definita, e perché il valore di uno stato dipenda
 soltanto dallo stato. Se l'osservazione disponibile non soddisfa la proprietà,
-si *arricchisce* lo stato (aggiungendo variabili, o una finestra di
-osservazioni recenti) finché la proprietà vale. È quello che farà il DQN,
-impilando quattro frame consecutivi di un videogioco per catturare le velocità.
+[si *arricchisce* lo stato (aggiungendo variabili, o una finestra di
+osservazioni recenti) finché la proprietà vale]{.pt-matita}. È quello che farà
+il DQN, impilando quattro frame consecutivi di un videogioco per catturare le
+velocità.
 
 Il caso in cui l'osservazione non basta ha un nome, perché è la regola e non
 l'eccezione. Quando l'agente non osserva lo stato ma solo una sua funzione
@@ -247,7 +248,7 @@ Lo sconto ha anche un secondo effetto, meno visibile del primo. Una partita che
 non finisce mai regala premi per sempre, e a sommarli tutti interi viene un
 totale infinito. Due strategie che incassano senza fine varrebbero infinito
 tutte e due, e col totale non ci sarebbe modo di dire quale sia la migliore.
-Scontando, invece, il totale resta un numero: $+10$ a ogni passo per
+[Scontando, invece, il totale resta un numero]{.pt-matita}: $+10$ a ogni passo per
 sempre, con $\gamma = 0{,}9$, fa in tutto $100$.
 
 Il motivo sta in un calcolo di due righe. Il totale da adesso in poi è il $10$
@@ -293,11 +294,11 @@ G_t = R_{t+1} + \gamma\, R_{t+2} + \gamma^2 R_{t+3} + \cdots
 = \sum_{k=0}^{\infty} \gamma^k\, R_{t+k+1}.
 $$
 
-Con $0 \le \gamma < 1$, e se le ricompense sono limitate, la serie converge
-anche su orizzonti infiniti, il che rende il problema ben posto. Per questo
-motivo nei compiti continui, quelli che non finiscono mai, di norma si sconta.
-L'alternativa è non scontare e misurare la ricompensa per unità di tempo, il
-criterio della **ricompensa media**,
+Con $0 \le \gamma < 1$, e se le ricompense sono limitate, [la serie converge
+anche su orizzonti infiniti, il che rende il problema ben posto]{.pt-matita}.
+Per questo motivo nei compiti continui, quelli che non finiscono mai, di norma
+si sconta. L'alternativa è non scontare e misurare la ricompensa per unità di
+tempo, il criterio della **ricompensa media**,
 
 $$
 \bar{r}(\pi) = \lim_{h \to \infty} \frac{1}{h}\,
@@ -375,9 +376,9 @@ cioè in una partita giocata dall'inizio alla fine, dipende infatti da come è
 andata quella volta: dalle mosse scelte, che possono essere state estratte a
 caso, e dal mondo, che alla stessa mossa può rispondere in modi diversi (una
 pedalata non fa sempre lo stesso effetto). Rigiocando viene un numero diverso.
-Serve allora il ritorno medio: quanto promette, in media, trovarsi in una certa
-situazione e comportarsi in un certo modo. Le **funzioni valore** misurano
-proprio questo.
+[Serve allora il ritorno medio: quanto promette, in media, trovarsi in una
+certa situazione e comportarsi in un certo modo]{.pt-matita}. Le **funzioni
+valore** misurano proprio questo.
 
 `````{tab} Elementare
 
@@ -434,10 +435,10 @@ manca, il valore vero resta $q_*(a)$ come in Sutton e Barto.
 ## L'equazione di Bellman: ogni valore si appoggia al successivo
 
 L’**equazione di Bellman** lega il valore di uno stato a quello degli stati che
-lo seguono. Il ritorno, infatti, si spezza in due pezzi, la ricompensa del
-passo successivo e il ritorno scontato che viene dopo, e del secondo pezzo
-basta il valore atteso. In questo modo non serve sommare da capo infinite
-ricompense.
+lo seguono. Il ritorno, infatti, [si spezza in due pezzi, la ricompensa del
+passo successivo e il ritorno scontato che viene dopo]{.pt-matita}, e del
+secondo pezzo basta il valore atteso. In questo modo non serve sommare da capo
+infinite ricompense.
 
 `````{tab} Elementare
 
@@ -540,8 +541,9 @@ contando la ricompensa immediata più il valore (scontato) della casella dove
 finirei?". Sulla casella scrivi il risultato della mossa migliore, perché il
 valore che stiamo calcolando è quello di chi gioca al meglio. Finito il giro,
 ricomincia da capo con i numeri nuovi, e poi ancora, finché i numeri smettono
-di muoversi. A quel punto ogni casella porta il suo valore vero, e la strategia
-migliore ne discende: da ogni casella, scegli la mossa che rende di più.
+di muoversi. A quel punto [ogni casella porta il suo valore vero, e la
+strategia migliore ne discende]{.pt-matita}: da ogni casella, scegli la mossa
+che rende di più.
 
 I numeri da cui si comincia, poi, non contano: partendo da cento dappertutto
 invece che da zero i giri sono molti di più, ma i numeri su cui ci si ferma
@@ -590,8 +592,8 @@ per dimostrarlo basta la disuguaglianza
 $|\max_a x_a - \max_a y_a| \le \max_a |x_a - y_a|$,
 insieme al fatto che le $P(s'\mid s,a)$ sommano a $1$. $\mathcal{B}$ è quindi
 una **contrazione** di fattore $\gamma$ nella norma del massimo, e per il
-teorema di punto fisso di Banach ha un punto fisso unico, $V^*$, a cui
-l'iterazione arriva da qualunque inizializzazione con
+teorema di punto fisso di Banach [ha un punto fisso unico, $V^*$, a cui
+l'iterazione arriva da qualunque inizializzazione]{.pt-matita} con
 $\|V_k - V^*\|_\infty \le \gamma^k \|V_0 - V^*\|_\infty$
 {cite}`bellman1957dynamic` {cite}`sutton2018reinforcement`.
 
@@ -734,10 +736,10 @@ contare tutti gli atomi dell'universo osservabile ne bastano un'ottantina. Su
 quei mondi una tabella non sarebbe lenta, sarebbe impossibile: non
 esiste un universo in cui scriverla. Al confronto, un milione di stati è poco.
 
-Come si è visto, il premio non resta fermo dov'è, ma risale il mondo di una
-casella per iterazione, come un'onda che parte dal traguardo e va all'indietro.
-Su tre stati quell'onda si esaurisce in due passi, e non c'è granché da
-guardare, mentre su una griglia si vede meglio, come mostra la
+Come si è visto, [il premio non resta fermo dov'è, ma risale il mondo di una
+casella per iterazione]{.pt-matita}, come un'onda che parte dal traguardo e va
+all'indietro. Su tre stati quell'onda si esaurisce in due passi, e non c'è
+granché da guardare, mentre su una griglia si vede meglio, come mostra la
 {numref}`fig-iterazione-valore`.
 
 Il labirinto della figura è diverso da quello a tre caselle di prima. In questo
@@ -804,8 +806,8 @@ Secondo tempo, la **correzione**: con la pagella davanti si scorrono le caselle
 una per una, e dove un'altra freccia rende di più, contando insieme il
 punteggio della mossa e il valore scontato della casella in cui manda, si gira
 la freccia. Poi si rifà la pagella per le frecce nuove, si corregge ancora, e
-avanti così. Quando un giro di correzioni non gira più nessuna freccia, quella
-è la strategia migliore possibile.
+avanti così. [Quando un giro di correzioni non gira più nessuna freccia, quella
+è la strategia migliore possibile]{.pt-matita}.
 
 Detta così sembra troppo bella. Si potrebbe restare incastrati in una strategia
 mediocre che nessuna correzione riesce a migliorare? Non succede, e lo
@@ -868,8 +870,8 @@ passo, finché resta l'attesa del ritorno sotto $\pi'$.
 
 La policy greedy soddisfa la condizione per costruzione, con miglioramento
 stretto da qualche parte finché $\pi$ non è ottima; e poiché in un MDP finito
-le policy deterministiche sono in numero finito, l'alternanza termina sulla
-policy ottima in un numero finito di iterazioni, al più
+le policy deterministiche sono in numero finito, [l'alternanza termina sulla
+policy ottima in un numero finito di iterazioni]{.pt-matita}, al più
 $|\mathcal{A}|^{|\mathcal{S}|}$ e in pratica pochissime
 {cite}`sutton2018reinforcement`.
 
@@ -925,9 +927,9 @@ def valori_mosse(V):
 
 print("value iteration       V(s0)  V(s1)  V(s2)")
 V = np.zeros(3)
-for giro in range(1, 4):
+for iterazione in range(1, 4):
     V = valori_mosse(V).max(axis=1)     # in ogni casella, la mossa migliore
-    print(f"  giro {giro}            " + "".join(f"{v:7.2f}" for v in V))
+    print(f"  iterazione {iterazione}      " + "".join(f"{v:7.2f}" for v in V))
 
 print("policy iteration")
 pi = np.array([1, 1, 0])                # si parte da "resta" e "torna"
@@ -945,16 +947,16 @@ while True:
 
 ```text
 value iteration       V(s0)  V(s1)  V(s2)
-  giro 1               0.00  10.00   0.00
-  giro 2               9.00  10.00   0.00
-  giro 3               9.00  10.00   0.00
+  iterazione 1         0.00  10.00   0.00
+  iterazione 2         9.00  10.00   0.00
+  iterazione 3         9.00  10.00   0.00
 policy iteration
   resta torna        -10.00 -10.00   0.00
   su    giù            9.00  10.00   0.00
 ```
 
-La value iteration si ferma al terzo giro, sui numeri della tabella. La policy
-iteration parte da una strategia che perde un punto a ogni passo per
+La value iteration si ferma alla terza iterazione, sui numeri della tabella. La
+policy iteration parte da una strategia che perde un punto a ogni passo per
 sempre, e il cui ritorno scontato vale $-10$ da tutte e due le caselle; alla
 prima correzione arriva sulla strategia giusta e sugli stessi valori, e lì si
 ferma.
@@ -963,8 +965,8 @@ ferma.
 
 Finora, però, per sommare la ricompensa dell'azione al valore della casella
 d'arrivo abbiamo dato per scontato di *sapere in anticipo* dove porta ogni
-azione e quanto paga, e questa è un'ipotesi enorme. In altri termini, la value
-iteration e la policy iteration richiedono di avere in mano la mappa:
+azione e quanto paga, e questa è un'ipotesi enorme. In altri termini, [la value
+iteration e la policy iteration richiedono di avere in mano la mappa]{.pt-matita}:
 per ogni mossa, dove si finisce (e con quali probabilità, quando
 l'esito è incerto) e quanto si incassa a farla. È come pianificare un viaggio
 con la cartina già aperta sul tavolo, e quella cartina sono le regole che, nel

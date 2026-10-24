@@ -50,9 +50,9 @@ periodo non entra più di un visitatore ogni sei secondi, perché più in fretta
 la macchina non stampa. Se il museo è rimasto tranquillo per un po’ la pila è
 piena, e una scolaresca di cinquanta ragazzi entra tutta insieme senza
 aspettare: le raffiche sono permesse, purché siano state pagate prima da un po’
-di calma. L'altezza della pila decide quanto può essere grande una raffica, il
+di calma. [L'altezza della pila decide quanto può essere grande una raffica, il
 ritmo della stampa quanto si entra in media, e le due cose si regolano
-separatamente.
+separatamente]{.pt-matita}.
 
 Con i modelli i biglietti sono token, e c'è una complicazione: quanti ne
 consumerà una richiesta si sa solo per metà. Il testo in entrata si conta prima
@@ -83,11 +83,11 @@ $r$. Lo stato è il livello $s \in [0, b]$, che cresce con $\dot s = r$ finché
 non raggiunge $b$; una richiesta di costo $\kappa$ è ammessa se $s \ge \kappa$,
 e allora $s \leftarrow s - \kappa$. Ne segue la garanzia che ne ha fatto il
 meccanismo standard del controllo di traffico: su qualunque intervallo di
-durata $\Delta t$ il costo ammesso non supera $b + r\,\Delta t$. Il tasso medio
-è limitato da $r$, la raffica da $b$, e le due grandezze si scelgono
-indipendentemente. Un contatore a finestra fissa non lo permette: con finestre
-da un minuto, sessanta secondi a cavallo del confine fra due finestre possono
-far passare il doppio del limite.
+durata $\Delta t$ il costo ammesso non supera $b + r\,\Delta t$. [Il tasso
+medio è limitato da $r$, la raffica da $b$, e le due grandezze si scelgono
+indipendentemente]{.pt-matita}. Un contatore a finestra fissa non lo permette:
+con finestre da un minuto, sessanta secondi a cavallo del confine fra due
+finestre possono far passare il doppio del limite.
 
 Per un modello linguistico il costo di una richiesta è
 $\kappa = N_{\text{in}} + N_{\text{out}}$ token, con $N_{\text{in}}$ noto
@@ -316,7 +316,7 @@ d'attesa, cioè per una trentina di secondi, lavora a vuoto: ogni risposta
 arriva a qualcuno che se n'è già andato. Poi le risposte utili tornano a
 ottanta.
 
-Con tre ritentativi il servizio non si riprende più
+[Con tre ritentativi il servizio non si riprende più]{.pt-matita}
 ({numref}`fig-tempesta-che-resta`). Ogni richiesta che trova la fila
 lunga scade, e scadendo ne genera un'altra, fino a quattro tentativi: 320 al
 secondo contro una capacità di 100. La fila cresce senza fine (68.192 tentativi
@@ -394,8 +394,9 @@ un decimo dello specialista e risolve otto casi su dieci, cento pazienti
 costano cento visite dal generico, che valgono quanto dieci dallo specialista,
 più le venti visite dallo specialista di chi non è stato risolto: trenta in
 tutto, meno di un terzo delle cento che servirebbero mandando tutti da lui.
-Conviene finché il generico sa riconoscere i casi che non sa risolvere; uno che
-si crede bravo e non manda mai nessuno costa poco e sbaglia molto.
+[Conviene finché il generico sa riconoscere i casi che non sa
+risolvere]{.pt-matita}; uno che si crede bravo e non manda mai nessuno costa
+poco e sbaglia molto.
 
 Poi c'è il caso in cui lo specialista non c'è. Il turno salta, il reparto
 chiude, e il paziente va mandato in un altro ospedale. Qui il criterio smette
@@ -436,9 +437,9 @@ $$
 $$
 
 e la latenza si compone allo stesso modo: la cascata paga sempre $c_1$, e a chi
-viene inoltrato fa pagare tutte le chiamate precedenti. Conviene quando $u_1$ è
-alto e il punteggiatore ha pochi falsi positivi, cioè accetta di rado risposte
-sbagliate, che sono l'errore che la cascata non recupera.
+viene inoltrato fa pagare tutte le chiamate precedenti. [Conviene quando $u_1$
+è alto e il punteggiatore ha pochi falsi positivi]{.pt-matita}, cioè accetta di
+rado risposte sbagliate, che sono l'errore che la cascata non recupera.
 
 Con due modelli, e
 trascurando il costo del punteggiatore, la cascata costa meno che mandare tutto
@@ -476,7 +477,7 @@ corriere, due giorni, non dice niente su questo pacco; il tracciamento sì. Ogni
 volta che il pacco passa da un posto qualcuno lo scansiona, e il sito mostra la
 fila delle scansioni con l'ora: ritirato alle nove, al centro di smistamento
 alle undici, al deposito della città alle sei di sera, e da lì più niente per
-ventiquattr'ore. Il ritardo ha un indirizzo, il deposito.
+ventiquattr'ore. [Il ritardo ha un indirizzo, il deposito]{.pt-matita}.
 
 Con una risposta di un modello si fa lo stesso. Ogni tratto del percorso segna
 quando comincia e quando finisce: il passaggio dalla porta d'ingresso, l'attesa
@@ -526,8 +527,8 @@ richiesta e il ritorno del primo token al cliente. È il TTFT visto dal cliente,
 come in {doc}`Misurare un servizio </MLOps/metriche-di-servizio>`; la somma
 $t_{\text{coda}} + t_{\text{prefill}}$ è il tratto che la replica può misurare
 in autonomia, il TTFT lato server. Il TPOT è la durata dello span di decode
-divisa per $N_{\text{out}} - 1$. La p99 aggregata dice che uno dei termini è
-cresciuto; la traccia dice quale.
+divisa per $N_{\text{out}} - 1$. [La p99 aggregata dice che uno dei termini è
+cresciuto; la traccia dice quale]{.pt-matita}.
 
 Il campionamento in testa (*head-based*), deciso all'ingresso con probabilità
 fissa come in Dapper, è economico ma perde quasi tutte le richieste rare; quello
@@ -561,13 +562,13 @@ finita si confronta l'esito con quella promessa. Se il tempo è stato
 rispettato, la scuola ha una prova in più che il piano funziona; se no, ha
 trovato il difetto in un giorno tranquillo invece che durante un incendio.
 
-L'esercitazione si fa con la scuola vera, in orario di lezione, con i ragazzi
-veri: provata di sabato a scuola vuota direbbe che le porte si aprono, non che
-trecento persone ci passano in tre minuti. Il guasto finto, invece, tocca
-pochi: si fa trovare chiusa una scala a una classe sola, mentre tutte le altre
-escono come sempre, così la ressa nei corridoi è quella vera e, se qualcosa va
-storto, il problema resta confinato. C'è anche un modo di fermare tutto se la
-prova degenera.
+[L'esercitazione si fa con la scuola vera, in orario di lezione, con i ragazzi
+veri]{.pt-matita}: provata di sabato a scuola vuota direbbe che le porte si
+aprono, non che trecento persone ci passano in tre minuti. Il guasto finto,
+invece, tocca pochi: si fa trovare chiusa una scala a una classe sola, mentre
+tutte le altre escono come sempre, così la ressa nei corridoi è quella vera e,
+se qualcosa va storto, il problema resta confinato. C'è anche un modo di
+fermare tutto se la prova degenera.
 
 Si cambia anche l'evento, perché gli incendi non scelgono il
 momento comodo: un anno l'allarme suona mentre la scala principale è chiusa per
@@ -596,11 +597,11 @@ conformità agli SLO su TTFT e ITL), e si ipotizza che resti tale sia nel gruppo
 di controllo sia in quello sperimentale. Si introducono variabili che
 riproducono eventi reali: la caduta di una replica, la latenza di una
 dipendenza, risposte 429 o 5xx da un fornitore, la revoca di un'istanza
-prerilasciabile, la perdita di una zona. Si eseguono gli esperimenti in
-produzione, perché solo lì il carico ha la sua distribuzione vera. Infine li si
-automatizza perché girino con continuità, dato che il sistema cambia e la
-confidenza guadagnata ieri invecchia. L'ipotesi è falsificata se lo stato
-stazionario differisce fra i due gruppi.
+prerilasciabile, la perdita di una zona. [Si eseguono gli esperimenti in
+produzione, perché solo lì il carico ha la sua distribuzione vera]{.pt-matita}.
+Infine li si automatizza perché girino con continuità, dato che il sistema
+cambia e la confidenza guadagnata ieri invecchia. L'ipotesi è falsificata se lo
+stato stazionario differisce fra i due gruppi.
 
 Per contenere il rischio l'articolo
 limita l'esperimento a una piccola percentuale degli utenti; la pratica

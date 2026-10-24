@@ -79,9 +79,9 @@ cosa sta succedendo, e sul copione segna il secondo in cui il tuono comincia e
 quello in cui smette, perché l'attore deve attaccare la sua battuta appena il
 tuono è finito.
 
-I due lavorano con le stesse orecchie e cambia soltanto il foglio su cui
-finisce l'ascolto: righe di dialogo per l'una, nomi di suoni e istanti per
-l'altro.
+[I due lavorano con le stesse orecchie e cambia soltanto il foglio su cui
+finisce l'ascolto]{.pt-matita}: righe di dialogo per l'una, nomi di suoni e
+istanti per l'altro.
 
 Il riconoscimento vocale ci rende bravi come la stenografa. Il fonico fa altro:
 dà un nome ai suoni, elenca tutto ciò che si sente in una scena, dice quando
@@ -105,16 +105,16 @@ $\hat{W}$. I compiti dell'audio generale hanno firme diverse:
 - generazione: campionare un $\mathbf{X}$ nuovo da una distribuzione appresa,
   eventualmente condizionata da testo.
 
-La radice comune è che le rappresentazioni tempo–frequenza restano quelle: la
-costruzione dello spettrogramma e della scala mel è la stessa per un colpo di
-tamburo e per una vocale, e a cambiare sono i parametri (la finestra standard
-di 25 ms è tarata sul parlato: abbastanza corta perché il tratto vocale si
-possa considerare stazionario, abbastanza lunga da contenere almeno due o tre
-periodi della fondamentale; chi lavora sulla musica allunga la finestra, per
-separare note vicine, e alza il numero di bande). Cambia poi tutto a valle
-(l'obiettivo, la funzione di perdita, l'architettura), perché la struttura
-statistica di musica e suoni ambientali non è quella, quasi-periodica e
-vincolata dal tratto vocale, del parlato.
+La radice comune è che [le rappresentazioni tempo–frequenza restano
+quelle]{.pt-matita}: la costruzione dello spettrogramma e della scala mel è la
+stessa per un colpo di tamburo e per una vocale, e a cambiare sono i parametri
+(la finestra standard di 25 ms è tarata sul parlato: abbastanza corta perché il
+tratto vocale si possa considerare stazionario, abbastanza lunga da contenere
+almeno due o tre periodi della fondamentale; chi lavora sulla musica allunga la
+finestra, per separare note vicine, e alza il numero di bande). Cambia poi
+tutto a valle (l'obiettivo, la funzione di perdita, l'architettura), perché la
+struttura statistica di musica e suoni ambientali non è quella, quasi-periodica
+e vincolata dal tratto vocale, del parlato.
 
 `````
 
@@ -218,8 +218,8 @@ oppure partendo da rumore e ripulendolo un passo alla volta: sono altre strade,
 e {doc}`la sezione sulla generazione </Audio/generazione-audio>` ne incontra
 una. La domanda è allora questa: esiste per il suono un alfabeto
 abbastanza piccolo da imparare e abbastanza lento da arrivare in fondo a un
-brano? Se esiste, tutto l'armamentario costruito per il linguaggio diventa di
-colpo applicabile al suono.
+brano? Se esiste, [tutto l'armamentario costruito per il linguaggio diventa di
+colpo applicabile al suono]{.pt-matita}.
 
 `````{tab} Elementare
 

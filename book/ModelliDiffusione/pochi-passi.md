@@ -6,10 +6,11 @@ gioca un migliaio di partite e il principiante le studia tutte, può arrivare a
 riconoscere le posizioni e a fare la mossa giusta senza calcolare niente: ha
 sostituito il ragionamento con la memoria della sua conclusione.
 
-Con i modelli di diffusione si fa lo stesso: un modello che integra la
+Con i modelli di diffusione si fa lo stesso: [un modello che integra la
 traiettoria in molti passi, il maestro, insegna a un altro, lo studente, a
-produrre lo stesso risultato in pochi passi o in uno. Il procedimento si
-chiama distillazione, come nella {doc}`sezione sul modello piccolo che imita
+produrre lo stesso risultato in pochi passi o in uno]{.pt-matita}. Il
+procedimento si chiama distillazione, come nella {doc}`sezione sul modello
+piccolo che imita
 </Efficienza/un-modello-piccolo-che-imita>`, con una differenza: là a
 rimpicciolire era la rete, qui la rete resta grande uguale e a ridursi è il
 numero di passi. Qui non si percorre meglio la traiettoria, che era la strada
@@ -32,9 +33,9 @@ tutti i tratti del percorso, il secondo modello sa fare in cinquecento passi il
 lavoro che il primo faceva in mille.
 
 E poi lo si rifà. Il secondo modello diventa il maestro, un terzo impara a
-dimezzarlo ancora, e si scende a duecentocinquanta. Ogni giro dimezza, quindi
-dieci giri portano da mille a uno. Il conto è quello del foglio piegato a metà:
-poche piegature, e gli strati sono tantissimi.
+dimezzarlo ancora, e si scende a duecentocinquanta. [Ogni giro dimezza, quindi
+dieci giri portano da mille a uno]{.pt-matita}. Il conto è quello del foglio
+piegato a metà: poche piegature, e gli strati sono tantissimi.
 
 Ogni giro è un addestramento a sé, non una rifinitura, con il maestro da
 interrogare due volte per ogni esempio. I giri non si accorciano (gli ultimi
@@ -90,9 +91,9 @@ $\mathbf{v}$-prediction. Nelle loro prove funzionano tutte le combinazioni
 proposte, tranne la predizione di $\boldsymbol{\epsilon}$ pesata con lo SNR
 troncato, che diverge.
 
-Terminata l'iterazione, lo studente diventa il maestro e si ripete: $K$
+Terminata l'iterazione, lo studente diventa il maestro e si ripete: [$K$
 iterazioni riducono i passi di un fattore $2^K$, quindi dieci iterazioni
-portano da $1024$ a $1$.
+portano da $1024$ a $1$]{.pt-matita}.
 
 La parametrizzazione è decisiva. Infatti, con passi lunghi, a $t$ grande è
 l'immagine ricavata dal rumore predetto ad avere varianza esplosiva, perché lì
@@ -134,9 +135,9 @@ uno altrettanto bello per un'altra strada, va bene uguale, e magari meglio.
 Da qui la seconda famiglia di metodi. Invece di chiedere allo studente di
 ripercorrere il cammino del maestro, gli si chiede che le immagini che produce
 siano distribuite come quelle del maestro. È una richiesta più debole sui
-singoli casi e più forte nell'insieme, e ha una conseguenza notevole: uno
+singoli casi e più forte nell'insieme, e ha una conseguenza notevole: [uno
 studente così può risultare migliore del maestro, perché non è obbligato a
-riprodurne gli errori.
+riprodurne gli errori]{.pt-matita}.
 
 Come si misuri se due insiemi di immagini sono distribuiti allo stesso modo è il
 problema tecnico, e le risposte sono due. La prima usa un giudice che impara a
@@ -203,11 +204,11 @@ discriminatore che lavora sulle caratteristiche di una rete visiva
 preaddestrata e congelata, è tenuto vicino al maestro da una perdita di
 distillazione del punteggio, e genera in un numero di passi fra uno e quattro.
 
-La differenza sostanziale rispetto alla distillazione progressiva è che il
-vincolo riguarda la distribuzione, non la traiettoria. Ne segue che lo studente
-può superare il maestro, cosa impossibile per costruzione nella famiglia
-precedente, e lo si è osservato: modelli a uno o due passi che battono il
-maestro a molti passi su punteggi percettivi, pur avendo una copertura delle
+La differenza sostanziale rispetto alla distillazione progressiva è che [il
+vincolo riguarda la distribuzione, non la traiettoria]{.pt-matita}. Ne segue
+che lo studente può superare il maestro, cosa impossibile per costruzione nella
+famiglia precedente, e lo si è osservato: modelli a uno o due passi che battono
+il maestro a molti passi su punteggi percettivi, pur avendo una copertura delle
 modalità peggiore. Il costo è un addestramento con tre reti in gioco, con la
 stabilità che ne consegue.
 
@@ -238,10 +239,10 @@ La cosa notevole è che la richiesta si può imporre senza sapere quale sia la
 risposta giusta. Basta prendere due punti vicini della stessa traiettoria e
 chiedere che la rete risponda uguale su tutti e due; ripetuto su tante coppie,
 questo incolla insieme la risposta lungo tutta la traiettoria. Se i due punti
-vicini li ricava un maestro con un suo passo, la rete non ha modo di uscire
-più precisa di quel passo. L'ancora che impedisce alla rete di rispondere
-sempre la stessa cosa (una risposta che soddisferebbe la richiesta e sarebbe
-inutile) è il punto di arrivo, dove la risposta giusta si conosce: a rumore
+vicini li ricava un maestro con un suo passo, la rete non ha modo di uscire più
+precisa di quel passo. L'ancora che impedisce alla rete di rispondere sempre la
+stessa cosa (una risposta che soddisferebbe la richiesta e sarebbe inutile) [è
+il punto di arrivo, dove la risposta giusta si conosce]{.pt-matita}: a rumore
 zero, l'immagine è quella che si sta guardando.
 
 `````
@@ -270,8 +271,8 @@ $$
 c_{\text{skip}}(\varepsilon)=1,\; c_{\text{out}}(\varepsilon)=0 .
 $$
 
-Senza la condizione al contorno la funzione costante soddisferebbe la
-consistenza ed è la soluzione degenere.
+[Senza la condizione al contorno la funzione costante soddisferebbe la
+consistenza ed è la soluzione degenere]{.pt-matita}.
 
 Sono i **consistency model** {cite}`song2023consistency`, e si addestrano in due
 modi. La **distillazione di consistenza** usa un maestro per fare il passo $t\to
@@ -328,9 +329,9 @@ un tratto lungo.
 La velocità media spiega il guadagno. Ad esempio, andando da Milano a Roma la
 velocità istantanea cambia di continuo, e per sapere dove si arriva bisogna
 seguirla minuto per minuto; ma se qualcuno ti dice la velocità media
-dell'intero viaggio, la destinazione la calcoli con una moltiplicazione. Un
-passo solo, e il risultato è esatto invece che approssimato, perché la media è
-definita così.
+dell'intero viaggio, la destinazione la calcoli con una moltiplicazione. [Un
+passo solo, e il risultato è esatto invece che approssimato]{.pt-matita},
+perché la media è definita così.
 
 Da qui la famiglia generale, che invece di una destinazione sola impara la
 mappa fra due istanti qualsiasi: dove si arriva partendo da qui a
@@ -364,16 +365,16 @@ o una sua restrizione. Le famiglie si collocano così:
 | consistency trajectory model | $\Phi_{t\to s}$ per $s$ qualsiasi |
 | mean flow | $\bar{\mathbf{u}}(\mathbf{x},t,s) := \frac{1}{s-t}\int_t^s \mathbf{u}_r\,\mathrm{d}r$ |
 
-L'ultima riga rende evidente perché un passo basti: per definizione
-$\Phi_{t\to s}(\mathbf{x}) = \mathbf{x} + (s-t)\,\bar{\mathbf{u}}$, quindi un
-singolo passo di Eulero con la velocità media è esatto, mentre lo stesso
-passo con la velocità istantanea ha errore $O((s-t)^2)$. Tutto il guadagno
-sta in questa sostituzione, e tutto il costo sta nel fatto che
-$\bar{\mathbf{u}}$ dipende da due tempi invece che da uno, quindi la rete ha un
-ingresso in più e un problema più difficile da approssimare. Il consistency
-trajectory model è di Kim e colleghi {cite}`kim2024consistency`; il mean flow
-è di Geng e colleghi {cite}`geng2025mean`, del 2025, e il suo posto nella
-pratica è ancora da stabilire.
+L'ultima riga rende evidente perché un passo basti: per definizione $\Phi_{t\to
+s}(\mathbf{x}) = \mathbf{x} + (s-t)\,\bar{\mathbf{u}}$, quindi [un singolo
+passo di Eulero con la velocità media è esatto]{.pt-matita}, mentre lo stesso
+passo con la velocità istantanea ha errore $O((s-t)^2)$. Tutto il guadagno sta
+in questa sostituzione, e tutto il costo sta nel fatto che $\bar{\mathbf{u}}$
+dipende da due tempi invece che da uno, quindi la rete ha un ingresso in più e
+un problema più difficile da approssimare. Il consistency trajectory model è di
+Kim e colleghi {cite}`kim2024consistency`; il mean flow è di Geng e colleghi
+{cite}`geng2025mean`, del 2025, e il suo posto nella pratica è ancora da
+stabilire.
 
 La consistenza in tempo continuo si scrive come una condizione differenziale
 sulla mappa,
@@ -476,10 +477,10 @@ incorporata nella distillazione invece che applicata al momento. È il motivo
 per cui un modello distillato arriva spesso con il peso della guida già
 fissata dentro.
 
-Il terzo è che il confronto onesto si fa a parità di valutazioni della
-rete, e non a parità di passi. Un metodo a due passi che ne usa due per passo
-costa quanto uno a quattro passi, e le tabelle degli articoli non sempre lo
-dichiarano.
+Il terzo è che [il confronto onesto si fa a parità di valutazioni della rete, e
+non a parità di passi]{.pt-matita}. Un metodo a due passi che ne usa due per
+passo costa quanto uno a quattro passi, e le tabelle degli articoli non sempre
+lo dichiarano.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

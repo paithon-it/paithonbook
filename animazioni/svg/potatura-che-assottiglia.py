@@ -71,7 +71,7 @@ from pathlib import Path
 from paithon_svg import *
 
 NOME = "potatura-che-assottiglia"
-TITOLO = "La potatura iterativa, giro dopo giro"
+TITOLO = "La potatura iterativa, una passata dopo l'altra"
 
 QUI = Path(__file__).resolve()
 RADICE = QUI.parents[2]
@@ -453,9 +453,9 @@ def costruisci() -> Figura:
         f'<text class="lbs" x="{r.x + r.larg}" y="{r.y + r.alt + 20}" '
         f'text-anchor="end">tolti tutti</text>']
 
-    # --- il cartiglio del giro --------------------------------------------
+    # --- il cartiglio della passata ---------------------------------------
     y = GY + LATO * CELLA + 44
-    corpo.append(f'<text class="lbs" x="{GX - 8}" y="{y}">al giro</text>')
+    corpo.append(f'<text class="lbs" x="{GX - 8}" y="{y}">finora</text>')
     for i, p in enumerate(passi):
         corpo.append(solo_al_giro(
             i, f'<text class="big" x="{GX + 48}" y="{y}">'
@@ -467,12 +467,12 @@ def costruisci() -> Figura:
         larghezza=LARG, altezza=ALT,
         alt="Due riquadri affiancati. A sinistra una griglia di sedici per sedici "
             "quadratini, un campione dei pesi del primo strato di una rete: "
-            "all'inizio sono tutti pieni, e giro dopo giro se ne svuotano sempre "
-            "di più, fino a restare vuota o quasi. A destra la curva "
+            "all'inizio sono tutti pieni, e passata dopo passata se ne svuotano "
+            "sempre di più, fino a restare vuota o quasi. A destra la curva "
             "dell'accuratezza contro la frazione di pesi tolti, tracciata un "
-            "punto per giro: resta piatta poco sotto il cento per cento mentre "
-            "si tolgono i primi nove pesi su dieci, e poi precipita negli ultimi "
-            "giri. Sotto, a ogni giro, quanti pesi sono stati tolti e "
+            "punto per passata: resta piatta poco sotto il cento per cento mentre "
+            "si tolgono i primi nove pesi su dieci, e poi precipita nelle ultime "
+            "passate. Sotto, a ogni passata, quanti pesi sono stati tolti e "
             "l'accuratezza corrispondente.",
         corpo="".join(corpo),
         stile=f"""    .griglia {{ stroke:{BORDER}; stroke-width:1; }}

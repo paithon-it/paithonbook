@@ -66,8 +66,9 @@ senza che nessuno le scriva.
 
 Si noti che le regole così ottenute devono valere anche fuori dalla raccolta.
 Le email che hai dato al programma sono già state smistate a mano, quindi
-smistarle di nuovo non serve a nessuno; ciò che serve è che il programma
-classifichi bene la prossima email, quella che nella raccolta non c'era.
+smistarle di nuovo non serve a nessuno; [ciò che serve è che il programma
+classifichi bene la prossima email, quella che nella raccolta non
+c'era]{.pt-matita}.
 
 `````
 
@@ -83,8 +84,8 @@ coppie input-output osservate, e cerchiamo una funzione $f_\theta$, presa da
 una famiglia parametrizzata da $\theta$, che le riproduca bene e che,
 soprattutto, **generalizzi** a input mai visti. Il compito, pertanto, non è
 più *scrivere* $f$, ma *stimare* i parametri $\theta$ a partire dai dati: il
-codice resta fisso, e con l'esperienza cambiano i numeri contenuti in
-$\theta$.
+[codice resta fisso, e con l'esperienza cambiano i numeri contenuti in
+$\theta$]{.pt-matita}.
 
 `````
 
@@ -116,7 +117,7 @@ questo «più bravo» si può misurare. Servono quindi tre ingredienti:
 Il programma di Samuel, ad esempio, diventava più bravo (vinceva di più) man
 mano che accumulava partite. Se dopo mille partite ne avesse vinte la stessa
 quota di prima, non avrebbe imparato niente, per quante ne avesse giocate:
-conta che la misura migliori, non il tempo passato al tavolo.
+[conta che la misura migliori, non il tempo passato al tavolo]{.pt-matita}.
 
 Si noti che i tre ingredienti non parlano di dama. Al posto del compito metti
 il riconoscimento di una firma falsa, al posto dell'esperienza le firme già
@@ -142,10 +143,10 @@ $E$.
 La formulazione è volutamente astratta: non nomina reti neurali né alberi di
 decisione, e vale quindi per qualunque algoritmo di apprendimento. Se
 all'aumentare di $E$ la $P$ non migliora, non c'è apprendimento. Affinché la
-condizione sia vincolante, tuttavia, $P$ va misurata su esempi che non fanno
-parte di $E$. Una tabella che memorizza le coppie viste, infatti, migliora con
-l'esperienza, se la si valuta su quelle stesse coppie, senza aver imparato
-nulla.
+condizione sia vincolante, tuttavia, [$P$ va misurata su esempi che non fanno
+parte di $E$]{.pt-matita}. Una tabella che memorizza le coppie viste, infatti,
+migliora con l'esperienza, se la si valuta su quelle stesse coppie, senza aver
+imparato nulla.
 
 `````
 
@@ -255,8 +256,8 @@ indicano dove tornare per migliorare ({numref}`fig-workflow-ml`).
 :width: 95%
 
 Il flusso tipico di un progetto ML. Dopo la valutazione, fatta su dati tenuti da
-parte, si torna quasi sempre indietro a rivedere le feature, e si ricomincia il
-giro.
+parte, si torna quasi sempre indietro a rivedere le feature, e si ricomincia con
+un'altra iterazione.
 ```
 
 I passaggi, nell'ordine, sono i seguenti.
@@ -296,11 +297,12 @@ I passaggi, nell'ordine, sono i seguenti.
    arrivano ogni giorno. Il modello va comunque sorvegliato, perché i dati del
    mondo cambiano nel tempo.
 
-Quasi mai il primo tentativo è quello buono, e per questo motivo la freccia di
-ritorno conta più delle altre. Si osserva dove il modello sbaglia sui dati
-tenuti da parte per il giudizio, si ritoccano le feature o il modello e si
-ricomincia. Su quali dati si debba giudicare lo stabilisce la {doc}`sezione su
-overfitting e validazione </MachineLearning/overfitting-validazione>`.
+Quasi mai il primo tentativo è quello buono, e per questo motivo [la freccia di
+ritorno conta più delle altre]{.pt-matita}. Si osserva dove il modello sbaglia
+sui dati tenuti da parte per il giudizio, si ritoccano le feature o il modello
+e si ricomincia. Su quali dati si debba giudicare lo stabilisce la
+{doc}`sezione su overfitting e
+validazione </MachineLearning/overfitting-validazione>`.
 
 `````{tab} Elementare
 
@@ -424,8 +426,8 @@ ha bisogno di moltissimi esempi.
 
 C'è infine il costo di esercizio. Il modello del collega si è addestrato sul
 suo portatile e va in servizio senza macchine speciali. Per questo motivo,
-prima di adottare una rete profonda conviene mettere in piedi il modello
-semplice e regolarlo bene: molto spesso basta già quello.
+prima di adottare una rete profonda [conviene mettere in piedi il modello
+semplice e regolarlo bene]{.pt-matita}: molto spesso basta già quello.
 
 `````
 
@@ -469,8 +471,8 @@ Le ragioni individuate sono di natura strutturale.
    di esempi che cresce almeno linearmente con il numero di feature
    irrilevanti {cite}`ng2004feature`.
 
-Ne segue un'indicazione pratica. Un gradient boosting si addestra in minuti su
-CPU e va in produzione senza GPU; pertanto, prima di adottare il deep
+Ne segue un'indicazione pratica. [Un gradient boosting si addestra in minuti su
+CPU e va in produzione senza GPU]{.pt-matita}; pertanto, prima di adottare il deep
 learning, conviene disporre di una **linea di base** classica ben calibrata
 (in inglese *baseline*), che spesso basta.
 

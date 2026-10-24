@@ -39,8 +39,8 @@ $\mathbf{q}_i^\top\mathbf{k}_j$, ma senza softmax. Al suo posto il punteggio è
 moltiplicato per $\gamma^{\,i-j}$, che dipende dalla distanza e mai dal
 contenuto, e sbiadisce allo stesso modo una data e un intercalare.
 
-Di RetNet interessa soprattutto il fatto che lo stesso calcolo ammette tre
-forme equivalenti, tre modi di ottenere lo stesso risultato, ciascuno
+Di RetNet interessa soprattutto il fatto che [lo stesso calcolo ammette tre
+forme equivalenti]{.pt-matita}, tre modi di ottenere lo stesso risultato, ciascuno
 conveniente in una situazione diversa ({numref}`fig-tre-forme-retention`).
 
 ```{figure} ../figures/tre-forme-retention.svg
@@ -286,8 +286,8 @@ quanto c'è già, come faceva la rubrica di Mario, e in più ha una libertà
 che lì non c'era: la correzione può andare oltre la misura, e
 allora la voce vecchia non si limita a sparire ma si ribalta dall'altra parte,
 come il $7$ che con l'etichetta calcata col pennarello diventava $13$. Là era
-un difetto; qui, dosato, serve, perché con quel ribaltamento la memoria
-riesce a seguire una situazione che cambia di continuo, come chi ha
+un difetto; qui, dosato, serve, perché [con quel ribaltamento la memoria
+riesce a seguire una situazione che cambia di continuo]{.pt-matita}, come chi ha
 la palla dopo venti passaggi, dove ogni passaggio non aggiunge
 un'informazione ma sostituisce quella di prima.
 
@@ -359,15 +359,15 @@ l'altra, e gli autori sottolineano questa differenza rispetto ai lavori
 precedenti.
 
 La capacità nuova, però, non viene dal gate per canale, e nemmeno dalla sola
-correzione di rango uno, che DeltaNet ha già: viene dal segno degli autovalori.
-In DeltaNet, con chiavi di norma unitaria, $\mathbf{I} - \beta_t
-\mathbf{k}_t\mathbf{k}_t^\top$ è una Householder *generalizzata* con $\beta_t
-\in (0,1)$: un autovalore vale $1-\beta_t \in (0,1)$, gli altri $1$, e uno
-negativo non compare mai (la riflessione vera, con autovalore $-1$, si avrebbe
-solo a $\beta_t = 2$). Grazzi e colleghi dimostrano che una ricorrenza lineare
-a precisione finita, le cui transizioni hanno solo autovalori positivi, non
-risolve nemmeno la parità, e che con autovalori in $[-1,1]$ la risolve
-{cite}`grazzi2025unlocking`. In RWKV-7 la transizione è
+correzione di rango uno, che DeltaNet ha già: [viene dal segno degli
+autovalori]{.pt-matita}. In DeltaNet, con chiavi di norma unitaria,
+$\mathbf{I} - \beta_t \mathbf{k}_t\mathbf{k}_t^\top$ è una Householder
+*generalizzata* con $\beta_t \in (0,1)$: un autovalore vale $1-\beta_t \in
+(0,1)$, gli altri $1$, e uno negativo non compare mai (la riflessione vera, con
+autovalore $-1$, si avrebbe solo a $\beta_t = 2$). Grazzi e colleghi dimostrano
+che una ricorrenza lineare a precisione finita, le cui transizioni hanno solo
+autovalori positivi, non risolve nemmeno la parità, e che con autovalori in
+$[-1,1]$ la risolve {cite}`grazzi2025unlocking`. In RWKV-7 la transizione è
 
 $$
 \operatorname{Diag}(\mathbf{w}_t) - c\,\hat{\boldsymbol{\kappa}}_t(\mathbf{a}_t\odot\hat{\boldsymbol{\kappa}}_t)^\top ,
@@ -594,8 +594,8 @@ $c_t/n_t$ e il fattore si semplifica.
 
 `````
 
-La mLSTM, cioè la cella con la memoria a griglia, si è rivelata quella di
-maggior peso pratico. Nel 2025 lo stesso gruppo presenta **xLSTM-7B**
+[La mLSTM, cioè la cella con la memoria a griglia, si è rivelata quella di
+maggior peso pratico]{.pt-matita}. Nel 2025 lo stesso gruppo presenta **xLSTM-7B**
 {cite}`beck2025xlstm7b`, un modello da 7 miliardi di parametri costruito su
 sole celle mLSTM e addestrato su 2,3 mila miliardi di token: a quella
 taglia va alla pari con i modelli confrontabili, mantenendo l'inferenza a memoria
@@ -612,8 +612,8 @@ RetNet, per RWKV dalla versione 5 in poi e per la cella mLSTM; fa eccezione la
 sLSTM, i cui collegamenti da stato a stato la rendono non lineare e
 addestrabile solo in sequenza.
 
-A distinguerle è soprattutto il modo in cui la memoria di ieri sopravvive a
-oggi, cioè il gradino che occupano nella tabella delle ricorrenze di
+[A distinguerle è soprattutto il modo in cui la memoria di ieri sopravvive a
+oggi]{.pt-matita}, cioè il gradino che occupano nella tabella delle ricorrenze di
 {doc}`scrivere meglio nella memoria
 </AttenzioneLineare/scrivere-nella-memoria>`. RetNet la sbiadisce con un ritmo
 deciso una volta per tutte. La mLSTM di xLSTM la sbiadisce con un ritmo che

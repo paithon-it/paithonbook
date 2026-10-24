@@ -92,14 +92,14 @@ valido, di solito c'è un'espressione regolare che ha confrontato il testo
 digitato con lo schema atteso e ha trovato che non combacia.
 
 Questi superpoteri hanno però un limite, che non nasce da una distrazione.
-Un'espressione regolare non sa contare. Scorre il testo da sinistra a destra e
-a ogni carattere ricorda solo in che punto dello schema si trova, non quante
-volte ci è già passata. Quindi non c'è modo di scriverne una che verifichi
-«ogni parentesi aperta ne ha una chiusa» quando le parentesi si possono
-annidare quanto si vuole: dovrebbe tenere il conto di quante ne ha aperte, e
-non ha dove segnarlo. Vale per le parentesi e vale per le frasi dentro le
-frasi, che sono la stessa cosa fatta di parole: «il gatto che dorme sul divano
-che ho comprato quando…». Per quelle serviranno gli strumenti della
+[Un'espressione regolare non sa contare]{.pt-matita}. Scorre il testo da
+sinistra a destra e a ogni carattere ricorda solo in che punto dello schema si
+trova, non quante volte ci è già passata. Quindi non c'è modo di scriverne una
+che verifichi «ogni parentesi aperta ne ha una chiusa» quando le parentesi si
+possono annidare quanto si vuole: dovrebbe tenere il conto di quante ne ha
+aperte, e non ha dove segnarlo. Vale per le parentesi e vale per le frasi
+dentro le frasi, che sono la stessa cosa fatta di parole: «il gatto che dorme
+sul divano che ho comprato quando…». Per quelle serviranno gli strumenti della
 {doc}`sezione su sintassi e parsing
 </NaturalLanguageProcessing/struttura-frase>`.
 
@@ -162,10 +162,10 @@ suoi primi $p$ simboli, un pezzo che si può ripetere quante volte si vuole
 restando nel linguaggio. Il linguaggio $\{a^k b^k : k \ge 1\}$, la forma più
 semplice di parentesi bilanciate, non lo rispetta: in $a^p b^p$ il pezzo
 ripetibile sarebbe fatto di sole $a$, e ripeterlo romperebbe l'uguaglianza fra
-$a$ e $b$. Nessuna espressione regolare può quindi verificare strutture
-annidate a profondità arbitraria (parentesi bilanciate, subordinate dentro
-subordinate). Per la sintassi delle lingue naturali servono strumenti più
-potenti, oppure modelli che la imparano dai dati.
+$a$ e $b$. [Nessuna espressione regolare può quindi verificare strutture
+annidate a profondità arbitraria]{.pt-matita} (parentesi bilanciate,
+subordinate dentro subordinate). Per la sintassi delle lingue naturali servono
+strumenti più potenti, oppure modelli che la imparano dai dati.
 
 La garanzia di tempo lineare offerta dal teorema riguarda i motori che
 compilano l'automa, come `grep` o RE2. Il modulo `re` di Python non costruisce
@@ -371,8 +371,9 @@ lo spezza in unità più piccole della parola: una parola lunga e rara come
 *straordinariamente* entra nel dizionario a pezzi, quelli che ricorrono in
 molte altre parole. Come si scelgono quei pezzi, e come li sceglie un
 tokenizzatore in uso, si vede in {doc}`Come si spezza il testo
-</NaturalLanguageProcessing/tokenizzatori>`. La normalizzazione aggressiva è
-dunque uno strumento da usare quando si conta, non un obbligo universale.
+</NaturalLanguageProcessing/tokenizzatori>`. [La normalizzazione aggressiva è
+dunque uno strumento da usare quando si conta, non un obbligo
+universale]{.pt-matita}.
 
 ## La distanza di edit: quante mosse da una parola all'altra
 
@@ -441,7 +442,8 @@ più economico fra le tre azioni, e un quarto modo di arrivarci non esiste:
 nessuna scorciatoia può sfuggire. Su parole di poche lettere il foglio si
 riempie in un lampo. Ha però una casella per ogni coppia di lettere, una della
 prima parola e una della seconda, e su due testi di mille lettere le caselle
-sono un milione: nessuno conosce un modo di saltarne la maggior parte.
+sono un milione: [nessuno conosce un modo di saltarne la maggior
+parte]{.pt-matita}.
 
 `````
 
@@ -496,15 +498,16 @@ ricostruisce l'allineamento, cioè quali lettere si corrispondono. È lo schema
 con cui Needleman e Wunsch {cite}`needleman1970general` allineano le sequenze
 di proteine, e la stessa programmazione dinamica tornerà con l'algoritmo di
 Viterbi, nella {doc}`sezione sul POS tagging
-</NaturalLanguageProcessing/etichettare-sequenze>`. Non si conosce un algoritmo
-sostanzialmente più veloce: Backurs e Indyk {cite}`backurs2015edit` dimostrano
-che un tempo $O(n^{2-\delta})$, per un qualunque $\delta > 0$, smentirebbe la
-*Strong Exponential Time Hypothesis*, una congettura su cui poggia gran parte
-della complessità moderna. Una quarta mossa, lo scambio di due lettere
-adiacenti, viene da Fred Damerau, che nel 1964 precede di un anno l'articolo di
-Levenshtein: per «gatot» → «gatto» la distanza scende da 2 a 1, coerente con
-l'osservazione di Damerau che circa quattro refusi su cinque sono a una sola
-mossa dalla parola giusta {cite}`damerau1964technique`.
+</NaturalLanguageProcessing/etichettare-sequenze>`. [Non si conosce un algoritmo
+sostanzialmente più veloce]{.pt-matita}: Backurs e Indyk
+{cite}`backurs2015edit` dimostrano che un tempo $O(n^{2-\delta})$, per un
+qualunque $\delta > 0$, smentirebbe la *Strong Exponential Time Hypothesis*,
+una congettura su cui poggia gran parte della complessità moderna. Una quarta
+mossa, lo scambio di due lettere adiacenti, viene da Fred Damerau, che nel 1964
+precede di un anno l'articolo di Levenshtein: per «gatot» → «gatto» la distanza
+scende da 2 a 1, coerente con l'osservazione di Damerau che circa quattro
+refusi su cinque sono a una sola mossa dalla parola giusta
+{cite}`damerau1964technique`.
 
 `````
 
@@ -536,9 +539,9 @@ Con la distanza di edit in mano, il correttore ortografico sembra fatto:
 suggerisci la parola più vicina e via. Non funziona, come mostra un esempio.
 Digito «cane» quando volevo «case»: le due parole distano una mossa sola, ma a
 distanza uno da «cane» ci sono anche «pane», «rane», «cani», «can» e altre.
-Sono tutte ugualmente vicine, e la vicinanza non sa dire quale volevo: bisogna
-anche chiedersi *quanto è verosimile che io abbia sbagliato in quel modo*, e
-quanto quella parola è frequente.
+[Sono tutte ugualmente vicine, e la vicinanza non sa dire quale
+volevo]{.pt-matita}: bisogna anche chiedersi *quanto è verosimile che io abbia
+sbagliato in quel modo*, e quanto quella parola è frequente.
 
 La cornice giusta viene dalla teoria dell'informazione, la disciplina fondata
 da Claude Shannon nel 1948 {cite}`shannon1948mathematical`. Shannon studiava

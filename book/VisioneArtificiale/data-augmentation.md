@@ -47,8 +47,8 @@ Prova invece a specchiare un cartello stradale: l'obbligo di svolta a destra
 diventa un obbligo di svolta a *sinistra* (stessa grafica, significato
 opposto). O prendi la cifra 6 e capovolgila: ottieni un 9. E una scritta
 ruotata di novanta gradi smette di essere leggibile. La stessa trasformazione
-che per i gatti è un regalo, per i cartelli o per le cifre è un sabotaggio: la
-trasformazione giusta dipende dal *compito*, non dall'immagine.
+che per i gatti è un regalo, per i cartelli o per le cifre è un sabotaggio: [la
+trasformazione giusta dipende dal *compito*, non dall'immagine]{.pt-matita}.
 
 C'è un secondo modo di sbagliare, e stavolta la risposta giusta non cambia
 affatto. Una foto di strada scattata storta di cinque gradi è ancora una foto
@@ -79,8 +79,8 @@ specchio inverte il significato.
 
 Conta anche l'intensità: una rotazione di 5 gradi su una foto di strada è
 realistica, mentre una di 90 gradi produce pedoni sdraiati che in produzione
-non esistono. Scegliere le trasformazioni è progettazione, non un dettaglio
-tecnico.
+non esistono. [Scegliere le trasformazioni è progettazione, non un dettaglio
+tecnico]{.pt-matita}.
 
 Quando l'uscita ha una geometria (riquadri, maschere, punti chiave) la
 condizione cambia forma: una trasformazione geometrica $T$ dell'immagine chiede
@@ -123,10 +123,10 @@ Vale poi una regola d'oro, che non ammette eccezioni disinvolte. Le foto sono
 divise in tre insiemi: quelle su cui la rete si allena (il training set),
 quelle su cui controlliamo strada facendo come sta andando, per aggiustare le
 nostre scelte (il validation set), e quelle che restano da parte fino alla
-fine, per il giudizio conclusivo (il test set). L'augmentation si applica solo
-al primo insieme. Sugli altri due si fanno soltanto le operazioni che danno
-sempre lo stesso risultato, cioè ridimensionare, ritagliare al centro e
-normalizzare.
+fine, per il giudizio conclusivo (il test set). [L'augmentation si applica solo
+al primo insieme]{.pt-matita}. Sugli altri due si fanno soltanto le operazioni
+che danno sempre lo stesso risultato, cioè ridimensionare, ritagliare al centro
+e normalizzare.
 
 Normalizzare, in questo contesto, vuol dire sottrarre a ogni canale di colore
 una media e dividerlo per una deviazione standard, fissate una volta per tutte
@@ -242,8 +242,8 @@ si affidano troppo a pochi numeri grossi ({doc}`overfitting e validazione
 </MachineLearning/overfitting-validazione>`), e il dropout, che spegne a caso
 una parte della rete a ogni passo ({doc}`ottimizzazione e regolarizzazione
 </DeepLearning/ottimizzazione-regolarizzazione>`) {cite}`srivastava2014dropout`.
-Freni di questo genere si chiamano regolarizzazioni; l'augmentation è una di
-loro, ma agisce sui dati invece che sulla rete.
+[Freni di questo genere si chiamano regolarizzazioni; l'augmentation è una di
+loro, ma agisce sui dati invece che sulla rete]{.pt-matita}.
 
 `````{tab} Elementare
 Torniamo ai compiti a casa, e chiediamoci perché l'insegnante cambi i numeri
@@ -426,11 +426,11 @@ learning, non in alternativa). Non è però una moltiplicazione miracolosa: le
 varianti di una foto portano *meno* informazione di altrettante foto nuove,
 perché raccontano sempre la stessa scena.
 
-Soprattutto, non colma la distanza fra i dati su cui il modello si è allenato e
-quelli che troverà al lavoro. Se è addestrato su foto diurne e in produzione
-arrivano riprese notturne, o se il nuovo ospedale usa uno scanner diverso da
-quello del training set, i dati di lavoro non vengono più dalla stessa
-distribuzione. È lo **shift di dominio**, un caso del dataset shift di
+Soprattutto, [non colma la distanza fra i dati su cui il modello si è allenato
+e quelli che troverà al lavoro]{.pt-matita}. Se è addestrato su foto diurne e
+in produzione arrivano riprese notturne, o se il nuovo ospedale usa uno scanner
+diverso da quello del training set, i dati di lavoro non vengono più dalla
+stessa distribuzione. È lo **shift di dominio**, un caso del dataset shift di
 {doc}`quando i dati cambiano </MachineLearning/dati-che-cambiano>`.
 
 Le trasformazioni riducono lo shift solo dove sanno imitarlo. Ad esempio, un

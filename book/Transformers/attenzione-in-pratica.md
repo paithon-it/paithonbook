@@ -49,14 +49,14 @@ a quel momento, dà il suo risultato e si butta. Si tengono invece l'etichetta
 con cui la parola si fa trovare e l'informazione che consegna, perché vi
 attingeranno tutte le parole successive.
 
-Il riuso vale finché vale il divieto di guardare avanti. Se ogni parola potesse
-tener conto anche di quelle che verranno, aggiungerne una in fondo cambierebbe
-l'etichetta di tutte le altre, e il lavoro andrebbe rifatto da capo a ogni
-parola nuova. Le macchine a cui il divieto non si applica, cioè quelle che
-leggono un testo già scritto per capirlo e non per continuarlo, sono fatte
-proprio così: ogni parola tiene conto anche di quelle dopo. La traduzione è un
-caso a parte: il modello legge la frase da tradurre una volta sola, e le sue
-rappresentazioni restano valide per tutta la traduzione.
+[Il riuso vale finché vale il divieto di guardare avanti]{.pt-matita}. Se ogni
+parola potesse tener conto anche di quelle che verranno, aggiungerne una in
+fondo cambierebbe l'etichetta di tutte le altre, e il lavoro andrebbe rifatto
+da capo a ogni parola nuova. Le macchine a cui il divieto non si applica, cioè
+quelle che leggono un testo già scritto per capirlo e non per continuarlo, sono
+fatte proprio così: ogni parola tiene conto anche di quelle dopo. La traduzione
+è un caso a parte: il modello legge la frase da tradurre una volta sola, e le
+sue rappresentazioni restano valide per tutta la traduzione.
 `````
 
 `````{tab} Superiore
@@ -76,10 +76,10 @@ memoria.
 
 La ragione per cui la seconda modalità può riusare il lavoro della prima
 discende dalla struttura della maschera, non da un'euristica. Con attenzione
-causale, la rappresentazione della posizione $j$ a ogni strato dipende solo
-dalle posizioni $\le j$; quindi $\mathbf{k}_j$ e $\mathbf{v}_j$, che sono
-proiezioni lineari di quella rappresentazione, sono determinati appena il token
-$j$ è stato elaborato, e non cambiano quando la sequenza si allunga.
+causale, [la rappresentazione della posizione $j$ a ogni strato dipende solo
+dalle posizioni $\le j$]{.pt-matita}; quindi $\mathbf{k}_j$ e $\mathbf{v}_j$,
+che sono proiezioni lineari di quella rappresentazione, sono determinati appena
+il token $j$ è stato elaborato, e non cambiano quando la sequenza si allunga.
 Formalmente, $\mathbf{k}_j = \mathbf{W}^{K\top} \mathbf{h}_j^{(\ell)}$ con
 $\mathbf{h}_j^{(\ell)} = f^{(\ell)}(\mathbf{x}_{1:j})$, indipendente da
 $\mathbf{x}_{>j}$.
@@ -125,11 +125,11 @@ nuova costringe a ricavare etichetta e informazione per tutte le parole già
 scritte; con il taccuino, se ne ricavano due sole, quelle della parola nuova.
 Il resto è già scritto.
 
-Il taccuino non elimina il confronto. La parola nuova guarda comunque tutte le
-righe scritte finora, quindi il lavoro per ogni parola cresce con il testo: la
-millesima si confronta con mille righe, la duemillesima con duemila. Dire che
-il taccuino rende la scrittura gratuita significa guardare solo la metà che si
-risparmia.
+[Il taccuino non elimina il confronto]{.pt-matita}. La parola nuova guarda
+comunque tutte le righe scritte finora, quindi il lavoro per ogni parola cresce
+con il testo: la millesima si confronta con mille righe, la duemillesima con
+duemila. Dire che il taccuino rende la scrittura gratuita significa guardare
+solo la metà che si risparmia.
 
 Resta lo spazio, che si vede subito sul taccuino di una conversazione lunga. Ad
 esempio, un palazzo moderno, molto più alto di quello del 2017, ha trentadue
@@ -179,9 +179,9 @@ token già elaborati. La generazione di $n$ token ha quindi costo $O(n^2 d + n\,
 d^2)$ per strato, contro l’$O(n^3 d + n^2 d^2)$ di un forward rifatto da capo a
 ogni passo.
 
-La cache riusa le proiezioni passate e non abolisce l'interazione con il
-prefisso; di conseguenza l'affermazione «la cache rende la decodifica a costo
-costante» è falsa per l'attenzione densa.
+[La cache riusa le proiezioni passate e non abolisce l'interazione con il
+prefisso]{.pt-matita}; di conseguenza l'affermazione «la cache rende la
+decodifica a costo costante» è falsa per l'attenzione densa.
 
 In decodifica domina la lettura della memoria, non il calcolo. Con una
 richiesta per volta, ogni token generato rilegge dalla memoria tutti i pesi del
@@ -252,12 +252,12 @@ della query $\mathbf{q}_t$ non resta traccia.
 
 ## Quante teste per le chiavi: da MHA a MLA
 
-La cache dipende dal numero di teste di chiave e valore, non da quello delle
-teste di query. Su questa osservazione si fondano, dal 2019, tre varianti della
-*multi-head attention* originale (MHA) che ne riducono la cache in modi diversi: la
-*multi-query attention* (MQA), la *grouped-query attention* (GQA) e la
-*multi-head latent attention* (MLA). {numref}`fig-teste-e-taccuini` le mette
-una accanto all'altra.
+[La cache dipende dal numero di teste di chiave e valore, non da quello delle
+teste di query]{.pt-matita}. Su questa osservazione si fondano, dal 2019, tre
+varianti della *multi-head attention* originale (MHA) che ne riducono la cache
+in modi diversi: la *multi-query attention* (MQA), la *grouped-query attention*
+(GQA) e la *multi-head latent attention* (MLA). {numref}`fig-teste-e-taccuini`
+le mette una accanto all'altra.
 
 ```{figure} ../figures/i-lettori-restano-otto.svg
 :name: fig-teste-e-taccuini
@@ -451,11 +451,12 @@ i calcoli, è una terza grandezza ancora, e sulle schede di oggi decide spesso
 il tempo di esecuzione, a parità di operazioni da compiere.
 
 Tenerle distinte permette di dire due cose insieme senza contraddirsi:
-l'attenzione densa fa un numero quadratico di interazioni, e un'implementazione
-esatta può evitare di scrivere in memoria l'intera matrice quadratica e girare
-molto più in fretta. Quest'ultima è la strada della FlashAttention, che esegue
-l'attenzione esatta un pezzo alla volta: a parità di risultato cambia solo
-l'esecuzione, come mostra in dettaglio la {doc}`sezione sulla FlashAttention
+[l'attenzione densa fa un numero quadratico di interazioni, e
+un'implementazione esatta può evitare di scrivere in memoria l'intera matrice
+quadratica]{.pt-matita} e girare molto più in fretta. Quest'ultima è la strada
+della FlashAttention, che esegue l'attenzione esatta un pezzo alla volta: a
+parità di risultato cambia solo l'esecuzione, come mostra in dettaglio la
+{doc}`sezione sulla FlashAttention
 </GPU/flash-attention>`. Una famiglia diversa di rimedi cambia invece quali
 coppie si calcolano, con finestre locali o schemi sparsi, e allora l'attenzione
 non è più densa; un'altra ancora riscrive la softmax per non formare mai le
@@ -475,11 +476,11 @@ per token.
 ## Gli errori che si fanno davvero
 
 Chi scrive da zero uno strato di attenzione sbaglia più spesso le forme, gli
-assi e le convenzioni che la formula, e molti errori non fanno rumore: il codice
-gira, le matrici hanno la forma giusta e il modello impara, un po’ peggio di
-quanto potrebbe. Il più facile da diagnosticare è la softmax sull'asse
-sbagliato, che definisce un'altra operazione e ha un sintomo netto: le righe non
-sommano più a uno.
+assi e le convenzioni che la formula, e [molti errori non fanno rumore: il
+codice gira, le matrici hanno la forma giusta e il modello impara]{.pt-matita},
+un po’ peggio di quanto potrebbe. Il più facile da diagnosticare è la softmax
+sull'asse sbagliato, che definisce un'altra operazione e ha un sintomo netto:
+le righe non sommano più a uno.
 
 ```python
 import torch
@@ -596,9 +597,9 @@ gradiente, e in cui distribuzioni di attenzione molto diverse davano previsioni
 quasi identiche. Wiegreffe e Pinter {cite}`wiegreffe2019attention` hanno
 contestato il rifiuto categorico, sostenendo che la risposta dipende da che
 cosa si chiama spiegazione e da quali termini di paragone si adottano. La
-posizione difendibile sta in mezzo, più stretta di tutti e due gli slogan: un
+posizione difendibile sta in mezzo, più stretta di tutti e due gli slogan: [un
 peso alto dice dove è andata l'aggregazione, e non dice perché il modello abbia
-risposto così. Leggerlo come una spiegazione richiede un metodo e una
+risposto così]{.pt-matita}. Leggerlo come una spiegazione richiede un metodo e una
 validazione, di cui si occupa la {doc}`sezione su attribuzione e
 interpretabilità meccanicistica
 </Interpretabilita/attribuzione-e-meccanicistica>`.

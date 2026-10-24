@@ -53,9 +53,10 @@ sala in cui la disuguaglianza è un'uguaglianza: dieci persone, una che guadagna
 trecentomila euro e nove che non guadagnano niente. Media trentamila, e uno su
 dieci alla soglia.
 
-Ne segue che la regola non si può migliorare senza sapere qualcosa in più. È
-anche la sua debolezza, perché, sapendo solo la media, di più non si può dire,
-e quel «uno su dieci» è di solito molto più alto della verità.
+Ne segue che [la regola non si può migliorare senza sapere qualcosa in
+più]{.pt-matita}. È anche la sua debolezza, perché, sapendo solo la media, di
+più non si può dire, e quel «uno su dieci» è di solito molto più alto della
+verità.
 
 `````
 
@@ -85,8 +86,9 @@ compensare quelli grandi e la media non dice più niente sulla coda.
 
 La disuguaglianza è inoltre ottimale, perché esiste una distribuzione che la
 realizza con l'uguaglianza: $X=a$ con probabilità $\mathbb{E}[X]/a$ e $X=0$
-altrimenti. Non si può quindi migliorare a parità di informazione, e tutte le
-disuguaglianze più forti si ottengono chiedendo di sapere qualcosa in più.
+altrimenti. [Non si può quindi migliorare a parità di
+informazione]{.pt-matita}, e tutte le disuguaglianze più forti si ottengono
+chiedendo di sapere qualcosa in più.
 
 `````
 
@@ -122,10 +124,10 @@ redditi, per i tempi di risposta di un server, per gli errori di un modello.
 Non chiedere niente ha un limite, che si vede confrontando con il caso in cui
 invece si chiede molto. Se i dati seguono la curva a campana, entro due
 larghezze non c'è il settantacinque per cento ma il novantacinque e mezzo, ed
-entro tre il novantanove e sette. La differenza fra quei numeri mostra quanto
-vale sapere la forma della distribuzione. Chi non la sa deve accontentarsi
-della garanzia debole, che sui dati veri è quasi sempre molto più prudente del
-necessario.
+entro tre il novantanove e sette. [La differenza fra quei numeri mostra quanto
+vale sapere la forma della distribuzione]{.pt-matita}. Chi non la sa deve
+accontentarsi della garanzia debole, che sui dati veri è quasi sempre molto più
+prudente del necessario.
 
 C'è però una situazione in cui la garanzia debole è esatta, e serve a capire
 che non si può fare di meglio a scatola chiusa. È il caso di dati in cui un
@@ -156,8 +158,8 @@ $\Pr[|X-\mu|\ge\varepsilon] \le \sigma^2/\varepsilon^2$.
 
 Per $k=2$, ad esempio, dà $\Pr \le 1/4$ e per $k=3$ dà $\Pr\le 1/9$, contro
 le code esatte di una gaussiana, che valgono $0{,}0455$ e $0{,}0027$: un
-fattore cinque e mezzo nel primo caso, quarantuno nel secondo. È quanto si
-guadagna, sulle code, sapendo che la distribuzione è gaussiana.
+fattore cinque e mezzo nel primo caso, quarantuno nel secondo. [È quanto si
+guadagna, sulle code, sapendo che la distribuzione è gaussiana]{.pt-matita}.
 
 Anche questa disuguaglianza è ottimale, e il testimone è, per ogni
 $k\ge1$, una distribuzione a tre punti: $X=\pm\sigma k$ ciascuno con
@@ -191,11 +193,11 @@ $\varepsilon$ compare al quadrato accanto a $n$.
 ## Quando i valori stanno in un intervallo: Hoeffding
 
 Il limite di Čebyšëv alla probabilità di un errore grande cala come $1/n$, con
-$n$ il numero di prove, e $1/n$ cala lentamente. Se in più i valori stanno in
-un intervallo noto, il limite cala invece esponenzialmente in $n$, e il
-vantaggio cresce con la sicurezza richiesta. Per una variabile in $[0,1]$, ad
-esempio, a parità di tolleranza e con una probabilità di errore ammessa di uno
-su venti, gli esempi necessari si riducono di un fattore 2,7 rispetto a
+$n$ il numero di prove, e $1/n$ cala lentamente. [Se in più i valori stanno in
+un intervallo noto, il limite cala invece esponenzialmente in $n$]{.pt-matita},
+e il vantaggio cresce con la sicurezza richiesta. Per una variabile in $[0,1]$,
+ad esempio, a parità di tolleranza e con una probabilità di errore ammessa di
+uno su venti, gli esempi necessari si riducono di un fattore 2,7 rispetto a
 Čebyšëv (con $\sigma^2\le 1/4$); per uno su mille il fattore è circa 66.
 
 `````{tab} Elementare
@@ -387,9 +389,9 @@ Ripetendo al computer l'intero esperimento duecento volte, la vincitrice sta
 tipicamente intorno a $83$, e in una singola prova può arrivare a $84{,}2$,
 oltre quattro punti sopra il vero.
 
-Nessuna delle cento è migliore delle altre: la più alta è la più fortunata, e
-il vantaggio apparente è tutto caso. È la scatola delle mille monete della
-{doc}`sezione su probabilità e statistica
+Nessuna delle cento è migliore delle altre: [la più alta è la più fortunata, e
+il vantaggio apparente è tutto caso]{.pt-matita}. È la scatola delle mille
+monete della {doc}`sezione su probabilità e statistica
 </Matematica/probabilita-statistica>`, in cui una trentina di monete oneste
 finiscono accusate per puro caso.
 
@@ -447,9 +449,9 @@ dell'apprendimento </TeoriaApprendimento/overview>` lo svolge a fondo, mentre
 la {doc}`sezione su overfitting e validazione
 </MachineLearning/overfitting-validazione>` lo affronta dal lato pratico.
 
-La correzione va applicata al numero di confronti effettivamente fatti, non a
-quelli dichiarati. Chi prova venti configurazioni, ne riporta una e chiama le
-altre esplorazione preliminare ha comunque fatto venti confronti.
+[La correzione va applicata al numero di confronti effettivamente fatti, non a
+quelli dichiarati]{.pt-matita}. Chi prova venti configurazioni, ne riporta una
+e chiama le altre esplorazione preliminare ha comunque fatto venti confronti.
 
 La cura alternativa è un secondo insieme di prova mai guardato durante la
 selezione. La vincitrice è allora un modello fissato, indipendente da
@@ -514,9 +516,10 @@ for k in (2, 3):
 ```
 
 Per ciascun numero di larghezze il programma riporta la frazione di dati che
-cade fuori e il limite di Čebyšëv. Il limite tiene con larghissimo margine,
-come quasi sempre, e tiene senza sapere che i dati sono esponenziali. Avrebbe
-tenuto anche con dati costruiti apposta per metterlo in difficoltà.
+cade fuori e il limite di Čebyšëv. [Il limite tiene con larghissimo margine,
+come quasi sempre, e tiene senza sapere che i dati sono
+esponenziali]{.pt-matita}. Avrebbe tenuto anche con dati costruiti apposta per
+metterlo in difficoltà.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

@@ -16,10 +16,10 @@ di gatto con la parola «gatto» sta in basso; la stessa foto con la parola
 «aeroplano» sta in alto. In simboli si scrive $E(\mathbf{x}, y)$, dove
 $\mathbf{x}$ è quello che si ha davanti e $y$ la risposta candidata.
 
-Rispondere, allora, significa cercare la risposta che rende l'energia minima;
-imparare significa dare forma al paesaggio, abbassare l'energia delle
-coppie giuste e alzarla, o tenerla alta, su quelle sbagliate. È una
-cornice molto più larga di quel che sembra, e toglie un vincolo pesante.
+[Rispondere, allora, significa cercare la risposta che rende l'energia
+minima]{.pt-matita}; imparare significa dare forma al paesaggio, abbassare
+l'energia delle coppie giuste e alzarla, o tenerla alta, su quelle sbagliate. È
+una cornice molto più larga di quel che sembra, e toglie un vincolo pesante.
 
 `````{tab} Elementare
 
@@ -176,8 +176,8 @@ I controesempi non sono tutti uguali: quello che insegna qualcosa è la coppia
 sbagliata che al buttafuori sembra più giusta di tutte, cioè l'impostore
 migliore. Per trovarlo però bisogna passare in rassegna la fila, cioè fare il
 lavoro del rispondere, e va rifatto a ogni passo dell'addestramento. Il difetto
-è quindi doppio: i controesempi servono a migliaia, e trovarne uno buono costa
-quanto rispondere a una domanda.
+è quindi doppio: [i controesempi servono a migliaia, e trovarne uno buono costa
+quanto rispondere a una domanda]{.pt-matita}.
 
 Il secondo: cambiare la porta invece di istruire il buttafuori. Se al posto
 della porta c'è una fessura, di là non passa una folla qualunque cosa lui dica.
@@ -222,17 +222,16 @@ contrastivo è la log-partizione, che solleva l'energia di *ogni* risposta con
 forza proporzionale alla sua verosimiglianza, e nel limite $\beta \to \infty$
 la loss NLL degenera nella loss del percettrone generalizzata, che ne solleva
 una sola, quella a energia minima {cite}`lecun2006tutorial`. Contrastive
-divergence, NCE e le loss a margine sono tutte varianti di una
-stessa domanda: di quali risposte alzare l'energia, e con che forza. Nella
-tabella delle loss del tutorial la energy loss ha margine «none», il
-percettrone generalizzato e LVQ2 hanno margine nullo, e tutte le altre (la
-hinge con margine $m$, la log-verosimiglianza negativa per ogni $\beta$) un
-margine strettamente positivo {cite}`lecun2006tutorial`. Il percettrone alza
-l'energia della risposta che il modello dà, eppure non crea nessun dislivello
-fra quella giusta e le altre, e l'articolo avverte che, come la energy loss,
-può produrre superfici piatte se l'architettura lo permette. A proteggere dal
-collasso, quindi, è il margine positivo: alzare altre energie da solo non
-basta.
+divergence, NCE e le loss a margine sono tutte varianti di una stessa domanda:
+di quali risposte alzare l'energia, e con che forza. Nella tabella delle loss
+del tutorial la energy loss ha margine «none», il percettrone generalizzato e
+LVQ2 hanno margine nullo, e tutte le altre (la hinge con margine $m$, la
+log-verosimiglianza negativa per ogni $\beta$) un margine strettamente positivo
+{cite}`lecun2006tutorial`. Il percettrone alza l'energia della risposta che il
+modello dà, eppure non crea nessun dislivello fra quella giusta e le altre, e
+l'articolo avverte che, come la energy loss, può produrre superfici piatte se
+l'architettura lo permette. [A proteggere dal collasso, quindi, è il margine
+positivo]{.pt-matita}: alzare altre energie da solo non basta.
 
 I **metodi regolarizzati o architetturali** impediscono il collasso per
 costruzione, limitando il *volume* dello spazio a bassa energia invece di

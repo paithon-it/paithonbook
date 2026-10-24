@@ -51,9 +51,9 @@ a meno dell'equazione. Da $x$ si fanno partire tanti camminatori ubriachi: a
 ogni istante ciascuno fa un passettino a caso, a destra o a sinistra, tanti a
 destra quanti a sinistra in media. Al tempo $t$ ci si ferma, si legge la
 temperatura *iniziale* nel punto in cui è arrivato ogni camminatore, e si fa la
-media. Quella media è la temperatura in $x$ al tempo $t$. Ad esempio, se tre
-camminatori arrivano dove all'inizio c'erano $10$, $20$ e $30$ gradi, la stima
-è $20$.
+media. [Quella media è la temperatura in $x$ al tempo $t$]{.pt-matita}. Ad
+esempio, se tre camminatori arrivano dove all'inizio c'erano $10$, $20$ e $30$
+gradi, la stima è $20$.
 
 I camminatori fanno all'indietro il viaggio del calore: il
 calore che al tempo $t$ si trova in $x$ è arrivato da tutti quei punti, e
@@ -294,14 +294,13 @@ dimensione    esatta     stima  errore  nodi di una griglia a 10 per lato
       1000   501.000   500.518   0.10%  10^1000
 ```
 
-In mille dimensioni diecimila cammini sbagliano di un millesimo, mentre la
-griglia più grossolana che si possa immaginare avrebbe un uno seguito da mille
-zeri di nodi. In questo esempio l'errore relativo (l'errore diviso per il valore
-esatto) addirittura scende con la dimensione, perché la dispersione di
-$\varphi$ cresce come la radice di $d$ mentre il valore esatto cresce come $d$,
-e il loro rapporto cala come $1/\sqrt{d}$: è una proprietà di
-$\varphi = \|\mathbf{x}\|^2$, non della formula, e con un'altra $\varphi$
-potrebbe salire.
+[In mille dimensioni diecimila cammini sbagliano di un millesimo]{.pt-matita},
+mentre la griglia più grossolana che si possa immaginare avrebbe un uno seguito
+da mille zeri di nodi. In questo esempio l'errore relativo (l'errore diviso per
+il valore esatto) addirittura scende con la dimensione, perché la dispersione
+di $\varphi$ cresce come la radice di $d$ mentre il valore esatto cresce come
+$d$, e il loro rapporto cala come $1/\sqrt{d}$: è una proprietà di $\varphi =
+\|\mathbf{x}\|^2$, non della formula, e con un'altra $\varphi$ potrebbe salire.
 
 Il limite è che la formula dà la soluzione in *un* punto per volta: per averla
 in un'intera regione bisognerebbe ripetere il calcolo per ogni punto, e con
@@ -424,8 +423,8 @@ la temperatura iniziale, presa per soluzione, sbaglia più di dieci volte tanto:
 Su diecimila punti che nessun cammino ha mai visitato la rete sbaglia di meno
 del tre per cento, mentre un cammino solo, preso come risposta, sbaglia più di
 dieci volte tanto, e lo stesso fa la temperatura iniziale scambiata per la
-soluzione. La rete ha imparato la media, e non i campioni rumorosi da cui l'ha
-ricavata.
+soluzione. [La rete ha imparato la media, e non i campioni rumorosi da cui l'ha
+ricavata]{.pt-matita}.
 
 ## Punti sempre nuovi: il Galerkin profondo
 
@@ -439,9 +438,10 @@ volta, all'inizio, e poi sempre quello, come un esame con le stesse domande a
 ogni appello; il rimedio già incontrato nella {doc}`legge dentro la loss
 </PINN/come-funziona>`, estrarre punti nuovi a ogni iterazione, è il cuore di un
 metodo uscito qualche mese prima delle PINN. Il **metodo di Galerkin profondo**
-fa la stessa verifica pescando punti nuovi a ogni passo dell'addestramento: la
+fa la stessa verifica pescando punti nuovi a ogni passo dell'addestramento: [la
 rete non può imparare a rispondere bene solo nei punti dell'esame, perché
-l'esame cambia ogni volta. È lo stesso trucco della rete che impara la media.
+l'esame cambia ogni volta]{.pt-matita}. È lo stesso trucco della rete che
+impara la media.
 
 Resta un costo: controllare la regola obbliga a misurare quanto la curva si
 piega in ogni direzione, e le direzioni sono tante quante le dimensioni, per
@@ -455,13 +455,12 @@ Il *Deep Galerkin Method* di Sirignano e Spiliopoulos {cite}`sirignano2018dgm`
 (preprint dell'agosto 2017, tre mesi prima di quelli sulle PINN) minimizza la
 stessa somma di residuo quadratico dell'equazione e di scarti sulle condizioni
 iniziali e al bordo, ma valutata su punti estratti di nuovo a ogni passo da una
-distribuzione sul dominio: una stima stocastica del funzionale integrale, e
-non una somma su un insieme fisso (la PINN di Raissi, Perdikaris e Karniadakis
-{cite}`raissi2019physics` usa invece un insieme fisso di punti di
+distribuzione sul dominio: [una stima stocastica del funzionale integrale, e
+non una somma su un insieme fisso]{.pt-matita} (la PINN di Raissi, Perdikaris e
+Karniadakis {cite}`raissi2019physics` usa invece un insieme fisso di punti di
 collocazione, generato una volta con un campionamento a ipercubo latino). Gli
-autori lo
-provano su problemi fino a 200 dimensioni, fra cui le opzioni americane con
-frontiera libera.
+autori lo provano su problemi fino a 200 dimensioni, fra cui le opzioni
+americane con frontiera libera.
 
 Il nome viene dal metodo di Galerkin, che proietta
 l'equazione su uno spazio di funzioni. Qui lo spazio è quello delle reti, e il

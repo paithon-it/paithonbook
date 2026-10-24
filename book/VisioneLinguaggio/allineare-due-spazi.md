@@ -23,8 +23,8 @@ volta che l'elenco cambia si ricomincia, perché una classe in più vuole
 immagini nuove, etichette nuove, un addestramento nuovo e un modello nuovo da
 mettere in servizio.
 
-In altri termini, le risposte che il sistema può dare vengono decise una volta
-per tutte, prima di partire.
+In altri termini, [le risposte che il sistema può dare vengono decise una volta
+per tutte, prima di partire]{.pt-matita}.
 
 Si può costruire un modello a cui le classi si dicano a parole, nel momento in
 cui servono? La risposta comincia da un cambio di domanda.
@@ -44,10 +44,11 @@ frasi è il *modality gap* di cui parla il paragrafo «Modality gap: un solo
 spazio, due quartieri».
 
 L'idea, resa celebre da CLIP {cite}`radford2021learning` nel 2021, è di
-addestrare due reti separate, un encoder di immagini e un encoder di testo, a
-portare le loro uscite nello stesso spazio vettoriale; l'articolo stesso indica
-come antenati della sua perdita la *multi-class N-pair loss* di Sohn, la
-InfoNCE e ConVIRT, che l'aveva già adattata a radiografie e referti medici.
+[addestrare due reti separate, un encoder di immagini e un encoder di testo, a
+portare le loro uscite nello stesso spazio vettoriale]{.pt-matita}; l'articolo
+stesso indica come antenati della sua perdita la *multi-class N-pair loss* di
+Sohn, la InfoNCE e ConVIRT, che l'aveva già adattata a radiografie e referti
+medici.
 
 Il compito diventa l’**appaiamento**: dato un batch di $B$
 immagini e le loro $B$ didascalie in ordine mescolato, il modello deve
@@ -187,8 +188,8 @@ fra quattro) paga parecchio.
 I quattro numeri della riga partono come somiglianze fra $-1$ e $+1$ e
 diventano percentuali di fiducia che insieme fanno cento con la stessa ricetta
 che nell'attenzione decide quanto guardare ogni parola, la softmax. Siccome
-fanno cento, la fiducia che manca alla didascalia giusta se l'è presa un'altra,
-quasi sempre la sbagliata che le somiglia di più. Il modello
+fanno cento, [la fiducia che manca alla didascalia giusta se l'è presa un'altra,
+quasi sempre la sbagliata che le somiglia di più]{.pt-matita}. Il modello
 lavora su quella, mentre le due che non c'entravano niente le lascia stare.
 
 Poi si rifà lo stesso esame guardando le colonne: «ecco la
@@ -263,8 +264,8 @@ fuori diagonale, con un'intensità che dipende da quanto ciascun negativo è gi�
 vicino: detto $s_{ij} = \langle \mathbf{I}_i, \mathbf{T}_j \rangle$ e $p_{ij}$
 la probabilità che la softmax della riga $i$ dà alla didascalia $j$, vale
 $\partial \ell^{\,\mathrm{I}\to\mathrm{T}}_i / \partial s_{ij} = (p_{ij} -
-\mathbb{1}_{[j = i]})/\tau$, come per SimCLR. È la proprietà, tipica della
-softmax, di occuparsi soprattutto dei concorrenti credibili.
+\mathbb{1}_{[j = i]})/\tau$, come per SimCLR. [È la proprietà, tipica della
+softmax, di occuparsi soprattutto dei concorrenti credibili]{.pt-matita}.
 
 `````
 
@@ -328,8 +329,8 @@ somiglianza. Alzarne il numero *riduce* l'amplificazione, che infatti quasi
 sparisce: alla coppia giusta va il 35% della fiducia e alle tre sbagliate poco
 meno, fra il 20 e il 24. Il costo sale a $1{,}082$; per confronto, tirare a
 caso fra quattro didascalie costerebbe $1{,}386$. Stessa tabella, stesso ordine
-corretto: con la temperatura alta il costo è quasi i quattro quinti di quello
-del tirare a caso, con quella bassa circa un decimo.
+corretto: [con la temperatura alta il costo è quasi i quattro quinti di quello
+del tirare a caso, con quella bassa circa un decimo]{.pt-matita}.
 
 `````
 
@@ -350,18 +351,18 @@ temperatura a $\tau = 0{,}5$. Dividendo per $0{,}5$ ed esponenziando come
 prima, la prima riga diventa $0{,}351$, $0{,}235$, $0{,}213$, $0{,}201$ di
 probabilità: la coppia giusta è ancora in testa, ma di un soffio, e la loss
 simmetrica sale a $1{,}082$. Per confronto, un modello che tirasse a caso fra
-quattro didascalie pagherebbe $\log 4 = 1{,}386$. Con $\tau = 0{,}5$ questa
+quattro didascalie pagherebbe $\log 4 = 1{,}386$. [Con $\tau = 0{,}5$ questa
 matrice, che pure è ordinata correttamente, ha una loss pari al $78\%$ di
-quella di un modello che tira a caso ($1{,}082$ contro $1{,}386$); con $\tau =
-0{,}07$ pari all’$11\%$.
+quella di un modello che tira a caso]{.pt-matita} ($1{,}082$ contro $1{,}386$);
+con $\tau = 0{,}07$ pari all’$11\%$.
 
 `````
 
 ## La temperatura e il batch
 
-Quel confronto mostra che la temperatura non è un parametro cosmetico: decide
+Quel confronto mostra che [la temperatura non è un parametro cosmetico: decide
 *quanto* piccole differenze di somiglianza diventino grandi differenze di
-fiducia, e quindi che cosa il modello si sforzi di correggere.
+fiducia, e quindi che cosa il modello si sforzi di correggere]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -531,8 +532,8 @@ temperatura cambiata, e i due numeri, $0{,}148$ e $1{,}082$, sono quelli dei
 conti a mano.
 
 Mancano le etichette, il numero di classi e la testa di classificazione:
-l'unica informazione supervisionata è l'ordine delle righe, cioè il fatto che
-la didascalia $i$ stava sotto l'immagine $i$.
+[l'unica informazione supervisionata è l'ordine delle righe, cioè il fatto che
+la didascalia $i$ stava sotto l'immagine $i$]{.pt-matita}.
 
 ## Modality gap: un solo spazio, due quartieri
 
@@ -570,10 +571,10 @@ l'esaminatore severo di CLIP e con le tante coppie del web in cui foto e frase
 c'entrano poco, spostare a mano un quartiere sopra l'altro fa salire il costo;
 con un esaminatore mite, invece, avvicinarli conviene.
 
-Ne segue una regola pratica: il numero di somiglianza fra una foto e una frase
-non si confronta con quello fra due foto. Sono due righelli con lo zero in
-posti diversi, e chi fissa una soglia guardando i secondi e la applica ai primi
-sbaglia sistematicamente.
+Ne segue una regola pratica: [il numero di somiglianza fra una foto e una frase
+non si confronta con quello fra due foto]{.pt-matita}. Sono due righelli con lo
+zero in posti diversi, e chi fissa una soglia guardando i secondi e la applica
+ai primi sbaglia sistematicamente.
 
 `````
 
@@ -688,14 +689,14 @@ globale), mentre con $\tau$ più alta il minimo si sposta verso la
 sovrapposizione. Il terzo sono le coppie mal appaiate, frequenti nei dati del
 web, che a temperatura bassa creano la struttura che respinge la sovrapposizione.
 
-Due conseguenze per chi costruisce. La prima: coseni cross-modali e coseni
+Due conseguenze per chi costruisce. La prima: [coseni cross-modali e coseni
 intra-modali vivono su scale diverse, non si confrontano fra loro e non si
-mescolano in un'unica soglia. La seconda: le operazioni che presuppongono uno
-spazio omogeneo (il centroide fra un'immagine e un testo, un $k$-means su
-vettori misti, una soglia assoluta di appartenenza) non hanno la garanzia che
-il coseno dà dentro una modalità, e vanno verificate caso per caso. Resta
-lecito l’$\arg\max$ dentro una modalità sola (la didascalia migliore per una
-data immagine), che è quanto serve al resto della sezione.
+mescolano in un'unica soglia]{.pt-matita}. La seconda: le operazioni che
+presuppongono uno spazio omogeneo (il centroide fra un'immagine e un testo, un
+$k$-means su vettori misti, una soglia assoluta di appartenenza) non hanno la
+garanzia che il coseno dà dentro una modalità, e vanno verificate caso per
+caso. Resta lecito l’$\arg\max$ dentro una modalità sola (la didascalia
+migliore per una data immagine), che è quanto serve al resto della sezione.
 
 `````
 
@@ -716,8 +717,8 @@ all'encoder di immagini, che te ne dà una. Guardi a quale delle tre è più
 vicina, cioè calcoli quel numero fra $-1$ e $+1$ tre volte e tieni il più alto.
 
 Se domani ti serve anche «una foto di un vaporetto», aggiungi una riga di
-testo: il classificatore è cresciuto di una classe in un secondo, senza una
-sola immagine di vaporetto.
+testo: [il classificatore è cresciuto di una classe in un secondo, senza una
+sola immagine di vaporetto]{.pt-matita}.
 
 Si chiama **zero-shot**, «a zero esempi», e usa la stessa operazione di prima,
 l'abbinare, con didascalie scritte da te. Le tre liste di numeri sono i pesi
@@ -769,9 +770,9 @@ $$
 $$
 
 L'osservazione strutturale, fatta nel paper originale
-{cite}`radford2021learning`, è che questa è una regressione logistica
+{cite}`radford2021learning`, è che [questa è una regressione logistica
 multinomiale con ingressi e pesi normalizzati in norma $\ell_2$, senza bias e
-con temperatura: la matrice $[\mathbf{T}_1; \dots; \mathbf{T}_K] \in
+con temperatura]{.pt-matita}: la matrice $[\mathbf{T}_1; \dots; \mathbf{T}_K] \in
 \mathbb{R}^{K \times d}$ è la matrice dei pesi, e l'encoder di testo è una
 *hypernetwork*, una rete che *genera* i pesi del classificatore a partire da
 una descrizione delle classi, invece di stimarli per discesa del gradiente su
@@ -885,13 +886,13 @@ con questo da un costo quasi nullo.
 
 `````
 
-La conseguenza pratica è che ogni casella dipende da una coppia sola, e non c'è
-più niente da normalizzare su tutto il batch. Con il batch distribuito su $D$
-dispositivi, ciascuno calcola la perdita dei propri $B/D$ esempi contro un
-blocco di embedding di testo alla volta, e i blocchi passano al dispositivo
-vicino con $D$ permutazioni collettive, senza radunare tutto su ciascuno: la
-memoria della matrice scende da $B^2$ a $(B/D)^2$ per dispositivo, mentre il
-calcolo totale resta $O(B^2 d)$.
+La conseguenza pratica è che [ogni casella dipende da una coppia sola, e non
+c'è più niente da normalizzare su tutto il batch]{.pt-matita}. Con il batch
+distribuito su $D$ dispositivi, ciascuno calcola la perdita dei propri $B/D$
+esempi contro un blocco di embedding di testo alla volta, e i blocchi passano
+al dispositivo vicino con $D$ permutazioni collettive, senza radunare tutto su
+ciascuno: la memoria della matrice scende da $B^2$ a $(B/D)^2$ per dispositivo,
+mentre il calcolo totale resta $O(B^2 d)$.
 
 La qualità risente molto meno della dimensione del batch. Nelle prove degli
 autori con l'encoder visivo bloccato (SigLiT) la sigmoide batte di parecchio la
@@ -970,16 +971,15 @@ didascalia dalle altre del gruppo (didascalie di immagini prese a caso), e non a
 mette in difficoltà anche modelli addestrati in altro modo, con l'appaiamento e
 il mascheramento delle parole.
 
-Per vincere al gioco, quasi sempre, basta
-indovinare quali oggetti compaiono nella foto: se le altre didascalie parlano
-di un tramonto, di una bicicletta e di una scodella di minestra, riconoscere
-«gatto» e «muro» è più che sufficiente, e capire *chi sta sopra chi* non porta
-nessun vantaggio. La soluzione più economica per abbassare la loss è trattare
-la didascalia come un sacchetto di parole (*bag-of-words*), e l'ottimizzazione
-la trova, perché nulla nella loss la penalizza. La sintassi, le relazioni
-spaziali, il conteggio, la negazione (togliere un «senza» da una didascalia le
-rovescia il significato e non la sposta quasi per niente nello spazio) sono i
-primi a rimanere fuori.
+[Per vincere al gioco, quasi sempre, basta indovinare quali oggetti compaiono
+nella foto]{.pt-matita}: se le altre didascalie parlano di un tramonto, di una
+bicicletta e di una scodella di minestra, riconoscere «gatto» e «muro» è più
+che sufficiente, e capire *chi sta sopra chi* non porta nessun vantaggio. La
+soluzione più economica per abbassare la loss è trattare la didascalia come un
+sacchetto di parole (*bag-of-words*), e l'ottimizzazione la trova, perché nulla
+nella loss la penalizza. La sintassi, le relazioni spaziali, il conteggio, la
+negazione (togliere un «senza» da una didascalia le rovescia il significato e
+non la sposta quasi per niente nello spazio) sono i primi a rimanere fuori.
 
 Che il gioco contrastivo sia una causa di questo comportamento è l'ipotesi di
 Yuksekgonul e colleghi {cite}`yuksekgonul2023when`, sostenuta da un esperimento

@@ -48,8 +48,8 @@ su tre. L'errore non si distribuisce a caso: colpisce sempre gli stessi.
 
 Questi due episodi dicono la stessa cosa: un modello non è uno strumento
 neutro. Impara dai dati, e i dati portano dentro di sé la storia, le
-disuguaglianze e i punti ciechi di chi li ha prodotti e raccolti. Un algoritmo
-può essere impeccabile nel codice e ingiusto nell'effetto.
+disuguaglianze e i punti ciechi di chi li ha prodotti e raccolti. [Un algoritmo
+può essere impeccabile nel codice e ingiusto nell'effetto]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -188,9 +188,9 @@ intrecciate, e conviene chiamarle per nome prima di entrarci dentro.
   responsabilità legali. Chi paga quando un modello sbaglia? L'AI Act è un primo
   tentativo di risposta.
 
-Nessuna di queste dimensioni si riduce a un numero da tenere d'occhio, e
-nessuna è garantita da uno strumento da installare: sono proprietà del *sistema
-nel suo contesto d'uso*, non del solo codice.
+[Nessuna di queste dimensioni si riduce a un numero da tenere
+d'occhio]{.pt-matita}, e nessuna è garantita da uno strumento da installare:
+sono proprietà del *sistema nel suo contesto d'uso*, non del solo codice.
 
 Resta fuori la preoccupazione che viene in mente per prima sentendo «pericoli
 dell'intelligenza artificiale», quella dei film. C'è chi ritiene che un giorno
@@ -217,18 +217,18 @@ un'interfaccia che restituisce solo il verdetto.
 `````{tab} Elementare
 
 Se sbagli una ricetta nella tua cucina, a cena rimedi con una pizza per
-quattro. Se la stessa ricetta sbagliata viene stampata e servita in
-diecimila mense nello stesso giorno, il piccolo errore è diventato un disastro.
-Con i modelli succede questo: uno solo, addestrato una volta, viene poi usato
-milioni di volte. Un difettuccio che su un singolo caso passerebbe inosservato,
-moltiplicato su tutta la popolazione, diventa un'ingiustizia su larga scala.
-La ricetta delle mense non l'ha scritta un cuoco: è uscita da diecimila cene
-guardate una per una. Chi guarda così tanto raccoglie anche le abitudini che
-col piatto non c'entrano: se in quelle cene il pesce lo ordinavano quasi solo
-gli anziani, la regola che ne esce lega il pesce all'età di chi mangia, e quel
-legame finisce nel piatto di tutti. In più, a differenza di un impiegato a cui
-puoi chiedere «perché mi hai detto di no?», molti modelli non sanno spiegarsi:
-sono scatole che restituiscono un sì o un no, e basta.
+quattro. Se la stessa ricetta sbagliata viene stampata e servita in diecimila
+mense nello stesso giorno, il piccolo errore è diventato un disastro. Con i
+modelli succede questo: [uno solo, addestrato una volta, viene poi usato
+milioni di volte]{.pt-matita}. Un difettuccio che su un singolo caso passerebbe
+inosservato, moltiplicato su tutta la popolazione, diventa un'ingiustizia su
+larga scala. La ricetta delle mense non l'ha scritta un cuoco: è uscita da
+diecimila cene guardate una per una. Chi guarda così tanto raccoglie anche le
+abitudini che col piatto non c'entrano: se in quelle cene il pesce lo
+ordinavano quasi solo gli anziani, la regola che ne esce lega il pesce all'età
+di chi mangia, e quel legame finisce nel piatto di tutti. In più, a differenza
+di un impiegato a cui puoi chiedere «perché mi hai detto di no?», molti modelli
+non sanno spiegarsi: sono scatole che restituiscono un sì o un no, e basta.
 
 `````
 
@@ -243,10 +243,10 @@ Tre spostamenti quantitativi hanno reso il tema ineludibile.
    punteggio di
    COMPAS esce da 137 domande, in parte risposte dell'imputato e in parte
    prese dal casellario {cite}`angwin2016machine`, e bastava a produrlo.
-2. Diffusione. Lo stesso modello viene servito a scala di popolazione, e
-   uno scarto sistematico, a differenza del rumore, non si media via al
-   crescere dei casi: si somma. Un *bias* con effetto trascurabile sul singolo
-   caso diventa così un effetto su interi gruppi sociali, proprio nei
+2. Diffusione. Lo stesso modello viene servito a scala di popolazione, e [uno
+   scarto sistematico, a differenza del rumore, non si media via al crescere
+   dei casi: si somma]{.pt-matita}. Un *bias* con effetto trascurabile sul
+   singolo caso diventa così un effetto su interi gruppi sociali, proprio nei
    contesti (credito, giustizia, impiego, servizi essenziali) che l'AI Act
    classifica come ad alto rischio {cite}`euaiact2024`.
 3. Opacità. Le reti profonde sono ottime nel *cosa* (l'accuratezza) e
@@ -331,9 +331,9 @@ vorremmo tutte e due; ma se una certa cosa, nei dati, capita più spesso in un
 gruppo che nell'altro, le due richieste litigano, e qualcosa dell'una va
 lasciato andare. Quel «capita più spesso» è a sua volta un conteggio: lo si
 legge in un registro, e un registro può essere storto come quello degli
-arresti. Quale richiesta lasciare andare è una decisione che spetta alle
-persone e non alla matematica: la tecnica dice quali compromessi esistono,
-sceglierli resta un atto di responsabilità umana.
+arresti. [Quale richiesta lasciare andare è una decisione che spetta alle
+persone e non alla matematica]{.pt-matita}: la tecnica dice quali compromessi
+esistono, sceglierli resta un atto di responsabilità umana.
 
 `````
 
@@ -351,12 +351,12 @@ dove due delle tre uguaglianze valgono, la terza salta. La sezione sull'equità
 mostra l'identità algebrica da cui discende, e distingue questo enunciato dagli
 altri due che gli somigliano e che vengono regolarmente confusi con esso.
 
-La scelta di *quale* criterio privilegiare non discende dai dati: è normativa.
-La statistica delimita lo spazio delle opzioni e ne espone i costi; qual è il
-compromesso «giusto» è una domanda di valori, che va posta esplicitamente e non
-nascosta dentro una funzione obiettivo. Nemmeno le premesse del conflitto
-sono neutrali: i tassi di base da cui il teorema dipende sono misure, e
-una misura può essere a sua volta distorta.
+[La scelta di *quale* criterio privilegiare non discende dai dati: è
+normativa]{.pt-matita}. La statistica delimita lo spazio delle opzioni e ne
+espone i costi; qual è il compromesso «giusto» è una domanda di valori, che va
+posta esplicitamente e non nascosta dentro una funzione obiettivo. Nemmeno le
+premesse del conflitto sono neutrali: i tassi di base da cui il teorema dipende
+sono misure, e una misura può essere a sua volta distorta.
 
 `````
 

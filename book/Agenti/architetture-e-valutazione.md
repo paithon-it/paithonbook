@@ -99,9 +99,9 @@ rivela un secondo bug, un file che non esiste), e serve allora una fase di
 e si aggiorna la lista. È lo stesso {doc}`spendere calcolo mentre si risponde
 </Transformers/post-training>` incontrato con i Transformer, ma speso *prima* di
 agire anziché durante: la pianificazione è ragionamento su come muoversi,
-scritto in anticipo. In definitiva nessuno dei due estremi prevale sempre, e i
-sistemi robusti li combinano: un piano di massima, rivisto quando la realtà lo
-smentisce.
+scritto in anticipo. In definitiva [nessuno dei due estremi prevale sempre, e i
+sistemi robusti li combinano]{.pt-matita}: un piano di massima, rivisto quando
+la realtà lo smentisce.
 
 `````
 
@@ -224,13 +224,13 @@ dall'organizzazione del sistema più che dal singolo agente.
 
 `````
 
-Sui banchi di prova correnti il vantaggio dei sistemi multi-agente su un
-agente solo è spesso modesto: è la premessa da cui parte l'articolo di Cemri e
-colleghi, non una loro misura, e va verificato caso per caso. I guasti
-stanno più nell'organizzazione che nel singolo agente: ruoli descritti male,
-agenti che procedono indipendentemente, e nessuno incaricato di controllare se
-il risultato finale è corretto. La regola prudente è aggiungere un
-ruolo quando risolve un problema che con un agente solo restava aperto.
+Sui banchi di prova correnti il vantaggio dei sistemi multi-agente su un agente
+solo è spesso modesto: è la premessa da cui parte l'articolo di Cemri e
+colleghi, non una loro misura, e va verificato caso per caso. I guasti stanno
+più nell'organizzazione che nel singolo agente: ruoli descritti male, agenti
+che procedono indipendentemente, e nessuno incaricato di controllare se il
+risultato finale è corretto. La regola prudente è [aggiungere un ruolo quando
+risolve un problema che con un agente solo restava aperto]{.pt-matita}.
 
 Il capitolo sui {doc}`sistemi multi-agente </SistemiMultiAgente/overview>` tratta
 come si organizza una squadra: quanto costa coordinarsi e quando conviene, chi
@@ -275,10 +275,10 @@ Come sceglie quali pagine? Con tre criteri di buon senso. Quanto è **recente**
 il ricordo (ciò che è successo un'ora fa pesa più di ieri, e una pagina appena
 ripescata resta in cima); quanto è **importante** (una festa conta più di una
 colazione qualsiasi); e quanto **c'entra** con la situazione di adesso (se sto
-pensando alla festa, ripesco i ricordi sulla festa). Il bibliotecario non guarda
-un criterio solo: dà tre voti e porta le pagine con il totale più alto. Un
-appunto di una settimana fa, importante e in tema, batte così la nota di
-stamattina che non c'entra niente.
+pensando alla festa, ripesco i ricordi sulla festa). [Il bibliotecario non
+guarda un criterio solo: dà tre voti e porta le pagine con il totale più
+alto]{.pt-matita}. Un appunto di una settimana fa, importante e in tema, batte
+così la nota di stamattina che non c'entra niente.
 
 Quando si è accumulata abbastanza roba importante, due o tre volte al
 giorno, l'agente si ferma e **riflette**: rilegge gli ultimi cento appunti e ne
@@ -312,8 +312,8 @@ della memoria e della query.
 Nel lavoro originale $\text{recency}(m) = 0{,}995^{h}$, con $h$ le ore di gioco
 dall'ultimo accesso, i tre punteggi sono riportati in $[0, 1]$ con una
 normalizzazione min-max prima della somma, e i pesi $\alpha$ valgono tutti 1:
-tre criteri sommati, non uno solo. Sono i parametri di una simulazione di
-venticinque agenti, non costanti universali.
+[tre criteri sommati, non uno solo]{.pt-matita}. Sono i parametri di una
+simulazione di venticinque agenti, non costanti universali.
 
 Il terzo pezzo è la riflessione: quando la somma delle salienze degli eventi
 recenti supera una soglia (150 nell'articolo, il che accadeva due o tre volte
@@ -353,7 +353,7 @@ Servono allora quattro misure diverse, e nessuna da sola basta.
 
 Il **tasso di successo** è la più ovvia: su cento compiti, quanti ne ha portati
 a termine? È un sì o no, e ignora tutto il resto. La **traiettoria** è la
-strada che ha fatto per arrivarci: quali mosse, quante inutili, quanti giri a
+strada che ha fatto per arrivarci: quali mosse, quante inutili, quante iterazioni a
 vuoto.
 
 Il **costo** è quel che si è consumato per strada, e si conta in token
@@ -503,7 +503,7 @@ un *episodio*, come in {doc}`MDP e funzioni valore
 import math
 
 # ogni episodio: esito, passi, token consumati, traiettoria valida?
-# (valida: nessuna ricerca ripetuta e nessun giro a vuoto, giudicato a mano)
+# (valida: nessuna ricerca ripetuta e nessuna iterazione a vuoto, giudicato a mano)
 episodi = [
     {"successo": True,  "passi": 4,  "token": 2100, "traiettoria_ok": True},
     {"successo": True,  "passi": 9,  "token": 5400, "traiettoria_ok": False},
@@ -557,14 +557,15 @@ episodi per +/- 5 punti: 369
 ```
 
 Un compito è riuscito con una traiettoria sporca (nove passi, con una ricerca
-ripetuta e un giro a vuoto): conta come successo, ma non è un comportamento su
-cui fare affidamento. Un fallimento è arrivato dopo una traiettoria valida:
-l'agente ha fatto le mosse giuste ed è inciampato all'ultimo, un caso ben
-diverso da chi ha sbagliato tutto. Il tasso di successo da solo appiattisce
-queste differenze; costo e traiettoria le fanno riemergere. Che una traiettoria
-sia valida lo dice qui una colonna scritta a mano; in un sistema reale lo decide
-una regola dichiarata in anticipo (nessuna azione ripetuta senza un'osservazione
-nuova, per esempio) o un giudice, umano o automatico, che legge la traccia.
+ripetuta e un'iterazione a vuoto): conta come successo, ma non è un
+comportamento su cui fare affidamento. Un fallimento è arrivato dopo una
+traiettoria valida: l'agente ha fatto le mosse giuste ed è inciampato
+all'ultimo, un caso ben diverso da chi ha sbagliato tutto. Il tasso di successo
+da solo appiattisce queste differenze; costo e traiettoria le fanno riemergere.
+Che una traiettoria sia valida lo dice qui una colonna scritta a mano; in un
+sistema reale lo decide una regola dichiarata in anticipo (nessuna azione
+ripetuta senza un'osservazione nuova, per esempio) o un giudice, umano o
+automatico, che legge la traccia.
 
 Il primo di quei numeri va però guardato con sospetto: cinque episodi non
 misurano nulla, perché il caso da solo può far sembrare l'agente bravo o scarso
@@ -619,13 +620,13 @@ soltanto producendo una modifica al codice che fa passare tutti i test del
 progetto. Nell'articolo che lo presentava il migliore dei modelli provati ne
 risolveva meno del 2%.
 
-La lezione sta altrove: un banco di prova va messo alla prova a sua volta. Nel 2024
-Aleithan e colleghi {cite}`aleithan2024swebenchplus` hanno riletto a mano i 251
-successi del sistema che allora guidava la classifica, SWE-Agent con GPT-4, e
-hanno trovato che circa uno su tre ($32{,}67\%$) non era stato risolto ma
-letto, perché la soluzione era già scritta nella segnalazione o nei commenti
-sotto; e che un altro $31{,}08\%$ passava grazie a test troppo deboli per
-bocciare alcunché.
+La lezione sta altrove: [un banco di prova va messo alla prova a sua
+volta]{.pt-matita}. Nel 2024 Aleithan e colleghi
+{cite}`aleithan2024swebenchplus` hanno riletto a mano i 251 successi del
+sistema che allora guidava la classifica, SWE-Agent con GPT-4, e hanno trovato
+che circa uno su tre ($32{,}67\%$) non era stato risolto ma letto, perché la
+soluzione era già scritta nella segnalazione o nei commenti sotto; e che un
+altro $31{,}08\%$ passava grazie a test troppo deboli per bocciare alcunché.
 
 Tolte le segnalazioni difettose, quel sistema scendeva dal $12{,}47\%$ al
 $3{,}97\%$: il numero pubblicato era più di tre volte quello che resta.
@@ -714,12 +715,13 @@ rende anche difficile garantire che cosa farà: più libertà d'azione, meno
 controllo.
 
 L'area è giovane: più procedure provate su casi particolari che teoria, banchi
-di prova che invecchiano in fretta, poche certezze su che cosa funzioni e perché
-{cite}`xi2023rise`. Ne segue una regola di condotta: misurare prima di concludere,
-aggiungere complessità solo quando risolve un problema, diffidare dei numeri
-troppo favorevoli. Fra un agente che sembra funzionare in una dimostrazione e
-uno di cui ci si può fidare nell'uso reale la distanza si misura con il tasso di
-successo, la traiettoria, il costo e la dispersione, su una prova affidabile.
+di prova che invecchiano in fretta, poche certezze su che cosa funzioni e
+perché {cite}`xi2023rise`. Ne segue una regola di condotta: [misurare prima di
+concludere, aggiungere complessità solo quando risolve un problema, diffidare
+dei numeri troppo favorevoli]{.pt-matita}. Fra un agente che sembra funzionare
+in una dimostrazione e uno di cui ci si può fidare nell'uso reale la distanza
+si misura con il tasso di successo, la traiettoria, il costo e la dispersione,
+su una prova affidabile.
 
 
 

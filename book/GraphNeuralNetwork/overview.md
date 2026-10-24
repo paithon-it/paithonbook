@@ -120,8 +120,8 @@ Le difficoltà non finiscono qui: a una cena ognuno ha un numero diverso di amic
 stesso numero di vicini. Ogni cena ha poi un numero diverso di invitati, mentre
 le foto le possiamo tagliare tutte alla stessa misura, e lo stesso modo di fare
 deve andare bene per una tavolata da sei e per una da sessanta. Ordine che non
-conta, vicini in numero variabile, dimensione variabile: ecco perché un grafo
-non è né una griglia né una sequenza, e serve un'idea nuova.
+conta, vicini in numero variabile, dimensione variabile: [ecco perché un grafo
+non è né una griglia né una sequenza, e serve un'idea nuova]{.pt-matita}.
 
 `````
 
@@ -137,8 +137,9 @@ $\mathbf{A}$ in $\mathbf{P} \mathbf{A} \mathbf{P}^\top$ senza cambiare il
 grafo. Un modello sensato deve quindi essere **invariante alla permutazione**
 (se produce un'etichetta per l'intero grafo, non deve cambiare quando
 rinumeriamo i nodi) o **equivariante** (se produce un'etichetta per ogni nodo,
-le etichette devono seguire la permutazione). Questa è la simmetria che le CNN
-hanno per la traslazione e che le GNN devono avere per la permutazione.
+le etichette devono seguire la permutazione). [Questa è la simmetria che le CNN
+hanno per la traslazione e che le GNN devono avere per la
+permutazione]{.pt-matita}.
 
 A ciò si aggiungono due irregolarità che rompono le architetture a griglia: il
 grado dei nodi è variabile ($\deg(v)$ diverso da nodo a nodo), quindi non
@@ -155,7 +156,8 @@ Il rimedio si enuncia in una frase:
 
 > dare a ogni nodo (o a ogni arco, o all'intero grafo) una fila di numeri
 > che lo descrive, e costruirla facendo circolare l'informazione lungo gli
-> archi: ogni nodo ascolta i suoi vicini e si aggiorna, e si ricomincia.
+> archi: [ogni nodo ascolta i suoi vicini e si aggiorna, e si
+> ricomincia]{.pt-matita}.
 
 Quella fila di numeri si chiama **rappresentazione** del nodo, e indica sempre
 la fila di numeri con cui il modello descrive un nodo in un certo momento.
@@ -397,8 +399,8 @@ tutti gli altri (un grafo così si chiama **completo**) e a sé stesso, perché
 ogni parola pesa anche la propria. In «decide quanto ciascuna conta» ogni
 collegamento porta un peso. Il miscuglio delle altre che diventa la nuova
 rappresentazione è, parola per parola, il passaparola fra vicini. Un
-Transformer, insomma, sta già facendo message passing: solo che il grafo non
-glielo dà nessuno, se lo fabbrica collegando tutti con tutti.
+[Transformer, insomma, sta già facendo message passing]{.pt-matita}: solo che
+il grafo non glielo dà nessuno, se lo fabbrica collegando tutti con tutti.
 
 Questo ha un vantaggio e un costo. Il vantaggio è che non gli serve sapere
 niente su chi è collegato a chi: funziona anche quando i collegamenti veri
@@ -432,14 +434,14 @@ dal Transformer, e le *graph network* di Battaglia e colleghi
 {cite}`battaglia2018relational` li tengono insieme in un'unica formulazione,
 elencando fra i metodi coperti anche la GAT che incontreremo fra poco. Ne
 discende una lettura che vale in entrambe le direzioni: la GAT è la
-self-attention applicata a un grafo sparso invece che completo; e uno strato di
-self-attention è una GNN che ha rinunciato alla struttura, pagando in costo
-quadratico la libertà di non doverla conoscere. Vale dello strato, non del
-Transformer intero: la struttura che serve al linguaggio, cioè
-l'ordine delle parole, un Transformer la reinserisce nelle feature
-dei nodi con la codifica posizionale. Da lì si capisce anche perché
-tanta ricerca sull'efficienza dell'attenzione somigli a teoria dei grafi:
-renderla sparsa è, alla lettera, togliere archi.
+self-attention applicata a un grafo sparso invece che completo; e [uno strato
+di self-attention è una GNN che ha rinunciato alla struttura]{.pt-matita},
+pagando in costo quadratico la libertà di non doverla conoscere. Vale dello
+strato, non del Transformer intero: la struttura che serve al linguaggio, cioè
+l'ordine delle parole, un Transformer la reinserisce nelle feature dei nodi con
+la codifica posizionale. Da lì si capisce anche perché tanta ricerca
+sull'efficienza dell'attenzione somigli a teoria dei grafi: renderla sparsa è,
+alla lettera, togliere archi.
 
 `````
 

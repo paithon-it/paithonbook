@@ -69,9 +69,9 @@ aggiunge quindi circa l’undici per cento di lavoro. In cambio ti tieni la
 memoria del filo e la garanzia dell’acqua: l’uscita che trovi è la più vicina,
 perché il giro prima, con un bivio in meno, era andato a vuoto.
 
-Nessuna delle due sa dove sia l’uscita, e questo pesa più della memoria:
-cercano dappertutto con lo stesso impegno, anche nella direzione opposta a
-quella giusta.
+[Nessuna delle due sa dove sia l’uscita, e questo pesa più della
+memoria]{.pt-matita}: cercano dappertutto con lo stesso impegno, anche nella
+direzione opposta a quella giusta.
 
 `````
 
@@ -96,9 +96,9 @@ come fa il programma del rompicapo, la ricerca in profondità diventa completa
 su spazi finiti, perché i cicli si riconoscono, ma richiede la memoria che si
 era risparmiata.
 
-Fra tempo e memoria, il vincolo che si incontra per primo è la memoria, perché
-la ricerca in ampiezza conserva un intero livello, e un livello cresce come
-$b^d$.
+Fra tempo e memoria, [il vincolo che si incontra per primo è la
+memoria]{.pt-matita}, perché la ricerca in ampiezza conserva un intero livello,
+e un livello cresce come $b^d$.
 
 Le due si sposano nell’**approfondimento iterativo**: si fa una ricerca in
 profondità con un tetto di un passo, poi di due, poi di tre, fino a trovare la
@@ -236,9 +236,9 @@ Le posizioni raggiungibili sono la metà di $9!$. La soluzione è lunga venti
 mosse, e per trovarla sono state esaminate più di quarantottomila posizioni,
 oltre un quarto di quelle che il rompicapo può raggiungere. Con la stima a
 zero, infatti, l’algoritmo apre sempre lo stato più vicino alla partenza e si
-allarga in tutte le direzioni allo stesso modo, come la ricerca in ampiezza. La
+allarga in tutte le direzioni allo stesso modo, come la ricerca in ampiezza. [La
 risposta è giusta, ma il lavoro è enorme, perché l’algoritmo non sa dove sta
-andando.
+andando]{.pt-matita}.
 
 ## La stima di quanto manca
 
@@ -653,10 +653,10 @@ A\* è infatti costretto ad aprire gli stati per cui i passi fatti più la stima
 stanno sotto il costo della soluzione: finché quella somma sta sotto non c’è
 modo di escludere che di là passi una strada più corta, e l’algoritmo deve
 andarci a guardare, mentre alzare la stima restringe quell’insieme. In
-definitiva, una buona euristica è la stima più alta che non superi mai il vero
-e si calcoli in fretta: la stima perfetta, la distanza vera, farebbe aprire
-soltanto gli stati che stanno su un cammino ottimo, ma calcolarla vorrebbe dire
-aver già risolto il problema.
+definitiva, [una buona euristica è la stima più alta che non superi mai il vero
+e si calcoli in fretta]{.pt-matita}: la stima perfetta, la distanza vera,
+farebbe aprire soltanto gli stati che stanno su un cammino ottimo, ma
+calcolarla vorrebbe dire aver già risolto il problema.
 
 Resta da capire che cosa si guadagna con la consistenza, e per vederlo la
 togliamo. La stima *a salti* vale la distanza a isolati quando le tessere fuori

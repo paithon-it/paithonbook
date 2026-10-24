@@ -273,12 +273,12 @@ esplorazione e ricompensa
 la qualità vera sale, si ferma e scende. La figura dà la forma, la tabella le
 cifre e la pressione a cui succede.
 
-Finché la pressione è bassa, il surrogato e
-l'obiettivo vero indicano quasi la stessa direzione. Alzandola, la ricerca del
-massimo si sposta là dove il giudice sbaglia di più, e da lì in poi ogni punto
-guadagnato sul voto lo sconta chi legge. Oltre un certo punto il sistema
-peggiora mentre il suo punteggio migliora. Non è vero che ottimizzare di più
-sia sempre meglio, e vale ben oltre questo giocattolo.
+Finché la pressione è bassa, il surrogato e l'obiettivo vero indicano quasi la
+stessa direzione. Alzandola, la ricerca del massimo si sposta là dove il
+giudice sbaglia di più, e da lì in poi ogni punto guadagnato sul voto lo sconta
+chi legge. [Oltre un certo punto il sistema peggiora mentre il suo punteggio
+migliora]{.pt-matita}. Non è vero che ottimizzare di più sia sempre meglio, e
+vale ben oltre questo giocattolo.
 
 Gao, Schulman e Hilton misurano lo
 stesso andamento su modelli di ricompensa veri {cite}`gao2023scaling`, usando
@@ -384,8 +384,8 @@ costruire.
 Il riassunto abituale della DPO, «stessa destinazione, due tappe in meno», fa
 credere che tolte le tappe il viaggio resti lo stesso. Il lavoro dimostra
 soltanto che i due metodi, portati fino in fondo, arrivano allo stesso punto
-migliore. Non dimostra che ci arrivino per la stessa strada né che sbaglino
-nello stesso modo, e una differenza c'è.
+migliore. [Non dimostra che ci arrivino per la stessa strada né che sbaglino
+nello stesso modo]{.pt-matita}, e una differenza c'è.
 
 Infatti, nella procedura col giudice il modello
 produce, mentre impara, risposte nuove e se le fa valutare; la DPO legge
@@ -541,10 +541,10 @@ parola si sceglie per probabilità, e in questo schema «Sydney» è più probab
 di «Canberra» perché compare più spesso, non perché sia la risposta giusta.
 ```
 
-Il collegamento sbarrato di {numref}`fig-allucinazioni` indica che le
+Il collegamento sbarrato di {numref}`fig-allucinazioni` indica che [le
 allucinazioni nascono dal meccanismo stesso e non da un malfunzionamento
-puntuale. Il modello non consulta una fonte per poi sbagliare: sceglie la
-continuazione plausibile, che è lo scopo del suo addestramento, e la
+puntuale]{.pt-matita}. Il modello non consulta una fonte per poi sbagliare:
+sceglie la continuazione plausibile, che è lo scopo del suo addestramento, e la
 plausibilità non coincide con la verità. Per questo si possono ridurre, non
 eliminare.
 
@@ -633,11 +633,11 @@ pericolosità stessa: quanto il modello aiuterebbe chi volesse fare del male con
 un'arma o con un attacco informatico, e oltre una certa soglia scattano misure
 più severe.
 
-Un esame superato, però, dice meno di quel che sembra. Con i modelli le
-domande girano in anticipo, perché le prove finiscono nel materiale su cui
-hanno studiato, e allora il voto sale senza che sia migliorato niente. Per
-questo qualche prova si tiene da parte e non si pubblica. Un ponte che ha
-passato le prove ha passato quelle prove: se al vento di traverso non ha
+Un esame superato, però, dice meno di quel che sembra. Con i modelli le domande
+girano in anticipo, perché le prove finiscono nel materiale su cui hanno
+studiato, e allora il voto sale senza che sia migliorato niente. Per questo
+qualche prova si tiene da parte e non si pubblica. [Un ponte che ha passato le
+prove ha passato quelle prove]{.pt-matita}: se al vento di traverso non ha
 pensato nessuno, del vento di traverso non si sa niente.
 
 `````
@@ -653,18 +653,18 @@ informatico): i laboratori ne ricavano le soglie oltre le quali adottano misure
 più severe, e il considerando 110 dell'AI Act mette i rischi chimici,
 biologici, radiologici e nucleari e le capacità informatiche offensive fra i
 rischi sistemici. Quelle di *sicurezza* misurano tossicità, rifiuto di
-richieste illecite, resistenza ai jailbreak e propensione alle allucinazioni,
-e si riassumono spesso in metriche che si leggono in versi opposti:
-l’*attack success rate*, la quota di attacchi andati a segno, che si vuole
-basso, e il tasso di rifiuto appropriato, che si vuole alto. Due avvertenze di
-metodo discendono da Goodhart. Un benchmark è un proxy, e ottimizzare *per* il
+richieste illecite, resistenza ai jailbreak e propensione alle allucinazioni, e
+si riassumono spesso in metriche che si leggono in versi opposti: l’*attack
+success rate*, la quota di attacchi andati a segno, che si vuole basso, e il
+tasso di rifiuto appropriato, che si vuole alto. Due avvertenze di metodo
+discendono da Goodhart. Un benchmark è un proxy, e ottimizzare *per* il
 benchmark (magari perché è finito nei dati di addestramento) gonfia il
 punteggio senza migliorare la sicurezza reale; per questo contano i *test
-adversariali tenuti nascosti*. E passare le evals dimostra l'assenza dei
-fallimenti *cercati*, non la sicurezza in assoluto: l'assenza di prove non è
-prova d'assenza, e la valutazione resta un processo continuo e non un timbro una
-tantum. Per i modelli a rischio sistemico l'AI Act ne fa un obbligo (art.
-55(1)(a)).
+adversariali tenuti nascosti*. E [passare le evals dimostra l'assenza dei
+fallimenti *cercati*, non la sicurezza in assoluto]{.pt-matita}: l'assenza di
+prove non è prova d'assenza, e la valutazione resta un processo continuo e non
+un timbro una tantum. Per i modelli a rischio sistemico l'AI Act ne fa un
+obbligo (art. 55(1)(a)).
 
 `````
 
@@ -684,12 +684,12 @@ pesanti stanno in cima, dove i casi sono pochi, e la base larga (quasi tutto
 ciò che si costruisce) non ha obblighi specifici.
 ```
 
-La {numref}`fig-ai-act-rischio` si legge dal basso. La lettura
-corrente («l'Europa regola l'AI») suggerisce un peso uniforme, mentre la
-piramide dice il contrario: la regola morde in proporzione al danno possibile,
-e per la maggior parte dei sistemi non morde affatto. Sapere in quale gradino
-cade il sistema che si sta costruendo è il primo esercizio di conformità, e spesso
-anche l'ultimo.
+La {numref}`fig-ai-act-rischio` si legge dal basso. La lettura corrente
+(«l'Europa regola l'AI») suggerisce un peso uniforme, mentre la piramide dice
+il contrario: [la regola morde in proporzione al danno possibile, e per la
+maggior parte dei sistemi non morde affatto]{.pt-matita}. Sapere in quale
+gradino cade il sistema che si sta costruendo è il primo esercizio di
+conformità, e spesso anche l'ultimo.
 
 Fra la cima e il gradino sotto corre una differenza di natura che la forma
 della piramide non mostra. Sotto si autorizza a condizioni: il legislatore
@@ -912,12 +912,12 @@ dipende da valori oltre che da stime.
 ## L'onestà dovuta
 
 L'allineamento è oggi un'area di ricerca a pieno titolo e non un ritocco
-finale: abbiamo strumenti per *orientare* il comportamento dei modelli (RLHF,
-DPO, Constitutional AI, red teaming, evals), ma nessuna garanzia sul risultato.
-Una tensione strutturale attraversa tutte queste tecniche, e nessuna l'ha
-sciolta: le stesse capacità che rendono utile un modello lo rendono difficile
-da controllare, e più il sistema è potente, più grave può essere il divario fra
-ciò che gli chiediamo e ciò che fa.
+finale: [abbiamo strumenti per *orientare* il comportamento dei modelli (RLHF,
+DPO, Constitutional AI, red teaming, evals), ma nessuna garanzia sul
+risultato]{.pt-matita}. Una tensione strutturale attraversa tutte queste
+tecniche, e nessuna l'ha sciolta: le stesse capacità che rendono utile un
+modello lo rendono difficile da controllare, e più il sistema è potente, più
+grave può essere il divario fra ciò che gli chiediamo e ciò che fa.
 
 Le regole, l'AI Act in testa, provano a
 guadagnare tempo e a fissare responsabilità mentre la ricerca insegue. Il campo

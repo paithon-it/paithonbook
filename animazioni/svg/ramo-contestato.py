@@ -84,8 +84,8 @@ def verifica(eventi, cammino) -> None:
         f"la didascalia dice nove catene, sei affermazioni e una controllata: "
         f"qui sono {catene}, {scritte} e {controllate}")
     assert len(set(cammino)) > 1, (
-        "l'`:alt:` dice che i due giri contestano rami diversi: con lo stesso "
-        "indice due volte la figura racconta una strada dritta")
+        "l'`:alt:` dice che le due iterazioni contestano rami diversi: con lo "
+        "stesso indice due volte la figura racconta una strada dritta")
 
 
 # --------------------------------------------------------------------------
@@ -161,8 +161,8 @@ def costruisci() -> Figura:
     # vanno tenute corte: piu' lunghe di cosi' la coda della prima incrocia il
     # ramo che scende dalla radice al nodo 1, e nei fermi immagine si legge una
     # parola appoggiata sopra una linea.
-    for g, riga in enumerate(("primo giro: tre parti",
-                              "secondo giro: altre tre parti")):
+    for g, riga in enumerate(("prima iterazione: tre parti",
+                              "seconda iterazione: altre tre parti")):
         corpo.append(acceso(
             f"riga{g}", ("scompone", g),
             f'<text class="lbs" x="26" y="{Y[g + 1] - R_NODO - 16}">'

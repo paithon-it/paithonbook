@@ -107,8 +107,8 @@ $\nabla_{\mathbf{x}} E = \sum_k \nabla_{\mathbf{x}} E_k$.
 
 `````
 
-Generare, completare, segnalare e mescolare si riducono dunque a portarsi
-verso il basso. Non «nel punto più basso di tutti», che darebbe sempre
+[Generare, completare, segnalare e mescolare si riducono dunque a portarsi
+verso il basso]{.pt-matita}. Non «nel punto più basso di tutti», che darebbe sempre
 la stessa risposta: si scende con addosso il rumore, come nella prima delle tre
 vie, e ogni volta si finisce in una valle diversa. Da un compito all'altro
 cambia solo il vincolo con cui si scende.
@@ -319,12 +319,12 @@ Hopfield di oggi non sono quelle del 1982: i neuroni non sono più soltanto
 accesi o spenti, e la formula dell'energia è stata riscritta in tre tappe, da
 Dmitry Krotov e dallo stesso Hopfield nel 2016 {cite}`krotov2016dense`, da Mete
 Demircigil e colleghi l'anno dopo {cite}`demircigil2017model` e da Hubert
-Ramsauer e colleghi nel 2021 {cite}`ramsauer2021hopfield`. L'ultima tappa
-porta a una scoperta: il calcolo con cui una di queste memorie richiama un
-ricordo è, a tre condizioni, lo stesso con cui un Transformer presta
-attenzione. L'articolo si intitola *Hopfield Networks is All You Need*, «le
-reti di Hopfield sono tutto ciò che serve», e cita il titolo di quello che nel
-2017 ha introdotto i Transformer, *Attention Is All You Need*
+Ramsauer e colleghi nel 2021 {cite}`ramsauer2021hopfield`. L'ultima tappa porta
+a una scoperta: [il calcolo con cui una di queste memorie richiama un ricordo
+è, a tre condizioni, lo stesso con cui un Transformer presta
+attenzione]{.pt-matita}. L'articolo si intitola *Hopfield Networks is All You
+Need*, «le reti di Hopfield sono tutto ciò che serve», e cita il titolo di
+quello che nel 2017 ha introdotto i Transformer, *Attention Is All You Need*
 {cite}`vaswani2017attention`.
 
 `````{tab} Elementare
@@ -492,11 +492,12 @@ L'argomento di LeCun ammette che quei sistemi funzionano. Sostiene che predire
 ogni pixel costringe la rete a spendere i suoi neuroni e il suo addestramento
 su dettagli che nessuno potrebbe indovinare, la forma esatta di una foglia
 mossa dal vento, e che per prevedere il mondo convenga prevedere non i pixel ma
-il *riassunto* che la rete se ne fa. È una previsione sul futuro della ricerca,
-e come tutte le previsioni va tenuta distinta dai risultati che abbiamo in
-mano. Il {doc}`capitolo sui world model </WorldModels/overview>` la prende sul
-serio perché la tratta così: come una scommessa argomentata, con i suoi
-risultati e i suoi limiti, non come una profezia.
+il *riassunto* che la rete se ne fa. [È una previsione sul futuro della
+ricerca, e come tutte le previsioni va tenuta distinta dai risultati che
+abbiamo in mano]{.pt-matita}. Il {doc}`capitolo sui world
+model </WorldModels/overview>` la prende sul serio perché la tratta così: come
+una scommessa argomentata, con i suoi risultati e i suoi limiti, non come una
+profezia.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

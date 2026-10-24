@@ -65,11 +65,11 @@ linea retta, non che fra loro non ci sia nessun legame.
 
 Quando in un gruppo le direzioni sono tutte perpendicolari a due a due, e
 lunghe uno, il gruppo si dice **ortonormale** e diventa comodissimo, perché
-ogni direzione si interroga separatamente. In particolare, per sapere quanto
+ogni direzione si interroga separatamente. In particolare, [per sapere quanto
 di una certa direzione c'è dentro un vettore basta fare il prodotto scalare con
-quella direzione, senza sapere niente delle altre: gli assi di una carta
-stradale funzionano così, «quanto a est» si legge senza guardare «quanto a
-nord».
+quella direzione, senza sapere niente delle altre]{.pt-matita}: gli assi di una
+carta stradale funzionano così, «quanto a est» si legge senza guardare «quanto
+a nord».
 
 Con direzioni oblique il gioco si rompe. Se due assi formano un angolo di trenta
 gradi, chiedere «quanto ce n'è del primo?» dà una risposta che dipende da quanto
@@ -118,10 +118,10 @@ $$
 \mathbf{v} = \sum_{i=1}^{k} (\mathbf{q}_i^\top\mathbf{v})\,\mathbf{q}_i ,
 $$
 
-cioè i coefficienti si leggono con un prodotto scalare ciascuno, invece di
-risolvere un sistema. Con una base qualunque $\{\mathbf{a}_i\}$ i coefficienti
-sono la soluzione di $\mathbf{A}\mathbf{c}=\mathbf{v}$, e costano $\Theta(nk^2)$
-contro i $\Theta(nk)$ della formula precedente (per
+cioè [i coefficienti si leggono con un prodotto scalare ciascuno, invece di
+risolvere un sistema]{.pt-matita}. Con una base qualunque $\{\mathbf{a}_i\}$ i
+coefficienti sono la soluzione di $\mathbf{A}\mathbf{c}=\mathbf{v}$, e costano
+$\Theta(nk^2)$ contro i $\Theta(nk)$ della formula precedente (per
 $\mathbf{v}\in\mathbb{R}^n$).
 
 Una matrice quadrata $\mathbf{Q}$ le cui colonne sono ortonormali si dice
@@ -167,12 +167,12 @@ delle cinque misure è un vettore in uno spazio a cinque dimensioni; i vettori
 di $(1,1,1,1,1)$. Il numero unico che rappresenta meglio le cinque misure è il
 punto di quella direzione più vicino alla lista vera, cioè la sua ombra.
 
-Il calcolo dà la media aritmetica; in altri termini, la media è l'ombra delle
-misure sulla direzione in cui sono tutte uguali. Lo scarto, la parte che
-l'ombra non registra, è la lista delle differenze fra ciascuna misura e la
-media, ed essendo perpendicolare a $(1,1,1,1,1)$ ha somma zero. Per questo gli
-scarti dalla media si compensano sempre, un fatto che di solito si impara come
-una curiosità e che qui diventa geometria.
+Il calcolo dà la media aritmetica; in altri termini, [la media è l'ombra delle
+misure sulla direzione in cui sono tutte uguali]{.pt-matita}. Lo scarto, la
+parte che l'ombra non registra, è la lista delle differenze fra ciascuna misura
+e la media, ed essendo perpendicolare a $(1,1,1,1,1)$ ha somma zero. Per questo
+gli scarti dalla media si compensano sempre, un fatto che di solito si impara
+come una curiosità e che qui diventa geometria.
 
 Ne segue anche che la lunghezza al quadrato dello scarto è la
 somma dei quadrati delle differenze dalla media, la quantità che in statistica
@@ -219,9 +219,9 @@ $$
 cioè la media campionaria, e il residuo $\mathbf{y}-\bar{y}\mathbf{1}$ ha per
 costruzione somma nulla. La sua norma al quadrato è
 $\sum_i (y_i-\bar{y})^2 = n\,\hat{\sigma}^2$, con $\hat{\sigma}^2$ la varianza
-calcolata dividendo per $n$. La media è quindi il coefficiente della proiezione
+calcolata dividendo per $n$. [La media è quindi il coefficiente della proiezione
 lungo $\mathbf{1}$, e la varianza è la norma al quadrato del residuo divisa
-per $n$. La
+per $n$]{.pt-matita}. La
 {doc}`sezione su probabilità e statistica </Matematica/probabilita-statistica>`
 le ritroverà per la via probabilistica, e i due calcoli danno gli stessi
 numeri.
@@ -285,12 +285,12 @@ diverso dall'ombra, la distanza dal colore chiesto è l'ipotenusa di un
 triangolo rettangolo che ha per cateto la distanza minima, ed è quindi più
 lunga.
 
-Ne segue una regola pratica. Quando la soluzione migliore è stata trovata,
-l'errore che resta è perpendicolare a tutto ciò che si poteva fare. Se non lo
-fosse, l'errore avrebbe una componente lungo una direzione disponibile, e
-spostandosi un po' in quella direzione si farebbe meglio, segno che non si era
-ancora al minimo. Errore perpendicolare e minimo raggiunto sono quindi la
-stessa condizione.
+Ne segue una regola pratica. [Quando la soluzione migliore è stata trovata,
+l'errore che resta è perpendicolare a tutto ciò che si poteva
+fare]{.pt-matita}. Se non lo fosse, l'errore avrebbe una componente lungo una
+direzione disponibile, e spostandosi un po' in quella direzione si farebbe
+meglio, segno che non si era ancora al minimo. Errore perpendicolare e minimo
+raggiunto sono quindi la stessa condizione.
 
 La stessa geometria ha altre due conseguenze. La prima è che rifare l'ombra di
 un'ombra non cambia niente, perché l'ombra sta già distesa sul piano e la sua
@@ -323,9 +323,9 @@ $$
 \lVert \mathbf{A}\mathbf{x} - \mathbf{b}\rVert_2^2 .
 $$
 
-**Teorema della proiezione.** Il minimo si raggiunge quando il residuo
+**Teorema della proiezione.** [Il minimo si raggiunge quando il residuo
 $\mathbf{r}=\mathbf{b}-\mathbf{A}\hat{\mathbf{x}}$ è ortogonale a
-$\operatorname{im}(\mathbf{A})$, cioè a tutte le colonne insieme:
+$\operatorname{im}(\mathbf{A})$, cioè a tutte le colonne insieme]{.pt-matita}:
 $\mathbf{A}^\top\mathbf{r}=\mathbf{0}$.
 
 La condizione è sufficiente. Infatti, se
@@ -447,9 +447,9 @@ C'è un numero che misura questo equilibrismo, il
 **numero di condizionamento**, e più è grande più i conti sono delicati. Le
 equazioni normali, però, non lavorano sulla tabella dei dati ma su un'altra,
 ottenuta moltiplicandola per sé stessa con righe e colonne scambiate (la sua
-trasposta), e in quel passaggio il numero viene elevato al quadrato, per cui
+trasposta), e [in quel passaggio il numero viene elevato al quadrato, per cui
 un problema un po' delicato diventa molto delicato, e uno molto delicato
-diventa impossibile. Sull'esempio degli appartamenti si passa da circa
+diventa impossibile]{.pt-matita}. Sull'esempio degli appartamenti si passa da circa
 trecentocinquanta a più di centoventimila.
 
 Il rimedio è doppio. La prima parte è una precauzione senza spesa: togliere a
@@ -522,10 +522,10 @@ $$
 $$
 
 perché i valori singolari di $\mathbf{A}^\top\mathbf{A}$ sono i quadrati di
-quelli di $\mathbf{A}$. Formare esplicitamente il prodotto raddoppia quindi le
-cifre perse, mentre la via QR lavora su $\mathbf{A}$ e ha condizionamento
-$\kappa_2(\mathbf{R})=\kappa_2(\mathbf{A})$; l'errore sulla soluzione cresce
-come $\kappa_2(\mathbf{A})$ quando il residuo è piccolo e come
+quelli di $\mathbf{A}$. [Formare esplicitamente il prodotto raddoppia quindi le
+cifre perse]{.pt-matita}, mentre la via QR lavora su $\mathbf{A}$ e ha
+condizionamento $\kappa_2(\mathbf{R})=\kappa_2(\mathbf{A})$; l'errore sulla
+soluzione cresce come $\kappa_2(\mathbf{A})$ quando il residuo è piccolo e come
 $\kappa_2(\mathbf{A})^2\tan\theta$, con $\theta$ l'angolo fra $\mathbf{b}$ e
 l'immagine di $\mathbf{A}$, quando non lo è {cite}`higham2002accuracy`. La
 {doc}`sezione di analisi numerica
@@ -600,9 +600,9 @@ Schmidt lo aveva dimostrato ventinove anni prima, in tedesco e per le equazioni
 integrali {cite}`schmidt1907theorie`, e per questo il teorema porta anche il
 suo nome.
 
-Il teorema dice che, quando di una tabella si può tenere solo un pezzo, esiste
-un pezzo migliore di tutti gli altri; e dice, prima ancora di costruirlo,
-quanto si sbaglia a tenere quello.
+Il teorema dice che, [quando di una tabella si può tenere solo un pezzo, esiste
+un pezzo migliore di tutti gli altri]{.pt-matita}; e dice, prima ancora di
+costruirlo, quanto si sbaglia a tenere quello.
 
 Il problema è quello lasciato aperto dalla {doc}`sezione sui sistemi lineari
 </Matematica/sistemi-lineari>`, dove una matrice di rango basso si riscriveva
@@ -907,11 +907,12 @@ colore chiesto.
 
 Fra risposte che valgono uguale bisogna sceglierne una, e il bancone suggerisce
 la regola: si spalma invece di concentrare. Si sommano i quadrati delle dosi e
-si tiene la ricetta che dà il totale più piccolo. Ad esempio, mezzo e mezzo
-dà $0{,}25 + 0{,}25$, cioè $0{,}50$; il litro secco dà $1$, il doppio. Sono
-gli stessi quadrati che danno l'ombra, e penalizzano chi esagera in un punto
-solo. È una convenzione, e nessuno vieta al titolare di preferirne un'altra, ma
-le librerie di calcolo che usiamo restituiscono questa senza dichiararlo.
+[si tiene la ricetta che dà il totale più piccolo]{.pt-matita}. Ad esempio,
+mezzo e mezzo dà $0{,}25 + 0{,}25$, cioè $0{,}50$; il litro secco dà $1$, il
+doppio. Sono gli stessi quadrati che danno l'ombra, e penalizzano chi esagera
+in un punto solo. È una convenzione, e nessuno vieta al titolare di preferirne
+un'altra, ma le librerie di calcolo che usiamo restituiscono questa senza
+dichiararlo.
 
 Il modo di ottenerla è quello del catalogo, letto al contrario. Là ogni
 premiscela aveva un peso, che diceva quanto un litro di quella premiscela
@@ -971,8 +972,8 @@ $\lVert\mathbf{x}\rVert_2$ minima. Le due situazioni si leggono insieme: con
 più righe che colonne il minimo dell'errore in generale non vale zero (vale
 zero solo se $\mathbf{b}$ sta nell'immagine) e la pseudoinversa dà la
 proiezione; con un nucleo non banale i minimizzatori formano
-$\hat{\mathbf{x}}+\ker(\mathbf{A})$ e la pseudoinversa sceglie il
-rappresentante ortogonale al nucleo.
+$\hat{\mathbf{x}}+\ker(\mathbf{A})$ e [la pseudoinversa sceglie il
+rappresentante ortogonale al nucleo]{.pt-matita}.
 
 La pseudoinversa è legata anche alla regolarizzazione:
 
@@ -1068,11 +1069,11 @@ davanti.
 
 Sul foglio, due frecce con direzioni scelte a caso sono quasi allineate (o
 quasi opposte) molto più spesso che quasi perpendicolari. Salendo di dimensione
-la faccenda cambia, e cambia in fretta. In uno spazio a mille dimensioni due
-direzioni prese a caso sono quasi sempre quasi perpendicolari. Il loro prodotto
-scalare, misurato su vettori di lunghezza uno, si aggira infatti intorno a due
-centesimi e mezzo, mentre nello spazio a tre dimensioni si aggira intorno a
-mezzo.
+la faccenda cambia, e cambia in fretta. [In uno spazio a mille dimensioni due
+direzioni prese a caso sono quasi sempre quasi perpendicolari]{.pt-matita}. Il
+loro prodotto scalare, misurato su vettori di lunghezza uno, si aggira infatti
+intorno a due centesimi e mezzo, mentre nello spazio a tre dimensioni si aggira
+intorno a mezzo.
 
 La ragione si intuisce contando le occasioni di essere diversi. Per puntare
 nella stessa direzione, due frecce devono andare d'accordo su tutte le
@@ -1124,10 +1125,10 @@ dimensione. La stessa stima sta alla base del lemma di Johnson-Lindenstrauss
 sulle proiezioni casuali che quasi conservano le distanze.
 
 Le conseguenze per il deep learning sono due, e vanno tenute insieme. La prima
-è che uno spazio di rappresentazione a $d$ dimensioni ospita molte più di $d$
-feature distinguibili, purché si accetti una sovrapposizione piccola; si
-tratta dell’**ipotesi della sovrapposizione**, che la {doc}`sezione
-sull'interpretabilità meccanicistica
+è che [uno spazio di rappresentazione a $d$ dimensioni ospita molte più di $d$
+feature distinguibili, purché si accetti una sovrapposizione
+piccola]{.pt-matita}; si tratta dell’**ipotesi della sovrapposizione**, che la
+{doc}`sezione sull'interpretabilità meccanicistica
 </Interpretabilita/attribuzione-e-meccanicistica>` discute per esteso.
 
 La seconda è un avvertimento sulla geometria dell'alta dimensione: l'intuizione

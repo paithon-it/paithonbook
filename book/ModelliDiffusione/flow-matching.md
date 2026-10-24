@@ -20,9 +20,10 @@ indiretta, cioè con un processo che rovina i dati e che poi viene invertito. Ci
 chiediamo allora se non si possa scegliere direttamente il percorso, invece di
 ereditarlo dal modo in cui si è deciso di rovinare le immagini.
 
-La risposta è sì, e il metodo si chiama **flow matching**. La scelta più
+La risposta è sì, e il metodo si chiama **flow matching**. [La scelta più
 semplice, una retta fra il dato e il rumore, risulta anche la più comoda da
-percorrere in pochi passi, a patto di intendere bene in che senso è dritta.
+percorrere in pochi passi]{.pt-matita}, a patto di intendere bene in che senso
+è dritta.
 
 ## Invece di rovinare, trasportare
 
@@ -35,10 +36,10 @@ quanto rumore aggiungere e a che ritmo, e quel che segue è determinato. Il
 percorso che i dati fanno per diventare rumore lo si subisce, perché lo impone
 il programma di rumore.
 
-Nel punto di vista del trasporto si decide il percorso. Si dice: questa
-fotografia deve trasformarsi in questo particolare mucchio di rumore, e ci
-arriverà passando di qui. Fatta la scelta, resta da imparare una sola cosa, un
-**campo di velocità**: in ogni punto dello spazio e in ogni istante, in che
+[Nel punto di vista del trasporto si decide il percorso]{.pt-matita}. Si dice:
+questa fotografia deve trasformarsi in questo particolare mucchio di rumore, e
+ci arriverà passando di qui. Fatta la scelta, resta da imparare una sola cosa,
+un **campo di velocità**: in ogni punto dello spazio e in ogni istante, in che
 direzione e a che velocità muoversi. Ad esempio, un meteorologo disegna un
 campo di velocità sulle carte dei venti, con una frecciolina per ogni punto:
 chi ci si trova dentro viene portato dove la freccia indica.
@@ -95,8 +96,8 @@ può aggiungere qualunque campo $\mathbf{w}$ con
 $\nabla\!\cdot\!(p_t\mathbf{w})=0$ senza cambiare l'evoluzione delle densità.
 Il flow matching ne sceglie uno, e a parità di percorso gaussiano il campo che
 sceglie coincide con la PF-ODE del limite continuo: il dizionario fra i due
-linguaggi lo mostra in una riga. Il rovesciamento di prospettiva aggiunge la
-libertà di scegliere il percorso, non un campo diverso da percorrere.
+linguaggi lo mostra in una riga. [Il rovesciamento di prospettiva aggiunge la
+libertà di scegliere il percorso, non un campo diverso da percorrere]{.pt-matita}.
 
 `````
 
@@ -125,13 +126,13 @@ si estrae a caso un rumore di arrivo, si decide che quei due sono gli estremi
 del viaggio, e a quel punto la velocità è banale da scrivere, perché il viaggio
 lo abbiamo disegnato noi.
 
-Il fatto sorprendente, e il motivo per cui il metodo funziona, è che allenarsi
+Il fatto sorprendente, e il motivo per cui il metodo funziona, è che [allenarsi
 sulla velocità del singolo viaggio porta allo stesso posto che allenarsi su
-quella media. Non è un'approssimazione: i due voti (le due funzioni di costo,
-nel gergo) danno il voto migliore alla stessa rete. La ragione è quella che
-rende speciale l'errore quadratico: chi cerca di indovinare un numero estratto a
-caso, e viene giudicato su quanto sbaglia al quadrato, ha come strategia
-migliore rispondere la media di quel numero.
+quella media]{.pt-matita}. Non è un'approssimazione: i due voti (le due
+funzioni di costo, nel gergo) danno il voto migliore alla stessa rete. La
+ragione è quella che rende speciale l'errore quadratico: chi cerca di
+indovinare un numero estratto a caso, e viene giudicato su quanto sbaglia al
+quadrato, ha come strategia migliore rispondere la media di quel numero.
 
 Prendiamo ad esempio un dado: l'errore al quadrato di chi risponde sempre 3,5 è
 in media 2,92; per chi risponde 3 o 4 sale a 3,17, e per chi risponde 1 a 9,17.
@@ -191,8 +192,8 @@ definizione $\mathbf{u}_t(\mathbf{x}) = \int
 p_t(\mathbf{x}\mid\mathbf{z})\,p(\mathbf{z})\,\mathrm{d}\mathbf{z}\,/\,
 p_t(\mathbf{x})$, cioè la media condizionata scritta sopra. Infine,
 differiscono soltanto nel termine in $\lVert\mathbf{u}\rVert^2$, che non
-dipende da $\theta$. La proprietà usata è una sola: il minimo di
-$\mathbb{E}[\lVert a - Y\rVert^2]$ rispetto ad $a$ è $\mathbb{E}[Y]$.
+dipende da $\theta$. [La proprietà usata è una sola: il minimo di
+$\mathbb{E}[\lVert a - Y\rVert^2]$ rispetto ad $a$ è $\mathbb{E}[Y]$]{.pt-matita}.
 
 Perché l'obiettivo abbia senso serve però anche il primo teorema dello stesso
 lavoro: se ogni campo condizionato genera il proprio percorso condizionato, il
@@ -226,10 +227,10 @@ Questa è l'idea del **flusso rettificato**, la strada presa dai generatori di
 immagini più recenti.
 
 C'è però un'insidia da capire bene, perché il metodo si spiega spesso male.
-Ogni singolo viaggio è una retta; il campo dei venti che ne risulta no. In un
-punto in cui passano molti viaggi diretti in posti diversi, la freccia è la
-loro media, e seguendo le medie non si percorre nessuna delle rette: si fa una
-curva.
+[Ogni singolo viaggio è una retta; il campo dei venti che ne risulta
+no]{.pt-matita}. In un punto in cui passano molti viaggi diretti in posti
+diversi, la freccia è la loro media, e seguendo le medie non si percorre
+nessuna delle rette: si fa una curva.
 
 È come un incrocio affollato in cui ciascuno, invece di seguire la propria
 strada, segue la media delle direzioni di chi gli sta intorno: le direzioni di
@@ -295,7 +296,7 @@ partenza è quello indipendente, $(\mathbf{x}_0,\boldsymbol{\epsilon}) \sim
 p_{\text{dati}} \otimes \mathcal{N}(\mathbf{0},\mathbf{I})$: ogni dato può
 finire con qualunque rumore.
 
-La rettitudine è condizionata, non marginale. Il campo marginale
+[La rettitudine è condizionata, non marginale]{.pt-matita}. Il campo marginale
 $\mathbf{u}_t(\mathbf{x}) = \mathbb{E}[\boldsymbol{\epsilon}-\mathbf{x}_0\mid
 \mathbf{x}_t=\mathbf{x}]$ è una media su tutti gli accoppiamenti compatibili, e
 le sue traiettorie sono curve anche quando ogni traiettoria condizionata è una
@@ -459,11 +460,11 @@ fatica.
 
 A leggere gli articoli i due punti di vista sembrano due mondi.
 
-In realtà non li separa quasi niente. Un percorso di diffusione è un percorso di
-trasporto particolare, quello che si ottiene mescolando immagine e rumore con un
-certo dosaggio; il campo di velocità che lo realizza si ricava dal punteggio con
-una formula, e viceversa. Di conseguenza una rete addestrata in un modo si può
-usare nell'altro riscrivendo la sua uscita.
+In realtà non li separa quasi niente. [Un percorso di diffusione è un percorso
+di trasporto particolare]{.pt-matita}, quello che si ottiene mescolando
+immagine e rumore con un certo dosaggio; il campo di velocità che lo realizza
+si ricava dal punteggio con una formula, e viceversa. Di conseguenza una rete
+addestrata in un modo si può usare nell'altro riscrivendo la sua uscita.
 
 Cambiano tre cose pratiche, e per esse il vocabolario nuovo si è imposto. La
 prima è che, potendo scegliere il percorso, si sceglie quello che si percorre in
@@ -489,14 +490,14 @@ $$
 \nabla_{\mathbf{x}}\log p_t(\mathbf{x}) ,
 $$
 
-e la relazione si inverte. Le due formulazioni sono quindi la stessa famiglia
-di modelli in due parametrizzazioni, e la differenza fra le loss è ancora una
-volta un peso $w(t)$. La relazione ha però $\alpha_t$ a denominatore: per il
-percorso rettificato diverge per $t \to 1$, dove il dato è dimenticato del
-tutto, e lì è la conversione attraverso il punteggio a diventare mal
-condizionata, mentre il campo
-$\mathbf{u}_t = \mathbb{E}[\boldsymbol{\epsilon} - \mathbf{x}_0 \mid
-\mathbf{x}_t]$ resta limitato.
+e la relazione si inverte. [Le due formulazioni sono quindi la stessa famiglia
+di modelli in due parametrizzazioni]{.pt-matita}, e la differenza fra le loss è
+ancora una volta un peso $w(t)$. La relazione ha però $\alpha_t$ a
+denominatore: per il percorso rettificato diverge per $t \to 1$, dove il dato è
+dimenticato del tutto, e lì è la conversione attraverso il punteggio a
+diventare mal condizionata, mentre il campo $\mathbf{u}_t =
+\mathbb{E}[\boldsymbol{\epsilon} - \mathbf{x}_0 \mid \mathbf{x}_t]$ resta
+limitato.
 
 Le tre differenze che restano sono operative e sostanziali:
 

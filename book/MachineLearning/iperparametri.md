@@ -93,8 +93,8 @@ Il calcolo si legge anche al contrario. Se il pomeriggio basta per venticinque
 combinazioni, e ognuna si porta dietro i suoi cinque assaggi, con due manopole
 restano cinque livelli per ciascuna, che è una prova seria; con quattro
 manopole restano poco più di due livelli a testa, cioè il minimo, il massimo e
-niente in mezzo. La griglia, quindi, dà il meglio quando le manopole da girare
-sono una o due.
+niente in mezzo. [La griglia, quindi, dà il meglio quando le manopole da girare
+sono una o due]{.pt-matita}.
 
 `````
 
@@ -109,8 +109,8 @@ di regolarizzazione $\lambda$ è una componente.
 Con $k$-fold cross-validation il costo sale a $k \cdot n^d$ addestramenti, cioè
 è esponenziale in $d$. Inoltre, a parità di budget, la risoluzione per
 dimensione è scarsa, $n = |\Lambda|^{1/d}$: con nove prove in due dimensioni,
-ad esempio, si vedono appena tre valori per asse. Per questo motivo la grid
-search resta ragionevole per $d \le 2$, e ha il pregio che i punti,
+ad esempio, si vedono appena tre valori per asse. Per questo motivo [la grid
+search resta ragionevole per $d \le 2$]{.pt-matita}, e ha il pregio che i punti,
 indipendenti tra loro, si valutano in parallelo. Per i parametri di scala, come
 il learning rate e la forza di regolarizzazione, i candidati vanno disposti in
 progressione geometrica ($10^{-4}, 10^{-3}, \dots$).
@@ -157,10 +157,10 @@ manopole insieme.
 
 Con più tentativi la probabilità si calcola. Se la stazione si sente su un
 ventesimo della scala, un tentativo a caso la manca diciannove volte su venti;
-ma se i tentativi sono sessanta, la probabilità di mancarla tutte le volte
-scende sotto il cinque per cento, e novantacinque volte su cento almeno uno
-cade dentro. Si noti che il calcolo resta lo stesso con due manopole e con
-venti.
+ma [se i tentativi sono sessanta, la probabilità di mancarla tutte le volte
+scende sotto il cinque per cento]{.pt-matita}, e novantacinque volte su cento
+almeno uno cade dentro. Si noti che il calcolo resta lo stesso con due manopole
+e con venti.
 
 Tutto però dipende da quanto è larga la stazione. Se si sente su un centesimo
 di scala invece che su un ventesimo, gli stessi sessanta tentativi la trovano
@@ -188,10 +188,11 @@ esiste una regione «buona» che copre il 5% del volume dello spazio di ricerca,
 la probabilità che $N$ estrazioni indipendenti la manchino tutte è
 $(1-0{,}05)^N = 0{,}95^N$; quindi la probabilità di centrarla almeno una volta
 è il complementare, $1 - 0{,}95^N$, che per $N = 60$ vale $0{,}954$. In altri
-termini, sessanta prove la centrano novantacinque volte su cento, in qualunque
-dimensione. Se la regione buona copre l'1% del volume, le stesse sessanta prove
-la centrano con probabilità $1 - 0{,}99^{60} = 0{,}453$. (Vale *se* una tale
-regione esiste ed è così larga: è un'ipotesi sul problema, non una promessa.)
+termini, [sessanta prove la centrano novantacinque volte su cento, in qualunque
+dimensione]{.pt-matita}. Se la regione buona copre l'1% del volume, le stesse
+sessanta prove la centrano con probabilità $1 - 0{,}99^{60} = 0{,}453$. (Vale
+*se* una tale regione esiste ed è così larga: è un'ipotesi sul problema, non
+una promessa.)
 
 In pratica contano anche le distribuzioni: per i parametri di scala si campiona
 in **log-uniforme**, cioè uniforme sull'esponente, così che il learning rate
@@ -204,11 +205,11 @@ $10^{-2}$ e $10^{-1}$.
 
 Griglia e ricerca casuale dedicano lo stesso budget a ogni candidato, anche a
 quelli che dopo poche epoche sono già chiaramente scadenti. I metodi
-**multi-fidelity**, a più livelli di fedeltà, ribaltano la logica: valutano
+**multi-fidelity**, a più livelli di fedeltà, ribaltano la logica: [valutano
 tutti i candidati con un budget piccolo, per esempio poche epoche, e concedono
-un budget maggiore solo ai migliori. In altri termini, la valutazione breve è
-una versione poco fedele di quella completa, e la selezione ha la forma di un
-torneo a eliminazione diretta.
+un budget maggiore solo ai migliori]{.pt-matita}. In altri termini, la
+valutazione breve è una versione poco fedele di quella completa, e la selezione
+ha la forma di un torneo a eliminazione diretta.
 
 Il budget si misura in epoche, cioè in passate complete sull'insieme di
 addestramento (introdotte nella {doc}`sezione su overfitting e validazione
@@ -348,11 +349,11 @@ Il quarto pozzo va dove la *promessa* è massima: un po’ dove la mappa dice be
 ignora). Cercare quel punto sulla carta costa qualche ora di matita, e la carta
 si fruga tutta prima di montare la sonda.
 
-L'ottimizzazione bayesiana funziona così: dopo ogni addestramento aggiorna la
-sua mappa del punteggio e sceglie la combinazione successiva chiedendosi *di
-quanto mi aspetto di battere il mio record, se provo qui?* La domanda ha un
-nome, **miglioramento atteso** (*expected improvement*), e da sola tiene insieme
-le due esigenze.
+L'ottimizzazione bayesiana funziona così: [dopo ogni addestramento aggiorna la
+sua mappa del punteggio e sceglie la combinazione successiva]{.pt-matita}
+chiedendosi *di quanto mi aspetto di battere il mio record, se provo qui?* La
+domanda ha un nome, **miglioramento atteso** (*expected improvement*), e da
+sola tiene insieme le due esigenze.
 
 Si noti che un pozzo peggiore del migliore già scavato non conta come una
 perdita: nel calcolo vale zero, perché il record resta quello di prima. La
@@ -404,10 +405,10 @@ dove $\gamma$ è il miglioramento rispetto al record, misurato in deviazioni
 standard del surrogato (niente a che vedere con il $\gamma$ del kernel RBF, che
 compare nella {doc}`sezione sul kernel trick <svm-kernel>`: è la stessa lettera
 con un significato diverso), e $\Phi$ e $\varphi$ sono la funzione di
-ripartizione e la densità della normale standard. Osserviamo che la formula
+ripartizione e la densità della normale standard. Osserviamo che [la formula
 premia sia $\mu(\boldsymbol{\lambda})$ basso (sfruttamento) sia
-$\sigma(\boldsymbol{\lambda})$ alto (esplorazione). La prossima prova è
-$\boldsymbol{\lambda}_{\text{next}} = \arg\max_{\boldsymbol{\lambda}}
+$\sigma(\boldsymbol{\lambda})$ alto (esplorazione)]{.pt-matita}. La prossima
+prova è $\boldsymbol{\lambda}_{\text{next}} = \arg\max_{\boldsymbol{\lambda}}
 \mathrm{EI}(\boldsymbol{\lambda})$, cioè un'ottimizzazione a sua volta, ma sul
 surrogato, che risponde in millisecondi.
 
@@ -494,11 +495,11 @@ caso: 0.9889 ± 0.0051
 
 La griglia è avanti di poco: $0{,}9896$ con ottanta addestramenti contro
 $0{,}9889$ con cento. Lo scarto è di sette decimillesimi, meno di quanto
-ciascun punteggio oscilla passando da un blocco di dati all'altro. Per questo il
-codice stampa anche l'oscillazione: senza, un pareggio si legge come una
-vittoria. Il pareggio era atteso, perché la ricerca casuale guadagna dove gli
-iperparametri sono tanti e quasi tutti ininfluenti, mentre qui sono due, e
-contano tutti e due.
+ciascun punteggio oscilla passando da un blocco di dati all'altro. Per questo
+il codice stampa anche l'oscillazione: senza, un pareggio si legge come una
+vittoria. Il pareggio era atteso, perché [la ricerca casuale guadagna dove gli
+iperparametri sono tanti e quasi tutti ininfluenti]{.pt-matita}, mentre qui
+sono due, e contano tutti e due.
 
 `loguniform` estrae a caso l'esponente e non il valore, e lo si usa ogni volta
 che si sceglie un learning rate. Invece di estrarre un numero a caso fra
@@ -536,12 +537,12 @@ il voto di prova più alto, e la distanza fra i due voti dice quanto si è vicin
 al precipizio.
 
 Il limite è nel «tutto il resto fermo». Le manopole non sono indipendenti: la
-posizione migliore di una dipende da dove stanno le altre, e girandole una alla
-volta si trova il meglio di una fetta, non del tutto. Per questo la curva serve
-a capire, e la ricerca a scegliere. Anche scegliere guardando il disegno è una
-piccola ricerca: il voto di prova della posizione scelta è ottimista come quello
-della vincitrice di una ricerca, caso trattato fra le avvertenze sull'ottimismo
-della scelta.
+posizione migliore di una dipende da dove stanno le altre, e [girandole una
+alla volta si trova il meglio di una fetta, non del tutto]{.pt-matita}. Per
+questo la curva serve a capire, e la ricerca a scegliere. Anche scegliere
+guardando il disegno è una piccola ricerca: il voto di prova della posizione
+scelta è ottimista come quello della vincitrice di una ricerca, caso trattato
+fra le avvertenze sull'ottimismo della scelta.
 
 `````
 
@@ -561,12 +562,12 @@ riporta il punteggio del modello e non l'errore. Per un classificatore il
 punteggio è l'accuratezza, cioè $1 - \hat{E}$ con la perdita 0-1, e il
 compromesso diventa quindi un massimo.
 
-La curva ha due limiti. È una sezione dello spazio degli iperparametri,
-condizionata ai valori fissati degli altri, quindi non vede le interazioni (il
-$\gamma$ migliore di una SVM dipende da $C$). Inoltre scegliere $\lambda_j$
-guardando la curva consuma la validazione come qualunque ricerca, con
-l'ottimismo della vincitrice di una ricerca, che le avvertenze sull'ottimismo
-della scelta misurano.
+La curva ha due limiti. [È una sezione dello spazio degli iperparametri,
+condizionata ai valori fissati degli altri, quindi non vede le
+interazioni]{.pt-matita} (il $\gamma$ migliore di una SVM dipende da $C$).
+Inoltre scegliere $\lambda_j$ guardando la curva consuma la validazione come
+qualunque ricerca, con l'ottimismo della vincitrice di una ricerca, che le
+avvertenze sull'ottimismo della scelta misurano.
 
 `````
 
@@ -739,11 +740,12 @@ invece, scende a $0{,}5160$, con un errore standard di $0{,}014$: poco più di
 un errore standard sopra il caso, cioè compatibile con il caso, e il resto è
 rumore di stima su archivi di duecento righe.
 
-In definitiva, una ricerca degli iperparametri è essa stessa un addestramento,
-e come ogni addestramento può adattarsi ai dati che ha visto. Dichiarare spazio
-di ricerca, budget e semi, e tenere il test chiuso fino all'ultimo, ne fa una
-procedura il cui risultato altri possono ripetere e controllare: è la parte di
-metodo che mancava all'alchimia di cui parlava Rahimi.
+In definitiva, [una ricerca degli iperparametri è essa stessa un addestramento,
+e come ogni addestramento può adattarsi ai dati che ha visto]{.pt-matita}.
+Dichiarare spazio di ricerca, budget e semi, e tenere il test chiuso fino
+all'ultimo, ne fa una procedura il cui risultato altri possono ripetere e
+controllare: è la parte di metodo che mancava all'alchimia di cui parlava
+Rahimi.
 
 `````{tab} Elementare
 

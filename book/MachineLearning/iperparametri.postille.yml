@@ -38,7 +38,7 @@
   postilla: "Il fattore cinque della cross-validation dipende dal giudicare, non dal cercare"
 - inizio: "A parità di seme, di versioni"
   impronta: "e5c576a58308"
-  postilla: "Altrove le ultime cifre possono variare; senza seme l'esito cambia a ogni giro"
+  postilla: "Altrove variano le ultime cifre; senza seme l'esito cambia a ogni esecuzione"
 - inizio: "Il voto della vincitrice supera il"
   impronta: "6f1106a0dd16"
   postilla: "Vincitrice 0,5695, premio della ricerca; annidata 0,5160, compatibile col caso"

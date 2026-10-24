@@ -193,17 +193,16 @@ estate avesse fruttato $82$, mentre il livello ($45$) e lo scarto estivo
 ($+35$) restano quelli stimati sugli anni scorsi, il residuo di quel trimestre
 sarebbe $82 - (45 + 35) = 2$.
 
-Le due forme sono poi la stessa scomposizione misurata su due scale, e a
-passare dall'una all'altra basta cambiare unità: contare in percentuali invece
-che in euro trasforma una moltiplicazione in una somma, e il logaritmo fa
-proprio questo. In base dieci il logaritmo di 10 è 1, di 100 è 2, di 1000 è 3,
-cioè
-ogni volta che si moltiplica per dieci il logaritmo aggiunge uno. Portata sui
-logaritmi, la stagione della gelateria smette di moltiplicare per $1{,}78$ e
-torna ad aggiungere sempre la stessa cifra. Box e Jenkins presero questa strada
-sui passeggeri aerei, e i modelli che lavorano su somme se la cavano anche con
-una stagione che moltiplica: basta portarli sulla scala dove quella stagione
-aggiunge.
+[Le due forme sono poi la stessa scomposizione misurata su due
+scale]{.pt-matita}, e a passare dall'una all'altra basta cambiare unità:
+contare in percentuali invece che in euro trasforma una moltiplicazione in una
+somma, e il logaritmo fa proprio questo. In base dieci il logaritmo di 10 è 1,
+di 100 è 2, di 1000 è 3, cioè ogni volta che si moltiplica per dieci il
+logaritmo aggiunge uno. Portata sui logaritmi, la stagione della gelateria
+smette di moltiplicare per $1{,}78$ e torna ad aggiungere sempre la stessa
+cifra. Box e Jenkins presero questa strada sui passeggeri aerei, e i modelli
+che lavorano su somme se la cavano anche con una stagione che moltiplica: basta
+portarli sulla scala dove quella stagione aggiunge.
 
 ## Stazionarietà e differenziazione
 
@@ -400,8 +399,8 @@ Il $-0{,}50$ dipende da un'ipotesi: che intorno alla retta ci sia rumore
 scossoni si somigliano già fra loro, differenziare ne cancella una parte e il
 numero sale verso lo zero.
 
-In sintesi le due operazioni non sono intercambiabili: ciascuna guasta il
-caso che l'altra risolve.
+In sintesi [le due operazioni non sono intercambiabili: ciascuna guasta il
+caso che l'altra risolve]{.pt-matita}.
 
 Per la stagionalità si usa la **differenziazione stagionale** $\nabla_m x_t =
 x_t - x_{t-m}$, dove $m$ è la lunghezza del ciclo (12 per dati mensili, 7 per
@@ -590,14 +589,14 @@ $$
 La serie scivola $20 \to 16 \to 13{,}6 \to 12{,}16$, avvicinandosi a $10$ a
 ogni passo: è il **rientro verso la media** (in inglese *mean reversion*).
 Succede finché la frazione $\phi$ sta fra $-1$ e $+1$, cioè finché $|\phi| < 1$
-(le due sbarrette vogliono dire «guarda il numero senza il segno»). Se valesse
+(le due sbarrette vogliono dire «guarda il numero senza il segno»). [Se valesse
 esattamente $1$, ogni giorno ricomincerebbe da dove era arrivato e la serie non
-tornerebbe mai indietro: è la tendenza stocastica della passeggiata aleatoria.
-Oltre $1$ è un caso diverso ancora, e più violento: ogni scossa viene
-moltiplicata a ogni passo, la serie parte per la tangente e non c'è
-differenziazione che la riporti a posto. Il rumore, nella realtà, scompiglia
-continuamente la discesa, ma la spinta di fondo resta sempre quella verso
-$\mu$.
+tornerebbe mai indietro]{.pt-matita}: è la tendenza stocastica della
+passeggiata aleatoria. Oltre $1$ è un caso diverso ancora, e più violento: ogni
+scossa viene moltiplicata a ogni passo, la serie parte per la tangente e non
+c'è differenziazione che la riporti a posto. Il rumore, nella realtà,
+scompiglia continuamente la discesa, ma la spinta di fondo resta sempre quella
+verso $\mu$.
 
 ## Da AR ad ARIMA: media mobile, integrazione, stagionalità
 
@@ -639,8 +638,8 @@ future messe a zero, e la risposta è il giorno normale, lo stesso numero per
 tutti i giorni che seguono. Sul grafico esce una linea piatta, all'altezza del
 livello medio degli incassi che il modello ha stimato sul registro: da venerdì
 in poi la risposta è quella che chiunque avrebbe dato guardando la media. Il
-modello non si è rotto. Ha finito la memoria, e la memoria dura quanti giorni
-gli si è detto di farla durare.
+modello non si è rotto. [Ha finito la memoria, e la memoria dura quanti giorni
+gli si è detto di farla durare]{.pt-matita}.
 
 Chi a venerdì ci vuole arrivare glielo chiede due giorni per volta, e appena
 gli incassi veri arrivano glieli rimette sotto, così ogni volta riparte da
@@ -715,11 +714,12 @@ dove $\mu$ è il livello medio attorno a cui la serie oscilla. La somma parte da
 $i = h$ perché solo per $i \geq h$ l'istante $T+h-i$ cade a $T$ o prima, cioè
 solo quelle scosse si sono già viste; e finisce a $i = q$ perché oltre $q$ il
 modello non ha più pesi da dare. Appena $h > q$ i due estremi si incrociano, la
-somma è vuota, e la previsione vale $\mu$ per tutti gli orizzonti
-successivi: una retta orizzontale, che coincide (a meno di come si stima $\mu$)
-con il rispondere sempre il livello medio della serie. Un MA(2) interrogato su
-cinquanta passi ne dà due sensati e quarantotto piatti, e quei quarantotto
-dicono soltanto che il modello ha esaurito la memoria che gli si è data.
+somma è vuota, e la previsione vale $\mu$ per tutti gli orizzonti successivi:
+una retta orizzontale, che coincide (a meno di come si stima $\mu$) con il
+rispondere sempre il livello medio della serie. [Un MA(2) interrogato su
+cinquanta passi ne dà due sensati e quarantotto piatti]{.pt-matita}, e quei
+quarantotto dicono soltanto che il modello ha esaurito la memoria che gli si è
+data.
 
 Il rimedio è chiedergli non più di $q$ passi per volta, e vale quando i dati
 arrivano prima della previsione successiva: la seconda coppia si chiede quando
@@ -879,10 +879,10 @@ confronto con un altro. Chiedere all'MA(2) tutti e quaranta i passi in un colpo
 solo dà $2{,}45$; rispondere sempre il livello medio, cioè non usare affatto il
 modello, dà $2{,}49$. La differenza è minima, e la riga fra parentesi dice da
 dove viene: sono i due passi utili su quaranta, che a parametri noti valgono
-$0{,}045$. Chi consegna quaranta passi di previsione da un MA(2) sta
-consegnando, per il novantacinque per cento, la linea di base. Chiederli due
-per volta, rimettendo sotto i valori veri man mano che arrivano, cambia
-registro: $1{,}49$, due quinti in meno.
+$0{,}045$. [Chi consegna quaranta passi di previsione da un MA(2) sta
+consegnando, per il novantacinque per cento, la linea di base]{.pt-matita}.
+Chiederli due per volta, rimettendo sotto i valori veri man mano che arrivano,
+cambia registro: $1{,}49$, due quinti in meno.
 
 Il terzo gruppo dice se queste differenze sono vere o fortuna. Per ogni serie
 si sottrae l'errore della linea piatta da quello del modello (è lo scarto
@@ -941,9 +941,9 @@ lasciata sfuggire e va cambiato. Se non si vede niente, si è imparato meno di
 quanto sembri: con questi dati nessuna regolarità è saltata fuori, il che non
 esclude che ce ne siano.
 
-Il modello sbagliato lo si riconosce dai suoi errori, non dalle sue previsioni.
-Le previsioni sembrano sempre plausibili; gli errori mostrano dove il modello
-ha sbagliato.
+[Il modello sbagliato lo si riconosce dai suoi errori, non dalle sue
+previsioni]{.pt-matita}. Le previsioni sembrano sempre plausibili; gli errori
+mostrano dove il modello ha sbagliato.
 
 `````
 
@@ -1084,10 +1084,10 @@ Tolto quel termine, il vantaggio del logaritmo, se c'è, torna della grandezza
 di una differenza fra modelli: il confronto grezzo stava misurando l'unità di
 misura.
 
-**3. Verificare i residui.** Se il modello ha catturato la struttura, i residui
-$\hat\varepsilon_t = x_t - \hat x_t$ devono essere rumore bianco: media
-nulla, varianza costante, nessuna autocorrelazione. Due strumenti, uno
-qualitativo e uno quantitativo.
+**3. Verificare i residui.** [Se il modello ha catturato la struttura, i
+residui $\hat\varepsilon_t = x_t - \hat x_t$ devono essere rumore
+bianco]{.pt-matita}: media nulla, varianza costante, nessuna autocorrelazione.
+Due strumenti, uno qualitativo e uno quantitativo.
 
 Il Q-Q plot confronta i quantili empirici dei residui con quelli di una
 normale: se stanno su una retta, la distribuzione è normale come si assume. È
@@ -1314,13 +1314,14 @@ con seicento osservazioni e cinque volte su venti con duemila. Non bastano,
 perché anche con duemila osservazioni l'AIC manca il modello vero tre volte su
 quattro.
 
-L'AIC serve a scegliere il modello che prevede meglio, non a ritrovare quello
-che ha generato i dati, e quando due modelli spiegano i dati quasi ugualmente
-bene i due obiettivi non coincidono. A puntare sull'identificazione è semmai il
-BIC, un parente stretto che penalizza i parametri tanto più severamente quante
-più osservazioni ci sono. La lezione che invece tiene su tutti i semi e a tutte
-e due le numerosità è un'altra: il Ljung-Box sul modello scelto non rifiuta
-mai, e il $p$-value più basso nei quaranta esperimenti è $0{,}13$.
+[L'AIC serve a scegliere il modello che prevede meglio, non a ritrovare quello
+che ha generato i dati]{.pt-matita}, e quando due modelli spiegano i dati quasi
+ugualmente bene i due obiettivi non coincidono. A puntare sull'identificazione
+è semmai il BIC, un parente stretto che penalizza i parametri tanto più
+severamente quante più osservazioni ci sono. La lezione che invece tiene su
+tutti i semi e a tutte e due le numerosità è un'altra: il Ljung-Box sul modello
+scelto non rifiuta mai, e il $p$-value più basso nei quaranta esperimenti è
+$0{,}13$.
 
 Sul modello vuoto, infine, il $p$-value crolla a zero. Un modello «vuoto»,
 l'ARMA($0,0$), non guarda nessun valore passato e nessun urto passato: dice
@@ -1381,12 +1382,12 @@ parametri, che crescono col quadrato del numero di serie, li paghi lo stesso.
 Esiste un test per verificarlo, e prende il nome dall'economista Clive Granger,
 che lo propose nel 1969 {cite}`granger1969investigating`. Il nome è il suo
 difetto maggiore: si dice «causalità di Granger», e non dice affatto che una
-serie fa succedere l'altra. Dice solo che il suo passato aiuta a indovinarla.
-Se il gelato e i condizionatori salgono insieme d'estate, ciascuno dei due
-«prevede» l'altro benissimo, ma a farli salire è il caldo, che non è né l'uno
-né l'altro. È un'affermazione sui dati, non sul mondo, e chi la porta fuori da
-qui come se fosse una prova di causa fa un errore che è costato mezzo secolo di
-equivoci.
+serie fa succedere l'altra. [Dice solo che il suo passato aiuta a
+indovinarla]{.pt-matita}. Se il gelato e i condizionatori salgono insieme
+d'estate, ciascuno dei due «prevede» l'altro benissimo, ma a farli salire è il
+caldo, che non è né l'uno né l'altro. È un'affermazione sui dati, non sul
+mondo, e chi la porta fuori da qui come se fosse una prova di causa fa un
+errore che è costato mezzo secolo di equivoci.
 
 `````
 
@@ -1452,7 +1453,7 @@ d'impulso). Il test di Granger è un test di esclusione su un blocco di
 coefficienti: risponde a «i ritardi incrociati servono?», non a «il VAR è
 lecito?».
 
-Il nome induce in errore: la causalità di Granger non è causalità. È
+Il nome induce in errore: [la causalità di Granger non è causalità]{.pt-matita}. È
 **precedenza predittiva**, e soltanto quella. Due serie guidate da una terza
 causa comune non osservata si «Granger-causano» a vicenda; e una causa vera che
 agisce più in fretta del passo di campionamento non viene rilevata affatto. Il
@@ -1479,10 +1480,10 @@ passato in una volta sola.
 Per indovinare le vendite di domani potresti fare la media di tutti i giorni
 passati. Il mese scorso conta davvero quanto ieri? No. Il lisciamento
 esponenziale fa una media *pesata*, in cui ieri pesa molto, l'altro ieri un po’
-meno, la settimana scorsa ancora meno, e così via a scendere. A ogni passo
-indietro il peso si riduce di una stessa frazione, come un ricordo che sbiadisce
-sempre allo stesso ritmo: nitido ieri, sfocato la settimana scorsa, quasi niente
-un anno fa.
+meno, la settimana scorsa ancora meno, e così via a scendere. [A ogni passo
+indietro il peso si riduce di una stessa frazione, come un ricordo che
+sbiadisce sempre allo stesso ritmo]{.pt-matita}: nitido ieri, sfocato la
+settimana scorsa, quasi niente un anno fa.
 
 Non occorre tenere il registro di tutti i giorni passati: basta un numero, la
 stima di ieri, che ogni sera si sposta un poco verso quanto è appena successo.
@@ -1570,7 +1571,7 @@ $\hat{x}_{t+h} = \ell_t + (\kappa + \kappa^2 + \dots + \kappa^h)\,b_t$, la
 pendenza si spegne, e la previsione converge a $\ell_t + b_t\,\kappa/(1-\kappa)$
 {cite}`gardner1985forecasting`.
 
-Il lisciamento esponenziale semplice, infine, è un ARIMA travestito.
+[Il lisciamento esponenziale semplice, infine, è un ARIMA travestito]{.pt-matita}.
 Dall'aggiornamento scritto come $\ell_t = \ell_{t-1} + \alpha e_t$, con
 $e_t = x_t - \ell_{t-1}$ l'errore a un passo, si ricava
 $x_t - x_{t-1} = e_t - (1-\alpha)\,e_{t-1}$: una media mobile di ordine uno
@@ -1656,13 +1657,14 @@ gestionale non ha movimenti da registrare, quindi la previsione è semplicemente
 «oggi come ieri»; e se i due margini restano gli stessi giorno dopo giorno, il
 guadagno smette di cambiare e si assesta su un valore fisso. La regola diventa:
 la stima nuova è un pezzetto del conteggio di oggi più tutto il resto della
-stima di ieri. Che è, parola per parola, il lisciamento esponenziale, e la sua
+stima di ieri. Che è, parola per parola, il lisciamento esponenziale, e [la sua
 manopola la decide il confronto fra quanto si muove la cosa che si vuole
-conoscere e quanto sbaglia lo strumento che la guarda. Serve però che qualche
-rottura non registrata continui a capitare. Se non ne capitasse nessuna, il
-margine non si riallargherebbe mai, ogni conteggio peserebbe meno di quello
-prima (la metà, un terzo, un quarto), e la scheda finirebbe per segnare la
-media di tutti i conteggi fatti: un'altra cosa dal lisciamento esponenziale.
+conoscere e quanto sbaglia lo strumento che la guarda]{.pt-matita}. Serve però
+che qualche rottura non registrata continui a capitare. Se non ne capitasse
+nessuna, il margine non si riallargherebbe mai, ogni conteggio peserebbe meno
+di quello prima (la metà, un terzo, un quarto), e la scheda finirebbe per
+segnare la media di tutti i conteggi fatti: un'altra cosa dal lisciamento
+esponenziale.
 
 Nel dosaggio conta il rapporto fra i due margini. Raddoppiali tutti e due e
 sulla scheda finisce lo stesso numero di prima: cambia solo la forchetta che le
@@ -1764,10 +1766,10 @@ E la ricorsione a regime, sostituendo, è $\hat{\ell}_t = K_\infty x_t +
 $\alpha = K_\infty$. La corrispondenza si inverte in una riga, $r =
 K_\infty^2/(1-K_\infty)$, ed è una biiezione fra $(0,\infty)$ e $(0,1)$: a ogni
 fattore di lisciamento ammissibile corrisponde uno e un solo rapporto
-segnale-rumore, e viceversa. Sceglierlo equivale quindi a dichiarare un'ipotesi
-sul fenomeno invece che a tentare un numero, e quindi i modelli in forma
-spazio-stato danno, oltre alle stesse previsioni puntuali, anche gli intervalli
-e un criterio d'informazione per scegliere fra modelli
+segnale-rumore, e viceversa. [Sceglierlo equivale quindi a dichiarare
+un'ipotesi sul fenomeno invece che a tentare un numero]{.pt-matita}, e quindi i
+modelli in forma spazio-stato danno, oltre alle stesse previsioni puntuali,
+anche gli intervalli e un criterio d'informazione per scegliere fra modelli
 {cite}`hyndman2021forecasting`.
 
 Con $\sigma_\ell^2 = 0$ la convergenza si perde: il guadagno scende come
@@ -1951,8 +1953,8 @@ valore vero (l'incertezza dichiarata, filo rosso dell'apertura): sono oggetti
 che un analista legge, discute e difende davanti a chi deve decidere. I
 parametri di una rete neurale sono milioni, e presi uno per uno non hanno un
 significato che si possa difendere. La regola pratica che ne discende
-attraversa tutto il forecasting serio: un modello classico è la linea di base
-onesta. Prima si batte quella, poi si passa al deep learning.
+attraversa tutto il forecasting serio: [un modello classico è la linea di base
+onesta]{.pt-matita}. Prima si batte quella, poi si passa al deep learning.
 
 ## In pratica: stimare un AR(1) ai minimi quadrati
 
@@ -2040,9 +2042,9 @@ for n_oss in (500, 50):
  50 osservazioni: distorsione -0.0580, formula -0.0560, errore standard 0.124
 ```
 
-In media la stima cade sotto il valore vero, e ci cade tanto più quanto la
-serie è corta: di sei millesimi con cinquecento osservazioni, di sei centesimi
-con cinquanta. Accanto c'è la formula classica che lo prevede,
+[In media la stima cade sotto il valore vero, e ci cade tanto più quanto la
+serie è corta]{.pt-matita}: di sei millesimi con cinquecento osservazioni, di
+sei centesimi con cinquanta. Accanto c'è la formula classica che lo prevede,
 $-(1+3\phi)/n$, e l'errore standard, cioè di quanto la stima si sparpaglia
 attorno alla propria media.
 

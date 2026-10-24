@@ -9,12 +9,12 @@ Young aveva visto: l'agente che prova a fare tutto in un colpo, esaurisce la
 finestra a metà, e lascia alla sessione dopo un prodotto iniziato su fondamenta
 che nessuno ha verificato.
 
-Nell'harness di Young il compito della prima sessione non è scrivere il
-prodotto {cite}`young2025harnesses`. È una sessione dello stesso agente, con le
-stesse istruzioni di sistema (quelle fisse che il modello riceve in testa a
-ogni sessione), gli stessi strumenti e lo stesso harness di tutte le altre;
-cambia soltanto il primo messaggio, che le affida un altro compito: preparare
-il terreno.
+Nell'harness di Young [il compito della prima sessione non è scrivere il
+prodotto]{.pt-matita} {cite}`young2025harnesses`. È una sessione dello stesso
+agente, con le stesse istruzioni di sistema (quelle fisse che il modello riceve
+in testa a ogni sessione), gli stessi strumenti e lo stesso harness di tutte le
+altre; cambia soltanto il primo messaggio, che le affida un altro compito:
+preparare il terreno.
 
 Ne escono quattro oggetti. Il primo è uno script, `init.sh`, che avvia
 l'applicazione in prova, sulla macchina di lavoro. Il secondo è un file di
@@ -44,8 +44,8 @@ decisione non scritta che ogni sessione indovina di nuovo, la stessa del
 <il-repository-come-memoria>`, applicata alle fondamenta.
 
 Separare le due fasi ha un costo, e conviene guardarlo in faccia: la prima
-sessione non produce niente che un utente possa vedere. Il costo si ripaga,
-però, se il lavoro dura abbastanza.
+sessione non produce niente che un utente possa vedere. [Il costo si ripaga,
+però, se il lavoro dura abbastanza]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -161,12 +161,12 @@ potrebbe essere questa.
 
 Ciascuna delle scelte di quel formato ha la sua ragione.
 
-Anzitutto, le voci nascono tutte false. L'elenco è così la definizione di
-«finito» per l'intero progetto, scritta prima di cominciare: il lavoro è
-concluso quando tutte le voci passano, e una sessione che si guarda intorno e
-vede molto codice scritto ha davanti il conto delle voci ancora false, cioè
-molte meno ragioni per concludere che il progetto sia fatto. È la difesa
-diretta contro la vittoria dichiarata.
+Anzitutto, le voci nascono tutte false. [L'elenco è così la definizione di
+«finito» per l'intero progetto, scritta prima di cominciare]{.pt-matita}: il
+lavoro è concluso quando tutte le voci passano, e una sessione che si guarda
+intorno e vede molto codice scritto ha davanti il conto delle voci ancora
+false, cioè molte meno ragioni per concludere che il progetto sia fatto. È la
+difesa diretta contro la vittoria dichiarata.
 
 In secondo luogo, le sessioni successive possono cambiare un campo solo,
 `passes`. Le istruzioni di Young lo dicono senza mezzi termini: togliere o
@@ -374,8 +374,8 @@ e non un controllo di cortesia: l'elenco di partenza va letto dalla storia di
 git, dove la sessione non può riscriverlo, e il controllo lo lancia il ciclo a
 fine sessione, non l'agente quando gli pare. E il controllo
 non sa se il carrello funziona davvero: a deciderlo, cioè a scrivere il valore
-di `passes`, è il collaudo da utente. Il controllo sa soltanto che nessuno ha
-spostato il metro mentre misurava.
+di `passes`, è il collaudo da utente. [Il controllo sa soltanto che nessuno ha
+spostato il metro mentre misurava]{.pt-matita}.
 
 `````{tab} Elementare
 

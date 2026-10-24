@@ -1,7 +1,8 @@
 """Message passing: come un nodo di un grafo impara dal proprio vicinato.
 
-Il tempo è il contenuto: a ogni giro il campo recettivo si allarga di un salto.
-Dopo k giri il nodo ha visto tutto ciò che dista k archi.
+Il tempo è il contenuto: a ogni iterazione il campo recettivo si allarga di
+un salto.
+Dopo k iterazioni il nodo ha visto tutto ciò che dista k archi.
 
     python3 .claude/skills/anima-manim/driver.py render animazioni/message-passing.py
 """
@@ -84,6 +85,6 @@ class MessagePassing(ScenaPaithon):
         onda([(x, "v") for x in ANELLO_1], TERZIARIO)
         self.play(evidenzia(nodi["v"], scala=1.3), run_time=RAPIDO)
 
-        self.play(entra(self.didascalia("dopo k giri, v ha visto tutto ciò che dista k archi")),
+        self.play(entra(self.didascalia("dopo k iterazioni, v ha visto tutto ciò che dista k archi")),
                   run_time=RAPIDO)
         self.chiusura()

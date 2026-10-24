@@ -51,12 +51,13 @@ battuta detta prima da un'altra persona. Infine c'è l’ironia: se dico «che b
 giornata» mentre diluvia, intendo l'esatto contrario. Nessuna di queste cose è
 scritta nelle parole: sta tra le righe, dove le macchine si perdono.
 
-Non esiste una regola che, presa la frase, ne restituisca il significato:
-nemmeno tu ne hai una. Davanti al binocolo scegli la lettura che ti torna di
-più, e ti torna di più per via delle migliaia di frasi simili che hai già
-sentito in vita tua. Una macchina addestrata sui testi fa lo stesso:
-pesa le letture possibili guardando le parole che ci stanno intorno, e punta su
-quella che le sembra più probabile. È una scommessa, e ogni tanto la perde.
+[Non esiste una regola che, presa la frase, ne restituisca il
+significato]{.pt-matita}: nemmeno tu ne hai una. Davanti al binocolo scegli la
+lettura che ti torna di più, e ti torna di più per via delle migliaia di frasi
+simili che hai già sentito in vita tua. Una macchina addestrata sui testi fa lo
+stesso: pesa le letture possibili guardando le parole che ci stanno intorno, e
+punta su quella che le sembra più probabile. È una scommessa, e ogni tanto la
+perde.
 
 `````
 
@@ -77,12 +78,12 @@ La difficoltà del linguaggio si può decomporre in alcuni fenomeni ricorrenti:
 - Pragmatica. Ironia, sarcasmo e implicature richiedono conoscenza del
   mondo e dell'intenzione del parlante, non ricavabile dalla sola sintassi.
 
-La conseguenza pratica è che il testo non determina la propria
-interpretazione: la stessa stringa ne ammette più d'una, e quale valga dipende
-dal contesto e da ciò che chi legge sa del mondo. Nessuna regola scritta a mano
-copre tutti i casi, e perciò il NLP moderno stima dai dati una distribuzione
-sulle interpretazioni, $P(\text{interpretazione} \mid \text{testo},
-\text{contesto})$, da cui sceglie la più probabile.
+La conseguenza pratica è che [il testo non determina la propria
+interpretazione]{.pt-matita}: la stessa stringa ne ammette più d'una, e quale
+valga dipende dal contesto e da ciò che chi legge sa del mondo. Nessuna regola
+scritta a mano copre tutti i casi, e perciò il NLP moderno stima dai dati una
+distribuzione sulle interpretazioni, $P(\text{interpretazione} \mid
+\text{testo}, \text{contesto})$, da cui sceglie la più probabile.
 
 `````
 
@@ -111,12 +112,12 @@ Sono compiti diversi, e per decenni li hanno risolti programmi diversi: uno
 per lo spam, uno per la traduzione, uno per le entità. I grandi modelli di
 linguaggio li hanno quasi unificati, grazie a un principio semplice.
 
-Un modello di linguaggio è un programma che nessuno ha scritto istruzione
-per istruzione. Lo si addestra su un'enorme raccolta di documenti a prevedere
-come prosegua un testo; di solito un secondo addestramento, basato sugli esempi
-e sulle preferenze di valutatori umani, gli insegna poi a seguire le
-istruzioni. La sua funzione resta continuare un testo, perciò si riscrive ogni
-compito in modo che la risposta sia la continuazione. Ad esempio, non gli si
+Un modello di linguaggio è un programma che nessuno ha scritto istruzione per
+istruzione. Lo si addestra su un'enorme raccolta di documenti a prevedere come
+prosegua un testo; di solito un secondo addestramento, basato sugli esempi e
+sulle preferenze di valutatori umani, gli insegna poi a seguire le istruzioni.
+[La sua funzione resta continuare un testo, perciò si riscrive ogni compito in
+modo che la risposta sia la continuazione]{.pt-matita}. Ad esempio, non gli si
 chiede «questa email è spam?»: gli si dà da finire un testo che dice «Email:
 *vinci subito un premio*. Questa email è spam? Risposta:», e la parola con cui
 continua è il verdetto. Non gli si chiede di tradurre: gli si dà «Italiano: *il
@@ -126,11 +127,11 @@ gli stessi; cambia soltanto il testo che gli si mette davanti.
 ## Una parabola storica: dalle regole ai Transformer
 
 Come ci si sia arrivati è una storia in quattro tappe, e la
-{numref}`fig-nlp-storia` le mette in fila. A cambiare, di tappa in tappa, è
+{numref}`fig-nlp-storia` le mette in fila. [A cambiare, di tappa in tappa, è
 sempre la stessa cosa: chi mette la conoscenza della lingua dentro il
-programma. Prima un linguista che scrive regole a mano, alla fine il testo
-stesso. L'ultima tappa porta il nome di un'architettura, il *Transformer*, alla
-base di quasi tutte queste macchine.
+programma]{.pt-matita}. Prima un linguista che scrive regole a mano, alla fine
+il testo stesso. L'ultima tappa porta il nome di un'architettura, il
+*Transformer*, alla base di quasi tutte queste macchine.
 
 ```{figure} ../figures/nlp-parabola-storica.svg
 :name: fig-nlp-storia

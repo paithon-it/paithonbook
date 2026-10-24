@@ -21,10 +21,10 @@ questione aperta.
 ## Che cosa c'è in una conversazione
 
 La tentazione è pensare che dialogare sia facile, una volta che si sa generare
-una frase: il modello risponde all'ultima battuta, e via così. Ma una
+una frase: il modello risponde all'ultima battuta, e via così. Ma [una
 conversazione è un'attività *congiunta* e non una collana di frasi
-indipendenti, con regole sue che rispettiamo senza accorgercene. Per vederle
-basta origliare una telefonata qualsiasi:
+indipendenti]{.pt-matita}, con regole sue che rispettiamo senza accorgercene.
+Per vederle basta origliare una telefonata qualsiasi:
 
 > - Ristorante Da Mario, buonasera.
 > - Buonasera. Vorrei prenotare un tavolo per domani.
@@ -151,9 +151,9 @@ memoria della conversazione, e la riga in fondo dice che cosa fa ciascuna
 quando la battuta esce dal previsto.
 ```
 
-Il confronto di {numref}`fig-tre-famiglie-dialogo` mostra che cosa separa i tre
+Il confronto di {numref}`fig-tre-famiglie-dialogo` mostra [che cosa separa i tre
 approcci, cioè come e dove viene conservata la memoria di quanto è stato
-detto.
+detto]{.pt-matita}.
 
 ### Lo specchio di regole: dentro ELIZA
 
@@ -221,10 +221,10 @@ for battuta in ["Mi sento in colpa verso mia sorella",
 
 Trenta righe scarse, eppure l'effetto c'è. Il cuore è la funzione `rifletti`,
 che ribalta la prospettiva del frammento catturato («mia sorella» diventa «tua
-sorella»). È proprio questo riuso delle *tue* parole, restituite al posto
-grammaticalmente giusto, a creare l'illusione di essere ascoltati. L'ordine
-delle regole conta (la prima che aggancia vince), e il ripiego finale copre
-tutto il resto del mondo, gatto sul muro compreso. L'ELIZA vera aveva più
+sorella»). [È proprio questo riuso delle *tue* parole, restituite al posto
+grammaticalmente giusto, a creare l'illusione di essere ascoltati]{.pt-matita}.
+L'ordine delle regole conta (la prima che aggancia vince), e il ripiego finale
+copre tutto il resto del mondo, gatto sul muro compreso. L'ELIZA vera aveva più
 copioni, più varianti di risposta e un rudimento di memoria, ma il principio è
 tutto qui.
 
@@ -251,8 +251,8 @@ Al centro c'è un'idea che l'articolo riprende da Marvin Minsky, uno dei padri
 dell'intelligenza artificiale, che a metà degli anni Settanta l'aveva proposta
 per rappresentare la conoscenza: il **frame**, cioè un modulo con delle caselle
 da riempire. La novità di GUS è far governare il dialogo da quelle caselle. Qui
-lo stato del dialogo smette di essere una parola: il modulo mezzo pieno *è* lo
-stato, scritto in una struttura che si può ispezionare. Da lì viene la
+lo stato del dialogo smette di essere una parola: [il modulo mezzo pieno *è* lo
+stato, scritto in una struttura che si può ispezionare]{.pt-matita}. Da lì viene la
 longevità dell'idea, perché quella forma si ritrova, decenni dopo,
 nell'ossatura degli assistenti orientati a un compito.
 
@@ -350,8 +350,8 @@ rilegge tutta la conversazione, dalla prima battuta all'ultima, perché la
 risposta giusta dipende da quello che è stato detto venti righe fa. Funziona,
 ed è già sorprendente.
 
-Ma se insegni a un modello a dare *la risposta più
-probabile*, impara le risposte che vanno bene ovunque («Non lo so», «Va bene»,
+Ma se insegni a un modello a dare *la risposta più probabile*, [impara le
+risposte che vanno bene ovunque]{.pt-matita} («Non lo so», «Va bene»,
 «Dipende»), le più probabili proprio perché compatibili con tutto:
 l'interlocutore più evasivo del mondo. Un rimedio c'è: invece della risposta
 più probabile in assoluto si cerca quella che sta bene con questa battuta e
@@ -376,8 +376,8 @@ dialogo e $y$ la risposta, con la stessa fattorizzazione autoregressiva della
 traduzione {cite}`sutskever2014sequence`. Uno dei primi chatbot neurali
 end-to-end è quello di Vinyals e Le {cite}`vinyals2015neural`, addestrato su
 log di assistenza tecnica e sottotitoli di film. Il difetto emerse subito:
-massima verosimiglianza e beam search privilegiano risposte ad alta probabilità
-*marginale*, generiche per costruzione («I don't know»). Li e colleghi
+[massima verosimiglianza e beam search privilegiano risposte ad alta probabilità
+*marginale*, generiche per costruzione]{.pt-matita} («I don't know»). Li e colleghi
 {cite}`li2016diversity` sostituiscono l'obiettivo di decodifica con una mutua
 informazione pesata, $\hat{y} = \arg\max_y \big[\log P(y \mid x) - \lambda \log
 P(y)\big]$, dove il secondo termine, stimato da un modello di linguaggio sulle
@@ -429,19 +429,19 @@ una battuta in più rispetto a una casella sbagliata. Quel peso non si indovina
 a tavolino: si chiede a chi ha prenotato quanto è rimasto contento, e si
 guarda che cosa lo aveva fatto arrabbiare.
 
-Con i chatbot aperti resta il tema. Contare le parole in comune con una
-risposta modello dice pochissimo: due risposte ottime alla stessa domanda
-possono non averne nemmeno una. E non basta guardare se l'italiano fila, dato
-che un tema può essere scritto benissimo e non dire niente. Allora si fanno
-conversare con persone in carne e ossa, e si chiede ai giudici di votare: le
-risposte filavano? stavano in piedi da un capo all'altro? veniva voglia di
-continuare? Spesso, invece del voto, si mettono due conversazioni a fianco e
-si chiede quale delle due è migliore, che è una domanda a cui si risponde
-meglio. Costoso, lento, un po’ soggettivo: ma a oggi non c'è metro
+Con i chatbot aperti resta il tema. [Contare le parole in comune con una
+risposta modello dice pochissimo]{.pt-matita}: due risposte ottime alla stessa
+domanda possono non averne nemmeno una. E non basta guardare se l'italiano
+fila, dato che un tema può essere scritto benissimo e non dire niente. Allora
+si fanno conversare con persone in carne e ossa, e si chiede ai giudici di
+votare: le risposte filavano? stavano in piedi da un capo all'altro? veniva
+voglia di continuare? Spesso, invece del voto, si mettono due conversazioni a
+fianco e si chiede quale delle due è migliore, che è una domanda a cui si
+risponde meglio. Costoso, lento, un po’ soggettivo: ma a oggi non c'è metro
 migliore del giudizio umano su una cosa fatta per gli umani. Da qualche anno i
 temi si fanno correggere anche a un'altra macchina, che costa pochissimo e non
-si stanca; ha però un difetto noto: tende a dare il voto più alto al
-tema più lungo.
+si stanca; ha però un difetto noto: tende a dare il voto più alto al tema più
+lungo.
 
 `````
 
@@ -459,9 +459,10 @@ standardizzazione a media nulla e varianza unitaria che rende confrontabili
 grandezze in unità diverse, e i pesi $\alpha, w_i$ si stimano con una
 regressione lineare sui giudizi di soddisfazione degli utenti.
 
-Per i chatbot aperti le metriche ereditate dalla traduzione falliscono: la
-sovrapposizione con una risposta di riferimento (come BLEU
-{cite}`papineni2002bleu`, definito nella {doc}`sezione sulla traduzione
+[Per i chatbot aperti le metriche ereditate dalla traduzione
+falliscono]{.pt-matita}: la sovrapposizione con una risposta di riferimento
+(come BLEU {cite}`papineni2002bleu`, definito nella {doc}`sezione sulla
+traduzione
 <seq2seq-traduzione>`) correla pochissimo con i giudizi umani, proprio per la
 molteplicità delle risposte valide (Liu e colleghi {cite}`liu2016how`, dal
 titolo eloquente: *How NOT to evaluate your dialogue system*). Il motivo si
@@ -520,8 +521,8 @@ un'altra cosa: stabilire se un ragazzo va bocciato, se una persona è
 pericolosa, se questa cura conviene per questo paziente. Lì non c'è nessun
 criterio scritto da nessuna parte: ci sono un giudizio, un'esperienza di vita e
 una responsabilità di cui qualcuno risponde, e per Weizenbaum una scelta così
-non si riduce a un calcolo. La domanda giusta, diceva, non è cosa le macchine
-*possono* fare, ma cosa *dobbiamo* affidare loro.
+non si riduce a un calcolo. La domanda giusta, diceva, [non è cosa le macchine
+*possono* fare, ma cosa *dobbiamo* affidare loro]{.pt-matita}.
 
 Cinquant'anni dopo, la questione si è fatta concreta su tre fronti, e merita
 un tono sobrio: né allarme, né alzata di spalle.

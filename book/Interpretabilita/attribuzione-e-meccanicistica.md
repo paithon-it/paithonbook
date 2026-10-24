@@ -358,8 +358,8 @@ di natura. È una scelta, e la scelta cambia le risposte. Di ciò che era già
 nero in partenza non si può misurare nessun contributo, perché fra partenza e
 arrivo non è cambiato. Se a decidere la risposta fosse una zona buia della foto
 (un'ombra, il cielo notturno, il nero di una radiografia), il metodo le darebbe
-zero e la somma tornerebbe lo stesso. Che la somma torni non prova che si sia
-partiti dal punto giusto.
+zero e la somma tornerebbe lo stesso. [Che la somma torni non prova che si sia
+partiti dal punto giusto]{.pt-matita}.
 
 `````
 
@@ -404,10 +404,10 @@ significato preciso: ciascuna è la *quota* di quel salto di punteggio imputabil
 a quella componente.
 
 C'è però un limite, e sta dove il metodo si presta a essere letto per più di
-quel che promette. La completezza vale per qualunque baseline. Gli assiomi
-vincolano come si ripartisce il salto $f(\mathbf{x}) - f(\mathbf{x}')$, non da
-dove il salto parte, e la scelta di $\mathbf{x}'$ resta il grado di libertà
-principale del metodo.
+quel che promette. [La completezza vale per qualunque baseline]{.pt-matita}.
+Gli assiomi vincolano come si ripartisce il salto $f(\mathbf{x}) -
+f(\mathbf{x}')$, non da dove il salto parte, e la scelta di $\mathbf{x}'$ resta
+il grado di libertà principale del metodo.
 
 Due conseguenze concrete. La prima è che il fattore
 $(x_i - x'_i)$ davanti all'integrale azzera per costruzione l'attribuzione di
@@ -989,8 +989,8 @@ concetto di TCAV {cite}`kim2018interpretability`.
 
 `````
 
-Niente di questo rende inutili le mappe o i nomi dei filtri, ma ne cambia
-l'uso. Servono a esplorare (dove guardare, quale ipotesi farsi, quale
+[Niente di questo rende inutili le mappe o i nomi dei filtri, ma ne cambia
+l'uso]{.pt-matita}. Servono a esplorare (dove guardare, quale ipotesi farsi, quale
 scorciatoia sospettare in una raccolta di dati) e non a certificare che un
 modello funzioni. Lo stesso dubbio si pone per un altro oggetto, che non
 bisogna nemmeno costruire perché nel modello c'è già.
@@ -1016,7 +1016,8 @@ nessuno di essi può essere *la* ragione del verdetto. Il loro articolo si
 intitolava appunto *«Attention is not Explanation»*. Wiegreffe e Pinter
 {cite}`wiegreffe2019attention` hanno risposto con *«Attention is not not
 Explanation»*: dipende da che cosa si pretende, e con richieste più modeste
-quei pesi qualcosa dicono. In pratica sono un indizio e non una prova.
+quei pesi qualcosa dicono. [In pratica sono un indizio e non una
+prova]{.pt-matita}.
 
 Il titolo, però, è più largo dell'esperimento che lo sostiene. Jain e Wallace
 studiano modelli con un solo strato di attenzione, per lo più sopra una rete
@@ -1225,14 +1226,14 @@ media su un esempio, quanto la ricostruzione somiglia all'originale, e quanto
 peggiora la rete se al posto dei suoi numeri le si passa la ricostruzione.
 
 Il campo è giovane. La tecnica ha retto la prova della scala e si applica ormai
-a modelli linguistici veri. Non è dimostrato il punto d'arrivo: che ogni
-casella contenga una cosa sola resta un giudizio dato guardandole a campione, e
-si sono trovati casi in cui una casella apparentemente pulita non si accende
-dove dovrebbe, perché un'altra, più specifica, le ha sottratto una parte dei
-casi. Aggiungere caselle o accenderne meno non basta a evitarlo. I tentativi
-più recenti seguono passo passo i calcoli di un modello vero su una singola
-domanda, e chi li ha fatti avverte che ne vede una piccola parte. Nessuno ha
-ancora letto per intero una rete grande.
+a modelli linguistici veri. Non è dimostrato il punto d'arrivo: [che ogni
+casella contenga una cosa sola resta un giudizio dato guardandole a
+campione]{.pt-matita}, e si sono trovati casi in cui una casella apparentemente
+pulita non si accende dove dovrebbe, perché un'altra, più specifica, le ha
+sottratto una parte dei casi. Aggiungere caselle o accenderne meno non basta a
+evitarlo. I tentativi più recenti seguono passo passo i calcoli di un modello
+vero su una singola domanda, e chi li ha fatti avverte che ne vede una piccola
+parte. Nessuno ha ancora letto per intero una rete grande.
 
 `````
 
@@ -1312,15 +1313,15 @@ tecnica ha superato la prova della scala: Templeton e colleghi
 di milioni di feature sulle attivazioni interne di un modello linguistico di
 produzione, non di un giocattolo di laboratorio.
 
-Non ha superato la prova dell’affidabilità: Chanin e colleghi,
-nel 2024, hanno documentato modi
-sistematici in cui un latente apparentemente monosemantico non si accende
-proprio dove dovrebbe, perché un latente più specifico ne ha assorbito i casi
-(lo chiamano *feature absorption*), e che il fenomeno non si risolve cambiando
-la dimensione del dizionario o il grado di sparsità
+Non ha superato la prova dell’affidabilità: Chanin e colleghi, nel 2024, hanno
+documentato modi sistematici in cui un latente apparentemente monosemantico non
+si accende proprio dove dovrebbe, perché un latente più specifico ne ha
+assorbito i casi (lo chiamano *feature absorption*), e che il fenomeno non si
+risolve cambiando la dimensione del dizionario o il grado di sparsità
 {cite}`chanin2024absorption`. La sovrapposizione resta una spiegazione teorica
-solida del *perché* i neuroni siano illeggibili; che gli sparse autoencoder
-siano *la* cura è ancora un programma di ricerca, non un risultato acquisito.
+solida del *perché* i neuroni siano illeggibili; [che gli sparse autoencoder
+siano *la* cura è ancora un programma di ricerca, non un risultato
+acquisito]{.pt-matita}.
 
 Il passo successivo va dalle feature ai circuiti: Lindsey e colleghi, nel 2025,
 sostituiscono gli MLP di un modello linguistico di produzione con un

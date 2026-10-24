@@ -74,8 +74,8 @@ del cliente?
 
 Le due letture descrivono lo stesso bancone. La prima guarda i pigmenti e chiede
 se i conti tornano voce per voce; la seconda guarda i barattoli e chiede se,
-dosandoli, ci si arriva. La seconda porta più lontano, perché rende
-visibile un caso che la prima nasconde.
+dosandoli, ci si arriva. [La seconda porta più lontano, perché rende
+visibile un caso che la prima nasconde]{.pt-matita}.
 
 Se il terzo barattolo fosse una miscela dei primi due (un blu e un giallo, per
 esempio, e un verde fatto mescolando quei due), non aggiungerebbe nessun colore
@@ -132,10 +132,10 @@ $\mathbf{A}$, e le incognite sono i coefficienti della combinazione.
 
 Le due letture sono algebricamente equivalenti, ma non guidano l'intuizione
 allo stesso modo. La prima si visualizza bene per $n\le 3$ e smette di aiutare
-subito dopo; la seconda resta utile in qualunque dimensione e basta a rispondere
-alla domanda sull'esistenza: il sistema ammette soluzione se e solo se
-$\mathbf{b}$ appartiene all'insieme delle combinazioni lineari delle colonne.
-Quell'insieme è l’immagine di $\mathbf{A}$.
+subito dopo; la seconda resta utile in qualunque dimensione e basta a
+rispondere alla domanda sull'esistenza: [il sistema ammette soluzione se e solo
+se $\mathbf{b}$ appartiene all'insieme delle combinazioni lineari delle
+colonne]{.pt-matita}. Quell'insieme è l’immagine di $\mathbf{A}$.
 
 `````
 
@@ -158,8 +158,8 @@ vincola più niente.
 
 *Sommare a un'equazione un multiplo di un'altra.* È l'operazione che fa
 tutto il lavoro. Chi soddisfa la prima promessa e la seconda soddisfa anche
-la loro somma, e poiché l'operazione si può disfare (basta
-risottrarre), le soluzioni restano le stesse.
+la loro somma, e [poiché l'operazione si può disfare (basta
+risottrarre), le soluzioni restano le stesse]{.pt-matita}.
 
 Il gioco consiste nello scegliere i multipli in modo da far sparire le
 incognite una alla volta. Nel problema del grano, ad esempio, conviene partire
@@ -194,8 +194,8 @@ quella in cui l'incognita da eliminare ha il coefficiente più grosso.
 
 Le tre **operazioni elementari di riga** (scambio $R_i\leftrightarrow R_j$,
 scalatura $R_i \leftarrow \alpha R_i$ con $\alpha\neq 0$, combinazione $R_i
-\leftarrow R_i + \alpha R_j$) sono invertibili, quindi preservano l'insieme
-delle soluzioni. Si applicano alla **matrice aumentata**
+\leftarrow R_i + \alpha R_j$) [sono invertibili, quindi preservano l'insieme
+delle soluzioni]{.pt-matita}. Si applicano alla **matrice aumentata**
 $[\,\mathbf{A}\mid\mathbf{b}\,]\in\mathbb{R}^{m\times(n+1)}$ e la portano in
 **forma a scala** per righe, nella quale in ogni riga non nulla il primo
 coefficiente diverso da zero (il **pivot**) sta a destra del pivot della riga
@@ -249,9 +249,9 @@ print(np.allclose(A @ x, b))      # rimessa dentro, la soluzione torna -> True
 
 ## Una soluzione, nessuna, infinite
 
-Un sistema lineare può comportarsi in tre modi soltanto: o c'è esattamente una
-soluzione, o non ce n'è nessuna, o ce ne sono infinite. Non capita mai che ce
-ne siano solo due, perché $\mathbf{A}$ è lineare. Se
+[Un sistema lineare può comportarsi in tre modi soltanto: o c'è esattamente una
+soluzione, o non ce n'è nessuna, o ce ne sono infinite]{.pt-matita}. Non capita
+mai che ce ne siano solo due, perché $\mathbf{A}$ è lineare. Se
 $\mathbf{A}\mathbf{u}=\mathbf{b}$ e $\mathbf{A}\mathbf{v}=\mathbf{b}$, ogni
 punto $t\mathbf{u}+(1-t)\mathbf{v}$ della retta che li congiunge dà
 $t\mathbf{b}+(1-t)\mathbf{b}=\mathbf{b}$.
@@ -435,10 +435,11 @@ invisibile, sul muro se ne vedono due, e sono le due direzioni del piano del
 muro. Le direzioni di partenza si ripartiscono quindi fra quelle che si perdono
 e quelle che arrivano, e la somma torna sempre: due più uno fa tre.
 
-Se una direzione finisce nel nucleo, nessuna quantità di osservazioni la potrà
-mai recuperare, perché all'arrivo quell'informazione non c'è, per quanto meglio
-o più a lungo si misuri. Per questo certi parametri di un modello restano
-indeterminati, e la tabella dell'editore non si ricostruisce dai soli totali.
+[Se una direzione finisce nel nucleo, nessuna quantità di osservazioni la potrà
+mai recuperare]{.pt-matita}, perché all'arrivo quell'informazione non c'è, per
+quanto meglio o più a lungo si misuri. Per questo certi parametri di un modello
+restano indeterminati, e la tabella dell'editore non si ricostruisce dai soli
+totali.
 
 `````
 
@@ -498,14 +499,14 @@ danno una variabile libera ciascuna, e ogni colonna è dell'uno o dell'altro
 tipo.
 
 La conseguenza per i modelli prende il nome di **non identificabilità**. Se
-$\ker(\mathbf{A})\neq\{\mathbf{0}\}$, due insiemi di parametri che differiscono
-per un elemento del nucleo producono osservazioni identiche, e nessuna quantità
-di dati potrà distinguerli. La {doc}`sezione sulla matematica di un modello
-linguistico </Matematica/matematica-llm>` mostra questo stesso fenomeno sulle
-matrici di query e chiave, che sono determinate solo a meno di una
-trasformazione invertibile; e ogni volta che una libreria restituisce «la»
-soluzione di un problema indeterminato, quella scelta è un'assunzione
-aggiuntiva, non un risultato.
+$\ker(\mathbf{A})\neq\{\mathbf{0}\}$, [due insiemi di parametri che
+differiscono per un elemento del nucleo producono osservazioni identiche, e
+nessuna quantità di dati potrà distinguerli]{.pt-matita}. La {doc}`sezione
+sulla matematica di un modello linguistico </Matematica/matematica-llm>` mostra
+questo stesso fenomeno sulle matrici di query e chiave, che sono determinate
+solo a meno di una trasformazione invertibile; e ogni volta che una libreria
+restituisce «la» soluzione di un problema indeterminato, quella scelta è
+un'assunzione aggiuntiva, non un risultato.
 
 `````
 
@@ -534,12 +535,12 @@ Nel linguaggio delle ombre il rango è quante direzioni sopravvivono al
 passaggio. Se l'oggetto può muoversi in tre direzioni e sul muro se ne vedono
 due, il rango è due, e la direzione perduta è il nucleo.
 
-Quando una trasformazione ha rango basso, la tabella che la descrive è grande
-soltanto all'apparenza: si può riscrivere come il passaggio attraverso una
-strettoia con poche corsie. Prima si comprime in poche direzioni, poi si
-riespande. I numeri da regolare crollano di conseguenza: una tabella di
-duecento righe per trecento colonne ne contiene sessantamila, ma
-se la si ottiene facendo passare i dati per una strettoia a quattro corsie i
+[Quando una trasformazione ha rango basso, la tabella che la descrive è grande
+soltanto all'apparenza]{.pt-matita}: si può riscrivere come il passaggio
+attraverso una strettoia con poche corsie. Prima si comprime in poche
+direzioni, poi si riespande. I numeri da regolare crollano di conseguenza: una
+tabella di duecento righe per trecento colonne ne contiene sessantamila, ma se
+la si ottiene facendo passare i dati per una strettoia a quattro corsie i
 numeri diventano duemila, trenta volte di meno.
 
 È l'idea su cui si basa LoRA, uno dei modi di adattare un modello linguistico a
@@ -591,9 +592,10 @@ $$
 che è la disuguaglianza dietro ogni collo di bottiglia. Fattorizzando, ad
 esempio, $\mathbf{W}\in\mathbb{R}^{m\times n}$ come $\mathbf{B}\mathbf{A}$ con
 $\mathbf{B}\in\mathbb{R}^{m\times r}$ e $\mathbf{A}\in\mathbb{R}^{r\times n}$,
-si passa da $mn$ parametri a $r(m+n)$, e in cambio si rinuncia a tutte le
-matrici di rango maggiore di $r$. È l'aritmetica di LoRA {cite}`hu2022lora`,
-delle raccomandazioni per fattorizzazione e degli autoencoder lineari.
+[si passa da $mn$ parametri a $r(m+n)$, e in cambio si rinuncia a tutte le
+matrici di rango maggiore di $r$]{.pt-matita}. È l'aritmetica di LoRA
+{cite}`hu2022lora`, delle raccomandazioni per fattorizzazione e degli
+autoencoder lineari.
 
 Nell'aritmetica in virgola mobile il rango così definito è una quantità
 fragile: una perturbazione generica, anche minima, rende di rango pieno una
@@ -637,8 +639,8 @@ genere non ha quasi mai soluzione, perché i dati portano rumore e nessuna retta
 passa esattamente per mille punti sparsi. In una rete che ha più parametri che
 esempi accade il contrario: le soluzioni esatte sono infinite.
 
-Rinunciare sarebbe assurdo, e la domanda si cambia: se non si può azzerare
-l'errore, si cerca la scelta che lo rende più piccolo possibile. La
+Rinunciare sarebbe assurdo, e la domanda si cambia: [se non si può azzerare
+l'errore, si cerca la scelta che lo rende più piccolo possibile]{.pt-matita}. La
 {doc}`sezione su ortogonalità e proiezioni
 </Matematica/ortogonalita-proiezioni>` risponde a questa domanda con una
 costruzione geometrica: il punto dell'immagine di $\mathbf{A}$ più vicino a
@@ -669,10 +671,10 @@ normale con i dati reali) non dice niente e restituisce un vettore enorme.
 
 `lstsq` invece non si ferma mai: restituisce una soluzione anche quando ce ne
 sono infinite (sceglie quella di norma minima) e anche quando non ce n'è
-nessuna (sceglie quella che minimizza l'errore). È comodo, ma insidioso: una
+nessuna (sceglie quella che minimizza l'errore). È comodo, ma insidioso: [una
 risposta arriva comunque, e devi sapere a quale delle tre situazioni
-corrisponde. Due colonne uguali a meno di un'unità di macchina bastano a
-vederlo:
+corrisponde]{.pt-matita}. Due colonne uguali a meno di un'unità di macchina
+bastano a vederlo:
 
 ```python
 import numpy as np

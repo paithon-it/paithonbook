@@ -46,7 +46,7 @@ La distinzione mostrata in {numref}`fig-tre-contenitori` si chiama
 **mutabilità** e causa parecchi errori dei primi giorni. Una stringa non si può
 cambiare; si può solo fabbricarne una nuova a partire da quella vecchia,
 che resta intatta. Una lista invece si cambia sul posto. Ne segue che
-una funzione può modificare la lista che le passi, ma non la stringa.
+[una funzione può modificare la lista che le passi, ma non la stringa]{.pt-matita}.
 
 ```python
 eta = 34             # int   -> un numero intero
@@ -234,10 +234,10 @@ Il secondo vantaggio è che una tupla può fare da chiave di un dizionario,
 mentre una lista no. Il dizionario, infatti, calcola dove tenere ogni valore a
 partire dal contenuto della chiave (è una **tabella hash**). Se la chiave
 cambiasse dopo l'inserimento, il valore resterebbe nel posto calcolato dal
-contenuto vecchio, e nessuno lo cercherebbe più. Come chiave va quindi bene
-solo qualcosa che non cambia, e che non cambia neanche dentro. Una tupla di
-numeri va bene, una tupla che contiene una lista no. Una coppia di nomi, per
-esempio, è una chiave comoda:
+contenuto vecchio, e nessuno lo cercherebbe più. [Come chiave va quindi bene
+solo qualcosa che non cambia, e che non cambia neanche dentro]{.pt-matita}. Una
+tupla di numeri va bene, una tupla che contiene una lista no. Una coppia di
+nomi, per esempio, è una chiave comoda:
 
 ```python
 distanze = {("Milano", "Roma"): 573, ("Milano", "Napoli"): 770}
@@ -377,7 +377,7 @@ for v in numeri:      # v diventa a turno ogni elemento della lista
 
 i = 0
 while i < 3:           # ripete finché la condizione è vera
-    print("giro", i)   # -> giro 0, giro 1, giro 2
+    print("iterazione", i)   # -> iterazione 0, iterazione 1, iterazione 2
     i += 1             # scorciatoia di "i = i + 1": senza, ciclo infinito
 ```
 
@@ -390,9 +390,9 @@ eseguire il resto del blocco.
 ```python
 for i in range(5):
     if i == 3:
-        break         # esce qui: il giro con i = 3 finisce, il 4 non parte
+        break         # esce: l'iterazione con i = 3 finisce, la 4 non parte
     if i == 1:
-        continue      # salta il resto di questo giro, e passa al prossimo
+        continue      # salta il resto dell'iterazione, passa alla prossima
     print(i)          # -> 0, 2
 ```
 
@@ -421,11 +421,12 @@ gira.
 
 Due comodità rendono questi cicli più semplici di quanto ci si aspetti.
 
-La prima è che il `for` non conta, scorre. In molti altri linguaggi si scrive
-«da zero fino alla lunghezza, prendi l'elemento numero *i*»; qui si dice «per
-ogni elemento», e funziona su qualunque cosa si possa attraversare un pezzo per
-volta: una lista, una stringa (un carattere alla volta), un dizionario (una
-chiave alla volta). Gli indici, quando non servono, non si scrivono proprio.
+La prima è che [il `for` non conta, scorre]{.pt-matita}. In molti altri
+linguaggi si scrive «da zero fino alla lunghezza, prendi l'elemento numero
+*i*»; qui si dice «per ogni elemento», e funziona su qualunque cosa si possa
+attraversare un pezzo per volta: una lista, una stringa (un carattere alla
+volta), un dizionario (una chiave alla volta). Gli indici, quando non servono,
+non si scrivono proprio.
 
 La seconda è che nelle condizioni i valori "vuoti" contano come falsi. Una
 lista vuota, la stringa vuota, il dizionario o l'insieme vuoti, lo zero (anche
@@ -456,8 +457,8 @@ Il `for` di Python è un *for-each* costruito sul **protocollo di iterazione**.
 Funziona su qualunque oggetto *iterabile* perché sa chiedergli un iteratore
 (`iter`) e poi, a ripetizione, l'elemento successivo (`next`), fino
 all'eccezione `StopIteration` che segna la fine. Liste, tuple, stringhe,
-dizionari e generatori rispondono tutti a quel protocollo, e il ciclo non sa
-nulla di come sono fatti dentro.
+dizionari e generatori rispondono tutti a quel protocollo, e [il ciclo non sa
+nulla di come sono fatti dentro]{.pt-matita}.
 
 In particolare, `range(n)` lo implementa in modo pigro, producendo gli indici
 a richiesta senza materializzare la lista. `enumerate` dà `(indice, valore)`,
@@ -525,8 +526,8 @@ print(area_rettangolo(3, 4) + 8)    # -> 20  (il 12 è lì, e ci si somma 8)
 Per questo `return` e `print` non sono la stessa cosa, benché nell'interprete
 si somiglino. La funzione `print` scrive sullo schermo e non consegna niente a
 nessuno, mentre `return` consegna un valore al programma e non scrive niente.
-Una funzione che stampasse invece di restituire sarebbe inutilizzabile dentro
-un calcolo più grande.
+[Una funzione che stampasse invece di restituire sarebbe inutilizzabile dentro
+un calcolo più grande]{.pt-matita}.
 
 Gli argomenti si possono anche passare con il loro nome davanti, e allora
 l'ordine non conta più:
@@ -670,8 +671,8 @@ risultato invece di descrivere la procedura per ottenerlo.
 
 Un codice si dice «pythonico» quando usa le forme che il linguaggio offre per
 quel compito, invece di riprodurre a mano le procedure di altri linguaggi. La
-{numref}`fig-stile-pythonico` ne mostra un caso: la comprehension si
-legge come una frase che descrive il risultato, e chi la scorre non deve
+{numref}`fig-stile-pythonico` ne mostra un caso: [la comprehension si legge
+come una frase che descrive il risultato]{.pt-matita}, e chi la scorre non deve
 simulare il ciclo per capire che cosa produrrà.
 
 ```python
@@ -732,13 +733,13 @@ Traceback (most recent call last):
 KeyError: 'Carla'
 ```
 
-Un traceback si legge dal fondo. L'ultima riga dice *che cosa* è successo, in
-questo caso `KeyError: 'Carla'`, cioè «ho cercato la chiave `Carla` e non
-c'era». Le righe sopra dicono *dove*. Ogni coppia «`File`, `line`» è un
-passaggio della catena di chiamate che il programma stava eseguendo, dalla
-prima chiamata in cima fino alla riga che ha causato l'errore, in fondo.
-Nell'esempio i passaggi sono due: la riga 6 ha chiamato `voto_di`, e dentro
-`voto_di` è fallita la riga 4.
+[Un traceback si legge dal fondo]{.pt-matita}. L'ultima riga dice *che cosa* è
+successo, in questo caso `KeyError: 'Carla'`, cioè «ho cercato la chiave
+`Carla` e non c'era». Le righe sopra dicono *dove*. Ogni coppia «`File`,
+`line`» è un passaggio della catena di chiamate che il programma stava
+eseguendo, dalla prima chiamata in cima fino alla riga che ha causato l'errore,
+in fondo. Nell'esempio i passaggi sono due: la riga 6 ha chiamato `voto_di`, e
+dentro `voto_di` è fallita la riga 4.
 
 Le tilde (`~`) e i cappucci (`^`) sotto ciascuna riga, che compaiono da
 Python 3.11, indicano il pezzo esatto che ha dato problemi, e in una riga
@@ -868,8 +869,8 @@ l'oggetto parla di sé stesso.
 Vale la fatica di prenderci la mano adesso, perché più avanti quasi tutto ha
 questa forma. Un modello di scikit-learn è un oggetto a cui si dice `.fit`
 (impara da questi dati) e poi `.predict` (adesso prevedi); una rete neurale in
-PyTorch è una classe, con dentro i propri numeri e i propri metodi. Chi
-riconosce lo stampo legge quel codice senza doverlo studiare.
+PyTorch è una classe, con dentro i propri numeri e i propri metodi. [Chi
+riconosce lo stampo legge quel codice senza doverlo studiare]{.pt-matita}.
 
 `````
 
@@ -921,9 +922,9 @@ chi la chiama passa prima e dopo per il codice dell'involucro.
 ```
 
 In {numref}`fig-decoratore` la scatola grande è l'involucro e quella piccola al
-centro è la funzione di partenza, che resta intatta. La `@` è una scorciatoia
-di scrittura, e vale «prendi questa funzione, passala a `qualcosa`, e tieni al
-suo posto ciò che torna».
+centro è la funzione di partenza, che resta intatta. [La `@` è una scorciatoia
+di scrittura]{.pt-matita}, e vale «prendi questa funzione, passala a
+`qualcosa`, e tieni al suo posto ciò che torna».
 
 `````{tab} Elementare
 
@@ -1108,11 +1109,11 @@ l'abitudine.
 
 L'oggetto usato con `with` si chiama **context manager** («gestore di
 contesto») e definisce che cosa fare all'ingresso e che cosa all'uscita del
-blocco. L'utilità sta tutta nella seconda metà, cioè nel rimettere a posto
-(chiudere il file, liberare la memoria, riaccendere ciò che si era spento).
-Avviene comunque, anche quando il programma, dentro il blocco, incontra un
-guasto e solleva un'eccezione. Chiudere un file a mano è facile da dimenticare;
-con `with` non serve ricordarsene.
+blocco. [L'utilità sta tutta nella seconda metà, cioè nel rimettere a
+posto]{.pt-matita} (chiudere il file, liberare la memoria, riaccendere ciò che
+si era spento). Avviene comunque, anche quando il programma, dentro il blocco,
+incontra un guasto e solleva un'eccezione. Chiudere un file a mano è facile da
+dimenticare; con `with` non serve ricordarsene.
 
 In PyTorch lo incontrerai soprattutto così:
 
@@ -1342,8 +1343,8 @@ sempre la stessa, cioè il tempo di parete con quattro thread confrontato con
 quello in sequenza. Sul lavoro di calcolo questo tempo non scende. Resta
 dov'era e, da un'esecuzione all'altra, oscilla di qualche centesimo in su o in
 giù, perché passarsi il turno ha un costo dello stesso ordine del rumore della
-misura. I quattro thread non stanno lavorando in quattro, si stanno alternando,
-come vuole il GIL.
+misura. [I quattro thread non stanno lavorando in quattro, si stanno
+alternando]{.pt-matita}, come vuole il GIL.
 
 Sull'attesa, invece, il tempo di parete scende a un quarto, da un secondo
 tondo a 0,25, perché durante l'attesa il GIL è rilasciato e i thread non si

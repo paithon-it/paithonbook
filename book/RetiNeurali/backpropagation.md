@@ -18,9 +18,9 @@ ancora, nei primi anni Sessanta, chi calcolava le traiettorie di volo migliori
 (il controllo ottimo) faceva già un calcolo all'indietro dello stesso genere,
 su grandezze che cambiano con continuità invece che a strati.
 
-L'idea sta in due movimenti. In avanti la rete produce una
+L'idea sta in due movimenti. [In avanti la rete produce una
 risposta; all'indietro misura di quanto ha sbagliato e distribuisce la
-"colpa" a ogni peso.
+"colpa" a ogni peso]{.pt-matita}.
 
 ## Il forward pass: dai dati all'uscita
 
@@ -145,9 +145,10 @@ a correggersi ne esce. È il prodotto di due cose: quanto il numero dichiarato
 era lontano dalla verità, e di quanto quel numero si sposta quando si sposta il
 punteggio. Chi ha dichiarato 0,99 mentre la verità era zero è lontano 0,99, ma
 il suo numero si muove di appena 0,0099: la spinta vale 0,0098. Chi ha
-dichiarato 0,5, senza sbilanciarsi, è lontano la metà, ma il suo numero si muove
-di 0,25: la spinta vale 0,125, più di dodici volte tanto. Chi ha torto marcio si
-corregge meno di chi era soltanto incerto: l'ultima cosa che si vorrebbe.
+dichiarato 0,5, senza sbilanciarsi, è lontano la metà, ma il suo numero si
+muove di 0,25: la spinta vale 0,125, più di dodici volte tanto. [Chi ha torto
+marcio si corregge meno di chi era soltanto incerto]{.pt-matita}: l'ultima cosa
+che si vorrebbe.
 
 Per questo, quando la risposta è una scelta fra nomi, la multa si conta in un
 altro modo, con la cross-entropia del gioco dei gettoni nelle caselle: con lo
@@ -198,12 +199,13 @@ $$
 $$
 
 Il fattore $\sigma'(z) = \sigma(z)(1-\sigma(z))$ vale quasi zero agli estremi,
-cioè quando il neurone è sicuro e sbagliato. Il modello che ha torto marcio è
-quello che impara più lentamente, il contrario di quanto servirebbe. Sostituiamo
-allora la MSE con la cross-entropia dello stesso caso a due classi, la
-cross-entropia binaria: è quella di poco fa quando le classi sono due e
-l'uscita è una sola, perché allora la probabilità della seconda classe è
-$1-\hat{y}$ e la somma su $k$ ha due soli termini. Quel fattore si semplifica:
+cioè quando il neurone è sicuro e sbagliato. [Il modello che ha torto marcio è
+quello che impara più lentamente]{.pt-matita}, il contrario di quanto
+servirebbe. Sostituiamo allora la MSE con la cross-entropia dello stesso caso a
+due classi, la cross-entropia binaria: è quella di poco fa quando le classi
+sono due e l'uscita è una sola, perché allora la probabilità della seconda
+classe è $1-\hat{y}$ e la somma su $k$ ha due soli termini. Quel fattore si
+semplifica:
 
 $$
 \frac{\partial}{\partial z}\Big[-y\log\sigma(z) - (1-y)\log(1-\sigma(z))\Big]
@@ -272,10 +274,10 @@ ciascuno, e li somma. Così il foglio arriva fino alla prima postazione. Tutto
 questo per una casa sola: le case però si mandano avanti a gruppetti, il giro
 si rifà per ciascuna e a ogni manopola spetta la media delle sue quote.
 
-Nessuno rifà i calcoli da capo, quindi il metodo è praticabile. La
-colpa che arriva si porta dietro due fattori in più a ogni postazione, la
-manopola e la piega, e per allungare un prodotto di un pezzo basta una
-moltiplicazione, quindi un giro solo all'indietro serve tutta la linea. È lo
+Nessuno rifà i calcoli da capo, quindi il metodo è praticabile. La colpa che
+arriva si porta dietro due fattori in più a ogni postazione, la manopola e la
+piega, e per allungare un prodotto di un pezzo basta una moltiplicazione,
+quindi [un giro solo all'indietro serve tutta la linea]{.pt-matita}. È lo
 stesso prodotto degli ingranaggi della {doc}`regola della catena
 </Matematica/analisi-ottimizzazione>` e degli specchietti della {doc}`panoramica
 sulle reti neurali <overview>`, raccontato con un'altra macchina.
@@ -383,9 +385,9 @@ $\partial\ell/\partial z_i = \hat{y}_i \sum_k y_k - y_i$, cioè
 $\hat{y}_i - y_i$, perché l'etichetta è one-hot e la somma vale $1$. Il
 termine d'uscita diventa quindi
 $\boldsymbol{\delta}^{[L]} = \hat{\mathbf{y}} - \mathbf{y}$: è la combinazione
-che i framework implementano. Ogni
+che i framework implementano. [Ogni
 $\boldsymbol{\delta}^{[l]}$ riusa $\boldsymbol{\delta}^{[l+1]}$, così un solo
-passaggio all'indietro basta a calcolare tutti i gradienti. Per questo
+passaggio all'indietro basta a calcolare tutti i gradienti]{.pt-matita}. Per questo
 l'addestramento è praticabile su reti enormi.
 
 Il verso giusto si spiega con la differenziazione automatica. Derivare
@@ -466,10 +468,10 @@ dello stesso procedimento. La «colpa» di un peso e la sua pendenza sono quindi
 nomi della stessa cosa: quanto l'errore sale o scende per ogni passettino che
 fa quel peso.
 
-Il gradiente indica, per ogni peso, la direzione in cui la loss *cresce*. Per
-farla calare basta muoversi nel verso opposto, a piccoli passi, e ogni passo si
-fa lungo in proporzione alla pendenza che si sente lì: ripido, passo lungo;
-quasi piatto, passo corto.
+Il gradiente indica, per ogni peso, la direzione in cui la loss *cresce*. [Per
+farla calare basta muoversi nel verso opposto, a piccoli passi]{.pt-matita}, e
+ogni passo si fa lungo in proporzione alla pendenza che si sente lì: ripido,
+passo lungo; quasi piatto, passo corto.
 
 ```{figure} ../figures/discesa-gradiente-da-zero.svg
 :name: fig-discesa-passi
@@ -564,9 +566,9 @@ difetto ed è utile, anche se non per la ragione che si racconta più spesso. Si
 sente dire che serva a scavalcare i **minimi locali**, cioè le conche poco
 profonde in cui la discesa si può fermare credendo di essere arrivata in fondo;
 ma nelle reti profonde quelle conche sono rare {cite}`dauphin2014identifying`.
-Serve piuttosto a staccarsi dai tratti piatti e dalle selle di poco fa, dove la
-pendenza vera è quasi zero. Senza rumore dalle selle si esce lo stesso, ma con
-calma.
+[Serve piuttosto a staccarsi dai tratti piatti e dalle selle di poco
+fa]{.pt-matita}, dove la pendenza vera è quasi zero. Senza rumore dalle selle
+si esce lo stesso, ma con calma.
 
 Un algoritmo perfettamente preciso, con un passo abbastanza piccolo e
 partito da un punto a caso, esce da ogni sella vera, cioè da una sella dove in
@@ -671,11 +673,11 @@ I due difetti si somigliano però meno di quanto lascino credere quei due
 calcoli, e la ragione è che il messaggio porta più di una parola alla volta:
 ogni passaggio ne tratta ciascuna a modo suo, alzandone qualcuna e abbassandone
 altre. Se un passaggio le abbassa tutte quante, e così fa quello dopo, e quello
-dopo ancora, allora in fondo non arriva niente: lo svanire è garantito. Un
-passaggio che ne alza qualcuna, invece, non garantisce nulla, perché il
-successivo può abbassare quelle e alzare le altre. Prendiamo trenta passaggi
-che a turno raddoppiano una parola e dividono per dieci l'altra: ogni parola
-finisce raddoppiata quindici volte e divisa per dieci altre quindici, e
+dopo ancora, allora in fondo non arriva niente: lo svanire è garantito. [Un
+passaggio che ne alza qualcuna, invece, non garantisce nulla]{.pt-matita},
+perché il successivo può abbassare quelle e alzare le altre. Prendiamo trenta
+passaggi che a turno raddoppiano una parola e dividono per dieci l'altra: ogni
+parola finisce raddoppiata quindici volte e divisa per dieci altre quindici, e
 dividere per dieci vince. Dell'originale resta poco più di tre
 centomiliardesimi, cioè un bisbiglio, benché a ogni passaggio qualcosa venisse
 raddoppiato.
@@ -728,11 +730,12 @@ di strati attraversati.
 
 Nell'altro verso, però, non c'è simmetria. Il fatto che ogni fattore allunghi
 qualche direzione non basta a far esplodere il gradiente, perché lo strato
-successivo può accorciare quella direzione: il prodotto di trenta
-matrici con $\sigma_{\max}=2$ ciascuna può avere norma $3\cdot10^{-11}$ (basta
-alternare $\mathrm{diag}(2;\,0{,}1)$ e $\mathrm{diag}(0{,}1;\,2)$). A garantire
-l'esplosione è il valore singolare minimo maggiore di $1$, una condizione molto
-più forte: allora $\lVert\prod_l \mathbf{J}^{[l]}\,\mathbf{v}\rVert \ge \prod_l
+successivo può accorciare quella direzione: il prodotto di trenta matrici con
+$\sigma_{\max}=2$ ciascuna può avere norma $3\cdot10^{-11}$ (basta alternare
+$\mathrm{diag}(2;\,0{,}1)$ e $\mathrm{diag}(0{,}1;\,2)$). [A garantire
+l'esplosione è il valore singolare minimo maggiore di $1$]{.pt-matita}, una
+condizione molto più forte: allora $\lVert\prod_l
+\mathbf{J}^{[l]}\,\mathbf{v}\rVert \ge \prod_l
 \sigma_{\min}(\mathbf{J}^{[l]})\, \lVert\mathbf{v}\rVert$ e la norma non può
 che crescere.
 

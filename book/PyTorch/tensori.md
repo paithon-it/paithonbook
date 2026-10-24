@@ -11,12 +11,12 @@ rete non potrebbe imparare.
 
 Nella {doc}`sezione di algebra lineare </Matematica/algebra-lineare>` abbiamo
 già incontrato scalari, vettori e matrici, cioè un numero solo, una fila di
-numeri e una tabella di numeri. Il tensore è semplicemente il passo successivo,
-la stessa idea portata avanti finché si vuole. Si continuano ad aggiungere
-direzioni lungo cui i numeri si dispongono, e ciascuna di queste direzioni si
-chiama **asse**. La parola qui ha un significato diverso da quello che ha nei
-grafici: sull'asse di un grafico si legge un valore, mentre lungo l'asse di un
-tensore si conta una posizione.
+numeri e una tabella di numeri. [Il tensore è semplicemente il passo
+successivo, la stessa idea portata avanti finché si vuole]{.pt-matita}. Si
+continuano ad aggiungere direzioni lungo cui i numeri si dispongono, e ciascuna
+di queste direzioni si chiama **asse**. La parola qui ha un significato diverso
+da quello che ha nei grafici: sull'asse di un grafico si legge un valore,
+mentre lungo l'asse di un tensore si conta una posizione.
 
 ```{figure} ../figures/tensori-scala.svg
 :name: fig-tensori-scala
@@ -189,11 +189,11 @@ il tutto come un'unica riga continua no, perché fra un pezzo e il successivo
 c'è la roba che hai saltato.
 
 Per il taglio basta dare la forma nuova, senza toccare niente; per la riga
-continua i numeri vanno ricopiati altrove. `reshape` ricopia in silenzio quando
-serve, `view` pretende di non ricopiare e, quando non può, si ferma con un
-errore invece di farlo di nascosto. Di solito va bene `reshape`; `view` si
-sceglie quando si vuole la certezza che la striscia sia la stessa, e che
-cambiando un numero da una parte cambi anche dall'altra.
+continua i numeri vanno ricopiati altrove. [`reshape` ricopia in silenzio
+quando serve, `view` pretende di non ricopiare e, quando non può, si ferma con
+un errore invece di farlo di nascosto]{.pt-matita}. Di solito va bene
+`reshape`; `view` si sceglie quando si vuole la certezza che la striscia sia la
+stessa, e che cambiando un numero da una parte cambi anche dall'altra.
 
 `````
 
@@ -215,8 +215,8 @@ due vettori è direttamente il prodotto scalare, senza bisogno di reshape.
 
 Il metodo `reshape` restituisce una **vista** (stessa memoria, solo un modo
 diverso di leggerla) quando la disposizione dei dati lo permette, e altrimenti
-copia senza avvisare, mentre `t.view(...)` pretende la vista e, quando non può
-darla, solleva un errore invece di copiare.
+copia senza avvisare, mentre [`t.view(...)` pretende la vista e, quando non può
+darla, solleva un errore invece di copiare]{.pt-matita}.
 
 La condizione per ottenere la vista non è la contiguità, come si legge spesso:
 è che la nuova forma sia compatibile con gli **stride** esistenti, cioè con i
@@ -300,9 +300,9 @@ avanti e indietro a ogni riga consuma nel viaggio più di quanto guadagni nel
 calcolo, come attraversare la cucina con una cassa per ogni singolo
 ingrediente.
 
-Ecco perché PyTorch non trasloca i dati di propria iniziativa e preferisce
-fermarsi con un errore: il viaggio devi deciderlo tu, e devi poterlo vedere
-scritto.
+Ecco perché [PyTorch non trasloca i dati di propria iniziativa e preferisce
+fermarsi con un errore]{.pt-matita}: il viaggio devi deciderlo tu, e devi
+poterlo vedere scritto.
 
 `````
 
@@ -310,11 +310,11 @@ scritto.
 
 Il pattern idiomatico è definire `device` una volta all'inizio e spostare
 modello e batch con `.to(device)`; su Apple Silicon il device si chiama
-`"mps"`. Operazioni tra tensori su device diversi sollevano un errore
-esplicito, perché PyTorch non fa trasferimenti impliciti, che nasconderebbero
-dei costi. Su una scheda discreta, infatti, il passaggio attraversa il bus PCIe
-ed è lento rispetto al calcolo, mentre su Apple Silicon la memoria è unificata
-ma l'uso misto non è comunque consentito.
+`"mps"`. [Operazioni tra tensori su device diversi sollevano un errore
+esplicito]{.pt-matita}, perché PyTorch non fa trasferimenti impliciti, che
+nasconderebbero dei costi. Su una scheda discreta, infatti, il passaggio
+attraversa il bus PCIe ed è lento rispetto al calcolo, mentre su Apple Silicon
+la memoria è unificata ma l'uso misto non è comunque consentito.
 
 L'eccezione sono i tensori a zero assi che stanno sulla CPU: un numero solo,
 lì, viene trattato come uno scalare e combinato senza errori con un tensore che
@@ -442,14 +442,15 @@ più lo si accorcia più il rapporto si avvicina a otto tondo. Dal nastro invece
 esce l'otto senza approssimazioni, e nessuno ha scritto la formula della
 derivata.
 
-Il verso del riavvolgimento decide il costo. Il nastro si riavvolge una volta
-sola, e da quella passata all'indietro esce l'effetto di tutti i pesi insieme:
-mille pesi o un milione, la passata resta una. Chi non ha il registratore fa il
-contrario: sposta di poco un peso, rifà tutto il calcolo in avanti, guarda di
-quanto si è spostato il risultato, poi ricomincia con il peso dopo. Ne escono
-risposte solo approssimate, come l'otto e un centesimo di prima, e una passata
-a testa. Con un milione di pesi, una passata contro un milione di passate è la
-distanza fra un addestramento che si può fare e uno che non si può.
+Il verso del riavvolgimento decide il costo. [Il nastro si riavvolge una volta
+sola, e da quella passata all'indietro esce l'effetto di tutti i pesi
+insieme]{.pt-matita}: mille pesi o un milione, la passata resta una. Chi non ha
+il registratore fa il contrario: sposta di poco un peso, rifà tutto il calcolo
+in avanti, guarda di quanto si è spostato il risultato, poi ricomincia con il
+peso dopo. Ne escono risposte solo approssimate, come l'otto e un centesimo di
+prima, e una passata a testa. Con un milione di pesi, una passata contro un
+milione di passate è la distanza fra un addestramento che si può fare e uno che
+non si può.
 
 Un numero può comparire in più punti dello stesso conto, e allora sul nastro
 compare più volte. Il registratore non ne sceglie uno: per ogni punto scrive di
@@ -512,10 +513,10 @@ modalità reverse non costruisce mai la Jacobiana, ma calcola direttamente il
 prodotto fra la sua trasposta e il vettore che arriva da valle (un
 *vector-Jacobian product*, uno per nodo). Se $\mathbf{J}$ è la Jacobiana
 dell'intera funzione, dai $p$ parametri alle sue $q$ uscite, una passata
-all'indietro dà un prodotto $\mathbf{v}^\top \mathbf{J}$, cioè una
-combinazione delle righe di $\mathbf{J}$, per ogni vettore $\mathbf{v}$ scelto
-in partenza. Per avere tutta la Jacobiana ne servirebbero quindi $q$; con la
-loss, però, $q = 1$, e ne basta una, al costo di un piccolo multiplo della
+all'indietro dà un prodotto $\mathbf{v}^\top \mathbf{J}$, cioè una combinazione
+delle righe di $\mathbf{J}$, per ogni vettore $\mathbf{v}$ scelto in partenza.
+Per avere tutta la Jacobiana ne servirebbero quindi $q$; [con la loss, però, $q
+= 1$, e ne basta una]{.pt-matita}, al costo di un piccolo multiplo della
 passata in avanti, qualunque sia il numero $p$ dei parametri.
 
 Per contare il multiplo consideriamo uno strato lineare, che riceve
@@ -557,7 +558,7 @@ passate; in compenso il training loop deve azzerarli a ogni passo. Ripetere la
 ```python
 x = torch.tensor(3.0, requires_grad=True)
 for _ in range(2):
-    y = x**2 + 2*x          # un forward nuovo a ogni giro
+    y = x**2 + 2*x          # un forward nuovo a ogni iterazione
     y.backward()
     print(x.grad)           # si somma: prima 8, poi 16
 try:

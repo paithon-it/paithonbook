@@ -101,11 +101,11 @@ una misura: resta fuori da questo discorso.
 
 `````
 
-La scala non è solo ordine mentale: dice anche dove va speso lo sforzo. Un
-compito semplice vive negli atomi e nelle molecole, e lì un buon prompt basta.
-Un agente vive negli organi: lì il collo di bottiglia diventa
-amministrare i testi in ingresso e in uscita dalla finestra a ogni passo,
-invece della frase.
+La scala non è solo ordine mentale: [dice anche dove va speso lo
+sforzo]{.pt-matita}. Un compito semplice vive negli atomi e nelle molecole, e
+lì un buon prompt basta. Un agente vive negli organi: lì il collo di bottiglia
+diventa amministrare i testi in ingresso e in uscita dalla finestra a ogni
+passo, invece della frase.
 
 ## Montare il contesto dentro un budget
 
@@ -115,9 +115,9 @@ interfaccia </Agenti/context-engineering>`. Prima di decidere che cosa ci
 entra, però, serve sapere dove il modello legge bene, perché c'è un fatto che
 va contro l'intuizione: anche quando lo spazio ci sarebbe, riempirlo può
 danneggiare la risposta. Nelson Liu e colleghi lo hanno misurato in un articolo
-dal titolo eloquente, *Lost in the Middle* {cite}`liu2024lost`: i modelli usano
+dal titolo eloquente, *Lost in the Middle* {cite}`liu2024lost`: [i modelli usano
 bene l'informazione che sta all’inizio e alla fine del contesto, e trascurano
-quella sepolta in mezzo.
+quella sepolta in mezzo]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -531,13 +531,13 @@ rimpicciolisce il materiale restando dentro, e nessuna delle quattro aggiunge
 spazio.
 ```
 
-Messe una accanto all'altra come in {numref}`fig-context-quattro-mosse`, le
-quattro mosse rivelano di essere quattro risposte alla stessa domanda: dove sta
-il materiale rispetto al bordo della finestra. Fuori e recuperabile (scrivere),
-fuori e da riportare dentro un pezzo alla volta (selezionare), dentro ma più
-corta (comprimere), fuori e affidata a qualcun altro che ha un bordo suo
-(isolare). La finestra resta grande quanto era: cambia la disciplina con cui la
-si riempie.
+Messe una accanto all'altra come in {numref}`fig-context-quattro-mosse`, [le
+quattro mosse rivelano di essere quattro risposte alla stessa
+domanda]{.pt-matita}: dove sta il materiale rispetto al bordo della finestra.
+Fuori e recuperabile (scrivere), fuori e da riportare dentro un pezzo alla
+volta (selezionare), dentro ma più corta (comprimere), fuori e affidata a
+qualcun altro che ha un bordo suo (isolare). La finestra resta grande quanto
+era: cambia la disciplina con cui la si riempie.
 
 ### Comprimere più di una finestra: riassumere a pezzi
 
@@ -670,11 +670,12 @@ token letti in tutto: ad albero 218500, in fila 218000
 ```
 
 Le chiamate sono quasi le stesse, trentotto contro trentasette, e i token letti
-differiscono di cinquecento su più di duecentomila. Cambia il tempo: l’albero
+differiscono di cinquecento su più di duecentomila. Cambia il tempo: [l’albero
 ha tre turni, perché le trentaquattro chiamate del primo livello partono
-insieme, mentre la fila ne ha trentasette, uno dopo l’altro. Cambia anche la
-strada che fa l’informazione del primo pezzo prima di arrivare al riassunto
-finale: tre riassunti in un caso, trentasette passaggi di scheda nell’altro.
+insieme]{.pt-matita}, mentre la fila ne ha trentasette, uno dopo l’altro.
+Cambia anche la strada che fa l’informazione del primo pezzo prima di arrivare
+al riassunto finale: tre riassunti in un caso, trentasette passaggi di scheda
+nell’altro.
 
 ## Come si guasta un contesto
 
@@ -733,8 +734,8 @@ peggio di quando non gliene davano nessuno e doveva rispondere a memoria. Era
 un modello solo, e di allora: vale il fatto che oltre un certo punto aggiungere
 documenti peggiora la risposta, non il numero preciso a cui succede. Una
 finestra più capiente non bastava: gli stessi modelli, nella versione che ne
-teneva molto di più, non sfruttavano meglio i documenti che ci trovavano. Lo
-spazio dichiarato non è lo spazio che il modello sa sfruttare.
+teneva molto di più, non sfruttavano meglio i documenti che ci trovavano. [Lo
+spazio dichiarato non è lo spazio che il modello sa sfruttare]{.pt-matita}.
 
 `````
 
@@ -746,33 +747,32 @@ contesto si allunga, il segnale rilevante si distribuisce su più token e la
 capacità del modello di isolarlo cala. Le evidenze si sovrappongono più di
 quanto la distinzione dei nomi suggerisca. Liu e colleghi {cite}`liu2024lost`
 misurano la posizione (la curva di accuratezza in funzione di dove sta
-l'informazione ha la forma a U) e insieme
-la lunghezza: sul QA multi-documento fanno variare il numero di documenti in
-finestra e trovano che, su GPT-3.5-Turbo, nel caso peggiore (cioè quando il
-documento rilevante capita in mezzo) con venti o trenta documenti l'accuratezza
-scende sotto quella a libro chiuso, cioè sotto il 56,1 per cento di risposte
-esatte che quel modello ottiene senza alcun documento davanti. Il numero è di
-un modello solo e di quel momento, e non va portato in giro come una soglia
-universale; vale invece il fatto che la curva, a un certo punto, gira verso il
-basso. Aggiungere contesto, oltre una certa soglia, costa più di quanto renda.
-Dallo stesso lavoro viene un secondo punto: i modelli a
-contesto esteso non usano il loro contesto meglio di quelli da cui derivano,
-dove i due si possono confrontare, e quindi la finestra dichiarata non è la
-finestra utile. RULER, nel 2024, misura lo stesso scarto su diciassette
-modelli: tutti dichiarano una finestra di almeno 32.000 token, e a quella
-lunghezza solo la metà mantiene prestazioni soddisfacenti
-{cite}`hsieh2024ruler`. La *distraction* del catalogo è quest'ultimo effetto
-visto dal lato pratico, con soglie osservate dalle decine di migliaia di token
-in su, a seconda del modello; *confusion* è invece il caso in cui token
-irrilevanti ma presenti attirano indebitamente l'attenzione. Il *poisoning* è
-di natura diversa (è un problema di veridicità dello stato, non di posizione) e
-il *clash* è un problema di coerenza dell'insieme. A ogni guasto si può
-abbinare un rimedio: *compress* contro distraction, *select* contro confusion,
-l'igiene dello stato (rimuovere ciò che si è rivelato falso) contro poisoning,
-la deduplicazione delle fonti contro clash. È un abbinamento plausibile, non
-misurato. Contro il *poisoning* il rimedio più semplice è anche il più
-drastico: azzerare la sessione e ripartire da un contesto pulito, portandosi
-dietro soltanto ciò che è stato verificato.
+l'informazione ha la forma a U) e insieme la lunghezza: sul QA multi-documento
+fanno variare il numero di documenti in finestra e trovano che, su
+GPT-3.5-Turbo, nel caso peggiore (cioè quando il documento rilevante capita in
+mezzo) con venti o trenta documenti l'accuratezza scende sotto quella a libro
+chiuso, cioè sotto il 56,1 per cento di risposte esatte che quel modello
+ottiene senza alcun documento davanti. Il numero è di un modello solo e di quel
+momento, e non va portato in giro come una soglia universale; vale invece il
+fatto che la curva, a un certo punto, gira verso il basso. Aggiungere contesto,
+oltre una certa soglia, costa più di quanto renda. Dallo stesso lavoro viene un
+secondo punto: i modelli a contesto esteso non usano il loro contesto meglio di
+quelli da cui derivano, dove i due si possono confrontare, e quindi [la
+finestra dichiarata non è la finestra utile]{.pt-matita}. RULER, nel 2024,
+misura lo stesso scarto su diciassette modelli: tutti dichiarano una finestra
+di almeno 32.000 token, e a quella lunghezza solo la metà mantiene prestazioni
+soddisfacenti {cite}`hsieh2024ruler`. La *distraction* del catalogo è
+quest'ultimo effetto visto dal lato pratico, con soglie osservate dalle decine
+di migliaia di token in su, a seconda del modello; *confusion* è invece il caso
+in cui token irrilevanti ma presenti attirano indebitamente l'attenzione. Il
+*poisoning* è di natura diversa (è un problema di veridicità dello stato, non
+di posizione) e il *clash* è un problema di coerenza dell'insieme. A ogni
+guasto si può abbinare un rimedio: *compress* contro distraction, *select*
+contro confusion, l'igiene dello stato (rimuovere ciò che si è rivelato falso)
+contro poisoning, la deduplicazione delle fonti contro clash. È un abbinamento
+plausibile, non misurato. Contro il *poisoning* il rimedio più semplice è anche
+il più drastico: azzerare la sessione e ripartire da un contesto pulito,
+portandosi dietro soltanto ciò che è stato verificato.
 
 `````
 
@@ -796,14 +796,14 @@ progetto completo: le misure, il tipo di legno, la foto di un tavolo che ti
 piace, perché il tuo venga di quello stile, e le due pagine del catalogo della
 ferramenta con le viti giuste, non il catalogo intero. In fondo al foglio c'è
 il dettaglio decisivo, la regola con cui si stabilisce se il tavolo è venuto
-bene, «deve stare in piano e reggere 40 chili». Con il progetto in mano
-il falegname lavora quasi in autonomia e sbaglia di meno, perché ha davanti tutto
+bene, «deve stare in piano e reggere 40 chili». Con il progetto in mano il
+falegname lavora quasi in autonomia e sbaglia di meno, perché ha davanti tutto
 *prima* di iniziare. Quella regola finale non serve soltanto a te. Quando il
-tavolo è pronto, lui lo appoggia, ci carica sopra il peso, e se traballa
-ripialla la gamba corta prima di consegnartelo. Il PRP è quel foglio, scritto
-per un assistente che programma: regole, esempi, le pagine di manuale che
-servono e la prova finale, tutto insieme, pronto da riusare al prossimo
-lavoro.
+tavolo è pronto, [lui lo appoggia, ci carica sopra il peso, e se traballa
+ripialla la gamba corta prima di consegnartelo]{.pt-matita}. Il PRP è quel
+foglio, scritto per un assistente che programma: regole, esempi, le pagine di
+manuale che servono e la prova finale, tutto insieme, pronto da riusare al
+prossimo lavoro.
 
 `````
 
@@ -813,19 +813,19 @@ Un PRP tipico raccoglie quattro ingredienti: (1) le regole di progetto in un
 file versionato accanto al codice (`CLAUDE.md`, `AGENTS.md` a seconda
 dell'assistente, che il {doc}`repository come memoria
 </Harness/il-repository-come-memoria>` tratta come un indice e non come un
-manuale), con convenzioni, vincoli, cosa evitare; (2) esempi di codice
-del repository, che condizionano l'assistente sullo stile reale invece che su
-uno generico; (3) la documentazione pertinente (API, riferimenti), selezionata
-e non l'intera libreria; (4) un **validation gate**, cioè il criterio oggettivo
+manuale), con convenzioni, vincoli, cosa evitare; (2) esempi di codice del
+repository, che condizionano l'assistente sullo stile reale invece che su uno
+generico; (3) la documentazione pertinente (API, riferimenti), selezionata e
+non l'intera libreria; (4) un **validation gate**, cioè il criterio oggettivo
 (i test da far passare, il *linter*, il comando che deve tornare a zero) con
 cui verificare che il lavoro sia effettivamente finito. I primi tre ingredienti
 sono context engineering allo stato puro: sono le mosse *select* e *write* rese
 esplicite in un artefatto versionabile. Il quarto anticipa la {doc}`sezione sul
-loop engineering <loop-engineering>`: il *validation gate* è il seme del loop
-engineering, perché trasforma un colpo solo in un ciclo (genera, verifica
-contro il gate, e se fallisce reitera con l'esito in contesto). Che dare al
-modello più contesto strutturato riduca gli errori è l'affermazione di chi
-propone il metodo {cite}`medin2025contextintro`: un'intuizione sensata, ma
+loop engineering <loop-engineering>`: [il *validation gate* è il seme del loop
+engineering]{.pt-matita}, perché trasforma un colpo solo in un ciclo (genera,
+verifica contro il gate, e se fallisce reitera con l'esito in contesto). Che
+dare al modello più contesto strutturato riduca gli errori è l'affermazione di
+chi propone il metodo {cite}`medin2025contextintro`: un'intuizione sensata, ma
 senza un confronto controllato alle spalle.
 
 `````

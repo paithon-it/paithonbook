@@ -68,10 +68,10 @@ Una domanda viene prima di ogni algoritmo: chi decide la ricompensa? Non
 l'agente, e nemmeno il mondo: la scrive chi imposta il problema. In un
 videogioco il punteggio esiste già e si prende quello; per un robot che deve
 imparare a camminare qualcuno deve stabilire che cadere vale $-5$ e che un
-metro guadagnato vale $+1$. È una scelta di progetto seria, perché un agente
+metro guadagnato vale $+1$. È una scelta di progetto seria, perché [un agente
 ottimizza i numeri che gli sono stati dati e non le intenzioni di chi glieli ha
-dati. Se lo si premia per la velocità, ad esempio, può imparare a buttarsi in
-avanti e cadere in fretta.
+dati]{.pt-matita}. Se lo si premia per la velocità, ad esempio, può imparare a
+buttarsi in avanti e cadere in fretta.
 
 Chi imposta il problema può anche aggiungere premi intermedi, per guidare
 l'agente invece di lasciarlo cercare a vuoto; la tecnica si chiama *reward
@@ -191,10 +191,10 @@ incolpare per la sconfitta? È il problema dell’**assegnazione del merito**
 C'è una seconda differenza, meno vistosa e non meno seria. Chi impara a
 riconoscere i gatti riceve un mazzo di foto già pronto, e quel mazzo resta lo
 stesso sia che risponda bene sia che risponda male. Chi impara a giocare a
-scacchi si fabbrica il suo mazzo muovendo: se apre sempre allo stesso modo,
-per anni vedrà le stesse posizioni e delle altre non saprà niente. In altre
-parole, le partite su cui ci si allena dipendono dal modo in cui si gioca, e
-appena quel modo cambia cambiano anche loro.
+scacchi si fabbrica il suo mazzo muovendo: se apre sempre allo stesso modo, per
+anni vedrà le stesse posizioni e delle altre non saprà niente. In altre parole,
+[le partite su cui ci si allena dipendono dal modo in cui si
+gioca]{.pt-matita}, e appena quel modo cambia cambiano anche loro.
 
 Aspettare la fine della partita per sapere chi ringraziare è troppo lento. Si
 può invece dare a ogni mossa, in ogni posizione, un voto provvisorio, anche
@@ -214,13 +214,14 @@ fino all'apertura.
 `````{tab} Superiore
 
 La differenza è strutturale. Nel supervisionato i dati $(\mathbf{x}, y)$ sono
-indipendenti e l'etichetta $y$ è il segnale di errore diretto. Nel RL il segnale
-è una ricompensa scalare, potenzialmente ritardata e sparsa, e i dati non sono
-indipendenti. L'azione corrente, infatti, determina lo stato successivo, quindi
-la distribuzione degli esempi dipende dalla politica stessa. L'assegnazione del
-merito temporale si affronta con i metodi a differenza temporale
-(*temporal-difference*, TD) e con l'equazione di Bellman, che spezza il ritorno
-in premio immediato più valore scontato dello stato futuro:
+indipendenti e l'etichetta $y$ è il segnale di errore diretto. Nel RL il
+segnale è una ricompensa scalare, potenzialmente ritardata e sparsa, e i dati
+non sono indipendenti. L'azione corrente, infatti, determina lo stato
+successivo, quindi [la distribuzione degli esempi dipende dalla politica
+stessa]{.pt-matita}. L'assegnazione del merito temporale si affronta con i
+metodi a differenza temporale (*temporal-difference*, TD) e con l'equazione di
+Bellman, che spezza il ritorno in premio immediato più valore scontato dello
+stato futuro:
 
 $$
 Q^{*}(s,a) = \mathbb{E}\!\left[\, R_{t+1} + \gamma \max_{a'} Q^{*}(S_{t+1}, a')
@@ -241,9 +242,9 @@ C'è una tensione che nessun agente può ignorare e che riconosciamo tutti.
 Hai un ristorante preferito che non delude mai. Provi quello nuovo appena
 aperto o resti sul sicuro? Se scegli sempre il noto (**sfruttamento**), non
 scoprirai mai un posto migliore. Se provi sempre cose nuove (**esplorazione**),
-sprechi serate in locali mediocri. Un buon agente fa entrambe le cose: sfrutta
-quasi sempre ciò che sa, ma ogni tanto azzarda, perché solo azzardando può
-scoprire ricompense che non sospettava.
+sprechi serate in locali mediocri. Un buon agente fa entrambe le cose: [sfrutta
+quasi sempre ciò che sa, ma ogni tanto azzarda]{.pt-matita}, perché solo
+azzardando può scoprire ricompense che non sospettava.
 
 Questa ricetta ha un nome, **$\varepsilon$-greedy**, che si legge
 "epsilon-greedy". *Greedy* è l'inglese per "avido", cioè chi sceglie sempre
@@ -279,13 +280,13 @@ A_t =
 \end{cases}
 $$
 
-In pratica $\varepsilon$ parte alto e decresce nel tempo; in questo modo si
-esplora molto all'inizio, quando le stime di $Q$ sono grezze, e si sfrutta
-sempre di più man mano che diventano affidabili. Approcci più raffinati non
-affidano l'esplorazione a una moneta: *softmax* distribuisce la probabilità in
-base ai valori stimati, dando più peso alle azioni che promettono di più,
-mentre *Upper Confidence Bound* e i bonus di curiosità privilegiano le azioni
-su cui la stima è più incerta.
+In pratica [$\varepsilon$ parte alto e decresce nel tempo]{.pt-matita}; in
+questo modo si esplora molto all'inizio, quando le stime di $Q$ sono grezze, e
+si sfrutta sempre di più man mano che diventano affidabili. Approcci più
+raffinati non affidano l'esplorazione a una moneta: *softmax* distribuisce la
+probabilità in base ai valori stimati, dando più peso alle azioni che
+promettono di più, mentre *Upper Confidence Bound* e i bonus di curiosità
+privilegiano le azioni su cui la stima è più incerta.
 
 `````
 

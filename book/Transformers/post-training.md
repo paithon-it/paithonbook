@@ -62,11 +62,11 @@ facendo ciò per cui era stato addestrato, cioè proseguire il
 testo. L'instruction tuning gli insegna che quel testo era un ordine.
 ```
 
-La differenza mostrata in {numref}`fig-instruction-tuning` è la ragione per
-cui il post-training esiste. Infatti un modello che completa e un assistente
-che esegue sanno quasi le stesse cose, e si distinguono soprattutto per come
-interpretano la richiesta: è l’*ipotesi dell'allineamento superficiale*
-{cite}`zhou2023lima`.
+La differenza mostrata in {numref}`fig-instruction-tuning` è la ragione per cui
+il post-training esiste. Infatti [un modello che completa e un assistente che
+esegue sanno quasi le stesse cose, e si distinguono soprattutto per come
+interpretano la richiesta]{.pt-matita}: è l’*ipotesi dell'allineamento
+superficiale* {cite}`zhou2023lima`.
 
 Il primo passo si chiama **SFT** (*supervised fine-tuning*), o *instruction
 tuning*. Si raccoglie un dataset di coppie (istruzione, risposta) scritte da
@@ -209,9 +209,9 @@ modello a un compito nuovo è fuori portata, e da qui viene il lucido.
 **LoRA** (*Low-Rank Adaptation*) {cite}`hu2022lora` nasce da una regolarità che si
 vede controluce. Le correzioni da fare sono sempre la stessa manciata, ripetuta
 in punti diversi e con intensità variabili: ogni riga del lucido si ottiene
-mescolando poche righe di partenza, in dosi diverse. Allora il lucido non ha
+mescolando poche righe di partenza, in dosi diverse. Allora [il lucido non ha
 tutte le sue righe da imparare: ha le poche righe di partenza, più qualche dose
-per riga.
+per riga]{.pt-matita}.
 
 In piccolo si vede subito. Una riga di partenza, $(4, 5, 6)$, e una colonna di
 dosi, $(1, 2, 3)$: moltiplicate nel modo standard (il prodotto di matrici della
@@ -279,23 +279,19 @@ bottiglia. Il rango si scrive di solito $r$ (così nella {doc}`sezione sui
 sistemi lineari </Matematica/sistemi-lineari>`, con la stessa fattorizzazione);
 qui è $\rho$ perché $r$ è la ricompensa dell'RLHF.
 
-Solo $\mathbf{A}$ e $\mathbf{B}$ ricevono gradiente. I parametri addestrabili
-passano da $dk$ a
-$\rho(d+k)$. Ad esempio, per $d=k=4096$ e $\rho=8$ si scende da $16{,}8$
-milioni a
-$65\,536$ per
-matrice, lo $0{,}39\%$. All'inizio $\mathbf{A}$ è inizializzata casualmente e
-$\mathbf{B}$ a zero,
-così $\Delta\mathbf{W} = 0$ e il modello parte dal comportamento
-pre-addestrato; $\alpha/\rho$ è un fattore di scala che disaccoppia il *learning
-rate* efficace dalla scelta di $\rho$. Stabilire su quali matrici inserire il ramo
-laterale è una scelta progettuale: il lavoro originale limita lo studio ai
-pesi dell'attenzione, e nella maggior parte degli esperimenti alle sole
-proiezioni $\mathbf{W}^Q$ e $\mathbf{W}^V$, da cui deriva il conteggio
-ridotto sul modello intero. QLoRA mostra tuttavia che per eguagliare il
-fine-tuning completo servono adattatori su tutte le matrici lineari del blocco,
-FFN comprese, e che a quel punto il rango conta poco
-{cite}`dettmers2023qlora`.
+Solo $\mathbf{A}$ e $\mathbf{B}$ ricevono gradiente. [I parametri addestrabili
+passano da $dk$ a $\rho(d+k)$]{.pt-matita}. Ad esempio, per $d=k=4096$ e
+$\rho=8$ si scende da $16{,}8$ milioni a $65\,536$ per matrice, lo $0{,}39\%$.
+All'inizio $\mathbf{A}$ è inizializzata casualmente e $\mathbf{B}$ a zero, così
+$\Delta\mathbf{W} = 0$ e il modello parte dal comportamento pre-addestrato;
+$\alpha/\rho$ è un fattore di scala che disaccoppia il *learning rate* efficace
+dalla scelta di $\rho$. Stabilire su quali matrici inserire il ramo laterale è
+una scelta progettuale: il lavoro originale limita lo studio ai pesi
+dell'attenzione, e nella maggior parte degli esperimenti alle sole proiezioni
+$\mathbf{W}^Q$ e $\mathbf{W}^V$, da cui deriva il conteggio ridotto sul modello
+intero. QLoRA mostra tuttavia che per eguagliare il fine-tuning completo
+servono adattatori su tutte le matrici lineari del blocco, FFN comprese, e che
+a quel punto il rango conta poco {cite}`dettmers2023qlora`.
 
 Tre conseguenze pratiche:
 
@@ -351,19 +347,19 @@ mortale?* Bastarono circa 900 confronti, meno di un'ora di tempo umano.
 
 ```{figure} ../figures/deep-rl-human-preferences-2017.svg
 :name: fig-preferenze-umane
-:alt: "Ciclo chiuso in quattro stazioni: l'agente di reinforcement learning genera coppie di traiettorie; una persona guarda le due e sceglie la preferita; da queste scelte un modello di ricompensa impara a dare punteggi; il modello di ricompensa restituisce all'agente una ricompensa predetta, che lo riaddestra, e il giro ricomincia."
+:alt: "Ciclo chiuso in quattro stazioni: l'agente di reinforcement learning genera coppie di traiettorie; una persona guarda le due e sceglie la preferita; da queste scelte un modello di ricompensa impara a dare punteggi; il modello di ricompensa restituisce all'agente una ricompensa predetta, che lo riaddestra, e il ciclo ricomincia."
 :width: 90%
 
-Il giro che sostituisce la regola dei punti scritta a mano. La persona non
+Il ciclo che sostituisce la regola dei punti scritta a mano. La persona non
 spiega mai cosa sia un salto mortale: si limita a preferire, e il giudice
 artificiale in mezzo (il *modello di ricompensa*) deduce il resto.
 ```
 
 Il passaggio decisivo di {numref}`fig-preferenze-umane` è il modello di
 ricompensa in mezzo. Infatti, senza questo modello ogni passo di addestramento
-richiederebbe un giudizio umano, cosa impraticabile; con il modello di
+richiederebbe un giudizio umano, cosa impraticabile; [con il modello di
 ricompensa i confronti servono ad addestrare una volta sola un giudice
-artificiale, che poi lavora quanto serve. La tecnica si chiama RLHF
+artificiale, che poi lavora quanto serve]{.pt-matita}. La tecnica si chiama RLHF
 (*Reinforcement Learning from Human Feedback*), e con InstructGPT
 {cite}`ouyang2022training` viene applicata in grande al linguaggio, in due
 tempi: prima i confronti umani addestrano un **reward model**, un modello che
@@ -555,15 +551,15 @@ Preference Optimization*, ottimizzazione diretta delle preferenze).
 
 Torniamo in cucina. Il metodo classico prevedeva due tempi: prima addestrare un
 giudice artificiale sui confronti degli assaggiatori, poi far cucinare il cuoco
-per il giudice. La DPO si accorge che il giro è più lungo del necessario: il
-cuoco può saltare il giudice e imparare direttamente dai confronti, perché il
-voto del giudice è già scritto nel cuoco. In altri termini, quanto un piatto
-gli piace si legge da quanto ha cambiato idea su di lui rispetto alla ricetta
-di partenza: se prima lo preparava una volta su cento e adesso tre, quel piatto
-gli piace; se
-un altro, per la stessa cena, passa da due volte su cento a una, no. Quanto sia
-impegnativa la cena in sé, un pranzo per due o un banchetto, pesa uguale sui
-due piatti, e nel confronto sparisce.
+per il giudice. La DPO si accorge che il giro è più lungo del necessario: [il
+cuoco può saltare il giudice e imparare direttamente dai
+confronti]{.pt-matita}, perché il voto del giudice è già scritto nel cuoco. In
+altri termini, quanto un piatto gli piace si legge da quanto ha cambiato idea
+su di lui rispetto alla ricetta di partenza: se prima lo preparava una volta su
+cento e adesso tre, quel piatto gli piace; se un altro, per la stessa cena,
+passa da due volte su cento a una, no. Quanto sia impegnativa la cena in sé, un
+pranzo per due o un banchetto, pesa uguale sui due piatti, e nel confronto
+sparisce.
 
 Per ogni coppia già valutata (piatto
 preferito, piatto scartato), il cuoco ritocca la propria ricetta in modo da
@@ -626,12 +622,12 @@ si elidono nella differenza richiesta dal modello di Bradley–Terry. È l'unico
 punto in cui $Z(x)$ compare: una somma di fatto intrattabile svanisce prima
 ancora di dover essere calcolata.
 
-Il secondo passaggio è meno visibile e più
-importante: la relazione appena scritta dice che qualunque ricompensa è
-rappresentabile come $\beta\log(\pi/\pi_{\text{ref}})$ per una qualche policy,
-a meno di una funzione del solo $x$. Si può allora smettere di parametrizzare
-le ricompense e parametrizzare direttamente le policy, sostituire $\pi^*$ con
-la $\pi_\theta$ che stiamo addestrando, e fare massima verosimiglianza sulle
+Il secondo passaggio è meno visibile e più importante: la relazione appena
+scritta dice che qualunque ricompensa è rappresentabile come
+$\beta\log(\pi/\pi_{\text{ref}})$ per una qualche policy, a meno di una
+funzione del solo $x$. [Si può allora smettere di parametrizzare le ricompense
+e parametrizzare direttamente le policy]{.pt-matita}, sostituire $\pi^*$ con la
+$\pi_\theta$ che stiamo addestrando, e fare massima verosimiglianza sulle
 preferenze osservate. Il risultato è una loss che dipende *solo dalla policy*:
 
 $$
@@ -819,13 +815,14 @@ usarlo.
 ```
 
 Le due curve di {numref}`fig-test-time-compute` distinguono due cose che si
-confondono facilmente. Più calcolo al momento della risposta aiuta se il modello
-lo usa per passaggi che si costruiscono l'uno sull'altro; altrimenti produce
-solo testo in più. Il meccanismo di base è la **chain-of-thought** (catena di
-pensiero), descritta da Wei e colleghi nel 2022 {cite}`wei2022chain`: far
-generare al modello i passaggi intermedi prima della risposta migliora
-l'accuratezza sui problemi che ne richiedono più d'uno (aritmetica, buon senso,
-ragionamento simbolico), a partire da una certa taglia del modello.
+confondono facilmente. [Più calcolo al momento della risposta aiuta se il
+modello lo usa per passaggi che si costruiscono l'uno sull'altro]{.pt-matita};
+altrimenti produce solo testo in più. Il meccanismo di base è la
+**chain-of-thought** (catena di pensiero), descritta da Wei e colleghi nel 2022
+{cite}`wei2022chain`: far generare al modello i passaggi intermedi prima della
+risposta migliora l'accuratezza sui problemi che ne richiedono più d'uno
+(aritmetica, buon senso, ragionamento simbolico), a partire da una certa taglia
+del modello.
 
 `````{tab} Elementare
 
@@ -1028,8 +1025,8 @@ sull'AI responsabile </AIResponsabile/allineamento-e-governance>`), o a
 verificatori automatici nei domini verificabili. La domanda resta: la scelta di
 quali giudizi o di quali principi contino è una decisione di chi costruisce il
 modello, non un fatto tecnico. Per questo l'allineamento è oggi un'area di
-ricerca autonoma, ben più di un ritocco finale: abbiamo strumenti per orientare
-il comportamento dei modelli, non garanzie sul risultato.
+ricerca autonoma, ben più di un ritocco finale: [abbiamo strumenti per orientare
+il comportamento dei modelli, non garanzie sul risultato]{.pt-matita}.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

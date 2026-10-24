@@ -185,7 +185,7 @@ def costruisci() -> Figura:
     corpo, anim, visti = [], [], set()
 
     # ---------------- pannello 1: il buffer -------------------------------
-    corpo.append(f'<text class="ttl" x="{GX}" y="34">experience replay</text>')
+    corpo.append(f'<text class="ttl" x="{GX}" y="34">memoria di replay</text>')
     corpo.append(f'<text class="lbs" x="{GX}" y="56">{N_BUFFER} transizioni, '
                  f'in ordine di arrivo →</text>')
     for i in range(N_BUFFER):
@@ -275,18 +275,18 @@ def costruisci() -> Figura:
     # ---------------- il contatore, comune ai due pannelli -----------------
     for k in range(n):
         nome = fetta(k, n, anim, visti)
-        testo = "il buffer è pieno" if k == 0 else f"passo {k}"
+        testo = "la memoria è piena" if k == 0 else f"passo {k}"
         corpo.append(f'<text class="pas" x="351" y="294" text-anchor="middle" '
                      f'opacity="{1 if k == PASSI else 0}" '
                      f'style="animation:{nome} var(--d) infinite">{testo}</text>')
 
     return Figura(
         larghezza=702, altezza=312,
-        alt="A sinistra il buffer di ventiquattro transizioni disposte in ordine "
+        alt="A sinistra la memoria di replay, ventiquattro transizioni in ordine "
             "di arrivo: a ogni passo si accendono quattro celle sparse, mai "
             "consecutive, che sono il minibatch pescato a caso. A destra il "
             "valore Q di una stessa coppia stato-azione: la curva della rete che "
-            "impara sale a ogni passo, la scaletta della copia congelata resta "
+            "impara sale a ogni passo, la scaletta della rete-target resta "
             "ferma per tre passi e poi scatta a raggiungerla.",
         corpo="".join(corpo),
         stile=f"""    .cel {{ fill:{CREAM}; stroke:{BORDER_STRONG}; stroke-width:1.5; }}

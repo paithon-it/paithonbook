@@ -146,9 +146,9 @@ Il modello si addestra, ma ha tre difetti. Il primo è che dipende
 dall'ordine con cui sono numerati i nodi; il secondo, che ha una dimensione
 d'ingresso fissata ($N^2$, quindi un solo $N$); il terzo, che non ha niente di
 simile alla finestra della convoluzione, che guarda i vicini di un punto con gli
-stessi pesi dappertutto, perché ogni nodo ha un numero diverso di vicini. Il
+stessi pesi dappertutto, perché ogni nodo ha un numero diverso di vicini. [Il
 primo difetto è il più grave, e nasce da una libertà che griglie e sequenze non
-hanno: in un grafo i nodi non hanno un ordine.
+hanno: in un grafo i nodi non hanno un ordine]{.pt-matita}.
 
 Un'immagine è una griglia. Il pixel in alto a sinistra è *sempre* in alto a
 sinistra, e la convoluzione sfrutta questa regolarità. Una frase è una
@@ -268,11 +268,11 @@ l'argomento, di altri no, e devi solo riempire i buchi. Questo si dice modo
 articolo nuovo.
 
 In un altro caso, invece, vuoi imparare una regola che funzioni anche su
-articoli che *non hai ancora visto*, o addirittura su un'altra biblioteca. È
-il modo **induttivo**: si impara qualcosa di generale, che si applica a nodi e
-grafi mai incontrati durante l'addestramento. È la differenza tra imparare a
-memoria la mappa di una città e imparare a leggere le mappe, dato che la
-seconda abilità funziona anche in una città nuova.
+articoli che *non hai ancora visto*, o addirittura su un'altra biblioteca. È il
+modo **induttivo**: si impara qualcosa di generale, che si applica a nodi e
+grafi mai incontrati durante l'addestramento. [È la differenza tra imparare a
+memoria la mappa di una città e imparare a leggere le mappe]{.pt-matita}, dato
+che la seconda abilità funziona anche in una città nuova.
 
 `````
 
@@ -334,8 +334,8 @@ stesso algoritmo che imparava gli embedding delle parole. Ogni nodo parte con
 una fila di numeri a caso; l'algoritmo scorre le passeggiate e, ogni volta che
 due nodi compaiono a pochi passi l'uno dall'altro, avvicina un poco le loro
 file, mentre allontana un poco quelle di qualche coppia pescata a sorte. Alla
-fine i nodi che capitano spesso vicini nelle passeggiate (cioè quelli ben
-connessi tra loro) hanno file simili. È l'idea di **DeepWalk**.
+fine [i nodi che capitano spesso vicini nelle passeggiate (cioè quelli ben
+connessi tra loro) hanno file simili]{.pt-matita}. È l'idea di **DeepWalk**.
 
 Una variante di poco successiva, **node2vec**, aggiunge due iperparametri (due
 manopole da regolare) per decidere *che tipo* di passeggiata fare: più
@@ -433,11 +433,11 @@ procedura per ogni nodo, come la convoluzione usa lo stesso filtro su tutti i
 pixel; e non accorgersi dell'ordine in cui gli elenchiamo i nodi, la proprietà
 da cui è partito tutto il ragionamento della cena.
 
-L'idea che concilia tutte queste richieste è far sì che ogni nodo aggiorni la
+[L'idea che concilia tutte queste richieste è far sì che ogni nodo aggiorni la
 fila di numeri che lo descrive ascoltando i vicini, e ripetere l'operazione a
-strati, con la stessa procedura ovunque. Ogni nodo, a ogni strato, raccoglie
-messaggi da chi gli sta intorno e li fonde con ciò che già sa. È il message
-passing, il meccanismo che dà il nome e la sostanza alle *Graph Neural
+strati, con la stessa procedura ovunque]{.pt-matita}. Ogni nodo, a ogni strato,
+raccoglie messaggi da chi gli sta intorno e li fonde con ciò che già sa. È il
+message passing, il meccanismo che dà il nome e la sostanza alle *Graph Neural
 Network*, e ha una {doc}`sezione tutta per sé
 </GraphNeuralNetwork/message-passing>`. Prima, però, scriviamo per
 esteso, su un grafo vero e piccolo, le tabelle di cui si è parlato fin qui.
@@ -537,8 +537,8 @@ $$
 che è un disegno di numeri completamente diverso dal primo. I gradi sono
 $(3,2,2,2,1)$: sono gli stessi cinque numeri di prima, in un altro
 ordine, come dev'essere, perché a cambiare sono stati i loro nomi, non i nodi.
-Ecco il problema in una tabella: due fogli con numeri diversi, e dietro un unico
-grafo. Una rete che legga il foglio riga per riga vede due
+[Ecco il problema in una tabella: due fogli con numeri diversi, e dietro un unico
+grafo]{.pt-matita}. Una rete che legga il foglio riga per riga vede due
 cose diverse, e nessuno le ha detto che non lo sono.
 
 `````{tab} Elementare

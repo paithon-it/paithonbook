@@ -23,8 +23,8 @@ situazione* e *quanto vale una mossa in quella situazione* (nella {doc}`sezione
 su MDP e funzioni valore </ReinforcementLearning/mdp-valore>` le due stime si
 chiamavano rispettivamente $V$ e $Q$), e poi ne ricaviamo l'azione migliore
 scegliendo di volta in volta quella col valore più alto. I metodi a **gradiente
-di policy** ribaltano la prospettiva: invece di valutare e poi decidere,
-imparano *direttamente a decidere*.
+di policy** ribaltano la prospettiva: [invece di valutare e poi decidere,
+imparano *direttamente a decidere*]{.pt-matita}.
 
 La policy è una rete neurale con pesi $\theta$, e la quantità da far crescere
 è il ritorno atteso $J(\theta)$, cioè la somma dei premi che quella policy
@@ -67,8 +67,8 @@ possibile, e poi far scegliere al cane il comportamento col punteggio più alto.
 L'altro approccio, più diretto, è modellare la *tendenza* del cane: rendere più
 probabili i comportamenti che in passato hanno fruttato un premio, meno
 probabili quelli finiti male. In altre parole, non calcoliamo un punteggio per
-poi decidere, ma regoliamo direttamente le probabilità con cui l'animale
-sceglie.
+poi decidere, ma [regoliamo direttamente le probabilità con cui l'animale
+sceglie]{.pt-matita}.
 
 Una policy è proprio questo: data una situazione, dice con quale
 probabilità compiere ciascuna azione. In italiano si direbbe «strategia»;
@@ -103,19 +103,18 @@ dove $\tau=(s_0,a_0,r_0,s_1,\dots)$ è una *traiettoria* generata seguendo la
 policy, $r_t$ è la ricompensa al passo $t$ e $\gamma\in[0,1)$ è il fattore di
 sconto, che pesa meno il futuro lontano.
 
-Rispetto ai metodi basati sul valore, ottimizzare $\pi_\theta$ direttamente
-gestisce con naturalezza gli spazi di azioni continui e le policy stocastiche.
-In particolare, per azioni continue basta una distribuzione continua, per
-esempio una gaussiana
-$\pi_\theta(\mathbf{a}\mid s)=\mathcal{N}\big(\boldsymbol{\mu}_\theta(s),\,
-\sigma^2\mathbf{I}\big)$ con la media data dalla rete e $\sigma$ fissato o
-appreso. Il termine che comparirà nel gradiente vale allora
-$\nabla_\theta\log\pi_\theta(\mathbf{a}\mid s)=
+Rispetto ai metodi basati sul valore, [ottimizzare $\pi_\theta$ direttamente
+gestisce con naturalezza gli spazi di azioni continui e le policy
+stocastiche]{.pt-matita}. In particolare, per azioni continue basta una
+distribuzione continua, per esempio una gaussiana $\pi_\theta(\mathbf{a}\mid
+s)=\mathcal{N}\big(\boldsymbol{\mu}_\theta(s),\, \sigma^2\mathbf{I}\big)$ con
+la media data dalla rete e $\sigma$ fissato o appreso. Il termine che comparirà
+nel gradiente vale allora $\nabla_\theta\log\pi_\theta(\mathbf{a}\mid s)=
 \sigma^{-2}\,\mathbf{J}_\theta(s)^{\top}
-\big(\mathbf{a}-\boldsymbol{\mu}_\theta(s)\big)$,
-con $\mathbf{J}_\theta=\partial\boldsymbol{\mu}_\theta/\partial\theta$ lo
-jacobiano della media. Moltiplicato per l'esito, questo termine sposta la
-media verso le azioni che hanno reso di più {cite}`sutton2018reinforcement`.
+\big(\mathbf{a}-\boldsymbol{\mu}_\theta(s)\big)$, con
+$\mathbf{J}_\theta=\partial\boldsymbol{\mu}_\theta/\partial\theta$ lo jacobiano
+della media. Moltiplicato per l'esito, questo termine sposta la media verso le
+azioni che hanno reso di più {cite}`sutton2018reinforcement`.
 
 Si noti che la notazione segue ora la convenzione dei lavori di deep RL: $r_t$
 è la ricompensa che segue l'azione $a_t$, cioè ciò che la sezione su MDP e
@@ -144,10 +143,10 @@ probabile la prossima volta". Se ha perso, il contrario. Ripetuto migliaia di
 volte, questo semplice riflesso spinge il comportamento verso le mosse buone
 senza che nessuno debba mai spiegare *perché* siano buone.
 
-Il difetto salta subito all'occhio, e da qui nasce tutto il seguito: il
-giudizio arriva solo alla fine, uno solo per tutta la partita. Se hai vinto,
-l'algoritmo rende più probabili anche le due o tre mosse pessime che avevi
-fatto per strada; se hai perso, rende meno probabili anche quelle buone.
+Il difetto salta subito all'occhio, e da qui nasce tutto il seguito: [il
+giudizio arriva solo alla fine, uno solo per tutta la partita]{.pt-matita}. Se
+hai vinto, l'algoritmo rende più probabili anche le due o tre mosse pessime che
+avevi fatto per strada; se hai perso, rende meno probabili anche quelle buone.
 
 E due partite giocate con la stessa identica strategia possono finire in
 modi opposti per puro caso, con la correzione che cambia segno di conseguenza.
@@ -247,8 +246,9 @@ aggiornamento in un mondo con un solo stato, dove la softmax sulle preferenze
 $H(a)$ faceva le veci di $\pi_\theta(a\mid s)$. Anche il rimedio che segue, la
 baseline, è già comparso là.
 
-Il punto debole è la varianza. Poiché $G_t$ dipende dall'intero seguito
-casuale della partita, le stime risultano rumorose e lente a convergere.
+Il punto debole è la varianza. [Poiché $G_t$ dipende dall'intero seguito
+casuale della partita, le stime risultano rumorose e lente a
+convergere]{.pt-matita}.
 
 `````
 
@@ -292,9 +292,9 @@ del gioco.
 L'allenatore, però, può sbagliare. Il suo «meglio del previsto» vale quanto
 valgono le sue previsioni, e all'inizio non ne sa più del giocatore: sono
 giudizi affrettati presi per buoni. Il verdetto di fine partita, quello, non
-sbagliava mai; ballava soltanto, perché una partita sola dice poco. Si
+sbagliava mai; ballava soltanto, perché una partita sola dice poco. [Si
 scambia una cosa con l'altra, commenti immediati in cambio del
-rischio che siano storti, e su questo scambio si basa il metodo.
+rischio che siano storti]{.pt-matita}, e su questo scambio si basa il metodo.
 
 Fra i due estremi c'è una manopola, e la si gira dove si vuole: quanto aspetta
 l'allenatore prima di parlare. Una mossa sola, e parla subito fidandosi in tutto
@@ -351,8 +351,8 @@ solo stato si può sottrarre senza introdurre distorsione.
 
 Il secondo modo è il *bootstrapping*, cioè sostituire il ritorno $G_t$ con
 $r_t+\gamma V_\phi(s_{t+1})$, che rende la stima distorta finché il critico è
-impreciso. Si scambia quindi varianza con *bias*, ed è il compromesso alla
-base dell'actor-critic.
+impreciso. [Si scambia quindi varianza con *bias*]{.pt-matita}, ed è il
+compromesso alla base dell'actor-critic.
 
 Il vantaggio stimato con l'errore TD a un passo è la scelta più economica del
 compromesso, con poca varianza e parecchio bias. All'altro estremo c'è il
@@ -429,9 +429,9 @@ va appunto da $0{,}8$ a $1{,}2$, cioè un quinto in meno e un quinto in più.
 
 L'addestramento serve a far salire la ricompensa attesa, spostando i pesi
 della rete. Appena si esce dalla fascia dalla parte pericolosa, però, quel
-numero smette di salire per quanto ci si sposti ancora. Il passo resta
+numero smette di salire per quanto ci si sposti ancora. [Il passo resta
 consentito ma non frutta più niente, e una rete che cerca il guadagno non ha
-ragione di farlo.
+ragione di farlo]{.pt-matita}.
 
 `````{tab} Elementare
 

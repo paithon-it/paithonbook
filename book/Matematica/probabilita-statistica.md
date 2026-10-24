@@ -22,10 +22,10 @@ esempio "esce un numero pari" $=\{2,4,6\}$. Se il dado è onesto, la probabilit�
 di un evento è semplicemente *casi favorevoli su casi possibili*, quindi
 $P(\text{pari}) = 3/6 = 0{,}5$.
 
-Tre regole di buon senso governano tutto: una probabilità sta sempre fra $0$
-(impossibile) e $1$ (certo); l'evento "esce qualcosa" ha probabilità $1$; e se
-due eventi non possono capitare insieme, la probabilità che ne capiti uno *o*
-l'altro è la somma delle due.
+[Tre regole di buon senso governano tutto]{.pt-matita}: una probabilità sta
+sempre fra $0$ (impossibile) e $1$ (certo); l'evento "esce qualcosa" ha
+probabilità $1$; e se due eventi non possono capitare insieme, la probabilità
+che ne capiti uno *o* l'altro è la somma delle due.
 
 `````
 
@@ -43,10 +43,10 @@ P(A)\ge 0, \qquad P(\Omega)=1, \qquad
 P\!\Big(\bigcup_i A_i\Big)=\sum_i P(A_i),
 $$
 
-dove l'ultima uguaglianza vale per eventi $A_i$ a due a due disgiunti. Da
-questi tre assiomi discende tutto il resto, in particolare $P(\varnothing)=0$,
-la probabilità del complementare $P(A^c)=1-P(A)$, e la regola di
-inclusione-esclusione $P(A\cup B)=P(A)+P(B)-P(A\cap B)$.
+dove l'ultima uguaglianza vale per eventi $A_i$ a due a due disgiunti. [Da
+questi tre assiomi discende tutto il resto]{.pt-matita}, in particolare
+$P(\varnothing)=0$, la probabilità del complementare $P(A^c)=1-P(A)$, e la
+regola di inclusione-esclusione $P(A\cup B)=P(A)+P(B)-P(A\cap B)$.
 
 `````
 
@@ -105,13 +105,13 @@ teste? Tante quante i modi di scegliere *chi* fa testa: ancora $120$. La
 probabilità è $120/1024$, circa l’$11{,}7\%$. In altri termini, il calcolo
 delle squadre e quello delle monete sono lo stesso calcolo.
 
-Questo modo di contare, però, vale solo se i casi contati sono ugualmente
-probabili, e sbagliare è facile. Nel 1754 Jean-Baptiste Le Rond d'Alembert, uno
-dei matematici più celebri del suo secolo, sostenne che lanciando due volte una
-moneta la probabilità di vedere almeno una testa fosse $2/3$. Pensava al gioco
-che si ferma appena esce testa: i casi, diceva, sono tre (testa al primo
-lancio, e il secondo non serve; croce e poi testa; due croci), e due su tre
-vanno bene.
+Questo modo di contare, però, [vale solo se i casi contati sono ugualmente
+probabili]{.pt-matita}, e sbagliare è facile. Nel 1754 Jean-Baptiste Le Rond
+d'Alembert, uno dei matematici più celebri del suo secolo, sostenne che
+lanciando due volte una moneta la probabilità di vedere almeno una testa fosse
+$2/3$. Pensava al gioco che si ferma appena esce testa: i casi, diceva, sono
+tre (testa al primo lancio, e il secondo non serve; croce e poi testa; due
+croci), e due su tre vanno bene.
 
 Ma quei tre casi non si equivalgono. «Testa subito» raccoglie infatti due file,
 testa-testa e testa-croce, perché il secondo lancio, anche se non lo si fa,
@@ -197,13 +197,13 @@ $x = p$ e $y = 1-p$ la normalizza a uno. È la distribuzione del conteggio di
 successi su cui poggiano il test binomiale esatto e l'intervallo di
 Clopper-Pearson.
 
-Il punto debole della definizione classica, $P(A) = |A|/|\Omega|$, è l'ipotesi
-che gli esiti elementari siano equiprobabili, e quindi il risultato dipende da
-come si sceglie lo spazio. D'Alembert, ad esempio, nella voce «Croix ou pile»
-dell’*Encyclopédie* (1754), diede $2/3$ alla probabilità di almeno una testa in
-due lanci perché prese come equiprobabili gli esiti del gioco che si ferma alla
-prima testa ($T$, $CT$, $CC$) invece delle quattro sequenze complete; la
-risposta è $3/4$.
+[Il punto debole della definizione classica, $P(A) = |A|/|\Omega|$, è l'ipotesi
+che gli esiti elementari siano equiprobabili]{.pt-matita}, e quindi il
+risultato dipende da come si sceglie lo spazio. D'Alembert, ad esempio, nella
+voce «Croix ou pile» dell’*Encyclopédie* (1754), diede $2/3$ alla probabilità
+di almeno una testa in due lanci perché prese come equiprobabili gli esiti del
+gioco che si ferma alla prima testa ($T$, $CT$, $CC$) invece delle quattro
+sequenze complete; la risposta è $3/4$.
 
 È l'obiezione che Roberval aveva mosso al metodo di Fermat, e che Pascal
 riferisce nella lettera del 24 agosto 1654: la partita vera si ferma appena
@@ -293,8 +293,8 @@ in 100000 partite, almeno una testa nel 75%
 
 Lanciare dieci monete e guardare come sono venute è una cosa; contare quante
 teste sono uscite è un'altra, quasi sempre quella che interessa. Il salto è
-piccolo ma cambia tutto, perché da un elenco di casi si passa a un numero, e
-sui numeri si possono fare medie, grafici, confronti.
+piccolo ma cambia tutto, perché [da un elenco di casi si passa a un numero, e
+sui numeri si possono fare medie, grafici, confronti]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -380,10 +380,10 @@ la media è quella che la coda sposta di più: pochi stipendi altissimi alzano
 lo stipendio medio senza spostare quello di mezzo.
 ```
 
-L'ordine in cui i tre indicatori compaiono in {numref}`fig-centro-larghezza`
-è un buon promemoria pratico: quando media e mediana si
-allontanano molto, la distribuzione ha una coda, e riassumerla con la sola
-media descrive un valore tipico che quasi nessuno osserva.
+L'ordine in cui i tre indicatori compaiono in {numref}`fig-centro-larghezza` è
+un buon promemoria pratico: [quando media e mediana si allontanano molto, la
+distribuzione ha una coda]{.pt-matita}, e riassumerla con la sola media
+descrive un valore tipico che quasi nessuno osserva.
 
 `````{tab} Elementare
 
@@ -538,11 +538,10 @@ Il totale di tre dadi è la somma di tre numeri che, presi da soli, non hanno
 niente di campanulare (in un dado tutte le facce sono ugualmente probabili, il
 disegno sarebbe piatto), eppure il totale sì.
 
-Il teorema promette che, sommando
-abbastanza pezzi, la campana arriva. Non promette però *quanto in fretta*: con i
-dadi bastano tre addendi, ma con ingredienti molto storti (per esempio un
-evento che capita una volta su cento) nemmeno trenta bastano, e la campana non
-si vede ancora.
+Il teorema promette che, sommando abbastanza pezzi, la campana arriva. [Non
+promette però *quanto in fretta*]{.pt-matita}: con i dadi bastano tre addendi,
+ma con ingredienti molto storti (per esempio un evento che capita una volta su
+cento) nemmeno trenta bastano, e la campana non si vede ancora.
 
 `````
 
@@ -577,13 +576,13 @@ dell'inizializzazione, per conservare la scala delle attivazioni fra uno strato
 e l'altro, e non la famiglia, tanto che il default di PyTorch campiona da
 un'uniforme e non da una normale.
 
-Il teorema dice che si converge, non quanto in fretta, e la seconda domanda ha
-una risposta separata. La disuguaglianza di Berry–Esseen dà una garanzia
-grossolana, $\sup_z |F_n(z)-\Phi(z)| \le C\,\rho_3 / (\sigma^3\sqrt{n})$, dove
-$F_n$ è la funzione di ripartizione della somma standardizzata, $\Phi$ quella
-della normale standard, $C$ una costante universale minore di mezzo che non
-dipende dalla distribuzione di partenza, e $\rho_3 = \mathbb{E}|X-\mu|^3$. La
-distanza cala dunque come $1/\sqrt{n}$.
+[Il teorema dice che si converge, non quanto in fretta]{.pt-matita}, e la
+seconda domanda ha una risposta separata. La disuguaglianza di Berry–Esseen dà
+una garanzia grossolana, $\sup_z |F_n(z)-\Phi(z)| \le C\,\rho_3 /
+(\sigma^3\sqrt{n})$, dove $F_n$ è la funzione di ripartizione della somma
+standardizzata, $\Phi$ quella della normale standard, $C$ una costante
+universale minore di mezzo che non dipende dalla distribuzione di partenza, e
+$\rho_3 = \mathbb{E}|X-\mu|^3$. La distanza cala dunque come $1/\sqrt{n}$.
 
 Davanti a quel fattore, però, c'è un momento terzo assoluto, che non distingue
 una sola coda lunga da due code lunghe simmetriche. Le separa lo sviluppo di
@@ -724,8 +723,8 @@ arriva un risultato positivo: quanto devi preoccuparti?
 L'istinto dice "molto", ma i calcoli dicono altro. Su $10\,000$ persone, $100$
 sono malate (e $99$ risultano positive); ma dei $9\,900$ sani ben $495$
 risultano positivi *per errore*. I positivi totali sono $99+495=594$, e solo
-$99$ sono malati, cioè circa il 17%. Con una malattia rara, la maggior parte
-dei positivi sono falsi allarmi.
+$99$ sono malati, cioè circa il 17%. [Con una malattia rara, la maggior parte
+dei positivi sono falsi allarmi]{.pt-matita}.
 
 `````
 
@@ -756,9 +755,9 @@ $$
 P(A\mid B)=\frac{0{,}99\cdot 0{,}01}{0{,}0594}\approx 0{,}167 .
 $$
 
-La prevalenza $P(A)$ (il *prior*) domina il risultato, e per questo nessun
-classificatore va giudicato dalla sola accuratezza quando le classi sono
-fortemente sbilanciate.
+[La prevalenza $P(A)$ (il *prior*) domina il risultato]{.pt-matita}, e per
+questo nessun classificatore va giudicato dalla sola accuratezza quando le
+classi sono fortemente sbilanciate.
 
 `````
 
@@ -806,10 +805,11 @@ perché nessun numero di prove rende la media *uguale* al valore vero.
 La forma a imbuto di {numref}`fig-legge-grandi-numeri` governa quanti esempi
 servono per valutare un modello, e l'imbuto si stringe più lentamente di quanto
 verrebbe da sperare, perché l'incertezza cala con la radice quadrata del numero
-di prove, non in proporzione a esso. Per dimezzarla, quindi, non basta il
-doppio delle prove: ne servono quattro volte tante, perché deve raddoppiare la
-radice, e $\sqrt{400}=20$ è il doppio di $\sqrt{100}=10$. Quattro volte i dati
-per metà dell'errore, ogni volta che si misura qualcosa su un campione.
+di prove, non in proporzione a esso. [Per dimezzarla, quindi, non basta il
+doppio delle prove: ne servono quattro volte tante]{.pt-matita}, perché deve
+raddoppiare la radice, e $\sqrt{400}=20$ è il doppio di $\sqrt{100}=10$.
+Quattro volte i dati per metà dell'errore, ogni volta che si misura qualcosa su
+un campione.
 
 `````{tab} Elementare
 
@@ -888,10 +888,10 @@ distinguibili: la differenza fra loro è più piccola di quanto la misura possa
 risolvere. C invece è peggiore.
 ```
 
-{numref}`fig-intervalli-confidenza` mostra che una barra d'errore permette di
-dire «non lo so». Senza di essa una classifica si può sempre stilare, e sembra
-informativa anche quando ordina rumore; con la barra alcune coppie restano a
-pari merito, che è la risposta corretta.
+{numref}`fig-intervalli-confidenza` mostra che [una barra d'errore permette di
+dire «non lo so»]{.pt-matita}. Senza di essa una classifica si può sempre
+stilare, e sembra informativa anche quando ordina rumore; con la barra alcune
+coppie restano a pari merito, che è la risposta corretta.
 
 `````{tab} Elementare
 
@@ -1038,12 +1038,12 @@ truccata a favore di testa». Chi sceglie il verso dopo aver visto il risultato
 si dà due occasioni di gridare al trucco invece di una, e quella in più se la
 prende anche quando il trucco non c'è.
 
-Chi fa la prova sul serio decide prima di lanciare quanto piccolo debba essere
-$p$ perché si smetta di credere all'ipotesi nulla. Per convenzione la soglia è
-cinque su cento, e quel numero non dice quanto è forte la prova, ma quanto
-spesso si accetta di accusare una moneta onesta. Qui $p$ vale $0{,}057$, appena
-sopra la soglia, e la moneta non viene accusata: ci sarebbero volute sessantuno
-teste.
+[Chi fa la prova sul serio decide prima di lanciare quanto piccolo debba essere
+$p$ perché si smetta di credere all'ipotesi nulla]{.pt-matita}. Per convenzione
+la soglia è cinque su cento, e quel numero non dice quanto è forte la prova, ma
+quanto spesso si accetta di accusare una moneta onesta. Qui $p$ vale $0{,}057$,
+appena sopra la soglia, e la moneta non viene accusata: ci sarebbero volute
+sessantuno teste.
 
 Il verdetto può sbagliare in due modi. Si può accusare una moneta onesta, e
 quanto spesso capita lo si è deciso a tavolino. Oppure si può lasciar passare
@@ -1118,9 +1118,9 @@ $p$-value superi o non superi una soglia. Il divieto del secondo è il
 passaggio da $\Pr(\text{dati} \mid H_0)$ a $\Pr(H_0 \mid \text{dati})$, che
 senza una probabilità a priori non si fa.
 
-Il punto di rottura è a monte del calcolo. Il $p$-value ha il significato
+Il punto di rottura è a monte del calcolo. [Il $p$-value ha il significato
 dichiarato solo se la statistica, il verso e la soglia sono stati scelti prima
-di guardare i dati. Chi prova più definizioni di errore, più finestre
+di guardare i dati]{.pt-matita}. Chi prova più definizioni di errore, più finestre
 temporali, più sottogruppi e riporta la migliore ha fatto molti confronti e ne
 dichiara uno solo; da qui nasce il problema della molteplicità.
 
@@ -1131,8 +1131,8 @@ dichiara uno solo; da qui nasce il problema della molteplicità.
 Il problema comincia quando la domanda non è una sola. Un programma che sorveglia
 un modello al lavoro tiene d'occhio trecento grandezze e per ciascuna chiede «è
 cambiata?»; uno studio di genetica misura ventimila geni; un banco di prova
-confronta sessanta modi di regolare la stessa rete. La soglia che vale per una
-domanda non vale per trecento.
+confronta sessanta modi di regolare la stessa rete. [La soglia che vale per una
+domanda non vale per trecento]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -1404,8 +1404,8 @@ perché lì resta aperto solo chi cucina davvero bene. Fra tutti i ristoranti
 quel legame non esiste; lo ha creato la selezione dei sopravvissuti.
 
 Noi sospettiamo il caldo per buon senso; un modello no.
-Impara la scorciatoia che funziona sui dati che ha visto e la usa finché il
-mondo non cambia: poi sbaglia, e sbaglia in modo inspiegabile.
+[Impara la scorciatoia che funziona sui dati che ha visto e la usa finché il
+mondo non cambia]{.pt-matita}: poi sbaglia, e sbaglia in modo inspiegabile.
 
 `````
 
@@ -1473,8 +1473,8 @@ di una catena e un confondente non osservato chiedono invece un intervento
 Nel machine learning la conseguenza ha un nome, *shortcut learning*: il modello
 aggancia la correlazione più comoda del dataset (lo sfondo invece dell'animale,
 il marcatore dell'ospedale invece della patologia) e crolla appena la
-distribuzione cambia. La correlazione basta per predire dentro la stessa
-distribuzione; non basta per decidere un intervento.
+distribuzione cambia. [La correlazione basta per predire dentro la stessa
+distribuzione; non basta per decidere un intervento]{.pt-matita}.
 
 `````
 
@@ -1513,8 +1513,8 @@ questo fra un secondo, il che le basta per prenderlo; delle ragioni per cui il
 topo si sposta non sa niente, e non le servono.
 
 Predire, insomma, non richiede capire. Conta però sapere quale domanda si sta
-facendo, perché salire un gradino richiede sempre qualcosa che nei dati non
-c'è.
+facendo, perché [salire un gradino richiede sempre qualcosa che nei dati non
+c'è]{.pt-matita}.
 
 `````
 
@@ -1547,12 +1547,12 @@ Non sempre, però, la quantità è calcolabile: se i confondenti rilevanti non
 sono osservati, nessuna quantità di dati basta, per un'impossibilità di
 principio e non per un limite di campione.
 
-La conseguenza per chi costruisce sistemi è che il gradino di una domanda
-determina che dati servono. Ad esempio, chiedere «quali clienti abbandoneranno»
-è livello 1 e un classificatore basta; chiedere «quali clienti abbandoneranno
-*se non li chiamiamo*» è livello 2, e un classificatore addestrato su dati in
-cui le chiamate erano decise da qualcuno risponde alla domanda sbagliata con
-grande sicurezza.
+La conseguenza per chi costruisce sistemi è che [il gradino di una domanda
+determina che dati servono]{.pt-matita}. Ad esempio, chiedere «quali clienti
+abbandoneranno» è livello 1 e un classificatore basta; chiedere «quali clienti
+abbandoneranno *se non li chiamiamo*» è livello 2, e un classificatore
+addestrato su dati in cui le chiamate erano decise da qualcuno risponde alla
+domanda sbagliata con grande sicurezza.
 
 `````
 
@@ -1619,8 +1619,8 @@ chiama **verosimiglianza**. Le curve di {numref}`fig-verosimiglianza` ne sono
 il grafico: per ogni valore di $p$ sull'asse orizzontale, quanto sarebbe
 verosimile l'osservazione.
 
-Per un modello, imparare è spesso questo: girare le manopole dei parametri
-finché i dati osservati diventano i più plausibili.
+[Per un modello, imparare è spesso questo: girare le manopole dei parametri
+finché i dati osservati diventano i più plausibili]{.pt-matita}.
 
 `````
 
@@ -1650,13 +1650,13 @@ loss, che si minimizza; la verosimiglianza si massimizza, e le due si
 incontrano nella log-verosimiglianza negativa, $\mathcal{L}(\theta)=-\log
 L(\theta)$ a meno di costanti.)
 
-Per un modello di regressione che descrive $y$ dato $x$ come una
-gaussiana centrata sulla predizione, $y \mid x \sim
-\mathcal{N}(\hat{y},\sigma^2)$ con varianza fissa, massimizzare la
-log-verosimiglianza equivale a minimizzare l'errore quadratico medio; sotto
-ipotesi di Bernoulli/categoriche equivale a minimizzare la cross-entropy. Le
-loss di regressione e di classificazione più usate sono verosimiglianze
-travestite, non scelte arbitrarie, e la sezione {doc}`Da dove viene la loss
+Per un modello di regressione che descrive $y$ dato $x$ come una gaussiana
+centrata sulla predizione, $y \mid x \sim \mathcal{N}(\hat{y},\sigma^2)$ con
+varianza fissa, massimizzare la log-verosimiglianza equivale a minimizzare
+l'errore quadratico medio; sotto ipotesi di Bernoulli/categoriche equivale a
+minimizzare la cross-entropy. [Le loss di regressione e di classificazione più
+usate sono verosimiglianze travestite, non scelte arbitrarie]{.pt-matita}, e la
+sezione {doc}`Da dove viene la loss
 </RetiNeurali/da-dove-viene-la-loss>` le sveste una per una e ne fa una
 procedura applicabile a una distribuzione qualsiasi.
 
@@ -1709,8 +1709,8 @@ proporzione osservata.
 Una curva si può riassumere in due modi, con il suo punto più alto o con il suo
 baricentro, e con pochi lanci i due differiscono un poco; con tanti quasi
 coincidono.
-Il punto più alto è la massima verosimiglianza con in più una spinta verso
-l'opinione di partenza, e la {doc}`regolarizzazione
+[Il punto più alto è la massima verosimiglianza con in più una spinta verso
+l'opinione di partenza]{.pt-matita}, e la {doc}`regolarizzazione
 </MachineLearning/overfitting-validazione>`, nel capitolo sul Machine Learning,
 userà lo stesso meccanismo per trattenere un modello che esagera.
 
@@ -1731,10 +1731,11 @@ $$
 \hat{\theta}_{\text{MAP}} = \arg\max_{\theta}\ \Big[\log p(\mathcal{D} \mid \theta) + \log p(\theta)\Big]:
 $$
 
-la massima verosimiglianza più un termine che dipende solo dal parametro. Con
-un prior gaussiano $\theta_j \sim \mathcal{N}(0, \tau^2)$, ad esempio, quel
-termine è $-\sum_j \theta_j^2 / (2\tau^2)$, che corrisponde, a meno di un
-fattore positivo, alla penalità $\ell_2$ del Ridge della {doc}`regolarizzazione
+[la massima verosimiglianza più un termine che dipende solo dal
+parametro]{.pt-matita}. Con un prior gaussiano $\theta_j \sim \mathcal{N}(0,
+\tau^2)$, ad esempio, quel termine è $-\sum_j \theta_j^2 / (2\tau^2)$, che
+corrisponde, a meno di un fattore positivo, alla penalità $\ell_2$ del Ridge
+della {doc}`regolarizzazione
 </MachineLearning/overfitting-validazione>`; con un prior di Laplace è la
 $\ell_1$ del Lasso. La stima bayesiana completa, invece, tiene tutta la
 posteriore: ne ricava la media, un intervallo di credibilità, la predittiva

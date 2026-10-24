@@ -63,11 +63,12 @@ dentro mezza biblioteca. Una parola che sta dappertutto non distingue niente,
 quindi le parole rare contano di più.
 
 Poi apri un titolo e conti. «Gatto» ci compare dieci volte, ma il libro non è
-dieci volte più pertinente di uno che lo nomina una volta sola: dopo un po’ il
-tema è chiaro e le menzioni in più aggiungono briciole. Con la regolazione più
-usata, e su un libro di lunghezza normale, una menzione vale un punto e dieci
-ne valgono meno di due; per quanto si insista non si supera un tetto, che con
-quella regolazione sta a due punti e due decimi, e si tocca presto.
+dieci volte più pertinente di uno che lo nomina una volta sola: [dopo un po’ il
+tema è chiaro e le menzioni in più aggiungono briciole]{.pt-matita}. Con la
+regolazione più usata, e su un libro di lunghezza normale, una menzione vale un
+punto e dieci ne valgono meno di due; per quanto si insista non si supera un
+tetto, che con quella regolazione sta a due punti e due decimi, e si tocca
+presto.
 
 Sullo scaffale accanto c'è l'enciclopedia in dodici volumi, che contiene
 «gatto» e «muro» per forza di cose, come contiene quasi ogni parola. Se non si
@@ -133,9 +134,9 @@ $\log\!\big(1 + \frac{N - \mathrm{df}(t) + 0{,}5}{\mathrm{df}(t) + 0{,}5}\big)$,
 sempre positiva e con lo stesso ordinamento nei casi utili.
 
 La frazione è il cuore della formula, e codifica la **saturazione** della term
-frequency: cresce con $\mathrm{tf}$ ma tende al tetto $k_1 + 1$. Con il valore
-tipico $k_1 = 1{,}2$ e un documento di lunghezza media (la parentesi vale 1),
-un'occorrenza dà punteggio $1$; dieci occorrenze danno
+frequency: [cresce con $\mathrm{tf}$ ma tende al tetto $k_1 + 1$]{.pt-matita}.
+Con il valore tipico $k_1 = 1{,}2$ e un documento di lunghezza media (la
+parentesi vale 1), un'occorrenza dà punteggio $1$; dieci occorrenze danno
 $\frac{10 \cdot 2{,}2}{10 + 1{,}2} \approx 1{,}96$ (non dieci volte tanto,
 nemmeno il doppio, e sempre sotto il tetto). Il termine $b \in [0, 1]$
 (tipicamente $b = 0{,}75$) dosa invece la **normalizzazione per lunghezza**:
@@ -173,7 +174,8 @@ rappresenta il testo </NaturalLanguageProcessing/rappresentare-testo>`, la
 stessa mappa del significato della {doc}`sezione sui modelli multilingua
 </Transformers/multilingua>`: ogni passaggio, e anche la domanda, diventa un
 vettore di $\mathbb{R}^d$, e testi dal significato simile hanno vettori vicini.
-Cercare, allora, diventa misurare distanze invece che confrontare parole.
+[Cercare, allora, diventa misurare distanze invece che confrontare
+parole]{.pt-matita}.
 
 Questo approccio si chiama **retrieval denso**, dove «denso» descrive il
 vettore: non una coordinata per ogni parola della lingua, quasi tutte nulle,
@@ -331,9 +333,9 @@ insieme più punti del testo. È il QA **generativo**, più flessibile, ma con l
 libertà arriva il rischio: chi scrive di suo può anche scrivere cose che nel
 testo non ci sono.
 
-C'è poi il caso in cui nessuno dà il brano: la domanda arriva nuda, e il primo
-passo è cercare le pagine giuste. Trovate quelle, si torna a scegliere fra
-evidenziatore e penna.
+C'è poi il caso in cui nessuno dà il brano: [la domanda arriva nuda, e il primo
+passo è cercare le pagine giuste]{.pt-matita}. Trovate quelle, si torna a
+scegliere fra evidenziatore e penna.
 
 `````
 
@@ -347,14 +349,14 @@ paragrafo dato. Il modello predice le posizioni di inizio e fine dello span
 token un punteggio di inizio e uno di fine, normalizzati da una softmax) e si
 valuta con *exact match* e F1 sui token. Nel 2018 i modelli neurali, BERT
 compreso, hanno superato su questo benchmark le prestazioni degli annotatori
-umani: un risultato significativo, da leggere però sapendo che
-cosa misura (individuare uno span in un singolo paragrafo fornito a priori, in
-cui la risposta è sempre presente, non equivale a rispondere a domande aperte).
-Il QA generativo rimuove il vincolo dello span: un modello seq2seq (o un
-decoder autoregressivo) *scrive* la risposta condizionata a domanda e contesto.
-Il QA a dominio aperto rimuove anche il paragrafo dato: prima si recuperano i
-passaggi da una collezione, poi si legge il materiale trovato, e su questa
-catena poggia la RAG.
+umani: un risultato significativo, da leggere però sapendo che cosa misura
+(individuare uno span in un singolo paragrafo fornito a priori, in cui la
+risposta è sempre presente, non equivale a rispondere a domande aperte). Il QA
+generativo rimuove il vincolo dello span: un modello seq2seq (o un decoder
+autoregressivo) *scrive* la risposta condizionata a domanda e contesto. [Il QA
+a dominio aperto rimuove anche il paragrafo dato]{.pt-matita}: prima si
+recuperano i passaggi da una collezione, poi si legge il materiale trovato, e
+su questa catena poggia la RAG.
 
 `````
 
@@ -534,12 +536,13 @@ filtrare. I numeri sono inventati apposta, per far vedere il meccanismo.
 
 La RAG mitiga le allucinazioni: per i contenuti presenti nell'archivio il
 modello non deve più inventare, e nel dialogo fondato su conoscenze i modelli
-con recupero allucinano meno {cite}`shuster2021retrieval`. Non le elimina: un
-recupero sbagliato produce una risposta sbagliata con le fonti in bella vista.
-In cambio offre due proprietà che i soli pesi non garantiscono in modo
-affidabile: la citabilità, perché una risposta con la fonte si può verificare e
-una senza fonte no, e l'aggiornabilità, perché quando i documenti cambiano si
-ricostruisce l'indice dell'archivio, non si riaddestra il modello.
+con recupero allucinano meno {cite}`shuster2021retrieval`. [Non le elimina: un
+recupero sbagliato produce una risposta sbagliata con le fonti in bella
+vista]{.pt-matita}. In cambio offre due proprietà che i soli pesi non
+garantiscono in modo affidabile: la citabilità, perché una risposta con la
+fonte si può verificare e una senza fonte no, e l'aggiornabilità, perché quando
+i documenti cambiano si ricostruisce l'indice dell'archivio, non si riaddestra
+il modello.
 
 ## Un retriever denso in miniatura
 
@@ -628,8 +631,8 @@ Risposta:
 Il primo passaggio è quello giusto, con una somiglianza di $0{,}99$, quasi
 perfetta. Il secondo, a $0{,}78$, parla di gatti e per questo sta *vicino* alla
 domanda sulla mappa, eppure non risponde: è il quasi-pertinente, l'insidia
-tipica della ricerca per significato, dove la vicinanza di tema non è
-pertinenza alla domanda.
+tipica della ricerca per significato, dove [la vicinanza di tema non è
+pertinenza alla domanda]{.pt-matita}.
 
 Nei sistemi reali interviene un secondo lettore, più
 lento e più accurato, che riesamina uno per uno i pochi candidati e li rimette

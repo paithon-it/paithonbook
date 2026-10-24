@@ -68,10 +68,10 @@ all'errore. Sono due uffici distinti che però tengono le procedure allineate.
 Questa soluzione occupa più memoria, perché le reti sono due, ma non obbliga
 due compiti diversi a usare la stessa identica preparazione.
 
-Nella pratica si finisce quasi sempre in mezzo: condiviso in basso, separato
-in alto. In basso una rete impara cose generiche (i bordi, le forme, la
-struttura della frase) che servono a chiunque; in alto cose specifiche del
-compito, che è giusto restino separate.
+Nella pratica [si finisce quasi sempre in mezzo: condiviso in basso, separato
+in alto]{.pt-matita}. In basso una rete impara cose generiche (i bordi, le
+forme, la struttura della frase) che servono a chiunque; in alto cose
+specifiche del compito, che è giusto restino separate.
 
 I mestieri si possono anche imparare uno alla volta, invece che tutti insieme.
 Si arriva in fondo lo stesso, con un rischio che l'altra via non corre: mentre
@@ -112,12 +112,11 @@ loss: con $\mu = 0$ le reti sono indipendenti, mentre per $\mu \to \infty$ i
 parametri penalizzati diventano uguali, quindi se la penalità esclude gli strati
 d'uscita il limite è la condivisione dura.
 
-Le forme miste condividono gli strati bassi e lasciano separati gli alti; sono
-quasi sempre la scelta pratica, per la ragione vista nella
-{doc}`sezione sulle rappresentazioni gerarchiche <overview>`: le feature
+[Le forme miste condividono gli strati bassi e lasciano separati gli
+alti]{.pt-matita}; sono quasi sempre la scelta pratica, per la ragione vista
+nella {doc}`sezione sulle rappresentazioni gerarchiche <overview>`: le feature
 generiche stanno in basso e quelle specifiche in alto, quindi il punto in cui
-separare le teste dipende da quanto in alto arriva la parentela fra i
-compiti.
+separare le teste dipende da quanto in alto arriva la parentela fra i compiti.
 
 Il *transfer learning* (visto con le stesse rappresentazioni gerarchiche) è lo
 stesso schema disteso nel tempo: là i compiti si affrontano in sequenza (si
@@ -170,9 +169,10 @@ non lo può sostituire.
 
 Il secondo motivo è più sottile: il compito in più fa da freno. Una rete
 lasciata sola con un compito trova la soluzione di comodo, e le soluzioni di
-comodo sono quelle che non generalizzano. Se la stessa rappresentazione deve
-servire anche a un secondo compito, quelle soluzioni non convengono più, perché
-al secondo non servono, e la rete è spinta verso soluzioni più generali.
+comodo sono quelle che non generalizzano. [Se la stessa rappresentazione deve
+servire anche a un secondo compito, quelle soluzioni non convengono
+più]{.pt-matita}, perché al secondo non servono, e la rete è spinta verso
+soluzioni più generali.
 
 In gergo questa spinta si chiama regolarizzazione, un nome che si dà a
 qualunque accorgimento che, restringendo le strade che la rete può prendere, la
@@ -211,8 +211,8 @@ attraverso lo strato condiviso. Infine c'è il *bias di rappresentazione*: fra l
 soluzioni che la discesa del gradiente può trovare, la rete a più compiti
 preferisce quelle che servono a tutti.
 
-In definitiva, chiedere alla stessa rappresentazione di servire più compiti
-restringe lo spazio delle ipotesi con informazione vera, e agisce da
+In definitiva, [chiedere alla stessa rappresentazione di servire più compiti
+restringe lo spazio delle ipotesi con informazione vera]{.pt-matita}, e agisce da
 regolarizzazione, perché il rumore specifico di un compito viene mediato via
 mentre la struttura comune sopravvive. Nel compromesso bias-varianza (la
 {doc}`sezione sull'overfitting </MachineLearning/overfitting-validazione>`) si
@@ -251,10 +251,11 @@ sempre.
 
 `````{tab} Elementare
 
-Funziona se i compiti sono imparentati. Se non lo sono, si contendono la
-stessa rappresentazione e finiscono peggio di quando erano separati. Studiare
-latino aiuta l'italiano; studiare latino la sera prima di una gara di nuoto
-non aiuta il nuoto, e toglie ore all'allenamento.
+Funziona se i compiti sono imparentati. Se non lo sono, [si contendono la
+stessa rappresentazione e finiscono peggio di quando erano
+separati]{.pt-matita}. Studiare latino aiuta l'italiano; studiare latino la
+sera prima di una gara di nuoto non aiuta il nuoto, e toglie ore
+all'allenamento.
 
 Il meccanismo del danno è concreto. Il tronco ha una capacità finita, perché i
 numeri che può regolare sono tanti ma non infiniti, e ciò che riesce a tenere a
@@ -300,13 +301,13 @@ e si risponde provando.
 
 Il rovescio ha un nome, **trasferimento negativo** (*negative transfer*), e una
 diagnosi meccanica proposta da Yu e colleghi: i **gradienti in conflitto**. I
-gradienti che due compiti imprimono ai parametri condivisi possono avere
+gradienti che due compiti imprimono ai parametri condivisi [possono avere
 prodotto scalare negativo, e allora ogni passo che aiuta l'uno danneggia
-l'altro. **PCGrad** {cite}`yu2020gradient` interviene su quel punto. Chiamati
-$\mathbf{g}_i = \nabla_\phi \mathcal{L}_i$ i gradienti dei compiti rispetto ai
-soli parametri condivisi, quando $\mathbf{g}_i^\top \mathbf{g}_j < 0$ si
-sostituisce $\mathbf{g}_i$ con la sua proiezione sul piano normale a
-$\mathbf{g}_j$,
+l'altro]{.pt-matita}. **PCGrad** {cite}`yu2020gradient` interviene su quel
+punto. Chiamati $\mathbf{g}_i = \nabla_\phi \mathcal{L}_i$ i gradienti dei
+compiti rispetto ai soli parametri condivisi, quando $\mathbf{g}_i^\top
+\mathbf{g}_j < 0$ si sostituisce $\mathbf{g}_i$ con la sua proiezione sul piano
+normale a $\mathbf{g}_j$,
 
 $$
 \mathbf{g}_i \leftarrow \mathbf{g}_i - \frac{\mathbf{g}_i^\top \mathbf{g}_j}{\lVert \mathbf{g}_j \rVert^2}\,\mathbf{g}_j ,
@@ -491,13 +492,13 @@ ausiliario (stessi dati, stessa partenza).
   è peggio che non averlo. La capacità del tronco spesa a inseguire quel
   bersaglio è capacità sottratta al compito che contava.
 
-Il risultato dell'ausiliario inutile è il più importante dei tre: il
+Il risultato dell'ausiliario inutile è il più importante dei tre: [il
 multi-compito non è una tecnica che si aggiunge senza rischio, perché nel caso
-peggiore fa danno. Si noti però che il bersaglio di quell'ausiliario è rumore
-puro, un caso estremo che nessuna rete può imparare, quindi l'esperimento misura
-con precisione la prima delle due cause di danno, la capacità del tronco
-sprecata. Un compito diverso ma *imparabile* fa in genere molto meno danno di
-così.
+peggiore fa danno]{.pt-matita}. Si noti però che il bersaglio di
+quell'ausiliario è rumore puro, un caso estremo che nessuna rete può imparare,
+quindi l'esperimento misura con precisione la prima delle due cause di danno,
+la capacità del tronco sprecata. Un compito diverso ma *imparabile* fa in
+genere molto meno danno di così.
 
 Il $+25\%$, poi, non dice niente su quanto debba pesare ciascun compito. Le
 righe `parente` e `rumore` sommano i due errori con peso uguale, cioè

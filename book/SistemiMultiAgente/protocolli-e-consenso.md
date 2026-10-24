@@ -15,13 +15,13 @@ parole) che si occupa di ciò che le parole *fanno* oltre a ciò che dicono.
 
 La teoria serve a chi progetta protocolli fra agenti. Quando due agenti si
 scambiano un messaggio, la domanda «che cosa c'è scritto» è la meno
-interessante; quella che conta è «che cosa fa questo messaggio»: apre un
-impegno, ne chiude uno, chiede, propone, rifiuta. Subito dopo arriva la seconda
-domanda, quella che con un agente solo non si pone: quando le risposte non
-coincidono, chi decide? Le risposte che il campo ha dato vanno dal messaggio che
-dichiara il proprio tipo fino al voto di maggioranza, e il voto poggia su
-un'ipotesi, l'indipendenza degli errori, che fra copie dello stesso modello
-quasi mai vale.
+interessante; [quella che conta è «che cosa fa questo messaggio»]{.pt-matita}:
+apre un impegno, ne chiude uno, chiede, propone, rifiuta. Subito dopo arriva la
+seconda domanda, quella che con un agente solo non si pone: quando le risposte
+non coincidono, chi decide? Le risposte che il campo ha dato vanno dal
+messaggio che dichiara il proprio tipo fino al voto di maggioranza, e il voto
+poggia su un'ipotesi, l'indipendenza degli errori, che fra copie dello stesso
+modello quasi mai vale.
 
 ## Atti linguistici e performative
 
@@ -31,13 +31,14 @@ informare, chiedere, impegnarsi, rifiutare.
 
 ```{figure} ../figures/anatomia-agente-ai.svg
 :name: fig-ciclo-percezione-azione
-:alt: "Ciclo chiuso in quattro stazioni disposte ad anello: percezione, decisione, azione e osservazione, unite l'una alla successiva da quattro frecce, e al centro dell'anello la memoria. Il giro ricomincia dalla percezione."
+:alt: "Ciclo chiuso in quattro stazioni disposte ad anello: percezione, decisione, azione e osservazione, unite l'una alla successiva da quattro frecce, e al centro dell'anello la memoria. L'iterazione ricomincia dalla percezione."
 :width: 84%
 
 Il ciclo del singolo agente, prima di metterne insieme molti: percezione,
 decisione, azione e osservazione dell'effetto, con al centro la memoria che
-porta lo stato da un giro al successivo. Ogni partecipante a un protocollo è uno
-di questi cicli: i messaggi entrano dalla percezione ed escono dall'azione.
+porta lo stato da un'iterazione alla successiva. Ogni partecipante a un
+protocollo è uno di questi cicli: i messaggi entrano dalla percezione ed escono
+dall'azione.
 ```
 
 Prima di guardare i messaggi conviene rimettersi davanti il singolo agente
@@ -122,14 +123,14 @@ riuscito»), `not-understood` («non ho capito che cosa vuoi»), e altre sedici
 sulla stessa falsariga.
 
 Perché conta oggi, che gli agenti sono modelli di linguaggio e la prosa libera
-gli riesce benissimo? Perché la prosa libera non si verifica. Ad esempio, se un
-agente scrive «ci penso io, più tardi», nessun programma può stabilire se ha
-accettato un incarico o se sta rimandando; e a lavoro finito nessuno può far
-dire a una macchina se quella richiesta ha avuto risposta, se quell'impegno è
-stato onorato, se quella proposta è stata accettata o ignorata. La stessa idea
-torna negli standard di oggi per gli agenti linguistici, quelli che la sezione
-sul ciclo dell'agente ha già presentato: MCP per il dialogo fra un agente e i
-suoi strumenti, e A2A, annunciato da Google nell'aprile 2025
+gli riesce benissimo? Perché [la prosa libera non si verifica]{.pt-matita}. Ad
+esempio, se un agente scrive «ci penso io, più tardi», nessun programma può
+stabilire se ha accettato un incarico o se sta rimandando; e a lavoro finito
+nessuno può far dire a una macchina se quella richiesta ha avuto risposta, se
+quell'impegno è stato onorato, se quella proposta è stata accettata o ignorata.
+La stessa idea torna negli standard di oggi per gli agenti linguistici, quelli
+che la sezione sul ciclo dell'agente ha già presentato: MCP per il dialogo fra
+un agente e i suoi strumenti, e A2A, annunciato da Google nell'aprile 2025
 {cite}`surapaneni2025a2a`, per quello fra agenti. Danno ai messaggi un tipo e
 uno schema, e questo li rende controllabili nella forma, ma non garantisce che
 gli agenti si capiscano, perché gli errori di disallineamento osservati da
@@ -323,10 +324,10 @@ programma.
 
 E attenzione al verso, perché è la prima delle due condizioni. Se ciascuno ci
 prende meno della metà delle volte il risultato si ribalta: con tre persone che
-azzeccano quattro volte su dieci il gruppo scende a trentacinque su cento, e con
-nove a ventisette. Più si è, peggio si fa. Il voto non aggiunge competenza,
-amplifica quella che c'è: sopra la metà spinge verso la risposta giusta, sotto
-la metà verso quella sbagliata.
+azzeccano quattro volte su dieci il gruppo scende a trentacinque su cento, e
+con nove a ventisette. Più si è, peggio si fa. [Il voto non aggiunge
+competenza, amplifica quella che c'è]{.pt-matita}: sopra la metà spinge verso
+la risposta giusta, sotto la metà verso quella sbagliata.
 
 `````
 
@@ -357,11 +358,11 @@ sbagliate con probabilità $q$, la pluralità tende alla verità per $n \to
 risposta giusta al 40% batte dieci risposte sbagliate al 6% ciascuna. La
 dicotomia con la soglia a $1/2$ che segue è quella del caso binario.
 
-Il teorema ha due parti: per $p > 1/2$ la successione $P_n$, letta
-sui valori dispari di $n$, è crescente e tende a $1$; per $p < 1/2$ è
-decrescente e tende a $0$. Il voto amplifica la tendenza di fondo, qualunque
-essa sia: sopra la soglia converge alla verità, sotto la soglia converge
-all'errore, e la soglia coincide con il tirare a caso.
+Il teorema ha due parti: per $p > 1/2$ la successione $P_n$, letta sui valori
+dispari di $n$, è crescente e tende a $1$; per $p < 1/2$ è decrescente e tende
+a $0$. [Il voto amplifica la tendenza di fondo, qualunque essa
+sia]{.pt-matita}: sopra la soglia converge alla verità, sotto la soglia
+converge all'errore, e la soglia coincide con il tirare a caso.
 
 Con $p = 0{,}7$: $P_3 = 0{,}784$, $P_5 = 0{,}837$, $P_9 = 0{,}901$,
 $P_{21} = 0{,}974$. La convergenza è reale ma lenta, con rendimenti decrescenti
@@ -573,11 +574,12 @@ print(f"\nP(unanimita' su 9) = {unanimi:.3f}, "
 P(unanimita' su 9) = 0.441, di cui sbagliate 45.4%
 ```
 
-In sintesi, fra agenti che sbagliano insieme il voto alza la correttezza solo
-fino a un tetto ($1-\lambda$, qui $0{,}80$ invece di $1$), e alza la sicurezza
-con cui la risposta viene data molto più della correttezza. Ed è un esito
-pericoloso, perché un sistema che sbaglia e dà segno di essere incerto si può
-ancora recuperare, mentre uno che sbaglia esibendo nove firme in calce no.
+In sintesi, [fra agenti che sbagliano insieme il voto alza la correttezza solo
+fino a un tetto]{.pt-matita} ($1-\lambda$, qui $0{,}80$ invece di $1$), e alza
+la sicurezza con cui la risposta viene data molto più della correttezza. Ed è
+un esito pericoloso, perché un sistema che sbaglia e dà segno di essere incerto
+si può ancora recuperare, mentre uno che sbaglia esibendo nove firme in calce
+no.
 
 L'indipendenza, però, non è tutto o niente: un po’ se ne può guadagnare, e ogni
 modo di ottenerla ha un costo. Si può alzare la temperatura, perché le risposte
@@ -671,11 +673,11 @@ E il processo non si esaurisce in un'udienza. Chi ha parlato per primo, messo
 sotto accusa su un punto, quel punto lo spiega più minutamente; l'altro guarda
 la spiegazione e di nuovo indica il pezzo che non gli torna; e si va avanti
 così, restringendo ogni volta. Alla fine il disaccordo si è stretto a un
-dettaglio solo, e controllare un dettaglio è alla portata di
-chiunque, anche di chi non avrebbe saputo ricostruire l'intera storia. Il
-giudice non deve essere più bravo dei dibattenti: deve solo saper valutare
-l'ultimo passaggio contestato. Quante udienze servano lo decide il caso: più
-è intricato, più giri ci vogliono per arrivare a quel dettaglio.
+dettaglio solo, e controllare un dettaglio è alla portata di chiunque, anche di
+chi non avrebbe saputo ricostruire l'intera storia. [Il giudice non deve essere
+più bravo dei dibattenti: deve solo saper valutare l'ultimo passaggio
+contestato]{.pt-matita}. Quante udienze servano lo decide il caso: più è
+intricato, più giri ci vogliono per arrivare a quel dettaglio.
 
 Qui sta anche il limite. Tutto funziona finché il giudice distingue un
 argomento sbagliato da uno valido. Se si lascia convincere dal più sicuro di
@@ -718,10 +720,10 @@ illimitata, e il dibattente onesto deve poterla usare tutta, perché per vincere
 è costretto a simulare per intero un calcolo esponenziale; il giudice è
 polinomiale ma scelto in funzione del problema; e il numero di turni cresce con
 il problema, perché a $n$ turni fissati la classe raggiunta è $\Sigma_n^P$, un
-gradino della gerarchia polinomiale per ogni turno. Il guadagno viene dal fatto
-che il giudice non deve esaminare l'intero albero degli argomenti, e non dalla
-maggiore bravura dei dibattenti: gli basta seguire il ramo che i due, con
-interessi opposti, hanno scelto di contestare.
+gradino della gerarchia polinomiale per ogni turno. [Il guadagno viene dal
+fatto che il giudice non deve esaminare l'intero albero degli
+argomenti]{.pt-matita}, e non dalla maggiore bravura dei dibattenti: gli basta
+seguire il ramo che i due, con interessi opposti, hanno scelto di contestare.
 
 Tre avvertenze, e sono sostanziali. La prima: il risultato vale con gioco
 ottimale e giudice affidabile, cioè capace di valutare correttamente l'ultimo
@@ -930,17 +932,16 @@ privacy e robustezza </AIResponsabile/privacy-e-robustezza>`, dove robusto vuol
 dire comportarsi in modo prevedibile quando qualcosa (o qualcuno) prova a farti
 sbagliare.
 
-L'analogia però ha dei limiti. Il teorema descrive un
-avversario che sceglie la strategia peggiore possibile e può mettersi d'accordo
-con gli altri traditori: un modello che sbaglia non è malevolo in quel senso, e
-la soglia dei due terzi non si trasferisce come formula ai sistemi di agenti,
-che non hanno traditori coordinati da tollerare. Quello che
-si trasferisce, e conta parecchio, è la classificazione dei guasti e la sua
-conseguenza di progetto: contro un partecipante che mente con garbo, l'unica
-difesa è un riscontro esterno che non passi per la sua parola. Uno strumento
-che misura, una fonte che si può andare a leggere, un programma di prova che o
-passa o non passa: è il cancello di verifica della {doc}`sezione sul costo del
-coordinamento
+L'analogia però ha dei limiti. Il teorema descrive un avversario che sceglie la
+strategia peggiore possibile e può mettersi d'accordo con gli altri traditori:
+un modello che sbaglia non è malevolo in quel senso, e la soglia dei due terzi
+non si trasferisce come formula ai sistemi di agenti, che non hanno traditori
+coordinati da tollerare. Quello che si trasferisce, e conta parecchio, è la
+classificazione dei guasti e la sua conseguenza di progetto: [contro un
+partecipante che mente con garbo, l'unica difesa è un riscontro esterno che non
+passi per la sua parola]{.pt-matita}. Uno strumento che misura, una fonte che
+si può andare a leggere, un programma di prova che o passa o non passa: è il
+cancello di verifica della {doc}`sezione sul costo del coordinamento
 </SistemiMultiAgente/costo-del-coordinamento>`, qui nella veste di antidoto
 alla menzogna. Resta valida l'avvertenza che la stessa sezione dava sui
 fallimenti reali: un verificatore che non ha modo di controllare non aggiunge
@@ -952,8 +953,8 @@ Il teorema dei generali bizantini garantisce una proprietà e non ne garantisce
 un'altra. Garantisce l’accordo: i partecipanti leali decidono tutti lo stesso
 valore. Non garantisce la verità: se il comandante leale ordina una ritirata
 sbagliata, il protocollo farà ritirare tutti, ordinatamente e all'unanimità.
-Consenso e correttezza sono due proprietà diverse, e confonderle è il modo più
-elegante di costruire un sistema che sbaglia in modo coordinato.
+[Consenso e correttezza sono due proprietà diverse]{.pt-matita}, e confonderle
+è il modo più elegante di costruire un sistema che sbaglia in modo coordinato.
 
 Vale per tutti i meccanismi visti qui. Scrivere il tipo sul messaggio rende
 controllabile se un agente ha risposto e se ha mantenuto un impegno, senza

@@ -7,12 +7,13 @@ dinamica, poi lo si usa per scegliere la mossa. È la divisione del lavoro dei
 Dreamer, e vale anche per la JEPA con un pianificatore.
 
 Esiste un modo di guardare la faccenda in cui quella separazione non c'è:
-predire e decidere sono un'operazione sola. Nasce nelle neuroscienze teoriche e
-si chiama inferenza attiva. Il nome compare già nella {doc}`sezione sul
-dibattito attorno al rinforzo </AutoSupervisione/dibattito-rl>`, dove serviva a
-spiegare perché chi vuole un caffè guarda prima il calendario; là se ne vede la
-conclusione, qui si parte dall'inizio. La trattazione d'insieme è un libro di
-Thomas Parr, Giovanni Pezzulo e Karl Friston {cite}`parr2022active`.
+[predire e decidere sono un'operazione sola]{.pt-matita}. Nasce nelle
+neuroscienze teoriche e si chiama inferenza attiva. Il nome compare già nella
+{doc}`sezione sul dibattito attorno al
+rinforzo </AutoSupervisione/dibattito-rl>`, dove serviva a spiegare perché chi
+vuole un caffè guarda prima il calendario; là se ne vede la conclusione, qui si
+parte dall'inizio. La trattazione d'insieme è un libro di Thomas Parr, Giovanni
+Pezzulo e Karl Friston {cite}`parr2022active`.
 
 «Inferenza», qui, è quella dei modelli latenti, cioè risalire alla causa
 nascosta a partire da quel che si vede, e non far girare un modello già
@@ -45,8 +46,8 @@ meno lo si riteneva probabile, e la {doc}`sezione sulla teoria
 dell'informazione
 </Matematica/teoria-informazione>` la misura in bit. Ad esempio, un esito
 che aspettavi una volta su due vale un bit di sorpresa, uno che aspettavi una
-volta su mille ne vale una decina. Restare vivi e restare poco sorpresi
-diventano così la stessa cosa, detta in due lingue diverse.
+volta su mille ne vale una decina. [Restare vivi e restare poco sorpresi
+diventano così la stessa cosa, detta in due lingue diverse]{.pt-matita}.
 
 ## Due modi di smettere di essere sorpresi
 
@@ -68,8 +69,8 @@ avere ragione. Questo si chiama **agire**.
 
 Sono due strade diverse verso lo stesso risultato, cioè eliminare lo scarto fra
 quello che ti aspettavi e quello che trovi. La tesi dell'inferenza attiva è che
-siano la stessa operazione, fatta in due direzioni: percepire piega le tue
-idee verso il mondo, agire piega il mondo verso le tue idee.
+siano la stessa operazione, fatta in due direzioni: [percepire piega le tue
+idee verso il mondo, agire piega il mondo verso le tue idee]{.pt-matita}.
 
 Davanti al buio, però, non puoi misurare la sorpresa vera: per calcolarla
 dovresti già conoscere la spiegazione migliore di tutte, e non la conosci.
@@ -140,8 +141,8 @@ che è la perdita di un VAE con prior $P(s)$, e ha la stessa forma
 noti che $F$ dipende anche da $o$, e che le osservazioni un agente se le
 può andare a prendere.
 
-Da qui i tre modi, che sono tre argomenti diversi rispetto a cui si minimizza la
-stessa quantità:
+Da qui [i tre modi, che sono tre argomenti diversi rispetto a cui si minimizza la
+stessa quantità]{.pt-matita}:
 
 - rispetto a $Q(s)$: **percezione**, cioè aggiornamento delle credenze a
   osservazioni date;
@@ -193,8 +194,8 @@ qualunque formula.
 
 `````{tab} Elementare
 
-La risposta è che la sorpresa non si misura rispetto a quello che capita, ma
-rispetto a quello che sei.
+La risposta è che [la sorpresa non si misura rispetto a quello che capita, ma
+rispetto a quello che sei]{.pt-matita}.
 
 Il modello di una creatura non è una fotocopia del mondo. Infatti chi avesse in
 testa solo una fotocopia descriverebbe la corrente e si lascerebbe portare. Il
@@ -232,9 +233,10 @@ va bene per tutto non dice più niente.
 `````{tab} Superiore
 
 Formalmente la risposta sta in dove vivono le preferenze. Non c'è una funzione
-di ricompensa affiancata al modello: le condizioni preferite sono i priori
-del modello generativo stesso, cioè la distribuzione delle osservazioni che
-l'agente si aspetta di incontrare in quanto agente di quel tipo.
+di ricompensa affiancata al modello: [le condizioni preferite sono i priori del
+modello generativo stesso]{.pt-matita}, cioè la distribuzione delle
+osservazioni che l'agente si aspetta di incontrare in quanto agente di quel
+tipo.
 
 Ne segue una proprietà che gli autori sottolineano: il modello generativo non
 può limitarsi a imitare la dinamica esterna, altrimenti l'agente si limiterebbe
@@ -296,10 +298,10 @@ possono essere ugualmente vicini al bar, ma dal vicolo non si capisce nemmeno
 se la saracinesca è alzata, quindi chi si infila lì resta nel dubbio comunque
 si giri, e il dubbio che voleva togliersi è ancora lì.
 
-Le due misure sono le due metà di un voto solo, che l'agente cerca di rendere
-più alto possibile, e si contano con la stessa moneta: nessuno deve decidere a
-parte quanti punti di curiosità valga un passo verso la meta, perché la
-curiosità era lì dall'inizio, dentro quel voto.
+[Le due misure sono le due metà di un voto solo]{.pt-matita}, che l'agente
+cerca di rendere più alto possibile, e si contano con la stessa moneta: nessuno
+deve decidere a parte quanti punti di curiosità valga un passo verso la meta,
+perché la curiosità era lì dall'inizio, dentro quel voto.
 
 Quanto l'agente esplori dipende però da quanto sono forti le sue preferenze. Ad
 esempio, chi vuole il caffè disperatamente va dritto al bar che conosce, e il
@@ -338,12 +340,12 @@ autori le danno, scrivendola come definizione; è la stessa che la {doc}`sezione
 sul dibattito attorno al rinforzo </AutoSupervisione/dibattito-rl>` ha usato
 con l'esempio del caffè.
 
-Poiché $G$ si minimizza, i due valori si massimizzano
-insieme e si misurano nella stessa unità, il nat, quindi non serve un
-coefficiente esterno che converta l'uno nell'altro. Il bilanciamento però non
-sparisce: gli autori scrivono che è il peso relativo dei due termini a decidere
-se il comportamento è prevalentemente esplorativo o di sfruttamento, e una riga
-di calcolo mostra da che cosa dipende quel peso.
+Poiché $G$ si minimizza, i due valori si massimizzano insieme e [si misurano
+nella stessa unità, il nat, quindi non serve un coefficiente esterno che
+converta l'uno nell'altro]{.pt-matita}. Il bilanciamento però non sparisce: gli
+autori scrivono che è il peso relativo dei due termini a decidere se il
+comportamento è prevalentemente esplorativo o di sfruttamento, e una riga di
+calcolo mostra da che cosa dipende quel peso.
 
 Scrivendo le preferenze come
 $P(\tilde{o} \mid C) \propto e^{\beta\, u(\tilde{o})}$, con $u$ un'utilità e
@@ -421,16 +423,16 @@ riottengono infatti come casi particolari, e la {doc}`sezione
 sull'esplorazione </DeepReinforcementLearning/esplorazione-e-ricompensa>` del
 deep reinforcement learning ne mostra una.
 
-Una cornice che spiega tutto va maneggiata con cura, e qui si confondono
-spesso due livelli. Il primo è il *principio* dell'energia libera, che per chi
-lo propone ha lo statuto di un principio variazionale, come quello di minima
+Una cornice che spiega tutto va maneggiata con cura, e qui si confondono spesso
+due livelli. Il primo è il *principio* dell'energia libera, che per chi lo
+propone ha lo statuto di un principio variazionale, come quello di minima
 azione in fisica: dice che un sistema che persiste si lascia descrivere *come
-se* minimizzasse $F$. In questa forma nessun esperimento lo può smentire (in
-gergo, non è falsificabile), perché quasi qualunque comportamento si riscrive
-scegliendo il modello generativo e i priori, cioè le aspettative di partenza,
-che lo producono. È la critica che gli muovono più spesso, anche i filosofi
-della biologia {cite}`colombo2021first`, e coincide con l'obiezione della
-stanza buia.
+se* minimizzasse $F$. [In questa forma nessun esperimento lo può
+smentire]{.pt-matita} (in gergo, non è falsificabile), perché quasi qualunque
+comportamento si riscrive scegliendo il modello generativo e i priori, cioè le
+aspettative di partenza, che lo producono. È la critica che gli muovono più
+spesso, anche i filosofi della biologia {cite}`colombo2021first`, e coincide
+con l'obiezione della stanza buia.
 
 Il secondo livello è quello delle *teorie di processo* che dal principio
 discendono, e queste si possono smentire: un certo modo in cui la corteccia
@@ -560,9 +562,9 @@ posti da cui si vede bene non ha dove attaccarsi.
 
 Resta una conclusione valida anche fuori dall'algebra. Quando un obiettivo
 pratico si scrive come «ottieni quello che preferisci, ma non allontanarti dal
-punto di partenza», quella seconda metà è sempre un'ipotesi su dove sia lecito
-cercare, mai un dettaglio implementativo, e quasi sempre decide che cosa il
-sistema diventerà.
+punto di partenza», [quella seconda metà è sempre un'ipotesi su dove sia lecito
+cercare, mai un dettaglio implementativo]{.pt-matita}, e quasi sempre decide
+che cosa il sistema diventerà.
 
 `````{tab} Elementare
 

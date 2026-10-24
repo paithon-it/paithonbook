@@ -60,29 +60,29 @@ percorso.
 ```
 
 Il punto che {numref}`fig-flusso-dati-personali` rende difficile da aggirare è
-la seconda stazione, dove i dati diventano pesi: i milioni di numeri interni che
-l'addestramento aggiusta un pochino alla volta finché il modello non funziona.
-Nelle altre stazioni un dato è un dato, sta in un archivio, si trova e si
-cancella. Nei pesi non c'è più, e c'è ancora: è stato sciolto dentro quei
-milioni di numeri. Di conseguenza, a addestramento finito, per toglierlo con
-certezza bisogna riaddestrare senza di lui. Il riaddestramento si può rendere
-meno caro, dividendo i dati in blocchi addestrati separatamente e rifacendo solo
-il blocco che conteneva il dato da togliere {cite}`bourtoule2021machine`; ci
-sono poi metodi approssimati che ritoccano i pesi senza ripartire da zero: per i
-modelli lineari la rimozione si può certificare {cite}`guo2020certified`, per le
-reti profonde della loro riuscita esistono misure, non prove. È il motivo per
-cui il diritto alla cancellazione, che esiste ed è esercitabile, è tecnicamente
-scomodo nel punto in cui servirebbe di più. La conseguenza pratica per chi usa
-questi sistemi è meno consolante di quanto piacerebbe: si può chiedere a un
-fornitore di cancellare i propri dati dagli archivi e dallo storico delle
-conversazioni, e in Europa il fornitore deve rispondere; ma se quei dati sono
-già finiti dentro un modello addestrato, quel modello resta com'è. Se poi il
-modello stesso contenga ancora dati personali è una domanda che si decide caso
-per caso. Per il Comitato europeo per la protezione dei dati un modello
-addestrato su dati personali non è sempre anonimo: lo è soltanto se la
-probabilità di estrarne quei dati, direttamente o interrogandolo, è trascurabile
-{cite}`edpb2024opinion28`. Gli attacchi di estrazione e di appartenenza sono il
-modo di misurarla.
+la seconda stazione, dove i dati diventano pesi: i milioni di numeri interni
+che l'addestramento aggiusta un pochino alla volta finché il modello non
+funziona. Nelle altre stazioni un dato è un dato, sta in un archivio, si trova
+e si cancella. Nei pesi non c'è più, e c'è ancora: è stato sciolto dentro quei
+milioni di numeri. Di conseguenza, a addestramento finito, [per toglierlo con
+certezza bisogna riaddestrare senza di lui]{.pt-matita}. Il riaddestramento si
+può rendere meno caro, dividendo i dati in blocchi addestrati separatamente e
+rifacendo solo il blocco che conteneva il dato da togliere
+{cite}`bourtoule2021machine`; ci sono poi metodi approssimati che ritoccano i
+pesi senza ripartire da zero: per i modelli lineari la rimozione si può
+certificare {cite}`guo2020certified`, per le reti profonde della loro riuscita
+esistono misure, non prove. È il motivo per cui il diritto alla cancellazione,
+che esiste ed è esercitabile, è tecnicamente scomodo nel punto in cui
+servirebbe di più. La conseguenza pratica per chi usa questi sistemi è meno
+consolante di quanto piacerebbe: si può chiedere a un fornitore di cancellare i
+propri dati dagli archivi e dallo storico delle conversazioni, e in Europa il
+fornitore deve rispondere; ma se quei dati sono già finiti dentro un modello
+addestrato, quel modello resta com'è. Se poi il modello stesso contenga ancora
+dati personali è una domanda che si decide caso per caso. Per il Comitato
+europeo per la protezione dei dati un modello addestrato su dati personali non
+è sempre anonimo: lo è soltanto se la probabilità di estrarne quei dati,
+direttamente o interrogandolo, è trascurabile {cite}`edpb2024opinion28`. Gli
+attacchi di estrazione e di appartenenza sono il modo di misurarla.
 
 `````{tab} Elementare
 
@@ -236,13 +236,13 @@ poche caselle fanno da cerniera, e con quella cerniera viene via tutto il resto
 della riga rimasta senza nome.
 ```
 
-Il punto che {numref}`fig-aggancio-anonimato` rende difficile da aggirare non
-è che la gara avesse pubblicato troppo. È che l'identità non sta nel nome: sta
-nella combinazione di ciò che resta quando il nome è tolto, e quanto quella
-combinazione sia rara non dipende dalla tabella, dipende da che cosa sa chi la
-guarda. Smussare le caselle è perciò una difesa che non si sa di quanto
-dimensionare, perché per saperlo bisognerebbe conoscere in anticipo tutto
-quello che un giorno qualcuno saprà.
+Il punto che {numref}`fig-aggancio-anonimato` rende difficile da aggirare non è
+che la gara avesse pubblicato troppo. È che [l'identità non sta nel nome: sta
+nella combinazione di ciò che resta quando il nome è tolto]{.pt-matita}, e
+quanto quella combinazione sia rara non dipende dalla tabella, dipende da che
+cosa sa chi la guarda. Smussare le caselle è perciò una difesa che non si sa di
+quanto dimensionare, perché per saperlo bisognerebbe conoscere in anticipo
+tutto quello che un giorno qualcuno saprà.
 
 ## Privacy differenziale: rumore calibrato al singolo
 
@@ -452,8 +452,8 @@ La formula rassicurante («adesso nessuno può sapere se quella persona c'era»)
 più forte del vero e non è ciò che la privacy differenziale promette. La
 garanzia «dal risultato non si impara nulla su nessuno» è dimostrabilmente
 irraggiungibile, perché un dato pubblicato che non insegna niente a nessuno non
-serve a niente {cite}`dwork2014algorithmic`. La privacy differenziale limita
-quanto si può dedurre, e non vieta di dedurre. Il patto è
+serve a niente {cite}`dwork2014algorithmic`. [La privacy differenziale limita
+quanto si può dedurre, e non vieta di dedurre]{.pt-matita}. Il patto è
 questo: qualunque numero esca, doveva poter uscire quasi altrettanto facilmente
 anche se quella persona non fosse stata nell'elenco, e quanto «quasi» lo decide
 $\varepsilon$.
@@ -540,11 +540,11 @@ modello impara comunque la tendenza generale (la spingono tutti nella stessa
 direzione) ma il segno particolare di ciascuno si perde nel rumore. L'accuratezza
 ne soffre, perché la privacy non è mai gratuita.
 
-Quanto rumore mettere lo decide la stessa manopola, $\varepsilon$, e qui ogni passo
-ne consuma un pezzetto: i passi sono migliaia, e alla fine la protezione
-rimasta è spesso più debole di quanto il nome faccia pensare. Per questo «qui
-c'è la privacy differenziale» dice poco finché non si dice dove la manopola è
-stata girata.
+Quanto rumore mettere lo decide la stessa manopola, $\varepsilon$, e qui ogni
+passo ne consuma un pezzetto: i passi sono migliaia, e [alla fine la protezione
+rimasta è spesso più debole di quanto il nome faccia pensare]{.pt-matita}. Per
+questo «qui c'è la privacy differenziale» dice poco finché non si dice dove la
+manopola è stata girata.
 
 `````
 
@@ -613,19 +613,19 @@ architettura senza privacy ($98{,}3\%$), e la qualità cala via via che si
 stringe $\varepsilon$ ($95\%$ a $\varepsilon = 2$, $90\%$ a $\varepsilon =
 0{,}5$).
 
-Con $\varepsilon \approx 8$ la garanzia formale si fa debole. Infatti il fattore
-in gioco passa da $e^{0{,}5} \approx 1{,}65$ a $e^{8} \approx 3000$:
-formalmente, la presenza di una singola persona può moltiplicare per tremila la
-plausibilità di un esito. Le guide pratiche del settore trattano $\varepsilon
-\le 1$ come protezione forte, fino a $10$ come ragionevole per un modello
-addestrato, e oltre $10$ come una garanzia che da sola non basta a dire protetti
-i dati {cite}`ponomareva2023dpfy`. Il limite vale contro l'avversario più forte
-immaginabile, e gli attacchi reali restano di norma ben sotto; ma quanto sotto
-non lo dice il teorema. Non è un difetto del lavoro di Abadi, che è esplicito
-sui suoi numeri: vale come avvertenza davanti a «questo sistema usa la privacy
-differenziale» senza il valore accanto, perché i budget dei sistemi in
-produzione stanno spesso lì o sopra. Più privacy, meno accuratezza: la manopola
-è sempre la stessa, e va guardato dove è girata.
+[Con $\varepsilon \approx 8$ la garanzia formale si fa debole]{.pt-matita}.
+Infatti il fattore in gioco passa da $e^{0{,}5} \approx 1{,}65$ a $e^{8}
+\approx 3000$: formalmente, la presenza di una singola persona può moltiplicare
+per tremila la plausibilità di un esito. Le guide pratiche del settore trattano
+$\varepsilon \le 1$ come protezione forte, fino a $10$ come ragionevole per un
+modello addestrato, e oltre $10$ come una garanzia che da sola non basta a dire
+protetti i dati {cite}`ponomareva2023dpfy`. Il limite vale contro l'avversario
+più forte immaginabile, e gli attacchi reali restano di norma ben sotto; ma
+quanto sotto non lo dice il teorema. Non è un difetto del lavoro di Abadi, che
+è esplicito sui suoi numeri: vale come avvertenza davanti a «questo sistema usa
+la privacy differenziale» senza il valore accanto, perché i budget dei sistemi
+in produzione stanno spesso lì o sopra. Più privacy, meno accuratezza: la
+manopola è sempre la stessa, e va guardato dove è girata.
 
 `````
 
@@ -654,8 +654,8 @@ Quel «cosa ha imparato», però, non è muto come sembra: dal modello che torna
 al server si riesce a volte a risalire ai pazienti che lo hanno allenato. Per
 questo prima di consegnarlo lo si sporca con un pizzico di caso, la moneta di
 prima, e il server viene costruito in modo da vedere soltanto la somma di tutti
-gli ospedali, mai il pacco di uno. Tenere i dati a casa abbassa il rischio, non
-lo cancella.
+gli ospedali, mai il pacco di uno. [Tenere i dati a casa abbassa il rischio, non
+lo cancella]{.pt-matita}.
 
 `````
 
@@ -679,7 +679,7 @@ mostrato che da un aggiornamento condiviso si possono talvolta *ricostruire*
 gli esempi che l'hanno prodotto. Il federated learning va perciò combinato con
 la privacy differenziale (rumore sugli aggiornamenti) e con l'aggregazione
 sicura, che lascia vedere al server solo la somma dei contributi, mai il
-singolo. Decentrare i dati riduce il rischio, non lo azzera.
+singolo. [Decentrare i dati riduce il rischio, non lo azzera]{.pt-matita}.
 
 `````
 
@@ -724,12 +724,12 @@ Controintuitivo è che la perturbazione sia costruita *su misura* per quel
 modello. Un rumore a caso non farebbe quasi nulla; questo, invece, spinge ogni
 singolo pixel nella direzione precisa che aumenta l'errore della rete, tutti
 d'accordo nello stesso verso. Presi uno a uno, gli spostamenti sono minuscoli:
-non li vedi. Sommati su decine di migliaia di pixel, formano una spinta
-abbastanza forte da far passare l'immagine oltre il confine fra una risposta e
-l'altra. È come far cadere una persona non con una spinta, ma con mille dita
-che premono tutte dallo stesso lato di un soffio ciascuna: singolarmente
-impercettibili, insieme irresistibili. L'effetto è specifico della macchina: a
-noi il panda resta un panda.
+non li vedi. [Sommati su decine di migliaia di pixel, formano una spinta
+abbastanza forte da far passare l'immagine oltre il confine]{.pt-matita} fra
+una risposta e l'altra. È come far cadere una persona non con una spinta, ma
+con mille dita che premono tutte dallo stesso lato di un soffio ciascuna:
+singolarmente impercettibili, insieme irresistibili. L'effetto è specifico
+della macchina: a noi il panda resta un panda.
 
 `````
 
@@ -768,15 +768,16 @@ pedice la lettera indica una norma, senza pedice la loss).
 Prendere il solo segno assegna a ogni componente lo stesso spostamento
 $\pm\rho$, e quella scelta è la soluzione esatta del problema linearizzato. Al
 primo ordine la loss cresce di $\boldsymbol{\delta}^{\top}\mathbf{g}$, con
-$\mathbf{g} = \nabla_{\mathbf{x}}\ell$ e $\boldsymbol{\delta}$ la perturbazione,
-e fra le perturbazioni con $\lVert\boldsymbol{\delta}\rVert_\infty \le \rho$ il
-massimo vale $\rho\,\lVert\mathbf{g}\rVert_1$ (disuguaglianza di Hölder) e si
-raggiunge per $\boldsymbol{\delta} = \rho\,\operatorname{sign}(\mathbf{g})$. La
+$\mathbf{g} = \nabla_{\mathbf{x}}\ell$ e $\boldsymbol{\delta}$ la
+perturbazione, e fra le perturbazioni con
+$\lVert\boldsymbol{\delta}\rVert_\infty \le \rho$ il massimo vale
+$\rho\,\lVert\mathbf{g}\rVert_1$ (disuguaglianza di Hölder) e si raggiunge per
+$\boldsymbol{\delta} = \rho\,\operatorname{sign}(\mathbf{g})$. [La
 perturbazione è quindi impercettibile per pixel e massimamente dannosa, finché
-vale l'approssimazione lineare, e il guadagno $\rho\,\lVert\mathbf{g}\rVert_1$
-cresce con la dimensione, perché somma $d$ componenti: è la spiegazione
-*lineare* di Goodfellow, Shlens e Szegedy, a cui basta che il modello sia
-abbastanza lineare attorno all'input.
+vale l'approssimazione lineare]{.pt-matita}, e il guadagno
+$\rho\,\lVert\mathbf{g}\rVert_1$ cresce con la dimensione, perché somma $d$
+componenti: è la spiegazione *lineare* di Goodfellow, Shlens e Szegedy, a cui
+basta che il modello sia abbastanza lineare attorno all'input.
 
 Nell'esempio originale bastava $\rho = 0{,}007$ per far passare il panda
 ($57{,}7\%$) a gibbone ($99{,}3\%$), e gli autori annotano che quel valore
@@ -836,8 +837,8 @@ colleghi, e ha un costo: ogni passo di addestramento contiene un attacco,
 quindi equivale al calcolo di diversi passi normali, e la robustezza entro un
 certo raggio riduce spesso un po' l'accuratezza sugli esempi intatti.
 
-«Robusto» è una parola da usare con cura: da sola non dice niente, perché la
-robustezza vale *contro quale attacco* e *dentro quale perimetro*.
+«Robusto» è una parola da usare con cura: [da sola non dice niente, perché la
+robustezza vale *contro quale attacco* e *dentro quale perimetro*]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -1056,9 +1057,9 @@ Il cartellino si stacca in un secondo; e per la filigrana si dimostra che chi
 sa giudicare quando un contenuto è venuto bene, e sa riscriverlo lasciandolo
 equivalente, trova sempre una strada per cancellarla, se deve restare
 invisibile. Chi ha tempo riscrive il testo con altre parole, ritaglia e
-ricomprime l'immagine finché il segno non si legge più. Si ottiene un aumento
+ricomprime l'immagine finché il segno non si legge più. [Si ottiene un aumento
 del costo: far passare per autentico un contenuto fabbricato smette di essere
-gratuito.
+gratuito]{.pt-matita}.
 
 `````
 
@@ -1128,9 +1129,9 @@ restando fra le versioni equivalenti), nessun watermark può essere insieme
 impercettibile e robusto: si può sempre costruire una sequenza di
 trasformazioni che preserva il significato e cancella la marca.
 
-La conclusione onesta è la stessa della crittografia applicata: il watermarking
+La conclusione onesta è la stessa della crittografia applicata: [il watermarking
 non stabilisce cosa è vero, alza il
-costo di far passare il sintetico per autentico.
+costo di far passare il sintetico per autentico]{.pt-matita}.
 
 `````
 
@@ -1261,12 +1262,13 @@ risposta sbagliata.
 
 `````{tab} Elementare
 
-Perché spostamenti così piccoli bastano? Perché sono tanti e tutti d'accordo.
-Ogni caratteristica si muove appena, ma tutte e trenta si muovono nel verso che
-fa salire l'errore del modello, e trenta soffi concordi sono una spinta vera.
-Con le immagini va anche peggio: le caratteristiche sono i pixel, decine di
-migliaia o più, e più dita premono, meno forte deve premere ciascuna. È il
-motivo per cui al panda dell'esempio famoso è bastato un rumore invisibile.
+Perché spostamenti così piccoli bastano? [Perché sono tanti e tutti
+d'accordo]{.pt-matita}. Ogni caratteristica si muove appena, ma tutte e trenta
+si muovono nel verso che fa salire l'errore del modello, e trenta soffi
+concordi sono una spinta vera. Con le immagini va anche peggio: le
+caratteristiche sono i pixel, decine di migliaia o più, e più dita premono,
+meno forte deve premere ciascuna. È il motivo per cui al panda dell'esempio
+famoso è bastato un rumore invisibile.
 
 `````
 
@@ -1275,19 +1277,19 @@ motivo per cui al panda dell'esempio famoso è bastato un rumore invisibile.
 Il gradiente della cross-entropia rispetto all'input, per la regressione
 logistica, è semplicemente $(\hat{y}-y)\,\mathbf{w}$: è la riga `grad_x` del
 codice. Il risultato conferma la spiegazione *lineare* di Goodfellow: il passo
-si muove lungo $\operatorname{sign}\!\big((\hat{y}-y)\,\mathbf{w}\big)$ e sposta
-il punteggio (il logit) di $\rho\,\lVert \mathbf{w}\rVert_1$ in modulo,
+si muove lungo $\operatorname{sign}\!\big((\hat{y}-y)\,\mathbf{w}\big)$ e
+sposta il punteggio (il logit) di $\rho\,\lVert \mathbf{w}\rVert_1$ in modulo,
 sempre nel verso che fa crescere la loss. Nell'esempio $y=1$ e $\hat{y}<y$,
 quindi la direzione è $-\operatorname{sign}(\mathbf{w})$ e il logit *cala* di
 $\rho\,\lVert \mathbf{w}\rVert_1 = 3{,}54$ (il codice non lo stampa, ma
 `np.linalg.norm(w, 1)` vale $23{,}58$, e $0{,}15 \times 23{,}58 = 3{,}54$):
 quanto basta a far scendere la probabilità da $0{,}890$ a $0{,}190$, perché il
-logit di partenza era $2{,}09$. È una quantità che cresce con il numero
-di dimensioni. In alta dimensione (dove vivono immagini e testi) bastano tante
-piccole spinte concordi per scavallare il confine. La stessa formula in PyTorch
-si scriverebbe con `x.requires_grad_(True)`, un passaggio `loss.backward()` e
-`x + rho * x.grad.sign()`: identica idea, gradiente rispetto all'input calcolato
-in automatico.
+logit di partenza era $2{,}09$. È una quantità che cresce con il numero di
+dimensioni. [In alta dimensione (dove vivono immagini e testi) bastano tante
+piccole spinte concordi per scavallare il confine]{.pt-matita}. La stessa
+formula in PyTorch si scriverebbe con `x.requires_grad_(True)`, un passaggio
+`loss.backward()` e `x + rho * x.grad.sign()`: identica idea, gradiente
+rispetto all'input calcolato in automatico.
 
 `````
 

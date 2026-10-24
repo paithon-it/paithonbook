@@ -85,7 +85,7 @@ raccomandazione risponde a una domanda che non hai fatto: *tra queste centomila
 cose, quali conviene mostrarti?* Quelle cose sono film, canzoni, prodotti,
 articoli, video, a seconda del catalogo. Nel gergo del settore si chiamano tutte
 **oggetti** (in inglese *item*), e qui useremo spesso «film», perché l'esempio è
-quello. Soprattutto, non esiste una risposta valida per tutti.
+quello. Soprattutto, [non esiste una risposta valida per tutti]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -227,7 +227,8 @@ prese a caso, può ribaltare la graduatoria fra due metodi
 classifica, nella {doc}`raccomandazione neurale
 </SistemiRaccomandazione/raccomandazione-neurale>`.
 
-La terza è la più insidiosa: il sistema influenza i dati che raccoglie.
+La terza è la più insidiosa: [il sistema influenza i dati che
+raccoglie]{.pt-matita}.
 
 `````{tab} Elementare
 

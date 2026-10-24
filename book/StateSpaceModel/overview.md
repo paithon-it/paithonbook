@@ -90,10 +90,10 @@ scivola di un posto e copre sei getti: alla somma si aggiunge in coda 0,0625,
 il getto più vecchio sbiadito cinque volte, e si arriva a 3,9375. La vasca dice
 lo stesso: metà di 3,875, più i due litri nuovi. Siccome nessun minuto aspetta
 il risultato di un altro, il filtro si fa scorrere su tutta la sequenza in un
-colpo solo. Sono quindi lo stesso calcolo visto da due lati, la **doppia
-natura** del modello. Lo si addestra nel secondo modo, veloce perché fa tutti i
-passi insieme, e lo si usa nel primo, economico perché a ogni parola gli basta
-il riassunto di prima.
+colpo solo. [Sono quindi lo stesso calcolo visto da due lati]{.pt-matita}, la
+**doppia natura** del modello. Lo si addestra nel secondo modo, veloce perché
+fa tutti i passi insieme, e lo si usa nel primo, economico perché a ogni parola
+gli basta il riassunto di prima.
 
 Tutto questo sta in piedi finché nessuno tocca il rubinetto e lo scarico. Se
 qualcuno stesse alla vasca a girarli minuto per minuto, regolandoli in base
@@ -119,26 +119,26 @@ l'uscita. Per usarlo su una sequenza discreta lo si discretizza con un passo
 $\Delta$, ottenendo una ricorrenza $\mathbf{h}_t = \bar{\mathbf{A}}\,
 \mathbf{h}_{t-1} + \bar{\mathbf{B}}\, x_t$, dove $x_t$ è l'ingresso campionato
 al passo $t$ e $\bar{\mathbf{A}}, \bar{\mathbf{B}}$ sono le versioni discrete
-di $\mathbf{A}$ e $\mathbf{B}$. Finché i parametri sono costanti nel tempo,
-questa ricorrenza ha una doppia natura. Si può calcolare passo per passo come
-una RNN (inferenza a costo costante *per token*) oppure, a stato iniziale
-nullo, tutta in una volta come una convoluzione (addestramento parallelo). È la
-stessa doppia natura parallelo/ricorrente che muove il {doc}`capitolo
-sull'attenzione lineare </AttenzioneLineare/overview>`, raggiunta però dalla
-teoria dei segnali. Quanto al passo $\Delta$, fissa un baratto fra memoria e
-ingresso. Infatti, con $\mathbf{A}$ stabile (autovalori a parte reale negativa)
-e la discretizzazione *zero-order hold*, che tiene l'ingresso costante dentro
-il passo (un'ipotesi tanto più grossolana quanto più il passo è lungo),
-$\bar{\mathbf{A}} = \exp(\Delta\mathbf{A})$ tende all'identità per $\Delta \to
-0$: lo stato si conserva e l'ingresso, scalato da $\bar{\mathbf{B}} \approx
-\Delta\mathbf{B}$, conta poco. Per $\Delta$ grande, al contrario,
-$\bar{\mathbf{A}}$ tende a zero: il passato si dimentica in fretta e domina
-l'ingresso corrente. Tolta l'invarianza nel tempo, con $\bar{\mathbf{A}}_t$ e
-$\bar{\mathbf{B}}_t$ diversi a ogni passo (come quando $\Delta$ dipende
-dall'ingresso), non c'è più un filtro unico da far scorrere e la forma
-convoluzionale cade; il calcolo in blocco si ritrova con lo *scan* parallelo,
-che fonde i passi a coppie, poi a gruppi di quattro, e così via, grazie
-all'associatività della loro composizione.
+di $\mathbf{A}$ e $\mathbf{B}$. [Finché i parametri sono costanti nel tempo,
+questa ricorrenza ha una doppia natura]{.pt-matita}. Si può calcolare passo per
+passo come una RNN (inferenza a costo costante *per token*) oppure, a stato
+iniziale nullo, tutta in una volta come una convoluzione (addestramento
+parallelo). È la stessa doppia natura parallelo/ricorrente che muove il
+{doc}`capitolo sull'attenzione lineare </AttenzioneLineare/overview>`,
+raggiunta però dalla teoria dei segnali. Quanto al passo $\Delta$, fissa un
+baratto fra memoria e ingresso. Infatti, con $\mathbf{A}$ stabile (autovalori a
+parte reale negativa) e la discretizzazione *zero-order hold*, che tiene
+l'ingresso costante dentro il passo (un'ipotesi tanto più grossolana quanto più
+il passo è lungo), $\bar{\mathbf{A}} = \exp(\Delta\mathbf{A})$ tende
+all'identità per $\Delta \to 0$: lo stato si conserva e l'ingresso, scalato da
+$\bar{\mathbf{B}} \approx \Delta\mathbf{B}$, conta poco. Per $\Delta$ grande,
+al contrario, $\bar{\mathbf{A}}$ tende a zero: il passato si dimentica in
+fretta e domina l'ingresso corrente. Tolta l'invarianza nel tempo, con
+$\bar{\mathbf{A}}_t$ e $\bar{\mathbf{B}}_t$ diversi a ogni passo (come quando
+$\Delta$ dipende dall'ingresso), non c'è più un filtro unico da far scorrere e
+la forma convoluzionale cade; il calcolo in blocco si ritrova con lo *scan*
+parallelo, che fonde i passi a coppie, poi a gruppi di quattro, e così via,
+grazie all'associatività della loro composizione.
 
 `````
 
@@ -177,12 +177,13 @@ il filtro fisso della forma convoluzionale, che un modello selettivo non ha
 più.
 ```
 
-{numref}`fig-attenzione-vs-ssm` mostra il guadagno, un costo proporzionale a $n$
-invece che a $n^2$. Ma uno stato di taglia fissa deve prima o poi dimenticare
-qualcosa. La selettività, il rombo sul lato destro, decide *che cosa* scrivere
-nello stato e che cosa lasciar cadere, in funzione di ciò che sta arrivando; ma
-non allarga lo stato, cambia come se ne usa lo spazio. Il tetto resta, e lo
-tratta {doc}`Panorama e limiti </StateSpaceModel/panorama-e-limiti>`.
+{numref}`fig-attenzione-vs-ssm` mostra il guadagno, un costo proporzionale a
+$n$ invece che a $n^2$. Ma [uno stato di taglia fissa deve prima o poi
+dimenticare qualcosa]{.pt-matita}. La selettività, il rombo sul lato destro,
+decide *che cosa* scrivere nello stato e che cosa lasciar cadere, in funzione
+di ciò che sta arrivando; ma non allarga lo stato, cambia come se ne usa lo
+spazio. Il tetto resta, e lo tratta {doc}`Panorama e
+limiti </StateSpaceModel/panorama-e-limiti>`.
 
 Con Mamba-2 {cite}`dao2024mamba2` (che nella sezione sulla scrittura in memoria
 era una riga della tabella delle ricorrenze) i due capitoli si toccano in un

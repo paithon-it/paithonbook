@@ -47,8 +47,8 @@ si chiama **cella**, e i suoi pesi sono gli stessi a ogni passo. Per vederlo si
 della cella per ogni passo, ciascuna collegata alla successiva dallo stato. Le
 copie sono un modo di disegnare il calcolo, non reti diverse:
 la cella è una sola, con gli stessi pesi al passo 3 e al passo tremila. Ecco
-perché una rete ricorrente resta piccola anche su testi lunghissimi: allungare
-il testo allunga il disegno, non la rete.
+perché una rete ricorrente resta piccola anche su testi lunghissimi: [allungare
+il testo allunga il disegno, non la rete]{.pt-matita}.
 
 ```{figure} ../figures/rnn-srotolata.svg
 :name: fig-rnn-srotolata
@@ -182,9 +182,9 @@ mano da che parte spostarsi, e di quanto. Per capire dove la mano ha sbagliato
 devi risalire le righe una per una, e a ogni riga la freccia ripassa per la
 stessa riscrittura che, nella lettura in avanti, aveva già smorzato i dettagli
 vecchi; si accorcia un pochino, poi ancora, poi ancora. Basta risalire poche
-decine di righe: quando la freccia arriva in cima non sposta più niente. La
+decine di righe: quando la freccia arriva in cima non sposta più niente. [La
 mano si aggiusta benissimo su quello che è appena successo, mentre su quello
-che è lontano non riceve nessuna indicazione.
+che è lontano non riceve nessuna indicazione]{.pt-matita}.
 
 Le RNN soffrono esattamente di questo doppio smorzamento, dei dettagli mentre si
 legge in avanti e della correzione mentre si risale, e il modello finisce per
@@ -244,9 +244,9 @@ analizzati già nella tesi di Sepp Hochreiter del 1991
 Simard e Paolo Frasconi nel 1994 {cite}`bengio1994learning`; il loro risultato
 va enunciato per quello che è: un compromesso, non un divieto. Se la rete
 conserva l'informazione in modo robusto, cioè in modo che un disturbo non la
-cancelli, allora il gradiente svanisce in modo esponenziale; e quindi è la
+cancelli, allora il gradiente svanisce in modo esponenziale; e quindi [è la
 discesa del gradiente a non riuscire a trovare quei legami, non la rete a non
-poterli rappresentare.
+poterli rappresentare]{.pt-matita}.
 
 `````
 
@@ -339,15 +339,15 @@ parlando di *chiavi*, plurale»), la prima manopola resta spalancata, dal
 taccuino non si cancella niente, e quella riga arriva intatta cento righe più
 in là.
 
-Per la stessa ragione la correzione, risalendo, arriva in cima. Sul
-foglietto ogni riga ripassa per la stessa riscrittura, e cento riscritture che
-conservano nove decimi lasciano meno di un trentamillesimo: $0{,}9$
-moltiplicato per sé stesso cento volte fa $0{,}000027$. Sul taccuino la riga
-vecchia non si riscrive, le si scrive accanto. Se scrivo $b = a + c$ e cambio
-$a$ di un centesimo, $b$ cambia di un centesimo esatto; così la correzione che
-risale lungo il taccuino attraversa cento aggiunte e arriva com'era partita.
-L'unica moltiplicazione è la prima manopola, e finché resta spalancata
-moltiplica per uno.
+Per la stessa ragione la correzione, risalendo, arriva in cima. Sul foglietto
+ogni riga ripassa per la stessa riscrittura, e cento riscritture che conservano
+nove decimi lasciano meno di un trentamillesimo: $0{,}9$ moltiplicato per sé
+stesso cento volte fa $0{,}000027$. Sul taccuino la riga vecchia non si
+riscrive, le si scrive accanto. Se scrivo $b = a + c$ e cambio $a$ di un
+centesimo, $b$ cambia di un centesimo esatto; così [la correzione che risale
+lungo il taccuino attraversa cento aggiunte e arriva com'era
+partita]{.pt-matita}. L'unica moltiplicazione è la prima manopola, e finché
+resta spalancata moltiplica per uno.
 
 Nella prima versione, del 1997, le manopole erano due, annota e mostra. Quella
 che dimentica sembrava superflua (perché mai insegnare a una memoria a
@@ -388,8 +388,8 @@ $$
 
 Qui $\oplus$ è la concatenazione: $\mathbf{h}_{t-1} \oplus \mathbf{x}_t$ mette
 in fila le componenti dei due vettori, e se $\mathbf{x}_t$ ha dimensione $d_x$
-ogni matrice $\mathbf{W}$ è $d \times (d + d_x)$. L'aggiornamento della memoria
-è quasi additivo, e questo mantiene vivo il gradiente:
+ogni matrice $\mathbf{W}$ è $d \times (d + d_x)$. [L'aggiornamento della memoria
+è quasi additivo, e questo mantiene vivo il gradiente]{.pt-matita}:
 
 $$
 \mathbf{c}_t = \mathbf{f}_t \odot \mathbf{c}_{t-1} + \mathbf{i}_t \odot \tilde{\mathbf{c}}_t,
@@ -502,9 +502,9 @@ class ClassificatoreSentiment(nn.Module):
 Il classificatore nasconde però una semplificazione che in un programma reale
 produce errori: `h[:, -1]` prende l'ultimo posto della fila. In un mini-batch
 le frasi hanno lunghezze diverse, e per metterle in una tabella sola le si
-allunga tutte alla stessa misura con dei riempitivi (il *padding*). L'ultimo
-posto letto è allora l'ultimo riempitivo, non l'ultima parola, e lo stato
-estratto dipende da quanti riempitivi si sono aggiunti.
+allunga tutte alla stessa misura con dei riempitivi (il *padding*). [L'ultimo
+posto letto è allora l'ultimo riempitivo, non l'ultima parola]{.pt-matita}, e
+lo stato estratto dipende da quanti riempitivi si sono aggiunti.
 
 Il rimedio è indicare alla rete la lunghezza effettiva di ciascuna frase. In
 PyTorch lo si fa impacchettando il mini-batch con `pack_padded_sequence`, a cui
@@ -553,9 +553,9 @@ e GRU, invece, nessuna delle due prevale con chiarezza.
 Per qualche anno, grosso modo fra il 2013 e il 2017, LSTM e GRU sono state
 l'architettura di riferimento per la traduzione automatica, il riconoscimento
 vocale e la generazione di testo. Accanto alle difficoltà nell'apprendere
-dipendenze a lungo termine, restava però un limite computazionale: lo stato al
+dipendenze a lungo termine, restava però un limite computazionale: [lo stato al
 passo $t$ dipende da quello al passo $t-1$, e ciò impedisce di eseguire in
-parallelo i passi di una sequenza.
+parallelo i passi di una sequenza]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -634,11 +634,11 @@ il salto che ha reso possibili i grandi modelli linguistici di oggi.
 Le RNN, le LSTM e le GRU restano però in uso dove i dati arrivano un pezzo alla
 volta e non finiscono mai (il segnale di un sensore, l'audio di un microfono
 sempre acceso) e dove memoria ed energia sono poche. La ragione è la stessa
-ricorrenza che le rende lente da addestrare: lo stato ha dimensione fissa,
+ricorrenza che le rende lente da addestrare: [lo stato ha dimensione fissa,
 quindi elaborare un elemento in più costa sempre lo stesso, qualunque sia la
-lunghezza del contesto già letto. Con l'attenzione, invece, ogni elemento nuovo
-si confronta con tutti quelli che lo precedono, e il costo cresce con la
-lunghezza.
+lunghezza del contesto già letto]{.pt-matita}. Con l'attenzione, invece, ogni
+elemento nuovo si confronta con tutti quelli che lo precedono, e il costo
+cresce con la lunghezza.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

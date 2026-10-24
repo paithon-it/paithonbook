@@ -30,8 +30,8 @@ punto a metà strada fra due codici, di un cammino dall’uno all’altro.
 Qui interessa una domanda diversa da quella dell’audio: un autoencoder che sa
 comprimere tutti i dati sa anche generarne di nuovi? In generale no, e la
 ragione non sta in quanto è brava la rete. L’obiettivo non dice dove debbano
-cadere i codici, quindi un codice scelto a caso non ha motivo di decodificarsi
-in un dato plausibile.
+cadere i codici, quindi [un codice scelto a caso non ha motivo di decodificarsi
+in un dato plausibile]{.pt-matita}.
 
 ## La strozzatura è il compito
 
@@ -52,8 +52,8 @@ stanno su una mappa, alcune vicine e altre lontane.
 Quella strozzatura il museo la vuole. Infatti, se all’archivista fosse concesso
 scrivere una scheda lunga quanto il quadro, la scriverebbe uguale al quadro, il
 copista la ricopierebbe, e i due avrebbero imparato a fotocopiare. Dovendo
-stare in poche righe, l’archivista è costretto a decidere che cosa conta, e a
-noi interessa quella decisione.
+[stare in poche righe, l’archivista è costretto a decidere che cosa
+conta]{.pt-matita}, e a noi interessa quella decisione.
 
 È il primo modo di impedire la fotocopia, ma non l’unico. Il museo può lasciare
 la scheda lunga, anche più del quadro, e far pagare l’inchiostro: ogni riga
@@ -78,9 +78,8 @@ Un altro ancora si capisce con un ritratto. Se la testa gira un po’ a destra, 
 scheda se ne deve accorgere, o la copia avrebbe la testa dritta; se sulla tela
 compare un graffio, la scheda può ignorarlo, perché nessun quadro del museo
 differisce da un altro per un graffio. Il museo allora mette un prezzo su quanto
-la scheda si muove quando il quadro si muove di poco. In altre parole, un quadro
-toccato appena deve dare una scheda quasi uguale, e una fotocopia, che ricopia
-ogni ritocco per intero, il prezzo lo paga tutto.
+la scheda si muove quando il quadro si muove di poco. Una fotocopia, che
+ricopia per intero ogni ritocco, quel prezzo lo paga tutto.
 
 Da sola la richiesta porterebbe a scrivere la stessa scheda per tutti i quadri;
 il copista, che deve ridipingerli diversi, tira dall’altra parte. Nelle prove la
@@ -108,6 +107,12 @@ cambi meno del quadro sporcato: è la stessa richiesta, fatta
 alla copia invece che alla scheda, e vale finché le macchie restano leggere e
 la copia somiglia già bene al quadro.
 
+Un copista che ripulisce bene impara anche una cosa che nessuno gli ha chiesto:
+davanti a una tela qualunque, sa da che parte ritoccarla perché somigli di più
+ai quadri del museo. Ritocco dopo ritocco, con un po’ di caso in mezzo, la tela
+cammina verso qualcosa che sembra un quadro. È un modo di inventare, ma passa
+per le tele, mai per le schede.
+
 Con la strozzatura, l’inchiostro, le macchie o il prezzo sul movimento, il
 museo dà sempre il voto a una scheda alla volta, guardando il quadro da cui
 viene, e nessuno stende mai le schede sulla mappa per vedere come stanno messe,
@@ -117,7 +122,7 @@ Quale che sia la regola, sulla scheda finiscono le cose che il copista non
 saprebbe indovinare (che soggetto è, com’è composto, quali colori dominano) e
 non finiscono quelle che sa rimettere senza aiuto (la grana della tela, il modo
 in cui uno sfondo sfuma). Quelle il copista non le ricorda quadro per quadro; ne
-dipinge una tipica, sempre la stessa per tutti i quadri che hanno la stessa
+dipinge una media, sempre la stessa per tutti i quadri che hanno la stessa
 scheda. Dalla scheda il copista non inventa niente; e in mano non ha mai avuto
 una scheda che non venisse da un quadro vero.
 
@@ -141,14 +146,15 @@ esempi e $\ell$ una misura di scarto fra dato e ricostruzione, sommata sulle
 $D$ componenti (errore quadratico, oppure cross-entropia per componente come
 nell’addestramento sulle cifre scritte a mano: è la somma sui pixel a fare del
 risultato un costo «per cifra» e non «per pixel»). Il vincolo $L \ll D$ è la
-strozzatura, e senza un vincolo il problema è vuoto. Infatti con $L \ge D$ basta
-prendere $d_\theta$ e $e_\phi$ inverse l’una dell’altra (l’identità, per esempio)
-e la loss tocca il suo minimo senza che nessuno abbia imparato niente.
+strozzatura, e [senza un vincolo il problema è vuoto]{.pt-matita}. Infatti con
+$L \ge D$ basta prendere $d_\theta$ e $e_\phi$ inverse l’una dell’altra
+(l’identità, per esempio) e la loss tocca il suo minimo senza che nessuno abbia
+imparato niente.
 
 La strozzatura, però, non è l’unico vincolo possibile, e per questo sta fra le
 condizioni e non nella definizione: ce ne sono altri, che di strozzatura
 non ne hanno. Uno chiede che di ogni codice si accendano pochissime componenti,
-e di componenti ne tiene più di quelle di partenza (lo *sparse
+e di componenti può tenerne anche più di quelle di partenza (lo *sparse
 autoencoder*, che ritorna nel capitolo sull’{doc}`interpretabilità
 </Interpretabilita/attribuzione-e-meccanicistica>`); un altro fa ricostruire il
 dato da una sua copia sporcata di rumore (il *denoising autoencoder*, che il
@@ -239,10 +245,10 @@ lo jacobiano esatto si ottiene con $L$ passate all’indietro per esempio; Rifai
 e colleghi lo evitano impilando encoder di uno strato, addestrati uno alla
 volta, ciascuno con la sua forma chiusa.
 
-Serve però una scala nel decoder,
-perché un encoder che moltiplica per una costante piccola $c$ e un decoder che
-divide per $c$ azzerano la penalità senza aver imparato niente: i pesi legati,
-$\mathbf{W}$ nell’encoder e $\mathbf{W}^\top$ nel decoder, lo impediscono.
+Serve però una scala nel decoder, perché un encoder che moltiplica per una
+costante piccola $a$ e un decoder che divide per $a$ rendono la penalità piccola
+a piacere senza aver imparato niente: i pesi legati, $\mathbf{W}$ nell’encoder
+e $\mathbf{W}^\top$ nel decoder, lo impediscono.
 
 Il legame con il denoising è stretto. In particolare, con rumore gaussiano di
 deviazione standard $s$ piccola, errore quadratico e una ricostruzione che resta
@@ -311,6 +317,10 @@ principali della sezione su riduzione e clustering. Su quella mappa, poi, i due
 possono tracciare gli assi come vogliono, dritti o girati: la mappa resta la
 stessa, e le copie anche.
 
+Al meglio i due arrivano perfino a tentoni, correggendo le miscele un poco alla
+volta. Qualunque altra sistemazione ha sempre un ritocco che migliora le copie,
+quindi non c’è un punto morto in cui fermarsi prima.
+
 Dei due divieti, però, decide il secondo. Se al copista tocca
 comunque una miscela fissa, i quadri che ridipinge cadono sulla mappa piatta
 comunque, quindi all’archivista si può concedere qualunque libertà senza che
@@ -321,10 +331,12 @@ museo e annotare soltanto di quanto il quadro che hanno davanti se ne discosta.
 Senza, la mappa è costretta a passare per il quadro fatto di niente, la tela
 bianca, e quasi mai è quella giusta.
 
-In altre parole, archivista e copista liberi da quei divieti sono la stessa
-vecchia macchina con un permesso in più, quello di incurvare la mappa, e a
-incurvarla è il copista. La differenza fra le due macchine spiega quando
-conviene l’una e quando l’altra: se i quadri stanno davvero su una mappa
+In altre parole, archivista e copista liberi da quei divieti sono [la stessa
+vecchia macchina con un permesso in più, quello di incurvare la
+mappa]{.pt-matita}, e a incurvarla è il copista. Il permesso toglie però la
+sicurezza di prima: su una mappa curva i ritocchi possono fermarsi in una
+sistemazione che non è la migliore. La differenza fra le due macchine spiega
+quando conviene l’una e quando l’altra: se i quadri stanno davvero su una mappa
 piatta, incurvarla non serve; se stanno su una superficie piegata, una mappa
 piatta la può solo approssimare.
 
@@ -375,10 +387,11 @@ strato nascosto non serve a niente, cioè sotto l’ottimo lineare non si scende
 
 La ragione è che le ricostruzioni sono l’immagine del decoder, e con un decoder
 affine quell’immagine è un sottospazio affine comunque sia fatto l’encoder.
-Quindi a piegare la superficie è il decoder; la non linearità dell’encoder serve
-ad atterrarci sopra meglio. La `Clessidra` addestrata sulle cifre scritte a mano
-ce l’ha da tutte e due le parti, e tutto il resto (la strozzatura, la loss,
-l’assenza di probabilità) è identico.
+Quindi [a piegare la superficie è il decoder]{.pt-matita}; la non linearità
+dell’encoder serve ad atterrarci sopra meglio. La `Clessidra` addestrata sulle
+cifre scritte a mano ce l’ha da tutte e due le parti, e tutto il resto (la
+strozzatura, una loss di sola ricostruzione, l’assenza di probabilità) è
+identico.
 
 `````
 
@@ -533,8 +546,8 @@ le stesse, rifatte a partire da otto numeri
 Le quattro cifre vere sono uno zero, un uno, un due e un tre; le prime due si
 leggono a colpo d’occhio, il due si riconosce dalla base larga nella penultima
 riga, il tre richiede di saperlo già. Le cifre rifatte ripetono quelle vere,
-tratto per tratto, e ci arrivano partendo da otto numeri soli. La compressione
-funziona e non è in discussione.
+tratto per tratto, e ci arrivano partendo da otto numeri soli. [La compressione
+funziona e non è in discussione]{.pt-matita}.
 
 ## Il cammino che si perde
 
@@ -653,9 +666,10 @@ hanno tratti che si interrompono a metà, la prima è un anello troppo grasso, l
 terza una forma piena, e nessuna delle quattro si lascia chiamare per nome. Più
 delle immagini conta il numero, che svela la causa invece del sintomo. I codici
 veri stanno a poco più di due unità l’uno dall’altro; un codice campionato
-dista più di cinque dal più vicino dei codici veri. Campionare in quello spazio
-porta a finire, di norma, a più del doppio della distanza che separa due codici
-veri vicini. È terra mai battuta, e succede nella maggior parte dei casi.
+dista più di cinque dal più vicino dei codici veri. [Campionare in quello
+spazio porta a finire, di norma, a più del doppio della distanza che separa due
+codici veri vicini]{.pt-matita}. È terra mai battuta, e succede nella maggior
+parte dei casi.
 
 Il risultato non dipende dal modo semplice di campionare. Infatti, campionando
 da una gaussiana con covarianza piena, che tiene conto anche di come le otto
@@ -666,8 +680,9 @@ inclinata.
 ## Perché la strozzatura non basta
 
 L’obiettivo dell’autoencoder contiene soltanto la ricostruzione, e niente in
-$\mathcal{L}$ dice dove debbano stare i codici l’uno rispetto all’altro. Il
-difetto sta quindi nell’obiettivo, e una rete più grande non lo ripara.
+$\mathcal{L}$ dice dove debbano stare i codici l’uno rispetto all’altro. [Il
+difetto sta quindi nell’obiettivo, e una rete più grande non lo
+ripara]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -708,11 +723,12 @@ q_\phi(\mathbf{z}) = \mathbb{E}_{\mathbf{x} \sim p_{\text{dati}}}
 $$
 
 dove $\delta$ è la delta di Dirac (l’encoder qui è deterministico, quindi ogni
-dato contribuisce un punto solo) e $p_{\text{dati}}$ la distribuzione da cui
-gli esempi provengono, è una misura concentrata sugli $N$ codici degli esempi
-di addestramento. Campionarla si può, ma si ripesca soltanto un codice già
-visto, codificando un esempio a caso; fra un codice e l’altro la sua forma non
-è vincolata da niente, e quindi da lei non si ottengono codici nuovi. Generare
+dato contribuisce un punto solo) e $p_{\text{dati}}$ la distribuzione dei dati
+(in pratica quella empirica, che dà peso $1/N$ a ciascun esempio di
+addestramento), è una misura concentrata sugli $N$ codici di quegli esempi.
+Campionarla si può, ma si ripesca soltanto un codice già visto, codificando un
+esempio a caso; fra un codice e l’altro la sua forma non è vincolata da niente,
+e quindi da lei non si ottengono codici nuovi. Generare
 richiede invece una distribuzione da cui estrarre un $\mathbf{z}$ mai visto
 prima di decodificarlo. (Nella sezione sull’ELBO lo stesso simbolo
 $q_\phi(\mathbf{z})$ tornerà con l’encoder diventato stocastico: là le delta
@@ -736,10 +752,9 @@ costante le moltiplica tutte e due. Misurano il disaccordo di forma, non la
 scala. Si dice, con formula spiccia, che il latente non è regolarizzato, e la
 regolarizzazione che manca riguarda la distribuzione dei codici, non i pesi.
 
-Servono quindi due cose insieme, e il nome «autoencoder variazionale» ne tiene
-una per parola: una distribuzione bersaglio $p(\mathbf{z})$ scelta in anticipo
-(così si sa dove campionare) e un termine nella loss che spinga i codici a
-distribuirsi come lei.
+Servono quindi due cose insieme: una distribuzione bersaglio $p(\mathbf{z})$
+scelta in anticipo (così si sa dove campionare) e un termine nella loss che
+spinga i codici a distribuirsi come lei.
 La sorpresa è che quel termine non si inventa: scaturisce naturalmente dal
 tentativo, tutt’altro, di massimizzare la verosimiglianza dei dati.
 
@@ -782,7 +797,7 @@ di addestramento gli fa venire.
 - La colpa non è dell’archivista: nella sua pagella non compariva l’ordine del
   cassetto. Manca una regola su dove vanno messe le schede, fatta di due
   pezzi, una forma decisa in anticipo per il cassetto e un voto che quella
-  forma la pretenda; la sezione sull’ELBO li ricava senza inventarli.
+  forma la pretenda; la sezione sull’ELBO ricava il secondo senza inventarlo.
 ```
 
 `````

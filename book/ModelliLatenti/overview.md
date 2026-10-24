@@ -43,8 +43,8 @@ tende a fare meglio anche le altre, e sempre nella stessa graduatoria. La
 spiegazione che Spearman propone nel 1904 è tutta nella sua forma. Sotto a
 tutte queste prove c’è una quantità sola, che nessuno ha misurato e che
 nessuno misurerà mai, e ogni prova è quella quantità più il proprio scarto. In
-altri termini, le materie non si somigliano fra loro: si somigliano perché sono
-figlie della stessa cosa.
+altri termini, [le materie non si somigliano fra loro: si somigliano perché sono
+figlie della stessa cosa]{.pt-matita}.
 
 Se quella quantità esista davvero, e che cosa sia, è oggetto di una discussione
 che dura da oltre un secolo, e qui non serve prendere posizione: ci
@@ -90,13 +90,13 @@ sue parti sono legate fra loro in modi che sfuggono: due pixel
 vicini hanno quasi sempre lo stesso colore, tranne sui contorni, e dove
 passano i contorni dipende da che cosa c’è nella foto.
 
-Il modello a variabile latente cambia la domanda. Invece di descrivere il
-dato, si descrive come è nato. Prima si campiona qualcosa che non si vede, la
-causa nascosta $\mathbf{z}$, da una distribuzione semplice scelta in anticipo,
-il prior $p(\mathbf{z})$; poi, a partire da lei, si campiona il dato
-$\mathbf{x}$. Il modello si scrive allora in due pezzi, e sono due pezzi
-semplici; la complicazione che si vede nasce dal fatto che il primo dei due
-non lo si osserva mai.
+Il modello a variabile latente cambia la domanda. [Invece di descrivere il
+dato, si descrive come è nato]{.pt-matita}. Prima si campiona qualcosa che non
+si vede, la causa nascosta $\mathbf{z}$, da una distribuzione semplice scelta
+in anticipo, il prior $p(\mathbf{z})$; poi, a partire da lei, si campiona il
+dato $\mathbf{x}$. Il modello si scrive allora in due pezzi, e sono due pezzi
+semplici; la complicazione che si vede nasce dal fatto che il primo dei due non
+lo si osserva mai.
 
 `````{tab} Elementare
 
@@ -293,18 +293,17 @@ griglia di punti; ma i punti della griglia si moltiplicano a ogni dimensione
 in più. Ad esempio, se lungo un asse ne bastassero dieci, con due assi ne
 servirebbero cento, e con otto cento milioni.
 
-Seconda difficoltà, più sorprendente: nemmeno la stima Monte Carlo
-funziona. La via d’uscita ovvia è campionare dal prior un po’ di valori
-$\mathbf{z}^{(1)}, \dots, \mathbf{z}^{(S)}$, calcolare per ciascuno quanto
-spiega il dato, $p_\theta(\mathbf{x} \mid \mathbf{z}^{(s)})$, e fare la media.
-In media la stima è giusta, e in poche dimensioni funziona. Quando $L$ cresce,
-però, quasi tutti i valori campionati danno a $p_\theta(\mathbf{x} \mid
+Seconda difficoltà, più sorprendente: [nemmeno la stima Monte Carlo
+funziona]{.pt-matita}. La via d’uscita ovvia è campionare dal prior un po’ di
+valori $\mathbf{z}^{(1)}, \dots, \mathbf{z}^{(S)}$, calcolare per ciascuno
+quanto spiega il dato, $p_\theta(\mathbf{x} \mid \mathbf{z}^{(s)})$, e fare la
+media. In media la stima è giusta, e in poche dimensioni funziona. Quando $L$
+cresce, però, quasi tutti i valori campionati danno a $p_\theta(\mathbf{x} \mid
 \mathbf{z})$ un valore trascurabile, e la media è dominata dai pochissimi che
-cadono nel posto giusto, ma che si estraggono di rado. Quando mancano,
-la stima esce molto più bassa del vero, quando compaiono schizza in alto, e
-ripetendo il campionamento cambia ogni volta. Ha quindi una varianza enorme e,
-in scala logaritmica, è sistematicamente troppo bassa. La
-{doc}`sezione sul salto
+cadono nel posto giusto, ma che si estraggono di rado. Quando mancano, la stima
+esce molto più bassa del vero, quando compaiono schizza in alto, e ripetendo il
+campionamento cambia ogni volta. Ha quindi una varianza enorme e, in scala
+logaritmica, è sistematicamente troppo bassa. La {doc}`sezione sul salto
 probabilistico </ModelliLatenti/il-salto-probabilistico>` lo misura.
 
 ## La stessa idea, dentro quattro macchine

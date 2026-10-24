@@ -56,9 +56,9 @@ Il notebook è comodo per sperimentare, e di solito il modello nasce lì. Sul
 proprio computer il lavoro sembra finito quando la metrica sui dati di prova è
 buona.
 
-Un modello che nessuno usa non serve a niente, e la distanza fra
+Un modello che nessuno usa non serve a niente, e [la distanza fra
 «funziona nel mio notebook» e «funziona per migliaia di persone, ogni giorno,
-per anni» sta quasi tutta fuori dal modello.
+per anni» sta quasi tutta fuori dal modello]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -144,8 +144,8 @@ MLOps prende quella cultura e la porta al ciclo di vita del machine learning
 {cite}`kreuzberger2023machine`, con una complicazione in più che è il cuore di
 tutto. Nel software classico si conserva versione per versione un solo
 artefatto, il codice; qui i pezzi che compongono il lavoro finito (gli
-**artefatti**) sono tre: il codice, i dati e il modello addestrato. Due dei tre
-non sono testo.
+**artefatti**) sono tre: il codice, i dati e il modello addestrato. [Due dei tre
+non sono testo]{.pt-matita}.
 
 Infatti gli strumenti con cui il software tiene la propria cronologia da
 decenni sono fatti apposta per il testo: sanno dire quale riga è cambiata
@@ -213,10 +213,10 @@ sue prestazioni degradano nel tempo e vanno sorvegliate e aggiornate di continuo
 ## Il ciclo di vita di un modello
 
 Qui sta la differenza più importante con il software che si consegna una volta
-sola: un modello in produzione è un processo da tenere in vita più che un
-risultato da archiviare. Siamo abituati a pensare al machine learning come a
-una linea retta: si raccolgono i dati, si addestra, si valuta, si consegna.
-Fine. La consegna è il punto in cui il modello incontra il mondo
+sola: [un modello in produzione è un processo da tenere in vita più che un
+risultato da archiviare]{.pt-matita}. Siamo abituati a pensare al machine
+learning come a una linea retta: si raccolgono i dati, si addestra, si valuta,
+si consegna. Fine. La consegna è il punto in cui il modello incontra il mondo
 reale, e il mondo reale cambia.
 
 Un modello in produzione va sorvegliato, perché prima
@@ -311,9 +311,10 @@ quell'intelligenza serva a qualcuno. La freccia che torna indietro in fondo è
 l'anello: da lì si ricomincia.
 ```
 
-Quattro caselle su cinque vengono *dopo* il notebook, una proporzione da
-tenere a mente. Costruire il modello sta tutto nella prima: la teoria e gli
-strumenti con cui si addestra una rete, come quelli di {doc}`PyTorch
+[Quattro caselle su cinque vengono *dopo* il notebook]{.pt-matita}, una
+proporzione da tenere a mente. Costruire il modello sta tutto nella prima: la
+teoria e gli strumenti con cui si addestra una rete, come quelli di
+{doc}`PyTorch
 </PyTorch/overview>`, sono il bagaglio con cui si parte. Il notebook che
 addestra una rete e ne stampa il voto è la riga di partenza, e da lì in poi
 comincia tutto il resto.

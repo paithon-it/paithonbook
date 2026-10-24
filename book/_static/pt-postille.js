@@ -9,9 +9,14 @@
  * Il segno compare sul capoverso su cui si e': col mouse quando ci si passa
  * sopra (lo fa il CSS), con la tastiera quando prende il fuoco, con le dita
  * sul capoverso che attraversa la riga di lettura, a un terzo dell'altezza
- * dello schermo, uno alla volta. La postilla si apre sotto il capoverso e
- * spinge giu' il testo: di lato non c'e' posto, a nessuna larghezza, e niente
- * deve coprire il testo che si sta leggendo.
+ * dello schermo, uno alla volta.
+ *
+ * Premendo il segno il capoverso sfuma e al suo posto la postilla si scrive,
+ * una lettera dopo l'altra, in Fraunces corsivo. Tenendolo premuto si
+ * sbircia: al rilascio torna il capoverso. Un tocco breve, un clic o Invio
+ * la lasciano scritta finche' non si preme di nuovo, o finche' non si preme
+ * Esc. La scritta e' un disegno (`aria-hidden`): per chi legge con un lettore
+ * di schermo la postilla resta l'`<aside>`, che si apre come prima.
  *
  * Senza questo script le postille restano nascoste e la pagina e' quella di
  * sempre.
@@ -35,9 +40,53 @@
   // viene dalla build, e non prende il segno.
   const MARCHIO = /^(\.\.\/)*_static\/brand\/logos\/paithon-mark\.svg$/;
 
-  function alterna(segno, postilla, apri) {
-    postilla.hidden = !apri;
-    segno.setAttribute('aria-expanded', apri ? 'true' : 'false');
+  // Sotto questa durata la pressione e' un tocco, e la postilla resta
+  // scritta; sopra e' uno sguardo, e al rilascio il capoverso torna.
+  const TOCCO = 280;
+
+  // La scritta: una lettera per `<span>`, ciascuna col suo indice (`--i`) per
+  // il ritardo dell'animazione; le lettere di una parola stanno in una
+  // parola che non si spezza, e si va a capo solo fra le parole.
+  function scritta(testo) {
+    const scritta = document.createElement('span');
+    scritta.className = 'pt-postilla__scritta';
+    scritta.setAttribute('aria-hidden', 'true');
+    const dentro = document.createElement('span');
+    let i = 0;
+    testo.trim().split(/(\s+)/).forEach(function (pezzo) {
+      if (!pezzo) return;
+      if (/^\s+$/.test(pezzo)) {
+        dentro.appendChild(document.createTextNode(' '));
+        i += 1;
+        return;
+      }
+      const parola = document.createElement('span');
+      parola.className = 'pt-postilla__parola';
+      Array.from(pezzo).forEach(function (lettera) {
+        const l = document.createElement('span');
+        l.textContent = lettera;
+        l.style.setProperty('--i', i);
+        i += 1;
+        parola.appendChild(l);
+      });
+      dentro.appendChild(parola);
+    });
+    scritta.appendChild(dentro);
+    return scritta;
+  }
+
+  function alterna(coppia, apri) {
+    coppia.postilla.hidden = !apri;
+    coppia.segno.setAttribute('aria-expanded', apri ? 'true' : 'false');
+    coppia.capoverso.classList.toggle('pt-postilla-attiva', apri);
+    if (apri) {
+      // L'animazione riparte da capo a ogni apertura.
+      coppia.scritta.classList.remove('pt-scrive');
+      void coppia.scritta.offsetWidth;
+      coppia.scritta.classList.add('pt-scrive');
+    } else {
+      coppia.fissa = false;
+    }
   }
 
   function prepara(postilla) {
@@ -68,11 +117,54 @@
     const riga = parseFloat(getComputedStyle(capoverso).lineHeight);
     if (riga) capoverso.style.setProperty('--pt-postilla-riga', riga + 'px');
 
-    segno.addEventListener('click', function () {
-      alterna(segno, postilla, postilla.hidden);
+    const coppia = {
+      capoverso: capoverso, segno: segno, postilla: postilla,
+      scritta: scritta(postilla.textContent), fissa: false,
+      inizio: 0, chiudeAlRilascio: false, premuto: false,
+    };
+    capoverso.appendChild(coppia.scritta);
+
+    // Il dito o il mouse sul segno: la postilla si scrive subito, e il
+    // rilascio decide se era un tocco (resta) o uno sguardo (si richiude).
+    segno.addEventListener('pointerdown', function (evento) {
+      if (evento.button !== 0) return;
+      evento.preventDefault();
+      // Col puntatore catturato il rilascio arriva al segno anche se il dito
+      // o il mouse ne sono usciti; un puntatore non attivo la rifiuta.
+      try { segno.setPointerCapture(evento.pointerId); } catch (e) { /* niente */ }
+      coppia.premuto = true;
+      coppia.inizio = performance.now();
+      coppia.chiudeAlRilascio = !postilla.hidden && coppia.fissa;
+      if (postilla.hidden) alterna(coppia, true);
+    });
+    function rilascio(annullato) {
+      if (!coppia.premuto) return;
+      coppia.premuto = false;
+      if (coppia.chiudeAlRilascio) {
+        alterna(coppia, false);
+      } else if (!annullato && performance.now() - coppia.inizio < TOCCO) {
+        coppia.fissa = true;
+      } else {
+        alterna(coppia, false);
+      }
+    }
+    segno.addEventListener('pointerup', function () { rilascio(false); });
+    segno.addEventListener('pointercancel', function () { rilascio(true); });
+    // Una pressione lunga col dito non deve aprire il menu del telefono.
+    segno.addEventListener('contextmenu', function (evento) {
+      evento.preventDefault();
+    });
+    // Il clic della tastiera (Invio, spazio) non passa dal puntatore:
+    // `detail` vale 0, e il clic fissa o richiude. Quello del puntatore l'ha
+    // gia' gestito il rilascio.
+    segno.addEventListener('click', function (evento) {
+      if (evento.detail !== 0) return;
+      const apri = postilla.hidden;
+      alterna(coppia, apri);
+      if (apri) coppia.fissa = true;
     });
     capoverso.appendChild(segno);
-    return { capoverso: capoverso, segno: segno, postilla: postilla };
+    return coppia;
   }
 
   function seguiLaLettura(coppie) {
@@ -124,7 +216,7 @@
     document.addEventListener('keydown', function (evento) {
       if (evento.key !== 'Escape') return;
       coppie.forEach(function (coppia) {
-        if (!coppia.postilla.hidden) alterna(coppia.segno, coppia.postilla, false);
+        if (!coppia.postilla.hidden) alterna(coppia, false);
       });
     });
 

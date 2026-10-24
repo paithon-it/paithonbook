@@ -79,9 +79,10 @@ quasi nessuno, due o tre per piano.
 
 Aggiungi una dimensione, cioè una colonna, e il posto disponibile si gonfia
 ancora, mentre le persone restano mille. In dieci, cento, mille dimensioni lo
-spazio è così vasto che tutti sono lontanissimi da tutti, e la parola «vicino»
-perde senso. Il tuo amico è lontano, e lo sono anche tutti gli altri, in modo
-così simile che sapere chi è il più vicino non ti aiuta a trovarlo.
+spazio è così vasto che [tutti sono lontanissimi da tutti, e la parola «vicino»
+perde senso]{.pt-matita}. Il tuo amico è lontano, e lo sono anche tutti gli
+altri, in modo così simile che sapere chi è il più vicino non ti aiuta a
+trovarlo.
 
 L'altro effetto, ancora più controintuitivo, è quello della figura: in tante
 dimensioni quasi tutto lo spazio si accalca sui bordi. Il calcolo si può rifare
@@ -139,12 +140,12 @@ $$
 Si noti che se le coordinate sono tutte copie l'una dell'altra i punti stanno
 su una retta, e l'effetto non c'è. Conta infatti la dimensione intrinseca dei
 dati, che per dati reali è spesso molto minore di $d$, e lì $k$-NN e il
-clustering per distanza funzionano. Dove l'effetto c'è, il punto più vicino e
-il più lontano sono quasi equidistanti, la nozione di «vicinanza» perde
-contrasto, e con essa vacillano $k$-NN, il clustering per distanza e la stima
-di densità {cite}`geron2022hands`. La riduzione della dimensionalità risponde
-cercando un sottospazio di dimensione $q \ll d$ che conservi l'informazione
-utile.
+clustering per distanza funzionano. Dove l'effetto c'è, [il punto più vicino e
+il più lontano sono quasi equidistanti]{.pt-matita}, la nozione di «vicinanza»
+perde contrasto, e con essa vacillano $k$-NN, il clustering per distanza e la
+stima di densità {cite}`geron2022hands`. La riduzione della dimensionalità
+risponde cercando un sottospazio di dimensione $q \ll d$ che conservi
+l'informazione utile.
 
 `````
 
@@ -172,9 +173,10 @@ direzione in cui gli uccelli sono più sparpagliati, perché da quella prospetti
 distingui bene chi è avanti e chi è indietro. Fotografarlo di punta, invece, li
 schiaccerebbe tutti in un mucchietto indistinto.
 
-La PCA fa lo stesso con i dati. Cerca la direzione lungo cui i punti
-sono più dispersi (la chiama **prima componente principale**), perché è lì
-che si nasconde la maggior parte delle differenze tra un esempio e l'altro.
+La PCA fa lo stesso con i dati. Cerca la direzione lungo cui i punti sono più
+dispersi (la chiama **prima componente principale**), perché [è lì che si
+nasconde la maggior parte delle differenze tra un esempio e
+l'altro]{.pt-matita}.
 
 Prima di scattare, però, ci si mette d'accordo sul metro. Se dello stormo
 misuri la lunghezza in metri e l'altezza in centimetri, i numeri diranno che
@@ -232,14 +234,14 @@ $$
 \mathbf{C}\, \mathbf{u} = \lambda\, \mathbf{u} ,
 $$
 
-e le direzioni cercate sono gli autovettori di $\mathbf{C}$, e la varianza
-catturata da ciascuna è il corrispondente autovalore $\lambda$. Ordinando gli
-autovalori $\lambda_1 \ge \lambda_2 \ge \dots \ge \lambda_d \ge 0$, la prima
-componente principale è l'autovettore di $\lambda_1$, la seconda quello di
-$\lambda_2$, e così via. Poiché $\mathbf{C}$ è simmetrica, le componenti si
-possono sempre scegliere ortogonali fra loro. Con autovalori distinti sono
-ortogonali per forza; se un autovalore è ripetuto, il teorema spettrale
-garantisce che una base ortonormale del suo autospazio esiste, e ogni
+e [le direzioni cercate sono gli autovettori di $\mathbf{C}$, e la varianza
+catturata da ciascuna è il corrispondente autovalore $\lambda$]{.pt-matita}.
+Ordinando gli autovalori $\lambda_1 \ge \lambda_2 \ge \dots \ge \lambda_d \ge
+0$, la prima componente principale è l'autovettore di $\lambda_1$, la seconda
+quello di $\lambda_2$, e così via. Poiché $\mathbf{C}$ è simmetrica, le
+componenti si possono sempre scegliere ortogonali fra loro. Con autovalori
+distinti sono ortogonali per forza; se un autovalore è ripetuto, il teorema
+spettrale garantisce che una base ortonormale del suo autospazio esiste, e ogni
 implementazione ne restituisce una.
 
 Ogni $\mathbf{u}_j$ relativo a un autovalore semplice resta però
@@ -496,13 +498,14 @@ meno due volte Bruno, cioè Bruno capovolto, che scende dove saliva e
 all'orecchio suona identico. Nessuno dice quale voce sia la prima.
 
 Il trucco si rompe in tre casi. Se le voci fossero due soffi di rumore a forma
-di campana, a ogni posizione della manopola uscirebbe la stessa campana, e
-l'ICA ne sceglierebbe una a caso. Se nella stanza entra Carla e i microfoni
-restano due, una combinazione cancella una voce sola, quindi con due microfoni
-e tre voci ne restano due mescolate. Infine, il calcolo suppone che ogni
-microfono senta le voci nello stesso istante; nella stanza vera il suono arriva
-un po’ prima al microfono più vicino, con l'eco ogni microfono sente anche le
-voci di un attimo prima, e allora il miscuglio non è più una semplice somma.
+di campana, [a ogni posizione della manopola uscirebbe la stessa campana, e
+l'ICA ne sceglierebbe una a caso]{.pt-matita}. Se nella stanza entra Carla e i
+microfoni restano due, una combinazione cancella una voce sola, quindi con due
+microfoni e tre voci ne restano due mescolate. Infine, il calcolo suppone che
+ogni microfono senta le voci nello stesso istante; nella stanza vera il suono
+arriva un po’ prima al microfono più vicino, con l'eco ogni microfono sente
+anche le voci di un attimo prima, e allora il miscuglio non è più una semplice
+somma.
 
 `````
 
@@ -536,14 +539,14 @@ $\tilde{\mathbf{A}}\tilde{\mathbf{A}}^\top = \mathbf{I}$. Resta quindi da
 trovare una rotazione, cioè $n(n-1)/2$ angoli invece degli $n^2$ numeri di una
 matrice qualunque (l'indeterminazione di segno assorbe le riflessioni).
 
-Qui la gaussiana fa eccezione. Una gaussiana sbiancata, infatti, è isotropa,
+Qui la gaussiana fa eccezione. [Una gaussiana sbiancata, infatti, è isotropa,
 ogni rotazione la lascia identica, e nessun criterio che guardi la
-distribuzione dei valori può sceglierne una. Con una sola sorgente gaussiana la
-rotazione è fissata lo stesso, dalle altre $n-1$ direzioni per ortogonalità;
-con due o più resta libera la rotazione nel loro sottospazio. Se invece le
-sorgenti hanno spettri diversi, l'ordine nel tempo basta a separarle anche
-gaussiane, con le sole covarianze a ritardo {cite}`belouchrani1997blind`, ma è
-un altro modello, che l'ICA non usa.
+distribuzione dei valori può sceglierne una]{.pt-matita}. Con una sola sorgente
+gaussiana la rotazione è fissata lo stesso, dalle altre $n-1$ direzioni per
+ortogonalità; con due o più resta libera la rotazione nel loro sottospazio. Se
+invece le sorgenti hanno spettri diversi, l'ordine nel tempo basta a separarle
+anche gaussiane, con le sole covarianze a ritardo {cite}`belouchrani1997blind`,
+ma è un altro modello, che l'ICA non usa.
 
 La rotazione si trova massimizzando la non gaussianità delle proiezioni
 $y = \mathbf{w}^\top\mathbf{z}$ con $\|\mathbf{w}\| = 1$, che hanno media
@@ -696,8 +699,8 @@ posizione dei gruppi fra loro.
 ```
 
 La promessa di {numref}`fig-tsne-umap` è limitata, e il limite è anche
-l'avvertenza d'uso: sulla mappa la grandezza di un gruppo e la distanza fra due
-gruppi non sono misure.
+l'avvertenza d'uso: [sulla mappa la grandezza di un gruppo e la distanza fra due
+gruppi non sono misure]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -879,11 +882,12 @@ quindi una sistemazione già vista non può tornare. Poiché le sistemazioni
 possibili, per quante siano, sono in numero finito, prima o poi nessuno cambia
 più gruppo e i centri si fermano.
 
-Fermarsi, però, non garantisce di aver trovato la sistemazione più comoda:
-garantisce che nessuno guadagna a cambiare ritrovo di sua iniziativa, e che
-ogni ritrovo sta già in mezzo ai suoi. Un giro, in compenso, è poco lavoro:
-ogni persona va confrontata con ogni ritrovo, anche quando le persone sono
-milioni. Il numero di ritrovi, $k$, lo devi invece decidere tu in anticipo.
+[Fermarsi, però, non garantisce di aver trovato la sistemazione più
+comoda]{.pt-matita}: garantisce che nessuno guadagna a cambiare ritrovo di sua
+iniziativa, e che ogni ritrovo sta già in mezzo ai suoi. Un giro, in compenso,
+è poco lavoro: ogni persona va confrontata con ogni ritrovo, anche quando le
+persone sono milioni. Il numero di ritrovi, $k$, lo devi invece decidere tu in
+anticipo.
 
 `````
 
@@ -920,8 +924,8 @@ C_j}\lVert\mathbf{x}_i-\boldsymbol{\mu}_j\rVert^2 +
 |C_j|\,\lVert\boldsymbol{\mu}_j-\mathbf{p}\rVert^2$, minimo in
 $\mathbf{p}=\boldsymbol{\mu}_j$. Le assegnazioni possibili sono in numero finito
 (al più $k^m$) e, se a parità di distanza un punto resta dov'è, nessuna si
-ripresenta. Di conseguenza la procedura si ferma in un numero finito di passi,
-in un minimo locale che dipende dall'inizializzazione.
+ripresenta. Di conseguenza [la procedura si ferma in un numero finito di passi,
+in un minimo locale che dipende dall'inizializzazione]{.pt-matita}.
 
 Il costo è $O(m\,k\,d)$ per iterazione. In pratica le iterazioni sono poche, ma
 nel caso peggiore crescono in modo esponenziale con $m$ anche nel piano
@@ -1027,9 +1031,9 @@ Un valore vicino a $+1$ indica che il punto è molto più vicino ai suoi che agl
 altri ed è ben piazzato; attorno a zero, che sta sul confine; negativo, che in
 media è più vicino al gruppo accanto che al suo e probabilmente sta nel gruppo
 sbagliato. La media su tutti i punti dice quanto è «pulita» la partizione, e si
-sceglie il $k$ che la rende più alta. I due grafici si leggono in
-versi opposti: la larghezza del gomito scende sempre, e si cerca la piega; la
-silhouette si cerca al massimo.
+sceglie il $k$ che la rende più alta. [I due grafici si leggono in versi
+opposti]{.pt-matita}: la larghezza del gomito scende sempre, e si cerca la
+piega; la silhouette si cerca al massimo.
 
 `````
 
@@ -1046,8 +1050,8 @@ s_i = \frac{b_i - a_i}{\max(a_i, b_i)} \in [-1, 1],
 $$
 
 dove $s_i \to 1$ indica un punto ben separato, $s_i \approx 0$ un punto al
-confine, $s_i < 0$ un punto probabilmente mal assegnato. Il coefficiente medio
-$\bar{s}$ si massimizza su $k$ per una scelta più oggettiva.
+confine, $s_i < 0$ un punto probabilmente mal assegnato. [Il coefficiente medio
+$\bar{s}$ si massimizza su $k$]{.pt-matita} per una scelta più oggettiva.
 
 `````
 
@@ -1097,11 +1101,11 @@ troppo pochi perché da lui il quartiere continui a crescere, ma che sta a un
 passo da uno che ne ha tanti. Quello nel quartiere entra lo stesso, e ne segna
 il bordo.
 
-Due regali rispetto a k-means. Primo: non devi dire quanti gruppi cerchi
-(li scopre lui, contando le zone dense). Secondo: i punti isolati, quelli in
-mezzo al buio, non vengono forzati dentro a nessun gruppo, e DBSCAN li marca
-come rumore. E poiché segue la forma della densità, riconosce famiglie di
-qualunque sagoma, anche due lune intrecciate, dove k-means fallisce
+Due regali rispetto a k-means. Primo: [non devi dire quanti gruppi cerchi (li
+scopre lui, contando le zone dense)]{.pt-matita}. Secondo: i punti isolati,
+quelli in mezzo al buio, non vengono forzati dentro a nessun gruppo, e DBSCAN
+li marca come rumore. E poiché segue la forma della densità, riconosce famiglie
+di qualunque sagoma, anche due lune intrecciate, dove k-means fallisce
 miseramente ({numref}`fig-clustering-metodi`).
 
 Il limite sta tutto nelle manopole. Il raggio lo scegli una volta e vale per
@@ -1130,10 +1134,10 @@ core a distanza $\le \varepsilon$; i punti non-core nell'intorno di un core
 sono di **bordo** e vi si aggregano; tutti gli altri sono rumore, e non
 appartengono ad alcun cluster.
 
-Il numero di cluster $k$, quindi, non è un parametro, ma emerge dai dati. In
-compenso la scelta di $\varepsilon$ è delicata, e una regola pratica è
-ispezionare il grafico delle distanze al $\mathrm{minPts}$-esimo vicino,
-ordinate, e cercarne il gomito.
+[Il numero di cluster $k$, quindi, non è un parametro, ma emerge dai
+dati]{.pt-matita}. In compenso la scelta di $\varepsilon$ è delicata, e una
+regola pratica è ispezionare il grafico delle distanze al
+$\mathrm{minPts}$-esimo vicino, ordinate, e cercarne il gomito.
 
 Inoltre DBSCAN soffre quando i cluster hanno densità molto diverse tra loro,
 perché un $\varepsilon$ unico non può adattarsi a tutte. La risposta standard è
@@ -1314,12 +1318,12 @@ quindi tiri a indovinare e alterni. Nessuno conta tutto da una parte sola:
 chi è nove decimi della fila pesa nove volte tanto nel centro della fila che in
 quello del cerchio.
 
-Ogni giro spiega il prato non peggio del giro prima, e quasi sempre un po’
-meglio; quando la spiegazione smette di crescere, ci si ferma. Dove ci si ferma
-dipende da dove si è partiti, quindi si riprova da più partenze. Il giro si
-chiama **algoritmo EM**, dalle iniziali inglesi dei suoi due passi: il primo
-(*expectation*) decide di chi è ognuno, viste le forme; il secondo
-(*maximization*) ricalcola centri e forme, viste le attribuzioni.
+[Ogni giro spiega il prato non peggio del giro prima]{.pt-matita}, e quasi
+sempre un po’ meglio; quando la spiegazione smette di crescere, ci si ferma.
+Dove ci si ferma dipende da dove si è partiti, quindi si riprova da più
+partenze. Il giro si chiama **algoritmo EM**, dalle iniziali inglesi dei suoi
+due passi: il primo (*expectation*) decide di chi è ognuno, viste le forme; il
+secondo (*maximization*) ricalcola centri e forme, viste le attribuzioni.
 
 Niente vieta a una campana di stringersi su una persona sola, seduta in
 disparte, e capita. Quella la descrivi alla perfezione, il racconto sembra il
@@ -1383,8 +1387,9 @@ $$
 \pi_k = \frac{m_k}{m}.
 $$
 
-La proprietà che rende EM un algoritmo e non un'euristica è la monotonia, e
-la prova sta in una riga. Per qualunque distribuzione $q$ sulle $z^{(i)}$,
+[La proprietà che rende EM un algoritmo e non un'euristica è la
+monotonia]{.pt-matita}, e la prova sta in una riga. Per qualunque distribuzione
+$q$ sulle $z^{(i)}$,
 
 $$
 \begin{gathered}
@@ -1588,10 +1593,10 @@ gruppi indovinare a caso ne azzecca metà.
 
 k-means si ferma a $0{,}663$, poco sopra il tirare a caso. Le due nuvole,
 infatti, sono allungate, e la frontiera a metà strada fra i due centri le
-taglia di traverso. La mistura arriva invece a $0{,}997$, perché ha imparato
-che i gruppi sono larghi in una direzione e stretti nell'altra. Restano cinque
-punti su seicento su cui il modello non si sbilancia oltre il 90%, e sono
-quelli in mezzo, dove l'incertezza è reale.
+taglia di traverso. La mistura arriva invece a $0{,}997$, perché [ha imparato
+che i gruppi sono larghi in una direzione e stretti nell'altra]{.pt-matita}.
+Restano cinque punti su seicento su cui il modello non si sbilancia oltre il
+90%, e sono quelli in mezzo, dove l'incertezza è reale.
 
 Consideriamo infine il BIC (*Bayesian Information Criterion*), cioè
 $-2\log L + \lvert\theta\rvert\log m$, con $L$ la verosimiglianza dei dati,

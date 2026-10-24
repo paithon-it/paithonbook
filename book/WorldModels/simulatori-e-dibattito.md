@@ -27,10 +27,10 @@ cambiamento di stato corretto».
 
 In quell'immagine c'è la domanda centrale del campo: un video che *sembra* vero
 dimostra che il modello ha *capito* il mondo, o soltanto che ha imparato a
-imitarne le apparenze? I pittori fiamminghi del Quattrocento
-rendevano la luce nel vetro quasi due secoli prima che Snell scrivesse la legge
-della rifrazione, nel 1621: copiare bene un fenomeno e possederne il meccanismo
-sono due cose diverse, e distinguere l'una dall'altra, in una rete neurale, è
+imitarne le apparenze? I pittori fiamminghi del Quattrocento rendevano la luce
+nel vetro quasi due secoli prima che Snell scrivesse la legge della rifrazione,
+nel 1621: [copiare bene un fenomeno e possederne il meccanismo sono due cose
+diverse]{.pt-matita}, e distinguere l'una dall'altra, in una rete neurale, è
 più difficile che in un quadro.
 
 ## Mondi da guardare, mondi da giocare
@@ -71,10 +71,10 @@ con cento pulsanti sarebbe ingovernabile.
 
 Da un fotogramma all'altro cambiano molte più cose di otto, come l'acqua che
 scorre sul fondale, il nemico che avanza, il corpo che ricade a terra dopo il
-salto. Nelle otto, quindi, ci finisce soltanto quel che dipende da chi gioca;
-il resto lo prosegue la parte di rete che disegna il fotogramma dopo, che di
-cadute ne ha viste migliaia. Quelle mosse diventano i pulsanti di un joystick
-che Genie si è costruito senza istruzioni.
+salto. Nelle otto, quindi, [ci finisce soltanto quel che dipende da chi
+gioca]{.pt-matita}; il resto lo prosegue la parte di rete che disegna il
+fotogramma dopo, che di cadute ne ha viste migliaia. Quelle mosse diventano i
+pulsanti di un joystick che Genie si è costruito senza istruzioni.
 
 Quando giochi, scegli un numero da 1 a 8: che il pulsante 3 significhi «salta»
 lo scopri provando, come davanti a una console senza libretto di istruzioni.
@@ -121,11 +121,11 @@ umano); e $g_\theta$ è il modello di dinamica, che predice i token del
 fotogramma successivo a partire dai token del passato *e* dall'azione latente
 $\tilde{a}_t$.
 
-A riportare i token in pixel è il decoder del tokenizer: il modello
-di dinamica non vede mai un pixel e non ne produce mai uno. Il collo di
-bottiglia è la chiave: potendo trasmettere a $g_\theta$ solo tre bit per passo,
-$\tilde{a}_t$ è spinta a codificare il *cambiamento controllabile* (la mossa) e
-a lasciare tutto il resto (sfondo, fisica, inerzia) al modello di dinamica.
+A riportare i token in pixel è il decoder del tokenizer: il modello di dinamica
+non vede mai un pixel e non ne produce mai uno. Il collo di bottiglia è la
+chiave: potendo trasmettere a $g_\theta$ solo tre bit per passo, [$\tilde{a}_t$
+è spinta a codificare il *cambiamento controllabile* (la mossa) e a lasciare
+tutto il resto (sfondo, fisica, inerzia) al modello di dinamica]{.pt-matita}.
 
 In inferenza il modello di azioni sparisce e l'azione è fornita dall'utente,
 fotogramma per fotogramma.
@@ -230,8 +230,8 @@ entrano in quei numeri e li ritoccano, spostando una pedina *nella mente* della
 rete: non nella sequenza di mosse, che resta identica. Se la scacchiera interna
 fosse un ornamento, le mosse proposte non cambierebbero. Invece cambiano, e in
 modo coerente con la scacchiera contraffatta: la rete gioca in base a ciò che
-«crede» di vedere. Non è un pappagallo di sequenze: dentro c'è un piccolo
-mondo, e lo usa.
+«crede» di vedere. [Non è un pappagallo di sequenze: dentro c'è un piccolo
+mondo, e lo usa]{.pt-matita}.
 
 `````
 
@@ -255,8 +255,8 @@ Poiché una sonda potrebbe leggere una correlazione senza ruolo
 causale, il passo decisivo è l’intervento: si modificano le attivazioni con una
 discesa di gradiente finché la sonda vi legge una scacchiera contraffatta, si
 lascia proseguire il calcolo e si osserva che la distribuzione sulle mosse
-legali si adegua alla scacchiera modificata, non alla sequenza di input. La
-rappresentazione, dunque, *guida* la predizione.
+legali si adegua alla scacchiera modificata, non alla sequenza di input. [La
+rappresentazione, dunque, *guida* la predizione]{.pt-matita}.
 
 Neel Nanda e collaboratori (2023) {cite}`nanda2023emergent` hanno mostrato che
 la rappresentazione è in realtà *lineare*, purché la si cerchi nel sistema di
@@ -351,8 +351,8 @@ scavano qui.
 
 Il giacimento però non regala tutto. Chi si mette a prevedere ogni puntino
 dello schermo passa il tempo anche sui riflessi del pavimento, che di quel che
-sta succedendo non dicono nulla. Indovinare il fotogramma dopo in una scena
-vista mille volte non equivale ad aver capito perché le cose cadono:
+sta succedendo non dicono nulla. [Indovinare il fotogramma dopo in una scena
+vista mille volte non equivale ad aver capito perché le cose cadono]{.pt-matita}:
 il bicchiere che si rovescia e tiene il succo dentro anche coricato a mezz'aria
 sta lì a ricordarlo.
 
@@ -385,8 +385,8 @@ di applicare la legge, dando più peso al colore di un oggetto che alla sua
 velocità {cite}`kang2024far`. Il banco Physics-IQ, costruito su riprese vere di
 esperimenti di meccanica, fluidi e ottica, trova lo stesso sui generatori più
 noti: il realismo visivo non predice la correttezza fisica
-{cite}`motamed2025generative`. Prevedere bene i fotogrammi tipici, insomma, non
-equivale ad aver interiorizzato le leggi che li generano.
+{cite}`motamed2025generative`. [Prevedere bene i fotogrammi tipici, insomma, non
+equivale ad aver interiorizzato le leggi che li generano]{.pt-matita}.
 
 `````
 
@@ -405,9 +405,9 @@ Hopfield del 1982. L'inferenza attiva: percepire, agire e imparare come tre
 modi di tenere bassa la stessa quantità, con quel che si desidera scritto
 dentro il modello invece che in un premio a parte. Infine Sora e Genie: la
 previsione fatta spettacolo, fotogrammi interi di futuro. Il filo che
-attraversa ottant'anni è uno solo: in questa tradizione di ricerca
+attraversa ottant'anni è uno solo: [in questa tradizione di ricerca
 l'intelligenza è la capacità di prevedere, e di usare le previsioni per
-agire.
+agire]{.pt-matita}.
 
 Manca ancora la composizionalità: i simulatori attuali sanno muoversi *fra* le
 scene che hanno visto, mescolandole e sfumando dall'una all'altra (in gergo si

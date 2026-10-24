@@ -31,9 +31,9 @@ L'elenco di tutti i pezzi che il sistema conosce si chiama **vocabolario**: è l
 scatola dei mattoncini disponibili, e niente che non ci sia dentro può essere
 rappresentato.
 
-Riempire la scatola di parole intere non funziona. Le parole di una lingua non
-finiscono mai: la scatola diventa enorme e resta comunque incompleta, e la prima
-parola che manca lascia il sistema muto.
+[Riempire la scatola di parole intere non funziona]{.pt-matita}. Le parole di
+una lingua non finiscono mai: la scatola diventa enorme e resta comunque
+incompleta, e la prima parola che manca lascia il sistema muto.
 
 I posti nella scatola si contano allora in partenza, qualche decina di
 migliaia, e si riempiono così. All'inizio ci si mette una lettera per posto:
@@ -63,8 +63,8 @@ limite, scendendo sotto la lettera, lo racconta la {doc}`sezione sui byte
 
 Formalmente definiamo un **vocabolario** $V$, l'insieme dei token noti. La
 tokenizzazione è una funzione che mappa una stringa nella sequenza dei suoi
-token $\in V$. La segmentazione a spazi bianchi soffre di due problemi: un
-vocabolario enorme e le parole fuori dizionario (*out-of-vocabulary*).
+token $\in V$. [La segmentazione a spazi bianchi soffre di due problemi: un
+vocabolario enorme e le parole fuori dizionario]{.pt-matita} (*out-of-vocabulary*).
 
 I sistemi moderni usano perciò tokenizzatori sottoparola (*subword*). Il *Byte
 Pair Encoding* riprende l'algoritmo introdotto da Philip Gage
@@ -127,7 +127,7 @@ singolo $1$.
 
 Funziona, ma è uno spreco e, soprattutto, è cieco al significato. Infatti, per
 questa codifica *gatto* e *felino* sono lontani esattamente quanto *gatto* e
-*mercoledì*: ogni parola è un'isola, nessuna somiglianza è possibile.
+*mercoledì*: [ogni parola è un'isola, nessuna somiglianza è possibile]{.pt-matita}.
 
 `````
 
@@ -143,11 +143,11 @@ $$
 \lVert \mathbf{e}_i - \mathbf{e}_j \rVert_2 = \sqrt{2} ,
 $$
 
-cioè prodotto scalare nullo e distanza identica per *qualsiasi* coppia. In altri
-termini, la geometria non porta alcuna informazione semantica. In più, con un
-vocabolario di parole intere, $|V|$ è dell'ordine di $10^5$–$10^6$ (con le
-sottoparole scende a qualche decina di migliaia): i vettori sono enormi e
-sparsissimi.
+cioè prodotto scalare nullo e distanza identica per *qualsiasi* coppia. In
+altri termini, [la geometria non porta alcuna informazione
+semantica]{.pt-matita}. In più, con un vocabolario di parole intere, $|V|$ è
+dell'ordine di $10^5$–$10^6$ (con le sottoparole scende a qualche decina di
+migliaia): i vettori sono enormi e sparsissimi.
 
 `````
 
@@ -206,11 +206,12 @@ quello che volevamo. *Sinapsi*, invece, compare in due documenti: mille
 diviso due fa cinquecento, e il logaritmo di cinquecento è circa 6,2.
 Sopravvive, e pesa.
 
-Il prodotto dei due numeri gonfia dunque le parole rare e informative e sgonfia
-quelle comuni a tutti: stessa pulsantiera, contatori pesati meglio. Una cosa
-però non cambia: le caselle restano mute fra loro, come gli interruttori di
-prima. Un testo che parla di *gatti* e uno che parla di *felini* non hanno una
-sola casella in comune, e per il conteggio non si somigliano per niente.
+[Il prodotto dei due numeri gonfia dunque le parole rare e informative e
+sgonfia quelle comuni a tutti]{.pt-matita}: stessa pulsantiera, contatori
+pesati meglio. Una cosa però non cambia: le caselle restano mute fra loro, come
+gli interruttori di prima. Un testo che parla di *gatti* e uno che parla di
+*felini* non hanno una sola casella in comune, e per il conteggio non si
+somigliano per niente.
 
 `````
 
@@ -229,8 +230,8 @@ documenti, $\text{df}(t)$ il numero di documenti che contengono $t$ (la misura
 è di Spärck Jones {cite}`sparckjones1972statistical`), e il logaritmo è quello
 naturale (la base cambia solo un fattore di scala comune a tutti i termini).
 
-Il fattore logaritmico penalizza i termini onnipresenti (con $\text{df}$
-elevato) fino ad annullare quelli presenti in ogni documento: se
+[Il fattore logaritmico penalizza i termini onnipresenti (con $\text{df}$
+elevato) fino ad annullare quelli presenti in ogni documento]{.pt-matita}: se
 $\text{df}(t) = N$ allora $\log(N/N) = 0$. Questa è la forma da manuale, e le
 librerie ne calcolano varianti lisciate; come peso dei termini, il prodotto
 $\text{tf}\cdot\text{idf}$ si afferma con i sistemi di recupero di Salton
@@ -343,14 +344,13 @@ conteggi). Nel 2003 il modello di linguaggio neurale di Bengio e colleghi
 {cite}`bengio2003neural` li imparava mentre prevedeva la parola
 successiva, e il salto che li ha resi comuni arriva nel 2013.
 
-L'idea guida è più vecchia ancora, e il linguista John Firth
-nel 1957 la riassunse così:
-*"You shall know a word by the
-company it keeps"* {cite}`firth1957synopsis`, conoscerai una parola dalla
-compagnia che frequenta. In altri termini, parole che appaiono in contesti
-simili hanno significati simili. Se lo facciamo dire ai numeri, otteniamo i
-**word embedding**: la parola inglese vuol dire «immersione», e l'immagine è
-quella di ogni parola calata dentro uno spazio, in un punto suo.
+L'idea guida è più vecchia ancora, e il linguista John Firth nel 1957 la
+riassunse così: *"You shall know a word by the company it keeps"*
+{cite}`firth1957synopsis`, conoscerai una parola dalla compagnia che frequenta.
+In altri termini, [parole che appaiono in contesti simili hanno significati
+simili]{.pt-matita}. Se lo facciamo dire ai numeri, otteniamo i **word
+embedding**: la parola inglese vuol dire «immersione», e l'immagine è quella di
+ogni parola calata dentro uno spazio, in un punto suo.
 
 La {numref}`fig-finestra-contesto` mostra come si fa in pratica. Si prende
 una finestra, cioè un ritaglio di poche parole che scorre lungo il testo,
@@ -567,8 +567,8 @@ condividono i pezzi `gat` e `att`, quindi i loro vettori nascono già simili
 (prezioso in una lingua di desinenze come la nostra). Secondo: di una parola mai
 vista prima manca il mattoncino della parola intera, che nessuno ha avuto
 occasione di imparare, ma le fette da tre, quattro, cinque lettere ci sono
-tutte, e sommando quelle un vettore esce lo stesso. Nessuna parola resta più
-senza rappresentazione.
+tutte, e sommando quelle un vettore esce lo stesso. [Nessuna parola resta più
+senza rappresentazione]{.pt-matita}.
 
 I mattoncini aiutano dove il significato si legge nei pezzi, come nelle
 desinenze. Dove non si legge, possono anche confondere. Ad esempio, *cane* e
@@ -596,10 +596,10 @@ dove $\mathbf{z}_g \in \mathbb{R}^{d}$ è il vettore appreso per l'n-gramma $g$.
 Per limitare l'occupazione di memoria gli n-grammi non hanno ciascuno una riga
 propria: una funzione di hash (FNV-1a) li manda in $K = 2\cdot 10^{6}$ righe, e
 n-grammi diversi che cadono nella stessa riga condividono il vettore. Due
-conseguenze pratiche: le parole **out-of-vocabulary** restano rappresentabili
-sommando i rispettivi n-grammi, ciascuno già associato a un vettore appreso
-altrove; e nelle lingue morfologicamente ricche le forme flesse di una stessa
-radice condividono parametri.
+conseguenze pratiche: [le parole **out-of-vocabulary** restano rappresentabili
+sommando i rispettivi n-grammi]{.pt-matita}, ciascuno già associato a un
+vettore appreso altrove; e nelle lingue morfologicamente ricche le forme flesse
+di una stessa radice condividono parametri.
 
 Il guadagno però non è uniforme: Bojanowski e
 colleghi {cite}`bojanowski2017enriching` lo misurano sulla similarità di parole
@@ -661,8 +661,8 @@ abbastanza da farle superare *re*.
 
 Tutti i programmi che fanno queste analogie
 tolgono dalla gara le tre parole della domanda, e solo così la risposta che
-esce è quella famosa. L'analogia geometrica esiste, ma è più tenue di come la
-si disegna, e il parallelogramma della figura è un'idealizzazione.
+esce è quella famosa. [L'analogia geometrica esiste, ma è più tenue di come la
+si disegna]{.pt-matita}, e il parallelogramma della figura è un'idealizzazione.
 
 Le frecce portano con sé anche associazioni che non vorremmo. I numeri vengono da
 testi scritti da persone, e le associazioni che stavano in quei testi ci
@@ -746,9 +746,9 @@ $$
 + \mathbf{v}_{\text{donna}}\bigr) = \text{regina} .
 $$
 
-La lettura corretta è che l'analogia lineare è una direzione debole
+La lettura corretta è che [l'analogia lineare è una direzione debole
 sovrapposta a una
-posizione forte: la geometria sposta il punto abbastanza da mettere
+posizione forte]{.pt-matita}: la geometria sposta il punto abbastanza da mettere
 *regina* al secondo posto, non abbastanza da farle superare *re*. Nissim, van
 Noord e van der Goot {cite}`nissim2020fair` hanno discusso a fondo la
 questione, mostrando quanto ciò che si legge sulle analogie, comprese quelle
@@ -805,8 +805,8 @@ libri e Wikipedia, con due esercizi: indovinare le parole che gli avevano
 cancellato, e dire se due frasi si seguissero nel testo originale.
 Quell'allenamento si riusa per compiti diversissimi senza rifare tutto. Ma
 nessuno gli ha mai chiesto quanto due moduli vogliano dire la stessa cosa, e
-infatti lo giudica male: quello che si vuole da uno spazio bisogna
-insegnarglielo.
+infatti lo giudica male: [quello che si vuole da uno spazio bisogna
+insegnarglielo]{.pt-matita}.
 
 La somiglianza gliela insegna tre moduli per volta: uno di riferimento,
 l’**ancora**, uno che dice la stessa cosa, uno che parla d'altro. Chiede solo
@@ -845,11 +845,10 @@ Con un encoder contestuale il problema si sposta ma non sparisce. Ad esempio,
 prendere il vettore del token `[CLS]` di un BERT pre-addestrato, o la media dei
 suoi token, dà rappresentazioni peggiori della media di GloVe su compiti di
 similarità semantica: `[CLS]` è ottimizzato per il *next sentence prediction* e
-per la
-successiva messa a punto, non per operare in uno spazio metrico. La lezione è
-generale: la geometria di uno spazio latente riflette l'obiettivo con cui è
-stato addestrato, e la similarità del coseno non è una proprietà che si ottiene
-per caso.
+per la successiva messa a punto, non per operare in uno spazio metrico. La
+lezione è generale: [la geometria di uno spazio latente riflette l'obiettivo
+con cui è stato addestrato]{.pt-matita}, e la similarità del coseno non è una
+proprietà che si ottiene per caso.
 
 Sentence-BERT {cite}`reimers2019sentence` risolve il problema con una struttura
 **siamese**: lo stesso encoder $f_\theta$ (pesi condivisi, non due reti

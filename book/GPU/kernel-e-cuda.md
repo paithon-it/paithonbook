@@ -28,12 +28,12 @@ Per semplicità consideriamo un kernel che lavora su un array a una dimensione
 (in PyTorch, un tensore a una dimensione). Il thread numero 7 si occupa allora
 dell'elemento in posizione 7, e così via.
 
-Il kernel, dunque, si scrive per uno e si lancia su tutti. «Lanciare», qui, è
-il verbo tecnico: si passa alla GPU il programma e le si dice su quanti
-esecutori farlo partire. Quell'insieme di esecutori è la griglia (in inglese
-*grid*) vista nell'architettura, cioè tutti i blocchi messi insieme. Ognuno
-esegue lo stesso codice su dati diversi e, per sapere *su quali*, comincia col
-ricavare il proprio numero.
+[Il kernel, dunque, si scrive per uno e si lancia su tutti]{.pt-matita}.
+«Lanciare», qui, è il verbo tecnico: si passa alla GPU il programma e le si
+dice su quanti esecutori farlo partire. Quell'insieme di esecutori è la griglia
+(in inglese *grid*) vista nell'architettura, cioè tutti i blocchi messi
+insieme. Ognuno esegue lo stesso codice su dati diversi e, per sapere *su
+quali*, comincia col ricavare il proprio numero.
 
 `````{tab} Elementare
 
@@ -267,12 +267,12 @@ cassette non esistono. Per queste vale la regola di prima: chi supera
 l'ultima cassetta si ferma. Nel codice se ne occupa la riga `mask`, che marca
 quali indici sono validi.
 
-Come le persone della squadra si spartiscano poi il lotto non è
-più affar tuo: lo decide Triton, che tiene occupati i lavoratori della GPU
-quasi sempre come farebbe a mano un esperto. Tu ragioni a lotti; il
-compilatore scende ai dettagli. È per questo che un kernel Triton si scrive in
-Python leggibile, senza toccare né l'indice del singolo esecutore né la memoria
-in cui appoggiare i numeri.
+Come le persone della squadra si spartiscano poi il lotto non è più affar tuo:
+lo decide Triton, che tiene occupati i lavoratori della GPU quasi sempre come
+farebbe a mano un esperto. [Tu ragioni a lotti; il compilatore scende ai
+dettagli]{.pt-matita}. È per questo che un kernel Triton si scrive in Python
+leggibile, senza toccare né l'indice del singolo esecutore né la memoria in cui
+appoggiare i numeri.
 
 Non tutti gli ordini, però, si sbrigano separatamente. Se alla squadra si
 chiede quanti volantini restano in tutto, i numeri vanno messi insieme, e
@@ -302,14 +302,14 @@ La funzione `fused_relu` è il **lancio**: alloca l'uscita, calcola quante
 istanze servono (`triton.cdiv`, la divisione arrotondata per eccesso) e invoca
 il kernel con la sintassi `fused_kernel[grid](...)`.
 
-Il salto di astrazione è netto: un *program instance* di Triton (un `pid`)
-non è un thread, ma elabora un intero blocco di `BLOCK_SIZE` elementi. Il
+Il salto di astrazione è netto: un *program instance* di Triton (un `pid`) non
+è un thread, ma elabora un intero blocco di `BLOCK_SIZE` elementi. Il
 programmatore lavora su vettori e tessere (`offsets` è un vettore di indici,
-`x` un vettore di valori), mentre il compilatore Triton mappa quel lavoro sui
-thread e sui warp dell'SM, sceglie il layout dei dati e sintetizza gli accessi
-coalescenti visti nella sezione sulla memoria. Triton sta così un livello
-sopra CUDA (dove invece scriveresti esplicitamente cosa fa *un* thread) e un
-livello sotto PyTorch.
+`x` un vettore di valori), mentre [il compilatore Triton mappa quel lavoro sui
+thread e sui warp dell'SM]{.pt-matita}, sceglie il layout dei dati e sintetizza
+gli accessi coalescenti visti nella sezione sulla memoria. Triton sta così un
+livello sopra CUDA (dove invece scriveresti esplicitamente cosa fa *un* thread)
+e un livello sotto PyTorch.
 
 `BLOCK_SIZE` è un `tl.constexpr`, cioè una costante nota a tempo di
 compilazione, che Triton usa per generare codice specializzato (srotolare
@@ -391,8 +391,9 @@ tempo scende quasi nella stessa proporzione.
 
 Se invece su ogni numero ci fosse mezz'ora di conti da fare, le telefonate e i
 viaggi sarebbero un rumore di fondo, e fondere non cambierebbe niente di
-misurabile. In generale, si guadagna dove il trasporto pesa più del calcolo,
-come in quasi tutto ciò che una rete fa sui numeri uno per uno.
+misurabile. In generale, [si guadagna dove il trasporto pesa più del
+calcolo]{.pt-matita}, come in quasi tutto ciò che una rete fa sui numeri uno
+per uno.
 
 Portata all'estremo, poi, la cura si esaurisce da sé: a forza di togliere
 viaggi si arriva al punto in cui il trasporto smette di essere il freno e a
@@ -414,8 +415,8 @@ bassissima: come calcolato nel roofline della {doc}`sezione sulla memoria
 <gerarchia-memoria>`, una somma vettoriale fa circa $1$ FLOP ogni $12$ byte
 spostati (profondamente *memory-bound*). Tre operazioni separate leggono e
 riscrivono l'array tre volte, mentre il kernel fuso lo fa una sola. A parità
-di FLOP, tagliare i byte alza l'intensità aritmetica e sposta l'operazione
-verso destra sul roofline, dal tetto di banda verso quello di calcolo.
+di FLOP, [tagliare i byte alza l'intensità aritmetica e sposta l'operazione
+verso destra sul roofline]{.pt-matita}, dal tetto di banda verso quello di calcolo.
 
 È ciò che fa la kernel fusion di `torch.compile`, descritta in «Prestazioni e
 scala»: TorchInductor riconosce le catene di operazioni fondibili e ne
@@ -448,10 +449,10 @@ posto tuo, senza che tu debba scrivere niente.
 
 Le richieste più impegnative restano affidate agli specialisti (kernel scritti
 a mano dal costruttore della GPU), mentre tutto il contorno di operazioni
-piccole viene accorpato. Meno telefonate, meno viaggi, e lo stesso risultato
-salvo l'ultima cifra, perché in un solo kernel il compilatore può fondere
-una moltiplicazione e una somma in un'unica operazione che arrotonda una volta
-sola, e in virgola mobile ogni arrotondamento si sente.
+piccole viene accorpato. [Meno telefonate, meno viaggi, e lo stesso risultato
+salvo l'ultima cifra]{.pt-matita}, perché in un solo kernel il compilatore può
+fondere una moltiplicazione e una somma in un'unica operazione che arrotonda
+una volta sola, e in virgola mobile ogni arrotondamento si sente.
 
 `````
 
@@ -473,10 +474,10 @@ e scala», TorchDynamo cattura la sequenza di operazioni in un grafo e
 TorchInductor la ricompila: le operazioni pesanti restano affidate a cuBLAS e
 cuDNN, ma le lunghe catene elementwise che le circondano (quelle che in eager
 sarebbero state dieci kernel e dieci viaggi in memoria) vengono fuse in pochi
-kernel Triton generati al volo. Ne risultano meno lanci, meno traffico sulla
-HBM e una GPU alimentata meglio. Dietro la riga `model = torch.compile(model)`
-si mette in moto un generatore di kernel fusi, e i kernel che produce
-sono scritti in Triton.
+kernel Triton generati al volo. Ne risultano [meno lanci, meno traffico sulla
+HBM e una GPU alimentata meglio]{.pt-matita}. Dietro la riga `model =
+torch.compile(model)` si mette in moto un generatore di kernel fusi, e i kernel
+che produce sono scritti in Triton.
 
 `````
 

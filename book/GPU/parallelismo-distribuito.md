@@ -67,8 +67,8 @@ Nessuna scheda, però, lavora sempre al massimo. La frazione del picco che un
 addestramento riesce a usare si chiama **MFU** (*model FLOPs utilization*)
 {cite}`chowdhery2023palm`; per Llama 3, ad esempio, nella sua taglia più grande
 (405 miliardi di parametri su 8192 o 16384 schede H100) è stata fra il 38% e il
-43% {cite}`grattafiori2024llama3`. Alcuni modelli, insomma, non stanno in una
-GPU sola né per memoria né per tempo.
+43% {cite}`grattafiori2024llama3`. Alcuni modelli, insomma, [non stanno in una
+GPU sola né per memoria né per tempo]{.pt-matita}.
 
 La sezione {doc}`«Prestazioni e scala» </PyTorch/prestazioni>` ha già
 presentato il **parallelismo dati**, la strategia più comune per usare più
@@ -157,9 +157,9 @@ suo non lo spedisce a nessuno), cioè sei quarti, una volta e mezza la lista
 intera. In otto, sette più sette, 1,75 volte. In quaranta, trentanove più
 trentanove, 1,95 volte.
 
-In generale, raddoppiando il tavolo i pezzetti si dimezzano mentre i
-passaggi raddoppiano, e le due cose quasi si annullano: chiunque sieda al
-tavolo manda in giro poco meno di due volte la propria lista, mai di più. I
+In generale, raddoppiando il tavolo i pezzetti si dimezzano mentre i passaggi
+raddoppiano, e le due cose quasi si annullano: [chiunque sieda al tavolo manda
+in giro poco meno di due volte la propria lista, mai di più]{.pt-matita}. I
 pezzetti poi partono appena sono pronti, mentre si sta ancora sommando il
 resto, e il tempo del giro si nasconde dentro il tempo del calcolo. Per questo
 il parallelismo dati scala bene su tante schede.
@@ -202,8 +202,8 @@ $T_\text{ring} = 2(K-1)\,\alpha + 2\frac{K-1}{K}\,\frac{n}{\beta}$. Il secondo
 termine è il tempo per spedire il volume che ciascuna GPU trasmette,
 $2\frac{K-1}{K}$ volte il gradiente. Qualunque all-reduce fa passare almeno
 altrettanti byte da almeno un nodo {cite}`patarasuk2009bandwidth`, quindi
-l'anello è ottimale in banda per ogni $K$, e al crescere di $K$ quel costo sale
-verso $2n/\beta$ senza mai superarlo.
+[l'anello è ottimale in banda per ogni $K$]{.pt-matita}, e al crescere di $K$
+quel costo sale verso $2n/\beta$ senza mai superarlo.
 
 Il primo termine, la latenza, cresce invece linearmente con $K$. È quella
 latenza, proporzionale a $K$, il motivo per cui a molti nodi NCCL abbandona
@@ -295,8 +295,8 @@ dipende dal foglio in arrivo.
 
 Finché i due sono seduti allo stesso tavolo, passarsi un foglio è quasi
 gratis. Se sono in due edifici diversi, quel fermarsi continuo diventa la voce
-di spesa principale. Per questo tagliare un registro così conviene solo fra
-schede vicine, unite da una linea diretta velocissima.
+di spesa principale. Per questo [tagliare un registro così conviene solo fra
+schede vicine, unite da una linea diretta velocissima]{.pt-matita}.
 
 `````
 
@@ -340,9 +340,9 @@ $\mathbf{B}$, così che anche lì basti un solo all-reduce.
 La contropartita è la comunicazione. Le collettive sulle *attivazioni* si
 ripetono a ogni blocco, sono sincrone e stanno sul cammino critico: il calcolo
 non può proseguire finché non finiscono, quindi non si nascondono dietro di
-esso, come invece fa l'all-reduce dei gradienti. Per questo il tensor
-parallelism si usa di norma dentro un singolo nodo, dove le GPU sono collegate
-da NVLink a centinaia di GB/s, e non tra nodi diversi.
+esso, come invece fa l'all-reduce dei gradienti. Per questo [il tensor
+parallelism si usa di norma dentro un singolo nodo]{.pt-matita}, dove le GPU
+sono collegate da NVLink a centinaia di GB/s, e non tra nodi diversi.
 
 `````
 
@@ -364,11 +364,11 @@ mentre la prima postazione lavora le altre tre stanno con le mani in mano, e
 quando l'auto arriva in fondo la prima è ferma da un pezzo. Quattro operai, ma
 a ogni istante ne lavora uno.
 
-Il rimedio è non mandare un'auto sola, ma un flusso continuo: appena la prima
-postazione ha finito il telaio di un'auto e l'ha passato avanti, comincia
-subito quello dell'auto successiva. Presto tutte e quattro le postazioni
-lavorano insieme, ciascuna su un'auto diversa. Nel modello le «auto» sono
-pezzetti del mazzetto di esempi, i **micro-batch**, che si fanno scorrere
+Il rimedio è [non mandare un'auto sola, ma un flusso continuo]{.pt-matita}:
+appena la prima postazione ha finito il telaio di un'auto e l'ha passato
+avanti, comincia subito quello dell'auto successiva. Presto tutte e quattro le
+postazioni lavorano insieme, ciascuna su un'auto diversa. Nel modello le «auto»
+sono pezzetti del mazzetto di esempi, i **micro-batch**, che si fanno scorrere
 lungo gli strati.
 
 Il tempo iniziale in cui le postazioni si riempiono, e quello finale in cui si
@@ -410,9 +410,9 @@ stare in edifici diversi, collegati da una strada normale.
 Gli strati sono partizionati in $p$ **stadi**, uno per GPU, disposti in
 sequenza: l'output di uno stadio è l'input del successivo. Con un solo batch
 l'utilizzo è disastroso, perché a ogni istante lavora un solo stadio su $p$.
-GPipe spezza allora ogni mini-batch in $m$ micro-batch, che entrano
-nella pipeline uno dopo l'altro. La frazione di tempo sprecata nel riempimento
-e nello svuotamento (la bolla) vale
+[GPipe spezza allora ogni mini-batch in $m$ micro-batch, che entrano nella
+pipeline uno dopo l'altro]{.pt-matita}. La frazione di tempo sprecata nel
+riempimento e nello svuotamento (la bolla) vale
 
 $$
 \frac{p-1}{m+p-1},
@@ -507,13 +507,13 @@ Nel parallelismo dati ognuno teneva in tasca una fotocopia *completa* di tutte
 e tre. Comodo, ma se la griglia è un tomo di mille pagine, tenerne una copia
 intera a testa è uno spreco enorme di zaini.
 
-Si strappa, allora, e si strappa in tre tempi. Prima il quadernetto: se gli
-insegnanti sono otto se ne tiene un ottavo a testa, e nessuno se ne accorge,
-perché quelle pagine ognuno le guarda soltanto per le domande che gli toccano.
-Poi il foglio delle correzioni, stessa storia. Questi due strappi non
-aggiungono un solo viaggio fra colleghi: quello che a fine turno girava attorno
-al tavolo continua a girare uguale, e intanto lo zaino si è già alleggerito.
-Non c'è ragione di rinunciarci.
+[Si strappa, allora, e si strappa in tre tempi]{.pt-matita}. Prima il
+quadernetto: se gli insegnanti sono otto se ne tiene un ottavo a testa, e
+nessuno se ne accorge, perché quelle pagine ognuno le guarda soltanto per le
+domande che gli toccano. Poi il foglio delle correzioni, stessa storia. Questi
+due strappi non aggiungono un solo viaggio fra colleghi: quello che a fine
+turno girava attorno al tavolo continua a girare uguale, e intanto lo zaino si
+è già alleggerito. Non c'è ragione di rinunciarci.
 
 Il terzo strappo, quello della griglia, è l'unico che si paga, ma è anche
 quello che serve. Otto fascicoli, uno per insegnante. Quando arriva la
@@ -543,12 +543,12 @@ un attimo prima di usarli e liberandoli subito dopo.
 
 `````{tab} Superiore
 
-ZeRO elimina la ridondanza del parallelismo dati in tre stadi cumulativi:
-partiziona tra le GPU prima gli stati dell'ottimizzatore (stadio 1), poi anche
-i gradienti (stadio 2), infine anche i parametri (stadio 3). Per «stati
-dell'ottimizzatore» ZeRO intende 12 dei 16 byte per parametro
-dell'addestramento a precisione mista: le due statistiche di Adam e la copia
-dei pesi in precisione piena.
+[ZeRO elimina la ridondanza del parallelismo dati in tre stadi
+cumulativi]{.pt-matita}: partiziona tra le GPU prima gli stati
+dell'ottimizzatore (stadio 1), poi anche i gradienti (stadio 2), infine anche i
+parametri (stadio 3). Per «stati dell'ottimizzatore» ZeRO intende 12 dei 16
+byte per parametro dell'addestramento a precisione mista: le due statistiche di
+Adam e la copia dei pesi in precisione piena.
 
 Con $\Psi$ parametri e $K$ schede, la memoria per scheda passa da $16\Psi$ a
 $4\Psi + 12\Psi/K$ nello stadio 1, a $2\Psi + 14\Psi/K$ nello stadio 2 e a
@@ -632,12 +632,13 @@ che spartisce fra le schede la lunghezza del testo
 parallelism e combina pipeline, parallelismo sugli esperti e il primo stadio di
 ZeRO {cite}`liu2024deepseekv3`.
 
-Ogni strategia sta dove il collegamento sostiene il suo traffico, e a decidere
-sono quanti byte passano per passo, quante volte, e se la comunicazione si può
-sovrapporre al calcolo. Mandare dati e fare calcoli sono due attività distinte,
-che possono avvenire *insieme*: una comunicazione che parte mentre le schede
-stanno ancora calcolando (come l'all-reduce dei gradienti, a pacchetti) si paga
-poco, una che blocca il calcolo finché non finisce si paga tutta.
+[Ogni strategia sta dove il collegamento sostiene il suo traffico]{.pt-matita},
+e a decidere sono quanti byte passano per passo, quante volte, e se la
+comunicazione si può sovrapporre al calcolo. Mandare dati e fare calcoli sono
+due attività distinte, che possono avvenire *insieme*: una comunicazione che
+parte mentre le schede stanno ancora calcolando (come l'all-reduce dei
+gradienti, a pacchetti) si paga poco, una che blocca il calcolo finché non
+finisce si paga tutta.
 
 Da qui dipende dove si colloca ciascuna strategia. Il tensor parallelism sta
 dentro ogni nodo, perché a ogni strato obbliga le schede a mettere insieme un

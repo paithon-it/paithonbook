@@ -126,8 +126,34 @@ class Voce:
     postilla: str
 
 
+_CHIUDE_MATITA = "]{.pt-matita}"
+
+
+def senza_matita(testo: str) -> str:
+    """`[frase]{.pt-matita}` diventa `frase`: la sottolineatura e' tipografia,
+    e metterla o toglierla non deve spegnere la postilla del capoverso. La
+    quadra che apre si cerca bilanciando quelle dei link dentro la frase."""
+    fine = testo.find(_CHIUDE_MATITA)
+    while fine != -1:
+        profondita, i = 0, fine - 1
+        while i >= 0:
+            if testo[i] == "]":
+                profondita += 1
+            elif testo[i] == "[":
+                if profondita == 0:
+                    break
+                profondita -= 1
+            i -= 1
+        if i < 0:                    # nessuna quadra che apre: resta testo
+            fine = testo.find(_CHIUDE_MATITA, fine + 1)
+            continue
+        testo = testo[:i] + testo[i + 1:fine] + testo[fine + len(_CHIUDE_MATITA):]
+        fine = testo.find(_CHIUDE_MATITA, i)
+    return testo
+
+
 def normalizza(testo: str) -> str:
-    testo = unicodedata.normalize("NFC", testo).translate(_DRITTI)
+    testo = unicodedata.normalize("NFC", senza_matita(testo)).translate(_DRITTI)
     return re.sub(r"\s+", " ", testo).strip()
 
 

@@ -27,16 +27,16 @@ Stanford e Berkeley, pubblicano un paper dal titolo che sembra uscito da un
 dipartimento di fisica: *Deep Unsupervised Learning using Nonequilibrium
 Thermodynamics* {cite}`sohl2015deep`. L'ispirazione viene dalla termodinamica
 di non equilibrio e l'idea è di un'eleganza spudorata: se distruggere è facile
-e costruire da zero non lo sa fare nessuno, filmiamo la distruzione e
-insegniamo a una rete a proiettare il film al contrario. Prendi una fotografia
-e aggiungile del rumore, cioè numeri estratti a caso che si sommano ai
-colori veri e li sporcano di puntini: un pizzico alla volta, finché non resta
-che pulviscolo. Questo è il verso facile, la goccia che si disperde. Poi
-addestra una rete a percorrere la pellicola all'indietro, un fotogramma per
+e costruire da zero non lo sa fare nessuno, [filmiamo la distruzione e
+insegniamo a una rete a proiettare il film al contrario]{.pt-matita}. Prendi
+una fotografia e aggiungile del rumore, cioè numeri estratti a caso che si
+sommano ai colori veri e li sporcano di puntini: un pizzico alla volta, finché
+non resta che pulviscolo. Questo è il verso facile, la goccia che si disperde.
+Poi addestra una rete a percorrere la pellicola all'indietro, un fotogramma per
 volta. Se impara bene, potrà partire da rumore puro, estratto di nuovo e mai
-visto prima, e riavvolgerla fino a un'immagine che non è mai esistita. Non
-è la stessa foto che torna indietro: il rumore di partenza è diverso
-ogni volta, e da un pulviscolo diverso esce un'immagine diversa.
+visto prima, e riavvolgerla fino a un'immagine che non è mai esistita. Non è la
+stessa foto che torna indietro: il rumore di partenza è diverso ogni volta, e
+da un pulviscolo diverso esce un'immagine diversa.
 
 «Rumore» è il termine tecnico e compare nelle formule; a parole diremo anche
 disturbo, pulviscolo o sporco, ma indicano sempre la stessa quantità. Si
@@ -47,11 +47,11 @@ chiamano modelli di **diffusione** per la goccia d'inchiostro: il verso facile
 
 Un modello di diffusione vive quindi di due processi, uno l'inverso dell'altro.
 L’**andata** non si impara: è una ricetta fissa che a ogni passo attenua un
-poco la fotografia e le aggiunge un pizzico di rumore casuale (sono due
-le operazioni, e perché servano entrambe lo mostra la {doc}`sezione su come
+poco la fotografia e le aggiunge un pizzico di rumore casuale (sono due le
+operazioni, e perché servano entrambe lo mostra la {doc}`sezione su come
 funziona la diffusione </ModelliDiffusione/come-funziona>`). Il **ritorno** è
-l'unica parte che si apprende e si riduce a una domanda sola: guardando un
-fotogramma sporco, *quanto rumore c'è qui sopra?*
+[l'unica parte che si apprende e si riduce a una domanda sola]{.pt-matita}:
+guardando un fotogramma sporco, *quanto rumore c'è qui sopra?*
 
 Alla rete non si chiede il pizzico dell'ultimo passo, ma tutto il rumore che la
 ricetta ha steso dalla fotografia pulita fino al livello di rovina $t$, che
@@ -198,11 +198,11 @@ il mucchio delle immagini generate con il mucchio di quelle vere e dice quanto
 i due si somigliano. Più è basso, meglio è.
 
 Il terzo atto arriva un anno dopo, e il titolo dice tutto: *Diffusion Models
-Beat GANs on Image Synthesis* {cite}`dhariwal2021diffusion`. La diffusione
+Beat GANs on Image Synthesis* {cite}`dhariwal2021diffusion`. [La diffusione
 supera le GAN migliori in due modi, nella qualità delle singole immagini e
-nella varietà di quelle che sa produrre: una GAN può affezionarsi a un pugno di
-soggetti e ripetere sempre quelli, il difetto che racconta per esteso il
-{doc}`capitolo sulle GAN </GAN/overview>`.
+nella varietà di quelle che sa produrre]{.pt-matita}: una GAN può affezionarsi
+a un pugno di soggetti e ripetere sempre quelli, il difetto che racconta per
+esteso il {doc}`capitolo sulle GAN </GAN/overview>`.
 
 Segue l'epilogo, che ormai è cronaca pubblica oltre che ricerca: il 2022. Nel
 giro di pochi mesi OpenAI presenta DALL·E 2 (aprile), Google risponde con
@@ -234,15 +234,15 @@ rumore lo aggiunge, è una ricetta fissa e si può calcolare.
 ```
 
 L'asimmetria di {numref}`fig-dal-rumore-all-immagine` è la ragione per cui il
-metodo funziona. Poiché l'andata è nota, da ogni singola fotografia si possono
-fabbricare gratis quanti esempi di allenamento si vuole: si sceglie un livello
-di rovina fra i mille, si campiona il rumore, lo si stende sopra, e si ha una
-domanda («quanto rumore c'è qui sopra?») di cui si conosce già la risposta. Il
-campione è diverso ogni volta, quindi la stessa fotografia allo stesso livello
-non dà mai due volte lo stesso esercizio, e gli esercizi non finiscono mai. Il
-ritorno diventa così un problema come quelli del {doc}`capitolo sul machine
-learning </MachineLearning/overview>`: domande di cui si conosce già la
-risposta giusta, tante quante ne servono.
+metodo funziona. Poiché l’andata è nota, [da ogni singola fotografia si possono
+fabbricare gratis quanti esempi di allenamento si vuole]{.pt-matita}: si
+sceglie un livello di rovina fra i mille, si campiona il rumore, lo si stende
+sopra, e si ha una domanda («quanto rumore c'è qui sopra?») di cui si conosce
+già la risposta. Il campione è diverso ogni volta, quindi la stessa fotografia
+allo stesso livello non dà mai due volte lo stesso esercizio, e gli esercizi
+non finiscono mai. Il ritorno diventa così un problema come quelli del
+{doc}`capitolo sul machine learning </MachineLearning/overview>`: domande di
+cui si conosce già la risposta giusta, tante quante ne servono.
 
 Il capitolo sulle GAN si è chiuso, nella {doc}`sezione sulle loro evoluzioni
 </GAN/applicazioni-evoluzioni>`, con il passaggio di testimone del 2021

@@ -192,14 +192,15 @@ una classifica che la temperatura non ha ancora toccato, e il nucleo resta lo
 stesso a ogni temperatura. Prima di applicare questo ragionamento alla propria
 chiamata bisogna quindi guardare in che ordine lavora il servizio che si usa.
 
-Il calcolo si rifà in poche righe di Python. Con cinquanta
-candidati abbastanza appaiati (presi a caso, ma sempre gli stessi per tutte le
-prove) la stessa soglia di 0,9 ne lascia passare due a temperatura 0,2, sedici
-a temperatura 1 e trentotto a temperatura 3. Cambiando i candidati i tre numeri
-cambiano, e parecchio, mentre la crescita con la temperatura resta in ogni
-caso. Regolare i due parametri insieme nella stessa direzione, insomma, non fa
-la somma dei due effetti: li mette uno sopra l'altro, e il risultato smette di
-essere prevedibile a mente. Perciò la regola pratica è muoverne uno per volta.
+Il calcolo si rifà in poche righe di Python. Con cinquanta candidati abbastanza
+appaiati (presi a caso, ma sempre gli stessi per tutte le prove) la stessa
+soglia di 0,9 ne lascia passare due a temperatura 0,2, sedici a temperatura 1 e
+trentotto a temperatura 3. Cambiando i candidati i tre numeri cambiano, e
+parecchio, mentre la crescita con la temperatura resta in ogni caso. Regolare i
+due parametri insieme nella stessa direzione, insomma, non fa la somma dei due
+effetti: li mette uno sopra l'altro, e il risultato smette di essere
+prevedibile a mente. Perciò [la regola pratica è muoverne uno per
+volta]{.pt-matita}.
 
 ```python
 import numpy as np
@@ -357,13 +358,13 @@ dopo.
 ```
 
 L'etichetta «pesi invariati» in {numref}`fig-few-shot` è la ragione per cui
-questa tecnica è di *ingegneria* e non di addestramento. Il modello non ha
-imparato il compito: ha riconosciuto uno schema nel testo che sta leggendo e
-lo ha proseguito. Ed è anche il limite, perché gli esempi occupano contesto a
-ogni singola chiamata, e si pagano ogni volta. Con GPT-3 Brown e colleghi
-misurano che, sulla maggior parte dei compiti, l'accuratezza sale passando da
-nessun esempio a qualche esempio {cite}`brown2020language`; quanto sale,
-però, dipende dalla scelta e dall'ordine degli esempi.
+questa tecnica è di *ingegneria* e non di addestramento. [Il modello non ha
+imparato il compito: ha riconosciuto uno schema nel testo che sta leggendo e lo
+ha proseguito]{.pt-matita}. Ed è anche il limite, perché gli esempi occupano
+contesto a ogni singola chiamata, e si pagano ogni volta. Con GPT-3 Brown e
+colleghi misurano che, sulla maggior parte dei compiti, l'accuratezza sale
+passando da nessun esempio a qualche esempio {cite}`brown2020language`; quanto
+sale, però, dipende dalla scelta e dall'ordine degli esempi.
 
 - **Zero-shot**: solo l'istruzione, nessun esempio. Ad esempio, «Dimmi se
   questa recensione è positiva, negativa o neutra» (in gergo: classificarne il
@@ -508,8 +509,8 @@ torna nel testo che ha davanti alla passata dopo. Se la risposta deve uscire
 subito, deve completare tutto il lavoro in una passata sola; se prima gli
 lasciamo scrivere «17 × 20 = 340», di passate ne ha una in più, e nella seconda
 quel 340 non deve più calcolarlo: gli sta davanti, scritto. In altri termini,
-lasciarlo scrivere i passaggi gli dà più spazio per fare i calcoli, e non è una
-cortesia.
+[lasciarlo scrivere i passaggi gli dà più spazio per fare i
+calcoli]{.pt-matita}, e non è una cortesia.
 
 `````{tab} Elementare
 
@@ -644,8 +645,8 @@ stessa persona dieci volte, e fra una volta e l'altra cambia soltanto un po’ d
 casualità. Contro le distrazioni funziona, perché chi si distrae si distrae
 ogni volta in un punto diverso. Contro un malinteso no: se la domanda è scritta
 in modo da portare fuori strada, porta fuori strada tutte e dieci le volte, e
-il conteggio finale non corregge l'errore, lo conferma con dieci voti invece
-che con uno.
+[il conteggio finale non corregge l'errore, lo conferma con dieci voti invece
+che con uno]{.pt-matita}.
 
 `````
 
@@ -687,8 +688,8 @@ di variazione è il rumore di campionamento. Per gli scivoloni di calcolo la
 moda è di solito giusta, e infatti è il regime in cui il metodo è stato
 misurato. Per gli errori indotti dal prompt no: sono gli stessi in tutte le
 catene, la moda è sbagliata, e la maggioranza non corregge, conferma, con $N$
-voti invece di uno {cite}`turpin2023unfaithful`. La self-consistency compra
-affidabilità contro il rumore, non contro il bias.
+voti invece di uno {cite}`turpin2023unfaithful`. [La self-consistency compra
+affidabilità contro il rumore, non contro il bias]{.pt-matita}.
 
 Quanto a $N$, nel lavoro
 originale si campionano quaranta catene, ma gli autori notano che il guadagno
@@ -768,8 +769,8 @@ prima di fare la domanda.
 
 Il modulo, però, non risolve tutto: un modulo compilato bene non è un modulo
 compilato giusto. Se nella casella «giudizio» c'è scritto «positivo» su una
-stroncatura, il modulo è perfetto e la risposta è sbagliata. La forma la puoi
-imporre; il contenuto va comunque controllato dopo.
+stroncatura, il modulo è perfetto e la risposta è sbagliata. [La forma la puoi
+imporre; il contenuto va comunque controllato dopo]{.pt-matita}.
 
 Non va bene per ogni domanda. Se si tratta di barrare una casella su tre aiuta,
 perché toglie modi di sbagliare. Se invece bisogna fare un calcolo, dentro una
@@ -805,10 +806,11 @@ uscita.
 Garantisce però meno di quanto la formula «togliere il problema alla radice»
 lascerebbe credere. Intanto cade se la generazione si interrompe a metà, per il
 tetto sui token o per un rifiuto: il testo rimasto non è più conforme a niente.
-Anche quando il vincolo è rispettato, la conformità non dice che i campi siano
-veri: `{"sentiment": "positivo"}` su una stroncatura è output perfettamente
-conforme. Elimina la classe di errori più fastidiosa (la risposta che non si
-riesce ad aprire), non quella di contenuto, che resta da verificare a valle.
+Anche quando il vincolo è rispettato, [la conformità non dice che i campi siano
+veri]{.pt-matita}: `{"sentiment": "positivo"}` su una stroncatura è output
+perfettamente conforme. Elimina la classe di errori più fastidiosa (la risposta
+che non si riesce ad aprire), non quella di contenuto, che resta da verificare
+a valle.
 
 Il vincolo non è gratuito. Tam e colleghi {cite}`tam2024format` confrontano
 decoding vincolato, istruzioni di formato e conversione a posteriori su più
@@ -864,9 +866,9 @@ In tutte e due le maniere la consegna vincitrice ha un voto troppo bello. Con
 venti consegne provate su cinquanta alunni ciascuna, qualcuna è capitata con
 gli alunni migliori, e il suo voto mescola il merito con la fortuna, come
 succede a chiunque scelga il migliore fra tanti tentativi misurati su pochi
-casi. Con cinquecento alunni la fortuna pesa meno, ma non sparisce. Il voto da
-credere è quello preso dalla vincitrice su una classe nuova, che nessuno ha
-usato per scegliere.
+casi. Con cinquecento alunni la fortuna pesa meno, ma non sparisce. [Il voto da
+credere è quello preso dalla vincitrice su una classe nuova]{.pt-matita}, che
+nessuno ha usato per scegliere.
 
 L’altro senso di «meta» è un’organizzazione del lavoro: un collega fa da
 coordinatore, spezza il compito, affida ogni pezzo a un esperto con istruzioni
@@ -901,8 +903,8 @@ massimo misurato vale in media almeno quanto ciascuna accuratezza vera, quindi
 almeno quanto la più alta. L’errore standard di un’accuratezza $p$ misurata su
 $|D|$ domande è $\sqrt{p(1-p)/|D|}$, circa $0{,}065$ per $p = 0{,}7$ e $|D| =
 50$, contro differenze vere fra candidate che spesso sono di pochi punti. Per
-questo APE riporta l’accuratezza dell’istruzione scelta su esempi tenuti da
-parte, perché solo quel valore è attendibile.
+questo [APE riporta l’accuratezza dell’istruzione scelta su esempi tenuti da
+parte]{.pt-matita}, perché solo quel valore è attendibile.
 
 Il *meta-prompting* di Suzgun e Kalai è un’altra cosa: un’impalcatura in cui
 lo stesso modello fa da direttore, scompone il compito, interroga istanze di
@@ -1024,9 +1026,9 @@ passaggi dà un'accuratezza quasi identica a quella del rispondere di getto,
 tranne quando la domanda o la risposta del modello contengono un segno di
 uguale, cioè quando c'è di mezzo un calcolo.
 
-La regola pratica che ne esce è netta: se il compito
-ha dentro un calcolo o una manipolazione di simboli, i passaggi servono; se è
-una domanda di conoscenza o di giudizio, si stanno pagando token per niente.
+La regola pratica che ne esce è netta: [se il compito ha dentro un calcolo o
+una manipolazione di simboli, i passaggi servono]{.pt-matita}; se è una domanda
+di conoscenza o di giudizio, si stanno pagando token per niente.
 
 Dietro le tecniche c'è un pugno di principi che la guida DAIR.AI ripete, e che
 valgono più di ogni «prompt segreto»:
@@ -1096,10 +1098,11 @@ li si tiene sotto misura, a ogni cambio di prompt o di modello, la
   memoria, che inventerebbe come il resto; permettergli di rispondere «non lo
   so»), ma non lo azzera: verificare tocca a chi legge.
 
-Nessuno di questi rischi si risolve dentro il messaggio. Il prompt è il primo
-livello, e porta lontano, ma i problemi seri (governare ciò che entra
-nella finestra, orchestrare più chiamate in un ciclo che si corregge) vivono ai
-livelli sopra, il {doc}`contesto <context-engineering>` e il {doc}`loop
+[Nessuno di questi rischi si risolve dentro il messaggio]{.pt-matita}. Il
+prompt è il primo livello, e porta lontano, ma i problemi seri (governare ciò
+che entra nella finestra, orchestrare più chiamate in un ciclo che si corregge)
+vivono ai livelli sopra, il {doc}`contesto <context-engineering>` e il
+{doc}`loop
 <loop-engineering>`.
 
 `````{tab} Elementare

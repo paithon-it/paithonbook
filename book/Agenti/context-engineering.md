@@ -15,9 +15,9 @@ finestra di contesto già incontrata nell’{doc}`anatomia di un agente
 volta, fissato da chi l'ha costruito (per esempio 128.000).
 
 Per chi usa un modello già addestrato senza riaddestrarlo, l'unica leva è il
-testo che gli si mette davanti. In altri termini, il contesto è l'interfaccia
-del modello, il punto da cui passa ogni istruzione. Nella sezione {doc}`sui
-grandi modelli linguistici
+testo che gli si mette davanti. In altri termini, [il contesto è l'interfaccia
+del modello, il punto da cui passa ogni istruzione]{.pt-matita}. Nella sezione
+{doc}`sui grandi modelli linguistici
 </Transformers/llm>` questa proprietà ha un nome inglese, *in-context learning*,
 apprendimento dal contesto: si descrive il compito nel contesto, magari con due
 esempi, e il modello lo esegue senza che i suoi pesi cambino. È un modo di
@@ -69,8 +69,8 @@ con uno sconto sulla parte già vista quando si usa la cache dei prefissi, è un
 delle voci che LLMOps tiene sotto controllo.
 
 Un contesto gonfio comporta dunque una spesa più alta e una risposta più lenta,
-e riempire la finestra fino al limite «per sicurezza» è quasi sempre
-svantaggioso.
+e [riempire la finestra fino al limite «per sicurezza» è quasi sempre
+svantaggioso]{.pt-matita}.
 
 La {numref}`fig-context-window` mostra come la finestra si riempie in una
 giornata di lavoro, e due delle sue voci vanno definite. La prima è il *system
@@ -176,12 +176,12 @@ cioè che cosa di tutto quel materiale merita la finestra a questo passo.
 
 `````
 
-La memoria esterna non ha il limite della finestra, ma ogni voce che rientra
-nel contesto ne consuma lo spazio. Scrivere in memoria pone già problemi (che
-cosa conservare, come aggiornare un fatto che cambia, quando dimenticare), e a
-ogni passo se ne aggiunge un secondo: decidere quale parte del materiale occupa
-la finestra *adesso*. Ogni riga dedicata al ricordo sottrae spazio al
-ragionamento.
+[La memoria esterna non ha il limite della finestra, ma ogni voce che rientra
+nel contesto ne consuma lo spazio]{.pt-matita}. Scrivere in memoria pone già
+problemi (che cosa conservare, come aggiornare un fatto che cambia, quando
+dimenticare), e a ogni passo se ne aggiunge un secondo: decidere quale parte
+del materiale occupa la finestra *adesso*. Ogni riga dedicata al ricordo
+sottrae spazio al ragionamento.
 
 ## Pensare costa token: il ragionamento come context engineering
 
@@ -256,9 +256,9 @@ visita molti meno nodi. Il costo cresce in token, in tempo e in denaro.
 
 Il compromesso del context engineering è sempre lo stesso: la finestra è un
 budget, ogni elemento che vi entra (istruzioni, esempi, memoria recuperata, il
-pensiero stesso del modello) ha un costo, e va collocato dove rende di più. È la
-differenza fra le due squadre dell'apertura: che cosa mettere davanti al
-modello, e in quale ordine.
+pensiero stesso del modello) [ha un costo, e va collocato dove rende di
+più]{.pt-matita}. È la differenza fra le due squadre dell'apertura: che cosa
+mettere davanti al modello, e in quale ordine.
 
 
 

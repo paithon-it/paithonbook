@@ -75,7 +75,7 @@ from pathlib import Path
 from paithon_svg import *
 
 NOME = "ciclo-addestramento"
-TITOLO = "il ciclo di addestramento: cinque passi, tre giri"
+TITOLO = "il ciclo di addestramento: cinque passi, tre iterazioni"
 
 QUI = Path(__file__).resolve()
 RADICE = QUI.parents[2]
@@ -489,12 +489,12 @@ def costruisci() -> Figura:
         corpo.append(f'<circle class="peso" cx="{cx}" cy="{cy[-1]:.1f}" r="7" '
                      f'style="animation:pw{i} var(--d) infinite"/>')
 
-    # --- la loss, un valore per giro ---
+    # --- la loss, un valore per iterazione ---
     corpo.append(f'<text class="lbl" x="{X_LOSS}" y="194">loss</text>')
     for g, perdita in enumerate(perdite):
         corpo.append(f'<text class="lbs" x="{X_LOSS}" y="{Y_LOSS[g]}">'
-                     f'giro {g + 1}</text>')
-        # compare quando si accende il passo «loss» del proprio giro
+                     f'iterazione {g + 1}</text>')
+        # compare quando si accende il passo «loss» della propria iterazione
         stato = ["fuori"] * (g * 5 + 1) + ["ora"] * 5 + ["prima"] * N_STATI
         anim.append(keyframes(f"ls{g}", tappe(
             stato[:N_STATI], fmt=lambda v: (
@@ -508,15 +508,15 @@ def costruisci() -> Figura:
                      f'style="animation:ls{g} var(--d) infinite">{valore}</text>')
 
     corpo.append('<text class="lbl" x="26" y="394">senza zero_grad() i gradienti '
-                 'nuovi si sommerebbero a quelli del giro prima</text>')
+                 'nuovi si sommerebbero a quelli dell\'iterazione prima</text>')
 
     return Figura(
         larghezza=LARG, altezza=ALT,
         alt="Il ciclo di addestramento in cinque passi (forward, loss, "
             "zero_grad, backward, step) percorso tre volte. Al backward le "
             "barre dei gradienti si riempiono, allo step i sei pesi mostrati "
-            "si spostano lungo la loro pista, allo zero_grad del giro dopo le "
-            "barre tornano a zero. La loss dei tre giri scende: "
+            "si spostano lungo la loro pista, allo zero_grad dell'iterazione dopo "
+            "le barre tornano a zero. La loss delle tre iterazioni scende: "
             + ", ".join(f"{p:.2f}".replace(".", ",") for p in perdite) + ".",
         corpo="".join(corpo),
         stile=f"""    svg   {{ --g: {DURATA / GIRI:.2f}s; }}

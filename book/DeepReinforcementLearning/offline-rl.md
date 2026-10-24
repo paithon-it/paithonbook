@@ -17,9 +17,10 @@ milioni di utenti per misurarne la reazione.
 
 Eppure gli agenti del Q-learning e del gradiente di policy imparano proprio
 così: provando, sbagliando, esplorando. Il **reinforcement learning offline**
-(o *batch RL*) affronta il caso opposto e più scomodo: imparare la migliore
-strategia possibile *senza mai interagire con l'ambiente*, disponendo solo di
-un registro di esperienze già accadute {cite}`levine2020offline`.
+(o *batch RL*) affronta il caso opposto e più scomodo: [imparare la migliore
+strategia possibile *senza mai interagire con l'ambiente*]{.pt-matita},
+disponendo solo di un registro di esperienze già accadute
+{cite}`levine2020offline`.
 
 ## Imparare da un archivio, non dall'esperienza
 
@@ -84,15 +85,15 @@ un'altra policy. Se sa fare questo, dovrebbe saper imparare anche da partite
 giocate da altri e finite da un pezzo: basterebbe addestrarlo sull'archivio
 $\mathcal{D}$ invece che sulle esperienze fresche.
 
-Fatto così, però, il metodo può fallire gravemente. Fujimoto e colleghi lo
-mostrano su un compito di controllo continuo, perfino quando l'archivio è
-generato da un agente che impara con successo da quelle stesse esperienze
-{cite}`fujimoto2019off`. Con archivi enormi e vari, invece, come i cinquanta
-milioni di transizioni accumulati da un DQN in tutto il suo addestramento su un
-gioco Atari, gli stessi metodi possono superare, sulla maggior parte dei
-giochi, l'agente che li ha prodotti {cite}`agarwal2020optimistic`. Capire
-*quando* e *perché* l'archivio fa fallire il metodo è il cuore di tutto
-l'argomento.
+[Fatto così, però, il metodo può fallire gravemente]{.pt-matita}. Fujimoto e
+colleghi lo mostrano su un compito di controllo continuo, perfino quando
+l'archivio è generato da un agente che impara con successo da quelle stesse
+esperienze {cite}`fujimoto2019off`. Con archivi enormi e vari, invece, come i
+cinquanta milioni di transizioni accumulati da un DQN in tutto il suo
+addestramento su un gioco Atari, gli stessi metodi possono superare, sulla
+maggior parte dei giochi, l'agente che li ha prodotti
+{cite}`agarwal2020optimistic`. Capire *quando* e *perché* l'archivio fa fallire
+il metodo è il cuore di tutto l'argomento.
 
 ## Il buco nero delle azioni mai viste
 
@@ -232,13 +233,13 @@ Non c'è niente di misterioso, e {numref}`fig-supporto-dei-dati` fa vedere dove
 succede. Infatti una curva passa docilmente in mezzo ai quaranta punti che ha,
 e fuori da quel tratto prosegue come le pare: non ha più nessun dato che la
 trattenga, e le basta una piccola pendenza sbagliata al bordo per schizzare in
-alto nel giro di un intervallo. La flessibilità decide quanto forte è lo
-schizzo, non se ci sarà. Rifacendo, ad esempio, lo stesso calcolo con una retta
-al posto della curva, il voto più alto cade di nuovo sullo sterzo tutto a
-destra, con una promessa di $+2{,}06$ dove il migliore possibile vale zero. Si
-sarebbe al riparo soltanto scegliendo la forma giusta, che qui è la parabola;
-ma la forma giusta è quella che non si conosce, perché è ciò che si sta
-cercando.
+alto nel giro di un intervallo. [La flessibilità decide quanto forte è lo
+schizzo, non se ci sarà]{.pt-matita}. Rifacendo, ad esempio, lo stesso calcolo
+con una retta al posto della curva, il voto più alto cade di nuovo sullo sterzo
+tutto a destra, con una promessa di $+2{,}06$ dove il migliore possibile vale
+zero. Si sarebbe al riparo soltanto scegliendo la forma giusta, che qui è la
+parabola; ma la forma giusta è quella che non si conosce, perché è ciò che si
+sta cercando.
 
 Vincolando invece la ricerca alla zona che i dati coprono (il loro
 **supporto**, che con quaranta punti è il tratto che li racchiude) si sceglie
@@ -251,8 +252,9 @@ compromesso di continuo.
 ## BCQ: restare vicini a ciò che è stato visto
 
 L'idea, suggerita dall'esempio, è semplice. Se il problema nasce
-dall'attribuire un voto ad azioni mai provate, conviene escluderle, cioè
-cercare il voto più alto soltanto fra le azioni che compaiono nell'archivio.
+dall'attribuire un voto ad azioni mai provate, [conviene escluderle, cioè
+cercare il voto più alto soltanto fra le azioni che compaiono
+nell'archivio]{.pt-matita}.
 
 A farlo nel controllo continuo, con le reti profonde e per dati fissi, è
 **BCQ** (*Batch-Constrained deep Q-learning*) di Scott Fujimoto, David Meger e
@@ -336,8 +338,8 @@ seconda rete, quella che imita chi ha raccolto i dati. Si può ottenere lo
 stesso effetto senza quella seconda rete, e nel 2020 Aviral Kumar, Aurick Zhou,
 George Tucker e Sergey Levine mostrano come: **CQL** (*Conservative
 Q-Learning*) {cite}`kumar2020conservative`. Invece di vietare le azioni mai
-viste (le azioni fuori distribuzione, o OOD), le rende *poco appetibili*,
-intervenendo direttamente sulla *loss* dell'addestramento.
+viste (le azioni fuori distribuzione, o OOD), [le rende *poco appetibili*,
+intervenendo direttamente sulla *loss* dell'addestramento]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -430,8 +432,8 @@ CQL valuta ancora le azioni OOD, salvo poi penalizzarle. Nel 2022 Ilya
 Kostrikov, Ashvin Nair e Sergey Levine propongono **IQL** (*Implicit
 Q-Learning*) {cite}`kostrikov2022offline`: costruire una strategia migliore di
 quella che ha raccolto i dati *senza mai chiedere alla rete dei voti che voto
-darebbe a un'azione che nell'archivio non c'è*. Se non
-guardi mai fuori, non puoi essere ingannato da ciò che c'è fuori.
+darebbe a un'azione che nell'archivio non c'è*. [Se non
+guardi mai fuori, non puoi essere ingannato da ciò che c'è fuori]{.pt-matita}.
 
 Il nome dice che il miglioramento della policy resta implicito. Finora, per
 sapere quanto vale una situazione, si prendeva il voto dell'azione migliore fra
@@ -634,9 +636,9 @@ valori discende dalla forma stessa del voto.
 
 Il Decision Transformer ha comunque aperto, insieme al Trajectory Transformer di
 Janner e colleghi, uscito il giorno dopo {cite}`janner2021offline`, una linea
-feconda: una parte del reinforcement learning si può riformulare come
+feconda: [una parte del reinforcement learning si può riformulare come
 apprendimento supervisionato di sequenze, condizionato sul risultato che si
-vuole.
+vuole]{.pt-matita}.
 
 ## Un filo che torna: le preferenze dell'RLHF
 
@@ -663,12 +665,12 @@ della stessa famiglia: al punteggio che il modello cerca di far salire si
 sottrae una penalità che cresce con la distanza dalle risposte di partenza,
 così che allontanarsi resta possibile ma sempre meno conveniente.
 
-Questa dinamica spiega *perché* si itera. Ottimizzando, il modello si
-sposta fuori dalla zona che i vecchi confronti coprivano, e quei confronti
-valgono sempre meno; tornare dalle persone serve a farsi dire come sono le
+Questa dinamica spiega *perché* si itera. [Ottimizzando, il modello si sposta
+fuori dalla zona che i vecchi confronti coprivano, e quei confronti valgono
+sempre meno]{.pt-matita}; tornare dalle persone serve a farsi dire come sono le
 risposte di adesso, non quelle di prima. Imparare da dati fissi, dalla terapia
-intensiva agli assistenti conversazionali, pone sempre la stessa domanda: quanto
-possiamo fidarci di ciò che non abbiamo mai visto?
+intensiva agli assistenti conversazionali, pone sempre la stessa domanda:
+quanto possiamo fidarci di ciò che non abbiamo mai visto?
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

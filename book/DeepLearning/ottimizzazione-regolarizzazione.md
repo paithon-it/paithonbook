@@ -38,8 +38,8 @@ A ogni passo indietro il gradiente viene moltiplicato per i pesi dello strato e
 per le derivate delle attivazioni. La derivata dell'attivazione dice di quanto
 cambia l'uscita di un neurone per una piccola variazione del suo ingresso, e
 dove l'attivazione è quasi piatta vale poco, cioè muovere l'ingresso non
-cambia quasi niente. Il problema nasce moltiplicando tante volte per numeri
-piccoli.
+cambia quasi niente. [Il problema nasce moltiplicando tante volte per numeri
+piccoli]{.pt-matita}.
 
 ```{figure} ../figures/gradiente-svanisce.svg
 :name: fig-gradiente-svanisce
@@ -170,9 +170,9 @@ Xavier per la tanh e He per la ReLU.
 
 Il fatto che le tre curve di {numref}`fig-inizializzazione` divergano *prima*
 del primo aggiornamento è ciò che rende l'inizializzazione un problema a sé.
-Con la scala sbagliata, infatti, in una rete profonda il gradiente è già
+Con la scala sbagliata, infatti, [in una rete profonda il gradiente è già
 svanito o esploso al primo passo, prima che l'addestramento possa correggere
-qualcosa.
+qualcosa]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -511,8 +511,8 @@ normalizza sul singolo esempio, come fa la layer normalization dei Transformer.
 
 `````
 
-Nessuno sa ancora con certezza perché la batch normalization funzioni così
-bene. Che cosa fa è fuori discussione: sottrae la media, divide per la
+[Nessuno sa ancora con certezza perché la batch normalization funzioni così
+bene]{.pt-matita}. Che cosa fa è fuori discussione: sottrae la media, divide per la
 deviazione standard e lascia alla rete due parametri, $\gamma$ e $\beta$, per
 ripristinare scala e posizione.
 
@@ -633,8 +633,8 @@ addestramento ne allena una presa a caso.
 
 Quelle reti, però, non hanno pesi propri, perché sono tutte ritagliate dallo
 stesso insieme di pesi, e un peso aggiornato per la sotto-rete di un passo ha
-lo stesso valore nuovo in tutte quelle che lo contengono. In altri termini, non
-si allenano una alla volta, ma tutte, un pezzetto per volta.
+lo stesso valore nuovo in tutte quelle che lo contengono. In altri termini, [non
+si allenano una alla volta, ma tutte, un pezzetto per volta]{.pt-matita}.
 
 ## Bersagli meno netti: il label smoothing
 
@@ -738,9 +738,9 @@ sul gatto», adesso pesa nove decimi; e accanto ne compare una nuova, «non
 lasciare nessuna risposta completamente a secco», che pesa il decimo restante e
 tira nella direzione opposta. Il lavoro lo fa quel tiro contrario.
 
-Adesso il traguardo esiste, e si può calcolare prima di cominciare. Al gatto
-tocca prendersi nove gettoni e due decimi contro i due decimi di ciascun altro,
-cioè quarantasei volte tanto.
+[Adesso il traguardo esiste, e si può calcolare prima di
+cominciare]{.pt-matita}. Al gatto tocca prendersi nove gettoni e due decimi
+contro i due decimi di ciascun altro, cioè quarantasei volte tanto.
 
 La regola dei gettoni è questa: alzare di uno il numero scritto accanto a una
 risposta le moltiplica la fetta, rispetto a ciascuna delle altre, sempre per lo
@@ -803,12 +803,11 @@ D_{\mathrm{KL}}(u \,\|\, p) + H(u)$ con $H(u)$ costante, quella penalità è una
 divergenza di Kullback-Leibler a meno di un termine che non dipende dai
 parametri.
 
-Il guadagno è che l'ottimo diventa raggiungibile. Minimizzando $H(q', p)$
-rispetto a $p$ su tutte le distribuzioni (il vincolo $\sum_k p(k) = 1$
-serve, perché senza di esso l'entropia incrociata non ha minimo) si trova
-$p^\star = q'$ per
-la disuguaglianza di Gibbs, quindi un distacco fra logit finito e calcolabile in
-anticipo:
+[Il guadagno è che l'ottimo diventa raggiungibile]{.pt-matita}. Minimizzando
+$H(q', p)$ rispetto a $p$ su tutte le distribuzioni (il vincolo $\sum_k p(k) =
+1$ serve, perché senza di esso l'entropia incrociata non ha minimo) si trova
+$p^\star = q'$ per la disuguaglianza di Gibbs, quindi un distacco fra logit
+finito e calcolabile in anticipo:
 
 $$
 z_y - z_k = \log \frac{1-\epsilon+\epsilon/K}{\epsilon/K}
@@ -977,9 +976,9 @@ arriva sia grande.
 Il difetto di Adagrad è che quel conto non si azzera mai: passo dopo passo la
 falcata si accorcia, finché la discesa semplicemente si ferma. RMSProp rimedia
 guardando solo al passato recente invece che all'intera storia, così il passo
-non muore mai del tutto. Adam, infine, mette insieme le due strade, il passo su
-misura di RMSProp e l'inerzia del momentum, e per questo è oggi la scelta
-predefinita in gran parte delle reti.
+non muore mai del tutto. Adam, infine, [mette insieme le due strade, il passo
+su misura di RMSProp e l'inerzia del momentum]{.pt-matita}, e per questo è oggi
+la scelta predefinita in gran parte delle reti.
 
 `````
 
@@ -1028,8 +1027,8 @@ a $0{,}99$.
 
 Sulla stessa idea, Adadelta {cite}`zeiler2012adadelta` accumula una media
 mobile anche degli aggiornamenti, eliminando di fatto la scelta di $\eta$.
-**Adam** unisce momentum e passo adattivo con due medie mobili elemento per
-elemento,
+**Adam** [unisce momentum e passo adattivo con due medie mobili elemento per
+elemento]{.pt-matita},
 
 $$
 \mathbf{v}_t = \beta_1\,\mathbf{v}_{t-1} + (1-\beta_1)\,\mathbf{g}_t, \qquad
@@ -1233,7 +1232,8 @@ la distanza si riduce a un quinto, e in sei passi non resta quasi niente. Con
 $\eta = 1{,}05$ vale $-1{,}1$, e il segno meno dice solo che si finisce
 dall'altra parte del minimo; conta però che in valore assoluto sia maggiore di
 uno, perché allora a ogni passo si atterra più lontano di dove si era partiti.
-Oltre una certa lunghezza il passo non rallenta la discesa, la fa scappare.
+[Oltre una certa lunghezza il passo non rallenta la discesa, la fa
+scappare]{.pt-matita}.
 
 Quella lunghezza dipende da quanto la conca è ripida e stretta, e le conche non
 sono tutte uguali. Camminando, la rete passa da un tratto di paesaggio a un
@@ -1458,8 +1458,8 @@ migliaia di righe una per somma; la regola sta in una frase. Finché la regola
 era incompleta il bigliettino serviva e la multa si pagava; appena la regola
 regge da sola, tenerlo diventa una spesa senza ritorno, e lui lo butta.
 
-Da fuori quello è il momento in cui «di colpo ha capito». In realtà aveva già
-capito da un pezzo, e di colpo ha soltanto buttato via il bigliettino.
+Da fuori quello è il momento in cui «di colpo ha capito». In realtà [aveva già
+capito da un pezzo, e di colpo ha soltanto buttato via il bigliettino]{.pt-matita}.
 
 Si capisce anche che cosa affretta l'intero episodio. Se tenere appunti si
 paga, prima o poi il bigliettino conviene buttarlo; se è gratis, può restare
@@ -1491,11 +1491,11 @@ memorizzanti, e nel loro impianto è il weight decay a guidarla, perché il
 circuito completo risolve il compito con una norma dei pesi più bassa di quella
 del circuito che memorizza.
 
-Ne segue la conclusione del lavoro di Nanda e colleghi: la transizione che si
+Ne segue la conclusione del lavoro di Nanda e colleghi: [la transizione che si
 osserva coincide con la sparizione del circuito che memorizza, mentre quello
-che generalizza era già lì da tempo, e cresceva. In altri termini, sotto una
-curva che salta esistono misure di progresso continue, ricavate aprendo il
-modello, che salgono regolarmente per tutta la fase invisibile.
+che generalizza era già lì da tempo, e cresceva]{.pt-matita}. In altri termini,
+sotto una curva che salta esistono misure di progresso continue, ricavate
+aprendo il modello, che salgono regolarmente per tutta la fase invisibile.
 
 Per chi addestra la conseguenza pratica è precisa, e va presa con la sua
 portata. L'arresto anticipato decide quando fermarsi guardando una curva di

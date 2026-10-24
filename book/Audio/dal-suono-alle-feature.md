@@ -51,11 +51,11 @@ campione alla volta, e {doc}`Generare suono e musica
 `````{tab} Elementare
 
 Un sismografo disegna la scossa con un pennino che sale e scende su un rullo di
-carta. Una macchina fa lo stesso con il suono, ma invece di una
-linea scrive numeri: annota dov'è la membrana del microfono, migliaia di volte
-al secondo. Il risultato è una lunghissima lista: quanto era "in avanti" o "in
-indietro" la membrana in ogni istante. Un suono, per il computer, è tutto qui:
-una sequenza di numeri che sale e scende nel tempo. Numeri grandi (in positivo
+carta. Una macchina fa lo stesso con il suono, ma invece di una linea scrive
+numeri: annota dov'è la membrana del microfono, migliaia di volte al secondo.
+Il risultato è una lunghissima lista: quanto era "in avanti" o "in indietro" la
+membrana in ogni istante. [Un suono, per il computer, è tutto qui: una sequenza
+di numeri che sale e scende nel tempo]{.pt-matita}. Numeri grandi (in positivo
 o in negativo), quando il suono è forte, vicini allo zero quando c'è silenzio.
 
 Due decisioni restano da prendere: ogni quanto guardare la membrana, e con
@@ -76,8 +76,8 @@ $b = 16$ bit ogni campione è un intero su $2^{16} = 65536$ valori. Un secondo
 di audio "CD" è quindi, per ogni canale, un vettore di
 $44\,100$ interi.
 
-Il campionamento, sotto le ipotesi del teorema che segue, non perde niente; la
-quantizzazione perde sempre. Con passo uniforme $\Delta = 2A/2^b$ su
+[Il campionamento, sotto le ipotesi del teorema che segue, non perde niente; la
+quantizzazione perde sempre]{.pt-matita}. Con passo uniforme $\Delta = 2A/2^b$ su
 un'escursione $[-A, A]$, l'errore di arrotondamento sta in
 $[-\Delta/2, \Delta/2]$, e se il segnale è abbastanza vario da renderlo
 scorrelato da $x$ lo si modella come rumore uniforme di varianza $\Delta^2/12$.
@@ -125,12 +125,12 @@ rovescio. Per questo, prima di misurare, si fa passare il suono per un
 filtro che lascia passare le note gravi e ferma quelle troppo acute: tolto
 prima, il fischio non ha modo di travestirsi.
 
-La regola che tiene lontano il travestimento è semplice: misurare più del
-doppio delle volte rispetto alla vibrazione più rapida che vogliamo catturare.
-Il doppio ha una ragione: per accorgersi che qualcosa sale e scende bisogna
-sorprenderlo almeno due volte a ogni giro, una mentre è su e una mentre è giù.
-Chi guarda una volta sola per giro lo ritrova sempre allo stesso punto, e lo
-vede fermo, come la ruota.
+La regola che tiene lontano il travestimento è semplice: [misurare più del
+doppio delle volte rispetto alla vibrazione più rapida che vogliamo
+catturare]{.pt-matita}. Il doppio ha una ragione: per accorgersi che qualcosa
+sale e scende bisogna sorprenderlo almeno due volte a ogni giro, una mentre è
+su e una mentre è giù. Chi guarda una volta sola per giro lo ritrova sempre
+allo stesso punto, e lo vede fermo, come la ruota.
 
 Ad esempio, l'orecchio umano arriva a circa 20.000 oscillazioni al secondo,
 quindi servono più di 40.000 misure al secondo: i CD ne fanno 44.100, che
@@ -178,10 +178,10 @@ più basse generando l'aliasing. Infatti un coseno a frequenza $f$ dà gli stess
 campioni di un coseno a $|f - k f_s|$ per ogni intero $k$, quindi dopo il
 campionamento è indistinguibile dalla sua immagine nella banda $[0, f_s/2]$ (ad
 esempio un tono a $5$ kHz campionato a $8$ kHz dà esattamente gli stessi
-campioni di un tono a $3$ kHz). Sono artefatti irreversibili. Per questo si
-applica un filtro anti-aliasing (passa-basso) *prima* di campionare. La voce
-viene tipicamente trattata a $f_s = 16\,\text{kHz}$, un buon compromesso tra
-fedeltà e peso.
+campioni di un tono a $3$ kHz). Sono artefatti irreversibili. [Per questo si
+applica un filtro anti-aliasing (passa-basso) *prima* di
+campionare]{.pt-matita}. La voce viene tipicamente trattata a $f_s =
+16\,\text{kHz}$, un buon compromesso tra fedeltà e peso.
 
 `````
 
@@ -202,8 +202,8 @@ $$
 X[k] = \sum_{n=0}^{N-1} x[n]\, e^{-\,i\,2\pi kn/N}, \qquad k = 0, \dots, N-1 .
 $$
 
-Si legge così. Per ogni $k$ si prende un'oscillazione che compie
-esattamente $k$ giri negli $N$ campioni, cioè di frequenza $k\,f_s/N$ hertz; la si
+Si legge così. Per ogni $k$ si prende un'oscillazione che compie esattamente
+$k$ periodi negli $N$ campioni, cioè di frequenza $k\,f_s/N$ hertz; la si
 confronta con il segnale moltiplicando campione per campione, e si somma. Se il
 segnale contiene quell'oscillazione i prodotti vanno d'accordo e la somma è
 grande; se non la contiene si compensano, e la somma resta vicina a zero.
@@ -222,11 +222,12 @@ richiede $O(N\log N)$ operazioni invece delle $N^2$ della somma scritta così.
 
 Ascolta un accordo al pianoforte: senti più note insieme, ma il tuo orecchio
 riesce a dire quali sono. La trasformata di Fourier fa lo stesso con un suono
-qualsiasi: prende l'onda ingarbugliata e la scompone nelle sue frequenze pure,
-dicendoti *quanto* di ciascuna è presente. È come un prisma che separa la luce
-bianca nei colori dell'arcobaleno: la luce sembrava una sola, invece era una
-somma. La trasformata fa la sua cernita così: mette il suono accanto a una
-nota pura alla volta, e guarda quanto le somiglia, molto, poco o niente.
+qualsiasi: [prende l'onda ingarbugliata e la scompone nelle sue frequenze
+pure]{.pt-matita}, dicendoti *quanto* di ciascuna è presente. È come un prisma
+che separa la luce bianca nei colori dell'arcobaleno: la luce sembrava una
+sola, invece era una somma. La trasformata fa la sua cernita così: mette il
+suono accanto a una nota pura alla volta, e guarda quanto le somiglia, molto,
+poco o niente.
 
 Per strada non si perde niente. I colori rimessi insieme ridanno la luce
 bianca, e le frequenze rimesse insieme ridanno l'onda esatta di partenza: sono
@@ -253,10 +254,9 @@ perché per $k \ne k'$ la somma è una serie geometrica di ragione
 $e^{\,i\,2\pi(k-k')/N} \ne 1$ che compie un numero intero di giri e si annulla.
 Formano quindi una base, e $X[k] = \langle \mathbf{x}, \boldsymbol{\phi}_k
 \rangle$ è la coordinata di $\mathbf{x}$ lungo la $k$-esima. In altri termini,
-la DFT è un cambio di base ortogonale, a meno del fattore $\sqrt{N}$ (come le
-basi ortonormali di
-{doc}`Ortogonalità e proiezioni </Matematica/ortogonalita-proiezioni>`). Ne
-seguono l'inversa,
+[la DFT è un cambio di base ortogonale]{.pt-matita}, a meno del fattore
+$\sqrt{N}$ (come le basi ortonormali di {doc}`Ortogonalità e
+proiezioni </Matematica/ortogonalita-proiezioni>`). Ne seguono l'inversa,
 
 $$
 x[n] = \frac{1}{N}\sum_{k=0}^{N-1} X[k]\, e^{\,i\,2\pi kn/N},
@@ -329,11 +329,11 @@ gradini, un'informazione che la trasformata del file intero non
 saprebbe dare.
 ```
 
-Le finestre a cavallo fra una nota e l'altra mostrano entrambe le frequenze,
-e non per un difetto del disegno: è il compromesso su cui la trasformata
-a finestre è costruita. Una finestra lunga distingue bene le
-frequenze e male gli istanti, perché dentro ci finiscono due note; una corta fa
-il contrario. Non esiste una lunghezza che vinca su tutti e due i fronti, quindi
+Le finestre a cavallo fra una nota e l'altra mostrano entrambe le frequenze, e
+non per un difetto del disegno: è il compromesso su cui la trasformata a
+finestre è costruita. Una finestra lunga distingue bene le frequenze e male gli
+istanti, perché dentro ci finiscono due note; una corta fa il contrario. [Non
+esiste una lunghezza che vinca su tutti e due i fronti]{.pt-matita}, quindi
 sceglierla è una decisione di progetto.
 
 Nel disegno la finestra è gonfia in mezzo e va a zero ai bordi,
@@ -506,7 +506,7 @@ sbagliare avevano bisogno di numeri che non si somigliassero. Le righe vicine
 dell'immagine invece si somigliano parecchio, e l'ultimo passaggio del
 riassunto le rimescola apposta, finché quella somiglianza sparisce.
 
-Le reti di oggi non hanno quel bisogno e si fermano un passo prima,
+[Le reti di oggi non hanno quel bisogno e si fermano un passo prima]{.pt-matita},
 all'immagine riletta a orecchio. Il rimescolamento anzi le danneggerebbe: una
 rete convoluzionale guarda insieme le righe vicine, come guarda insieme i pixel
 vicini di una foto, e dopo il rimescolamento due righe vicine non parlano più
@@ -593,8 +593,8 @@ diagonale su feature correlate è un modello sbagliato; le bande mel si
 sovrappongono, quindi correlate lo sono parecchio. Decorrelare le rendeva
 lecite.
 
-Caduta l'ipotesi, è caduta la ragione: una rete non chiede feature
-scorrelate, e la DCT le nuoce, perché mescolando tutte le bande in
+Caduta l'ipotesi, è caduta la ragione: [una rete non chiede feature
+scorrelate, e la DCT le nuoce]{.pt-matita}, perché mescolando tutte le bande in
 ogni coefficiente distrugge la località in frequenza su cui una convoluzione
 lavora. Per questo dagli anni Dieci si è tornati allo spettrogramma log-mel
 grezzo, mentre i 13 MFCC restano una feature d'archivio, ancora comoda dove
@@ -619,13 +619,13 @@ inizio. Lo spettrogramma log-mel ne toglie di mezzo una parte, ciascuna per una
 ragione precisa.
 
 Anzitutto, uno spostamento più corto della finestra cambia quasi soltanto le
-fasi, e le fasi nell'immagine non ci sono più. Un cambio di volume
-moltiplica tutte le energie per lo stesso fattore, e dopo il logaritmo diventa
-uno spostamento costante di tutta l'immagine, che una rete assorbe facilmente.
-La scala mel, infine, riduce il numero di righe e tiene la risoluzione dove
-l'orecchio la usa. Il modello parte così da una descrizione più piccola e più
-stabile. Non tutto però se ne va: il rumore di fondo della stanza resta
-nell'immagine, sommato al suono, e a separarlo deve pensarci il modello.
+fasi, e le fasi nell'immagine non ci sono più. Un cambio di volume moltiplica
+tutte le energie per lo stesso fattore, e dopo il logaritmo diventa uno
+spostamento costante di tutta l'immagine, che una rete assorbe facilmente. La
+scala mel, infine, riduce il numero di righe e tiene la risoluzione dove
+l'orecchio la usa. [Il modello parte così da una descrizione più piccola e più
+stabile]{.pt-matita}. Non tutto però se ne va: il rumore di fondo della stanza
+resta nell'immagine, sommato al suono, e a separarlo deve pensarci il modello.
 
 I sistemi più recenti, come wav2vec 2.0 {cite}`baevski2020wav2vec`, che impara
 dall'onda grezza senza etichette, o Whisper {cite}`radford2022robust`, il

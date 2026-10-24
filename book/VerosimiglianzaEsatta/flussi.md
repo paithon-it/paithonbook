@@ -135,8 +135,8 @@ area sotto la candidata con il fattore:   1.000
 Senza il fattore la candidata ha la forma giusta ma l'altezza sbagliata. Si
 scosta dalla curva misurata fino a 0,27, e la sua area fa 3. Con il fattore,
 invece, lo scarto scende a 0,002, che è il rumore di un conteggio su due
-milioni di punti, e l'area fa 1. In definitiva, è il fattore a fare della
-formula una densità.
+milioni di punti, e l'area fa 1. In definitiva, [è il fattore a fare della
+formula una densità]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -279,8 +279,8 @@ determinante: il calcolo è impraticabile.
 ## Gli strati di accoppiamento
 
 La via d'uscita è cambiare la domanda. Invece di calcolare in fretta il
-determinante di una matrice qualunque, si costruisce $f$ in modo che la sua
-jacobiana sia triangolare, e il determinante si legga sulla diagonale.
+determinante di una matrice qualunque, [si costruisce $f$ in modo che la sua
+jacobiana sia triangolare, e il determinante si legga sulla diagonale]{.pt-matita}.
 
 La costruzione si chiama **strato di accoppiamento** (*coupling layer*). Si
 dividono le coordinate, cioè i numeri della fotografia, in due gruppi,
@@ -536,9 +536,10 @@ dei numeri a trentadue bit e non un'approssimazione del metodo.
 La seconda e la terza sono quelle che importano alla verosimiglianza esatta, e
 vanno lette insieme. La densità del modello, integrata numericamente su una
 griglia che la copre tutta, fa uno, e non perché qualcuno l'abbia normalizzata
-a mano. Fa uno perché il cambio di variabile lo garantisce, e la terza misura lo
-mostra togliendo il fattore dagli stessi identici pesi: senza, l'area scende a
-0,24, e una curva la cui area non fa uno non è una densità di probabilità.
+a mano. [Fa uno perché il cambio di variabile lo garantisce]{.pt-matita}, e la
+terza misura lo mostra togliendo il fattore dagli stessi identici pesi: senza,
+l'area scende a 0,24, e una curva la cui area non fa uno non è una densità di
+probabilità.
 
 Nel valore 0,24 non c'è niente da leggere, dipende dal flusso che è uscito da
 questo addestramento; l'unica cosa che conta è che non faccia uno. Fare uno
@@ -619,11 +620,11 @@ Lo stesso autoencoder si può mettere davanti a un flusso, e la
 verosimiglianza vale allora per il latente e non più per l'immagine, come nel
 trasloco sui token di {doc}`un pixel alla volta <pixel-per-pixel>`.
 
-Il costo vero del vincolo è l'espressività di ogni strato. Un accoppiamento,
-invertibile e con un determinante che si legge, deforma poco, e per piegare una
-gaussiana in una distribuzione di fotografie ne servono pile lunghe e costose.
-Il divario era quindi di architettura più che di famiglia, e lo mostrano due
-lavori del 2025 dello stesso gruppo.
+[Il costo vero del vincolo è l'espressività di ogni strato]{.pt-matita}. Un
+accoppiamento, invertibile e con un determinante che si legge, deforma poco, e
+per piegare una gaussiana in una distribuzione di fotografie ne servono pile
+lunghe e costose. Il divario era quindi di architettura più che di famiglia, e
+lo mostrano due lavori del 2025 dello stesso gruppo.
 
 TarFlow {cite}`zhai2025tarflow` sostituisce gli accoppiamenti con strati
 autoregressivi fatti di blocchi Transformer, lavora direttamente sui pixel e

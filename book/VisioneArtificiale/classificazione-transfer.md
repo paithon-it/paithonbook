@@ -54,8 +54,8 @@ perché la testa è il pezzo da sostituire. In una rete moderna la testa, cioè
 gli strati che vengono dopo le lenti, tiene pochi numeri; nelle prime reti di
 questo genere era il contrario. In AlexNet, ad esempio, novantasei numeri su
 cento stavano nei suoi ultimi tre strati, e rifare quella testa voleva dire
-rifare quasi tutta la rete. Su una rete di allora e su una di oggi, quindi,
-cambiare la testa è un lavoro di due misure diverse.
+rifare quasi tutta la rete. [Su una rete di allora e su una di oggi, quindi,
+cambiare la testa è un lavoro di due misure diverse]{.pt-matita}.
 
 `````
 
@@ -94,8 +94,9 @@ La testa che si scrive in codice, quindi, è una `nn.Linear` nuda
 
 Le reti della prima generazione, AlexNet e VGG, appiattivano invece la mappa e
 la mandavano in tre strati densi. In AlexNet questi strati sono il 96% dei
-$60\,965\,224$ parametri della versione dell'articolo, e per questo
-«sostituire la testa» è un'operazione di peso molto diverso sulle due famiglie.
+$60\,965\,224$ parametri della versione dell'articolo, [e per questo
+«sostituire la testa» è un'operazione di peso molto diverso sulle due
+famiglie]{.pt-matita}.
 
 `````
 
@@ -108,10 +109,11 @@ etichettati e molta potenza di calcolo.
 
 Con le poche migliaia di foto di un progetto reale (le lastre di un
 ambulatorio, i difetti su una linea di produzione, le specie di una guida
-botanica), una rete addestrata da zero va in overfitting, cioè impara a
-memoria gli esempi mostrati invece della regola che li spiega. Sulle foto di
-addestramento l'errore scende quasi a zero, ma su quelle nuove resta alto. Il
-collo di bottiglia, quasi sempre, sono i dati e il tempo, non l'algoritmo.
+botanica), una rete addestrata da zero va in overfitting, cioè impara a memoria
+gli esempi mostrati invece della regola che li spiega. Sulle foto di
+addestramento l'errore scende quasi a zero, ma su quelle nuove resta alto. [Il
+collo di bottiglia, quasi sempre, sono i dati e il tempo, non
+l'algoritmo]{.pt-matita}.
 
 ## Prendere in prestito: transfer learning
 
@@ -165,7 +167,8 @@ trasferiti conviene quasi sempre, anche quando poi si rifinisce tutto.
 
 `````
 
-Riusiamo dunque la base, che è la parte generica, e sostituiamo solo la testa.
+[Riusiamo dunque la base, che è la parte generica, e sostituiamo solo la
+testa]{.pt-matita}.
 
 ```{figure} ../figures/transfer-learning.svg
 :name: fig-transfer
@@ -246,10 +249,10 @@ decina di gruppetti, un appunto tarato sulle lastre invece che sulle foto di
 ImageNet. Così i numeri che la base consegna alla testa cambiano da
 un giro all'altro, e la testa impara inseguendo un bersaglio che si sposta.
 
-Perché la base resti ferma, a quegli strati va detto di smettere di
-aggiornare l'appunto. Lo si dice anche quando si sbloccano gli ultimi strati con
-pochi esempi, perché una media presa su un gruppetto di poche foto salta da un
-gruppetto all'altro.
+[Perché la base resti ferma, a quegli strati va detto di smettere di aggiornare
+l'appunto]{.pt-matita}. Lo si dice anche quando si sbloccano gli ultimi strati
+con pochi esempi, perché una media presa su un gruppetto di poche foto salta da
+un gruppetto all'altro.
 
 Il prestito, poi, conviene soprattutto quando le foto sono poche. Con
 moltissime foto e molto tempo, infatti, una rete partita da zero arriva allo
@@ -273,8 +276,8 @@ aggiornano a ogni forward, con o senza autograd, come media mobile delle
 statistiche del batch (con il momento predefinito di PyTorch,
 $\hat{\mu} \leftarrow 0{,}9\,\hat{\mu} + 0{,}1\,\mu_{\mathcal{B}}$, e lo stesso
 per la varianza). Una base «congelata» solo con `requires_grad_(False)` deriva
-quindi comunque verso il nuovo dominio; per fermarla, i moduli BatchNorm vanno
-messi in modalità valutazione (`.eval()`).
+quindi comunque verso il nuovo dominio; [per fermarla, i moduli BatchNorm vanno
+messi in modalità valutazione (`.eval()`)]{.pt-matita}.
 
 Nel **fine-tuning** riattiviamo il gradiente sugli strati alti della base e
 riprendiamo l'ottimizzazione con un learning rate molto basso (tipicamente

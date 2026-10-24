@@ -40,7 +40,7 @@ per altri sedici, duecentocinquantasei volte il valore di partenza. Vale anche
 l'altra metà della regola: i confronti sono solo una parte del lavoro, e
 prevalgono quando le tessere diventano migliaia.
 
-Il primo costo, però, sono i posti. Un modello di linguaggio
+[Il primo costo, però, sono i posti]{.pt-matita}. Un modello di linguaggio
 ha un numero fissato di posti nella sequenza, per esempio 4096, e 1024 tessere
 ne occupano un quarto; di conseguenza, alle parole della domanda e della
 risposta restano quelli che avanzano.
@@ -68,24 +68,24 @@ $d$ dimensione del modello, e dunque quartico nel lato dell'immagine. Da $224$
 a $448$ il costo cresce di $(1024/256)^2 = 16$ volte; da $224$ a $896$, di
 $(4096/256)^2 = 256$ volte.
 
-Per inquadrare il peso effettivo del termine quadratico, si noti che nei
-FLOP di un blocco Transformer l'attenzione vale circa $4N^2 d$ e le proiezioni
-più il feed-forward (con strato nascosto a $4d$ unità) circa $24 N d^2$: il
+Per inquadrare il peso effettivo del termine quadratico, si noti che nei FLOP
+di un blocco Transformer l'attenzione vale circa $4N^2 d$ e le proiezioni più
+il feed-forward (con strato nascosto a $4d$ unità) circa $24 N d^2$: il
 quadratico supera il lineare solo per $N > 6d$, cioè oltre $24\,576$ token in
 un modello con $d = 4096$ (nell'encoder visivo, dove $d$ vale circa un
-migliaio, la soglia scende attorno ai seimila). Il primo effetto è dunque il
-contesto occupato, il tempo di *prefill* e la KV cache. La FlashAttention della
-{doc}`sezione sulle GPU </GPU/flash-attention>` {cite}`dao2022flashattention`
-elimina la memoria $O(N^2)$, non il calcolo: alza il tetto, non cambia
-l'esponente.
+migliaio, la soglia scende attorno ai seimila). [Il primo effetto è dunque il
+contesto occupato, il tempo di *prefill* e la KV cache]{.pt-matita}. La
+FlashAttention della {doc}`sezione sulle GPU </GPU/flash-attention>`
+{cite}`dao2022flashattention` elimina la memoria $O(N^2)$, non il calcolo: alza
+il tetto, non cambia l'esponente.
 
 `````
 
 ## Perché duecentoventiquattro pixel non bastano
 
 Quanta risoluzione serva non ha una risposta valida in generale, e da questa
-osservazione dipende il resto: la risoluzione la detta il compito, non
-l'architettura.
+osservazione dipende il resto: [la risoluzione la detta il compito, non
+l'architettura]{.pt-matita}.
 
 Ad esempio, un gatto lo si riconosce da lontano, perché la sagoma, le orecchie
 e la coda sono strutture larghe che sopravvivono a una riduzione brutale; su
@@ -197,8 +197,8 @@ appartengano alla stessa cosa. Intera si vede solo nella settima, quella senza
 dettaglio. Il taglio cade dove capita, non segue i confini degli oggetti.
 
 Poi resta la pila. Sette foto invece di una, e la settima ripete il contenuto
-delle altre: da guardare ce ne sono comunque sette. La spesa si è spostata
-dalla macchina fotografica al mucchio di foto.
+delle altre: da guardare ce ne sono comunque sette. [La spesa si è spostata
+dalla macchina fotografica al mucchio di foto]{.pt-matita}.
 
 `````
 
@@ -242,10 +242,10 @@ largo $d = 3200$, si rovescia: a riquadri costa l’8,5% in più. Il guadagno
 immediato va da un quinto a niente, e diventa una perdita quanto più l'encoder
 è largo. (Il rapporto non è una percentuale: dividere per $1{,}24$ vuol dire
 risparmiare il 19%, non il 24%.) In cambio i token *totali* salgono da $4096$ a
-$5120$, perché la miniatura è ridondante per costruzione. In altri termini, il
-costo si è spostato, non è sparito, e tutti quei token finiscono nella stessa
-sequenza del modello di linguaggio, dove l'attenzione è di nuovo quadratica su
-tutto.
+$5120$, perché la miniatura è ridondante per costruzione. In altri termini, [il
+costo si è spostato, non è sparito]{.pt-matita}, e tutti quei token finiscono
+nella stessa sequenza del modello di linguaggio, dove l'attenzione è di nuovo
+quadratica su tutto.
 
 I due argomenti più solidi, quindi, sono gli altri, e non sono computazionali.
 Gli embedding di posizione dell'encoder restano validi, quindi non vanno
@@ -306,7 +306,8 @@ quattro, e non hai perso un grammo di colore: la cassetta è solo quattro volte
 più pesante. Questo è il pixel shuffle (alla lettera «rimescolamento dei
 puntini»: il nome è più oscuro della cosa): quattro tessere adiacenti diventano
 un pezzo solo, che porta con sé tutti e quattro i contenuti, uno di fianco
-all'altro. L'informazione si è spostata dai *posti* al *contenuto di ogni posto*.
+all'altro. [L'informazione si è spostata dai *posti* al *contenuto di ogni
+posto*]{.pt-matita}.
 
 La cassetta, però, prima di entrare nel modello di linguaggio deve stare in un
 posto della misura di sempre: i posti della sequenza sono tutti uguali, e in
@@ -333,16 +334,16 @@ $$
 
 che raggruppa ogni blocco $2 \times 2$ di posizioni adiacenti e ne concatena i
 quattro vettori lungo la dimensione dei canali. Il numero di token scende a
-$N/4$ e la dimensione di ciascuno sale a $4 d_v$: è una permutazione degli
+$N/4$ e la dimensione di ciascuno sale a $4 d_v$: [è una permutazione degli
 elementi del tensore, quindi biiettiva, e il conteggio dell'informazione non
-cambia. (Il nome viene dalla super-risoluzione, dove si usa nel verso opposto;
-in PyTorch le due direzioni sono `nn.PixelShuffle` e `nn.PixelUnshuffle`, e qui
-serve la seconda, applicata dopo aver rimesso la sequenza di token in forma di
-griglia con i canali per primi.) Con i numeri di prima, i $1024$
-token di un riquadro $448 \times 448$ diventano $256$: è la scelta di InternVL
-{cite}`chen2024far`, dove una tessera da $448 \times 448$ vale 256 token, e una
-pagina in griglia $3 \times 4$ più miniatura passa così da $13\,312$ a $13
-\cdot 256 = 3328$ token.
+cambia]{.pt-matita}. (Il nome viene dalla super-risoluzione, dove si usa nel
+verso opposto; in PyTorch le due direzioni sono `nn.PixelShuffle` e
+`nn.PixelUnshuffle`, e qui serve la seconda, applicata dopo aver rimesso la
+sequenza di token in forma di griglia con i canali per primi.) Con i numeri di
+prima, i $1024$ token di un riquadro $448 \times 448$ diventano $256$: è la
+scelta di InternVL {cite}`chen2024far`, dove una tessera da $448 \times 448$
+vale 256 token, e una pagina in griglia $3 \times 4$ più miniatura passa così
+da $13\,312$ a $13 \cdot 256 = 3328$ token.
 
 Il confronto con il pooling medio sullo stesso blocco $2 \times 2$ è immediato.
 Il pooling è la mappa lineare $\mathbb{R}^{4 d_v} \to \mathbb{R}^{d_v}$,
@@ -373,10 +374,10 @@ C'è una famiglia di compiti in cui tutto questo si vede a occhio nudo: la
 lettura dei documenti. Per decenni la sola strada praticabile è stata una
 catena: la pagina a un sistema di **riconoscimento ottico dei caratteri**
 (l'OCR), e il testo che ne usciva a chi doveva farci qualcosa, che oggi è un
-modello di linguaggio. Ogni anello è una conversione, e ogni conversione decide
-qualcosa al posto di chi verrà dopo. Qui la risposta riguarda che cosa si tiene
-della pagina, più che quante tessere entrano: invece di convertirla in testo,
-la si tiene come immagine.
+modello di linguaggio. [Ogni anello è una conversione, e ogni conversione
+decide qualcosa al posto di chi verrà dopo]{.pt-matita}. Qui la risposta
+riguarda che cosa si tiene della pagina, più che quante tessere entrano: invece
+di convertirla in testo, la si tiene come immagine.
 
 `````{tab} Elementare
 
@@ -614,11 +615,11 @@ scelta si fa guardando che cosa il modello dovrà leggere. La risoluzione è un
 iperparametro di progetto, che si fissa sapendo a che cosa servirà il prodotto
 finito.
 
-Ognuna delle tre risposte sposta il costo altrove. Il tiling lo toglie
-all'encoder e lo consegna al contesto, dove diventa lunghezza di sequenza; la
-compressione lo toglie al contesto e lo carica sui singoli token, dove diventa
-capacità, cioè quanta pagina deve portare ogni vettore; e le due si combinano,
-come in InternVL.
+[Ognuna delle tre risposte sposta il costo altrove]{.pt-matita}. Il tiling lo
+toglie all'encoder e lo consegna al contesto, dove diventa lunghezza di
+sequenza; la compressione lo toglie al contesto e lo carica sui singoli token,
+dove diventa capacità, cioè quanta pagina deve portare ogni vettore; e le due
+si combinano, come in InternVL.
 
 Il recupero *vision-native* risponde a un problema vicino ma
 diverso, le conversioni della catena di estrazione: sposta il costo

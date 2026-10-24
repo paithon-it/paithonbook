@@ -114,8 +114,8 @@ probabilità $p(\mathbf{x}) \ge 0$, e le probabilità di tutte le configurazioni
 devono sommare a uno (integrare a uno, se le configurazioni sono continue): per
 valutarne una sola bisogna quindi tener conto di tutte le altre. Un modello a
 energia, invece, rinuncia a questo vincolo. Assegna a ogni configurazione
-(un'immagine, una frase, uno stato della rete) un'energia, e chiede soltanto
-che quelle sensate stiano in basso e le altre in alto.
+(un'immagine, una frase, uno stato della rete) un'energia, e [chiede soltanto
+che quelle sensate stiano in basso e le altre in alto]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -213,8 +213,8 @@ l'argomento disteso sta nel documento di posizione del 2022
 {cite}`lecun2022path`.
 
 Diffusione, JEPA, Hopfield moderne, il programma di LeCun: sembrano quattro
-argomenti distinti, ma hanno in comune un punteggio da minimizzare invece di
-normalizzare (per la diffusione con una riserva, che la sezione sulla
+argomenti distinti, ma [hanno in comune un punteggio da minimizzare invece di
+normalizzare]{.pt-matita} (per la diffusione con una riserva, che la sezione sulla
 funzione di partizione rende precisa). La {doc}`sezione sui paesaggi di oggi
 </ModelliEnergia/paesaggi-di-oggi>` li riprende uno per uno.
 

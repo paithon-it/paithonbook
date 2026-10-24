@@ -58,12 +58,13 @@ merito si perdono comunque. Sono rimedi veri e aiutano a smistare, ma nemmeno
 chi ti accompagna ha sentito altro che la frase della sera:
 nessuno di quei rimedi inventa un'informazione che nessuno ha dato.
 
-Le due obiezioni si moltiplicano invece di sommarsi. Poca informazione sarebbe
-già un problema; poca informazione, e da spalmare su centinaia di decisioni che
-non sai distinguere, è un problema di un altro ordine. Più lunga è la giornata,
-più sono le decisioni fra cui dividerla. Rifare la stessa giornata dieci volte,
-con dieci frasi la sera, non cambia la sostanza: ogni giornata riceve ancora
-una frase sola, da dividere fra tutte le tue azioni.
+[Le due obiezioni si moltiplicano invece di sommarsi]{.pt-matita}. Poca
+informazione sarebbe già un problema; poca informazione, e da spalmare su
+centinaia di decisioni che non sai distinguere, è un problema di un altro
+ordine. Più lunga è la giornata, più sono le decisioni fra cui dividerla.
+Rifare la stessa giornata dieci volte, con dieci frasi la sera, non cambia la
+sostanza: ogni giornata riceve ancora una frase sola, da dividere fra tutte le
+tue azioni.
 
 `````
 
@@ -113,8 +114,8 @@ vantaggio azione per azione, lo sconto che accorcia l'orizzonte di
 attribuzione), e sono attenuazioni vere; ma nessuna di esse fabbrica
 informazione che nel segnale non c'era.
 
-I due argomenti si compongono: pochi bit, da distribuire per giunta su un
-numero di decisioni che cresce con la lunghezza dell'episodio.
+I due argomenti si compongono: [pochi bit, da distribuire per giunta su un
+numero di decisioni che cresce con la lunghezza dell'episodio]{.pt-matita}.
 
 `````
 
@@ -136,10 +137,11 @@ l'agente ha sbagliato, e ricevono la stessa spinta di tutti gli altri.
 
 ## Che cosa propone LeCun al suo posto
 
-Per LeCun la conseguenza di questo argomento non è che il rinforzo sia inutile,
-ma che sia nel posto sbagliato: va bene per rifinire una policy, cioè la
-regola con cui un agente sceglie che cosa fare, quando la comprensione del mondo
-è già stata costruita altrove, e non va bene come modo di costruirla.
+Per LeCun la conseguenza di questo argomento [non è che il rinforzo sia
+inutile, ma che sia nel posto sbagliato]{.pt-matita}: va bene per rifinire una
+policy, cioè la regola con cui un agente sceglie che cosa fare, quando la
+comprensione del mondo è già stata costruita altrove, e non va bene come modo
+di costruirla.
 
 Nel {doc}`capitolo sui modelli a energia </ModelliEnergia/overview>` c'è
 l'elenco delle quattro rinunce che LeCun ripete nelle sue conferenze, e la
@@ -215,9 +217,9 @@ imitazione, che su certi problemi si può migliorare senza avere traiettorie di
 esperti da copiare, e che «il modello può anche scoprire soluzioni che una
 persona potrebbe non trovare mai. È incredibile. Eppure, è ancora stupido».
 
-Non è dunque una richiesta di abbandonare il rinforzo. È la tesi che lo
-strumento che oggi si usa sia molto peggiore di come viene percepito, e che il
-campo abbia bisogno di qualcosa in più.
+[Non è dunque una richiesta di abbandonare il rinforzo]{.pt-matita}. È la tesi
+che lo strumento che oggi si usa sia molto peggiore di come viene percepito, e
+che il campo abbia bisogno di qualcosa in più.
 
 ## Un'attribuzione da rimettere a posto
 
@@ -343,11 +345,11 @@ da quanto, e su che cosa, si addestra, e la domanda resta aperta.
 
 `````
 
-Le due posizioni sono compatibili e vanno tenute distinte. Karpathy dice che il
-segnale è povero e mal distribuito; Yue e colleghi misurano che, con
-l'impostazione della primavera del 2025, il confine delle capacità non si
-allarga. Questa seconda tesi non è di Karpathy, e chi le fonde gli
-attribuisce una misura che non ha fatto e una conclusione che lui stesso
+[Le due posizioni sono compatibili e vanno tenute distinte]{.pt-matita}.
+Karpathy dice che il segnale è povero e mal distribuito; Yue e colleghi
+misurano che, con l'impostazione della primavera del 2025, il confine delle
+capacità non si allarga. Questa seconda tesi non è di Karpathy, e chi le fonde
+gli attribuisce una misura che non ha fatto e una conclusione che lui stesso
 contraddice nella stessa intervista, quando dice che il rinforzo fa scoprire
 soluzioni che una persona potrebbe non trovare.
 
@@ -386,12 +388,12 @@ probabilità verso strade che pagano, e questo è utilissimo e non è la stessa
 cosa che insegnare una strada nuova.
 
 C'è infine un argomento di prospettiva da tenere presente. Le critiche fin qui
-riguardano il rinforzo come unico maestro, cioè l'idea di
-costruire un sistema per tentativi ed errori a partire da zero. Nessuno dei
-due critici propone questo: la ciliegina è una ciliegina perché viene
-dopo, su una torta già cotta. Criticare il rinforzo come unico maestro non
-è quindi criticarlo come rifinitura, e le due frasi si somigliano tanto che
-vengono scambiate di continuo.
+riguardano il rinforzo come unico maestro, cioè l'idea di costruire un sistema
+per tentativi ed errori a partire da zero. Nessuno dei due critici propone
+questo: la ciliegina è una ciliegina perché viene dopo, su una torta già cotta.
+[Criticare il rinforzo come unico maestro non è quindi criticarlo come
+rifinitura]{.pt-matita}, e le due frasi si somigliano tanto che vengono
+scambiate di continuo.
 
 ## Cambiare la quantità, invece di arricchire il premio
 
@@ -521,11 +523,11 @@ avversari di qualcuno: il quadro «non mira a rimpiazzare altri quadri di
 riferimento, come la psicologia comportamentale, la teoria delle decisioni e
 l'apprendimento per rinforzo», ma a comprenderli.
 
-L'inferenza attiva serve a mostrare un punto preciso: la povertà del segnale
+L'inferenza attiva serve a mostrare un punto preciso: [la povertà del segnale
 non è una fatalità dell'imparare agendo, ma la conseguenza di *quale* quantità
-si è scelto di ottimizzare. L'oggetto della discordia, a ben vedere, non è se
-il rinforzo serva, ma se basti a spiegare da dove venga la comprensione. Su
-quella domanda si apre il {doc}`capitolo sui world model
+si è scelto di ottimizzare]{.pt-matita}. L'oggetto della discordia, a ben
+vedere, non è se il rinforzo serva, ma se basti a spiegare da dove venga la
+comprensione. Su quella domanda si apre il {doc}`capitolo sui world model
 </WorldModels/overview>`.
 
 `````{tab} Elementare

@@ -51,8 +51,8 @@ vanno dette insieme ai suoi numeri.
 La {numref}`fig-world-model-vmc` mostra il ciclo completo, con $\mathbf{h}$ e
 LSTM scritti al loro posto: l'azione di C torna all'ambiente, che produce il
 fotogramma successivo. Mostra anche l'anello tratteggiato che rende speciale
-l'architettura: M può alimentare se stesso, sostituendosi all'ambiente. È il
-circuito del sogno.
+l'architettura: [M può alimentare se stesso, sostituendosi
+all'ambiente]{.pt-matita}. È il circuito del sogno.
 
 ```{figure} ../figures/world-model-vmc.svg
 :name: fig-world-model-vmc
@@ -70,9 +70,9 @@ modello utile per decidere.
 Un fotogramma di *CarRacing*, ridotto a $64 \times 64$ pixel, sono 4.096
 puntini; ma ogni puntino è colorato, e per dire un colore servono tre numeri
 (quanto rosso, quanto verde, quanto blu), quindi il fotogramma sono $64 \times
-64 \times 3 = 12\,288$ numeri. Troppi, e quasi tutti ridondanti: alla
+64 \times 3 = 12\,288$ numeri. Troppi, e quasi tutti ridondanti: [alla
 guida non servono i singoli fili d'erba, serve sapere dove curva la strada e
-dove sta l'auto.
+dove sta l'auto]{.pt-matita}.
 
 V è un encoder addestrato a comprimere ogni fotogramma in un codice di 32
 numeri, 384 volte meno dei 12.288 di partenza. Il suo nome tecnico è
@@ -179,8 +179,8 @@ addestramento. Su *CarRacing* V pesa circa 4,3 milioni di parametri.
 
 ### M come Memoria: la fisica del gioco in una RNN
 
-Un fotogramma compresso è una fotografia, non un film, e quindi non dice cosa
-succederà. Il secondo modulo impara la **dinamica**: dato il
+[Un fotogramma compresso è una fotografia, non un film, e quindi non dice cosa
+succederà]{.pt-matita}. Il secondo modulo impara la **dinamica**: dato il
 codice di adesso e l'azione scelta, quale sarà il codice di poi?
 
 M è una LSTM,
@@ -294,13 +294,13 @@ la miscela è ciò su cui agirà la temperatura del sogno, che regola quanto il
 
 ### C come Controller: il pilota minimalista
 
-Dopo un encoder da milioni di parametri e una memoria da centinaia di
-migliaia, il modulo che *decide* è il più piccolo dei tre. C concatena i 32
-numeri del codice visivo e i 256 della memoria, 288 in tutto, e ne fa una
-trasformazione affine: per ciascuno dei tre comandi (sterzo, acceleratore,
-freno) una somma pesata dei 288 numeri più una costante, cioè
-$288 \times 3 + 3 = 867$ parametri. È la tesi dell'articolo: se V e M hanno
-estratto la struttura utile del mondo, per agire basta una policy lineare.
+Dopo un encoder da milioni di parametri e una memoria da centinaia di migliaia,
+il modulo che *decide* è il più piccolo dei tre. C concatena i 32 numeri del
+codice visivo e i 256 della memoria, 288 in tutto, e ne fa una trasformazione
+affine: per ciascuno dei tre comandi (sterzo, acceleratore, freno) una somma
+pesata dei 288 numeri più una costante, cioè $288 \times 3 + 3 = 867$
+parametri. È la tesi dell'articolo: [se V e M hanno estratto la struttura utile
+del mondo, per agire basta una policy lineare]{.pt-matita}.
 
 Quanto contino il codice e la memoria lo dicono gli autori togliendo pezzi uno
 alla volta (in gergo, un’*ablazione*), sempre su *CarRacing*. Ogni risultato è
@@ -622,8 +622,8 @@ vera. Un modello promosso a pieni voti da questa prova può essere bocciato
 appena lo si lascia proseguire per venti passi senza ripartire dal vero, come
 qui.
 
-Per questo un modello del mondo si giudica anche lasciandolo andare da
-solo per molti passi, o dal risultato di chi ci si allena dentro.
+Per questo [un modello del mondo si giudica anche lasciandolo andare da
+solo per molti passi, o dal risultato di chi ci si allena dentro]{.pt-matita}.
 
 La seconda va guardata con attenzione, perché sembra dire il contrario. La
 distanza fra le due altalene, misurata passo per passo, a tratti si richiude:
@@ -709,7 +709,7 @@ Revenge*, il DQN si arena.
 In sintesi, i world model rispondono così, con un approccio model-based, alla
 fame di esperienza dei metodi model-free: ogni interazione vera con l'ambiente
 (un campione, nel lessico del rinforzo) migliora il modello oltre ai valori, e
-il modello genera poi altre esperienze al solo costo del calcolo.
+[il modello genera poi altre esperienze al solo costo del calcolo]{.pt-matita}.
 
 `````{tab} Elementare
 

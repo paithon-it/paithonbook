@@ -1,10 +1,10 @@
 # Le postille di questa pagina, una per capoverso del testo comune.
 # Ognuna vale finché la sua impronta combacia col testo del capoverso.
 - inizio: "C'è un gioco che tutti conosciamo:"
-  impronta: "271b702966f6"
-  postilla: "Ascoltando tutti i vicini, a ogni giro la voce va una stretta di mano più in là"
+  impronta: "2b9647cec88c"
+  postilla: "Ascoltando i vicini, a ogni iterazione la voce va una stretta di mano più in là"
 - inizio: "Una rete neurale su grafo elabora"
-  impronta: "2dca2bd428a9"
+  impronta: "800b92989282"
   postilla: "Quattro nomi: adiacenza, feature, gradi, adiacenza con i cappi"
 - inizio: "Lo schema dei tre passaggi è"
   impronta: "4f80317b4d3b"
@@ -22,7 +22,7 @@
   impronta: "86eb0cee099f"
   postilla: "Uno strato stringe i quattro valori: lo scarto scende da tre a due punti scarsi"
 - inizio: "I due nodi di mezzo salgono"
-  impronta: "c4dcc7b2db98"
+  impronta: "a0351b05069d"
   postilla: "Somma pesata, non media: le differenze si consumano ripetendo, non a ogni passo"
 - inizio: "Questo appiattimento ha un nome, **oversmoothing**,"
   impronta: "5f1b65f2e62e"

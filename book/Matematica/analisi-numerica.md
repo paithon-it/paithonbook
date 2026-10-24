@@ -66,9 +66,9 @@ giusto. (La `b` sta per *brain*: il formato nasce nel gruppo Google Brain, non
 ```
 
 **Portata** e **precisione**, distinte in {numref}`fig-formati-virgola-mobile`,
-sono due budget separati, e gli errori del calcolo in virgola mobile vengono
+sono due budget separati, e [gli errori del calcolo in virgola mobile vengono
 dall'esaurirsi dell'uno (il risultato esce dai numeri rappresentabili) o
-dell'altro (restano troppo poche cifre buone).
+dell'altro (restano troppo poche cifre buone)]{.pt-matita}.
 
 Il `bfloat16` della terza barra ha lo stesso esponente del `float32` (quindi
 la stessa portata) ma sette bit di mantissa invece di ventitré, cioè un terzo
@@ -239,8 +239,8 @@ eppure un `float32` registra zero tondo, senza avvisare.
 La difesa usa la notazione scientifica di prima: invece di moltiplicare i
 numeri, si sommano i loro «per dieci alla…», e duecento dimezzamenti diventano
 un esponente di circa $-60$, un numero qualunque, che si scrive senza fatica.
-Il conto è lo stesso, fatto per una strada che non passa mai da quantità fuori
-portata.
+[Il conto è lo stesso, fatto per una strada che non passa mai da quantità fuori
+portata]{.pt-matita}.
 
 `````
 
@@ -260,8 +260,8 @@ standard IEEE 754 fa restituire $\pm\infty$ a un overflow; un `NaN` nasce da
 $\infty-\infty$, $0\cdot\infty$ o $0/0$, e di norma si propaga attraverso ogni
 operazione aritmetica che lo tocca. L'underflow, invece, è insidioso perché
 *silenzioso*: un prodotto di molte probabilità, $\prod_i p_i$ con $p_i < 1$,
-tende esponenzialmente a zero e sparisce senza segnalazioni. La difesa standard
-è lavorare nel dominio logaritmico, dove i prodotti diventano somme.
+tende esponenzialmente a zero e sparisce senza segnalazioni. [La difesa standard
+è lavorare nel dominio logaritmico, dove i prodotti diventano somme]{.pt-matita}.
 
 `````
 
@@ -287,10 +287,10 @@ esponenziali vanno in overflow, quindi il calcolo non si può eseguire.
 Esiste una scappatoia, perché alla fine si divide. Se moltiplichi tutti e tre
 gli esponenziali per uno stesso numero, sopra e sotto la frazione compare lo
 stesso fattore e le quote non cambiano: è la stessa ragione per cui
-$\tfrac{2}{4}$ e $\tfrac{20}{40}$ sono lo stesso numero. Ora, moltiplicare
+$\tfrac{2}{4}$ e $\tfrac{20}{40}$ sono lo stesso numero. Ora, [moltiplicare
 tutti gli $e^{z}$ per una stessa quantità equivale a sottrarre uno stesso
-numero a tutti i punteggi prima di esponenziare, come prevedono le proprietà
-delle potenze.
+numero a tutti i punteggi prima di esponenziare]{.pt-matita}, come prevedono le
+proprietà delle potenze.
 
 Sottraendo il massimo, $1002$, i punteggi diventano $(-2,\ -1,\ 0)$, e adesso
 gli esponenziali sono tre numeri comodissimi: $e^{-2}=0{,}135$,
@@ -310,8 +310,8 @@ $$
 $$
 
 dove $\mathbf{z}$ è il vettore dei logit e $z_i$ la sua componente $i$-esima.
-Sia $m = \max_j z_j$. Moltiplicando numeratore e denominatore per $e^{-m}$ il
-valore non cambia, ma ogni esponente diventa $\le 0$:
+Sia $m = \max_j z_j$. [Moltiplicando numeratore e denominatore per $e^{-m}$ il
+valore non cambia, ma ogni esponente diventa $\le 0$]{.pt-matita}:
 
 $$
 \text{softmax}(\mathbf{z})_i = \frac{e^{z_i - m}}{\sum_{j} e^{z_j - m}} .
@@ -358,9 +358,9 @@ sbagliate di un chilo in versi opposti possono dare una differenza sotto zero,
 cioè un peso negativo, che è una risposta impossibile.
 
 La via d'uscita esiste. Il capitano sale sulla bilancia da solo, e con una
-pesata sola l'errore torna a un chilo su settanta. In pratica evita di
-calcolare una quantità piccola come differenza di due quantità grandi; quando
-puoi, misura direttamente la grandezza piccola.
+pesata sola l'errore torna a un chilo su settanta. [In pratica evita di
+calcolare una quantità piccola come differenza di due quantità
+grandi]{.pt-matita}; quando puoi, misura direttamente la grandezza piccola.
 
 `````
 
@@ -375,9 +375,9 @@ dare un valore negativo). Per questo le librerie evitano la formula ingenua.
 NumPy, ad esempio, calcola prima la media e poi la media degli scarti
 quadratici, in due passate; quando i dati arrivano in flusso e si può fare una
 passata sola, si usa l'algoritmo di Welford, numericamente stabile. In generale
-conviene riformulare le espressioni per non sottrarre grandezze vicine, perché
-la stessa quantità matematica può perdere molte o poche cifre a seconda di
-*come* la si calcola.
+[conviene riformulare le espressioni per non sottrarre grandezze
+vicine]{.pt-matita}, perché la stessa quantità matematica può perdere molte o
+poche cifre a seconda di *come* la si calcola.
 
 Per quantificare la perdita, supponiamo $\tilde{x}=x(1+\delta_1)$ e
 $\tilde{y}=y(1+\delta_2)$, con $|\delta_i|\le u$; allora
@@ -408,10 +408,10 @@ nella quindicesima o sedicesima cifra significativa; se arriva alle prime
 cifre, serve capire da dove viene.
 
 Il fenomeno si riproduce anche su una macchina sola, cambiando soltanto
-l'ordine in cui si somma, perché l'addizione in virgola mobile non è
-associativa: $(a+b)+c$ e $a+(b+c)$ sono lo stesso numero in matematica e in
-generale due numeri diversi nel computer. Infatti ogni somma parziale viene
-arrotondata, e le somme parziali dei due ordini sono diverse.
+l'ordine in cui si somma, perché [l'addizione in virgola mobile non è
+associativa]{.pt-matita}: $(a+b)+c$ e $a+(b+c)$ sono lo stesso numero in
+matematica e in generale due numeri diversi nel computer. Infatti ogni somma
+parziale viene arrotondata, e le somme parziali dei due ordini sono diverse.
 
 ```python
 import numpy as np
@@ -572,11 +572,12 @@ più di duemila volte tanto ($2{,}9$ diviso $0{,}00125$ fa circa $2\,300$). La
 bilancia e chi misura non c'entrano: è la domanda stessa ad amplificare
 l'errore.
 
-Quando un risultato numerico esce sbagliato, le cause possibili sono due e si
-confondono spesso. Una è che il problema amplifichi gli errori di per sé, e
-allora non c'è programma che tenga; bisogna cambiare domanda. L'altra è che il
-programma sia scritto male e ne introduca di suoi, e allora si riscrive il
-programma (la softmax senza il trucco del massimo è un caso di questo tipo).
+[Quando un risultato numerico esce sbagliato, le cause possibili sono due e si
+confondono spesso]{.pt-matita}. Una è che il problema amplifichi gli errori di
+per sé, e allora non c'è programma che tenga; bisogna cambiare domanda. L'altra
+è che il programma sia scritto male e ne introduca di suoi, e allora si
+riscrive il programma (la softmax senza il trucco del massimo è un caso di
+questo tipo).
 
 La regola «evita di calcolare una quantità piccola come differenza di due
 quantità grandi» funziona nei due modi: se le due quantità sono dati misurati,
@@ -653,9 +654,10 @@ $\kappa(\mathbf{A})\,u$, e per fare di meglio bisogna cambiare problema oppure
 calcolare il residuo in precisione più alta, come fa il raffinamento iterativo
 {cite}`higham2002accuracy`.
 
-In definitiva, condizionamento e stabilità sono due cause indipendenti. Welford
-e il *log-sum-exp* intervengono sull'algoritmo, non sul problema;
-standardizzare i dati interviene sul problema, non sull'algoritmo.
+In definitiva, [condizionamento e stabilità sono due cause
+indipendenti]{.pt-matita}. Welford e il *log-sum-exp* intervengono
+sull'algoritmo, non sul problema; standardizzare i dati interviene sul
+problema, non sull'algoritmo.
 
 `````
 
@@ -693,8 +695,8 @@ scarto tipico, così che sparpagliamenti diversi diventino confrontabili.
 
 Alla fine ogni caratteristica è centrata sullo zero e larga circa uno, e gli
 euro del valore catastale e il numero di stanze sono finalmente sulla stessa
-scala. Di conseguenza la valle diventa molto più tonda e la discesa punta quasi
-dritta al fondo.
+scala. Di conseguenza [la valle diventa molto più tonda e la discesa punta quasi
+dritta al fondo]{.pt-matita}.
 
 Non è una cura completa. Mette tutte le caratteristiche sulla stessa scala, ma
 non cambia il modo in cui si somigliano fra loro: se due di esse crescono e
@@ -717,8 +719,8 @@ Se una feature vale in centinaia di migliaia di euro e un'altra in numero di
 stanze, i loro prodotti dentro la rete stanno su scale lontanissime e la
 superficie della *loss* si allunga in una valle stretta, mal condizionata. La
 discesa del gradiente vi rimbalza da una parete all'altra a zig-zag,
-convergendo molto lentamente. Standardizzare rende le curve di livello molto
-più tonde: il gradiente punta quasi dritto verso il minimo
+convergendo molto lentamente. [Standardizzare rende le curve di livello molto
+più tonde: il gradiente punta quasi dritto verso il minimo]{.pt-matita}
 ({numref}`fig-condizionamento`).
 
 Per misurare l'effetto con il numero di condizionamento, consideriamo un

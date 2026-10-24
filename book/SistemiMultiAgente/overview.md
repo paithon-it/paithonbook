@@ -65,13 +65,13 @@ modelli che contavano i vicini invece di misurarli continuavano a pesare di più
 i vicini e di meno i lontani, e così la distanza in metri rientrava nella
 regola.
 
-I dati di Roma dicono altro. Ogni storno interagisce con un numero circa fisso
-di vicini, sei o sette (la media sui dieci stormi è sei e mezzo), comunque
-siano lontani. Lo si vede confrontando gli stormi fra loro: dentro uno stesso
-raggio il più fitto dei dieci contiene dieci volte gli uccelli del più rado, e
-se la regola fosse in metri, nel primo ogni storno avrebbe dieci volte i
-compagni con cui interagire; invece ne ha sei o sette nell'uno e nell'altro. La
-distanza che governa lo stormo è quindi **topologica**, e la parola qui vuol
+I dati di Roma dicono altro. [Ogni storno interagisce con un numero circa fisso
+di vicini, sei o sette]{.pt-matita} (la media sui dieci stormi è sei e mezzo),
+comunque siano lontani. Lo si vede confrontando gli stormi fra loro: dentro uno
+stesso raggio il più fitto dei dieci contiene dieci volte gli uccelli del più
+rado, e se la regola fosse in metri, nel primo ogni storno avrebbe dieci volte
+i compagni con cui interagire; invece ne ha sei o sette nell'uno e nell'altro.
+La distanza che governa lo stormo è quindi **topologica**, e la parola qui vuol
 dire soltanto questo: conta il numero d'ordine del vicino (il primo, il
 secondo, fino al settimo più vicino), non quanti metri ci sono di mezzo.
 
@@ -177,8 +177,8 @@ vengono riscalate.
 `````
 
 Da qui l'idea portante, che vale ben oltre gli
-uccelli: a parità di individui, il comportamento di un gruppo lo decide la
-regola di interazione. Nelle simulazioni con cui Ballerini e colleghi
+uccelli: [a parità di individui, il comportamento di un gruppo lo decide la
+regola di interazione]{.pt-matita}. Nelle simulazioni con cui Ballerini e colleghi
 accompagnano le misure gli individui sono gli stessi, e cambia soltanto la
 regola con cui ciascuno guarda i vicini: con quella topologica lo stormo
 attaccato da un predatore resta intero nell'esito più probabile, con quella
@@ -250,9 +250,9 @@ risultato è sbagliato lo stesso. Due esempi: la richiesta di partenza si
 deforma passando di mano in mano, e l'ultimo risponde benissimo a una domanda
 diversa da quella iniziale (la *deriva del compito*); oppure qualcuno afferma
 con sicurezza qualcosa di falso e nessuno lo controlla (la *verifica assente o
-sbagliata*, fra i modi di fallire più frequenti). Il difetto sta nella
-conversazione, non nei singoli turni, e catalogarne le forme è un lavoro
-cominciato da poco {cite}`cemri2025why`: la {doc}`sezione sul costo del
+sbagliata*, fra i modi di fallire più frequenti). [Il difetto sta nella
+conversazione, non nei singoli turni]{.pt-matita}, e catalogarne le forme è un
+lavoro cominciato da poco {cite}`cemri2025why`: la {doc}`sezione sul costo del
 coordinamento </SistemiMultiAgente/costo-del-coordinamento>` riprende quel
 catalogo, dove i modi sono quattordici e la famiglia più numerosa non è nessuna
 di queste due.
@@ -276,13 +276,13 @@ più casi da elencare): si fa con foglio e matita, ma per adesso basta il
 senso.
 
 Il conto però vale solo se i tre sbagliano in modo *diverso*. Se hanno studiato
-sugli stessi appunti sbagliati sbagliano insieme, la maggioranza conferma
-l'errore invece di correggerlo e il gruppo ci prende sette volte su dieci come
-ciascuno di loro: tre stipendi per il risultato di uno. Se ciascuno ci prende
-quattro volte su dieci, invece, votare *peggiora* le cose: tre danno il 35%,
-nove il 27%. Il voto amplifica la tendenza di fondo, qualunque sia. (Anche
-questi due numeri escono dallo stesso elenco di casi, rifatto partendo da
-quattro volte su dieci invece che da sette.)
+sugli stessi appunti sbagliati sbagliano insieme, [la maggioranza conferma
+l'errore invece di correggerlo]{.pt-matita} e il gruppo ci prende sette volte
+su dieci come ciascuno di loro: tre stipendi per il risultato di uno. Se
+ciascuno ci prende quattro volte su dieci, invece, votare *peggiora* le cose:
+tre danno il 35%, nove il 27%. Il voto amplifica la tendenza di fondo,
+qualunque sia. (Anche questi due numeri escono dallo stesso elenco di casi,
+rifatto partendo da quattro volte su dieci invece che da sette.)
 
 `````
 
@@ -318,7 +318,7 @@ consenso <protocolli-e-consenso>`.
 L'ipotesi vincolante è l’**indipendenza degli errori**, la più fragile fra
 agenti che condividono il modello di base, i dati di
 pre-addestramento e spesso metà del prompt. Nel limite di correlazione perfetta
-$P_n = p$ per ogni $n$: la maggioranza di $n$ agenti vale un agente,
+$P_n = p$ per ogni $n$: [la maggioranza di $n$ agenti vale un agente]{.pt-matita},
 moltiplicandone il costo. È la lezione dei {doc}`metodi ensemble
 </MachineLearning/alberi-ensemble>`, dove il guadagno non viene dal numero di
 modelli ma dalla loro decorrelazione. Diversità prima di quantità; i modi di
@@ -361,12 +361,12 @@ di come starebbero fidandosi l'uno dell'altro, e nessuno, muovendosi per primo,
 ci guadagna.
 
 Un sistema multi-agente allarga quella struttura: i giocatori possono essere
-dieci, e non sono per forza nemici. Imparare diventa anche più difficile, perché
-un agente solo studia in un mondo fermo mentre dieci agenti studiano in un mondo
-che si muove: il «mondo» di ciascuno contiene gli altri nove, che stanno
-imparando anche loro. È come allenarsi per una gara in cui anche gli avversari
-si allenano: il mese prossimo non basterà più la preparazione che ha vinto il
-mese scorso.
+dieci, e non sono per forza nemici. Imparare diventa anche più difficile,
+perché un agente solo studia in un mondo fermo mentre dieci agenti studiano in
+un mondo che si muove: [il «mondo» di ciascuno contiene gli altri nove, che
+stanno imparando anche loro]{.pt-matita}. È come allenarsi per una gara in cui
+anche gli avversari si allenano: il mese prossimo non basterà più la
+preparazione che ha vinto il mese scorso.
 
 `````
 
@@ -413,11 +413,12 @@ senza peggiorarlo per nessuno. Nel caso cooperativo il profilo ottimo è un
 equilibrio, ma accanto a equilibri peggiori, e scegliere fra loro è un problema
 a sé.
 
-Ne segue che il caso multi-agente non è quello singolo ripetuto $N$ volte:
-per l'agente $i$ l'ambiente comprende le policy $\pi^{-i}$ degli altri, che
-cambiano durante l'addestramento, quindi il processo che $i$ osserva non è
-stazionario e le garanzie di convergenza del Q-learning, che presuppongono un
-MDP fisso, decadono. Lo affronta la stessa sezione su imparare insieme.
+Ne segue che [il caso multi-agente non è quello singolo ripetuto $N$
+volte]{.pt-matita}: per l'agente $i$ l'ambiente comprende le policy $\pi^{-i}$
+degli altri, che cambiano durante l'addestramento, quindi il processo che $i$
+osserva non è stazionario e le garanzie di convergenza del Q-learning, che
+presuppongono un MDP fisso, decadono. Lo affronta la stessa sezione su imparare
+insieme.
 
 `````
 
@@ -431,7 +432,7 @@ regola dei sei o sette vicini non l'ha insegnata nessuno?
 
 - La prima domanda è quella del costo del coordinamento: quando più agenti
   battono un singolo agente ben progettato, numeri alla mano (quante volte si
-  interroga il modello, quanto testo gli si fa rileggere, quanti giri di
+  interroga il modello, quanto testo gli si fa rileggere, quante iterazioni di
   conversazione servono).
 - La seconda ha due metà. Chi parla con chi: le forme che può prendere lo
   schema di chi scrive a chi (un coordinatore con i suoi lavoratori, la catena,

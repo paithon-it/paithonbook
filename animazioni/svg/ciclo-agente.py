@@ -1,20 +1,20 @@
 """Il ciclo dell'agente: quello che gira è sempre uguale, il contesto no.
 
 Una figura ferma di un agente è un cerchio con tre frecce, e nasconde proprio
-la cosa che distingue un agente da una singola chiamata al modello: a ogni giro
-il modello **rilegge più di prima**, perché ogni osservazione resta nel
-contesto. Qui il cerchio gira a sinistra e la colonna di destra si allunga di
-un blocco per giro, che è la chiamata con ciò che ha risposto.
+la cosa che distingue un agente da una singola chiamata al modello: a ogni
+iterazione il modello **rilegge più di prima**, perché ogni osservazione
+resta nel contesto. Qui il cerchio gira a sinistra e la colonna di destra si
+allunga di un blocco per iterazione, che è la chiamata con ciò che ha risposto.
 
 I passi non sono scritti a mano: questo file esegue **l'agente giocattolo del
 capitolo** (lo stesso `llm_finto`, la stessa calcolatrice senza `eval`, lo
 stesso archivio) e disegna la traccia che ne esce. `controlla()` verifica che
 sia quella stampata in `Agenti/agenti-e-tool-use.md`: le osservazioni 2017 e 9,
-tre giri, e la risposta parola per parola. Se un giorno il capitolo cambiasse
+tre iterazioni, e la risposta parola per parola. Se un giorno il capitolo cambiasse
 l'esempio, la figura non si genererebbe più invece di smentirlo in silenzio.
 
 Il disegno fermo è l'ultimo stato, ed è la parte che la divulgazione dimentica:
-il ciclo **finisce**. Al terzo giro il modello non chiama nessuno strumento, e
+il ciclo **finisce**. Alla terza iterazione il modello non chiama nessuno strumento, e
 il ramo di uscita porta alla risposta; il limite (`max_passi = 5`) resta lì a
 vista, perché è l'altro modo in cui un agente si ferma.
 """
@@ -116,7 +116,8 @@ def controlla(passi, esito):
         raise ValueError(f"{NOME}: osservazioni {osservazioni}, il capitolo "
                          f"stampa ['2017', '9']")
     if len(passi) != 3:
-        raise ValueError(f"{NOME}: {len(passi)} giri, il capitolo ne stampa 3")
+        raise ValueError(f"{NOME}: {len(passi)} iterazioni, il capitolo ne "
+                         f"stampa 3")
     atteso = "'Attention Is All You Need' è del 2017: 9 anni fa nel 2026."
     if passi[-1]["argomento"] != atteso:
         raise ValueError(f"{NOME}: la risposta non è quella del capitolo")
@@ -181,7 +182,7 @@ def costruisci() -> Figura:
     passi, esito = esegui_agente(DOMANDA)
     controlla(passi, esito)
 
-    # gli stati dell'animazione: pensa/agisce/osserva per ogni giro, e il
+    # gli stati dell'animazione: pensa/agisce/osserva per ogni iterazione, e il
     # terzo pensa che invece di agire risponde
     stati, blocchi_visti = [], []
     n_blocchi = 1                            # la domanda c'è dall'inizio
@@ -223,7 +224,7 @@ def costruisci() -> Figura:
         '<text class="ttl" x="30" y="40">il ciclo</text>',
         '<text class="lbs" x="30" y="58">pensa, agisce, osserva, e si ricomincia</text>',
         f'<text class="ttl" x="{XB}" y="40">il contesto</text>',
-        f'<text class="lbs" x="{XB}" y="58">si allunga di un blocco a ogni giro</text>',
+        f'<text class="lbs" x="{XB}" y="58">si allunga di un blocco a ogni iterazione</text>',
     ]
 
     # --------------------------------------------------------- le tre caselle
@@ -283,9 +284,14 @@ def costruisci() -> Figura:
         attivi = {j for j in range(n) if giro_di[j] == giro}
         anim.append(keyframes(f"gi{giro}", acceso_su(attivi, n)))
         op = 1 if (n - 1) in attivi else 0
-        corpo.append(f'<text class="giro" x="215" y="180" text-anchor="middle" '
-                     f'opacity="{op}" style="animation:gi{giro} var(--d) infinite">'
-                     f'giro {giro} di {MAX_PASSI}</text>')
+        # su due righe, perché «iterazione 3 di 5» intera non sta fra le due
+        # frecce; due <text> e non due <tspan>, che i rasterizzatori centrano
+        # male con text-anchor="middle"
+        for y, testo in ((172, "iterazione"), (190, f"{giro} di {MAX_PASSI}")):
+            corpo.append(f'<text class="giro" x="212" y="{y}" '
+                         f'text-anchor="middle" opacity="{op}" '
+                         f'style="animation:gi{giro} var(--d) infinite">'
+                         f'{testo}</text>')
 
     # ------------------------------------------------------- l'uscita dal ciclo
     anim.append(keyframes("usc", acceso_su({n - 1}, n)))
@@ -301,12 +307,12 @@ def costruisci() -> Figura:
                  f'{"".join(pezzi)}</g>')
 
     # --------------------------------------------------- la colonna del contesto
-    # un blocco per giro: la chiamata e ciò che ha risposto
+    # un blocco per iterazione: la chiamata e ciò che ha risposto
     blocchi = [("Domanda", spezza(DOMANDA, CAR_BLK), None)]
     for i, p in enumerate(passi):
         if p["osservazione"] is None:
             continue
-        blocchi.append((f"giro {i + 1}",
+        blocchi.append((f"iterazione {i + 1}",
                         [f'Action: {p["azione"]}[{p["argomento"]}]'],
                         f'Observation: {p["osservazione"]}'))
     if len(blocchi) != len(Y_BLK):
@@ -353,15 +359,15 @@ def costruisci() -> Figura:
         attivi = {i for i, v in enumerate(blocchi_visti) if v == b}
         anim.append(keyframes(f"cn{b}", acceso_su(attivi, n)))
         op = 1 if (n - 1) in attivi else 0
-        testo = ("1 blocco, riletto a ogni giro" if b == 1
-                 else f"{b} blocchi, riletti a ogni giro")
+        testo = ("1 blocco, riletto a ogni iterazione" if b == 1
+                 else f"{b} blocchi, riletti a ogni iterazione")
         corpo.append(f'<text class="cnt" x="{XB}" y="{y1 + 26}" opacity="{op}" '
                      f'style="animation:cn{b} var(--d) infinite">{testo}</text>')
 
     # ---------------------------------------------------------------- la coda
     corpo += [
-        f'<text class="note" x="30" y="400">Un ciclo finisce in due modi. Qui al '
-        f'giro {len(passi)}, perché l\'agente ha la risposta;</text>',
+        f'<text class="note" x="30" y="400">Un ciclo finisce in due modi. Qui all\''
+        f'iterazione {len(passi)}, perché l\'agente ha la risposta;</text>',
         f'<text class="note" x="30" y="418">se non l\'avesse, lo fermerebbe il '
         f'limite: max_passi = {MAX_PASSI}.</text>',
     ]
@@ -372,11 +378,12 @@ def costruisci() -> Figura:
             "pensa (Thought), agisce (Action) e osserva (Observation). "
             "L'evidenziazione gira di casella in casella: il modello pensa, "
             "chiama uno strumento, il sistema lo esegue e il risultato torna "
-            "indietro. Al centro un contagiri arriva a giro 3 di 5. Al terzo "
-            "giro il modello non chiama nessuno strumento: un ramo scende fuori "
+            "indietro. Al centro un contatore arriva all'iterazione 3 di 5. Alla "
+            "terza iterazione il modello non chiama nessuno strumento: un ramo "
+            "scende fuori "
             "dal cerchio verso la risposta finale, cioè che il paper è del 2017 "
             "e sono 9 anni fa nel 2026. A destra la colonna del contesto si "
-            "allunga di un blocco a ogni giro: prima la sola domanda, poi la "
+            "allunga di un blocco a ogni iterazione: prima la sola domanda, poi la "
             "ricerca con la sua osservazione 2017, poi il calcolo con la sua "
             "osservazione 9, e una barra verticale accanto cresce insieme a "
             "loro fino a tre blocchi.",

@@ -32,16 +32,16 @@ casella va calcolata per la propria coppia. Si noti che la normalizzazione, cio�
 la divisione per la somma della riga che trasforma i punteggi in pesi, non
 c'entra: la si conserva anche senza tabella, con un secondo accumulatore.
 
-La via d'uscita è cambiare la misura di somiglianza: ne serve una che si
-scomponga in un fattore dipendente solo dalla query e in uno dipendente solo
-dalla chiave, $\phi(\mathbf{q})^\top\phi(\mathbf{k})$. Una misura così si chiama
-*kernel*, come nelle {doc}`SVM </MachineLearning/svm-kernel>`, cioè una
+[La via d'uscita è cambiare la misura di somiglianza]{.pt-matita}: ne serve una
+che si scomponga in un fattore dipendente solo dalla query e in uno dipendente
+solo dalla chiave, $\phi(\mathbf{q})^\top\phi(\mathbf{k})$. Una misura così si
+chiama *kernel*, come nelle {doc}`SVM </MachineLearning/svm-kernel>`, cioè una
 funzione che dà un numero per ogni coppia di vettori. Con il filtro delle
 {doc}`reti convoluzionali </DeepLearning/reti-convoluzionali>` e con il
 {doc}`programma che gira sulla GPU </GPU/kernel-e-cuda>` ha in comune soltanto
 il nome. Con un kernel che si scompone il prodotto fra matrici si può
-ri-associare, e il numero di operazioni scende da $O(n^2 d)$ a
-$O(n d^2)$, con $d$ la dimensione di query e chiavi.
+ri-associare, e il numero di operazioni scende da $O(n^2 d)$ a $O(n d^2)$, con
+$d$ la dimensione di query e chiavi.
 
 `````{tab} Elementare
 
@@ -244,11 +244,11 @@ aggiunge un'altra.
 
 Il secondo è un foglio-registro di dimensione fissa. Non aggiungi scontrini:
 aggiorni le stesse caselle. Quando qualcuno parla, sommi il suo contributo al
-contenuto già scritto, e il foglio resta un foglio, sempre lo stesso, che tu sia
-alla decima o alla decimillesima parola. Per rispondere a una domanda leggi il
-foglio, non rovisti nella pila. Il foglio, però, non ricorda chi ha
-parlato per primo: $2 + 5$ fa $7$ come $5 + 2$, e l'ordine degli interventi
-resta soltanto se qualcuno l'ha scritto dentro quello che dice.
+contenuto già scritto, e [il foglio resta un foglio, sempre lo stesso, che tu
+sia alla decima o alla decimillesima parola]{.pt-matita}. Per rispondere a una
+domanda leggi il foglio, non rovisti nella pila. Il foglio, però, non ricorda
+chi ha parlato per primo: $2 + 5$ fa $7$ come $5 + 2$, e l'ordine degli
+interventi resta soltanto se qualcuno l'ha scritto dentro quello che dice.
 
 L'attenzione lineare tiene questo foglio. Ecco perché la memoria non
 cresce: qualunque sia la lunghezza del testo, il foglio (negli articoli si
@@ -303,12 +303,13 @@ Questa ricorrenza è una RNN, con due differenze rispetto alle celle dei
 {doc}`modelli di sequenza
 </NaturalLanguageProcessing/modelli-sequenza>`. La prima: lo stato non è un
 vettore $\mathbf{h}_t$ ma una matrice $\mathbf{S}_t$ (una memoria molto più
-capiente). La seconda, decisiva: la transizione di stato è lineare, anzi è
-l'identità ($\mathbf{S}_{t-1}$ passa intatto, gli si somma soltanto un termine
-nuovo). Non c'è nessuna $\tanh$ o non-linearità *sullo stato*, come invece in
-$\mathbf{h}_t = \tanh(\mathbf{W}_{hh} \mathbf{h}_{t-1} + \dots)$.
-L'aggiornamento ha costo $O(d^2)$ per token e la memoria è costante: la matrice $d
-\times d$ non cambia dimensione, sia al decimo sia al milionesimo token.
+capiente). La seconda, decisiva: [la transizione di stato è lineare, anzi è
+l'identità]{.pt-matita} ($\mathbf{S}_{t-1}$ passa intatto, gli si somma
+soltanto un termine nuovo). Non c'è nessuna $\tanh$ o non-linearità *sullo
+stato*, come invece in $\mathbf{h}_t = \tanh(\mathbf{W}_{hh} \mathbf{h}_{t-1} +
+\dots)$. L'aggiornamento ha costo $O(d^2)$ per token e la memoria è costante:
+la matrice $d \times d$ non cambia dimensione, sia al decimo sia al milionesimo
+token.
 
 È il senso, volutamente ironico, del titolo del paper di Katharopoulos et al.,
 *Transformers are RNNs* {cite}`katharopoulos2020transformers`: sotto una certa
@@ -349,11 +350,11 @@ Finora lo stato si è riempito un token alla volta. Quando il testo è già tutt
 disponibile, come in addestramento, lo stesso risultato si ottiene anche in
 parallelo, ripartendo il lavoro fra molte unità di calcolo: in aritmetica
 esatta le due forme calcolano la stessa funzione, e in precisione finita
-differiscono per un arrotondamento. Questa doppia scrittura, parallela e
-ricorrente, è la proprietà che interessa in tutta la famiglia, e ritorna, con
-altri strumenti, nel
-{doc}`capitolo sugli State Space Model </StateSpaceModel/overview>`, i modelli
-che descrivono una sequenza come un sistema che evolve nel tempo.
+differiscono per un arrotondamento. [Questa doppia scrittura, parallela e
+ricorrente, è la proprietà che interessa in tutta la famiglia]{.pt-matita}, e
+ritorna, con altri strumenti, nel {doc}`capitolo sugli State Space
+Model </StateSpaceModel/overview>`, i modelli che descrivono una sequenza come
+un sistema che evolve nel tempo.
 
 ```{figure} ../figures/stato-ricorrente.gif
 :name: fig-stato-ricorrente
@@ -549,8 +550,8 @@ L'aggiornamento $\mathbf{S}_t = \mathbf{S}_{t-1} +
 \mathbf{v}_t\,\phi(\mathbf{k}_t)^\top$ è puramente additivo: non cancella e non
 corregge nulla di quanto è già scritto. Ogni token lascia il proprio
 contributo, sommato a quelli dei precedenti, e il contributo resta per sempre,
-perché la transizione è l'identità. Una memoria di capacità finita, a forza di
-somme, si satura.
+perché la transizione è l'identità. [Una memoria di capacità finita, a forza di
+somme, si satura]{.pt-matita}.
 
 `````{tab} Elementare
 

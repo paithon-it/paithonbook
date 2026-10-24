@@ -105,8 +105,9 @@ stavano. Sul foglio però sono due riquadri lontani fra loro, e sotto a
 ciascuno ricominci da capo a disegnare tutto quello che viene dopo.
 
 Le situazioni diverse in cui il rompicapo può trovarsi sono tante, ma sono un
-numero fisso. I riquadri sul foglio no: ogni situazione ne prende uno per ogni
-strada che ci arriva, e di strade se ne possono inventare quante si vuole.
+numero fisso. I riquadri sul foglio no: [ogni situazione ne prende uno per ogni
+strada che ci arriva]{.pt-matita}, e di strade se ne possono inventare quante
+si vuole.
 
 Quel disegno è l’albero, e non lo si costruisce mai tutto. Se ne costruisce un
 pezzetto, si guarda, si decide da che parte continuare.
@@ -141,9 +142,9 @@ stato si può raggiungere per strade diverse, e la stessa posizione può
 ripresentarsi (è una trasposizione, approfondita nella {doc}`sezione sui giochi
 </Ricerca/giocare-contro-qualcuno>`). L’albero di ricerca è invece
 l’oggetto che l’algoritmo srotola. Un suo **nodo** contiene uno stato, il nodo
-da cui viene e il costo $g(n)$ del cammino fin lì, e due nodi
-diversi possono contenere lo stesso stato, uno per ogni cammino che ci arriva;
-se nello spazio ci sono cicli, l’albero è infinito.
+da cui viene e il costo $g(n)$ del cammino fin lì, e due nodi diversi possono
+contenere lo stesso stato, [uno per ogni cammino che ci arriva]{.pt-matita}; se
+nello spazio ci sono cicli, l’albero è infinito.
 
 Anche il grafo cresce in modo esponenziale con la dimensione del problema. Il
 rompicapo delle otto tessere, ad esempio, ha 181.440 stati raggiungibili,
@@ -190,11 +191,11 @@ fisico: se ogni atomo dell’universo fosse un computer che esamina una
 posizione al secondo dal Big Bang a oggi, l’albero degli scacchi non sarebbe
 stato sfiorato.
 
-Il problema, allora, è guardare pochissimo di quell’albero e decidere bene lo
-stesso. Le strade sono due. La prima è guardare nel posto giusto, e per farlo
-serve una stima di quanto manca alla fine, quella che si chiama euristica. La
-seconda è smettere di guardare dove non serve, e per farlo basta accorgersi che
-un ramo è già peggio di uno che si conosce, cioè potarlo.
+[Il problema, allora, è guardare pochissimo di quell’albero e decidere bene lo
+stesso]{.pt-matita}. Le strade sono due. La prima è guardare nel posto giusto,
+e per farlo serve una stima di quanto manca alla fine, quella che si chiama
+euristica. La seconda è smettere di guardare dove non serve, e per farlo basta
+accorgersi che un ramo è già peggio di uno che si conosce, cioè potarlo.
 
 ```{figure} ../figures/albero-dei-futuri.svg
 :name: fig-albero-futuri

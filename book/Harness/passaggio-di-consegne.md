@@ -6,8 +6,9 @@ ingegnere arriva senza alcun ricordo di quello che è successo nel turno prima
 {cite}`young2025harnesses`. È la condizione di un agente su un compito lungo.
 La sessione finisce quando la finestra di contesto è piena, o quando il lavoro
 di quel turno è concluso, e la sessione dopo riparte con la finestra vuota. In
-mezzo passa soltanto ciò che è stato scritto, e il modo in cui lo si scrive
-decide se il turno successivo comincia a lavorare o comincia a indovinare.
+mezzo passa soltanto ciò che è stato scritto, e [il modo in cui lo si scrive
+decide se il turno successivo comincia a lavorare o comincia a
+indovinare]{.pt-matita}.
 
 Il {doc}`primo turno <il-primo-turno>` ha preparato le carte: l'ambiente che
 parte, l'elenco delle funzionalità tutte da fare, il registro aperto, il primo
@@ -55,8 +56,8 @@ finisce prima resta aperto quello solo, e il registro dice quale.
 
 Perché la difesa funzioni, la funzionalità deve stare in una sessione, che è la
 misura chiesta all'elenco dal primo turno. Il lavoro diventa così una sequenza
-di unità che si chiudono, e un'unità chiusa non ha bisogno di essere ricordata:
-basta leggerne il risultato.
+di unità che si chiudono, e [un'unità chiusa non ha bisogno di essere
+ricordata]{.pt-matita}: basta leggerne il risultato.
 
 `````{tab} Elementare
 
@@ -171,10 +172,10 @@ ci si è arrivati: ogni salvataggio con il suo messaggio, e la possibilità di
 tornare a uno stato in cui tutto funzionava.
 
 Una quarta cosa si perde facilmente se nessuno la scrive, ed è il **perché**.
-Il codice sopravvive alla sessione, la ragione di una scelta no: se un'opzione
-è stata scartata per un buon motivo e il motivo non è annotato, la sessione
-dopo vede soltanto codice che le pare migliorabile, e lo «migliora» rifacendo
-l'errore che quella scelta evitava.
+[Il codice sopravvive alla sessione, la ragione di una scelta no]{.pt-matita}:
+se un'opzione è stata scartata per un buon motivo e il motivo non è annotato,
+la sessione dopo vede soltanto codice che le pare migliorabile, e lo «migliora»
+rifacendo l'errore che quella scelta evitava.
 
 Il rimedio costa poco: un file delle decisioni, una riga per decisione con la
 ragione e l'alternativa scartata, che nello sviluppo del software si chiama
@@ -278,70 +279,70 @@ componente dell'harness, e come ogni componente dipende dal modello che
 serve.
 
 C'è poi un conto che vale per qualunque modello, ed è quello dei token. Un
-modello linguistico non ricorda niente fra una chiamata e l'altra: a ogni giro
-del ciclo riceve di nuovo tutto il contesto, istruzioni e cronologia, e lo
-rilegge da capo. Se la cronologia cresce di una quantità fissa a ogni giro,
-ogni giro costa un po' più del precedente, e il costo di una sessione cresce
-con il quadrato della sua lunghezza: una sessione lunga il doppio legge quasi
-quattro volte tanto.
+modello linguistico non ricorda niente fra una chiamata e l'altra: a ogni
+iterazione del ciclo riceve di nuovo tutto il contesto, istruzioni e
+cronologia, e lo rilegge da capo. Se la cronologia cresce di una quantità fissa
+a ogni iterazione, ogni iterazione costa un po' più della precedente, e il
+costo di una sessione cresce con il quadrato della sua lunghezza: una sessione
+lunga il doppio legge quasi quattro volte tanto.
 
-Un programma fa il conto su numeri tondi, scelti per far
-vedere la forma del conto e non misurati su un sistema vero: un compito di
-sessanta giri, istruzioni fisse di cinquemila token, tremila token in più a
-ogni giro, una finestra di centomila. Confronta quattro strategie: nessuna; la
+Un programma fa il conto su numeri tondi, scelti per far vedere la forma del
+conto e non misurati su un sistema vero: un compito di sessanta iterazioni,
+istruzioni fisse di cinquemila token, tremila token in più a ogni iterazione,
+una finestra di centomila. Confronta quattro strategie: nessuna; la
 compattazione quando il contesto supera l'ottanta per cento della finestra, e
 poi quando supera il cinquanta, con un riassunto di quattromila token e
 contando anche la chiamata che lo scrive; la ripartenza a ogni funzionalità
-finita, ogni quindici giri, con duemila token da leggere all'inizio di ogni
-sessione. Per ciascuna stampa il picco, cioè il contesto più grande letto in
-una volta, e i token letti in tutto, sommati giro per giro; poi il costo di due
-funzionalità fatte nella stessa sessione.
+finita, ogni quindici iterazioni, con duemila token da leggere all'inizio di
+ogni sessione. Per ciascuna stampa il picco, cioè il contesto più grande letto
+in una volta, e i token letti in tutto, sommati iterazione per iterazione; poi
+il costo di due funzionalità fatte nella stessa sessione.
 
 ```python
 import math
 
-# Un modello a numeri tondi, non una misura: a ogni giro il modello rilegge
-# tutto il contesto, e la cronologia cresce della sua risposta e dell'esito
-# di uno strumento.
+# Un modello a numeri tondi, non una misura: a ogni iterazione il modello
+# rilegge tutto il contesto, e la cronologia cresce della sua risposta e
+# dell'esito di uno strumento.
 FINESTRA = 100_000      # token che il modello legge al massimo in una volta
-FISSO = 5_000           # istruzioni e catalogo degli strumenti, a ogni giro
-GIRO = 3_000            # quanto cresce la cronologia a ogni giro
-GIRI = 60               # la lunghezza del compito
+FISSO = 5_000           # istruzioni e strumenti, riletti a ogni iterazione
+CRESCITA = 3_000        # quanto cresce la cronologia a ogni iterazione
+ITERAZIONI = 60         # la lunghezza del compito
 RIASSUNTO = 4_000       # la cronologia compattata diventa un riassunto
 REGISTRO = 2_000        # registro, voci aperte dell'elenco, storia recente
-PER_SESSIONE = 15       # giri di una sessione: una funzionalità
+PER_SESSIONE = 15       # iterazioni di una sessione: una funzionalità
 
 def senza_niente():
     letti, storia, contesti = 0, 0, []
-    for t in range(GIRI):
+    for t in range(ITERAZIONI):
         contesto = FISSO + storia
         if contesto > FINESTRA:          # non ci sta più: il lavoro si ferma
             break
         contesti.append(contesto)
         letti += contesto
-        storia += GIRO
+        storia += CRESCITA
     return letti, contesti
 
 def con_compattazione(soglia):
     letti, storia, contesti, volte, per_riassunti = 0, 0, [], 0, 0
-    for t in range(GIRI):
+    for t in range(ITERAZIONI):
         if FISSO + storia > soglia * FINESTRA:
             per_riassunti += FISSO + storia   # la chiamata che lo scrive
             storia, volte = RIASSUNTO, volte + 1
         contesto = FISSO + storia
         contesti.append(contesto)
         letti += contesto
-        storia += GIRO
+        storia += CRESCITA
     return letti + per_riassunti, contesti, volte, per_riassunti
 
-def con_ripartenza(giri=GIRI, per_sessione=PER_SESSIONE):
+def con_ripartenza(iterazioni=ITERAZIONI, per_sessione=PER_SESSIONE):
     letti, contesti = 0, []
-    for t in range(giri):
-        dentro = t % per_sessione        # giri già fatti in questa sessione
-        contesto = FISSO + REGISTRO + dentro * GIRO
+    for t in range(iterazioni):
+        dentro = t % per_sessione        # iterazioni già fatte nella sessione
+        contesto = FISSO + REGISTRO + dentro * CRESCITA
         contesti.append(contesto)
         letti += contesto
-    return letti, contesti, math.ceil(giri / per_sessione)
+    return letti, contesti, math.ceil(iterazioni / per_sessione)
 
 def it(n):                               # 1648000 -> 1.648.000
     return f"{n:,}".replace(",", ".")
@@ -351,15 +352,16 @@ b, cb, volte, _ = con_compattazione(0.8)
 b5, cb5, volte5, scrivere5 = con_compattazione(0.5)
 c, cc, sessioni = con_ripartenza()
 meta = len(ca) // 2
-print(f"senza niente: si ferma dopo {len(ca)} giri di {GIRI}, "
-      f"letti {it(a)} ({it(sum(ca[:meta]))} nei primi {meta})")
+print(f"senza niente: si ferma dopo {len(ca)} iterazioni "
+      f"di {ITERAZIONI}, "
+      f"letti {it(a)} ({it(sum(ca[:meta]))} nelle prime {meta})")
 print(f"compattazione all'80%: {volte} riassunti, picco {it(max(cb))}, "
       f"letti {it(b)}")
 print(f"compattazione al 50%: {volte5} riassunti, picco {it(max(cb5))}, "
       f"letti {it(b5)} ({it(scrivere5)} per scriverli)")
 print(f"ripartenza: {sessioni} sessioni, picco {it(max(cc))}, letti {it(c)}")
-print(f"letti per giro, in media: {it(b // GIRI)}, {it(b5 // GIRI)}, "
-      f"{it(c // GIRI)}")
+print(f"letti per iterazione, in media: {it(b // ITERAZIONI)}, "
+      f"{it(b5 // ITERAZIONI)}, {it(c // ITERAZIONI)}")
 
 # Due voci nella stessa sessione, contro due sessioni da una voce.
 insieme = con_ripartenza(2 * PER_SESSIONE, 2 * PER_SESSIONE)[0]
@@ -368,43 +370,42 @@ print(f"due voci: {it(insieme)} in una sessione, {it(separate)} in due")
 ```
 
 ```text
-senza niente: si ferma dopo 32 giri di 60, letti 1.648.000 (440.000 nei primi 16)
+senza niente: si ferma dopo 32 iterazioni di 60, letti 1.648.000 (440.000 nelle prime 16)
 compattazione all'80%: 2 riassunti, picco 80.000, letti 2.538.000
 compattazione al 50%: 4 riassunti, picco 50.000, letti 1.864.000 (206.000 per scriverli)
 ripartenza: 4 sessioni, picco 49.000, letti 1.680.000
-letti per giro, in media: 42.300, 31.066, 28.000
+letti per iterazione, in media: 42.300, 31.066, 28.000
 due voci: 1.515.000 in una sessione, 840.000 in due
 ```
 
-Senza nessuna strategia il lavoro si ferma dopo trentadue giri, perché il
-trentatreesimo non entra più nella finestra, e a quel punto il modello ha già
-letto più di un milione e mezzo di token, quasi quattro volte quelli dei primi
-sedici giri. La compattazione all'ottanta per cento arriva in fondo, ma lascia
-risalire il contesto fino alla soglia prima di ogni riassunto: legge in media
-più di quarantamila token per giro, con punte di ottantamila, e sui contesti
-lunghi la qualità cala, come la {doc}`sezione sul contesto come interfaccia
-</Agenti/context-engineering>` ha già mostrato. La ripartenza legge circa un
-terzo in meno e non supera la metà della finestra.
+Senza nessuna strategia il lavoro si ferma dopo trentadue iterazioni, perché la
+trentatreesima non entra più nella finestra, e a quel punto il modello ha già
+letto più di un milione e mezzo di token, quasi quattro volte quelli delle prime
+sedici iterazioni. La compattazione all'ottanta per cento arriva in fondo, ma
+lascia risalire il contesto fino alla soglia prima di ogni riassunto: legge in
+media più di quarantamila token per iterazione, con punte di ottantamila, e sui
+contesti lunghi la qualità cala, come la {doc}`sezione sul contesto come
+interfaccia </Agenti/context-engineering>` ha già mostrato. La ripartenza
+legge circa un terzo in meno e non supera la metà della finestra.
 
-A decidere il confronto,
-però, è la frequenza del taglio più che la strategia: la compattazione al
-cinquanta per cento, che taglia più o meno ogni quindici giri come la
-ripartenza, legge poco più di lei, e la differenza sta tutta nelle chiamate che
-scrivono i riassunti. Due funzionalità nella stessa sessione, infine, leggono
-quasi il doppio di due sessioni da una funzionalità, perché la seconda si fa su
-un contesto già pieno della prima: è la seconda ragione del limite di una
-funzionalità per turno.
+A decidere il confronto, però, [è la frequenza del taglio più che la
+strategia]{.pt-matita}: la compattazione al cinquanta per cento, che taglia più
+o meno ogni quindici iterazioni come la ripartenza, legge poco più di lei, e la
+differenza sta tutta nelle chiamate che scrivono i riassunti. Due funzionalità
+nella stessa sessione, infine, leggono quasi il doppio di due sessioni da una
+funzionalità, perché la seconda si fa su un contesto già pieno della prima: è
+la seconda ragione del limite di una funzionalità per turno.
 
 Che cosa decida fra compattare e ripartire, allora, non sta in questi numeri:
 è la qualità di ciò che passa oltre il taglio, ed è il modello. La
-{numref}`fig-harness-turni` mostra giro dopo giro tre delle strategie.
+{numref}`fig-harness-turni` mostra iterazione dopo iterazione tre delle strategie.
 
 ```{figure} ../figures/harness-turni.svg
 :name: fig-harness-turni
-:alt: "Tre corsie, una per strategia, con i giri del compito in orizzontale e l'occupazione della finestra in verticale. Nella prima, senza strategie, la linea sale dritta fino al tetto della finestra e si interrompe dopo 32 giri, dopo aver letto 1.648.000 token. Nella seconda, con la compattazione all'ottanta per cento, la linea sale fino alla soglia, crolla al riassunto e risale, 2 volte, per 2.538.000 token letti in tutto, compresi quelli riletti per scrivere i riassunti. Nella terza, con la ripartenza a ogni funzionalità, la linea sale e torna in basso a ogni nuova sessione, 4 denti di sega che restano sotto la linea della metà della finestra, per 1.680.000 token letti."
+:alt: "Tre corsie, una per strategia, con le iterazioni del compito in orizzontale e l'occupazione della finestra in verticale. Nella prima, senza strategie, la linea sale dritta fino al tetto della finestra e si interrompe dopo 32 iterazioni, dopo aver letto 1.648.000 token. Nella seconda, con la compattazione all'ottanta per cento, la linea sale fino alla soglia, crolla al riassunto e risale, 2 volte, per 2.538.000 token letti in tutto, compresi quelli riletti per scrivere i riassunti. Nella terza, con la ripartenza a ogni funzionalità, la linea sale e torna in basso a ogni nuova sessione, 4 denti di sega che restano sotto la linea della metà della finestra, per 1.680.000 token letti."
 :width: 95%
 
-L'occupazione della finestra giro dopo giro, senza strategie, con la
+L'occupazione della finestra a ogni iterazione, senza strategie, con la
 compattazione all'ottanta per cento e con la ripartenza a ogni funzionalità:
 la linea che sale dritta e si ferma, quella che risale fino alla soglia dopo
 ogni riassunto, e i denti di sega delle sessioni che ripartono dal registro.
@@ -456,24 +457,24 @@ nuovo. Altri non ci fanno caso, e con loro basta sgomberare quando serve.
 `````{tab} Superiore
 
 Un modello autoregressivo non conserva stato fra una chiamata e l'altra: il
-ciclo gli rimanda a ogni giro il contesto intero, e il costo di un giro, in
-token letti, è la lunghezza di quel contesto. Sia $\phi$ il contesto fisso
-(istruzioni, catalogo), $d$ la crescita della cronologia per giro e $W$ la
-finestra. Senza intervento il contesto al giro $t$, contato da zero, è
-$C_t = \phi + t d$, e i token letti in $T$ giri sono
+ciclo gli rimanda a ogni iterazione il contesto intero, e il costo di
+un'iterazione, in token letti, è la lunghezza di quel contesto. Sia $\phi$ il
+contesto fisso (istruzioni, catalogo), $d$ la crescita della cronologia per
+iterazione e $W$ la finestra. Senza intervento il contesto all'iterazione $t$,
+contato da zero, è $C_t = \phi + t d$, e i token letti in $T$ iterazioni sono
 
 $$
 L(T) = \sum_{t=0}^{T-1} (\phi + t d) = T \phi + d\,\frac{T(T-1)}{2},
 $$
 
 quadratici in $T$; il lavoro si interrompe al primo $t$ con $\phi + t d > W$,
-cioè dopo $\lfloor (W - \phi)/d \rfloor + 1$ giri, che con i valori del
+cioè dopo $\lfloor (W - \phi)/d \rfloor + 1$ iterazioni, che con i valori del
 programma sono $32$.
 
 Compattazione e ripartenza tagliano il contesto e ne portano oltre il taglio
 una versione compressa: la compattazione un riassunto di $s$ token, quando il
 contesto supererebbe la frazione $\sigma$ della finestra; la ripartenza un
-registro di $r$ token, ogni $g$ giri. Su un ciclo fra due tagli il contesto
+registro di $r$ token, ogni $g$ iterazioni. Su un ciclo fra due tagli il contesto
 medio è
 
 $$
@@ -485,7 +486,7 @@ $$
 
 Con $\phi = 5000$, $d = 3000$, $r = 2000$ e $g = 15$ la ripartenza dà
 $\bar{C}_{\text{rip}} = 28.000$; con $s = 4000$ la compattazione ha cicli di
-circa ventiquattro giri per $\sigma = 0{,}8$ e di circa quattordici per
+circa ventiquattro iterazioni per $\sigma = 0{,}8$ e di circa quattordici per
 $\sigma = 0{,}5$. A parità di lunghezza del ciclo le due formule differiscono
 soltanto per $r - s$, e alla compattazione si aggiunge la chiamata che scrive
 il riassunto, che rilegge il contesto intero, circa $\sigma W$ token per
@@ -493,16 +494,16 @@ taglio: il costo lo fissa la frequenza del taglio, non il nome della strategia.
 
 Il conto poggia sull'ipotesi che $r$ sia costante. In realtà $r$ è ciò che la
 sessione legge all'avvio, e cresce: il registro si allunga di sessione in
-sessione, e un elenco di duecento voci letto per intero vale decine di
-migliaia di token. Con $r$ di quell'ordine la ripartenza costa per giro più
-della compattazione, e se $r$ cresce linearmente con il numero di sessioni il
-termine quadratico ricompare, sulle sessioni invece che sui giri. Un avvio ben
+sessione, e un elenco di duecento voci letto per intero vale decine di migliaia
+di token. Con $r$ di quell'ordine la ripartenza costa per iterazione più della
+compattazione, e se $r$ cresce linearmente con il numero di sessioni il termine
+quadratico ricompare, sulle sessioni invece che sulle iterazioni. Un avvio ben
 fatto legge dell'elenco soltanto le voci aperte in testa, e del registro una
 versione potata; e potare il registro è a sua volta una compattazione, fatta al
 confine di un'unità invece che a metà lavoro.
 
 Lo stesso conto dà la seconda giustificazione del limite al lavoro in corso.
-Con $L$ calcolata sul contesto fisso $\phi + r$, $m$ voci di $g$ giri in una
+Con $L$ calcolata sul contesto fisso $\phi + r$, $m$ voci di $g$ iterazioni in una
 sessione sola costano, rispetto a $m$ sessioni da una voce,
 
 $$

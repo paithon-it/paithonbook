@@ -33,10 +33,10 @@ La matrice di confusione è questa tabella: quante volte il
 modello ha azzeccato (VP e VN) e, soprattutto, *in che modo* ha sbagliato
 (falso allarme o incendio mancato). Non è mai indifferente quale dei due.
 
-Da questi quattro numeri si ricava tutto il resto. Il primo e più ovvio è
-l’accuratezza: la quota di volte in cui il modello ha risposto giusto, cioè i
-due casi buoni (VP e VN) divisi per il totale delle risposte. Ad esempio, su
-cento allarmi novantanove giusti danno un'accuratezza del 99%.
+[Da questi quattro numeri si ricava tutto il resto]{.pt-matita}. Il primo e più
+ovvio è l’accuratezza: la quota di volte in cui il modello ha risposto giusto,
+cioè i due casi buoni (VP e VN) divisi per il totale delle risposte. Ad
+esempio, su cento allarmi novantanove giusti danno un'accuratezza del 99%.
 
 Il calcolo vale anche quando le risposte in gioco sono più di due (silenzio,
 fumo di padella, incendio vero). La tabellina cresce, ma l'accuratezza resta le
@@ -50,8 +50,9 @@ buono a torto.
 Per un problema binario con classe *positiva* e *negativa*, ogni predizione
 cade in una delle quattro celle: $\text{VP}$, $\text{FP}$, $\text{FN}$,
 $\text{VN}$ (con $m = \text{VP}+\text{FP}+\text{FN}+\text{VN}$ esempi totali).
-Da questi quattro numeri si ricava ogni metrica di classificazione. La prima,
-l’accuratezza, è semplicemente la frazione di predizioni corrette:
+[Da questi quattro numeri si ricava ogni metrica di
+classificazione]{.pt-matita}. La prima, l’accuratezza, è semplicemente la
+frazione di predizioni corrette:
 
 $$
 \text{accuratezza} = \frac{\text{VP}+\text{VN}}{\text{VP}+\text{FP}+\text{FN}+\text{VN}} .
@@ -91,10 +92,10 @@ risposte giuste, fuori gli errori.
 Consideriamo di nuovo il modello che dice sempre «sano», su 100 pazienti con 99
 sani e 1 malato. Ha $\text{VN}=99$, $\text{FN}=1$ e $\text{VP}=\text{FP}=0$,
 cioè un'accuratezza del 99% e nessun malato trovato. In generale, quando le
-classi sono sbilanciate (una molto più frequente dell'altra), l'accuratezza
-premia chi predice sempre la classe maggioritaria, perché conta il caso raro
-per la sua frequenza, un centesimo del totale, anche quando è l'unico che
-interessa. Servono quindi metriche che guardino separatamente i due tipi di
+classi sono sbilanciate (una molto più frequente dell'altra), [l'accuratezza
+premia chi predice sempre la classe maggioritaria]{.pt-matita}, perché conta il
+caso raro per la sua frequenza, un centesimo del totale, anche quando è l'unico
+che interessa. Servono quindi metriche che guardino separatamente i due tipi di
 errore.
 
 ## Precision e recall: due domande diverse
@@ -118,14 +119,14 @@ opposto, e ci azzecca quasi sempre, mentre parecchi malati escono
 dall'ambulatorio senza che nessuno si sia accorto di niente. Sono i due piatti
 di una bilancia, e a spostarla basta un numero.
 
-La **F1** è il voto unico che tiene conto di tutti e due i piatti, e resta alto
-solo quando lo sono entrambi. Prendiamo un filtro prudente, che azzecca nove
-volte su dieci quando cestina ma di spam ne pesca solo quattro su dieci, cioè
-precision $0{,}9$ e recall $0{,}4$. La sua F1 vale $0{,}55$ (due volte il
-prodotto diviso la somma: $0{,}72$ diviso $1{,}3$). Si noti che non è $0{,}65$,
-la media dei due, ma un valore molto più vicino al piatto peggiore. Se la
-recall crollasse a $0{,}1$, la F1 crollerebbe con lei anche con la precision al
-massimo.
+La **F1** è il voto unico che tiene conto di tutti e due i piatti, e [resta
+alto solo quando lo sono entrambi]{.pt-matita}. Prendiamo un filtro prudente,
+che azzecca nove volte su dieci quando cestina ma di spam ne pesca solo quattro
+su dieci, cioè precision $0{,}9$ e recall $0{,}4$. La sua F1 vale $0{,}55$ (due
+volte il prodotto diviso la somma: $0{,}72$ diviso $1{,}3$). Si noti che non è
+$0{,}65$, la media dei due, ma un valore molto più vicino al piatto peggiore.
+Se la recall crollasse a $0{,}1$, la F1 crollerebbe con lei anche con la
+precision al massimo.
 
 Il voto si può anche sbilanciare apposta, dichiarando quante volte un malato
 mancato pesa più di un falso allarme. In questo modo premia chi non se ne
@@ -166,10 +167,10 @@ $$
 F_1 = 2\cdot\frac{\text{precision}\cdot\text{recall}}{\text{precision}+\text{recall}} .
 $$
 
-La media armonica, a differenza di quella aritmetica, resta bassa se anche solo
-uno dei due valori è basso. In altri termini, non basta eccellere in una per
-avere una buona $F_1$. Quando i due errori non hanno lo stesso costo si usa la
-versione generale, che sposta il peso da una parte:
+[La media armonica, a differenza di quella aritmetica, resta bassa se anche
+solo uno dei due valori è basso]{.pt-matita}. In altri termini, non basta
+eccellere in una per avere una buona $F_1$. Quando i due errori non hanno lo
+stesso costo si usa la versione generale, che sposta il peso da una parte:
 
 $$
 F_\beta = (1+\beta^2)\,\frac{\text{precision}\cdot\text{recall}}
@@ -264,8 +265,9 @@ loro media è 65 su 36, e rovesciata di nuovo dà 36 su 65.
 In generale, con lo stesso numero sopra, la media armonica è la frazione che
 sotto ha la media dei due numeri di sotto. Nel filtro prudente 36 su 65 è 72 su
 130, gli spam presi contati due volte e divisi per sé stessi più tutti gli
-errori, i 4 falsi allarmi e i 54 spam mancati. In definitiva, la F1 è un
-calcolo unico sugli stessi casi, e non una media di due voti fatta dopo.
+errori, i 4 falsi allarmi e i 54 spam mancati. In definitiva, [la F1 è un
+calcolo unico sugli stessi casi, e non una media di due voti fatta
+dopo]{.pt-matita}.
 
 `````
 
@@ -305,9 +307,9 @@ $R = 0{,}05$ vale $0{,}475$ contro una $F_1$ di $0{,}095$.
 
 La ragione per scegliere $H$ sta nei conteggi. Precision e recall sono
 $\mathrm{VP}/(\mathrm{VP}+\mathrm{FP})$ e
-$\mathrm{VP}/(\mathrm{VP}+\mathrm{FN})$, con lo stesso numeratore, e la media
+$\mathrm{VP}/(\mathrm{VP}+\mathrm{FN})$, con lo stesso numeratore, e [la media
 armonica di due rapporti con lo stesso numeratore è il rapporto con la media
-aritmetica dei denominatori:
+aritmetica dei denominatori]{.pt-matita}:
 
 $$
 F_1 = \frac{2\,\mathrm{VP}}{2\,\mathrm{VP} + \mathrm{FP} + \mathrm{FN}} .
@@ -443,8 +445,9 @@ $0{,}2$, letto al contrario, ne vale $0{,}8$).
 
 C'è un secondo modo di leggere quel numero, più maneggevole: pesca a caso un
 malato e a caso un sano, e guarda a quale dei due il modello ha dato il
-sospetto più alto. L'AUC è la quota di coppie in cui vince il malato, con una
-regola in più per i pari merito, che valgono mezza vittoria.
+sospetto più alto. [L'AUC è la quota di coppie in cui vince il
+malato]{.pt-matita}, con una regola in più per i pari merito, che valgono mezza
+vittoria.
 
 I pari merito non sono una rarità: un modello che risponde soltanto «sì» o
 «no», senza sfumature, ne produce di continuo. Ad esempio, uno che segnala il
@@ -467,8 +470,8 @@ $$
 $$
 
 L’AUC (*Area Under the Curve*) è l'area sottesa, in $[0,1]$. Ha una lettura
-probabilistica: è la probabilità che il modello assegni a un positivo
-scelto a caso uno score più alto che a un negativo scelto a caso, contando
+probabilistica: [è la probabilità che il modello assegni a un positivo scelto a
+caso uno score più alto che a un negativo scelto a caso]{.pt-matita}, contando
 mezzo punto quando i due score coincidono:
 
 $$
@@ -586,11 +589,12 @@ ne può spuntare uno di 43, con gli altri valori spostati della stessa frazione
 del tragitto (si dice *interpolare*). L’*undersampling* fa il contrario: scarta
 operazioni della classe frequente, e butta via informazione.
 
-Le frodi fabbricate si aggiungono dopo aver messo da parte le operazioni con cui
-si darà il voto, mai prima. Altrimenti le copie di una stessa frode finiscono
-metà fra gli esercizi e metà fra le domande d'esame, e all'esame il modello
-ritrova facce già viste e prende un voto che non ha meritato. L'errore non
-lascia tracce, perché i conti tornano, e tornano troppo belli.
+[Le frodi fabbricate si aggiungono dopo aver messo da parte le operazioni con
+cui si darà il voto, mai prima]{.pt-matita}. Altrimenti le copie di una stessa
+frode finiscono metà fra gli esercizi e metà fra le domande d'esame, e
+all'esame il modello ritrova facce già viste e prende un voto che non ha
+meritato. L'errore non lascia tracce, perché i conti tornano, e tornano troppo
+belli.
 
 `````
 
@@ -624,11 +628,11 @@ esatte stringono la regione di decisione della classe rara attorno ai punti
 già visti, che il modello impara a memoria; i punti interpolati la allargano
 allo spazio fra un esempio raro e l'altro.
 
-Il ricampionamento va applicato solo al training set, dentro la
-cross-validation. Ricampionare prima dello split, infatti, significa che copie
-sintetiche dello stesso positivo finiscono sia in train sia in validation, per
-cui il modello riconosce esempi che ha già visto e la stima delle prestazioni
-diventa ottimistica in modo invisibile.
+[Il ricampionamento va applicato solo al training set, dentro la
+cross-validation]{.pt-matita}. Ricampionare prima dello split, infatti,
+significa che copie sintetiche dello stesso positivo finiscono sia in train sia
+in validation, per cui il modello riconosce esempi che ha già visto e la stima
+delle prestazioni diventa ottimistica in modo invisibile.
 
 In pratica lo si ottiene con la libreria imbalanced-learn, che offre sia
 l'implementazione di SMOTE sia una `Pipeline` compatibile con scikit-learn: il
@@ -691,10 +695,10 @@ modello ha sbagliato? No: dire «novantaquattro su cento è frode» implica anch
 «sei su cento è pulita», e quell'operazione può essere una delle sei. In
 generale, una singola affermazione probabilistica non si può smentire.
 
-L'unica cosa che si può mettere alla prova è il gruppo. Si prendono tutte le
-operazioni segnate attorno al novantaquattro, si aprono, e si contano le frodi:
-se sono novantaquattro su cento il numero era una promessa mantenuta, se sono
-sessanta il modello si vantava.
+[L'unica cosa che si può mettere alla prova è il gruppo]{.pt-matita}. Si
+prendono tutte le operazioni segnate attorno al novantaquattro, si aprono, e si
+contano le frodi: se sono novantaquattro su cento il numero era una promessa
+mantenuta, se sono sessanta il modello si vantava.
 
 Quella corrispondenza fra il numero detto e la frequenza osservata si chiama
 **calibrazione**. I pesi di classe e i casi rari duplicati la rompono, perché
@@ -1057,8 +1061,8 @@ in media, di quanti euro sbagliamo il prezzo. Il **RMSE** (*root mean squared
 error*, radice dell'errore quadratico medio) è simile, ma prima di
 mediare eleva al quadrato gli errori, e alla fine ne fa la radice quadrata.
 
-Il quadrato serve a
-punire di più i grandi svarioni: sbagliare una volta di $100$ costa
+[Il quadrato serve a
+punire di più i grandi svarioni]{.pt-matita}: sbagliare una volta di $100$ costa
 $100^2 = 10\,000$, mentre sbagliare due volte di $50$ costa
 $50^2 + 50^2 = 5\,000$, cioè la metà, benché l'errore totale sia lo stesso. La
 radice serve a rimettere il numero nell'unità di
@@ -1092,9 +1096,9 @@ $$
 \text{RMSE} = \sqrt{\text{MSE}} .
 $$
 
-L'MSE eleva al quadrato gli scarti, quindi pesa di più gli errori grandi ed è
-più sensibile agli *outlier*; la radice (RMSE) riporta il valore nell'unità del
-target.
+[L'MSE eleva al quadrato gli scarti, quindi pesa di più gli errori
+grandi]{.pt-matita} ed è più sensibile agli *outlier*; la radice (RMSE) riporta
+il valore nell'unità del target.
 
 MSE e MAE hanno minimizzatori diversi. Fra tutte le costanti $c$, infatti,
 $\sum_i(y_i-c)^2$ è minima nella media e $\sum_i|y_i-c|$ nella mediana; per
@@ -1157,9 +1161,9 @@ dice «over 70» e ha scambiato una ragazza per sua nonna. Fra una fascia e
 l'altra, però, non c'è una distanza scritta da nessuna parte, e si sa solo chi
 viene prima e chi dopo.
 
-L'accuratezza non vede niente di tutto questo, e conta i due sbagli come
-identici. Peggio ancora, chi sceglie il modello guardando l'accuratezza può
-preferire quello che sbaglia di più.
+[L'accuratezza non vede niente di tutto questo, e conta i due sbagli come
+identici]{.pt-matita}. Peggio ancora, chi sceglie il modello guardando
+l'accuratezza può preferire quello che sbaglia di più.
 
 Con cinque fasce d'età mettiamo alla prova due modelli. Il primo sbaglia
 sempre, ma sempre di una fascia sola, e dice «40-50» quando è «30-40». Il
@@ -1201,8 +1205,8 @@ pochissimo spazio e fra altre due moltissimo.
 
 Un target ordinale ha $K$ classi con un ordine totale ma senza una metrica
 data: sappiamo che $c_1 \prec c_2 \prec c_3$ ma non che la distanza fra le
-prime due sia pari a quella fra le seconde. Trattarlo come nominale butta via
-l'ordine; trattarlo come numerico gli impone una distanza che non ha.
+prime due sia pari a quella fra le seconde. [Trattarlo come nominale butta via
+l'ordine; trattarlo come numerico gli impone una distanza che non ha]{.pt-matita}.
 
 Sul fronte delle metriche, l'accuratezza è insensibile all'ordine. Una
 correzione grossolana ma usata è l'accuratezza *one-off*, che conta corretta
@@ -1276,10 +1280,10 @@ esempi i positivi sono una decina, e una recall di otto su dieci è un sondaggio
 su dieci persone: il valore vero può stare quasi ovunque fra la metà e quasi
 tutto.
 
-Il numero si scrive quindi con il suo margine, contato sui casi che contano.
-Due modelli provati sugli stessi esempi si confrontano guardando gli esempi su
-cui si comportano in modo diverso, non mettendo uno accanto all'altro i due
-margini.
+[Il numero si scrive quindi con il suo margine, contato sui casi che
+contano]{.pt-matita}. Due modelli provati sugli stessi esempi si confrontano
+guardando gli esempi su cui si comportano in modo diverso, non mettendo uno
+accanto all'altro i due margini.
 
 `````
 
@@ -1288,8 +1292,8 @@ margini.
 Ogni metrica calcolata su un test finito è una stima e ha il suo margine.
 L'accuratezza su $m_{\text{te}}$ esempi indipendenti ha errore standard
 $\sqrt{p(1-p)/m_{\text{te}}}$, cioè circa un punto attorno al $90\%$ con mille
-esempi (il margine al $95\%$ ne vale due). Per la recall il campione che conta
-è il numero dei positivi, non quello degli esempi: con prevalenza
+esempi (il margine al $95\%$ ne vale due). [Per la recall il campione che conta
+è il numero dei positivi, non quello degli esempi]{.pt-matita}: con prevalenza
 dell’$1\%$ e mille esempi i positivi sono una decina, e una recall di $0{,}8$
 ha errore standard $\sqrt{0{,}8\cdot 0{,}2/10}\approx 0{,}13$; a così pochi
 casi, però, l'approssimazione normale non regge, e l'intervallo di Wilson di 8
@@ -1344,8 +1348,8 @@ numero che dice quanto quella risposta è stata sbagliata, e basta ordinarli dal
 peggiore. In cima si trovano le stesse due cose: esempi la cui etichetta è
 sbagliata (il modello ha ragione e il dato ha torto) ed esempi genuinamente
 difficili, che dicono dove serve altro materiale. Il vantaggio in più è che
-quegli esempi sono pochissimi, e trovarli a mano richiederebbe ore, mentre la
-graduatoria li concentra in cima.
+quegli esempi sono pochissimi, e trovarli a mano richiederebbe ore, mentre [la
+graduatoria li concentra in cima]{.pt-matita}.
 
 `````
 
@@ -1356,8 +1360,8 @@ costo somma o media prima di restituire un numero solo. Per un classificatore
 probabilistico è la log-loss del singolo campione, $\ell_i = -\log
 \hat{p}_i(y_i)$, cioè la sorpresa del modello davanti all'etichetta vera.
 Cresce senza limite man mano che la probabilità assegnata a quella classe tende
-a zero, e per questo pone in cima alla graduatoria gli esempi su cui il modello
-ha sbagliato con convinzione.
+a zero, e per questo [pone in cima alla graduatoria gli esempi su cui il modello
+ha sbagliato con convinzione]{.pt-matita}.
 
 L'ordinamento per $\ell_i$ decrescente separa due popolazioni che si
 riconoscono aprendo gli esempi:
@@ -1442,8 +1446,8 @@ Le etichette guaste sono il $2{,}8\%$ della validazione, ed estraendo un
 esempio a caso sarebbe quella la probabilità di incontrarne una. Fra i dieci
 esempi con la perdita più alta sono invece l’$80\%$, circa ventinove volte più
 dense. Per decidere quanto tempo spenderci conta soprattutto la riga dei
-cinquanta: aprendoli se ne ritrovano venti su ventidue, cioè il $91\%$ delle
-etichette guaste guardando cinquanta esempi invece di ottocento.
+cinquanta: [aprendoli se ne ritrovano venti su ventidue, cioè il $91\%$ delle
+etichette guaste guardando cinquanta esempi invece di ottocento]{.pt-matita}.
 
 L'accuratezza, intanto, dice $0{,}899$ e non dice niente di tutto questo. Non è
 un difetto della metrica: riassume la prova in un numero, e scovare le

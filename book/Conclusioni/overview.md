@@ -19,8 +19,8 @@ Adesso possiamo dire com'è andata. Sono passati
 {{ n_capitoli_meno_uno_lettere }} capitoli, dall'algebra lineare alle reti che
 generano immagini, dagli alberi di decisione agli agenti che usano strumenti,
 dal codice che fa correre una scheda grafica alle domande su chi risponde
-quando un modello sbaglia. In definitiva, dei meccanismi non è rimasto quasi
-niente di prodigioso: guardati da vicino, sono conti.
+quando un modello sbaglia. In definitiva, [dei meccanismi non è rimasto quasi
+niente di prodigioso]{.pt-matita}: guardati da vicino, sono conti.
 
 Ora abbiamo ciò che all'inizio mancava: gli strumenti per capire come
 funzionano queste macchine e per distinguere ciò che sanno fare da ciò che
@@ -171,7 +171,8 @@ sono appendici morali messe in fondo per buona educazione.
 
 Gli argomenti sono diversissimi e in mezzo ci sono settant'anni di storia, dal
 percettrone di Rosenblatt del 1958, il primo neurone artificiale che imparava
-dagli esempi, ai modelli di oggi. Eppure, sotto, tornano sempre le stesse tre idee.
+dagli esempi, ai modelli di oggi. Eppure, [sotto, tornano sempre le stesse tre
+idee]{.pt-matita}.
 
 ## Tre fili, un solo tessuto
 
@@ -204,8 +205,8 @@ sempre quella.
 
 Per questo il libro insiste su cose che accanto alle architetture sembrano
 noiose: come si dividono i dati, che cosa succede quando cambiano sotto i
-piedi, chi li ha lasciati e se era d'accordo. Un modello addestrato su dati
-storti impara la stortura con tutta la precisione di cui è capace.
+piedi, chi li ha lasciati e se era d'accordo. [Un modello addestrato su dati
+storti impara la stortura con tutta la precisione di cui è capace]{.pt-matita}.
 
 Le **rappresentazioni apprese** sono il cuore, e il deep learning le ha cambiate
 più di ogni altra cosa: le caratteristiche con cui un modello descrive un
@@ -371,8 +372,8 @@ cambia perfino l'esistenza di un obiettivo.
 ## Dove sta andando
 
 Per capire dove va un campo non serve sapere quale modello sia il più bravo
-adesso, perché la risposta scade in pochi mesi; serve sapere che cosa succede
-quando si danno a un modello più risorse.
+adesso, perché la risposta scade in pochi mesi; [serve sapere che cosa succede
+quando si danno a un modello più risorse]{.pt-matita}.
 
 Tre grafici mostrano quanto migliora un modello se gli diamo più potenza di
 calcolo, più dati o più parametri. Ogni retta mostra l'errore che il modello
@@ -634,8 +635,8 @@ persona, nel lavoro del [post-addestramento](../Transformers/post-training.md).
 Torna il discorso dell'aria: nel mondo digitale i dati abbondano, costano poco
 e spesso portano con sé il proprio giudizio, e lì un polmone respira a pieno.
 
-Non è una gara alla pari, è una partita in casa, e buona parte del vantaggio
-viene dal terreno, non dall'intelligenza.
+Non è una gara alla pari, [è una partita in casa, e buona parte del vantaggio
+viene dal terreno, non dall'intelligenza]{.pt-matita}.
 
 Questa però è una lettura, e c'è chi ne dà un'altra. Chi parte dalle leggi di
 scala, dove le rette non si piegano, risponde che il terreno dice soltanto da
@@ -732,12 +733,12 @@ chiediti se giocava in casa.
 
 ## Una nota onesta
 
-Sarebbe disonesto chiudere con il solo entusiasmo. Questi sistemi hanno limiti
-che, con le tecniche di oggi, non spariscono facendo il modello più grande:
-dipendono da come sono fatti, addestrati e messi alla prova. Un modello dà per
-veri fatti che non esistono, e si porta dietro i pregiudizi dei testi da cui ha
-imparato; nessuna delle due cose è una sorpresa, e tutte e due hanno le radici
-nel modo in cui viene addestrato e misurato.
+Sarebbe disonesto chiudere con il solo entusiasmo. [Questi sistemi hanno limiti
+che, con le tecniche di oggi, non spariscono facendo il modello più
+grande]{.pt-matita}: dipendono da come sono fatti, addestrati e messi alla
+prova. Un modello dà per veri fatti che non esistono, e si porta dietro i
+pregiudizi dei testi da cui ha imparato; nessuna delle due cose è una sorpresa,
+e tutte e due hanno le radici nel modo in cui viene addestrato e misurato.
 
 `````{tab} Elementare
 Un modello linguistico non "sa" le cose: prevede la parola più probabile dopo
@@ -844,8 +845,8 @@ ancora letto oltre a chi li ha scritti, e da fuori i due si distinguono male.
 Vanno letti come va letto un modello: senza prendere per buono niente solo
 perché è scritto bene.
 
-Soprattutto *riproduci il codice*: un modello lo capisci quando lo fai girare e
-lo rompi. Il metodo sta nella sezione su [come si replica un
+Soprattutto *riproduci il codice*: [un modello lo capisci quando lo fai girare e
+lo rompi]{.pt-matita}. Il metodo sta nella sezione su [come si replica un
 paper](../PyTorch/replicare-un-paper.md) del capitolo su PyTorch, quattro
 passi, e i controlli che contano si fanno senza nemmeno addestrare.
 
@@ -1014,11 +1015,11 @@ scaffale marcato *intelligente* a quello riservato alle curiosità». È success
 con ELIZA, il programma che faceva lo psicoterapeuta rigirando a chi gli
 scriveva le sue stesse frasi, e succede ancora: è uno dei motivi per cui
 l'intelligenza artificiale non si lascia definire, perché ogni pezzo capito
-smette di sembrare intelligenza e diventa «solo» un algoritmo. Smettere di
+smette di sembrare intelligenza e diventa «solo» un algoritmo. [Smettere di
 sembrare intelligenza, però, non è smettere di funzionare, e nemmeno di
-contare. Per te queste macchine non sono più una scatola nera: sai di che cosa
-sono fatte, dati, rappresentazioni, ottimizzazione. Non è più la macchina a
-restare chiusa, ma quello che ha imparato, e sai anche perché leggerlo sia un
-problema aperto. Il resto è pratica.
+contare]{.pt-matita}. Per te queste macchine non sono più una scatola nera: sai
+di che cosa sono fatte, dati, rappresentazioni, ottimizzazione. Non è più la
+macchina a restare chiusa, ma quello che ha imparato, e sai anche perché
+leggerlo sia un problema aperto. Il resto è pratica.
 
 Buon lavoro, e in bocca al lupo.

@@ -43,8 +43,8 @@ hai fatto, è il **determinante**, e {numref}`fig-determinante-area` lo disegna.
 Quel numero non dipende dal quadretto che hai scelto. Qualunque
 figura tu avessi disegnato sul foglio (un cerchio, una lettera, la sagoma di un
 gatto), la sua area sarebbe cambiata dello stesso fattore, perché lo
-stiramento è lo stesso dappertutto. Un solo numero riassume l'effetto della
-trasformazione su tutte le aree del piano.
+stiramento è lo stesso dappertutto. [Un solo numero riassume l'effetto della
+trasformazione su tutte le aree del piano]{.pt-matita}.
 
 Il determinante ha quattro proprietà, tutte conseguenze del vederlo come un
 fattore di area.
@@ -81,8 +81,8 @@ $$
 $$
 
 ed è l’area con segno del parallelogramma generato dalle due colonne. Più in
-generale, in $\mathbb{R}^n$ è il volume con segno del parallelepipedo generato
-dalle $n$ colonne, e il fattore vale per ogni figura: se
+generale, [in $\mathbb{R}^n$ è il volume con segno del parallelepipedo generato
+dalle $n$ colonne]{.pt-matita}, e il fattore vale per ogni figura: se
 $S\subset\mathbb{R}^n$ ha volume,
 $\operatorname{vol}(\mathbf{A}S)=|\det\mathbf{A}|\,\operatorname{vol}(S)$ (si
 approssima $S$ con cubetti, e ciascuno va in un parallelepipedo di volume
@@ -176,8 +176,8 @@ print(np.linalg.det(S), np.linalg.matrix_rank(S))             # -> 0.0 1
 ## Come si calcola, e come non si calcola
 
 Lo sviluppo di Laplace, che per una matrice $2\times 2$ o $3\times 3$ si fa a
-mano, vale in ogni dimensione, ma costa un numero di operazioni che cresce come
-$n!$, e per questo è la strada sbagliata.
+mano, vale in ogni dimensione, ma [costa un numero di operazioni che cresce come
+$n!$, e per questo è la strada sbagliata]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -290,9 +290,9 @@ quadri e la vernice resta quella, lo strato si dimezza: la quantità totale non
 cambia, quindi quanta ce n'è per metro quadro deve scendere nella stessa misura
 in cui la parete si è allargata.
 
-In generale, ogni volta che una trasformazione deforma lo spazio, qualunque
+In generale, ogni volta che una trasformazione deforma lo spazio, [qualunque
 cosa sia distribuita su quello spazio si concentra dove lo spazio si è ristretto
-e si dirada dove si è allargato, e il fattore è il determinante.
+e si dirada dove si è allargato, e il fattore è il determinante]{.pt-matita}.
 
 Dove la trasformazione non è la stessa dappertutto (un foglio tirato più da una
 parte che dall'altra) si guarda punto per punto: attorno a ogni punto, per uno
@@ -351,7 +351,7 @@ La formula esprime la conservazione della massa: la probabilità contenuta in
 un volumetto attorno a $\mathbf{x}$ è la stessa che sta nel volumetto
 immagine attorno a $\mathbf{y}$, che è
 $\lvert\det\mathbf{J}_{\mathbf{f}}(\mathbf{x})\rvert$ volte più grande, quindi
-la densità si divide per quel fattore.
+[la densità si divide per quel fattore]{.pt-matita}.
 
 In forma logaritmica, che è quella che si usa,
 

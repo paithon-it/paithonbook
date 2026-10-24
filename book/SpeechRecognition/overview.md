@@ -40,11 +40,11 @@ parole che contiene.
 
 Ascolti una registrazione e la trascrivi a mano: ricevi un flusso continuo di
 suono (alti, bassi, pause) e produci una riga di parole scritte. Dieci secondi
-di registrazione diventano una ventina di parole, e nessuno ti dice quanti
-centesimi di secondo tocchino a ciascuna. Dove il parlato è impastato torni
-indietro, riascolti, provi due letture possibili e scrivi quella che ti
-convince di più. Il riconoscitore vocale fa lo stesso: in ingresso l'onda
-sonora catturata dal microfono, in uscita del testo. Del
+di registrazione diventano una ventina di parole, e [nessuno ti dice quanti
+centesimi di secondo tocchino a ciascuna]{.pt-matita}. Dove il parlato è
+impastato torni indietro, riascolti, provi due letture possibili e scrivi
+quella che ti convince di più. Il riconoscitore vocale fa lo stesso: in
+ingresso l'onda sonora catturata dal microfono, in uscita del testo. Del
 significato non capisce niente, e si ferma alle lettere giuste.
 
 `````
@@ -59,10 +59,10 @@ $$
 \hat{W} = \arg\max_{W} P(W \mid \mathbf{X}).
 $$
 
-Si noti che $\mathbf{X}$ è tipicamente lunga centinaia o migliaia di passi
-(uno ogni dieci millisecondi circa), mentre $W$ conta poche decine di parole:
-input e output hanno lunghezze molto diverse e non allineate una-a-una.
-Gestire questo disallineamento temporale è il cuore tecnico del problema.
+Si noti che $\mathbf{X}$ è tipicamente lunga centinaia o migliaia di passi (uno
+ogni dieci millisecondi circa), mentre $W$ conta poche decine di parole: input
+e output hanno lunghezze molto diverse e non allineate una-a-una. [Gestire
+questo disallineamento temporale è il cuore tecnico del problema]{.pt-matita}.
 
 `````
 
@@ -94,13 +94,13 @@ il tempo». Andava bene per pochissime parole e un solo parlante, perché
 aggiungerne una voleva dire registrarla.
 
 Il salto di qualità, preparato negli anni Settanta all'IBM e a Carnegie Mellon
-e diventato la norma nel decennio seguente, arrivò da due idee, non da macchine
-più potenti. La prima fu smettere di ragionare per parole intere e ragionare
-per **fonemi**, i suoni minimi che distinguono una parola dall'altra (*pane* e
-*cane* differiscono per uno solo). Infatti le parole di una lingua sono
-centinaia di migliaia, i fonemi qualche decina, e una parola mai sentita prima
-è comunque fatta di fonemi già sentiti. La seconda fu dividere il lavoro in due
-pareri.
+e diventato la norma nel decennio seguente, [arrivò da due idee, non da
+macchine più potenti]{.pt-matita}. La prima fu smettere di ragionare per parole
+intere e ragionare per **fonemi**, i suoni minimi che distinguono una parola
+dall'altra (*pane* e *cane* differiscono per uno solo). Infatti le parole di
+una lingua sono centinaia di migliaia, i fonemi qualche decina, e una parola
+mai sentita prima è comunque fatta di fonemi già sentiti. La seconda fu
+dividere il lavoro in due pareri.
 
 `````{tab} Elementare
 
@@ -258,7 +258,7 @@ sui suoni gravi e le più a destra sugli acuti. Le fettine si prendono
 accavallate, così una consonante a cavallo di un taglio non va persa. Questa
 sequenza di istantanee sonore è lo spettrogramma costruito passo per
 passo in {doc}`Dal suono alle feature </Audio/dal-suono-alle-feature>`, e il
-modello acustico ascolta questo al posto dell'onda.
+[modello acustico ascolta questo al posto dell'onda]{.pt-matita}.
 
 Un tempo lo riceveva anche più spremuto, una dozzina di numeri per fettina,
 perché lavorava bene solo con poche misure che non si ripetessero fra loro, e
@@ -270,14 +270,14 @@ reti se lo prendono così com'è.
 `````{tab} Superiore
 
 Il segnale continuo viene diviso in frame sovrapposti e trasformato nello
-spettrogramma log-mel costruito in
-{doc}`Dal suono alle feature </Audio/dal-suono-alle-feature>`: è la matrice
-$\mathbf{X}$ che entra nel modello acustico. I sistemi classici applicavano un
-ultimo passaggio, la trasformata coseno discreta (DCT), che decorrelava i
-coefficienti e riduceva ogni frame a una dozzina di MFCC (*Mel-Frequency
-Cepstral Coefficients*, una quarantina con le derivate prima e seconda).
-Serviva alle covarianze diagonali delle GMM, mentre i sistemi neurali
-end-to-end, Whisper compreso, non lo fanno più.
+spettrogramma log-mel costruito in {doc}`Dal suono alle
+feature </Audio/dal-suono-alle-feature>`: [è la matrice $\mathbf{X}$ che entra
+nel modello acustico]{.pt-matita}. I sistemi classici applicavano un ultimo
+passaggio, la trasformata coseno discreta (DCT), che decorrelava i coefficienti
+e riduceva ogni frame a una dozzina di MFCC (*Mel-Frequency Cepstral
+Coefficients*, una quarantina con le derivate prima e seconda). Serviva alle
+covarianze diagonali delle GMM, mentre i sistemi neurali end-to-end, Whisper
+compreso, non lo fanno più.
 
 `````
 

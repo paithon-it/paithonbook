@@ -24,8 +24,8 @@ domanda più scomoda, quella che uno studente fa al secondo minuto: perché
 ottimizzare un compito (indovinare la parola coperta) dovrebbe migliorarne un
 altro, diverso, a cui nessuno ha addestrato il modello (rispondere, poniamo, a
 una domanda di biologia)? Una parte del campo dà a quella domanda una risposta
-sola, la stessa di Borges: per prevedere bene bisogna accorciare, e per
-accorciare bisogna aver colto la struttura dei dati.
+sola, la stessa di Borges: [per prevedere bene bisogna accorciare, e per
+accorciare bisogna aver colto la struttura dei dati]{.pt-matita}.
 
 ## Predire e comprimere sono la stessa operazione
 
@@ -48,15 +48,15 @@ servono in media per ogni singolo numero del dato.
 
 Il secondo fatto è che la perdita che il pre-addestramento di un modello
 generativo minimizza, la cross-entropia, è quel numero di bit sommato su tutto
-il testo:
-ogni parola che il modello dava per improbabile, e che invece arriva, ne
-richiede molti. Minimizzare la cross-entropia su un corpus e minimizzare la
-lunghezza del file compresso sono la stessa istruzione scritta in due gerghi.
-Vale per i modelli che danno una probabilità alla sequenza intera, cioè quelli
-autoregressivi, che prevedono la parola successiva. Il modello a maschera dà la
-probabilità di ogni parola coperta conoscendo tutte le altre, che non è la
-probabilità della frase e non definisce un codice; e le perdite contrastive, a
-distillazione e a ridondanza delle {doc}`quattro famiglie
+il testo: ogni parola che il modello dava per improbabile, e che invece arriva,
+ne richiede molti. [Minimizzare la cross-entropia su un corpus e minimizzare la
+lunghezza del file compresso sono la stessa istruzione scritta in due
+gerghi]{.pt-matita}. Vale per i modelli che danno una probabilità alla sequenza
+intera, cioè quelli autoregressivi, che prevedono la parola successiva. Il
+modello a maschera dà la probabilità di ogni parola coperta conoscendo tutte le
+altre, che non è la probabilità della frase e non definisce un codice; e le
+perdite contrastive, a distillazione e a ridondanza delle {doc}`quattro
+famiglie
 </AutoSupervisione/famiglie>` non ne definiscono nessuno. L'argomento riguarda
 quindi il pre-addestramento generativo, non l'intera auto-supervisione.
 
@@ -324,9 +324,9 @@ mette più tempo e arriva un po’ più in su.
 
 ```{admonition} Che cosa insegna il fondo
 :class: tip
-Il fondo lo tocca il modello che ha la forma della regola, non il più grosso e
-non il più generico. Vale per ogni modello di apprendimento, e qui è misurato
-in bit invece che in accuratezza.
+[Il fondo lo tocca il modello che ha la forma della regola, non il più grosso e
+non il più generico]{.pt-matita}. Vale per ogni modello di apprendimento, e qui
+è misurato in bit invece che in accuratezza.
 ```
 
 ## Il programma più corto
@@ -508,9 +508,10 @@ raffinato {cite}`grunwald2004tutorial`.
 
 `````
 
-La dettatura più corta è il rasoio di Occam in una forma che si può mettere in
-un programma. In altri termini, fra due spiegazioni degli stessi dati vince
-quella che si detta in meno parole. La {doc}`sezione sull'overfitting
+[La dettatura più corta è il rasoio di Occam in una forma che si può mettere in
+un programma]{.pt-matita}. In altri termini, fra due spiegazioni degli stessi
+dati vince quella che si detta in meno parole. La {doc}`sezione
+sull'overfitting
 </MachineLearning/overfitting-validazione>` aveva enunciato il rasoio come
 massima («a parità di spiegazione, vince la più semplice») e poi l'aveva reso
 operativo con la regolarizzazione, che penalizza i pesi grandi. La complessità
@@ -597,8 +598,9 @@ problema che lasciano aperto.
 
 `````
 
-È il rasoio di Occam messo dentro la definizione di intelligenza, e con esso il
-presupposto che il mondo sia fatto in modo da premiare le ipotesi corte.
+[È il rasoio di Occam messo dentro la definizione di intelligenza]{.pt-matita},
+e con esso il presupposto che il mondo sia fatto in modo da premiare le ipotesi
+corte.
 
 ## Comprimere insieme: l'argomento di Sutskever
 
@@ -682,10 +684,10 @@ dentro, e quei grammi non raddoppiano se raddoppia la roba.
 Il secondo modo di contare, però, nessuno lo sa fare direttamente: «quel che
 resta da aggiungere» dipende da che cosa ti chiederanno all'arrivo, e quando
 chiudi il bagaglio non lo sai ancora. Sai fare l'altro, mettere dentro tutto e
-farlo pesare il meno possibile; e siccome i due conti danno lo stesso peso, chi
-fa bene il bagaglio unico ha fatto bene, senza saperlo, anche la valigia
-piccola. Nel peso entrano anche le istruzioni per fare la valigia, che pesano
-sempre uguale, comunque sia grande il carico.
+farlo pesare il meno possibile; e siccome i due conti danno lo stesso peso,
+[chi fa bene il bagaglio unico ha fatto bene, senza saperlo, anche la valigia
+piccola]{.pt-matita}. Nel peso entrano anche le istruzioni per fare la valigia,
+che pesano sempre uguale, comunque sia grande il carico.
 
 Fuor di metafora, la roba tanta e in sé inutile è il testo di internet, la
 parte poca che serve è il compito a cui tieni, e fare un bagaglio solo è il
@@ -749,11 +751,11 @@ $$
 dove il termine d'errore va inteso nei due sensi (nella forma con errore
 costante il condizionale si prende rispetto al programma più corto di $X$ e non
 a $X$ nudo, cioè $K(X,Y) = K(X) + K(Y \mid X^*) + O(1)$). Si legge così:
-comprimere $X$ e $Y$ insieme non è sostanzialmente diverso dal comprimere prima
-$X$ e poi $Y$ sfruttando $X$. Da qui la scelta pratica: un condizionale non lo
-si sa addestrare, un congiunto sì, e il congiunto è ciò che fa la massima
-verosimiglianza su un corpus grande. Scritta in bit, e con la fattorizzazione
-autoregressiva che un transformer usa,
+[comprimere $X$ e $Y$ insieme non è sostanzialmente diverso dal comprimere
+prima $X$ e poi $Y$ sfruttando $X$]{.pt-matita}. Da qui la scelta pratica: un
+condizionale non lo si sa addestrare, un congiunto sì, e il congiunto è ciò che
+fa la massima verosimiglianza su un corpus grande. Scritta in bit, e con la
+fattorizzazione autoregressiva che un transformer usa,
 
 $$
 L(x_{1:N} \mid \theta) \;=\; -\sum_{i=1}^{N} \log_2 p_\theta(x_i \mid x_{<i}),
@@ -818,10 +820,11 @@ X)| - K(Y \mid X)$ per scrivere i dati $Y$ del compito avendo in mano i dati
 non etichettati $X$. È la quantità che mette l'auto-supervisione alla pari col
 supervisionato, e la più fraintesa.
 
-Il rimpianto non misura quanto sei bravo: misura quanta parte del valore
-contenuto nei dati non etichettati ti sei lasciato sfuggire. Avere rimpianto
-basso equivale a sapere che nessun altro, con un compressore migliore del tuo,
-avrebbe potuto cavare da quei dati più aiuto di quanto ne hai cavato tu.
+Il rimpianto non misura quanto sei bravo: [misura quanta parte del valore
+contenuto nei dati non etichettati ti sei lasciato sfuggire]{.pt-matita}. Avere
+rimpianto basso equivale a sapere che nessun altro, con un compressore migliore
+del tuo, avrebbe potuto cavare da quei dati più aiuto di quanto ne hai cavato
+tu.
 
 La forza della garanzia sta in ciò che non richiede. Non richiede che i dati
 non etichettati siano utili. Possono contenere la risposta, oppure essere
@@ -897,10 +900,11 @@ sessantamila immagini da 32 pixel per lato divise in dieci categorie, quel
 sondaggio lineare arriva al $96{,}3\%$, meglio di una rete convoluzionale
 addestrata con le etichette; e le due curve, quella della bravura a indovinare
 il pixel dopo e quella del classificatore lineare, salgono insieme. È il punto:
-migliora il predittore e migliora la rappresentazione, senza che nessuno abbia
-mai detto alla rete che cosa sia un gatto. (Scongelando la rete e rifinendola
-completamente si arriva al $99{,}0\%$, ma quello diventa addestramento con le
-etichette invece che un sondaggio, e non dimostra la stessa cosa.)
+[migliora il predittore e migliora la rappresentazione]{.pt-matita}, senza che
+nessuno abbia mai detto alla rete che cosa sia un gatto. (Scongelando la rete e
+rifinendola completamente si arriva al $99{,}0\%$, ma quello diventa
+addestramento con le etichette invece che un sondaggio, e non dimostra la
+stessa cosa.)
 
 Sutskever lo presenta come una prova di principio costosa, non come un metodo
 pratico. Infatti il modello che dà quel $96{,}3\%$ ha un miliardo e
@@ -1032,13 +1036,13 @@ negativo perché a meno bit corrisponde un modello migliore.
 
 `````
 
-Il secondo risultato è notevole, e va letto con precisione. Dice che, dentro la
-famiglia dei modelli linguistici di oggi, la compressione è un ottimo
-indicatore: un numero che si ottiene da testo grezzo, senza etichette e senza
-costruire una prova d'esame, e che ordina i modelli come li ordinerebbero dodici
-prove d'esame. Non dice che comprimere *sia* essere intelligenti, per la stessa
-ragione per cui il fatto che le persone alte pesino di più non rende l'altezza
-una definizione di peso.
+Il secondo risultato è notevole, e va letto con precisione. Dice che, [dentro
+la famiglia dei modelli linguistici di oggi, la compressione è un ottimo
+indicatore]{.pt-matita}: un numero che si ottiene da testo grezzo, senza
+etichette e senza costruire una prova d'esame, e che ordina i modelli come li
+ordinerebbero dodici prove d'esame. Non dice che comprimere *sia* essere
+intelligenti, per la stessa ragione per cui il fatto che le persone alte pesino
+di più non rende l'altezza una definizione di peso.
 
 ## Il prezzo del modello
 
@@ -1171,8 +1175,8 @@ Questo è l'insegnamento più generale, e va oltre la compressione. Due gruppi
 seri possono guardare la stessa rete addestrata e concludere che comprime
 magnificamente o che è un disastro, senza che nessuno dei due sbagli un numero:
 cambia ciò che si include nel costo. Ogni volta che si legge «il modello X
-comprime al tot per cento», la domanda da fare è chi paga il modello, più che
-quanto.
+comprime al tot per cento», [la domanda da fare è chi paga il modello, più che
+quanto]{.pt-matita}.
 
 ## Dove la tesi si ferma
 
@@ -1257,8 +1261,8 @@ nessuno.
 
 Se l'universo che ci circonda non fosse pieno di regolarità, saremmo
 tutti in quella riga lì, e nessuna intelligenza di nessun tipo sarebbe
-possibile. La comprimibilità, prima che una proprietà della mente che comprime,
-è una proprietà del mondo: che comprimere funzioni è, prima di tutto,
+possibile. [La comprimibilità, prima che una proprietà della mente che comprime,
+è una proprietà del mondo]{.pt-matita}: che comprimere funzioni è, prima di tutto,
 un'informazione su dove abitiamo.
 
 `````{tab} Elementare

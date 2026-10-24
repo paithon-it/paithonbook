@@ -43,9 +43,9 @@ una regola del tipo «chi è già finito in prigione una volta, la seconda volta
 esce subito», il patto sarebbe rotto: la casella da sola non basterebbe più a
 decidere il futuro. Basta però cambiare che cosa si chiama stato. Invece della
 sola casella si prende la coppia (casella, sei già stato in prigione?), e il
-patto torna valido, con il doppio degli stati. In generale, quasi ogni sistema
+patto torna valido, con il doppio degli stati. In generale, [quasi ogni sistema
 si può rendere markoviano allargando la definizione di stato, ma gli stati si
-moltiplicano.
+moltiplicano]{.pt-matita}.
 
 Descritto il gioco, si vuole sapere dove si finisce. Non in che
 casella cadrai tu stasera, che dipende dai dadi, ma come si distribuiscono i
@@ -95,7 +95,7 @@ stocastiche, vettori riga, $\boldsymbol{\pi}_{t+1} = \boldsymbol{\pi}_t
 \mathbf{P}$), e confrontando una formula con la sua fonte conviene guardare
 da che parte sta la somma a uno.
 
-L'ipotesi di Markov è meno restrittiva di quanto sembri, per via
+[L'ipotesi di Markov è meno restrittiva di quanto sembri]{.pt-matita}, per via
 dell’allargamento dello stato. Un processo che dipende dagli ultimi $k$
 istanti, infatti, diventa markoviano prendendo come stato la $k$-upla degli
 ultimi $k$ valori, al costo di $n^k$ stati. È la costruzione dei modelli
@@ -137,11 +137,11 @@ turno: la fotografia resta ferma perché quanti entrano in una casella e quanti
 ne escono si pareggiano.
 
 La distribuzione stazionaria, però, si può trovare risolvendo, invece che
-aspettando. Cercare una distribuzione che la regola lascia identica a sé stessa
-equivale a cercare una direzione che la matrice non devia, cioè un autovettore
-con fattore di allungamento uguale a uno. È una delle venature del legno di una
-matrice; qui la venatura che conta è quella che non si allunga né si accorcia,
-e il sistema ci scivola sopra e ci resta.
+aspettando. [Cercare una distribuzione che la regola lascia identica a sé
+stessa equivale a cercare una direzione che la matrice non devia, cioè un
+autovettore con fattore di allungamento uguale a uno]{.pt-matita}. È una delle
+venature del legno di una matrice; qui la venatura che conta è quella che non
+si allunga né si accorcia, e il sistema ci scivola sopra e ci resta.
 
 `````
 
@@ -154,10 +154,10 @@ $$
 \mathbf{P}\,\boldsymbol{\pi} = \boldsymbol{\pi} ,
 $$
 
-il che la rende un autovettore di $\mathbf{P}$ relativo all'autovalore $1$.
-L'autovalore $1$ esiste sempre. Le colonne di $\mathbf{P}$, infatti, sommano a
-$1$, quindi $\mathbf{1}^\top\mathbf{P} = \mathbf{1}^\top$, e $\mathbf{1}$ è
-autovettore sinistro con autovalore $1$; poiché $\mathbf{P}$ e
+[il che la rende un autovettore di $\mathbf{P}$ relativo all'autovalore
+$1$]{.pt-matita}. L'autovalore $1$ esiste sempre. Le colonne di $\mathbf{P}$,
+infatti, sommano a $1$, quindi $\mathbf{1}^\top\mathbf{P} = \mathbf{1}^\top$, e
+$\mathbf{1}$ è autovettore sinistro con autovalore $1$; poiché $\mathbf{P}$ e
 $\mathbf{P}^\top$ hanno lo stesso spettro, esiste anche l'autovettore destro.
 
 Osserviamo però che questo ragionamento non garantisce che l'autovettore si
@@ -235,11 +235,11 @@ esempio), per rompere il ritmo e far convergere tutto. Un solo giro di tre
 passi, invece, non basta: la distribuzione gira fra tre valori, come fra due
 nella porta girevole.
 
-Con tutte e due le condizioni la garanzia è forte: esiste una sola distribuzione
-di equilibrio, e la catena ci arriva da qualunque punto di partenza. La
-memoria dell'inizio si consuma, e l'equilibrio dipende soltanto dalla
-regola. È il motivo per cui un mazzo mescolato abbastanza a lungo non ricorda
-più com'era ordinato all'inizio.
+[Con tutte e due le condizioni la garanzia è forte]{.pt-matita}: esiste una
+sola distribuzione di equilibrio, e la catena ci arriva da qualunque punto di
+partenza. La memoria dell'inizio si consuma, e l'equilibrio dipende soltanto
+dalla regola. È il motivo per cui un mazzo mescolato abbastanza a lungo non
+ricorda più com'era ordinato all'inizio.
 
 `````
 
@@ -261,9 +261,9 @@ $$
 \qquad\text{per ogni distribuzione iniziale } \mathbf{x}_0 .
 $$
 
-I due controesempi mostrano che nessuna delle due ipotesi è di comodo. Con
-$\mathbf{P}=\mathbf{I}$ (riducibile all'estremo) ogni distribuzione è
-stazionaria e non c'è unicità. Con
+[I due controesempi mostrano che nessuna delle due ipotesi è di
+comodo]{.pt-matita}. Con $\mathbf{P}=\mathbf{I}$ (riducibile all'estremo) ogni
+distribuzione è stazionaria e non c'è unicità. Con
 $\mathbf{P}=\begin{pmatrix}0&1\\1&0\end{pmatrix}$ (irriducibile ma periodica di
 periodo $2$) lo spettro è $\{1,-1\}$: la stazionaria $(\tfrac12,\tfrac12)$
 esiste ed è unica, ma $\mathbf{P}^t\mathbf{x}_0$ oscilla e non converge, perché
@@ -310,8 +310,8 @@ suoi fattori di allungamento, il più grande dopo l'uno che tiene ferma la
 distribuzione di equilibrio. Se è piccolo si arriva in fretta, se è vicino a
 uno ci si mette moltissimo. Poiché lo scarto si moltiplica per quella frazione,
 il numero di passi non cresce in proporzione alla precisione voluta. In altre
-parole, ogni cifra decimale in più aggiunge sempre lo stesso numero di passi,
-quale che sia la cifra.
+parole, [ogni cifra decimale in più aggiunge sempre lo stesso numero di passi,
+quale che sia la cifra]{.pt-matita}.
 
 Il mazzo di carte è un caso speciale. Il ritmo regolare vale comunque a lungo
 andare, ma prima di arrivarci il passaggio dal mescolato male al mescolato bene
@@ -374,13 +374,13 @@ catena non reversibile, come la matrice di Google, lo spettro da solo non basta
 nemmeno a questa maggiorazione, perché conta anche quanto sono vicini fra loro
 gli autovettori.
 
-Il logaritmo dice che guadagnare una cifra decimale richiede sempre lo stesso
-numero di passi, e il fattore davanti dice quanti. Se $\lambda_2$ è complesso,
-il decadimento è geometrico soltanto in modulo, con una rotazione sovrapposta.
-Di conseguenza il rapporto fra due passi consecutivi oscilla, e la stima di
-$|\lambda_2|$ si prende come media geometrica su molti passi. Un gap piccolo
-(una catena quasi riducibile, con due gruppi di stati collegati da pochi
-passaggi) rende il mescolamento lentissimo, la difficoltà tipica dei
+[Il logaritmo dice che guadagnare una cifra decimale richiede sempre lo stesso
+numero di passi]{.pt-matita}, e il fattore davanti dice quanti. Se $\lambda_2$
+è complesso, il decadimento è geometrico soltanto in modulo, con una rotazione
+sovrapposta. Di conseguenza il rapporto fra due passi consecutivi oscilla, e la
+stima di $|\lambda_2|$ si prende come media geometrica su molti passi. Un gap
+piccolo (una catena quasi riducibile, con due gruppi di stati collegati da
+pochi passaggi) rende il mescolamento lentissimo, la difficoltà tipica dei
 campionatori usati in statistica bayesiana.
 
 Il fenomeno del mazzo di carte ha un nome, **cutoff** (Aldous e
@@ -427,9 +427,9 @@ sette clic.
 Questo salto fa tre cose insieme. Rende il web
 attraversabile da qualunque punto (prima condizione), toglie ogni ritmo fisso
 (seconda condizione), e accelera la convergenza: più spesso il
-navigatore si annoia, prima la distribuzione si stabilizza. Il salto, nato per
+navigatore si annoia, prima la distribuzione si stabilizza. [Il salto, nato per
 riparare due difetti del modello, è anche ciò che rende possibile il calcolo su
-miliardi di pagine.
+miliardi di pagine]{.pt-matita}.
 
 `````
 
@@ -458,9 +458,9 @@ $$
 |\lambda_2(\mathbf{G})| \;\le\; d ,
 $$
 
-indipendentemente da come è fatto il grafo dei link. Lo smorzamento, introdotto
+indipendentemente da come è fatto il grafo dei link. [Lo smorzamento, introdotto
 come correzione del modello, si rivela così una garanzia di convergenza a
-velocità nota.
+velocità nota]{.pt-matita}.
 
 Il limite si dimostra con lo stesso argomento usato per $|\lambda|\le1$. Sia
 $\lambda\ne1$ un autovalore di $\mathbf{G}$ con autovettore $\mathbf{v}$. Da

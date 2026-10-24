@@ -143,8 +143,8 @@ Il TTFT, invece, si sente sempre,
 perché è tempo in cui sullo schermo non succede niente, e le soglie di Nielsen
 dicono quanto: sotto il decimo di secondo l'attesa passa inosservata, oltre il
 secondo il filo del pensiero comincia a spezzarsi. È il primo criterio di
-progetto: oltre una certa soglia il TPOT smette di essere percepibile, il TTFT
-no.
+progetto: [oltre una certa soglia il TPOT smette di essere percepibile, il TTFT
+no]{.pt-matita}.
 
 Il criterio vale per un testo che una persona legge mentre arriva. Quando la
 risposta serve solo intera (la legge un programma, come un agente che aspetta
@@ -180,10 +180,10 @@ stamparle nello stesso giro, una per ciascuno: il minuto si divide per
 sessantaquattro. È il mazzo (in inglese *batch*): le richieste che il servizio
 manda avanti in un giro solo.
 
-Sono due lavori che non convivono bene sulla stessa macchina nello stesso
-momento: se, mentre venti persone ricevono la risposta parola per parola,
-arriva qualcuno con un prompt lunghissimo, la fotocopiatrice si dedica a quello
-e gli altri vedono il testo bloccarsi a metà frase. Un singhiozzo.
+[Sono due lavori che non convivono bene sulla stessa macchina nello stesso
+momento]{.pt-matita}: se, mentre venti persone ricevono la risposta parola per
+parola, arriva qualcuno con un prompt lunghissimo, la fotocopiatrice si dedica
+a quello e gli altri vedono il testo bloccarsi a metà frase. Un singhiozzo.
 
 `````
 
@@ -220,11 +220,11 @@ centinaio di FLOP/byte:
   portano l'intensità a circa 64 FLOP/byte.
 
 Quando le due fasi condividono la GPU nella stessa iterazione dello scheduler,
-la lunga si mangia la corta. Un prefill da 8.000 token può occupare la scheda
-per centinaia di millisecondi, e ogni sequenza in decode aspetta quel tempo
-prima del token successivo: **head-of-line blocking** classico, con la coda
-dell'ITL che si allunga e la p99 del TPOT che peggiora mentre la media resta
-accettabile {cite}`agrawal2024taming`.
+[la lunga si mangia la corta]{.pt-matita}. Un prefill da 8.000 token può
+occupare la scheda per centinaia di millisecondi, e ogni sequenza in decode
+aspetta quel tempo prima del token successivo: **head-of-line blocking**
+classico, con la coda dell'ITL che si allunga e la p99 del TPOT che peggiora
+mentre la media resta accettabile {cite}`agrawal2024taming`.
 
 Le due intensità danno anche dei limiti inferiori ai tempi. Un prefill di $L$
 token non può durare meno del suo calcolo, e un passo di decode con $b$
@@ -407,7 +407,7 @@ richieste servite salgono a 32,0 al secondo, il $60\%$ in più, ma la quota di
 quelle a posto crolla al 49,4% e il goodput scende a
 $32{,}0 \times 0{,}494 = 15{,}8$, quasi il $15\%$ in meno di prima. Il numero
 che si guarda per abitudine dice che la seconda configurazione è migliore;
-il goodput dice il contrario, e ha ragione lui.
+[il goodput dice il contrario, e ha ragione lui]{.pt-matita}.
 
 Sono due configurazioni simulate, non due misure su un sistema vero, e servono
 a mostrare *che* throughput e goodput possono muoversi in direzioni opposte,
@@ -472,17 +472,17 @@ caso che morde è quello in cui una risposta aspetta molte chiamate lanciate
 tutte insieme: venti pezzi di documento da andare a recuperare in venti archivi
 diversi, oppure venti programmi esterni a cui il modello chiede un'informazione
 ciascuno (che ora, un cambio, una tariffa) prima di poter rispondere. Lì non si
-aspetta la media, si aspetta la più lenta di tutte, e una sola finita nella
-coda trascina con sé l'intera risposta. Se ciascuna ha l’$1\%$ di probabilità
-di essere lenta, e le venti sono lente per ragioni indipendenti, la probabilità
-che almeno una lo sia si trova al rovescio: si calcola quella che vadano bene
-tutte e venti (il prodotto di venti fattori tutti uguali a $0{,}99$, circa
-l’$82\%$) e la si toglie da uno, cioè $1 - 0{,}99^{20} \approx 18\%$. Ed è
-ancora una stima ottimistica, perché quell’$1\%$ è misurato su una chiamata
-sola: venti che premono insieme sulla stessa scheda o sulla stessa rete si
-rallentano a vicenda, e la probabilità di partenza sale. Una p99 rassicurante
-sul singolo passo diventa un utente scontento su cinque sull'intera
-interazione, come argomentano Dean e Barroso {cite}`dean2013tail`.
+aspetta la media, [si aspetta la più lenta di tutte, e una sola finita nella
+coda trascina con sé l'intera risposta]{.pt-matita}. Se ciascuna ha l’$1\%$ di
+probabilità di essere lenta, e le venti sono lente per ragioni indipendenti, la
+probabilità che almeno una lo sia si trova al rovescio: si calcola quella che
+vadano bene tutte e venti (il prodotto di venti fattori tutti uguali a
+$0{,}99$, circa l’$82\%$) e la si toglie da uno, cioè $1 - 0{,}99^{20} \approx
+18\%$. Ed è ancora una stima ottimistica, perché quell’$1\%$ è misurato su una
+chiamata sola: venti che premono insieme sulla stessa scheda o sulla stessa
+rete si rallentano a vicenda, e la probabilità di partenza sale. Una p99
+rassicurante sul singolo passo diventa un utente scontento su cinque
+sull'intera interazione, come argomentano Dean e Barroso {cite}`dean2013tail`.
 
 Il calcolo si può anche rovesciare, e così serve a chi progetta.
 Perché venti chiamate parallele indipendenti stiano tutte sotto la soglia 99
@@ -539,9 +539,9 @@ i nove turni precedenti più l'ultima domanda: quei nove li abbiamo già letti
 nove volte.
 
 Gli appunti che il modello prende su un pezzo di testo dipendono solo da quel
-pezzo e da ciò che lo precede: se l'inizio è identico, gli appunti sull'inizio
-sono identici. Identico segno per segno, però: cambiata una virgola nella prima
-pagina, da lì in poi il copista ricomincia a scrivere.
+pezzo e da ciò che lo precede: [se l'inizio è identico, gli appunti sull'inizio
+sono identici]{.pt-matita}. Identico segno per segno, però: cambiata una
+virgola nella prima pagina, da lì in poi il copista ricomincia a scrivere.
 
 Riprendiamo i 250 token per turno (la domanda più la risposta) della
 conversazione di {numref}`fig-costo-per-caso-uso`, e allunghiamola a dieci
@@ -563,14 +563,15 @@ trova il suo atto da ricopiare da capo.
 
 `````{tab} Superiore
 
-Nell'attenzione causale la coppia $(\mathbf{k}, \mathbf{v})$ della posizione $j$
-dipende solo dai token $1, \dots, j$. Due richieste che condividono un prefisso
-hanno quindi, per quelle posizioni, la stessa KV cache in aritmetica esatta, a
-parità di pesi, precisione, eventuale adattatore LoRA e codifica posizionale;
-ricalcolata dentro un batch di forma diversa può differire nelle ultime cifre,
-per la stessa non associatività della somma che il batching dinamico già
-introduce, e riusarla non è quindi meno esatto che ricalcolarla. La chiave del
-riuso è la sequenza esatta di identificativi di token, non la stringa.
+Nell'attenzione causale la coppia $(\mathbf{k}, \mathbf{v})$ della posizione
+$j$ dipende solo dai token $1, \dots, j$. [Due richieste che condividono un
+prefisso hanno quindi, per quelle posizioni, la stessa KV cache in aritmetica
+esatta]{.pt-matita}, a parità di pesi, precisione, eventuale adattatore LoRA e
+codifica posizionale; ricalcolata dentro un batch di forma diversa può
+differire nelle ultime cifre, per la stessa non associatività della somma che
+il batching dinamico già introduce, e riusarla non è quindi meno esatto che
+ricalcolarla. La chiave del riuso è la sequenza esatta di identificativi di
+token, non la stringa.
 
 Il meccanismo di riferimento è la **RadixAttention** di SGLang
 {cite}`zheng2024sglang`: la cache non è una tabella piatta ma un **albero dei
@@ -649,19 +650,19 @@ cantina: nel calcolatore il piano di sotto è la memoria del computer in cui la
 scheda grafica è montata, la cantina il suo disco. Più si scende più c'è posto,
 e più ci vuole a riprenderli.
 
-Portarli giù conviene se riprenderli costa meno che ricopiarli. Tutti e due i
-tempi crescono con le pagine del fascicolo, quindi la sua lunghezza pesa allo
-stesso modo sui due piatti della bilancia, e a decidere è quanto sono lente le
-scale rispetto alla mano del copista. Se scendere costa un minuto a pagina e
-ricopiare due, vince lo scendere, con dieci pagine come con cento. Solo con
-fascicoli lunghissimi la bilancia si sposta, e sempre dalla parte delle scale:
-lì ricopiare una pagina costa sempre di più, perché ogni riga nuova va
-confrontata con tutte quelle prima. Dal piano di sotto riprendere conviene
-quasi sempre, dalla cantina a volte si fa prima a ricopiare, e conta anche come
-si portano i fascicoli: dieci scatoloni pieni fanno le scale più in fretta di
-cento cartelline sciolte. In uno studio con molti copisti, poi, conviene dare
-ogni atto nuovo a chi ha già in archivio le premesse giuste, a meno che non sia
-sommerso di lavoro.
+[Portarli giù conviene se riprenderli costa meno che ricopiarli]{.pt-matita}.
+Tutti e due i tempi crescono con le pagine del fascicolo, quindi la sua
+lunghezza pesa allo stesso modo sui due piatti della bilancia, e a decidere è
+quanto sono lente le scale rispetto alla mano del copista. Se scendere costa un
+minuto a pagina e ricopiare due, vince lo scendere, con dieci pagine come con
+cento. Solo con fascicoli lunghissimi la bilancia si sposta, e sempre dalla
+parte delle scale: lì ricopiare una pagina costa sempre di più, perché ogni
+riga nuova va confrontata con tutte quelle prima. Dal piano di sotto riprendere
+conviene quasi sempre, dalla cantina a volte si fa prima a ricopiare, e conta
+anche come si portano i fascicoli: dieci scatoloni pieni fanno le scale più in
+fretta di cento cartelline sciolte. In uno studio con molti copisti, poi,
+conviene dare ogni atto nuovo a chi ha già in archivio le premesse giuste, a
+meno che non sia sommerso di lavoro.
 
 Lo stesso problema si presenta sul tavolo, mentre si lavora. Lì il copista non
 copia: scrive gli atti nuovi, una riga alla volta, e per ciascuno tiene accanto
@@ -746,17 +747,17 @@ Lo stesso conto governa la cache dei prefissi quando la si estende oltre la
 GPU. I blocchi sfrattati dall'albero dei prefissi, invece di essere scartati,
 scendono in una gerarchia: la memoria dell'host, gli SSD locali, e in un
 cluster la memoria e i dischi di altre macchine raggiunti via rete. Un colpo in
-un livello di banda $B_{\text{liv}}$ conviene se
-$L\, m_{\text{kv}}/B_{\text{liv}} < 2N_pL/P_{\text{eff}}$, cioè se ricaricare
-costa meno che rifare il prefill, e il margine si stringe a ogni livello.
-Mooncake {cite}`qin2025mooncake`, la piattaforma che serve il chatbot Kimi, è
-costruita attorno a questa idea: separa prefill e decode, mette in comune la
-DRAM, gli SSD e le schede di rete poco usati del cluster in una cache globale
-di KV, e ha uno scheduler che sceglie dove mandare ogni richiesta pesando il
-prefisso già presente contro il carico delle istanze, e che può anche spostare
-la cache o ricalcolarla. Su tracce reali gli autori riportano una capacità
-effettiva più alta del 59-498% rispetto ai sistemi di riferimento, a seconda
-della soglia imposta alla pausa fra un token e l'altro.
+un livello di banda $B_{\text{liv}}$ conviene se $L\,
+m_{\text{kv}}/B_{\text{liv}} < 2N_pL/P_{\text{eff}}$, cioè [se ricaricare costa
+meno che rifare il prefill]{.pt-matita}, e il margine si stringe a ogni
+livello. Mooncake {cite}`qin2025mooncake`, la piattaforma che serve il chatbot
+Kimi, è costruita attorno a questa idea: separa prefill e decode, mette in
+comune la DRAM, gli SSD e le schede di rete poco usati del cluster in una cache
+globale di KV, e ha uno scheduler che sceglie dove mandare ogni richiesta
+pesando il prefisso già presente contro il carico delle istanze, e che può
+anche spostare la cache o ricalcolarla. Su tracce reali gli autori riportano
+una capacità effettiva più alta del 59-498% rispetto ai sistemi di riferimento,
+a seconda della soglia imposta alla pausa fra un token e l'altro.
 
 `````
 
@@ -832,9 +833,9 @@ successiva si muoverà nella direzione che quella scelta indica. Un sistema
 calibrato sul throughput diventerà bravissimo a servire molte richieste male;
 uno calibrato sul TTFT medio diventerà bravissimo a nascondere la coda lenta a
 chi guarda i grafici. È lo stesso avvertimento già dato sulle metriche di un
-classificatore e sui surrogati del giudizio umano: ottimizzare contro una
+classificatore e sui surrogati del giudizio umano: [ottimizzare contro una
 misura sbagliata non produce un fallimento rumoroso, produce un successo
-apparente.
+apparente]{.pt-matita}.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

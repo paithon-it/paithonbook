@@ -176,11 +176,11 @@ grossolano al più selettivo.
 
 `````
 
-Il gate attenua il primo difetto, la saturazione, ma dimentica anche ciò che
-servirebbe: ad esempio, nei test in cui bisogna ritrovare un dato nascosto in
-un testo lungo, Mamba-2, che decade troppo in fretta, peggiora molto oltre i
-2000 token {cite}`yang2024gateddelta`. Il secondo difetto non lo tocca: per
-quanto le voci decadano, ogni scrittura resta un'aggiunta cieca, e
+[Il gate attenua il primo difetto, la saturazione, ma dimentica anche ciò che
+servirebbe]{.pt-matita}: ad esempio, nei test in cui bisogna ritrovare un dato
+nascosto in un testo lungo, Mamba-2, che decade troppo in fretta, peggiora
+molto oltre i 2000 token {cite}`yang2024gateddelta`. Il secondo difetto non lo
+tocca: per quanto le voci decadano, ogni scrittura resta un'aggiunta cieca, e
 nessuno controlla se quella voce contraddice le voci già presenti.
 
 ## Correggere: la delta rule
@@ -409,22 +409,22 @@ N=16  richiamo: somma 0.68, delta 0.49  | riscrittura: somma 1.22, delta 0.00
 N=32  richiamo: somma 0.99, delta 0.72  | riscrittura: somma 1.43, delta 0.00
 ```
 
-La delta rule riduce il limite di capacità senza toglierlo. In particolare, a
-$N = d$ l'errore resta $0{,}72$, contro $0{,}99$ della somma. Sul valore
-riscritto la somma sbaglia di più del valore stesso, perché restituisce il
-vecchio sommato al nuovo; la delta rule lo restituisce senza errore, perché
-le chiavi hanno norma uno e $\beta_t = 1$.
+[La delta rule riduce il limite di capacità senza toglierlo]{.pt-matita}. In
+particolare, a $N = d$ l'errore resta $0{,}72$, contro $0{,}99$ della somma.
+Sul valore riscritto la somma sbaglia di più del valore stesso, perché
+restituisce il vecchio sommato al nuovo; la delta rule lo restituisce senza
+errore, perché le chiavi hanno norma uno e $\beta_t = 1$.
 
 ## Unire oblio e correzione: Gated DeltaNet
 
-Poiché gate e delta rule curano difetti diversi, si possono combinare. Il
-gate scalare, che fa decadere tutta la memoria con lo stesso fattore, svuota
-in fretta, ma in modo uniforme e indiscriminato, e non sa *cosa* sta buttando
-via. La delta rule fa correzioni
-mirate su singole chiavi, ma non svuota: tende a lasciare la memoria
-piena di tracce, sia pure aggiustate. I due rimedi sono dunque complementari,
-e le tiene insieme **Gated DeltaNet**, di Yang (MIT) con Kautz e Hatamizadeh
-(NVIDIA), presentato alla conferenza ICLR nel 2025 {cite}`yang2024gateddelta`.
+Poiché gate e delta rule curano difetti diversi, si possono combinare. Il gate
+scalare, che fa decadere tutta la memoria con lo stesso fattore, svuota in
+fretta, ma in modo uniforme e indiscriminato, e non sa *cosa* sta buttando via.
+La delta rule fa correzioni mirate su singole chiavi, ma non svuota: tende a
+lasciare la memoria piena di tracce, sia pure aggiustate. [I due rimedi sono
+dunque complementari]{.pt-matita}, e le tiene insieme **Gated DeltaNet**, di
+Yang (MIT) con Kautz e Hatamizadeh (NVIDIA), presentato alla conferenza ICLR
+nel 2025 {cite}`yang2024gateddelta`.
 
 `````{tab} Elementare
 
@@ -493,9 +493,10 @@ addestrabile su contesti lunghi.
 ## Le ricorrenze come regressione online
 
 Accumulo, gate, delta rule e la loro combinazione sembrano trucchi diversi, ma
-si leggono tutti come passi di ottimizzazione online sullo stesso problema,
-con obiettivi e decadimenti diversi. Il problema è una regressione lineare con
-bersaglio vettoriale, della stessa famiglia della {doc}`retta di best fit
+[si leggono tutti come passi di ottimizzazione online sullo stesso
+problema]{.pt-matita}, con obiettivi e decadimenti diversi. Il problema è una
+regressione lineare con bersaglio vettoriale, della stessa famiglia della
+{doc}`retta di best fit
 </MachineLearning/apprendimento-supervisionato>`: si cerca una matrice
 $\mathbf{S}$ tale che $\mathbf{S}\mathbf{k}_t \approx \mathbf{v}_t$ per ogni
 coppia letta. È *online* perché le coppie arrivano una alla volta, e ciascuna

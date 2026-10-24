@@ -7,8 +7,8 @@ descritta benissimo. A deciderlo è la testa di uscita, cioè una softmax su un
 vocabolario che contiene soltanto parole. Infatti, qualunque cosa il modello
 abbia capito guardando, per uscire deve passare da lì.
 
-L'asimmetria è strutturale: il sistema ha un occhio in ingresso e una bocca in
-uscita, e nessuna mano.
+L'asimmetria è strutturale: [il sistema ha un occhio in ingresso e una bocca in
+uscita, e nessuna mano]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -89,10 +89,10 @@ finta che non ci sia.
 ```
 
 Il passaggio che conta in {numref}`fig-vq-vae` è l'ultimo, quando del vettore
-resta solo l'indice. Da lì in poi un'immagine e una frase sono oggetti dello
-stesso tipo per il modello, cioè sequenze di simboli da un vocabolario finito;
-quindi si possono trattare nello stesso Transformer, benché le loro
-statistiche restino molto diverse.
+resta solo l'indice. Da lì in poi [un'immagine e una frase sono oggetti dello
+stesso tipo per il modello, cioè sequenze di simboli da un vocabolario
+finito]{.pt-matita}; quindi si possono trattare nello stesso Transformer,
+benché le loro statistiche restino molto diverse.
 
 `````{tab} Elementare
 
@@ -208,10 +208,10 @@ dall'ingresso e le elabora un solo Transformer, con gli stessi pesi.
 Delle tre strade presentate in apertura di
 capitolo ne bastano quindi due: la mappa di CLIP e l'occhio innestato stanno
 dal lato tardivo, anche se nel secondo i token visivi entrano nel modello di
-linguaggio fin dal primo strato, e nessuno dei due sa produrre un'immagine. La
+linguaggio fin dal primo strato, e nessuno dei due sa produrre un'immagine. [La
 differenza non sta in quanta informazione si scambiano immagine e testo, ma in
 come ciascuna modalità arriva alla sequenza: con un proprio encoder già
-addestrato, oppure con lo stesso vocabolario e gli stessi pesi.
+addestrato, oppure con lo stesso vocabolario e gli stessi pesi]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -364,8 +364,8 @@ sono fatti in modo molto diverso: indovinare quale sarà la prossima tessera di
 mosaico è molto più difficile che indovinare un articolo determinativo, e i
 numeri che le due cose fanno girare dentro la rete non hanno la stessa taglia.
 
-Passano però per gli stessi pesi, e ciascuna, per contare qualcosa nel
-risultato, tende a farsi un po’ più grossa. I numeri interni crescono,
+Passano però per gli stessi pesi, e [ciascuna, per contare qualcosa nel
+risultato, tende a farsi un po’ più grossa]{.pt-matita}. I numeri interni crescono,
 lentamente, per milioni di passi; e poiché sono memorizzati con una precisione
 finita, prima o poi si esce dall'intervallo in cui quei numeri hanno ancora un
 senso, e l'addestramento salta.
@@ -439,10 +439,11 @@ della softmax, cioè la somma degli esponenziali dei logit: non tocca le
 probabilità, che dal livello assoluto non dipendono, ma toglie al modello la
 libertà di farlo crescere.
 
-La lezione generale va oltre la multimodalità: quando più sorgenti eterogenee
+La lezione generale va oltre la multimodalità: [quando più sorgenti eterogenee
 condividono gli stessi parametri, la competizione fra di esse si scarica sulle
-norme, e la stabilità va difesa nei punti in cui quelle norme entrano in una
-softmax, che della loro crescita non si accorge finché non è troppo tardi.
+norme]{.pt-matita}, e la stabilità va difesa nei punti in cui quelle norme
+entrano in una softmax, che della loro crescita non si accorge finché non è
+troppo tardi.
 
 `````
 
@@ -505,9 +506,9 @@ in cui il mosaico veniva letto, riga per riga.
 Quando nel foglio arriva il punto in cui ci vuole un disegno, chi scrive posa
 la penna, apre un riquadro, lo abbozza e lo rifinisce guardando quel che ha
 scritto fin lì, poi lo chiude e riprende a scrivere dalla riga dopo. Le due
-tecniche non stanno in due teste separate: a scrivere e a dipingere si allena
+tecniche non stanno in due teste separate: [a scrivere e a dipingere si allena
 la stessa mano, e a essere diversi sono soltanto gli strumenti, la penna e il
-pennello.
+pennello]{.pt-matita}.
 
 Il vantaggio pratico si vede subito: siccome l'immagine non viene mai
 arrotondata a un catalogo di tessere, il dettaglio fine non viene buttato via
@@ -545,12 +546,12 @@ dover togliere, e questo $t$ è il livello di rumore, non la posizione nella
 sequenza) e $\lambda$ pesa il secondo rispetto al primo (nel lavoro originale
 $\lambda = 5$).
 
-Si noti che le due perdite non riguardano parametri diversi: attraversano
-gli stessi strati, e ogni peso del Transformer riceve gradienti da entrambe.
-Restano specifici della modalità soltanto gli innesti agli estremi (l'embedding
-dei token di testo da una parte, i pochi strati che impacchettano e
-spacchettano le patch latenti dall'altra), che è il minimo indispensabile per
-far entrare due tipi di dato nella stessa sequenza.
+Si noti che [le due perdite non riguardano parametri diversi: attraversano gli
+stessi strati, e ogni peso del Transformer riceve gradienti da
+entrambe]{.pt-matita}. Restano specifici della modalità soltanto gli innesti
+agli estremi (l'embedding dei token di testo da una parte, i pochi strati che
+impacchettano e spacchettano le patch latenti dall'altra), che è il minimo
+indispensabile per far entrare due tipi di dato nella stessa sequenza.
 
 In generazione il modello lavora in due modalità e passa dall'una all'altra
 senza interventi esterni: campiona parole finché non emette il simbolo speciale
@@ -629,8 +630,8 @@ superano a vicenda, e la scelta si fa sul meccanismo.
 Se il compito è capire (descrivere una foto, rispondere a domande su un
 grafico, leggere un documento), la fusione tardiva è la scelta ragionevole e lo
 resta, perché riusa due modelli già addestrati, evita l'arrotondamento al
-codebook e chiede solo un connettore. Pagare per la mano
-quando basta la bocca è cattiva ingegneria.
+codebook e chiede solo un connettore. [Pagare per la mano
+quando basta la bocca è cattiva ingegneria]{.pt-matita}.
 
 Se il compito è produrre immagini e testo dentro lo stesso sistema, o
 peggio alternarli (una risposta che contiene un diagramma, un disegno corretto

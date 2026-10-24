@@ -56,8 +56,8 @@ trecento conti non si accorge nemmeno del tragitto.
 Dividendo 640 per poco meno di cinque si trova dunque la soglia: circa
 centoquaranta conti per ogni numero preso da
 fuori (il valore preciso dipende dal chip e da quante cifre ha ogni numero).
-Sotto la soglia la corrente se ne va soprattutto nei viaggi alla memoria; sopra,
-nei conti.
+[Sotto la soglia la corrente se ne va soprattutto nei viaggi alla memoria; sopra,
+nei conti]{.pt-matita}.
 
 Generare una parola alla volta sta molto sotto la soglia, perché il
 computer rilegge tutti i pesi del modello per produrne una sola. Servire
@@ -124,19 +124,19 @@ generazione sta a circa uno e la lettura di un prompt a qualche migliaio di
 FLOP/byte; cambia il valore del pareggio, e conviene sapere da quale tabella e
 da quale formato proviene il proprio.
 
-Sotto il pareggio, qualunque sia il suo valore esatto, l'energia se ne va quasi
-tutta in movimento di dati. È il caso della generazione token per token, dove
-l'intensità è dell'ordine dell'unità e l'aritmetica è circa l'uno per cento
-dell'energia. Sopra il pareggio domina invece l'aritmetica: la lettura di
-un prompt lungo e una passata di addestramento stanno dall'altra parte del
-ginocchio. La leva del movimento dei dati è quindi grande dove il carico è
-limitato dalla memoria (*memory-bound*), che comprende quasi tutta l'inferenza
-interattiva, e modesta altrove. Questo motiva, dal lato dell'energia,
-l'ingegneria del {doc}`capitolo sulle GPU </GPU/overview>`: il riuso in shared
-memory, la fusione dei kernel, la precisione ridotta (che dimezza i byte da
-muovere prima ancora di alleggerire i conti) e l'array sistolico, che esiste per
-far passare un dato letto una sola volta attraverso decine di unità di
-calcolo.
+Sotto il pareggio, qualunque sia il suo valore esatto, [l'energia se ne va
+quasi tutta in movimento di dati]{.pt-matita}. È il caso della generazione
+token per token, dove l'intensità è dell'ordine dell'unità e l'aritmetica è
+circa l'uno per cento dell'energia. Sopra il pareggio domina invece
+l'aritmetica: la lettura di un prompt lungo e una passata di addestramento
+stanno dall'altra parte del ginocchio. La leva del movimento dei dati è quindi
+grande dove il carico è limitato dalla memoria (*memory-bound*), che comprende
+quasi tutta l'inferenza interattiva, e modesta altrove. Questo motiva, dal lato
+dell'energia, l'ingegneria del {doc}`capitolo sulle GPU </GPU/overview>`: il
+riuso in shared memory, la fusione dei kernel, la precisione ridotta (che
+dimezza i byte da muovere prima ancora di alleggerire i conti) e l'array
+sistolico, che esiste per far passare un dato letto una sola volta attraverso
+decine di unità di calcolo.
 
 La stessa scomposizione dà l'energia di un token generato. In un passo di
 decode con $b$ sequenze di contesto $n_{\text{ctx}}$,
@@ -213,8 +213,8 @@ accende centrali diverse. Oltre alla media del luogo e al valore di quell'ora
 c'è un terzo modo di contare: chi compra a contratto energia eolica o solare per
 il suo centro dati la sottrae dal totale anche nelle ore in cui dalla presa esce
 la corrente della rete di tutti, e con quel metodo la stessa corrente risulta
-molto più pulita. Prima di confrontare due cifre bisogna sapere quale dei tre è
-stato usato.
+molto più pulita. [Prima di confrontare due cifre bisogna sapere quale dei tre è
+stato usato]{.pt-matita}.
 
 I tre fattori (la corrente delle macchine, il contorno dell'edificio, quanto
 sporca è la rete) si moltiplicano fra loro, non si sommano: dimezzare il
@@ -270,16 +270,16 @@ il PUE non copre né le perdite di trasmissione della rete elettrica né il
 consumo d'acqua. Va bene per l'ordine di grandezza, non per confrontare due
 lavori sulla stessa macchina.
 
-Anche $I_{\text{rete}}$ va scelto, perché per lo stesso carico se ne possono
-prendere tre valori. C'è la media annuale della rete in cui sta il centro dati
-(il metodo *location-based*); c'è l'intensità oraria, o quella marginale, cioè
-della centrale che si accende per coprire il carico in più; e c'è il valore
-contrattuale, che sconta l'energia rinnovabile acquistata dall'azienda (il
-metodo *market-based*). Per spostare un lavoro nel tempo conta l'intensità
-oraria, per decidere se un lavoro in più accende una centrale conta la
-marginale. La differenza è grande: per il 2024 Google dichiara sui suoi centri
-dati 345 g/kWh con il primo metodo e 94 con il terzo (345 meno 251 di energia
-pulita acquistata), e con il terzo stima per il prompt di testo mediano
+[Anche $I_{\text{rete}}$ va scelto, perché per lo stesso carico se ne possono
+prendere tre valori]{.pt-matita}. C'è la media annuale della rete in cui sta il
+centro dati (il metodo *location-based*); c'è l'intensità oraria, o quella
+marginale, cioè della centrale che si accende per coprire il carico in più; e
+c'è il valore contrattuale, che sconta l'energia rinnovabile acquistata
+dall'azienda (il metodo *market-based*). Per spostare un lavoro nel tempo conta
+l'intensità oraria, per decidere se un lavoro in più accende una centrale conta
+la marginale. La differenza è grande: per il 2024 Google dichiara sui suoi
+centri dati 345 g/kWh con il primo metodo e 94 con il terzo (345 meno 251 di
+energia pulita acquistata), e con il terzo stima per il prompt di testo mediano
 dell'assistente Gemini, nel maggio 2025, 0,24 Wh, 0,03 g di CO₂e (comprese le
 emissioni di fabbricazione dell'hardware) e 0,26 millilitri d'acqua
 {cite}`elsworth2025measuring`. È una misura datata, da leggere insieme alla
@@ -342,12 +342,13 @@ addestrare {cite}`patterson2022plateau`. Ne discende un ordine di priorità, da
 tenere presente quando si sceglie fra un modello grande e uno piccolo rifinito
 bene.
 
-Le leve principali sono dunque quelle del rispondere, e coincidono con quelle
-già incontrate per risparmiare denaro e tempo. Si alleggerisce il modello,
-scrivendone i pesi con meno cifre o togliendo quelli che servono meno (la
-quantizzazione e la potatura di {doc}`LLMOps </MLOps/llmops>`); si servono
-molte richieste in una volta sola; e non si ricalcola ciò che è già stato
-calcolato (il riuso del prefisso di {doc}`Misurare un servizio
+[Le leve principali sono dunque quelle del rispondere]{.pt-matita}, e
+coincidono con quelle già incontrate per risparmiare denaro e tempo. Si
+alleggerisce il modello, scrivendone i pesi con meno cifre o togliendo quelli
+che servono meno (la quantizzazione e la potatura di
+{doc}`LLMOps </MLOps/llmops>`); si servono molte richieste in una volta sola; e
+non si ricalcola ciò che è già stato calcolato (il riuso del prefisso di
+{doc}`Misurare un servizio
 </MLOps/metriche-di-servizio>`). Là servivano a spendere meno e rispondere
 prima; qui riducono anche l'energia per richiesta.
 
@@ -396,9 +397,9 @@ vita della vecchia, superino quelle della fabbricazione della nuova. Dove la
 rete brucia carbone succede in fretta; dove è pulita può volerci più della vita
 che restava alla vecchia, e allora conviene tenerla. Con il sensore va al
 rovescio: sostituirlo significa far fabbricare da capo un dispositivo per
-risparmiare briciole di corrente, e la scelta ambientale che conta diventa
-tenerlo in servizio più a lungo, perché un programma che continua a girare sul
-dispositivo vecchio è un dispositivo nuovo che non si costruisce.
+risparmiare briciole di corrente, e [la scelta ambientale che conta diventa
+tenerlo in servizio più a lungo]{.pt-matita}, perché un programma che continua
+a girare sul dispositivo vecchio è un dispositivo nuovo che non si costruisce.
 
 `````
 
@@ -448,8 +449,9 @@ e conviene se $T_{\text{rip}}$ è più breve della vita residua della scheda
 vecchia. Il tempo è inversamente proporzionale a $I_{\text{rete}}$: su una rete
 a qualche decina di grammi per kilowattora si allunga di un ordine di grandezza
 rispetto a una rete a carbone, la stessa leva del «dove si esegue». Sull’*edge*
-si ottimizza la longevità: un modello che continua a funzionare su hardware
-vecchio evita un ricambio, e quel ricambio pesa più di anni di funzionamento.
+[si ottimizza la longevità]{.pt-matita}: un modello che continua a funzionare
+su hardware vecchio evita un ricambio, e quel ricambio pesa più di anni di
+funzionamento.
 
 `````
 
@@ -487,8 +489,8 @@ consumo è salito di poco.
 l'Agenzia internazionale dell'energia: nel 2024 i centri dati del mondo hanno
 consumato circa 415 TWh, l'1,5% dell'elettricità mondiale, e nello scenario di
 base arrivano a circa 945 TWh nel 2030, più del doppio {cite}`iea2025energy`. Le
-due serie insieme mostrano che l'efficienza può assorbire la crescita e non
-garantisce di farlo.
+due serie insieme mostrano che [l'efficienza può assorbire la crescita e non
+garantisce di farlo]{.pt-matita}.
 
 Quasi tutte le cifre pubblicate su questo tema sono stime, ottenute da ipotesi
 su hardware, utilizzo e mix energetico che raramente sono dichiarate tutte;

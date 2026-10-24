@@ -33,12 +33,12 @@ sta nella seconda.
 
 ## Primo: un ordine
 
-Una frase un ordine ce l'ha, un'immagine no. Bisogna dunque sceglierne uno e
-non cambiarlo più: si va riga per riga, da sinistra a destra, come quando si
-legge, e dentro un pixel a colori si mette anche un ordine fra i tre canali,
-cioè fra il rosso, il verde e il blu. La scelta è arbitraria e nessuno pretende
-che sia la migliore: pretende solo di essere fissa, perché è rispetto a essa
-che «prima» e «dopo» vogliono dire qualcosa.
+Una frase un ordine ce l'ha, un'immagine no. [Bisogna dunque sceglierne uno e
+non cambiarlo più]{.pt-matita}: si va riga per riga, da sinistra a destra, come
+quando si legge, e dentro un pixel a colori si mette anche un ordine fra i tre
+canali, cioè fra il rosso, il verde e il blu. La scelta è arbitraria e nessuno
+pretende che sia la migliore: pretende solo di essere fissa, perché è rispetto
+a essa che «prima» e «dopo» vogliono dire qualcosa.
 
 Fatto questo, la probabilità di un'immagine è il prodotto delle probabilità dei
 suoi pixel, ciascuna presa sapendo tutti i pixel che nella lettura vengono
@@ -53,10 +53,10 @@ Qui arriva l'ostacolo, e ha una forma precisa. Il {doc}`capitolo sul deep
 learning </DeepLearning/overview>` ha spiegato perché su un'immagine si usa una
 convoluzione e non uno strato denso: la convoluzione calcola l'uscita in un
 punto con un filtro, un quadratino di pesi che guarda un intorno del pixel,
-cioè i vicini in tutte le direzioni. Qui «tutte le direzioni» è ciò che non si
-può ammettere. Infatti l'intorno comprende anche pixel che nell'ordine di
-lettura vengono dopo, e se nel prevedere un pixel la rete li vede, il prodotto
-dei condizionali non è più una probabilità.
+cioè i vicini in tutte le direzioni. [Qui «tutte le direzioni» è ciò che non si
+può ammettere]{.pt-matita}. Infatti l'intorno comprende anche pixel che
+nell'ordine di lettura vengono dopo, e se nel prevedere un pixel la rete li
+vede, il prodotto dei condizionali non è più una probabilità.
 
 Il vincolo si impone sui pesi con la **convoluzione mascherata**: il filtro si
 moltiplica, elemento per elemento, per una maschera di zeri e di uni che azzera
@@ -172,12 +172,12 @@ termini, le maschere rispettano l'ordine di lettura.
 
 La seconda colonna è la sorpresa. Con sei strati ventiquattro pixel del passato
 restano fuori, perché la rete non arriva ancora così lontano e una profondità
-maggiore risolve il problema. Con dodici ne restano fuori sei. Con
-ventiquattro ne restano fuori ancora sei, una zona che quelle maschere non
-raggiungono a nessuna profondità: il triangolo che nella mappa sale a destra
-del pixel da indovinare. Si chiama **punto cieco** (*blind spot*), e il lavoro
-che l'ha diagnosticato lo dice in una riga: le PixelCNN «hanno un punto cieco
-nel campo recettivo che non può essere usato per fare predizioni»
+maggiore risolve il problema. Con dodici ne restano fuori sei. Con ventiquattro
+ne restano fuori ancora sei, [una zona che quelle maschere non raggiungono a
+nessuna profondità]{.pt-matita}: il triangolo che nella mappa sale a destra del
+pixel da indovinare. Si chiama **punto cieco** (*blind spot*), e il lavoro che
+l'ha diagnosticato lo dice in una riga: le PixelCNN «hanno un punto cieco nel
+campo recettivo che non può essere usato per fare predizioni»
 {cite}`oord2016conditional`. Il disegno lo mostra strato per strato
 ({numref}`fig-campo-cieco`): il cono si allarga fin dove arriva, e i sei
 quadretti tratteggiati che salgono a destra del pixel da indovinare restano
@@ -369,8 +369,8 @@ ordini di grandezza nel numero di passi consecutivi, che un'implementazione più
 efficiente rende meno onerosi ma non riduce, perché la sequenza la impone la
 fattorizzazione stessa.
 
-Per questo l'idea, sulle immagini, è tornata spostandosi di un piano. Niente
-obbliga i pezzi da ordinare a essere pixel. Se prima si comprime
+Per questo l'idea, sulle immagini, è tornata spostandosi di un piano. [Niente
+obbliga i pezzi da ordinare a essere pixel]{.pt-matita}. Se prima si comprime
 l'immagine in una griglia piccola di simboli presi da un catalogo, i passaggi
 sequenziali crollano. Ne è un esempio il VQ-VAE dei {doc}`modelli latenti
 </ModelliLatenti/il-latente-che-si-usa>`, o il suo successore con perdita

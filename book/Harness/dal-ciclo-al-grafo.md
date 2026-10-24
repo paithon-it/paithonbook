@@ -48,8 +48,9 @@ avvia, scegli la voce, lavora, collauda, salva, sempre in quest'ordine. Dentro
 la casella «lavora», però, c'è un agente, che decide da sé quali file aprire e
 quali comandi lanciare. Il ciclo fra costruttore e valutatore di Rajasekaran è
 il valutatore con ottimizzatore, con il contratto di tappa fissato prima.
-Quindi, più che scegliere fra percorso scritto e agente, si tratta di decidere
-dove passa il confine fra ciò che decide il codice e ciò che decide il modello.
+Quindi, più che scegliere fra percorso scritto e agente, [si tratta di decidere
+dove passa il confine fra ciò che decide il codice e ciò che decide il
+modello]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -248,12 +249,12 @@ def esegui(filo, approvati=()):
         return fatti, f"fermo dopo {TETTO} tentativi: serve una persona"
     return fatti, "fine"
 
-for giro, approvati in [("prima corsa", ()), ("ripresa", ()),
+for corsa, approvati in [("prima corsa", ()), ("ripresa", ()),
                         ("dopo l'approvazione", ("rilascia",))]:
     fatti, motivo = esegui("ordine-17", approvati)
-    print(f"{giro}: {' -> '.join(fatti)}")
+    print(f"{corsa}: {' -> '.join(fatti)}")
     print(f"   {motivo}")
-    if giro == "prima corsa":
+    if corsa == "prima corsa":
         nodo, stato = archivio["ordine-17"]
         print(f"   punto salvato: si riparte da «{nodo}», "
               f"tentativi costruiti: {stato['tentativi']}")
@@ -321,16 +322,16 @@ si riparte. Non è la fotografia della bottega che si scatta la sera, quella
 del salvataggio nella storia: è una foto piccola, della sola scheda, dopo ogni
 banco.
 
-Una sera salta la corrente mentre l'ordine è al collaudo. La mattina nessuno
-ricomincia dal disegno: si prende l'ultima foto, che dice «riprendere dal
-collaudo, un tentativo già costruito», e si riparte da lì. Il collaudo
-interrotto si rifà da capo, però, perché nessuno sa a che punto fosse arrivato
-quando la luce è andata via. E la scheda può sbagliare in un modo solo: se la
-luce salta mentre il camion parte, l'ultima foto è di prima, e la scheda dice
-«da spedire». Per questo chi spedisce scrive sulla scheda il numero della
-spedizione prima di chiamare il corriere, e la mattina, invece di rispedire,
-telefona e chiede se la spedizione con quel numero è già partita; il corriere,
-dal canto suo, non accetta due ritiri con lo stesso numero.
+Una sera salta la corrente mentre l'ordine è al collaudo. [La mattina nessuno
+ricomincia dal disegno]{.pt-matita}: si prende l'ultima foto, che dice
+«riprendere dal collaudo, un tentativo già costruito», e si riparte da lì. Il
+collaudo interrotto si rifà da capo, però, perché nessuno sa a che punto fosse
+arrivato quando la luce è andata via. E la scheda può sbagliare in un modo
+solo: se la luce salta mentre il camion parte, l'ultima foto è di prima, e la
+scheda dice «da spedire». Per questo chi spedisce scrive sulla scheda il numero
+della spedizione prima di chiamare il corriere, e la mattina, invece di
+rispedire, telefona e chiede se la spedizione con quel numero è già partita; il
+corriere, dal canto suo, non accetta due ritiri con lo stesso numero.
 
 Il banco della spedizione ha anche un'altra regola, che non c'entra con i
 guasti: lì l'ordine si ferma e aspetta la firma del proprietario, perché un
@@ -371,12 +372,12 @@ concatenazione è associativa ma non commutativa, e i rami si fondono in un
 ordine fissato; la sostituzione, con due rami che scrivono lo stesso campo,
 non si ammette, e LangGraph la rifiuta.
 
-La ripresa dopo un guasto riparte dall'ultimo punto salvato, e dà al nodo in
-corso una semantica **almeno una volta**: se si è interrotto dopo aver prodotto
-un effetto esterno ma prima che il punto fosse scritto, alla ripresa lo produce
-di nuovo. Vale a una condizione, che il punto si scriva in un archivio durevole
-e in modo sincrono, prima di passare al nodo dopo: un dizionario in memoria,
-come quello del motore, sparisce con il processo.
+[La ripresa dopo un guasto riparte dall'ultimo punto salvato]{.pt-matita}, e dà
+al nodo in corso una semantica **almeno una volta**: se si è interrotto dopo
+aver prodotto un effetto esterno ma prima che il punto fosse scritto, alla
+ripresa lo produce di nuovo. Vale a una condizione, che il punto si scriva in
+un archivio durevole e in modo sincrono, prima di passare al nodo dopo: un
+dizionario in memoria, come quello del motore, sparisce con il processo.
 
 Una semantica **esattamente una volta** per gli effetti esterni chiede qualcosa
 in più dal lato di chi li riceve. O nodi idempotenti, la proprietà che si

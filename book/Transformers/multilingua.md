@@ -51,11 +51,11 @@ Resta il problema delle dosi. Ogni mestolata è un **turno**, e tocca a una
 lingua sola; di turni ce ne sono miliardi. Se si versasse in proporzione ai
 testi che esistono, l'inglese sommergerebbe tutto, perché fra la sua Wikipedia
 e quella in curdo il divario è di centinaia di volte, e in miliardi di
-mestolate il curdo non salirebbe quasi mai. Allora si bara sulle dosi, e si
+mestolate il curdo non salirebbe quasi mai. [Allora si bara sulle dosi, e si
 bara in modo controllato, aggiungendone alle lingue piccole e togliendone alle
-grandi, con una manopola che dice quanto appiattire. Girata a fondo, ogni
-lingua ha lo stesso numero di turni, il curdo quanti l'inglese. Lasciata ferma,
-ognuna ha i turni che le spettano. La si mette in mezzo.
+grandi]{.pt-matita}, con una manopola che dice quanto appiattire. Girata a
+fondo, ogni lingua ha lo stesso numero di turni, il curdo quanti l'inglese.
+Lasciata ferma, ognuna ha i turni che le spettano. La si mette in mezzo.
 
 Quanto in mezzo, non c'è accordo. Prendi un pentolone con due sole lingue,
 cento frasi in tutto, novantanove inglesi e una curda. mBERT, il primo modello
@@ -100,17 +100,18 @@ $$
 q_i = \frac{p_i^{\,\alpha}}{\sum_j p_j^{\,\alpha}}, \qquad 0 < \alpha \le 1 .
 $$
 
-Con $\alpha = 1$ nulla cambia; più $\alpha$ scende, più la distribuzione si
-appiattisce verso l'uniforme. Il valore cambia da un modello all'altro: mBERT
-usa $\alpha = 0{,}7$ (il README multilingue ufficiale lo chiama $S$), XLM
-{cite}`lample2019cross` $\alpha = 0{,}5$, XLM-R {cite}`conneau2020unsupervised`
-$\alpha = 0{,}3$. Ad esempio, per due lingue che compaiono nei dati al $99\%$ e
-all’$1\%$, l’$\alpha$ di mBERT dà il $96\%$ e il $4\%$, sovracampionando la
-lingua piccola di quasi quattro volte; il valore di XLM-R porta le quote
-all’$80\%$ e al $20\%$, moltiplicandone la presenza per venti. Lo stesso
-campionamento governa il vocabolario condiviso: alle lingue a bassa
-disponibilità vengono assegnate sottoparole più lunghe invece di singoli
-caratteri, secondo il compromesso discusso nella {doc}`sezione sui tokenizzatori
+Con $\alpha = 1$ nulla cambia; [più $\alpha$ scende, più la distribuzione si
+appiattisce verso l'uniforme]{.pt-matita}. Il valore cambia da un modello
+all'altro: mBERT usa $\alpha = 0{,}7$ (il README multilingue ufficiale lo
+chiama $S$), XLM {cite}`lample2019cross` $\alpha = 0{,}5$, XLM-R
+{cite}`conneau2020unsupervised` $\alpha = 0{,}3$. Ad esempio, per due lingue
+che compaiono nei dati al $99\%$ e all’$1\%$, l’$\alpha$ di mBERT dà il $96\%$
+e il $4\%$, sovracampionando la lingua piccola di quasi quattro volte; il
+valore di XLM-R porta le quote all’$80\%$ e al $20\%$, moltiplicandone la
+presenza per venti. Lo stesso campionamento governa il vocabolario condiviso:
+alle lingue a bassa disponibilità vengono assegnate sottoparole più lunghe
+invece di singoli caratteri, secondo il compromesso discusso nella
+{doc}`sezione sui tokenizzatori
 </NaturalLanguageProcessing/tokenizzatori>`. Ogni quota assegnata a una lingua
 rara viene però sottratta a una comune. Il compromesso ha un effetto su ogni
 frase: dove il vocabolario condiviso riserva meno sottoparole a una lingua, sale
@@ -130,8 +131,8 @@ migliora il modello sulla sua lingua a parità di dati.
 
 Nell'addestramento di mBERT non c'è nulla che chieda al modello di
 mettere vicine le traduzioni. Nessuno gli mostra mai «il gatto nero salta sul
-muro» accanto a «the black cat jumps on the wall». Eppure, a fine
-addestramento, le due frasi hanno rappresentazioni vicine.
+muro» accanto a «the black cat jumps on the wall». [Eppure, a fine
+addestramento, le due frasi hanno rappresentazioni vicine]{.pt-matita}.
 
 Dentro il modello ogni frase diventa un vettore (in mBERT la media dei vettori
 dei suoi token a un dato strato, 768 numeri), cioè un indirizzo: due numeri
@@ -299,11 +300,12 @@ la prima lavora sulle singole parole, la seconda sulle frasi intere.
 
 `````{tab} Elementare
 
-La prima strada è l'esercizio a buchi fatto su due frasi appaiate: si mette
-la frase italiana e la sua traduzione inglese una dopo l'altra, e si coprono
+La prima strada è l'esercizio a buchi fatto su due frasi appaiate: si mette la
+frase italiana e la sua traduzione inglese una dopo l'altra, e si coprono
 parole in tutte e due. A quel punto, per indovinare la parola coperta in
-italiano, al modello conviene sbirciare nell'inglese, e viceversa. Non gli si
-dice «queste due sono la stessa cosa»: gli si rende conveniente scoprirlo.
+italiano, al modello conviene sbirciare nell'inglese, e viceversa. [Non gli si
+dice «queste due sono la stessa cosa»: gli si rende conveniente
+scoprirlo]{.pt-matita}.
 
 Le frasi appaiate, però, bisogna averle. Fra l'italiano e l'inglese ce ne sono
 milioni, e lo stesso vale per qualche decina di altre coppie di lingue; per
@@ -352,15 +354,15 @@ $$
 $$
 
 così che, quando il contesto monolingue non basta, l'attenzione possa attingere
-all'altra lingua. In altri termini, TLM è mMLM con in più un incentivo
-all'attenzione cross-lingua, e su corpora paralleli migliora sensibilmente
-l'allineamento. Il limite è altrettanto evidente: richiede testi paralleli, che
-esistono in abbondanza per poche decine di coppie e quasi per nulla per le
-altre. **XLM-R** {cite}`conneau2020unsupervised` fa la scelta opposta, cioè solo
-mMLM ma su CommonCrawl invece che su Wikipedia, con una quantità di testo
-superiore di ordini di grandezza per un centinaio di lingue, e mostra che con un
-volume di dati sufficiente il segnale parallelo esplicito diventa meno
-necessario.
+all'altra lingua. In altri termini, [TLM è mMLM con in più un incentivo
+all'attenzione cross-lingua]{.pt-matita}, e su corpora paralleli migliora
+sensibilmente l'allineamento. Il limite è altrettanto evidente: richiede testi
+paralleli, che esistono in abbondanza per poche decine di coppie e quasi per
+nulla per le altre. **XLM-R** {cite}`conneau2020unsupervised` fa la scelta
+opposta, cioè solo mMLM ma su CommonCrawl invece che su Wikipedia, con una
+quantità di testo superiore di ordini di grandezza per un centinaio di lingue,
+e mostra che con un volume di dati sufficiente il segnale parallelo esplicito
+diventa meno necessario.
 
 La via a **doppio encoder** (LaBSE {cite}`feng2022language` e affini) cambia
 granularità: non predice token, allinea *frasi*. Con un batch di $N$ coppie
@@ -409,27 +411,27 @@ tradurre in inglese il testo da giudicare e usare il modello inglese
 (*translate-test*), le due righe di confronto che accompagnano i risultati
 multilingui fin da XNLI {cite}`conneau2018xnli`.
 
-La prima avvertenza è che la rifinitura consuma l'allineamento, perché i
+La prima avvertenza è che [la rifinitura consuma l'allineamento, perché i
 parametri che si spostano per imparare il compito sono gli stessi che tenevano
-vicine le lingue. Liu e colleghi {cite}`liu2020continual` lo misurano rifinendo
-un modello multilingue sul *POS tagging* inglese, cioè sull'etichettare ogni
-parola di una frase come nome, verbo, aggettivo. Prima della rifinitura,
-ritrovare la traduzione inglese di una frase italiana riusciva 45 volte su
-cento; dopo, 26. La perplessità sul compito di mascheramento in inglese,
-l'indice di quanto il modello resta indeciso sulla parola coperta, peggiora di
-venti volte. È **dimenticanza catastrofica**, cioè imparare qualcosa di nuovo
-cancellando qualcosa di vecchio, un fenomeno descritto sulle reti neurali fin
-dal 1989 {cite}`mccloskey1989catastrophic`. I rimedi mostrano che cosa si è
-perso. Rimettere il vecchio compito di mascheramento accanto al compito nuovo
-riporta la perplessità dov'era, ma le traduzioni si ritrovano 25 volte su cento,
-peggio di prima: l'allineamento non era un semplice prodotto secondario del
-mascheramento. Impedire agli errori sul vecchio compito di crescere ne salva una
-parte, 32 volte su cento. Per superare il punto di partenza bisogna chiedere
-durante la rifinitura la proprietà che si vuole conservare, cioè appaiare le
-frasi con le loro traduzioni: con un vincolo che protegge insieme il
-mascheramento e l'appaiamento si arriva a 64 volte su cento, e con
-l'addestramento congiunto sui due compiti a 74. Tornano così a servire le frasi
-appaiate, di cui quasi tutte le lingue sono prive.
+vicine le lingue]{.pt-matita}. Liu e colleghi {cite}`liu2020continual` lo
+misurano rifinendo un modello multilingue sul *POS tagging* inglese, cioè
+sull'etichettare ogni parola di una frase come nome, verbo, aggettivo. Prima
+della rifinitura, ritrovare la traduzione inglese di una frase italiana
+riusciva 45 volte su cento; dopo, 26. La perplessità sul compito di
+mascheramento in inglese, l'indice di quanto il modello resta indeciso sulla
+parola coperta, peggiora di venti volte. È **dimenticanza catastrofica**, cioè
+imparare qualcosa di nuovo cancellando qualcosa di vecchio, un fenomeno
+descritto sulle reti neurali fin dal 1989 {cite}`mccloskey1989catastrophic`. I
+rimedi mostrano che cosa si è perso. Rimettere il vecchio compito di
+mascheramento accanto al compito nuovo riporta la perplessità dov'era, ma le
+traduzioni si ritrovano 25 volte su cento, peggio di prima: l'allineamento non
+era un semplice prodotto secondario del mascheramento. Impedire agli errori sul
+vecchio compito di crescere ne salva una parte, 32 volte su cento. Per superare
+il punto di partenza bisogna chiedere durante la rifinitura la proprietà che si
+vuole conservare, cioè appaiare le frasi con le loro traduzioni: con un vincolo
+che protegge insieme il mascheramento e l'appaiamento si arriva a 64 volte su
+cento, e con l'addestramento congiunto sui due compiti a 74. Tornano così a
+servire le frasi appaiate, di cui quasi tutte le lingue sono prive.
 
 La seconda avvertenza è che il trasferimento non è uniforme, e la sua
 asimmetria riserva una sorpresa. Le lingue si possono raggruppare per l'ordine
@@ -484,15 +486,15 @@ girare la manopola delle dosi verso le lingue rare le aiuta e sottrae turni alle
 comuni. Una regolazione giusta in assoluto non esiste; esiste quella giusta
 rispetto alle lingue che interessano.
 
-Nessuno ha sbagliato niente: la coperta è corta. L'unico modo di aggiungere
-lingue senza rimetterci è ingrandire il modello, e la strada più diretta è
-dare a ogni lingua, a ogni piano, un pezzetto di macchina tutto suo, che si
-accende solo sui suoi testi, lasciando in comune il resto: il modello cresce
-con le lingue, ma ogni frase ne attraversa sempre la stessa quantità. Una
-strada più antica è addestrare un modello per una famiglia di lingue vicine,
-che ha molto meno da spartire. Il ragionamento è lo stesso che spiegava perché
-l'allineamento emerge, rovesciato: condividere è economico finché la scarsità
-costringe a farlo, e diventa un impaccio quando serve distinguere.
+[Nessuno ha sbagliato niente: la coperta è corta]{.pt-matita}. L'unico modo di
+aggiungere lingue senza rimetterci è ingrandire il modello, e la strada più
+diretta è dare a ogni lingua, a ogni piano, un pezzetto di macchina tutto suo,
+che si accende solo sui suoi testi, lasciando in comune il resto: il modello
+cresce con le lingue, ma ogni frase ne attraversa sempre la stessa quantità.
+Una strada più antica è addestrare un modello per una famiglia di lingue
+vicine, che ha molto meno da spartire. Il ragionamento è lo stesso che spiegava
+perché l'allineamento emerge, rovesciato: condividere è economico finché la
+scarsità costringe a farlo, e diventa un impaccio quando serve distinguere.
 
 `````
 
@@ -502,8 +504,8 @@ costringe a farlo, e diventa un impaccio quando serve distinguere.
 {cite}`conneau2020unsupervised`: a capacità fissa, la prestazione media
 cross-lingua cresce con il numero di lingue fino a un massimo e poi cala, perché
 lo spazio di parametri per lingua diminuisce. La curva si sposta verso l'alto e
-verso destra aumentando i parametri del modello: è un vincolo di capacità, non
-di metodo.
+verso destra aumentando i parametri del modello: [è un vincolo di capacità, non
+di metodo]{.pt-matita}.
 
 Ne discendono due tensioni concrete nel disegno di un modello multilingue. La
 prima riguarda il vocabolario condiviso: allargarlo offre sottoparole migliori
@@ -536,13 +538,13 @@ dati inglesi funziona in italiano meglio di quanto ci si aspetterebbe, e
 permette di costruire sistemi funzionanti senza disporre di dataset italiani di
 dimensioni comparabili.
 
-Questa comodità nasconde però due insidie. La prima è che *funziona meglio del
-previsto* non equivale a *funziona come in inglese*. Il divario esiste e tende a
-essere più grande dove conta la **morfologia**, cioè il modo in cui una parola
-cambia forma. In inglese, ad esempio, il verbo «to walk» fa «walk», «walks»,
-«walked», «walking»: quattro forme. In italiano «camminare» ne fa una
-cinquantina, e il modello deve imparare che sono tutte lo stesso verbo, con
-molti meno esempi per ciascuna. La seconda è che le lingue minoritarie non
+Questa comodità nasconde però due insidie. La prima è che [*funziona meglio del
+previsto* non equivale a *funziona come in inglese*]{.pt-matita}. Il divario
+esiste e tende a essere più grande dove conta la **morfologia**, cioè il modo
+in cui una parola cambia forma. In inglese, ad esempio, il verbo «to walk» fa
+«walk», «walks», «walked», «walking»: quattro forme. In italiano «camminare» ne
+fa una cinquantina, e il modello deve imparare che sono tutte lo stesso verbo,
+con molti meno esempi per ciascuna. La seconda è che le lingue minoritarie non
 godono di nulla di tutto ciò: il sardo, il friulano, il ladino, il napoletano
 scritto non hanno abbastanza testo online per ottenere token dedicati nel
 vocabolario condiviso, e la maledizione della multilingualità fa il resto. La

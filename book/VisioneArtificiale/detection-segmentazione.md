@@ -41,11 +41,11 @@ insieme. Per ciascuno indovina tre cose alla volta: *dove* tracciare la
 cornice, *cosa* c'è dentro e *quanto ci crede*, cioè un numero fra 0 e 1 con
 cui dichiara la sua sicurezza che lì dentro qualcosa ci sia.
 
-Il terzo numero serve perché nessuno gli ha detto quante cornici disegnare. In
-una foto di strada gli oggetti possono essere due o quaranta, e
-prima di guardare il rilevatore non lo sa. Per questo tiene pronte tantissime
-cornici sparse su tutta la foto e le riempie tutte, sapendo che per la
-stragrande maggioranza la risposta giusta è "qui non c'è niente".
+[Il terzo numero serve perché nessuno gli ha detto quante cornici
+disegnare]{.pt-matita}. In una foto di strada gli oggetti possono essere due o
+quaranta, e prima di guardare il rilevatore non lo sa. Per questo tiene pronte
+tantissime cornici sparse su tutta la foto e le riempie tutte, sapendo che per
+la stragrande maggioranza la risposta giusta è "qui non c'è niente".
 
 Mentre impara, a ogni foto il rilevatore riceve tre penalità e le somma: una
 per la cornice storta, una per il nome sbagliato, una per la sicurezza fuori
@@ -97,8 +97,8 @@ coincide con il punteggio softmax della classe perché lì lo sfondo è trattato
 come una classe in più.
 
 Un'immagine può contenere un numero variabile di oggetti, e
-gestire questa cardinalità ignota è il vero nodo architetturale della
-detection.
+[gestire questa cardinalità ignota è il vero nodo architetturale della
+detection]{.pt-matita}.
 
 `````
 
@@ -148,8 +148,8 @@ sfondo al primo passaggio. Chi guarda una volta sola deve invece dare una
 risposta per ogni casella dell'immagine, e le caselle con dentro un oggetto
 sono una manciata contro decine di migliaia di asfalto, cielo e muro. Alla
 correzione arrivano così diecimila risposte quasi tutte uguali e quasi tutte
-facili. Sommate, seppelliscono le poche difficili, e il rilevatore impara
-benissimo a dire "niente" e molto peggio tutto il resto.
+facili. [Sommate, seppelliscono le poche difficili]{.pt-matita}, e il
+rilevatore impara benissimo a dire "niente" e molto peggio tutto il resto.
 
 Abbassare in blocco il peso di tutte le risposte vuote, come si faceva
 all'inizio, aiuta ma non basta. Fra quelle vuote, infatti, ce ne sono migliaia
@@ -179,11 +179,11 @@ raffina i riquadri, e le mappe dell'immagine si calcolano una volta sola per
 tutti e due. L'accuratezza è elevata, ma la latenza è maggiore, perché il
 secondo stadio lavora regione per regione.
 
-I due stadi aggirano per costruzione lo squilibrio fra oggetti e
-sfondo: il primo riduce le posizioni candidate da circa centomila a uno o
-duemila, scartando quasi tutto lo sfondo, e nel secondo si campiona un rapporto
-fisso fra oggetti e sfondo (uno a tre) oppure si scelgono gli esempi più
-difficili {cite}`lin2017focal`.
+[I due stadi aggirano per costruzione lo squilibrio fra oggetti e
+sfondo]{.pt-matita}: il primo riduce le posizioni candidate da circa centomila
+a uno o duemila, scartando quasi tutto lo sfondo, e nel secondo si campiona un
+rapporto fisso fra oggetti e sfondo (uno a tre) oppure si scelgono gli esempi
+più difficili {cite}`lin2017focal`.
 
 La famiglia a uno stadio (YOLO {cite}`redmon2016you` e SSD {cite}`liu2016ssd`)
 elimina invece la fase di proposta: una sola rete convoluzionale predice
@@ -265,9 +265,9 @@ solo le più convinte.
 `````{tab} Superiore
 
 Su ogni cella della mappa di feature si centrano $k$ riquadri predefiniti (le
-ancore) a più scale e proporzioni. La rete non predice coordinate assolute, ma
+ancore) a più scale e proporzioni. [La rete non predice coordinate assolute, ma
 per ciascuna ancora produce i punteggi di classe e quattro **offset** che la
-deformano verso il riquadro vero,
+deformano verso il riquadro vero]{.pt-matita},
 
 $$
 t_x = \frac{x - x_a}{w_a}, \qquad
@@ -337,10 +337,10 @@ già riassunti da chi gli sta davanti.
 Poi il significato torna indietro. L'ultimo segna su un foglio di carta lucida,
 a grandi linee, «qui c'è un uccello»; l'aiutante davanti a lui ingrandisce il
 foglio fino alla misura dei propri appunti, ce lo posa sopra e lo ripassa con
-il suo tratto più fine, e così via fino al primo. Alla fine ognuno ha le due
+il suo tratto più fine, e così via fino al primo. [Alla fine ognuno ha le due
 cose insieme: il dettaglio del proprio sguardo e il significato portato da chi
-vedeva l'insieme. Siccome tutti incorniciano seguendo lo stesso manuale, ognuno
-ricopia i propri appunti sullo stesso formato di foglio.
+vedeva l'insieme]{.pt-matita}. Siccome tutti incorniciano seguendo lo stesso
+manuale, ognuno ricopia i propri appunti sullo stesso formato di foglio.
 
 Ogni oggetto lo incornicia l'aiutante che lo vede della misura giusta, con le
 cornici adatte a quella misura: il passerotto chi sta vicino alla tela, il
@@ -388,13 +388,14 @@ d'ingresso è multiplo di $32$ (le implementazioni riempiono l'immagine fino a
 esserlo), e la $3\times3$ attenua i blocchi $2\times2$ che quel
 sovracampionamento lascia.
 
-Ogni $\mathbf{P}_l$ ha così la risoluzione di $\mathbf{C}_l$ e la semantica che
-scende da $\mathbf{C}_5$, a un costo molto inferiore a quello di una piramide
-d'immagine, concentrato sul livello più fine. Le teste sono condivise fra i
-livelli, come in una piramide d'immagine, perciò tutti vanno portati alla
-stessa $d$. La novità rispetto a FCN e U-Net (le reti di segmentazione,
-trattate più avanti), che hanno a loro volta un percorso dall'alto in basso,
-sta proprio nel predire da ogni livello con le stesse teste.
+[Ogni $\mathbf{P}_l$ ha così la risoluzione di $\mathbf{C}_l$ e la semantica
+che scende da $\mathbf{C}_5$]{.pt-matita}, a un costo molto inferiore a quello
+di una piramide d'immagine, concentrato sul livello più fine. Le teste sono
+condivise fra i livelli, come in una piramide d'immagine, perciò tutti vanno
+portati alla stessa $d$. La novità rispetto a FCN e U-Net (le reti di
+segmentazione, trattate più avanti), che hanno a loro volta un percorso
+dall'alto in basso, sta proprio nel predire da ogni livello con le stesse
+teste.
 
 Nella RPN ogni livello ha ancore di una sola area, $32^2,
 64^2, 128^2, 256^2, 512^2$ pixel su $\mathbf{P}_2, \dots, \mathbf{P}_6$, in tre
@@ -486,12 +487,12 @@ scambiassero le prime due cornici, la prima fermata cadrebbe a 1 su 2, e
 appiattita varrebbe 0,60 invece di 1.
 
 La somma fa 2,20, e si divide per tre, cioè per i cani presenti nella foto, non
-per le cinque cornici disegnate: 0,73. Un cane che nessuna cornice avesse
+per le cinque cornici disegnate: 0,73. [Un cane che nessuna cornice avesse
 cerchiato non aggiungerebbe niente alla somma e resterebbe comunque nel
-divisore. Per questo chi disegna una cornice sola, la più sicura di tutte,
-tiene la precisione altissima e porta a casa un voto basso; chi ne disegna
-mille li cerchia tutti e tre e paga a ogni fermata gli errori che ha lasciato
-dietro.
+divisore]{.pt-matita}. Per questo chi disegna una cornice sola, la più sicura
+di tutte, tiene la precisione altissima e porta a casa un voto basso; chi ne
+disegna mille li cerchia tutti e tre e paga a ogni fermata gli errori che ha
+lasciato dietro.
 
 Quel 0,73 è il voto sui cani, e si chiama **Average Precision** (AP),
 precisione media: è già una media, fatta sui cani veri. Non tutti i
@@ -519,8 +520,8 @@ $$
 Fissata una soglia (ad esempio $\text{IoU} \ge 0{,}5$), le predizioni si
 scorrono in ordine di confidenza decrescente: una predizione è un vero positivo
 se supera la soglia con un oggetto reale non ancora assegnato, e quell'oggetto
-viene «consumato». Ogni oggetto reale si accoppia cioè a una sola predizione, e
-i duplicati, per quanto ben sovrapposti, contano come falsi positivi.
+viene «consumato». [Ogni oggetto reale si accoppia cioè a una sola predizione, e
+i duplicati, per quanto ben sovrapposti, contano come falsi positivi]{.pt-matita}.
 
 Da qui si costruisce la curva *precision–recall* per ciascuna classe: l'area
 sotto la sua interpolata (l'inviluppo monotono decrescente, campionato a 11
@@ -617,8 +618,8 @@ griglia abbastanza fitta da vederlo, e al posto della softmax mette tanti
 classificatori indipendenti, uno per classe, perché la stessa figura può essere
 insieme «persona» e «pedone».
 
-Poi la famiglia si divide, e il filo conduttore è uno: ha prima adottato e poi
-abbandonato le due impalcature, cioè le ancore e la NMS. Dal 2020 due
+Poi la famiglia si divide, e [il filo conduttore è uno: ha prima adottato e poi
+abbandonato le due impalcature, cioè le ancore e la NMS]{.pt-matita}. Dal 2020 due
 linee parallele portano questo nome. Da una parte ci sono articoli di gruppi di
 ricerca (YOLOv4 nel 2020 e YOLOv7 nel 2022, degli stessi autori, e YOLOv10 nel
 2024); dall'altra il software della società Ultralytics
@@ -696,8 +697,8 @@ perde *dove*; le connessioni orizzontali riportano il «dove» dal ramo di
 discesa a quello di risalita.
 ```
 
-In {numref}`fig-unet` le skip connection sono le linee tratteggiate. La rete
-fa le due cose incompatibili su due rami, e a ogni livello li ricuce.
+In {numref}`fig-unet` le skip connection sono le linee tratteggiate. [La rete
+fa le due cose incompatibili su due rami, e a ogni livello li ricuce]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -859,10 +860,10 @@ Può però anche fare il contrario, e imparare timbri che la trama a quadretti l
 disegnano comunque, anche quando i colpi cadono ordinati e ogni casella ne
 riceve lo stesso numero.
 
-Sistemare il passo, quindi, non mette al riparo, e molte reti recenti scelgono
-una via più prudente: ingrandire la mappa in un modo fisso, ricopiando ogni
-casella o sfumando fra una casella e la vicina, e passarci sopra una
-convoluzione ordinaria, di quelle che non ingrandiscono.
+[Sistemare il passo, quindi, non mette al riparo]{.pt-matita}, e molte reti
+recenti scelgono una via più prudente: ingrandire la mappa in un modo fisso,
+ricopiando ogni casella o sfumando fra una casella e la vicina, e passarci
+sopra una convoluzione ordinaria, di quelle che non ingrandiscono.
 
 `````
 
@@ -896,9 +897,9 @@ inverte solo la geometria. In PyTorch è `nn.ConvTranspose2d`.
 Quando $k$ non è multiplo di $s$, le applicazioni del kernel si sovrappongono
 in modo disomogeneo e l'output mostra i tipici **artefatti a scacchiera**
 {cite}`odena2016deconvolution`. Verrebbe da concludere che basti scegliere $k$
-multiplo di $s$, ma l'articolo citato dimostra il contrario: la scelta toglie
-la disomogeneità geometrica ma non gli artefatti, perché una rete impara
-volentieri kernel che li producono anche a sovrapposizione uniforme. Per
+multiplo di $s$, ma l'articolo citato dimostra il contrario: [la scelta toglie
+la disomogeneità geometrica ma non gli artefatti]{.pt-matita}, perché una rete
+impara volentieri kernel che li producono anche a sovrapposizione uniforme. Per
 questo, e non per la sola divisibilità, molte architetture recenti preferiscono
 un upsampling fisso (bilineare o *nearest-neighbor*) seguito da una
 convoluzione ordinaria.
@@ -935,8 +936,8 @@ delle IoU sulle sole coppie trovate non peggiora di niente.
 Se ne accorgono invece le misure che contano anche gli assenti: la mAP, che
 divide per gli oggetti veri, e la IoU per classe della segmentazione, dove i
 pixel di un nodulo mancato entrano nell'unione e abbassano il punteggio. In
-medicina o alla guida, in definitiva, sono le due cose insieme, il contorno
-approssimato e l'oggetto non visto, a chiedere un occhio umano.
+medicina o alla guida, in definitiva, [sono le due cose insieme, il contorno
+approssimato e l'oggetto non visto, a chiedere un occhio umano]{.pt-matita}.
 
 C'è infine una domanda che nessuno di questi strumenti si pone: a quanti metri
 sta l'oggetto. Il riquadro e la maschera, infatti, stanno nel piano della foto,

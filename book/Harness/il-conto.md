@@ -33,9 +33,9 @@ mentre LATS e Reflexion restano fuori, perché la strategia che riprova risolve
 di più e costa meno.
 
 Gli autori lasciano aperta la domanda se esplorare,
-criticarsi e seguire l'esecuzione servano davvero, e concludono che una quota
+criticarsi e seguire l'esecuzione servano davvero, e concludono che [una quota
 di problemi risolti, riportata da sola, non distingue un'idea nuova da un
-modello chiamato più volte.
+modello chiamato più volte]{.pt-matita}.
 
 Per un agente che lavora un'ora su un repository la domanda è la stessa, e più
 acuta: il costo è quello di un compito intero, decine o centinaia di chiamate
@@ -60,7 +60,7 @@ c \;=\; \text{richieste} \times \frac{\text{passi}}{\text{richiesta}}
 $$
 
 dove una richiesta è un messaggio dell'utente con il lavoro che l'agente fa
-prima di rispondere, un passo è un giro del ciclo (una chiamata al
+prima di rispondere, un passo è un'iterazione del ciclo (una chiamata al
 modello e l'esecuzione di ciò che chiede), e ogni rapporto è fra totali, così
 che il prodotto torna sempre. Ad esempio, tre richieste da dieci passi, con
 ventimila token letti a passo, fanno seicentomila token. I fattori non sono
@@ -126,11 +126,12 @@ corrente.
 # più la cache del prefisso e un prezzo. Il contesto di una chiamata è una fila
 # di pezzi (nome, token): due pezzi con lo stesso nome sono identici token per
 # token. Ipotesi: la cache tiene il contesto della chiamata precedente e non
-# scade fra un giro e l'altro; scriverci costa quanto leggere un token fresco;
-# il registro lo aggiorna l'ultimo giro di ogni sessione, dentro la sua uscita.
-FINESTRA, FISSO, GIRO, GIRI = 100_000, 5_000, 3_000, 60
+# scade fra un'iterazione e l'altra; scriverci costa quanto leggere un token
+# fresco; il registro lo aggiorna l'ultima iterazione di ogni sessione, dentro
+# la sua uscita.
+FINESTRA, FISSO, CRESCITA, ITERAZIONI = 100_000, 5_000, 3_000, 60
 RIASSUNTO, REGISTRO, PER_SESSIONE = 4_000, 2_000, 15
-USCITA = 500            # dei 3.000 token di un giro, quelli scritti dal modello
+USCITA = 500            # dei 3.000 di un'iterazione, scritti dal modello
 ORA = 20                # una riga con l'ora corrente, se la si mette in testa
 # Prezzi illustrativi, in token freschi equivalenti: i listini cambiano.
 P_CACHE = 0.1           # un token letto dalla cache
@@ -139,7 +140,7 @@ P_USCITA = 5            # un token scritto dal modello
 def chiamate(strategia, ora=False):
     """Le chiamate di un compito: per ciascuna il contesto e i token scritti."""
     elenco, storia = [], []
-    for t in range(GIRI):
+    for t in range(ITERAZIONI):
         if strategia == "ripartenza" and t % PER_SESSIONE == 0:
             storia = [(f"registro {t}", REGISTRO)]       # sessione nuova
         testa = [(f"ora {t}", ORA)] if ora else []
@@ -152,7 +153,7 @@ def chiamate(strategia, ora=False):
             storia = [(f"riassunto {t}", RIASSUNTO)]
             contesto = testa + [("fisso", FISSO)] + storia
         elenco.append((contesto, USCITA))
-        storia = storia + [(f"giro {t}", GIRO)]          # risposta ed esito
+        storia = storia + [(f"iterazione {t}", CRESCITA)]   # risposta ed esito
     return elenco
 
 def comune(prima, dopo):
@@ -205,20 +206,21 @@ _, c5, f5, u5, _ = casi["compattazione al 50%"]
 pari = (f5 + P_USCITA * u5 - f8 - P_USCITA * u8) / (c8 - c5)
 print(f"all'80% costa meno che al 50% se la cache costa meno di {it(pari, 3)}")
 
-# Senza strategie, fino al giro in cui il contesto non ci sta più.
+# Senza strategie, fino all'iterazione in cui il contesto non ci sta più.
 el = chiamate("nessuna")
 _, c, f, u, _ = conto(el)
-print(f"nessuna strategia, {len(el)} giri: {it(P_CACHE * c)} dalla cache, "
+print(f"nessuna strategia, {len(el)} iterazioni: "
+      f"{it(P_CACHE * c)} dalla cache, "
       f"{it(f)} freschi, {it(P_USCITA * u)} scritti")
 cresce = [conto(el, p)[4] / conto(el[:16], p)[4] for p in (P_CACHE, 1)]
-print(f"{len(el)} giri costano {it(cresce[0], 1)} volte 16 con la cache, "
-      f"{it(cresce[1], 1)} senza")
+print(f"{len(el)} iterazioni costano {it(cresce[0], 1)} volte 16 con la "
+      f"cache, {it(cresce[1], 1)} senza")
 
 # Dove il termine quadratico raggiunge quelli lineari, all'ordine principale.
-lineari = GIRO + P_CACHE * FISSO + P_USCITA * USCITA
+lineari = CRESCITA + P_CACHE * FISSO + P_USCITA * USCITA
 print(f"il quadrato raggiunge i termini lineari a "
-      f"{it(2 * lineari / (P_CACHE * GIRO))} giri con la cache, a "
-      f"{it(2 * (FISSO + P_USCITA * USCITA) / GIRO)} senza")
+      f"{it(2 * lineari / (P_CACHE * CRESCITA))} iterazioni con la cache, a "
+      f"{it(2 * (FISSO + P_USCITA * USCITA) / CRESCITA)} senza")
 ```
 
 ```text
@@ -230,9 +232,9 @@ ripartenza, ora in testa  1.681.200          0 1.681.200  30.000 1.831.200   1.8
 ripartenza, il costo: 149.900 dalla cache, 181.000 freschi, 150.000 scritti
 l'ora in testa lo moltiplica per 3,8
 all'80% costa meno che al 50% se la cache costa meno di 0,070
-nessuna strategia, 32 giri: 155.000 dalla cache, 98.000 freschi, 80.000 scritti
-32 giri costano 2,6 volte 16 con la cache, 3,6 senza
-il quadrato raggiunge i termini lineari a 40 giri con la cache, a 5 senza
+nessuna strategia, 32 iterazioni: 155.000 dalla cache, 98.000 freschi, 80.000 scritti
+32 iterazioni costano 2,6 volte 16 con la cache, 3,6 senza
+il quadrato raggiunge i termini lineari a 40 iterazioni con la cache, a 5 senza
 ```
 
 I token letti sono quelli di prima (2.538.000, 1.864.000, 1.680.000); la
@@ -265,15 +267,16 @@ uno nuovo, più mezzo foglio di risposta: nove decimi, più una moneta, più due
 mezzo, fanno 4,4 monete invece di 12,5. Il taccuino non fa ricordare niente di
 nuovo; risparmia soltanto la rilettura.
 
-Gli appunti valgono solo fino al primo foglio cambiato. Se il foglio due cambia,
-l'appunto sulla gamba non vale più, e nemmeno quelli dopo, che si appoggiavano a
-lui: da lì si rilegge tutto, anche per una virgola. I primi fogli, il cartello e
-l'elenco degli attrezzi, sono quelli dove una modifica costa di più. Chi scrive
-in cima al primo foglio l'ora esatta fa rileggere tutto a ogni mossa: per chi
-smonta a ogni pezzo, quasi quattro volte tanto. Lo stesso, dal foglio cambiato
-in giù, se il capobottega riordina l'elenco degli attrezzi o toglie un foglio
-vecchio in mezzo alla pila per lasciarci una riga: risparmia quel foglio, e
-paga a prezzo pieno tutti quelli dopo.
+[Gli appunti valgono solo fino al primo foglio cambiato]{.pt-matita}. Se il
+foglio due cambia, l'appunto sulla gamba non vale più, e nemmeno quelli dopo,
+che si appoggiavano a lui: da lì si rilegge tutto, anche per una virgola. I
+primi fogli, il cartello e l'elenco degli attrezzi, sono quelli dove una
+modifica costa di più. Chi scrive in cima al primo foglio l'ora esatta fa
+rileggere tutto a ogni mossa: per chi smonta a ogni pezzo, quasi quattro volte
+tanto. Lo stesso, dal foglio cambiato in giù, se il capobottega riordina
+l'elenco degli attrezzi o toglie un foglio vecchio in mezzo alla pila per
+lasciarci una riga: risparmia quel foglio, e paga a prezzo pieno tutti quelli
+dopo.
 
 E il taccuino è di chi l'ha scritto, a
 un altro artigiano non serve; resta sul banco solo qualche minuto, perché chi
@@ -337,10 +340,11 @@ Il riuso esatto chiede l'identità token per token. L'attenzione causale lo
 permette: come mostra la {doc}`sezione sull'attenzione in pratica
 </Transformers/attenzione-in-pratica>`, chiave e valore della posizione $j$, a
 ogni strato, non dipendono dai token dopo $j$. E la stessa dipendenza lo
-vincola, perché dipendono da tutti i token fino a $j$: la cache di una chiamata
-precedente vale fino alla prima posizione in cui le due sequenze differiscono,
-e per nessuna dopo, qualunque sia la differenza. Un token cambiato in posizione
-$j$ costa la rilettura fresca di $\mathrm{tok}(C_t) - j + 1$ token.
+vincola, perché dipendono da tutti i token fino a $j$: [la cache di una
+chiamata precedente vale fino alla prima posizione in cui le due sequenze
+differiscono]{.pt-matita}, e per nessuna dopo, qualunque sia la differenza. Un
+token cambiato in posizione $j$ costa la rilettura fresca di
+$\mathrm{tok}(C_t) - j + 1$ token.
 
 Si noti che la chiave è la sequenza degli identificativi dei token: lo stesso
 oggetto serializzato con i campi in un altro ordine è un prefisso diverso. E la
@@ -349,7 +353,7 @@ altro modello a metà traiettoria rilegge tutto a prezzo pieno.
 
 Con la storia accodata e una cache che non scade fra un passo e l'altro,
 $\chi_t = \mathrm{tok}(C_{t-1})$ e $\mathrm{tok}(C_t) - \chi_t = d$, la
-crescita per giro. Con $\mathrm{tok}(C_t) = \phi + t d$, come nel calcolo del
+crescita per iterazione. Con $\mathrm{tok}(C_t) = \phi + t d$, come nel calcolo del
 passaggio di consegne, e $y_t = y$ costante, la somma su $T$ chiamate è
 
 $$
@@ -369,11 +373,11 @@ chiamate come mostrerà la sezione sulle metriche di servizio, è un'altra.
 La cache sposta però il punto in cui il quadrato domina: all'ordine principale
 il termine quadratico, circa $\eta d T^2/2$, raggiunge quelli lineari, circa
 $T(d + \eta\phi + \omega y)$, per $T \approx 2(d + \eta\phi + \omega y)/(\eta
-d)$, 40 giri con i valori del programma; senza cache, dove anche i token nuovi
-di ogni giro stanno nel termine quadratico, il calcolo analogo è $2(\phi +
-\omega y)/d$, 5 giri, contro i 32 che la finestra consente. Dentro la finestra,
-a quel prezzo, il costo è fatto soprattutto dei termini lineari; in una
-finestra dieci volte più grande il quadrato torna a dominare.
+d)$, 40 iterazioni con i valori del programma; senza cache, dove anche i token
+nuovi di ogni iterazione stanno nel termine quadratico, il calcolo analogo è
+$2(\phi + \omega y)/d$, 5 iterazioni, contro i 32 che la finestra consente.
+Dentro la finestra, a quel prezzo, il costo è fatto soprattutto dei termini
+lineari; in una finestra dieci volte più grande il quadrato torna a dominare.
 
 Rompe la cache tutto ciò che cambia un token prima della fine del prefisso già
 visto: un'informazione variabile in testa (l'ora, un identificativo), che porta
@@ -387,7 +391,7 @@ cambiata: in spesa conviene solo quando $\eta$ per i token tolti, sommati su
 tutte le chiamate che seguono, supera $(1 - \eta)$ per i token riletti, che si
 pagano una volta a ogni modifica. Fatta a ogni passo, la rilettura torna a ogni
 chiamata e il conto pareggia soltanto con decine di voci già accorciate;
-accorciando a blocchi, ogni tanti giri, la si paga una volta per blocco.
+accorciando a blocchi, ogni tante iterazioni, la si paga una volta per blocco.
 
 La regola di progetto, fuori da questi tagli, è il log in sola aggiunta: si
 accodano voci e non se ne modificano, le correzioni sono voci nuove, le
@@ -402,23 +406,22 @@ pari ai token letti dalla cache; da qui la soglia del programma: sotto
 $\eta \approx 0{,}07$ la compattazione all'ottanta per cento, che taglia due
 volte, costa meno di quella al cinquanta, che taglia quattro.
 
-La ripartenza ha
-meno token in ogni colonna e costa meno a qualunque prezzo, con l'ipotesi a suo
-favore del registro scritto dentro l'uscita dell'ultimo giro. La frequenza del
-taglio, che senza cache fissava il costo, con la cache pesa molto meno, e la
-compattazione si giustifica con la finestra e con il calo di qualità sui
-contesti lunghi più che con la spesa.
+La ripartenza ha meno token in ogni colonna e costa meno a qualunque prezzo,
+con l'ipotesi a suo favore del registro scritto dentro l'uscita dell'ultima
+iterazione. La frequenza del taglio, che senza cache fissava il costo, con la
+cache pesa molto meno, e la compattazione si giustifica con la finestra e con
+il calo di qualità sui contesti lunghi più che con la spesa.
 
 `````
 
 ## Ogni risparmio ha un contro-costo
 
-Ogni leva del conto sposta una parte del costo altrove, e il risparmio che si
-vede subito non è quello che resta. Ad esempio, la compattazione accorcia il
-contesto, ma riscrive la cache, e i file che ha tolto, se servono ancora, si
-rileggono con una chiamata in più; gli agenti secondari tengono pulito il
-contesto dell'agente principale, ma ciascuno rilegge le istruzioni e i file
-comuni, e quello che uno ha già capito l'altro lo ricapisce; un modello
+[Ogni leva del conto sposta una parte del costo altrove, e il risparmio che si
+vede subito non è quello che resta]{.pt-matita}. Ad esempio, la compattazione
+accorcia il contesto, ma riscrive la cache, e i file che ha tolto, se servono
+ancora, si rileggono con una chiamata in più; gli agenti secondari tengono
+pulito il contesto dell'agente principale, ma ciascuno rilegge le istruzioni e
+i file comuni, e quello che uno ha già capito l'altro lo ricapisce; un modello
 economico costa meno a passo, ma un suo passo sbagliato può aggiungerne molti
 dopo.
 
@@ -565,14 +568,14 @@ spesa riportata di 800 dollari contro 1.400.
 Per ogni lavorazione di un mobile il capobottega decide chi chiamare:
 l'apprendista, un artigiano alle prime armi che costa poco, o il maestro, che
 costa dieci monete in più a lavorazione; sono il modello economico e quello
-forte. Più che alla difficoltà della lavorazione, il capobottega guarda a quanto
-il maestro cambia la probabilità che il mobile venga bene, e a quanto vale il
-mobile. Un incastro regge una sedia da cinquanta monete: su dieci
-sedie l'apprendista ne fa venire bene sei, il maestro nove, cioè tre sedie e
-centocinquanta monete in più contro cento monete di maestro, e conviene. Su un
-taglio dritto l'apprendista ne fa bene novantacinque su cento e il maestro
-novantotto: centocinquanta monete contro mille, e non conviene. Su un intarsio
-che nemmeno il maestro sa fare, chiamarlo non sposta niente.
+forte. Più che alla difficoltà della lavorazione, [il capobottega guarda a
+quanto il maestro cambia la probabilità che il mobile venga bene]{.pt-matita},
+e a quanto vale il mobile. Un incastro regge una sedia da cinquanta monete: su
+dieci sedie l'apprendista ne fa venire bene sei, il maestro nove, cioè tre
+sedie e centocinquanta monete in più contro cento monete di maestro, e
+conviene. Su un taglio dritto l'apprendista ne fa bene novantacinque su cento e
+il maestro novantotto: centocinquanta monete contro mille, e non conviene. Su
+un intarsio che nemmeno il maestro sa fare, chiamarlo non sposta niente.
 
 Nel conto entra anche quello che viene dopo: un incastro storto fa rifare le
 lavorazioni che ci poggiano sopra, e un maestro chiamato a metà lavoro rilegge
@@ -639,8 +642,8 @@ chiamate, la rilettura fresca del contesto che ogni cambio di modello impone,
 perché la cache è per modello, e con il segno opposto i passi in più che
 un'azione debole provoca dopo: per questo può essere negativa.
 
-La difficoltà del passo è un criterio più debole di $\Delta s$: dove la
-probabilità di successo è vicina a zero o a uno con qualunque modello,
+[La difficoltà del passo è un criterio più debole di $\Delta s$]{.pt-matita}:
+dove la probabilità di successo è vicina a zero o a uno con qualunque modello,
 l'intervento non sposta niente. Nel confronto appaiato del programma $\Delta
 c/\Delta s = 11$ per compito riuscito in più, e A conviene su B se $v > 11$; ma
 sono stime su cento compiti, e il rapporto eredita l'incertezza di $\Delta s$,
@@ -824,9 +827,9 @@ volta, il capobottega li porta allo sportello insieme, dietro lo sportello le
 tre ricerche si fanno nello stesso momento, e l'artigiano aspetta quanto la più
 lunga.
 
-La giornata dura quanto la fila più lunga di cose che si aspettano l'una
-con l'altra: la vernice aspetta che la colla asciughi, e nessuna mano in più la
-fa asciugare prima; le tre gambe, invece, si carteggiano insieme.
+[La giornata dura quanto la fila più lunga di cose che si aspettano l'una con
+l'altra]{.pt-matita}: la vernice aspetta che la colla asciughi, e nessuna mano
+in più la fa asciugare prima; le tre gambe, invece, si carteggiano insieme.
 
 Tre biglietti insieme costano meno di tre uno dopo l'altro: l'artigiano fa una
 mossa sola invece di tre, e rilegge il tavolo una volta sola. Costa di più far
@@ -874,8 +877,8 @@ porta, ma va scritta per quello che è.
 Il lavoro di un compito è un grafo aciclico orientato $\mathcal{G}$ i cui nodi
 $a$ sono azioni (una chiamata al modello, uno strumento) di durata $\ell_a$, e
 in cui un arco da $a$ ad $a'$ dice che $a'$ ha bisogno del risultato di $a$.
-Eseguito in serie dura $\sum_a \ell_a$; con risorse illimitate e senza costi di
-coordinamento dura quanto il cammino critico,
+Eseguito in serie dura $\sum_a \ell_a$; [con risorse illimitate e senza costi di
+coordinamento dura quanto il cammino critico]{.pt-matita},
 
 $$
 \ell_{\text{crit}} = \max_{\text{cammini}} \;\sum_{a \in \text{cammino}} \ell_a ,

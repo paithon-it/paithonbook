@@ -20,7 +20,7 @@
   postilla: "Col bfloat16 lo scaler non fa né bene né male: se c'è solo bfloat16, si toglie"
 - inizio: "Due precauzioni in questo codice sono"
   impronta: "4108495f94c5"
-  postilla: "Prima qualche giro a vuoto, poi il minimo delle ripetizioni: la meno disturbata"
+  postilla: "Prima qualche prova a vuoto, poi il minimo delle ripetizioni: la meno disturbata"
 - inizio: "Su CPU, con queste due precauzioni,"
   impronta: "99235208a64a"
   postilla: "Su CPU tempi uguali a meno del rumore: la prova in bianco, dove la coda non c'è"

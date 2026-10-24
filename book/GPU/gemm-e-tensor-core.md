@@ -48,8 +48,8 @@ N)$, dà una matrice $\mathbf{C}$ di forma $(M, N)$.
 Le operazioni da fare si contano: una moltiplicazione e una somma per ogni
 casella del risultato e per ogni passo lungo il lato in comune. Per due tabelle
 da mille caselle di lato, ad esempio, sono due miliardi di operazioni. Come
-spesso su una GPU, però, il problema della versione ingenua sta meno nelle
-operazioni da fare che nei byte da muovere per farle.
+spesso su una GPU, però, [il problema della versione ingenua sta meno nelle
+operazioni da fare che nei byte da muovere per farle]{.pt-matita}.
 
 `````{tab} Elementare
 Una riga per una colonna, moltiplica e somma: facile. Immagina però di farlo
@@ -146,8 +146,8 @@ prima di essere buttato.
 
 Più grande la cassetta, più lavoro si fa con ogni viaggio. I numeri portati
 crescono infatti come il lato della tessera al quadrato, le operazioni che se
-ne ricavano come il lato al cubo, quindi a ogni raddoppio del lato ogni numero
-lavora il doppio.
+ne ricavano come il lato al cubo, quindi [a ogni raddoppio del lato ogni numero
+lavora il doppio]{.pt-matita}.
 
 Prendi, per esempio, una tessera da 32 caselle di lato. Ogni viaggio porta
 $2\,048$ numeri, due blocchetti da 32 per 32, e da quei numeri escono $32\,768$
@@ -220,11 +220,11 @@ shared memory un blocco $T \times T$ di $\mathbf{A}$ e uno di $\mathbf{B}$, e
 si accumulano nella tessera i $T^3$ prodotti che quei due blocchi generano,
 distribuiti sui $T^2$ accumulatori, prima di passare al blocco $K$ successivo.
 
-In questo modo ogni valore caricato entra in $T$ moltiplicazioni invece che in
-una: il fattore di riuso (la grandezza già incontrata nella sezione sulla
-memoria) è $T$. Le letture dalla HBM scendono da $2 M N K$ a circa $2 M N K /
-T$ elementi. Poiché ogni moltiplicazione consuma due valori caricati, uno per
-tabella, l'intensità aritmetica sale da $\tfrac14$ a
+In questo modo [ogni valore caricato entra in $T$ moltiplicazioni invece che in
+una]{.pt-matita}: il fattore di riuso (la grandezza già incontrata nella
+sezione sulla memoria) è $T$. Le letture dalla HBM scendono da $2 M N K$ a
+circa $2 M N K / T$ elementi. Poiché ogni moltiplicazione consuma due valori
+caricati, uno per tabella, l'intensità aritmetica sale da $\tfrac14$ a
 
 $$
 I_\text{tiled} \approx \frac{T}{4} \ \text{FLOP/byte}.
@@ -422,11 +422,11 @@ perché un grammo non cambia il piatto, e tiene invece la contabilità della
 spesa all'ultimo centesimo, perché lì gli errori si sommano.
 
 Un timbro così veloce, però, sposta il problema invece di chiuderlo. La
-dispensa consegna alla velocità di sempre, e chi timbra quindici volte più in
-fretta pretende quindici volte più conti da ogni cassetta che gli arriva. Più
-il timbro corre, quindi, più conta portare sul tavolo poca roba e spremerla
-fino in fondo: cassetta e timbro vanno insieme, e l'uno senza l'altro non
-basta.
+dispensa consegna alla velocità di sempre, e [chi timbra quindici volte più in
+fretta pretende quindici volte più conti da ogni cassetta che gli
+arriva]{.pt-matita}. Più il timbro corre, quindi, più conta portare sul tavolo
+poca roba e spremerla fino in fondo: cassetta e timbro vanno insieme, e l'uno
+senza l'altro non basta.
 
 Il timbro, poi, non lo prende in mano chi scrive il programma. Lo appoggiano le
 librerie che PyTorch chiama ogni volta che una rete gira, a patto che i numeri
@@ -466,8 +466,8 @@ codice che sta intorno).
 
 Il guadagno è di circa un ordine di grandezza sul throughput di matmul rispetto
 ai CUDA core normali (un fattore 8 sulla V100, 16 sull'A100, 15 sulla H100). È
-l'innalzamento di $P_\text{picco}$ che, come mostrava il roofline, sposta il
-ginocchio verso destra e rende la banda ancora più decisiva.
+l'innalzamento di $P_\text{picco}$ che, come mostrava il roofline, [sposta il
+ginocchio verso destra e rende la banda ancora più decisiva]{.pt-matita}.
 
 Tutti i picchi citati sono *densi*. Le schede tecniche NVIDIA mettono in
 evidenza anche il valore con sparsità strutturata 2:4, doppio (624 TFLOP/s in
@@ -515,10 +515,10 @@ Ha avuto più fortuna il primo, quello con il numero fermo sul banco, la scelta
 degli **acceleratori** più noti, cioè i chip costruiti per fare un solo lavoro
 invece di tutti.
 
-Il guadagno sta tutto in quel passaggio da un vicino all'altro. Un numero
-prelevato una volta sola dal magazzino attraversa un'intera fila di banchi e li
-serve tutti, senza che nessuno debba andare a ripescarlo, e il totale si
-costruisce camminando lungo la colonna come un pezzo su una catena di
+[Il guadagno sta tutto in quel passaggio da un vicino all'altro]{.pt-matita}.
+Un numero prelevato una volta sola dal magazzino attraversa un'intera fila di
+banchi e li serve tutti, senza che nessuno debba andare a ripescarlo, e il
+totale si costruisce camminando lungo la colonna come un pezzo su una catena di
 montaggio.
 
 Una macchina fatta così si chiama **array sistolico**, dove *array* è la
@@ -590,10 +590,10 @@ una somma parziale da 256 elementi per ciclo.
 
 Quell'unità, però, moltiplica interi a 8 bit e serve solo per l'inferenza,
 quindi il confronto con una GPU che addestra in mezza precisione non è alla
-pari. In ogni caso il confronto non è «chi calcola di più» ma «chi si muove di
-meno», e per questo gli acceleratori dedicati guadagnano soprattutto in energia
-per operazione, la voce di spesa descritta nella {doc}`sezione sul conto in
-energia </MLOps/energia-e-impronta>`.
+pari. In ogni caso [il confronto non è «chi calcola di più» ma «chi si muove di
+meno»]{.pt-matita}, e per questo gli acceleratori dedicati guadagnano
+soprattutto in energia per operazione, la voce di spesa descritta nella
+{doc}`sezione sul conto in energia </MLOps/energia-e-impronta>`.
 
 La specializzazione ha un limite, la rigidità: un array sistolico sa fare bene
 un solo lavoro. Se la matrice è più piccola dell'array, gran parte degli
@@ -668,9 +668,9 @@ Il lavoro si distribuisce a giri: una tessera a testa, e quando hanno finito
 un'altra a testa. Se le tessere da calcolare sono, poniamo, centodieci, le
 prime centootto riempiono un giro e le due rimaste ne occupano un secondo tutto
 per loro, con centosei officine a guardare. Servono così due giri per fare poco
-più del lavoro di uno, e il tempo quasi raddoppia. È il motivo per cui certe
-misure «tonde» vanno peggio di misure vicine, e chi non conosce questo secondo
-effetto dà la colpa alla tessera, che non c'entra.
+più del lavoro di uno, e il tempo quasi raddoppia. È il motivo per cui [certe
+misure «tonde» vanno peggio di misure vicine]{.pt-matita}, e chi non conosce
+questo secondo effetto dà la colpa alla tessera, che non c'entra.
 `````
 
 `````{tab} Superiore
@@ -687,9 +687,9 @@ di tessere da calcolare supera di poco un multiplo degli SM disponibili (108 su
 A100, a un blocco per SM alla volta; se ne ospitano di più, il multiplo è
 quello dei blocchi che stanno insieme sulla scheda), l'ultima ondata di blocchi
 impegna pochissimi SM e tutti gli altri restano fermi, quindi il tempo quasi
-raddoppia. Per questo motivo certe taglie di batch «tonde» vanno peggio di
-taglie vicine, e chi non conosce questo secondo effetto lo attribuisce alla
-tessera, che non c'entra.
+raddoppia. Per questo motivo [certe taglie di batch «tonde» vanno peggio di
+taglie vicine]{.pt-matita}, e chi non conosce questo secondo effetto lo
+attribuisce alla tessera, che non c'entra.
 `````
 
 Il tiling, insomma, avvicina i due limiti che il roofline della sezione sulla

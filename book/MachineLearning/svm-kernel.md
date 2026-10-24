@@ -22,10 +22,11 @@ Sollevare i punti, però, richiede troppi calcoli. Nei casi utili le dimensioni
 da aggiungere (le coordinate nuove di ogni punto) non sono una ma migliaia, a
 volte infinite, e nessun computer può gestirle.
 
-Il trucco è che la strada più larga si calcola usando soltanto le ombre a due a
-due, un numero per ogni coppia di punti, e le coordinate non compaiono in
-nessun altro posto. Quindi, se sappiamo produrre direttamente quei numeri *come
-sarebbero dopo il sollevamento*, il sollevamento non serve più farlo.
+Il trucco è che [la strada più larga si calcola usando soltanto le ombre a due
+a due, un numero per ogni coppia di punti]{.pt-matita}, e le coordinate non
+compaiono in nessun altro posto. Quindi, se sappiamo produrre direttamente quei
+numeri *come sarebbero dopo il sollevamento*, il sollevamento non serve più
+farlo.
 
 La regola che li produce si chiama **kernel**. Si sceglie il kernel, e lo
 spazio sollevato resta un'idea, che non si costruisce mai.
@@ -72,8 +73,8 @@ $$
 k(\mathbf{x}, \mathbf{z}) = \phi(\mathbf{x})^\top\phi(\mathbf{z}),
 $$
 
-allora non serve mai costruire $\phi$: si lavora nello spazio ad alta dimensione
-*senza mai visitarlo*. La funzione $k$ si chiama **kernel**
+allora [non serve mai costruire $\phi$]{.pt-matita}: si lavora nello spazio ad
+alta dimensione *senza mai visitarlo*. La funzione $k$ si chiama **kernel**
 {cite}`scholkopf2002learning`, e i kernel più usati sono
 
 $$
@@ -259,8 +260,8 @@ quattro: nessuno chiama sbaglio quel decimo. La SVR ragiona così. Invece di
 penalizzare ogni piccolo scarto tra previsione e valore vero (come fa la
 regressione lineare classica) disegna attorno alla linea un «tubo» di
 tolleranza, come un tratto di pennarello grosso al posto di una riga di
-matita: finché un punto sta dentro il tratto, l'errore conta zero. Pagano solo
-i punti che sporgono, e solo per quanto sporgono.
+matita: finché un punto sta dentro il tratto, l'errore conta zero. [Pagano solo
+i punti che sporgono, e solo per quanto sporgono]{.pt-matita}.
 
 Ad esempio, con un pennarello largo due decimi per parte, una previsione di
 $21{,}5$ non paga niente se il valore vero sta fra $21{,}3$ e $21{,}7$; se il
@@ -290,9 +291,9 @@ $$
 = \max\!\big(0,\ |y - f(\mathbf{x})| - \epsilon\big).
 $$
 
-In altri termini, gli errori entro $\pm\epsilon$ non vengono penalizzati;
-oltre, la penalità cresce linearmente. Con due variabili slack per ogni
-esempio, una per chi sporge sopra il tubo e una per chi sporge sotto, il
+In altri termini, [gli errori entro $\pm\epsilon$ non vengono penalizzati;
+oltre, la penalità cresce linearmente]{.pt-matita}. Con due variabili slack per
+ogni esempio, una per chi sporge sopra il tubo e una per chi sporge sotto, il
 problema è
 
 $$
@@ -363,8 +364,8 @@ ancora capitate.
 
 C'è però un modo in cui sbaglia: se il paese cresce e si costruiscono case
 nuove più in là, tutte legittime, la vecchia staccionata le segnala una per
-una. Non sa che cosa sia una frode; sa soltanto dov'era il paese il giorno in
-cui l'ha guardato.
+una. [Non sa che cosa sia una frode; sa soltanto dov'era il paese il giorno in
+cui l'ha guardato]{.pt-matita}.
 
 `````
 
@@ -404,9 +405,9 @@ ereditando la scalabilità degli alberi della {doc}`sezione sugli ensemble
 <alberi-ensemble>`) e il *Local Outlier Factor* basato sulla densità locale.
 
 Senza esempi anomali non c'è un errore da validare, per cui $\gamma$ e $\nu$ si
-fissano con euristiche ($\nu$ dalla quota di anomalie che ci si aspetta). Il
-modello descrive i dati del giorno in cui è stato addestrato, e se la loro
-distribuzione si sposta il nuovo normale esce come anomalo.
+fissano con euristiche ($\nu$ dalla quota di anomalie che ci si aspetta). [Il
+modello descrive i dati del giorno in cui è stato addestrato]{.pt-matita}, e se
+la loro distribuzione si sposta il nuovo normale esce come anomalo.
 
 `````
 
@@ -434,10 +435,11 @@ elementi. `SVC` delega il calcolo a libsvm, un solutore di tipo SMO che a ogni
 passo aggiorna due moltiplicatori $\alpha_i$ insieme, perché il vincolo $\sum_i
 \alpha_i y_i = 0$ ne impedisce uno solo.
 
-In definitiva, la SVM con kernel va bene da poche centinaia a qualche decina di
-migliaia di punti, ma diventa proibitiva su milioni. Per i dataset molto grandi
-si ripiega su modelli lineari (`LinearSVC`, `SGDClassifier`, che scalano circa
-come $O(m)$) o sugli alberi in boosting della {doc}`sezione sugli ensemble
+In definitiva, [la SVM con kernel va bene da poche centinaia a qualche decina
+di migliaia di punti, ma diventa proibitiva su milioni]{.pt-matita}. Per i
+dataset molto grandi si ripiega su modelli lineari (`LinearSVC`,
+`SGDClassifier`, che scalano circa come $O(m)$) o sugli alberi in boosting
+della {doc}`sezione sugli ensemble
 <alberi-ensemble>` {cite}`geron2022hands`.
 
 Le varianti si provano sugli stessi duecento punti, due mezzelune

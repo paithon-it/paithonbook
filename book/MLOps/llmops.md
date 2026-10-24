@@ -63,9 +63,10 @@ fa 26.
 ```
 
 Il vincolo di {numref}`fig-cosa-entra-in-memoria` ha la precedenza su tutte le
-tecniche di ottimizzazione, e ne fissa l'ordine. In altri termini, si
+tecniche di ottimizzazione, e ne fissa l'ordine. In altri termini, [si
 stabilisce prima cosa entra nella memoria disponibile, poi si discute di quanto
-vada veloce: un modello che non ci sta non è lento, semplicemente non parte.
+vada veloce]{.pt-matita}: un modello che non ci sta non è lento, semplicemente
+non parte.
 
 `````{tab} Elementare
 
@@ -135,7 +136,8 @@ lotta contro questi due limiti.
 
 Il problema centrale è la lettura dei pesi, che a ogni token pesa più del
 calcolo aritmetico. Da lì viene anche la conseguenza che rende sostenibile il
-servizio: la lettura è la stessa qualunque cosa il modello stia scrivendo.
+servizio: [la lettura è la stessa qualunque cosa il modello stia
+scrivendo]{.pt-matita}.
 
 Farla per servire una persona sola, o per servirne cento nello stesso istante,
 dura quasi uguale, finché le richieste in volo restano sotto la soglia in cui
@@ -157,7 +159,7 @@ Formare il mazzo, però, qui è molto più difficile, e per due ragioni.
 :width: 100%
 
 Quattro posti sulla stessa GPU e una coda di dieci richieste, sullo stesso
-orologio, che batte un’*iterazione* a ogni giro in cui ogni posto occupato
+orologio, che batte un’*iterazione* alla volta, e in ciascuna ogni posto occupato
 scrive un token. Il batching statico non rinnova il mazzo finché la risposta
 più lunga non ha finito, e alla dodicesima iterazione ha tre richieste
 concluse, tre posti fermi e la coda intatta. Il continuous batching, il mazzo
@@ -400,8 +402,8 @@ quanto più i due erano in disaccordo, e quando la scarta scrive lui. La regola
 è costruita perché il testo emesso sia campionato come lo avrebbe campionato il
 grande da solo: se davanti a una frase quel modello sceglie sempre la stessa
 parola, esce parola per parola il suo testo; se campiona fra più continuazioni,
-escono le stesse continuazioni con le stesse probabilità. Cambia il tempo, non
-il testo.
+escono le stesse continuazioni con le stesse probabilità. [Cambia il tempo, non
+il testo]{.pt-matita}.
 
 {numref}`fig-bozza-che-si-corregge` mostra la regola su sei parole.
 
@@ -669,13 +671,13 @@ da centro dati, tre e mezzo entrano in un portatile.
 ```
 
 {numref}`fig-quantizzazione-memoria` non mostra un risparmio graduale, e per
-questo la quantizzazione conta più di quanto un taglio del 75% suggerisca. Le
-quattro barre sono quattro risposte a una domanda che ammette solo sì o no,
-cioè «ci sta nella memoria che ho?», e non quattro sconti sempre più generosi.
-Sul portatile da 8 gigabyte della prima figura, che dopo il margine per la
-conversazione ne lascia liberi cinque, le prime tre righe sono tutte e tre un
-no, e la differenza fra loro non serve a niente: l'unica che cambia l'esito è
-la quarta.
+questo la quantizzazione conta più di quanto un taglio del 75% suggerisca. [Le
+quattro barre sono quattro risposte a una domanda che ammette solo sì o
+no]{.pt-matita}, cioè «ci sta nella memoria che ho?», e non quattro sconti
+sempre più generosi. Sul portatile da 8 gigabyte della prima figura, che dopo
+il margine per la conversazione ne lascia liberi cinque, le prime tre righe
+sono tutte e tre un no, e la differenza fra loro non serve a niente: l'unica
+che cambia l'esito è la quarta.
 
 `````{tab} Elementare
 
@@ -798,9 +800,9 @@ conversazioni aperte e contesti lunghi, la KV cache pesa quanto i pesi o di più
 </Transformers/attenzione-in-pratica>`), e si può comprimere anche lei. Le
 varianti dell'attenzione che condividono chiavi e valori fra le teste ne
 riducono il numero, e le sceglie chi progetta il modello; la quantizzazione ne
-riduce le cifre, e si fa dopo. In memoria le due riduzioni si moltiplicano, ma
-non sono indipendenti: su un modello che ha già una sola testa di chiavi e
-valori, ogni cifra tolta pesa di più.
+riduce le cifre, e si fa dopo. [In memoria le due riduzioni si moltiplicano, ma
+non sono indipendenti]{.pt-matita}: su un modello che ha già una sola testa di
+chiavi e valori, ogni cifra tolta pesa di più.
 
 `````{tab} Elementare
 
@@ -948,9 +950,9 @@ passaggio non c'è, perché riaddestrare un modello da miliardi di parametri non
 si fa a valle di un deploy. I metodi che si usano sugli LLM esistono per
 sostituirlo: invece di riaddestrare tutto, aggiustano strato per strato i pesi
 rimasti, guardando che cosa ci passa attraverso. È un rimedio locale, e si vede
-dal traguardo: metà dei pesi, non i nove decimi. Da qui la regola pratica: a
+dal traguardo: metà dei pesi, non i nove decimi. Da qui la regola pratica: [a
 parità di rischio si comincia dalla quantizzazione, che il riaddestramento non
-lo chiede. Vale la regola di sempre, misurare, perché il degrado si
+lo chiede]{.pt-matita}. Vale la regola di sempre, misurare, perché il degrado si
 distribuisce in modo diseguale fra i compiti e una media aggregata lo nasconde.
 
 ## Valutare l'invalutabile
@@ -1000,8 +1002,8 @@ resta una correlazione, e un giudice di un'altra famiglia sposta il problema
 più che toglierlo, perché un modello premia anche i testi che somigliano ai
 propri. Questi pregiudizi si attenuano scambiando l'ordine, con giudici più
 forti, con istruzioni di valutazione più precise, ma nessuna delle misure li
-azzera: chiedere una preferenza invece di una verifica lascia al giudice lo
-spazio per usare i suoi.
+azzera: [chiedere una preferenza invece di una verifica lascia al giudice lo
+spazio per usare i suoi]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -1071,7 +1073,7 @@ GPT-3.5 non preferisce sé stesso; lo hanno misurato poi Panickssery e colleghi,
 sui riassunti, e il giudice riconosce i propri testi tanto più spesso quanto
 più li preferisce {cite}`panickssery2024selfpreference`. Il position bias si
 mitiga chiamando il giudice due volte a ordini scambiati e dichiarando
-vincitore solo chi vince in tutti e due i giri, pari quando i due giri si
+vincitore solo chi vince in tutti e due gli ordini, pari quando i due ordini si
 contraddicono; il resto non sparisce.
 
 Un giudice senza riferimento, poi, non
@@ -1125,11 +1127,12 @@ L'anello dell'MLOps resta quello di sempre (dati, addestramento, valutazione,
 consegna, sorveglianza), ma con gli LLM cambia il contenuto dell'anello, cioè
 le cose di cui si conserva ogni versione. Spesso non sono i pesi, che arrivano
 già fatti da qualcun altro: è il prompt, la riga d'istruzione con cui si spiega
-al modello che cosa deve fare. Quella riga è codice a tutti gli effetti,
-e fragile: infatti basta una parola diversa per cambiare la risposta, come
-illustrato nel capitolo sui Transformer. Si versiona quindi come il codice: un
-identificativo (l'impronta del testo e dei parametri di generazione, come
-quella della configurazione in {doc}`Dal notebook alla produzione
+al modello che cosa deve fare. [Quella riga è codice a tutti gli effetti, e
+fragile]{.pt-matita}: infatti basta una parola diversa per cambiare la
+risposta, come illustrato nel capitolo sui Transformer. Si versiona quindi come
+il codice: un identificativo (l'impronta del testo e dei parametri di
+generazione, come quella della configurazione in {doc}`Dal notebook alla
+produzione
 </MLOps/dal-notebook-alla-produzione>`), il modello fissato alla versione con
 cui è stato provato, e la batteria di casi che lo ha approvato.
 

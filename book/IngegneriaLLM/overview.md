@@ -119,9 +119,9 @@ chiama fine-tuning ed è la strada più costosa, come mostra la
 {numref}`fig-quale-leva`), ma i pesi restano fermi mentre si lavora sul testo.
 
 In pratica programmiamo con le parole, cioè con il testo che gli mettiamo
-davanti prima di chiedergli una risposta. Cambiare quel testo cambia il
-comportamento del sistema tanto quanto, nel software tradizionale, cambierebbe
-riscrivere una funzione.
+davanti prima di chiedergli una risposta. [Cambiare quel testo cambia il
+comportamento del sistema]{.pt-matita} tanto quanto, nel software tradizionale,
+cambierebbe riscrivere una funzione.
 
 `````{tab} Elementare
 
@@ -258,8 +258,8 @@ taccuino la riga che conta: «quel bianco no, troppo secco». Al quarto giro
 rilegge il taccuino, non il tavolo. Chi invece si limita a limare il modo di
 porre la domanda, e non sparecchia né annota niente, alla quarta bottiglia ti
 riporta quel bianco: la domanda era perfetta, la serata no. Domanda dentro il
-tavolo apparecchiato, il tavolo dentro la serata: ogni cerchio contiene quello
-prima.
+tavolo apparecchiato, il tavolo dentro la serata: [ogni cerchio contiene quello
+prima]{.pt-matita}.
 
 `````
 
@@ -287,8 +287,8 @@ quando il compito è finito.
 
 Ottimizzare il singolo prompt senza governare $g$ significa curare un
 fotogramma e ignorare il film: il prompt vive un istante, il loop dura quanto
-il compito. Ecco perché i tre livelli non sono alternativi ma annidati, e
-perché conviene affrontarli dal piccolo al grande.
+il compito. Ecco perché [i tre livelli non sono alternativi ma
+annidati]{.pt-matita}, e perché conviene affrontarli dal piccolo al grande.
 
 `````
 
@@ -321,10 +321,11 @@ dopo viene «cosa manca davvero».
 ```
 
 L'ordine delle domande in {numref}`fig-quale-leva` dice già come ragiona un
-ingegnere. Si comincia dalla strada che costa meno e si sale solo se
-serve. Il fine-tuning, infatti, è più caro del prompt, non più avanzato (vuole
-esempi raccolti a mano, macchine per addestrare, e va rifatto ogni volta che si
-cambia modello), e va giustificato da qualcosa che il prompt non poteva dare.
+ingegnere. [Si comincia dalla strada che costa meno e si sale solo se
+serve]{.pt-matita}. Il fine-tuning, infatti, è più caro del prompt, non più
+avanzato (vuole esempi raccolti a mano, macchine per addestrare, e va rifatto
+ogni volta che si cambia modello), e va giustificato da qualcosa che il prompt
+non poteva dare.
 
 La domanda che fa scegliere, quando il prompt non basta, è che cosa manchi
 davvero. Se mancano

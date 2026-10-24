@@ -10,7 +10,10 @@
  * di lettura (lo decide `pt-postille.js`), e solo allora si puo' toccare: un
  * segno invisibile non deve prendersi un tocco.
  *
- * La postilla aperta sta sotto il capoverso e spinge giu' il testo che segue.
+ * Premuto il segno, il capoverso sfuma (il testo diventa un'ombra sfocata) e
+ * la postilla si scrive al suo posto, una lettera dopo l'altra, in Fraunces
+ * corsivo: niente si sposta, la pagina resta ferma. L'`<aside>` resta nella
+ * pagina per i lettori di schermo, e a vista non si vede.
  */
 .pt-con-postilla {
   position: relative;
@@ -18,6 +21,12 @@
 
 .pt-postilla__segno {
   position: absolute;
+  z-index: 1;
+  /* una pressione lunga col dito: niente selezione, niente menu */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
   left: calc(100% + 5px);
   top: calc((var(--pt-postilla-riga, 1.7em) - 24px) / 2);
   box-sizing: border-box;
@@ -73,6 +82,7 @@
 
 .pt-postilla__segno:focus-visible,
 .pt-postilla__segno[aria-expanded="true"],
+.pt-postilla-attiva > .pt-postilla__segno,
 .pt-con-postilla.pt-in-lettura > .pt-postilla__segno {
   opacity: 1;
 }
@@ -86,13 +96,96 @@
   outline-offset: 2px;
 }
 
-aside.pt-postilla {
-  margin: -0.55em 0 1.3em;
-  max-width: 40ch;
-  font-size: 0.86em;
+/* Il capoverso che sfuma: le lettere diventano un'ombra sfocata del loro
+   colore. Il testo diretto del capoverso e quello dei figli (un link, un
+   neretto, una formula) insieme; la scritta e il segno no. */
+.pt-con-postilla,
+.pt-con-postilla *:not(.pt-postilla__scritta):not(.pt-postilla__scritta *) {
+  transition: color var(--pt-transition-slow), text-shadow var(--pt-transition-slow),
+              opacity var(--pt-transition-slow);
+}
+
+.pt-postilla-attiva,
+.pt-postilla-attiva *:not(.pt-postilla__segno):not(.pt-postilla__segno *):not(.pt-postilla__scritta):not(.pt-postilla__scritta *) {
+  color: transparent !important;
+  text-shadow: 0 0 5px color-mix(in srgb, var(--pt-fg) 28%, transparent);
+}
+
+/* Cio' che non ha testo da sfocare (le formule disegnate, le immagini)
+   si attenua e basta. */
+.pt-postilla-attiva :is(img, svg, mjx-container):not(.pt-postilla__segno *) {
+  opacity: 0.15;
+}
+
+/* La scritta: sopra il capoverso, nel suo riquadro, senza spostare niente. */
+.pt-postilla__scritta {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1em;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.pt-postilla__scritta > span {
+  max-width: 34ch;
+  font-family: var(--pt-font-display);
   font-style: italic;
-  line-height: 1.45;
-  color: var(--pt-fg-muted);
+  font-weight: 400;
+  font-size: 1.3em;
+  line-height: 1.35;
+  text-align: center;
+  color: var(--pt-fg);
+  text-shadow: none;
+}
+
+.pt-postilla__parola {
+  white-space: nowrap;
+}
+
+.pt-postilla__parola > span {
+  display: inline-block;
+}
+
+.pt-postilla-attiva > .pt-postilla__scritta {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Si scrive piano: ogni lettera compare dopo la precedente, come sotto una
+   penna, dopo che il capoverso ha cominciato a sfumare. */
+.pt-postilla__scritta.pt-scrive .pt-postilla__parola > span {
+  animation: pt-scrivi 420ms var(--pt-ease-out) both;
+  animation-delay: calc(160ms + var(--i) * 30ms);
+}
+
+@keyframes pt-scrivi {
+  from {
+    opacity: 0;
+    transform: translateY(0.18em);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+/* L'<aside> della postilla: per il lettore di schermo, non per la vista. */
+aside.pt-postilla {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }
 
 aside.pt-postilla[hidden] {
@@ -100,8 +193,14 @@ aside.pt-postilla[hidden] {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pt-postilla__segno {
-    transition: none;
+  .pt-postilla__segno,
+  .pt-con-postilla,
+  .pt-con-postilla * {
+    transition: none !important;
+  }
+
+  .pt-postilla__scritta.pt-scrive .pt-postilla__parola > span {
+    animation: none;
   }
 }
 
@@ -116,6 +215,7 @@ aside.pt-postilla[hidden] {
 
 @media print {
   .pt-postilla__segno,
+  .pt-postilla__scritta,
   aside.pt-postilla {
     display: none !important;
   }

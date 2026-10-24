@@ -37,8 +37,9 @@ pesi che esistono già: un modello di linguaggio riaddestrato su qualche milione
 di didascalie perde per strada una parte delle capacità che aveva con il testo
 puro, perché impara una competenza nuova cancellandone una vecchia. È la
 dimenticanza catastrofica, già incontrata nella {doc}`sezione sui modelli
-multilingua </Transformers/multilingua>`. Congelare dà quindi anche una
-garanzia sul comportamento che si vuole conservare, oltre al risparmio.
+multilingua </Transformers/multilingua>`. [Congelare dà quindi anche una
+garanzia sul comportamento che si vuole conservare, oltre al
+risparmio]{.pt-matita}.
 
 ## Che cosa deve fare, di preciso, il connettore
 
@@ -88,9 +89,9 @@ Infatti, dopo aver guardato gli altri, ogni pezzo attraversa da solo una lunga
 catena di calcoli, che cresce quanto i pezzi, e in un modello di linguaggio
 grande, a seicento pezzi, pesa una quarantina di volte più dei confronti.
 
-Il conto vero cala quindi di undici volte e mezzo, non di centotrenta, e
-il quadrato comincerebbe a comandare solo quando i pezzi si contano a decine di
-migliaia.
+[Il conto vero cala quindi di undici volte e mezzo, non di
+centotrenta]{.pt-matita}, e il quadrato comincerebbe a comandare solo quando i
+pezzi si contano a decine di migliaia.
 
 Per questo «quanti» pesa lo stesso: ogni tessera occupa un posto, i posti sono
 contati, e mentre scrive la risposta, parola dopo parola, il modello tiene il
@@ -125,7 +126,7 @@ linearmente in $M+T$ per ogni strato e ogni testa. Con i valori dell'esempio
 numerico, $N = 576$ e $T = 20$: passare da $M = 32$ a $M = N$ moltiplica il
 termine quadratico per $(596/52)^2 \approx 131$.
 
-Si noti però che quel $131$ non è il rapporto fra i due costi: a
+Si noti però che [quel $131$ non è il rapporto fra i due costi]{.pt-matita}: a
 $M + T \approx 600$ e $d_t = 4096$ il termine quadratico vale il $2{,}4\%$ del
 blocco (è il calcolo $4(M+T)^2 d_t$ contro $24
 (M+T) d_t^2$ che la {doc}`sezione sulla risoluzione
@@ -172,8 +173,8 @@ Come mostra {numref}`fig-vlm-connettori`, i blocchi alle estremità non cambiano
 mai. Cambia il pezzo in mezzo, e cambiano con lui due grandezze: quanti
 parametri si addestrano, che calano da sinistra a destra di quasi tre ordini di
 grandezza, e se ci sia o no una compressione. Le prime due colonne comprimono e
-la terza no, e a decidere quale delle tre si è diffusa è questa distinzione,
-più del numero dei parametri.
+la terza no, e [a decidere quale delle tre si è diffusa è questa distinzione,
+più del numero dei parametri]{.pt-matita}.
 
 ### Aggiungere strati nuovi dentro il modello congelato
 
@@ -204,10 +205,10 @@ entra a volume pieno, e più di così non lo si può amplificare.
 Ogni strato nuovo è collegato così, anzi due volte, perché è fatto di due
 pezzi, uno che va a guardare l'immagine e uno che rielabora il materiale
 raccolto: ciascuno ha il suo volume, un unico numero che moltiplica l'uscita
-del pezzo prima che si sommi al resto, e che parte da zero. Al
-primo istante l'immagine non influenza nulla e il modello si comporta identico a
-com'era; poi l'addestramento scopre che alzare il volume conviene, perché aiuta
-a indovinare le parole giuste, e lo alza gradualmente.
+del pezzo prima che si sommi al resto, e che parte da zero. [Al primo istante
+l'immagine non influenza nulla e il modello si comporta identico a
+com'era]{.pt-matita}; poi l'addestramento scopre che alzare il volume conviene,
+perché aiuta a indovinare le parole giuste, e lo alza gradualmente.
 
 Resta il problema di quante liste di numeri consegnare. Un'immagine ne dà
 centinaia, un video ne dà centinaia per ogni fotogramma, e gli
@@ -244,9 +245,9 @@ congelato, $\mathbf{R}$ i vettori visivi già preparati dal modulo a monte,
 $\mathrm{XAttn}$ la cross-attention (query da $\mathbf{x}$, chiavi e valori da
 $\mathbf{R}$) e $\alpha$ uno scalare appreso, inizializzato a zero (ogni
 blocco ne ha due, uno per la cross-attention e uno per il feed-forward che la
-segue). Poiché $\tanh(0) = 0$, alla prima iterazione ogni blocco
+segue). Poiché $\tanh(0) = 0$, [alla prima iterazione ogni blocco
 aggiunto è esattamente l'identità: la funzione calcolata dalla rete è, token per
-token, quella del modello di partenza. L'inizializzazione è quindi
+token, quella del modello di partenza]{.pt-matita}. L'inizializzazione è quindi
 esatta e non soltanto «piccola», e si parte da un punto di cui si conoscono
 le prestazioni. Osserviamo inoltre che $\tanh$ dà un gate limitato in
 $(-1, 1)$, che non fa esplodere il ramo nuovo quando $\alpha$ cresce. Lo stesso
@@ -315,8 +316,8 @@ autori il risultato peggiora molto: con uno dei due modelli di linguaggio
 provati, anzi, peggiora via via che lo studio va avanti.
 
 Davanti a ogni nuova foto pone le 32 domande, la guarda per rispondere e
-consegna 32 risposte: da lì in poi il modello di linguaggio ha in mano solo
-quelle, la foto non la vede più.
+consegna 32 risposte: da lì in poi [il modello di linguaggio ha in mano solo
+quelle, la foto non la vede più]{.pt-matita}.
 
 Il guadagno si legge nei numeri. L'encoder qui produce 257 liste per ogni foto:
 l'immagine è da 224 puntini di lato, le tessere da 14, quindi 16 per riga e 16
@@ -352,13 +353,13 @@ $$
 \mathbf{E} = \mathbf{Z}_{\text{out}} \mathbf{W}_{\text{proj}},
 $$
 
-dove $\mathbf{Z}$ sono le feature dell'encoder visivo, $\theta$ i parametri del Q-Former
-e $\mathbf{W}_{\text{proj}} \in \mathbb{R}^{768 \times d_t}$ una proiezione lineare che
-porta le uscite nella dimensione degli embedding del modello di linguaggio. Il
-collo di bottiglia è dimensionato apposta: con un ViT-L/14 le feature visive
-sono $257 \times 1024$, l'uscita è $32 \times 768$, cioè un fattore $10{,}7$ in
-meno di numeri. Le query non possono quindi conservare tutta l'informazione, e
-sono costrette a selezionare.
+dove $\mathbf{Z}$ sono le feature dell'encoder visivo, $\theta$ i parametri del
+Q-Former e $\mathbf{W}_{\text{proj}} \in \mathbb{R}^{768 \times d_t}$ una
+proiezione lineare che porta le uscite nella dimensione degli embedding del
+modello di linguaggio. Il collo di bottiglia è dimensionato apposta: con un
+ViT-L/14 le feature visive sono $257 \times 1024$, l'uscita è $32 \times 768$,
+cioè un fattore $10{,}7$ in meno di numeri. [Le query non possono quindi
+conservare tutta l'informazione, e sono costrette a selezionare]{.pt-matita}.
 
 L'addestramento avviene in due fasi, e la prima serve a decidere che cosa
 selezionare: il Q-Former è collegato al solo encoder visivo e ottimizza tre
@@ -387,11 +388,11 @@ l'addestramento procede, per dimenticanza catastrofica.
 
 ### Una matrice, e basta
 
-La terza risposta, LLaVA {cite}`liu2023visual` nello stesso 2023, è la più
-semplice: niente compressione, niente query apprese, niente strati nuovi. Il
-connettore è una matrice, detta **proiettore**: il vettore di ogni tessera
-viene moltiplicato per quella matrice e diventa un token, e i token si
-dispongono davanti al prompt come fossero parole.
+La terza risposta, LLaVA {cite}`liu2023visual` nello stesso 2023, [è la più
+semplice: niente compressione, niente query apprese, niente strati
+nuovi]{.pt-matita}. Il connettore è una matrice, detta **proiettore**: il
+vettore di ogni tessera viene moltiplicato per quella matrice e diventa un
+token, e i token si dispongono davanti al prompt come fossero parole.
 
 `````{tab} Elementare
 
@@ -454,11 +455,11 @@ LLaVA e da molti dei modelli aperti che l'hanno seguita.
 
 Il Q-Former è più sofisticato, e la cross-attention con il gate di Flamingo è
 più rispettosa del modello congelato; eppure, nei modelli aperti della famiglia
-di LLaVA, si è imposta la matrice. La ragione di principio è che gli altri due
+di LLaVA, si è imposta la matrice. La ragione di principio è che [gli altri due
 connettori comprimono, cioè scelgono che cosa dell'immagine conta prima di
-conoscere la domanda, e quello che sembrava un pregio si rivela un difetto. È
-una ragione e non una legge, con dei confini: in sistemi più grandi la
-cross-attention è ancora in uso.
+conoscere la domanda]{.pt-matita}, e quello che sembrava un pregio si rivela un
+difetto. È una ragione e non una legge, con dei confini: in sistemi più grandi
+la cross-attention è ancora in uso.
 
 `````{tab} Elementare
 
@@ -553,10 +554,11 @@ saltare la prima fase faceva perdere qualche punto.
 solo connettore su coppie immagine-didascalia, con l'obiettivo di sempre di un
 modello di linguaggio: data l'immagine, scrivi la sua didascalia, una parola
 dopo l'altra. Nel primo lavoro su LLaVA questa fase usa 595 000 coppie filtrate
-da un grande corpus di immagini e testi del web. Non si insegna niente di nuovo
-ai due modelli: si insegna al connettore dove scrivere, cioè si allineano le
-feature visive alla regione dello spazio che il modello di linguaggio sa già
-leggere, nello stesso senso geometrico della sezione sull'allineamento.
+da un grande corpus di immagini e testi del web. [Non si insegna niente di
+nuovo ai due modelli: si insegna al connettore dove scrivere]{.pt-matita}, cioè
+si allineano le feature visive alla regione dello spazio che il modello di
+linguaggio sa già leggere, nello stesso senso geometrico della sezione
+sull'allineamento.
 
 **Secondo tempo, *visual instruction tuning*.** Si scongela anche il modello di
 linguaggio (l'encoder visivo di norma resta fermo) e si continua su dialoghi
@@ -679,8 +681,8 @@ print(sum(p.numel() for p in proiettore.parameters()))
 20979712
 ```
 
-Più importante è come i token visivi raggiungono il decoder: entrano dalla
-stessa porta delle parole.
+Più importante è come i token visivi raggiungono il decoder: [entrano dalla
+stessa porta delle parole]{.pt-matita}.
 
 ```{code-block} python
 :class: pt-non-eseguibile

@@ -52,9 +52,9 @@ Perché allora non si tengono diecimila lepri? Perché una lepre è ingombrante.
 Le servono le gambe lunghe, la memoria di tutte le scorciatoie, una borsa di
 attrezzi per quando la strada è chiusa, tutta roba da portarsi dietro e da
 nutrire. Una formica non ha niente di tutto questo, e nello stesso formicaio ce
-ne stanno migliaia. Lo spazio è quello, e si spende in un modo o nell'altro:
+ne stanno migliaia. [Lo spazio è quello, e si spende in un modo o nell'altro:
 poche lepri attrezzate, oppure una folla di operaie spoglie, capaci di un
-lavoro solo.
+lavoro solo]{.pt-matita}.
 
 Il formicaio ha poi un vantaggio che si vede solo quando qualcosa va storto.
 Una formica che trova una pozzanghera si ferma ad aspettare che scoli, ma
@@ -83,13 +83,14 @@ fino a qualche centinaio nei processori da server, ciascuno con unità vettorial
 SIMD fino a 512 bit. Gran parte del silicio è spesa in logica di controllo e
 memoria, non in unità di calcolo.
 
-Una GPU è *throughput-oriented* e rovescia il bilancio: il silicio va quasi
+Una GPU è *throughput-oriented* e rovescia il bilancio: [il silicio va quasi
 tutto in ALU (le unità aritmetiche, i «CUDA core») e pochissimo in controllo e
-cache per core. Il singolo thread è lento e non ha trucchi per nascondere le
-proprie attese; la GPU nasconde la latenza in un altro modo, statisticamente.
-Tiene *moltissimi* thread pronti e, quando uno si ferma in attesa di un dato
-dalla memoria, ne fa partire un altro già pronto. In altri termini, non
-accorcia l'attesa del singolo, ma la *copre* con il lavoro degli altri.
+cache per core]{.pt-matita}. Il singolo thread è lento e non ha trucchi per
+nascondere le proprie attese; la GPU nasconde la latenza in un altro modo,
+statisticamente. Tiene *moltissimi* thread pronti e, quando uno si ferma in
+attesa di un dato dalla memoria, ne fa partire un altro già pronto. In altri
+termini, non accorcia l'attesa del singolo, ma la *copre* con il lavoro degli
+altri.
 
 È una scelta sensata solo se il problema offre parallelismo in abbondanza, come
 le reti neurali. Il prodotto di due matrici $(M,K)$ e $(K,N)$, ad esempio,
@@ -104,8 +105,8 @@ accorcia a profondità $\log_2 K$ solo sommando ad albero).
 Vista da lontano, una GPU sembra un blocco unico. Da vicino è un insieme di
 unità quasi autonome, gli **Streaming Multiprocessor** (SM), ciascuna delle
 quali esegue in autonomia una parte del lavoro. Una GPU moderna ne ha da
-qualche decina a oltre un centinaio, e la sua potenza cresce, prima di tutto,
-moltiplicando gli SM.
+qualche decina a oltre un centinaio, e [la sua potenza cresce, prima di tutto,
+moltiplicando gli SM]{.pt-matita}.
 
 Prima di aprirne uno serve una distinzione. Le **ALU** (le unità aritmetiche,
 quelle che eseguono materialmente una moltiplicazione o una somma) sono
@@ -203,9 +204,9 @@ e ci si ritrova a confrontarle.
 Gli uffici aperti sono quelli che sono, e in ognuno ci sta qualche squadra per
 volta, non di più. Se gli uffici sono venti e le squadre cento, ad esempio,
 parte chi ci sta e le altre aspettano che si liberi posto. Il capo non ha
-bisogno di saperlo, perché lo stesso ordine («100 squadre da 256») funziona in
-un paese con due uffici e in una metropoli che ne ha centoventi, e a cambiare è
-quanto ci si mette, non il piano.
+bisogno di saperlo, perché [lo stesso ordine («100 squadre da 256») funziona in
+un paese con due uffici e in una metropoli che ne ha centoventi]{.pt-matita}, e
+a cambiare è quanto ci si mette, non il piano.
 
 Sulle schede più recenti c'è un livello in più, facoltativo, fra la squadra e
 l'operazione intera: alcune squadre vengono messe apposta in uffici confinanti,
@@ -242,8 +243,8 @@ lancio; l'hardware assegna ciascun blocco a uno SM e lo tiene lì fino alla fine
 Un SM può ospitare più blocchi in parallelo, se le risorse (registri, shared
 memory) bastano; i blocchi che non entrano restano in coda e partono quando un
 SM si libera. Questo rende un programma CUDA scalabile in modo trasparente:
-lo stesso codice gira su una GPU con 20 SM o con 120, distribuendo gli stessi
-blocchi su più o meno SM, senza cambiare una riga.
+[lo stesso codice gira su una GPU con 20 SM o con 120, distribuendo gli stessi
+blocchi su più o meno SM, senza cambiare una riga]{.pt-matita}.
 
 Sotto il blocco c'è un livello ulteriore, che il programmatore non specifica ma
 non può ignorare: l'hardware esegue i thread di un blocco in warp da 32. Un
@@ -321,8 +322,9 @@ quindi il bivio pesa come prima. Il sergente che dava per scontato di trovarli
 sempre tutti allineati, ora, prima di farli parlare fra loro deve fare
 l'appello e aspettare che rispondano tutti.
 
-Sulla GPU i bivi che separano i 32 compagni di plotone rallentano molto il
-lavoro, e il codice più veloce è quello in cui tutti compiono lo stesso passo.
+Sulla GPU [i bivi che separano i 32 compagni di plotone rallentano molto il
+lavoro]{.pt-matita}, e il codice più veloce è quello in cui tutti compiono lo
+stesso passo.
 
 `````
 
@@ -359,9 +361,9 @@ rovescio della medaglia riguarda chi scrive kernel: i vecchi kernel
 sincronizzarsi esplicitamente, non sono più corretti, e servono le primitive
 come `__syncwarp()`.
 
-La regola pratica, invece, non cambia: i rami condizionali vanno tenuti
-allineati alla granularità del warp, così che i 32 thread restino il più
-possibile *coerenti* e nessuno sprechi tempo restando mascherato.
+La regola pratica, invece, non cambia: [i rami condizionali vanno tenuti
+allineati alla granularità del warp]{.pt-matita}, così che i 32 thread restino
+il più possibile *coerenti* e nessuno sprechi tempo restando mascherato.
 
 Warp, SM, shared memory e tensor core sono nomi di NVIDIA. Sulle GPU AMD lo SM
 si chiama *compute unit* (CU), il warp *wavefront* (64 thread sulle schede da
@@ -436,10 +438,10 @@ Due pentole che chiedono una cassa da quattro cucchiai l'una ne mettono in
 strada otto anche loro, e il corridoio è altrettanto pieno con quattro volte
 meno pentole.
 
-Riempire i fornelli resta il modo più semplice per riempire il corridoio, e
-un'officina con due pentole accese che chiedono un cucchiaio per volta spreca il
-suo capocuoco; ma a chi si fa portare una cassa per volta di pentole ne bastano
-poche.
+[Riempire i fornelli resta il modo più semplice per riempire il
+corridoio]{.pt-matita}, e un'officina con due pentole accese che chiedono un
+cucchiaio per volta spreca il suo capocuoco; ma a chi si fa portare una cassa
+per volta di pentole ne bastano poche.
 
 `````
 
@@ -478,12 +480,12 @@ circa $640$ KB su tutto il chip, cioè circa 6 KB per ciascuno dei 108 SM.
 
 Se ogni thread legge 4 byte, un warp in volo ne porta 128, e servono una
 quarantina abbondante di richieste pendenti per SM, più di due terzi dei 64
-warp che un SM può ospitare: occupancy alta. Se invece ogni thread
-legge un `float4` (16 byte, cioè 512 byte per warp), ne bastano una dozzina, e
-la banda si satura con meno di un quinto dei warp. Cambia solo la larghezza
-della lettura, e le occupancy necessarie sono opposte: le richieste in volo
-vanno tenute alte, e ci si arriva sia con tanti warp sia con pochi warp che
-leggono largo.
+warp che un SM può ospitare: occupancy alta. Se invece ogni thread legge un
+`float4` (16 byte, cioè 512 byte per warp), ne bastano una dozzina, e la banda
+si satura con meno di un quinto dei warp. Cambia solo la larghezza della
+lettura, e le occupancy necessarie sono opposte: [le richieste in volo vanno
+tenute alte]{.pt-matita}, e ci si arriva sia con tanti warp sia con pochi warp
+che leggono largo.
 
 `````
 

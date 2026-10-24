@@ -20,8 +20,8 @@ interventi degli altri, i token letti crescono come il quadrato dei turni; con
 contesti separati, in cui ognuno legge soltanto i messaggi che lo riguardano,
 crescono come il numero di agenti, e il divario fra i due si allarga man mano
 che la squadra cresce. Dunque fra i due casi non cambia il modello e non cambia
-il numero dei partecipanti; cambia chi legge i messaggi di chi, cioè la
-topologia.
+il numero dei partecipanti; [cambia chi legge i messaggi di chi, cioè la
+topologia]{.pt-matita}.
 
 Una precisazione sulla parola, perché qui ha due sensi molto vicini. Nella
 {doc}`pagina d'apertura del capitolo <overview>` «topologica» descriveva la
@@ -38,8 +38,8 @@ La rappresentazione giusta è la più spoglia possibile: un grafo, i cui nodi
 sono gli agenti e i cui archi sono i canali di comunicazione. Un arco non
 significa «questi due *possono* scriversi»: dentro un programma tutti possono
 scrivere a tutti, basta una riga di codice. Significa «in questo progetto
-questi due *si scrivono*, e gli altri no». La topologia è un vincolo che il
-progettista impone, e il suo valore sta in ciò che vieta.
+questi due *si scrivono*, e gli altri no». [La topologia è un vincolo che il
+progettista impone, e il suo valore sta in ciò che vieta]{.pt-matita}.
 
 Su un grafo si misurano tre grandezze, le stesse che governano il progetto di
 una rete di calcolatori: quanta strada fa l'informazione per arrivare dove
@@ -251,7 +251,7 @@ Tutto si paga sullo stesso nodo. Il supervisore è insieme il
 collo di bottiglia (ogni decisione aspetta il suo turno) e il punto singolo di
 rottura: se sbaglia lui, nessun altro può accorgersene, perché i lavoratori
 vedono solo il proprio pezzo. Sotto una certa taglia è quasi sempre la scelta
-giusta; sopra, la stella non si allarga, si spezza.
+giusta; [sopra, la stella non si allarga, si spezza]{.pt-matita}.
 
 ## La catena
 
@@ -317,9 +317,9 @@ scrivono messaggi cortesi e ben formati fino in fondo {cite}`cemri2025why`.
 
 La catena si usa quando i passi si susseguono per natura e ciascuno ha un modo
 suo di verificare il risultato, così che il controllo stia dentro ogni
-passaggio e non solo alla fine. Senza controlli lungo la strada, ogni agente
+passaggio e non solo alla fine. [Senza controlli lungo la strada, ogni agente
 aggiunto alla fila toglie un'altra fetta all'affidabilità di quello che arriva
-in fondo.
+in fondo]{.pt-matita}.
 
 ## La gerarchia
 
@@ -587,29 +587,29 @@ sessantaquattro, e diviso due fa trentadue. Più del doppio.
 
 La ragione è strutturale: in uno schema abbastanza regolare nessuno sta più al
 centro degli altri, quindi il traffico si ripartisce senza interventi, e con
-più strade fra ogni coppia togliere qualcuno non spezza niente. Il baratto fra
+più strade fra ogni coppia togliere qualcuno non spezza niente. [Il baratto fra
 le tre grandezze era la condizione di chi vuole spendere pochi fili, non una
-legge: vale perché fra due partecipanti c'è una strada sola, e chi sta su
-quella strada la porta tutta.
+legge]{.pt-matita}: vale perché fra due partecipanti c'è una strada sola, e chi
+sta su quella strada la porta tutta.
 
 Se la maglia vince su tutto, perché nella pratica si usano altre forme?
 Perché i nodi di Baran erano macchine che smistano, mentre i nostri sono
 agenti che leggono e scrivono, e un collegamento in più non è un cavo da
-stendere: è, a ogni giro, altro testo da rileggere e da scrivere. Se a ogni
-giro ciascuno scrive ai suoi vicini e legge i messaggi che gli arrivano, ogni
-filo porta due messaggi, uno per verso, e il testo letto in un giro va con il
+stendere: è, a ogni iterazione, altro testo da rileggere e da scrivere. Se a ogni
+iterazione ciascuno scrive ai suoi vicini e legge i messaggi che gli arrivano, ogni
+filo porta due messaggi, uno per verso, e il testo letto in un'iterazione va con il
 numero di fili: sessantaquattro messaggi nell'ipercubo, ventotto
 nell'organigramma, più del doppio per lo stesso lavoro.
 
 Non è però la crescita esplosiva della trascrizione condivisa, dove fra sedici
-agenti che leggono tutti gli altri i messaggi letti in un giro sarebbero
+agenti che leggono tutti gli altri i messaggi letti in un'iterazione sarebbero
 duecentoquaranta; e a ciascun agente ne toccano pochi, quattro, meno dei
 quattordici che arrivano al centro di una stella. Il limite vero è un altro:
 nella maglia nessuno vede l'insieme. Un'informazione impiega fino a quattro
-giri per attraversarla, e ogni giro sono sedici chiamate al modello; e alla
-fine non c'è nessuno che tenga la risposta, per cui gli agenti
-devono mettersi d'accordo su quale sia, che è il problema della {doc}`sezione su
-protocolli e consenso <protocolli-e-consenso>`.
+iterazioni per attraversarla, e ogni iterazione sono sedici chiamate al
+modello; e alla fine non c'è nessuno che tenga la risposta, per cui gli agenti
+devono mettersi d'accordo su quale sia, che è il problema della {doc}`sezione
+su protocolli e consenso <protocolli-e-consenso>`.
 
 Baran poteva tirare fili perché la sua rete doveva
 soltanto far passare i messaggi, e un cavo in più era soltanto un cavo in più;
@@ -624,11 +624,11 @@ progettista, e lo decide prima che il sistema parta. Le due che restano vi
 rinunciano, e in cambio ottengono qualcosa che con un grafo fissato in anticipo
 non si ottiene.
 
-Nella prima, nessuno scrive a nessuno. C'è un foglio comune, la lavagna, su
-cui tutti leggono e scrivono: un agente ci mette sopra un'ipotesi, un altro la
-vede comparire e reagisce, un terzo la corregge. Nessuno sa chi siano gli altri,
-e non gli serve saperlo; un pezzo di programma a parte decide, giro dopo giro,
-chi lasciar agire.
+Nella prima, nessuno scrive a nessuno. C'è un foglio comune, la lavagna, su cui
+tutti leggono e scrivono: un agente ci mette sopra un'ipotesi, un altro la vede
+comparire e reagisce, un terzo la corregge. Nessuno sa chi siano gli altri, e
+non gli serve saperlo; un pezzo di programma a parte decide, iterazione dopo
+iterazione, chi lasciar agire.
 
 L'architettura nasce dentro un riconoscitore di parlato, e il motivo per cui
 nasce lì è il ritratto in miniatura del problema che risolve (il riconoscimento
@@ -671,11 +671,11 @@ meteorologo scrive che il vento gira; il tecnico legge quella riga e corregge
 una stima che aveva scritto lui mezz'ora prima; nessuno dei due sa
 dell'esistenza dell'altro.
 
-Il pregio è che si può aggiungere uno specialista nuovo senza avvisare nessuno:
-se sa leggere la lavagna e scriverci sopra, è dentro, e nessuno degli altri va
-modificato. È il contrario del capo cantiere, che va aggiornato ogni volta che
-arriva un operaio e che, a differenza della lavagna, ha una giornata sola da
-spendere.
+Il pregio è che [si può aggiungere uno specialista nuovo senza avvisare
+nessuno]{.pt-matita}: se sa leggere la lavagna e scriverci sopra, è dentro, e
+nessuno degli altri va modificato. È il contrario del capo cantiere, che va
+aggiornato ogni volta che arriva un operaio e che, a differenza della lavagna,
+ha una giornata sola da spendere.
 
 I difetti sono i due che chiunque abbia visto una lavagna vera conosce. Il
 primo è la ressa: in due che scrivono nello stesso punto nello stesso momento
@@ -716,13 +716,12 @@ per limite una finestra di contesto e una capacità di ragionamento, un centro
 che *conserva* ha per limite la contesa in scrittura e la coerenza, cioè
 problemi da basi di dati (transazioni, versioni, blocchi) con soluzioni note.
 
-Con agenti
-linguistici, però, la lavagna è testo libero: il controllo di versione e di
-conflitto che una base di dati fa su campi tipizzati qui non c'è, e due
-scritture fra loro incoerenti si scoprono soltanto con un terzo agente che le
-legga, o imponendo uno schema rigido a ciò che si scrive. In cambio
-il disaccoppiamento è massimo: le knowledge source non si nominano fra loro, e
-aggiungerne una non richiede di modificare le altre.
+Con agenti linguistici, però, la lavagna è testo libero: il controllo di
+versione e di conflitto che una base di dati fa su campi tipizzati qui non c'è,
+e due scritture fra loro incoerenti si scoprono soltanto con un terzo agente
+che le legga, o imponendo uno schema rigido a ciò che si scrive. In cambio [il
+disaccoppiamento è massimo]{.pt-matita}: le knowledge source non si nominano
+fra loro, e aggiungerne una non richiede di modificare le altre.
 
 Gli autori stessi elencano due debolezze, e valgono ancora. La prima nasce
 dalla generalità: ogni decisione passa per la lavagna, una scelta che si è
@@ -787,12 +786,12 @@ niente. Se dieci agenti leggono l'annuncio e cinque preparano
 un'offerta, sono cinque ragionamenti spesi per decidere chi ne farà uno. Su
 compiti piccoli la gara costa più del lavoro che assegna.
 
-C'è poi il problema di chi promette troppo, chi giura di finire in due
-giorni a metà prezzo, e poi non lo fa. Nelle gare vere ha perfino un nome,
-l’**offerta anomala**, quella che chi bandisce deve controllare prima di
-assegnare. Un modello di linguaggio a cui si chiede «sei in grado di fare
-questo?» tende a rispondere di sì, e allora la gara premia chi si stima meglio,
-non chi lavora meglio. Contro le promesse il rimedio è chiedere qualcosa di
+C'è poi il problema di chi promette troppo, chi giura di finire in due giorni a
+metà prezzo, e poi non lo fa. Nelle gare vere ha perfino un nome, l’**offerta
+anomala**, quella che chi bandisce deve controllare prima di assegnare. Un
+modello di linguaggio a cui si chiede «sei in grado di fare questo?» tende a
+rispondere di sì, e allora [la gara premia chi si stima meglio, non chi lavora
+meglio]{.pt-matita}. Contro le promesse il rimedio è chiedere qualcosa di
 guardabile: un pezzo di lavoro già fatto su un campione, e la memoria di come è
 andata l'ultima volta con lui.
 
@@ -838,12 +837,13 @@ distribuendo.
 Il secondo costo è la **calibrazione delle offerte**. Il protocollo assume che
 un nodo sappia stimare la propria idoneità, ipotesi ragionevole quando
 l'offerta è «ho tre sensori acustici a queste coordinate» e insostenibile
-quando è un modello di linguaggio che dichiara di saper fare un compito. Il
-vincitore sistematico diventa l'agente più ottimista, e l'ottimismo non correla
-con la competenza. È la *maledizione del vincitore* delle aste: vince chi ha
-sovrastimato di più. Se poi l'ottimismo è un tratto stabile di certi agenti, e
-non un errore che capita a caso, diventa una selezione avversa: il protocollo
-seleziona il tipo di partecipante che non voleva.
+quando è un modello di linguaggio che dichiara di saper fare un compito. [Il
+vincitore sistematico diventa l'agente più ottimista]{.pt-matita}, e
+l'ottimismo non correla con la competenza. È la *maledizione del vincitore*
+delle aste: vince chi ha sovrastimato di più. Se poi l'ottimismo è un tratto
+stabile di certi agenti, e non un errore che capita a caso, diventa una
+selezione avversa: il protocollo seleziona il tipo di partecipante che non
+voleva.
 
 Le contromisure sono due, e
 nessuna sta nel protocollo: rendere l'offerta verificabile (non «so farlo» ma
@@ -888,16 +888,16 @@ forma della conversazione, che è il tema della sezione su {doc}`protocolli e
 consenso <protocolli-e-consenso>`: là ogni messaggio si porterà scritto in cima
 che cosa fa, e la decisione collettiva diventerà una regola di voto.
 
-In altri termini, quando non si sa in anticipo con chi si parlerà, o si
-condivide un posto o si condivide una lingua.
+In altri termini, [quando non si sa in anticipo con chi si parlerà, o si
+condivide un posto o si condivide una lingua]{.pt-matita}.
 
 ## Scegliere
 
-La topologia si sceglie dal compito, mai dall'eleganza. Le tre domande sulla
-festa non dicono quale forma sia migliore, dicono cosa si ottiene e cosa si
-cede; il compito dice quale delle tre cose non è negoziabile. Vale anche
-l'avvertenza dell'ipercubo: quel baratto obbligato è la condizione di chi vuole
-spendere pochi collegamenti, non una legge di natura, e qui lo si accetta
+[La topologia si sceglie dal compito, mai dall'eleganza]{.pt-matita}. Le tre
+domande sulla festa non dicono quale forma sia migliore, dicono cosa si ottiene
+e cosa si cede; il compito dice quale delle tre cose non è negoziabile. Vale
+anche l'avvertenza dell'ipercubo: quel baratto obbligato è la condizione di chi
+vuole spendere pochi collegamenti, non una legge di natura, e qui lo si accetta
 perché ogni collegamento in più è altro testo da rileggere per qualcuno, e
 perché una maglia senza centro, alla fine, deve mettersi d'accordo.
 
@@ -994,11 +994,11 @@ controllo che sbarra la strada, è nel frattempo un ottimo posto dove aspettare.
   grafo regolare ben connesso le prende tutte insieme (l'ipercubo $Q_4$ fa
   diametro $4$, carico $21\%$ e connettività residua $100\%$ contro $6$, $54\%$
   e $37\%$ dell'albero binario, con più del doppio degli archi). Qui non si usa
-  perché il testo letto per giro va come $2|E|\,\bar{m}$ ($64\bar{m}$ contro i
-  $28\bar{m}$ dell'albero: lineare negli archi, non quadratico come nella
-  trascrizione condivisa) e perché nessun nodo ha la vista d'insieme:
-  l'informazione impiega fino a $\mathrm{diam}(G)$ giri ad attraversare la
-  maglia, e una risposta comune richiede un protocollo di consenso. Per gli
+  perché il testo letto per iterazione va come $2|E|\,\bar{m}$ ($64\bar{m}$
+  contro i $28\bar{m}$ dell'albero: lineare negli archi, non quadratico come
+  nella trascrizione condivisa) e perché nessun nodo ha la vista d'insieme:
+  l'informazione impiega fino a $\mathrm{diam}(G)$ iterazioni ad attraversare
+  la maglia, e una risposta comune richiede un protocollo di consenso. Per gli
   alberi il vincolo si scrive col limite di Moore, $N \le 1 +
   \Delta\sum_{i=0}^{k-1}(\Delta-1)^i$ con diametro $2k$, e la fragilità
   graduata con la connettività residua $\mathrm{res}(G)$.

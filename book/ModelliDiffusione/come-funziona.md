@@ -4,9 +4,9 @@ Facciamo un gioco. Ti mostro una fotografia su cui ho sparso un pulviscolo di
 puntini casuali e ti faccio una domanda sola: *quanto disturbo ho aggiunto?*
 Non ti chiedo di ridipingere la foto, né di dirmi cosa rappresenta: solo di
 indicare il pulviscolo, punto per punto. Sembra una richiesta modesta e invece
-sorregge l'intero capitolo, perché chi sa rispondere sa da che parte tirare per
-ripulire. Togliere il disturbo non basta, come si vedrà, ma il verso giusto è
-quello.
+sorregge l'intero capitolo, perché [chi sa rispondere sa da che parte tirare
+per ripulire]{.pt-matita}. Togliere il disturbo non basta, come si vedrà, ma il
+verso giusto è quello.
 
 Adesso ripetiamo il gioco per mille livelli di rovina, dalla grana appena
 percettibile al pulviscolo che ha inghiottito tutto. Mille non è un numero
@@ -48,9 +48,9 @@ Gauss, la distribuzione normale incontrata nei richiami di
 statistica. È la curva che descrive il modo più comune in cui i valori si
 distribuiscono attorno a una media: quasi tutti vicini allo zero, qualcuno un
 po’ più in là, quasi nessuno lontanissimo. La scelta non è di comodo, perché
-questa curva ha una proprietà rara: sommare mille numeri estratti da una
+questa curva ha una proprietà rara: [sommare mille numeri estratti da una
 campana di Gauss dà ancora un numero estratto da una campana di Gauss, solo più
-larga. È su questo che poggia tutto il resto della sezione.
+larga]{.pt-matita}. È su questo che poggia tutto il resto della sezione.
 
 `````{tab} Elementare
 
@@ -238,11 +238,11 @@ che nessuna formula sa svolgere, e per questo serve una rete.
 Ora entra in scena l'unica cosa che si impara: una rete neurale che riceve due
 cose soltanto, l'immagine rovinata e il numero del passo a cui è stata
 rovinata, e deve rispondere alla domanda del nostro gioco: *quanto rumore è
-stato aggiunto?* Non le si chiede com'era la foto pulita, le si chiede il
-rumore. La scelta è meno ovvia di quanto sembri e spiega in parte perché DDPM
-{cite}`ho2020denoising` funziona così bene. (Il nome per esteso è *Denoising
-Diffusion Probabilistic Models*, «modelli probabilistici di diffusione che
-tolgono il rumore».)
+stato aggiunto?* [Non le si chiede com'era la foto pulita, le si chiede il
+rumore]{.pt-matita}. La scelta è meno ovvia di quanto sembri e spiega in parte
+perché DDPM {cite}`ho2020denoising` funziona così bene. (Il nome per esteso è
+*Denoising Diffusion Probabilistic Models*, «modelli probabilistici di
+diffusione che tolgono il rumore».)
 
 Il rumore da indicare è quello della forma chiusa, il $\boldsymbol{\epsilon}$
 con cui l'andata è arrivata al livello $t$ in un colpo solo, e la risposta
@@ -424,11 +424,11 @@ nuovo. Nessuno ha disegnato il 3: è emerso da mille rimescolamenti.
 ```
 
 La {numref}`fig-diffusione-denoising` comprime in pochi passi ciò che nel DDPM
-originale ne richiede mille. Il meccanismo vero, però, non è una
-ripulitura progressiva: per quasi tutto il viaggio il rumore rimescolato è
-molto più grande di quello sottratto, e l'immagine emerge per un'altra via. Si
-vede anche nella clip, dove il disturbo non cala in modo liscio ma resta lì a
-lungo e se ne va tardi.
+originale ne richiede mille. Il meccanismo vero, però, non è una ripulitura
+progressiva: [per quasi tutto il viaggio il rumore rimescolato è molto più
+grande di quello sottratto]{.pt-matita}, e l'immagine emerge per un'altra via.
+Si vede anche nella clip, dove il disturbo non cala in modo liscio ma resta lì
+a lungo e se ne va tardi.
 
 `````{tab} Elementare
 
@@ -643,7 +643,7 @@ detta, ma una sua versione riequilibrata a mano; e il voto del principio,
 seguito alla lettera, dà immagini peggiori di quello riequilibrato. La
 contropartita si vede dove la ricetta prometteva: davanti alle fotografie vere
 dell'archivio, il modello riequilibrato le dichiara meno probabili di quanto
-faccia quello fedele. Genera meglio e giudica peggio.
+faccia quello fedele. [Genera meglio e giudica peggio]{.pt-matita}.
 
 La seconda risposta è più bella. Immagina una mappa sterminata in cui ogni
 punto è una possibile immagine: ogni combinazione di pixel, anche le più
@@ -739,9 +739,9 @@ addestrato con $\mathcal{L}_{\text{semplice}}$ smette di massimizzare la
 verosimiglianza: la sua verosimiglianza è misurabilmente peggiore di quella
 dello stesso modello addestrato sul bound vero, e resta lontana da quella dei
 modelli autoregressivi, come gli autori dichiarano esplicitamente. È il
-compromesso che spiega un tratto controintuitivo della famiglia: i modelli di
+compromesso che spiega un tratto controintuitivo della famiglia: [i modelli di
 diffusione producono campioni migliori dei modelli che ottimizzano la
-verosimiglianza, pur avendo verosimiglianze peggiori.
+verosimiglianza, pur avendo verosimiglianze peggiori]{.pt-matita}.
 
 **Cosa impara la rete.** Dalla forma chiusa dell'andata segue
 $\nabla_{\mathbf{x}_t} \log q(\mathbf{x}_t \mid \mathbf{x}_0) =
@@ -797,9 +797,9 @@ si fa attendere: arriva a meno di quattro mesi da DDPM, nell'ottobre del 2020,
 e sono i *Denoising Diffusion Implicit Models* (DDIM) di Jiaming Song, Chenlin
 Meng e Stefano Ermon {cite}`song2021denoising`.
 
-La promessa è notevole: lo stesso identico modello già addestrato, nessun
+La promessa è notevole: [lo stesso identico modello già addestrato, nessun
 riaddestramento, e campioni di qualità paragonabile in un centinaio di passi
-invece di mille, o anche in venti se si accetta di perdere qualcosa.
+invece di mille]{.pt-matita}, o anche in venti se si accetta di perdere qualcosa.
 La generazione è quindi dieci volte più veloce nel primo caso, cinquanta nel
 secondo, ed è l'intervallo dichiarato dagli autori.
 
@@ -931,10 +931,10 @@ l'allontanarsi e il riavvicinarsi avvengono *dentro la rete*, in una sola
 interrogazione, e non hanno niente a che vedere con l'andata e il ritorno della
 diffusione, che sono i mille passi.)
 
-Resta da dirle a che punto della scala sta lavorando. Il numero del passo
-entra come un'etichetta attaccata alla foto («questo è il livello 700 su
-1000»), e la rete se la ripete a ogni stadio del lavoro, da lontano come da
-vicino. Così una sola rete serve tutti i livelli di rovina: quando il rumore è
+Resta da dirle a che punto della scala sta lavorando. Il numero del passo entra
+come un'etichetta attaccata alla foto («questo è il livello 700 su 1000»), e la
+rete se la ripete a ogni stadio del lavoro, da lontano come da vicino. Così
+[una sola rete serve tutti i livelli di rovina]{.pt-matita}: quando il rumore è
 tanto sgrossa le forme, quando è poco rifinisce i dettagli.
 
 `````
@@ -951,10 +951,10 @@ Resta da iniettare il tempo. Il passo $t$ entra nella rete come **embedding
 sinusoidale** (lo stesso trucco degli encoding di posizione dei Transformer
 {cite}`vaswani2017attention`, con $t$ al posto della posizione nella frase)
 trasformato da un piccolo MLP e sommato alle feature di *ogni* blocco della
-U-Net. Così una sola rete serve tutti i mille livelli di rumore: $t$ le dice
-a quale punto della scala sta lavorando, se sgrossare forme globali (rumore
-alto) o rifinire texture (rumore basso). La U-Net di DDPM aggiunge infine
-blocchi di self-attention a una sola risoluzione intermedia (nei modelli
+U-Net. Così [una sola rete serve tutti i mille livelli di rumore]{.pt-matita}:
+$t$ le dice a quale punto della scala sta lavorando, se sgrossare forme globali
+(rumore alto) o rifinire texture (rumore basso). La U-Net di DDPM aggiunge
+infine blocchi di self-attention a una sola risoluzione intermedia (nei modelli
 $32 \times 32$, la mappa $16 \times 16$, e non le due più basse), dove i pixel
 sono già pochi abbastanza perché guardarli tutti insieme costi poco, ma non
 così pochi da non avere più struttura da confrontare.

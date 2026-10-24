@@ -45,9 +45,9 @@ GraphSAGE cambia il modo di addestrare con una domanda semplice: e se
 l'addestramento, invece di guardare il grafo intero una volta per tutte,
 guardasse ogni volta un nodo e i suoi dintorni, così che la ricetta impari fin
 dall'inizio a lavorare su pezzi di rete sempre diversi? Una ricetta del tipo
-«prendi la persona, guarda i suoi amici, mescola nel modo giusto». Una ricetta
+«prendi la persona, guarda i suoi amici, mescola nel modo giusto». [Una ricetta
 la puoi applicare anche a qualcuno che non hai mai visto, purché tu sappia chi
-sono i suoi amici. Questo si chiama modo induttivo: la
+sono i suoi amici]{.pt-matita}. Questo si chiama modo induttivo: la
 rete non impara *i risultati*, impara *come si calcolano*, e quel «come»
 funziona pure sui nuovi arrivati e su reti diverse da quella di addestramento
 (un antibiotico nuovo, un utente iscritto stamattina).
@@ -88,8 +88,8 @@ dimensione fissa. È il campionamento a rendere il costo per nodo indipendente
 dal grado: con $S$ vicini campionati per strato e $K$ strati, il sottografo che
 alimenta un nodo ha al più $S^K$ foglie, comunque grande sia il grafo. Poiché
 $\mathbf{W}^{(k)}$ e le funzioni di aggregazione non dipendono da *quali* nodi
-si stia guardando ma solo dalle loro feature, il modello si applica di peso a
-nodi e grafi mai visti: l'inferenza su un nuovo nodo richiede solo di
+si stia guardando ma solo dalle loro feature, [il modello si applica di peso a
+nodi e grafi mai visti]{.pt-matita}: l'inferenza su un nuovo nodo richiede solo di
 conoscerne il vicinato, non di riaddestrare. La stessa condivisione
 dei pesi c'è anche nella GCN, che infatti si può applicare a nodi nuovi, a
 patto di
@@ -168,8 +168,8 @@ class GraphSAGE(nn.Module):
         self.conv2 = SAGEConv(hid_dim, out_dim, aggr="mean")
 
     def forward(self, x, edge_index):
-        x = torch.relu(self.conv1(x, edge_index))  # primo giro di vicinato
-        return self.conv2(x, edge_index)           # secondo giro
+        x = torch.relu(self.conv1(x, edge_index))  # 1ª iterazione di vicinato
+        return self.conv2(x, edge_index)           # 2ª iterazione
 ```
 
 La {numref}`fig-gnn-graphsage-gat` confronta il
@@ -226,8 +226,8 @@ grande; gli altri contano meno.
 L'attenzione dei Transformer fa guardare ogni parola a tutte le altre della
 frase: è, in fondo, attenzione su un grafo *completo*, dove ogni parola è
 collegata a ogni altra. La GAT rifà la stessa operazione su un grafo *qualunque*,
-dove ogni nodo guarda solo i vicini a cui è collegato. Il modo di assegnare i voti
-cambia nei due casi, la struttura no: un voto a
+dove ogni nodo guarda solo i vicini a cui è collegato. [Il modo di assegnare i voti
+cambia nei due casi, la struttura no]{.pt-matita}: un voto a
 testa, e poi la media pesata.
 
 `````
@@ -259,15 +259,15 @@ gli ingressi negativi) e $\sigma$ quella finale. Il coefficiente $\alpha_{ij}$
 dice quanto il nodo $i$ pesa il vicino $j$; la softmax garantisce
 $\sum_{j \in \mathcal{N}(i) \cup \{i\}} \alpha_{ij} = 1$.
 
-Rispetto alla *scaled dot-product attention* dei Transformer l'ossatura «pesi
-softmax, media pesata» è la stessa, ma due cose cambiano. Cambia il modo di
-calcolare il punteggio (qui una piccola rete con $\mathbf{a}$ e la
+Rispetto alla *scaled dot-product attention* dei Transformer [l'ossatura «pesi
+softmax, media pesata» è la stessa]{.pt-matita}, ma due cose cambiano. Cambia
+il modo di calcolare il punteggio (qui una piccola rete con $\mathbf{a}$ e la
 $\mathrm{LeakyReLU}$, lì il prodotto scalare query·key diviso per la radice
-della dimensione delle chiavi, che è la ragione del nome *scaled*). Cambia poi il
-fatto che nella GAT non esiste una proiezione separata per i *value*: la stessa
-$\mathbf{W}$ ha due funzioni, costruisce il punteggio e produce il vettore che
-poi viene mediato, mentre il Transformer tiene $\mathbf{W}_Q$, $\mathbf{W}_K$ e
-$\mathbf{W}_V$ distinte.
+della dimensione delle chiavi, che è la ragione del nome *scaled*). Cambia poi
+il fatto che nella GAT non esiste una proiezione separata per i *value*: la
+stessa $\mathbf{W}$ ha due funzioni, costruisce il punteggio e produce il
+vettore che poi viene mediato, mentre il Transformer tiene $\mathbf{W}_Q$,
+$\mathbf{W}_K$ e $\mathbf{W}_V$ distinte.
 
 Il punteggio della GAT ha però un limite che la formula nasconde. Scrivendo
 $\mathbf{a} = [\mathbf{a}_1 \,\|\, \mathbf{a}_2]$ si ha
@@ -382,11 +382,12 @@ in tutt'e due, il massimo pure: le confondono. Contare, a volte, è tutto.
 
 Nemmeno la somma però arriva dappertutto, e il muro si tocca presto. Prendi un
 anello di sei atomi e, accanto, due triangoli da tre atomi ciascuno.
-Nell'anello come nei triangoli ogni atomo ha due vicini, i vicini
-di quei vicini ne hanno due a testa, e così via: il passaparola racconta a ogni
-atomo la stessa identica storia. Tutti finiscono con lo stesso valore, e sei
-numeri uguali sommati danno lo stesso totale di qua e di là. Nessuna rete che
-funzioni a passaparola, per quanti giri faccia, separa quelle due molecole.
+Nell'anello come nei triangoli ogni atomo ha due vicini, i vicini di quei
+vicini ne hanno due a testa, e così via: il passaparola racconta a ogni atomo
+la stessa identica storia. Tutti finiscono con lo stesso valore, e sei numeri
+uguali sommati danno lo stesso totale di qua e di là. [Nessuna rete che
+funzioni a passaparola, per quanti giri faccia, separa quelle due
+molecole]{.pt-matita}.
 
 `````
 
@@ -424,9 +425,10 @@ un’euristica incompleta, e lo dichiara il paper stesso. Se due grafi ricevono
 colorazioni diverse allora non sono isomorfi; se le ricevono uguali non si può
 concludere niente. Il controesempio è elementare: un ciclo di sei nodi e due
 triangoli separati sono entrambi $2$-regolari, quindi con feature iniziali
-costanti ogni nodo ha lo stesso stato a ogni giro in tutti e due, e 1-WL li
-dichiara indistinguibili. Lo sono di conseguenza anche per qualunque GNN a
-message passing, con qualunque MLP: non è un limite di GIN, è il tetto.
+costanti ogni nodo ha lo stesso stato a ogni iterazione in tutti e due, e 1-WL
+li dichiara indistinguibili. [Lo sono di conseguenza anche per qualunque GNN a
+message passing, con qualunque MLP]{.pt-matita}: non è un limite di GIN, è il
+tetto.
 
 Xu et al. dimostrano appunto che nessuna GNN a message passing può distinguere
 due grafi che 1-WL dichiara indistinguibili (Lemma 2, il tetto teorico) e che
@@ -573,9 +575,9 @@ decuplicano; ma la fila di numeri su cui il nodo scrive quel che ha sentito ha
 sempre la stessa lunghezza. Peggio ancora: se due parti del grafo sono unite
 da un solo arco, tutto quanto l'una ha da dire all'altra deve passare da
 lì. Un imbuto, e più lontano si va più si stringe. Questo schiacciamento
-dell'informazione lontana si chiama **over-squashing**. È una tenaglia: per
+dell'informazione lontana si chiama **over-squashing**. È una tenaglia: [per
 sentire chi sta lontano servirebbero più giri, e più giri sono quelli
-che spengono le differenze.
+che spengono le differenze]{.pt-matita}.
 
 Si aggiungono la fatica di girare su grafi da miliardi di archi, e il fatto che
 quasi tutte le GNN danno per scontato che i nodi collegati si somiglino (gli
@@ -624,8 +626,8 @@ affatto.
   mentre il vettore che lo riassume ha dimensione fissa: l'informazione
   proveniente da nodi distanti viene «schiacciata» attraverso colli di
   bottiglia topologici, penalizzando i compiti a lungo raggio. Profondità e
-  portata sono così in tensione: servirebbero più strati per raggiungere nodi
-  lontani, ma più strati innescano l'oversmoothing.
+  portata sono così in tensione: [servirebbero più strati per raggiungere nodi
+  lontani, ma più strati innescano l'oversmoothing]{.pt-matita}.
 
   La versione misurabile è di Topping e colleghi: in una MPNN che pesa i
   messaggi dei vicini con $\hat{\mathbf{A}}$, l'adiacenza normalizzata con i
@@ -676,13 +678,13 @@ Viene naturale chiedersi cosa succeda a togliere quel vincolo e a lasciar
 parlare tutti con tutti. La risposta arriva dai {doc}`Transformer
 </Transformers/overview>` ed è meno lieta di come la si racconta di solito.
 
-Toglierlo tocca l'over-squashing e l'oversmoothing, e non allo stesso modo.
-Dell'over-squashing sparisce la componente che dipende dalla forma del grafo: se
-ogni nodo parla con ogni altro, ogni coppia è a un passo e non ci sono più
-strade strette da attraversare. Resta la parte di capienza, perché quel che
-dicono gli altri nodi deve comunque stare in un vettore di lunghezza fissa.
-L’oversmoothing invece resta tutto: nasce dalla media che a ogni strato si fa
-con i vicini, e non dalla distanza fra i nodi; se i vicini
+[Toglierlo tocca l'over-squashing e l'oversmoothing, e non allo stesso
+modo]{.pt-matita}. Dell'over-squashing sparisce la componente che dipende dalla
+forma del grafo: se ogni nodo parla con ogni altro, ogni coppia è a un passo e
+non ci sono più strade strette da attraversare. Resta la parte di capienza,
+perché quel che dicono gli altri nodi deve comunque stare in un vettore di
+lunghezza fissa. L’oversmoothing invece resta tutto: nasce dalla media che a
+ogni strato si fa con i vicini, e non dalla distanza fra i nodi; se i vicini
 diventano tutti e l'attenzione li pesa allo stesso modo, la media cancella le
 differenze in un passo solo. Un'attenzione appresa, con le connessioni residue
 e gli strati densi che un Transformer ha, lo frena senza eliminarlo.
@@ -966,12 +968,12 @@ raccolte di dati su cui provare. Scrivere una GNN, oggi, è questione di poche
 righe, come lo è diventato scrivere una rete convoluzionale.
 
 Il filo, intanto, non si spezza: l'attenzione che qui pesa i vicini di un nodo
-è la stessa dei Transformer. Le reti su grafo non sono un'isola. Sono il
-punto in cui convoluzione, attenzione e apprendimento di rappresentazioni si
+è la stessa dei Transformer. Le reti su grafo non sono un'isola. Sono il punto
+in cui convoluzione, attenzione e apprendimento di rappresentazioni si
 ritrovano, e si ritrovano lì per una ragione precisa, quella con cui il
-capitolo si era aperto: ciascuna di loro nasce dall'elenco delle cose che si
-possono fare al dato senza cambiarne il significato. Spostare un'immagine,
-riordinare i nodi di un grafo. Cambia l'elenco, cambia la rete.
+capitolo si era aperto: [ciascuna di loro nasce dall'elenco delle cose che si
+possono fare al dato senza cambiarne il significato]{.pt-matita}. Spostare
+un'immagine, riordinare i nodi di un grafo. Cambia l'elenco, cambia la rete.
 
 `````{tab} Elementare
 

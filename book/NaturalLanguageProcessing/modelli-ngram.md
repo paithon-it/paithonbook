@@ -68,7 +68,8 @@ media le mette nel conto.
 
 L'idea che unisce il matematico che contava le lettere a Pietroburgo e
 l'ingegnere dei laboratori Bell è la tesi da cui partono i modelli di
-linguaggio: il linguaggio si può modellare come una catena di scommesse.
+linguaggio: [il linguaggio si può modellare come una catena di
+scommesse]{.pt-matita}.
 
 Con la classificazione a sacchetto di parole, «Il gatto nero salta sul muro» e
 «Il muro nero salta sul gatto» erano gemelli indistinguibili. Qui invece
@@ -103,12 +104,12 @@ fine lettura, la pagina è la scommessa bell'e pronta: se dopo
 scommetti «nero» con fiducia 2 su 3 e «bianco» con fiducia 1 su 3.
 
 C'è un patto nascosto, però. A rigore, per scommettere bene dovresti tener
-conto di *tutta* la frase letta fin lì; ma quasi nessuna frase intera compare
-due volte, nemmeno in una biblioteca, quindi non avresti mai conteggi. Il
-patto (lo stesso di Markov con le sue vocali) è fingere che conti solo
-l'ultima parola (modello a coppie, il bigramma) o le ultime due (a terne, il
-trigramma). È una semplificazione dichiarata, e funziona molto meglio di
-quanto meriti.
+conto di *tutta* la frase letta fin lì; ma [quasi nessuna frase intera compare
+due volte, nemmeno in una biblioteca, quindi non avresti mai
+conteggi]{.pt-matita}. Il patto (lo stesso di Markov con le sue vocali) è
+fingere che conti solo l'ultima parola (modello a coppie, il bigramma) o le
+ultime due (a terne, il trigramma). È una semplificazione dichiarata, e
+funziona molto meglio di quanto meriti.
 
 `````
 
@@ -123,8 +124,8 @@ P(w_1, \dots, w_N) = \prod_{t=1}^{N} P(w_t \mid w_1, \dots, w_{t-1}),
 $$
 
 dove $w_t$ è la parola in posizione $t$ e ogni fattore è la scommessa sulla
-parola successiva dato il prefisso. Il problema è la stima, perché i prefissi
-lunghi sono quasi tutti unici e i loro conteggi valgono zero o uno.
+parola successiva dato il prefisso. [Il problema è la stima, perché i prefissi
+lunghi sono quasi tutti unici e i loro conteggi valgono zero o uno]{.pt-matita}.
 L’**assunzione di Markov** tronca la storia alle ultime $n-1$ parole:
 
 $$
@@ -196,11 +197,11 @@ seguito quell'altra, diviso quante volte quell'altra è comparsa».
 - «sul» compare 2 volte, seguito una volta da «muro» e una da «divano»:
   $P(\text{muro} \mid \text{sul}) = 0{,}5$.
 
-La probabilità della frase intera è il prodotto delle scommesse lungo la
-catena. Prodotto e non somma, per la stessa ragione per cui la probabilità di
-fare sei due volte di fila è un sesto di un sesto: perché la frase
-esca tutta quanta devono andare in porto tutte le scommesse, una dopo l'altra,
-e ciascuna si gioca su quello che è già uscito.
+[La probabilità della frase intera è il prodotto delle scommesse lungo la
+catena]{.pt-matita}. Prodotto e non somma, per la stessa ragione per cui la
+probabilità di fare sei due volte di fila è un sesto di un sesto: perché la
+frase esca tutta quanta devono andare in porto tutte le scommesse, una dopo
+l'altra, e ciascuna si gioca su quello che è già uscito.
 
 $$
 \begin{aligned}
@@ -233,8 +234,8 @@ le biforcazioni, non quello che il modello ha visto scritto.
 Ora proviamo con «il cane nero salta sul divano». Frase italiana
 ineccepibile, eppure il modello la boccia senza appello: la coppia «cane
 nero» non compare mai nel corpus, quindi $P(\text{nero} \mid \text{cane}) = 0$,
-e uno zero nel prodotto azzera tutto. Il modello confonde «mai visto» con
-«impossibile».
+e uno zero nel prodotto azzera tutto. [Il modello confonde «mai visto» con
+«impossibile»]{.pt-matita}.
 
 È la regola, non un difetto del nostro corpus giocattolo, e i conti si fanno in
 fretta. Jurafsky e Martin {cite}`jurafsky2026speech` prendono
@@ -614,8 +615,8 @@ corrisponde alla radice settima.
 
 Un dado da 1,35 facce: quasi nessun dubbio. Troppo bello per essere onesto, e
 infatti stiamo barando: abbiamo valutato il modello *sulla frase con cui
-l'abbiamo addestrato*, che è la prima del corpus. La perplessità va sempre
-misurata su un testo di test, mai visto in addestramento; e lì, senza
+l'abbiamo addestrato*, che è la prima del corpus. [La perplessità va sempre
+misurata su un testo di test, mai visto in addestramento]{.pt-matita}; e lì, senza
 smoothing, basta un bigramma nuovo per mandarla a infinito.
 
 Rifacciamo dunque il confronto come si deve, con il modello lisciato alla
@@ -686,8 +687,8 @@ Sul nostro corpus di tre frasi la passeggiata produce frasi come
 «il cane guarda il cane guarda il gatto nero» ({numref}`fig-passeggiata`): ogni
 passo è impeccabile (tutte coppie viste nel corpus) ma la frase gira in tondo.
 Su corpora veri l'effetto è identico, solo più elegante: come nelle
-approssimazioni di Shannon, il testo *suona giusto da vicino ed è sconnesso da
-lontano*.
+approssimazioni di Shannon, [il testo *suona giusto da vicino ed è sconnesso da
+lontano*]{.pt-matita}.
 
 ```{figure} ../figures/passeggiata-bigramma.svg
 :name: fig-passeggiata
@@ -861,10 +862,10 @@ fece nel 1913.
 
 ## Gli n-gram non sono morti
 
-Le reti neurali non hanno mandato gli n-gram in soffitta, e la ragione è il
-costo. Una rete neurale si addestra ripassando sugli stessi dati molte volte e
-aggiustando ogni volta milioni di parametri con il gradiente, e quando è grande
-le serve una scheda grafica, una GPU.
+[Le reti neurali non hanno mandato gli n-gram in soffitta, e la ragione è il
+costo]{.pt-matita}. Una rete neurale si addestra ripassando sugli stessi dati
+molte volte e aggiustando ogni volta milioni di parametri con il gradiente, e
+quando è grande le serve una scheda grafica, una GPU.
 
 Costruire un n-gram, invece, vuol dire leggere il
 corpus una volta sola e riempire un quaderno; usarlo vuol dire aprire il

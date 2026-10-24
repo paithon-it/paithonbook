@@ -82,8 +82,8 @@ nessun modello che abbia imparato qualcosa dai dati.
 Distinguere ciò che una macchina ha imparato dalla buona ingegneria serve anche
 contro due reazioni opposte che questa tecnologia suscita: l'entusiasmo che le
 attribuisce qualunque cosa e il timore che la immagina fuori controllo.
-Nascono tutte e due dal non sapere che cosa ci sia dentro, e per questo il
-rimedio è lo stesso: guardare.
+Nascono tutte e due dal non sapere che cosa ci sia dentro, e per questo [il
+rimedio è lo stesso: guardare]{.pt-matita}.
 
 Nessuno può elencare tutte le regole che un modello grande si è dato. Si può
 però misurare che cosa sbaglia e su quali casi, e si può coprire un pezzo alla

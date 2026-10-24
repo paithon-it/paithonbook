@@ -74,9 +74,10 @@ dell'aria alla volta, e anche questo è un modello del mondo nel senso di Craik.
 Nella letteratura che segue, però, «world model» indica un simulatore
 *appreso*: le regole le ricava dai dati, e resta sempre una copia approssimata.
 Serve alla stessa cosa (esercitarsi senza conseguenze), ma sbaglia per ragioni
-diverse: un simulatore scritto a mano sbaglia dove le sue equazioni
-semplificano, uno appreso dove i dati non l'hanno mai portato. Che forma
-prendano quegli sbagli lo racconta la {doc}`sezione sui mondi in miniatura
+diverse: [un simulatore scritto a mano sbaglia dove le sue equazioni
+semplificano, uno appreso dove i dati non l'hanno mai portato]{.pt-matita}. Che
+forma prendano quegli sbagli lo racconta la {doc}`sezione sui mondi in
+miniatura
 </WorldModels/mondi-in-miniatura>`.
 
 `````{tab} Elementare
@@ -237,8 +238,8 @@ bambino si è fatto, l'evento che poi accade.
 
 È una lezione auto-supervisionata, perché il bersaglio non lo scrive
 nessuno: è il futuro stesso che arriva. Se il senso comune è fatto così,
-inseguirlo significa costruire macchine che imparano a prevedere il mondo, non a
-memorizzarlo.
+[inseguirlo significa costruire macchine che imparano a prevedere il mondo, non a
+memorizzarlo]{.pt-matita}.
 
 ## La scommessa di LeCun (e chi non è d'accordo)
 
@@ -263,8 +264,8 @@ rinforzo a «ciliegina sulla torta» {cite}`lecun2016cake`, che il dibattito sul
 rinforzo ha pesato insieme alle obiezioni. L'argomento è il criterio di quel
 dibattito: chi impara per tentativi riceve una correzione poverissima, un
 «bravo» a fine giornata, mentre chi prevede il mondo ne riceve una a ogni
-istante. Da lì viene la proposta di sostituire i tentativi con la pianificazione
-dentro un modello del mondo, che è l'oggetto delle pagine che seguono.
+istante. Da lì viene [la proposta di sostituire i tentativi con la pianificazione
+dentro un modello del mondo]{.pt-matita}, che è l'oggetto delle pagine che seguono.
 
 `````{tab} Elementare
 

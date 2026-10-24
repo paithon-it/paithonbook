@@ -11,8 +11,8 @@ Se il passaggio giusto non viene ripescato, il generatore non ha modo di
 rimediare. Gli resta solo ricordare, e ricordando un modello inventa molto più
 che leggendo, senza lasciare accanto la fonte con cui controllarlo. La quota
 dei passaggi giusti che la ricerca ripesca si chiama *recall* ed è il tetto
-dell'intero sistema: nessun accorgimento applicato dopo recupera ciò
-che la ricerca non ha trovato.
+dell'intero sistema: [nessun accorgimento applicato dopo recupera ciò
+che la ricerca non ha trovato]{.pt-matita}.
 
 L'articolo che ha introdotto la RAG ha misurato il peso di quel tetto. Sulle
 domande la cui risposta non compare in nessun documento recuperato, il sistema
@@ -126,9 +126,9 @@ fornitore (settembre 2024).
 La domanda dell'utente non coincide con la *query*, il testo inviato al
 cercatore, e la prima leva consiste nel non farle coincidere. La ricerca per
 significato presume che la query e il passaggio giusto abbiano embedding
-vicini; ma una domanda breve, ellittica o che dipende dalla conversazione è
-spesso una query povera, perché le mancano i termini che il passaggio giusto
-contiene.
+vicini; ma [una domanda breve, ellittica o che dipende dalla conversazione è
+spesso una query povera]{.pt-matita}, perché le mancano i termini che il
+passaggio giusto contiene.
 
 Ad esempio, chi ha appena letto una pagina sulla manutenzione
 dell'automobile e digita «e il tagliando?» manda a cercare tre parole che non
@@ -327,8 +327,9 @@ approssimato e restituisce non i pochi passaggi che finiranno sotto gli occhi
 del modello, ma molti più candidati grezzi (cinquanta, cento) tra cui, si
 spera, ci sono anche i migliori. Il secondo stadio, il reranker cross-encoder,
 si applica *solo* a quella rosa ristretta e la riordina con cura, promuovendo i
-passaggi che rispondono e affondando i quasi-pertinenti. In sintesi, il
-compromesso è recuperare molto e in fretta, poi riordinare poco e con cura.
+passaggi che rispondono e affondando i quasi-pertinenti. In sintesi, [il
+compromesso è recuperare molto e in fretta, poi riordinare poco e con
+cura]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -634,8 +635,8 @@ nessuna singola ricerca li riporta insieme: per trovare il secondo bisogna
 sapere il primo. Lì il sistema rigido non fallisce per distrazione, fallisce
 per costruzione.
 
-La terza leva fa del recupero una decisione del modello: se cercare, quando e
-quante volte.
+[La terza leva fa del recupero una decisione del modello: se cercare, quando e
+quante volte]{.pt-matita}.
 
 Al secondo problema si può rispondere anche cambiando la forma dell'archivio
 invece di cercare più volte. Se i fatti stanno in un *knowledge graph*, un grafo
@@ -854,10 +855,10 @@ di giudizi umani, mai preso per oracolo.
 `````
 
 La fedeltà, la metrica più facile da scambiare per correttezza, non va confusa
-con la verità. Un sistema può essere perfettamente fedele e fattualmente
-sbagliato. Se l'archivio contiene un documento errato, la risposta più fedele
-possibile a quel documento sarà infatti errata, con tanto di citazione
-impeccabile.
+con la verità. [Un sistema può essere perfettamente fedele e fattualmente
+sbagliato]{.pt-matita}. Se l'archivio contiene un documento errato, la risposta
+più fedele possibile a quel documento sarà infatti errata, con tanto di
+citazione impeccabile.
 
 Vale anche il rovescio, già enunciato in «Cercare per rispondere»: una
 citazione formalmente corretta non rende vera una risposta che ne travisa il

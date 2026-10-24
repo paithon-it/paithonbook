@@ -50,9 +50,9 @@ non ti obbliga a essere ordinato.
 
 La pentola, però, non resta. Nella pagina salvata ci sono i piatti riusciti e i
 numerini che dicono in che ordine hai acceso i fornelli l'ultima volta; non che
-cosa bolliva dentro, e nemmeno le prove che nel frattempo hai buttato via. Uno
+cosa bolliva dentro, e nemmeno le prove che nel frattempo hai buttato via. [Uno
 script è invece la ricetta scritta: chiunque la legga ottiene lo stesso piatto,
-nello stesso ordine, senza doverti chiedere niente.
+nello stesso ordine, senza doverti chiedere niente]{.pt-matita}.
 
 Il segnale che è arrivato il momento di passare dall'uno all'altro è sempre lo
 stesso: quando cominci a rilanciare la stessa cosa cambiando un numero. Ad
@@ -79,9 +79,9 @@ La differenza sostanziale è tra **stato implicito** e **stato esplicito**. Nel
 notebook lo stato vive nel kernel, e il documento salvato registra per ogni
 cella il numero della sua ultima esecuzione, non la storia delle esecuzioni né
 le celle nel frattempo cancellate. Perciò il documento non basta a dire come si
-riottengono i suoi output. Un notebook è riproducibile solo se lo si riesegue
-da kernel pulito, dall'alto in basso, e nulla nel file garantisce che sia
-andata così.
+riottengono i suoi output. [Un notebook è riproducibile solo se lo si riesegue
+da kernel pulito, dall'alto in basso]{.pt-matita}, e nulla nel file garantisce
+che sia andata così.
 
 Uno script, invece, ha un unico **punto d'ingresso**, un ordine totale delle
 istruzioni, e tutto ciò che varia passa dagli argomenti della riga di comando.
@@ -158,7 +158,7 @@ def passo_valutazione(modello, loader, criterio, device):
 
 Un primo dettaglio è la moltiplicazione `* X.size(0)`. Serve perché la loss
 restituita da PyTorch è già una media sul batch, cioè sugli esempi che hanno
-appena attraversato la rete, e la media delle medie non è la media.
+appena attraversato la rete, e [la media delle medie non è la media]{.pt-matita}.
 
 Prendiamo due batch, il primo con dieci esempi che sbagliano in media di $1$
 e il secondo con due esempi che sbagliano in media di $4$. La media vera sui
@@ -359,12 +359,12 @@ partenza, e quindi la configurazione va salvata insieme.
 ```
 
 Il salvataggio parte da un modello vivo e produce numeri, e sembra facile; il
-ricaricamento deve fare il contrario, e i numeri non dicono in che
-forma andavano rimessi. Questa asimmetria, disegnata in
+ricaricamento deve fare il contrario, e i numeri non dicono in che forma
+andavano rimessi. Questa asimmetria, disegnata in
 {numref}`fig-serializzazione`, è una fonte frequente di errori di
-ricaricamento. Per questo motivo la configurazione viaggia nello stesso file
-dei pesi, e dentro c'è anche il seme, che di quella configurazione è una voce
-come le altre.
+ricaricamento. Per questo motivo [la configurazione viaggia nello stesso file
+dei pesi]{.pt-matita}, e dentro c'è anche il seme, che di quella configurazione
+è una voce come le altre.
 
 I due passaggi del ricaricamento, in codice, sono la ricostruzione del modello
 dalla configurazione e il caricamento dei pesi:
@@ -436,9 +436,9 @@ piccolo può venire dal foglio più che dal learning rate. Per saperlo rifai la
 prova con tre o cinque fogli diversi, confronti le medie, e magari anche quanto
 ballano i valori.
 
-Nessun foglio garantisce le ultime cifre. Una somma lunga, fatta in ordini
-diversi, dà totali diversi, e non serve sbagliare niente, basta che a ogni
-passaggio si arrotondi. Un conto in banca, ad esempio, tiene i centesimi e
+[Nessun foglio garantisce le ultime cifre]{.pt-matita}. Una somma lunga, fatta
+in ordini diversi, dà totali diversi, e non serve sbagliare niente, basta che a
+ogni passaggio si arrotondi. Un conto in banca, ad esempio, tiene i centesimi e
 matura quattro decimi di centesimo di interessi al giorno. Accreditati giorno
 per giorno, spariscono ogni volta nell'arrotondamento, e dopo un anno il saldo
 è quello di partenza; sommati prima fra loro fanno un euro e quarantasei, e il
@@ -490,11 +490,11 @@ questo chi riporta un risultato scrive anche con quali versioni l'ha ottenuto.
 `````
 
 `````{tab} Superiore
-Fissare i semi rende riproducibile la sequenza pseudocasuale, ma non basta a
-garantire risultati bit-identici su GPU. Molti kernel CUDA, infatti, usano
-riduzioni atomiche il cui ordine di somma varia tra esecuzioni, e in virgola
-mobile l'addizione non è associativa. Il determinismo completo si chiede quindi
-esplicitamente, con un costo in prestazioni:
+[Fissare i semi rende riproducibile la sequenza pseudocasuale, ma non basta a
+garantire risultati bit-identici su GPU]{.pt-matita}. Molti kernel CUDA,
+infatti, usano riduzioni atomiche il cui ordine di somma varia tra esecuzioni,
+e in virgola mobile l'addizione non è associativa. Il determinismo completo si
+chiede quindi esplicitamente, con un costo in prestazioni:
 
 ```{code-block} python
 :class: pt-non-eseguibile
@@ -537,8 +537,8 @@ Il consiglio che si sente più spesso è l'opposto, ma si può modularizzare
 troppo presto. Un'idea che non si sa ancora se funzioni non ha
 bisogno di cinque file, di un parser degli argomenti e di un'impalcatura di
 oggetti; ha bisogno di essere provata in venti minuti. La divisione in moduli
-(qui i file del progetto, non i moduli della rete) è un investimento che si
-ripaga quando qualcosa si ripete, e non prima.
+(qui i file del progetto, non i moduli della rete) [è un investimento che si
+ripaga quando qualcosa si ripete, e non prima]{.pt-matita}.
 
 La regola pratica è quella delle **tre volte**: la prima volta si scrive nel
 notebook; la seconda si copia e incolla, borbottando; la terza si estrae una

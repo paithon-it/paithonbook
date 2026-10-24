@@ -55,11 +55,11 @@ la trova meno strana, con una correzione che si legge nel barattolo: settecento
 delle mille erano da un euro e trecento da due, quindi a parità di stranezza la
 dai da un euro.
 
-Una descrizione permette anche di inventare. Sorteggi un peso e un diametro che
-le stiano dentro, e sul foglietto compare una moneta da un euro credibile che
-nel barattolo non c'era. La riga non sa farlo. Il nome generativo viene da qui,
-e i programmi che inventano immagini e frasi fanno lo stesso, con descrizioni
-molto più ricche.
+[Una descrizione permette anche di inventare]{.pt-matita}. Sorteggi un peso e
+un diametro che le stiano dentro, e sul foglietto compare una moneta da un euro
+credibile che nel barattolo non c'era. La riga non sa farlo. Il nome generativo
+viene da qui, e i programmi che inventano immagini e frasi fanno lo stesso, con
+descrizioni molto più ricche.
 
 Il giorno che nel barattolo finiscono i cinquanta centesimi, ne calcoli media e
 scostamenti e la terza descrizione è pronta; le prime due restano quelle di
@@ -140,12 +140,13 @@ p(y = k \mid \mathbf{x}) =
 \qquad \pi_k = p(y = k).
 $$
 
-Il nome «generativo» viene da una proprietà che il discriminativo non ha: avendo
-$p(\mathbf{x} \mid y)$ si possono campionare esempi nuovi di una classe. In
-altri termini, il modello non riassume i dati, li sa rifare. Il nome è lo
-stesso dei modelli che generano immagini e testo, che pure apprendono una
-distribuzione dei dati da cui si può campionare (spesso condizionata a
-un'etichetta o a un testo), ma non tutti ne danno una densità calcolabile.
+Il nome «generativo» viene da una proprietà che il discriminativo non ha:
+avendo $p(\mathbf{x} \mid y)$ si possono campionare esempi nuovi di una classe.
+In altri termini, [il modello non riassume i dati, li sa rifare]{.pt-matita}.
+Il nome è lo stesso dei modelli che generano immagini e testo, che pure
+apprendono una distribuzione dei dati da cui si può campionare (spesso
+condizionata a un'etichetta o a un testo), ma non tutti ne danno una densità
+calcolabile.
 
 Le conseguenze pratiche di modellare $p(\mathbf{x}\mid y)$ invece di
 $p(y \mid \mathbf{x})$ sono quattro:
@@ -329,12 +330,12 @@ forma per ciascuno, e il confine si incurva: è l’**analisi discriminante
 quadratica**, o QDA.
 
 La seconda sembra sempre preferibile, perché include la prima come caso
-particolare. Imparare una forma per taglio, però, richiede di stimare il doppio
-dei numeri con le stesse monete, quindi di stimarli peggio. Con tagli che hanno
-la stessa forma, la QDA spende numeri per scoprire un fatto già noto e ci
-rimette; con tagli di forma diversa, la LDA non ha modo di accorgersene. È il
-compromesso bias-varianza: una descrizione troppo rigida contro una troppo
-libera per le monete che ha.
+particolare. Imparare una forma per taglio, però, [richiede di stimare il
+doppio dei numeri con le stesse monete, quindi di stimarli peggio]{.pt-matita}.
+Con tagli che hanno la stessa forma, la QDA spende numeri per scoprire un fatto
+già noto e ci rimette; con tagli di forma diversa, la LDA non ha modo di
+accorgersene. È il compromesso bias-varianza: una descrizione troppo rigida
+contro una troppo libera per le monete che ha.
 
 Quando le monete sono poche c'è una via di mezzo: stimi le due forme separate e
 poi le tiri verso la forma unica, tenendo un po’ di ciascuna. Quanto tirare è
@@ -447,10 +448,11 @@ Il numero dei parametri spiega il compromesso. Con $d$ feature e $K$ classi, la
 LDA stima $K$ medie più una covarianza, cioè $Kd + d(d+1)/2$ numeri; la QDA
 stima $K$ medie e $K$ covarianze, cioè $Kd + K\,d(d+1)/2$. Per $d = 20$ e $K =
 2$ sono $250$ contro $460$, quasi il doppio, e a raddoppiare è la parte
-difficile, perché stimare una covarianza è stimare circa $d^2/2$ numeri da dati
-che ne informano poco. Da qui nasce la **regularized discriminant analysis** di
-Friedman {cite}`friedman1989regularized`, che interpola fra le due mescolando
-$\boldsymbol{\Sigma}_k$ con la covarianza comune.
+difficile, perché [stimare una covarianza è stimare circa $d^2/2$ numeri da
+dati che ne informano poco]{.pt-matita}. Da qui nasce la **regularized
+discriminant analysis** di Friedman {cite}`friedman1989regularized`, che
+interpola fra le due mescolando $\boldsymbol{\Sigma}_k$ con la covarianza
+comune.
 
 In scikit-learn quella interpolazione non c'è
 (`QuadraticDiscriminantAnalysis(reg_param=...)` fa solo l'altra metà e tira
@@ -619,8 +621,8 @@ Il rimedio sta nello scegliere i voti invece di fissarli a uno e a zero, e
 prende il nome di **optimal scoring**, i voti scelti al meglio. Per ogni taglio
 si cerca il numero che una ricetta sola indovina meglio, e i numeri che escono
 mettono l’euro a un capo, i due euro all’altro e i cinquanta centesimi in
-mezzo, dove stanno. Con i voti scelti così la regressione ritrova la ricetta di
-Fisher, e il taglio di mezzo non si perde più.
+mezzo, dove stanno. [Con i voti scelti così la regressione ritrova la ricetta di
+Fisher]{.pt-matita}, e il taglio di mezzo non si perde più.
 
 Da lì si può allargare in due direzioni. Nella prima, la ricetta può smettere
 di essere una somma e diventare una curva qualunque, e allora il confine fra i
@@ -661,12 +663,12 @@ $$
 $$
 
 con i punteggi a media nulla, varianza unitaria e ortogonali fra loro sui dati.
-I $\boldsymbol{\beta}_\ell$ coincidono, a meno di una costante, con le
-direzioni discriminanti di Fisher, e la LDA si ottiene assegnando la classe del
-centroide più vicino nello spazio delle
+[I $\boldsymbol{\beta}_\ell$ coincidono, a meno di una costante, con le
+direzioni discriminanti di Fisher]{.pt-matita}, e la LDA si ottiene assegnando
+la classe del centroide più vicino nello spazio delle
 $\hat{\eta}_\ell(\mathbf{x}) = \mathbf{x}^{\!\top}\boldsymbol{\beta}_\ell$, con
-pesi $w_\ell = 1/\big(r_\ell^2(1 - r_\ell^2)\big)$, dove $r_\ell^2$ è il residuo
-quadratico medio del punteggio $\ell$ {cite}`hastie1994flexible`.
+pesi $w_\ell = 1/\big(r_\ell^2(1 - r_\ell^2)\big)$, dove $r_\ell^2$ è il
+residuo quadratico medio del punteggio $\ell$ {cite}`hastie1994flexible`.
 
 Il calcolo è una regressione multipla di $\mathbf{Y}$ seguita da un problema
 agli autovalori di dimensione $K$,
@@ -796,8 +798,8 @@ L'ipotesi è quasi sempre falsa, e non un po’: in un'email le parole «offerta
 «gratis» si tirano dietro a vicenda, in una moneta peso e diametro pure. Il nome
 lo ammette: *naive* vuol dire ingenuo.
 
-Funziona lo stesso, perché al classificatore non serve avere ragione sulle
-probabilità: gli basta mettere le classi nel giusto ordine. Può
+Funziona lo stesso, perché [al classificatore non serve avere ragione sulle
+probabilità: gli basta mettere le classi nel giusto ordine]{.pt-matita}. Può
 sbagliare di brutto sul «quanto» (dirà $0{,}999$ dove il vero è $0{,}7$,
 perché contando due volte prove che erano la stessa prova si convince troppo)
 e azzeccare comunque il «quale».
@@ -829,10 +831,10 @@ il terzo pannello di {numref}`fig-lda-qda`.
 
 Il risultato di Domingos e Pazzani {cite}`domingos1997optimality` è che la
 regione di ottimalità del naive Bayes sotto perdita $0$–$1$ è strettamente più
-ampia di quella in cui vale l'indipendenza condizionata. Infatti l'errore
+ampia di quella in cui vale l'indipendenza condizionata. Infatti [l'errore
 sull’*ordinamento* delle posteriori è un evento più raro dell'errore sulle
-posteriori stesse, perché la funzione $\arg\max$ è invariante a un'ampia classe
-di distorsioni monotone.
+posteriori stesse]{.pt-matita}, perché la funzione $\arg\max$ è invariante a
+un'ampia classe di distorsioni monotone.
 
 Le stime restano però mal calibrate, tipicamente sovrasicure, perché feature
 correlate portano nel prodotto la stessa evidenza più volte. Di conseguenza, chi
@@ -858,9 +860,9 @@ di una gara con due tempi.
 
 Il generativo parte meglio, perché si avvicina al meglio che sa fare con un
 numero di esempi che cresce come $\log d$ nel numero $d$ di caratteristiche,
-contro l'ordine di $d$ della logistica. Il discriminativo parte
-peggio, ma il meglio che sa fare non è mai peggiore. In sintesi, su pochi dati
-vince il primo; su tanti, il secondo, se l'ipotesi del primo è sbagliata.
+contro l'ordine di $d$ della logistica. Il discriminativo parte peggio, ma il
+meglio che sa fare non è mai peggiore. In sintesi, [su pochi dati vince il
+primo; su tanti, il secondo, se l'ipotesi del primo è sbagliata]{.pt-matita}.
 
 Il confronto che scelgono è il più pulito possibile: naive Bayes gaussiano
 contro regressione logistica. Nel loro naive Bayes ogni caratteristica ha una
@@ -1053,11 +1055,11 @@ volte meno probabile». Quel punto, per il modello, semplicemente non capita.
 La classificazione dello stesso punto, invece, esce al $99{,}99\%$ di
 sicurezza, perché una volta scelto da che parte della retta si trova non c'è
 altro da dire. I due numeri vengono dallo stesso modello, addestrato una volta
-sola, e sono la ragione per cui conviene avere in casa un generativo. La
+sola, e sono la ragione per cui conviene avere in casa un generativo. [La
 sicurezza di un classificatore, infatti, è sempre relativa alle classi che
-conosce, e di per sé non distingue «è certamente una gazza» da «non ho idea di
-cosa sia, ma se devo scegliere dico gazza». La densità, invece, fa questa
-distinzione.
+conosce]{.pt-matita}, e di per sé non distingue «è certamente una gazza» da
+«non ho idea di cosa sia, ma se devo scegliere dico gazza». La densità, invece,
+fa questa distinzione.
 
 Quando conviene prenderli in considerazione, in concreto:
 

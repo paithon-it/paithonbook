@@ -71,8 +71,8 @@ promesso: lasciando perdere il primo quarto d'ora, quando la fila si sta ancora
 formando, e contando abbastanza clienti da non farsi ingannare da una mezz'ora
 fortunata. Finché il bancone sta dietro agli arrivi la quota resta alta; poi, a
 un certo ritmo, precipita, perché da lì in avanti la fila si allunga senza più
-recuperare. La capacità è l'ultimo ritmo prima del crollo, e la si prende con
-un margine sotto, perché lì vicino basta una mattina storta.
+recuperare. [La capacità è l'ultimo ritmo prima del crollo, e la si prende con
+un margine sotto]{.pt-matita}, perché lì vicino basta una mattina storta.
 
 Inoltre i clienti finti devono comprare come quelli veri: dieci persone che
 chiedono una rosetta ciascuna non dicono niente di un sabato con le torte da
@@ -137,8 +137,8 @@ Infine, vicino a $\mu^\ast$ la curva
 di conformità è ripida: nella coda M/M/1, con $\mu$ il tasso di servizio grezzo
 della replica, il tempo di permanenza è esponenziale di parametro $\mu-\lambda$,
 la conformità a una soglia $\tau$ vale $1 - e^{-(\mu-\lambda)\tau}$, e quindi
-$\mu^\ast = \mu - \ln 10/\tau$ per la quota del 90%. Per questo si opera a una
-frazione di $\mu^\ast$, non a $\mu^\ast$.
+$\mu^\ast = \mu - \ln 10/\tau$ per la quota del 90%. Per questo [si opera a una
+frazione di $\mu^\ast$, non a $\mu^\ast$]{.pt-matita}.
 
 La M/M/1 resta un modello
 didattico: serve una richiesta alla volta con tempi esponenziali, mentre una
@@ -176,8 +176,8 @@ la frequenza. La corrente di casa alterna cinquanta volte al secondo perché i
 generatori delle centrali girano a quel ritmo. Se la domanda supera per un
 attimo la produzione, l'energia che manca viene tirata fuori dalla rotazione
 stessa: i generatori rallentano, e la frequenza scende sotto i cinquanta. Se la
-produzione supera la domanda, sale. La frequenza non dice quanto lavora una
-centrale, dice se domanda e offerta sono in pari.
+produzione supera la domanda, sale. [La frequenza non dice quanto lavora una
+centrale, dice se domanda e offerta sono in pari]{.pt-matita}.
 
 Guardare quanto lavora ciascuna centrale sembrerebbe più naturale, e non
 servirebbe. Una centrale al massimo può coprire la domanda al megawatt o restare
@@ -241,19 +241,19 @@ La scelta della metrica è il punto. L'utilizzazione che `nvidia-smi` espone
 come `utilization.gpu` è la frazione del periodo di campionamento in cui almeno
 un kernel era in esecuzione: con il continuous batching vale quasi 100% da una
 sequenza in su, non distingue un mazzo da 1 da uno da 64, e satura molto prima
-della capacità. Serve una grandezza che cresca con lo squilibrio fra arrivi e
-servizio. Per la legge di Little il numero di richieste in volo per replica è
-$L_r = \lambda W / N_r$, e finché le promesse tengono $W$ varia poco: $L_r$ è
-proporzionale al carico, e un bersaglio sulla concorrenza insegue $\lambda$.
-Rispetto a $\lambda$ ha un vantaggio, perché pesa ogni richiesta per quanto
-dura: $\mu^\ast$ in richieste al secondo cambia con il mix delle lunghezze, la
-concorrenza sostenibile da una replica molto meno. Più diretta ancora è la
-lunghezza della coda d'attesa $L_q$: la coda è stabile se e solo se $\lambda <
-N_r\mu$, e sopra cresce senza limite. I motori di serving espongono anche
-l'occupazione della KV cache, che anticipa il momento in cui lo scheduler dovrà
-sfrattare sequenze. Strumenti come KEDA portano metriche di questo tipo (la
-lunghezza di una coda di messaggi, un contatore del servizio) dentro lo stesso
-anello.
+della capacità. [Serve una grandezza che cresca con lo squilibrio fra arrivi e
+servizio]{.pt-matita}. Per la legge di Little il numero di richieste in volo
+per replica è $L_r = \lambda W / N_r$, e finché le promesse tengono $W$ varia
+poco: $L_r$ è proporzionale al carico, e un bersaglio sulla concorrenza insegue
+$\lambda$. Rispetto a $\lambda$ ha un vantaggio, perché pesa ogni richiesta per
+quanto dura: $\mu^\ast$ in richieste al secondo cambia con il mix delle
+lunghezze, la concorrenza sostenibile da una replica molto meno. Più diretta
+ancora è la lunghezza della coda d'attesa $L_q$: la coda è stabile se e solo se
+$\lambda < N_r\mu$, e sopra cresce senza limite. I motori di serving espongono
+anche l'occupazione della KV cache, che anticipa il momento in cui lo scheduler
+dovrà sfrattare sequenze. Strumenti come KEDA portano metriche di questo tipo
+(la lunghezza di una coda di messaggi, un contatore del servizio) dentro lo
+stesso anello.
 
 Il bersaglio sulla concorrenza discende dalla capacità misurata. Una replica
 che lavora a $\rho^\ast\mu^\ast$ richieste al secondo, con permanenza media
@@ -327,8 +327,8 @@ l'attesa intera.
 Quanta riserva tenere si ricava dalla rampa. Se la domanda sale di cento
 megawatt al minuto e una centrale ci mette dieci minuti a partire, nel momento
 in cui la si chiama bisogna averne già mille accesi in più, tanti quanti la
-domanda ne aggiungerà mentre si aspetta. Una rampa lenta vuole poca riserva, un
-salto improvviso ne vorrebbe quanto il salto intero, e nessuna riserva
+domanda ne aggiungerà mentre si aspetta. [Una rampa lenta vuole poca riserva, un
+salto improvviso ne vorrebbe quanto il salto intero]{.pt-matita}, e nessuna riserva
 ragionevole lo copre. Lo coprono soltanto una centrale che parte così in fretta
 che il salto non fa in tempo a pesare, come Dinorwig, o il palinsesto, che lo fa
 vedere arrivare.
@@ -376,16 +376,16 @@ $$
 Un controllore reattivo conosce solo $\lambda(t)$, e per soddisfarla deve
 tenere una riserva di $\lceil \dot\lambda_{\max} T_{\text{avvio}} /
 (\rho^\ast\mu^\ast) \rceil$ repliche, con $\dot\lambda_{\max}$ la rampa più
-ripida che si vuole assorbire. La riserva cresce con il prodotto di ripidità e
-ritardo. Per un gradino di altezza $\Delta\lambda$ l'approssimazione al primo
-ordine non vale più, e la condizione esatta chiede
-$\lceil \Delta\lambda/(\rho^\ast\mu^\ast) \rceil$ repliche in più: una
-riserva finita, ma grande quanto il salto e da pagare per tutto il tempo in cui
-il salto potrebbe arrivare. Accorciare $T_{\text{avvio}}$ riduce la riserva per
-le rampe in proporzione, e per un gradino riduce la scopertura a
-$T_{\text{avvio}}$ senza annullarla. La annulla soltanto conoscere
-$\lambda(t + T_{\text{avvio}})$ in anticipo, con una previsione della
-stagionalità giornaliera o con un calendario degli eventi annunciati.
+ripida che si vuole assorbire. [La riserva cresce con il prodotto di ripidità e
+ritardo]{.pt-matita}. Per un gradino di altezza $\Delta\lambda$
+l'approssimazione al primo ordine non vale più, e la condizione esatta chiede
+$\lceil \Delta\lambda/(\rho^\ast\mu^\ast) \rceil$ repliche in più: una riserva
+finita, ma grande quanto il salto e da pagare per tutto il tempo in cui il
+salto potrebbe arrivare. Accorciare $T_{\text{avvio}}$ riduce la riserva per le
+rampe in proporzione, e per un gradino riduce la scopertura a
+$T_{\text{avvio}}$ senza annullarla. La annulla soltanto conoscere $\lambda(t +
+T_{\text{avvio}})$ in anticipo, con una previsione della stagionalità
+giornaliera o con un calendario degli eventi annunciati.
 
 La **scala a zero** (spegnere tutte le repliche quando il traffico si annulla)
 azzera il costo dei periodi vuoti e aggiunge $T_{\text{avvio}}$ al TTFT della
@@ -553,8 +553,8 @@ milioni, e il milione le costa 2 diviso 9,2, circa 21,7 centesimi.
 Se la replica lavora al
 36%, come chi tiene accese tutto il giorno le repliche del picco, gli stessi
 due euro si dividono per poco più di un terzo dei token, e il milione costa
-21,7 diviso 0,36, cioè 60 centesimi. Nessuno ha cambiato modello né scheda:
-sono cambiate soltanto le ore pagate per stare fermi.
+21,7 diviso 0,36, cioè 60 centesimi. [Nessuno ha cambiato modello né scheda:
+sono cambiate soltanto le ore pagate per stare fermi]{.pt-matita}.
 
 C'è anche un modo di pagare meno l'ora, e la rete elettrica conosce pure
 questo. Un'acciaieria può comprare corrente interrompibile: le costa meno, e in
@@ -593,13 +593,13 @@ $$
 Con $C_{\text{ora}} = 2$ € (un valore d'esempio) e $\nu^\ast = 2560$ token/s
 (64 sequenze a 40 token/s), a $\bar\rho = 1$ si ha $c = 2/(3600 \cdot 2560)
 \approx 2{,}2 \cdot 10^{-7}$ €, circa 0,22 € per milione; a $\bar\rho =
-0{,}36$, circa 0,60 €. Il fattore $1/\bar\rho$ è il sovraccosto della capacità
-in eccesso, e raccoglie in un numero tutte le scelte precedenti: il margine
-$1 - \rho^\ast$, la riserva per il ritardo d'avvio, la finestra che scende
-piano, la replica calda tenuta contro la scala a zero. La formula addebita
-l'ora intera ai soli token generati; ripartirla anche sui token letti in
-prefill richiede una regola, e quella naturale pesa ciascuna fase per il tempo
-di scheda che occupa, tenendo conto che il prefill è compute-bound e si
+0{,}36$, circa 0,60 €. [Il fattore $1/\bar\rho$ è il sovraccosto della capacità
+in eccesso]{.pt-matita}, e raccoglie in un numero tutte le scelte precedenti:
+il margine $1 - \rho^\ast$, la riserva per il ritardo d'avvio, la finestra che
+scende piano, la replica calda tenuta contro la scala a zero. La formula
+addebita l'ora intera ai soli token generati; ripartirla anche sui token letti
+in prefill richiede una regola, e quella naturale pesa ciascuna fase per il
+tempo di scheda che occupa, tenendo conto che il prefill è compute-bound e si
 raccoglie in mazzi di migliaia di token mentre il decode è memory-bound. I
 listini, del resto, prezzano di solito in modo diverso i token in ingresso e
 quelli in uscita, e scontano quelli d'ingresso trovati nella cache del
@@ -641,8 +641,8 @@ potrebbe dare ancora. Lo si vede confrontando il lavoro svolto con la capacità
 massima. L'utilizzazione dei FLOP del modello (MFU, la quota dei calcoli
 possibili che la scheda sta facendo), la misura su cui si giudica
 l'addestramento, applicata alla generazione parola per parola, il decode, dà un
-numero molto basso: il 4% nell'esempio che segue. Basso, qui, non è sinonimo di
-sprecato.
+numero molto basso: il 4% nell'esempio che segue. [Basso, qui, non è sinonimo di
+sprecato]{.pt-matita}.
 
 `````{tab} Elementare
 

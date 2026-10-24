@@ -90,8 +90,8 @@ tornare a casa la valigia il più intatta possibile.
 La vera sorpresa, però, non è la compressione in sé: l'MP3 già comprime bene.
 È che quel riassunto compatto, imparato dalla rete, possiamo poi
 arrotondarlo a un piccolo insieme di valori-tipo, e ogni valore-tipo è un
-simbolo: un numero intero. È il ponte che stavamo cercando, dall'onda continua
-all'alfabeto.
+simbolo: un numero intero. [È il ponte che stavamo cercando, dall'onda continua
+all'alfabeto]{.pt-matita}.
 
 `````
 
@@ -130,11 +130,12 @@ spetta al termine corrispondente, invece di dipendere dalla scala, molto variabi
 dei gradienti del discriminatore.
 
 Fin qui è compressione con rappresentazione continua: ogni $\mathbf{z}$ è un
-vettore di numeri reali. La novità che ci interessa è renderla discreta:
-sostituire ogni vettore latente con un simbolo preso da un insieme finito. È il
-passaggio che trasforma un compressore in un *tokenizzatore* del suono, e apre
-la porta ai modelli di linguaggio sull'audio. Il come lo stabilisce la
-quantizzazione, prima con un codebook solo e poi con una cascata di codebook.
+vettore di numeri reali. [La novità che ci interessa è renderla discreta:
+sostituire ogni vettore latente con un simbolo preso da un insieme
+finito]{.pt-matita}. È il passaggio che trasforma un compressore in un
+*tokenizzatore* del suono, e apre la porta ai modelli di linguaggio sull'audio.
+Il come lo stabilisce la quantizzazione, prima con un codebook solo e poi con
+una cascata di codebook.
 
 `````
 
@@ -166,15 +167,15 @@ con quattro la foto si sfalda e i volti diventano macchie; con mille torna
 quasi perfetta, ma la posizione da scrivere è un numero più lungo, e va scritto
 per ogni pixel.
 
-La *vector quantization* fa lo stesso, ma invece dei colori dei pixel
-tratta i pezzetti di suono così come escono dall'encoder: ognuno è un
-gruppetto di numeri, come un colore è un gruppetto di tre numeri. La
-«tavolozza» si chiama **codebook**: un elenco di pezzetti-tipo, i
-*prototipi*. Ogni pezzetto di audio, dopo l'encoder, viene avvicinato al
-prototipo più simile, e di lui si tiene solo il numero di posizione nell'elenco.
-Quel numero è il token: il nostro simbolo dell'alfabeto sonoro. L'operazione
-che abbiamo appena fatto, sostituire un elemento qualsiasi con il più vicino di un
-elenco prestabilito, si chiama **quantizzare**, cioè arrotondare.
+La *vector quantization* fa lo stesso, ma invece dei colori dei pixel tratta i
+pezzetti di suono così come escono dall'encoder: ognuno è un gruppetto di
+numeri, come un colore è un gruppetto di tre numeri. La «tavolozza» si chiama
+**codebook**: un elenco di pezzetti-tipo, i *prototipi*. Ogni pezzetto di
+audio, dopo l'encoder, viene avvicinato al prototipo più simile, e di lui si
+tiene solo il numero di posizione nell'elenco. [Quel numero è il token: il
+nostro simbolo dell'alfabeto sonoro]{.pt-matita}. L'operazione che abbiamo
+appena fatto, sostituire un elemento qualsiasi con il più vicino di un elenco
+prestabilito, si chiama **quantizzare**, cioè arrotondare.
 
 `````
 
@@ -191,8 +192,8 @@ k^\star = \arg\min_{k \in \{1,\dots,K\}} \lVert \mathbf{z} - \mathbf{e}_k \rVert
 $$
 
 dove $q(\mathbf{z})$ è il vettore quantizzato e $k^\star$ è il token: un intero in
-$\{1, \dots, K\}$. L'audio non è più una sequenza di vettori reali ma una
-sequenza di interi, esattamente come un testo tokenizzato.
+$\{1, \dots, K\}$. [L'audio non è più una sequenza di vettori reali ma una
+sequenza di interi, esattamente come un testo tokenizzato]{.pt-matita}.
 
 L'operazione $\arg\min$ non è differenziabile, quindi
 il gradiente non attraverserebbe la quantizzazione. Il VQ-VAE
@@ -300,9 +301,9 @@ La soluzione è la **residual vector quantization** (RVQ), una tecnica di
 codifica del parlato a stadi multipli che risale agli anni Ottanta
 {cite}`juang1982multiple`, portata nei codec neurali da SoundStream
 {cite}`zeghidour2021soundstream` e adottata da EnCodec
-{cite}`defossez2023high`, di Meta: invece di un solo codebook enorme, si
+{cite}`defossez2023high`, di Meta: invece di un solo codebook enorme, [si
 mettono in cascata più codebook piccoli, ciascuno dei quali corregge l'errore
-lasciato dal precedente.
+lasciato dal precedente]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -555,9 +556,9 @@ incida dipende da dove si parte: se i prototipi nascono sparsi molto più larghi
 dei pezzetti che dovranno descrivere, ne sopravvivono pochissimi, perché tutti
 i pezzetti finiscono addosso agli stessi due o tre. I rimedi sono di ingegneria
 e stanno dentro i codec. Il primo sostituisce le voci mai usate con pezzetti
-presi dal batch che si sta elaborando in quel momento, dando loro
-così un posto dove sono utili, e si chiama *restart*: SoundStream lo prende da
-Jukebox, e lo adotta poi anche EnCodec {cite}`zeghidour2021soundstream`
+presi dal batch che si sta elaborando in quel momento, dando loro così un posto
+dove sono utili, e si chiama *restart*: SoundStream lo prende da Jukebox, e lo
+adotta poi anche EnCodec {cite}`zeghidour2021soundstream`
 {cite}`defossez2023high`. Il *Descript Audio Codec* (DAC) {cite}`kumar2023high`
 cerca invece il prototipo più vicino in uno spazio molto più piccolo, di otto
 dimensioni, mentre i pezzetti veri ne hanno 1024 (i *codici fattorizzati*), e
@@ -566,8 +567,9 @@ prove dei suoi autori l'efficienza dei codebook, cioè quanta parte dei bit
 pagati porta informazione, sale dal 97 % della sola media mobile al 99 %, e il
 codec comprime l'audio a 44,1 kHz in 8 kbps, circa novanta volte. Gli stessi
 autori mostrano che il *quantizer dropout* applicato a ogni esempio peggiora il
-suono quando si usano tutti i codebook, e lo applicano a un esempio su due. Un
-codebook va sempre misurato per le voci che usa, non per quelle che dichiara.
+suono quando si usano tutti i codebook, e lo applicano a un esempio su due. [Un
+codebook va sempre misurato per le voci che usa, non per quelle che
+dichiara]{.pt-matita}.
 
 Sulla misura della qualità serve poi una distinzione che il gergo tende a
 cancellare. L'errore quadratico medio sui campioni non è il criterio giusto

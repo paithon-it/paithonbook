@@ -14,16 +14,16 @@ Nel 1982 John Hopfield mostra come costruirne una con neuroni artificiali
 come si comportano solidi e liquidi, passato poi a studiare i sistemi
 biologici, e dal 1980 insegnava al California Institute of Technology.
 
-Non parte da un foglio bianco. Memorie che si interrogano
-per contenuto circolavano già da un decennio, costruite legando fra loro i
-pezzi che nei ricordi vanno d'accordo: le propongono nel 1972, ognuno per conto
-suo, Teuvo Kohonen {cite}`kohonen1972correlation`, Kaoru Nakano
+Non parte da un foglio bianco. Memorie che si interrogano per contenuto
+circolavano già da un decennio, costruite legando fra loro i pezzi che nei
+ricordi vanno d'accordo: le propongono nel 1972, ognuno per conto suo, Teuvo
+Kohonen {cite}`kohonen1972correlation`, Kaoru Nakano
 {cite}`nakano1972associatron`, James Anderson {cite}`anderson1972simple` e
-Shun-ichi Amari {cite}`amari1972learning`.[^little] Hopfield
-aggiunge l’energia, e con lei il campo riparte. L’energia è un solo numero
-associato a ogni configurazione della rete, e Hopfield dimostra che la regola
-con cui i neuroni cambiano stato, uno alla volta, non lo fa mai salire. Da quel
-momento i ricordi sono minimi dell’energia, e ricordare è una discesa.
+Shun-ichi Amari {cite}`amari1972learning`.[^little] Hopfield aggiunge
+l’energia, e con lei il campo riparte. L’energia è un solo numero associato a
+ogni configurazione della rete, e Hopfield dimostra che la regola con cui i
+neuroni cambiano stato, uno alla volta, non lo fa mai salire. Da quel momento
+[i ricordi sono minimi dell’energia, e ricordare è una discesa]{.pt-matita}.
 
 Il suo impianto è quello di un fisico. Si prendono $N$ neuroni che possono stare
 solo «accesi» o «spenti» (in gergo si dicono binari, come una fila di
@@ -465,10 +465,11 @@ lo stato delle altre e decide se cambiare) una sola casella cambia colore. A
 destra c'è la pallina, cioè l'energia. Sono la stessa cosa vista da due parti:
 ogni casella che cambia colore è uno scalino che la pallina scende.
 
-Si vede la proprietà che rende la rete una memoria e non un pasticcio: l'energia
-non risale mai. Scende quando una casella cambia, e resta ferma quando la
-casella si guarda intorno e decide di stare com'è; nel disegno si contano solo
-i sei cambi, perché sono i soli passi in cui succede qualcosa.
+Si vede la proprietà che rende la rete una memoria e non un pasticcio:
+[l'energia non risale mai]{.pt-matita}. Scende quando una casella cambia, e
+resta ferma quando la casella si guarda intorno e decide di stare com'è; nel
+disegno si contano solo i sei cambi, perché sono i soli passi in cui succede
+qualcosa.
 
 Che i cambi siano sei come le caselle rovinate è il caso migliore e non una
 regola: ogni casella sbagliata si è raddrizzata una volta sola e nessuna

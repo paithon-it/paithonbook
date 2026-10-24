@@ -56,8 +56,8 @@ numeri deve visitarle una a una, chiedendosi ogni volta "che cos'è questo?".
 
 L’`ndarray` fa il patto opposto: tutti gli elementi sono dello stesso tipo e
 stanno uno accanto all'altro in un blocco compatto di memoria. Perde la
-libertà di mescolare tipi diversi, ma in cambio le operazioni sui numeri
-diventano corte da scrivere e molto più veloci da eseguire.
+libertà di mescolare tipi diversi, ma in cambio [le operazioni sui numeri
+diventano corte da scrivere e molto più veloci da eseguire]{.pt-matita}.
 
 Insieme al blocco viene il passo con cui percorrerlo. In memoria i numeri di
 una tabella stanno scritti in fila, una riga dopo l'altra: per leggere una riga
@@ -83,10 +83,10 @@ perfettamente legittimo e non contiguo, e la trasposta `M.T` è F-contigua ma
 non C-contigua.
 
 Questa struttura permette due cose. In primo luogo, slice e trasposizione sono
-sempre *viste*, cioè ricalcoli di stride a costo zero senza copia dei dati. Gli
-stride esistono proprio perché la contiguità non è garantita. Anche `reshape` è
-una vista quando gli stride della forma nuova si possono ricavare da quelli
-vecchi, altrimenti copia.
+sempre *viste*, cioè ricalcoli di stride a costo zero senza copia dei dati.
+[Gli stride esistono proprio perché la contiguità non è garantita]{.pt-matita}.
+Anche `reshape` è una vista quando gli stride della forma nuova si possono
+ricavare da quelli vecchi, altrimenti copia.
 
 In secondo luogo, le operazioni elemento-per-elemento sono delegate a cicli in
 C compilati e vettorizzati (istruzioni SIMD), che saltano l’*overhead*
@@ -160,10 +160,10 @@ Il generatore casuale moderno si costruisce con `default_rng(seme)`. Si noti
 che un programma deterministico non produce numeri casuali, ma li calcola con
 una formula che li fa *sembrare* casuali (si dicono infatti *pseudo-casuali*).
 Il **seme** è il numero da cui la formula parte: stesso seme, stessa sequenza,
-oggi e sulla macchina di un altro; seme diverso, sequenza diversa. Fissare il
-seme rende quindi l'esperimento ripetibile, requisito minimo di ogni lavoro
-scientifico serio. Senza seme, NumPy parte da un valore preso dal sistema
-operativo, e ogni esecuzione è diversa.
+oggi e sulla macchina di un altro; seme diverso, sequenza diversa. [Fissare il
+seme rende quindi l'esperimento ripetibile]{.pt-matita}, requisito minimo di
+ogni lavoro scientifico serio. Senza seme, NumPy parte da un valore preso dal
+sistema operativo, e ogni esecuzione è diversa.
 
 La promessa vale a parità di versione di NumPy, che si riserva di cambiare la
 formula quando ne trova una migliore, e lo dichiara. Per questo chi deve
@@ -202,9 +202,9 @@ selezione.
 ```
 
 Nessuna delle tre selezioni di {numref}`fig-slicing-numpy` copia i dati. Sono
-**viste** sullo stesso array in memoria, e scriverci dentro modifica
-l'originale: è la differenza più insidiosa rispetto alla fetta di una lista,
-che invece è una copia.
+**viste** sullo stesso array in memoria, e [scriverci dentro modifica
+l'originale]{.pt-matita}: è la differenza più insidiosa rispetto alla fetta di
+una lista, che invece è una copia.
 
 ```python
 lista = [10, 20, 30, 40]
@@ -358,8 +358,8 @@ ciascuna, cioè una colonna. Le parentesi esterne racchiudono la
 tabella, quelle interne una riga per volta.
 
 La regola pratica: se una delle due forme ha $1$ dove l'altra ha $n$, quel lato
-viene "steso" a $n$. Il ripetersi è solo apparente: serve a far tornare i conti,
-non consuma memoria.
+viene "steso" a $n$. [Il ripetersi è solo apparente: serve a far tornare i conti,
+non consuma memoria]{.pt-matita}.
 
 Se i sovrapprezzi fossero scritti anche in riga, tre numeri contro quattro,
 NumPy si fermerebbe con un errore: nessuno dei due lati vale $1$, quindi non
@@ -370,9 +370,9 @@ prezzo.
 
 `````{tab} Superiore
 
-Il broadcasting allinea le forme da destra. Due assi sono compatibili se
-sono uguali oppure se uno dei due vale $1$, e in questo caso quel lato viene
-esteso senza copia. I nomi del codice `a` e `b` sono scritti in
+[Il broadcasting allinea le forme da destra]{.pt-matita}. Due assi sono
+compatibili se sono uguali oppure se uno dei due vale $1$, e in questo caso
+quel lato viene esteso senza copia. I nomi del codice `a` e `b` sono scritti in
 tondo: il grassetto matematico è per vettori e matrici, non per gli
 identificatori di un programma. Con `a` di forma $(4,)$ e `b` di forma $(3,1)$:
 
@@ -463,10 +463,10 @@ ripetizioni.
 
 Le prime due misure riguardano la stessa cosa (raddoppiare un milione di
 numeri), ma la seconda strada è di solito centinaia di volte più veloce, e la
-ragione sta tutta nel ciclo che sparisce. È il pedaggio già incontrato: il
-ciclo Python lo paga un milione di volte, `2 * x` una volta sola, perché a
-scorrere il blocco è il motore in C. Che i numeri stiano in fila serve a lui,
-che li prende a manciate, e non a un ciclo scritto in Python.
+ragione sta tutta nel ciclo che sparisce. È il pedaggio già incontrato: [il
+ciclo Python lo paga un milione di volte, `2 * x` una volta sola]{.pt-matita},
+perché a scorrere il blocco è il motore in C. Che i numeri stiano in fila serve
+a lui, che li prende a manciate, e non a un ciclo scritto in Python.
 
 Vale anche il rovescio: se il ciclo lo scrivi comunque, farlo passare su un
 array invece che su una lista lo rallenta, perché a ogni giro l'array deve
@@ -513,10 +513,10 @@ ciclo Python, che legge un elemento per volta, impiega dal doppio al triplo del
 tempo (a seconda della macchina) quando legge da un `ndarray` invece che da una
 lista, e fra le due righe l'unica cosa che cambia è il contenitore letto. La
 ragione è che ogni lettura deve impacchettare il numero grezzo in un oggetto
-`np.float64`, mentre nella lista quell'oggetto esiste già. In definitiva, la
-contiguità serve al ciclo in C e non a quello in Python: un `ndarray` è veloce
-quando lo si tocca tutto in una volta, e chi "ottimizza" un ciclo Python
-convertendo la lista in array lo rallenta.
+`np.float64`, mentre nella lista quell'oggetto esiste già. In definitiva, [la
+contiguità serve al ciclo in C e non a quello in Python]{.pt-matita}: un
+`ndarray` è veloce quando lo si tocca tutto in una volta, e chi "ottimizza" un
+ciclo Python convertendo la lista in array lo rallenta.
 
 Il meccanismo che sta sotto si chiama **ufunc** (*universal function*):
 `np.add`, `np.multiply`, `np.sqrt` e gli operatori che le richiamano applicano
@@ -568,8 +568,8 @@ $1 + 2$, $7$ è $3 + 4$, cioè ogni riga di `A` moltiplicata voce per voce per
 Per risolvere un sistema di equazioni
 $\mathbf{A}\mathbf{z} = \mathbf{v}$, cioè trovare lo $\mathbf{z}$ che
 moltiplicato per $\mathbf{A}$ dà $\mathbf{v}$, si usa `np.linalg.solve`, non
-`inv(A) @ v`. Il primo è infatti più preciso e più veloce; calcolare l'inversa
-esplicita è quasi sempre uno spreco, e la
+`inv(A) @ v`. Il primo è infatti più preciso e più veloce; [calcolare l'inversa
+esplicita è quasi sempre uno spreco]{.pt-matita}, e la
 {doc}`sezione sui sistemi lineari </Matematica/sistemi-lineari>` dice quanto
 costa.
 

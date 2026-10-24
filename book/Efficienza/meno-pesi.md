@@ -7,11 +7,12 @@ grandi lo hanno mostrato Han e colleghi, che hanno ridotto i parametri di nove
 volte su AlexNet e di tredici su VGG-16 senza perdere accuratezza
 {cite}`han2015learning`.
 
-Fra le tre leve è quella che promette di più, ma in pratica la promessa si
-riscuote male. Una rete alleggerita del novanta per cento, infatti, non diventa
-più veloce in proporzione, perché la moltiplicazione fra matrici che si esegue
-di solito, quella densa, moltiplica anche gli zeri. Per guadagnare tempo bisogna
-cambiare il modo di moltiplicare, e questo conviene solo a certe condizioni.
+Fra le tre leve è quella che promette di più, ma [in pratica la promessa si
+riscuote male]{.pt-matita}. Una rete alleggerita del novanta per cento,
+infatti, non diventa più veloce in proporzione, perché la moltiplicazione fra
+matrici che si esegue di solito, quella densa, moltiplica anche gli zeri. Per
+guadagnare tempo bisogna cambiare il modo di moltiplicare, e questo conviene
+solo a certe condizioni.
 
 ## Quali pesi si tolgono
 
@@ -49,7 +50,7 @@ La prima domenica dice come è andata. Tolti nove pesi su dieci, l'accuratezza
 passa da novantotto a trentanove per cento, cioè da «sbaglia una volta su
 cinquanta» a «sbaglia tre volte su cinque».
 
-A salvare la squadra è il ritiro. Dopo aver tagliato si riaddestra,
+[A salvare la squadra è il ritiro]{.pt-matita}. Dopo aver tagliato si riaddestra,
 tenendo però i tagli dove sono: i giocatori rimasti si allenano nei ruoli
 lasciati vuoti, e dopo qualche settimana si gioca di nuovo bene. Chi è stato
 mandato via non rientra: dopo ogni seduta i pesi tagliati vengono rimessi a
@@ -114,12 +115,12 @@ previsione regge fino a circa il trenta per cento dei pesi tolti: potare al
 novanta per cento vuol dire quindi andare tre volte oltre. Eppure il criterio
 funziona lo stesso.
 
-Il taglio da solo non basta, perché la rete rimasta è fuori dal minimo in cui
-era stata portata. In altri termini, i pesi superstiti sono ottimi rispetto a
-una funzione che comprendeva anche quelli azzerati. Il **riaddestramento con
-maschera fissa** riporta i superstiti in un minimo della funzione ristretta: la
-maschera dei pesi sopravvissuti si applica dopo ogni passo dell’ottimizzatore,
-così i pesi tagliati non tornano mai.
+[Il taglio da solo non basta, perché la rete rimasta è fuori dal minimo in cui
+era stata portata]{.pt-matita}. In altri termini, i pesi superstiti sono ottimi
+rispetto a una funzione che comprendeva anche quelli azzerati. Il
+**riaddestramento con maschera fissa** riporta i superstiti in un minimo della
+funzione ristretta: la maschera dei pesi sopravvissuti si applica dopo ogni
+passo dell’ottimizzatore, così i pesi tagliati non tornano mai.
 
 Nella pratica il ciclo si itera: si pota una frazione, si riaddestra, si pota
 ancora {cite}`han2015learning`. Lo faceva già OBD, che teneva fissi a zero i
@@ -253,7 +254,7 @@ valore.
 
 ```{figure} ../figures/potatura-che-assottiglia.svg
 :name: fig-potatura
-:alt: "Due riquadri affiancati. A sinistra una griglia di sedici per sedici quadratini, un campione dei pesi del primo strato di una rete: all'inizio sono tutti pieni, e giro dopo giro se ne svuotano sempre di più, fino a restare vuota o quasi. A destra la curva dell'accuratezza contro la frazione di pesi tolti, tracciata un punto per giro: resta piatta poco sotto il cento per cento mentre si tolgono i primi nove pesi su dieci, e poi precipita negli ultimi giri. Sotto, a ogni giro, quanti pesi sono stati tolti e l'accuratezza corrispondente."
+:alt: "Due riquadri affiancati. A sinistra una griglia di sedici per sedici quadratini, un campione dei pesi del primo strato di una rete: all'inizio sono tutti pieni, e passata dopo passata se ne svuotano sempre di più, fino a restare vuota o quasi. A destra la curva dell'accuratezza contro la frazione di pesi tolti, tracciata un punto per passata: resta piatta poco sotto il cento per cento mentre si tolgono i primi nove pesi su dieci, e poi precipita nelle ultime passate. Sotto, a ogni passata, quanti pesi sono stati tolti e l'accuratezza corrispondente."
 :width: 100%
 
 Tredici passate di potatura iterativa su una rete piccola, più lo stato di
@@ -293,10 +294,10 @@ moltiplicazioni che il calcolatore fa, in tutti e due i casi: 268 milioni
   di cui per zero: 255 milioni
 ```
 
-Il lavoro utile è venti volte minore, ma il lavoro risparmiato è zero: il
-calcolatore fa gli stessi duecentosessantotto milioni di moltiplicazioni in
-tutti e due i casi, e duecentocinquantacinque milioni di queste (il
-novantacinque per cento) sono moltiplicazioni per zero.
+[Il lavoro utile è venti volte minore, ma il lavoro risparmiato è
+zero]{.pt-matita}: il calcolatore fa gli stessi duecentosessantotto milioni di
+moltiplicazioni in tutti e due i casi, e duecentocinquantacinque milioni di
+queste (il novantacinque per cento) sono moltiplicazioni per zero.
 
 Cronometrando si vede lo stesso: la matrice sparsa non va venti volte più
 veloce, va uguale. Un cronometro dipende dalla macchina e da quanto è occupata,
@@ -423,9 +424,9 @@ Poi il chip moltiplica. Di ogni gruppetto legge i due numeri rimasti, guarda le
 etichette, e fra i numeri d'ingresso prende soltanto i due che andrebbero
 moltiplicati proprio con quelle caselle; gli altri due non li tocca, perché
 andrebbero moltiplicati per zero. Due moltiplicazioni invece di quattro, in
-ogni gruppetto, e quindi metà del lavoro. Siccome la regola è la stessa per
+ogni gruppetto, e quindi metà del lavoro. [Siccome la regola è la stessa per
 tutti i gruppetti, ogni pezzo del chip ha esattamente lo stesso lavoro degli
-altri, e nessuno resta ad aspettare.
+altri]{.pt-matita}, e nessuno resta ad aspettare.
 
 Lo svantaggio è il vincolo: il gruppetto con tre pesi utili ne perde uno, e la
 rete ci rimette. Per questo, dopo aver azzerato, la si fa studiare di nuovo, per
@@ -464,9 +465,10 @@ prodotti degli strati lineari di LLaMA-65B a batch 1 guadagnano da 1,54 a 1,63
 volte, e il tempo di risposta intero di LLaMA-7B 1,24 volte
 {cite}`sun2024simple`.
 
-Il vincolo è locale e uniforme, quindi conserva le due proprietà che la sparsità
-non strutturata distrugge, la regolarità dell'accesso e il riempimento delle
-unità di calcolo, e in più bilancia il carico per costruzione.
+[Il vincolo è locale e uniforme, quindi conserva le due proprietà che la
+sparsità non strutturata distrugge]{.pt-matita}, la regolarità dell'accesso e
+il riempimento delle unità di calcolo, e in più bilancia il carico per
+costruzione.
 
 La procedura degli autori è addestrare il modello denso, potarlo a 2:4 per
 modulo (in ogni gruppo si tengono i due pesi più grandi) e riaddestrarlo con lo
@@ -543,10 +545,10 @@ casella giusta del risultato. Lo smistamento diventa così la parte costosa: due
 prodotti che vogliono la stessa casella nello stesso istante fanno la fila, e
 per ridurre gli ingorghi le caselle si raddoppiano.
 
-Il bilancio si rovescia quando gli zeri sono pochi. Davanti a un'immagine quasi
-piena, o con troppo pochi pesi non nulli per riempire un blocco, lo smistamento
-costa più di quanto fa risparmiare, e un chip che moltiplica tutto va più
-veloce.
+[Il bilancio si rovescia quando gli zeri sono pochi]{.pt-matita}. Davanti a
+un'immagine quasi piena, o con troppo pochi pesi non nulli per riempire un
+blocco, lo smistamento costa più di quanto fa risparmiare, e un chip che
+moltiplica tutto va più veloce.
 
 `````
 
@@ -585,14 +587,14 @@ attraverso una crossbar, verso banchi di accumulatori scelti dalle coordinate
 d'uscita, che si ricavano dagli indici dei due fattori. I banchi sono il doppio
 dei prodotti ($A = 2FI$) per contenere le collisioni.
 
-Il punto di rottura è la densità. A parità di moltiplicatori con un acceleratore
-denso, e con più area per crossbar e accumulatori, SCNN è più veloce solo quando
-pesi e attivazioni sono ciascuno sotto l’85% circa di densità, e più efficiente
-in energia sotto l’83% contro il denso semplice e sotto il 60% contro uno che
-spegne già le moltiplicazioni per zero e comprime il traffico verso la memoria.
-Rende poco anche quando i fattori non nulli sono troppo pochi per riempire
-l'array $4 \times 4$ (i filtri $1 \times 1$) e sugli strati d'ingresso, densi al
-100%.
+Il punto di rottura è la densità. A parità di moltiplicatori con un
+acceleratore denso, e con più area per crossbar e accumulatori, [SCNN è più
+veloce solo quando pesi e attivazioni sono ciascuno sotto l’85% circa di
+densità]{.pt-matita}, e più efficiente in energia sotto l’83% contro il denso
+semplice e sotto il 60% contro uno che spegne già le moltiplicazioni per zero e
+comprime il traffico verso la memoria. Rende poco anche quando i fattori non
+nulli sono troppo pochi per riempire l'array $4 \times 4$ (i filtri $1 \times
+1$) e sugli strati d'ingresso, densi al 100%.
 
 `````
 
@@ -688,9 +690,9 @@ la calcolatrice: i suoi fili restano come stavano e nessun secchiello si
 riempie. Su un chip per le reti che guardano le immagini, ad esempio, questo
 solo accorgimento ha tolto quasi metà dell’energia spesa nei banchi.
 
-Il battito però passa lo stesso, e il banco lo passa fermo: si risparmia acqua,
-non tempo. Per risparmiare anche il battito bisogna sapere prima dove stanno gli
-zeri, e a questo servono le etichette di EIE.
+[Il battito però passa lo stesso, e il banco lo passa fermo: si risparmia
+acqua, non tempo]{.pt-matita}. Per risparmiare anche il battito bisogna sapere
+prima dove stanno gli zeri, e a questo servono le etichette di EIE.
 
 Un banco che per un intero strato non ha niente da fare smette di sentire il
 metronomo. Non si muove più niente, nemmeno i fili che portano il battito, che
@@ -762,10 +764,11 @@ della moltiplicazione-accumulo di commutare, cioè azzera il $p_{01}$ di quel
 pezzo di circuito per quel ciclo.
 
 Rispetto allo stesso elemento senza gating la potenza scende del 45%, e su
-AlexNet la potenza del chip cala strato dopo strato, man mano che le attivazioni
-si riempiono di zeri. Il ciclo però si consuma e il throughput non cambia, e
-recuperarlo vuol dire sapere in anticipo dove stanno i non nulli, cioè usare i
-formati compressi di EIE e SCNN con il loro costo in indici.
+AlexNet la potenza del chip cala strato dopo strato, man mano che le
+attivazioni si riempiono di zeri. [Il ciclo però si consuma e il throughput non
+cambia]{.pt-matita}, e recuperarlo vuol dire sapere in anticipo dove stanno i
+non nulli, cioè usare i formati compressi di EIE e SCNN con il loro costo in
+indici.
 
 **Clock gating.** Il clock di un blocco passa per una porta comandata da un
 segnale di abilitazione: a blocco disabilitato i registri non caricano, la
@@ -901,8 +904,8 @@ disponibile. Per sapere quali sono i biglietti vincenti, infatti, bisogna prima
 fare l’estrazione, cioè addestrare la rete grande, e per giunta più volte se si
 pota in più passate. Tutti i risultati della potatura (novanta pesi su cento
 tolti, un punto di accuratezza perso) si pagano dopo un addestramento intero,
-non al posto suo. La potatura comprime un modello che esiste già; non insegna a
-farne uno piccolo.
+non al posto suo. [La potatura comprime un modello che esiste già; non insegna a
+farne uno piccolo]{.pt-matita}.
 
 Questa conclusione ha però due riserve, che la restringono senza ribaltarla. La
 prima riguarda la potatura di unità intere: l’architettura che ne esce,
@@ -921,11 +924,11 @@ della sparsità non strutturata.
 
 ## Le due leve insieme
 
-Le leve si compongono, ma la perdita complessiva non è la somma delle perdite
-singole, né cade da una parte prevedibile. Per vederlo abbiamo già tutto quello
-che serve: prendiamo la rete, la potiamo al novanta per cento riaddestrandola, e
-poi arrotondiamo a quattro bit i pesi rimasti con la funzione `quantizza` della
-{doc}`sezione sulla quantizzazione <meno-bit>`.
+Le leve si compongono, ma [la perdita complessiva non è la somma delle perdite
+singole]{.pt-matita}, né cade da una parte prevedibile. Per vederlo abbiamo già
+tutto quello che serve: prendiamo la rete, la potiamo al novanta per cento
+riaddestrandola, e poi arrotondiamo a quattro bit i pesi rimasti con la
+funzione `quantizza` della {doc}`sezione sulla quantizzazione <meno-bit>`.
 
 ```python
 def stato_pieno():

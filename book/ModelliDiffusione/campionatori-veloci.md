@@ -13,10 +13,10 @@ L'equazione della diffusione, invece, ha una struttura particolare: è
 **semilineare**. Il termine lineare nello stato viene dal programma di rumore,
 che abbiamo scelto noi, e si risolve in forma chiusa, senza approssimare
 niente; il termine che contiene la rete, e solo quello, va approssimato
-numericamente. Un integratore che tiene separati i due termini ha portato il
+numericamente. [Un integratore che tiene separati i due termini ha portato il
 costo di un'immagine da qualche centinaio di valutazioni della rete a una
-ventina, con la stessa rete e gli stessi pesi: nessun riaddestramento, soltanto
-un modo più accorto di percorrere la stessa strada.
+ventina]{.pt-matita}, con la stessa rete e gli stessi pesi: nessun
+riaddestramento, soltanto un modo più accorto di percorrere la stessa strada.
 
 ## Metà dell'equazione si risolve a mano
 
@@ -40,11 +40,11 @@ da noi: si conosce in forma esatta a qualunque istante. L'altro pezzo dice «e
 adesso correggi come indica la rete», e solo quello è ignoto.
 
 Un metodo che tratta i due pezzi allo stesso modo, come fa quello di Eulero,
-spreca passi per ricalcolare qualcosa di già noto. Un metodo che li separa,
-invece, usa gli stessi passi tutti sul pezzo che conta. Il guadagno è grande
-perché il pezzo noto, in queste equazioni, cambia molto in fretta: all'inizio
-del ritorno il fattore di scala si muove di ordini di grandezza, e chi lo
-insegue a passetti deve farne moltissimi.
+spreca passi per ricalcolare qualcosa di già noto. [Un metodo che li separa,
+invece, usa gli stessi passi tutti sul pezzo che conta]{.pt-matita}. Il
+guadagno è grande perché il pezzo noto, in queste equazioni, cambia molto in
+fretta: all'inizio del ritorno il fattore di scala si muove di ordini di
+grandezza, e chi lo insegue a passetti deve farne moltissimi.
 
 `````
 
@@ -72,9 +72,9 @@ $$
 $$
 
 Il primo addendo è esatto, per qualunque ampiezza del passo: nessuna
-approssimazione, nessun errore accumulato. Ne segue che tutto l'errore di
+approssimazione, nessun errore accumulato. Ne segue che [tutto l'errore di
 discretizzazione sta nell'integrale, cioè nella sola parte che dipende dalla
-rete.
+rete]{.pt-matita}.
 
 Questa è la definizione di **integratore esponenziale**, una famiglia di metodi
 sviluppata per i problemi *stiff*, quelli con costanti di tempo molto più corte
@@ -108,13 +108,13 @@ del ritorno l'immagine è indistinguibile dal rumore e i cambiamenti sono
 grossolani; nell'ultimo tratto si decidono i dettagli, e lì i passi vanno
 fitti. Passi uniformi nel tempo ne sprecano parecchi dove non serve.
 
-La grandezza rispetto a cui conviene spaziarli è quanto segnale c'è rispetto al
-rumore, e conviene contarla per moltiplicazioni invece che per somme. Ad
-esempio, un passo porta il rapporto fra segnale e rumore da un centesimo a un
-decimo, il successivo da un decimo a 1, quello dopo da 1 a 10: ogni passo
-moltiplica per dieci, cioè cambia le cose nella stessa proporzione, e i passi
-risultano ugualmente informativi. Contare così, per fattori invece che per
-differenze, si chiama usare una scala logaritmica.
+[La grandezza rispetto a cui conviene spaziarli è quanto segnale c'è rispetto
+al rumore, e conviene contarla per moltiplicazioni invece che per
+somme]{.pt-matita}. Ad esempio, un passo porta il rapporto fra segnale e rumore
+da un centesimo a un decimo, il successivo da un decimo a 1, quello dopo da 1 a
+10: ogni passo moltiplica per dieci, cioè cambia le cose nella stessa
+proporzione, e i passi risultano ugualmente informativi. Contare così, per
+fattori invece che per differenze, si chiama usare una scala logaritmica.
 
 È un cambio di variabile, cioè un'operazione che non tocca l'equazione ma solo
 il modo di percorrerla, e vale già una parte importante del risparmio. Chi
@@ -160,13 +160,13 @@ $\lambda$: i coefficienti che servono sono gli integrali
 $\int e^{-\lambda}\lambda^k\,\mathrm{d}\lambda$, che hanno primitiva
 elementare. Non serve dunque alcuna quadratura numerica.
 
-La seconda riguarda la griglia. Spaziare uniformemente in $\lambda$ invece che
-in $t$ concentra i passi dove $\hat{\boldsymbol{\epsilon}}$ varia di più, e su
-programmi come quello lineare di DDPM la differenza fra le due griglie è
-sostanziale a parità di valutazioni; ma il verso della differenza dipende dal
-metodo e dal programma di rumore, e il banco di prova lo mostra. È il motivo per
-cui i campionatori delle librerie espongono la griglia come parametro separato
-dal metodo: sono due scelte distinte.
+La seconda riguarda la griglia. [Spaziare uniformemente in $\lambda$ invece che
+in $t$ concentra i passi dove $\hat{\boldsymbol{\epsilon}}$ varia di
+più]{.pt-matita}, e su programmi come quello lineare di DDPM la differenza fra
+le due griglie è sostanziale a parità di valutazioni; ma il verso della
+differenza dipende dal metodo e dal programma di rumore, e il banco di prova lo
+mostra. È il motivo per cui i campionatori delle librerie espongono la griglia
+come parametro separato dal metodo: sono due scelte distinte.
 
 La parametrizzazione che le librerie hanno adottato più di tutte è quella di
 Karras e colleghi {cite}`karras2022elucidating`. Si scrive il dato rumoroso come
@@ -203,8 +203,8 @@ all'inizio. Il conto che ne esce era già noto: è DDIM, il campionatore
 veloce comparso pochi mesi dopo DDPM. All'epoca ci si era arrivati da
 tutt'altra parte, la strada raccontata nella {doc}`sezione su come funziona la
 diffusione
-</ModelliDiffusione/come-funziona>`; visto da qui è il primo gradino di una
-scala.
+</ModelliDiffusione/come-funziona>`; [visto da qui è il primo gradino di una
+scala]{.pt-matita}.
 
 I gradini della scala si chiamano **ordini**. Un metodo del primo ordine, come
 DDIM, fa ogni passo guardando soltanto che cosa succede all'inizio del passo.
@@ -242,9 +242,9 @@ $$
 
 Le due scritture sono la stessa cosa, e la seconda è quella con cui DDIM viene
 di solito presentato: si stima il dato pulito e lo si rimescola al livello di
-rumore successivo. L'errore locale è $O(h^2)$ e quello globale $O(h)$: DDIM è
-un metodo del primo ordine e un integratore esponenziale, non un Eulero. La
-differenza si misura, e risulta grande.
+rumore successivo. L'errore locale è $O(h^2)$ e quello globale $O(h)$: [DDIM è
+un metodo del primo ordine e un integratore esponenziale, non un
+Eulero]{.pt-matita}. La differenza si misura, e risulta grande.
 
 Il secondo ordine (DPM-Solver-2) valuta la rete anche in un punto intermedio
 $s_1$, con $\lambda_{s_1} = \lambda_s + r_1 h$:
@@ -430,15 +430,15 @@ sorprende.
 `````{tab} Elementare
 
 Con otto sole valutazioni il metodo del secondo ordine fa peggio del primo
-ordine: quasi sei centesimi contro poco più di uno. Nei numeri non c'è un errore:
-i metodi di ordine alto sono più precisi quando i passi sono piccoli, e più
-fragili quando sono grandi. Un metodo del secondo ordine guarda avanti usando
-l'informazione presa a metà passo; se il passo è enorme, quella informazione è
-presa in un posto molto diverso da dove si finirà, e la correzione fa danni
-invece che bene. Dove cada il confine dipende però dal problema: sul banco di
-prova attorno alle sedici valutazioni, nei modelli veri molto prima, tanto che
-lì l'ordine alto vince già con dieci, e lo stesso rovescio si vede semmai fra
-il secondo ordine e il terzo.
+ordine: quasi sei centesimi contro poco più di uno. Nei numeri non c'è un
+errore: [i metodi di ordine alto sono più precisi quando i passi sono piccoli,
+e più fragili quando sono grandi]{.pt-matita}. Un metodo del secondo ordine
+guarda avanti usando l'informazione presa a metà passo; se il passo è enorme,
+quella informazione è presa in un posto molto diverso da dove si finirà, e la
+correzione fa danni invece che bene. Dove cada il confine dipende però dal
+problema: sul banco di prova attorno alle sedici valutazioni, nei modelli veri
+molto prima, tanto che lì l'ordine alto vince già con dieci, e lo stesso
+rovescio si vede semmai fra il secondo ordine e il terzo.
 
 Ci sono altre due cose che in pratica limitano l'ordine alto.
 
@@ -470,9 +470,9 @@ Tre limiti, in ordine di importanza pratica.
 
 **Stabilità a passo grande.** L'errore locale di un metodo di ordine $p$ è
 $O(h^{p+1})$, con costante proporzionale alla derivata $p$-esima di
-$\hat{\boldsymbol{\epsilon}}$ in $\lambda$. Per $h$ grande la costante domina
-l'esponente, e la gerarchia degli ordini si rovescia. Sul banco di prova il
-punto di pareggio fra primo e secondo ordine cade attorno alle sedici
+$\hat{\boldsymbol{\epsilon}}$ in $\lambda$. [Per $h$ grande la costante domina
+l'esponente, e la gerarchia degli ordini si rovescia]{.pt-matita}. Sul banco di
+prova il punto di pareggio fra primo e secondo ordine cade attorno alle sedici
 valutazioni. Si noti che sui modelli addestrati la soglia non si trasporta: nel
 lavoro di DPM-Solver, su CIFAR-10, l'ordine alto batte DDIM già a dieci
 valutazioni, e il rovescio si osserva fra secondo e terzo ordine, con il
@@ -535,9 +535,9 @@ for N in (8, 16, 32, 64):
 # -> 64 9.6e-04 1.4e-04 secondo ordine
 ```
 
-Sul banco di prova la regola è netta: fino alle sedici valutazioni conviene il
-primo ordine, sopra il secondo. Sui modelli veri la lezione resta, ma la soglia
-non è la stessa.
+Sul banco di prova la regola è netta: [fino alle sedici valutazioni conviene il
+primo ordine, sopra il secondo]{.pt-matita}. Sui modelli veri la lezione resta,
+ma la soglia non è la stessa.
 
 Ad esempio, nel lavoro di DPM-Solver, su CIFAR-10 con un modello addestrato,
 l'ordine alto batte DDIM già con dieci valutazioni (FID $13{,}58$ per DDIM, da

@@ -50,9 +50,9 @@ I numeri dicono anche *dove* è successo. Il $32$ è il numero di esempi nel
 mini-batch (nel codice, *batch*); il $784$ sono i pixel di un'immagine MNIST
 srotolata, $28 \times 28$. Il $128$ e il $10$ sono la seconda matrice, cioè lo
 strato d'uscita del nostro percettrone, che prende 128 numeri e ne produce 10,
-uno per cifra. In altri termini, sono arrivate 32 immagini appiattite
-direttamente allo strato finale, perché fra i due manca lo strato nascosto, che
-avrebbe dovuto portarle da $784$ a $128$.
+uno per cifra. In altri termini, [sono arrivate 32 immagini appiattite
+direttamente allo strato finale, perché fra i due manca lo strato
+nascosto]{.pt-matita}, che avrebbe dovuto portarle da $784$ a $128$.
 
 `````{tab} Elementare
 Un tensore porta scritte addosso le sue dimensioni, che dicono quante cose
@@ -179,9 +179,9 @@ tensore è scritto: interi (il $3$) oppure decimali (il $3{,}0$). Quando somma o
 moltiplica due tensori numero per numero, PyTorch li converte a un tipo
 comune (un intero e un decimale, per esempio, diventano due decimali, anche
 a costo di qualche cifra: `int64` e `float32` danno `float32`). Ma nel
-prodotto fra matrici e dentro gli strati `nn` (i casi dei due messaggi) la
+prodotto fra matrici e dentro gli strati `nn` (i casi dei due messaggi) [la
 libreria richiede un tipo preciso, e preferisce fermarsi piuttosto che
-indovinare quale volevamo.
+indovinare quale volevamo]{.pt-matita}.
 
 I due messaggi vanno letti in modi diversi. Nel primo, i due tipi sono i due
 operandi nell'ordine, cioè il tensore che abbiamo passato e i pesi del modello,
@@ -330,12 +330,12 @@ nella riga dei dati c'è `X = X.to(device)`. Senza il `=` è una riga che sembra
 funzionare e non fa nulla, e non dà nessun errore finché il tensore non arriva
 al modello.
 
-Un altro caso, che sfugge quasi sempre, riguarda un pezzo che nasce
-dentro il modello mentre lavora. Una riga come `torch.ones(...)` lo fabbrica
-nella stanza della CPU, perché nessuno le ha detto dove farlo, e il modello che
-sta di là se lo trova davanti come qualcuno entrato dalla porta sbagliata. Il
-rimedio è guardare dove sta un dato che si ha già in mano, invece di scrivere
-il nome della stanza dentro il modello: `torch.ones(..., device=x.device)`
+Un altro caso, che sfugge quasi sempre, riguarda un pezzo che nasce dentro il
+modello mentre lavora. Una riga come `torch.ones(...)` lo fabbrica nella stanza
+della CPU, perché nessuno le ha detto dove farlo, e il modello che sta di là se
+lo trova davanti come qualcuno entrato dalla porta sbagliata. [Il rimedio è
+guardare dove sta un dato che si ha già in mano, invece di scrivere il nome
+della stanza dentro il modello]{.pt-matita}: `torch.ones(..., device=x.device)`
 fabbrica il pezzo dove serve, qualunque stanza sia.
 
 Le cose che appartengono al modello (una tabella di riferimento, una media da
@@ -369,9 +369,10 @@ def forward(self, x):
     maschera = torch.ones(x.shape[-1], device=x.device)   # corretto
 ```
 
-Dentro un modulo il dispositivo si deduce da un tensore che si ha già in mano
-(`x.device`) o dai propri parametri (`next(self.parameters()).device`), mai da
-una variabile globale `device`.
+[Dentro un modulo il dispositivo si deduce da un tensore che si ha già in mano
+(`x.device`) o dai propri parametri
+(`next(self.parameters()).device`)]{.pt-matita}, mai da una variabile globale
+`device`.
 
 Per le costanti che appartengono al modello (una tabella di codifiche
 posizionali, una media di normalizzazione), la soluzione corretta è
@@ -386,10 +387,10 @@ grafo, `cpu` lo riporta nella memoria della CPU, `numpy` converte.
 
 ## Un metodo, non un rimedio
 
-I tre errori si risolvono in trenta secondi *se* si legge il messaggio. Il
-metodo con cui li si risolve va reso esplicito, perché funziona anche sugli
-errori che nessun elenco contiene, compresi quelli che
-nasceranno il mese prossimo.
+[I tre errori si risolvono in trenta secondi *se* si legge il
+messaggio]{.pt-matita}. Il metodo con cui li si risolve va reso esplicito,
+perché funziona anche sugli errori che nessun elenco contiene, compresi quelli
+che nasceranno il mese prossimo.
 
 1. **Leggi il traceback dal basso verso l'alto.** Quando un programma Python si
    ferma non stampa una frase, stampa un elenco: è il *traceback*, la catena di
@@ -409,9 +410,9 @@ nasceranno il mese prossimo.
 
 ## Gli altri classici
 
-I tre grandi errori si annunciano con un messaggio. Gli altri sono peggiori,
-perché non danno nessun errore: il codice gira, le curve della loss dicono poco
-o dicono il falso, e non c'è niente di rosso da leggere.
+I tre grandi errori si annunciano con un messaggio. [Gli altri sono peggiori,
+perché non danno nessun errore]{.pt-matita}: il codice gira, le curve della
+loss dicono poco o dicono il falso, e non c'è niente di rosso da leggere.
 
 ```{figure} ../figures/overfitting-memoria.svg
 :name: fig-curva-nervosa
@@ -605,8 +606,8 @@ Per gli errori rumorosi c'è il traceback. Per quelli silenziosi c'è un
 grafico, lo strumento diagnostico che si usa più spesso: le due curve
 della loss, addestramento e validazione, epoca per epoca.
 
-Quel grafico va guardato dall'epoca uno, non alla fine. Aspettare il termine
-dell'addestramento per tracciare le curve significa, su un modello
+[Quel grafico va guardato dall'epoca uno, non alla fine]{.pt-matita}. Aspettare
+il termine dell'addestramento per tracciare le curve significa, su un modello
 serio, scoprire dopo sei ore un difetto già leggibile dopo due epoche. Il costo
 di stampare due numeri a fine epoca e disegnarli è nullo; il costo di non farlo
 è una notte di GPU.
@@ -741,9 +742,10 @@ arriva a tutti i parametri.
 ### Quando la validazione va meglio dell'addestramento
 
 C'è una forma che confonde chiunque la incontri la prima volta: la curva di
-validazione sta sotto quella di addestramento. Sembra impossibile, perché
-il modello ha visto i dati di addestramento e non quelli di validazione.
-Quasi sempre, però, non c'è nulla di rotto, e le spiegazioni sono quattro.
+validazione sta sotto quella di addestramento. Sembra impossibile, perché il
+modello ha visto i dati di addestramento e non quelli di validazione. [Quasi
+sempre, però, non c'è nulla di rotto]{.pt-matita}, e le spiegazioni sono
+quattro.
 
 1. Si stanno confrontando due misure prese in momenti diversi. La loss di
    addestramento che si stampa è di solito la media su tutti i batch

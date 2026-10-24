@@ -48,14 +48,14 @@ all'inizio. Il secondo problema è la fila: se puoi leggere solo una parola alla
 volta, non puoi farti aiutare, e cento amici non leggono un libro più in fretta
 di te se il libro va comunque letto in fila.
 
-Il Transformer rompe la fessura, perché guarda tutta la frase insieme e per
-ogni parola decide a quali altre parole prestare attenzione. Ad esempio, in "Il
-gatto nero salta sul muro", mentre elabora "salta" può guardare direttamente
-"gatto" (chi è che salta?) senza passare per un riassunto sbiadito. Siccome
-ogni parola viene elaborata insieme alle altre, il lavoro si può dividere, e i
-cento amici servono eccome. È soprattutto questo ad aver fatto crescere i
-modelli fino alle dimensioni di oggi: leggersi una biblioteca intera diventa
-una faccenda di quanti amici riesci a chiamare.
+Il Transformer rompe la fessura, perché [guarda tutta la frase insieme e per
+ogni parola decide a quali altre parole prestare attenzione]{.pt-matita}. Ad
+esempio, in "Il gatto nero salta sul muro", mentre elabora "salta" può guardare
+direttamente "gatto" (chi è che salta?) senza passare per un riassunto
+sbiadito. Siccome ogni parola viene elaborata insieme alle altre, il lavoro si
+può dividere, e i cento amici servono eccome. È soprattutto questo ad aver
+fatto crescere i modelli fino alle dimensioni di oggi: leggersi una biblioteca
+intera diventa una faccenda di quanti amici riesci a chiamare.
 
 Dividere il lavoro però non lo fa sparire, e il costo sta nelle coppie. Ogni
 parola guarda ogni altra, quindi dieci parole fanno cento sguardi e cento
@@ -76,8 +76,8 @@ LSTM e GRU mitigano ma non eliminano. La derivazione si trova nella
 intrinsecamente sequenziale: il passo $t$ richiede il passo $t-1$, e l'hardware
 parallelo (le GPU) resta sottoutilizzato in addestramento.
 
-Nel Transformer la self-attention collega ogni coppia di posizioni in un solo
-passo, con lunghezza di cammino $O(1)$, e l'elaborazione di tutte le
+Nel Transformer [la self-attention collega ogni coppia di posizioni in un solo
+passo]{.pt-matita}, con lunghezza di cammino $O(1)$, e l'elaborazione di tutte le
 posizioni è un prodotto tra matrici, parallelizzabile per costruzione. Questa
 seconda proprietà, più ancora della prima, ha cambiato la scala dei modelli:
 addestrare su corpora enormi è diventato una questione di hardware, non di

@@ -49,9 +49,9 @@ e la catena le ha tutte: **tante serie collegate** fra loro; relazioni **non
 lineari** (una promozione raddoppia le vendite solo sotto una certa soglia di
 prezzo); **fattori esterni** che aiutano a prevedere (meteo, festività,
 prezzo); e il bisogno di una **stima dell'incertezza** invece di un numero
-solo, perché chi ordina la merce deve sapere di quanto rischia di sbagliare. Se
+solo, perché chi ordina la merce deve sapere di quanto rischia di sbagliare. [Se
 invece hai una sola serie, pulita e lunga, i classici restano spesso la scelta
-migliore, e comunque la prima da provare.
+migliore]{.pt-matita}, e comunque la prima da provare.
 
 Poi c'è la terza famiglia. I metodi classici e le reti provano a
 indovinare, ciascuno a modo suo, la regola con cui un giorno genera il
@@ -105,10 +105,11 @@ stima puntuale. Un avviso sulle lettere, per chi andrà a leggere l'articolo di
 DeepAR: là $z$ è la serie da prevedere e le covariate si chiamano $x$, il
 contrario di qui.
 
-Il modello globale ha però un costo strutturale. Con poche serie, o serie
+Il modello globale ha però un costo strutturale. [Con poche serie, o serie
 corte, i dati non bastano a controllare la varianza di un modello ad alta
-capacità, e i metodi statistici (robusti, frugali, interpretabili) tengono il
-campo, come mostrano le competizioni M raccontate in {doc}`Il futuro nei numeri
+capacità]{.pt-matita}, e i metodi statistici (robusti, frugali, interpretabili)
+tengono il campo, come mostrano le competizioni M raccontate in {doc}`Il futuro
+nei numeri
 </SerieTemporali/overview>`. Il modello globale non è una prerogativa delle
 reti: lo è altrettanto un albero potenziato su feature ritardate e covariate,
 il tipo di modello che ha vinto la M5.
@@ -205,11 +206,12 @@ del linguaggio, l'idea di lasciare che il modello decida da sé a quali pezzi de
 passato dare peso.
 
 Ci sono però due guai, e nel forecasting pesano più che altrove. Il primo è che
-la memoria di queste reti si consuma: più il passato è lontano, meno ne
-resta nel riassunto, e le LSTM migliorano le cose senza risolverle. Il secondo è
-che queste reti si addestrano un passo dopo l'altro, perché il giorno $t$ non si
-può calcolare finché non è finito il $t-1$: il lavoro non si può spartire fra le
-migliaia di unità di calcolo di una GPU, e l'addestramento è lento.
+la memoria di queste reti si consuma: [più il passato è lontano, meno ne resta
+nel riassunto, e le LSTM migliorano le cose senza risolverle]{.pt-matita}. Il
+secondo è che queste reti si addestrano un passo dopo l'altro, perché il giorno
+$t$ non si può calcolare finché non è finito il $t-1$: il lavoro non si può
+spartire fra le migliaia di unità di calcolo di una GPU, e l'addestramento è
+lento.
 
 `````
 
@@ -231,10 +233,10 @@ meccanismo di attenzione.
 
 I limiti, però, sono quelli della {doc}`sezione sui modelli di sequenza
 </NaturalLanguageProcessing/modelli-sequenza>`, e nel forecasting pesano
-persino di più. La memoria delle RNN semplici si dissolve su orizzonti
-lunghi (il gradiente che svanisce) e le LSTM lo mitigano ma non lo cancellano;
-l'addestramento è sequenziale, mal parallelizzabile sulle GPU perché il
-passo $t$ aspetta il $t-1$.
+persino di più. [La memoria delle RNN semplici si dissolve su orizzonti lunghi
+(il gradiente che svanisce) e le LSTM lo mitigano ma non lo
+cancellano]{.pt-matita}; l'addestramento è sequenziale, mal parallelizzabile
+sulle GPU perché il passo $t$ aspetta il $t-1$.
 
 `````
 
@@ -293,10 +295,10 @@ il terzo di quattro, il quarto di otto. I salti sommati fanno $1 + 2 + 4 + 8 =
 15$ giorni, più oggi fa sedici; con dieci strati si passano i mille. È la
 dilatazione, e con finestre più larghe di due la copertura cresce ancora.
 
-Il sedicesimo giorno indietro, però, con quattro
-strati non c'è: non sbiadito, assente del tutto, e nessuna finestra di ingresso
-più lunga glielo fa comparire. Per guardare più indietro si aggiunge uno
-strato, o si allarga la finestra di ciascuno.
+[Il sedicesimo giorno indietro, però, con quattro strati non c'è: non sbiadito,
+assente del tutto]{.pt-matita}, e nessuna finestra di ingresso più lunga glielo
+fa comparire. Per guardare più indietro si aggiunge uno strato, o si allarga la
+finestra di ciascuno.
 
 Impilare dieci strati, però, crea un problema che il calcolo dei giorni non
 mostra, e la rete lo risolve con un accorgimento di costruzione: uno strato non
@@ -355,11 +357,11 @@ esponenziali, contro gli $O(n)$ passi di una ricorrente su una sequenza lunga
 $n$. In generazione autoregressiva, invece, il passo $t$ resta in attesa del
 $t-1$ anche qui.
 
-Il punto di rottura c'è, di specie diversa da quello delle RNN: una ricorrente
-sbiadisce la memoria lontana, una TCN la taglia di netto. Oltre $r$ istanti non
-arriva niente, mai, per costruzione. Di conseguenza, allungare la finestra di
-ingresso oltre il campo recettivo non serve a nulla, e per guardare più
-indietro si aggiungono strati o si allarga il filtro.
+Il punto di rottura c'è, di specie diversa da quello delle RNN: [una ricorrente
+sbiadisce la memoria lontana, una TCN la taglia di netto]{.pt-matita}. Oltre
+$r$ istanti non arriva niente, mai, per costruzione. Di conseguenza, allungare
+la finestra di ingresso oltre il campo recettivo non serve a nulla, e per
+guardare più indietro si aggiungono strati o si allarga il filtro.
 
 `````
 
@@ -570,11 +572,11 @@ due calcoli coincidono a meno di tre centesimi (lo scarto più grande, al quinto
 giorno, è $3{,}166$ contro $3{,}194$): la differenza che resta è il tremolio del
 sorteggio, non un difetto del metodo.
 
-Generare tante storie a caso e leggere il
-ventaglio che ne viene si chiama metodo Monte Carlo, come il casinò, e nella
-rete vera è l'unica strada praticabile, perché il calcolo passa per una LSTM e
-per gli intervalli non esiste una formula chiusa. Il ventaglio, in ogni caso, è
-l'informazione che una previsione probabilistica dichiara e una puntuale nasconde.
+Generare tante storie a caso e leggere il ventaglio che ne viene si chiama
+metodo Monte Carlo, come il casinò, e nella rete vera è l'unica strada
+praticabile, perché il calcolo passa per una LSTM e per gli intervalli non
+esiste una formula chiusa. [Il ventaglio, in ogni caso, è l'informazione che
+una previsione probabilistica dichiara e una puntuale nasconde]{.pt-matita}.
 
 ## N-BEATS: solo percettroni, ma interpretabili
 
@@ -590,13 +592,13 @@ sua eleganza sta in un'idea di contabilità: il **doppio residuo**.
 `````{tab} Elementare
 
 Una serie si spiega a strati, come si pela una cipolla. Il primo blocco guarda
-la finestra passata e produce due cose: una ricostruzione di
-ciò che ha capito del passato (il *backcast*) e un pezzo di previsione del
-futuro (il *forecast*). A questo punto si *sottrae* la ricostruzione dal
-passato: ciò che resta è quello che il primo blocco non ha saputo spiegare, e
-passa al secondo blocco, che ripete il gioco su quel residuo. Blocco dopo
-blocco, ogni strato spiega un pezzo in più; le previsioni parziali si
-sommano a formare quella finale.
+la finestra passata e produce due cose: una ricostruzione di ciò che ha capito
+del passato (il *backcast*) e un pezzo di previsione del futuro (il
+*forecast*). A questo punto si *sottrae* la ricostruzione dal passato: [ciò che
+resta è quello che il primo blocco non ha saputo spiegare, e passa al secondo
+blocco]{.pt-matita}, che ripete il gioco su quel residuo. Blocco dopo blocco,
+ogni strato spiega un pezzo in più; le previsioni parziali si sommano a formare
+quella finale.
 
 Il bello viene quando a qualche blocco si lega la mano. A uno si concede di
 disegnare soltanto curve dolci, e finisce per occuparsi della tendenza di
@@ -619,12 +621,12 @@ $$
 \hat{\mathbf{y}} = \sum_{b} \hat{\mathbf{y}}^{(b)},
 $$
 
-dove l'ingresso del blocco successivo è ciò che il blocco corrente non ha
-saputo spiegare, e la previsione finale è la somma dei contributi. Nella
-variante *interpretabile* la base è vincolata (polinomi di grado basso per il
-trend, termini di Fourier per la stagionalità), così che i blocchi, raccolti in
-due gruppi, restituiscano una componente leggibile ciascuno; in quella
-*generica* la base è appresa liberamente, e lì di componenti statistiche
+dove [l'ingresso del blocco successivo è ciò che il blocco corrente non ha
+saputo spiegare]{.pt-matita}, e la previsione finale è la somma dei contributi.
+Nella variante *interpretabile* la base è vincolata (polinomi di grado basso
+per il trend, termini di Fourier per la stagionalità), così che i blocchi,
+raccolti in due gruppi, restituiscano una componente leggibile ciascuno; in
+quella *generica* la base è appresa liberamente, e lì di componenti statistiche
 innestate non ce n'è nessuna: solo strati densi.
 
 Nel gruppo della tendenza il
@@ -718,9 +720,9 @@ quando gliene si dà di più; i Transformer, con la finestra più lunga, restava
 fermi o peggioravano, mentre i modelli lineari miglioravano quasi dappertutto.
 
 La conclusione non è che i Transformer non servano: la complessità non è mai un
-vantaggio gratuito. Prima di celebrare un modello elaborato va confrontato con
-la linea di base più semplice a cui riesci a pensare, e va controllato che usi
-l'informazione che dichiara di usare.
+vantaggio gratuito. [Prima di celebrare un modello elaborato va confrontato con
+la linea di base più semplice a cui riesci a pensare]{.pt-matita}, e va
+controllato che usi l'informazione che dichiara di usare.
 
 Un Transformer costruito apposta, come il Temporal Fusion Transformer, continua
 invece a servire quando le informazioni esterne sono molte e di tipi diversi:
@@ -783,12 +785,11 @@ relazioni temporali da una storia lunga deve migliorare quando gliene si dà di
 più. I Transformer, allungando la finestra, restano fermi o peggiorano; i
 modelli lineari migliorano sulla maggior parte di quei dataset (non su tutti:
 sui tassi di cambio, dicono gli autori, la finestra lunga non aiuta nemmeno
-loro). Messe insieme, le due
-prove dicono che su quei banchi di prova l'attenzione non stava estraendo le
-relazioni temporali che dichiarava di estrarre. Gli autori lo attribuiscono
-all'invarianza per permutazione dell'attenzione e al sovradattamento al rumore,
-e ne concludono che l'efficacia dei Transformer su questo compito va messa in
-discussione.
+loro). Messe insieme, [le due prove dicono che su quei banchi di prova
+l'attenzione non stava estraendo le relazioni temporali che dichiarava di
+estrarre]{.pt-matita}. Gli autori lo attribuiscono all'invarianza per
+permutazione dell'attenzione e al sovradattamento al rumore, e ne concludono
+che l'efficacia dei Transformer su questo compito va messa in discussione.
 
 Non è la condanna dei Transformer: il **Temporal Fusion Transformer** di Lim e
 colleghi {cite}`lim2021temporal` resta forte quando servono covariate multiple
@@ -846,8 +847,8 @@ addestrarsi da capo. Il modello Chronos, di Amazon, usa un trucco
 sorprendente: trasforma i numeri in parole. Si sceglie un vocabolario di
 qualche migliaio di simboli e si stabilisce che ciascuno copre una fettina di
 valori, così «$23{,}7$ gradi» diventa, mettiamo, il simbolo numero $1372$;
-a quel punto una serie è una frase, e prevedere il seguito è completare la
-frase, cioè il compito per cui i modelli linguistici sono già fatti.
+[a quel punto una serie è una frase, e prevedere il seguito è completare la
+frase]{.pt-matita}, cioè il compito per cui i modelli linguistici sono già fatti.
 Siccome una frase si può finire in molti modi, il modello ne scrive
 tante e legge il ventaglio che ne viene: anche qui la previsione arriva con la
 sua incertezza.
@@ -874,9 +875,9 @@ temporali. Entrambi dichiarano prestazioni *zero-shot* competitive con modelli
 allenati sul singolo compito, e il protocollo conta: dei 42 dataset su cui
 Chronos si misura, 15 fanno parte anche del suo addestramento, e il confronto
 lì è in dominio, mentre lo *zero-shot* vale per gli altri 27, tenuti fuori. Di
-qui la cautela: il campo ha pochi anni, i confronti dipendono da quali serie il
-modello ha già visto e da quale banco di prova si usa, e su serie corte o molto
-specifiche i metodi classici restano spesso preferibili.
+qui la cautela: il campo ha pochi anni, [i confronti dipendono da quali serie
+il modello ha già visto e da quale banco di prova si usa]{.pt-matita}, e su
+serie corte o molto specifiche i metodi classici restano spesso preferibili.
 
 `````
 
@@ -890,8 +891,8 @@ Una finestra che scorre su una fila di numeri, arrivata al
 primo giorno, non ha niente alla sua sinistra: le mancano dei valori, e la
 libreria li mette a zero. Solo che li mette da tutte e due le parti, anche a
 destra, dove il tempo non è ancora arrivato, e così il risultato viene più lungo
-dell'ingresso. La soluzione è chiedere gli zeri lo stesso e
-poi tagliare via la coda a destra: quello che resta è come se gli zeri
+dell'ingresso. [La soluzione è chiedere gli zeri lo stesso e
+poi tagliare via la coda a destra]{.pt-matita}: quello che resta è come se gli zeri
 fossero stati messi soltanto a sinistra, la sequenza è lunga quanto prima e
 l'uscita del giorno $t$ non ha mai pescato nel futuro.
 

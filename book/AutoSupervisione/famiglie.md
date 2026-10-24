@@ -17,9 +17,9 @@ costante, la risposta vuota, si chiama **collasso**, e i {doc}`modelli a
 energia </ModelliEnergia/energia-come-compatibilita>` l'hanno già
 incontrata come un'energia bassa dappertutto, che dà ragione a ogni coppia.
 
-La domanda da porre non riguarda dunque il pretesto, ma che cosa impedisce la
-risposta vuota. Le quattro famiglie sono quattro risposte, e si ricordano
-meglio di quattro elenchi di sigle.
+[La domanda da porre non riguarda dunque il pretesto, ma che cosa impedisce la
+risposta vuota]{.pt-matita}. Le quattro famiglie sono quattro risposte, e si
+ricordano meglio di quattro elenchi di sigle.
 
 ## La prima: respingere
 
@@ -37,8 +37,8 @@ candidati, cioè $\log K$.
 {doc}`Imparare a vedere senza etichette </VisioneArtificiale/senza-etichette>`:
 la ricetta di base, il costo dei rivali, e la coda di rivali già elaborati che
 permette di averne molti senza doverli calcolare tutti insieme. Qui interessa
-solo il posto che occupa nello schema: il collasso lo impedisce una forza che
-allontana.
+solo il posto che occupa nello schema: [il collasso lo impedisce una forza che
+allontana]{.pt-matita}.
 
 Il limite di questa famiglia sono i rivali. Perché la perdita dica qualcosa ne
 servono migliaia, e ciascuno va elaborato dalla rete. Per questo la seconda e
@@ -51,8 +51,8 @@ con BERT, esisteva dal 2018, prima delle altre due.
 Si tolgono i rivali, e al loro posto si mettono due reti con ruoli diversi, che
 la letteratura chiama studente e insegnante. Guardano due viste della stessa
 foto, e lo studente deve indovinare che cosa produce l'insegnante. Niente
-allontana più niente; a impedire il collasso è il fatto che
-le due reti non sono intercambiabili. Solo lo studente si corregge. La
+allontana più niente; [a impedire il collasso è il fatto che
+le due reti non sono intercambiabili]{.pt-matita}. Solo lo studente si corregge. La
 correzione, cioè il gradiente della perdita, scorre lungo un ramo solo, mentre
 l'insegnante resta fermo per quel passo (in gergo, *stop-gradient*). Il modo di
 rompere la simmetria cambia da metodo a metodo. In BYOL l'insegnante è una
@@ -127,14 +127,14 @@ sette, e sto sprecando spazio. Quanto pesi la varietà rispetto alla somiglianza
 lo decidiamo noi, con una manopola.
 
 Per questo questa famiglia non ha bisogno né di rivali né di trucchi
-costruttivi: le due regole fermano due modi diversi di sbagliare, e insieme li
-coprono. La risposta vuota, cioè descrivere tutte le foto allo stesso modo, la
-ferma la somiglianza: caselle bloccate non si somigliano, non c'è niente da
-premiare, e quella regola resta insoddisfatta per intero. La varietà ferma il
-caso più educato, la scheda che cambia da foto a foto ma dice otto volte la
-stessa cosa: lì i due ritagli si somigliano quanto devono, e a pagare è lo
-spreco. In tutti e due i casi la penalità è scritta nel punteggio, e non arriva
-per vie traverse.
+costruttivi: [le due regole fermano due modi diversi di sbagliare, e insieme li
+coprono]{.pt-matita}. La risposta vuota, cioè descrivere tutte le foto allo
+stesso modo, la ferma la somiglianza: caselle bloccate non si somigliano, non
+c'è niente da premiare, e quella regola resta insoddisfatta per intero. La
+varietà ferma il caso più educato, la scheda che cambia da foto a foto ma dice
+otto volte la stessa cosa: lì i due ritagli si somigliano quanto devono, e a
+pagare è lo spreco. In tutti e due i casi la penalità è scritta nel punteggio,
+e non arriva per vie traverse.
 
 Un secondo metodo, VICReg, scrive le stesse pretese in un altro modo. La
 somiglianza diventa soltanto «le due schede vicine», senza il controllo sulle
@@ -195,8 +195,9 @@ quelle di $\mathbf{Z}^B$: ogni cella di $\mathbf{C}$ vale allora lo stesso
 numero $\rho$, quello che sta sulla diagonale, e il termine di ridondanza paga
 $\lambda \, D(D-1) \, \rho^2$, cioè $D(D-1)$ celle piene quanto la diagonale,
 mentre una rappresentazione con la stessa diagonale e coordinate scorrelate
-pagherebbe zero. Non serve un argomento sulla dinamica dell'ottimizzazione: la
-penalità si legge sul valore della perdita, perché è scritta nell'obiettivo.
+pagherebbe zero. Non serve un argomento sulla dinamica dell'ottimizzazione: [la
+penalità si legge sul valore della perdita, perché è scritta
+nell'obiettivo]{.pt-matita}.
 
 **VICReg** {cite}`bardes2022vicreg` arriva alla stessa meta con tre termini
 espliciti. Con $\mathbf{z}_n$ le righe di $\mathbf{Z}$,
@@ -370,8 +371,8 @@ L'ultima famiglia non chiede al modello di riconoscere né di confrontare: gli
 copre un pezzo di dato e gli chiede di rifarlo. La risposta vuota qui non
 paga: con la stessa rappresentazione per tutte le immagini, la ricostruzione
 migliore possibile è l'immagine media, la stessa per tutte, e la perdita resta
-alta quanto le immagini sono diverse fra loro. Ne segue che il collasso completo
-non è un minimo di questa perdita.
+alta quanto le immagini sono diverse fra loro. Ne segue che [il collasso completo
+non è un minimo di questa perdita]{.pt-matita}.
 
 È la famiglia **generativa mascherata**, già trattata due volte: sul testo, con
 l'esercizio di BERT, in {doc}`GPT, BERT, T5: tre esercizi di pre-addestramento
@@ -422,12 +423,12 @@ rappresentazioni che si usano ovunque, come quella che {doc}`CLIP
 | riduzione di ridondanza (vincolare le statistiche) | accordo fra due viste, coordinate scorrelate | un vincolo sulle coordinate scritto nella perdita | in quali statistiche si decide di vincolare |
 | generativa mascherata (ricostruire) | rifare il pezzo coperto | il compito stesso | in quanta informazione si toglie |
 
-L'ultima colonna dice che fabbricare un pretesto è decidere dove mettere la
-difficoltà, e che ognuna delle quattro famiglie la mette in un posto diverso:
-nelle nostre scelte a monte, nella forma dell'architettura, in una condizione
-scritta nella perdita, o nella dose di informazione nascosta. Non esiste una
-risposta migliore in assoluto, ma una che si adatta meglio al tipo di dato e a
-quanto siamo disposti a mettere di nostro dentro il compito.
+L'ultima colonna dice che [fabbricare un pretesto è decidere dove mettere la
+difficoltà]{.pt-matita}, e che ognuna delle quattro famiglie la mette in un
+posto diverso: nelle nostre scelte a monte, nella forma dell'architettura, in
+una condizione scritta nella perdita, o nella dose di informazione nascosta.
+Non esiste una risposta migliore in assoluto, ma una che si adatta meglio al
+tipo di dato e a quanto siamo disposti a mettere di nostro dentro il compito.
 
 ## Un avvertimento sulle tassonomie
 
@@ -442,13 +443,13 @@ token) oppure la sua rappresentazione: da lì escono tre famiglie, e la terza,
 quella che predice nello spazio delle rappresentazioni, qui non compare affatto
 perché non è un modo diverso di evitare il collasso.
 
-Le due tassonomie non si contraddicono: i due assi sono indipendenti, e un
-metodo ha una posizione su ciascuno dei due. Una JEPA, per esempio, sull'asse
-del *dove* predice nello spazio delle rappresentazioni, e sull'asse del *come
-non collassa* si affida a un'asimmetria, oppure a un vincolo sulle statistiche.
-Quando si leggono due elenchi con due numeri diversi, quasi sempre non
-significa che uno dei due sbagli a contare: stanno guardando la stessa cosa da
-due lati.
+Le due tassonomie non si contraddicono: [i due assi sono indipendenti, e un
+metodo ha una posizione su ciascuno dei due]{.pt-matita}. Una JEPA, per
+esempio, sull'asse del *dove* predice nello spazio delle rappresentazioni, e
+sull'asse del *come non collassa* si affida a un'asimmetria, oppure a un
+vincolo sulle statistiche. Quando si leggono due elenchi con due numeri
+diversi, quasi sempre non significa che uno dei due sbagli a contare: stanno
+guardando la stessa cosa da due lati.
 
 `````{tab} Elementare
 

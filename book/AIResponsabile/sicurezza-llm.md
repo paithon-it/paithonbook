@@ -50,9 +50,9 @@ ha mostrato come si inganna la *vista* di una rete neurale, con manomissioni
 invisibili all'occhio. Per i modelli di linguaggio la domanda è la stessa, e il
 quadro cambia in due modi. Il primo, già annunciato: l'attacco è prosa e non un
 rumore impercettibile, e per scriverla non serve né conoscere il modello né
-saper calcolare. Il secondo, meno rassicurante: dentro il modello il canale
-separato non c'è. Accanto a ogni pezzo di testo si sa scrivere da dove viene, e
-c'è chi addestra il modello a dare più peso ai pezzi fidati
+saper calcolare. Il secondo, meno rassicurante: [dentro il modello il canale
+separato non c'è]{.pt-matita}. Accanto a ogni pezzo di testo si sa scrivere da
+dove viene, e c'è chi addestra il modello a dare più peso ai pezzi fidati
 {cite}`wallace2024instruction` o marca la provenienza trasformando il testo non
 fidato {cite}`hines2024spotlighting`; ma sono disposizioni apprese, che
 riducono il successo degli attacchi noti senza escluderlo. Non si sa invece
@@ -199,9 +199,9 @@ Il primo risultato mostra il difetto in forma pura. Quando i marcatori
 viaggiano dentro il testo, la sequenza prodotta da un documento ostile è
 identica a quella di una conversazione in cui quell'ordine lo aveva impartito
 davvero il gestore del sistema. In altri termini, non si somigliano: sono la
-stessa cosa, e nessun modello, per quanto bravo, può distinguere due ingressi
-identici. Si dice che il marcatore viaggia **in banda**, cioè nello stesso
-canale dei dati, come il fischio sul filo della voce.
+stessa cosa, e [nessun modello, per quanto bravo, può distinguere due ingressi
+identici]{.pt-matita}. Si dice che il marcatore viaggia **in banda**, cioè
+nello stesso canale dei dati, come il fischio sul filo della voce.
 
 Il secondo risultato mostra che una parte del problema si risolve: per questo
 i formati di chat moderni riservano numeri speciali che il testo di chi
@@ -276,8 +276,8 @@ seguire un'istruzione che si trova davanti è di norma proprio quello che deve
 fare, e a distinguere il caso ostile servirebbe sapere da dove quell'istruzione
 viene.
 
-L'iniezione indiretta è la più grave delle tre perché l'attaccante non ha
-bisogno di parlare con il sistema. Gli basta
+[L'iniezione indiretta è la più grave delle tre perché l'attaccante non ha
+bisogno di parlare con il sistema]{.pt-matita}. Gli basta
 lasciare il proprio testo dove prima o poi qualcuno lo farà leggere a un
 modello. Non sceglie il bersaglio, non conosce l'utente, non paga nulla a
 nessuno: pubblica e aspetta.
@@ -302,9 +302,9 @@ e dà le coppie direttamente al modello che parla {cite}`rafailov2023direct`.
 
 In entrambi i casi il risultato è una **disposizione appresa**, sparsa in
 miliardi di numeri, non una regola che qualcuno possa esibire e verificare. Una
-regola vale o non vale; una disposizione si può *spostare* cambiando il
-contesto in cui la richiesta arriva, cioè tutto quello che al modello sta
-davanti insieme alla domanda.
+regola vale o non vale; [una disposizione si può *spostare* cambiando il
+contesto in cui la richiesta arriva]{.pt-matita}, cioè tutto quello che al
+modello sta davanti insieme alla domanda.
 
 `````{tab} Elementare
 
@@ -394,9 +394,9 @@ scambi in cui il modello accetta di fare una cosa che non dovrebbe, alla fine
 la fa. Siccome le conversazioni che questi sistemi riescono a tenere a mente
 si sono allungate moltissimo, di finti esempi ce ne stanno centinaia.
 
-In definitiva, la memoria lunga, che è una capacità, è anche una porta, e più
-la si allarga per rendere il sistema utile, più larga diventa anche per chi
-vuole entrare.
+In definitiva, [la memoria lunga, che è una capacità, è anche una
+porta]{.pt-matita}, e più la si allarga per rendere il sistema utile, più larga
+diventa anche per chi vuole entrare.
 
 `````{tab} Elementare
 
@@ -566,9 +566,9 @@ loro parola.
 `````
 
 Simon Willison chiama quei tre ingredienti *lethal trifecta*
-{cite}`willison2025trifecta`, la triade letale. Dove ci sono tutti e tre, la
-domanda da porsi è quale dei tre si può togliere: che il modello prima o poi
-ceda va dato per scontato.
+{cite}`willison2025trifecta`, la triade letale. Dove ci sono tutti e tre, [la
+domanda da porsi è quale dei tre si può togliere]{.pt-matita}: che il modello
+prima o poi ceda va dato per scontato.
 
 ## Difese, in ordine di quanto reggono
 
@@ -682,8 +682,8 @@ AgentDojo, CaMeL, un sistema costruito su questo principio, porta a termine il
 Il modo di ottenerlo è vecchio quanto la sicurezza dei sistemi: privilegio
 minimo (l'agente ha solo i permessi che servono al compito, non quelli
 dell'utente che lo ha lanciato), conferma umana per le azioni irreversibili, e
-tracciamento della provenienza di ciò che sta in contesto. Il cancello guarda
-da dove viene il contesto, mai che cosa dice.
+tracciamento della provenienza di ciò che sta in contesto. [Il cancello guarda
+da dove viene il contesto, mai che cosa dice]{.pt-matita}.
 
 ```python
 # Cosa fa ogni strumento e' dichiarato dal programma, una volta per tutte:
@@ -874,8 +874,8 @@ categorie che già conosce, mentre a quel modello si può scrivere qualunque
 cosa, e le frasi possibili non finiscono mai. È lo stesso problema di chi
 addestra un modello a rifiutare, guardato dal lato di chi misura: la richiesta
 in una forma mai vista non è nel suo addestramento, e non è nemmeno nell'elenco
-delle prove. Di conseguenza, un rapporto che dice «nessun tentativo riuscito»
-descrive la copertura del rapporto, non la sicurezza del sistema.
+delle prove. Di conseguenza, [un rapporto che dice «nessun tentativo riuscito»
+descrive la copertura del rapporto, non la sicurezza del sistema]{.pt-matita}.
 
 ## Quello che si può promettere
 
@@ -906,10 +906,10 @@ raggio del danno, si rendono le azioni pericolose reversibili o soggette a
 conferma, e si osserva quello che succede. È ciò che ha reso utilizzabili
 sistemi molto più insicuri di questi, e non una resa.
 
-La conseguenza pratica è questa: quando serve una
-garanzia, la si cerca fuori dal modello, in un componente che non si lascia
-persuadere, perché non legge il testo che dovrebbe convincerlo. Il modello si
-può rendere bravo; il confine bisogna costruirlo altrove.
+La conseguenza pratica è questa: [quando serve una garanzia, la si cerca fuori
+dal modello, in un componente che non si lascia persuadere]{.pt-matita}, perché
+non legge il testo che dovrebbe convincerlo. Il modello si può rendere bravo;
+il confine bisogna costruirlo altrove.
 
 `````{tab} Elementare
 

@@ -141,13 +141,14 @@ trovato due cose: che il vecchio prodotto scalare, calibrato con cura, batte la
 rete; e che per un MLP imparare a riprodurre un prodotto scalare è
 sorprendentemente difficile, e richiede molta capacità e molti dati.
 
-Il risultato non dice che le reti non servano: dice che la libertà in più va
-pagata in dati. Il prodotto scalare porta con sé un'ipotesi sul problema, che il
-punteggio sia una somma di prodotti fra componenti corrispondenti dei due
-embedding. Una rete, al suo posto, deve ricostruire quell'ipotesi dai dati, ma
-in una matrice quasi vuota i dati sono pochi; per questo un'ipotesi azzeccata,
-data al modello in partenza, vale più di molti parametri in più. È il *bias
-induttivo* incontrato nella {doc}`sezione sull'apprendimento multi-compito
+Il risultato non dice che le reti non servano: dice che [la libertà in più va
+pagata in dati]{.pt-matita}. Il prodotto scalare porta con sé un'ipotesi sul
+problema, che il punteggio sia una somma di prodotti fra componenti
+corrispondenti dei due embedding. Una rete, al suo posto, deve ricostruire
+quell'ipotesi dai dati, ma in una matrice quasi vuota i dati sono pochi; per
+questo un'ipotesi azzeccata, data al modello in partenza, vale più di molti
+parametri in più. È il *bias induttivo* incontrato nella {doc}`sezione
+sull'apprendimento multi-compito
 </DeepLearning/multi-compito>`.
 
 Il prodotto scalare ha anche un vantaggio di costo, che con la qualità non
@@ -174,8 +175,8 @@ dati da guardare. La matrice di interazione è il grafo bipartito utenti-oggetti
 con cui si è chiuso il {doc}`capitolo sulle reti neurali su grafo
 </GraphNeuralNetwork/overview>`, un arco per ogni cella piena, e su quel grafo
 il compito diventa la **link prediction**: prevedere gli archi che mancano.
-Letta così, la raccomandazione può propagare l'informazione lungo gli archi,
-oltre il singolo confronto fra due embedding.
+Letta così, [la raccomandazione può propagare l'informazione lungo gli archi,
+oltre il singolo confronto fra due embedding]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -517,13 +518,14 @@ epoca 200 · loss BPR 0.025
 recall@10 · BPR 0.738 · solo i titoli popolari 0.227
 ```
 
-Senza un solo voto, BPR rimette fra i primi dieci quasi tre titoli nascosti su
-quattro, più di tre volte quelli che ritrova la classifica per popolarità, e
-nessuno gli ha mai detto quanto un film piaccia: solo quali film un utente ha
-scelto. In altri termini, la riga della loss guarda di quanto il libro comprato
-sta sopra a quello ignorato e trasforma quel margine in una spinta. Se il
-comprato sta già molto sopra, la spinta è quasi zero e la vetrina non si muove;
-se sta sotto, la spinta cresce, e cresce tanto più quanto è sotto.
+[Senza un solo voto, BPR rimette fra i primi dieci quasi tre titoli nascosti su
+quattro]{.pt-matita}, più di tre volte quelli che ritrova la classifica per
+popolarità, e nessuno gli ha mai detto quanto un film piaccia: solo quali film
+un utente ha scelto. In altri termini, la riga della loss guarda di quanto il
+libro comprato sta sopra a quello ignorato e trasforma quel margine in una
+spinta. Se il comprato sta già molto sopra, la spinta è quasi zero e la vetrina
+non si muove; se sta sotto, la spinta cresce, e cresce tanto più quanto è
+sotto.
 
 `F.logsigmoid` fa in un passaggio solo due operazioni, la sigmoide e il
 logaritmo della {doc}`sezione di analisi </Matematica/analisi-ottimizzazione>`,
@@ -593,16 +595,16 @@ primi $k$ suggerimenti (di solito $k = 10$ o $20$), che sono la parte della
 lista che l'utente vede; l'AUC, che BPR approssima, guarda invece l'ordine
 dell'intero catalogo.
 
-Prima di scegliere il metro, però, va deciso su che cosa si misura. Nessuno può
-dire se ti sarebbe piaciuto un titolo che non hai mai visto, quindi si procede
-per finta: si prende la storia di un utente, si nasconde una parte di ciò che
-ha guardato, si addestra il modello su quel che resta, e poi si guarda quanti
-dei titoli nascosti il modello rimette in cima alla lista. I titoli nascosti
-fanno da riferimento: sono interazioni che sappiamo avvenute, e che il modello
-non ha visto perché le abbiamo tolte noi. Il riferimento è imperfetto, per le
-ragioni della {doc}`panoramica <overview>`: aver guardato un titolo non
-equivale ad averlo gradito, e un titolo buono che l'utente non ha mai
-incontrato, se il modello lo propone, conta come un errore.
+Prima di scegliere il metro, però, [va deciso su che cosa si
+misura]{.pt-matita}. Nessuno può dire se ti sarebbe piaciuto un titolo che non
+hai mai visto, quindi si procede per finta: si prende la storia di un utente,
+si nasconde una parte di ciò che ha guardato, si addestra il modello su quel
+che resta, e poi si guarda quanti dei titoli nascosti il modello rimette in
+cima alla lista. I titoli nascosti fanno da riferimento: sono interazioni che
+sappiamo avvenute, e che il modello non ha visto perché le abbiamo tolte noi.
+Il riferimento è imperfetto, per le ragioni della {doc}`panoramica <overview>`:
+aver guardato un titolo non equivale ad averlo gradito, e un titolo buono che
+l'utente non ha mai incontrato, se il modello lo propone, conta come un errore.
 
 `````{tab} Elementare
 
@@ -786,15 +788,15 @@ zero.
 
 ## La storia recente conta
 
-Un limite silenzioso di tutto ciò che abbiamo visto: la matrice dei voti non ha
-orologio. Per la fattorizzazione, il film visto ieri sera e quello di dieci
-anni fa pesano uguale. Chi ha appena comprato una tenda da campeggio, invece, è
-per qualche giorno una persona diversa: sacco a pelo e fornelletto sono
-consigli d'oro oggi e rumore tra un mese. La **raccomandazione sequenziale**
-tratta la storia di un utente, $i_1, \dots, i_t$, come una frase da continuare,
-e stima $P(i_{t+1} \mid i_1, \dots, i_t)$ sul catalogo come un modello del
-linguaggio stima la parola successiva. Gli strumenti sono quelli dei
-{doc}`capitoli sul NLP </NaturalLanguageProcessing/overview>` e sui
+Un limite silenzioso di tutto ciò che abbiamo visto: [la matrice dei voti non
+ha orologio]{.pt-matita}. Per la fattorizzazione, il film visto ieri sera e
+quello di dieci anni fa pesano uguale. Chi ha appena comprato una tenda da
+campeggio, invece, è per qualche giorno una persona diversa: sacco a pelo e
+fornelletto sono consigli d'oro oggi e rumore tra un mese. La **raccomandazione
+sequenziale** tratta la storia di un utente, $i_1, \dots, i_t$, come una frase
+da continuare, e stima $P(i_{t+1} \mid i_1, \dots, i_t)$ sul catalogo come un
+modello del linguaggio stima la parola successiva. Gli strumenti sono quelli
+dei {doc}`capitoli sul NLP </NaturalLanguageProcessing/overview>` e sui
 {doc}`Transformer
 </Transformers/overview>`, e il settore ne ha seguito la stessa parabola: prima
 le reti ricorrenti, poi la self-attention. Al posto delle parole ci sono i
@@ -842,11 +844,11 @@ vantaggio attribuito all'architettura stava nella funzione di costo.
 
 ## Come lo fa l'industria
 
-Resta da vedere che cosa succede nell'attimo fra il momento in cui
-apri l'app e quello in cui compare la prima riga di suggerimenti. Nessuna
-piattaforma calcola un punteggio raffinato per milioni di titoli a ogni visita:
-i sistemi reali lavorano **a due stadi**, e li descrissero pubblicamente gli
-ingegneri di YouTube nel 2016 {cite}`covington2016deep`.
+Resta da vedere che cosa succede nell'attimo fra il momento in cui apri l'app e
+quello in cui compare la prima riga di suggerimenti. [Nessuna piattaforma
+calcola un punteggio raffinato per milioni di titoli a ogni
+visita]{.pt-matita}: i sistemi reali lavorano **a due stadi**, e li descrissero
+pubblicamente gli ingegneri di YouTube nel 2016 {cite}`covington2016deep`.
 
 `````{tab} Elementare
 
@@ -981,7 +983,7 @@ loop già incontrato: il modello impara da dati che il modello stesso ha
 filtrato, come discusso nella sezione {doc}`Quando i dati cambiano
 </MachineLearning/dati-che-cambiano>`.
 
-A decidere è la metrica, più che la tecnica. Un sistema addestrato a
+[A decidere è la metrica, più che la tecnica]{.pt-matita}. Un sistema addestrato a
 massimizzare i minuti di visione imparerà, con perfetta onestà matematica, a
 mostrare tutto ciò che ci tiene incollati allo schermo: l'indignazione e il
 sensazionalismo compresi, se funzionano. Chi sceglie il metro su cui il sistema

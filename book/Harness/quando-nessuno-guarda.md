@@ -45,21 +45,21 @@ con i loro linguaggi di interrogazione, come si interroga un database, e a
 fine compito tutto veniva smontato, così che il compito dopo partisse da un
 impianto pulito {cite}`lopopolo2026harness`.
 
-Con quegli occhi, richieste che prima non si potevano fare diventano
-trattabili, ad esempio «l'avvio del servizio deve completarsi in meno di 800
-millisecondi» e «nessun intervallo dei quattro percorsi critici di un utente
-deve superare i due secondi» (per un negozio, percorsi come cercare un
-prodotto o pagare). Sono frasi che un agente può verificare da sé, interrogando
-le metriche e le tracce. Lopopolo racconta di singole esecuzioni dell'agente
-che lavorano a un compito per più di sei ore, spesso mentre le persone
-dormono.
+Con quegli occhi, [richieste che prima non si potevano fare diventano
+trattabili]{.pt-matita}, ad esempio «l'avvio del servizio deve completarsi in
+meno di 800 millisecondi» e «nessun intervallo dei quattro percorsi critici di
+un utente deve superare i due secondi» (per un negozio, percorsi come cercare
+un prodotto o pagare). Sono frasi che un agente può verificare da sé,
+interrogando le metriche e le tracce. Lopopolo racconta di singole esecuzioni
+dell'agente che lavorano a un compito per più di sei ore, spesso mentre le
+persone dormono.
 
 ## Seguire una richiesta da capo a fondo
 
 L'altra faccia è vedere che cosa succede dentro il sistema che l'agente
-costruisce o mantiene, quando qualcosa va storto senza fare rumore. I guasti
+costruisce o mantiene, quando qualcosa va storto senza fare rumore. [I guasti
 peggiori di un sistema che risponde con un modello non sono gli errori, che
-fermano tutto e si notano, ma le risposte plausibili e sbagliate.
+fermano tutto e si notano, ma le risposte plausibili e sbagliate]{.pt-matita}.
 
 Un archivio di documenti interrogato per somiglianza, come quello del {doc}`RAG
 </Transformers/rag>`, ne offre un esempio classico. I documenti sono stati
@@ -426,10 +426,10 @@ I chiodi non arrivano mai a zero, perché ogni giorno qualcuno ne pianta di
 nuovi: il loro numero si ferma dove quelli rifatti ogni notte pareggiano quelli
 nuovi. Se ne nasce uno al giorno e l'artigiano ne rifà uno su dieci, si ferma
 intorno a dieci, perché un chiodo resta lì in media dieci giorni. È questa la
-misura che conta: quanti chiodi ci sono dipende da quanti ne nascono e da
-quanto a lungo ciascuno resta prima di essere rifatto. E finché resta, chi
-passa lo copia: un chiodo che resta il doppio non lascia il doppio dei chiodi,
-ne lascia di più, perché nel frattempo ha fatto figli.
+misura che conta: [quanti chiodi ci sono dipende da quanti ne nascono e da
+quanto a lungo ciascuno resta prima di essere rifatto]{.pt-matita}. E finché
+resta, chi passa lo copia: un chiodo che resta il doppio non lascia il doppio
+dei chiodi, ne lascia di più, perché nel frattempo ha fatto figli.
 
 Una pulizia del venerdì
 che lasciasse ogni chiodo, in media, altrettanto a lungo darebbe più o meno lo
@@ -503,14 +503,14 @@ parità di $\bar{W}$ le due pulizie danno quasi la stessa media, esattamente la
 stessa nel caso lineare, e le ondate un dente di sega con picchi sopra la
 media.
 
-È la forma del *compound* con cui Lopopolo descrive il debito tecnico:
-a contare è la permanenza, e una squadra di capacità fissa la allunga man mano
-che il codice cresce, che è come falliva la pulizia del venerdì. I principi
-scritti abbassano $\varepsilon$, e $\kappa$ se rendono la scorciatoia meno
-facile da copiare; la pulizia in sottofondo accorcia $\bar{W}$. Resta però un
-modello, con parametri non misurati, che assume codice riscritto a caso, copia
-che pesca da tutto il repository, dimensioni e parametri costanti e
-correzioni perfette.
+È la forma del *compound* con cui Lopopolo descrive il debito tecnico: [a
+contare è la permanenza]{.pt-matita}, e una squadra di capacità fissa la
+allunga man mano che il codice cresce, che è come falliva la pulizia del
+venerdì. I principi scritti abbassano $\varepsilon$, e $\kappa$ se rendono la
+scorciatoia meno facile da copiare; la pulizia in sottofondo accorcia
+$\bar{W}$. Resta però un modello, con parametri non misurati, che assume codice
+riscritto a caso, copia che pesca da tutto il repository, dimensioni e
+parametri costanti e correzioni perfette.
 
 `````
 

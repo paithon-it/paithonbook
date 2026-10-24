@@ -60,8 +60,8 @@ manciata qualsiasi di punti, ed è questa regolarità a dare il nome al metodo.
 
 Ogni misura che facciamo è un chiodo piantato nel tavolo, e da quel momento i
 fili devono passare lì vicino, quasi toccarlo; chi passa lontano esce di scena.
-Vicino ai chiodi il fascio è costretto, i fili quasi si sovrappongono; lontano
-dai chiodi si riapre a ventaglio, perché nulla lo vincola.
+[Vicino ai chiodi il fascio è costretto, i fili quasi si sovrappongono; lontano
+dai chiodi si riapre a ventaglio, perché nulla lo vincola]{.pt-matita}.
 
 I chiodi però non cambiano la natura del fascio. Anche dopo, in ogni punto del
 tavolo, le altezze si affollano attorno a un centro con la loro campana; solo
@@ -76,7 +76,8 @@ indovinare.
 
 `````{tab} Superiore
 
-Un processo gaussiano è una distribuzione di probabilità sulle funzioni:
+[Un processo gaussiano è una distribuzione di probabilità sulle
+funzioni]{.pt-matita}:
 
 $$
 f \sim \mathcal{GP}\big(\mu(\mathbf{x}),\, k(\mathbf{x}, \mathbf{x}')\big),
@@ -164,7 +165,7 @@ anche questo.
 
 Così una parte del voto premia chi spiega le nostre letture, l'altra toglie
 punti a chi avrebbe spiegato altrettanto bene troppe tabelle diverse dalla
-nostra. Vince una posizione di mezzo.
+nostra. [Vince una posizione di mezzo]{.pt-matita}.
 
 Le posizioni buone però sono più di una, e chi gira la manopola sempre nello
 stesso verso si ferma sulla prima. Per questo la ricerca si rifà cinque volte,
@@ -252,9 +253,9 @@ logaritmo di questa densità. Se $\sigma_n$ non è fissato, entra anch'esso fra
 gli iperparametri.
 
 Il primo termine premia l'aderenza ai dati, mentre il secondo (il logaritmo del
-determinante) penalizza i kernel «capaci», quelli che ammettono troppe
-funzioni diverse. È il rasoio di Occam scritto dentro il criterio: la
-complessità è già penalizzata nella stima degli iperparametri, e non serve un
+determinante) penalizza i kernel «capaci», quelli che ammettono troppe funzioni
+diverse. È il rasoio di Occam scritto dentro il criterio: [la complessità è già
+penalizzata nella stima degli iperparametri]{.pt-matita}, e non serve un
 validation set per sceglierli.
 
 Il criterio non sostituisce però il giudizio sul modello finito: massimizzare
@@ -299,9 +300,10 @@ misurare.
 
 Il secondo numero è la larghezza del fascio, e si ottiene per sottrazione. Si
 parte da quanto eravamo ignoranti prima di misurare, cioè dall'apertura del
-ventaglio libero, e si toglie quanto le misure hanno già spiegato. Accanto
-a un chiodo la sottrazione porta via quasi tutto e resta un filo; lontano non
-c'è niente da togliere, e si torna all'apertura di partenza.
+ventaglio libero, e [si toglie quanto le misure hanno già
+spiegato]{.pt-matita}. Accanto a un chiodo la sottrazione porta via quasi tutto
+e resta un filo; lontano non c'è niente da togliere, e si torna all'apertura di
+partenza.
 
 Se la stima è 24 gradi e la banda va da 21 a 27, il modello sta dicendo: «quasi
 certamente la temperatura vera è lì in mezzo». Quella banda risponde alla
@@ -370,11 +372,11 @@ osservazioni, e lontano dai dati la stima torna alla loro media.
 
 La covarianza $\boldsymbol{\Sigma}_*$ è la varianza del prior
 ($\mathbf{K}_{**}$) *meno* l'informazione che le osservazioni danno sulla
-funzione, e non dipende da $\mathbf{y}$. A iperparametri fissati, quindi, la
-banda dice dove si è misurato, non che cosa si è misurato, e una misura
-sorprendente non la allarga {cite}`rasmussen2006gaussian`. Vicino ai dati la
-sottrazione toglie quasi tutto e l'incertezza crolla; lontano non sottrae
-nulla e si torna all'incertezza del prior.
+funzione, e non dipende da $\mathbf{y}$. A iperparametri fissati, quindi, [la
+banda dice dove si è misurato, non che cosa si è misurato]{.pt-matita}, e una
+misura sorprendente non la allarga {cite}`rasmussen2006gaussian`. Vicino ai
+dati la sottrazione toglie quasi tutto e l'incertezza crolla; lontano non
+sottrae nulla e si torna all'incertezza del prior.
 
 La banda al 95% sulla funzione, punto per punto, è $\boldsymbol{\mu}_* \pm
 2\sqrt{\operatorname{diag}(\boldsymbol{\Sigma}_*)}$ (per ogni $\mathbf{x}_*$
@@ -474,8 +476,8 @@ $2\sigma_f = 2 \cdot 0{,}706 \approx 1{,}41$ (dal kernel stimato, che il
 programma stampa): lontano dai dati il modello torna all'incertezza di
 partenza, e lo dichiara.
 
-In generale, l'incertezza non distingue «dentro» da «fuori» l'intervallo
-esplorato: dipende soprattutto dalla distanza dai dati più vicini.
+In generale, [l'incertezza non distingue «dentro» da «fuori» l'intervallo
+esplorato: dipende soprattutto dalla distanza dai dati più vicini]{.pt-matita}.
 
 ## Costo computazionale, e dove conviene
 
@@ -539,10 +541,10 @@ sul problema reale.
 
 `````
 
-Il suo territorio, allora, è l'opposto del big data, cioè pochi dati costosi.
-Esperimenti di laboratorio dove ogni misura vale una giornata di lavoro,
-simulazioni ingegneristiche da ore di calcolo l'una, prove sul campo che non si
-possono ripetere.
+[Il suo territorio, allora, è l'opposto del big data, cioè pochi dati
+costosi]{.pt-matita}. Esperimenti di laboratorio dove ogni misura vale una
+giornata di lavoro, simulazioni ingegneristiche da ore di calcolo l'una, prove
+sul campo che non si possono ripetere.
 
 È anche il caso dell’ottimizzazione bayesiana degli iperparametri
 {cite}`snoek2012practical`, dove ogni "dato" è un intero addestramento e il

@@ -4,21 +4,22 @@ C'è un gioco che tutti conosciamo: il *telefono senza fili*. Una persona
 sussurra una frase all'orecchio del vicino, quello la ripete al suo, e così
 via. Cambiamo le regole. Invece di ascoltare *un* vicino, ognuno ascolta
 *tutti* i propri vicini in una volta sola, riassume ciò che ha sentito e si fa
-un'idea aggiornata; poi si ricomincia. Dopo un giro, ogni persona sa qualcosa
-dei suoi amici diretti. Dopo due giri, anche degli amici degli amici. Dopo
-$K$ giri, la voce partita da un capo della rete è arrivata a chi sta a $K$
+un'idea aggiornata; poi si ricomincia. Dopo un'iterazione, ogni persona sa qualcosa
+dei suoi amici diretti. Dopo due iterazioni, anche degli amici degli amici. Dopo
+$K$ iterazioni, la voce partita da un capo della rete è arrivata a chi sta a $K$
 strette di mano di distanza.
 
-Una rete neurale su grafo elabora l'informazione allo stesso modo: a ogni giro
-ogni nodo mette insieme le file di numeri dei vicini e aggiorna la propria. La
-{doc}`sezione «Il mondo come grafo» </GraphNeuralNetwork/dati-a-grafo>` ha
-messo il dato in forma di tabelle, e per seguire queste pagine basta ricordare
-che cosa dicono: chi è collegato a chi e che cosa c'è scritto su ogni nodo. I
-nomi propri sono quattro: la matrice di adiacenza $\mathbf{A}$ (chi è collegato
-a chi), la matrice delle feature dei nodi $\mathbf{X}$ (le file di numeri dei
-nodi), la matrice diagonale dei gradi $\mathbf{D}$ (quanti vicini ha ciascuno) e
-la versione con i cappi $\tilde{\mathbf{A}} = \mathbf{A} + \mathbf{I}$ (con ogni
-nodo dichiarato vicino di sé stesso).
+Una rete neurale su grafo elabora l'informazione allo stesso modo: a ogni
+iterazione ogni nodo mette insieme le file di numeri dei vicini e aggiorna la
+propria. La {doc}`sezione «Il mondo come grafo» </GraphNeuralNetwork/dati-a-grafo>`
+ha messo il dato in forma di tabelle, e per seguire queste pagine basta
+ricordare che cosa dicono: chi è collegato a chi e che cosa c'è scritto su ogni
+nodo. I nomi propri sono quattro: la matrice di
+adiacenza $\mathbf{A}$ (chi è collegato a chi), la matrice delle feature dei
+nodi $\mathbf{X}$ (le file di numeri dei nodi), la matrice diagonale dei gradi
+$\mathbf{D}$ (quanti vicini ha ciascuno) e la versione con i cappi
+$\tilde{\mathbf{A}} = \mathbf{A} + \mathbf{I}$ (con ogni nodo dichiarato vicino
+di sé stesso).
 
 L'introduzione al capitolo ha dato un nome al meccanismo: message passing,
 «scambio di messaggi». Qui lo apriamo: prima nella sua forma generale, poi nella
@@ -28,8 +29,8 @@ minuscolo, la ragione per cui è fatta così e infine da dove viene.
 
 ## Il passo di message passing: messaggio, aggregazione, aggiornamento
 
-L'idea poggia su un'operazione sola, ripetuta a ogni giro e uguale per ogni
-nodo: guarda i vicini, riassumili, aggiornati. La
+[L'idea poggia su un'operazione sola, ripetuta a ogni iterazione e uguale per ogni
+nodo: guarda i vicini, riassumili, aggiornati]{.pt-matita}. La
 {numref}`fig-message-passing` la mostra tutta in un colpo d'occhio.
 
 ```{figure} ../figures/message-passing.svg
@@ -81,8 +82,8 @@ non guarda l'ordine.
 Il quadro generale è la *Message Passing Neural Network* (MPNN) di Gilmer e
 colleghi {cite}`gilmer2017neural`, che unifica sotto un'unica notazione quasi
 tutte le GNN. Sia $\mathbf{h}_v^{(k)}$ il vettore di stato del nodo $v$ dopo
-$k$ giri, con $\mathbf{h}_v^{(0)} = \mathbf{x}_v$ (la sua feature iniziale). Un
-passo si scrive in due parti:
+$k$ iterazioni, con $\mathbf{h}_v^{(0)} = \mathbf{x}_v$ (la sua feature
+iniziale). Un passo si scrive in due parti:
 
 $$
 \mathbf{m}_v^{(k)} = \bigoplus_{u \in \mathcal{N}(v)}
@@ -139,9 +140,9 @@ e pubblicata nel 2017 {cite}`kipf2017semi`, fissa le tre scelte nel modo più
 semplice e si è imposta come termine di paragone contro cui si misurano i
 modelli successivi.
 
-Le parole **giro** e **strato** si alternano: ogni giro di passaparola è uno
-strato della rete, detto dal lato di chi ascolta o dal lato di chi la rete la
-costruisce.
+Le parole «iterazione» e **strato** si alternano: ogni iterazione di message
+passing è uno strato della rete, detto dal lato di chi ascolta o dal lato di
+chi la rete la costruisce.
 
 La regola di propagazione della GCN, da uno strato al successivo, sta in una
 riga:
@@ -156,8 +157,8 @@ Ogni simbolo ha un ruolo preciso.
 
 `````{tab} Elementare
 
-È la scena dei bigliettini scritta in forma abbreviata, tutta in una riga e per
-tutti i nodi insieme.
+[È la scena dei bigliettini scritta in forma abbreviata, tutta in una riga e per
+tutti i nodi insieme]{.pt-matita}.
 
 $\mathbf{H}^{(l)}$ è la pila delle schede al giro $l$: una riga per nodo e, al
 giro zero, le informazioni che ogni nodo ha su di sé.
@@ -224,10 +225,10 @@ $$
 \right),
 $$
 
-dove $\tilde{d}_v$ è il grado di $v$ in $\tilde{\mathbf{A}}$. È un caso
-particolare della MPNN, a tre condizioni. Primo, l'insieme su cui corre
-$\bigoplus$ include il nodo stesso. Secondo, la funzione messaggio è lineare,
-$M(\mathbf{h}_v, \mathbf{h}_u, e_{vu}) =
+dove $\tilde{d}_v$ è il grado di $v$ in $\tilde{\mathbf{A}}$. [È un caso
+particolare della MPNN, a tre condizioni]{.pt-matita}. Primo, l'insieme su cui
+corre $\bigoplus$ include il nodo stesso. Secondo, la funzione messaggio è
+lineare, $M(\mathbf{h}_v, \mathbf{h}_u, e_{vu}) =
 e_{vu}\,\mathbf{W}^{(l)\top}\mathbf{h}_u$, con il peso $e_{vu} =
 1/\sqrt{\tilde{d}_v\,\tilde{d}_u}$ passato come feature dell'arco, perché i
 gradi non sono argomenti di $M$ in nessun altro modo. Terzo, l'aggregazione è
@@ -365,23 +366,23 @@ $\tfrac{1}{\sqrt6}$) e arrotondate solo alla fine: chi le rifà con i valori
 tondi della tabella, $0{,}333$ e $0{,}408$, trova le ultime cifre diverse (per
 esempio $0{,}333 \cdot 3 = 0{,}999$ e non $1{,}000$), e non ha sbagliato niente.
 
-Il risultato è
-$\mathbf{H}' \approx (1{,}316,\, 2{,}075,\, 3{,}300,\, 3{,}225)^\top$, e
-racconta bene cosa fa la GCN: i quattro valori si stringono. Infatti partivano da
-$1$ e arrivavano a $4$, tre punti fra il più basso e il più alto; adesso vanno
-da $1{,}32$ a $3{,}30$, due punti scarsi. Il nodo 1, che valeva $1$, sale a
-$1{,}316$ perché è tirato in alto dal vicino 2; il nodo 4, che valeva $4$,
-scende a $3{,}225$ perché è tirato in basso dal 3.
+Il risultato è $\mathbf{H}' \approx (1{,}316,\, 2{,}075,\, 3{,}300,\,
+3{,}225)^\top$, e racconta bene cosa fa la GCN: [i quattro valori si
+stringono]{.pt-matita}. Infatti partivano da $1$ e arrivavano a $4$, tre punti
+fra il più basso e il più alto; adesso vanno da $1{,}32$ a $3{,}30$, due punti
+scarsi. Il nodo 1, che valeva $1$, sale a $1{,}316$ perché è tirato in alto dal
+vicino 2; il nodo 4, che valeva $4$, scende a $3{,}225$ perché è tirato in
+basso dal 3.
 
-I due nodi di mezzo salgono invece tutti e due, e questo smonta una
-scorciatoia naturale: questa non è la media dei vicini. Se lo
-fosse, il nodo 3, che vale $3$ e sta fra un $2$ e un $4$, resterebbe a $3$;
-invece sale a $3{,}300$. La ragione è che i pesi di una riga non sommano a uno
-(in quella del nodo 3 fanno $1{,}07$), quindi ogni giro non è una media ma una
-somma pesata, che può alzare il livello generale. La GCN garantisce
-che, ripetendo, le differenze di partenza si consumino, non che ciascuno
-vada verso i suoi vicini a ogni singolo passo. Il livellamento si vedrà
-succedere, giro dopo giro, su questi stessi quattro numeri.
+I due nodi di mezzo salgono invece tutti e due, e questo smonta una scorciatoia
+naturale: questa non è la media dei vicini. Se lo fosse, il nodo 3, che vale
+$3$ e sta fra un $2$ e un $4$, resterebbe a $3$; invece sale a $3{,}300$. La
+ragione è che i pesi di una riga non sommano a uno (in quella del nodo 3 fanno
+$1{,}07$), quindi ogni iterazione non è una media ma una somma pesata, che può
+alzare il livello generale. La GCN garantisce che, ripetendo, le differenze di
+partenza si consumino, non che ciascuno vada verso i suoi vicini a ogni singolo
+passo. Il livellamento si vedrà succedere, iterazione dopo iterazione, su
+questi stessi quattro numeri.
 
 ### Perché normalizzare così
 
@@ -409,13 +410,13 @@ messaggio di un amico molto popolare arriva più leggero, perché il suo tempo �
 diviso fra tanti, come il consiglio di chi conosce mezzo mondo vale un filo
 meno di quello dell'amico che hai solo tu.
 
-Sulla scala i due modi si equivalgono, quindi la scelta si gioca altrove: sui
-due versi dello stesso collegamento. Prendi un popolare che, contando sé
-stesso, sente dieci voci, e un solitario che ne sente due, la propria e quella
-del popolare. Con la media il popolare dà alla voce del solitario un decimo,
-il solitario dà a quella del popolare metà: lo stesso collegamento pesa
-$0{,}1$ in un verso e $0{,}5$ nell'altro. Con la spartizione pesa
-$1/\sqrt{10 \cdot 2} \approx 0{,}22$ in tutti e due, e la rubrica resta
+[Sulla scala i due modi si equivalgono, quindi la scelta si gioca
+altrove]{.pt-matita}: sui due versi dello stesso collegamento. Prendi un
+popolare che, contando sé stesso, sente dieci voci, e un solitario che ne sente
+due, la propria e quella del popolare. Con la media il popolare dà alla voce
+del solitario un decimo, il solitario dà a quella del popolare metà: lo stesso
+collegamento pesa $0{,}1$ in un verso e $0{,}5$ nell'altro. Con la spartizione
+pesa $1/\sqrt{10 \cdot 2} \approx 0{,}22$ in tutti e due, e la rubrica resta
 simmetrica, come il grafo. La GCN prende il secondo modo, e quella simmetria
 serve alla derivazione da cui la formula è uscita, che arriva subito dopo.
 
@@ -458,8 +459,8 @@ dominante svanisce comunque.
 La forma simmetrica si distingue per la simmetria stessa:
 $\hat{\mathbf{A}}$ è autoaggiunta, quindi ha autovalori reali e una base di
 autovettori ortonormale, mentre $\tilde{\mathbf{D}}^{-1}\tilde{\mathbf{A}}$
-non è simmetrica e i suoi autovettori non sono ortogonali. È questa proprietà,
-e non il controllo delle scale, a rendere lecito tutto ciò che segue:
+non è simmetrica e i suoi autovettori non sono ortogonali. [È questa proprietà,
+e non il controllo delle scale, a rendere lecito tutto ciò che segue]{.pt-matita}:
 decomporre un segnale sui nodi nelle sue «frequenze» con $\mathbf{U}^\top$,
 moltiplicarle una per una e ricomporre con $\mathbf{U}$ presuppone una base
 ortonormale, e senza di essa la lettura spettrale non sta in piedi.
@@ -481,9 +482,9 @@ numero piccolo di strati e si addestra come una qualunque rete profonda.
 
 ### Da dove viene la formula: le frequenze di un grafo
 
-La regola della GCN è ciò che resta di una convoluzione definita sulle
-frequenze del grafo, dopo due approssimazioni successive. La costruzione
-spiega anche il difetto più noto delle GNN, l'oversmoothing.
+[La regola della GCN è ciò che resta di una convoluzione definita sulle
+frequenze del grafo, dopo due approssimazioni successive]{.pt-matita}. La
+costruzione spiega anche il difetto più noto delle GNN, l'oversmoothing.
 
 `````{tab} Elementare
 
@@ -761,8 +762,9 @@ molte volte. Non c'è
 nessun errore di programmazione da andare a cercare. C'è da decidere quanti
 strati mettere, oppure da cambiare filtro.
 
-Il calcolo sta in poche righe, e stampa insieme i quattro valori giro dopo giro
-con la loro energia, i quattro autovalori e il divario che si consuma.
+Il calcolo sta in poche righe, e stampa insieme i quattro valori iterazione
+dopo iterazione con la loro energia, i quattro autovalori e il divario che si
+consuma.
 
 ```python
 import numpy as np
@@ -774,32 +776,32 @@ d = A_tilde.sum(1)                          # gradi col cappio: [2 3 3 2]
 A_hat = A_tilde / np.sqrt(np.outer(d, d))   # normalizzazione simmetrica
 
 X = np.array([1., 2., 3., 4.])
-for giri in (0, 1, 5, 20):
-    H = np.linalg.matrix_power(A_hat, giri) @ X
+for n_iter in (0, 1, 5, 20):
+    H = np.linalg.matrix_power(A_hat, n_iter) @ X
     E = H @ (H - A_hat @ H) / (H @ H)       # energia di Dirichlet normalizzata
-    print(f"{giri:>2} giri: " + "  ".join(f"{v:.2f}" for v in H)
+    print(f"iterazioni {n_iter:>2}: " + "  ".join(f"{v:.2f}" for v in H)
           + f"   energia {E:.1e}")
 
 print("autovalori:", np.round(np.sort(np.linalg.eigvalsh(A_hat))[::-1], 3))
 r = (np.linalg.matrix_power(A_hat, 20) @ X) / np.sqrt(d)
 print("valore diviso la radice del grado:", np.round(r, 4))
-# a 100 giri la seconda cifra del divario dipende già dall'ordine dei conti
-for giri, cifre in ((20, 1), (50, 1), (100, 0)):
-    r = (np.linalg.matrix_power(A_hat, giri) @ X) / np.sqrt(d)
-    print(f"divario fra il più alto e il più basso dopo {giri:>3} giri: "
-          f"{r.max() - r.min():.{cifre}e}")
+# a 100 iterazioni la seconda cifra del divario dipende dall'ordine dei conti
+for n_iter, cifre in ((20, 1), (50, 1), (100, 0)):
+    r = (np.linalg.matrix_power(A_hat, n_iter) @ X) / np.sqrt(d)
+    print(f"divario fra il più alto e il più basso dopo {n_iter:>3} "
+          f"iterazioni: {r.max() - r.min():.{cifre}e}")
 ```
 
 ```text
- 0 giri: 1.00  2.00  3.00  4.00   energia 5.8e-02
- 1 giri: 1.32  2.07  3.30  3.22   energia 2.6e-02
- 5 giri: 1.95  2.57  2.88  2.50   energia 2.2e-03
-20 giri: 2.22  2.72  2.73  2.23   energia 1.7e-07
+iterazioni  0: 1.00  2.00  3.00  4.00   energia 5.8e-02
+iterazioni  1: 1.32  2.07  3.30  3.22   energia 2.6e-02
+iterazioni  5: 1.95  2.57  2.88  2.50   energia 2.2e-03
+iterazioni 20: 2.22  2.72  2.73  2.23   energia 1.7e-07
 autovalori: [ 1.     0.729  0.167 -0.229]
 valore diviso la radice del grado: [1.5714 1.5724 1.5739 1.5748]
-divario fra il più alto e il più basso dopo  20 giri: 3.4e-03
-divario fra il più alto e il più basso dopo  50 giri: 2.6e-07
-divario fra il più alto e il più basso dopo 100 giri: 3e-14
+divario fra il più alto e il più basso dopo  20 iterazioni: 3.4e-03
+divario fra il più alto e il più basso dopo  50 iterazioni: 2.6e-07
+divario fra il più alto e il più basso dopo 100 iterazioni: 3e-14
 ```
 
 ## Impilare gli strati: il campo recettivo a $K$ salti
@@ -821,8 +823,8 @@ nodo 1 in due passi. Al terzo giro arriverebbe anche quella del nodo 4.
 Succede lo stesso in una rete convoluzionale, dove impilando i
 livelli ogni neurone «vede» una porzione via via più grande dell'immagine: il
 suo *campo recettivo* cresce con la profondità. Sul grafo vale la stessa legge,
-contata in salti: con $K$ strati, ogni nodo raccoglie informazione da tutto
-ciò che sta entro $K$ passi da lui. La striscia in basso nella
+contata in salti: [con $K$ strati, ogni nodo raccoglie informazione da tutto
+ciò che sta entro $K$ passi da lui]{.pt-matita}. La striscia in basso nella
 {numref}`fig-message-passing` mostra questo salto da uno a due.
 
 Quanti giri servono, allora? Tanti quanti i passi che separano un nodo
@@ -837,8 +839,8 @@ addestrare.
 `````{tab} Superiore
 
 Impilare $K$ strati di GCN corrisponde ad applicare $K$ volte l'operatore di
-propagazione: lo stato finale $\mathbf{h}_v^{(K)}$ dipende da tutti i nodi $u$
-per cui esiste un cammino di lunghezza $\le K$ fino a $v$ (il **campo
+propagazione: [lo stato finale $\mathbf{h}_v^{(K)}$ dipende da tutti i nodi $u$
+per cui esiste un cammino di lunghezza $\le K$ fino a $v$]{.pt-matita} (il **campo
 recettivo** a $K$ salti, l'analogo del campo recettivo che cresce con la
 profondità nelle CNN). Da qui due indicazioni pratiche. Primo, la profondità va
 scelta in base a quanti salti di distanza sta l'informazione che serve: sui
@@ -858,12 +860,12 @@ vedono l'addestramento farsi difficile oltre i sette senza connessioni residue
 
 ```{figure} ../figures/message-passing.gif
 :name: fig-message-passing-animato
-:alt: Animazione di un grafo con un nodo centrale v, quattro vicini diretti e quattro nodi a due salti. Al primo giro i messaggi viaggiano dai vicini diretti verso v; al secondo giro partono prima dai nodi esterni verso i vicini, poi di nuovo verso v.
+:alt: Animazione di un grafo con un nodo centrale v, quattro vicini diretti e quattro nodi a due salti. Alla prima iterazione i messaggi viaggiano dai vicini diretti verso v; alla seconda partono prima dai nodi esterni verso i vicini, poi di nuovo verso v.
 :width: 90%
 
-Il campo recettivo che si allarga: al giro $k=1$ arrivano a $v$ solo i vicini
-diretti; al giro $k=2$ i messaggi partono dai nodi a due salti, passano *per* i
-vicini e arrivano anch'essi.
+Il campo recettivo che si allarga: all'iterazione $k=1$ arrivano a $v$ solo i
+vicini diretti; all'iterazione $k=2$ i messaggi partono dai nodi a due salti,
+passano *per* i vicini e arrivano anch'essi.
 ```
 
 La {numref}`fig-message-passing-animato` mostra perché la profondità è
@@ -902,8 +904,8 @@ gioca a scacchi anche lui.
 
 Il trucco è che, pur pagando solo gli errori sui 140 articoli di cui sappiamo
 la risposta, per rispondere su quei 140 la rete ha dovuto far girare
-l'informazione su tutto il grafo. Aggiustandosi per i 140, quindi, migliora
-la fila di numeri di tutti: anche quella degli altri articoli, più di
+l'informazione su tutto il grafo. [Aggiustandosi per i 140, quindi, migliora
+la fila di numeri di tutti]{.pt-matita}: anche quella degli altri articoli, più di
 duemilacinquecento, su cui non le abbiamo mai detto se aveva ragione. Un
 apprendimento che parte da poche
 risposte e tanta struttura si chiama **semi-supervisionato**.
@@ -932,9 +934,9 @@ $$
 
 dove $y_{vc}$ è l'etichetta one-hot del nodo $v$ per la classe $c$ e $C$ il
 numero di classi. Si noti che $\mathbf{z}_v$ dipende, tramite
-$\hat{\mathbf{A}}$, dalle feature dell'intero vicinato a due salti: il
+$\hat{\mathbf{A}}$, dalle feature dell'intero vicinato a due salti: [il
 gradiente di $\mathcal{L}$ fluisce quindi indietro anche attraverso nodi non
-etichettati, che partecipano all'addestramento pur senza comparire
+etichettati]{.pt-matita}, che partecipano all'addestramento pur senza comparire
 nella somma. Nel loro articolo Kipf e Welling riportano su Cora l’$81{,}5\%$ di
 accuratezza contro il $75{,}7\%$ del miglior metodo che confrontano (e
 $80{,}1 \pm 0{,}5\%$ su divisioni casuali dei dati, invece che su quella
@@ -1031,13 +1033,13 @@ seme 2: con il grafo meglio che senza -> True
 vantaggio di almeno venti punti su tutti e tre: True
 ```
 
-Su tutti e tre i semi la rete che usa il grafo indovina più nodi di quella che
-non lo usa, e di oltre venti punti percentuali; le cifre esatte cambiano con il
-seme e con il processore, l'ordine no. Dieci etichette su duecento nodi
-bastano perché lungo gli archi, fitti dentro le comunità, ogni nodo riceve le
-feature di molti suoi simili, e la media di molte feature rumorose è molto meno
-rumorosa di una sola. (Kipf e Welling, su Cora, aggiungono il dropout e
-regolarizzano soltanto il primo strato: qui non serve.)
+[Su tutti e tre i semi la rete che usa il grafo indovina più nodi di quella che
+non lo usa, e di oltre venti punti percentuali]{.pt-matita}; le cifre esatte
+cambiano con il seme e con il processore, l'ordine no. Dieci etichette su
+duecento nodi bastano perché lungo gli archi, fitti dentro le comunità, ogni
+nodo riceve le feature di molti suoi simili, e la media di molte feature
+rumorose è molto meno rumorosa di una sola. (Kipf e Welling, su Cora,
+aggiungono il dropout e regolarizzano soltanto il primo strato: qui non serve.)
 
 In pratica non serve scrivere lo strato a mano: la libreria **PyTorch
 Geometric** offre `GCNConv`, che aggiunge i cappi e applica la normalizzazione

@@ -17,9 +17,9 @@ Prima di tradurre, un modello deve saper *parlare* la lingua d'arrivo. Lo
 strumento è il modello di linguaggio che conosciamo dalla {doc}`sezione sugli
 *n-gram* <modelli-ngram>`: un sistema che, data una sequenza di parole, assegna
 una probabilità alla parola successiva (la tastiera che dopo «a domani e
-buona» suggerisce «serata» e quasi mai «carburatore»). La novità è *chi* fa la
+buona» suggerisce «serata» e quasi mai «carburatore»). [La novità è *chi* fa la
 scommessa: non più una tabella di conteggi, ma una rete ricorrente con la sua
-memoria.
+memoria]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -101,8 +101,8 @@ incollano i due riassunti (quello di ciò che precede e quello di ciò che
 segue). Attenzione però: questo trucco vale solo per capire un testo che
 esiste già tutto intero. Per generare una frase non funziona: mentre
 scrivi, le parole future non esistono ancora; nessun giallista può rileggere
-il capitolo che deve ancora scrivere. Per questo chi *legge* la frase può
-essere bidirezionale, ma chi la *scrive* procede sempre in avanti.
+il capitolo che deve ancora scrivere. Per questo [chi *legge* la frase può
+essere bidirezionale, ma chi la *scrive* procede sempre in avanti]{.pt-matita}.
 
 `````
 
@@ -123,11 +123,12 @@ che condensa l'intera frase *vista da quella posizione*: prefisso e suffisso. È
 lo standard per i compiti di comprensione (classificazione, NER, encoding), ma
 è inapplicabile alla generazione autoregressiva: al passo $t$ la catena
 all'indietro richiederebbe $x_{t+1}, \dots, x_n$, che non sono ancora stati
-generati. Il decoder resta quindi unidirezionale per costruzione: un vincolo di
-causalità che ritroveremo, sotto forma di *maschera*, anche nei Transformer.
-Ortogonale alla direzione di lettura è l’**impilamento** (*stacked RNN*): più
-strati ricorrenti sovrapposti, dove la sequenza di stati dello strato $\ell-1$
-fa da input allo strato $\ell$, per rappresentazioni via via più astratte.
+generati. [Il decoder resta quindi unidirezionale per costruzione]{.pt-matita}:
+un vincolo di causalità che ritroveremo, sotto forma di *maschera*, anche nei
+Transformer. Ortogonale alla direzione di lettura è l’**impilamento** (*stacked
+RNN*): più strati ricorrenti sovrapposti, dove la sequenza di stati dello
+strato $\ell-1$ fa da input allo strato $\ell$, per rappresentazioni via via
+più astratte.
 
 `````
 
@@ -208,10 +209,11 @@ decoder cominci a scrivere: fra i due passa solo quel vettore, e nient'altro.
 ```
 
 Il «nient'altro» di {numref}`fig-encoder-decoder` è il fatto da cui discende
-tutto il resto della storia. Quel vettore di contesto è una fila di numeri
-di lunghezza decisa in anticipo (mille, ad esempio), e resta di mille numeri sia
-che la frase da tradurre abbia cinque parole sia che ne abbia cinquanta: non c'è
-nessuno spazio in più per le frasi lunghe, per quanto ce ne sarebbe bisogno.
+tutto il resto della storia. Quel vettore di contesto è una fila di numeri di
+lunghezza decisa in anticipo (mille, ad esempio), e [resta di mille numeri sia
+che la frase da tradurre abbia cinque parole sia che ne abbia
+cinquanta]{.pt-matita}: non c'è nessuno spazio in più per le frasi lunghe, per
+quanto ce ne sarebbe bisogno.
 
 Mentre legge, l'encoder produce un riassunto dopo ogni parola: uno
 dopo «il», uno dopo «il gatto», uno dopo «il gatto nero», e così via fino in
@@ -473,9 +475,9 @@ Quelli della rete, le matrici apprese durante l'addestramento, restano fissi
 una volta addestrato il modello; gli $\alpha_{ij}$ si calcolano invece
 dall'ingresso, e cambiano per ogni parola prodotta.
 
-Cade così il collo di bottiglia del vettore unico: nessuna sequenza di
-numeri a lunghezza fissa deve più contenere l'intera frase. Resta invece
-intatto il vincolo sequenziale dei {doc}`modelli di sequenza
+[Cade così il collo di bottiglia del vettore unico]{.pt-matita}: nessuna
+sequenza di numeri a lunghezza fissa deve più contenere l'intera frase. Resta
+invece intatto il vincolo sequenziale dei {doc}`modelli di sequenza
 <modelli-sequenza>`, perché l'elaborazione procede comunque un passo dopo
 l'altro. Due strozzature diverse: l'attenzione ne elimina una, mentre i
 Transformer supereranno l'altra.
@@ -636,12 +638,12 @@ la seconda parola la scrivi partendo dal tuo «The». Se in quel punto il
 professore ha messo «A», stai continuando da un inizio su cui non ti sei
 mai esercitato.
 
-Da lì in poi peggiora, e questa è la parte che sorprende. Ogni parola successiva
-la scegli guardando una frase già sgangherata, che nell'esercizio non hai mai
-visto, quindi una parola storta rende più probabile che sia storta anche la
-successiva. Questo scarto fra come si impara e come si lavora è l'exposure bias:
-alla lettera «distorsione da esposizione», perché durante l'esercizio si è stati
-esposti solo ai testi giusti.
+Da lì in poi peggiora, e questa è la parte che sorprende. Ogni parola
+successiva la scegli guardando una frase già sgangherata, che nell'esercizio
+non hai mai visto, quindi [una parola storta rende più probabile che sia storta
+anche la successiva]{.pt-matita}. Questo scarto fra come si impara e come si
+lavora è l'exposure bias: alla lettera «distorsione da esposizione», perché
+durante l'esercizio si è stati esposti solo ai testi giusti.
 
 I rimedi che si usano sono due, e nessuno dei due lo risolve del tutto. Il primo
 è ammorbidire il metodo: ogni tanto il professore lascia stare la tua parola
@@ -723,16 +725,15 @@ accumulare, su un orizzonte di $m$ passi, un costo $O(\epsilon\,m^2)$ invece
 dell’$O(\epsilon\,m)$ di un problema supervisionato ordinario, ed è un limite
 stretto {cite}`ross2010efficient`.
 
-Il meccanismo: la distribuzione condizionata
-$P_\theta(y_i \mid y_{<i}, x)$ è stimata accuratamente dove i prefissi
-abbondano, cioè sul supporto dei dati; fuori di lì non c'è nessuna garanzia,
-perché i dati non permettono di distinguere fra ipotesi che coincidono sul
-supporto e divergono altrove. Un token deviante porta il modello in un contesto
-raro o inedito, dove sbaglia di più, il che rende più probabile il token
-deviante successivo. La popolazione delle sequenze si sdoppia: quelle ancora
-sul supporto sbagliano al tasso misurato in addestramento, quelle uscite
-sbagliano molto di più, e la media fra le due peggiora finché le proporzioni si
-assestano.
+Il meccanismo: la distribuzione condizionata $P_\theta(y_i \mid y_{<i}, x)$ è
+stimata accuratamente dove i prefissi abbondano, cioè sul supporto dei dati;
+fuori di lì non c'è nessuna garanzia, perché i dati non permettono di
+distinguere fra ipotesi che coincidono sul supporto e divergono altrove. [Un
+token deviante porta il modello in un contesto raro o inedito, dove sbaglia di
+più]{.pt-matita}, il che rende più probabile il token deviante successivo. La
+popolazione delle sequenze si sdoppia: quelle ancora sul supporto sbagliano al
+tasso misurato in addestramento, quelle uscite sbagliano molto di più, e la
+media fra le due peggiora finché le proporzioni si assestano.
 
 I rimedi seguono due strade, e nessuna delle due abbandona il teacher forcing.
 Lo *scheduled sampling* di Samy Bengio e colleghi {cite}`bengio2015scheduled`
@@ -899,7 +900,7 @@ i numeri incontrati lungo il cammino, perché sono cose che devono capitare
 tutte insieme, come i voti che si moltiplicavano nel filtro antispam. Al bivio
 dopo «A», «black» promette 0,30, e la strada «A black» vale
 0,50 × 0,30 = 0,15. Dopo «The», «black» promette 0,60, e «The black» vale
-0,40 × 0,60 = 0,24. La strada partita peggio è arrivata meglio.
+0,40 × 0,60 = 0,24. [La strada partita peggio è arrivata meglio]{.pt-matita}.
 
 Chi non vuole cadere nella trappola manda avanti più esploratori invece di uno,
 e la mossa si chiama **beam search**, «ricerca a fascio». Quanti mandarne si
@@ -965,8 +966,9 @@ $$
 e trattiene le migliori $k$ (con $k=1$ si torna alla greedy). Il costo
 computazionale per passo è pari a $k$ volte quello della ricerca greedy,
 intermedio tra la scelta greedy e la ricerca esaustiva. Non è una ricerca
-esatta: l'ottimo globale può sfuggire al fascio, e allargare $k$ riduce gli
-errori di ricerca senza migliorare la traduzione oltre un certo punto.
+esatta: [l'ottimo globale può sfuggire al fascio]{.pt-matita}, e allargare $k$
+riduce gli errori di ricerca senza migliorare la traduzione oltre un certo
+punto.
 
 Koehn e Knowles misurano che «in quasi tutti i casi si trovano traduzioni
 peggiori oltre un'ampiezza ottima», che sulle otto coppie di lingue che provano
@@ -1064,9 +1066,9 @@ medio. Si noti che la misura vale per le frasi su cui è fatta: 500 per coppia
 di lingue, isolate, prese da Wikipedia e da siti di notizie, e che gli autori
 stessi definiscono semplici.
 
-Da quel momento le reti ricorrenti che abbiamo studiato traducono ogni giorno
-per un servizio di massa, e non sono le sole: altri sistemi neurali entrano in
-produzione negli stessi mesi {cite}`koehn2017six`.
+[Da quel momento le reti ricorrenti che abbiamo studiato traducono ogni giorno
+per un servizio di massa]{.pt-matita}, e non sono le sole: altri sistemi
+neurali entrano in produzione negli stessi mesi {cite}`koehn2017six`.
 
 Lo sviluppo successivo è ripreso nella {doc}`sezione sui modelli multilingue
 </Transformers/multilingua>`. Pochi mesi dopo, invece di un

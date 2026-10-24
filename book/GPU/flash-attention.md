@@ -10,7 +10,7 @@ moltiplicale per dieci e diventa cento volte più grande.
 A un certo punto la tabella non ci sta più nella memoria della GPU, e anche
 quando ci sta, spostarla avanti e indietro prende più tempo dei calcoli che
 servono a riempirla. FlashAttention, l'idea che ha spostato quel muro, si dice
-in una riga: quella tabella non viene mai scritta.
+in una riga: [quella tabella non viene mai scritta]{.pt-matita}.
 
 Serve prima il *che cosa* dell'attenzione, il meccanismo su cui i modelli
 linguistici sono costruiti. La {doc}`sezione sulla matematica dei modelli
@@ -81,8 +81,8 @@ come risultato ma che, nella forma standard, vanno scritti.
 ## Il problema è la memoria, non i calcoli
 
 Verrebbe da pensare che l'attenzione sia lenta perché fa *molti calcoli*. Sono
-molti, ma nella forma standard non sono loro a fissare il tempo: lo fissa il
-movimento dei dati, come accade spesso su una GPU (è il roofline della
+molti, ma nella forma standard [non sono loro a fissare il tempo: lo fissa il
+movimento dei dati]{.pt-matita}, come accade spesso su una GPU (è il roofline della
 {doc}`sezione sulla memoria <gerarchia-memoria>`).
 
 `````{tab} Elementare
@@ -236,9 +236,9 @@ tantissimo.
 Il costo arriva più tardi. Quando la rete impara, dopo aver letto il testo in
 avanti rifà la strada all'indietro per capire quali numeri correggere, e in
 quel secondo passaggio le servirebbero i punteggi che sono stati buttati; non
-avendoli, se li rifà. Qualche conto in più, quindi, in cambio di molti viaggi
-in meno. Il baratto conviene, perché una GPU esegue i calcoli quasi senza
-fatica, mentre i viaggi la rallentano.
+avendoli, se li rifà. [Qualche conto in più, quindi, in cambio di molti viaggi
+in meno]{.pt-matita}. Il baratto conviene, perché una GPU esegue i calcoli
+quasi senza fatica, mentre i viaggi la rallentano.
 
 Resta un'insidia: come fai a calcolare delle *percentuali* se non hai ancora
 visto tutti i punteggi? Per fare una percentuale ti serve il totale, e il
@@ -289,12 +289,12 @@ traffico verso la HBM scende di circa nove volte (4,4 contro 40,3 GB) e il
 tempo di quasi sei (7,3 contro 41,7 ms), e l'articolo lo dichiara: «even with
 the increased FLOPs due to recomputation».
 
-Il baratto è dunque calcolo in cambio di traffico, lo stesso del *gradient
-checkpointing* con cui si ricalcolano le attivazioni invece di conservarle.
-Conviene perché i FLOP in più sono prodotti fra matrici, che i tensor core
-eseguono a un costo marginale quasi nullo, mentre i byte risparmiati sono
-accessi alla HBM, la risorsa scarsa. Lo stesso scambio ricorre nel pipeline
-parallelism della {doc}`sezione sul parallelismo distribuito
+[Il baratto è dunque calcolo in cambio di traffico]{.pt-matita}, lo stesso del
+*gradient checkpointing* con cui si ricalcolano le attivazioni invece di
+conservarle. Conviene perché i FLOP in più sono prodotti fra matrici, che i
+tensor core eseguono a un costo marginale quasi nullo, mentre i byte
+risparmiati sono accessi alla HBM, la risorsa scarsa. Lo stesso scambio ricorre
+nel pipeline parallelism della {doc}`sezione sul parallelismo distribuito
 <parallelismo-distribuito>` e in {doc}`Mamba </StateSpaceModel/mamba>`.
 
 Anche il traffico verso la HBM crolla. L'articolo lo conta in
@@ -391,10 +391,10 @@ diviso 2,7 due volte), il 3 pesa 1, e il totale dice 1,135.
 
 Secondo mucchietto: arriva il 4, il record sale di un punto, e il totale già
 messo da parte va moltiplicato per 0,368, il «diviso 2,7» di prima, e 1,135
-diventa 0,418. Poi si aggiungono i due nuovi, il 2 (due punti sotto il
-record, 0,135) e il 4 (che pesa 1): il totale fa 1,553, uguale al totale che
-darebbe guardare i quattro punteggi tutti insieme. Sono i primi quattro della
-riga che la {numref}`fig-flash-attention-blocchi` fa scorrere.
+diventa 0,418. Poi si aggiungono i due nuovi, il 2 (due punti sotto il record,
+0,135) e il 4 (che pesa 1): [il totale fa 1,553, uguale al totale che darebbe
+guardare i quattro punteggi tutti insieme]{.pt-matita}. Sono i primi quattro
+della riga che la {numref}`fig-flash-attention-blocchi` fa scorrere.
 
 Resta la miscela. I punteggi non servono per sé, servono a dosare: ogni sacco
 contiene una farina diversa, e alla fine si vuole una miscela in cui ciascuna
@@ -436,8 +436,8 @@ l_2 = \alpha\, l_1 + \big(e^{2-4}+e^{4-4}\big)
     = 0{,}368 \cdot 1{,}135 + e^{-2}+1 \approx 1{,}553.
 $$
 
-Il totale $l_2 \approx 1{,}553$ coincide con la somma calcolata in un colpo
-solo, per cui la online softmax dà gli stessi pesi.
+[Il totale $l_2 \approx 1{,}553$ coincide con la somma calcolata in un colpo
+solo]{.pt-matita}, per cui la online softmax dà gli stessi pesi.
 
 In generale, quando arriva un nuovo blocco con massimo locale $\tilde m$, le
 regole di aggiornamento sono
@@ -519,13 +519,13 @@ $2 \times 32 \times 8 \times 128 \times 2 = 131\,072$ byte. Su centomila token
 di contesto fanno 13 GB, per una conversazione sola, su una scheda che di GB ne
 ha 80.
 
-FlashAttention non agisce sulla KV cache; se ne occupano altre tecniche, che
-stanno nella sezione sui
-{doc}`grandi modelli linguistici </Transformers/llm>` e in quella su
-{doc}`prefill e decodifica </MLOps/metriche-di-servizio>`. Non riduce nemmeno
-il numero di calcoli da fare, che resta proporzionale al quadrato della
-lunghezza, e a quello pensa il
-{doc}`capitolo sull'attenzione lineare </AttenzioneLineare/overview>`.
+[FlashAttention non agisce sulla KV cache]{.pt-matita}; se ne occupano altre
+tecniche, che stanno nella sezione sui {doc}`grandi modelli
+linguistici </Transformers/llm>` e in quella su {doc}`prefill e
+decodifica </MLOps/metriche-di-servizio>`. Non riduce nemmeno il numero di
+calcoli da fare, che resta proporzionale al quadrato della lunghezza, e a
+quello pensa il {doc}`capitolo sull'attenzione
+lineare </AttenzioneLineare/overview>`.
 
 Il kernel che realizza l'idea è complicato: indici, gestione della shared
 memory, casi limite della **maschera causale**, la regola che impedisce a ogni
@@ -595,9 +595,9 @@ meglio di uno che salta di continuo da un lavoro all'altro, e così le macchine
 non restano mai senza materiale e nessuno dei due lavori si ferma ad aspettare
 l'altro.
 
-Tutte e tre servono a non lasciare il banco senza pezzi: la prima e la terza
-facendoli arrivare *mentre* si lavora, la seconda facendone stare di più in
-ogni viaggio.
+[Tutte e tre servono a non lasciare il banco senza pezzi]{.pt-matita}: la prima
+e la terza facendoli arrivare *mentre* si lavora, la seconda facendone stare di
+più in ogni viaggio.
 `````
 
 `````{tab} Superiore
@@ -634,10 +634,11 @@ seconda, in FP8, precede la quantizzazione a blocchi con una rotazione casuale
 (una trasformata di Hadamard con segni casuali, detta *incoherent processing*)
 che sparpaglia i valori anomali prima di arrotondare.
 
-Algoritmo, online softmax e accessi alla HBM restano quelli del 2022; quello
-che cambia è quanta parte del movimento dei dati il calcolo riesce a coprire.
-Chi vuole seguire queste tecniche fino al codice trova una trattazione avanzata
-nel corso *Modern GPU Programming for MLSys* di mlc.ai.
+Algoritmo, online softmax e accessi alla HBM restano quelli del 2022; [quello
+che cambia è quanta parte del movimento dei dati il calcolo riesce a
+coprire]{.pt-matita}. Chi vuole seguire queste tecniche fino al codice trova
+una trattazione avanzata nel corso *Modern GPU Programming for MLSys* di
+mlc.ai.
 `````
 
 Tutto questo avviene dentro una singola scheda: nel modo in cui esegue, nella

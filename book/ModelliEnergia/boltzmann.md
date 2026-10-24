@@ -36,14 +36,15 @@ tempo nelle valli profonde e pochissimo sulle cime, in proporzioni che
 Boltzmann aveva calcolato un secolo prima per un gas o per un pezzo di metallo
 caldo. Sono le stesse proporzioni, con la stessa formula.
 
-Quel tempo è una probabilità. Se la rete può arrivare da ogni configurazione a
-ogni altra (con la temperatura sopra zero è così), la frazione di tempo che
-passa in una regione dello spazio degli stati tende, a lungo andare, alla
-probabilità $P$ di quella regione. Ad esempio, osservandola a intervalli
-regolari un milione di volte e trovandola trentamila volte in fondo a una certa
-valle, la probabilità di quella valle è circa il 3%. È la porta da cui
-un'altezza diventa una probabilità, e il pedaggio da pagare per attraversarla è
-la funzione di partizione, a cui è intitolata {doc}`Oltre la partizione
+[Quel tempo è una probabilità]{.pt-matita}. Se la rete può arrivare da ogni
+configurazione a ogni altra (con la temperatura sopra zero è così), la frazione
+di tempo che passa in una regione dello spazio degli stati tende, a lungo
+andare, alla probabilità $P$ di quella regione. Ad esempio, osservandola a
+intervalli regolari un milione di volte e trovandola trentamila volte in fondo
+a una certa valle, la probabilità di quella valle è circa il 3%. È la porta da
+cui un'altezza diventa una probabilità, e il pedaggio da pagare per
+attraversarla è la funzione di partizione, a cui è intitolata {doc}`Oltre la
+partizione
 </ModelliEnergia/oltre-la-partizione>`.
 
 `````{tab} Elementare
@@ -227,10 +228,10 @@ scrive: una differenza fra due divergenze di Kullback e Leibler, la misura
 un'altra, $\mathrm{KL}(p_0 \,\|\, p_\theta) - \mathrm{KL}(p_k \,\|\,
 p_\theta)$.
 
-Qui $p_\theta$ è la distribuzione del modello, $p_0$ quella dei
-dati e $p_k$ quella del sogno abbreviato, cioè degli stati in cui arriva la
-rete lasciata evolvere per $k$ passi partendo dai dati. Dentro c'è il contrasto
-fra veglia e sogno. In breve, si rinuncia al sogno completo. Invece di lasciar
+Qui $p_\theta$ è la distribuzione del modello, $p_0$ quella dei dati e $p_k$
+quella del sogno abbreviato, cioè degli stati in cui arriva la rete lasciata
+evolvere per $k$ passi partendo dai dati. Dentro c'è il contrasto fra veglia e
+sogno. In breve, [si rinuncia al sogno completo]{.pt-matita}. Invece di lasciar
 sognare la macchina finché il sogno non si assesta, la si fa partire da un dato
 vero e le si concede un istante solo di fantasia.
 

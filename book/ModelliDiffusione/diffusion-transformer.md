@@ -59,9 +59,10 @@ C'è però un'accortezza: mettendo le tessere in fila si perderebbe
 l'informazione su dove stavano nella griglia, quindi a ciascuna si appiccica
 un'etichetta che dice da che riga e da che colonna viene.
 
-Quanto grosse tagliare le tessere è una scelta: a 4 caselle per lato le parole
-sarebbero 64 invece di 256, e leggerle costerebbe quattro volte meno. È la
-manopola con cui si decide quanto far lavorare la torre.
+Quanto grosse tagliare le tessere è una scelta: [a 4 caselle per lato le parole
+sarebbero 64 invece di 256, e leggerle costerebbe quattro volte
+meno]{.pt-matita}. È la manopola con cui si decide quanto far lavorare la
+torre.
 
 Da qui in poi il lavoro lo conosciamo dal capitolo sui Transformer: la torre,
 con i suoi piani (in gergo si chiamano blocchi). Le tessere prendono il posto
@@ -102,22 +103,21 @@ della stessa forma dell'ingresso: la rete resta una
 $\boldsymbol{\epsilon}_\theta(\mathbf{z}_t, t)$, cambia solo ciò che ha dentro.
 
 Il lato $p$ della patch è l'iperparametro che regola il calcolo: con $p = 2$ i
-token sono $N
-= 256$, con $p = 4$ sono 64, con $p = 8$ sono 16. Dimezzare $p$ quadruplica i
-token e con essi il costo di una passata a parità di parametri. Ad esempio, nel
-paper la taglia XL passa da 29,1 Gflops con $p = 4$ a 118,6 con $p = 2$, cioè
-un fattore $4{,}08$, e non di più. Il termine quadratico dell'attenzione c'è,
-ma a queste lunghezze di sequenza è piccolo: per blocco pesa $2N^2 d$ contro i
-$12Nd^2$ delle proiezioni e dell'MLP, cioè un rapporto $N/(6d)$ che per
-DiT-XL/2, dove
-la larghezza è $d = 1152$, fa $256/(6 \cdot 1152) \approx 3{,}7\%$ del termine
-lineare, e quindi il $3{,}6\%$ del totale. Il rapporto però cresce con il
-quadrato del lato: alla stessa larghezza, $512$ pixel portano $N$ a $1024$ e il
-quadratico al $15\%$ del lineare, $1024$ pixel lo portano al $59\%$. Lì quel
-termine diventa il vincolo, lo stesso problema da cui era partito il
-{doc}`capitolo sull'attenzione lineare </AttenzioneLineare/overview>`. Da qui
-la nomenclatura del paper: quattro taglie (DiT-S, B, L, XL) per tre patch (/8,
-/4, /2), dodici modelli, che costituiscono l'esperimento del lavoro.
+token sono $N = 256$, con $p = 4$ sono 64, con $p = 8$ sono 16. [Dimezzare $p$
+quadruplica i token e con essi il costo di una passata a parità di
+parametri]{.pt-matita}. Ad esempio, nel paper la taglia XL passa da 29,1 Gflops
+con $p = 4$ a 118,6 con $p = 2$, cioè un fattore $4{,}08$, e non di più. Il
+termine quadratico dell'attenzione c'è, ma a queste lunghezze di sequenza è
+piccolo: per blocco pesa $2N^2 d$ contro i $12Nd^2$ delle proiezioni e
+dell'MLP, cioè un rapporto $N/(6d)$ che per DiT-XL/2, dove la larghezza è $d =
+1152$, fa $256/(6 \cdot 1152) \approx 3{,}7\%$ del termine lineare, e quindi il
+$3{,}6\%$ del totale. Il rapporto però cresce con il quadrato del lato: alla
+stessa larghezza, $512$ pixel portano $N$ a $1024$ e il quadratico al $15\%$
+del lineare, $1024$ pixel lo portano al $59\%$. Lì quel termine diventa il
+vincolo, lo stesso problema da cui era partito il {doc}`capitolo
+sull'attenzione lineare </AttenzioneLineare/overview>`. Da qui la nomenclatura
+del paper: quattro taglie (DiT-S, B, L, XL) per tre patch (/8, /4, /2), dodici
+modelli, che costituiscono l'esperimento del lavoro.
 
 `````
 
@@ -136,9 +136,9 @@ La U-Net aveva un modo semplice di riceverle, appenderle come un'etichetta; con
 le tessere in fila si aprono più strade, e Peebles e Xie le mettono a
 confronto. Potrebbero accodare le due informazioni come parole in più della
 frase, o farle consultare a parte, come fa Stable Diffusion con la richiesta
-scritta. Vince invece la soluzione più economica, battezzata **adaLN-zero**: il
+scritta. Vince invece la soluzione più economica, battezzata **adaLN-zero**: [il
 condizionamento non entra come token nella sequenza, ma modula la
-normalizzazione di ogni blocco. Il nome è una sigla. *LN* è la *layer
+normalizzazione di ogni blocco]{.pt-matita}. Il nome è una sigla. *LN* è la *layer
 normalization*, l'operazione con cui il Transformer, prima di ogni
 sotto-strato, riporta ciascun token a media zero e varianza uno e poi lo
 riscala con un guadagno e uno spostamento appresi; *ada* sta per adattiva,
@@ -266,11 +266,11 @@ da trarre e la sbagliata. Lo stesso lavoro contiene anche delle *ablazioni*
 modo di far entrare il condizionamento, e quel modo cambia la qualità in misura
 tutt'altro che marginale; adaLN-zero vince quel confronto con meno calcolo
 degli altri due. Le due affermazioni stanno insieme senza contraddirsi, a patto
-di enunciarle con precisione: fra modelli costruiti tutti allo stesso modo, il
+di enunciarle con precisione: [fra modelli costruiti tutti allo stesso modo, il
 calcolo predice la qualità meglio della sola taglia o del solo numero di
-tessere. D'altra parte, come è fatto un blocco del Transformer resta una
-scelta, e una scelta sbagliata abbassa la qualità; la regolarità indica dove
-spendere il prossimo Gflop, non che l'ingegneria sia finita.
+tessere]{.pt-matita}. D'altra parte, come è fatto un blocco del Transformer
+resta una scelta, e una scelta sbagliata abbassa la qualità; la regolarità
+indica dove spendere il prossimo Gflop, non che l'ingegneria sia finita.
 
 In cima alla curva sta il modello più grande con le tessere più piccole, che
 nel paper si chiama DiT-XL/2 (XL è la taglia della rete, il 2 è il lato della
@@ -394,9 +394,9 @@ lavoro si misura in un altro modo rispetto ai dodici DiT. Là si contavano le
 operazioni di una passata sola e la qualità era un numero, il FID; qui si conta
 il calcolo speso per addestrare, e i tre filmati si confrontano a occhio. Sono
 due facce della stessa regolarità, le leggi di scala dei modelli di linguaggio,
-misurate su due assi diversi. L'impostazione DiT viene estesa di una dimensione:
+misurate su due assi diversi. [L'impostazione DiT viene estesa di una dimensione:
 dove il Vision Transformer affettava un'immagine, qui si affetta un blocco di
-fotogrammi.
+fotogrammi]{.pt-matita}.
 
 Il rapporto *non* dice quanti parametri abbia il modello, su quali dati
 sia stato addestrato, come sia fatto nel dettaglio. È un documento aziendale
@@ -432,13 +432,13 @@ richiesta una volta per tutte in una sequenza di vettori, e da lì in poi la
 U-Net poteva soltanto *consultarla* tramite cross-attention: l'informazione
 andava in un senso solo.
 
-In MM-DiT il testo e l'immagine diventano due sequenze di token alla pari: due
-corsie che conservano ciascuna i propri pesi ma si incontrano nell'attenzione,
-così che a ogni blocco le parole guardino le tessere dell'immagine e
-viceversa. La famiglia arriva fino a 8 miliardi di parametri, e la scala si
-comporta anche qui in modo regolare e prevedibile. L'impostazione ha fatto
-scuola: la riprende, tra gli altri, FLUX (2024), del gruppo di autori originali
-di Stable Diffusion.
+[In MM-DiT il testo e l'immagine diventano due sequenze di token alla
+pari]{.pt-matita}: due corsie che conservano ciascuna i propri pesi ma si
+incontrano nell'attenzione, così che a ogni blocco le parole guardino le
+tessere dell'immagine e viceversa. La famiglia arriva fino a 8 miliardi di
+parametri, e la scala si comporta anche qui in modo regolare e prevedibile.
+L'impostazione ha fatto scuola: la riprende, tra gli altri, FLUX (2024), del
+gruppo di autori originali di Stable Diffusion.
 
 `````{tab} Elementare
 
@@ -776,8 +776,8 @@ e diventa protagonista nel 2017 {cite}`vaswani2017attention`. Le tessere sono
 quelle di un Vision Transformer del 2021 nato per riconoscere il contenuto
 delle fotografie {cite}`dosovitskiy2021image`. Tre di questi pezzi non erano
 nati per generare immagini, e il quarto, il VAE, era nato per generarle e qui
-comprime; tutti e quattro sono stati ricombinati con pazienza da gruppi diversi
-in anni diversi.
+comprime; [tutti e quattro sono stati ricombinati con pazienza da gruppi diversi
+in anni diversi]{.pt-matita}.
 
 `````{tab} Elementare
 

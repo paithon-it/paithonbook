@@ -88,8 +88,8 @@ La sigla sta per *Retrieval-Augmented Generation*, generazione aumentata dal
 recupero {cite}`lewis2020retrieval`. Prima di scrivere la risposta, il sistema
 prende da un archivio i brani pertinenti alla domanda e li pone davanti al
 modello. La catena resta però fissa: cerca sempre, una volta sola, e poi
-scrive. Un agente si distingue perché è il modello a decidere se e quando
-cercare.
+scrive. [Un agente si distingue perché è il modello a decidere se e quando
+cercare]{.pt-matita}.
 
 Quello che un modello sa sta nei suoi pesi, fissati dall'addestramento e
 invariati finché lo si usa: è la sua *memoria parametrica*, e aggiornarla
@@ -227,11 +227,11 @@ volta da zero. Il ciclo osserva → ragiona → agisci si ripete fino alla
 risposta.
 ```
 
-Come mostra {numref}`fig-agente-anatomia`, il modello non agisce mai sul mondo
-direttamente, ma attraverso gli strumenti, e l'esito di ogni azione rientra
-nel contesto come osservazione. Il punto più delicato è l'uso degli strumenti
-(in inglese **tool use**), poiché un modello che produce soltanto testo deve
-riuscire a mettere in esecuzione una funzione.
+Come mostra {numref}`fig-agente-anatomia`, [il modello non agisce mai sul mondo
+direttamente, ma attraverso gli strumenti]{.pt-matita}, e l'esito di ogni
+azione rientra nel contesto come osservazione. Il punto più delicato è l'uso
+degli strumenti (in inglese **tool use**), poiché un modello che produce
+soltanto testo deve riuscire a mettere in esecuzione una funzione.
 
 `````{tab} Elementare
 
@@ -303,10 +303,11 @@ piano quando il mondo non era come previsto. Le sue regole e i suoi simboli
 erano scritti a mano da un programmatore, perciò non poteva interpretare una
 consegna che nessuno avesse già tradotto in simboli.
 
-Gli agenti *basati su LLM* (*large language model*) nascono solo ora perché
-questi modelli hanno acquisito da poco la capacità che a Shakey mancava:
-eseguire una consegna scritta come la si scriverebbe a una persona, in
-linguaggio naturale, senza che qualcuno ne programmi i casi uno per uno.
+Gli agenti *basati su LLM* (*large language model*) [nascono solo ora perché
+questi modelli hanno acquisito da poco la capacità che a Shakey
+mancava]{.pt-matita}: eseguire una consegna scritta come la si scriverebbe a
+una persona, in linguaggio naturale, senza che qualcuno ne programmi i casi uno
+per uno.
 
 `````{tab} Elementare
 
@@ -385,10 +386,10 @@ senso di linea di condotta) del {doc}`capitolo sul reinforcement learning
 
 `````{tab} Elementare
 
-Il limite di quei sistemi era la rigidità. Un assistente a moduli sa fare
-benissimo ciò che è previsto: chiede dove, quando, quanti, e a modulo pieno
-prenota. «Vorrei il finestrino, ma solo se il viaggio dura più di tre ore» non
-ha nessuna casella dove entrare, e lui resta lì senza sapere che pesci
+[Il limite di quei sistemi era la rigidità]{.pt-matita}. Un assistente a moduli
+sa fare benissimo ciò che è previsto: chiede dove, quando, quanti, e a modulo
+pieno prenota. «Vorrei il finestrino, ma solo se il viaggio dura più di tre
+ore» non ha nessuna casella dove entrare, e lui resta lì senza sapere che pesci
 prendere: ogni comportamento gliel'aveva scritto un programmatore, uno per uno.
 
 Quelle caselle però davano qualcosa in cambio. Inventare non poteva, perché
@@ -409,12 +410,12 @@ pagare gli si fa comunque riempire il modulo, casella per casella.
 
 `````{tab} Superiore
 
-Il salto è da una policy scritta a mano a una policy espressa in
-linguaggio. Nei sistemi a frame la logica di controllo era una macchina a
-stati esplicita: slot tipizzati, una domanda per ogni slot vuoto, transizioni
-codificate da un ingegnere. Robusta e prevedibile (nessuna risposta inventata,
-errori localizzabili, successo misurabile) ma incapace di uscire dallo spazio
-di stati previsto.
+[Il salto è da una policy scritta a mano a una policy espressa in
+linguaggio]{.pt-matita}. Nei sistemi a frame la logica di controllo era una
+macchina a stati esplicita: slot tipizzati, una domanda per ogni slot vuoto,
+transizioni codificate da un ingegnere. Robusta e prevedibile (nessuna risposta
+inventata, errori localizzabili, successo misurabile) ma incapace di uscire
+dallo spazio di stati previsto.
 
 L'agente LLM tiene l'ossatura (uno stato, una policy, delle azioni) ma la
 policy diventa un modello di linguaggio orientato da un prompt, al posto di un

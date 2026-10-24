@@ -59,10 +59,10 @@ lungo la stessa cosa: a forza di assaggiare e correggere, il palato si abitua,
 e dopo il quinto cucchiaio non senti più il sale che c'è. In altre parole, gli
 assaggi si consumano man mano che li usi per decidere.
 
-Ecco perché conta il momento in cui il piatto va in tavola (6). Chi lo mangia
-non ha cucinato, quindi il suo giudizio è l'unico rimasto intatto; e lo hai una
-volta sola, perché se lo chiami in cucina a metà cottura e correggi in base al
-suo parere hai consumato anche lui.
+Ecco perché conta il momento in cui il piatto va in tavola (6). [Chi lo mangia
+non ha cucinato, quindi il suo giudizio è l'unico rimasto intatto]{.pt-matita};
+e lo hai una volta sola, perché se lo chiami in cucina a metà cottura e
+correggi in base al suo parere hai consumato anche lui.
 `````
 
 `````{tab} Superiore
@@ -83,10 +83,10 @@ non viene usato per scegliere.
 Le stazioni 3–5 sono un ciclo di ricerca su iperparametri e architettura,
 guidato dalla metrica di validazione. Ogni decisione presa guardando quel
 numero lo consuma un po’, perché il set di validazione diventa a poco a poco
-parte dell'addestramento. Per questo il test set si tocca una volta sola, alla
-fine, perché è l'unica stima onesta che rimane. Il {doc}`capitolo sul machine
-learning </MachineLearning/overview>` tratta per esteso questa contabilità
-nella sezione su [overfitting e
+parte dell'addestramento. [Per questo il test set si tocca una volta sola, alla
+fine, perché è l'unica stima onesta che rimane]{.pt-matita}. Il {doc}`capitolo
+sul machine learning </MachineLearning/overview>` tratta per esteso questa
+contabilità nella sezione su [overfitting e
 validazione](../MachineLearning/overfitting-validazione.md).
 `````
 
@@ -212,9 +212,9 @@ OrderedDict({'strato.weight': tensor([[0.6968]]), 'strato.bias': tensor([0.3025]
 Alla fine dell'addestramento `state_dict()` stampa due numeri molto vicini a
 $0{,}7$ e $0{,}3$, cioè $0{,}6968$ e $0{,}3025$, che arrotondati al centesimo
 danno $0{,}70$ e $0{,}30$. Non sono identici, perché la discesa del gradiente
-si ferma quando è *abbastanza* vicina. È una verifica che nella maggior parte
+si ferma quando è *abbastanza* vicina. [È una verifica che nella maggior parte
 dei problemi veri non potremo mai fare, e per questo conviene farla almeno una
-volta: qui sappiamo con certezza che la macchina funziona.
+volta]{.pt-matita}: qui sappiamo con certezza che la macchina funziona.
 
 Si noti che nelle ultime epoche i valori si ripetono: $0{,}0103$ e $0{,}0013$
 tornano a turno. Verso la fine la perdita non si ferma su un valore, ma
@@ -362,12 +362,12 @@ messo in percentuale, diventa un numero così piccolo che la macchina finisce le
 cifre e scrive zero tondo, e da uno zero non si sa più né di quanto lo
 smistatore abbia sbagliato né da che parte correggerlo.
 
-La probabilità serve eccome, ma dopo: `sigmoid` e `softmax` si applicano sul
-risultato, quando il numero lo deve leggere una persona. Se le mettessi dentro
-il modello, come ultimo strato, consegnerebbero alla funzione di perdita dei
-punteggi già convertiti, che lei convertirebbe una seconda volta. È l'errore
-già visto con la cross-entropy, e anche qui il modello impara male senza nessun
-messaggio rosso, solo con numeri che non migliorano.
+La probabilità serve eccome, ma dopo: [`sigmoid` e `softmax` si applicano sul
+risultato, quando il numero lo deve leggere una persona]{.pt-matita}. Se le
+mettessi dentro il modello, come ultimo strato, consegnerebbero alla funzione
+di perdita dei punteggi già convertiti, che lei convertirebbe una seconda
+volta. È l'errore già visto con la cross-entropy, e anche qui il modello impara
+male senza nessun messaggio rosso, solo con numeri che non migliorano.
 
 Resta una manopola, che serve appena si esce dagli esempi: le risposte quasi
 mai sono in pari. Su mille buste, novecentonovanta lettere vere e dieci
@@ -381,8 +381,8 @@ le due risposte tornano in pari, e alla furbizia non conviene più.
 `````
 
 `````{tab} Superiore
-`BCEWithLogitsLoss` e `CrossEntropyLoss` incorporano rispettivamente la
-sigmoide e la log-softmax, e vanno alimentate con i logit. Il motivo è
+[`BCEWithLogitsLoss` e `CrossEntropyLoss` incorporano rispettivamente la
+sigmoide e la log-softmax, e vanno alimentate con i logit]{.pt-matita}. Il motivo è
 numerico: il calcolo congiunto usa il *log-sum-exp trick*, che evita
 l'underflow di $\log(\hat{y})$ quando $\hat{y} \to 0$. In particolare, per un
 logit $z$ e un'etichetta $y \in \{0, 1\}$ la perdita della `BCEWithLogitsLoss`
@@ -421,7 +421,7 @@ non si sa quale delle cinque abbia funzionato, quindi nemmeno quale
 spingere ancora.
 
 `````{tab} Elementare
-Un rubinetto che gocciola non si aggiusta smontando tutto il bagno:
+[Un rubinetto che gocciola non si aggiusta smontando tutto il bagno]{.pt-matita}:
 l'idraulico chiude l'acqua, cambia una guarnizione, riapre e guarda. Una
 chiave alla volta, partendo dal pezzo che si rompe più spesso. Sul modello le
 chiavi sono sei.

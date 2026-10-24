@@ -19,11 +19,11 @@ equazioni di Lotka-Volterra, perché alle stesse era arrivato prima di lui
 Alfred Lotka, partendo dalle reazioni chimiche che oscillano.
 
 La risposta al quesito di D'Ancona c'era, ma la conseguenza più importante è
-un'altra. Quelle due popolazioni non si fermano mai su un valore di equilibrio,
-ci girano attorno all'infinito. Segnate su un piano, le prede in orizzontale e i
-predatori in verticale, gli anni disegnano un anello chiuso che ripassa sempre
-da dove era partito. Ognuna insegue l'altra, e l'altra nel frattempo si
-è spostata.
+un'altra. [Quelle due popolazioni non si fermano mai su un valore di
+equilibrio, ci girano attorno all'infinito]{.pt-matita}. Segnate su un piano,
+le prede in orizzontale e i predatori in verticale, gli anni disegnano un
+anello chiuso che ripassa sempre da dove era partito. Ognuna insegue l'altra, e
+l'altra nel frattempo si è spostata.
 
 Quelle orbite torneranno, con altri nomi, nel gioco di sasso, carta e forbici.
 Topologie, costi e protocolli sono modi di *progettare* il coordinamento: chi
@@ -44,7 +44,7 @@ sempre alla stessa legge di transizione) e fissi sono i premi (la stessa
 azione vale sempre altrettanto). Su quell'ipotesi si dimostra che il
 Q-learning tabellare converge al valore ottimo, e quindi a una strategia
 ottima, purché ogni mossa venga provata in ogni situazione abbastanza spesso.
-Se l'ambiente cambia mentre si impara, quella dimostrazione cade.
+[Se l'ambiente cambia mentre si impara, quella dimostrazione cade]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -314,19 +314,19 @@ di far salire il proprio punteggio senza fare la cosa per cui il punteggio era
 stato inventato, e un agente che insegue il proprio numero può danneggiare la
 squadra in perfetta buona fede.
 
-La strada che ha funzionato è l'opposta: tenere un premio solo e ricavarne il
-merito di ciascuno, invece di dichiararlo in anticipo. Le vie sono due. La
-prima misura **per differenza**: si confronta come è andata con come sarebbe
-andata se quel membro, al posto della mossa che ha fatto, ne avesse fatta una a
-caso fra quelle che di solito fa, e tutti gli altri avessero giocato come hanno
-giocato. In un lavoro di gruppo con un voto solo, è chiedersi che voto avrebbe
-preso lo
-stesso lavoro se uno dei membri avesse scritto la sua parte come gli capitava,
-mentre gli altri scrivevano la loro come l'hanno scritta. L'idea non
-nasce qui: si chiamano *difference rewards*, li propongono David Wolpert e
-Kagan Tumer, e COMA li porta dentro l'attore-critico. Il rumore dei compagni si
-abbassa; il merito del singolo, però, non viene isolato, perché come è andata
-dipende comunque anche dalle scelte dei compagni.
+La strada che ha funzionato è l'opposta: [tenere un premio solo e ricavarne il
+merito di ciascuno, invece di dichiararlo in anticipo]{.pt-matita}. Le vie sono
+due. La prima misura **per differenza**: si confronta come è andata con come
+sarebbe andata se quel membro, al posto della mossa che ha fatto, ne avesse
+fatta una a caso fra quelle che di solito fa, e tutti gli altri avessero
+giocato come hanno giocato. In un lavoro di gruppo con un voto solo, è
+chiedersi che voto avrebbe preso lo stesso lavoro se uno dei membri avesse
+scritto la sua parte come gli capitava, mentre gli altri scrivevano la loro
+come l'hanno scritta. L'idea non nasce qui: si chiamano *difference rewards*,
+li propongono David Wolpert e Kagan Tumer, e COMA li porta dentro
+l'attore-critico. Il rumore dei compagni si abbassa; il merito del singolo,
+però, non viene isolato, perché come è andata dipende comunque anche dalle
+scelte dei compagni.
 
 La seconda impara a **scomporre il risultato**, cioè a stimare quanto ciascuno
 ha contribuito partendo dal solo premio di squadra, e si porta dietro anche il
@@ -350,12 +350,13 @@ In partita, però, ciascuno ha soltanto la propria osservazione.
 
 Il principio che ne discende si chiama **CTDE**, addestramento centralizzato ed
 esecuzione decentralizzata, e la sua regola d'oro sta in una riga:
-l'informazione privilegiata si usa solo dove non servirà durante la partita. In
-pratica il critico serve ad addestrare l'attore, e poi si butta via. Alla fine
-dell'addestramento deve sopravvivere una sola cosa: la regola con cui ciascun
-agente sceglie la propria azione a partire dalla propria osservazione, e
-soltanto da quella. Se sopravvivesse qualcosa che per funzionare ha bisogno di
-sapere anche che cosa vedono gli altri, in partita non funzionerebbe.
+[l'informazione privilegiata si usa solo dove non servirà durante la
+partita]{.pt-matita}. In pratica il critico serve ad addestrare l'attore, e poi
+si butta via. Alla fine dell'addestramento deve sopravvivere una sola cosa: la
+regola con cui ciascun agente sceglie la propria azione a partire dalla propria
+osservazione, e soltanto da quella. Se sopravvivesse qualcosa che per
+funzionare ha bisogno di sapere anche che cosa vedono gli altri, in partita non
+funzionerebbe.
 
 `````{tab} Elementare
 
@@ -609,26 +610,25 @@ sembra buono soltanto perché non ne ha provati altri, l'unico modo di scoprirlo
 se stesso, un passo indietro.
 
 Quella scala che sale, la formula vincente di alpha che passa a beta e diventa
-l'avversario da battere al giro dopo, ha un nome: si chiama **curriculum**, nel
-senso in cui la parola indica un programma di studi. Una successione di
-esercizi ordinati dal più facile al più difficile, invece del problema intero
-servito subito. Yoshua Bengio e colleghi l’hanno studiata nel 2009 come
-tecnica di addestramento generale {cite}`bengio2009curriculum`, misurandola su
-compiti lontani dai giochi: riconoscere forme geometriche, e indovinare la
-parola successiva in un testo.
+l'avversario da battere all'iterazione dopo, ha un nome: si chiama
+**curriculum**, nel senso in cui la parola indica un programma di studi. Una
+successione di esercizi ordinati dal più facile al più difficile, invece del
+problema intero servito subito. Yoshua Bengio e colleghi l’hanno studiata nel
+2009 come tecnica di addestramento generale {cite}`bengio2009curriculum`,
+misurandola su compiti lontani dai giochi: riconoscere forme geometriche, e
+indovinare la parola successiva in un testo.
 
 Giocare contro copie di sé si chiama **self-play**, e il suo meccanismo
 prezioso sta nel curriculum che si genera da solo, più che nel risparmio di
 partite umane. Infatti un avversario troppo forte non insegna niente (perdi
 comunque, e non sai per che cosa); uno troppo debole nemmeno (vinci comunque, e
 qualunque cosa tu faccia va bene). L'avversario che insegna è quello che ti sta
-appena sopra, e deve cambiare man mano che migliori.
-Progettare quella scala a mano, per un gioco complesso, è fuori portata:
-nessuno sa scrivere l'esercizio giusto per un giocatore di Go di livello
-intermedio. Nel self-play la scala non si progetta, si ottiene per costruzione,
-perché l'avversario è forte quanto te, sempre, essendo te. Nessuno dei due vince
-troppo spesso, e le partite restano informative. Almeno, finché «più bravo»
-vuol dire qualcosa.
+appena sopra, e deve cambiare man mano che migliori. Progettare quella scala a
+mano, per un gioco complesso, è fuori portata: nessuno sa scrivere l'esercizio
+giusto per un giocatore di Go di livello intermedio. [Nel self-play la scala
+non si progetta, si ottiene per costruzione]{.pt-matita}, perché l'avversario è
+forte quanto te, sempre, essendo te. Nessuno dei due vince troppo spesso, e le
+partite restano informative. Almeno, finché «più bravo» vuol dire qualcosa.
 
 È la linea che porta ad AlphaGo {cite}`silver2016mastering`, già raccontato
 nella sezione {doc}`MCTS e AlphaGo </DeepReinforcementLearning/mcts-alphago>`.
@@ -796,9 +796,9 @@ Allenandosi contro la media di tutte le versioni passate, invece che contro
 l'ultima, in duemila generazioni la popolazione si assesta su un terzo di
 sasso, un terzo di carta e un terzo di forbici: è l'equilibrio descritto
 nell’{doc}`apertura del capitolo <overview>`, e la sua sfruttabilità scende
-quasi a zero. Si noti che a essere difficile da battere è la popolazione, non
-un singolo giocatore: il campione da schierare è l'insieme delle versioni, e si
-scende in campo estraendo a caso, ogni volta, una di esse.
+quasi a zero. Si noti che [a essere difficile da battere è la popolazione, non
+un singolo giocatore]{.pt-matita}: il campione da schierare è l'insieme delle
+versioni, e si scende in campo estraendo a caso, ogni volta, una di esse.
 
 Su scala industriale, questa è la *league* di AlphaStar
 {cite}`vinyals2019grandmaster`, il programma di DeepMind che gioca a
@@ -866,9 +866,9 @@ il generatore, fabbrica esemplari falsi (di solito immagini) partendo dal caso;
 la seconda, il discriminatore, guarda un esemplare e dice se è vero o falso. Il
 generatore vince quando inganna, il discriminatore quando smaschera.
 
-Detta così, una GAN è un sistema multi-agente con due soli partecipanti, e
-riconoscerlo non è un gioco di parole: spiega i suoi guasti tipici meglio di
-quanto li spieghi la teoria delle reti neurali.
+Detta così, [una GAN è un sistema multi-agente con due soli
+partecipanti]{.pt-matita}, e riconoscerlo non è un gioco di parole: spiega i
+suoi guasti tipici meglio di quanto li spieghi la teoria delle reti neurali.
 
 `````{tab} Elementare
 

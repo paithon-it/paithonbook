@@ -59,8 +59,8 @@ strato, o di uno ogni due) con $N$ copie indipendenti, gli *esperti*, e mettere
 davanti un piccolo **router** che per ogni token ne sceglie $k$: uno in Switch
 Transformer {cite}`fedus2022switch`, due in Mixtral {cite}`jiang2024mixtral`,
 otto su 256 in DeepSeek-V3 {cite}`liu2024deepseekv3`. L'attenzione resta
-com'era. Il modello possiede i parametri di tutti gli esperti, ma ogni token
-ne attraversa soltanto $k$.
+com'era. [Il modello possiede i parametri di tutti gli esperti, ma ogni token
+ne attraversa soltanto $k$]{.pt-matita}.
 
 Finché capacità e calcolo crescono insieme, l'unico modo di avere un modello più
 capace è pagarlo a ogni token. Lo strato di {numref}`fig-moe-layer` li separa,
@@ -375,8 +375,8 @@ imparare a smistare?
 Impara dai pesi della miscela, che sono continui e dipendono dai punteggi. In
 concreto, se un esperto scelto ha dato una risposta utile, l'aggiornamento ne
 alza il peso, cioè il punteggio assegnato dal router, e la volta dopo il router
-lo sceglierà più volentieri per un token simile. Il router viene corretto sul
-risultato degli esperti che ha scelto, mai direttamente sulla scelta.
+lo sceglierà più volentieri per un token simile. [Il router viene corretto sul
+risultato degli esperti che ha scelto, mai direttamente sulla scelta]{.pt-matita}.
 
 I parametri degli esperti *non* scelti non ricevono gradiente per quel token:
 nessuna correzione, nessun modo di dimostrare che avrebbero fatto meglio (i loro
@@ -387,11 +387,11 @@ modelli a esperti.
 
 ## Il collasso del router
 
-Senza contromisure il router tende a convergere su pochi esperti, sempre gli
-stessi: quelli favoriti si addestrano più in fretta e vengono scelti ancora di
-più, un circolo che si rinforza da solo {cite}`shazeer2017outrageously`, e gli
-altri restano parametri inutilizzati. Il collasso è una proprietà della
-dinamica dell'addestramento.
+Senza contromisure [il router tende a convergere su pochi esperti, sempre gli
+stessi]{.pt-matita}: quelli favoriti si addestrano più in fretta e vengono
+scelti ancora di più, un circolo che si rinforza da solo
+{cite}`shazeer2017outrageously`, e gli altri restano parametri inutilizzati. Il
+collasso è una proprietà della dinamica dell'addestramento.
 
 `````{tab} Elementare
 
@@ -574,11 +574,11 @@ blocco si somma all'ingresso, quindi il token attraversa lo strato immutato,
 come se lì non ci fosse. Nessun errore, nessun messaggio: solo un po’ di
 qualità in meno, distribuita in modo silenzioso. Alzare $c$ riduce i token
 caduti ma alloca buffer più grandi, cioè spreca memoria per posti mai occupati.
-Con un tetto c'è inoltre una conseguenza più insidiosa: il destino di un token
-dipende dagli altri token del batch, quindi lo stesso identico input, in
-compagnia diversa, può ricevere un trattamento diverso, e il modello smette di
-essere una funzione del solo esempio. Chi cerca la causa di un'anomalia deve
-saperlo.
+Con un tetto c'è inoltre una conseguenza più insidiosa: [il destino di un token
+dipende dagli altri token del batch]{.pt-matita}, quindi lo stesso identico
+input, in compagnia diversa, può ricevere un trattamento diverso, e il modello
+smette di essere una funzione del solo esempio. Chi cerca la causa di
+un'anomalia deve saperlo.
 
 Il tetto però non è obbligatorio. MegaBlocks {cite}`gale2023megablocks` non
 scarta mai un token e lascia che ogni esperto ne riceva un numero variabile (la
@@ -590,9 +590,9 @@ che deve tenere corte le code.
 
 ## Il conto si sposta, non sparisce
 
-Il risparmio riguarda il calcolo, non la memoria. Gli esperti che nessun token
-attraversa non consumano aritmetica, ma i loro pesi devono restare caricati,
-perché il token successivo potrebbe sceglierli.
+[Il risparmio riguarda il calcolo, non la memoria]{.pt-matita}. Gli esperti che
+nessun token attraversa non consumano aritmetica, ma i loro pesi devono restare
+caricati, perché il token successivo potrebbe sceglierli.
 
 `````{tab} Elementare
 

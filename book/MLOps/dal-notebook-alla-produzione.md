@@ -25,9 +25,9 @@ funzionava».
 
 Il disordine di quelle celle non è un peccato in sé: mentre si esplora, saltare
 avanti e indietro è il modo giusto di lavorare, e i notebook esistono per
-questo. Il peccato sta nel consegnare quel disordine, cioè nel lasciare che il
-risultato buono viva soltanto nella memoria di una sessione che qualcuno prima
-o poi chiuderà.
+questo. [Il peccato sta nel consegnare quel disordine]{.pt-matita}, cioè nel
+lasciare che il risultato buono viva soltanto nella memoria di una sessione che
+qualcuno prima o poi chiuderà.
 
 Fra quel notebook e un sistema che dà previsioni a persone vere, ogni giorno,
 senza sorprese, c'è quindi un abisso. Il primo tratto, dalle celle agli script
@@ -49,17 +49,17 @@ l'avevano prodotto.
 
 Una sera cucini un piatto per gli amici. Puoi assaggiare, aggiustare di sale a
 occhio, ripetere se viene male: nessuno ti cronometra. Metterlo nel menu di un
-ristorante cambia le regole. Il piatto deve venire *identico* la centesima e
-la cinquecentesima volta; deve uscire dalla cucina in otto minuti, non in tre
-ore; deve reggere il sabato sera con la sala piena; e se il fornitore cambia i
+ristorante cambia le regole. Il piatto deve venire *identico* la centesima e la
+cinquecentesima volta; deve uscire dalla cucina in otto minuti, non in tre ore;
+deve reggere il sabato sera con la sala piena; e se il fornitore cambia i
 pomodori, qualcuno se ne deve accorgere prima che se ne accorga il cliente. I
 fogli delle ricette poi si tengono tutti, non l'ultimo soltanto: quando il
 piatto di questa settimana piace meno di quello di un mese fa, si ripesca il
-foglio di allora e si torna a com'era. Provare varianti in fretta, controllare
+foglio di allora e si torna a com'era. [Provare varianti in fretta, controllare
 ogni fornitura prima di usarla e tenere in ordine il raccoglitore si contendono
-le stesse ore, e la sera in cui la sala è piena una delle tre si salta: quale,
-lo decide chi conduce la cucina. Il notebook è la cena tra amici. La produzione
-è il servizio in sala, tutte le sere, per anni.
+le stesse ore]{.pt-matita}, e la sera in cui la sala è piena una delle tre si
+salta: quale, lo decide chi conduce la cucina. Il notebook è la cena tra amici.
+La produzione è il servizio in sala, tutte le sere, per anni.
 
 `````
 
@@ -81,9 +81,9 @@ ci riescono {cite}`shankar2022operationalizing`:
   poter tornare indietro, confrontare e riprodurre qualunque risultato
   passato.
 
-Queste tre spinte sono spesso in tensione: la Velocity preme per tagliare gli
-angoli, la Validation e il Versioning per non tagliarli. L'ingegneria di un
-sistema di ML è, in buona misura, l'arte di bilanciarle.
+[Queste tre spinte sono spesso in tensione]{.pt-matita}: la Velocity preme per
+tagliare gli angoli, la Validation e il Versioning per non tagliarli.
+L'ingegneria di un sistema di ML è, in buona misura, l'arte di bilanciarle.
 
 `````
 
@@ -116,8 +116,8 @@ Lo stadio aggiunto in {numref}`fig-cicd-ml` è la differenza fra il rilascio di
 un programma e quello di un modello. Un programma rotto si ferma subito, con un
 errore; un modello no: restituisce comunque
 una predizione, e nessun errore segnala che è peggiore di quella della versione
-precedente. Senza una soglia scritta prima, non c'è modo automatico di
-accorgersene.
+precedente. [Senza una soglia scritta prima, non c'è modo automatico di
+accorgersene]{.pt-matita}.
 
 Uno studio di ingegneria del software condotto in Microsoft elenca nove
 fasi ricorrenti di un progetto di machine learning
@@ -159,11 +159,11 @@ rilascio: comincia la manutenzione, che dura quanto il modello
 
 ## Riproducibilità: i tre artefatti da versionare
 
-Rifare esattamente un risultato è la competenza su cui poggia tutto il resto.
-Se non sai riprodurre un modello non puoi confrontarlo con un altro, non puoi
-correggerlo quando sbaglia, e non puoi tornare a quello buono quando il nuovo
-peggiora. Qui è più difficile che nel software normale, perché il risultato
-non dipende solo dal codice.
+[Rifare esattamente un risultato è la competenza su cui poggia tutto il
+resto]{.pt-matita}. Se non sai riprodurre un modello non puoi confrontarlo con
+un altro, non puoi correggerlo quando sbaglia, e non puoi tornare a quello
+buono quando il nuovo peggiora. Qui è più difficile che nel software normale,
+perché il risultato non dipende solo dal codice.
 
 Le cose da conservare sono i tre artefatti già nominati (codice, dati,
 modello), e conservarne ogni versione invece dell'ultima soltanto si dice in
@@ -413,11 +413,12 @@ print(run_a)            # e4d5dc4d91ef
 print(run_a == run_b)   # True: l'impronta non dipende dall'ordine delle chiavi
 ```
 
-Il registro, poi, è una semplice rubrica in memoria, che si salva su disco in un
-file di testo: nulla di magico. Il valore non sta nella tecnologia ma nella
-disciplina: non lanciare *mai* un addestramento senza che iperparametri, semi e
-risultati finiscano da qualche parte che sopravviva alla chiusura del notebook.
-È la differenza tra un laboratorio con i quaderni e uno dove si va a memoria.
+Il registro, poi, è una semplice rubrica in memoria, che si salva su disco in
+un file di testo: nulla di magico. [Il valore non sta nella tecnologia ma nella
+disciplina]{.pt-matita}: non lanciare *mai* un addestramento senza che
+iperparametri, semi e risultati finiscano da qualche parte che sopravviva alla
+chiusura del notebook. È la differenza tra un laboratorio con i quaderni e uno
+dove si va a memoria.
 
 ## Il debito tecnico del machine learning
 
@@ -454,13 +455,13 @@ equilibri e sposti le risposte anche dove nessuno se lo aspettava. Cambiare
 *qualsiasi* cosa può cambiare *tutto*. I dati, a differenza del codice,
 cambiano senza che nessuno tocchi una riga.
 
-Chi compra una casa così manda un perito, con un elenco di controlli da spuntare
-(per un sistema di machine learning ne esiste uno di ventotto, divisi fra i
-dati, il modello, le macchine e la sorveglianza), e il perito non fa la media
-delle stanze: guarda quella messa peggio. Muri perfetti e impianto elettrico
-fuori norma fanno una casa fuori norma. Il sopralluogo non si fa una volta
-sola a lavori finiti: si rifà a ogni modifica, e a farlo è una macchina che non
-si stanca.
+Chi compra una casa così manda un perito, con un elenco di controlli da
+spuntare (per un sistema di machine learning ne esiste uno di ventotto, divisi
+fra i dati, il modello, le macchine e la sorveglianza), e [il perito non fa la
+media delle stanze: guarda quella messa peggio]{.pt-matita}. Muri perfetti e
+impianto elettrico fuori norma fanno una casa fuori norma. Il sopralluogo non
+si fa una volta sola a lavori finiti: si rifà a ogni modifica, e a farlo è una
+macchina che non si stanca.
 
 `````
 
@@ -482,16 +483,16 @@ Sculley e colleghi catalogano le forme di debito specifiche dell'ML, tra cui:
   *Changing Anything Changes Everything*.
 
 Come si misura se un sistema è pronto per la produzione? Una rubrica nota come
-**ML Test Score** elenca 28 controlli concreti su quattro aree (dati e
-feature, sviluppo del modello, infrastruttura, monitoraggio)
-{cite}`breck2017ml`. Il voto complessivo è dettato dall'area più debole: non
-basta un modello brillante se il monitoraggio è assente. Accanto a quella
-rubrica, come pratica e non come suo gradino, sta la
-Continuous Delivery for Machine Learning, in sigla **CD4ML**
-{cite}`sato2019continuous`, che estende al ML le pratiche di consegna continua
-del software: automatizzare l'intero ciclo (dati, training, valutazione,
-deploy), così che qualunque modello sia riproducibile e rilasciabile in modo
-affidabile, in ogni momento, con un comando invece che con un rito manuale.
+**ML Test Score** elenca 28 controlli concreti su quattro aree (dati e feature,
+sviluppo del modello, infrastruttura, monitoraggio) {cite}`breck2017ml`. [Il
+voto complessivo è dettato dall'area più debole]{.pt-matita}: non basta un
+modello brillante se il monitoraggio è assente. Accanto a quella rubrica, come
+pratica e non come suo gradino, sta la Continuous Delivery for Machine
+Learning, in sigla **CD4ML** {cite}`sato2019continuous`, che estende al ML le
+pratiche di consegna continua del software: automatizzare l'intero ciclo (dati,
+training, valutazione, deploy), così che qualunque modello sia riproducibile e
+rilasciabile in modo affidabile, in ogni momento, con un comando invece che con
+un rito manuale.
 
 `````
 

@@ -71,11 +71,11 @@ Ad esempio, in Tacotron 2, il modello di riferimento per il primo stadio, un
 secondo di parlato sono $24\,000$ campioni in fila. Lo stesso secondo, come
 mel-spettrogramma, sta in $80$ colonne, una ogni $12{,}5$ millesimi di secondo.
 Si noti che il rapporto fra i due, $300$, non misura quanti numeri si
-risparmiano: ogni colonna ha a sua volta $80$ bande, quindi i numeri sono $6400$
-contro $24\,000$, un fattore $3{,}75$. Misura i passi da fare uno dopo l'altro,
-e quando ogni decisione aspetta la precedente è quello il numero che conta. (Che
-bande e colonne siano tutte e due ottanta è una coincidenza dei parametri di
-Tacotron 2.)
+risparmiano: ogni colonna ha a sua volta $80$ bande, quindi i numeri sono
+$6400$ contro $24\,000$, un fattore $3{,}75$. [Misura i passi da fare uno dopo
+l'altro, e quando ogni decisione aspetta la precedente è quello il numero che
+conta]{.pt-matita}. (Che bande e colonne siano tutte e due ottanta è una
+coincidenza dei parametri di Tacotron 2.)
 
 Ecco perché il lavoro si divide in due. Prima si decide *che suoni* produrre e
 *con che ritmo*, e sono ottanta colonne al secondo, poche, e si possono
@@ -110,9 +110,9 @@ analisi grammaticale di {doc}`POS tagging ed entità
 
 Sbagliare qui non fa rumore. Se il programma legge «1901» come
 «millenovecentodieci», chi ascolta sente un anno plausibile, detto bene, e non
-ha il foglio davanti per accorgersi che era un altro. Un errore che nessuno
-può correggere pesa più di uno che si sente subito. Per questo il lavoro si fa
-ancora a mano, regola per regola, invece di darlo a una rete.
+ha il foglio davanti per accorgersi che era un altro. [Un errore che nessuno
+può correggere pesa più di uno che si sente subito]{.pt-matita}. Per questo il
+lavoro si fa ancora a mano, regola per regola, invece di darlo a una rete.
 
 `````
 
@@ -141,8 +141,8 @@ Il secondo fronte sono gli **omografi eterofoni**: *àncora/ancóra*,
 grammaticale, cioè il {doc}`POS tagging
 </NaturalLanguageProcessing/etichettare-sequenze>`, o un contesto più ampio. La
 normalizzazione è la parte meno vistosa della catena e una delle più costose da
-mettere a punto, e i suoi errori, a differenza di quelli della rete acustica,
-passano inosservati.
+mettere a punto, e [i suoi errori, a differenza di quelli della rete acustica,
+passano inosservati]{.pt-matita}.
 `````
 
 ## Dal grafema al fonema
@@ -285,9 +285,9 @@ il testo e tradurlo in suoni) sono preparazione; le ultime due sono le due
 reti neurali vere e proprie, e si chiamano stadi. Il primo
 stadio prende il testo, ormai sciolto e tradotto in suoni, e ne disegna il
 mel-spettrogramma. Il secondo prende quell'immagine e ne fabbrica l'onda che
-esce dall'altoparlante. Sono due
+esce dall'altoparlante. [Sono due
 compiti talmente diversi che quasi sempre li svolgono due reti separate,
-addestrate indipendentemente.
+addestrate indipendentemente]{.pt-matita}.
 
 ### Primo stadio: dal testo al mel-spettrogramma
 
@@ -327,9 +327,9 @@ che gliel'hanno insegnato: prima di addestrarlo, un altro programma passa su
 tutte le registrazioni e segna dove comincia e dove finisce ogni suono, così il
 modello ha degli esempi da cui imparare. Quel programma, per inciso, è un
 sistema della generazione precedente, uno di quelli che hanno retto il
-riconoscimento vocale per trent'anni. Il metodo nuovo si appoggia al vecchio per
-la parte che non sa fare in proprio; la famiglia VITS ha poi insegnato al
-modello a ricavare anche i confini dei suoni.
+riconoscimento vocale per trent'anni. [Il metodo nuovo si appoggia al vecchio
+per la parte che non sa fare in proprio]{.pt-matita}; la famiglia VITS ha poi
+insegnato al modello a ricavare anche i confini dei suoni.
 
 Il risultato è una sintesi decine di volte più veloce, quasi cinquanta nelle
 misure degli autori, e senza balbuzie. In cambio, la melodia della frase va
@@ -392,11 +392,11 @@ calcolo per secondo di audio, $1{,}95 \cdot 10^{-2}$ contro
 $9{,}32 \cdot 10^{-1}$, sulla stessa GPU e con lo stesso vocoder
 {cite}`ren2021fastspeech`).
 
-Eliminare l'attenzione sposta un problema invece di toglierlo. Il predittore di
-durate è addestrato in modo supervisionato, quindi gli servono le durate vere di
-ogni fonema; ma un corpus TTS è fatto di coppie testo-audio, non di
-segmentazioni fonema per fonema, ed è la stessa impraticabilità che si è vista
-dal lato del riconoscimento.
+[Eliminare l'attenzione sposta un problema invece di toglierlo]{.pt-matita}. Il
+predittore di durate è addestrato in modo supervisionato, quindi gli servono le
+durate vere di ogni fonema; ma un corpus TTS è fatto di coppie testo-audio, non
+di segmentazioni fonema per fonema, ed è la stessa impraticabilità che si è
+vista dal lato del riconoscimento.
 
 Le etichette gliele fornisce un **allineatore forzato** esterno (nel paper il
 Montreal Forced Aligner, costruito sopra un sistema HMM della generazione
@@ -462,10 +462,11 @@ a bande e la si confronta con quella di partenza, così il falsario non può
 cavarsela con una voce bellissima che dice un'altra frase. Falsario ed esperti
 si allenano a vicenda finché il falso non si distingue più.
 
-Risultato: qualità paragonabile a WaveNet, ma molto più veloce del tempo reale:
-per fabbricare un secondo di parlato ci mette molto meno di un secondo, tanto
-che in un secondo di calcolo ne produce minuti. Il conto gira su una scheda
-grafica, che qui non disegna niente: fa migliaia di moltiplicazioni insieme.
+Risultato: [qualità paragonabile a WaveNet, ma molto più veloce del tempo
+reale]{.pt-matita}: per fabbricare un secondo di parlato ci mette molto meno di
+un secondo, tanto che in un secondo di calcolo ne produce minuti. Il conto gira
+su una scheda grafica, che qui non disegna niente: fa migliaia di
+moltiplicazioni insieme.
 
 `````
 
@@ -511,10 +512,10 @@ a risoluzioni diverse. Alla loss avversaria si sommano una *feature matching
 loss* e una loss L1 tra i mel-spettrogrammi dell'audio vero e di quello
 generato, che stabilizzano l'addestramento.
 
-In definitiva, la differenza di costo è strutturale: WaveNet esegue $T'$ passi
-sequenziali, HiFi-GAN uno solo, e la velocità misurata dagli autori sta due
-ordini di grandezza sopra il tempo reale su una singola GPU, con naturalezza
-percepita alla pari dei vocoder autoregressivi.
+In definitiva, [la differenza di costo è strutturale: WaveNet esegue $T'$ passi
+sequenziali, HiFi-GAN uno solo]{.pt-matita}, e la velocità misurata dagli
+autori sta due ordini di grandezza sopra il tempo reale su una singola GPU, con
+naturalezza percepita alla pari dei vocoder autoregressivi.
 
 `````
 
@@ -529,15 +530,15 @@ vero degli altri.
 `````{tab} Elementare
 
 Come si giudica un doppiatore? Lo si ascolta. Il **MOS** (*mean opinion score*,
-punteggio medio di opinione) funziona così: si fa ascoltare la stessa frase a un
-gruppo di persone e si chiede un voto da 1 («pessima») a 5 («eccellente»); il
-MOS è la media. Un voto isolato, però, non dice niente: per leggerlo serve il
-termine di paragone, cioè quanto hanno preso, nella stessa prova, delle
-registrazioni di voce umana vera, infilate fra le altre senza dirlo a nessuno.
-Ad esempio, se il sistema prende 4,2 e le registrazioni, nella stessa prova,
-4,5, la voce sintetica sta tre decimi sotto quella vera. Se invece le
-registrazioni prendono 3,9, lo stesso 4,2 vuol dire che la voce sintetica è
-piaciuta più di quella vera.
+punteggio medio di opinione) funziona così: si fa ascoltare la stessa frase a
+un gruppo di persone e si chiede un voto da 1 («pessima») a 5 («eccellente»);
+il MOS è la media. [Un voto isolato, però, non dice niente]{.pt-matita}: per
+leggerlo serve il termine di paragone, cioè quanto hanno preso, nella stessa
+prova, delle registrazioni di voce umana vera, infilate fra le altre senza
+dirlo a nessuno. Ad esempio, se il sistema prende 4,2 e le registrazioni, nella
+stessa prova, 4,5, la voce sintetica sta tre decimi sotto quella vera. Se
+invece le registrazioni prendono 3,9, lo stesso 4,2 vuol dire che la voce
+sintetica è piaciuta più di quella vera.
 
 C'è una ragione precisa per cui quel paragone deve stare dentro la stessa prova.
 Trenta persone in una stanza con le cuffie giudicano in un modo, trenta
@@ -570,9 +571,9 @@ dell'ascoltatore $i$-esimo e $N$ il numero di ascoltatori (e non le parole del
 riferimento, come nel WER); si riporta con l'intervallo di confidenza al 95% e
 richiede un protocollo rigoroso (frasi fuori dal training, ascoltatori
 madrelingua, cuffie, campioni mescolati con parlato reale come ancoraggio). Le
-alternative sono i test di preferenza A/B e ABX. Due debolezze strutturali: il
+alternative sono i test di preferenza A/B e ABX. Due debolezze strutturali: [il
 MOS è relativo al gruppo di ascoltatori e alle condizioni della prova, quindi i
-numeri di studi diversi non sono confrontabili.
+numeri di studi diversi non sono confrontabili]{.pt-matita}.
 
 Ad esempio, nel paper di Tacotron 2 il *parlato umano registrato* prende
 $4{,}58$, in quello di FastSpeech 2 tre anni dopo prende $4{,}30$: ventotto
@@ -642,8 +643,8 @@ La questione di fondo è il consenso. La voce identifica una persona, e quando
 la si tratta per riconoscere chi parla la legge europea sulla
 protezione dei dati la conta fra i dati biometrici, come un volto o un'impronta
 digitale; e fa parte della sua identità: Hawking, che rifiutò per
-trent'anni voci «migliori» della sua, lo sapeva bene. Clonarla senza permesso
-fa parlare qualcuno senza che l'abbia deciso.
+trent'anni voci «migliori» della sua, lo sapeva bene. [Clonarla senza permesso
+fa parlare qualcuno senza che l'abbia deciso]{.pt-matita}.
 
 Una contromisura tecnica è il **watermarking**, una filigrana inudibile
 incorporata nell'onda sintetica per riconoscerla dopo, come il filo di sicurezza

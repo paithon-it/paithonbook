@@ -50,10 +50,10 @@ scritto: se Torino è una città allora è un luogo, e quell'arco non c'è bisog
 di scriverlo.
 
 C'è poi una differenza che sembra filosofica e invece decide come si progetta
-tutto il resto. In un knowledge graph, un arco che non c'è dice «non lo so»,
-non «è falso». Nessuno ha scritto tutti i fatti veri del mondo, e nessuno mai
-lo farà; per questo l'assenza di (Torino, gemellata-con, Salt Lake City) non è
-una smentita, è un silenzio.
+tutto il resto. In un knowledge graph, [un arco che non c'è dice «non lo so»,
+non «è falso»]{.pt-matita}. Nessuno ha scritto tutti i fatti veri del mondo, e
+nessuno mai lo farà; per questo l'assenza di (Torino, gemellata-con, Salt Lake
+City) non è una smentita, è un silenzio.
 
 La stessa differenza decide come si addestra un modello che impari a indovinare
 i fatti mancanti, cioè gli archi veri che nessuno ha ancora scritto. Infatti,
@@ -79,21 +79,22 @@ codominio di ogni relazione (`sindaco-di` va da una `Persona` a un
 entra e permettere l'inferenza per ereditarietà, cioè dedurre triple non scritte
 da quelle scritte.
 
-La proprietà semantica decisiva è l’**assunzione di mondo aperto**: la mancanza
-di una tripla non è la sua negazione. Ne discende che il problema naturale su
-un knowledge graph, la link prediction, non è una classificazione binaria
-ordinaria: dispone di soli esempi positivi, e gli insiemi di addestramento e di
-valutazione vanno costruiti di conseguenza. La valutazione standard lo fa così.
-Per ogni tripla di test $(h, r, t)$ si sostituisce la coda con ciascuna entità
-$e \in \mathcal{E}$, si ordinano i candidati per punteggio $f(h, r, e)$ e si
-registra la posizione $\mathrm{rank}$ della coda vera; lo stesso si fa con la
-testa. Su un insieme $\mathcal{T}$ di interrogazioni si riportano la media dei
-reciproci, $\mathrm{MRR} = \frac{1}{|\mathcal{T}|}\sum_{q \in \mathcal{T}}
-1/\mathrm{rank}_q$, e la frazione $\text{Hits@}k$ di interrogazioni con
-$\mathrm{rank}_q \le k$ (di solito $k$ vale 1, 3 o 10); per entrambe, più alto
-è meglio. L'impostazione *filtrata* toglie dalla graduatoria le altre entità
-che formano triple vere già note, perché un modello che mette al primo posto
-un'altra risposta giusta non va punito {cite}`bordes2013translating`.
+La proprietà semantica decisiva è l’**assunzione di mondo aperto**: [la
+mancanza di una tripla non è la sua negazione]{.pt-matita}. Ne discende che il
+problema naturale su un knowledge graph, la link prediction, non è una
+classificazione binaria ordinaria: dispone di soli esempi positivi, e gli
+insiemi di addestramento e di valutazione vanno costruiti di conseguenza. La
+valutazione standard lo fa così. Per ogni tripla di test $(h, r, t)$ si
+sostituisce la coda con ciascuna entità $e \in \mathcal{E}$, si ordinano i
+candidati per punteggio $f(h, r, e)$ e si registra la posizione $\mathrm{rank}$
+della coda vera; lo stesso si fa con la testa. Su un insieme $\mathcal{T}$ di
+interrogazioni si riportano la media dei reciproci, $\mathrm{MRR} =
+\frac{1}{|\mathcal{T}|}\sum_{q \in \mathcal{T}} 1/\mathrm{rank}_q$, e la
+frazione $\text{Hits@}k$ di interrogazioni con $\mathrm{rank}_q \le k$ (di
+solito $k$ vale 1, 3 o 10); per entrambe, più alto è meglio. L'impostazione
+*filtrata* toglie dalla graduatoria le altre entità che formano triple vere già
+note, perché un modello che mette al primo posto un'altra risposta giusta non
+va punito {cite}`bordes2013translating`.
 
 Il protocollo ha anche una storia: nei banchi FB15k e WN18 molte triple di test
 erano l'inversa di una tripla d'addestramento, tanto che una regola banale, che
@@ -114,9 +115,9 @@ una parte del vantaggio pubblicato {cite}`sun2020reevaluation`.
 
 ## Costruirlo è il lavoro
 
-Il grafo non arriva già fatto: costruirlo è il passo più costoso, e i
-modelli che vi si applicano ne sono la voce più piccola. Il percorso da
-un mucchio di testi a un grafo di fatti passa per quattro gradini.
+Il grafo non arriva già fatto: [costruirlo è il passo più costoso, e i modelli
+che vi si applicano ne sono la voce più piccola]{.pt-matita}. Il percorso da un
+mucchio di testi a un grafo di fatti passa per quattro gradini.
 
 Il primo gradino è trovare i nomi: individuare nel testo i pezzi che
 nominano qualcosa. Si chiama **riconoscimento delle entità nominate**, e lo
@@ -204,12 +205,12 @@ mettono un'altra trasformazione, e ognuno rimedia a un caso e ne rompe un
 altro. La più riuscita è la rotazione: invece di spostare il punto, lo si fa
 girare attorno al centro. Due quarti di giro fanno mezzo giro, quindi le catene
 di relazioni diverse si compongono come prima; e mezzo giro fatto due volte
-riporta al punto di partenza, come chiede «confina-con». Nemmeno la rotazione,
-però, riesce a esprimere l'ereditarietà lungo la catena, perché un giro che
-fatto due volte deve dare sé stesso è il giro nullo. Per quella servono modelli
-in cui un'entità diventa una scatola capace di contenerne altre, la scatola
-«città» dentro la scatola «luogo»: un modo molto più naturale di dire «è un
-caso particolare di».
+riporta al punto di partenza, come chiede «confina-con». [Nemmeno la rotazione,
+però, riesce a esprimere l'ereditarietà lungo la catena]{.pt-matita}, perché un
+giro che fatto due volte deve dare sé stesso è il giro nullo. Per quella
+servono modelli in cui un'entità diventa una scatola capace di contenerne
+altre, la scatola «città» dentro la scatola «luogo»: un modo molto più naturale
+di dire «è un caso particolare di».
 
 C'è infine una via del tutto diversa: portare su un grafo di fatti il
 passaparola fra vicini. Qui gli archi non sono tutti uguali, e un
@@ -289,8 +290,8 @@ un'ontologia). Lì servirebbero insieme $\mathbf{a} + 2\mathbf{r} \approx
 \mathbf{c}$ e $\mathbf{a} + \mathbf{r} \approx \mathbf{c}$, cioè ancora una
 volta $\mathbf{r} \approx \mathbf{0}$.
 
-Il seguito della famiglia sistema altre caselle, ma non quella della
-transitività. I modelli bilineari come DistMult
+[Il seguito della famiglia sistema altre caselle, ma non quella della
+transitività]{.pt-matita}. I modelli bilineari come DistMult
 {cite}`yang2015embedding` danno il
 punteggio $f(h,r,t) = \sum_{k} h_k r_k t_k$, una forma bilineare con matrice
 diagonale $\mathrm{diag}(\mathbf{r})$. Scambiando $\mathbf{h}$ e $\mathbf{t}$ il
@@ -382,10 +383,10 @@ passo è un altro punto in cui il recupero può sbagliare.
 
 Il secondo vantaggio è che il cammino è la spiegazione. Una ricerca per
 somiglianza restituisce tre paragrafi e una risposta, e per verificarla bisogna
-leggere i paragrafi. Una risposta ottenuta navigando restituisce la catena di
-fatti che l'ha prodotta, e ogni anello si può controllare separatamente. In un
-dominio dove un errore è grave (clinico, legale, finanziario) è una differenza di
-natura.
+leggere i paragrafi. [Una risposta ottenuta navigando restituisce la catena di
+fatti che l'ha prodotta, e ogni anello si può controllare
+separatamente]{.pt-matita}. In un dominio dove un errore è grave (clinico,
+legale, finanziario) è una differenza di natura.
 
 Il terzo vantaggio si dimentica spesso ed è forse il più pratico: le domande
 che chiedono di contare. «Quanti registi italiani hanno girato almeno tre film
@@ -425,8 +426,8 @@ però, che i modelli non danno, e sono la ragione durevole di questa struttura:
 il cammino che si può verificare anello per anello, la possibilità di contare e
 quella di dichiarare regole che il sistema non ha il permesso di violare (che
 il sindaco di un posto debba essere una persona e non un'altra città, che
-nessuno possa essere nato dopo essere morto). Sono garanzie, non conoscenza, e
-sono le garanzie a giustificare il costo di costruirlo.
+nessuno possa essere nato dopo essere morto). [Sono garanzie, non conoscenza, e
+sono le garanzie a giustificare il costo di costruirlo]{.pt-matita}.
 
 `````{tab} Elementare
 

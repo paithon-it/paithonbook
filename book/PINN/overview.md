@@ -53,7 +53,7 @@ infine diciamo con onestà dove le PINN convengono e dove no.
 Un'equazione differenziale, si è detto, è una regola su come cambiano le cose.
 Il modo in cui lo fa, però, spiazza: non dice mai *quanto vale* la grandezza che
 ci interessa, dice soltanto *di quanto sta cambiando*. Sembra pochissimo, eppure
-per ricostruire l'intera storia basta.
+[per ricostruire l'intera storia basta]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -163,8 +163,8 @@ rispetto alle coordinate.
 sott'occhio quella giusta, e qui la risposta giusta non ce l'ha nessuno: è
 quella che stiamo cercando. Una legge però permette di correggere lo stesso,
 perché sa dire se una risposta è *sbagliata* anche quando nessuno sa dire quale
-sia quella buona. Per questo l'equazione può prendere il posto dei dati come
-supervisione.
+sia quella buona. Per questo [l'equazione può prendere il posto dei dati come
+supervisione]{.pt-matita}.
 
 A rilanciare questo approccio, nel 2019, sono Maziar Raissi, Paris Perdikaris e
 George Karniadakis {cite}`raissi2019physics`, e il nome che le danno è la sigla
@@ -370,16 +370,15 @@ nome di **scientific machine learning** {cite}`karniadakis2021physics`.
 
 ## Un'onestà dovuta
 
-Le PINN non mandano in pensione i solutori classici, e il loro territorio è
-più stretto di quanto le tre proprietà lascino credere. Sta dove legge e
-misure vanno usate insieme per rispondere alla stessa domanda; dove le
-variabili in gioco sono troppe perché una griglia stia in piedi; e sui
-problemi inversi, non perché i metodi classici non li sappiano fare, ma perché
-loro chiedono un programma scritto su misura per quell'equazione, e una PINN
-no. Sui problemi diretti, con geometria regolare e senza dati da integrare, i
-confronti sistematici con gli elementi finiti non trovano alle PINN un
-vantaggio né nel tempo per ottenere la soluzione né nell'accuratezza
-{cite}`grossmann2024can`.
+[Le PINN non mandano in pensione i solutori classici]{.pt-matita}, e il loro
+territorio è più stretto di quanto le tre proprietà lascino credere. Sta dove
+legge e misure vanno usate insieme per rispondere alla stessa domanda; dove le
+variabili in gioco sono troppe perché una griglia stia in piedi; e sui problemi
+inversi, non perché i metodi classici non li sappiano fare, ma perché loro
+chiedono un programma scritto su misura per quell'equazione, e una PINN no. Sui
+problemi diretti, con geometria regolare e senza dati da integrare, i confronti
+sistematici con gli elementi finiti non trovano alle PINN un vantaggio né nel
+tempo per ottenere la soluzione né nell'accuratezza {cite}`grossmann2024can`.
 
 `````{tab} Elementare
 

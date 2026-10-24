@@ -147,7 +147,7 @@ momento: $t$ è il passo in cui l'agente decide, $t+1$ quello subito dopo.
 
 ```{figure} ../figures/reinforcement-learning-agenti-stati-azioni.svg
 :name: fig-agente-ambiente
-:alt: "Anello fra due blocchi: l'agente invia un'azione all'ambiente; l'ambiente restituisce all'agente il nuovo stato e una ricompensa numerica, e il giro ricomincia. Nessun altro canale collega i due: tutto ciò che l'agente sa del mondo passa da stato e ricompensa."
+:alt: "Anello fra due blocchi: l'agente invia un'azione all'ambiente; l'ambiente restituisce all'agente il nuovo stato e una ricompensa numerica, e il ciclo ricomincia. Nessun altro canale collega i due: tutto ciò che l'agente sa del mondo passa da stato e ricompensa."
 :width: 88%
 
 L'anello fra l'agente e l'ambiente: l'agente manda la sua mossa, l'ambiente
@@ -155,11 +155,11 @@ risponde con la nuova situazione e con la ricompensa, e si ricomincia. Non
 passa nient'altro.
 ```
 
-Fra l'agente e l'ambiente passa poco: il nuovo stato e un numero. Quel numero è
-l'unico giudizio che l'agente riceve sul proprio operato, e arriva spesso con
-molte mosse di ritardo rispetto alla scelta che lo ha causato. Il robot, ad
-esempio, cade adesso per un passo storto di tre secondi fa. Nessuna
-spiegazione, nessuna indicazione della mossa giusta.
+Fra l'agente e l'ambiente passa poco: il nuovo stato e un numero. [Quel numero
+è l'unico giudizio che l'agente riceve sul proprio operato]{.pt-matita}, e
+arriva spesso con molte mosse di ritardo rispetto alla scelta che lo ha
+causato. Il robot, ad esempio, cade adesso per un passo storto di tre secondi
+fa. Nessuna spiegazione, nessuna indicazione della mossa giusta.
 
 Stabilire a quale mossa, fra le tante, vada attribuito il merito di un
 punteggio arrivato dopo è il problema dell’**assegnazione del credito**

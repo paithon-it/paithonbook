@@ -44,11 +44,11 @@ risposta che il modello doveva imparare a dare («questo candidato era bravo»,
 
 ```{figure} ../figures/bias-nei-modelli.svg
 :name: fig-ciclo-del-bias
-:alt: "Catena che si chiude ad anello: i dati storici, che portano già le disparità del passato, entrano nel modello, che le amplifica; il modello produce decisioni che riproducono la disparità nel mondo; e quelle decisioni diventano i dati storici del giro successivo."
+:alt: "Catena che si chiude ad anello: i dati storici, che portano già le disparità del passato, entrano nel modello, che le amplifica; il modello produce decisioni che riproducono la disparità nel mondo; e quelle decisioni diventano i dati storici dell'iterazione successiva."
 :width: 92%
 
 Il bias non attraversa il modello e si ferma: torna indietro. Le decisioni di
-oggi diventano i dati di domani, e il giro seguente parte da una disparità un
+oggi diventano i dati di domani, e l'iterazione seguente parte da una disparità un
 po’ più marcata.
 ```
 
@@ -84,12 +84,12 @@ arrivano da quattro porte.
   mandarcene ancora di più. Il pregiudizio si auto-conferma.
 
 Due di queste porte si chiudono lavorando sulla raccolta: si fotografano più
-volti per il campione, e si smette di mandare le pattuglie soltanto dove le si è
-già mandate. Le altre due non si chiudono con altri dati dello stesso tipo.
-Mille prestiti in più dello stesso storico raccontano la stessa ingiustizia con
-qualche decimale in più; e «arrestato» scritto dove serviva «ha commesso un
-reato» resta la domanda sbagliata per quante risposte si raccolgano, finché non
-si trova un altro modo di misurare ciò che interessa.
+volti per il campione, e si smette di mandare le pattuglie soltanto dove le si
+è già mandate. [Le altre due non si chiudono con altri dati dello stesso
+tipo]{.pt-matita}. Mille prestiti in più dello stesso storico raccontano la
+stessa ingiustizia con qualche decimale in più; e «arrestato» scritto dove
+serviva «ha commesso un reato» resta la domanda sbagliata per quante risposte
+si raccolgano, finché non si trova un altro modo di misurare ciò che interessa.
 
 Il riassunto sta in un adagio: *bias in, bias out*. Un modello impeccabile
 allenato su dati storti produce risultati storti.
@@ -136,11 +136,12 @@ dalla raccolta dei dati alla messa in uso.
 
 La distinzione operativa è netta. In pratica, campionamento e feedback si
 attaccano intervenendo sulla raccolta: più esempi del gruppo scarso, e una
-raccolta che non dipenda dalle decisioni del modello. Il bias storico non si
-corregge con altri dati dello stesso tipo, perché la disuguaglianza è il
-fenomeno. Quello di misura si corregge soltanto cambiando la grandezza
-misurata, o modellandone la distorsione {cite}`fogliato2020fairness`: serve una
-misura indipendente dall'etichetta distorta, e non sempre ce n'è una.
+raccolta che non dipenda dalle decisioni del modello. [Il bias storico non si
+corregge con altri dati dello stesso tipo]{.pt-matita}, perché la
+disuguaglianza è il fenomeno. Quello di misura si corregge soltanto cambiando
+la grandezza misurata, o modellandone la distorsione
+{cite}`fogliato2020fairness`: serve una misura indipendente dall'etichetta
+distorta, e non sempre ce n'è una.
 
 `````
 
@@ -277,10 +278,11 @@ l'accuratezza vera sta con buona probabilità fra $0{,}50$ e $0{,}59$: lontana
 dall'85%, appena sopra una moneta. L'ultima riga stampata dice perché: il
 modello ha dato quasi tutto il peso alla prima colonna, quella che decide la
 risposta nel gruppo grande, e quasi niente alla seconda, che la decide nel
-gruppo piccolo. La media assomiglia al gruppo grande perché è calcolata soprattutto
-sui suoi dati. La quota di ciascun gruppo nel dataset (la prima riga stampata)
-è la domanda sulla composizione che la scheda tecnica pone; senza quella e
-senza il calcolo per gruppo, il 54,5% non compare da nessuna parte.
+gruppo piccolo. [La media assomiglia al gruppo grande perché è calcolata
+soprattutto sui suoi dati]{.pt-matita}. La quota di ciascun gruppo nel dataset
+(la prima riga stampata) è la domanda sulla composizione che la scheda tecnica
+pone; senza quella e senza il calcolo per gruppo, il 54,5% non compare da
+nessuna parte.
 
 ## Misurare l'equità guardando i gruppi
 
@@ -348,8 +350,8 @@ richieste distinte.
   stesso modo per tutti: se fra gli uomini con punteggio 70 l'esito capita
   al 70%, lo stesso deve valere fra le donne.
 
-Sembrano tre modi di dire la stessa cosa. Sono richieste diverse, e metterle
-d'accordo è spesso impossibile.
+Sembrano tre modi di dire la stessa cosa. [Sono richieste diverse, e metterle
+d'accordo è spesso impossibile]{.pt-matita}.
 
 `````
 
@@ -357,10 +359,10 @@ d'accordo è spesso impossibile.
 
 Fissiamo la notazione: $A$ è l’**attributo protetto** che identifica il gruppo
 (per esempio $A=a$ e $A=b$), $Y \in \{0,1\}$ è l’esito reale, $\hat{Y}$ è la
-decisione del modello e $S \in [0,1]$ il punteggio da cui la decisione
-si ottiene fissando una soglia. Un criterio enunciato su $S$ e lo stesso
-criterio enunciato su $\hat{Y}$ sono affermazioni diverse, e la distinzione fra
-i due torna a ogni risultato di impossibilità.
+decisione del modello e $S \in [0,1]$ il punteggio da cui la decisione si
+ottiene fissando una soglia. [Un criterio enunciato su $S$ e lo stesso criterio
+enunciato su $\hat{Y}$ sono affermazioni diverse]{.pt-matita}, e la distinzione
+fra i due torna a ogni risultato di impossibilità.
 
 Le definizioni di equità di gruppo si organizzano attorno a tre criteri
 statistici, nella terna di Barocas, Hardt e Narayanan
@@ -446,9 +448,10 @@ la calibrazione è sottile e conta: la calibrazione riguarda il punteggio, il
 il no che si ottengono tagliando quel punteggio a una certa altezza. È
 quest'ultima, non la calibrazione, quella che l'azienda di COMPAS rivendicava.
 
-Questi criteri non entrano in conflitto per caso: alcuni sono matematicamente
-incompatibili ogni volta che i gruppi partono da tassi di base diversi, cioè
-ogni volta che l'esito, nei dati, è più frequente in un gruppo che nell'altro.
+Questi criteri non entrano in conflitto per caso: [alcuni sono matematicamente
+incompatibili ogni volta che i gruppi partono da tassi di base
+diversi]{.pt-matita}, cioè ogni volta che l'esito, nei dati, è più frequente in
+un gruppo che nell'altro.
 
 I risultati che lo dimostrano sono tre, e non sono tre versioni dello stesso.
 Quello di Chouldechova riguarda le decisioni sì o no: la parità del valore
@@ -701,10 +704,10 @@ problema che si voleva misurare.
 Questo non rende falso nessuno dei tre teoremi, poiché sono catene di
 uguaglianze che restano vere qualunque sia l'esito che si è deciso di misurare.
 Cambia però cosa se ne può concludere. Il teorema dice che, dati quei numeri,
-non si possono avere tutte le garanzie; non dice che quei numeri siano i numeri
-giusti, e non dice quale garanzia tenere. Fermarsi a «tanto è una scelta di
-valori» è vero e insufficiente, perché lascia credere che almeno le premesse
-del conflitto siano solide. Una di esse non lo è.
+non si possono avere tutte le garanzie; [non dice che quei numeri siano i
+numeri giusti, e non dice quale garanzia tenere]{.pt-matita}. Fermarsi a «tanto
+è una scelta di valori» è vero e insufficiente, perché lascia credere che
+almeno le premesse del conflitto siano solide. Una di esse non lo è.
 
 `````{tab} Elementare
 
@@ -786,12 +789,12 @@ spostando il traguardo: il modello resta com'è, ma il punteggio oltre il quale
 si dice sì viene fissato più in alto per un gruppo e più in basso per l'altro,
 finché i due tassi di errore coincidono.
 
-Nessuno dei tre è gratis. Riequilibrare i dati può abbassare l'accuratezza per
-tutti. Spostare il traguardo pareggia gli errori senza toccare il punteggio,
-che resta onesto com'era; a pagare è il «sì», che dopo vale di più in un gruppo
-che nell'altro. È delicato per una ragione evidente: comporta
-trattare due persone in modo diverso in base al gruppo, cioè ciò
-da cui eravamo partiti. C'è chi lo considera l'unico rimedio serio e chi una
+[Nessuno dei tre è gratis]{.pt-matita}. Riequilibrare i dati può abbassare
+l'accuratezza per tutti. Spostare il traguardo pareggia gli errori senza
+toccare il punteggio, che resta onesto com'era; a pagare è il «sì», che dopo
+vale di più in un gruppo che nell'altro. È delicato per una ragione evidente:
+comporta trattare due persone in modo diverso in base al gruppo, cioè ciò da
+cui eravamo partiti. C'è chi lo considera l'unico rimedio serio e chi una
 discriminazione a sua volta, e la discussione è aperta anche fra i giuristi.
 
 `````
@@ -830,11 +833,11 @@ discriminazione a sua volta, e la discussione è aperta anche fra i giuristi.
   costruzione geometrica sulle curve ROC dei due gruppi).
 
 I risultati di impossibilità restano sullo sfondo, e il post-processing è il
-posto in cui si vede meglio che cosa garantiscono queste tecniche. Le
-soglie per gruppo raggiungono l'equalized odds senza toccare il punteggio,
-quindi senza toccarne la calibrazione; ciò che non possono fare è tenere fermo
-anche il valore predittivo, che si separa fra i gruppi non appena le
-prevalenze differiscono. Nessuna delle tre leve annulla il conflitto: sposta
+posto in cui si vede meglio che cosa garantiscono queste tecniche. Le soglie
+per gruppo raggiungono l'equalized odds senza toccare il punteggio, quindi
+senza toccarne la calibrazione; ciò che non possono fare è tenere fermo anche
+il valore predittivo, che si separa fra i gruppi non appena le prevalenze
+differiscono. [Nessuna delle tre leve annulla il conflitto]{.pt-matita}: sposta
 *quale* criterio privilegiare, e quel «quale» non è una scelta tecnica.
 
 `````
@@ -866,9 +869,9 @@ ingiustificate fra individui vicini».
 
 Il problema è tutto in quella parola, *simili*. Simili rispetto a cosa? Due
 curriculum possono sembrare vicini per titoli di studio e lontani per
-esperienza: chi decide il metro? Definire la somiglianza «giusta» è difficile
-quanto il problema di equità di partenza, e spesso nasconde, dentro il metro,
-le stesse distorsioni che volevamo eliminare.
+esperienza: chi decide il metro? [Definire la somiglianza «giusta» è difficile
+quanto il problema di equità di partenza]{.pt-matita}, e spesso nasconde,
+dentro il metro, le stesse distorsioni che volevamo eliminare.
 
 `````
 
@@ -893,7 +896,7 @@ termine (lemma 3.1 del lavoro) che con la variazione totale è limitato dalla
 distanza di trasporto, l’*Earthmover*, fra le distribuzioni dei due gruppi
 misurata con $d$ (teorema 3.3). Gruppi vicini secondo $d$ ricevono quote simili
 senza che lo si imponga; gruppi lontani possono riceverne di molto diverse. Ma
-l'equità individuale sposta l'intera difficoltà su $d$: la metrica di
+[l'equità individuale sposta l'intera difficoltà su $d$]{.pt-matita}: la metrica di
 somiglianza specifica del compito è assunta *data*, mentre in pratica
 sceglierla è precisamente il giudizio di valore che si voleva rendere
 oggettivo. Per questo l'equità individuale è teoricamente elegante ma di rado
@@ -1038,12 +1041,12 @@ inosservato, è il valore predittivo: $0{,}795$ nel Gruppo A contro $0{,}660$
 nel Gruppo B. Quando il modello dice sì, ci prende molto più spesso in un
 gruppo che nell'altro.
 
-È il contenuto del teorema: tre garanzie, di cui al più due alla volta. Un
-esperimento non dimostra un'impossibilità, ma mostra la forma del vincolo e il
-fatto che la scelta è reale: si può pareggiare gli errori accettando che il
-«sì» valga meno in un gruppo, oppure pareggiare l'affidabilità del sì
-accettando tassi di errore diversi. Non esiste una scelta che le tenga
-entrambe.
+[È il contenuto del teorema: tre garanzie, di cui al più due alla
+volta]{.pt-matita}. Un esperimento non dimostra un'impossibilità, ma mostra la
+forma del vincolo e il fatto che la scelta è reale: si può pareggiare gli
+errori accettando che il «sì» valga meno in un gruppo, oppure pareggiare
+l'affidabilità del sì accettando tassi di errore diversi. Non esiste una scelta
+che le tenga entrambe.
 
 `````{tab} Elementare
 
@@ -1092,9 +1095,9 @@ domanda, perché cambia l'errore che pesa di più.
 
 Quel che la statistica può fare lo fa fino in fondo: elenca le opzioni,
 quantifica il costo di ciascuna, smaschera quelle che si escludono a vicenda.
-Poi si ferma, e la scelta va fatta in chiaro da qualcuno che se ne assume la
-responsabilità, invece che finire dentro una riga di codice che non legge
-nessuno.
+Poi si ferma, e [la scelta va fatta in chiaro da qualcuno che se ne assume la
+responsabilità]{.pt-matita}, invece che finire dentro una riga di codice che
+non legge nessuno.
 
 `````{tab} Elementare
 

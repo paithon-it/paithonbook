@@ -31,7 +31,7 @@ Le due bussole si mettono insieme con il conto che si fa ogni volta che si
 aggiorna un'opinione con un indizio, e sta in una riga: la direzione verso
 «immagini credibili che contengono un gatto» è la direzione verso «immagini
 credibili» più la direzione verso «cose che a un riconoscitore di gatti
-sembrano gatti». Due bussole che si sommano, e la somma è la strada.
+sembrano gatti». [Due bussole che si sommano, e la somma è la strada]{.pt-matita}.
 
 Da qui le due ricette. La prima, quella del 2021, prende la seconda bussola da
 un riconoscitore addestrato a parte (in gergo, un classificatore): si guarda
@@ -69,8 +69,8 @@ $$
 $$
 
 Il primo termine è il punteggio che il modello già conosce; il secondo è
-l'unica cosa che il condizionamento aggiunge. Di conseguenza tutte le tecniche
-di guida sono modi diversi di procurarsi quel secondo termine.
+l'unica cosa che il condizionamento aggiunge. Di conseguenza [tutte le tecniche
+di guida sono modi diversi di procurarsi quel secondo termine]{.pt-matita}.
 
 **Classifier guidance** {cite}`dhariwal2021diffusion`. Si addestra un
 classificatore $p_\psi(c\mid
@@ -218,8 +218,8 @@ i numeri stanno al posto dei pixel, e uscire dalla zona dei dati equivale a
 mettere colori più accesi di quanti se ne trovino nelle foto vere. In
 particolare, a peso sette e mezzo, che è il valore con cui Stable Diffusion
 esce di serie, i campioni non vengono dalla distribuzione dei dati con
-quell'etichetta: vengono da una distribuzione più stretta della metà e centrata
-un'unità più in là.
+quell'etichetta: [vengono da una distribuzione più stretta della metà e centrata
+un'unità più in là]{.pt-matita}.
 
 Le cure che si usano derivano tutte da questa lettura. Si può rimettere in
 scala l'immagine guidata, riportandone l'ampiezza a quella che aveva la bussola
@@ -249,9 +249,10 @@ campionamento dalla condizionata.
 Per $w>1$ divergono, e non di poco. Ad esempio, a $w=7{,}5$ il campionatore
 produce media $2{,}57$ e deviazione $0{,}247$, contro $1{,}508$ e $0{,}490$
 della distribuzione inclinata: la media è spostata di più di due deviazioni
-standard dei dati veri, e la larghezza è dimezzata. La guida applicata lungo
-la traiettoria non campiona dalla distribuzione inclinata, e la formula che
-si cita per giustificarla descrive un oggetto diverso da quello che si ottiene.
+standard dei dati veri, e la larghezza è dimezzata. [La guida applicata lungo
+la traiettoria non campiona dalla distribuzione inclinata]{.pt-matita}, e la
+formula che si cita per giustificarla descrive un oggetto diverso da quello che
+si ottiene.
 
 La ragione è che l'operazione di inclinazione e quella di diffusione non
 commutano. Il punteggio inclinato al tempo $t$,
@@ -307,14 +308,14 @@ passo guidato la attraversa due volte invece di una, all'andata e al ritorno.
 Siccome il modello non si sta addestrando, il ritorno costa quanto l'andata, e
 il passo costa quasi il doppio.
 
-Un accorgimento fa la differenza fra funzionare e non funzionare. La misura va
+Un accorgimento fa la differenza fra funzionare e non funzionare. [La misura va
 applicata non all'immagine rumorosa che si ha in mano, ma alla stima
-dell'immagine pulita che il modello sa già produrre in ogni istante. Un
-misuratore di qualità estetica davanti a un'immagine mezza distrutta risponde a
-caso, e la sua indicazione sarebbe rumore; davanti alla stima di come
-quell'immagine finirà, risponde sensatamente. È il motivo per cui la maggior
-parte dei metodi che aggiungono vincoli a un modello di diffusione, senza
-riaddestrarlo, passa da quella stima.
+dell'immagine pulita che il modello sa già produrre in ogni
+istante]{.pt-matita}. Un misuratore di qualità estetica davanti a un'immagine
+mezza distrutta risponde a caso, e la sua indicazione sarebbe rumore; davanti
+alla stima di come quell'immagine finirà, risponde sensatamente. È il motivo
+per cui la maggior parte dei metodi che aggiungono vincoli a un modello di
+diffusione, senza riaddestrarlo, passa da quella stima.
 
 C'è un caso in cui questa sola idea copre una famiglia intera di problemi.
 Ricostruire la parte mancante di una foto, tirar fuori i dettagli da
@@ -355,11 +356,11 @@ dell'ELBO e il logaritmo del rapporto segnale-rumore). Il gradiente rispetto a
 $\mathbf{x}_t$ attraversa la rete, quindi ogni passo guidato costa una passata
 all'indietro in più.
 
-La giustificazione poggia su due gradini, e solo il primo è esatto. Il primo è
-la formula di Tweedie, che dà la stima del dato pulito come media a posteriori,
-$\hat{\mathbf{x}}_0 = \mathbb{E}[\mathbf{x}_0\mid\mathbf{x}_t]$, un'identità e
-non un'approssimazione (vale a rete ottima, cioè quando
-$\boldsymbol{\epsilon}_\theta$ coincide con
+[La giustificazione poggia su due gradini, e solo il primo è
+esatto]{.pt-matita}. Il primo è la formula di Tweedie, che dà la stima del dato
+pulito come media a posteriori, $\hat{\mathbf{x}}_0 =
+\mathbb{E}[\mathbf{x}_0\mid\mathbf{x}_t]$, un'identità e non un'approssimazione
+(vale a rete ottima, cioè quando $\boldsymbol{\epsilon}_\theta$ coincide con
 $\mathbb{E}[\boldsymbol{\epsilon}\mid\mathbf{x}_t]$). Il secondo è lo scambio
 fra la funzione e la media, $\mathbb{E}[h(\mathbf{x}_0)\mid\mathbf{x}_t]\approx
 h(\mathbb{E}[\mathbf{x}_0\mid\mathbf{x}_t])$, che è un salto di Jensen
@@ -414,17 +415,16 @@ modello di partenza e si misura sempre la differenza rispetto a quella. Senza
 il paragone, il modo più rapido di rendere probabile la preferita sarebbe
 dimenticare tutto il resto.
 
-Il pericolo però non sparisce, cambia solo indirizzo. Un modello addestrato a
+Il pericolo però non sparisce, cambia solo indirizzo. [Un modello addestrato a
 massimizzare un voto impara a massimizzare quel voto, non la qualità che il
-voto doveva misurare: se il giudice premia i colori saturi perché nei dati di
-addestramento le foto belle erano sature, il modello impara a saturare tutto;
-se premia le immagini con molti dettagli, impara a riempirle di dettagli
-inutili. Nel secondo metodo il giudice non c'è, ma il voto sì, nascosto dentro
-le coppie: la preferenza raccolta è quella di chi ha guardato, e il modello
-impara a piacere a quelle persone in quelle condizioni. Il fenomeno ha un nome,
-reward hacking, e lo racconta per esteso la
-{doc}`sezione sull'esplorazione e
-la ricompensa
+voto doveva misurare]{.pt-matita}: se il giudice premia i colori saturi perché
+nei dati di addestramento le foto belle erano sature, il modello impara a
+saturare tutto; se premia le immagini con molti dettagli, impara a riempirle di
+dettagli inutili. Nel secondo metodo il giudice non c'è, ma il voto sì,
+nascosto dentro le coppie: la preferenza raccolta è quella di chi ha guardato,
+e il modello impara a piacere a quelle persone in quelle condizioni. Il
+fenomeno ha un nome, reward hacking, e lo racconta per esteso la {doc}`sezione
+sull'esplorazione e la ricompensa
 </DeepReinforcementLearning/esplorazione-e-ricompensa>`.
 
 `````
@@ -455,16 +455,15 @@ le quattro valutazioni di rete che servono: due modelli, quello corrente e
 quello di riferimento, su due immagini.
 
 Il fallimento tipico è il *reward hacking*. Infatti il modello di ricompensa è
-una funzione appresa su una distribuzione di immagini, e l'ottimizzazione la
-porta
-fuori da quella distribuzione, dove il punteggio è alto e la qualità no; nella
-seconda famiglia la ricompensa non è un modello a parte ma resta implicita nel
-rapporto di verosimiglianze, e il difetto si sposta sulle preferenze raccolte
-invece di sparire. Le contromisure standard sono un termine di regolarizzazione
-verso il modello di partenza (una divergenza KL, con il suo coefficiente), il
-rimescolamento periodico dei dati di preferenza, e l'interruzione anticipata
-guidata da una valutazione indipendente. Nessuna delle tre elimina il problema;
-lo rallentano soltanto.
+una funzione appresa su una distribuzione di immagini, e [l'ottimizzazione la
+porta fuori da quella distribuzione, dove il punteggio è alto e la qualità
+no]{.pt-matita}; nella seconda famiglia la ricompensa non è un modello a parte
+ma resta implicita nel rapporto di verosimiglianze, e il difetto si sposta
+sulle preferenze raccolte invece di sparire. Le contromisure standard sono un
+termine di regolarizzazione verso il modello di partenza (una divergenza KL,
+con il suo coefficiente), il rimescolamento periodico dei dati di preferenza, e
+l'interruzione anticipata guidata da una valutazione indipendente. Nessuna
+delle tre elimina il problema; lo rallentano soltanto.
 
 `````
 
@@ -517,12 +516,13 @@ for da, a in ((0.8, 1.0), (0.6, 0.8), (0.4, 0.6), (0.2, 0.4), (0.0, 0.2)):
 
 La misura dà un risultato netto e ha un limite.
 
-Il risultato netto è che il danno si fa a metà strada. Infatti, accesa soltanto
-nel primo quinto, dove il rumore è massimo, la guida sposta il centro
-di $0{,}161$; soltanto nell'ultimo, dove i dati sono vicini, di $0{,}046$; nella
-fascia fra $0{,}4$ e $0{,}6$ di $0{,}699$. Lo spostamento (la colonna «scarto»)
-va di pari passo con la distanza fra i due punteggi (la colonna «divario»):
-$0{,}028$ nel primo quinto, $0{,}027$ nell'ultimo, $0{,}203$ in mezzo.
+Il risultato netto è che [il danno si fa a metà strada]{.pt-matita}. Infatti,
+accesa soltanto nel primo quinto, dove il rumore è massimo, la guida sposta il
+centro di $0{,}161$; soltanto nell'ultimo, dove i dati sono vicini, di
+$0{,}046$; nella fascia fra $0{,}4$ e $0{,}6$ di $0{,}699$. Lo spostamento (la
+colonna «scarto») va di pari passo con la distanza fra i due punteggi (la
+colonna «divario»): $0{,}028$ nel primo quinto, $0{,}027$ nell'ultimo,
+$0{,}203$ in mezzo.
 
 La ragione è tutta lì: a rumore massimo l'immagine è ancora tutta grana, la
 classe non si vede, i due punteggi indicano quasi la stessa direzione, e

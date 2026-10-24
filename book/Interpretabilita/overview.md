@@ -37,11 +37,12 @@ sospettò della neve. Allora i ricercatori diedero loro le *spiegazioni*: sopra
 ogni foto, evidenziate a colori, le porzioni di immagine su cui quella risposta
 si era basata. L'inganno crollò. I fiduciosi scesero a tre, e venticinque
 studenti su ventisette indicarono la neve {cite}`ribeiro2016why`. Era una
-messinscena costruita apposta per dimostrare un fatto solo: senza una
+messinscena costruita apposta per dimostrare un fatto solo: [senza una
 spiegazione, nemmeno gli addetti ai lavori si accorgono di un modello che
-funziona per la ragione sbagliata. Il metodo che disegna quelle macchie, LIME,
-lo proposero gli stessi autori insieme all'esperimento, e lo racconta la
-sezione sulle {doc}`spiegazioni locali </Interpretabilita/spiegazioni-locali>`.
+funziona per la ragione sbagliata]{.pt-matita}. Il metodo che disegna quelle
+macchie, LIME, lo proposero gli stessi autori insieme all'esperimento, e lo
+racconta la sezione sulle {doc}`spiegazioni
+locali </Interpretabilita/spiegazioni-locali>`.
 
 La storia ha un antenato illustre. All'inizio del Novecento, a Berlino, un
 cavallo di nome Hans il Sapiente sembrava saper contare: gli si chiedeva
@@ -164,8 +165,8 @@ divisi per sottogruppi.
 Le ragioni per volere una spiegazione non sono una sola, e non hanno tutte lo
 stesso peso. Hanno però una radice comune {cite}`doshi2017towards`. Un modello
 si addestra facendo scendere un solo numero, la perdita, che misura quanto le
-sue risposte sono sbagliate e nient'altro; e si vuole una spiegazione quando
-quel numero non esprime tutte le richieste che gli facciamo: «indovina
+sue risposte sono sbagliate e nient'altro; e [si vuole una spiegazione quando
+quel numero non esprime tutte le richieste che gli facciamo]{.pt-matita}: «indovina
 l'animale» si scrive in una formula, «guarda l'animale e non lo sfondo» o «non
 discriminare» no. Elencarle serve comunque, perché guidano
 *che tipo* di spiegazione cerchiamo.
@@ -442,14 +443,15 @@ sono due domande diverse, non una.
   si riaddestrasse domani potrebbe scegliere l'altra. Non c'è nessuna ragione
   per dare più credito a una che all'altra, quindi si divide in parti uguali.
 
-Nessuna delle due risposte è sbagliata: rispondono a domande diverse, e chi usa
-un metodo senza sapere a quale delle due sta rispondendo legge nel numero più
-di quanto contiene. Chi cerca un difetto nel modello vuole la prima. Chi
-cerca una causa nel mondo vorrebbe la seconda, e nemmeno quella gliela darà: un
-modello ha visto solo cose che vanno insieme (si dice che sono **correlate**),
-non ha mai fatto un esperimento, e due cose che vanno insieme non sono per
-forza l'una la causa dell'altra. Questo bivio tornerà più volte, ogni volta che
-due metodi entrambi ragionevoli daranno due numeri diversi per lo stesso caso.
+Nessuna delle due risposte è sbagliata: rispondono a domande diverse, e [chi
+usa un metodo senza sapere a quale delle due sta rispondendo legge nel numero
+più di quanto contiene]{.pt-matita}. Chi cerca un difetto nel modello vuole la
+prima. Chi cerca una causa nel mondo vorrebbe la seconda, e nemmeno quella
+gliela darà: un modello ha visto solo cose che vanno insieme (si dice che sono
+**correlate**), non ha mai fatto un esperimento, e due cose che vanno insieme
+non sono per forza l'una la causa dell'altra. Questo bivio tornerà più volte,
+ogni volta che due metodi entrambi ragionevoli daranno due numeri diversi per
+lo stesso caso.
 
 ## Un modello che si spiega da sé
 
@@ -649,12 +651,12 @@ la spiegazione coincida con il calcolo {cite}`rudin2019stop`. È una strada più
 giovane, e la spiegazione dopo resta la più battuta.
 
 Le due fazioni concordano però su un punto, scritto nel 2017 da due
-ricercatrici, Finale Doshi-Velez e Been Kim {cite}`doshi2017towards`: una
-spiegazione va misurata, non esibita. Chi la produce deve dichiarare che cosa
-ha misurato e con quale esperimento, come si fa per l’accuratezza di un
-modello, che nessuno si sognerebbe di dichiarare senza dire su quali casi l'ha
-contata. Non esistono spiegazioni «gratis»: esistono spiegazioni verificate e
-spiegazioni che ci raccontiamo.
+ricercatrici, Finale Doshi-Velez e Been Kim {cite}`doshi2017towards`: [una
+spiegazione va misurata, non esibita]{.pt-matita}. Chi la produce deve
+dichiarare che cosa ha misurato e con quale esperimento, come si fa per
+l’accuratezza di un modello, che nessuno si sognerebbe di dichiarare senza dire
+su quali casi l'ha contata. Non esistono spiegazioni «gratis»: esistono
+spiegazioni verificate e spiegazioni che ci raccontiamo.
 
 Resta da dire perché, sui dati in tabella, lo scambio fra accuratezza e
 chiarezza manchi così spesso. La ragione ha un nome preso dal cinema, **effetto

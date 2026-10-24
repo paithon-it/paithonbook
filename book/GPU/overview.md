@@ -39,9 +39,9 @@ Verso la metà degli anni Duemila, però, la tensione smise di scendere. Per
 abbassarla, infatti, bisogna abbassare anche la tensione di soglia, quella a
 cui il transistor si accende, e con una soglia troppo bassa il transistor
 lascia passare corrente anche da spento, cioè scalda senza lavorare. Ferma la
-tensione, ogni aumento di frequenza diventava calore in più, e presto più
-calore di quanto se ne riuscisse a portare via. I chip avevano trovato un muro
-fisico, il *power wall*.
+tensione, [ogni aumento di frequenza diventava calore in più]{.pt-matita}, e
+presto più calore di quanto se ne riuscisse a portare via. I chip avevano
+trovato un muro fisico, il *power wall*.
 
 Nel 2004 Intel rinunciò ai processori che avrebbero dovuto correre a frequenze
 sempre più alte; nel 2005 Herb Sutter, che presiedeva il comitato di
@@ -165,8 +165,8 @@ già finito da un pezzo.
 Basta un pezzo di catena piccolo per pesare molto. Se, ad esempio, anche solo
 un ventesimo del lavoro va fatto un passo dopo l'altro, mille persone vanno al
 massimo venti volte più in fretta di una sola, perché quel ventesimo nessuno lo
-può accorciare. La folla conviene quindi quando c'è da fare la stessa
-operazione migliaia di volte insieme.
+può accorciare. [La folla conviene quindi quando c'è da fare la stessa
+operazione migliaia di volte insieme]{.pt-matita}.
 
 Una rete neurale è fatta di quella montagna, e lo si vede contando. Prendi uno
 strato solo, con mille numeri in ingresso e mille in uscita: ogni numero in
@@ -199,10 +199,10 @@ accetta un $t_\text{lat}$ di centinaia di cicli verso la memoria e alza il
 numero di operazioni in volo, con decine di warp residenti per SM e centinaia
 di migliaia di thread sul chip.
 
-Questa scelta conviene però solo se il problema offre quel parallelismo, e la
-**legge di Amdahl** {cite}`amdahl1967validity` dice quanto: se una frazione
-$p$ del lavoro si divide su $u$ unità e il resto deve procedere in sequenza,
-l'accelerazione vale
+[Questa scelta conviene però solo se il problema offre quel
+parallelismo]{.pt-matita}, e la **legge di Amdahl** {cite}`amdahl1967validity`
+dice quanto: se una frazione $p$ del lavoro si divide su $u$ unità e il resto
+deve procedere in sequenza, l'accelerazione vale
 
 $$
 S(u) = \frac{1}{(1-p) + p/u},
@@ -234,10 +234,11 @@ dodici, con quattro che si danno il cambio non si ferma mai.
 
 ## Il collo di bottiglia è muovere i dati
 
-La seconda idea è meno intuitiva: il limite di una GPU è spesso la quantità di
-byte che le arrivano, più che il numero di calcoli che sa eseguire. Succede
-quando un'operazione richiede pochi calcoli per ogni byte che legge o scrive, e
-allora le unità di calcolo restano ferme ad aspettare i dati.
+La seconda idea è meno intuitiva: [il limite di una GPU è spesso la quantità di
+byte che le arrivano, più che il numero di calcoli che sa
+eseguire]{.pt-matita}. Succede quando un'operazione richiede pochi calcoli per
+ogni byte che legge o scrive, e allora le unità di calcolo restano ferme ad
+aspettare i dati.
 
 L'unità di misura è il **byte**, cioè otto cifre binarie, e una rete neurale ne
 usa di solito quattro per ogni numero, oppure due. Un miliardo di byte fa un

@@ -35,8 +35,8 @@ togliendolo e guardando che cosa succede. Ciò che si può misurare si può anch
 cercare, proponendo una modifica, provandola e tenendola se va meglio, e sempre
 più spesso a farlo è un altro agente. Lo si fa a scale diverse, dal contesto
 che si accumula da un compito all'altro fino all'harness intero, e ogni volta
-torna la domanda del nodo 114, cioè chi possa toccare il metro con cui la
-modifica viene giudicata.
+torna la domanda del nodo 114, cioè [chi possa toccare il metro con cui la
+modifica viene giudicata]{.pt-matita}.
 
 ## Dall'esperienza al contesto
 
@@ -157,8 +157,8 @@ correzione su una vecchia, e a metterle a posto c'è un commesso che non
 riscrive niente e segue sempre la stessa regola. Infila le schede nuove; fa una
 tacca su quelle che, a detta di chi le ha usate, sono servite, e una tacca di
 un altro colore su quelle che hanno fatto sbagliare; se una scheda nuova dice la
-stessa cosa di una vecchia, le pinza insieme. Una scheda sbagliata rovina i
-pezzi del suo tipo, non tutto lo schedario.
+stessa cosa di una vecchia, le pinza insieme. [Una scheda sbagliata rovina i
+pezzi del suo tipo, non tutto lo schedario]{.pt-matita}.
 
 Il prezzo c'è anche qui. Lo schedario cresce, e la mattina nessuno lo legge più
 tutto; si tirano fuori le schede del pezzo del giorno, e bisogna saper scegliere
@@ -211,14 +211,14 @@ P(\text{trovata})
 $$
 
 che con $\nu = 40$ e $q = 0{,}95$ vale $0{,}34$; le voci presenti sono in media
-$\nu P = 13{,}6$, sotto la capacità $1/(1 - q) = 20$ che si avrebbe con una voce
-nuova per compito. Nel programma il crollo ha una probabilità fissa; nella
+$\nu P = 13{,}6$, sotto la capacità $1/(1 - q) = 20$ che si avrebbe con una
+voce nuova per compito. Nel programma il crollo ha una probabilità fissa; nella
 fonte arriva quando il contesto è cresciuto. Nella fusione una voce esce solo
 per un'operazione esplicita del codice, la deduplicazione o la potatura delle
-voci poco utili, e l'errore di un $D_k$ sbagliato resta confinato alle voci che
-tocca. Nell'ablazione degli autori su AppWorld (compiti della parte normale,
-DeepSeek-V3.1 nei tre ruoli) ACE senza gli aggiornamenti a voci porta l'agente
-da 63,7 a 67,3, con gli aggiornamenti a 76,2.
+voci poco utili, e [l'errore di un $D_k$ sbagliato resta confinato alle voci
+che tocca]{.pt-matita}. Nell'ablazione degli autori su AppWorld (compiti della
+parte normale, DeepSeek-V3.1 nei tre ruoli) ACE senza gli aggiornamenti a voci
+porta l'agente da 63,7 a 67,3, con gli aggiornamenti a 76,2.
 
 I limiti sono altrettanto netti. $|M_k|$ decresce soltanto per quelle
 operazioni, e il costo di leggere lo stato cresce con lui. La deduplicazione è
@@ -290,15 +290,15 @@ e chi fosse ripartito sempre dal migliore avrebbe seguito un altro ramo. I voti
 sono illustrativi.
 ```
 
-Il punto debole del metodo è quello che il nodo 114 ha reso visibile. Infatti il
-voto su quei compiti è l'unica descrizione di ciò che si vuole, e la ricerca è
-libera di peggiorare tutto ciò che non misura. Il voto del vincitore è gonfiato
-come quello dell'istruzione migliore nell'ottimizzazione del prompt, e in più
-chi propone ha letto i risultati di quei compiti. E il metro deve stare fuori
-dalla portata di chi viene misurato, come chiedeva la {doc}`sezione sul
-collaudo <finito-vuol-dire-collaudato>`: nella DGM il controllo era nascosto, ma
-a scrivere i marcatori da cui leggeva era il codice che l'agente poteva
-modificare.
+Il punto debole del metodo è quello che il nodo 114 ha reso visibile. Infatti
+[il voto su quei compiti è l'unica descrizione di ciò che si vuole, e la
+ricerca è libera di peggiorare tutto ciò che non misura]{.pt-matita}. Il voto
+del vincitore è gonfiato come quello dell'istruzione migliore
+nell'ottimizzazione del prompt, e in più chi propone ha letto i risultati di
+quei compiti. E il metro deve stare fuori dalla portata di chi viene misurato,
+come chiedeva la {doc}`sezione sul collaudo <finito-vuol-dire-collaudato>`:
+nella DGM il controllo era nascosto, ma a scrivere i marcatori da cui leggeva
+era il codice che l'agente poteva modificare.
 
 Un programma mostra le due facce dell'archivio a numeri tondi. Un harness è una
 fila di componenti accesi o spenti, e una modifica ne cambia uno a caso. Il
@@ -321,7 +321,7 @@ import numpy as np
 # vero s(H) è inventato, in due versioni: nella "liscia" ogni componente
 # acceso aggiunge un poco; nella "trappola", costruita apposta, i primi tre
 # servono solo tutti insieme, e uno o due da soli peggiorano.
-GIRI, PROVE = 80, 300
+ITERAZIONI, PROVE = 80, 300
 
 def liscia(h):
     return 0.20 + 0.04 * h.sum()
@@ -339,7 +339,7 @@ def voto(rng, s, compiti):     # compiti=None: misura esatta; altrimenti
 def cerca(paesaggio, aperto, compiti, rng, componenti=8):
     archivio = [np.zeros(componenti, dtype=int)]
     voti, figli = [voto(rng, paesaggio(archivio[0]), compiti)], [0]
-    for _ in range(GIRI):
+    for _ in range(ITERAZIONI):
         if aperto:             # l'archivio: ogni voce può fare da genitore
             v = np.array(voti)
             peso = 1 / (1 + np.exp(-10 * (v - 0.5))) / (1 + np.array(figli))
@@ -581,17 +581,17 @@ riassunto scritta dal capobottega. Il terzo può aprire l'armadio dei
 raccoglitori di ogni prova, con i fogli di viaggio di tutti i pezzi, e tirare
 fuori quelli che vuole.
 
-Una prova ha messo la pentola della colla sullo scaffale vicino alla finestra, e
-tre banchi più in là i pezzi vengono storti, perché la colla si raffredda per
+Una prova ha messo la pentola della colla sullo scaffale vicino alla finestra,
+e tre banchi più in là i pezzi vengono storti, perché la colla si raffredda per
 strada. Il voto dice «dodici pezzi storti»; il riassunto dice «problemi di
 incollaggio»; solo i fogli di viaggio mostrano che i pezzi storti sono tutti
-quelli incollati con la colla di quello scaffale. Un riassunto non può contenere
-quello che i fogli non dicono, e chi lo scrive non sa che cosa il riordinatore
-andrà a cercare. I fogli però sono migliaia, e nessuno li legge tutti; il terzo
-vince perché sa cercare, per esempio mettendo i pezzi storti accanto a quelli di
-una prova andata bene. E se si confronta la prova a metà classifica di ciascuno,
-che non ha la fortuna della migliore, quella del terzo batte la migliore degli
-altri due.
+quelli incollati con la colla di quello scaffale. [Un riassunto non può
+contenere quello che i fogli non dicono]{.pt-matita}, e chi lo scrive non sa
+che cosa il riordinatore andrà a cercare. I fogli però sono migliaia, e nessuno
+li legge tutti; il terzo vince perché sa cercare, per esempio mettendo i pezzi
+storti accanto a quelli di una prova andata bene. E se si confronta la prova a
+metà classifica di ciascuno, che non ha la fortuna della migliore, quella del
+terzo batte la migliore degli altri due.
 
 Il proprietario chiede poi al riordinatore due cose. Non deve toccare la dima, i
 raccoglitori né la scelta degli artigiani, anche se come lo faccia rispettare
@@ -628,10 +628,10 @@ $$
 \mathcal{F}^{\text{tracce}} = \{(H_i, \hat s_i, \xi_i)\},
 $$
 
-dove $\mathrm{riass}$ è un riassunto scritto da un modello. Voto e riassunto
-sono funzioni, eventualmente aleatorie, della traccia; per la causa di un
-fallimento (la decisione dell'harness che l'ha prodotto) la catena $\text{causa}
-\to \xi \to \mathrm{riass}(\xi)$ è di Markov, e la disuguaglianza
+dove $\mathrm{riass}$ è un riassunto scritto da un modello. [Voto e riassunto
+sono funzioni, eventualmente aleatorie, della traccia]{.pt-matita}; per la
+causa di un fallimento (la decisione dell'harness che l'ha prodotto) la catena
+$\text{causa} \to \xi \to \mathrm{riass}(\xi)$ è di Markov, e la disuguaglianza
 dell'elaborazione dei dati della {doc}`teoria dell'informazione
 </Matematica/teoria-informazione>` dà $I(\text{causa}; \mathrm{riass}(\xi)) \le
 I(\text{causa}; \xi)$, e lo stesso per $\hat s$. Ma $|\xi_i|$ arriva a $10^7$
@@ -742,11 +742,12 @@ prova non la ferma, perché nessun suo ordine dice «finitura viennese»; e la
 tacca «ha fatto sbagliare» non arriva, perché chi la usa pensa di aver seguito
 un buon consiglio.
 
-Il rimedio è scrivere su ogni scheda da dove viene il trucco, se dalla bottega,
-provato sui pezzi, o da un volantino. Le schede copiate da fuori restano
-consigli, e una cosa che non si disfa, come spedire un mobile, sulla loro parola
-non si fa senza la firma del proprietario. Costa qualcosa, perché se quasi ogni
-giorno qualcuno legge un volantino, quasi ogni scheda resta un consiglio.
+[Il rimedio è scrivere su ogni scheda da dove viene il trucco]{.pt-matita}, se
+dalla bottega, provato sui pezzi, o da un volantino. Le schede copiate da fuori
+restano consigli, e una cosa che non si disfa, come spedire un mobile, sulla
+loro parola non si fa senza la firma del proprietario. Costa qualcosa, perché
+se quasi ogni giorno qualcuno legge un volantino, quasi ogni scheda resta un
+consiglio.
 
 `````
 
@@ -795,13 +796,14 @@ e un harness con la memoria avvelenata prende lo stesso voto di uno pulito. La
 deduplicazione non lo ferma, perché le voci ostili non sono doppioni, e i
 contatori di utilità non scattano, perché li aggiorna l'agente che ne segue i
 consigli. La condizione che manca è la **provenienza**. Ogni voce $\mu_i$ porta
-un'etichetta di fiducia ereditata dal contenuto da cui è stata ricavata, e le
+un'etichetta di fiducia ereditata dal contenuto da cui è stata ricavata, e [le
 voci non fidate non possono, da sole, guidare un'azione con effetti esterni
-irreversibili. È il tracciamento della provenienza che la {doc}`sezione sulla
-sicurezza dei modelli di linguaggio </AIResponsabile/sicurezza-llm>`, nel
-capitolo sull'AI responsabile, metterà fra i confini di privilegio, applicato
-alla memoria invece che al contesto, e con il loro prezzo: se quasi ogni
-traccia ha letto qualcosa da fuori, quasi ogni voce resta non fidata.
+irreversibili]{.pt-matita}. È il tracciamento della provenienza che la
+{doc}`sezione sulla sicurezza dei modelli di
+linguaggio </AIResponsabile/sicurezza-llm>`, nel capitolo sull'AI responsabile,
+metterà fra i confini di privilegio, applicato alla memoria invece che al
+contesto, e con il loro prezzo: se quasi ogni traccia ha letto qualcosa da
+fuori, quasi ogni voce resta non fidata.
 
 `````
 

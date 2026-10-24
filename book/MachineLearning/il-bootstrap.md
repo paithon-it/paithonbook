@@ -47,13 +47,13 @@ di quanti sono. È il motivo per cui un sondaggio su mille persone dichiara un
 margine di poco più di tre punti, e il giornalista può scriverlo senza rifare
 il sondaggio.
 
-Il problema è che quella formula vale per la media e per poco altro. Restano
-scoperte quasi tutte le quantità che si vogliono misurare nella pratica:
-la mediana degli stipendi (che è più onesta della media, perché non si fa
-trascinare da tre amministratori delegati), l’AUC di un modello, il rapporto
-fra due grandezze, la differenza fra le prestazioni di due modelli messi a
-confronto. Per tutte queste la formula o non esiste, o esiste sotto ipotesi che
-i dati veri non rispettano.
+Il problema è che [quella formula vale per la media e per poco
+altro]{.pt-matita}. Restano scoperte quasi tutte le quantità che si vogliono
+misurare nella pratica: la mediana degli stipendi (che è più onesta della
+media, perché non si fa trascinare da tre amministratori delegati), l’AUC di un
+modello, il rapporto fra due grandezze, la differenza fra le prestazioni di due
+modelli messi a confronto. Per tutte queste la formula o non esiste, o esiste
+sotto ipotesi che i dati veri non rispettano.
 
 Prima del 1979 esisteva già uno strumento, il **jackknife**: togli un dato dal
 mucchio, rifai il calcolo senza di lui, rimettilo a posto e passa al
@@ -91,8 +91,8 @@ Per $\hat\theta = \bar{x}$ il teorema del limite centrale dà la risposta
 asintotica, $\operatorname{se}(\bar{x}) = \sigma/\sqrt{m}$ stimabile con
 $s/\sqrt{m}$. Per statistiche non lineari o non regolari (mediana, quantili,
 rapporti, coefficienti di correlazione, AUC, differenza fra due metriche),
-la distribuzione campionaria dipende da $F$ in modo che non si scrive
-in forma chiusa. Le approssimazioni con il metodo delta richiedono
+[la distribuzione campionaria dipende da $F$ in modo che non si scrive
+in forma chiusa]{.pt-matita}. Le approssimazioni con il metodo delta richiedono
 derivabilità e danno comunque solo il primo ordine.
 
 Il **jackknife** di Quenouille e Tukey, la soluzione precedente, ricalcola la
@@ -129,11 +129,11 @@ quanto quelle mille sono sparpagliate. Ecco quanto balla la tua mediana. Non
 puoi, perché hai un campione solo, e raccoglierne altri
 novecentonovantanove vorrebbe dire rifare l'indagine da capo ogni volta.
 
-Efron fa questo ragionamento. Il campione che hai in mano è la miglior
-fotografia che esista del mondo da cui viene. Sessanta stipendi presi a caso,
-infatti, somigliano al paese più di qualunque altra cosa tu abbia. Invece
-di pescare mille campioni nuovi dal mondo (impossibile), peschiamo mille
-campioni nuovi dalla fotografia.
+Efron fa questo ragionamento. [Il campione che hai in mano è la miglior
+fotografia che esista del mondo da cui viene]{.pt-matita}. Sessanta stipendi
+presi a caso, infatti, somigliano al paese più di qualunque altra cosa tu
+abbia. Invece di pescare mille campioni nuovi dal mondo (impossibile),
+peschiamo mille campioni nuovi dalla fotografia.
 
 Come si pesca da una fotografia di sessanta numeri un campione nuovo di
 sessanta numeri? Rimettendo dentro, cioè con reimmissione. Si estrae un numero
@@ -169,11 +169,12 @@ bordo del campione: succede con il massimo.
 
 `````{tab} Superiore
 
-Si sostituisce la distribuzione ignota $F$ con la distribuzione empirica
-$\hat{F}_m$, che mette massa $1/m$ su ciascun dato osservato. Un campione
-bootstrap $\mathbf{x}^*$ è un campione di taglia $m$ estratto da $\hat{F}_m$,
-cioè estratto **con reimmissione** dai dati. La **distribuzione bootstrap** è
-quella di $\hat\theta^* = s(\mathbf{x}^*)$ al variare dell'estrazione.
+[Si sostituisce la distribuzione ignota $F$ con la distribuzione empirica
+$\hat{F}_m$, che mette massa $1/m$ su ciascun dato osservato]{.pt-matita}. Un
+campione bootstrap $\mathbf{x}^*$ è un campione di taglia $m$ estratto da
+$\hat{F}_m$, cioè estratto **con reimmissione** dai dati. La **distribuzione
+bootstrap** è quella di $\hat\theta^* = s(\mathbf{x}^*)$ al variare
+dell'estrazione.
 
 Il principio è la sostituzione
 
@@ -285,10 +286,10 @@ rng = np.random.default_rng(0)
 # sessanta stipendi, con la coda a destra che hanno i redditi veri
 campione = np.round(np.exp(rng.normal(np.log(28_000), 0.45, 60)))
 
-def bootstrap(dati, stima, giri=10_000, seme=0):
-    """La stima calcolata su `giri` ricampionamenti con reimmissione."""
+def bootstrap(dati, stima, iterazioni=10_000, seme=0):
+    """La stima calcolata su `iterazioni` ricampionamenti con reimmissione."""
     r = np.random.default_rng(seme)
-    idx = r.integers(0, len(dati), (giri, len(dati)))
+    idx = r.integers(0, len(dati), (iterazioni, len(dati)))
     return stima(dati[idx], axis=1)
 
 for nome, f in (("mediana", np.median), ("media", np.mean)):
@@ -343,10 +344,10 @@ confronto, quindi, non dice se il bootstrap funzioni anche sulla mediana, dove
 una formula non c'è e il bootstrap risponde $2061$; lo dicono la teoria
 {cite}`efron1979bootstrap` e una prova di copertura dell'intervallo.
 
-Le due righe del jackknife mostrano perché serviva il bootstrap. Il jackknife
-ritrova la formula della media alla lettera ($1666$), ma sulla mediana si ferma
-a $549$, un quarto del bootstrap, perché fra le sue sessanta repliche ci sono
-due soli valori.
+[Le due righe del jackknife mostrano perché serviva il bootstrap]{.pt-matita}.
+Il jackknife ritrova la formula della media alla lettera ($1666$), ma sulla
+mediana si ferma a $549$, un quarto del bootstrap, perché fra le sue sessanta
+repliche ci sono due soli valori.
 
 La mediana ($29\,282$) sta sotto la media ($31\,425$),
 come accade di solito con stipendi e prezzi delle case, che hanno la coda a
@@ -387,7 +388,7 @@ rng = np.random.default_rng(0)
 dentro = 0
 for k in range(PROVE):
     c = np.exp(rng.normal(MU, SIGMA, M))          # un'indagine nuova, da capo
-    d = bootstrap(c, np.median, giri=1000, seme=k)
+    d = bootstrap(c, np.median, iterazioni=1000, seme=k)
     lo, hi = np.percentile(d, [2.5, 97.5])
     dentro += lo <= VERA <= hi
 
@@ -460,10 +461,11 @@ BCa       : 1878 su 2000, 93.9% (±1.0%)
 ```
 
 Il $\mathrm{BCa}$ copre come il percentile, mentre l'intervallo *basic* resta
-sotto di quasi sette punti. Sulla mediana, quindi, la correzione non serve,
-perché i suoi ordini d'errore valgono per le statistiche lisce, come la media o
-un coefficiente di regressione, ed è su quelle che la correzione si ripaga.
-Per la mediana basta il percentile, che si scrive in quattro righe.
+sotto di quasi sette punti. Sulla mediana, quindi, [la correzione non
+serve]{.pt-matita}, perché i suoi ordini d'errore valgono per le statistiche
+lisce, come la media o un coefficiente di regressione, ed è su quelle che la
+correzione si ripaga. Per la mediana basta il percentile, che si scrive in
+quattro righe.
 
 In definitiva, la stessa domanda (di quanto balla) è servita per giudicare la
 percentuale misurata, e dal suo margine è dipeso il verdetto.
@@ -481,10 +483,10 @@ rng = np.random.default_rng(7)
 c = np.exp(rng.normal(np.log(28_000), 0.45, 60))
 
 for nome, f in (("massimo", np.max), ("mediana", np.median)):
-    d = bootstrap(c, f, giri=10_000)
+    d = bootstrap(c, f, iterazioni=10_000)
     print(f"{nome:8s}: {len(np.unique(d)):4d} valori distinti su 10000 ricampionamenti")
 
-d = bootstrap(c, np.max, giri=10_000)
+d = bootstrap(c, np.max, iterazioni=10_000)
 print(f"\nil massimo del campione vale {c.max():.0f}")
 print(f"quota di ricampionamenti che ridanno esattamente quel valore: {(d == c.max()).mean():.3f}")
 print(f"1 - (1 - 1/m)^m con m=60 vale                               : {1-(1-1/60)**60:.3f}")
@@ -516,12 +518,12 @@ misurare l'errore. Qui il complemento, $1-(1-1/m)^m$, è la probabilità che un
 dato compaia nel ricampionamento. Di conseguenza il massimo del campione ci sta
 in quasi due ricampionamenti su tre, che ridanno la stessa risposta.
 
-Da qui la regola pratica: il bootstrap funziona per le statistiche che cambiano
-poco quando cambia un po’ la distribuzione dei dati (medie, mediane e altri
-quantili interni, coefficienti di un modello, metriche), e fallisce per quelle
-che stanno sul bordo dei dati (il massimo, il minimo, i quantili estremi).
-La mediana di sessanta valori dipende da due soli dati, eppure
-funziona, perché quei due stanno al centro e non sul bordo.
+Da qui la regola pratica: [il bootstrap funziona per le statistiche che
+cambiano poco quando cambia un po’ la distribuzione dei dati]{.pt-matita}
+(medie, mediane e altri quantili interni, coefficienti di un modello,
+metriche), e fallisce per quelle che stanno sul bordo dei dati (il massimo, il
+minimo, i quantili estremi). La mediana di sessanta valori dipende da due soli
+dati, eppure funziona, perché quei due stanno al centro e non sul bordo.
 
 Ci sono altri due modi di rompersi, e sono più insidiosi perché il risultato
 esce lo stesso e sembra buono.
@@ -550,8 +552,9 @@ zeri e uno, invece, viene dal bootstrap sul test set: si ricampionano gli
 esempi di test con reimmissione, si ricalcola la metrica ogni volta e si
 guardano i percentili.
 
-Per confrontare due modelli, però, i due intervalli separati non bastano. Lo
-dice già la {doc}`sezione sugli intervalli di confidenza
+[Per confrontare due modelli, però, i due intervalli separati non
+bastano]{.pt-matita}. Lo dice già la {doc}`sezione sugli intervalli di
+confidenza
 </Matematica/probabilita-statistica>`: due margini messi a fianco sono prudenti
 per costruzione e nascondono differenze vere. Per decidere basta una riga in
 più, cioè ricampionare gli *stessi* esempi per tutti e due i modelli (il

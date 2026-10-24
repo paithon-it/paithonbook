@@ -54,9 +54,9 @@ E dentro la scatola «sul muro» c'è una scatolina, «il muro»: scatole dentro
 scatole, fino alle parole. Verso l'alto, invece, non c'è un tetto. Una scatola
 può stare dentro una scatola dello stesso tipo, e quella dentro un'altra
 ancora: «il gatto del vicino del piano di sopra» ne infila tre una dentro
-l'altra, e si potrebbe continuare per un pezzo. Sono sempre gli stessi pochi
+l'altra, e si potrebbe continuare per un pezzo. [Sono sempre gli stessi pochi
 modi di inscatolare, riusati; bastano quelli a costruire frasi lunghe quanto si
-vuole, comprese quelle che nessuno ha mai pronunciato.
+vuole]{.pt-matita}, comprese quelle che nessuno ha mai pronunciato.
 
 Ora il binocolo. Le due letture sono due modi diversi di inscatolare le stesse
 parole. Se l'uomo ha il binocolo, c'è una scatola grande: «Ho visto [un uomo
@@ -104,9 +104,10 @@ nominale, verbale e preposizionale, e le categorie lessicali (DET, N, V, AUX,
 P) riscrivono le parole. Una **derivazione** parte da $F$ e riscrive un simbolo
 alla volta finché restano solo parole; la sua storia è l’**albero di
 derivazione**. La regola $\text{SN} \to \text{SN}\ \text{SP}$ introduce la
-ricorsione: sei regole generano infinite frasi, e questa regola, in concorrenza
-con $\text{SV} \to \text{SV}\ \text{SP}$, produce l'ambiguità del binocolo
-(l’*attacco del sintagma preposizionale*, al nome oppure al verbo).
+ricorsione: [sei regole generano infinite frasi]{.pt-matita}, e questa regola,
+in concorrenza con $\text{SV} \to \text{SV}\ \text{SP}$, produce l'ambiguità
+del binocolo (l’*attacco del sintagma preposizionale*, al nome oppure al
+verbo).
 
 `````
 
@@ -145,9 +146,9 @@ sul muro», ma anche «sul muro salta il gatto nero», e in altre lingue le paro
 girano ancora di più. Con le scatole ogni riordino richiede una regola di
 montaggio nuova, perché le scatole stanno in fila e la fila cambia (una regola
 di montaggio dice come due pezzi ne fanno uno più grande: un articolo seguito
-da un nome fa un sintagma nominale). Con le frecce no: chi comanda chi resta
-identico, cambia solo dove le parole sono scritte sulla riga. È una delle
-ragioni per cui il progetto che annota con gli stessi criteri più di
+da un nome fa un sintagma nominale). Con le frecce no: [chi comanda chi resta
+identico, cambia solo dove le parole sono scritte sulla riga]{.pt-matita}. È
+una delle ragioni per cui il progetto che annota con gli stessi criteri più di
 centocinquanta lingue, quell'Universal Dependencies già incontrato per le
 etichette, ha scelto le frecce, e infatti si chiama «delle dipendenze»: da una
 lingua all'altra cambiano l'ordine, le desinenze e le parole piccole, ma chi
@@ -181,19 +182,20 @@ i ruoli.
 Perché due formalismi? Le dipendenze pagano meglio nelle lingue a ordine
 flessibile. L'italiano, ad esempio, ammette «Il binocolo l'ho visto io» o «Sul
 muro salta, il gatto nero»: una grammatica a costituenti deve prevedere regole
-per ogni permutazione, mentre l'albero a dipendenze resta *lo stesso*; cambia
-solo l'ordine lineare in cui le parole compaiono, non la struttura. È uno dei
-motivi per cui il progetto UD ha scelto le dipendenze come base comune per
-annotare con gli stessi criteri più di centocinquanta lingue, dall'italiano al
-finlandese al giapponese: il suo obiettivo dichiarato è una rappresentazione in
-cui costruzioni simili restino parallele da una lingua all'altra, nonostante le
-differenze di ordine, di morfologia e di parole funzionali
-{cite}`demarneffe2021universal`. Un arco dalla testa $h$ al dipendente $d$ è
-**proiettivo** se da $h$ si arriva, seguendo gli archi, a ogni parola compresa
-fra $h$ e $d$ nella frase; un albero è proiettivo se lo sono tutti i suoi
-archi, il che equivale a dire che gli archi, disegnati sopra la frase con la
-radice compresa, non si incrociano. Un albero non proiettivo è raro in inglese,
-assai più comune nelle lingue a ordine libero.
+per ogni permutazione, mentre [l'albero a dipendenze resta *lo stesso*; cambia
+solo l'ordine lineare in cui le parole compaiono, non la
+struttura]{.pt-matita}. È uno dei motivi per cui il progetto UD ha scelto le
+dipendenze come base comune per annotare con gli stessi criteri più di
+centocinquanta lingue, dall'italiano al finlandese al giapponese: il suo
+obiettivo dichiarato è una rappresentazione in cui costruzioni simili restino
+parallele da una lingua all'altra, nonostante le differenze di ordine, di
+morfologia e di parole funzionali {cite}`demarneffe2021universal`. Un arco
+dalla testa $h$ al dipendente $d$ è **proiettivo** se da $h$ si arriva,
+seguendo gli archi, a ogni parola compresa fra $h$ e $d$ nella frase; un albero
+è proiettivo se lo sono tutti i suoi archi, il che equivale a dire che gli
+archi, disegnati sopra la frase con la radice compresa, non si incrociano. Un
+albero non proiettivo è raro in inglese, assai più comune nelle lingue a ordine
+libero.
 
 `````
 
@@ -302,26 +304,26 @@ with syntactic ambiguity or how to put the block in the box on the table*
 {cite}`church1982coping`. Come mettere il blocco nella scatola sul tavolo: ma
 il tavolo sostiene la scatola, o è lì che va messo il blocco?
 
-Una frase di giornale può avere *migliaia* di alberi grammaticalmente leciti,
-quasi tutti assurdi per un lettore umano ma impeccabili per la grammatica, che
-non ne giudica la plausibilità; e nessun parser può elencarli uno per uno.
-Servono allora due mosse. La prima è condividere i pezzi comuni a molte
-analisi, cioè la programmazione dinamica, già incontrata con la griglia della
-distanza di edit e con l'algoritmo di Viterbi: risolvere una volta sola ogni
-pezzo che servirà più volte, e conservarne il risultato. La seconda è scegliere
-fra le analisi, e nella forma più semplice si fa contando. In un insieme di
-frasi già analizzate a mano si guarda quante volte è stata usata ciascuna
-regola di montaggio, rispetto alle altre regole che costruiscono lo stesso tipo
-di blocco, e quella frequenza diventa la probabilità della regola; un albero
-vale il prodotto delle probabilità delle sue regole, e vince il più probabile.
-È una **grammatica context-free probabilistica** (PCFG). Le sue probabilità,
-però, stanno sulle regole, che parlano di categorie: le due letture del
-binocolo usano le stesse parole, e a separarle restano le sole regole che
-agganciano un complemento al verbo o al nome. La PCFG sceglie l'aggancio da
-quelle frequenze, e darebbe lo stesso verdetto a «con il cappello», cioè
-sbaglia proprio dove a decidere sono le parole. Perciò, al posto dei conteggi,
-si può mettere una rete neurale, che guarda anche le parole e non solo le
-categorie.
+[Una frase di giornale può avere *migliaia* di alberi grammaticalmente
+leciti]{.pt-matita}, quasi tutti assurdi per un lettore umano ma impeccabili
+per la grammatica, che non ne giudica la plausibilità; e nessun parser può
+elencarli uno per uno. Servono allora due mosse. La prima è condividere i pezzi
+comuni a molte analisi, cioè la programmazione dinamica, già incontrata con la
+griglia della distanza di edit e con l'algoritmo di Viterbi: risolvere una
+volta sola ogni pezzo che servirà più volte, e conservarne il risultato. La
+seconda è scegliere fra le analisi, e nella forma più semplice si fa contando.
+In un insieme di frasi già analizzate a mano si guarda quante volte è stata
+usata ciascuna regola di montaggio, rispetto alle altre regole che costruiscono
+lo stesso tipo di blocco, e quella frequenza diventa la probabilità della
+regola; un albero vale il prodotto delle probabilità delle sue regole, e vince
+il più probabile. È una **grammatica context-free probabilistica** (PCFG). Le
+sue probabilità, però, stanno sulle regole, che parlano di categorie: le due
+letture del binocolo usano le stesse parole, e a separarle restano le sole
+regole che agganciano un complemento al verbo o al nome. La PCFG sceglie
+l'aggancio da quelle frequenze, e darebbe lo stesso verdetto a «con il
+cappello», cioè sbaglia proprio dove a decidere sono le parole. Perciò, al
+posto dei conteggi, si può mettere una rete neurale, che guarda anche le parole
+e non solo le categorie.
 
 ## Costruire l'albero senza provarle tutte
 
@@ -381,10 +383,11 @@ Guarda le due carte in cima e quante parole restano da prendere, poi butta giù
 la mossa senza pensarci. Due mosse per parola, una sola passata sulla frase, e
 la partita è chiusa.
 
-Una carta uscita dal tavolo, però, non ci torna più. Un collegamento messo
-storto alla terza parola resta storto fino all'ultima, ed è il difetto di ogni
-scelta ingorda, quella della traduzione compresa. Il rimedio è tenere aperte
-tre o quattro partite invece di una, e scartare alla fine quelle andate peggio.
+[Una carta uscita dal tavolo, però, non ci torna più]{.pt-matita}. Un
+collegamento messo storto alla terza parola resta storto fino all'ultima, ed è
+il difetto di ogni scelta ingorda, quella della traduzione compresa. Il rimedio
+è tenere aperte tre o quattro partite invece di una, e scartare alla fine
+quelle andate peggio.
 
 Le carte hanno anche un limite di disegno: le frecce che producono non si
 incrociano mai. Nelle lingue in cui le parole si spostano con libertà due frecce
@@ -447,14 +450,14 @@ di parole e categoria) che l'albero prodotto ha in comune con quello annotato.
 
 **Parsing a transizioni.** Per le dipendenze le strategie principali sono due.
 La prima, lo *shift-reduce*, costruisce l'albero con una sequenza di mosse
-scelte da un classificatore: è lineare nella lunghezza della frase, ma una
-mossa sbagliata non si corregge. Una configurazione è una terna (pila $\sigma$,
-buffer $\beta$, archi $\mathcal{A}$) e le mosse della variante *arc-standard*
-sono tre: `shift` (sposta la prossima parola sulla pila), `left-arc` e
-`right-arc` (creano un arco etichettato tra le due parole in cima e ne
-rimuovono la dipendente). La configurazione finale ha il buffer vuoto e sulla
-pila la sola radice, e una frase di $n$ parole ci arriva in circa $2n$ mosse:
-costo lineare.
+scelte da un classificatore: [è lineare nella lunghezza della frase, ma una
+mossa sbagliata non si corregge]{.pt-matita}. Una configurazione è una terna
+(pila $\sigma$, buffer $\beta$, archi $\mathcal{A}$) e le mosse della variante
+*arc-standard* sono tre: `shift` (sposta la prossima parola sulla pila),
+`left-arc` e `right-arc` (creano un arco etichettato tra le due parole in cima
+e ne rimuovono la dipendente). La configurazione finale ha il buffer vuoto e
+sulla pila la sola radice, e una frase di $n$ parole ci arriva in circa $2n$
+mosse: costo lineare.
 
 Un classificatore sceglie la mossa sullo stato corrente; dalla
 svolta neurale {cite}`chen2014fast` i tratti simbolici sono rimpiazzati dagli
@@ -551,10 +554,10 @@ print(conta_alberi(
 Le due letture del binocolo ci sono; con il secondo complemento le analisi
 diventano cinque, il passo successivo dei numeri di Catalan, compresa quella in
 cui è il *binocolo* a indossare il cappello. La grammatica genera questa
-combinazione senza batter ciglio, perché dice solo che cosa si può montare, non
-che cosa ha senso: scartare le assurdità tocca a probabilità imparate su frasi
-reali o a una rete neurale. E con un terzo complemento, «con il gatto», le
-analisi sono già quattordici.
+combinazione senza batter ciglio, perché [dice solo che cosa si può montare,
+non che cosa ha senso]{.pt-matita}: scartare le assurdità tocca a probabilità
+imparate su frasi reali o a una rete neurale. E con un terzo complemento, «con
+il gatto», le analisi sono già quattordici.
 
 ## Da dove vengono gli alberi: i treebank
 
@@ -571,8 +574,8 @@ costituenti.
 
 Da quelle decine di migliaia di frasi, per vent'anni, i parser hanno ricavato
 la frequenza di ciascuna regola di montaggio, imparando a scegliere fra le
-molte analisi possibili: la grammatica ha smesso di essere scritta a mano,
-regola per regola, ed è diventata qualcosa che si *conta nei dati*.
+molte analisi possibili: [la grammatica ha smesso di essere scritta a mano,
+regola per regola, ed è diventata qualcosa che si *conta nei dati*]{.pt-matita}.
 
 Il progetto Universal Dependencies ha esteso l'operazione su scala mondiale con
 le frecce al posto delle scatole: per l'italiano il treebank di riferimento è
@@ -625,9 +628,9 @@ separano: in «il gatto nero salta sul muro», «nero» dista una freccia da
 con lo strato migliore di BERT-large quell'albero ha in comune con quello
 annotato l'82,5% delle frecce, senza contarne il verso, contro il 48,9% di un
 albero che lega semplicemente ogni parola alla successiva; e nessuno ha mai
-mostrato quegli alberi al modello. È un indizio che qualcosa di simile alla
-struttura sintattica si formi da sé durante l'addestramento, non la prova che
-il modello la usi come farebbe un linguista.
+mostrato quegli alberi al modello. [È un indizio che qualcosa di simile alla
+struttura sintattica si formi da sé durante l'addestramento]{.pt-matita}, non
+la prova che il modello la usi come farebbe un linguista.
 
 Il parsing esplicito, intanto, non è andato in pensione. Serve alla
 linguistica, che avendo tutte quelle lingue annotate con gli stessi criteri può

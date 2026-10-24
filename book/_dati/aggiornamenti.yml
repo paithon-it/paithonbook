@@ -10,12 +10,16 @@
 #
 # ## Il numero
 #
-# Tre cifre, `impianto.sezioni.correzioni`:
+# Tre cifre, `major.minor.patch`:
 #
-#   la PRIMA  sale quando cambia l'impianto (una parte nuova nell'indice, un
-#             riordino che cambia il percorso di lettura, la licenza);
-#   la SECONDA quando arriva un capitolo o una sezione;
-#   la TERZA  quando si corregge o si rifinisce quello che c'è già.
+#   MAJOR  sale quando cambia l'impianto (una parte nuova nell'indice, un
+#          riordino che cambia il percorso di lettura, la licenza);
+#   MINOR  quando arriva un capitolo o una sezione;
+#   PATCH  quando si corregge o si rifinisce quello che c'è già, sito e PDF
+#          compresi.
+#
+# La pagina mette sotto ogni versione il suo livello, calcolato dalla cifra
+# salita: il tipo della voce decide solo l'ordine in cui le voci compaiono.
 #
 # Chi sale azzera le cifre alla sua destra. Se una pubblicazione porta sia
 # sezioni nuove sia correzioni, sale la seconda e la terza torna a zero: il
@@ -46,6 +50,39 @@
 #           conviene tornare a leggere.
 
 versioni:
+
+- versione: "1.17.5"
+  data: 2026-10-24
+  voci:
+
+  - tipo: corretto
+    testo: >
+      **Iterazione, non giro.** Fuori dalle schede Elementari la ripetizione di
+      un procedimento si chiama iterazione, come la definisce il capitolo su
+      Python: nel testo, nel codice, nelle figure e nelle postille.
+
+  - tipo: corretto
+    testo: >
+      **Le due schede fanno le stesse mosse.** Nella valutazione dei
+      raggruppamenti e negli autoencoder la scheda Elementare racconta ciò che
+      la Superiore dimostra, compreso dove ciascun risultato smette di valere.
+
+  - tipo: corretto
+    pagina: DeepReinforcementLearning/dqn.md
+    testo: >
+      **La figura del DQN parla come il capitolo.** Memoria di replay e
+      rete-target, al posto di buffer e copia congelata.
+
+  - tipo: impianto
+    testo: >
+      **Una frase sottolineata per sezione.** In ogni sezione che ne ha una,
+      la matita segna la frase su cui la sezione si regge: sul sito e nel PDF.
+
+  - tipo: impianto
+    testo: >
+      **Le postille si scrivono sul capoverso.** Premuto il segno, il
+      capoverso sfuma e la postilla si scrive al suo posto; tenendolo premuto
+      la si sbircia, un tocco la lascia scritta.
 
 - versione: "1.17.4"
   data: 2026-10-24

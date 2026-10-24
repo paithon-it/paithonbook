@@ -43,7 +43,8 @@ L'altro pezzo, i settanta minuti che mancano, resta un'opinione, e se è
 sbagliata la correzione tira dalla parte sbagliata. Ad esempio, col cantiere
 trenta chilometri più avanti, che il navigatore non conosce, la previsione
 scende mentre dovrebbe salire. Su una strada mai fatta succede spesso, e in
-generale ogni stima appoggiata a un'altra stima rischia di sbagliare così.
+generale [ogni stima appoggiata a un'altra stima rischia di sbagliare
+così]{.pt-matita}.
 
 `````
 
@@ -67,12 +68,12 @@ metodi Monte Carlo non ce l'hanno.
 
 Il bersaglio non è più il ritorno osservato $G_t$ ma una sua approssimazione a
 un passo. Di conseguenza la varianza diminuisce (un solo termine casuale invece
-di una somma lunga) e compare una distorsione, perché $V(s')$ è a sua volta
-una stima, e all'inizio è sbagliata. La distorsione, però, non resta. Per una
-policy fissa e una tabella, TD(0) converge a $V^\pi$ con probabilità $1$ se
-ogni stato è visitato infinite volte, se $\gamma < 1$ (o gli episodi terminano
-quasi certamente) e se i passi, presi sulle visite di ciascuno stato,
-soddisfano le condizioni di Robbins-Monro viste sui bandit
+di una somma lunga) e [compare una distorsione, perché $V(s')$ è a sua volta
+una stima, e all'inizio è sbagliata]{.pt-matita}. La distorsione, però, non
+resta. Per una policy fissa e una tabella, TD(0) converge a $V^\pi$ con
+probabilità $1$ se ogni stato è visitato infinite volte, se $\gamma < 1$ (o gli
+episodi terminano quasi certamente) e se i passi, presi sulle visite di
+ciascuno stato, soddisfano le condizioni di Robbins-Monro viste sui bandit
 {cite}`dayan1992convergence`.
 
 A parità di dati le due famiglie non convergono alla stessa stima. In
@@ -112,8 +113,8 @@ alto.
 
 La parte sorprendente è che l'agente può muoversi anche a casaccio, sbagliando
 di proposito per esplorare, e imparare comunque quali sarebbero le mosse
-migliori. In altre parole, impara una cosa mentre ne fa un'altra. Per questo si
-dice *off-policy*, cioè "fuori dalla propria strategia".
+migliori. In altre parole, [impara una cosa mentre ne fa un'altra]{.pt-matita}.
+Per questo si dice *off-policy*, cioè "fuori dalla propria strategia".
 
 Il trucco sta nel massimo: quando l'agente corregge il voto di una mossa,
 guarda dove è finito e prende il voto della migliore fra le mosse possibili da
@@ -175,8 +176,8 @@ $S_{t+1} \sim P(\cdot \mid s, a)$.
 
 Il Q-learning è off-policy perché il suo *target* usa $\max_{a'} Q(s',a')$
 (il valore dell'azione *migliore* nello stato successivo) indipendentemente da
-quale azione l'agente abbia poi effettivamente scelto. In questo modo impara la
-politica ottima anche mentre ne segue una esplorativa.
+quale azione l'agente abbia poi effettivamente scelto. In questo modo [impara la
+politica ottima anche mentre ne segue una esplorativa]{.pt-matita}.
 
 Watkins e Dayan {cite}`watkins1992q` ne dimostrarono la convergenza sotto
 ipotesi precise, e la più restrittiva, la tabella, è il punto da cui parte il
@@ -322,11 +323,11 @@ tutti i mesi da qui all'eternità arrivi a sei. Sei ristoranti nuovi in tutta la
 vita: i ristoranti che non hai provato entro allora non li proverai mai, e se
 uno era il migliore della città non lo saprai.
 
-Se invece dividi la quota per il numero dei mesi passati (metà il secondo
-mese, un terzo il terzo, un decimo il decimo), la somma diventa tre più uno e
-mezzo più uno più tre quarti e così via, cioè sedici novità in dieci anni e
-ventitré in un secolo. Sembrano poche anche queste, ma la somma della prima
-ricetta si ferma a sei, quella della seconda non si ferma mai, e qualunque
+Se invece dividi la quota per il numero dei mesi passati (metà il secondo mese,
+un terzo il terzo, un decimo il decimo), la somma diventa tre più uno e mezzo
+più uno più tre quarti e così via, cioè sedici novità in dieci anni e ventitré
+in un secolo. Sembrano poche anche queste, ma [la somma della prima ricetta si
+ferma a sei, quella della seconda non si ferma mai]{.pt-matita}, e qualunque
 numero si fissi prima o poi lo si supera. Rallenti senza mai fermarti, e
 aspettando abbastanza ogni ristorante prima o poi ti capita.
 
@@ -353,13 +354,13 @@ $$
 
 Un $\varepsilon$ costante garantisce esplorazione perpetua; in pratica, però,
 si usa un *decay*, spesso esponenziale, per avvicinarsi gradualmente allo
-sfruttamento puro. Il decadimento esponenziale sacrifica la garanzia teorica.
-Infatti la convergenza di Watkins e Dayan vuole ogni coppia $(s,a)$ visitata
-infinite volte, e a questo basta che la somma degli $\varepsilon$ diverga su
-ogni stato. Accade, ad esempio, con $\varepsilon \propto 1/n(s)$, dove $n(s)$
-conta le visite a quello stato, mentre con il tempo globale al denominatore la
-somma può restare finita: uno stato visitato ai tempi $t = 2^k$ raccoglie
-$\sum_k 2^{-k}$.
+sfruttamento puro. [Il decadimento esponenziale sacrifica la garanzia
+teorica]{.pt-matita}. Infatti la convergenza di Watkins e Dayan vuole ogni
+coppia $(s,a)$ visitata infinite volte, e a questo basta che la somma degli
+$\varepsilon$ diverga su ogni stato. Accade, ad esempio, con $\varepsilon
+\propto 1/n(s)$, dove $n(s)$ conta le visite a quello stato, mentre con il
+tempo globale al denominatore la somma può restare finita: uno stato visitato
+ai tempi $t = 2^k$ raccoglie $\sum_k 2^{-k}$.
 
 Le due richieste, visite infinite a ogni coppia e policy greedy nel limite, si
 chiamano **GLIE** (*greedy in the limit with infinite exploration*). Con GLIE e
@@ -381,11 +382,11 @@ Q(s',a')$, usa il valore $Q(s',a')$ dell'azione $a'$ che l'agente esegue subito
 dopo. Il nome è l'elenco dei cinque elementi dell'aggiornamento: *state,
 action, reward, state, action*.
 
-L'algoritmo è quindi *on-policy*: invece di imparare quanto varrebbero le mosse
-di un giocatore perfetto, impara quanto valgono le proprie, esplorazione
-compresa. Lo proposero Rummery e Niranjan {cite}`rummery1994online`, che lo
-chiamavano *modified connectionist Q-learning*; Sutton gli diede nel 1996 il
-nome con cui lo conosciamo.
+L'algoritmo è quindi *on-policy*: [invece di imparare quanto varrebbero le
+mosse di un giocatore perfetto, impara quanto valgono le proprie, esplorazione
+compresa]{.pt-matita}. Lo proposero Rummery e Niranjan
+{cite}`rummery1994online`, che lo chiamavano *modified connectionist
+Q-learning*; Sutton gli diede nel 1996 il nome con cui lo conosciamo.
 
 `````{tab} Elementare
 
@@ -572,10 +573,11 @@ mossa con $-1$, il secondo aggiornamento darebbe $0{,}5\,[-1 + 0{,}45] =
 
 `````
 
-È il meccanismo TD in azione: la ricompensa non si propaga a tutta la griglia
-in una volta, ma retrocede verso la partenza di un passo per episodio (di più
-solo se l'episodio ripassa dalla stessa casella), come una macchia che si
-allarga all'indietro dalla meta. Il codice, ambiente compreso, è breve:
+È il meccanismo TD in azione: [la ricompensa non si propaga a tutta la griglia
+in una volta, ma retrocede verso la partenza di un passo per
+episodio]{.pt-matita} (di più solo se l'episodio ripassa dalla stessa casella),
+come una macchia che si allarga all'indietro dalla meta. Il codice, ambiente
+compreso, è breve:
 
 ```python
 import numpy as np
@@ -812,8 +814,9 @@ Monte Carlo; oppure tre, o dieci.
 
 Guardare pochi passi dà una correzione stabile ma un po’ sbagliata, perché si
 appoggia a una stima che, quando si è appena cominciato a giocare, non vale
-niente. Guardare fino in fondo dà una correzione onesta ma ballerina. Una
-manciata di passi, nei casi studiati, in genere batte entrambi gli estremi.
+niente. Guardare fino in fondo dà una correzione onesta ma ballerina. [Una
+manciata di passi, nei casi studiati, in genere batte entrambi gli
+estremi]{.pt-matita}.
 
 C'è anche un modo elegante di non scegliere: fare la media di tutte le
 lunghezze, dando più peso a quelle corte e via via meno a quelle lunghe. Il
@@ -881,8 +884,8 @@ e l'aggiornamento è il solito $V(S_t) \leftarrow V(S_t) +
 pari o superiore ai passi che restano fino alla fine dell'episodio il termine
 con $V$ sparisce e resta il ritorno Monte Carlo.
 
-Il compromesso è quello classico fra distorsione e varianza: con $n$ piccolo si
-ha poca varianza e molta distorsione, con $n$ grande il contrario. La
+Il compromesso è quello classico fra distorsione e varianza: [con $n$ piccolo si
+ha poca varianza e molta distorsione, con $n$ grande il contrario]{.pt-matita}. La
 distorsione ha un limite preciso: il valore atteso del ritorno a $n$ passi
 dista da $v_\pi$ al più $\gamma^n$ volte la distanza della stima da cui parte,
 in norma del massimo (la proprietà di riduzione dell'errore). Nei banchi di
@@ -1010,11 +1013,11 @@ quante se ne possano giocare. Al posto della tabella serve allora una funzione
 che, davanti a una situazione mai vista, ne indovini i voti accostandola a
 quelle già viste, come fanno le reti neurali.
 
-Ma la convergenza del Q-learning è un teorema, dimostrato nel 1992 da
-Watkins e Peter Dayan, e parla di una tabella soltanto. Senza la tabella la
-garanzia cade, e non per una dimostrazione che manchi: si conoscono esempi
-costruiti apposta in cui i voti divergono. La combinazione
-responsabile si chiama {doc}`triade fatale </DeepReinforcementLearning/dqn>`
+Ma la convergenza del Q-learning è un teorema, dimostrato nel 1992 da Watkins e
+Peter Dayan, e parla di una tabella soltanto. [Senza la tabella la garanzia
+cade]{.pt-matita}, e non per una dimostrazione che manchi: si conoscono esempi
+costruiti apposta in cui i voti divergono. La combinazione responsabile si
+chiama {doc}`triade fatale </DeepReinforcementLearning/dqn>`
 {cite}`sutton2018reinforcement`: approssimazione di funzione (valori calcolati
 da una formula invece che scritti uno per uno), bootstrapping e apprendimento
 off-policy, messi insieme, possono far divergere i valori. Un Q-learning con

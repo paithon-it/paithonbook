@@ -23,8 +23,9 @@ neurale: un neurone artificiale è un pezzo di aritmetica.
 ## Un neurone fatto di aritmetica
 
 Un neurone biologico riceve segnali da altri neuroni, li combina e "scarica" un
-impulso se lo stimolo complessivo supera una soglia. Rosenblatt formalizza
-questo meccanismo in tre operazioni: pesare gli ingressi, sommarli, decidere.
+impulso se lo stimolo complessivo supera una soglia. [Rosenblatt formalizza
+questo meccanismo in tre operazioni: pesare gli ingressi, sommarli,
+decidere]{.pt-matita}.
 
 Ogni ingresso arriva con un peso che ne misura l'importanza: il primo ingresso
 lo chiamiamo $x_1$ e il suo peso $w_1$, il secondo $x_2$ e $w_2$, e avanti
@@ -146,9 +147,9 @@ $x_1 = 1{,}5 : 0{,}3 = 5$: a metà altezza e a metà fra $8{,}3$ e
 $1{,}7$, cioè sulla riga che unisce gli altri due.
 
 Da una parte di quella riga il neurone risponde sempre sì, dall'altra sempre
-no, e una terza possibilità non c'è. In altri termini, quella riga è tutto ciò
-che un neurone sa disegnare: cambiare i pesi la inclina, cambiare il bias la
-sposta avanti e indietro, ma resta dritta.
+no, e una terza possibilità non c'è. In altri termini, [quella riga è tutto ciò
+che un neurone sa disegnare]{.pt-matita}: cambiare i pesi la inclina, cambiare
+il bias la sposta avanti e indietro, ma resta dritta.
 
 `````
 
@@ -175,8 +176,8 @@ la pendenza qui moltiplica per zero e non si muove.
 
 Il neurone assegna la classe $1$ ai punti da un lato dell'iperpiano
 $\mathbf{w}^\top\mathbf{x}+b=0$ e la classe $0$ a quelli dall'altro. È un
-**classificatore lineare**: spostando il bias $b$ si trasla la frontiera,
-ruotando $\mathbf{w}$ la si inclina.
+**classificatore lineare**: [spostando il bias $b$ si trasla la frontiera,
+ruotando $\mathbf{w}$ la si inclina]{.pt-matita}.
 
 `````
 
@@ -220,8 +221,8 @@ separate, e da lì in poi nessun esempio provoca più un aggiornamento.
 ```
 
 Nella {numref}`fig-percettrone-impara` si vede la proprietà che rese famoso
-l'algoritmo: quando una retta separatrice esiste, il percettrone la trova in
-un numero finito di correzioni. È il **teorema di convergenza** di
+l'algoritmo: [quando una retta separatrice esiste, il percettrone la trova in
+un numero finito di correzioni]{.pt-matita}. È il **teorema di convergenza** di
 Rosenblatt, dove convergere è fermarsi a un certo punto invece di andare
 avanti per sempre. Quel "quando esiste" diventerà
 fra poco il problema principale.
@@ -510,9 +511,9 @@ dice $1$ dove doveva dire $0$. Un singolo percettrone, sullo XOR, è condannato
 a sbagliare almeno un caso.
 
 Adesso lascia provare alla macchina, con la regola delle correzioni, e a ogni
-caso sbagliato la riga si sposta un po’. Dopo due o tre giri completi le quattro
+caso sbagliato la riga si sposta un po’. Dopo due o tre giri completi [le quattro
 correzioni di ogni giro si annullano fra loro, e alla fine la riga è tornata
-dov'era. Il giro dopo è identico, e quello dopo ancora.
+dov'era]{.pt-matita}. Il giro dopo è identico, e quello dopo ancora.
 
 Da fuori sembra una macchina rotta e ferma: dà sempre le stesse quattro
 risposte, sbaglia sempre gli stessi casi, al decimo giro come al centesimo.
@@ -535,10 +536,10 @@ un difetto dell'ottimizzatore, è un limite di *capacità* del modello.
 Lanciando `addestra` su `y_xor = np.array([0, 1, 1, 0])` si vede che non
 converge, e fin qui è ovvio; ma nemmeno diverge, e nemmeno vaga. Le prime due
 epoche sbagliano tre esempi su quattro; dalla terza in poi li sbagliano tutti e
-quattro, tutti e quattro producono una correzione, e le quattro correzioni si
-annullano fra loro: alla fine di ogni epoca i parametri sono tornati dov'erano
-($\mathbf{w} = (-0{,}1,\ 0)$, $b = 0$), e l'uscita stampata è `[1 1 0 0]` alla
-decima epoca come alla centesima.
+quattro, tutti e quattro producono una correzione, e [le quattro correzioni si
+annullano fra loro: alla fine di ogni epoca i parametri sono tornati
+dov'erano]{.pt-matita} ($\mathbf{w} = (-0{,}1,\ 0)$, $b = 0$), e l'uscita
+stampata è `[1 1 0 0]` alla decima epoca come alla centesima.
 
 Per vedere da dove nasce il ciclo, le quattro correzioni si seguono sul foglio.
 Si parte da $\mathbf{w} = (-0{,}1,\ 0)$ e $b = 0$. Il primo esempio, $(0,0)$,
@@ -597,11 +598,11 @@ dispari, risposta sì; tutti e due accesi fa due, di nuovo pari, di nuovo no. È
 la tabella dello XOR. Anche per questo è rimasto nella
 memoria di tutti: si disegna su un foglio in un secondo.
 
-Lo XOR è la punta di una famiglia. La conclusione vera è un'altra: mettere
+Lo XOR è la punta di una famiglia. La conclusione vera è un'altra: [mettere
 insieme la risposta a partire da ispettori che guardano ciascuno il proprio
 pezzetto funziona sui casi piccoli e diventa impraticabile appena il problema
-cresce. Il difetto è peggiore di quello della riga, perché non si vede finché
-non si prova a ingrandire.
+cresce]{.pt-matita}. Il difetto è peggiore di quello della riga, perché non si
+vede finché non si prova a ingrandire.
 
 `````
 
@@ -619,9 +620,9 @@ sola, e nessuna combinazione di predicati di ordine minore di $n$ basta. Un
 altro dice che per decidere se una figura disegnata è tutta d'un pezzo o
 spezzata in due, il numero di punti da guardare insieme cresce con la figura.
 Lo XOR è la parità a due bit, il caso più piccolo di una famiglia, e il primo
-gradino di un costo che cresce con l'ingresso. Il risultato riguarda la
+gradino di un costo che cresce con l'ingresso. [Il risultato riguarda la
 scalabilità di questo modo di costruire le caratteristiche, e non il limite di
-una retta.
+una retta]{.pt-matita}.
 
 `````
 
@@ -705,9 +706,9 @@ stessa identica coppia, $(0{,}5;\ 0{,}5)$: erano due punti diversi e adesso
 sono lo stesso punto. I due casi con risposta $0$ danno $(0;\ 1{,}5)$ e
 $(1{,}5;\ 0)$, cioè due punti lontani e da parti opposte. Adesso prendi un
 foglio nuovo, mettici $h_1$ in orizzontale e $h_2$ in verticale, segna i tre
-punti: una riga sola li separa, e a tracciarla è il neurone di uscita. Il primo
-strato non ha risolto il problema: lo ha spostato in un posto dove era facile,
-come fanno gli strati nascosti in ogni rete.
+punti: una riga sola li separa, e a tracciarla è il neurone di uscita. [Il
+primo strato non ha risolto il problema: lo ha spostato in un posto dove era
+facile]{.pt-matita}, come fanno gli strati nascosti in ogni rete.
 
 ```{figure} ../figures/xor-si-piega.svg
 :name: fig-xor-si-piega

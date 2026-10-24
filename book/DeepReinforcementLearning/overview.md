@@ -56,8 +56,9 @@ quadretto perché la schermata sia un'altra, con la sua riga da riempire. Otto
 ore al giorno per cinquant'anni fanno scorrere una trentina di miliardi di
 schermate, che non scalfiscono nemmeno quell'elenco.
 
-In definitiva, l'idea di dare un voto a ogni mossa resta buona; a non
-funzionare è l'elenco, cioè l'idea di tenere una riga per ciascuna schermata.
+In definitiva, [l'idea di dare un voto a ogni mossa resta buona; a non
+funzionare è l'elenco]{.pt-matita}, cioè l'idea di tenere una riga per ciascuna
+schermata.
 
 `````
 
@@ -77,19 +78,19 @@ $$
 un numero di quasi sessantottomila cifre, contro i $\sim 10^{80}$ atomi
 dell'universo osservabile. Una $Q$-table richiederebbe una cella per ogni
 coppia di stato $s$ e azione $a$: né la memoria né i dati per visitarli tutti
-esisteranno mai. Il problema, quindi, è la rappresentazione e non l'algoritmo:
-enumerare gli stati non scala.
+esisteranno mai. [Il problema, quindi, è la rappresentazione e non
+l'algoritmo]{.pt-matita}: enumerare gli stati non scala.
 
 `````
 
 ## L'idea: una rete al posto della tabella
 
-Se il valore di ogni schermata non si può *elencare*, lo si calcola sul momento
-con una funzione che generalizza, cioè che risponde anche su un caso mai visto
-perché somiglia a casi già visti. In altri termini, schermate simili ricevono
-valori simili. Per le immagini la scelta naturale è una rete convoluzionale, il
-tipo di rete costruito apposta per guardarle. La rete riceve i pixel e
-restituisce il valore $Q(s,a)$ di ciascuna azione
+Se il valore di ogni schermata non si può *elencare*, [lo si calcola sul
+momento con una funzione che generalizza]{.pt-matita}, cioè che risponde anche
+su un caso mai visto perché somiglia a casi già visti. In altri termini,
+schermate simili ricevono valori simili. Per le immagini la scelta naturale è
+una rete convoluzionale, il tipo di rete costruito apposta per guardarle. La
+rete riceve i pixel e restituisce il valore $Q(s,a)$ di ciascuna azione
 ({numref}`fig-drl-pixel-to-q`).
 
 ```{figure} ../figures/drl-pixel-to-q.svg
@@ -207,13 +208,13 @@ Accanto ai successi, il deep RL è notoriamente capriccioso.
 
 `````{tab} Elementare
 
-Le difficoltà principali sono due. La prima è che l'allenamento è instabile.
-La rete, infatti, si corregge inseguendo un numero che calcola lei stessa, e
-quel numero si sposta a ogni correzione: è come cercare di colpire la propria
-ombra, che si muove ogni volta che ti muovi tu. Basta poco (un ritocco alla
-velocità con cui la rete si corregge) e invece di assestarsi i suoi giudizi
-crescono senza fermarsi. Contro questo effetto servono la memoria di
-replay e la rete-target, una copia congelata della rete.
+Le difficoltà principali sono due. La prima è che l'allenamento è instabile. La
+rete, infatti, [si corregge inseguendo un numero che calcola lei
+stessa]{.pt-matita}, e quel numero si sposta a ogni correzione: è come cercare
+di colpire la propria ombra, che si muove ogni volta che ti muovi tu. Basta
+poco (un ritocco alla velocità con cui la rete si corregge) e invece di
+assestarsi i suoi giudizi crescono senza fermarsi. Contro questo effetto
+servono la memoria di replay e la rete-target, una copia congelata della rete.
 
 La seconda difficoltà è che serve una quantità enorme di partite. L'agente
 impara per tentativi, e di tentativi ne vuole milioni: settimane di gioco. In
@@ -226,11 +227,11 @@ meno.
 
 I campioni sono fortemente correlati (fotogrammi consecutivi) e il *target*
 $r + \gamma \max_{a'} Q(s',a';\theta)$ si muove insieme ai pesi che stiamo
-aggiornando: la combinazione di approssimazione, bootstrapping e apprendimento
-off-policy è la celebre *deadly triad* che può causare divergenza. DQN la
-addomestica con due accorgimenti: l’experience replay (campionare a caso da un
-buffer di transizioni passate, decorrelandole) e la rete-target $\theta^{-}$,
-aggiornata di rado, che stabilizza il bersaglio.
+aggiornando: [la combinazione di approssimazione, bootstrapping e apprendimento
+off-policy è la celebre *deadly triad* che può causare divergenza]{.pt-matita}.
+DQN la addomestica con due accorgimenti: l’experience replay (campionare a caso
+da un buffer di transizioni passate, decorrelandole) e la rete-target
+$\theta^{-}$, aggiornata di rado, che stabilizza il bersaglio.
 
 Resta il costo campionario. La versione di *Nature*, ad esempio, usava
 $50$ milioni di passi dell'agente per titolo, cioè $200$ milioni di fotogrammi
@@ -243,8 +244,8 @@ aperto.
 ## Una libertà in più, un contenimento in più
 
 Ogni metodo del capitolo nasce per curare una fragilità del precedente, e la
-cura ha quasi sempre la stessa forma: si concede all'agente una libertà in più,
-e subito dopo bisogna inventarsi il modo di contenerla.
+cura ha quasi sempre la stessa forma: [si concede all'agente una libertà in più,
+e subito dopo bisogna inventarsi il modo di contenerla]{.pt-matita}.
 
 Si comincia dal DQN: la libertà è una rete al posto della tabella, e a
 contenerla sono i due accorgimenti che le impediscono di esplodere, la memoria

@@ -58,9 +58,9 @@ cui si scrive il programma, non solo da offrire funzioni pronte. I primi
 framework di deep learning funzionavano nel primo modo: prima descrivevi
 *tutta* la rete, cioè scrivevi tutto il grafo, poi la consegnavi al motore ed
 eseguivi, e se qualcosa andava storto capirlo era un'impresa. PyTorch funziona
-come il navigatore: ogni riga di codice viene eseguita subito, puoi fermarti a
-guardare i numeri in qualunque punto, e correggere è facile come in qualsiasi
-programma Python.
+come il navigatore: [ogni riga di codice viene eseguita subito]{.pt-matita},
+puoi fermarti a guardare i numeri in qualunque punto, e correggere è facile
+come in qualsiasi programma Python.
 
 Col navigatore acceso il viaggio cambia forma mentre lo fai. Piove, e prendi la
 statale. Il traffico è fermo, ed esci un'uscita prima. Le commissioni oggi sono
@@ -89,11 +89,11 @@ tempo di quanto ne fa risparmiare.
 
 `````{tab} Superiore
 PyTorch segue il paradigma **define-by-run** (reso popolare dal framework
-giapponese Chainer nel 2015): il grafo delle operazioni non viene dichiarato in
-anticipo ma costruito dinamicamente durante l'esecuzione, registrando le
-operazioni man mano che avvengono. È il contrario del *define-and-run* di
-TensorFlow 1.x, dove si compilava un grafo statico da eseguire in una
-`Session`.
+giapponese Chainer nel 2015): [il grafo delle operazioni non viene dichiarato
+in anticipo ma costruito dinamicamente durante l'esecuzione]{.pt-matita},
+registrando le operazioni man mano che avvengono. È il contrario del
+*define-and-run* di TensorFlow 1.x, dove si compilava un grafo statico da
+eseguire in una `Session`.
 
 Ne segue che il *control flow* è normale Python (`if`, `for`, ricorsione) anche
 dentro il modello, che il debugging usa gli strumenti ordinari (`print`, `pdb`)
@@ -121,11 +121,11 @@ di aver usato PyTorch.
 
 La ragione sta nel modo in cui lavora la ricerca: si scrive un'idea, quasi
 sempre sbagliata, la si esegue, si guardano i valori intermedi e si cambia.
-Serve quindi uno strumento che si lasci aprire e guardare dentro mentre gira.
-Con un grafo dichiarato tutto in anticipo il programma si scrive in due lingue
-insieme, Python e quella del grafo, e un errore si cerca con strumenti diversi
-da quelli di Python; con il grafo costruito mentre il programma gira bastano un
-`print` e il debugger di sempre.
+[Serve quindi uno strumento che si lasci aprire e guardare dentro mentre
+gira]{.pt-matita}. Con un grafo dichiarato tutto in anticipo il programma si
+scrive in due lingue insieme, Python e quella del grafo, e un errore si cerca
+con strumenti diversi da quelli di Python; con il grafo costruito mentre il
+programma gira bastano un `print` e il debugger di sempre.
 
 Attorno a questa comodità si è formato un circolo virtuoso: gli articoli
 pubblicano il loro codice in PyTorch, chi vuole riprodurli usa PyTorch, e le
@@ -181,7 +181,8 @@ spostarle, e a dirglielo sei tu.
 Che la velocità sia quella della cucina vale finché l'ordine è grosso. Chiedi
 un chicco di riso alla volta e la griglia resta ferma: il tempo se ne va tutto
 nel cameriere che fa avanti e indietro con foglietti da una riga. Per questo in
-PyTorch si lavora su blocchi interi di numeri, e non su un numero per volta.
+PyTorch [si lavora su blocchi interi di numeri, e non su un numero per
+volta]{.pt-matita}.
 `````
 
 `````{tab} Superiore
@@ -204,9 +205,9 @@ Il passaggio da Python al motore ha un costo fisso. Ogni operazione, infatti,
 attraversa il dispatcher prima di arrivare al kernel, e quel tragitto,
 dell'ordine dei microsecondi, non dipende dalla dimensione dei tensori: su un
 tensore da diecimila elementi è trascurabile, su diecimila operazioni da un
-elemento è quasi tutto il tempo. Per questo si lavora su blocchi interi di
-numeri e non su un numero per volta, e per questo `torch.compile` fonde in un
-solo kernel le operazioni piccole in sequenza.
+elemento è quasi tutto il tempo. Per questo [si lavora su blocchi interi di
+numeri e non su un numero per volta]{.pt-matita}, e per questo `torch.compile`
+fonde in un solo kernel le operazioni piccole in sequenza.
 
 ```python
 import time

@@ -33,8 +33,8 @@ badare all'ordine delle righe.
 
 La parte da fissare in {numref}`fig-series-dataframe` è la fascia di
 etichette sul fianco sinistro, che non è una colonna. L'indice fa da etichetta:
-pandas riconosce ogni riga da lì, e quell'etichetta resta attaccata ai dati
-quando si filtra, si ordina o si estrae una colonna.
+pandas riconosce ogni riga da lì, e [quell'etichetta resta attaccata ai dati
+quando si filtra, si ordina o si estrae una colonna]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -226,10 +226,10 @@ df[(df["eta"] > 30) & (df["citta"] == "Milano")]
 ```
 
 Quello che passa dal colino finisce in una ciotola a parte, e la ciotola non è
-la pentola. Il filtro fa lo stesso: la tabella filtrata è una copia. Se scrivi
-lì dentro, la tabella di partenza resta com'era, il programma non si ferma, e
-la correzione riesce sul recipiente sbagliato. La riga che produce questo
-errore è
+la pentola. Il filtro fa lo stesso: [la tabella filtrata è una
+copia]{.pt-matita}. Se scrivi lì dentro, la tabella di partenza resta com'era,
+il programma non si ferma, e la correzione riesce sul recipiente sbagliato. La
+riga che produce questo errore è
 
 ```python
 df[df["eta"] > 30]["spesa"] = 0       # scrive sulla ciotola, non sulla pentola
@@ -275,9 +275,9 @@ l'assegnazione sbagliata passa in silenzio.
 
 Chi vuole che il programma si fermi può promuovere l'avviso a errore vero con
 `warnings.simplefilter("error", pd.errors.ChainedAssignmentError)`, che è una
-riga da mettere in cima a uno script che tratta dati veri. La forma che
+riga da mettere in cima a uno script che tratta dati veri. [La forma che
 funziona è una sola, `df.loc[df["eta"] > 30, "spesa"] = 0`, perché seleziona
-e assegna in un passo solo.
+e assegna in un passo solo]{.pt-matita}.
 
 Nota per chi cerca in rete: con il Copy-on-Write, predefinito da pandas 3, il
 vecchio `SettingWithCopyWarning` non esiste più e la copia non scrive mai
@@ -347,10 +347,10 @@ vuote, per cui una colonna con due numeri e un buco fa la media dei due. Ma
 l'unico cliente di Napoli ha la spesa mancante, e una media senza nemmeno un
 valore da mediare non esiste.
 
-L'ultimo passaggio di {numref}`fig-split-apply-combine` si tende
-a dimenticare: dopo un `groupby` la colonna di raggruppamento diventa
-l'indice, e smette di essere una colonna. Da lì in poi, quindi, una riga si
-chiama con la sua etichetta, non con il valore di una colonna.
+L'ultimo passaggio di {numref}`fig-split-apply-combine` si tende a dimenticare:
+[dopo un `groupby` la colonna di raggruppamento diventa l'indice, e smette di
+essere una colonna]{.pt-matita}. Da lì in poi, quindi, una riga si chiama con
+la sua etichetta, non con il valore di una colonna.
 
 Questo spiega gran parte dei `KeyError` che arrivano dopo un raggruppamento
 (`KeyError` è l'errore con cui Python dice «questo nome qui dentro non c'è»).
@@ -456,11 +456,11 @@ il terzo guarda le altre colonne della stessa riga, e a chi ha fatto nove
 acquisti dà 347 di spesa invece dei 159,25 della media.
 ```
 
-Nei tre modi di {numref}`fig-dati-mancanti` resta fuori una cosa: che una
-casella vuota è essa stessa un'informazione. Se manca perché il sensore era
-spento, ad esempio, è un caso; se manca perché la domanda era imbarazzante, il
-fatto che manchi dice qualcosa, e riempirla con la media cancella proprio quel
-qualcosa.
+Nei tre modi di {numref}`fig-dati-mancanti` resta fuori una cosa: che [una
+casella vuota è essa stessa un'informazione]{.pt-matita}. Se manca perché il
+sensore era spento, ad esempio, è un caso; se manca perché la domanda era
+imbarazzante, il fatto che manchi dice qualcosa, e riempirla con la media
+cancella proprio quel qualcosa.
 
 `````{tab} Elementare
 
@@ -641,7 +641,7 @@ Il primo è lineare; il secondo è una curva che una retta descrive
 male; il terzo è una retta rovinata da un solo valore anomalo (un *outlier*);
 il quarto ha tutti i punti su una verticale, tranne uno che da solo determina
 la pendenza. Nessuna di queste patologie emerge quindi dai numeri riassuntivi:
-solo l'occhio le coglie.
+[solo l'occhio le coglie]{.pt-matita}.
 
 ## Matplotlib: tre grafici per guardare i dati
 

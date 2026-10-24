@@ -346,8 +346,8 @@ degli iperparametri, $\beta$ compreso. Nello studio non
 si è trovato un criterio per sceglierli senza etichette: la selezione del
 modello senza supervisione resta un problema aperto, e per adesso si prova.
 
-Il che non rende $\beta$ inutile: regola quanta informazione porta il codice,
-non quali fattori separa.
+Il che non rende $\beta$ inutile: [regola quanta informazione porta il codice,
+non quali fattori separa]{.pt-matita}.
 
 ## Quando il latente è fatto di simboli
 
@@ -380,12 +380,12 @@ testo fatto così si può mettere al lavoro tutta la macchina costruita per il
 linguaggio, quella che indovina il simbolo dopo. È il modo in cui una macchina
 genera musica, e il modo in cui genera parlato.
 
-C’è però un ostacolo, già annunciato nella sezione sull’ELBO. Il trucco per
-far tornare indietro le correzioni funzionava perché lo scarto si poteva
-decidere prima e poi appoggiare sulla zona proposta. Fra la descrizione numero
-tre e la numero quattro non c’è niente in mezzo, quindi non c’è nessuno scarto
-da decidere, e il trucco non si applica. Ci vuole un’altra idea, e la si trova
-nella {doc}`sezione sui codec neurali
+C’è però un ostacolo, già annunciato nella sezione sull’ELBO. Il trucco per far
+tornare indietro le correzioni funzionava perché lo scarto si poteva decidere
+prima e poi appoggiare sulla zona proposta. Fra la descrizione numero tre e la
+numero quattro non c’è niente in mezzo, quindi [non c’è nessuno scarto da
+decidere, e il trucco non si applica]{.pt-matita}. Ci vuole un’altra idea, e la
+si trova nella {doc}`sezione sui codec neurali
 </Audio/codec-neurali>`,
 dove il prontuario si chiamava tavolozza: all’indietro si fa finta che la
 scelta della casella non ci sia, e la correzione arriva all’archivista come se
@@ -436,13 +436,14 @@ medie mobili esponenziali {cite}`oord2017neural`; altri riavviano le voci
 inutilizzate su codici presi dai dati {cite}`dhariwal2020jukebox`. Qui
 interessa la posizione del VQ-VAE in questa famiglia.
 
-La posizione è questa. Con un latente categorico la riparametrizzazione non è
-disponibile: non esiste una scrittura $\mathbf{z} = g(\boldsymbol{\epsilon},
-\phi, \mathbf{x})$ derivabile in $\phi$, perché la mappa da $\phi$ a un indice
-è costante a tratti e ha derivata nulla quasi ovunque. Restano tre strade, e si
-incontrano tutte e tre in punti diversi: lo stimatore a punteggio della sezione
-sull’ELBO, che si applica ma paga in varianza; un rilassamento continuo come
-la Gumbel-softmax, che la {doc}`sezione sulle rappresentazioni
+La posizione è questa. [Con un latente categorico la riparametrizzazione non è
+disponibile]{.pt-matita}: non esiste una scrittura $\mathbf{z} =
+g(\boldsymbol{\epsilon}, \phi, \mathbf{x})$ derivabile in $\phi$, perché la
+mappa da $\phi$ a un indice è costante a tratti e ha derivata nulla quasi
+ovunque. Restano tre strade, e si incontrano tutte e tre in punti diversi: lo
+stimatore a punteggio della sezione sull’ELBO, che si applica ma paga in
+varianza; un rilassamento continuo come la Gumbel-softmax, che la {doc}`sezione
+sulle rappresentazioni
 auto-supervisionate </Audio/rappresentazioni-auto-supervisionate>` usa per
 wav2vec 2.0; e lo straight-through estimator, cioè copiare all’indietro il
 gradiente saltando la quantizzazione, che è la scelta di VQ-VAE.

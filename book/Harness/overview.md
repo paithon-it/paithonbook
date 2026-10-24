@@ -65,18 +65,18 @@ non è il modello.
 
 Il {doc}`loop engineering </IngegneriaLLM/loop-engineering>` chiudeva l'elenco
 dei suoi componenti (la sveglia che fa partire il ciclo, la copia dei file su
-cui ogni giro lavora, i file in cui il ciclo tiene memoria) chiamandoli
+cui ogni iterazione lavora, i file in cui il ciclo tiene memoria) chiamandoli
 *scaffolding*, la struttura attorno al modello. L'harness engineering, invece,
 prende sul serio quella struttura: ne fa un oggetto di progetto, da misurare
 componente per componente, e porta al centro la domanda che la memoria esterna
 del ciclo aveva appena toccato, cioè che cosa resta, e in che forma, quando la
 finestra si svuota.
 
-Un compito lungo, per un agente, si spezza in sessioni, e ogni sessione comincia
-con una finestra vuota. Quello che sopravvive è soltanto ciò che è stato scritto
-fuori: nei file del progetto, nella cartella che git custodisce con la storia di
-tutte le sue versioni (il *repository*), nei controlli che qualcuno ha
-preparato.
+Un compito lungo, per un agente, si spezza in sessioni, e ogni sessione
+comincia con una finestra vuota. [Quello che sopravvive è soltanto ciò che è
+stato scritto fuori]{.pt-matita}: nei file del progetto, nella cartella che git
+custodisce con la storia di tutte le sue versioni (il *repository*), nei
+controlli che qualcuno ha preparato.
 
 In questo capitolo i guasti di Young danno l'ordine al percorso. Contro la
 sessione che non sa dove si era arrivati c'è {doc}`il repository come memoria
@@ -128,7 +128,7 @@ verifica sono le due parti che l'anatomia non nominava.
 
 ```{figure} ../figures/harness-anatomia.svg
 :name: fig-harness-anatomia
-:alt: "Al centro un riquadro tratteggiato, la finestra di contesto, che dura una sessione; dentro, il modello che la legge, con i pesi congelati. Attorno, cinque riquadri pieni che restano: in alto le istruzioni (AGENTS.md e la cartella docs), a sinistra lo stato (avanzamento, funzionalità, storia git), a destra gli strumenti (catalogo e permessi), in basso a destra l'ambiente (macchina, dipendenze, applicazione avviabile), in basso a sinistra la verifica (test, linter, collaudo da utente). Le frecce chiudono il giro: istruzioni e stato entrano nella finestra a inizio sessione, le richieste del modello passano agli strumenti, gli strumenti hanno effetto sull'ambiente, gli esiti tornano nella finestra, l'ambiente passa alla verifica le cose da controllare, e la verifica scrive «fatto» nello stato."
+:alt: "Al centro un riquadro tratteggiato, la finestra di contesto, che dura una sessione; dentro, il modello che la legge, con i pesi congelati. Attorno, cinque riquadri pieni che restano: in alto le istruzioni (AGENTS.md e la cartella docs), a sinistra lo stato (avanzamento, funzionalità, storia git), a destra gli strumenti (catalogo e permessi), in basso a destra l'ambiente (macchina, dipendenze, applicazione avviabile), in basso a sinistra la verifica (test, linter, collaudo da utente). Le frecce chiudono il ciclo: istruzioni e stato entrano nella finestra a inizio sessione, le richieste del modello passano agli strumenti, gli strumenti hanno effetto sull'ambiente, gli esiti tornano nella finestra, l'ambiente passa alla verifica le cose da controllare, e la verifica scrive «fatto» nello stato."
 :width: 92%
 
 L'anatomia di un harness. Il tratteggio segna ciò che dura una sessione, la
@@ -174,8 +174,8 @@ sulla dima.
 Metti lo stesso artigiano in due botteghe. Nella prima il cartello non c'è, gli
 attrezzi stanno in un mucchio, il registro è vuoto e nessuno controlla: lavora
 con le stesse mani, e a sera hai tre pezzi cominciati e nessuno finito. Nella
-seconda consegna il pezzo giusto. Le mani erano le stesse, è cambiata la
-bottega.
+seconda consegna il pezzo giusto. [Le mani erano le stesse, è cambiata la
+bottega]{.pt-matita}.
 
 Attento però a come fai il confronto. Lo hanno fatto davvero: lo
 stesso modello ha lavorato venti minuti in una bottega spoglia e sei ore in una
@@ -270,11 +270,12 @@ non si separano del tutto: i fornitori addestrano i propri modelli sugli
 strumenti del proprio harness, e un confronto a $H$ fissato favorisce il
 modello addestrato per quell’$H$.
 
-$H$ non aggiunge capacità a $\theta$: le aggiunge al sistema. Nessuna istruzione
-insegna al modello ciò che non sa, ma un controllo con la possibilità di
-rifare alza il tasso di successo di qualunque modello che riesca con una
-probabilità fra zero e uno. Ogni componente di $H$ codifica un'ipotesi su che
-cosa il modello non sa fare da solo, e il suo valore dipende da $\theta$.
+[$H$ non aggiunge capacità a $\theta$: le aggiunge al sistema]{.pt-matita}.
+Nessuna istruzione insegna al modello ciò che non sa, ma un controllo con la
+possibilità di rifare alza il tasso di successo di qualunque modello che riesca
+con una probabilità fra zero e uno. Ogni componente di $H$ codifica un'ipotesi
+su che cosa il modello non sa fare da solo, e il suo valore dipende da
+$\theta$.
 
 Rajasekaran ne dà due casi: il valutatore separato, che vale il suo costo
 finché il compito sta oltre ciò che il modello fa in modo affidabile da solo e
@@ -315,9 +316,9 @@ Questo è il gesto diagnostico dell'harness engineering. Un fallimento si
 attribuisce a uno dei cinque sottosistemi (l'istruzione che mancava, lo
 strumento che non c'era, l'ambiente che non partiva, lo stato che non diceva
 dove si era arrivati, il controllo che non ha fermato l'errore), si ripara lì,
-e si riprova. Cambiare modello resta un'ipotesi, ma viene dopo le altre, perché
-è la sola che non dice niente su che cosa mancasse; ci si arriva quando nessuna
-riparazione dell'harness basta.
+e si riprova. [Cambiare modello resta un’ipotesi, ma viene dopo le
+altre]{.pt-matita}, perché è la sola che non dice niente su che cosa mancasse;
+ci si arriva quando nessuna riparazione dell'harness basta.
 
 Il gesto ha un rovescio, che si dimentica più
 spesso: ogni componente aggiunto costa (testo da leggere a ogni sessione, cioè

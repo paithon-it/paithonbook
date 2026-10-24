@@ -75,8 +75,8 @@ Al secondo cuoco, invece, arriva la verdura intera. Il giudizio del cliente
 risale all'indietro tutta la catena, dalla sala ai fornelli e dai fornelli al
 tagliere, e la sera dopo cambiano insieme la cottura e il taglio. Nessuno gli
 ha detto che gli asparagi vanno tagliati in diagonale; ci arriva perché così i
-piatti tornano indietro meno spesso. In altre parole, il taglio non è più una
-regola fissa decisa da qualcun altro, e si impara come la cottura.
+piatti tornano indietro meno spesso. In altre parole, [il taglio non è più una
+regola fissa decisa da qualcun altro, e si impara come la cottura]{.pt-matita}.
 
 `````
 
@@ -103,8 +103,8 @@ anche strati di altra forma, come il pooling.
 Tutti i parametri $\theta$, dal primo strato all'ultimo, vengono ottimizzati
 insieme (*end-to-end*) minimizzando la loss $\mathcal{L}$ con la discesa del
 gradiente, e la retropropagazione calcola il gradiente rispetto a ciascuno di
-essi. In questo modo l'estrazione delle feature diventa parte del modello e
-viene appresa, invece di stare a monte e fissa; è ciò che si chiama
+essi. In questo modo [l'estrazione delle feature diventa parte del modello e
+viene appresa, invece di stare a monte e fissa]{.pt-matita}; è ciò che si chiama
 **representation learning**.
 
 `````
@@ -129,8 +129,8 @@ Il risultato somigliava in modo sorprendente alla corteccia di Hubel e Wiesel:
 i primi strati reagiscono a bordi e linee orientate; gli strati intermedi a
 parti riconoscibili (un occhio, una ruota) e a *texture*, cioè trame che si
 ripetono, come la stoffa di un tessuto o il pelo di un animale; gli ultimi
-strati a interi oggetti. In altri termini, la profondità costruisce astrazione,
-un livello alla volta ({numref}`fig-gerarchia-feature`).
+strati a interi oggetti. In altri termini, [la profondità costruisce astrazione,
+un livello alla volta]{.pt-matita} ({numref}`fig-gerarchia-feature`).
 
 ```{figure} ../figures/gerarchia-feature.svg
 :name: fig-gerarchia-feature
@@ -198,10 +198,10 @@ nuovi, mentre gli ultimi vanno riaddestrati {cite}`yosinski2014transferable`.
 C'è un dettaglio che spiazza chi arriva al deep learning da profano: la
 retropropagazione, l'algoritmo che addestra queste reti, fu resa celebre nel
 1986 da Rumelhart, Hinton e Williams {cite}`rumelhart1986learning`, ma l'idea è
-ancora più vecchia[^backprop-storia].
-Se l'algoritmo esisteva da decenni, perché il deep learning
-è esploso solo dopo il 2012? Perché servivano tre ingredienti tutti insieme:
-dati, potenza di calcolo e algoritmi maturi.
+ancora più vecchia[^backprop-storia]. Se l'algoritmo esisteva da decenni,
+perché il deep learning è esploso solo dopo il 2012? Perché [servivano tre
+ingredienti tutti insieme]{.pt-matita}: dati, potenza di calcolo e algoritmi
+maturi.
 
 Il momento-simbolo è l'autunno del 2012 e la gara ImageNet, già incontrata nel
 {doc}`capitolo sulle GPU </GPU/overview>`: più di un milione di fotografie,
@@ -353,7 +353,8 @@ Con più strati, invece, il secondo lavora su ciò che ha trovato il primo, il
 terzo su ciò che ha trovato il secondo. È la differenza tra una ricetta scritta
 tutta come "prendi la farina, prendi l'uovo, prendi il burro" e una che a un
 certo punto dice "prepara la besciamella", dando per fatto un pezzo di strada
-già percorso: la seconda arriva allo stesso piatto con molte parole in meno.
+già percorso: [la seconda arriva allo stesso piatto con molte parole in
+meno]{.pt-matita}.
 
 `````
 
@@ -410,8 +411,9 @@ approssimare oltre una certa soglia a meno di renderla esponenzialmente larga.
 Montúfar e colleghi {cite}`montufar2014number` mostrano che il numero di
 regioni lineari che una rete ReLU può generare cresce esponenzialmente con la
 profondità e solo polinomialmente con la larghezza. Per queste famiglie di
-funzioni, quindi, la profondità dà un'efficienza espressiva che la larghezza
-non dà: comporre trasformazioni è più economico che allargarne una sola.
+funzioni, quindi, [la profondità dà un'efficienza espressiva che la larghezza
+non dà]{.pt-matita}: comporre trasformazioni è più economico che allargarne una
+sola.
 
 `````
 
@@ -571,8 +573,9 @@ rapporto: 1019 volte
 
 Cinque strati da dieci neuroni hanno $471$ parametri e arrivano al più a
 $161\,051$ regioni, cioè $11^5$, perché ogni strato da dieci neuroni moltiplica
-le regioni al più per undici. La rete a uno strato che spende quei parametri,
-anzi uno in più, ne fa al più $158$, mille volte meno con la stessa spesa.
+le regioni al più per undici. [La rete a uno strato che spende quei parametri,
+anzi uno in più, ne fa al più $158$, mille volte meno con la stessa
+spesa]{.pt-matita}.
 
 I due numeri sono massimi, e uno solo dei due si raggiunge: la rete piatta
 arriva alle sue $158$ regioni mettendo i suoi $157$ spigoli in punti diversi,

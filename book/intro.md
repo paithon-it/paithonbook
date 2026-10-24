@@ -591,9 +591,10 @@ In $x = 0$ la funzione non è derivabile (il grafico ha un punto angoloso); il s
 Accanto a molti capoversi, quando ci passi sopra o ci arrivi scorrendo, compare
 un piccolo cerchio col triangolo del libro, <span class="pt-postilla-inline"
 aria-hidden="true"><img class="dark-light"
-src="_static/brand/logos/paithon-mark.svg" alt=""></span>: premuto, apre la
-postilla, una riga che dice di che cosa parla quel capoverso. La postilla si
-apre sotto il testo, e lo stesso gesto la richiude.
+src="_static/brand/logos/paithon-mark.svg" alt=""></span>: premuto, il
+capoverso sfuma e al suo posto si scrive la postilla, una riga che dice di che
+cosa parla. Tenendolo premuto la sbirci, e quando lo lasci torna il testo; un
+tocco la lascia scritta finché non lo premi di nuovo.
 :::
 
 :::{only} latex

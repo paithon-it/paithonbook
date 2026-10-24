@@ -53,8 +53,8 @@ essere macchie e cominciano ad avere bordi netti e coerenza.
 Su quel pugno di numeri di partenza si può fare aritmetica. Ad esempio, si
 prendono i numeri che hanno fatto tre uomini con gli occhiali, si tolgono quelli
 di tre uomini senza, si aggiungono quelli di tre donne senza: esce una donna con
-gli occhiali. Con un esemplare solo per gruppo l'operazione fallisce, perché
-«occhiali» sta in una zona di quei numeri e non in un punto preciso.
+gli occhiali. [Con un esemplare solo per gruppo l'operazione fallisce, perché
+«occhiali» sta in una zona di quei numeri e non in un punto preciso]{.pt-matita}.
 `````
 
 `````{tab} Superiore
@@ -78,10 +78,10 @@ strutturato: aritmetica vettoriale come "uomo con occhiali $-$ uomo senza
 occhiali $+$ donna senza occhiali" produce, decodificata da $G$, il volto di
 una donna con occhiali. C'è però una cautela, che il paper stesso dichiara e
 che pesa: sui singoli vettori l'operazione è instabile, e il risultato si
-ottiene mediando i $\mathbf{z}$ di tre esemplari per concetto. La struttura
-c'è, ma è una proprietà di regioni dello spazio, non di punti singoli; ed è
-comunque un indizio precoce del fatto che la rete apprende una
-rappresentazione, non una tabella di memorizzazione.
+ottiene mediando i $\mathbf{z}$ di tre esemplari per concetto. [La struttura
+c'è, ma è una proprietà di regioni dello spazio, non di punti
+singoli]{.pt-matita}; ed è comunque un indizio precoce del fatto che la rete
+apprende una rappresentazione, non una tabella di memorizzazione.
 `````
 
 ## Conditional GAN: prendere il controllo
@@ -103,8 +103,8 @@ decide una volta per tutte un numero per ciascuna parola possibile, e "voglio
 un gatto" diventa una manciata di numeri accodata al rumore. Sia il generatore
 sia il discriminatore ricevono questa etichetta: il primo la usa come
 istruzione, il secondo per giudicare non solo *se* l'immagine è verosimile, ma
-se corrisponde all'etichetta richiesta. Così smettiamo di pescare a caso e
-cominciamo a ordinare su misura.
+se corrisponde all'etichetta richiesta. [Così smettiamo di pescare a caso e
+cominciamo a ordinare su misura]{.pt-matita}.
 `````
 
 `````{tab} Superiore
@@ -137,10 +137,11 @@ $$
 
 cioè il discriminatore ottimo del gioco senza condizioni, classe per classe.
 
-Il condizionamento è il seme concettuale di quasi tutto ciò che segue: la
-traduzione immagine-a-immagine e, con altri modelli generativi (diffusione,
-modelli autoregressivi), il *text-to-image* sono generazione condizionata su un
-input sempre più ricco, da un'etichetta discreta a un'intera frase.
+[Il condizionamento è il seme concettuale di quasi tutto ciò che
+segue]{.pt-matita}: la traduzione immagine-a-immagine e, con altri modelli
+generativi (diffusione, modelli autoregressivi), il *text-to-image* sono
+generazione condizionata su un input sempre più ricco, da un'etichetta discreta
+a un'intera frase.
 `````
 
 ## SAGAN e BigGAN: guardare lontano, poi crescere
@@ -166,13 +167,13 @@ Il risultato era riconoscibile: cieli, mari e paesaggi, che sono fatti di trama,
 venivano bene; i cani avevano un pelo perfetto ma zampe confuse, perché quattro
 zampe vanno messe d’accordo fra loro e con il corpo, e sono lontane.
 
-L’attenzione della SAGAN dà a ogni punto la possibilità di guardare tutta la
-tela, e di pesare quanto gli servono i punti lontani. Serve anche all’esperto
-che giudica: può controllare che una zampa in basso a sinistra vada d’accordo
-con quella in alto a destra. La rete impara per gradi: all’inizio il peso
-dell’attenzione è a zero e dipinge come prima, poi lo alza quando le conviene.
-Lo sguardo lungo richiede più calcoli: ogni punto guarda tutti gli altri, e
-raddoppiando i punti le occhiate diventano quattro volte tante.
+[L’attenzione della SAGAN dà a ogni punto la possibilità di guardare tutta la
+tela, e di pesare quanto gli servono i punti lontani]{.pt-matita}. Serve anche
+all’esperto che giudica: può controllare che una zampa in basso a sinistra vada
+d’accordo con quella in alto a destra. La rete impara per gradi: all’inizio il
+peso dell’attenzione è a zero e dipinge come prima, poi lo alza quando le
+conviene. Lo sguardo lungo richiede più calcoli: ogni punto guarda tutti gli
+altri, e raddoppiando i punti le occhiate diventano quattro volte tante.
 
 BigGAN adotta la soluzione che sembra meno ingegnosa, e rende di più: tutto più
 grande. A ogni passo guarda otto volte più immagini, e ogni gruppo così contiene
@@ -206,14 +207,15 @@ regola in sei su dieci.
 `````{tab} Superiore
 
 SAGAN nasce da un’osservazione sulle GAN convoluzionali condizionate addestrate
-su ImageNet: riescono bene le classi che si distinguono per la trama più che per
-la geometria (oceano, cielo, paesaggi), e male quelle con una struttura
+su ImageNet: riescono bene le classi che si distinguono per la trama più che
+per la geometria (oceano, cielo, paesaggi), e male quelle con una struttura
 geometrica ricorrente, come i cani, disegnati con il pelo realistico ma senza
 zampe ben separate. La spiegazione che gli autori avanzano, e che i loro
 confronti classe per classe sostengono, sta nel campo recettivo locale della
-convoluzione: una dipendenza fra regioni lontane si forma solo attraverso una
-pila di strati, che l’ottimizzazione fatica a coordinare, e allargare i kernel
-farebbe perdere l’efficienza computazionale e statistica della struttura locale.
+convoluzione: [una dipendenza fra regioni lontane si forma solo attraverso una
+pila di strati, che l’ottimizzazione fatica a coordinare]{.pt-matita}, e
+allargare i kernel farebbe perdere l’efficienza computazionale e statistica
+della struttura locale.
 
 Il blocco di SAGAN adatta l’operazione *non-local* all’interno di una GAN. Date
 le feature $\mathbf{x} \in \mathbb{R}^{C \times N}$ di uno strato ($N$
@@ -293,8 +295,8 @@ studiate. Il contributo di StyleGAN {cite}`karras2019style`, però, è
 architetturale: un generatore a stili che controlla gli attributi dell'immagine
 scala per scala. Migliora anche la qualità (a parità di addestramento e di
 iperparametri il FID su FFHQ scende da $5{,}25$ a $4{,}40$ rispetto al
-generatore tradizionale, circa un sesto), ma il risultato che lo distingue è il
-controllo.
+generatore tradizionale, circa un sesto), ma [il risultato che lo distingue è il
+controllo]{.pt-matita}.
 
 `````{tab} Elementare
 StyleGAN non "disegna" il volto tutto in una volta: lo costruisce a livelli, dal
@@ -388,15 +390,14 @@ ovvia a dirsi: si comincia da $4 \times 4$, si aspetta che le due reti si
 assestino, poi si aggiunge uno strato a ciascuna e si raddoppia il lato. Sedici
 pixel, poi sessantaquattro, poi duecentocinquantasei, e via fino al milione.
 
-Il punto delicato è il gradino. Aggiungere di
-colpo uno strato nuovo, coi suoi numeri ancora casuali, a due reti che
-avevano appena trovato l'equilibrio lo butta all'aria. La
-soluzione è una **dissolvenza**: per un po’ l'immagine che esce è una miscela
-fra quella del gradino vecchio (semplicemente ingrandita) e quella del gradino
-nuovo, e il peso della miscela scivola da zero
-a uno nel corso dell'addestramento. All'inizio comanda il vecchio, alla fine il
-nuovo, e in mezzo non c'è nessun salto. Lo stesso vale, specularmente, per il
-discriminatore.
+Il punto delicato è il gradino. Aggiungere di colpo uno strato nuovo, coi suoi
+numeri ancora casuali, a due reti che avevano appena trovato l'equilibrio lo
+butta all'aria. La soluzione è una **dissolvenza**: per un po’ l'immagine che
+esce è una miscela fra quella del gradino vecchio (semplicemente ingrandita) e
+quella del gradino nuovo, e il peso della miscela scivola da zero a uno nel
+corso dell'addestramento. [All'inizio comanda il vecchio, alla fine il nuovo, e
+in mezzo non c'è nessun salto]{.pt-matita}. Lo stesso vale, specularmente, per
+il discriminatore.
 
 `````{tab} Elementare
 
@@ -470,13 +471,13 @@ Gli altri tre contributi del lavoro:
 Detto come cresce, resta da dire che cosa StyleGAN aggiunge: la **AdaIN**,
 *adaptive instance normalization*. A ogni livello il segnale dentro il
 generatore è fatto di tanti canali, le pile di valori della DCGAN, e la AdaIN
-lavora su ciascuno separatamente, in due tempi. Prima lo normalizza,
-sottraendo la media e dividendo per la deviazione standard calcolate su tutte
-le sue posizioni; poi gli applica una scala e uno scarto calcolati dallo stile
-di quel livello. Ogni canale esce quindi con le statistiche dettate dallo
-stile, e poiché lo stile cambia da livello a livello il controllo è per scala:
-cambiando lo stile dei primi livelli cambia la posa, cambiando quello degli
-ultimi cambiano le lentiggini.
+lavora su ciascuno separatamente, in due tempi. Prima lo normalizza, sottraendo
+la media e dividendo per la deviazione standard calcolate su tutte le sue
+posizioni; poi gli applica una scala e uno scarto calcolati dallo stile di quel
+livello. Ogni canale esce quindi con le statistiche dettate dallo stile, e
+[poiché lo stile cambia da livello a livello il controllo è per
+scala]{.pt-matita}: cambiando lo stile dei primi livelli cambia la posa,
+cambiando quello degli ultimi cambiano le lentiggini.
 
 Il meccanismo non nasce qui: è l'AdaIN che Xun Huang e Serge Belongie
 {cite}`huang2017arbitrary` avevano proposto per il trasferimento di stile, e che
@@ -574,14 +575,14 @@ L'altra metà dell'enigma resta aperta, e sono gli stessi autori a lasciarla lì
 una macchia tanto costante il discriminatore dovrebbe vederla, e perché non la
 penalizzi l'ipotesi non lo dice.
 
-Il rimedio, che arriva con StyleGAN2, è elegante: invece di normalizzare le
-attivazioni, si normalizzano i pesi. Lo stile scala i pesi della convoluzione
-(la *modulazione*), e subito dopo i pesi vengono rinormalizzati (la
-*demodulazione*) in modo che l'uscita torni, in media, ad ampiezza unitaria. Il
-risultato sulla carta è quasi lo stesso, ma la seconda operazione non guarda
-mai il contenuto dell'immagine: lavora sui pesi, prima che l'immagine esista, e
-non lascia al generatore nessun varco in cui far passare un segnale. Le gocce
-spariscono.
+Il rimedio, che arriva con StyleGAN2, è elegante: [invece di normalizzare le
+attivazioni, si normalizzano i pesi]{.pt-matita}. Lo stile scala i pesi della
+convoluzione (la *modulazione*), e subito dopo i pesi vengono rinormalizzati
+(la *demodulazione*) in modo che l'uscita torni, in media, ad ampiezza
+unitaria. Il risultato sulla carta è quasi lo stesso, ma la seconda operazione
+non guarda mai il contenuto dell'immagine: lavora sui pesi, prima che
+l'immagine esista, e non lascia al generatore nessun varco in cui far passare
+un segnale. Le gocce spariscono.
 
 ```{admonition} Come si legge questa storia
 :class: tip
@@ -734,8 +735,8 @@ Resta una scappatoia più fine, e i falsari la trovano. Si può dipingere un Mon
 vero e nasconderci dentro la foto, in una trama di puntini troppo debole perché
 l'occhio la veda: al ritorno il compagno rilegge la trama e ricostruisce la foto
 identica. L'esperto è contento e il giro si chiude, ma nessuno ha promesso che
-nel quadro ci siano gli stessi alberi della foto. Un andata e ritorno perfetto
-non dimostra che il soggetto abbia fatto il viaggio.
+nel quadro ci siano gli stessi alberi della foto. [Un andata e ritorno perfetto
+non dimostra che il soggetto abbia fatto il viaggio]{.pt-matita}.
 `````
 
 `````{tab} Superiore
@@ -763,8 +764,8 @@ e Sandler {cite}`chu2017cyclegan` hanno mostrato che CycleGAN impara a
 soddisfare il ciclo nascondendo l'immagine di partenza dentro quella tradotta,
 come un segnale ad alta frequenza quasi invisibile a occhio, che $F$ poi
 rilegge per ricostruire l'originale. Il ciclo si chiude, ma per steganografia
-invece che per conservazione del soggetto: una $\mathcal{L}_{\text{cyc}}$ bassa
-non è di per sé una garanzia di fedeltà.
+invece che per conservazione del soggetto: [una $\mathcal{L}_{\text{cyc}}$ bassa
+non è di per sé una garanzia di fedeltà]{.pt-matita}.
 `````
 
 ## Applicazioni
@@ -776,10 +777,11 @@ Il primo è la **super-risoluzione**. SRGAN {cite}`ledig2017photo` ricostruisce
 dettagli plausibili in immagini a bassa risoluzione, e da lì vengono il
 restauro fotografico e l’*upscaling*, l'ingrandimento di un'immagine senza che
 diventi sgranata. La parola «plausibili» va presa alla lettera, e indica il
-limite dello strumento: i dettagli che nella foto piccola non c'erano la rete
-non li recupera, li inventa in modo verosimile. Su una foto di famiglia è una
-scelta estetica; su una lastra medica o su un fotogramma di sorveglianza è una
-trappola, perché il risultato ha l'aria di un'informazione e non lo è.
+limite dello strumento: [i dettagli che nella foto piccola non c'erano la rete
+non li recupera, li inventa in modo verosimile]{.pt-matita}. Su una foto di
+famiglia è una scelta estetica; su una lastra medica o su un fotogramma di
+sorveglianza è una trappola, perché il risultato ha l'aria di un'informazione e
+non lo è.
 
 Il secondo è la generazione di **dati sintetici**: volti, lastre mediche, scene
 stradali con cui addestrare altri modelli quando i dati reali sono scarsi o
@@ -847,8 +849,8 @@ un discriminatore. A quel punto il compressore non può più cavarsela con la
 media, perché una media il discriminatore la riconosce, e con lo stesso
 accorciamento le immagini tornano nitide: un'immagine di $256 \times 256$ pixel
 si riduce a una fila di $256$ simboli, che un Transformer gestisce senza fatica.
-Da lì in poi generare un'immagine è, alla lettera, scrivere una frase di 256
-parole.
+Da lì in poi [generare un'immagine è, alla lettera, scrivere una frase di 256
+parole]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -1015,8 +1017,8 @@ nella {doc}`sezione sul latente che si usa
 compressione di quarantotto volte. È stato addestrato anche con una loss
 avversaria, con un discriminatore *patch-based* come quello di VQ-GAN che
 finito l'addestramento si scarta, e a lui si deve la nitidezza delle
-ricostruzioni. Il duello, insomma, è passato dal centro della scena a un ruolo
-di manutenzione.
+ricostruzioni. [Il duello, insomma, è passato dal centro della scena a un ruolo
+di manutenzione]{.pt-matita}.
 
 ```{admonition} Nota etica: i deepfake
 :class: warning

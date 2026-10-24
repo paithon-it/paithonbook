@@ -29,8 +29,8 @@ Nella {doc}`sezione sui tensori <tensori>` il comando era `.to(device)`; qui
 c'è il perché. Visti dall'hardware, i calcoli di una rete neurale sono quasi
 soltanto moltiplicazioni fra tabelle di numeri (le matrici dell'algebra
 lineare), cioè milioni di prodotti e somme tutti uguali fra loro e,
-soprattutto, in gran parte indipendenti: ogni numero del risultato si calcola
-senza aspettare gli altri.
+soprattutto, in gran parte indipendenti: [ogni numero del risultato si calcola
+senza aspettare gli altri]{.pt-matita}.
 
 `````{tab} Elementare
 Le squadre a cui affidare quel lavoro sono due. La prima è la CPU: otto operai
@@ -102,8 +102,8 @@ sono due. La prima vale per le operazioni limitate dalla memoria, che in una
 rete sono molte (le attivazioni, le normalizzazioni, le somme dei residui). In
 queste operazioni il tempo se ne va soprattutto a spostare i numeri fra la
 memoria e le unità di calcolo, che per gran parte del tempo aspettano.
-Dimezzare la lunghezza dei numeri dimezza il traffico, e il tempo scende quasi
-in proporzione.
+[Dimezzare la lunghezza dei numeri dimezza il traffico, e il tempo scende quasi
+in proporzione]{.pt-matita}.
 
 La seconda vale per i prodotti fra matrici grandi, limitati dal calcolo, e
 riguarda i **tensor core**: circuiti costruiti apposta per moltiplicare piccole
@@ -283,10 +283,10 @@ in cui cade praticamente chiunque la prima volta.
 
 `````{tab} Elementare
 
-Quando scrivi un'operazione su GPU, Python non aspetta che venga eseguita.
-La mette in coda e prosegue subito con la riga successiva. È il motivo per cui
-la GPU riesce a stare occupata: mentre lavora su un'operazione, il programma le
-sta già preparando le prossime.
+[Quando scrivi un'operazione su GPU, Python non aspetta che venga
+eseguita]{.pt-matita}. La mette in coda e prosegue subito con la riga
+successiva. È il motivo per cui la GPU riesce a stare occupata: mentre lavora
+su un'operazione, il programma le sta già preparando le prossime.
 
 La conseguenza è che un cronometro attorno a un pezzo di codice misura il tempo
 di accodare le operazioni, non quello di eseguirle. È così che nascono i
@@ -315,13 +315,13 @@ niente.
 
 `````{tab} Superiore
 
-Le chiamate CUDA sono asincrone rispetto all'host, cioè vengono inserite in uno
-*stream* e ritornano immediatamente. La sincronizzazione avviene solo in punti
-precisi, e conviene conoscerli perché sono anche i punti dove il codice
-rallenta senza motivo apparente: un `.item()`, un `.cpu()`, una `print` del
-tensore, un `if` che dipende da un valore calcolato sulla GPU. Ognuno di questi
-è una barriera implicita, e per questo loggare la loss a ogni passo
-può rallentare parecchio.
+[Le chiamate CUDA sono asincrone rispetto all'host, cioè vengono inserite in
+uno *stream* e ritornano immediatamente]{.pt-matita}. La sincronizzazione
+avviene solo in punti precisi, e conviene conoscerli perché sono anche i punti
+dove il codice rallenta senza motivo apparente: un `.item()`, un `.cpu()`, una
+`print` del tensore, un `if` che dipende da un valore calcolato sulla GPU.
+Ognuno di questi è una barriera implicita, e per questo loggare la loss a ogni
+passo può rallentare parecchio.
 
 Per cronometrare correttamente serve `torch.cuda.synchronize()` prima di
 far partire il cronometro (per svuotare la coda pregressa) e dopo il blocco
@@ -442,10 +442,10 @@ tutto insieme, si accorge che tre operazioni consecutive possono diventare una
 sola, e riscrive i passaggi in una versione ottimizzata.
 
 La prima esecuzione è *più lenta*, perché studiare la ricetta costa; le
-successive sono più veloci. Conviene quindi quando lo stesso piatto va cucinato
-migliaia di volte (un addestramento lungo su un modello grande) e non conviene
-per un assaggio: su un esperimento di due minuti il tempo di compilazione
-mangia tutto il guadagno.
+successive sono più veloci. [Conviene quindi quando lo stesso piatto va
+cucinato migliaia di volte]{.pt-matita} (un addestramento lungo su un modello
+grande) e non conviene per un assaggio: su un esperimento di due minuti il
+tempo di compilazione mangia tutto il guadagno.
 
 Il piano vale finché il servizio resta quello. Se cambia il numero di
 coperti, cioè la forma dei dati che arrivano (un vassoio di esempi più grande,
@@ -498,8 +498,8 @@ Su una MLP per MNIST in CPU, ad esempio, la prima compilazione richiede da sola
 alcuni secondi a freddo, contro un addestramento che dura minuti, e a regime il
 compilato può restare più lento dell'eager, soprattutto sotto carico. Su CPU
 l'inductor è meno ottimizzato, e il fattore misurato non si trasferisce a una
-GPU, dove va rimisurato. La regola pratica: attivalo quando l'addestramento
-dura ore, misura, e tienilo solo se il cronometro dà ragione.
+GPU, dove va rimisurato. La regola pratica: [attivalo quando l'addestramento
+dura ore, misura, e tienilo solo se il cronometro dà ragione]{.pt-matita}.
 `````
 
 ## Più GPU, un solo modello: il parallelismo dati
@@ -535,10 +535,10 @@ fotocopia. Così hanno corretto in un terzo del tempo, e le tre griglie
 sono ancora perfettamente uguali, come se avesse corretto una persona sola, ma
 tre volte più in fretta.
 
-Le pile però devono essere uguali, e per questo si contano prima. Se uno ne
-corregge centocinquanta e un altro cinquanta, la media delle tre proposte pesa
-i cinquanta compiti quanto i centocinquanta, e la griglia che ne esce non è
-quella che sarebbe uscita correggendo tutta la pila di seguito.
+[Le pile però devono essere uguali, e per questo si contano prima]{.pt-matita}.
+Se uno ne corregge centocinquanta e un altro cinquanta, la media delle tre
+proposte pesa i cinquanta compiti quanto i centocinquanta, e la griglia che ne
+esce non è quella che sarebbe uscita correggendo tutta la pila di seguito.
 
 Il trucco funziona perché ogni compito si giudica senza guardare gli altri: se
 il voto di un compito dipendesse dagli altri della stessa pila, per esempio
@@ -564,14 +564,15 @@ $$
 \nabla_\theta \mathcal{L} = \frac{1}{R} \sum_{r=1}^{R} \nabla_\theta \mathcal{L}_r,
 $$
 
-dove $\mathcal{L}_r$ è la loss media sulla fetta della replica $r$. Se le fette
-hanno la stessa dimensione, questa media è il gradiente sull'intero batch, a
-meno degli arrotondamenti: cambia solo chi calcola. L'uguaglianza richiede però
-che la loss sia una media di termini per esempio, e che nessuno strato accoppi
-gli esempi del batch. In particolare, non vale con la batch normalization, che
-calcola le sue statistiche sulla sola fetta (a meno di `SyncBatchNorm`), né con
-le loss che usano gli altri esempi come negativi, come quelle contrastive,
-perché ogni replica vede solo i negativi della propria fetta.
+dove $\mathcal{L}_r$ è la loss media sulla fetta della replica $r$. [Se le
+fette hanno la stessa dimensione, questa media è il gradiente sull'intero
+batch, a meno degli arrotondamenti]{.pt-matita}: cambia solo chi calcola.
+L'uguaglianza richiede però che la loss sia una media di termini per esempio, e
+che nessuno strato accoppi gli esempi del batch. In particolare, non vale con
+la batch normalization, che calcola le sue statistiche sulla sola fetta (a meno
+di `SyncBatchNorm`), né con le loss che usano gli altri esempi come negativi,
+come quelle contrastive, perché ogni replica vede solo i negativi della propria
+fetta.
 
 Lo standard è `DistributedDataParallel` (DDP), con un processo per GPU,
 comunicazione NCCL, e l'all-reduce eseguito *durante* il backward, a pacchetti
@@ -662,9 +663,9 @@ Glorot. La {doc}`sezione sull'inizializzazione
 </DeepLearning/ottimizzazione-regolarizzazione>` ne dà la derivazione; qui
 vediamo come si applicano.
 
-I default di PyTorch non sono né Glorot né He, benché si legga spesso il
-contrario. Per `nn.Linear`, ad esempio, il default è una variante uniforme
-ereditata dal vecchio Torch, che estrae i pesi a caso fra
+[I default di PyTorch non sono né Glorot né He, benché si legga spesso il
+contrario]{.pt-matita}. Per `nn.Linear`, ad esempio, il default è una variante
+uniforme ereditata dal vecchio Torch, che estrae i pesi a caso fra
 $-1/\sqrt{n_{\text{in}}}$ e $+1/\sqrt{n_{\text{in}}}$ (nel sorgente di
 `nn.Linear` è `kaiming_uniform_` con `a=math.sqrt(5)`, che nonostante il nome
 dà questa uniforme).
@@ -724,12 +725,12 @@ sono più modeste e più vicine:
   disponibilità; gli esempi che usano una scheda sola ci girano, lo schema DDP,
   che ne chiede più d'una, no.
 
-Prima di ogni ottimizzazione, a ogni scala, bisogna misurare. Un cronometro
-attorno a un'epoca, con `time.perf_counter()`, dà il tempo totale. Un'epoca è
-abbastanza lunga perché il riscaldamento pesi poco; su una scheda grafica,
-però, prima di leggere il cronometro serve la sincronizzazione della coda
-asincrona, altrimenti si misura soltanto il tempo di accodare. Dove va quel
-tempo lo dice il profilatore.
+[Prima di ogni ottimizzazione, a ogni scala, bisogna misurare]{.pt-matita}. Un
+cronometro attorno a un'epoca, con `time.perf_counter()`, dà il tempo totale.
+Un'epoca è abbastanza lunga perché il riscaldamento pesi poco; su una scheda
+grafica, però, prima di leggere il cronometro serve la sincronizzazione della
+coda asincrona, altrimenti si misura soltanto il tempo di accodare. Dove va
+quel tempo lo dice il profilatore.
 
 Il comando `nvidia-smi`, da scrivere nel terminale mentre l'addestramento
 gira, mostra in `GPU-Util` la percentuale di tempo in cui la scheda stava

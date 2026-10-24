@@ -63,10 +63,11 @@ Pisa con una mano: la mano è vicina e la torre è lontana, ma dal punto di vist
 dell'obiettivo sono allineate, e la foto non conosce la differenza.
 
 In altre parole, un oggetto piccolo e vicino e uno grande e lontano fanno lo
-stesso pixel. La distanza non è nascosta nell'immagine, è andata perduta nel
-momento dello scatto. Per riaverla bisogna rimetterla da fuori, e ci sono tre
-modi: guardare la scena da un secondo punto, muoversi e guardare come le cose
-scorrono, o mettere in campo la conoscenza che si ha di com'è fatto il mondo.
+stesso pixel. [La distanza non è nascosta nell'immagine, è andata perduta nel
+momento dello scatto]{.pt-matita}. Per riaverla bisogna rimetterla da fuori, e
+ci sono tre modi: guardare la scena da un secondo punto, muoversi e guardare
+come le cose scorrono, o mettere in campo la conoscenza che si ha di com'è
+fatto il mondo.
 
 `````
 
@@ -96,11 +97,12 @@ fotocamera) e $[\mathbf{R} \mid \mathbf{t}]$ gli **estrinseci** (dov'è e come
 è orientata). Il simbolo $\sim$ ricorda che l'uguaglianza vale a meno di un
 fattore di scala: per tornare ai pixel si divide per la terza componente.
 
-Quella divisione distrugge l'informazione. La mappa $(X,Y,Z) \mapsto
-(u,v)$ non è invertibile, perché l'insieme dei punti che finiscono nello stesso
-pixel è l'intera semiretta uscente dal centro ottico, e $\mathbf{p}$ e $\lambda
+Quella divisione distrugge l'informazione. La mappa $(X,Y,Z) \mapsto (u,v)$ non
+è invertibile, perché l'insieme dei punti che finiscono nello stesso pixel è
+l'intera semiretta uscente dal centro ottico, e $\mathbf{p}$ e $\lambda
 \mathbf{p}$ con $\lambda > 0$ sono indistinguibili. In altri termini,
-un'immagine determina una direzione per ogni pixel, mai una posizione.
+[un'immagine determina una direzione per ogni pixel, mai una
+posizione]{.pt-matita}.
 
 Le fotocamere vere aggiungono due complicazioni, che in pratica si misurano e
 si tolgono. La prima è la **distorsione dell'obiettivo**, che curva le rette
@@ -176,7 +178,7 @@ gemello di ogni punto della prima. Invece di usare tutti gli accoppiamenti, se
 ne prendono a caso quanti bastano a fissare quella regola, si calcola la regola
 che danno, e si contano quanti altri accoppiamenti la rispettano, entro uno
 scarto deciso prima. Si ripete centinaia di volte e si tiene la regola con più
-sostenitori. Chi sbaglia non ha compagni, e resta escluso.
+sostenitori. [Chi sbaglia non ha compagni, e resta escluso]{.pt-matita}.
 
 Quel «quanti bastano» va preso alla lettera, perché un punto in più da estrarre
 si paga caro. La regola ha sette numeri liberi, e ogni accoppiamento ne fissa
@@ -231,11 +233,11 @@ calibrate), conta gli *inlier* entro una soglia, e itera.
 Con una frazione $w$ di corrispondenze buone e un modello che ne richiede $s$,
 la probabilità di aver estratto almeno un campione interamente pulito in $N$
 tentativi è $1 - (1 - w^s)^N$, e si sceglie $N$ per portarla dove serve
-{cite}`fischler1981random`. Il minimo conta perché $s$ sta all'esponente. Ad
-esempio, con $w = 0{,}5$ e obiettivo $0{,}99$ servono circa $1177$ tentativi
-con $s = 8$, $588$ con $s = 7$ e $146$ con $s = 5$. Usare l'algoritmo a otto
-punti dentro RANSAC, come si legge spesso, raddoppia quindi i campioni
-necessari.
+{cite}`fischler1981random`. [Il minimo conta perché $s$ sta
+all'esponente]{.pt-matita}. Ad esempio, con $w = 0{,}5$ e obiettivo $0{,}99$
+servono circa $1177$ tentativi con $s = 8$, $588$ con $s = 7$ e $146$ con $s =
+5$. Usare l'algoritmo a otto punti dentro RANSAC, come si legge spesso,
+raddoppia quindi i campioni necessari.
 
 `````
 
@@ -300,8 +302,8 @@ Quindi il punto che cerchi nella seconda foto, qualunque sia la profondità
 vera, sta su una retta ben precisa, che si può calcolare in anticipo
 conoscendo solo la posizione reciproca delle due fotocamere. Quella retta si
 chiama **retta epipolare**, e l’*epipolo* da cui prende il nome è il punto in
-cui ciascuna fotocamera vedrebbe l'altra. Non devi cercare in
-tutta l'immagine, devi cercare lungo una riga.
+cui ciascuna fotocamera vedrebbe l'altra. [Non devi cercare in
+tutta l'immagine, devi cercare lungo una riga]{.pt-matita}.
 
 È il passaggio che rende praticabile tutto il resto. Milioni di candidati,
 infatti, diventano qualche centinaio, e a lavorare è una legge geometrica che
@@ -400,9 +402,10 @@ $\mathbf{t} = \mathbf{0}$ ed $\mathbf{E}$ è nulla {cite}`hartley2004multiple`.
 
 In pratica si rettificano le due immagini, cioè si applica a ciascuna
 un'omografia che porta gli epipoli all'infinito. Dopo la rettificazione le
-rette epipolari sono orizzontali e allineate fra le due immagini, e la ricerca
-della corrispondenza diventa uno scorrimento lungo la stessa riga di pixel.
-È per questo che le telecamere stereo si montano affiancate e allineate.
+rette epipolari sono orizzontali e allineate fra le due immagini, e [la ricerca
+della corrispondenza diventa uno scorrimento lungo la stessa riga di
+pixel]{.pt-matita}. È per questo che le telecamere stereo si montano affiancate
+e allineate.
 
 `````
 
@@ -429,8 +432,8 @@ salta. Ora allontanalo il più possibile: salta molto meno. Quel salto si
 chiama **disparità**, e la sua misura è la misura della distanza. Vicino,
 salto grande; lontano, salto piccolo; infinitamente lontano, nessun salto.
 
-La relazione è un'inversa, non una proporzione diretta: raddoppiando la
-distanza il salto si dimezza. Ad esempio, su una telecamera con trenta
+[La relazione è un'inversa, non una proporzione diretta: raddoppiando la
+distanza il salto si dimezza]{.pt-matita}. Ad esempio, su una telecamera con trenta
 centimetri fra i due obiettivi e una focale di $700$ pixel (un oggetto largo
 un metro, a un metro, ne occupa $700$), un oggetto a un metro salta
 $700 \times 0{,}30 = 210$ pixel, a due metri $105$, a quattro metri $52{,}5$,
@@ -490,10 +493,10 @@ con $f = 700$ pixel e $B = 0{,}30$ m, cioè $fB = 210$, un errore di mezzo pixel
 vale $4 \cdot 0{,}5/210 \approx 0{,}01$ m a $2$ m e
 $2500 \cdot 0{,}5/210 \approx 6$ m a $50$ m.
 
-Per questo motivo la disparità (che è proporzionale a $1/Z$) è spesso una
-parametrizzazione numericamente migliore della profondità stessa: campionarla
-uniformemente significa campionare finemente il vicino e grossolanamente il
-lontano, che è dove serve precisione.
+[Per questo motivo la disparità (che è proporzionale a $1/Z$) è spesso una
+parametrizzazione numericamente migliore della profondità stessa]{.pt-matita}:
+campionarla uniformemente significa campionare finemente il vicino e
+grossolanamente il lontano, che è dove serve precisione.
 
 Il calcolo denso della disparità è un problema di ottimizzazione, e la sua
 tassonomia classica {cite}`scharstein2002taxonomy` distingue quattro pezzi:
@@ -625,11 +628,10 @@ per arrivare al movimento vero stanno ad angolo retto fra loro, e due frecce ad
 angolo retto non si sommano come si sommano i numeri: si sommano come i cateti
 di un triangolo rettangolo, con Pitagora.
 
-Quella che manca è lunga 45 pixel, e infatti
-$\sqrt{85^2 + 45^2} = \sqrt{9250} = 96{,}2$, cioè i novantasei di partenza a
-meno degli arrotondamenti. In definitiva si perde quasi la metà del movimento,
-non un decimo, e la perdita sfugge perché sta in una direzione diversa da
-quella che si misura.
+Quella che manca è lunga 45 pixel, e infatti $\sqrt{85^2 + 45^2} = \sqrt{9250}
+= 96{,}2$, cioè i novantasei di partenza a meno degli arrotondamenti. In
+definitiva [si perde quasi la metà del movimento, non un decimo]{.pt-matita}, e
+la perdita sfugge perché sta in una direzione diversa da quella che si misura.
 
 Quei 45 pixel sono scivolati lungo il bordo, dove il palo, muovendosi, non
 cambia niente di ciò che si vede. La finestrella non li può recuperare per
@@ -706,8 +708,8 @@ prende la sistemazione che ha fra le mani e la ritocca finché ogni altro
 ritocco peggiora le cose. Partendo da una disposizione a caso, quindi, si
 finisce in una sistemazione tutta sbagliata da cui nessun ritocco fa uscire,
 con le fotocamere messe dove non erano e i punti piazzati di conseguenza, a
-dar loro ragione. Le due foto iniziali servono a partire già abbastanza vicini
-alla risposta giusta.
+dar loro ragione. [Le due foto iniziali servono a partire già abbastanza vicini
+alla risposta giusta]{.pt-matita}.
 
 Quando lo stesso calcolo si fa in tempo reale, mentre il dispositivo si muove,
 si chiama **SLAM**, sigla di *simultaneous localization and mapping*, cioè
@@ -743,11 +745,11 @@ con un solutore denso ha un costo cubico in quel numero a ogni iterazione.
 Poiché ogni punto compare in poche immagini, è sparso anche il blocco che lega
 punti e fotocamere.
 
-Il problema è non convesso e serve una buona inizializzazione; per questo le
-pipeline procedono in modo incrementale invece di ottimizzare tutto da subito
-{cite}`schoenberger2016structure`. La soluzione è definita a
-meno di una similarità (sette gradi di libertà: rotazione, traslazione,
-scala), e la scala globale resta indeterminata senza informazione esterna.
+[Il problema è non convesso e serve una buona inizializzazione]{.pt-matita};
+per questo le pipeline procedono in modo incrementale invece di ottimizzare
+tutto da subito {cite}`schoenberger2016structure`. La soluzione è definita a
+meno di una similarità (sette gradi di libertà: rotazione, traslazione, scala),
+e la scala globale resta indeterminata senza informazione esterna.
 
 Quel «a meno di una similarità» vale però solo con gli intrinseci noti. Senza
 calibrazione l'ambiguità è molto più larga: si ottiene una ricostruzione
@@ -786,7 +788,7 @@ oggetto ne copre un altro sta davanti, sai che la foschia sbianca il lontano.
 Una rete addestrata su milioni di foto con la profondità misurata impara la
 stessa cosa: non calcola, riconosce. Ha visto infatti abbastanza scene da
 sapere come si dispongono di solito. È un'ottima cosa, ma ha un limite preciso:
-essendo un ricordo statistico e non una misura, si può ingannare. Una
+[essendo un ricordo statistico e non una misura, si può ingannare]{.pt-matita}. Una
 fotografia di una fotografia, ad esempio, viene letta come una scena vera, e un
 plastico ben fatto viene letto come un palazzo.
 
@@ -853,12 +855,12 @@ gradienti provenienti da sorgenti non commensurabili
 dati non etichettati, usando un modello maestro per pseudo-etichettare milioni
 di immagini {cite}`yang2024depth`.
 
-In definitiva, la geometria dà vincoli esatti ma insufficienti, l'apprendimento
-dà un prior sufficiente ma fallibile, e i sistemi che funzionano li usano
-entrambi. Uno stereo appreso, per esempio, mantiene la ricerca lungo la retta
-epipolare e impara solo la parte ambigua; una pipeline di ricostruzione usa la
-profondità monoculare per inizializzare e la geometria multi-vista per
-correggerla.
+In definitiva, [la geometria dà vincoli esatti ma insufficienti,
+l'apprendimento dà un prior sufficiente ma fallibile, e i sistemi che
+funzionano li usano entrambi]{.pt-matita}. Uno stereo appreso, per esempio,
+mantiene la ricerca lungo la retta epipolare e impara solo la parte ambigua;
+una pipeline di ricostruzione usa la profondità monoculare per inizializzare e
+la geometria multi-vista per correggerla.
 
 C'è anche chi sposta il confine ancora più in là: reti addestrate su
 moltissime scene che da una coppia di fotografie non calibrate stimano

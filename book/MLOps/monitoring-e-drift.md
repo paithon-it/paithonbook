@@ -55,8 +55,8 @@ arriva con giorni o settimane di ritardo. A volte non arriva mai.
 
 Il secondo quadrante si muove mentre sei ancora in strada e puoi accostare; il
 terzo parla a viaggio finito. Per questo le spie di mezzo contano più di
-quanto sembrino: sono le sole che si accendono quando puoi ancora fare
-qualcosa.
+quanto sembrino: [sono le sole che si accendono quando puoi ancora fare
+qualcosa]{.pt-matita}.
 
 `````
 
@@ -88,8 +88,8 @@ le etichette vere.
    {cite}`huyen2022designing`: l'etichetta arriva in ritardo (il rimborso del
    prestito si scopre a mesi, la diagnosi confermata a settimane) o non arriva
    affatto. La qualità vera è quindi una metrica *ritardata*, e per questo i
-   proxy statistici del livello 2 diventano una necessità: sono
-   l'unica spia che si accende *prima* che il danno sia misurabile.
+   proxy statistici del livello 2 diventano una necessità: [sono
+   l'unica spia che si accende *prima* che il danno sia misurabile]{.pt-matita}.
 
 `````
 
@@ -571,8 +571,8 @@ matrice di confusione del modello, stimata una volta su dati di validazione
 etichettati. Invertendo quella relazione, il che si può fare se il modello
 distingue le classi, le proporzioni vere si stimano senza nessuna etichetta
 nuova {cite}`lipton2018detecting`, come in {doc}`Quando i dati cambiano
-</MachineLearning/dati-che-cambiano>`. Il
-monitoraggio statistico è un allarme precoce, non un verdetto.
+</MachineLearning/dati-che-cambiano>`. [Il
+monitoraggio statistico è un allarme precoce, non un verdetto]{.pt-matita}.
 
 ### Wasserstein e Gini: quanta strada, e quanto bene ordina
 
@@ -718,14 +718,14 @@ AUC 0.8083; 2 AUC - 1 = 0.6166; Gini dalla curva CAP = 0.6166
 KS fra i punteggi dei buoni e dei cattivi: 0.469
 ```
 
-In tutte e due le derive la strada percorsa è la stessa, $0{,}200$ deviazioni
-standard, e il KS le vede in modo diverso: $0{,}082$ la prima, $0{,}020$ la
-seconda, quattro volte meno per lo stesso spostamento complessivo. Un allarme
-fondato sul solo KS dormirebbe mentre due clienti su cento si sono spostati di
-dieci deviazioni standard. Sulle prestazioni, il Gini calcolato con le aree
-della curva CAP coincide con $2\,\mathrm{AUC} - 1$ fino all'ultima cifra
-stampata, $0{,}6166$; il KS fra le due classi, $0{,}469$, misura la stessa
-separazione guardando la soglia migliore invece di tutte.
+[In tutte e due le derive la strada percorsa è la stessa, $0{,}200$ deviazioni
+standard, e il KS le vede in modo diverso]{.pt-matita}: $0{,}082$ la prima,
+$0{,}020$ la seconda, quattro volte meno per lo stesso spostamento complessivo.
+Un allarme fondato sul solo KS dormirebbe mentre due clienti su cento si sono
+spostati di dieci deviazioni standard. Sulle prestazioni, il Gini calcolato con
+le aree della curva CAP coincide con $2\,\mathrm{AUC} - 1$ fino all'ultima
+cifra stampata, $0{,}6166$; il KS fra le due classi, $0{,}469$, misura la
+stessa separazione guardando la soglia migliore invece di tutte.
 
 ### Quando è cambiato: la somma che si accumula
 
@@ -951,15 +951,15 @@ soglia h = 8: un falso allarme ogni  706 giorni in media; dopo il cambio suona i
 
 Da $h = 4$ a $h = 8$ i giorni fra un falso allarme e l'altro passano da $72$ a
 $706$, quasi dieci volte tanto, mentre il ritardo passa da $13{,}6$ a $27{,}6$
-giorni, poco più del doppio: i falsi allarmi si diradano in fretta, il ritardo
-cresce piano. È l'andamento che la teoria prevede, con il ritardo che cresce
-come il logaritmo del tempo medio fra due falsi allarmi, e il ritardo misurato
-qui ne è proprio il caso peggiore, perché ogni flusso parte con la somma a zero.
-La formula del limite, però, vale per soglie molto alte, e presa alla lettera
-con questi numeri dà un ritardo minimo più lungo di quello misurato. Quale
-soglia scegliere non lo dice la statistica, lo dice quanto costa
-un falso allarme (una persona svegliata di notte, un modello ritirato senza
-motivo) contro quanto costa una settimana in più di modello peggiorato.
+giorni, poco più del doppio: [i falsi allarmi si diradano in fretta, il ritardo
+cresce piano]{.pt-matita}. È l'andamento che la teoria prevede, con il ritardo
+che cresce come il logaritmo del tempo medio fra due falsi allarmi, e il
+ritardo misurato qui ne è proprio il caso peggiore, perché ogni flusso parte
+con la somma a zero. La formula del limite, però, vale per soglie molto alte, e
+presa alla lettera con questi numeri dà un ritardo minimo più lungo di quello
+misurato. Quale soglia scegliere non lo dice la statistica, lo dice quanto
+costa un falso allarme (una persona svegliata di notte, un modello ritirato
+senza motivo) contro quanto costa una settimana in più di modello peggiorato.
 
 ## Rispondere al drift
 
@@ -968,8 +968,8 @@ organizza come una piramide, e la forma dice due cose insieme. Salendo,
 l'intervento è più drastico, cioè più invasivo (non più lento), perché tocca
 sempre più a fondo il servizio che sta girando. Salendo la piramide si stringe,
 perché i casi che arrivano fin lassù sono pochi. La regola d'oro è che la
-risposta sia *proporzionata* alla prova: la maggior parte degli allarmi non
-deve arrivare in cima.
+risposta sia *proporzionata* alla prova: [la maggior parte degli allarmi non
+deve arrivare in cima]{.pt-matita}.
 
 Alla base c'è l’allarme: automatico, a costo quasi nullo, tanto abbondante
 quanto lo consente una buona soglia. Sopra c'è l’indagine: un umano guarda
@@ -1114,8 +1114,8 @@ comanda difficile, che fa sbagliare tutti e due, non conta né per l'uno né per
 l'altro; e nemmeno una facile, che riesce a tutti e due. Restano le comande in
 cui i due piatti si sono davvero distinti, e su quelle si decide.
 
-Di solito i
-tre modi si usano tutti, uno dopo l'altro, in quest'ordine.
+[Di solito i
+tre modi si usano tutti, uno dopo l'altro, in quest'ordine]{.pt-matita}.
 
 `````
 
@@ -1190,10 +1190,11 @@ una quota dell'1% sono più di centomila richieste in tutto: alle quote a cui
 lavora, il canary vede i guasti grossolani (errori, latenza, crash) e non una
 piccola regressione di qualità, che resta compito dell'A/B.
 
-Le tre non sono alternative ma un percorso: shadow per verificare che non si
-rompa nulla, canary per limitare l'esposizione, A/B per decidere con rigore se
-promuoverlo. Dietro tutte c'è il prerequisito che il modello sia versionato,
-così che il *rollback* al precedente sia sempre un'operazione di un istante.
+[Le tre non sono alternative ma un percorso]{.pt-matita}: shadow per verificare
+che non si rompa nulla, canary per limitare l'esposizione, A/B per decidere con
+rigore se promuoverlo. Dietro tutte c'è il prerequisito che il modello sia
+versionato, così che il *rollback* al precedente sia sempre un'operazione di un
+istante.
 
 `````
 

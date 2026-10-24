@@ -64,12 +64,12 @@ all'inizio, e da lì in poi controlla sempre quelli: sembra un dettaglio da
 bidello, e sarà la chiave di tutto. Lo studente ritocca la curva e riconsegna,
 ancora e ancora, finché i punti persi non si riducono a briciole.
 
-Qui sta la stranezza: *nessuno dei due conosce la soluzione*. Il professore
-sa solo verificare la partenza e la regola. Eppure la curva giusta può saltare
-fuori, perché tra tutte le curve possibili quella vera è l'unica che parte così
-*e* rispetta la regola dappertutto. Una PINN è questo studente: la
-curva è la rete, i punti persi sono la loss, e gli istanti su cui il professore
-punta il dito si chiamano punti di collocazione.
+Qui sta la stranezza: *nessuno dei due conosce la soluzione*. Il professore sa
+solo verificare la partenza e la regola. Eppure [la curva giusta può saltare
+fuori]{.pt-matita}, perché tra tutte le curve possibili quella vera è l'unica
+che parte così *e* rispetta la regola dappertutto. Una PINN è questo studente:
+la curva è la rete, i punti persi sono la loss, e gli istanti su cui il
+professore punta il dito si chiamano punti di collocazione.
 
 C'è però una scorciatoia. Anche una riga piatta sul riposo rispetta la regola
 (un corpo fermo al centro resta fermo), e un foglio così perde soltanto i
@@ -163,13 +163,13 @@ $$
 \;+\; \frac{1}{m\,\omega_d}\int_0^T \big|r_\theta(s)\big|\,\mathrm{d}s .
 $$
 
-Ne segue che l'errore è controllato dagli scarti iniziali e dall'integrale del
-residuo su tutto l'intervallo (a sua volta, per Cauchy-Schwarz, non più grande
-di $\sqrt{T\int_0^T r_\theta^2}$, la versione continua del termine di fisica),
-non dalla media di $r_\theta^2$ sui punti di collocazione: la loss stima
-quell'integrale con $N_c$ campioni, e un picco stretto che cade fra due di essi
-pesa nell'integrale e non nella loss. La differenza fra le due quantità è il
-divario di generalizzazione della PINN.
+Ne segue che [l'errore è controllato dagli scarti iniziali e dall'integrale del
+residuo su tutto l'intervallo]{.pt-matita} (a sua volta, per Cauchy-Schwarz,
+non più grande di $\sqrt{T\int_0^T r_\theta^2}$, la versione continua del
+termine di fisica), non dalla media di $r_\theta^2$ sui punti di collocazione:
+la loss stima quell'integrale con $N_c$ campioni, e un picco stretto che cade
+fra due di essi pesa nell'integrale e non nella loss. La differenza fra le due
+quantità è il divario di generalizzazione della PINN.
 
 Perché allora in pratica si sceglie $\lambda_0$ ben maggiore di 1? La ragione
 che se ne dà non è selezionare il minimo, ma raggiungerlo: i due termini non
@@ -414,17 +414,18 @@ produce curve fatte così: segmenti dritti incollati uno dopo l'altro, come una
 spezzata. Il motivo è che la ReLU non piega mai: taglia in un punto e per il
 resto lascia dritto. Sommando tratti dritti si ottengono ancora tratti dritti,
 quindi con tanti neuroni i pezzi diventano tantissimi, ma restano pezzi dritti.
-Una spezzata però non ha curvatura da nessuna parte, perché un tratto dritto
-non piega, e negli angoli, dove piegherebbe, la curvatura non si riesce nemmeno
-a calcolare. La regola della molla parla di curvatura, che ne è anzi il termine
-principale: con una curva a spezzata il professore non vedrebbe più il pezzo
-più importante della regola, e darebbe voti alti a curve che con la molla non
-c'entrano niente. Serve dunque una funzioncina che pieghi dolcemente
-dappertutto, senza angoli. Quella che si usa è una S sdraiata e centrata nello
-zero: viene su da sinistra dove è quasi piatta, si impenna passando per il
-centro e torna a spianarsi a destra, e in nessun punto ha uno spigolo. Si
-chiama **tanh** e nel programma si scrive `nn.Tanh()`. Nel resto del deep
-learning la ReLU l'aveva mandata in pensione; qui si prende la rivincita.
+[Una spezzata però non ha curvatura da nessuna parte]{.pt-matita}, perché un
+tratto dritto non piega, e negli angoli, dove piegherebbe, la curvatura non si
+riesce nemmeno a calcolare. La regola della molla parla di curvatura, che ne è
+anzi il termine principale: con una curva a spezzata il professore non vedrebbe
+più il pezzo più importante della regola, e darebbe voti alti a curve che con
+la molla non c'entrano niente. Serve dunque una funzioncina che pieghi
+dolcemente dappertutto, senza angoli. Quella che si usa è una S sdraiata e
+centrata nello zero: viene su da sinistra dove è quasi piatta, si impenna
+passando per il centro e torna a spianarsi a destra, e in nessun punto ha uno
+spigolo. Si chiama **tanh** e nel programma si scrive `nn.Tanh()`. Nel resto
+del deep learning la ReLU l'aveva mandata in pensione; qui si prende la
+rivincita.
 
 `````
 
@@ -439,15 +440,16 @@ lo conta la sezione «Quante regioni taglia una rete» del {doc}`capitolo sul
 deep learning </DeepLearning/overview>`. Nel nostro residuo, invece, compare
 $u''$: per una rete ReLU verrebbe zero ovunque autograd riesca a calcolarlo, e
 il termine principale dell'equazione diventerebbe invisibile alla loss. Il
-difetto è silenzioso. Chiedendo ad autograd la derivata seconda di una
-rete ReLU non si ottiene un errore né un `None`, si ottengono zeri, e da quegli
-zeri nessun peso riceve più una spinta: il termine c'è, allunga il calcolo e
-non muove nulla. La `tanh`, al contrario, è liscia (derivabile infinite volte,
-con derivate continue a ogni ordine) e infatti è la scelta standard delle PINN;
-funzionano anche il seno e la softplus (una versione arrotondata della ReLU),
-perché il requisito, qui, è la regolarità. Non per questo sono intercambiabili:
-le attivazioni periodiche cambiano quali frequenze la rete impara in fretta,
-effetto di cui la sezione sui limiti si serve come rimedio.
+difetto è silenzioso. Chiedendo ad autograd la derivata seconda di una rete
+ReLU [non si ottiene un errore né un `None`, si ottengono zeri]{.pt-matita}, e
+da quegli zeri nessun peso riceve più una spinta: il termine c'è, allunga il
+calcolo e non muove nulla. La `tanh`, al contrario, è liscia (derivabile
+infinite volte, con derivate continue a ogni ordine) e infatti è la scelta
+standard delle PINN; funzionano anche il seno e la softplus (una versione
+arrotondata della ReLU), perché il requisito, qui, è la regolarità. Non per
+questo sono intercambiabili: le attivazioni periodiche cambiano quali frequenze
+la rete impara in fretta, effetto di cui la sezione sui limiti si serve come
+rimedio.
 
 In generale la condizione dipende dall'ordine $p$ dell'equazione: il residuo
 contiene derivate della rete fino all'ordine $p$, e l'attivazione deve averne
@@ -672,12 +674,12 @@ secondi lo scarto dalla formula esatta resta attorno ai sette centesimi
 dell'ampiezza iniziale. Per una curva ricostruita da una regola e da due
 numeri, è molto.
 
-La seconda è che quella curva non è accurata quanto la loss di fisica
-lascerebbe credere. Sui 200 punti in cui la regola è stata controllata la loss
-di fisica vale $8 \cdot 10^{-3}$, cioè la molla risulta obbedita quasi alla
-lettera; ma lo scarto massimo dalla soluzione vera è $0{,}15$, il 15% dello
-spostamento di partenza, e le due curve messe una sull'altra si distinguono
-benissimo.
+La seconda è che [quella curva non è accurata quanto la loss di fisica
+lascerebbe credere]{.pt-matita}. Sui 200 punti in cui la regola è stata
+controllata la loss di fisica vale $8 \cdot 10^{-3}$, cioè la molla risulta
+obbedita quasi alla lettera; ma lo scarto massimo dalla soluzione vera è
+$0{,}15$, il 15% dello spostamento di partenza, e le due curve messe una
+sull'altra si distinguono benissimo.
 
 Quel 15% si può leggere in un modo più severo. Quello scarto non è sparso: sui
 primi cinque secondi resta attorno a 0,07, negli ultimi arriva a 0,15, e lì la
@@ -1131,16 +1133,16 @@ precisione. Nemmeno la ragione che di solito lo giustifica, lo squilibrio fra i
 gradienti dei due termini, qui c'è: all'avvio il rapporto fra le loro ampiezze
 medie ha mediana 2,4, e in quattro semi su venti è rovesciato.
 
-Ne seguono tre indicazioni pratiche. La prima: in una PINN la loss non è una
-pagella. In un problema di apprendimento ordinario un punteggio che scende è
-una buona notizia; qui la loss di fisica può scendere allontanandosi dalla
-risposta, e nella loss che si sta minimizzando non c'è niente che lo segnali.
-Confrontare con la soluzione vera, come abbiamo fatto qui, nei casi veri non
-si può: se quella soluzione ce l'avessimo, non staremmo usando una PINN. La
-seconda: un risultato ottenuto con un solo seme non è un risultato. Il modo
-minimo di lavorare seriamente con questi metodi è rilanciare con qualche seme
-diverso e guardare quanto le risposte si somigliano fra loro, che è l'unica
-cosa che si può fare quando la risposta giusta non si conosce.
+Ne seguono tre indicazioni pratiche. La prima: [in una PINN la loss non è una
+pagella]{.pt-matita}. In un problema di apprendimento ordinario un punteggio
+che scende è una buona notizia; qui la loss di fisica può scendere
+allontanandosi dalla risposta, e nella loss che si sta minimizzando non c'è
+niente che lo segnali. Confrontare con la soluzione vera, come abbiamo fatto
+qui, nei casi veri non si può: se quella soluzione ce l'avessimo, non staremmo
+usando una PINN. La seconda: un risultato ottenuto con un solo seme non è un
+risultato. Il modo minimo di lavorare seriamente con questi metodi è rilanciare
+con qualche seme diverso e guardare quanto le risposte si somigliano fra loro,
+che è l'unica cosa che si può fare quando la risposta giusta non si conosce.
 
 La terza è suggerita dalle due loss affiancate: la loss di fisica va
 misurata anche dove la rete non è stata addestrata, su una griglia fitta o su
@@ -1183,9 +1185,9 @@ dei dati. Il solutore classico visto in apertura di capitolo, il metodo a
 passettini del caffè, la curva la sa calcolare; ma la calcola su una griglia di
 istanti, e i valori in mezzo li ricostruisce interpolando fra quelli che ha in
 mano (i solutori maturi lo fanno bene, non tirando una retta fra due puntini).
-La PINN invece restituisce una funzione: chiedile il valore a $3{,}7$ secondi,
-o quanto sta salendo lì, o le due cose in qualunque altro punto, e risponde,
-perché la soluzione ormai abita dentro la rete.
+[La PINN invece restituisce una funzione]{.pt-matita}: chiedile il valore a
+$3{,}7$ secondi, o quanto sta salendo lì, o le due cose in qualunque altro
+punto, e risponde, perché la soluzione ormai abita dentro la rete.
 
 Su questo problemino il
 metodo a passettini vince su tutta la linea: qualche centesimo di secondo
@@ -1210,25 +1212,23 @@ dati e legge vanno mescolati, come vedremo tra un attimo.
 
 `````{tab} Superiore
 
-Rispetto alla regressione pura: minimizzare solo il termine dati richiede
-$N_d$ grande e non promette nulla tra un campione e l'altro, mentre qui il
-residuo vincola $u_\theta$ nei punti di collocazione, e per il loro tramite,
-con le riserve appena viste, l'intero dominio: bastano le condizioni iniziali,
-e il termine di fisica agisce come una regolarizzazione informata dalla
-legge. Rispetto a un integratore classico (Eulero, Runge–Kutta):
-quello discretizza il tempo con passo $h$, propaga sequenzialmente e offre
-garanzie di convergenza con errore $O(h^p)$ (sotto le ipotesi del caso:
-stabilità dello schema e soluzione abbastanza regolare); la PINN sostituisce
-la propagazione con un'ottimizzazione globale non convessa: nessuna garanzia
-formale, costo superiore di ordini di grandezza su un problema standard come
-questo, ma soluzione *mesh-free* e continua, valutabile e derivabile in
-qualunque punto. Su quest'ultimo vantaggio conviene non calcare troppo: un
-integratore a passo adattivo offre da decenni l’*output denso*, cioè
-un'interpolante di ordine appena inferiore a quello del metodo, richiamabile
-in qualunque
-istante. Alla rete resta la derivabilità, e il fatto che
-la stessa impalcatura non cambia passando a più variabili o a un problema
-inverso.
+Rispetto alla regressione pura: minimizzare solo il termine dati richiede $N_d$
+grande e non promette nulla tra un campione e l'altro, mentre qui il residuo
+vincola $u_\theta$ nei punti di collocazione, e per il loro tramite, con le
+riserve appena viste, l'intero dominio: bastano le condizioni iniziali, e il
+termine di fisica agisce come una regolarizzazione informata dalla legge.
+Rispetto a un integratore classico (Eulero, Runge–Kutta): quello discretizza il
+tempo con passo $h$, propaga sequenzialmente e offre garanzie di convergenza
+con errore $O(h^p)$ (sotto le ipotesi del caso: stabilità dello schema e
+soluzione abbastanza regolare); [la PINN sostituisce la propagazione con
+un'ottimizzazione globale non convessa]{.pt-matita}: nessuna garanzia formale,
+costo superiore di ordini di grandezza su un problema standard come questo, ma
+soluzione *mesh-free* e continua, valutabile e derivabile in qualunque punto.
+Su quest'ultimo vantaggio conviene non calcare troppo: un integratore a passo
+adattivo offre da decenni l’*output denso*, cioè un'interpolante di ordine
+appena inferiore a quello del metodo, richiamabile in qualunque istante. Alla
+rete resta la derivabilità, e il fatto che la stessa impalcatura non cambia
+passando a più variabili o a un problema inverso.
 
 Quanto alla storia, l'idea non nasce nel 2019, e nemmeno nel
 1998. La loss delle PINN, così com'è scritta qui (un MLP che approssima
@@ -1467,10 +1467,11 @@ $3{,}91$ e $4{,}09$ in novanta sorteggi su cento, un intervallo da cui il
 $3{,}76$ del seme 7 resta fuori. Non è infallibile nemmeno lui (il problema non
 è convesso, e partendo da $k = 1$ ogni tanto si ferma su una frequenza
 sbagliata), ma su un problema con tre incognite e un solutore a disposizione
-rimane superiore alla PINN. Il vantaggio della rete sta altrove: lo stesso
-impianto si applica senza modifiche quando l'incognita è un campo intero invece di
-tre numeri, o quando l'equazione è alle derivate parziali e un adattamento come
-questo chiederebbe un solutore, e il suo aggiunto, scritti su misura.
+rimane superiore alla PINN. Il vantaggio della rete sta altrove: [lo stesso
+impianto si applica senza modifiche quando l'incognita è un campo intero invece
+di tre numeri]{.pt-matita}, o quando l'equazione è alle derivate parziali e un
+adattamento come questo chiederebbe un solutore, e il suo aggiunto, scritti su
+misura.
 
 `````{tab} Elementare
 

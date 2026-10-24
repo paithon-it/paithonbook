@@ -18,8 +18,8 @@ scelgono fra alternative (gatto o cane, spam o no).
 
 ## La sorpresa di un evento
 
-Il punto di partenza di Shannon è un'osservazione quasi banale: un messaggio
-porta tanta più informazione quanto più è *improbabile*.
+Il punto di partenza di Shannon è un'osservazione quasi banale: [un messaggio
+porta tanta più informazione quanto più è *improbabile*]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -143,10 +143,11 @@ dieci la sorpresa è quasi nulla (0,15 bit), mentre una volta su dieci è grande
 equa. Il risultato ha senso: una moneta prevedibile ci sorprende poco, e
 quindi "produce" poca informazione.
 
-In generale l'entropia è massima quando tutto è ugualmente
-possibile (massima incertezza: 1 bit per la moneta equa, circa 2,6 bit per il
-dado onesto) e scende verso zero man mano che un esito diventa dominante.
-Al limite, una moneta con due teste ha entropia zero: nessuna sorpresa, mai.
+In generale [l'entropia è massima quando tutto è ugualmente
+possibile]{.pt-matita} (massima incertezza: 1 bit per la moneta equa, circa 2,6
+bit per il dado onesto) e scende verso zero man mano che un esito diventa
+dominante. Al limite, una moneta con due teste ha entropia zero: nessuna
+sorpresa, mai.
 
 `````
 
@@ -170,8 +171,8 @@ bit; dado equo, $H = \log_2 6 \approx 2{,}585$ bit.
 Osserviamo due proprietà strutturali. La prima è $H(p)\ge 0$, con uguaglianza
 solo per distribuzioni degeneri (un esito certo); la seconda è
 $H(p)\le \log_2 n$, con uguaglianza solo per la distribuzione uniforme.
-L'entropia è quindi una misura di *incertezza*: nulla quando l'esito è
-scritto, massima quando le $n$ alternative sono equiprobabili.
+[L'entropia è quindi una misura di *incertezza*: nulla quando l'esito è
+scritto, massima quando le $n$ alternative sono equiprobabili]{.pt-matita}.
 
 Entrambe valgono nel discreto, mentre nel continuo la prima cade. L'analogo per
 una densità, l’*entropia differenziale* $h(f) = -\int f\log_2 f$, può infatti
@@ -286,8 +287,8 @@ scritti con il codice tarato sulla distribuzione sbagliata.
 
 La cross-entropia e la divergenza KL, le due misure di
 {numref}`fig-cross-entropia-kl`, differiscono per $H(p)$, l'entropia della
-distribuzione vera, che non dipende dal modello. Per questo motivo minimizzare
-l'una o l'altra rispetto ai parametri dà lo stesso modello.
+distribuzione vera, che non dipende dal modello. Per questo motivo [minimizzare
+l'una o l'altra rispetto ai parametri dà lo stesso modello]{.pt-matita}.
 
 La cross-entropia ha però un vantaggio pratico in più:
 $H(p,q)=\mathbb{E}_{x\sim p}[-\log q(x)]$ si stima dai campioni, con
@@ -322,9 +323,9 @@ o cane, nessuna scelta dei parametri rende certa la risposta; quella sorpresa
 che resta è l'incertezza dei dati stessi, e la paga anche il modello perfetto.
 
 La stessa manovra ha infine un terzo nome: scegliere i parametri sotto i quali
-gli esempi raccolti risultano i più plausibili. In altre parole, sorprendersi
+gli esempi raccolti risultano i più plausibili. In altre parole, [sorprendersi
 poco della risposta giusta e trovare plausibili gli esempi raccolti sono la
-stessa regolazione dei parametri, vista da due lati.
+stessa regolazione dei parametri, vista da due lati]{.pt-matita}.
 
 `````
 
@@ -363,9 +364,9 @@ memorizzato quelle estrazioni, non perché il processo sia diventato certo.
 Inoltre, sulla distribuzione empirica del training set la cross-entropia
 coincide con la log-verosimiglianza negativa media: minimizzarla *è* la stima
 di massima verosimiglianza della {doc}`sezione su probabilità e statistica
-</Matematica/probabilita-statistica>`. Le tre prospettive (minimizzare la
+</Matematica/probabilita-statistica>`. [Le tre prospettive (minimizzare la
 cross-entropia, avvicinare $q_\theta$ a $p$ nel senso della KL, massimizzare la
-verosimiglianza) sono la stessa operazione. È ciò che fa
+verosimiglianza) sono la stessa operazione]{.pt-matita}. È ciò che fa
 `nn.CrossEntropyLoss`: la loss di un esempio è $\ell=-\log \hat{y}_c$ (dove
 $\hat{y}_c$ è la probabilità che il modello assegna alla classe corretta $c$),
 e $\mathcal{L}$ è la sua media sugli esempi. La sezione
@@ -431,9 +432,9 @@ invece di schiarirle.
 
 Ma un positivo capita di rado, e un negativo, che capita quasi sempre, riduce
 il dubbio quasi a zero. Contando tutte e due le risposte con la loro
-frequenza, l'esame dimezza l'incertezza: dopo restano $0{,}04$ bit. Una
+frequenza, l'esame dimezza l'incertezza: dopo restano $0{,}04$ bit. [Una
 singola notizia può aumentare il dubbio; una fonte di notizie, in media, non
-lo aumenta mai.
+lo aumenta mai]{.pt-matita}.
 
 Le notizie non si moltiplicano passando di bocca in bocca. Se l'amico
 riferisce la sua frase a un terzo, e il terzo la riferisce a te, del dado puoi
@@ -469,8 +470,8 @@ I(X;Y)=D_{KL}\big(p(x,y)\,\|\,p(x)\,p(y)\big)
 $$
 
 quindi per la disuguaglianza di Gibbs è non negativa, e nulla se e solo se $X$
-e $Y$ sono indipendenti. Ne segue $H(Y\mid X)\le H(Y)$, cioè condizionare non
-aumenta l'entropia *in media*.
+e $Y$ sono indipendenti. Ne segue $H(Y\mid X)\le H(Y)$, cioè [condizionare non
+aumenta l'entropia *in media*]{.pt-matita}.
 
 Per un singolo valore, invece, $H(Y\mid X=x)>H(Y)$ è possibile, come mostra un
 esame diagnostico. Siano $Y$ lo stato di salute e $X$ l'esito dell'esame, con
@@ -642,9 +643,9 @@ testo $x_1\dots x_T$ in circa $-\sum_{t=1}^{T}\log_2 q(x_t\mid x_{<t})$ bit,
 $T$ volte la sua cross-entropia per simbolo. Dove il modello indovina, la
 sorpresa è quasi zero e non c'è quasi niente da scrivere.
 
-Predire bene e comprimere bene sono quindi lo stesso problema, e la perdita
-con cui si addestra un modello linguistico è, a meno della base del logaritmo,
-la lunghezza media per simbolo del testo compresso con lui.
+[Predire bene e comprimere bene sono quindi lo stesso problema]{.pt-matita}, e
+la perdita con cui si addestra un modello linguistico è, a meno della base del
+logaritmo, la lunghezza media per simbolo del testo compresso con lui.
 
 ## In pratica, con NumPy
 

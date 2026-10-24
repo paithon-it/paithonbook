@@ -61,10 +61,10 @@ qualche chiamata dura moltissimo {cite}`li2025continuum`.
 L'insieme delle chiamate di un agente su un compito, con le dipendenze fra
 loro, si chiama **programma**: una catena di chiamate e di interruzioni, o un
 grafo quando l'agente lancia più chiamate in parallelo {cite}`luo2025autellix`.
-Il motore vede soltanto richieste, e non ha un modo sicuro di sapere che due di
-esse appartengono allo stesso programma. Due sistemi pensati per servire
-agenti, Autellix e Continuum (il lavoro di Li e colleghi), glielo fanno sapere
-nel modo più semplice: il cliente apre una sessione, o dichiara un
+[Il motore vede soltanto richieste, e non ha un modo sicuro di sapere che due
+di esse appartengono allo stesso programma]{.pt-matita}. Due sistemi pensati
+per servire agenti, Autellix e Continuum (il lavoro di Li e colleghi), glielo
+fanno sapere nel modo più semplice: il cliente apre una sessione, o dichiara un
 identificativo di programma, e lo attacca a ogni chiamata. Il motore può allora
 decidere che cosa fare della KV cache di un programma fermo su uno strumento, a
 quale programma dare la precedenza, su quale replica (copia del modello)
@@ -162,10 +162,10 @@ trasferimento non vince mai (2,60 contro 1,74 GB·s).
 
 Con la GQA, invece, la cache pesa un quarto, i viaggi durano 10,5 millisecondi,
 e oltre 2,42 secondi conviene spostare (0,63 GB·s) e non scartare (1,69). In
-pratica, calcolatrice, Wikipedia e casa simulata stanno sotto la soglia di
-questo calcolo; una persona che risponde mezzo minuto dopo sta ben sopra. La
-{numref}`fig-kv-in-attesa` segue la memoria della scheda durante una pausa di
-cinque secondi, una strada per corsia.
+pratica, [calcolatrice, Wikipedia e casa simulata stanno sotto la soglia di
+questo calcolo; una persona che risponde mezzo minuto dopo sta ben
+sopra]{.pt-matita}. La {numref}`fig-kv-in-attesa` segue la memoria della scheda
+durante una pausa di cinque secondi, una strada per corsia.
 
 ```{figure} ../figures/kv-in-attesa.svg
 :name: fig-kv-in-attesa
@@ -381,7 +381,7 @@ che gli autori scalano con la stessa taglia. Il fattore
 $\zeta = -\mathrm{Corr}(k, J - k)$ (la $\eta$ del lavoro originale) misura
 quanto il carico abbia memoria, con $J$ le chiamate di un programma e $k$
 quelle già servite. Vale 1 se tutti i programmi hanno lo stesso numero di
-chiamate, e allora chi ha fatto più giri è più vicino alla fine e tenerlo in
+chiamate, e allora chi ha fatto più iterazioni è più vicino alla fine e tenerlo in
 ordine approssima il servire per primo il lavoro più corto; vale 0 se il numero
 di chiamate è geometrico, e dell'attesa evitata non resta niente. Il tempo di
 vita massimizza il beneficio atteso netto,
@@ -512,8 +512,8 @@ Con lunghezze così disuguali PLAS chiude i programmi corti in 5,5 passi, contro
 i 9,6 dell'ordine d'arrivo delle chiamate e i 37,1 dell'ordine d'arrivo dei
 programmi, e abbassa anche la durata media di tutti, 44,8 passi contro 47,1 e
 65,2. Il prezzo lo pagano i lunghi, che passano da 361,7 e 295,0 a 419,9 passi.
-Con sette chiamate per tutti, invece, la stessa regola diventa la peggiore,
-100,6 passi in media contro 78,6 e 67,4.
+[Con sette chiamate per tutti, invece, la stessa regola diventa la
+peggiore]{.pt-matita}, 100,6 passi in media contro 78,6 e 67,4.
 
 `````{tab} Elementare
 
@@ -676,13 +676,14 @@ non c'è niente di suo, e la tavola va rifatta da capo.
 
 Allora il maître guarda, per ogni cliente, quanta parte della sua tavola è già
 pronta in ciascuna sala. Una sera arriva un uomo per il menù della festa,
-servito su una tavola lunga da preparare e già allestita nella sala verde. Lì è
-pronto più di metà di quello che gli serve, e ci va. Una coppia che non trova
-pronta più di metà da nessuna parte va nella sala meno carica, e il maître la
-riconosce dal lavoro fatto lì negli ultimi minuti, dalle tavole da sparecchiare
-per farle posto (che pesano di più se molti le usano) e dalla tavola da
-preparare. Se però in una sala quasi tutti sono a metà cena, il cameriere lì ha
-le mani libere, e la coppia ci va senza bisogno di fare il conto.
+servito su una tavola lunga da preparare e già allestita nella sala verde. [Lì
+è pronto più di metà di quello che gli serve, e ci va]{.pt-matita}. Una coppia
+che non trova pronta più di metà da nessuna parte va nella sala meno carica, e
+il maître la riconosce dal lavoro fatto lì negli ultimi minuti, dalle tavole da
+sparecchiare per farle posto (che pesano di più se molti le usano) e dalla
+tavola da preparare. Se però in una sala quasi tutti sono a metà cena, il
+cameriere lì ha le mani libere, e la coppia ci va senza bisogno di fare il
+conto.
 
 Verso le nove arriva un pullman per il menù della festa. La sala verde si
 riempie mentre le altre restano mezze vuote, e il maître se ne accorge quando
@@ -710,10 +711,10 @@ tiene un albero dei prefissi globale, che per ogni nodo registra le repliche
 che lo hanno in cache e quante richieste lo hanno condiviso in una finestra
 recente di durata $H$ (tre minuti di default), e decide con la regola E2,
 sfruttamento ed esplorazione {cite}`srivatsa2025preble`. Se sul prefisso più
-lungo trovato $L^{\text{miss}} < L^{\text{hit}}$, cioè se la parte in cache
-supera metà del prompt, la richiesta sfrutta, e va alla replica che ha il nodo
-più lungo del cammino (fra più candidate, a quella di costo minimo). Altrimenti
-esplora, e va alla replica che minimizza
+lungo trovato $L^{\text{miss}} < L^{\text{hit}}$, cioè [se la parte in cache
+supera metà del prompt, la richiesta sfrutta]{.pt-matita}, e va alla replica
+che ha il nodo più lungo del cammino (fra più candidate, a quella di costo
+minimo). Altrimenti esplora, e va alla replica che minimizza
 
 $$
 \begin{aligned}

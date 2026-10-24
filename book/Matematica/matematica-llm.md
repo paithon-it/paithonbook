@@ -56,11 +56,11 @@ sommano a uno: qualcosa come $0{,}30$ a «muro», $0{,}18$ a «tetto», $0{,}12$
 in fondo alla coda «democrazia» con un numero talmente piccolo da non stare in
 tre cifre.
 
-Sembra poco, e invece è tutto, perché se so scommettere bene sulla parola dopo,
-so anche scrivere. Basta scegliere una parola fra quelle probabili, aggiungerla
-al testo e rifare la domanda. In questo modo la frase esce una parola alla
-volta, come una lunga catena di scommesse in cui ogni puntata tiene conto di
-tutte quelle già fatte.
+Sembra poco, e invece è tutto, perché [se so scommettere bene sulla parola
+dopo, so anche scrivere]{.pt-matita}. Basta scegliere una parola fra quelle
+probabili, aggiungerla al testo e rifare la domanda. In questo modo la frase
+esce una parola alla volta, come una lunga catena di scommesse in cui ogni
+puntata tiene conto di tutte quelle già fatte.
 
 Se so scommettere bene sulla parola dopo *in ogni situazione*, allora ho
 imparato qualcosa di più di una lista di frasi fatte, perché per indovinare
@@ -86,8 +86,8 @@ Non è un'approssimazione né un'ipotesi di indipendenza: è un'identità, vera
 per qualunque distribuzione congiunta, e si ottiene applicando $n-1$ volte la
 definizione di probabilità condizionata, $P(A\cap B)=P(A)\,P(B\mid A)$, la
 stessa che dà il teorema di Bayes. Ogni fattore è una distribuzione
-condizionata sulla parola successiva dato tutto ciò che la precede, e un
-modello linguistico è un sistema che calcola quei fattori.
+condizionata sulla parola successiva dato tutto ciò che la precede, e [un
+modello linguistico è un sistema che calcola quei fattori]{.pt-matita}.
 
 Da qui discende anche il modo di generare testo: campionare $w_{n+1}$ da
 $P(\cdot \mid w_1,\dots,w_n)$, accodarlo e ripetere, è campionare dalla
@@ -118,10 +118,11 @@ Anche potendo scriverlo, quel quaderno sarebbe quasi tutto vuoto, perché la
 stragrande maggioranza delle frasi sensate non è mai stata scritta da nessuno,
 quindi avrebbe conteggio zero, e un conteggio zero non è una previsione.
 
-Serve un oggetto diverso, non una tabella da consultare ma una funzione da
-calcolare, che dato un contesto qualsiasi (anche mai visto) produca una
-distribuzione sensata. Una funzione che abbia imparato da «Il gatto nero salta
-sul muro» qualcosa di utile anche per «Il cane bianco corre sul prato».
+[Serve un oggetto diverso, non una tabella da consultare ma una funzione da
+calcolare]{.pt-matita}, che dato un contesto qualsiasi (anche mai visto)
+produca una distribuzione sensata. Una funzione che abbia imparato da «Il gatto
+nero salta sul muro» qualcosa di utile anche per «Il cane bianco corre sul
+prato».
 
 `````
 
@@ -135,13 +136,13 @@ massima verosimiglianza per conteggi, cioè i {doc}`modelli n-gram
 il numero di parametri cresce esponenzialmente in $m$ e la matrice dei conteggi
 diventa quasi ovunque nulla.
 
-La via d'uscita è sostituire la tabella con una funzione parametrica $f_\theta$
-che mappa contesti in distribuzioni, con $|\theta|$ fissato e indipendente dal
-numero di contesti. L'approssimazione introduce *bias*; in cambio si guadagna
-la generalizzazione, cioè contesti diversi ma vicini nello spazio delle
-rappresentazioni ricevono distribuzioni vicine. Questo è, in sostanza, uno
-smoothing implicito e appreso al posto di quelli progettati a mano (Laplace,
-Good–Turing, Kneser–Ney).
+[La via d'uscita è sostituire la tabella con una funzione parametrica
+$f_\theta$ che mappa contesti in distribuzioni]{.pt-matita}, con $|\theta|$
+fissato e indipendente dal numero di contesti. L'approssimazione introduce
+*bias*; in cambio si guadagna la generalizzazione, cioè contesti diversi ma
+vicini nello spazio delle rappresentazioni ricevono distribuzioni vicine.
+Questo è, in sostanza, uno smoothing implicito e appreso al posto di quelli
+progettati a mano (Laplace, Good–Turing, Kneser–Ney).
 
 Una cosa, però, *non* cambia. Un modello linguistico ha una lunghezza massima
 di contesto fissata a progetto, e tutto ciò che precede quella soglia è
@@ -182,8 +183,8 @@ alla ragione per cui funziona: una parola si conosce dalla compagnia che
 frequenta, quindi parole che compaiono negli stessi contesti finiscono per
 prendere liste simili.
 
-Il guadagno è che le parole diventano punti, e sui punti si possono
-fare le domande dell'algebra lineare. Quanto sono lontani?
+[Il guadagno è che le parole diventano punti, e sui punti si possono
+fare le domande dell'algebra lineare]{.pt-matita}. Quanto sono lontani?
 Puntano dalla stessa parte? Qual è il punto che sta in mezzo? Su una fila di
 caselle spente e una accesa nessuna di queste domande aveva una risposta
 interessante.
@@ -215,10 +216,10 @@ Firth, «una parola la conosci dalla compagnia che frequenta»
 {cite}`firth1957synopsis`, e le regolarità aritmetiche che ne emergono
 {cite}`mikolov2013distributed`.
 
-Qui basta la conseguenza matematica, che sta tutta nel prodotto scalare. Una
+Qui basta la conseguenza matematica, che sta tutta nel prodotto scalare. [Una
 volta che i token sono punti, si possono sommare, mediare, confrontare per
-angolo e per distanza, e diventano così oggetti su cui l'algebra lineare ha
-qualcosa da dire.
+angolo e per distanza]{.pt-matita}, e diventano così oggetti su cui l'algebra
+lineare ha qualcosa da dire.
 
 `````
 
@@ -242,9 +243,9 @@ Serve quindi una funzione che prende i vettori dei token
 $(\mathbf{e}_1,\dots,\mathbf{e}_n)$, ciascuno uguale in ogni contesto, e
 restituisce altrettanti vettori $(\mathbf{h}_1,\dots,\mathbf{h}_n)$ della
 stessa dimensione, in cui $\mathbf{h}_i$ dipende dal contesto del token $i$. In
-altri termini, la stessa parola, in due frasi diverse, deve dare due vettori
-diversi. Si noti che, per un modello che prevede la parola successiva, il
-contesto sono il token stesso e quelli che lo precedono,
+altri termini, [la stessa parola, in due frasi diverse, deve dare due vettori
+diversi]{.pt-matita}. Si noti che, per un modello che prevede la parola
+successiva, il contesto sono il token stesso e quelli che lo precedono,
 $\mathbf{e}_1,\dots,\mathbf{e}_i$, non quelli che seguono.
 
 ## Il motore: una media pesata con pesi appresi
@@ -311,8 +312,8 @@ imparare.
 
 Decise le porzioni, ogni parola legge il suo terzo biglietto per il tempo che
 le tocca, e la nuova versione di «salta» è la media di quanto ha sentito. In
-definitiva, l'intero meccanismo si riduce a tre moduli, un prodotto scalare,
-una softmax e una media.
+definitiva, [l'intero meccanismo si riduce a tre moduli, un prodotto scalare,
+una softmax e una media]{.pt-matita}.
 
 `````
 
@@ -399,9 +400,9 @@ le posizioni, per quanto trascurabile. In pratica si calcola sempre sottraendo
 prima il massimo, con il *log-sum-exp* della sezione di analisi numerica,
 altrimenti l'esponenziale trabocca.
 
-In sintesi, l'operazione completa per la posizione $i$ consiste nel proiettare
+In sintesi, [l'operazione completa per la posizione $i$ consiste nel proiettare
 con le tre matrici, calcolare i punteggi, normalizzarli in pesi e restituire la
-media pesata dei contenuti.
+media pesata dei contenuti]{.pt-matita}.
 
 `````
 
@@ -483,11 +484,11 @@ la prima più la seconda, la quarta il doppio della prima e così via, le righe
 autonome sono due e le altre si ricostruiscono da quelle. Quel numero si chiama
 *rango*, e il prodotto di due tabelle alte $128$ ha rango al più $128$.
 
-Si perde però qualcosa, perché le tabelle ottenute in questo modo sono una
-famiglia ristretta e non tutte quelle possibili. In cambio si risparmia
-memoria, e probabilmente anche qualcosa di più: con meno manopole ci sono meno
-modi di imparare a memoria i dettagli irrilevanti degli esempi visti (il
-difetto che si chiama *overfitting*, e che si combatte con la
+[Si perde però qualcosa, perché le tabelle ottenute in questo modo sono una
+famiglia ristretta e non tutte quelle possibili]{.pt-matita}. In cambio si
+risparmia memoria, e probabilmente anche qualcosa di più: con meno manopole ci
+sono meno modi di imparare a memoria i dettagli irrilevanti degli esempi visti
+(il difetto che si chiama *overfitting*, e che si combatte con la
 *regolarizzazione*, di cui parla la {doc}`sezione su overfitting e validazione
 </MachineLearning/overfitting-validazione>`). Se questo basti a spiegare perché
 il modello se la cava su esempi mai visti è un'ipotesi, non un risultato.
@@ -509,9 +510,9 @@ In generale, una forma bilineare su $\mathbb{R}^d$ si scrive $\mathbf{x}^\top
 $\mathbf{M} = (\mathbf{W}^A)^\top \mathbf{W}^B$.
 
 La differenza sta nel rango. Se $\mathbf{W}^A$ e $\mathbf{W}^B$ sono $k \times
-d$ con $k < d$, allora $\operatorname{rank}(\mathbf{M}) \le k$, e quindi si
+d$ con $k < d$, allora $\operatorname{rank}(\mathbf{M}) \le k$, e quindi [si
 impara una parametrizzazione a rango basso, cioè un elemento di una famiglia
-ristretta, e non una forma bilineare qualsiasi.
+ristretta, e non una forma bilineare qualsiasi]{.pt-matita}.
 
 Con i valori di GPT-3 ($d = 12\,288$, $k = d/H = 128$), ad esempio, la matrice
 piena avrebbe $d^2 = 150\,994\,944$ parametri, mentre la coppia di fattori ne
@@ -560,8 +561,8 @@ prodotto scalare, che guarda solo lunghezze e angoli, non se ne accorge.
 
 Di rotazioni così ce ne sono infinite, e tutte danno lo stesso identico
 modello. Ne segue che chiedersi «che cosa significa la riga 7 di quella
-tabella?» è una domanda mal posta, perché la riga 7 non è determinata dai dati;
-lo è solo il modo in cui le righe lavorano insieme.
+tabella?» [è una domanda mal posta, perché la riga 7 non è determinata dai
+dati]{.pt-matita}; lo è solo il modo in cui le righe lavorano insieme.
 
 Per chi vuole capire che cosa un modello ha imparato, questa libertà di scelta
 è un ostacolo. Per chi lo addestra, invece, è una circostanza innocua, perché
@@ -633,10 +634,10 @@ si usa </ModelliLatenti/il-latente-che-si-usa>` rifà lo stesso argomento sulle
 immagini invece che sulle matrici.
 
 Ne derivano due conseguenze, opposte di segno. Per l'interpretabilità è una
-cattiva notizia, perché le quantità che ha senso studiare sono quelle
+cattiva notizia, perché [le quantità che ha senso studiare sono quelle
 invarianti (i prodotti, i pesi $\alpha_{ij}$, le direzioni nello spazio delle
-rappresentazioni), non le singole righe delle matrici; la {doc}`sezione
-sull'interpretabilità meccanicistica
+rappresentazioni), non le singole righe delle matrici]{.pt-matita}; la
+{doc}`sezione sull'interpretabilità meccanicistica
 </Interpretabilita/attribuzione-e-meccanicistica>` riprende il tema con i
 circuiti e la sovrapposizione. Per l'ottimizzazione, invece, il quadro è
 neutro. L'insieme delle soluzioni equivalenti è una varietà continua e non un
@@ -662,7 +663,7 @@ indica l'entropia, ma qui è solo un conteggio.
 evidenziatore. Alla fine i fogli si sovrappongono e la frase risulta letta da
 più punti di vista insieme.
 
-Nessuno, però, assegna i compiti:
+[Nessuno, però, assegna i compiti]{.pt-matita}:
 non c'è una copia incaricata dei pronomi e una della concordanza. Le $H$
 copie sono identiche nella struttura, partono da numeri casuali e vengono
 addestrate tutte con lo stesso identico obiettivo, indovinare la parola dopo.
@@ -722,10 +723,10 @@ ciascuno dei $12d^2$ parametri dello strato, cioè due operazioni per parametro
 come discute la {doc}`sezione sull'attenzione in pratica
 </Transformers/attenzione-in-pratica>`.
 
-Va tenuto separato ciò che è progettato da ciò che è scoperto. La scelta di
+Va tenuto separato ciò che è progettato da ciò che è scoperto. [La scelta di
 avere $H$ copie è architetturale e crea *capacità* di specializzazione, mentre
-quali relazioni emergano lo decide l'ottimizzazione, che è identica per tutte
-le copie.
+quali relazioni emergano lo decide l'ottimizzazione]{.pt-matita}, che è
+identica per tutte le copie.
 
 Che la ridondanza sia penalizzata implicitamente dalla loss è un'ipotesi
 ragionevole, non un risultato, e la prova sperimentale la ridimensiona. Una
@@ -768,8 +769,8 @@ che uno strato fa su ogni parola presa da sola (moltiplicare per dei numeri e
 sommare) sono **lineari**, e due applicate in successione valgono una sola,
 perché il risultato resta una somma di multipli dei numeri di partenza, con
 altri coefficienti. È lo stesso motivo per cui raddoppiare e poi triplicare
-equivale a sestuplicare. Cento passaggi così equivarrebbero quindi a uno, e
-tutta quella parte della pila collasserebbe in un'unica tabella.
+equivale a sestuplicare. [Cento passaggi così equivarrebbero quindi a uno, e
+tutta quella parte della pila collasserebbe in un'unica tabella]{.pt-matita}.
 
 Serve allora, fra uno strato e l'altro, una funzione che *pieghi* i numeri, e la
 più semplice che si possa immaginare è azzerare i valori negativi e lasciar
@@ -819,12 +820,13 @@ ripartizione della normale standard) in GPT-2 e GPT-3
 con una terza matrice e un prodotto elemento per elemento, che cambia il
 conteggio dei parametri.
 
-Senza $\phi$ le trasformazioni posizione per posizione si comporrebbero in una
-sola mappa lineare. L'aggregazione contestuale, d'altra parte, non è lineare in
-$\mathbf{e}$, perché i pesi $\alpha_{ij}$ ne dipendono tramite la softmax, ma
-non sostiene la profondità: una pila di sola attenzione, senza connessioni
-residue né parte non lineare, perde rango con velocità doppiamente esponenziale
-e porta tutte le posizioni verso lo stesso vettore {cite}`dong2021attention`.
+[Senza $\phi$ le trasformazioni posizione per posizione si comporrebbero in una
+sola mappa lineare]{.pt-matita}. L'aggregazione contestuale, d'altra parte, non
+è lineare in $\mathbf{e}$, perché i pesi $\alpha_{ij}$ ne dipendono tramite la
+softmax, ma non sostiene la profondità: una pila di sola attenzione, senza
+connessioni residue né parte non lineare, perde rango con velocità doppiamente
+esponenziale e porta tutte le posizioni verso lo stesso vettore
+{cite}`dong2021attention`.
 
 **Aggiornamento additivo.** Ogni trasformazione è applicata nella forma
 $\mathbf{h}_i \leftarrow \mathbf{h}_i + f(\mathbf{h}_i)$ {cite}`he2016deep`. La
@@ -883,12 +885,12 @@ Ad esempio, «Il cane morde l'uomo» e «l'uomo morde il cane» avrebbero le ste
 rappresentazioni, in ordine diverso, e un modello che le confonde non è un
 modello del linguaggio.
 
-L'informazione di posizione va quindi aggiunta a mano. Nella soluzione
-originale {cite}`vaswani2017attention` si costruisce per ogni posizione $i$ un
-vettore $\mathbf{p}_i\in\mathbb{R}^d$ (nell'articolo con funzioni sinusoidali,
-in altri modelli appreso) e lo si somma al vettore della parola che sta lì. In
-questo modo chi legge $\mathbf{e}_{w_i}+\mathbf{p}_i$ ci trova, mescolate, due
-informazioni, quale parola è e dove sta.
+[L'informazione di posizione va quindi aggiunta a mano]{.pt-matita}. Nella
+soluzione originale {cite}`vaswani2017attention` si costruisce per ogni
+posizione $i$ un vettore $\mathbf{p}_i\in\mathbb{R}^d$ (nell'articolo con
+funzioni sinusoidali, in altri modelli appreso) e lo si somma al vettore della
+parola che sta lì. In questo modo chi legge $\mathbf{e}_{w_i}+\mathbf{p}_i$ ci
+trova, mescolate, due informazioni, quale parola è e dove sta.
 
 Le soluzioni oggi prevalenti codificano invece la posizione relativa, cioè la
 distanza fra le due parole e non il numero d'ordine di ciascuna, per due
@@ -937,11 +939,11 @@ prende il numero fisso $e$ della sezione sull'analisi, lo si eleva a ciascuno
 dei punteggi (così spariscono i segni meno e i punteggi alti restano alti) e si
 divide ognuno per il totale, in modo che la somma faccia uno.
 
-Quest'ultimo passo, in sé, è un'operazione ordinaria della statistica. Il
-modello ha una lista di numeri che descrivono la situazione, la confronta con
-una lista per ogni risposta possibile e ne ricava delle probabilità. È lo stesso
-schema con cui si stima se un cliente restituirà un prestito, dati il suo
-reddito e la sua età.
+[Quest'ultimo passo, in sé, è un'operazione ordinaria della
+statistica]{.pt-matita}. Il modello ha una lista di numeri che descrivono la
+situazione, la confronta con una lista per ogni risposta possibile e ne ricava
+delle probabilità. È lo stesso schema con cui si stima se un cliente restituirà
+un prestito, dati il suo reddito e la sua età.
 
 La differenza, che è grossa, è che lì una persona sceglie i numeri che
 descrivono la situazione (reddito, età, anzianità di lavoro), mentre qui sono
@@ -965,13 +967,13 @@ P(w_{n+1} = v \mid w_1, \dots, w_n)
 = \frac{e^{z_v}}{\sum_{v' \in \mathcal{V}} e^{z_{v'}}} .
 $$
 
-In altri termini, l'ultimo strato di un modello linguistico è una regressione
-logistica multinomiale con $|\mathcal{V}|$ categorie, in cui il vettore dei
-regressori non è stato scelto da un analista ma calcolato dagli $L$ strati
-precedenti. Tutta la sofisticazione dell'architettura serve quindi a costruire
-delle buone covariate (cioè le variabili esplicative, i «numeri che descrivono
-il caso») per un modello statistico fra i più antichi e più studiati che ci
-siano.
+In altri termini, [l'ultimo strato di un modello linguistico è una regressione
+logistica multinomiale con $|\mathcal{V}|$ categorie]{.pt-matita}, in cui il
+vettore dei regressori non è stato scelto da un analista ma calcolato dagli $L$
+strati precedenti. Tutta la sofisticazione dell'architettura serve quindi a
+costruire delle buone covariate (cioè le variabili esplicative, i «numeri che
+descrivono il caso») per un modello statistico fra i più antichi e più studiati
+che ci siano.
 
 In molti modelli i vettori $\mathbf{u}_v$ sono le righe della matrice di
 embedding $\mathbf{E}$, riusate al contrario (**weight tying**), e non
@@ -1005,8 +1007,8 @@ un numero solo, quello assegnato alla parola giusta, e l'obiettivo si riduce a
 far sì che quel numero sia il più alto possibile, in ogni punto del testo.
 
 È la sorpresa media della sezione sulla teoria dell'informazione, misurata
-sulla realtà. Minimizzare quella e massimizzare la plausibilità dei dati,
-quindi, sono la stessa operazione, scritta due volte.
+sulla realtà. [Minimizzare quella e massimizzare la plausibilità dei dati,
+quindi, sono la stessa operazione, scritta due volte]{.pt-matita}.
 
 Le manopole si girano come per l'escursionista nella nebbia: si guarda in che
 direzione l'errore cala più in fretta e si fa un passo di lì. C'è però una
@@ -1033,9 +1035,9 @@ già mostrato.
 Si noti che qui la distribuzione «vera» su ogni posizione è **degenere**, cioè
 mette tutta la probabilità su un solo esito, la parola che è effettivamente
 occorsa. La sua entropia è quindi nulla, e la cross-entropia si riduce a $-\log
-q(\text{parola occorsa})$. Minimizzare la sorpresa media del modello davanti
+q(\text{parola occorsa})$. [Minimizzare la sorpresa media del modello davanti
 alla realtà e massimizzare la verosimiglianza sono, letteralmente, la stessa
-formula.
+formula]{.pt-matita}.
 
 È anche il caso in cui il «pavimento» della loss è zero. La sezione sulla
 teoria dell'informazione osservava che il minimo teorico è $H(p)$, ma questo è
@@ -1163,9 +1165,9 @@ limiti, che non sono difetti di implementazione ma conseguenze della forma
 dell'oggetto.
 
 Il modello impara soltanto da testo e non ha modo di verificare un'affermazione
-contro il mondo. Inoltre ottimizza la verosimiglianza, non la verità, e genera
-volentieri frasi plausibili e false, perché plausibile è ciò che l'obiettivo
-premia.
+contro il mondo. Inoltre [ottimizza la verosimiglianza, non la verità, e genera
+volentieri frasi plausibili e false]{.pt-matita}, perché plausibile è ciò che
+l'obiettivo premia.
 
 Allo stesso modo, niente nella forma dell'obiettivo lo obbliga a eseguire
 deduzioni: l'obiettivo premia chi riproduce bene gli schemi di ragionamento

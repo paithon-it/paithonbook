@@ -86,8 +86,8 @@ dire modificarli finché le risposte si avvicinano a quelle giuste. In
 particolare, i parametri per cui il modello moltiplica l'ingresso si chiamano
 **pesi**.
 
-In sintesi, le tre lingue servono a *rappresentare* i dati, a *regolare* i
-parametri e a *quantificare* la fiducia nel risultato. A queste se ne
+In sintesi, [le tre lingue servono a *rappresentare* i dati, a *regolare* i
+parametri e a *quantificare* la fiducia nel risultato]{.pt-matita}. A queste se ne
 aggiungono altre due. La **teoria dell'informazione** riduce a un numero solo
 l'errore dei modelli che rispondono con probabilità (l'entropia di Shannon
 nasce lì); l’**analisi numerica** studia che cosa accade ai numeri quando a

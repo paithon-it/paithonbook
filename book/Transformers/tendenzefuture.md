@@ -110,9 +110,9 @@ difficili ci fermiamo a pensare.
 Nel 2018 Mostafa Dehghani e colleghi provarono a rifare il palazzo, e lo
 chiamarono Universal Transformer. Le sessanta stanze sono tutte diverse, e un
 paio in più non si aggiungono: quel numero è murato. Se invece la stanza fosse
-una sola, e ci si rientrasse? I giri li deciderebbe la domanda: due per «due più
-due», venti per il rompicapo. A ogni giro un bigliettino può dire «io ho
-finito», e resta lì com'è mentre gli altri continuano.
+una sola, e ci si rientrasse? [I giri li deciderebbe la domanda: due per «due
+più due», venti per il rompicapo]{.pt-matita}. A ogni giro un bigliettino può
+dire «io ho finito», e resta lì com'è mentre gli altri continuano.
 
 Nei muri della stanza non è scritto nessun massimo. Per questo la stanza sola
 promette di riuscire anche in compiti più lunghi di tutti quelli visti in
@@ -173,8 +173,8 @@ A questo gli autori affiancano l’**Adaptive Computation Time** di Graves
 per ogni posizione, una piccola unità emette una probabilità di
 arresto; le posizioni che si fermano vengono copiate invariate mentre le altre
 continuano a essere aggiornate, e una penalità sul numero di passi (il *ponder
-cost*) impedisce di iterare all'infinito. Il calcolo diventa così
-condizionato all'ingresso invece che fissato dall'architettura.
+cost*) impedisce di iterare all'infinito. [Il calcolo diventa così
+condizionato all'ingresso invece che fissato dall'architettura]{.pt-matita}.
 
 Gli autori mostrano che legare i pesi e iterare rende il modello
 **Turing-completo**, ma lo dicono sotto certe ipotesi, e quella che pesa è
@@ -271,15 +271,15 @@ sistematiche dei testi scritti online, i bias, che i modelli assorbono
 insieme al resto.
 
 Da quei dati il modello impara a stimare la probabilità di un testo, e qui sta
-il terzo limite, l'affidabilità. Le allucinazioni (risposte fluenti ma
-false) hanno una causa nell'obiettivo stesso: il pre-addestramento premia la
-verosimiglianza, e un'affermazione falsa e fluente non si distingue da un fatto
-se i dati non offrono un modo di farlo. La valutazione fa il resto, perché la
-maggior parte dei benchmark dà zero punti a un «non lo so» e premia così chi
-tira a indovinare {cite}`kalai2025hallucinate`. Mitigarle è un problema aperto,
-affrontato con il {doc}`recupero di fonti esterne <rag>`, la verifica e la
-{doc}`calibrazione </MachineLearning/metriche>`, cioè l'accordo fra la
-sicurezza che il modello dichiara e quanto spesso ha ragione.
+il terzo limite, l'affidabilità. Le allucinazioni (risposte fluenti ma false)
+[hanno una causa nell'obiettivo stesso: il pre-addestramento premia la
+verosimiglianza]{.pt-matita}, e un'affermazione falsa e fluente non si
+distingue da un fatto se i dati non offrono un modo di farlo. La valutazione fa
+il resto, perché la maggior parte dei benchmark dà zero punti a un «non lo so»
+e premia così chi tira a indovinare {cite}`kalai2025hallucinate`. Mitigarle è
+un problema aperto, affrontato con il {doc}`recupero di fonti esterne <rag>`,
+la verifica e la {doc}`calibrazione </MachineLearning/metriche>`, cioè
+l'accordo fra la sicurezza che il modello dichiara e quanto spesso ha ragione.
 
 Resta aperta la questione di che cosa i modelli *capiscano*. Bender e Koller
 {cite}`bender2020climbing` sostengono che dalla sola forma del testo non si
@@ -298,9 +298,9 @@ dalla traduzione automatica neurale {cite}`bahdanau2015neural`, gli embedding
 dalle rappresentazioni distribuite del testo, e la discesa del gradiente, che
 sistema i parametri un passo alla volta, è ancora più antica. Risale al 2017
 l'idea di farne l'unico meccanismo con cui le posizioni comunicano
-{cite}`vaswani2017attention`. Su larga scala i salti sono venuti più da quanto
-calcolo e quanti dati si sono potuti spendere che da pezzi nuovi: la loss
-scende in modo regolare al crescere di parametri, dati e calcolo
+{cite}`vaswani2017attention`. Su larga scala [i salti sono venuti più da quanto
+calcolo e quanti dati si sono potuti spendere che da pezzi nuovi]{.pt-matita}:
+la loss scende in modo regolare al crescere di parametri, dati e calcolo
 {cite}`kaplan2020scaling`, e a parità di calcolo conta il bilanciamento fra
 parametri e dati {cite}`hoffmann2022training`, come spiega la {doc}`sezione
 sulle leggi di scala <llm>`. I pezzi aggiunti dopo, dalla KV cache alla mixture

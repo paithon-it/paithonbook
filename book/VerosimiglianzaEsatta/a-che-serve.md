@@ -8,8 +8,8 @@ più degli altri due.
 
 ## Primo: comprimere
 
-Sapere quanto un dato è probabile e saperlo comprimere sono la stessa cosa
-detta in due modi, e la {doc}`sezione sulla teoria dell'informazione
+[Sapere quanto un dato è probabile e saperlo comprimere sono la stessa cosa
+detta in due modi]{.pt-matita}, e la {doc}`sezione sulla teoria dell'informazione
 </Matematica/teoria-informazione>`, nei richiami di matematica, l'ha già
 stabilito: il numero di bit che servono per scrivere un messaggio con il codice
 migliore possibile è $-\log_2 p$ del messaggio, cioè quante volte bisogna
@@ -191,12 +191,13 @@ lo si vuole, non rispetto al numero più comodo da stampare.
 
 ## Secondo: ordinare, confrontare, scegliere
 
-Il secondo uso è meno vistoso e più diffuso di quanto sembri. Avere
-$p(\mathbf{x})$ permette di ordinare delle ipotesi e di sceglierne una. Ad
-esempio, un riconoscitore del parlato che esita fra «ho visto un gatto» e «o
-visto un gatto», che all'orecchio suonano uguali, chiede a un modello del
-linguaggio quale delle due frasi sia più probabile, e riordina le sue ipotesi
-secondo la risposta (la {doc}`sezione sui modelli di riconoscimento
+Il secondo uso è meno vistoso e più diffuso di quanto sembri. [Avere
+$p(\mathbf{x})$ permette di ordinare delle ipotesi e di sceglierne
+una]{.pt-matita}. Ad esempio, un riconoscitore del parlato che esita fra «ho
+visto un gatto» e «o visto un gatto», che all'orecchio suonano uguali, chiede a
+un modello del linguaggio quale delle due frasi sia più probabile, e riordina
+le sue ipotesi secondo la risposta (la {doc}`sezione sui modelli di
+riconoscimento
 </SpeechRecognition/modelli-asr>` lo fa con le prime $n$ trascrizioni); un
 programma che deve ricostruire i pixel mancanti di una fotografia confronta le
 ricostruzioni candidate con lo stesso criterio. In questi ruoli il modello di
@@ -234,10 +235,11 @@ assegnando una verosimiglianza più alta a queste ultime quando il modello è
 stato addestrato sulle prime».
 
 Non «faticano a distinguere»: sbagliano nella direzione sbagliata, e con
-sicurezza. Il modello dichiara più probabili le immagini che non ha mai visto.
-Gli autori ne traggono un avvertimento più che una condanna: non usare la
-densità di questi modelli per riconoscere i dati estranei finché il suo
-comportamento fuori dalla distribuzione di addestramento non è capito meglio.
+sicurezza. [Il modello dichiara più probabili le immagini che non ha mai
+visto]{.pt-matita}. Gli autori ne traggono un avvertimento più che una
+condanna: non usare la densità di questi modelli per riconoscere i dati
+estranei finché il suo comportamento fuori dalla distribuzione di addestramento
+non è capito meglio.
 
 `````{tab} Elementare
 
@@ -469,8 +471,8 @@ verosimiglianza esatta, e il suo discendente più usato per generare immagini la
 mette da parte in addestramento, tenendo solo la parte geometrica, il
 movimento. La proprietà però resta lì: un modello a flow matching sa ancora
 dare la verosimiglianza, se si accetta il costo dell'equazione differenziale e
-della divergenza. La rinuncia riguarda l'addestramento e lascia intatta la
-struttura, e la parola «flusso» ne conserva l'origine.
+della divergenza. [La rinuncia riguarda l'addestramento e lascia intatta la
+struttura]{.pt-matita}, e la parola «flusso» ne conserva l'origine.
 
 `````{tab} Elementare
 

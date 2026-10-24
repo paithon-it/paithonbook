@@ -13,8 +13,8 @@ testo riga per riga, e se la modifica rompeva il codice nessuno glielo diceva.
 
 Da queste difficoltà John Yang, Carlos E. Jimenez e i loro colleghi hanno
 ricavato l'idea che dà il titolo al lavoro: un modello che usa un computer è un
-utente di genere nuovo, e lavora meglio con un'interfaccia pensata per lui che
-con una pensata per le persone. L'hanno chiamata **interfaccia
+utente di genere nuovo, e [lavora meglio con un'interfaccia pensata per lui che
+con una pensata per le persone]{.pt-matita}. L'hanno chiamata **interfaccia
 agente-computer** (*agent-computer interface*, ACI): i comandi che il modello
 può dare, il modo in cui gli vengono descritti, la forma in cui il computer gli
 risponde e quanto delle risposte passate gli resta davanti
@@ -60,9 +60,9 @@ codice e fin dove deve poter arrivare ciò che fanno.
 Le definizioni degli strumenti, cioè il nome, la descrizione e l'elenco dei
 valori che ciascuno accetta, entrano nel contesto a ogni passo, che lo
 strumento serva o no; e ciò che uno strumento restituisce entra nel contesto e
-ci resta, riletto a ogni passo successivo. Progettare gli strumenti vuol dire
-progettare il contesto. Ken Aizawa, che ha raccolto le lezioni di Anthropic
-sugli strumenti per agenti, comincia da un errore che dice frequente:
+ci resta, riletto a ogni passo successivo. [Progettare gli strumenti vuol dire
+progettare il contesto]{.pt-matita}. Ken Aizawa, che ha raccolto le lezioni di
+Anthropic sugli strumenti per agenti, comincia da un errore che dice frequente:
 trasformare in strumenti, una per una, le funzioni che un servizio offre agli
 altri programmi {cite}`anthropic2025tools`. Ad esempio, un programma può
 scorrere una rubrica di mille contatti uno alla volta, perché la sua memoria
@@ -105,11 +105,11 @@ andata, il codice d'uscita: 1 se non ha trovato niente, 2 se qualcosa è andato
 storto, per esempio un file che non esiste, e allora scrive anche un messaggio
 d'errore, su un canale a parte. Uno strumento che passa al modello soltanto
 l'uscita normale riduce quindi i due casi alla stessa risposta vuota, e
-l'agente legge «niente da trovare» dove c'era un guasto. Per questo SWE-agent
-dice quando un comando è riuscito senza stampare niente, e MCP, il protocollo
-con cui un'applicazione parla con i suoi strumenti, chiede che l'errore di uno
-strumento torni al modello dentro la risposta, segnato come errore, perché
-altrove il modello non lo vedrebbe {cite}`mcp2025specification`.
+[l'agente legge «niente da trovare» dove c'era un guasto]{.pt-matita}. Per
+questo SWE-agent dice quando un comando è riuscito senza stampare niente, e
+MCP, il protocollo con cui un'applicazione parla con i suoi strumenti, chiede
+che l'errore di uno strumento torni al modello dentro la risposta, segnato come
+errore, perché altrove il modello non lo vedrebbe {cite}`mcp2025specification`.
 
 La stessa ambiguità vive nei valori: un'ora scritta senza fuso
 orario sposta di ore un lavoro programmato, e la toglie un'uscita che dichiara
@@ -362,12 +362,12 @@ peggio che lasciare all'agente la sola ricerca della shell, il 12,0% contro il
 uno, finché non finivano i soldi a disposizione o lo spazio nel contesto
 {cite}`yang2024sweagent`.
 
-Trovata la riga, bisogna cambiarla, e il formato della modifica decide due cose
-che tirano in versi opposti: quante righe il modello deve scrivere, e quanto è
-probabile che la modifica tocchi soltanto ciò che doveva. Nella riscrittura
-intera il modello riscrive il file: si applica sempre, ma le righe da scrivere
-crescono con il file, e quelle da non toccare possono cambiare senza che
-nessuno l'abbia chiesto.
+Trovata la riga, bisogna cambiarla, e [il formato della modifica decide due
+cose che tirano in versi opposti]{.pt-matita}: quante righe il modello deve
+scrivere, e quanto è probabile che la modifica tocchi soltanto ciò che doveva.
+Nella riscrittura intera il modello riscrive il file: si applica sempre, ma le
+righe da scrivere crescono con il file, e quelle da non toccare possono
+cambiare senza che nessuno l'abbia chiesto.
 
 Il **diff unificato**, il formato con cui le persone si scambiano le modifiche,
 porta le righe tolte, quelle aggiunte e qualche riga di contorno: chi lo applica
@@ -715,7 +715,7 @@ strumenti separati chiede molte chiamate; tutto ciò che è installato sulla
 macchina, i file, la rete, gli altri programmi, diventa un'azione possibile; e
 i file scritti e i programmi avviati restano dopo la chiamata. Ne segue il
 **raggio d'azione** (in inglese *blast radius*, il raggio dell'esplosione):
-l'agente può fare tutto ciò che può fare la shell, anche per sbaglio.
+[l'agente può fare tutto ciò che può fare la shell, anche per sbaglio]{.pt-matita}.
 
 Philipp Schmid, che ogni tanto ricostruisce da capo un harness per vedere che
 cosa si può togliere, nel settembre 2026 ha raccontato di averlo ridotto alla
@@ -881,7 +881,7 @@ indotto a portare fuori dati nelle interrogazioni al DNS.
 I limiti si dichiarano. La garanzia è d'integrità, non di riservatezza: ciò che
 il recinto contiene si legge, entra in $o_{k,t}$ e va al modello, e una chiamata
 verso l'esterno, se viene approvata, lo porta fuori nei propri argomenti. E con
-una persona nel giro il confine torna a dipendere dal testo, perché la persona
+una persona nel ciclo il confine torna a dipendere dal testo, perché la persona
 approva la chiamata che il modello le presenta. Il minimo di autonomia lega i
 pezzi: si toglie dal catalogo ogni strumento, e da ogni strumento ogni
 argomento, che il compito non richiede.

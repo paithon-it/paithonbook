@@ -23,8 +23,8 @@ anni per percorrerle: quasi tremila volte l'età dell'universo.
 Cento neuroni accesi o spenti sono soltanto un'immagine in bianco e nero di
 dieci pixel per dieci, molto meno di una fotografia. Il costo cresce come $2^N$,
 e nessun miglioramento dell'hardware fa sparire trenta zeri. Di conseguenza,
-per un'energia qualunque in alta dimensione, un metodo che deve calcolare $Z$ è
-escluso in partenza.
+per un'energia qualunque in alta dimensione, [un metodo che deve calcolare $Z$ è
+escluso in partenza]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -160,10 +160,11 @@ trova, scoprirai che passa più tempo dove il paesaggio è basso e pochissimo
 sulle cime. In altri termini, la frequenza con cui visita ogni punto *è* la
 probabilità che il paesaggio definisce.
 
-Il punto elegante è questo: per far vibrare e scendere la pallina serve solo la
-pendenza locale, quella sotto i suoi piedi. La misura dell'intero continente,
-quella che non sappiamo calcolare, serve a una cosa sola: dividere per il totale
-la pioggia di ogni valle, cioè applicare lo stesso fattore in ogni punto.
+Il punto elegante è questo: [per far vibrare e scendere la pallina serve solo
+la pendenza locale, quella sotto i suoi piedi]{.pt-matita}. La misura
+dell'intero continente, quella che non sappiamo calcolare, serve a una cosa
+sola: dividere per il totale la pioggia di ogni valle, cioè applicare lo stesso
+fattore in ogni punto.
 
 Il cambio fra le due lingue funziona così: scendere di un gradino non aggiunge
 una quantità fissa di pioggia, la moltiplica per un fattore fisso, sempre lo
@@ -232,12 +233,13 @@ Metropolis (la variante MALA), a cui di solito si rinuncia in cambio della
 semplicità.
 
 Si noti che compare solo $\nabla_{\mathbf{x}} E_\theta$: la costante $\log
-Z(\theta)$, non dipendendo da $\mathbf{x}$, ha gradiente nullo, quindi il
-campionamento non ha mai bisogno della normalizzazione. Dove le ipotesi valgono,
-la convergenza può essere comunque lentissima: il tempo medio per scavalcare una
-barriera di altezza $\Delta E$ cresce come $e^{\Delta E}$ (la legge di Kramers
-{cite}`kramers1940brownian`), e un paesaggio con molte buche separate da
-barriere alte si campiona in tempi esponenziali nell'altezza delle barriere.
+Z(\theta)$, non dipendendo da $\mathbf{x}$, ha gradiente nullo, quindi [il
+campionamento non ha mai bisogno della normalizzazione]{.pt-matita}. Dove le
+ipotesi valgono, la convergenza può essere comunque lentissima: il tempo medio
+per scavalcare una barriera di altezza $\Delta E$ cresce come $e^{\Delta E}$
+(la legge di Kramers {cite}`kramers1940brownian`), e un paesaggio con molte
+buche separate da barriere alte si campiona in tempi esponenziali nell'altezza
+delle barriere.
 
 La versione stocastica su minibatch, che sostituisce il gradiente esatto con
 quello stimato, è la *stochastic gradient Langevin dynamics*
@@ -648,10 +650,10 @@ successione.
 Il cerchio che si chiude qui è largo. Il compito con cui si addestrano i
 modelli di diffusione, «indovina il rumore che ho aggiunto a questa immagine»,
 nasce nel {doc}`capitolo sulla diffusione </ModelliDiffusione/overview>` come
-una scelta pratica e felice.
-Vista dai modelli a energia è la soluzione di un problema vecchio di vent'anni:
-come dare forma a un paesaggio senza mai misurare il continente. I modelli di
-diffusione sono, in questa luce, modelli a energia addestrati sulla pendenza.
+una scelta pratica e felice. Vista dai modelli a energia è la soluzione di un
+problema vecchio di vent'anni: come dare forma a un paesaggio senza mai
+misurare il continente. [I modelli di diffusione sono, in questa luce, modelli
+a energia addestrati sulla pendenza]{.pt-matita}.
 
 C'è però una differenza tecnica. Un modello a energia impara l'altezza del
 paesaggio, e la pendenza si ricava da quella; un modello di diffusione impara
@@ -686,8 +688,9 @@ Invece di chiedere al modello «quanto è probabile questa immagine?», gli si
 chiede: «questa l'ho presa dal mondo o l'ho fabbricata io?». Si mescolano
 esempi veri e finti (fabbricati da una sorgente di rumore di cui sappiamo
 tutto) e si addestra il modello a smistarli. Per riuscirci, il modello deve
-implicitamente sapere quanto ogni esempio è tipico dei dati: la conoscenza che
-serviva sta tutta lì dentro, ma è arrivata rispondendo a una domanda facile.
+implicitamente sapere quanto ogni esempio è tipico dei dati: [la conoscenza che
+serviva sta tutta lì dentro, ma è arrivata rispondendo a una domanda
+facile]{.pt-matita}.
 
 Per smistare serve anche l'asticella: quanto tipica deve essere un'immagine
 perché la si dichiari vera. Quel livello è la misura del continente, e qui
@@ -770,8 +773,8 @@ La rinuncia, però, non fa perdere la normalizzazione: all'ottimo la costante
 appresa coincide con il logaritmo della partizione, $\hat c = \log
 Z(\hat\theta)$, perché il massimo della funzione obiettivo, preso su tutte le
 densità non normalizzate, ha integrale uno da sé (Teorema 1 in
-{cite}`gutmann2012noise`). NCE normalizza il modello senza mai sommare su tutto
-lo spazio, ed è l'unica delle tre vie a restituire una densità.
+{cite}`gutmann2012noise`). [NCE normalizza il modello senza mai sommare su tutto
+lo spazio, ed è l'unica delle tre vie a restituire una densità]{.pt-matita}.
 
 La InfoNCE dei metodi contrastivi è la stessa idea con molti campioni di rumore
 per ogni dato e una softmax al posto della sigmoide, e la si ritrova nella
@@ -821,9 +824,9 @@ La {numref}`tab-tre-vie` mette a confronto le tre vie.
     diventa facile e servono moltissimi esempi per imparare poco
 ```
 
-Nessuna delle tre vie è gratuita. Hanno tutte lo stesso scopo, costruire un
-modello di com'è fatto il paesaggio, e si distinguono per il costo che
-accettano.
+[Nessuna delle tre vie è gratuita]{.pt-matita}. Hanno tutte lo stesso scopo,
+costruire un modello di com'è fatto il paesaggio, e si distinguono per il costo
+che accettano.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

@@ -19,10 +19,10 @@ La {doc}`sezione sulle tre cose che la ricerca dava per scontate
 </Ricerca/quando-il-mondo-non-si-conosce>` aveva lasciato la questione a questo
 punto. La ricerca classica, per fermarsi a metà albero, ha bisogno di una
 formula che dia un voto alla posizione, e nel Go nessuno è mai riuscito a
-scriverla a mano. La via d'uscita era smettere di giudicare e mettersi a
-contare, cioè giocare da lì molte partite a caso e guardare come finiscono. È
-un'idea semplice, ma va organizzata, perché le partite possibili sono troppe per
-giocarle tutte.
+scriverla a mano. [La via d'uscita era smettere di giudicare e mettersi a
+contare]{.pt-matita}, cioè giocare da lì molte partite a caso e guardare come
+finiscono. È un'idea semplice, ma va organizzata, perché le partite possibili
+sono troppe per giocarle tutte.
 
 `````{tab} Elementare
 
@@ -242,7 +242,7 @@ def figli(nodo):
 def foglia(nodo):
     return nodo >= PRIME
 
-def cerca(seme, giri=2000):
+def cerca(seme, iterazioni=2000):
     """Una partita di MCTS completa, con il proprio seme casuale."""
     rng = np.random.default_rng(seme)
     valori_foglie = rng.uniform(0, 1, RAMI ** PROFONDITA)
@@ -265,7 +265,7 @@ def cerca(seme, giri=2000):
             nodo = int(rng.choice(figli(nodo)))
         return valori_foglie[nodo - PRIME]
 
-    for _ in range(giri):
+    for _ in range(iterazioni):
         nodo, cammino = 0, [0]
         while not foglia(nodo) and all(N.get(f, 0) > 0 for f in figli(nodo)):
             nodo = uct(nodo)                                      # 1. SELEZIONE
@@ -348,12 +348,12 @@ certezza, non lo dicono questi nove semi: lo dice il fatto che la garanzia di
 UCT vale soltanto alla lunga, con un numero di simulazioni che cresce senza
 limite.
 
-La quota oscilla, la forma no: l'albero cresce storto su tutti e sessanta i
-semi, e mai una volta le visite si distribuiscono uniformemente. Ma se avessimo
-tenuto il solo numero del seme $7$, con la sua bella cifra decimale,
-l'algoritmo sarebbe sembrato più preciso, e la regola della mossa più visitata
-più sicura di quanto sia. È il motivo per cui in questo campo i risultati si
-riportano su molte ripetizioni, e non su una.
+[La quota oscilla, la forma no: l'albero cresce storto su tutti e sessanta i
+semi]{.pt-matita}, e mai una volta le visite si distribuiscono uniformemente.
+Ma se avessimo tenuto il solo numero del seme $7$, con la sua bella cifra
+decimale, l'algoritmo sarebbe sembrato più preciso, e la regola della mossa più
+visitata più sicura di quanto sia. È il motivo per cui in questo campo i
+risultati si riportano su molte ripetizioni, e non su una.
 
 ## Da AlphaGo ad AlphaZero
 
@@ -370,7 +370,7 @@ l'anno dopo, basterà la rete.
 
 ```{figure} ../figures/alphago-2016.svg
 :name: fig-alphago
-:alt: "In alto, staccato e in tratteggio, il punto di partenza del 2016: le partite umane su cui la rete di policy viene addestrata all'inizio, con l'annotazione che è il passo che AlphaGo Zero eliminerà. Sotto, il ciclo chiuso come lo realizzano i successori di AlphaGo: il self-play genera partite che il sistema gioca contro sé stesso; dalle partite si affinano due reti, quella di policy che propone le mosse e quella di valore che stima chi sta vincendo; le due reti guidano a loro volta una ricerca ad albero Monte Carlo, che gioca meglio di entrambe e produce le partite del giro successivo. Il ritorno dalla ricerca al self-play è la novità di AlphaGo Zero: nel 2016 le partite di self-play le giocava la sola rete di policy."
+:alt: "In alto, staccato e in tratteggio, il punto di partenza del 2016: le partite umane su cui la rete di policy viene addestrata all'inizio, con l'annotazione che è il passo che AlphaGo Zero eliminerà. Sotto, il ciclo chiuso come lo realizzano i successori di AlphaGo: il self-play genera partite che il sistema gioca contro sé stesso; dalle partite si affinano due reti, quella di policy che propone le mosse e quella di valore che stima chi sta vincendo; le due reti guidano a loro volta una ricerca ad albero Monte Carlo, che gioca meglio di entrambe e produce le partite dell'iterazione successiva. Il ritorno dalla ricerca al self-play è la novità di AlphaGo Zero: nel 2016 le partite di self-play le giocava la sola rete di policy."
 :width: 92%
 
 Il ciclo che si autoalimenta, come lo chiudono i successori di AlphaGo, e il
@@ -380,13 +380,13 @@ ricerca al self-play non c'era ancora: lo introduce AlphaGo Zero.
 ```
 
 Il ciclo di {numref}`fig-alphago` è il motivo per cui i successori di AlphaGo
-poterono fare a meno delle partite umane, e poggia su un fatto semplice: la
-ricerca gioca meglio delle due reti che la guidano. Infatti la rete propone
-guardando la sola posizione, mentre la ricerca, prima di decidere, prova
-migliaia di continuazioni (AlphaGo Zero ne fa $1600$ per mossa, circa quattro
-decimi di secondo di calcolo). Con abbastanza simulazioni la mossa che esce
-dalla ricerca è migliore di quella che la rete avrebbe scelto senza ricerca, e
-diventa un esempio su cui la rete può allenarsi.
+poterono fare a meno delle partite umane, e poggia su un fatto semplice: [la
+ricerca gioca meglio delle due reti che la guidano]{.pt-matita}. Infatti la
+rete propone guardando la sola posizione, mentre la ricerca, prima di decidere,
+prova migliaia di continuazioni (AlphaGo Zero ne fa $1600$ per mossa, circa
+quattro decimi di secondo di calcolo). Con abbastanza simulazioni la mossa che
+esce dalla ricerca è migliore di quella che la rete avrebbe scelto senza
+ricerca, e diventa un esempio su cui la rete può allenarsi.
 
 È una fonte di supervisione interna: non serve un maestro, basta giocare contro
 sé stessi e imparare da dove la ricerca ha portato.
@@ -427,7 +427,7 @@ distanza.
 
 ```{figure} ../figures/instructgpt-2022.svg
 :name: fig-instructgpt
-:alt: "Il giro dell'RLHF, in tre riquadri: alcune persone ordinano per preferenza più risposte allo stesso prompt; da questi ordinamenti si addestra un modello di ricompensa (reward model) che impara ad assegnare punteggi; il modello di ricompensa guida infine l'ottimizzazione della policy del modello linguistico, che genera, viene valutata e aggiornata."
+:alt: "Il ciclo dell'RLHF, in tre riquadri: alcune persone ordinano per preferenza più risposte allo stesso prompt; da questi ordinamenti si addestra un modello di ricompensa (reward model) che impara ad assegnare punteggi; il modello di ricompensa guida infine l'ottimizzazione della policy del modello linguistico, che genera, viene valutata e aggiornata."
 :width: 100%
 
 Il giudizio umano che diventa un numero. Le persone non danno voti: mettono in
@@ -449,9 +449,9 @@ ritocca poi la policy del modello (la sua tendenza a produrre certe risposte),
 verso ciò che gli umani apprezzano, e una penalità tiene la policy vicina al
 modello di partenza; la misura di quella distanza (la divergenza di
 Kullback-Leibler) e gli altri dettagli si trovano nella {doc}`sezione sul
-post-addestramento </Transformers/post-training>`. La stessa famiglia di metodi
+post-addestramento </Transformers/post-training>`. [La stessa famiglia di metodi
 che ha affinato la policy di AlphaGo orienta oggi un assistente verso le
-risposte che le persone preferiscono.
+risposte che le persone preferiscono]{.pt-matita}.
 
 La figura comincia dagli ordinamenti, ma prima c'è un passo che non mostra: il
 modello viene addestrato a imitare risposte scritte da persone, cioè a copiare

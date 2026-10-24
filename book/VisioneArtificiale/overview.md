@@ -81,8 +81,8 @@ l'altro, come una lunghissima lista della spesa. Il danno si vede subito: nella
 riga il quadretto sopra e quello sotto finiscono a centinaia di posti di
 distanza, e sparisce l'unica cosa che li teneva insieme, cioè che erano
 attaccati, e che quindi appartenevano probabilmente allo stesso bordo, allo
-stesso pelo, allo stesso occhio. I numeri ci sono ancora tutti; manca solo chi
-sta accanto a chi.
+stesso pelo, allo stesso occhio. [I numeri ci sono ancora tutti; manca solo chi
+sta accanto a chi]{.pt-matita}.
 
 Il compito della visione artificiale è trovare dentro quella griglia le
 regolarità che corrispondono a ciò che noi chiamiamo "un gatto".
@@ -119,9 +119,9 @@ Sulla vetrina del bar c'è l'avviso di un gatto siamese smarrito: la foto, e un
 recapito da chiamare. Nel pomeriggio, sul telefono della padrona, arrivano sette
 foto di gatti avvistati in giro, mandate da chi ha letto l'avviso. Per il
 telefono ognuna è una griglia di numeri, e tanti numeri non spaventano
-nessuno, perché un computer li macina. Il problema è che lo stesso gatto
+nessuno, perché un computer li macina. [Il problema è che lo stesso gatto
 produce griglie completamente diverse, e due gatti diversi possono produrne di
-molto simili.
+molto simili]{.pt-matita}.
 
 Punto di vista. Uno è preso dal balcone: schiena e coda, mentre sull'avviso
 il gatto è di fronte. Le due griglie non hanno un quadretto in comune.
@@ -204,16 +204,16 @@ $\mathbf{X} \in \mathbb{R}^{C\times H\times W}$ e la categoria semantica non
 c'è nessuna relazione semplice, e in particolare nessuna relazione che si
 possa scrivere guardando i valori dei pixel uno per uno.
 
-Formulato con precisione, il compito è imparare una funzione
-$f: \mathbb{R}^{C\times H\times W} \to \{1,\dots,K\}$ che sia **invariante** a
-una famiglia di trasformazioni di *nuisance* (traslazione, scala, rotazione
+Formulato con precisione, il compito è imparare una funzione $f:
+\mathbb{R}^{C\times H\times W} \to \{1,\dots,K\}$ che sia **invariante** a una
+famiglia di trasformazioni di *nuisance* (traslazione, scala, rotazione
 limitata, cambi fotometrici, occlusioni parziali) e allo stesso tempo
 discriminativa rispetto alle differenze fra classi, che sono spesso molto più
-piccole, nella metrica dei pixel, delle variazioni da ignorare. Due immagini
-della stessa classe possono avere distanza euclidea maggiore di due immagini
-di classi diverse. Per questo motivo un classificatore a vicini più prossimi
-sui pixel grezzi funziona male, e il primo tentativo di rimediare furono i
-filtri disegnati a mano.
+piccole, nella metrica dei pixel, delle variazioni da ignorare. [Due immagini
+della stessa classe possono avere distanza euclidea maggiore di due immagini di
+classi diverse]{.pt-matita}. Per questo motivo un classificatore a vicini più
+prossimi sui pixel grezzi funziona male, e il primo tentativo di rimediare
+furono i filtri disegnati a mano.
 
 Le invarianze si ottengono in tre modi.
 
@@ -281,10 +281,11 @@ comune c'è mezzo riquadro, mentre la superficie coperta in tutto è un riquadro
 e mezzo, quindi $0{,}5$ diviso $1{,}5$, cioè un terzo. Sotto una soglia che si
 fissa in partenza, il riquadro conta come sbagliato.
 
-Più la risposta è fine, più lavoro richiede a chi prepara gli esempi. Scrivere
-"gatto" sotto una foto sono pochi secondi; ritagliarne la sagoma esatta, pixel
-per pixel, sono minuti, e per una foto sola. È la ragione per cui di foto con
-una parola sotto ne esistono a milioni, e di sagome ritagliate molte meno.
+[Più la risposta è fine, più lavoro richiede a chi prepara gli
+esempi]{.pt-matita}. Scrivere "gatto" sotto una foto sono pochi secondi;
+ritagliarne la sagoma esatta, pixel per pixel, sono minuti, e per una foto
+sola. È la ragione per cui di foto con una parola sotto ne esistono a milioni,
+e di sagome ritagliate molte meno.
 
 `````
 
@@ -309,8 +310,9 @@ Formalmente, i quattro compiti differiscono per la forma dell'output.
 - **Segmentazione di istanza**: a ogni pixel si associa una classe *e*
   un'identità di istanza, distinguendo gatto-1 da gatto-2.
 
-Il costo di annotazione cresce nello stesso ordine: etichettare un'immagine è
-questione di secondi, tracciare una maschera pixel-perfetta richiede minuti.
+[Il costo di annotazione cresce nello stesso ordine: etichettare un'immagine è
+questione di secondi, tracciare una maschera pixel-perfetta richiede
+minuti]{.pt-matita}.
 
 `````
 
@@ -350,11 +352,11 @@ Funzionava, ma solo fino a un certo punto, perché ogni nuovo problema
 richiedeva nuove regole cucite a mano, e la realtà (luci, ombre, angolazioni) è
 troppo varia per essere ingabbiata in istruzioni fisse.
 
-La svolta è stata spostare il confine fra ciò che si scrive a mano e ciò che si
-impara, perché anche il setaccio si può imparare. Invece di dire alla macchina
-*come* riconoscere un gatto, le mostriamo migliaia di gatti e lasciamo che sia
-lei a costruirsi i rilevatori giusti. Le "regole" non le scrive più
-l'ingegnere: emergono dai dati.
+[La svolta è stata spostare il confine fra ciò che si scrive a mano e ciò che
+si impara, perché anche il setaccio si può imparare]{.pt-matita}. Invece di
+dire alla macchina *come* riconoscere un gatto, le mostriamo migliaia di gatti
+e lasciamo che sia lei a costruirsi i rilevatori giusti. Le "regole" non le
+scrive più l'ingegnere: emergono dai dati.
 
 `````
 
@@ -378,11 +380,11 @@ La rottura viene dalle reti convoluzionali. LeCun e colleghi mostrano già nel
 mano. Lo spartiacque arriva però nel 2012, con la vittoria di AlexNet
 (Krizhevsky, Sutskever, Hinton) a ImageNet {cite}`krizhevsky2012imagenet`,
 illustrata in dettaglio fra le {doc}`architetture storiche
-</DeepLearning/architetture-storiche>`. Da allora, per il riconoscimento, le
+</DeepLearning/architetture-storiche>`. [Da allora, per il riconoscimento, le
 feature non si disegnano più: si *imparano*, strato dopo strato, direttamente
-dai pixel. Quelle disegnate a mano sopravvivono invece nella geometria, dove
-SIFT resta il punto di partenza di molte pipeline di ricostruzione
-tridimensionale.
+dai pixel]{.pt-matita}. Quelle disegnate a mano sopravvivono invece nella
+geometria, dove SIFT resta il punto di partenza di molte pipeline di
+ricostruzione tridimensionale.
 
 `````
 
@@ -400,8 +402,8 @@ Poco dopo arriva **COCO** (*Common Objects in Context*, 2014), con centinaia di
 migliaia di immagini annotate con l'etichetta e anche con i riquadri e le
 maschere (le sagome ritagliate pixel per pixel) di circa ottanta categorie di
 oggetti comuni. Per questo è il banco di prova naturale per rilevamento e
-segmentazione. La lezione vale per tutto il deep learning: un'architettura
-rende quanto le permettono i dati con cui la si addestra.
+segmentazione. [La lezione vale per tutto il deep learning: un'architettura
+rende quanto le permettono i dati con cui la si addestra]{.pt-matita}.
 
 ## Dalla classificazione alla geometria
 

@@ -81,11 +81,11 @@ l'esperimento invece di crederci sulla parola, e chi lo rifà parte da dove
 l'altro è arrivato. A rendere possibile questo scambio è un linguaggio comune a
 tutti.
 
-Sui calcoli pesanti Python, da solo, è lento, ma quei calcoli non li fa quasi
-mai lui. Le librerie importanti, infatti, sono scritte in linguaggi più veloci
-e più faticosi da usare, e Python fa il capocantiere: legge il progetto e dà
-gli ordini alle squadre. Tu scrivi la riga chiara, e il muro lo tira su chi ha
-gli attrezzi per farlo in fretta.
+[Sui calcoli pesanti Python, da solo, è lento, ma quei calcoli non li fa quasi
+mai lui]{.pt-matita}. Le librerie importanti, infatti, sono scritte in
+linguaggi più veloci e più faticosi da usare, e Python fa il capocantiere:
+legge il progetto e dà gli ordini alle squadre. Tu scrivi la riga chiara, e il
+muro lo tira su chi ha gli attrezzi per farlo in fretta.
 
 `````
 
@@ -102,11 +102,11 @@ termini, si cede velocità di esecuzione in cambio di velocità di sviluppo.
 Il calcolo scientifico in Python convive con il *problema dei due linguaggi*
 (prototipare in un linguaggio comodo e riscrivere in uno veloce, il problema da
 cui è nato Julia) e lo risolve ripartendolo per ruoli: chi sviluppa le librerie
-scrive nel secondo linguaggio, e chi le usa resta nel primo. Di conseguenza le
-operazioni pesanti non girano affatto in Python puro. NumPy, ad esempio, è
-scritto in C, PyTorch e TensorFlow in C++ e CUDA. Python fa da **collante**
-(*glue language*), orchestrando componenti compilate che sfruttano BLAS, SIMD e
-GPU.
+scrive nel secondo linguaggio, e chi le usa resta nel primo. Di conseguenza [le
+operazioni pesanti non girano affatto in Python puro]{.pt-matita}. NumPy, ad
+esempio, è scritto in C, PyTorch e TensorFlow in C++ e CUDA. Python fa da
+**collante** (*glue language*), orchestrando componenti compilate che sfruttano
+BLAS, SIMD e GPU.
 
 Attorno al linguaggio è cresciuto un ecosistema di centinaia di migliaia di
 pacchetti (distribuiti via PyPI e `pip`) e una prassi di ricerca in cui i
@@ -138,12 +138,12 @@ mostra niente, e per vedere il risultato bisogna stamparlo con `print`. Gli
 esempi che seguono sono scritti come li si digiterebbe nell'interprete, perciò
 spesso una riga mostra un valore senza `print` accanto.
 
-Eseguendo `import this` compaiono i diciannove aforismi che Tim Peters
-codificò nel 1999, fra i quali *"Explicit is better than implicit"* («meglio
-esplicito che implicito»), *"Simple is better than complex"* («meglio semplice
-che complicato») e *"Readability counts"* («la leggibilità conta»). Il codice,
-infatti, si legge molte più volte di quante lo si scriva, e in un progetto
-condiviso ciò che non si capisce non si può nemmeno verificare. Questa
+Eseguendo `import this` compaiono i diciannove aforismi che Tim Peters codificò
+nel 1999, fra i quali *"Explicit is better than implicit"* («meglio esplicito
+che implicito»), *"Simple is better than complex"* («meglio semplice che
+complicato») e *"Readability counts"* («la leggibilità conta»). [Il codice,
+infatti, si legge molte più volte di quante lo si scriva]{.pt-matita}, e in un
+progetto condiviso ciò che non si capisce non si può nemmeno verificare. Questa
 chiarezza rende Python adatto a insegnare e a comunicare l'AI, ma per lavorarci
 serve anche altro, e lo fornisce l'ecosistema.
 
@@ -199,9 +199,9 @@ somma tocca a NumPy.
 
 Il modo in cui NumPy esegue quella somma prende il nome di **vettorizzazione**.
 Invece di dire al computer che cosa fare a un numero e poi ripeterglielo un
-milione di volte, glielo si dice una volta sola sul blocco intero. Quasi tutto
+milione di volte, glielo si dice una volta sola sul blocco intero. [Quasi tutto
 il guadagno sta nel lavoro che l'interprete svolge attorno a ogni operazione, e
-non nell'aritmetica.
+non nell'aritmetica]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -274,10 +274,10 @@ in cui gran parte del machine learning viene insegnato e praticato.
 
 Le celle condividono la memoria: quello che una ha calcolato resta a
 disposizione delle altre. Questa comodità, però, ha un tranello. Se esegui le
-celle in un ordine diverso da come stanno sulla pagina, il quaderno segue
-l'ordine dei tuoi clic, non quello delle righe, e può mostrare un risultato
-che, rileggendo la pagina, non torna. Il rimedio, quando succede, è rieseguire
-tutto da capo, dall'alto in basso.
+celle in un ordine diverso da come stanno sulla pagina, [il quaderno segue
+l'ordine dei tuoi clic, non quello delle righe]{.pt-matita}, e può mostrare un
+risultato che, rileggendo la pagina, non torna. Il rimedio, quando succede, è
+rieseguire tutto da capo, dall'alto in basso.
 
 Infine, se non vuoi installare nulla, **Google Colab** ti dà un notebook nel
 browser, gratuito e spesso con una scheda grafica in prestito: abbastanza per
@@ -291,9 +291,9 @@ L'interprete interattivo è un **REPL** (*read–eval–print loop*); la version
 arricchita `IPython` ne è il motore. Un notebook Jupyter è un documento
 `.ipynb` (JSON di celle) eseguito da un **kernel** che mantiene lo stato tra
 una cella e l'altra. Da qui la potenza (e i tranelli) dell'esecuzione fuori
-ordine. Poiché lo stato vive nel kernel e non nel file, un notebook è
+ordine. Poiché lo stato vive nel kernel e non nel file, [un notebook è
 riproducibile solo se, riavviato il kernel e rieseguito dall'alto, produce gli
-stessi risultati.
+stessi risultati]{.pt-matita}.
 
 **Google Colab** è un ambiente Jupyter gestito, con acceleratori hardware
 (GPU/TPU) accessibili gratuitamente entro certi limiti, ideale per

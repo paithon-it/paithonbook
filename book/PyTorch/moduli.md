@@ -80,10 +80,10 @@ Un valore più grande dà una rete più capiente e più lenta, uno più piccolo 
 contrario. Si prova, e la sezione sul [flusso di lavoro](flusso-di-lavoro.md)
 spiega come scegliere.
 
-Scrivere un pezzo come `self.qualcosa` lo inserisce nell'inventario della rete.
-È quell'inventario che l'addestramento andrà a regolare, e basta una riga sola
-per salvarlo tutto su un file o per spostarlo tutto insieme sulla scheda
-grafica.
+[Scrivere un pezzo come `self.qualcosa` lo inserisce nell'inventario della
+rete]{.pt-matita}. È quell'inventario che l'addestramento andrà a regolare, e
+basta una riga sola per salvarlo tutto su un file o per spostarlo tutto insieme
+sulla scheda grafica.
 
 Se invece i pezzi si mettono in una normale lista di Python, per esempio
 `self.strati = [nn.Linear(784, 128), nn.Linear(128, 10)]`, funzionano
@@ -121,11 +121,11 @@ nessun errore, e quegli strumenti smettono di lavorare senza dirlo.
 `````
 
 `````{tab} Superiore
-`nn.Module` fornisce la contabilità dei parametri. In particolare, ogni
+`nn.Module` fornisce la contabilità dei parametri. In particolare, [ogni
 attributo che sia a sua volta un modulo (o un `nn.Parameter`) viene registrato
-automaticamente, e `model.parameters()` restituisce l'iteratore su tutti i
-parametri registrati, anche su quelli con `requires_grad=False` (lo passeremo
-all'ottimizzatore).
+automaticamente]{.pt-matita}, e `model.parameters()` restituisce l'iteratore su
+tutti i parametri registrati, anche su quelli con `requires_grad=False` (lo
+passeremo all'ottimizzatore).
 
 Ciò che invece finisce in una lista Python ordinaria non viene registrato: il
 `forward` lo usa lo stesso, ma resta fuori da `parameters()` e dallo
@@ -215,11 +215,11 @@ che non lava niente ma senza la quale il risultato cambia. È la stessa ReLU di
 prima in un'altra veste: `torch.relu` è il verbo, da scrivere dentro `forward`,
 mentre `nn.ReLU()` è il pezzo, da inserire nell'elenco.
 
-Si usa questa scrittura finché la rete è una fila. Si torna alla classe il
-giorno in cui la fila non basta più, cioè quando il dato deve prendere due
-strade e ricongiungersi dopo, o saltare un passaggio. Un tunnel a corsia unica
-non lo sa fare, e un elenco non lo sa scrivere; in `forward` sì, perché lì sono
-normali variabili Python.
+[Si usa questa scrittura finché la rete è una fila]{.pt-matita}. Si torna alla
+classe il giorno in cui la fila non basta più, cioè quando il dato deve
+prendere due strade e ricongiungersi dopo, o saltare un passaggio. Un tunnel a
+corsia unica non lo sa fare, e un elenco non lo sa scrivere; in `forward` sì,
+perché lì sono normali variabili Python.
 `````
 
 `````{tab} Superiore
@@ -233,10 +233,10 @@ variabili Python.
 
 Questa è la differenza rispetto a Keras, che per descrivere un grafo con rami
 affianca all'API `Sequential` un'API funzionale separata; in PyTorch non serve,
-perché la composizione arbitraria è già Python. Il limite di `nn.Sequential` è
-preciso: da un modulo al successivo passa un solo tensore, e un modulo che ne
-vuole due solleva un `TypeError`. Per MNIST la pila lineare è più che
-sufficiente.
+perché la composizione arbitraria è già Python. [Il limite di `nn.Sequential` è
+preciso: da un modulo al successivo passa un solo tensore]{.pt-matita}, e un
+modulo che ne vuole due solleva un `TypeError`. Per MNIST la pila lineare è più
+che sufficiente.
 `````
 
 ## Quanti parametri ha questa rete?
@@ -246,9 +246,9 @@ regolerà: pesi e bias tutti insieme. Non tutti i pezzi ne hanno. Lo strato che
 srotola l'immagine, ad esempio, sposta i numeri e non li cambia, quindi non ha
 parametri.
 
-Contarli è il primo controllo da fare su qualunque modello, prima ancora di
-addestrarlo. Se il numero non coincide con quello atteso, infatti, la rete
-montata non è quella che si aveva in mente.
+[Contarli è il primo controllo da fare su qualunque modello, prima ancora di
+addestrarlo]{.pt-matita}. Se il numero non coincide con quello atteso, infatti,
+la rete montata non è quella che si aveva in mente.
 
 `````{tab} Elementare
 Ogni collegamento tra un ingresso e un neurone ha il suo peso, più un piccolo
@@ -321,8 +321,8 @@ Un modello appena creato parte da lì vicino, in media un poco sopra, perché i
 pesi estratti a caso gli fanno già preferire qualcuna delle cifre, e una
 preferenza data a caso fa perdere più di quanto fa guadagnare. Il programma su
 MNIST della {doc}`sezione sull'addestramento <addestramento>` stampa il punto da
-cui parte il nostro. Un addestramento che funziona scende da lì; uno che resta
-lassù non ha imparato niente.
+cui parte il nostro. [Un addestramento che funziona scende da lì; uno che resta
+lassù non ha imparato niente]{.pt-matita}.
 
 `````{tab} Elementare
 Un perito passa la mattina in due appartamenti e su ogni scheda scrive tre

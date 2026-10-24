@@ -17,13 +17,13 @@ intorno.
 
 La memoria che accomuna queste architetture è una matrice $\mathbf{S}_t$ di
 dimensione fissa, che associa chiavi a valori: a ogni parola vi si scrive la
-coppia $(\mathbf{k}_t, \mathbf{v}_t)$ per prodotto esterno, e la si rilegge
-con una query $\mathbf{q}_t$, come nella {doc}`sezione dalla softmax alla
+coppia $(\mathbf{k}_t, \mathbf{v}_t)$ per prodotto esterno, e la si rilegge con
+una query $\mathbf{q}_t$, come nella {doc}`sezione dalla softmax alla
 ricorrenza </AttenzioneLineare/dalla-softmax-alla-ricorrenza>`. Prima di
-scrivere, lo stato viene moltiplicato per un fattore, la **transizione**: è lì
-che passa quasi tutta la differenza fra queste architetture. Da RetNet a
-Mamba-2 cambiano la forma di quel fattore e il fatto che
-dipenda o no dall'ingresso.
+scrivere, lo stato viene moltiplicato per un fattore, la **transizione**: [è lì
+che passa quasi tutta la differenza fra queste architetture]{.pt-matita}. Da
+RetNet a Mamba-2 cambiano la forma di quel fattore e il fatto che dipenda o no
+dall'ingresso.
 
 `````{tab} Elementare
 
@@ -234,9 +234,9 @@ famiglie si incontrano su quel gradino, e fuori da lì restano parenti.
 
 ## Il collo di bottiglia dello stato fisso
 
-Il limite è strutturale: uno stato di taglia fissa non può contenere una
-quantità di informazione che cresce con la lunghezza del contesto. Si vede
-nel ritrovare alla lettera, in un contesto lunghissimo, un dettaglio
+[Il limite è strutturale: uno stato di taglia fissa non può contenere una
+quantità di informazione che cresce con la lunghezza del contesto]{.pt-matita}.
+Si vede nel ritrovare alla lettera, in un contesto lunghissimo, un dettaglio
 letto centinaia di pagine prima; nel gergo del campo è il *recall associativo
 esatto*: data una chiave, restituire il valore che le era stato associato.
 
@@ -353,11 +353,11 @@ resta superiore. Sul suo terreno conviene affiancarla, invece di sostituirla.
 L'attenzione piena vince sul richiamo esatto, le ricorrenze lineari sul costo.
 Un modello è una pila di strati e ogni strato ha la sua memoria (la cache
 chiave-valore per l'attenzione, uno stato di taglia fissa per gli altri):
-niente impedisce di mescolare strati dei due tipi, pochi di attenzione dove
-serve ripescare un dettaglio preciso e molti lineari o SSM per il resto. Sono
-le architetture ibride, e ricorrono in gran parte dei lavori recenti. Il costo
-quadratico non sparisce, ma lo paga una minoranza di strati e,
-finché il contesto non diventa smisurato, pesa poco sul totale.
+[niente impedisce di mescolare strati dei due tipi, pochi di attenzione dove
+serve ripescare un dettaglio preciso e molti lineari o SSM per il
+resto]{.pt-matita}. Sono le architetture ibride, e ricorrono in gran parte dei
+lavori recenti. Il costo quadratico non sparisce, ma lo paga una minoranza di
+strati e, finché il contesto non diventa smisurato, pesa poco sul totale.
 
 `````{tab} Elementare
 
@@ -423,10 +423,10 @@ dosaggi diversi, in architetture per il resto lontanissime fra loro.
 
 ## Dove sta andando
 
-Gli SSM e le ricorrenze lineari non hanno sostituito l'attenzione. Costano
-meno in tempo e memoria sui contesti lunghi e in generazione; su copia e
-richiamo esatto restano indietro, e per questo le versioni più riuscite sono
-ibride.
+[Gli SSM e le ricorrenze lineari non hanno sostituito
+l'attenzione]{.pt-matita}. Costano meno in tempo e memoria sui contesti lunghi
+e in generazione; su copia e richiamo esatto restano indietro, e per questo le
+versioni più riuscite sono ibride.
 
 Un modello a stato fisso conviene anzitutto sui contesti molto lunghi, dove il
 costo quadratico dell'attenzione piena diventa proibitivo. In generazione, poi,

@@ -25,12 +25,12 @@ linguistico </Matematica/matematica-llm>` ha già visto tutto il meccanismo, con
 altri nomi e con le matrici scritte trasposte; qui lo si rivede con il
 vocabolario standard e con i pezzi che là restavano fuori.
 
-Per ogni posizione l'attenzione calcola una media pesata dei vettori di tutte le
-posizioni della frase. Il risultato è una versione della parola arricchita dal
-contesto: non più «salta» in astratto, ma «salta» in *questa* frase. A
-differenza di una media pesata ordinaria, i pesi non sono parametri fissati una
-volta per tutte dall'addestramento: il contenuto della frase li ricalcola ogni
-volta, parola per parola. Una media con pesi decisi dalla
+[Per ogni posizione l'attenzione calcola una media pesata dei vettori di tutte
+le posizioni della frase]{.pt-matita}. Il risultato è una versione della parola
+arricchita dal contesto: non più «salta» in astratto, ma «salta» in *questa*
+frase. A differenza di una media pesata ordinaria, i pesi non sono parametri
+fissati una volta per tutte dall'addestramento: il contenuto della frase li
+ricalcola ogni volta, parola per parola. Una media con pesi decisi dalla
 somiglianza c'era già, nella {ref}`regressione a nucleo
 <sec-regressione-a-nucleo>`; là però il modo di misurare la somiglianza era
 fissato in partenza, una campana sulla distanza, qui lo impara la rete.
@@ -148,9 +148,9 @@ il calcolo si fa per tutte insieme impilando i vettori per righe, in notazione
 matriciale. Le posizioni che pongono una domanda, le *query*, sono $L$, e
 impilate formano la matrice $\mathbf{Q}$; quelle che si offrono per essere
 trovate, le *chiavi*, sono $S$, e formano la matrice $\mathbf{K}$. I due numeri
-in generale sono diversi: la matrice dei punteggi, una riga per query e una
-colonna per chiave, ha forma $L \times S$, e il caso quadrato è soltanto il più
-frequente.
+in generale sono diversi: [la matrice dei punteggi, una riga per query e una
+colonna per chiave, ha forma $L \times S$]{.pt-matita}, e il caso quadrato è
+soltanto il più frequente.
 
 `````{tab} Elementare
 Un tabellone appeso al muro, una riga per ogni parola che fa una domanda e una
@@ -273,9 +273,9 @@ che nessuno dei due sia sbagliato.
 La separazione dei tre ruoli sembra un lusso, e invece è la parte essenziale.
 Se ogni parola avesse una sola versione di sé, cercare ed essere trovati
 sarebbero la stessa operazione, e una parola potrebbe attirare soltanto le
-parole che le somigliano. Con la ricerca e l'etichetta distinte può invece
-cercare qualcosa di molto diverso da ciò che offre: "salta" offre un'azione e
-cerca un soggetto, che è tutt'altra cosa.
+parole che le somigliano. [Con la ricerca e l'etichetta distinte può invece
+cercare qualcosa di molto diverso da ciò che offre]{.pt-matita}: "salta" offre
+un'azione e cerca un soggetto, che è tutt'altra cosa.
 `````
 
 `````{tab} Superiore
@@ -310,10 +310,10 @@ strutturale che si perde di vista: la matrice dei punteggi
 $\mathbf{X}\mathbf{W}^Q(\mathbf{X}\mathbf{W}^K)^\top =
 \mathbf{X}\,\mathbf{W}^Q\mathbf{W}^{K\top}\mathbf{X}^\top$ è governata da
 $\mathbf{W}^Q\mathbf{W}^{K\top}$, una matrice $d_{\text{model}} \times
-d_{\text{model}}$ che in generale non è simmetrica. Che $i$ presti attenzione a
-$j$ non implica quindi che $j$ presti attenzione a $i$, e da questa asimmetria
-viene la capacità di rappresentare relazioni orientate come «chi è il soggetto
-di», invece della sola somiglianza.
+d_{\text{model}}$ che in generale non è simmetrica. [Che $i$ presti attenzione
+a $j$ non implica quindi che $j$ presti attenzione a $i$]{.pt-matita}, e da
+questa asimmetria viene la capacità di rappresentare relazioni orientate come
+«chi è il soggetto di», invece della sola somiglianza.
 
 Inoltre la stessa matrice ha rango al più $d_k$, perché è il prodotto di due
 fattori con $d_k$ colonne: ogni testa confronta le posizioni in un sottospazio
@@ -358,10 +358,11 @@ esempio, con due vettori di tre elementi, il prodotto fra $(2, 0, 1)$ e $(3, 1,
 In generale, il punteggio è alto quando i due vettori hanno valori grandi e
 concordi nelle stesse posizioni, e basso, o negativo, quando non sono allineati.
 È l'operazione che la {doc}`sezione sull'algebra lineare
-</Matematica/algebra-lineare>` chiama *prodotto scalare*, e il meccanismo non
-esegue altro confronto fra una query e una chiave. Il prodotto fra matrici
-$\mathbf{Q}\mathbf{K}^\top$ li calcola tutti in un colpo solo: ogni riga
-corrisponde a una posizione di query, ogni colonna a una posizione di chiave.
+</Matematica/algebra-lineare>` chiama *prodotto scalare*, e [il meccanismo non
+esegue altro confronto fra una query e una chiave]{.pt-matita}. Il prodotto fra
+matrici $\mathbf{Q}\mathbf{K}^\top$ li calcola tutti in un colpo solo: ogni
+riga corrisponde a una posizione di query, ogni colonna a una posizione di
+chiave.
 
 Un punteggio grezzo non è una probabilità: può essere negativo, e la sua
 grandezza dipende dalla scala e dalla dimensione dei vettori, cioè da due cose
@@ -385,9 +386,9 @@ Un punteggio nasce come somma di tanti pezzetti, uno per ogni numero delle due
 liste. I pezzetti sono un po’ positivi e un po’ negativi e in buona parte si
 compensano fra loro, quindi la somma non cresce in proporzione a quanti sono:
 cresce come la loro radice quadrata. Ad esempio, liste quattro volte più lunghe
-danno punteggi grandi il doppio. Dividere per quella radice riporta i punteggi
-alla taglia che avevano con le liste corte, e la proporzione resta la stessa
-qualunque lunghezza si scelga.
+danno punteggi grandi il doppio. [Dividere per quella radice riporta i punteggi
+alla taglia che avevano con le liste corte]{.pt-matita}, e la proporzione resta
+la stessa qualunque lunghezza si scelga.
 
 La divisione serve a evitare che i punteggi diventino enormi, perché in quel
 caso il più alto si prende tutto il colore e agli altri resta zero.
@@ -436,7 +437,7 @@ $$
 \operatorname{Var}\!\left(\sum_{c=1}^{d_k} q_c k_c\right) = d_k .
 $$
 
-Dividere per $\sqrt{d_k}$ la riporta a 1. Servono dunque due
+[Dividere per $\sqrt{d_k}$ la riporta a 1]{.pt-matita}. Servono dunque due
 indipendenze diverse, una per ciascun passaggio, e una terza ipotesi che di
 solito non si dice: tutto questo vale all'inizializzazione, perché non appena
 comincia l'addestramento $\mathbf{W}^Q$ e $\mathbf{W}^K$ smettono di produrre
@@ -463,8 +464,8 @@ da riga a riga.
 
 Prima della softmax si può sommare alla matrice dei punteggi una **maschera**,
 cioè una matrice della stessa forma che vale $0$ dove il collegamento è lecito
-e $-\infty$ dove è vietato. La somma deve avvenire prima della softmax, e non
-dopo: le due scelte danno risultati diversi.
+e $-\infty$ dove è vietato. [La somma deve avvenire prima della softmax, e non
+dopo]{.pt-matita}: le due scelte danno risultati diversi.
 
 `````{tab} Elementare
 Il regolamento si scrive sul tabellone prima di cominciare a colorare, e su
@@ -587,8 +588,8 @@ si mescola l'informazione che ogni parola consegna: prendi il 52%
 della lista di "gatto", il 24% di quella di "muro", e somma. Il risultato
 è fatto della stessa stoffa delle informazioni consegnate, non dei punteggi:
 i punteggi hanno deciso le proporzioni e sono spariti. Da qui un limite
-importante: nessun dosaggio può tirare fuori qualcosa che nelle informazioni
-non c'era. È l'unico punto in cui l'informazione passa da una parola
+importante: [nessun dosaggio può tirare fuori qualcosa che nelle informazioni
+non c'era]{.pt-matita}. È l'unico punto in cui l'informazione passa da una parola
 all'altra; il resto serve a decidere in quale quantità.
 `````
 
@@ -617,11 +618,12 @@ $$
 $$
 
 Questo prodotto è facile da trascurare, e porta con sé una proprietà da
-enunciare per esteso: $\mathbf{o}_i$ vive nello spazio dei valori, mai in quello
-dei punteggi, ed essendo una combinazione convessa dei $\mathbf{v}_j$ sta nel
-loro inviluppo convesso. Una singola testa non può fabbricare direzioni che i
-valori non contengono già; può solo scegliere come mescolare i valori in
-funzione del contenuto, e cambiare la scelta a ogni posizione.
+enunciare per esteso: $\mathbf{o}_i$ vive nello spazio dei valori, mai in
+quello dei punteggi, ed essendo una combinazione convessa dei $\mathbf{v}_j$
+sta nel loro inviluppo convesso. [Una singola testa non può fabbricare
+direzioni che i valori non contengono già]{.pt-matita}; può solo scegliere come
+mescolare i valori in funzione del contenuto, e cambiare la scelta a ogni
+posizione.
 
 Nell'attenzione a più teste la proprietà vale per ciascuna: l'uscita di ogni
 testa è una media convessa dei propri valori, con pesi propri, e la proiezione
@@ -794,13 +796,13 @@ letta.
 | self-attention causale | la sequenza stessa | la sequenza stessa | sé stessa e quelle prima |
 
 Due parole che il gergo confonde volentieri, e che la tabella tiene separate.
-«Self-attention» dice da dove vengono query, chiavi e valori; «causale» dice
-quali collegamenti sono permessi, cioè è una proprietà della maschera: ogni
-posizione vede soltanto sé stessa e quelle che la precedono, come chi scrive
-una parola alla volta. Una self-attention può essere bidirezionale
-(nell'encoder) oppure causale (nel decoder), e resta self-attention in tutti e
-due i casi. Chiamare causale ogni self-attention porta a cercare una maschera
-dove non c'è, e a non vederla dove c'è.
+«Self-attention» dice da dove vengono query, chiavi e valori; [«causale» dice
+quali collegamenti sono permessi, cioè è una proprietà della
+maschera]{.pt-matita}: ogni posizione vede soltanto sé stessa e quelle che la
+precedono, come chi scrive una parola alla volta. Una self-attention può essere
+bidirezionale (nell'encoder) oppure causale (nel decoder), e resta
+self-attention in tutti e due i casi. Chiamare causale ogni self-attention
+porta a cercare una maschera dove non c'è, e a non vederla dove c'è.
 
 ## Multi-Head Attention: più letture in parallelo
 
@@ -828,8 +830,8 @@ coda all'altra si ottiene di nuovo una lista lunga quanto quella di partenza,
 perché otto ottavi fanno uno. Resta un ultimo passaggio: una tabella che non
 cambia la lunghezza, ma mescola fra loro i contributi degli otto lettori, così
 che l'informazione di ciascuno arrivi in tutte le caselle e non solo nel
-proprio ottavo. Alla fine il costo supera di poco quello di un lettore solo a
-lista piena, per via di quell'ultima tabella.
+proprio ottavo. [Alla fine il costo supera di poco quello di un lettore solo a
+lista piena]{.pt-matita}, per via di quell'ultima tabella.
 
 Ogni lettore si chiama, per ragioni che nessuno ricorda più, una **testa** di
 attenzione. Perché otto e non nove? Perché funzionava: è una scelta provata sul
@@ -869,11 +871,12 @@ Nel Transformer originale $h = 8$ e, con $d_{\text{model}} = 512$, ogni testa
 lavora in dimensione $d_k = d_v = d_{\text{model}}/h = 64$, così che la
 concatenazione sia già larga quanto l'ingresso: tenendo $d_{\text{model}}$
 fisso, aumentare il numero di teste non moltiplica per $h$ il costo di
-un'attenzione a dimensione piena, perché ogni testa è più stretta. Il costo
+un'attenzione a dimensione piena, perché ogni testa è più stretta. [Il costo
 complessivo resta paragonabile a quello di una singola attenzione a dimensione
-piena, e anche i parametri non dipendono da $h$: le proiezioni delle $h$ teste
-ne hanno $3\,h\,d_{\text{model}}\,d_k = 3\,d_{\text{model}}^2$, e $\mathbf{W}^O$
-altri $d_{\text{model}}^2$, cioè $4\,d_{\text{model}}^2$ in tutto.
+piena]{.pt-matita}, e anche i parametri non dipendono da $h$: le proiezioni
+delle $h$ teste ne hanno $3\,h\,d_{\text{model}}\,d_k = 3\,d_{\text{model}}^2$,
+e $\mathbf{W}^O$ altri $d_{\text{model}}^2$, cioè $4\,d_{\text{model}}^2$ in
+tutto.
 
 Nelle prove dell'articolo (Tabella 3, righe A), a costo di calcolo costante, il
 BLEU di sviluppo passa da $24{,}9$ con $h = 1$ a $25{,}8$ con $h = 8$ e con $h =
@@ -900,9 +903,9 @@ Nella formula dell'attenzione non compare mai la posizione dei token. Ogni riga
 di $\mathbf{Q}$ viene confrontata con ogni riga di $\mathbf{K}$ senza che nulla
 dica quale venga prima: la self-attention senza maschera è **equivariante
 rispetto alle permutazioni**, cioè rimescolare le parole in ingresso rimescola
-allo stesso modo le uscite, senza cambiarne i valori. Per l'attenzione, «Il
+allo stesso modo le uscite, senza cambiarne i valori. [Per l'attenzione, «Il
 gatto morde il cane» e «Il cane morde il gatto» sono lo stesso insieme di
-parole.
+parole]{.pt-matita}.
 
 `````{tab} Elementare
 Si prendono le parole di «Il gatto morde il cane» e si rimescolano come carte,
@@ -976,8 +979,8 @@ il decoder consulta le rappresentazioni dell'encoder.
 
 Una pila di blocchi è una rete profonda, e lo è in senso letterale: tanti
 passaggi uno sopra l'altro, decine, e più di cento nei modelli più grandi.
-Impilarli, però, non basta: ogni blocco porta con sé due accorgimenti che
-servono soltanto a rendere la pila addestrabile.
+Impilarli, però, non basta: [ogni blocco porta con sé due accorgimenti che
+servono soltanto a rendere la pila addestrabile]{.pt-matita}.
 
 `````{tab} Elementare
 Una pila di blocchi è un palazzo, e ogni blocco è un piano, fatto come gli

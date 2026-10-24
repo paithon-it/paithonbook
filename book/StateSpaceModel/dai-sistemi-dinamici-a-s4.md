@@ -62,8 +62,8 @@ cresce, e a deciderlo è la sua regola interna, non chi lo alimenta.
 
 Un'eco in una valle funziona allo stesso modo: gridi (ingresso), il suono
 rimbomba e si spegne gradualmente (stato che decade), e senti una versione
-attenuata e ritardata del grido (uscita). In tutti questi casi lo stato
-è una fotografia compatta del passato: sapendo il livello dell'acqua
+attenuata e ritardata del grido (uscita). In tutti questi casi [lo stato
+è una fotografia compatta del passato]{.pt-matita}: sapendo il livello dell'acqua
 *adesso* e cosa farai col rubinetto *da adesso in poi*, sai prevedere il futuro
 senza riavvolgere tutta la storia.
 
@@ -91,9 +91,9 @@ tiene a parte (equivale a un residuo) e ci si concentra sulla parte con
 memoria, ponendo spesso $D=0$ nella derivazione.
 
 Questa è la *rappresentazione in spazio degli stati* della teoria del
-controllo: lo stato $\mathbf{h}(t)$ è, per costruzione, una statistica
-sufficiente del passato. La derivata $\mathbf{h}'(t)$ dice come lo stato cambia
-istante per istante, spinto in parte dalla dinamica propria
+controllo: [lo stato $\mathbf{h}(t)$ è, per costruzione, una statistica
+sufficiente del passato]{.pt-matita}. La derivata $\mathbf{h}'(t)$ dice come lo
+stato cambia istante per istante, spinto in parte dalla dinamica propria
 ($\mathbf{A}\,\mathbf{h}$, che con autovalori a parte reale negativa lo riporta
 verso lo zero) e in parte dal mondo esterno ($\mathbf{B}\,u$).
 
@@ -142,15 +142,16 @@ esattamente.
 
 Discretizzare è come campionare un segnale continuo: invece di seguire l'acqua
 della vasca in ogni istante, ne misuri il livello a intervalli regolari e ti
-chiedi come passare da una misura alla successiva. Ogni misura è un passo
-della sequenza (per un testo, una parola), e fra un passo e il successivo
-passano $\Delta$ secondi. Le parole di un testo, però, non hanno secondi: per
-loro $\Delta$ è un numero che il modello sceglie, e dice quanta storia della
-vasca far passare fra una parola e la successiva. Con $\Delta$ piccolo, fra un
-passo e l'altro lo scarico porta via poco e la memoria si allunga; con $\Delta$
+chiedi come passare da una misura alla successiva. Ogni misura è un passo della
+sequenza (per un testo, una parola), e fra un passo e il successivo passano
+$\Delta$ secondi. Le parole di un testo, però, non hanno secondi: per loro
+$\Delta$ è un numero che il modello sceglie, e dice quanta storia della vasca
+far passare fra una parola e la successiva. Con $\Delta$ piccolo, fra un passo
+e l'altro lo scarico porta via poco e la memoria si allunga; con $\Delta$
 grande, fra un passo e l'altro succede molto e di quel che c'era prima resta
-poco. È l'intervallo a decidere quanto in fretta il sistema dimentica, e
-{doc}`Mamba </StateSpaceModel/mamba>` lo sceglierà di nuovo a ogni parola.
+poco. [È l'intervallo a decidere quanto in fretta il sistema
+dimentica]{.pt-matita}, e {doc}`Mamba </StateSpaceModel/mamba>` lo sceglierà di
+nuovo a ogni parola.
 
 Le due regole sono due modi diversi di indovinare cosa succede *tra* un passo e
 l'altro, e tutte e due tengono fermo il rubinetto per l'intero tratto,
@@ -224,8 +225,8 @@ usano lo ZOH, e S4D le ammette tutte e due {cite}`gu2022s4d`. In entrambi i
 casi la $\mathbf{C}$ resta invariata ($\bar{\mathbf{C}}=\mathbf{C}$), e i
 parametri effettivi del modello sono la quaterna $(\Delta, \mathbf{A},
 \mathbf{B}, \mathbf{C})$: le matrici continue più il passo, da cui si generano
-le matrici discrete. Il passo $\Delta$ decide molto: fissa la *scala temporale*
-del sistema, cioè quanto in fretta lo stato dimentica.
+le matrici discrete. [Il passo $\Delta$ decide molto: fissa la *scala temporale*
+del sistema, cioè quanto in fretta lo stato dimentica]{.pt-matita}.
 
 Quanto conti la scelta della regola, invece, lo dicono le ablazioni. Poco nel
 caso LTI: in S4D lo ZOH e la bilineare non fanno differenza, mentre
@@ -273,9 +274,9 @@ ancora sull'uscita di adesso: nella vasca dei due litri al minuto erano 1, 0,5,
 tre). Inoltre, una convoluzione si calcola in un colpo solo, in
 parallelo su tutta la sequenza, come richiedono le GPU in addestramento.
 
-In pratica si addestra in forma convoluzionale (veloce, parallela) e si fa
-inferenza in forma ricorrente (economica, una parola alla volta). La funzione è
-la stessa, in due forme scelte secondo l'occasione.
+[In pratica si addestra in forma convoluzionale (veloce, parallela) e si fa
+inferenza in forma ricorrente (economica, una parola alla volta)]{.pt-matita}.
+La funzione è la stessa, in due forme scelte secondo l'occasione.
 
 Tutto questo vale a una condizione, che il filtro sia uno solo, lo stesso dalla
 prima parola all'ultima. Se le tre regole cambiassero da una parola alla
@@ -321,11 +322,11 @@ $j$ passi fa pesa ancora sull'uscita di adesso: è la memoria del sistema, e
 decade con le potenze $\bar{\mathbf{A}}^{\,j}$.
 
 L'equivalenza $ \text{ricorrenza} \equiv \text{convoluzione} $ vale solo perché
-$\bar{\mathbf{A}}, \bar{\mathbf{B}}, \mathbf{C}$ sono costanti nel tempo. È la
+$\bar{\mathbf{A}}, \bar{\mathbf{B}}, \mathbf{C}$ sono costanti nel tempo. [È la
 tempo-invarianza a garantire che il kernel $\bar{\mathbf{K}}$ sia unico e
-fisso. Quando, con Mamba, faremo dipendere questi parametri dall'ingresso, il
-sistema cesserà di essere LTI, il kernel di convoluzione fisso svanirà, e
-resterà solo lo scan ricorrente.
+fisso]{.pt-matita}. Quando, con Mamba, faremo dipendere questi parametri
+dall'ingresso, il sistema cesserà di essere LTI, il kernel di convoluzione
+fisso svanirà, e resterà solo lo scan ricorrente.
 
 `````
 
@@ -404,8 +405,8 @@ scrive con una formula, tutto in una volta. Il secondo è un ritocco piccolo,
 fatto di pochi ingredienti, che lega le righe fra loro, e un ritocco così si
 sistema alla fine con un solo conto in più. L'elenco intero esce in blocco.
 
-In sintesi, la memoria gliela dà la pagina di partenza e la velocità la
-scomposizione: senza tutt'e due sarebbe rimasto un esercizio.
+In sintesi, [la memoria gliela dà la pagina di partenza e la velocità la
+scomposizione]{.pt-matita}: senza tutt'e due sarebbe rimasto un esercizio.
 
 Con tutt'e due è il primo modello che risolve **Path-X**, la prova più dura del
 *Long Range Arena*, la gara sulle dipendenze a lunghissimo raggio. Si guarda
@@ -472,8 +473,8 @@ ostacolo era computazionale. Costruire il kernel $\bar{\mathbf{K}}$ richiede le
 potenze $\bar{\mathbf{A}}^{\,j}$ fino a $j = L-1$: farlo direttamente costa
 $O(N^2 L)$ operazioni, proibitivo per stati e sequenze grandi. S4 non impone ad
 $\mathbf{A}$ una struttura: se lo facesse perderebbe la matrice che dà la
-memoria lunga, e l'argomento crollerebbe. Dimostra invece (Teorema 1 del paper)
-che le matrici HiPPO una struttura sfruttabile ce l'hanno già, e che è
+memoria lunga, e l'argomento crollerebbe. [Dimostra invece (Teorema 1 del paper)
+che le matrici HiPPO una struttura sfruttabile ce l'hanno già]{.pt-matita}, e che è
 **normale più basso rango** (NPLR):
 
 $$
@@ -632,12 +633,12 @@ compare come termine di confronto, non come ingrediente {cite}`gu2023mamba`.
 Restava un limite comune a tutti. Il nucleo che accumula il passato (la
 ricorrenza di S4 e S5, la convoluzione lunga di Hyena) è LTI: aggiorna lo stato
 con la stessa regola per ogni token, incapace di *scegliere* che cosa ricordare
-in base al contenuto. In altri termini, chi legge una parola importante e chi
-legge una virgola aggiornano lo stato con la stessa regola fissa. I cancelli di
-H3 e di Hyena dipendono dai dati, ma agiscono posizione per posizione e non
-lungo la sequenza: non decidono che cosa entra nello stato e che cosa ne esce.
-Rompere il vincolo (rendere il nucleo tempo-variante, capace di selezionare) è
-il passo che porta a {doc}`Mamba </StateSpaceModel/mamba>`.
+in base al contenuto. In altri termini, [chi legge una parola importante e chi
+legge una virgola aggiornano lo stato con la stessa regola fissa]{.pt-matita}.
+I cancelli di H3 e di Hyena dipendono dai dati, ma agiscono posizione per
+posizione e non lungo la sequenza: non decidono che cosa entra nello stato e
+che cosa ne esce. Rompere il vincolo (rendere il nucleo tempo-variante, capace
+di selezionare) è il passo che porta a {doc}`Mamba </StateSpaceModel/mamba>`.
 
 `````{tab} Elementare
 

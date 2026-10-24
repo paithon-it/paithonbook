@@ -2,17 +2,18 @@
 
 Rajasekaran parte da una tendenza che scrive in chiaro: chiesto di giudicare il
 lavoro che ha prodotto, un agente tende a lodarlo con sicurezza, anche quando a
-una persona la qualità sembra chiaramente mediocre {cite}`rajasekaran2026harness`.
-La sua risposta è stata separare i ruoli, un agente che costruisce e uno che
-valuta. Il valutatore separato, però, non è imparziale per natura: è un modello
-anche lui, incline alla generosità verso il testo di un modello. Appena messo al
-lavoro trovava problemi veri, poi si convinceva da solo che non fossero gravi,
-e approvava. Tendeva inoltre a provare l'applicazione in superficie,
-senza spingersi nei casi limite (un carrello vuoto, un prezzo a zero, un nome
-lunghissimo), e i difetti più sottili spesso passavano. Ma rendere scettico un
-valutatore separato si è rivelato molto più trattabile che rendere critico chi
-costruisce verso il proprio lavoro; e una volta che il giudizio esterno c'è,
-chi costruisce ha qualcosa di concreto su cui correggersi.
+una persona la qualità sembra chiaramente mediocre
+{cite}`rajasekaran2026harness`. La sua risposta è stata separare i ruoli, un
+agente che costruisce e uno che valuta. Il valutatore separato, però, non è
+imparziale per natura: è un modello anche lui, incline alla generosità verso il
+testo di un modello. Appena messo al lavoro trovava problemi veri, poi si
+convinceva da solo che non fossero gravi, e approvava. Tendeva inoltre a
+provare l'applicazione in superficie, senza spingersi nei casi limite (un
+carrello vuoto, un prezzo a zero, un nome lunghissimo), e i difetti più sottili
+spesso passavano. Ma [rendere scettico un valutatore separato si è rivelato
+molto più trattabile che rendere critico chi costruisce verso il proprio
+lavoro]{.pt-matita}; e una volta che il giudizio esterno c'è, chi costruisce ha
+qualcosa di concreto su cui correggersi.
 
 Lo stesso guasto ha già dato una regola al {doc}`loop engineering
 </IngegneriaLLM/loop-engineering>`: chi propone non può essere anche chi
@@ -45,8 +46,8 @@ vedevano; Young scrive che questi strumenti hanno migliorato nettamente i
 risultati. Lo stesso articolo nomina il limite: il browser automatico non
 vedeva i riquadri d'avviso del browser stesso, cioè le finestrelle del tipo
 «Sei sicuro? OK, Annulla», e le funzionalità che ne dipendevano erano, di
-conseguenza, più difettose delle altre. In altri termini, il collaudo vede
-soltanto quello che i suoi strumenti gli fanno vedere.
+conseguenza, più difettose delle altre. In altri termini, [il collaudo vede
+soltanto quello che i suoi strumenti gli fanno vedere]{.pt-matita}.
 
 Un test d'unità isola il pezzo che prova, e quando il pezzo ha bisogno di un
 altro pezzo lo sostituisce con una **controfigura**, scritta per comportarsi
@@ -244,7 +245,7 @@ utente a ogni sessione.
 
 Un cancello che dice soltanto «no» costringe chi è stato respinto a indovinare
 perché. Il loop engineering ne ha già fatto una regola, il motivo del rifiuto
-passato al giro successivo.
+passato all'iterazione successiva.
 
 Nel repository di Lopopolo la stessa idea è scesa
 fino ai controlli automatici del codice. La squadra usa dei linter propri,
@@ -265,12 +266,12 @@ può usare soltanto quelli che lo precedono, mai quelli dopo; un controllo
 automatico rifiuta tutto il resto, così che una modifica all'interfaccia non
 possa rompere il modo in cui i dati sono definiti.
 
-Il secondo principio è che
-il gusto delle persone entra nel sistema una volta e poi vale sempre: i
-commenti delle revisioni, le richieste di modifica per riordinare il codice, i
-difetti visti dagli utenti diventano documentazione o controlli automatici, e
-quando la documentazione non basta la regola viene promossa a codice, un
-controllo che fallisce invece di una frase che si può dimenticare.
+Il secondo principio è che [il gusto delle persone entra nel sistema una volta
+e poi vale sempre]{.pt-matita}: i commenti delle revisioni, le richieste di
+modifica per riordinare il codice, i difetti visti dagli utenti diventano
+documentazione o controlli automatici, e quando la documentazione non basta la
+regola viene promossa a codice, un controllo che fallisce invece di una frase
+che si può dimenticare.
 
 `````{tab} Elementare
 
@@ -338,10 +339,10 @@ deve soddisfare per entrare.
 
 ## La partizione: chi può toccare il metro
 
-Un cancello misura il lavoro con un metro, e il metro deve stare fuori dalla
-portata di chi viene misurato. Le istruzioni di Young lo dicono per le voci
-dell'elenco, che lui chiama test: toglierle o modificarle è inaccettabile,
-perché potrebbe portare a funzionalità mancanti o difettose
+[Un cancello misura il lavoro con un metro, e il metro deve stare fuori dalla
+portata di chi viene misurato]{.pt-matita}. Le istruzioni di Young lo dicono
+per le voci dell'elenco, che lui chiama test: toglierle o modificarle è
+inaccettabile, perché potrebbe portare a funzionalità mancanti o difettose
 {cite}`young2025harnesses`. Il loop engineering lo aveva visto dall'altro lato:
 se il ciclo permette al modello di modificare i test del codice, il cancello
 misura solo la coerenza del modello con sé stesso.
@@ -465,7 +466,7 @@ una **taratura**. Il metodo era semplice e faticoso: leggere i resoconti del
 valutatore, trovare i punti in cui il suo giudizio si allontanava da quello
 dell'autore, e riscrivere le istruzioni per correggere quel genere di errore.
 
-Dopo qualche giro il valutatore giudicava in un modo che l'autore trovava
+Dopo qualche iterazione il valutatore giudicava in un modo che l'autore trovava
 ragionevole, e qualche difetto restava comunque scoperto
 {cite}`rajasekaran2026harness`. Per le valutazioni di gusto (il disegno di
 un'interfaccia, cioè delle schermate che l'utente vede) l'autore ha aggiunto
@@ -483,8 +484,8 @@ valuta rivedeva la proposta, e i due ripetevano finché non erano d'accordo,
 scambiandosi dei file. Per una tappa sola i criteri del contratto erano
 ventisette, tutti sull'editor dei livelli di un videogioco. Rajasekaran lo
 motiva con lo spazio fra una richiesta scritta in termini generali e una
-consegna che si possa controllare: il contratto decide prima, e per iscritto,
-che cosa vorrà dire «fatto».
+consegna che si possa controllare: [il contratto decide prima, e per iscritto,
+che cosa vorrà dire «fatto»]{.pt-matita}.
 
 `````{tab} Elementare
 

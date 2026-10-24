@@ -119,8 +119,8 @@ La $f$, però, non si sceglie fra tutte le regole immaginabili. Si sceglie dentr
 un catalogo deciso prima di guardare gli esempi (per il prezzo delle case, le
 sole regole «tanto al metro quadro, più un tanto fisso», che su un foglio a
 quadretti disegnano delle rette), e quel catalogo si chiama **spazio delle
-ipotesi**. Lo spazio delle ipotesi decide che cosa il modello potrà mai
-imparare, e lo si può sbagliare in due modi opposti.
+ipotesi**. [Lo spazio delle ipotesi decide che cosa il modello potrà mai
+imparare]{.pt-matita}, e lo si può sbagliare in due modi opposti.
 
 Se è troppo povero, la regola buona non c'è, e nessuna quantità di esempi la fa
 comparire: fra le rette, ad esempio, non si trova una curva. Se è troppo ricco,
@@ -174,12 +174,12 @@ funzioni affini per la regressione lineare, gli alberi di profondità limitata,
 le reti di una data architettura. Il principio si chiama **minimizzazione del
 rischio empirico**.
 
-La scelta di $\mathcal{H}$ è un'ipotesi sul problema presa prima di vedere un
-solo esempio, e rappresenta la forma più netta del **bias induttivo** del
-modello (*restriction bias*); l'altra forma è la preferenza fra funzioni della
-stessa famiglia, per esempio quella espressa da una penalità (*preference
-bias*) {cite}`mitchell1997machine`. Si noti che nulla di questo ha a che fare
-con il termine noto $b$ delle rette, che si chiama anch'esso *bias*.
+[La scelta di $\mathcal{H}$ è un'ipotesi sul problema presa prima di vedere un
+solo esempio]{.pt-matita}, e rappresenta la forma più netta del **bias
+induttivo** del modello (*restriction bias*); l'altra forma è la preferenza fra
+funzioni della stessa famiglia, per esempio quella espressa da una penalità
+(*preference bias*) {cite}`mitchell1997machine`. Si noti che nulla di questo ha
+a che fare con il termine noto $b$ delle rette, che si chiama anch'esso *bias*.
 
 L'effetto della scelta di $\mathcal{H}$ si divide in due errori
 {cite}`mohri2018foundations`. Indichiamo con $R(f) =
@@ -229,8 +229,8 @@ Ciò che distingue i due problemi è il *tipo* di risposta. "Quanto costa questa
 casa?" chiede un numero su una scala continua: è **regressione**. "Questa email
 è spam, sì o no?" chiede un'etichetta da un insieme finito: è
 **classificazione**, e le etichette possibili si chiamano **classi** (spam e non
-spam sono due classi). L'impianto è lo stesso, imparare $f$ da coppie
-$(\mathbf{x}, y)$, ma le geometrie sono diverse, come mostra
+spam sono due classi). [L'impianto è lo stesso, imparare $f$ da coppie
+$(\mathbf{x}, y)$, ma le geometrie sono diverse]{.pt-matita}, come mostra
 {numref}`fig-regr-classif`: a sinistra cerchiamo una linea che *segua* i punti,
 a destra una linea che li *separi*.
 
@@ -332,11 +332,11 @@ $\eta$), e la {doc}`sezione su discesa del gradiente e learning rate
 </RetiNeurali/backpropagation>` spiega come sceglierlo.
 
 Nella nebbia, di solito, ci si ferma nella prima conca, senza sapere che dietro
-il crinale ce n'era una più profonda. Qui no, perché con la media degli scarti
-al quadrato la collina è una scodella con un fondo solo, e da qualunque retta si
-parta si arriva lì, purché i passi non siano troppo lunghi. Vale per la retta
-e non per ogni modello: le reti neurali camminano su terreni molto più
-accidentati.
+il crinale ce n'era una più profonda. Qui no, perché [con la media degli scarti
+al quadrato la collina è una scodella con un fondo solo]{.pt-matita}, e da
+qualunque retta si parta si arriva lì, purché i passi non siano troppo lunghi.
+Vale per la retta e non per ogni modello: le reti neurali camminano su terreni
+molto più accidentati.
 
 Per una retta, poi, si può anche non camminare: un calcolo diretto dà i pesi
 migliori in un colpo solo, e lo si usa finché i dati stanno comodi; con
@@ -378,13 +378,13 @@ $$
 \big(\mathbf{w}^\top \mathbf{x}^{(i)} + b - y^{(i)}\big)^2 .
 $$
 
-$\mathcal{L}$ è convessa in $(\mathbf{w},b)$, quindi non ha minimi locali in
-cui restare intrappolati. Se le colonne della matrice dei dati, insieme alla
-colonna costante del bias, sono linearmente indipendenti, il minimo è anche
-unico e si raggiunge in forma chiusa con le equazioni normali. Con feature
-collineari (una feature costante basta, perché replica la colonna del
-bias), o con meno esempi che feature, i punti di minimo diventano infiniti (un
-intero sottospazio, tutti con lo stesso valore della loss) e le equazioni
+[$\mathcal{L}$ è convessa in $(\mathbf{w},b)$]{.pt-matita}, quindi non ha
+minimi locali in cui restare intrappolati. Se le colonne della matrice dei
+dati, insieme alla colonna costante del bias, sono linearmente indipendenti, il
+minimo è anche unico e si raggiunge in forma chiusa con le equazioni normali.
+Con feature collineari (una feature costante basta, perché replica la colonna
+del bias), o con meno esempi che feature, i punti di minimo diventano infiniti
+(un intero sottospazio, tutti con lo stesso valore della loss) e le equazioni
 normali degenerano.
 
 Indichiamo con $\tilde{\mathbf{X}} \in \mathbb{R}^{m\times(n+1)}$ la matrice
@@ -454,11 +454,11 @@ un numero fisso, $e \approx 2{,}718$ (lo racconta la {doc}`sezione su analisi e
 ottimizzazione </Matematica/analisi-ottimizzazione>`). Al punteggio $2$, per
 esempio, dà $0{,}88$, allo zero la metà, $0{,}5$, a $-2$ dà $0{,}12$.
 
-Quel numero si legge come una probabilità, cioè come la sicurezza del filtro
-che l'email sia spam: $0{,}9$ vuol dire «ci scommetterei», $0{,}52$ «non ne ho
-idea, ma se proprio devo dico sì». Per ottenere una risposta secca, però, serve
-un taglio fissato da chi usa il filtro, per abitudine $0{,}5$, con «sì» sopra e
-«no» sotto.
+[Quel numero si legge come una probabilità]{.pt-matita}, cioè come la sicurezza
+del filtro che l'email sia spam: $0{,}9$ vuol dire «ci scommetterei», $0{,}52$
+«non ne ho idea, ma se proprio devo dico sì». Per ottenere una risposta secca,
+però, serve un taglio fissato da chi usa il filtro, per abitudine $0{,}5$, con
+«sì» sopra e «no» sotto.
 
 I pesi si trovano scendendo di nuovo una collina, ma l'altezza adesso si misura
 come in una scommessa: il filtro punta la sua sicurezza, e se sbaglia paga una
@@ -539,9 +539,9 @@ $$
 \sigma(z) = \frac{1}{1 + e^{-z}} \in (0, 1),
 $$
 
-e interpretiamo $\hat{y} = \sigma(z)$ come $P(y=1 \mid \mathbf{x})$. La
-previsione di classe si ottiene con una soglia a $0{,}5$, che equivale a
-$z = 0$: l'insieme
+e [interpretiamo $\hat{y} = \sigma(z)$ come $P(y=1 \mid
+\mathbf{x})$]{.pt-matita}. La previsione di classe si ottiene con una soglia a
+$0{,}5$, che equivale a $z = 0$: l'insieme
 
 $$
 \{\mathbf{x} : \mathbf{w}^\top \mathbf{x} + b = 0\}
@@ -803,10 +803,11 @@ cinquanta e l'oscillazione per poco più di sette, che è la radice di cinquanta
 È la regola dei conteggi che capitano ciascuno per conto proprio, e porta il
 nome di Poisson: prenderla al posto della curva a campana completa la ricetta.
 
-In sintesi, prezzo, sì o no e clienti sono la stessa macchina con tre
-impostazioni, che cambiano solo come si legge il punteggio e con che regola si
-misura lo scarto. Anche il modo di imparare è uno solo: si guarda la differenza
-fra i clienti venuti e quelli attesi, e si spingono i pesi in quella direzione.
+In sintesi, [prezzo, sì o no e clienti sono la stessa macchina con tre
+impostazioni]{.pt-matita}, che cambiano solo come si legge il punteggio e con
+che regola si misura lo scarto. Anche il modo di imparare è uno solo: si guarda
+la differenza fra i clienti venuti e quelli attesi, e si spingono i pesi in
+quella direzione.
 
 I modi di sbagliare sono due. Leggere il punteggio come un logaritmo è una
 scelta di chi costruisce il modello, e dice che gli effetti si moltiplicano: se
@@ -883,12 +884,13 @@ $$
 
 perché $A'(\eta_i) = \mu_i$.
 
-Osserviamo che il gradiente ha la stessa forma per tutti e tre i modelli:
-residuo per feature, sommato sugli esempi. All'ottimo si annulla, cioè
-i residui risultano ortogonali a ogni colonna; e derivando rispetto a $b$ si
-ottiene $\sum_i (y_i - \mu_i) = 0$, cioè la loro somma nulla (senza intercetta
-quella condizione non c'è). È la stessa condizione del primo ordine dei minimi
-quadrati vista nella {doc}`sezione su ortogonalità e proiezioni
+Osserviamo che [il gradiente ha la stessa forma per tutti e tre i
+modelli]{.pt-matita}: residuo per feature, sommato sugli esempi. All'ottimo si
+annulla, cioè i residui risultano ortogonali a ogni colonna; e derivando
+rispetto a $b$ si ottiene $\sum_i (y_i - \mu_i) = 0$, cioè la loro somma nulla
+(senza intercetta quella condizione non c'è). È la stessa condizione del primo
+ordine dei minimi quadrati vista nella {doc}`sezione su ortogonalità e
+proiezioni
 </Matematica/ortogonalita-proiezioni>`, ma non la stessa geometria, perché
 $\mu_i = A'(\eta_i)$ non appartiene allo span delle colonne e non c'è nessun
 teorema di Pitagora da invocare.
@@ -1084,8 +1086,8 @@ Rimettendo le due colonne sulla stessa taglia, cioè contando ogni scarto in
 rapporto all'intervallo che la sua colonna copre, la prima dista
 $8/160 + 2/4 = 0{,}55$ e la seconda $15/160 \approx 0{,}09$; l'ordine si
 rovescia e la vicina diventa la seconda, quella con lo stesso numero di stanze.
-In definitiva, chi fa votare i vicini senza questa precauzione lascia decidere
-tutto alla colonna con i numeri più grandi.
+In definitiva, chi fa votare i vicini senza questa precauzione [lascia decidere
+tutto alla colonna con i numeri più grandi]{.pt-matita}.
 
 `````
 
@@ -1110,8 +1112,8 @@ $k/m\to 0$ {cite}`stone1977consistent`, cioè converge all'ottimo
 senza assumere una famiglia di funzioni, a prezzo di una velocità che peggiora
 con la dimensione dei dati. Il valore di $k$ regola il compromesso: $k$ piccolo
 segue il rumore, $k$ grande liscia troppo. La distanza euclidea, inoltre,
-impone di normalizzare le feature, altrimenti quella con la scala più ampia la
-domina.
+[impone di normalizzare le feature, altrimenti quella con la scala più ampia la
+domina]{.pt-matita}.
 
 Due raffinamenti sono già in scikit-learn. Il voto pesato
 (`weights="distance"`) fa contare di più i vicini più prossimi invece di dare

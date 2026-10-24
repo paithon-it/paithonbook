@@ -45,9 +45,9 @@ raccolta.
 `````{tab} Elementare
 Una piccola lente scorre sull'immagine di una cifra, un pezzetto alla volta,
 cercando tratti semplici: un bordo, una curva, un angolo. È lo stampino che
-scorreva sul foglio a quadretti, e la rete ne usa la stessa copia in ogni
+scorreva sul foglio a quadretti, e [la rete ne usa la stessa copia in ogni
 punto, quindi c'è da impararne una sola invece di una diversa per ogni
-posizione.
+posizione]{.pt-matita}.
 
 Dopo ogni passata la rete riassume. Divide il risultato in quadretti e di
 ciascuno tiene un numero solo. In questo modo resta scritto che il tratto
@@ -62,12 +62,12 @@ dei programmi scritti a regole con cui fu confrontata.
 
 `````{tab} Superiore
 LeNet-5 alterna strati convoluzionali (che condividono i pesi su tutta
-l'immagine) e strati di sottocampionamento (l'antenato del *pooling*),
-seguiti da strati *fully-connected* per la classificazione finale, con
-attivazioni $\tanh$. Ha $60\,000$ parametri (minuscola per gli standard
-odierni) ed è addestrata con la *backpropagation* sul dataset di cifre
-manoscritte MNIST. Introduce già i tre principi delle CNN: connettività
-locale, condivisione dei pesi (da cui l'equivarianza alla traslazione) e
+l'immagine) e strati di sottocampionamento (l'antenato del *pooling*), seguiti
+da strati *fully-connected* per la classificazione finale, con attivazioni
+$\tanh$. Ha $60\,000$ parametri (minuscola per gli standard odierni) ed è
+addestrata con la *backpropagation* sul dataset di cifre manoscritte MNIST.
+[Introduce già i tre principi delle CNN]{.pt-matita}: connettività locale,
+condivisione dei pesi (da cui l'equivarianza alla traslazione) e
 sottocampionamento, che aggiunge una tolleranza approssimata a spostamenti e
 piccole deformazioni.
 
@@ -110,9 +110,9 @@ allenamento preliminare su un archivio di immagini più di dodici volte maggiore
 (quindici milioni di immagini contro 1,2 milioni).
 
 La singola rete descritta nell'articolo si ferma al 18,2% sull'insieme di
-validazione. Il salto fu comunque tale da convincere il resto del campo che il
-deep learning funzionava. La stessa distinzione fra la rete e la squadra
-tornerà con ResNet.
+validazione. [Il salto fu comunque tale da convincere il resto del campo che il
+deep learning funzionava]{.pt-matita}. La stessa distinzione fra la rete e la
+squadra tornerà con ResNet.
 
 ```{figure} ../figures/alexnet-2012.svg
 :name: fig-alexnet
@@ -213,7 +213,7 @@ strati densi finali che decidono la categoria (dove le reti dell'epoca
 concentravano quasi tutti i loro collegamenti), NiN prepara una mappa per ogni
 categoria e ne fa la media, cioè guarda quanto quella mappa ha risposto forte
 nell'insieme dell'immagine. Vince la categoria con la media più alta, e in
-questo modo una media prende il posto di milioni di collegamenti.
+questo modo [una media prende il posto di milioni di collegamenti]{.pt-matita}.
 `````
 
 `````{tab} Superiore
@@ -229,9 +229,9 @@ in network*.
 All'altro capo della rete, il **global average pooling** elimina gli strati
 *fully-connected* finali. L'ultimo strato convoluzionale produce una mappa di
 attivazione per classe, ogni mappa viene ridotta alla propria media spaziale e
-il vettore risultante passa direttamente alla softmax. Il pooling globale non
+il vettore risultante passa direttamente alla softmax. [Il pooling globale non
 ha parametri, mentre negli strati densi che sostituisce AlexNet ne concentra il
-94%; con meno parametri la rete sovradatta meno.
+94%]{.pt-matita}; con meno parametri la rete sovradatta meno.
 
 Il calcolo si fa a mano. Le tre matrici dense sono $9216\times4096$,
 $4096\times4096$ e $4096\times1000$, cioè $58\,621\,952$ pesi, che con i
@@ -258,12 +258,13 @@ Invece di una lente grande che guarda molto in una volta sola, come quella da
 undici pixel per undici con cui cominciava AlexNet, VGG usa tante lenti
 piccole, una dopo l'altra.
 
-Due lenti piccole in successione "vedono" quanto una lente più grande, come
-mostra un conto a mente. La prima lente guarda tre pixel per volta. La seconda
-guarda tre risultati della prima, e ciascuno di quei tre riassumeva tre pixel:
-il primo i pixel da 1 a 3, il secondo da 2 a 4, il terzo da 3 a 5. Messi
-insieme, la seconda lente sta guardando i pixel da 1 a 5, cioè quanto una lente
-da cinque. Allo stesso modo, tre lenti in successione arrivano a sette.
+[Due lenti piccole in successione "vedono" quanto una lente più
+grande]{.pt-matita}, come mostra un conto a mente. La prima lente guarda tre
+pixel per volta. La seconda guarda tre risultati della prima, e ciascuno di
+quei tre riassumeva tre pixel: il primo i pixel da 1 a 3, il secondo da 2 a 4,
+il terzo da 3 a 5. Messi insieme, la seconda lente sta guardando i pixel da 1 a
+5, cioè quanto una lente da cinque. Allo stesso modo, tre lenti in successione
+arrivano a sette.
 
 Il guadagno è doppio. Fra una lente e l'altra la rete piega i numeri, quindi ci
 sono più passaggi in cui può succedere qualcosa di interessante; e i numeri da
@@ -280,8 +281,8 @@ pochi parametri, mentre gli strati densi finali ne usano moltissimi.
 `````
 
 `````{tab} Superiore
-Due convoluzioni $3\times 3$ in serie hanno lo stesso *campo recettivo* di una
-$5\times 5$, tre in serie di una $7\times 7$, ma con più non-linearità
+[Due convoluzioni $3\times 3$ in serie hanno lo stesso *campo recettivo* di una
+$5\times 5$]{.pt-matita}, tre in serie di una $7\times 7$, ma con più non-linearità
 intermedie e meno parametri. Su $C$ canali, ad esempio, un filtro $5\times 5$
 costa $25C^2$ pesi, due filtri $3\times 3$ solo $2\cdot 9C^2 = 18C^2$. VGG-16 e
 VGG-19 spingono la profondità a 16–19 strati e diventano il punto di
@@ -336,10 +337,10 @@ caselle del quadratino moltiplicate per le opinioni in entrata e ancora per
 quelle in uscita, e la lente grande ha molte più caselle.
 
 Davanti a ogni lente grande, allora, il modulo mette la lente di NiN, quella
-che guarda un solo punto: prima riassume le opinioni, poi la lente grande legge
-il riassunto. Nel primo modulo di GoogLeNet, ad esempio, la lente da cinque per
-cinque avrebbe $192$ opinioni da leggere e ne produce $32$, cioè venticinque
-caselle per $192$ per $32$, che fanno $153\,600$ numeri.
+che guarda un solo punto: [prima riassume le opinioni, poi la lente grande
+legge il riassunto]{.pt-matita}. Nel primo modulo di GoogLeNet, ad esempio, la
+lente da cinque per cinque avrebbe $192$ opinioni da leggere e ne produce $32$,
+cioè venticinque caselle per $192$ per $32$, che fanno $153\,600$ numeri.
 
 Il riassunto gliene passa $16$ invece di $192$. La lente grande ha allora
 venticinque per $16$ per $32$ numeri, cioè $12\,800$, e il riassunto stesso,
@@ -350,11 +351,11 @@ $3\,072$. In tutto, per quel ramo, sono $15\,872$, un decimo di prima.
 `````{tab} Superiore
 Ogni modulo esegue in parallelo convoluzioni $1\times 1$, $3\times 3$, $5\times
 5$ e un *pooling*, poi concatena le uscite lungo i canali, elaborando così
-l'immagine a più scale simultaneamente. In particolare, le convoluzioni
+l'immagine a più scale simultaneamente. In particolare, [le convoluzioni
 $1\times 1$ fungono da collo di bottiglia che riduce i canali prima delle
-convoluzioni costose. Il risultato è una rete di 22 strati con pesi e, come
-dichiara l'articolo, dodici volte meno parametri di AlexNet (cioè circa $5$
-milioni), con un'accuratezza persino superiore.
+convoluzioni costose]{.pt-matita}. Il risultato è una rete di 22 strati con
+pesi e, come dichiara l'articolo, dodici volte meno parametri di AlexNet (cioè
+circa $5$ milioni), con un'accuratezza persino superiore.
 
 Quella cifra è un rapporto, non un conteggio. L'articolo non scrive un totale,
 ma la sua Tabella 1 ha una colonna dei parametri strato per strato, che
@@ -418,10 +419,10 @@ Solo dopo la somma i numeri passano dalla ReLU.
 `````{tab} Elementare
 L'idea è semplice ({numref}`fig-skip-connection`). Invece di chiedere a un
 blocco di strati di ricostruire da capo tutto il segnale, gli si affianca una
-"scorciatoia" che porta l'input intatto fino all'uscita, dove viene
-ri-sommato. Così il blocco deve imparare solo la correzione da
-apportare, non l'intera risposta; se non serve correggere nulla, può lasciar
-passare l'input senza rovinarlo, e aggiungere strati non fa più danni.
+"scorciatoia" che porta l'input intatto fino all'uscita, dove viene ri-sommato.
+Così [il blocco deve imparare solo la correzione da apportare, non l'intera
+risposta]{.pt-matita}; se non serve correggere nulla, può lasciar passare
+l'input senza rovinarlo, e aggiungere strati non fa più danni.
 
 Perché prima li facesse, quei danni, non è del tutto chiaro nemmeno oggi. Si sa
 però che la soluzione buona esisteva anche nella rete profonda, e che la rete
@@ -459,10 +460,10 @@ $$
 
 dove $\mathbf{x}$ è l'input del blocco, $\{\mathbf{W}_i\}$ i suoi pesi e
 $\mathbf{y}$ l'uscita (a cui si applica poi la non-linearità). Il blocco
-apprende quindi il residuo
-$\mathcal{F}(\mathbf{x}) = \mathcal{H}(\mathbf{x}) - \mathbf{x}$ rispetto alla
-mappa desiderata $\mathcal{H}$. Osserviamo che azzerare $\mathcal{F}$ per
-ottenere l'identità è facile, mentre ricostruire l'identità da zero non lo è.
+apprende quindi il residuo $\mathcal{F}(\mathbf{x}) = \mathcal{H}(\mathbf{x}) -
+\mathbf{x}$ rispetto alla mappa desiderata $\mathcal{H}$. Osserviamo che
+[azzerare $\mathcal{F}$ per ottenere l'identità è facile, mentre ricostruire
+l'identità da zero non lo è]{.pt-matita}.
 
 Inoltre il termine additivo apre una via diretta al gradiente: lo jacobiano
 del blocco è $\mathbf{I} + \partial\mathcal{F}/\partial\mathbf{x}$, quindi
@@ -560,8 +561,9 @@ mappe prodotte prima, messe semplicemente una accanto all'altra
 messaggio ha sotto gli occhi l'intera conversazione: nessuna informazione va
 riassunta o ricostruita, basta consultarla.
 
-Poiché può contare su tutto il lavoro già fatto, ogni strato aggiunge poco di
-suo (poche mappe nuove per volta) e la rete resta sorprendentemente snella.
+Poiché può contare su tutto il lavoro già fatto, [ogni strato aggiunge poco di
+suo (poche mappe nuove per volta) e la rete resta sorprendentemente
+snella]{.pt-matita}.
 
 Due mappe, però, si possono affiancare solo se hanno la stessa misura, quindi
 la conversazione non prosegue all'infinito: ogni tanto la rete la chiude,
@@ -585,12 +587,12 @@ convoluzione $3\times 3$. Ogni strato produce solo $k$ mappe nuove (il
 **growth rate**, tipicamente $k=12$ o $k=32$), così lo strato $\ell$ riceve
 $k_0 + k(\ell-1)$ canali, dove $k_0$ sono quelli dell'input.
 
-Il riuso delle feature rende la rete efficiente nei parametri (a parità di
-accuratezza su ImageNet, all'incirca la metà di una ResNet comparabile), e la
-concatenazione apre a ogni strato un percorso diretto verso il gradiente della
-loss. Poiché concatenare richiede mappe della stessa dimensione spaziale, i
-blocchi densi sono separati da **strati di transizione** (convoluzione
-$1\times 1$ e pooling), che dimezzano la risoluzione.
+[Il riuso delle feature rende la rete efficiente nei parametri]{.pt-matita} (a
+parità di accuratezza su ImageNet, all'incirca la metà di una ResNet
+comparabile), e la concatenazione apre a ogni strato un percorso diretto verso
+il gradiente della loss. Poiché concatenare richiede mappe della stessa
+dimensione spaziale, i blocchi densi sono separati da **strati di transizione**
+(convoluzione $1\times 1$ e pooling), che dimezzano la risoluzione.
 
 Il costo è la memoria in addestramento. In un'implementazione ingenua, infatti,
 le attivazioni concatenate crescono col quadrato della profondità del blocco, e
@@ -636,8 +638,8 @@ il resto non sparisce.
 La ragione sta nel modo in cui i pesi si contano. Nella versione ordinaria ogni
 combinazione di «quale pixel del quadratino», «quale opinione di partenza» e
 «quale opinione di arrivo» ha il suo peso, e i tre elenchi si moltiplicano fra
-loro: $9 \times 64 \times 128$. Separando, due dei tre si sommano invece di
-moltiplicarsi: $9 \times 64$, più $64 \times 128$.
+loro: $9 \times 64 \times 128$. [Separando, due dei tre si sommano invece di
+moltiplicarsi]{.pt-matita}: $9 \times 64$, più $64 \times 128$.
 
 Qualcosa si perde, però. Le combinazioni che mescolavano in un colpo solo il
 posto nel quadratino e l'opinione di partenza adesso vanno ottenute in due
@@ -669,12 +671,12 @@ $$
 \;\xrightarrow[\;C_{\text{out}} \to \infty\;]{}\; k^2 ,
 $$
 
-cioè il risparmio tende a $k^2$, che per i filtri $3\times3$ fa $9$. La
-convergenza, però, è lenta: con $C_{\text{out}}=32$ il rapporto vale $7{,}0$,
-cioè il 78% del limite; a $128$ canali $8{,}4$; a $256$ ancora soltanto
-$8{,}7$. In altri termini, il «quasi nove volte» è la promessa asintotica, e
-con i 128 canali in uscita dell'esempio numerico si sta misurabilmente al di
-sotto.
+cioè [il risparmio tende a $k^2$, che per i filtri $3\times3$ fa
+$9$]{.pt-matita}. La convergenza, però, è lenta: con $C_{\text{out}}=32$ il
+rapporto vale $7{,}0$, cioè il 78% del limite; a $128$ canali $8{,}4$; a $256$
+ancora soltanto $8{,}7$. In altri termini, il «quasi nove volte» è la promessa
+asintotica, e con i 128 canali in uscita dell'esempio numerico si sta
+misurabilmente al di sotto.
 
 Il guadagno viene da una fattorizzazione del kernel. La separabile in
 profondità, infatti, è la convoluzione piena con il kernel vincolato alla forma
@@ -791,10 +793,10 @@ rete può crescere in tre modi: più strati (la profondità), più
 lenti per strato (la larghezza), immagini d'ingresso più grandi (la
 risoluzione).
 
-Invece di puntare tutto su uno solo, EfficientNet li fa crescere insieme, in
-proporzioni fisse trovate una volta per tutte: ogni volta che si accetta di
-spendere il doppio in conti, la profondità aumenta di circa il 20%, la
-larghezza del 10% e la risoluzione del 15%.
+Invece di puntare tutto su uno solo, [EfficientNet li fa crescere insieme, in
+proporzioni fisse trovate una volta per tutte]{.pt-matita}: ogni volta che si
+accetta di spendere il doppio in conti, la profondità aumenta di circa il 20%,
+la larghezza del 10% e la risoluzione del 15%.
 
 Sembrano aumenti minuscoli per un raddoppio, e invece bastano: i tre si
 moltiplicano fra loro, e due contano al quadrato. La risoluzione perché
@@ -819,12 +821,11 @@ composto* che fissa il budget di calcolo, e le costanti
 $\alpha=1{,}2$, $\beta=1{,}1$, $\gamma=1{,}15$ sono trovate con una piccola
 grid search sulla rete base.
 
-Il vincolo fa sì che ogni incremento unitario di $\phi$ raddoppi all'incirca i
-FLOPs (che crescono come $\alpha \cdot \beta^2 \cdot \gamma^2$ elevato a
-$\phi$). Dalla rete base EfficientNet-B0, il compound scaling
-genera la famiglia B1–B7, che a parità di accuratezza su ImageNet usa fino a
-quasi un ordine di grandezza di parametri in meno rispetto alle CNN
-precedenti.
+Il vincolo fa sì che [ogni incremento unitario di $\phi$ raddoppi all'incirca i
+FLOPs]{.pt-matita} (che crescono come $\alpha \cdot \beta^2 \cdot \gamma^2$
+elevato a $\phi$). Dalla rete base EfficientNet-B0, il compound scaling genera
+la famiglia B1–B7, che a parità di accuratezza su ImageNet usa fino a quasi un
+ordine di grandezza di parametri in meno rispetto alle CNN precedenti.
 `````
 
 La seconda direzione è automatizzare la ricerca stessa: nella **neural
@@ -843,9 +844,10 @@ riparleremo nella {doc}`sezione sui Vision Transformer e i modelli multimodali
 
 ## L'architettura decide dove passa l'informazione
 
-Nessuna di queste reti ha vinto soltanto con più esempi o più GPU. Ogni salto è
-nato da un'idea su come far circolare l'informazione dentro la rete: dove farla
-passare, dove farla saltare, dove riunirla con sé stessa.
+Nessuna di queste reti ha vinto soltanto con più esempi o più GPU. [Ogni salto
+è nato da un'idea su come far circolare l'informazione dentro la
+rete]{.pt-matita}: dove farla passare, dove farla saltare, dove riunirla con sé
+stessa.
 
 Parecchie di quelle idee, inoltre, rispondevano a un vincolo di costo, cioè non
 a «come faccio a metterci più roba» ma a «come faccio a spendere meno»: i

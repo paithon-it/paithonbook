@@ -56,9 +56,9 @@ griglia di venticinque caselle.
 Il disegno, però, non mostra il punto più importante, perché lì le celle piene
 sono la maggioranza. In un catalogo vero ognuno ha visto una frazione minuscola
 dei titoli, quindi due persone qualsiasi hanno pochissimi film in comune su cui
-misurare la somiglianza. Quel vuoto è la difficoltà vera del problema, e da lì
-nasce l'idea della fattorizzazione, che riassume ogni utente e ogni film in un
-vettore di pochi numeri.
+misurare la somiglianza. [Quel vuoto è la difficoltà vera del
+problema]{.pt-matita}, e da lì nasce l'idea della fattorizzazione, che riassume
+ogni utente e ogni film in un vettore di pochi numeri.
 
 `````{tab} Elementare
 
@@ -436,7 +436,7 @@ dove si finisce dipende anche da dove si è partiti.
 
 `````
 
-I fattori latenti non hanno un significato fissato in partenza.
+[I fattori latenti non hanno un significato fissato in partenza]{.pt-matita}.
 Infatti il prodotto
 $\mathbf{P}\mathbf{Q}^\top$ resta lo stesso se si sostituiscono $\mathbf{P}$
 con $\mathbf{P}\mathbf{A}$ e $\mathbf{Q}$ con $\mathbf{Q}\mathbf{A}^{-\top}$,
@@ -696,9 +696,9 @@ ottimista; per un numero da riportare ne servirebbe un terzo insieme.
 Le righe di AdamW dicono un'altra cosa. Con $10^{-4}$ AdamW dà praticamente gli
 stessi numeri del modello senza regolarizzazione, e per ottenere da AdamW lo
 stesso freno che Adam dà con $10^{-4}$ bisogna scrivergli $10^{-1}$, mille
-volte tanto. Dunque lo stesso numero in due ottimizzatori quasi uguali è una
-regolarizzazione diversa, e la ragione sta nel modo in cui la riga che gira si
-scosta dalla formula.
+volte tanto. Dunque [lo stesso numero in due ottimizzatori quasi uguali è una
+regolarizzazione diversa]{.pt-matita}, e la ragione sta nel modo in cui la riga
+che gira si scosta dalla formula.
 
 `````{tab} Elementare
 
@@ -768,9 +768,9 @@ sono questi.
 ## Dove il collaborativo si ferma
 
 Due limiti, la partenza a freddo e il bias di popolarità, dipendono dal fatto
-che il filtraggio collaborativo usa soltanto la matrice delle interazioni. Si
+che il filtraggio collaborativo usa soltanto la matrice delle interazioni. [Si
 attenuano con informazione esterna alla matrice o con l'esplorazione, non con
-un modello migliore sugli stessi dati.
+un modello migliore sugli stessi dati]{.pt-matita}.
 
 `````{tab} Elementare
 

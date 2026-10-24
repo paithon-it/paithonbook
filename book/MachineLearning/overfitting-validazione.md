@@ -44,8 +44,8 @@ Per accorgersene basta confrontare due numeri: quanto il modello sbaglia sugli
 esempi con cui ha studiato, e quanto sbaglia su esempi che non ha mai visto. Se
 il modello sbaglia parecchio in tutti e due i casi, e più o meno allo stesso
 modo, è underfitting. Se invece sbaglia quasi niente sugli esempi di studio e
-parecchio sugli altri, è overfitting, e la distanza fra i due numeri ne dà la
-misura, e quando si allarga il modello sta memorizzando.
+parecchio sugli altri, è overfitting, e [la distanza fra i due numeri ne dà la
+misura, e quando si allarga il modello sta memorizzando]{.pt-matita}.
 
 `````
 
@@ -84,9 +84,9 @@ cui ci troviamo:
   Il modello ha capacità in eccesso e adatta $f_\theta$ anche alle
   fluttuazioni casuali del campione (*varianza* alta).
 
-Il divario tra i due errori, $\text{err}_{\text{test}} -
-\text{err}_{\text{train}}$, è la spia dell'overfitting, e quando si allarga il
-modello sta memorizzando.
+[Il divario tra i due errori, $\text{err}_{\text{test}} -
+\text{err}_{\text{train}}$, è la spia dell'overfitting]{.pt-matita}, e quando
+si allarga il modello sta memorizzando.
 
 `````
 
@@ -205,10 +205,10 @@ come aritmetica.
 
 `````
 
-In sintesi, al crescere della complessità del modello il bias cala e la
-varianza cresce. L'errore sui dati di addestramento scende in genere sempre,
-mentre l'errore sui dati nuovi, somma di bias al quadrato, varianza e rumore,
-ha di solito un minimo a una complessità intermedia.
+In sintesi, [al crescere della complessità del modello il bias cala e la
+varianza cresce]{.pt-matita}. L'errore sui dati di addestramento scende in
+genere sempre, mentre l'errore sui dati nuovi, somma di bias al quadrato,
+varianza e rumore, ha di solito un minimo a una complessità intermedia.
 
 La curva dell'errore sui dati nuovi scende partendo da sinistra (una retta),
 dove il modello è troppo rigido per seguire i dati, e risale verso destra (una
@@ -329,8 +329,8 @@ da $3{,}471$ a $0{,}09$ ne ha percorso il $96\%$. La diagnosi è opposta, e lo �
 anche la cura: qui i dati in più servono.
 
 Questa diagnostica si fa prima di spendere. Raccogliere o etichettare dati
-è la spesa più grande di quasi ogni progetto, e le due curve dicono in
-un pomeriggio se la spesa avrà effetto.
+è la spesa più grande di quasi ogni progetto, e [le due curve dicono in
+un pomeriggio se la spesa avrà effetto]{.pt-matita}.
 
 ```{admonition} Due curve diverse con lo stesso nome
 :class: note
@@ -371,9 +371,9 @@ dell'esame, il test set è il compito d'esame vero. Se lo sbirci mentre studi e
 correggi le tue scelte in base a quello, il voto finale non dice più nulla: hai
 imparato a memoria *quell’* esame.
 
-Per questo il test si tiene chiuso in un cassetto e si apre soltanto alla fine.
-Ogni volta che usi il test per decidere qualcosa, lo "consumi", e il
-numero che ti restituisce diventa troppo ottimista.
+Per questo [il test si tiene chiuso in un cassetto e si apre soltanto alla
+fine]{.pt-matita}. Ogni volta che usi il test per decidere qualcosa, lo
+"consumi", e il numero che ti restituisce diventa troppo ottimista.
 
 Si sbircia anche senza barare: basta aprire la busta con il compito per
 vedere di che cosa parla, e le settimane di studio si organizzano da sole
@@ -400,8 +400,8 @@ pesa nel programma, e nella busta finisce un po’ di tutto.
 Usare il test per selezionare modelli è una forma sottile di *data leakage*, e
 di conseguenza la stima dell'errore di generalizzazione diventa ottimista. Per
 questo motivo il validation set assorbe le decisioni intermedie e la selezione
-avviene su training e validation; il test stima senza distorsione il rischio
-del modello scelto solo se non ha contribuito a sceglierlo.
+avviene su training e validation; [il test stima senza distorsione il rischio
+del modello scelto solo se non ha contribuito a sceglierlo]{.pt-matita}.
 
 Con $m_{\text{te}}$ esempi di test indipendenti dal modello, l'errore di test è
 la media di $m_{\text{te}}$ perdite indipendenti e ha deviazione standard
@@ -496,7 +496,7 @@ validazione.
 
 ```{figure} ../figures/cross-validation-il-test-che-non-bara.svg
 :name: fig-cross-validation
-:alt: "Cinque righe, una per giro. In ciascuna, i dati di addestramento sono divisi in cinque blocchi: uno fa da validazione e gli altri quattro da training, e il blocco di validazione scorre di una posizione a ogni riga, dal primo al quinto. A destra di ogni riga il punteggio ottenuto in quel giro. In fondo, il risultato è la media dei cinque punteggi con la loro deviazione standard."
+:alt: "Cinque righe, una per fold. In ciascuna, i dati di addestramento sono divisi in cinque blocchi: uno fa da validazione e gli altri quattro da training, e il blocco di validazione scorre di una posizione a ogni riga, dal primo al quinto. A destra di ogni riga il punteggio ottenuto in quel fold. In fondo, il risultato è la media dei cinque punteggi con la loro deviazione standard."
 :width: 92%
 
 Il blocco di validazione ruota. Alla fine ogni esempio ha fatto da giudice
@@ -509,8 +509,8 @@ Dividi i dati di addestramento in $k$ blocchi uguali (di solito $k=5$ o $10$).
 A turno, ogni blocco fa da giudice mentre gli altri $k-1$ addestrano il
 modello. Ottieni così $k$ misure di errore, ognuna su un pezzo diverso di dati,
 e ne fai la media. È come fare cinque compiti in classe su cinque parti
-diverse del programma invece di giocarsi tutto su una sola interrogazione: il
-giudizio finale è più affidabile e meno soggetto al caso.
+diverse del programma invece di giocarsi tutto su una sola interrogazione: [il
+giudizio finale è più affidabile e meno soggetto al caso]{.pt-matita}.
 
 Si può spingere all'estremo: un blocco per ogni singolo esempio, cioè tanti
 compiti quanti sono i dati. Sembra il giudizio più solido di tutti, e di solito
@@ -576,8 +576,8 @@ cui nelle simulazioni di ESL risulta perfino debolmente anticorrelata
 {cite}`hastie2009elements`; e siccome ogni modello vede $(k-1)m/k$ esempi, la
 stima è pessimista per il modello finale, addestrato su tutti gli $m$.
 
-Inoltre, perché la stima sia valida, ogni passo che guarda i dati deve stare
-dentro il ciclo. Il controesempio classico è di ESL: cinquanta esempi,
+Inoltre, perché la stima sia valida, [ogni passo che guarda i dati deve stare
+dentro il ciclo]{.pt-matita}. Il controesempio classico è di ESL: cinquanta esempi,
 cinquemila colonne di puro rumore, le cento più correlate con l'etichetta
 scelte guardando tutti i dati, e un $1$-NN valutato in cross-validation;
 l'errore stimato è del $3\%$, quello vero del $50\%$. Selezione delle colonne,
@@ -670,24 +670,24 @@ modello = Ridge(alpha=1.0)   # alpha: quanto si fa pagare la complessità
 scores = cross_val_score(modello, X_train, y_train, cv=5,
                          scoring="neg_mean_squared_error")  # 5-fold CV
 print(f"errore medio di validazione: {-scores.mean():.3f}")
-print(f"quanto ballano i cinque giri: {scores.std():.3f}")
+print(f"quanto ballano i cinque fold: {scores.std():.3f}")
 
-# un secondo modello sugli stessi cinque blocchi: differenza giro per giro
+# un secondo modello sugli stessi cinque blocchi: differenza fold per fold
 altro = Ridge(alpha=300.0)
 altri = cross_val_score(altro, X_train, y_train, cv=5,
                         scoring="neg_mean_squared_error")
 diff = scores - altri
 print(f"alpha=300: errore medio {-altri.mean():.3f}, "
-      f"ballo dei cinque giri {altri.std():.3f}")
-print(f"differenza giro per giro: {diff.round(3)}")
+      f"ballo dei cinque fold {altri.std():.3f}")
+print(f"differenza fold per fold: {diff.round(3)}")
 print(f"media {diff.mean():+.3f}, ballo della differenza {diff.std():.3f}")
 ```
 
 ```text
 errore medio di validazione: 2.248
-quanto ballano i cinque giri: 0.217
-alpha=300: errore medio 2.268, ballo dei cinque giri 0.209
-differenza giro per giro: [ 0.024  0.017  0.04   0.024 -0.004]
+quanto ballano i cinque fold: 0.217
+alpha=300: errore medio 2.268, ballo dei cinque fold 0.209
+differenza fold per fold: [ 0.024  0.017  0.04   0.024 -0.004]
 media +0.020, ballo della differenza 0.014
 ```
 
@@ -769,8 +769,8 @@ di più.
 
 Un cerchio, invece, non ha punte, e il primo contatto cade in un posto
 qualunque del bordo, dove entrambi i pesi sono piccoli ma nessuno è nullo. In
-definitiva, sommare i valori assoluti seleziona le caratteristiche e sommare i
-quadrati no, e la differenza dipende dalla forma del recinto.
+definitiva, [sommare i valori assoluti seleziona le caratteristiche e sommare i
+quadrati no]{.pt-matita}, e la differenza dipende dalla forma del recinto.
 
 `````{tab} Elementare
 
@@ -1311,9 +1311,9 @@ L'ultima colonna dice perché il Lasso perde dove i dati sono chiari: tiene in
 media quasi nove colonne, quando quelle che contano sono cinque, mentre la
 selezione in avanti ne tiene poco più di cinque. In piccolo, il risultato
 coincide con quello di un confronto molto più ampio di Hastie, Tibshirani e
-Tibshirani: il freno continuo conviene quando il rumore rende instabile ogni
+Tibshirani: [il freno continuo conviene quando il rumore rende instabile ogni
 selezione, la scelta a salti quando i dati sono abbastanza chiari da
-selezionare bene.
+selezionare bene]{.pt-matita}.
 
 ## Il rasoio di Occam
 
@@ -1322,8 +1322,8 @@ Sotto tutto questo c'è un principio antico. Nel XIV secolo il frate francescano
 riassunto poi nella formula *entia non sunt multiplicanda praeter
 necessitatem*, non moltiplicare le entità oltre il necessario (la frase esatta,
 per la cronaca, non compare nei suoi scritti, e la coniò un commentatore del
-Seicento). In altri termini, a parità di capacità di spiegare i dati, scegli il
-modello più semplice.
+Seicento). In altri termini, [a parità di capacità di spiegare i dati, scegli il
+modello più semplice]{.pt-matita}.
 
 La regolarizzazione mette il rasoio di Occam in formule: il parametro $\lambda$
 è il prezzo applicato alla complessità, misurata qui come grandezza dei pesi,
@@ -1380,14 +1380,14 @@ nel punto di **interpolazione**, cioè dove il modello riesce per la
 prima volta a passare per tutti i punti (in matematica si dice *interpolare*) e
 non gli avanza niente.
 
-Fra le infinite curve che passano per tutti i punti, l'addestramento tende a
-scegliere quella meno tormentata. Per i modelli lineari è dimostrato: la
-discesa del gradiente (la procedura a piccoli passi vista con la retta di best
-fit), partendo da zero e muovendosi a passettini finché non riproduce i dati,
-arriva a quella con i pesi più piccoli. Per le reti profonde è
-l'ipotesi più studiata, con buone prove sperimentali ma senza una dimostrazione
-generale. Avere parametri in eccesso dà soprattutto questo: la libertà di
-scegliere una soluzione gentile.
+[Fra le infinite curve che passano per tutti i punti, l'addestramento tende a
+scegliere quella meno tormentata]{.pt-matita}. Per i modelli lineari è
+dimostrato: la discesa del gradiente (la procedura a piccoli passi vista con la
+retta di best fit), partendo da zero e muovendosi a passettini finché non
+riproduce i dati, arriva a quella con i pesi più piccoli. Per le reti profonde
+è l'ipotesi più studiata, con buone prove sperimentali ma senza una
+dimostrazione generale. Avere parametri in eccesso dà soprattutto questo: la
+libertà di scegliere una soluzione gentile.
 
 La gobba, poi, non compare soltanto ingrandendo il modello. Si vede anche
 allungando l'addestramento, e perfino aumentando i dati: se il modello sta
@@ -1414,10 +1414,10 @@ in quest'ultimo caso produce l'effetto contro-intuitivo per cui, vicino al
 punto di interpolazione, aggiungere dati può peggiorare l'errore di test.
 
 Il rasoio di Occam resta valido se si cambia il modo di misurare la
-complessità. Il numero di parametri è un pessimo indicatore della complessità
-di una rete, e la candidata più studiata al suo posto è una misura di norma
-della soluzione trovata, la stessa da cui partono i {doc}`bound di norma della
-teoria dell'apprendimento </TeoriaApprendimento/garanzie-e-reti>`.
+complessità. [Il numero di parametri è un pessimo indicatore della complessità
+di una rete]{.pt-matita}, e la candidata più studiata al suo posto è una misura
+di norma della soluzione trovata, la stessa da cui partono i {doc}`bound di
+norma della teoria dell'apprendimento </TeoriaApprendimento/garanzie-e-reti>`.
 
 In due casi il legame con l'algoritmo è un teorema. Sui minimi quadrati con più
 parametri che esempi, la discesa del gradiente partita da zero converge alla
@@ -1567,9 +1567,9 @@ dall'interno, guardando quali parti della rete contribuiscono al risultato.
 `````
 
 In definitiva, doppia discesa e biglietto vincente non smontano il quadro
-classico, ma dicono che la complessità di un modello non si conta in parametri.
-Tenere il test chiuso, misurare su dati mai visti e penalizzare la complessità
-restano validi come prima.
+classico, ma dicono che [la complessità di un modello non si conta in
+parametri]{.pt-matita}. Tenere il test chiuso, misurare su dati mai visti e
+penalizzare la complessità restano validi come prima.
 
 `````{tab} Elementare
 

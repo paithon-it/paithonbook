@@ -48,13 +48,13 @@ al 3: la sua previsione del 3 marzo sembrerà miracolosa, ma solo perché ha
 spiato i giorni vicini nel futuro.
 
 Nel mondo vero non funziona così: quando prevedi domani, hai solo *ieri e
-prima*. Non puoi allenarti sui risultati di domani per indovinare domani.
-Mescolare i dati di una serie temporale rompe questa regola (mette futuro e
-passato nello stesso mucchio) e ti regala un modello che sul foglio va
-benissimo e nella realtà crolla. Ci sono casi in cui il danno pesa poco (un
-modello semplicissimo, che guarda solo i giorni appena prima e sbaglia soltanto
-per caso, dai giorni vicini non ha niente da imparare), ma vanno verificati uno
-per uno; nel dubbio, prima e dopo non si mescolano.
+prima*. [Non puoi allenarti sui risultati di domani per indovinare
+domani]{.pt-matita}. Mescolare i dati di una serie temporale rompe questa
+regola (mette futuro e passato nello stesso mucchio) e ti regala un modello che
+sul foglio va benissimo e nella realtà crolla. Ci sono casi in cui il danno
+pesa poco (un modello semplicissimo, che guarda solo i giorni appena prima e
+sbaglia soltanto per caso, dai giorni vicini non ha niente da imparare), ma
+vanno verificati uno per uno; nel dubbio, prima e dopo non si mescolano.
 
 `````
 
@@ -69,9 +69,9 @@ all'indietro. La stima dell'errore che ne esce è sistematicamente ottimista: un
 caso di *data leakage*, la stessa fuga di informazione per cui il test non si
 tocca mai.
 
-La regola è netta: ogni dato usato per addestrare deve precedere nel tempo ogni
-dato usato per validare. Il confine tra train e validation è un istante $t_0$,
-non un'estrazione a sorte.
+La regola è netta: [ogni dato usato per addestrare deve precedere nel tempo
+ogni dato usato per validare]{.pt-matita}. Il confine tra train e validation è
+un istante $t_0$, non un'estrazione a sorte.
 
 La regola ha però un perimetro, e conviene conoscerlo. Per un modello
 puramente autoregressivo, i cui ingressi sono soltanto ritardi della serie, la
@@ -92,10 +92,10 @@ La cura è semplice da enunciare: rispettare la freccia del tempo. Ci si allena
 sul passato, si verifica sul futuro, mai il contrario. Un taglio solo, però,
 non basta, perché darebbe un voto solo, misurato su una manciata di giorni: se
 in quei giorni è capitato un fatto strano (una nevicata, uno sciopero), il voto
-racconta la nevicata e non il modello. Conviene allora tagliare in molti punti
-diversi e fare la media dei voti. È il backtesting dell'apertura, e gli altri
-due nomi con cui lo si incontra sono **walk-forward** e valutazione «su
-**origine mobile**»: tre nomi per lo stesso metodo
+racconta la nevicata e non il modello. [Conviene allora tagliare in molti punti
+diversi e fare la media dei voti]{.pt-matita}. È il backtesting dell'apertura,
+e gli altri due nomi con cui lo si incontra sono **walk-forward** e valutazione
+«su **origine mobile**»: tre nomi per lo stesso metodo
 {cite}`hyndman2021forecasting`.
 
 `````{tab} Elementare
@@ -231,14 +231,14 @@ L'altro è leggerla come una gara alla pari, e non lo è. L'errore di chi copia
 si misura una volta sola, prima che la prova cominci, sulla strada già
 percorsa, quella su cui ti sei allenato, e chiedendogli ogni volta soltanto il
 giorno dopo; tu invece corri sui giorni nuovi, e magari ne stai prevedendo
-dodici in una volta ({numref}`fig-mase-non-duello`). Nel conto di prima, gli 8
-gradi di chi copia fanno da metro e non da avversario: servono a trasformare i
-tuoi 4 gradi in quel $0{,}5$ che non ha più unità di misura. Ed è la scelta di
-chi ha proposto la MASE, Rob Hyndman e Anne Koehler: la strada già percorsa ha
-sempre molti giorni, e il metro si annulla solo se tutta la storia è identica,
-mentre sui giorni di prova, con una previsione sola, chi copia avrebbe un
-errore solo, magari zero, e per zero non si divide. Sbagliare quanto lui,
-allora, non vuol dire pareggiare: su dodici giorni avanti è un ottimo
+dodici in una volta ({numref}`fig-mase-non-duello`). [Nel conto di prima, gli 8
+gradi di chi copia fanno da metro e non da avversario]{.pt-matita}: servono a
+trasformare i tuoi 4 gradi in quel $0{,}5$ che non ha più unità di misura. Ed è
+la scelta di chi ha proposto la MASE, Rob Hyndman e Anne Koehler: la strada già
+percorsa ha sempre molti giorni, e il metro si annulla solo se tutta la storia
+è identica, mentre sui giorni di prova, con una previsione sola, chi copia
+avrebbe un errore solo, magari zero, e per zero non si divide. Sbagliare quanto
+lui, allora, non vuol dire pareggiare: su dodici giorni avanti è un ottimo
 risultato, su un giorno solo sarebbe mediocre.
 
 `````
@@ -309,16 +309,16 @@ zero comunque, e la MASE stagionale si usa sulle serie che un periodo ce
 l'hanno. La lettura, però, va data per esteso, perché la versione corta («sotto
 1 batte il naive») è la fonte di un equivoco: un valore sotto $1$ vuol dire che
 l'errore del modello è inferiore a quello commesso, a un passo di stagione e
-sui dati di addestramento, dal predittore che copia il ciclo precedente. È una
-scala e non un duello: il denominatore serve a togliere l'unità di misura della
-serie, non a fare da avversario. Un modello con MASE $0{,}9$ su un orizzonte a
-dodici passi non ha battuto nessuno alla pari: ha sbagliato il 90% di quanto
-sbaglia a un passo chi copia, il che su dodici passi è ottimo e su un passo
-sarebbe mediocre. Se si vuole il duello, il naive va fatto correre sullo stesso
-test e sullo stesso orizzonte, come si fa con le linee di base ingenue. Su più
-serie, infine, serve una regola per aggregare: le competizioni M usano l'OWA
-(*overall weighted average*), la media di sMAPE e MASE, ciascuna divisa per
-quella di un metodo di riferimento sull'insieme delle serie (il Naive 2, un
+sui dati di addestramento, dal predittore che copia il ciclo precedente. [È una
+scala e non un duello]{.pt-matita}: il denominatore serve a togliere l'unità di
+misura della serie, non a fare da avversario. Un modello con MASE $0{,}9$ su un
+orizzonte a dodici passi non ha battuto nessuno alla pari: ha sbagliato il 90%
+di quanto sbaglia a un passo chi copia, il che su dodici passi è ottimo e su un
+passo sarebbe mediocre. Se si vuole il duello, il naive va fatto correre sullo
+stesso test e sullo stesso orizzonte, come si fa con le linee di base ingenue.
+Su più serie, infine, serve una regola per aggregare: le competizioni M usano
+l'OWA (*overall weighted average*), la media di sMAPE e MASE, ciascuna divisa
+per quella di un metodo di riferimento sull'insieme delle serie (il Naive 2, un
 naive sulla serie destagionalizzata), così che $1$ voglia dire «pari al
 riferimento» {cite}`makridakis2020m4`.
 
@@ -428,9 +428,10 @@ un righello e non un verdetto.
 
 ## Le linee di base che bisogna sempre battere
 
-Prima di dichiarare vittoria con una rete neurale, un modello va confrontato con
-avversari volutamente banali. Se non li batte, non serve. È l'idea di linea di
-base incontrata con gli {doc}`alberi decisionali e metodi ensemble
+Prima di dichiarare vittoria con una rete neurale, un modello va confrontato
+con avversari volutamente banali. [Se non li batte, non serve]{.pt-matita}. È
+l'idea di linea di base incontrata con gli {doc}`alberi decisionali e metodi
+ensemble
 </MachineLearning/alberi-ensemble>`, il termine di paragone volutamente
 semplice che un modello più elaborato deve battere; una serie storica ha i
 suoi.
@@ -604,9 +605,10 @@ futuro segua le regole del passato, e quelle tirano da una parte sola.
 
 `````
 
-Le due ipotesi, quindi, non tirano dalla stessa parte, e su una banda di uso
-quotidiano il segno dell'errore dipende da quale delle due pesa di più. A
-dover stare in guardia su tutte e due è chi promette di coprire quasi tutto.
+[Le due ipotesi, quindi, non tirano dalla stessa parte]{.pt-matita}, e su una
+banda di uso quotidiano il segno dell'errore dipende da quale delle due pesa di
+più. A dover stare in guardia su tutte e due è chi promette di coprire quasi
+tutto.
 
 La buona notizia è che tutto questo si misura, e la misura ha un nome,
 **copertura empirica**: si prende il walk-forward, si conta
@@ -777,11 +779,12 @@ d'allenamento, quella del lunedì precedente chiede le vendite di questo lunedì
 la sera della previsione sono già note, e la riga resta. Le sei righe dopo, da
 martedì a domenica, chiedono invece di giorni che quella sera non sono ancora
 arrivati, e sono risposte che nel momento della previsione nessuno conosce: si
-buttano via. Sono una meno dei giorni d'anticipo, sei con una settimana e
-nessuna se si prevede soltanto il giorno dopo: un pugno di esempi in cambio di
-un confine pulito. Che la riga del lunedì sera, per fare le sue medie, guardi
-indietro ai giorni d'allenamento non guasta niente, perché quei giorni sono già
-passati. L'operazione si chiama **purga**, e il nome viene dalla finanza.
+buttano via. [Sono una meno dei giorni d'anticipo, sei con una settimana e
+nessuna se si prevede soltanto il giorno dopo]{.pt-matita}: un pugno di esempi
+in cambio di un confine pulito. Che la riga del lunedì sera, per fare le sue
+medie, guardi indietro ai giorni d'allenamento non guasta niente, perché quei
+giorni sono già passati. L'operazione si chiama **purga**, e il nome viene
+dalla finanza.
 
 `````
 
@@ -825,10 +828,10 @@ cross-validation in finanza. Quante siano discende dalla regola stessa. La
 prima riga di test, all'istante $t_0$, usa osservazioni fino a $y_{t_0}$, che è
 quanto il previsore sa quando la emette; una riga di training all'istante $t <
 t_0$ è lecita se il suo bersaglio era già noto a quel punto, cioè se $t + h \le
-t_0$, e le righe da togliere in fondo al training sono $h-1$, da $t_0-h+1$ a
-$t_0-1$: nessuna per $h=1$, sei con un orizzonte di una settimana. In
-`scikit-learn` è il parametro `gap` di `TimeSeriesSplit`, da porre a $h-1$. Il
-numero dipende da dove finisce la riga: con la convenzione, che si incontra
+t_0$, e [le righe da togliere in fondo al training sono $h-1$]{.pt-matita}, da
+$t_0-h+1$ a $t_0-1$: nessuna per $h=1$, sei con un orizzonte di una settimana.
+In `scikit-learn` è il parametro `gap` di `TimeSeriesSplit`, da porre a $h-1$.
+Il numero dipende da dove finisce la riga: con la convenzione, che si incontra
 anche, di una riga $t$ che legge fino a $y_{t-1}$, le righe diventano $h$, e
 chi cambia convenzione deve rifarlo. Ritardi e finestre mobili non allungano
 l'elenco: che una riga di training abbia per bersaglio un valore che la prima
@@ -924,8 +927,8 @@ $t+h$ cadono $h$ innovazioni ancora da osservare, qualunque strategia si scelga.
 `````
 
 Non esiste una scelta sempre migliore, e la regola di prima resta sovrana:
-qualunque strategia si scelga, la si valuta col walk-forward, mai mescolando il
-tempo.
+[qualunque strategia si scelga, la si valuta col walk-forward, mai mescolando il
+tempo]{.pt-matita}.
 
 ## In pratica: walk-forward e MASE con NumPy
 
@@ -957,8 +960,8 @@ serie = 10 + 0.05 * t + 3 * np.sin(2 * np.pi * t / m) + rng.normal(0, 0.4, n)
 
 # Lo scalatore è il naive a passo m (la serie ha un ciclo di 7 giorni: il
 # metro giusto è chi copia la settimana scorsa, non chi copia ieri) ed è
-# fissato UNA volta sul training iniziale, così i MASE dei vari giri sono
-# tutti espressi nella stessa unità e si possono mediare.
+# fissato UNA volta sul training iniziale, così i MASE delle varie
+# iterazioni sono tutti espressi nella stessa unità e si possono mediare.
 scalatore = np.mean(np.abs(serie[m:28] - serie[:28 - m]))
 scalatore_1 = np.mean(np.abs(serie[1:28] - serie[:27]))   # il metro a un passo
 
@@ -1018,8 +1021,8 @@ mettere sotto la linea di frazione il naive a un passo invece che a sette: gli
 stessi due predittori escono a $0{,}343$ e $1{,}643$, come stampano le ultime
 due righe, e il primo sembrerebbe bravissimo. Non ha previsto meglio di prima:
 è cambiato il righello. È la lettura che rende la MASE preziosa e insieme la
-sua unica insidia: un numero senza unità dice al volo se un modello vale più
-della pigrizia, purché si dichiari quale pigrizia.
+sua unica insidia: [un numero senza unità dice al volo se un modello vale più
+della pigrizia, purché si dichiari quale pigrizia]{.pt-matita}.
 
 `````{tab} Elementare
 

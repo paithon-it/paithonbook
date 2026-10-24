@@ -86,12 +86,12 @@ tanti per i debiti, tanti per l'anzianità di lavoro. Cerca i numeri che fanno
 somigliare la somma alle risposte della nuvola, e la tiene corta: fra due somme
 che vanno ugualmente bene si prende quella con meno voci.
 
-C'è però una regola in più, che fa tutto il lavoro: i fantasmi più simili alla
-pratica vera di Maria contano di più nella somma, quelli lontani quasi niente.
-Una somma così, in cui ogni voce entra con un'importanza sua, si dice pesata.
-Quando i dati stanno in una tabella, però, i fantasmi non nascono
-vicini a Maria: LIME li fabbrica pescando per ogni casella un valore a caso fra
-quelli degli altri clienti, e quindi escono sparsi un po' dappertutto.
+C'è però una regola in più, che fa tutto il lavoro: [i fantasmi più simili alla
+pratica vera di Maria contano di più nella somma, quelli lontani quasi
+niente]{.pt-matita}. Una somma così, in cui ogni voce entra con un'importanza
+sua, si dice pesata. Quando i dati stanno in una tabella, però, i fantasmi non
+nascono vicini a Maria: LIME li fabbrica pescando per ogni casella un valore a
+caso fra quelli degli altri clienti, e quindi escono sparsi un po' dappertutto.
 
 A renderli «vicini» è solo il peso, che fa contare poco quelli lontani. Più
 caselle ha la pratica, più è raro che un fantasma pescato così somigli a Maria
@@ -161,15 +161,14 @@ $\pi_{\mathbf{x}_0}(\mathbf{z}) =
 che decade con la distanza $d$, e si adatta una regressione lineare pesata. I
 coefficienti appresi sono le attribuzioni.
 
-La località, però, non entra dove ci si aspetta. Nell'implementazione
-tabellare degli autori i campioni non si generano attorno a $\mathbf{x}_0$, ma
-dalla distribuzione marginale del training set (l'opzione
-`sample_around_instance` è falsa per default, e le colonne continue vengono per
-giunta discretizzate in quartili prima di essere perturbate). La vicinanza a
-$\mathbf{x}_0$ la introduce soltanto il peso $\pi_{\mathbf{x}_0}$, a valle. Di
-conseguenza la fedeltà locale dipende da quanti dei punti generati
-globalmente cadono vicino a $\mathbf{x}_0$, e in alta dimensione sono
-pochi.
+La località, però, non entra dove ci si aspetta. Nell'implementazione tabellare
+degli autori i campioni non si generano attorno a $\mathbf{x}_0$, ma dalla
+distribuzione marginale del training set (l'opzione `sample_around_instance` è
+falsa per default, e le colonne continue vengono per giunta discretizzate in
+quartili prima di essere perturbate). [La vicinanza a $\mathbf{x}_0$ la
+introduce soltanto il peso $\pi_{\mathbf{x}_0}$, a valle]{.pt-matita}. Di
+conseguenza la fedeltà locale dipende da quanti dei punti generati globalmente
+cadono vicino a $\mathbf{x}_0$, e in alta dimensione sono pochi.
 
 Quattro limiti vanno dichiarati. Primo, l’instabilità: campionamento casuale e
 scelta del kernel rendono la spiegazione sensibile ai dettagli; rieseguire LIME
@@ -311,12 +310,13 @@ su ciascuno. Un calcolo complicato lo si spezza, si fanno i calcoli sui pezzi e
 si sommano i risultati: così si trattano i modelli in cui a rispondere sono
 centinaia di alberi che votano.
 
-Sono richieste che sembrano ragionevoli a chiunque (anche se c'è chi discute che
-siano quelle giuste per spiegare un modello), e il motivo per cui la formula del
-1953 è ancora qui è che c'è un solo modo di dividere il merito che le soddisfa
-tutte e quattro insieme. Uno solo, però, una volta deciso che cosa risponde il
-modello quando una colonna non gliela si fa sapere: quella decisione resta di
-chi fa il conto, e nessuna delle quattro richieste dice quale sia quella giusta.
+Sono richieste che sembrano ragionevoli a chiunque (anche se c'è chi discute
+che siano quelle giuste per spiegare un modello), e il motivo per cui la
+formula del 1953 è ancora qui è che [c'è un solo modo di dividere il merito che
+le soddisfa tutte e quattro insieme]{.pt-matita}. Uno solo, però, una volta
+deciso che cosa risponde il modello quando una colonna non gliela si fa sapere:
+quella decisione resta di chi fa il conto, e nessuna delle quattro richieste
+dice quale sia quella giusta.
 
 `````
 
@@ -337,8 +337,8 @@ $$
 
 dove $v(S \cup \{i\}) - v(S)$ è quanto aggiunge $i$ unendosi alla coalizione
 $S$, e il coefficiente combinatorio conta la frazione di permutazioni in cui le
-feature che precedono $i$ sono esattamente quelle di $S$. Questa è l’unica
-attribuzione che soddisfa quattro assiomi:
+feature che precedono $i$ sono esattamente quelle di $S$. [Questa è l’unica
+attribuzione che soddisfa quattro assiomi]{.pt-matita}:
 
 - **Efficienza**: $\sum_{i} \phi_i = v(N) - v(\varnothing) =
   f(\mathbf{x}_0) - \mathbb{E}[f(\mathbf{x})]$.
@@ -436,8 +436,9 @@ C'è un caso in cui quella scelta si vede tutta. Nella pratica di Maria due
 caselle dicono quasi la stessa cosa, lo stipendio al mese e quello all'anno, e
 il modello ne guarda una sola. Spegnendo una casella per volta si finisce per
 chiedere al modello che cosa direbbe di chi guadagna mille euro al mese e
-centomila all'anno, un cliente che non esiste; e il merito va tutto alla casella
-guardata, zero all'altra, che per Maria diceva la stessa identica cosa.
+centomila all'anno, un cliente che non esiste; e [il merito va tutto alla
+casella guardata, zero all'altra]{.pt-matita}, che per Maria diceva la stessa
+identica cosa.
 
 Rispetto ad altri metodi si guadagna una garanzia, e la si vede con due
 versioni dello stesso modello. Se nella seconda il reddito aggiunge più
@@ -465,14 +466,14 @@ distingue SHAP da LIME, i cui pesi euristici non hanno questa garanzia.
 
 A pesi giusti, però, resta da calcolare la funzione valore, e lì la garanzia si
 indebolisce. KernelSHAP approssima $v(S) = \mathbb{E}\big[f(\mathbf{x}) \mid
-\mathbf{x}_S\big]$ con l'attesa marginale, sostituendo le feature assenti
-con valori pescati da un insieme di riferimento: è l'ipotesi di indipendenza
-fra le feature, dichiarata da Lundberg e Lee nel passaggio in cui derivano
+\mathbf{x}_S\big]$ con l'attesa marginale, sostituendo le feature assenti con
+valori pescati da un insieme di riferimento: è l'ipotesi di indipendenza fra le
+feature, dichiarata da Lundberg e Lee nel passaggio in cui derivano
 l'approssimazione {cite}`lundberg2017unified`. Quando le feature sono correlate
 le due quantità divergono {cite}`aas2021explaining`, e la divergenza non è
-piccola: su due colonne quasi identiche di cui il modello ne usa una sola, la
-versione marginale dà tutto il merito alla colonna usata e zero all'altra,
-mentre quella condizionale lo ripartisce fra le due.
+piccola: su due colonne quasi identiche di cui il modello ne usa una sola, [la
+versione marginale dà tutto il merito alla colonna usata e zero
+all'altra]{.pt-matita}, mentre quella condizionale lo ripartisce fra le due.
 
 È ancora il bivio fra spiegare il modello e spiegare il mondo, e qui produce
 l'equivoco più comune: KernelSHAP restituisce sistematicamente la prima
@@ -549,11 +550,11 @@ risultato diverso.
 
 `````{tab} Elementare
 
-Un controfattuale è un'affermazione del tipo: «se il tuo reddito fosse stato
-30 000 € invece di 24 000, il prestito sarebbe stato approvato». Non ti dice
-come funziona il modello dentro; ti dice la modifica più piccola che avrebbe
-ribaltato la decisione. È **azionabile**: indica una via d'uscita concreta,
-non una diagnosi astratta.
+Un controfattuale è un'affermazione del tipo: «se il tuo reddito fosse stato 30
+000 € invece di 24 000, il prestito sarebbe stato approvato». Non ti dice come
+funziona il modello dentro; [ti dice la modifica più piccola che avrebbe
+ribaltato la decisione]{.pt-matita}. È **azionabile**: indica una via d'uscita
+concreta, non una diagnosi astratta.
 
 La qualità di un buon controfattuale sta in due cose. Primo, dev'essere
 vicino alla tua situazione reale: «guadagna 200 000 € in più» tecnicamente
@@ -577,9 +578,9 @@ nasconde, mentre il controfattuale lo scrive nero su bianco e te lo consegna.
 
 `````{tab} Superiore
 
-Wachter e colleghi cercano un punto $\mathbf{x}_{\mathrm{cf}}$ che ottenga
+[Wachter e colleghi cercano un punto $\mathbf{x}_{\mathrm{cf}}$ che ottenga
 l'esito desiderato $y'$ restando il più vicino possibile all'istanza originale
-$\mathbf{x}_0$, minimizzando
+$\mathbf{x}_0$]{.pt-matita}, minimizzando
 
 $$
 \operatorname*{arg\,min}_{\mathbf{x}_{\mathrm{cf}}}\;
@@ -645,12 +646,12 @@ la strada col reddito. Per questo, chiedendo tre risposte senza chiedere che
 siano diverse, se ne avrebbero tre versioni della stessa: seimila euro in più,
 o qualche centinaio sopra.
 
-Per avere tre strade diverse bisogna premiare la differenza. Si dà un voto
-all’insieme delle risposte: vicine alla situazione reale, sì, ma anche
-sparpagliate fra loro. Tre risposte quasi uguali prendono un voto di varietà
-quasi nullo, tre leve diverse un voto alto; e nel punteggio complessivo le tre
-leve, un po’ più lontane in media ma molto più varie, battono le tre varianti
-del reddito.
+[Per avere tre strade diverse bisogna premiare la differenza]{.pt-matita}. Si
+dà un voto all’insieme delle risposte: vicine alla situazione reale, sì, ma
+anche sparpagliate fra loro. Tre risposte quasi uguali prendono un voto di
+varietà quasi nullo, tre leve diverse un voto alto; e nel punteggio complessivo
+le tre leve, un po’ più lontane in media ma molto più varie, battono le tre
+varianti del reddito.
 
 La varietà però si paga in vicinanza, e non basta che le risposte siano
 diverse: devono restare possibili. Le voci che non si possono cambiare, come
@@ -694,8 +695,8 @@ lineare. Con la distanza $L_1$ pesata il problema è un programma lineare, il
 minimo sta su un vertice, e si muove la sola voce che sposta il logit al costo
 più basso, cioè quella con $|w_j|\,\mathrm{MAD}_j$ massimo; vale con voci
 continue, senza vincoli di intervallo attivi e senza pareggi fra i
-$|w_j|\,\mathrm{MAD}_j$. La risposta è sempre la stessa leva, e $k$ risposte
-senza il termine di diversità ne sono $k$ varianti.
+$|w_j|\,\mathrm{MAD}_j$. [La risposta è sempre la stessa leva, e $k$ risposte
+senza il termine di diversità ne sono $k$ varianti]{.pt-matita}.
 
 Resta aperto un aspetto che
 il determinante non vede: due controfattuali diversi possono essere entrambi
@@ -805,10 +806,10 @@ La regola di cui parliamo suona così:
 > altre colonne.»
 
 Una regola così si chiama **anchor**, àncora, e cambia il tipo di risposta.
-LIME dice quanto ogni feature ha pesato *in questo caso*; un anchor dice fin
-dove la risposta resta la stessa, e questa è una promessa verificabile: si
-prende la regola, si cercano altri casi che la soddisfano, e si controlla se il
-modello risponde sempre allo stesso modo.
+LIME dice quanto ogni feature ha pesato *in questo caso*; [un anchor dice fin
+dove la risposta resta la stessa, e questa è una promessa
+verificabile]{.pt-matita}: si prende la regola, si cercano altri casi che la
+soddisfano, e si controlla se il modello risponde sempre allo stesso modo.
 
 Da qui le due misure che accompagnano ogni anchor, con dei numeri in mano. La
 **precisione** dice quanto spesso la regola azzecca la risposta del modello: se
@@ -868,12 +869,12 @@ affinare è formulato come *best-arm identification*, il problema che affrontano
 i {doc}`bandit a più braccia </ReinforcementLearning/banditi>`, con l'algoritmo
 KL-LUCB a dare intervalli di confidenza sulla precisione.
 
-Il guadagno rispetto a LIME è la fedeltà dichiarata: un anchor non
-approssima, delimita, e la sua precisione è un numero misurato invece che una
-speranza. Il limite è che su feature continue e ad alta dimensione le regole
-diventano lunghe o la copertura crolla, e su dati non tabellari (immagini,
-testo) bisogna prima definire che cosa sia una «condizione», il che riporta
-tutti i problemi di rappresentazione di LIME.
+Il guadagno rispetto a LIME è la fedeltà dichiarata: [un anchor non approssima,
+delimita, e la sua precisione è un numero misurato invece che una
+speranza]{.pt-matita}. Il limite è che su feature continue e ad alta dimensione
+le regole diventano lunghe o la copertura crolla, e su dati non tabellari
+(immagini, testo) bisogna prima definire che cosa sia una «condizione», il che
+riporta tutti i problemi di rappresentazione di LIME.
 
 `````
 

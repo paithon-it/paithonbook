@@ -41,9 +41,9 @@ impara la lingua e una parte delle conoscenze sul mondo, e solo dopo, con il
 post-training, impara a svolgere compiti. Trecento miliardi di token non stanno
 in nessuna enciclopedia, e il grosso può venire solo dal web, che però mescola
 testo di qualità, spam, pagine duplicate e testo generato da macchine, per cui
-va filtrato, deduplicato e ripesato prima dell'addestramento, e questa
-preparazione è una parte rilevante del lavoro di chi costruisce un grande
-modello.
+[va filtrato, deduplicato e ripesato prima dell'addestramento]{.pt-matita}, e
+questa preparazione è una parte rilevante del lavoro di chi costruisce un
+grande modello.
 
 `````{tab} Elementare
 Una lingua straniera si può imparare con *un solo tipo di esercizio*: frasi da
@@ -295,10 +295,10 @@ di Gopher e ha letto quasi cinque volte di più: a parità di calcolo, vince
 Chinchilla.
 ```
 
-Il confronto di {numref}`fig-chinchilla` è il motivo per cui «quanti parametri
-ha?» non basta più come domanda. Infatti un numero di parametri dice quanta
-capacità c'è, non quanta ne è stata riempita, e due modelli con lo stesso
-cartellino possono aver letto quantità di testo incomparabili.
+Il confronto di {numref}`fig-chinchilla` è il motivo per cui [«quanti parametri
+ha?» non basta più come domanda]{.pt-matita}. Infatti un numero di parametri
+dice quanta capacità c'è, non quanta ne è stata riempita, e due modelli con lo
+stesso cartellino possono aver letto quantità di testo incomparabili.
 
 Le leggi di scala descrivono come cala la loss di test dentro il regime in cui
 sono state misurate, cioè quanto il modello sbaglierà meno a indovinare la
@@ -330,11 +330,12 @@ incastrato a girare in tondo («Il gatto nero salta sul muro. Il gatto nero
 salta sul muro. Il gatto nero...»). Gli stessi autori sono andati a controllare
 come è fatto il testo scritto da noi: hanno preso pagine di prosa umana e hanno
 chiesto al modello, parola per parola, quale probabilità assegnasse a ciascuna.
-Risulta che noi non scegliamo mai la sequenza più probabile: le nostre frasi
-sono punteggiate di scelte a media e bassa probabilità, e sono queste a
-renderle vive. Per scrivere come noi, quindi, il modello deve rischiare, cioè
-**campionare**: tirare un dado truccato secondo le sue probabilità invece di
-scegliere sempre il massimo. Il trucco del dado si può regolare.
+Risulta che [noi non scegliamo mai la sequenza più probabile]{.pt-matita}: le
+nostre frasi sono punteggiate di scelte a media e bassa probabilità, e sono
+queste a renderle vive. Per scrivere come noi, quindi, il modello deve
+rischiare, cioè **campionare**: tirare un dado truccato secondo le sue
+probabilità invece di scegliere sempre il massimo. Il trucco del dado si può
+regolare.
 
 ```{figure} ../figures/generazione-autoregressiva.gif
 :name: fig-generazione-autoregressiva
@@ -472,8 +473,8 @@ si fa trovare e l'informazione che consegna, e per una parola nuova il modello
 scrive soltanto le sue due righe, consultando le vecchie senza rifarle. Il
 risultato è identico a quello ottenuto rileggendo tutto, perché
 nessuna parola può guardare avanti: quanto accade a pagina trecento non cambia
-gli appunti di pagina dodici. Il risparmio è enorme, la differenza fra girare
-pagina e rileggere il libro da capo a ogni pagina.
+gli appunti di pagina dodici. [Il risparmio è enorme, la differenza fra girare
+pagina e rileggere il libro da capo a ogni pagina]{.pt-matita}.
 
 Lo svantaggio è lo spazio: il
 taccuino si allunga a ogni parola, mezzo megabyte a
@@ -489,11 +490,11 @@ a pesare di più.
 `````
 
 `````{tab} Superiore
-La KV cache evita di ricalcolare chiavi e valori del prefisso: il costo di un
-passo scende, per strato, da $O(t^2 d + t\,d^2)$ a $O(t\,d + d^2)$, e quello
-dell'intera generazione di $n$ token da $O(n^3 d + n^2 d^2)$ a
-$O(n^2 d + n\,d^2)$, come ricava la sezione sull'attenzione in pratica; per il
-modello intero si moltiplica per gli $n_{\text{strati}}$ strati.
+[La KV cache evita di ricalcolare chiavi e valori del prefisso]{.pt-matita}: il
+costo di un passo scende, per strato, da $O(t^2 d + t\,d^2)$ a $O(t\,d + d^2)$,
+e quello dell'intera generazione di $n$ token da $O(n^3 d + n^2 d^2)$ a $O(n^2
+d + n\,d^2)$, come ricava la sezione sull'attenzione in pratica; per il modello
+intero si moltiplica per gli $n_{\text{strati}}$ strati.
 
 I due termini vanno tenuti distinti per non trarne la conclusione sbagliata. Il
 termine in $t\,d$ è quello dell'attenzione ed è ineliminabile, come nel
@@ -598,9 +599,9 @@ Il fatto resta strano. Fin qui, "adattare un modello" ha significato
 addestrarlo, cioè mostrargli esempi, misurare quanto sbaglia e spostargli i
 numeri interni un'inezia alla volta, per giorni. Qui no: il compito viene
 *descritto in italiano* (o in inglese), e il modello, completando il testo nel
-modo più probabile, di fatto lo esegue. In altri termini, il prompt è diventato
-un'interfaccia di programmazione in linguaggio naturale: si "programma" il
-modello scrivendo.
+modo più probabile, di fatto lo esegue. In altri termini, [il prompt è
+diventato un'interfaccia di programmazione in linguaggio naturale]{.pt-matita}:
+si "programma" il modello scrivendo.
 
 L’**in-context learning** (imparare dal
 contesto della singola richiesta) non era un obiettivo di progetto: nessuna
@@ -711,9 +712,9 @@ La zona di sovrapposizione è il problema. Non serve malafede perché si formi:
 basta che il benchmark sia pubblico e il corpus sia il web.
 ```
 
-Come si vede in {numref}`fig-contaminazione`, la contaminazione non è un
+Come si vede in {numref}`fig-contaminazione`, [la contaminazione non è un
 imbroglio ma una conseguenza quasi inevitabile del modo in cui si raccolgono i
-dati. Per questo è difficile da escludere: per dimostrare che una
+dati]{.pt-matita}. Per questo è difficile da escludere: per dimostrare che una
 domanda *non* è nel corpus bisognerebbe poterlo ispezionare tutto, e chi
 pubblica un punteggio quasi mai pubblica anche i dati. Se il modello ha
 studiato l'intero web, è probabile che abbia già *visto* le domande del test,
@@ -770,8 +771,8 @@ nella *pagella*, non nel modello.
 
 Se si misura la stessa identica prestazione con un metro graduale (quante
 cifre sono corrette, o la probabilità assegnata alla risposta giusta), la
-curva diventa liscia e prevedibile. Il miglioramento c'era ed era continuo: la
-metrica lo nascondeva.
+curva diventa liscia e prevedibile. [Il miglioramento c'era ed era continuo: la
+metrica lo nascondeva]{.pt-matita}.
 
 Tuttavia questo vale per molti casi, non per tutti. Che gran parte di quelle
 curve a scalino sia un effetto del righello è ormai ben argomentato; che
@@ -796,9 +797,9 @@ valutata in modo esatto vale circa $p_{\text{tok}}^{\,n}$, dove
 $p_{\text{tok}}$ è la probabilità di azzeccare un singolo token e il calcolo
 suppone che gli errori sui token siano indipendenti l'uno dall'altro. Una
 funzione del genere resta schiacciata vicino a zero e poi si impenna. Ne segue
-che la discontinuità è prodotta dalla non linearità della metrica, non dal
-modello. Sostituendo l'accuratezza esatta con la distanza di edit, o con la
-log-verosimiglianza della risposta corretta, in molti casi l'emergenza
+che [la discontinuità è prodotta dalla non linearità della metrica, non dal
+modello]{.pt-matita}. Sostituendo l'accuratezza esatta con la distanza di edit,
+o con la log-verosimiglianza della risposta corretta, in molti casi l'emergenza
 svanisce.
 
 Il dibattito non è chiuso, e le due affermazioni vanno tenute distinte. Che gran

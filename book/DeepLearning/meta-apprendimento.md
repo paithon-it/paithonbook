@@ -43,9 +43,10 @@ bene i tre di prima, ma prepararsi a imparare il quarto in fretta.
 Detta così sembra un gioco di parole, e invece cambia l'allenamento. Chi vuole
 suonare bene i tre strumenti si esercita sui tre strumenti. Chi vuole arrivare
 pronto al quarto deve esercitarsi in un modo strano: prendere ogni tanto uno
-strumento messo da parte, darsi cinque minuti, e poi guardare come suona
-dopo quei cinque minuti. Se suona male, a essere corretta non è la tecnica di
-quei cinque minuti ma la posizione di partenza da cui li si era cominciati.
+strumento messo da parte, darsi cinque minuti, e poi guardare come suona dopo
+quei cinque minuti. Se suona male, [a essere corretta non è la tecnica di quei
+cinque minuti ma la posizione di partenza da cui li si era
+cominciati]{.pt-matita}.
 
 Per questo l'altra strada fallisce sulle famiglie varie. Chi si esercita sempre
 e solo a suonare bene i tre strumenti che ha, senza mai provare a ripartire da
@@ -92,8 +93,9 @@ $$
 $$
 
 dove $\alpha$ è il passo interno e $\mathcal{L}^{\text{s}}_{\mathcal{T}_i}$ la
-perdita sui $k$ esempi con cui ci si adatta. Il **ciclo esterno** aggiorna
-$\theta$ guardando quanto valgono i parametri adattati, e non $\theta$ stesso:
+perdita sui $k$ esempi con cui ci si adatta. Il **ciclo esterno** [aggiorna
+$\theta$ guardando quanto valgono i parametri adattati, e non $\theta$
+stesso]{.pt-matita}:
 
 $$
 \theta \leftarrow \theta - \beta \nabla_\theta
@@ -343,9 +345,9 @@ anche lei, in novantanove onde su cento, ma solo da $1{,}88$ a $1{,}18$. Il suo
 errore resta quindi più di tre volte quello della rete meta-addestrata, che è
 stata costruita per far funzionare i passi lunghi.
 
-In definitiva, ciò che il meta-addestramento ottimizza non si vede guardando
-la rete ferma, ma solo guardando che cosa le succede quando impara, che è
-appunto la grandezza messa nella funzione obiettivo.
+In definitiva, [ciò che il meta-addestramento ottimizza non si vede guardando
+la rete ferma, ma solo guardando che cosa le succede quando
+impara]{.pt-matita}, che è appunto la grandezza messa nella funzione obiettivo.
 
 La tabella riporta mediane, e non medie, perché con passi di dimensione fissa
 capita che su qualche onda i cinque passi non convergano affatto, e basta uno
@@ -391,10 +393,10 @@ mento. Ha imparato anche che cosa lasciar perdere: i capelli, che la gente
 cambia; gli occhiali, che si tolgono; la luce della hall, che non è mai la
 stessa.
 
-Stamattina arrivano cinque ospiti nuovi, e di ciascuno vede la faccia una
-volta sola, al banco. Nel pomeriggio uno rientra, e il portiere lo saluta per
-nome. Non ha imparato niente di nuovo: ha confrontato. Un portiere al primo
-giorno confronterebbe tutto, e un ospite che rientra con il cappello e il
+Stamattina arrivano cinque ospiti nuovi, e di ciascuno vede la faccia una volta
+sola, al banco. Nel pomeriggio uno rientra, e il portiere lo saluta per nome.
+[Non ha imparato niente di nuovo: ha confrontato]{.pt-matita}. Un portiere al
+primo giorno confronterebbe tutto, e un ospite che rientra con il cappello e il
 sole alle spalle gli sembrerebbe un’altra persona.
 
 Con i numeri, di una faccia si possono prendere quaranta misure, e l’occhio
@@ -447,8 +449,8 @@ colleghi trovano però utile addestrare con più classi per episodio di quante
 ne avrà la prova, e con lo stesso numero di esempi per classe
 {cite}`snell2017prototypical`.
 
-Al momento della prova non c’è nessun passo di gradiente, ma solo $N$ medie e
-$N$ distanze. Rispetto a MAML cambia il costo, perché non ci sono né
+[Al momento della prova non c’è nessun passo di gradiente, ma solo $N$ medie e
+$N$ distanze]{.pt-matita}. Rispetto a MAML cambia il costo, perché non ci sono né
 ciclo interno né derivate seconde, e cambia il perimetro: il metodo è fatto per
 la classificazione, mentre MAML si applica anche alla regressione e al
 rinforzo.

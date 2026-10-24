@@ -64,8 +64,8 @@ ventuno sbaglia di quasi $60$, su una curva che non supera mai $1$.
 
 Per questa campana basta infittire i punti verso i bordi, invece di tenerli a
 distanze uguali. Nei dati veri, però, non si decide dove cadono i punti, e il
-problema di fondo resta: una formula sola vale per tutto il campo, e ogni
-coefficiente in più piega la curva dappertutto, anche dove andava bene
+problema di fondo resta: [una formula sola vale per tutto il campo, e ogni
+coefficiente in più piega la curva dappertutto]{.pt-matita}, anche dove andava bene
 com'era. L'errore esplode ai bordi, dove i punti stanno tutti da una parte sola
 e niente tiene ferma la curva dall'altra.
 
@@ -135,9 +135,9 @@ polinomio diverge per $|x| \gtrsim 0{,}726$ {cite}`trefethen2013approximation`.
 
 In definitiva, cambiare la posizione dei nodi cura questo esempio, e cambiare
 base cura il condizionamento, ma nessuno dei due cura il problema di fondo: un
-polinomio ha **supporto globale**, quindi ogni coefficiente influenza la curva
-su tutto il dominio, e la stima ai minimi quadrati non ha modo di localizzare
-la flessibilità.
+polinomio ha **supporto globale**, quindi [ogni coefficiente influenza la curva
+su tutto il dominio]{.pt-matita}, e la stima ai minimi quadrati non ha modo di
+localizzare la flessibilità.
 
 `````
 
@@ -229,9 +229,9 @@ forza). Tre pretese su ogni peso, e la giuntura sparisce anche alla vista:
 l'occhio non sa dire dove finisce un arco e comincia l'altro. Sul foglio resta
 una spline cubica.
 
-Una gobba in più in fondo a destra si ottiene aggiungendo un peso a destra, e
-gli archi di sinistra restano quasi dov'erano, mentre con una formula sola per
-tutto il campo si muoveva tutto.
+Una gobba in più in fondo a destra si ottiene [aggiungendo un peso a destra, e
+gli archi di sinistra restano quasi dov'erano]{.pt-matita}, mentre con una
+formula sola per tutto il campo si muoveva tutto.
 
 Quanta libertà resti alla curva si conta con le dita. Tre pesi fanno quattro
 tratti; ogni tratto è una cubica, e una cubica per stare ferma vuole quattro
@@ -298,8 +298,8 @@ da zero solo su quattro intervalli consecutivi.
 Da qui deriva tutto il vantaggio sul polinomio globale, nel quale ogni base è
 diversa da zero ovunque: la matrice di disegno è a banda, la base resta ben
 condizionata al crescere di $K$ (il suo numero di condizione dipende dal grado
-e non dal numero di nodi), e un coefficiente sposta la curva solo nel suo
-pezzo di dominio.
+e non dal numero di nodi), e [un coefficiente sposta la curva solo nel suo
+pezzo di dominio]{.pt-matita}.
 
 La matrice di disegno dipende però anche dai dati: ha rango pieno se e solo se
 fra i dati si possono scegliere $K+4$ punti in ordine crescente, l’$i$-esimo
@@ -348,10 +348,10 @@ loro. Da un lato deve passare vicino ai punti, e ogni elastico lo tira dalla
 sua parte, tanto più forte quanto più è teso. Dall'altro il legno si oppone
 alla piega: piegarlo richiede fatica, tanto più quanto più stretta è la piega.
 
-La curva che il listello disegna è il compromesso fra questi due tiri, cioè
-quella che spende meno fatica in totale. Con i pesi la rigidità non conterebbe
-niente: il listello passerebbe per tutti i punti comunque, duro o morbido che
-sia.
+[La curva che il listello disegna è il compromesso fra questi due
+tiri]{.pt-matita}, cioè quella che spende meno fatica in totale. Con i pesi la
+rigidità non conterebbe niente: il listello passerebbe per tutti i punti
+comunque, duro o morbido che sia.
 
 Nessuno deve dire al listello che forma prendere: non sa che cosa siano i tratti
 e i paletti, eppure ne esce una curva a tratti raccordati, con i raccordi in
@@ -389,7 +389,7 @@ dove il primo termine è la fedeltà ai dati e il secondo la penalità di
 curvatura, pesata da $\lambda \ge 0$. Il risultato, non ovvio, è che il
 minimo di questo problema su uno spazio di funzioni di dimensione infinita
 esiste, è unico ed è una spline cubica naturale con un nodo in ogni $x_i$
-distinto: la forma non si impone, si ottiene.
+distinto: [la forma non si impone, si ottiene]{.pt-matita}.
 
 I due estremi si leggono nella formula. Per $\lambda \to 0$ la penalità sparisce
 e resta l'interpolazione; per $\lambda \to \infty$ l'unico modo di tenere finito
@@ -596,9 +596,9 @@ leggere la stima sulla retta, all'altezza della casa da stimare. La retta,
 infatti, si accorge che i prezzi vanno giù, e lo tiene in conto anche dove i
 vicini stanno tutti da un lato.
 
-Questa correzione vale però solo se la finestra non è troppo stretta: una retta
+Questa correzione vale però solo se la finestra non è troppo stretta: [una retta
 tirata su due o tre case sole punta dove vuole, e al bordo sbaglia più della
-media che doveva correggere.
+media che doveva correggere]{.pt-matita}.
 
 La finestra, infine, non basta più quando le caratteristiche sono tante. Case
 simili per superficie ce ne sono sempre; case simili per superficie, piano,
@@ -657,9 +657,9 @@ $O(h^2)$: la retta corregge al primo ordine l'asimmetria del vicinato
 {cite}`hastie2009elements`.
 
 In cambio cresce la varianza, che nel punto estremo, con le stesse ipotesi, è
-circa tripla di quella della media pesata: con una banda stretta la retta
+circa tripla di quella della media pesata: [con una banda stretta la retta
 poggia su pochi punti tutti da un lato, e al bordo sbaglia più della media che
-doveva correggere.
+doveva correggere]{.pt-matita}.
 
 La stessa idea, massimizzare una verosimiglianza pesata attorno a $x_0$, dà la
 *verosimiglianza locale*, che porta la regressione logistica o di Poisson in
@@ -811,8 +811,8 @@ logistica).
 L'idea è rinunciare a una sola cosa, sapendo a quale. Invece di chiedere
 «come varia il risultato al variare di tutte le colonne insieme», si chiede
 «come varia al variare di ciascuna colonna presa da sola», e poi si sommano
-le risposte. Con dieci colonne le curve da disegnare sono dieci, e dieci curve
-si disegnano anche con i pochi dati che uno ha.
+le risposte. [Con dieci colonne le curve da disegnare sono dieci, e dieci curve
+si disegnano anche con i pochi dati che uno ha]{.pt-matita}.
 
 Ad esempio, per il prezzo di un affitto una curva dice come cambia al crescere
 dei metri quadri (sale, ma sempre meno: i primi cinquanta metri quadri valgono
@@ -884,10 +884,10 @@ additivo {cite}`buja1989linear`.
 
 Costruire un GAM con B-spline non richiede altro che quanto già visto: si
 espande ogni colonna nella sua base e si risolve un unico problema lineare
-regolarizzato. La complessità sale quindi linearmente con il numero $d$ di
-colonne, non esponenzialmente: è la maledizione della dimensionalità evitata
-per costruzione, e in cambio lo spazio delle ipotesi perde tutti i termini di
-interazione $f_{jk}(x_j, x_k)$.
+regolarizzato. [La complessità sale quindi linearmente con il numero $d$ di
+colonne, non esponenzialmente]{.pt-matita}: è la maledizione della
+dimensionalità evitata per costruzione, e in cambio lo spazio delle ipotesi
+perde tutti i termini di interazione $f_{jk}(x_j, x_k)$.
 
 La garanzia che giustifica la rinuncia è di Stone {cite}`stone1985additive`: se
 il modello additivo è vero e ogni $f_j$ è due volte derivabile, l'errore
@@ -992,10 +992,10 @@ modelli trasparenti </Interpretabilita/modelli-trasparenti-e-importanza>` ci
 torna sopra: un GAM si guarda direttamente, senza bisogno che qualcuno venga
 dopo a spiegarlo.
 
-Sono la risposta sbagliata quando le interazioni sono il cuore del problema, e
-quando i dati sono immagini, suono o testo, perché là non ci sono
-colonne con un significato proprio di cui abbia senso disegnare l'effetto, e
-servono altri modelli.
+[Sono la risposta sbagliata quando le interazioni sono il cuore del
+problema]{.pt-matita}, e quando i dati sono immagini, suono o testo, perché là
+non ci sono colonne con un significato proprio di cui abbia senso disegnare
+l'effetto, e servono altri modelli.
 
 `````{tab} Elementare
 

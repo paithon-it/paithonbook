@@ -15,8 +15,8 @@ quindi, è come contare i centesimi.
 ## Arrotondare, e di quanto si sbaglia
 
 Arrotondare ai multipli di un **passo** $s$ vuol dire sbagliare al più $s/2$
-su ogni numero. In altri termini, scegliere il passo è scegliere di quanto si
-è disposti a sbagliare, e da questa scelta discende tutto il resto.
+su ogni numero. In altri termini, [scegliere il passo è scegliere di quanto si
+è disposti a sbagliare]{.pt-matita}, e da questa scelta discende tutto il resto.
 
 `````{tab} Elementare
 
@@ -312,8 +312,8 @@ stesso a otto bit come a tre.
 La ragione è che il peso più grande detta il passo di tutto il gruppo, e lo
 confermano i due massimi. Su tutta la matrice il massimo sta a 4,56 deviazioni
 standard, mentre in un gruppo da sessantaquattro sta in media a 2,63, e 4,56
-diviso 2,63 fa 1,73. Più piccolo è il gruppo che condivide il passo, meno un
-elemento grande può rovinare i suoi vicini.
+diviso 2,63 fa 1,73. [Più piccolo è il gruppo che condivide il passo, meno un
+elemento grande può rovinare i suoi vicini]{.pt-matita}.
 
 C’è un secondo modo di stringere il passo, senza scale in più: prenderlo più
 corto di quanto chiederebbe il peso più grande, cioè calcolarlo da un tetto più
@@ -407,12 +407,12 @@ la componente enorme piu' grande vale  167.6
 8 bit, ma le tre enormi tenute intere:   0.20%
 ```
 
-Basta tenere per esteso tre colonne su cinquecentododici, cioè lo 0,6 per cento
-dei numeri, invece di arrotondarle, e l’errore passa da poco più del sette per
-cento a due decimi. Sui modelli linguistici dai 6,7 miliardi di parametri in su
-è la differenza fra arrotondare a otto bit anche le attivazioni senza perdere
-accuratezza e perderne molta {cite}`dettmers2022llmint8`. Tenerle a parte è
-economico perché sono poche e tendono a stare nelle stesse posizioni.
+[Basta tenere per esteso tre colonne su cinquecentododici]{.pt-matita}, cioè lo
+0,6 per cento dei numeri, invece di arrotondarle, e l’errore passa da poco più
+del sette per cento a due decimi. Sui modelli linguistici dai 6,7 miliardi di
+parametri in su è la differenza fra arrotondare a otto bit anche le attivazioni
+senza perdere accuratezza e perderne molta {cite}`dettmers2022llmint8`. Tenerle
+a parte è economico perché sono poche e tendono a stare nelle stesse posizioni.
 
 `````{tab} Elementare
 
@@ -700,13 +700,13 @@ una scala sola sale con lui, al 7,83%. I due FP8 restano dove erano (2,50% e
 5,25%), perché il loro errore è una frazione di ciascun numero e non dipende da
 chi altro c’è nel gruppo.
 
-L’intero con una scala ogni 64 pesi resta però il più preciso di tutti
-(1,55%), perché i pesi grandi allargano il passo soltanto del loro gruppo.
-Anche qui, quindi, decide chi condivide il passo più che il formato. La virgola
-mobile batte l’intero a una scala sola soltanto quando il peso più grande sta
-molto sopra tutti gli altri, come nella seconda riga, e il suo vantaggio vero è
-un altro: sulle GPU che la supportano un prodotto in FP8 può andare fino al
-doppio della velocità di uno a sedici bit.
+L’intero con una scala ogni 64 pesi resta però il più preciso di tutti (1,55%),
+perché i pesi grandi allargano il passo soltanto del loro gruppo. Anche qui,
+quindi, [decide chi condivide il passo più che il formato]{.pt-matita}. La
+virgola mobile batte l’intero a una scala sola soltanto quando il peso più
+grande sta molto sopra tutti gli altri, come nella seconda riga, e il suo
+vantaggio vero è un altro: sulle GPU che la supportano un prodotto in FP8 può
+andare fino al doppio della velocità di uno a sedici bit.
 
 ## Arrotondare dopo, o saperlo già durante
 

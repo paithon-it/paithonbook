@@ -65,8 +65,8 @@ calcolo, e il verdetto è la probabilità che ne risulta.
 
 Nella {numref}`fig-naive-bayes-spam` si vede anche dove sta l'ingenuità del
 metodo: le frecce entrano nel calcolo ciascuna per conto suo, senza mai
-incontrarsi. L'aggettivo *naive*, "ingenuo", significa questo: ogni parola vota
-come se le altre non esistessero. Se ad esempio «offerta» e «gratis»
+incontrarsi. L'aggettivo *naive*, "ingenuo", significa questo: [ogni parola vota
+come se le altre non esistessero]{.pt-matita}. Se ad esempio «offerta» e «gratis»
 compaiono quasi sempre insieme, il modello le conta come due indizi
 indipendenti, e lo stesso sospetto vota due volte. Alla fine il modello
 combina tutti gli indizi e sceglie l'etichetta con il punteggio più alto.
@@ -257,10 +257,10 @@ cercano il confine più largo possibile fra due gruppi di esempi e hanno una
 Due risultati restano istruttivi. Il primo è che tutti e tre i modelli,
 addestrati direttamente sugli esempi, raggiungevano circa l'80 per cento di
 risposte esatte, superando nettamente il metodo tradizionale basato su liste
-manuali di parole positive e negative (i lessici di sentiment). Il secondo è che
-giudicare il tono si rivelò più difficile che riconoscere l'argomento di un
-testo, perché l'argomento sta nelle parole, mentre il giudizio si nasconde nei
-giri di frase, che sfuggono ai semplici conteggi.
+manuali di parole positive e negative (i lessici di sentiment). Il secondo è
+che [giudicare il tono si rivelò più difficile che riconoscere l'argomento di
+un testo]{.pt-matita}, perché l'argomento sta nelle parole, mentre il giudizio
+si nasconde nei giri di frase, che sfuggono ai semplici conteggi.
 
 Con `scikit-learn` il classificatore diventa poche righe. Costruiamo un
 micro-corpus di recensioni in italiano:
@@ -309,9 +309,9 @@ il `TfidfVectorizer` già visto nella sezione sulla rappresentazione del testo.
 
 Naive Bayes conta le parole per ciascuna delle due etichette possibili (le
 *classi*, nel linguaggio tecnico) e lascia che la regola di Bayes tiri le
-somme. C'è un'alternativa più diretta: imparare, per ogni parola, un peso che
-dica quanto spinge verso un'etichetta o l'altra, e sommare le spinte. È la
-regressione logistica.
+somme. C'è un'alternativa più diretta: [imparare, per ogni parola, un peso che
+dica quanto spinge verso un'etichetta o l'altra, e sommare le
+spinte]{.pt-matita}. È la regressione logistica.
 
 `````{tab} Elementare
 
@@ -444,8 +444,8 @@ le classi.
 
 La differenza si vede sugli indizi fotocopia: se «gratis» e «offerta» compaiono
 quasi sempre insieme, per Naive Bayes sono due voti pieni (conta due volte lo
-stesso indizio), mentre la bilancia della regressione logistica se ne accorge
-durante l'addestramento e divide il peso tra le due.
+stesso indizio), mentre [la bilancia della regressione logistica se ne accorge
+durante l'addestramento e divide il peso tra le due]{.pt-matita}.
 
 Quel doppio conteggio si sente nel modo in cui il primo perito parla. Si
 dichiara sicurissimo, «è lui, non c'è dubbio», mentre gli indizi davvero
@@ -493,14 +493,14 @@ occorre, nel caso peggiore, un numero lineare (l'analisi è ripresa in
 {doc}`Modelli generativi
 </MachineLearning/modelli-generativi>`).
 
-Ne seguono conseguenze pratiche. Quando le
-feature sono correlate (e nel testo lo sono sempre) Naive Bayes moltiplica
-evidenze non indipendenti e produce probabilità mal calibrate, schiacciate verso
-0 o 1 (la *decisione* spesso resta giusta, la *confidenza* no); la regressione
-logistica, ottimizzando i pesi congiuntamente, ripartisce il credito tra feature
-correlate. In cambio, Naive Bayes ha stime a bassa varianza che convergono con
-pochi dati e si addestra in un solo passaggio; la regressione logistica tende a
-vincere quando gli esempi abbondano.
+Ne seguono conseguenze pratiche. Quando le feature sono correlate (e nel testo
+lo sono sempre) Naive Bayes moltiplica evidenze non indipendenti e produce
+probabilità mal calibrate, schiacciate verso 0 o 1 (la *decisione* spesso resta
+giusta, la *confidenza* no); [la regressione logistica, ottimizzando i pesi
+congiuntamente, ripartisce il credito tra feature correlate]{.pt-matita}. In
+cambio, Naive Bayes ha stime a bassa varianza che convergono con pochi dati e
+si addestra in un solo passaggio; la regressione logistica tende a vincere
+quando gli esempi abbondano.
 
 Nei confronti di Pang, Lee e
 Vaithyanathan sulle recensioni di film la regressione logistica (la «massima
@@ -573,13 +573,13 @@ più negative: ['ore', 'soldi', 'senza']
 più positive: ['fotografia', 'sorprende', 'che']
 ```
 
-Con otto recensioni, però, la lista dice più sul corpus che sulla lingua: in
-cima finiscono parole che compaiono una volta sola, e perfino una parola vuota
-come «che» si prende un peso alto pur comparendo una volta per parte, in «una
-storia che sorprende» e in «che noia». La recensione entusiasta è la più corta
-delle due, e in un vettore riportato alla stessa misura complessiva la stessa
-parola pesa di più dove le altre sono meno; basta quel poco perché il suo
-peso risulti positivo.
+Con otto recensioni, però, [la lista dice più sul corpus che sulla
+lingua]{.pt-matita}: in cima finiscono parole che compaiono una volta sola, e
+perfino una parola vuota come «che» si prende un peso alto pur comparendo una
+volta per parte, in «una storia che sorprende» e in «che noia». La recensione
+entusiasta è la più corta delle due, e in un vettore riportato alla stessa
+misura complessiva la stessa parola pesa di più dove le altre sono meno; basta
+quel poco perché il suo peso risulti positivo.
 
 Su un corpus vero, dove ogni parola si è
 vista in contesti diversi, in cima e in fondo compaiono di solito quelle che
@@ -617,12 +617,12 @@ tirano in direzioni opposte. Il
 giudice non risponde sì o no: emette un punteggio, e c'è una soglia oltre la
 quale segnala.
 
-Abbassa la soglia e segnalerai di più: la recall non può che
-salire o restare ferma, perché le segnalazioni giuste di prima restano tutte,
-mentre la precision di solito scende, perché fra i nuovi segnalati entrano
-soprattutto falsi allarmi (di solito, non sempre: se il caso che entra è
-giusto, la precision sale). Alzala e succede il contrario. Un solo cursore,
-due numeri che tendono a muoversi in senso inverso: per questo non ha senso
+Abbassa la soglia e segnalerai di più: la recall non può che salire o restare
+ferma, perché le segnalazioni giuste di prima restano tutte, mentre la
+precision di solito scende, perché fra i nuovi segnalati entrano soprattutto
+falsi allarmi (di solito, non sempre: se il caso che entra è giusto, la
+precision sale). Alzala e succede il contrario. [Un solo cursore, due numeri
+che tendono a muoversi in senso inverso]{.pt-matita}: per questo non ha senso
 chiedere «quanto è bravo» in astratto, senza dire quale dei due errori costa di
 più.
 
@@ -689,11 +689,11 @@ I limiti però sono seri. Il contesto: «imprevedibile» è un complimento per l
 trama di un film e un'accusa per i freni di un'auto, ma nel dizionario ha un
 solo segno. L'ironia: «complimenti davvero», scritto sotto il racconto di un
 disastro, in un elenco di parole conta come una lode. E la negazione: «non è
-affatto male» è un complimento, eppure è fatto soltanto di parole che
-un elenco di quel genere marchia come negative o neutre, «non» e «male» in
-testa. Un conteggio di parole isolate non può cogliere quella frase, per
-costruzione: presa una per una, nessuna di quelle parole è un elogio, e il
-senso sta tutto in come stanno insieme.
+affatto male» è un complimento, eppure è fatto soltanto di parole che un elenco
+di quel genere marchia come negative o neutre, «non» e «male» in testa. [Un
+conteggio di parole isolate non può cogliere quella frase, per
+costruzione]{.pt-matita}: presa una per una, nessuna di quelle parole è un
+elogio, e il senso sta tutto in come stanno insieme.
 
 Un modello che legge la frase intera
 con l'attenzione, come quelli del capitolo sui Transformer, ha davanti anche il
@@ -719,13 +719,13 @@ polarità nota e la propagano alle parole che stanno vicine nello spazio dei
 word embedding, come SentProp di Hamilton e colleghi
 {cite}`hamilton2016inducing`.
 
-In un sistema moderno il lessico raramente decide
-da solo: i suoi conteggi entrano come feature in una regressione logistica,
-dove convivono con i pesi appresi; un innesto utile soprattutto quando i dati
-etichettati del dominio sono pochi. Restano i limiti strutturali di ogni
-approccio a sacchetto di parole: polarità dipendente dal dominio, ironia
-invisibile, e la negazione, che sposta il segno di intere porzioni di frase e
-richiede modelli che elaborino sequenze ordinate anziché sacchetti di parole.
+In un sistema moderno il lessico raramente decide da solo: i suoi conteggi
+entrano come feature in una regressione logistica, dove convivono con i pesi
+appresi; un innesto utile soprattutto quando i dati etichettati del dominio
+sono pochi. [Restano i limiti strutturali di ogni approccio a sacchetto di
+parole]{.pt-matita}: polarità dipendente dal dominio, ironia invisibile, e la
+negazione, che sposta il segno di intere porzioni di frase e richiede modelli
+che elaborino sequenze ordinate anziché sacchetti di parole.
 
 `````
 

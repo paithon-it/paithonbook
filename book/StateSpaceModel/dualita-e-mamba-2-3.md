@@ -198,8 +198,8 @@ transizione scalare ci si ritrova su quello stesso gradino. Lì la stessa
 funzione ha una forma ricorrente, il cui costo è proporzionale alla lunghezza
 del testo (la vista «SSM»), e una forma a tabella, la griglia $L \times L$ dei
 confronti fra tutte le coppie di parole, mascherata perché ciascuna guardi solo
-all'indietro (la vista «attenzione»). Su quel gradino non è un'analogia: è
-un'uguaglianza. Sugli altri, le due famiglie restano parenti.
+all'indietro (la vista «attenzione»). [Su quel gradino non è un'analogia: è
+un'uguaglianza]{.pt-matita}. Sugli altri, le due famiglie restano parenti.
 
 ## Perché conviene: i tensor core
 
@@ -317,11 +317,11 @@ più preciso.
 
 Mamba-1 aveva reso l'SSM selettivo pagando con lo scan. Mamba-2 recupera il
 parallelismo pieno delle matrici accettando una transizione di stato (il modo
-in cui lo stato decade) più semplice, e può permetterselo perché la dualità
-gli garantisce che quella forma più semplice è un'attenzione lineare
-mascherata, e come tale si calcola a prodotti di matrici. È il compromesso
-tipico di questa famiglia: qualche grado di libertà in meno sulla transizione,
-cioè meno modi di decadere, in cambio di forme parallele che sfruttano le GPU.
+in cui lo stato decade) più semplice, e può permetterselo perché la dualità gli
+garantisce che quella forma più semplice è un'attenzione lineare mascherata, e
+come tale si calcola a prodotti di matrici. È il compromesso tipico di questa
+famiglia: [qualche grado di libertà in meno sulla transizione, cioè meno modi
+di decadere, in cambio di forme parallele che sfruttano le GPU]{.pt-matita}.
 
 ## Mamba-3
 
@@ -483,9 +483,9 @@ Perché serve? Ci sono compiti in cui la risposta dipende dal *contare* o dal
 *tenere il segno*: capire se il numero di parentesi aperte è pari o dispari,
 contare qualcosa che si ripete a cicli (come le ore su un
 quadrante, dove dopo il dodici si ricomincia), seguire uno stato che si
-alterna. Una memoria che sa solo sbiadire fatica; una che sa ruotare può,
+alterna. Una memoria che sa solo sbiadire fatica; [una che sa ruotare può,
 letteralmente, «girare la lancetta» a ogni passo e ricordare a che punto del
-ciclo si trova.
+ciclo si trova]{.pt-matita}.
 
 Sulle parentesi si vede bene: basta che a ogni parentesi la
 lancetta faccia mezzo giro, e dopo un numero pari di parentesi è tornata
@@ -508,21 +508,21 @@ che si sta leggendo.
 
 `````{tab} Superiore
 
-Mamba-3 riporta nel modello selettivo le **transizioni a valori complessi**, che
-S4 aveva (nella sua forma normale più basso rango) e che Mamba e Mamba-2 avevano
-abbandonato per il caso reale {cite}`lahoti2026mamba3`. La dinamica dello stato
-diventa una moltiplicazione per un numero complesso, che ha un modulo (il
-decadimento, come prima) e una fase (una rotazione). Nel piano complesso,
-moltiplicare per $e^{i\theta}$ è ruotare di un
-angolo $\theta$; ripetendo il passo, lo stato percorre un cerchio. Per la
-parità basterebbe un autovalore reale negativo, $-1$, che rovescia il segno a
-ogni passo: Grazzi e colleghi {cite}`grazzi2025unlocking` dimostrano che una
-ricorrenza lineare a precisione finita con autovalori della transizione tutti
-positivi, come l’$e^{\Delta_t a} \in (0,1)$ di Mamba-2, la parità non la
-risolve, e che per contare modulo $3$ serve che una transizione, o un prodotto
-di transizioni, abbia un autovalore non reale: una triangolare a elementi reali
-non basta. La rotazione fa questo: con angolo $2\pi/m$ lo stato torna al
-punto di partenza ogni $m$ passi e conta modulo $m$, cosa che un fattore reale,
+Mamba-3 riporta nel modello selettivo le **transizioni a valori complessi**,
+che S4 aveva (nella sua forma normale più basso rango) e che Mamba e Mamba-2
+avevano abbandonato per il caso reale {cite}`lahoti2026mamba3`. La dinamica
+dello stato diventa una moltiplicazione per un numero complesso, che ha un
+modulo (il decadimento, come prima) e una fase (una rotazione). Nel piano
+complesso, moltiplicare per $e^{i\theta}$ è ruotare di un angolo $\theta$;
+ripetendo il passo, lo stato percorre un cerchio. Per la parità basterebbe un
+autovalore reale negativo, $-1$, che rovescia il segno a ogni passo: Grazzi e
+colleghi {cite}`grazzi2025unlocking` dimostrano che una ricorrenza lineare a
+precisione finita con autovalori della transizione tutti positivi, come
+l’$e^{\Delta_t a} \in (0,1)$ di Mamba-2, la parità non la risolve, e che per
+contare modulo $3$ serve che una transizione, o un prodotto di transizioni,
+abbia un autovalore non reale: una triangolare a elementi reali non basta. La
+rotazione fa questo: [con angolo $2\pi/m$ lo stato torna al punto di partenza
+ogni $m$ passi e conta modulo $m$]{.pt-matita}, cosa che un fattore reale,
 anche negativo, sa fare solo per $m = 2$. Il paper documenta un netto
 miglioramento sui compiti di state tracking.
 
@@ -623,9 +623,10 @@ discretizzazione esponenziale-trapezoidale con peso $\lambda_t$ appreso (che
 rende opzionale la convoluzione corta), transizioni a valori complessi,
 equivalenti a un RoPE dipendente dai dati su $\mathbf{B}$ e $\mathbf{C}$, che
 permettono di contare, e la formulazione MIMO, che a parità di stato fa più
-calcolo per byte letto. Il filo è sempre lo stesso, comprimere il passato in
-uno stato di dimensione fissa, e ogni versione sposta qualcosa: su che cosa vi
-si scrive, su come lo si calcola, su che cosa lo stato può rappresentare.
+calcolo per byte letto. [Il filo è sempre lo stesso, comprimere il passato in
+uno stato di dimensione fissa]{.pt-matita}, e ogni versione sposta qualcosa: su
+che cosa vi si scrive, su come lo si calcola, su che cosa lo stato può
+rappresentare.
 
 `````{tab} Elementare
 

@@ -32,8 +32,8 @@ mille volte e che non è cambiata di un pixel.
 Il limite sta nel formato di ciò che ha imparato. L'agente ha in mano la
 tabella dei valori del {doc}`capitolo sul reinforcement learning
 </ReinforcementLearning/overview>`, un voto per ogni coppia (casella, azione),
-e quei voti dicono quanto conviene un'azione *per quel traguardo*: cambiato il
-traguardo, ogni numero è da rifare. Vorremmo quindi salvare, invece di
+e quei voti dicono quanto conviene un'azione *per quel traguardo*: [cambiato il
+traguardo, ogni numero è da rifare]{.pt-matita}. Vorremmo quindi salvare, invece di
 un'azione, un pezzo di comportamento: «esci da questa stanza», che vale per
 tutti i traguardi che stanno di là.
 
@@ -48,13 +48,14 @@ volte, e che poi in campo esce come un gesto solo.
 Uno schema ha tre cose. C'è un momento in cui lo si può chiamare, e non è
 sempre: a metà campo, con la palla in mano, mentre dalla propria area non
 avrebbe senso. C'è quello che succede dentro, i passaggi e i movimenti senza
-palla che ognuno ha provato in settimana. Infine c'è un modo di finire, deciso in
-anticipo: il tiro parte, oppure lo schema si rompe e si torna a giocare a
+palla che ognuno ha provato in settimana. Infine c'è un modo di finire, deciso
+in anticipo: il tiro parte, oppure lo schema si rompe e si torna a giocare a
 braccio. Una sequenza di passi imparata a memoria ed eseguita sempre uguale ha
-anche lei un inizio, un corpo e una fine; lo schema vero, invece, guarda il
-campo mentre lo si esegue, adatta i movimenti a come si mette la difesa, e
-finisce prima o dopo a seconda di come va. È questo che consente di chiamarlo e
-poi smettere di pensarci, sapendo che sarà lui a dire quando è finito.
+anche lei un inizio, un corpo e una fine; [lo schema vero, invece, guarda il
+campo mentre lo si esegue]{.pt-matita}, adatta i movimenti a come si mette la
+difesa, e finisce prima o dopo a seconda di come va. È questo che consente di
+chiamarlo e poi smettere di pensarci, sapendo che sarà lui a dire quando è
+finito.
 
 Chi chiama lo schema decide di rado, una volta ogni dieci secondi invece che
 dieci volte al secondo, e i suoi dieci secondi sono un gesto solo anche per lui:
@@ -79,9 +80,9 @@ in una tripla. Un'opzione $\omega = \langle I_\omega, \pi_\omega,
 
 L'agente opera quindi su due livelli: una **politica sulle opzioni**
 $\pi_\Omega(\omega \mid s)$, che sceglie quale opzione avviare, e le
-sotto-politiche $\pi_\omega$, che eseguono l'opzione scelta. La differenza con
-una macro classica sta nel ciclo chiuso. Una macro è una sequenza fissa di
-azioni elementari, eseguita senza guardare; un'opzione, invece, ha una
+sotto-politiche $\pi_\omega$, che eseguono l'opzione scelta. [La differenza con
+una macro classica sta nel ciclo chiuso]{.pt-matita}. Una macro è una sequenza
+fissa di azioni elementari, eseguita senza guardare; un'opzione, invece, ha una
 sotto-politica che guarda lo stato a ogni passo e una terminazione che dipende
 dallo stato (anche in modo stocastico), quindi reagisce a ciò che succede e
 finisce quando serve. La sequenza fissa resta un caso particolare, un'opzione
@@ -152,8 +153,8 @@ Il terzo è quello che si dimentica, e riguarda la qualità del gioco. Uno schem
 porta dove porta, e ci mette il suo tempo: chi gioca soltanto a schemi non vede
 il pallone perso dall'avversario con il canestro libero davanti, chiama la sua
 sequenza, la esegue per bene, e arriva dall'altra parte tre secondi più tardi
-di quanto avrebbe fatto da solo in due passi. Giocare a gesti grossi fa perdere
-le scorciatoie.
+di quanto avrebbe fatto da solo in due passi. [Giocare a gesti grossi fa perdere
+le scorciatoie]{.pt-matita}.
 
 Da quest'ultimo viene la scelta abituale: gli schemi si aggiungono al gioco
 libero e non lo sostituiscono. Una squadra che ha in mano tutti e due chiama lo
@@ -181,18 +182,18 @@ I costi sono di tre specie, e l'ultima è quella che si dimentica.
 - La complessità combinatoria. Il numero di macro cresce in modo
   esponenziale con la loro lunghezza, quindi enumerarle è escluso e la politica
   di alto livello va approssimata come tutto il resto.
-- La qualità. Una politica che contiene macro può essere peggiore di una
-  fatta di sole azioni elementari, perché una macro scavalca percorsi più corti
-  che le azioni singole avrebbero trovato. La causa non sta nell'algoritmo ma
-  nell'aver ristretto l'insieme delle traiettorie percorribili. Da
-  qui la scelta progettuale standard di aggiungere le opzioni
+- La qualità. [Una politica che contiene macro può essere peggiore di una fatta
+  di sole azioni elementari]{.pt-matita}, perché una macro scavalca percorsi
+  più corti che le azioni singole avrebbero trovato. La causa non sta
+  nell'algoritmo ma nell'aver ristretto l'insieme delle traiettorie
+  percorribili. Da qui la scelta progettuale standard di aggiungere le opzioni
   all'insieme delle azioni elementari invece di rimpiazzarlo: così l'ottimo
   raggiungibile resta quello di prima. Raggiungibile, però, non vuol dire
   raggiunto: le opzioni cambiano quali stati l'agente visita, e un'opzione
-  sufficientemente efficace sottrae all'apprendimento le visite che servivano
-  a scoprire la strada migliore. Si impara più in fretta all'inizio e si
-  arriva all'ottimo più tardi, o non ci si arriva; che il saldo sia positivo
-  dipende da quanto le opzioni sono adatte al compito.
+  sufficientemente efficace sottrae all'apprendimento le visite che servivano a
+  scoprire la strada migliore. Si impara più in fretta all'inizio e si arriva
+  all'ottimo più tardi, o non ci si arriva; che il saldo sia positivo dipende
+  da quanto le opzioni sono adatte al compito.
 
 Già il lavoro fondativo del quadro avverte che troppe opzioni possono
 rallentare anche la pianificazione, come i macro-operatori usati senza misura
@@ -434,9 +435,9 @@ opzioni resta sopra di cinque passi e mezzo sulla porta e di quasi tre
 sull'angolo. Le opzioni che l'hanno fatto partire adesso lo trattengono, e la
 spiegazione più plausibile è quella del costo che si dimentica: sono abbastanza
 efficaci, l'agente le chiama, e non compie le visite che avrebbero rivelato la
-strada più corta. L'esperimento misura il ritardo, non la sua causa. Aggiungere
+strada più corta. L'esperimento misura il ritardo, non la sua causa. [Aggiungere
 le opzioni lascia raggiungibile la strada migliore, ma non garantisce che la si
-trovi.
+trovi]{.pt-matita}.
 
 ## Dove i sotto-obiettivi non li dà nessuno
 
@@ -481,24 +482,24 @@ elementari a ogni passo dell'ambiente. L'obiettivo è una direzione in uno
 spazio latente appreso, e il worker riceve un premio interno per quanto si
 muove lungo quella direzione: il manager dice dove andare, non come.
 
-Le due famiglie servono soprattutto dove la ricompensa arriva di rado: una
-decisione di alto livello copre in una volta sola un tratto che a passi
-elementari richiederebbe una fortuna rara. Nella seconda famiglia, però, il
-problema si ripresenta un livello più giù. Un livello basso che impara a
-raggiungere un obiettivo ha bisogno di sapere quando ci è arrivato, ma il
-punteggio del gioco può arrivare migliaia di passi dopo, quando la porta
-attraversata è ormai lontana nel tempo. L’**h-DQN** {cite}`kulkarni2016hdqn`
-affronta questo punto: un livello alto sceglie un obiettivo (in un gioco,
-«arriva alla scala», «prendi la chiave»), un livello basso sceglie le azioni
-per raggiungerlo, e quando l'obiettivo è raggiunto l'agente stesso dà al
-livello basso un premio interno. Quel premio non entra nel punteggio del gioco:
-serve soltanto a dire al livello basso «ci sei arrivato». L'h-DQN, però, non
-trova gli obiettivi da sé: su *Montezuma's Revenge* li ricava da un rivelatore
-di oggetti scritto a mano (la scala, la chiave, la porta), ricevendo
-dall'esterno ciò che si voleva apprendere. Mostra che due livelli e un premio
-interno superano le ricompense rade quando gli obiettivi ci sono; trovarli
-resta il compito dei metodi che li apprendono, come l’option-critic e le
-FeUdal Networks.
+[Le due famiglie servono soprattutto dove la ricompensa arriva di
+rado]{.pt-matita}: una decisione di alto livello copre in una volta sola un
+tratto che a passi elementari richiederebbe una fortuna rara. Nella seconda
+famiglia, però, il problema si ripresenta un livello più giù. Un livello basso
+che impara a raggiungere un obiettivo ha bisogno di sapere quando ci è
+arrivato, ma il punteggio del gioco può arrivare migliaia di passi dopo, quando
+la porta attraversata è ormai lontana nel tempo. L’**h-DQN**
+{cite}`kulkarni2016hdqn` affronta questo punto: un livello alto sceglie un
+obiettivo (in un gioco, «arriva alla scala», «prendi la chiave»), un livello
+basso sceglie le azioni per raggiungerlo, e quando l'obiettivo è raggiunto
+l'agente stesso dà al livello basso un premio interno. Quel premio non entra
+nel punteggio del gioco: serve soltanto a dire al livello basso «ci sei
+arrivato». L'h-DQN, però, non trova gli obiettivi da sé: su *Montezuma's
+Revenge* li ricava da un rivelatore di oggetti scritto a mano (la scala, la
+chiave, la porta), ricevendo dall'esterno ciò che si voleva apprendere. Mostra
+che due livelli e un premio interno superano le ricompense rade quando gli
+obiettivi ci sono; trovarli resta il compito dei metodi che li apprendono, come
+l’option-critic e le FeUdal Networks.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

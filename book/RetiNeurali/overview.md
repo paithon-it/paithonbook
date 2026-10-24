@@ -34,9 +34,9 @@ Il neurone biologico riceve segnali dalle sue diramazioni d'ingresso, i
 "spara" un impulso lungo l'assone, il cavo d'uscita, fino ai punti di contatto
 con gli altri neuroni. Da questa immagine nasce il neurone artificiale, che è
 una metafora e non una fotografia, poiché un neurone reale è una cellula viva,
-governata da una chimica che non riproduciamo. Il neurone artificiale ne prende
-in prestito una sola idea (*sommare tanti segnali e decidere*) e la trasforma
-in aritmetica.
+governata da una chimica che non riproduciamo. [Il neurone artificiale ne
+prende in prestito una sola idea]{.pt-matita} (*sommare tanti segnali e
+decidere*) e la trasforma in aritmetica.
 
 `````{tab} Elementare
 
@@ -107,14 +107,14 @@ valeva l'ingresso: uno acceso, che vale uno, sposta il suo peso di un passo
 intero, uno spento non lo sposta affatto. È il passo con cui l'allievo si
 corregge. Nessuno gli ha scritto la regola, la ricava dagli errori.
 
-C'è una promessa, e vale a una condizione. Se esiste un modo di pesare gli
+C'è una promessa, e vale a una condizione. [Se esiste un modo di pesare gli
 ingressi che azzecchi tutti gli esempi del maestro, l'allievo lo trova di
-sicuro: dopo un numero finito di correzioni smette di sbagliare, e da lì in poi
-i pesi restano dove sono. Se non esiste, l'allievo non si assesta mai: aggiusta
-un esempio e ne rompe un altro, poi torna indietro, e andrebbe avanti così per
-sempre. Quanto manchi alla fine, però, dall'esterno non si vede: si guarda una
-risposta alla volta, e finché l'allievo sbaglia ogni tanto non si sa se sia a
-un passo dal riuscirci o se stia girando in tondo.
+sicuro]{.pt-matita}: dopo un numero finito di correzioni smette di sbagliare, e
+da lì in poi i pesi restano dove sono. Se non esiste, l'allievo non si assesta
+mai: aggiusta un esempio e ne rompe un altro, poi torna indietro, e andrebbe
+avanti così per sempre. Quanto manchi alla fine, però, dall'esterno non si
+vede: si guarda una risposta alla volta, e finché l'allievo sbaglia ogni tanto
+non si sa se sia a un passo dal riuscirci o se stia girando in tondo.
 
 `````
 
@@ -137,13 +137,13 @@ b \leftarrow b + \eta\,(y - \hat{y}),
 $$
 
 dove $y\in\{0,1\}$ è l'etichetta corretta, $\hat{y}$ la predizione ed $\eta>0$
-il tasso di apprendimento. C'è poi il **teorema di convergenza**: se i dati sono
-linearmente separabili, questa regola trova in un numero finito di passi un
-iperpiano che li separa. Non è nell'articolo del 1958, che presenta il modello;
-la dimostrazione arriva con *Principles of Neurodynamics* del 1962
-{cite}`rosenblatt1962principles`, e le forme rigorose che si citano oggi si
-devono a Novikoff {cite}`novikoff1962convergence` e a Block. Se i dati non sono
-separabili, il teorema non garantisce la convergenza.
+il tasso di apprendimento. C'è poi il **teorema di convergenza**: [se i dati
+sono linearmente separabili, questa regola trova in un numero finito di passi
+un iperpiano che li separa]{.pt-matita}. Non è nell'articolo del 1958, che
+presenta il modello; la dimostrazione arriva con *Principles of Neurodynamics*
+del 1962 {cite}`rosenblatt1962principles`, e le forme rigorose che si citano
+oggi si devono a Novikoff {cite}`novikoff1962convergence` e a Block. Se i dati
+non sono separabili, il teorema non garantisce la convergenza.
 
 `````
 
@@ -153,14 +153,14 @@ Nel 1969 Marvin Minsky e Seymour Papert pubblicano *Perceptrons*
 {cite}`minsky1969perceptrons`, un libro di matematica rigorosa, passato alla
 storia per un risultato che non dimostra.
 
-Un neurone solo, dovendo dividere i casi in due gruppi, sa tracciare una riga
-dritta e nient'altro: separa soltanto i casi che una retta divide, e che per
-questo si dicono linearmente separabili. Esistono allora regole semplicissime
-che gli restano precluse, perché per separarne i casi una riga non basta. Nel
-1969 questo si sapeva benissimo, perché è un'osservazione di poche righe che i
-due autori danno per nota. L'esempio che tutti ricordano è lo **XOR**, l’"o
-esclusivo". I teoremi veri del libro sono un'altra cosa, più forte, e li
-racconta la sezione sul {doc}`percettrone <percettrone>`.
+[Un neurone solo, dovendo dividere i casi in due gruppi, sa tracciare una riga
+dritta e nient'altro]{.pt-matita}: separa soltanto i casi che una retta divide,
+e che per questo si dicono linearmente separabili. Esistono allora regole
+semplicissime che gli restano precluse, perché per separarne i casi una riga
+non basta. Nel 1969 questo si sapeva benissimo, perché è un'osservazione di
+poche righe che i due autori danno per nota. L'esempio che tutti ricordano è lo
+**XOR**, l’"o esclusivo". I teoremi veri del libro sono un'altra cosa, più
+forte, e li racconta la sezione sul {doc}`percettrone <percettrone>`.
 
 Al 1969 seguirono anni in cui i fondi per le reti neurali passarono all'altra
 intelligenza artificiale, quella dei programmi a regole scritte a mano, e dopo
@@ -241,13 +241,13 @@ finisce il raggio.
 Un modo ovvio ci sarebbe: girare un pochino il primo specchietto, guardare dove
 va a finire il punto, rimetterlo com'era, e poi il secondo, e poi il terzo. Con
 dieci specchietti si fa; con dieci milioni no, perché a ogni prova il raggio
-deve rifare il giro intero. 
-La backpropagation di giri ne fa uno solo, e
-all'indietro: parte dal punto sbagliato e risale la fila. A ogni specchietto
-arriva il calcolo già fatto di tutto il tratto che viene dopo, e per sapere
-quanto conta quello lì basta moltiplicarlo per quanto quello specchietto,
-girato un pochino, devia il raggio: gli effetti lungo la fila si moltiplicano
-uno dopo l'altro, come i giri degli ingranaggi della {doc}`regola della catena
+deve rifare il giro intero. [La backpropagation di giri ne fa uno solo, e
+all'indietro]{.pt-matita}: parte dal punto sbagliato e risale la fila. A ogni
+specchietto arriva il calcolo già fatto di tutto il tratto che viene dopo, e
+per sapere quanto conta quello lì basta moltiplicarlo per quanto quello
+specchietto, girato un pochino, devia il raggio: gli effetti lungo la fila si
+moltiplicano uno dopo l'altro, come i giri degli ingranaggi della {doc}`regola
+della catena
 </Matematica/analisi-ottimizzazione>`. Poi il calcolo, aggiornato, passa allo
 specchietto precedente. Alla fine ognuno sa di quanto sposterebbe il punto, se
 lo si girasse un pochino, e il ritorno è costato quanto un paio di andate, non
@@ -281,8 +281,9 @@ $$
 
 Il gradiente rispetto ai pesi degli strati profondi si calcola applicando la
 regola della catena strato per strato, propagando l'errore dall'uscita verso
-l'ingresso. È efficiente perché riusa i calcoli condivisi; di conseguenza il
-costo di una passata all'indietro è dello stesso ordine di una in avanti.
+l'ingresso. È efficiente perché riusa i calcoli condivisi; di conseguenza [il
+costo di una passata all'indietro è dello stesso ordine di una in
+avanti]{.pt-matita}.
 
 `````
 
@@ -331,8 +332,8 @@ possibili mano a mano che gli strati aumentano, non perché quei punti li
 richiedano. Lo XOR risolto arriva nella {doc}`sezione sul percettrone
 <percettrone>`. Il senso però è lo stesso: il limite del percettrone era che una
 riga sola non può separare i quattro casi dello XOR per quanto bene la si giri,
-non che imparasse male. Serviva un secondo strato, non un addestramento
-migliore.
+non che imparasse male. [Serviva un secondo strato, non un addestramento
+migliore]{.pt-matita}.
 
 Dal primo riquadro al secondo si guadagna qualcosa che prima non c'era. Un
 neurone solo disegna una riga e nient'altro, quindi un confine chiuso gli è

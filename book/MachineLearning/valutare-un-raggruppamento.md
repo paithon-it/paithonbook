@@ -18,8 +18,8 @@ I quattro metodi di raggruppamento di {doc}`Riduzione e clustering
 <riduzione-clustering>` ($k$-means, DBSCAN, clustering gerarchico, misture
 gaussiane) lasciano aperta la domanda più difficile: come si valuta un
 raggruppamento? In un problema supervisionato si confronta la predizione con
-l'etichetta e si contano gli errori. Nel clustering, di solito, la risposta
-giusta non esiste da nessuna parte: non è stata persa, non esiste.
+l'etichetta e si contano gli errori. Nel clustering, di solito, [la risposta
+giusta non esiste da nessuna parte: non è stata persa, non esiste]{.pt-matita}.
 Anche quando un'etichetta c'è (nei dati di prova, o tenuta da parte per il voto
 finale), non è comunque l'unico raggruppamento sensato, perché dipende dal
 criterio con cui si decide che due punti si somigliano.
@@ -53,21 +53,23 @@ Ora prova a barare. Due bibliotecari che tirano i libri sui ripiani senza
 leggerne i titoli vanno d'accordo su moltissime coppie. Se i ripiani sono
 tanti, infatti, due libri presi a caso finiscono quasi sempre su ripiani
 diversi in tutte e due le scaffalature, e per il Rand separare è già un
-accordo. Di qui la correzione: si toglie in partenza l'accordo che due lavori
-tirati a caso si prenderebbero comunque, e resta l’**ARI** (*Adjusted Rand
-Index*, indice di Rand aggiustato).
+accordo. Di qui la correzione: si toglie l'accordo che due lavori tirati a caso
+si prenderebbero comunque, e si guarda quanto del resto il bibliotecario ha
+guadagnato davvero. Se il caso arriva già a $0{,}9$ di accordo e lui a
+$0{,}95$, ha guadagnato metà di quello che restava:
+$(0{,}95-0{,}9)/(1-0{,}9) = 0{,}5$. È l’**ARI** (*Adjusted Rand Index*, indice
+di Rand aggiustato), che dà $1$ a due scaffalature identiche e, in media, zero
+a due lavori tirati a caso.
 
 L’**NMI** (*Normalized Mutual Information*, informazione mutua normalizzata) fa
 un'altra domanda: sapendo dove sta il Calvino nella prima scaffalatura, quanto
-hai già indovinato della seconda? Sia l'ARI che l'NMI valgono $1$ su due
-scaffalature identiche. Sul lavoro tirato a caso l'ARI dà zero, perché è
-costruito apposta per darlo; l'NMI ci va vicino con pochi ripiani, ma con tanti
-ripiani piccoli resta un po’ sopra lo zero anche sul caso, tanto che ne gira
-una versione corretta allo stesso modo, l'AMI.
+hai già indovinato della seconda? Anche l'NMI dà $1$ a due scaffalature
+identiche, ma sul lavoro tirato a caso con tanti ripiani piccoli resta un po’
+sopra lo zero, tanto che ne gira una versione corretta allo stesso modo, l'AMI.
 
-Nessuno dei due si fa ingannare dai cartellini: il «ripiano 1» di
-un bibliotecario e quello di un altro non hanno niente a che vedere, e gli
-indici guardano soltanto quali libri stanno insieme.
+Nessuno di questi indici si fa ingannare dai cartellini: il «ripiano 1» di
+un bibliotecario e quello di un altro non hanno niente a che vedere, e conta
+soltanto quali libri stanno insieme.
 
 Il caso vero è l'altro: hai appena ereditato la biblioteca, e la risposta non ce
 l'ha nessuno. Resta solo lo scaffale da guardare: i libri di uno stesso ripiano
@@ -81,19 +83,21 @@ vicino; poi fai la differenza fra la seconda e la prima, e la dividi per la più
 grande delle due. Ad esempio, un libro che dista in media $2$ dai suoi e $6$
 dagli estranei prende $(6-2)/6 \approx 0{,}67$; uno che dista $5$ dai suoi e
 $4$ dagli estranei prende $(4-5)/5 = -0{,}2$, segno che starebbe meglio di là.
-La media su tutti i libri è la silhouette della scaffalatura.
+La media su tutti i libri è la silhouette della scaffalatura. Con un ripiano
+solo, però, di estranei non ce ne sono e il conto non si fa: la silhouette non
+saprà mai consigliarti di lasciare tutti i libri insieme.
 
-Il difetto è che la silhouette premia sempre lo stesso tipo di scaffale, il
-mucchio tondo e ben distanziato. Una saga lunga è invece una fila: ogni volume
-somiglia al successivo, il primo e l'ultimo per niente, e in un punto la fila
-sfiora quella di un'altra saga. In quel punto il volume è più vicino, in media,
-agli estranei della fila accanto che alla sua stessa saga, che si allunga
-lontano. La silhouette lo dà quindi per mal collocato, e con lui boccia una
-scaffalatura che aveva ragione.
+L'altro difetto è che [la silhouette premia sempre lo stesso tipo di scaffale,
+il mucchio tondo e ben distanziato]{.pt-matita}. Una saga lunga è invece una
+fila: ogni volume somiglia al successivo, il primo e l'ultimo per niente, e in
+un punto la fila sfiora quella di un'altra saga. In quel punto il volume è più
+vicino, in media, agli estranei della fila accanto che alla sua stessa saga,
+che si allunga lontano. La silhouette lo dà quindi per mal collocato, e con lui
+boccia una scaffalatura che aveva ragione.
 
-Usata per scegliere fra due bibliotecari con criteri diversi, la silhouette
-premia il bibliotecario che fa scaffali tondi come piacciono a lei, e lo fa
-con convinzione.
+Fra due bibliotecari che fanno tutti e due mucchi tondi la silhouette resta un
+buon arbitro. Usata per scegliere fra criteri diversi, invece, premia
+quello che fa scaffali tondi come piacciono a lei, e lo fa con convinzione.
 
 `````
 
@@ -150,12 +154,12 @@ dire che non ci sono gruppi; a quella domanda risponde la *gap statistic*
 senza struttura.
 
 Su geometrie non convesse, però, compattezza e separazione non coincidono con
-la qualità della partizione, e gli indici favoriscono i gruppi compatti e
-convessi, cioè quelli che $k$-means tende a produrre. In altri termini, sono
-indici allineati con l'ipotesi di un particolare algoritmo. Usati per scegliere
-fra algoritmi con ipotesi diverse, tendono a premiare quello che la condivide,
-mentre fra partizioni che la condividono ($k$-means a $k$ diversi, Ward contro
-$k$-means) sono il metro giusto.
+la qualità della partizione, e [gli indici favoriscono i gruppi compatti e
+convessi, cioè quelli che $k$-means tende a produrre]{.pt-matita}. In altri
+termini, sono indici allineati con l'ipotesi di un particolare algoritmo. Usati
+per scegliere fra algoritmi con ipotesi diverse, tendono a premiare quello che
+la condivide, mentre fra partizioni che la condividono ($k$-means a $k$
+diversi, Ward contro $k$-means) sono il metro giusto.
 
 Per le forme non convesse esistono indici interni costruiti su un'altra
 ipotesi, quella dei gruppi come regioni dense. Il più usato è il DBCV
@@ -297,11 +301,11 @@ propria), e quindi $s_i < 0$ anche se l'assegnazione è giusta. Con la
 partizione di DBSCAN, che è quella vera, succede al $16\%$ dei punti (la quota
 di `s<0`), contro lo $0{,}3\%$ di $k$-means.
 
-In generale, un indice interno esprime una domanda geometrica di compattezza e
-separazione, e va usato solo quando questa è la domanda che ci si pone. (Qui
-DBSCAN non manda nessun punto nel rumore; quando lo fa, scikit-learn tratta
-l'etichetta $-1$ come un gruppo qualsiasi, e per l'ARI tutti i punti di rumore
-formano un gruppo unico.)
+In generale, [un indice interno esprime una domanda geometrica di compattezza e
+separazione, e va usato solo quando questa è la domanda che ci si
+pone]{.pt-matita}. (Qui DBSCAN non manda nessun punto nel rumore; quando lo fa,
+scikit-learn tratta l'etichetta $-1$ come un gruppo qualsiasi, e per l'ARI
+tutti i punti di rumore formano un gruppo unico.)
 
 Il confronto fra etichettature casuali riguarda il Rand, e mostra perché nella
 sua forma grezza non va usato. Sono due etichettature tirate a caso, due
@@ -347,25 +351,21 @@ andata nell'insieme.
 
 Tutto questo si può fare senza sapere niente della risposta giusta, e serve
 soprattutto a decidere quanti gruppi cercare, cioè quanti ripiani chiedere: il
-numero buono è quello che supera la prova, mentre uno sbagliato produce
-scaffalature che cambiano ogni volta che cambiano i libri. Rifare il calcolo su
-un'altra pescata è la stessa idea del bootstrap (ricampionare per vedere quanto
-cambia il risultato), qui con metà dei libri pescata senza rimetterli a posto, e
-al servizio di un'altra domanda.
+numero buono dovrebbe superare la prova, e uno sbagliato produrre scaffalature
+che cambiano ogni volta che cambiano i libri.
 
-Chiedere pochissimi ripiani, però, è una trappola, perché un numero troppo
-basso supera spesso la prova anche quando è sbagliato. Se i libri sono di
+Un numero sbagliato, però, può superare la prova lo stesso. Se i libri sono di
 quattro generi e chiedi due ripiani, ad esempio, il bibliotecario deve unire i
 generi a due a due; se un modo di unirli è nettamente il più comodo, lo sceglie
 ogni volta, e le due prove vanno d'accordo anche se due ripiani sono troppo
 pochi.
 
-A volte ci si accorge della trappola guardando non solo quanto le prove vanno
-d'accordo in media, ma anche se vanno d'accordo tutte le volte: quando due modi
-di unire i generi sono comodi uguale, ogni tanto le due metà ne scelgono due
-diversi. Se il modo più comodo è uno solo, le prove vanno d'accordo sempre, e
-la prova non se ne accorge. Serve dunque a scartare i numeri che non tengono,
-non a incoronare il più stabile.
+A volte ci si accorge del numero sbagliato guardando non solo quanto le prove
+vanno d'accordo in media, ma anche se vanno d'accordo tutte le volte: quando
+due modi di unire i generi sono comodi uguale, ogni tanto le due metà ne
+scelgono due diversi. Se il modo più comodo è uno solo, le prove vanno
+d'accordo sempre, e la prova non se ne accorge. Serve dunque a scartare i
+numeri che non tengono, non a incoronare il più stabile.
 
 `````
 
@@ -483,8 +483,8 @@ La simmetria fa oscillare il $k = 2$, e in questo caso salva l'analisi. Basta
 però allungare il quadrato in altezza, facendone un rettangolo, perché il
 taglio che separa le due nuvole in basso dalle due in alto diventi l'unico
 ottimo: allora il $k = 2$ sbagliato esce stabile quanto il $k = 4$ giusto,
-e né la media né la dispersione se ne accorgono. La stabilità dice se il
-raggruppamento migliore è unico, e sulla sua correttezza tace.
+e né la media né la dispersione se ne accorgono. [La stabilità dice se il
+raggruppamento migliore è unico, e sulla sua correttezza tace]{.pt-matita}.
 
 La stabilità serve quindi a scartare i valori instabili (qui il $3$, con
 $0{,}655 \pm 0{,}238$: un raggruppamento in tre parti di quattro nuvole
@@ -516,11 +516,11 @@ dal suo codice compresso, e $k$-means ricostruisce ogni punto con il suo
 centroide. A tracciare il confine è il compito: l'auto-supervisione fabbrica
 un bersaglio predicendo una parte nascosta dell'input da una visibile.
 
-Ne segue che «non supervisionato» si tiene per i metodi che descrivono la
-struttura dei dati (raggruppamento, riduzione della dimensionalità, stima di
-densità), e non per quelli che si costruiscono un compito di previsione. LeCun
-e Misra rinunciano al nome per tutti; il confine fra descrivere e prevedere è
-una convenzione, e non è la loro.
+Ne segue che [«non supervisionato» si tiene per i metodi che descrivono la
+struttura dei dati]{.pt-matita} (raggruppamento, riduzione della
+dimensionalità, stima di densità), e non per quelli che si costruiscono un
+compito di previsione. LeCun e Misra rinunciano al nome per tutti; il confine
+fra descrivere e prevedere è una convenzione, e non è la loro.
 
 ## Perché nessun algoritmo di raggruppamento è neutro
 
@@ -528,9 +528,9 @@ Resta una domanda: fra tutti questi voti, qual è quello buono? Un teorema
 c'entra, ma parla degli algoritmi e non degli indici. Non esclude che
 esista un buon indice: Ackerman e Ben-David hanno mostrato che le stesse
 richieste, riscritte per le misure di qualità di un raggruppamento, non
-si contraddicono {cite}`ackerman2008measures`. Esclude che un algoritmo di
+si contraddicono {cite}`ackerman2008measures`. [Esclude che un algoritmo di
 raggruppamento possa essere neutro: ognuno incorpora una scelta, e la scelta va
-dichiarata.
+dichiarata]{.pt-matita}.
 
 Nel 2002 Jon Kleinberg dimostra che tre proprietà che a chiunque sembrerebbero
 minime per una funzione di raggruppamento non possono valere tutte e tre
@@ -605,14 +605,19 @@ Che è, poi, la storia di Plutone: alla fine si vota.
 - Un indice interno può bocciare la risposta giusta. Sulle due lune, DBSCAN
   ricostruisce i gruppi veri alla perfezione (ARI $1{,}000$) e la silhouette
   preferisce $k$-means, che ha sbagliato ($0{,}486$ contro $0{,}331$). La
-  silhouette non misura «giusto», misura «tondo e ben distanziato».
+  silhouette non misura «giusto», misura «tondo e ben distanziato»: resta un
+  buon arbitro fra raggruppamenti che fanno tutti mucchi tondi, non fra chi li
+  fa e chi no.
 - L'indice di Rand grezzo non parte da zero: due etichettature tirate a caso in
   due gruppi ne prendono $0{,}5$, e più i gruppi sono tanti e piccoli più sale
-  (con venti gruppi, $0{,}9$). La versione aggiustata (ARI) toglie la parte che
-  si prenderebbe per caso, e sul caso vale $0$.
+  (con venti gruppi, $0{,}9$). La versione aggiustata (ARI) toglie l'accordo
+  che si avrebbe per caso e misura quanto di ciò che restava è stato
+  guadagnato davvero: vale $1$ su due scaffalature identiche e, in media, $0$
+  sul caso.
 - Senza risposta giusta si può chiedere se il raggruppamento tiene: rifallo
-  su due metà dei dati e guarda se dicono la stessa cosa. Serve soprattutto a
-  scartare i numeri di gruppi che non sono stabili.
+  su due metà dei dati e guarda se dicono la stessa cosa. Serve a scartare i
+  numeri di gruppi che non sono stabili, non a scegliere il più stabile,
+  perché anche un numero sbagliato può superare la prova.
 - Un metodo di raggruppamento perfetto non esiste, e non è colpa di nessuno:
   tre proprietà minime e ragionevoli non possono valere tutte e tre insieme
   (Kleinberg, 2002). La scelta va dichiarata, perché nessun dato la farà al
@@ -628,12 +633,13 @@ Che è, poi, la storia di Plutone: alla fine si vota.
 - Indici interni: usano solo $\mathbf{X}$ e le etichette assegnate, e premiano
   coesione e separazione, salendo la silhouette e il Calinski–Harabasz,
   scendendo il Davies–Bouldin, che dei tre è il solo da minimizzare. Sono
-  allineati a un'ipotesi geometrica convessa: su geometrie non convesse misurano
-  compattezza e separazione, che lì non coincidono con la qualità, e favoriscono
-  le partizioni che $k$-means tende a produrre; per le forme non convesse c'è
-  il DBCV, costruito sulla densità. Sulle due lune la
-  silhouette dà $0{,}486$ a $k$-means e $0{,}331$ a DBSCAN, mentre ARI e NMI di
-  DBSCAN valgono $1{,}000$.
+  allineati a un'ipotesi geometrica convessa: fra partizioni che la condividono
+  ($k$-means a $k$ diversi) sono il metro giusto, ma su geometrie non convesse
+  misurano compattezza e separazione, che lì non coincidono con la qualità, e
+  favoriscono le partizioni che $k$-means tende a produrre; per le forme non
+  convesse c'è il DBCV, costruito sulla densità. Sulle due lune la silhouette
+  dà $0{,}486$ a $k$-means e $0{,}331$ a DBSCAN, mentre ARI e NMI di DBSCAN
+  valgono $1{,}000$.
 - Indici esterni: confrontano con una partizione nota e sono invarianti alla
   permutazione delle etichette; Rand e ARI contano le coppie di punti, NMI e AMI
   misurano l'informazione mutua fra le due partizioni. L'indice di Rand grezzo
@@ -645,8 +651,9 @@ Che è, poi, la storia di Plutone: alla fine si vota.
   misurato con l'ARI sull'intersezione. Criterio applicabile senza etichette; da
   usare per scartare i $k$ instabili e non per scegliere il più stabile: con un
   minimo unico dell'inerzia ogni $k$, giusto o sbagliato, tende a stabilità
-  $1$, e sotto $1$ la porta solo una simmetria dei dati ($0{,}960$ a $k=2$
-  contro $1{,}000$ a $k=4$ sulle quattro nuvole disposte in quadrato).
+  $1$ al crescere del campione, e sotto $1$ la porta solo una simmetria dei
+  dati ($0{,}960$ a $k=2$ contro $1{,}000$ a $k=4$ sulle quattro nuvole
+  disposte in quadrato).
 - Teorema di impossibilità di Kleinberg {cite}`kleinberg2002impossibility`:
   nessuna funzione di clustering soddisfa insieme invarianza di scala, ricchezza
   e coerenza. Il legame singolo, con tre regole d'arresto diverse, rinuncia a

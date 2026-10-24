@@ -37,11 +37,11 @@ fra 3, 12 e 8, cioè 3. La seconda vale il minimo fra 2, 4 e 6, cioè 2. La terz
 vale il minimo fra 14, 5 e 2, cioè 2. Ora tocca a me, che voglio il massimo:
 fra 3, 2 e 2 scelgo il 3, cioè la prima mossa.
 
-Si chiama ragionare all’indietro: il valore di una posizione è il risultato di
+Si chiama ragionare all’indietro: [il valore di una posizione è il risultato di
 una partita giocata fino in fondo, supponendo che da lì in avanti giochino bene
-tutti e due. Il numero più alto che si vede sotto non c’entra, perché a
-sceglierlo non sono io. Si parte dalle foglie e si risale un livello alla
-volta, alternando «prendi il massimo» e «prendi il minimo».
+tutti e due]{.pt-matita}. Il numero più alto che si vede sotto non c’entra,
+perché a sceglierlo non sono io. Si parte dalle foglie e si risale un livello
+alla volta, alternando «prendi il massimo» e «prendi il minimo».
 
 Questo ragionamento dà per scontato che lui giochi sempre la risposta migliore.
 Contro qualcuno che si distrae, ad esempio, la terza mossa potrebbe fruttare
@@ -82,11 +82,11 @@ $$
 
 dove $u(s)$ è l’**utilità** dello stato terminale letta dal punto di vista di
 chi massimizza, $\mathcal{A}(s)$ le mosse legali e $\mathrm{ris}(s,a)$ lo stato
-che ne segue. Il valore così definito si ottiene se entrambi giocano in modo
-ottimo da lì alla fine, e l’ipotesi è forte. Contro un avversario che sbaglia,
-infatti, minimax non sfrutta gli errori quanto potrebbe, perché sceglie la
-mossa migliore contro la risposta migliore e non quella che guadagna di più
-dalla risposta probabile.
+che ne segue. [Il valore così definito si ottiene se entrambi giocano in modo
+ottimo da lì alla fine, e l’ipotesi è forte]{.pt-matita}. Contro un avversario
+che sbaglia, infatti, minimax non sfrutta gli errori quanto potrebbe, perché
+sceglie la mossa migliore contro la risposta migliore e non quella che guadagna
+di più dalla risposta probabile.
 
 L’algoritmo è una visita in profondità che scende fino alle foglie e risale
 combinando. Costa $O(b^m)$ in tempo, con $b$ il numero di mosse legali per
@@ -356,9 +356,9 @@ partite portate fino in fondo: 7330
 rapporto: 34.8 volte meno
 ```
 
-Stessa risposta, quasi trentacinque volte meno lavoro. Non si è rinunciato a
-niente, perché i rami non guardati erano rami di cui si era dimostrato, senza
-guardarli, che non potevano cambiare la conclusione.
+[Stessa risposta, quasi trentacinque volte meno lavoro]{.pt-matita}. Non si è
+rinunciato a niente, perché i rami non guardati erano rami di cui si era
+dimostrato, senza guardarli, che non potevano cambiare la conclusione.
 
 È lo stesso genere di risparmio di A\* con un’euristica ammissibile, ed è il
 contrario di quello che si ottiene con un giudizio messo al posto della
@@ -613,12 +613,12 @@ Due complicazioni sporcano la teoria pulita nei programmi veri:
 
 `````
 
-Messe accanto, la potatura e la funzione di valutazione sono di natura opposta.
-La potatura spegne rami di cui si è dimostrato che non possono cambiare la
-risposta, e la lascia intatta. La funzione di valutazione, invece, sostituisce
-una risposta vera con un giudizio, e ne deriva l’effetto orizzonte, che
-colpisce ogni ricerca ferma a una profondità fissa, per quanto ben programmata,
-perché nasce dal taglio stesso.
+[Messe accanto, la potatura e la funzione di valutazione sono di natura
+opposta]{.pt-matita}. La potatura spegne rami di cui si è dimostrato che non
+possono cambiare la risposta, e la lascia intatta. La funzione di valutazione,
+invece, sostituisce una risposta vera con un giudizio, e ne deriva l’effetto
+orizzonte, che colpisce ogni ricerca ferma a una profondità fissa, per quanto
+ben programmata, perché nasce dal taglio stesso.
 
 ## Quando il giudizio è esatto: il Nim
 
@@ -679,9 +679,10 @@ pari.
 Il tavolo vuoto è in pari (zero pacchetti per ogni misura, e zero è pari), e
 siccome in pari lo lascio sempre io, l’ultimo fiammifero lo prendo io.
 
-Per giocare così non serve immaginare nemmeno una risposta dell’avversario:
-basta un’occhiata alla posizione. È un giudizio che non sbaglia mai, e dove il
-giudizio non sbaglia non c’è nessun orizzonte oltre cui nascondere un disastro.
+[Per giocare così non serve immaginare nemmeno una risposta dell’avversario:
+basta un’occhiata alla posizione]{.pt-matita}. È un giudizio che non sbaglia
+mai, e dove il giudizio non sbaglia non c’è nessun orizzonte oltre cui
+nascondere un disastro.
 
 Tutto questo vale con la regola detta, in cui l’ultimo fiammifero vince. C’è
 anche chi gioca al contrario, e allora chi prende l’ultimo perde: il trucco
@@ -726,9 +727,10 @@ esattamente le P.
 
 Dal punto di vista della ricerca, il test $t \neq 0$ è una funzione di
 valutazione *esatta*, perché in ogni stato dice quello che direbbe minimax,
-cioè se vince chi muove, senza visitare niente. Con una valutazione esatta
-basta una ricerca a profondità uno: si provano le $\sum_i x_i$ mosse e si
-tiene una che porta a $t' = 0$, e l’effetto orizzonte non ha dove nascere.
+cioè se vince chi muove, senza visitare niente. [Con una valutazione esatta
+basta una ricerca a profondità uno]{.pt-matita}: si provano le $\sum_i x_i$
+mosse e si tiene una che porta a $t' = 0$, e l’effetto orizzonte non ha dove
+nascere.
 
 Il Nim permette anche di meglio, perché la dimostrazione costruisce la mossa
 (il bit più alto di $t$, un mucchio che lo ha acceso, $x_i \oplus t$) in
@@ -1004,8 +1006,8 @@ Le ultime due righe sono il guadagno della somma. Dieci mucchi
 dello stesso gioco formano più di centotrentasette miliardi di configurazioni,
 e seicentoquarantaseimila se non si distingue l’ordine dei mucchi, come fa già
 `vince_chi_muove`, che ordina i mucchi prima di guardarli. Quel numero però
-cresce con i mucchi, mentre per giudicare tutte le posizioni bastano tredici
-numeri e uno XOR, che i mucchi siano dieci o cento.
+cresce con i mucchi, mentre [per giudicare tutte le posizioni bastano tredici
+numeri e uno XOR]{.pt-matita}, che i mucchi siano dieci o cento.
 
 Il tris e gli scacchi sono fuori da questa famiglia, e per loro restano
 l’albero, la potatura e la funzione di valutazione, con il suo effetto

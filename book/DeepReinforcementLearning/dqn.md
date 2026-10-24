@@ -20,8 +20,8 @@ quando non li ha mai visti.
 
 ## Dalla tabella alla rete
 
-DQN è semplice quanto radicale: butta via la tabella e mette al suo posto una
-rete neurale.
+DQN è semplice quanto radicale: [butta via la tabella e mette al suo posto una
+rete neurale]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -126,12 +126,12 @@ Guarda partite giocate a casaccio e scrive i voti come se al posto di quel
 giocatore ci fosse un campione: si gioca da esploratore e si prendono appunti
 da campione. È l'off-policy.
 
-Ciascuna abitudine è utile, e a coppie il taccuino si tiene in ordine. Tutte e
+Ciascuna abitudine è utile, e a coppie il taccuino si tiene in ordine. [Tutte e
 tre insieme, però, espongono a un rischio: i voti possono crescere senza
-fermarsi. Non succede per forza, e ci sono taccuini più complicati, costruiti
-apposta, che lo evitano; ma il pericolo c'è, e Richard Sutton e Andrew Barto,
-autori del manuale classico della materia, chiamano **triade fatale** la
-combinazione dei tre.
+fermarsi]{.pt-matita}. Non succede per forza, e ci sono taccuini più
+complicati, costruiti apposta, che lo evitano; ma il pericolo c'è, e Richard
+Sutton e Andrew Barto, autori del manuale classico della materia, chiamano
+**triade fatale** la combinazione dei tre.
 
 Per vederla basta il gioco più facile possibile. Lo costruì Baird, e si chiama
 **controesempio di Baird**: sette schermate, e non si guadagna mai un punto.
@@ -176,11 +176,11 @@ La **triade fatale** {cite}`sutton2018reinforcement` è la coesistenza di:
 3. addestramento off-policy, cioè una distribuzione degli aggiornamenti
    diversa da quella indotta dalla policy che si sta valutando.
 
-Con due soli dei tre l'instabilità si può evitare. Con tutti e tre il pericolo
-c'è, e la divergenza si osserva già nel caso della sola predizione, senza
-controllo né miglioramento della policy. Non dipende nemmeno dall'incertezza
-sull'ambiente, poiché si manifesta identica nella programmazione dinamica,
-dove il modello è noto per intero.
+Con due soli dei tre l'instabilità si può evitare. [Con tutti e tre il pericolo
+c'è]{.pt-matita}, e la divergenza si osserva già nel caso della sola
+predizione, senza controllo né miglioramento della policy. Non dipende nemmeno
+dall'incertezza sull'ambiente, poiché si manifesta identica nella
+programmazione dinamica, dove il modello è noto per intero.
 
 La divergenza, tuttavia, non è inevitabile. I metodi *Gradient-TD*, che
 scendono lungo il gradiente dell'errore di Bellman proiettato a costo di un
@@ -221,8 +221,9 @@ altrui, che è però la premessa della memoria di replay.
 
 ## Due accorgimenti per non far esplodere l'addestramento
 
-DQN tiene tutti e tre gli elementi della triade, senza rinunciare a nessuno, e
-ne rende praticabile la convivenza con due accorgimenti.
+[DQN tiene tutti e tre gli elementi della triade, senza rinunciare a
+nessuno]{.pt-matita}, e ne rende praticabile la convivenza con due
+accorgimenti.
 
 ### Experience replay
 
@@ -234,8 +235,9 @@ consecutivi, infatti, si somigliano troppo, e la rete finisce per "fissarsi".
 
 La **memoria di replay** è un grande quaderno degli appunti: ogni esperienza
 vissuta viene annotata e, per allenarsi, l'agente pesca a caso vecchie
-esperienze dal quaderno. Così mescola situazioni lontane nel tempo e impara in
-modo più equilibrato, e riutilizza ogni esperienza molte volte, non una sola.
+esperienze dal quaderno. Così [mescola situazioni lontane nel tempo e impara in
+modo più equilibrato]{.pt-matita}, e riutilizza ogni esperienza molte volte,
+non una sola.
 
 `````
 
@@ -244,8 +246,8 @@ modo più equilibrato, e riutilizza ogni esperienza molte volte, non una sola.
 Ogni transizione $(s, a, r, s')$ viene salvata in un buffer $\mathcal{D}$
 (tipicamente un milione di transizioni). L'aggiornamento dei pesi avviene su
 *minibatch* campionati uniformemente da $\mathcal{D}$, e non sull'ultima
-transizione. In questo modo si rompe la correlazione temporale tra campioni
-consecutivi (che violerebbe l'ipotesi di indipendenza nella discesa
+transizione. In questo modo [si rompe la correlazione temporale tra campioni
+consecutivi]{.pt-matita} (che violerebbe l'ipotesi di indipendenza nella discesa
 stocastica del gradiente) e si aumenta enormemente l'efficienza nell'uso dei
 dati, riutilizzando ogni transizione in molti aggiornamenti.
 
@@ -258,9 +260,9 @@ dati, riutilizzando ogni transizione in molti aggiornamenti.
 C'è un secondo problema: la rete deve inseguire un bersaglio che lei stessa
 sposta a ogni passo, come cercare di colpire la propria ombra. La soluzione è
 tenere due copie della rete: una che impara di continuo e una "congelata"
-che fornisce il bersaglio e viene aggiornata solo ogni tanto. Il bersaglio
+che fornisce il bersaglio e viene aggiornata solo ogni tanto. [Il bersaglio
 resta fermo abbastanza a lungo perché la rete che apprende riesca a
-raggiungerlo.
+raggiungerlo]{.pt-matita}.
 
 `````
 
@@ -280,9 +282,10 @@ $$
 Qui $r$ è la ricompensa immediata, $\gamma\in[0,1)$ il fattore di sconto,
 $d\in\{0,1\}$ vale $1$ quando $s'$ è terminale (e allora del futuro non resta
 niente), e il termine $y = r + \gamma\,(1-d)\max_{a'} Q(s', a'; \theta^{-})$ è
-il bersaglio, calcolato con i pesi congelati $\theta^{-}$. Congelarli attenua il
-*feedback* instabile in cui il bersaglio si muove insieme alla stima; con le
-parole del lavoro, divergenza e oscillazioni diventano molto meno probabili.
+il bersaglio, calcolato con i pesi congelati $\theta^{-}$. [Congelarli attenua
+il *feedback* instabile in cui il bersaglio si muove insieme alla
+stima]{.pt-matita}; con le parole del lavoro, divergenza e oscillazioni
+diventano molto meno probabili.
 
 Due dettagli del lavoro su *Nature* {cite}`mnih2015human` cambiano questa
 perdita. Nel gradiente l'errore $\delta = y - Q(s,a;\theta)$ subisce il clipping in
@@ -310,7 +313,7 @@ che la guida, tenendo fermo il secondo mentre la prima si muove
 
 ```{figure} ../figures/dqn-stabilita.svg
 :name: fig-dqn-stabilita
-:alt: "Animazione: a sinistra un buffer di ventiquattro celle disposte in ordine di arrivo, di cui a ogni passo se ne accendono quattro pescate a caso, sparpagliate nel buffer invece che una di fila all'altra: sono il minibatch. A destra il valore Q di una stessa coppia stato-azione: la curva della rete che impara sale a ogni passo, mentre la scaletta della copia congelata resta ferma per tre passi e poi scatta a raggiungerla."
+:alt: "Animazione: a sinistra la memoria di replay, ventiquattro celle disposte in ordine di arrivo, di cui a ogni passo se ne accendono quattro pescate a caso, sparpagliate nella memoria invece che una di fila all'altra: sono il minibatch. A destra il valore Q di una stessa coppia stato-azione: la curva della rete che impara sale a ogni passo, mentre la scaletta della rete-target resta ferma per tre passi e poi scatta a raggiungerla."
 :width: 95%
 
 I due accorgimenti al lavoro sullo stesso addestramento. A sinistra la memoria
@@ -401,11 +404,11 @@ bersaglio = r + gamma * q_next * (1 - fine)        # se finisce qui, resta solo 
 
 ## Atari: giocare partendo dai pixel
 
-Il dettaglio storicamente rilevante è l'ingresso della rete: l'immagine, cioè i
-quattro fotogrammi impilati, e nient'altro. Nessuna informazione sulle regole,
-e nessuna misura scelta e calcolata a mano da un programmatore (in gergo,
-nessuna *feature*, ad esempio la «distanza fra pallina e racchetta» o il
-«numero di mattoni rimasti»).
+[Il dettaglio storicamente rilevante è l'ingresso della rete: l'immagine, cioè
+i quattro fotogrammi impilati, e nient'altro]{.pt-matita}. Nessuna informazione
+sulle regole, e nessuna misura scelta e calcolata a mano da un programmatore
+(in gergo, nessuna *feature*, ad esempio la «distanza fra pallina e racchetta»
+o il «numero di mattoni rimasti»).
 
 Inoltre, da un gioco all'altro non cambiava niente. Lo stesso algoritmo ha
 imparato i 49 titoli del confronto con il collaudatore umano raccontato
@@ -433,8 +436,8 @@ a cui l'errore ha dato la spinta verso l'alto più grande, non quello della
 mossa migliore. Fra otto misure sbagliate a caso, la più alta è quasi sempre
 una misura fortunata.
 
-Prendere il massimo di stime rumorose, insomma, non restituisce il massimo dei
-valori veri: restituisce qualcosa di sistematicamente più grande.
+[Prendere il massimo di stime rumorose, insomma, non restituisce il massimo dei
+valori veri: restituisce qualcosa di sistematicamente più grande]{.pt-matita}.
 
 Il conto si può anche fare. Supponiamo che le otto mosse valgano tutte $5$, e
 che ogni voto sbagli di una quantità qualsiasi fra $-1$ e $+1$, in su come in
@@ -487,10 +490,9 @@ $$
 e il divario cresce con il numero di azioni e con la varianza dell'errore. In
 particolare, la disuguaglianza è stretta ogni volta che il rumore può cambiare
 quale azione risulti la migliore, e con stime esatte si ridurrebbe a
-un'uguaglianza. Basta
-quindi un errore di stima a media nulla perché il bersaglio sia
-sistematicamente sovrastimato, e il bootstrapping propaga la sovrastima
-all'indietro.
+un'uguaglianza. [Basta quindi un errore di stima a media nulla perché il
+bersaglio sia sistematicamente sovrastimato]{.pt-matita}, e il bootstrapping
+propaga la sovrastima all'indietro.
 
 Consideriamo il caso più semplice, che si calcola per intero. Se gli $m$
 valori veri sono uguali
@@ -608,9 +610,9 @@ quindi un patto, e glielo si impone: i contributi delle mosse devono
 compensarsi fra loro, tanto in su quanto in giù, e quello che avanza è il
 giudizio sulla situazione.
 
-Con i due rami separati, quel giudizio si affina a ogni passaggio, anche
-quando sulle singole mosse non c'è niente da imparare. Così è già pronto
-quando arriva la curva in cui le mosse tornano a contare.
+Con i due rami separati, [quel giudizio si affina a ogni passaggio, anche
+quando sulle singole mosse non c'è niente da imparare]{.pt-matita}. Così è già
+pronto quando arriva la curva in cui le mosse tornano a contare.
 
 `````
 
@@ -649,8 +651,8 @@ dove $|\mathcal{A}|$ è il numero di azioni e la sottrazione della media rende
 identificabile la scomposizione, perché senza di essa una costante potrebbe
 passare da $V$ ad $A$ lasciando $Q$ identica.
 
-Il guadagno è che ogni aggiornamento allena $V$, qualunque azione contenga il
-minibatch. In particolare, negli stati in cui le azioni più o meno si
+Il guadagno è che [ogni aggiornamento allena $V$, qualunque azione contenga il
+minibatch]{.pt-matita}. In particolare, negli stati in cui le azioni più o meno si
 equivalgono, e in molti giochi sono tanti, la rete impara comunque qualcosa
 che servirà altrove.
 

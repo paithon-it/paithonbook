@@ -35,11 +35,11 @@ autori lo chiamano **S6**, per brevità: la sigla sta per «S4 con un meccanismo
 di selezione, calcolato con uno scan», e non indica il successore di S5, che è
 il modello di un altro gruppo.
 
-Se le regole cambiano a ogni parola, il sistema non è più invariante nel tempo
-e non ha più un filtro unico; di conseguenza la forma «tutto insieme», che
-rendeva veloce l'addestramento di S4, non si può più usare. Per lavorare in
-parallelo servirà un'altra strada, lo *scan*. Vediamo prima il guadagno, che
-ripaga il sacrificio.
+Se le regole cambiano a ogni parola, [il sistema non è più invariante nel tempo
+e non ha più un filtro unico]{.pt-matita}; di conseguenza la forma «tutto
+insieme», che rendeva veloce l'addestramento di S4, non si può più usare. Per
+lavorare in parallelo servirà un'altra strada, lo *scan*. Vediamo prima il
+guadagno, che ripaga il sacrificio.
 
 `````{tab} Elementare
 
@@ -191,9 +191,9 @@ fonderli non fa risparmiare niente.
 
 A questa proprietà, la *chiusura*, si affianca l’**associatività**, che vale
 per ogni composizione di funzioni: raggruppare i passi in un modo o nell'altro
-dà lo stesso risultato. Insieme, le due proprietà autorizzano a fondere i passi
-a coppie, poi a gruppi di quattro, di otto, invece di percorrerli uno dopo
-l'altro da sinistra a destra.
+dà lo stesso risultato. Insieme, [le due proprietà autorizzano a fondere i
+passi a coppie, poi a gruppi di quattro, di otto]{.pt-matita}, invece di
+percorrerli uno dopo l'altro da sinistra a destra.
 
 Questo è il *parallel scan*, dove «scan» è la passata che percorre la sequenza
 accumulando i risultati parziali. In fila, $L$ passi chiedono $L$ turni uno
@@ -463,7 +463,7 @@ def scan_parallelo(a, b):
         a_prec, b_prec = a[:-salto].clone(), b[:-salto].clone()
         b[salto:] = a[salto:] * b_prec + b[salto:]
         a[salto:] = a[salto:] * a_prec
-        salto *= 2          # 1, 2, 4, 8, ...: log L giri invece di L
+        salto *= 2          # 1, 2, 4, 8, ...: log L iterazioni invece di L
     return b                # b_t contiene ora h_t
 
 # parametri che cambiano a ogni passo: il sistema e' selettivo
@@ -502,11 +502,11 @@ mLSTM nella {doc}`sezione sulle architetture lineari
 </AttenzioneLineare/architetture-lineari>`. Il secondo è il *gated MLP*, la
 variante con cancello dello strato che nei Transformer segue l'attenzione.
 
-Il cancello del blocco agisce posizione per posizione; la selezione, che agisce
-lungo la sequenza, sta dentro l'SSM, in $\Delta_t$, $\mathbf{B}_t$ e
-$\mathbf{C}_t$. Il blocco è l'unico tipo della rete, ripetuto decine di volte
-con una normalizzazione e una connessione residua, dove i Transformer
-alternano attenzione e MLP.
+Il cancello del blocco agisce posizione per posizione; [la selezione, che
+agisce lungo la sequenza, sta dentro l'SSM, in $\Delta_t$, $\mathbf{B}_t$ e
+$\mathbf{C}_t$]{.pt-matita}. Il blocco è l'unico tipo della rete, ripetuto
+decine di volte con una normalizzazione e una connessione residua, dove i
+Transformer alternano attenzione e MLP.
 
 ```{figure} ../figures/blocco-mamba.svg
 :name: fig-blocco-mamba
@@ -603,9 +603,9 @@ testo, ma suono grezzo (dove un passo è un campione sonoro: in un secondo di
 registrazione ce ne stanno circa sedicimila, quindi un milione di campioni è
 poco più di un minuto) e sequenze di DNA (dove un passo è una lettera del
 genoma). Sul linguaggio i contesti provati nell'articolo restano molto più
-corti, dell'ordine delle migliaia di parole. Che la stessa ricetta funzioni su
+corti, dell'ordine delle migliaia di parole. [Che la stessa ricetta funzioni su
 tre materiali così diversi è comunque il segno che il meccanismo non ha niente
-di specificamente linguistico.
+di specificamente linguistico]{.pt-matita}.
 
 Gli autori, poi, hanno misurato quale delle tre azioni del buttafuori pesi di
 più. Il tempo dedicato a ciascuno vale più, preso singolarmente, di ognuno
@@ -637,10 +637,11 @@ Il bilancio, sui meccanismi:
   selettivi; con $\mathbf{B}$ e $\mathbf{C}$ costanti resta ferma intorno a
   9,8 (tabella 10). È l'argomento che rende interessante lo stato molto più
   grande di Mamba-2.
-- Il meccanismo non è specifico del testo: gli stessi blocchi si addestrano su
-  audio e su DNA. Il DNA è una sequenza di simboli discreti (le quattro basi),
-  senza un lessico di parole e con dipendenze lunghissime; l'audio è un
-  segnale continuo campionato, nel paper a sedicimila valori al secondo.
+- [Il meccanismo non è specifico del testo: gli stessi blocchi si addestrano su
+  audio e su DNA]{.pt-matita}. Il DNA è una sequenza di simboli discreti (le
+  quattro basi), senza un lessico di parole e con dipendenze lunghissime;
+  l'audio è un segnale continuo campionato, nel paper a sedicimila valori al
+  secondo.
 
 `````
 

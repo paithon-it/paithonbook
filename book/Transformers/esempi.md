@@ -25,14 +25,14 @@ le query («che cosa mi serve adesso?»), mentre dall'encoder vengono le chiavi 
 i valori con cui si risponde.
 
 `````{tab} Elementare
-Segui il viaggio di "The cat sits on the mat". Prima la frase viene spezzata
-in mattoncini (le parole o pezzi di parola: i *token*) e l'encoder la legge
-tutta, riscrivendo la lista di numeri di ogni parola in modo che si porti dentro
-anche il contesto in cui si trova. Poi il decoder comincia a scrivere in
-italiano, una parola alla volta: quando deve produrre "gatto" il suo
-evidenziatore, cioè l'attenzione, punta su "cat", e quando produce "siede"
-punta su "sits". Somiglia più a un traduttore che legge tutta la frase, la
-capisce e la riscrive, che a un dizionario che sostituisce parola per parola.
+Segui il viaggio di "The cat sits on the mat". Prima la frase viene spezzata in
+mattoncini (le parole o pezzi di parola: i *token*) e l'encoder la legge tutta,
+riscrivendo la lista di numeri di ogni parola in modo che si porti dentro anche
+il contesto in cui si trova. Poi il decoder comincia a scrivere in italiano,
+una parola alla volta: quando deve produrre "gatto" il suo evidenziatore, cioè
+l'attenzione, punta su "cat", e quando produce "siede" punta su "sits".
+[Somiglia più a un traduttore che legge tutta la frase, la capisce e la
+riscrive]{.pt-matita}, che a un dizionario che sostituisce parola per parola.
 
 La differenza si vede con una parola ambigua: "bank"
 in inglese è sia la banca sia la riva del fiume, e su "The cat sits on the
@@ -72,11 +72,11 @@ Il gatto si siede sulla riva del fiume.
 ```
 
 La terza frase è la disambiguazione lessicale in atto. Un dizionario elenca
-tutti e due i significati di «bank» e lascia la scelta a chi legge, mentre qui
-è il modello a decidere in funzione del contesto: senza «river», infatti, la
-stessa frase diventa «Il gatto si siede sulla banca», il significato più
-comune. È il risultato atteso di una rappresentazione di «bank» costruita
-dall'attenzione anche sugli altri token della frase.
+tutti e due i significati di «bank» e lascia la scelta a chi legge, mentre [qui
+è il modello a decidere in funzione del contesto]{.pt-matita}: senza «river»,
+infatti, la stessa frase diventa «Il gatto si siede sulla banca», il
+significato più comune. È il risultato atteso di una rappresentazione di «bank»
+costruita dall'attenzione anche sugli altri token della frase.
 
 Il codice esegue tre passaggi: tokenizzazione (la frase diventa una sequenza di
 id di token), inferenza con `generate` (encoder e decoder Transformer, con
@@ -116,11 +116,11 @@ altrove, oppure due caselle in testa a pochi gettoni una dall'altra: l'annuncio
 esce identico, un nome di casella e nient'altro, mentre le due situazioni non
 si somigliano.
 
-Per questo, chiedere la fila completa, casella per casella, distingue la
-macchina sicura da quella in bilico. Nemmeno ottanta gettoni su una casella
-vogliono dire avere ragione ottanta volte su cento: se la sicurezza della
-macchina sia giustificata lo si scopre soltanto provandola su frasi di cui si
-sa già la risposta.
+[Per questo, chiedere la fila completa, casella per casella, distingue la
+macchina sicura da quella in bilico]{.pt-matita}. Nemmeno ottanta gettoni su
+una casella vogliono dire avere ragione ottanta volte su cento: se la sicurezza
+della macchina sia giustificata lo si scopre soltanto provandola su frasi di
+cui si sa già la risposta.
 
 Tutti indovinano le frasi facili; quanto un modello abbia capito si vede
 sulle altre. Il caso classico in italiano è il
@@ -190,8 +190,8 @@ $0{,}365$ a due stelle e $0{,}336$ a tre: uno scarto di ventinove millesimi,
 l'unico caso fra le quattro frasi in cui le prime due classi risultano quasi
 appaiate. Il solo `argmax` direbbe «2 stars» e si fermerebbe lì,
 indistinguibile dai verdetti delle altre tre frasi, dove la seconda classe
-resta indietro di centocinquanta millesimi o più: `top_k=None` rende visibile
-la differenza fra una classificazione netta e una in bilico.
+resta indietro di centocinquanta millesimi o più: [`top_k=None` rende visibile
+la differenza fra una classificazione netta e una in bilico]{.pt-matita}.
 
 Il punteggio della classe vincente è la probabilità assegnata dalla softmax, ma
 nulla garantisce che sia calibrata, ossia che fra le frasi con punteggio 0,6 ne

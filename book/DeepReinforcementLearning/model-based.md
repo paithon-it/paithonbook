@@ -25,15 +25,15 @@ imparano *provando nel mondo*. In altri termini, provano un'azione, guardano
 cosa succede, aggiustano, e non si costruiscono mai una copia del gioco da
 consultare in privato. Sono metodi **model-free**, «senza modello». La ricerca
 ad albero fa eccezione, ma pianifica su un modello che le è *dato*, cioè le
-regole del gioco. Un agente **model-based**, invece, costruisce il modello
-dell'ambiente e poi lo usa per *pianificare*, cioè per provare le mosse nella
-testa, come al tavolo da gioco.
+regole del gioco. Un agente **model-based**, invece, [costruisce il modello
+dell'ambiente e poi lo usa per *pianificare*]{.pt-matita}, cioè per provare le
+mosse nella testa, come al tavolo da gioco.
 
 ## Provare per davvero o provare nella testa
 
 ```{figure} ../figures/model-based-loop.svg
 :name: fig-model-based-loop
-:alt: Anello a quattro blocchi. L'esperienza reale raccolta dall'ambiente addestra un modello appreso della dinamica e della ricompensa; dal modello si srotolano traiettorie immaginate; queste aggiornano policy e valore senza toccare l'ambiente; la policy agisce di nuovo nel mondo. La freccia dalle traiettorie immaginate verso policy e valore è arancione, ed è l'unica del giro a non toccare il mondo vero.
+:alt: Anello a quattro blocchi. L'esperienza reale raccolta dall'ambiente addestra un modello appreso della dinamica e della ricompensa; dal modello si srotolano traiettorie immaginate; queste aggiornano policy e valore senza toccare l'ambiente; la policy agisce di nuovo nel mondo. La freccia dalle traiettorie immaginate verso policy e valore è arancione, ed è l'unica dell'anello a non toccare il mondo vero.
 :width: 90%
 
 Il ciclo dell'agente che si costruisce un simulatore. Le mosse fatte nel mondo
@@ -45,7 +45,7 @@ immaginato: l'unico che non consuma nessun passo nel mondo vero.
 Il disegno mostra due cicli, non uno. Il primo tocca il mondo vero: si agisce,
 si guarda cosa succede e si usa quel poco per aggiustare il simulatore. Il
 secondo (quello con la freccia arancione) vive solo nella testa dell'agente.
-L'idea è far girare molte volte il secondo spendendo poco nel primo.
+L'idea è [far girare molte volte il secondo spendendo poco nel primo]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -277,8 +277,8 @@ parte il ripasso ha portato la casella di partenza a $0{,}815$, cioè dove
 doveva arrivare, mentre senza ripassi si è fermata a $0{,}156$: cinque volte
 più in basso, e ancora lontanissima dal bersaglio. Se avessimo
 guardato solo la policy, avremmo concluso che i ripassi non cambiano niente, e
-ci saremmo sbagliati, perché il vantaggio c'è e sta nella velocità con cui il
-valore arriva fino alla casella di partenza.
+ci saremmo sbagliati, perché [il vantaggio c'è e sta nella velocità con cui il
+valore arriva fino alla casella di partenza]{.pt-matita}.
 
 ## L'errore del modello si compone lungo il rollout
 
@@ -314,9 +314,9 @@ biglie partite vicine si allontanano parecchio. Un sogno corto vive tutto
 dentro quel giro: lo scarto cresce mentre si sogna, anche se più tardi si
 sarebbe riassorbito.
 
-Quasi mai sai in quale di questi mondi ti trovi, quindi le previsioni su cui
-puoi contare sono quelle a breve. La cura è semplice e nel 2019 trova la
-formulazione che farà scuola, un algoritmo che si chiama **MBPO**
+Quasi mai sai in quale di questi mondi ti trovi, quindi [le previsioni su cui
+puoi contare sono quelle a breve]{.pt-matita}. La cura è semplice e nel 2019
+trova la formulazione che farà scuola, un algoritmo che si chiama **MBPO**
 («ottimizzare la strategia basandosi su un modello»): invece di far partire i
 sogni dall'inizio della partita e tirarli avanti a lungo, si parte da una
 situazione *vera*, appena visitata, e si immaginano solo pochi passi. Sogni
@@ -358,8 +358,8 @@ lineare, e dal ventesimo passo è già fermo lì.
 
 Questo accumulo prende il nome di **compounding error**, e impone un
 compromesso: rollout lunghi danno più segnale di allenamento ma sempre meno
-affidabile; quanto sia affidabile lo stabilisce il sistema, non il solo
-orizzonte.
+affidabile; [quanto sia affidabile lo stabilisce il sistema, non il solo
+orizzonte]{.pt-matita}.
 
 Il calcolo, poi, è ottimista per costruzione: chiede che l'errore del
 modello resti sotto $\epsilon$ in ogni stato raggiunto, mentre un modello
@@ -414,10 +414,10 @@ gioco di prestigio: pianifica in profondità come AlphaZero, ma *senza ricevere
 le regole del gioco*, con un modello imparato come quello di Dyna; e quel
 modello non prova nemmeno a riprodurre il mondo.
 
-In altri termini, il modello che MuZero si costruisce conserva, al posto del
-mondo, un riassunto, il minimo che serve a decidere. Quel riassunto si chiama
-**latente**, e la parola vuol dire nascosto, perché là dentro la scacchiera non
-c'è più.
+In altri termini, [il modello che MuZero si costruisce conserva, al posto del
+mondo, un riassunto, il minimo che serve a decidere]{.pt-matita}. Quel
+riassunto si chiama **latente**, e la parola vuol dire nascosto, perché là
+dentro la scacchiera non c'è più.
 
 `````{tab} Elementare
 
@@ -492,14 +492,14 @@ interno dell'ambiente (un *world model*, trattato nella {doc}`sezione sui mondi
 in miniatura </WorldModels/mondi-in-miniatura>`) e allenare la strategia
 *interamente lì dentro*, senza mai fermarsi a pianificare.
 
-La terza via sfrutta il fatto che simulatore e strategia sono reti neurali,
-quindi derivabili. Se le azioni sono continue (quanta spinta, quanto sterzo),
-il gradiente del ritorno immaginato può risalire il rollout, passo dopo passo,
-fino ai parametri della strategia, che impara così non solo *che* il tratto è
-andato male ma *di quanto* andava spostata ciascuna azione. Un'azione discreta,
-cioè una scelta fra le voci di un menu come nei giochi Atari, non ha derivata,
-e lì si torna allo stimatore di REINFORCE, che l'ultima versione di Dreamer usa
-per tutte le azioni.
+[La terza via sfrutta il fatto che simulatore e strategia sono reti neurali,
+quindi derivabili]{.pt-matita}. Se le azioni sono continue (quanta spinta,
+quanto sterzo), il gradiente del ritorno immaginato può risalire il rollout,
+passo dopo passo, fino ai parametri della strategia, che impara così non solo
+*che* il tratto è andato male ma *di quanto* andava spostata ciascuna azione.
+Un'azione discreta, cioè una scelta fra le voci di un menu come nei giochi
+Atari, non ha derivata, e lì si torna allo stimatore di REINFORCE, che l'ultima
+versione di Dreamer usa per tutte le azioni.
 
 Anche in questo caso la simulazione si srotola nello spazio latente: a ogni
 passo il simulatore prevede il latente successivo, senza ricostruire le
@@ -599,8 +599,8 @@ for _ in range(3):                                    # orizzonte corto: 3 passi
 
 ## Quando il sogno inganna: il model exploitation
 
-Resta il punto dolente, che nessun risultato spettacolare cancella. Una policy
-addestrata dentro un modello tende a sfruttarne i difetti: è il
+Resta il punto dolente, che nessun risultato spettacolare cancella. [Una policy
+addestrata dentro un modello tende a sfruttarne i difetti]{.pt-matita}: è il
 **model exploitation**, o sfruttamento del modello. Se il modello sbaglia in
 modo sistematico (sopravvaluta una ricompensa, dimentica un ostacolo),
 l'ottimizzazione trova quegli errori, e ne emergono policy che incassano

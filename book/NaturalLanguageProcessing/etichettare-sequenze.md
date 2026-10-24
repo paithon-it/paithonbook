@@ -66,8 +66,8 @@ azioni, l'articolo fa strada al nome), e il punto delicato è che alcune ne fann
 due, cambiando divisa senza avvisare: «ancora» è un pezzo di nave se la pronunci
 *àncora* e un avverbio se la pronunci *ancóra*. Sulla pagina le due «ancora»
 sono identiche: solo le parole intorno rivelano quale hai davanti. Etichettare
-le parti del discorso è proprio questo: guardare il contesto e decidere, parola
-per parola, quale mestiere è in servizio.
+le parti del discorso è proprio questo: [guardare il contesto e decidere, parola
+per parola, quale mestiere è in servizio]{.pt-matita}.
 
 Le parole a doppio mestiere sono poche, se le si conta sul vocabolario: aprilo
 a caso e quasi ogni voce ne ha uno solo. Sono però quelle che tornano di
@@ -86,13 +86,13 @@ si mette a inventare un articolo. Cambiano le parole, non l'elenco dei mestieri.
 
 `````{tab} Superiore
 
-Formalmente il POS tagging è un problema di **etichettatura di sequenze**:
-data la frase $w_1, \dots, w_n$, produrre la sequenza di etichette
-$t_1, \dots, t_n$, una per token, della stessa lunghezza dell'input. È una
-struttura più semplice della {doc}`traduzione <seq2seq-traduzione>` (niente
-riordini, niente lunghezze diverse), ma la difficoltà si concentra
-nell'ambiguità: le parole ambigue sono una minoranza del vocabolario, però
-sono tra le più frequenti. Con il tagset del Penn Treebank, 45 etichette per
+Formalmente il POS tagging è un problema di **etichettatura di sequenze**: data
+la frase $w_1, \dots, w_n$, produrre la sequenza di etichette $t_1, \dots,
+t_n$, una per token, della stessa lunghezza dell'input. È una struttura più
+semplice della {doc}`traduzione <seq2seq-traduzione>` (niente riordini, niente
+lunghezze diverse), ma la difficoltà si concentra nell'ambiguità: [le parole
+ambigue sono una minoranza del vocabolario, però sono tra le più
+frequenti]{.pt-matita}. Con il tagset del Penn Treebank, 45 etichette per
 l'inglese, le ambigue sono il 14–15% dei tipi di parola ma il 55–67% delle
 occorrenze nei testi correnti; con un altro tagset, come le 17 etichette
 universali, le percentuali cambiano.
@@ -156,11 +156,11 @@ A prima vista sembra un problema diverso dal POS tagging: lì un'etichetta per
 parola, qui *segmenti* da ritagliare; infatti «Enrico Fermi» è un'entità sola,
 lunga due parole.
 
-La soluzione che riporta tutto alla forma già nota è lo **schema BIO**: invece
+La soluzione che riporta tutto alla forma già nota è lo **schema BIO**: [invece
 di dire dove comincia e dove finisce un segmento, si dà un'etichetta a ogni
-parola, e l'etichetta dice se lì un segmento *comincia*, se lo *continua*, o se
-lì fuori non c'è niente. Le tre lettere sono le iniziali inglesi di quelle tre
-parole (*begin*, *inside*, *outside*).
+parola]{.pt-matita}, e l'etichetta dice se lì un segmento *comincia*, se lo
+*continua*, o se lì fuori non c'è niente. Le tre lettere sono le iniziali
+inglesi di quelle tre parole (*begin*, *inside*, *outside*).
 
 Lo schema nasce nel 1995 con il lavoro di Lance Ramshaw e Mitchell Marcus sugli
 spezzoni di frase, dove il segnale di «comincia» compariva solo quando serviva a
@@ -255,9 +255,10 @@ parola richiama il suo patto: quello che succede adesso dipende solo da quello
 che è successo subito prima. *Model*, modello, perché è appunto una descrizione
 semplificata di come nasce una frase.
 
-Infine *hidden*, nascosto, che è l'aggettivo importante: le categorie
-grammaticali non si vedono mai, perché sulla pagina ci sono soltanto parole,
-eppure sono loro a governare quali parole compaiono e in che ordine.
+Infine *hidden*, nascosto, che è l'aggettivo importante: [le categorie
+grammaticali non si vedono mai, perché sulla pagina ci sono soltanto
+parole]{.pt-matita}, eppure sono loro a governare quali parole compaiono e in
+che ordine.
 
 `````{tab} Elementare
 
@@ -352,14 +353,14 @@ quelle prima ancora. È la stessa regola del patto di Markov, ed è il motivo pe
 cui questi modelli si dicono «a catena»: come in una catena, ogni anello tocca
 solo il precedente e il successivo.
 
-In che senso questa proprietà viene in aiuto? Arrivati alla parola
-12, non serve ricordare l'intera sequenza precedente: basta sapere, per ciascuna
-delle 17 categorie possibili, quale fosse il cammino migliore per raggiungerla
-alla parola 11. Tutto il resto si può scartare, perché non influenzerà le scelte
-successive. Questo procedimento (calcolare una volta sola ogni risultato
-parziale e conservarlo per i passi seguenti) si chiama programmazione dinamica,
-già incontrata con la griglia della distanza di edit nella {doc}`cassetta degli
-attrezzi <strumenti-classici>`.
+In che senso questa proprietà viene in aiuto? Arrivati alla parola 12, non
+serve ricordare l'intera sequenza precedente: [basta sapere, per ciascuna delle
+17 categorie possibili, quale fosse il cammino migliore per raggiungerla alla
+parola 11]{.pt-matita}. Tutto il resto si può scartare, perché non influenzerà
+le scelte successive. Questo procedimento (calcolare una volta sola ogni
+risultato parziale e conservarlo per i passi seguenti) si chiama programmazione
+dinamica, già incontrata con la griglia della distanza di edit nella
+{doc}`cassetta degli attrezzi <strumenti-classici>`.
 
 L'algoritmo che la applica qui porta il nome di Andrew Viterbi
 {cite}`viterbi1967error`, nato Andrea a Bergamo nel 1935 ed emigrato bambino
@@ -646,12 +647,12 @@ usavano una rete a finestra fissa di parole invece di una ricorrente.
 
 ## La via neurale: una BiLSTM per etichettare
 
-E le reti ricorrenti? Nella {doc}`sezione sulla traduzione <seq2seq-traduzione>`
-abbiamo stabilito una regola: la lettura bidirezionale vale solo per *capire* un
-testo che esiste già tutto intero, non per generarlo. L'etichettatura è il caso
-ideale: la frase è lì, completa, e per decidere l'etichetta di «porta» servono
-tanto le parole prima quanto quelle dopo («la porta cigola» contro «la porta a
-scuola»).
+E le reti ricorrenti? Nella {doc}`sezione sulla traduzione
+<seq2seq-traduzione>` abbiamo stabilito una regola: la lettura bidirezionale
+vale solo per *capire* un testo che esiste già tutto intero, non per generarlo.
+[L'etichettatura è il caso ideale: la frase è lì, completa, e per decidere
+l'etichetta di «porta» servono tanto le parole prima quanto quelle
+dopo]{.pt-matita} («la porta cigola» contro «la porta a scuola»).
 
 Un etichettatore neurale minimo (un **tagger**, dall'inglese *tag*, cartellino)
 ha tre componenti, tutti già incontrati: uno strato di embedding, che trasforma
@@ -757,11 +758,11 @@ Il tagger prende quelle file di numeri come ingredienti, accanto al suo
 embedding, e i due lettori restano come sono: non li si riaddestra.
 
 Ogni lettore è fatto di più strati, uno sopra l'altro, e ciascuno rilavora
-quello che gli passa lo strato di sotto; gli strati non sanno le stesse cose:
-quelli bassi sono più bravi con la grammatica (che ruolo ha la parola), quelli
-alti con il significato (quale calcio). Così ogni compito impara la propria
-ricetta, quanto prendere da ogni strato, e una manopola che alza o abbassa il
-tutto, come un volume.
+quello che gli passa lo strato di sotto; [gli strati non sanno le stesse
+cose]{.pt-matita}: quelli bassi sono più bravi con la grammatica (che ruolo ha
+la parola), quelli alti con il significato (quale calcio). Così ogni compito
+impara la propria ricetta, quanto prendere da ogni strato, e una manopola che
+alza o abbassa il tutto, come un volume.
 
 I limiti sono due. I lettori sono fermi, quindi il compito non può correggerli
 per le proprie esigenze; e ciascuno dei due vede un lato solo della frase,
@@ -799,14 +800,14 @@ compiti anche alla sua uscita. (Il lavoro affina anche il modello di linguaggio
 sul testo del compito, senza etichette, prima di congelarlo: è un adattamento al
 dominio, non il fine-tuning supervisionato di BERT.)
 
-L'analisi degli strati conferma la divisione del lavoro: il primo strato serve
-meglio l'etichettatura grammaticale, l'ultimo la disambiguazione del senso delle
-parole. Con questo schema ELMo migliora i risultati su sei compiti diversi,
-dalle domande e risposte all'implicazione testuale, dai ruoli semantici alla
-coreferenza, dal NER al sentiment. Sul NER del CoNLL-2003, aggiunto a una
-BiLSTM-CRF, porta la $F_1$ da $90{,}15$ a $92{,}22$ (media su cinque semi), cioè
-il 21% di errore relativo in meno; il miglior risultato precedente era $91{,}93$
-{cite}`peters2018deep`.
+L'analisi degli strati conferma la divisione del lavoro: [il primo strato serve
+meglio l'etichettatura grammaticale, l'ultimo la disambiguazione del senso
+delle parole]{.pt-matita}. Con questo schema ELMo migliora i risultati su sei
+compiti diversi, dalle domande e risposte all'implicazione testuale, dai ruoli
+semantici alla coreferenza, dal NER al sentiment. Sul NER del CoNLL-2003,
+aggiunto a una BiLSTM-CRF, porta la $F_1$ da $90{,}15$ a $92{,}22$ (media su
+cinque semi), cioè il 21% di errore relativo in meno; il miglior risultato
+precedente era $91{,}93$ {cite}`peters2018deep`.
 
 Con il fine-tuning, sullo stesso test, BERT-large arriva a $92{,}8$
 {cite}`devlin2019bert`. BERT chiama lo schema di ELMo approccio *feature-based*,
@@ -843,17 +844,17 @@ un etichettatore? La risposta giusta è diversa per i due compiti.
 Per le parti del discorso il voto naturale funziona: quante parole hanno
 ricevuto l'etichetta giusta, su cento. Ma attenzione alle percentuali gonfiate.
 
-Prova a immaginare il sistema più stupido possibile: per ogni parola guarda qual
-è il mestiere che quella parola fa più spesso nei testi già etichettati, e
+Prova a immaginare il sistema più stupido possibile: per ogni parola guarda
+qual è il mestiere che quella parola fa più spesso nei testi già etichettati, e
 scrive sempre quello, senza mai guardare il contesto. Un sistema così, che non
 ha capito niente di niente, sull'inglese dei giornali azzecca già 92 parole su
 cento, perché tantissime parole sono facili: «the» è sempre un articolo,
-«quickly» quasi sempre un avverbio (come da noi «il» e «velocemente»). Le parole
-ambigue sono meno numerose, ma sono quelle che si usano di più, e in un testo
-inglese di giornale coprono più della metà delle parole scritte. I sistemi seri
-stanno oltre il 97. Ecco perché quei numeri vanno letti sapendo da dove si
-parte: fra il 92 e il 97 c'è tutto il lavoro, e ci sono tutte le parole ambigue,
-cioè le uniche su cui valga la pena discutere.
+«quickly» quasi sempre un avverbio (come da noi «il» e «velocemente»). Le
+parole ambigue sono meno numerose, ma sono quelle che si usano di più, e in un
+testo inglese di giornale coprono più della metà delle parole scritte. I
+sistemi seri stanno oltre il 97. Ecco perché quei numeri vanno letti sapendo da
+dove si parte: [fra il 92 e il 97 c'è tutto il lavoro]{.pt-matita}, e ci sono
+tutte le parole ambigue, cioè le uniche su cui valga la pena discutere.
 
 Per le entità quel voto diventa una trappola. Prendi un testo di 100 parole che
 contiene una sola entità, «Enrico Fermi». Un sistema pigro che non evidenzia
@@ -888,9 +889,10 @@ Per il POS tagging la metrica è l’**accuratezza per token**, $\text{acc} =
 \frac{\#\{i : \hat{t}_i = t_i\}}{n}$. Va letta rispetto a una base di confronto
 onesta: la baseline «assegna a ogni parola la sua etichetta più frequente nel
 corpus» arriva già al 92% sull'inglese giornalistico (con il tagset Penn, sul
-*Wall Street Journal*). Lo spazio reale di miglioramento sta quindi tutto nelle
-occorrenze ambigue, le più difficili, dove si concentra il passaggio dal 92% al
-97%, quota raggiunta allo stesso modo da HMM, CRF e BERT sui treebank inglesi.
+*Wall Street Journal*). [Lo spazio reale di miglioramento sta quindi tutto
+nelle occorrenze ambigue]{.pt-matita}, le più difficili, dove si concentra il
+passaggio dal 92% al 97%, quota raggiunta allo stesso modo da HMM, CRF e BERT
+sui treebank inglesi.
 
 Per il NER si usano precisione, richiamo ed $F_1$ a livello di entità, con
 il criterio dell’*exact match* reso standard dalle campagne di valutazione

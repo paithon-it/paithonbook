@@ -43,9 +43,9 @@ che a «treno» è vero, ma non serve a rovinare con metodo.
 *Cancellarla.* Al posto della parola si mette un segnaposto che dice «qui c'era
 qualcosa e non lo sai». Aumentando il tempo si cancella una frazione crescente
 di parole, finché non resta che una fila di segnaposti. È la strada che ha
-vinto, per una ragione che si vede subito: chi ripulisce sa dove guardare. Le
-parole rimaste sono vere e non si toccano; il lavoro è ricostruire quelle
-cancellate, e il modello sa quali sono.
+vinto, per una ragione che si vede subito: [chi ripulisce sa dove
+guardare]{.pt-matita}. Le parole rimaste sono vere e non si toccano; il lavoro
+è ricostruire quelle cancellate, e il modello sa quali sono.
 
 Il compito «ecco un testo con dei buchi, riempili» è quello su cui una
 generazione di modelli linguistici è stata addestrata a partire dal 2018, quando
@@ -77,8 +77,8 @@ $\mathbf{Q}_t$ definisce la famiglia:
   speciale $\texttt{[MASK]}$, dal quale non si esce più. La stazionaria è la
   sequenza di soli $\texttt{[MASK]}$.
 
-La terza è quella che si è imposta, e la ragione è strutturale: lo stato
-$\mathbf{x}_t$ dichiara quali posizioni sono state corrotte, quindi il
+La terza è quella che si è imposta, e la ragione è strutturale: [lo stato
+$\mathbf{x}_t$ dichiara quali posizioni sono state corrotte]{.pt-matita}, quindi il
 posteriore $q(\mathbf{x}_{t-1}\mid\mathbf{x}_t,\mathbf{x}_0)$ è una delta su
 tutte le posizioni non mascherate, che restano fisse, e il modello deve
 imparare soltanto le posizioni mascherate. Con la transizione uniforme, invece,
@@ -115,8 +115,8 @@ su ogni posizione cancellata.
 Sviluppando il calcolo che misura quanto il modello è bravo e semplificando
 tutto il semplificabile, resta soltanto questo. Non ci sono rumori
 gaussiani, non c'è nessun punteggio da imparare, non c'è nessuna equazione
-differenziale: c'è la somma degli errori sulle posizioni cancellate, ciascuno
-moltiplicato per un peso.
+differenziale: [c'è la somma degli errori sulle posizioni cancellate, ciascuno
+moltiplicato per un peso]{.pt-matita}.
 
 Il peso però conta, e ha un andamento sensato. Quando quasi tutto è cancellato,
 indovinare è quasi impossibile e ogni singola risposta vale poco; quando è
@@ -149,8 +149,8 @@ $1/t$ e la somma ha in media $tL$ termini, con $L$ la lunghezza della sequenza:
 i due fattori si compensano, e la perdita divisa per $L$ è la cross-entropia
 media sulle posizioni cancellate. Le posizioni non mascherate la rete non le
 deve predire: le copia dall'ingresso. Non compaiono né il
-punteggio né una divergenza fra gaussiane: il modello risolve una
-classificazione sul vocabolario, posizione per posizione.
+punteggio né una divergenza fra gaussiane: [il modello risolve una
+classificazione sul vocabolario, posizione per posizione]{.pt-matita}.
 
 Da qui il legame con il **modellamento mascherato del linguaggio** alla BERT
 {cite}`devlin2019bert`: a meno del peso, è la stessa somma valutata a un solo
@@ -278,12 +278,12 @@ dirsi: tirarle nello stesso momento è lecito. È la terza che dipende da tutte 
 due, e quando tocca a lei le altre sono già scritte. Risultato: solo parole
 valide, e un quarto ciascuna.
 
-Questo è il compromesso della diffusione sui simboli, e vale ovunque. Il numero
-di passi necessari dipende meno dalla lunghezza del testo che da quanto le
-parti si condizionano a vicenda. Dove il testo è prevedibile si può scrivere
-molto in parallelo; dove ogni parola cambia il senso delle altre, i passi
-tornano tanti. Un modello che promette mille parole in dieci passaggi sta
-scommettendo che il testo sia in gran parte prevedibile, e qualche volta la
+Questo è il compromesso della diffusione sui simboli, e vale ovunque. [Il
+numero di passi necessari dipende meno dalla lunghezza del testo che da quanto
+le parti si condizionano a vicenda]{.pt-matita}. Dove il testo è prevedibile si
+può scrivere molto in parallelo; dove ogni parola cambia il senso delle altre,
+i passi tornano tanti. Un modello che promette mille parole in dieci passaggi
+sta scommettendo che il testo sia in gran parte prevedibile, e qualche volta la
 scommessa si perde.
 
 Si può anche scegliere quali posizioni scoprire per prime: quelle su cui il
@@ -330,15 +330,15 @@ $$
 - H\big(\{x^{(i)}\}_{i\in G} \mid \mathbf{x}_t\big) .
 $$
 
-Scoprire in parallelo è esatto quando quella quantità è nulla, e l'errore
-cresce con essa. Per due sole posizioni coincide con l'informazione mutua; da
-tre in su non si riduce a nessuna somma di informazioni mutue a coppie, e il
-linguaggio di parità lo mostra nel modo più netto: ogni coppia di bit ha
-informazione mutua nulla, e le tre posizioni insieme hanno multi-informazione
-di un bit. È la ragione per cui due passi bastano e uno no. La quantità non è
-solo un indice: con un modello perfetto, campionare il gruppo dal prodotto
-delle marginali invece che dalla congiunta comporta una divergenza di
-Kullback-Leibler pari a
+[Scoprire in parallelo è esatto quando quella quantità è nulla, e l'errore
+cresce con essa]{.pt-matita}. Per due sole posizioni coincide con
+l'informazione mutua; da tre in su non si riduce a nessuna somma di
+informazioni mutue a coppie, e il linguaggio di parità lo mostra nel modo più
+netto: ogni coppia di bit ha informazione mutua nulla, e le tre posizioni
+insieme hanno multi-informazione di un bit. È la ragione per cui due passi
+bastano e uno no. La quantità non è solo un indice: con un modello perfetto,
+campionare il gruppo dal prodotto delle marginali invece che dalla congiunta
+comporta una divergenza di Kullback-Leibler pari a
 $D_{\mathrm{KL}}\big(p(\cdot\mid\mathbf{x}_t)\,\big\Vert\,\prod_{i\in G}
 p(x^{(i)}\mid\mathbf{x}_t)\big) = \mathrm{TC}(G\mid\mathbf{x}_t)$, cioè un bit
 per il gruppo di tre del linguaggio di parità. Ne segue la strategia usata in
@@ -389,11 +389,11 @@ di 256 pezzi di parola alla volta. Dove restino indietro, se restano indietro,
 guardare: la generazione lunga, dove una parola dell'inizio può decidere una
 parola della fine, e ogni passo parallelo paga una parte di quel legame.
 
-Dove la famiglia ha già un vantaggio chiaro è nei compiti in cui il testo va
-riempito invece che scritto di seguito: completare un modulo, correggere un
-pezzo di codice in mezzo a un file, generare rispettando vincoli sparsi. Lì la
-scrittura da sinistra a destra è un impedimento, e il sudoku è il modo giusto
-di procedere.
+Dove la famiglia ha già un vantaggio chiaro è [nei compiti in cui il testo va
+riempito invece che scritto di seguito]{.pt-matita}: completare un modulo,
+correggere un pezzo di codice in mezzo a un file, generare rispettando vincoli
+sparsi. Lì la scrittura da sinistra a destra è un impedimento, e il sudoku è il
+modo giusto di procedere.
 
 E gli stessi metodi si applicano a qualunque cosa sia fatta di simboli e abbia
 una struttura da rispettare. Le molecole sono reticoli di atomi legati fra
@@ -440,11 +440,11 @@ tecniche di guida della {doc}`sezione su guida e allineamento
 guida senza classificatore, per esempio, combina le due predizioni sui logit),
 anche se non tutte si traducono nella stessa forma.
 
-Infine, questa famiglia rende naturali i compiti di riempimento
-vincolato, che è la forma di molti problemi importanti fuori dal linguaggio:
-generazione di molecole con proprietà imposte, progettazione di sequenze
-proteiche con siti fissati, sintesi di programmi con un'interfaccia data. In
-tutti l'ordine di scrittura è un vincolo artificiale, e toglierlo è un
+Infine, [questa famiglia rende naturali i compiti di riempimento
+vincolato]{.pt-matita}, che è la forma di molti problemi importanti fuori dal
+linguaggio: generazione di molecole con proprietà imposte, progettazione di
+sequenze proteiche con siti fissati, sintesi di programmi con un'interfaccia
+data. In tutti l'ordine di scrittura è un vincolo artificiale, e toglierlo è un
 guadagno.
 
 `````

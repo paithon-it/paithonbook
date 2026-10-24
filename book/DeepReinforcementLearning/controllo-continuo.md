@@ -12,8 +12,8 @@ Considera invece un braccio robotico con sette giunti o un robot a quattro
 zampe che deve imparare a camminare. A ogni istante chi lo comanda non decide
 "sinistra o destra", ma *quanta spinta* dare a ciascun motore: un numero con la
 virgola, magari negativo per frenare, magari $3{,}4$, magari $3{,}41$. In altri
-termini, non c'è un menu di azioni da scorrere, ma un continuo di forze da
-dosare.
+termini, [non c'è un menu di azioni da scorrere, ma un continuo di forze da
+dosare]{.pt-matita}.
 
 È lo scoglio annunciato in fondo alla {doc}`sezione su DQN <dqn>`. Per prendere
 il voto più alto, infatti, bisogna scorrere le azioni una per una. Con un
@@ -48,9 +48,9 @@ alto, perché dovresti scorrere all'infinito.
 La via d'uscita è smettere di cercare il massimo confrontando le opzioni e
 tenere invece, accanto al "giudice" che assegna i voti, un secondo personaggio:
 un *attore* che, guardando la situazione, propone direttamente la forza da
-applicare. In questo modo il giudice non deve più scandagliare infinite
-possibilità, ma solo dire all'attore se l'azione proposta è buona e in che
-direzione ritoccarla.
+applicare. In questo modo [il giudice non deve più scandagliare infinite
+possibilità, ma solo dire all'attore se l'azione proposta è buona]{.pt-matita}
+e in che direzione ritoccarla.
 
 C'è poi una seconda pretesa, che con il menu non c'entra: le prove già fatte non
 si buttano. Ogni azione tentata, con il suo esito, finisce su un
@@ -82,10 +82,10 @@ campionamento con il *cross-entropy method* (QT-Opt
 {cite}`kalashnikov2018qtopt`). Discretizzare ciascuna delle $n$ componenti in
 $k$ valori, invece, dà $k^n$ azioni da scorrere.
 
-La via più seguita è un'altra: approssimare quel massimo con una policy
-parametrica $\boldsymbol{\mu}_\theta(s)$ che restituisce direttamente l'azione,
-addestrata in modo che $\boldsymbol{\mu}_\theta(s) \approx
-\arg\max_{\mathbf{a}} Q(s,\mathbf{a})$. Vogliamo inoltre un metodo
+La via più seguita è un'altra: [approssimare quel massimo con una policy
+parametrica $\boldsymbol{\mu}_\theta(s)$ che restituisce direttamente
+l'azione]{.pt-matita}, addestrata in modo che $\boldsymbol{\mu}_\theta(s)
+\approx \arg\max_{\mathbf{a}} Q(s,\mathbf{a})$. Vogliamo inoltre un metodo
 *off-policy*, che riusi un buffer di esperienze passate come DQN
 {cite}`mnih2015human`, per garantire un uso efficiente dei campioni
 {cite}`sutton2018reinforcement`.
@@ -98,9 +98,9 @@ Il primo algoritmo a unire queste due proprietà con reti
 profonde, su compiti di controllo con molti gradi di libertà, è **DDPG**,
 *Deep Deterministic Policy Gradient*, presentato da Lillicrap e colleghi di
 DeepMind nel 2016 {cite}`lillicrap2016continuous`. L'attore-critico con
-policy deterministica esisteva già, anche con reti neurali piccole; il
+policy deterministica esisteva già, anche con reti neurali piccole; [il
 contributo di DDPG è averlo reso stabile su reti profonde portandoci gli
-accorgimenti di DQN.
+accorgimenti di DQN]{.pt-matita}.
 
 L'idea è tenere due reti che collaborano. L’attore guarda la situazione e
 propone un'azione precisa: non un ventaglio di possibilità con le loro
@@ -224,10 +224,11 @@ correlato, e un semplice rumore gaussiano indipendente basta
 
 DDPG funziona, ma è fragile, e due problemi ne minano la stabilità. Il primo è
 la sovrastima del valore, lo stesso male che affliggeva DQN. Il critico,
-infatti, ha errori di stima in ogni direzione, e l'attore, addestrato a cercare
-le azioni che il critico valuta di più, si infila dove il critico ha sbagliato
-*per eccesso*. Quegli errori ottimistici vengono così selezionati, amplificati
-e reimmessi nel bersaglio che il critico insegue, dove tendono ad accumularsi.
+infatti, ha errori di stima in ogni direzione, e [l'attore, addestrato a
+cercare le azioni che il critico valuta di più, si infila dove il critico ha
+sbagliato *per eccesso*]{.pt-matita}. Quegli errori ottimistici vengono così
+selezionati, amplificati e reimmessi nel bersaglio che il critico insegue, dove
+tendono ad accumularsi.
 
 Il secondo è l’ipersensibilità agli iperparametri, cioè ai valori che si
 decidono prima di cominciare e non si imparano: la velocità con cui le reti si
@@ -246,8 +247,8 @@ patologie e propongono **TD3**, *Twin Delayed DDPG*
 {cite}`fujimoto2018addressing`. Si noti che quel «TD» non ha niente a che
 vedere con le differenze temporali (*temporal difference*) del Q-learning; sta
 per *Twin Delayed*, «gemello e ritardato», e i due aggettivi dicono già due dei
-tre accorgimenti. È DDPG con tre correzioni mirate, ciascuna rivolta a un
-difetto preciso, e non un algoritmo nuovo.
+tre accorgimenti. [È DDPG con tre correzioni mirate, ciascuna rivolta a un
+difetto preciso, e non un algoritmo nuovo]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -353,11 +354,11 @@ scopre la scorciatoia: si è incaponito sulla prima strada che andava bene, e se
 era solo mediocre non lo saprà mai.
 
 SAC cambia la regola del gioco. All'agente non chiede soltanto "massimizza il
-premio", ma "massimizza il premio *restando il più imprevedibile possibile*". A
-parità di ricompensa attesa, preferisce la condotta più varia, quella che
-mantiene aperte più opzioni. Un pendolare che ogni tanto cambia percorso, senza
-perdere troppo tempo, resta pronto a cogliere la via migliore quando si
-presenta.
+premio", ma "massimizza il premio *restando il più imprevedibile possibile*".
+[A parità di ricompensa attesa, preferisce la condotta più varia, quella che
+mantiene aperte più opzioni]{.pt-matita}. Un pendolare che ogni tanto cambia
+percorso, senza perdere troppo tempo, resta pronto a cogliere la via migliore
+quando si presenta.
 
 Questa preferenza per la varietà si regola con una manopola, la
 "temperatura": alta, l'agente esplora molto; bassa, si concentra sul premio. Il
@@ -413,8 +414,9 @@ $$
 
 Il coefficiente $\alpha>0$ è la temperatura, che pesa quanto conta esplorare
 rispetto allo sfruttare. L'entropia $\mathcal{H}$ è massima quando la policy è
-il più possibile casuale, quindi massimizzarla spinge l'agente a non collassare
-prematuramente su un'unica azione, migliorando l'esplorazione e la robustezza.
+il più possibile casuale, quindi [massimizzarla spinge l'agente a non
+collassare prematuramente su un'unica azione]{.pt-matita}, migliorando
+l'esplorazione e la robustezza.
 
 Il critico impara un *soft* Q-value con bersaglio
 
@@ -536,9 +538,9 @@ l'ottimizzatore minimizza, e minimizzare $-Q_\phi(s,\boldsymbol{\mu}_\theta(s))$
 equivale a far salire il valore che il critico dà all'azione dell'attore. La
 retropropagazione parte da quel valore, attraversa il critico, raggiunge
 l'azione ed entra nei parametri dell'attore. È la regola della catena del
-gradiente deterministico di policy calcolata dalla libreria; per questo il
+gradiente deterministico di policy calcolata dalla libreria; per questo [il
 critico non dice solo *quanto vale* l'azione, ma anche *da che parte* spostarla
-per farla valere di più.
+per farla valere di più]{.pt-matita}.
 
 ## Onestà sui limiti
 
@@ -555,9 +557,9 @@ con migliaia di robot simulati in parallelo si usa spesso PPO, che consuma
 subito l'intera esperienza raccolta. Ad esempio, Rudin e colleghi hanno
 insegnato così a camminare a un robot a quattro zampe in meno di quattro minuti
 di addestramento sul piano, e in venti su un terreno accidentato
-{cite}`rudin2022learning`. Non esiste quindi il vincitore assoluto: la scelta
+{cite}`rudin2022learning`. Non esiste quindi il vincitore assoluto: [la scelta
 dipende da quanto costa una prova e da quanta cura si può dedicare alla messa a
-punto.
+punto]{.pt-matita}.
 
 C'è poi un limite che nessuno di questi algoritmi risolve, il **sim-to-real
 gap**, lo scarto fra simulazione e mondo fisico. Addestrare un robot

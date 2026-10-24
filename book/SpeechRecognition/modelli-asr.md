@@ -45,8 +45,8 @@ mai quella che la precede.
 
 I tempi si potrebbero anche segnare a mano, col cronometro, suono per suono; su
 un video si fa, su milioni di ore di registrazioni non lo farà nessuno. Restano
-le due cose facili da avere, la registrazione e la sua trascrizione, e da
-quelle due i tempi vanno ricavati senza aiuto.
+le due cose facili da avere, la registrazione e la sua trascrizione, e [da
+quelle due i tempi vanno ricavati senza aiuto]{.pt-matita}.
 `````
 
 `````{tab} Superiore
@@ -56,8 +56,8 @@ sotto-parole): è la trascrizione $W$ di {doc}`Speech Recognition
 </SpeechRecognition/overview>`, vista qui come sequenza di simboli. Con $T \gg
 U$, l'allineamento è **monotono** (l'audio scorre in avanti come il testo) ma
 sconosciuto: non abbiamo etichette frame per frame. Segmentare a mano milioni
-di ore per dire «da qui a qui c'è una a» è impraticabile. Serve un modello che
-impari l'allineamento dalla sola coppia (audio, trascrizione).
+di ore per dire «da qui a qui c'è una a» è impraticabile. [Serve un modello che
+impari l'allineamento dalla sola coppia (audio, trascrizione)]{.pt-matita}.
 `````
 
 ## CTC: imparare ad allineare da soli
@@ -160,10 +160,10 @@ di Viterbi di
 con una differenza che pesa nella decodifica: là in ogni casella sopravviveva
 il cammino migliore, qui si sommano tutti.
 
-C'è però un limite. La rete vota un frame alla volta, e ogni voto lo dà
-guardando il suono e nient'altro: non si rilegge mai. Non sa, per esempio, che
-dopo «c-a-n» in italiano viene molto più facilmente una «e» che una «q». A
-questa ignoranza dovrà rimediare un altro pezzo del sistema.
+C'è però un limite. [La rete vota un frame alla volta, e ogni voto lo dà
+guardando il suono e nient'altro]{.pt-matita}: non si rilegge mai. Non sa, per
+esempio, che dopo «c-a-n» in italiano viene molto più facilmente una «e» che
+una «q». A questa ignoranza dovrà rimediare un altro pezzo del sistema.
 `````
 
 `````{tab} Superiore
@@ -241,8 +241,8 @@ uscite ai vari frame sono condizionatamente indipendenti, e lo garantisce un
 vincolo di architettura, l'assenza di connessioni di ritorno dallo strato di
 uscita a se stesso. Nel prodotto non compare perciò nessun fattore della forma
 $p(y_u \mid y_{<u})$, e togliere quel vincolo è la modifica che porta al
-trasduttore. La CTC non modella le dipendenze fra i caratteri in uscita: non ha il
-posto dove metterle.
+trasduttore. [La CTC non modella le dipendenze fra i caratteri in
+uscita]{.pt-matita}: non ha il posto dove metterle.
 
 Una conseguenza dell'addestramento si vede alla prima esecuzione: la rete
 concentra ogni simbolo su un frame, o su pochi, e dà il vuoto quasi a tutti
@@ -312,8 +312,8 @@ probabilità è il prodotto dei due voti:
 
 Il percorso più probabile è `∅ ∅`, con il 36%, e non scrive niente. Ma la
 lettera «A» esce da tre percorsi diversi, e insieme fanno 24 + 24 + 16 = 64%:
-quasi il doppio. Prendendo il percorso migliore avremmo trascritto il
-silenzio; sommando come fa la CTC, la risposta è «A».
+quasi il doppio. [Prendendo il percorso migliore avremmo trascritto il
+silenzio; sommando come fa la CTC, la risposta è «A»]{.pt-matita}.
 
 Succede anche fuori dagli esempi costruiti ad arte: ogni volta che una
 trascrizione è sostenuta da tanti percorsi mediocri e un'altra da un percorso
@@ -334,9 +334,9 @@ $$
 mentre l'obiettivo che il modello è stato addestrato a massimizzare è
 $\arg\max_y p(y \mid \mathbf{X})$, cioè la somma su
 $\mathcal{B}^{-1}(y)$. Le due
-quantità sono diverse perché $\mathcal{B}$ non è iniettiva: molti percorsi
+quantità sono diverse perché $\mathcal{B}$ non è iniettiva: [molti percorsi
 cadono sulla stessa etichettatura, e la loro massa può battere il massimo
-puntuale. Il controesempio minimo ha $T = 2$ e alfabeto
+puntuale]{.pt-matita}. Il controesempio minimo ha $T = 2$ e alfabeto
 $\{\varnothing, \texttt{A}\}$, con $p_t(\varnothing) = 0{,}6$ su entrambi i
 frame: il percorso migliore è $\varnothing\varnothing$ e vale $0{,}36$, ma
 l'etichettatura `A` raccoglie i tre percorsi restanti e vale
@@ -457,14 +457,13 @@ rileggersi il modello ricava gratis un orecchio per la lingua, che nessuno gli
 ha insegnato: sa come continuano le frasi, e ci si appoggia quando il suono è
 confuso.
 
-L'interprete, però, ha due limiti. Il primo è che, per cominciare, deve
-aver ascoltato la frase fino in fondo: un modello così non può scrivere
-mentre uno sta ancora parlando. Il secondo è che
-niente gli impedisce di sbagliare punto. Può riguardare un pezzo di audio che
-ha già tradotto, o saltarne uno del tutto, e allora ripete una sillaba o si
-mangia una parola; nei casi peggiori si impunta e ripete la stessa cosa
-all'infinito. La CTC questo difetto non ce l'ha, perché va avanti frame per
-frame e indietro non torna mai.
+L'interprete, però, ha due limiti. Il primo è che, per cominciare, deve aver
+ascoltato la frase fino in fondo: un modello così non può scrivere mentre uno
+sta ancora parlando. Il secondo è che [niente gli impedisce di sbagliare
+punto]{.pt-matita}. Può riguardare un pezzo di audio che ha già tradotto, o
+saltarne uno del tutto, e allora ripete una sillaba o si mangia una parola; nei
+casi peggiori si impunta e ripete la stessa cosa all'infinito. La CTC questo
+difetto non ce l'ha, perché va avanti frame per frame e indietro non torna mai.
 `````
 
 `````{tab} Superiore
@@ -487,15 +486,16 @@ modella cioè le dipendenze del testo in uscita, e per questo contiene un
 modello di linguaggio implicito, che nessuno gli ha inserito.
 
 Il punto debole sta altrove, non nella lentezza della generazione sequenziale.
-Nulla vincola $\alpha_{ij}$ ad avanzare al crescere di $i$: la CTC ha la
-monotonia per costruzione, l'attenzione la deve imparare, e niente le impedisce
-di saltare una porzione di audio, di riguardarne una già trascritta o di
-restare ferma dov'è. Da lì vengono le parole mancanti, le sillabe ripetute e i
-loop di ripetizione, che si ritrovano identici (stessa causa, altro compito)
-nella {doc}`sintesi vocale </SpeechRecognition/sintesi-vocale>`. Un secondo
-difetto conta appena si esce dal laboratorio. La somma corre su tutti gli stati
-dell'encoder, quindi il primo token non può uscire prima dell'ultimo frame, e
-il modello non trascrive mentre ascolta.
+Nulla vincola $\alpha_{ij}$ ad avanzare al crescere di $i$: [la CTC ha la
+monotonia per costruzione, l'attenzione la deve imparare]{.pt-matita}, e niente
+le impedisce di saltare una porzione di audio, di riguardarne una già
+trascritta o di restare ferma dov'è. Da lì vengono le parole mancanti, le
+sillabe ripetute e i loop di ripetizione, che si ritrovano identici (stessa
+causa, altro compito) nella {doc}`sintesi
+vocale </SpeechRecognition/sintesi-vocale>`. Un secondo difetto conta appena si
+esce dal laboratorio. La somma corre su tutti gli stati dell'encoder, quindi il
+primo token non può uscire prima dell'ultimo frame, e il modello non trascrive
+mentre ascolta.
 `````
 
 Una tecnica di addestramento ha contato, per questi modelli, quanto
@@ -526,8 +526,8 @@ Messe una accanto all'altra, le due famiglie sembrano costringere a una scelta.
 La CTC scorre l'audio in avanti e non torna mai indietro, ma non sa niente di
 quello che ha già scritto. Il decoder con attenzione sa benissimo che cosa ha
 già scritto, ma per farlo deve aver ascoltato tutto, e per giunta può perdere
-il segno. La scelta si evita con una terza famiglia, che tiene le due cose
-insieme: il **trasduttore neurale**, proposto da Alex Graves nel 2012
+il segno. [La scelta si evita con una terza famiglia, che tiene le due cose
+insieme]{.pt-matita}: il **trasduttore neurale**, proposto da Alex Graves nel 2012
 {cite}`graves2012sequence`, cioè da chi aveva scritto la CTC sei anni prima.
 Nei testi si trova sempre con la sigla RNN-T, dove le prime tre lettere sono le
 {doc}`reti ricorrenti </NaturalLanguageProcessing/modelli-sequenza>`, quelle
@@ -709,10 +709,10 @@ parità di calcolo, i modelli piccoli addestrati su tutte le lingue e tutti i
 compiti sbagliano più di quelli addestrati sul solo inglese, e solo i più
 grandi rovesciano il confronto.
 
-La sua forza, del resto, sta più nei dati che nell'architettura: le 680.000
-ore di audio, raccolte dal web con **etichettatura debole**, cioè con
-trascrizioni già esistenti in rete, scritte da qualcuno per i propri scopi e
-non per addestrare un modello.
+[La sua forza, del resto, sta più nei dati che nell'architettura]{.pt-matita}:
+le 680.000 ore di audio, raccolte dal web con **etichettatura debole**, cioè
+con trascrizioni già esistenti in rete, scritte da qualcuno per i propri scopi
+e non per addestrare un modello.
 
 «Debole» non vuol dire «non curata». Gli autori le passano al setaccio con
 filtri automatici, buttando via quelle prodotte da altri riconoscitori
@@ -870,18 +870,18 @@ compito e del 9% sul secondo, che ha molte più trascrizioni di addestramento
 interno del decoder è già competitivo, e quello esterno aggiunge poco.
 
 Un modello CTC, invece, decide ogni frame guardando il suono e mai le lettere
-già scritte: non ha il posto dove mettere un modello di linguaggio interno, e
-quello esterno pesa molto di più. Lo mostrano Baevski e colleghi con wav2vec
-2.0 e una testa CTC a caratteri {cite}`baevski2020wav2vec`. Rifinito su dieci
-minuti di parlato trascritto e decodificato senza modello di linguaggio,
-sbaglia il 40,2 per cento delle parole sugli audiolibri puliti di LibriSpeech,
-e gli errori sono quasi tutti di ortografia, parole quasi giuste che non
-esistono (*coud* per *could*, *stil* per *still*); con un modello di linguaggio
-Transformer scende al 4,8. Rifinito su tutte le 960 ore trascritte, passa dal
-2,2 all’1,8: il modello di linguaggio serve sempre, ma il suo peso cala al
-crescere delle trascrizioni. Il trasduttore sta in mezzo, e si capisce perché
-la sua *prediction network* (il foglio che lo stenografo si rilegge) è il
-modello di linguaggio interno che alla CTC mancava.
+già scritte: [non ha il posto dove mettere un modello di linguaggio interno, e
+quello esterno pesa molto di più]{.pt-matita}. Lo mostrano Baevski e colleghi
+con wav2vec 2.0 e una testa CTC a caratteri {cite}`baevski2020wav2vec`.
+Rifinito su dieci minuti di parlato trascritto e decodificato senza modello di
+linguaggio, sbaglia il 40,2 per cento delle parole sugli audiolibri puliti di
+LibriSpeech, e gli errori sono quasi tutti di ortografia, parole quasi giuste
+che non esistono (*coud* per *could*, *stil* per *still*); con un modello di
+linguaggio Transformer scende al 4,8. Rifinito su tutte le 960 ore trascritte,
+passa dal 2,2 all’1,8: il modello di linguaggio serve sempre, ma il suo peso
+cala al crescere delle trascrizioni. Il trasduttore sta in mezzo, e si capisce
+perché la sua *prediction network* (il foglio che lo stenografo si rilegge) è
+il modello di linguaggio interno che alla CTC mancava.
 
 ## Misurare gli errori: il Word Error Rate
 
@@ -966,8 +966,8 @@ tarata sul suo stile. Messa a confronto con un normalizzatore scritto da altri,
 quello del progetto FairSpeech, sulla maggior parte delle raccolte le due si
 equivalgono, ma su tre (WSJ, CallHome, Switchboard) la loro abbassa il WER di
 Whisper molto più di quanto abbassi quello degli altri modelli
-{cite}`radford2022robust`. Un WER riportato senza dire come è stato normalizzato
-il testo, dunque, non si confronta con niente.
+{cite}`radford2022robust`. [Un WER riportato senza dire come è stato normalizzato
+il testo, dunque, non si confronta con niente]{.pt-matita}.
 
 Anche normalizzato resta grezzo,
 perché pesa allo stesso modo un errore grave e uno banale, e tratta male le

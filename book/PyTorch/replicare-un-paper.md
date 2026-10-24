@@ -42,10 +42,10 @@ Tre: controlla le misure a ogni passo. Dopo ogni pezzo, si manda dentro un
 tensore finto e si guarda che forma esce. È l'equivalente del metro da
 falegname: se una misura non torna, l'errore è lì, non tre pezzi più avanti.
 
-Quattro: conta i pezzi alla fine. Se il paper dice che il modello
-ha 86 milioni di parametri e il tuo ne ha 40, hai saltato qualcosa. È la
-verifica più economica di tutte, e non richiede di addestrare nulla; non vede
-però un pezzo montato al contrario, che ha le stesse viti di quello giusto.
+Quattro: conta i pezzi alla fine. Se il paper dice che il modello ha 86 milioni
+di parametri e il tuo ne ha 40, hai saltato qualcosa. È la verifica più
+economica di tutte, e non richiede di addestrare nulla; [non vede però un pezzo
+montato al contrario, che ha le stesse viti di quello giusto]{.pt-matita}.
 
 Poi, prima di dichiararlo finito, una spinta. Un mobile può stare in piedi con
 un ripiano soltanto appoggiato: da fuori sembra montato, e cede al primo peso.
@@ -106,10 +106,10 @@ volta; a ogni passo si verificano invarianti controllabili senza addestrare:
    minimo, l'indipendenza fra gli esempi: in `eval()` l'uscita di un esempio
    non deve cambiare se cambiano gli altri del batch.
 
-Gli invarianti sono condizioni necessarie, non sufficienti: soddisfatti tutti
-e quattro, dicono che il montaggio può essere quello del paper. Solo a quel
-punto ha senso parlare di risultati numerici, e da lì comincia la parte
-difficile.
+[Gli invarianti sono condizioni necessarie, non sufficienti]{.pt-matita}:
+soddisfatti tutti e quattro, dicono che il montaggio può essere quello del
+paper. Solo a quel punto ha senso parlare di risultati numerici, e da lì
+comincia la parte difficile.
 `````
 
 ## Il caso: il Vision Transformer
@@ -233,10 +233,10 @@ Con un buco largo sedici pixel e uno scatto pure di sedici, invece,
 l'operazione è una sola. La mascherina si sposta di quanto è larga, quindi ogni
 quadratino passa sotto una volta e nessun pixel due volte.
 
-I due modi calcolano la stessa cosa. Stessi numeri da imparare (la mascherina
-ne aggiunge soltanto uno per ogni numero che esce, una piccola correzione
-fissa), stessi prodotti, sistemati in due ordini diversi, e per passare
-dall'uno all'altro basta riordinarli.
+[I due modi calcolano la stessa cosa]{.pt-matita}. Stessi numeri da imparare
+(la mascherina ne aggiunge soltanto uno per ogni numero che esce, una piccola
+correzione fissa), stessi prodotti, sistemati in due ordini diversi, e per
+passare dall'uno all'altro basta riordinarli.
 
 Quello che cambia è il lavoro attorno. Chi ritaglia stacca tutti e 196 i
 quadratini e li mette da parte, cioè si ritrova sul tavolo una seconda foto
@@ -279,11 +279,11 @@ che l'alternativa non funzioni, mentre ha soltanto lasciato i passi com'erano.
 $\mathbf{x}_p^{i}\mathbf{E}$ con $\mathbf{E} \in \mathbb{R}^{(P^2C) \times D}$
 per ogni $i$. Una `Conv2d` con `kernel_size = stride = P` calcola, per ogni
 posizione non sovrapposta, il prodotto scalare tra la finestra e ciascuno dei
-$D$ filtri, cioè gli stessi $P^2C \cdot D$ moltiplicatori, riorganizzati. La
-`Conv2d` è identica anche nei parametri, a meno del bias: ne ha $D$ che
-l'equazione 1 non scrive (la tabella dei parametri per strato, in «Verificare
-senza addestrare», li include), e con il bias la proiezione è affine invece
-che lineare.
+$D$ filtri, cioè gli stessi $P^2C \cdot D$ moltiplicatori, riorganizzati. [La
+`Conv2d` è identica anche nei parametri, a meno del bias]{.pt-matita}: ne ha
+$D$ che l'equazione 1 non scrive (la tabella dei parametri per strato, in
+«Verificare senza addestrare», li include), e con il bias la proiezione è
+affine invece che lineare.
 
 Per passare da una forma all'altra basta portare il filtro $(D, C, P, P)$ in
 $(D, P^2C)$, con lo stesso ordine (canale, riga, colonna) con cui si
@@ -562,18 +562,18 @@ un esempio non dipende dagli altri, batch_first=False: False
 
 Con le LayerNorm come nel riferimento lo scarto è zero, cifra per cifra, quindi
 il montaggio è quello. Con il default di PyTorch, cioè `eps` a $10^{-5}$ invece
-che a $10^{-6}$, lo scarto sale a qualche centesimo. Il confronto scova così un
-dettaglio che il paper non dichiara e che il conteggio non può vedere, perché
-`eps` non è un parametro.
+che a $10^{-6}$, lo scarto sale a qualche centesimo. [Il confronto scova così
+un dettaglio che il paper non dichiara e che il conteggio non può
+vedere]{.pt-matita}, perché `eps` non è un parametro.
 
 Senza un riferimento resta la prova minima: con `batch_first` sbagliato forme,
 conteggio e gradienti tornano lo stesso, ma l'indipendenza fra gli esempi no.
 
 ## Quando i numeri non tornano
 
-Architettura verificata, e poi? Riprodurre la *struttura* di un paper è
-questione di ore; riprodurne i risultati spesso non lo è, e non per colpa di chi
-ci prova.
+Architettura verificata, e poi? [Riprodurre la *struttura* di un paper è
+questione di ore; riprodurne i risultati spesso non lo è]{.pt-matita}, e non
+per colpa di chi ci prova.
 
 Il ViT è un caso esemplare di questa differenza. La tesi dell'articolo è che
 l'architettura raggiunge o supera le reti convoluzionali (le CNN, la famiglia
@@ -730,13 +730,13 @@ per esperimento, scritta prima di lanciarlo:
 > 10k passi e nel mio di 500. Cambio solo quello. Mi aspetto che la loss
 > iniziale smetta di impennarsi. Esito: …*
 
-Tre proprietà rendono utile questo rito, e tolta una delle tre non funziona più.
-Una cosa alla volta, altrimenti il risultato non attribuisce il merito a
-nessuno dei due cambi. L'ipotesi prima del risultato, perché scritta dopo si
-adatta sempre a ciò che è successo, e si finisce per credere di aver capito.
-Infine si annota anche l'esperimento fallito, che è la metà che nessuno scrive
-e l'unica che impedisce di riprovare fra due settimane la stessa strada senza
-ricordarsene.
+[Tre proprietà rendono utile questo rito, e tolta una delle tre non funziona
+più]{.pt-matita}. Una cosa alla volta, altrimenti il risultato non attribuisce
+il merito a nessuno dei due cambi. L'ipotesi prima del risultato, perché
+scritta dopo si adatta sempre a ciò che è successo, e si finisce per credere di
+aver capito. Infine si annota anche l'esperimento fallito, che è la metà che
+nessuno scrive e l'unica che impedisce di riprovare fra due settimane la stessa
+strada senza ricordarsene.
 
 Gli strumenti che tracciano gli esperimenti (nel {doc}`capitolo su MLOps
 </MLOps/overview>`) rendono tutto questo cercabile e condivisibile, e non c'è

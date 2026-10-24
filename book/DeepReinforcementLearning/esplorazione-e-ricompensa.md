@@ -23,8 +23,8 @@ Nella maggior parte dei giochi Atari qualcosa di buono o cattivo capita a ogni
 secondo, quindi l'agente ha un flusso costante di segnali da cui correggersi.
 Quando invece la ricompensa arriva solo dopo lunghe sequenze di azioni giuste
 (la chiave, la porta, il livello), il segnale diventa un ago in un pagliaio:
-finché l'agente non inciampa *per caso* in quella prima ricompensa, non ha
-nulla che gli dica in che direzione andare.
+[finché l'agente non inciampa *per caso* in quella prima ricompensa, non ha
+nulla che gli dica in che direzione andare]{.pt-matita}.
 
 Quanto sia improbabile inciamparci si calcola a mente. Se a ogni passo ci sono
 otto azioni possibili e una sola è quella giusta, azzeccarne dieci in sequenza
@@ -47,8 +47,8 @@ avanti e indietro nello stesso quartiere per ore, perché il caso non ha memoria
 e non sa quali strade hai già battuto e quali no. Per raggiungere un vicolo che
 sta a dieci svolte precise da qui dovrebbero capitarti due fortune, dieci volte
 in sequenza: che a quell'incrocio ti venga in mente di tirare il dado, e che il
-dado dica la svolta giusta. La probabilità di azzeccarle
-tutte è minuscola, e si riduce a ogni svolta che si aggiunge alla catena.
+dado dica la svolta giusta. [La probabilità di azzeccarle tutte è minuscola, e
+si riduce a ogni svolta che si aggiunge alla catena]{.pt-matita}.
 
 L'esplorazione casuale agita le mani nel buio, nei dintorni di dove sei già.
 Servirebbe quindi un'esplorazione diretta: una spinta a puntare
@@ -62,10 +62,10 @@ di sempre.
 Con $\varepsilon$-greedy le azioni esplorative sono scelte in modo *uniforme e
 indipendente* dallo stato: la perturbazione è locale e non correlata nel tempo.
 Di conseguenza, per raggiungere uno stato-obiettivo che dista $n$ azioni
-"insolite" dalla regione già visitata, la probabilità di percorrere l'intera
+"insolite" dalla regione già visitata, [la probabilità di percorrere l'intera
 sequenza per puro caso scala come $(\varepsilon/|\mathcal{A}|)^{\,n}$ e decade
-esponenzialmente in $n$. Questo è **dithering**: rumore attorno alla policy
-corrente, non ricerca strutturata.
+esponenzialmente in $n$]{.pt-matita}. Questo è **dithering**: rumore attorno
+alla policy corrente, non ricerca strutturata.
 
 L'esplorazione *diretta* tiene invece conto di ciò che l'agente ha già visto e
 orienta deliberatamente il comportamento verso le regioni poco note dello
@@ -189,8 +189,8 @@ prima.
 
 Si noti che la regola con cui l'agente sceglie è rimasta quella di sempre,
 prendere l'azione col voto più alto. È solo il voto ad avere adesso un pezzo in
-più, e l'agente si dirige verso l'ignoto credendo di dirigersi verso il
-guadagno.
+più, e [l'agente si dirige verso l'ignoto credendo di dirigersi verso il
+guadagno]{.pt-matita}.
 
 Quando le situazioni non si possono contare, si stima il conteggio: si valuta
 quanto una schermata assomigli a quelle già viste, e da quella somiglianza si
@@ -407,13 +407,13 @@ prima: visti 0.108  nuovi 0.112  lontani 1.213
 dopo : visti 0.000  nuovi 0.019  lontani 0.215
 ```
 
-Prima dell'addestramento visti e nuovi si equivalgono, perché vengono
-dalla stessa distribuzione. Dopo l'addestramento, sugli stati visti l'errore è
+Prima dell'addestramento visti e nuovi si equivalgono, perché vengono dalla
+stessa distribuzione. Dopo l'addestramento, sugli stati visti l'errore è
 sparito, sui nuovi è sceso quasi altrettanto, e sui lontani resta una decina di
-volte più alto che sui nuovi. Il predictor, cioè, generalizza: RND non premia
-l'essere mai visto, premia la distanza da ciò che si è già visto. Uno stato
-nuovo ma simile a tanti altri vale poco, uno diverso vale molto, e serve a
-uscire dalla regione già battuta.
+volte più alto che sui nuovi. Il predictor, cioè, generalizza: [RND non premia
+l'essere mai visto, premia la distanza da ciò che si è già visto]{.pt-matita}.
+Uno stato nuovo ma simile a tanti altri vale poco, uno diverso vale molto, e
+serve a uscire dalla regione già battuta.
 
 ## Un modo diverso di guardare la curiosità
 
@@ -449,10 +449,10 @@ mano fra il curiosare e l'incassare, perché tutti e due sono pezzi della stessa
 quantità; quanto curiosare dipende però ancora da quanto è forte la voglia di un
 buon piatto.
 
-Vista così, i bonus di novità non aggiungono la curiosità a un agente che non
-ce l'aveva. Una ricompensa che dice soltanto «quanto ti è andata bene» e mai
-«quanto hai imparato» costringe a rimetterla dentro a mano, e ogni manopola che
-dosa il peso del bonus viene da quella scelta iniziale.
+[Vista così, i bonus di novità non aggiungono la curiosità a un agente che non
+ce l'aveva]{.pt-matita}. Una ricompensa che dice soltanto «quanto ti è andata
+bene» e mai «quanto hai imparato» costringe a rimetterla dentro a mano, e ogni
+manopola che dosa il peso del bonus viene da quella scelta iniziale.
 
 La questione riguarda da vicino le ricompense rade. Quando per centinaia di passi
 non succede niente, il «quanto mi conviene» vale zero per tutte le azioni, e
@@ -480,9 +480,9 @@ famiglia dei bonus di novità e della curiosità intrinseca. Il segno è opposto
 questa grandezza si massimizza, come un bonus di novità, mentre l'energia
 libera attesa da cui proviene si minimizza.
 
-Il rapporto fra le due letture non è quindi di concorrenza: la ricompensa
+Il rapporto fra le due letture non è quindi di concorrenza: [la ricompensa
 intrinseca è il caso particolare che si ottiene spegnendo il termine
-pragmatico. Il legame tocca da vicino le ricompense
+pragmatico]{.pt-matita}. Il legame tocca da vicino le ricompense
 rade: in un ambiente simile il termine pragmatico, per gran parte
 della traiettoria, assume lo stesso valore per tutte le azioni, e smette di
 ordinarle. A decidere resta quindi il termine epistemico, cioè la curiosità.
@@ -527,8 +527,8 @@ d'aria sulla pianta, ignorando i muri, e una stanza vicina all'uscita ma murata
 prende lo stesso una quota alta. Lì mandi il robot a sbattere. Con quote
 sensate impara molto più in fretta, perché a ogni passo ha un segnale invece
 del buio; con quote pessime ci mette di più. In nessuno dei due casi impara a
-fare la cosa sbagliata: la strada migliore per uscire resta quella di prima,
-quote o non quote.
+fare la cosa sbagliata: [la strada migliore per uscire resta quella di prima,
+quote o non quote]{.pt-matita}.
 
 Il conto della soglia torna così tondo finché un premietto incassato fra dieci
 passi vale quanto uno incassato adesso. Di solito vale meno: come nel corridoio
@@ -563,9 +563,9 @@ $$
 F(s, a, s') = \gamma\, \Phi(s') - \Phi(s) ,
 $$
 
-con $\gamma$ il fattore di sconto. Il risultato chiave è che la policy ottima
+con $\gamma$ il fattore di sconto. Il risultato chiave è che [la policy ottima
 dell'MDP modellato coincide con quella dell'MDP originale, *per qualunque*
-$\Phi$: la garanzia deriva da un argomento telescopico. Nella somma
+$\Phi$]{.pt-matita}: la garanzia deriva da un argomento telescopico. Nella somma
 scontata dei termini $F$ ogni potenziale intermedio compare una volta col segno
 più e una col segno meno, e di una traiettoria di $T$ passi sopravvivono i soli
 due termini di bordo, $-\Phi(s_0) + \gamma^{T}\Phi(s_T)$. Il secondo svanisce
@@ -594,9 +594,9 @@ può rallentarlo. In nessuno dei due casi sposta l'obiettivo (si veda
 Il pericolo intravisto con il reward shaping è in realtà molto più generale, e
 ha un nome: **reward hacking**, cioè «scassinare la ricompensa» (si dice anche
 *specification gaming*, «giocare sulle regole scritte»). L'agente ottimizza
-esattamente la ricompensa che gli abbiamo scritto, e per questo trova
+esattamente la ricompensa che gli abbiamo scritto, e per questo [trova
 scorciatoie che massimizzano quel numero tradendo del tutto ciò che
-intendevamo.
+intendevamo]{.pt-matita}.
 
 ```{figure} ../figures/reward-hacking.svg
 :name: fig-reward-hacking
@@ -640,7 +640,7 @@ allineamento e governance </AIResponsabile/allineamento-e-governance>` lo fa
 con un esempio giocattolo: un modello che fa da giudice sceglie, fra un numero
 crescente di risposte scritte, quella che gli piace di più. Il giudice guarda
 due cose, il merito e la lunghezza, con un margine di errore casuale; entrambe
-salgono a ogni giro, e il suo voto con loro, mentre la qualità vera delle
+salgono a ogni iterazione, e il suo voto con loro, mentre la qualità vera delle
 risposte scelte sale fino a un massimo e poi scende sotto il valore iniziale.
 
 `````{tab} Elementare

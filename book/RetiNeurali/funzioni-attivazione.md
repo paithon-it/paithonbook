@@ -19,8 +19,8 @@ somma i risultati e aggiunge un numero fisso suo, il bias. Tutto lo strato
 insieme, con i pesi in una matrice e i bias in un vettore, calcola
 $\mathbf{W}\mathbf{x} + \mathbf{b}$. È un'operazione **affine**, cioè una
 moltiplicazione seguita da uno spostamento fisso (nell'uso si dice lineare anche
-così). Il problema è che comporre due operazioni affini ne dà ancora una
-affine, e di conseguenza mille strati così valgono quanto uno.
+così). Il problema è che [comporre due operazioni affini ne dà ancora una
+affine, e di conseguenza mille strati così valgono quanto uno]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -261,8 +261,8 @@ strati (è il gradiente) viene moltiplicato per un numero così, e si spegne.
 Le code sono la parte peggiore, ma non sono tutto il problema. Un quarto è il
 massimo che la sigmoide concede. Nel suo punto migliore, lo zero, il messaggio
 che la attraversa esce ridotto a un quarto, e ovunque altro esce ridotto di
-più. Con dieci strati uno dietro l'altro, ciascuno con il suo quarto, di quello
-che era partito resta quindi un milionesimo.
+più. Con dieci strati uno dietro l'altro, ciascuno con il suo quarto, [di quello
+che era partito resta quindi un milionesimo]{.pt-matita}.
 
 Il rimedio che viene in mente per primo, alzare i pesi per compensare, non
 funziona. Pesi più grandi ingrandiscono i numeri che entrano nella funzione, e
@@ -294,13 +294,14 @@ Osserviamo che la derivata è massima nell'origine, dove vale solo $0{,}25$, e
 tende a $0$ per $|x|\to\infty$ (le code sature). Nella *backpropagation* il
 gradiente che attraversa uno strato viene moltiplicato per $\sigma'$ *e* per la
 matrice dei pesi. Con pesi di norma moderata, quella delle inizializzazioni
-standard, il fattore complessivo per strato resta quindi sotto $1$ e il
-prodotto collassa esponenzialmente con la profondità. È il celebre problema del
-**gradiente che svanisce** (*vanishing gradient*), studiato da Hochreiter
-{cite}`hochreiter1991untersuchungen` e Bengio {cite}`bengio1994learning`: nelle
-reti profonde gli strati vicini all'ingresso smettono di ricevere segnale e non
-apprendono. Inoltre l'uscita non è centrata nello zero (sempre positiva), il
-che rallenta la convergenza della discesa del gradiente.
+standard, [il fattore complessivo per strato resta quindi sotto $1$ e il
+prodotto collassa esponenzialmente con la profondità]{.pt-matita}. È il celebre
+problema del **gradiente che svanisce** (*vanishing gradient*), studiato da
+Hochreiter {cite}`hochreiter1991untersuchungen` e Bengio
+{cite}`bengio1994learning`: nelle reti profonde gli strati vicini all'ingresso
+smettono di ricevere segnale e non apprendono. Inoltre l'uscita non è centrata
+nello zero (sempre positiva), il che rallenta la convergenza della discesa del
+gradiente.
 
 Il rimedio più intuitivo non funziona, perché il fattore $1/4$ non si compensa
 alzando i pesi. Pesi più grandi spingono $z$ nelle code, dove $\sigma'$ è
@@ -383,8 +384,8 @@ neurone è quel numero moltiplicato per il messaggio che arriva dall'alto, che
 per tutto il neurone è uno solo. Quindi o salgono tutti i pesi insieme o
 scendono tutti insieme. Se la direzione buona chiedeva un peso su e un altro
 giù, in linea retta non ci si arriva, e la discesa del gradiente ci arriva a
-zig-zag, un passo per verso. Con lo zero al centro le uscite si
-bilanciano, i segni si mescolano, e la strada si raddrizza.
+zig-zag, un passo per verso. [Con lo zero al centro le uscite si
+bilanciano, i segni si mescolano, e la strada si raddrizza]{.pt-matita}.
 
 C'è un secondo guadagno, e si misura come prima. Spostandosi di uno, da $0$ a
 $1$, l'uscita sale da $0$ a $0{,}76$: settantasei centesimi, contro i ventitré
@@ -404,8 +405,8 @@ $$
 \tanh'(x) = 1-\tanh^2(x).
 $$
 
-L'uscita è centrata nello zero, quindi i gradienti dei pesi non hanno un
-segno sistematico, e la convergenza è più regolare che con la sigmoide
+[L'uscita è centrata nello zero, quindi i gradienti dei pesi non hanno un
+segno sistematico]{.pt-matita}, e la convergenza è più regolare che con la sigmoide
 {cite}`lecun1998efficient`. Si noti che la derivata arriva fino a $1$
 nell'origine, contro il $0{,}25$ della sigmoide, ma satura comunque agli
 estremi. Per anni la `tanh` è stata lo standard negli strati nascosti e
@@ -430,9 +431,9 @@ e restituisce zero per uno negativo o nullo. È uno sportello
 che lascia passare i versamenti e blocca i prelievi. Ad esempio, se entra $10$
 esce $10$, e se entra $-3$ esce $0$.
 
-Perché è diventata la scelta di partenza delle reti profonde? Perché dal lato
+Perché è diventata la scelta di partenza delle reti profonde? Perché [dal lato
 positivo la curva è una riga inclinata: la sua pendenza è sempre $1$, non si
-appiattisce mai.
+appiattisce mai]{.pt-matita}.
 
 Si misura come prima: da $2$ a $3$ l'uscita passa da $2$ a $3$,
 cioè cresce di uno intero; da $20$ a $21$ passa da $20$ a $21$, ancora uno
@@ -506,7 +507,7 @@ in zero si trova $0{,}5$, cioè la media dei due lati, e non lo $0$ che
 la libreria restituisce. I due numeri non coincidono e nessuno dei due è
 sbagliato: è il punto in cui la derivata non c'è, non un errore nel codice.
 
-Per $x>0$ il gradiente vale $1$, quindi non c'è saturazione e non c'è
+[Per $x>0$ il gradiente vale $1$, quindi non c'è saturazione]{.pt-matita} e non c'è
 *vanishing* lungo i cammini attivi. Ciò ha contribuito, con l'inizializzazione e
 più tardi con le connessioni residue, a rendere addestrabili reti profonde senza
 pre-addestramento ({cite}`nair2010rectified`; {cite}`glorot2011deep`; AlexNet,
@@ -570,10 +571,11 @@ insieme e le trasformi in percentuali che sommano a $100$. È la **softmax**.
 `````{tab} Elementare
 
 La rete deve decidere tra "gatto", "cane" e "volpe", e produce tre punteggi
-grezzi, per esempio $2{,}0$, $1{,}0$, $0{,}1$. La softmax li converte in tre
-percentuali che sommano a $100\%$ (qui $66\%$, $24\%$, $10\%$) esaltando il
-punteggio più alto ma senza mai azzerare del tutto gli altri. In altri termini,
-il risultato si legge come "quanto la rete è convinta di ciascuna classe".
+grezzi, per esempio $2{,}0$, $1{,}0$, $0{,}1$. [La softmax li converte in tre
+percentuali che sommano a $100\%$]{.pt-matita} (qui $66\%$, $24\%$, $10\%$)
+esaltando il punteggio più alto ma senza mai azzerare del tutto gli altri. In
+altri termini, il risultato si legge come "quanto la rete è convinta di
+ciascuna classe".
 
 È il calcolo già fatto con le cartelle della posta, nella {doc}`regressione
 logistica a più risposte </MachineLearning/apprendimento-supervisionato>`: ogni
@@ -608,9 +610,9 @@ $$
 \qquad \sum_{i=1}^{K}\mathrm{softmax}(\mathbf{z})_i = 1 .
 $$
 
-È la generalizzazione multiclasse della sigmoide (con $K=2$ si riduce a
-$\sigma(z_1-z_2)$) e si accompagna alla loss di cross-entropia. Si noti che è
-invariante a una traslazione comune dei logit,
+[È la generalizzazione multiclasse della sigmoide]{.pt-matita} (con $K=2$ si
+riduce a $\sigma(z_1-z_2)$) e si accompagna alla loss di cross-entropia. Si
+noti che è invariante a una traslazione comune dei logit,
 $\mathrm{softmax}(\mathbf{z}+c\mathbf{1}) = \mathrm{softmax}(\mathbf{z})$,
 perché $e^{c}$ si semplifica fra numeratore e denominatore. L'esponenziale di
 logit grandi va però in overflow, e la soluzione standard sfrutta
@@ -634,8 +636,8 @@ Una guida ragionevole per la maggior parte dei casi:
 | Uscita, scelta fra più risposte (classificazione multiclasse) | softmax | una percentuale per ciascuna delle classi in gioco |
 | Uscita, previsione di un numero (regressione) | nessuna (lineare) | il valore può essere qualunque numero |
 
-In pratica, negli strati nascosti parti da ReLU e cambi solo se
-i risultati non convincono. Sull'uscita, invece, la funzione dipende dal
+In pratica, [negli strati nascosti parti da ReLU e cambi solo se i risultati
+non convincono]{.pt-matita}. Sull'uscita, invece, la funzione dipende dal
 problema, non dal gusto.
 
 ## In pratica, con NumPy

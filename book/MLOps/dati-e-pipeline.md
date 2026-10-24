@@ -25,9 +25,9 @@ si trovano perfino nei set di prova dei benchmark più usati: in dieci di
 questi, in media almeno il 3,3% degli esempi ha l'etichetta sbagliata
 {cite}`northcutt2021pervasive`.
 
-Se è così, i dati non possono restare un allegato del codice: vanno trattati
-come il codice, cioè versionati, testati e sorvegliati con la stessa
-disciplina. {doc}`Dal notebook alla produzione
+Se è così, [i dati non possono restare un allegato del codice]{.pt-matita}:
+vanno trattati come il codice, cioè versionati, testati e sorvegliati con la
+stessa disciplina. {doc}`Dal notebook alla produzione
 </MLOps/dal-notebook-alla-produzione>` ha stabilito che riprodurre un modello
 richiede tre artefatti: codice, dati, modello. Qui si entra nel più grande e
 trascurato dei tre, e nell'infrastruttura che lo trasporta, la *pipeline* dei
@@ -65,12 +65,12 @@ Il progetto dice «mi servono i dati con il cartellino `a3f8…`», e il magazzi
 li consegna. Quando arrivano, li ripassi nel tritatutto: se il codice che ne
 esce è quello scritto sul cartellino, per strada non si è rotto niente.
 
-Niente si corregge sul posto: chi cambia i dati ne deposita una versione nuova,
-con un cartellino nuovo, e la vecchia resta dov'era: così chi riprende un
-lavoro di sei mesi prima ritrova i dati che quel lavoro aveva usato. Sul
-modello finito si scrive di quali cartellini è fatto, quelli dei dati e quello
-del programma: mesi dopo, quando qualcuno chiede da dove viene una certa
-risposta, si risale all'indietro fino al dato di partenza.
+Niente si corregge sul posto: [chi cambia i dati ne deposita una versione
+nuova, con un cartellino nuovo, e la vecchia resta dov'era]{.pt-matita}: così
+chi riprende un lavoro di sei mesi prima ritrova i dati che quel lavoro aveva
+usato. Sul modello finito si scrive di quali cartellini è fatto, quelli dei
+dati e quello del programma: mesi dopo, quando qualcuno chiede da dove viene
+una certa risposta, si risale all'indietro fino al dato di partenza.
 
 `````
 
@@ -81,12 +81,12 @@ funzione deterministica e sensibile a ogni bit che mappa una sequenza
 arbitraria di byte in una stringa di lunghezza fissa. Su questa idea si
 costruisce il **content-addressable storage**: l'indirizzo di un dato *è*
 l'hash del suo contenuto, non un percorso né un nome scelto a mano. Ne
-discendono tre proprietà preziose. Immutabilità: un dato non si modifica «sul
-posto», si scrive una nuova versione con un nuovo indirizzo; le vecchie restano
-raggiungibili, e un esperimento passato non cambia sotto i piedi.
-Deduplicazione: file identici hanno lo stesso hash e occupano spazio una volta
-sola. Integrità: ricalcolare l'hash verifica che il dato non si sia corrotto in
-transito.
+discendono tre proprietà preziose. Immutabilità: [un dato non si modifica «sul
+posto», si scrive una nuova versione con un nuovo indirizzo]{.pt-matita}; le
+vecchie restano raggiungibili, e un esperimento passato non cambia sotto i
+piedi. Deduplicazione: file identici hanno lo stesso hash e occupano spazio una
+volta sola. Integrità: ricalcolare l'hash verifica che il dato non si sia
+corrotto in transito.
 
 Nel repository si versiona allora solo un *puntatore* (un piccolo file di
 testo che contiene l'hash e l'indirizzo del magazzino remoto), mentre
@@ -134,11 +134,11 @@ blocco di mezzo è il mondo dentro cui il modello dovrà cavarsela.
 
 La freccia a senso unico di {numref}`fig-feature-engineering` dice che il
 modello conosce il mondo solo attraverso il blocco di mezzo, e niente lo
-scavalca. Ne segue che quel blocco va conservato versione per versione come il
-programma. Se cambia il modo di costruire una feature, il modello addestrato
-prima e quello addestrato dopo non stanno più guardando la stessa cosa, e
-confrontare i loro voti è come confrontare i tempi di due corse su piste di
-lunghezza diversa. Per le reti che imparano da sole le proprie
+scavalca. Ne segue che [quel blocco va conservato versione per versione come il
+programma]{.pt-matita}. Se cambia il modo di costruire una feature, il modello
+addestrato prima e quello addestrato dopo non stanno più guardando la stessa
+cosa, e confrontare i loro voti è come confrontare i tempi di due corse su
+piste di lunghezza diversa. Per le reti che imparano da sole le proprie
 rappresentazioni (le immagini, il testo) il blocco di mezzo si riduce, fino a
 limitarsi alla normalizzazione o alla divisione in token; ma resta una
 trasformazione, e si conserva insieme al modello.
@@ -219,13 +219,13 @@ sue ottanta voci in sequenza: è il CSV, comodo se ti serve tutta la scheda di
 un cliente. Oppure **per colonna**, cioè un elenco di tutte le età, poi un
 elenco di tutte le città, e così via.
 
-Quale conviene dipende dall'uso, e per addestrare un
-modello l'uso è sempre lo stesso: leggere tre colonne su ottanta, per tutti. Con
-l'archivio per riga devi attraversare l'intero milione di schede e scartare il
-$96\%$ di ciò che leggi (77 voci buttate ogni 80): il disco consegna blocchi
-interi, e le tre voci che ti servono stanno sparse una qui e una là. Con
-l'archivio per colonna i tre elenchi stanno già tutti insieme: li prendi e il
-resto non lo tocchi nemmeno.
+Quale conviene dipende dall'uso, e [per addestrare un modello l'uso è sempre lo
+stesso: leggere tre colonne su ottanta, per tutti]{.pt-matita}. Con l'archivio
+per riga devi attraversare l'intero milione di schede e scartare il $96\%$ di
+ciò che leggi (77 voci buttate ogni 80): il disco consegna blocchi interi, e le
+tre voci che ti servono stanno sparse una qui e una là. Con l'archivio per
+colonna i tre elenchi stanno già tutti insieme: li prendi e il resto non lo
+tocchi nemmeno.
 
 Ogni elenco, poi, è spezzato in cassetti, con scritto fuori il valore più
 piccolo e il più grande che contengono: chi cerca le spese sopra i mille euro
@@ -265,10 +265,10 @@ uno dopo l'altro; uno orientato alle colonne (Parquet, ORC) memorizza
 insieme tutti i valori di una stessa colonna. La differenza produce tre effetti
 che contano tutti in un carico di lavoro analitico.
 
-Il primo è il **projection pushdown**: leggere $k$ colonne su $d$ costa in
-proporzione a $k$ e non a $d$, perché le altre non vengono nemmeno toccate su
-disco. Nei carichi di ML, dove si leggono poche colonne di tabelle larghe, è la
-voce dominante.
+Il primo è il **projection pushdown**: [leggere $k$ colonne su $d$ costa in
+proporzione a $k$ e non a $d$]{.pt-matita}, perché le altre non vengono nemmeno
+toccate su disco. Nei carichi di ML, dove si leggono poche colonne di tabelle
+larghe, è la voce dominante.
 
 Il secondo è la **compressione**: dentro una colonna i valori sono omogenei per
 tipo e spesso per contenuto, il che abilita codifiche specializzate (dizionario
@@ -395,9 +395,9 @@ dati vecchi, e un'altra mentre il modello risponde, su un singolo caso appena
 arrivato. Se i due calcoli divergono anche di poco, il modello in funzione
 riceve qualcosa di diverso da ciò su cui ha imparato.
 
-Il rimedio è un magazzino unico delle feature, dove ciascuna è definita una
-volta sola e da cui la prendono tutti e due, chi addestra e chi risponde. Si
-chiama **feature store** {cite}`huyen2022designing`.
+[Il rimedio è un magazzino unico delle feature, dove ciascuna è definita una
+volta sola]{.pt-matita} e da cui la prendono tutti e due, chi addestra e chi
+risponde. Si chiama **feature store** {cite}`huyen2022designing`.
 
 `````{tab} Elementare
 
@@ -573,17 +573,16 @@ allarmi oltre 0.5 (corretta):    32 su 32
 allarmi oltre 0.5 (bacata):      13 su 32
 ```
 
-Lo stesso identico modello, sugli stessi identici dati, dà due risposte molto
-diverse. La pipeline corretta riconosce il lotto come sospetto: probabilità
-media di frode $0{,}97$, e tutte e 32 le transazioni oltre una soglia
-d'intervento di $0{,}5$. Quella bacata, ricentrando ogni lotto su sé stesso,
-cancella l'anomalia e scende a $0{,}45$. Non è un lotto innocuo: è testa o
-croce, e con la stessa soglia il sistema
-antifrode ne ferma 13 su 32 e lascia passare le altre diciannove. Su singole
-transazioni la differenza fra le due risposte arriva a $0{,}79$. Nessun errore,
-nessun avviso: solo predizioni sbagliate. Ecco perché la definizione di una
-feature deve vivere in *un posto solo*, condiviso tra addestramento e servizio:
-è il compito del feature store.
+[Lo stesso identico modello, sugli stessi identici dati, dà due risposte molto
+diverse]{.pt-matita}. La pipeline corretta riconosce il lotto come sospetto:
+probabilità media di frode $0{,}97$, e tutte e 32 le transazioni oltre una
+soglia d'intervento di $0{,}5$. Quella bacata, ricentrando ogni lotto su sé
+stesso, cancella l'anomalia e scende a $0{,}45$. Non è un lotto innocuo: è
+testa o croce, e con la stessa soglia il sistema antifrode ne ferma 13 su 32 e
+lascia passare le altre diciannove. Su singole transazioni la differenza fra le
+due risposte arriva a $0{,}79$. Nessun errore, nessun avviso: solo predizioni
+sbagliate. Ecco perché la definizione di una feature deve vivere in *un posto
+solo*, condiviso tra addestramento e servizio: è il compito del feature store.
 
 ## Validare i dati in ingresso
 
@@ -726,7 +725,7 @@ caselle vuote si tollerano, controlli di coerenza fra un campo e l'altro,
 l'aggancio ai controlli sulle distribuzioni) ma l'ossatura resta questa:
 dichiarare cosa ci si aspetta dai dati, e verificarlo prima di fidarsene.
 Trattare i dati come il codice significa, alla fine, esattamente questo:
-dargli un contratto, e farlo rispettare.
+[dargli un contratto, e farlo rispettare]{.pt-matita}.
 
 ## Collaudare il modello, non solo i dati
 
@@ -880,9 +879,9 @@ scarta. Anche avendola vista, un modello che somma un peso per ogni parola
 darebbe a «non» un contributo solo, uguale davanti a «buono» e davanti a
 «pessimo»: potrebbe abbassare «non buono» soltanto abbassando insieme «non
 pessimo». Le altre due prove passano: cambiare città non sposta nessuna
-risposta, e una lamentela fatta di parole note abbassa ogni lode. L'accuratezza
+risposta, e una lamentela fatta di parole note abbassa ogni lode. [L'accuratezza
 piena e il collaudo misurano due cose diverse, e solo il secondo dice dove il
-modello si rompe.
+modello si rompe]{.pt-matita}.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

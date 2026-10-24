@@ -94,12 +94,12 @@ rapporto, 656 diviso 68, fa quasi dieci. Quel dieci va ricordato.
 
 `````{tab} Superiore
 
-Siano $N$ gli agenti, $R$ i giri di parola a testa e $T = N R$ il numero
-totale di turni. Al turno $t$ la finestra di chi parla contiene il contesto
-iniziale (istruzioni di sistema e definizione dei ruoli) di lunghezza $c_0$,
-più la trascrizione: il messaggio che enuncia il compito e i $t-1$ interventi
-già scritti, cioè $t$ messaggi di lunghezza media $\bar{m}$. I token letti
-nell'intera conversazione sono quindi
+Siano $N$ gli agenti, $R$ le iterazioni (in ognuna ciascun agente parla una
+volta) e $T = N R$ il numero totale di turni. Al turno $t$ la finestra di chi
+parla contiene il contesto iniziale (istruzioni di sistema e definizione dei
+ruoli) di lunghezza $c_0$, più la trascrizione: il messaggio che enuncia il
+compito e i $t-1$ interventi già scritti, cioè $t$ messaggi di lunghezza media
+$\bar{m}$. I token letti nell'intera conversazione sono quindi
 
 $$
 \text{token}(T) \;=\; \sum_{t=1}^{T}\left(c_0 + t\,\bar{m}\right)
@@ -147,10 +147,10 @@ elaborare un contesto di lunghezza $L$ ha un termine quadratico in $L$, e
 siccome qui $L$ cresce linearmente con i turni, sommato sulla conversazione
 quel termine va come $T^{3}$.
 
-L'altro regime possibile è il *broadcast*, dove a ogni giro tutti leggono e
-tutti scrivono insieme invece che a turno. Ciascuno legge
-l'enunciato del compito e la trascrizione dei giri già chiusi, che cresce di
-$N\bar{m}$ a giro, per un totale di
+L'altro regime possibile è il *broadcast*, dove a ogni iterazione tutti leggono
+e tutti scrivono insieme invece che a turno. Ciascuno legge l'enunciato del
+compito e la trascrizione delle iterazioni già chiuse, che cresce di $N\bar{m}$
+per iterazione, per un totale di
 
 $$
 \text{token}_{\text{broadcast}}(N, R) \;=\; N R\,(c_0 + \bar{m}) \;+\;
@@ -161,25 +161,26 @@ cioè lo stesso ordine $O(\bar{m}N^2R^2)$ con la stessa costante di testa: lo
 sconto sta in un termine di grado inferiore, e quindi si vede sui numeri
 piccoli e sparisce al crescere dei turni.
 
-Ad esempio, con quattro agenti e otto giri a testa ($N = 4$, $R = 8$) fa
+Ad esempio, con quattro agenti e otto iterazioni ($N = 4$, $R = 8$) fa
 $304.000$ token contro i $328.000$ del turno a
 turno, il 7% in meno; a $R = 64$ il rapporto è già $0{,}99$. Resta sotto a uno
 per ogni squadra di almeno due agenti, ma il vantaggio diminuisce al
 crescere dei turni.
 
-Lo sconto non è efficienza: dentro un giro nessuno legge
-gli altri. Chi parla per $t$-esimo nel regime a turni ha già davanti i $t-1$
-interventi del giro in corso; in *broadcast* tutti leggono la stessa
-trascrizione, ferma al giro precedente, e dal conto manca l'informazione che
-manca a chi lavora. Il *broadcast* ottiene una latenza bassa, $R$ giri invece
-di $NR$ turni, perché gli interventi di un giro si producono in parallelo, e la
-paga con un giro di ritardo nel reagire a quello che ha appena detto un altro.
+Lo sconto non è efficienza: dentro un'iterazione nessuno legge gli altri. Chi
+parla per $t$-esimo nel regime a turni ha già davanti i $t-1$ interventi
+dell'iterazione in corso; in *broadcast* tutti leggono la stessa trascrizione,
+ferma all'iterazione precedente, e dal conto manca l'informazione che manca a
+chi lavora. Il *broadcast* ottiene una latenza bassa, $R$ iterazioni invece di
+$NR$ turni, perché gli interventi di un'iterazione si producono in parallelo, e
+la paga con un'iterazione di ritardo nel reagire a quello che ha appena detto
+un altro.
 
 `````
 
 Mettiamo delle taglie tonde: duemila token di istruzioni iniziali (due o tre
 pagine di regole, che ciascuno si rilegge sempre uguali a ogni turno), messaggi
-da cinquecento token l'uno (mezza paginetta), otto giri di parola a testa. Poche
+da cinquecento token l'uno (mezza paginetta), otto interventi a testa. Poche
 righe di Python sommano i token letti e calcolano anche la larghezza della
 finestra di contesto all'ultimo turno, cioè il testo che ha davanti chi parla
 per ultimo:
@@ -198,13 +199,13 @@ def token_letti(turni, contesto_iniziale, messaggio_medio):
 
 c0 = 2000   # istruzioni di sistema e definizione dei ruoli
 m = 500     # lunghezza media di un messaggio
-giri = 8    # giri di parola a testa
+iterazioni = 8   # in ognuna ogni agente parla una volta
 
-base = token_letti(giri, c0, m)  # un agente solo: il termine di paragone
+base = token_letti(iterazioni, c0, m)  # un agente solo: il termine di paragone
 
 print("agenti  turni  token letti  finestra finale  costo")
 for agenti in (1, 2, 4, 8):
-    turni = agenti * giri
+    turni = agenti * iterazioni
     letti = token_letti(turni, c0, m)
     finestra = c0 + turni * m    # quanto e' larga la finestra all'ultimo turno
     print(f"{agenti:6d} {turni:6d} {letti:12,d} {finestra:16,d} {letti / base:6.1f}x")
@@ -219,8 +220,8 @@ agenti  turni  token letti  finestra finale  costo
 ```
 
 Il caso da tenere a mente è la terza riga. Quattro agenti che si parlano per
-otto giri leggono 328.000 token contro i 34.000 di un solista che lavora
-otto turni: non quattro volte tanto, quasi dieci volte tanto. I token
+otto iterazioni leggono 328.000 token contro i 34.000 di un solista che lavora
+otto turni: [non quattro volte tanto, quasi dieci volte tanto]{.pt-matita}. I token
 *scritti*, invece, sono esattamente quattro volte (32 turni per 500 token fanno
 16.000, contro gli 8 per 500 del solista, cioè 4.000), per cui tutto
 lo scarto sta sul lato della lettura, la parte della spesa che nessuno guarda
@@ -343,10 +344,10 @@ sposta ancora più a sinistra.
 
 `````
 
-La conseguenza pratica è una sola: si aggiungono agenti finché il pezzo
-divisibile lo giustifica, e poi si smette. La domanda da farsi non è «un altro
-agente aiuterebbe?» (la risposta è quasi sempre sì, di pochissimo) ma «quanto
-vale l’*ultimo* agente aggiunto, rispetto a quello che costa?».
+La conseguenza pratica è una sola: [si aggiungono agenti finché il pezzo
+divisibile lo giustifica, e poi si smette]{.pt-matita}. La domanda da farsi non
+è «un altro agente aiuterebbe?» (la risposta è quasi sempre sì, di pochissimo)
+ma «quanto vale l’*ultimo* agente aggiunto, rispetto a quello che costa?».
 
 I due risultati si possono affiancare, se li si fa sulla stessa squadra. Con la
 frazione seriale del rapporto, tre ore su dieci, passare da quattro a otto
@@ -511,12 +512,12 @@ engineering </IngegneriaLLM/loop-engineering>` quel controllo si chiama
 cancello di verifica (in inglese *validation gate*), e il nome ne dice la
 funzione: chi non è in regola non passa.
 
-I conti sul costo del coordinamento aggiungono la ragione per cui il cancello
-non è un lusso ma il pezzo portante. Senza, ogni passaggio in più porta via la
-stessa frazione di quanto è arrivato fin lì, e le perdite si compongono:
-dopo $n$ passaggi resta $p^n$, che scende verso zero senza mai fermarsi. Con il
-cancello la frazione persa a ogni passaggio diventa piccola, e la fila affonda
-molto più piano man mano che si allunga.
+I conti sul costo del coordinamento aggiungono la ragione per cui [il cancello
+non è un lusso ma il pezzo portante]{.pt-matita}. Senza, ogni passaggio in più
+porta via la stessa frazione di quanto è arrivato fin lì, e le perdite si
+compongono: dopo $n$ passaggi resta $p^n$, che scende verso zero senza mai
+fermarsi. Con il cancello la frazione persa a ogni passaggio diventa piccola, e
+la fila affonda molto più piano man mano che si allunga.
 
 ## Quando si guadagna davvero
 
@@ -566,8 +567,8 @@ ragionamento che c'è dietro, a sfuggirgli sono tre errori su dieci invece di
 nove: in fondo ne arriva uno e mezzo su cento, tre volte meno. Stesso modello,
 stessa bravura, stesso numero di controlli: cambia solo chi controlla.
 
-Quel vantaggio non viene dall'avere due teste, viene dal fatto che la seconda
-non sa come è stato fatto il lavoro. Se
+Quel vantaggio non viene dall'avere due teste, viene dal fatto che [la seconda
+non sa come è stato fatto il lavoro]{.pt-matita}. Se
 al controllore si passa tutto il ragionamento del primo, la sua scrivania torna
 a essere quella del primo, e il vantaggio sparisce insieme all'ignoranza. Resta
 un limite anche col compagno più ignaro: se ha studiato sugli stessi appunti,
@@ -585,9 +586,9 @@ su dieci ($P(M \mid E) \approx 0{,}9$): lascia passare il $4{,}5\%$. Un critico
 con contesto pulito e criteri propri scende a $P(M \mid E) \approx 0{,}3$ e
 lascia passare l’$1{,}5\%$, tre volte meglio a parità di modello. Le due cifre
 sono plausibili, non misurate; conta il verso della disuguaglianza, che non
-dipende dai valori precisi. Tutto il valore del secondo agente sta in quel
-condizionamento, e sparisce se gli si passa la trascrizione del primo: a quel
-punto i due contesti tornano a coincidere.
+dipende dai valori precisi. [Tutto il valore del secondo agente sta in quel
+condizionamento]{.pt-matita}, e sparisce se gli si passa la trascrizione del
+primo: a quel punto i due contesti tornano a coincidere.
 
 Il condizionamento toglie però la
 correlazione che viene dal contesto, non quella che viene dai pesi. Se
@@ -703,10 +704,10 @@ accorge perché la conversazione resta perfettamente fluente. Qui stanno
 l'agente che ignora quanto gli è stato appena detto, l'agente che procede su
 una richiesta ambigua senza chiedere chiarimenti, l'agente che trattiene
 un'informazione utile agli altri, e la conversazione che scivola su un compito
-diverso senza che nessuno lo dichiari. È la famiglia più insidiosa perché non
-produce sintomi leggibili: due agenti in disaccordo su cosa stanno facendo si
-scrivono messaggi cortesi e ben formati fino in fondo. Vale il 32,3% dei
-fallimenti.
+diverso senza che nessuno lo dichiari. [È la famiglia più insidiosa perché non
+produce sintomi leggibili]{.pt-matita}: due agenti in disaccordo su cosa stanno
+facendo si scrivono messaggi cortesi e ben formati fino in fondo. Vale il 32,3%
+dei fallimenti.
 
 La terza è la **verifica e la terminazione**, cioè il momento in cui il sistema
 decide di aver finito (23,5%). Il sistema si ferma troppo presto, oppure la
@@ -782,9 +783,9 @@ ha vinto, ha speso.
 Sotto tutte e quattro c'è la lezione di Brooks, mezzo secolo dopo: il
 coordinamento è una voce di costo, e con una trascrizione condivisa cresce più
 in fretta (con il quadrato dei turni) del beneficio che dovrebbe pagare, che la
-legge di Amdahl tiene sotto un tetto. Un sistema multi-agente ben progettato ha
-il minimo numero di agenti che risolve il problema, ciascuno con una finestra
-pulita e un compito che il solista non chiudeva.
+legge di Amdahl tiene sotto un tetto. [Un sistema multi-agente ben progettato
+ha il minimo numero di agenti che risolve il problema]{.pt-matita}, ciascuno
+con una finestra pulita e un compito che il solista non chiudeva.
 
 `````{tab} Elementare
 
@@ -842,7 +843,7 @@ pulita e un compito che il solista non chiudeva.
 :class: important
 - Con una trascrizione condivisa il costo va come il quadrato dei turni,
   $\sum_{t=1}^{T}(c_0 + t\bar{m}) = O(\bar{m}T^2)$, e siccome $T = NR$ è
-  quadratico anche negli agenti. Quattro agenti per otto giri leggono
+  quadratico anche negli agenti. Quattro agenti per otto iterazioni leggono
   $328.000$ token contro i $34.000$ di un solista: quasi dieci volte, non
   quattro.
 - La legge di Amdahl mette un tetto: con una frazione seriale $s$

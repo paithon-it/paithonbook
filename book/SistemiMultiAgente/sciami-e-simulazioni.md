@@ -66,7 +66,7 @@ la seguono con probabilità maggiore, e depositano altro feromone proprio lì.
 
 Nessuno ha misurato o confrontato le due strade. La strada corta
 vince perché la si percorre più spesso, e la si percorre più spesso perché è
-corta: è il tempo a fare la misura al posto di un cervello.
+corta: [è il tempo a fare la misura al posto di un cervello]{.pt-matita}.
 
 Le formiche del computer ottengono lo stesso effetto con una scorciatoia. Invece di
 lasciare sempre la stessa quantità e aspettare che sia il tempo a contare i
@@ -136,12 +136,12 @@ deposita a ogni passo, senza aspettare la fine del giro, una quantità fissa
 (*ant-density*) o inversamente proporzionale alla lunghezza del singolo arco
 (*ant-quantity*). Sono due usi di informazione locale, e infatti vanno peggio:
 chi ha fatto un giro corto deve lasciare più feromone di chi ne ha fatto uno
-lungo, e per saperlo bisogna che il giro sia finito. Così la traccia
-non registra il traffico, registra il merito.
+lungo, e per saperlo bisogna che il giro sia finito. Così [la traccia
+non registra il traffico, registra il merito]{.pt-matita}.
 
 Nell'articolo del 1996 i valori risultati migliori per questa versione sono
 $\alpha = 1$, $\beta = 5$, $Q = 100$ e una persistenza di $0{,}5$ (la frazione
-di traccia che resta da un giro all'altro), con tante formiche quante città,
+di traccia che resta da un'iterazione all'altra), con tante formiche quante città,
 $m = n$. Ogni iterazione della colonia ha complessità $O(m\,n^2)$, perché
 ciascuna delle $m$ formiche fa $n$ scelte fra al più $n$ candidati.
 
@@ -154,15 +154,16 @@ senza alcun limite sul tempo che serve {cite}`stutzle2002convergence`.
 `````
 
 L'accumulo si vede solo nel tempo, perché in un fotogramma solo non c'è niente
-da guardare. {numref}`fig-formiche-feromone` mostra sei giri della colonia sulle
-due strade, che cambiano spessore man mano che il feromone si deposita.
+da guardare. {numref}`fig-formiche-feromone` mostra sei iterazioni della
+colonia sulle due strade, che cambiano spessore man mano che il feromone si
+deposita.
 
 ```{figure} ../figures/formiche-feromone.svg
 :name: fig-formiche-feromone
-:alt: "Il formicaio a sinistra e il cibo a destra, uniti da due strade: una lunga che sale in alto e una corta che passa in basso. Giro dopo giro entrambe si ispessiscono, perché su entrambe passano formiche, ma la corta molto più in fretta, e il divario fra le due cresce. Il contatore sotto dice quante formiche su cento scelgono la corta: si parte da cinquanta e si arriva a ottantadue."
+:alt: "Il formicaio a sinistra e il cibo a destra, uniti da due strade: una lunga che sale in alto e una corta che passa in basso. Iterazione dopo iterazione entrambe si ispessiscono, perché su entrambe passano formiche, ma la corta molto più in fretta, e il divario fra le due cresce. Il contatore sotto dice quante formiche su cento scelgono la corta: si parte da cinquanta e si arriva a ottantadue."
 :width: 88%
 
-Sei giri della colonia sulle due strade: lo spessore di ciascuna è il
+Sei iterazioni della colonia sulle due strade: lo spessore di ciascuna è il
 feromone che ci si è accumulato sopra. Si parte in parità, cinquanta e
 cinquanta, e si finisce con l'ottantadue per cento delle formiche sulla strada
 corta. I numeri non sono disegnati a occhio, li calcola la figura applicando le
@@ -174,10 +175,10 @@ e non svanisce.
 
 Della figura contano due aspetti, il secondo più del primo.
 
-Il primo è *dove* si muove di più. La quota di formiche sulla strada corta parte
-da cinquanta su cento e diventa, giro dopo giro, sessantasei, settantatré,
-settantasette, ottanta, ottantadue: il salto grosso è il primo, sedici punti,
-contro i sette del secondo e i quattro del terzo.
+Il primo è *dove* si muove di più. La quota di formiche sulla strada corta
+parte da cinquanta su cento e diventa, iterazione dopo iterazione, sessantasei,
+settantatré, settantasette, ottanta, ottantadue: il salto grosso è il primo,
+sedici punti, contro i sette del secondo e i quattro del terzo.
 
 Quel salto avviene quando le due strade sono ancora percorse dallo stesso
 numero di formiche, per cui a fare la differenza è soltanto quanto ciascuna
@@ -223,9 +224,9 @@ pratica gli ultimi due giorni: il deposito di ieri pesa
 la metà di quello di oggi, quello di tre sere fa un ottavo.
 
 Detta così sembra una perdita, ma è la risorsa più preziosa dell'algoritmo.
-Senza evaporazione la memoria del gruppo è definitiva: la prima strada scoperta
-per caso resta la più marcata per sempre, e nessuna formica avrà mai occasione
-di scoprire quella dietro l'angolo.
+[Senza evaporazione la memoria del gruppo è definitiva]{.pt-matita}: la prima
+strada scoperta per caso resta la più marcata per sempre, e nessuna formica
+avrà mai occasione di scoprire quella dietro l'angolo.
 
 All'estremo opposto, se ogni sera sparisse
 tutto quello che c'era prima, la mattina resterebbe soltanto il segno del
@@ -275,9 +276,9 @@ al punto fisso $\tau^{\ast} = \Delta/\rho$, che con $\rho = 0{,}5$ vale il
 doppio di un singolo deposito. Inoltre la somma dei pesi è $1/\rho$, quindi
 $1/\rho$ è l'orizzonte di memoria in cicli.
 
-Con $\rho$ vicino a zero la colonia
-ricorda tutto e si fossilizza sul primo ottimo locale; con $\rho$ vicino a uno
-dimentica a ogni ciclo e le formiche tornano a essere golose e scorrelate.
+Con $\rho$ vicino a zero [la colonia ricorda tutto e si fossilizza sul primo
+ottimo locale]{.pt-matita}; con $\rho$ vicino a uno dimentica a ogni ciclo e le
+formiche tornano a essere golose e scorrelate.
 
 Il valore che gli autori trovano migliore per questa variante sta a
 metà, $\rho = 0{,}5$ (l'unico numero che vale lo stesso nelle due convenzioni,
@@ -295,8 +296,9 @@ Le formiche artificiali non si scambiano un solo messaggio, e questo fa dello
 sciame un sistema multi-agente e non soltanto un metodo di ottimizzazione. Non
 si conoscono, non si nominano, non sanno nemmeno in quante sono. Una formica
 conosce le altre soltanto attraverso le tracce che trova per terra. In altri
-termini, la loro esperienza è diventata una proprietà fisica dell'ambiente, e
-la traccia sopravvive alle singole formiche che l'hanno lasciata.
+termini, [la loro esperienza è diventata una proprietà fisica
+dell'ambiente]{.pt-matita}, e la traccia sopravvive alle singole formiche che
+l'hanno lasciata.
 
 Gli autori lo dicono in una frase che potrebbe stare in un manuale di sistemi
 distribuiti: nell'Ant System le formiche comunicano modificando una struttura
@@ -362,7 +364,7 @@ il punto, certe volte lo lascia a mezza strada, e in media lo porta sul punto.
 Un po’ tira poi dritto per dove stava già andando, perché ha una sua velocità e
 non si ferma di colpo.
 
-Quest'ultima spinta sembra un dettaglio, ma fa funzionare tutto. Se
+[Quest'ultima spinta sembra un dettaglio, ma fa funzionare tutto]{.pt-matita}. Se
 uno andasse solo dove è tirato, si poserebbe sul punto migliore conosciuto
 insieme a tutti gli altri: più gli si avvicina, più corto diventa il richiamo,
 finché non lo muove più. Siccome però arriva lanciato, lo supera, va a guardare
@@ -409,7 +411,8 @@ Il sorpasso è deliberato: gli autori osservano che togliendo il termine di
 velocità precedente, che nel 1995 chiamano *momentum* (cioè sostituendo la
 velocità invece di correggerla), l'algoritmo diventa inefficace nel trovare gli
 ottimi globali. È la stessa ragione dell'evaporazione delle formiche, in veste
-meccanica: un sistema che va solo dove è già andato bene smette di cercare.
+meccanica: [un sistema che va solo dove è già andato bene smette di
+cercare]{.pt-matita}.
 
 La stabilità ha una risposta chiusa {cite}`clerc2002particle`. Con
 $\varphi = c_1 + c_2 > 4$ e il fattore di costrizione
@@ -627,12 +630,12 @@ esatta, mentre le altre due volte si ferma a duecentoventiquattro contro
 duecentoventotto, cioè meno del due per cento sotto. Per un problema in cui non
 esiste alcuna pendenza da seguire, è molto.
 
-La seconda è che quel «otto volte su
-dieci» non si può eliminare. Un algoritmo genetico non dà garanzie, e
-soprattutto non dice quanto gli è mancato: qui lo sappiamo perché lo zaino ha
-anche un algoritmo esatto e rapido, la programmazione dinamica, che con pesi
-interi ha costo dell'ordine di $n \cdot W$ operazioni ($n$ oggetti, $W$ la
-capienza: qui $20 \cdot 60 = 1200$) e arriva anch'essa a 228.
+La seconda è che quel «otto volte su dieci» non si può eliminare. [Un algoritmo
+genetico non dà garanzie, e soprattutto non dice quanto gli è
+mancato]{.pt-matita}: qui lo sappiamo perché lo zaino ha anche un algoritmo
+esatto e rapido, la programmazione dinamica, che con pesi interi ha costo
+dell'ordine di $n \cdot W$ operazioni ($n$ oggetti, $W$ la capienza: qui $20
+\cdot 60 = 1200$) e arriva anch'essa a 228.
 
 Lo zaino serve qui
 da banco di prova con la risposta nota; un algoritmo genetico si usa
@@ -693,8 +696,8 @@ C'è però una ragione per cui quel «moltissimi» diventa «impossibile» appen
 cose da decidere sono tante. Chi sente la pendenza la sente in tutte le
 direzioni insieme: che siano due o un milione, un piede appoggiato gli dice per
 ognuna se si sale o se si scende. Chi non la sente le deve provare a una a una,
-e con un milione di direzioni gli servono almeno un milione di passi solo per
-sapere da che parte andare: la giornata finisce prima.
+e [con un milione di direzioni gli servono almeno un milione di passi solo per
+sapere da che parte andare]{.pt-matita}: la giornata finisce prima.
 
 Dove vince, poi, non promette niente. Quando si ferma, non sa dire se quello è il
 punto più basso della valle o soltanto il più basso che ha visto.
@@ -712,11 +715,12 @@ valutazioni rumorose o prodotte da una simulazione, e paesaggi molto
 multimodali dove il gradiente è informativo solo dentro il bacino in cui si
 nasce.
 
-Si paga in valutazioni della funzione obiettivo, e in alta dimensione il costo
-diventa proibitivo, per una ragione precisa. Con la retropropagazione, infatti,
-una sola passata all'indietro produce tutte le $d$ derivate parziali di
-$\mathcal{L}$ rispetto ai parametri $\theta$, a un costo dell'ordine di una
-passata in avanti: l'informazione per passo cresce con $d$ mentre il costo no.
+Si paga in valutazioni della funzione obiettivo, e [in alta dimensione il costo
+diventa proibitivo]{.pt-matita}, per una ragione precisa. Con la
+retropropagazione, infatti, una sola passata all'indietro produce tutte le $d$
+derivate parziali di $\mathcal{L}$ rispetto ai parametri $\theta$, a un costo
+dell'ordine di una passata in avanti: l'informazione per passo cresce con $d$
+mentre il costo no.
 
 Un metodo senza derivate deve invece stimare una
 direzione utile a partire da valori scalari: con le differenze finite servono
@@ -804,10 +808,11 @@ fossetta non c'è nemmeno arrivato).
 
 Un metodo che segue la pendenza, partito da lì, scivolerebbe in fondo a quella
 fossetta e ci resterebbe per sempre, perché dal fondo tutte le direzioni
-salgono. Lo sciame ne esce entro la ventesima, e ne esce senza alcuna
-informazione sulla pendenza: una particella era semplicemente arrivata più in
-là del punto migliore conosciuto, e più in là si scendeva. Dalla ventesima in
-poi il gruppo si limita a rifinire un valore già piccolissimo.
+salgono. [Lo sciame ne esce entro la ventesima, e ne esce senza alcuna
+informazione sulla pendenza]{.pt-matita}: una particella era semplicemente
+arrivata più in là del punto migliore conosciuto, e più in là si scendeva.
+Dalla ventesima in poi il gruppo si limita a rifinire un valore già
+piccolissimo.
 
 Il costo si conta in misure. A ogni iterazione lo sciame misura la quota nei
 trenta punti in cui si trovano le sue particelle; le iterazioni sono sessanta,
@@ -891,8 +896,9 @@ Le prove riuscite in tutto sono sessantasette, quindi una sola ce l'ha fatta
 partendo interamente da fuori. Nascere nel posto giusto, qui, è sempre bastato
 e quasi sempre è servito.
 
-In definitiva, la discesa con trenta ripartenze non ha imparato niente in più
-di quella a partenza singola: ha soltanto avuto trenta biglietti invece di uno.
+In definitiva, [la discesa con trenta ripartenze non ha imparato niente in più
+di quella a partenza singola]{.pt-matita}: ha soltanto avuto trenta biglietti
+invece di uno.
 
 Tutti questi numeri escono da un programma solo, che rifà le trecento prove con
 gli stessi numeri casuali e con una soglia dichiarata: «arrivare al fondo vero»
@@ -1058,11 +1064,12 @@ Sommandoli così vince B, poi C, poi A: l'ordine dell'importanza, e gli altri
 due criteri non hanno contato niente. Infatti un voto da 1 a 10 schiaccia due
 numeri fra 0 e 1.
 
-La cura è mettere le tre colonne sulla stessa scala prima di sommarle. In ogni
-colonna, il migliore dei tre prende 1, il peggiore prende 0, e quello di mezzo
-prende la frazione che gli spetta: sulla freschezza, per esempio, il migliore è
-A con 0,995 e il peggiore B con 0,367, quindi C, che sta a 0,778, ha percorso
-due terzi scarsi della distanza fra i due e prende 0,65.
+La cura è [mettere le tre colonne sulla stessa scala prima di
+sommarle]{.pt-matita}. In ogni colonna, il migliore dei tre prende 1, il
+peggiore prende 0, e quello di mezzo prende la frazione che gli spetta: sulla
+freschezza, per esempio, il migliore è A con 0,995 e il peggiore B con 0,367,
+quindi C, che sta a 0,778, ha percorso due terzi scarsi della distanza fra i
+due e prende 0,65.
 
 | ricordo | freschezza | importanza | pertinenza | **somma** |
 |---|---|---|---|---|
@@ -1093,12 +1100,12 @@ $$
 
 dove $e$ è un ricordo, $q$ la situazione corrente e la tilde indica che ogni
 termine è stato riscalato con un min-max nell'intervallo $[0,1]$ prima della
-somma. Nel lavoro originale i tre pesi valgono tutti $1$, il che rende la
+somma. Nel lavoro originale i tre pesi valgono tutti $1$, [il che rende la
 normalizzazione l'unico meccanismo che impedisce al termine con l'escursione
-più ampia di dominare: sommando direttamente un voto in $[1,10]$ e due grandezze
-in $[0,1]$, il voto basta a fissare l'ordine di due ricordi ogni volta che le
-loro importanze distano più di due punti, perché le altre due grandezze insieme
-non arrivano a recuperarli.
+più ampia di dominare]{.pt-matita}: sommando direttamente un voto in $[1,10]$ e
+due grandezze in $[0,1]$, il voto basta a fissare l'ordine di due ricordi ogni
+volta che le loro importanze distano più di due punti, perché le altre due
+grandezze insieme non arrivano a recuperarli.
 
 Poiché il riscalamento è
 relativo all'insieme dei candidati, il punteggio non è assoluto: lo stesso
@@ -1186,7 +1193,7 @@ pagina: i loro agenti, scrivono, come i personaggi animati della Disney puntano
 a dare un senso di credibilità, ma non implicano una vera capacità di agire in
 autonomia.
 
-Credibile non vuol dire predittivo: è la solita distinzione
+[Credibile non vuol dire predittivo]{.pt-matita}: è la solita distinzione
 fra somigliare e prevedere. Perché una simulazione dicesse qualcosa sulle
 società reali dovrebbe riprodurre non i singoli comportamenti verosimili, ma le
 distribuzioni di quei comportamenti: quante persone su venticinque davvero
@@ -1240,8 +1247,8 @@ scritto in cima al biglietto, il premio dato alla squadra o al singolo, la
 velocità con cui il feromone svanisce, il vicinato che una particella ascolta:
 sono la stessa variabile, regolata su sistemi diversi.
 
-È la tesi dell'apertura, arrivata in fondo intatta: a parità di
-individui, la regola di interazione determina il comportamento del gruppo. Vale
+È la tesi dell'apertura, arrivata in fondo intatta: [a parità di individui, la
+regola di interazione determina il comportamento del gruppo]{.pt-matita}. Vale
 per gli storni sopra Termini, che contando i vicini restano uniti e che, nelle
 simulazioni, misurandoli in metri si spezzerebbero molto più spesso
 {cite}`ballerini2008interaction`; vale per una colonia di formiche artificiali,

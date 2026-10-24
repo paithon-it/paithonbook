@@ -62,10 +62,10 @@ che a quattordici indizi l'uno fanno $238$. Il calcolo fatto senza arrotondare
 dà $225$, perché in realtà i dimezzamenti sono un po' meno di diciassette e
 ciascuno chiede un po’ meno di quattordici indizi.
 
-Con il doppio dei sospettati servono soltanto altri quattordici indizi, perché
-la probabilità di ciascuno va dimezzata una volta ancora. Per questo, con un
-milione di sospettati invece di mille, ne servono $360$ e non
-duecentoventicinquemila.
+[Con il doppio dei sospettati servono soltanto altri quattordici
+indizi]{.pt-matita}, perché la probabilità di ciascuno va dimezzata una volta
+ancora. Per questo, con un milione di sospettati invece di mille, ne servono
+$360$ e non duecentoventicinquemila.
 
 Una tolleranza più stretta fa salire il numero. Se il sospettato indicato deve
 contraddire meno dell'uno per cento degli indizi invece del cinque, ogni
@@ -148,7 +148,7 @@ allarga di poco il limite; ad esempio, con $|\mathcal{H}|=1000$,
 $\varepsilon=0{,}05$ e $\delta=0{,}01$ la forma con $(1-\varepsilon)^m$ chiede
 $225$ esempi, quella esponenziale $231$.
 
-La dipendenza da $|\mathcal{H}|$ è logaritmica, e
+[La dipendenza da $|\mathcal{H}|$ è logaritmica]{.pt-matita}, e
 $\log_2|\mathcal{H}|$ è il numero di bit che servono a indicare un'ipotesi. Se
 ogni ipotesi si descrive con $b$ bit, $|\mathcal{H}|\le 2^b$ e quindi
 $R(h_S)\le\big(b\log 2+\log\frac{1}{\delta}\big)/m$, che è la versione

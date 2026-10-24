@@ -45,9 +45,9 @@ Un'ipotesi numerica dà l'idea di quanto convenga l'abitudine. Su cento
 fotografie in cui compare un coltello, supponiamo che in ottanta ci sia anche
 una forchetta. Un modello che non guarda affatto e risponde sempre «sì, c'è la
 forchetta» ne azzecca ottanta su cento. Per battere quel punteggio bisogna
-guardare l'immagine e fare meglio dell'ottanta per cento, ma l'addestramento
+guardare l'immagine e fare meglio dell'ottanta per cento, ma [l'addestramento
 non lo chiede, perché premia la risposta giusta in media e quella si ottiene
-anche a occhi chiusi. Guardare non è vietato, è facoltativo.
+anche a occhi chiusi]{.pt-matita}. Guardare non è vietato, è facoltativo.
 
 L'abitudine, poi, parte avvantaggiata. La tastiera macina frasi da anni; la
 telecamera le è stata attaccata ieri, e il filo che le collega è nuovo di zecca,
@@ -86,9 +86,10 @@ e il secondo la **mutua informazione puntuale** fra il token e l'immagine, dato
 il prefisso. Per predittori ottimi la riduzione della perdita che il
 condizionamento sull'immagine produce coincide con la mutua informazione
 condizionata $\mathcal{I}(Y_t; E(\mathbf{I}) \mid Y_{<t})$, dove le maiuscole
-indicano i token visti come variabili aleatorie. Ne segue che, dove la
-didascalia è già prevedibile dal solo testo, quella quantità è piccola, e con
-essa il gradiente che spinge il percorso visivo a servire a qualcosa.
+indicano i token visti come variabili aleatorie. Ne segue che, [dove la
+didascalia è già prevedibile dal solo testo, quella quantità è
+piccola]{.pt-matita}, e con essa il gradiente che spinge il percorso visivo a
+servire a qualcosa.
 
 Il punto di partenza dell'ottimizzazione può aggravare lo sbilanciamento. Il
 priore arriva già formato da un pre-addestramento testuale molto più lungo,
@@ -174,10 +175,11 @@ raddoppiare i valori di CHAIR di uno stesso modello, e in qualche caso
 invertire l'ordine fra due modelli. È l'obiezione che li ha portati a cambiare
 strada.
 
-Una misura che si muove per ragioni estranee all'immagine è la peggiore che si
-possa avere in mano quando si vuole stabilire se un fenomeno esista, perché il
-punteggio cambia con la domanda mentre il modello non è cambiato di una virgola.
-Cambiare la domanda serve più di un analizzatore migliore.
+[Una misura che si muove per ragioni estranee all'immagine è la peggiore che si
+possa avere in mano quando si vuole stabilire se un fenomeno
+esista]{.pt-matita}, perché il punteggio cambia con la domanda mentre il
+modello non è cambiato di una virgola. Cambiare la domanda serve più di un
+analizzatore migliore.
 
 ## Una domanda con due sole risposte
 
@@ -216,8 +218,8 @@ che ci sono. Davanti al piatto e al coltello, «c'è una forchetta?». Qui
 l'abitudine spinge con tutta la sua forza, la spinta che si vuole misurare.
 
 Alla fine non si guarda un punteggio ma tre, e di quanto scendono passando dalla
-domanda regalata a quella cattiva. Quella discesa non misura quanto il modello
-sia bravo: misura a quale abitudine si appoggia.
+domanda regalata a quella cattiva. [Quella discesa non misura quanto il modello
+sia bravo: misura a quale abitudine si appoggia]{.pt-matita}.
 
 `````
 
@@ -243,8 +245,8 @@ ultime due si prendono i primi $k$ candidati in ordine di punteggio anziché
 campionare, con $k$ pari al numero di domande negative che tocca all'immagine.
 Le tre condizioni mettono alla prova separatamente due priori diversi, quello
 marginale e quello condizionato alla co-occorrenza, più un controllo. Di
-conseguenza il divario fra le accuratezze nelle tre condizioni è una stima di
-quanto ciascun priore stia guidando la risposta.
+conseguenza [il divario fra le accuratezze nelle tre condizioni è una stima di
+quanto ciascun priore stia guidando la risposta]{.pt-matita}.
 
 Tre proprietà del disegno lo rendono una misura e non un sondaggio. L'insieme è
 bilanciato, metà domande con risposta sì e metà con risposta no, così che
@@ -379,9 +381,9 @@ spesso nella domanda stessa, nelle alternative proposte accanto («che animale
 c'è nella foto? a) un cane, b) una sedia, c) un tavolo, d) una nuvola») o in
 cose che chiunque sa del mondo.
 
-Per fortuna un controllo semplicissimo li scopre tutti e due: rifare
-l'esame togliendo l'immagine. Ciò che il modello porta a casa a occhi chiusi non
-l'ha imparato guardando.
+Per fortuna [un controllo semplicissimo li scopre tutti e due: rifare l'esame
+togliendo l'immagine]{.pt-matita}. Ciò che il modello porta a casa a occhi
+chiusi non l'ha imparato guardando.
 
 Per sapere quale dei due difetti si ha davanti, quel
 voto si mette accanto a
@@ -424,11 +426,11 @@ annotazioni di un corpus fotografico pubblico, COCO, presente nella miscela di
 addestramento di quasi ogni sistema di cui si misura l'allucinazione. Qui serve
 cautela: che il corpus sia nella miscela è noto, mentre che questo gonfi i
 punteggi è un rischio documentato su altri benchmark, non una misura pubblicata
-su questo protocollo. Il rimedio resta comunque uno solo, una riesecuzione che
-riporta il punteggio a immagine tolta accanto a quello ordinario. È la stessa
-operazione che fra poco ricomparirà fra i rimedi in decodifica (confrontare la
-risposta a occhi aperti con quella a occhi chiusi), applicata alla valutazione
-invece che alla generazione.
+su questo protocollo. [Il rimedio resta comunque uno solo, una riesecuzione che
+riporta il punteggio a immagine tolta accanto a quello ordinario]{.pt-matita}.
+È la stessa operazione che fra poco ricomparirà fra i rimedi in decodifica
+(confrontare la risposta a occhi aperti con quella a occhi chiusi), applicata
+alla valutazione invece che alla generazione.
 
 `````
 
@@ -547,12 +549,13 @@ di altre fotografie prese a caso, e per vincerlo bastava riconoscere gli
 oggetti: da qui il comportamento a sacchetto di parole, che tratta la frase come
 un mucchio di parole senza ordine.
 
-Dal lato dell'immagine vale la conseguenza speculare: un tratto della
+Dal lato dell'immagine vale la conseguenza speculare: [un tratto della
 fotografia che non serve mai a fare quella scelta si può buttare senza perdere
-niente, e l'addestramento, che non ha motivo di conservare un tratto da cui la
-perdita non dipende, lo butta. Ad esempio, il verso in cui è girato un animale,
-il numero degli oggetti, un particolare minuto sono tratti da cui la didascalia
-di un'altra fotografia non dipende mai. È un solo difetto, visto dai due lati.
+niente]{.pt-matita}, e l'addestramento, che non ha motivo di conservare un
+tratto da cui la perdita non dipende, lo butta. Ad esempio, il verso in cui è
+girato un animale, il numero degli oggetti, un particolare minuto sono tratti
+da cui la didascalia di un'altra fotografia non dipende mai. È un solo difetto,
+visto dai due lati.
 
 Il rimedio a monte è coerente con la diagnosi. Se un encoder addestrato sulle
 didascalie perde ciò che le didascalie non nominano, gli si affianca un secondo
@@ -758,16 +761,16 @@ confermare l'errore che doveva smascherare. Il rimedio funziona nella misura in
 cui il secondo controllo è indipendente dal primo, come lo sono un rilevatore
 di oggetti o una persona.
 
-Nessun rimedio elimina il fenomeno, che discende da come i modelli si
-addestrano. Finché la funzione di costo premia la continuazione plausibile e
-l'immagine è soltanto uno dei dati da cui la risposta dipende, il priore resta
-la strada più economica verso una perdita bassa. I rimedi spostano il punto di
-equilibrio. Rendono le affermazioni controllabili, rendono meno conveniente
-la parola che si direbbe comunque, aggiungono un secondo paio di occhi. La
-domanda su quanto sia fragile un sistema messo nel mondo tornerà nella sezione
-su {doc}`privacy e robustezza </AIResponsabile/privacy-e-robustezza>`; qui si
-pone a un sistema che vede, e diventa meno accademica quando il sistema comanda
-una mano.
+[Nessun rimedio elimina il fenomeno, che discende da come i modelli si
+addestrano]{.pt-matita}. Finché la funzione di costo premia la continuazione
+plausibile e l'immagine è soltanto uno dei dati da cui la risposta dipende, il
+priore resta la strada più economica verso una perdita bassa. I rimedi spostano
+il punto di equilibrio. Rendono le affermazioni controllabili, rendono meno
+conveniente la parola che si direbbe comunque, aggiungono un secondo paio di
+occhi. La domanda su quanto sia fragile un sistema messo nel mondo tornerà
+nella sezione su {doc}`privacy e
+robustezza </AIResponsabile/privacy-e-robustezza>`; qui si pone a un sistema
+che vede, e diventa meno accademica quando il sistema comanda una mano.
 
 ## Dalla percezione all'azione
 
@@ -950,11 +953,11 @@ modelli che si costruiscono una copia interna del mondo, è il vicino naturale d
 un robot che impara: provare in quella copia è più economico che provare sul
 robot vero.
 
-Il meccanismo è economico, perché l'azione non richiede un'architettura
+Il meccanismo è economico, perché [l'azione non richiede un'architettura
 propria: il sistema è quello di tutto il capitolo con un vocabolario un po’ più
-largo. E spiega perché l'azione sta in coda all'allucinazione. Un sistema che
-allucina una forchetta scrive una parola di troppo; lo stesso sistema che
-comanda una mano allucina un movimento.
+largo]{.pt-matita}. E spiega perché l'azione sta in coda all'allucinazione. Un
+sistema che allucina una forchetta scrive una parola di troppo; lo stesso
+sistema che comanda una mano allucina un movimento.
 
 ## Quattro scelte di progetto e un controllo
 
@@ -973,9 +976,9 @@ estendere a lungo e un arrotondamento a catalogo che perde parte
 dell'informazione. Il dettaglio dipende dalla risoluzione, e ogni pixel in più
 diventa un posto occupato nella sequenza.
 
-Davanti a tutte e quattro resta la diffidenza, che non è una quinta tecnica. La
+Davanti a tutte e quattro resta la diffidenza, che non è una quinta tecnica. [La
 domanda da porre a ciascuna è se i due flussi si siano incontrati, o se il
-modello stia parlando di una fotografia che non ha guardato.
+modello stia parlando di una fotografia che non ha guardato]{.pt-matita}.
 
 `````{tab} Elementare
 

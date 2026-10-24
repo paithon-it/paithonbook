@@ -57,8 +57,8 @@ $p_\theta$ prende il nome di densità: un'altezza di curva più che una
 probabilità, che può anche superare uno, mentre a fare uno è l'area sotto la
 curva.
 
-Quel «fa uno» è tutto il problema, e lega i modelli a verosimiglianza esatta ai
-modelli a energia. Normalizzare un punteggio vuol
+[Quel «fa uno» è tutto il problema]{.pt-matita}, e lega i modelli a
+verosimiglianza esatta ai modelli a energia. Normalizzare un punteggio vuol
 dire dividerlo per la somma dei punteggi di tutti i dati possibili, e quella
 somma non si può fare: il capitolo sui modelli a energia mostrerà quanto il
 conto sia fuori portata. Le strade sono allora due: rinunciare alla
@@ -70,11 +70,11 @@ mai fare quel conto. È la strada della verosimiglianza esatta.
 
 Le famiglie di modelli generativi sono cinque: i {doc}`modelli latenti
 </ModelliLatenti/overview>`, le GAN, la diffusione, i modelli a verosimiglianza
-esatta e quelli a energia. L'asse su cui si ordinano qui è uno solo: che
-rapporto ha il modello con la probabilità del dato. È un taglio fra i tanti
-possibili (le quattro famiglie dell'auto-supervisione, per esempio, si ordinano
-in base a cosa impedisca la risposta vuota, che è tutta un'altra domanda). Qui
-contano solo tre risposte.
+esatta e quelli a energia. L’[asse su cui si ordinano qui è uno solo: che
+rapporto ha il modello con la probabilità del dato]{.pt-matita}. È un taglio
+fra i tanti possibili (le quattro famiglie dell'auto-supervisione, per esempio,
+si ordinano in base a cosa impedisca la risposta vuota, che è tutta un'altra
+domanda). Qui contano solo tre risposte.
 
 La prima risposta è che il modello quel numero non ce l'ha affatto. Sa produrre
 campioni e nient'altro, e la probabilità non compare in nessuna delle sue
@@ -128,9 +128,9 @@ immagini.
 
 ## Il prezzo
 
-Nessuna delle due strade è gratis: in tutte e due la probabilità esatta si
-paga con un vincolo sulla forma del modello, e per gli autoregressivi anche
-con il tempo di generazione.
+[Nessuna delle due strade è gratis]{.pt-matita}: in tutte e due la probabilità
+esatta si paga con un vincolo sulla forma del modello, e per gli autoregressivi
+anche con il tempo di generazione.
 
 Un modello autoregressivo deve garantire che ogni valore dipenda soltanto da
 quelli che lo precedono. Il testo un ordine ce l'ha per natura; un'immagine no,

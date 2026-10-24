@@ -5,9 +5,9 @@ rivista di processi stocastici (cioè casuali) un articolo di quattordici pagine
 intitolato *Reverse-time diffusion equation models* {cite}`anderson1982reverse`.
 Il problema che aveva per le mani era di tutt'altro genere: dato un segnale
 rumoroso osservato fino a un certo istante, stimare che cosa fosse successo
-prima. Il risultato che ottiene è generale: un processo casuale che si diffonde
+prima. Il risultato che ottiene è generale: [un processo casuale che si diffonde
 in avanti nel tempo si può percorrere all'indietro, e l'equazione che descrive
-il ritorno è quella dell'andata più un termine correttivo.
+il ritorno è quella dell'andata più un termine correttivo]{.pt-matita}.
 
 Quel termine correttivo è il gradiente del logaritmo della densità dei dati
 rumorosi, $\nabla_{\mathbf{x}}\log p_t(\mathbf{x})$, detto **punteggio**
@@ -70,10 +70,10 @@ danno sempre lo stesso tremore complessivo, né nullo né infinito.
 si sparpaglia come la radice del loro numero, e la media, che è la somma divisa
 per quel numero, si stringe come uno diviso la radice.
 
-Il gioco vale la candela per una ragione pratica: nel continuo la ricetta si
-descrive con due sole funzioni del tempo, e tutte le varianti che negli anni
-sono state proposte si scrivono scegliendo quelle due. Invece di una famiglia di
-metodi diversi, una sola equazione con due manopole.
+Il gioco vale la candela per una ragione pratica: [nel continuo la ricetta si
+descrive con due sole funzioni del tempo]{.pt-matita}, e tutte le varianti che
+negli anni sono state proposte si scrivono scegliendo quelle due. Invece di una
+famiglia di metodi diversi, una sola equazione con due manopole.
 
 `````
 
@@ -110,10 +110,10 @@ incrementi indipendenti, e $\mathbf{w}(t)-\mathbf{w}(s)$ è gaussiano di media
 nulla e varianza $t-s$. È continuo ovunque e derivabile in nessun punto, per
 cui la scrittura $\mathrm{d}\mathbf{w}$ non si può dividere per $\mathrm{d}t$.
 
-La cosa che rende trattabile tutto il resto è la scelta di una deriva
-affine, $\mathbf{f}(\mathbf{x},t) = f(t)\,\mathbf{x}$ con $f$ scalare. Sotto
-questa ipotesi il processo condizionato al dato iniziale resta gaussiano a ogni
-istante, e il **nucleo di perturbazione** ha forma chiusa:
+[La cosa che rende trattabile tutto il resto è la scelta di una deriva
+affine]{.pt-matita}, $\mathbf{f}(\mathbf{x},t) = f(t)\,\mathbf{x}$ con $f$
+scalare. Sotto questa ipotesi il processo condizionato al dato iniziale resta
+gaussiano a ogni istante, e il **nucleo di perturbazione** ha forma chiusa:
 
 $$
 p_t(\mathbf{x}_t\mid\mathbf{x}_0)
@@ -176,9 +176,9 @@ sempre attorno a uno, che per una rete neurale è la condizione comoda. La
 seconda ce li tiene senza fare niente; chi usa la prima li riscala prima di
 darli alla rete, e fatto quel riscalamento il vantaggio si annulla.
 
-Il fatto notevole è che sono la stessa equazione con due manopole diverse.
-Prima del 2020 erano due letterature separate, con due vocabolari e due insiemi
-di trucchi; nel continuo la separazione sparisce.
+Il fatto notevole è che [sono la stessa equazione con due manopole
+diverse]{.pt-matita}. Prima del 2020 erano due letterature separate, con due
+vocabolari e due insiemi di trucchi; nel continuo la separazione sparisce.
 
 `````
 
@@ -291,10 +291,10 @@ tre.
 Riavvolgere una diffusione sembra impossibile, e per una singola traiettoria lo
 è: il fumo che esce da un camino non rientra, e da una nuvola di fumo non si
 ricostruisce la scintilla che l'ha prodotta. Il risultato di Anderson dice una
-cosa più sottile e più utile: la singola traiettoria non si riavvolge, ma la
-distribuzione sì. Non si può sapere da quale scintilla venga quel fumo lì; si
-può però costruire un processo che, partendo da nuvole di fumo, produce
-scintille distribuite come quelle vere.
+cosa più sottile e più utile: [la singola traiettoria non si riavvolge, ma la
+distribuzione sì]{.pt-matita}. Non si può sapere da quale scintilla venga quel
+fumo lì; si può però costruire un processo che, partendo da nuvole di fumo,
+produce scintille distribuite come quelle vere.
 
 L'equazione all'indietro ha la stessa forma di quella in avanti, con un termine
 in più: in ogni punto, oltre alla deriva e al tremore, c'è una spinta che punta
@@ -354,11 +354,11 @@ stimato: sono questi due scarti, e l'errore di discretizzazione, a separare i
 campioni dai dati. Le singole traiettorie, invece, non si corrispondono: per
 questo il generatore non ricostruisce l'immagine da cui il rumore era partito.
 
-L'ingrediente ignoto è uno solo. Scelti $\mathbf{f}$ e $g$, il resto della
-dinamica è determinato dal punteggio, e imparare il punteggio è il problema che
-la sezione su come funziona la diffusione ha già risolto in forma discreta.
-Infatti il minimo della loss quadratica sul rumore è la media condizionata
-$\mathbb{E}[\boldsymbol{\epsilon}\mid\mathbf{x}_t]$, e questa è
+[L'ingrediente ignoto è uno solo]{.pt-matita}. Scelti $\mathbf{f}$ e $g$, il
+resto della dinamica è determinato dal punteggio, e imparare il punteggio è il
+problema che la sezione su come funziona la diffusione ha già risolto in forma
+discreta. Infatti il minimo della loss quadratica sul rumore è la media
+condizionata $\mathbb{E}[\boldsymbol{\epsilon}\mid\mathbf{x}_t]$, e questa è
 $-\sigma_t\nabla\log p_t(\mathbf{x}_t)$.
 
 **La lettura come dinamica di Langevin.** Ponendo $\mathbf{f}\equiv\mathbf{0}$
@@ -410,8 +410,8 @@ tuttavia si può fare in modo che in ogni istante la folla sia sparpagliata allo
 stesso modo: stessa densità in ogni punto della piazza, a ogni ora.
 
 Questo secondo modo esiste, e si costruisce a partire dal primo togliendo il
-tremore e dimezzando la spinta: metà è esattamente quanto serve a rimpiazzare
-il rimescolamento che si è tolto. Le conseguenze sono tre.
+tremore e dimezzando la spinta: [metà è esattamente quanto serve a rimpiazzare
+il rimescolamento che si è tolto]{.pt-matita}. Le conseguenze sono tre.
 
 *Si può percorrere nei due sensi.* Senza caso, il percorso è una linea
 tracciata: dai dati al rumore e dal rumore ai dati si passa lungo la stessa
@@ -486,10 +486,11 @@ $$
 
 che è l'equazione di continuità di un flusso deterministico con velocità
 $\mathbf{f} - \tfrac12 g^2\nabla\log p_t$: la PF-ODE, che quindi ha le stesse
-marginali. Il fattore $\tfrac12$ è esattamente quanto serve a far rientrare nel
-trasporto il termine diffusivo che si è tolto. La stessa riscrittura, spezzando
-$\tfrac12 g^2\Delta p_t$ in $g^2\Delta p_t - \tfrac12 g^2\Delta p_t$ e
-invertendo il tempo, dà la SDE all'indietro di Anderson {cite}`song2021score`.
+marginali. [Il fattore $\tfrac12$ è esattamente quanto serve a far rientrare
+nel trasporto il termine diffusivo che si è tolto]{.pt-matita}. La stessa
+riscrittura, spezzando $\tfrac12 g^2\Delta p_t$ in $g^2\Delta p_t - \tfrac12
+g^2\Delta p_t$ e invertendo il tempo, dà la SDE all'indietro di Anderson
+{cite}`song2021score`.
 
 Ne seguono tre conseguenze:
 
@@ -628,14 +629,14 @@ Sono quattro forme della stessa informazione perché l'immagine rovinata è fatt
 di due pezzi, l'immagine pulita e il disturbo, mescolati in proporzioni note.
 Sapendo l'immagine rovinata e uno dei due pezzi, l'altro si ricava sottraendo.
 
-La scelta lascia invariata la matematica e cambia la precisione dei calcoli.
-Chiedere il disturbo funziona male quando di disturbo ce n'è pochissimo, perché
-di quel disturbo nell'immagine resta una traccia minuscola e va indovinato
-tutto a partire da lì; chiedere l'immagine pulita funziona male dall'altra
-parte, dove di immagine non c'è quasi più niente. La quarta domanda, la
-velocità, nasce per questo: mescola le due in modo da restare affidabile a
-tutti e due gli estremi, e si usa quando il percorso deve essere accorciato a
-pochi passi.
+[La scelta lascia invariata la matematica e cambia la precisione dei
+calcoli]{.pt-matita}. Chiedere il disturbo funziona male quando di disturbo ce
+n'è pochissimo, perché di quel disturbo nell'immagine resta una traccia
+minuscola e va indovinato tutto a partire da lì; chiedere l'immagine pulita
+funziona male dall'altra parte, dove di immagine non c'è quasi più niente. La
+quarta domanda, la velocità, nasce per questo: mescola le due in modo da
+restare affidabile a tutti e due gli estremi, e si usa quando il percorso deve
+essere accorciato a pochi passi.
 
 `````
 
@@ -661,15 +662,16 @@ $\hat{\mathbf{v}}$ la velocità. Una rete addestrata su una qualsiasi delle
 quattro si converte nelle altre senza riaddestramento, e le librerie infatti
 espongono un parametro di configurazione per sceglierla.
 
-L'equivalenza è algebrica, il condizionamento numerico no. Per $t\to 0$ si ha
-$\sigma_t\to 0$: la conversione $\hat{\boldsymbol{\epsilon}}\mapsto \mathbf{s}$
-divide per $\sigma_t$ e amplifica l'errore, mentre $\hat{\mathbf{x}}_0$ è ben
-posta. Per $t\to T$ è il contrario, perché $\alpha_t\to 0$ e ricostruire
-$\hat{\mathbf{x}}_0$ significa dividere per qualcosa che tende a zero. La
-**$\mathbf{v}$-prediction** {cite}`salimans2022progressive` interpola fra le
-due e resta ben condizionata a entrambi gli estremi; è la parametrizzazione
-standard nella distillazione e nei programmi di rumore che portano il rapporto
-segnale/rumore a zero all'ultimo passo.
+[L'equivalenza è algebrica, il condizionamento numerico no]{.pt-matita}. Per
+$t\to 0$ si ha $\sigma_t\to 0$: la conversione
+$\hat{\boldsymbol{\epsilon}}\mapsto \mathbf{s}$ divide per $\sigma_t$ e
+amplifica l'errore, mentre $\hat{\mathbf{x}}_0$ è ben posta. Per $t\to T$ è il
+contrario, perché $\alpha_t\to 0$ e ricostruire $\hat{\mathbf{x}}_0$ significa
+dividere per qualcosa che tende a zero. La **$\mathbf{v}$-prediction**
+{cite}`salimans2022progressive` interpola fra le due e resta ben condizionata a
+entrambi gli estremi; è la parametrizzazione standard nella distillazione e nei
+programmi di rumore che portano il rapporto segnale/rumore a zero all'ultimo
+passo.
 
 Le funzioni di costo corrispondenti differiscono solo per un peso dipendente da
 $t$:

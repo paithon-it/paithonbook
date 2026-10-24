@@ -19,16 +19,16 @@ ricava un dato sintetico $\tilde{\mathbf{x}}$ che deve sembrare autentico.
 
 `````{tab} Elementare
 
-Il falsario, $G$, lavora bendato: i quadri autentici non li vedrà mai, nemmeno
-uno, per scelta di progetto e non per dimenticanza. Gli si consegna una
-manciata di numeri tirati a sorte, sempre diversi, e da quelli deve modellare
-qualcosa di sensato, per esempio l'immagine di un volto. All'inizio produce
-macchie informi; con l'allenamento impara a trasformare quei numeri in volti
-sempre più plausibili, e numeri diversi in ingresso danno volti diversi in
-uscita, quindi $G$ genera *varietà* invece di una sola immagine ripetuta. Di
-volti però non tiene nessun registro: sa fabbricarne uno, non sa dire quanto un
-volto sia probabile. Alla fine lo si giudica in blocco: i volti che sforna,
-tutti insieme, devono somigliare al mucchio di quelli veri.
+Il falsario, $G$, lavora bendato: [i quadri autentici non li vedrà mai, nemmeno
+uno]{.pt-matita}, per scelta di progetto e non per dimenticanza. Gli si
+consegna una manciata di numeri tirati a sorte, sempre diversi, e da quelli
+deve modellare qualcosa di sensato, per esempio l'immagine di un volto.
+All'inizio produce macchie informi; con l'allenamento impara a trasformare quei
+numeri in volti sempre più plausibili, e numeri diversi in ingresso danno volti
+diversi in uscita, quindi $G$ genera *varietà* invece di una sola immagine
+ripetuta. Di volti però non tiene nessun registro: sa fabbricarne uno, non sa
+dire quanto un volto sia probabile. Alla fine lo si giudica in blocco: i volti
+che sforna, tutti insieme, devono somigliare al mucchio di quelli veri.
 
 `````
 
@@ -41,13 +41,12 @@ $$
 $$
 
 Il vettore $\mathbf{z}$ è campionato da un *prior* semplice, tipicamente
-$p_z=\mathcal{N}(\mathbf{0}, \mathbf{I})$ o uniforme.
-Osserviamo che $G$ definisce implicitamente una distribuzione $p_G$ sullo
-spazio dei dati: propagando campioni di $\mathbf{z}$ attraverso la rete,
-otteniamo campioni di dati sintetici. L'obiettivo dell'addestramento è far
-convergere $p_G$ verso la distribuzione reale $p_{\text{dati}}$, senza mai
-scrivere esplicitamente la densità: da qui il nome di modello *generativo
-implicito*.
+$p_z=\mathcal{N}(\mathbf{0}, \mathbf{I})$ o uniforme. Osserviamo che $G$
+definisce implicitamente una distribuzione $p_G$ sullo spazio dei dati:
+propagando campioni di $\mathbf{z}$ attraverso la rete, otteniamo campioni di
+dati sintetici. [L'obiettivo dell'addestramento è far convergere $p_G$ verso la
+distribuzione reale $p_{\text{dati}}$]{.pt-matita}, senza mai scrivere
+esplicitamente la densità: da qui il nome di modello *generativo implicito*.
 
 `````
 
@@ -98,16 +97,16 @@ generatore, e il suo nome tecnico è gradiente; quella con cui il discriminatore
 corregge sé stesso non è disegnata.
 ```
 
-Si noti che fra i dati reali e il generatore non passa nessuna freccia: $G$ non
-li copia e non li confronta, e tutto ciò che sa dei dati gli arriva attraverso
-il gradiente di $D$. È una scelta di progetto. Se infatti $G$ vedesse i
-campioni reali, il modo più semplice di ingannare $D$ sarebbe riprodurne uno, e
-il modello restituirebbe i dati con cui è stato addestrato; tenuto lontano dai
-dati, $G$ è costretto a generare. I dati entrano nel gioco da un
-lato solo, quello di $D$, che a ogni passo è addestrato anche su campioni
-reali: nella funzione di valore
-è il termine $\mathbb{E}_{\mathbf{x}\sim p_{\text{dati}}}[\log
-D(\mathbf{x})]$, l'unico in cui compaia $p_{\text{dati}}$.
+Si noti che fra i dati reali e il generatore non passa nessuna freccia: [$G$
+non li copia e non li confronta, e tutto ciò che sa dei dati gli arriva
+attraverso il gradiente di $D$]{.pt-matita}. È una scelta di progetto. Se
+infatti $G$ vedesse i campioni reali, il modo più semplice di ingannare $D$
+sarebbe riprodurne uno, e il modello restituirebbe i dati con cui è stato
+addestrato; tenuto lontano dai dati, $G$ è costretto a generare. I dati entrano
+nel gioco da un lato solo, quello di $D$, che a ogni passo è addestrato anche
+su campioni reali: nella funzione di valore è il termine
+$\mathbb{E}_{\mathbf{x}\sim p_{\text{dati}}}[\log D(\mathbf{x})]$, l'unico in
+cui compaia $p_{\text{dati}}$.
 
 `````{tab} Elementare
 
@@ -153,8 +152,8 @@ in cui la si ottimizza: per ciascun generatore si prende il discriminatore
 che porta $V$ al massimo, e fra tutti i
 generatori si cerca quello per cui quel massimo è il più basso. Nel codice il
 minimax non si vede scritto da nessuna parte, perché le due reti si correggono
-un passo per volta. In altri termini, il minimax dice dove la partita
-andrebbe a finire, non come ci si arriva.
+un passo per volta. In altri termini, [il minimax dice dove la partita
+andrebbe a finire, non come ci si arriva]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -578,16 +577,15 @@ generatore un dato autentico.
 
 `````
 
-Che $D$ restituisca a $G$ un gradiente e non un verdetto serve per tutto quello
-che segue, perché i guasti dei duelli che si inceppano sono guasti di quel
-gradiente. Ad esempio, a volte si riduce fino a sparire (i *gradienti che
-svaniscono*, in inglese *vanishing gradients*) e il generatore non sa più da
-che parte andare; altre volte diventa grande e cambia direzione da un passo
-all'altro, e l'aggiornamento si fa instabile. Anche uno dei rimedi, il
-*gradient penalty*,
-agisce sul gradiente di $D$ rispetto al suo ingresso e non sul verdetto:
-penalizza il discriminatore quando la norma di quel gradiente si allontana da
-uno, in su o in giù.
+[Che $D$ restituisca a $G$ un gradiente e non un verdetto serve per tutto
+quello che segue]{.pt-matita}, perché i guasti dei duelli che si inceppano sono
+guasti di quel gradiente. Ad esempio, a volte si riduce fino a sparire (i
+*gradienti che svaniscono*, in inglese *vanishing gradients*) e il generatore
+non sa più da che parte andare; altre volte diventa grande e cambia direzione
+da un passo all'altro, e l'aggiornamento si fa instabile. Anche uno dei rimedi,
+il *gradient penalty*, agisce sul gradiente di $D$ rispetto al suo ingresso e
+non sul verdetto: penalizza il discriminatore quando la norma di quel gradiente
+si allontana da uno, in su o in giù.
 
 ### Gli altri due dettagli
 
@@ -626,14 +624,14 @@ lo sposta di una virgola, e alla prima domanda la risposta è sempre la stessa,
 a ogni compito senza mai sapere quale zero fosse meno grave: non ha modo di
 capire se l'ultimo ritocco andava nella direzione giusta.
 
-La seconda domanda un fondo non ce l'ha, e si vede con due numeri. Supponiamo
-che l'esperto dia al quadro una probabilità di essere autentico di $1$ su $100$,
-e che un ritocco la porti a $2$ su $100$. Per la prima domanda non è successo
-quasi niente: da «falso al $99$ per cento» a «falso al $98$ per cento», un
-centesimo di scarto. Per la seconda il quadro ha raddoppiato le
-proprie probabilità, un passo avanti enorme. Stesso ritocco, stesso
-esperto: cambia solo quale delle due domande gli si fa, e la seconda continua a
-distinguere anche laggiù in fondo, dove la prima ha smesso.
+[La seconda domanda un fondo non ce l'ha]{.pt-matita}, e si vede con due
+numeri. Supponiamo che l'esperto dia al quadro una probabilità di essere
+autentico di $1$ su $100$, e che un ritocco la porti a $2$ su $100$. Per la
+prima domanda non è successo quasi niente: da «falso al $99$ per cento» a
+«falso al $98$ per cento», un centesimo di scarto. Per la seconda il quadro ha
+raddoppiato le proprie probabilità, un passo avanti enorme. Stesso ritocco,
+stesso esperto: cambia solo quale delle due domande gli si fa, e la seconda
+continua a distinguere anche laggiù in fondo, dove la prima ha smesso.
 
 A rigore non è più lo stesso gioco. Il falsario non sta più cercando di far
 scendere il punteggio che l'esperto fa salire: ne insegue uno suo, e il
@@ -683,10 +681,10 @@ Le due spingono nello stesso verso (verso $s$ grande, cioè $D(G(\mathbf{z}))\to
 smaschera, diciamo $D(G(\mathbf{z})) = 0{,}01$, la prima ha modulo $0{,}01$ e
 la seconda $0{,}99$: novantanove volte più grande. In generale il rapporto fra
 le due vale $(1-\sigma)/\sigma = e^{-s}$ e cresce senza limite man mano che $D$
-si convince, mentre all'equilibrio $\sigma=\tfrac12$ le due coincidono. La loss
-minimax è debole dove servirebbe di più, cioè all'inizio dell'addestramento, e
-non in generale; il paper lo dice con la frase: «same fixed point», ma «much
-stronger gradients early in learning».
+si convince, mentre all'equilibrio $\sigma=\tfrac12$ le due coincidono. [La
+loss minimax è debole dove servirebbe di più, cioè all'inizio
+dell'addestramento]{.pt-matita}, e non in generale; il paper lo dice con la
+frase: «same fixed point», ma «much stronger gradients early in learning».
 
 Non sono però lo stesso gioco: con questa formulazione il gioco non è più a
 somma zero e non si lascia più scrivere con un'unica funzione di valore, come
@@ -738,14 +736,14 @@ essere fra le reti più difficili da addestrare, e tre problemi ricorrono.
   falsario parte da un centinaio di numeri e deve riempire milioni di puntini:
   tutti i quadri che sa fare si descrivono con quel centinaio di numeri, e fra
   tutti i quadri possibili sono pochissimi, come i punti di un filo teso dentro
-  una stanza. Anche i quadri veri, quelli che hanno un senso, sono pochissimi (o
-  almeno così si suppone): un altro filo. Due fili tesi in una stanza quasi
-  mai si toccano. All'esperto basta allora un dettaglio che nessun falso ha mai,
-  e li boccia tutti con la stessa sicurezza, venuti quasi bene o malissimo: la
-  domanda «è autentico?» non registra più i progressi del falsario, e alternare
-  meglio i turni non ci mette rimedio. Per uscirne bisogna cambiare domanda, e
-  chiedere quanto distano i due mucchi di quadri, quello dei veri e quello dei
-  falsi.
+  una stanza. Anche i quadri veri, quelli che hanno un senso, sono pochissimi
+  (o almeno così si suppone): un altro filo. [Due fili tesi in una stanza quasi
+  mai si toccano]{.pt-matita}. All'esperto basta allora un dettaglio che nessun
+  falso ha mai, e li boccia tutti con la stessa sicurezza, venuti quasi bene o
+  malissimo: la domanda «è autentico?» non registra più i progressi del
+  falsario, e alternare meglio i turni non ci mette rimedio. Per uscirne
+  bisogna cambiare domanda, e chiedere quanto distano i due mucchi di quadri,
+  quello dei veri e quello dei falsi.
 - **Mode collapse.** Il falsario scopre *un solo* falso che inganna sempre
   l'esperto e si limita a rifarlo. Di conseguenza $G$ genera sempre la stessa
   immagine (o pochissime varianti), buttando via tutta la varietà dei dati
@@ -781,25 +779,24 @@ essere fra le reti più difficili da addestrare, e tre problemi ricorrono.
 - **Instabilità.** L'ottimizzazione simultanea di un gioco minimax non equivale a minimizzare una singola funzione: la dinamica può divergere o entrare in cicli limite. Se $D$ diventa troppo accurato si ha $D(G(\mathbf{z}))\to 0$, e con l'obiettivo minimax originale questo annulla i gradienti verso $G$ (*vanishing gradients*); la non-saturating loss vista sopra scongiura l'annullamento, ma con un discriminatore quasi ottimo lo paga in aggiornamenti instabili e ad alta varianza {cite}`arjovsky2017towards`. Se invece $D$ è troppo debole, non fornisce segnale utile.
 
   Che $D$ diventi "troppo accurato" non è un incidente di dosaggio, e capirlo
-  cambia il rimedio. Arjovsky e Bottou mostrano che $p_G$, essendo
-  l'immagine di uno spazio di rumore a poche decine o centinaia di dimensioni,
-  vive su una varietà di dimensione bassa immersa nello spazio dei dati: con
-  $\mathbf{z} \in \mathbb{R}^{100}$ e immagini $1024\times1024$ a colori, il
-  supporto di $p_G$ ha dimensione al più $100$ dentro
-  $\mathbb{R}^{3\,145\,728}$. Supponi che anche $p_{\text{dati}}$ stia su una
-  varietà di dimensione bassa. È l’ipotesi della varietà, che Arjovsky e Bottou
-  assumono senza dimostrarla, e chiede ai dati di starci sopra, non soltanto
-  vicino. In quel caso due varietà così, salvo allineamenti perfetti, hanno
-  supporti quasi certamente disgiunti, o che si intersecano in un insieme di
-  misura nulla. Su supporti disgiunti un discriminatore perfetto esiste, e la
-  $\mathrm{JSD}$ vale $\log 2$ qualunque sia la distanza fra le due
-  distribuzioni. Il gradiente è nullo, e non soltanto piccolo, e resta nullo
-  mentre $G$ si avvicina. Si chiude così il cerchio con le ipotesi del
-  teorema: il calcolo che dava $2\,\mathrm{JSD}$ presupponeva due densità, e un
-  generatore vero non ne ha una. La caratterizzazione dell'ottimo
-  resta vera, ma il mondo in cui vale non è quello dell'addestramento.
-  Alternare meglio i turni non risolve il problema; da qui nasce l'idea di
-  cambiare misura, cioè la Wasserstein GAN.
+  cambia il rimedio. Arjovsky e Bottou mostrano che $p_G$, essendo l'immagine
+  di uno spazio di rumore a poche decine o centinaia di dimensioni, vive su una
+  varietà di dimensione bassa immersa nello spazio dei dati: con $\mathbf{z}
+  \in \mathbb{R}^{100}$ e immagini $1024\times1024$ a colori, il supporto di
+  $p_G$ ha dimensione al più $100$ dentro $\mathbb{R}^{3\,145\,728}$. Supponi
+  che anche $p_{\text{dati}}$ stia su una varietà di dimensione bassa. È
+  l’ipotesi della varietà, che Arjovsky e Bottou assumono senza dimostrarla, e
+  chiede ai dati di starci sopra, non soltanto vicino. In quel caso due varietà
+  così, salvo allineamenti perfetti, hanno supporti quasi certamente disgiunti,
+  o che si intersecano in un insieme di misura nulla. [Su supporti disgiunti un
+  discriminatore perfetto esiste, e la $\mathrm{JSD}$ vale $\log 2$ qualunque
+  sia la distanza fra le due distribuzioni]{.pt-matita}. Il gradiente è nullo,
+  e non soltanto piccolo, e resta nullo mentre $G$ si avvicina. Si chiude così
+  il cerchio con le ipotesi del teorema: il calcolo che dava $2\,\mathrm{JSD}$
+  presupponeva due densità, e un generatore vero non ne ha una. La
+  caratterizzazione dell'ottimo resta vera, ma il mondo in cui vale non è
+  quello dell'addestramento. Alternare meglio i turni non risolve il problema;
+  da qui nasce l'idea di cambiare misura, cioè la Wasserstein GAN.
 - **Mode collapse.** $G$ mappa molti $\mathbf{z}$ diversi su una stessa uscita
   $\tilde{\mathbf{x}}$: $p_G$ collassa su pochi modi di $p_{\text{dati}}$.
   Sembra un paradosso, visto che l'obiettivo ideale ha minimo solo in $p_G =
@@ -931,7 +928,7 @@ transizioni sempre più ripide.
 ```{code-block} python
 :class: pt-lento
 
-# pt-lento: quattro addestramenti da quattrocento giri, circa un minuto su CPU
+# pt-lento: quattro addestramenti da 400 epoche, circa un minuto su CPU
 import math
 import torch
 from torch import nn
@@ -964,7 +961,7 @@ for seme in range(4):
     G, D = rete(2, 2), rete(2, 1)
     opt_G = torch.optim.Adam(G.parameters(), lr=2e-4)
     opt_D = torch.optim.Adam(D.parameters(), lr=2e-4)
-    for giro in range(400):
+    for epoca in range(400):
         somme = [0.0, 0.0]
         for batch_reale in dati[torch.randperm(4000)].split(256):
             n = batch_reale.size(0)
@@ -975,22 +972,23 @@ for seme in range(4):
             loss_G = criterio(D(G(torch.randn(n, 2))), uni)
             opt_G.zero_grad(); loss_G.backward(); opt_G.step()
             somme[0] += loss_D.item() * n; somme[1] += loss_G.item() * n
-        if giro in (0, 399):
+        if epoca in (0, 399):
             coperti, quota = giudica(G)
-            print(f"seme {seme}, giro {giro + 1:>3}: loss_D {somme[0] / 4000:.2f}  "
+            print(f"seme {seme}, epoca {epoca + 1:>3}: "
+                  f"loss_D {somme[0] / 4000:.2f}  "
                   f"loss_G {somme[1] / 4000:.2f}  coperti {coperti}/8  "
                   f"a segno {quota:.0%}")
 ```
 
 ```text
-seme 0, giro   1: loss_D 1.30  loss_G 0.70  coperti 0/8  a segno 0%
-seme 0, giro 400: loss_D 1.26  loss_G 0.92  coperti 8/8  a segno 77%
-seme 1, giro   1: loss_D 1.32  loss_G 0.72  coperti 0/8  a segno 0%
-seme 1, giro 400: loss_D 1.29  loss_G 0.91  coperti 8/8  a segno 78%
-seme 2, giro   1: loss_D 1.31  loss_G 0.70  coperti 0/8  a segno 0%
-seme 2, giro 400: loss_D 1.31  loss_G 0.84  coperti 8/8  a segno 82%
-seme 3, giro   1: loss_D 1.33  loss_G 0.73  coperti 0/8  a segno 0%
-seme 3, giro 400: loss_D 1.25  loss_G 0.94  coperti 8/8  a segno 76%
+seme 0, epoca   1: loss_D 1.30  loss_G 0.70  coperti 0/8  a segno 0%
+seme 0, epoca 400: loss_D 1.26  loss_G 0.92  coperti 8/8  a segno 77%
+seme 1, epoca   1: loss_D 1.32  loss_G 0.72  coperti 0/8  a segno 0%
+seme 1, epoca 400: loss_D 1.29  loss_G 0.91  coperti 8/8  a segno 78%
+seme 2, epoca   1: loss_D 1.31  loss_G 0.70  coperti 0/8  a segno 0%
+seme 2, epoca 400: loss_D 1.31  loss_G 0.84  coperti 8/8  a segno 82%
+seme 3, epoca   1: loss_D 1.33  loss_G 0.73  coperti 0/8  a segno 0%
+seme 3, epoca 400: loss_D 1.25  loss_G 0.94  coperti 8/8  a segno 76%
 ```
 
 `````{tab} Elementare
@@ -1032,8 +1030,8 @@ di Jensen $\mathcal{L}_G = \mathbb{E}[-\log D(G(\mathbf{z}))] \ge -\log
 e^{-\mathcal{L}_G}$, cioè almeno $0{,}43$ con $\mathcal{L}_G = 0{,}84$ e almeno
 $0{,}39$ con $0{,}94$.
 
-Dentro ciascun addestramento $\mathcal{L}_G$ è più alta all'ultimo giro che al
-primo, mentre i modi coperti passano da $0$ a $8$: al primo giro $D$ è vicino a
+Dentro ciascun addestramento $\mathcal{L}_G$ è più alta all'ultima epoca che alla
+prima, mentre i modi coperti passano da $0$ a $8$: alla prima epoca $D$ è vicino a
 una costante, e $\mathcal{L}_G$ sta attorno a $\ln 2$ per questo, non per una
 parità raggiunta. La loss misura la posizione relativa dei due giocatori, e un
 arresto sul minimo di $\mathcal{L}_G$ sceglierebbe il generatore peggiore. Fra
@@ -1054,9 +1052,10 @@ Resta da dire che cosa questo esperimento *non* mostra. Il collasso vero e
 proprio, il generatore chiuso su uno o due mucchietti, con queste reti piccole
 e otto mucchietti ben separati non si presenta: in queste quattro prove sono
 coperti tutti e otto. È il guasto più temuto delle GAN, e per vederlo servono
-compiti più duri. Questo esperimento mostra un'altra cosa: dentro un
+compiti più duri. Questo esperimento mostra un'altra cosa: [dentro un
 addestramento le loss non misurano la qualità, misurano chi dei due sta
-vincendo in quel momento, e nessuna dice quanto si è lontani dalla meta.
+vincendo in quel momento]{.pt-matita}, e nessuna dice quanto si è lontani dalla
+meta.
 
 Serve quindi una misura che giudichi un insieme di immagini invece di una sola:
 in gergo, la loro *distribuzione*, cioè come si spartiscono fra i vari tipi
@@ -1400,13 +1399,13 @@ guardandoli tutti insieme: nel critico non ci va, perché il giudizio su
 un'immagine finirebbe per dipendere dalle altre del minibatch, mentre la
 penalità è scritta per un'immagine alla volta {cite}`gulrajani2017improved`.
 
-Nessuna di queste tecniche garantisce la convergenza in generale. I risultati
-di convergenza locale, come quello della Dirac-GAN con la penalità $R_1$,
-coprono alcune combinazioni di loss e regolarizzazione, e la scelta dipende
-ancora in buona parte dal confronto sperimentale su dati e architetture. È
-anche il motivo per cui la storia delle GAN è una fila di ricette, ciascuna
-delle quali aggiusta un guasto della precedente, come racconta la {doc}`sezione
-sulle evoluzioni </GAN/applicazioni-evoluzioni>`.
+[Nessuna di queste tecniche garantisce la convergenza in generale]{.pt-matita}.
+I risultati di convergenza locale, come quello della Dirac-GAN con la penalità
+$R_1$, coprono alcune combinazioni di loss e regolarizzazione, e la scelta
+dipende ancora in buona parte dal confronto sperimentale su dati e
+architetture. È anche il motivo per cui la storia delle GAN è una fila di
+ricette, ciascuna delle quali aggiusta un guasto della precedente, come
+racconta la {doc}`sezione sulle evoluzioni </GAN/applicazioni-evoluzioni>`.
 
 `````{tab} Elementare
 

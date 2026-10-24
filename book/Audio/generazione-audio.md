@@ -61,9 +61,9 @@ WaveNet fa questo con sedicimila puntini al secondo: tante sono le misure al
 secondo con cui di solito si tratta la voce (i $16\,000$ della {doc}`sezione
 sul suono digitale <dal-suono-alle-feature>`). Un minuto di musica ne richiede
 quasi un milione. Ognuno dipende dai precedenti, quindi non si può correre
-avanti: bisogna aspettare che il puntino di prima sia pronto. Per questo
-WaveNet, pur suonando benissimo, era lenta. Quanto lo fosse lo mostra il
-seguito che DeepMind pubblicò l'anno dopo, *Parallel WaveNet*
+avanti: bisogna aspettare che il puntino di prima sia pronto. [Per questo
+WaveNet, pur suonando benissimo, era lenta]{.pt-matita}. Quanto lo fosse lo
+mostra il seguito che DeepMind pubblicò l'anno dopo, *Parallel WaveNet*
 {cite}`oord2018parallel`, nato per rimediare: sulla scheda grafica di allora
 l'originale scriveva centosettantadue campioni al secondo, e l'onda su cui quel
 lavoro lo misura è più fitta, perché per guadagnare in fedeltà porta le misure
@@ -118,10 +118,10 @@ quindi almeno quattro blocchi; quello che genera parlato libero circa trecento;
 quello sulla musica qualche secondo, comunque troppo poco per tenere insieme un
 brano.
 
-Resta il limite strutturale dell'autoregressione *sui campioni grezzi*: la
+Resta il limite strutturale dell'autoregressione *sui campioni grezzi*: [la
 generazione richiede $T$ passi sequenziali, sedicimila per ogni secondo a $16$
-kHz, senza nulla di parallelizzabile in inferenza. È il collo di bottiglia che
-la generazione per token aggira.
+kHz, senza nulla di parallelizzabile in inferenza]{.pt-matita}. È il collo di
+bottiglia che la generazione per token aggira.
 
 `````
 
@@ -364,10 +364,11 @@ passaggio il timbro si perde quasi tutto, e resta l'ossatura. I secondi, i token
 del **suono** (gli *acustici*), aggiungono il dettaglio fine: la voce precisa,
 il colore, la grana.
 
-Il modello genera prima la struttura, dall'inizio alla fine, e solo dopo la
-riveste di suono. Il risultato ha insieme le due qualità che, prese da sole, si
-escludevano: coerenza (il brano ha un filo, non deraglia dopo pochi secondi) e
-fedeltà (suona come audio vero, non come un'imitazione metallica).
+[Il modello genera prima la struttura, dall'inizio alla fine, e solo dopo la
+riveste di suono]{.pt-matita}. Il risultato ha insieme le due qualità che,
+prese da sole, si escludevano: coerenza (il brano ha un filo, non deraglia dopo
+pochi secondi) e fedeltà (suona come audio vero, non come un'imitazione
+metallica).
 
 L'ordine ha un limite: chi scrive lo scheletro non sente ancora il timbro, e lo
 scheletro poi non si ritocca. Se una frase, detta con quella voce, avrebbe
@@ -424,10 +425,10 @@ sono allineate una a una.
 Separare semantici e acustici serve perché i due obiettivi tirano in direzioni
 opposte. Predire direttamente i token acustici darebbe fedeltà ma, senza una
 guida a lungo termine, la generazione perde il filo dopo pochi secondi; predire
-solo i semantici darebbe coerenza ma un suono povero. La cascata mette la
-coerenza a monte e la fedeltà a valle, ottenendo entrambe. AudioLM lo dimostra
-continuando sia parlato sia brani di pianoforte a partire da pochi secondi di
-traccia, mantenendo identità e stile del frammento iniziale.
+solo i semantici darebbe coerenza ma un suono povero. [La cascata mette la
+coerenza a monte e la fedeltà a valle, ottenendo entrambe]{.pt-matita}. AudioLM
+lo dimostra continuando sia parlato sia brani di pianoforte a partire da pochi
+secondi di traccia, mantenendo identità e stile del frammento iniziale.
 
 `````
 
@@ -480,8 +481,8 @@ ancora quattro token in un colpo solo, e sono il primo dell'istante di adesso,
 il secondo dell'istante prima, il terzo di due istanti fa, il quarto di tre. Al
 giro 5, per esempio, escono il primo token dell'istante 5, il secondo del 4, il
 terzo del 3 e il quarto del 2: l'istante 2 è completo soltanto adesso, tre giri
-dopo che era uscito il suo primo token. Così il secondo token dell'istante prima
-può guardare il primo di quello stesso istante, già uscito un giro fa.
+dopo che era uscito il suo primo token. [Così il secondo token dell'istante prima
+può guardare il primo di quello stesso istante, già uscito un giro fa]{.pt-matita}.
 
 Resta una semplificazione, spostata dove pesa meno: i quattro token che escono
 nello stesso giro vengono ancora scelti ognuno senza guardare gli altri tre, ma
@@ -513,10 +514,11 @@ il residuo dipende per costruzione da ciò che lo precede.
 MusicGen adotta invece un **pattern di interleaving** dei codebook, in
 particolare uno schema a **ritardo** (*delay*) che sfasa i flussi di un passo:
 al tempo $t$ il modello predice $c_t^1, c_{t-1}^2, c_{t-2}^3, c_{t-3}^4$. Così
-ogni token può condizionarsi sui codebook di livello inferiore già emessi, e la
-sequenza cresce solo di poche posizioni invece che di un fattore $N$: con $T$
-frame i passi sono $T + N - 1$ invece degli $N T$ della linearizzazione, e
-trenta secondi a $50$ Hz diventano $1500$ passi più tre.
+[ogni token può condizionarsi sui codebook di livello inferiore già emessi, e
+la sequenza cresce solo di poche posizioni invece che di un fattore
+$N$]{.pt-matita}: con $T$ frame i passi sono $T + N - 1$ invece degli $N T$
+della linearizzazione, e trenta secondi a $50$ Hz diventano $1500$ passi più
+tre.
 
 Il bitrate nominale del codec è $N \log_2 K\, f_r = 4 \cdot 11 \cdot 50 = 2200$
 bit/s, contro i $6000$ di EnCodec a $24$ kHz con otto codebook.
@@ -866,10 +868,10 @@ La strada dello spartito sopravvive dove il risultato dev'essere modificato
 (accompagnamenti, composizione assistita, colonne sonore da rimaneggiare),
 mentre la frase che diventa canzone passa per i token audio.
 
-Vale anche oltre la musica: la parte difficile non era il modello, era scrivere
-i dati in fila. La stessa domanda torna, con risposte diverse, ogni volta che
-qualcosa che non è testo deve essere dato a una macchina che predice il simbolo
-successivo.
+Vale anche oltre la musica: [la parte difficile non era il modello, era
+scrivere i dati in fila]{.pt-matita}. La stessa domanda torna, con risposte
+diverse, ogni volta che qualcosa che non è testo deve essere dato a una
+macchina che predice il simbolo successivo.
 
 ## Diffusione, limiti aperti e copyright
 
@@ -914,8 +916,9 @@ kHz.
 
 Rispetto ai token il numero dei passi si rovescia: un modello a token fa un
 passo di rete per ogni token, in fila; la diffusione ne fa da pochi a qualche
-centinaio, ma ciascuno lavora su tutta la durata insieme, in parallelo. I due
-filoni corrono paralleli, e quale dei due convenga dipende dal compito.
+centinaio, ma ciascuno lavora su tutta la durata insieme, in parallelo. [I due
+filoni corrono paralleli, e quale dei due convenga dipende dal
+compito]{.pt-matita}.
 
 Restano limiti aperti, almeno per i sistemi descritti qui. La coerenza a lungo
 termine è fragile: un modello sa produrre un frammento convincente, e anche

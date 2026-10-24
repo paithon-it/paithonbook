@@ -52,8 +52,8 @@ Una risposta l'ha appena data il {doc}`capitolo sui modelli latenti
 $p_\theta(\mathbf{x})$, cioè quanto il modello trova probabile un dato, e
 siccome calcolarla esattamente non si può, se ne fa salire un limite inferiore,
 l'ELBO. Le GAN prendono la strada opposta, e da questa scelta discende tutto il
-resto: una verosimiglianza non si scrive affatto, e al suo posto si mette
-una seconda rete che guarda il risultato e dice se ci crede.
+resto: [una verosimiglianza non si scrive affatto, e al suo posto si mette
+una seconda rete che guarda il risultato e dice se ci crede]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -125,11 +125,11 @@ falsario impara *che cosa*? Se l'esperto si limitasse a dire
 studente a cui il professore scrive soltanto "no" in fondo al compito, invece di
 sottolineargli le righe da rifare.
 
-L'esperto di questa storia è un professore che sottolinea: non dice "falso",
-dice "falso, e soprattutto per via di *questo* qui", indicando col dito, punto
-per punto del quadro, da che parte tirare. Come faccia, e perché per riuscirci
-debba essere una rete e non una persona, lo racconta la {doc}`sezione
-sull'addestramento avversario
+[L'esperto di questa storia è un professore che sottolinea]{.pt-matita}: non
+dice "falso", dice "falso, e soprattutto per via di *questo* qui", indicando
+col dito, punto per punto del quadro, da che parte tirare. Come faccia, e
+perché per riuscirci debba essere una rete e non una persona, lo racconta la
+{doc}`sezione sull'addestramento avversario
 </GAN/come-funziona>`.
 
 `````
@@ -141,10 +141,10 @@ rumore $\mathbf{z}$ in un campione sintetico $G(\mathbf{z})$. Il
 **discriminatore** $D$ riceve un'immagine e restituisce $D(\cdot) \in [0,1]$,
 la probabilità stimata che sia reale. Si addestrano *insieme* ma con obiettivi
 opposti: $D$ vuole assegnare $1$ ai dati veri e $0$ ai falsi; $G$ vuole che $D$
-assegni $1$ ai propri falsi. Il segnale che smaschera il falso, propagato
-all'indietro attraverso $D$, è lo stesso che insegna a $G$ come migliorarlo, ed
-è questa condivisione a saldare l'addestramento delle due reti in un unico
-ciclo di feedback.
+assegni $1$ ai propri falsi. [Il segnale che smaschera il falso, propagato
+all'indietro attraverso $D$, è lo stesso che insegna a $G$ come
+migliorarlo]{.pt-matita}, ed è questa condivisione a saldare l'addestramento
+delle due reti in un unico ciclo di feedback.
 
 Quel segnale è il perno del meccanismo, e non è il verdetto. Ciò che risale da
 $D$ verso $G$ è il gradiente della loss del generatore rispetto al dato
@@ -192,8 +192,8 @@ il pareggio è il traguardo.
 Il pareggio arriva quando il falsario è diventato bravissimo. Se i suoi quadri
 sono indistinguibili da quelli veri, l'esperto non ha più niente su cui
 appoggiarsi, e qualunque cosa gli passi davanti può solo tirare a indovinare,
-come a testa o croce, e indovina una volta su due. Quel 50% è il
-massimo che chiunque possa ottenere quando non c'è più niente da vedere, e non
+come a testa o croce, e indovina una volta su due. [Quel 50% è il massimo che
+chiunque possa ottenere quando non c'è più niente da vedere]{.pt-matita}, e non
 il segno di un esperto che si è arreso.
 
 Perché dovrebbe finire *così*, e non con l'esperto che vince sempre e il
@@ -228,13 +228,13 @@ $$
 
 Qui $\mathbf{x}\sim p_{\text{dati}}$ è un campione reale, $\mathbf{z}\sim p_z$
 è il rumore in ingresso a $G$, $D(\mathbf{x})$ è la probabilità stimata che
-l'input sia autentico. Il primo termine è l'unico in cui compaiono i dati:
-è attraverso $D$ che $p_{\text{dati}}$ entra nel gioco, e $G$ la vede
-soltanto di riflesso. Il discriminatore *massimizza* $V$ (assegna probabilità
-alta ai veri, bassa ai falsi $G(\mathbf{z})$); il generatore *minimizza* il
-secondo termine, cioè spinge $D(G(\mathbf{z}))$ verso $1$. All'ottimo teorico
-si ha $p_G=p_{\text{dati}}$ e $D(\mathbf{x})=\tfrac{1}{2}$ sul supporto dei
-dati: il discriminatore non sa più decidere. In pratica l'equilibrio è
+l'input sia autentico. Il primo termine è l'unico in cui compaiono i dati: è
+attraverso $D$ che $p_{\text{dati}}$ entra nel gioco, e $G$ la vede soltanto di
+riflesso. Il discriminatore *massimizza* $V$ (assegna probabilità alta ai veri,
+bassa ai falsi $G(\mathbf{z})$); il generatore *minimizza* il secondo termine,
+cioè spinge $D(G(\mathbf{z}))$ verso $1$. All'ottimo teorico si ha
+$p_G=p_{\text{dati}}$ e $D(\mathbf{x})=\tfrac{1}{2}$ sul supporto dei dati: [il
+discriminatore non sa più decidere]{.pt-matita}. In pratica l'equilibrio è
 delicato: instabilità dell'addestramento e **mode collapse** (il generatore che
 produce sempre la stessa immagine vincente) sono le due difficoltà ricorrenti,
 e la sezione sull'addestramento avversario li riprende uno per uno.

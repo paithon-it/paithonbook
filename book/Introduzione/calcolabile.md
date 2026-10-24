@@ -31,8 +31,8 @@ esempio, non una definizione. La diede Alan Turing nel 1936, con una macchina
 immaginaria {cite}`turing1936computable`; quasi negli stessi mesi Alonzo Church
 ne diede un'altra, equivalente {cite}`church1936unsolvable`. Da allora
 «calcolabile» ha un significato matematico, e si può dimostrare che certi
-problemi non lo sono. Un modello che impara resta un programma, e i limiti
-dei programmi sono anche i suoi.
+problemi non lo sono. [Un modello che impara resta un programma, e i limiti
+dei programmi sono anche i suoi]{.pt-matita}.
 
 ## Una macchina con un nastro e una matita
 
@@ -75,8 +75,8 @@ scrivere sul nastro, come simboli fra gli altri, e Turing costruì una macchina
 che legge quelle regole e le esegue: una macchina **universale**, che imita
 qualunque altra macchina di cui le si dia la descrizione. Le sue regole sono
 poche e fisse, e dicono soltanto come leggere le regole scritte sul nastro e
-applicarle. È l'idea del computer che esegue programmi diversi senza cambiare
-un filo, più di dieci anni prima che ne venisse costruito uno.
+applicarle. [È l'idea del computer che esegue programmi diversi senza cambiare
+un filo]{.pt-matita}, più di dieci anni prima che ne venisse costruito uno.
 
 Resta una domanda: questa macchina così povera calcola tutto quello che si può
 calcolare con un procedimento? I linguaggi di programmazione di oggi, Python
@@ -124,10 +124,10 @@ la successione $0\,1\,0\,1\ldots$ senza fermarsi mai. Turing chiama gli stati
 $\mathfrak{e}$, $\mathfrak{k}$.
 
 Il risultato decisivo è la **macchina universale** $U$: codificata ogni
-macchina come stringa $\langle M\rangle$, esiste $U$ tale che
-$U(\langle M\rangle, x)$ si arresta se e solo se $M(x)$ si arresta, e in quel
-caso con la stessa uscita. In altri termini, il programma diventa un dato, ed
-è questo lo schema concettuale del calcolatore a programma memorizzato.
+macchina come stringa $\langle M\rangle$, esiste $U$ tale che $U(\langle
+M\rangle, x)$ si arresta se e solo se $M(x)$ si arresta, e in quel caso con la
+stessa uscita. In altri termini, [il programma diventa un dato, ed è questo lo
+schema concettuale del calcolatore a programma memorizzato]{.pt-matita}.
 
 La **tesi di Church-Turing** afferma che le funzioni calcolabili da un
 procedimento effettivo sono esattamente quelle calcolabili da una macchina di
@@ -260,8 +260,9 @@ Si dia ora al Dispetto la sua stessa descrizione. Se il Profeta dice che il
 Dispetto si ferma, il Dispetto gira per sempre; se dice che gira per sempre, il
 Dispetto si ferma. In tutti e due i casi il Profeta ha sbagliato. E il trucco
 funziona con qualunque Profeta: chiunque ne scriva uno, gli si costruisce il
-suo Dispetto. Quindi un Profeta che non sbaglia mai non può esistere. Non è
-questione di programmatori poco bravi: nessuno potrà mai scriverlo.
+suo Dispetto. Quindi [un Profeta che non sbaglia mai non può
+esistere]{.pt-matita}. Non è questione di programmatori poco bravi: nessuno
+potrà mai scriverlo.
 
 Ed è la risposta alla domanda di Hilbert. Se esistesse il procedimento che
 decide se un'affermazione segue dagli assiomi, basterebbe scrivergli
@@ -294,16 +295,16 @@ particolari, e lo si fa, ma la garanzia generale non c'è.
 `````{tab} Superiore
 
 Sia $\mathrm{HALT}=\{\langle M,x\rangle : M \text{ si arresta su } x\}$.
-**Teorema** (Turing, 1936, nella forma moderna): $\mathrm{HALT}$ non è
-decidibile. Infatti, se una macchina $H$ decidesse $\mathrm{HALT}$, la macchina
-$D$ che su $\langle M\rangle$ esegue $H(\langle M,\langle M\rangle\rangle)$ e
-poi entra in un ciclo infinito se la risposta è «si arresta», e si arresta
-altrimenti, darebbe su $\langle D\rangle$ la contraddizione $D(\langle
-D\rangle)\downarrow \iff D(\langle D\rangle)\uparrow$. È la diagonale di
-Cantor: le macchine si enumerano, e $D$ differisce dalla $n$-esima sul suo
-stesso indice. $\mathrm{HALT}$ è però **semidecidibile** (ricorsivamente
-enumerabile): basta eseguire $M$ su $x$ e rispondere quando si arresta. Il
-complemento non lo è.
+**Teorema** (Turing, 1936, nella forma moderna): [$\mathrm{HALT}$ non è
+decidibile]{.pt-matita}. Infatti, se una macchina $H$ decidesse
+$\mathrm{HALT}$, la macchina $D$ che su $\langle M\rangle$ esegue $H(\langle
+M,\langle M\rangle\rangle)$ e poi entra in un ciclo infinito se la risposta è
+«si arresta», e si arresta altrimenti, darebbe su $\langle D\rangle$ la
+contraddizione $D(\langle D\rangle)\downarrow \iff D(\langle
+D\rangle)\uparrow$. È la diagonale di Cantor: le macchine si enumerano, e $D$
+differisce dalla $n$-esima sul suo stesso indice. $\mathrm{HALT}$ è però
+**semidecidibile** (ricorsivamente enumerabile): basta eseguire $M$ su $x$ e
+rispondere quando si arresta. Il complemento non lo è.
 
 Turing formulò il risultato in altri termini. Chiama *circolare* una macchina
 che stampa solo un numero finito di cifre (perché si blocca, o perché continua
@@ -414,8 +415,8 @@ trucco. Dimostrare che è possibile è la parte tecnica del lavoro di Gödel.
 un risultato. Se la frase si potesse dimostrare, il sistema, che sa
 controllare le proprie dimostrazioni, dimostrerebbe anche che la frase si può
 dimostrare, cioè il contrario di quello che la frase dice: si contraddirebbe.
-Quindi, se il sistema non si contraddice, la frase non si dimostra; e siccome
-dice proprio questo, è vera. Una verità che il sistema non raggiunge.
+Quindi, [se il sistema non si contraddice, la frase non si dimostra; e siccome
+dice proprio questo, è vera]{.pt-matita}. Una verità che il sistema non raggiunge.
 
 Aggiungere quella frase alle regole non aiuta, perché il sistema nuovo ha la
 sua frase nuova. Hofstadter chiama questo tornare su sé stessi, salendo di
@@ -539,7 +540,7 @@ Il punto debole sta in «vediamo che è vera». La frase di Gödel è vera solo 
 il sistema non si contraddice mai; se il sistema si contraddicesse,
 dimostrerebbe qualunque cosa e il ragionamento cadrebbe. Nella logica, infatti,
 da una contraddizione segue qualunque affermazione. Per «vedere» che la frase è
-vera, quindi, bisogna sapere che il sistema è senza contraddizioni.
+vera, quindi, [bisogna sapere che il sistema è senza contraddizioni]{.pt-matita}.
 
 Il secondo risultato di Gödel, però, dice proprio che un sistema abbastanza
 ricco non riesce a dimostrarlo di sé stesso. Se la mente fosse un sistema di
@@ -582,8 +583,8 @@ Bach*, giudica l'argomentazione di Lucas «erronea», ma in un modo che trova
 
 In definitiva, i teoremi limitativi dicono che nessun sistema formale coerente e
 abbastanza ricco decide tutta l'aritmetica, e che nessun programma decide il
-comportamento di tutti i programmi; nulla, in essi, dimostra una differenza fra
-menti e macchine.
+comportamento di tutti i programmi; [nulla, in essi, dimostra una differenza fra
+menti e macchine]{.pt-matita}.
 
 `````
 

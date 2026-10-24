@@ -26,8 +26,8 @@ fu la sola cosa che tenne il furgone in carreggiata.
 L'imitazione è l'idea più ovvia di tutte, e per questo bisogna capire perché non
 basta. Nei capitoli precedenti l'agente impara da una ricompensa, e la
 ricompensa è la parte difficile: scriverla per una guida sicura o per una
-risposta utile è un problema aperto. Se però qualcuno sa già fare il compito,
-quel problema si può aggirare. Non gli si chiede di scrivere una
+risposta utile è un problema aperto. [Se però qualcuno sa già fare il compito,
+quel problema si può aggirare]{.pt-matita}. Non gli si chiede di scrivere una
 funzione di ricompensa: gli si chiede di mostrare come fare.
 
 ## Clonare un comportamento è apprendimento supervisionato
@@ -37,8 +37,9 @@ funzione di ricompensa: gli si chiede di mostrare come fare.
 Si registra un esperto mentre lavora e si annota, momento per momento, che cosa
 vedeva e che cosa ha fatto. Ne esce un elenco di coppie: «in questa situazione,
 questa mossa». A quel punto il problema di reinforcement learning è sparito, e
-al suo posto c'è un normalissimo problema di apprendimento supervisionato:
-l'ingresso è la situazione, l'uscita da indovinare è la scelta dell'esperto.
+[al suo posto c'è un normalissimo problema di apprendimento
+supervisionato]{.pt-matita}: l'ingresso è la situazione, l'uscita da indovinare
+è la scelta dell'esperto.
 
 Chi impara viene messo davanti a una situazione dell'elenco e propone la sua
 azione: si guarda di quanto ha mancato quella dell'esperto e lo si corregge un
@@ -83,8 +84,8 @@ $$
 
 con $\ell$ la cross-entropia per azioni discrete o l'errore quadratico per
 azioni continue. Non compaiono ricompense, non compare l'equazione di Bellman,
-non compare il bootstrapping: è regressione o classificazione,
-con la stabilità e gli strumenti già noti che ne conseguono.
+non compare il bootstrapping: [è regressione o classificazione,
+con la stabilità e gli strumenti già noti che ne conseguono]{.pt-matita}.
 
 Lo stesso schema compare in tre punti. Nella {doc}`sezione sulla ricerca ad
 albero Monte Carlo <mcts-alphago>`, la rete di policy di AlphaGo è
@@ -120,9 +121,10 @@ quaranta. Il posto lo conosci ancora meno, e sbagli di più. Dopo dieci secondi
 sei nel fosso.
 
 Eppure ogni tua sterzata, accanto a quelle del pilota, sbagliava di pochissimo.
-A fregarti è dove ti lascia ogni sbaglio: un pezzo di strada che conosci meno,
-dove il prossimo sarà più grosso. Su una curva sola non te ne accorgi; su
-un'ora di autostrada è la differenza fra arrivare e uscire di strada.
+[A fregarti è dove ti lascia ogni sbaglio: un pezzo di strada che conosci meno,
+dove il prossimo sarà più grosso]{.pt-matita}. Su una curva sola non te ne
+accorgi; su un'ora di autostrada è la differenza fra arrivare e uscire di
+strada.
 
 Più il maestro è bravo, peggio è: chi non sbaglia mai non si trova mai a
 rimediare, e non ti fa vedere l'unica cosa che ti servirà. Uno scarso peggiora
@@ -184,10 +186,10 @@ Il risultato che inquadra il problema è di Ross e Bagnell
 {cite}`ross2010efficient`, e l'attribuzione conta perché il lavoro che tutti
 citano, quello del 2011, lo riprende come premessa. Se la politica appresa ha
 un tasso d'errore $\epsilon$ sotto la distribuzione dell'esperto, e il costo di
-un singolo passo è limitato, su un orizzonte $T$ il costo aggiuntivo della
+un singolo passo è limitato, su un orizzonte $T$ [il costo aggiuntivo della
 clonazione comportamentale cresce, nel caso peggiore e con un limite stretto,
-come $O(\epsilon T^2)$: il fattore $T$ in più rispetto all'ideale $O(\epsilon
-T)$ è la composizione degli errori. Su orizzonti lunghi la
+come $O(\epsilon T^2)$]{.pt-matita}: il fattore $T$ in più rispetto all'ideale
+$O(\epsilon T)$ è la composizione degli errori. Su orizzonti lunghi la
 differenza fra $T$ e $T^2$ distingue un sistema che funziona da uno che
 fallisce.
 
@@ -405,12 +407,13 @@ print(f"\ndopo la folata: |stato| finale esperto {fe.abs().mean():.3f}, "
 # DAgger: si aggiungono le situazioni in cui e' finito L'ALLIEVO, etichettate
 # dall'esperto. Sono proprio quelle che le dimostrazioni non contenevano.
 S_tot, A_tot = S_dim, A_dim
-for giro in (1, 2, 3):
+for iterazione in (1, 2, 3):
     S_v, A_v, _ = episodio(politica, avvio(64), g, raffica=True)
     S_tot, A_tot = torch.cat([S_tot, S_v]), torch.cat([A_tot, A_v])
     allena(politica, S_tot, A_tot, passi=1500)
     _, _, f = episodio(politica, avvio(64), g, raffica=True)
-    print(f"dopo il giro {giro} di DAgger: |stato| finale {f.abs().mean():.3f}")
+    print(f"dopo l'iterazione {iterazione} di DAgger: "
+          f"|stato| finale {f.abs().mean():.3f}")
 
 # Controllo, e vale quanto l'esperimento: quel 74,6 è UN seme, e la folata
 # gliela diamo noi. Che cosa succede su otto semi, e senza la folata?
@@ -457,15 +460,15 @@ servirebbero $5{,}00$. Da lì in poi lo scarto cresce, e più cresce più si
 allontana da ciò che la clonazione conosce. La folata, che vale $4{,}0$,
 scaraventa l'auto in quella regione instabile.
 
-Il risultato: dopo la folata l'esperto torna a $0{,}071$ e la clonazione
+Il risultato: dopo la folata l'esperto torna a $0{,}071$ e [la clonazione
 finisce a $74{,}6$, cioè mille volte più lontano dal centro della corsia,
-partendo da un errore per passo pari a zero.
+partendo da un errore per passo pari a zero]{.pt-matita}.
 
-Poi i tre giri di DAgger: $0{,}102$, $0{,}077$, $0{,}082$. Riportare l'esperto
-a etichettare gli stati in cui era finito l'allievo basta a tornare al livello
-del maestro. Non sono cambiati il modello, il modo di misurare l'errore
-o il procedimento di ottimizzazione: sono cambiate le situazioni incluse negli
-esempi.
+Poi le tre iterazioni di DAgger: $0{,}102$, $0{,}077$, $0{,}082$. Riportare
+l'esperto a etichettare gli stati in cui era finito l'allievo basta a tornare
+al livello del maestro. Non sono cambiati il modello, il modo di misurare
+l'errore o il procedimento di ottimizzazione: sono cambiate le situazioni
+incluse negli esempi.
 
 ### Che cosa questo esperimento dimostra, e che cosa no
 
@@ -503,11 +506,11 @@ a crescere in proporzione.
 Nell'esperimento la spinta iniziale è un espediente, il modo più rapido di
 mettere l'allievo dove non è mai stato per mostrare cosa succede una volta che
 ci si trova. Quello che l'esperimento dimostra, e lo dimostra bene, è la
-seconda metà del ragionamento: fuori dalle situazioni che il maestro ha
-mostrato l'allievo sbaglia in modo sistematico, e su un sistema instabile
-sbagliare in modo sistematico è irrecuperabile. La prima metà, cioè che a
-portarlo fuori bastino i suoi stessi errori, resta un risultato teorico, e
-questo codice non la prova.
+seconda metà del ragionamento: [fuori dalle situazioni che il maestro ha
+mostrato l'allievo sbaglia in modo sistematico]{.pt-matita}, e su un sistema
+instabile sbagliare in modo sistematico è irrecuperabile. La prima metà, cioè
+che a portarlo fuori bastino i suoi stessi errori, resta un risultato teorico,
+e questo codice non la prova.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

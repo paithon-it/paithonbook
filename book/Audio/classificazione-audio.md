@@ -49,12 +49,12 @@ spostarsi in alto non sono la stessa cosa. La stessa macchia più a destra è lo
 stesso latrato mezzo secondo dopo; più in alto è un suono più acuto, cioè
 un'altra vocale, un'altra nota, un altro strumento. La rete invece cerca le
 sagome dappertutto allo stesso modo, in basso come in alto, come se una sagoma
-spostata in alto fosse ancora lo stesso suono. Qui la lastra sonora
-smette di essere una foto: in una foto un gatto più in alto è ancora un gatto,
-sulla lastra un fischio più in alto è un altro fischio. La rete se la cava lo
-stesso, perché le sagome che contano sono piccole, ma quell'ipotesi, presa
-alla lettera, è falsa. Correggerla è facile: le si scrive accanto a ogni riga
-della lastra a che altezza si trova, e la rete impara a tenerne conto.
+spostata in alto fosse ancora lo stesso suono. Qui la lastra sonora smette di
+essere una foto: in una foto un gatto più in alto è ancora un gatto, [sulla
+lastra un fischio più in alto è un altro fischio]{.pt-matita}. La rete se la
+cava lo stesso, perché le sagome che contano sono piccole, ma quell'ipotesi,
+presa alla lettera, è falsa. Correggerla è facile: le si scrive accanto a ogni
+riga della lastra a che altezza si trova, e la rete impara a tenerne conto.
 
 C'è un vantaggio in più, che viene dalla somiglianza con le foto. Una
 rete che ha già passato mesi a guardare fotografie ha imparato a riconoscere
@@ -77,20 +77,20 @@ immagini](../VisioneArtificiale/classificazione-transfer.md), con un'unica
 differenza concettuale: qui i due assi non sono omogenei (uno è il tempo,
 l'altro la frequenza).
 
-La conseguenza però non riguarda la località, che non è mai stata in discussione
-(una firma sonora è un motivo locale nel piano tempo–frequenza come un occhio
-lo è in una foto): riguarda la condivisione dei pesi. Applicare gli stessi
-filtri a ogni banda rende ogni strato convoluzionale *equivariante* per
+La conseguenza però non riguarda la località, che non è mai stata in
+discussione (una firma sonora è un motivo locale nel piano tempo–frequenza come
+un occhio lo è in una foto): riguarda la condivisione dei pesi. Applicare gli
+stessi filtri a ogni banda rende ogni strato convoluzionale *equivariante* per
 traslazione (un motivo spostato produce la stessa risposta, spostata), e il
 pooling, soprattutto quello globale finale, trasforma l'equivarianza in
 *invarianza*: la rete completa assume che traslare un motivo non ne cambi la
-classe. Lungo il tempo è una simmetria vera,
-un latrato è un latrato mezzo secondo dopo; lungo la frequenza no, perché su
-una scala quasi logaritmica traslare verso l'alto equivale a trasporre, e la
-trasposizione cambia la vocale, la nota, lo strumento. Funziona lo stesso
-perché i motivi utili restano locali, ma è un bias solo approssimato, e va
-tenuto a mente quando si legge una CNN su spettrogrammi come se fosse una CNN
-su fotografie.
+classe. Lungo il tempo è una simmetria vera, un latrato è un latrato mezzo
+secondo dopo; lungo la frequenza no, perché su una scala quasi logaritmica
+traslare verso l'alto equivale a trasporre, e la trasposizione cambia la
+vocale, la nota, lo strumento. [Funziona lo stesso perché i motivi utili
+restano locali, ma è un bias solo approssimato]{.pt-matita}, e va tenuto a
+mente quando si legge una CNN su spettrogrammi come se fosse una CNN su
+fotografie.
 
 I rimedi restituiscono alla rete la posizione in frequenza: un
 canale in più all'ingresso che contiene la coordinata della banda (la tecnica
@@ -227,8 +227,8 @@ questo ciascuno porta un'etichetta che dice *quali* suoni contiene, scelti da
 un catalogo di centinaia di categorie, dal miagolio al motore diesel al rumore
 della pioggia; ma è un'etichetta «alla buona», che dice che in quei dieci
 secondi *c'è* un
-cane e non in quale secondo abbaia. Poche certezze precise, ma tantissimi
-esempi: è un baratto che, con le reti profonde, conviene quasi sempre.
+cane e non in quale secondo abbaia. [Poche certezze precise, ma tantissimi
+esempi: è un baratto che, con le reti profonde, conviene quasi sempre]{.pt-matita}.
 
 Il catalogo però non si riempie in modo uniforme. La musica e il parlato
 compaiono ovunque; il verso di un uccello raro sta in un centinaio di frammenti
@@ -262,10 +262,10 @@ $n$-esima soglia, con $R_0 = 0$ (le precisioni pesate con l'aumento di richiamo
 che ciascuna soglia porta), e la mAP è la media delle $\mathrm{AP}_c$ sulle $C$
 classi. Si massimizza.
 
-In generale, un dataset grande e debolmente etichettato sposta il collo di
+In generale, [un dataset grande e debolmente etichettato sposta il collo di
 bottiglia dai dati scarsi alle etichette rumorose e alle code lunghe di classi
-rare, un regime in cui la capienza del modello e il pre-addestramento contano
-più della precisione di ogni singola annotazione.
+rare]{.pt-matita}, un regime in cui la capienza del modello e il
+pre-addestramento contano più della precisione di ogni singola annotazione.
 
 C'è poi una complicazione pratica: AudioSet distribuisce gli identificatori dei
 video di YouTube e gli intervalli da ritagliare, non l'audio. Ogni gruppo
@@ -312,14 +312,14 @@ solo tessere che si guardano tra loro. Il confronto fra tutte costa:
 dieci secondi di suono sono milleduecento tessere, e le coppie da confrontare,
 a ogni passaggio, quasi un milione e mezzo.
 
-Non è gratis, però. I filtri che
-scorrono portavano con sé un'idea già pronta (conta ciò che sta vicino),
-e a un modello che riceve un'idea in regalo bastano
+Non è gratis, però. I filtri che scorrono portavano con sé un'idea già pronta
+(conta ciò che sta vicino), e a un modello che riceve un'idea in regalo bastano
 meno esempi per imparare. Le tessere quell'idea non ce l'hanno e se la devono
-costruire dai dati, quindi di esempi ne chiedono molti di più: addestrato da
-zero su poca roba, un Transformer audio resta dietro a una rete convoluzionale.
-La scappatoia è quella di prima: partire da una rete che ha già guardato milioni
-di fotografie e riadattarla agli spettrogrammi.
+costruire dai dati, quindi di esempi ne chiedono molti di più: [addestrato da
+zero su poca roba, un Transformer audio resta dietro a una rete
+convoluzionale]{.pt-matita}. La scappatoia è quella di prima: partire da una
+rete che ha già guardato milioni di fotografie e riadattarla agli
+spettrogrammi.
 
 `````
 
@@ -363,8 +363,8 @@ bias andava «gratis». Senza, servono molti più dati, oppure, come fa
 l'AST, il transfer dei pesi di un ViT pre-addestrato su ImageNet, adattando gli
 embedding di patch e di posizione dallo spazio delle immagini a quello degli
 spettrogrammi. Un Transformer audio addestrato da zero su pochi dati resta
-dietro a una CNN: l'attenzione conviene quando i dati (o il pre-addestramento)
-abbondano.
+dietro a una CNN: [l'attenzione conviene quando i dati (o il pre-addestramento)
+abbondano]{.pt-matita}.
 
 `````
 
@@ -508,7 +508,7 @@ finestra |   energia |    zcr | classe
 ```
 
 Il tono ha energia $0{,}5$, e quel numero si può controllare. L'onda oscilla
-fra $-1$ e $1$, e per una sinusoide osservata per un numero intero di giri (qui
+fra $-1$ e $1$, e per una sinusoide osservata per un numero intero di periodi (qui
 dieci, in ogni finestra) la media dei quadrati è esattamente la metà del
 quadrato del picco: qui $0{,}5$. Vale per la sinusoide, non per ogni
 oscillazione regolare: un'onda quadra che salta fra $-1$ e $1$ ha media dei
@@ -571,12 +571,12 @@ rumore cupo |    0.0900 |  0.018 | tono
 
 La regola sbaglia tutte e due le volte. Il tono acuto cambia segno quasi a ogni
 campione, e la formula di prima lo prevede: due attraversamenti per
-oscillazione, 3.900 oscillazioni al secondo, 8.000 campioni, quindi
-$2 \times 3900 / 8000 \approx 0{,}975$.
-Il rumore cupo, che ha la stessa energia del rumore bianco, attraversa lo zero
-di rado, ben sotto la soglia di $0{,}20$, e la regola lo chiama tono. Lo zcr
-dice dove stanno le frequenze di un suono, alte o basse; se il suono sia un
-tono o un rumore è un'altra domanda, e queste due misure non bastano per capirlo.
+oscillazione, 3.900 oscillazioni al secondo, 8.000 campioni, quindi $2 \times
+3900 / 8000 \approx 0{,}975$. Il rumore cupo, che ha la stessa energia del
+rumore bianco, attraversa lo zero di rado, ben sotto la soglia di $0{,}20$, e
+la regola lo chiama tono. [Lo zcr dice dove stanno le frequenze di un suono,
+alte o basse; se il suono sia un tono o un rumore è un'altra
+domanda]{.pt-matita}, e queste due misure non bastano per capirlo.
 
 Due numeri per finestra e due soglie, nessuna rete, e la logica è già quella dei
 modelli grandi: *estrarre feature che separano le classi, poi decidere*. La

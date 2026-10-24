@@ -60,7 +60,7 @@ iterazione; `optimizer` è l'ottimizzatore.
 for X_batch, y_batch in dataloader:
     y_pred = model(X_batch)             # 1. forward: la previsione
     loss = criterion(y_pred, y_batch)   # 2. loss: quanto abbiamo sbagliato
-    optimizer.zero_grad()               # 3. via i gradienti del giro prima
+    optimizer.zero_grad()               # 3. via i gradienti precedenti
     loss.backward()                     # 4. backward: calcola i gradienti
     optimizer.step()                    # 5. aggiorna i pesi
 ```
@@ -85,14 +85,15 @@ modello.
 
 ```{figure} ../figures/ciclo-addestramento.svg
 :name: fig-ciclo-addestramento
-:alt: "I cinque passi del ciclo di addestramento in fila, con una freccia che dal quinto torna al primo. Sotto, lo stato del modello: le barre dei gradienti di sei pesi e la posizione di quei sei pesi rispetto al valore di partenza. Il quarto passo, backward, riempie le barre dei gradienti; il quinto, step, sposta i pesi; le barre restano piene fino allo zero_grad del giro successivo, che le riporta a zero. A destra la loss dei tre giri, che scende: 2,35 poi 2,29 poi 2,25."
+:alt: "I cinque passi del ciclo di addestramento in fila, con una freccia che dal quinto torna al primo. Sotto, lo stato del modello: le barre dei gradienti di sei pesi e la posizione di quei sei pesi rispetto al valore di partenza. Il quarto passo, backward, riempie le barre dei gradienti; il quinto, step, sposta i pesi; le barre restano piene fino allo zero_grad dell'iterazione successiva, che le riporta a zero. A destra la loss delle tre iterazioni, che scende: 2,35 poi 2,29 poi 2,25."
 :width: 96%
 
-Tre giri dello stesso ciclo, su una rete piccola presa a esempio. I gradienti
-compaiono quando `backward()` li calcola, restano finché lo `zero_grad()` del
-giro dopo non li toglie di mezzo, e intanto `step()` sposta i pesi. A destra la
-loss dei tre giri: parte da $2{,}35$, poco sopra il $2{,}30$ di chi tira a
-indovinare fra dieci cifre, e a ogni giro scende un poco.
+Tre iterazioni dello stesso ciclo, su una rete piccola presa a esempio. I
+gradienti compaiono quando `backward()` li calcola, restano finché lo
+`zero_grad()` dell'iterazione dopo non li toglie di mezzo, e intanto `step()`
+sposta i pesi. A destra la loss delle tre iterazioni: parte da $2{,}35$, poco
+sopra il $2{,}30$ di chi tira a indovinare fra dieci cifre, e a ogni iterazione
+scende un poco.
 ```
 
 `````{tab} Elementare
@@ -115,12 +116,13 @@ scritti, perché dopo il terzo passo sul tavolo non c'è niente, nemmeno un
 foglio bianco. Dove il foglio non c'è non si corregge niente: un peso che in un
 giro non ha lasciato appunti resta com'era.
 
-Il foglio si cambia a ogni giro, tranne quando si vuole sommare di proposito.
-Il caso classico è il tavolo piccolo: ci stanno otto carte per volta, ma vuoi
-decidere la correzione su trentadue, perché su più carte si sbaglia di meno.
-Allora fai quattro mazzetti da otto, scrivi gli appunti di tutti e quattro
-sullo stesso foglio, uno sotto l'altro, e alla fine correggi una volta sola,
-dividendo per quattro la somma; solo allora cambi foglio.
+[Il foglio si cambia a ogni giro, tranne quando si vuole sommare di
+proposito]{.pt-matita}. Il caso classico è il tavolo piccolo: ci stanno otto
+carte per volta, ma vuoi decidere la correzione su trentadue, perché su più
+carte si sbaglia di meno. Allora fai quattro mazzetti da otto, scrivi gli
+appunti di tutti e quattro sullo stesso foglio, uno sotto l'altro, e alla fine
+correggi una volta sola, dividendo per quattro la somma; solo allora cambi
+foglio.
 
 Chi cambia foglio a ogni mazzetto si corregge su otto carte credendo di averne
 guardate trentadue, e intanto il ripasso fila liscio uguale, senza nessun
@@ -143,8 +145,8 @@ dipende dall'ottimizzatore: la discesa semplice per `optim.SGD`, stime adattive
 dei momenti per `optim.Adam` {cite}`kingma2015adam`, fra gli ottimizzatori più
 usati, anche se nessuno è il migliore in generale {cite}`goodfellow2016deep`.
 
-`zero_grad()` è necessario perché autograd accumula i gradienti a ogni
-`backward()`; senza, ogni passo userebbe la somma di tutti i gradienti
+[`zero_grad()` è necessario perché autograd accumula i gradienti a ogni
+`backward()`]{.pt-matita}; senza, ogni passo userebbe la somma di tutti i gradienti
 precedenti. Il nome `zero_grad()`, però, dice meno di quanto il metodo faccia.
 Da PyTorch 2.0 il default è `set_to_none=True`, quindi `p.grad` non diventa un
 tensore di zeri, ma `None`.
@@ -239,10 +241,11 @@ mezzo che tiene i fornelli sempre occupati.
 Inoltre un vassoio dice quasi quanto direbbe il dataset intero. Assaggiare un
 cucchiaio, ad esempio, dice quanto sale c'è in tutta la pentola, con la
 risposta giusta in media e un po’ di scarto da un cucchiaio all'altro. Allo
-stesso modo sessantaquattro esempi indicano la direzione in cui correggersi
-quasi come la indicherebbero tutti e sessantamila, e sbandano un poco a ogni
-giro. Lo sbandamento riduce la precisione, e in cambio scuote la discesa quel
-tanto che basta a non farla restare ferma dove il terreno è quasi piatto.
+stesso modo [sessantaquattro esempi indicano la direzione in cui correggersi
+quasi come la indicherebbero tutti e sessantamila]{.pt-matita}, e sbandano un
+poco a ogni giro. Lo sbandamento riduce la precisione, e in cambio scuote la
+discesa quel tanto che basta a non farla restare ferma dove il terreno è quasi
+piatto.
 `````
 
 `````{tab} Superiore
@@ -271,9 +274,9 @@ mini-batch di $B$ esempi è una stima non distorta del gradiente sull'intero
 insieme di $m$ esempi, con covarianza $\boldsymbol{\Sigma}/B$, dove
 $\boldsymbol{\Sigma}$ è la covarianza dei gradienti dei singoli esempi (va
 moltiplicata per $(m-B)/(m-1)$ quando si estrae senza reimmissione, come fa
-`shuffle=True` dentro un'epoca). Il rumore scende quindi come $1/\sqrt{B}$: ad
-esempio, quadruplicare il batch lo dimezza. È il limite, e in parte il segreto,
-della discesa *stocastica*.
+`shuffle=True` dentro un'epoca). [Il rumore scende quindi come
+$1/\sqrt{B}$]{.pt-matita}: ad esempio, quadruplicare il batch lo dimezza. È il
+limite, e in parte il segreto, della discesa *stocastica*.
 `````
 
 ## MNIST da cima a fondo
@@ -411,10 +414,11 @@ Il blocco `torch.no_grad()` dice al registratore dei gradienti di spegnersi:
 durante l'esame non si prendono appunti per migliorare, si risponde soltanto, e
 senza il registratore acceso tutto è più veloce e leggero.
 
-I due interruttori sono distinti, e nessuno dei due sostituisce l'altro:
-spegnere il registratore lascia accesi i trucchi dello studio, e dichiarare
-l'esame lascia acceso il registratore. Chi ne fa uno solo o riempie fogli che
-nessuno leggerà, o dà l'esame con qualche appunto ancora coperto.
+[I due interruttori sono distinti, e nessuno dei due sostituisce
+l'altro]{.pt-matita}: spegnere il registratore lascia accesi i trucchi dello
+studio, e dichiarare l'esame lascia acceso il registratore. Chi ne fa uno solo
+o riempie fogli che nessuno leggerà, o dà l'esame con qualche appunto ancora
+coperto.
 `````
 
 `````{tab} Superiore
@@ -474,12 +478,12 @@ niente. In gergo questa fase si chiama **inferenza**, parola presa in prestito
 dalla statistica che qui indica soltanto un modello già addestrato messo in
 uso, senza nessun ragionamento dentro.
 
-`eval()` e `no_grad()` sono due meccanismi indipendenti, e servono entrambi:
-`eval()` senza `no_grad()` dà predizioni corrette ma spreca memoria;
-`no_grad()` senza `eval()` lascia il dropout acceso e falsa le predizioni. Il
-nostro MLP non ha né dropout né batch norm, quindi qui `eval()` è tecnicamente
-superfluo, ma scriverlo sempre è un'abitudine che evita bug sottili appena il
-modello cresce.
+[`eval()` e `no_grad()` sono due meccanismi indipendenti, e servono
+entrambi]{.pt-matita}: `eval()` senza `no_grad()` dà predizioni corrette ma
+spreca memoria; `no_grad()` senza `eval()` lascia il dropout acceso e falsa le
+predizioni. Il nostro MLP non ha né dropout né batch norm, quindi qui `eval()`
+è tecnicamente superfluo, ma scriverlo sempre è un'abitudine che evita bug
+sottili appena il modello cresce.
 
 Quando si fa soltanto inferenza esiste una forma più stretta di
 `no_grad()`, `torch.inference_mode()`, che oltre a non registrare rinuncia
@@ -504,10 +508,10 @@ Per questo in un progetto serio gli insiemi sono tre, come nella
 quello su cui il modello impara. L'insieme di validazione si consulta a ogni
 epoca per decidere (gli iperparametri, il momento di fermarsi), e queste
 decisioni lo consumano un poco, perché ogni scelta presa guardandolo lo
-avvicina all'addestramento. L'insieme di test si tocca una volta sola, alla
-fine, e dà la stima onesta. Nel programma su MNIST ne abbiamo usati due per non
-appesantire il codice, una scorciatoia comune negli esempi; fuori dagli esempi,
-il terzo insieme si ritaglia.
+avvicina all'addestramento. [L'insieme di test si tocca una volta sola, alla
+fine, e dà la stima onesta]{.pt-matita}. Nel programma su MNIST ne abbiamo
+usati due per non appesantire il codice, una scorciatoia comune negli esempi;
+fuori dagli esempi, il terzo insieme si ritaglia.
 
 ```{figure} ../figures/curve-overfitting-validazione.svg
 :name: fig-curve-overfitting
@@ -657,8 +661,8 @@ riprendere** non sono la stessa cosa.
 
 `````{tab} Elementare
 Il file con i soli pesi serve a usare il modello: lo ricarichi, gli dai
-un'immagine, ti risponde. Non serve a riprendere l'addestramento dal punto
-in cui l'avevi interrotto.
+un'immagine, ti risponde. [Non serve a riprendere l'addestramento dal punto
+in cui l'avevi interrotto]{.pt-matita}.
 
 La ragione è che Adam, mentre corregge i pesi, si costruisce una memoria di
 come si sono mossi finora; questa memoria gli permette di dare a ciascun peso
@@ -688,10 +692,10 @@ perché un file per riprendere è un fascicolo, con dentro più di un documento.
 `````
 
 `````{tab} Superiore
-Con SGD semplice la questione è marginale; con `optim.Adam`, quello del
-programma su MNIST, i momenti *sono* stato. Sono due medie mobili tenute per
-ogni peso: $m \leftarrow \beta_1 m + (1-\beta_1)\,g$ per i gradienti e $v
-\leftarrow \beta_2 v + (1-\beta_2)\,g^2$ per i loro quadrati, con $g$ il
+Con SGD semplice la questione è marginale; [con `optim.Adam`, quello del
+programma su MNIST, i momenti *sono* stato]{.pt-matita}. Sono due medie mobili
+tenute per ogni peso: $m \leftarrow \beta_1 m + (1-\beta_1)\,g$ per i gradienti
+e $v \leftarrow \beta_2 v + (1-\beta_2)\,g^2$ per i loro quadrati, con $g$ il
 gradiente. Qui $m$ è la notazione di Kingma e Ba per il primo momento, non il
 numero di esempi del paragrafo sul `DataLoader`, e di default $\beta_1 = 0{,}9$
 e $\beta_2 = 0{,}999$ (memorie di circa dieci e mille passi).

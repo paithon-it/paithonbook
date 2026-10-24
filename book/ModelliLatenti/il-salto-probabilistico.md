@@ -151,8 +151,8 @@ il segno è positivo per un centesimo), ma la spinta verso il basso diventa
 schiacciante quando le dimensioni crescono.
 
 La colonna a destra dice perché: su centomila campioni, uno solo si prende il
-trentacinque per cento del totale. Non stiamo facendo una media, stiamo
-aspettando un colpo di fortuna.
+trentacinque per cento del totale. [Non stiamo facendo una media, stiamo
+aspettando un colpo di fortuna]{.pt-matita}.
 
 Il latente delle nostre cifre ha otto numeri soltanto; quello di
 {doc}`Stable Diffusion </ModelliDiffusione/stable-diffusion>`, il modello che
@@ -206,8 +206,8 @@ quasi tutto, nella media dei numeri schiacciati non pesa quasi niente. Noi
 sappiamo calcolare soltanto la media dei numeri schiacciati, e il valore vero,
 la media dei numeri veri, sta sempre più in alto.
 
-Il divario fra la stima e il vero dipende soltanto da quanto il
-consiglio era buono: se il conoscente sapeva il quartiere, il divario
+[Il divario fra la stima e il vero dipende soltanto da quanto il
+consiglio era buono]{.pt-matita}: se il conoscente sapeva il quartiere, il divario
 è quasi zero; se ha tirato a indovinare, è grande.
 
 Qui sta il vantaggio che rende utile tutto questo. Vorremmo due risultati: un
@@ -283,8 +283,8 @@ perché una divergenza di Kullback–Leibler non è mai negativa. Ne discendono
 due fatti fondamentali per il metodo {cite}`kingma2019introduction`:
 
 - il divario fra l’ELBO e la log-verosimiglianza vera *è* la distanza fra
-  la posterior approssimata e quella vera. Non la limita, la eguaglia. Un
-  encoder perfetto rende l’ELBO esatto;
+  la posterior approssimata e quella vera. Non la limita, la eguaglia. [Un
+  encoder perfetto rende l’ELBO esatto]{.pt-matita};
 - massimizzando l’ELBO rispetto a $\theta$ e $\phi$ insieme si ottengono due
   cose con un’azione sola: si spinge in alto (approssimativamente)
   $\log p_\theta(\mathbf{x})$, cioè si migliora il modello generativo, e si
@@ -393,8 +393,8 @@ millimetro, costa molto.
 L’archivista si trova quindi stretto fra due spinte opposte, e questo è il
 cuore di tutto. Se resta sul vago, la scheda è economica e il copista dipinge
 male. Se è precisissimo, il copista dipinge benissimo e la scheda diventa
-carissima. Il punto di equilibrio è la scheda più vaga che ancora
-basta: gli si chiede di essere impreciso quanto può permettersi.
+carissima. [Il punto di equilibrio è la scheda più vaga che ancora
+basta]{.pt-matita}: gli si chiede di essere impreciso quanto può permettersi.
 
 Quell’imprecisione voluta riempie i buchi del cassetto. Se
 ogni quadro non è descritto da un punto ma da un alone, gli aloni di quadri
@@ -430,9 +430,9 @@ $$
 $$
 
 dove il primo termine premia i codici da cui il dato si ricostruisce bene e il
-secondo penalizza gli encoder che si allontanano dal prior. Il secondo è la
+secondo penalizza gli encoder che si allontanano dal prior. [Il secondo è la
 regolarizzazione che mancava all’autoencoder, e non è stata
-aggiunta: è comparsa spezzando in due un’identità. Agisce però su un
+aggiunta: è comparsa spezzando in due un’identità]{.pt-matita}. Agisce però su un
 esempio alla volta, e mediato sui dati si scompone in due pezzi
 {cite}`hoffman2016elbo`:
 
@@ -524,9 +524,9 @@ campione esiste, lo **stimatore a punteggio**, ma la sua varianza è alta.
 
 Il rimedio, lo stesso che nella {doc}`sezione sul controllo continuo
 </DeepReinforcementLearning/controllo-continuo>` fa passare il gradiente
-attraverso le azioni di SAC, non elimina il campionamento: lo rende un ingresso
-del grafo di calcolo, un rumore $\boldsymbol{\epsilon}$ la cui distribuzione
-non dipende da $\phi$ ({numref}`fig-riparametrizzazione`).
+attraverso le azioni di SAC, [non elimina il campionamento: lo rende un
+ingresso del grafo di calcolo]{.pt-matita}, un rumore $\boldsymbol{\epsilon}$
+la cui distribuzione non dipende da $\phi$ ({numref}`fig-riparametrizzazione`).
 
 ```{figure} ../figures/riparametrizzazione-il-caso-di-lato.svg
 :name: fig-riparametrizzazione
@@ -1009,10 +1009,10 @@ che il costo di descrizione impedisce di stringere, più che una disposizione
 più fitta dei centri.
 
 La seconda colonna è la conseguenza. Una cifra vera dista dalla sua vicina
-1,01; una cifra inventata dal VAE dista 1,09, cioè l’otto per cento in più;
-una inventata dall’autoencoder dista 1,62, cioè più del sessanta per cento in
-più. Con questo metro un dato inventato dal VAE sta alle cifre vere quasi
-quanto una cifra vera sta alle altre; uno inventato dall’autoencoder no.
+1,01; una cifra inventata dal VAE dista 1,09, cioè l’otto per cento in più; una
+inventata dall’autoencoder dista 1,62, cioè più del sessanta per cento in più.
+Con questo metro [un dato inventato dal VAE sta alle cifre vere quasi quanto
+una cifra vera sta alle altre]{.pt-matita}; uno inventato dall’autoencoder no.
 
 Il metro però ha un punto cieco, e l’ultima riga della tabella lo mostra: la
 media di cinque cifre vere della stessa classe, una cifra sfocata che nessuno ha
@@ -1046,8 +1046,8 @@ dirlo resta solo la tabella.)
 ## Che cosa il VAE non fa bene
 
 I VAE hanno tre limiti noti: la sfocatura, il collasso della posterior e lo
-scarto fra il prior e la distribuzione dei codici. Vengono tutti e tre
-dall’obiettivo stesso, e allenare di più non li toglie.
+scarto fra il prior e la distribuzione dei codici. [Vengono tutti e tre
+dall’obiettivo stesso, e allenare di più non li toglie]{.pt-matita}.
 
 `````{tab} Elementare
 

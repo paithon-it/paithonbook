@@ -201,8 +201,8 @@ parole fin dall'ingresso, con gli stessi pesi. Nella versione più radicale
 anche l'immagine è ridotta a simboli presi da un elenco finito, token come le
 parole, e il modello li legge e li scrive tutti insieme.
 
-Il punto in cui i due flussi si incontrano spiega quasi sempre che cosa un
-sistema sa fare e dove trova i suoi limiti.
+[Il punto in cui i due flussi si incontrano spiega quasi sempre che cosa un
+sistema sa fare e dove trova i suoi limiti]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -315,9 +315,9 @@ gli mostri una spiaggia senza ombrelloni, lui te li nomina lo stesso.
 
 Non dipende dalla sfortuna di un modello. Non è l'unico modo di sbagliare,
 perché a volte la foto, per come arriva al modello, non mostra abbastanza; è
-però quello che l'addestramento stesso favorisce: se le parole giuste si
-indovinano dal contesto, guardare diventa facoltativo, e chi è addestrato a
-indovinare bene impara a farne a meno.
+però quello che l'addestramento stesso favorisce: [se le parole giuste si
+indovinano dal contesto, guardare diventa facoltativo]{.pt-matita}, e chi è
+addestrato a indovinare bene impara a farne a meno.
 
 `````
 
@@ -328,11 +328,11 @@ $\mathcal{L}(\theta) = -\sum_t \log p_\theta(y_t \mid y_{<t}, \mathbf{I})$,
 dove $y_t$ è il token al passo $t$ e $\mathbf{I}$ l'immagine. Nulla in questa
 funzione di costo obbliga il modello a *usare* $\mathbf{I}$: se il prior
 linguistico concentra già la massa di probabilità sulla parola corretta, il
-gradiente che spinge a sfruttare l'informazione visiva è debole, e il modello
-impara la statistica delle didascalie invece della scena. È il primo dei
-meccanismi dell’allucinazione visiva, e deriva da ciò che l'obiettivo premia,
-non da un incidente; gli altri due (un encoder che non distingue ciò che
-servirebbe, dati di istruzione scritti da chi l'immagine non l'ha vista) li
+gradiente che spinge a sfruttare l'informazione visiva è debole, e [il modello
+impara la statistica delle didascalie invece della scena]{.pt-matita}. È il
+primo dei meccanismi dell’allucinazione visiva, e deriva da ciò che l'obiettivo
+premia, non da un incidente; gli altri due (un encoder che non distingue ciò
+che servirebbe, dati di istruzione scritti da chi l'immagine non l'ha vista) li
 elenca la {doc}`sezione sull'allucinazione
 </VisioneLinguaggio/vedere-quel-che-non-ce>`.
 

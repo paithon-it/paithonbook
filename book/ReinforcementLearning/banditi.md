@@ -93,9 +93,9 @@ messi insieme i passi devono bastare a portarla dovunque serva.
 La seconda è che si accorci abbastanza da smettere di rincorrere la fortuna
 dell'ultimo tiro.
 
-Uno diviso il numero di tiri fa tutte e due le cose, mentre il passo fisso fa
-solo la prima, e per questo insegue per sempre: un difetto se le leve non
-cambiano mai, un pregio se cambiano.
+[Uno diviso il numero di tiri fa tutte e due le cose, mentre il passo fisso fa
+solo la prima, e per questo insegue per sempre]{.pt-matita}: un difetto se le
+leve non cambiano mai, un pregio se cambiano.
 
 `````
 
@@ -165,20 +165,20 @@ $$
 la prima chiede che i passi restino abbastanza grandi da lasciarsi alle spalle
 qualunque punto di partenza, la seconda che si accorcino abbastanza in fretta
 da smettere di rincorrere il rumore. Il passo $1/n$ le soddisfa entrambe ($\sum
-1/n$ diverge, $\sum 1/n^2$ converge); un passo costante $\alpha$ soddisfa la
-prima e viola la seconda, quindi non converge. È la proprietà che lo rende
-adatto ai problemi non stazionari.
+1/n$ diverge, $\sum 1/n^2$ converge); [un passo costante $\alpha$ soddisfa la
+prima e viola la seconda, quindi non converge]{.pt-matita}. È la proprietà che
+lo rende adatto ai problemi non stazionari.
 
 `````
 
 ## Il costo di essere avidi
 
 Un agente **avido** (*greedy*) tira sempre la leva con la stima più alta.
-All'inizio, però, la stima più alta è quasi sempre sbagliata, e l'errore si
-auto-conferma. Se ad esempio la leva migliore ha avuto sfortuna nei primi due
-tiri, la sua stima resta bassa, non viene più scelta, e nessuno la corregge
-mai. In questo modo l'agente si chiude dentro una convinzione senza aver mai
-raccolto le prove per smentirla.
+All'inizio, però, [la stima più alta è quasi sempre sbagliata, e l'errore si
+auto-conferma]{.pt-matita}. Se ad esempio la leva migliore ha avuto sfortuna
+nei primi due tiri, la sua stima resta bassa, non viene più scelta, e nessuno
+la corregge mai. In questo modo l'agente si chiude dentro una convinzione senza
+aver mai raccolto le prove per smentirla.
 
 Quanto costi questo errore si misura su un banco di prova, sempre lo stesso,
 che è quello di Sutton e Barto {cite}`sutton2018reinforcement`, i due autori
@@ -260,7 +260,7 @@ che nessuna leva può mantenere. Qualunque leva si tiri, l'incasso è inferiore 
 quanto c'era scritto, quindi la sua stima scende sotto quelle delle leve non
 ancora provate, e al tiro dopo l'agente ne prova un'altra. Un agente che sceglie
 sempre la migliore secondo il quaderno finisce così per girarle tutte, senza
-tirare nessun dado: esplora perché resta sistematicamente deluso.
+tirare nessun dado: [esplora perché resta sistematicamente deluso]{.pt-matita}.
 
 Perché la delusione duri, però, il passo deve restare fisso (nell'esperimento
 sul banco di prova vale un decimo). Se il passo è invece "uno diviso il numero
@@ -280,8 +280,8 @@ facendo la media se ne perdono quindici, quasi un terzo.
 Sul banco di prova $q_*(a) \sim \mathcal{N}(0,1)$. Inizializzando $Q_1(a) = +5$
 per ogni $a$, qualunque azione si scelga la ricompensa osservata delude in
 media di circa cinque unità, la stima corrispondente scende sotto quelle delle
-azioni non ancora provate, e l'agente, pur restando strettamente greedy, spazza
-l'intero insieme delle azioni.
+azioni non ancora provate, e l’[agente, pur restando strettamente greedy, spazza
+l'intero insieme delle azioni]{.pt-matita}.
 
 Perché l'ottimismo sopravviva al primo tiro serve però un passo costante. Con
 la media campionaria si ha $Q_2 = Q_1 + \frac{1}{1}(R_1 - Q_1) = R_1$, cioè la
@@ -321,11 +321,11 @@ quella di qualcun’altra un tiro solo, e non ne sai niente. Le prime non
 meritano un altro tiro, le seconde sì.
 
 Allora su ogni pagina, accanto alla stima, scrivi un **bonus di ignoranza**:
-quanto più di rado hai tirato quella leva, tanto più è generoso, e per una leva
-mai tirata è il più generoso di tutti. Poi tiri, senza dadi, la leva con la
-somma più alta. Una leva mediocre ma poco esplorata può vincere il confronto
-grazie al bonus; ogni volta che la tiri il bonus cala, finché la sua mediocrità
-non emerge e smetti di sceglierla.
+[quanto più di rado hai tirato quella leva, tanto più è generoso]{.pt-matita},
+e per una leva mai tirata è il più generoso di tutti. Poi tiri, senza dadi, la
+leva con la somma più alta. Una leva mediocre ma poco esplorata può vincere il
+confronto grazie al bonus; ogni volta che la tiri il bonus cala, finché la sua
+mediocrità non emerge e smetti di sceglierla.
 
 Il bonus cresce anche nei tiri in cui non tocchi quella leva, per il solo
 passare del tempo. Una leva provata due volte in cento tiri e una provata due
@@ -397,9 +397,9 @@ in $[0,1]$, con media vera $\mu$ e media campionaria $\bar{X}_n$, la
 disuguaglianza dà $\Pr(|\bar{X}_n - \mu| \ge u) \le 2e^{-2nu^2}$ per ogni
 scarto $u > 0$.
 
-Il nome dice il principio: **ottimismo di fronte all'incertezza**, cioè agire
+Il nome dice il principio: **ottimismo di fronte all'incertezza**, cioè [agire
 come se ogni azione valesse il massimo compatibile con i dati raccolti, e
-lasciare che siano i dati a smentire.
+lasciare che siano i dati a smentire]{.pt-matita}.
 
 Il decadimento logaritmico non è decorativo. Si chiami **rimpianto** in $T$
 tiri
@@ -539,8 +539,8 @@ tirare; e siccome una leva che sale viene tirata più spesso, il primo colpo di
 fortuna si autoalimenta. In media le correzioni puntano ancora dalla parte
 giusta, perché la differenza vera fra le leve c'è ancora; ma è una differenza
 di qualche unità sopra un livello di mille, e resta sepolta sotto oscillazioni
-enormi. Con il riferimento, quel che conta non è quanto ho preso ma quanto ho
-preso rispetto al solito, e quel mille sparisce dal conto.
+enormi. Con il riferimento, [quel che conta non è quanto ho preso ma quanto ho
+preso rispetto al solito]{.pt-matita}, e quel mille sparisce dal conto.
 
 Sul banco di prova di prima la differenza è netta. Il metodo delle preferenze
 azzecca la leva migliore l’84,1% delle volte. Aggiungiamo adesso quattro punti
@@ -624,12 +624,12 @@ che non cambia in nulla la difficoltà del problema (le differenze fra le leve
 sono identiche), con la baseline si resta all’83,8%, mentre togliendola si
 crolla al 48,5%.
 
-Lo spiega la derivazione: qualunque $b$ dà lo stesso aggiornamento atteso, cioè
-il gradiente, e cambia soltanto la varianza. Senza baseline, infatti, ogni
-aggiornamento si porta dietro il $+4$ comune a tutte le ricompense, che in
-media si cancella ma tiro per tiro sposta le preferenze molto più della
-differenza fra le leve; con la baseline, $R_t - \bar{R}_t$ non risente della
-traslazione.
+Lo spiega la derivazione: [qualunque $b$ dà lo stesso aggiornamento atteso,
+cioè il gradiente, e cambia soltanto la varianza]{.pt-matita}. Senza baseline,
+infatti, ogni aggiornamento si porta dietro il $+4$ comune a tutte le
+ricompense, che in media si cancella ma tiro per tiro sposta le preferenze
+molto più della differenza fra le leve; con la baseline, $R_t - \bar{R}_t$ non
+risente della traslazione.
 
 `````
 
@@ -739,9 +739,10 @@ eps 0,01 supera eps 0,1 dal tiro 9227
 
 Il sorpasso arriva passato il novemillesimo tiro, e alla fine chi azzarda una
 volta su cento sta al 91,6%, chi azzarda una volta su dieci all’89,0%: le parti
-si sono invertite. La classifica dipende dunque dalla lunghezza della partita.
-In generale, quanto esplorare si decide guardando l’**orizzonte**, cioè il
-numero di tiri che si hanno davanti, non i primi mille.
+si sono invertite. [La classifica dipende dunque dalla lunghezza della
+partita]{.pt-matita}. In generale, quanto esplorare si decide guardando
+l’**orizzonte**, cioè il numero di tiri che si hanno davanti, non i primi
+mille.
 
 Il bandit a gradiente ha una struttura diversa e un programma suo, con dentro
 anche la prova sulla baseline.
@@ -817,9 +818,9 @@ L'esplorazione nasce senza che nessuno debba deciderla. Una leva di cui sai
 poco ha il ventaglio largo, quindi ogni tanto le esce un valore alto e la tiri;
 una leva provata cento volte e mediocre ha il ventaglio stretto attorno a un
 numero basso, e un valore alto non le esce quasi più. Nessun dado da regolare
-come in $\varepsilon$-greedy, nessun bonus da scegliere a mano come in UCB: la
+come in $\varepsilon$-greedy, nessun bonus da scegliere a mano come in UCB: [la
 larghezza del ventaglio fa il lavoro, e si stringe man mano che le prove si
-accumulano.
+accumulano]{.pt-matita}.
 
 È il dado truccato del 1933, guardato da vicino. Ogni leva vince la pesca, e
 viene tirata, con la stessa probabilità con cui, secondo ciò che credi in quel
@@ -928,9 +929,9 @@ Per ricompense in $\{0,1\}$ la coniugata è la Beta: con priore uniforme, dopo
 $s$ successi e $f$ fallimenti la posteriore è $\mathrm{Beta}(1+s,\, 1+f)$, il
 caso della sperimentazione clinica del 1933 e del test A/B.
 
-Il meccanismo che spegne l'esplorazione è la varianza a posteriori, che va a
-zero come $1/N_t(a)$: i campioni si concentrano sulla media e le azioni
-chiaramente peggiori smettono di vincere il massimo.
+[Il meccanismo che spegne l'esplorazione è la varianza a posteriori, che va a
+zero come $1/N_t(a)$]{.pt-matita}: i campioni si concentrano sulla media e le
+azioni chiaramente peggiori smettono di vincere il massimo.
 
 Si noti che il denominatore è $N_t(a)$, non $t$. Un braccio subottimo viene
 tirato $\Theta(\ln t)$ volte (lo mostrano le analisi citate più sotto), quindi

@@ -74,9 +74,9 @@ esempi.
 In ELIZA la separazione fra il motore e il foglio delle regole va già in quella
 direzione. Le regole, infatti, sono un testo che il programma legge, e un testo
 si può produrre anche in modi diversi dallo scriverlo a mano. Ma nel 1966 una
-persona scriveva ancora ogni regola, una per una. L'apprendimento automatico
+persona scriveva ancora ogni regola, una per una. [L'apprendimento automatico
 comincia quando nessuno scrive più quel foglio e le regole si ricavano dagli
-esempi.
+esempi]{.pt-matita}.
 
 In questo capitolo ripercorriamo le origini dell'intelligenza artificiale, dai
 sillogismi di Aristotele al seminario di Dartmouth e ai due inverni della
@@ -344,9 +344,9 @@ Perché il trucco funziona lo racconta il pavimento. Dal rettangolo di
 $12 \times 8$ ritaglia il quadrato più grande che ci sta, $8 \times 8$: avanza
 una striscia di $8 \times 4$, e la larghezza della striscia è proprio il resto
 della divisione. Una piastrella che copre senza tagli il pavimento intero
-copre senza tagli anche la striscia, e viceversa. Quindi cercare la
+copre senza tagli anche la striscia, e viceversa. Quindi [cercare la
 piastrella più grande per $12$ e $8$, o cercarla per $8$ e $4$, è lo stesso
-problema, solo più piccolo.
+problema, solo più piccolo]{.pt-matita}.
 
 Dalla striscia ritaglia poi due quadrati di $4 \times 4$: non avanza niente, e
 quando non avanza niente il lato del quadrato è la piastrella cercata.
@@ -371,13 +371,12 @@ resto della divisione intera, $0 \le a \bmod b < b$; il caso base è
 $\mathrm{MCD}(a, 0) = a$ per $a > 0$, e $\mathrm{MCD}(0, 0)$ si pone uguale a
 $0$ per convenzione. Poiché il secondo argomento scende strettamente a ogni
 passo restando non negativo, il ciclo termina. La correttezza segue dal fatto
-che ogni divisore comune di $a$ e $b$ divide anche
-$a \bmod b = a - \lfloor a/b \rfloor\, b$ e che, viceversa, ogni divisore
-comune di $b$ e $a \bmod b$ divide
-$a = \lfloor a/b \rfloor\, b + (a \bmod b)$. Ne segue che i due insiemi di
-divisori comuni coincidono, e quindi il massimo è invariante a ogni passo. Ad
-esempio, per $a=12$ e $b=8$ la successione delle coppie è
-$(12, 8) \to (8, 4) \to (4, 0) \Rightarrow 4$.
+che ogni divisore comune di $a$ e $b$ divide anche $a \bmod b = a - \lfloor a/b
+\rfloor\, b$ e che, viceversa, ogni divisore comune di $b$ e $a \bmod b$ divide
+$a = \lfloor a/b \rfloor\, b + (a \bmod b)$. Ne segue che [i due insiemi di
+divisori comuni coincidono, e quindi il massimo è invariante a ogni
+passo]{.pt-matita}. Ad esempio, per $a=12$ e $b=8$ la successione delle coppie
+è $(12, 8) \to (8, 4) \to (4, 0) \Rightarrow 4$.
 
 Il numero di passi $N$ è $O(\log \min(a, b))$. Più precisamente, se
 $a > b \ge 1$ vale $b \ge F_{N+1} \ge \varphi^{N-1}$, con $F_k$ i numeri di
@@ -446,9 +445,9 @@ ricetta, anche se gli occhi e il cervello la eseguono in un decimo di secondo.
 E allora si cambia strada. Invece di scrivere le regole, si raccolgono gli
 **esempi** (migliaia di fotografie con scritto accanto «gatto» oppure «non
 gatto») e si lascia che sia il programma a trovare che cosa distingue le une
-dalle altre. In altri termini, nessuno scrive le regole: emergono dai dati. In
-questo senso un programma *impara*; per lo stesso motivo, in questo modo di
-lavorare i dati contano quanto il codice.
+dalle altre. In altri termini, [nessuno scrive le regole: emergono dai
+dati]{.pt-matita}. In questo senso un programma *impara*; per lo stesso motivo,
+in questo modo di lavorare i dati contano quanto il codice.
 
 Contro questa idea c’è un’obiezione vecchia di quasi due secoli, e un pezzo
 della sua storia si è svolto in Italia, a Torino. Nel 1840 il matematico
@@ -583,9 +582,9 @@ totale medio sopra $25$ è un miglioramento.
 
 «Agire nel modo migliore possibile» significa, alla fine, scegliere le
 mosse che rendono quel punteggio il più alto possibile. Buona parte
-dell'intelligenza artificiale moderna, sotto sotto, funziona così: si sceglie
+dell'intelligenza artificiale moderna, sotto sotto, funziona così: [si sceglie
 un numero da massimizzare (o un errore da rendere minimo) e si lascia che sia
-la macchina a scoprire come.
+la macchina a scoprire come]{.pt-matita}.
 
 Un giro solo, però, dice poco. Il robot, infatti, vale per come pulirà le
 stanze che deve ancora vedere, come il salotto coi mobili spostati o la casa di
@@ -673,8 +672,8 @@ l'ottimizzazione trovi un ottimo globale.
 Gran parte dei metodi di apprendimento sono variazioni su questo tema. Ad
 esempio, la regressione minimizza un errore quadratico medio, la
 classificazione una cross-entropy, il reinforcement learning massimizza una
-ricompensa cumulata attesa. Cambiano $\mathcal{L}$ e il modo di calcolare il
-minimo, non lo schema.
+ricompensa cumulata attesa. [Cambiano $\mathcal{L}$ e il modo di calcolare il
+minimo, non lo schema]{.pt-matita}.
 
 Le eccezioni sono poche, e mostrano due modi di uscire dal quadro. Le GAN
 sostituiscono la minimizzazione di una funzione con l'equilibrio di un gioco fra
@@ -700,8 +699,8 @@ tratta {doc}`Esplorazione e ricompensa
 Se le regole si ricavano dagli esempi, servono molti esempi e macchine capaci
 di elaborarli. È la risposta alla domanda che tutti fanno: perché un campo
 nato negli anni Cinquanta ha dato i risultati di oggi solo dopo il 2012.
-Servivano insieme i dati, la potenza di calcolo e gli algoritmi capaci di
-sfruttarli, e per decenni ne mancava almeno uno.
+[Servivano insieme i dati, la potenza di calcolo e gli algoritmi capaci di
+sfruttarli]{.pt-matita}, e per decenni ne mancava almeno uno.
 
 L'AI deve molto all'informatica e all'elettronica. Le hanno dato i linguaggi
 con cui si scrivono i programmi, Python fra questi. Le hanno dato le

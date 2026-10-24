@@ -45,8 +45,8 @@ caratteri del corpus la `s` compare 50 volte e la coppia `ss` 25: il punteggio �
 
 Il motivo è che la `s` è talmente diffusa che le sue coppie non stupiscono
 nessuno, mentre la `a`, che si presenta sempre e solo dopo la `b`, è una
-compagnia troppo fedele per essere una coincidenza. BPE premia ciò che ricorre,
-WordPiece premia ciò che sta insieme per una ragione.
+compagnia troppo fedele per essere una coincidenza. [BPE premia ciò che ricorre,
+WordPiece premia ciò che sta insieme per una ragione]{.pt-matita}.
 
 Questo criterio, però, non guarda quanto lavoro farà la fusione. Torna al
 giornale e mettiamo che «acqua» compaia 40 volte e «minerale» 12, sempre
@@ -120,9 +120,9 @@ caratteri):
 | `s s` | 25 | 50 | 50 | 0,0100 |
 
 La coppia più frequente in assoluto, `s s`, scende all'ottavo posto su dodici;
-vince `b a`, che ha un terzo delle occorrenze ma due componenti rari. Il
+vince `b a`, che ha un terzo delle occorrenze ma due componenti rari. [Il
 denominatore fa da correttivo: penalizza le coppie che devono la loro frequenza
-alla diffusione dei pezzi.
+alla diffusione dei pezzi]{.pt-matita}.
 
 Il criterio originale, però, sulle stesse cinque parole non avrebbe scelto
 `ba`. Lo si vede ricalcolando per ogni coppia il guadagno esatto di
@@ -300,8 +300,8 @@ l'incastro di perline più piccole, e queste hanno un nome, byte. Ne esistono 25
 tipi, tante quante le combinazioni di otto caselle da zero o uno con cui un
 computer scrive qualunque cosa: non 256 nei testi che si sono visti, 256 e
 basta, e non le ha scelte nessuno. Un ideogramma o un'emoji ne occupano più
-d'una, ma sempre di quelle. La scatola di partenza copre tutto per costruzione,
-e «sconosciuto» esce dal dizionario.
+d'una, ma sempre di quelle. [La scatola di partenza copre tutto per costruzione,
+e «sconosciuto» esce dal dizionario]{.pt-matita}.
 
 Il rovescio sta nella lunghezza della collana. Una lettera accentata
 sono due perline, un ideogramma tre, un'emoji quattro; se quelle sequenze non
@@ -379,9 +379,9 @@ Un'ulteriore tecnica, che SentencePiece non ha inventato ma che si combina con
 le prime due, è il **BPE a livello di byte**, adottato da GPT-2
 {cite}`radford2019language`: si applica BPE non ai caratteri Unicode (che sono
 oltre centomila, un alfabeto di base già proibitivo) ma alla codifica UTF-8 del
-testo. L'alfabeto di base ha allora esattamente $|\Sigma| = 256$ elementi, e il
-tasso di `<UNK>` è zero per costruzione, su qualunque input: testo, codice
-sorgente, perfino dati binari.
+testo. [L'alfabeto di base ha allora esattamente $|\Sigma| = 256$ elementi, e
+il tasso di `<UNK>` è zero per costruzione, su qualunque input]{.pt-matita}:
+testo, codice sorgente, perfino dati binari.
 
 Il limite è che un carattere fuori ASCII occupa da 2 a 4 byte: se le sue
 sequenze non sono abbastanza frequenti da meritare una fusione, un singolo
@@ -554,13 +554,14 @@ nessun gradiente ha mai regolato, in mezzo a numeri regolati per mesi. E
 cambiare la segmentazione di un token esistente è peggio, perché tutto ciò che
 il modello ha imparato su quella riga si riferisce ormai a un'altra cosa.
 
-Il tokenizzatore è quindi parte del modello quanto i suoi pesi, si distribuisce
-insieme a essi, e se il dominio d'uso non era rappresentato nel corpus su cui è
-stato costruito (una lingua minore, la notazione chimica, un linguaggio di
-programmazione poco diffuso) quel testo resterà frammentato per tutta la vita
-del modello. Si può porre rimedio solo riaddestrando, o almeno estendendo il
-vocabolario e riadattando gli embedding nuovi: operazioni entrambe costose,
-motivo per cui il tokenizzatore si sceglie all'inizio e con cura.
+[Il tokenizzatore è quindi parte del modello quanto i suoi pesi]{.pt-matita},
+si distribuisce insieme a essi, e se il dominio d'uso non era rappresentato nel
+corpus su cui è stato costruito (una lingua minore, la notazione chimica, un
+linguaggio di programmazione poco diffuso) quel testo resterà frammentato per
+tutta la vita del modello. Si può porre rimedio solo riaddestrando, o almeno
+estendendo il vocabolario e riadattando gli embedding nuovi: operazioni
+entrambe costose, motivo per cui il tokenizzatore si sceglie all'inizio e con
+cura.
 
 ## Un'idea che vale oltre il testo
 
@@ -606,8 +607,8 @@ una regola, nel secondo lo decide un modello, che però non si impara insieme al
 resto della rete, e gli autori lo indicano come direzione futura.
 
 In definitiva, se il tokenizzatore resiste, la ragione è economica più che
-teorica: i simboli accorciano le sequenze, e la lunghezza delle sequenze è ciò
-che si paga.
+teorica: [i simboli accorciano le sequenze, e la lunghezza delle sequenze è ciò
+che si paga]{.pt-matita}.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

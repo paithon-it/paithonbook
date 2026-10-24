@@ -71,8 +71,8 @@ frequenza.
 
 Il nome viene dalla teoria statistica delle decisioni, dove il rischio è la
 perdita che ci si aspetta, ed «empirico» vuol dire misurato sui dati. Il primo
-dei due numeri si calcola, il secondo no, e la teoria dell'apprendimento è lo
-studio della distanza fra i due.
+dei due numeri si calcola, il secondo no, e [la teoria dell'apprendimento è lo
+studio della distanza fra i due]{.pt-matita}.
 
 `````{tab} Elementare
 

@@ -53,7 +53,7 @@
   postilla: "Gli errori diventano osservazioni; qui il modello è una regola scritta a mano"
 - inizio: "L'esecuzione stampa la traccia completa: i"
   impronta: "e67778d3fa8c"
-  postilla: "Tre iterazioni, e a ogni giro il contesto si allunga di un blocco"
+  postilla: "Tre iterazioni, e a ognuna il contesto si allunga di un blocco"
 - inizio: "La traccia è scritta da regole,"
   impronta: "45a2a0f32480"
   postilla: "Basta un LLM vero al posto della regola per avere l'ossatura degli assistenti"

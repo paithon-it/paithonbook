@@ -56,8 +56,8 @@ non cambia: la rete è quella del supervisionato, la perdita è la stessa
 cross-entropia, e il bersaglio prende il posto dell'etichetta. Nei metodi che
 confrontano due versioni della stessa immagine cambiano invece anche la perdita
 e l'architettura, ed è la materia delle {doc}`quattro famiglie
-</AutoSupervisione/famiglie>`. In tutti i casi la risposta c'era già, e la si è
-solo nascosta per un momento.
+</AutoSupervisione/famiglie>`. In tutti i casi [la risposta c'era già, e la si è
+solo nascosta per un momento]{.pt-matita}.
 
 Detta così sembra un trucco: che cosa resta da imparare, da una risposta che
 si conosceva già? Lo dice la quantità di informazione che il bersaglio può
@@ -185,9 +185,9 @@ appena un fattore dieci. Il salto sta nella terza riga, il brano di testo che
 il modello legge in un colpo solo, ottomila pezzetti di parola: vale quasi
 quattordicimila etichette e centotrentanovemila verdetti di fine partita, come
 mostrano i due rapporti stampati dal programma. Un brano che nessuno ha
-annotato offre quindi un tetto di informazione migliaia di volte più alto di
-una fotografia con la sua etichetta; quanto di quel tetto il modello usi
-davvero è un'altra domanda.
+annotato offre quindi [un tetto di informazione migliaia di volte più alto di
+una fotografia con la sua etichetta]{.pt-matita}; quanto di quel tetto il
+modello usi davvero è un'altra domanda.
 
 Senza una precisazione, però, questi numeri prometterebbero più di quanto
 possono mantenere.
@@ -269,11 +269,11 @@ un modo di dire.
 
 All'ISSCC del 2019, un convegno sui circuiti integrati, LeCun mostra la stessa
 diapositiva con una parola cambiata: dove diceva «non supervisionato» adesso
-dice «auto-supervisionato». Il cambio è di sostanza, e la ragione l'ha scritta
-lui stesso, insieme a Ishan Misra, in un testo del 2021 che è la formulazione
-più chiara di tutta questa faccenda {cite}`lecun2021darkmatter`: «non
-supervisionato» è un termine mal definito e fuorviante, perché suggerisce che
-l'apprendimento non usi supervisione affatto, mentre in realtà
+dice «auto-supervisionato». [Il cambio è di sostanza]{.pt-matita}, e la ragione
+l'ha scritta lui stesso, insieme a Ishan Misra, in un testo del 2021 che è la
+formulazione più chiara di tutta questa faccenda {cite}`lecun2021darkmatter`:
+«non supervisionato» è un termine mal definito e fuorviante, perché suggerisce
+che l'apprendimento non usi supervisione affatto, mentre in realtà
 l'auto-supervisione «usa molti più segnali di correzione di quanti ne usino i
 metodi supervisionati e per rinforzo standard».
 
@@ -309,12 +309,12 @@ dopo.
 | {doc}`Allineare due spazi </VisioneLinguaggio/allineare-due-spazi>` | riappaiare l'immagine con la sua didascalia | uno spazio comune fra vista e lingua |
 | {doc}`World model </WorldModels/overview>` | prevedere come continua la scena | un simulatore interno |
 
-Cinque pretesti diversi e un meccanismo solo, con il linguaggio che ci arriva
-per due strade, la parola coperta e la parola successiva. La colonna di mezzo
-cambia sempre; quella di destra dice quasi sempre la stessa cosa, una
-rappresentazione, cioè il vettore $\mathbf{h} = f_\theta(\mathbf{x})$ che la
-parte di rete chiamata encoder, $f_\theta$, calcola da ogni dato $\mathbf{x}$,
-e che i compiti successivi usano come ingresso.
+[Cinque pretesti diversi e un meccanismo solo]{.pt-matita}, con il linguaggio
+che ci arriva per due strade, la parola coperta e la parola successiva. La
+colonna di mezzo cambia sempre; quella di destra dice quasi sempre la stessa
+cosa, una rappresentazione, cioè il vettore $\mathbf{h} = f_\theta(\mathbf{x})$
+che la parte di rete chiamata encoder, $f_\theta$, calcola da ogni dato
+$\mathbf{x}$, e che i compiti successivi usano come ingresso.
 
 Quando il pretesto si scarta, si tiene l'encoder. Fa eccezione il modello di
 linguaggio che indovina la parola successiva: lì il pretesto coincide con l'uso,

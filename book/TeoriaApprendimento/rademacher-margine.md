@@ -36,13 +36,13 @@ un indovino che ha una spiegazione per tutto: quando poi indovina anche le
 risposte vere, non sta dicendo niente. Una famiglia che resta vicina allo zero,
 quando indovina le risposte vere, sta dicendo qualcosa.
 
-La media di quei punteggi si chiama complessità di Rademacher, dal
-matematico Hans Rademacher, che studiò successioni di più uno e meno uno che si
-comportano come monete lanciate a caso. Ha un pregio che la dimensione VC non
-ha: si misura sui propri esempi, non sul caso peggiore immaginabile. Lo stesso
-righello, ad esempio, su punti tutti lungo una linea può soltanto tagliare la
-fila in due, una parte per colore, e insegue le monete peggio che su punti
-sparpagliati. La misura se ne accorge, la dimensione VC no.
+La media di quei punteggi si chiama complessità di Rademacher, dal matematico
+Hans Rademacher, che studiò successioni di più uno e meno uno che si comportano
+come monete lanciate a caso. [Ha un pregio che la dimensione VC non ha: si
+misura sui propri esempi, non sul caso peggiore immaginabile]{.pt-matita}. Lo
+stesso righello, ad esempio, su punti tutti lungo una linea può soltanto
+tagliare la fila in due, una parte per colore, e insegue le monete peggio che
+su punti sparpagliati. La misura se ne accorge, la dimensione VC no.
 
 La garanzia che ne esce ha la stessa forma di quella della dimensione VC.
 L'errore vero sta sotto l'errore sugli esempi, più quel punteggio sulle monete,
@@ -100,8 +100,8 @@ Il legame con la teoria VC passa per il lemma di Massart (teorema 3.7), che per
 le famiglie a valori $\pm1$ dà
 $\mathfrak{R}_m(\mathcal{H})\le\sqrt{2\log\Pi_{\mathcal{H}}(m)/m}$ (corollario
 3.8). Con il lemma di Sauer si ottiene di nuovo $O\big(\sqrt{d\log m/m}\big)$,
-cioè Rademacher non è mai peggio di VC a meno delle costanti, e sui dati buoni
-è meglio.
+cioè [Rademacher non è mai peggio di VC a meno delle costanti, e sui dati buoni
+è meglio]{.pt-matita}.
 
 Il costo è computazionale: calcolare $\hat{\mathfrak{R}}_S$ richiede di
 minimizzare l'errore empirico su etichette casuali, un problema NP-difficile per
@@ -125,11 +125,12 @@ colorazioni una strada così non passa. È la strada più larga della
 {doc}`sezione sulle SVM </MachineLearning/svm>`, e anche un modo per tenere
 bassa la ricchezza della famiglia.
 
-La larghezza però va misurata rispetto a quanto sono sparsi i punti. Una
-strada larga un metro fra punti sparsi su un chilometro è un sentiero; fra
-punti raccolti in una stanza è un'autostrada. Conta quindi il rapporto fra la
-larghezza (il margine, come lo chiama la SVM) e l'ingombro dei punti, ed è da
-questo che dipende quanto il righello riesce a inseguire le monete.
+La larghezza però va misurata rispetto a quanto sono sparsi i punti. Una strada
+larga un metro fra punti sparsi su un chilometro è un sentiero; fra punti
+raccolti in una stanza è un'autostrada. [Conta quindi il rapporto fra la
+larghezza (il margine, come lo chiama la SVM) e l'ingombro dei
+punti]{.pt-matita}, ed è da questo che dipende quanto il righello riesce a
+inseguire le monete.
 
 Non dipende invece dal numero di direzioni in cui i punti possono stare. Su un
 foglio un righello qualsiasi frantuma tre punti; in uno spazio di mille
@@ -195,9 +196,9 @@ che discende dal bound generale
 $R(h)\le\hat{R}_{S,\rho}(h)+\frac{2}{\rho}\mathfrak{R}_m(\mathcal{H})+\sqrt{\log(1/\delta)/(2m)}$
 (teorema 5.8).
 
-In altri termini, conta il rapporto $r\Lambda/\rho$, l'inverso del margine
-normalizzato, e non la dimensione $n$ dello spazio. Per gli iperpiani senza
-vincolo sui pesi, invece, con il termine noto che la SVM ha,
+In altri termini, [conta il rapporto $r\Lambda/\rho$, l'inverso del margine
+normalizzato, e non la dimensione $n$ dello spazio]{.pt-matita}. Per gli
+iperpiani senza vincolo sui pesi, invece, con il termine noto che la SVM ha,
 $\mathrm{VCdim}=n+1$ (senza, $n$), e con $m\le n+1$ il bound VC è vuoto. Il
 massimo margine della SVM, $\min\lVert\mathbf{w}\rVert$ a margine funzionale
 unitario, è la minimizzazione diretta di quel rapporto.

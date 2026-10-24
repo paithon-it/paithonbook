@@ -21,7 +21,7 @@ byte al secondo la memoria riesce a consegnare a regime, cioè una volta avviato
 il flusso (è il *throughput* di prima, misurato in byte invece che in compiti
 finiti).
 
-I warp coprono la latenza, ma la banda è finita e non si nasconde. In
+[I warp coprono la latenza, ma la banda è finita e non si nasconde]{.pt-matita}. In
 moltissimi programmi è proprio la banda a decidere le prestazioni, più della
 potenza di calcolo: è il cosiddetto «muro della banda». Raddoppiare le unità di
 calcolo non serve, se i byte non arrivano più in fretta.
@@ -120,9 +120,9 @@ quante persone siedano al tavolo.
 Per l'armadio vero, la HBM, sono qualche migliaio di miliardi di byte al
 secondo (qualche terabyte al secondo, TB/s); il cavo verso il deposito ne porta
 qualche decina di miliardi (decine di gigabyte al secondo, GB/s), cioè
-da dieci a cento volte meno. In definitiva, chi programma una GPU fa lo stesso
+da dieci a cento volte meno. In definitiva, [chi programma una GPU fa lo stesso
 lavoro di chi si tiene in ordine la scrivania: vicino i fogli che servono
-adesso, e in giro per la stanza il meno possibile.
+adesso, e in giro per la stanza il meno possibile]{.pt-matita}.
 `````
 
 `````{tab} Superiore
@@ -187,8 +187,8 @@ nessuno dei due casi il triangolo racconta le capienze totali). Il triangolo
 dice bene quanto sia scarsa la memoria per chi la usa, non quanta ce ne sia a
 ciascun piano.
 
-In sintesi, tenere il lavoro il più in alto possibile nella piramide è l'intera
-arte dell'ottimizzazione su GPU.
+In sintesi, [tenere il lavoro il più in alto possibile nella piramide è l'intera
+arte dell'ottimizzazione su GPU]{.pt-matita}.
 `````
 
 ## Accessi coalescenti: leggere in fila
@@ -196,8 +196,8 @@ arte dell'ottimizzazione su GPU.
 Sapere *dove* stanno i dati non basta: conta anche *come* li si chiede. Qui
 entra in gioco un dettaglio che può far buttare via i sette ottavi della banda
 senza che nessuno se ne accorga. La memoria non consegna un byte alla volta ma
-a pacchi di indirizzi vicini, quindi chiedere numeri consecutivi è molto più
-rapido che chiedere gli stessi numeri sparsi.
+a pacchi di indirizzi vicini, quindi [chiedere numeri consecutivi è molto più
+rapido che chiedere gli stessi numeri sparsi]{.pt-matita}.
 
 Quando i 32 thread di un warp chiedono indirizzi contigui, l'hardware fonde le
 richieste in poche consegne piene. Da questo fondersi viene il nome del
@@ -376,8 +376,8 @@ pavimento (in inglese *tile*, parola che resta per gli oggetti del codice). Il
 tiling è il motore del prodotto fra matrici, l'operazione in cui sta quasi
 tutta l'aritmetica di una rete. A questo prodotto è dedicata la {doc}`sezione
 sul GEMM <gemm-e-tensor-core>`, dal nome (*GEneral Matrix Multiply*) con cui lo
-chiamano le librerie di calcolo. In definitiva, la shared memory esiste per
-rendere possibile questo riuso.
+chiamano le librerie di calcolo. In definitiva, [la shared memory esiste per
+rendere possibile questo riuso]{.pt-matita}.
 
 ## Il modello roofline: limitati dalle operazioni o dai byte?
 
@@ -462,8 +462,8 @@ cuochi. È un numero che si sposta, e sempre nella stessa direzione. Se accendi
 le unità costruite apposta per moltiplicare due tabelloni, i *tensor core*, il
 pareggio sale oltre i centocinquanta, perché i cuochi sono diventati sedici
 volte più svelti mentre il magazzino consegna alla stessa velocità di prima. Da
-qui la cura, per chi sta sotto: fare più conti con gli stessi ingredienti prima
-di rimandarli indietro.
+qui la cura, per chi sta sotto: [fare più conti con gli stessi ingredienti prima
+di rimandarli indietro]{.pt-matita}.
 `````
 
 `````{tab} Superiore
@@ -547,15 +547,15 @@ Due esempi concreti, con dati in `float32` (4 byte):
   GEMM <gemm-e-tensor-core>` riprenderà questo calcolo per mostrare a che punto
   si arrivi in pratica (e perché non serva arrivarci).
 
-Ne segue *perché* la kernel fusion conviene: fondere tre operazioni
-elemento-per-elemento in un solo kernel significa leggere gli input una volta
-e scrivere l'output una volta invece di tre (meno byte a parità di FLOP, cioè
-intensità $I$ più alta). Sul roofline l'operazione scivola verso destra, dal
-tetto di banda verso il tetto di calcolo. I tensor core, infine, alzano
-$P_\text{picco}$ di un ordine di grandezza, e così spostano il ginocchio a
-destra e rendono *ancora più* facile ritrovarsi memory-bound. Ecco perché,
-nell'era dei tensor core, la partita si gioca sempre più sui byte e sempre
-meno sui FLOP.
+Ne segue *perché* la kernel fusion conviene: [fondere tre operazioni
+elemento-per-elemento in un solo kernel significa leggere gli input una volta e
+scrivere l'output una volta invece di tre]{.pt-matita} (meno byte a parità di
+FLOP, cioè intensità $I$ più alta). Sul roofline l'operazione scivola verso
+destra, dal tetto di banda verso il tetto di calcolo. I tensor core, infine,
+alzano $P_\text{picco}$ di un ordine di grandezza, e così spostano il ginocchio
+a destra e rendono *ancora più* facile ritrovarsi memory-bound. Ecco perché,
+nell'era dei tensor core, la partita si gioca sempre più sui byte e sempre meno
+sui FLOP.
 `````
 
 Ogni tecnica che segue si legge sul roofline. Il tiling del prodotto fra
@@ -612,8 +612,8 @@ risultato.
 In questo modo il fattorino fa molti meno viaggi, e le corsie lavorano in
 parallelo, ciascuna con il suo aiutante. Non è che le corsie, tutte insieme,
 aprano più scatolette al minuto di quante il fattorino ne porterebbe in cucina:
-il guadagno è la strada che ogni scatoletta non fa più, e la fatica di farla,
-mentre i cuochi restano liberi per il resto.
+[il guadagno è la strada che ogni scatoletta non fa più, e la fatica di
+farla]{.pt-matita}, mentre i cuochi restano liberi per il resto.
 
 Gli aiutanti del magazzino, però, non sono i cuochi della cucina. Hanno banchi
 piccoli e attrezzi semplici, e soprattutto non devono scaldare l'ambiente,
@@ -658,14 +658,14 @@ cambia il collegamento su cui si contano i byte: con molte unità che leggono in
 parallelo, ciascuna dal proprio banco, la banda complessiva cresce con quante
 sono.
 
-Nel Neurocube, però, non succede. I sedici vault, a 10 GB/s l'uno, fanno
-160 GB/s, e i collegamenti esterni ne portano fino a 320 (nella Tabella I del
+Nel Neurocube, però, non succede. I sedici vault, a 10 GB/s l'uno, fanno 160
+GB/s, e i collegamenti esterni ne portano fino a 320 (nella Tabella I del
 lavoro, moltiplicando la banda per canale per il numero di canali; il sistema
-valutato ne ha quattro, cioè 160). Il guadagno è quindi in energia e non in
-banda: nella stessa tabella un bit che sale per le TSV costa 3,7 pJ, uno che
-esce dai collegamenti esterni 10, e la potenza è il vincolo di tutta la pila.
-Il vantaggio sta nel non far viaggiare ogni dato fino al processore, che resta
-libero e riceve solo la configurazione.
+valutato ne ha quattro, cioè 160). [Il guadagno è quindi in energia e non in
+banda]{.pt-matita}: nella stessa tabella un bit che sale per le TSV costa 3,7
+pJ, uno che esce dai collegamenti esterni 10, e la potenza è il vincolo di
+tutta la pila. Il vantaggio sta nel non far viaggiare ogni dato fino al
+processore, che resta libero e riceve solo la configurazione.
 
 Per un kernel a sinistra del ginocchio (un prodotto matrice-vettore,
 un'operazione elemento per elemento) il calcolo in memoria è la leva giusta;

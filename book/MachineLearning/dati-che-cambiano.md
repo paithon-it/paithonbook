@@ -69,10 +69,10 @@ oggi.
 
 Se in un'urna ben mescolata il 30% delle palline è rosso, in una manciata di
 cento ne troverai più o meno trenta rosse. In altre parole, la manciata "parla"
-per l'urna intera. Ma se stanotte qualcuno sostituisce metà delle palline, la
-manciata pescata ieri non dice più nulla sull'urna di oggi. È successo a Google
-Flu Trends: l'urna (il modo in cui la gente usa un motore di ricerca) era
-cambiata, e nessuno aveva avvisato il modello.
+per l'urna intera. Ma se stanotte qualcuno sostituisce metà delle palline, [la
+manciata pescata ieri non dice più nulla sull'urna di oggi]{.pt-matita}. È
+successo a Google Flu Trends: l'urna (il modo in cui la gente usa un motore di
+ricerca) era cambiata, e nessuno aveva avvisato il modello.
 
 La manciata parla per l'urna anche a un'altra condizione, che riguarda il
 momento in cui si decide la domanda. Se «Quante rosse?» viene stabilito prima
@@ -112,8 +112,8 @@ dell'apprendimento </TeoriaApprendimento/overview>` tratta per esteso).
 l'overfitting, che di quella garanzia è appunto il controesempio: quando la
 capacità non è limitata, l'errore sul campione può essere azzerato senza che
 questo dica più nulla sull'errore atteso. Quando invece valgono entrambe le
-condizioni, campionamento i.i.d. e capacità limitata, minimizzare la loss
-empirica è una buona approssimazione del minimizzare il rischio vero.
+condizioni, campionamento i.i.d. e capacità limitata, [minimizzare la loss
+empirica è una buona approssimazione del minimizzare il rischio vero]{.pt-matita}.
 
 Quando le due distribuzioni divergono, $P_{\text{train}}(\mathbf{x}, y) \neq
 P_{\text{prod}}(\mathbf{x}, y)$, con $P_{\text{prod}}$ la distribuzione che il
@@ -196,8 +196,8 @@ arrivano da negozi legittimi; e intanto i truffatori hanno imparato a scrivere
 come una banca. Qui cambiano le domande e cambia anche la *risposta giusta alla
 stessa domanda*. Allo spam sono serviti anni; altrove la regola cambia da un
 giorno all'altro, come quando una legge nuova stabilisce che cosa conta come
-transazione sospetta. È il caso più insidioso, perché nessuna quantità di dati
-vecchi può insegnare una regola nuova.
+transazione sospetta. È il caso più insidioso, perché [nessuna quantità di dati
+vecchi può insegnare una regola nuova]{.pt-matita}.
 
 Nel mondo vero i tre cambiamenti non arrivano uno alla volta e ben separati.
 L'inverno porta insieme foto più scure e più abeti che margherite, cioè domande
@@ -228,8 +228,8 @@ quale condizionata resta ferma {cite}`morenotorres2012unifying`:
   il *real concept drift*; *concept drift* senza aggettivi indica di solito
   qualunque cambiamento della congiunta nel tempo {cite}`gama2014survey`.
 
-Ciascuna famiglia è un'ipotesi su come le due distribuzioni si legano, e senza
-nessuna ipotesi non si impara niente. Se ad esempio le etichette si
+[Ciascuna famiglia è un'ipotesi su come le due distribuzioni si legano, e senza
+nessuna ipotesi non si impara niente]{.pt-matita}. Se ad esempio le etichette si
 capovolgessero a parità di $P(\mathbf{x})$, nessun dato di addestramento
 potrebbe dirlo. Il covariate shift è l'ipotesi naturale quando $\mathbf{x}$
 causa $y$ (le caratteristiche di una casa determinano il prezzo), il label
@@ -254,10 +254,10 @@ addestramento, non sotto quella che il modello incontrerà dopo.
 `````{tab} Elementare
 
 Train, validation e test sono tre ritagli della *stessa fotografia*. Se la
-fotografia invecchia, invecchiano tutti e tre insieme, e i loro voti restano
-alti mentre il modello, nel mondo reale, comincia a sbagliare. È come guidare
-guardando lo specchietto retrovisore, che ti dice benissimo la strada già
-percorsa ma non la curva che sta arrivando.
+fotografia invecchia, [invecchiano tutti e tre insieme, e i loro voti restano
+alti mentre il modello, nel mondo reale, comincia a sbagliare]{.pt-matita}. È
+come guidare guardando lo specchietto retrovisore, che ti dice benissimo la
+strada già percorsa ma non la curva che sta arrivando.
 
 Google Flu Trends andava bene sui dati di validazione, perché era stato
 validato sul passato. Quel voto misurava quanto il modello somigliasse al
@@ -281,11 +281,11 @@ di un rimescolamento che gli lascia sbirciare il domani.
 `````{tab} Superiore
 
 La stima di validazione approssima $\mathbb{E}_{(\mathbf{x},y)\sim
-P_{\text{train}}}\!\left[\ell\big(f_\theta(\mathbf{x}), y\big)\right]$, cioè
-un valore atteso sotto la distribuzione di addestramento. Di conseguenza, se la
-distribuzione operativa è un'altra, questo numero non vincola l'errore reale
-senza un'ipotesi sulla distanza fra le due distribuzioni, e può restare ottimo
-mentre l'errore sotto $P_{\text{prod}}$ diverge.
+P_{\text{train}}}\!\left[\ell\big(f_\theta(\mathbf{x}), y\big)\right]$, cioè un
+valore atteso sotto la distribuzione di addestramento. Di conseguenza, se la
+distribuzione operativa è un'altra, [questo numero non vincola l'errore reale
+senza un'ipotesi sulla distanza fra le due distribuzioni]{.pt-matita}, e può
+restare ottimo mentre l'errore sotto $P_{\text{prod}}$ diverge.
 
 Con dati temporali il problema si aggrava: la cross-validation rimescolata
 distrugge l'ordine cronologico e lascia che il modello "veda il futuro" dei
@@ -344,10 +344,10 @@ La stessa ripesatura ripara anche il caso della malattia diventata comune, dove
 i malati erano uno su mille e adesso sono uno su cinquanta: ogni malato del
 vecchio mucchio di esempi conta venti volte.
 
-Ripesare, però, corregge un solo difetto, quello di aver intervistato le persone
-sbagliate. Se nel frattempo la gente ha cambiato idea, i giovani del campione
-hanno espresso le opinioni di allora, e moltiplicare per quattro una risposta
-vecchia dà una risposta vecchia quattro volte.
+[Ripesare, però, corregge un solo difetto, quello di aver intervistato le
+persone sbagliate]{.pt-matita}. Se nel frattempo la gente ha cambiato idea, i
+giovani del campione hanno espresso le opinioni di allora, e moltiplicare per
+quattro una risposta vecchia dà una risposta vecchia quattro volte.
 
 Se sotto i trent'anni non è stato intervistato nessuno, non c'è peso che
 tenga, perché qualunque numero moltiplicato per zero fa zero. Di quella fascia
@@ -420,10 +420,10 @@ $w(\mathbf{x}) =
 P(\text{prod}\mid\mathbf{x})}$. È lo stesso classificatore che serve
 ad accorgersi della deriva.
 
-La ripesatura serve soprattutto quando il modello è mal specificato: se la
-famiglia contiene la vera $P(y \mid \mathbf{x})$, il minimo non pesato è già
-consistente e i pesi aggiungono soltanto varianza
-{cite}`shimodaira2000improving`.
+[La ripesatura serve soprattutto quando il modello è mal
+specificato]{.pt-matita}: se la famiglia contiene la vera $P(y \mid
+\mathbf{x})$, il minimo non pesato è già consistente e i pesi aggiungono
+soltanto varianza {cite}`shimodaira2000improving`.
 
 Per il *label shift* il calcolo è più semplice, perché il rapporto dipende dalla
 sola classe. Con $P(\mathbf{x} \mid y)$ invariata, $p_{\text{prod}}(y \mid
@@ -552,10 +552,11 @@ A fine anno, con tutte le email davanti, cerchi il miglior filtro fisso: quello
 che, applicato dal primo giorno, avrebbe sbagliato meno di tutti. Il rimpianto è
 quanto il filtro che ha imparato strada facendo ha sbagliato in più.
 
-Un teorema garantisce che il rimpianto cresce al più come la radice del numero
-di email, cioè più piano delle email stesse. Se per esempio dopo cento email
-fosse dieci, dopo diecimila sarebbe al più cento, e il rimpianto per email
-scenderebbe da un decimo a un centesimo. Per email, quindi, tende a zero.
+Un teorema garantisce che [il rimpianto cresce al più come la radice del numero
+di email, cioè più piano delle email stesse]{.pt-matita}. Se per esempio dopo
+cento email fosse dieci, dopo diecimila sarebbe al più cento, e il rimpianto
+per email scenderebbe da un decimo a un centesimo. Per email, quindi, tende a
+zero.
 
 Più piano della radice, in generale, non si può promettere. Se le email,
 infatti, fossero decise a testa o croce nessun filtro potrebbe indovinarle;
@@ -630,10 +631,10 @@ $$
 $$
 
 e con $\|\nabla \ell_t\| \le G$ e $\eta_t = D/(G\sqrt{t})$ garantisce $R_T \le
-\tfrac{3}{2}\,GD\sqrt{T}$ {cite}`hazan2016introduction`. L'ordine $\sqrt{T}$
-non si migliora senza altre ipotesi. Con perdite lineari scelte a caso,
-infatti, ogni algoritmo subisce un rimpianto atteso $\Omega(GD\sqrt{T})$. Con
-più struttura, invece, l'ordine migliora: se le $\ell_t$ sono
+\tfrac{3}{2}\,GD\sqrt{T}$ {cite}`hazan2016introduction`. [L'ordine $\sqrt{T}$
+non si migliora senza altre ipotesi]{.pt-matita}. Con perdite lineari scelte a
+caso, infatti, ogni algoritmo subisce un rimpianto atteso $\Omega(GD\sqrt{T})$.
+Con più struttura, invece, l'ordine migliora: se le $\ell_t$ sono
 $\alpha$-fortemente convesse, il passo $\eta_t = 1/(\alpha t)$ porta il
 rimpianto a $O\big((G^2/\alpha)\log T\big)$ {cite}`hazan2007logarithmic`.
 
@@ -885,10 +886,10 @@ Se invece i consigli spostano molto i gusti, ogni settimana il modello trova un
 pubblico diverso da quello su cui si è preparato, e i riaddestramenti possono
 girare senza fermarsi mai.
 
-Anche quando ci si ferma, l'equilibrio può non essere il migliore possibile,
-perché il modello e i gusti che ha contribuito a creare si danno ragione a
-vicenda. Il video di cucina che non porterà mai alla musica è un equilibrio di
-questo tipo.
+[Anche quando ci si ferma, l'equilibrio può non essere il migliore
+possibile]{.pt-matita}, perché il modello e i gusti che ha contribuito a creare
+si danno ragione a vicenda. Il video di cucina che non porterà mai alla musica
+è un equilibrio di questo tipo.
 
 `````
 
@@ -915,7 +916,7 @@ vicinanza è $W_1\big(\mathcal{D}(\theta), \mathcal{D}(\theta')\big) \le
 Wasserstein-1 fra distribuzioni e $\varepsilon < \gamma/\beta$.
 
 Sono ipotesi strette, e se una cade il riaddestramento può non convergere
-affatto. Un punto stabile non è necessariamente ottimo: il
+affatto. [Un punto stabile non è necessariamente ottimo]{.pt-matita}: il
 punto fisso del riaddestramento in generale non minimizza $\mathrm{PR}$.
 
 `````

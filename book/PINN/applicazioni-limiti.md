@@ -111,10 +111,10 @@ limiti: infatti solo con dati fabbricati la risposta vera si conosce e si può
 controllare se la ricostruzione sia corretta, ma quei dati sono più puliti di
 qualunque risonanza.
 
-Leggere il non misurabile a partire dal misurabile è la vera ragione per
-studiare le PINN, molto più che rifare il lavoro dei solutori classici, che lo
-fanno già benissimo (il metodo a passettini dell'apertura del capitolo, che
-avanza su una fitta rete di puntini).
+[Leggere il non misurabile a partire dal misurabile è la vera ragione per
+studiare le PINN]{.pt-matita}, molto più che rifare il lavoro dei solutori
+classici, che lo fanno già benissimo (il metodo a passettini dell'apertura del
+capitolo, che avanza su una fitta rete di puntini).
 
 ## Il problema inverso
 
@@ -136,8 +136,8 @@ che il lievito fosse il doppio.
 
 Eppure è quasi sempre la domanda che interessa di più, come la pressione sulla
 parete dal filmato del tracciante. La PINN affronta l'inverso con naturalezza:
-la dose ignota diventa un numero in più che l'addestramento regola insieme ai
-pesi, finché fisica e osservazioni non vanno d'accordo.
+[la dose ignota diventa un numero in più che l'addestramento regola insieme ai
+pesi]{.pt-matita}, finché fisica e osservazioni non vanno d'accordo.
 
 Indovinare le dosi da un assaggio, del resto, non l'ha inventato la rete. Al
 computer lo si fa da decenni con altri metodi, spesso spendendo meno. Della
@@ -182,8 +182,8 @@ differenza vera è che lo stato aggiunto richiede di derivare e scrivere, per
 quella specifica equazione, sia il solutore diretto sia quello aggiunto,
 mentre la PINN monta un unico problema non vincolato in $(\theta, \alpha)$ e
 assorbe misure sparse, rumorose e di natura eterogenea senza cambiare
-impianto. È un vantaggio di uniformità e di costo di implementazione, non
-di complessità algoritmica.
+impianto. [È un vantaggio di uniformità e di costo di implementazione, non
+di complessità algoritmica]{.pt-matita}.
 
 Non è nemmeno un vantaggio della *rete*. La stessa formulazione (residuo
 discreto più dati, minimizzati insieme al parametro incognito) si può montare
@@ -256,8 +256,8 @@ inglese si chiamano *full-waveform inversion* (simulano le onde in un modello
 del sottosuolo e lo correggono finché i sismogrammi calcolati coincidono con
 quelli registrati), e sono maturi e difficili da battere.
 
-**Clima e meteo.** I grandi modelli meteorologici neurali che negli ultimi anni
-hanno fatto notizia non sono PINN. GraphCast, una {doc}`rete a grafo
+**Clima e meteo.** [I grandi modelli meteorologici neurali che negli ultimi anni
+hanno fatto notizia non sono PINN]{.pt-matita}. GraphCast, una {doc}`rete a grafo
 </GraphNeuralNetwork/architetture-applicazioni>`, prevede dieci giorni su tutto
 il pianeta in meno di un minuto {cite}`lam2023graphcast`, e FourCastNet una
 settimana in meno di due secondi {cite}`pathak2022fourcastnet`, ma nella loss
@@ -569,11 +569,11 @@ manca del tutto: si dimostra, sotto ipotesi che si sanno controllare prima di
 partire, che infittendo i puntini l'errore scende, e pure di quanto.
 
 Una PINN che impiega minuti dove un solutore maturo impiega millisecondi, e che
-ogni tanto fallisce senza preavviso, è un passo indietro. In definitiva il
-vantaggio delle PINN, quando c'è, sta in tre casi: quando misure e leggi vanno
-usate insieme per rispondere alla stessa domanda; quando la risposta dipende da
-così tante grandezze che i puntini da mettere sarebbero più di quanti un
-computer ne possa tenere; e quando il problema è inverso.
+ogni tanto fallisce senza preavviso, è un passo indietro. In definitiva [il
+vantaggio delle PINN, quando c'è, sta in tre casi]{.pt-matita}: quando misure e
+leggi vanno usate insieme per rispondere alla stessa domanda; quando la
+risposta dipende da così tante grandezze che i puntini da mettere sarebbero più
+di quanti un computer ne possa tenere; e quando il problema è inverso.
 
 ## Gli operatori neurali: imparare il mestiere, non il compito
 
@@ -625,8 +625,8 @@ soluzione* di un problema, imparano il procedimento che porta dalla domanda
 alla risposta: dammi una temperatura di partenza qualsiasi, un materiale che
 lascia passare il calore più o meno in fretta, e ti restituisco subito la
 curva, senza riaddestrare niente. È un'approssimazione, buona ma non esatta, e
-arriva in un istante. Hai imparato il mestiere, non il singolo compito, e puoi
-riusarlo all'infinito.
+arriva in un istante. [Hai imparato il mestiere, non il singolo
+compito]{.pt-matita}, e puoi riusarlo all'infinito.
 
 Il mestiere ha i suoi confini, come li ha quello di una persona. Chi si è
 allenato sulle sbarre di ferro che si scaldano non sa per questo come si
@@ -645,30 +645,30 @@ restituisce un altro.
 `````{tab} Superiore
 
 Un operatore neurale approssima una mappa $\mathcal{G}: \mathcal{A} \to
-\mathcal{U}$ tra **spazi di funzioni**: l'ingresso non è un vettore ma una
-funzione intera (il campo delle condizioni iniziali, dei coefficienti, della
-sorgente) e l'uscita è la funzione soluzione. Due architetture hanno segnato il
-campo. Il **DeepONet** di Lu, Jin, Pang, Zhang e Karniadakis poggia sul teorema
-di approssimazione universale *degli operatori*, dimostrato da Tianping Chen e
-Hong Chen nel 1995 per operatori continui su un compatto di funzioni, e come
-tutti i teoremi di quella famiglia dice che una rete abbastanza grande esiste,
-non quanto debba essere grande {cite}`chen1995universal`: una rete *branch*
-codifica la funzione d'ingresso campionata su un insieme di sensori, una rete
-*trunk* codifica il punto di query, e il loro prodotto scalare dà il valore
-della soluzione lì {cite}`lu2021learning`. In formule, con $m$ sensori fissi
-$\mathbf{x}_1, \dots, \mathbf{x}_m$, $\mathcal{G}(a)(\mathbf{y}) \approx
-\sum_{k=1}^{p} b_k\big(a(\mathbf{x}_1), \dots,
-a(\mathbf{x}_m)\big)\,\tau_k(\mathbf{y})$, dove le $b_k$ sono le uscite della
-rete branch e le $\tau_k$ quelle della rete trunk (il preprint è del 2019, la
-rivista del 2021). Il **Fourier Neural Operator** di Li, Kovachki e colleghi
-parametrizza il nucleo integrale direttamente nello spazio di Fourier
-{cite}`li2021fourier`: ogni strato trasforma, tiene le sole frequenze basse e
-le ripesa con parametri appresi, antitrasforma. Le alte frequenze non sono
-perdute per sempre, altrimenti il filtro sarebbe semplicemente un passa-basso: a
-rigenerarle sono le nonlinearità fra uno strato e l'altro, mentre la
-trasformazione lineare che scorre accanto al ramo spettrale porta avanti quello
-che il taglio lascia fuori. Uno strato è $v_{\ell+1}(\mathbf{x}) =
-\sigma\big(\mathbf{W}_\ell\,v_\ell(\mathbf{x}) +
+\mathcal{U}$ tra **spazi di funzioni**: [l'ingresso non è un vettore ma una
+funzione intera]{.pt-matita} (il campo delle condizioni iniziali, dei
+coefficienti, della sorgente) e l'uscita è la funzione soluzione. Due
+architetture hanno segnato il campo. Il **DeepONet** di Lu, Jin, Pang, Zhang e
+Karniadakis poggia sul teorema di approssimazione universale *degli operatori*,
+dimostrato da Tianping Chen e Hong Chen nel 1995 per operatori continui su un
+compatto di funzioni, e come tutti i teoremi di quella famiglia dice che una
+rete abbastanza grande esiste, non quanto debba essere grande
+{cite}`chen1995universal`: una rete *branch* codifica la funzione d'ingresso
+campionata su un insieme di sensori, una rete *trunk* codifica il punto di
+query, e il loro prodotto scalare dà il valore della soluzione lì
+{cite}`lu2021learning`. In formule, con $m$ sensori fissi $\mathbf{x}_1, \dots,
+\mathbf{x}_m$, $\mathcal{G}(a)(\mathbf{y}) \approx \sum_{k=1}^{p}
+b_k\big(a(\mathbf{x}_1), \dots, a(\mathbf{x}_m)\big)\,\tau_k(\mathbf{y})$, dove
+le $b_k$ sono le uscite della rete branch e le $\tau_k$ quelle della rete trunk
+(il preprint è del 2019, la rivista del 2021). Il **Fourier Neural Operator**
+di Li, Kovachki e colleghi parametrizza il nucleo integrale direttamente nello
+spazio di Fourier {cite}`li2021fourier`: ogni strato trasforma, tiene le sole
+frequenze basse e le ripesa con parametri appresi, antitrasforma. Le alte
+frequenze non sono perdute per sempre, altrimenti il filtro sarebbe
+semplicemente un passa-basso: a rigenerarle sono le nonlinearità fra uno strato
+e l'altro, mentre la trasformazione lineare che scorre accanto al ramo
+spettrale porta avanti quello che il taglio lascia fuori. Uno strato è
+$v_{\ell+1}(\mathbf{x}) = \sigma\big(\mathbf{W}_\ell\,v_\ell(\mathbf{x}) +
 \mathcal{F}^{-1}\big(\mathbf{R}_\ell \cdot
 \mathcal{F}v_\ell\big)(\mathbf{x})\big)$, con $\mathcal{F}$ la trasformata di
 Fourier, $\mathbf{R}_\ell$ un tensore di pesi complessi che agisce sui soli
@@ -739,15 +739,15 @@ comprando.
 
 ## Congedo: far collaborare conoscenza e dati
 
-Le PINN valgono, alla fine, più come *simbolo* che come tecnica, e il simbolo
-è questo: non chiedono di scegliere fra la conoscenza umana e i dati. Per
-secoli la scienza ha scritto leggi e le ha risolte al computer; nel
-decennio abbondante che va dalla svolta del deep learning, attorno al 2012, a
-oggi, il machine learning ha spesso fatto l'opposto, lasciando che la
-struttura venisse dai dati, con vincoli leggeri come le simmetrie delle
-convoluzioni e dei grafi, e senza le leggi della fisica. Le PINN indicano una
-terza strada: mettere la legge scritta a mano e il dato misurato nella stessa
-funzione di costo (l'altro nome della loss), e lasciare che si correggano a
+Le PINN valgono, alla fine, più come *simbolo* che come tecnica, e il simbolo è
+questo: non chiedono di scegliere fra la conoscenza umana e i dati. Per secoli
+la scienza ha scritto leggi e le ha risolte al computer; nel decennio
+abbondante che va dalla svolta del deep learning, attorno al 2012, a oggi, il
+machine learning ha spesso fatto l'opposto, lasciando che la struttura venisse
+dai dati, con vincoli leggeri come le simmetrie delle convoluzioni e dei grafi,
+e senza le leggi della fisica. Le PINN indicano una terza strada: [mettere la
+legge scritta a mano e il dato misurato nella stessa funzione di
+costo]{.pt-matita} (l'altro nome della loss), e lasciare che si correggano a
 vicenda. La fisica riempie i vuoti che i dati non coprono; i dati piegano la
 fisica dove il modello è incompleto.
 

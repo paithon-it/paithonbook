@@ -77,11 +77,12 @@ scomparti, mille cose da ricordare; centomila scomparti, centomila. E per
 scegliere il pezzo da mettere adesso si passa in rassegna la scatola intera,
 quindi con dieci volte gli scomparti ci vuole dieci volte il tempo.
 
-La soluzione è una scatola mista, con i pezzi grandi per le cose che ricorrono
-(*rosso*, *casa*, *-mente*, *-zione*) e le lettere singole come riserva per
-tutto il resto. Quanti scomparti ci siano non lo decide l'algoritmo. Il numero
-si fissa prima di cominciare, qualche decina di migliaia di solito, e chi deve
-cavarsela in venti lingue lo alza, perché ogni lingua porta i suoi pezzi.
+[La soluzione è una scatola mista]{.pt-matita}, con i pezzi grandi per le cose
+che ricorrono (*rosso*, *casa*, *-mente*, *-zione*) e le lettere singole come
+riserva per tutto il resto. Quanti scomparti ci siano non lo decide
+l'algoritmo. Il numero si fissa prima di cominciare, qualche decina di migliaia
+di solito, e chi deve cavarsela in venti lingue lo alza, perché ogni lingua
+porta i suoi pezzi.
 
 Resta da decidere quali pezzi grandi tenere, dato che gli scomparti sono
 contati. Tutti gli algoritmi che seguono rispondono allo stesso modo, almeno
@@ -114,11 +115,11 @@ Inoltre la softmax finale opera su $|V|$ classi, e il suo costo cresce
 linearmente con la taglia.
 
 Le taglie usate in pratica (da qualche decina di migliaia a qualche centinaio
-di migliaia di token) stanno nella fascia in cui nessuno dei due costi domina
-l'altro, e la scelta si sposta verso l'alto quando il modello deve coprire
-molte lingue. Nessuno di questi algoritmi *sceglie* $|V|$: è un iperparametro,
-e ciascuno si limita a riempire i posti disponibili nel modo che ritiene
-migliore.
+di migliaia di token) [stanno nella fascia in cui nessuno dei due costi domina
+l'altro]{.pt-matita}, e la scelta si sposta verso l'alto quando il modello deve
+coprire molte lingue. Nessuno di questi algoritmi *sceglie* $|V|$: è un
+iperparametro, e ciascuno si limita a riempire i posti disponibili nel modo che
+ritiene migliore.
 
 `````
 
@@ -234,10 +235,10 @@ cambiati. In un modo o nell'altro è un lavoro che si fa una volta sola.
 Alla fine hai due cose: un elenco di pezzi (il vocabolario) e, soprattutto,
 l’**elenco ordinato delle fusioni**. Il secondo è più importante del primo,
 perché è la ricetta. Per tokenizzare una parola nuova non serve cercarla da
-nessuna parte: la si spezza in lettere e le si riapplicano le stesse fusioni,
-nello stesso ordine in cui erano state imparate. Se la parola contiene pezzi
-familiari, si ricompongono; se non ne contiene nessuno, resta una fila
-di lettere.
+nessuna parte: [la si spezza in lettere e le si riapplicano le stesse fusioni,
+nello stesso ordine in cui erano state imparate]{.pt-matita}. Se la parola
+contiene pezzi familiari, si ricompongono; se non ne contiene nessuno, resta
+una fila di lettere.
 
 Ripassare l'elenco intero per ogni parola sarebbe però uno spreco, perché le
 stesse poche parole tornano di continuo. Il risultato si scrive accanto alla
@@ -267,12 +268,12 @@ coppia $(\Sigma, M)$.
 
 La codifica di una stringa mai vista consiste nel ripercorrere la lista: si
 parte dai caratteri e si applicano $m_1, \dots, m_k$ in quest'ordine. L'ordine
-è sostanziale, non convenzionale: una fusione tardiva può agire su
-simboli che solo le precedenti sanno produrre, e invertirne due dà in generale
-una segmentazione diversa. La procedura è deterministica e priva di ricerca. In
-altri termini, BPE non cerca la segmentazione ottima di una parola, ma quella
-prodotta dalla sequenza delle sue fusioni, caratteristica che spiega risultati
-a prima vista sorprendenti.
+è sostanziale, non convenzionale: una fusione tardiva può agire su simboli che
+solo le precedenti sanno produrre, e invertirne due dà in generale una
+segmentazione diversa. La procedura è deterministica e priva di ricerca. In
+altri termini, [BPE non cerca la segmentazione ottima di una parola, ma quella
+prodotta dalla sequenza delle sue fusioni]{.pt-matita}, caratteristica che
+spiega risultati a prima vista sorprendenti.
 
 Quanto alla complessità, contare le coppie da zero a ogni passo richiede
 $O(N)$, con $N$ lunghezza totale del corpus in simboli, per un totale di
@@ -375,11 +376,11 @@ fusione: `sso`.
 sole quelle di `rosso`), e la fusione produce `rosso`: una parola intera diventa
 un singolo token.
 
-La regola è la stessa dei passi precedenti: `ss`, `sso` e `ro`
-si sono formati prima perché condivisi da più parole, e *rosso*, la parola più
-frequente del corpus, è la prima a saldarsi in un pezzo solo. Per questo, nei
-tokenizzatori reali, le parole più frequenti nel corpus di addestramento
-formano un token solo e quelle rare ne richiedono parecchi: nel vocabolario di
+La regola è la stessa dei passi precedenti: `ss`, `sso` e `ro` si sono formati
+prima perché condivisi da più parole, e *rosso*, la parola più frequente del
+corpus, è la prima a saldarsi in un pezzo solo. Per questo, nei tokenizzatori
+reali, [le parole più frequenti nel corpus di addestramento formano un token
+solo e quelle rare ne richiedono parecchi]{.pt-matita}: nel vocabolario di
 GPT-2, ad esempio, *the* è un token unico e *ortogonalizzazione* ne prende
 sette.
 
@@ -461,14 +462,13 @@ dei quali buchi. Il codice didattico del BPE in Python non compie questo
 controllo, perché riapplica le fusioni senza verificare che i simboli residui
 siano noti: serve a illustrare l'algoritmo, non a tokenizzare in produzione.
 
-L'affermazione
-«con le sotto-parole non resta fuori niente» non è una proprietà
-dell'algoritmo: è una scommessa sull'alfabeto di partenza. Si vince finché
-il corpus di addestramento conteneva ogni carattere che potrà mai arrivare.
-Con cinque parole la scommessa è persa in partenza; con un corpus vero è quasi
-sempre vinta, e a farla fallire bastano un ideogramma raro o un'emoji uscita l'anno
-scorso. È il limite che i tokenizzatori basati sui byte supereranno per
-costruzione.
+[L'affermazione «con le sotto-parole non resta fuori niente» non è una
+proprietà dell'algoritmo: è una scommessa sull'alfabeto di
+partenza]{.pt-matita}. Si vince finché il corpus di addestramento conteneva
+ogni carattere che potrà mai arrivare. Con cinque parole la scommessa è persa
+in partenza; con un corpus vero è quasi sempre vinta, e a farla fallire bastano
+un ideogramma raro o un'emoji uscita l'anno scorso. È il limite che i
+tokenizzatori basati sui byte supereranno per costruzione.
 
 ## Il BPE in Python
 

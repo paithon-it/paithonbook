@@ -29,8 +29,8 @@ punteggi in pesi. Se al suo posto si mette una somiglianza più semplice, un
 prodotto scalare fra versioni trasformate della query e della chiave, che si
 spezza in un pezzo per chi interroga e uno per chi risponde, l'attenzione
 causale (quella in cui ogni parola guarda soltanto le precedenti) si riscrive
-come una rete ricorrente. Il Transformer, che aveva appena spodestato le reti
-ricorrenti, ricade così in una di loro.
+come una rete ricorrente. [Il Transformer, che aveva appena spodestato le reti
+ricorrenti, ricade così in una di loro]{.pt-matita}.
 
 L'attenzione dei {doc}`Transformer </Transformers/overview>` ha due costi. Il
 primo, appena visto, nasce dal fatto che ogni parola guarda tutte le altre:
@@ -96,12 +96,12 @@ dimensione fissa, quindi in generazione il lavoro per ogni parola è poco e
 resta lo stesso anche dopo mille pagine; ma procedono in sequenza, e per questo
 addestrarle è lento.
 
-Il sogno è avere insieme la velocità di addestramento dei
-Transformer e il basso costo in generazione delle reti ricorrenti. Sembra
-una richiesta contraddittoria, perché guardare tutto in una volta e procedere
-in sequenza sono due modi opposti di lavorare. La via d'uscita è che si tratta
-di uno stesso calcolo, e uno stesso calcolo si può fare in due maniere, tutto
-insieme quando il modello impara o una parola alla volta quando scrive. Il
+Il sogno è avere insieme la velocità di addestramento dei Transformer e il
+basso costo in generazione delle reti ricorrenti. Sembra una richiesta
+contraddittoria, perché guardare tutto in una volta e procedere in sequenza
+sono due modi opposti di lavorare. La via d'uscita è che si tratta di uno
+stesso calcolo, e [uno stesso calcolo si può fare in due maniere, tutto insieme
+quando il modello impara o una parola alla volta quando scrive]{.pt-matita}. Il
 risultato è lo stesso. Lo promette l'attenzione lineare, con tutta la famiglia
 di ricorrenze che le sta intorno.
 
@@ -118,16 +118,16 @@ dimensione $d$ costa invece $O(n d^2)$, lineare in $n$, e quello stato non
 cresce mai; ma il passo $t$ dipende dal passo $t-1$: niente parallelismo lungo
 la sequenza.
 
-L'attenzione lineare vive nel punto d'incontro, perché espone due forme
-equivalenti dello stesso calcolo. Una forma *parallela*, per addestrare
-sull'intera sequenza sfruttando le GPU (in pratica spezzata a blocchi di $B$
-token, per tenere il costo lineare); e una forma *ricorrente*, per generare a
-costo e memoria costanti per token: senza una *cache* che cresce. La
-tabella mette i costi a confronto per il solo mescolamento fra token, con una
-testa di dimensione $d$ (le proiezioni che producono query, chiavi e valori
-costano lo stesso in tutti i casi); i «passi in sequenza» sono quelli che
-devono aspettare il precedente, cioè il lavoro che una GPU non può fare
-insieme.
+[L'attenzione lineare vive nel punto d'incontro, perché espone due forme
+equivalenti dello stesso calcolo]{.pt-matita}. Una forma *parallela*, per
+addestrare sull'intera sequenza sfruttando le GPU (in pratica spezzata a
+blocchi di $B$ token, per tenere il costo lineare); e una forma *ricorrente*,
+per generare a costo e memoria costanti per token: senza una *cache* che
+cresce. La tabella mette i costi a confronto per il solo mescolamento fra
+token, con una testa di dimensione $d$ (le proiezioni che producono query,
+chiavi e valori costano lo stesso in tutti i casi); i «passi in sequenza» sono
+quelli che devono aspettare il precedente, cioè il lavoro che una GPU non può
+fare insieme.
 
 | | addestramento: lavoro | addestramento: passi in sequenza | generazione: lavoro per token | generazione: memoria |
 | :--- | :--- | :--- | :--- | :--- |
@@ -145,19 +145,19 @@ generazione il costo fisso per token della forma ricorrente.
 
 ## Una sola ricorrenza, molti modelli
 
-Una sola struttura tiene insieme l'attenzione lineare e gli
-{doc}`State Space Model </StateSpaceModel/overview>` (in italiano modelli a
-spazio degli stati, che alla stessa forma arrivano partendo dai sistemi
-dinamici). Quasi tutti questi modelli conservano uno stato di dimensione fissa
-e a ogni token lo riscrivono come la somma di due pezzi: ciò che sopravvive
-dello stato precedente, e ciò che il token scrive. Si distinguono soprattutto
-per la regola con cui lo stato precedente sopravvive: se ci si limita ad
+Una sola struttura tiene insieme l'attenzione lineare e gli {doc}`State Space
+Model </StateSpaceModel/overview>` (in italiano modelli a spazio degli stati,
+che alla stessa forma arrivano partendo dai sistemi dinamici). Quasi tutti
+questi modelli conservano uno stato di dimensione fissa e a ogni token lo
+riscrivono come la somma di due pezzi: ciò che sopravvive dello stato
+precedente, e ciò che il token scrive. [Si distinguono soprattutto per la
+regola con cui lo stato precedente sopravvive]{.pt-matita}: se ci si limita ad
 accumulare, se si impara a dimenticare, se si corregge ciò che è già scritto.
 Passare dall'attenzione lineare a RetNet, a Mamba, a DeltaNet significa
 cambiare quella regola, e i nomi che seguono sono varianti di uno stesso
-schema. L'eccezione è la cella sLSTM di xLSTM, la cui ricorrenza non è
-lineare: la si incontra con le
-{doc}`architetture lineari </AttenzioneLineare/architetture-lineari>`.
+schema. L'eccezione è la cella sLSTM di xLSTM, la cui ricorrenza non è lineare:
+la si incontra con le {doc}`architetture
+lineari </AttenzioneLineare/architetture-lineari>`.
 
 `````{tab} Elementare
 

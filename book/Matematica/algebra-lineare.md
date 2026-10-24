@@ -24,8 +24,8 @@ perché in entrambi i casi si arriva nello stesso punto.
 
 La doppia lettura di {numref}`fig-somma-vettori` è il primo motivo per cui
 l'algebra lineare serve al machine learning. I dati, infatti, arrivano come
-liste di numeri, e appena li si guarda come frecce diventano disponibili parole
-che sui numeri non avevano senso: direzione, distanza, angolo.
+liste di numeri, e [appena li si guarda come frecce diventano disponibili parole
+che sui numeri non avevano senso: direzione, distanza, angolo]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -103,11 +103,11 @@ di grigi, "srotolata", è un vettore di $\mathbb{R}^{784}$.
 
 ## Il prodotto scalare: quanto due vettori "vanno d'accordo"
 
-Il prodotto scalare è l'operazione che ritorna più spesso nel machine learning.
-Un neurone artificiale, il mattone di cui una rete è fatta, calcola infatti il
-prodotto scalare fra i propri pesi e i numeri che riceve, vi somma un termine
-costante e applica una funzione non lineare, come spiega la {doc}`sezione sul
-percettrone </RetiNeurali/percettrone>`.
+[Il prodotto scalare è l'operazione che ritorna più spesso nel machine
+learning]{.pt-matita}. Un neurone artificiale, il mattone di cui una rete è
+fatta, calcola infatti il prodotto scalare fra i propri pesi e i numeri che
+riceve, vi somma un termine costante e applica una funzione non lineare, come
+spiega la {doc}`sezione sul percettrone </RetiNeurali/percettrone>`.
 
 Per produrre un solo token, ad esempio, un modello linguistico da sette
 miliardi di parametri esegue circa sette miliardi di moltiplicazioni con somma,
@@ -234,7 +234,7 @@ Impilati uno sotto l'altro formano la **matrice dei dati** $\mathbf{X}$, con
 una riga per esempio e una colonna per caratteristica; in generale, $m$ esempi
 descritti da $d$ numeri ciascuno danno una matrice $m \times d$. Con una
 matrice si fa anche una seconda cosa, meno ovvia della prima e molto più
-importante: non solo tenere fermi i dati, ma trasformarli.
+importante: [non solo tenere fermi i dati, ma trasformarli]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -492,9 +492,10 @@ ha la sua matrice, e l'effetto accumulato non è un solo $\lambda$ elevato a
 cento ma il prodotto di cento allungamenti diversi.
 
 Resta vera l'idea generale, cioè che in una catena lunga basta poco perché
-cento moltiplicazioni portino lontanissimo. Il numero da guardare è quanto
-allunga il prodotto delle cento matrici, non l'autovalore di una singola, ed è
-un calcolo che la {doc}`sezione sulla backpropagation
+cento moltiplicazioni portino lontanissimo. [Il numero da guardare è quanto
+allunga il prodotto delle cento matrici, non l'autovalore di una
+singola]{.pt-matita}, ed è un calcolo che la {doc}`sezione sulla
+backpropagation
 </RetiNeurali/backpropagation>` rifà per esteso.
 
 `````
@@ -648,10 +649,10 @@ il comportamento *asintotico*. Ad esempio, per $\mathbf{A} =
 vettore unitario arriva a norma $387$ dopo dieci applicazioni prima di
 cominciare a scendere. Le matrici non normali ($\mathbf{A}\mathbf{A}^\top \neq
 \mathbf{A}^\top\mathbf{A}$) hanno un transitorio che il raggio spettrale non
-vede, e a profondità finita è quel transitorio, non il limite, a contare. La
+vede, e a profondità finita è quel transitorio, non il limite, a contare. [La
 grandezza giusta per i gradienti che esplodono o svaniscono è quindi la norma
-del prodotto, cioè i valori singolari, un calcolo che il capitolo sulle reti
-neurali rifà per esteso.
+del prodotto, cioè i valori singolari]{.pt-matita}, un calcolo che il capitolo
+sulle reti neurali rifà per esteso.
 
 `````
 
@@ -668,8 +669,9 @@ che così si può andare avanti per quanti mesi si vuole {cite}`pisano1857liber`
 
 In generale, una regola in cui ogni termine è una combinazione fissa dei
 precedenti si chiama **ricorrenza lineare**, e si risolve con gli autovalori.
-Gli ultimi termini si mettono in un vettore, il passo da un mese al successivo
-diventa una matrice, e il mese $n$ è quindi quella matrice applicata $n$ volte.
+Gli ultimi termini si mettono in un vettore, [il passo da un mese al successivo
+diventa una matrice, e il mese $n$ è quindi quella matrice applicata $n$
+volte]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -873,9 +875,9 @@ sedici.
 La lunghezza di un vettore, già comparsa nel prodotto scalare, si chiama norma
 e si scrive $\lVert\mathbf{x}\rVert$. Serve a misurare l'errore di un modello
 che risponde con più numeri insieme, ad esempio tre prezzi. Se
-$\hat{\mathbf{y}}$ è la risposta del modello e $\mathbf{y}$ quella giusta, la
+$\hat{\mathbf{y}}$ è la risposta del modello e $\mathbf{y}$ quella giusta, [la
 norma della differenza, $\lVert\hat{\mathbf{y}}-\mathbf{y}\rVert$, dice di
-quanto il modello ha sbagliato.
+quanto il modello ha sbagliato]{.pt-matita}.
 
 `````{tab} Elementare
 

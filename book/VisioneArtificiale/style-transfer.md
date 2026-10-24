@@ -36,7 +36,8 @@ schema.
 La rete è una VGG (il nome viene dal laboratorio di Oxford che la costruì), già
 addestrata a riconoscere oggetti sul grande archivio di foto etichettate
 ImageNet {cite}`simonyan2015very`, e non impara nulla: i suoi pesi restano
-congelati. A muoversi, un piccolo passo alla volta, sono i pixel dell'immagine.
+congelati. [A muoversi, un piccolo passo alla volta, sono i pixel
+dell'immagine]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -143,11 +144,12 @@ col blu; «riga obliqua» e «giallo» pure. Si prendono allora tutte le coppie
 possibili di filtri e si conta, per ciascuna, quanto spesso e con quanta forza i
 due si accendono insieme, senza segnarsi dove.
 
-Quella tabella di conteggi è la carta d'identità della mano del pittore: dice
-quali ingredienti vanno assieme e non dice niente su dove stiano. Per questo si
-può appiccicare a un'altra scena. Con la sola tabella, senza nessuna foto da
-rispettare, si può perfino fabbricare una superficie nuova con la stessa mano:
-una stoffa, una corteccia, un cielo a spirali.
+[Quella tabella di conteggi è la carta d'identità della mano del
+pittore]{.pt-matita}: dice quali ingredienti vanno assieme e non dice niente su
+dove stiano. Per questo si può appiccicare a un'altra scena. Con la sola
+tabella, senza nessuna foto da rispettare, si può perfino fabbricare una
+superficie nuova con la stessa mano: una stoffa, una corteccia, un cielo a
+spirali.
 
 `````
 
@@ -171,11 +173,11 @@ $$
 
 dove l'elemento $G^{(l)}_{ij}$ è il prodotto scalare tra il canale $i$ e il
 canale $j$, e misura quanto i due filtri si attivano *insieme*, sommando su
-tutte le posizioni spaziali. Osserviamo che in quella somma la geometria della
+tutte le posizioni spaziali. Osserviamo che [in quella somma la geometria della
 scena sparisce, e resta solo la statistica delle co-occorrenze di texture e
-colori, cioè lo stile. Per questo il risultato conserva la disposizione della
-foto ma non copia i cipressi di van Gogh: della *Notte stellata* sopravvivono
-solo le correlazioni.
+colori, cioè lo stile]{.pt-matita}. Per questo il risultato conserva la
+disposizione della foto ma non copia i cipressi di van Gogh: della *Notte
+stellata* sopravvivono solo le correlazioni.
 
 L'idea viene da un lavoro degli stessi autori di pochi mesi prima, sulla
 sintesi di texture, in cui una texture è descritta dalle matrici di Gram di una
@@ -236,8 +238,8 @@ risultato.
 Quel mille, però, non è un numero universale. Basta cambiare la ricetta con cui
 i due voti si calcolano e cambia anche il rapporto che li mette in pari, perché
 una normalizzazione che restituisce voti più piccoli chiede un $\beta$ molto
-più grande per arrivare allo stesso equilibrio. Un numero del genere va sempre
-riletto insieme alla ricetta che lo accompagna, e mai copiato da solo.
+più grande per arrivare allo stesso equilibrio. [Un numero del genere va sempre
+riletto insieme alla ricetta che lo accompagna, e mai copiato da solo]{.pt-matita}.
 
 `````
 
@@ -281,9 +283,10 @@ ordine.
 
 Usare più strati cattura lo stile a più scale, dai granelli di colore alle
 volute larghe. Nel paper il rapporto $\alpha/\beta$ è dell'ordine di
-$10^{-3}$–$10^{-4}$, ma quel numero dipende dalla normalizzazione scelta per il
-termine di stile: cambiandola cambia il rapporto utile, e un'implementazione
-che normalizza le Gram in un altro modo chiede un $\beta$ di tutt'altra taglia.
+$10^{-3}$–$10^{-4}$, ma [quel numero dipende dalla normalizzazione scelta per
+il termine di stile]{.pt-matita}: cambiandola cambia il rapporto utile, e
+un'implementazione che normalizza le Gram in un altro modo chiede un $\beta$ di
+tutt'altra taglia.
 
 `````
 
@@ -418,11 +421,11 @@ non per generare un'immagine ma per addestrare una rete che trasforma qualunque
 foto in quello stile con una passata sola, senza iterazioni successive (in
 gergo, una rete *feed-forward*).
 
-L'ottimizzazione costosa si paga così una volta sola, in fase di addestramento;
-dopo, applicare lo stile è circa mille volte più rapido (tre ordini di
-grandezza), abbastanza per un video in tempo reale. È la famiglia di tecniche
-che rende pratiche le app di stile sul telefono, con il compromesso di una rete
-da addestrare *per ciascuno stile*.
+[L'ottimizzazione costosa si paga così una volta sola, in fase di
+addestramento]{.pt-matita}; dopo, applicare lo stile è circa mille volte più
+rapido (tre ordini di grandezza), abbastanza per un video in tempo reale. È la
+famiglia di tecniche che rende pratiche le app di stile sul telefono, con il
+compromesso di una rete da addestrare *per ciascuno stile*.
 
 Il compromesso è durato poco: già nel 2016 c'erano reti capaci di più stili, e
 la forma rimasta è quella di Huang e Belongie {cite}`huang2017arbitrary`. Per
