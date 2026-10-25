@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Modelli di sequenza: da RNN e LSTM ai Transformer"
+descrizione: "Come si leggono le sequenze: reti ricorrenti, gradiente che
+  svanisce, LSTM e GRU, un esempio in PyTorch e il passaggio dalle ricorrenze
+  all'attenzione."
+---
 # Modelli di sequenza: da RNN ai Transformer
 
 «Il gatto nero salta sul muro, e dopo un attimo lo scavalca.» Leggila da

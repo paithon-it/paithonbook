@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Oltre il BPE: WordPiece, SentencePiece e byte"
+descrizione: "Che cosa viene dopo il Byte Pair Encoding: WordPiece,
+  SentencePiece, i tokenizzatori a livello di byte e le conseguenze pratiche di
+  queste scelte."
+---
 # Oltre il BPE: WordPiece, SentencePiece e i byte
 
 ## WordPiece: non il più frequente, il meno casuale

@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Sintesi vocale (TTS): dal testo al parlato"
+descrizione: "Come si fa parlare una macchina: normalizzazione del testo, dal
+  grafema al fonema, TTS neurale in due stadi, qualità della voce e rischio dei
+  cloni."
+---
 # La voce sintetica: dal testo al parlato
 
 New York, estate del 1939. Nel padiglione della Bell all'Esposizione universale,

@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Naive Bayes e analisi discriminante: modelli generativi"
+descrizione: "Come classificare descrivendo ogni classe invece di tracciare un
+  confine: analisi discriminante, naive Bayes e i casi con pochi dati in cui
+  vincono."
+---
 # Classificare descrivendo: analisi discriminante e naive Bayes
 
 Chiedi a un ornitologo come distingua una cornacchia da una gazza e non ti

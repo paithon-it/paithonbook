@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Meta-apprendimento: imparare da pochi esempi"
+descrizione: "Come si affronta un compito nuovo con pochi esempi: partire da una
+  posizione adatta invece che da una risposta, e confrontare invece di
+  adattare."
+---
 # Imparare a imparare in fretta
 
 Di esempi ce ne sono dieci, e il compito è nuovo. Che cosa si fa?

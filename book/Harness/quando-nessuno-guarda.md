@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Osservabilità degli agenti ed entropia del codice"
+descrizione: "Come dare agli agenti occhi sul proprio lavoro, seguire una
+  richiesta da capo a fondo e contenere l'entropia che il codice generato
+  accumula nel tempo."
+---
 # Quando nessuno guarda: osservabilità ed entropia
 
 Nel progetto di OpenAI scritto da un agente, per un certo periodo la squadra ha

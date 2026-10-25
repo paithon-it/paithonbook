@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Sistemi multi-agente: molti agenti che decidono"
+descrizione: "Che cosa cambia quando le decisioni sono distribuite tra molti
+  agenti: la regola che dà forma al collettivo, quando conviene e le tre domande
+  del capitolo."
+---
 # Sistemi multi-agente: molti che decidono
 
 ```{image} ../figures/aperture/sistemi-multi-agente.png

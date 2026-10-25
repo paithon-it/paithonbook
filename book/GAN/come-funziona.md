@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "GAN: l'addestramento avversario passo per passo"
+descrizione: "Come si addestra una GAN passo per passo: il gioco minimax fra le
+  due reti, generatore e discriminatore, l'addestramento alternato e come si
+  stabilizza."
+---
 # Come funziona l'addestramento avversario
 
 Quella sera a Montréal è nata un'idea; adesso la smontiamo pezzo per pezzo. Al

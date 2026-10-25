@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "LLM: i grandi modelli linguistici e come si addestrano"
+descrizione: "Dai dati del web alle leggi di scala, dalla generazione parola per
+  parola alla cache KV, fino al prompt e all'apprendimento in contesto."
+---
 # I grandi modelli linguistici
 
 Nel 1951 Claude Shannon pubblicò uno degli esperimenti più casalinghi della

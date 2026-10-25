@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Il kernel trick: separare l'inseparabile"
+descrizione: "Come funziona il kernel trick nelle SVM: separare classi che
+  nessuna retta divide, e poi la regressione, il rilevamento di anomalie e
+  scikit-learn."
+---
 # Il kernel trick: separare l'inseparabile
 
 La SVM del massimo margine traccia frontiere *diritte*. Se però le classi

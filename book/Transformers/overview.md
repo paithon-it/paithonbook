@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Transformer: quando l'attenzione basta da sola"
+descrizione: "Come funziona il Transformer, l'architettura di Attention Is All
+  You Need: leggere una frase tutta insieme con la sola attenzione, senza RNN."
+---
 # Transformer: quando l'attenzione basta
 
 ```{image} ../figures/aperture/transformers.png

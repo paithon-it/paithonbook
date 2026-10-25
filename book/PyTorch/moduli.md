@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "nn.Module in PyTorch: costruire il modello"
+descrizione: "Come si costruisce una rete in PyTorch: nn.Module, nn.Sequential,
+  il conteggio dei parametri e le funzioni di perdita per misurare l'errore del
+  modello."
+---
 # Moduli: costruire il modello
 
 Verso la metà degli anni Novanta, Yann LeCun e i suoi colleghi ai Bell Labs

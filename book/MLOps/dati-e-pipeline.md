@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Pipeline di dati: versionare, validare, collaudare"
+descrizione: "Perché in un sistema di machine learning i dati contano quanto il
+  codice: versionamento, pipeline, feature store, training-serving skew e
+  validazione."
+---
 # I dati contano quanto il programma
 
 Apri il registro delle modifiche di un sistema che riconosce le frodi con la

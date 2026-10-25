@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Reti di Hopfield: la memoria associativa"
+descrizione: "Come funziona una rete di Hopfield: una memoria che richiama un
+  ricordo da un indizio parziale e si ripara da sola, con un esempio in poche
+  righe."
+---
 # La memoria associativa di Hopfield
 
 La memoria di un computer funziona per indirizzo: ogni dato abita in una

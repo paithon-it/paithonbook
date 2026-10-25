@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Apprendimento auto-supervisionato: il segnale nei dati"
+descrizione: "Come si impara senza etichette: un compito la cui risposta è già
+  nei dati, quanta informazione porta e come cinque pretesti seguono lo stesso
+  meccanismo."
+---
 # Auto-supervisione: il segnale è già nei dati
 
 ```{image} ../figures/aperture/auto-supervisione.png

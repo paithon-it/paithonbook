@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Proiezioni ortogonali: la risposta migliore possibile"
+descrizione: "Come si trova la risposta più vicina quando un sistema non ha
+  soluzione esatta: ortogonalità, proiezioni su una retta o un piano,
+  Gram-Schmidt e QR."
+---
 # Ortogonalità e proiezioni: la risposta migliore quando non ce n'è una esatta
 
 Dall'osservatorio di Palermo, nella prima notte dell'Ottocento, Giuseppe Piazzi

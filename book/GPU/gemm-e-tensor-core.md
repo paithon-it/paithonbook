@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "GEMM e tensor core: il prodotto di matrici"
+descrizione: "Come la GPU esegue il prodotto di matrici: il costo della versione
+  ingenua, il tiling, i tensor core e le scelte pratiche su forme e mezza
+  precisione."
+---
 # GEMM: la moltiplicazione di matrici sull'hardware
 
 Prendi l'addestramento di una rete neurale qualunque e mettici sopra un

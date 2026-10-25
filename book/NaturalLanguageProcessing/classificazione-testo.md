@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Classificazione del testo: Naive Bayes e logistica"
+descrizione: "Come si assegna un'etichetta a un testo: Naive Bayes, regressione
+  logistica, modelli generativi e discriminativi, un esempio in PyTorch e la
+  valutazione."
+---
 # Insegnare a giudicare: classificare il testo
 
 Tra il 1787 e il 1788, sui giornali di New York, escono ottantacinque saggi

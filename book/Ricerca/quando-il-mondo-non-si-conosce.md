@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Ricerca e pianificazione quando il mondo non si conosce"
+descrizione: "Le tre ipotesi nascoste della ricerca classica: una valutazione
+  scrivibile, un test di arrivo e un modello del mondo, e che cosa accade se ne
+  manca una."
+---
 # Le tre cose date per scontate
 
 La ricerca vista finora poggia su tre ipotesi che nessuno ha mai scritto,

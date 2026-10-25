@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Geometria e profondità: stereo, flusso e SLAM"
+descrizione: "Come ricavare dove sono le cose da una o più immagini:
+  corrispondenze, vincolo epipolare, disparità, flusso ottico, structure from
+  motion e SLAM."
+---
 # Dove sono le cose: geometria, corrispondenze e profondità
 
 Nei primi decenni del Quattrocento, sulla piazza del Duomo di Firenze, Filippo

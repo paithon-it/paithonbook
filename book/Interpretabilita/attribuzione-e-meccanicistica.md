@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Grad-CAM e interpretabilità meccanicistica"
+descrizione: "Come si guarda dentro una rete profonda: mappe di salienza,
+  Grad-CAM, Integrated Gradients, il ruolo dell'attenzione e il
+  reverse-engineering dei circuiti."
+---
 # Dentro le reti profonde: attribuzione e interpretabilità meccanicistica
 
 Il modello che credeva di riconoscere i lupi e in realtà riconosceva la neve,

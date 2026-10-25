@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Modelli a verosimiglianza esatta: autoregressivi e flow"
+descrizione: "Che cosa vuol dire calcolare la probabilità esatta di un dato, che
+  cosa costa, e i due meccanismi che lo permettono: modelli autoregressivi e
+  flussi."
+---
 # Modelli a verosimiglianza esatta
 
 ```{image} ../figures/aperture/verosimiglianza-esatta.png

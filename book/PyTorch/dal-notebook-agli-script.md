@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Dal notebook agli script: organizzare il codice"
+descrizione: "Come passare dal notebook a un progetto in script: cinque file,
+  una responsabilità ciascuno, punto d'ingresso, riproducibilità e quando non
+  modularizzare."
+---
 # Dal notebook agli script
 
 Un notebook è il quaderno interattivo con cui si lavora quasi sempre

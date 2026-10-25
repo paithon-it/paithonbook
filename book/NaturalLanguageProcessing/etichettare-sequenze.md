@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "POS tagging e NER: un'etichetta per ogni parola"
+descrizione: "Come si etichetta ogni parola di una frase: parti del discorso,
+  entità nominate, HMM e Viterbi, una BiLSTM e il modo giusto di misurare i
+  risultati."
+---
 # Un'etichetta per ogni parola: POS tagging e riconoscimento di entità
 
 «La vecchia porta la sbarra». Leggi la frase una prima volta: c'è un'anziana

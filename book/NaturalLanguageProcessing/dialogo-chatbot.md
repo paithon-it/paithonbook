@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Chatbot e dialogo: parlare con le macchine"
+descrizione: "Che cosa c'è in una conversazione, le tre famiglie di chatbot,
+  come si valuta un sistema di dialogo e la lezione che lascia ELIZA."
+---
 # Parlare con le macchine: dialogo e chatbot
 
 Si torna dove tutto era cominciato. Nell’{doc}`Introduzione

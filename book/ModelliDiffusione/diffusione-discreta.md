@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Diffusione discreta: generare testo con i simboli"
+descrizione: "Come si applica la diffusione a dati fatti di simboli come il
+  testo: cancellare un simbolo invece di sporcarlo, l'obiettivo di addestramento
+  e il prezzo."
+---
 # Quando lo stato è fatto di simboli: diffondere il testo
 
 Chi risolve un sudoku non procede da sinistra a destra e dall'alto in basso.

@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Calcolabilità: che cosa può calcolare un programma"
+descrizione: "Che cosa si può calcolare davvero: dalla macchina con nastro e
+  matita al problema che nessun programma risolve, partendo dal risultato di
+  Gödel."
+---
 # Che cosa si può calcolare
 
 Nel settembre del 1930 a Königsberg si tengono più convegni negli stessi

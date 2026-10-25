@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Bootstrap: quanto fidarsi di un numero"
+descrizione: "Come si stima l'incertezza di un numero ricampionando i dati:
+  l'idea del bootstrap, un calcolo su sessanta stipendi e il legame con il
+  bagging."
+---
 # Il bootstrap: quanto ci credo a questo numero
 
 Il nome più famoso della statistica al calcolatore è stato dato in una riga

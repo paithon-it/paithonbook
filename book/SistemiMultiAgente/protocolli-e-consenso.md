@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Consenso tra agenti: voto, dibattito e generali bizantini"
+descrizione: "Come più agenti si mettono d'accordo: atti linguistici, voto con
+  il teorema di Condorcet, dibattito e che cosa fare quando qualcuno mente."
+---
 # Mettersi d'accordo: dire, votare, diffidare
 
 Il sindaco che dice «vi dichiaro marito e moglie» non riferisce di un

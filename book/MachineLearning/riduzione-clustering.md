@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Apprendimento non supervisionato: PCA, t-SNE e k-means"
+descrizione: "Come trovare struttura in dati senza etichette: riduzione delle
+  dimensioni con PCA, ICA, t-SNE e UMAP, e raggruppamento con k-means."
+---
 # Ridurre le dimensioni e trovare gruppi: l'apprendimento non supervisionato
 
 Finora abbiamo sempre avuto un maestro alle spalle. Nella regressione, nella

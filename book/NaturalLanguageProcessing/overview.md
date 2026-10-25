@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Natural language processing: dalle regole ai LLM"
+descrizione: "Che cos'è il natural language processing: perché il linguaggio è
+  difficile, i compiti tipici e la storia dalle regole scritte a mano fino ai
+  Transformer."
+---
 # Natural Language Processing
 
 ```{image} ../figures/aperture/natural-language-processing.png

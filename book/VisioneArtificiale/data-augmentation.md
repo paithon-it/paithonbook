@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Data augmentation: più dati senza raccoglierli"
+descrizione: "Che cos'è la data augmentation per le immagini: trasformazioni che
+  cambiano i pixel e non l'etichetta, un esempio con torchvision e quando non
+  aiuta."
+---
 # Data augmentation: moltiplicare i dati senza raccoglierli
 
 Per insegnare a un bambino che cos'è una tazza non servono diecimila tazze. Ne

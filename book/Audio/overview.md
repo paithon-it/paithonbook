@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Audio e intelligenza artificiale: il suono oltre la voce"
+descrizione: "Che cosa può fare un modello con il suono oltre al parlato:
+  riconoscere, generare musica, trattare l'audio come una sequenza di token."
+---
 # Audio oltre la voce
 
 ```{image} ../figures/aperture/audio.png

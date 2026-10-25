@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Percettrone: il neurone artificiale che impara dagli errori"
+descrizione: "Come funziona il percettrone di Rosenblatt: somma pesata, funzione
+  a gradino, regola di apprendimento, il limite dello XOR e gli strati
+  nascosti."
+---
 # Il percettrone e la sua regola di apprendimento
 
 Nel 1958 uno psicologo del Cornell Aeronautical Laboratory, Frank Rosenblatt,

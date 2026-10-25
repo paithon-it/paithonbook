@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Modelli trasparenti e importanza delle feature"
+descrizione: "Come funzionano i modelli interpretabili per costruzione e
+  l'importanza delle feature, tra permutazione e impurità, con un esempio di
+  prototipi e critiche."
+---
 # Modelli trasparenti e importanza delle feature
 
 A metà degli anni Novanta, addestrando un modello per stimare il rischio di

@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Inferenza veloce: come far rispondere in fretta un modello"
+descrizione: "Perché far rispondere un modello è un problema di traffico di dati
+  più che di calcolo, e le tre strade per renderlo veloce una volta che ci sta
+  in memoria."
+---
 # Starci non è rispondere: la mappa dell’altra metà
 
 Le tre leve del capitolo hanno stretto il modello. Un modello stretto ci sta in

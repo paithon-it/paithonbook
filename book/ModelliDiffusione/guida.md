@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Classifier-free guidance e le altre guide della diffusione"
+descrizione: "Come si orienta un modello di diffusione: la guida letta con la
+  regola di Bayes, che cosa fa alla distribuzione e le guide che non chiedono di
+  riaddestrare."
+---
 # Piegare la generazione: guida, vincoli, preferenze
 
 Il sorpasso sulle GAN del 2021 lo firmano Prafulla Dhariwal e Alex Nichol

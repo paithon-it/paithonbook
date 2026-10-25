@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Generazione di audio e musica con l'AI"
+descrizione: "Come si genera suono: da WaveNet a MusicGen, i token audio, la
+  musica da un testo, la diffusione. Con i limiti aperti e la questione del
+  copyright."
+---
 # Generare suono e musica
 
 I {doc}`codec neurali </Audio/codec-neurali>` ci hanno lasciato in mano

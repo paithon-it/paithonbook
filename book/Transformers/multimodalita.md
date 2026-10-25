@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "GPT, BERT e T5: le famiglie di Transformer"
+descrizione: "Come il Transformer si è diviso in encoder e decoder: GPT, BERT e
+  T5, poi Vision Transformer e AlphaFold 2, con vantaggi e sfide."
+---
 # Le famiglie di modelli, e oltre il testo
 
 L'architettura del 2017 era una macchina per tradurre. La sua storia

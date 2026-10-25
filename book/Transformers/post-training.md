@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Post-training: instruction tuning, LoRA, RLHF e DPO"
+descrizione: "Come si passa da un modello pre-addestrato a un assistente che
+  segue le istruzioni: instruction tuning, LoRA, RLHF, DPO e ragionamento a
+  inferenza."
+---
 # Dopo il pre-addestramento: istruzioni, preferenze, allineamento
 
 Prova a chiedere a un modello *solo* pre-addestrato: «Scrivi una poesia sul

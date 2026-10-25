@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Mamba-2 e Mamba-3: la dualità SSM e attenzione"
+descrizione: "Come Mamba-2 mostra che uno state space model equivale a una forma
+  di attenzione, perché conviene sui tensor core e che cosa cambia con Mamba-3."
+---
 # La dualità: Mamba-2 e Mamba-3
 
 Lo scan del Mamba originale, che per distinguerlo dai successori si dice anche

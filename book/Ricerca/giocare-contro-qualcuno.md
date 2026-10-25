@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Minimax e potatura alfa-beta: giocare contro qualcuno"
+descrizione: "Come si gioca contro un avversario: ragionare all'indietro con il
+  minimax, potare i rami inutili, fermarsi a metà partita e il caso del Nim."
+---
 # Giocare contro qualcuno: minimax, potatura, orizzonte
 
 In un labirinto i corridoi stanno fermi. Se ne provo uno e non porta da nessuna

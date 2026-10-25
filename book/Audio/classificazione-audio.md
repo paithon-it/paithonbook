@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Classificazione audio: riconoscere i suoni"
+descrizione: "Come un modello assegna un'etichetta a un suono: dallo
+  spettrogramma alla classe, il dataset AudioSet e l'Audio Spectrogram
+  Transformer."
+---
 # Riconoscere i suoni: classificazione e tagging
 
 Chiudi gli occhi in una stanza e prova a nominare i suoni che senti: il ronzio

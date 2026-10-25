@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Analisi numerica: errori di arrotondamento e virgola mobile"
+descrizione: "Perché i computer sbagliano i conti: virgola mobile, overflow,
+  underflow, cancellazione e il trucco log-sum-exp per i numeri molto grandi o
+  piccoli."
+---
 # Analisi numerica: quando i numeri hanno precisione finita
 
 Apri un terminale Python e somma due decimali semplici:

@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Disuguaglianze di concentrazione: quanto sbaglia una media"
+descrizione: "Quanto può allontanarsi una media dal suo valore atteso: le
+  disuguaglianze di Markov, Čebyšëv e Hoeffding, e il prezzo di guardare i dati
+  molte volte."
+---
 # Quanto può sbagliare una media: le disuguaglianze di concentrazione
 
 Una quantità casuale finisce lontano dalla propria media solo di rado, e lo si

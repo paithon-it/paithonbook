@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Serie temporali e forecasting: dalla statistica alle reti"
+descrizione: "Che cos'è una serie temporale e come si fa forecasting: i problemi
+  tipici, perché è un compito difficile e il passaggio dai modelli classici alle
+  reti."
+---
 # Il futuro nei numeri: serie temporali e forecasting
 
 ```{image} ../figures/aperture/serie-temporali.png

@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Machine learning: come una macchina impara dai dati"
+descrizione: "Che cos'è il machine learning: la definizione di Mitchell, i tre
+  modi in cui una macchina impara e le tappe di un progetto, dai dati al
+  modello."
+---
 # Machine Learning: imparare dai dati
 
 ```{image} ../figures/aperture/machine-learning.png

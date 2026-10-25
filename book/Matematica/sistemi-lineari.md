@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Sistemi lineari: soluzioni, rango ed eliminazione"
+descrizione: "Come si risolve un sistema di equazioni lineari: eliminazione di
+  Gauss, casi con una, nessuna o infinite soluzioni, e il ruolo del rango della
+  matrice."
+---
 # Sistemi lineari: quando i vincoli bastano, e quando no
 
 Un manuale cinese compilato intorno al primo secolo, i *Nove capitoli

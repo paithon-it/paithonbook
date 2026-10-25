@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Metodi auto-supervisionati: le quattro famiglie"
+descrizione: "Le quattro famiglie dell'apprendimento auto-supervisionato
+  (respingere, differenziare le reti, vincolare le statistiche, ricostruire) a
+  confronto."
+---
 # Quattro modi di fabbricare il segnale
 
 I nomi in circolazione sono decine e sembrano tutti diversi. Se si guarda che

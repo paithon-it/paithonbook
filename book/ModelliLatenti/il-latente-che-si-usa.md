@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "VQ-VAE e spazio latente: un latente fatto di simboli"
+descrizione: "Come si usa uno spazio latente: un peso sul costo di descrizione,
+  i latenti fatti di simboli del VQ-VAE e quattro modelli riletti alla luce del
+  capitolo."
+---
 # Il latente che si usa
 
 Con uno spazio latente ben fatto si può compiere un’operazione che ha l’aria di

@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Transformer: traduzione e analisi del sentimento"
+descrizione: "Due esempi concreti di Transformer al lavoro: tradurre una frase
+  da una lingua all'altra e capire se una recensione è entusiasta o delusa."
+---
 # Esempi pratici
 
 I Transformer lavorano qui su due compiti concreti: tradurre una frase e capire

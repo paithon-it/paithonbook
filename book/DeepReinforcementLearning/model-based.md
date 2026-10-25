@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Model-based RL: Dyna, MuZero e Dreamer"
+descrizione: "Come un agente impara anche da un modello del mondo: Dyna,
+  l'errore che si compone nei rollout, MuZero, Dreamer e il rischio del model
+  exploitation."
+---
 # Reinforcement learning basato su modello
 
 La prima volta che ti siedi davanti a un gioco da tavolo nuovo, dopo un paio di

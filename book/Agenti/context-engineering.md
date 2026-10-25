@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Finestra di contesto e memoria di un agente"
+descrizione: "Come si gestisce la finestra di un agente come un budget di token,
+  che cosa tenere in memoria fuori dalla finestra e quanto costa ragionare."
+---
 # Il contesto è l'interfaccia: la finestra di un agente
 
 Due squadre costruiscono un assistente che risponde ai clienti di un negozio.

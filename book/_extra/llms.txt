@@ -17,20 +17,20 @@ della sezione e URL), non si ridistribuisce il testo.
 
 ## Prima di cominciare
 
-- [Prefazione](https://book.paithon.it/main/prefazione.html): Questo libro è stato scritto una prima volta nel 2019, per uscire su carta. Aveva un indice di quattordici capitoli.
+- [Prefazione](https://book.paithon.it/main/prefazione.html): Perché un manoscritto del 2019, mai uscito su carta, è diventato un libro online e gratuito sull'intelligenza artificiale, e che cosa troverai.
 
 ## Fondamenta
 
-- [Introduzione](https://book.paithon.it/main/Introduzione/overview.html): Joseph Weizenbaum era un informatico tedesco emigrato negli Stati Uniti e professore al MIT. Nel 1966 presentò al mondo ELIZA, il capostipite dei chatbot, cioè un programma con cui si poteva…
+- [Introduzione](https://book.paithon.it/main/Introduzione/overview.html): Che cos'è l'intelligenza artificiale, da ELIZA a oggi: che cosa sono un algoritmo e le regole imparate dai dati, e perché il campo è esploso adesso.
   - [Il primo programma](https://book.paithon.it/main/Introduzione/massimo_comune_divisore.html)
   - [Che cosa si può calcolare](https://book.paithon.it/main/Introduzione/calcolabile.html)
   - [Robotica e AI](https://book.paithon.it/main/Introduzione/applicazioni.html)
   - [Conclusione](https://book.paithon.it/main/Introduzione/conclusione.html)
-- [Python](https://book.paithon.it/main/Python/overview.html): Nel Natale del 1989 un programmatore olandese, Guido van Rossum, si annoia. Gli uffici del centro di ricerca dove lavora ad Amsterdam sono chiusi per le feste, e lui riempie il tempo scrivendo, per…
+- [Python](https://book.paithon.it/main/Python/overview.html): Perché Python è il linguaggio dell'AI: com'è nato, come si legge, quali librerie scientifiche lo accompagnano e come preparare l'ambiente di lavoro.
   - [Le basi di Python](https://book.paithon.it/main/Python/basi.html)
   - [NumPy](https://book.paithon.it/main/Python/numpy.html)
   - [Pandas e Matplotlib](https://book.paithon.it/main/Python/pandas-matplotlib.html)
-- [Matematica](https://book.paithon.it/main/Matematica/overview.html): «Chiamala entropia, per due ragioni. La prima è che la tua funzione d'incertezza in meccanica statistica si chiama già così.
+- [Matematica](https://book.paithon.it/main/Matematica/overview.html): Quale matematica serve al machine learning: algebra lineare, analisi e probabilità, e la domanda a cui risponde ciascuno dei cinque strumenti del capitolo.
   - [Algebra lineare](https://book.paithon.it/main/Matematica/algebra-lineare.html)
   - [Sistemi lineari](https://book.paithon.it/main/Matematica/sistemi-lineari.html)
   - [Ortogonalità e proiezioni](https://book.paithon.it/main/Matematica/ortogonalita-proiezioni.html)
@@ -45,7 +45,7 @@ della sezione e URL), non si ridistribuisce il testo.
 
 ## Imparare dai dati
 
-- [Machine Learning](https://book.paithon.it/main/MachineLearning/overview.html): Nel 1959 Arthur Samuel, un ingegnere dell'IBM, pubblicò un articolo dal titolo modesto, Some Studies in Machine Learning Using the Game of Checkers , che oggi suona profetico.
+- [Machine Learning](https://book.paithon.it/main/MachineLearning/overview.html): Che cos'è il machine learning: la definizione di Mitchell, i tre modi in cui una macchina impara e le tappe di un progetto, dai dati al modello.
   - [Apprendimento supervisionato](https://book.paithon.it/main/MachineLearning/apprendimento-supervisionato.html)
   - [Overfitting e validazione](https://book.paithon.it/main/MachineLearning/overfitting-validazione.html)
   - [Valutare un modello](https://book.paithon.it/main/MachineLearning/metriche.html)
@@ -60,12 +60,12 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Valutare un raggruppamento](https://book.paithon.it/main/MachineLearning/valutare-un-raggruppamento.html)
   - [Quando i dati cambiano](https://book.paithon.it/main/MachineLearning/dati-che-cambiano.html)
   - [Processi gaussiani](https://book.paithon.it/main/MachineLearning/processi-gaussiani.html)
-- [Teoria dell'apprendimento](https://book.paithon.it/main/TeoriaApprendimento/overview.html): Per tutta la vita, ogni mattina, un pollo ha visto arrivare l'uomo che lo accudisce con il mangime; una mattina l'uomo arriva e gli tira il collo.
+- [Teoria dell'apprendimento](https://book.paithon.it/main/TeoriaApprendimento/overview.html): Perché imparare da un numero finito di esempi può funzionare: la distanza fra errore sul campione ed errore vero, dal problema dell'induzione in poi.
   - [Apprendimento PAC](https://book.paithon.it/main/TeoriaApprendimento/pac.html)
   - [La dimensione VC](https://book.paithon.it/main/TeoriaApprendimento/dimensione-vc.html)
   - [Rademacher e margine](https://book.paithon.it/main/TeoriaApprendimento/rademacher-margine.html)
   - [Garanzie e reti neurali](https://book.paithon.it/main/TeoriaApprendimento/garanzie-e-reti.html)
-- [Reti neurali](https://book.paithon.it/main/RetiNeurali/overview.html): Le reti neurali portano fin dal nome l'immagine del cervello: decine di miliardi di cellule che si scambiano segnali, e da quel brulichio emergono la memoria, il linguaggio, il riconoscere il volto…
+- [Reti neurali](https://book.paithon.it/main/RetiNeurali/overview.html): Come funzionano le reti neurali: dal neurone formale al percettrone, l'inverno dello XOR, la backpropagation e il percettrone multistrato.
   - [Il percettrone](https://book.paithon.it/main/RetiNeurali/percettrone.html)
   - [Funzioni di attivazione](https://book.paithon.it/main/RetiNeurali/funzioni-attivazione.html)
   - [Da dove viene la loss](https://book.paithon.it/main/RetiNeurali/da-dove-viene-la-loss.html)
@@ -73,7 +73,7 @@ della sezione e URL), non si ridistribuisce il testo.
 
 ## Strumenti e hardware
 
-- [PyTorch](https://book.paithon.it/main/PyTorch/overview.html): C'è stato un periodo, tra il 2011 e il 2016, in cui per fare deep learning all'avanguardia conveniva imparare Lua, un linguaggio di scripting nato in Brasile e famoso soprattutto per gli addon di…
+- [PyTorch](https://book.paithon.it/main/PyTorch/overview.html): Che cos'è PyTorch: la filosofia del grafo dinamico, perché ha vinto nella ricerca, come è fatto lo stack, l'installazione e il primo contatto.
   - [Tensori e autograd](https://book.paithon.it/main/PyTorch/tensori.html)
   - [Moduli](https://book.paithon.it/main/PyTorch/moduli.html)
   - [Il training loop](https://book.paithon.it/main/PyTorch/addestramento.html)
@@ -83,14 +83,14 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Dal notebook agli script](https://book.paithon.it/main/PyTorch/dal-notebook-agli-script.html)
   - [Replicare un paper](https://book.paithon.it/main/PyTorch/replicare-un-paper.html)
   - [Prestazioni e scala](https://book.paithon.it/main/PyTorch/prestazioni.html)
-- [GPU e calcolo parallelo](https://book.paithon.it/main/GPU/overview.html): Per trent'anni i programmatori hanno goduto di un privilegio che sembrava una legge di natura: bastava aspettare.
+- [GPU e calcolo parallelo](https://book.paithon.it/main/GPU/overview.html): Perché le GPU contano per l'AI: il limite dei processori, il parallelismo di molti core semplici e il movimento dei dati come vero collo di bottiglia.
   - [Dentro la GPU](https://book.paithon.it/main/GPU/architettura-gpu.html)
   - [La memoria](https://book.paithon.it/main/GPU/gerarchia-memoria.html)
   - [Kernel e CUDA](https://book.paithon.it/main/GPU/kernel-e-cuda.html)
   - [GEMM e tensor core](https://book.paithon.it/main/GPU/gemm-e-tensor-core.html)
   - [FlashAttention](https://book.paithon.it/main/GPU/flash-attention.html)
   - [Parallelismo distribuito](https://book.paithon.it/main/GPU/parallelismo-distribuito.html)
-- [Efficienza](https://book.paithon.it/main/Efficienza/overview.html): Molti insetti vivono due vite in un corpo solo. La larva è fatta per mangiare: lenta, molle, con un apparato digerente che occupa quasi tutto lo spazio disponibile.
+- [Efficienza](https://book.paithon.it/main/Efficienza/overview.html): Addestrare un modello e farlo rispondere chiedono cose diverse: le tre leve per alleggerirlo, cioè meno bit, meno pesi e un modello più piccolo che imita.
   - [Meno bit](https://book.paithon.it/main/Efficienza/meno-bit.html)
   - [Meno pesi](https://book.paithon.it/main/Efficienza/meno-pesi.html)
   - [Un modello che imita](https://book.paithon.it/main/Efficienza/un-modello-piccolo-che-imita.html)
@@ -98,13 +98,13 @@ della sezione e URL), non si ridistribuisce il testo.
 
 ## Deep learning e visione
 
-- [Deep Learning](https://book.paithon.it/main/DeepLearning/overview.html): Un elettrodo sottile, infilato nella corteccia visiva di un gatto, e davanti ai suoi occhi uno schermo su cui si proiettano forme luminose.
+- [Deep Learning](https://book.paithon.it/main/DeepLearning/overview.html): Che cos'è il deep learning: feature apprese dalla rete, rappresentazioni gerarchiche, ruolo di dati e calcolo, e perché una rete profonda batte una larga.
   - [Reti convoluzionali (CNN)](https://book.paithon.it/main/DeepLearning/reti-convoluzionali.html)
   - [Far funzionare le reti profonde](https://book.paithon.it/main/DeepLearning/ottimizzazione-regolarizzazione.html)
   - [Architetture storiche](https://book.paithon.it/main/DeepLearning/architetture-storiche.html)
   - [Una rete, molti compiti](https://book.paithon.it/main/DeepLearning/multi-compito.html)
   - [Imparare a imparare](https://book.paithon.it/main/DeepLearning/meta-apprendimento.html)
-- [Visione artificiale](https://book.paithon.it/main/VisioneArtificiale/overview.html): Un lavoro per l'estate: secondo il piano che Seymour Papert scrisse al MIT nel 1966, il Summer Vision Project, tanto doveva bastare perché un gruppo di studenti costruisse un sistema capace di…
+- [Visione artificiale](https://book.paithon.it/main/VisioneArtificiale/overview.html): Come una macchina vede le immagini: la griglia di numeri, la distanza fra pixel e significato, i compiti della visione e il peso dei grandi dataset.
   - [Classificazione e transfer learning](https://book.paithon.it/main/VisioneArtificiale/classificazione-transfer.html)
   - [Data augmentation](https://book.paithon.it/main/VisioneArtificiale/data-augmentation.html)
   - [Imparare senza etichette](https://book.paithon.it/main/VisioneArtificiale/senza-etichette.html)
@@ -115,16 +115,16 @@ della sezione e URL), non si ridistribuisce il testo.
 
 ## Apprendimento per rinforzo
 
-- [Ricerca e pianificazione](https://book.paithon.it/main/Ricerca/overview.html): Una cassa di ingranaggi e contatti elettrici, in una sala di Parigi, nel 1914, gioca a scacchi da sola davanti al pubblico.
+- [Ricerca e pianificazione](https://book.paithon.it/main/Ricerca/overview.html): Come una macchina sceglie le mosse esplorando un albero di futuri: stati e mosse, l'esplosione combinatoria e le potature che la rendono gestibile.
   - [Esplorare lo spazio](https://book.paithon.it/main/Ricerca/esplorare-lo-spazio.html)
   - [Giocare contro qualcuno](https://book.paithon.it/main/Ricerca/giocare-contro-qualcuno.html)
   - [Le tre cose date per scontate](https://book.paithon.it/main/Ricerca/quando-il-mondo-non-si-conosce.html)
-- [Reinforcement Learning](https://book.paithon.it/main/ReinforcementLearning/overview.html): Nessuno insegna a un bambino a camminare elencandogli la sequenza esatta di contrazioni muscolari. Il bambino ci prova, oscilla, cade, si rialza, fa un passo e cade di nuovo.
+- [Reinforcement Learning](https://book.paithon.it/main/ReinforcementLearning/overview.html): Che cos'è il reinforcement learning: agente, ambiente e ricompensa, la differenza dall'apprendimento supervisionato e il dilemma fra esplorare e sfruttare.
   - [I bandit a più braccia](https://book.paithon.it/main/ReinforcementLearning/banditi.html)
   - [MDP e funzioni valore](https://book.paithon.it/main/ReinforcementLearning/mdp-valore.html)
   - [I metodi Monte Carlo](https://book.paithon.it/main/ReinforcementLearning/monte-carlo.html)
   - [Q-learning e differenze temporali](https://book.paithon.it/main/ReinforcementLearning/q-learning.html)
-- [Deep Reinforcement Learning](https://book.paithon.it/main/DeepReinforcementLearning/overview.html): Nel 2013 un laboratorio londinese ancora poco noto, DeepMind, pubblica un risultato che sembra un giochino e invece è uno spartiacque: una rete neurale impara a giocare a Breakout, il classico dei…
+- [Deep Reinforcement Learning](https://book.paithon.it/main/DeepReinforcementLearning/overview.html): Che cos'è il deep reinforcement learning: una rete al posto della tabella, da Atari ad AlphaGo, e il prezzo di un addestramento instabile.
   - [Deep Q-Network (DQN)](https://book.paithon.it/main/DeepReinforcementLearning/dqn.html)
   - [Gradiente di policy](https://book.paithon.it/main/DeepReinforcementLearning/policy-gradient.html)
   - [MCTS e AlphaGo](https://book.paithon.it/main/DeepReinforcementLearning/mcts-alphago.html)
@@ -137,7 +137,7 @@ della sezione e URL), non si ridistribuisce il testo.
 
 ## Linguaggio e sequenze
 
-- [Natural Language Processing](https://book.paithon.it/main/NaturalLanguageProcessing/overview.html): Duecentocinquanta voci di vocabolario, fra radici e desinenze, e sei regole di grammatica: con questi soli strumenti un calcolatore tradusse dal russo all'inglese, davanti alla stampa, più di…
+- [Natural Language Processing](https://book.paithon.it/main/NaturalLanguageProcessing/overview.html): Che cos'è il natural language processing: perché il linguaggio è difficile, i compiti tipici e la storia dalle regole scritte a mano fino ai Transformer.
   - [La cassetta degli attrezzi](https://book.paithon.it/main/NaturalLanguageProcessing/strumenti-classici.html)
   - [Rappresentare il testo](https://book.paithon.it/main/NaturalLanguageProcessing/rappresentare-testo.html)
   - [Come si spezza il testo](https://book.paithon.it/main/NaturalLanguageProcessing/tokenizzatori.html)
@@ -149,7 +149,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [POS tagging ed entità](https://book.paithon.it/main/NaturalLanguageProcessing/etichettare-sequenze.html)
   - [Sintassi e parsing](https://book.paithon.it/main/NaturalLanguageProcessing/struttura-frase.html)
   - [Dialogo e chatbot](https://book.paithon.it/main/NaturalLanguageProcessing/dialogo-chatbot.html)
-- [Transformer](https://book.paithon.it/main/Transformers/overview.html): Nel giugno del 2017 otto ricercatori, tutti passati per Google Brain e Google Research, pubblicano un articolo dal titolo che suona come una battuta: Attention Is All You Need («l'attenzione è tutto…
+- [Transformer](https://book.paithon.it/main/Transformers/overview.html): Come funziona il Transformer, l'architettura di Attention Is All You Need: leggere una frase tutta insieme con la sola attenzione, senza RNN.
   - [Il meccanismo di attenzione](https://book.paithon.it/main/Transformers/attenzione.html)
   - [La struttura del Transformer](https://book.paithon.it/main/Transformers/architettura.html)
   - [Confronto coi modelli precedenti](https://book.paithon.it/main/Transformers/confronti.html)
@@ -162,17 +162,17 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Dopo il pre-addestramento](https://book.paithon.it/main/Transformers/post-training.html)
   - [Retrieval e RAG](https://book.paithon.it/main/Transformers/rag.html)
   - [Tendenze e limiti](https://book.paithon.it/main/Transformers/tendenzefuture.html)
-- [Attenzione lineare](https://book.paithon.it/main/AttenzioneLineare/overview.html): Centomila parole sono la lunghezza di un romanzo, e per leggerlo un Transformer deve confrontare ogni parola con tutte le altre, centomila per centomila, cioè dieci miliardi di confronti, e non una…
+- [Attenzione lineare](https://book.paithon.it/main/AttenzioneLineare/overview.html): Perché l'attenzione costa quanto il quadrato della lunghezza e come l'attenzione lineare lo evita con una memoria di taglia fissa.
   - [Dalla softmax alla ricorrenza](https://book.paithon.it/main/AttenzioneLineare/dalla-softmax-alla-ricorrenza.html)
   - [Scrivere nella memoria](https://book.paithon.it/main/AttenzioneLineare/scrivere-nella-memoria.html)
   - [Architetture lineari](https://book.paithon.it/main/AttenzioneLineare/architetture-lineari.html)
   - [Verifica numerica](https://book.paithon.it/main/AttenzioneLineare/linear-attention-ricorrenza.html)
-- [State Space Model](https://book.paithon.it/main/StateSpaceModel/overview.html): C'è un'idea che l'ingegneria usa da oltre mezzo secolo per descrivere qualunque sistema che evolve nel tempo: un termostato, la traiettoria di un razzo, un circuito elettrico.
+- [State Space Model](https://book.paithon.it/main/StateSpaceModel/overview.html): Che cos'è un modello a spazio degli stati, come descrive un sistema che evolve nel tempo e come questa idea porta fino a Mamba.
   - [Dai sistemi dinamici a S4](https://book.paithon.it/main/StateSpaceModel/dai-sistemi-dinamici-a-s4.html)
   - [Mamba](https://book.paithon.it/main/StateSpaceModel/mamba.html)
   - [Mamba-2 e Mamba-3](https://book.paithon.it/main/StateSpaceModel/dualita-e-mamba-2-3.html)
   - [Panorama e limiti](https://book.paithon.it/main/StateSpaceModel/panorama-e-limiti.html)
-- [Visione e linguaggio](https://book.paithon.it/main/VisioneLinguaggio/overview.html): Nel 1929 René Magritte dipinge una pipa su fondo chiaro e, sotto, ci scrive a mano Ceci n'est pas une pipe: questa non è una pipa. È una constatazione esatta, non un gioco di parole.
+- [Visione e linguaggio](https://book.paithon.it/main/VisioneLinguaggio/overview.html): Come un modello può vedere e parlare: far incontrare immagini e testo, trasformare l'immagine in una sequenza e unire i due flussi.
   - [Allineare due spazi](https://book.paithon.it/main/VisioneLinguaggio/allineare-due-spazi.html)
   - [Innestare gli occhi](https://book.paithon.it/main/VisioneLinguaggio/innestare-gli-occhi.html)
   - [Fusione precoce e tardiva](https://book.paithon.it/main/VisioneLinguaggio/fusione-precoce-tardiva.html)
@@ -181,16 +181,16 @@ della sezione e URL), non si ridistribuisce il testo.
 
 ## Lavorare con gli LLM
 
-- [Agenti](https://book.paithon.it/main/Agenti/overview.html): Rispondere bene a una domanda e portare a termine un lavoro sono due compiti diversi, e un banco di prova ne misura la distanza: SWE-bench .
+- [Agenti](https://book.paithon.it/main/Agenti/overview.html): Che cos'è un agente AI: dal completare un testo all'agire, com'è fatto il suo ciclo, perché funziona adesso e come lo si misura, con SWE-bench.
   - [Il ciclo dell'agente](https://book.paithon.it/main/Agenti/agenti-e-tool-use.html)
   - [RAG avanzato](https://book.paithon.it/main/Agenti/rag-avanzato.html)
   - [Il contesto è l'interfaccia](https://book.paithon.it/main/Agenti/context-engineering.html)
   - [Architetture e valutazione](https://book.paithon.it/main/Agenti/architetture-e-valutazione.html)
-- [Prompt, contesto e loop](https://book.paithon.it/main/IngegneriaLLM/overview.html): Nel giugno 2025 Andrej Karpathy (tra i fondatori di OpenAI, per anni a capo dell'intelligenza artificiale in Tesla) ha dato il suo appoggio a un nome appena proposto per un lavoro che esisteva già.
+- [Prompt, contesto e loop](https://book.paithon.it/main/IngegneriaLLM/overview.html): Come si programma un modello linguistico a parole: i tre livelli di prompt, contesto e ciclo, e perché si parla di ingegneria e non di magia.
   - [Prompt engineering](https://book.paithon.it/main/IngegneriaLLM/prompt-engineering.html)
   - [Context engineering](https://book.paithon.it/main/IngegneriaLLM/context-engineering.html)
   - [Loop engineering](https://book.paithon.it/main/IngegneriaLLM/loop-engineering.html)
-- [Harness engineering](https://book.paithon.it/main/Harness/overview.html): «Costruisci un clone di claude.ai.» La richiesta stava in una riga; il lavoro che chiedeva, un sito per conversare con un modello, con le sue pagine, i suoi pulsanti e l'archivio delle…
+- [Harness engineering](https://book.paithon.it/main/Harness/overview.html): Che cos'è l'harness di un agente: il ciclo, i file, gli strumenti e i controlli attorno al modello, e che cosa manca quando l'agente sbaglia.
   - [Il repository come memoria](https://book.paithon.it/main/Harness/il-repository-come-memoria.html)
   - [Il primo turno](https://book.paithon.it/main/Harness/il-primo-turno.html)
   - [Il passaggio di consegne](https://book.paithon.it/main/Harness/passaggio-di-consegne.html)
@@ -200,7 +200,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Il conto](https://book.paithon.it/main/Harness/il-conto.html)
   - [Dal ciclo al grafo](https://book.paithon.it/main/Harness/dal-ciclo-al-grafo.html)
   - [L'harness che si riscrive](https://book.paithon.it/main/Harness/l-harness-che-si-riscrive.html)
-- [Sistemi multi-agente](https://book.paithon.it/main/SistemiMultiAgente/overview.html): Chi attraversa Roma in un pomeriggio d'inverno lo ha visto almeno una volta: poco prima del tramonto migliaia di storni arrivano dalla campagna e sopra gli alberi del posatoio disegnano forme che si…
+- [Sistemi multi-agente](https://book.paithon.it/main/SistemiMultiAgente/overview.html): Che cosa cambia quando le decisioni sono distribuite tra molti agenti: la regola che dà forma al collettivo, quando conviene e le tre domande del capitolo.
   - [Il costo del coordinamento](https://book.paithon.it/main/SistemiMultiAgente/costo-del-coordinamento.html)
   - [Chi parla con chi](https://book.paithon.it/main/SistemiMultiAgente/topologie.html)
   - [Protocolli e consenso](https://book.paithon.it/main/SistemiMultiAgente/protocolli-e-consenso.html)
@@ -209,26 +209,26 @@ della sezione e URL), non si ridistribuisce il testo.
 
 ## Suono e voce
 
-- [Audio oltre la voce](https://book.paithon.it/main/Audio/overview.html): Un mattino di primavera, punti il telefono verso una siepe e apri un'applicazione. Un merlo canta, invisibile tra le foglie, e sullo schermo compare un nome: Turdus merula.
+- [Audio oltre la voce](https://book.paithon.it/main/Audio/overview.html): Che cosa può fare un modello con il suono oltre al parlato: riconoscere, generare musica, trattare l'audio come una sequenza di token.
   - [Dal suono alle feature](https://book.paithon.it/main/Audio/dal-suono-alle-feature.html)
   - [Riconoscere i suoni](https://book.paithon.it/main/Audio/classificazione-audio.html)
   - [Imparare senza etichette](https://book.paithon.it/main/Audio/rappresentazioni-auto-supervisionate.html)
   - [Codec neurali](https://book.paithon.it/main/Audio/codec-neurali.html)
   - [Generare suono e musica](https://book.paithon.it/main/Audio/generazione-audio.html)
-- [Speech Recognition](https://book.paithon.it/main/SpeechRecognition/overview.html): Nel 1952, nei laboratori della Bell Telephone, un apparecchio ingombrante fatto di valvole e relè (l'elettronica di allora, con i suoi bulbi di vetro incandescenti e gli interruttori che scattano da…
+- [Speech Recognition](https://book.paithon.it/main/SpeechRecognition/overview.html): Come una macchina trascrive il parlato: perché è un problema difficile, la storia da Audrey a Whisper e i passi della catena di riconoscimento.
   - [I modelli di riconoscimento](https://book.paithon.it/main/SpeechRecognition/modelli-asr.html)
   - [Sintesi vocale](https://book.paithon.it/main/SpeechRecognition/sintesi-vocale.html)
 
 ## Energia e generazione
 
-- [Modelli latenti](https://book.paithon.it/main/ModelliLatenti/overview.html): In una scuola preparatoria inglese, trentatré ragazzi fanno gli esami di quattro materie: le materie classiche, il francese, l’inglese e la matematica. I voti si somigliano più di quanto dovrebbero.
+- [Modelli latenti](https://book.paithon.it/main/ModelliLatenti/overview.html): L'idea di spiegare il visibile con variabili nascoste, il prezzo da pagare (una somma impossibile da fare) e le quattro macchine che la usano.
   - [Comprimere e ricostruire](https://book.paithon.it/main/ModelliLatenti/comprimere-e-ricostruire.html)
   - [ELBO e riparametrizzazione](https://book.paithon.it/main/ModelliLatenti/il-salto-probabilistico.html)
   - [Il latente che si usa](https://book.paithon.it/main/ModelliLatenti/il-latente-che-si-usa.html)
-- [GAN](https://book.paithon.it/main/GAN/overview.html): L'idea delle GAN nasce in un bar di Montréal, «Les 3 Brasseurs», una sera del 2014, e a raccontarla è stato lo stesso Ian Goodfellow .
+- [GAN](https://book.paithon.it/main/GAN/overview.html): Come funzionano le GAN, le Generative Adversarial Networks: generatore e discriminatore in competizione in un gioco a somma zero, da Goodfellow in poi.
   - [L'addestramento avversario](https://book.paithon.it/main/GAN/come-funziona.html)
   - [Evoluzioni e applicazioni](https://book.paithon.it/main/GAN/applicazioni-evoluzioni.html)
-- [Modelli di diffusione](https://book.paithon.it/main/ModelliDiffusione/overview.html): Versa una goccia d'inchiostro in un bicchiere d'acqua e guarda. Prima un filamento scuro, poi volute sempre più sottili, e in pochi minuti l'acqua è tutta di un azzurro pallido e uniforme.
+- [Modelli di diffusione](https://book.paithon.it/main/ModelliDiffusione/overview.html): Come funzionano i modelli di diffusione: il processo che disfa un'immagine in rumore, e come si impara a rifarlo per generare immagini nuove.
   - [Come funziona la diffusione](https://book.paithon.it/main/ModelliDiffusione/come-funziona.html)
   - [Il limite continuo](https://book.paithon.it/main/ModelliDiffusione/sde-e-ode.html)
   - [Flow matching](https://book.paithon.it/main/ModelliDiffusione/flow-matching.html)
@@ -238,22 +238,22 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Generatori a un passo](https://book.paithon.it/main/ModelliDiffusione/pochi-passi.html)
   - [Guida e allineamento](https://book.paithon.it/main/ModelliDiffusione/guida.html)
   - [Diffondere il testo](https://book.paithon.it/main/ModelliDiffusione/diffusione-discreta.html)
-- [Verosimiglianza esatta](https://book.paithon.it/main/VerosimiglianzaEsatta/overview.html): Il generatore di volti del sforna a ripetizione persone che non esistono. Facciamogli una domanda diversa da tutte quelle che gli abbiamo fatto finora.
+- [Verosimiglianza esatta](https://book.paithon.it/main/VerosimiglianzaEsatta/overview.html): Che cosa vuol dire calcolare la probabilità esatta di un dato, che cosa costa, e i due meccanismi che lo permettono: modelli autoregressivi e flussi.
   - [Un pixel alla volta](https://book.paithon.it/main/VerosimiglianzaEsatta/pixel-per-pixel.html)
   - [I flussi normalizzanti](https://book.paithon.it/main/VerosimiglianzaEsatta/flussi.html)
   - [A che serve saperlo](https://book.paithon.it/main/VerosimiglianzaEsatta/a-che-serve.html)
-- [Modelli a energia](https://book.paithon.it/main/ModelliEnergia/overview.html): L'8 ottobre 2024 l'Accademia reale svedese delle scienze annuncia il premio Nobel per la fisica: va a John Hopfield e Geoffrey Hinton «per scoperte e invenzioni fondamentali che rendono possibile…
+- [Modelli a energia](https://book.paithon.it/main/ModelliEnergia/overview.html): Come funzionano i modelli a energia: un numero che dice quanto un dato è plausibile, il paesaggio che ne deriva e i quattro nomi dello stesso oggetto.
   - [Memoria associativa](https://book.paithon.it/main/ModelliEnergia/memoria-associativa.html)
   - [Macchine di Boltzmann](https://book.paithon.it/main/ModelliEnergia/boltzmann.html)
   - [Oltre la partizione](https://book.paithon.it/main/ModelliEnergia/oltre-la-partizione.html)
   - [Energia come compatibilità](https://book.paithon.it/main/ModelliEnergia/energia-come-compatibilita.html)
   - [Paesaggi di oggi](https://book.paithon.it/main/ModelliEnergia/paesaggi-di-oggi.html)
-- [Auto-supervisione](https://book.paithon.it/main/AutoSupervisione/overview.html): Wilson Taylor studiava giornalismo, non calcolatori, e nel 1953 aveva un problema pratico: misurare quanto un testo sia facile da leggere.
+- [Auto-supervisione](https://book.paithon.it/main/AutoSupervisione/overview.html): Come si impara senza etichette: un compito la cui risposta è già nei dati, quanta informazione porta e come cinque pretesti seguono lo stesso meccanismo.
   - [Le quattro famiglie](https://book.paithon.it/main/AutoSupervisione/famiglie.html)
   - [Collasso e misura](https://book.paithon.it/main/AutoSupervisione/collasso-e-misura.html)
   - [Capire è accorciare](https://book.paithon.it/main/AutoSupervisione/capire-e-accorciare.html)
   - [Il dibattito sul rinforzo](https://book.paithon.it/main/AutoSupervisione/dibattito-rl.html)
-- [World Model](https://book.paithon.it/main/WorldModels/overview.html): Un gatto di casa ha molto più senso comune e comprensione del mondo di qualunque modello di linguaggio.
+- [World Model](https://book.paithon.it/main/WorldModels/overview.html): Che cos'è un world model: un modello in scala ridotta della realtà, in cui immaginare costa meno che provare. La scommessa di LeCun e quattro risposte.
   - [Mondi in miniatura](https://book.paithon.it/main/WorldModels/mondi-in-miniatura.html)
   - [La via di LeCun (JEPA)](https://book.paithon.it/main/WorldModels/jepa.html)
   - [L'inferenza attiva](https://book.paithon.it/main/WorldModels/inferenza-attiva.html)
@@ -261,26 +261,26 @@ della sezione e URL), non si ridistribuisce il testo.
 
 ## Altri dati, altri domini
 
-- [Graph Neural Network](https://book.paithon.it/main/GraphNeuralNetwork/overview.html): Nella Königsberg del primo Settecento (oggi Kaliningrad, in Russia) c'era un passatempo cittadino. Il fiume Pregel divideva la città prussiana in quattro lembi di terra, due sponde e due isole,…
+- [Graph Neural Network](https://book.paithon.it/main/GraphNeuralNetwork/overview.html): Come ragionare sui dati che non sono né una griglia né una sequenza: l'idea delle reti neurali su grafo, dal dato all'architettura, e i fili del capitolo.
   - [Il mondo come grafo](https://book.paithon.it/main/GraphNeuralNetwork/dati-a-grafo.html)
   - [Message passing](https://book.paithon.it/main/GraphNeuralNetwork/message-passing.html)
   - [I knowledge graph](https://book.paithon.it/main/GraphNeuralNetwork/knowledge-graph.html)
   - [GraphSAGE, GAT e applicazioni](https://book.paithon.it/main/GraphNeuralNetwork/architetture-applicazioni.html)
-- [Sistemi di raccomandazione](https://book.paithon.it/main/SistemiRaccomandazione/overview.html): Un milione di dollari a chi riesce a migliorare del 10% Cinematch, il sistema di raccomandazione di Netflix: è il premio che l'azienda, all'epoca un servizio di noleggio DVD per posta, mette in…
+- [Sistemi di raccomandazione](https://book.paithon.it/main/SistemiRaccomandazione/overview.html): Come funziona un sistema di raccomandazione, dal premio Netflix del 2006 ai dati che lasciamo: non il film più bello, ma quello adatto a te.
   - [Il filtraggio collaborativo](https://book.paithon.it/main/SistemiRaccomandazione/filtraggio-collaborativo.html)
   - [La raccomandazione neurale](https://book.paithon.it/main/SistemiRaccomandazione/raccomandazione-neurale.html)
-- [Serie temporali](https://book.paithon.it/main/SerieTemporali/overview.html): Una macchina di ottone, corde e pulegge che prevedeva le maree: la fece costruire a Londra, negli anni Settanta dell'Ottocento, William Thomson, professore a Glasgow (il mondo lo avrebbe conosciuto…
+- [Serie temporali](https://book.paithon.it/main/SerieTemporali/overview.html): Che cos'è una serie temporale e come si fa forecasting: i problemi tipici, perché è un compito difficile e il passaggio dai modelli classici alle reti.
   - [Componenti e modelli classici](https://book.paithon.it/main/SerieTemporali/componenti-e-classici.html)
   - [Validazione e feature](https://book.paithon.it/main/SerieTemporali/validazione-e-feature.html)
   - [Forecasting neurale](https://book.paithon.it/main/SerieTemporali/forecasting-neurale.html)
-- [PINN: reti e fisica](https://book.paithon.it/main/PINN/overview.html): La notte del 23 settembre 1846 l'astronomo Johann Galle punta il telescopio dell'Osservatorio di Berlino verso un punto preciso del cielo, indicato in una lettera arrivata quel giorno da Parigi.
+- [PINN: reti e fisica](https://book.paithon.it/main/PINN/overview.html): Che cosa sono le PINN: reti neurali che imparano la soluzione di un'equazione differenziale, con la legge fisica dentro la funzione di perdita.
   - [La legge dentro la loss](https://book.paithon.it/main/PINN/come-funziona.html)
   - [Un'equazione come media](https://book.paithon.it/main/PINN/equazioni-come-medie.html)
   - [Dove la fisica aiuta](https://book.paithon.it/main/PINN/applicazioni-limiti.html)
 
 ## Produzione e responsabilità
 
-- [MLOps](https://book.paithon.it/main/MLOps/overview.html): C'è una figura, in un articolo del 2015, che vale da sola un capitolo intero. La disegnano alcuni ingegneri di Google (D. Sculley e colleghi) per una conferenza di apprendimento automatico .
+- [MLOps](https://book.paithon.it/main/MLOps/overview.html): Che cos'è MLOps: perché il modello è solo la parte piccola del sistema, il ciclo di vita di un modello e perché non basta un notebook.
   - [Dal notebook alla produzione](https://book.paithon.it/main/MLOps/dal-notebook-alla-produzione.html)
   - [Dati e pipeline](https://book.paithon.it/main/MLOps/dati-e-pipeline.html)
   - [Servire un modello](https://book.paithon.it/main/MLOps/deployment-e-serving.html)
@@ -291,11 +291,11 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Davanti ai modelli](https://book.paithon.it/main/MLOps/gateway-e-affidabilita.html)
   - [Servire un agente](https://book.paithon.it/main/MLOps/servire-un-agente.html)
   - [Il conto in energia](https://book.paithon.it/main/MLOps/energia-e-impronta.html)
-- [Interpretabilità](https://book.paithon.it/main/Interpretabilita/overview.html): Nel 2016 tre ricercatori dell'Università di Washington (Marco Tulio Ribeiro, Sameer Singh e Carlos Guestrin) costruirono di proposito un programma truccato.
+- [Interpretabilità](https://book.paithon.it/main/Interpretabilita/overview.html): Perché spiegare un modello e non solo usarlo: una mappa dei metodi, i modelli trasparenti, il rischio di spiegazioni false e la strada verso i circuiti.
   - [Modelli trasparenti](https://book.paithon.it/main/Interpretabilita/modelli-trasparenti-e-importanza.html)
   - [Spiegazioni locali](https://book.paithon.it/main/Interpretabilita/spiegazioni-locali.html)
   - [Attribuzione e meccanicistica](https://book.paithon.it/main/Interpretabilita/attribuzione-e-meccanicistica.html)
-- [AI responsabile](https://book.paithon.it/main/AIResponsabile/overview.html): C'è un software venduto ai tribunali statunitensi, COMPAS, che assegna a ogni imputato un punteggio di rischio: la probabilità, stimata da un algoritmo, che quella persona torni a delinquere.
+- [AI responsabile](https://book.paithon.it/main/AIResponsabile/overview.html): Che cos'è l'AI responsabile: il caso COMPAS, le tre famiglie di danno, perché il tema esplode adesso e perché non è solo un problema tecnico.
   - [Equità e bias](https://book.paithon.it/main/AIResponsabile/equita-e-bias.html)
   - [Privacy e robustezza](https://book.paithon.it/main/AIResponsabile/privacy-e-robustezza.html)
   - [Attaccare e difendere un LLM](https://book.paithon.it/main/AIResponsabile/sicurezza-llm.html)
@@ -303,6 +303,6 @@ della sezione e URL), non si ridistribuisce il testo.
 
 ## Chiusura
 
-- [Conclusioni](https://book.paithon.it/main/Conclusioni/overview.html): Siamo partiti, nell'introduzione, da una frase di Joseph Weizenbaum: «si dice che spiegare sia dissolvere l'incanto» .
+- [Conclusioni](https://book.paithon.it/main/Conclusioni/overview.html): Il cammino del libro visto dall'alto, i fili che lo tengono insieme, dove sta andando l'AI, i limiti di quello che sappiamo e come continuare a imparare.
 - [Bibliografia](https://book.paithon.it/main/references.html): Le opere citate nel libro, in ordine alfabetico. Nel testo le citazioni compaiono come rimandi tra parentesi quadre: ogni rimando porta qui.
 - [Aggiornamenti](https://book.paithon.it/main/aggiornamenti.html): Paithon Book si aggiorna per versioni successive: si aggiungono capitoli e sezioni, si correggono gli errori, si riscrivono le spiegazioni che non funzionano.

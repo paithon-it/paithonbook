@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Offline reinforcement learning: da dati fissi"
+descrizione: "Come si impara una policy da un archivio di dati senza interagire
+  con l'ambiente: azioni mai viste, BCQ, CQL, IQL e il Decision Transformer."
+---
 # Offline reinforcement learning: imparare da dati fissi
 
 Nel 2018 un gruppo dell'Imperial College di Londra ha addestrato un sistema a

@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Physics-informed neural networks: la fisica nella loss"
+descrizione: "Che cosa sono le PINN: reti neurali che imparano la soluzione di
+  un'equazione differenziale, con la legge fisica dentro la funzione di
+  perdita."
+---
 # Physics-Informed Neural Networks
 
 ```{image} ../figures/aperture/pinn.png

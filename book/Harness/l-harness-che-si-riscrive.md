@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "L'harness che si riscrive: quando a cercarlo è un agente"
+descrizione: "Che cosa succede quando a migliorare l'harness è un agente, come
+  la Darwin Gödel Machine: l'harness come programma da cercare, e che cosa legge
+  chi propone."
+---
 # L'harness che si riscrive: quando a cercarlo è un agente
 
 Il compito era far smettere un modello di inventarsi le chiamate agli strumenti.

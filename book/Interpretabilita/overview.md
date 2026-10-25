@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Interpretabilità: aprire la scatola nera dei modelli"
+descrizione: "Perché spiegare un modello e non solo usarlo: una mappa dei
+  metodi, i modelli trasparenti, il rischio di spiegazioni false e la strada
+  verso i circuiti."
+---
 # Aprire la scatola nera
 
 ```{image} ../figures/aperture/interpretabilita.png

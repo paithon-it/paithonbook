@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Bias algoritmico: equità nei modelli di machine learning"
+descrizione: "Da dove entra il bias in un modello, come si misura l'equità fra
+  gruppi, perché le metriche entrano in conflitto e dove si può intervenire per
+  attenuarlo."
+---
 # Equità e bias algoritmico
 
 Nel 2018 un'inchiesta di Reuters rivela che Amazon aveva accantonato in

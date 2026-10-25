@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Forecasting neurale: da RNN a Transformer"
+descrizione: "Quando il deep learning conviene nelle serie temporali: reti
+  ricorrenti, TCN, DeepAR, N-BEATS, Transformer e foundation model, con una TCN
+  in PyTorch."
+---
 # Forecasting neurale: da RNN ai Transformer e ai foundation model
 
 Nella seconda metà degli anni Dieci, in Amazon si presentava un problema di scala

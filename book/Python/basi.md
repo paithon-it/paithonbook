@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Python per l'AI: variabili, strutture dati e funzioni"
+descrizione: "Le basi di Python che servono al machine learning: tipi e
+  variabili, liste e dizionari, controllo di flusso, funzioni e list
+  comprehension."
+---
 # Le basi di Python
 
 Il nucleo di Python è piccolo. Comprende 35 parole chiave nelle versioni

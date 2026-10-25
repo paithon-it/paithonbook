@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Determinante: quanto una matrice gonfia lo spazio"
+descrizione: "Che cos'è il determinante: il numero che misura come una
+  trasformazione cambia aree e volumi, come si calcola e come si usa nel cambio
+  di variabile."
+---
 # Il determinante: quanto una trasformazione gonfia lo spazio
 
 Il determinante è più vecchio della matrice. Nel 1683 il matematico giapponese

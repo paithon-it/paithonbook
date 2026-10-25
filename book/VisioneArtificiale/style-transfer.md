@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Neural style transfer: ottimizzare l'immagine"
+descrizione: "Come si ridipinge una foto nello stile di un quadro: contenuto e
+  stile come due misure, la loss composita, un esempio in PyTorch e le versioni
+  veloci."
+---
 # Neural style transfer: la tua foto dipinta da van Gogh
 
 Nell'estate del 2015 tre ricercatori dell'Università di Tubinga (Leon Gatys,

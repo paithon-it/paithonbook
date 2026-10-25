@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Dal notebook alla produzione: il machine learning in pratica"
+descrizione: "Perché un modello nato in un notebook non è ancora un prodotto:
+  ciclo di vita, riproducibilità, tracciamento degli esperimenti e debito
+  tecnico."
+---
 # Dal notebook alla produzione
 
 Il notebook ha quarantasette celle, i pezzetti in cui il programma è

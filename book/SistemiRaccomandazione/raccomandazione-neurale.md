@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Raccomandazione neurale: dal prodotto scalare alla rete"
+descrizione: "Come si sostituisce il prodotto scalare con una rete neurale in un
+  sistema di raccomandazione, e come si misura una classifica con BPR e le sue
+  metriche."
+---
 # La raccomandazione neurale
 
 Intorno al 2016 il deep learning aveva già conquistato il riconoscimento delle

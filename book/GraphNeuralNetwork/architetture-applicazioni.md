@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "GraphSAGE, GAT e Graph Transformer: oltre la GCN"
+descrizione: "GraphSAGE, GAT e Graph Transformer a confronto: come
+  generalizzare, pesare i vicini, distinguere i grafi. Con applicazioni, limiti
+  e strumenti."
+---
 # Oltre la GCN: GraphSAGE, GAT e applicazioni
 
 La *Graph Convolutional Network* della {doc}`sezione sul message passing

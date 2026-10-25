@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "LLMOps: servire e valutare i grandi modelli"
+descrizione: "Che cos'è l'LLMOps: come cambiano servire, comprimere e valutare
+  un modello di linguaggio, tra speculative decoding, quantizzazione e ciclo
+  operativo."
+---
 # LLMOps: operare i grandi modelli
 
 Il 30 novembre 2022 OpenAI mette online ChatGPT. Cinque giorni dopo Sam Altman

@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Apprendimento multi-compito: una rete, più compiti"
+descrizione: "Come una rete impara più compiti insieme: un tronco condiviso e
+  teste separate, perché un compito in più può frenare l'overfitting e quando fa
+  danno."
+---
 # Una rete, molti compiti: l'apprendimento multi-compito
 
 Chi ha studiato il latino racconta spesso di aver capito meglio l'italiano. Le

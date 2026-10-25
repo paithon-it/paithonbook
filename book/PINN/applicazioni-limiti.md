@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "PINN: applicazioni e limiti delle reti con la fisica"
+descrizione: "Dove le reti informate dalla fisica portano un vantaggio reale,
+  come nel problema inverso, quali sono i loro limiti e che cosa sono gli
+  operatori neurali."
+---
 # Dove la fisica aiuta e dove no
 
 Un neurochirurgo studia un aneurisma: una sacca gonfiata sulla parete di

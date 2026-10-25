@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Gate e delta rule: scrivere meglio nella memoria"
+descrizione: "Come far dimenticare e correggere la memoria dell'attenzione
+  lineare: i gate, la delta rule, Gated DeltaNet e la lettura come regressione
+  online."
+---
 # Scrivere meglio nella memoria: gate e delta rule
 
 L'attenzione lineare causale è una rete ricorrente e, al posto della KV cache

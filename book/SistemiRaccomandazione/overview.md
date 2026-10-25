@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Sistemi di raccomandazione: indovinare cosa ti piacerà"
+descrizione: "Come funziona un sistema di raccomandazione, dal premio Netflix
+  del 2006 ai dati che lasciamo: non il film più bello, ma quello adatto a te."
+---
 # Sistemi di Raccomandazione
 
 ```{image} ../figures/aperture/sistemi-raccomandazione.png

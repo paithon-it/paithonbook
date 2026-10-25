@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Knowledge graph: i fatti come archi"
+descrizione: "Come funziona un knowledge graph: le triple come fatti, il lavoro
+  di costruirlo, entità e relazioni come punti e frecce, e quando conviene
+  usarlo."
+---
 # Fatti come archi: i knowledge graph
 
 Nel maggio del 2012 Google annuncia una modifica al motore di ricerca con uno

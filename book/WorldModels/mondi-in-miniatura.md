@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "World model di Ha e Schmidhuber: imparare sognando"
+descrizione: "L'esperimento del 2018 con V, M e C: un agente che si allena nel
+  sogno di un modello, la linea Dreamer e i tre moduli scritti in PyTorch."
+---
 # Mondi in miniatura: imparare sognando
 
 L'esperimento del 2018 sembra uscito da un racconto più che da un laboratorio di

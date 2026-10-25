@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Monitoraggio e data drift: sorvegliare un modello"
+descrizione: "Come si controlla un modello in produzione, quali metriche
+  guardare, come si rileva il data drift e come si rilascia senza rompere
+  nulla."
+---
 # Sorvegliare un modello vivo
 
 {doc}`Quando i dati cambiano </MachineLearning/dati-che-cambiano>` aveva

@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Servire un modello: dal file all'API"
+descrizione: "Come si porta un modello addestrato in produzione: elaborazione
+  batch, online o streaming, modello dietro un'API, ottimizzazione di latenza e
+  throughput."
+---
 # Servire un modello: dal file all'API
 
 Alla fine di tutto, un modello addestrato è un file. Qualche centinaio di

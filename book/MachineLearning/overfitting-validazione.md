@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Overfitting: bias, varianza e validazione"
+descrizione: "Che cos'è l'overfitting e come si evita: compromesso
+  bias-varianza, train, validation e test, cross-validation e regolarizzazione."
+---
 # Overfitting, bias-varianza e validazione
 
 C'è un modo infallibile per andare male a un esame: imparare a memoria le

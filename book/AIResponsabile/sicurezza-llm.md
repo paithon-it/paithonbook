@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Sicurezza degli LLM: prompt injection e difese"
+descrizione: "Perché i modelli di linguaggio sono attaccabili da un solo canale:
+  jailbreak e prompt injection, difese in ordine di tenuta e test per cercare i
+  guasti."
+---
 # Un canale solo: attaccare e difendere un modello di linguaggio
 
 Nell'ottobre del 1971 la rivista *Esquire* pubblica un reportage di Ron

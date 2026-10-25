@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "NeRF e splatting: scene che si addestrano"
+descrizione: "Come si impara una scena 3D dalle foto: il rendering volumetrico
+  differenziabile, la codifica posizionale dei NeRF e lo splatting con le
+  gaussiane."
+---
 # Scene che si addestrano: NeRF e splatting
 
 Nel 1999, per la scena in cui Neo schiva i proiettili piegandosi all'indietro

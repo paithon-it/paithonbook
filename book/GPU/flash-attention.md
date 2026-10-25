@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "FlashAttention: attenzione veloce e senza sprechi"
+descrizione: "Come FlashAttention calcola l'attenzione a tessere senza scrivere
+  la matrice completa in memoria: il problema, l'idea, il guadagno e i suoi
+  limiti."
+---
 # FlashAttention: l'attenzione che non spreca memoria
 
 Chiedere a un modello di riassumere un romanzo intero, o di rispondere su un

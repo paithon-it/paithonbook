@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Stable Diffusion: la diffusione nello spazio latente"
+descrizione: "Come funziona Stable Diffusion: la diffusione nello spazio latente
+  di un autoencoder, l'architettura, la guida del testo e l'ecosistema dei pesi
+  aperti."
+---
 # Lo spazio latente: Stable Diffusion
 
 Il 22 agosto 2022 compare online un file da circa quattro gigabyte: i pesi di

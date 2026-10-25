@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "State space model: un sistema che riassume il passato"
+descrizione: "Che cos'è un modello a spazio degli stati, come descrive un
+  sistema che evolve nel tempo e come questa idea porta fino a Mamba."
+---
 # State Space Model
 
 ```{image} ../figures/aperture/state-space-model.png

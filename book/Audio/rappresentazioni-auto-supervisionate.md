@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Audio auto-supervisionato: wav2vec 2.0 e HuBERT"
+descrizione: "Come imparare dal suono senza trascrizioni: wav2vec 2.0 maschera
+  parti dell'audio, HuBERT si genera le etichette da solo. E a che cosa
+  servono."
+---
 # Imparare dal suono senza etichette
 
 Chi trascrive migliaia di ore di audio? Qualcuno deve farlo: per insegnare a

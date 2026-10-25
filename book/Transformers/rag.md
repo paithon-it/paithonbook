@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "RAG: retrieval per far rispondere con fonti"
+descrizione: "Come un modello risponde con il libro aperto: information
+  retrieval, ricerca per significato, question answering e RAG, con un retriever
+  in miniatura."
+---
 # Cercare per rispondere: retrieval e RAG
 
 C'è una differenza che ogni studente conosce bene: l'esame a libro chiuso e

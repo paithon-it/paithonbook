@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Algebra lineare per il machine learning: vettori e matrici"
+descrizione: "La matematica che tiene insieme il machine learning: vettori,
+  prodotto scalare, matrici, autovalori e norme, con gli esempi in NumPy."
+---
 # Algebra lineare: vettori, matrici, prodotti
 
 Prima di arrivare a un modello, un dato diventa una fila ordinata di numeri. Un

@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Loop engineering: il ciclo di verifica degli LLM"
+descrizione: "Come progettare il ciclo in cui un LLM lavora: i componenti, il
+  cancello di verifica e perché gli errori si moltiplicano a ogni passaggio."
+---
 # Loop engineering: progettare il ciclo
 
 Nei primi anni di questa tecnologia la domanda, in ogni squadra che provava a

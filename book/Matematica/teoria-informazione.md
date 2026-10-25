@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Teoria dell'informazione: entropia e cross-entropia"
+descrizione: "Come si misura l'informazione: sorpresa, entropia, cross-entropia
+  e divergenza KL, e perché la cross-entropia è una funzione di perdita
+  naturale."
+---
 # Teoria dell'informazione: misurare la sorpresa
 
 Nel luglio del 1948, sul *Bell System Technical Journal*, Claude Shannon, un

@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Backpropagation: come una rete neurale impara"
+descrizione: "Come impara una rete neurale: forward pass, funzione di loss,
+  backpropagation, aggiornamento dei pesi con il learning rate e addestramento a
+  mini-batch."
+---
 # Backpropagation: come impara una rete
 
 Le poche pagine che Rumelhart, Hinton e Williams pubblicano su *Nature* nel

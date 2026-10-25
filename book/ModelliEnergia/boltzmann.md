@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Macchine di Boltzmann e contrastive divergence"
+descrizione: "Come le macchine di Boltzmann superano il limite della rete di
+  Hopfield alzando la temperatura, e come si addestrano con la contrastive
+  divergence."
+---
 # Alzare la temperatura: le macchine di Boltzmann
 
 La pallina di Hopfield ha un difetto di fabbrica: può solo scendere. Se

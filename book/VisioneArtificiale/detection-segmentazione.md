@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Object detection e segmentazione delle immagini"
+descrizione: "Come una rete trova gli oggetti in una foto: riquadri, ancore, IoU
+  e mAP, la famiglia YOLO e il passaggio dal riquadro alla sagoma con la
+  segmentazione."
+---
 # Object detection e segmentazione
 
 Un'auto a guida autonoma si avvicina a un incrocio. Una rete di

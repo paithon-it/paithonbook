@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Prompt engineering: struttura, esempi e ragionamento"
+descrizione: "Come si scrive un buon prompt: anatomia del messaggio, temperatura
+  e top_p, esempi zero-shot e few-shot, chain-of-thought e self-consistency."
+---
 # Prompt engineering: il singolo messaggio
 
 Cerca «prompt segreti» e troverai un mercato intero: raccolte di frasi «che

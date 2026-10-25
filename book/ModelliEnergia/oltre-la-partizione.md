@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Funzione di partizione: come aggirarla"
+descrizione: "Tre modi di evitare la funzione di partizione nei modelli a
+  energia: campionare il paesaggio, imparare lo score, trasformare il problema
+  in un sì o no."
+---
 # Oltre la partizione: tre modi di aggirare $Z$
 
 La macchina di Boltzmann ha lasciato in eredità $Z$, la funzione di partizione:

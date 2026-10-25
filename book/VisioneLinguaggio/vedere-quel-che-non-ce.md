@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Allucinazione visiva nei modelli multimodali"
+descrizione: "Perché un modello che vede descrive oggetti assenti dall'immagine,
+  come si misura il difetto con una domanda a due risposte e da dove nasce."
+---
 # Allucinazione visiva: la forchetta che non c’era
 
 Apparecchia mezzo tavolo: un piatto, un coltello alla sua destra, un bicchiere.

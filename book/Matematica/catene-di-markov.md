@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Catene di Markov: distribuzione stazionaria e PageRank"
+descrizione: "Come funzionano le catene di Markov: la matrice di transizione, la
+  distribuzione stazionaria, la velocità di convergenza e l'esempio di
+  PageRank."
+---
 # Catene di Markov: la matrice che si applica per sempre
 
 Per mescolare bene un mazzo di cinquantadue carte servono sette mescolate. Lo

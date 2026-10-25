@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Allineamento dell'AI: dai valori umani alle regole"
+descrizione: "Che cos'è il problema dell'allineamento, come si allineano gli
+  LLM, quali rischi presentano, come si valuta la sicurezza e come li regola la
+  governance."
+---
 # Allineamento e governance: dai valori umani alle regole
 
 La barca di *CoastRunners*, un gioco di corse, è il caso che la {doc}`sezione su

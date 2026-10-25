@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Generalizzazione nelle reti: dove le garanzie non arrivano"
+descrizione: "Perché le garanzie classiche dicono poco sulle reti neurali: una
+  rete che impara qualunque etichettatura e le piste per spiegare la
+  generalizzazione."
+---
 # Quello che le garanzie non spiegano
 
 Le garanzie viste fin qui hanno tutte la stessa forma: l'errore vero sta sotto

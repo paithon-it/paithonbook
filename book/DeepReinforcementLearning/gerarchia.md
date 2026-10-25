@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Reinforcement learning gerarchico: le opzioni"
+descrizione: "Come un agente decide a intervalli e non a ogni passo:
+  comportamenti richiamabili per nome, che cosa si guadagna e si paga, e chi dà
+  gli obiettivi."
+---
 # Decidere ogni tanto invece che sempre
 
 Che cosa resta, di tutto quello che un agente ha imparato, quando gli si cambia

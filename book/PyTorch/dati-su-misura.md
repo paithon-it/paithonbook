@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Dataset e DataLoader personalizzati in PyTorch"
+descrizione: "Come caricare i propri dati in PyTorch: scrivere un Dataset a
+  mano, trasformazioni, DataLoader e collate_fn per esempi di forma diversa."
+---
 # Dati su misura: `Dataset`, `DataLoader` e trasformazioni
 
 Nei manuali il dataset arriva sempre pronto. Ad esempio MNIST, la raccolta di

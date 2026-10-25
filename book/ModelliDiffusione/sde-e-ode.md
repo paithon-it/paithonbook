@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "SDE e ODE: la diffusione come equazione continua"
+descrizione: "Che cosa succede alla diffusione quando i passi diventano
+  infiniti: l'equazione in avanti e all'indietro, e la strada deterministica
+  senza estrazioni."
+---
 # Il limite continuo: una sola equazione, in avanti e all'indietro
 
 Nel 1982 Brian Anderson, ingegnere del controllo automatico, pubblica su una

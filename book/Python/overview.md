@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Python: il linguaggio dell'intelligenza artificiale"
+descrizione: "Perché Python è il linguaggio dell'AI: com'è nato, come si legge,
+  quali librerie scientifiche lo accompagnano e come preparare l'ambiente di
+  lavoro."
+---
 # Python: il linguaggio dell'intelligenza artificiale
 
 ```{image} ../figures/aperture/python.png

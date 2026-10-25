@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Modelli n-gram: scommettere sulla parola dopo"
+descrizione: "Come un modello di linguaggio prevede la parola successiva
+  contando le coppie: bigrammi, il problema degli zeri, la perplessità e il
+  codice in Python."
+---
 # Scommettere sulla prossima parola: i modelli n-gram
 
 San Pietroburgo, inverno 1913. Andrej Andreevič Markov, cinquantaseienne,

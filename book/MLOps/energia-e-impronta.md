@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Consumo energetico dei modelli: dal FLOP al grammo"
+descrizione: "Quanta energia consuma un modello: come si passa dai FLOP ai joule
+  e ai grammi di CO2, il peso dell'addestramento contro l'uso e che cosa si può
+  fare."
+---
 # Il conto in energia
 
 Di un modello si dichiara quasi tutto: il numero di parametri, i **FLOP** di una

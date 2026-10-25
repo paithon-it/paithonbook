@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Equazioni come medie: PINN senza griglia"
+descrizione: "Come certe equazioni alle derivate parziali diventano medie di
+  cammini casuali e come una rete può impararle tutte insieme col metodo di
+  Galerkin profondo."
+---
 # Quando un'equazione è una media
 
 Nel 1905 Albert Einstein pubblicò un articolo sul tremolio dei granelli sospesi

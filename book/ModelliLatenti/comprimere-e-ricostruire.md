@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Autoencoder: comprimere e ricostruire"
+descrizione: "Che cos'è un autoencoder: la strozzatura che lo costringe a
+  imparare, il legame con la PCA, un esempio in poche righe e perché da solo non
+  basta."
+---
 # Comprimere e ricostruire, e perché non basta
 
 Un museo ha in magazzino più quadri di quanti ne stiano alle pareti, e un

@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Prefazione: perché questo libro è online e gratuito"
+descrizione: "Perché un manoscritto del 2019, mai uscito su carta, è diventato
+  un libro online e gratuito sull'intelligenza artificiale, e che cosa
+  troverai."
+---
 # Prefazione
 
 Questo libro è stato scritto una prima volta nel 2019, per uscire su carta.

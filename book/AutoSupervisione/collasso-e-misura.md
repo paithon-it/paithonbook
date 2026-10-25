@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Collasso nell'auto-supervisione e come misurarlo"
+descrizione: "Perché i metodi auto-supervisionati rischiano di collassare, che
+  cosa garantisce il punteggio contrastivo e con che cosa si può sostituire per
+  valutarli."
+---
 # Perché non collassa, e come si fa a saperlo
 
 Un modello addestrato in modo supervisionato si controlla in un attimo: gli si

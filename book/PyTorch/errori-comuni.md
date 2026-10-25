@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Errori comuni in PyTorch: forma, tipo e dispositivo"
+descrizione: "I tre errori che incontra chiunque scriva PyTorch, forma, tipo e
+  dispositivo che non tornano, e il metodo per leggere il messaggio e
+  correggerli."
+---
 # I tre errori più comuni
 
 Esiste un rito d'iniziazione che accomuna chiunque abbia scritto codice

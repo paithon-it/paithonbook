@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Architettura Transformer: encoder, decoder e posizioni"
+descrizione: "Com'è fatto il Transformer del 2017: l'encoder che legge, il
+  decoder che scrive, la codifica posizionale e la rete feed-forward di ogni
+  blocco."
+---
 # La struttura del Transformer
 
 La macchina che contiene l'attenzione è il Transformer descritto in

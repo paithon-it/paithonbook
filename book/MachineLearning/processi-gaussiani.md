@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Processi gaussiani: previsioni con incertezza"
+descrizione: "Come funziona un processo gaussiano: una distribuzione sulle
+  curve, il ruolo del kernel, previsioni con media e incertezza, e il costo
+  computazionale."
+---
 # Processi gaussiani: prevedere con l'incertezza
 
 C'è una differenza sottile ma decisiva tra due previsioni del tempo. «Domani 24

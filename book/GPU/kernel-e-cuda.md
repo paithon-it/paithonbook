@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Kernel GPU: Triton, fusione e torch.compile"
+descrizione: "Che cos'è un kernel e come si scrive per la GPU: un programma per
+  migliaia di thread, un esempio in Triton, il costo dei lanci, la fusione e
+  torch.compile."
+---
 # Kernel: dare ordini a migliaia di thread
 
 Scrivi `c = a + b` su due tensori PyTorch che vivono sulla GPU, e sembra

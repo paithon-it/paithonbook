@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Message passing e GCN: il cuore delle GNN"
+descrizione: "Come funziona il message passing: messaggio, aggregazione e
+  aggiornamento, la forma a matrice della GCN, il campo recettivo e uno strato
+  in PyTorch."
+---
 # Message passing: il cuore delle GNN
 
 C'è un gioco che tutti conosciamo: il *telefono senza fili*. Una persona

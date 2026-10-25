@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Apprendimento PAC: probabilmente corretto"
+descrizione: "Che cos'è l'apprendimento PAC: la definizione di Valiant con
+  tolleranza e confidenza, e come si ottengono garanzie contando le ipotesi di
+  famiglie finite."
+---
 # Probabilmente, approssimativamente corretto
 
 La definizione di Valiant, nella forma in cui oggi si scrive, ha due parametri

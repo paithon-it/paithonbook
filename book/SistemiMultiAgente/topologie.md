@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Topologie multi-agente: supervisore, catena, gerarchia"
+descrizione: "Come si collegano più agenti: rete centralizzata, decentralizzata
+  o distribuita, supervisore e lavoratori, catena, gerarchia e lavagna
+  condivisa."
+---
 # Chi parla con chi: le topologie del coordinamento
 
 Una rete **centralizzata**, con un nodo al centro e tutti gli altri appesi a

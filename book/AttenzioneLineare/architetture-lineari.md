@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "RetNet, RWKV e xLSTM: architetture lineari"
+descrizione: "Tre modelli lineari apparsi tra il 2023 e il 2025 che sfidano il
+  Transformer: la retention di RetNet, le RNN di RWKV e il ritorno dell'LSTM con
+  xLSTM."
+---
 # Le architetture lineari: RetNet, RWKV, xLSTM
 
 La somiglianza che si scompone, il gate e la delta rule sono meccanismi.

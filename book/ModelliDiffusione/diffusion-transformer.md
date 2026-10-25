@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Diffusion Transformer (DiT) e diffusione video"
+descrizione: "Come si sostituisce la U-Net con un Transformer: patchify,
+  condizionamento adaLN-zero, scalabilità, diffusione sui video e il passaggio a
+  MM-DiT."
+---
 # Quando la diffusione incontra i Transformer: DiT
 
 Il cuore di ogni modello di diffusione incontrato finora, dal DDPM del 2020

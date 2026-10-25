@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "PINN: scrivere la legge fisica nella funzione di perdita"
+descrizione: "Come si costruisce una PINN: la penalità sulla legge, una molla
+  come banco di prova, perché serve una curva liscia e come si risolve il
+  problema inverso."
+---
 # La legge dentro la loss
 
 Dalla {doc}`sezione sui tensori e su autograd </PyTorch/tensori>` in poi, la

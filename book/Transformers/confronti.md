@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Transformer contro RNN, LSTM e GRU: il confronto"
+descrizione: "Perché il Transformer ha superato le reti ricorrenti: i limiti di
+  RNN, LSTM e GRU, il costo quadratico dell'attenzione e quando altro conviene."
+---
 # Confronto con i modelli precedenti
 
 Ogni nuova architettura va giudicata rispetto a ciò che sostituisce; prima del

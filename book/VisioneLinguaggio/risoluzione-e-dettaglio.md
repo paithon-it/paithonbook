@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Risoluzione delle immagini nei modelli multimodali"
+descrizione: "Perché una piccola immagine non basta per leggere i dettagli e
+  come i modelli vedono di più: riquadri, token compressi o niente conversione
+  in token."
+---
 # Il costo del dettaglio
 
 Prendi un giornale e allontanalo dagli occhi. A un metro riconosci ancora che è

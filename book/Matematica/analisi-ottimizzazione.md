@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Discesa del gradiente: derivate e ottimizzazione"
+descrizione: "Come si minimizza una funzione seguendo la pendenza: derivate,
+  gradiente, regola della catena e discesa del gradiente, il motore
+  dell'addestramento."
+---
 # Analisi e ottimizzazione: derivate e discesa del gradiente
 
 Nebbia fitta, nessuna mappa, e non si vede a un metro di distanza.

@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Metriche di valutazione: dove il modello sbaglia"
+descrizione: "Come si valuta un modello: matrice di confusione, precision e
+  recall, curva ROC e AUC, calibrazione, classi sbilanciate e metriche di
+  regressione."
+---
 # Valutare un modello: le metriche
 
 Un modello deve diagnosticare una malattia che colpisce una persona su cento.

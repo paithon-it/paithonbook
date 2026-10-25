@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Modelli latenti e inferenza variazionale"
+descrizione: "L'idea di spiegare il visibile con variabili nascoste, il prezzo
+  da pagare (una somma impossibile da fare) e le quattro macchine che la usano."
+---
 # Modelli latenti e inferenza variazionale
 
 ```{image} ../figures/aperture/modelli-latenti.png

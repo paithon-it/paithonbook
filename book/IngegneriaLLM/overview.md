@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Ingegneria degli LLM: prompt, contesto e loop"
+descrizione: "Come si programma un modello linguistico a parole: i tre livelli
+  di prompt, contesto e ciclo, e perché si parla di ingegneria e non di magia."
+---
 # Prompt, contesto e loop: programmare gli LLM
 
 ```{image} ../figures/aperture/ingegneria-llm.png

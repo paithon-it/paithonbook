@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Codec neurali audio: il suono come token"
+descrizione: "Come comprimere il suono in simboli discreti con un codec neurale:
+  vector quantization, residual vector quantization e un esempio in miniatura."
+---
 # Il suono come token: i codec neurali
 
 Per generare suono come un modello di linguaggio genera testo, un simbolo alla

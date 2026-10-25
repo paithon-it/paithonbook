@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Fusione precoce e tardiva: un vocabolario unico"
+descrizione: "Come un modello può parlare solo con parole: quantizzazione
+  vettoriale, dove si incontrano i flussi, fusione tardiva e precoce, un
+  vocabolario comune."
+---
 # Un vocabolario solo: fusione tardiva e fusione precoce
 
 Chiedi a un sistema come quelli di {doc}`Innestare gli occhi

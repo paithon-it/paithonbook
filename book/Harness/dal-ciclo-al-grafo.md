@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Workflow di agenti: dal ciclo al grafo"
+descrizione: "Come si disegna un harness per un lavoro che dura: percorsi
+  scritti in anticipo e percorsi scelti dal modello, e il grafo come struttura
+  dati."
+---
 # Dal ciclo al grafo: il disegno di un lavoro che dura
 
 Un harness, disegnato su un foglio, ha quasi sempre la forma di frecce fra

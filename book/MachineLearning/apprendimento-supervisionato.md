@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Apprendimento supervisionato: regressione e classificazione"
+descrizione: "Che cos'è l'apprendimento supervisionato: imparare una funzione da
+  esempi con risposta, la differenza fra regressione e classificazione, retta e
+  logistica."
+---
 # Apprendimento supervisionato: regressione e classificazione
 
 Chi affianca per una settimana un agente immobiliare esperto non impara

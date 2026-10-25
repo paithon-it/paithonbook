@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Embedding: rappresentare il testo in numeri"
+descrizione: "Come si trasforma un testo in numeri: tokenizzazione, one-hot,
+  bag-of-words e TF-IDF, word embedding, fastText ed embedding di frase."
+---
 # Rappresentare il testo: dai token agli embedding
 
 Per un computer un testo è già una sequenza di numeri, i punti di codice

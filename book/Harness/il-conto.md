@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Costo degli agenti: token, cache e attesa"
+descrizione: "Quanto costa un compito affidato a un agente: il conto in token,
+  la cache del prefisso, il contro-costo di ogni risparmio e il tempo di
+  attesa."
+---
 # Il conto di un compito: token, cache e attesa
 
 Su HumanEval, i 164 problemi di programmazione che il {doc}`loop engineering

@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Monte Carlo tree search: da AlphaGo ad AlphaZero"
+descrizione: "Come funziona la ricerca ad albero Monte Carlo: come un agente
+  simula le mosse prima di sceglierle, da AlphaGo ad AlphaZero, fino ai modelli
+  linguistici."
+---
 # Pensare prima di agire: la ricerca ad albero Monte Carlo
 
 Finora la policy ha sempre risposto d'istinto: una funzione dallo stato

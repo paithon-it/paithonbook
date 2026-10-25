@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Metodi Monte Carlo nel reinforcement learning"
+descrizione: "Come un agente impara giocando fino in fondo e facendo la media
+  dei risultati: differenze dalla programmazione dinamica, controllo e metodi
+  off-policy."
+---
 # Giocare fino in fondo: i metodi Monte Carlo
 
 Nel 1946, a Los Alamos, Stanisław Ulam era in convalescenza e passava le

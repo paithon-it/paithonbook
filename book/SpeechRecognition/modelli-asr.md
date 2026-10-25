@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Modelli ASR: CTC, RNN-T e Whisper nel dettaglio"
+descrizione: "Come un modello trasforma l'audio in parole: il problema
+  dell'allineamento, CTC, trasduttore neurale, Whisper, decodifica e Word Error
+  Rate."
+---
 # I modelli di riconoscimento
 
 Quando pronunci la parola «casa», il microfono del telefono non registra

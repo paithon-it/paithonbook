@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "L'AI, la nuova elettricità: una tecnologia di uso generale"
+descrizione: "Il capitolo conclusivo dell'introduzione: l'AI come tecnologia di
+  uso generale, che cambia il modo in cui si risolvono problemi in tanti
+  settori."
+---
 # Conclusione
 
 Ogni tanto arriva una tecnologia che non risolve un problema, ma cambia il

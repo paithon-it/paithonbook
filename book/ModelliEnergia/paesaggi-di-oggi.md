@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Modelli a energia oggi: dove sono tornati"
+descrizione: "Dove vivono oggi i modelli a energia: sulle immagini in modo
+  dichiarato, in due ritorni non dichiarati, e le quattro rinunce che hanno
+  accettato."
+---
 # Paesaggi di oggi
 
 Le reti di Hopfield non si usano più, e nemmeno le macchine di Boltzmann

@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Apprendimento autosupervisionato per le immagini"
+descrizione: "Come una rete impara a vedere senza etichette: due viste della
+  stessa foto, DINO, il mascheramento dell'immagine e come si valuta il
+  risultato."
+---
 # Imparare a vedere senza etichette
 
 Le fotografie su cui AlexNet si è addestrata nel 2012, un milione e

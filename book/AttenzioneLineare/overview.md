@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Attenzione lineare: contesti lunghi senza il costo n²"
+descrizione: "Perché l'attenzione costa quanto il quadrato della lunghezza e
+  come l'attenzione lineare lo evita con una memoria di taglia fissa."
+---
 # Attenzione lineare
 
 ```{image} ../figures/aperture/attenzione-lineare.png

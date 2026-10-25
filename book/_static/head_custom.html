@@ -84,7 +84,9 @@
     posto di una sezione. -#}
 {%- set pt_servizio = pagename in ('genindex', 'search', 'py-modindex') -%}
 {%- set pt_home = pagename == (master_doc | default('intro', true)) -%}
-{%- set pt_titolo_pagina = title | default('', true) | striptags | trim -%}
+{#- `pt_titolo_ricerca` (front matter, via `_ext/pt_meta.py`) vince sul titolo
+    nel testo: e' quello pensato per un elenco di risultati. -#}
+{%- set pt_titolo_pagina = pt_titolo_ricerca | default('', true) or (title | default('', true) | striptags | trim) -%}
 {%- set pt_titolo = pt_claim if (pt_home or not pt_titolo_pagina) else pt_titolo_pagina ~ ' · Paithon Book' -%}
 {%- set pt_sommario = pt_sommario_libro if (pt_home or not pt_descrizione | default('', true)) else pt_descrizione -%}
 {%- set pt_url = pageurl | default('https://book.paithon.it/main/', true) -%}

@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "S4 e HiPPO: dai sistemi dinamici al linguaggio"
+descrizione: "Dalla formulazione di Kálmán del 1960 a S4: dal tempo continuo a
+  quello discreto, ricorrenza e convoluzione, HiPPO e le tappe verso il
+  linguaggio."
+---
 # Dai sistemi dinamici a S4
 
 Nel 1960 l'ingegnere ungherese-americano Rudolf Kálmán pubblicò la formulazione

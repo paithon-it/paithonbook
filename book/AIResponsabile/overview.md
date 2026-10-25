@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "AI responsabile: la tecnologia non è neutra"
+descrizione: "Che cos'è l'AI responsabile: il caso COMPAS, le tre famiglie di
+  danno, perché il tema esplode adesso e perché non è solo un problema tecnico."
+---
 # AI responsabile: la tecnologia non è neutra
 
 ```{image} ../figures/aperture/ai-responsabile.png

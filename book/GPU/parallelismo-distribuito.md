@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Parallelismo distribuito: addestrare su più GPU"
+descrizione: "Come si addestra un modello su più GPU: parallelismo dei dati,
+  tensor e pipeline parallelism, ZeRO e FSDP, e come combinarli in un quadro
+  d'insieme."
+---
 # Oltre una GPU: parallelismo distribuito
 
 I modelli di cui leggiamo i nomi ogni settimana non nascono su una scheda: ne

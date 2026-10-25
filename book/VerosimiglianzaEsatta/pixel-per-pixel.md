@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Modelli autoregressivi: PixelCNN pixel per pixel"
+descrizione: "Come si genera un'immagine un pixel alla volta: un ordine fra i
+  pixel, una convoluzione mascherata, il codice di PixelCNN e dove la famiglia è
+  tornata."
+---
 # Un pixel alla volta
 
 Generare un pezzo alla volta si è già visto. Il {doc}`capitolo sui Transformer

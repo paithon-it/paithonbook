@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Reti neurali: dal neurone al percettrone multistrato"
+descrizione: "Come funzionano le reti neurali: dal neurone formale al
+  percettrone, l'inverno dello XOR, la backpropagation e il percettrone
+  multistrato."
+---
 # Reti neurali: dal neurone al percettrone multistrato
 
 ```{image} ../figures/aperture/reti-neurali.png

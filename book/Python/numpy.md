@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "NumPy: calcolo numerico vettorizzato con gli array"
+descrizione: "Che cos'è NumPy e come si usa: l'array ndarray, indicizzazione,
+  broadcasting e vettorizzazione, per calcolare su interi insiemi di numeri
+  senza cicli."
+---
 # NumPy: calcolo numerico vettorizzato
 
 NumPy nasce nel 2005, quando Travis Oliphant riunisce in un solo progetto due

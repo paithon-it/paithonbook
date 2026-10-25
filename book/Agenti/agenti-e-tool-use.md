@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Tool use e ReAct: il ciclo di un agente"
+descrizione: "Come un modello linguistico usa strumenti: chiamata di funzioni,
+  ReAct, riflessione sui propri errori e un agente giocattolo scritto in
+  Python."
+---
 # Ragionare e agire: il ciclo dell'agente
 
 Un modello di linguaggio non ha un orologio, e se gli chiedi che ore sono non

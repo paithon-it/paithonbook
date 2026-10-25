@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Byte Pair Encoding: come si tokenizza il testo"
+descrizione: "Come si sceglie il vocabolario di un modello: il Byte Pair
+  Encoding da compressore a tokenizzatore, un esempio svolto e il codice in
+  Python."
+---
 # Come si spezza il testo: il Byte Pair Encoding
 
 Nella {doc}`rappresentazione del testo

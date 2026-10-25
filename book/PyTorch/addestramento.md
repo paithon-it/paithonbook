@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Training loop in PyTorch: addestrare un modello"
+descrizione: "Il ciclo di addestramento in PyTorch passo per passo: Dataset e
+  DataLoader, MNIST da cima a fondo, train ed eval, e la validazione per
+  fermarsi."
+---
 # Il training loop: addestrare un modello
 
 Le cinque righe del ciclo mostrato in fondo alla {doc}`sezione sulla

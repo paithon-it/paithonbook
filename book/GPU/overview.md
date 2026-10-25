@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "GPU: perché servono migliaia di core semplici"
+descrizione: "Perché le GPU contano per l'AI: il limite dei processori, il
+  parallelismo di molti core semplici e il movimento dei dati come vero collo di
+  bottiglia."
+---
 # GPU e calcolo parallelo
 
 ```{image} ../figures/aperture/gpu.png

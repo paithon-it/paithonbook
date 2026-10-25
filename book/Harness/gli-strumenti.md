@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Strumenti degli agenti: shell, codice e contesto"
+descrizione: "Come si progettano gli strumenti di un agente: ogni strumento è un
+  pezzo di contesto, conta che cosa torna indietro, e la shell allarga il raggio
+  d'azione."
+---
 # Gli strumenti: l'interfaccia fra l'agente e il computer
 
 Un gruppo di Princeton ha messo un modello di linguaggio davanti alla riga di

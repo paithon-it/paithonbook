@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Seq2seq: tradurre con le reti neurali"
+descrizione: "Come una rete traduce una frase: comprimerla in un vettore, la
+  nascita dell'attenzione, teacher forcing, beam search e la traduzione neurale
+  in produzione."
+---
 # Da frase a frase: tradurre con le reti
 
 Prova a tradurre parola per parola: «Il gatto nero salta sul muro» diventerebbe

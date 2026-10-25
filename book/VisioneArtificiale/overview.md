@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Visione artificiale: come una macchina vede"
+descrizione: "Come una macchina vede le immagini: la griglia di numeri, la
+  distanza fra pixel e significato, i compiti della visione e il peso dei grandi
+  dataset."
+---
 # Visione artificiale: far vedere le macchine
 
 ```{image} ../figures/aperture/visione-artificiale.png

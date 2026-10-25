@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "MLOps: portare i modelli in produzione"
+descrizione: "Che cos'è MLOps: perché il modello è solo la parte piccola del
+  sistema, il ciclo di vita di un modello e perché non basta un notebook."
+---
 # MLOps: mettere i modelli in produzione
 
 ```{image} ../figures/aperture/mlops.png

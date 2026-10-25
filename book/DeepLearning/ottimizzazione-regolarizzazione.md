@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Reti profonde: inizializzazione, dropout, Adam"
+descrizione: "Come si addestra bene una rete profonda: gradiente che svanisce,
+  inizializzazione, batch normalization, dropout, label smoothing, ottimizzatori
+  e grokking."
+---
 # Far funzionare le reti profonde
 
 Per molto tempo una rete con tanti strati è stata più un'idea che una pratica.

@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Sintassi e parsing: l'albero della frase"
+descrizione: "Come si ricava la struttura di una frase: costituenti e
+  dipendenze, l'esplosione degli alberi possibili, l'algoritmo CKY, i treebank e
+  la sintassi oggi."
+---
 # La struttura nascosta della frase: sintassi e parsing
 
 «Ho visto un uomo con il binocolo». Chi ha il binocolo? Se ce l'ho io, «con il

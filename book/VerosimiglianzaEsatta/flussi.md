@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Normalizing flow: il flusso che si inverte"
+descrizione: "Come funzionano i normalizing flow: il cambio di variabile per le
+  densità, gli strati di accoppiamento, un caso sulle due lune e il costo di
+  invertire."
+---
 # Il flusso che si può invertire
 
 {doc}`Un pixel alla volta <pixel-per-pixel>` ha ottenuto la probabilità esatta

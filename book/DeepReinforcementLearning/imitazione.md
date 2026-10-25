@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Imitation learning: clonazione comportamentale"
+descrizione: "Come un agente impara copiando un maestro: la clonazione è
+  apprendimento supervisionato, ma gli errori si accumulano appena si esce dai
+  casi mostrati."
+---
 # Imparare guardando: imitazione e clonazione comportamentale
 
 Nel 1989, alla Carnegie Mellon, un furgone attrezzato percorreva le strade

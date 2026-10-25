@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Processi decisionali di Markov e Bellman"
+descrizione: "Come si descrive una decisione sequenziale: stati, azioni, policy,
+  ritorno scontato, funzioni valore, equazione di Bellman e value iteration."
+---
 # Processi decisionali di Markov e funzioni valore
 
 La {doc}`sezione sui bandit <banditi>` ha lavorato su un mondo che non si

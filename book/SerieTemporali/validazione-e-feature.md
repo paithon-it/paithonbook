@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Backtesting: validare un modello di serie temporali"
+descrizione: "Perché mescolare i dati falsa la valutazione di una serie
+  temporale, come si fa un backtesting cronologico e quali metriche e linee di
+  base usare."
+---
 # Validare e rappresentare: backtesting e feature temporali
 
 Un analista quantitativo mostra il grafico di un suo modello: rendimento annuo

@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Robotica e AI: un corpo che decide come muoversi"
+descrizione: "Come robotica e intelligenza artificiale lavorano insieme: la
+  prima progetta il corpo, la seconda decide come muoverlo, dal rover su Marte
+  al magazzino."
+---
 # Robotica e AI
 
 Un rover su Marte sceglie da solo dove mettere le ruote fra le rocce, un

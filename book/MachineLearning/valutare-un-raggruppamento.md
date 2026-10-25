@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Valutare un clustering quando manca la risposta giusta"
+descrizione: "Come si giudica un raggruppamento senza risposte corrette: indici
+  interni ed esterni, stabilità del risultato e perché nessun algoritmo è
+  neutro."
+---
 # Quando non c'è una risposta giusta: valutare un raggruppamento
 
 Che Plutone non sia un pianeta lo ha deciso un'alzata di mano. Successe

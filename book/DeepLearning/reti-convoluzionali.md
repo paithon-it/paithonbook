@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Reti convoluzionali: filtri che scorrono"
+descrizione: "Come funziona una rete convoluzionale (CNN): il filtro che scorre
+  sull'immagine, i pesi condivisi, il pooling e l'architettura tipica."
+---
 # Reti convoluzionali (CNN)
 
 Per un computer una fotografia è una tabella di numeri, uno per ogni pixel, o

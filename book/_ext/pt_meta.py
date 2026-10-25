@@ -16,6 +16,20 @@ La landing non passa da qui: apre con l'istruzione per l'interruttore dei
 livelli, che come descrizione non direbbe niente, e il template ha per lei la
 riga curata del libro.
 
+Una pagina che si cerca molto puo' dire di se' qualcosa di piu' preciso, nel
+front matter:
+
+    ---
+    titolo_ricerca: "Machine learning: cos'e' e come funziona"
+    descrizione: "Che cos'e' il machine learning, ..."
+    ---
+
+`descrizione` prende il posto del primo paragrafo; `titolo_ricerca` finisce
+nel contesto come `pt_titolo_ricerca` e lo usano `<title>` (in
+`_templates/layout.html`) e `og:title`. Il titolo nel testo, l'indice e il
+PDF restano quelli della pagina: e' il modo in cui la pagina si presenta in un
+elenco di risultati, non un altro nome del capitolo.
+
 Regola di questo file: **non deve poter rompere la build**. Una descrizione
 mancante e' un peccato veniale (il template ha il ripiego), un `raise` dentro
 `html-page-context` e' un libro che non si pubblica. Per questo tutto sta in un
@@ -61,9 +75,22 @@ def primo_paragrafo(doctree) -> str:
     return ""
 
 
+def dal_front_matter(context, chiave: str) -> str:
+    """Il valore di `chiave` nel front matter della pagina, su una riga."""
+    meta = context.get("meta") or {}
+    valore = meta.get(chiave, "") if hasattr(meta, "get") else ""
+    return " ".join(str(valore).split()) if valore else ""
+
+
 def aggiungi_descrizione(app, pagename, templatename, context, doctree):
+    context["pt_titolo_ricerca"] = ""
     try:
-        context["pt_descrizione"] = primo_paragrafo(doctree) if doctree else ""
+        context["pt_titolo_ricerca"] = dal_front_matter(context, "titolo_ricerca")
+        scritta = dal_front_matter(context, "descrizione")
+        if scritta:
+            context["pt_descrizione"] = taglia(scritta)
+        else:
+            context["pt_descrizione"] = primo_paragrafo(doctree) if doctree else ""
     except Exception as errore:                      # mai fermare la build
         logger.warning("pt_meta: niente descrizione per %s (%s)", pagename, errore)
         context["pt_descrizione"] = ""
@@ -71,5 +98,5 @@ def aggiungi_descrizione(app, pagename, templatename, context, doctree):
 
 def setup(app):
     app.connect("html-page-context", aggiungi_descrizione)
-    return {"version": "1.0", "parallel_read_safe": True,
+    return {"version": "1.1", "parallel_read_safe": True,
             "parallel_write_safe": True}

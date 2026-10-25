@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Replicare un paper: il metodo, con il Vision Transformer"
+descrizione: "Come si replica un articolo scientifico di deep learning: un
+  metodo in passi, il caso del Vision Transformer e cosa fare se i numeri non
+  tornano."
+---
 # Replicare un paper
 
 Un articolo scientifico si può leggere in tre modi. Il primo è scorrerlo:

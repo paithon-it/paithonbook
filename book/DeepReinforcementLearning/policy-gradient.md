@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Policy gradient: REINFORCE, actor-critic e PPO"
+descrizione: "Come si impara direttamente la policy: il metodo REINFORCE, la
+  coppia actor-critic e gli algoritmi A3C e PPO usati nella pratica."
+---
 # Metodi a gradiente di policy
 
 Seul, marzo 2016. Alla trentasettesima mossa della seconda partita contro il

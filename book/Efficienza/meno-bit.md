@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Quantizzazione: meno bit, che cosa si perde"
+descrizione: "Come funziona la quantizzazione dei modelli: quanto si sbaglia
+  arrotondando, quanti bit servono, le componenti anomale, gli otto bit in
+  virgola mobile."
+---
 # Meno bit: che cosa si perde arrotondando
 
 Al supermercato nessuno somma i centesimi. Si arrotonda: due e novantacinque

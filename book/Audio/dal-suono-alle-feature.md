@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Spettrogramma e MFCC: dal suono alle feature"
+descrizione: "Come si trasforma un suono in numeri per un modello: campionamento
+  e teorema di Nyquist, trasformata di Fourier, spettrogramma, scala mel e
+  MFCC."
+---
 # Dal suono alle feature
 
 Quando pronunciamo una parola non facciamo altro che spingere aria. Le corde

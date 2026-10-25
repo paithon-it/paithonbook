@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Reinforcement learning: imparare per tentativi"
+descrizione: "Che cos'è il reinforcement learning: agente, ambiente e
+  ricompensa, la differenza dall'apprendimento supervisionato e il dilemma fra
+  esplorare e sfruttare."
+---
 # Reinforcement Learning: imparare per tentativi
 
 ```{image} ../figures/aperture/reinforcement-learning.png

@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Harness: il repository come memoria dell'agente"
+descrizione: "Perché un agente di programmazione ha bisogno che istruzioni e
+  decisioni stiano nel repository: un indice invece di un manuale, e come
+  tenerlo vero."
+---
 # Il repository come memoria: istruzioni e fonte di verità
 
 Un ingegnere arriva il lunedì in una squadra che lavora da mesi allo stesso

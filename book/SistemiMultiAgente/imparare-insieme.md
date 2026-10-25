@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Apprendimento multi-agente: ambienti che imparano"
+descrizione: "Perché addestrare più agenti insieme è difficile: ambiente non
+  stazionario, attribuzione del merito, addestramento centralizzato, self-play e
+  curriculum."
+---
 # Imparare insieme: quando l'ambiente impara anche lui
 
 Negli anni Venti il biologo marino Umberto D'Ancona mise in fila i registri dei

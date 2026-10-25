@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Controllo continuo: DDPG, TD3 e SAC"
+descrizione: "Come si addestra un agente con azioni continue: DDPG, le
+  correzioni di TD3, l'esplorazione di SAC, uno schema in PyTorch e i limiti dei
+  tre metodi."
+---
 # Controllo continuo: DDPG, TD3, SAC
 
 Dopo la ricerca, che pensa prima di muovere, si torna ai metodi che decidono

@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Modelli di diffusione: dal rumore all'immagine"
+descrizione: "Come funzionano i modelli di diffusione: il processo che disfa
+  un'immagine in rumore, e come si impara a rifarlo per generare immagini
+  nuove."
+---
 # Modelli di Diffusione
 
 ```{image} ../figures/aperture/modelli-diffusione.png

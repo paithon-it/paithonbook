@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Harness: il primo turno di un agente di codice"
+descrizione: "Che cosa preparare prima di costruire con un agente di
+  programmazione: due compiti diversi, l'elenco delle funzionalità come
+  struttura e un cancello."
+---
 # Il primo turno: preparare prima di costruire
 
 Che cosa fa un agente di programmazione nella prima ora di un progetto vuoto,

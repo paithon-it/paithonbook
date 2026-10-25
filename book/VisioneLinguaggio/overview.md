@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Modelli visione-linguaggio: immagini e parole insieme"
+descrizione: "Come un modello può vedere e parlare: far incontrare immagini e
+  testo, trasformare l'immagine in una sequenza e unire i due flussi."
+---
 # Modelli che vedono e parlano
 
 ```{image} ../figures/aperture/visione-linguaggio.png

@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Cache KV e attenzione multi-testa in pratica"
+descrizione: "Come si usa l'attenzione quando il modello genera testo: la cache
+  KV, le varianti da MHA a MLA, che cosa costa in memoria e gli errori più
+  comuni."
+---
 # L'attenzione in pratica
 
 Nel novembre del 2019 esce un articolo di nove pagine, firmato da una persona

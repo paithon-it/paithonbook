@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Conclusioni: il cammino fatto e come continuare a imparare"
+descrizione: "Il cammino del libro visto dall'alto, i fili che lo tengono
+  insieme, dove sta andando l'AI, i limiti di quello che sappiamo e come
+  continuare a imparare."
+---
 # Conclusioni
 
 ```{image} ../figures/aperture/conclusioni.png

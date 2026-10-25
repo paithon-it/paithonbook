@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Inferenza attiva e principio dell'energia libera"
+descrizione: "Che cos'è l'inferenza attiva: agire per non essere sorpresi, i due
+  modi di ridurre la sorpresa, come sceglie una mossa e che cosa resta di questa
+  teoria."
+---
 # Agire per non essere sorpresi: l'inferenza attiva
 
 I sistemi visti fin qui tengono separate due cose. Da una parte un modello che

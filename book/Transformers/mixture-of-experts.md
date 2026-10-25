@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Mixture of Experts: più parametri, stesso conto"
+descrizione: "Come un modello con molti blocchi ne attiva pochi per ogni token:
+  il router che sceglie, il rischio di collasso e dove si sposta il costo."
+---
 # Mixture of Experts: più parametri, stesso conto
 
 Un'enciclopedia in trenta volumi non si legge tutta per rispondere a una

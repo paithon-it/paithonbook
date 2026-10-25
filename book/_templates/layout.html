@@ -18,6 +18,22 @@
   head_custom.html è risolto dal template loader perché `_static` è in
   `templates_path` (vedi _config.yml).
 -#}
+{#-
+  Il titolo nella scheda del browser e nei risultati di ricerca. Una pagina
+  puo' darne uno pensato per chi cerca con `titolo_ricerca` nel front matter
+  (lo legge `_ext/pt_meta.py`); il titolo nel testo, l'indice e il PDF restano
+  quelli della pagina. Senza, e' il blocco di Sphinx com'era.
+
+  Il separatore prima di «Paithon Book» e' il punto in alto, come nei titoli
+  di paithon.it e nell'anteprima dei link (head_custom.html): Sphinx mette un
+  trattino lungo, che nei titoli non si usa.
+-#}
+{%- block htmltitle %}
+    {%- set pt_scheda = pt_titolo_ricerca|e if pt_titolo_ricerca
+          else title|striptags|e %}
+    {%- set pt_suffisso = titlesuffix|replace(' &#8212; ', ' · ') %}
+    <title>{{ pt_scheda }}{{ pt_suffisso }}</title>
+{%- endblock %}
 {% block extrahead %}
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="{{ language }}"/>

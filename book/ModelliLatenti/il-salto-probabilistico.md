@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "VAE: ELBO e trucco della riparametrizzazione"
+descrizione: "Come si passa dall'autoencoder al VAE: la posterior approssimata,
+  i due termini dell'ELBO, la riparametrizzazione e che cosa il VAE non fa
+  bene."
+---
 # Il salto probabilistico: l’ELBO e la riparametrizzazione
 
 L’autoencoder della {doc}`sezione su comprimere e ricostruire

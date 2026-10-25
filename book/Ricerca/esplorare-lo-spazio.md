@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Algoritmi di ricerca: a tentoni e con l'euristica"
+descrizione: "Come si cerca un percorso senza avversari: due modi di procedere a
+  tentoni, un rompicapo da contare e la stima di quanto manca che orienta la
+  ricerca."
+---
 # Cercare senza avversari: a tentoni e con l’euristica
 
 Chiedi al telefono la strada per una città a trecento chilometri e la risposta

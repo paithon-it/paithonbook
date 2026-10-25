@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Support vector machine: il classificatore a margine massimo"
+descrizione: "Come funziona una support vector machine: la retta che separa i
+  dati con il margine più largo, il margine morbido per i dati imperfetti."
+---
 # Support Vector Machine: il margine massimo
 
 Disegna due nuvole di punti su un foglio (pallini blu a sinistra, quadratini

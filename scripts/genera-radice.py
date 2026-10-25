@@ -120,7 +120,10 @@ RX_INLINE = [
 def prima_frase(percorso: Path, limite: int = 165) -> str:
     """Il primo paragrafo di testo della pagina, che nel libro e' l'aggancio.
 
-    Qui la sorgente e' il MyST grezzo, e non il testo gia' ripulito.
+    Qui la sorgente e' il MyST grezzo, e non il testo gia' ripulito. Se la
+    pagina ha un front matter con `descrizione`, vale quella, come per il
+    `<meta name="description">` che scrive `book/_ext/pt_meta.py`; il front
+    matter comunque non e' testo, e si salta.
     """
     if not percorso.is_file():
         return ""
@@ -131,6 +134,13 @@ def prima_frase(percorso: Path, limite: int = 165) -> str:
                         if c.get("cell_type") == "markdown").splitlines()
     else:
         righe = percorso.read_text(encoding="utf-8").splitlines()
+        if righe and righe[0].strip() == "---" and "---" in (r.strip() for r in righe[1:]):
+            fine = next(i for i in range(1, len(righe)) if righe[i].strip() == "---")
+            intestazione = yaml.safe_load("\n".join(righe[1:fine])) or {}
+            righe = righe[fine + 1:]
+            scritta = intestazione.get("descrizione") if isinstance(intestazione, dict) else None
+            if scritta:
+                righe = [" ".join(str(scritta).split())]
 
     # Un commento HTML su piu' righe: la prima riga cade da se' (comincia per
     # `<`), le altre no, e senza questo la descrizione di una pagina generata

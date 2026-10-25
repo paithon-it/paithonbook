@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Compressione e predizione: capire è accorciare"
+descrizione: "Perché predire e comprimere sono la stessa operazione: il limite
+  della compressione, il programma più corto, l'argomento di Sutskever e le
+  prove."
+---
 # Capire è accorciare
 
 Ireneo Funes, il ragazzo che Borges immagina caduto da cavallo in un paese

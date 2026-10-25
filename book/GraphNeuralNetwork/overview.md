@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Graph neural network: reti neurali su grafo"
+descrizione: "Come ragionare sui dati che non sono né una griglia né una
+  sequenza: l'idea delle reti neurali su grafo, dal dato all'architettura, e i
+  fili del capitolo."
+---
 # Reti neurali su grafo
 
 ```{image} ../figures/aperture/graph-neural-network.png

@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "GAN: due reti in gara per generare immagini"
+descrizione: "Come funzionano le GAN, le Generative Adversarial Networks:
+  generatore e discriminatore in competizione in un gioco a somma zero, da
+  Goodfellow in poi."
+---
 # Generative Adversarial Networks
 
 ```{image} ../figures/aperture/gan.png

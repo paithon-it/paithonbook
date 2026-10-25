@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Privacy e attacchi avversari nei modelli di AI"
+descrizione: "Come i modelli memorizzano dati personali e come ci si difende:
+  privacy differenziale, federated learning, esempi avversari, FGSM e
+  watermarking."
+---
 # Privacy e robustezza: dati protetti e attacchi avversari
 
 Il nome completo di una persona reale, il suo indirizzo, un numero di telefono,

@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Dimensione VC: garanzie con infinite ipotesi"
+descrizione: "Come si dà una garanzia quando le ipotesi sono infinite: la
+  dimensione VC, il concetto di frantumare un insieme di punti e il legame con
+  il caso peggiore."
+---
 # Quando le ipotesi sono infinite: la dimensione VC
 
 Le soglie su un segmento sono infinite, eppure l'esperimento delle

@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Transfer learning: riusare una rete addestrata"
+descrizione: "Come classificare immagini partendo da una rete già addestrata:
+  base e testa, feature extraction contro fine-tuning, con un esempio in
+  PyTorch."
+---
 # Classificazione e transfer learning
 
 La vittoria di AlexNet a ImageNet, nel 2012, è raccontata fra le

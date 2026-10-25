@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Probabilità e statistica: convivere con l'incertezza"
+descrizione: "Le basi di probabilità e statistica per il machine learning:
+  variabili aleatorie, media e varianza, distribuzioni comuni e teorema di
+  Bayes."
+---
 # Probabilità e statistica: convivere con l'incertezza
 
 Nell'estate del 1654 due matematici francesi, Blaise Pascal e Pierre de Fermat,

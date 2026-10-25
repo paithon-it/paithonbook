@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "State space model e attenzione lineare: limiti"
+descrizione: "Il quadro d'insieme delle ricorrenze lineari a stato fisso: il
+  collo di bottiglia dello stato, i modelli ibridi con l'attenzione e dove va la
+  ricerca."
+---
 # Panorama e limiti
 
 L'attenzione lineare e gli *state space model* partono da punti diversi e

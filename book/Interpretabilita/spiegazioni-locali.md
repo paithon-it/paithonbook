@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "LIME, SHAP e controfattuali: spiegare una predizione"
+descrizione: "Come si spiega una singola predizione: LIME, i valori di Shapley,
+  SHAP, i controfattuali e gli anchor, con i valori di Shapley calcolati da
+  zero."
+---
 # Spiegazioni locali: LIME, SHAP e controfattuali
 
 Nel 1953 **Lloyd Shapley**, un giovane matematico che a Princeton stava

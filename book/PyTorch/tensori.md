@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Tensori e autograd in PyTorch: dati e derivate"
+descrizione: "Che cosa sono i tensori in PyTorch, come si creano e si usano su
+  CPU e GPU, e come autograd calcola le derivate al posto nostro durante
+  l'addestramento."
+---
 # Tensori e autograd
 
 Dentro PyTorch ogni cosa è un tensore: l'immagine da classificare, la frase

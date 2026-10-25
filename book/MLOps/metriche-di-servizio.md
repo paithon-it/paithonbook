@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "TTFT, TPOT e goodput: misurare un LLM in servizio"
+descrizione: "Come si misura il servizio di un modello di linguaggio: latenza
+  scomposta, prefill e decode, goodput, percentili, riuso del prefisso e
+  memoria."
+---
 # Misurare la generazione: TTFT, TPOT e goodput
 
 Entro 0,1 secondi la risposta sembra istantanea, entro 1 secondo il filo del

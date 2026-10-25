@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Consistency models: generare in pochi passi"
+descrizione: "Come passare da mille passi a uno solo: distillazione, consistency
+  model e condizione di consistenza, e che cosa si perde in qualità."
+---
 # Da mille passi a uno: insegnare a saltare
 
 Un maestro di scacchi che calcola dieci mosse avanti e un principiante che ne

@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Agenti AI: quando i modelli linguistici agiscono"
+descrizione: "Che cos'è un agente AI: dal completare un testo all'agire, com'è
+  fatto il suo ciclo, perché funziona adesso e come lo si misura, con
+  SWE-bench."
+---
 # Agenti: quando i modelli linguistici agiscono
 
 ```{image} ../figures/aperture/agenti.png

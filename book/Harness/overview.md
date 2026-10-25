@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Harness engineering: tutto ciò che circonda il modello"
+descrizione: "Che cos'è l'harness di un agente: il ciclo, i file, gli strumenti
+  e i controlli attorno al modello, e che cosa manca quando l'agente sbaglia."
+---
 # Harness engineering: tutto ciò che non è il modello
 
 ```{image} ../figures/aperture/harness.png

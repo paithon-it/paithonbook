@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "GAN: da DCGAN a StyleGAN, e le applicazioni"
+descrizione: "Le tappe delle GAN: DCGAN, conditional GAN, BigGAN, StyleGAN,
+  pix2pix e CycleGAN, VQ-GAN. Poi le applicazioni e il passaggio ai modelli di
+  diffusione."
+---
 # Evoluzioni e applicazioni
 
 Le prime immagini generate da una GAN, nel 2014, erano cifre scritte a mano di

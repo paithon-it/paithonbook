@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Energy-based model: un numero al posto di una probabilità"
+descrizione: "Come funzionano i modelli a energia: un numero che dice quanto un
+  dato è plausibile, il paesaggio che ne deriva e i quattro nomi dello stesso
+  oggetto."
+---
 # Modelli a energia
 
 ```{image} ../figures/aperture/modelli-energia.png

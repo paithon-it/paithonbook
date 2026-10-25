@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Complessità di Rademacher e margine nei modelli lineari"
+descrizione: "Una misura di complessità che dipende dai dati: la complessità di
+  Rademacher, che insegue etichette casuali, e il margine delle funzioni
+  lineari."
+---
 # Una complessità misurata sui dati: Rademacher e il margine
 
 La dimensione VC si calcola una volta per tutte, guardando la famiglia di regole

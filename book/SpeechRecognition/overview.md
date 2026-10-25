@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Speech recognition: dalla voce al testo"
+descrizione: "Come una macchina trascrive il parlato: perché è un problema
+  difficile, la storia da Audrey a Whisper e i passi della catena di
+  riconoscimento."
+---
 # Speech Recognition: dalla voce al testo
 
 ```{image} ../figures/aperture/speech-recognition.png

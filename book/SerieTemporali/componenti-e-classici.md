@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "ARIMA e Holt-Winters: i modelli classici delle serie"
+descrizione: "Come si scompone una serie temporale in trend e stagionalità e
+  come funzionano AR, ARIMA, SARIMAX, il lisciamento esponenziale e il filtro di
+  Kalman."
+---
 # Componenti e modelli classici: da ARIMA a Holt-Winters
 
 Nel 1970 George Box e Gwilym Jenkins misero in appendice al loro libro una

@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Harness: passaggio di consegne fra sessioni di agente"
+descrizione: "Come un agente lavora a turni senza ricordare il turno prima: la
+  routine di sessione, che cosa si scrive per chi viene dopo e quando ripartire
+  da capo."
+---
 # Lavorare a turni: il passaggio di consegne
 
 Per descrivere il problema che voleva risolvere, Young usa un'immagine sola: un

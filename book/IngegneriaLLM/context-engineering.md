@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Context engineering: costruire la finestra del modello"
+descrizione: "Come si monta il contesto di un'applicazione LLM entro un budget:
+  le quattro mosse, i modi in cui si guasta e il PRP per scriverlo una volta
+  sola."
+---
 # Context engineering: la finestra come sistema
 
 Se potessimo aprire una di quelle applicazioni che le aziende costruiscono

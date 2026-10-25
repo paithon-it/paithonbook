@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Prestazioni in PyTorch: GPU, precisione mista e scala"
+descrizione: "Come far girare PyTorch più veloce: perché la GPU, precisione
+  mista, misure corrette con la coda asincrona, torch.compile e parallelismo
+  dati su più GPU."
+---
 # Prestazioni e scala: spremere l'hardware
 
 Nell'autunno del 2012 la gara mondiale di riconoscimento di immagini,

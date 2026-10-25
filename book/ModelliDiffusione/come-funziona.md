@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Diffusione: rumore e ritorno, passo per passo"
+descrizione: "Come funziona un modello di diffusione: si aggiunge rumore a
+  un'immagine, la rete impara a toglierlo, e si genera tornando dal rumore. Con
+  DDIM e U-Net."
+---
 # Rumore e ritorno: come funziona la diffusione
 
 Facciamo un gioco. Ti mostro una fotografia su cui ho sparso un pulviscolo di

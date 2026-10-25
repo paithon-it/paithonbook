@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Spline e modelli additivi: curve al posto di rette"
+descrizione: "Come adattare una curva ai dati senza alzare il grado del
+  polinomio: spline cubiche, smoothing spline, regressione a nucleo e modelli
+  additivi."
+---
 # Curve al posto di rette: spline e modelli additivi
 
 «*A spline is a simple mechanical device for drawing smooth curves*»: uno

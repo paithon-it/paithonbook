@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Deep learning: perché la profondità conta"
+descrizione: "Che cos'è il deep learning: feature apprese dalla rete,
+  rappresentazioni gerarchiche, ruolo di dati e calcolo, e perché una rete
+  profonda batte una larga."
+---
 # Deep Learning: perché la profondità conta
 
 ```{image} ../figures/aperture/deep-learning.png

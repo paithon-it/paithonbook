@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Flow matching: scegliere la strada dal rumore al dato"
+descrizione: "Come funziona il flow matching: invece di rovinare un dato si
+  trasporta una distribuzione in un'altra, scegliendo il percorso più semplice,
+  una retta."
+---
 # Flow matching: scegliere la strada invece di ereditarla
 
 Nel 1781 Gaspard Monge presenta all'Accademia delle Scienze di Parigi una

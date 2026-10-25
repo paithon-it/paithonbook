@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Energy-based learning: la cornice di LeCun"
+descrizione: "L'energia come misura di compatibilità fra dati, nella cornice di
+  LeCun e colleghi: che cos'è il collasso e quali famiglie di rimedi esistono."
+---
 # L'energia come compatibilità: la cornice di LeCun
 
 Nel 2006 Yann LeCun, con Sumit Chopra, Raia Hadsell, Marc'Aurelio Ranzato e Fu

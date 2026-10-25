@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Matematica dei modelli linguistici: dai simboli ai vettori"
+descrizione: "La matematica che sta dentro un modello linguistico: il compito
+  come probabilità, i vettori che rappresentano le parole e l'attenzione come
+  media pesata."
+---
 # La matematica di un modello linguistico
 
 Joseph Breeden costruisce modelli statistici per il rischio di credito, dopo

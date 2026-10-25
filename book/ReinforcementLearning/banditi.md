@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Multi-armed bandit: esplorare o sfruttare"
+descrizione: "Il problema del bandit a più braccia: il costo di essere avidi,
+  tre modi di esplorare meglio e il Thompson sampling, provati su duemila
+  banchi."
+---
 # Il problema più semplice: i bandit a più braccia
 
 Nel 1933, sulle pagine della rivista *Biometrika*, William R. Thompson pone una

@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "RAG avanzato: reranking, query e Self-RAG"
+descrizione: "Come migliorare un sistema RAG oltre il recupero ingenuo:
+  riscrivere la domanda, riordinare i candidati con il reranking, Self-RAG e
+  come valutarlo."
+---
 # RAG avanzato: oltre il recupero ingenuo
 
 «Su cosa salta il gatto nero?». Nella sezione {doc}`«Cercare per rispondere»

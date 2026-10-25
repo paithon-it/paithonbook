@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Pandas e Matplotlib: dati, tabelle e grafici"
+descrizione: "Come si preparano e si guardano i dati prima di addestrare un
+  modello: DataFrame, filtri, raggruppamenti, valori mancanti e grafici con
+  Matplotlib."
+---
 # Pandas e Matplotlib: dati e visualizzazione
 
 Prima di addestrare un modello c'è il lavoro sui dati, che nella pratica

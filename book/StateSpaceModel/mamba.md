@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Mamba: selezione e scan negli state space model"
+descrizione: "Come Mamba rende selettivo lo state space model, perché usa uno
+  scan adatto all'hardware della GPU, com'è fatto il blocco e che cosa ottiene."
+---
 # Mamba: selezione e scan
 
 S4 e i suoi successori diagonali discretizzano un sistema continuo in una

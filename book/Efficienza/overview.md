@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Modelli più leggeri: quantizzazione, pruning, distillazione"
+descrizione: "Addestrare un modello e farlo rispondere chiedono cose diverse: le
+  tre leve per alleggerirlo, cioè meno bit, meno pesi e un modello più piccolo
+  che imita."
+---
 # Efficienza: il modello che si addestra e quello che si usa
 
 ```{image} ../figures/aperture/efficienza.png

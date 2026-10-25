@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "PyTorch: costruire reti neurali in pratica"
+descrizione: "Che cos'è PyTorch: la filosofia del grafo dinamico, perché ha
+  vinto nella ricerca, come è fatto lo stack, l'installazione e il primo
+  contatto."
+---
 # PyTorch: costruire reti in pratica
 
 ```{image} ../figures/aperture/pytorch.png

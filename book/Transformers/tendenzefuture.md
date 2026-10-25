@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Transformer: tendenze di ricerca e limiti aperti"
+descrizione: "Dove lavora oggi la ricerca sui Transformer, come si fa pensare
+  più a lungo un modello sui problemi difficili e quali limiti restano."
+---
 # Tendenze e limiti
 
 Prevedere l'evoluzione dei Transformer è rischioso, perché in questo campo le

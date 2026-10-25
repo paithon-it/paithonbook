@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Sistemi multi-agente: il costo del coordinamento"
+descrizione: "Perché aggiungere agenti non basta: il conto in token, il tetto di
+  Amdahl, gli errori che si compongono, quando si guadagna davvero e come si
+  fallisce."
+---
 # Il costo del coordinamento
 
 Nel 1975 Fred Brooks pubblica *The Mythical Man-Month*, il resoconto di cosa

@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Distribution shift: quando i dati cambiano nel tempo"
+descrizione: "Che cosa succede a un modello quando i dati cambiano: l'ipotesi di
+  distribuzione fissa, i tipi di cambiamento, perché la validazione non basta e
+  i rimedi."
+---
 # Quando i dati cambiano
 
 Nel 2008 Google lanciò un servizio dal nome ambizioso: **Google Flu Trends**.

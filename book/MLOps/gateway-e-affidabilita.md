@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Gateway per LLM: rate limit, retry e routing"
+descrizione: "Come si protegge un servizio che usa modelli di linguaggio: limiti
+  di richieste, tentativi ripetuti, scelta del modello, osservabilità e prove di
+  guasto."
+---
 # Davanti ai modelli: limitare, ritentare, instradare
 
 Una centrale di commutazione della rete interurbana AT&T, a New York, il

@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Q-learning: differenze temporali e SARSA"
+descrizione: "Come funziona il Q-learning: l'apprendimento per differenze
+  temporali, la formula di aggiornamento, l'esplorazione epsilon-greedy, SARSA e
+  un labirinto."
+---
 # Q-learning e l'apprendimento per differenze temporali
 
 Nel videogioco dell’{doc}`apertura del capitolo <overview>` premi tasti, il

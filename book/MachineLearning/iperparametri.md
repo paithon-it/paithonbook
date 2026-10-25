@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Iperparametri: griglia, ricerca casuale e bayesiana"
+descrizione: "Come si scelgono gli iperparametri di un modello: grid search,
+  random search, successive halving, Hyperband e ottimizzazione bayesiana, con
+  il codice."
+---
 # Trovare gli iperparametri
 
 Nel dicembre 2017, dal palco di NIPS, la più importante conferenza mondiale di

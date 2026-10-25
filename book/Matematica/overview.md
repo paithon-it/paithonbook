@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Matematica per il machine learning: cinque strumenti"
+descrizione: "Quale matematica serve al machine learning: algebra lineare,
+  analisi e probabilità, e la domanda a cui risponde ciascuno dei cinque
+  strumenti del capitolo."
+---
 # La matematica del machine learning: algebra lineare, analisi, probabilità
 
 ```{image} ../figures/aperture/matematica.png

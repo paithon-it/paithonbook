@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Servire un agente: richieste che aspettano"
+descrizione: "Perché servire un agente è diverso dal servire un modello: molte
+  chiamate per una richiesta, attese degli strumenti, priorità e scelta della
+  replica."
+---
 # Servire un agente: richieste che aspettano
 
 Una calcolatrice risponde in meno di un millesimo di secondo; una persona che

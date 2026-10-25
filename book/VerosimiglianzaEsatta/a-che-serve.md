@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Verosimiglianza esatta: usi e limiti"
+descrizione: "A che cosa serve conoscere la probabilità esatta di un dato:
+  comprimere, confrontare ipotesi, riconoscere ciò che è fuori posto, e dove
+  sbaglia."
+---
 # A che serve saperlo, e dove sbaglia
 
 {doc}`Un pixel alla volta <pixel-per-pixel>` e {doc}`I flussi normalizzanti

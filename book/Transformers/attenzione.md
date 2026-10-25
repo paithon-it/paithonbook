@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Self-attention: la media pesata che legge il contesto"
+descrizione: "Come funziona il meccanismo di attenzione: query, chiavi e valori,
+  la matrice dei punteggi, la softmax e le maschere, con le forme delle
+  matrici."
+---
 # Il meccanismo di attenzione
 
 Quando leggi la frase "il gatto, che aveva dormito tutto il giorno sul

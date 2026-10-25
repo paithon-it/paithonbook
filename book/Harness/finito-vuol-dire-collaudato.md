@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Agenti di codice: finito vuol dire collaudato"
+descrizione: "Perché un agente giudica troppo bene il proprio lavoro e come
+  separare chi costruisce da chi valuta: collaudo da utente, partizione e
+  taratura."
+---
 # Finito vuol dire collaudato: la verifica di un lavoro lungo
 
 Rajasekaran parte da una tendenza che scrive in chiaro: chiesto di giudicare il

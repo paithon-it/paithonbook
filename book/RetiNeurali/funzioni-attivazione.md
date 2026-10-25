@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Funzioni di attivazione: sigmoide, tanh, ReLU e softmax"
+descrizione: "A che cosa servono le funzioni di attivazione in una rete neurale
+  e come cambiano da sigmoide a tanh, ReLU e softmax, che dà probabilità."
+---
 # Funzioni di attivazione
 
 Prendi una rete profonda: dieci strati, migliaia di neuroni, milioni di

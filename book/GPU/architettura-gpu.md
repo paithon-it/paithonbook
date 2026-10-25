@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Architettura GPU: SM, thread, warp e occupancy"
+descrizione: "Come è fatta una GPU e come esegue il codice: latenza e
+  throughput, Streaming Multiprocessor, griglie, blocchi, warp, SIMT e
+  occupancy."
+---
 # Dentro la GPU: come è fatta e come esegue
 
 Nel 1999 NVIDIA lanciò la GeForce 256 e la vendette come «la prima GPU al

@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "World model: un modello in scala ridotta del mondo"
+descrizione: "Che cos'è un world model: un modello in scala ridotta della
+  realtà, in cui immaginare costa meno che provare. La scommessa di LeCun e
+  quattro risposte."
+---
 # World Model
 
 ```{image} ../figures/aperture/world-models.png

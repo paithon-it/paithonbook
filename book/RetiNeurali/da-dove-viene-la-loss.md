@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Funzione di perdita: da dove vengono MSE e cross-entropia"
+descrizione: "Da dove nascono le funzioni di perdita più usate: la rete dichiara
+  una distribuzione e la verosimiglianza ne ricava errore quadratico e
+  cross-entropia."
+---
 # Da dove viene la loss
 
 Perché l'errore di una rete si misura spesso al quadrato, e non con la

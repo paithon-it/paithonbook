@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Reward hacking ed esplorazione con ricompense rade"
+descrizione: "Perché le ricompense rade bloccano l'esplorazione e come si
+  aggira: bonus di novità, curiosità intrinseca, reward shaping e il reward
+  hacking."
+---
 # Esplorazione e ricompensa: curiosità, ricompense rade, reward hacking
 
 Fra i 49 giochi Atari del confronto con il collaudatore umano, nel 2015, ce

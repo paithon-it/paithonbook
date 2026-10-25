@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Architetture di agenti: pianificazione e valutazione"
+descrizione: "Come si organizza un agente per compiti grossi: pianificare, far
+  collaborare più agenti, tenere una memoria che dura e valutare il risultato."
+---
 # Architetture di agenti e come valutarli
 
 La {doc}`sezione sul ciclo dell'agente </Agenti/agenti-e-tool-use>` ha costruito

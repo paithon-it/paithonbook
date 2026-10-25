@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Architetture storiche: da LeNet a ResNet"
+descrizione: "Le architetture che hanno segnato il deep learning, da LeNet-5 e
+  AlexNet a VGG, Inception, ResNet e DenseNet, e che cosa ciascuna ha cambiato."
+---
 # Le architetture che hanno fatto la storia
 
 Ogni anno, tra il 2010 e il 2017, i laboratori di visione artificiale di mezzo

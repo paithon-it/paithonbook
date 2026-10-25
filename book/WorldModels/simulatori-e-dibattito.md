@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Video generativi e world model: Sora e il dibattito"
+descrizione: "Se i video generativi come Sora siano world model, se gli LLM ne
+  hanno uno (la scacchiera nella macchina) e dove i world model lavorano già."
+---
 # Simulare il mondo: video generativi e un dibattito aperto
 
 Il 15 febbraio 2024 OpenAI presenta Sora, un modello che da una descrizione

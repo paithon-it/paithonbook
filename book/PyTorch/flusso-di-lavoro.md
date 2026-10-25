@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Flusso di lavoro in PyTorch: dal problema al modello"
+descrizione: "Come si affronta un problema di deep learning con PyTorch: sei
+  stazioni dal dato al modello, scelta di loss, miglioramento e predizione su
+  dati nuovi."
+---
 # Il flusso di lavoro: dal problema al modello
 
 Chiedi a chi lavora con le reti neurali qual è la parte difficile, e quasi

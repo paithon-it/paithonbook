@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Campionatori veloci per la diffusione"
+descrizione: "Come generare con meno passi: risolvere l'equazione della
+  diffusione con metodi numerici di ordine alto invece di simularla, e quale
+  campionatore usare."
+---
 # Meno passi: risolvere l'equazione invece di simularla
 
 Il modo che tutti conoscono per seguire numericamente una traiettoria lo scrive

@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "DQN: la rete che gioca ad Atari dai pixel"
+descrizione: "Come funziona la Deep Q-Network: la rete al posto della tabella,
+  perché poteva divergere, gli accorgimenti per stabilizzarla e il limite della
+  sovrastima."
+---
 # Deep Q-Network (DQN)
 
 Il risultato del 2013 su *Breakout* veniva da un programma solo, provato su

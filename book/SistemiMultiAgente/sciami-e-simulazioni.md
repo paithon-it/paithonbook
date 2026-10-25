@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Intelligenza di sciame: formiche e particelle"
+descrizione: "Come molti agenti semplici risolvono problemi senza un
+  coordinatore: le formiche e l'evaporazione, la memoria nell'ambiente e lo
+  sciame di particelle."
+---
 # Sciami e simulazioni: molti semplici invece di pochi intelligenti
 
 Gli storni con cui si è aperto il capitolo non stanno risolvendo niente: volano.

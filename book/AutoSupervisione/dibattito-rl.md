@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "La torta di LeCun: il dibattito sul reinforcement learning"
+descrizione: "L'argomento di LeCun per cui il rinforzo è solo la ciliegina, che
+  cosa propone al suo posto, le obiezioni di chi non è d'accordo e la lettura di
+  Karpathy."
+---
 # La ciliegina: il dibattito sul rinforzo
 
 Nella torta di LeCun l'apprendimento per rinforzo è la ciliegina: un'immagine

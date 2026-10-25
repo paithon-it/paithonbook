@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Espressioni regolari e distanza di edit"
+descrizione: "Gli strumenti classici per il testo: espressioni regolari,
+  normalizzazione, distanza di edit e l'idea del canale rumoroso dei correttori
+  ortografici."
+---
 # La cassetta degli attrezzi: espressioni regolari, normalizzazione e distanza di edit
 
 Nell’{doc}`Introduzione </Introduzione/overview>` abbiamo incontrato ELIZA, il

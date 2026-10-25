@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Attenzione lineare: dalla softmax alla ricorrenza"
+descrizione: "Come togliere la softmax trasforma l'attenzione in una rete
+  ricorrente: il trucco del kernel, l'addestramento in parallelo e il limite
+  dell'accumulo."
+---
 # Dalla softmax alla ricorrenza
 
 Le {doc}`reti ricorrenti </NaturalLanguageProcessing/modelli-sequenza>` che i

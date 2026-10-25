@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Intelligenza artificiale: dalle origini a oggi"
+descrizione: "Che cos'è l'intelligenza artificiale, da ELIZA a oggi: che cosa
+  sono un algoritmo e le regole imparate dai dati, e perché il campo è esploso
+  adesso."
+---
 # Introduzione
 
 ```{image} ../figures/aperture/introduzione.png

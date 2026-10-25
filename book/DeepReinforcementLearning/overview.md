@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Deep reinforcement learning: reti che imparano a decidere"
+descrizione: "Che cos'è il deep reinforcement learning: una rete al posto della
+  tabella, da Atari ad AlphaGo, e il prezzo di un addestramento instabile."
+---
 # Deep Reinforcement Learning
 
 ```{image} ../figures/aperture/deep-reinforcement-learning.png

@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Distillazione: il modello piccolo che imita"
+descrizione: "Che cos'è la distillazione: un modello piccolo impara dalle
+  risposte di uno grande, e un esperimento mostra che cosa c'è dentro un
+  «quasi»."
+---
 # Un modello piccolo che imita: la distillazione
 
 Un maestro guarda una cifra scritta a mano da un bambino e dice: «È un 7». Un

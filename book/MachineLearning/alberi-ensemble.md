@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Alberi decisionali ed ensemble: random forest e boosting"
+descrizione: "Come funzionano gli alberi decisionali e perché combinarli aiuta:
+  instabilità, bagging, random forest e boosting, che corregge gli errori uno
+  alla volta."
+---
 # Alberi decisionali e metodi ensemble
 
 C'è un gioco da tavolo, *Indovina chi?*, in cui si scopre il personaggio

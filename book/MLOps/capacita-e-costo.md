@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Capacità e costo: quante repliche accendere"
+descrizione: "Come si dimensiona un servizio di inferenza: quanto regge una
+  replica, quali metriche guardare, il tempo di avvio, il costo di un token e
+  l'uso della GPU."
+---
 # Quante repliche accendere: la capacità e il suo prezzo
 
 Il 4 luglio 1990, allo stadio delle Alpi di Torino, la semifinale dei Mondiali

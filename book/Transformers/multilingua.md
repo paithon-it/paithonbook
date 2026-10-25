@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Modelli multilingue: una rete per cento lingue"
+descrizione: "Come un solo Transformer impara molte lingue insieme: il
+  vocabolario condiviso, l'allineamento tra lingue e il prezzo che si paga a
+  coprirne tante."
+---
 # Una rete, cento lingue
 
 Nel 2016 GNMT, il traduttore neurale di Google descritto nella {doc}`sezione

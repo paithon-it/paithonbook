@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Teoria dell'apprendimento: perché bastano gli esempi"
+descrizione: "Perché imparare da un numero finito di esempi può funzionare: la
+  distanza fra errore sul campione ed errore vero, dal problema dell'induzione
+  in poi."
+---
 # Teoria dell'apprendimento: perché gli esempi bastano
 
 ```{image} ../figures/aperture/teoria-apprendimento.png

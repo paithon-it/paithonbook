@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "JEPA: predire nello spazio delle idee"
+descrizione: "Perché non predire i pixel: l'architettura JEPA di LeCun, da
+  I-JEPA a V-JEPA e V-JEPA 2, il ritorno del collasso e una mini-JEPA in
+  PyTorch."
+---
 # La via di LeCun: predire nello spazio delle idee
 
 Il programma di LeCun ha una data precisa: il 27 giugno 2022 Yann LeCun

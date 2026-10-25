@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "CLIP: un solo spazio per immagini e parole"
+descrizione: "Come addestrare un modello su coppie di immagini e didascalie
+  perché finiscano nello stesso spazio: la loss simmetrica, la temperatura e il
+  batch."
+---
 # Un solo spazio per le immagini e le parole
 
 Le mille categorie di ImageNet, il dataset su cui si è addestrata mezza storia

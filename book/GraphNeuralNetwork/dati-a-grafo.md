@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Grafi per il machine learning: nodi, archi, matrici"
+descrizione: "Che cos'è un grafo e perché mette in crisi le reti classiche: nodi
+  e archi, tre tipi di domanda, camminate casuali e un esempio dalla figura alla
+  matrice."
+---
 # Il mondo come grafo
 
 Fermati un attimo a guardare i dati che ti circondano. I tuoi contatti sul

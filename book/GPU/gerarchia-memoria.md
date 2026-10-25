@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Memoria GPU: gerarchia, coalescenza e roofline"
+descrizione: "Perché la memoria limita una GPU più del calcolo: la piramide
+  delle memorie, gli accessi coalescenti e il modello roofline per capire dove
+  sta il limite."
+---
 # La memoria: il vero collo di bottiglia
 
 Più spesso del calcolo, a limitare una GPU è il movimento dei dati. La

@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Connettore visione-linguaggio: innestare gli occhi"
+descrizione: "Come si collega un encoder visivo a un modello linguistico
+  addestrato: che cosa fa il connettore, le soluzioni possibili e i due tempi
+  dell'addestramento."
+---
 # Il connettore: il pezzo più piccolo che si può addestrare
 
 Chi innesta una vite non pianta un albero nuovo. Prende un ceppo già radicato,

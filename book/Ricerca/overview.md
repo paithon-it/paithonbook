@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Ricerca e pianificazione: l'albero dei futuri"
+descrizione: "Come una macchina sceglie le mosse esplorando un albero di futuri:
+  stati e mosse, l'esplosione combinatoria e le potature che la rendono
+  gestibile."
+---
 # Ricerca e pianificazione: l’albero dei futuri
 
 ```{image} ../figures/aperture/ricerca.png

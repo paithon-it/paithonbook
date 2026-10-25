@@ -1,3 +1,8 @@
+---
+titolo_ricerca: "Filtraggio collaborativo: chiedere all'amico giusto"
+descrizione: "Che cos'è il filtraggio collaborativo: i vicini, i fattori latenti
+  della matrice compressa, un modello in PyTorch e i casi in cui si ferma."
+---
 # Il filtraggio collaborativo
 
 C'è un algoritmo di raccomandazione che usiamo da sempre, e non richiede

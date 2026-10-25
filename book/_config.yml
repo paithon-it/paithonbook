@@ -237,6 +237,11 @@ sphinx:
       launch_buttons:
         thebe: true
         colab_url: "https://colab.research.google.com"
+      # Sotto il copyright: che cosa misura `_static/pt-statistiche.js`, e
+      # dove sta l'informativa.
+      extra_footer: >-
+        <p>Statistiche di visita anonime e senza cookie, con il Plausible di
+        paithon.it: <a href="https://paithon.it/privacy/">informativa</a>.</p>
     html_show_copyright: false
     # LA STAMPA. Il libro esiste anche come PDF unico, che si costruisce con
     # `python3 scripts/genera-pdf.py`. Queste righe non toccano l'HTML.

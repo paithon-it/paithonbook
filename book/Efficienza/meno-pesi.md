@@ -1,3 +1,9 @@
+---
+titolo_ricerca: "Pruning: togliere i pesi che non servono"
+descrizione: "Che cos'è il pruning: quali pesi si tolgono, perché togliere il
+  90% dei pesi non rende la rete più veloce e che cosa dà il biglietto
+  vincente."
+---
 # Meno pesi: la promessa che si riscuote male
 
 Novanta pesi su cento si possono buttare via e la rete continua a rispondere
