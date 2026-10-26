@@ -1,0 +1,34 @@
+/*
+ * PAITHON BOOK: IL MENU COL DITO
+ *
+ * Il pannello dell'indice che il dito trascina (`pt-gesto-menu.js`). Mentre
+ * il dito lo tiene, il pannello gli sta attaccato senza ritardo; al rilascio
+ * va al suo posto, aperto o chiuso, con la transizione del brand, che con il
+ * movimento ridotto vale zero.
+ *
+ * Lo script sposta il pannello con `transform` e scrive in `--pt-gesto-menu`
+ * quanto e' aperto, da 0 (fuori dallo schermo) a 1 (aperto): il velo dietro
+ * il pannello scurisce nella stessa misura. Registrata con `@property`, la
+ * variabile si anima anche lei, e il velo arriva insieme al pannello.
+ */
+@property --pt-gesto-menu {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 1;
+}
+
+#pst-primary-sidebar-modal.pt-gesto-segue {
+  transition: none;
+  will-change: transform;
+}
+
+#pst-primary-sidebar-modal.pt-gesto-posa {
+  transition: transform var(--pt-transition-base),
+              --pt-gesto-menu var(--pt-transition-base);
+}
+
+/* Il tema da' al velo mezza opacita' (`.bd-sidebar::backdrop`): qui la stessa,
+   per la frazione di pannello che si vede. */
+#pst-primary-sidebar-modal::backdrop {
+  opacity: calc(0.5 * var(--pt-gesto-menu));
+}

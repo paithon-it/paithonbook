@@ -93,6 +93,8 @@ sphinx:
     - pt-ricerca.css
     # Le postille: il segno accanto al capoverso. Vedi _static/pt-postille.js.
     - pt-postille.css
+    # Il pannello dell'indice trascinato dal dito. Vedi _static/pt-gesto-menu.js.
+    - pt-gesto-menu.css
     html_js_files:
     - https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js
     - custom.js

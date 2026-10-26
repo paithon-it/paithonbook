@@ -2,19 +2,25 @@
  * PAITHON BOOK: IL MENU COL DITO
  *
  * Sul telefono l'indice del libro sta in un pannello che il tema apre col
- * pulsante in alto a sinistra. Qui lo apre anche il dito: un trascinamento
- * verso destra lo fa entrare, uno verso sinistra lo richiude.
+ * pulsante in alto a sinistra. Qui lo apre anche il dito: trascinando verso
+ * destra il pannello entra dal bordo e resta attaccato al dito, e al rilascio
+ * finisce di aprirsi o torna indietro, secondo quanto ne e' uscito e con che
+ * slancio il dito l'ha lasciato. A pannello aperto, verso sinistra, lo stesso
+ * al contrario.
  *
  * Il trascinamento che parte dal bordo sinistro dello schermo resta del
  * browser, che ci lega la pagina precedente (Safari, e Android con la
  * navigazione a gesti), e una pagina non ha modo di prenderselo: quel tocco
- * le arriva come `touchcancel`. Il gesto che apre il pannello comincia quindi
- * dentro la pagina.
+ * le arriva come `touchcancel`. Il gesto quindi non parte nella striscia
+ * lungo il bordo (`BORDO`): li' il dito e' del browser, e il pannello non
+ * comincia a uscire per poi tornare indietro quando il browser se lo prende.
  *
  * Il pannello lo apre e lo chiude il codice del tema, con un clic sul suo
  * pulsante e con `close()` sul suo <dialog>: focus, contenuto e chiusura col
- * tocco fuori restano quelli del tema. I gestori sono passivi e decidono
- * solo al rilascio, quindi lo scorrimento della pagina non aspetta mai.
+ * tocco fuori restano quelli del tema. Lo script aggiunge lo spostamento
+ * (`transform` e `--pt-gesto-menu`, vedi `pt-gesto-menu.css`). Il
+ * `touchmove` non e' passivo perche', preso il pannello, deve tenere ferma
+ * la pagina sotto; prima di allora non annulla niente.
  */
 
 (function () {
@@ -25,19 +31,32 @@
   if (window.__ptGestoMenuCaricato) return;
   window.__ptGestoMenuCaricato = true;
 
-  // Quanto deve correre il dito in orizzontale (in pixel CSS), quanto puo'
-  // deviare in verticale rispetto alla corsa (0,5 vuol dire entro 27 gradi
-  // dall'orizzontale: uno scorrimento verticale un po' storto non conta) e
-  // quanto puo' durare (oltre, il dito sta leggendo o selezionando).
-  const CORSA = 60;
+  // Quanti pixel CSS percorre il dito prima che il gesto si decida, e quanto
+  // puo' deviare in verticale rispetto a quella corsa (0,5 vuol dire entro
+  // 27 gradi dall'orizzontale: uno scorrimento un po' storto resta uno
+  // scorrimento).
+  const AVVIO = 10;
   const PENDENZA = 0.5;
-  const DURATA = 700;
+  // Un dito rimasto fermo piu' a lungo sta premendo, non trascinando: la
+  // pressione lunga seleziona il testo, o apre una postilla (450 ms in
+  // `pt-postille.js`).
+  const ATTESA = 400;
+  // La striscia lungo il bordo sinistro in cui il dito e' del browser.
+  const BORDO = 30;
+  // Al rilascio decide lo slancio, se il dito correva almeno a SCATTO pixel
+  // al millisecondo nell'ultimo decimo di secondo (FINESTRA) e aveva fatto
+  // almeno SCATTO_MINIMO pixel; altrimenti decide quanto pannello si vede.
+  const SCATTO = 0.4;
+  const SCATTO_MINIMO = 30;
+  const FINESTRA = 100;
   // Da questa larghezza in su l'indice sta accanto al testo e il pulsante
   // del tema lo nasconde invece di aprirlo (`fixSidebarToggle` di
   // sphinx-book-theme): li' il gesto non fa niente.
   const LARGO = '(min-width: 992px)';
 
-  let inizio = null;
+  let tocco = null;   // il dito appoggiato, finche' il gesto non si decide
+  let traino = null;  // il pannello attaccato al dito
+  let posa = null;    // il pannello che va al suo posto dopo il rilascio
 
   function pannello() {
     return document.getElementById('pst-primary-sidebar-modal');
@@ -93,52 +112,162 @@
       return false;
     }
     if (menu.open) return true;
+    if (evento.touches[0].clientX < BORDO) return false;
     return !!pulsanteVisibile() && !scorreDiLato(bersaglio);
   }
 
+  // Il dito ha fatto AVVIO pixel: il pannello e' suo se va di lato e nel
+  // verso giusto, se si e' mosso subito, a pagina ferma e senza selezione.
+  function prende(da, dx, dy, menu) {
+    if (dy > Math.abs(dx) * PENDENZA) return false;
+    if (performance.now() - da.quando > ATTESA) return false;
+    if (Math.abs(window.scrollY - da.scorrimento) > AVVIO) return false;
+    if (selezioneAperta()) return false;
+    if (!menu || menu.open !== da.aperto) return false;
+    return menu.open ? dx < 0 : dx > 0;
+  }
+
+  // `pos` e' lo spostamento del pannello: 0 aperto, -larghezza fuori.
+  function sposta(menu, pos, larghezza) {
+    menu.style.transform = 'translateX(' + pos + 'px)';
+    menu.style.setProperty('--pt-gesto-menu', String(1 + pos / larghezza));
+  }
+
+  function pulisci(menu) {
+    menu.classList.remove('pt-gesto-segue', 'pt-gesto-posa');
+    menu.style.removeProperty('transform');
+    menu.style.removeProperty('--pt-gesto-menu');
+  }
+
+  // Se il pannello si chiude per un'altra via (Esc, una voce dell'indice)
+  // mentre il dito lo tiene o mentre va a posto, lo spostamento si toglie.
+  function sorveglia(menu) {
+    if (menu.__ptGestoSorvegliato) return;
+    menu.__ptGestoSorvegliato = true;
+    menu.addEventListener('close', function () {
+      if (traino && traino.menu === menu) traino = null;
+      if (posa && posa.menu === menu) {
+        clearTimeout(posa.timer);
+        posa = null;
+      }
+      pulisci(menu);
+    });
+  }
+
+  function segui(t) {
+    const dx = t.clientX - traino.x;
+    const pos = traino.aperto ? dx : dx - traino.larghezza;
+    traino.pos = Math.min(0, Math.max(-traino.larghezza, pos));
+    sposta(traino.menu, traino.pos, traino.larghezza);
+    // I campioni dell'ultimo decimo di secondo, piu' quello appena prima:
+    // un dito che si ferma prima di staccarsi lascia slancio zero.
+    const ora = performance.now();
+    const c = traino.campioni;
+    c.push({ t: ora, x: t.clientX });
+    while (c.length > 2 && ora - c[1].t >= FINESTRA) c.shift();
+  }
+
+  function slancio() {
+    const c = traino.campioni;
+    const tempo = c[c.length - 1].t - c[0].t;
+    return tempo > 0 ? (c[c.length - 1].x - c[0].x) / tempo : 0;
+  }
+
+  // Il pannello e' arrivato: se doveva chiudersi lo chiude il <dialog>, che
+  // riporta l'indice nella pagina.
+  function concludiPosa() {
+    if (!posa) return;
+    const p = posa;
+    posa = null;
+    clearTimeout(p.timer);
+    if (!p.aperto && p.menu.open) p.menu.close();
+    pulisci(p.menu);
+  }
+
+  function rilascia(aperto) {
+    const t = traino;
+    traino = null;
+    const menu = t.menu;
+    // La transizione parte dal punto in cui il dito ha lasciato il pannello:
+    // lo si fissa prima di cambiarla.
+    void getComputedStyle(menu).transform;
+    menu.classList.replace('pt-gesto-segue', 'pt-gesto-posa');
+    sposta(menu, aperto ? 0 : -t.larghezza, t.larghezza);
+    posa = { menu: menu, aperto: aperto, timer: 0 };
+    // La durata e' quella del brand, che vale zero col movimento ridotto.
+    const durata =
+      parseFloat(getComputedStyle(menu).transitionDuration) * 1000 || 0;
+    if (durata > 0) posa.timer = setTimeout(concludiPosa, durata + 30);
+    else concludiPosa();
+  }
+
   document.addEventListener('touchstart', function (evento) {
-    // Un secondo dito che si appoggia annulla il gesto del primo.
-    inizio = null;
+    tocco = null;
+    // Un dito che arriva mentre il pannello va a posto lo trova arrivato; un
+    // secondo dito rimanda il pannello dove l'aveva trovato il primo.
+    concludiPosa();
+    if (traino) rilascia(traino.aperto);
     const menu = pannello();
     if (!puoPartire(evento, menu)) return;
     const t = evento.touches[0];
-    inizio = {
-      x: t.clientX, y: t.clientY, deviazione: 0,
-      quando: performance.now(), scorrimento: window.scrollY,
-      aperto: menu.open,
+    tocco = {
+      x: t.clientX, y: t.clientY, quando: performance.now(),
+      scorrimento: window.scrollY, aperto: menu.open,
     };
   }, { passive: true });
 
   document.addEventListener('touchmove', function (evento) {
-    if (!inizio) return;
-    if (evento.touches.length !== 1) { inizio = null; return; }
-    const dy = Math.abs(evento.touches[0].clientY - inizio.y);
-    if (dy > inizio.deviazione) inizio.deviazione = dy;
-  }, { passive: true });
-
-  document.addEventListener('touchcancel', function () {
-    inizio = null;
-  }, { passive: true });
-
-  document.addEventListener('touchend', function (evento) {
-    const da = inizio;
-    inizio = null;
-    if (!da || evento.touches.length !== 0) return;
-    const t = evento.changedTouches[0];
-    const dx = t.clientX - da.x;
-    const dy = Math.max(Math.abs(t.clientY - da.y), da.deviazione);
-    if (Math.abs(dx) < CORSA || dy > Math.abs(dx) * PENDENZA) return;
-    if (performance.now() - da.quando > DURATA) return;
-    // La pagina si e' mossa: era uno scorrimento, non un gesto.
-    if (Math.abs(window.scrollY - da.scorrimento) > 10) return;
-    if (selezioneAperta()) return;
+    if (traino) {
+      if (evento.touches.length !== 1) { rilascia(traino.aperto); return; }
+      if (evento.cancelable) evento.preventDefault();
+      segui(evento.touches[0]);
+      return;
+    }
+    if (!tocco) return;
+    if (evento.touches.length !== 1) { tocco = null; return; }
+    const t = evento.touches[0];
+    const dx = t.clientX - tocco.x;
+    const dy = Math.abs(t.clientY - tocco.y);
+    if (Math.abs(dx) < AVVIO && dy < AVVIO) return;
+    const da = tocco;
+    tocco = null;
     const menu = pannello();
-    if (!menu || menu.open !== da.aperto) return;
-    if (dx > 0 && !menu.open) {
+    if (!prende(da, dx, dy, menu)) return;
+    if (!menu.open) {
       const pulsante = pulsanteVisibile();
       if (pulsante) pulsante.click();
-    } else if (dx < 0 && menu.open) {
-      menu.close();
+      if (!menu.open) return;
     }
+    if (evento.cancelable) evento.preventDefault();
+    sorveglia(menu);
+    traino = {
+      menu: menu, x: da.x, aperto: da.aperto,
+      larghezza: menu.offsetWidth || 1, pos: 0, campioni: [],
+    };
+    // Il tema ha appena aperto il <dialog>: il pannello va spostato prima
+    // che il browser lo disegni aperto del tutto.
+    menu.classList.add('pt-gesto-segue');
+    segui(t);
+  }, { passive: false });
+
+  document.addEventListener('touchend', function (evento) {
+    tocco = null;
+    if (!traino || evento.touches.length !== 0) return;
+    const t = evento.changedTouches[0];
+    segui(t);
+    const v = slancio();
+    let aperto = traino.pos > -traino.larghezza / 2;
+    if (Math.abs(v) >= SCATTO &&
+        Math.abs(t.clientX - traino.x) >= SCATTO_MINIMO) {
+      aperto = v > 0;
+    }
+    rilascia(aperto);
+  }, { passive: true });
+
+  // Il browser si e' preso il tocco (il gesto di sistema, uno scorrimento):
+  // il pannello torna com'era.
+  document.addEventListener('touchcancel', function () {
+    tocco = null;
+    if (traino) rilascia(traino.aperto);
   }, { passive: true });
 })();

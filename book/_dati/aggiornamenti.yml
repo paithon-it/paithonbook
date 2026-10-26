@@ -51,6 +51,17 @@
 
 versioni:
 
+- versione: "1.17.9"
+  data: 2026-10-26
+  voci:
+
+  - tipo: impianto
+    testo: >
+      **L'indice segue il dito.** Sul telefono il pannello dell'indice si
+      trascina: resta sotto il dito e, al rilascio, finisce di aprirsi o torna
+      indietro. Il gesto non parte più a ridosso del bordo sinistro, che resta
+      al browser per tornare alla pagina precedente.
+
 - versione: "1.17.8"
   data: 2026-10-26
   voci:

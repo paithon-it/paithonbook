@@ -35,6 +35,14 @@ che contiene sia sezioni nuove sia correzioni prende il numero della modifica
 maggiore, e ogni versione corrisponde a una pubblicazione: sotto ciascuna, il
 livello dice quale cifra è salita.
 
+(v1-17-9)=
+
+## 1.17.9 · 26 ottobre 2026
+
+### Patch
+
+- **L'indice segue il dito.** Sul telefono il pannello dell'indice si trascina: resta sotto il dito e, al rilascio, finisce di aprirsi o torna indietro. Il gesto non parte più a ridosso del bordo sinistro, che resta al browser per tornare alla pagina precedente.
+
 (v1-17-8)=
 
 ## 1.17.8 · 26 ottobre 2026
