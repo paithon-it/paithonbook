@@ -103,6 +103,9 @@ sphinx:
     - pt-ricerca.js
     # Le postille: il segno accanto al capoverso. Vedi _static/pt-postille.js.
     - pt-postille.js
+    # Sul telefono, il dito che scorre verso destra apre l'indice. Vedi
+    # _static/pt-gesto-menu.js.
+    - pt-gesto-menu.js
     # Lo scambio di tema per la stampa. Sta nel brand perche' serve identico
     # al sito, che nasce scuro come il libro: il CSS da solo non arriva alla
     # tavolozza del codice, che pende da data-theme.

@@ -35,6 +35,23 @@ che contiene sia sezioni nuove sia correzioni prende il numero della modifica
 maggiore, e ogni versione corrisponde a una pubblicazione: sotto ciascuna, il
 livello dice quale cifra è salita.
 
+(v1-17-8)=
+
+## 1.17.8 · 26 ottobre 2026
+
+### Patch
+
+- **L'indice a portata di dito.** Sul telefono un trascinamento verso destra apre l'indice, e uno verso sinistra lo richiude. Il gesto parte dall'interno della pagina: quello dal bordo dello schermo resta al browser, che torna alla pagina precedente.
+
+(v1-17-7)=
+
+## 1.17.7 · 25 ottobre 2026
+
+### Patch
+
+- **Statistiche di visita, senza cookie.** Il libro conta le visite e i download dei PDF con il Plausible di paithon.it: niente cookie, niente script di terzi, e nessun conteggio se il browser chiede di non essere tracciato. Lo dice una riga in fondo a ogni pagina, con l'informativa.
+- **Ogni pagina si presenta da sé.** Nei risultati di ricerca, nella scheda del browser e nell'anteprima di un link condiviso ogni pagina ha un titolo e una descrizione propri. Il titolo nella pagina, l'indice e il PDF non cambiano.
+
 (v1-17-6)=
 
 ## 1.17.6 · 24 ottobre 2026

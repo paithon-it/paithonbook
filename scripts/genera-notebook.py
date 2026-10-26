@@ -580,6 +580,51 @@ def cambiato(prima: str, dopo: str) -> tuple[bool, str]:
     return False, "solo prosa"
 
 
+def capitoli_cambiati(prima: str, dopo: str) -> tuple[set[str] | None, str]:
+    """Quali capitoli hanno, fra due commit, codice, uscite o titoli cambiati.
+
+    Per `pubblica.py`, che esegue i notebook e verifica le uscite solo su
+    quelli: la prosa e il front matter non entrano in un notebook. Guarda solo
+    le pagine; i file che cambiano tutto (`SEMPRE`, le estensioni) li decide
+    chi chiama. Le pagine di radice (`intro.md` e simili) non stanno in nessun
+    capitolo e non contano. Nel dubbio (un commit che non c'e', una pagina in
+    una cartella che non e' un capitolo) la risposta e' `None`: tutti.
+    """
+    def git(*a):
+        return subprocess.run(["git", *a], capture_output=True, text=True,
+                              cwd=RADICE)
+    for sha in (prima, dopo):
+        if git("cat-file", "-e", f"{sha}^{{commit}}").returncode:
+            return None, f"il commit {sha[:12]} non c'e'"
+    nomi_capitoli = set(capitoli())
+    nomi = git("-c", "core.quotePath=false", "diff", "--name-status",
+               "--no-renames", prima, dopo).stdout.split("\n")
+    scelti: set[str] = set()
+    for riga in filter(None, nomi):
+        stato, nome = riga.split("\t", 1)
+        if not (nome.startswith("book/") and nome.endswith((".md", ".ipynb"))):
+            continue
+        parti = nome.split("/")
+        if len(parti) == 2:
+            continue
+        capitolo = parti[1]
+        if capitolo not in nomi_capitoli:
+            return None, f"{nome}: non sta in nessun capitolo"
+        if capitolo in scelti:
+            continue
+        # Una pagina nuova o tolta, o un notebook del libro, cambiano il
+        # capitolo comunque.
+        if stato != "M" or nome.endswith(".ipynb"):
+            scelti.add(capitolo)
+            continue
+        vecchio = git("show", f"{prima}:{nome}").stdout
+        nuovo = git("show", f"{dopo}:{nome}").stdout
+        if impronta(vecchio) != impronta(nuovo):
+            scelti.add(capitolo)
+    return scelti, ("nessun capitolo con codice cambiato" if not scelti
+                    else ", ".join(sorted(scelti)))
+
+
 def main() -> None:
     # Un flag scritto male non deve passare inosservato. Senza questo controllo
     # qualunque cosa cominci per `--` veniva tolta dagli argomenti posizionali e

@@ -51,6 +51,35 @@
 
 versioni:
 
+- versione: "1.17.8"
+  data: 2026-10-26
+  voci:
+
+  - tipo: impianto
+    testo: >
+      **L'indice a portata di dito.** Sul telefono un trascinamento verso
+      destra apre l'indice, e uno verso sinistra lo richiude. Il gesto parte
+      dall'interno della pagina: quello dal bordo dello schermo resta al
+      browser, che torna alla pagina precedente.
+
+- versione: "1.17.7"
+  data: 2026-10-25
+  voci:
+
+  - tipo: impianto
+    testo: >
+      **Statistiche di visita, senza cookie.** Il libro conta le visite e i
+      download dei PDF con il Plausible di paithon.it: niente cookie, niente
+      script di terzi, e nessun conteggio se il browser chiede di non essere
+      tracciato. Lo dice una riga in fondo a ogni pagina, con l'informativa.
+
+  - tipo: impianto
+    testo: >
+      **Ogni pagina si presenta da sé.** Nei risultati di ricerca, nella
+      scheda del browser e nell'anteprima di un link condiviso ogni pagina ha
+      un titolo e una descrizione propri. Il titolo nella pagina, l'indice e
+      il PDF non cambiano.
+
 - versione: "1.17.6"
   data: 2026-10-24
   voci:

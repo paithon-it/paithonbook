@@ -31,16 +31,17 @@
     var dati = { n: nome, u: indirizzo(), d: DOMINIO, r: document.referrer || null };
     if (proprieta) { dati.p = proprieta; }
     try {
-      // text/plain e no-cors: una richiesta semplice, senza preflight; la
-      // risposta non serve.
+      // text/plain senza credenziali: una richiesta semplice, senza
+      // preflight. Il server la accetta da ogni origine, quindi la risposta
+      // torna leggibile; in no-cors il browser la scartava e segnava la
+      // richiesta come interrotta. La risposta comunque non serve.
       fetch(API, {
         method: 'POST',
-        mode: 'no-cors',
         credentials: 'omit',
         keepalive: true,
         headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify(dati)
-      });
+      }).catch(function () { /* una visita persa non e' un errore */ });
     } catch (e) { /* un browser senza fetch non conta, e va bene cosi' */ }
   }
 
