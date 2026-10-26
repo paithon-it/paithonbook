@@ -51,6 +51,16 @@
 
 versioni:
 
+- versione: "1.17.10"
+  data: 2026-10-26
+  voci:
+
+  - tipo: corretto
+    testo: >
+      **L'indice si chiude senza rimbalzo.** Sul telefono, chiuso col dito, il
+      pannello dell'indice ricompariva per un attimo prima di sparire. Adesso
+      esce una volta sola.
+
 - versione: "1.17.9"
   data: 2026-10-26
   voci:

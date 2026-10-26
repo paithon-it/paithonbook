@@ -35,6 +35,14 @@ che contiene sia sezioni nuove sia correzioni prende il numero della modifica
 maggiore, e ogni versione corrisponde a una pubblicazione: sotto ciascuna, il
 livello dice quale cifra è salita.
 
+(v1-17-10)=
+
+## 1.17.10 · 26 ottobre 2026
+
+### Patch
+
+- **L'indice si chiude senza rimbalzo.** Sul telefono, chiuso col dito, il pannello dell'indice ricompariva per un attimo prima di sparire. Adesso esce una volta sola.
+
 (v1-17-9)=
 
 ## 1.17.9 · 26 ottobre 2026
