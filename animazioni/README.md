@@ -179,6 +179,7 @@ un minuto.
 | `svg/attesa-che-si-copre.py` | `fig-attesa-coperta` | `GPU/overview.md` |
 | `svg/autovettori.py` | `fig-autovettori` | `Matematica/algebra-lineare.md` |
 | `svg/bersaglio-che-si-sposta.py` | `fig-bersaglio-che-si-sposta` | `MachineLearning/dati-che-cambiano.md` |
+| `svg/bersaglio-si-solleva.py` | `fig-svm-kernel` | `MachineLearning/svm-kernel.md` |
 | `svg/boosting-si-somma.py` | `fig-boosting-si-somma` | `MachineLearning/alberi-ensemble.md` |
 | `svg/bootstrap-si-accumula.py` | `fig-bootstrap-accumula` | `MachineLearning/il-bootstrap.md` |
 | `svg/bozza-che-si-corregge.py` | `fig-bozza-che-si-corregge` | `MLOps/llmops.md` |

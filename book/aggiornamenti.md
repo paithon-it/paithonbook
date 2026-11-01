@@ -35,6 +35,14 @@ che contiene sia sezioni nuove sia correzioni prende il numero della modifica
 maggiore, e ogni versione corrisponde a una pubblicazione: sotto ciascuna, il
 livello dice quale cifra è salita.
 
+(v1-17-11)=
+
+## 1.17.11 · 1 novembre 2026
+
+### Patch
+
+- {doc}`Il kernel trick </MachineLearning/svm-kernel>` (Machine Learning). **La figura del kernel trick si muove.** I punti del bersaglio salgono a un'altezza pari al quadrato della distanza dal centro, un piano orizzontale li separa, e il suo taglio, riportato nello spazio di partenza, è un cerchio.
+
 (v1-17-10)=
 
 ## 1.17.10 · 26 ottobre 2026

@@ -51,6 +51,18 @@
 
 versioni:
 
+- versione: "1.17.11"
+  data: 2026-11-01
+  voci:
+
+  - tipo: corretto
+    pagina: MachineLearning/svm-kernel.md
+    testo: >
+      **La figura del kernel trick si muove.** I punti del bersaglio salgono a
+      un'altezza pari al quadrato della distanza dal centro, un piano
+      orizzontale li separa, e il suo taglio, riportato nello spazio di
+      partenza, è un cerchio.
+
 - versione: "1.17.10"
   data: 2026-10-26
   voci:

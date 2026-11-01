@@ -153,16 +153,18 @@ operazioni.
 
 `````
 
-```{figure} ../figures/svm-kernel-trick.svg
+```{figure} ../figures/bersaglio-si-solleva.svg
 :name: fig-svm-kernel
-:alt: "A sinistra, in due dimensioni, un disco di punti teal circondato da un anello di punti terracotta, non separabili da una retta; una freccia phi al centro. A destra, dopo la mappa, gli stessi punti giacciono su una parabola: gli interni in basso, gli esterni in alto, e una retta orizzontale tratteggiata li separa."
-:width: 100%
+:alt: "Una nuvola di punti vista prima dall'alto: un disco di punti teal al centro e un anello di punti terracotta intorno, che nessuna retta può separare. La vista si inclina e il pavimento diventa un'ellisse. Poi ogni punto sale a un'altezza pari al quadrato della sua distanza dal centro: i punti del disco restano in basso, quelli dell'anello salgono, e compare la superficie a forma di ciotola su cui stanno tutti. Un piano orizzontale semitrasparente si infila a quota 1,20, sopra il disco e sotto l'anello, e li separa. Infine il cerchio in cui il piano taglia la ciotola scende sul pavimento: nello spazio di partenza la frontiera è quel cerchio, fra il disco e l'anello."
+:width: 90%
 
-Il kernel trick. A sinistra due classi che nessuna retta separa: un disco al
-centro e un anello intorno. A destra gli stessi punti dopo il sollevamento, con
-l'altezza pari alla distanza dal centro elevata al quadrato: i punti del disco
-restano in basso, quelli dell'anello salgono, e una retta orizzontale basta a
-dividerli.
+Il kernel trick. Nello spazio di partenza $(x_1, x_2)$ un disco di punti è
+circondato da un anello, e nessuna retta li separa. La mappa $\phi$ solleva
+ogni punto a un'altezza pari al quadrato della sua distanza dal centro,
+$r^2 = x_1^2 + x_2^2$: il disco resta in basso, l'anello sale, e un piano
+orizzontale divide le due classi. Il cerchio in cui il piano taglia la
+superficie, riportato nello spazio di partenza, è la frontiera che nessuna
+retta poteva tracciare.
 ```
 
 Come illustra {numref}`fig-svm-kernel`, ciò che era un anello inseparabile
