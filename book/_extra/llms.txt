@@ -258,6 +258,17 @@ della sezione e URL), non si ridistribuisce il testo.
   - [La via di LeCun (JEPA)](https://book.paithon.it/main/WorldModels/jepa.html)
   - [L'inferenza attiva](https://book.paithon.it/main/WorldModels/inferenza-attiva.html)
   - [Simulare il mondo](https://book.paithon.it/main/WorldModels/simulatori-e-dibattito.html)
+- [Generare video](https://book.paithon.it/main/GenerazioneVideo/overview.html): Come si genera un video: la taglia di un clip, perché non basta una pila di immagini, che cosa tiene insieme i fotogrammi e il percorso del capitolo, dalla compressione al suono.
+  - [Comprimere il tempo](https://book.paithon.it/main/GenerazioneVideo/comprimere-il-tempo.html)
+  - [Spazio e tempo](https://book.paithon.it/main/GenerazioneVideo/spazio-e-tempo.html)
+  - [Addestrare e misurare](https://book.paithon.it/main/GenerazioneVideo/addestrare-e-misurare.html)
+  - [Tempo reale e mondi](https://book.paithon.it/main/GenerazioneVideo/generare-mentre-scorre.html)
+  - [Il suono delle immagini](https://book.paithon.it/main/GenerazioneVideo/il-suono-delle-immagini.html)
+- [Generare musica](https://book.paithon.it/main/GenerazioneMusica/overview.html): Che cosa ha in più una canzone rispetto a un brano strumentale: una voce che canta un testo su un accompagnamento, per minuti.
+  - [La voce che canta](https://book.paithon.it/main/GenerazioneMusica/la-voce-che-canta.html)
+  - [La canzone a token](https://book.paithon.it/main/GenerazioneMusica/la-canzone-come-linguaggio.html)
+  - [Tutta la canzone insieme](https://book.paithon.it/main/GenerazioneMusica/tutta-la-canzone-insieme.html)
+  - [Prima il progetto](https://book.paithon.it/main/GenerazioneMusica/prima-il-progetto.html)
 
 ## Altri dati, altri domini
 

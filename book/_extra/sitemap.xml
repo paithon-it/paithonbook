@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://book.paithon.it/main/intro.html</loc>
-    <lastmod>2026-10-24T17:04:23+00:00</lastmod>
+    <lastmod>2026-11-05T09:08:04+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/prefazione.html</loc>
@@ -698,7 +698,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/Audio/generazione-audio.html</loc>
-    <lastmod>2026-10-25T16:38:18+00:00</lastmod>
+    <lastmod>2026-11-05T09:08:04+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/SpeechRecognition/overview.html</loc>
@@ -858,7 +858,51 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/WorldModels/simulatori-e-dibattito.html</loc>
-    <lastmod>2026-10-25T16:38:18+00:00</lastmod>
+    <lastmod>2026-11-05T09:08:04+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/GenerazioneVideo/overview.html</loc>
+    <lastmod>2026-11-05T09:08:04+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/GenerazioneVideo/comprimere-il-tempo.html</loc>
+    <lastmod>2026-11-05T09:08:04+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/GenerazioneVideo/spazio-e-tempo.html</loc>
+    <lastmod>2026-11-05T09:08:04+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/GenerazioneVideo/addestrare-e-misurare.html</loc>
+    <lastmod>2026-11-05T09:08:04+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/GenerazioneVideo/generare-mentre-scorre.html</loc>
+    <lastmod>2026-11-05T09:08:04+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/GenerazioneVideo/il-suono-delle-immagini.html</loc>
+    <lastmod>2026-11-05T09:08:04+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/GenerazioneMusica/overview.html</loc>
+    <lastmod>2026-11-05T09:08:04+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/GenerazioneMusica/la-voce-che-canta.html</loc>
+    <lastmod>2026-11-05T09:08:04+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/GenerazioneMusica/la-canzone-come-linguaggio.html</loc>
+    <lastmod>2026-11-05T09:08:04+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/GenerazioneMusica/tutta-la-canzone-insieme.html</loc>
+    <lastmod>2026-11-05T09:08:04+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/GenerazioneMusica/prima-il-progetto.html</loc>
+    <lastmod>2026-11-05T09:08:04+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/GraphNeuralNetwork/overview.html</loc>
@@ -1014,6 +1058,6 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/aggiornamenti.html</loc>
-    <lastmod>2026-11-01T12:16:11+00:00</lastmod>
+    <lastmod>2026-11-05T12:33:48+00:00</lastmod>
   </url>
 </urlset>

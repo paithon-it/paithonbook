@@ -1,0 +1,110 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
+  fonte: ../musica-ace-step.svg
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 590" role="img" aria-label="Schema di ACE-Step v1. In alto a sinistra tre encoder: il testo della canzone, con un encoder che si addestra; lo stile, descritto a parole con tag o con una frase, con un encoder congelato; e, facoltativa, una voce da imitare di dieci secondi, ridotta a un solo vettore. Le tre uscite si mettono in fila nel tempo, nell'ordine voce, stile, testo, e il DiT le legge in ogni blocco con la cross-attention. Al centro un latente rumoroso di 8 canali per 16 righe per n frame entra nel DiT, 24 blocchi in cui ogni frame guarda tutti gli altri con un'attenzione lineare, legge le condizioni con la cross-attention e viene rielaborato da solo da una rete feed-forward; in ogni blocco entra anche il passo t della diffusione. Il DiT rifà tutto il latente a ogni passo, per 27 o 60 passi, e produce un latente pulito, che il decoder dell'autoencoder riporta al mel-spettrogramma a 128 bande e un vocoder all'onda a 44,1 kHz. In basso a sinistra, in tratteggio e solo in addestramento, lo stato dell'ottavo blocco del DiT passa per una proiezione e un'interpolazione nel tempo ed è confrontato con le rappresentazioni di due encoder calcolate sulla canzone pulita, MERT per la musica e mHuBERT per il parlato: è l'allineamento REPA.">
+  <defs>
+    <marker id="freccia-ace" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#BCB3A1"/>
+    </marker>
+    <marker id="freccia-ace-t" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#E27B52"/>
+    </marker>
+    <marker id="freccia-ace-o" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8E8676"/>
+    </marker>
+  </defs>
+
+  <!-- ============ I TRE ENCODER ============ -->
+  <rect x="20" y="20" width="250" height="46" rx="8" fill="#E27B52" fill-opacity="0.12" stroke="#E27B52" stroke-width="2"/>
+  <text x="145" y="40" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#F4ECDD">testo della canzone</text>
+  <text x="145" y="57" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">encoder che si addestra</text>
+
+  <rect x="20" y="76" width="250" height="46" rx="8" fill="#E27B52" fill-opacity="0.12" stroke="#E27B52" stroke-width="2"/>
+  <text x="145" y="96" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#F4ECDD">stile, a parole</text>
+  <text x="145" y="113" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">tag o una frase, encoder congelato</text>
+
+  <rect x="20" y="132" width="250" height="46" rx="8" fill="#E27B52" fill-opacity="0.12" stroke="#E27B52" stroke-width="2"/>
+  <text x="145" y="152" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#F4ECDD">voce da imitare</text>
+  <text x="145" y="169" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">10 s, facoltativa: un solo vettore</text>
+
+  <!-- ogni encoder entra nel proprio tratto della fila -->
+  <path d="M270,43 H570 V128" fill="none" stroke="#E27B52" stroke-width="2" marker-end="url(#freccia-ace-t)"/>
+  <path d="M270,99 H442 V128" fill="none" stroke="#E27B52" stroke-width="2" marker-end="url(#freccia-ace-t)"/>
+  <line x1="270" y1="155" x2="326" y2="155" stroke="#E27B52" stroke-width="2" marker-end="url(#freccia-ace-t)"/>
+
+  <!-- condizioni concatenate nel tempo -->
+  <text x="582" y="124" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">condizioni in fila nel tempo</text>
+  <rect x="330" y="132" width="64" height="46" rx="4" fill="#E27B52" fill-opacity="0.18" stroke="#E27B52" stroke-width="1.5"/>
+  <text x="362" y="160" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#F4ECDD">voce</text>
+  <rect x="394" y="132" width="96" height="46" rx="4" fill="#E27B52" fill-opacity="0.18" stroke="#E27B52" stroke-width="1.5"/>
+  <text x="442" y="160" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#F4ECDD">stile</text>
+  <rect x="490" y="132" width="160" height="46" rx="4" fill="#E27B52" fill-opacity="0.18" stroke="#E27B52" stroke-width="1.5"/>
+  <text x="570" y="160" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#F4ECDD">testo della canzone</text>
+
+  <!-- ingresso delle condizioni nel DiT -->
+  <path d="M650,155 H735 V311 H696" fill="none" stroke="#E27B52" stroke-width="2" marker-end="url(#freccia-ace-t)"/>
+  <text x="746" y="190" font-family="Inter, sans-serif" font-size="11" fill="#E27B52">lette in</text>
+  <text x="746" y="205" font-family="Inter, sans-serif" font-size="11" fill="#E27B52">ogni blocco</text>
+  <text x="746" y="220" font-family="Inter, sans-serif" font-size="10.5" fill="#BCB3A1">(cross-attention)</text>
+
+  <!-- ============ IL DiT ============ -->
+  <rect x="20" y="250" width="210" height="80" rx="8" fill="#BCB3A1" fill-opacity="0.10" stroke="#BCB3A1" stroke-width="2"/>
+  <text x="125" y="284" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#F4ECDD">latente rumoroso</text>
+  <text x="125" y="304" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">8 canali &#215; 16 righe &#215; n frame</text>
+  <line x1="230" y1="290" x2="296" y2="290" stroke="#BCB3A1" stroke-width="2" marker-end="url(#freccia-ace)"/>
+
+  <rect x="300" y="190" width="410" height="210" rx="10" fill="#5BA39C" fill-opacity="0.08" stroke="#5BA39C" stroke-width="2.5"/>
+  <text x="505" y="212" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#F4ECDD">DiT, 24 blocchi</text>
+  <text x="505" y="230" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">a ogni passo rif&#224; tutto il latente: 27 o 60 passi</text>
+  <rect x="320" y="250" width="370" height="34" rx="6" fill="#5BA39C" fill-opacity="0.15" stroke="#5BA39C" stroke-width="1.5"/>
+  <text x="505" y="272" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#F4ECDD">ogni frame guarda tutti gli altri <tspan font-size="10.5" fill="#BCB3A1">(attenzione lineare)</tspan></text>
+  <rect x="320" y="294" width="370" height="34" rx="6" fill="#E27B52" fill-opacity="0.12" stroke="#E27B52" stroke-width="1.5"/>
+  <text x="505" y="316" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#F4ECDD">ogni frame legge le condizioni <tspan font-size="10.5" fill="#BCB3A1">(cross-attention)</tspan></text>
+  <rect x="320" y="338" width="370" height="34" rx="6" fill="#5BA39C" fill-opacity="0.15" stroke="#5BA39C" stroke-width="1.5"/>
+  <text x="505" y="360" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#F4ECDD">ogni frame si rielabora da solo <tspan font-size="10.5" fill="#BCB3A1">(feed-forward)</tspan></text>
+  <text x="505" y="390" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">in ogni blocco entra anche il passo t della diffusione</text>
+
+  <line x1="710" y1="355" x2="776" y2="355" stroke="#BCB3A1" stroke-width="2" marker-end="url(#freccia-ace)"/>
+  <rect x="780" y="320" width="160" height="70" rx="8" fill="#BCB3A1" fill-opacity="0.10" stroke="#BCB3A1" stroke-width="2"/>
+  <text x="860" y="353" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#F4ECDD">latente pulito</text>
+  <text x="860" y="372" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">8 &#215; 16 &#215; n</text>
+
+  <!-- ============ DAL LATENTE ALL'ONDA ============ -->
+  <path d="M860,390 V415 H530 V440" fill="none" stroke="#BCB3A1" stroke-width="2" marker-end="url(#freccia-ace)"/>
+  <rect x="470" y="440" width="120" height="56" rx="8" fill="#C9A961" fill-opacity="0.18" stroke="#C9A961" stroke-width="2.5"/>
+  <text x="530" y="466" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#F4ECDD">decoder</text>
+  <text x="530" y="484" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">dell&#8217;autoencoder</text>
+  <line x1="590" y1="468" x2="616" y2="468" stroke="#BCB3A1" stroke-width="2" marker-end="url(#freccia-ace)"/>
+  <rect x="620" y="440" width="86" height="56" rx="8" fill="#BCB3A1" fill-opacity="0.10" stroke="#BCB3A1" stroke-width="2"/>
+  <text x="663" y="466" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#F4ECDD">mel</text>
+  <text x="663" y="484" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">128 bande</text>
+  <line x1="706" y1="468" x2="732" y2="468" stroke="#BCB3A1" stroke-width="2" marker-end="url(#freccia-ace)"/>
+  <rect x="736" y="440" width="100" height="56" rx="8" fill="#C9A961" fill-opacity="0.18" stroke="#C9A961" stroke-width="2.5"/>
+  <text x="786" y="466" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#F4ECDD">vocoder</text>
+  <text x="786" y="484" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">rif&#224; il suono</text>
+  <line x1="836" y1="468" x2="862" y2="468" stroke="#BCB3A1" stroke-width="2" marker-end="url(#freccia-ace)"/>
+  <rect x="866" y="440" width="74" height="56" rx="8" fill="#F4ECDD" fill-opacity="0.10" stroke="#F4ECDD" stroke-width="2"/>
+  <text x="903" y="466" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#F4ECDD">onda</text>
+  <text x="903" y="484" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">44,1 kHz</text>
+
+  <!-- ============ REPA, SOLO IN ADDESTRAMENTO ============ -->
+  <rect x="20" y="440" width="420" height="140" rx="12" fill="none" stroke="#C9A961" stroke-width="2" stroke-dasharray="8 6"/>
+  <text x="430" y="460" text-anchor="end" font-family="Inter, sans-serif" font-size="11.5" fill="#BCB3A1">solo in addestramento: allineamento (REPA)</text>
+  <path d="M340,400 V424 H106 V480" fill="none" stroke="#8E8676" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#freccia-ace-o)"/>
+  <text x="223" y="418" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">stato dell&#8217;ottavo blocco</text>
+  <rect x="36" y="480" width="140" height="50" rx="8" fill="#5BA39C" fill-opacity="0.12" stroke="#5BA39C" stroke-width="2"/>
+  <text x="106" y="502" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#F4ECDD">proiezione</text>
+  <text x="106" y="519" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">e interpolazione</text>
+  <line x1="176" y1="505" x2="246" y2="491" stroke="#8E8676" stroke-width="2" marker-end="url(#freccia-ace-o)"/>
+  <line x1="176" y1="505" x2="246" y2="537" stroke="#8E8676" stroke-width="2" marker-end="url(#freccia-ace-o)"/>
+  <text x="206" y="482" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">confronto</text>
+  <rect x="250" y="474" width="182" height="34" rx="6" fill="#C9A961" fill-opacity="0.18" stroke="#C9A961" stroke-width="2"/>
+  <text x="341" y="496" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#F4ECDD">encoder della musica <tspan font-size="10.5" fill="#BCB3A1">(MERT)</tspan></text>
+  <rect x="250" y="520" width="182" height="34" rx="6" fill="#C9A961" fill-opacity="0.18" stroke="#C9A961" stroke-width="2"/>
+  <text x="341" y="542" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#F4ECDD">encoder del parlato <tspan font-size="10.5" fill="#BCB3A1">(mHuBERT)</tspan></text>
+  <text x="341" y="572" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#BCB3A1">sulla canzone pulita</text>
+</svg>

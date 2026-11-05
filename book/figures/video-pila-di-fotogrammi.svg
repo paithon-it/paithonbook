@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 340" role="img" aria-label="Una fila di fotogrammi, il primo, il secondo, il terzo e l&#8217;ultimo, con puntini di sospensione fra il terzo e l&#8217;ultimo. Una pallina in terracotta parte da terra a sinistra, sale spostandosi verso destra e nell&#8217;ultimo fotogramma è di nuovo a terra, a destra, come in un rimbalzo. Sotto ogni fotogramma il suo nome, una fetta del tensore V: V con indice 1 sotto il fotogramma 1, poi V con indice 2 e V con indice 3, e V con indice F sotto il fotogramma F. Sul primo fotogramma una freccia orizzontale indica la larghezza W e una verticale l&#8217;altezza H, in pixel. Sotto la fila, una freccia in teal indica l&#8217;asse del tempo, con F fotogrammi a frequenza fissa. In basso, i 3 canali di colore di ogni pixel, il numero di valori di un fotogramma, H per W per 3, e la forma del tensore V, F per H per W per 3.">
+  <defs>
+    <marker id="freccia-pila" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5E5852"/>
+    </marker>
+    <marker id="freccia-pila-t" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2D5A5C"/>
+    </marker>
+  </defs>
+
+  <!-- quote del primo fotogramma: larghezza e altezza -->
+  <line x1="70" y1="78" x2="200" y2="78" stroke="#5E5852" stroke-width="2" marker-start="url(#freccia-pila)" marker-end="url(#freccia-pila)"/>
+  <text x="135" y="68" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#5E5852"><tspan font-style="italic">W</tspan> pixel</text>
+  <line x1="48" y1="100" x2="48" y2="186" stroke="#5E5852" stroke-width="2" marker-start="url(#freccia-pila)" marker-end="url(#freccia-pila)"/>
+  <text x="38" y="143" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#5E5852" transform="rotate(-90 38 143)"><tspan font-style="italic">H</tspan> pixel</text>
+
+  <!-- fotogramma 1 -->
+  <rect x="70" y="100" width="130" height="86" rx="8" fill="#5E5852" fill-opacity="0.10" stroke="#5E5852" stroke-width="2"/>
+  <line x1="78" y1="166" x2="192" y2="166" stroke="#C9C2B4" stroke-width="1.5"/>
+  <circle cx="98" cy="154" r="9" fill="#B5532C"/>
+  <text x="135" y="212" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#1A1A1A">fotogramma 1 (<tspan font-weight="700">V</tspan><tspan dy="4" font-size="10">1</tspan><tspan dy="-4">)</tspan></text>
+
+  <!-- fotogramma 2 -->
+  <rect x="230" y="100" width="130" height="86" rx="8" fill="#5E5852" fill-opacity="0.10" stroke="#5E5852" stroke-width="2"/>
+  <line x1="238" y1="166" x2="352" y2="166" stroke="#C9C2B4" stroke-width="1.5"/>
+  <circle cx="276" cy="132" r="9" fill="#B5532C"/>
+  <text x="295" y="212" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#1A1A1A"><tspan font-weight="700">V</tspan><tspan dy="4" font-size="10">2</tspan></text>
+
+  <!-- fotogramma 3 -->
+  <rect x="390" y="100" width="130" height="86" rx="8" fill="#5E5852" fill-opacity="0.10" stroke="#5E5852" stroke-width="2"/>
+  <line x1="398" y1="166" x2="512" y2="166" stroke="#C9C2B4" stroke-width="1.5"/>
+  <circle cx="455" cy="126" r="9" fill="#B5532C"/>
+  <text x="455" y="212" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#1A1A1A"><tspan font-weight="700">V</tspan><tspan dy="4" font-size="10">3</tspan></text>
+
+  <!-- puntini di sospensione -->
+  <circle cx="556" cy="143" r="3" fill="#8B847C"/>
+  <circle cx="577" cy="143" r="3" fill="#8B847C"/>
+  <circle cx="598" cy="143" r="3" fill="#8B847C"/>
+
+  <!-- fotogramma F -->
+  <rect x="650" y="100" width="130" height="86" rx="8" fill="#5E5852" fill-opacity="0.10" stroke="#5E5852" stroke-width="2"/>
+  <line x1="658" y1="166" x2="772" y2="166" stroke="#C9C2B4" stroke-width="1.5"/>
+  <circle cx="750" cy="154" r="9" fill="#B5532C"/>
+  <text x="715" y="212" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#1A1A1A">fotogramma <tspan font-style="italic">F</tspan> (<tspan font-weight="700">V</tspan><tspan dy="4" font-size="10" font-style="italic">F</tspan><tspan dy="-4">)</tspan></text>
+
+  <!-- asse del tempo -->
+  <line x1="70" y1="240" x2="790" y2="240" stroke="#2D5A5C" stroke-width="2.5" marker-end="url(#freccia-pila-t)"/>
+  <text x="430" y="230" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#2D5A5C">tempo: <tspan font-style="italic">F</tspan> fotogrammi a frequenza fissa</text>
+
+  <!-- il tensore -->
+  <rect x="70" y="274" width="12" height="12" rx="2" fill="#B5532C"/>
+  <rect x="86" y="274" width="12" height="12" rx="2" fill="#2D5A5C"/>
+  <rect x="102" y="274" width="12" height="12" rx="2" fill="#C9A961"/>
+  <text x="124" y="285" font-family="Inter, sans-serif" font-size="13" fill="#5E5852">3 canali di colore per ogni pixel: un fotogramma ha <tspan font-style="italic">H</tspan> &#183; <tspan font-style="italic">W</tspan> &#183; 3 valori</text>
+  <text x="70" y="318" font-family="Inter, sans-serif" font-size="15" fill="#1A1A1A"><tspan font-weight="700">V</tspan> &#8712; &#8477;<tspan dy="-6" font-size="11"><tspan font-style="italic">F</tspan> &#215; <tspan font-style="italic">H</tspan> &#215; <tspan font-style="italic">W</tspan> &#215; 3</tspan></text>
+</svg>

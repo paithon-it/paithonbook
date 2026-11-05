@@ -360,6 +360,24 @@ class="pt-card-num"></span> <span class="pt-card-title">World Model</span>
 href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-WorldModels.pdf"
 aria-label="Scarica in PDF il capitolo «World Model»" title="«World Model» in
 PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
+href="GenerazioneVideo/overview.html"> <span class="pt-card-num"></span>
+<span class="pt-card-title">Generare video</span> <span
+class="pt-card-desc">Il tempo come terza dimensione: comprimere i fotogrammi,
+l'attenzione nello spazio e nel tempo, la generazione in tempo reale fino ai
+mondi interattivi, il suono insieme alle immagini.</span> </a> <a
+class="pt-card-pdf"
+href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-GenerazioneVideo.pdf"
+aria-label="Scarica in PDF il capitolo «Generare video»" title="«Generare
+video» in PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
+href="GenerazioneMusica/overview.html"> <span class="pt-card-num"></span>
+<span class="pt-card-title">Generare musica</span> <span
+class="pt-card-desc">La canzone con la voce e il testo: dalla sintesi della
+voce cantata ai modelli a token, alla diffusione su tutta la canzone, al
+pianificatore che scrive lo schema prima del suono.</span> </a> <a
+class="pt-card-pdf"
+href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-GenerazioneMusica.pdf"
+aria-label="Scarica in PDF il capitolo «Generare musica»" title="«Generare
+musica» in PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
 href="GraphNeuralNetwork/overview.html"> <span class="pt-card-num"></span>
 <span class="pt-card-title">Graph Neural Network</span> <span
 class="pt-card-desc">Reti che imparano su dati a grafo: message passing, GCN,

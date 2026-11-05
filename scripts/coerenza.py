@@ -1203,6 +1203,31 @@ def main():
                 riga = t.count("\n", 0, m.start()) + 1
                 problemi["script e fogli di stile da un altro dominio"].append(
                     f"{Path(nome).as_posix()}:{riga}: {m.group(1)}")
+        # In `_config.yml` uno script si carica anche senza scrivere un tag:
+        # le chiavi di Sphinx `html_js_files`, `html_css_files` e
+        # `mathjax_path` accettano un indirizzo. Le due librerie che Sphinx e
+        # Jupyter Book caricano da un CDN per default sono ammesse, scritte
+        # per esteso; ogni altro indirizzo sotto quelle chiavi si segnala.
+        ammessi = {
+            "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js",
+            "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js",
+        }
+        if config.is_file():
+            import yaml
+            t = config.read_text(encoding="utf-8")
+            conf = (yaml.safe_load(t) or {}).get("sphinx", {}).get("config", {})
+            for chiave in ("html_js_files", "html_css_files", "mathjax_path"):
+                valori = conf.get(chiave) or []
+                for v in valori if isinstance(valori, list) else [valori]:
+                    indirizzo = v[0] if isinstance(v, (list, tuple)) else v
+                    if not isinstance(indirizzo, str):
+                        continue
+                    if (re.match(r"(?:https?:)?//", indirizzo)
+                            and indirizzo not in ammessi):
+                        posizione = t.find(indirizzo)
+                        riga = t.count("\n", 0, posizione) + 1 if posizione >= 0 else 0
+                        problemi["script e fogli di stile da un altro dominio"].append(
+                            f"_config.yml:{riga}: {indirizzo} ({chiave})")
 
     if "landing" in attivi:
         # La griglia della landing e' l'indice del libro scritto a mano: i

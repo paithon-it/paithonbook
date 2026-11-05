@@ -1,0 +1,89 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
+  fonte: ../video-vae-causale.svg
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 340" role="img" aria-label="Schema dell'encoder di un autoencoder video causale. In alto, una striscia di 81 fotogrammi: il primo è isolato e disegnato in terracotta, i successivi sono raggruppati a quattro a quattro in teal (da 2 a 5, da 6 a 9, da 10 a 13, fino a quello da 78 a 81), con dei puntini al posto dei gruppi intermedi. Sulla destra, fra le due righe, l'etichetta encoder causale in t. In basso, la sequenza dei 21 fotogrammi latenti: una linea terracotta porta il primo fotogramma, da solo, nel primo latente, e da ogni gruppo di quattro fotogrammi una linea teal porta al latente corrispondente. Una freccia sotto i latenti indica che il tempo scorre da sinistra a destra, e la scritta accanto precisa che ogni latente dipende dal proprio gruppo e da ciò che lo precede, mai da ciò che segue. Sotto, il conto: F primo uguale 1 più F meno 1 diviso c t, cioè 1 più 80 diviso 4, uguale 21.">
+  <defs>
+    <marker id="freccia-vae" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#BCB3A1"/>
+    </marker>
+  </defs>
+
+  <text x="24" y="30" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#F4ECDD">Fotogrammi nei pixel, F = 81</text>
+
+  <!-- primo fotogramma, da solo -->
+  <rect x="40" y="52" width="18" height="44" rx="2" fill="#E27B52" fill-opacity="0.2" stroke="#E27B52" stroke-width="2"/>
+  <text x="49" y="116" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#E27B52">1</text>
+
+  <!-- gruppo 1: fotogrammi 2-5 -->
+  <g fill="#5BA39C" fill-opacity="0.15" stroke="#5BA39C" stroke-width="1.5">
+    <rect x="100" y="52" width="18" height="44" rx="2"/>
+    <rect x="121" y="52" width="18" height="44" rx="2"/>
+    <rect x="142" y="52" width="18" height="44" rx="2"/>
+    <rect x="163" y="52" width="18" height="44" rx="2"/>
+  </g>
+  <text x="140" y="116" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">2&#8211;5</text>
+
+  <!-- gruppo 2: 6-9 -->
+  <g fill="#5BA39C" fill-opacity="0.15" stroke="#5BA39C" stroke-width="1.5">
+    <rect x="209" y="52" width="18" height="44" rx="2"/>
+    <rect x="230" y="52" width="18" height="44" rx="2"/>
+    <rect x="251" y="52" width="18" height="44" rx="2"/>
+    <rect x="272" y="52" width="18" height="44" rx="2"/>
+  </g>
+  <text x="249" y="116" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">6&#8211;9</text>
+
+  <!-- gruppo 3: 10-13 -->
+  <g fill="#5BA39C" fill-opacity="0.15" stroke="#5BA39C" stroke-width="1.5">
+    <rect x="318" y="52" width="18" height="44" rx="2"/>
+    <rect x="339" y="52" width="18" height="44" rx="2"/>
+    <rect x="360" y="52" width="18" height="44" rx="2"/>
+    <rect x="381" y="52" width="18" height="44" rx="2"/>
+  </g>
+  <text x="358" y="116" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">10&#8211;13</text>
+
+  <!-- puntini -->
+  <text x="462" y="82" text-anchor="middle" font-family="Inter, sans-serif" font-size="22" fill="#8E8676">&#8230;</text>
+
+  <!-- ultimo gruppo: 78-81 -->
+  <g fill="#5BA39C" fill-opacity="0.15" stroke="#5BA39C" stroke-width="1.5">
+    <rect x="530" y="52" width="18" height="44" rx="2"/>
+    <rect x="551" y="52" width="18" height="44" rx="2"/>
+    <rect x="572" y="52" width="18" height="44" rx="2"/>
+    <rect x="593" y="52" width="18" height="44" rx="2"/>
+  </g>
+  <text x="570" y="116" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">78&#8211;81</text>
+
+  <!-- collegamenti fotogrammi -> latenti -->
+  <line x1="49" y1="124" x2="49" y2="198" stroke="#E27B52" stroke-width="2" marker-end="url(#freccia-vae)"/>
+  <line x1="140" y1="124" x2="140" y2="198" stroke="#5BA39C" stroke-width="2" marker-end="url(#freccia-vae)"/>
+  <line x1="249" y1="124" x2="249" y2="198" stroke="#5BA39C" stroke-width="2" marker-end="url(#freccia-vae)"/>
+  <line x1="358" y1="124" x2="358" y2="198" stroke="#5BA39C" stroke-width="2" marker-end="url(#freccia-vae)"/>
+  <line x1="570" y1="124" x2="570" y2="198" stroke="#5BA39C" stroke-width="2" marker-end="url(#freccia-vae)"/>
+
+  <text x="640" y="150" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#F4ECDD">encoder</text>
+  <text x="640" y="166" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">causale in t</text>
+
+  <!-- latenti -->
+  <rect x="21" y="204" width="56" height="40" rx="8" fill="#E27B52" fill-opacity="0.15" stroke="#E27B52" stroke-width="2.5"/>
+  <text x="49" y="229" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#F4ECDD">1</text>
+  <rect x="112" y="204" width="56" height="40" rx="8" fill="#5BA39C" fill-opacity="0.15" stroke="#5BA39C" stroke-width="2.5"/>
+  <text x="140" y="229" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#F4ECDD">2</text>
+  <rect x="221" y="204" width="56" height="40" rx="8" fill="#5BA39C" fill-opacity="0.15" stroke="#5BA39C" stroke-width="2.5"/>
+  <text x="249" y="229" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#F4ECDD">3</text>
+  <rect x="330" y="204" width="56" height="40" rx="8" fill="#5BA39C" fill-opacity="0.15" stroke="#5BA39C" stroke-width="2.5"/>
+  <text x="358" y="229" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#F4ECDD">4</text>
+  <text x="462" y="232" text-anchor="middle" font-family="Inter, sans-serif" font-size="22" fill="#8E8676">&#8230;</text>
+  <rect x="542" y="204" width="56" height="40" rx="8" fill="#5BA39C" fill-opacity="0.15" stroke="#5BA39C" stroke-width="2.5"/>
+  <text x="570" y="229" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#F4ECDD">21</text>
+
+  <text x="24" y="274" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#F4ECDD">Fotogrammi latenti, F&#8242; = 21</text>
+
+  <!-- freccia del tempo -->
+  <line x1="24" y1="294" x2="620" y2="294" stroke="#BCB3A1" stroke-width="2" marker-end="url(#freccia-vae)"/>
+  <text x="24" y="314" font-family="Inter, sans-serif" font-size="11.5" fill="#BCB3A1">il tempo scorre: ogni latente dipende dal proprio gruppo e da ci&#242; che lo precede, mai da ci&#242; che segue</text>
+  <text x="24" y="332" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#E27B52">F&#8242; = 1 + (F &#8722; 1) / c<tspan baseline-shift="sub" font-size="9">t</tspan> = 1 + 80 / 4 = 21</text>
+</svg>

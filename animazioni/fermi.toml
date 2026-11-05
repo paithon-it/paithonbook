@@ -227,3 +227,13 @@ istanti = [0.208, 0.40, 0.95]
 # meta' della scala, quando la corsia in parallelo ha finito, quella lettura e'
 # gia' scartata e la terza previsione e' partita; il terzo e' il lavoro
 # concluso, l'unico in cui si leggono tutti e tre i totali della didascalia.
+
+[video-cache-che-scorre]
+istanti = [0.362, 0.603, 0.983]
+# perche': i default cadono sui confini fra passi e il primo (10%) cade quando
+# la finestra ancora non c'e'. Qui i tre fermi mostrano la finestra (due
+# blocchi da tre, w = 6) in tre momenti: appena piena sui blocchi 1-2 mentre
+# nasce il terzo, e nessuno ancora scartato; a regime sui blocchi 3-4, con il
+# quinto ancora rumoroso e i primi due attenuati; a corsa finita sugli ultimi
+# due con i primi cinque attenuati. Gli istanti cadono a meta' di un passo (29
+# passi, 29 = 7 blocchi per 4 passi piu' la sosta finale).

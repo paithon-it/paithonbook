@@ -511,6 +511,30 @@ parts:
       title: L'inferenza attiva
     - file: WorldModels/simulatori-e-dibattito.md
       title: Simulare il mondo
+  - file: GenerazioneVideo/overview.md
+    title: Generare video
+    sections:
+    - file: GenerazioneVideo/comprimere-il-tempo.md
+      title: Comprimere il tempo
+    - file: GenerazioneVideo/spazio-e-tempo.md
+      title: Spazio e tempo
+    - file: GenerazioneVideo/addestrare-e-misurare.md
+      title: Addestrare e misurare
+    - file: GenerazioneVideo/generare-mentre-scorre.md
+      title: Tempo reale e mondi
+    - file: GenerazioneVideo/il-suono-delle-immagini.md
+      title: Il suono delle immagini
+  - file: GenerazioneMusica/overview.md
+    title: Generare musica
+    sections:
+    - file: GenerazioneMusica/la-voce-che-canta.md
+      title: La voce che canta
+    - file: GenerazioneMusica/la-canzone-come-linguaggio.md
+      title: La canzone a token
+    - file: GenerazioneMusica/tutta-la-canzone-insieme.md
+      title: Tutta la canzone insieme
+    - file: GenerazioneMusica/prima-il-progetto.md
+      title: Prima il progetto
 
 - caption: Altri dati, altri domini
   chapters:

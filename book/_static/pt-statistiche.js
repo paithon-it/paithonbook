@@ -27,8 +27,18 @@
     return canonico && canonico.href ? canonico.href : location.origin + location.pathname;
   }
 
+  function provenienza() {
+    // Solo da un'altra origine, e senza query ne' hash: dopo una ricerca
+    // nel libro il referrer porta la query, e di una provenienza interna le
+    // statistiche non fanno niente.
+    try {
+      var p = new URL(document.referrer);
+      return p.origin === location.origin ? null : p.origin + p.pathname;
+    } catch (e) { return null; }
+  }
+
   function invia(nome, proprieta) {
-    var dati = { n: nome, u: indirizzo(), d: DOMINIO, r: document.referrer || null };
+    var dati = { n: nome, u: indirizzo(), d: DOMINIO, r: provenienza() };
     if (proprieta) { dati.p = proprieta; }
     try {
       // text/plain senza credenziali: una richiesta semplice, senza

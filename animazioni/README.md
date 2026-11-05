@@ -231,6 +231,7 @@ un minuto.
 | `svg/lune-si-raddrizzano.py` | `fig-flusso-lune` | `VerosimiglianzaEsatta/flussi.md` |
 | `svg/media-che-scivola.py` | `fig-media-che-scivola` | `MachineLearning/curve-al-posto-di-rette.md` |
 | `svg/miscele-di-winograd.py` | `fig-miscele-di-winograd` | `DeepLearning/reti-convoluzionali.md` |
+| `svg/musica-tutta-insieme.py` | `fig-musica-tutta-insieme` | `GenerazioneMusica/tutta-la-canzone-insieme.md` |
 | `svg/nastro-e-testina.py` | `fig-nastro-e-testina` | `Introduzione/calcolabile.md` |
 | `svg/nastro-si-riavvolge.py` | `fig-nastro-autograd` | `PyTorch/tensori.md` |
 | `svg/ogni-turno-costa-uguale.py` | `fig-torneo-costo-piatto` | `MachineLearning/iperparametri.md` |
@@ -263,6 +264,7 @@ un minuto.
 | `svg/tracce-illuminano.py` | `fig-tracce-illuminano` | `ReinforcementLearning/q-learning.md` |
 | `svg/trapezio-e-il-peso.py` | `fig-trapezio-e-il-peso` | `StateSpaceModel/dualita-e-mamba-2-3.md` |
 | `svg/vetrina-si-ordina.py` | `fig-vetrina-si-ordina` | `SistemiRaccomandazione/raccomandazione-neurale.md` |
+| `svg/video-cache-che-scorre.py` | `fig-video-cache-che-scorre` | `GenerazioneVideo/generare-mentre-scorre.md` |
 | `svg/voto-che-retrocede.py` | `fig-voto-che-retrocede` | `ReinforcementLearning/q-learning.md` |
 | `svg/xor-non-separabile.py` | `fig-xor-non-separabile` | `RetiNeurali/percettrone.md` |
 | `svg/xor-si-piega.py` | `fig-xor-si-piega` | `RetiNeurali/percettrone.md` |

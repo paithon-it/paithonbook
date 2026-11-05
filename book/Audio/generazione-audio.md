@@ -930,7 +930,10 @@ Restano limiti aperti, almeno per i sistemi descritti qui. La coerenza a lungo
 termine è fragile: un modello sa produrre un frammento convincente, e anche
 lungo, ma tenere in piedi la struttura di un brano intero (con temi che
 tornano, uno sviluppo, una chiusura) è ancora difficile, e i token semantici o
-le gerarchie attenuano il problema senza risolverlo. Restano poi i difetti
+le gerarchie attenuano il problema senza risolverlo. Le canzoni intere, con una
+voce che canta un testo sopra l'accompagnamento, lo rendono ancora più duro; il
+{doc}`capitolo sulla generazione di musica </GenerazioneMusica/overview>`
+mette a confronto i sistemi che ci provano. Restano poi i difetti
 tipici del suono fabbricato, che in gergo si chiamano **artefatti**: un timbro
 metallico che si accende qua e là, gli attacchi delle note impastati invece che
 netti, code di riverbero che non suonano come suonerebbe una stanza vera. Un

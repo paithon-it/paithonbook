@@ -1,0 +1,145 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
+  fonte: ../video-attenzione-fattorizzata-piena.svg
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 500" role="img" aria-label="Tre righe di quattro fotogrammi, ciascuno una griglia di tre per tre token. In ogni riga un token del terzo fotogramma, in alto a sinistra, è in terracotta. Riga A1, strato spaziale: sono in teal i token dello stesso fotogramma. Riga A2, strato temporale: sono in ocra i token nello stesso posto negli altri fotogrammi. Riga B, attenzione piena: sono in teal tutti i token di tutti i fotogrammi. Un riquadro tratteggiato segna il token al centro del secondo fotogramma: nei due strati fattorizzati il token in terracotta non lo guarda direttamente, con l’attenzione piena sì.">
+<text x="24" y="56" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#F4ECDD">A1 · Fattorizzata, strato spaziale</text>
+<text x="59.0" y="68" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">fotogramma 1</text>
+<rect x="24" y="76" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="49" y="76" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="74" y="76" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="24" y="101" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="49" y="101" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="74" y="101" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="24" y="126" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="49" y="126" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="74" y="126" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<text x="219.0" y="68" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">fotogramma 2</text>
+<rect x="184" y="76" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="209" y="76" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="234" y="76" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="184" y="101" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="209" y="101" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="206" y="98" width="26" height="26" rx="5" fill="none" stroke="#F4ECDD" stroke-width="2" stroke-dasharray="4 3"/>
+<rect x="234" y="101" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="184" y="126" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="209" y="126" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="234" y="126" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<text x="379.0" y="68" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">fotogramma 3</text>
+<rect x="344" y="76" width="20" height="20" rx="3" fill="#E27B52" fill-opacity="0.85" stroke="#E27B52" stroke-width="2"/>
+<rect x="369" y="76" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.55" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="394" y="76" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.55" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="344" y="101" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.55" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="369" y="101" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.55" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="394" y="101" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.55" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="344" y="126" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.55" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="369" y="126" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.55" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="394" y="126" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.55" stroke="#5BA39C" stroke-width="1.5"/>
+<text x="539.0" y="68" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">fotogramma 4</text>
+<rect x="504" y="76" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="529" y="76" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="554" y="76" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="504" y="101" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="529" y="101" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="554" y="101" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="504" y="126" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="529" y="126" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="554" y="126" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<text x="24" y="186" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#F4ECDD">A2 · Fattorizzata, strato temporale</text>
+<text x="59.0" y="198" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">fotogramma 1</text>
+<rect x="24" y="206" width="20" height="20" rx="3" fill="#C9A961" fill-opacity="0.65" stroke="#C9A961" stroke-width="1.5"/>
+<rect x="49" y="206" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="74" y="206" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="24" y="231" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="49" y="231" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="74" y="231" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="24" y="256" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="49" y="256" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="74" y="256" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<text x="219.0" y="198" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">fotogramma 2</text>
+<rect x="184" y="206" width="20" height="20" rx="3" fill="#C9A961" fill-opacity="0.65" stroke="#C9A961" stroke-width="1.5"/>
+<rect x="209" y="206" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="234" y="206" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="184" y="231" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="209" y="231" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="206" y="228" width="26" height="26" rx="5" fill="none" stroke="#F4ECDD" stroke-width="2" stroke-dasharray="4 3"/>
+<rect x="234" y="231" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="184" y="256" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="209" y="256" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="234" y="256" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<text x="379.0" y="198" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">fotogramma 3</text>
+<rect x="344" y="206" width="20" height="20" rx="3" fill="#E27B52" fill-opacity="0.85" stroke="#E27B52" stroke-width="2"/>
+<rect x="369" y="206" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="394" y="206" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="344" y="231" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="369" y="231" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="394" y="231" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="344" y="256" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="369" y="256" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="394" y="256" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<text x="539.0" y="198" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">fotogramma 4</text>
+<rect x="504" y="206" width="20" height="20" rx="3" fill="#C9A961" fill-opacity="0.65" stroke="#C9A961" stroke-width="1.5"/>
+<rect x="529" y="206" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="554" y="206" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="504" y="231" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="529" y="231" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="554" y="231" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="504" y="256" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="529" y="256" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<rect x="554" y="256" width="20" height="20" rx="3" fill="#F4ECDD" fill-opacity="0.06" stroke="#BCB3A1" stroke-width="1"/>
+<text x="24" y="331" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#F4ECDD">B · Attenzione piena</text>
+<text x="59.0" y="343" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">fotogramma 1</text>
+<rect x="24" y="351" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.45" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="49" y="351" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.45" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="74" y="351" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.45" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="24" y="376" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.45" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="49" y="376" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.45" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="74" y="376" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.45" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="24" y="401" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.45" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="49" y="401" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.45" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="74" y="401" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.45" stroke="#5BA39C" stroke-width="1.5"/>
+<text x="219.0" y="343" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">fotogramma 2</text>
+<rect x="184" y="351" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.45" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="209" y="351" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.45" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="234" y="351" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.45" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="184" y="376" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.45" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="209" y="376" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.45" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="206" y="373" width="26" height="26" rx="5" fill="none" stroke="#F4ECDD" stroke-width="2" stroke-dasharray="4 3"/>
+<rect x="234" y="376" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.45" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="184" y="401" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.45" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="209" y="401" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.45" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="234" y="401" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.45" stroke="#5BA39C" stroke-width="1.5"/>
+<text x="379.0" y="343" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">fotogramma 3</text>
+<rect x="344" y="351" width="20" height="20" rx="3" fill="#E27B52" fill-opacity="0.85" stroke="#E27B52" stroke-width="2"/>
+<rect x="369" y="351" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.45" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="394" y="351" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.45" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="344" y="376" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.45" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="369" y="376" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.45" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="394" y="376" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.45" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="344" y="401" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.45" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="369" y="401" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.45" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="394" y="401" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.45" stroke="#5BA39C" stroke-width="1.5"/>
+<text x="539.0" y="343" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">fotogramma 4</text>
+<rect x="504" y="351" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.45" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="529" y="351" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.45" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="554" y="351" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.45" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="504" y="376" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.45" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="529" y="376" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.45" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="554" y="376" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.45" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="504" y="401" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.45" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="529" y="401" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.45" stroke="#5BA39C" stroke-width="1.5"/>
+<rect x="554" y="401" width="20" height="20" rx="3" fill="#5BA39C" fill-opacity="0.45" stroke="#5BA39C" stroke-width="1.5"/>
+<text x="24" y="30" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#F4ECDD">Chi guarda chi: un token (in terracotta) e i token che guarda in uno strato</text>
+<text x="600" y="96" font-family="Inter, sans-serif" font-size="12" fill="#5BA39C">stesso fotogramma:</text>
+<text x="600" y="113" font-family="Inter, sans-serif" font-size="12" fill="#5BA39C">S token (in teal)</text>
+<text x="600" y="226" font-family="Inter, sans-serif" font-size="12" fill="#BCB3A1">stesso posto, altri fotogrammi:</text>
+<text x="600" y="243" font-family="Inter, sans-serif" font-size="12" fill="#BCB3A1">F′ token (in ocra)</text>
+<text x="600" y="371" font-family="Inter, sans-serif" font-size="12" fill="#5BA39C">tutti i F′S token</text>
+<text x="600" y="388" font-family="Inter, sans-serif" font-size="12" fill="#5BA39C">della sequenza</text>
+<line x1="24" y1="305" x2="836" y2="305" stroke="#BCB3A1" stroke-width="1" stroke-opacity="0.3"/>
+<rect x="24" y="470" width="16" height="16" rx="5" fill="none" stroke="#F4ECDD" stroke-width="2" stroke-dasharray="4 3"/>
+<text x="48" y="483" font-family="Inter, sans-serif" font-size="12" fill="#F4ECDD">il token del fotogramma precedente, in un altro posto: in uno strato lo guarda direttamente solo l’attenzione piena</text>
+</svg>

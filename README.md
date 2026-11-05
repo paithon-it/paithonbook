@@ -125,17 +125,19 @@ che spezzano l'indice per aree.
 | 30 | **Modelli a energia** | Il paesaggio invece della probabilità: memoria associativa di Hopfield, macchine di Boltzmann e contrastive divergence, i modi di aggirare la funzione di partizione (Langevin, score matching, NCE), la cornice di LeCun, EBM di oggi (IGEBM, JEM) |
 | 31 | **Auto-supervisione** | Il segnale fabbricato dai dati: la banda informativa e la torta di LeCun, le quattro famiglie (contrastiva, distillazione, riduzione di ridondanza con Barlow Twins e VICReg, mascheramento), collasso e misura, il dibattito sul rinforzo |
 | 32 | **World Model** | Simulatori interni: Ha & Schmidhuber, Dreamer, la via di LeCun (JEPA), l'inferenza attiva, simulatori video e dibattito |
+| 33 | **Generare video** | Il tempo come terza dimensione: l'autoencoder video causale, l'attenzione nello spazio e nel tempo, dati, addestramento e misura, la generazione in tempo reale fino ai mondi interattivi (Diffusion Forcing, Self Forcing), il suono insieme alle immagini |
+| 34 | **Generare musica** | La canzone con la voce e il testo: la sintesi della voce cantata (Vocaloid, DiffSinger, ACE Studio), la canzone a token (YuE), tutta la canzone insieme per diffusione (ACE-Step, DiffRhythm), il pianificatore e il renderer (ACE-Step 1.5), misura e limiti |
 | | *Altri dati, altri domini* | |
-| 33 | **Graph Neural Network** | Dati relazionali e message passing: GCN, GraphSAGE, GAT; node embedding e knowledge graph, applicazioni (molecole, raccomandazione, frodi, traffico) e limiti (oversmoothing) |
-| 34 | **Sistemi di Raccomandazione** | Dal Netflix Prize alla matrix factorization e alla raccomandazione neurale |
-| 35 | **Serie temporali** | Prevedere dal passato: decomposizione, ARIMA e Holt-Winters, validazione temporale e metriche (MASE, pinball loss), forecasting neurale (TCN, DeepAR, N-BEATS, Transformer, foundation model) |
-| 36 | **Physics-Informed Neural Networks** | Le equazioni differenziali dentro la loss; operatori neurali |
+| 35 | **Graph Neural Network** | Dati relazionali e message passing: GCN, GraphSAGE, GAT; node embedding e knowledge graph, applicazioni (molecole, raccomandazione, frodi, traffico) e limiti (oversmoothing) |
+| 36 | **Sistemi di Raccomandazione** | Dal Netflix Prize alla matrix factorization e alla raccomandazione neurale |
+| 37 | **Serie temporali** | Prevedere dal passato: decomposizione, ARIMA e Holt-Winters, validazione temporale e metriche (MASE, pinball loss), forecasting neurale (TCN, DeepAR, N-BEATS, Transformer, foundation model) |
+| 38 | **Physics-Informed Neural Networks** | Le equazioni differenziali dentro la loss; operatori neurali |
 | | *Produzione e responsabilità* | |
-| 37 | **MLOps** | Dal notebook alla produzione: versionamento, pipeline, serving, metriche di servizio, costo per token, gateway e affidabilità, servire un agente (la KV cache durante l'attesa di uno strumento, scheduling per programma, instradamento consapevole della cache), drift, LLMOps, energia |
-| 38 | **Interpretabilità** | Aprire la scatola nera: modelli trasparenti, importanza delle feature, LIME/SHAP/controfattuali, Grad-CAM e integrated gradients, interpretabilità meccanicistica |
-| 39 | **AI responsabile** | Equità e bias, privacy (differential privacy, federated learning) e robustezza agli attacchi avversari, sicurezza degli LLM (prompt injection, jailbreak, red teaming), allineamento (RLHF/DPO) e governance (l'AI Act europeo) |
+| 39 | **MLOps** | Dal notebook alla produzione: versionamento, pipeline, serving, metriche di servizio, costo per token, gateway e affidabilità, servire un agente (la KV cache durante l'attesa di uno strumento, scheduling per programma, instradamento consapevole della cache), drift, LLMOps, energia |
+| 40 | **Interpretabilità** | Aprire la scatola nera: modelli trasparenti, importanza delle feature, LIME/SHAP/controfattuali, Grad-CAM e integrated gradients, interpretabilità meccanicistica |
+| 41 | **AI responsabile** | Equità e bias, privacy (differential privacy, federated learning) e robustezza agli attacchi avversari, sicurezza degli LLM (prompt injection, jailbreak, red teaming), allineamento (RLHF/DPO) e governance (l'AI Act europeo) |
 | | *Chiusura* | |
-| 40 | **Conclusioni** | Bilancio e letture per proseguire |
+| 42 | **Conclusioni** | Bilancio e letture per proseguire |
 
 ## Il codice si esegue
 

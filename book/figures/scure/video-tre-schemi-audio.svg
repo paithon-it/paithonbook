@@ -1,0 +1,96 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La mappa dei colori e' quella del brand,
+  book/_static/brand/figure/palette.json.
+  fonte: ../video-tre-schemi-audio.svg
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 620" role="img" aria-label="Tre schemi per generare audio e video insieme. A, in cascata, con i numeri di MMAudio: il video è un dato; le sue feature visive (CLIP a 8 fotogrammi al secondo e feature di sincronia a 24) entrano in un denoiser che genera solo il latente audio, a 31,25 al secondo, poi il decoder del VAE e il vocoder producono l'audio; la freccia va in un senso solo e il video non cambia. B, due flussi accoppiati: un flusso video e un flusso audio partono ciascuno dal proprio rumore e a ogni blocco si guardano con attenzione incrociata nei due versi, usando la posizione nel tempo e non quella nello spazio. C, un flusso unico: testo, video e audio sono impacchettati in una sola sequenza che attraversa un unico Transformer a un solo flusso, con parametri di attenzione e FFN comuni a tutte le modalità; escono i latenti video e i latenti audio, e le modalità si distinguono soltanto all'ingresso, all'uscita e nella modulazione adaLN.">
+  <defs>
+    <marker id="freccia-schemi" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#BCB3A1"/>
+    </marker>
+    <marker id="freccia-schemi-t" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#E27B52"/>
+    </marker>
+  </defs>
+
+  <!-- ===================== A: IN CASCATA ===================== -->
+  <text x="24" y="32" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#F4ECDD">A &#183; In cascata: il video &#232; dato, l&#8217;audio si genera (numeri di MMAudio)</text>
+
+  <rect x="24" y="56" width="124" height="76" rx="8" fill="#5BA39C" fill-opacity="0.12" stroke="#5BA39C" stroke-width="2"/>
+  <text x="86" y="90" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" fill="#F4ECDD">video</text>
+  <text x="86" y="110" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#BCB3A1">gi&#224; fatto</text>
+  <line x1="148" y1="94" x2="180" y2="94" stroke="#BCB3A1" stroke-width="2" marker-end="url(#freccia-schemi)"/>
+
+  <rect x="184" y="56" width="156" height="76" rx="8" fill="#5BA39C" fill-opacity="0.12" stroke="#5BA39C" stroke-width="2"/>
+  <text x="262" y="84" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" fill="#F4ECDD">feature visive</text>
+  <text x="262" y="104" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#BCB3A1">CLIP a 8 fps</text>
+  <text x="262" y="119" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#BCB3A1">sincronia a 24 fps</text>
+  <line x1="340" y1="94" x2="372" y2="94" stroke="#BCB3A1" stroke-width="2" marker-end="url(#freccia-schemi)"/>
+
+  <rect x="376" y="56" width="180" height="76" rx="8" fill="#E27B52" fill-opacity="0.12" stroke="#E27B52" stroke-width="2.5"/>
+  <text x="466" y="84" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#F4ECDD">denoiser sull&#8217;audio</text>
+  <text x="466" y="104" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#BCB3A1">attenzione congiunta,</text>
+  <text x="466" y="119" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#BCB3A1">sincronia per token</text>
+  <line x1="556" y1="94" x2="588" y2="94" stroke="#E27B52" stroke-width="2" marker-end="url(#freccia-schemi-t)"/>
+
+  <rect x="592" y="56" width="120" height="76" rx="8" fill="#E27B52" fill-opacity="0.12" stroke="#E27B52" stroke-width="2"/>
+  <text x="652" y="84" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" fill="#F4ECDD">latente audio</text>
+  <text x="652" y="104" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#BCB3A1">31,25 al secondo</text>
+  <line x1="712" y1="94" x2="740" y2="94" stroke="#E27B52" stroke-width="2" marker-end="url(#freccia-schemi-t)"/>
+
+  <rect x="744" y="56" width="92" height="76" rx="8" fill="#E27B52" fill-opacity="0.12" stroke="#E27B52" stroke-width="2"/>
+  <text x="790" y="84" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" fill="#F4ECDD">audio</text>
+  <text x="790" y="104" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#BCB3A1">decoder VAE</text>
+  <text x="790" y="119" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#BCB3A1">e vocoder</text>
+
+  <text x="430" y="160" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#BCB3A1">la freccia va in un senso solo: il video non cambia mai</text>
+
+  <line x1="24" y1="184" x2="836" y2="184" stroke="#BCB3A1" stroke-width="1" stroke-opacity="0.3"/>
+
+  <!-- ===================== B: DUE FLUSSI ACCOPPIATI ===================== -->
+  <text x="24" y="216" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#F4ECDD">B &#183; Due flussi accoppiati: i due rumori si tolgono insieme</text>
+
+  <rect x="60" y="240" width="270" height="120" rx="8" fill="#5BA39C" fill-opacity="0.12" stroke="#5BA39C" stroke-width="2.5"/>
+  <text x="195" y="288" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#F4ECDD">flusso video</text>
+  <text x="195" y="310" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#BCB3A1">rumore video &#8594; latenti video</text>
+
+  <rect x="530" y="240" width="270" height="120" rx="8" fill="#E27B52" fill-opacity="0.12" stroke="#E27B52" stroke-width="2.5"/>
+  <text x="665" y="288" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#F4ECDD">flusso audio</text>
+  <text x="665" y="310" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#BCB3A1">rumore audio &#8594; latenti audio</text>
+
+  <line x1="336" y1="266" x2="524" y2="266" stroke="#BCB3A1" stroke-width="2" marker-start="url(#freccia-schemi)" marker-end="url(#freccia-schemi)"/>
+  <line x1="336" y1="300" x2="524" y2="300" stroke="#BCB3A1" stroke-width="2" marker-start="url(#freccia-schemi)" marker-end="url(#freccia-schemi)"/>
+  <line x1="336" y1="334" x2="524" y2="334" stroke="#BCB3A1" stroke-width="2" marker-start="url(#freccia-schemi)" marker-end="url(#freccia-schemi)"/>
+  <text x="430" y="256" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">attenzione incrociata</text>
+  <text x="430" y="352" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">a ogni blocco</text>
+
+  <text x="430" y="388" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#BCB3A1">tutti e due i versi, e fra le due sequenze conta il tempo, non la posizione nello spazio</text>
+
+  <line x1="24" y1="414" x2="836" y2="414" stroke="#BCB3A1" stroke-width="1" stroke-opacity="0.3"/>
+
+  <!-- ===================== C: FLUSSO UNICO ===================== -->
+  <text x="24" y="446" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#F4ECDD">C &#183; Un flusso unico: una sola sequenza impacchettata</text>
+
+  <rect x="24" y="480" width="84" height="64" rx="8" fill="#C9A961" fill-opacity="0.15" stroke="#C9A961" stroke-width="2.5"/>
+  <text x="66" y="518" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" fill="#F4ECDD">testo</text>
+  <rect x="116" y="480" width="84" height="64" rx="8" fill="#5BA39C" fill-opacity="0.12" stroke="#5BA39C" stroke-width="2"/>
+  <text x="158" y="518" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" fill="#F4ECDD">video</text>
+  <rect x="208" y="480" width="84" height="64" rx="8" fill="#E27B52" fill-opacity="0.12" stroke="#E27B52" stroke-width="2"/>
+  <text x="250" y="518" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" fill="#F4ECDD">audio</text>
+  <line x1="296" y1="512" x2="340" y2="512" stroke="#BCB3A1" stroke-width="2" marker-end="url(#freccia-schemi)"/>
+
+  <rect x="344" y="472" width="280" height="80" rx="8" fill="#BCB3A1" fill-opacity="0.10" stroke="#BCB3A1" stroke-width="2.5"/>
+  <text x="484" y="506" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#F4ECDD">Transformer a un solo flusso</text>
+  <text x="484" y="527" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#BCB3A1">attenzione e FFN uguali per tutti</text>
+  <line x1="624" y1="498" x2="664" y2="498" stroke="#BCB3A1" stroke-width="2" marker-end="url(#freccia-schemi)"/>
+  <line x1="624" y1="526" x2="664" y2="526" stroke="#BCB3A1" stroke-width="2" marker-end="url(#freccia-schemi)"/>
+
+  <rect x="668" y="478" width="168" height="40" rx="8" fill="#5BA39C" fill-opacity="0.12" stroke="#5BA39C" stroke-width="2"/>
+  <text x="752" y="503" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#F4ECDD">latenti video</text>
+  <rect x="668" y="522" width="168" height="40" rx="8" fill="#E27B52" fill-opacity="0.12" stroke="#E27B52" stroke-width="2"/>
+  <text x="752" y="547" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#F4ECDD">latenti audio</text>
+
+  <text x="430" y="596" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#BCB3A1">le modalit&#224; si distinguono solo all&#8217;ingresso, all&#8217;uscita e nella modulazione adaLN</text>
+</svg>

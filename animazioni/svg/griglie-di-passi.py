@@ -23,23 +23,34 @@ from paithon_svg import *
 NOME = "griglie-di-passi"
 TITOLO = "la stessa integrazione su due griglie di passi"
 
-PAGINA = (Path(__file__).resolve().parents[2] / "book" / "ModelliDiffusione"
-          / "campionatori-veloci.md")
+SEZIONE = (Path(__file__).resolve().parents[2] / "book" / "ModelliDiffusione"
+           / "campionatori-veloci.md")
+MARCA = "MODI = np.array"
 PASSI_DISEGNATI = 16      # i passi mostrati sulle due righe
 VALUTAZIONI = 32          # quelle a cui la pagina confronta gli scarti
 
 
+def _blocco(marcatore: str) -> str:
+    """Il blocco ```python della pagina che porta la marca."""
+    testo = SEZIONE.read_text(encoding="utf-8")
+    # il recinto si riconosce a inizio riga, come fa Markdown: tre apici in
+    # fondo a una riga di prosa non aprono un blocco
+    trovati = [m.group(1) for m in re.finditer(r"^```python\n(.*?)^```", testo,
+                                               re.S | re.M)
+               if MARCA in m.group(1)]
+    if len(trovati) != 1:
+        raise ValueError(f"{NOME}: {len(trovati)} blocchi ```{marcatore} con "
+                         f"{MARCA!r} in {SEZIONE.name}, ne serve esattamente 1")
+    return trovati[0]
+
+
 def esegui_pagina():
     """Esegue il blocco della pagina e restituisce il suo spazio dei nomi."""
-    testo = PAGINA.read_text(encoding="utf-8")
-    blocchi = re.findall(r"```python\n(.*?)```", testo, re.S)
-    scelti = [b for b in blocchi if "MODI = np.array" in b]
-    if len(scelti) != 1:
-        raise AssertionError(f"blocco dei campionatori trovato {len(scelti)} volte")
+    codice = _blocco("python")
     spazio = {}
     with contextlib.redirect_stdout(io.StringIO()):
-        exec(scelti[0], spazio)
-    return spazio, scelti[0]
+        exec(compile(codice, str(SEZIONE), "exec"), spazio)   # noqa: S102
+    return spazio, codice
 
 
 def stampato(codice, etichetta, colonna):

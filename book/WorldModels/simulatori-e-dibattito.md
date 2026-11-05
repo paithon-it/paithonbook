@@ -537,11 +537,9 @@ Un modello del mondo può nascere dalla sola previsione e restare incoerente in
 punti che nessuno ha messo alla prova, e per accorgersene bisogna interrogarlo
 fuori da ciò su cui è stato addestrato. La mappa dei taxi lo mostra: quali
 strade siano collegate a quali, la rete doveva ricostruirlo a forza di
-previsioni, e l'ha sbagliato. Esistono però dati in cui quei collegamenti
-arrivano già scritti insieme ai dati stessi, come le stazioni di una
-metropolitana con le linee che le uniscono o gli atomi di una molecola con i
-loro legami. Si chiamano grafi, e il {doc}`capitolo sulle reti neurali su grafo
-</GraphNeuralNetwork/overview>` parte da lì: in quei dati la struttura non va
-indovinata, è data, e dove non lo è, come nei {doc}`grafi di fatti
-</GraphNeuralNetwork/knowledge-graph>`, costruirla diventa il lavoro più
-grosso.
+previsioni, e l'ha sbagliato. Per i generatori di video la domanda resta
+aperta, ma come sono fatti si può dire con precisione: come si comprime un
+minuto di immagini, come un'attenzione guarda insieme lo spazio e il tempo, come
+si genera il fotogramma che risponde al tasto appena premuto. Lo racconta il
+{doc}`capitolo sulla generazione di video </GenerazioneVideo/overview>`, che
+da Genie riparte per spiegare il meccanismo del tempo reale.

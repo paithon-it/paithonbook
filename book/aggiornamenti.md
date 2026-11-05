@@ -35,6 +35,16 @@ che contiene sia sezioni nuove sia correzioni prende il numero della modifica
 maggiore, e ogni versione corrisponde a una pubblicazione: sotto ciascuna, il
 livello dice quale cifra è salita.
 
+(v1-18-0)=
+
+## 1.18.0 · 5 novembre 2026
+
+### Minor
+
+- {doc}`Generare video </GenerazioneVideo/overview>`. **Nuovo capitolo: Generare video.** Come un modello comprime il tempo con un autoencoder causale, mette in relazione spazio e tempo con l'attenzione, si addestra e si misura; come genera mentre il video scorre, fino ai mondi interattivi; e come accompagna le immagini con il suono. Con una figura animata.
+- {doc}`Generare musica </GenerazioneMusica/overview>`. **Nuovo capitolo: Generare musica.** Dalla voce sintetica che canta una partitura alla canzone intera: la canzone scritta come una sequenza di token, generata tutta insieme con un modello di diffusione, e prima progettata da un modello di linguaggio e poi resa in audio. Con una figura animata.
+- **Statistiche di visita più discrete.** La provenienza di una visita si registra solo quando si arriva da un altro sito, e senza i parametri dell'indirizzo.
+
 (v1-17-11)=
 
 ## 1.17.11 · 1 novembre 2026

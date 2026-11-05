@@ -139,6 +139,8 @@ sphinx:
       - DeepReinforcementLearning
       - Efficienza
       - GAN
+      - GenerazioneMusica
+      - GenerazioneVideo
       - GraphNeuralNetwork
       - Harness
       - IngegneriaLLM
@@ -174,6 +176,12 @@ sphinx:
     - _static
 
     mathjax_path: https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+    # `ui/safe`: in una formula `\href` accetta solo http, https e mailto, e
+    # `\class`, `\cssId` e `\style` restano entro limiti. Il libro non usa
+    # nessuna di queste macro.
+    mathjax3_config:
+      loader:
+        load: ['ui/safe']
     thebe_config:
       use_thebe_lite: true
       exclude_patterns: ["**/_*.yml", "**/*.md", "**/*.ipynb"]
