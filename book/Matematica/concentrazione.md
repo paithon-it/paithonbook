@@ -387,8 +387,8 @@ insieme di prova da mille esempi e si tiene la migliore.
 
 Su mille domande un modello da ottanta per cento non ne azzecca esattamente
 ottocento, come cento lanci di moneta non danno cinquanta teste spaccate. Ogni
-variante sbaglia domande un po' diverse, e il suo punteggio cade un po' sopra
-o un po' sotto.
+variante sbaglia domande un po’ diverse, e il suo punteggio cade un po’ sopra
+o un po’ sotto.
 
 La migliore, quindi, risulterà sopra l'ottanta per cento, e non di poco.
 Ripetendo al computer l'intero esperimento duecento volte, la vincitrice sta

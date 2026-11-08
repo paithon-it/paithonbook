@@ -843,7 +843,7 @@ $$
 Per $\lambda = 1$ è la varianza degli $e_i$, e la loss non cambia se si
 moltiplica per una costante la profondità predetta, perché il logaritmo della
 costante si somma a ogni $e_i$; con $\lambda = 0{,}5$, il valore usato
-nell'addestramento, resta un po' di informazione sulla scala assoluta.
+nell'addestramento, resta un po’ di informazione sulla scala assoluta.
 
 Per la profondità relativa si aggiunge l'invarianza all'offset: prima di
 confrontare, la predizione $\mathbf{d}$ si allinea al bersaglio $\mathbf{d}^*$

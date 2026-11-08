@@ -224,7 +224,7 @@ Dove va messo, allora, il centro? Se in tre giornate con lo stesso indizio
 (poniamo tre lunedì di sole) i panini venduti sono stati $10$, $10$ e $40$, le
 distanze al quadrato dal centro, sommate sui tre turni, fanno $10^2 + 10^2 +
 20^2 = 600$ con il centro a $20$, la media, e $0 + 0 + 30^2 = 900$ con il
-centro a $10$. Spostandolo un po' attorno alla media va peggio in tutti e due i
+centro a $10$. Spostandolo un po’ attorno alla media va peggio in tutti e due i
 versi (a $15$ e a $25$ si paga $675$), e nessun punto fa meglio della media.
 Nessuna rete toglie la multa che resta anche lì, i $600$ del centro migliore:
 davanti allo stesso indizio una rete deve dare lo stesso centro, e le tre

@@ -485,7 +485,7 @@ tutte le strade.
 Questi due conti servono quando non ci sono frasi etichettate a mano su cui
 contare i due libretti: si parte da libretti tirati a indovinare, si usano
 quelle probabilità al posto dei conteggi, e si ripete, e a ogni giro i libretti
-spiegano le frasi un po' meglio. Per le parti del discorso, però, i libretti
+spiegano le frasi un po’ meglio. Per le parti del discorso, però, i libretti
 imparati così funzionano peggio di quelli contati su frasi etichettate, e
 conviene etichettarne a mano più che si può.
 

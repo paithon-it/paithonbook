@@ -977,6 +977,9 @@ _POSTILLE_SOLO_ELENCO = ("spenta", "ambigua", "forme", "conto")
 # l'asse `postille` nel testo delle postille.
 _RX_LINEETTA_DOPPIA = re.compile(r"(?<![-\w])--(?![-\w])|(?<=\w)--(?=\w)")
 _RX_LINEETTA_SINGOLA = re.compile(r"(?<=\w) - (?=\w)")
+# L'apostrofo dritto dopo una lettera e prima di qualcosa che non e' una
+# lettera o una cifra: per le virgolette di docutils e' una chiusura.
+_RX_APOSTROFO_FINALE = re.compile(r"(?<=[A-Za-zÀ-ÿ])'(?![A-Za-zÀ-ÿ0-9])")
 _RX_MARCATURA = re.compile(r"[`$*_{}\[\]<>|\\]|https?://")
 
 
@@ -1027,8 +1030,9 @@ def main():
         "numref", "cite", "ref", "figure", "toc", "codifica", "esterni",
         "landing", "animazioni",
         "schede", "ricordare", "simboli", "avanti", "palette", "clip", "ambiente",
-        "lineette", "stampa", "verso", "matematica", "doppioni",
-        "contrapposizioni", "enfasi", "matita", "frasi", "postille"}
+        "lineette", "apostrofi", "stampa", "verso", "matematica",
+        "doppioni", "contrapposizioni", "enfasi", "matita", "frasi",
+        "postille"}
 
     testi = sorgenti()
     problemi = defaultdict(list)
@@ -1883,6 +1887,46 @@ def main():
                          messaggio="una lineetta scritta in ASCII: il libro "
                                    "usa parentesi, virgole o due punti")
 
+    if "apostrofi" in attivi:
+        # L'apostrofo dritto in fondo a una parola («un po'», «quell'«in»),
+        # nella prosa. Le virgolette tipografiche di docutils (smartquotes)
+        # lo prendono per la chiusura di una citazione fra apici, e con la
+        # lingua italiana la chiusura secondaria e' ”: in pagina e nel PDF
+        # esce «un po”». Dentro la parola (`l'attenzione`) l'apostrofo si
+        # riconosce, e resta dritto. La forma giusta e' quella tipografica
+        # (`po’`), che le virgolette di docutils lasciano stare. Lo stesso
+        # rilevatore vede gli accenti scritti in ASCII («perche'», «e'»),
+        # che nella prosa sono sbagliati comunque.
+        #
+        # Fuori dal conto: codice e matematica (la maschera comune, dove `s'`
+        # e' la derivata o lo stato successivo), le righe di commento di MyST
+        # (`%`) e i commenti HTML, che in pagina non arrivano.
+        finale = _RX_APOSTROFO_FINALE
+        pagine = [p for p in pagine_del_toc() if p.suffix == ".md"]
+        for pagina in pagine:
+            f = pagina.relative_to(LIBRO).as_posix()
+            t = pagina.read_text(encoding="utf-8")
+            maschera = list(_maschera_prosa(t))
+            for c in re.finditer(r"<!--.*?-->", t, re.S):
+                maschera[c.start():c.end()] = " " * (c.end() - c.start())
+            righe_vere = t.split("\n")
+            for n, riga in enumerate("".join(maschera).split("\n"), 1):
+                if righe_vere[n - 1].lstrip().startswith("%"):
+                    continue
+                for m in finale.finditer(riga):
+                    problemi["apostrofi dritti in fondo a una parola"].append(
+                        f"{f}:{n}  {righe_vere[n - 1].strip()[:88]}")
+                    fonte = (" (la pagina si genera da "
+                             "book/_dati/aggiornamenti.yml)"
+                             if f.endswith("aggiornamenti.md") else "")
+                    voce("apostrofi", "apostrofi dritti in fondo a una parola",
+                         f, riga=n, colonna=m.start() + 1,
+                         fine_colonna=m.end() + 1, identita="apostrofo",
+                         messaggio="apostrofo dritto in fondo a una parola: "
+                                   "in pagina esce come ”; si scrive ’"
+                                   + fonte)
+        print(f"   (apostrofi: {len(pagine)} pagine lette dal toc)")
+
     if "contrapposizioni" in attivi:
         # «non e' X, e' Y». `CONTRIBUTING.md` ne ammette **due per capitolo**,
         # e solo dove la contrapposizione *e'* l'argomento. Fuori di li' e' la
@@ -2562,6 +2606,7 @@ def main():
               "capitoli senza figure animate (dichiarali in "
               "animazioni/senza-clip.toml, con la ragione)",
               "lineette scritte in ASCII (-- oppure - )",
+              "apostrofi dritti in fondo a una parola",
               "«non e' X, e' Y» oltre il tetto di due",
               "«non e' X, e' Y» oltre il tetto (da leggere)",
               "enfasi oltre il tetto di otto per mille",

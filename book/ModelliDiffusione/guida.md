@@ -301,7 +301,7 @@ migliori. Lo scambio è deliberato.
 La riga di Bayes non chiede che la seconda bussola venga da un classificatore.
 Chiede solo che ci sia un modo di dire quanto un'immagine è vicina a quello
 che si vuole, e che quel modo si possa derivare, cioè che sappia rispondere
-alla domanda «in che direzione ritoccare i pixel per migliorare un po'?».
+alla domanda «in che direzione ritoccare i pixel per migliorare un po’?».
 
 Quel modo può essere qualsiasi cosa. Ad esempio, la somiglianza a una
 fotografia di riferimento, la fedeltà a un disegno di contorni, il rispetto di
@@ -634,4 +634,4 @@ Tutto questo presuppone che lo stato su cui si lavora sia fatto di numeri che
 si possono sporcare un poco alla volta. Un pixel è un numero, e aggiungergli un
 centesimo ha senso. Una parola no: fra «gatto» e «cane» non c'è niente in
 mezzo, e sommare del rumore gaussiano a un simbolo non produce un simbolo un
-po' più rumoroso, produce niente.
+po’ più rumoroso, produce niente.

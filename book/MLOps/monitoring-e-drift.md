@@ -519,7 +519,7 @@ si è spostato di più (la distanza fra i centri delle due nuvole cresce come la
 radice del numero di colonne: $0{,}15\sqrt{40} \approx 0{,}95$ deviazioni
 standard invece di $0{,}15$), e non è la deriva di prima divisa fra più
 colonne. È proprio il caso che interessa, perché una deriva vera si presenta
-così, un po' dappertutto; il merito del detective sta nel raccoglierla mentre
+così, un po’ dappertutto; il merito del detective sta nel raccoglierla mentre
 il controllo colonna per colonna, davanti allo stesso identico movimento, non
 vede niente.
 
@@ -599,7 +599,7 @@ lontane. Un'altra misura guarda tutta la striscia fra le due curve e ne prende
 l'area: è il movimento terra delle GAN, quanta strada dovrebbero fare in media i
 dati di oggi per tornare dove stavano ieri, e si misura nell'unità della
 colonna, in euro se la colonna è un importo. Le due misure vedono cose diverse.
-Se tutti i clienti spendono un po' di più, le curve si scostano un poco lungo
+Se tutti i clienti spendono un po’ di più, le curve si scostano un poco lungo
 tutto il percorso, e il KS lo vede. Se due clienti su cento cominciano a
 spendere cifre lontanissime da quelle di prima, le curve restano quasi
 sovrapposte, perché a muoversi sono pochi, e il KS quasi non se ne accorge; la
@@ -799,7 +799,7 @@ caso peggiore.
 Il registro si fida di tre cose che gli dice il gestore: il normale, letto su un
 periodo tranquillo; quanto oscillano di solito le sere; e che ogni sera faccia
 storia a sé. Sull'oscillazione basta poco per sbagliare di molto: se le sere
-oscillano un po' più di quanto il gestore crede, è come avere la soglia più
+oscillano un po’ più di quanto il gestore crede, è come avere la soglia più
 bassa, e i falsi allarmi crescono in fretta. In una settimana di festa le sere
 storte arrivano tutte insieme, per una ragione che passerà: gli errori sono
 saliti davvero, il registro somma e suona, perché non sa distinguere una fila
@@ -1090,7 +1090,7 @@ cinquanta, a tutti; se storcono il naso, lo ritiri e nessun danno è fatto. È i
 *canary*, dal canarino che i minatori si portavano sottoterra: se il gas c'era,
 lo sentiva lui per primo. Che cosa voglia dire «se funziona» lo decidi prima di
 servirlo, non guardando le facce. Due tavoli su cento ti dicono se il piatto
-è immangiabile, non se è un po' meno buono del vecchio: per accorgerti di
+è immangiabile, non se è un po’ meno buono del vecchio: per accorgerti di
 quello servirebbero moltissime serate.
 
 Il terzo: due metà della sala, stesso momento, piatto vecchio a una metà e
@@ -1257,7 +1257,7 @@ finché il modello serve.
   produrre non lo corregge: ne amplifica gli errori, a ogni giro. Serve una
   persona nell'anello e dati freschi.
 - Un modello nuovo non si accende di colpo per tutti: prima in ombra, poi a
-  pochi tavoli (che vedono un piatto immangiabile, non uno un po' meno buono),
+  pochi tavoli (che vedono un piatto immangiabile, non uno un po’ meno buono),
   poi metà sala contro metà sala, tirata a sorte.
 ```
 `````

@@ -46,11 +46,16 @@ tre mesi, leggerne tre diversi.
 
 import datetime
 import pathlib
+import re
 
 import yaml
+from sphinx.errors import SphinxError
 from sphinx.util import logging
 
 logger = logging.getLogger(__name__)
+
+# Il numero di versione: tre gruppi di cifre ASCII, niente altro.
+NUMERO = re.compile(r"[0-9]+\.[0-9]+\.[0-9]+")
 
 MESI = ("gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio",
         "agosto", "settembre", "ottobre", "novembre", "dicembre")
@@ -96,23 +101,43 @@ def conta_capitoli(percorso_toc: pathlib.Path) -> int:
     return sum(1 for c in voci if "/" in str(c.get("file", "")))
 
 
+class RegistroNonValido(SphinxError):
+    """La voce in cima al registro non ha un numero o una data validi."""
+
+    category = "Registro delle versioni non valido"
+
+
 def versione_corrente(percorso: pathlib.Path) -> dict[str, str]:
     """La voce in cima al registro: numero e data, già in italiano.
 
-    La data la legge PyYAML come `datetime.date`; se qualcuno la scrive fra
-    virgolette arriva come stringa, e allora si stampa com'è invece di
-    inventarsi un mese.
+    Il numero finisce senza escape in posti diversi (una sostituzione MyST,
+    che si rilegge come Markdown, il contesto dei template, il frontespizio
+    LaTeX), quindi qui si accetta solo `major.minor.patch` in cifre e una
+    data che PyYAML legge come `datetime.date`. Qualunque altra cosa ferma la
+    build con `RegistroNonValido`: un numero sbagliato non si stampa e non si
+    sostituisce con un altro.
     """
     dati = yaml.safe_load(percorso.read_text(encoding="utf-8")) or {}
     versioni = dati.get("versioni") or []
     if not versioni:
         return {}
     prima = versioni[0]
+    if not isinstance(prima, dict):
+        raise RegistroNonValido(
+            f"{percorso}: la voce in cima non è una mappa ({prima!r})")
+    numero = prima.get("versione")
+    if not (isinstance(numero, str) and NUMERO.fullmatch(numero)):
+        raise RegistroNonValido(
+            f"{percorso}: la voce in cima ha versione {numero!r}, "
+            "e deve essere major.minor.patch in cifre (1.18.0)")
     giorno = prima.get("data")
-    esteso = (f"{giorno.day} {MESI[giorno.month - 1]} {giorno.year}"
-              if isinstance(giorno, datetime.date) else str(giorno or ""))
-    return {"versione": str(prima.get("versione", "")),
-            "data_versione": esteso}
+    if not isinstance(giorno, datetime.date):
+        raise RegistroNonValido(
+            f"{percorso}: la voce in cima ha data {giorno!r}, "
+            "e deve essere una data senza virgolette (2026-11-05)")
+    return {"versione": numero,
+            "data_versione":
+                f"{giorno.day} {MESI[giorno.month - 1]} {giorno.year}"}
 
 
 def aggiungi_sostituzioni(app, config):
@@ -136,9 +161,13 @@ def aggiungi_sostituzioni(app, config):
 
     # La versione è facoltativa per costruzione: se il registro manca o è
     # illeggibile il libro si costruisce lo stesso, semplicemente senza numero.
+    # Un registro leggibile con la voce in cima sbagliata invece ferma la
+    # build: `RegistroNonValido` passa oltre.
     percorso_registro = pathlib.Path(app.srcdir) / "_dati" / "aggiornamenti.yml"
     try:
         marca = versione_corrente(percorso_registro)
+    except RegistroNonValido:
+        raise
     except Exception as errore:      # noqa: BLE001
         logger.warning("pt_conteggi: registro delle versioni illeggibile (%s)",
                        errore)

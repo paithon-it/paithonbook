@@ -237,7 +237,7 @@ del sistema, cioè quanto in fretta lo stato dimentica]{.pt-matita}.
 Quanto conti la scelta della regola, invece, lo dicono le ablazioni. Poco nel
 caso LTI: in S4D lo ZOH e la bilineare non fanno differenza, mentre
 l'inizializzazione di $\mathbf{A}$ pesa molto di più {cite}`gu2022s4d`. Nel
-caso selettivo conta un po' di più, ma resta una correzione piccola: lo misura
+caso selettivo conta un po’ di più, ma resta una correzione piccola: lo misura
 il paper di Mamba-3, con i numeri riportati nella {doc}`sezione sulla dualità
 </StateSpaceModel/dualita-e-mamba-2-3>`.
 

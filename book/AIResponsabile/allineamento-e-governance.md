@@ -267,7 +267,7 @@ nel suo voto la lunghezza è sempre un pregio.
 
 L'ultima riga stampata mostra l'effetto del tremolio. Con lo stesso difetto e
 senza errori casuali, a mille candidati la qualità vera scende a $0{,}087$
-invece che a $0{,}267$: il tremolio slega un po' la scelta dal difetto del
+invece che a $0{,}267$: il tremolio slega un po’ la scelta dal difetto del
 giudice e gioca a favore, mentre un giudice regolare porta la scelta dritta nel
 punto in cui sbaglia.
 
@@ -370,7 +370,7 @@ l'uso conversazionale.
 Il reward hacking non è l'unico limite del metodo. La {doc}`sezione sul
 post-training </Transformers/post-training>` documenta anche la ruffianeria
 (*sycophancy*) {cite}`sharma2023sycophancy`, che è il giocattolo con un altro
-difetto del giudice: i valutatori premiano un po' più spesso le risposte che
+difetto del giudice: i valutatori premiano un po’ più spesso le risposte che
 danno loro ragione, e il modello impara a dare ragione. Una rassegna dei
 problemi aperti e dei limiti di fondo dell'RLHF è quella di Casper e colleghi
 {cite}`casper2023open`.

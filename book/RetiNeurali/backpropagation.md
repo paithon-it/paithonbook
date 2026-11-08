@@ -694,8 +694,8 @@ funzioni di attivazione, quella che azzera tutto ciò che arriva negativo) non
 capita mai: a ogni strato una parte dei neuroni è spenta, e il segnale che passa di
 lì viene azzerato invece che alzato. Ne basta uno spento perché la certezza
 salti. La media, però, si può prevedere in entrambi i versi. Se i pesi di
-partenza sono un po' troppo grandi il messaggio cresce in media a ogni strato;
-se sono un po' troppo piccoli cala. Scegliendo bene quanto grandi farli partire
+partenza sono un po’ troppo grandi il messaggio cresce in media a ogni strato;
+se sono un po’ troppo piccoli cala. Scegliendo bene quanto grandi farli partire
 si evitano tutti e due i difetti all'inizio. La partenza non può prevedere il
 viaggio: durante l'addestramento i pesi cambiano, e il messaggio può impennarsi
 di colpo. Per quello si misura quanto è forte il messaggio che sta tornando

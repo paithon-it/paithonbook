@@ -209,7 +209,7 @@ nessuno le ha detto che due posti confinanti abbiano qualcosa a che fare l'uno
 con l'altro: la tessera accanto a quella dell'orecchio e la tessera della coda,
 per il Transformer, sono lontane uguale. Che i puntini vicini vadano insieme
 deve scoprirlo guardando fotografie, e gliene servono a milioni. Con una
-scatola di foto e nient'altro il risultato è un po' peggiore di quello del
+scatola di foto e nient'altro il risultato è un po’ peggiore di quello del
 metodo che guarda un pezzetto di foto alla volta, che quella regola ce l'ha
 scritta dentro e non deve impararla; con qualche accorgimento in più nello
 studio, la distanza si colma.
@@ -449,7 +449,7 @@ i modelli precedenti <confronti>`:
   rispondere a parole. La comodità si paga in esempi: che due tessere vicine
   siano imparentate va imparato da milioni di fotografie, e quando le foto sono
   poche, senza accorgimenti nello studio, il metodo che ne guarda un pezzetto
-  alla volta resta un po' avanti.
+  alla volta resta un po’ avanti.
 - Lo stesso meccanismo che pesa le parole di una frase pesa le coppie di
   anelli di una proteina, e AlphaFold prevede come la catena si ripiega
   leggendo la stessa proteina in migliaia di specie: le posizioni che cambiano

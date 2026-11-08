@@ -289,7 +289,7 @@ Resta una ricevuta corta, e le frasi con più di una condizione dicono le cose
 che nessun termine per colonna saprebbe dire, come «l'età conta solo se il
 reddito è basso».
 
-Poiché ogni punto ha un costo, il Lasso ne dà un po' meno del giusto anche
+Poiché ogni punto ha un costo, il Lasso ne dà un po’ meno del giusto anche
 alle frasi che servono. Due frasi quasi uguali si dividono i punti che
 spetterebbero a una sola. Se la regola vera non scatta d'un colpo ma cresce
 piano, per imitarla servono tante frasi, una per ogni gradino, e la ricevuta
@@ -464,7 +464,7 @@ primi tre portano più di nove decimi del peso. In testa c'è la regola nascosta
 parte di quelli che mancano va a una regola quasi identica, con la soglia a
 $0{,}59$ invece che a $0{,}60$, che l'arrotondamento non ha fuso con la prima e
 che si prende $0{,}11$; il resto va ad altre regole quasi uguali, più piccole,
-e al Lasso stesso, che fa pagare ogni punto e quindi ne dà un po' meno del
+e al Lasso stesso, che fa pagare ogni punto e quindi ne dà un po’ meno del
 giusto. Sull'anzianità si vede l'altro limite. Il suo termine lineare, cioè i
 punti per ogni unità di anzianità, vale $1{,}64$ contro i $2$ veri, e qui
 l'avarizia del Lasso c'entra poco: dieci piccole regole a soglia sulla sola

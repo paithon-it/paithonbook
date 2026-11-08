@@ -116,7 +116,7 @@ prompt e il modello risponde citando le fonti.
 Le tecniche che seguono intervengono quasi tutte nella seconda fase, che si
 ripete a ogni domanda e determina l'attesa dell'utente (la latenza). Una
 riguarda invece la prima e ha un costo che si sostiene una volta sola: tagliare
-bene i passaggi e dare a ciascuno un po' del contesto del documento da cui
+bene i passaggi e dare a ciascuno un po’ del contesto del documento da cui
 viene.
 
 Il *contextual retrieval* di Anthropic antepone a ogni passaggio, prima di

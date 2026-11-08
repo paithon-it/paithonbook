@@ -41,7 +41,7 @@ stesso oggetto.
 `````{tab} Elementare
 
 Finora di ricette per rovinare un'immagine ne abbiamo vista una, quella di DDPM,
-che a ogni passo restringe un po' l'immagine e ci aggiunge un pizzico di rumore.
+che a ogni passo restringe un po’ l'immagine e ci aggiunge un pizzico di rumore.
 Ce n'è un'altra, nata nello stesso periodo, che l'immagine non la tocca e ci
 versa sopra rumore sempre più forte. Sembrano diverse; scritte una sotto
 l'altra, però, hanno la stessa forma: il nuovo valore è il vecchio, più uno
@@ -50,8 +50,8 @@ valgono i due pezzi.
 
 Applichiamo ora quella ricetta un milione di volte invece di mille, con passi
 mille volte più corti. Al limite si ottiene una descrizione continua: invece di
-dire «a ogni passo fai così», si dice «in ogni istante il valore deriva un po'
-in questa direzione e trema un po' con questa intensità». Il primo pezzo si
+dire «a ogni passo fai così», si dice «in ogni istante il valore deriva un po’
+in questa direzione e trema un po’ con questa intensità». Il primo pezzo si
 chiama **deriva** e dice dove il valore è trascinato; il secondo si chiama
 **diffusione** e dice quanto trema. Una regola così, che dice come una cosa
 cambia istante per istante, in matematica si chiama equazione differenziale: la
@@ -319,7 +319,7 @@ comanda solo la spinta.
 
 Il procedimento è parente di uno classico per estrarre punti da una
 distribuzione complicata, la dinamica di Langevin: si cammina verso le zone
-dense tremando un po', e alla lunga i punti visitati si distribuiscono come si
+dense tremando un po’, e alla lunga i punti visitati si distribuiscono come si
 voleva.
 
 Qui però la mappa delle zone dense non resta ferma. All'inizio del ritorno è
@@ -410,7 +410,7 @@ serva davvero.
 
 Una folla è sparpagliata in una piazza, e ci sono due modi di riportarla a casa.
 Il primo dà a ciascuno una spinta verso casa e lo lascia anche barcollare un
-po'; il secondo assegna a ogni punto della piazza una direzione precisa e chiede
+po’; il secondo assegna a ogni punto della piazza una direzione precisa e chiede
 a tutti di seguirla senza sbandare. I percorsi individuali sono diversissimi, e
 tuttavia si può fare in modo che in ogni istante la folla sia sparpagliata allo
 stesso modo: stessa densità in ogni punto della piazza, a ogni ora.
@@ -445,15 +445,15 @@ imparato, cioè sempre.
 
 Sulla strada tracciata, infatti, un errore commesso a metà percorso resta lì e
 si porta fino in fondo; su quella casuale il barcollamento rimescola a ogni
-passo, e ogni rimescolamento riporta la folla un po' più vicino alla densità che
+passo, e ogni rimescolamento riporta la folla un po’ più vicino alla densità che
 dovrebbe avere in quel momento, cancellando in parte gli errori vecchi. Per
 questo, con una spinta imperfetta, la strada casuale arriva spesso più vicino
-alla folla vera, e chi vuole il massimo della qualità usa un misto: un po' di
+alla folla vera, e chi vuole il massimo della qualità usa un misto: un po’ di
 caso in un tratto del percorso, nessuno alla fine.
 
 Con la spinta esatta, invece, le due strade portano alla stessa folla, e il
 barcollamento obbliga soltanto a fare più passi: con passi non abbastanza
-piccoli la casuale arriva un po' più sparpagliata attorno alla meta, perché
+piccoli la casuale arriva un po’ più sparpagliata attorno alla meta, perché
 trema fino all'ultimo. La prova con i due soli valori $\pm 1{,}5$ fa vedere
 questo.
 

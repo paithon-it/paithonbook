@@ -102,8 +102,8 @@ il margine che la {doc}`sezione sulla concentrazione
 La regola, però, si sceglie dopo aver guardato i biglietti, prendendo quella
 che ne sbaglia di meno. Così, fra tante regole, quella che va meglio sui mille
 è anche quella che con quei mille ha avuto più fortuna. È il vincitore di un
-concorso in cui conta anche la sorte: il suo punteggio dice un po' di bravura e
-un po' di fortuna, ma non dice quanta dell'una e quanta dell'altra.
+concorso in cui conta anche la sorte: il suo punteggio dice un po’ di bravura e
+un po’ di fortuna, ma non dice quanta dell'una e quanta dell'altra.
 
 Lo mostra la storia delle mille persone che lanciano una moneta dieci volte,
 incontrata con lo {doc}`spazio delle ipotesi

@@ -551,7 +551,7 @@ vera, quindi, [bisogna sapere che il sistema è senza contraddizioni]{.pt-matita
 Il secondo risultato di Gödel, però, dice proprio che un sistema abbastanza
 ricco non riesce a dimostrarlo di sé stesso. Se la mente fosse un sistema di
 regole complicato come un cervello, nemmeno lei saprebbe dimostrare di non
-contraddirsi mai, e chi conosce un po' le persone ha buone ragioni per
+contraddirsi mai, e chi conosce un po’ le persone ha buone ragioni per
 dubitarne.
 
 Turing aveva già risposto nel 1950, prima di Lucas. Che ogni singola macchina

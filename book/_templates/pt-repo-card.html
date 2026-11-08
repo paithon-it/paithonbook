@@ -9,12 +9,16 @@
 
   L'URL arriva da `html_theme_options.repository_url` in `_config.yml`: se
   quel valore manca, il template non produce nulla.
+
+  L'ambiente Jinja di Sphinx non fa l'escape da sé: ogni valore che viene da
+  un file di dati (la configurazione, il registro delle versioni) passa da
+  `|e`, anche quando chi lo produce lo ha già validato.
 -#}
 {%- if theme_repository_url %}
 {%- set pt_repo_slug = theme_repository_url.replace("https://github.com/", "").replace("http://github.com/", "").rstrip("/") %}
-<div class="pt-repo-card" data-pt-repo="{{ pt_repo_slug }}">
+<div class="pt-repo-card" data-pt-repo="{{ pt_repo_slug|e }}">
   <a class="pt-repo-card__main"
-     href="{{ theme_repository_url }}"
+     href="{{ theme_repository_url|e }}"
      target="_blank" rel="noopener noreferrer"
      title="Il sorgente del libro su GitHub">
     <svg class="pt-repo-card__mark" viewBox="0 0 16 16" width="20" height="20" aria-hidden="true" focusable="false">
@@ -22,7 +26,7 @@
     </svg>
     <span class="pt-repo-card__text">
       <span class="pt-repo-card__label">Il libro è aperto</span>
-      <span class="pt-repo-card__slug">{{ pt_repo_slug }}</span>
+      <span class="pt-repo-card__slug">{{ pt_repo_slug|e }}</span>
     </span>
   </a>
   <div class="pt-repo-card__stats" data-pt-stats hidden>
@@ -48,11 +52,11 @@
   {%- if pt_versione %}
   <a class="pt-repo-card__versione" href="{{ pathto('aggiornamenti') }}"
      title="Che cosa è cambiato, e quando">
-    versione {{ pt_versione }} · {{ pt_data_versione }}
+    versione {{ pt_versione|e }} · {{ pt_data_versione|e }}
   </a>
   {%- endif %}
   <a class="pt-repo-card__issues"
-     href="{{ theme_repository_url }}/issues/new"
+     href="{{ theme_repository_url|e }}/issues/new"
      target="_blank" rel="noopener noreferrer">
     Hai visto un errore? Segnalalo
   </a>

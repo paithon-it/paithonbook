@@ -97,7 +97,7 @@ pratica vera di Maria contano di più nella somma, quelli lontani quasi
 niente]{.pt-matita}. Una somma così, in cui ogni voce entra con un'importanza
 sua, si dice pesata. Quando i dati stanno in una tabella, però, i fantasmi non
 nascono vicini a Maria: LIME li fabbrica pescando per ogni casella un valore a
-caso fra quelli degli altri clienti, e quindi escono sparsi un po' dappertutto.
+caso fra quelli degli altri clienti, e quindi escono sparsi un po’ dappertutto.
 
 A renderli «vicini» è solo il peso, che fa contare poco quelli lontani. Più
 caselle ha la pratica, più è raro che un fantasma pescato così somigli a Maria

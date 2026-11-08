@@ -294,7 +294,7 @@ lunga.
 Ne segue una regola pratica. [Quando la soluzione migliore è stata trovata,
 l'errore che resta è perpendicolare a tutto ciò che si poteva
 fare]{.pt-matita}. Se non lo fosse, l'errore avrebbe una componente lungo una
-direzione disponibile, e spostandosi un po' in quella direzione si farebbe
+direzione disponibile, e spostandosi un po’ in quella direzione si farebbe
 meglio, segno che non si era ancora al minimo. Errore perpendicolare e minimo
 raggiunto sono quindi la stessa condizione.
 
@@ -454,7 +454,7 @@ C'è un numero che misura questo equilibrismo, il
 equazioni normali, però, non lavorano sulla tabella dei dati ma su un'altra,
 ottenuta moltiplicandola per sé stessa con righe e colonne scambiate (la sua
 trasposta), e [in quel passaggio il numero viene elevato al quadrato, per cui
-un problema un po' delicato diventa molto delicato, e uno molto delicato
+un problema un po’ delicato diventa molto delicato, e uno molto delicato
 diventa impossibile]{.pt-matita}. Sull'esempio degli appartamenti si passa da circa
 trecentocinquanta a più di centoventimila.
 
@@ -932,7 +932,7 @@ restituisce quella.
 
 Una seconda strada mostra che la regola non è arbitraria. Si chiede al calcolo
 di non esagerare con le dosi, mettendo una penale sui litri usati, e poi si
-allenta la penale un po' alla volta: la ricetta si avvicina a quella spalmata e,
+allenta la penale un po’ alla volta: la ricetta si avvicina a quella spalmata e,
 alleggerendo ancora, la raggiunge.
 
 Il vantaggio della regola si vede quando i due barattoli sono quasi uguali e non

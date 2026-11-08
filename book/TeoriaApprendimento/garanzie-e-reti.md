@@ -211,7 +211,7 @@ distacco. Per staccare allo stesso modo le risposte a caso i pesi devono
 crescere molto di più, e la misura viene più grande.
 
 Un'altra pista guarda quanto la preparazione è salda. Si prende lo studente e
-lo si confonde un po', cambiandogli qualche ricordo a caso. Se lui continua ad
+lo si confonde un po’, cambiandogli qualche ricordo a caso. Se lui continua ad
 andare bene, la sua bravura non è un colpo di fortuna: vanno bene anche tutte
 le copie di lui appena diverse.
 

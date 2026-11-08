@@ -341,7 +341,7 @@ foglio, e di solito lo rispetta perché a ogni passata ce l'ha sotto gli occhi.
 Il guaio sta in ciò che il foglio non dice. Cinque segni al secondo sono uno
 ogni due decimi di secondo, e il foglio fissa dove cade il ritornello ma non su
 quale battito cade la terza sillaba del primo verso. Quello lo decide
-l'arrangiatrice da sola, e se sbaglia la parola esce un po' prima o un po'
+l'arrangiatrice da sola, e se sbaglia la parola esce un po’ prima o un po’
 dopo del suo posto.
 
 `````
@@ -540,7 +540,7 @@ compare nei numeri che riporta.
 
 L'arrangiatrice di prima, la maestra, faceva cinquanta passate di pulizia, e a
 ogni passata ascoltava due volte: una con la richiesta davanti e una senza. Poi
-spingeva il suono un po' oltre il primo ascolto, nella direzione in cui la
+spingeva il suono un po’ oltre il primo ascolto, nella direzione in cui la
 richiesta lo cambiava. Cento ascolti per canzone. La sua allieva impara a fare
 otto passate con un solo ascolto ciascuna: la spinta in più non la ricalcola,
 perché l'ha assorbita nel gesto.

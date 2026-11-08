@@ -12,14 +12,16 @@
   GPU è gratis — che è la ragione per cui il libro passa da Colab invece di
   provare a eseguire nel browser: PyTorch non esiste per WebAssembly.
 -#}
-{#- Il manifesto elenca CAPITOLI: la pagina eredita il notebook del suo. -#}
+{#- Il manifesto elenca CAPITOLI: la pagina eredita il notebook del suo.
+    Nomi, ramo e indirizzo vengono dalla configurazione e dai percorsi, e
+    l'ambiente Jinja di Sphinx non fa l'escape da sé: passano da `|e`. -#}
 {%- set capitolo = pagename.split('/')[0] %}
 {%- set pagina_nb = capitolo if pt_notebooks is defined and capitolo in pt_notebooks else none %}
 {%- if pagina_nb %}
 {%- set slug = theme_repository_url | default('', true) | replace('https://github.com/', '') %}
 <div class="header-article-item pt-notebook">
   <a class="pt-notebook__link"
-     href="https://colab.research.google.com/github/{{ slug }}/blob/{{ theme_repository_branch | default('main', true) }}/notebooks/{{ pagina_nb }}.ipynb"
+     href="https://colab.research.google.com/github/{{ slug|e }}/blob/{{ theme_repository_branch | default('main', true) | e }}/notebooks/{{ pagina_nb|e }}.ipynb"
      target="_blank" rel="noopener noreferrer"
      title="Apri su Google Colab il notebook con il codice di questo capitolo">
     <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" focusable="false">

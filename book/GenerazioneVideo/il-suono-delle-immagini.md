@@ -676,7 +676,7 @@ differenze. E se la spinta del film è zero, resta quella di sempre, con il solo
 copione.
 
 Il pericolo è esagerare. Ogni spinta va già oltre ciò che le tre prove, da sole,
-autorizzano. Un po' di spinta dà una scena più fedele, troppa una caricatura,
+autorizzano. Un po’ di spinta dà una scena più fedele, troppa una caricatura,
 che nessun attore potrebbe recitare.
 
 `````

@@ -35,6 +35,15 @@ che contiene sia sezioni nuove sia correzioni prende il numero della modifica
 maggiore, e ogni versione corrisponde a una pubblicazione: sotto ciascuna, il
 livello dice quale cifra è salita.
 
+(v1-18-1)=
+
+## 1.18.1 · 8 novembre 2026
+
+### Patch
+
+- **I PDF si aprono nel browser.** Il libro intero e ogni capitolo si leggono e si scaricano direttamente da paithon.it.
+- **L’apostrofo di «un po’».** In tutto il libro esce come apostrofo, e non più come virgoletta di chiusura.
+
 (v1-18-0)=
 
 ## 1.18.0 · 5 novembre 2026
@@ -1000,7 +1009,7 @@ livello dice quale cifra è salita.
 ### Minor
 
 - {doc}`Prefazione </prefazione>`. **Prefazione.** Nuova pagina su perché il libro esiste e perché il mancato progetto a stampa del 2019 sia stato un vantaggio: l'indice non nominava i Transformer. Non è un capitolo.
-- {doc}`Conclusione </Introduzione/conclusione>` (Introduzione). **Genealogia dell'«elettricità» di Ng.** Prima della citazione di Andrew Ng sull'AI come «nuova elettricità» è inserita la genealogia a cui allude: le tecnologie che cambiano il modo di risolvere tutti gli altri problemi.
+- {doc}`Conclusione </Introduzione/conclusione>` (Introduzione). **Genealogia dell’«elettricità» di Ng.** Prima della citazione di Andrew Ng sull'AI come «nuova elettricità» è inserita la genealogia a cui allude: le tecnologie che cambiano il modo di risolvere tutti gli altri problemi.
 - **Numerazione dei capitoli nell'indice.** Il numero è assegnato ai soli capitoli (la pagina degli aggiornamenti compariva come trentaquattresima) e coincide con quello delle schede in prima pagina.
 - {doc}`Conclusioni </Conclusioni/overview>`. **Citazione di Weizenbaum nelle Conclusioni.** Il richiamo cita la frase con cui si apre l'Introduzione, «si dice che spiegare significhi dissolvere», al posto di una priva di riscontro nelle fonti primarie.
 - **Comando di apertura delle sezioni nell'indice.** Il controllo che apre le sezioni di un capitolo senza entrarvi, prima un'icona di dodici pixel, è ora un comando alto quanto la riga, in teal, evidenziato al passaggio.

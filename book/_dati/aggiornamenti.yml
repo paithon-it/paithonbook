@@ -51,6 +51,20 @@
 
 versioni:
 
+- versione: "1.18.1"
+  data: 2026-11-08
+  voci:
+
+  - tipo: corretto
+    testo: >
+      **I PDF si aprono nel browser.** Il libro intero e ogni capitolo si
+      leggono e si scaricano direttamente da paithon.it.
+
+  - tipo: corretto
+    testo: >
+      **L’apostrofo di «un po’».** In tutto il libro esce come apostrofo, e
+      non più come virgoletta di chiusura.
+
 - versione: "1.18.0"
   data: 2026-11-05
   voci:
@@ -2994,7 +3008,7 @@ versioni:
   - tipo: ampliato
     pagina: Introduzione/conclusione.md
     testo: >
-      **Genealogia dell'«elettricità» di Ng.** Prima della citazione di Andrew
+      **Genealogia dell’«elettricità» di Ng.** Prima della citazione di Andrew
       Ng sull'AI come «nuova elettricità» è inserita la genealogia a cui allude:
       le tecnologie che cambiano il modo di risolvere tutti gli altri problemi.
 

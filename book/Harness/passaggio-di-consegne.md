@@ -288,7 +288,7 @@ C'è poi un conto che vale per qualunque modello, ed è quello dei token. Un
 modello linguistico non ricorda niente fra una chiamata e l'altra: a ogni
 iterazione del ciclo riceve di nuovo tutto il contesto, istruzioni e
 cronologia, e lo rilegge da capo. Se la cronologia cresce di una quantità fissa
-a ogni iterazione, ogni iterazione costa un po' più della precedente, e il
+a ogni iterazione, ogni iterazione costa un po’ più della precedente, e il
 costo di una sessione cresce con il quadrato della sua lunghezza: una sessione
 lunga il doppio legge quasi quattro volte tanto.
 
@@ -422,7 +422,7 @@ ogni riassunto, e i denti di sega delle sessioni che ripartono dal registro.
 Il tavolo dell'artigiano è grande quanto è grande, e lui lavora in un modo
 strano: a ogni mossa rilegge da capo tutti i fogli che ci sono sopra, perché da
 una mossa all'altra non ricorda niente. Ogni ora sul tavolo arriva un foglio
-nuovo e niente se ne va, così ogni mossa costa un po' più della precedente, e
+nuovo e niente se ne va, così ogni mossa costa un po’ più della precedente, e
 una giornata lunga il doppio costa quasi quattro volte tanto. Prima o poi il
 tavolo è pieno, e il lavoro si ferma, se nessuno fa niente.
 

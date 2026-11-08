@@ -519,7 +519,7 @@ $6\%$ sotto quello vero con $16$ esempi, e il $3\%$ sotto con $32$.
 
 Poiché l'uscita di ogni batch viene normalizzata per avere varianza distorta
 $1$, la sua varianza non distorta vale $n/(n-1)$, quindi l'ultimo batch corto
-esce un po' più disperso degli altri. In una `BatchNorm2d`, invece, $n$ è la
+esce un po’ più disperso degli altri. In una `BatchNorm2d`, invece, $n$ è la
 taglia del batch per $H\,W$, un valore per pixel di ogni esempio, e la
 distorsione si perde nel rumore.
 

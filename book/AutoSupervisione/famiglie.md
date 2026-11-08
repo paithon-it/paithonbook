@@ -70,7 +70,7 @@ sull'altro: tolta l'una o l'altro, il modello collassa. In DINO le architetture
 sono identiche, e servono la copia lenta e due ritocchi all'uscita
 dell'insegnante: la centratura, che sottrae la risposta media e gli impedisce
 di dire sempre la stessa cosa, e l'affilatura, che rende la risposta più netta
-e gli impedisce di dire un po' di tutto.
+e gli impedisce di dire un po’ di tutto.
 
 È la famiglia della **distillazione**, perché una rete impara dall'uscita
 dell'altra; la tratta già {doc}`Imparare a vedere senza etichette
@@ -361,7 +361,7 @@ ci resta, al tetto imposto dal rumore, $0{,}92$.
 Dopo seicento passi la diagonale segna $0{,}93$, un centesimo sopra quel tetto.
 Il centesimo viene dal campione: il punteggio si calcola sulle
 cinquecentododici coppie che il modello ha davanti e non sulla sorgente da cui
-vengono, e su un campione finito un po' di somiglianza in più si trova sempre.
+vengono, e su un campione finito un po’ di somiglianza in più si trova sempre.
 Che sia questo lo dice l'ultima riga, dove lo stesso proiettore descrive esempi
 che non ha mai visto: lì la diagonale torna a $0{,}92$, e la fuori diagonale
 sale appena, da $0{,}01$ a $0{,}03$.

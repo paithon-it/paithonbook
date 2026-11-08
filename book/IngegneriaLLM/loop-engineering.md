@@ -727,7 +727,7 @@ differenza di una frase, va sorvegliato mentre lavora.
   per cento di rischio ciascuno, se i passi sbagliano in modo indipendente,
   arrivano puliti in fondo trentasei volte su cento, poco più di una su tre.
   Nei cicli veri uno sbaglio ne tira dietro altri: i giri puliti sono allora un
-  po' di più, ma quelli che si sporcano si sporcano di più. In tutti e due i
+  po’ di più, ma quelli che si sporcano si sporcano di più. In tutti e due i
   casi il cancello non è un lusso.
 - L'autonomia si concede un gradino alla volta, come a un nuovo assunto: prima
   solo relazioni da leggere, poi proposte da approvare, e solo alla fine, e

@@ -967,7 +967,7 @@ quanto si aspetta ogni pezzo, e un congegno trasforma le sue attese in bit,
 come nella regola delle sorprese (pezzo atteso, pochi bit; pezzo inatteso,
 tanti). Sul gigabyte di Wikipedia il file scende a meno di un decimo, dove
 `gzip`, il compressore che c'è su ogni computer, si ferma a quasi la metà: è
-testo, il suo terreno, anche se un po' di quella Wikipedia l'aveva già letta
+testo, il suo terreno, anche se un po’ di quella Wikipedia l'aveva già letta
 durante l'addestramento.
 
 La sorpresa è che batte i formati fatti apposta anche su pezzetti di fotografie

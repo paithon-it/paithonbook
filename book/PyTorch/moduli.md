@@ -366,7 +366,7 @@ dieci, tirando a indovinare, e la multa è $2{,}3$; l'1%, e la multa è $4{,}6$.
 Guarda gli ultimi due: dal 10% all'1% la fiducia si divide per dieci e la multa
 raddoppia esatta, e ogni ulteriore divisione per dieci aggiunge sempre quegli
 stessi $2{,}3$. A contare, quindi, è il rapporto fra le fiducie e non il loro
-divario, e verso il basso la multa non trova fondo: escludere ancora un po' la
+divario, e verso il basso la multa non trova fondo: escludere ancora un po’ la
 risposta vera aggiunge altri $2{,}3$ di multa, e nessuno dice basta.
 
 È la **cross-entropy**, la misura per quando la risposta è una scelta fra

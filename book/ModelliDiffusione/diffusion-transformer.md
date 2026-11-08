@@ -566,7 +566,7 @@ Su una strada così non serve fermarsi mille volte a ricontrollare la mappa, e
 nemmeno le cinquanta delle scorciatoie: ne bastano poche decine. Dritta, però,
 per modo di dire, come si è visto con il flusso rettificato: le strade che la
 rete impara sono la media di milioni di linee che si incrociano, e curvano un
-po'. È la differenza fra un tornante di montagna e una provinciale con qualche
+po’. È la differenza fra un tornante di montagna e una provinciale con qualche
 curva. Raddrizzarle ancora, rifacendo l'addestramento sulle coppie che la rete
 stessa collega, porterebbe fino a una fermata sola; Stable Diffusion 3 non lo
 fa, e si ferma a qualche decina.

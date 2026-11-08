@@ -403,7 +403,7 @@ rifatta.
 
 Le serate storte tendono a esserlo dall'inizio, per un fornitore che
 non è arrivato, più che per un inciampo a caso piatto per piatto: allora le
-serate perfette sono un po' più di quante ne preveda il calcolo, e quelle
+serate perfette sono un po’ più di quante ne preveda il calcolo, e quelle
 disastrose pure. Ma l'ultimo passaggio pesa quanto il primo, e chi rovescia il
 vassoio sulla soglia della sala aveva fatto tutto bene fino a lì.
 

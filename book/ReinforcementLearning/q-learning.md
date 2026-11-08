@@ -1046,7 +1046,7 @@ una rete al posto della tabella le ha tutte e tre.
   sorpresa dell'ultimo passo (piccola: passi cauti), l'altra quanto pesa il
   futuro rispetto al premio immediato. Per il dilemma del ristorante c'è la
   ricetta $\varepsilon$-greedy: quasi sempre la mossa col voto più alto, ogni
-  tanto una a caso per scoprire di meglio. Se quell'«ogni tanto» cala troppo in
+  tanto una a caso per scoprire di meglio. Se quell’«ogni tanto» cala troppo in
   fretta, le novità finiscono, e con loro la promessa che i voti si assestino
   al posto giusto.
 - Prendere sempre il voto più alto gonfia in media le stime, perché fra quattro

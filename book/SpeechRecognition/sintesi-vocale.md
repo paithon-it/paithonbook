@@ -422,7 +422,7 @@ generatore del tipo di HiFi-GAN come decoder, addestrato sull'ELBO più le
 perdite avversarie. L'allineamento fra fonemi e frame si stima dentro
 l'addestramento, con una ricerca dell'allineamento monotono più probabile
 (*Monotonic Alignment Search*), e un predittore di durate stocastico dà a ogni
-lettura un ritmo un po' diverso. Nella prova degli autori, su LJSpeech, prende
+lettura un ritmo un po’ diverso. Nella prova degli autori, su LJSpeech, prende
 $4{,}43$ di MOS contro $4{,}46$ del parlato registrato.
 
 `````

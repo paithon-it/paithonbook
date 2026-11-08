@@ -785,7 +785,7 @@ regola. A metà corsa verrebbe da versare metà dell'una e metà dell'altra, ma 
 due nebbie sono indipendenti, e dove una si addensa l'altra spesso si dirada:
 messe insieme a metà, i loro grumi si compensano in parte, e la nebbia diventa
 più rada di entrambe, diversa da tutte quelle che il restauratore ha visto
-imparando. La manopola prende invece un po' di più di ciascuna, a metà corsa
+imparando. La manopola prende invece un po’ di più di ciascuna, a metà corsa
 sette decimi dell'una e sette decimi dell'altra, quanto basta perché la nebbia
 resti spessa come prima: girandola cambia soltanto quanto somiglia alla
 vecchia.

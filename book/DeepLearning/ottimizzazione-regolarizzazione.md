@@ -1436,7 +1436,7 @@ di quanto succede dentro.
 `````{tab} Elementare
 
 Immagina qualcuno a cui si chiede di sommare le ore su un orologio strano, che
-invece di dodici ore ne ha novantasette. Gli si mostrano un po' di somme già
+invece di dodici ore ne ha novantasette. Gli si mostrano un po’ di somme già
 fatte, e lui deve imparare a rispondere anche su quelle che non ha visto.
 
 Comincia nel modo più naturale: si scrive un bigliettino con le risposte che

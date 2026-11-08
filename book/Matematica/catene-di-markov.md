@@ -24,7 +24,7 @@ soglia, e sta fra la quinta mescolata e la settima.
 
 Quel risultato riguarda un mazzo di carte, ma la sua struttura è quella di una
 catena di Markov. Un mazzo mescolato, infatti, è uno stato; la mescolata è una
-regola che porta da uno stato al successivo, con un po' di caso; e la domanda
+regola che porta da uno stato al successivo, con un po’ di caso; e la domanda
 «dopo quante volte non si distingue più da un mazzo qualsiasi?» riguarda la
 velocità con cui la catena si avvicina all'equilibrio. Per quasi tutte le
 catene il secondo autovalore della matrice che descrive la regola ne governa la

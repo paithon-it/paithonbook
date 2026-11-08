@@ -703,7 +703,7 @@ tutto da preparare, così nessuno resta fuori.
 
 In un altro ristorante il maître all'ingresso fa più semplice. Chi arriva per
 un piatto veloce va nella sala con meno clienti; la comitiva con la cena a metà
-torna sempre nella sua sala, anche quando è piena e deve aspettare un po'
+torna sempre nella sua sala, anche quando è piena e deve aspettare un po’
 davanti alla porta, perché rifarle la tavola altrove costerebbe di più.
 
 `````

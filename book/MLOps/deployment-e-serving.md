@@ -293,7 +293,7 @@ una media di quelle medie, raccolta su tutto l'allenamento. Quando risponde ha
 davanti un esempio solo, di cui non ha senso fare la media, e deve usare quella
 messa da parte. Se nessuno gli dice che l'allenamento è finito, fa due danni:
 calcola la scala su un gruppo che non c'è, e continua ad aggiornare la sua
-media con le domande che arrivano, così che il modello cambia un po' a ogni
+media con le domande che arrivano, così che il modello cambia un po’ a ogni
 richiesta. Le risposte escono sbagliate senza che niente segnali l'errore.
 
 Il terzo passo è spegnere il taccuino. Mentre impara, la rete annota ogni

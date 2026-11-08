@@ -618,7 +618,7 @@ Più semplice, però, non vuol dire unica, e Hewitt e Liang
 vocabolario un'etichetta casuale, scelta una volta per tutte, senza nessun
 senso grammaticale («gatto» riceve sempre la 7, «muro» sempre la 3), e si
 addestra la stessa sonda a ripeterla: sui vettori di un modello di linguaggio
-una sonda lineare ci riesce in buona parte, e una un po' più grande quasi del
+una sonda lineare ci riesce in buona parte, e una un po’ più grande quasi del
 tutto, perché basta riconoscere la parola. Il loro controllo confronta allora
 la riuscita della sonda sul compito vero con quella sul compito a etichette
 casuali: solo lo scarto fra le due dice quanto la sonda legge davvero nelle

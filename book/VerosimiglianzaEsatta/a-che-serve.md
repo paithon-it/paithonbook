@@ -392,7 +392,7 @@ stessa.
 Anche la diagonale costa, quando le coordinate sono un milione. Il trucco è non
 misurarla tutta: si sceglie una direzione a caso, si guarda di quanto la
 corrente la allunga, e si ripete con un'altra direzione a ogni nuova
-misura. Ogni prova sbaglia un po', ma in media fa giusto, e una prova costa
+misura. Ogni prova sbaglia un po’, ma in media fa giusto, e una prova costa
 quanto un passaggio della rete.
 
 Una regola però resta, ed è quella che tiene in piedi tutto: la corrente deve

@@ -495,7 +495,7 @@ quella partita. Se invece dividi per la somma dei pesi, otto in tutto, il voto
 cade per forza fra il punteggio peggiore e il migliore che hai letto.
 
 Il primo modo azzecca in media il valore giusto già con pochi fogli, ma
-quell'«in media» può nascondere oscillazioni enormi; il secondo lo sbaglia un
+quell’«in media» può nascondere oscillazioni enormi; il secondo lo sbaglia un
 po’ e non impazzisce mai, e per questo si sceglie quasi sempre.
 
 `````

@@ -259,7 +259,7 @@ quel testo non è mai in conversazione con nessuno.
 
 ```{figure} ../figures/jailbreak-e-prompt-injection.svg
 :name: fig-jailbreak-injection
-:alt: "Tre schemi affiancati. A sinistra il jailbreak: una scatola sola, «utente uguale attaccante», con una freccia che scende al modello, e sotto la riga «ci rimette chi offre il modello». In mezzo la prompt injection diretta: lo stesso attore solo, ma fra lui e il modello c'e' una scatola con le istruzioni del programma, «traduci quello che segue», che il suo «ignora quanto sopra» scavalca; ci rimette chi ha scritto il programma. A destra la prompt injection indiretta: due scatole in alto, l'utente vittima e un attaccante distinto; l'attaccante nasconde un'istruzione dentro un documento, l'utente manda al modello una domanda normale, e una freccia a due punte fra documento e modello dice che e' il modello ad andare a leggere e a portarsi il testo in contesto. L'attaccante non parla mai col modello."
+:alt: "Tre schemi affiancati. A sinistra il jailbreak: una scatola sola, «utente uguale attaccante», con una freccia che scende al modello, e sotto la riga «ci rimette chi offre il modello». In mezzo la prompt injection diretta: lo stesso attore solo, ma fra lui e il modello c'è una scatola con le istruzioni del programma, «traduci quello che segue», che il suo «ignora quanto sopra» scavalca; ci rimette chi ha scritto il programma. A destra la prompt injection indiretta: due scatole in alto, l'utente vittima e un attaccante distinto; l'attaccante nasconde un'istruzione dentro un documento, l'utente manda al modello una domanda normale, e una freccia a due punte fra documento e modello dice che è il modello ad andare a leggere e a portarsi il testo in contesto. L'attaccante non parla mai col modello."
 :width: 100%
 
 Chi c'è in scena, nei tre casi, e quale regola salta. Nel jailbreak e
@@ -419,7 +419,7 @@ porta si apre di sicuro: si può dire quanto è difficile, mai che
 Chi ha in mano una copia identica del portiere, e può provare su di lei tutte
 le volte che vuole senza che nessuno se ne accorga, fa un'altra cosa ancora.
 Accoda alla richiesta una frase senza senso, poi cambia una parola alla volta,
-tenendo ogni volta quella che rende la copia un po' più disposta a rispondere
+tenendo ogni volta quella che rende la copia un po’ più disposta a rispondere
 «ma certo, entri pure», e riparte da lì. La frase che ne esce funziona spesso
 anche sul portiere vero, e persino su quello del palazzo accanto, formato da
 un'altra agenzia con lo stesso metodo: quello che è stato trovato non

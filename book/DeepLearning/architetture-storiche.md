@@ -601,7 +601,7 @@ dimensione spaziale, i blocchi densi sono separati da **strati di transizione**
 
 Il costo è la memoria in addestramento. In un'implementazione ingenua, infatti,
 le attivazioni concatenate crescono col quadrato della profondità del blocco, e
-a parità di accuratezza una ResNet ne consuma un po' meno. Le implementazioni
+a parità di accuratezza una ResNet ne consuma un po’ meno. Le implementazioni
 parsimoniose ricalcolano le concatenazioni invece di conservarle, riportano la
 crescita a lineare e ribaltano il confronto; il risparmio di memoria, però,
 richiede più tempo di calcolo.

@@ -756,7 +756,7 @@ sopra, quindi l'operazione più sospetta di tutte resta la più sospetta. In
 altri termini, cambiano i numeri ma non la graduatoria, e tutto ciò che si
 giudicava sulla graduatoria (la curva ROC, l'area sotto di essa) resta
 identico. Ma c'è una riserva sulla scaletta, che è fatta di gradini: due
-operazioni un po' diverse possono finire sullo stesso gradino e diventare pari
+operazioni un po’ diverse possono finire sullo stesso gradino e diventare pari
 merito, e i pari merito nella graduatoria contano mezzo punto ciascuno.
 
 La calibrazione da sola, però, non basta come voto. Un modello che a ogni

@@ -782,10 +782,19 @@ def frontespizio(app) -> str:
     sys.path.insert(0, str(pathlib.Path(app.srcdir) / "_ext"))
     import pt_conteggi
 
+    from sphinx.util import texescape
+
     registro = pathlib.Path(app.srcdir) / "_dati" / "aggiornamenti.yml"
     marca = pt_conteggi.versione_corrente(registro) if registro.exists() else {}
-    numero = marca.get("versione", "")
-    data = marca.get("data_versione", "")
+    # `versione_corrente` accetta solo cifre, punti e una data vera, ma il
+    # testo entra in LaTeX scritto a mano e passa comunque dall'escape di
+    # Sphinx. Le tabelle dell'escape le riempie `init()`, che il builder
+    # LaTeX chiama dopo `config-inited`: qui si chiama prima, e ripeterla
+    # non cambia niente.
+    texescape.init()
+    motore = getattr(app.config, "latex_engine", None)
+    numero = texescape.escape(marca.get("versione", ""), motore)
+    data = texescape.escape(marca.get("data_versione", ""), motore)
 
     testo = FRONTESPIZIO
     testo = testo.replace("VERSIONE_E_DATA",

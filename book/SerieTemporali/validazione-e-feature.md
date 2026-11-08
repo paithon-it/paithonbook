@@ -544,7 +544,7 @@ due è vera, e non sbagliano nello stesso verso.
 La prima si racconta in una riga. Per dire «fra 22 e 26» il modello usa due
 numeri suoi, quanto ieri pesa su oggi e quanto di solito le giornate si
 discostano, e quei due numeri non glieli ha dati nessuno: se li è ricavati
-dalla stessa storia che sta guardando, e poteva ricavarli un po' diversi. Il
+dalla stessa storia che sta guardando, e poteva ricavarli un po’ diversi. Il
 conto della forbice fa finta di no. È un'incertezza che c'è e che nessuno
 conta, e siccome nessuno la conta la forbice esce più stretta del dovuto:
 sempre, e tanto più quanto la storia è corta e quanto più in là si guarda.

@@ -579,7 +579,7 @@ particolare.
 
 Restando fermo sull'audio potrebbe, in teoria, scrivere all'infinito. A
 fermarlo non c'è una regola. Dopo aver scritto le lettere di quel pezzo di
-suono, l'«avanti» diventa la scelta più votata, e il trasduttore si
+suono, l’«avanti» diventa la scelta più votata, e il trasduttore si
 sposta. Un modello mal addestrato che si incaponisce a scrivere produce infatti
 una parola ripetuta finché qualcuno non stacca la spina.
 

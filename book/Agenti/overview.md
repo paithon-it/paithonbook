@@ -265,7 +265,7 @@ e non il cuoco. Con un agente è il programma, e non il modello, a decidere che
 cosa viene eseguito. Anche il bancone ha una misura: foglietti e piatti
 consegnati restano lì tutti, e a fine serata non c'è più posto per appoggiare
 niente. Il bancone del modello è la sua finestra di contesto, e ogni chiamata
-la riempie un po'.
+la riempie un po’.
 
 `````
 

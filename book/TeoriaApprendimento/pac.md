@@ -65,7 +65,7 @@ ciascuna sotto uno su centomila. Portare una probabilità da uno a uno su cento
 chiede quasi sette dimezzamenti ($2^7=128$), e dividerla ancora per mille ne
 chiede altri dieci ($2^{10}=1024$); in tutto sono diciassette dimezzamenti,
 che a quattordici indizi l'uno fanno $238$. Il calcolo fatto senza arrotondare
-dà $225$, perché in realtà i dimezzamenti sono un po' meno di diciassette e
+dà $225$, perché in realtà i dimezzamenti sono un po’ meno di diciassette e
 ciascuno chiede un po’ meno di quattordici indizi.
 
 [Con il doppio dei sospettati servono soltanto altri quattordici

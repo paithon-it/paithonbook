@@ -414,7 +414,7 @@ pochi e sparsi; con la copia, un incastro con i chiodi non sparisce più, e ogni
 giornata storta ne aggiunge altri. E i chiodi si copiano anche più volentieri
 degli incastri buoni, perché fanno prima: dopo un mese sono dappertutto.
 
-Per un po' il proprietario passa il venerdì a togliere chiodi e rifare
+Per un po’ il proprietario passa il venerdì a togliere chiodi e rifare
 incastri. Ma la bottega lavora di più ogni settimana, e in un giorno solo non
 ce la fa più. Allora cambia metodo, con due mosse che lavorano su due cose
 diverse. Scrive sul cartello due regole d'oro, «gli incastri si fanno con le

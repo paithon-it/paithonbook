@@ -179,7 +179,7 @@ escursione massima in cent: 50.0
 La nota 64 sta a 329,63 Hz, cinque tasti sotto il la, con un fattore 0,944 a
 ogni tasto; dodici semitoni sono 1200 cent per un rapporto di 2. Il vibrato
 porta l'altezza fra 320,24 e 339,29 Hz, cioè 9,66 Hz sopra la nota e 9,38 sotto:
-lo scarto è lo stesso in cent, ma in hertz vale un po' di più sopra che sotto.
+lo scarto è lo stesso in cent, ma in hertz vale un po’ di più sopra che sotto.
 In 1,28 s, a 5,5 oscillazioni al secondo, ne stanno sette, e rimessa in cent
 l'escursione massima torna ai 50 cent della profondità.
 

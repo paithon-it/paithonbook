@@ -84,7 +84,7 @@ corrette che si contraddicono, e nessuna delle due è truccata. ProPublica, per�
 non guardava soltanto i falsi allarmi: guardava anche l'errore opposto, le
 persone poi riarrestate che il sistema aveva messo fra quelle «a basso rischio»,
 e le trovava più spesso fra i bianchi. Le richieste in gioco sono quindi tre:
-che l'«alto rischio» ci prenda ugualmente spesso nei due gruppi, come voleva
+che l’«alto rischio» ci prenda ugualmente spesso nei due gruppi, come voleva
 l'azienda, e che i due errori (l'allarme dato a chi poi non viene riarrestato e
 quello mancato per chi lo è) capitino con la stessa frequenza, come voleva
 ProPublica. Se nei due gruppi il riarresto non capita con la stessa frequenza,

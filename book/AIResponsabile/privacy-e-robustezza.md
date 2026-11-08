@@ -287,7 +287,7 @@ perché sappiamo *quanto* ne abbiamo messo, anche se non sappiamo a chi sia
 toccato. Si perde in precisione, perché su mille persone quel $30\%$ ha un
 errore standard di circa tre punti percentuali, contro un punto e mezzo della
 domanda diretta, se tutti rispondessero sinceri. Ogni individuo ha la sua
-*negabilità plausibile*; la statistica collettiva sopravvive, un po' più
+*negabilità plausibile*; la statistica collettiva sopravvive, un po’ più
 sfocata.
 
 La privacy differenziale è questa idea resa una garanzia numerica: al risultato
@@ -841,7 +841,7 @@ ricalcolata), e si addestra il modello su quella versione invece che
 sull'esempio pulito. È la soluzione approssimata del problema min-max di Madry e
 colleghi, e ha un costo: ogni passo di addestramento contiene un attacco,
 quindi equivale al calcolo di diversi passi normali, e la robustezza entro un
-certo raggio riduce spesso un po' l'accuratezza sugli esempi intatti.
+certo raggio riduce spesso un po’ l'accuratezza sugli esempi intatti.
 
 «Robusto» è una parola da usare con cura: [da sola non dice niente, perché la
 robustezza vale *contro quale attacco* e *dentro quale perimetro*]{.pt-matita}.

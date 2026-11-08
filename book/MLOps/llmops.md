@@ -719,7 +719,7 @@ guadagni, e il furgone arriva pieno di cocci. Due ricercatori hanno cercato il
 punto in cui la bilancia si rovescia, provando molti traslochi di misura
 diversa, e l'hanno trovato lì, alle quattro volte. Con la premessa che si stia
 imballando a occhio: chi guarda prima che cosa sta mettendo in scatola riesce a
-stringere un po' di più.
+stringere un po’ di più.
 
 `````
 
@@ -926,7 +926,7 @@ evidenti; oltre, la perdita diventa sensibile. Un quaderno con metà pagine
 strappate qua e là non si legge in metà tempo: chi lo sfoglia deve comunque
 passare di buco in buco. Si guadagna tempo solo se si strappa con una regola
 fissa che il lettore conosce in anticipo, due fogli su ogni quattro, e anche
-così il senso ne soffre un po' di più che strappando dove si vuole.
+così il senso ne soffre un po’ di più che strappando dove si vuole.
 
 `````
 

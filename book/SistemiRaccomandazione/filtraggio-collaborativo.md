@@ -695,7 +695,7 @@ più: restano la media e i bias, che stimati su sedici voti per utente e
 ventiquattro per film si portano dietro più rumore che informazione, e l'errore
 ($1{,}016$) supera quello della previsione banale. Il valore buono sta in
 mezzo, e si cerca sui dati. Qui gli stessi voti messi da parte servono sia a
-scegliere il valore sia a misurare l'errore, che risulta quindi un po'
+scegliere il valore sia a misurare l'errore, che risulta quindi un po’
 ottimista; per un numero da riportare ne servirebbe un terzo insieme.
 
 Le righe di AdamW dicono un'altra cosa. Con $10^{-4}$ AdamW dà praticamente gli

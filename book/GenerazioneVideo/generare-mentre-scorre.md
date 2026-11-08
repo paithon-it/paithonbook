@@ -85,7 +85,7 @@ Il prezzo si vede subito. Il pubblico vede un blocco solo quando è pulito,
 quindi la prima immagine arriva dopo il primo blocco intero, e tanto più tardi
 quanto più il blocco è grande. E chi disegna guardando solo il passato non può
 correggere una pagina guardando quella dopo, che è il vantaggio del tavolo con
-tutte le pagine: a parità di allenamento i blocchetti vengono un po' peggio, e
+tutte le pagine: a parità di allenamento i blocchetti vengono un po’ peggio, e
 una pagina venuta storta resta nel taccuino, sotto gli occhi di quelle che
 seguono.
 `````
@@ -221,10 +221,10 @@ oscillando con l'onda, per questo al fotogramma 100 è più piccola che al 50).
 Eppure lo sbaglio del singolo passo è rimasto lo stesso, 0,00027 sul passato
 proprio, e nemmeno la somma degli sbagli spiega la distanza: fino al fotogramma
 299 gli sbagli di un passo sommano 0,082, e la distanza è 7,3 volte tanto. Lo
-sbaglio di un passo, infatti, non resta dov'è. Il fotogramma un po' sbagliato
+sbaglio di un passo, infatti, non resta dov'è. Il fotogramma un po’ sbagliato
 diventa il passato del successivo, e la ricorrenza lo porta avanti con l'onda:
 il modello continua con un'onda appena più veloce di quella vera, che a ogni
-fotogramma guadagna un po' di fase e non la restituisce più, e lo sfasamento
+fotogramma guadagna un po’ di fase e non la restituisce più, e lo sfasamento
 cresce con il tempo. In un modello vero c'è anche di peggio, perché un passato
 mai visto in addestramento fa sbagliare di più anche il passo singolo; la
 ricorrenza dell'esempio è lineare e questo non lo mostra, quindi dice come
@@ -260,7 +260,7 @@ può farle tutte insieme sul tavolo. È il *teacher forcing* della traduzione
 automatica: il passato lo impone l'insegnante.
 
 Poi il disegnatore va in scena, e nessuno gli passa pagine vere: continua dalle
-proprie. Una linea un po' storta alla pagina 4 diventa il punto di partenza
+proprie. Una linea un po’ storta alla pagina 4 diventa il punto di partenza
 della 5, e il disegnatore, che a lezione non ha mai visto una pagina così,
 disegna una 5 storta di suo e per ciò che ha ereditato. Il blocchetto prende
 una piega, e più va avanti più la piega cresce. [A lezione ha visto solo
@@ -435,7 +435,7 @@ che il maestro sa fare, la punizione è lieve. Così l'allievo tende a restare
 nei generi che gli riescono, e i suoi blocchetti si somigliano fra loro più di
 quanto si somiglino quelli del maestro. Ha guadagnato la velocità (il suo primo
 blocco è pronto in poco più di un secondo, mentre il maestro, per un video di
-128 fotogrammi, impiega più di tre minuti e mezzo) e ha perso un po' di
+128 fotogrammi, impiega più di tre minuti e mezzo) e ha perso un po’ di
 varietà.
 
 Perché non avere come maestro un disegnatore che lavora già a blocchi, come
@@ -613,7 +613,7 @@ Un'altra disposizione degli stessi fotogrammi nel tempo è la **coda a rumore
 crescente**. Invece di finire un blocco prima di cominciare il successivo, il
 modello lavora su una fila di fotogrammi a livelli di rumore diversi, il più
 vecchio quasi pulito e il più nuovo ancora quasi tutto rumore. A ogni passo
-tutti si ripuliscono un po'; quando il primo è pulito esce dalla fila, e in
+tutti si ripuliscono un po’; quando il primo è pulito esce dalla fila, e in
 fondo entra un fotogramma di rumore. È lo zig-zag di Diffusion Forcing, con il
 futuro vicino più pulito del lontano, usato per generare un flusso senza fine,
 ed è lo schema dello Streamer di Wan e di MAGI-1
@@ -812,7 +812,7 @@ meccanismo, e non dice niente su come Genie 3 ottenga la sua memoria.
   ha finito. Per giocarci dentro il disegnatore deve invece procedere a blocchi
   di poche pagine, guardando solo quelle già finite e tenendo un taccuino per
   non rileggere tutto: il pubblico vede un blocco quando è pulito, e a parità
-  di allenamento i blocchetti vengono un po' peggio.
+  di allenamento i blocchetti vengono un po’ peggio.
 - A lezione ha visto solo passati perfetti, e in scena continua dalle proprie
   pagine, con le loro sbavature: è l'exposure bias. L'insegnante può sporcare
   le pagine vere con macchie diverse (Diffusion Forcing), oppure far esercitare

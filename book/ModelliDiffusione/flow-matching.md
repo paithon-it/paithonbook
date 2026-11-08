@@ -218,7 +218,7 @@ applicato due volte.
 Se il percorso lo scegliamo noi, quale conviene scegliere?
 
 Il percorso che la diffusione impone è una curva, e non per un capriccio: nasce
-dal fatto che a ogni istante si mescola un po' meno immagine con un po' più
+dal fatto che a ogni istante si mescola un po’ meno immagine con un po’ più
 rumore, secondo un dosaggio che cambia continuamente. Se si disegna il viaggio
 di una singola fotografia verso il suo rumore, se ne ricava una strada tortuosa.
 

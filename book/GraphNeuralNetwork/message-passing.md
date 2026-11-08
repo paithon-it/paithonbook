@@ -503,7 +503,7 @@ Su un grafo la stessa parola ha un senso preciso, purché si cambi che cosa si
 guarda. Una configurazione di numeri sui nodi è a bassa frequenza se nodi
 collegati portano valori simili, ad alta frequenza se lungo ogni arco il
 valore salta. La più liscia di tutte è quasi lo stesso valore su ogni nodo
-(quasi: un po' più alto dove i vicini sono di più); la più agitata somiglia a
+(quasi: un po’ più alto dove i vicini sono di più); la più agitata somiglia a
 una scacchiera, con ogni nodo di segno opposto ai suoi vicini.
 
 Queste configurazioni, dalla più liscia alla più agitata, si chiamano gli

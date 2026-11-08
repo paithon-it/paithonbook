@@ -511,7 +511,7 @@ profezia.
 - Un paesaggio si può scavare anche su immagini vere, e allora un solo
   modello fa quattro mestieri: genera, completa un'immagine a cui manca un
   pezzo, segnala quello che è fuori posto e mescola concetti. Sono la stessa
-  cosa: scendere verso il basso con vincoli diversi, e con un po' di rumore
+  cosa: scendere verso il basso con vincoli diversi, e con un po’ di rumore
   che fa finire ogni volta in una valle diversa.
 - Un classificatore è già un modello a energia senza saperlo: dal più alto
   dei punteggi che dà alle classi, corretto un poco verso l'alto quando anche

@@ -2227,12 +2227,12 @@ nav.bd-links li.toctree-l1.current > details > summary .toctree-toggle {
 /* ==========================================================================
    Scarica il libro in PDF
    ==========================================================================
-   Il blocco sotto il paragrafo della versione, nella landing. Il file vive
-   come allegato a una release del repository pubblico: l'indirizzo usa
-   `releases/latest/download/`, che GitHub risolve sempre sull'ultima, cosi'
-   il link non contiene un numero di versione e non marcisce a ogni
-   pubblicazione. Il numero nell'etichetta invece c'e', e lo mette la
-   sostituzione `{{ versione }}`.
+   Il blocco sotto il paragrafo della versione, nella landing. I PDF stanno
+   su paithon.it con un nome fisso, cosi' il link non contiene un numero di
+   versione e non marcisce a ogni pubblicazione. Il salvataggio lo chiede
+   `?scarica=1`, e non l'attributo `download`, che il browser ignora quando
+   il file sta su un altro dominio. Il numero nell'etichetta invece c'e', e
+   lo mette la sostituzione `{{ versione }}`.
    ========================================================================== */
 .pt-scarica {
   margin: 1.6rem 0 2rem;

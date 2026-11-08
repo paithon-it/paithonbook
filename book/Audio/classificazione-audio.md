@@ -452,7 +452,7 @@ Generiamo un segnale finto in tre parti e classifichiamo ogni finestra con la
 regola a soglie, per vedere come le due misure, prese in quest'ordine, separino
 le tre situazioni. Il tono è una sinusoide a 200 oscillazioni al secondo; il
 «silenzio» è un fruscio piccolissimo; il rumore è una fila di valori estratti a
-caso, il **rumore bianco**, che contiene un po' di tutte le frequenze. Il
+caso, il **rumore bianco**, che contiene un po’ di tutte le frequenze. Il
 generatore di numeri casuali parte da un valore fissato, così chi esegue il
 codice ottiene esattamente gli stessi numeri:
 

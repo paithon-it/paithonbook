@@ -87,7 +87,7 @@ class="pt-inizio-nome">Voglio capire gli LLM</span><span
 class="pt-inizio-desc">L'attenzione e il Transformer, poi gli agenti e
 l'ingegneria che sta attorno ai modelli.</span></a>
 <a class="pt-inizio-scheda"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book.pdf"><span
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book.pdf"><span
 class="pt-inizio-nome">Lo leggo su carta</span><span class="pt-inizio-desc">Il
 libro intero in PDF, impaginato per la lettura e per la stampa.</span></a>
 </div>
@@ -113,14 +113,14 @@ class="pt-card-title">Introduzione</span> <span class="pt-card-desc">Che cos'è
 l'intelligenza artificiale, da ELIZA a oggi; il primo programma da eseguire;
 che cosa si può calcolare e che cosa no; la robotica.</span> </a> <a
 class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-Introduzione.pdf"
-aria-label="Scarica in PDF il capitolo «Introduzione»" title="«Introduzione» in
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-Introduzione.pdf"
+aria-label="Leggi in PDF il capitolo «Introduzione»" title="«Introduzione» in
 PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
 href="Python/overview.html"> <span class="pt-card-num"></span> <span
 class="pt-card-title">Python</span> <span class="pt-card-desc">Il linguaggio
 dell'AI: basi, NumPy, pandas e matplotlib.</span> </a> <a class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-Python.pdf"
-aria-label="Scarica in PDF il capitolo «Python»" title="«Python» in
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-Python.pdf"
+aria-label="Leggi in PDF il capitolo «Python»" title="«Python» in
 PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
 href="Matematica/overview.html"> <span class="pt-card-num"></span> <span
 class="pt-card-title">Matematica</span> <span
@@ -128,47 +128,47 @@ class="pt-card-desc">Algebra lineare, sistemi e proiezioni, ottimizzazione,
 probabilità e concentrazione, catene di Markov, teoria dell'informazione,
 analisi numerica e la matematica di un LLM.</span> </a> <a
 class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-Matematica.pdf"
-aria-label="Scarica in PDF il capitolo «Matematica»"
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-Matematica.pdf"
+aria-label="Leggi in PDF il capitolo «Matematica»"
 title="«Matematica» in PDF">PDF</a></div> <div class="pt-cella"><a
 class="pt-card" href="MachineLearning/overview.html"> <span
 class="pt-card-num"></span> <span class="pt-card-title">Machine Learning</span>
 <span class="pt-card-desc">Imparare dai dati: apprendimento supervisionato,
 overfitting e metriche, alberi ed ensemble, SVM, clustering e riduzione della
 dimensionalità, dati che cambiano.</span> </a> <a class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-MachineLearning.pdf"
-aria-label="Scarica in PDF il capitolo «Machine Learning»" title="«Machine
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-MachineLearning.pdf"
+aria-label="Leggi in PDF il capitolo «Machine Learning»" title="«Machine
 Learning» in PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
 href="TeoriaApprendimento/overview.html"> <span class="pt-card-num"></span>
 <span class="pt-card-title">Teoria dell'apprendimento</span> <span
 class="pt-card-desc">Perché gli esempi bastano: apprendimento PAC, dimensione
 VC, complessità di Rademacher e margine, e che cosa le garanzie non spiegano
 delle reti profonde.</span> </a> <a class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-TeoriaApprendimento.pdf"
-aria-label="Scarica in PDF il capitolo «Teoria dell'apprendimento»"
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-TeoriaApprendimento.pdf"
+aria-label="Leggi in PDF il capitolo «Teoria dell'apprendimento»"
 title="«Teoria dell'apprendimento» in PDF">PDF</a></div> <div
 class="pt-cella"><a class="pt-card" href="RetiNeurali/overview.html"> <span
 class="pt-card-num"></span> <span class="pt-card-title">Reti Neurali</span>
 <span class="pt-card-desc">Dal
 percettrone alla backpropagation: come una rete impara davvero.</span> </a> <a
 class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-RetiNeurali.pdf"
-aria-label="Scarica in PDF il capitolo «Reti Neurali»" title="«Reti Neurali» in
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-RetiNeurali.pdf"
+aria-label="Leggi in PDF il capitolo «Reti Neurali»" title="«Reti Neurali» in
 PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
 href="PyTorch/overview.html"> <span class="pt-card-num"></span> <span
 class="pt-card-title">PyTorch</span> <span class="pt-card-desc">Tensori,
 autograd, moduli e training loop: il framework del libro.</span> </a> <a
 class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-PyTorch.pdf"
-aria-label="Scarica in PDF il capitolo «PyTorch»" title="«PyTorch» in
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-PyTorch.pdf"
+aria-label="Leggi in PDF il capitolo «PyTorch»" title="«PyTorch» in
 PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
 href="GPU/overview.html"> <span class="pt-card-num"></span> <span
 class="pt-card-title">GPU e calcolo parallelo</span> <span
 class="pt-card-desc">Sotto il cofano dell'hardware: architettura, memoria,
 kernel, GEMM e tensor core, Flash Attention e parallelismo su più GPU.</span>
 </a> <a class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-GPU.pdf"
-aria-label="Scarica in PDF il capitolo «GPU e calcolo parallelo»" title="«GPU e
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-GPU.pdf"
+aria-label="Leggi in PDF il capitolo «GPU e calcolo parallelo»" title="«GPU e
 calcolo parallelo» in PDF">PDF</a></div> <div class="pt-cella"><a
 class="pt-card" href="Efficienza/overview.html"> <span
 class="pt-card-num"></span> <span class="pt-card-title">Efficienza</span> <span
@@ -176,38 +176,38 @@ class="pt-card-desc">Il modello che si addestra e quello che si usa:
 quantizzazione e componenti anomale, potatura e biglietto vincente,
 distillazione, e perché starci in memoria non è rispondere in fretta.</span>
 </a> <a class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-Efficienza.pdf"
-aria-label="Scarica in PDF il capitolo «Efficienza»" title="«Efficienza» in
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-Efficienza.pdf"
+aria-label="Leggi in PDF il capitolo «Efficienza»" title="«Efficienza» in
 PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
 href="DeepLearning/overview.html"> <span class="pt-card-num"></span> <span
 class="pt-card-title">Deep Learning</span> <span class="pt-card-desc">Reti
 convoluzionali, ottimizzazione, regolarizzazione, architetture storiche e una
 rete sola per molti compiti.</span> </a> <a class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-DeepLearning.pdf"
-aria-label="Scarica in PDF il capitolo «Deep Learning»" title="«Deep Learning»
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-DeepLearning.pdf"
+aria-label="Leggi in PDF il capitolo «Deep Learning»" title="«Deep Learning»
 in PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
 href="VisioneArtificiale/overview.html"> <span class="pt-card-num"></span>
 <span class="pt-card-title">Visione Artificiale</span> <span
 class="pt-card-desc">Classificare, riconoscere, segmentare: le macchine che
 vedono.</span> </a> <a class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-VisioneArtificiale.pdf"
-aria-label="Scarica in PDF il capitolo «Visione Artificiale»" title="«Visione
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-VisioneArtificiale.pdf"
+aria-label="Leggi in PDF il capitolo «Visione Artificiale»" title="«Visione
 Artificiale» in PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
 href="Ricerca/overview.html"> <span class="pt-card-num"></span> <span
 class="pt-card-title">Ricerca e pianificazione</span> <span
 class="pt-card-desc">Guardare avanti nelle mosse possibili: alberi di ricerca,
 euristiche e A*, minimax e potatura alfa-beta, e le tre cose che quando mancano
 cambiano tutto.</span> </a> <a class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-Ricerca.pdf"
-aria-label="Scarica in PDF il capitolo «Ricerca e pianificazione»"
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-Ricerca.pdf"
+aria-label="Leggi in PDF il capitolo «Ricerca e pianificazione»"
 title="«Ricerca e pianificazione» in PDF">PDF</a></div> <div
 class="pt-cella"><a class="pt-card" href="ReinforcementLearning/overview.html">
 <span class="pt-card-num"></span> <span class="pt-card-title">Reinforcement
 Learning</span> <span class="pt-card-desc">Imparare per tentativi: i bandit,
 gli MDP e le funzioni di valore, i metodi Monte Carlo, il Q-learning.</span>
 </a> <a class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-ReinforcementLearning.pdf"
-aria-label="Scarica in PDF il capitolo «Reinforcement Learning»"
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-ReinforcementLearning.pdf"
+aria-label="Leggi in PDF il capitolo «Reinforcement Learning»"
 title="«Reinforcement Learning» in PDF">PDF</a></div> <div class="pt-cella"><a
 class="pt-card" href="DeepReinforcementLearning/overview.html"> <span
 class="pt-card-num"></span> <span class="pt-card-title">Deep Reinforcement
@@ -215,8 +215,8 @@ Learning</span> <span class="pt-card-desc">Quando il RL incontra le reti
 profonde: DQN e policy gradient, controllo continuo, RL basato su modello,
 imitazione, offline RL, esplorazione e reward hacking.</span> </a> <a
 class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-DeepReinforcementLearning.pdf"
-aria-label="Scarica in PDF il capitolo «Deep Reinforcement Learning»"
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-DeepReinforcementLearning.pdf"
+aria-label="Leggi in PDF il capitolo «Deep Reinforcement Learning»"
 title="«Deep Reinforcement Learning» in PDF">PDF</a></div> <div
 class="pt-cella"><a class="pt-card"
 href="NaturalLanguageProcessing/overview.html"> <span
@@ -224,8 +224,8 @@ class="pt-card-num"></span> <span class="pt-card-title">Natural Language
 Processing</span> <span class="pt-card-desc">Dal testo ai numeri: token,
 embedding, modelli n-gram, reti ricorrenti, traduzione e attenzione, entità,
 parsing, dialogo e chatbot.</span> </a> <a class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-NaturalLanguageProcessing.pdf"
-aria-label="Scarica in PDF il capitolo «Natural Language Processing»"
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-NaturalLanguageProcessing.pdf"
+aria-label="Leggi in PDF il capitolo «Natural Language Processing»"
 title="«Natural Language Processing» in PDF">PDF</a></div> <div
 class="pt-cella"><a class="pt-card" href="Transformers/overview.html"> <span
 class="pt-card-num"></span> <span class="pt-card-title">Transformer</span>
@@ -233,45 +233,45 @@ class="pt-card-num"></span> <span class="pt-card-title">Transformer</span>
 self-attention, GPT e BERT, i grandi modelli linguistici, Mixture of Experts,
 il post-addestramento (RLHF, DPO), retrieval e RAG, multimodalità e
 multilingua.</span> </a> <a class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-Transformers.pdf"
-aria-label="Scarica in PDF il capitolo «Transformer»" title="«Transformer» in
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-Transformers.pdf"
+aria-label="Leggi in PDF il capitolo «Transformer»" title="«Transformer» in
 PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
 href="AttenzioneLineare/overview.html"> <span class="pt-card-num"></span> <span
 class="pt-card-title">Attenzione lineare</span> <span
 class="pt-card-desc">Oltre il costo quadratico: dal trucco del kernel alla
 delta rule, con RetNet, RWKV e xLSTM.</span> </a> <a class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-AttenzioneLineare.pdf"
-aria-label="Scarica in PDF il capitolo «Attenzione lineare»" title="«Attenzione
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-AttenzioneLineare.pdf"
+aria-label="Leggi in PDF il capitolo «Attenzione lineare»" title="«Attenzione
 lineare» in PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
 href="StateSpaceModel/overview.html"> <span class="pt-card-num"></span> <span
 class="pt-card-title">State Space Model</span> <span class="pt-card-desc">Da S4
 a Mamba: sequenze a tempo lineare dai sistemi dinamici, fino a Mamba-2 e
 Mamba-3.</span> </a> <a class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-StateSpaceModel.pdf"
-aria-label="Scarica in PDF il capitolo «State Space Model»" title="«State Space
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-StateSpaceModel.pdf"
+aria-label="Leggi in PDF il capitolo «State Space Model»" title="«State Space
 Model» in PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
 href="VisioneLinguaggio/overview.html"> <span class="pt-card-num"></span> <span
 class="pt-card-title">Visione e linguaggio</span> <span
 class="pt-card-desc">Modelli che vedono e parlano: addestramento contrastivo,
 connettori, fusione precoce e il costo del dettaglio.</span> </a> <a
 class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-VisioneLinguaggio.pdf"
-aria-label="Scarica in PDF il capitolo «Visione e linguaggio»" title="«Visione
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-VisioneLinguaggio.pdf"
+aria-label="Leggi in PDF il capitolo «Visione e linguaggio»" title="«Visione
 e linguaggio» in PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
 href="Agenti/overview.html"> <span class="pt-card-num"></span> <span
 class="pt-card-title">Agenti</span> <span
 class="pt-card-desc">Quando gli LLM agiscono: tool use e ReAct, RAG avanzato,
 context engineering, valutazione.</span> </a> <a class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-Agenti.pdf"
-aria-label="Scarica in PDF il capitolo «Agenti»"
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-Agenti.pdf"
+aria-label="Leggi in PDF il capitolo «Agenti»"
 title="«Agenti» in PDF">PDF</a></div> <div
 class="pt-cella"><a class="pt-card" href="IngegneriaLLM/overview.html"> <span
 class="pt-card-num"></span> <span class="pt-card-title">Prompt, contesto e
 loop</span> <span class="pt-card-desc">Programmare gli LLM a parole su tre
 livelli concentrici: prompt engineering, context engineering e loop
 engineering.</span> </a> <a class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-IngegneriaLLM.pdf"
-aria-label="Scarica in PDF il capitolo «Prompt, contesto e loop»"
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-IngegneriaLLM.pdf"
+aria-label="Leggi in PDF il capitolo «Prompt, contesto e loop»"
 title="«Prompt, contesto e loop» in PDF">PDF</a></div> <div class="pt-cella"><a
 class="pt-card" href="Harness/overview.html"> <span class="pt-card-num"></span>
 <span class="pt-card-title">Harness engineering</span> <span
@@ -280,69 +280,69 @@ repository, lista delle funzionalità, passaggio di consegne fra sessioni,
 collaudo da utente, progetto degli strumenti, costo e attesa di un compito,
 grafi con checkpoint, harness cercati da un altro agente.</span> </a>
 <a class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-Harness.pdf"
-aria-label="Scarica in PDF il capitolo «Harness engineering»"
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-Harness.pdf"
+aria-label="Leggi in PDF il capitolo «Harness engineering»"
 title="«Harness engineering» in PDF">PDF</a></div> <div class="pt-cella"><a
 class="pt-card" href="SistemiMultiAgente/overview.html"> <span
 class="pt-card-num"></span> <span class="pt-card-title">Sistemi
 multi-agente</span> <span class="pt-card-desc">Quando gli agenti sono molti:
 costo del coordinamento, topologie, consenso, apprendimento per rinforzo
 multi-agente e sciami.</span> </a> <a class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-SistemiMultiAgente.pdf"
-aria-label="Scarica in PDF il capitolo «Sistemi multi-agente»" title="«Sistemi
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-SistemiMultiAgente.pdf"
+aria-label="Leggi in PDF il capitolo «Sistemi multi-agente»" title="«Sistemi
 multi-agente» in PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
 href="Audio/overview.html"> <span class="pt-card-num"></span> <span
 class="pt-card-title">Audio oltre la voce</span> <span
 class="pt-card-desc">Dallo spettrogramma alla generazione: AudioSet, wav2vec,
 codec neurali, MusicGen.</span> </a> <a class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-Audio.pdf"
-aria-label="Scarica in PDF il capitolo «Audio oltre la voce»" title="«Audio
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-Audio.pdf"
+aria-label="Leggi in PDF il capitolo «Audio oltre la voce»" title="«Audio
 oltre la voce» in PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
 href="SpeechRecognition/overview.html"> <span class="pt-card-num"></span> <span
 class="pt-card-title">Speech Recognition</span> <span
 class="pt-card-desc">Dalla voce al testo e ritorno: allineamento, CTC, Whisper,
 sintesi vocale.</span> </a> <a class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-SpeechRecognition.pdf"
-aria-label="Scarica in PDF il capitolo «Speech Recognition»" title="«Speech
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-SpeechRecognition.pdf"
+aria-label="Leggi in PDF il capitolo «Speech Recognition»" title="«Speech
 Recognition» in PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
 href="ModelliLatenti/overview.html"> <span class="pt-card-num"></span> <span
 class="pt-card-title">Modelli latenti</span> <span
 class="pt-card-desc">Spiegare i dati con qualcosa che non si vede: autoencoder,
 ELBO e riparametrizzazione, il latente che il resto del libro monta senza
 spiegarlo.</span> </a> <a class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-ModelliLatenti.pdf"
-aria-label="Scarica in PDF il capitolo «Modelli latenti»" title="«Modelli
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-ModelliLatenti.pdf"
+aria-label="Leggi in PDF il capitolo «Modelli latenti»" title="«Modelli
 latenti» in PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
 href="GAN/overview.html"> <span class="pt-card-num"></span> <span
 class="pt-card-title">GAN</span> <span class="pt-card-desc">Due reti che si
 sfidano: il gioco avversario che genera immagini.</span> </a> <a
 class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-GAN.pdf"
-aria-label="Scarica in PDF il capitolo «GAN»" title="«GAN» in
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-GAN.pdf"
+aria-label="Leggi in PDF il capitolo «GAN»" title="«GAN» in
 PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
 href="ModelliDiffusione/overview.html"> <span class="pt-card-num"></span> <span
 class="pt-card-title">Modelli di Diffusione</span> <span
 class="pt-card-desc">Rumore e ritorno: da DDPM alle equazioni differenziali,
 flow matching, campionatori veloci, generatori a un passo, guida e diffusione
 sul testo.</span> </a> <a class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-ModelliDiffusione.pdf"
-aria-label="Scarica in PDF il capitolo «Modelli di Diffusione»" title="«Modelli
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-ModelliDiffusione.pdf"
+aria-label="Leggi in PDF il capitolo «Modelli di Diffusione»" title="«Modelli
 di Diffusione» in PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
 href="VerosimiglianzaEsatta/overview.html"> <span class="pt-card-num"></span>
 <span class="pt-card-title">Verosimiglianza esatta</span> <span
 class="pt-card-desc">I modelli che sanno dire quanto &egrave; probabile un
 dato: un pixel alla volta, oppure deformando lo spazio.</span> </a> <a
 class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-VerosimiglianzaEsatta.pdf"
-aria-label="Scarica in PDF il capitolo «Verosimiglianza esatta»"
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-VerosimiglianzaEsatta.pdf"
+aria-label="Leggi in PDF il capitolo «Verosimiglianza esatta»"
 title="«Verosimiglianza esatta» in PDF">PDF</a></div> <div class="pt-cella"><a
 class="pt-card" href="ModelliEnergia/overview.html"> <span
 class="pt-card-num"></span> <span class="pt-card-title">Modelli a
 energia</span> <span class="pt-card-desc">Il paesaggio invece della
 probabilit&agrave;: da Hopfield e Boltzmann allo score matching, la lingua in
 cui sono scritte diffusione e JEPA.</span> </a> <a class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-ModelliEnergia.pdf"
-aria-label="Scarica in PDF il capitolo «Modelli a energia»" title="«Modelli a
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-ModelliEnergia.pdf"
+aria-label="Leggi in PDF il capitolo «Modelli a energia»" title="«Modelli a
 energia» in PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
 href="AutoSupervisione/overview.html"> <span class="pt-card-num"></span> <span
 class="pt-card-title">Auto-supervisione</span> <span class="pt-card-desc">Il
@@ -350,15 +350,15 @@ paradigma che regge quasi tutto il libro, detto una volta sola: come si
 fabbrica un segnale dai dati, le quattro famiglie (contrasto, distillazione,
 ridondanza, ricostruzione) e il dibattito sul rinforzo.</span> </a> <a
 class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-AutoSupervisione.pdf"
-aria-label="Scarica in PDF il capitolo «Auto-supervisione»"
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-AutoSupervisione.pdf"
+aria-label="Leggi in PDF il capitolo «Auto-supervisione»"
 title="«Auto-supervisione» in PDF">PDF</a></div> <div class="pt-cella"><a
 class="pt-card" href="WorldModels/overview.html"> <span
 class="pt-card-num"></span> <span class="pt-card-title">World Model</span>
 <span class="pt-card-desc">Simulatori interni della realtà: dai sogni di Ha
 &amp; Schmidhuber alla via di LeCun (JEPA).</span> </a> <a class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-WorldModels.pdf"
-aria-label="Scarica in PDF il capitolo «World Model»" title="«World Model» in
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-WorldModels.pdf"
+aria-label="Leggi in PDF il capitolo «World Model»" title="«World Model» in
 PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
 href="GenerazioneVideo/overview.html"> <span class="pt-card-num"></span>
 <span class="pt-card-title">Generare video</span> <span
@@ -366,8 +366,8 @@ class="pt-card-desc">Il tempo come terza dimensione: comprimere i fotogrammi,
 l'attenzione nello spazio e nel tempo, la generazione in tempo reale fino ai
 mondi interattivi, il suono insieme alle immagini.</span> </a> <a
 class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-GenerazioneVideo.pdf"
-aria-label="Scarica in PDF il capitolo «Generare video»" title="«Generare
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-GenerazioneVideo.pdf"
+aria-label="Leggi in PDF il capitolo «Generare video»" title="«Generare
 video» in PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
 href="GenerazioneMusica/overview.html"> <span class="pt-card-num"></span>
 <span class="pt-card-title">Generare musica</span> <span
@@ -375,23 +375,23 @@ class="pt-card-desc">La canzone con la voce e il testo: dalla sintesi della
 voce cantata ai modelli a token, alla diffusione su tutta la canzone, al
 pianificatore che scrive lo schema prima del suono.</span> </a> <a
 class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-GenerazioneMusica.pdf"
-aria-label="Scarica in PDF il capitolo «Generare musica»" title="«Generare
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-GenerazioneMusica.pdf"
+aria-label="Leggi in PDF il capitolo «Generare musica»" title="«Generare
 musica» in PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
 href="GraphNeuralNetwork/overview.html"> <span class="pt-card-num"></span>
 <span class="pt-card-title">Graph Neural Network</span> <span
 class="pt-card-desc">Reti che imparano su dati a grafo: message passing, GCN,
 GraphSAGE e GAT, dalle molecole alla scoperta di farmaci e alle
 raccomandazioni.</span> </a> <a class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-GraphNeuralNetwork.pdf"
-aria-label="Scarica in PDF il capitolo «Graph Neural Network»" title="«Graph
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-GraphNeuralNetwork.pdf"
+aria-label="Leggi in PDF il capitolo «Graph Neural Network»" title="«Graph
 Neural Network» in PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
 href="SistemiRaccomandazione/overview.html"> <span class="pt-card-num"></span>
 <span class="pt-card-title">Sistemi di Raccomandazione</span> <span
 class="pt-card-desc">Dal Netflix Prize alla raccomandazione neurale: i modelli
 che scelgono per noi.</span> </a> <a class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-SistemiRaccomandazione.pdf"
-aria-label="Scarica in PDF il capitolo «Sistemi di Raccomandazione»"
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-SistemiRaccomandazione.pdf"
+aria-label="Leggi in PDF il capitolo «Sistemi di Raccomandazione»"
 title="«Sistemi di Raccomandazione» in PDF">PDF</a></div> <div
 class="pt-cella"><a class="pt-card" href="SerieTemporali/overview.html"> <span
 class="pt-card-num"></span> <span class="pt-card-title">Serie temporali</span>
@@ -399,15 +399,15 @@ class="pt-card-num"></span> <span class="pt-card-title">Serie temporali</span>
 classici (ARIMA, Holt-Winters), validazione temporale e metriche, forecasting
 neurale (TCN, DeepAR, N-BEATS, Transformer e foundation model).</span> </a> <a
 class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-SerieTemporali.pdf"
-aria-label="Scarica in PDF il capitolo «Serie temporali»" title="«Serie
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-SerieTemporali.pdf"
+aria-label="Leggi in PDF il capitolo «Serie temporali»" title="«Serie
 temporali» in PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
 href="PINN/overview.html"> <span class="pt-card-num"></span> <span
 class="pt-card-title">Physics-Informed Neural Networks</span> <span
 class="pt-card-desc">Le leggi della fisica dentro la loss: reti che rispettano
 le equazioni differenziali.</span> </a> <a class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-PINN.pdf"
-aria-label="Scarica in PDF il capitolo «Physics-Informed Neural Networks»"
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-PINN.pdf"
+aria-label="Leggi in PDF il capitolo «Physics-Informed Neural Networks»"
 title="«Physics-Informed Neural Networks» in PDF">PDF</a></div> <div
 class="pt-cella"><a class="pt-card" href="MLOps/overview.html"> <span
 class="pt-card-num"></span> <span class="pt-card-title">MLOps</span> <span
@@ -415,8 +415,8 @@ class="pt-card-desc">Dal notebook alla produzione: versioning e pipeline dei
 dati, serving, monitoraggio del drift, LLMOps, metriche di servizio, capacità e
 costo, gateway e affidabilità, servire un agente, il conto in
 energia.</span> </a> <a
-class="pt-card-pdf" href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-MLOps.pdf"
-aria-label="Scarica in PDF il capitolo «MLOps»" title="«MLOps» in
+class="pt-card-pdf" href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-MLOps.pdf"
+aria-label="Leggi in PDF il capitolo «MLOps»" title="«MLOps» in
 PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
 href="Interpretabilita/overview.html"> <span class="pt-card-num"></span> <span
 class="pt-card-title">Interpretabilità</span> <span
@@ -424,8 +424,8 @@ class="pt-card-desc">Aprire la scatola nera: modelli trasparenti e importanza
 delle feature, spiegazioni locali (LIME, SHAP, controfattuali), attribuzione
 (Grad-CAM, integrated gradients) e interpretabilità meccanicistica.</span> </a>
 <a class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-Interpretabilita.pdf"
-aria-label="Scarica in PDF il capitolo «Interpretabilità»"
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-Interpretabilita.pdf"
+aria-label="Leggi in PDF il capitolo «Interpretabilità»"
 title="«Interpretabilità» in PDF">PDF</a></div> <div class="pt-cella"><a
 class="pt-card" href="AIResponsabile/overview.html"> <span
 class="pt-card-num"></span> <span class="pt-card-title">AI responsabile</span>
@@ -433,14 +433,14 @@ class="pt-card-num"></span> <span class="pt-card-title">AI responsabile</span>
 privacy, federated learning) e robustezza agli attacchi avversari, attaccare e
 difendere un LLM (prompt injection, jailbreak), allineamento (RLHF, DPO) e
 governance (l'AI Act europeo).</span> </a> <a class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-AIResponsabile.pdf"
-aria-label="Scarica in PDF il capitolo «AI responsabile»" title="«AI
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-AIResponsabile.pdf"
+aria-label="Leggi in PDF il capitolo «AI responsabile»" title="«AI
 responsabile» in PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
 href="Conclusioni/overview.html"> <span class="pt-card-num"></span> <span
 class="pt-card-title">Conclusioni</span> <span class="pt-card-desc">Bilancio
 del viaggio e letture per proseguire.</span> </a> <a class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-Conclusioni.pdf"
-aria-label="Scarica in PDF il capitolo «Conclusioni»" title="«Conclusioni» in
+href="https://paithon.it/wp-content/uploads/paithon-book/paithon-book-Conclusioni.pdf"
+aria-label="Leggi in PDF il capitolo «Conclusioni»" title="«Conclusioni» in
 PDF">PDF</a></div> </div>
 
 ## Il codice, il PDF e gli aggiornamenti
@@ -472,16 +472,17 @@ correzioni, una voce per pubblicazione, con il link alla pagina toccata. Questa
 
 ::::{only} html
 :::{container} pt-scarica
-[**Scarica il libro intero in PDF** · versione {{ versione }}](https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book.pdf)
+[**Scarica il libro intero in PDF** · versione {{ versione }}](https://paithon.it/wp-content/uploads/paithon-book/paithon-book.pdf?scarica=1)
 
-[**Leggilo nel browser**](https://doi.org/10.5281/zenodo.21947219)
+[**Leggilo nel browser**](https://paithon.it/wp-content/uploads/paithon-book/paithon-book.pdf)
 
 Tutti i capitoli in un file solo, impaginato per la lettura e per la stampa.
 Dove il libro online anima una figura, il PDF ne mostra tre fermi immagine e
-l'indirizzo per vederla muoversi. «Leggilo nel browser» apre il libro su Zenodo,
-l'archivio del CERN in cui è depositato. Il collegamento è il suo **DOI**,
-l'identificativo permanente, che porta sempre all'ultima versione, la mostra
-pagina per pagina e dà la scheda per citarla.
+l'indirizzo per vederla muoversi. Il libro è depositato su Zenodo, l'archivio
+del CERN, con il **DOI**
+[10.5281/zenodo.21947219](https://doi.org/10.5281/zenodo.21947219):
+l'identificativo permanente, che porta sempre all'ultima versione e dà la
+scheda per citarla.
 :::
 ::::
 

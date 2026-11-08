@@ -473,7 +473,7 @@ tokenizzatore, che limita le prestazioni sui compiti di OCR
 Il primo motivo per la fusione precoce è rendere l'immagine qualcosa che il
 modello possa emettere, non solo leggere. Questo non obbliga a usare simboli
 discreti. La diffusione, ad esempio, genera un'immagine in un altro modo, senza
-vocabolari: parte da rumore gaussiano e ne toglie un po' a ogni passo, come
+vocabolari: parte da rumore gaussiano e ne toglie un po’ a ogni passo, come
 descrive il {doc}`capitolo sui modelli di diffusione
 </ModelliDiffusione/overview>`.
 
