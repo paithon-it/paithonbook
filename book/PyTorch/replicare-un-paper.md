@@ -58,11 +58,11 @@ un ripiano soltanto appoggiato: da fuori sembra montato, e cede al primo peso.
 Si scuote il fianco e si guarda che cosa si muove insieme al resto; il pezzo
 che resta fermo non è avvitato a niente.
 
-Sul modello la prova è la stessa: si dà un colpo solo, dall'uscita, e si guarda
-se è arrivato fino a ogni singolo pezzo. Quelli che non l'hanno sentito non
-impareranno mai niente, perché la correzione non li raggiunge. Senza la spinta,
-il ripiano appoggiato si scopre dopo tre giorni di addestramento che non porta
-da nessuna parte.
+Sul modello la prova è la stessa: si dà un colpo solo, dall'uscita, cioè un
+solo calcolo all'indietro delle correzioni, e si guarda se è arrivato fino a
+ogni singolo pezzo. Quelli che non l'hanno sentito non impareranno mai niente,
+perché la correzione non li raggiunge. Senza la spinta, il ripiano appoggiato
+si scopre dopo tre giorni di addestramento che non porta da nessuna parte.
 
 Se in negozio c'è lo stesso mobile già montato dal fabbricante, la prova più
 severa è metterlo accanto al tuo. Un ripiano montato al contrario ha le stesse
@@ -239,10 +239,10 @@ Con un buco largo sedici pixel e uno scatto pure di sedici, invece,
 l'operazione è una sola. La mascherina si sposta di quanto è larga, quindi ogni
 quadratino passa sotto una volta e nessun pixel due volte.
 
-[I due modi calcolano la stessa cosa]{.pt-matita}. Stessi numeri da imparare
-(la mascherina ne aggiunge soltanto uno per ogni numero che esce, una piccola
-correzione fissa), stessi prodotti, sistemati in due ordini diversi, e per
-passare dall'uno all'altro basta riordinarli.
+[I due modi calcolano la stessa cosa]{.pt-matita}. Quasi gli stessi numeri da
+imparare (la mascherina ne ha in più soltanto uno per ogni numero che esce, una
+piccola correzione fissa), stessi prodotti, sistemati in due ordini diversi, e
+per passare dall'uno all'altro basta riordinarli.
 
 Quello che cambia è il lavoro attorno. Chi ritaglia stacca tutti e 196 i
 quadratini e li mette da parte, cioè si ritrova sul tavolo una seconda foto
@@ -250,8 +250,9 @@ fatta a pezzi grande quanto la prima, e solo dopo moltiplica; la mascherina li
 legge dove stanno. Un'operazione invece di tre, e più veloce.
 
 Quella pila pesa quanto la foto finché la mascherina scatta di quanto è larga.
-Chi la fa scattare di otto pixel con un buco da sedici ritrova lo stesso
-pixel dentro più ritagli, e la pila diventa 3,7 volte la foto.
+Chi la fa scattare di otto pixel con un buco da sedici ritrova lo stesso pixel
+dentro più ritagli: ne entrano ventisette per riga invece di quattordici, quasi
+quattro volte tanti in tutto, e la pila diventa 3,7 volte la foto.
 
 Il token di classe. Sopra la pila dei 196 ritagli si mette un foglio che di
 immagine non ha niente. È lo stesso per ogni foto che arriva sul tavolo, e
@@ -268,9 +269,11 @@ da che punto della foto veniva il quadratino.
 I cartellini sono tanti quanti i posti, e questo legame si fa sentire quando le
 foto cambiano misura. Chi dà foto da 384 pixel a un modello addestrato su foto
 da 224 si ritrova sul tavolo 576 quadratini (24 per riga invece di
-14) e 197 cartellini in mano. Stamparne di nuovi, vuoti, butterebbe via le
-posizioni che il modello aveva imparato, quindi si prendono quelli che ci sono
-e si stirano sulla griglia più grande.
+14) e 197 cartellini in mano, mentre ne servirebbe uno per ogni quadratino, più
+    quello del foglio. Stamparne di nuovi, vuoti, butterebbe via le posizioni
+    che il modello aveva imparato, quindi si prendono quelli che ci sono e si
+    stirano sulla griglia più grande, come una cartina ingrandita: quelli che
+    mancano si ricavano dai vicini.
 
 Al foglio c'è un'alternativa. Niente foglio in cima, e alla fine si fa la media
 delle risposte dei 196 ritagli. Funziona altrettanto bene a un patto,
@@ -401,7 +404,8 @@ copiato i primi quattro numeri, ma non il quinto, che ne è una conseguenza solo
 in parte. Il numero di parametri, infatti, dipende da strati, dimensione
 nascosta e dimensione dell'MLP (e da patch e risoluzione, che la tabella non
 riporta), ma non dal numero di teste, perché le teste si spartiscono le colonne
-di ciascuna proiezione.
+di ciascuna proiezione: dodici teste da sessantaquattro colonne ne usano in
+tutto settecentosessantotto, quante una testa sola.
 
 Il conteggio si fa in trenta secondi, senza una GPU e senza dati, e verifica
 quelle dimensioni; le teste e l'ordine delle operazioni si controllano in un
@@ -466,10 +470,11 @@ $$
 85\,797\,120 + 1\,536 + (768 \cdot 1000 + 1000) = 86\,567\,656,
 $$
 
-che coincide con il numero riportato da quel modello, fino all'ultima cifra. Il
-$+K$ in coda conta, perché dimenticare i mille bias della testa farebbe tornare
-il totale mille parametri sotto, e in una verifica che si vanta di essere
-esatta all'unità mille parametri si vedono.
+che coincide con il numero riportato da quel modello, fino all'ultima cifra: il
+paper dà un numero tondo, ai milioni, e un conteggio esatto si confronta solo
+con un modello che si può contare. Il $+K$ in coda conta, perché dimenticare i
+mille bias della testa farebbe tornare il totale mille parametri sotto, e in
+una verifica che si vanta di essere esatta all'unità mille parametri si vedono.
 
 Se invece il nostro conteggio fosse uscito attorno ai $43$ milioni, il primo
 sospetto sarebbero sei blocchi invece di dodici, che danno $43\,269\,888$

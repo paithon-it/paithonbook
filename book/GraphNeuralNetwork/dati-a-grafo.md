@@ -161,7 +161,7 @@ sinistra, e la convoluzione sfrutta questa regolarità. Una frase è una
 sequenza. La prima parola viene sempre prima della seconda, e i modelli per il
 testo su quell'ordine ci contano. Un grafo no: se rinumero i suoi nodi
 (chiamo «1» il nodo che prima chiamavo «3» e viceversa) è lo *stesso* grafo,
-ma la matrice $\mathbf{A}$ cambia completamente aspetto.
+ma la matrice $\mathbf{A}$ cambia aspetto.
 
 `````{tab} Elementare
 
@@ -540,7 +540,7 @@ $$
 \end{pmatrix},
 $$
 
-che è un disegno di numeri completamente diverso dal primo. I gradi sono
+che è un disegno di numeri diverso dal primo. I gradi sono
 $(3,2,2,2,1)$: sono gli stessi cinque numeri di prima, in un altro
 ordine, come dev'essere, perché a cambiare sono stati i loro nomi, non i nodi.
 [Ecco il problema in una tabella: due fogli con numeri diversi, e dietro un unico
@@ -568,7 +568,7 @@ chi parla e quello di chi ascolta; quanto, di preciso, lo dice la sezione sul
 message passing, coi numeri.
 
 Una proprietà conta più di tutte. Se ai nodi si cambiano i
-nomi, la tabella cambia da cima a fondo e il grafo no.
+nomi, la tabella cambia e il grafo no.
 
 `````
 

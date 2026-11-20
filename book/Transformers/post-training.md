@@ -290,14 +290,15 @@ passano da $dk$ a $\rho(d+k)$]{.pt-matita}. Ad esempio, per $d=k=4096$ e
 $\rho=8$ si scende da $16{,}8$ milioni a $65\,536$ per matrice, lo $0{,}39\%$.
 All'inizio $\mathbf{A}$ è inizializzata casualmente e $\mathbf{B}$ a zero, così
 $\Delta\mathbf{W} = 0$ e il modello parte dal comportamento pre-addestrato;
-$\alpha/\rho$ è un fattore di scala che disaccoppia il *learning rate* efficace
-dalla scelta di $\rho$. Stabilire su quali matrici inserire il ramo laterale è
-una scelta progettuale: il lavoro originale limita lo studio ai pesi
-dell'attenzione, e nella maggior parte degli esperimenti alle sole proiezioni
-$\mathbf{W}^Q$ e $\mathbf{W}^V$, da cui deriva il conteggio ridotto sul modello
-intero. QLoRA mostra tuttavia che per eguagliare il fine-tuning completo
-servono adattatori su tutte le matrici lineari del blocco, FFN comprese, e che
-a quel punto il rango conta poco {cite}`dettmers2023qlora`.
+$\alpha/\rho$ è un fattore di scala che riduce la necessità di ritarare il
+*learning rate* quando si cambia $\rho$, senza renderlo indipendente da $\rho$.
+Stabilire su quali matrici inserire il ramo laterale è una scelta progettuale:
+il lavoro originale limita lo studio ai pesi dell'attenzione, e nella maggior
+parte degli esperimenti alle sole proiezioni $\mathbf{W}^Q$ e $\mathbf{W}^V$,
+da cui deriva il conteggio ridotto sul modello intero. QLoRA mostra tuttavia
+che per eguagliare il fine-tuning completo servono adattatori su tutte le
+matrici lineari del blocco, FFN comprese, e che a quel punto il rango conta
+poco {cite}`dettmers2023qlora`.
 
 Tre conseguenze pratiche:
 
@@ -415,7 +416,7 @@ Il reward model $r_\phi(x, y)$ (tipicamente lo stesso Transformer con una testa
 scalare al posto della softmax) viene addestrato assumendo il modello di
 **Bradley–Terry** {cite}`bradley1952rank`, per cui la probabilità di preferenza
 dipende solo dalla differenza dei punteggi. Quel modello poggia su tre
-assunzioni forti: l'esistenza di un unico scalare per risposta da cui
+ipotesi forti: l'esistenza di un unico scalare per risposta da cui
 discendono tutte le preferenze; la transitività della struttura sottostante,
 che segue dalla prima (il singolo giudizio può essere ciclico e viene trattato
 come rumore, ma l'ordinamento teorico non può esserlo); l'intercambiabilità
@@ -1129,19 +1130,20 @@ il comportamento dei modelli, non garanzie sul risultato]{.pt-matita}.
   dal riferimento la ricompensa vera cala, e la penalità KL non sposta la curva
   {cite}`gao2023scaling`), ruffianeria, e la domanda non tecnica «allineato a
   chi?».
-- Limite dello strumento: un ritorno scalare a fine sequenza va ridistribuito su
-  tutti i token generati, quindi rinforza anche i passaggi errati delle
+- Limite dello strumento: un ritorno scalare a fine sequenza va ridistribuito
+  su tutti i token generati, quindi rinforza anche i passaggi errati delle
   traiettorie riuscite («sucking supervision through a straw»,
   {cite}`karpathy2025dwarkesh`). Misurando col pass@$k$, nello studio
   dell'aprile 2025 i modelli addestrati con ricompensa verificabile vincono a
   $k$ piccolo e i modelli base a $k$ grande {cite}`yue2025rlvr`, ma con
-  addestramenti più lunghi il vantaggio tiene anche a $k$ grande
-  {cite}`liu2025prorl`. La {doc}`sezione sul dibattito sul rinforzo
+  addestramenti più lunghi il vantaggio può tenere anche a $k$ grande,
+  soprattutto sui compiti in cui il modello base è debole {cite}`liu2025prorl`.
+  La {doc}`sezione sul dibattito sul rinforzo
   </AutoSupervisione/dibattito-rl>` tratta entrambe le questioni per esteso.
 ```
 `````
 
-Il post-training orienta il comportamento di un modello senza aggiornare quello
-che sa, e l'instruction tuning insegna male i fatti nuovi. Per le conoscenze
-che i pesi non hanno serve un'altra strada, quella della {doc}`sezione sul
-retrieval <rag>`.
+Il post-training orienta il comportamento di un modello senza aggiungere molto
+a quello che sa, e l'instruction tuning insegna male i fatti nuovi. Per le
+conoscenze che i pesi non hanno serve un'altra strada, quella della
+{doc}`sezione sul retrieval <rag>`.

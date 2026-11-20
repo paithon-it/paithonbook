@@ -35,6 +35,16 @@ che contiene sia sezioni nuove sia correzioni prende il numero della modifica
 maggiore, e ogni versione corrisponde a una pubblicazione: sotto ciascuna, il
 livello dice quale cifra è salita.
 
+(v1-18-2)=
+
+## 1.18.2 · 20 novembre 2026
+
+### Patch
+
+- {doc}`Generare video </GenerazioneVideo/overview>`. **Le aperture di Generare video e Generare musica.** Anche questi due capitoli hanno la loro illustrazione d'apertura.
+- **Più chiaro per chi parte da zero.** In tutti i capitoli le spiegazioni più semplici dicono i termini al primo uso e non saltano passaggi.
+- **Formule e fatti ricontrollati.** In tutti i capitoli le formule hanno le ipotesi che mancavano, le affermazioni troppo forti sono ridimensionate, e numeri e attribuzioni sono verificati sulle fonti.
+
 (v1-18-1)=
 
 ## 1.18.1 · 8 novembre 2026

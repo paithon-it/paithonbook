@@ -186,8 +186,9 @@ rifacendo l'errore che quella scelta evitava.
 Il rimedio costa poco: un file delle decisioni, una riga per decisione con la
 ragione e l'alternativa scartata, che nello sviluppo del software si chiama
 *architecture decision record* {cite}`nygard2011adr`. Per esempio: «I prezzi si
-tengono in centesimi interi. Scartati gli euro con la virgola: le somme dei
-numeri con la virgola, nel computer, sbagliano di qualche centesimo.»
+tengono in centesimi interi. Scartati gli euro con la virgola: i numeri con la
+virgola, nel computer, non sono esatti (0,1 più 0,2 non fa 0,3), e un confronto
+o un arrotondamento al centesimo può sbagliare.»
 
 Il file di avanzamento ha un vantaggio preciso sul riassunto che, nel primo
 tentativo di Young, passava da una finestra all'altra. Tutti e due li scrive il
@@ -290,7 +291,9 @@ iterazione del ciclo riceve di nuovo tutto il contesto, istruzioni e
 cronologia, e lo rilegge da capo. Se la cronologia cresce di una quantità fissa
 a ogni iterazione, ogni iterazione costa un po’ più della precedente, e il
 costo di una sessione cresce con il quadrato della sua lunghezza: una sessione
-lunga il doppio legge quasi quattro volte tanto.
+lunga il doppio legge quasi quattro volte tanto. Con un foglio in più a ogni
+iterazione, ad esempio, dieci iterazioni leggono in tutto cinquantacinque
+fogli, e venti ne leggono duecentodieci.
 
 Un programma fa il conto su numeri tondi, scelti per far vedere la forma del
 conto e non misurati su un sistema vero: un compito di sessanta iterazioni,

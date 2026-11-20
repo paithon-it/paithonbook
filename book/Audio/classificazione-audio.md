@@ -172,36 +172,38 @@ confrontando gli intervalli predetti con quelli veri, in due modi
 {cite}`mesaros2016metrics`: per segmenti, dividendo il tempo in tratti di un
 secondo e contando in ciascuno le classi indovinate, mancate e in più; o per
 eventi, dove un evento predetto conta come giusto se il suo inizio cade entro
-una tolleranza da quello vero (il *collar*, da 100 a 250 millisecondi nelle
-edizioni di DCASE). Da quei conteggi si ricavano l'F1 e il tasso d'errore, e il
+una tolleranza da quello vero (il *collar*: nella Task 4 di DCASE 2021, 200
+millisecondi sull'inizio, e la fine deve cadere entro 200 millisecondi o, se è di
+più, il 20% della durata dell'evento). Da quei conteggi si ricavano l'F1 e il
+tasso d'errore, e il
 PSDS {cite}`bilen2020framework` li riassume su tutte le soglie di decisione in
 un numero solo.
 
-Le etichette, però, sono quasi sempre della clip e non del frame, cioè *deboli*:
-si tratta di apprendimento a istanze multiple, dove la clip è un sacco di frame
-e l'etichetta dice soltanto se nel sacco c'è almeno un evento. Il modello
-produce allora probabilità per frame $\hat{y}_{c,t}$, una funzione
-di *pooling* le riduce a una probabilità di clip $y_c$, e su quella si calcola
-la BCE.
+Le etichette, però, sono quasi sempre della clip e non del frame, cioè
+*deboli*: si tratta di apprendimento a istanze multiple, dove la clip è un
+sacco di frame e l'etichetta dice soltanto se nel sacco c'è almeno un evento.
+Il modello produce allora probabilità per frame $\hat{y}_{c,t}$, una funzione
+di *pooling* le riduce a una probabilità di clip $\hat{y}_c$, e su quella,
+contro l'etichetta $y_c$, si calcola la BCE.
 
 Wang e colleghi ne confrontano cinque {cite}`wang2019comparison`: il massimo,
-$y_c = \max_t \hat{y}_{c,t}$; la media, $y_c = \frac{1}{T}\sum_t
-\hat{y}_{c,t}$; la *linear softmax*, $y_c = \sum_t \hat{y}_{c,t}^2 / \sum_t
-\hat{y}_{c,t}$; la *exponential softmax*, $y_c = \sum_t
+$\hat{y}_c = \max_t \hat{y}_{c,t}$; la media, $\hat{y}_c = \frac{1}{T}\sum_t
+\hat{y}_{c,t}$; la *linear softmax*, $\hat{y}_c = \sum_t \hat{y}_{c,t}^2 / \sum_t
+\hat{y}_{c,t}$; la *exponential softmax*, $\hat{y}_c = \sum_t
 \hat{y}_{c,t}\,e^{\hat{y}_{c,t}} / \sum_t e^{\hat{y}_{c,t}}$; e l'attenzione,
-$y_c = \sum_t w_{c,t}\,\hat{y}_{c,t} / \sum_t w_{c,t}$, con pesi $w_{c,t}$
+$\hat{y}_c = \sum_t w_{c,t}\,\hat{y}_{c,t} / \sum_t w_{c,t}$, con pesi $w_{c,t}$
 appresi. Il massimo è fedele alla definizione ma passa il gradiente a un frame
 solo, e lascia spenti gli altri frame dell'evento; la media lo spalma su tutti,
 e sulle clip positive accende anche i frame dove l'evento non c'è. La linear
 softmax sta in mezzo, e la derivata dice come:
 
 $$
-\frac{\partial y_c}{\partial \hat{y}_{c,t}}
-= \frac{2\hat{y}_{c,t} - y_c}{\sum_{t'} \hat{y}_{c,t'}},
+\frac{\partial \hat{y}_c}{\partial \hat{y}_{c,t}}
+= \frac{2\hat{y}_{c,t} - \hat{y}_c}{\sum_{t'} \hat{y}_{c,t'}},
 $$
 
 positiva soltanto per i frame sopra metà della probabilità di
-clip. Su una clip positiva, dove la perdita spinge $y_c$ verso 1, quei frame
+clip. Su una clip positiva, dove la perdita spinge $\hat{y}_c$ verso 1, quei frame
 vengono alzati e gli altri abbassati. Di conseguenza le probabilità di frame si
 polarizzano, e questo è ciò che serve a localizzare. L'attenzione, che impara
 quali frame pesare, sulle clip negative finisce invece per pesare i frame a
@@ -209,7 +211,7 @@ probabilità bassa, e lascia accesi gli altri, che diventano falsi positivi.
 Sulla Task 4 di DCASE 2017
 (17 classi di veicoli e segnali d'allarme) la linear softmax risulta la
 migliore delle cinque, e localizza almeno quanto il massimo (tasso d'errore
-dell'84 % contro l'85 %), mentre media, softmax esponenziale e attenzione
+dell'84,3 % contro l'84,7 %), mentre media, softmax esponenziale e attenzione
 superano il 100 %. In definitiva, da quella scelta dipende se i confini
 temporali che escono dal modello valgono qualcosa, visto che nessuno glieli ha
 mai mostrati.
@@ -218,13 +220,13 @@ mai mostrati.
 
 ## I dati: AudioSet
 
-Per i suoni del mondo il riferimento è AudioSet, pubblicato da Google nel
-2017 {cite}`gemmeke2017audioset`. Contiene oltre due milioni di clip da dieci
+Per i suoni del mondo il riferimento è AudioSet, pubblicato da Google nel 2017
+{cite}`gemmeke2017audioset`. Contiene oltre due milioni di clip da dieci
 secondi, contro le 2000 di ESC-50 {cite}`piczak2015esc` e le 8732 di
-UrbanSound8K {cite}`salamon2014dataset`, due raccolte di suoni ambientali
-messe insieme a mano negli anni precedenti. Sono due ordini di grandezza in
-più, pagati con
-etichette meno precise.
+UrbanSound8K {cite}`salamon2014dataset`, due raccolte di suoni ambientali messe
+insieme a mano negli anni precedenti. Sono mille volte le clip della prima
+raccolta e circa duecentoquaranta volte quelle della seconda, pagate con etichette
+meno precise.
 
 `````{tab} Elementare
 
@@ -311,12 +313,13 @@ abbiamo incontrato con il {doc}`Vision Transformer
 </Transformers/multimodalita>`.
 
 L'AST fa la stessa identica cosa sulla radiografia del suono: taglia lo
-spettrogramma in tessere, le mette in fila e lascia che ciascuna guardi
-le altre, collegando per esempio un colpo secco all'inizio con la sua eco un
+spettrogramma in tessere, le mette in fila e lascia che ciascuna guardi le
+altre, collegando per esempio un colpo secco all'inizio con la sua eco un
 istante dopo, anche se sulla lastra sono lontani. Niente filtri che scorrono:
-solo tessere che si guardano tra loro. Il confronto fra tutte costa:
-dieci secondi di suono sono milleduecento tessere, e le coppie da confrontare,
-a ogni passaggio, quasi un milione e mezzo.
+solo tessere che si guardano tra loro. Il confronto fra tutte costa: dieci
+secondi di suono sono milleduecento tessere, e le coppie da confrontare, a ogni
+passaggio, quasi un milione e mezzo, perché ogni tessera guarda tutte le altre:
+milleduecento per milleduecento.
 
 Non è gratis, però. I filtri che scorrono portavano con sé un'idea già pronta
 (conta ciò che sta vicino), e a un modello che riceve un'idea in regalo bastano
@@ -435,12 +438,13 @@ gaussiano, dove ogni coppia di campioni cambia segno con probabilità $1/2$,
 $\mathrm{ZCR} \approx 1/2$.
 
 Si noti che lo ZCR misura *dove* sta lo spettro, non se il segnale è tonale o
-rumoroso: un tono vicino alla frequenza di Nyquist ha ZCR
-vicino a $1$, un rumore con poca energia sopra qualche centinaio di hertz lo ha
-vicino a $0$. Separare toni e rumori in generale chiede un'altra misura, che
-guardi la forma dello spettro invece della sua posizione, come la *spectral
-flatness* (il rapporto fra la media geometrica e la media aritmetica dello
-spettro di potenza, vicina a $1$ per un rumore bianco e a $0$ per un tono).
+rumoroso: un tono vicino alla frequenza di Nyquist ha ZCR vicino a $1$, un
+rumore con poca energia sopra qualche centinaio di hertz lo ha vicino a $0$.
+Separare toni e rumori in generale chiede un'altra misura, che guardi la forma
+dello spettro invece della sua posizione, come la *spectral flatness* (il
+rapporto fra la media geometrica e la media aritmetica dello spettro di
+potenza: vale $1$ sullo spettro atteso di un rumore bianco, circa $0{,}56$ sul
+periodogramma di una finestra sola, e tende a $0$ per un tono).
 
 Energia e ZCR sono, storicamente, tra le prime feature usate per separare
 parti sonore e non sonore del parlato: un antenato rudimentale delle feature

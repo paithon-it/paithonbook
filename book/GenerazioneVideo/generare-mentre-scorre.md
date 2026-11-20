@@ -590,8 +590,8 @@ nemmeno la memoria: 7,14 GiB sia per cinque secondi sia per cinque minuti. Una
 cache che crescesse sempre, per cinque minuti, ne vorrebbe 1429, e le coppie di
 fotogrammi da confrontare sarebbero quasi tre milioni invece di 28.740, cento
 volte tanto. Il prezzo della finestra è la memoria del modello, perché sei
-fotogrammi latenti coprono un secondo e mezzo di video e il modello non vede
-più quello che ne è uscito.
+fotogrammi latenti coprono un secondo e mezzo di video e il modello non guarda
+più direttamente quello che ne è uscito.
 
 La {numref}`fig-video-cache-che-scorre` mostra il processo in movimento, con
 blocchi di tre fotogrammi latenti e una finestra di due blocchi, cioè gli
@@ -661,10 +661,12 @@ meno movimento complesso sa disegnare, perché non vede abbastanza indietro.
 La cache ha una dimensione fissa: $w\,S \cdot 2\,d\,L \cdot b$ byte, con $b$ il
 numero di byte per elemento, che per Wan 14B a 480p con $w = 6$ vale 7,14 GiB.
 Il costo di un fotogramma nuovo è $O(T w)$, quello della cache che scorre di
-Self Forcing; il prezzo è che la memoria del modello è la finestra stessa,
-$w\,c_t$ fotogrammi di video, e a 16 fotogrammi al secondo con $c_t = 4$ sei
-fotogrammi latenti sono 24 fotogrammi, cioè 1,5 secondi (21 fotogrammi finché
-la finestra contiene il primo latente, che ne vale uno solo).
+Self Forcing; il prezzo è che la memoria diretta del modello è la finestra
+stessa, $w\,c_t$ fotogrammi di video (quelli scartati sopravvivono solo come
+tracce nelle chiavi e nei valori degli strati profondi), e a 16 fotogrammi al
+secondo con $c_t = 4$ sei fotogrammi latenti sono 24 fotogrammi, cioè 1,5
+secondi (21 fotogrammi finché la finestra contiene il primo latente, che ne
+vale uno solo).
 
 Il fattore $2\,d$ per strato vale per Wan, dove ogni testa di query ha chiavi
 e valori suoi: la tabella del modello dà 12 teste alla versione da 1,3
@@ -729,7 +731,10 @@ p\big(\mathbf{x}^{i} \mid \mathbf{x}^{<i},\, \mathbf{a}^{\le i}\big),
 $$
 
 dove $\mathbf{a}^i$ è il comando, il vettore dei tasti premuti e del movimento
-del mouse, dato prima di vedere il fotogramma $i$. Genie ricava i comandi dal
+del mouse, dato prima di vedere il fotogramma $i$. Il prodotto è una scelta di
+modello, la distribuzione dei fotogrammi quando i comandi sono imposti: sui
+dati registrati, dove chi gioca sceglie il comando dopo aver visto lo schermo,
+il condizionamento ordinario non si fattorizza così. Genie ricava i comandi dal
 video senza etichette e GameNGen li osserva dalle partite registrate: la
 {doc}`sezione sui mondi da giocare </WorldModels/simulatori-e-dibattito>` ne ha
 descritto il modello di azioni latenti, e qui non si ripete. Un esempio aperto,
@@ -782,7 +787,7 @@ bidirezionale, quindi i comandi di tutti i suoi fotogrammi devono essere noti
 prima di ripulirlo. Ne segue che un comando arrivato durante la generazione di
 un blocco agisce dal blocco dopo, e che la reattività è limitata dalla durata
 del blocco. Restano poi i due limiti della cache che scorre: la finestra di $w$
-fotogrammi è l'unica memoria del modello, e l'errore si accumula.
+fotogrammi è l'unica memoria diretta del modello, e l'errore si accumula.
 `````
 
 Genie 3 affronta lo stesso problema in un sistema chiuso, e il suo blog lo
@@ -855,9 +860,9 @@ meccanismo, e non dice niente su come Genie 3 ottenga la sua memoria.
   *mode-seeking*.
 - Per ogni fotogramma nuovo, con $T$ passi e finestra $w$: $O(T w^2)$ per la
   finestra bidirezionale, $O(w^2 + T w)$ per la cache con ricalcolo, $O(T w)$
-  per la cache che scorre. La memoria della cache è $w\,S \cdot 2\,d\,L \cdot b$
-  byte (7,14 GiB per Wan 14B a 480p con $w = 6$) e la memoria del modello è la
-  finestra: 1,5 secondi a 16 fotogrammi al secondo.
+  per la cache che scorre. La memoria della cache è $w\,S \cdot 2\,d\,L \cdot
+  b$ byte (7,14 GiB per Wan 14B a 480p con $w = 6$) e la memoria diretta del
+  modello è la finestra: 1,5 secondi a 16 fotogrammi al secondo.
 - Il primo fotogramma latente ha statistiche diverse: Self Forcing ne toglie la
   vista all'ultimo blocco in addestramento, Krea ricalcola la cache e ricodifica
   il primo fotogramma a ogni scarto, con un costo $O(S^2 w(w+1)/2)$.

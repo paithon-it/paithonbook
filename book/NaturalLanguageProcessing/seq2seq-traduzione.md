@@ -326,8 +326,9 @@ in token delle traduzioni candidate del corpus e $r$ la *lunghezza di
 riferimento effettiva*, cioè la somma, frase per frase, della lunghezza del
 riferimento più vicina a quella del candidato. La penalità serve perché BLEU è
 fatto di sole precisioni: un termine di *recall* non c'è (non esiste un modo
-ovvio di calcolarlo su più riferimenti insieme) e senza correzione la
-traduzione più corta risulterebbe sempre la migliore. Il punteggio è
+ovvio di calcolarlo su più riferimenti insieme) e senza correzione una
+traduzione corta, fatta delle sole parole più sicure, avrebbe precisioni alte
+senza pagare ciò che omette. Il punteggio è
 
 $$
 \mathrm{BLEU} = \mathrm{BP} \cdot
@@ -337,14 +338,14 @@ $$
 dove $p_n$ è la precisione clippata degli $n$-grammi e $w_n = 1/4$ il peso
 uniforme dei quattro ordini.
 
-Per leggere i punteggi di Sutskever servono anche i limiti della metrica. BLEU è
-definito sul corpus e non sulla singola frase:
-le $p_n$ si accumulano su tutto il test set, e su una frase sola un 4-gramma
-mancante manda il punteggio a zero. Inoltre, dipende dalla tokenizzazione e dal
-numero di riferimenti, tanto che due punteggi si confrontano solo a protocollo
-identico. È la ragione per cui esiste `sacrebleu`: Matt Post misura fino a 1,8
-punti di differenza fra configurazioni d'uso comune, e indica come prima causa
-la tokenizzazione e la normalizzazione applicate ai riferimenti
+Per leggere i punteggi di Sutskever servono anche i limiti della metrica. BLEU
+è definito sul corpus e non sulla singola frase: le $p_n$ si accumulano su
+tutto il test set, e su una frase sola basta che nessun 4-gramma coincida ($p_4
+= 0$) perché il punteggio vada a zero. Inoltre, dipende dalla tokenizzazione e
+dal numero di riferimenti, tanto che due punteggi si confrontano solo a
+protocollo identico. È la ragione per cui esiste `sacrebleu`: Matt Post misura
+fino a 1,8 punti di differenza fra configurazioni d'uso comune, e indica come
+prima causa la tokenizzazione e la normalizzazione applicate ai riferimenti
 {cite}`post2018call`. Infine, la metrica non rileva le parafrasi corrette, e
 per tutte queste ragioni una differenza di un punto, da sola, non decide fra
 due sistemi.
@@ -371,15 +372,16 @@ candidato.
 La simmetria si rompe appena i riferimenti sono più d'uno, che è il caso
 normale. BLEU taglia il conteggio del candidato sul massimo fra i riferimenti;
 la ROUGE-N originale somma invece numeratore e denominatore su tutti i
-riferimenti, assegnando così maggior peso agli $n$-grammi condivisi da più
-di loro, mentre il pacchetto dell'autore impiega un terzo criterio (il
-massimo delle ROUGE calcolate a coppie).
+riferimenti, assegnando così maggior peso agli $n$-grammi condivisi da più di
+loro, mentre per più riferimenti lo stesso articolo prende il massimo delle
+ROUGE calcolate a coppie, e il pacchetto dell'autore lo media in *jackknifing*,
+togliendo un riferimento alla volta.
 
 Ad esempio, con il candidato «il gatto dorme» e i due riferimenti «il gatto
-dorme» e «il cane», BLEU conta $3$ unigrammi su $3$
-(ciascuno tagliato alla sua occorrenza massima in un riferimento), la ROUGE-1
-originale ne somma $3 + 1 = 4$ su $5$ parole di riferimento, e il massimo a
-coppie del pacchetto dà $1$: nessuna delle tre formule si ottiene dall'altra
+dorme» e «il cane», BLEU conta $3$ unigrammi su $3$ (ciascuno tagliato alla sua
+occorrenza massima in un riferimento), la ROUGE-1 originale ne somma $3 + 1 =
+4$ su $5$ parole di riferimento, il massimo a coppie dà $1$ e il pacchetto
+$(1 + 1/2)/2 = 0{,}75$: nessuna delle quattro formule si ottiene da un'altra
 scambiando un denominatore.
 
 Accanto alla ROUGE-N si riporta quasi sempre la **ROUGE-L**, che al posto degli
@@ -456,8 +458,9 @@ Nella {numref}`fig-allineamento-traduzione` le due linee centrali si
 incrociano: non è un difetto, ma il punto essenziale. In italiano l'aggettivo
 segue il nome, in inglese lo precede, e il modello va a prendersi le parole
 nell'ordine dovuto, prima la terza e poi la seconda. Con il vettore unico
-questo non era possibile, non perché fosse difficile, ma perché l'informazione
-sulla posizione di ciascuna parola era già andata perduta.
+questo modo di lavorare non c'era: l'ordine si poteva ricostruire solo a
+memoria, perché la posizione di ciascuna parola era ormai sfumata dentro un
+riassunto solo, e su una frase lunga la memoria non basta.
 
 ```{figure} ../figures/seq2seq-attenzione.svg
 :name: fig-seq2seq-attenzione
@@ -1065,12 +1068,12 @@ messe fianco a fianco: quella del sistema statistico, quella di GNMT e quella
 di un traduttore umano che conosce bene le due lingue.
 
 GNMT recupera fra il 58% (inglese→cinese) e l'87% (inglese→spagnolo) della
-distanza fra il sistema statistico e il traduttore umano, a seconda della coppia
-di lingue. Gli autori
-la chiamano riduzione degli errori, e nell'abstract la riassumono in un 60%
-medio. Si noti che la misura vale per le frasi su cui è fatta: 500 per coppia
-di lingue, isolate, prese da Wikipedia e da siti di notizie, e che gli autori
-stessi definiscono semplici.
+distanza fra il sistema statistico e il traduttore umano (della differenza di
+voto fra i due, cioè, ne colma da poco più di metà a quasi nove decimi), a
+seconda della coppia di lingue. Gli autori la chiamano riduzione degli errori,
+e nell'abstract la riassumono in un 60% medio. Si noti che la misura vale per
+le frasi su cui è fatta: 500 per coppia di lingue, isolate, prese da Wikipedia
+e da siti di notizie, e che gli autori stessi definiscono semplici.
 
 [Da quel momento le reti ricorrenti che abbiamo studiato traducono ogni giorno
 per un servizio di massa]{.pt-matita}, e non sono le sole: altri sistemi
@@ -1161,9 +1164,10 @@ sequenze <etichettare-sequenze>`), ricostruire la struttura della frase
   collo di bottiglia: la qualità dell'encoder–decoder di base cala con la
   lunghezza della frase (la LSTM profonda di Sutskever, con la sorgente
   invertita, fa eccezione).
-- L’attenzione di Bahdanau lo elimina: a ogni passo il decoder rivede
-  *tutti* gli stati dell'encoder con pesi $\alpha_{ij}$ appresi; è il
-  precursore diretto della *scaled dot-product attention* dei Transformer.
+- L’attenzione di Bahdanau lo elimina: a ogni passo il decoder rivede *tutti*
+  gli stati dell'encoder con pesi $\alpha_{ij}$ ricalcolati dall'ingresso
+  (appresi sono i parametri che li producono); la *scaled dot-product
+  attention* dei Transformer discende dalla forma moltiplicativa di Luong.
 - L'addestramento condiziona su $y_{<i}$ di riferimento (teacher forcing). È la
   forma esatta della massima verosimiglianza sulle coppie, token di fine frase
   compreso, e rende noti in anticipo gli ingressi del decoder: su una RNN
@@ -1189,13 +1193,13 @@ sequenze <etichettare-sequenze>`), ricostruire la struttura della frase
   protocollo, cieco alla parafrasi. Nel 2014 la rete pura ($34{,}8$) supera il
   sistema statistico di riferimento ($33{,}3$) ma non lo stato dell'arte
   ($37{,}0$).
-- Il gemello per i riassunti è ROUGE {cite}`lin2004rouge`: un richiamo
-  sugli $n$-grammi del riferimento, perché là il peccato è l'omissione. Con un
+- Il gemello per i riassunti è ROUGE {cite}`lin2004rouge`: un richiamo sugli
+  $n$-grammi del riferimento, perché là il peccato è l'omissione. Con un
   riferimento solo è la frazione di BLEU col denominatore scambiato; con più
-  riferimenti no, perché BLEU taglia sul massimo e ROUGE somma. La ROUGE-L
-  usa la sottosequenza comune più lunga, che vede l'ordine senza pretendere la
-  contiguità e non chiede di fissare $n$; si riportano le $F_1$ perché un
-  richiamo puro premia il candidato lungo.
+  riferimenti no, perché BLEU taglia sul massimo e la ROUGE-N originale somma.
+  La ROUGE-L usa la sottosequenza comune più lunga, che vede l'ordine senza
+  pretendere la contiguità e non chiede di fissare $n$; si riportano le $F_1$
+  perché un richiamo puro premia il candidato lungo.
 - Nel 2016 la traduzione neurale entra in produzione con GNMT (valutazione
   umana su frasi semplici e isolate); nel 2017 il Transformer fa cadere la
   ricorrenza.

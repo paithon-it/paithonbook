@@ -239,11 +239,11 @@ visita*. Per $s_0$ si mediano $9$, $7{,}1$ e $6{,}39$, cioè $22{,}49 : 3 =
 9{,}0333\ldots$.
 
 Il secondo conta tutte le righe, ripassaggi compresi, e si chiama *a ogni
-visita*. Per $s_0$ i numeri diventano cinque ($9 + 7{,}1 + 9 +
-6{,}39 + 9 = 40{,}49$, diviso $5$ fa $8{,}098$) e per $s_1$ quattro ($10 + 10 +
-7{,}1 + 10 = 37{,}1$, diviso $4$ fa $9{,}275$). Arrotondati alla seconda cifra,
-sono $7{,}50$ e $9{,}03$ da una parte, $8{,}10$ e $9{,}28$ dall'altra, ma i
-numeri veri sono questi.
+visita*. Per $s_0$ i numeri diventano cinque ($9 + 7{,}1 + 9 + 6{,}39 + 9 =
+40{,}49$, diviso $5$ fa $8{,}098$) e per $s_1$ quattro ($10 + 10 + 7{,}1 + 10 =
+37{,}1$, diviso $4$ fa $9{,}275$). Arrotondati alla seconda cifra, sono
+$7{,}50$ e $9{,}03$ da una parte, $8{,}10$ e $9{,}28$ dall'altra, ma i numeri
+esatti sono quelli del conto.
 
 `````
 
@@ -420,8 +420,11 @@ dipende da come si estraggono gli inizi. Se li si sceglie in modo arbitrario,
 purché ogni coppia torni infinite volte, esiste un controesempio in cui
 l'alternanza non converge {cite}`bertsekas1996neuro`; con il ritorno scontato e
 ogni coppia che apre gli episodi con la stessa frequenza, la convergenza
-all'ottimo è dimostrata {cite}`tsitsiklis2002convergence`. Fuori da questi
-casi resta una domanda aperta.
+all'ottimo è dimostrata {cite}`tsitsiklis2002convergence`. Risultati successivi
+coprono il caso non scontato del cammino minimo stocastico
+{cite}`liu2021convergence` e gli MDP in cui la policy ottima non ripassa da uno
+stato, fra cui gli ambienti deterministici a episodi
+{cite}`wang2022convergence`; nel caso generale la domanda resta aperta.
 
 Il secondo, praticabile, è restare su policy **$\varepsilon$-soft**, cioè con
 $\pi(a\mid s) \ge \varepsilon/|\mathcal{A}|$ per ogni azione; il caso tipico è

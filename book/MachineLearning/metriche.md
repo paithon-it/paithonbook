@@ -128,11 +128,11 @@ di una bilancia, e a spostarla basta un numero.
 La **F1** è il voto unico che tiene conto di tutti e due i piatti, e [resta
 alto solo quando lo sono entrambi]{.pt-matita}. Prendiamo un filtro prudente,
 che azzecca nove volte su dieci quando cestina ma di spam ne pesca solo quattro
-su dieci, cioè precision $0{,}9$ e recall $0{,}4$. La sua F1 vale $0{,}55$ (due
-volte il prodotto diviso la somma: $0{,}72$ diviso $1{,}3$). Si noti che non è
-$0{,}65$, la media dei due, ma un valore molto più vicino al piatto peggiore.
-Se la recall crollasse a $0{,}1$, la F1 crollerebbe con lei anche con la
-precision al massimo.
+su dieci, cioè precision $0{,}9$ e recall $0{,}4$. La sua F1 vale $0{,}55$ (si
+moltiplicano i due valori, si raddoppia il prodotto e lo si divide per la loro
+somma: $0{,}72$ diviso $1{,}3$). Si noti che non è $0{,}65$, la media dei due,
+ma un valore molto più vicino al piatto peggiore. Se la recall crollasse a
+$0{,}1$, la F1 crollerebbe con lei anche con la precision al massimo.
 
 Il voto si può anche sbilanciare apposta, dichiarando quante volte un malato
 mancato pesa più di un falso allarme. In questo modo premia chi non se ne
@@ -143,10 +143,9 @@ Con più di due risposte in gioco bisogna decidere come mediare i voti, e la
 decisione cambia il risultato. Ad esempio, un rilevatore a tre risposte passa
 cento notti in casa: novantaquattro volte non succede niente, tre volte c'è del
 fumo di padella, tre volte un incendio vero, e lui dice sempre «niente». Alla
-risposta «niente» tocca un voto altissimo, $0{,}97$, perché delle
-novantaquattro notti tranquille non se ne lascia sfuggire una e la dà a
-sproposito soltanto nelle sei rimanenti. Alle altre due tocca zero, dato che
-non le nomina mai.
+risposta «niente» tocca una F1 altissima, $0{,}97$, perché delle novantaquattro
+notti tranquille non se ne lascia sfuggire una e la dà a sproposito soltanto
+nelle sei rimanenti. Alle altre due tocca zero, dato che non le nomina mai.
 
 Chi fa la media dei tre voti (la media *macro*) ottiene $0{,}32$. Chi butta
 tutte le risposte in un mucchio solo e dà un voto al mucchio (la media *micro*)
@@ -266,11 +265,12 @@ L’armonica è la scelta giusta per una ragione che sta nei conteggi. Il filtro
 prudente ha preso 36 spam, ne ha cestinati 40 e ce n’erano 90: la precision è
 36 su 40, la recall 36 su 90, stesso numero sopra e due numeri diversi sotto.
 La media armonica lavora sui rovesci, e i rovesci sono 40 su 36 e 90 su 36. La
-loro media è 65 su 36, e rovesciata di nuovo dà 36 su 65.
+loro media è 65 su 36, perché sotto resta lo stesso numero e sopra si fa la
+media dei due; rovesciata di nuovo, dà 36 su 65.
 
 In generale, con lo stesso numero sopra, la media armonica è la frazione che
 sotto ha la media dei due numeri di sotto. Nel filtro prudente 36 su 65 è 72 su
-130, gli spam presi contati due volte e divisi per sé stessi più tutti gli
+130: sopra, gli spam presi contati due volte; sotto, gli stessi più tutti gli
 errori, i 4 falsi allarmi e i 54 spam mancati. In definitiva, [la F1 è un
 calcolo unico sugli stessi casi, e non una media di due voti fatta
 dopo]{.pt-matita}.
@@ -661,13 +661,13 @@ calibrate (per una soglia basata sui costi, o per combinarle con altre stime)
 va ricalibrato in ogni caso; in alternativa si lascia il modello sbilanciato
 com'è e si sposta la soglia secondo i costi.
 
-Quando i costi sono noti, il criterio corretto è minimizzare il costo atteso, non
-massimizzare la $F_1$. Con $c_{\text{FN}}$ e
-$c_{\text{FP}}$ i costi dei due errori, e posto a zero il costo delle due
-decisioni corrette, prevedere «positivo» costa in media $(1-\hat
-p)\,c_{\text{FP}}$ e prevedere «negativo» costa $\hat p\,c_{\text{FN}}$, con
-$\hat p$ la probabilità vera di essere positivo. Si prevede «positivo» quando il
-primo costo è minore del secondo, cioè per $\hat p > \tau^\star$ con
+Quando i costi sono noti, il criterio corretto è minimizzare il costo atteso,
+non massimizzare la $F_1$. Con $c_{\text{FN}}$ e $c_{\text{FP}}$ i costi dei
+due errori, e posto a zero il costo delle due decisioni corrette, prevedere
+«positivo» costa in media $(1-\hat p)\,c_{\text{FP}}$ e prevedere «negativo»
+costa $\hat p\,c_{\text{FN}}$, con $\hat p$ la probabilità di essere positivo
+stimata dal modello, presa come se fosse quella vera. Si prevede «positivo»
+quando il primo costo è minore del secondo, cioè per $\hat p > \tau^\star$ con
 
 $$
 \tau^\star = \frac{c_{\text{FP}}}{c_{\text{FP}} + c_{\text{FN}}} ,

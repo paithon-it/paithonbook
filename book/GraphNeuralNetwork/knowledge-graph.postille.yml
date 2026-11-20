@@ -1,8 +1,8 @@
 # Le postille di questa pagina, una per capoverso del testo comune.
 # Ognuna vale finché la sua impronta combacia col testo del capoverso.
 - inizio: "L'idea non era nuova: la stessa"
-  impronta: "c7e0994b7e02"
-  postilla: "Struttura già vista tre volte; nuovo era metterla dietro un motore di ricerca"
+  impronta: "0bbbe08b173b"
+  postilla: "Struttura già vista più volte; nuovo era metterla dietro un motore di ricerca"
 - inizio: "Il secondo è capire *quale* cosa."
   impronta: "fd206069b4b6"
   postilla: "Collegamento delle entità: decidere a quale cosa si riferisce un nome"

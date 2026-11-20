@@ -190,9 +190,9 @@ data augmentation. Ogni trasformazione risponde a una voce della lista, e
 insieme dicono alla rete quali cambiamenti devono lasciare la risposta
 dov'era.
 
-Una voce, però, resta scoperta: il punto di vista. Girare la foto imita una
-fotocamera tenuta storta, ma da uno scatto di fronte nessuna deformazione
-ricava la schiena e la coda.
+Una voce, però, resta fuori dalla portata di qualunque trasformazione: il punto
+di vista. Girare la foto imita una fotocamera tenuta storta, ma da uno scatto
+di fronte nessuna deformazione ricava la schiena e la coda.
 
 La stessa idea porta fino a imparare da foto che nessuno ha etichettato. Si
 ritagliano due pezzi dello stesso scatto, la testa e una zampa, e si pretende

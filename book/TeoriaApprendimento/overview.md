@@ -161,14 +161,14 @@ $|R(h)-\hat{R}_S(h)|\le\sqrt{\log(2/\delta)/(2m)}$ con probabilità almeno
 $1-\delta$.
 
 L'ipotesi restituita dall'algoritmo, $h_S$, dipende però da $S$, e per lei
-quella disuguaglianza non vale. Se poi l'algoritmo sceglie
-l'ipotesi che sbaglia meno sul campione (la **minimizzazione del rischio
-empirico**), $\hat{R}_S(h_S)$ è anche distorta verso il basso. Infatti, detta
-$h^*$ la migliore ipotesi di $\mathcal{H}$, vale
+quella disuguaglianza non è più garantita. Se poi l'algoritmo sceglie l'ipotesi
+che sbaglia meno sul campione (la **minimizzazione del rischio empirico**),
+$\hat{R}_S(h_S)$ è anche distorta verso il basso. Infatti, detta $h^*$ la
+migliore ipotesi di $\mathcal{H}$, vale
 $\mathbb{E}\hat{R}_S(h_S)\le\mathbb{E}\hat{R}_S(h^*)=R(h^*)\le\mathbb{E}R(h_S)$,
-per lo stesso meccanismo della maledizione del vincitore della
-{doc}`sezione sulla concentrazione </Matematica/concentrazione>`. Il rimedio è
-chiedere la **convergenza uniforme**,
+per lo stesso meccanismo della maledizione del vincitore della {doc}`sezione
+sulla concentrazione </Matematica/concentrazione>`. Il rimedio è chiedere la
+**convergenza uniforme**,
 
 $$
 \Pr_{S\sim\mathcal{D}^m}\Big[\sup_{h\in\mathcal{H}}

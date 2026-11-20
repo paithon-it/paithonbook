@@ -126,12 +126,13 @@ per colonna, in tutto 1.024, e altrettanti sono i numeri della lista, 1.024 per
 un muro bianco come per una folla in piazza, quanto diverse centinaia di parole
 in fila.
 
-Ogni numero sta fra 1 e 8.192, e per scriverlo bastano 13 cifre
-binarie: la lista intera occupa poco più di 1,6 kilobyte, contro i 786 della
-foto grezza, circa 470 volte meno. Il risparmio però conta poco (per quello
-esistono già i formati di compressione): quel che conta è che adesso l'immagine
-è una lista di simboli presi da un elenco fisso, come una frase è una lista di
-parole prese da un dizionario.
+Ogni numero sta fra 1 e 8.192, e per scriverlo bastano 13 cifre binarie (due
+moltiplicato per sé stesso tredici volte fa proprio quel massimo): la lista
+intera occupa poco più di 1,6 kilobyte, contro i 786 kilobyte della foto
+grezza, circa 470 volte meno. Il risparmio però conta poco (per quello esistono
+già i formati di compressione): quel che conta è che adesso l'immagine è una
+lista di simboli presi da un elenco fisso, come una frase è una lista di parole
+prese da un dizionario.
 
 Due cose sono andate perse per strada. Il campione scelto è il più vicino che
 c'era in magazzino, non la tessera originale, e la differenza è sparita per
@@ -211,13 +212,14 @@ tardiva ogni architettura che tiene un encoder per ciascuna modalità; è
 precoce quella in cui le modalità entrano nella stessa sequenza fin
 dall'ingresso e le elabora un solo Transformer, con gli stessi pesi.
 
-Delle tre strade presentate in apertura di
-capitolo ne bastano quindi due: la mappa di CLIP e l'occhio innestato stanno
-dal lato tardivo, anche se nel secondo i token visivi entrano nel modello di
-linguaggio fin dal primo strato, e nessuno dei due sa produrre un'immagine. [La
-differenza non sta in quanta informazione si scambiano immagine e testo, ma in
-come ciascuna modalità arriva alla sequenza: con un proprio encoder già
-addestrato, oppure con lo stesso vocabolario e gli stessi pesi]{.pt-matita}.
+Delle tre strade presentate in apertura di capitolo ne bastano quindi due: la
+mappa di CLIP e l'occhio innestato stanno dal lato tardivo, anche se nel
+secondo, quando il connettore fa da prefisso come in LLaVA, i token visivi
+entrano nel modello di linguaggio fin dal primo strato, e nessuno dei due sa
+produrre un'immagine. [La differenza non sta in quanta informazione si
+scambiano immagine e testo, ma in come ciascuna modalità arriva alla sequenza:
+con un proprio encoder già addestrato, oppure con lo stesso vocabolario e gli
+stessi pesi]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -401,12 +403,12 @@ nella softmax dell'attenzione, e quando quei valori escono dall'intervallo in
 cui l'aritmetica a precisione ridotta (bf16) rappresenta ancora qualcosa,
 l'addestramento diverge.
 
-La crescita è lenta, e per questo insidiosa:
-nel lavoro citato il problema compare sopra gli 8 miliardi di parametri e i
-mille miliardi di token, e le divergenze possono arrivare anche dopo il 20-30%
-dell'addestramento (il modello da 7 miliardi senza normalizzazione di query e
-chiavi diverge dopo circa il 20% di un'epoca). È la ragione per cui non lo si
-scopre addestrando modelli piccoli.
+La crescita è lenta, e per questo insidiosa: nel lavoro citato il problema si
+fa evidente soprattutto oltre gli 8 miliardi di parametri e i mille miliardi di
+token, e le divergenze possono arrivare anche dopo il 20-30%
+dell'addestramento; colpisce però già il modello da 7 miliardi, che senza
+normalizzazione di query e chiavi diverge dopo circa il 20% di un'epoca. È per
+questa lentezza che non lo si scopre addestrando modelli piccoli.
 
 Due accorgimenti, entrambi di normalizzazione, lo tengono a bada. Il primo è la
 **query-key normalization**: si normalizzano $\mathbf{Q}$ e $\mathbf{K}$

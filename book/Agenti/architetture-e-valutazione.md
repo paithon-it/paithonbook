@@ -397,9 +397,10 @@ stessa salsa rimestata per dieci minuti, o tre viaggi in dispensa per la
 stessa cosa.
 
 Più passaggi ha un piatto, più diventa un affare rischioso: se a ogni passo c'è
-anche solo un piccolo rischio di sbagliare, una ricetta di dieci mosse si salva
-per intero solo una volta su tre. Qualche intoppo si recupera, come la salsa
-rifatta.
+anche solo un piccolo rischio di sbagliare, poniamo uno su dieci, una ricetta
+di dieci mosse si salva per intero solo una volta su tre: nove decimi
+moltiplicato per sé stesso dieci volte fa circa un terzo. Qualche intoppo si
+recupera, come la salsa rifatta.
 
 Le serate storte tendono a esserlo dall'inizio, per un fornitore che
 non è arrivato, più che per un inciampo a caso piatto per piatto: allora le
@@ -445,22 +446,22 @@ P(\text{traiettoria senza errori}) = (1 - p)^n,
 $$
 
 che precipita al crescere di $n$: con $p = 0{,}1$, dieci passi lasciano appena
-$(0{,}9)^{10} \approx 0{,}35$. Le due ipotesi vanno dichiarate. I passi
-reali non sono indipendenti. Se una difficoltà latente $Z$ li rende correlati
-(un compito difficile fa sbagliare più passi insieme) e, dato $Z$, ogni passo
-sbaglia con probabilità $p_Z$,
+$(0{,}9)^{10} \approx 0{,}35$. Le due ipotesi vanno dichiarate. I passi reali
+non sono indipendenti. Se una difficoltà latente $Z$ li rende correlati (un
+compito difficile fa sbagliare più passi insieme) e, dato $Z$, i passi
+sbagliano indipendentemente, ciascuno con probabilità $p_Z$,
 
 $$
 P(\text{nessun errore}) = \mathbb{E}\big[(1-p_Z)^n\big] \;\ge\; \big(1-\mathbb{E}[p_Z]\big)^n
 $$
 
 per la disuguaglianza di Jensen, perché $(1-p)^n$ è convessa in $p$. In altri
-termini, a parità di errore medio per passo, la correlazione alza la quota di
-traiettorie senza errori, e ne lascia altre piene di errori. Non ogni errore è
-fatale: la riflessione e il re-planning servono a recuperarne una parte, e
-allora il tasso di successo può superare questa cifra. Il modellino conserva
-comunque il suo insegnamento: non basta riuscire un passo, bisogna riuscirne
-molti di fila, e per questo i compiti lunghi restano difficili.
+termini, a parità di errore medio per passo, questa correlazione positiva alza
+la quota di traiettorie senza errori, e ne lascia altre piene di errori. Non
+ogni errore è fatale: la riflessione e il re-planning servono a recuperarne una
+parte, e allora il tasso di successo può superare questa cifra. Il modellino
+conserva comunque il suo insegnamento: non basta riuscire un passo, bisogna
+riuscirne molti di fila, e per questo i compiti lunghi restano difficili.
 
 Alla misura del *cosa* si affianca poi quella del *quanto*, cioè token
 consumati, latenza, numero di chiamate a strumenti, perché un agente
@@ -583,9 +584,10 @@ singolo intervallo: se l'esperimento si ripetesse cento volte, ripetendo ogni
 volta il calcolo, circa novantacinque degli intervalli conterrebbero il valore
 vero, e di quello che si ha in mano non si sa se sia fra i novantacinque. La
 formula del codice è l'intervallo di Wilson, tra i più usati con poche prove:
-non esce da $[0, 1]$ e in media mantiene la copertura del 95%, anche se per
-certi valori veri del tasso la manca di qualche punto. Chi vuole una garanzia
-piena usa l'intervallo esatto di Clopper e Pearson, più largo.
+non esce da $[0, 1]$ e in media mantiene la copertura del 95%, anche se con
+poche prove, per tassi veri vicini a 0 o a 1, la manca anche di oltre dieci
+punti. Chi vuole una garanzia piena usa l'intervallo esatto di Clopper e
+Pearson, più largo.
 
 Su tre successi su cinque l'intervallo va dal 23% all'88%, per
 cui il «60%» è compatibile sia con un agente che fallisce tre volte su quattro,
@@ -646,12 +648,13 @@ Nemmeno quella selezione ha chiuso la questione. Gli autori del riesame
 ritrovano i due difetti anche nella versione verificata; e il 23 febbraio 2026
 OpenAI ha smesso di riportare i punteggi di SWE-bench Verified
 {cite}`openai2026sweverified`. Su 138 problemi che il suo modello o3 non
-risolveva con costanza, riesaminati da ingegneri esperti, il 59,4% aveva difetti
-nei test o nella descrizione (il 35,5% test troppo stretti, che respingono
-soluzioni corrette; il 18,8% test troppo larghi, che controllano cose che la
-segnalazione non chiede); e tutti i modelli di frontiera provati riuscivano a
-riprodurre, per alcuni problemi, la correzione originale o il testo della
-segnalazione, segno che il banco era finito nei loro dati di addestramento.
+risolveva con costanza, riesaminati da ingegneri esperti, il 59,4% aveva
+difetti nei test o nella descrizione (fra cui il 35,5% di test troppo stretti,
+che respingono soluzioni corrette; il 18,8% di test troppo larghi, che
+controllano cose che la segnalazione non chiede); e tutti i modelli di
+frontiera provati riuscivano a riprodurre, per alcuni problemi, la correzione
+originale o il testo della segnalazione, segno che il banco era finito nei loro
+dati di addestramento.
 
 Con i migliori punteggi arrivati intorno all'80%, i progressi misuravano sempre
 meno la capacità di programmare e sempre più quanto un modello avesse visto il
@@ -735,15 +738,16 @@ su una prova affidabile.
 ```{admonition} Da ricordare
 :class: important
 - Su un compito grosso il ciclo passo-passo funziona tanto meglio quanto più è
-  bravo il modello che ha dentro. Dove non basta, due strategie: scrivere la lista
-  prima di entrare (prima il piano dei sotto-compiti, poi l'esecuzione) e
-  mettere in fila più agenti con mestieri diversi (chi progetta, chi
-  costruisce, chi collauda). Il piano dà una visione d'insieme, ma una lista
-  scritta al buio va rifatta quando la realtà la smentisce.
+  bravo il modello che ha dentro. Dove non basta, due delle tre strategie
+  riguardano il lavoro stesso: scrivere la lista prima di entrare (prima il
+  piano dei sotto-compiti, poi l'esecuzione) e mettere in fila più agenti con
+  mestieri diversi (chi progetta, chi costruisce, chi collauda). Il piano dà
+  una visione d'insieme, ma una lista scritta al buio va rifatta quando la
+  realtà la smentisce.
 - Più teste non sono gratis e non sono sempre meglio: ogni agente in più è
   lavoro da pagare e un modo in più di fraintendersi. Chi è andato a guardare
-  come falliscono questi sistemi {cite}`cemri2025why` ha trovato
-  guadagni spesso modesti, e ha trovato che si sbaglia soprattutto
+  come falliscono questi sistemi {cite}`cemri2025why`, partendo dai loro
+  guadagni spesso modesti, ha trovato che si sbaglia soprattutto
   nell'organizzazione (ruoli scritti male, passaggi di consegne, nessuno che
   controlla il risultato), più che dentro il singolo agente. La squadra rende
   quando il lavoro si divide in pezzi da fare in parallelo. Si aggiunge un
@@ -788,8 +792,9 @@ su una prova affidabile.
 ```{admonition} Da ricordare
 :class: important
 - Nello stesso ciclo minimo, su SWE-bench Verified, il tasso di successo va dal
-  9% al 74% cambiando solo il modello (misure del 2025): il ciclo ReAct non si
-  smarrisce in generale. Dove non basta, due strategie: plan-and-execute (prima un
+  9% al 74% cambiando solo il modello (misure del 2025, con la riserva sulla
+  contaminazione): quanto il ciclo ReAct si smarrisca dipende soprattutto dal
+    modello. Dove non basta, due delle tre strategie: plan-and-execute (prima un
   piano di sotto-compiti, poi l'esecuzione; ReWOO risparmia cinque volte i
   token su HotpotQA, ma non vince ovunque) e i sistemi multi-agente con ruoli
   specializzati (pianificatore, esecutore, critico). Pianificare dà struttura
@@ -827,14 +832,14 @@ su una prova affidabile.
   riportare SWE-bench Verified per test difettosi e contaminazione
   {cite}`openai2026sweverified`. In produzione servono i guardrail e i permessi
   minimi; l’LLM-as-a-judge è uno strumento di valutazione, con i suoi bias.
-- Gli errori si accumulano sui compiti lunghi: *se* i passi sono
-  indipendenti, una traiettoria senza errori ha probabilità $(1-p)^n$, dove $p$
-  è la probabilità di sbagliare un passo e $n$ il numero di passi, e precipita
-  con $n$ (nel modellino illustrativo; nella pratica i passi sono correlati, e
-  per Jensen la correlazione alza la quota di traiettorie pulite, mentre
-  riflessione e re-planning ne recuperano una parte). Gli agenti sono
-  promettenti ma fragili, e restano un'area giovane {cite}`xi2023rise`.
-  Misurare più che sperare.
+- Gli errori si accumulano sui compiti lunghi: *se* i passi sono indipendenti,
+  una traiettoria senza errori ha probabilità $(1-p)^n$, dove $p$ è la
+  probabilità di sbagliare un passo e $n$ il numero di passi, e precipita con
+  $n$ (nel modellino illustrativo; nella pratica i passi sono correlati, e se
+  la correlazione viene da una difficoltà comune, per Jensen alza la quota di
+  traiettorie pulite, mentre riflessione e re-planning ne recuperano una
+  parte). Gli agenti sono promettenti ma fragili, e restano un'area giovane
+  {cite}`xi2023rise`. Misurare più che sperare.
 ```
 
 `````

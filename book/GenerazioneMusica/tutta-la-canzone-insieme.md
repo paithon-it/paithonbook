@@ -357,9 +357,11 @@ lineare.
 Ogni scrittura e ogni lettura costano più di un ascolto, perché toccano tutta
 la lavagna, ma se ne fanno tante quanti sono i musicisti, non quante le loro
 coppie: con quasi duemilaseicento musicisti il lavoro diventa una ventina di
-volte più piccolo. La lavagna, però, resta della stessa grandezza qualunque sia
-la durata della canzone: [quello che vi si accumula si impasta]{.pt-matita}, e
-con meno di centoventotto musicisti il guadagno sparisce.
+volte più piccolo (quasi duemilaseicento diviso i centoventotto numeri di una
+riga della lavagna). La lavagna, però, resta della stessa grandezza qualunque
+sia la durata della canzone: [quello che vi si accumula si
+impasta]{.pt-matita}, e con meno di centoventotto musicisti il guadagno
+sparisce.
 
 Le parole non stanno in sala. Sul leggio ci sono tre fogli attaccati in fila: un
 foglietto con l'impronta della voce da imitare, se c'è, le indicazioni di stile
@@ -787,8 +789,9 @@ messe insieme a metà, i loro grumi si compensano in parte, e la nebbia diventa
 più rada di entrambe, diversa da tutte quelle che il restauratore ha visto
 imparando. La manopola prende invece un po’ di più di ciascuna, a metà corsa
 sette decimi dell'una e sette decimi dell'altra, quanto basta perché la nebbia
-resti spessa come prima: girandola cambia soltanto quanto somiglia alla
-vecchia.
+resti spessa come prima (a contare sono i quadrati, e quarantanove centesimi
+più quarantanove centesimi fanno quasi uno): girandola cambia soltanto quanto
+somiglia alla vecchia.
 
 Per rifare un pezzo solo, segni sulla canzone il tratto da rifare e tieni da
 parte l'originale. Annebbi tutto, tanto più quanto più vuoi cambiare quel
@@ -1007,8 +1010,9 @@ all'altra.
 `````
 
 In nessuna delle due strade un modello decide in anticipo dove cadrà ciascuna
-sillaba: DiffRhythm se lo fa dire dall'utente, ACE-Step v1 lo scopre mentre
-genera. Il gruppo di ACE-Step ha poi spostato quella decisione prima della
-diffusione, affidandola a un modello di linguaggio {cite}`gong2026acestep`: è
-la strada del {doc}`progetto che viene prima del suono
+sillaba: DiffRhythm si fa dire dall'utente almeno dove comincia ogni frase,
+ACE-Step v1 lo scopre mentre genera. Il gruppo di ACE-Step ha poi spostato
+quella decisione prima della diffusione, affidandola a un modello di linguaggio
+{cite}`gong2026acestep`: è la strada del {doc}`progetto che viene prima del
+suono
 </GenerazioneMusica/prima-il-progetto>`.

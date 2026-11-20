@@ -354,7 +354,7 @@ $$
 $$
 
 Osserviamo che ogni riga di queste matrici è un rivelatore di caratteristiche:
-il suo prodotto scalare con $\mathbf{e}$ misura quanto quel vettore esibisce la
+il suo prodotto scalare con $\mathbf{e}$ misura quanto quel vettore possiede la
 caratteristica che la riga rappresenta, e l'uscita in $\mathbb{R}^k$ è la lista
 di $k$ misure così ottenute.
 
@@ -626,9 +626,10 @@ per l'ingresso e per l'uscita (i vettori $\mathbf{u}_v$ sono le righe di
 $\mathbf{E}$). In questo caso $\mathbf{R}$ e $\mathbf{R}^{-\top}$ devono
 coincidere, il che accade solo se $\mathbf{R}$ è ortogonale. In definitiva, la
 libertà di $\mathbf{R}$ resta, ma si restringe alle trasformazioni ortogonali
-(rotazioni e riflessioni). Quella di
-$\mathbf{S}$, che lavora dentro la singola relazione e non tocca né gli
-embedding né ciò che li rilegge, non subisce restrizioni.
+(rotazioni e riflessioni) che, per la normalizzazione, lasciano ferma la
+direzione lungo cui si prende la media. Quella di $\mathbf{S}$, che lavora
+dentro la singola relazione e non tocca né gli embedding né ciò che li rilegge,
+non subisce restrizioni.
 
 Sulle rotazioni la situazione è analoga a quella dei fattori nell'analisi
 fattoriale, il metodo che spiega molte misure osservate con poche cause

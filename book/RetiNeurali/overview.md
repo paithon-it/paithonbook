@@ -25,9 +25,10 @@ L'idea, vecchia quasi quanto i calcolatori, è seducente: se il cervello è fatt
 di neuroni, per costruire una macchina che impara forse basta costruire neuroni
 artificiali e collegarli fra loro.
 
-Il *deep learning* è l'apprendimento
-automatico con i neuroni artificiali impilati in molti strati; l'aggettivo
-«profondo» allude al loro numero.
+Il *deep learning* è l'apprendimento automatico con i neuroni artificiali
+impilati in molti strati, cioè in file di neuroni ciascuna delle quali riceve i
+risultati di quella precedente; l'aggettivo «profondo» allude al numero degli
+strati.
 
 In questo capitolo costruiamo queste reti un pezzo alla volta, dal neurone
 singolo e dalla sua storia fino al percettrone multistrato e ai pezzi che lo
@@ -76,12 +77,13 @@ z = \mathbf{w}^\top \mathbf{x} + b, \qquad a = g(z).
 $$
 
 Qui $\mathbf{w}$ è il vettore dei pesi (una "importanza" per ciascun ingresso),
-$b$ è il **bias** (che sposta la soglia), $z$ è la **pre-attivazione** (la somma
-pesata), $a$ l’**attivazione** che ne esce e $g$ è la funzione di attivazione
-che introduce la non linearità: un gradino, una sigmoide o, oggi, quasi sempre
-la ReLU $\max(0,z)$ (la lettera $\sigma$ resta alla sigmoide). Il cuore del
-calcolo, $\mathbf{w}^\top\mathbf{x}$, è il prodotto scalare della {doc}`sezione
-di algebra lineare </Matematica/algebra-lineare>`.
+$b$ è il **bias** (che sposta la soglia), $z$ è la **pre-attivazione** (la
+somma pesata), $a$ l’**attivazione** che ne esce e $g$ è la funzione di
+attivazione che introduce la non linearità: un gradino, una sigmoide o, oggi,
+il più delle volte la ReLU $\max(0,z)$ o una sua variante (la lettera $\sigma$
+resta alla sigmoide). Il cuore del calcolo, $\mathbf{w}^\top\mathbf{x}$, è il
+prodotto scalare della {doc}`sezione di algebra
+lineare </Matematica/algebra-lineare>`.
 
 `````
 
@@ -209,15 +211,15 @@ cioè un iperpiano; può risolvere solo problemi **linearmente separabili**. Lo
 XOR non lo è: poiché il gradino risponde $1$ quando $z\ge 0$, servirebbero
 $\mathbf{w}$ e $b$ tali che $w_1 x_1 + w_2 x_2 + b$ risulti non negativo sui
 due punti con etichetta $1$ e negativo sugli altri due, e non esistono (la
-dimostrazione, in due righe, sta nella sezione sul percettrone). La
-soluzione (impilare più neuroni in strati) era nota già
-allora, ma mancava un modo efficiente per addestrarla, motivo
-che gli stessi Minsky e Papert indicheranno per la lunga pausa che seguì. Il
-libro contribuì a raffreddare gli entusiasmi e a spostare risorse verso l'AI
-simbolica; nel decennio successivo, con il rapporto Lighthill del 1973, i
-tagli colpirono l'intero campo. È il primo "inverno" delle reti neurali, e la
-storiografia recente invita a non attribuirlo a un libro solo
-{cite}`olazaran1996sociological`.
+dimostrazione, in due righe, sta nella sezione sul percettrone). La soluzione
+(impilare più neuroni in strati) era nota già allora, ma mancava un modo
+collaudato per addestrarla, e gli stessi Minsky e Papert osservavano che per la
+macchina a più strati nessuno aveva un teorema che ne garantisse
+l'apprendimento. Il libro contribuì a raffreddare gli entusiasmi e a spostare
+risorse verso l'AI simbolica; nel decennio successivo, con il rapporto
+Lighthill del 1973, i tagli colpirono l'intero campo. È il primo "inverno"
+delle reti neurali, e la storiografia recente invita a non attribuirlo a un
+libro solo {cite}`olazaran1996sociological`.
 
 `````
 
@@ -229,12 +231,12 @@ mezzo? Per quelli in fondo lo sappiamo, perché ogni esempio di addestramento si
 porta dietro la risposta giusta (si chiama **etichetta**, ad esempio «questa
 foto è un gatto»). Per quelli in mezzo non l'ha scritta nessuno.
 
-La risposta è la
-**backpropagation** (retropropagazione dell'errore), resa celebre nel 1986 da
-David Rumelhart, Geoffrey Hinton e Ronald Williams su *Nature*. L'algoritmo
-aveva precursori, che la sezione sulla {doc}`backpropagation <backpropagation>`
-racconta a partire dal primo, Seppo Linnainmaa nel 1970, ma è quel lavoro a
-farne lo standard.
+La risposta è la **backpropagation** (retropropagazione dell'errore), resa
+celebre nel 1986 da David Rumelhart, Geoffrey Hinton e Ronald Williams su
+*Nature*. L'algoritmo aveva precursori, che la sezione sulla
+{doc}`backpropagation <backpropagation>` racconta, dal controllo ottimo dei
+primi anni Sessanta a Seppo Linnainmaa nel 1970, ma è quel lavoro a farne lo
+standard.
 
 `````{tab} Elementare
 

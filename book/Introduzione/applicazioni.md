@@ -112,17 +112,18 @@ gradiente vale:
 
 $$
 \nabla_\theta J(\theta) = \mathbb{E}_{\pi_\theta}\!\left[\sum_{t}
-\nabla_\theta \log \pi_\theta(a_t \mid s_t)\, G_t\right],
+\gamma^{\,t}\,\nabla_\theta \log \pi_\theta(a_t \mid s_t)\, G_t\right],
 \qquad G_t = \sum_{k \ge t} \gamma^{\,k-t} r_{k+1},
 $$
 
-dove $G_t$ è il ritorno scontato dal passo $t$ in poi (a meno di un fattore
-$\gamma^{\,t}$ che nella pratica si omette). Salendo lungo questo gradiente, le
-azioni seguite da un ritorno alto diventano più probabili e le altre meno
-(REINFORCE {cite}`williams1992simple`). Si noti che la formula segue
-dall'identità $\nabla_\theta \pi_\theta = \pi_\theta \nabla_\theta \log
-\pi_\theta$, che porta il gradiente dentro il valore atteso senza derivare
-attraverso l'ambiente.
+dove $G_t$ è il ritorno scontato dal passo $t$ in poi. Nella pratica il fattore
+$\gamma^{\,t}$ si omette, e la direzione che si segue non è più esattamente
+$\nabla_\theta J$. Salendo lungo questo gradiente, le azioni seguite da un
+ritorno alto diventano più probabili e le altre meno (REINFORCE
+{cite}`williams1992simple`). Si noti che la formula segue dall'identità
+$\nabla_\theta \pi_\theta = \pi_\theta \nabla_\theta \log \pi_\theta$, che
+porta il gradiente dentro il valore atteso senza derivare attraverso
+l'ambiente.
 
 La stima ha però varianza alta, e per questo motivo in pratica a $G_t$ si
 sottrae una *baseline* $b(s_t)$ che non dipende dall'azione. La sottrazione di

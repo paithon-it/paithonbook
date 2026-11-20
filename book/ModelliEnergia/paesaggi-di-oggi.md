@@ -114,10 +114,10 @@ $\nabla_{\mathbf{x}} E = \sum_k \nabla_{\mathbf{x}} E_k$.
 `````
 
 [Generare, completare, segnalare e mescolare si riducono dunque a portarsi
-verso il basso]{.pt-matita}. Non «nel punto più basso di tutti», che darebbe sempre
-la stessa risposta: si scende con addosso il rumore, come nella prima delle tre
-vie, e ogni volta si finisce in una valle diversa. Da un compito all'altro
-cambia solo il vincolo con cui si scende.
+verso il basso]{.pt-matita}. Non «nel punto più basso di tutti», che darebbe
+sempre la stessa risposta: si scende con addosso il rumore, come nella prima
+delle tre vie, e da partenze diverse, e ogni volta si finisce in una valle
+diversa. Da un compito all'altro cambia solo il vincolo con cui si scende.
 
 Nel 2020 Will Grathwohl e colleghi prendono sul serio una lettura che la
 {doc}`cornice di LeCun </ModelliEnergia/energia-come-compatibilita>` conteneva
@@ -371,9 +371,9 @@ torna a medie su gruppetti di ricordi. La discesa c'è sempre; il punto d'arrivo
 
 `````{tab} Superiore
 
-Con $M$ ricordi $\boldsymbol{\xi}^\mu$ nelle righe di
-$\boldsymbol{\Xi} \in \mathbb{R}^{M \times d}$ e lo stato $\mathbf{s}$, la
-famiglia si scrive con una funzione di interazione $F$:
+Con $M$ ricordi $\boldsymbol{\xi}^\mu$ nelle righe di $\boldsymbol{\Xi} \in
+\mathbb{R}^{M \times d}$ (nel caso binario $d = N$, il numero dei neuroni) e lo
+stato $\mathbf{s}$, la famiglia si scrive con una funzione di interazione $F$:
 
 $$
 E(\mathbf{s}) = -\sum_{\mu=1}^{M} F\big(\boldsymbol{\xi}^\mu \cdot \mathbf{s}\big).
@@ -478,7 +478,7 @@ Il *perché* di quella riga sta in un calcolo, non nella diapositiva. Quando
 un sistema impara per tentativi, la correzione che riceve alla fine di un
 tentativo è una quantità sola: è andata bene oppure male. Quando impara
 guardando, la correzione è grande quanto il pezzo di mondo che stava provando a
-indovinare, e contata in bit può valere decine di migliaia di volte tanto. È
+indovinare, e contata in bit può valere più di centomila volte tanto. È
 l'argomento che LeCun riassume dicendo che l'apprendimento per rinforzo è la
 «ciliegina sulla torta» {cite}`lecun2016cake`, e il {doc}`dibattito sul rinforzo
 </AutoSupervisione/dibattito-rl>` lo misura nei dettagli, calcolo compreso,
@@ -508,11 +508,11 @@ profezia.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Un paesaggio si può scavare anche su immagini vere, e allora un solo
-  modello fa quattro mestieri: genera, completa un'immagine a cui manca un
-  pezzo, segnala quello che è fuori posto e mescola concetti. Sono la stessa
-  cosa: scendere verso il basso con vincoli diversi, e con un po’ di rumore
-  che fa finire ogni volta in una valle diversa.
+- Un paesaggio si può scavare anche su immagini vere, e allora un solo modello
+  fa quattro mestieri: genera, completa un'immagine a cui manca un pezzo,
+  segnala quello che è fuori posto e mescola concetti. Sono la stessa cosa:
+  scendere verso il basso con vincoli diversi, e con un po’ di rumore e
+  partenze diverse, che fanno finire ogni volta in una valle diversa.
 - Un classificatore è già un modello a energia senza saperlo: dal più alto
   dei punteggi che dà alle classi, corretto un poco verso l'alto quando anche
   gli altri gli stanno vicino, si ottiene quanto quell'immagine è plausibile,

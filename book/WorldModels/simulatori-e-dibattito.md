@@ -137,7 +137,7 @@ fotogramma per fotogramma.
 
 Le azioni apprese risultano semanticamente coerenti tra ambienti mai visti;
 addestrando lo stesso schema su video di manipolazione robotica (il dataset
-RT-1), emergono allo stesso modo azioni consistenti senza alcuna etichetta:
+RT-1), emergono allo stesso modo azioni coerenti senza alcuna etichetta:
 indizio che il procedimento non è legato ai platform.
 
 GameNGen di Valevski e colleghi {cite}`valevski2025diffusion` fa il contrario di
@@ -297,14 +297,14 @@ appena se ne esce (**fuori distribuzione** si dice appunto di tutto ciò che al
 momento dell'addestramento non c'era).
 
 È l'eco di una prudenza già incontrata nella {doc}`sezione su tendenze e limiti
-dei Transformer </Transformers/tendenzefuture>`, a
-proposito di allucinazioni e comprensione: su che cosa i modelli capiscano,
-il dibattito scientifico è tutt'altro che chiuso. Da una parte c'è
-chi, come LeCun, ritiene che serva un'architettura pensata apposta per
-prevedere il mondo, la strada della JEPA. Dall'altra
-c'è chi scommette che basteranno la taglia dei modelli e la quantità di dati
-{cite}`kaplan2020scaling` a far maturare un modello del mondo dentro i modelli
-di linguaggio.
+dei Transformer </Transformers/tendenzefuture>`, a proposito di allucinazioni e
+comprensione: su che cosa i modelli capiscano, il dibattito scientifico è
+tutt'altro che chiuso. Da una parte c'è chi, come LeCun, ritiene che serva
+un'architettura pensata apposta per prevedere il mondo, la strada della JEPA.
+Dall'altra c'è chi scommette che a far maturare un modello del mondo dentro i
+modelli di linguaggio basteranno la taglia dei modelli e la quantità di dati, e
+si appoggia alle leggi di scala, secondo cui la loss scende in modo prevedibile
+{cite}`kaplan2020scaling`.
 
 ## Dove i world model lavorano già
 
@@ -312,8 +312,8 @@ Mentre il dibattito continua, i world model lavorano. Ad esempio, in robotica
 V-JEPA 2, nella variante condizionata sulle azioni descritta nella
 {doc}`sezione sulla JEPA </WorldModels/jepa>`, usa le previsioni nello spazio
 delle rappresentazioni per *pianificare* (provare mentalmente i comandi
-possibili e scegliere quello che avvicina il braccio all'obiettivo) su robot
-mai visti in addestramento.
+possibili e scegliere quello che avvicina il braccio all'obiettivo) su bracci
+robotici in laboratori i cui ambienti non compaiono nei dati di addestramento.
 
 Nella guida autonoma il problema sono gli scenari rari: il bambino che sbuca
 tra due auto, il carico che cade dal camion. Raccoglierli su strada è
@@ -464,11 +464,12 @@ il Nobel per la fisica nel 2024.
   radiocronache di partite si è costruita in testa una scacchiera. Lo si
   dimostra in due mosse, e la seconda è quella che conta: prima un lettore del
   pensiero indovina dove sono le pedine guardando l'attività interna della rete
-  (uno semplice sbaglia una casella su cinque, uno con un passaggio di calcolo
-  in più meno di 2 su 100),
-  poi il test del falso ricordo, in cui gli sperimentatori spostano una
-  pedina *nella mente* della rete e le mosse cambiano di conseguenza. Non è un
-  pappagallo: dentro c'è un piccolo mondo, e lo usa.
+  (uno semplice sbaglia una casella su cinque se chiede «bianca o nera», molto
+  meno se chiede «mia o dell'avversario»; uno con un passaggio di calcolo in
+  più meno di 2 su 100), poi il test del falso ricordo, in cui gli
+  sperimentatori spostano una pedina *nella mente* della rete e le mosse
+  cambiano di conseguenza. Non è un pappagallo: dentro c'è un piccolo mondo, e
+  lo usa.
 - Ma un'altra rete, allenata sui percorsi dei taxi di New York, dà indicazioni
   quasi sempre giuste e ha in testa una mappa piena di strade che non esistono.
   Un modello del mondo, dunque, può nascere da solo; quanto sia coerente e

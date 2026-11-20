@@ -216,7 +216,7 @@ di quella in corso {cite}`sutton1999options`.
 ### In pratica: quattro stanze, con e senza opzioni
 
 Il risparmio di esperienza, le scorciatoie perse e la ragione per cui le
-opzioni si aggiungono alle mosse invece di rimpiazzarle si misurano tutti e tre
+opzioni si aggiungono alle mosse invece di rimpiazzarle si guardano tutti e tre
 nello stesso banco di prova: la pianta a quattro stanze. Le opzioni sono otto: ogni
 porta ne ha due, una per ciascuna delle due stanze che collega. Ognuna arriva
 alla sua porta per la via più breve dentro la stanza, e finisce lì.

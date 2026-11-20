@@ -232,21 +232,22 @@ dicotomie lineari {cite}`cover1965geometrical` dà il valore esatto per punti in
 posizione generale, $\Pi(m)=m^2-m+2$, sotto il tetto di Sauer $\sum_{i\le
 3}\binom{m}{i}$.
 
-Sostituendo $\Pi_{\mathcal{H}}$ a $|\mathcal{H}|$ nella disuguaglianza
-dell'unione si ottiene il **bound VC** (Mohri e colleghi, corollario 3.19): con
-probabilità almeno $1-\delta$, per ogni $h\in\mathcal{H}$,
+Il **bound VC** (Mohri e colleghi, corollario 3.19) dice che, con probabilità
+almeno $1-\delta$, per ogni $h\in\mathcal{H}$,
 
 $$
 R(h) \le \hat{R}_S(h) + \sqrt{\frac{2d\log\frac{em}{d}}{m}}
 + \sqrt{\frac{\log\frac{1}{\delta}}{2m}} .
 $$
 
-La sostituzione non è immediata, perché $R(h)$ dipende dall'intera
-distribuzione e non dalle sole dicotomie su $S$. La via di Vapnik e
-Chervonenkis è la *simmetrizzazione*. Si rimpiazza $R(h)$ con il rischio
-empirico su un secondo campione fantasma, si riduce tutto alle dicotomie su
-$2m$ punti e si applica la disuguaglianza dell'unione a $\Pi_{\mathcal{H}}(2m)$,
-con il risultato $\sqrt{(8d\log\frac{2em}{d}+8\log\frac{4}{\delta})/m}$.
+Ci si arriva sostituendo $\Pi_{\mathcal{H}}$ a $|\mathcal{H}|$ nella
+disuguaglianza dell'unione, ma la sostituzione non è immediata, perché $R(h)$
+dipende dall'intera distribuzione e non dalle sole dicotomie su $S$. La via di
+Vapnik e Chervonenkis è la *simmetrizzazione*. Si rimpiazza $R(h)$ con il
+rischio empirico su un secondo campione fantasma, si riduce tutto alle
+dicotomie su $2m$ punti e si applica la disuguaglianza dell'unione a
+$\Pi_{\mathcal{H}}(2m)$, con il risultato
+$\sqrt{(8d\log\frac{2em}{d}+8\log\frac{4}{\delta})/m}$.
 
 Le costanti più strette del corollario 3.19 vengono da un'altra strada, il
 lemma di Massart applicato alla funzione di crescita, che è lo strumento della

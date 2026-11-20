@@ -329,9 +329,9 @@ modo diverso a seconda del gruppo.
 Un «sì» è la previsione positiva del modello: che si verifichi l'evento che
 stavamo cercando di prevedere, il che non è per forza una buona notizia. Nel
 prestito il «sì» è «te lo diamo»; nel software dei tribunali è «questa persona
-è ad alto rischio». Allo stesso modo «l'esito è accaduto» indica che è successo
-ciò che il modello prevedeva, buono o brutto che sia. Parole neutre, per un
-calcolo uguale nei due casi.
+è ad alto rischio». Allo stesso modo «l'esito è accaduto» indica che l'evento
+di cui si parla è successo davvero, buono o brutto che sia, qualunque cosa
+avesse detto il modello. Parole neutre, per un calcolo uguale nei due casi.
 
 Ci sono tre modi diversi di chiedere «il modello è equo?», e portano a tre
 richieste distinte.
@@ -455,9 +455,9 @@ il no che si ottengono tagliando quel punteggio a una certa altezza. È
 quest'ultima, non la calibrazione, quella che l'azienda di COMPAS rivendicava.
 
 Questi criteri non entrano in conflitto per caso: [alcuni sono matematicamente
-incompatibili ogni volta che i gruppi partono da tassi di base
-diversi]{.pt-matita}, cioè ogni volta che l'esito, nei dati, è più frequente in
-un gruppo che nell'altro.
+incompatibili quando i gruppi partono da tassi di base diversi]{.pt-matita},
+cioè quando l'esito, nei dati, è più frequente in un gruppo che nell'altro
+(salvo casi limite, come un predittore che non sbaglia mai).
 
 I risultati che lo dimostrano sono tre, e non sono tre versioni dello stesso.
 Quello di Chouldechova riguarda le decisioni sì o no: la parità del valore
@@ -497,19 +497,19 @@ stesse persone sono 150, quindi 15 su 150: uno su dieci. Tre volte più spesso,
 e nessuno l'ha voluto: il tre viene dal 50 contro 150, cioè da quante persone,
 in ciascun gruppo, possono ricevere un falso allarme.
 
-Il teorema di Chouldechova lo dice in generale: quando i tassi
-di base sono diversi, tre parità non stanno insieme. Due le abbiamo appena
-pretese: che il sì valga lo stesso, e che il modello prenda la stessa quota di
-persone a cui l'esito è capitato, che è come pretendere che ne sfugga la stessa
-quota (se delle cinquanta ne prende trentacinque, le altre quindici gli
-sfuggono). La terza è quella saltata, la stessa quota di falsi allarmi (non lo
-stesso numero: il numero coincide). Se ne assicuri due,
-la terza salta. È un vincolo dell'aritmetica, che né codice migliore né più dati
-possono togliere; ne restano fuori soltanto due casi limite, un modello che non
-dà mai un falso allarme e uno che non prende nessuna delle persone a cui l'esito
+Il teorema di Chouldechova lo dice in generale: quando i tassi di base sono
+diversi, tre parità non stanno insieme. Due le abbiamo appena pretese: che il
+sì valga lo stesso, e che il modello prenda la stessa quota di persone a cui
+l'esito è capitato, che è come pretendere che ne sfugga la stessa quota (se
+delle cinquanta ne prende trentacinque, le altre quindici gli sfuggono). La
+terza è quella saltata, la stessa quota di falsi allarmi (la quota, non il
+numero: qui il numero coincide e la quota no). Se ne assicuri due, la terza
+salta. È un vincolo dell'aritmetica, che né codice migliore né più dati possono
+togliere; ne restano fuori soltanto due casi limite, un modello che non dà mai
+un falso allarme e uno che non prende nessuna delle persone a cui l'esito
 capita.
 
-La richiesta rimasta fuori, dire sì alla stessa quota di persone in
+La richiesta che il teorema non nomina, dire sì alla stessa quota di persone in
 ogni gruppo, non si salva da sola. Se l'esito capita a una persona su due di
 qua e a una su quattro di là, l'unico modo di avere insieme la stessa quota di
 sì e gli stessi due tassi di errore è che il modello dica i suoi sì a caso,
@@ -523,16 +523,16 @@ Avevano ragione entrambe.
 
 Teoremi di questa famiglia ce ne sono altri due. Quello di Kleinberg e colleghi
 guarda i punteggi invece dei sì, e si vede con gli stessi due gruppi. Se il
-punteggio è onesto, tornano anche le somme: letti come probabilità («70»
-vale 0,7), i punteggi di un gruppo sommano in media al numero di persone che
-avranno l'esito, cioè a 50 nel Gruppo A e a 50 nel Gruppo B. Pretendiamo ora che
-chi l'esito lo avrà riceva in media lo stesso punteggio di qua e di là, diciamo
-60: le cinquanta persone di ciascun gruppo, a 0,6 ciascuna, si prendono 30 di
+punteggio è onesto, tornano anche le somme: letti come probabilità («70» vale
+0,7), i punteggi di un gruppo sommano in media al numero di persone che avranno
+l'esito, cioè a 50 nel Gruppo A e a 50 nel Gruppo B. Pretendiamo ora che chi
+l'esito lo avrà riceva in media lo stesso punteggio di qua e di là, diciamo 60:
+le cinquanta persone di ciascun gruppo, a 0,6 ciascuna, si prendono 30 di
 quei 50. I 20 che restano vanno a chi l'esito non lo avrà: nel Gruppo A sono 50
-persone, e la loro media è 40; nel Gruppo B sono 150, e la media scende a
-circa 13. La terza pretesa, una media uguale nei due gruppi anche per chi
-l'esito non lo avrà, salta per forza, salvo che i gruppi partano dalla stessa
-frequenza o che il modello non sbagli mai.
+persone, e il loro punteggio medio è 40; nel Gruppo B sono 150, e il punteggio
+medio scende a circa 13. La terza pretesa, una media uguale nei due gruppi
+anche per chi l'esito non lo avrà, salta per forza, salvo che i gruppi partano
+dalla stessa frequenza o che il modello non sbagli mai.
 
 L'ultimo, di Pleiss e colleghi, dice che cosa si salva. Un punteggio che resta
 onesto può avere pari una sola di quelle due medie (sono le persone che sfuggono
@@ -622,16 +622,18 @@ d'errore. Con quei nomi il teorema precedente si rilegge così: calibrazione ed
 equalized odds *generalizzato* non stanno insieme, salvo prevalenze uguali o
 predittore perfetto. Pleiss e colleghi {cite}`pleiss2017fairness` (fra gli
 autori ci sono Kleinberg e Raghavan) lo riconoscono come risultato di Kleinberg
-e lo estendono: con prevalenze diverse, due vincoli di costo distinti qualsiasi,
-insieme alla calibrazione, impongono il predittore perfetto. La parte nuova è
-l'altra metà, quella costruttiva. Un vincolo alla volta, o i falsi negativi o i
-falsi positivi generalizzati, si ottiene conservando la calibrazione. Sia
-$g_t(h)$ il costo d'errore generalizzato del classificatore $h$ sul gruppo $t$,
-e sia $b$ il gruppo che sbaglia meno, $g_a(h_a) \ge g_b(h_b)$. Il nuovo
-classificatore del gruppo $b$ restituisce con probabilità $\alpha$ la
-prevalenza $p_b$ del gruppo (il predittore banale $h^{p_b}$, che è calibrato e
-non informa) e altrimenti $h_b(\mathbf{x})$; siccome il costo della mistura è
-lineare in $\alpha$, i costi dei due gruppi coincidono per
+e lo estendono: con prevalenze diverse, due vincoli di costo distinti
+qualsiasi, insieme alla calibrazione, impongono il predittore perfetto. La
+parte nuova è l'altra metà, quella costruttiva. Un vincolo alla volta, o i
+falsi negativi o i falsi positivi generalizzati, si ottiene conservando la
+calibrazione, purché il gruppo che sbaglia di più non costi più del predittore
+banale dell'altro. Siano $g_a(h)$ e $g_b(h)$ i costi d'errore generalizzati del
+classificatore $h$ sui due gruppi, e sia $b$ il gruppo che sbaglia meno,
+$g_a(h_a) \ge g_b(h_b)$. Il nuovo classificatore del gruppo $b$ restituisce con
+probabilità $\alpha$ la prevalenza $p_b$ del gruppo (il predittore banale
+$h^{p_b}$, che è calibrato e non informa) e altrimenti $h_b(\mathbf{x})$;
+siccome il costo della mistura è lineare in $\alpha$, i costi dei due gruppi
+coincidono per
 
 $$
 \alpha \;=\; \frac{g_a(h_a) - g_b(h_b)}{g_b(h^{p_b}) - g_b(h_b)}.
@@ -669,11 +671,11 @@ oggetto, e il costo compare subito nel valore predittivo. Il post-processing di
 Hardt, Price e Srebro sfrutta questo spiraglio.
 
 Quei numeri si rifanno in forma chiusa, senza bisogno di simulare: per
-$S \sim \text{Beta}(\alpha,\beta)$ la massa di punteggio sopra la soglia vale
+$S \sim \text{Beta}(u,v)$ la massa di punteggio sopra la soglia vale
 
 $$
 \mathbb{E}\bigl[S\,\mathbb{1}\{S \ge t\}\bigr]
-   = \frac{\alpha}{\alpha+\beta}\,P\bigl(\text{Beta}(\alpha+1,\beta) \ge t\bigr),
+   = \frac{u}{u+v}\,P\bigl(\text{Beta}(u+1,v) \ge t\bigr),
 $$
 
 dove $t$ è la soglia e $\mathbb{1}\{\cdot\}$ vale $1$ quando la condizione è
@@ -1042,10 +1044,10 @@ La conclusione più diffusa, che quei tassi *non si possano* allineare, è
 sbagliata, perché le ultime righe stampate, quelle con una soglia diversa per
 gruppo, li allineano ($0{,}215$ contro $0{,}219$ e $0{,}056$ contro $0{,}055$),
 senza toccare il punteggio e senza toccare le frequenze di base, che restano
-$0{,}50$ e $0{,}33$. Quel che si sposta, e che con la soglia unica passava
-inosservato, è il valore predittivo: $0{,}795$ nel Gruppo A contro $0{,}660$
-nel Gruppo B. Quando il modello dice sì, ci prende molto più spesso in un
-gruppo che nell'altro.
+$0{,}50$ e $0{,}33$. Quel che si sposta, e che con la soglia unica differiva di
+poco ($0{,}656$ contro $0{,}607$), è il valore predittivo: $0{,}795$ nel Gruppo
+A contro $0{,}660$ nel Gruppo B. Quando il modello dice sì, ci prende molto più
+spesso in un gruppo che nell'altro.
 
 [È il contenuto del teorema: tre garanzie, di cui al più due alla
 volta]{.pt-matita}. Un esperimento non dimostra un'impossibilità, ma mostra la
@@ -1075,14 +1077,16 @@ può.
 
 `````{tab} Superiore
 
-La configurazione a soglia unica riproduce la struttura del caso COMPAS
-{cite}`angwin2016machine`: divario nei tassi di errore con punteggio calibrato.
+La configurazione a soglia unica riproduce il divario nei tassi di errore
+misurato su COMPAS {cite}`angwin2016machine`, non la difesa dell'azienda: qui è
+calibrato il punteggio, e il VPP differisce già ($0{,}656$ contro $0{,}607$).
 Quella a due soglie riproduce il post-processing di Hardt, Price e Srebro
-{cite}`hardt2016equality`, e mostra che cosa si perde a valle: la
-separazione del VPP, che è il criterio rivendicato da Northpointe
+{cite}`hardt2016equality`, e mostra che cosa si perde a valle: la separazione
+del VPP, che è il criterio rivendicato da Northpointe
 {cite}`dieterich2016compas`. Resta il caveat sui tassi di base come grandezze
 misurate, e vale anche qui: nella simulazione sono noti per costruzione, mentre
-su dati veri sono stimati da etichette che possono essere a loro volta distorte.
+su dati veri sono stimati da etichette che possono essere a loro volta
+distorte.
 
 `````
 

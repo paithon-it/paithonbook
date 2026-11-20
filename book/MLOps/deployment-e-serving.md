@@ -473,13 +473,12 @@ Sull'esportazione, invece, è cambiato il rapporto fra i due strumenti.
 l'ha addestrato; ONNX è un formato aperto con cui quel grafo si consegna a un
 motore d'inferenza di terzi. Non sono due strade alternative, e chi le ha
 imparate ai tempi di PyTorch 1.x se lo ricorda al contrario: da PyTorch 2.9
-l'esportatore ONNX passa per `torch.export` (il parametro `dynamo` vale
-`True` di serie) e delega a lui la cattura del grafo. Ne discende una
-conseguenza pratica immediata: la traduzione in ONNX vive in
-un pacchetto a parte, `onnxscript`, che non viene più installato insieme a
-`torch`. Su un ambiente appena preparato quella riga solleva un
-`ModuleNotFoundError`, e la cura è installarlo (`pip install onnxscript`), non
-tornare all'esportatore vecchio.
+l'esportatore ONNX passa per `torch.export` (il parametro `dynamo` vale `True`
+di serie) e delega a lui la cattura del grafo. Ne discende una conseguenza
+pratica immediata: la traduzione in ONNX vive in un pacchetto a parte,
+`onnxscript`, che `torch` non installa. Su un ambiente appena preparato quella
+riga solleva un `ModuleNotFoundError`, e la cura è installarlo (`pip install
+onnxscript`), non tornare all'esportatore vecchio.
 
 Vale infine la stessa disciplina della precisione mista: [la quantizzazione va
 sempre misurata su un insieme di validazione]{.pt-matita}, perché il calo di
@@ -752,20 +751,20 @@ misurare prima di fidarsi.
   `model.eval()` (per *dropout* e *BatchNorm*, che in modo train aggiornerebbe
   le sue medie con i dati di produzione), `torch.no_grad()` per non costruire
   il grafo del backward.
-- Le leve per accelerare sono il batching dinamico, la riduzione di
-  precisione (`float16`, come nel capitolo PyTorch) e la quantizzazione a
-  `int8` con la mappa affine $\hat{w} = s\,(q - z)$, cioè scala e livello
-  dello zero {cite}`jacob2018quantization` (in `quantize_dynamic`, $z = 0$ sui
-  pesi e $z$ ricalcolato a ogni batch sulle attivazioni): circa 4× di memoria
-  in meno sui pesi che si quantizzano (con i soli `nn.Linear`, su una rete
-  mista il guadagno complessivo è molto minore), con un piccolo calo
-  di accuratezza, da misurare sempre. La scala per canale costa una manciata
-  di scalari per strato ed evita che un solo canale anomalo allarghi il
-  gradino di tutti.
+- Le leve per accelerare sono il batching dinamico, la riduzione di precisione
+  (`float16`, come nel capitolo PyTorch) e la quantizzazione a `int8` con la
+  mappa affine $\hat{w} = s\,(q - z)$, cioè scala e livello dello zero
+  {cite}`jacob2018quantization` (in `quantize_dynamic`, $z = 0$ sui pesi e $z$
+  ricalcolato a ogni batch sulle attivazioni): circa 4× di memoria in meno sui
+  pesi che si quantizzano (con i soli `nn.Linear`, su una rete mista il
+  guadagno complessivo è molto minore), con un piccolo calo di accuratezza, da
+  misurare sempre. La scala per canale costa uno scalare per canale d'uscita,
+  trascurabile rispetto ai pesi dello strato, ed evita che un solo canale
+  anomalo allarghi il gradino di tutti.
 - L'esportazione stacca il modello dal codice che l'ha addestrato:
-  `torch.export` cattura il grafo, e da PyTorch 2.9 l'esportatore ONNX passa
-  di lì invece di essere la sua alternativa (serve `onnxscript`, che non è più
-  una dipendenza di `torch`).
+  `torch.export` cattura il grafo, e da PyTorch 2.9 l'esportatore ONNX passa di
+  lì invece di essere la sua alternativa (serve `onnxscript`, che non è una
+  dipendenza di `torch`).
 - I termini sono tre: l’SLI è ciò che si misura (la p99 della latenza),
   lo SLO la soglia che il team si impone su quell'indicatore, lo SLA il
   contratto con le penali. Uno SLO serio si scrive sui percentili alti

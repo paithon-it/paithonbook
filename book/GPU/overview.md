@@ -35,11 +35,13 @@ battito, $V$ la tensione che li alimenta e $f$ la frequenza del clock.
 Per decenni alzare $f$ non era stato un problema, grazie a una regola di scala
 ricavata nel 1974 da Robert Dennard e colleghi {cite}`dennard1974design`, lo
 **scaling di Dennard**. A ogni generazione i **transistor** (i minuscoli
-interruttori di cui un chip è fatto) si rimpicciolivano di un fattore
-$\kappa$, e la tensione scendeva nella stessa proporzione. Di conseguenza ogni
-transistor consumava $\kappa^2$ volte meno e poteva battere $\kappa$ volte più
-in fretta, e siccome nella stessa area di silicio ne stavano $\kappa^2$ volte
-tanti, la potenza per millimetro quadrato restava la stessa.
+interruttori di cui un chip è fatto) si rimpicciolivano di un fattore $\kappa$,
+e la tensione scendeva nella stessa proporzione. Di conseguenza ogni
+transistor, pur battendo $\kappa$ volte più in fretta, consumava $\kappa^2$
+volte meno: nella formula la capacità scendeva di quel fattore e il quadrato
+della tensione del suo quadrato, e la frequenza più alta ne recuperava uno
+solo; e siccome nella stessa area di silicio ne stavano $\kappa^2$ volte tanti,
+la potenza per millimetro quadrato restava la stessa.
 
 Verso la metà degli anni Duemila, però, la tensione smise di scendere. Per
 abbassarla, infatti, bisogna abbassare anche la tensione di soglia, quella a

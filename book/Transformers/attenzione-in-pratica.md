@@ -8,11 +8,11 @@ descrizione: "Come si usa l'attenzione quando il modello genera testo: la cache
 
 Nel novembre del 2019 esce un articolo di nove pagine, firmato da una persona
 sola, che si intitola *Fast Transformer Decoding: One Write-Head is All You
-Need* {cite}`shazeer2019fast`. Il gioco di parole è deliberato: l'autore è
-Noam Shazeer, secondo firmatario dell'articolo del 2017. Due anni dopo aver
-scritto che serviva l'attenzione, torna sulla stessa formula per dire che, al
-momento di generare, basta una sola testa per le chiavi. La formula resta
-quella; cambiano la memoria occupata e il modo di eseguirla.
+Need* {cite}`shazeer2019fast`. Il gioco di parole è deliberato: l'autore è Noam
+Shazeer, secondo firmatario dell'articolo del 2017. Due anni dopo aver scritto
+che serviva l'attenzione, torna sulla stessa formula per dire che, al momento
+di generare, basta una sola testa per chiavi e valori. La formula resta quella;
+cambiano la memoria occupata e il modo di eseguirla.
 
 Lo stesso strato di attenzione gira in due modalità: con tutta la sequenza
 insieme in addestramento, o un token alla volta in generazione. I costi delle
@@ -141,9 +141,9 @@ Resta lo spazio, che si vede subito sul taccuino di una conversazione lunga. Ad
 esempio, un palazzo moderno, molto più alto di quello del 2017, ha trentadue
 piani con trentadue lettori per piano: circa mille taccuini, ciascuno con due
 righe per ogni parola scritta, e ogni riga è fatta di centoventotto numeri da
-due byte. Mille per due per centoventotto per due fa circa mezzo megabyte a
-parola, e una conversazione da ottomila parole ne occupa più di quattro
-gigabyte.
+due byte. Mille taccuini per due righe per centoventotto numeri per due byte fa
+circa mezzo megabyte a parola, e una conversazione da ottomila parole ne occupa
+più di quattro gigabyte.
 
 A ogni parola nuova quel materiale va riletto tutto, insieme ai numeri del
 modello. A questo punto la domanda diventa dove tenere i taccuini.

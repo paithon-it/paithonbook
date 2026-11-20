@@ -51,6 +51,27 @@
 
 versioni:
 
+- versione: "1.18.2"
+  data: 2026-11-20
+  voci:
+
+  - tipo: corretto
+    testo: >
+      **Più chiaro per chi parte da zero.** In tutti i capitoli le spiegazioni
+      più semplici dicono i termini al primo uso e non saltano passaggi.
+
+  - tipo: corretto
+    testo: >
+      **Formule e fatti ricontrollati.** In tutti i capitoli le formule hanno
+      le ipotesi che mancavano, le affermazioni troppo forti sono
+      ridimensionate, e numeri e attribuzioni sono verificati sulle fonti.
+
+  - tipo: ampliato
+    pagina: GenerazioneVideo/overview.md
+    testo: >
+      **Le aperture di Generare video e Generare musica.** Anche questi due
+      capitoli hanno la loro illustrazione d'apertura.
+
 - versione: "1.18.1"
   data: 2026-11-08
   voci:

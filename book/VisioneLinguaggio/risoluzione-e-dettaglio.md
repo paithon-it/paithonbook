@@ -499,14 +499,13 @@ passaggio trascritto, ma sulle regioni dell'immagine, e un token della domanda
 si aggancia alla zona di pagina che gli corrisponde, parola, cella di tabella o
 etichetta di un asse che sia.
 
-Il modello si addestra con una perdita
-contrastiva sul batch che oppone il punteggio della pagina giusta a quello del
-negativo più alto del batch, $\mathcal{L} = \frac{1}{b}\sum_{k=1}^{b}
-\operatorname{softplus}\big(s^-_k - s^+_k\big)$, con $b$ le coppie
-domanda-pagina del batch, $s^+_k = s(\mathbf{Q}_k, \mathbf{D}_k)$ e $s^-_k =
-\max_{l \neq k} s(\mathbf{Q}_k, \mathbf{D}_l)$: non la InfoNCE su tutti i
-negativi della sezione sull'allineamento, ma la sua variante sul negativo più
-difficile.
+Il modello si addestra con una perdita contrastiva sul batch che oppone il
+punteggio della pagina giusta a quello del negativo più alto del batch,
+$\mathcal{L} = \frac{1}{b}\sum_{m=1}^{b} \operatorname{softplus}\big(s^-_m -
+s^+_m\big)$, con $b$ le coppie domanda-pagina del batch, $s^+_m =
+s(\mathbf{Q}_m, \mathbf{D}_m)$ e $s^-_m = \max_{l \neq m} s(\mathbf{Q}_m,
+\mathbf{D}_l)$: non la InfoNCE su tutti i negativi della sezione
+sull'allineamento, ma la sua variante sul negativo più difficile.
 
 Il costo è la vera obiezione. Un indice multi-vettore conserva $n_d \cdot k$
 numeri per pagina invece di $k$: con $n_d \approx 1024$ e $k = 128$ in mezza

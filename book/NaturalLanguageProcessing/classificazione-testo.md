@@ -398,10 +398,12 @@ $$
 dove $m$ è il numero di documenti di addestramento, $y_i \in \{0, 1\}$
 l'etichetta del documento $i$, $\hat{y}_i$ la probabilità che il modello gli
 assegna e $\lambda \ge 0$ il coefficiente di regolarizzazione (in
-`scikit-learn` si imposta il suo inverso, `C`). $\mathcal{L}$ è convessa,
-quindi la discesa non resta intrappolata in minimi locali, ma non ha una
-soluzione in forma chiusa, per cui si usano metodi iterativi (la discesa del
-gradiente, o L-BFGS in `scikit-learn`).
+`scikit-learn` si imposta `C`, che con questa scrittura vale $1/(2m\lambda)$:
+la libreria somma le perdite invece di farne la media, e mette un $\tfrac12$
+davanti alla norma). $\mathcal{L}$ è convessa, quindi la discesa non resta
+intrappolata in minimi locali, ma non ha una soluzione in forma chiusa, per cui
+si usano metodi iterativi (la discesa del gradiente, o L-BFGS in
+`scikit-learn`).
 
 Senza regolarizzazione, su dati
 linearmente separabili il minimo non esiste: la perdita continua a scendere
@@ -701,12 +703,12 @@ conteggio di parole isolate non può cogliere quella frase, per
 costruzione]{.pt-matita}: presa una per una, nessuna di quelle parole è un
 elogio, e il senso sta tutto in come stanno insieme.
 
-Un modello che legge la frase intera
-con l'attenzione, come quelli del capitolo sui Transformer, ha davanti anche il
-«non», e in principio potrebbe farcela. Eppure negli {doc}`esempi pratici di
-quel capitolo </Transformers/esempi>` un modello che dà alle recensioni da una
-a cinque stelle legge proprio questa frase come scontenta, per un soffio, e le
-dà due stelle. Leggere tutta la frase è la condizione per capirla, non la
+Un modello che legge la frase intera con l'attenzione, come quelli del capitolo
+sui Transformer, ha davanti anche il «non», e in linea di principio potrebbe
+farcela. Eppure negli {doc}`esempi pratici di quel
+capitolo </Transformers/esempi>` un modello che dà alle recensioni da una a
+cinque stelle legge proprio questa frase come scontenta, per un soffio, e le dà
+due stelle. Leggere tutta la frase è la condizione per capirla, non la
 garanzia.
 
 `````

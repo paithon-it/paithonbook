@@ -109,11 +109,12 @@ una, e si indovina quale moneta sta in quale. Il gettone resta nel bianco,
 lontano da tutte le monete di qualunque taglio.
 
 Con due misure tutto questo funziona. Con migliaia, come i puntini di una
-fotografia, può ingannare. Una delle ragioni è che ogni foto vera si
-scosta dalla foto media in mille piccoli modi, uno per puntino, così
-nessuna sta al centro, dove l'inchiostro è più scuro. Le foto vere stanno tutte
-in un anello tutt'intorno, e una foto di tutt'altro genere può cadere più
-vicino di loro alla macchia più scura. Programmi che avevano
+fotografia, può ingannare. Una delle ragioni è che ogni foto vera si scosta
+dalla foto media in mille piccoli modi, uno per puntino, e mille piccoli scarti
+sommati non fanno mai zero: danno a tutte le foto più o meno la stessa distanza
+dal centro. Così nessuna sta al centro, dove l'inchiostro è più scuro. Le foto
+vere stanno tutte in un anello tutt'intorno, e una foto di tutt'altro genere
+può cadere più vicino di loro alla macchia più scura. Programmi che avevano
 studiato fotografie di animali e di camion hanno trovato le fotografie di
 numeri civici, mai viste, più normali di quelle su cui avevano studiato.
 
@@ -274,11 +275,11 @@ scarto è normale e un decimo di millimetro no. La solita correzione per quanto
 sono comuni i due tagli resta anche qui.
 
 Con la distanza misurata così, le monete ugualmente lontane dai due centri
-stanno su una retta, l'asse del segmento che li unisce se si prende la forma
-del mucchio come unità di misura; sul foglio ordinario la stessa retta
-non taglia il segmento ad angolo retto. La correzione la sposta soltanto,
-parallela a sé stessa. Il metodo porta il nome di Fisher, ed è l’**analisi
-discriminante lineare**, o LDA.
+stanno su una retta, l'asse del segmento che li unisce (la retta che lo taglia
+a metà ad angolo retto) se si prende la forma del mucchio come unità di misura;
+sul foglio ordinario la stessa retta non taglia il segmento ad angolo retto. La
+correzione la sposta soltanto, parallela a sé stessa. Il metodo porta il nome
+di Fisher, ed è l’**analisi discriminante lineare**, o LDA.
 
 Fisher ci arrivava da un'altra parte, senza le due descrizioni. Cercava una
 ricetta che mescolasse le misure in un numero solo, per esempio due volte il
@@ -578,7 +579,7 @@ le due classi perché sono identici.
 
 ```{figure} ../figures/lda-qda-naive-bayes.svg
 :name: fig-lda-qda
-:alt: "Tre pannelli sugli stessi due gruppi di punti, teal e terracotta, che si sovrappongono in parte. Nel primo, LDA, le due classi hanno la stessa identica ellisse di forma in due posizioni diverse, e il confine fra loro e una retta. Nel secondo, QDA, ogni classe ha la sua ellisse, con orientamenti diversi, e il confine e una curva. Nel terzo, naive Bayes gaussiano, le ellissi hanno gli assi obbligatoriamente paralleli agli assi del grafico, perche l ipotesi di indipendenza vieta le diagonali, e il confine e una curva diversa dalla precedente."
+:alt: "Tre pannelli sugli stessi due gruppi di punti, teal e terracotta, che si sovrappongono in parte. Nel primo, LDA, le due classi hanno la stessa identica ellisse di forma in due posizioni diverse, e il confine fra loro è una retta. Nel secondo, QDA, ogni classe ha la sua ellisse, con orientamenti diversi, e il confine è una curva. Nel terzo, naive Bayes gaussiano, le ellissi hanno gli assi obbligatoriamente paralleli agli assi del grafico, perché l’ipotesi di indipendenza vieta le diagonali, e il confine è una curva diversa dalla precedente."
 :width: 100%
 
 Le tre ipotesi, disegnate. L'ovale che circonda ciascun gruppo (un’ellisse) è

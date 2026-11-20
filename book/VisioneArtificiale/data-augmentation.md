@@ -32,8 +32,9 @@ mano. Da un'immagine di 256 pixel di lato se ne ritaglia una di 224, quindi il
 bordo sinistro del ritaglio può stare tutto a sinistra o scivolare di una, due,
 fino a $256 - 224 = 32$ colonne, cioè in 33 posizioni, e il bordo alto in
 altrettante. In tutto fanno $33 \times 33 = 1089$ ritagli diversi, che lo
-specchio raddoppia a $2178$. Gli autori scrivono $2048$, cioè contano
-trentadue posizioni per lato invece di trentatré; la sostanza non cambia.
+specchio raddoppia a $2178$. Gli autori scrivono $2048$, cioè contano trentadue
+posizioni per lato invece di trentatré (trentadue per trentadue, raddoppiato
+dallo specchio); la sostanza non cambia.
 
 ## Cambiare i pixel, non l'etichetta
 
@@ -141,8 +142,11 @@ stessa scala su cui è stata addestrata.
 
 Si noti che è la stessa operazione per tutte le foto, quindi non pareggia la
 luce: una foto scattata in controluce resta più scura di una scattata al sole.
-Anzi, la differenza fra le due si ingrandisce, perché, con i valori dei pixel
-espressi fra 0 e 1, si divide per un numero più piccolo di uno (circa 0,2).
+In assoluto, anzi, la differenza fra le due si ingrandisce: con i valori dei
+pixel espressi fra 0 e 1 si divide per un numero più piccolo di uno (circa
+0,23), cioè la si moltiplica per circa quattro e mezzo. Lo stesso però succede
+a ogni altra differenza dell'immagine, e in proporzione il divario di luce
+resta quello di prima.
 
 `````{tab} Elementare
 È la differenza tra i compiti a casa e il compito in classe. A casa
@@ -351,7 +355,7 @@ soltanto chi si sbilancia.
 Una manopola decide quanto mescolare, e la si tiene bassa. Il 70 contro 30 è
 già una dose generosa, e il più delle volte esce qualcosa di molto più
 sbilanciato, una diapositiva quasi piena e l'altra appena un'ombra; il mezzo e
-mezzo capita di rado.
+mezzo, che sarebbe la mescolanza massima, capita di rado.
 
 **Cutout** è ancora più semplice: si copre un rettangolo a caso della foto,
 come con un post-it. Se la rete riconosceva i gatti solo dalle orecchie, con il
@@ -411,11 +415,12 @@ e deve riconoscerla.
 
 **Cutout** {cite}`devries2017improved` azzera un riquadro casuale
 dell'immagine, impedendo alla rete di dipendere da una singola regione
-discriminante: un dropout applicato allo spazio dei pixel.
-L'idea quasi identica del *random erasing* lo riempie invece di valori
-casuali; torchvision le fa tutte e due con `transforms.RandomErasing` (da
-applicare dopo `ToTensor`), in cui il valore predefinito è zero, cioè Cutout,
-mentre per il random erasing serve `value="random"`.
+discriminante: un dropout applicato allo spazio dei pixel. L'idea quasi
+identica del *random erasing* lo riempie invece di valori casuali; torchvision
+le fa tutte e due con `transforms.RandomErasing` (da applicare dopo
+`ToTensor`), in cui il valore predefinito è zero, vicino a Cutout (area e
+proporzioni del riquadro però si estraggono a caso), mentre per il random
+erasing serve `value="random"`.
 
 Infine **AutoAugment** {cite}`cubuk2019autoaugment` tratta la scelta delle
 trasformazioni come un problema di ricerca: un controllore addestrato per

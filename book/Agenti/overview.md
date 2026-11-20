@@ -361,12 +361,13 @@ senza garanzia di funzionare altrove.
 
 Il secondo è strutturale: gli errori si sommano lungo il ciclo. Se ogni passo
 sbaglia con probabilità $p$ e gli errori sono indipendenti, cioè sbagliare un
-passo non rende più probabile sbagliare il successivo, la probabilità di
-attraversare $n$ passi senza errori è $(1-p)^n$. Ad esempio, con $p = 0{,}1$ e
-$n = 10$ fa $0{,}9^{10} \approx 0{,}35$: su cento tentativi il primo passo ne
-lascia passare novanta, il secondo ottantuno, il terzo circa settantatré, e
-dopo dieci passi ne restano trentacinque. L'indipendenza è un'ipotesi comoda e
-poco realistica, e la {doc}`sezione sul valutare un agente
+passo non cambia, né in più né in meno, la probabilità di sbagliare il
+successivo, la probabilità di attraversare $n$ passi senza errori è $(1-p)^n$.
+Ad esempio, con $p = 0{,}1$ e $n = 10$ fa $0{,}9^{10} \approx 0{,}35$: su cento
+tentativi il primo passo ne lascia passare novanta, il secondo ottantuno, il
+terzo circa settantatré, e dopo dieci passi ne restano trentacinque.
+L'indipendenza è un'ipotesi comoda e poco realistica, e la {doc}`sezione sul
+valutare un agente
 </Agenti/architetture-e-valutazione>` mostra che cosa cambia quando cade. Ne segue
 che non basta riuscire un passo, bisogna riuscirne molti di seguito, e per
 questo i compiti lunghi come quelli di SWE-bench {cite}`jimenez2024swebench`
@@ -384,10 +385,11 @@ domande mirate, e a modulo completo prenotava. I sistemi di questo tipo si
 dicono *a frame*, e il modulo mezzo pieno era la loro memoria: l'unica cosa che
 si portavano dietro da una battuta all'altra.
 
-Erano già agenti. Avevano una percezione (l'input dell'utente), delle azioni (le
-risposte e la prenotazione) e una regola che, data la situazione, sceglieva
-l'azione successiva. Quella regola è la *policy* (in italiano politica, nel
-senso di linea di condotta) del {doc}`capitolo sul reinforcement learning
+Erano già agenti, in senso lato. Avevano una percezione (l'input dell'utente),
+delle azioni (le risposte e la prenotazione) e una regola che, data la
+situazione, sceglieva l'azione successiva. Quella regola è la *policy* (in
+italiano politica, nel senso di linea di condotta) del {doc}`capitolo sul
+reinforcement learning
 </ReinforcementLearning/overview>`.
 
 `````{tab} Elementare

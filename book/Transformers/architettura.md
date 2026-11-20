@@ -370,9 +370,10 @@ linguistici recenti usano quasi tutti la **RoPE** (*rotary position embedding*
 {cite}`su2024roformer`), che prende quell'identità sul serio e la promuove da
 congettura a costruzione.
 
-La RoPE non aggiunge niente all'embedding: in ogni
-strato ruota query e chiave, coppia di coordinate per coppia, di un angolo
-proporzionale alla posizione assoluta del token, $\mathbf{q}_m \mapsto
+La RoPE non aggiunge niente all'embedding: in ogni strato ruota query e chiave,
+coppia di coordinate per coppia, di un angolo proporzionale alla posizione
+assoluta del token (qui $m$ e $n$ sono due posizioni, come nell'articolo della
+RoPE, e non le lunghezze della traduzione), $\mathbf{q}_m \mapsto
 \mathbf{R}_{m}\,\mathbf{q}_m$ e $\mathbf{k}_n \mapsto
 \mathbf{R}_{n}\,\mathbf{k}_n$, dove $\mathbf{R}_m =
 \operatorname{diag}\big(\mathbf{R}(m\omega_0), \dots,
@@ -448,8 +449,9 @@ stanno sui moduli della scrivania e un terzo su quelli della riunione.
 Il conto è alla portata. La riunione usa quattro moduli grandi uguali: uno per
 la query, uno per la chiave, uno per il valore, uno per rimettere insieme le
 risposte degli otto lettori. La scrivania ne usa due soli, ma ciascuno quattro
-volte più grande, perché uno allarga e l'altro ricomprime: sono otto moduli
-della prima taglia. Otto contro quattro, due terzi contro un terzo.
+volte più grande, cioè con quattro volte i numeri, perché uno allarga e l'altro
+ricomprime: sono otto moduli della prima taglia. Otto contro quattro, due terzi
+contro un terzo.
 
 Nei piani della torre che scrive le riunioni sono due, la propria e la
 consultazione dell'altra torre, quindi lì si va a otto contro otto e la quota
@@ -467,11 +469,11 @@ zero. I fogli lunghi, poi, diventano due, compilati con due moduli diversi: il
 primo, quello con i negativi scoloriti, fa da filtro, e numero per numero
 decide quanto del secondo passa oltre.
 
-Perché il totale dei numeri stampati non
-cresca, i fogli si accorciano da quattro a poco meno di tre volte la nota
-di partenza: con il modulo che ricomprime, tre moduli di questa misura
-equivalgono di nuovo a otto della prima taglia, e il bilancio di prima torna.
-Stessi numeri da regolare, e il modello funziona meglio.
+Perché il totale dei numeri stampati non cresca, i fogli si accorciano da
+quattro a otto terzi della nota di partenza, poco meno di tre volte: con il
+modulo che ricomprime, tre moduli di questa misura equivalgono di nuovo a otto
+della prima taglia, e il bilancio di prima torna. Stessi numeri da regolare, e
+il modello funziona meglio.
 `````
 
 `````{tab} Superiore

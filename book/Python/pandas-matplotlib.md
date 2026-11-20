@@ -531,12 +531,13 @@ vecchi, di cui l'età è registrata, saltano più letture. In MNAR (*missing not
 at random*) dipende dal valore mancante stesso, come quando chi guadagna di
 più dichiara meno spesso il reddito.
 
-Se i dati sono MCAR è garantito che eliminare le righe incomplete non
-introduca distorsioni (a costo di perdere informazione), e in una regressione
+Se i dati sono MCAR è garantito che eliminare le righe incomplete non introduca
+distorsioni (a costo di perdere informazione), e in una regressione
 l'eliminazione resta lecita anche quando la mancanza dipende solo dalle
-covariate e non dalla risposta. Con MAR l'eliminazione può distorcere le
-stime, mentre l'imputazione multipla e i metodi di massima verosimiglianza, se
-il modello è scritto bene, restano validi. Con MNAR, infine, servono ipotesi
+covariate e non dalla risposta, purché il modello della risposta date le
+covariate sia specificato correttamente. Con MAR l'eliminazione può distorcere
+le stime, mentre l'imputazione multipla e i metodi di massima verosimiglianza,
+se il modello è scritto bene, restano validi. Con MNAR, infine, servono ipotesi
 esplicite sul meccanismo, perché i dati da soli non lo rivelano.
 
 L'imputazione con media o mediana è semplice, ma comprime la varianza e
@@ -597,9 +598,10 @@ quarto decimale.
 La **varianza** misura lo sparpagliamento attorno a quella media, ed è piccola
 se i valori stanno tutti lì vicino, grande se sono sparsi ai due estremi. Si
 calcola come la media dei quadrati delle distanze dalla media, dividendo però
-per $n-1$ invece che per $n$ (è il `ddof=1` del codice). In orizzontale è
-identica in tutte e quattro; in verticale le quattro differiscono al terzo
-decimale, che è già più in là di dove si guarda.
+per $n-1$ invece che per $n$, perché la media è stata calcolata sugli stessi
+dati e li fa sembrare un po’ meno sparsi di quanto siano (è il `ddof=1` del
+codice). In orizzontale è identica in tutte e quattro; in verticale le quattro
+differiscono al terzo decimale, che è già più in là di dove si guarda.
 
 La **correlazione** (di Pearson) è un numero fra $-1$ e $1$ che misura quanto
 le due grandezze crescono insieme lungo una retta; vale $0$ quando non c'è

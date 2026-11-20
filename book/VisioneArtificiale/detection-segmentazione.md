@@ -77,11 +77,12 @@ L'addestramento minimizza una loss composita che somma un termine di
 localizzazione (errore sulle coordinate, tipicamente *smooth L1* o una
 IoU-loss), un termine di classificazione (cross-entropy sulla classe) e un
 termine di **objectness** che supervisiona la confidenza, spingendola verso
-l'alto dove c'è un oggetto e verso zero sullo sfondo. In YOLOv1 e YOLOv2
-il bersaglio dell'objectness non era uno ma la IoU stessa fra
-riquadro predetto e riquadro vero (l'area in comune divisa per quella coperta
-in tutto), così che il punteggio incorporasse la qualità della localizzazione;
-da YOLOv3 in poi, è semplicemente uno. La formula unisce i tre termini:
+l'alto dove c'è un oggetto e verso zero sullo sfondo. In YOLOv1 e YOLOv2 il
+bersaglio dell'objectness non era uno ma la IoU stessa fra riquadro predetto e
+riquadro vero (l'area in comune divisa per quella coperta in tutto), così che
+il punteggio incorporasse la qualità della localizzazione; in YOLOv3 è
+semplicemente uno, YOLOv5 torna alla IoU, e da YOLOv8 il termine di objectness
+sparisce. La formula unisce i tre termini:
 
 $$
 \mathcal{L} = \mathcal{L}_{\text{obj}} + \mathcal{L}_{\text{cls}} + \lambda \,\mathcal{L}_{\text{box}} .
@@ -153,9 +154,9 @@ esamina con calma soltanto le zone sospette, e ha già scartato quasi tutto lo
 sfondo al primo passaggio. Chi guarda una volta sola deve invece dare una
 risposta per ogni casella dell'immagine, e le caselle con dentro un oggetto
 sono una manciata contro decine di migliaia di asfalto, cielo e muro. Alla
-correzione arrivano così diecimila risposte quasi tutte uguali e quasi tutte
-facili. [Sommate, seppelliscono le poche difficili]{.pt-matita}, e il
-rilevatore impara benissimo a dire "niente" e molto peggio tutto il resto.
+correzione arrivano così decine di migliaia di risposte quasi tutte uguali e
+quasi tutte facili. [Sommate, seppelliscono le poche difficili]{.pt-matita}, e
+il rilevatore impara benissimo a dire "niente" e molto peggio tutto il resto.
 
 Abbassare in blocco il peso di tutte le risposte vuote, come si faceva
 all'inizio, aiuta ma non basta. Fra quelle vuote, infatti, ce ne sono migliaia
@@ -420,7 +421,8 @@ troncato a $l \in \{2, \dots, 5\}$. Il $\log_2$ viene dal passo $2^l$, e $l_0 =
 4$ imita il Faster R-CNN che legge da $\mathbf{C}_4$. Una regione con
 $\sqrt{wh}$ fra $224$ (la taglia di ImageNet) e $448$ va su $\mathbf{P}_4$;
 ogni dimezzamento di $\sqrt{wh}$ scende di un livello, e sul proprio livello
-ogni regione copre fra $14$ e $28$ celle per lato.
+una regione con $\sqrt{wh}$ fra $56$ e $896$ copre fra $14$ e $28$ celle per
+lato; sotto i $56$ pixel la troncatura a $\mathbf{P}_2$ ne lascia meno.
 
 Il limite sugli oggetti piccoli è doppio. Da un lato $\mathbf{P}_2$ ha passo
 $4$ (la $\mathbf{C}_1$ è esclusa per la memoria); dall'altro l'ancora più
@@ -903,7 +905,7 @@ inverte solo la geometria. In PyTorch è `nn.ConvTranspose2d`.
 Quando $k$ non è multiplo di $s$, le applicazioni del kernel si sovrappongono
 in modo disomogeneo e l'output mostra i tipici **artefatti a scacchiera**
 {cite}`odena2016deconvolution`. Verrebbe da concludere che basti scegliere $k$
-multiplo di $s$, ma l'articolo citato dimostra il contrario: [la scelta toglie
+multiplo di $s$, ma l'articolo citato mostra il contrario: [la scelta toglie
 la disomogeneità geometrica ma non gli artefatti]{.pt-matita}, perché una rete
 impara volentieri kernel che li producono anche a sovrapposizione uniforme. Per
 questo, e non per la sola divisibilità, molte architetture recenti preferiscono
@@ -1016,11 +1018,11 @@ geometria e profondità <geometria-e-profondita>`.
   la mAP (*mean Average Precision*) riassume in un numero solo la qualità
   complessiva del rilevatore, e nel farlo accoppia ogni oggetto a una sola
   predizione: i doppioni contano come errori.
-- Prima della valutazione la non-maximum suppression sfoltisce i doppioni:
-  si tiene il riquadro più confidente e si scartano quelli sovrapposti oltre
-  una soglia di IoU, a un costo quadratico nel caso peggiore; nelle scene
-  affollate sopprime anche oggetti veri, e la Soft-NMS ne abbassa la
-  confidenza invece di scartarli.
+- Prima della valutazione la non-maximum suppression sfoltisce i doppioni: si
+  tiene il riquadro col punteggio più alto e si scartano quelli sovrapposti
+  oltre una soglia di IoU, a un costo quadratico nel caso peggiore; nelle scene
+  affollate sopprime anche oggetti veri, e la Soft-NMS ne abbassa la confidenza
+  invece di scartarli.
 - Semantica (FCN, U-Net) etichetta ogni pixel; istanza (Mask R-CNN)
   separa anche i singoli oggetti. Le *skip connection* fra encoder e decoder
   nascono con la FCN; la U-Net ne generalizza la forma concatenando a ogni

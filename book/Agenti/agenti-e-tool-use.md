@@ -147,10 +147,12 @@ Se la sequenza emessa non rispetta lo schema, i rimedi sono due. Il primo è
 validarla a valle e restituire l'errore al modello come osservazione, perché la
 corregga all'iterazione dopo. Il secondo è il **decoding vincolato**: a ogni
 passo si mettono a $-\infty$ i logit dei token che porterebbero la chiamata
-fuori dalla grammatica dello schema, e la chiamata è valida per costruzione.
-Garantisce la forma, non il contenuto: un argomento può essere sintatticamente
-perfetto e sbagliato. Lo tratta per esteso la {doc}`sezione sulle risposte che
-un programma sa leggere </IngegneriaLLM/prompt-engineering>`.
+fuori dalla grammatica dello schema, e la chiamata è valida per costruzione,
+purché la generazione non si interrompa al limite di token e la grammatica
+copra tutto lo schema. Garantisce la forma, non il contenuto: un argomento può
+essere sintatticamente perfetto e sbagliato. Lo tratta per esteso la
+{doc}`sezione sulle risposte che un programma sa
+leggere </IngegneriaLLM/prompt-engineering>`.
 
 `````
 
@@ -432,21 +434,23 @@ per conto proprio almeno un'ipotesi la produceva.
 
 Il ragionamento che il detective recita suona convincente, ma resta un
 racconto, e a volte è costruito dopo, per giustificare una mossa presa
-d'istinto. Ci si può fidare dei registri che ha aperto e di quello che vi era
-scritto.
+d'istinto. Ci si può fidare del fatto che quei registri li ha aperti davvero e
+che vi era scritto quello che riporta; se il registro stesso sia giusto è
+un'altra questione.
 
 `````
 
 `````{tab} Superiore
 
-ReAct allarga lo spazio delle azioni da $\mathcal{A}$ a
-$\hat{\mathcal{A}} = \mathcal{A} \cup \mathcal{L}$, dove $\mathcal{L}$ è lo
-spazio del linguaggio. Un'azione $\hat{a}_t \in \mathcal{L}$, il pensiero, non
-agisce sull'ambiente e non produce un'osservazione: aggiorna soltanto il
-contesto, $s_{t+1} = s_t \oplus \hat{a}_t$, da cui la policy sceglie l'azione
-successiva {cite}`yao2023react`. È la risposta alla domanda ovvia (se il
-pensiero non cambia il mondo, perché conta?): cambia ciò su cui la policy
-condiziona. Il contesto dell'agente cresce così come una sequenza di terne:
+ReAct allarga lo spazio delle azioni da $\mathcal{A}$ a $\hat{\mathcal{A}} =
+\mathcal{A} \cup \mathcal{T}$, dove $\mathcal{T}$ è lo spazio del linguaggio
+(nell'articolo $\mathcal{L}$, lettera già presa dalla perdita di Toolformer).
+Un'azione $\hat{a}_t \in \mathcal{T}$, il pensiero, non agisce
+sull'ambiente e non produce un'osservazione: aggiorna soltanto il contesto,
+$s_{t+1} = s_t \oplus \hat{a}_t$, da cui la policy sceglie l'azione successiva
+{cite}`yao2023react`. È la risposta alla domanda ovvia (se il pensiero non
+cambia il mondo, perché conta?): cambia ciò su cui la policy condiziona. Il
+contesto dell'agente cresce così come una sequenza di terne:
 
 ```text
 Thought: per rispondere mi serve l'anno del paper, non lo so a memoria.
@@ -765,10 +769,11 @@ Answer: 'Attention Is All You Need' è del 2017: 9 anni fa nel 2026.
 
 L'esecuzione stampa la traccia completa: i tre `Thought`, le due chiamate agli
 strumenti con le rispettive `Observation`, e la risposta finale. Il ciclo gira
-tre volte ({numref}`fig-ciclo-agente`) e i tre passi sono sempre gli stessi; a
-cambiare è il contesto, cioè ciò che il modello legge prima di scegliere
-l'azione successiva, che a ogni iterazione si allunga di un blocco: la chiamata
-fatta e la sua risposta.
+tre volte ({numref}`fig-ciclo-agente`): nelle prime due i tre passi sono sempre
+gli stessi, e nella terza il modello risponde senza strumenti; a cambiare è il
+contesto, cioè ciò che il modello legge prima di scegliere l'azione successiva,
+che a ogni iterazione si allunga di un blocco: la chiamata fatta e la sua
+risposta.
 
 ```{figure} ../figures/ciclo-agente.svg
 :name: fig-ciclo-agente
@@ -855,12 +860,12 @@ per compito e non per comodità.
 
 ```{admonition} Da ricordare
 :class: important
-- Un LLM da solo non sa l'ora, sbaglia i conti lunghi senza i passaggi e
-  ignora ciò che è successo dopo l'addestramento. Con il tool use, invece di
+- Un LLM da solo non sa l'ora, sbaglia i conti lunghi senza i passaggi e ignora
+  ciò che è successo dopo l'addestramento. Con il tool use, invece di
   rispondere, emette una chiamata strutturata a uno strumento, che il sistema
   esegue e il cui risultato rientra nel contesto; se la chiamata non rispetta
   lo schema, si restituisce l'errore come osservazione o si vincola la
-  decodifica (che garantisce la forma, non il contenuto).
+  decodifica (che garantisce la forma, salvo troncamenti, non il contenuto).
 - Ogni strumento è uno schema (nome, descrizione, argomenti tipati, in
   JSON Schema: `type`, `properties`, `required`); alla capacità di sceglierlo e
   di compilarne gli argomenti si arriva per due strade, addestrando il modello
@@ -880,18 +885,15 @@ per compito e non per comodità.
   `tools/list` e invocati con `tools/call`, descrizioni da trattare come non
   fidate se il server non lo è.
 - ReAct {cite}`yao2023react` intreccia in un loop Thought → Action →
-  Observation, con il pensiero come azione in $\mathcal{L}$ che cambia solo il
+  Observation, con il pensiero come azione in $\mathcal{T}$ che cambia solo il
   contesto (senza pensieri, su ALFWorld, dal 71% al 45%): le osservazioni
   àncorano il ragionamento a fatti reali e le allucinazioni crollano, senza
   sparire (6% di risposte giuste con fatti inventati), ma è uno scambio, non un
-  guadagno secco (fra le
-  traiettorie fallite esaminate a mano, cinquanta per metodo, gli errori di
-  ragionamento passano dal 16% della sola catena di pensiero al 47%, e si
-  aggiunge il
-  fallimento della ricerca a vuoto). La traccia è ispezionabile, ma non
-  fedele
-  {cite}`turpin2023unfaithful, lanham2023faith`: contano le azioni, non i
-  pensieri.
+  guadagno secco (fra le traiettorie fallite esaminate a mano, cinquanta per
+  metodo, gli errori di ragionamento passano dal 16% della sola catena di
+  pensiero al 47%, e si aggiunge il fallimento della ricerca a vuoto). La
+  traccia è ispezionabile, ma non fedele {cite}`turpin2023unfaithful,
+  lanham2023faith`: contano le azioni, non i pensieri.
 - Reflexion {cite}`shinn2023reflexion` aggiunge una memoria verbale
   degli errori (le ultime una-tre critiche): dopo un fallimento l'agente si
   auto-critica a parole e riprova leggendo la critica, senza toccare i pesi;

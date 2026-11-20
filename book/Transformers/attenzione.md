@@ -139,12 +139,13 @@ $\mathbf{u}$ è la domanda, e nella traduzione con Luong, Pham e Manning
 {cite}`luong2015effective`, che confrontano tre punteggi fra lo stato del
 decoder $\mathbf{s}$ e uno stato dell'encoder $\mathbf{h}_j$: il prodotto
 scalare $\mathbf{s}^\top\mathbf{h}_j$, la forma bilineare
-$\mathbf{s}^\top\mathbf{W}_a\mathbf{h}_j$ e una variante della rete additiva.
-Il Transformer adotta questa prima forma, con le proiezioni apprese e il
-fattore di scala. L'articolo del 2017 ne spiega il motivo: a parità di
-complessità teorica il prodotto scalare è un prodotto fra matrici, molto più
-veloce e parco di memoria della rete additiva, che però lo supera quando $d_k$
-è grande e la scala manca.
+$\mathbf{s}^\top\mathbf{W}_b\mathbf{h}_j$ (con $\mathbf{W}_b$ appresa, altra
+dalla $\mathbf{W}_a$ di Bahdanau) e una variante della rete additiva. Il
+Transformer adotta questa prima forma, con le proiezioni apprese e il fattore
+di scala. L'articolo del 2017 ne spiega il motivo: a parità di complessità
+teorica il prodotto scalare è un prodotto fra matrici, molto più veloce e parco
+di memoria della rete additiva, che però lo supera quando $d_k$ è grande e la
+scala manca.
 `````
 
 ## Tutte le query insieme: le forme delle matrici
@@ -406,17 +407,16 @@ consiglio non ti serve a niente. Siccome imparare, per una rete, consiste nel
 ricevere consigli di quel genere e seguirli un pochino per volta, un modello
 saturo smette di imparare in quel punto.
 
-La radice descrive bene la taglia dei punteggi
-finché i numeri delle liste sono presi alla rinfusa, cioè all'inizio,
-quando la rete non ha ancora imparato niente. Dopo un po’ di addestramento le
-liste smettono di essere alla rinfusa e la radice non descrive più bene la loro
-taglia. La divisione, dunque,
-non promette che l'interruttore non scatti: con numeri abbastanza grandi
-scatta lo stesso, a qualunque lunghezza delle liste. Elimina soltanto la
-dipendenza dalla lunghezza. Si divide tutto per lo
-stesso numero, senza guardare quanto sia grande ciascun punteggio: le
-proporzioni fra le caselle di una riga restano quelle di prima, cambia solo
-quanto sono distanti.
+La radice descrive bene la taglia dei punteggi finché i numeri delle liste sono
+presi alla rinfusa, cioè all'inizio, quando la rete non ha ancora imparato
+niente. Dopo un po’ di addestramento le liste smettono di essere alla rinfusa e
+la radice non descrive più bene la loro taglia. La divisione, dunque, non
+promette che l'interruttore non scatti: con numeri abbastanza grandi scatta lo
+stesso, a qualunque lunghezza delle liste. Elimina soltanto la dipendenza dalla
+lunghezza. Si divide tutto per lo stesso numero, senza guardare quanto sia
+grande ciascun punteggio: le proporzioni fra i punteggi di una riga restano
+quelle di prima, cambia solo quanto sono distanti, e con la distanza cambia
+quanto il peso si concentra sul più alto.
 `````
 
 `````{tab} Superiore
@@ -445,9 +445,11 @@ $$
 
 [Dividere per $\sqrt{d_k}$ la riporta a 1]{.pt-matita}. Servono dunque due
 indipendenze diverse, una per ciascun passaggio, e una terza ipotesi che di
-solito non si dice: tutto questo vale all'inizializzazione, perché non appena
-comincia l'addestramento $\mathbf{W}^Q$ e $\mathbf{W}^K$ smettono di produrre
-componenti a varianza unitaria. Sono ipotesi di illustrazione, non una
+solito non si dice: tutto questo vale al più all'inizializzazione, e la
+varianza unitaria solo se lo schema dei pesi la produce, mentre per togliere la
+dipendenza da $d_k$ basta una varianza comune qualsiasi. Non appena comincia
+l'addestramento, poi, $\mathbf{W}^Q$ e $\mathbf{W}^K$ smettono di produrre
+componenti di varianza fissata. Sono ipotesi di illustrazione, non una
 descrizione di che cosa faccia un modello addestrato, e l'articolo del 2017 le
 presenta così {cite}`vaswani2017attention`.
 
@@ -458,12 +460,12 @@ tutti i termini che tendono a zero, quindi il gradiente che arriva ai punteggi
 svanisce, e con esso svanisce il gradiente diretto a $\mathbf{W}^Q$ e
 $\mathbf{W}^K$.
 
-Il fattore non impedisce la saturazione: con componenti di varianza diversa da 1
-la softmax satura lo stesso, a qualunque dimensione. Ne toglie la dipendenza da
-$d_k$, cioè permette di allargare le teste senza che il regime cambi per quel
-solo motivo. Il fattore non normalizza $\mathbf{Q}$ e $\mathbf{K}$ a vettori
-unitari: sarebbe un'altra operazione, che cambierebbe i punteggi in modo diverso
-da riga a riga.
+Il fattore non impedisce la saturazione: con componenti di varianza molto
+maggiore di 1 la softmax satura lo stesso, a qualunque dimensione. Ne toglie la
+dipendenza da $d_k$, cioè permette di allargare le teste senza che il regime
+cambi per quel solo motivo. Il fattore non normalizza $\mathbf{Q}$ e
+$\mathbf{K}$ a vettori unitari: sarebbe un'altra operazione, che cambierebbe i
+punteggi in modo diverso da riga a riga.
 `````
 
 ## Le maschere: quali collegamenti sono permessi
@@ -642,11 +644,13 @@ viene da come i coefficienti dipendono dall'ingresso, e dal fatto che li si
 moltiplica per valori che dipendono anch'essi dall'ingresso.
 
 Il costo sta nei due prodotti fra matrici: $\mathbf{Q}\mathbf{K}^\top$ richiede
-$L\,S\,d_k$ moltiplicazioni, ciascuna con la sua somma, e $\mathbf{A}\mathbf{V}$
-altre $L\,S\,d_v$; un'implementazione diretta tiene poi in memoria l'intera
-matrice dei punteggi, $L \times S$ numeri. Con $L = S = n$ il tempo cresce come
-$n^2 d_k$ per testa, cioè $O(n^2 d_{\text{model}})$ sommando le teste, e la
-memoria come $n^2$: sono i costi che il {doc}`confronto coi modelli precedenti
+$L\,S\,d_k$ moltiplicazioni, ciascuna con la sua somma, e
+$\mathbf{A}\mathbf{V}$ altre $L\,S\,d_v$; un'implementazione diretta tiene poi
+in memoria l'intera matrice dei punteggi, $L \times S$ numeri. Con $L = S = n$
+il tempo cresce come $n^2 d_k$ per testa, cioè $O(n^2 h\,d_k)$ sommando le
+teste, che è $O(n^2 d_{\text{model}})$ con la scelta usuale $d_k =
+d_{\text{model}}/h$, e la memoria come $n^2$: sono i costi che il
+{doc}`confronto coi modelli precedenti
 <confronti>` mette accanto a quelli delle reti ricorrenti.
 
 I pesi $\mathbf{A}$ restano una quantità intermedia. Scambiarli per l'uscita
@@ -721,16 +725,16 @@ uscita
         [0.2321, 1.5812]])
 ```
 
-Le tre righe si leggono una per una, e nessuna richiede la macchina. La prima
-posizione vede solo sé stessa: peso 1 su una colonna sola, e la sua uscita
-$(1{,}00;\ 0{,}00)$ è il suo stesso valore. La seconda ha davanti due punteggi
-uguali, quindi pesi $\tfrac{1}{2}$ e $\tfrac{1}{2}$, e la sua uscita è la media
-dei due valori, $\tfrac{1}{2}(1;\ 0) + \tfrac{1}{2}(0;\ 2) = (0{,}50;\ 1{,}00)$.
-La terza è l'unica interessante. La query di "salta", $(2;\ 0)$, contro le
-chiavi di "il", $(1;\ 0)$, e di "gatto", $(2;\ 0)$, dà i punteggi $2$ e $4$, che
-dopo la scala diventano $1{,}414$ e $2{,}828$; la softmax li trasforma in
-$0{,}19$ e $0{,}77$, e il resto, cinque centesimi, va a "salta" su sé stessa.
-"Salta" dà a "gatto" più di tre quarti del peso, e la sua uscita
+Le tre righe si leggono una per una, e solo la terza chiede una calcolatrice.
+La prima posizione vede solo sé stessa: peso 1 su una colonna sola, e la sua
+uscita $(1{,}00;\ 0{,}00)$ è il suo stesso valore. La seconda ha davanti due
+punteggi uguali, quindi pesi $\tfrac{1}{2}$ e $\tfrac{1}{2}$, e la sua uscita è
+la media dei due valori, $\tfrac{1}{2}(1;\ 0) + \tfrac{1}{2}(0;\ 2) = (0{,}50;\
+1{,}00)$. La terza è l'unica interessante. La query di "salta", $(2;\ 0)$,
+contro le chiavi di "il", $(1;\ 0)$, e di "gatto", $(2;\ 0)$, dà i punteggi $2$
+e $4$, che dopo la scala diventano $1{,}414$ e $2{,}828$; la softmax li
+trasforma in $0{,}19$ e $0{,}77$, e il resto, cinque centesimi, va a "salta" su
+sé stessa. "Salta" dà a "gatto" più di tre quarti del peso, e la sua uscita
 $(0{,}23;\ 1{,}58)$ pende verso il valore di "gatto", che era $(0;\ 2)$.
 
 I numeri mostrano un dettaglio invisibile nella formula: nell'uscita
@@ -1077,8 +1081,8 @@ perché lo spostamento conta: nel Post-LN, all'inizializzazione, i gradienti
 attesi dei parametri vicini all'uscita sono grandi, e con un learning rate alto
 l'addestramento diventa instabile; nel Pre-LN restano invece controllati.
 
-Per questo l'articolo del 2017 aveva bisogno di un riscaldamento del learning
-rate, che al passo $s$ vale
+Secondo questa analisi è per questo che l'articolo del 2017 aveva bisogno di un
+riscaldamento del learning rate, che al passo $s$ vale
 
 $$
 \eta(s) = d_{\text{model}}^{-1/2}\,\min\!\big(s^{-1/2},\; s \cdot 4000^{-3/2}\big),
@@ -1212,7 +1216,7 @@ retrieval <rag>`.
   è simmetrica, l'attenzione può rappresentare relazioni orientate.
 - Il fattore $1/\sqrt{d_k}$ neutralizza la dipendenza da $d_k$ della varianza
   dei punteggi, sotto l'ipotesi di componenti indipendenti a media nulla e
-  varianza unitaria, che vale all'inizializzazione. Non impedisce la
+  varianza comune, plausibile solo all'inizializzazione. Non impedisce la
   saturazione della softmax: ne toglie una causa.
 - La maschera si somma ai punteggi prima della softmax, con $-\infty$ sulle
   posizioni vietate. Azzerare i pesi dopo lascia righe che non sommano a 1; e

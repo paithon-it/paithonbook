@@ -87,9 +87,9 @@ sviluppata per i problemi *stiff*, quelli con costanti di tempo molto più corte
 del passo che si vorrebbe usare. Nella PF-ODE, però, la rigidità sta nel
 termine della rete vicino a $t = 0$, e il coefficiente lineare ne è esente:
 $f(t) = -\tfrac12\beta(t)$ resta fra $-0{,}05$ e $-10$, e all'indietro, nel
-verso della generazione, allarga invece di smorzare, con $|hf| \le 1{,}25$ a
-otto passi uniformi: nessun modo da inseguire più in fretta del passo. Con
-$\boldsymbol{\epsilon}_\theta \approx (\mathbf{x} -
+verso della generazione, allarga invece di smorzare, con $|\Delta t\, f| \le
+1{,}25$ a otto passi uniformi ($\Delta t = 1/8$): nessun modo da inseguire più
+in fretta del passo. Con $\boldsymbol{\epsilon}_\theta \approx (\mathbf{x} -
 \alpha_t\mathbf{x}_0)/\sigma_t$, invece, la derivata del termine della rete
 rispetto a $\mathbf{x}$ vale circa $g^2(t)/(2\sigma_t^2)$, che sul banco di
 prova passa da $10$ a $t = 1$ a circa $545$ a $t = 10^{-3}$. Il cambio di
@@ -249,8 +249,11 @@ $$
 Le due scritture sono la stessa cosa, e la seconda è quella con cui DDIM viene
 di solito presentato: si stima il dato pulito e lo si rimescola al livello di
 rumore successivo. L'errore locale è $O(h^2)$ e quello globale $O(h)$: [DDIM è
-un metodo del primo ordine e un integratore esponenziale, non un
-Eulero]{.pt-matita}. La differenza si misura, e risulta grande.
+un metodo del primo ordine e un integratore esponenziale, non l'Eulero sul
+tempo della PF-ODE]{.pt-matita}. La differenza si misura, e risulta grande.
+Nelle variabili di Karras e colleghi, $\mathbf{x}/\alpha_t$ con
+$\sigma_t/\alpha_t$ come tempo, lo stesso passo coincide invece con un passo di
+Eulero.
 
 Il secondo ordine (DPM-Solver-2) valuta la rete anche in un punto intermedio
 $s_1$, con $\lambda_{s_1} = \lambda_s + r_1 h$:
@@ -492,14 +495,14 @@ w\,(\boldsymbol{\epsilon}_c-\boldsymbol{\epsilon}_\varnothing)$, dove
 $\boldsymbol{\epsilon}_\varnothing$ e $\boldsymbol{\epsilon}_c$ sono la
 predizione senza e con il testo e $w$ è il peso della guida (un numero, non il
 peso $w(t)$ della loss). La norma di $\tilde{\boldsymbol{\epsilon}}$ cresce
-linearmente in $w$ e la sua derivata in $\lambda$ cresce con essa.
-DPM-Solver++ {cite}`lu2022dpmpp` risolve il problema riscrivendo l'integrale
-nella parametrizzazione $\hat{\mathbf{x}}_0$, che a guida alta esce
-dall'intervallo dei dati molto meno del rumore predetto (e quel che ne esce si
-riporta dentro con una soglia dinamica), e adottando uno schema
-multipasso (che riusa le valutazioni precedenti, come i metodi di Adams)
-invece che a passo singolo: a parità di ordine dimezza le valutazioni. Nella
-parametrizzazione sul dato, con $\hat{\mathbf{x}}_0$ al posto di
+linearmente in $w$ e la sua derivata in $\lambda$ cresce con essa. DPM-Solver++
+{cite}`lu2022dpmpp` risolve il problema riscrivendo l'integrale nella
+parametrizzazione $\hat{\mathbf{x}}_0$, che a guida alta esce dall'intervallo
+dei dati molto meno del rumore predetto (e quel che ne esce si riporta dentro
+con una soglia dinamica), e adottando uno schema multipasso (che riusa le
+valutazioni precedenti, come i metodi di Adams) invece che a passo singolo: a
+parità di ordine fa una sola valutazione nuova per passo (la metà, al secondo
+ordine). Nella parametrizzazione sul dato, con $\hat{\mathbf{x}}_0$ al posto di
 $\boldsymbol{\epsilon}_\theta$, il passo del primo ordine è
 
 $$
@@ -556,7 +559,7 @@ lavoro, non misurati qui.
 
 Nelle librerie i nomi sono `DDIM` per il primo, e anche `Euler`,
 che però non è l'Eulero della tabella: fa i suoi passi sulla scala del rumore
-invece che sul tempo, e così finisce per comportarsi quasi come DDIM;
+invece che sul tempo, e a parità di livelli di rumore coincide con DDIM;
 `DPMSolverMultistep` (nella variante «più») o `Heun` per il secondo.
 
 La scelta della griglia è un'impostazione a parte, ma attenzione al nome: il
@@ -608,7 +611,8 @@ rumore.
 - Troncando all'ordine zero si riottiene DDIM,
   $\mathbf{x}_t=\frac{\alpha_t}{\alpha_s}\mathbf{x}_s-\sigma_t(e^h-1)
   \boldsymbol{\epsilon}_\theta$, che è quindi un integratore esponenziale del
-  primo ordine e non un Eulero. Ordini misurati sul banco di prova: Eulero
+  primo ordine e non l'Eulero sul tempo (con $\sigma_t/\alpha_t$ come tempo
+  coincide con un passo di Eulero). Ordini misurati sul banco di prova: Eulero
   $0{,}78$, DDIM $1{,}07$, DPM-Solver-2 $2{,}08$.
 - I tre limiti dell'ordine alto: instabilità a passo grande (sul banco di
   prova il pareggio col primo ordine cade attorno alle sedici valutazioni; su

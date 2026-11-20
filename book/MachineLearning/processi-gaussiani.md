@@ -533,11 +533,11 @@ ogni previsione costa $O(m)$ per la media e $O(m^2)$ per la varianza. Con la
 fattorizzazione esatta il limite pratico è di qualche decina di migliaia di
 punti, e lo si sposta in due modi.
 
-Le approssimazioni *sparse* riassumono il dataset con $u \ll m$ punti
-induttori e scendono a $O(m\,u^2)$ {cite}`titsias2009variational`, ma
-sacrificano proprio il punto di forza del modello, la qualità delle
-incertezze. I metodi iterativi, invece, tengono il modello esatto e
-sostituiscono Cholesky con il gradiente coniugato, che chiede soltanto
+Le approssimazioni *sparse* riassumono il dataset con $u \ll m$ punti induttori
+e scendono a $O(m\,u^2)$ {cite}`titsias2009variational`, ma con pochi punti
+induttori rischiano di guastare proprio il punto di forza del modello, la
+qualità delle incertezze. I metodi iterativi, invece, tengono il modello esatto
+e sostituiscono Cholesky con il gradiente coniugato, che chiede soltanto
 prodotti per $\mathbf{K}$: su più GPU hanno addestrato processi gaussiani
 esatti su oltre un milione di punti {cite}`wang2019exact`.
 

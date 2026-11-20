@@ -60,8 +60,9 @@ decidere dove quei pezzi incontrano le parole.
 
 Un testo è una sequenza $\mathbf{x} = (x_1, \dots, x_T)$ con $x_t \in V$, dove
 $V$ è un vocabolario finito: discreto, ordinato in una dimensione, già
-simbolico, perché l'unità minima porta significato di per sé. Un'immagine è un
-tensore $\mathbf{I} \in \mathbb{R}^{H \times W \times 3}$, con $H$ e $W$
+simbolico, perché le sue unità (parole o pezzi di parola) sono segni
+convenzionali, fissati dalla lingua prima di qualunque modello. Un'immagine è
+un tensore $\mathbf{I} \in \mathbb{R}^{H \times W \times 3}$, con $H$ e $W$
 altezza e larghezza in pixel e tre canali di colore: continuo, ordinato in due
 dimensioni e privo di unità naturali. Il pixel non è un simbolo, e non esiste
 una segmentazione canonica del reticolo in parti dotate di senso; la
@@ -131,11 +132,11 @@ quattro volte tante ($448 : 16 = 28$ per riga, cioè $28 \times 28 = 784$), e i
 confronti, che sono tessere per tessere, sedici volte tanti.
 
 I confronti però sono solo una parte del lavoro. Il resto, cioè il lavoro che
-il modello svolge su ogni tessera, cresce quanto le tessere: quattro volte, non
-sedici. Con qualche centinaio di tessere questo resto pesa molto più dei
-confronti, e il quadrato prende il sopravvento solo quando le tessere diventano
-migliaia, tanto più tardi quanto più il modello è grande. Lo stesso conto si
-ripresenta in ogni sistema che vede e parla.
+il modello svolge tessera per tessera, in tutto cresce quanto le tessere:
+quattro volte, non sedici. Con qualche centinaio di tessere questo resto pesa
+molto più dei confronti, e il quadrato prende il sopravvento solo quando le
+tessere diventano migliaia, tanto più tardi quanto più il modello è grande. Lo
+stesso conto si ripresenta in ogni sistema che vede e parla.
 
 `````
 
@@ -386,7 +387,7 @@ sistema ha guardato l'immagine.
   tagliata a pezzi, le parole, sempre le stesse per tutti; una fotografia è un
   tappeto di puntini colorati senza cuciture, e il confine fra il gatto e il
   muro lo vediamo noi, nei numeri non c'è.
-- Il primo passo è sempre lo stesso: rimpicciolire la foto, tagliarla in
+- Il primo passo, di solito, è lo stesso: rimpicciolire la foto, tagliarla in
   tessere e metterle in fila come le parole di una frase, attaccando a ciascuna
   un'etichetta che dice dove stava. Da lì in poi immagine e testo sono due
   sequenze di pezzi, e resta da decidere dove si incontrano. Il costo cresce

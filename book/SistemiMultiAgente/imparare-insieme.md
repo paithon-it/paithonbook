@@ -307,8 +307,9 @@ valore atteso del gradiente) e toglie di mezzo la parte di ritorno che $i$
 incasserebbe comunque, cioè il rumore contato sopra. Ma $A^i$ resta in generale
 una funzione anche delle azioni $a^{-i}$: il valore congiunto non si scompone,
 ed è solo nel modello additivo di comodo di poco fa che la differenza collassa
-sul solo $g^i$. La baseline controfattuale garantisce la riduzione della
-varianza, non l'isolamento del contributo di $i$.
+sul solo $g^i$. La baseline controfattuale lascia il gradiente senza
+distorsione e di solito ne riduce la varianza, ma non isola il contributo di
+$i$.
 
 `````
 
@@ -641,16 +642,15 @@ nella sezione {doc}`MCTS e AlphaGo </DeepReinforcementLearning/mcts-alphago>`.
 Lì una rete sceglie la mossa: è addestrata prima sulle partite dei giocatori
 umani, poi affinata col gradiente di policy contro una versione precedente di
 sé, estratta a caso ogni volta da un archivio invece di prendere sempre
-l'ultima, perché la rete non si adatti alla sola policy corrente (è il guasto
-che si vede nel gioco di sasso, carta e forbici). Una seconda rete dice chi sta
-vincendo, e si
-addestra proprio sulle partite così generate. Le due guidano la ricerca ad
-albero Monte Carlo, che prima di muovere prova a immaginare come proseguirebbe
-la partita. L'anno dopo la stessa squadra toglie di mezzo anche il punto di
-partenza umano: AlphaGo Zero {cite}`silver2017mastering` parte dalle sole regole
-del gioco e da pesi casuali, e tutto il suo addestramento è self-play. È la
-prova più netta del punto: le partite umane erano un acceleratore, non un
-ingrediente necessario.
+l'ultima, perché la rete non si adatti alla sola policy corrente (è il giro in
+tondo che si vedrà nel gioco di sasso, carta e forbici). Una seconda rete dice
+chi sta vincendo, e si addestra proprio sulle partite così generate. Le due
+guidano la ricerca ad albero Monte Carlo, che prima di muovere prova a
+immaginare come proseguirebbe la partita. L'anno dopo la stessa squadra toglie
+di mezzo anche il punto di partenza umano: AlphaGo Zero
+{cite}`silver2017mastering` parte dalle sole regole del gioco e da pesi
+casuali, e tutto il suo addestramento è self-play. È la prova più netta del
+punto: le partite umane erano un acceleratore, non un ingrediente necessario.
 
 ## Quando la scala non esiste
 
@@ -943,20 +943,20 @@ i\eta$ hanno modulo $\sqrt{1+\eta^2} > 1$: a ogni passo la coppia ruota e si
 allontana dall'equilibrio, per qualunque $\eta > 0$. Nel limite continuo
 percorre cerchi chiusi, orbite dello stesso genere di quelle di Volterra (le
 sue, vicino all'equilibrio, diventano ellissi); aggiornando i due giocatori in
-alternanza le orbite restano limitate ma non convergono al centro.
-L'oscillazione appartiene dunque alla dinamica del gradiente sui giochi prima
-che alle reti. Il **collasso dei modi** è, in una delle sue forme, il self-play
-ingenuo visto dall'altro lato: il generatore si specializza sull'unica regione
-dello spazio che inganna l'avversario corrente, ottiene contro di lui un tasso
-di successo altissimo e perde il resto del supporto; quando il discriminatore
-lo raggiunge salta su un'altra regione, e ruota fra i modi dei dati senza mai
-coprirli insieme {cite}`metz2017unrolled`. Non è l'unico meccanismo: la sezione
-sulle GAN lo fa discendere anche dall'ordine dei quantificatori
-nell'ottimizzazione alternata e dalla *loss* non-saturante, che un modo
-abbandonato quasi non lo fa pagare. Fra le contromisure note ce n'è una che qui
-si riconosce a colpo d'occhio e che il capitolo sulle GAN non elenca: mostrare
-al discriminatore anche campioni prodotti da versioni passate del generatore. È
-una lega in miniatura, con la stessa motivazione.
+alternanza, con $\eta < 2$, le orbite restano limitate ma non convergono al
+centro. L'oscillazione appartiene dunque alla dinamica del gradiente sui giochi
+prima che alle reti. Il **collasso dei modi** è, in una delle sue forme, il
+self-play ingenuo visto dall'altro lato: il generatore si specializza
+sull'unica regione dello spazio che inganna l'avversario corrente, ottiene
+contro di lui un tasso di successo altissimo e perde il resto del supporto;
+quando il discriminatore lo raggiunge salta su un'altra regione, e ruota fra i
+modi dei dati senza mai coprirli insieme {cite}`metz2017unrolled`. Non è
+l'unico meccanismo: la sezione sulle GAN lo fa discendere anche dall'ordine dei
+quantificatori nell'ottimizzazione alternata e dalla *loss* non-saturante, che
+un modo abbandonato quasi non lo fa pagare. Fra le contromisure note ce n'è una
+che qui si riconosce a colpo d'occhio e che il capitolo sulle GAN non elenca:
+mostrare al discriminatore anche campioni prodotti da versioni passate del
+generatore. È una lega in miniatura, con la stessa motivazione.
 
 `````
 
@@ -1104,17 +1104,17 @@ esecuzione, quel critico non esiste più.
   finito è NEXP-completo già con due agenti (contro P-completo per un MDP e
   PSPACE-completo per un POMDP), e approssimarlo resta NEXP-difficile. Nessuno
   risolve: tutti approssimano.
-- All'assegnazione temporale del merito se ne aggiunge una
-  strutturale: con ricompensa comune il gradiente del singolo è moltiplicato
-  per il ritorno di tutti, e quel che ha fatto lui resta sepolto sotto quel che
-  hanno fatto i compagni. Nel caso di comodo in cui i contributi semplicemente
-  si sommano e sono indipendenti, il rapporto fra segnale e rumore scende come
+- All'assegnazione temporale del merito se ne aggiunge una strutturale: con
+  ricompensa comune il gradiente del singolo è moltiplicato per il ritorno di
+  tutti, e quel che ha fatto lui resta sepolto sotto quel che hanno fatto i
+  compagni. Nel caso di comodo in cui i contributi semplicemente si sommano e
+  sono indipendenti, il rapporto fra segnale e rumore scende come
   $1/\sqrt{N-1}$ (un terzo con dieci agenti). È il passeggero a scrocco in
   forma di gradiente. Il rimedio è misurare ciascuno per differenza:
   confrontare com'è andata con come sarebbe andata se lui, al posto della sua
   mossa, ne avesse fatta una qualsiasi fra le solite, e gli altri no. È la
-  mossa di COMA {cite}`foerster2018counterfactual`, che abbatte quel rumore
-  senza però isolare il contributo del singolo.
+  mossa di COMA {cite}`foerster2018counterfactual`, che di solito riduce quel
+  rumore senza però isolare il contributo del singolo.
 - Il principio che funziona è CTDE: informazione privilegiata in addestramento,
   osservazione vera in esecuzione. MADDPG {cite}`lowe2017multi` dà a ogni
   agente un critico che vede le azioni di tutti, e condizionando su quelle la

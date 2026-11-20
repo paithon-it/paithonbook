@@ -60,13 +60,14 @@ funziona la diffusione </ModelliDiffusione/come-funziona>`). Il **ritorno** è
 guardando un fotogramma sporco, *quanto rumore c'è qui sopra?*
 
 Alla rete non si chiede il pizzico dell'ultimo passo, ma tutto il rumore che la
-ricetta ha steso dalla fotografia pulita fino al livello di rovina $t$, che
-nelle formule si indica con $\boldsymbol{\epsilon}$. Non coincide con la
-differenza fra il fotogramma e l'originale, perché nel frattempo anche la
-fotografia si è attenuata: è la parte del fotogramma che dalla
-fotografia non viene. La risposta ha la forma dell'immagine, un valore per
-punto: è una mappa del rumore, non un'immagine. Passare da quella mappa a
-un'immagine è meno intuitivo di quanto sembri, e ne tratta la stessa sezione.
+ricetta ha steso dalla fotografia pulita fino al livello di rovina $t$,
+riportato a un'ampiezza che non dipende da $t$: nelle formule si indica con
+$\boldsymbol{\epsilon}$. Non coincide con la differenza fra il fotogramma e
+l'originale, perché nel frattempo anche la fotografia si è attenuata: è, a meno
+di un fattore che cresce con $t$, la parte del fotogramma che dalla fotografia
+non viene. La risposta ha la forma dell'immagine, un valore per punto: è una
+mappa del rumore, non un'immagine. Passare da quella mappa a un'immagine è meno
+intuitivo di quanto sembri, e ne tratta la stessa sezione.
 
 `````{tab} Elementare
 
@@ -85,8 +86,10 @@ restauratore paziente, che non ridipinge il quadro ma sa dire dov'è lo sporco e
 quanto è spesso. Di fotogrammi così ne serve una montagna per allenarla, da
 ogni foto dell'archivio e da ogni livello di rovina, e nessuno li prepara
 rovinando la foto cinquecento volte di seguito: la dose di sporco che spetta al
-passo 500 si sa calcolare in anticipo e si stende in un colpo solo. La risposta
-esatta la conosciamo sempre: lo sporco l'abbiamo messo noi.
+passo 500 si sa calcolare in anticipo e si stende in un colpo solo: per
+preparare l'esercizio il salto va bene, perché a disfarlo, quando si genera, si
+torna indietro a piccoli passi. La risposta esatta la conosciamo sempre: lo
+sporco l'abbiamo messo noi.
 
 Per generare un'immagine nuova si parte dalla fine: si sorteggia del
 pulviscolo nuovo (dado alla mano, come per rovinare la foto, solo che qui
@@ -205,10 +208,10 @@ i due si somigliano. Più è basso, meglio è.
 
 Il terzo atto arriva un anno dopo, e il titolo dice tutto: *Diffusion Models
 Beat GANs on Image Synthesis* {cite}`dhariwal2021diffusion`. [La diffusione
-supera le GAN migliori in due modi, nella qualità delle singole immagini e
-nella varietà di quelle che sa produrre]{.pt-matita}: una GAN può affezionarsi
-a un pugno di soggetti e ripetere sempre quelli, il difetto che racconta per
-esteso il {doc}`capitolo sulle GAN </GAN/overview>`.
+supera le GAN migliori nel FID, che pesa insieme qualità e varietà, e stacca
+soprattutto nella varietà delle immagini che sa produrre]{.pt-matita}: una GAN
+può affezionarsi a un pugno di soggetti e ripetere sempre quelli, il difetto
+che racconta per esteso il {doc}`capitolo sulle GAN </GAN/overview>`.
 
 Segue l'epilogo, che ormai è cronaca pubblica oltre che ricerca: il 2022. Nel
 giro di pochi mesi OpenAI presenta DALL·E 2 (aprile), Google risponde con
@@ -410,7 +413,7 @@ applicata a uno stato fatto di simboli invece che di numeri, cioè al testo.
   predire il rumore iniettato, loss
   $\mathbb{E}\lVert\boldsymbol{\epsilon} - \boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t)\rVert^2$,
   stabile come un problema supervisionato.
-- Nel 2021 la diffusione supera le GAN in qualità e copertura dei modi
+- Nel 2021 la diffusione supera le GAN nel FID e nella copertura dei modi
   {cite}`dhariwal2021diffusion`; nel 2022, con DALL·E 2, Imagen, Midjourney
   e Stable Diffusion, rilasciato con i pesi aperti {cite}`rombach2022high`,
   diventa un fenomeno pubblico.

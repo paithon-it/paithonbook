@@ -323,8 +323,9 @@ silenzio; sommando come fa la CTC, la risposta è «A»]{.pt-matita}.
 
 Succede anche fuori dagli esempi costruiti ad arte: ogni volta che una
 trascrizione è sostenuta da tanti percorsi mediocri e un'altra da un percorso
-solo, molto convinto, vince la prima; e i percorsi che danno la stessa parola
-sono miliardi, come si è contato per «palla».
+solo, molto convinto, può vincere la prima, ed è facile che succeda, perché i
+percorsi che danno la stessa parola sono miliardi, come si è contato per
+«palla».
 
 `````
 

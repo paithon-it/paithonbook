@@ -221,12 +221,13 @@ implicitamente dai dati, ed è lì che si gioca la naturalezza.
 La prima generazione automatizza il Voder: al posto delle dita dell'operatrice
 ci sono regole scritte a mano, una per ogni suono da produrre. Si chiama
 **sintesi per formanti**, dal nome della cosa che imita: quando parliamo, la
-gola e la bocca cambiano forma e fanno risuonare più forte certe frequenze e non
-altre, ed è da quelle poche frequenze esaltate (le *formanti*) che l'orecchio
-distingue una «a» da una «i». La macchina non registra nessuna voce: fabbrica
-quelle risonanze da zero, con generatori di suono e filtri, e le regole gliele
-scrive una persona. Si capisce benissimo, non si stanca mai, e non somiglia a
-nessuno. È la voce robotica per definizione.
+gola e la bocca cambiano forma e fanno risuonare più forte certe frequenze e
+non altre, ed è da quelle poche frequenze esaltate (le *formanti*) che
+l'orecchio distingue una «a» da una «i». La macchina non registra nessuna voce:
+fabbrica quelle risonanze da zero, con generatori di suono e filtri, e le
+regole gliele scrive una persona. Si capisce benissimo, non si stanca mai, e
+non somiglia a nessuno, se non, un poco, a chi ne ha scritto le regole. È la
+voce robotica per definizione.
 
 Le regole migliori le scrisse Dennis Klatt, al MIT, e per scriverle prese a
 modello la propria voce: la misurò, e mise nelle regole le frequenze che ci
@@ -745,11 +746,11 @@ ti risponde.
   all'andata ascolta i suoni e dice quali sono, al ritorno legge il testo e
   decide quali suoni produrre. Stesso nome, freccia rovesciata.
 - Sciogliere il testo (la normalizzazione) è il lavoro meno appariscente e
-  quello dove si sbaglia di più: «1901» è «millenovecentouno» o «uno nove zero
-  uno» a seconda di cosa sia. Poi si passa dalle lettere ai suoni veri, i
-  fonemi, e il passaggio si chiama G2P: la c di *casa* e la c di *ciao* sono la
-  stessa lettera e due fonemi diversi. Sopra tutto c'è la prosodia, la musica
-  della frase: pause, durate, intonazione.
+  quello dove un errore si nota di meno: «1901» è «millenovecentouno» o «uno
+  nove zero uno» a seconda di cosa sia. Poi si passa dalle lettere ai suoni
+  veri, i fonemi, e il passaggio si chiama G2P: la c di *casa* e la c di *ciao*
+  sono la stessa lettera e due fonemi diversi. Sopra tutto c'è la prosodia, la
+  musica della frase: pause, durate, intonazione.
 - Le generazioni delle macchine parlanti: quella per formanti (fabbrica i suoni
   da zero seguendo regole, ed è la voce robotica di Hawking), quella
   concatenativa (ritagli di voce vera ricuciti insieme), quella neurale, di

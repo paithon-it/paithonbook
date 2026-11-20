@@ -183,11 +183,11 @@ dell'artigiano non basta. Meglio ancora se a spuntarla è il collaudo stesso,
 così non dipende dalla buona volontà di nessuno.
 
 Il collaudo intero, però, costa: montare la libreria e provarla richiede
-mezz'ora, misurare un pezzo un minuto. Per questo la bottega fa prima le prove
-rapide che sbagliano spesso, e poi quelle lunghe; ma se si salta il montaggio
-ogni volta che «tanto non tocca le ante», si salta proprio quando un artigiano
-è convinto di non aver toccato un confine, cioè quando ci sono i difetti di
-confine.
+mezz'ora, misurare un pezzo un minuto. Per questo la bottega fa per prime le
+prove rapide, quelle che i pezzi falliscono più spesso, e poi quelle lunghe; ma
+se si salta il montaggio ogni volta che «tanto non tocca le ante», si salta
+proprio quando un artigiano è convinto di non aver toccato un confine, cioè
+quando ci sono i difetti di confine.
 
 `````
 
@@ -195,7 +195,7 @@ confine.
 
 Sia una funzionalità realizzata da componenti $u_1, \dots, u_n$, con
 interfacce $\iota_{ij}$ fra le coppie $(i, j) \in I$ che si parlano, e sia
-$V_i$ il suo collaudo, i passi di prova della voce, osservabili dall'utente.
+$V$ il suo collaudo, i passi di prova della voce, osservabili dall'utente.
 Un test d'unità di $u_i$ controlla, su pochi ingressi, una proprietà
 $\psi_i(u_i; \hat{u})$ di $u_i$ montato con le controfigure $\hat{u}_j$, cioè
 con modelli del comportamento dei componenti con cui comunica. I test danno il
@@ -210,8 +210,8 @@ componenti veri implichino il collaudo (il passo del ragionamento
 $$
 \bigwedge_{i} \psi_i(u_i; \hat{u}) \;\wedge\;
 \bigwedge_{(i,j) \in I} \big(\hat{u}_j \simeq u_j \text{ su } \iota_{ij}\big)
-\;\wedge\; \Big(\bigwedge_i \psi_i(u_i; u) \Rightarrow V_i = 1\Big)
-\;\Longrightarrow\; V_i = 1 ,
+\;\wedge\; \Big(\bigwedge_i \psi_i(u_i; u) \Rightarrow V = 1\Big)
+\;\Longrightarrow\; V = 1 ,
 $$
 
 con le $\psi_i$ intese su tutto il dominio d'ingresso. Nell'esempio del
@@ -219,7 +219,7 @@ carrello le $\psi$ valgono per entrambi i componenti con le loro controfigure,
 mentre $\hat{u} \simeq u$ è falsa sull'unità di misura del totale.
 
 Il collaudo
-da capo a capo valuta $V_i$ sui componenti montati, e quindi toglie l'ipotesi di
+da capo a capo valuta $V$ sui componenti montati, e quindi toglie l'ipotesi di
 fedeltà per tutto ciò che monta davvero; la conserva per ciò che resta
 simulato, l'ambiente di prova e i servizi esterni finti, ed è lì che vive la
 dipendenza dall'ambiente. Fra i due estremi stanno i test che controllano la
@@ -229,7 +229,7 @@ dei difetti di confine corrispondono ai modi in cui $\hat{u}_j \simeq u_j$
 fallisce: formato o unità dei dati, stato condiviso, ciclo di vita delle
 risorse, ambiente.
 
-Il collaudo da utente ha un limite di osservabilità e uno di costo. $V_i$ si
+Il collaudo da utente ha un limite di osservabilità e uno di costo. $V$ si
 valuta su ciò che gli strumenti del collaudo espongono, e ciò che non
 espongono resta non verificato (i riquadri d'avviso nativi del browser,
 invisibili all'automazione usata da Young).
@@ -312,11 +312,11 @@ messaggio che accompagna il rifiuto è l'osservazione $o_{k,t}$ che il ciclo
 rimette nel contesto. Il suo valore per il passo successivo dipende da quanta
 informazione porta sulla riparazione. Un rifiuto binario porta al più un bit:
 dice soltanto che lo stato corrente è fuori dall'insieme ammesso. Un messaggio
-che nomina una regola fra $R$ e un punto fra $n$ ne porta fino a
-$\log_2(R\,n)$, e se aggiunge la correzione sposta la distribuzione
-$P_\theta(\cdot \mid C)$ dell'azione successiva verso le azioni che riparano.
-È la differenza fra un oracolo che risponde sì o no e un oracolo che
-restituisce un controesempio con la sua spiegazione.
+che nomina una regola fra $R$ e un punto fra $M$ ne porta fino a
+$\log_2(R\,M)$, e se aggiunge la correzione sposta la distribuzione
+$P_\theta(\cdot \mid C)$ dell'azione successiva verso le azioni che riparano. È
+la differenza fra un oracolo che risponde sì o no e un oracolo che restituisce
+un controesempio con la sua spiegazione.
 
 Le invarianti di architettura sono vincoli sul grafo delle dipendenze. Sia
 $\mathcal{G} = (N, A)$ il grafo dei moduli, con un arco $(x, y) \in A$ quando
@@ -368,15 +368,16 @@ contiene il modello, l'ottimizzatore e il ciclo di addestramento, ed è l'unico
 file che l'agente modifica; `program.md` contiene le istruzioni per l'agente, e
 lo scrive la persona.
 
-Ogni esperimento dura cinque minuti di addestramento, così
-che un modello più grande ma più lento non vinca soltanto perché ha avuto più
-tempo. Si giudica poi su una sola grandezza, la `val_bpb`: quanti bit servono in
-media per ogni carattere di un testo che il modello non ha visto durante
-l'addestramento (più il modello prevede bene, meno ne servono). Le istruzioni
-dicono di tenere un cambiamento se la misura scende e di scartarlo altrimenti,
-con un criterio di semplicità: un guadagno minimo con codice molto più semplice
-si tiene, uno minimo con venti righe contorte no. A decidere, e a tornare
-indietro, è l'agente stesso.
+Ogni esperimento dura cinque minuti di addestramento, così che un modello più
+grande ma più lento non vinca soltanto perché ha avuto più tempo. Si giudica
+poi su una sola grandezza, la `val_bpb`: quanti bit servono in media per ogni
+byte di un testo che il modello non ha visto durante l'addestramento (più il
+modello prevede bene, meno ne servono; contare i byte e non i token rende la
+misura indipendente dal vocabolario). Le istruzioni dicono di tenere un
+cambiamento se la misura scende e di scartarlo altrimenti, con un criterio di
+semplicità: un guadagno minimo con codice molto più semplice si tiene, uno
+minimo con venti righe contorte no. A decidere, e a tornare indietro, è
+l'agente stesso.
 
 La partizione, però, è dichiarata più che imposta. Che `prepare.py` resti
 intatto lo chiede un'istruzione, e nel repository non c'è un controllo che lo
@@ -386,7 +387,7 @@ verifichi.
 `prepare.py`, ma per calcolare la perdita chiama il modello definito in
 `train.py`, e anche il ciclo che misura i cinque minuti e la riga che stampa la
 misura stanno in `train.py`. Restano fissi, fuori dalla portata dell'agente, i
-dati di validazione e il calcolo che trasforma la perdita in bit per carattere;
+dati di validazione e il calcolo che trasforma la perdita in bit per byte;
 il file che l'agente scrive, invece, calcola la perdita di ogni token.
 
 `````{tab} Elementare
@@ -550,12 +551,12 @@ tenuti da parte; misurati fuori dal ciclo, poi, possono sottostimare $\alpha$
 dentro il ciclo, dove chi costruisce si corregge proprio contro quel
 valutatore.
 
-I due errori hanno costi diversi. $\alpha$ lascia passare un
-difetto, che la sessione dopo eredita come lavoro concluso. $\beta$ fa rifare un
-lavoro buono: senza un tetto servono in media $1/(1 - \beta)$ tentativi, con un
-tetto di $n$ la voce resta aperta con probabilità $\beta^n$, ed è una stima
-ottimistica, perché gli errori dello stesso giudice sullo stesso lavoro sono
-correlati.
+I due errori hanno costi diversi. $\alpha$ lascia passare un difetto, che la
+sessione dopo eredita come lavoro concluso. $\beta$ fa rifare un lavoro buono:
+senza un tetto servono in media $1/(1 - \beta)$ tentativi, con un tetto di
+$n_{\max}$ tentativi la voce resta aperta con probabilità $\beta^{n_{\max}}$,
+ed è una stima ottimistica, perché gli errori dello stesso giudice sullo stesso
+lavoro sono correlati.
 
 La {doc}`sezione sulle architetture degli agenti
 </Agenti/architetture-e-valutazione>` discute lo stesso strumento, il modello
@@ -564,13 +565,14 @@ preferire i testi simili ai propri.
 
 Le soglie e il contratto sono due oggetti diversi. I criteri fissi del
 valutatore, con punteggi $\sigma_j$ e soglie $\tau_j$, danno la regola
-congiuntiva $\text{accetta} \iff \forall j:\ \sigma_j \ge \tau_j$, che impedisce
-a un criterio forte di compensarne uno debole ed è più severa di una media
-pesata; ma con $K$ criteri e tassi $\beta_j$ indipendenti un lavoro buono viene
-respinto con probabilità $1 - \prod_j (1 - \beta_j)$, che con ventisette
-criteri binari e $\beta_j = 0{,}02$ fa circa $0{,}42$. Il contratto di tappa fissa
-invece, prima della produzione, l'insieme dei comportamenti da provare,
-ciascuno con esito sì o no.
+congiuntiva $\text{accetta} \iff \forall j:\ \sigma_j \ge \tau_j$, che
+impedisce a un criterio forte di compensarne uno debole ed è più severa di una
+media pesata; ma con $K$ criteri e tassi $\beta_j$ indipendenti un lavoro buono
+viene respinto con probabilità $1 - \prod_j (1 - \beta_j)$, che con i quattro
+criteri e $\beta_j = 0{,}02$ fa circa $0{,}08$, e con ventisette controlli
+binari che devono passare tutti, come quelli di un contratto, circa $0{,}42$.
+Il contratto di tappa fissa invece, prima della produzione, l'insieme dei
+comportamenti da provare, ciascuno con esito sì o no.
 
 Che fissarlo prima aiuti anche contro l'indulgenza
 è un ragionamento in più rispetto alla fonte, e vale per i criteri binari: lì
@@ -626,7 +628,7 @@ il computer <gli-strumenti>`.
   Il collaudo da capo a capo toglie la fedeltà per ciò che monta, non per ciò
   che resta simulato, ed è limitato da ciò che i suoi strumenti osservano
   {cite}`young2025harnesses`.
-- Un messaggio di rifiuto porta fino a $\log_2(R\,n)$ bit invece di uno; le
+- Un messaggio di rifiuto porta fino a $\log_2(R\,M)$ bit invece di uno; le
   regole si promuovono dalla documentazione al codice, e le invarianti di
   architettura sono vincoli sul grafo delle dipendenze
   {cite}`lopopolo2026harness`.

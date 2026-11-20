@@ -433,11 +433,13 @@ con cui Zhou e colleghi addestrarono l'ALS sui dati del Netflix Prize
 scelta di $\lambda$ dipende meno da quanti voti ha ciascuno. Il costo è $O(n_u
 k^2 + k^3)$ per utente, e ogni utente si risolve indipendentemente dagli altri.
 In sintesi, SGD è più semplice e più veloce sul dato sparso esplicito; ALS si
-parallelizza meglio e diventa obbligato quando ogni cella conta, come
-sull'implicito. In nessuno dei due casi c'è la garanzia di arrivare a un minimo
-globale: il problema è convesso in $\mathbf{P}$ e in $\mathbf{Q}$
-*separatamente* (e per questo ha senso alternare) ma non nei due insieme, e
-dove si finisce dipende anche da dove si è partiti.
+parallelizza meglio e diventa la scelta naturale quando ogni cella conta, come
+sull'implicito (l'alternativa è la discesa per coordinate, che sfrutta lo
+stesso termine comune $\mathbf{Q}^\top\mathbf{Q}$). In nessuno dei due casi c'è
+la garanzia di arrivare a un minimo globale: il problema è convesso in
+$\mathbf{P}$ e in $\mathbf{Q}$ *separatamente* (e per questo ha senso
+alternare) ma non nei due insieme, e dove si finisce dipende anche da dove si è
+partiti.
 
 `````
 
@@ -711,7 +713,7 @@ La regolarizzazione fa da freno: a ogni ritocco tira un po’ verso lo zero tutt
 le manopole delle schede. Così una manopola si allontana dallo zero solo se i
 voti la spingono più forte del freno, e il modello non può inventarsi numeri
 enormi per far tornare un voto isolato. Quanto stringerlo lo dicono i voti
-messi da parte: troppo lento, e il modello impara a memoria; troppo stretto, e
+messi da parte: troppo lasco, e il modello impara a memoria; troppo stretto, e
 le manopole restano tutte a zero, cioè il modello dà a ciascuno soltanto la
 media del sito con i suoi due ritocchi, e sbaglia più di chi desse a tutti il
 voto medio.
@@ -818,14 +820,16 @@ accanto a quella lista salta la domanda più semplice.
 
 **Partenza a freddo.** L'embedding di un utente o di un item senza interazioni
 non compare in nessun termine della somma, quindi niente lo determina: con
-l'SGD sulle sole triple resta all'inizializzazione, con ALS o con un
-decadimento dei pesi finisce a zero. In nessuno dei due casi il modello
-collaborativo puro ha un canale per informarlo. Le mitigazioni escono
-dal paradigma: modelli *content-based* o ibridi che inizializzano l'embedding
-dai metadati (genere, cast, descrizione, per gli item) o da questionari e dati
-demografici (per gli utenti), oppure strategie di esplorazione che mostrano
-l'oggetto nuovo a qualcuno per raccogliere interazioni mirate nei primi giorni
-di vita. Queste ultime sono il problema dei {doc}`bandit a più braccia
+l'SGD sulle sole triple resta all'inizializzazione, con un decadimento dei
+pesi, o con un ALS che regolarizza con $\lambda\,\mathbf{I}$, finisce a zero
+(con il peso $\lambda\,n_u$ il sistema, per $n_u = 0$, è singolare). In nessuno
+dei due casi il modello collaborativo puro ha un canale per informarlo. Le
+mitigazioni escono dal paradigma: modelli *content-based* o ibridi che
+inizializzano l'embedding dai metadati (genere, cast, descrizione, per gli
+item) o da questionari e dati demografici (per gli utenti), oppure strategie di
+esplorazione che mostrano l'oggetto nuovo a qualcuno per raccogliere
+interazioni mirate nei primi giorni di vita. Queste ultime sono il problema dei
+{doc}`bandit a più braccia
 </ReinforcementLearning/banditi>`: UCB, il Thompson sampling e il bandit
 contestuale con cui Li e colleghi sceglievano le notizie da proporre
 {cite}`li2010contextual`. Nell'attesa che una di queste faccia effetto, il

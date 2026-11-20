@@ -631,11 +631,11 @@ in una percentuale.
   Funziona, ma è una scorciatoia, non una soluzione: il numero che dice quanto
   la macchina sta sbagliando resta fuori portata, e nel caso più studiato si è
   dimostrato che i ritocchi che fa non sono la discesa di nessun numero.
-- Il disegno dei legami dice chi dipende da chi: due variabili non collegate
-  si influenzano solo attraverso quelle in mezzo, e se quelle sono note non si
+- Il disegno dei legami dice chi dipende da chi: due variabili non collegate si
+  influenzano solo attraverso quelle in mezzo, e se quelle sono note non si
   dicono più niente. Con i dati davanti i taccuini decidono ognuno per conto
-  suo; senza guardare i dati, due taccuini legati alla stessa casella vanno
-  d'accordo.
+  suo; senza guardare i dati, due taccuini legati alla stessa casella si
+  influenzano a vicenda (con legami positivi come questi, vanno d'accordo).
 - L'altezza del paesaggio diventa una percentuale solo misurando il paesaggio
   intero, valle per valle: è la funzione di partizione, a cui è intitolata la
   sezione {doc}`Oltre la partizione </ModelliEnergia/oltre-la-partizione>`.

@@ -37,5 +37,5 @@
   impronta: "bd1ac6e2b8df"
   postilla: "Oltre venti punti col grafo, su tre semi: la media dei simili riduce il rumore"
 - inizio: "In pratica non serve scrivere lo"
-  impronta: "70c4aa20dea9"
-  postilla: "La sola lista degli archi: sui grafi grandi la matrice intera non sta in memoria"
+  impronta: "626fcee397e8"
+  postilla: "La sola lista degli archi: sui grafi grandi la matrice densa non sta in memoria"

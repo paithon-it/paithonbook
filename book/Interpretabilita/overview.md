@@ -314,15 +314,14 @@ sé si legge, per costruzione, con uno strumento fatto per quel tipo di modello.
 
 A ogni metodo di spiegazione si fanno tre domande.
 
-- Il modello si legge da sé, o va spiegato dopo? Alcuni modelli decidono
-  con una catena di domande sì/no («il reddito supera i 30 000? se sì, l'età
-  supera i 40? se no, rifiuta»). Disegnato, un modello così si biforca a ogni
-  domanda, come l'albero di decisione già incontrato: leggerlo è come
-  leggere una ricetta, e diciamo che è trasparente. Un modello con milioni
-  di numeri dentro no: lì serve uno strumento esterno che lo interroghi *dopo*
-  che ha finito di imparare, e una
-  spiegazione ottenuta così si chiama **post-hoc**, dal latino «dopo il
-  fatto».
+- Il modello si legge da sé, o va spiegato dopo? Alcuni modelli decidono con
+  una catena di domande sì/no («il reddito supera i 30 000? se no, rifiuta; se
+  sì, l'età supera i 40?»). Disegnato, un modello così si biforca a ogni
+  domanda, come l'albero di decisione già incontrato: leggerlo è come leggere
+  una ricetta, e diciamo che è trasparente. Un modello con milioni di numeri
+  dentro no: lì serve uno strumento esterno che lo interroghi *dopo* che ha
+  finito di imparare, e una spiegazione ottenuta così si chiama **post-hoc**,
+  dal latino «dopo il fatto».
 - Vuoi capire tutto il modello, o una singola decisione? «In generale questo
   modello dà molto peso al reddito» riguarda il modello nel suo insieme
   (spiegazione *globale*). «*Questo* prestito è stato rifiutato per via della
@@ -368,7 +367,7 @@ distinguiamo lungo tre assi.
   input→output $f$ e resta valido per qualunque modello, al costo di stimare il
   comportamento per campionamento anziché leggerlo dai parametri.
 
-I tre assi sono largamente indipendenti (fa eccezione l'interpretabilità
+I tre assi sono in gran parte indipendenti (fa eccezione l'interpretabilità
 intrinseca, che per definizione è sempre specifica del modello
 {cite}`molnar2022interpretable`). A mostrarlo serve un esempio che li separi,
 perché i primi due che vengono in mente non lo fanno: LIME, uno dei metodi delle
@@ -390,7 +389,7 @@ una risposta sola.
 
 Le tre domande, con tre metodi appoggiati sopra: ogni metodo ha il suo colore,
 e una linea a segmenti unisce le sue tre risposte. Che le tre scelte siano
-indipendenti lo dice la linea di mezzo, la sola che cambia lato. È quella
+indipendenti lo dice una delle tre linee, la sola che cambia lato. È quella
 dell'importanza per rimescolamento, che mescola a caso i valori di una colonna
 e guarda quanto il modello peggiora: si fa a modello già addestrato e va bene
 su qualunque modello, ma il risultato riguarda il modello intero e non una
@@ -545,7 +544,7 @@ modello che non si legge indovina parecchio di più di uno leggibile.
 I due fiori, poi, misurano il tetto che all'albero abbiamo messo noi per farlo
 stare in sette righe, e non quanto la leggibilità faccia perdere. Concedendogli
 una domanda in più, un albero di profondità tre, che si stampa ancora tutto in
-una schermata, indovina gli stessi 144 fiori della foresta. Su questi fiori,
+una schermata, indovina 144 fiori, quanti ne indovina la foresta. Su questi fiori,
 quindi, lo scambio non c'è.
 
 ## Una spiegazione può convincere ed essere falsa
@@ -614,14 +613,15 @@ etichette discrete, uno scarto quadratico per probabilità o punteggi continui.
 La quantità cresce quando la fedeltà cala: tanto più è piccola, tanto più $g$ è
 fedele a $f$ in quell'intorno (all'estremo, vale zero se il surrogato riproduce
 esattamente la scatola nera sui punti campionati). Una fedeltà alta
-*sull'intorno* non garantisce nulla *globalmente* e resta del tutto scorrelata
-dalla **plausibilità**: quanto la spiegazione appare sensata a un umano. Nulla
-vieta a un surrogato di essere plausibile e infedele, o fedele e
-controintuitivo. È il difetto costitutivo dei metodi a surrogato: approssimano,
-e un'approssimazione può ingannare. Non tutto il post-hoc è fatto così
-(l'importanza per permutazione, i controfattuali e le attribuzioni interrogano
-$f$ direttamente, senza copie di mezzo), ma la distinzione tra plausibilità e
-fedeltà vale per ogni spiegazione, comunque prodotta.
+*sull'intorno* non garantisce nulla *globalmente* e non implica la
+**plausibilità** né ne è implicata (la plausibilità è quanto la spiegazione
+appare sensata a un umano). Nulla vieta a un surrogato di essere plausibile e
+infedele, o fedele e controintuitivo. È il difetto costitutivo dei metodi a
+surrogato: approssimano, e un'approssimazione può ingannare. Non tutto il
+post-hoc è fatto così (l'importanza per permutazione, i controfattuali e le
+attribuzioni interrogano $f$ direttamente, senza copie di mezzo), ma la
+distinzione tra plausibilità e fedeltà vale per ogni spiegazione, comunque
+prodotta.
 
 `````
 
@@ -943,7 +943,7 @@ per gruppi di persone, e lo sguardo su che cosa il modello si appoggia.
   spiegazioni umane (Miller) sono contrastive, selezionate, causali più che
   probabilistiche, e sociali.
 - Tre assi ordinano il campo: intrinseca vs post-hoc, globale vs locale,
-  model-specific vs model-agnostic. Sono largamente indipendenti, salvo che
+  model-specific vs model-agnostic. Sono in gran parte indipendenti, salvo che
   l'intrinseca è sempre specifica del modello. A essi si
   affianca una domanda che non è un asse ma decide quale risposta sia corretta:
   si sta spiegando il modello o il fenomeno? (Due colonne quasi

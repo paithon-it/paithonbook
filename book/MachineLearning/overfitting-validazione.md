@@ -203,10 +203,15 @@ fra i possibili addestramenti coincide con quella ottima, e con segno meno dove
 non coincide. Ne segue che più varianza può perfino *ridurre* l'errore quando
 il bias sta dalla parte sbagliata della soglia.
 
-Per le altre perdite è una questione aperta quali condizioni garantiscano una
-scomposizione additiva {cite}`wood2023unified`. «Bias» e «varianza» restano
-quindi utili come vocabolario, anche parlando di alberi e di foreste, ma non
-come aritmetica.
+Per le altre perdite si sa quali ammettono una scomposizione additiva. Wood e
+colleghi hanno esteso quella quadratica alle divergenze di Bregman, che
+comprendono la cross-entropia {cite}`wood2023unified`, e Heskes ha dimostrato
+che, fra le perdite continue, non negative e nulle solo quando i due argomenti
+coincidono, le divergenze di Bregman sono le sole ad ammetterne una pulita, a
+meno di un cambio di variabile: la 0-1 e la perdita assoluta ne restano fuori
+{cite}`heskes2025bias`. Per l’errore di classificazione, quindi, «bias» e
+«varianza» restano utili come vocabolario, anche parlando di alberi e di
+foreste, ma non come aritmetica.
 
 `````
 
@@ -313,10 +318,10 @@ $2{,}335$, che è ancora quasi in cima; dai $3{,}471$ di partenza sono scesi
 appena $1{,}14$ su $3{,}38$, cioè un terzo della strada. (Metà strada sarebbe
 stata $0{,}09 + 3{,}38/2 = 1{,}78$, parecchio più in basso.)
 
-L'errore di addestramento, per giunta, non migliora ($2{,}294$ con 120 esempi,
-$2{,}321$ con 2400). Con pochi esempi una retta riesce a passare un po’ più
-vicino a tutti, con tanti non ce la fa più, perché la forma giusta non è una
-retta e i punti in più lo mostrano. È il segno del bias.
+L'errore di addestramento, intanto, sale un poco ($2{,}294$ con 120 esempi,
+$2{,}321$ con 2400), come per qualunque modello: con pochi esempi una retta si
+adatta anche a una parte del rumore, con tanti non più. Il segno del bias è il
+livello a cui le due curve si incontrano, ben sopra il pavimento del rumore.
 
 In altri termini, il modello ha già dato quanto poteva, e altri diecimila
 esempi non farebbero scendere l'errore; semmai lo porterebbero verso quello
@@ -416,9 +421,10 @@ $\sqrt{p(1-p)/m_{\text{te}}}$, cioè $0{,}0095$ per $p=0{,}1$ e
 $m_{\text{te}}=1000$: è il margine da scrivere accanto al numero.
 
 Se invece si confrontano $K$ modelli sul test e si tiene il migliore, il
-punteggio del vincitore è il massimo di $K$ stime rumorose. Per la
-disuguaglianza dell'unione, con probabilità almeno $1-\delta$ nessuna si
-discosta dal vero più di $\sqrt{\log(2K/\delta)/(2m_{\text{te}})}$, che cresce
+punteggio del vincitore è il massimo di $K$ stime rumorose. Per una perdita a
+valori in $[0,1]$, come la 0-1, la disuguaglianza di Hoeffding unita a quella
+dell'unione garantisce che, con probabilità almeno $1-\delta$, nessuna si
+discosti dal vero più di $\sqrt{\log(2K/\delta)/(2m_{\text{te}})}$, che cresce
 come $\sqrt{\log K}$ (lo mostra la {doc}`sezione sulla concentrazione
 </Matematica/concentrazione>`). In pratica, riusare il test poche volte
 introduce una distorsione piccola, mentre riusarlo a ogni tentativo lo
@@ -563,8 +569,9 @@ quasi non distorta, perché ogni modello è addestrato su $m-1$ esempi, ma è
 costosa e di norma ha una varianza più alta della $k$-fold con $k<m$
 {cite}`james2023introduction`. Infatti fa la media di $m$ modelli addestrati su
 insiemi quasi identici e perciò fortemente correlati fra loro, e la media di
-quantità fortemente correlate si stabilizza poco: con correlazione $\rho$ fra i
-termini la sua varianza non scende sotto $\rho\,\sigma^2$, qualunque sia il
+quantità fortemente correlate si stabilizza poco: se i termini hanno tutti
+varianza $s^2$ e correlazione $\rho$ a due a due, la varianza della media vale
+$\rho s^2+(1-\rho)s^2/m$ e non scende sotto $\rho\,s^2$, qualunque sia il
 numero dei termini.
 
 Per i minimi quadrati, però, il costo sparisce: se $h_{ii}$ sono gli elementi
@@ -603,11 +610,11 @@ più semplice del dovuto. È il rasoio di Occam applicato a una classifica che s
 sa incerta.
 
 Infine, $\text{CV}_k$ stima l'errore a patto che le righe siano
-**scambiabili**, cioè che partizionarle a caso produca fold indipendenti fra
-loro. Se più righe descrivono lo stesso soggetto (più visite dello stesso
-paziente, più eventi dello stesso utente, più fotogrammi dello stesso video),
-il rimescolamento mette quasi-duplicati sia in training sia in validation, e il
-modello ritrova in validation ciò che ha già visto.
+**indipendenti** fra loro, così che partizionarle a caso produca fold
+indipendenti. Se più righe descrivono lo stesso soggetto (più visite dello
+stesso paziente, più eventi dello stesso utente, più fotogrammi dello stesso
+video), il rimescolamento mette quasi-duplicati sia in training sia in
+validation, e il modello ritrova in validation ciò che ha già visto.
 
 Il risultato è una stima priva di significato, non solo un po’ ottimista, e non
 dà nessun segnale d'allarme. Lo mostra un calcolo con duecento soggetti, dieci
@@ -836,7 +843,8 @@ no, e il peso del rosso dice quanto una rossa vale più di una verde. I dati
 sono gli stessi, eppure scritti così il Lasso può lasciare colori diversi: la
 conclusione dipendeva dalla scrittura, non dai dati.
 
-Il **lasso a gruppi** vende ogni gruppo come un pacchetto, al prezzo della sua
+Il **lasso a gruppi** vende come un pacchetto unico ogni gruppo di colonne che
+descrivono la stessa cosa, come le colonne di un colore, al prezzo della sua
 lunghezza, che è l'ipotenusa di Pitagora con quanti cateti servono: si sommano
 i quadrati dei pesi e si prende la radice. Due pesi da $0{,}3$ e $0{,}4$ fanno
 $0{,}09 + 0{,}16 = 0{,}25$, cioè un pacchetto lungo $0{,}5$.
@@ -1161,12 +1169,12 @@ toglie minuti a tutti e decide chi resta in panchina. Tirato quanto serve per
 lasciare fuori le riserve, toglie troppi minuti ai titolari; allentato per far
 giocare i titolari, lascia entrare qualche riserva che non servirebbe.
 
-C'è poi un costo nascosto nella convocazione, la trappola delle mille persone
-che lanciano la moneta: chi prova migliaia di squadre sugli stessi dati ne
-trova sempre una che su quei dati va bene per caso. Il merito che le si
-attribuisce è gonfiato dalla ricerca stessa, anche se alla fine i convocati
-sono pochi, perché a pesare non è quanti giocano ma quante squadre si sono
-provate per sceglierli.
+C'è poi un costo nascosto nella convocazione, lo stesso delle mille persone che
+lanciano una moneta dieci volte, fra le quali qualcuna sembra bravissima per
+puro caso: chi prova migliaia di squadre sugli stessi dati ne trova sempre una
+che su quei dati va bene per caso. Il merito che le si attribuisce è gonfiato
+dalla ricerca stessa, anche se alla fine i convocati sono pochi, perché a
+pesare non è quanti giocano ma quante squadre si sono provate per sceglierli.
 
 Quando i dati sono chiari, con poco rumore, la squadra convocata bene è la più
 precisa, perché chi gioca gioca a pieno; quando il rumore è tanto conviene il
@@ -1366,12 +1374,13 @@ di continuare a salire.
 ```
 
 Il picco di {numref}`fig-double-descent` sta alla soglia di interpolazione,
-dove il numero di parametri uguaglia il numero di esempi. Lì esiste una sola
-curva che passa per tutti i punti (con dieci punti, un solo polinomio di nono
-grado, che ha dieci coefficienti), e per obbedire a tutti oscilla fortemente
-fra un punto e l'altro. Con più parametri le curve che interpolano
-diventano infinite, e fra di esse ce n'è una regolare; l'addestramento tende a
-sceglierne una di queste.
+dove il modello ha appena la capacità di passare per tutti i punti: per un
+modello lineare nei parametri, come questo, quando i parametri sono tanti
+quanti gli esempi. Lì esiste una sola curva che passa per tutti i punti (con
+dieci punti, un solo polinomio di nono grado, che ha dieci coefficienti), e per
+obbedire a tutti oscilla fortemente fra un punto e l'altro. Con più parametri
+le curve che interpolano diventano infinite, e fra di esse ce n'è una regolare;
+l'addestramento tende a sceglierne una di queste.
 
 `````{tab} Elementare
 
@@ -1425,13 +1434,14 @@ di norma della soluzione trovata, la stessa da cui partono i {doc}`bound di
 norma della teoria dell'apprendimento </TeoriaApprendimento/garanzie-e-reti>`.
 
 In due casi il legame con l'algoritmo è un teorema. Sui minimi quadrati con più
-parametri che esempi, la discesa del gradiente partita da zero converge alla
-soluzione interpolante di norma $\ell_2$ minima, un fatto classico dell'algebra
-lineare. Sulla regressione logistica con dati separabili, la direzione dei pesi
-converge a quella di massimo margine, come hanno dimostrato Soudry e colleghi
-{cite}`soudry2018implicit`. Sulle reti profonde, invece, lo stesso **bias
-implicito** è un'ipotesi con buone prove sperimentali: è assodato che «semplice»
-non si misura in parametri, ma resta aperto in che cosa si misuri.
+parametri che esempi, la discesa del gradiente partita da zero, con un passo
+abbastanza piccolo, converge alla soluzione interpolante di norma $\ell_2$
+minima, un fatto classico dell'algebra lineare. Sulla regressione logistica con
+dati separabili, la direzione dei pesi converge a quella di massimo margine,
+come hanno dimostrato Soudry e colleghi {cite}`soudry2018implicit`. Sulle reti
+profonde, invece, lo stesso **bias implicito** è un'ipotesi con buone prove
+sperimentali: è assodato che «semplice» non si misura in parametri, ma resta
+aperto in che cosa si misuri.
 
 La doppia discesa si vede soprattutto con le etichette sporche, e la
 regolarizzazione ne appiana il picco. Gli autori stessi notano il legame con le
@@ -1655,7 +1665,7 @@ penalizzare la complessità restano validi come prima.
   che *impara* dai dati (scaler, imputazione, selezione) si tara dentro il
   training: è la forma di *leakage* che non dà avvisi.
 - La k-fold cross-validation media $k$ validazioni su fold diversi: stima
-  più stabile quando i dati sono pochi. Vale se le righe sono scambiabili:
+  più stabile quando i dati sono pochi. Vale se le righe sono indipendenti:
   con righe raggruppate per soggetto servono `GroupKFold`, con righe ordinate
   nel tempo `TimeSeriesSplit`.
 - La regolarizzazione (Ridge $\ell_2$, Lasso $\ell_1$) frena la complessità

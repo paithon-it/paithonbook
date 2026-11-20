@@ -27,8 +27,8 @@ serve a un'altra cosa: lo stesso procedimento che trova la risposta dice anche
 quando la risposta non c'è e quando invece ce ne sono infinite. Sono i due casi
 tipici del machine learning. Con più equazioni che incognite, come in una
 regressione, di norma non c'è una soluzione esatta; con più incognite che
-equazioni, come in una rete che ha più parametri che esempi, ce ne sono
-infinite.
+equazioni, come in una rete che ha più parametri che esempi, di norma ce ne
+sono infinite.
 
 ## Le due letture di uno stesso sistema
 
@@ -169,10 +169,11 @@ risottrarre), le soluzioni restano le stesse]{.pt-matita}.
 
 Il gioco consiste nello scegliere i multipli in modo da far sparire le
 incognite una alla volta. Nel problema del grano, ad esempio, conviene partire
-dalla terza promessa, che ha un solo covone di prima qualità. Tolta tre volte
-dalla prima e due volte dalla seconda, la $x$ sparisce da entrambe, e restano
-$-4y - 8z = -39$ e $-y - 5z = -18$. Tolta quattro volte la seconda di queste
-dalla prima, sparisce anche la $y$, e resta $12z = 33$, cioè $z = 2{,}75$.
+dalla terza promessa, che ha un solo covone di prima qualità. Tolta la terza
+tre volte dalla prima e due volte dalla seconda, la $x$ sparisce da entrambe, e
+restano $-4y - 8z = -39$ e $-y - 5z = -18$. Tolta quattro volte la seconda di
+queste dalla prima, sparisce anche la $y$, e resta $12z = 33$, cioè $z =
+2{,}75$.
 
 Da lì si risale: la $z$ nota dà $y = 4{,}25$, e le due insieme danno $x =
 9{,}25$. Il tavoliere alla fine ha la forma di una scaletta: la prima riga con
@@ -512,7 +513,7 @@ sulla matematica di un modello linguistico </Matematica/matematica-llm>` mostra
 questo stesso fenomeno sulle matrici di query e chiave, che sono determinate
 solo a meno di una trasformazione invertibile; e ogni volta che una libreria
 restituisce «la» soluzione di un problema indeterminato, quella scelta è
-un'assunzione aggiuntiva, non un risultato.
+un'ipotesi aggiuntiva, non un risultato.
 
 `````
 
@@ -643,7 +644,8 @@ il caso frequente è l'opposto: le equazioni sono migliaia (una per ogni esempio
 osservato) e le incognite poche (i parametri del modello). Un sistema del
 genere non ha quasi mai soluzione, perché i dati portano rumore e nessuna retta
 passa esattamente per mille punti sparsi. In una rete che ha più parametri che
-esempi accade il contrario: le soluzioni esatte sono infinite.
+esempi accade di solito il contrario: le soluzioni esatte, quando esistono,
+sono infinite.
 
 Rinunciare sarebbe assurdo, e la domanda si cambia: [se non si può azzerare
 l'errore, si cerca la scelta che lo rende più piccolo possibile]{.pt-matita}. La

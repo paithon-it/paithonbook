@@ -310,11 +310,11 @@ mettere davanti al modello, e in quale ordine.
   rot*).
 - La finestra è finita e costosa: ogni token pesa sulla cache delle chiavi e
   dei valori (lineare nella lunghezza, 512 KiB per token per un modello da
-  sette miliardi a 16 bit), sull'attesa del primo token e sul costo per token;
-  le definizioni degli strumenti e la cronologia ne occupano una parte che
-  cresce a ogni passo. C'è anche il lost in the middle {cite}`liu2024lost`: i
-  modelli usano bene l'inizio e la fine del contesto, male il centro, dove
-  finiscono i passi vecchi della traccia.
+  sette miliardi a 16 bit con tutte le teste), sull'attesa del primo token e
+  sul costo per token; le definizioni degli strumenti e la cronologia ne
+  occupano una parte che cresce a ogni passo. C'è anche il lost in the middle
+  {cite}`liu2024lost`: i modelli usano bene l'inizio e la fine del contesto,
+  male il centro, dove finiscono i passi vecchi della traccia.
 - Memoria: a breve termine lo *scratchpad* nella finestra; a lungo termine
   una memoria esterna, a livelli come la memoria virtuale (MemGPT
   {cite}`packer2023memgpt`), nelle forme del database vettoriale/RAG, dei

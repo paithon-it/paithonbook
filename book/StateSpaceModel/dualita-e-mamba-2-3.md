@@ -465,9 +465,10 @@ differenza si veda. A sinistra quanto entra in un passo, e le tre altezze con
 cui tre pesi diversi lo stimano; a destra, per ogni peso fra zero e uno, lo
 scarto medio su 120 punti di partenza. È una conca con il fondo quasi a metà, e
 i due estremi sbagliano quasi uguale. Il fondo, però, non è dove Mamba-3 tiene
-il peso: inchiodarlo lì, dice il paper, peggiora i risultati, sia pure di poco.
-Il vantaggio del fondo dipende dal passo: qui è di quasi cinque volte, e cresce
-al ridursi del passo, che il modello sceglie token per token.
+il peso: inchiodarlo lì, dice il paper, peggiora i risultati del modello
+rispetto al peso lasciato libero, sia pure di poco. Il vantaggio del fondo
+dipende dal passo: qui è di quasi cinque volte, e cresce al ridursi del passo,
+che il modello sceglie token per token.
 ```
 
 La seconda novità è la più concettuale, perché riaggancia gli SSM ai
@@ -514,22 +515,22 @@ che si sta leggendo.
 `````{tab} Superiore
 
 Mamba-3 riporta nel modello selettivo le **transizioni a valori complessi**,
-che S4 aveva (nella sua forma normale più basso rango) e che Mamba e Mamba-2
-avevano abbandonato per il caso reale {cite}`lahoti2026mamba3`. La dinamica
-dello stato diventa una moltiplicazione per un numero complesso, che ha un
-modulo (il decadimento, come prima) e una fase (una rotazione). Nel piano
-complesso, moltiplicare per $e^{i\theta}$ è ruotare di un angolo $\theta$;
-ripetendo il passo, lo stato percorre un cerchio. Per la parità basterebbe un
-autovalore reale negativo, $-1$, che rovescia il segno a ogni passo: Grazzi e
-colleghi {cite}`grazzi2025unlocking` dimostrano che una ricorrenza lineare a
-precisione finita con autovalori della transizione tutti positivi, come
-l’$e^{\Delta_t a} \in (0,1)$ di Mamba-2, la parità non la risolve, e che per
-contare modulo $3$ serve che una transizione, o un prodotto di transizioni,
-abbia un autovalore non reale: una triangolare a elementi reali non basta. La
-rotazione fa questo: [con angolo $2\pi/m$ lo stato torna al punto di partenza
-ogni $m$ passi e conta modulo $m$]{.pt-matita}, cosa che un fattore reale,
-anche negativo, sa fare solo per $m = 2$. Il paper documenta un netto
-miglioramento sui compiti di state tracking.
+che S4 aveva (nella sua forma normale più basso rango), che Mamba riservava
+all'audio e che Mamba-2 aveva abbandonato per il caso reale
+{cite}`lahoti2026mamba3`. La dinamica dello stato diventa una moltiplicazione
+per un numero complesso, che ha un modulo (il decadimento, come prima) e una
+fase (una rotazione). Nel piano complesso, moltiplicare per $e^{i\theta}$ è
+ruotare di un angolo $\theta$; ripetendo il passo, lo stato percorre un
+cerchio. Per la parità basterebbe un autovalore reale negativo, $-1$, che
+rovescia il segno a ogni passo: Grazzi e colleghi {cite}`grazzi2025unlocking`
+dimostrano che una ricorrenza lineare a precisione finita con autovalori della
+transizione tutti positivi, come l’$e^{\Delta_t a} \in (0,1)$ di Mamba-2, la
+parità non la risolve, e che per contare modulo $3$ serve che una transizione,
+o un prodotto di transizioni, abbia un autovalore non reale: una triangolare a
+elementi reali non basta. La rotazione fa questo: [con angolo $2\pi/m$ lo stato
+torna al punto di partenza ogni $m$ passi e conta modulo $m$]{.pt-matita}, cosa
+che un fattore reale, anche negativo, sa fare solo per $m = 2$. Il paper
+documenta un netto miglioramento sui compiti di state tracking.
 
 Il legame con i Transformer è preciso. Il paper mostra che l'SSM complesso
 equivale a un **RoPE data-dipendente** applicato alle matrici $\mathbf{B}$ e
@@ -718,10 +719,10 @@ rappresentare.
   milioni di parametri la perplessità è 15,72 con il peso appreso, 15,76 a
   $1/2$ e 15,81 con Eulero. Insieme a un bias esplicito su $\mathbf{B}$ e
   $\mathbf{C}$ rende opzionale la convoluzione causale corta; stato complesso
-  con aggiornamenti rotazionali, che S4 aveva e i modelli selettivi avevano
-  abbandonato (migliore *state tracking*, con un legame formale al RoPE
-  data-dipendente su $\mathbf{B}$ e $\mathbf{C}$); e formulazione MIMO (più
-  qualità senza aumentare la latenza di decodifica). Modelli fino a 1,5
+  con aggiornamenti rotazionali, che S4 aveva, Mamba riservava all'audio e
+  Mamba-2 aveva abbandonato (migliore *state tracking*, con un legame formale
+  al RoPE data-dipendente su $\mathbf{B}$ e $\mathbf{C}$); e formulazione MIMO
+  (più qualità senza aumentare la latenza di decodifica). Modelli fino a 1,5
   miliardi di parametri, una cifra per configurazione, senza barre d'errore.
 - L'arco S4 → Mamba → Mamba-2 → Mamba-3: da tempo-invariante a lungo
   raggio, a selettivo, a riconciliato con l'attenzione e veloce, a raffinato

@@ -685,9 +685,9 @@ organico di questa portata è europeo.
 :alt: "Piramide a quattro gradini con i livelli di rischio dell'AI Act. In cima, rischio inaccettabile: divieto totale, social scoring e manipolazione. Sotto, alto rischio: conformità completa, log, sorveglianza umana, marchio CE. Più giù, rischio limitato: solo trasparenza, «stai parlando con un'AI». Alla base, rischio minimo: nessun obbligo specifico, ed è dove sta la maggioranza dei prodotti."
 :width: 80%
 
-La piramide del rischio. La forma conta quanto i contenuti: gli obblighi
-pesanti stanno in cima, dove i casi sono pochi, e la base larga (quasi tutto
-ciò che si costruisce) non ha obblighi specifici.
+La piramide del rischio. La forma conta quanto i contenuti: i divieti stanno in
+cima e gli obblighi pesanti subito sotto, dove i casi sono pochi, e la base
+larga (quasi tutto ciò che si costruisce) non ha obblighi specifici.
 ```
 
 La {numref}`fig-ai-act-rischio` si legge dal basso. La lettura corrente
@@ -743,8 +743,8 @@ Gli altri divieti sono questi.
   immagini intime il divieto riguarda sia chi mette in circolazione
   un'applicazione fatta in modo da produrle senza che niente lo impedisca, sia
   chi la usa a quello scopo.
-- Dedurre da dati biometrici, come il volto, la razza, le opinioni politiche,
-  la religione o l'orientamento sessuale di qualcuno.
+- Dedurre la razza, le opinioni politiche, la religione o l'orientamento
+  sessuale di qualcuno da dati biometrici, come il volto.
 - Riconoscere i volti in tempo reale nei luoghi pubblici, e qui conta chi lo fa:
   il divieto vale per le forze dell'ordine, salvo tre eccezioni precise, e non
   per chiunque. Fuori da quel caso il riconoscimento biometrico non è vietato, e
@@ -983,10 +983,10 @@ noi: non c'è un teorema da dimostrare.
   l'ottimizzatore cerca il massimo); si distinguono *outer* e *inner* alignment.
 - La curva dell’overottimizzazione non è monotona: al crescere della pressione
   la qualità (nel loro esperimento, il voto di un giudice più grande) prima
-  sale, poi ripiega e scende sotto il punto di partenza, mentre il punteggio
-  surrogato continua a salire {cite}`gao2023scaling`. La penalità KL dell'RLHF è
-  la difesa contro questo, e insieme l'ammissione che il reward model è un
-  surrogato.
+  sale, poi ripiega e scende, e con una pressione abbastanza alta finisce sotto
+  il punto di partenza, mentre il punteggio surrogato continua a salire
+  {cite}`gao2023scaling`. La penalità KL dell'RLHF è la difesa contro questo, e
+  insieme l'ammissione che il reward model è un surrogato.
 - Allineare gli LLM: RLHF {cite}`christiano2017deep`,
   {cite}`ouyang2022training` (fine-tuning supervisionato, reward model dalle
   preferenze, PPO sotto penalità KL); DPO {cite}`rafailov2023direct` (stesso

@@ -191,9 +191,10 @@ gli utenti in una colonna di pallini a sinistra, tutti i film in una colonna a
 destra, e tira una linea ogni volta che qualcuno ha visto qualcosa. I pallini
 sono i *nodi* e le linee gli *archi*, le parole del {doc}`capitolo sulle reti
 neurali su grafo </GraphNeuralNetwork/overview>`; qui continueremo a dire
-pallini e linee, che si vedono meglio. Non hai aggiunto né tolto niente: è lo
-stesso dato, disegnato. Adesso si vede una cosa che nella tabella restava
-nascosta: raccomandare è indovinare le linee che ancora non ci sono.
+pallini e linee, che si vedono meglio. Non hai aggiunto niente, e delle stelle
+hai tenuto solo il sì o no: per il resto è lo stesso dato, disegnato. Adesso si
+vede una cosa che nella tabella restava nascosta: raccomandare è indovinare le
+linee che ancora non ci sono.
 
 Vista così, la fattorizzazione guarda vicino: la scheda di ognuno riassume le
 linee che partono dal suo pallino, e per giudicare una coppia si confrontano
@@ -753,13 +754,13 @@ problema più serio, però, è un altro: il gonfiamento non è uguale per tutti 
 modelli, quindi la metrica campionata può invertire l'ordine fra due sistemi
 {cite}`krichene2020sampled`. Il meccanismo si scrive in una riga. Se l'oggetto
 di test sta al posto $\rho$ nella classifica di un catalogo di $m$ oggetti e se
-ne campionano $s$ negativi senza reimmissione, il numero $X$ di negativi che
-gli stanno sopra è ipergeometrico, $X \sim \mathrm{Ipergeom}(m - 1,\, \rho -
-1,\, s)$, e l'hit rate campionata a $k$ vale $P(X \le k - 1)$, mentre quella
-esatta vale $\mathbb{1}[\rho \le k]$. Krichene e Rendle mostrano che per questo
-la metrica campionata non è coerente con quella esatta, e ne propongono una
-correzione. Leggendo un Recall@10 in un paper, la prima cosa da cercare è su
-quanti candidati è stato calcolato.
+ne campionano $n_{\text{neg}}$ negativi senza reimmissione, il numero $X$ di
+negativi che gli stanno sopra è ipergeometrico, $X \sim \mathrm{Ipergeom}(m -
+1,\, \rho - 1,\, n_{\text{neg}})$, e l'hit rate campionata a $k$ vale $P(X \le
+k - 1)$, mentre quella esatta vale $\mathbb{1}[\rho \le k]$. Krichene e Rendle
+mostrano che per questo la metrica campionata non è coerente con quella esatta,
+e ne propongono una correzione. Leggendo un Recall@10 in un paper, la prima
+cosa da cercare è su quanti candidati è stato calcolato.
 
 `````
 
@@ -1048,8 +1049,8 @@ smettere di prendere la vetrina per il catalogo.
 - Quella tabella non ha un orologio: il film di ieri sera e quello di dieci
   anni fa pesano uguale, mentre chi ha appena comprato una tenda da campeggio
   è, per qualche giorno, una persona diversa. I modelli che guardano la storia
-  in ordine la trattano come una frase da continuare, e il più recente non è
-  per forza il migliore.
+  in ordine la trattano come una frase da continuare, e il metodo arrivato per
+  ultimo non è per forza il migliore.
 - I sistemi veri lavorano in due tempi: un primo filtro rapido e grossolano
   che da milioni di titoli ne tiene qualche centinaio, poi un giudizio accurato
   sui soli superstiti.

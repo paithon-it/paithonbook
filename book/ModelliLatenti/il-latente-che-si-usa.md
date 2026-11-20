@@ -454,13 +454,14 @@ auto-supervisionate </Audio/rappresentazioni-auto-supervisionate>` usa per
 wav2vec 2.0; e lo straight-through estimator, cioè copiare all’indietro il
 gradiente saltando la quantizzazione, che è la scelta di VQ-VAE.
 
-Dell’ELBO, poi, resta poco. Con prior uniforme sugli indici e
-posterior deterministica il termine di divergenza vale $\log K$, cioè è una
-costante: c’è, ma non ha gradiente e non partecipa all’ottimizzazione. Si
-minimizza la ricostruzione più due termini che nell’ELBO non
-compaiono affatto, e che servono a tenere insieme dizionario ed encoder. Il
-prior sugli indici viene semmai appreso dopo, con un modello autoregressivo
-sulla sequenza di simboli; a generare è quel modello, non il VQ-VAE.
+Dell’ELBO, poi, resta poco. Con prior uniforme sugli indici e posterior
+deterministica il termine di divergenza vale $\log K$ per ogni posizione ($n
+\log K$ per una sequenza di $n$ indici), cioè è una costante: c’è, ma non ha
+gradiente e non partecipa all’ottimizzazione. Si minimizza la ricostruzione più
+due termini che nell’ELBO non compaiono affatto, e che servono a tenere insieme
+dizionario ed encoder. Il prior sugli indici viene semmai appreso dopo, con un
+modello autoregressivo sulla sequenza di simboli; a generare è quel modello,
+non il VQ-VAE.
 
 `````
 
@@ -565,12 +566,12 @@ e il sogno si spezzerebbe dopo pochi passi.
   si applica (mappa costante a tratti). Le tre alternative, che si incontrano
   in punti diversi, sono lo stimatore a punteggio, la Gumbel-softmax e lo
   *straight-through*. Nell’obiettivo del VQ-VAE il termine di divergenza vale
-  $\log K$ ed è quindi costante, cioè resta lì senza avere gradiente, e accanto
-  compaiono due termini estranei all’ELBO che allineano dizionario ed encoder.
-  Lo scostamento che conta è un altro: lo *straight-through* dà un gradiente
-  distorto, quindi non si sta più ottimizzando un limite in senso stretto. Il
-  difetto tipico sono le voci del dizionario che nessuno sceglie, e che restano
-  inutilizzate.
+  $\log K$ per ogni posizione ed è quindi costante, cioè resta lì senza avere
+  gradiente, e accanto compaiono due termini estranei all’ELBO che allineano
+  dizionario ed encoder. Lo scostamento che conta è un altro: lo
+  *straight-through* dà un gradiente distorto, quindi non si sta più
+  ottimizzando un limite in senso stretto. Il difetto tipico sono le voci del
+  dizionario che nessuno sceglie, e che restano inutilizzate.
 - Quattro usi in altrettanti capitoli, due già letti e due che verranno:
   tokenizzazione del suono (codec neurali) e vincolo di supporto sulle azioni
   (offline RL); poi compressione percettiva (Stable Diffusion) e riassunto
@@ -582,9 +583,11 @@ e il sogno si spezzerebbe dopo pochi passi.
 Adesso la macchina sa fare due cose insieme: comprimere un dato in poche
 componenti, e restituire un dato nuovo partendo da un codice che nessun dato ha
 mai prodotto. Le fa bene tutte e due, e nessuna delle due benissimo: le
-immagini che produce sono morbide, e la ragione è nell’obiettivo, che punisce
-molto il modello se dimentica qualcosa di vero e poco se inventa qualcosa che
-non esiste. Nel dubbio, quindi, copre.
+immagini che produce sono morbide, per due ragioni. Il decoder è fattorizzato,
+cioè decide ogni pixel per conto suo, e così disegna la media delle immagini
+compatibili con un codice; e l’obiettivo punisce molto il modello se dimentica
+qualcosa di vero e poco se inventa qualcosa che non esiste. Nel dubbio, quindi,
+copre.
 
 Il {doc}`capitolo sulle GAN </GAN/overview>`, che segue, rinuncia alla
 verosimiglianza. Il generatore definisce ancora una distribuzione, da cui si sa

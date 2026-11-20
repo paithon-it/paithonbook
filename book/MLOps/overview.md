@@ -119,12 +119,12 @@ ridistribuisce il contributo di quelle correlate con lei, come i coefficienti
 di una regressione con predittori correlati.
 
 A modello fermo cambia soltanto l'ingresso, ma l'effetto sull'uscita dipende
-ancora dai valori di tutte le
-altre feature, salvo nei modelli additivi, dove ogni feature contribuisce per
-conto suo. In tutti e due i casi le predizioni si spostano in modi non locali e
-difficili da prevedere. È l'opposto della modularità a cui l'ingegneria del
-software tradizionale ci ha abituati, e per questo un sistema di ML non si
-governa con le sole pratiche del software classico.
+ancora dai valori di tutte le altre feature, salvo nei modelli additivi, dove
+ogni feature contribuisce per conto suo. In tutti e due i casi, fuori da
+quell'eccezione, le predizioni si spostano in modi non locali e difficili da
+prevedere. È l'opposto della modularità a cui l'ingegneria del software
+tradizionale ci ha abituati, e per questo un sistema di ML non si governa con
+le sole pratiche del software classico.
 
 `````
 
@@ -191,17 +191,17 @@ Kreuzberger e colleghi definiscono MLOps come una pratica d'ingegneria che
 unisce machine learning, ingegneria del software (DevOps in particolare) e
 ingegneria dei dati, e ne elencano i principi: automazione CI/CD,
 orchestrazione dei flussi di lavoro, riproducibilità, versionamento di dati,
-modello e codice, addestramento e valutazione continui, tracciamento dei
-metadati, monitoraggio continuo e anelli di retroazione
+modello e codice, collaborazione, addestramento e valutazione continui,
+tracciamento dei metadati, monitoraggio continuo e anelli di retroazione
 {cite}`kreuzberger2023machine`. Il nucleo operativo è la tripletta versionata
-dati + codice + modello. Rendere un esperimento riproducibile
-significa poter ricostruire una predizione a partire da (a) la versione esatta
-del dataset di addestramento, (b) la versione del codice e degli
-iperparametri, (c) i pesi del modello che ne sono risultati. Da qui le
-pratiche cardine: *data versioning* e *feature store* per gli ingressi,
-*experiment tracking* per legare metriche e configurazioni, *model registry*
-per i modelli, pipeline automatizzate che rieseguono l'intero percorso (da
-dato grezzo a modello servito) con un comando solo.
+dati + codice + modello. Rendere un esperimento riproducibile significa poter
+ricostruire una predizione a partire da (a) la versione esatta del dataset di
+addestramento, (b) la versione del codice e degli iperparametri, (c) i pesi del
+modello che ne sono risultati. Da qui le pratiche cardine: *data versioning* e
+*feature store* per gli ingressi, *experiment tracking* per legare metriche e
+configurazioni, *model registry* per i modelli, pipeline automatizzate che
+rieseguono l'intero percorso (da dato grezzo a modello servito) con un comando
+solo.
 
 L'obiettivo è l’automazione e la
 tracciabilità: ridurre il lavoro che si rifà a mano ogni volta, rendere

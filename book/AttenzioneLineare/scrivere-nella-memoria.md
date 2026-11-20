@@ -441,11 +441,12 @@ c'era senza guardare cosa fosse. Secondo: si cerca la voce che riguarda la
 parola appena letta, si legge cosa dice adesso e si scrive sopra soltanto la
 correzione, come faceva la rubrica di Mario.
 
-I due gesti risolvono due problemi diversi e non si ostacolano. Lo straccio fa
-spazio, e serve perché la lavagna non arrivi mai piena; la correzione tiene in
-ordine le voci che restano, e serve perché ciò che è scritto sia giusto. Se si
-smette di passare lo straccio, resta la sola correzione, e le voci sono
-precise, ma la lavagna a un certo punto si riempie.
+I due gesti curano mali diversi, e ciascuno si regola per conto suo, lo
+straccio con il suo ritmo e la correzione con la sua dose. Lo straccio fa
+spazio, e serve perché la lavagna non arrivi mai piena; la
+correzione tiene in ordine le voci che restano, e serve perché ciò che è
+scritto sia giusto. Se si smette di passare lo straccio, resta la sola
+correzione, e le voci sono precise, ma la lavagna a un certo punto si riempie.
 
 Se si smette di correggere, resta il solo straccio, e il risultato
 sorprende: non si ottiene la lavagna che sbiadisce e ci somma sopra le voci

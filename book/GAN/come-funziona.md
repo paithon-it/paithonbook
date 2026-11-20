@@ -497,14 +497,14 @@ faticose.
 
 `````{tab} Superiore
 
-Le due loss, su un minibatch di $m$ esempi reali $\mathbf{x}_i$ e $m$ rumori
+Le due loss, su un minibatch di $n$ esempi reali $\mathbf{x}_i$ e $n$ rumori
 $\mathbf{z}_i$, sono
 
 $$
-\mathcal{L}_D = -\frac{1}{m}\sum_{i=1}^{m}\Big[\log D(\mathbf{x}_i)
+\mathcal{L}_D = -\frac{1}{n}\sum_{i=1}^{n}\Big[\log D(\mathbf{x}_i)
 + \log\big(1 - D(G(\mathbf{z}_i))\big)\Big],
 \qquad
-\mathcal{L}_G = -\frac{1}{m}\sum_{i=1}^{m}\log D(G(\mathbf{z}_i)) :
+\mathcal{L}_G = -\frac{1}{n}\sum_{i=1}^{n}\log D(G(\mathbf{z}_i)) :
 $$
 
 la prima è l'opposto della stima di $V$ sul minibatch, la seconda non è il
@@ -615,7 +615,7 @@ diventerebbe necessaria.
 
 Secondo dettaglio: nel suo turno, il falsario misura il proprio errore come
 se i suoi falsi *dovessero* risultare autentici, e impara da quanto il verdetto
-se ne discosta. Non sta corrompendo l'arbitro, che infatti non se ne accorge:
+se ne discosta. Non sta corrompendo l'esperto, che infatti non se ne accorge:
 sta scegliendo con che metro misurare sé stesso.
 Detta così sembra una sfumatura, e invece cambia la domanda che si fa
 all'esperto. Non più «quanto è falso questo quadro?», ma «quanto manca perché
@@ -915,19 +915,21 @@ $$
 
 e due medie adiacenti distano $4\sin\tfrac{\pi}{8} \approx 1{,}53$, una
 trentina di deviazioni standard. Un punto generato è *a segno* se dista meno di
-$0{,}15 = 3\sigma$ dalla media più vicina: per una gaussiana isotropa nel piano
-la distanza dalla media segue una legge di Rayleigh, e la frazione entro
-$3\sigma$ è $1 - e^{-9/2} \approx 98{,}9\%$, la quota di un generatore
-perfetto. Un modo è *coperto* se almeno l’$1\%$ dei punti generati è a segno
-attorno alla sua media, contro il $12{,}5\%$ di una copertura uniforme. $G$ e
-$D$ sono percettroni con due strati nascosti da $128$ unità e LeakyReLU,
-$\mathbf{z} \sim \mathcal{N}(\mathbf{0}, \mathbf{I}_2)$, l'ottimizzatore è
-Adam con learning rate $2\cdot10^{-4}$ su minibatch da $256$, le epoche sono
-$400$, la loss di $G$ è quella non saturante, e i semi vanno da $0$ a $3$. Con
-$\mathbf{z}$ gaussiano e $G$ continuo il supporto di $p_G$ è connesso: per
-raggiungere otto isole separate il generatore deve lasciare dei punti nei
-corridoi fra l'una e l'altra, e al $98{,}9\%$ può solo avvicinarsi, con
-transizioni sempre più ripide.
+$0{,}15$, tre deviazioni standard, dalla media più vicina: per una gaussiana
+isotropa nel piano la distanza dalla media segue una legge di Rayleigh, e la
+frazione entro tre deviazioni standard è $1 - e^{-9/2} \approx 98{,}9\%$, la
+quota di un generatore perfetto. Un modo è *coperto* se almeno l’$1\%$ dei
+punti generati è a segno attorno alla sua media, contro il $12{,}5\%$ di una
+copertura uniforme. $G$ e $D$ sono percettroni con due strati nascosti da $128$
+unità e LeakyReLU, $\mathbf{z} \sim \mathcal{N}(\mathbf{0}, \mathbf{I}_2)$,
+l'ottimizzatore è Adam con learning rate $2\cdot10^{-4}$ su minibatch da $256$,
+le epoche sono $400$, la loss di $G$ è quella non saturante, e i semi vanno da
+$0$ a $3$. Con $\mathbf{z}$ gaussiano e $G$ continuo l'immagine di $G$ è
+connessa: per coprire otto modi lontani il generatore deve passare per i
+corridoi, dove $p_{\text{dati}}$ ha massa trascurabile ma non nulla, e una rete
+piccola ci lascia di solito più punti del dovuto. Il $98{,}9\%$ è la quota del
+generatore perfetto, non un tetto: la supera chi concentra i punti attorno alle
+medie più di quanto facciano i dati.
 
 `````
 
@@ -1010,8 +1012,9 @@ vicino al valore di riferimento: al primo giro anche l'esperto non sa ancora
 niente e risponde più o meno a caso, quindi il gioco non è in parità.
 Quattrocento giri dopo, in tutti e quattro gli addestramenti il falsario copre
 gli otto isolotti, e il suo conto è più alto, fra $0{,}84$ e $0{,}94$: nel
-frattempo l'esperto è diventato bravo. Chi tenesse il falsario dal conto più
-basso terrebbe quello del primo giro, buono a niente.
+frattempo l'esperto è diventato più bravo di quando rispondeva a caso. Chi
+tenesse il falsario dal conto più basso terrebbe quello del primo giro, buono a
+niente.
 
 Dal conto del falsario si ricava anche un minimo garantito di quanto l'esperto
 crede veri i suoi falsi: con $0{,}84$ almeno il quarantatré per cento, con

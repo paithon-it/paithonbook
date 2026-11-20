@@ -31,7 +31,7 @@
   impronta: "c45e7ebe738c"
   postilla: "Tre strade: Dyna, MuZero con albero, e allenare dentro un simulatore interno"
 - inizio: "La terza via sfrutta il fatto"
-  impronta: "244738aad073"
+  impronta: "69acc6360044"
   postilla: "Con azioni continue il gradiente risale il rollout; con discrete serve REINFORCE"
 - inizio: "Resta il punto dolente, che nessun"
   impronta: "65744fbf9ac7"

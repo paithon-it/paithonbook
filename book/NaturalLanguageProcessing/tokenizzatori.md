@@ -19,12 +19,12 @@ opposte.
 Un vocabolario di parole intere non si chiude mai, perché più testo si legge,
 più parole nuove si incontrano. La crescita ha una forma nota, la **legge di
 Heaps** (o di Herdan), secondo cui un testo di $N$ parole ne contiene circa
-$kN^{\beta}$
-diverse, con $k$ e $\beta$ costanti e $0 < \beta < 1$, e i valori misurati
-stanno attorno a $0{,}5$ o poco sopra, a seconda del corpus e del genere
+$kN^{\beta}$ diverse, con $k$ e $\beta$ costanti e $0 < \beta < 1$, e i valori
+misurati vanno da circa $0{,}5$ nelle collezioni di documenti a
+$0{,}67$–$0{,}75$ nei grandi corpora, a seconda del corpus e del genere
 {cite}`herdan1960type,heaps1978information,jurafsky2026speech`. In pratica,
-quadruplicare il testo raddoppia più o meno le parole diverse, e
-la crescita non si ferma.
+quadruplicare il testo moltiplica le parole diverse per un fattore fra due e
+tre, e la crescita non si ferma.
 
 Qualunque taglia si scelga, cinquantamila, centomila, un milione, prima o poi
 arriva una parola che non c'è, ad esempio un cognome (*Rossellini*), un refuso
@@ -299,10 +299,9 @@ un'utilità di compressione (di quanto si accorcia il corpus con $k$ fusioni) e
 dimostrano che la scelta greedy ne raggiunge almeno una frazione
 $\frac{1}{\sigma}\bigl(1 - e^{-\sigma}\bigr)$ dell'ottimo, con $\sigma$ la
 curvatura totale all'indietro dell'utilità rispetto alla sequenza di fusioni
-ottima. Il valore numerico della garanzia viene da una stima di $\sigma$:
-circa $0{,}37$ su stringhe piccole e sintetiche, $0{,}43$ su testo inglese.
-Nello stesso lavoro l'indice con la coda di priorità porta l'addestramento da
-$O(Nk)$ a $O(N \log k)$.
+ottima. Stimando $\sigma$ sui dati, la garanzia vale circa $0{,}37$ su stringhe
+piccole e sintetiche e $0{,}43$ su testo inglese. Nello stesso lavoro l'indice
+con la coda di priorità porta l'addestramento da $O(Nk)$ a $O(N \log k)$.
 
 `````
 

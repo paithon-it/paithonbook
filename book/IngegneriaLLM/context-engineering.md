@@ -142,26 +142,26 @@ l'informazione importante è il centro di un contesto lungo.
 
 `````{tab} Superiore
 
-Liu e colleghi (2023) variano la posizione del documento che contiene la
-risposta dentro un contesto di 10, 20 o 30 documenti, su GPT-3.5-Turbo, Claude
-1.3 e due modelli aperti (MPT-30B-Instruct e LongChat-13B), e misurano
-l'accuratezza al variare di quella posizione; lo stesso andamento lo ritrovano
-su un secondo compito, sintetico, dove si chiede di recuperare il valore
-associato a una chiave. La curva non è piatta: ha una forma a U. Detta $j$ la
-posizione del passaggio rilevante su $n$ passaggi totali, l'accuratezza è
-massima agli estremi ($j = 1$ e $j = n$) e cala vistosamente verso il centro
-($j \approx n/2$): con venti o trenta documenti e l'informazione a metà
-contesto GPT-3.5-Turbo scende sotto il suo risultato a libro chiuso, cioè senza
-nessun documento in ingresso, che su quella prova vale il $56{,}1\%$. Il calo
-si accentua man mano che il contesto si allunga. Sono misure su modelli del
-2023: quanto pesi la posizione dipende dal modello, mentre il calo con la
-lunghezza del contesto lo ritrova anche il *context rot* di cui parla Anthropic
-nel 2025 {cite}`anthropic2025context`. Due implicazioni operative dirette.
-Primo: allungare il contesto ha un costo, perché più passaggi si infilano, più
-è probabile seppellire quello giusto in una zona cieca. Secondo: l'ordine
-conta. Se recuperiamo dei passaggi (per esempio con un sistema RAG) e ne
-conosciamo la rilevanza stimata, conviene collocare i più importanti in testa o
-in coda, non nella zona centrale del contesto.
+Liu e colleghi {cite}`liu2024lost` variano la posizione del documento che
+contiene la risposta dentro un contesto di 10, 20 o 30 documenti, su
+GPT-3.5-Turbo, Claude 1.3 e due modelli aperti (MPT-30B-Instruct e
+LongChat-13B), e misurano l'accuratezza al variare di quella posizione; lo
+stesso andamento lo ritrovano su un secondo compito, sintetico, dove si chiede
+di recuperare il valore associato a una chiave. La curva non è piatta: ha una
+forma a U. Detta $j$ la posizione del passaggio rilevante su $n$ passaggi
+totali, l'accuratezza è massima agli estremi ($j = 1$ e $j = n$) e cala
+vistosamente verso il centro ($j \approx n/2$): con venti o trenta documenti e
+l'informazione a metà contesto GPT-3.5-Turbo scende sotto il suo risultato a
+libro chiuso, cioè senza nessun documento in ingresso, che su quella prova vale
+il $56{,}1\%$. Il calo si accentua man mano che il contesto si allunga. Sono
+misure su modelli del 2023: quanto pesi la posizione dipende dal modello,
+mentre il calo con la lunghezza del contesto lo ritrova anche il *context rot*
+di cui parla Anthropic nel 2025 {cite}`anthropic2025context`. Due implicazioni
+operative dirette. Primo: allungare il contesto ha un costo, perché più
+passaggi si infilano, più è probabile seppellire quello giusto in una zona
+cieca. Secondo: l'ordine conta. Se recuperiamo dei passaggi (per esempio con un
+sistema RAG) e ne conosciamo la rilevanza stimata, conviene collocare i più
+importanti in testa o in coda, non nella zona centrale del contesto.
 
 `````
 
@@ -225,15 +225,15 @@ Avendo ammesso il troncamento, lo zaino è diventato frazionario. Per questo
 problema l'ottimo greedy si ottiene ordinando per **densità** $r_i / c_i$
 (rilevanza per token), non per la sola rilevanza $r_i$; e nello zaino 0/1,
 senza troncamento, il migliore fra il greedy per densità e il singolo passaggio
-di rilevanza massima garantisce almeno metà dell'ottimo. Con un'avvertenza che
-il troncamento stesso solleva: lo zaino frazionario assume che mezzo oggetto
-valga mezzo valore, e mezza frase non afferma mezza cosa, quindi la garanzia di
-ottimalità vale sul modello, non sul contesto. Sui numeri dell'esempio in
-Python i due criteri scelgono gli stessi passaggi, ma la regola enunciata non è
-quella che il modello dello zaino richiederebbe. Sotto tutto c'è un'ipotesi che
-i passaggi ridondanti smentiscono: che la rilevanza totale sia la somma delle
-rilevanze. Due passaggi quasi uguali non valgono il doppio di uno, e da questo
-problema parte l'MMR.
+di rilevanza massima fra quelli con $c_i \le B$ garantisce almeno metà
+dell'ottimo. Con un'avvertenza che il troncamento stesso solleva: lo zaino
+frazionario assume che mezzo oggetto valga mezzo valore, e mezza frase non
+afferma mezza cosa, quindi la garanzia di ottimalità vale sul modello, non sul
+contesto. Sui numeri dell'esempio in Python i due criteri scelgono gli stessi
+passaggi, ma la regola enunciata non è quella che il modello dello zaino
+richiederebbe. Sotto tutto c'è un'ipotesi che i passaggi ridondanti
+smentiscono: che la rilevanza totale sia la somma delle rilevanze. Due passaggi
+quasi uguali non valgono il doppio di uno, e da questo problema parte l'MMR.
 
 `````
 
@@ -593,27 +593,26 @@ che non sanno che cosa c'era prima, a conti fatti, sbagliano meno.
 
 `````{tab} Superiore
 
-Siano $n$ i token del documento, $w$ quelli di testo che una chiamata può
+Siano $L$ i token del documento, $w$ quelli di testo che una chiamata può
 leggere (la finestra meno le istruzioni e lo spazio per la risposta) e $s$ la
 lunghezza di un riassunto, supposta la stessa a ogni livello qualunque cosa
-condensi, che è una semplificazione. Se $n \le w$ basta una chiamata
+condensi, che è una semplificazione. Se $L \le w$ basta una chiamata
 sola, che nel lessico di LangChain si chiama *stuff*.
 
-Il riassunto in fila mantiene uno stato, il sunto corrente di al più $s$
-token, e a ogni chiamata legge lo stato e $w - s$ token nuovi: servono
-$m = \lceil n/(w-s) \rceil$ chiamate, tutte sequenziali. È una ricorrenza con
-uno stato di taglia fissa, e ne eredita il
-{doc}`collo di bottiglia sequenziale
+Il riassunto in fila mantiene uno stato, il sunto corrente di al più $s$ token,
+e a ogni chiamata legge lo stato e $w - s$ token nuovi: servono al più $m =
+\lceil L/(w-s) \rceil$ chiamate, tutte sequenziali. È una ricorrenza con uno
+stato di taglia fissa, e ne eredita il {doc}`collo di bottiglia sequenziale
 </NaturalLanguageProcessing/modelli-sequenza>`:
 l’informazione del primo pezzo raggiunge l’uscita attraverso $m$ riscritture,
 mentre ogni chiamata vede, compresso, tutto ciò che la precede.
 
-Il riassunto ad albero fa $\lceil n/w \rceil$ chiamate indipendenti sui pezzi
+Il riassunto ad albero fa $\lceil L/w \rceil$ chiamate indipendenti sui pezzi
 (la fase *map*), poi raggruppa i riassunti a $k = \lfloor w/s \rfloor$ per
 chiamata e ripete (*reduce*), finché ne resta uno; serve $k \ge 2$, cioè un
 riassunto lungo al più metà del testo che legge, o l’albero non converge. I
-livelli sono circa $1 + \lceil \log_k \lceil n/w \rceil \rceil$, le chiamate in
-tutto circa $\lceil n/w \rceil \cdot k/(k-1)$, e il cammino critico, cioè il
+livelli sono circa $1 + \lceil \log_k \lceil L/w \rceil \rceil$, le chiamate in
+tutto circa $\lceil L/w \rceil \cdot k/(k-1)$, e il cammino critico, cioè il
 numero di turni che non si possono sovrapporre, è pari ai livelli: logaritmico
 invece che lineare. Il limite è simmetrico: nella fase *map* ogni chiamata vede
 un pezzo solo, e un riferimento che attraversa il confine fra due pezzi (un nome
@@ -750,7 +749,7 @@ spazio dichiarato non è lo spazio che il modello sa sfruttare]{.pt-matita}.
 Per *distraction* e *confusion* una lettura possibile (interpretativa, non
 presa dalla letteratura) è la diluizione dell'attenzione: man mano che il
 contesto si allunga, il segnale rilevante si distribuisce su più token e la
-capacità del modello di isolarlo cala. Le evidenze si sovrappongono più di
+capacità del modello di isolarlo cala. I fenomeni si sovrappongono più di
 quanto la distinzione dei nomi suggerisca. Liu e colleghi {cite}`liu2024lost`
 misurano la posizione (la curva di accuratezza in funzione di dove sta
 l'informazione ha la forma a U) e insieme la lunghezza: sul QA multi-documento
@@ -930,7 +929,7 @@ finestra è un sistema e non una casella di testo, e va progettata come tale.
   (partizionare tra sotto-agenti). Ognuna perde qualcosa; e la cache dei prompt
   premia un prefisso stabile, con ciò che cambia in fondo.
 - Un documento più lungo della finestra si riassume in fila
-  ($\lceil n/(w-s) \rceil$ chiamate sequenziali) o ad albero (circa
+  ($\lceil L/(w-s) \rceil$ chiamate sequenziali) o ad albero (circa
   altrettante chiamate, cammino critico logaritmico); il confronto su cento
   libri dà all'albero meno errori di coerenza e meno dettaglio
   {cite}`chang2024booookscore`.

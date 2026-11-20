@@ -538,8 +538,8 @@ pochi restano tutta la sera, chi ha già mangiato molto è quasi certamente uno
 di quei pochi e ne ha ancora per molto, quindi servire prima chi ha mangiato
 meno vuol dire, quasi sempre, servire prima chi ha meno da mangiare. Nella
 simulazione chi prende uno o due piatti finisce in circa metà del tempo che gli
-serve con le comande in ordine d'arrivo, e anche la cena media di tutti si
-accorcia.
+serve con le comande in ordine d'arrivo, una per una, e anche la cena media di
+tutti si accorcia.
 
 In un locale a menù fisso, dove tutti mangiano sette portate, la regola si
 rovescia. Chi ha già mangiato molto è vicino al dolce, e farlo aspettare tiene

@@ -201,8 +201,8 @@ teorema, infatti, vale per stati distribuiti secondo $\rho^\mu$, cioè secondo
 la policy corrente; sostituirvi gli stati della memoria di replay,
 $s\sim\mathcal{D}$, raccolti da policy precedenti, rende DDPG *off-policy*
 omettendo un termine del gradiente. Funziona, ma non discende dalla regola
-della catena: è una scelta, la stessa di tutti i metodi attore-critico
-off-policy.
+della catena: è una scelta, la stessa della maggior parte dei metodi
+attore-critico off-policy.
 
 Il critico si addestra sul bersaglio di Bellman
 
@@ -281,12 +281,13 @@ voto di riferimento, così che azioni quasi identiche ricevano voti quasi
 identici. In questo modo impedisce all'attore di aggrapparsi a un picco stretto
 e probabilmente illusorio del critico.
 
-In sintesi, dei due problemi di DDPG i tre trucchi attaccano l'ottimismo dei
-voti, e lo attaccano in due (i due giudici e i bersagli sfumati). L'attore che
-parla di meno cura un problema che nell'elenco non c'era, cioè l'attore che
-insegue giudizi ancora acerbi. Sulla sensibilità agli iperparametri, invece,
-TD3 non promette niente. L'addestramento è meno nervoso e quindi se ne soffre
-meno, ma il problema resta.
+In sintesi, dei due problemi di DDPG (i voti troppo ottimisti e la sensibilità
+agli iperparametri) TD3 attacca il primo, e lo attacca con i due giudici. I
+bersagli sfumati e l'attore che parla di meno curano un terzo problema,
+l'instabilità: voti di riferimento che cambiano troppo fra azioni quasi
+identiche, e un attore che insegue giudizi ancora acerbi. Sulla sensibilità agli
+iperparametri, invece, TD3 non promette niente. L'addestramento è meno nervoso e
+quindi se ne soffre meno, ma il problema resta.
 
 `````
 
@@ -334,12 +335,12 @@ delle azioni ammesse), così che il bersaglio sia liscio rispetto all'azione;
 questo previene lo sfruttamento, da parte dell'attore, di picchi acuti ed
 erronei nella superficie del critico.
 
-In definitiva, dei due problemi di DDPG, TD3 attacca frontalmente la
-sovrastima con il clipped double-Q e il target smoothing, mentre il *delayed
-policy update* corregge l'instabilità dovuta a stime del critico ancora
-immature. Sull'ipersensibilità agli iperparametri, invece, TD3 non offre
-garanzie. Ne attenua i sintomi perché l'addestramento procede in modo più
-regolare, non perché il problema sia risolto alla radice.
+In definitiva, dei due problemi di DDPG, TD3 attacca frontalmente la sovrastima
+con il clipped double-Q, mentre il target smoothing e il *delayed policy
+update* riducono la varianza del bersaglio e l'instabilità dovuta a stime del
+critico ancora immature. Sull'ipersensibilità agli iperparametri, invece, TD3
+non offre garanzie. Ne attenua i sintomi perché l'addestramento procede in modo
+più regolare, non perché il problema sia risolto alla radice.
 
 `````
 
@@ -562,10 +563,10 @@ Dove i campioni sono facili da raccogliere, invece, il vantaggio diminuisce:
 con migliaia di robot simulati in parallelo si usa spesso PPO, che consuma
 subito l'intera esperienza raccolta. Ad esempio, Rudin e colleghi hanno
 insegnato così a camminare a un robot a quattro zampe in meno di quattro minuti
-di addestramento sul piano, e in venti su un terreno accidentato
-{cite}`rudin2022learning`. Non esiste quindi il vincitore assoluto: [la scelta
-dipende da quanto costa una prova e da quanta cura si può dedicare alla messa a
-punto]{.pt-matita}.
+di orologio sul piano, con migliaia di robot simulati che provavano insieme, e
+in venti su un terreno accidentato {cite}`rudin2022learning`. Non esiste quindi
+il vincitore assoluto: [la scelta dipende da quanto costa una prova e da quanta
+cura si può dedicare alla messa a punto]{.pt-matita}.
 
 C'è poi un limite che nessuno di questi algoritmi risolve, il **sim-to-real
 gap**, lo scarto fra simulazione e mondo fisico. Addestrare un robot
@@ -622,9 +623,9 @@ muoversi nel mondo.
 - DDPG addestra l'attore deterministico con il *deterministic policy
   gradient* (il gradiente del critico rispetto all'azione), riusando replay
   buffer e reti target ereditati da DQN; esplora aggiungendo rumore all'azione.
-- TD3 attenua la sovrastima di DDPG con due accorgimenti, *twin critics*
-  (minimo dei due $Q$) e *target policy smoothing*, e con il terzo, i *delayed
-  policy updates*, evita che l'attore insegua stime ancora immature;
+- TD3 attenua la sovrastima di DDPG con i *twin critics* (minimo dei due $Q$),
+  e con *target policy smoothing* e *delayed policy updates* riduce la varianza
+  del bersaglio ed evita che l'attore insegua stime ancora immature;
   sull'ipersensibilità agli iperparametri non promette nulla.
 - SAC adotta un attore stocastico e l'obiettivo di massima entropia
   (premio + entropia, con temperatura $\alpha$ spesso auto-regolata su un

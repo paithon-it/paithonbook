@@ -201,19 +201,19 @@ sull’{doc}`attenzione lineare </AttenzioneLineare/overview>`.
 `````
 
 `````{tab} Superiore
-[La matrice di attenzione ha $n \times n$ elementi]{.pt-matita}. Contando la sola
-operazione di attenzione (proiezioni escluse), il costo in tempo è
-$O(n^2 \cdot d)$ nella lunghezza $n$ della sequenza, con $d = d_{\text{model}}$,
+[La matrice di attenzione ha $n \times n$ elementi]{.pt-matita}. Contando la
+sola operazione di attenzione (proiezioni escluse), il costo in tempo è $O(n^2
+\cdot d)$ nella lunghezza $n$ della sequenza, con $d = d_{\text{model}}$,
 contro l’$O(n \cdot d^2)$ di uno strato ricorrente; la memoria per i punteggi è
 $O(n^2)$, contro l’$O(n \cdot d)$ delle attivazioni ricorrenti. Dal confronto
 fra i due termini l'articolo ricava che l'operazione di attenzione costa meno
 dello strato ricorrente finché $n < d$, il caso tipico della traduzione del
 2017; le quattro proiezioni dello strato, che la sua tabella non conta, costano
-però $4nd^2$, quanto lo strato ricorrente: lo strato intero non costa quindi
-meno, ma si parallelizza meglio. Dentro il Transformer, poi, il termine
-quadratico va messo accanto a quello delle proiezioni e della FFN: per strato
-il totale è $12nd^2 + 2n^2d$, e il secondo supera il primo solo per $n > 6d$,
-come ricava la {doc}`matematica di un modello linguistico
+però $4nd^2$, lo stesso ordine $O(nd^2)$ dello strato ricorrente: lo strato
+intero non costa quindi meno, ma si parallelizza meglio. Dentro il Transformer,
+poi, il termine quadratico va messo accanto a quello delle proiezioni e della
+FFN: per strato il totale è $12nd^2 + 2n^2d$, e il secondo supera il primo solo
+per $n > 6d$, come ricava la {doc}`matematica di un modello linguistico
 </Matematica/matematica-llm>`.
 
 Un termine di paragone assente nella tabella è uno strato denso sull'intera
@@ -282,14 +282,13 @@ query. Trovare i vicini senza confrontarli tutti è un problema classico, e la
 risposta classica è l’**hashing sensibile alla località** (LSH): una funzione
 $g$ che manda vettori simili nello stesso secchiello con alta probabilità.
 
-Perché l'hashing funzioni, però, query e chiavi devono coincidere: se
-$g(\mathbf{q}_j) \neq g(\mathbf{k}_j)$ una query può finire in un secchiello
-dove la sua stessa
-chiave non c'è. Il Reformer usa quindi la stessa proiezione per entrambe
-(*shared-QK*), rinunciando alla distinzione fra il cercare e l'essere trovati
-su cui si basa la {numref}`fig-qkv`; gli autori non trovano perdite
-sui due compiti su cui la provano (testo carattere per carattere e immagini di
-$64 \times 64$ pixel).
+Con query e chiavi distinte, però, un secchiello può raccogliere molte query e
+nessuna chiave, e se $g(\mathbf{q}_j) \neq g(\mathbf{k}_j)$ una query può
+finire dove la sua stessa chiave non c'è. Il Reformer usa quindi la stessa
+proiezione per entrambe (*shared-QK*), rinunciando alla distinzione fra il
+cercare e l'essere trovati su cui si basa la {numref}`fig-qkv`; gli autori non
+trovano perdite sui due compiti su cui la provano (testo carattere per
+carattere e immagini di $64 \times 64$ pixel).
 
 Fatto questo, si raggruppano query e chiavi per secchiello, si calcola
 l'attenzione piena solo dentro ciascun secchiello, e il costo scende da

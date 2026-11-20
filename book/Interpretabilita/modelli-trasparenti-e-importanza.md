@@ -107,11 +107,11 @@ ricevuta: quando due voci vanno sempre insieme, i dati fissano bene il loro
 totale e male la spartizione, e i due cartellini, letti uno per uno, possono
 raccontare una storia che con un altro campione di case sarebbe diversa.
 
-Vale lo stesso per la regressione logistica, che al posto di una quantità dà
-una probabilità: al posto di un «sì» o un «no» secchi, «questo cliente
-restituirà il prestito con probabilità del 65%». La somma delle voci non è
-ancora quella probabilità: un totale può venire enorme o negativo, mentre una
-probabilità sta fra zero e uno, e un ultimo passaggio lo schiaccia dentro
+Vale lo stesso per la regressione logistica, che risponde sì o no ma dietro la
+risposta dà una probabilità: invece di un «sì» o un «no» secchi, «questo
+cliente restituirà il prestito con probabilità del 65%». La somma delle voci
+non è ancora quella probabilità: un totale può venire enorme o negativo, mentre
+una probabilità sta fra zero e uno, e un ultimo passaggio lo schiaccia dentro
 quell'intervallo. I pesi si leggono comunque uno per uno, e il segno dice da
 che parte tira ciascuno, verso il sì o verso il no. Un modello così si stampa
 su mezza pagina e si discute con chi non ha mai visto una formula, finché le
@@ -478,12 +478,12 @@ imitare a gradini; sulle funzioni simulate del lavoro originale il vantaggio
 medio c'è, ma è piccolo. Il modello lineare si ferma a $0{,}47$ perché una
 regola a soglia fra due colonne non è una somma di rette.
 
-Si sente dire che la trasparenza si paghi in accuratezza. Dipende dai dati,
-come ha già mostrato la storia degli asmatici: su tabelle con colonne che hanno
-un senso il divario fra un modello trasparente ben costruito e una scatola nera
-è spesso piccolo o nullo, su immagini, testo e suoni le reti profonde sono
-nettamente più accurate. Resta da vedere come si costruisce, su una tabella, un
-modello trasparente all'altezza del modello che lì va più forte.
+Si sente dire che la trasparenza si paghi in accuratezza. Dipende dai dati: su
+tabelle con colonne che hanno un senso il divario fra un modello trasparente
+ben costruito e una scatola nera è spesso piccolo o nullo, su immagini, testo e
+suoni le reti profonde sono nettamente più accurate. Resta da vedere come si
+costruisce, su una tabella, un modello trasparente all'altezza del modello che
+lì va più forte.
 
 `````{tab} Elementare
 
@@ -641,10 +641,10 @@ $e_{\pi_j} = \mathcal{L}(f, (\mathbf{X}_{\pi_j}, \mathbf{y}))$. L'importanza
 è il peggioramento
 
 $$
-\mathrm{FI}_j = \frac{1}{K}\sum_{k=1}^{K} e_{\pi_j}^{(k)} - e_{\text{orig}},
+\mathrm{FI}_j = \frac{1}{R}\sum_{r=1}^{R} e_{\pi_j}^{(r)} - e_{\text{orig}},
 $$
 
-media su $K$ permutazioni indipendenti (in `scikit-learn`, `n_repeats`), che
+media su $R$ permutazioni indipendenti (in `scikit-learn`, `n_repeats`), che
 fornisce anche una deviazione standard. Introdotta da Breiman con le foreste
 casuali {cite}`breiman2001random` e in seguito formalizzata da Fisher, Rudin e
 Dominici {cite}`fisher2019models` come *model reliance* (nella loro variante
@@ -1135,10 +1135,10 @@ l'archivio ne abbia.
 
 Siano $X = \{\mathbf{x}_1, \dots, \mathbf{x}_n\}$ i dati in $\mathbb{R}^d$, $Z$
 un insieme di prototipi scelti fra loro e $k$ il nucleo gaussiano di larghezza
-$\sigma$,
-$k(\mathbf{x}, \mathbf{x}') = \exp\big(-\lVert\mathbf{x} - \mathbf{x}'\rVert^2 / (2\sigma^2)\big)$.
-La stima dell'MMD al quadrato fra la distribuzione empirica dei dati e quella
-dei prototipi è
+$\sigma$ (qui una larghezza, non la sigmoide), $k(\mathbf{x}, \mathbf{x}') =
+\exp\big(-\lVert\mathbf{x} - \mathbf{x}'\rVert^2 / (2\sigma^2)\big)$. La stima
+dell'MMD al quadrato fra la distribuzione empirica dei dati e quella dei
+prototipi è
 
 $$
 \mathrm{MMD}^2(X, Z) = \frac{1}{|Z|^2}\sum_{\mathbf{z}, \mathbf{z}' \in Z} k(\mathbf{z}, \mathbf{z}')
@@ -1382,7 +1382,7 @@ leggerci dentro più di quel che c'è.
   presunto compromesso accuratezza/interpretabilità non vale sempre, specie sui
   dati tabellari (EBM).
 - La permutation importance {cite}`breiman2001random` mescola i valori di
-  una sola colonna e misura il calo di performance ($\mathrm{FI}_j =
+  una sola colonna e misura il calo di prestazioni ($\mathrm{FI}_j =
   e_{\pi_j} - e_{\text{orig}}$): è model-agnostic, va calcolata su dati
   held-out e mediata su più permutazioni. Con feature correlate il
   numero va letto con la domanda in mano: la gemella non permutata lo

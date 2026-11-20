@@ -571,12 +571,12 @@ l'altezza delle note sale in verticale. Il nome di quella griglia, **piano
 roll**, viene dal rotolo di carta perforata delle pianole meccaniche di inizio
 Novecento, dove i buchi erano le note e la carta scorreva.
 
-Il problema sta nella parola «sequenza». Un modello che indovina il prossimo
-token vuole una fila: un simbolo, poi un altro, poi un altro. La musica, però,
-non è una fila. In un accordo, ad esempio, tre note partono insieme e ciascuna
-dura per sé: la linea di basso tiene una nota lunga mentre quella acuta ne fa
-passare otto. Ognuna di queste linee si chiama **voce**, anche quando la suona
-uno strumento e non qualcuno che canta. Mettere più voci su una riga sola è la
+Il problema sta nella sequenza: un modello che indovina il prossimo token vuole
+una fila: un simbolo, poi un altro, poi un altro. La musica, però, non è una
+fila. In un accordo, ad esempio, tre note partono insieme e ciascuna dura per
+sé: la linea di basso tiene una nota lunga mentre quella acuta ne fa passare
+otto. Ognuna di queste linee si chiama **voce**, anche quando la suona uno
+strumento e non qualcuno che canta. Mettere più voci su una riga sola è la
 domanda tecnica di questa strada, e le risposte sono due.
 
 `````{tab} Elementare

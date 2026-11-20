@@ -658,7 +658,8 @@ $$
 $$
 
 che sul clip di Wan vale 2,63. Il guadagno cresce con $N$, ma resta lontano dal
-rapporto fra le coppie finché $N$ è confrontabile con la larghezza dello strato.
+rapporto fra le coppie finché $S + F'$, la lunghezza delle sequenze
+fattorizzate, non supera di molto $4d + d_{\text{ff}}$.
 
 Il conto non vede la memoria, e FlashAttention, che la tiene lineare in $N$,
 riduce il traffico di memoria senza ridurre le operazioni. Il report di Wan
@@ -899,10 +900,11 @@ dopo strato, come nei flussi di HunyuanVideo.
   terzo token che li mescola al resto del fotogramma; nelle ablazioni di
   CogVideoX la versione fattorizzata impara peggio ed è instabile
   {cite}`yang2025cogvideox`.
-- L’attenzione 3D piena mette gli $N = F'S$ token in una sequenza, con una RoPE
-  a tre componenti (fotogramma, riga, colonna) che ruota gruppi di canali
-  separati, così che il punteggio dipenda solo dalle tre differenze
-  {cite}`kong2024hunyuanvideo`.
+- L’attenzione 3D piena mette gli $N = F'S$ token in una sequenza;
+  HunyuanVideo, ad esempio, usa una RoPE a tre componenti (fotogramma, riga,
+  colonna) che ruota gruppi di canali separati, così che il punteggio dipenda
+  solo dalle tre differenze {cite}`kong2024hunyuanvideo`, mentre Movie Gen
+  somma a ogni strato embedding assoluti appresi.
 - Il rapporto fra attenzione e resto dello strato è
   $\rho = N/(2d + d_{\text{ff}})$, che per $d_{\text{ff}} = 4d$ è $N/(6d)$; con
   le dimensioni di Wan 14B a 75.600 token vale 3,14 (2,54 contando la

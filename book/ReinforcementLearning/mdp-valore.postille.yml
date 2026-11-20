@@ -55,7 +55,7 @@
   impronta: "fdf4831e5608"
   postilla: "Value e policy iteration pretendono la mappa: dove porta ogni mossa"
 - inizio: "Quella mappa ha un nome tecnico,"
-  impronta: "f4342b304874"
+  impronta: "0d0a0b71bda2"
   postilla: "Modello dell'ambiente: probabilità di transizione e ricompense, non una rete"
 - inizio: "Quando il modello manca, i valori"
   impronta: "cd30a50a4ceb"

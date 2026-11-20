@@ -7,6 +7,18 @@ descrizione: "Che cosa ha in più una canzone rispetto a un brano strumentale:
 ---
 # Generare musica
 
+```{image} ../figures/aperture/generazione-musica.png
+:class: pt-apertura only-light
+:width: 100%
+:alt: Un microfono da studio d'epoca: da un lato entra un pentagramma con qualche nota, dall'altro esce un'onda sonora.
+```
+
+```{image} ../figures/aperture/generazione-musica-scura.png
+:class: pt-apertura only-dark
+:width: 100%
+:alt: Un microfono da studio d'epoca: da un lato entra un pentagramma con qualche nota, dall'altro esce un'onda sonora.
+```
+
 Hatsune Miku è un programma. La Crypton Future Media, un'azienda giapponese, lo
 mette in commercio il 31 agosto 2007 e lo descrive come uno strumento con cui
 chiunque può generare una voce cantata scrivendo un testo e una melodia. La
@@ -440,11 +452,12 @@ insieme </GenerazioneMusica/tutta-la-canzone-insieme>`.
 
 La terza è la struttura scritta sezione per sezione. In YuE un testo dato tutto
 all'inizio perde presa man mano che la canzone si allunga: secondo gli autori
-il modello comincia a seguirlo peggio dopo una trentina di secondi di canzone,
-e oltre il minuto lo perde del tutto. Per questo YuE scrive davanti a ogni
-sezione della canzone (strofa, ritornello, ponte) il suo nome e le sue parole,
-così che l'allineamento resti da trovare soltanto dentro la sezione, con il
-testo che serve sempre vicino {cite}`yuan2025yue`.
+il modello comincia a seguirlo peggio dopo circa 3.000 token audio, una
+trentina di secondi se voce e accompagnamento stanno su due tracce, e oltre i
+6.000, circa un minuto, lo perde del tutto. Per questo YuE scrive davanti a
+ogni sezione della canzone (strofa, ritornello, ponte) il suo nome e le sue
+parole, così che l'allineamento resti da trovare soltanto dentro la sezione,
+con il testo che serve sempre vicino {cite}`yuan2025yue`.
 
 La quarta è l'utente, frase per frase. Gli autori di DiffRhythm, dando al
 modello il testo senza istanti, non ottengono un canto comprensibile, né con

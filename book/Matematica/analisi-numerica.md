@@ -243,9 +243,10 @@ duecento fattori $0{,}5$; il risultato vero è un numero minuscolo e positivo,
 eppure un `float32` registra zero tondo, senza avvisare.
 
 La difesa usa la notazione scientifica di prima: invece di moltiplicare i
-numeri, si sommano i loro «per dieci alla…», e duecento dimezzamenti diventano
-un esponente di circa $-60$, un numero qualunque, che si scrive senza fatica.
-[Il conto è lo stesso, fatto per una strada che non passa mai da quantità fuori
+numeri, si sommano i loro «per dieci alla…», e duecento dimezzamenti, che
+abbassano l'esponente di circa tre decimi ciascuno, diventano un esponente di
+circa $-60$, un numero qualunque, che si scrive senza fatica. [Il conto è lo
+stesso, fatto per una strada che non passa mai da quantità fuori
 portata]{.pt-matita}.
 
 `````

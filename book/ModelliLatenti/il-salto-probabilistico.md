@@ -48,13 +48,13 @@ la nostra cifra non c’entra niente, e valgono zero. Il valore vero sta tutto
 dentro le pochissime che hanno avuto fortuna, e se quelle non capita di
 pescarle, la media viene fuori troppo bassa e nessuno se ne accorge.
 
-La difficoltà cresce in fretta man mano che la scheda si allunga. Con una scheda
-da un numero solo la fortuna capita quasi sempre; con una da quaranta non
-capita mai. È lo stesso motivo per cui indovinare una parola di quattro lettere
-tirando a caso si può fare e indovinarne una di quaranta no: con quattro
-lettere dell’alfabeto italiano le parole possibili sono circa duecentomila, con
-quaranta il loro numero ha cinquantatré cifre. Le possibilità non crescono, si
-moltiplicano.
+La difficoltà cresce in fretta man mano che la scheda si allunga. Con una
+scheda da un numero solo la fortuna capita quasi sempre; con una da quaranta
+non capita quasi mai. È lo stesso motivo per cui indovinare una parola di
+quattro lettere tirando a caso si può fare e indovinarne una di quaranta no:
+con quattro lettere dell’alfabeto italiano le parole possibili sono circa
+duecentomila, con quaranta il loro numero ha cinquantatré cifre. Le possibilità
+non crescono, si moltiplicano.
 
 `````
 
@@ -199,8 +199,9 @@ apposta per il fatto che si è guardato in una fetta sola, e resta giusta.
 quartiere dove la persona potrebbe abitare, perché lì nessuno andrebbe a
 cercarla e la stima non se ne accorgerebbe. Qui il suo consiglio è una zona
 sfumata, che si dirada allontanandosi ma non chiude fuori nessun quartiere, e
-la condizione vale sempre.) Ne esce, però, una **stima prudente** e non la
-probabilità vera, cioè un numero che sta sicuramente sotto a quello giusto.
+la condizione vale sempre.) Per come la si calcola davvero, cioè sui numeri
+schiacciati, ne esce però una **stima prudente** e non la probabilità vera,
+cioè un numero che sta sicuramente sotto a quello giusto.
 
 Perché sotto e non sopra? La ragione sta nell’ordine di due operazioni, non
 nella fetta. I numeri in gioco sono minuscoli, e per maneggiarli si schiacciano:
@@ -325,8 +326,8 @@ concentrarsi su pochi campioni, e per ogni dato servono $K$ passate del
 decoder.
 
 {doc}`Come funziona la diffusione </ModelliDiffusione/come-funziona>`, più
-avanti, userà una versione ripesata di questo stesso limite, e chi ci arriverà
-riconoscerà l’oggetto. Chi arriva dalla {doc}`sezione su riduzione e
+avanti, userà una versione ripesata dell’ELBO, cioè del caso $K = 1$, e chi ci
+arriverà riconoscerà l’oggetto. Chi arriva dalla {doc}`sezione su riduzione e
 clustering </MachineLearning/riduzione-clustering>` riconosce la struttura
 dell’algoritmo EM, che alterna il miglioramento del bound rispetto a $q$ e
 rispetto a $\theta$; la differenza è che qui $q$ non si calcola in forma
@@ -658,7 +659,8 @@ L’alternativa è lo stimatore a punteggio, $\nabla_\phi \mathbb{E}_{q_\phi}[f]
 {doc}`sezione sul gradiente di policy
 </DeepReinforcementLearning/policy-gradient>`. Anche quello è non distorto, e ha
 il vantaggio decisivo di funzionare su variabili discrete, dove la
-riparametrizzazione non si applica. Ha però una varianza maggiore, e la
+riparametrizzazione non si applica. Di solito ha però una varianza maggiore
+(non sempre: con una funzione che oscilla in fretta vale il contrario), e la
 differenza si misura.
 
 `````
@@ -722,9 +724,9 @@ Tutti e due i metodi puntano al valore giusto, 4, e nessuno dei due imbroglia.
 La differenza sta nella variabilità, che nel secondo è molto maggiore, e a
 dirlo è la deviazione standard, cioè quanto una singola risposta balla attorno
 al valore giusto: 2,0 per il primo metodo, 9,3 per il secondo. Il numero in
-fondo eleva al quadrato quelle due, che è il passaggio con cui si arriva alla
-varianza, e ne esce 9,3 al quadrato contro 2 al quadrato, cioè ventidue volte
-tanto.
+fondo si ottiene elevando al quadrato quelle due, che è il passaggio con cui si
+arriva alla varianza, e ne esce 9,3 al quadrato contro 2 al quadrato, cioè
+ventidue volte tanto.
 
 A parità di precisione, una varianza ventidue volte maggiore impone ventidue
 volte i campioni. Lo stimatore a punteggio ha un rimedio classico, la linea di
@@ -1122,22 +1124,22 @@ il termine di ricostruzione è debole, e $q_\phi(\mathbf{z} \mid \mathbf{x})
 \approx p(\mathbf{z})$ è un equilibrio stabile da cui è difficile uscire: il
 costo di descrizione va a zero e il latente smette di portare informazione. Nel
 caso lineare-gaussiano dell’apertura del capitolo, la PCA probabilistica, il
-collasso si calcola: all’ottimo la colonna di $\mathbf{W}$ che corrisponde a un
-autovalore non superiore alla varianza del rumore $\sigma^2$ è nulla, e la
-posterior di quella componente coincide con il prior
-{cite}`tipping1999probabilistic`. Un rumore più grande spegne le componenti a
-partire dalla più debole, e in quel caso il collasso è l’ottimo globale della
-verosimiglianza, non un incidente dell’ottimizzazione. Lucas e colleghi
-{cite}`lucas2019dont` mostrano che l’ELBO del VAE lineare non aggiunge massimi
-locali spuri rispetto alla verosimiglianza, e che l’analisi lineare resta
-predittiva anche per VAE profondi con decoder gaussiano, dove aiuta a spiegare
-il legame fra varianza del rumore di osservazione e collasso. Il fenomeno è
-documentato su testo da Bowman e colleghi {cite}`bowman2016generating`, che
-propongono di far salire lentamente il peso del termine KL; l’alternativa dei
-*free bits* {cite}`kingma2016improved` impone invece un minimo di nat per gruppo
-di componenti latenti. Il caso peggiore è un decoder molto espressivo
-(autoregressivo, ad esempio), che può modellare i dati da solo e rende il
-latente superfluo.
+collasso si calcola: con $\sigma^2$ fissato, all’ottimo la colonna di
+$\mathbf{W}$ che corrisponde a un autovalore non superiore alla varianza del
+rumore $\sigma^2$ è nulla, e la posterior di quella componente coincide con il
+prior {cite}`tipping1999probabilistic`. Un rumore più grande spegne le
+componenti a partire dalla più debole, e in quel caso il collasso è l’ottimo
+globale della verosimiglianza, non un incidente dell’ottimizzazione. Lucas e
+colleghi {cite}`lucas2019dont` mostrano che l’ELBO del VAE lineare non aggiunge
+massimi locali spuri rispetto alla verosimiglianza, e che l’analisi lineare
+resta predittiva anche per VAE profondi con decoder gaussiano, dove aiuta a
+spiegare il legame fra varianza del rumore di osservazione e collasso. Il
+fenomeno è documentato su testo da Bowman e colleghi
+{cite}`bowman2016generating`, che propongono di far salire lentamente il peso
+del termine KL; l’alternativa dei *free bits* {cite}`kingma2016improved` impone
+invece un minimo di nat per gruppo di componenti latenti. Il caso peggiore è un
+decoder molto espressivo (autoregressivo, ad esempio), che può modellare i dati
+da solo e rende il latente superfluo.
 
 Resta lo **scarto fra prior e posterior aggregata**: il termine KL agisce su un
 esempio alla volta, quindi vincola ciascuna $q_\phi(\mathbf{z} \mid
@@ -1232,12 +1234,12 @@ sezione sul latente che si usa.
   quello si toglie la migliore linea di base costante. Lo stimatore a
   punteggio, però, si applica anche ai latenti discreti, dove la
   riparametrizzazione non arriva.
-- Limiti strutturali: sfocatura (la direzione della KL per Kingma e Welling,
-  il decoder fattorizzato che fa la media per Zhao e colleghi),
-  collasso della posterior {cite}`bowman2016generating,kingma2016improved`
-  (nel caso lineare-gaussiano è l’ottimo, per ogni componente con autovalore
-  non superiore a $\sigma^2$) e scarto fra prior e posterior aggregata
-  {cite}`hoffman2016elbo,rosca2018distribution`.
+- Limiti strutturali: sfocatura (la direzione della KL per Kingma e Welling, il
+  decoder fattorizzato che fa la media per Zhao e colleghi), collasso della
+  posterior {cite}`bowman2016generating,kingma2016improved` (nel caso
+  lineare-gaussiano con $\sigma^2$ fissato è l’ottimo, per ogni componente con
+  autovalore non superiore a $\sigma^2$) e scarto fra prior e posterior
+  aggregata {cite}`hoffman2016elbo,rosca2018distribution`.
 ```
 
 `````

@@ -176,8 +176,8 @@ dipende se il tuo modello serve a qualcuno o fa danni, e questi capitoli non
 sono appendici morali messe in fondo per buona educazione.
 
 Gli argomenti sono diversissimi e in mezzo ci sono settant'anni di storia, dal
-percettrone di Rosenblatt del 1958, il primo neurone artificiale che imparava
-dagli esempi, ai modelli di oggi. Eppure, [sotto, tornano sempre le stesse tre
+percettrone di Rosenblatt del 1958, un neurone artificiale che imparava dagli
+esempi, ai modelli di oggi. Eppure, [sotto, tornano sempre le stesse tre
 idee]{.pt-matita}.
 
 ## Tre fili, un solo tessuto
@@ -693,7 +693,7 @@ vero. È giusto a metà.
 
 Il campo, intanto, si allarga. Ogni sensore, ogni telecamera, ogni pagamento
 tracciato prende un pezzo di mondo vero e lo trasforma in numeri, cioè lo porta
-dentro casa loro. È l'altra faccia dello scarto di cui parlava l'introduzione:
+dentro casa loro. È l'altra faccia dell'avanzo di cui parlava l'introduzione:
 ciò che lasciamo dietro è l'aria che respirano e anche il terreno su cui
 giocano. La robotica è il tentativo di portare la partita all'aperto, e lì la
 differenza si vede a occhio nudo: una prova dura il tempo vero che ci vuole, il

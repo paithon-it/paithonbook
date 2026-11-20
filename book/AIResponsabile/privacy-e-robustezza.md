@@ -156,15 +156,16 @@ Prima di una garanzia matematica viene in mente una soluzione più semplice, che
 per questo va guardata bene: se il problema è che i dati sono di qualcuno, si
 tolgono i nomi. Il GDPR ha una parola per questa operazione,
 **pseudonimizzazione**: al posto del nome e del codice fiscale si mette un
-codice, e la tabella che collega il codice alla persona si conserva a parte. Per
-il regolamento, però, i dati pseudonimizzati restano dati personali, perché con
-le informazioni aggiuntive la persona si ritrova; ne escono soltanto i dati
+codice, e la tabella che collega il codice alla persona si conserva a parte.
+Per il regolamento, però, i dati pseudonimizzati restano dati personali, perché
+con le informazioni aggiuntive la persona si ritrova; ne escono soltanto i dati
 anonimi, quelli da cui l'identificazione non è più possibile con mezzi
-ragionevoli {cite}`eugdpr2016`. La forma rigorosa del passo successivo è del
-2002 e si chiama **$k$-anonimato** {cite}`sweeney2002kanonymity`: si
-generalizzano le colonne che, combinate, indicano una persona (i
-*quasi-identificatori*, come età, CAP e sesso) finché ogni riga non risulta
-indistinguibile da almeno altre $k-1$ su quelle colonne.
+ragionevoli {cite}`eugdpr2016`. La forma rigorosa del passo successivo,
+proposta alla fine degli anni Novanta e fissata in un articolo del 2002, si
+chiama **$k$-anonimato** {cite}`sweeney2002kanonymity`: si generalizzano le
+colonne che, combinate, indicano una persona (i *quasi-identificatori*, come
+età, CAP e sesso) finché ogni riga non risulta indistinguibile da almeno altre
+$k-1$ su quelle colonne.
 
 `````{tab} Elementare
 
@@ -255,12 +256,12 @@ tutto quello che un giorno qualcuno saprà.
 Contro una falla del genere non basta rattoppare a valle: serve una nozione di
 riservatezza che si possa *garantire* in partenza, e che valga anche contro un
 avversario a cui non abbiamo pensato. La risposta più solida nasce nel 2006
-nella comunità crittografica: la **privacy differenziale** di Cynthia
-Dwork e colleghi {cite}`dwork2006calibrating`. L'idea ribalta la
-prospettiva: invece di chiedersi «questo output rivela qualcosa?», si chiede
-«l'output cambierebbe se un singolo individuo entrasse o uscisse dai dati?». Se
-la risposta è «quasi per niente», allora nessun individuo può essere in
-pericolo, perché la sua presenza non lascia traccia rilevabile.
+nella comunità crittografica: la **privacy differenziale** di Cynthia Dwork e
+colleghi {cite}`dwork2006calibrating`. L'idea ribalta la prospettiva: invece di
+chiedersi «questo output rivela qualcosa?», si chiede «l'output cambierebbe se
+un singolo individuo entrasse o uscisse dai dati?». Se la risposta è «quasi per
+niente», allora nessun individuo rischia qualcosa per il fatto di esserci,
+perché la sua presenza non lascia traccia rilevabile.
 
 `````{tab} Elementare
 
@@ -349,12 +350,11 @@ per gli stessi $\mathcal{D}$, $\mathcal{D}'$ e $\mathcal{S}$, con $\delta$
 piccolissimo e di norma ben sotto $1/n$, dove $n$ è il numero di individui (con
 $\delta$ dell'ordine di $1/n$ sarebbe ammesso il meccanismo che pubblica per
 intero una riga a caso). Si legge informalmente come una piccola probabilità
-
 di eccezione (la lettura precisa è un po’ più debole di così); è la
 versione di cui ha bisogno il rumore gaussiano del deep learning.
 
-Si ottiene con il **meccanismo di Laplace**. Data una funzione numerica
-$f$, se ne misura la *sensibilità*
+La $\varepsilon$-DP pura si ottiene con il **meccanismo di Laplace**. Data una
+funzione numerica $f$, se ne misura la *sensibilità*
 
 $$
 \Delta f = \max_{\mathcal{D} \sim \mathcal{D}'}
@@ -475,16 +475,17 @@ di uno, e la manopola, messa a $0{,}5$. Si divide la prima per la seconda, uno
 diviso mezzo, e il dado ha taglia due: i suoi tiri restano entro tre unità circa
 tre volte su quattro, e la quarta volta vanno più lontano.
 
-Che cosa garantisce quel dado? Supponi che, senza Mario in azienda, un certo numero
-pubblicato uscisse dieci volte su cento. Con Mario dentro, la manopola a $0{,}5$
-garantisce che lo stesso numero esca al più sedici volte e mezzo su cento, e
-almeno sei: la manopola a mezzo permette di moltiplicare o dividere quella
-probabilità al più per uno virgola sessantacinque, e dieci per $1{,}65$ fa
-$16{,}5$, dieci diviso $1{,}65$ fa circa sei. Chi legge il numero pubblicato
-può farsi un'idea su Mario, ma l'idea si sposta di poco, e resta un indizio, non
-una prova. È però una scorta, e ogni annuncio ne consuma un pezzo: due annunci
-con la manopola a mezzo valgono un annuncio solo con la manopola a uno, e il
-dieci su cento può allora salire fin oltre ventisette.
+Che cosa garantisce quel dado? Supponi che, senza Mario in azienda, un certo
+numero pubblicato uscisse dieci volte su cento. Con Mario dentro, la manopola a
+$0{,}5$ garantisce che lo stesso numero esca al più sedici volte e mezzo su
+cento, e almeno sei: la manopola a mezzo permette di moltiplicare o dividere
+quella probabilità al più per uno virgola sessantacinque (la radice quadrata
+del numero e), e dieci per $1{,}65$ fa $16{,}5$, dieci diviso $1{,}65$ fa circa
+sei. Chi legge il numero pubblicato può farsi un'idea su Mario, ma l'idea si
+sposta di poco, e resta un indizio, non una prova. È però una scorta, e ogni
+annuncio ne consuma un pezzo: due annunci con la manopola a mezzo valgono un
+annuncio solo con la manopola a uno, e il dieci su cento può allora salire fin
+oltre ventisette, dieci volte il numero e.
 
 `````
 
@@ -703,7 +704,7 @@ e lo riproduce schematicamente la {numref}`fig-esempio-avversario`.
 
 ```{figure} ../figures/esempio-avversario.svg
 :name: fig-esempio-avversario
-:alt: Tre riquadri in fila collegati da un piu e da un uguale. Nel primo una sagoma stilizzata di panda con etichetta panda 58 per cento. Nel secondo una griglia di rumore impercettibile etichettata rho per il segno del gradiente, con sotto la spiegazione che e’ la mappa di dove spingere ogni pixel. Nel terzo la stessa identica sagoma di panda con l'etichetta errata gibbone 99 per cento in terracotta.
+:alt: Tre riquadri in fila collegati da un più e da un uguale. Nel primo una sagoma stilizzata di panda con etichetta panda 58 per cento. Nel secondo una griglia di rumore impercettibile etichettata rho per il segno del gradiente, con sotto la spiegazione che è la mappa di dove spingere ogni pixel. Nel terzo la stessa identica sagoma di panda con l'etichetta errata gibbone 99 per cento in terracotta.
 :width: 100%
 
 La logica di un esempio avversario. All'immagine di un panda, riconosciuta con
@@ -795,11 +796,12 @@ scelto sotto una soglia di percettibilità. Su un'altra scala il passo è un alt
 (sull'intervallo unitario, appunto, $0{,}004$), e infatti in letteratura gli
 attacchi si regolano in multipli di $1/255$.
 
-FGSM è un unico passo, quindi un attacco *debole*. La sua versione
-iterativa è la **Projected Gradient Descent** (PGD) di Madry e colleghi
-{cite}`madry2018towards`: si ripete il passo più volte con ampiezza $\alpha$
-piccola, riproiettando ogni volta dentro la palla di raggio $\rho$ attorno
-all'input originale,
+FGSM è un unico passo, quindi un attacco *debole*. La sua versione iterativa,
+introdotta da Kurakin e colleghi {cite}`kurakin2017adversarial`, diventa con
+una partenza casuale nella palla la **Projected Gradient Descent** (PGD) di
+Madry e colleghi {cite}`madry2018towards`: si ripete il passo più volte con
+ampiezza $\alpha$ piccola, riproiettando ogni volta dentro la palla di raggio
+$\rho$ attorno all'input originale,
 
 $$
 \mathbf{x}^{t+1} = \Pi_{\mathcal{B}(\mathbf{x},\rho)}\!\Big( \mathbf{x}^{t} + \alpha \operatorname{sign}\!\big(\nabla_{\mathbf{x}} \ell(\theta, \mathbf{x}^{t}, y)\big) \Big),
@@ -889,15 +891,16 @@ modello è stato costruito, e non solo quanti ne sono stati usati.
 
 `````{tab} Superiore
 
-Attacchi e formule per gli esempi avversari vivono tutti dentro la palla
-$\ell_\infty$, una scelta che dipende dal **modello di minaccia**. Quel
-perimetro non descrive l'avversario: descrive ciò che è comodo trattare, perché
-è differenziabile, proiettabile e quindi ottimizzabile. Le perturbazioni che
-contano nel mondo non hanno norma $\ell_p$ piccola: una rotazione, un ritaglio,
-un'ombra, un adesivo su un segnale stradale, una frase riformulata. Un modello
-robusto a $\rho = 8/255$ non è per questo robusto a nessuna di quelle. Ne segue
-che «robusto» è sempre una proprietà relativa a un perimetro dichiarato e a un
-attacco misurato, mai un attributo del modello.
+FGSM e PGD, nella forma più usata, vivono dentro la palla $\ell_\infty$ (la
+certificazione con il randomized smoothing in una palla $\ell_2$), una scelta
+che dipende dal **modello di minaccia**. Quel perimetro non descrive
+l'avversario: descrive ciò che è comodo trattare, perché è differenziabile,
+proiettabile e quindi ottimizzabile. Le perturbazioni che contano nel mondo non
+hanno norma $\ell_p$ piccola: una rotazione, un ritaglio, un'ombra, un adesivo
+su un segnale stradale, una frase riformulata. Un modello robusto a $\rho =
+8/255$ non è per questo robusto a nessuna di quelle. Ne segue che «robusto» è
+sempre una proprietà relativa a un perimetro dichiarato e a un attacco
+misurato, mai un attributo del modello.
 
 Molte difese euristiche proposte dopo il 2015 sono state poi aggirate: Athalye e
 colleghi {cite}`athalye2018obfuscated` mostrarono che davano una falsa sicurezza
@@ -1270,11 +1273,12 @@ risposta sbagliata.
 
 Perché spostamenti così piccoli bastano? [Perché sono tanti e tutti
 d'accordo]{.pt-matita}. Ogni caratteristica si muove appena, ma tutte e trenta
-si muovono nel verso che fa salire l'errore del modello, e trenta soffi
-concordi sono una spinta vera. Con le immagini va anche peggio: le
-caratteristiche sono i pixel, decine di migliaia o più, e più dita premono,
-meno forte deve premere ciascuna. È il motivo per cui al panda dell'esempio
-famoso è bastato un rumore invisibile.
+si muovono nel verso che fa salire l'errore del modello, e gli effetti di
+trenta soffi concordi sull'errore si sommano, anche se lo spostamento
+complessivo resta piccolo. Con le immagini va anche peggio: le caratteristiche
+sono i pixel, decine di migliaia o più, e più dita premono, meno forte deve
+premere ciascuna. È il motivo per cui al panda dell'esempio famoso è bastato un
+rumore invisibile.
 
 `````
 

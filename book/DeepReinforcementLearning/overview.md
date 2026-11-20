@@ -58,8 +58,9 @@ sarebbe nemmeno cominciato.
 Poi ci sono i dati. Per scrivere il voto di una riga bisogna aver giocato
 quella schermata almeno una volta, e basta che la pallina si sposti di un
 quadretto perché la schermata sia un'altra, con la sua riga da riempire. Otto
-ore al giorno per cinquant'anni fanno scorrere una trentina di miliardi di
-schermate, che non scalfiscono nemmeno quell'elenco.
+ore al giorno per cinquant'anni, a sessanta schermate al secondo, fanno
+scorrere una trentina di miliardi di schermate, che non scalfiscono nemmeno
+quell'elenco.
 
 In definitiva, [l'idea di dare un voto a ogni mossa resta buona; a non
 funzionare è l'elenco]{.pt-matita}, cioè l'idea di tenere una riga per ciascuna
@@ -130,10 +131,11 @@ di due punti e mezzo. Quei due punti e mezzo sono l'errore, e l'occhio si
 corregge per ridurlo.
 
 Gli scarti grossi pesano più che in proporzione, perché contano per il loro
-quadrato, e quindi sono i primi a essere sistemati; oltre una certa misura,
-però, si contano soltanto in proporzione, così che un unico voto sballato non
-si trascini dietro tutto il resto. L'occhio non si sposta per uno scarto
-isolato; si corregge sulla media di tante mosse giocate.
+quadrato (uno scarto doppio pesa quattro volte), e quindi sono i primi a essere
+sistemati; oltre una certa misura, però, si contano soltanto in proporzione,
+così che un unico voto sballato non si trascini dietro tutto il resto. L'occhio
+non si sposta per uno scarto isolato; si corregge sulla media di tante mosse
+giocate.
 
 Il voto della schermata successiva, infine, non lo chiede a sé stesso di
 adesso ma a una sua copia di qualche tempo prima, messa da parte e lasciata
@@ -218,8 +220,9 @@ rete, infatti, [si corregge inseguendo un numero che calcola lei
 stessa]{.pt-matita}, e quel numero si sposta a ogni correzione: è come cercare
 di colpire la propria ombra, che si muove ogni volta che ti muovi tu. Basta
 poco (un ritocco alla velocità con cui la rete si corregge) e invece di
-assestarsi i suoi giudizi crescono senza fermarsi. Contro questo effetto
-servono la memoria di replay e la rete-target, una copia congelata della rete.
+assestarsi i suoi giudizi crescono senza fermarsi. Contro questo effetto serve
+la rete-target, una copia congelata della rete; la memoria di replay ne cura un
+altro, il legame fra esperienze consecutive.
 
 La seconda difficoltà è che serve una quantità enorme di partite. L'agente
 impara per tentativi, e di tentativi ne vuole milioni: settimane di gioco. In

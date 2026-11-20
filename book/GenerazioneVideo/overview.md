@@ -6,6 +6,18 @@ descrizione: "Come si genera un video: la taglia di un clip, perché non basta
 ---
 # Generare video
 
+```{image} ../figures/aperture/generazione-video.png
+:class: pt-apertura only-light
+:width: 100%
+:alt: Una striscia di pellicola con quattro fotogrammi, e in ciascuno la sagoma di un cavallo al trotto in un momento diverso della falcata.
+```
+
+```{image} ../figures/aperture/generazione-video-scura.png
+:class: pt-apertura only-dark
+:width: 100%
+:alt: Una striscia di pellicola con quattro fotogrammi, e in ciascuno la sagoma di un cavallo al trotto in un momento diverso della falcata.
+```
+
 Nella tenuta di Palo Alto, in California, una mattina di giugno del 1878, a
 bordo pista c’è un capanno imbiancato a calce, e dentro il fotografo Eadweard
 Muybridge ha allineato dodici fotocamere. Dall’altra parte della pista c’è un

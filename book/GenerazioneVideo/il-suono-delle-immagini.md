@@ -282,7 +282,8 @@ di quasi quattro a uno).
 Serve un altro accorgimento. Se il rumorista si facesse un'idea generale del
 film e poi inventasse i suoni, otterrebbe una media: sentirebbe che c'è una
 porta e non saprebbe quando sbatte. Gli serve invece un foglietto che, per ogni
-istante, dice che cosa succede in quell'istante nell'immagine. Ne arrivano
+istante, dice che cosa succede in quell'istante nell'immagine. I foglietti
+sono un materiale a parte, più fitto del riassunto del film: ne arrivano
 ventiquattro al secondo, e lui li ricopia a uno per ogni tacca del suono, così
 da leggere quello giusto nel momento in cui scrive quel pezzo di rumore.
 

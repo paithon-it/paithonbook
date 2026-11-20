@@ -228,9 +228,10 @@ $\mathcal{H}$ può essere un problema intrattabile anche quando gli esempi
 necessari sono pochi. La via d'uscita, quando c'è, è cercare in una famiglia
 più grande di quella che contiene il bersaglio.
 
-Ad esempio, le formule booleane in forma disgiuntiva con $k$ termini, già per
-$k=3$, non si imparano in tempo polinomiale se l'ipotesi restituita deve
-essere anch'essa una formula di quel tipo, a meno che
+Ad esempio, le formule booleane in forma disgiuntiva con $k$ termini (si prenda
+$k=3$) non si imparano in tempo polinomiale se l'ipotesi restituita
+
+deve essere anch'essa una formula di quel tipo, a meno che
 $\mathrm{RP}=\mathrm{NP}$. Ciascuna però si riscrive come una $k$-CNF, e le
 $k$-CNF si imparano in tempo polinomiale; di conseguenza, restituendo una
 $k$-CNF, cioè un'ipotesi più lunga, la stessa classe diventa efficientemente
@@ -366,8 +367,8 @@ dell'unione) le conta come se sbagliassero su punti sempre diversi.
 La riga sul caso agnostico misura invece il salto che si ha quando la regola
 giusta non è fra le candidate (*agnostico* perché non presume niente su dove
 stia). In questo caso, per separare chi sbaglia il cinque per cento da chi
-sbaglia il sei, le stime devono stare entro mezzo punto, e gli esempi
-diventano più di duecentoquarantamila.
+sbaglia il sei, le stime devono stare entro mezzo punto, metà del punto che le
+separa, e gli esempi diventano più di duecentoquarantamila.
 
 Resta un ostacolo che nessun esperimento può aggirare. Le soglie erano mille
 perché le si è prese su una griglia, ma una soglia vera può stare in

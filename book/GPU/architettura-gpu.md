@@ -352,11 +352,11 @@ il tempo di un warp coerente.
 Il meccanismo, però, è cambiato, e molti testi descrivono ancora la macchina di
 prima. Fino a Pascal (2016) il warp aveva un *unico* program counter condiviso
 dai 32 thread, più una maschera di attivazione che diceva quali fossero vivi in
-quel momento. Di conseguenza i thread di un warp, letteralmente, non potevano
-trovarsi in due punti diversi del programma. Da Volta (2017) ogni thread ha
-program counter e stack di chiamata propri (*independent thread scheduling*), e
-uno *schedule optimizer* raggruppa per l'emissione i thread che eseguono la
-stessa istruzione.
+quel momento. Di conseguenza i thread di un warp non potevano avanzare
+indipendentemente: un ramo restava sospeso finché l'altro non arrivava al punto
+di riconvergenza. Da Volta (2017) ogni thread ha program counter e stack di
+chiamata propri (*independent thread scheduling*), e uno *schedule optimizer*
+raggruppa per l'emissione i thread che eseguono la stessa istruzione.
 
 L'esecuzione resta SIMT e la divergenza pesa ancora, perché rami diversi non
 possono essere emessi nello stesso ciclo. Ciò che cambia è che thread
@@ -437,12 +437,12 @@ Chi cucina se ne accorge da un sintomo strano: cambi una riga della ricetta, e
 all'improvviso i fornelli si svuotano.
 
 Più delle pentole accese, però, conta il corridoio che porta gli ingredienti
-dalla dispensa. Il corridoio consegna il suo massimo solo se è sempre pieno di
-roba in cammino, e a riempirlo è la roba chiesta e non ancora arrivata. Otto
-pentole che chiedono un cucchiaio per volta mettono in strada otto cucchiai.
-Due pentole che chiedono una cassa da quattro cucchiai l'una ne mettono in
-strada otto anche loro, e il corridoio è altrettanto pieno con quattro volte
-meno pentole.
+dalla dispensa, cioè la strada fra la memoria e chi calcola. Il corridoio
+consegna il suo massimo solo se è sempre pieno di roba in cammino, e a
+riempirlo è la roba chiesta e non ancora arrivata. Otto pentole che chiedono un
+cucchiaio per volta mettono in strada otto cucchiai. Due pentole che chiedono
+una cassa da quattro cucchiai l'una ne mettono in strada otto anche loro, e il
+corridoio è altrettanto pieno con quattro volte meno pentole.
 
 [Riempire i fornelli resta il modo più semplice per riempire il
 corridoio]{.pt-matita}, e un'officina con due pentole accese che chiedono un

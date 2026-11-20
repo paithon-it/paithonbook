@@ -72,12 +72,12 @@ totale, a decidere se un calcolo va veloce: quanti conti si fanno per ogni byte
 che ci si è fatti portare.
 
 Fatta una casella alla volta, senza riusare niente, la moltiplicazione fra
-matrici finisce quindi in fondo a quella classifica, lontanissima dal
-settecento che il riuso perfetto prometteva. Consuma tutti i byte al secondo
-che la memoria riesce a consegnare, e tiene le unità di calcolo per lo più
-ferme. Ingrandire le tabelle, poi, non le cambia posto in classifica: raddoppia
-i lati, e conti e viaggi crescono insieme, nella stessa misura, mentre il
-rapporto fra i due resta quello di prima.
+matrici finisce quindi in fondo a quella classifica, lontanissima dai quasi
+settecento conti per byte che il riuso perfetto prometteva. Consuma tutti i
+byte al secondo che la memoria riesce a consegnare, e tiene le unità di calcolo
+per lo più ferme. Ingrandire le tabelle, poi, non le cambia posto in
+classifica: raddoppia i lati, e conti e viaggi crescono insieme, nella stessa
+misura, mentre il rapporto fra i due resta quello di prima.
 
 Un aiuto arriva soltanto per caso. Fra la dispensa e le cucine c'è un cassetto
 in comune fra tutte le squadre, dove resta per un po’ la roba appena passata di
@@ -277,11 +277,11 @@ $\mathbf{B}$ uscissero una volta sola e $\mathbf{C}$ ci rientrasse una volta
 sola, sarebbero circa 400 MB e $0{,}21$ ms.
 
 Quel secondo numero è un pavimento e non una misura: perché le due matrici
-escano una volta sola dovrebbero stare tutte on-chip, e in
-`float16` sono 128 MiB l'una contro i 40 MB di L2 di una A100. Il traffico vero
-sta fra i due estremi, e conta dove: finché dalla HBM escono più dei circa 7 GB
-che in quei $3{,}5$ ms la banda fa in tempo a portare, il kernel è bloccato
-dalla memoria; sotto quella soglia comandano i tensor core.
+escano una volta sola dovrebbe starne almeno una tutta on-chip, e in `float16`
+sono 128 MiB l'una contro i 40 MB di L2 di una A100. Il traffico vero sta fra i
+due estremi, e conta dove: finché dalla HBM escono più dei circa 7 GB che in
+quei $3{,}5$ ms la banda fa in tempo a portare, il kernel è bloccato dalla
+memoria; sotto quella soglia comandano i tensor core.
 
 Le librerie lavorano per stare sotto quella soglia, e non lo affidano al caso:
 lanciano i blocchi in un ordine scelto perché quelli eseguiti insieme si
@@ -319,20 +319,21 @@ tessera di warp $64 \times 64$ tipica dei GEMM su Ampere dà 32 FLOP per byte
 con 128 accumulatori per thread.
 
 È la stessa aritmetica del tiling, con la shared al posto della HBM e i
-registri al posto della shared: il riuso si recupera un piano più giù, grazie
-al register file, che come si è visto nella sezione sulla memoria è il banco
+registri al posto della shared: il riuso si recupera un piano più su, grazie al
+register file, che come si è visto nella sezione sulla memoria è il banco
 on-chip più capiente di un SM. In generale c'è un roofline per ogni livello
 della piramide, ciascuno con la sua banda e il suo ginocchio, e ogni livello di
 tiling esiste per superare il suo.
 
 Quanto al tetto, l’$n/6$ del roofline (dove $n$ è il lato di due matrici
-quadrate) è un *ideale* che richiederebbe $\mathbf{A}$ e $\mathbf{B}$ intere
-on-chip, e per fortuna non serve raggiungerlo: l'intensità realmente
-raggiungibile non cresce con $n$, ma con la radice della memoria veloce
-disponibile. È il risultato classico di Hong e Kung sulla complessità di I/O
-{cite}`hongkung1981io`, che dà $\Omega(n^3/\sqrt{M_\text{chip}})$ trasferimenti
-e quindi $I = O(\sqrt{M_\text{chip}})$, dove $M_\text{chip}$ è la memoria
-veloce disponibile (da non confondere con le $M$ righe di $\mathbf{A}$).
+quadrate) è un *ideale* che richiederebbe almeno una fra $\mathbf{A}$ e
+$\mathbf{B}$ intera on-chip, e per fortuna non serve raggiungerlo: l'intensità
+realmente raggiungibile non cresce con $n$, ma con la radice della memoria
+veloce disponibile. È il risultato classico di Hong e Kung sulla complessità di
+I/O {cite}`hongkung1981io`, che dà $\Omega(n^3/\sqrt{M_\text{chip}})$
+trasferimenti e quindi $I = O(\sqrt{M_\text{chip}})$, dove $M_\text{chip}$ è la
+memoria veloce disponibile (da non confondere con le $M$ righe di
+$\mathbf{A}$).
 
 Il risultato vale per l'algoritmo che esegue tutti gli $n^3$ prodotti (non per
 quelli alla Strassen, che ne eseguono meno) e per una memoria veloce di
@@ -453,8 +454,10 @@ per unità (l'operazione è esposta al programmatore per warp, su tessere $16
 \times 16$). Si noti che qui $\mathbf{C}$ non è il risultato del prodotto, che
 è $\mathbf{D}$, ma il valore già accumulato a cui il prodotto si somma, secondo
 la convenzione con cui NVIDIA espone l'istruzione. Le forme sono quelle di
-Volta: le generazioni successive ne usano di più grandi, e da Hopper l'unità
-che emette l'istruzione non è più il singolo warp ma un gruppo di quattro.
+Volta: le generazioni successive ne usano di più grandi; su Hopper l'istruzione
+più veloce (`wgmma`) la emette un gruppo di quattro warp, su Blackwell da
+datacenter (`tcgen05.mma`) un solo thread, con l'accumulatore in una memoria
+dedicata invece che nei registri.
 
 Il cuore è la precisione mista {cite}`micikevicius2018mixed`. Gli ingressi
 $\mathbf{A}$ e $\mathbf{B}$ sono a 16 bit (`float16` sulla V100, e da Ampere
@@ -664,19 +667,20 @@ chiude lo stesso. Capita più spesso di quanto si creda, per esempio quando si
 lavora su un ritaglio di una tabella più grande invece che sulla tabella
 intera.
 
-La seconda ragione non riguarda le tessere né le misure della tabella. Riguarda
-quante officine restano ferme all'ultimo giro, cioè quante ne restano
-inutilizzate quando il lavoro non si divide in parti uguali. Queste officine
-sono gli Streaming Multiprocessor, le unità in cui la GPU è divisa (su una A100
-sono 108).
+La seconda ragione non riguarda la forma delle tessere né dove comincia la
+riga. Riguarda quante officine restano ferme all'ultimo giro, cioè quante ne
+restano inutilizzate quando il lavoro non si divide in parti uguali. Queste
+officine sono gli Streaming Multiprocessor, le unità in cui la GPU è divisa (su
+una A100 sono 108).
 
 Il lavoro si distribuisce a giri: una tessera a testa, e quando hanno finito
-un'altra a testa. Se le tessere da calcolare sono, poniamo, centodieci, le
-prime centootto riempiono un giro e le due rimaste ne occupano un secondo tutto
-per loro, con centosei officine a guardare. Servono così due giri per fare poco
-più del lavoro di uno, e il tempo quasi raddoppia. È il motivo per cui [certe
-misure «tonde» vanno peggio di misure vicine]{.pt-matita}, e chi non conosce
-questo secondo effetto dà la colpa alla tessera, che non c'entra.
+un'altra a testa. Se le tessere da calcolare, tante quante ne servono a coprire
+la tabella, sono, poniamo, centodieci, le prime centootto riempiono un giro e
+le due rimaste ne occupano un secondo tutto per loro, con centosei officine a
+guardare. Servono così due giri per fare poco più del lavoro di uno, e il tempo
+quasi raddoppia. È il motivo per cui [certe misure «tonde» vanno peggio di
+misure vicine]{.pt-matita}, e chi non conosce questo secondo effetto dà la
+colpa alla tessera, che non c'entra.
 `````
 
 `````{tab} Superiore
@@ -692,10 +696,13 @@ quantization**, che non dipende dalla tessera ma dal numero di SM. Se il numero
 di tessere da calcolare supera di poco un multiplo degli SM disponibili (108 su
 A100, a un blocco per SM alla volta; se ne ospitano di più, il multiplo è
 quello dei blocchi che stanno insieme sulla scheda), l'ultima ondata di blocchi
-impegna pochissimi SM e tutti gli altri restano fermi, quindi il tempo quasi
-raddoppia. Per questo motivo [certe taglie di batch «tonde» vanno peggio di
-taglie vicine]{.pt-matita}, e chi non conosce questo secondo effetto lo
-attribuisce alla tessera, che non c'entra.
+impegna pochissimi SM e tutti gli altri restano fermi: con un'ondata piena più
+una tessera (109 tessere su 108 SM) il tempo quasi raddoppia, e con $w$ ondate
+piene più una tessera cresce di circa
+
+$1/w$. Per questo motivo [certe taglie di batch «tonde» vanno peggio di taglie
+vicine]{.pt-matita}, e chi non conosce questo secondo effetto lo attribuisce
+alla tessera, che non c'entra.
 `````
 
 Il tiling, insomma, avvicina i due limiti che il roofline della sezione sulla

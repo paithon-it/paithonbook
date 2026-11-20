@@ -208,26 +208,26 @@ tempo il carico dei ritentativi e ne decorrela gli istanti: senza la parte
 casuale, i clienti falliti insieme ritentano insieme e ricreano il picco a ogni
 scadenza. È il *full jitter*.
 
-Nel confronto di Brooker, le tre varianti con una
-componente casuale battono tutte quella che ne è priva. Fra loro, quella che
-tiene fissa metà dell'attesa (l’*equal jitter*) è la peggiore, mentre fra il
-full jitter e il *decorrelated jitter*, che allarga l'intervallo a partire
-dall'attesa precedente, la scelta resta aperta {cite}`brooker2015backoff`. Se
-il server ha risposto 429 indicando quando riprovare (l'intestazione
-`Retry-After`), quell'indicazione viene prima del backoff. Un budget di
-ritentativi, per esempio non più del 10% delle richieste nuove applicato con un
-token bucket, impone $A \le 1{,}1$ qualunque sia $p$, e rompe l'anello; lo si
-tiene per destinazione e per cliente, perché un budget unico lascerebbe a un
-solo cliente in errore la possibilità di consumarlo tutto. Il **circuit
-breaker** {cite}`nygard2007release` osserva il tasso di errore verso una
-destinazione: sopra una soglia passa allo stato *aperto* e fa fallire subito
-ogni chiamata senza inoltrarla, dopo un intervallo ne lascia passare una sola
-(stato *semiaperto*), e torna *chiuso* se va a buon fine. Toglie carico a chi è
-già in difficoltà, e restituisce l'errore in millisecondi invece che allo
-scadere di un timeout. L'ultima difesa sta dal lato del server: se ogni
-richiesta porta con sé la propria scadenza e il server scarta senza eseguirle
-quelle già scadute (la *propagazione della scadenza*), sparisce il lavoro speso
-per nessuno, che è il combustibile della metastabilità.
+Nel confronto di Brooker, le tre varianti con una componente casuale battono
+tutte quella che ne è priva. Fra loro, quella che tiene fissa metà dell'attesa
+(l’*equal jitter*) è la peggiore, mentre fra il full jitter e il *decorrelated
+jitter*, che allarga l'intervallo a partire dall'attesa precedente, la scelta
+resta aperta {cite}`brooker2015backoff`. Se il server ha risposto 429 indicando
+quando riprovare (l'intestazione `Retry-After`), quell'indicazione viene prima
+del backoff. Un budget di ritentativi, per esempio non più del 10% delle
+richieste nuove applicato con un token bucket, impone in media $A \le 1{,}1$
+qualunque sia $p$, a meno di una raffica pari alla capienza del secchio, e
+rompe l'anello; lo si tiene per destinazione e per cliente, perché un budget
+unico lascerebbe a un solo cliente in errore la possibilità di consumarlo
+tutto. Il **circuit breaker** {cite}`nygard2007release` osserva il tasso di
+errore verso una destinazione: sopra una soglia passa allo stato *aperto* e fa
+fallire subito ogni chiamata senza inoltrarla, dopo un intervallo ne lascia
+passare una sola (stato *semiaperto*), e torna *chiuso* se va a buon fine.
+Toglie carico a chi è già in difficoltà, e restituisce l'errore in millisecondi
+invece che allo scadere di un timeout. L'ultima difesa sta dal lato del server:
+se ogni richiesta porta con sé la propria scadenza e il server scarta senza
+eseguirle quelle già scadute (la *propagazione della scadenza*), sparisce il
+lavoro speso per nessuno, che è il combustibile della metastabilità.
 
 Per un modello generativo il timeout si scrive sul TTFT e sulla pausa massima
 fra token, non sulla durata totale: una risposta lunga è lenta per costruzione,
@@ -687,7 +687,7 @@ giorni cattivi.
   richiesta sono $A = (1-p^{k+1})/(1-p)$, che tende a $k+1$ nel sovraccarico:
   la retroazione può rendere il guasto metastabile
   {cite}`bronson2021metastable`. Difese: backoff esponenziale con jitter,
-  budget di ritentativi ($A \le 1{,}1$ con il 10%), circuit breaker
+  budget di ritentativi ($A \le 1{,}1$ in media con il 10%), circuit breaker
   {cite}`nygard2007release`, propagazione della scadenza. Il timeout di un
   modello generativo si scrive sul TTFT e sulla pausa fra token.
 - Il router sceglie prima di interrogare {cite}`ong2025routellm`; la cascata

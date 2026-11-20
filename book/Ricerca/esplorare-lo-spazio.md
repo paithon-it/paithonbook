@@ -265,9 +265,9 @@ Nils Nilsson e Bertram Raphael {cite}`hart1968formal`.
 
 `````{tab} Elementare
 
-In una città che non conosci c’è la casa di un amico, e sai solo che sta vicino
-a una torre che dal tuo incrocio si vede. Non sai quali strade ci portino, né
-se sono a senso unico. Sai la direzione, e i metri in linea d’aria.
+In una città che non conosci un amico abita in cima a una torre che dal tuo
+incrocio si vede. Non sai quali strade ci portino, né se sono a senso unico.
+Sai la direzione, e i metri in linea d’aria.
 
 Puntare alla torre a ogni incrocio non funziona. Quando va bene arrivi per un
 giro più lungo del necessario; quando va male finisci davanti a un muro, con la
@@ -760,11 +760,11 @@ stati guardati scendono da 3.666 a 2.312 con le tessere fuori posto e da 282 a
 - Il difetto vero del cercare a tentoni è che si cerca dappertutto con lo
   stesso impegno, anche dalla parte sbagliata; la memoria viene dopo.
 - La cosa che cambia di più le proporzioni è una stima di quanto manca,
-  un’euristica: la distanza in linea d’aria dalla torre vicino a casa
-  dell’amico. Non dice quale strada prendere, dice solo da che parte guardare
-  per primo. A\* tiene aperte più strade e allunga sempre quella in cui i metri
-  fatti più la stima danno la somma più piccola; quando il foglio non basta,
-  IDA\* fa lo stesso col filo e un tetto sulla somma.
+  un’euristica: la distanza in linea d’aria dalla torre in cui abita l’amico.
+  Non dice quale strada prendere, dice solo da che parte guardare per primo.
+  A\* tiene aperte più strade e allunga sempre quella in cui i metri fatti più
+  la stima danno la somma più piccola; quando il foglio non basta, IDA\* fa lo
+  stesso col filo e un tetto sulla somma.
 - La stima deve stare sotto al vero, mai sopra, e allora si dice ammissibile.
   Se sbaglia per difetto si guarda qualcosa di troppo; se sbaglia per eccesso
   si scarta la strada buona e si arriva più lunghi, senza nemmeno accorgersene.

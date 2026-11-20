@@ -838,9 +838,9 @@ inservibili, oppure non contenere niente del tutto (al limite, simboli estratti
 a caso con probabilità uguali): tu non lo sai, e non c'è modo di saperlo in
 anticipo. Con un algoritmo a rimpianto basso, però, dice Sutskever, in tutti i
 casi puoi dormire tranquillo, perché sai di aver fatto il meglio possibile con
-i dati che avevi. È un tipo di garanzia diverso da quello del supervisionato, e
-altrettanto solido: là si garantisce un risultato, qui si garantisce di non
-aver sprecato niente.
+i dati che avevi. È un tipo di garanzia diverso da quello del supervisionato e,
+per un algoritmo che il rimpianto basso ce l'abbia davvero, altrettanto solido:
+là si garantisce un risultato, qui si garantisce di non aver sprecato niente.
 
 Questa garanzia, però, non porta con sé tutto. Il «peggio che va, si va in
 pari» è una proprietà del compressore ideale, che per definizione non fa mai
@@ -1068,14 +1068,16 @@ il dizionario qualcuno te lo deve dare, e se è più grosso di tutti i messaggi
 che ci scriveremo in vita nostra, nel complesso ho fatto crescere le cose
 invece di accorciarle.
 
-È la posizione del modello da settanta miliardi di parametri. Ogni
-parametro è un numero, e per scriverlo servono almeno due byte: settanta
-miliardi di numeri fanno centoquaranta miliardi di byte, cioè centoquaranta
-gigabyte. Per scrivere il gigabyte di Wikipedia in ottantatré megabyte, meno di
-un decimo, devi prima consegnare quel dizionario lì. Contando tutto, quel
-modello non ha compresso Wikipedia: l'ha fatta diventare centoquaranta volte
-più grossa. Perché un dizionario così si ripaghi, il messaggio dovrebbe essere
-almeno mille volte più lungo.
+È la posizione del modello da settanta miliardi di parametri. Ogni parametro è
+un numero, e per scriverlo servono almeno due byte: settanta miliardi di numeri
+fanno centoquaranta miliardi di byte, cioè centoquaranta gigabyte. Per scrivere
+il gigabyte di Wikipedia in ottantatré megabyte, meno di un decimo, devi prima
+consegnare quel dizionario lì. Contando tutto, quel modello non ha compresso
+Wikipedia: l'ha fatta diventare centoquaranta volte più grossa. Perché un
+dizionario così si ripaghi, il messaggio dovrebbe essere almeno centocinquanta
+volte più lungo: ogni gigabyte di testo fa risparmiare poco più di novecento
+megabyte, e i centoquaranta gigabyte del dizionario si recuperano solo dopo un
+centinaio e mezzo di gigabyte.
 
 C'è però un secondo modo di fare i conti, onesto con chi impara: invece di
 consegnare il dizionario, lo si costruisce strada facendo. Si chiama **codice
@@ -1160,11 +1162,11 @@ rasoio di Occam» e «il deep learning lo rispetta»,
 e a deciderla è la scelta del codice, non il modello.
 
 La ragione profonda è che il codice prequenziale misura la generalizzazione: è
-corto se e solo se il modello, a ogni dimensione dell'insieme visto, prevede
-bene i dati che ancora non ha visto. Ha però un difetto noto, il fenomeno del
-ritardo: un'architettura grande all'inizio va in sovradattamento sui pochi dati
-disponibili, quindi i primi blocchi richiedono più bit del codice uniforme, e
-il debito si recupera solo dopo.
+corto se il modello, sommando su tutte le dimensioni dell'insieme visto,
+prevede bene i dati che ancora non ha visto. Ha però un difetto noto, il
+fenomeno del ritardo: un'architettura grande all'inizio va in sovradattamento
+sui pochi dati disponibili, quindi i primi blocchi richiedono più bit del
+codice uniforme, e il debito si recupera solo dopo.
 
 `````
 
@@ -1259,11 +1261,11 @@ sia intelligente, spesso usano due metri diversi senza dirlo.
 
 Resta un punto che nessuna delle due letture nega, e forse è la conclusione più
 solida. Quanto ci si avvicini al fondo di una sorgente dipende da chi comprime,
-e l'esperimento sulla lingua a quattro lettere lo ha misurato sei volte.
-Che un fondo ci sia, invece, e che stia sotto la dimensione dei dati grezzi,
-non dipende da nessuno: lo dice la riga dei dati casuali, quel $100{,}8\%$,
-dove il fondo coincide con il grezzo e non c'è niente da guadagnare per
-nessuno.
+e l'esperimento sulla lingua a quattro lettere lo ha misurato con sei
+compressori diversi. Che un fondo ci sia, invece, e che stia sotto la
+dimensione dei dati grezzi, non dipende da nessuno: lo dice la riga dei dati
+casuali, quel $100{,}8\%$, dove il fondo coincide con il grezzo e non c'è
+niente da guadagnare per nessuno.
 
 Se l'universo che ci circonda non fosse pieno di regolarità, saremmo
 tutti in quella riga lì, e nessuna intelligenza di nessun tipo sarebbe

@@ -299,15 +299,16 @@ una macchina sola: quel comando vieta i procedimenti ballerini di *quel*
 computer, non l'ordine in cui due processori diversi sommano gli stessi numeri.
 
 La seconda è la **riproducibilità statistica**: i numeri possono differire
-nell'ultima cifra, purché ogni metrica resti dentro la variabilità che si osserva
-cambiando il seme e il confronto fra due modelli non cambi verso. Quella
-variabilità si misura: si ripete l'addestramento con alcuni semi diversi e se
-ne riportano media e deviazione standard, e due configurazioni si confrontano
-sugli stessi semi. È la promessa che serve quasi sempre, e seme,
-ambiente congelato e dati versionati bastano a mantenerla.
-Senza nemmeno il seme, però, non si ha né l'una né l'altra: due esecuzioni
-dello stesso codice danno modelli diversi, e ogni confronto perde di
-significato.
+nell'ultima cifra, purché ogni metrica resti dentro la variabilità che si
+osserva cambiando il seme e il confronto fra due modelli non cambi verso.
+Quella variabilità si misura: si ripete l'addestramento con alcuni semi diversi
+e se ne riportano media e deviazione standard, e due configurazioni si
+confrontano sugli stessi semi. È la promessa che serve quasi sempre, e seme,
+ambiente congelato e dati versionati bastano a mantenerla. Senza il seme si
+perdono la prima e il confronto appaiato sugli stessi semi: due esecuzioni
+dello stesso codice danno modelli diversi, e un confronto fatto su
+un'esecuzione sola non separa la differenza fra le configurazioni dal rumore
+del sorteggio.
 
 ## Tracciare gli esperimenti
 
@@ -485,8 +486,8 @@ Sculley e colleghi catalogano le forme di debito specifiche dell'ML, tra cui:
   opzioni, soglie) senza controllo né validazione.
 - **Data dependencies**, le dipendenze dai dati sono più insidiose di quelle
   dal codice, perché sono *silenziose*: nessun compilatore si lamenta se una
-  feature a monte cambia distribuzione. Da qui il principio CACE:
-  *Changing Anything Changes Everything*.
+  feature a monte cambia distribuzione. Accanto sta l’*entanglement*, riassunto
+  dal principio CACE (*Changing Anything Changes Everything*).
 
 Come si misura se un sistema è pronto per la produzione? Una rubrica nota come
 **ML Test Score** elenca 28 controlli concreti su quattro aree (dati e feature,

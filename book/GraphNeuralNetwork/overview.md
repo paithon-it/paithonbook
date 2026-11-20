@@ -121,13 +121,14 @@ invitato, e di risposte ne dà una per ognuno: devono essere gli stessi nomi di
 prima, e ciascuna deve restare attaccata alla sua persona anche adesso che il
 nome sta su un'altra riga.
 
-Le difficoltà non finiscono qui: a una cena ognuno ha un numero diverso di amici
-(c'è chi ne ha due e chi dieci), mentre in un'immagine ogni pixel ha sempre lo
-stesso numero di vicini. Ogni cena ha poi un numero diverso di invitati, mentre
-le foto le possiamo tagliare tutte alla stessa misura, e lo stesso modo di fare
-deve andare bene per una tavolata da sei e per una da sessanta. Ordine che non
-conta, vicini in numero variabile, dimensione variabile: [ecco perché un grafo
-non è né una griglia né una sequenza, e serve un'idea nuova]{.pt-matita}.
+Le difficoltà non finiscono qui: a una cena ognuno ha un numero diverso di
+amici (c'è chi ne ha due e chi dieci), mentre in un'immagine ogni pixel ha lo
+stesso numero di vicini (salvo quelli del bordo). Ogni cena ha poi un numero
+diverso di invitati, mentre le foto le possiamo tagliare tutte alla stessa
+misura, e lo stesso modo di fare deve andare bene per una tavolata da sei e per
+una da sessanta. Ordine che non conta, vicini in numero variabile, dimensione
+variabile: [ecco perché un grafo non è né una griglia né una sequenza, e serve
+un'idea nuova]{.pt-matita}.
 
 `````
 

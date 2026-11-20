@@ -282,12 +282,14 @@ una parola alla volta, e controlla che il risultato coincida.
   i Transformer *e* inferenza a memoria costante come le RNN, grazie a due
   forme equivalenti (parallela e ricorrente) dello stesso calcolo.
 - Il filo comune all'attenzione lineare e agli State Space Model: RNN lineari
-  con stato di dimensione fissa,
-  $\mathbf{S}_t = \mathbf{S}_{t-1}\,(\text{transizione}_t) + (\text{scrittura}_t)$,
-  che si distinguono soprattutto per la transizione di stato (la scrittura
-  cambia al più per un fattore scalare, o per una chiave di scrittura diversa
-  da quella di rimozione). Fa eccezione la sLSTM di xLSTM, ricorrente non
-  lineare.
+  con stato di dimensione fissa, $\mathbf{S}_t =
+  \mathbf{S}_{t-1}\,(\text{transizione}_t) + (\text{scrittura}_t)$, che si
+  distinguono soprattutto per la transizione di stato (la scrittura cambia al
+  più per un fattore scalare, o per una chiave di scrittura diversa da quella
+  di rimozione). Fa eccezione la sLSTM di xLSTM, ricorrente non lineare; e non
+  hanno questa forma la RWKV-4, a stato vettoriale, né S4 e Mamba-1, il cui
+  decadimento cambia da canale a canale e non si scrive come un fattore a
+  destra.
 - Il percorso: dall'attenzione lineare (kernel e ricorrenza) → a come scrivere
   meglio nella memoria (gate e delta rule) → alle architetture concrete (RetNet,
   RWKV, xLSTM).

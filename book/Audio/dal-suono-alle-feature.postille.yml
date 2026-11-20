@@ -1,8 +1,8 @@
 # Le postille di questa pagina, una per capoverso del testo comune.
 # Ognuna vale finché la sua impronta combacia col testo del capoverso.
 - inizio: "Quando pronunciamo una parola non facciamo"
-  impronta: "7cc87cef3945"
-  postilla: "Ogni sistema audio parte da qui: onda in numeri, numeri in immagine"
+  impronta: "9d930609cb10"
+  postilla: "Chi riconosce suoni parte quasi sempre da qui: onda in numeri, poi immagine"
 - inizio: "Un microfono trasforma la variazione di"
   impronta: "31599a2bf39a"
   postilla: "Frequenza in hertz, alta per i suoni acuti: il la del diapason fa 440 Hz"

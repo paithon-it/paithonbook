@@ -39,11 +39,12 @@ Chintala {cite}`radford2016unsupervised`.
 L'idea è dare alla rete lo strumento giusto per "vedere": far scorrere sopra
 l'immagine, casella per casella, una piccola griglia di numeri che reagisce a
 una certa forma (un bordo verticale, una macchia chiara su fondo scuro, la
-grana di un tessuto). Quella griglietta si chiama filtro, e l'operazione è
-la convoluzione; quali numeri mettere nei filtri è precisamente ciò che la
-rete impara. È il discriminatore ad analizzare l'immagine così, con gli stessi
-filtri di un classificatore qualsiasi; il generatore fa il percorso inverso, e
-parte da un pugno di numeri casuali per "gonfiarli" fino a un'immagine intera.
+grana di un tessuto). Quella griglietta si chiama filtro, e l'operazione è la
+convoluzione; quali numeri mettere nei filtri è precisamente ciò che la rete
+impara. È il discriminatore ad analizzare l'immagine così, con lo stesso tipo
+di filtri di un classificatore qualsiasi; il generatore fa il percorso inverso,
+e parte da un pugno di numeri casuali per "gonfiarli" fino a un'immagine
+intera.
 
 Gonfiare come, se i numeri di partenza sono un centinaio e i puntini d'arrivo
 qualche migliaio? Il primo passaggio dispone quel centinaio di numeri in una
@@ -182,19 +183,20 @@ conviene. Lo sguardo lungo richiede più calcoli: ogni punto guarda tutti gli
 altri, e raddoppiando i punti le occhiate diventano quattro volte tante.
 
 BigGAN adotta la soluzione che sembra meno ingegnosa, e rende di più: tutto più
-grande. A ogni passo guarda otto volte più immagini, e ogni gruppo così contiene
-più tipi diversi di immagine: la correzione che le due reti ne ricavano, pensano
-gli autori, è più affidabile. Le reti sono poi più larghe, cioè con più filtri
-per strato, più cose guardate in parallelo. L’accorgimento più curioso riguarda
-il pugno di numeri a caso da cui ogni immagine parte, una fila di più di cento
-numeri. Durante l’addestramento sono estratti come sempre, quasi tutti vicini
-allo zero e qualcuno lontano, e siccome capitano soprattutto vicino allo zero è
-lì che la rete si è esercitata di più. Al momento di generare, invece, BigGAN
-ripesca ogni numero che esce da una soglia, finché non ci rientra: le immagini
-che nascono da numeri tranquilli sono le più tipiche. Abbassando la soglia ogni
+grande. A ogni passo guarda otto volte più immagini dei modelli di prima, e
+ogni gruppo così contiene più tipi diversi di immagine: la correzione che le
+due reti ne ricavano, pensano gli autori, è più affidabile. Le reti sono poi
+più larghe, cioè con più filtri per strato, più cose guardate in parallelo.
+L’accorgimento più curioso riguarda il pugno di numeri a caso da cui ogni
+immagine parte, una fila di più di cento numeri. Durante l’addestramento sono
+estratti come sempre, quasi tutti vicini allo zero e qualcuno lontano, e
+siccome capitano soprattutto vicino allo zero è lì che, numero per numero, la
+rete si è esercitata di più. Al momento di generare, invece, BigGAN ripesca
+ogni numero che esce da una soglia, finché non ci rientra: le immagini che
+nascono da numeri tranquilli sono le più tipiche. Abbassando la soglia ogni
 immagine diventa più bella e tutte insieme più simili, fino a disegnare sempre
-lo stesso cane della classe. Diventa così una manopola fra qualità e varietà, da
-girare dopo l’addestramento.
+lo stesso cane della classe. Diventa così una manopola fra qualità e varietà,
+da girare dopo l’addestramento.
 
 La manopola ha un punto debole, che sta nella fila intera. Durante
 l’addestramento ogni numero, preso singolarmente, stava spesso vicino allo
@@ -301,8 +303,8 @@ studiate. Il contributo di StyleGAN {cite}`karras2019style`, però, è
 architetturale: un generatore a stili che controlla gli attributi dell'immagine
 scala per scala. Migliora anche la qualità (a parità di addestramento e di
 iperparametri il FID su FFHQ scende da $5{,}25$ a $4{,}40$ rispetto al
-generatore tradizionale, circa un sesto), ma [il risultato che lo distingue è il
-controllo]{.pt-matita}.
+generatore tradizionale, un calo di circa un sesto), ma [il risultato che lo
+distingue è il controllo]{.pt-matita}.
 
 `````{tab} Elementare
 StyleGAN non "disegna" il volto tutto in una volta: lo costruisce a livelli, dal
@@ -463,7 +465,7 @@ Gli altri tre contributi del lavoro:
 - **Pixelwise feature normalization** nel generatore: dopo ogni convoluzione il
   vettore di attivazioni di ciascun pixel è riscalato perché la media dei suoi
   quadrati sui canali valga uno. Non
-  ha parametri appresi e serve a impedire che le magnitudini divergano
+  ha parametri appresi e serve a impedire che le ampiezze divergano
   durante l'escalation del duello.
 - **Minibatch standard deviation**: al discriminatore si aggiunge un canale
   costante che riporta la deviazione standard delle attivazioni *attraverso il
@@ -984,14 +986,15 @@ parla il {doc}`capitolo sui modelli di diffusione
 Le GAN non sono scomparse, e il primo motivo è la velocità: una GAN produce
 l'immagine in un colpo solo, un unico passaggio attraverso il generatore,
 mentre la diffusione parte dal rumore e lo ripulisce un po’ per volta,
-ripetendo l'operazione decine di volte. Il vantaggio era così evidente che la
-ricerca sulla diffusione ha passato anni a rincorrerlo, imparando a ottenere lo
-stesso risultato in pochi passi invece che in molti; e per riuscirci ha spesso
-rimesso in gioco un discriminatore. La distillazione avversaria (ADD, 2023)
-{cite}`sauer2024adversarial` addestra un modello a generare in uno-quattro
-passi affiancando alla guida di un modello di diffusione già addestrato una
-loss avversaria, con un discriminatore che giudica le feature di una rete di
-visione congelata; è il metodo con cui Stability AI ha costruito SDXL Turbo.
+ripetendo l'operazione centinaia di volte, o decine con i trucchi più recenti.
+Il vantaggio era così evidente che la ricerca sulla diffusione ha passato anni
+a rincorrerlo, imparando a ottenere lo stesso risultato in pochi passi invece
+che in molti; e per riuscirci ha spesso rimesso in gioco un discriminatore. La
+distillazione avversaria (ADD, 2023) {cite}`sauer2024adversarial` addestra un
+modello a generare in uno-quattro passi affiancando alla guida di un modello di
+diffusione già addestrato una loss avversaria, con un discriminatore che
+giudica le feature di una rete di visione congelata; è il metodo con cui
+Stability AI ha costruito SDXL Turbo.
 
 Intanto la famiglia ha continuato a crescere. StyleGAN3 (2021)
 {cite}`karras2021alias` affronta l'ultimo difetto di StyleGAN2: nelle
@@ -1084,9 +1087,9 @@ duello, e conviene ripassarle così.
   «somigliare» conviene sempre il grigio medio.
 - Dal 2021 il testimone passa ai modelli di diffusione (Stable Diffusion,
   DALL·E 2). Le GAN restano dove conta la velocità (un colpo solo contro decine
-  di passaggi), continuano a crescere (StyleGAN3, GigaGAN, R3GAN), e l'idea
-  avversaria serve a costruire gli strumenti di oggi, anche quando poi nel
-  prodotto finito l'esperto non c'è più.
+  o centinaia di passaggi), continuano a crescere (StyleGAN3, GigaGAN, R3GAN),
+  e l'idea avversaria serve a costruire gli strumenti di oggi, anche quando poi
+  nel prodotto finito l'esperto non c'è più.
 ```
 
 `````

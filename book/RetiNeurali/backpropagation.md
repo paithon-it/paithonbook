@@ -268,21 +268,25 @@ scarto, ma è di nuovo un fattore che moltiplica tutte le quote allo stesso modo
 e non sposta di un millimetro dove si va a finire. All'ultima postazione
 arrivano due pezzi, preparati da due addetti della postazione prima, e
 l'addetto finale tiene la manopola su 2 per il primo pezzo e su 1 per il
-secondo: al primo dei due addetti tocca il doppio del rimprovero, 60.000 contro
-30.000. Che le due quote superino insieme i 30.000 di partenza è normale,
-perché la colpa non si spartisce come una torta: viaggia lungo un filo e si
-moltiplica per la manopola che incontra.
+secondo: a ciascuno dei due addetti tocca lo scarto moltiplicato per la sua
+manopola, quindi al primo il doppio del rimprovero, 60.000 contro 30.000. Che
+le due quote superino insieme i 30.000 di partenza è normale, perché la colpa
+non si spartisce come una torta: viaggia lungo un filo e si moltiplica per la
+manopola che incontra.
 
 Ogni addetto passa poi la sua quota a chi lo riforniva, moltiplicata per la
-manopola del filo e per la pendenza della piega attraversata. Chi sta in mezzo
-riforniva parecchi addetti a valle, quindi di rimproveri ne riceve uno per
-ciascuno, e li somma. Così il foglio arriva fino alla prima postazione. Tutto
-questo per una casa sola: le case però si mandano avanti a gruppetti, il giro
-si rifà per ciascuna e a ogni manopola spetta la media delle sue quote.
+manopola del filo e per la pendenza della piega attraversata, cioè per quanto
+la piega, in quel punto, ingrandisce o rimpicciolisce un piccolo cambiamento.
+Chi sta in mezzo riforniva parecchi addetti a valle, quindi di rimproveri ne
+riceve uno per ciascuno, e li somma. Così il foglio arriva fino alla prima
+postazione. Tutto questo per una casa sola: le case però si mandano avanti a
+gruppetti, il giro si rifà per ciascuna e a ogni manopola spetta la media delle
+sue quote.
 
 Nessuno rifà i calcoli da capo, quindi il metodo è praticabile. La colpa che
-arriva si porta dietro due fattori in più a ogni postazione, la manopola e la
-piega, e per allungare un prodotto di un pezzo basta una moltiplicazione,
+arriva a una postazione è un prodotto, con due fattori per ogni postazione
+attraversata, la manopola e la piega. Per passarla alla postazione prima basta
+moltiplicarla per i due fattori successivi, senza rifare il prodotto da capo,
 quindi [un giro solo all'indietro serve tutta la linea]{.pt-matita}. È lo
 stesso prodotto degli ingranaggi della {doc}`regola della catena
 </Matematica/analisi-ottimizzazione>` e degli specchietti della {doc}`panoramica
@@ -504,9 +508,9 @@ sotto i piedi, e un moltiplicatore fisso che scegli tu, il **learning rate**
 accorcia i passi vicino al fondo, come nella {numref}`fig-discesa-passi`; il
 moltiplicatore è la manopola che hai in mano. Con un moltiplicatore troppo
 grande scavalchi la valle e rimbalzi avanti e indietro senza arrivare mai; con
-uno troppo piccolo scendi lentissimo, e rischi di fermarti nel primo
-avvallamento che incontri credendolo il fondo, con i passi ormai troppo corti
-per uscirne. Trovare un buon moltiplicatore è una delle scelte che più contano.
+uno troppo piccolo scendi lentissimo, e dove il terreno è quasi piano i passi
+diventano così corti che sembri fermo. Trovare un buon moltiplicatore è una
+delle scelte che più contano.
 
 Quel moltiplicatore non deve restare lo stesso per tutta la discesa, e nemmeno
 essere identico in ogni direzione. Chi
@@ -534,11 +538,11 @@ hessiana $\mathbf{H}$, la discesa converge se $\eta <
 2/\lambda_{\max}(\mathbf{H})$ e diverge lungo la direzione più curva appena
 $\eta$ supera quella soglia, che è la stessa del lemma di discesa di
 {doc}`Analisi e ottimizzazione
-</Matematica/analisi-ottimizzazione>`. Al contrario, un $\eta$ troppo piccolo rende
-la convergenza lentissima o la blocca in un minimo mediocre. Gli
-ottimizzatori moderni aggiungono memoria delle direzioni già prese (Momentum,
-che però conserva un solo $\eta$ per tutti i parametri), un passo diverso per
-ciascun parametro (RMSProp), o tutte e due le cose (Adam
+</Matematica/analisi-ottimizzazione>`. Al contrario, un $\eta$ troppo piccolo
+rende la convergenza lentissima, e quasi ferma nei tratti in cui il gradiente è
+piccolo. Gli ottimizzatori moderni aggiungono memoria delle direzioni già prese
+(Momentum, che però conserva un solo $\eta$ per tutti i parametri), un passo
+diverso per ciascun parametro (RMSProp), o tutte e due le cose (Adam
 {cite}`kingma2015adam`), ma il cuore resta questo.
 
 `````
@@ -703,8 +707,8 @@ indietro e, se supera una soglia, lo si abbassa prima di passarlo.
 
 Le reti profonde vanno quindi progettate perché il messaggio arrivi integro
 fino in fondo, e un rimedio lo conosci già: è la ReLU stessa, che dal lato
-positivo non appiattisce il segnale e quindi non lo indebolisce a ogni
-passaggio. Gli altri rimedi, da dove far partire i pesi e le scorciatoie che
+positivo lascia passare il segnale senza appiattirlo, come invece fa la
+sigmoide. Gli altri rimedi, da dove far partire i pesi e le scorciatoie che
 saltano gli strati, sono l'argomento del capitolo sul deep learning: delle
 sezioni su {doc}`ottimizzazione e regolarizzazione
 </DeepLearning/ottimizzazione-regolarizzazione>` e sulle {doc}`architetture che
@@ -729,10 +733,10 @@ diagonalizzare, come avvertiva la {doc}`sezione di algebra lineare
 Se i valori singolari massimi restano sistematicamente sotto $1$, il prodotto
 tende a zero esponenzialmente con la profondità (*vanishing gradient*), e la
 garanzia è immediata: la norma di un prodotto non supera il prodotto delle
-norme,
-$\lVert\prod_l \mathbf{J}^{[l]}\rVert \le \prod_l \sigma_{\max}(\mathbf{J}^{[l]}) \le c^{\,L}$,
-dove $c<1$ è il maggiorante comune dei valori singolari massimi e $L$ il numero
-di strati attraversati.
+norme, $\lVert\prod_l \mathbf{J}^{[l]}\rVert \le \prod_l
+\sigma_{\max}(\mathbf{J}^{[l]}) \le c^{\,L}$, dove $\sigma_{\max}$ è il valore
+singolare massimo (qui $\sigma$ non è la sigmoide), $c<1$ il loro maggiorante
+comune e $L$ il numero di strati attraversati.
 
 Nell'altro verso, però, non c'è simmetria. Il fatto che ogni fattore allunghi
 qualche direzione non basta a far esplodere il gradiente, perché lo strato
@@ -861,15 +865,15 @@ di migliorare.
   discesa del gradiente. Il passo è lungo quanto la pendenza moltiplicata
   per il learning rate, che è l'unica manopola in mano a noi: decide se si
   scende a valle, se si rimbalza o se non si arriva mai.
-- Si procede a piccoli gruppi di esempi (i mini-batch), ripassando più volte
-  su tutti i dati (le epoche). Nelle reti molto profonde il messaggio che
-  torna indietro può affievolirsi fino a non insegnare più niente ai primi
-  strati, oppure amplificarsi fino a diventare assordante e mandare tutto in
-  tilt. In partenza tutte e due si evitano scegliendo bene quanto grandi far
-  nascere i pesi; durante l'addestramento, un'impennata improvvisa si tampona
-  quando arriva. Per questo una rete profonda va
-  progettata apposta per far arrivare il messaggio integro fino in fondo, e un
-  rimedio è già noto: la ReLU, che non appiattisce il segnale.
+- Si procede a piccoli gruppi di esempi (i mini-batch), ripassando più volte su
+  tutti i dati (le epoche). Nelle reti molto profonde il messaggio che torna
+  indietro può affievolirsi fino a non insegnare più niente ai primi strati,
+  oppure amplificarsi fino a diventare assordante e mandare tutto in tilt. In
+  partenza tutte e due si evitano scegliendo bene quanto grandi far nascere i
+  pesi; durante l'addestramento, un'impennata improvvisa si tampona quando
+  arriva. Per questo una rete profonda va progettata apposta per far arrivare
+  il messaggio integro fino in fondo, e un rimedio è già noto: la ReLU, che dal
+  lato positivo non appiattisce il segnale come la sigmoide.
 ```
 
 `````

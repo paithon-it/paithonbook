@@ -448,11 +448,12 @@ $$
 dove $\mu$ e $\sigma$ si calcolano per canale sulle posizioni. In questo modo
 una rete sola trasferisce lo stile di un quadro qualunque, in una passata.
 
-Questo allineamento è una versione ridotta della matrice di Gram: invece di
-misurare quanto ogni coppia di canali si accende insieme, confronta soltanto la
-media e l'ampiezza di ciascun canale, e lascia cadere le correlazioni fra
-canali. È anche l'operazione che StyleGAN porterà dentro il suo generatore di
-volti, livello per livello, nella {doc}`sezione sulle evoluzioni delle GAN
+Questo allineamento è una versione ridotta della matrice di Gram, la tabella
+dei conteggi: invece di misurare quanto ogni coppia di canali si accende
+insieme, confronta soltanto la media e l'ampiezza di ciascun canale, e lascia
+cadere le correlazioni fra canali. È anche l'operazione che StyleGAN porterà
+dentro il suo generatore di volti, livello per livello, nella {doc}`sezione
+sulle evoluzioni delle GAN
 </GAN/applicazioni-evoluzioni>` (GAN sta per *generative adversarial network*,
 le «reti generative avversarie»).
 

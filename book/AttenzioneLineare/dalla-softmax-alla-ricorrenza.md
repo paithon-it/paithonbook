@@ -168,19 +168,20 @@ $$
     = \mathbf{S}\,\phi(\mathbf{q}_i),
 $$
 
-dove i passaggi sono tre: il prodotto scalare è simmetrico, quindi
+dove i passaggi sono quattro: il prodotto scalare è simmetrico, quindi
 $\phi(\mathbf{q}_i)^\top \phi(\mathbf{k}_j) = \phi(\mathbf{k}_j)^\top
 \phi(\mathbf{q}_i)$; uno scalare si può spostare a destra del vettore
-$\mathbf{v}_j$; e a quel punto è l’**associatività** del prodotto a permettere
-di raccogliere $\phi(\mathbf{q}_i)$ fuori dalla somma su $j$, che si stacca
-dalla query e si condensa in un'unica matrice $\mathbf{S} = \sum_j
-\mathbf{v}_j\, \phi(\mathbf{k}_j)^\top \in \mathbb{R}^{d_v\times C}$ (lo stato,
-una memoria chiave→valore). Qui $\mathbf{q}_i, \mathbf{k}_j, \mathbf{v}_j$ sono
-i vettori query, key e value del token e $d_v$ è la dimensione del value. Da
-qui in avanti, per semplicità, assumiamo key, query e value della stessa
-dimensione $d$ e una $\phi$ che non cambia dimensione ($C = d$), così che lo
-stato sia una $d \times d$: è il caso della feature map che sceglieremo fra
-poco, ma non il caso generale.
+$\mathbf{v}_j$; a quel punto l’**associatività** del prodotto riscrive ogni
+termine come $(\mathbf{v}_j\phi(\mathbf{k}_j)^\top)\phi(\mathbf{q}_i)$; e la
+distributività permette di raccogliere $\phi(\mathbf{q}_i)$ fuori dalla somma
+su $j$, che si stacca dalla query e si condensa in un'unica matrice $\mathbf{S}
+= \sum_j \mathbf{v}_j\, \phi(\mathbf{k}_j)^\top \in \mathbb{R}^{d_v\times C}$
+(lo stato, una memoria chiave→valore). Qui $\mathbf{q}_i, \mathbf{k}_j,
+\mathbf{v}_j$ sono i vettori query, key e value del token e $d_v$ è la
+dimensione del value. Da qui in avanti, per semplicità, assumiamo key, query e
+value della stessa dimensione $d$ e una $\phi$ che non cambia dimensione ($C =
+d$), così che lo stato sia una $d \times d$: è il caso della feature map che
+sceglieremo fra poco, ma non il caso generale.
 
 Le due strade hanno costi molto diversi. Calcolare tutti i prodotti
 $\phi(\mathbf{q}_i)^\top \phi(\mathbf{k}_j)$ è la matrice $n \times n$, costo
@@ -230,14 +231,14 @@ lettura *normalizzata* diventa $\mathbf{o}_i =
 
 ## L'attenzione lineare è una RNN
 
-Fin qui le parole erano tutte disponibili insieme. Nella generazione vale una
-condizione in più: ogni token vede soltanto quelli che lo precedono, e
-l'attenzione si dice *causale*. Di conseguenza non c'è più un'unica matrice
-$\mathbf{S}$, calcolata alla fine, ma una successione $\mathbf{S}_t$, in cui
-ogni token aggiunge il proprio contributo a quanto accumulato dai precedenti, e
-le dimensioni restano quelle. Uno stato che si aggiorna così, un passo alla
-volta e a partire da com'era al passo prima, è una *ricorrenza*: il nome delle
-reti che i Transformer avevano mandato in pensione.
+Fin qui le parole erano tutte disponibili insieme. Nei modelli che generano
+testo vale una condizione in più: ogni token vede soltanto quelli che lo
+precedono, e l'attenzione si dice *causale*. Di conseguenza non c'è più
+un'unica matrice $\mathbf{S}$, calcolata alla fine, ma una successione
+$\mathbf{S}_t$, in cui ogni token aggiunge il proprio contributo a quanto
+accumulato dai precedenti, e le dimensioni restano quelle. Uno stato che si
+aggiorna così, un passo alla volta e a partire da com'era al passo prima, è una
+*ricorrenza*: il nome delle reti che i Transformer avevano mandato in pensione.
 
 `````{tab} Elementare
 
@@ -713,10 +714,11 @@ memoria </AttenzioneLineare/scrivere-nella-memoria>`.
   molto prima di quanto lascino sperare le sue caselle, perché ogni
   informazione si spalma su tutto il foglio: uno da trentadue righe per
   trentadue colonne ne ha più di mille, ma tiene separate al più trentadue
-  etichette, quante il suo lato, e già a otto informazioni la risposta torna
-  sbagliata di circa metà del suo valore, e a trentadue lo sbaglio è grande
-  quanto la risposta. Prendere un foglio più grande si può, ma aggiunge conti e
-  memoria a ogni parola, e a quel punto tanto vale un Transformer.
+  etichette, quante il suo lato, e solo se sono scelte nel modo migliore; con
+  etichette qualunque già a otto informazioni la risposta torna sbagliata di
+  circa metà del suo valore, e a trentadue lo sbaglio è grande quanto la
+  risposta. Prendere un foglio più grande si può, ma aggiunge conti e memoria a
+  ogni parola, e a quel punto tanto vale un Transformer.
 - I due rimedi: un modo per sbiadire le voci vecchie e un modo per correggere
   invece di sommare alla cieca.
 ```

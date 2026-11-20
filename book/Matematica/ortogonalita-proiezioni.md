@@ -798,10 +798,10 @@ non i suoi assi.
 
 Non ne segue che la discesa del gradiente raggiunga l'ottimo, e gli autori lo
 scrivono: una superficie senza minimi locali lascia comunque il modo di
-incagliarsi in una sella. Aggiungono però che in pratica non capita quasi
-mai, perché la direzione calcolata su pochi campioni non è il gradiente vero.
-Si noti che oggi l'ipotesi del rango pieno cade spesso: ogni volta che
-i casi sono meno delle caratteristiche, e anche quando i casi bastano ma le
+incagliarsi in una sella. In pratica, però, capita di rado, perché la direzione
+calcolata su pochi campioni non è il gradiente vero, e il suo rumore allontana
+dalla sella. Si noti che oggi l'ipotesi del rango pieno cade spesso: ogni volta
+che i casi sono meno delle caratteristiche, e anche quando i casi bastano ma le
 direzioni vere sono poche, come in una matrice di quaranta righe e dodici
 colonne che ha cinque valori singolari non nulli.
 
@@ -1073,13 +1073,14 @@ davanti.
 
 `````{tab} Elementare
 
-Sul foglio, due frecce con direzioni scelte a caso sono quasi allineate (o
-quasi opposte) molto più spesso che quasi perpendicolari. Salendo di dimensione
-la faccenda cambia, e cambia in fretta. [In uno spazio a mille dimensioni due
-direzioni prese a caso sono quasi sempre quasi perpendicolari]{.pt-matita}. Il
-loro prodotto scalare, misurato su vettori di lunghezza uno, si aggira infatti
-intorno a due centesimi e mezzo, mentre nello spazio a tre dimensioni si aggira
-intorno a mezzo.
+Sul foglio, due frecce di lunghezza uno con direzioni scelte a caso hanno un
+prodotto scalare vicino a uno, o a meno uno, molto più spesso che vicino a
+zero: misurate così, sono quasi allineate (o quasi opposte) molto più spesso
+che quasi perpendicolari. Salendo di dimensione la faccenda cambia, e cambia in
+fretta. [In uno spazio a mille dimensioni due direzioni prese a caso sono quasi
+sempre quasi perpendicolari]{.pt-matita}. Il loro prodotto scalare, misurato su
+vettori di lunghezza uno, si aggira infatti intorno a due centesimi e mezzo,
+mentre nello spazio a tre dimensioni si aggira intorno a mezzo.
 
 La ragione si intuisce contando le occasioni di essere diversi. Per puntare
 nella stessa direzione, due frecce devono andare d'accordo su tutte le
@@ -1163,14 +1164,14 @@ for d in (3, 100, 1000):
 
 ```{figure} ../figures/quasi-perpendicolari.svg
 :name: fig-quasi-perpendicolari
-:alt: "Tre istogrammi affiancati, con la stessa scala verticale da zero a cento per cento, mostrano come si distribuisce il coseno fra due direzioni sorteggiate a caso. A sinistra, in tre dimensioni, le venti fasce sono tutte alte uguali, un tappeto piatto al cinque per cento: ogni angolo è ugualmente probabile, e il coseno medio vale zero virgola cinquanta. Al centro, in cento dimensioni, le fasce calano da sinistra a destra e dopo la sesta non ce n'è quasi più nessuna: il coseno medio vale zero virgola zero otto. A destra, in mille dimensioni, resta un picco solo appoggiato allo zero, alto quasi il novanta per cento, e il coseno medio vale zero virgola zero tre. Sotto ogni istogramma, la quota di coppie con coseno sotto un decimo: dieci per cento in tre dimensioni, sessantotto in cento, novantanove virgola otto in mille."
+:alt: "Tre istogrammi affiancati, con la stessa scala verticale da zero a cento per cento, mostrano come si distribuisce il coseno fra due direzioni sorteggiate a caso. A sinistra, in tre dimensioni, le venti fasce sono tutte alte uguali, un tappeto piatto al cinque per cento: ogni valore del coseno è ugualmente probabile, e il coseno medio vale zero virgola cinquanta. Al centro, in cento dimensioni, le fasce calano da sinistra a destra e dopo la sesta non ce n'è quasi più nessuna: il coseno medio vale zero virgola zero otto. A destra, in mille dimensioni, resta un picco solo appoggiato allo zero, alto quasi il novanta per cento, e il coseno medio vale zero virgola zero tre. Sotto ogni istogramma, la quota di coppie con coseno sotto un decimo: dieci per cento in tre dimensioni, sessantotto in cento, novantanove virgola otto in mille."
 :width: 100%
 
-Il coseno fra due direzioni estratte a caso, misurato su tremila direzioni
-per ogni spazio e diviso in venti fasce. In tre dimensioni le fasce sono tutte
-ugualmente piene, cioè fra due direzioni può capitare qualunque angolo; in
-mille ne resta piena una sola, appoggiata allo zero, e il 99,8% delle coppie
-sta sotto un decimo.
+Il coseno fra due direzioni estratte a caso, misurato su tremila direzioni per
+ogni spazio e diviso in venti fasce. In tre dimensioni le fasce sono tutte
+ugualmente piene, cioè il coseno è uniforme (gli angoli no: quelli vicini al
+retto sono più frequenti); in mille ne resta piena una sola, appoggiata allo
+zero, e il 99,8% delle coppie sta sotto un decimo.
 ```
 
 La media da sola non distingue una distribuzione che si è spostata da una che

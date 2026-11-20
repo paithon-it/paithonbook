@@ -57,7 +57,7 @@ quelli su cui è stato addestrato?
 ## L'ipotesi nascosta: che la distribuzione non cambi
 
 L'impianto dell'apprendimento supervisionato (addestramento, validazione, test)
-poggia su un'assunzione che di solito non viene dichiarata: che i dati su cui il
+poggia su un'ipotesi che di solito non viene dichiarata: che i dati su cui il
 modello è addestrato e quelli che incontrerà dopo siano estratti dalla stessa
 distribuzione, e che ogni esempio sia estratto senza essere condizionato dagli
 altri. È l’**ipotesi i.i.d.** (*indipendenti e identicamente distribuiti*).
@@ -228,11 +228,13 @@ quale condizionata resta ferma {cite}`morenotorres2012unifying`:
   $P(\mathbf{x} \mid y)$. La malattia si presenta come prima, ma la sua
   prevalenza è diversa. Un classificatore bayesiano che usa il *prior* vecchio
   produce probabilità a posteriori sistematicamente distorte.
-- **Concept shift**: cambia $P(y \mid \mathbf{x})$. La relazione input-etichetta
-  stessa si sposta, gradualmente (i gusti musicali) o di colpo (una nuova legge
-  cambia cosa è "transazione sospetta"). Nella letteratura sui flussi di dati è
-  il *real concept drift*; *concept drift* senza aggettivi indica di solito
-  qualunque cambiamento della congiunta nel tempo {cite}`gama2014survey`.
+- **Concept shift**: cambia $P(y \mid \mathbf{x})$ a $P(\mathbf{x})$ ferma (o
+  $P(\mathbf{x} \mid y)$ a $P(y)$ ferma, quando $y$ causa $\mathbf{x}$). La
+  relazione input-etichetta stessa si sposta, gradualmente (i gusti musicali) o
+  di colpo (una nuova legge cambia cosa è "transazione sospetta"). Nella
+  letteratura sui flussi di dati è il *real concept drift*; *concept drift*
+  senza aggettivi indica di solito qualunque cambiamento della congiunta nel
+  tempo {cite}`gama2014survey`.
 
 [Ciascuna famiglia è un'ipotesi su come le due distribuzioni si legano, e senza
 nessuna ipotesi non si impara niente]{.pt-matita}. Se ad esempio le etichette si
@@ -243,9 +245,9 @@ shift quando $y$ causa $\mathbf{x}$ (la malattia produce i sintomi).
 
 Nella pratica le tre forme arrivano mescolate, e distinguere quale domini a
 partire dai soli dati è un problema difficile, spesso mal posto se le etichette
-nuove tardano ad arrivare. La terna non esaurisce i casi: un
-cambiamento di $P(\mathbf{x} \mid y)$ a $P(y)$ fisso, per esempio, non è
-nessuna delle tre {cite}`morenotorres2012unifying`.
+nuove tardano ad arrivare. La terna non esaurisce i casi: se cambiano insieme
+$P(\mathbf{x})$ e $P(y \mid \mathbf{x})$, per esempio, non è nessuna delle tre
+{cite}`morenotorres2012unifying`.
 
 `````
 
@@ -406,7 +408,7 @@ deve stare dentro quello di addestramento, e dove manca nessun peso può
 inventare esempi mai raccolti. Quindi $\mathcal{L}_w(\theta)$ è una stima
 corretta del rischio in produzione per ogni $\theta$, e con una classe di
 ipotesi di capacità limitata il suo minimo converge a quello giusto al crescere
-di $m$.
+di $m$, purché i pesi abbiano varianza finita sotto $p_{\text{train}}$.
 
 Con $m$ finito, però, la varianza di $\mathcal{L}_w$ cresce con
 $\mathbb{E}[w^2]$, e stimare il rapporto di densità in alta dimensione è
@@ -448,7 +450,7 @@ Una difesa complementare è l’**out-of-distribution detection**, che riconosce
 gli input troppo lontani dalla distribuzione di addestramento e, invece di
 predire con finta sicurezza, si astiene o segnala. Il problema è particolarmente
 delicato per le reti profonde, che su input fuori distribuzione tendono a essere
-*confidenti e sbagliate* insieme. Due strumenti già visti vanno in questa
+*sicure e sbagliate* insieme. Due strumenti già visti vanno in questa
 direzione, la densità di una mistura gaussiana ({doc}`Riduzione e clustering
 <riduzione-clustering>`) e la One-Class SVM ({doc}`Il kernel trick
 <svm-kernel>`), e segnalano gli input che cadono dove la distribuzione di
@@ -983,9 +985,9 @@ struttura stessa del problema, e non come effetto collaterale.
 - Tre famiglie di dataset shift, distinte da quale condizionata resta ferma:
   *covariate shift* (cambia $P(\mathbf{x})$, resta $P(y \mid \mathbf{x})$),
   *label shift* (cambia $P(y)$, resta $P(\mathbf{x} \mid y)$), *concept shift*
-  (cambia $P(y \mid \mathbf{x})$, cioè la regola stessa). La terna non esaurisce
-  i casi, e *concept drift* in letteratura indica spesso qualunque cambiamento
-  nel tempo.
+  (cambia $P(y \mid \mathbf{x})$ a $P(\mathbf{x})$ ferma, cioè la regola
+  stessa). La terna non esaurisce i casi, e *concept drift* in letteratura
+  indica spesso qualunque cambiamento nel tempo.
 - La validazione classica non protegge, perché validation e test sono ritagli
   dello stesso passato e, senza un'ipotesi sulla distanza fra le distribuzioni,
   non vincolano l'errore in produzione. Con dati temporali, meglio lo split

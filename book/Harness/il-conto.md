@@ -336,10 +336,11 @@ quello di un token scritto, ragionamento compreso; il programma usa
 $\eta = 0{,}1$ e $\omega = 5$. È il modello del server, a granularità di token.
 
 Quello che i fornitori fatturano, invece, è più grossolano (contano il prefisso
-a blocchi, da punti dichiarati nella richiesta e sopra una lunghezza minima, e
-alcuni fanno pagare di più la scrittura in cache), e il modello lo trascura.
-L'organizzazione della cache nel server, un albero dei prefissi con le sue
-regole di sfratto, la racconterà la {doc}`sezione sulle metriche di servizio
+a blocchi e sopra una lunghezza minima, alcuni da punti dichiarati nella
+richiesta e altri in automatico, e alcuni fanno pagare di più la scrittura in
+cache), e il modello lo trascura. L'organizzazione della cache nel server, un
+albero dei prefissi con le sue regole di sfratto, la racconterà la
+{doc}`sezione sulle metriche di servizio
 </MLOps/metriche-di-servizio>` nel capitolo su MLOps.
 
 Il riuso esatto chiede l'identità token per token. L'attenzione causale lo

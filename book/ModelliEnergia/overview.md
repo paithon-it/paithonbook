@@ -84,17 +84,18 @@ problemi diversi.
 
 Le due mosse della {numref}`fig-paesaggio-energia` sono quelle della ricerca
 locale, già incontrate nella {doc}`sezione sulla ricerca senza un modello del
-mondo </Ricerca/quando-il-mondo-non-si-conosce>`. La prima è la salita
-(*hill climbing*), che accetta soltanto le mosse che migliorano; qui le
-risposte buone stanno in basso, quindi la salita scende, e il nome le è
-rimasto addosso. La seconda è la ricottura simulata (*simulated
-annealing*), che accetta anche una mossa che alza l'energia di $\Delta E > 0$,
-con probabilità $e^{-\Delta E / T}$, e abbassa $T$ col passare del tempo
-{cite}`kirkpatrick1983optimization`: finché $T$ è alta la pallina esce anche
-dalle conche in cui si era infilata per sbaglio. Il nome viene dal fabbro, che
-scalda un pezzo di metallo e lo lascia raffreddare adagio invece di buttarlo
-nell'acqua, perché raffreddando piano gli atomi hanno il tempo di sistemarsi
-bene. Su questa regola di accettazione sono costruite le macchine di Boltzmann.
+mondo </Ricerca/quando-il-mondo-non-si-conosce>`. La prima è la salita (*hill
+climbing*), che accetta soltanto le mosse che migliorano; qui le risposte buone
+stanno in basso, quindi la salita scende, e il nome le è rimasto addosso. La
+seconda è la ricottura simulata (*simulated annealing*), che accetta anche una
+mossa che alza l'energia di $\Delta E > 0$, con probabilità $e^{-\Delta E /
+T}$, e abbassa $T$ col passare del tempo {cite}`kirkpatrick1983optimization`:
+finché $T$ è alta la pallina esce anche dalle conche in cui si era infilata per
+sbaglio. Il nome viene dal fabbro, che scalda un pezzo di metallo e lo lascia
+raffreddare adagio invece di buttarlo nell'acqua, perché raffreddando piano gli
+atomi hanno il tempo di sistemarsi bene. Sulla stessa idea, con una regola di
+accettazione diversa che porta alla stessa distribuzione d'equilibrio, sono
+costruite le macchine di Boltzmann.
 
 La seconda parola presa in prestito dalla fisica è temperatura, la «T» del
 disegno. Non c'è niente di caldo e nessun termometro: $T > 0$ è il parametro
@@ -118,10 +119,11 @@ affine a quella che si incontra qui.
 Un modello probabilistico assegna a ogni configurazione $\mathbf{x}$ una
 probabilità $p(\mathbf{x}) \ge 0$, e le probabilità di tutte le configurazioni
 devono sommare a uno (integrare a uno, se le configurazioni sono continue): per
-valutarne una sola bisogna quindi tener conto di tutte le altre. Un modello a
-energia, invece, rinuncia a questo vincolo. Assegna a ogni configurazione
-(un'immagine, una frase, uno stato della rete) un'energia, e [chiede soltanto
-che quelle sensate stiano in basso e le altre in alto]{.pt-matita}.
+valutarne una sola, se il modello non è costruito apposta perché la somma torni
+da sé, bisogna quindi tener conto di tutte le altre. Un modello a energia,
+invece, rinuncia a questo vincolo. Assegna a ogni configurazione (un'immagine,
+una frase, uno stato della rete) un'energia, e [chiede soltanto che quelle
+sensate stiano in basso e le altre in alto]{.pt-matita}.
 
 `````{tab} Elementare
 
@@ -282,12 +284,12 @@ configurazioni possibili. La indica la lettera $Z$, iniziale del tedesco
   paga con la funzione di partizione $Z(\theta)$, intrattabile in alta
   dimensione quando l'energia non ha vincoli sull'architettura: è
   l'ostacolo contro cui urta gran parte dei modelli a energia.
-- Il premio Nobel per la fisica 2024 a Hopfield e Hinton ha riportato
-  alla luce un filone che non se n'era mai andato: lo *score* della
-  diffusione è $-\nabla_{\mathbf{x}} E_t$, una pendenza per ogni livello di
-  rumore; la JEPA è un'energia non normalizzata; l'aggiornamento delle Hopfield
-  moderne è la *scaled dot-product attention*, a meno della proiezione dei
-  value.
+- Il premio Nobel per la fisica 2024 a Hopfield e Hinton ha riportato alla luce
+  un filone che non se n'era mai andato: lo *score* della diffusione è
+  $-\nabla_{\mathbf{x}} E_t$, una pendenza per ogni livello di rumore; la JEPA
+  è un'energia non normalizzata; un passo dell'aggiornamento delle Hopfield
+  moderne, con la temperatura scelta come nell'attenzione, è la *scaled
+  dot-product attention*, a meno della proiezione dei value.
 - Seguono la memoria associativa, le macchine di Boltzmann e la contrastive
   divergence, i modi di aggirare $Z$, la cornice
   dell’*energy-based learning* e i modelli a energia di oggi.

@@ -293,7 +293,7 @@ modello, è invece salito in media del 20% e del 23%, e questo aumento non è
 dovuto al caso.
 
 Quelli scritti dagli sviluppatori hanno alzato la quota di 2,4 punti in media,
-anche questi troppo pochi per escludere il caso, e il costo in media del 19%,
+anche questi troppo pochi per escludere il caso, e il costo fino al 19%,
 con grandi differenze da un agente all'altro; in compenso hanno fatto meglio dei
 file scritti da un modello, ed è l'unica differenza di successo dello studio che
 il caso non spiega. Gli agenti seguivano le istruzioni, e proprio per questo
@@ -458,7 +458,7 @@ può sbagliare.
   controllabilità.
 - Le misure (una richiesta alla volta, modelli del 2025): file generati da un
   modello senza effetto significativo sul successo e con il 20-23% di costo in
-  più; file degli sviluppatori +2,4 punti non significativi, costo medio +19%,
+    più; file degli sviluppatori +2,4 punti non significativi, costo fino a +19%,
   meglio dei generati; utili dove manca altra documentazione
   {cite}`gloaguen2026agentsmd`. Sul tempo, mediana da 98,6 a 70,3 secondi e
   token prodotti da 2.925 a 2.440, correttezza non misurata

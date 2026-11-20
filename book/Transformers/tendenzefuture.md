@@ -81,7 +81,7 @@ dannosi con il post-training.
 `````{tab} Superiore
 Sul fronte dell'efficienza rientrano la {doc}`distillazione
 </Efficienza/un-modello-piccolo-che-imita>`, la {doc}`quantizzazione
-</Efficienza/meno-bit>` (pesi a 8 o 4 bit invece che a 32, dove a quattro bit
+</Efficienza/meno-bit>` (pesi a 8 o 4 bit invece che a 16, dove a quattro bit
 la perdita smette di essere trascurabile e servono metodi che facciano più che
 arrotondare), la {doc}`potatura </Efficienza/meno-pesi>`, e le architetture
 {doc}`mixture of experts <mixture-of-experts>`, che attivano solo una frazione

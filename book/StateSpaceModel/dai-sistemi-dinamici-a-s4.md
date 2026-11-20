@@ -262,7 +262,7 @@ uno strumento diverso per il «tutto insieme», un filtro.
 Da un lato la forma ricorrente, in cui parti dallo stato, aggiungi il nuovo
 ingresso, ottieni il nuovo stato, leggi l'uscita e ripeti. Un token alla volta,
 con una quantità di memoria che non cresce mai, perfetta per generare testo o
-processare un flusso audio in tempo reale. È il modo di lavorare di una RNN.
+elaborare un flusso audio in tempo reale. È il modo di lavorare di una RNN.
 
 Dall'altro la forma convoluzionale. Se il sistema non cambia nel tempo, si può
 dimostrare che l'intera uscita è una singola convoluzione dell'ingresso con un

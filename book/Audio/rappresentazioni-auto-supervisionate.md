@@ -274,12 +274,15 @@ si indica spesso con $\tau$, creando possibile confusione. La perdita è il meno
 logaritmo di una softmax, e scende quando il modello assegna a $\mathbf{q}_t$
 la probabilità più alta.
 
-Il nome InfoNCE viene dall'informazione mutua: con $N = K + 1$
-candidati vale $I(\mathbf{c}_t; \mathbf{q}_t) \ge \log N - \mathcal{L}_m$
-{cite}`oord2018representation`, quindi minimizzare $\mathcal{L}_m$ alza un
-limite inferiore dell'informazione che il contesto porta sull'unità coperta. Il
-limite però non supera $\log N$, cioè $\log 101 \approx 4{,}6$ nat con $K =
-100$: più distrattori lo alzano, e richiedono più calcolo.
+Il nome InfoNCE viene dall'informazione mutua: con $N = K + 1$ candidati e
+distrattori estratti indipendentemente dalla marginale vale $I(\mathbf{c}_t;
+\mathbf{q}_t) \ge \log N - \mathbb{E}[\mathcal{L}_m]$
+{cite}`oord2018representation` (con distrattori presi dalla stessa frase, come
+in wav2vec 2.0, il limite è solo indicativo), quindi minimizzare
+$\mathcal{L}_m$ alza un limite inferiore dell'informazione che il contesto
+porta sull'unità coperta. Il limite però non supera $\log N$, cioè $\log 101
+\approx 4{,}6$ nat con $K = 100$: più distrattori lo alzano, e richiedono più
+calcolo.
 
 Alla perdita si affianca il termine di diversità, e la ragione la dà il
 paper: se il dizionario collassa su poche voci, il bersaglio e i distrattori

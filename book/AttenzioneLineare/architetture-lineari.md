@@ -213,13 +213,13 @@ temporali di durata diversa, dal contesto immediato a quello lontano.
 
 RetNet è il primo dei tre gradini dello sbiadimento descritti in {doc}`scrivere
 meglio nella memoria </AttenzioneLineare/scrivere-nella-memoria>`: il ritmo con
-cui la memoria decade è deciso in fase di progetto, uguale per ogni token e per
-ogni componente dello stato. È la forma più grossolana di oblio: efficace e a
-costo nullo, ma cieca al contenuto. Gli altri due gradini quella cecità la
-tolgono: Mamba-2, che il ritmo lo ricalcola a ogni token guardando che cosa sta
-leggendo, e GLA (*gated linear attention*), che oltre a ricalcolarlo lo
-differenzia canale per canale. Sono i tre modi di decidere quanto dimenticare,
-dal più rigido al più libero.
+cui la memoria decade è deciso in fase di progetto, uguale per ogni token e,
+dentro una stessa testa, per ogni componente dello stato. È la forma più
+grossolana di oblio: efficace e a costo nullo, ma cieca al contenuto. Gli altri
+due gradini quella cecità la tolgono: Mamba-2, che il ritmo lo ricalcola a ogni
+token guardando che cosa sta leggendo, e GLA (*gated linear attention*), che
+oltre a ricalcolarlo lo differenzia canale per canale. Sono i tre modi di
+decidere quanto dimenticare, dal più rigido al più libero.
 
 ## RWKV: reinventare le RNN
 
@@ -319,8 +319,9 @@ $$
 dove $k_i$ e $v_i$ sono chiave e valore alla posizione $i$, $w \ge 0$ è il
 decadimento del canale (il peso di un token svanisce come $e^{-(t-1-i)w}$ al
 crescere della distanza, e il caso limite $w = 0$ è il canale che non
-dimentica) e $u$ è un bonus riservato al token corrente, che lo esenta dal
-decadimento così che il presente non venga penalizzato quanto il passato.
+dimentica) e $u$ è un peso appreso a parte per il token corrente (il *bonus*
+dell'articolo), che prende il posto del decadimento: il più recente dei
+passati, $i = t-1$, ha già esponente nullo.
 
 Numeratore e denominatore sono la classica media pesata: il denominatore è il
 normalizzatore, la somma dei pesi. Tenerne uno avvicina RWKV-4 a Katharopoulos
@@ -480,11 +481,11 @@ quello di oggi.
 
 Quel tetto tolto si paga in due modi. Con quote così grandi i numeri che il
 magazziniere segna crescono in fretta, e diventano troppo grandi perché il
-computer li sappia scrivere: dieci articoli che entrano ciascuno con quota
-mille fanno già un uno seguito da trenta zeri. La contromisura è segnare tutto
-in rapporto alla quota più grande ancora in gioco, come chi, invece di scrivere
-cifre enormi, scrive «metà della più grande», «un decimo della più grande»: i
-rapporti restano gli stessi, e i numeri da scrivere restano piccoli.
+computer li sappia scrivere: una quota senza tetto può arrivare a un uno seguito
+da quaranta zeri. La contromisura è segnare tutto in rapporto alla quota più
+grande ancora in gioco, come chi, invece di scrivere cifre enormi, scrive «metà
+della più grande», «un decimo della più grande»: i rapporti restano gli stessi,
+e i numeri da scrivere restano piccoli.
 
 Poi c'è la risposta al cliente. Il magazziniere prende il mucchio che ha
 accumulato sullo scaffale e lo divide per quanta roba ci ha fatto entrare, come

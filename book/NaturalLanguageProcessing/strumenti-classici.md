@@ -98,15 +98,15 @@ valido, di solito c'è un'espressione regolare che ha confrontato il testo
 digitato con lo schema atteso e ha trovato che non combacia.
 
 Questi superpoteri hanno però un limite, che non nasce da una distrazione.
-[Un'espressione regolare non sa contare]{.pt-matita}. Scorre il testo da
-sinistra a destra e a ogni carattere ricorda solo in che punto dello schema si
-trova, non quante volte ci è già passata. Quindi non c'è modo di scriverne una
-che verifichi «ogni parentesi aperta ne ha una chiusa» quando le parentesi si
-possono annidare quanto si vuole: dovrebbe tenere il conto di quante ne ha
-aperte, e non ha dove segnarlo. Vale per le parentesi e vale per le frasi
-dentro le frasi, che sono la stessa cosa fatta di parole: «il gatto che dorme
-sul divano che ho comprato quando…». Per quelle serviranno gli strumenti della
-{doc}`sezione su sintassi e parsing
+[Un'espressione regolare non sa contare senza un tetto fisso]{.pt-matita}.
+Scorre il testo da sinistra a destra e a ogni carattere ricorda solo in che
+punto dello schema si trova, non quante volte ci è già passata. Quindi non c'è
+modo di scriverne una che verifichi «ogni parentesi aperta ne ha una chiusa»
+quando le parentesi si possono annidare quanto si vuole: dovrebbe tenere il
+conto di quante ne ha aperte, e non ha dove segnarlo. Vale per le parentesi e
+vale per le frasi dentro le frasi, che sono la stessa cosa fatta di parole: «il
+gatto che dorme sul divano che ho comprato quando…». Per quelle serviranno gli
+strumenti della {doc}`sezione su sintassi e parsing
 </NaturalLanguageProcessing/struttura-frase>`.
 
 Lo schema è una cosa, il programma che lo esegue un'altra. `grep` legge il testo
@@ -173,21 +173,21 @@ annidate a profondità arbitraria]{.pt-matita} (parentesi bilanciate,
 subordinate dentro subordinate). Per la sintassi delle lingue naturali servono
 strumenti più potenti, oppure modelli che la imparano dai dati.
 
-La garanzia di tempo lineare offerta dal teorema riguarda i motori che
-compilano l'automa, come `grep` o RE2. Il modulo `re` di Python non costruisce
-l'automa: procede per *backtracking*, provando una strada e tornando indietro,
-e la garanzia decade anche su schemi formalmente regolari. Su `^(a+)+$`, che
-descrive il modestissimo insieme delle stringhe di sole `a` e che `grep`
-liquida in un istante, `re` applicato a un input ostile impiega un tempo che
-raddoppia a ogni carattere in più, perché prova una per una le $2^{n-1}$
-scomposizioni di $n$ lettere in gruppi. Inoltre i costrutti aggiuntivi del
-modulo (le *backreference*, che chiedono a un pezzo di ripetersi identico)
-descrivono linguaggi non regolari, ed escono dalla portata del teorema. Da
-Python 3.11 il modulo ha i quantificatori possessivi (`a++`) e i gruppi atomici
-(`(?>...)`), che vietano al motore di tornare indietro dentro quel pezzo: con
-`(a++)+` al posto di `(a+)+`, lo stesso input ostile si chiude subito.
-L'alternativa è un motore a tempo lineare come RE2, che per garantirlo rinuncia
-alle backreference.
+La garanzia di tempo lineare nella lunghezza del testo viene dall'automa, non
+dal teorema, e riguarda i motori che lo costruiscono, come `grep` o RE2. Il
+modulo `re` di Python non costruisce l'automa: procede per *backtracking*,
+provando una strada e tornando indietro, e la garanzia decade anche su schemi
+formalmente regolari. Su `^(a+)+$`, che descrive il modestissimo insieme delle
+stringhe di sole `a` e che `grep` liquida in un istante, `re` applicato a un
+input ostile impiega un tempo che raddoppia a ogni carattere in più, perché
+prova una per una le $2^{n-1}$ scomposizioni di $n$ lettere in gruppi. Inoltre
+i costrutti aggiuntivi del modulo (le *backreference*, che chiedono a un pezzo
+di ripetersi identico) descrivono linguaggi non regolari, ed escono dalla
+portata del teorema. Da Python 3.11 il modulo ha i quantificatori possessivi
+(`a++`) e i gruppi atomici (`(?>...)`), che vietano al motore di tornare
+indietro dentro quel pezzo: con `(a++)+` al posto di `(a+)+`, lo stesso input
+ostile si chiude subito. L'alternativa è un motore a tempo lineare come RE2,
+che per garantirlo rinuncia alle backreference.
 
 `````
 
@@ -370,7 +370,7 @@ documento.
 
 Le reti neurali moderne, invece, hanno progressivamente smesso di scartare
 l'informazione, perché maiuscole, accenti e desinenze *portano significato*. In
-«Rosa è rosa» la prima parola è un nome proprio e la seconda un colore: con il
+«Ho dato a Rosa una rosa» la prima è un nome proprio e la seconda un fiore: con il
 minuscolo diventano la stessa parola, e il senso si perde. Al posto di questa
 eliminazione, le reti usano un taglio diverso, che conserva il testo com'è e
 lo spezza in unità più piccole della parola: una parola lunga e rara come
@@ -649,8 +649,10 @@ refusi di un anno di notizie dell'Associated Press, aggiornano le matrici con
 le correzioni scelte e ripetono, lisciando i conteggi con il metodo di Good e
 Turing. Il modello della lingua è un unigramma, stimato come $P(w) =
 (\mathrm{freq}(w) + 0{,}5)/N$ su $N = 44$ milioni di parole dello stesso
-archivio: lo smoothing additivo (add-$k$, qui con $k = 1/2$), lo stesso dei
-{doc}`modelli n-gram </NaturalLanguageProcessing/modelli-ngram>`.
+archivio: uno smoothing additivo con $k = 1/2$, a cui però manca il $k|V|$ al
+denominatore dell'add-$k$ dei {doc}`modelli
+n-gram </NaturalLanguageProcessing/modelli-ngram>`: le $P(w)$ non sommano a
+uno, e alla scelta della correzione più probabile non importa.
 
 Il limite sta nell'unigramma, che guarda ogni parola senza le vicine.
 Nell'esempio dell'articolo, *acress*, i candidati a una mossa sono sei parole

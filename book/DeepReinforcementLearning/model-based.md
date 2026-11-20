@@ -351,9 +351,9 @@ e i tre regimi si comportano in modo molto diverso.
 
 Per $L>1$ la somma esplode esponenzialmente in $k$, e questo è il caso che
 rende l'accumulo dell'errore un problema. Un sistema instabile ha per forza
-$L>1$, ma non vale il contrario, e il caso che sfugge è il peggiore di tutti.
-Una dinamica che alla lunga si riassorbe, infatti, può intanto allargare lo
-scarto di decine di volte, cioè nei pochi passi in cui vive il rollout.
+$L>1$, ma non vale il contrario. Una dinamica che alla lunga si riassorbe,
+infatti, può intanto allargare lo scarto di decine di volte, cioè nei pochi
+passi in cui vive il rollout.
 
 Per $L=1$ si ha la crescita lineare, $k\epsilon$, che è il caso limite e non il
 caso tipico. Per $L<1$, infine, cioè quando la dinamica è contrattiva e gli
@@ -504,8 +504,8 @@ quanto sterzo), il gradiente del ritorno immaginato può risalire il rollout,
 passo dopo passo, fino ai parametri della strategia, che impara così non solo
 *che* il tratto è andato male ma *di quanto* andava spostata ciascuna azione.
 Un'azione discreta, cioè una scelta fra le voci di un menu come nei giochi
-Atari, non ha derivata, e lì si torna allo stimatore di REINFORCE, che l'ultima
-versione di Dreamer usa per tutte le azioni.
+Atari, non ha derivata, e lì si torna allo stimatore di REINFORCE, che
+DreamerV3 usa per tutte le azioni.
 
 Anche in questo caso la simulazione si srotola nello spazio latente: a ogni
 passo il simulatore prevede il latente successivo, senza ricostruire le
@@ -522,7 +522,9 @@ allenato.
 
 E da una curva ripassata male il pilota non ricava soltanto che è andata male:
 ripercorrendola a ritroso capisce di quanto avrebbe dovuto girare il volante,
-punto per punto.
+punto per punto. È il modo delle prime versioni: la terza, per funzionare anche
+dove le scelte sono voci di un menu, ci rinuncia, e dal ripasso ricava soltanto
+se la curva è andata bene o male.
 
 Il ripasso, però, non è mai il giro intero. Il pilota riparte da un punto della
 pista in cui è passato nel pomeriggio e tira avanti per un tratto breve, la
@@ -548,11 +550,10 @@ policy <policy-gradient>`) su rollout immaginati di una quindicina di passi,
 chiusi dai $\lambda$-ritorni del critico, per contenere il compounding error.
 Nelle prime versioni l'attore impara per retropropagazione attraverso il
 modello quando le azioni sono continue, e con lo stimatore di REINFORCE quando
-sono discrete. La versione definitiva, DreamerV3 {cite}`hafner2023mastering`,
-usa REINFORCE per tutte e aggiunge normalizzazioni robuste di osservazioni,
-ricompense e ritorni che rendono lo stesso set di iperparametri valido su
-domini radicalmente diversi, il che dimostra che un agente model-based può
-essere *generalista*.
+sono discrete. DreamerV3 {cite}`hafner2023mastering` usa REINFORCE per tutte e
+aggiunge normalizzazioni robuste di osservazioni, ricompense e ritorni che
+rendono lo stesso set di iperparametri valido su domini radicalmente diversi,
+il che dimostra che un agente model-based può essere *generalista*.
 
 La parentela con Dyna è diretta (attore e critico crescono su esperienza
 sintetica generata da un modello appreso), ma qui il modello è una rete

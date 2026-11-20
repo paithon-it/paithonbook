@@ -89,13 +89,14 @@ int4         4     3.5 GB   sì
 I formati portano il nome che hanno nel codice, `float` per la virgola mobile e
 `int` per gli interi, seguito dai bit. Le due righe agli estremi descrivono lo
 stesso modello, con gli stessi parametri, addestrato una volta sola. Nella
-prima non ci sta, mentre nell’ultima ci starebbe quattro volte e mezzo. Fra le
-due [non c’è nessun addestramento in più: gli stessi parametri sono scritti con
-meno cifre]{.pt-matita}, cioè arrotondati.
+prima non ci sta, mentre nell’ultima ci starebbe quattro volte e mezzo, una
+copia accanto all’altra. Fra le due [non c’è nessun addestramento in più: gli
+stessi parametri sono scritti con meno cifre]{.pt-matita}, cioè arrotondati.
 
 La colonna di destra, però, conta i soli pesi. Per far girare davvero il
-modello serve dell’altro spazio, quindi la riga a sedici bit, che lascia due
-gigabyte esatti di margine, nella pratica è più stretta di quanto sembri.
+modello, con i risultati intermedi e la memoria di ciò che ha già letto, serve
+dell’altro spazio, quindi la riga a sedici bit, che lascia due gigabyte esatti
+di margine, nella pratica è più stretta di quanto sembri.
 
 ## Le tre leve
 
@@ -106,7 +107,8 @@ e per questo si possono usare tutte e tre insieme.
 La prima toglie bit a ogni parametro. I parametri restano tutti, e resta la
 forma della rete; cambia solo quante cifre si tengono di ciascun numero. In
 altri termini, agisce sul secondo dei due numeri. Si chiama **quantizzazione**,
-e rende di più per quanto costa.
+ed è la più conveniente: fra le tre è quella che rende di più rispetto alla
+fatica che chiede.
 
 La seconda toglie parametri. La forma della rete resta quella, ma una parte dei
 suoi collegamenti viene messa a zero, e in linea di principio non servirebbe
@@ -161,7 +163,7 @@ rivolgersi, che cosa si promette a chi lo usa, come si misura se sta
 rispettando la promessa. È il piano di sopra.
 
 In mezzo sta il meccanismo: perché quattro bit bastino, che cosa si rompe
-quando non bastano, che cosa perde davvero uno studente che imita il maestro.
+quando non bastano, che cosa perde davvero un modello piccolo che imita il grande.
 Non come si mette in produzione, ma perché funziona il modello che si mette in
 produzione.
 
@@ -197,9 +199,10 @@ produzione.
   quattro bit con gruppi da sessantaquattro), e in servizio ci sono le
   attivazioni e la cache che cresce con la conversazione.
 - Le tre leve agiscono su fattori diversi dello stesso prodotto: la
-  quantizzazione su $b$, la potatura e la distillazione su $P$. Le
-  ultime due lo fanno però in modi diversi: la potatura svuota una matrice che
-  resta della sua forma, la distillazione cambia la forma.
+  quantizzazione su $b$, la potatura e la distillazione su $P$. Le ultime due
+  lo fanno però in modi diversi: la potatura svuota una matrice che resta della
+  sua forma, e i byte scendono solo se la si salva in formato sparso, dove ogni
+  peso tenuto paga anche il suo indice; la distillazione cambia la forma.
 - Sono componibili e si compongono davvero. Un modello distillato, ad esempio,
   si pota, e uno potato si quantizza, nell'ordine in cui le compone la
   {doc}`prova sulla potatura <meno-pesi>`. Non è componibile, invece, il
@@ -218,7 +221,8 @@ produzione.
 
 `````
 
-La prima leva rende di più e si spiega peggio, perché la domanda
-che si porta dietro è scomoda: come fa un modello a funzionare quasi come prima
-se gli si tolgono ventotto bit su trentadue? Risponde la sezione {doc}`Meno
-bit </Efficienza/meno-bit>`, e la risposta comincia dal supermercato.
+La prima leva rende di più e si spiega peggio, perché la domanda che si porta
+dietro è scomoda: come fa un modello a funzionare quasi come prima se gli si
+tolgono ventotto bit su trentadue, passando da trentadue a quattro? Risponde la
+sezione {doc}`Meno bit </Efficienza/meno-bit>`, e la risposta comincia dal
+supermercato.

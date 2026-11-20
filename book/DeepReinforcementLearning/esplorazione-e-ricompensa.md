@@ -262,7 +262,8 @@ tirati a caso e non si tocca più, e a ogni schermata risponde con un numero
 senza significato, ma sempre lo stesso per la stessa schermata; la seconda si
 allena a indovinarlo sulle schermate per cui l'agente passa. Dove l'agente è
 passato spesso, la seconda ha avuto tempo di impararlo e sbaglia poco; su una
-schermata nuova sbaglia parecchio, e il suo errore è il premio alla novità.
+schermata molto diversa da quelle viste sbaglia parecchio, e il suo errore è il
+premio alla novità.
 
 `````
 
@@ -625,11 +626,10 @@ tutto lo sforzo*.
 La legge porta il nome di Charles Goodhart, un economista britannico che nel
 1975 la osservò a proposito della moneta: le banche centrali usavano certi
 indicatori per capire come andasse l'economia, e quegli indicatori smisero di
-funzionare non appena si cominciò a governarli. Quella sintesi
-è però dell'antropologa Marilyn Strathern, che la scrisse nel 1997
-studiando come si valutano le università britanniche
-{cite}`strathern1997improving`, e ha portato la legge
-fuori dall'economia.
+funzionare non appena si cominciò a governarli. La frase fra virgolette, però,
+è dell'antropologa Marilyn Strathern, che la scrisse nel 1997 studiando come si
+valutano le università britanniche {cite}`strathern1997improving`, e ha portato
+la legge fuori dall'economia.
 
 L'esempio diventato manifesto è di OpenAI {cite}`clark2016faulty`: in
 *CoastRunners*, un gioco di
@@ -688,14 +688,16 @@ penalità esplicite, apprendimento della ricompensa dalle preferenze umane
 della specifica. Il risultato formale più netto è negativo. Skalse e colleghi
 chiamano *non hackable* una ricompensa surrogata rispetto a quella vera se non
 esiste una coppia di politiche su cui il ritorno surrogato sale mentre quello
-vero scende. Dimostrano che sull'insieme di tutte le politiche
-stazionarie due ricompense non banali (che non danno lo stesso ritorno a ogni
+vero scende. Dimostrano che sull'insieme di tutte le politiche stazionarie
+stocastiche due ricompense non banali (che non danno lo stesso ritorno a ogni
 politica) sono non hackable l'una rispetto all'altra solo se sono
 *equivalenti*, cioè se ordinano le politiche nello stesso modo; e lo stesso
-vale limitandosi alle politiche quasi ottime {cite}`skalse2022defining`.
-Togliere termini alla ricompensa per semplificarla, quindi, non basta a
-renderla sicura: o se ne preserva l'ordine esatto, o esiste una coppia di
-politiche su cui migliorare quella surrogata peggiora quella vera.
+vale limitandosi alle politiche quasi ottime {cite}`skalse2022defining`. Con
+politiche stocastiche, quindi, togliere termini alla ricompensa per
+semplificarla non basta a renderla sicura: o se ne preserva l'ordine esatto, o
+esiste una coppia di politiche su cui migliorare quella surrogata peggiora
+quella vera. Su politiche deterministiche, invece, semplificazioni non hackable
+possono esistere, a condizioni che gli autori caratterizzano.
 
 Il nodo di
 fondo (specificare compiutamente ciò che vogliamo tramite una funzione scalare)

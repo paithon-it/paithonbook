@@ -897,8 +897,9 @@ c'è più niente da normalizzare su tutto il batch]{.pt-matita}. Con il batch
 distribuito su $D$ dispositivi, ciascuno calcola la perdita dei propri $B/D$
 esempi contro un blocco di embedding di testo alla volta, e i blocchi passano
 al dispositivo vicino con $D$ permutazioni collettive, senza radunare tutto su
-ciascuno: la memoria della matrice scende da $B^2$ a $(B/D)^2$ per dispositivo,
-mentre il calcolo totale resta $O(B^2 d)$.
+ciascuno: la memoria della matrice per dispositivo scende da $(B/D) \cdot B$,
+la striscia che ogni GPU calcola già con CLIP, a $(B/D)^2$, mentre il calcolo
+totale resta $O(B^2 d)$.
 
 La qualità risente molto meno della dimensione del batch. Nelle prove degli
 autori con l'encoder visivo bloccato (SigLiT) la sigmoide batte di parecchio la
@@ -1096,12 +1097,13 @@ leggere lo mostra la sezione {doc}`Innestare gli occhi
   calcolo, che accanto ai due encoder è trascurabile, ma la memoria della
   matrice. La normalizzazione di riga obbliga inoltre a un all-gather degli
   embedding fra i dispositivi a ogni passo.
-- Le due modalità restano in due regioni disgiunte dello spazio condiviso, il
-  *modality gap* {cite}`liang2022mind`: il contrastivo ottimizza un ordinamento
-  dentro il batch, e di quell'ordinamento la sovrapposizione delle due nuvole
-  non fa parte; a temperatura bassa, come in CLIP, forzarla a mano fa salire la
-  perdita invece di abbassarla. Conseguenza operativa: un coseno cross-modale
-  non si confronta con un coseno intra-modale.
+- Nei modelli come CLIP le due modalità occupano due regioni separate dello
+  spazio condiviso, il *modality gap* {cite}`liang2022mind`: il contrastivo
+  ottimizza un ordinamento dentro il batch, e di quell'ordinamento la
+  sovrapposizione delle due nuvole non fa parte; a temperatura bassa, come in
+  CLIP, forzarla a mano fa salire la perdita invece di abbassarla. Conseguenza
+  operativa: un coseno cross-modale non si confronta con un coseno
+  intra-modale.
 - La classificazione zero-shot è una conseguenza, non una funzione in più:
   una regressione logistica i cui pesi li genera l'encoder di testo, una
   didascalia per classe. La forma del prompt conta, perché il modello ha

@@ -389,9 +389,9 @@ cioè $\Theta(n)$.
 
 Il determinante compare in altri due posti. Nella densità della gaussiana
 multivariata, il fattore di normalizzazione contiene
-$(\det\boldsymbol{\Sigma})^{-1/2}$ e misura il volume dell'ellissoide di
-covarianza; nella verosimiglianza dei processi gaussiani,
-$\log\det\boldsymbol{\Sigma}$ e
+$(\det\boldsymbol{\Sigma})^{-1/2}$, l'inverso di una quantità proporzionale al
+volume dell'ellissoide di covarianza; nella verosimiglianza dei processi
+gaussiani, $\log\det\boldsymbol{\Sigma}$ e
 $\mathbf{y}^\top\boldsymbol{\Sigma}^{-1}\mathbf{y}$ si ricavano dalla stessa
 fattorizzazione di Cholesky della matrice di covarianza, che costa
 $\Theta(N^3)$ nel numero $N$ di osservazioni {cite}`rasmussen2006gaussian`.

@@ -47,7 +47,7 @@ hai pagato. Il modello non ti mente: ti dà meno di quanto sembra.
 Per scoprirlo si contano, su tante schede insieme, le manopole che si muovono
 in modo indipendente. Contarle non basta: otto manopole libere che girano a
 caso, come un rumore, sono tutte indipendenti e non descrivono niente. Nemmeno
-i metodi che giocano con i rivali ne sono esenti.
+i metodi che giocano con i rivali sono esenti dal collasso parziale.
 
 È insidioso perché il punteggio del pretesto può essere ottimo lo stesso. Se il
 gioco che gli abbiamo dato si vince con tre direzioni, tre direzioni gli
@@ -205,10 +205,10 @@ $$
 
 come mostrano van den Oord e colleghi {cite}`oord2018representation`, e in
 forma rigorosa Ben Poole e colleghi {cite}`poole2019variational`. Il critico
-che lo rende più stretto è il rapporto di densità
-$f^*(\mathbf{x}, \mathbf{y}) = \log p(\mathbf{y} \mid \mathbf{x}) / p(\mathbf{y})$,
-a meno di una funzione della sola $\mathbf{x}$, e con quello il limite tende a
-$I$ quando $K$ cresce.
+che lo rende più stretto è il logaritmo del rapporto di densità,
+$f^*(\mathbf{x}, \mathbf{y}) = \log\big(p(\mathbf{y} \mid \mathbf{x}) /
+p(\mathbf{y})\big)$, a meno di una funzione della sola $\mathbf{x}$, e con
+quello il limite tende a $I$ quando $K$ cresce.
 
 La disuguaglianza però è saturata da $\log K$: la
 perdita non è mai negativa, quindi anche con $\mathcal{L}_{\text{NCE}} = 0$ la
@@ -221,24 +221,25 @@ l'informazione mutua può svanire {cite}`tschannen2020mutual`.
 
 Ne seguono due conseguenze, da tenere separate. La prima è tecnica: il numero
 $K$ dei candidati, e con lui il batch da cui si pescano, entra nella
-*garanzia*, non solo nel costo, e per questo in questi metodi i batch sono
-enormi. La seconda riguarda l'interpretazione e pesa di più: la massimizzazione
-dell'informazione mutua non può essere la spiegazione del successo di questi
-metodi.
+*garanzia*, non solo nel costo; che in pratica servano molti candidati (batch
+enormi in SimCLR, una coda in MoCo) è però un dato empirico, che il limite da
+solo non spiega. La seconda riguarda l'interpretazione e pesa di più: la
+massimizzazione dell'informazione mutua non può essere la spiegazione del
+successo di questi metodi.
 
-Due risultati lo mostrano direttamente. Michael Tschannen e colleghi
-prendono encoder invertibili, che per costruzione conservano tutta
-l'informazione mutua, e trovano che la qualità delle rappresentazioni cambia lo
-stesso, durante l'addestramento e al variare dell'architettura; e mostrano che
-limiti più stretti, ottenuti con critici di capacità maggiore, possono dare
+Due risultati lo mostrano direttamente. Michael Tschannen e colleghi prendono
+encoder invertibili, che per costruzione conservano tutta l'informazione mutua,
+e trovano che la qualità delle rappresentazioni cambia lo stesso, durante
+l'addestramento e al variare dell'architettura; e mostrano che limiti più
+stretti, ottenuti con critici di capacità maggiore, possono dare
 rappresentazioni peggiori di limiti più larghi ottenuti con critici semplici
 {cite}`tschannen2020mutual`. David McAllester e Karl Stratos chiudono il lato
 teorico: nessun limite inferiore sull'informazione mutua che valga senza
 ipotesi sulla distribuzione, e con alta confidenza, può superare l'ordine di
 $\log M$ se lo si stima da $M$ campioni {cite}`mcallester2020formal`. Il
-risultato vale per qualunque stimatore, e dice che il tetto $\log K$ è il
-limite di ogni certificazione di informazione a partire da un numero finito di
-esempi, a cui l'InfoNCE è soggetta come ogni altro stimatore.
+risultato vale per qualunque stimatore: da $M$ esempi non si certifica più
+dell'ordine di $\log M$, e il tetto $\log K$ dell'InfoNCE, con $K \le M$, ne è
+un caso più stretto.
 
 La distillazione
 asimmetrica e la riduzione di ridondanza, che non stimano $I$ in nessun modo,

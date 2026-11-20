@@ -25,7 +25,8 @@ mille», chiedersi quanto disturbo c'è sopra, toglierne un pochino e ritrovarsi
 al livello 999; e così, gradino dopo gradino, arrivare al livello zero, che è
 quello senza disturbo. Sotto quel pulviscolo non c'era nessuna fotografia,
 eppure alla fine della scala c'è una fotografia nuova; e quale fotografia esca
-lo decide il rumore di partenza, estratto a caso e sempre diverso.
+lo decide in buona parte il rumore di partenza, estratto a caso e sempre
+diverso.
 
 Lo smontiamo in due parti: il verso facile, che rovina la fotografia, e il
 verso difficile, che si impara. La {numref}`fig-diffusione-processo` è la mappa
@@ -960,10 +961,10 @@ trasformato da un piccolo MLP e sommato alle feature di *ogni* blocco della
 U-Net. Così [una sola rete serve tutti i mille livelli di rumore]{.pt-matita}:
 $t$ le dice a quale punto della scala sta lavorando, se sgrossare forme globali
 (rumore alto) o rifinire texture (rumore basso). La U-Net di DDPM aggiunge
-infine blocchi di self-attention a una sola risoluzione intermedia (nei modelli
-$32 \times 32$, la mappa $16 \times 16$, e non le due più basse), dove i pixel
-sono già pochi abbastanza perché guardarli tutti insieme costi poco, ma non
-così pochi da non avere più struttura da confrontare.
+infine blocchi di self-attention alla risoluzione $16 \times 16$ (nei modelli
+$32 \times 32$), dove i pixel sono già pochi abbastanza perché guardarli tutti
+insieme costi poco, e uno nel blocco centrale, alla risoluzione più bassa (il
+paper nomina solo i primi; il secondo sta nel codice di riferimento).
 
 `````
 

@@ -350,16 +350,16 @@ arriva al modello già dentro la $f_0$, e il modello non lo genera.
 
 VISinger {cite}`zhang2022visinger` parte invece dalle note e da un'osservazione
 sullo schema a due stadi: il vocoder si addestra sul mel vero e in uso riceve
-quello predetto, con una differenza di distribuzione fra addestramento e uso. Lo
-scarto riguarda anche DiffSinger, che usa un Parallel WaveGAN preaddestrato,
+quello predetto, con una differenza di distribuzione fra addestramento e uso.
+Lo scarto riguarda anche DiffSinger, che usa un Parallel WaveGAN preaddestrato,
 cioè addestrato per conto suo, e in uso gli passa i mel del modello acustico
 {cite}`liu2022diffsinger`. VISinger prende quindi l'architettura end-to-end di
 VITS {cite}`kim2021vits` (un autoencoder variazionale condizionale con un
-encoder a posteriori che legge l'onda, un prior reso più flessibile da un
-normalizing flow e un decoder addestrato in modo avversario) e la adatta al
-canto in tre punti: la rete del prior lavora a livello di frame e non di fonema;
-un predittore di $f_0$ guida la rete del prior; il predittore di durata stima,
-per il fonema $i$, il rapporto
+encoder a posteriori che legge lo spettrogramma lineare, un prior reso più
+flessibile da un normalizing flow e un decoder che genera l'onda, addestrato in
+modo avversario) e la adatta al canto in tre punti: la rete del prior lavora a
+livello di frame e non di fonema; un predittore di $f_0$ guida la rete del
+prior; il predittore di durata stima, per il fonema $i$, il rapporto
 
 $$
 \rho_i = \frac{d_i}{b_{j(i)}}
@@ -570,8 +570,9 @@ D_{\mathrm{KL}}(t) = \frac{\bar{\alpha}_t}{2\,(1-\bar{\alpha}_t)}\,\lVert \mathb
 $$
 
 dove $\mathrm{SNR}(t) = \bar{\alpha}_t/(1-\bar{\alpha}_t)$ è il rapporto
-segnale-rumore al passo $t$, cioè la varianza del segnale sopravvissuto divisa
-per quella del rumore accumulato.
+segnale-rumore al passo $t$, cioè il quadrato del coefficiente del segnale
+diviso per la varianza del rumore accumulato (diventa il rapporto fra le
+varianze solo se le componenti del mel hanno varianza unitaria).
 
 In uso, però, $\mathbf{x}_0$ non è noto, e la legge che il processo inverso ha
 visto in addestramento, per una data partitura, è la marginale
@@ -762,8 +763,8 @@ canzone </GenerazioneMusica/tutta-la-canzone-insieme>`.
   pezzo all'altezza della nota e livella le giunture. Non impara niente, e non
   inventa niente.
 - Una rete impara dalle registrazioni come una partitura diventa suono. Ogni
-  suono resta acceso per le colonne del mel che gli spettano, e due stimatori
-  guidano la durata dei suoni e la curva dell'altezza.
+  suono resta acceso per le colonne del mel che gli spettano, e in VISinger due
+  stimatori guidano la durata dei suoni e la curva dell'altezza.
 - DiffSinger parte da un mel sfocato coperto di nebbia fino al passo 54,
   invece che dalla nebbia completa, e compie 54 passi invece di 100, con un
   tempo che cala quasi nella stessa proporzione.

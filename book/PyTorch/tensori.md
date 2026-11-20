@@ -215,7 +215,7 @@ la forma completa è quindi `t.detach().cpu().numpy()`, come nella sezione sui
 Le regole di broadcasting sono le stesse di NumPy: gli assi si allineano da
 destra e le dimensioni compatibili (uguali, o pari a 1) si espandono
 virtualmente. Ad esempio, una matrice $(3, 4)$ più un vettore $(4,)$ produce
-una $(3, 4)$. Il prodotto matriciale è `@` (ovvero `torch.matmul`), con la
+una $(3, 4)$. Il prodotto matriciale è `@` (cioè `torch.matmul`), con la
 stessa semantica di NumPy anche sui vettori rank-1; in particolare, `a @ b` tra
 due vettori è direttamente il prodotto scalare, senza bisogno di reshape.
 
@@ -407,7 +407,7 @@ percorre nei due sensi.
 
 ```{figure} ../figures/nastro-si-riavvolge.svg
 :name: fig-nastro-autograd
-:alt: "Il grafo del conto y uguale a x al quadrato più due x, con x che vale 3. A sinistra il riquadro di x, da cui partono due frecce verso due operazioni: quella in alto moltiplica x per x, quella in basso moltiplica x per 2; le due si ritrovano nel riquadro di y a destra. All'andata lungo le frecce compaiono i valori 3 e 3, poi 9 e 6, e y vale 15; sotto ciascuna operazione compare un appunto tratteggiato, 3 per il quadrato e 2 per il ramo lineare. Al ritorno le frecce si percorrono al contrario partendo da 1 dal fondo, e ogni appunto lascia il posto al proprio conto: uno per due per tre uguale sei nel ramo del quadrato, uno per due uguale due in quello lineare. In basso a sinistra il contatore x.grad si riempie in due tempi, prima 6 e poi 6 più 2 uguale 8. Una riga in fondo ricorda che gli appunti dell'andata li consuma il ritorno, e che per riavvolgere una seconda volta bisogna rifare l'andata oppure chiedere prima che restino."
+:alt: "Il grafo del conto y uguale a x al quadrato più due x, con x che vale 3. A sinistra il riquadro di x, da cui partono due frecce verso due operazioni: quella in alto moltiplica x per x, quella in basso moltiplica x per 2; le due si ritrovano nel riquadro di y a destra. All'andata lungo le frecce compaiono i valori 3 e 3, poi 9 e 6, e y vale 15; sotto ciascuna operazione compare un appunto tratteggiato, 3 per il quadrato e 2 per il ramo lineare. Al ritorno le frecce si percorrono al contrario partendo da 1 dal fondo, e ogni appunto lascia il posto al proprio conto: uno per due per tre uguale sei nel ramo del quadrato, uno per due uguale due in quello lineare. In basso a sinistra il contatore x.grad resta vuoto finché i due contributi, 6 e 2, non si sono sommati, e riceve 6 più 2 uguale 8 in una volta sola. Una riga in fondo ricorda che gli appunti dell'andata li consuma il ritorno, e che per riavvolgere una seconda volta bisogna rifare l'andata oppure chiedere prima che restino."
 :width: 100%
 
 Lo stesso calcolo percorso nei due sensi. All'andata ogni operazione salva il
@@ -440,13 +440,12 @@ operazione, formano il *grafo* computazionale: una fila, finché ogni numero
 serve una volta sola, che si biforca appena un numero entra in due operazioni.
 
 Nel conto $y = x^2 + 2x$ con $x$ che vale $3$, dal nastro esce $8$. Quasi lo
-stesso numero viene a mano spostando $x$ da $3$ a $3{,}01$: $y$ sale da
-$15$ a $15{,}0801$, cioè di $0{,}0801$ per uno spostamento di $0{,}01$, otto
-volte tanto e un centesimo. Quel centesimo di troppo viene dallo spostamento,
-che non era abbastanza piccolo: partendo da $3{,}001$ scende a un millesimo, e
-più lo si accorcia più il rapporto si avvicina a otto tondo. Dal nastro invece
-esce l'otto senza approssimazioni, e nessuno ha scritto la formula della
-derivata.
+stesso numero viene a mano spostando $x$ da $3$ a $3{,}01$: $y$ sale da $15$ a
+$15{,}0801$, cioè di $0{,}0801$ per uno spostamento di $0{,}01$: il rapporto fa
+otto e un centesimo. Quel centesimo di troppo viene dallo spostamento, che non
+era abbastanza piccolo: partendo da $3{,}001$ scende a un millesimo, e più lo
+si accorcia più il rapporto si avvicina a otto tondo. Dal nastro invece esce
+l'otto senza approssimazioni, e nessuno ha scritto la formula della derivata.
 
 Il verso del riavvolgimento decide il costo. [Il nastro si riavvolge una volta
 sola, e da quella passata all'indietro esce l'effetto di tutti i pesi
@@ -460,10 +459,11 @@ non si può.
 
 Un numero può comparire in più punti dello stesso conto, e allora sul nastro
 compare più volte. Il registratore non ne sceglie uno: per ogni punto scrive di
-quanto quel punto ha spostato il risultato, e alla fine somma i pezzi, $6$ dal
-quadrato e $2$ dal doppio. Somma anche nel taccuino su cui deposita, `x.grad`,
-ma per un'altra ragione: PyTorch è fatto così, e il taccuino non si cancella
-automaticamente.
+quanto quel punto ha spostato il risultato, e alla fine somma i pezzi: $6$ dal
+quadrato, perché un quadrato cresce del doppio del suo numero e il numero è
+tre, e $2$ dal doppio, perché raddoppiare raddoppia anche ogni spostamento.
+Somma anche nel taccuino su cui deposita, `x.grad`, ma per un'altra ragione:
+PyTorch è fatto così, e il taccuino non si cancella automaticamente.
 
 Capita a tutti la prima volta: rifai il calcolo da capo, richiedi la derivata
 senza aver svuotato `x.grad`, e ti ritrovi in mano $16$ invece di $8$. Per
@@ -475,8 +475,9 @@ riavvolge due volte, a meno di chiedere prima che gli appunti restino, e allora
 occupano memoria fino alla fine: non lo si chiede per abitudine.
 
 Il registratore, poi, scrive soltanto dove gli è stato detto di guardare: sui
-numeri dichiarati la derivata si trova, sui risultati calcolati per strada non
-c'è niente.
+numeri dichiarati da seguire (quelli creati con `requires_grad=True`) la
+derivata si trova, mentre sui risultati calcolati per strada, come `y`, il
+taccuino resta vuoto.
 
 Infine, il registratore rilegge alcune operazioni senza cavarne niente, ad
 esempio arrotondare a un numero intero o indicare la posizione del più grande
@@ -506,12 +507,15 @@ $$
   \nabla_{\mathbf{z}} \mathcal{L},
 $$
 
-dove $\mathbf{z} \in \mathbb{R}^m$ raccoglie le $m$ quantità intermedie che
-dipendono dai $p$ parametri raccolti in $\theta$, $\partial \mathbf{z} /
-\partial \theta \in \mathbb{R}^{m \times p}$ è la matrice delle loro derivate
-(la Jacobiana) e $\nabla_{\mathbf{z}} \mathcal{L}$ è il gradiente già calcolato
-a valle. Composta lungo tutto il grafo, questa regola è precisamente
-l'algoritmo di {doc}`backpropagation </RetiNeurali/backpropagation>`.
+dove $\mathbf{z} \in \mathbb{R}^m$ raccoglie $m$ quantità intermedie che
+dipendono dai $p$ parametri raccolti in $\theta$ e attraverso cui passa *ogni*
+dipendenza di $\mathcal{L}$ da $\theta$ (un termine come
+$\lambda\lVert\theta\rVert^2$, che arriva a $\mathcal{L}$ per un'altra strada,
+si somma a parte), $\partial \mathbf{z} / \partial \theta \in \mathbb{R}^{m
+\times p}$ è la matrice delle loro derivate (la Jacobiana) e
+$\nabla_{\mathbf{z}} \mathcal{L}$ è il gradiente già calcolato a valle.
+Composta lungo tutto il grafo, questa regola è precisamente l'algoritmo di
+{doc}`backpropagation </RetiNeurali/backpropagation>`.
 
 Nella forma vettoriale ci sono due cose che una catena a un solo cammino non
 direbbe, e sono le due che contano nella pratica. La prima è la trasposta: la
@@ -555,11 +559,13 @@ prima di arrivare in `.grad`. È il punto in cui il grafo smette di essere una
 catena.
 
 L'accumulo fra chiamate diverse è un'altra cosa, e dipende da una scelta di
-progetto: `.grad` si aggiorna con `+=` e non con `=`. Così due
-`backward()` successive, anche su forward diversi, danno per linearità il
-gradiente della somma delle due loss, e si possono accumulare gradienti su più
-passate; in compenso il training loop deve azzerarli a ogni passo. Ripetere la
-*stessa* chiamata sullo stesso grafo, invece, solleva un errore.
+progetto: `.grad` si aggiorna con `+=` e non con `=`. Così due `backward()`
+successive, anche su forward diversi, danno per linearità il gradiente della
+somma delle due loss, e si possono accumulare gradienti su più passate; in
+compenso il training loop deve azzerarli a ogni passo. Ripetere la *stessa*
+chiamata sullo stesso grafo, invece, solleva un errore quando il grafo ha
+salvato valori per il ritorno, cioè quasi sempre (con `y = x + 1` non ne salva,
+e la seconda `backward()` somma in silenzio).
 
 ```python
 x = torch.tensor(3.0, requires_grad=True)

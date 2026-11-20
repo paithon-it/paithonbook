@@ -234,8 +234,8 @@ La macchina dell'articolo di Turing, lasciata andare, scriverebbe per sempre, e
 lo si vede dalle sue quattro regole. Ciascuna, infatti, scrive una cifra o
 salta una casella, va a destra e passa allo stato successivo, e dall'ultimo
 stato si torna al primo, in cerchio, senza mai arrivare in uno stato privo di
-regole. Per una macchina qualunque, invece, sapere se si fermerà è una
-domanda a cui nessun programma sa rispondere.
+regole. Per tutte le macchine insieme, invece, non esiste un programma che
+sappia dire, di ciascuna, se si fermerà.
 
 ## La domanda che nessun programma risolve
 

@@ -147,7 +147,7 @@ grandezza (le cifre esatte cambiano con la generazione: qui contano le
   registri.
 - **Shared memory e cache L1**, on-chip, all'interno dello SM, con latenza di
   poche decine di cicli. La shared memory è condivisa dai thread di uno stesso
-  blocco, dell'ordine di un centinaio di KB per unità di calcolo, e la sua
+  blocco, dell'ordine di un centinaio di KB per SM, e la sua
   particolarità è che *non* è una cache automatica: la gestisci a mano,
   decidendo tu che cosa metterci. La L1 sì, è automatica. La piramide
   disegnata, però, nasconde che oggi le due sono lo stesso banco di SRAM (lo
@@ -162,19 +162,20 @@ grandezza (le cifre esatte cambiano con la generazione: qui contano le
   ottiene solo per fortuna. Infine, i registri in eccesso (gli *spill*, quando
   un thread ne chiede più di quanti ne ha) finiscono in memoria locale e
   passano dalla L1, a cui sottraggono capienza e banda.
-- **Cache L2**, condivisa da tutte le unità di calcolo, dell'ordine di decine
+- **Cache L2**, condivisa da tutti gli SM, dell'ordine di decine
   di MB (40 MB su A100), con latenza di un paio di centinaia di cicli. È
   l'ultimo livello *dentro* il chip.
 - **Memoria globale** (HBM), la *High Bandwidth Memory* off-chip, con decine di
   GB, banda dell'ordine di qualche TB/s, ma latenza di *centinaia* di cicli. Lì
   vivono tensori, pesi e attivazioni.
-- **Memoria host**, la RAM di sistema, di là dal bus PCIe che separa CPU e
-  GPU: capiente quanto vuoi, ma raggiungibile solo attraverso quel bus, che
-  consegna qualche decina di GB/s (uno o due ordini di grandezza sotto la
-  HBM). Il collo di bottiglia è il PCIe, non la RAM, molto più svelta in
-  sé. Per questo, come visto nella sezione {doc}`«Prestazioni e scala»
-  </PyTorch/prestazioni>`, `.to(device)` va fatto *una volta per batch* e non
-  tensore per tensore.
+- **Memoria host**, la RAM di sistema, di là dal bus PCIe che separa CPU e GPU:
+  capiente quanto vuoi, ma raggiungibile solo attraverso quel bus, che consegna
+  qualche decina di GB/s (uno o due ordini di grandezza sotto la HBM). Il collo
+  di bottiglia è il PCIe, non la RAM, molto più svelta in sé, e ogni copia paga
+  anche un costo fisso di qualche microsecondo. Per questo, come visto nella
+  sezione {doc}`«Prestazioni e scala» </PyTorch/prestazioni>`, i dati vanno
+  sulla GPU *un batch alla volta*, non esempio per esempio, e lì restano finché
+  servono.
 
 Due parametri descrivono ogni livello: la latenza (quanto aspetti il primo
 byte) e la banda (quanti byte al secondo, a regime). I warp nascondono la
@@ -256,7 +257,7 @@ thread che legge un vettore di `float32` (4 byte ciascuno).
 - *Accesso sparso*: per uno stride tale che ogni thread cada in un segmento
   diverso, servono 32 segmenti da 32 byte, cioè $32 \times 32 = 1024$ byte
   trasferiti per consegnare gli stessi 128 byte utili → efficienza 12,5%,
-  ovvero $8\times$ di banda buttata via.
+  cioè $8\times$ di banda buttata via.
 
 L'efficienza è il rapporto $\text{byte utili} / \text{byte trasferiti}$. In
 generale, su un carico limitato dalla banda, un fattore 8 di traffico sprecato è
@@ -447,11 +448,12 @@ da quattro byte l'uno: dodici byte per *un* conto. Fa un dodicesimo di conto
 per byte, e sei nel magazzino fino al collo.
 
 Adesso due tabelloni da quattromila numeri di lato, da moltiplicare. Il
-fattorino porta i tre tabelloni, 48 milioni di numeri, cioè 192 milioni di
-byte. I cuochi, per ciascuna delle 16 milioni di caselle del risultato, fanno
-quattromila moltiplicazioni e altrettante somme: 128 miliardi di conti.
-Dividendo, si ottengono quasi settecento conti per ogni byte portato, e il
-magazzino smette di essere il problema.
+fattorino porta i tre tabelloni (i due da moltiplicare e quello del risultato),
+48 milioni di numeri, cioè 192 milioni di byte. I cuochi, per ciascuna delle 16
+milioni di caselle del risultato, fanno quattromila moltiplicazioni e
+altrettante somme: 128 miliardi di conti. Dividendo, si ottengono quasi
+settecento conti per ogni byte portato, e il magazzino smette di essere il
+problema.
 
 Quel settecento, però, suppone che ogni ingrediente entri in cucina una volta
 sola, cioè che tutta la roba stia sul tavolo accanto ai cuochi mentre lavorano.
@@ -541,17 +543,18 @@ Due esempi concreti, con dati in `float32` (4 byte):
   10 FLOP/byte usa meno dell’1% del picco di calcolo.
 - **GEMM grande** $\mathbf{C} = \mathbf{A}\mathbf{B}$ con matrici $n \times n$.
   Servono circa $2n^3$ FLOP e, *con riuso perfetto*, $3 n^2 \times 4 = 12 n^2$
-  byte, per un'intensità $I = n/6$ FLOP/byte che cresce con $n$: per
-  $n = 4096$ vale circa 680 FLOP/byte, e l'operazione è saldamente
-  compute-bound. Per «riuso perfetto» s'intende leggere ogni elemento di
-  $\mathbf{A}$ e $\mathbf{B}$ *una volta sola*, cioè tenerle intere in memoria
-  veloce. Per $n = 4096$ in `float32` sono 128 MiB, e l'unico banco on-chip che
-  una tessera qualsiasi può attraversare è la cache L2, 50 MB su una H100.
-  Shared memory e registri, infatti, sono ripartiti per SM e per blocco, e
-  sommarli al totale darebbe un numero che nessun calcolo può spendere.
-  Quell’$n/6$ è quindi un tetto ideale, non un traguardo. La {doc}`sezione sul
-  GEMM <gemm-e-tensor-core>` riprenderà questo calcolo per mostrare a che punto
-  si arrivi in pratica (e perché non serva arrivarci).
+  byte, per un'intensità $I = n/6$ FLOP/byte che cresce con $n$: per $n = 4096$
+  vale circa 680 FLOP/byte, e l'operazione è saldamente compute-bound. Per
+  «riuso perfetto» s'intende leggere ogni elemento di $\mathbf{A}$ e
+  $\mathbf{B}$ *una volta sola*, cioè tenerne almeno una intera in memoria
+  veloce, più una riga dell'altra. Per $n = 4096$ in `float32` sono 64 MiB a
+  matrice, e l'unico banco on-chip che una tessera qualsiasi può attraversare è
+  la cache L2, 50 MB su una H100. Shared memory e registri, infatti, sono
+  ripartiti per SM e per blocco, e sommarli al totale darebbe un numero che
+  nessun calcolo può spendere. Quell’$n/6$ è quindi un tetto ideale, non un
+  traguardo. La {doc}`sezione sul GEMM <gemm-e-tensor-core>` riprenderà questo
+  calcolo per mostrare a che punto si arrivi in pratica (e perché non serva
+  arrivarci).
 
 Ne segue *perché* la kernel fusion conviene: [fondere tre operazioni
 elemento-per-elemento in un solo kernel significa leggere gli input una volta e
@@ -616,10 +619,11 @@ che apre le scatolette dove stanno e manda in cucina (il processore) solo il
 risultato.
 
 In questo modo il fattorino fa molti meno viaggi, e le corsie lavorano in
-parallelo, ciascuna con il suo aiutante. Non è che le corsie, tutte insieme,
-aprano più scatolette al minuto di quante il fattorino ne porterebbe in cucina:
-[il guadagno è la strada che ogni scatoletta non fa più, e la fatica di
-farla]{.pt-matita}, mentre i cuochi restano liberi per il resto.
+parallelo, ciascuna con il suo aiutante. Le corsie, tutte insieme, non aprono
+più scatolette al minuto di quante il fattorino ne porterebbe in cucina: [il
+guadagno è la strada che ogni scatoletta non fa più, e la fatica di
+farla]{.pt-matita} (cioè l'energia che quel viaggio consuma), mentre i cuochi
+restano liberi per il resto.
 
 Gli aiutanti del magazzino, però, non sono i cuochi della cucina. Hanno banchi
 piccoli e attrezzi semplici, e soprattutto non devono scaldare l'ambiente,

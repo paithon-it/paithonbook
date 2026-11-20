@@ -18,12 +18,12 @@ di vicinissime (il pastore tedesco e il pastore belga sono due voci
 distinte), quindi pretendere un'unica risposta avrebbe misurato anche la
 fortuna. Il punteggio si chiama **errore top-5**.
 
-Nel 2011 l'errore del sistema migliore era intorno al 26%, cioè su cento
-fotografie in ventisei nemmeno una delle cinque proposte era quella giusta. Nel
-2015 lo stesso errore era sceso sotto il 4%, meglio del 5,1% sbagliato da una
+Nel 2011 l'errore del sistema migliore era intorno al 26%, cioè in ventisei
+fotografie su cento nessuna delle cinque proposte era quella giusta. Nel 2015
+lo stesso errore era sceso sotto il 4%, meglio del 5,1% sbagliato da una
 persona che si era allenata a fare lo stesso lavoro sulle stesse
-fotografie[^annotatore]. In quattro anni un problema considerato
-durissimo è stato quasi chiuso.
+fotografie[^annotatore]. In quattro anni un problema considerato durissimo è
+stato quasi chiuso.
 
 Dietro quel crollo non ci sono soltanto più dati e computer più potenti, ma
 anche una manciata di **architetture** (modi diversi di impilare gli strati di
@@ -151,11 +151,12 @@ far girare i videogiochi) invece che su normali processori.
 
 Cambia anche il modo in cui ogni neurone decide quanto accendersi. La regola
 vecchia schiacciava i valori grandi verso un tetto, e una volta appiccicati al
-tetto si somigliavano tutti, quindi la rete non capiva più in che verso
-correggersi, e imparava pianissimo. La regola nuova è sbrigativa: sotto lo
-zero spegne, sopra lo zero lascia passare il numero com'è. Niente tetto,
-nessuna zona piatta, addestramento molto più rapido. È la ReLU, il primo dei
-tre accorgimenti della {doc}`panoramica del capitolo </DeepLearning/overview>`.
+tetto si somigliavano tutti (cinque e cinquanta uscivano quasi uguali, a un
+soffio dal tetto), quindi la rete non capiva più in che verso correggersi, e
+imparava pianissimo. La regola nuova è sbrigativa: sotto lo zero spegne, sopra
+lo zero lascia passare il numero com'è. Niente tetto, nessuna zona piatta,
+addestramento molto più rapido. È la ReLU, il primo dei tre accorgimenti della
+{doc}`panoramica del capitolo </DeepLearning/overview>`.
 
 Gli altri due servono contro il difetto peggiore, quello di "imparare a
 memoria" le fotografie dell'addestramento. Uno spegne a caso una parte dei
@@ -216,9 +217,11 @@ maturo: una piccola riunione di esperti convocata pixel per pixel.
 La seconda idea riguarda il finale. Invece di collegare tutto agli enormi
 strati densi finali che decidono la categoria (dove le reti dell'epoca
 concentravano quasi tutti i loro collegamenti), NiN prepara una mappa per ogni
-categoria e ne fa la media, cioè guarda quanto quella mappa ha risposto forte
-nell'insieme dell'immagine. Vince la categoria con la media più alta, e in
-questo modo [una media prende il posto di milioni di collegamenti]{.pt-matita}.
+categoria (ognuna legata in partenza alla sua, e l'addestramento le insegna a
+rispondere forte quando la vede) e ne fa la media, cioè guarda quanto quella
+mappa ha risposto forte nell'insieme dell'immagine. Vince la categoria con la
+media più alta, e in questo modo [una media prende il posto di milioni di
+collegamenti]{.pt-matita}.
 `````
 
 `````{tab} Superiore
@@ -265,23 +268,24 @@ piccole, una dopo l'altra.
 
 [Due lenti piccole in successione "vedono" quanto una lente più
 grande]{.pt-matita}, come mostra un conto a mente. La prima lente guarda tre
-pixel per volta. La seconda guarda tre risultati della prima, e ciascuno di
-quei tre riassumeva tre pixel: il primo i pixel da 1 a 3, il secondo da 2 a 4,
-il terzo da 3 a 5. Messi insieme, la seconda lente sta guardando i pixel da 1 a
-5, cioè quanto una lente da cinque. Allo stesso modo, tre lenti in successione
-arrivano a sette.
+pixel per volta, e scorre di un pixel alla volta. La seconda guarda tre
+risultati della prima, e ciascuno di quei tre riassumeva tre pixel: il primo i
+pixel da 1 a 3, il secondo da 2 a 4, il terzo da 3 a 5. Messi insieme, la
+seconda lente sta guardando i pixel da 1 a 5, cioè quanto una lente da cinque.
+Allo stesso modo, tre lenti in successione arrivano a sette.
 
-Il guadagno è doppio. Fra una lente e l'altra la rete piega i numeri, quindi ci
-sono più passaggi in cui può succedere qualcosa di interessante; e i numeri da
-imparare sono meno, perché due quadratini da tre per tre hanno diciotto caselle
-e uno da cinque per cinque ne ha venticinque. È il principio del mattoncino
-Lego: pochi pezzi uguali, combinati in tanti strati.
+Il guadagno è doppio. Fra una lente e l'altra passa la ReLU, che piega i numeri
+spegnendo quelli sotto zero, quindi ci sono più passaggi in cui può succedere
+qualcosa di interessante; e i numeri da imparare sono meno, perché due
+quadratini da tre per tre hanno diciotto caselle e uno da cinque per cinque ne
+ha venticinque. È il principio del mattoncino Lego: pochi pezzi uguali,
+combinati in tanti strati.
 
 Il risparmio, però, riguarda le lenti, e il peso di VGG sta altrove. In fondo
-alla rete restano gli enormi strati densi che decidono la categoria,
-quelli che NiN aveva appena mostrato come togliere. Lì dentro stanno quasi nove
-decimi dei centotrentotto milioni di numeri che VGG deve imparare, cioè più del
-doppio di quanti ne aveva AlexNet. I mattoncini piccoli danno profondità con
+alla rete restano gli enormi strati densi che decidono la categoria, quelli che
+NiN aveva appena mostrato come togliere. Lì dentro stanno quasi nove decimi dei
+centotrentotto milioni di numeri che VGG deve imparare, cioè più del doppio dei
+circa sessanta milioni di AlexNet. I mattoncini piccoli danno profondità con
 pochi parametri, mentre gli strati densi finali ne usano moltissimi.
 `````
 
@@ -313,11 +317,11 @@ come evitare e che VGG non raccoglie.
 
 Gli stessi 138 milioni sono 2,3 volte anche i parametri di una ResNet-152
 ($60\,192\,808$), che ha centocinquantadue strati contro sedici. Il numero di
-strati, quindi, non basta a prevedere quello dei parametri. Incide invece sul
-numero di operazioni: He e colleghi contano le
-moltiplicazioni-accumulo per immagine, $11{,}3$ miliardi per ResNet-152, il
-triplo dei $3{,}8$ di ResNet-50 ma meno dei $15{,}3$ di VGG-16
-{cite}`he2016deep`.
+strati, quindi, non basta a prevedere quello dei parametri, e nemmeno quello
+delle operazioni, che dipende anche dalla larghezza e dalla risoluzione a cui
+lavora ogni strato: He e colleghi contano le moltiplicazioni-accumulo per
+immagine, $11{,}3$ miliardi per ResNet-152, il triplo dei $3{,}8$ di ResNet-50
+ma meno dei $15{,}3$ di VGG-16 {cite}`he2016deep`.
 `````
 
 ## GoogLeNet e i moduli Inception
@@ -345,7 +349,8 @@ Davanti a ogni lente grande, allora, il modulo mette la lente di NiN, quella
 che guarda un solo punto: [prima riassume le opinioni, poi la lente grande
 legge il riassunto]{.pt-matita}. Nel primo modulo di GoogLeNet, ad esempio, la
 lente da cinque per cinque avrebbe $192$ opinioni da leggere e ne produce $32$,
-cioè venticinque caselle per $192$ per $32$, che fanno $153\,600$ numeri.
+cioè venticinque caselle (cinque per cinque) per $192$ opinioni in entrata per
+$32$ in uscita, che fanno $153\,600$ numeri.
 
 Il riassunto gliene passa $16$ invece di $192$. La lente grande ha allora
 venticinque per $16$ per $32$ numeri, cioè $12\,800$, e il riassunto stesso,
@@ -382,8 +387,8 @@ numero preciso dipende da che cosa si conta.
 GoogLeNet riprende anche la seconda idea di NiN, cioè rinuncia agli strati
 densi finali (*fully-connected*) con cui AlexNet e VGG chiudevano. Al loro
 posto calcola la media di ogni mappa (il *global average pooling* di NiN) e la
-passa a un solo strato lineare che sceglie la classe. Per questo ha così
-pochi parametri, circa nove volte meno di AlexNet, e sbaglia meno.
+passa a un solo strato lineare che sceglie la classe. Soprattutto per questo ha
+così pochi parametri, circa nove volte meno di AlexNet, e intanto sbaglia meno.
 
 ## ResNet: insegnare alle reti a non dimenticare l'input
 
@@ -430,8 +435,10 @@ risposta]{.pt-matita}; se non serve correggere nulla, può lasciar passare
 l'input senza rovinarlo, e aggiungere strati non fa più danni.
 
 Perché prima li facesse, quei danni, non è del tutto chiaro nemmeno oggi. Si sa
-però che la soluzione buona esisteva anche nella rete profonda, e che la rete
-non riusciva a trovarla: la scorciatoia gliela mette a portata di mano.
+però che la soluzione buona esisteva anche nella rete profonda (bastava che gli
+strati in più copiassero l'ingresso senza toccarlo, e avrebbe fatto almeno
+quanto la corta), e che la rete non riusciva a trovarla: la scorciatoia gliela
+mette a portata di mano.
 
 La somma, però, chiede una condizione: che i due pezzi abbiano la stessa forma,
 tanti numeri di qua quanti di là, disposti allo stesso modo. Finché il blocco
@@ -440,17 +447,20 @@ restituisce un'uscita della forma dell'ingresso, la somma si può fare.
 Ogni tanto la rete cambia formato (raddoppia le opinioni raccolte in ogni
 punto, oppure rimpicciolisce le mappe), e lì i due pezzi hanno misure diverse,
 quindi sommarli è impossibile. La scorciatoia porta allora una versione
-riadattata dell'input, che di numeri da imparare ne ha anche lei, e
-l'argomento «se non serve correggere nulla, non si guasta niente» non vale
-più, perché lasciar passare tutto liscio ha un costo.
+riadattata dell'input, che di numeri da imparare ne ha anche lei, e l'argomento
+«se non serve correggere nulla, non si guasta niente» non vale più, perché
+anche la scorciatoia va imparata, e lasciar passare tutto liscio non è più
+gratis. Succede però solo in quei pochi punti di cambio formato.
 
 Nelle reti più profonde cambia anche l'interno del blocco. Con 256 opinioni per
 punto, due lenti da tre per tre consecutive hanno più di un milione di numeri
-da imparare.
+da imparare: nove caselle per duecentocinquantasei opinioni in entrata per
+duecentocinquantasei in uscita, due volte.
 
 Il blocco allora riassume prima le opinioni a 64, con la lente che guarda un
 solo punto, fa il lavoro vero su quelle poche e alla fine le riporta a 256:
-stessa forma in uscita, diciassette volte meno numeri. Per questo una rete di
+stessa forma in uscita, diciassette volte meno numeri. Grazie a questo, e alla
+media finale presa da NiN al posto degli strati densi, una rete di
 centocinquantadue strati ha meno della metà dei numeri da imparare di VGG, che
 di strati ne ha sedici.
 `````
@@ -588,9 +598,10 @@ $$
 
 dove $[\cdot]$ indica la concatenazione lungo i canali, $\mathbf{x}_0$ è
 l'input del blocco e $H_\ell$ una sequenza batch normalization → ReLU →
-convoluzione $3\times 3$. Ogni strato produce solo $k$ mappe nuove (il
-**growth rate**, tipicamente $k=12$ o $k=32$), così lo strato $\ell$ riceve
-$k_0 + k(\ell-1)$ canali, dove $k_0$ sono quelli dell'input.
+convoluzione $3\times 3$. Ogni strato produce solo $k$ mappe nuove (il **growth
+rate**, tipicamente $k=12$ o $k=32$; qui $k$ conta mappe, non è il lato del
+kernel), così lo strato $\ell$ riceve $k_0 + k(\ell-1)$ canali, dove $k_0$ sono
+quelli dell'input.
 
 [Il riuso delle feature rende la rete efficiente nei parametri]{.pt-matita} (a
 parità di accuratezza su ImageNet, all'incirca la metà di una ResNet

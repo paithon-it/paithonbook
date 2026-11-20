@@ -22,7 +22,7 @@ Prima di guardare la fotografia il modello si aspetta già una continuazione, il
 **priore linguistico**, cioè la distribuzione sulle parole successive
 condizionata soltanto al testo già scritto, $p_\theta(y_t \mid y_{<t})$. Si
 chiama «priore» perché viene prima dell'immagine e non dipende da essa. Ci
-chiediamo allora perché vinca così spesso sull'evidenza visiva, come se ne
+chiediamo allora perché vinca così spesso sull'immagine, come se ne
 misuri la forza e che cosa possa contenerlo.
 
 ## Un errore che non nasce solo negli occhi
@@ -51,8 +51,9 @@ fotografie in cui compare un coltello, supponiamo che in ottanta ci sia anche
 una forchetta. Un modello che non guarda affatto e risponde sempre «sì, c'è la
 forchetta» ne azzecca ottanta su cento. Per battere quel punteggio bisogna
 guardare l'immagine e fare meglio dell'ottanta per cento, ma [l'addestramento
-non lo chiede, perché premia la risposta giusta in media e quella si ottiene
-anche a occhi chiusi]{.pt-matita}. Guardare non è vietato, è facoltativo.
+lo chiede appena, perché premia la risposta giusta in media e gran parte di
+quella si ottiene anche a occhi chiusi]{.pt-matita}. Guardare non è vietato, è
+facoltativo.
 
 L'abitudine, poi, parte avvantaggiata. La tastiera macina frasi da anni; la
 telecamera le è stata attaccata ieri, e il filo che le collega è nuovo di zecca,
@@ -201,8 +202,8 @@ e un secondo modello ha difetti suoi, che entrano nella misura proprio dove si
 vuole misurarne uno.
 
 Il cuore del metodo, però, sta in come si scelgono gli oggetti assenti, più che
-nel formato binario. Chiedere «c'è una zebra?» davanti a una cucina non misura
-niente.
+nel formato binario. Chiedere «c'è una zebra?» davanti a una cucina, da solo,
+misura poco: serve come termine di confronto.
 
 `````{tab} Elementare
 
@@ -334,9 +335,9 @@ armonica dei due, che tira verso il più piccolo (la media aritmetica darebbe
 $0{,}75$): il doppio del prodotto diviso la somma,
 $2 \cdot 1 \cdot 0{,}5 / (1 + 0{,}5) = 0{,}667$.
 
-Il secondo modello guarda
-l'immagine e sbaglia due volte su cinque, sia sulle domande a cui va risposto
-sì sia su quelle a cui va risposto no, e si ferma a $0{,}60$, che è meno.
+Il secondo modello guarda l'immagine e sbaglia due volte su cinque, sia sulle
+domande a cui va risposto sì sia su quelle a cui va risposto no, e si ferma a
+$0{,}60$, che è meno di quanto prende chi risponde sempre sì.
 
 Chi legge la sola F1 mette un modello che non ha usato un pixel sopra uno che
 guarda e sbaglia due volte su cinque. La quota di sì risolve l'equivoco, $1{,}0$

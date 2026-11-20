@@ -129,11 +129,12 @@ redditi, per i tempi di risposta di un server, per gli errori di un modello.
 
 Non chiedere niente ha un limite, che si vede confrontando con il caso in cui
 invece si chiede molto. Se i dati seguono la curva a campana, entro due
-larghezze non c'è il settantacinque per cento ma il novantacinque e mezzo, ed
-entro tre il novantanove e sette. [La differenza fra quei numeri mostra quanto
-vale sapere la forma della distribuzione]{.pt-matita}. Chi non la sa deve
-accontentarsi della garanzia debole, che sui dati veri è quasi sempre molto più
-prudente del necessario.
+larghezze non c'è il settantacinque per cento ma il novantacinque e mezzo (il
+«novantacinque» che si dice di solito è questo, arrotondato), ed entro tre il
+novantanove e sette. [La differenza fra quei numeri mostra quanto vale sapere
+la forma della distribuzione]{.pt-matita}. Chi non la sa deve accontentarsi
+della garanzia debole, che sui dati veri è quasi sempre molto più prudente del
+necessario.
 
 C'è però una situazione in cui la garanzia debole è esatta, e serve a capire
 che non si può fare di meglio a scatola chiusa. È il caso di dati in cui un
@@ -403,8 +404,9 @@ finiscono accusate per puro caso.
 
 Il meccanismo si capisce contando le occasioni. Ogni singola variante ha una
 probabilità piccola di sembrare molto meglio di quel che è; con cento varianti,
-però, quelle probabilità piccole si sommano, e la probabilità che almeno una
-sembri molto meglio diventa grande.
+però, le occasioni sono cento, e la probabilità che almeno una sembri molto
+meglio diventa grande: può arrivare fino alla somma delle cento probabilità
+piccole, mai oltre.
 
 Le due cure sono note e si usano poco. La prima è tenere da parte un secondo
 insieme di prova, mai guardato durante la selezione, su cui misurare soltanto

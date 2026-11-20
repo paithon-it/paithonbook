@@ -246,7 +246,7 @@ danno una ragione in più per riproporli. I sistemi di raccomandazione vivono in
 questo cerchio: ciò che mostri determina ciò che viene cliccato, e ciò che
 viene cliccato determina ciò che mostrerai.
 
-Uscirne si può, ma nessuna strada è gratis. Per sapere com'è il quarto piatto
+Attenuarlo si può, ma nessuna strada è gratis. Per sapere com'è il quarto piatto
 bisogna portarlo a qualcuno che non l'ha chiesto, e quel qualcuno cenerà peggio
 perché il locale aveva bisogno di saperlo.
 
@@ -256,9 +256,9 @@ proposta due volte, è stata ordinata una: ha convinto un cliente su due. Se si
 contano le ordinazioni vince il risotto, cinquanta a uno, ma solo perché il
 cameriere lo nomina sempre. Il rimedio è contare ogni ordinazione al contrario
 di quanto spesso quel piatto veniva proposto: le cinquanta del risotto valgono
-un duecentesimo l'una, l'unica della zuppa vale mezzo, e in testa passa la
-zuppa, cioè il ristorante che si sarebbe visto se il cameriere avesse proposto
-tutto allo stesso modo.
+un duecentesimo l'una, cioè un quarto in tutto, e l'unica della zuppa vale
+mezzo, e in testa passa la zuppa, cioè il ristorante che si sarebbe visto se il
+cameriere avesse proposto tutto allo stesso modo.
 
 Questo rimedio ha due debolezze. Un piatto che il
 cameriere non nomina mai resta a zero, e nessun peso lo recupera. La zuppa, poi,

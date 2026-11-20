@@ -322,7 +322,7 @@ orizzonte a dodici passi non ha battuto nessuno alla pari: ha sbagliato il 90%
 di quanto sbaglia a un passo chi copia, il che su dodici passi è ottimo e su un
 passo sarebbe mediocre. Se si vuole il duello, il naive va fatto correre sullo
 stesso test e sullo stesso orizzonte, come si fa con le linee di base ingenue.
-Su più serie, infine, serve una regola per aggregare: le competizioni M usano
+Su più serie, infine, serve una regola per aggregare: la competizione M4 usava
 l'OWA (*overall weighted average*), la media di sMAPE e MASE, ciascuna divisa
 per quella di un metodo di riferimento sull'insieme delle serie (il Naive 2, un
 naive sulla serie destagionalizzata), così che $1$ voglia dire «pari al
@@ -561,7 +561,7 @@ a diradarsi sono le vie di mezzo.
 Adesso contali, e il risultato viene al contrario di come sembra. Col fenomeno
 tranquillo, una forbice che promette otto casi su dieci ne raccoglie, appunto,
 otto su dieci. Col fenomeno che fa i salti, la stessa forbice sta dove i valori
-si sono accalcati, e ne raccoglie di più: quasi nove su dieci. Una forbice
+si sono accalcati, e ne raccoglie di più: più di otto e mezzo su dieci. Una forbice
 larghissima, quella che promette novantanove casi su cento, arriva invece fin
 quasi in fondo alla coda, e i pochi mostri gliela passano oltre: i casi
 raccolti sono meno di novantanove.

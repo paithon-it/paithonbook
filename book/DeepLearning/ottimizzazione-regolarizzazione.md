@@ -127,11 +127,12 @@ fattori vanno scritti da sinistra a destra per $k$ crescente e non si possono
 scambiare, perché il prodotto di matrici non commuta.
 
 Poiché la norma di un prodotto non supera il prodotto delle norme, se le norme
-spettrali dei fattori restano sotto $1$ il prodotto tende a $0$
-esponenzialmente in $L$ (**vanishing gradient**), e la condizione è
-sufficiente. Che qualche norma superi $1$ è invece necessario perché il
-gradiente diverga (**exploding gradient**), ma non basta, perché conta anche
-come i fattori si allineano {cite}`pascanu2013difficulty`.
+spettrali dei fattori restano sotto una stessa costante $\lambda<1$, il
+prodotto tende a $0$ esponenzialmente nel numero degli strati attraversati
+(**vanishing gradient**), e la condizione è sufficiente. Che qualche norma
+superi $1$ è invece necessario perché il gradiente diverga (**exploding
+gradient**), ma non basta, perché conta anche come i fattori si allineano
+{cite}`pascanu2013difficulty`.
 
 La sigmoide aggrava il primo caso: la sua derivata non supera $0{,}25$ in
 nessun punto, quindi il solo fattore di attivazione riduce il gradiente di
@@ -207,11 +208,11 @@ ReLU, che sotto zero zittisce tutto. Delle cento ne ripartono cinquanta, quindi
 chi parla si regola su cinquanta e comincia al doppio del volume. Di quanti lo
 ascoltino non si occupa.
 
-Uno strato creato in PyTorch senza dire niente non segue nessuna delle due. In
-questo caso la stanza parte con un volume sei volte più basso di He, e nessuno
-parte in silenzio. Il bias, il numero fisso che ogni neurone somma al segnale
-sentito, dovrebbe valere zero all'inizio, perché non c'è ancora ragione di
-preferire un verso; PyTorch invece lo estrae a caso, come i pesi.
+Uno strato creato in PyTorch senza dire niente non segue nessuna delle due. Con
+la sua regola la stanza parte con un volume sei volte più basso di He: nessuno
+è muto, ma tutti parlano piano. Il bias, il numero fisso che ogni neurone somma
+al segnale sentito, dovrebbe valere zero all'inizio, perché non c'è ancora
+ragione di preferire un verso; PyTorch invece lo estrae a caso, come i pesi.
 
 Il divario si sente presto, e cresce con la fila. Con cinque stanze, ad
 esempio, il grido che torna alla prima con i pesi di PyTorch è già mille volte
@@ -257,8 +258,8 @@ $$
 $$
 
 adatta ad attivazioni simmetriche attorno a zero (tanh). Per la ReLU, che
-azzera metà degli ingressi, He {cite}`he2015delving` raddoppia la scala
-usando solo il fan-in:
+azzera metà degli ingressi, He {cite}`he2015delving` raddoppia la varianza (la
+deviazione standard cresce di $\sqrt{2}$) usando solo il fan-in:
 
 $$
 \operatorname{Var}(w) = \frac{2}{n_{\text{in}}}.
@@ -578,8 +579,9 @@ accendersi e spegnersi allarga i numeri di suo.
 
 Il giorno in cui la rete lavora ci sono tutti, quel rimescolio sparisce, e i
 numeri arrivano più stretti di come erano stati misurati, mentre la scala messa
-da parte è rimasta quella larga. La rete risponde peggio di quanto farebbe con
-una tecnica sola, e per questo di solito se ne sceglie una.
+da parte, cioè la media e l'ampiezza annotate durante l'allenamento, è rimasta
+quella larga. La rete risponde peggio di quanto farebbe con una tecnica sola, e
+per questo di solito se ne sceglie una.
 
 `````
 
@@ -600,7 +602,7 @@ riscalature. L'uscita della rete piena, tuttavia, non è la media dell'ensemble
 di sotto-reti, perché attraversare una non-linearità non conserva il valore
 atteso. Ne è un'approssimazione (della media geometrica delle distribuzioni
 predette), esatta solo per modelli senza unità nascoste non lineari e per il
-resto giustificata dalla sola evidenza empirica, che però è schiacciante. I
+resto giustificata dai soli risultati empirici, che però sono schiaccianti. I
 valori tipici sono $p \in [0{,}2,\ 0{,}5]$.
 
 Su un modello lineare con perdita quadratica si dimostra in forma chiusa perché
@@ -735,9 +737,10 @@ tutte le classi, la giusta compresa.
 `````{tab} Elementare
 
 Basta una riga del regolamento. Al posto di «dieci sul gatto», il bersaglio
-diventa nove gettoni sul gatto, e il decimo spartito in parti uguali fra tutte
-e cinque le risposte, gatto compreso. In tutto fa nove gettoni e due decimi al
-gatto, due decimi a ciascuna delle altre quattro.
+diventa nove gettoni sul gatto, e il decimo gettone spartito in parti uguali
+fra tutte e cinque le risposte, gatto compreso, due decimi di gettone a testa.
+In tutto fa nove gettoni e due decimi al gatto, due decimi a ciascuna delle
+altre quattro.
 
 Sembra uno sconto e invece è una richiesta in più. La vecchia, «metti i gettoni
 sul gatto», adesso pesa nove decimi; e accanto ne compare una nuova, «non
@@ -752,10 +755,11 @@ La regola dei gettoni è questa: alzare di uno il numero scritto accanto a una
 risposta le moltiplica la fetta, rispetto a ciascuna delle altre, sempre per lo
 stesso fattore, $2{,}7$ circa. Per moltiplicarla per quarantasei ci vogliono
 quindi poco meno di quattro punti di **distacco**, cioè di differenza fra il
-numero del gatto e quello degli altri; più precisamente $3{,}83$. Arrivati lì
-si smette di alzare, perché alzare ancora abbasserebbe il voto invece di
-alzarlo. In altre parole, il gioco ha un punto in cui si vince, e ci si può
-arrivare.
+numero del gatto e quello degli altri; più precisamente $3{,}83$, che si trova
+con la calcolatrice (quattro punti interi farebbero già più di cinquanta).
+Arrivati lì si smette di alzare, perché alzare ancora abbasserebbe il voto
+invece di alzarlo. In altre parole, il gioco ha un punto in cui si vince, e ci
+si può arrivare.
 
 Il limite si legge nella stessa riga che ha portato il guadagno. Quel decimo di
 gettone si spartisce in parti uguali, alla lince tanto quanto al camion. La
@@ -767,7 +771,7 @@ bravo e non dal foglio delle soluzioni: è la {doc}`distillazione
 maestro che scrive «7, ma per un soffio», e lì il «quasi» era l'informazione
 da trasmettere.
 
-E il guadagno non è garantito. Con il regolamento nuovo la classe qualche volta
+E il guadagno non è garantito. Con il regolamento nuovo chi gioca qualche volta
 prende voti migliori e qualche volta no, e nessuno sa dire quando. Il bersaglio
 morbido si adotta perché raramente fa danno, più che perché si sappia quando
 aiuti.
@@ -1091,11 +1095,11 @@ nella spinta accumulata e continua a farsi sentire nei passi successivi, invece
 di esaurirsi in quello in cui è stata data. E l'inerzia c'è quasi sempre.
 
 La differenza si vede con un peso solo. Prendi un peso che vale $1$, mettilo in
-un punto dove il terreno è perfettamente piatto (così l'unica cosa che lo
-muove è la multa) e fagli fare quaranta passi, con una multa che ogni volta gli
-toglie mezzo centesimo. Senza inerzia i due modi lo lasciano tutti e due nello
-stesso punto, $0{,}995$ moltiplicato per sé stesso quaranta volte, cioè
-$0{,}818$, identici come promesso.
+un punto dove il terreno è perfettamente piatto (così l'unica cosa che lo muove
+è la multa) e fagli fare quaranta passi, con una multa che ogni volta gli
+toglie mezzo centesimo del suo valore. Senza inerzia i due modi lo lasciano
+tutti e due nello stesso punto, $0{,}995$ moltiplicato per sé stesso quaranta
+volte, cioè $0{,}818$, identici come promesso.
 
 Con l'inerzia il secondo modo resta a $0{,}818$, perché l'accorciamento non
 passa dalla pallina. Il primo, invece, porta il peso a $0{,}061$, tredici volte
@@ -1273,10 +1277,11 @@ $0 < \eta < 1$. Il terzo pannello usa $\eta = 1{,}05$, con fattore $-1{,}1$, e
 ogni passo scavalca il minimo più lontano del precedente.
 
 In generale la soglia dipende dalla curvatura. Se il gradiente è
-$L$-lipschitziano, il lemma di discesa garantisce che un passo fisso
-$\eta < 2/L$ abbassa la loss a ogni iterazione, e sulla parabola $L = 2$,
-quindi $2/L = 1$ è la soglia appena trovata (la derivazione sta nella
-{doc}`sezione sulla discesa del gradiente
+$L$-lipschitziano (qui $L$ è la costante di Lipschitz, non il numero di
+strati), il lemma di discesa garantisce che un passo fisso $\eta < 2/L$ abbassa
+la loss a ogni iterazione, e sulla parabola $L = 2$, quindi $2/L = 1$ è la
+soglia appena trovata (la derivazione sta nella {doc}`sezione sulla discesa del
+gradiente
 </Matematica/analisi-ottimizzazione>`). Uno schedule insegue questa soglia
 mentre la curvatura cambia.
 
@@ -1458,11 +1463,11 @@ le ore vanno da zero a novantasei, una che ne fa due, una che ne fa tre. Due
 risposte che sul primo quadrante cadono vicine, sul secondo o sul terzo cadono
 lontane.
 
-A questo punto entra la multa. La regola in vigore fa pagare ogni appunto
-tenuto, in proporzione a quanto è ingombrante. Il bigliettino è enorme,
-migliaia di righe una per somma; la regola sta in una frase. Finché la regola
-era incompleta il bigliettino serviva e la multa si pagava; appena la regola
-regge da sola, tenerlo diventa una spesa senza ritorno, e lui lo butta.
+A questo punto entra la multa, che fa pagare ogni appunto tenuto, in
+proporzione a quanto è ingombrante. Il bigliettino è enorme, migliaia di righe
+una per somma; la regola sta in una frase. Finché la regola era incompleta il
+bigliettino serviva e la multa si pagava; appena la regola regge da sola,
+tenerlo diventa una spesa senza ritorno, e lui lo butta.
 
 Da fuori quello è il momento in cui «di colpo ha capito». In realtà [aveva già
 capito da un pezzo, e di colpo ha soltanto buttato via il bigliettino]{.pt-matita}.
@@ -1525,7 +1530,8 @@ quello di prova in funzione della norma dei pesi {cite}`liu2023omnigrok`.
 Di quel che succede a curve ferme si può controllare a mano il pezzo
 aritmetico, cioè che una manciata di *frequenze* basti a scrivere la tavola
 dell'addizione modulare. Una frequenza $k$ è un quadrante su cui la lancetta fa
-$k$ giri mentre le ore vanno da zero a $p - 1$, con $p = 97$ il numero di ore.
+$k$ giri mentre le ore vanno da zero a $p - 1$, con $p = 97$ il numero di ore
+(qui $p$ non è né la probabilità di spegnimento né la distribuzione predetta).
 
 Per ogni coppia di addendi $a, b$ e ogni risposta possibile $c$, si guarda su
 ciascun quadrante quanto la lancetta di $a + b$ cade vicino a quella di $c$; il
@@ -1652,9 +1658,9 @@ fermarsi non dicono tutto sul lavoro della rete.
   addestrato distilla peggio. Che con i logit liberi l'addestramento si
   fermi è dimostrato; che una rete generalizzi meglio è misurato e non
   spiegato.
-- Adam (momentum + passo adattivo) è il punto di partenza sensato,
-  AdamW se si usa il weight decay (che in `torch.optim` è una penalità L2,
-  la quale coincide col decadimento vero solo per l'SGD senza momentum); un
+- Adam (momentum + passo adattivo) è il punto di partenza sensato, AdamW se si
+  usa il weight decay (che in `SGD` e `Adam` di `torch.optim` è una penalità
+  L2, la quale coincide col decadimento vero solo per l'SGD senza momentum); un
   learning rate schedule che decade nel tempo rifinisce la convergenza.
 - Lo schedule comincia però salendo: il warmup porta il learning rate
   da quasi zero a $\eta_0$ nei primi passi, i più fragili. La diagnosi più
@@ -1662,15 +1668,14 @@ fermarsi non dicono tutto sul lavoro della rete.
   all'inizio sono stimati su pochissimi campioni; è però contestata, e il
   warmup giova anche a SGD con momentum, che di stime adattive non ne ha. Poi
   si decade, di norma a coseno.
-- Il grokking divide l'addestramento in memorizzazione, formazione del
-  circuito e pulizia, e solo la terza si vede nelle curve. Il weight decay la
-  anticipa (non è indispensabile, ma la rende molto più rapida), perché il
-  circuito che generalizza ha norma dei pesi più bassa del
-  circuito che memorizza. Ne segue che l'ipotesi implicita dell'arresto
-  anticipato, cioè che una validazione ferma voglia dire che non c'è altro da
-  imparare, è un'ipotesi. Documentato su dataset algoritmici piccoli; su dati
-  veri è stato indotto, meno marcato, con un campione ridotto e pesi iniziali
-  più grandi.
+- Il grokking divide l'addestramento in memorizzazione, formazione del circuito
+  e pulizia, e la seconda non si vede nelle curve. Il weight decay anticipa la
+  pulizia (non è indispensabile, ma la rende molto più rapida), perché il
+  circuito che generalizza ha norma dei pesi più bassa del circuito che
+  memorizza. Ne segue che l'ipotesi implicita dell'arresto anticipato, cioè che
+  una validazione ferma voglia dire che non c'è altro da imparare, è
+  un'ipotesi. Documentato su dataset algoritmici piccoli; su dati veri è stato
+  indotto, meno marcato, con un campione ridotto e pesi iniziali più grandi.
 ```
 `````
 

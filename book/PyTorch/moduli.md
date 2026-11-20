@@ -92,13 +92,15 @@ basta una riga sola per salvarlo tutto su un file o per spostarlo tutto insieme
 sulla scheda grafica.
 
 Se invece i pezzi si mettono in una normale lista di Python, per esempio
-`self.strati = [nn.Linear(784, 128), nn.Linear(128, 10)]`, funzionano
-benissimo quando i dati ci passano attraverso, ma nell'inventario non
-compaiono, quindi nessuno li addestra, nessuno li salva, e restano com'erano
-appena creati. Il giorno in cui la rete trasloca sulla scheda grafica, quei
-pezzi restano indietro, perché la riga che sposta l'inventario non li include:
-lì l'errore diventa esplicito e il programma si ferma. Per una fila di pezzi
-c'è una lista apposta, `nn.ModuleList`, che li mette in inventario uno per uno.
+`self.strati = [nn.Linear(784, 128), nn.Linear(128, 10)]`, funzionano benissimo
+quando i dati ci passano attraverso, ma nell'inventario non compaiono, quindi
+nessuno li addestra, nessuno li salva, e restano com'erano appena creati. Il
+difetto resta muto fino al giorno in cui la rete trasloca sulla scheda grafica:
+quei pezzi restano indietro, perché la riga che sposta l'inventario non li
+include, e i dati, arrivati sulla scheda, non possono lavorare con pezzi
+rimasti sul processore. Lì il programma si ferma con un errore. Per una fila di
+pezzi c'è una lista apposta, `nn.ModuleList`, che li mette in inventario uno
+per uno.
 
 In `forward` si dice che strada fanno i dati: entra l'immagine, viene
 srotolata, passa per lo strato nascosto e poi per la ReLU, ed esce come 10
@@ -325,10 +327,11 @@ delle dieci cifre la stessa probabilità, una su dieci.
 
 Un modello appena creato parte da lì vicino, in media un poco sopra, perché i
 pesi estratti a caso gli fanno già preferire qualcuna delle cifre, e una
-preferenza data a caso fa perdere più di quanto fa guadagnare. Il programma su
-MNIST della {doc}`sezione sull'addestramento <addestramento>` stampa il punto da
-cui parte il nostro. [Un addestramento che funziona scende da lì; uno che resta
-lassù non ha imparato niente]{.pt-matita}.
+preferenza data a caso fa perdere più di quanto fa guadagnare: togliere fiducia
+alla cifra giusta costa più di quanto renda dargliene altrettanta in più. Il
+programma su MNIST della {doc}`sezione sull'addestramento <addestramento>`
+stampa il punto da cui parte il nostro. [Un addestramento che funziona scende
+da lì; uno che resta lassù non ha imparato niente]{.pt-matita}.
 
 `````{tab} Elementare
 Un perito passa la mattina in due appartamenti e su ogni scheda scrive tre
@@ -364,10 +367,14 @@ e dieci, e paga secondo quanta ne aveva data a quella vera. Alla cifra vera il
 dieci, tirando a indovinare, e la multa è $2{,}3$; l'1%, e la multa è $4{,}6$.
 
 Guarda gli ultimi due: dal 10% all'1% la fiducia si divide per dieci e la multa
-raddoppia esatta, e ogni ulteriore divisione per dieci aggiunge sempre quegli
-stessi $2{,}3$. A contare, quindi, è il rapporto fra le fiducie e non il loro
-divario, e verso il basso la multa non trova fondo: escludere ancora un po’ la
-risposta vera aggiunge altri $2{,}3$ di multa, e nessuno dice basta.
+raddoppia esatta. La regola è questa: ogni volta che la fiducia data alla cifra
+vera si divide per dieci, la multa cresce degli stessi $2{,}3$. Il primo dei
+due casi è la fiducia piena divisa una volta, e paga una volta; il secondo è
+divisa due volte, e paga due; dare quasi tutta la fiducia alla cifra vera,
+invece, non costa quasi niente. A contare, quindi, è il rapporto fra le fiducie
+e non il loro divario, e verso il basso la multa non trova fondo: escludere
+ancora un po’ la risposta vera aggiunge altri $2{,}3$ di multa, e nessuno dice
+basta.
 
 È la **cross-entropy**, la misura per quando la risposta è una scelta fra
 categorie, quale cifra o quale animale. Di multa ce n'è una per formulario, e
@@ -377,8 +384,8 @@ Sul foglio, però, l'impiegata non scrive percentuali: scrive un punteggio per
 cifra, alto per il $3$ che le sembra di vedere e basso per l’$8$ che le pare
 improbabile. A farne percentuali ci pensa l'agenzia, nello stesso momento in
 cui calcola la multa, e i due conti insieme escono più precisi che uno dopo
-l'altro, perché con percentuali piccolissime il secondo passaggio perde cifre
-per strada.
+l'altro: una percentuale piccolissima, scritta prima di calcolarne la multa,
+perde cifre per strada, e a volte arriva come zero tondo.
 
 Anche `nn.CrossEntropyLoss` vuole i punteggi grezzi (i **logit**, il nome
 tecnico di quei numeri prima che diventino probabilità) e la trasformazione la
@@ -420,10 +427,10 @@ di una predizione, il termine che sta dentro la somma.
 
 Sul batch il modulo restituisce la $\mathcal{L}$, cioè la media di questi
 termini sui $B$ esempi (`reduction='mean'`, il default): è il "numero solo" del
-codice, e qui la media è calcolata sul singolo esempio, perché c'è un solo
-termine per ciascuno. Con pesi per classe (`weight`), però, la media divide per
-la somma dei pesi delle classi vere, e con `ignore_index` per il numero dei
-target non ignorati, non per $B$:
+codice, e qui la media sugli elementi è anche la media sugli esempi, perché c'è
+un solo termine per ciascuno. Con pesi per classe (`weight`), però, la media
+divide per la somma dei pesi delle classi vere, e con `ignore_index` per il
+numero dei target non ignorati, non per $B$:
 
 $$
 \mathcal{L} = \frac{\sum_{i=1}^{B} w_{y_i}\,\ell_i}{\sum_{i=1}^{B} w_{y_i}},

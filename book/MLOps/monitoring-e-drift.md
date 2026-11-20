@@ -60,9 +60,9 @@ giusta (l'utente ha cliccato, il paziente era malato) spesso
 arriva con giorni o settimane di ritardo. A volte non arriva mai.
 
 Il secondo quadrante si muove mentre sei ancora in strada e puoi accostare; il
-terzo parla a viaggio finito. Per questo le spie di mezzo contano più di
-quanto sembrino: [sono le sole che si accendono quando puoi ancora fare
-qualcosa]{.pt-matita}.
+terzo parla a viaggio finito. Per questo le spie di mezzo contano più di quanto
+sembrino: [sono le sole che avvisano di un guaio di qualità quando puoi ancora
+fare qualcosa]{.pt-matita}.
 
 `````
 
@@ -88,14 +88,15 @@ le etichette vere.
    $i$-esima. Non richiedono le etichette vere: si calcolano sul traffico così
    com'è, e sono l’**allarme anticipato** del drift.
 
-3. **Qualità vera** (metriche di modello: accuratezza, F1, calibrazione,
-   errore di regressione). Sono la grandezza che ci interessa, ma richiedono le
+3. **Qualità vera** (metriche di modello: accuratezza, F1, calibrazione, errore
+   di regressione). Sono la grandezza che ci interessa, ma richiedono le
    etichette vere, e qui sta il problema strutturale del **label delay**
    {cite}`huyen2022designing`: l'etichetta arriva in ritardo (il rimborso del
    prestito si scopre a mesi, la diagnosi confermata a settimane) o non arriva
    affatto. La qualità vera è quindi una metrica *ritardata*, e per questo i
-   proxy statistici del livello 2 diventano una necessità: [sono
-   l'unica spia che si accende *prima* che il danno sia misurabile]{.pt-matita}.
+   proxy statistici del livello 2 diventano una necessità: [sono l'unica spia
+   che può accendersi *prima* che il danno sia misurabile]{.pt-matita}, e
+   restano spenti davanti a un *concept shift* puro.
 
 `````
 
@@ -250,16 +251,17 @@ cambia, con $P(\mathbf{x} \mid y)$ invariata) e il *concept shift* ($P(y \mid
 
   Sul criterio di allarme il riflesso abituale è quello sbagliato. Alle taglie
   di una finestra di produzione (migliaia di record) il KS ha una potenza
-  enorme: uno spostamento di due decimi di deviazione standard, che nessun
-  modello sente, su $n = 2000$ per finestra dà tipicamente $p \sim 10^{-7}$, e
-  il rifiuto arriva su ogni finestra simulata. La correzione di Bonferroni non
-  risolve il problema, perché agisce sull'asse sbagliato: protegge dai rifiuti
-  *falsi* dovuti alla molteplicità dei test, mentre qui i rifiuti sono veri, e
-  davanti a scostamenti così i $p$-value stanno comunque molti ordini di
-  grandezza sotto qualunque soglia, corretta o no. L'allarme va quindi fondato
-  sull'ampiezza ($D$, o una distanza normalizzata, o il PSI) con una soglia
-  decisa sul significato pratico, tenendo il $p$-value al più come filtro
-  contro il rumore delle finestre piccole.
+  enorme: uno spostamento di due decimi di deviazione standard, che su una
+  feature poco influente il modello quasi non sente, su $n = 2000$ per finestra
+    dà tipicamente $p \sim 10^{-7}$, e il rifiuto arriva quasi a ogni finestra.
+  La correzione di Bonferroni non risolve il problema, perché agisce
+  sull'asse sbagliato: protegge dai rifiuti *falsi* dovuti alla molteplicità
+  dei test, mentre qui i rifiuti sono veri, e davanti a scostamenti così i
+  $p$-value stanno comunque molti ordini di grandezza sotto qualunque soglia,
+  corretta o no. L'allarme va quindi fondato sull'ampiezza ($D$, o una distanza
+  normalizzata, o il PSI) con una soglia decisa sul significato pratico,
+  tenendo il $p$-value al più come filtro contro il rumore delle finestre
+  piccole.
 
   Il **PSI** (*Population Stability Index*), lo standard di fatto nel mondo
   del credito, è una di quelle ampiezze. Si dividono i valori in fasce (di
@@ -328,13 +330,12 @@ $0{,}12$, $0{,}20$, $0{,}29$, $0{,}40$.
 Due cose il disegno le mostra e il numero $D$, da solo, non direbbe. La prima è
 *dove* cade il segmento: non ai bordi, perché lì le due curve tornano comunque
 a coincidere, l'una partendo da zero e l'altra arrivando a uno, ma nel mezzo:
-quando una distribuzione simmetrica si sposta senza cambiare forma, come in
-questo disegno, esattamente a metà strada fra il centro di ieri e il centro di
-oggi (con una forma asimmetrica, o con una larghezza che cambia, il punto si
-sposta altrove). La seconda
-è che la soglia disegnata, quel $0{,}10$, è una soglia sull'ampiezza del
-segmento, decisa su quanto si è disposti a lasciar scivolare le cose prima di
-preoccuparsi.
+quando una distribuzione simmetrica e con una sola gobba si sposta senza
+cambiare forma, come in questo disegno, esattamente a metà strada fra il centro
+di ieri e il centro di oggi (con una forma asimmetrica, o con una larghezza che
+cambia, il punto si sposta altrove). La seconda è che la soglia disegnata, quel
+$0{,}10$, è una soglia sull'ampiezza del segmento, decisa su quanto si è
+disposti a lasciar scivolare le cose prima di preoccuparsi.
 
 Il KS restituisce però un altro numero, e usarlo come soglia è un errore
 comune.
@@ -1189,12 +1190,14 @@ Le tre tecniche, in ordine crescente di esposizione {cite}`huyen2022designing`:
   È lo strumento per rispondere a *«il nuovo è davvero meglio?»*,
   mentre shadow e canary rispondono a *«il nuovo è sicuro da servire?»*.
 
-La stessa formula dice perché il canary non basta a giudicare la qualità. Per
-vedere un tasso d'errore che raddoppia dal 2% al 4%, con $\alpha = 0{,}05$ e
-potenza $0{,}8$, servono circa $1\,100$ richieste nel gruppo canary, che con
-una quota dell'1% sono più di centomila richieste in tutto: alle quote a cui
-lavora, il canary vede i guasti grossolani (errori, latenza, crash) e non una
-piccola regressione di qualità, che resta compito dell'A/B.
+Lo stesso conto, rifatto per due gruppi di taglia diversa, dice perché il
+canary non basta a giudicare la qualità. Per vedere un tasso d'errore che
+raddoppia dal 2% al 4%, con $\alpha = 0{,}05$ e potenza $0{,}8$, servono circa
+$760$ richieste nel gruppo canary (il controllo, novantanove volte più grande,
+non pesa quasi più sulla varianza), che con una quota dell'1% sono circa
+settantacinquemila richieste in tutto: alle quote a cui lavora, il canary vede
+i guasti grossolani (errori, latenza, crash) e non una piccola regressione di
+qualità, che resta compito dell'A/B.
 
 [Le tre non sono alternative ma un percorso]{.pt-matita}: shadow per verificare
 che non si rompa nulla, canary per limitare l'esposizione, A/B per decidere con
@@ -1270,27 +1273,29 @@ finché il modello serve.
   output (distribuzioni, tasso di ciascuna classe predetta), (3) qualità vera,
   che richiede le etichette e soffre di label delay (arriva tardi o mai
   {cite}`huyen2022designing`).
-- I proxy statistici del livello 2 sono un allarme anticipato: si accendono
-  *prima* che il degrado sia misurabile con le etichette vere.
+- I proxy statistici del livello 2 possono accendersi *prima* che il degrado
+  sia misurabile con le etichette vere, ma solo se cambia $P(\mathbf{x})$: un
+  *concept shift* puro li lascia spenti.
 - Il detective della sezione «Quando i dati cambiano» diventa sorveglianza
   continua con tre scelte operative: finestre (riferimento vs corrente
-  scorrevole), soglia sull'AUC (che decide quale scostamento passa
-  inosservato, non il tasso di falsi allarmi) e test per
-  *feature* per localizzare il drift: Kolmogorov–Smirnov sulle colonne
-  numeriche, e sulle categoriche, a cui non si applica, il PSI o un chi
-  quadro. Essendo addestrato
-  sui soli ingressi, rileva un cambiamento della marginale $P(\mathbf{x})$: il
-  covariate shift lo fa suonare, il label shift lo sposta appena e quasi mai
-  abbastanza, e del *concept shift* puro non vede niente.
+  scorrevole), soglia sull'AUC (che decide quale scostamento passa inosservato,
+  non il tasso di falsi allarmi) e test per *feature* per localizzare il drift:
+  Kolmogorov–Smirnov sulle colonne numeriche, e sulle categoriche, a cui non si
+  applica, il PSI o un chi quadro. Essendo addestrato sui soli ingressi, rileva
+  un cambiamento della marginale $P(\mathbf{x})$: il covariate shift lo fa
+  suonare, il label shift lo sposta tanto meno quanto più piccolo è il cambio
+  delle quote (da 1% a 10% non basta a farlo suonare), e del *concept shift*
+  puro non vede niente.
 - L'allarme si fonda sull’ampiezza dello scostamento, non sul $p$-value: a
-  taglie di produzione il KS rifiuta su differenze che nessun modello sente.
-  Anche le ampiezze, però, dipendono dalla taglia: il PSI, senza nessuna deriva,
-  vale in media $(B-1)(1/n_r + 1/n_c)$, e le sue soglie convenzionali (0,1 e
-  0,25) vanno ritarate sulle finestre {cite}`yurdakul2020statistical`. Il
-  test per colonna è necessario ma non sufficiente, per due ragioni: uno
-  shift che vive nella struttura congiunta lascia tutte le marginali intatte, e
-  uno shift diffuso le muove tutte di un'inezia, ciascuna sotto la propria
-  soglia, mentre l'indicatore globale che le somma suona.
+  taglie di produzione il KS rifiuta anche su differenze che il modello quasi
+  non sente. Anche le ampiezze, però, dipendono dalla taglia: il PSI, senza
+  nessuna deriva, vale in media $(B-1)(1/n_r + 1/n_c)$, e le sue soglie
+  convenzionali (0,1 e 0,25) vanno ritarate sulle finestre
+  {cite}`yurdakul2020statistical`. Il test per colonna è necessario ma non
+  sufficiente, per due ragioni: uno shift che vive nella struttura congiunta
+  lascia tutte le marginali intatte, e uno shift diffuso le muove tutte di
+  un'inezia, ciascuna sotto la propria soglia, mentre l'indicatore globale che
+  le somma suona.
 - $W_1 = \int \lvert F - G \rvert$ integra la differenza che il KS massimizza:
   sente le code e non ha tetto, e va normalizzato per confrontare colonne. La
   deriva delle prestazioni si misura per sottopopolazione con AUC, KS fra le

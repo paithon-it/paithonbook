@@ -169,8 +169,9 @@ meno.
 Siano $\mathcal{H}=\{\mathbf{x}\mapsto\mathbf{w}^\top\mathbf{x} :
 \lVert\mathbf{w}\rVert\le\Lambda\}$ e i punti in una palla di raggio $r$ (il
 termine noto della SVM si assorbe aggiungendo a ogni punto una coordinata
-costante, che allarga un poco $r$). Allora (Mohri e colleghi, teorema 5.10; per
-i nuclei, teorema 6.12)
+costante $c$, che porta il raggio a $\sqrt{r^2+c^2}$, purché il vincolo di
+norma valga anche per $b/c$, che la SVM non regolarizza). Allora (Mohri e
+colleghi, teorema 5.10; per i nuclei, teorema 6.12)
 
 $$
 \hat{\mathfrak{R}}_S(\mathcal{H}) \le \sqrt{\frac{r^2\Lambda^2}{m}},
@@ -274,10 +275,12 @@ n=1000 m= 100: Rademacher 0.0999 (tetto 0.1000); margine 0.400, VC inf
 n=1000 m=1000: Rademacher 0.0316 (tetto 0.0316); margine 0.126, VC inf
 ```
 
-Il numero stampato come Rademacher è la correlazione con le monete, che vale
-$1$ quando la famiglia le insegue tutte e $0$ quando ne indovina metà; con
-dieci punti sul cerchio di raggio uno, ad esempio, vale $0{,}28$. In due
-dimensioni i due termini sono simili, al più uno il doppio dell'altro.
+Il numero stampato come Rademacher è la correlazione con le monete che le
+funzioni lineari raggiungono con pesi di norma al più uno: non conta le monete
+indovinate (in mille dimensioni un iperpiano le indovina tutte), ma quanto
+l'uscita riesce ad allinearsi ai loro segni; con dieci punti sul cerchio di
+raggio uno, ad esempio, vale $0{,}28$. In due dimensioni i due termini sono
+simili, al più uno il doppio dell'altro.
 
 In mille dimensioni, invece, la garanzia VC non esiste più, perché mille esempi
 non bastano nemmeno a superare la dimensione VC degli iperpiani, mentre il

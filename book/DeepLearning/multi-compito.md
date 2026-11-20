@@ -58,9 +58,9 @@ rilegge i documenti da capo per ogni domanda.
 
 L'errore da ridurre, però, è uno solo. A fine giornata non si guarda uno
 sportello per volta, ma si somma quanto ha sbagliato ciascuno e ne esce un
-numero unico da far scendere, sistemando insieme l'archivio e gli sportelli. Nel
-sommare bisogna decidere quanto pesa ciascuno sportello, e questa è la scelta
-più delicata di tutte.
+numero unico da far scendere, sistemando insieme l'archivio e gli sportelli.
+Nel sommare bisogna decidere quanto conta ciascuno sportello, e questa è la
+scelta più delicata di tutte.
 
 Non è l'unica forma possibile. A volte i compiti sono parenti ma non abbastanza
 da poter condividere tutto. In questi casi si tengono due reti separate,
@@ -174,11 +174,11 @@ deve imparare il proprio mestiere dai propri esempi, e lì il compito di contorn
 non lo può sostituire.
 
 Il secondo motivo è più sottile: il compito in più fa da freno. Una rete
-lasciata sola con un compito trova la soluzione di comodo, e le soluzioni di
-comodo sono quelle che non generalizzano. [Se la stessa rappresentazione deve
-servire anche a un secondo compito, quelle soluzioni non convengono
-più]{.pt-matita}, perché al secondo non servono, e la rete è spinta verso
-soluzioni più generali.
+lasciata sola con un compito trova la soluzione di comodo, come appoggiarsi a
+un dettaglio che negli esempi c'è per caso, e le soluzioni di comodo sono
+quelle che non generalizzano. [Se la stessa rappresentazione deve servire anche
+a un secondo compito, quelle soluzioni non convengono più]{.pt-matita}, perché
+al secondo non servono, e la rete è spinta verso soluzioni più generali.
 
 In gergo questa spinta si chiama regolarizzazione, un nome che si dà a
 qualunque accorgimento che, restringendo le strade che la rete può prendere, la
@@ -186,7 +186,8 @@ costringa a una risposta che vale in generale invece che a una perfetta sugli
 esempi già visti. Il freno rende quando gli esempi sono pochi e la rete è
 libera di inventarsi qualunque cosa. Quando gli esempi abbondano le soluzioni
 di comodo sono già poche, e il compito in più, invece di aiutare, può
-cominciare a ostacolare.
+cominciare a ostacolare, perché la rappresentazione comune deve accontentare
+due compiti, e il secondo le toglie spazio.
 
 Il terzo motivo è l’attenzione, nel senso di tutti i giorni: certi compiti
 dicono alla rete dove guardare. Se per rispondere alla seconda domanda serve un
@@ -199,7 +200,7 @@ rappresentarlo, e magari scopre che serviva anche alla prima.
 
 L'argomento di Caruana è statistico: i compiti condividono un **bias
 induttivo**. Ogni algoritmo di apprendimento ne ha uno, cioè un insieme di
-assunzioni implicite che rendono preferibili certe ipotesi. Addestrare su più
+presupposti impliciti che rendono preferibili certe ipotesi. Addestrare su più
 compiti significa allora cercare l'ipotesi che soddisfa *tutti* i loro bias
 insieme, il che restringe lo spazio delle soluzioni ammissibili.
 

@@ -25,7 +25,7 @@
   impronta: "9c85f6f81941"
   postilla: "Query e chiavi scelte perché «salta» cerchi dove «gatto» si fa trovare"
 - inizio: "Le tre righe si leggono una"
-  impronta: "849ae541a474"
+  impronta: "3b1ab6095415"
   postilla: "Alla terza posizione «salta» dà a «gatto» più di tre quarti del peso"
 - inizio: "La riga mascherata dopo la softmax"
   impronta: "5ea415e4c328"

@@ -119,8 +119,9 @@ La rete che comprime non restituisce una scheda sola, ma una scheda e un
 margine di tolleranza: «all'incirca questo, più o meno tanto». È quel margine
 la trovata, perché costringe schede vicine a ridiventare immagini simili.
 (Sulla scheda il disegno mette i nomi tecnici: $\mu$ è il valore scritto,
-$\sigma$ il margine di tolleranza, e il pallino nero il punto campionato
-dentro quel margine. La scheda, quindi, è la coppia: il valore *e* il margine.)
+$\sigma$ il margine di tolleranza, e il pallino nero il punto campionato dentro
+quel margine. La rete, quindi, restituisce la coppia, il valore *e* il margine,
+e la scheda che si usa è il punto pescato lì dentro.)
 ```
 
 La {numref}`fig-vae` riassume i due tratti che il VAE aggiunge
@@ -268,7 +269,7 @@ cosa è plausibile ricostruire, il che è un'altra cosa e ha conseguenze proprie
 
 ## L'architettura di Stable Diffusion: la ricetta in quattro mosse
 
-Manca un pezzo solo, tenuto finora in disparte: il testo. Le fotografie con cui
+Manca un pezzo, tenuto finora in disparte: il testo. Le fotografie con cui
 questi modelli si addestrano non arrivano nude, arrivano con una didascalia
 accanto («un gatto nero seduto su un muro»), raccolta insieme all'immagine dal
 sito da cui è stata presa. È così che il modello impara ad associare le parole
@@ -1047,15 +1048,14 @@ tecnica]{.pt-matita}.
   prompt, trasformato dal text encoder di CLIP {cite}`radford2021learning`,
   entra nella U-Net via cross-attention (la stessa formula dei Transformer, con
   $\mathbf{Q}$ dal latente e $\mathbf{K}$, $\mathbf{V}$ dal testo).
-- La classifier-free guidance {cite}`ho2022classifier` addestra il
-  modello anche senza prompt e in inferenza estrapola tra predizione
-  condizionata e non, con peso $w$: più aderenza al testo, meno varietà. Il
-  «classificatore implicito» è un'ispirazione, non un oggetto (il campo
-  guidato non è conservativo), e per $w > 1$ non si campiona più da
-  $p(\mathbf{x} \mid c)$ e nemmeno dall'inclinata
-  $p(\mathbf{x})\,p(c \mid \mathbf{x})^w$, che è la giustificazione corrente
-  {cite}`bradley2024classifier`. I *negative prompt* sono la
-  stessa formula al contrario.
+- La classifier-free guidance {cite}`ho2022classifier` addestra il modello
+  anche senza prompt e in inferenza estrapola tra predizione condizionata e
+  non, con peso $w$: più aderenza al testo, meno varietà. Il «classificatore
+  implicito» è un'ispirazione, non un oggetto (il campo guidato non è
+  conservativo), e per $w > 1$ non si campiona più da $p(\mathbf{x} \mid c)$ e
+  nemmeno dall'inclinata $p(\mathbf{x})\,p(c \mid \mathbf{x})^w$, che è la
+  giustificazione corrente {cite}`bradley2024classifier`. I *negative prompt*
+  sono la stessa formula con $c_{\mathrm{neg}}$ al posto di $\varnothing$.
 - I pesi aperti (agosto 2022) hanno generato un ecosistema (LoRA
   {cite}`hu2022lora`, ControlNet {cite}`zhang2023adding`, interfacce di
   comunità) e una traiettoria che finisce col sostituire la U-Net con un

@@ -39,9 +39,10 @@ distinzione. (È una ricostruzione fatta da chi l'ha studiato, perché la
 procedura con cui Google ha addestrato BERT non è mai stata pubblicata.) Invece
 di chiedersi «quante volte questi due pezzi si trovano attaccati?», si chiede:
 «si trovano attaccati più di quanto capiterebbe per caso?». Il calcolo è
-semplice: si prende quante volte la coppia compare e la si divide per quanto
-sono comuni i due pezzi presi singolarmente. Un pezzo che è dappertutto viene
-penalizzato, e le sue coppie devono essere molto frequenti per vincere.
+semplice: si prende quante volte la coppia compare e la si divide per il
+prodotto di quante volte compare ciascuno dei due pezzi. Un pezzo che è
+dappertutto viene penalizzato, e le sue coppie devono essere molto frequenti
+per vincere.
 
 Nel nostro corpus di cinque parole, con questo criterio, la prima fusione non è
 più `ss` ma `ba`, e il calcolo si può rifare a mano con due divisioni. Nei 146
@@ -253,11 +254,11 @@ di sottolineatura), attaccata alla parola che comincia. Viene `▁il▁gatto▁n
 una fila ininterrotta su cui BPE gira come prima. In giapponese, dove gli spazi
 non ci sono, non cambia niente: la fila era già così.
 
-Quando si scelgono le perline, però, la fila di solito si taglia lo stesso a
-ogni barretta, e nessuna perlina nuova ne scavalca una: un pezzo come
-`▁sul▁muro` nasce solo se lo si chiede. Dove barrette non ce ne sono, il pezzo
-da guardare è la frase intera, e quanto può essere lunga una perlina lo si fissa
-a parte.
+Quando si scelgono le perline, però, di solito si decide di rispettare le
+barrette: la fila resta intera, ma nessuna perlina nuova ne scavalca una: un
+pezzo come `▁sul▁muro` nasce solo se lo si chiede. Dove barrette non ce ne
+sono, il pezzo da guardare è la frase intera, e quanto può essere lunga una
+perlina lo si fissa a parte.
 
 Per riavere la frase basta riaccostare i pezzi e rimettere uno spazio dove c'è
 la barretta, senza regole su dove ci va e dove no (prima di *gatto* sì, prima

@@ -178,17 +178,17 @@ cadono vicino a $\mathbf{x}_0$, e in alta dimensione sono pochi.
 
 Quattro limiti vanno dichiarati. Primo, l’instabilità: campionamento casuale e
 scelta del kernel rendono la spiegazione sensibile ai dettagli; rieseguire LIME
-sullo stesso punto può dare coefficienti diversi, in buona parte perché i
-campioni nascono dalla distribuzione marginale e solo il peso li avvicina al
-punto. Si misura rilanciando il metodo con semi diversi e confrontando, fra due
-rilanci, gli insiemi $\mathcal{K}_1$ e $\mathcal{K}_2$ delle $k$ feature in
-testa con l'indice di Jaccard $|\mathcal{K}_1 \cap \mathcal{K}_2|
-/ |\mathcal{K}_1 \cup \mathcal{K}_2|$: lontano da $1$, la spiegazione dipende
-dal sorteggio, e più campioni la stabilizzano, con una valutazione del modello
-in più per ogni campione. Una richiesta più forte è che punti vicini ricevano
-spiegazioni vicine: Alvarez-Melis e Jaakkola la misurano con una stima locale
-della costante di Lipschitz della spiegazione $\boldsymbol{\phi}$, il massimo
-di $\lVert \boldsymbol{\phi}(\mathbf{x}_i) -
+sullo stesso punto può dare coefficienti diversi, in buona parte perché, sui
+dati in tabella, i campioni nascono dalla distribuzione marginale e solo il
+peso li avvicina al punto. Si misura rilanciando il metodo con semi diversi e
+confrontando, fra due rilanci, gli insiemi $\mathcal{K}_1$ e $\mathcal{K}_2$
+delle $k$ feature in testa con l'indice di Jaccard $|\mathcal{K}_1 \cap
+\mathcal{K}_2| / |\mathcal{K}_1 \cup \mathcal{K}_2|$: lontano da $1$, la
+spiegazione dipende dal sorteggio, e più campioni la stabilizzano, con una
+valutazione del modello in più per ogni campione. Una richiesta più forte è che
+punti vicini ricevano spiegazioni vicine: Alvarez-Melis e Jaakkola la misurano
+con una stima locale della costante di Lipschitz della spiegazione
+$\boldsymbol{\phi}$, il massimo di $\lVert \boldsymbol{\phi}(\mathbf{x}_i) -
 \boldsymbol{\phi}(\mathbf{x}_j)\rVert_2 / \lVert \mathbf{x}_i - \mathbf{x}_j
 \rVert_2$ sui punti $\mathbf{x}_j$ di una piccola palla attorno a
 $\mathbf{x}_i$, e trovano che i metodi diffusi per lo più non la soddisfano, e
@@ -305,9 +305,10 @@ nome. Che la somma torni senza avanzi, come qui $25 + 15 = 50 - 10$, è
 l’**efficienza**. Che due colonne che fanno lo stesso mestiere ricevano lo
 stesso merito è la **simmetria**. Nel calcolo completo reddito e pagamenti non
 fanno lo stesso mestiere (da soli valgono 20 e 10), e infatti prendono 25 e 15;
-lo fanno dentro l'interazione, dove nessuno dei due vale niente senza l'altro,
-e per questo quei dieci punti si sono divisi a metà. Che una colonna che non
-aggiunge mai niente, in nessun ordine, prenda zero è il **giocatore nullo**.
+lo fanno dentro l'interazione, i dieci punti in più che nascono solo se ci sono
+tutti e due, e per questo quei dieci punti si sono divisi a metà. Che una
+colonna che non aggiunge mai niente, in nessun ordine, prenda zero è il
+**giocatore nullo**.
 
 Poi c'è l’**additività**, la meno intuitiva delle quattro e la più utile: se il
 punteggio del cliente fosse la somma di due punteggi calcolati a parte, il
@@ -353,7 +354,7 @@ attribuzione che soddisfa quattro assiomi]{.pt-matita}:
 - **Simmetria**: se due feature danno lo stesso contributo a ogni coalizione
   ($v(S \cup \{i\}) = v(S \cup \{j\})$ per ogni $S$ che non contiene né $i$
   né $j$), allora $\phi_i = \phi_j$.
-- **Giocatore nullo** (*dummy*): una feature che non cambia mai il valore
+- **Giocatore nullo** (*null player*): una feature che non cambia mai il valore
   ($v(S \cup \{i\}) = v(S)$ per ogni $S$) riceve $\phi_i = 0$, e la si può
   togliere dal gioco: per ogni altra feature il contributo a una coalizione che
   contiene $i$ è lo stesso che senza, quindi i valori delle altre non cambiano.
@@ -390,12 +391,14 @@ grandezze del mondo reale.
 
 Sull'esempio dei due giocatori, con $v(\varnothing)=10$, $v(\{1\})=30$,
 $v(\{2\})=20$, $v(\{1,2\})=50$, la formula dà $\phi_1 = 25$ e $\phi_2 = 15$, in
-accordo con la media sugli ordini, e $\phi_1 + \phi_2 = 40 = v(N) - v(\varnothing)$
-verifica l'efficienza. Il costo è la maledizione combinatoria: la somma per una
-singola feature è su $2^{\,n-1}$ coalizioni (i sottoinsiemi che non contengono
-$i$), e le coalizioni distinte in tutto sono $2^n$: è quest'ultimo il miliardo
-abbondante che si cita per $n = 30$. In entrambi i conteggi si è impraticabili
-oltre poche decine di feature. È il problema che SHAP risolve.
+accordo con la media sugli ordini, e $\phi_1 + \phi_2 = 40 = v(N) -
+v(\varnothing)$ verifica l'efficienza. Il costo è la maledizione combinatoria:
+la somma per una singola feature è su $2^{\,n-1}$ coalizioni (i sottoinsiemi
+che non contengono $i$), e le coalizioni distinte in tutto sono $2^n$: è
+quest'ultimo il miliardo abbondante che si cita per $n = 30$. In entrambi i
+conteggi si è impraticabili oltre poche decine di feature. È il problema che
+SHAP aggira, stimando la somma per campionamento (KernelSHAP) o, sugli alberi,
+sfruttandone la struttura (TreeSHAP).
 
 `````
 
@@ -1145,19 +1148,19 @@ tutti: se ne prova un campione a caso, oppure si usa TreeSHAP quando il modello
   sezione sui modelli trasparenti rispondeva a «cosa conta in media?».
 - LIME {cite}`ribeiro2016why` approssima il modello con un surrogato lineare
   definito su una rappresentazione interpretabile binaria (superpixel, parole,
-  intervalli) e adattato a punti perturbati pesati per prossimità: la località
-  la porta il peso $\pi_{\mathbf{x}_0}$, non il campionamento. È model-agnostic
-  ma instabile, sensibile alla larghezza del vicinato e alla segmentazione
-  scelta; l'instabilità si misura rilanciandolo e confrontando le feature in
-  testa.
-- I valori di Shapley (teoria dei giochi, 1953) ripartiscono fra le feature
-  lo scarto fra la predizione $f(\mathbf{x}_0)$ e un valore base, cioè quanto
+  intervalli) e adattato a punti perturbati pesati per prossimità: sui dati in
+  tabella, nell'implementazione degli autori, la località la porta il peso
+  $\pi_{\mathbf{x}_0}$, non il campionamento. È model-agnostic ma instabile,
+  sensibile alla larghezza del vicinato e alla segmentazione scelta;
+  l'instabilità si misura rilanciandolo e confrontando le feature in testa.
+- I valori di Shapley (teoria dei giochi, 1953) ripartiscono fra le feature lo
+  scarto fra la predizione $f(\mathbf{x}_0)$ e un valore base, cioè quanto
   risponde il modello quando delle feature non sa nulla; la quota di ciascuna è
-  la media dei suoi contributi marginali su tutti gli ordini di ingresso.
-  Sono l'unica attribuzione che soddisfa efficienza, simmetria, giocatore
-  nullo e additività, una volta stabilito che cosa significa «non far sapere»
-  una feature al modello: deciderlo in un modo o nell'altro sposta il valore
-  base, e con esso le attribuzioni.
+  la media dei suoi contributi marginali su tutti gli ordini di ingresso. Sono
+  l'unica attribuzione che soddisfa efficienza, simmetria, giocatore nullo e
+  additività, una volta stabilito che cosa significa «non far sapere» una
+  feature al modello: deciderlo in un modo o nell'altro cambia il gioco $v$
+  (con un riferimento fisso, anche il valore base), e con esso le attribuzioni.
 - SHAP {cite}`lundberg2017unified` li stima in modo efficiente,
   KernelSHAP (agnostico) e TreeSHAP (esatto per gli alberi), con la
   proprietà di consistenza; si legge col grafico a cascata (*waterfall*),

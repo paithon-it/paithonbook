@@ -65,7 +65,7 @@ da Simonyan, Vedaldi e Zisserman nel 2014 {cite}`simonyan2014deep`.
 `````{tab} Elementare
 
 Quali pixel, toccati appena, cambierebbero il verdetto della rete? Sposta di un
-nulla il pixel del muso e la fiducia in «cane» crolla: quel pixel è
+nulla il pixel del muso e la fiducia in «cane» cambia parecchio: quel pixel è
 *importante*. Tocca un pixel dello sfondo e non succede niente: quello non
 conta. La mappa di salienza è questa, un'immagine in bianco e nero delle stesse
 dimensioni della foto, che si accende dove un piccolo ritocco farebbe la
@@ -342,9 +342,10 @@ salita, quando reagiva eccome.
 
 Resta un ultimo passo. La media dice quanto la rete reagisce a *un ritocco* di
 quel pixel, e a noi serve quanto ha contato in tutto il suo percorso dal nero
-al suo valore vero. Per questo si moltiplica la media per quella strada: un
-pixel che è passato da nero a bianco pieno l'ha fatta tutta e si prende tutto,
-uno che è rimasto quasi nero ne ha fatta pochissima e si prende quasi niente.
+al suo valore vero. Per questo si moltiplica la media per la strada che quel
+pixel ha percorso, cioè per quanto il suo valore vero dista dal nero: un pixel
+che è passato da nero a bianco pieno l'ha fatta tutta e si prende tutto, uno
+che è rimasto quasi nero ne ha fatta pochissima e si prende quasi niente.
 
 Fare la media di otto pendenze e moltiplicarla per tutta la strada dà lo stesso
 risultato che sommare otto contributi, ciascuno la pendenza di una tappa per il
@@ -397,9 +398,10 @@ Riemann su $m$ passi. Integrando lungo il cammino, il metodo cattura anche i
 gradienti *prima* della saturazione, dove il segnale è vivo, risolvendo la
 cecità del gradiente locale.
 
-La proprietà più importante è la completezza: se $f$ è differenziabile quasi
-ovunque lungo il cammino (lo è una rete con ReLU), le attribuzioni sommano
-esattamente alla differenza di uscita tra input e baseline,
+La proprietà più importante è la completezza: se $f$ è lipschitziana (lo è una
+rete con ReLU), così che lungo il cammino è assolutamente continua e derivabile
+quasi ovunque, le attribuzioni sommano esattamente alla differenza di uscita
+tra input e baseline,
 
 $$
 \sum_i \mathrm{IG}_i(\mathbf{x}) = f(\mathbf{x}) - f(\mathbf{x}').
@@ -472,8 +474,8 @@ pixel che è tutta la spiegazione.
 La seconda è che la barra di destra si ferma sulla riga, e qui vanno separate
 due cose. Che la riga sia il posto giusto è un teorema, la completezza: se si
 misura la pendenza in *ogni* punto del cammino, la somma fa esattamente il
-salto di fiducia fra partenza e arrivo, purché la curva sia derivabile quasi
-ovunque. Che ci arrivi una somma di otto sole tappe, invece, non lo garantisce
+salto di fiducia fra partenza e arrivo, purché la pendenza della curva resti
+limitata. Che ci arrivi una somma di otto sole tappe, invece, non lo garantisce
 niente.
 
 Lungo ogni tappa la pendenza cala, e bisogna decidere in che punto
@@ -656,12 +658,13 @@ meriti.
 `````{tab} Superiore
 
 Sia $f: \mathbb{R}^d \to \mathbb{R}$ il punteggio e $\bar{\mathbf{x}}$ una
-baseline. **Gradiente per ingresso**: $a_i = x_i\,\partial f/\partial x_i$.
-**Occlusione** {cite}`zeiler2014visualizing`: $a_i = f(\mathbf{x}) -
-f(\mathbf{x}_{[i \leftarrow \bar{x}_i]})$, dove sulle immagini si sostituisce una
-pezza di pixel invece di una componente; è agnostica rispetto al modello, costa
-una passata in avanti per pezza, e non gode di completezza, perché in presenza
-di interazioni $\sum_i a_i \neq f(\mathbf{x}) - f(\bar{\mathbf{x}})$.
+baseline (la $\mathbf{x}'$ dei gradienti integrati). **Gradiente per
+ingresso**: $a_i = x_i\,\partial f/\partial x_i$. **Occlusione**
+{cite}`zeiler2014visualizing`: $a_i = f(\mathbf{x}) - f(\mathbf{x}_{[i
+\leftarrow \bar{x}_i]})$, dove sulle immagini si sostituisce una pezza di pixel
+invece di una componente; è agnostica rispetto al modello, costa una passata in
+avanti per pezza, e non gode di completezza, perché in presenza di interazioni
+$\sum_i a_i \neq f(\mathbf{x}) - f(\bar{\mathbf{x}})$.
 
 **LRP** {cite}`bach2015pixel` ridistribuisce il punteggio dall’uscita
 all’ingresso con regole locali; nella regola $\varepsilon$, per uno strato con
@@ -925,9 +928,9 @@ Il nome dice però meno di quanto sembri. Viene dall'archivio, e un concetto che
 l'archivio non contiene non si può trovare, quindi un filtro senza nome può
 fare benissimo qualcosa.
 
-Si può poi rimescolare uno strato. Ad esempio, al posto di due filtri
-A e B se ne mettono due nuovi, «A più B» e «A meno B»: sembrano diversi,
-ma sommandoli e sottraendoli si ritrovano A e B tali e quali, quindi la rete sa
+Si può poi rimescolare uno strato. Ad esempio, al posto di due filtri A e B se
+ne mettono due nuovi, «A più B» e «A meno B»: sembrano diversi, ma sommandoli e
+sottraendoli si ritrovano A e B, a meno di dividere per due, quindi la rete sa
 le stesse cose. Nessuno dei due nuovi, però, si accende più sui soli cani.
 Rimescolando così tutti i filtri di uno strato, in un esperimento degli stessi
 autori su una rete che riconosce luoghi, i nomi diversi che si riescono a dare
@@ -1052,7 +1055,7 @@ comprese, piano dopo piano. Gli strumenti che fanno questo calcolo si chiamano
 **attention rollout** e **attention flow**, e restituiscono una mappa sulle
 parole di partenza, spesso più sensata di quella del singolo strato.
 
-Rollout e flow dicono quanto ogni parola ha pesato sul risultato. C'è poi un
+Rollout e flow dicono quanto ogni parola ha pesato sul risultato. C'è poi uno
 strumento che risponde a un'altra domanda: se a un certo piano della rete è
 scritta una data informazione, per esempio se una parola è un nome o un verbo.
 È il probing (sondaggio): si prova a leggere quell'informazione da lì con lo
@@ -1211,14 +1214,14 @@ perché riscrive ciò che riceve in modo da poterlo poi ricostruire.
 
 Perché quelle due regole insieme dovrebbero dare caselle leggibili? Ogni
 casella, quando si accende, rimette nella ricostruzione sempre lo stesso pezzo,
-la sua impronta, e tutte le impronte hanno la stessa grandezza, così che il
-«poche per volta» non si aggiri accendendo le caselle piano e ingrandendo le
-impronte. Una casella che tenesse tre cose diverse avrebbe una sola impronta
-per tutte e tre: accesa per un gatto, ci rimetterebbe anche un po’ di
-automobile e di verde, e per correggerla servirebbero altre caselle accese, e
-la regola del «poche per volta» penalizza proprio questo. Una casella che fa
-una cosa sola ricostruisce quella cosa da sola, e il posto abbondante serve
-perché ce ne sia una per ogni cosa.
+la sua impronta, e un accorgimento in più dà a tutte le impronte la stessa
+grandezza, così che il «poche per volta» non si aggiri accendendo le caselle
+piano e ingrandendo le impronte. Una casella che tenesse tre cose diverse
+avrebbe una sola impronta per tutte e tre: accesa per un gatto, ci rimetterebbe
+anche un po’ di automobile e di verde, e per correggerla servirebbero altre
+caselle accese, e la regola del «poche per volta» penalizza proprio questo. Una
+casella che fa una cosa sola ricostruisce quella cosa da sola, e il posto
+abbondante serve perché ce ne sia una per ogni cosa.
 
 È la stessa idea della rete, rovesciata: la
 rete mescola i concetti perché ha poco spazio, e se lo può permettere perché
@@ -1469,7 +1472,7 @@ come strumento di controllo.
   gradiente lungo il cammino dalla baseline all'input: fondati su assiomi
   (sensibilità a input e baseline che differiscono in una sola componente,
   invarianza all'implementazione), risolvono la saturazione e
-  soddisfano la completezza per $f$ differenziabile quasi ovunque,
+  soddisfano la completezza per $f$ lipschitziana (come una rete con ReLU),
   $\sum_i \mathrm{IG}_i = f(\mathbf{x}) - f(\mathbf{x}')$, che la somma di
   Riemann approssima (da controllare, aumentando $m$). La completezza vale
   però per qualunque baseline: $\mathbf{x}'$ è il grado di libertà che gli

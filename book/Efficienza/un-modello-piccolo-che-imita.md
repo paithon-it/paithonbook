@@ -171,10 +171,12 @@ del linguaggio, con il 60% di velocità in più {cite}`sanh2019distilbert`.
 
 Il maestro è una rete larga, addestrata su tutte le etichette. Lo studente è
 una rete minuscola, e vede pochissime etichette: centoventi esempi su
-ottocentonovantotto. La domanda è che cosa cambi se, oltre a quelle centoventi
-etichette, allo studente si lasciano leggere anche i commenti del maestro,
-cioè le sue risposte a temperatura alta, su tutti gli esempi, compresi quelli
-di cui non ha l’etichetta.
+ottocentonovantotto (questi sono metà della raccolta, e l’altra metà resta per
+l’esame).
+La domanda è che cosa cambi se, oltre a quelle centoventi etichette, allo
+studente si lasciano leggere anche i commenti del maestro, cioè le sue risposte
+a temperatura alta, su tutti gli esempi, compresi quelli di cui non ha
+l’etichetta.
 
 ```python
 import torch

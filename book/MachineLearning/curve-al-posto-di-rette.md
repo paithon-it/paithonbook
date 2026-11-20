@@ -332,7 +332,7 @@ altri, che si sceglie con la cross-validation di
 {doc}`Overfitting e validazione <overfitting-validazione>`. C'è anche una
 terza via, che evita questa scelta.
 
-## Smoothing spline: la manopola che irrigidisce il legno
+## Smoothing spline: il parametro che irrigidisce il legno
 
 Invece di decidere quanti nodi usare, se ne mette uno per dato e si penalizza
 la curvatura. È l'idea della **smoothing spline**. Il listello dei cantieri ne
@@ -514,7 +514,7 @@ cubica naturale e la smoothing spline.
 
 ```{figure} ../figures/spline-tavola-e-tavolette.svg
 :name: fig-spline-tavolette
-:alt: "Tre pannelli. Nei primi due gli stessi quindici punti equispaziati presi su una curva a campana, disegnata tenue sotto. Nel primo il polinomio di grado quattordici che passa per tutti e quindici i punti: al centro segue la campana, ma verso le due estremita oscilla sempre piu forte e finisce fuori dal riquadro, come segnalano due frecce. Nel secondo la spline cubica naturale sugli stessi punti resta aderente alla campana per tutta la sua lunghezza. Il terzo pannello ha altri dati, quaranta punti rumorosi, e mostra la stessa curva a tre rigidita crescenti: una in ocra passa quasi per ogni punto e ondeggia, una in terracotta segue la campana, la terza tratteggiata e indistinguibile da una retta."
+:alt: "Tre pannelli. Nei primi due gli stessi quindici punti equispaziati presi su una curva a campana, disegnata tenue sotto. Nel primo il polinomio di grado quattordici che passa per tutti e quindici i punti: al centro segue la campana, ma verso le due estremità oscilla sempre più forte e finisce fuori dal riquadro, come segnalano due frecce. Nel secondo la spline cubica naturale sugli stessi punti resta aderente alla campana per tutta la sua lunghezza. Il terzo pannello ha altri dati, quaranta punti rumorosi, e mostra la stessa curva a tre rigidità crescenti: una in ocra passa quasi per ogni punto e ondeggia, una in terracotta segue la campana, la terza tratteggiata è indistinguibile da una retta."
 :width: 100%
 
 A sinistra e al centro, lo stesso compito e la stessa scala: far

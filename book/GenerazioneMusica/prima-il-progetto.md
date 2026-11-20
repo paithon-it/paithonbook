@@ -194,7 +194,8 @@ dichiarata, $n$ sale a 7.500 e uno strato globale valuta 56.250.000 coppie. La
 GQA non alleggerisce una cache dell'auto-attenzione, che in un DiT non c'è,
 perché a ogni passo di diffusione la sequenza cambia per intero: dimezza le
 chiavi e i valori che ogni strato calcola e tiene in memoria (il rapporto 0,5
-del calcolo), in auto-attenzione come in cross-attention. Nella cross-attention,
+del calcolo), in auto-attenzione come in cross-attention, ma non le coppie
+valutate, che restano $n^2$ per ogni testa di query. Nella cross-attention,
 anzi, il codice calcola chiavi e valori una volta sola e li riusa a ogni passo,
 perché le condizioni non cambiano.
 
@@ -770,9 +771,9 @@ più alto o il più basso) e con un modo suo di sbagliare.
 La FAD (*Fréchet Audio Distance*) {cite}`kilgour2019frechet` confronta due
 insiemi di brani, quelli generati e quelli di un insieme di riferimento,
 attraverso i loro embedding, cioè i vettori di numeri che una rete addestrata a
-riconoscere suoni assegna a ogni brano, come nella sezione sui
-{doc}`codec neurali </Audio/codec-neurali>`. È una distanza e si minimizza, e
-dice qualcosa dell'insieme, mai del singolo brano.
+riconoscere suoni assegna a ogni brano, come nella sezione sui {doc}`codec
+neurali </Audio/codec-neurali>`. È una distanza e si minimizza, e nella forma
+standard dice qualcosa dell'insieme, non del singolo brano.
 
 Il punteggio CLAP usa CLAP (*Contrastive Language-Audio Pretraining*), che la
 sezione sulla {doc}`generazione di audio e musica </Audio/generazione-audio>`
@@ -890,7 +891,7 @@ essere il gusto di quella scuola.
 Le misure, una per una, con il verso e il loro limite.
 
 - FAD: la distanza fra due insiemi di embedding, trattati come due gaussiane.
-  Più bassa è meglio. Giudica l'insieme e non dice niente del singolo brano.
+  Più bassa è meglio. Nella forma standard giudica l'insieme, non il singolo brano.
 - Punteggio CLAP: il coseno fra testo e audio nello spazio comune. Più alto è
   meglio. Un CLAP non specifico per la musica può non cogliere ciò che conta.
 - PER e WER: fonemi o parole di un riconoscitore contro il testo. Più bassi
@@ -974,17 +975,18 @@ ogni 2.000 passi, perché non ne avevano una {cite}`gong2025acestep`.
 ## Che cosa resta aperto
 
 I limiti che gli autori dichiarano per la prima versione sono elencati nella
-sezione sulla {doc}`diffusione su tutta
-la canzone </GenerazioneMusica/tutta-la-canzone-insieme>`: la lotteria dei
+sezione sulla {doc}`diffusione su tutta la
+canzone </GenerazioneMusica/tutta-la-canzone-insieme>`: la lotteria dei
 tentativi, che scrive il report, e le note della model card, cioè le giunzioni
 del repaint, il canto grossolano e la struttura che oltre i cinque minuti può
-perdersi, già fuori dai quattro minuti (2584 frame del latente) del contesto
-massimo di addestramento. Per la 1.5 scrivono che le capacità restano limitate
-dal numero di parametri, tenuto basso perché il modello giri su hardware di
-consumo, e mettono fra i lavori futuri la ricchezza acustica, le lingue e gli
-stili, la conoscenza del mondo nelle didascalie e l'allineamento preciso dei
-testi {cite}`gong2026acestep`. Dei sistemi commerciali chiusi, come Suno e Udio,
-non risulta una descrizione tecnica pubblicata, e quindi non se ne può dire il
+perdersi, già fuori dai quattro minuti (2584 frame del latente della prima
+versione, che ne aveva poco meno di undici al secondo) del contesto massimo di
+addestramento. Per la 1.5 scrivono che le capacità restano limitate dal numero
+di parametri, tenuto basso perché il modello giri su hardware di consumo, e
+mettono fra i lavori futuri la ricchezza acustica, le lingue e gli stili, la
+conoscenza del mondo nelle didascalie e l'allineamento preciso dei testi
+{cite}`gong2026acestep`. Dei sistemi commerciali chiusi, come Suno e Udio, non
+risulta una descrizione tecnica pubblicata, e quindi non se ne può dire il
 meccanismo.
 
 Del copyright e del consenso sui dati di addestramento si occupa la sezione

@@ -70,13 +70,13 @@ computer rilegge tutti i pesi del modello per produrne una sola. Servire
 molte persone insieme divide quella lettura fra tutte, ma gli appunti di ogni
 conversazione vanno riletti comunque uno per uno.
 
-Tagliare i viaggi conta quindi
-più di ogni altra cosa, e le tecniche del capitolo sulle GPU servono a questo:
-tenere i dati vicino al processore, fare più operazioni in un passaggio solo
-invece di andare e tornare. Lì i viaggi frenavano il tempo, qui frenano la
-corrente, e le due cose vanno insieme: andare più veloci e consumare meno
-coincidono. Addestramento e lettura di un prompt lungo stanno sopra la soglia, e
-lì limare i viaggi sposta poco.
+Quando si genera una parola alla volta, tagliare i viaggi conta quindi più di
+ogni altra cosa, e le tecniche del capitolo sulle GPU servono a questo: tenere
+i dati vicino al processore, fare più operazioni in un passaggio solo invece di
+andare e tornare. Lì i viaggi frenavano il tempo, qui frenano la corrente, e le
+due cose vanno insieme: andare più veloci e consumare meno coincidono.
+Addestramento e lettura di un prompt lungo stanno sopra la soglia, e lì limare
+i viaggi sposta poco.
 
 `````
 
@@ -270,11 +270,12 @@ Si noti che il PUE è un rapporto di struttura, annualizzato: riguarda tutto
 l'edificio su tutto l'anno. Moltiplicarlo per l’$E_{\text{IT}}$ di *un* singolo
 carico di lavoro presuppone che il contorno cresca in proporzione al carico,
 mentre una quota rilevante (illuminazione, gruppi di continuità a vuoto,
-ventilazione di base) è fissa: il PUE **marginale** di un lavoro aggiuntivo è di
-norma più basso di quello medio, e la formula sovrastima. In direzione opposta,
-il PUE non copre né le perdite di trasmissione della rete elettrica né il
-consumo d'acqua. Va bene per l'ordine di grandezza, non per confrontare due
-lavori sulla stessa macchina.
+ventilazione di base) è fissa: il PUE **marginale** di un lavoro aggiuntivo è
+di norma più basso di quello medio, e la formula sovrastima. In direzione
+opposta, il PUE non copre né le perdite di trasmissione della rete elettrica né
+il consumo d'acqua. Va bene per l'ordine di grandezza e per confrontare due
+lavori nello stesso centro dati, dove il fattore si semplifica; non per il
+valore assoluto di un singolo lavoro.
 
 [Anche $I_{\text{rete}}$ va scelto, perché per lo stesso carico se ne possono
 prendere tre valori]{.pt-matita}. C'è la media annuale della rete in cui sta il
@@ -348,13 +349,13 @@ addestrare {cite}`patterson2022plateau`. Ne discende un ordine di priorità, da
 tenere presente quando si sceglie fra un modello grande e uno piccolo rifinito
 bene.
 
-[Le leve principali sono dunque quelle del rispondere]{.pt-matita}, e
-coincidono con quelle già incontrate per risparmiare denaro e tempo. Si
-alleggerisce il modello, scrivendone i pesi con meno cifre o togliendo quelli
-che servono meno (la quantizzazione e la potatura di
-{doc}`LLMOps </MLOps/llmops>`); si servono molte richieste in una volta sola; e
-non si ricalcola ciò che è già stato calcolato (il riuso del prefisso di
-{doc}`Misurare un servizio
+[Per un modello che resta a lungo in servizio, le leve principali sono dunque
+quelle del rispondere]{.pt-matita}, e coincidono con quelle già incontrate per
+risparmiare denaro e tempo. Si alleggerisce il modello, scrivendone i pesi con
+meno cifre o togliendo quelli che servono meno (la quantizzazione e la potatura
+di {doc}`LLMOps </MLOps/llmops>`); si servono molte richieste in una volta
+sola; e non si ricalcola ciò che è già stato calcolato (il riuso del prefisso
+di {doc}`Misurare un servizio
 </MLOps/metriche-di-servizio>`). Là servivano a spendere meno e rispondere
 prima; qui riducono anche l'energia per richiesta.
 

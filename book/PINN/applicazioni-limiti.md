@@ -176,20 +176,19 @@ dove il residuo fisico dentro $\mathcal{L}$ dipende ora anche da $\alpha$, il
 cui gradiente arriva dalla stessa passata di backpropagation che aggiorna i
 pesi: soluzione e parametro si stimano nello stesso ciclo di discesa.
 
-Una scorciatoia retorica diffusa
-consiste nel dipingere i metodi classici mentre provano un valore, risolvono
-tutto, confrontano e riprovano. Non si procede così da
-quarant'anni: il metodo dello stato aggiunto ottiene il gradiente della
-funzione di scarto rispetto a tutti i parametri incogniti al costo di una o
-due risoluzioni del problema diretto, indipendentemente da quanti siano quei
-parametri, e poi scende con un quasi-Newton {cite}`plessix2006adjoint`. Anche
-lì c'è un solo problema di ottimizzazione, non un anello annidato. La
-differenza vera è che lo stato aggiunto richiede di derivare e scrivere, per
-quella specifica equazione, sia il solutore diretto sia quello aggiunto,
-mentre la PINN monta un unico problema non vincolato in $(\theta, \alpha)$ e
-assorbe misure sparse, rumorose e di natura eterogenea senza cambiare
-impianto. [È un vantaggio di uniformità e di costo di implementazione, non
-di complessità algoritmica]{.pt-matita}.
+Una scorciatoia retorica diffusa consiste nel dipingere i metodi classici
+mentre provano un valore, risolvono tutto, confrontano e riprovano. Non si
+procede così da quarant'anni: il metodo dello stato aggiunto ottiene il
+gradiente della funzione di scarto rispetto a tutti i parametri incogniti al
+costo di una risoluzione del problema diretto e di una del problema aggiunto,
+che costa altrettanto, indipendentemente da quanti siano quei parametri, e poi
+scende con un quasi-Newton {cite}`plessix2006adjoint`. Anche lì c'è un solo
+problema di ottimizzazione, non un anello annidato. La differenza vera è che lo
+stato aggiunto richiede di derivare e scrivere, per quella specifica equazione,
+sia il solutore diretto sia quello aggiunto, mentre la PINN monta un unico
+problema non vincolato in $(\theta, \alpha)$ e assorbe misure sparse, rumorose
+e di natura eterogenea senza cambiare impianto. [È un vantaggio di uniformità e
+di costo di implementazione, non di complessità algoritmica]{.pt-matita}.
 
 Non è nemmeno un vantaggio della *rete*. La stessa formulazione (residuo
 discreto più dati, minimizzati insieme al parametro incognito) si può montare
@@ -239,10 +238,10 @@ sangue in particolare. È il territorio d'elezione, quello di *Hidden Fluid
 Mechanics*: ricostruire velocità e pressione punto per punto a partire da
 immagini di un tracciante, con Navier–Stokes imposta come penalità
 {cite}`raissi2020hidden`; nel lavoro fondativo, però, le immagini sono simulate
-e pulite, e la prova su misure cliniche rumorose resta da fare. Il valore non è
-la velocità di calcolo (un solutore maturo è più rapido) ma la capacità di
-tenere conto di misure reali tutte insieme, che in gergo si dice *assimilarle*,
-e di ricavare da lì ciò che quelle misure non contengono.
+e pulite. Il valore non è la velocità di calcolo (un solutore maturo è più
+rapido) ma la capacità di tenere conto di misure reali tutte insieme, che in
+gergo si dice *assimilarle*, e di ricavare da lì ciò che quelle misure non
+contengono.
 
 **Identificazione di parametri nei materiali.** Da poche misure di
 deformazione o di temperatura, stimare grandezze nascoste trattandole come
@@ -680,11 +679,11 @@ $v_{\ell+1}(\mathbf{x}) = \sigma\big(\mathbf{W}_\ell\,v_\ell(\mathbf{x}) +
 Fourier, $\mathbf{R}_\ell$ un tensore di pesi complessi che agisce sui soli
 $k_{\max}$ modi più bassi, $\mathbf{W}_\ell$ un'applicazione lineare punto per
 punto e $\sigma$ l'attivazione (preprint del 2020, conferenza ICLR del 2021).
-Il risultato è *invariante alla risoluzione* (addestri su una griglia, valuti
-su un'altra) e su Navier–Stokes il riassunto dell'articolo dichiara
-un'inferenza fino a circa tre ordini di grandezza più rapida dei solutori
-tradizionali; il cronometro nel corpo, sul confronto con il pseudospettrale, dà
-440 volte.
+Gli autori lo presentano come *invariante alla risoluzione* (addestri su una
+griglia, valuti su un'altra), e su Navier–Stokes il riassunto dell'articolo
+dichiara un'inferenza fino a circa tre ordini di grandezza più rapida dei
+solutori tradizionali; il cronometro nel corpo, sul confronto con il
+pseudospettrale, dà 440 volte.
 
 Quella cifra va però letta con la stessa cautela che si applica alle PINN. Il
 confronto non è a parità di accuratezza: il solutore pseudospettrale è quello
@@ -828,22 +827,23 @@ sugli esempi, o lo usano al posto degli esempi quando mancano.
   ODIL usa da due a cinque ordini di grandezza meno calcolo della PINN
   {cite}`karnakov2024discrete`.
 - Dove le PINN hanno dimostrazioni solide: ricostruzione di campi di flusso da
-  immagini di un tracciante (finora su dati simulati) e stima di parametri di
-  materiali da poche misure. In geofisica sono ancora ricerca, e l'inversione
-  di forma d'onda classica resta difficile da battere. I grandi modelli meteo
-  neurali sono appresi dai dati di rianalisi, senza fisica nella loss, e non
-  sono PINN.
+  immagini di un tracciante (nel lavoro fondativo, su dati simulati) e stima di
+  parametri di materiali da poche misure. In geofisica sono ancora ricerca, e
+  l'inversione di forma d'onda classica resta difficile da battere. I grandi
+  modelli meteo neurali sono appresi dai dati di rianalisi, senza fisica nella
+  loss, e non sono PINN.
 - Limiti onesti {cite}`krishnapriyan2021characterizing`: le PINN falliscono
   anche su PDE semplici; la loss multi-obiettivo va bilanciata, provando o
   ristimando i coefficienti dalle statistiche dei gradienti o dal nucleo
-  tangente; lo
-  spectral bias frena fronti ripidi e strati limite; le PDE stiff sono ostili
-  per il condizionamento, non per lo spectral bias {cite}`deryck2024operator`, e
-  il flusso del gradiente di una PINN è rigido di suo, con i gradienti dei
-  termini squilibrati {cite}`wang2021understanding`; sugli orizzonti lunghi
-  manca l'ordine causale, e residuo piccolo non implica soluzione corretta (lo
-  si è misurato sulla molla della legge dentro la loss). Sui problemi standard i
-  solutori classici vincono quasi sempre in velocità, accuratezza e garanzie
+  tangente; lo spectral bias frena fronti ripidi e strati limite; le PDE stiff
+  sono ostili per il condizionamento, non per lo spectral bias (De Ryck e
+  colleghi riconducono la difficoltà al condizionamento dell'operatore
+  {cite}`deryck2024operator`), e il flusso del gradiente di una PINN è rigido
+  di suo, con i gradienti dei termini squilibrati
+  {cite}`wang2021understanding`; sugli orizzonti lunghi manca l'ordine causale,
+  e residuo piccolo non implica soluzione corretta (lo si è misurato sulla
+  molla della legge dentro la loss). Sui problemi standard i solutori classici
+  vincono quasi sempre in velocità, accuratezza e garanzie
   {cite}`grossmann2024can`.
 - Gli operatori neurali imparano il mestiere, non il compito: la mappa
   condizioni → soluzione, riusabile senza riaddestrare (DeepONet

@@ -269,7 +269,7 @@ Le ipotesi contano, perché sono ciò che rende quel numero un teorema e non
 un'osservazione: pattern casuali e non correlati, rete completamente
 connessa, limite termodinamico $N \to \infty$ a carico $M/N$ fisso,
 temperatura nulla, simmetria di replica, e una tolleranza per una piccola
-frazione di bit errati nel richiamo. Al di fuori di queste assunzioni il numero va
+frazione di bit errati nel richiamo. Al di fuori di queste ipotesi il numero va
 maneggiato con cura, e la rete di venticinque neuroni mostra quanto: a $N = 25$
 non c'è nessun limite termodinamico e la transizione è del tutto sfumata.
 
@@ -459,9 +459,9 @@ La rete ha calcolato quei due numeri sommando un contributo per ogni coppia di
 caselle: chi va d'accordo con il legame che lo unisce abbassa il totale, chi lo
 contraddice lo alza. Che vengano negativi non vuol dire niente di speciale.
 Sulla carta geografica c'è uno zero, il livello del mare; qui non c'è, e
-l'energia non è un'altitudine. Da sola non dice nulla; dice tutto se
-confrontata con un'altra energia dello stesso paesaggio. $-11{,}20$ sta più in
-basso di $-2{,}08$, e qui è l'unico fatto che conta.
+l'energia non è un'altitudine sul livello del mare. Da sola non dice nulla;
+dice tutto se confrontata con un'altra energia dello stesso paesaggio.
+$-11{,}20$ sta più in basso di $-2{,}08$, e qui è l'unico fatto che conta.
 
 Quella stampa mostra il prima e il dopo, e nasconde la parte interessante: i
 passi in mezzo. La {numref}`fig-hopfield-ricorda` li mostra tutti e mette
@@ -670,8 +670,9 @@ lettere.
   paesaggio compaiono anche conche che nessuno ha mai memorizzato, miscele di
   più ricordi, e il gemello capovolto di ogni ricordo.
 - La pallina finisce nella valle più *vicina*, non necessariamente in quella
-  giusta. La rete ricorda soltanto: non inventa, e può solo scendere. Sono i
-  due limiti che la {doc}`sezione sulle macchine di Boltzmann
+  giusta. La rete ricorda soltanto: non inventa a comando (al più cade in un
+  ricordo fantasma), e può solo scendere. Sono i due limiti che la
+  {doc}`sezione sulle macchine di Boltzmann
   </ModelliEnergia/boltzmann>` affronta con la temperatura e i neuroni
   nascosti.
 ```
@@ -686,13 +687,13 @@ lettere.
   dell'energia $E(\mathbf{s}) = -\tfrac{1}{2}\, \mathbf{s}^\top \mathbf{W} \mathbf{s}$;
   la regola di Hebb scava le valli e l'aggiornamento asincrono (che non fa mai
   salire $E$) completa i ricordi corrotti scendendo nel minimo più vicino.
-- La capienza è di circa il 14% del numero di neuroni
-  ($\alpha_c = 0{,}138$) {cite}`amit1985storing`, e oltre soglia il
-  richiamo non degrada: crolla. È però un risultato asintotico, per pattern
-  casuali e non correlati: su reti piccole la transizione è sfumata e la
-  degradazione dolce. Il limite è della regola di Hebb: con la pseudo-inversa
-  si arriva a $N$ ricordi linearmente indipendenti, a prezzo di una regola non
-  locale. Il paesaggio ospita anche minimi spuri: i gemelli capovolti
+- La capienza è di circa il 14% del numero di neuroni ($\alpha_c = 0{,}138$)
+  {cite}`amit1985storing`, e oltre soglia il richiamo non degrada: crolla. È
+  però un risultato asintotico, per pattern casuali e non correlati: su reti
+  piccole la transizione è sfumata e la degradazione dolce. Il limite è della
+  regola di Hebb: con la pseudo-inversa è stabile ogni insieme di $M < N$
+  ricordi linearmente indipendenti, a prezzo di una regola non locale. Il
+  paesaggio ospita anche minimi spuri: i gemelli capovolti
   $-\boldsymbol{\xi}^\mu$ e le miscele dei ricordi.
 - La rete *ricorda* ma non *inventa*, e può solo scendere: due limiti che la
   {doc}`sezione sulle macchine di Boltzmann </ModelliEnergia/boltzmann>`

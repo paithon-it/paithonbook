@@ -225,13 +225,13 @@ sue ottanta voci in sequenza: è il CSV, comodo se ti serve tutta la scheda di
 un cliente. Oppure **per colonna**, cioè un elenco di tutte le età, poi un
 elenco di tutte le città, e così via.
 
-Quale conviene dipende dall'uso, e [per addestrare un modello l'uso è sempre lo
-stesso: leggere tre colonne su ottanta, per tutti]{.pt-matita}. Con l'archivio
-per riga devi attraversare l'intero milione di schede e scartare il $96\%$ di
-ciò che leggi (77 voci buttate ogni 80): il disco consegna blocchi interi, e le
-tre voci che ti servono stanno sparse una qui e una là. Con l'archivio per
-colonna i tre elenchi stanno già tutti insieme: li prendi e il resto non lo
-tocchi nemmeno.
+Quale conviene dipende dall'uso, e [per addestrare un modello l'uso è quasi
+sempre lo stesso: leggere poche colonne, poniamo tre su ottanta, per
+tutti]{.pt-matita}. Con l'archivio per riga devi attraversare l'intero milione
+di schede e scartare il $96\%$ di ciò che leggi (77 voci buttate ogni 80): il
+disco consegna blocchi interi, e le tre voci che ti servono stanno sparse una
+qui e una là. Con l'archivio per colonna i tre elenchi stanno già tutti
+insieme: li prendi e il resto non lo tocchi nemmeno.
 
 Ogni elenco, poi, è spezzato in cassetti, con scritto fuori il valore più
 piccolo e il più grande che contengono: chi cerca le spese sopra i mille euro
@@ -277,7 +277,7 @@ toccate su disco. Nei carichi di ML, dove si leggono poche colonne di tabelle
 larghe, è la voce dominante.
 
 Il secondo è la **compressione**: dentro una colonna i valori sono omogenei per
-tipo e spesso per contenuto, il che abilita codifiche specializzate (dizionario
+tipo e spesso per contenuto, il che consente codifiche specializzate (dizionario
 per le categorie a bassa cardinalità, run-length per i valori ripetuti, delta
 per i timestamp) prima ancora della compressione generica. Rispetto al CSV
 equivalente il guadagno è di qualche volta, e a decidere quante è soprattutto
@@ -460,15 +460,15 @@ x_f(e, t) = v_f(e, s^\ast), \qquad
 s^\ast = \max\{\, s \le t - \delta_f : \text{esiste } v_f(e, s) \,\},
 $$
 
-dove $v_f(e, s)$ è il valore calcolato all'istante $s$ e $\delta_f$ il ritardo
-con cui quel valore diventa disponibile al servizio (in Pandas,
-`pd.merge_asof`). Il ritardo si dimentica facilmente: gli istanti che
+dove $v_f(e, s)$ è il valore riferito all'evento accaduto all'istante $s$ e
+$\delta_f$ il ritardo con cui quel valore diventa disponibile al servizio (in
+Pandas, `pd.merge_asof`). Il ritardo si dimentica facilmente: gli istanti che
 contano sono quelli in cui il dato è *arrivato* al sistema, non quelli in cui
 l'evento è *accaduto*. Un join sul solo tempo dell'evento rispetta $s \le t$ ma
 lascia trapelare il futuro lo stesso, perché il valore c'era già nell'archivio
-storico ma non ancora nel servizio. Un *point-in-time join* corretto è laborioso
-da implementare a mano ed è una delle ragioni per cui il feature store esiste
-come componente dedicato.
+storico ma non ancora nel servizio. Un *point-in-time join* corretto è
+laborioso da implementare a mano ed è una delle ragioni per cui il feature
+store esiste come componente dedicato.
 
 `````
 
@@ -501,12 +501,12 @@ calcolano una volta sola, sui dati di addestramento, e poi si congelano: fanno
 parte del modello quanto i pesi.
 
 In produzione, per una svista, qualcuno li ricalcola sul *singolo lotto* appena
-arrivato, e la bilancia comincia a mentire. In addestramento «alto»
-voleva dire «più della media di tutti»; se la media la si rifà sul gruppetto
-appena arrivato, e quel gruppetto è fatto di soli importi alti, nessuno di loro
-è più sopra la media: sono tutti normali. Il modello smette di insospettirsi
-del lotto più sospetto che gli sia mai capitato. Fra il programma
-giusto e quello bacato la differenza è una riga sola.
+arrivato, e la bilancia comincia a mentire. In addestramento «alto» voleva dire
+«più della media di tutti»; se la media la si rifà sul gruppetto appena
+arrivato, e quel gruppetto è fatto di soli importi alti, rispetto a quella
+media nessuno sembra più fuori dal comune: sono tutti normali. Il modello
+smette di insospettirsi del lotto più sospetto che gli sia mai capitato. Fra il
+programma giusto e quello bacato la differenza è una riga sola.
 
 `````
 

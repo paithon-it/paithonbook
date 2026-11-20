@@ -290,7 +290,9 @@ def llms(url: str, elenco: list[dict]) -> str:
         "questo non e' il posto.",
         "",
         "Licenza CC BY-NC-ND 4.0: si cita e si parafrasa attribuendo (titolo",
-        "della sezione e URL), non si ridistribuisce il testo.",
+        "della sezione e URL), e i passi testuali si riportano con la fonte; non",
+        "si ridistribuisce il libro dentro un altro prodotto, ne' in versioni",
+        "modificate.",
         "",
     ]
     # Il capitolo porta la sua descrizione (l'`overview.md` dice di che parla);

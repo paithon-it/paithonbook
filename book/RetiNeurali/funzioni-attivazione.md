@@ -70,9 +70,10 @@ ottocento a meno di quattro centomillesimi, quasi quattromila volte sotto.
 
 Con una piega di quelle buone, e abbastanza macchinette affiancate, ci si
 avvicina quanto si vuole a qualunque curva tracciata senza staccare la matita.
-La garanzia è dimostrata, ma afferma soltanto che uno strato capace di
-riuscirci esiste. Quanto largo debba essere non lo dice, e per una curva che
-dipende da molte grandezze insieme il numero di macchinette può esplodere.
+Questa garanzia, che ci si possa avvicinare quanto si vuole, è dimostrata, ma
+afferma soltanto che uno strato capace di riuscirci esiste. Quanto largo debba
+essere non lo dice, e per una curva che dipende da molte grandezze insieme il
+numero di macchinette può esplodere.
 
 `````
 
@@ -371,9 +372,9 @@ svanire con la saturazione, e oltre quella scala con l'esplosione.
 
 ## La tanh: la stessa S, ma centrata nello zero
 
-La `tanh` (**tangente iperbolica**) è la stessa S della sigmoide, alta il doppio
-e centrata nello zero: va da $-1$ a $1$ invece che da $0$ a $1$, e corregge così
-uno dei suoi difetti, lo stare tutta sopra lo zero.
+La `tanh` (**tangente iperbolica**) è la stessa S della sigmoide, alta il
+doppio, stretta la metà e centrata nello zero: va da $-1$ a $1$ invece che da
+$0$ a $1$, e corregge così uno dei suoi difetti, lo stare tutta sopra lo zero.
 
 `````{tab} Elementare
 
@@ -472,7 +473,7 @@ C'è però un rischio. Se un neurone finisce nella zona negativa per *tutti* gli
 esempi (cioè per tutti i dati con cui la rete viene addestrata), la sua uscita
 è sempre zero, e allora anche la pendenza che sente è sempre zero: nessuna
 indicazione, nessuna correzione, i suoi pesi restano fermi. È il neurone
-"morto", e il nome è più drammatico del suo destino.
+"morto", e il nome è spesso più drammatico del suo destino.
 
 I suoi pesi non lo
 riportano in vita; tuttavia i neuroni che lo precedono continuano a cambiare e

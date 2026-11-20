@@ -93,12 +93,14 @@ significato: $\mathbf{x}$ è l'intero campione e non le caratteristiche di un
 singolo esempio, mentre $\theta$ è la quantità da stimare e non i parametri di
 un modello.
 
-Per $\hat\theta = \bar{x}$ il teorema del limite centrale dà la risposta
-asintotica, $\operatorname{se}(\bar{x}) = \sigma/\sqrt{m}$ stimabile con
-$s/\sqrt{m}$. Per statistiche non lineari o non regolari (mediana, quantili,
-rapporti, coefficienti di correlazione, AUC, differenza fra due metriche),
-[la distribuzione campionaria dipende da $F$ in modo che non si scrive
-in forma chiusa]{.pt-matita}. Le approssimazioni con il metodo delta richiedono
+Per $\hat\theta = \bar{x}$ l'errore standard è esatto,
+$\operatorname{se}(\bar{x}) = \sigma/\sqrt{m}$, stimabile con
+$\hat\sigma/\sqrt{m}$, e per il teorema del limite centrale la distribuzione
+di $\bar{x}$ è asintoticamente normale.
+Per statistiche non lineari o non regolari (mediana, quantili, rapporti,
+coefficienti di correlazione, AUC, differenza fra due metriche), [la
+distribuzione campionaria dipende da $F$ in modo che non si scrive in forma
+chiusa]{.pt-matita}. Le approssimazioni con il metodo delta richiedono
 derivabilità e danno comunque solo il primo ordine.
 
 Il **jackknife** di Quenouille e Tukey, la soluzione precedente, ricalcola la
@@ -106,12 +108,12 @@ statistica togliendo un dato per volta, $\hat\theta_{(i)}$, e stima
 $\widehat{\operatorname{se}}_{\text{jack}} =
 \sqrt{\tfrac{m-1}{m}\sum_i(\hat\theta_{(i)} - \hat\theta_{(\cdot)})^2}$, con
 $\hat\theta_{(\cdot)}$ la media delle $m$ repliche. Sulla media ritrova
-$s/\sqrt m$ senza scarti, ma sulla mediana fallisce, perché le repliche
-prendono due soli valori e la stima dipende da un unico scarto fra due dati. In
-particolare, sui sessanta stipendi dell'esempio numerico vale $549$, contro i
-$2061$ del bootstrap. E non migliora con più dati, perché il rapporto fra la
-stima e l'errore standard vero non converge a $1$ ma a una variabile casuale
-esponenziale di media $1$ {cite}`efron1982jackknife`.
+$\hat\sigma/\sqrt m$ senza scarti, ma sulla mediana fallisce, perché le
+repliche prendono due soli valori e la stima dipende da un unico scarto fra due
+dati. In particolare, sui sessanta stipendi dell'esempio numerico vale $549$,
+contro i $2061$ del bootstrap. E non migliora con più dati, perché il rapporto
+fra la stima e l'errore standard vero non converge a $1$ ma a una variabile
+casuale esponenziale di media $1$ {cite}`efron1982jackknife`.
 
 Il difetto era già noto quando Efron scrive; nella sezione 3 dell'articolo si
 mostra che sulla stessa mediana il bootstrap invece funziona, e il confronto è
@@ -194,10 +196,11 @@ giustificata dal fatto che $\hat{F}_m \to F$ (Glivenko–Cantelli) e che, per
 statistiche abbastanza regolari, la legge dello scarto normalizzato $\sqrt
 m\,(\hat\theta - \theta(F))$ dipende con continuità da $F$. Di conseguenza la
 sua copia bootstrap $\sqrt m\,(\hat\theta^* - \hat\theta)$, calcolata sotto
-$\hat F_m$, ha la stessa legge limite {cite}`bickel1981some`. Basta che
-$\theta$ sia differenziabile secondo Hadamard in $F$, come la media, le
-funzioni lisce di medie e i quantili interni dove $F$ ha densità positiva; il
-massimo non lo è.
+$\hat F_m$, ha la stessa legge limite {cite}`bickel1981some`. Per la media e le
+funzioni lisce di medie basta un momento secondo finito (con varianza infinita
+il bootstrap della media non è consistente); per i quantili interni dove $F$ ha
+densità positiva basta che $\theta$ sia differenziabile secondo Hadamard in
+$F$; il massimo non ha né l'una né l'altra garanzia.
 
 L'errore standard si stima con la deviazione standard delle $B$ repliche,
 
@@ -251,12 +254,12 @@ dell'errore standard dentro ogni replica {cite}`diciccio1996bootstrap`.
 
 La mediana, però, non è liscia in $F$ (e il jackknife con cui si stima $\hat
 a$, su di lei, sbaglia), e una prova di copertura mostra che lì la correzione
-non serve: il $\mathrm{BCa}$ copre come il percentile, e l'intervallo *basic*
-copre molto meno. Sul massimo, invece, non c'è correzione che tenga, perché la
-distribuzione bootstrap non converge a quella vera {cite}`bickel1981some`; il
-rimedio è ricampionare $r$ punti invece di $m$, con $r \to \infty$ e $r/m \to
-0$. Su dati simulati, dove il valore vero si conosce, la sotto-copertura si può
-misurare.
+non porta niente: il $\mathrm{BCa}$ copre come il percentile, e l'intervallo
+*basic* copre molto meno. Sul massimo, invece, non c'è correzione che tenga,
+perché la distribuzione bootstrap non converge a quella vera
+{cite}`bickel1981some`; il rimedio è ricampionare $r$ punti invece di $m$, con
+$r \to \infty$ e $r/m \to 0$. Su dati simulati, dove il valore vero si conosce,
+la sotto-copertura si può misurare.
 
 Tutto questo presuppone che il campione sia estratto i.i.d. dalla $F$ di cui si
 vuole parlare. Se è stato raccolto da un'altra popolazione, $\hat F_m$
@@ -467,8 +470,8 @@ BCa       : 1878 su 2000, 93.9% (±1.0%)
 ```
 
 Il $\mathrm{BCa}$ copre come il percentile, mentre l'intervallo *basic* resta
-sotto di quasi sette punti. Sulla mediana, quindi, [la correzione non
-serve]{.pt-matita}, perché i suoi ordini d'errore valgono per le statistiche
+sotto di quasi sette punti. Su questa mediana, quindi, [la correzione non ha
+portato niente]{.pt-matita}: i suoi ordini d'errore valgono per le statistiche
 lisce, come la media o un coefficiente di regressione, ed è su quelle che la
 correzione si ripaga. Per la mediana basta il percentile, che si scrive in
 quattro righe.
@@ -526,21 +529,23 @@ in quasi due ricampionamenti su tre, che ridanno la stessa risposta.
 
 Da qui la regola pratica: [il bootstrap funziona per le statistiche che
 cambiano poco quando cambia un po’ la distribuzione dei dati]{.pt-matita}
-(medie, mediane e altri quantili interni, coefficienti di un modello,
-metriche), e fallisce per quelle che stanno sul bordo dei dati (il massimo, il
-minimo, i quantili estremi). La mediana di sessanta valori dipende da due soli
-dati, eppure funziona, perché quei due stanno al centro e non sul bordo.
+(medie di dati con varianza finita, mediane e altri quantili interni,
+coefficienti di un modello, metriche), e fallisce per quelle che stanno sul
+bordo dei dati (il massimo, il minimo, i quantili estremi). La mediana di
+sessanta valori dipende da due soli dati, eppure funziona, perché quei due
+stanno al centro e non sul bordo.
 
 Ci sono altri due modi di rompersi, e sono più insidiosi perché il risultato
 esce lo stesso e sembra buono.
 
-- Dati che non sono indipendenti. Il ricampionamento tratta i dati come
-  palline in un'urna, quindi intercambiabili, ma in una serie temporale non lo
-  sono: la temperatura di oggi somiglia a quella di ieri, e mescolando le
-  palline si distrugge la struttura che rende la serie una serie. Il risultato
-  è un intervallo troppo stretto, una fiducia che non c'è. Il rimedio si
-  chiama **block bootstrap** e ricampiona pezzi di serie interi invece che
-  singoli valori; la {doc}`sezione sulla validazione delle serie temporali
+- Dati che non sono indipendenti. Il ricampionamento tratta i dati come palline
+  in un'urna, quindi intercambiabili, ma in una serie temporale non lo sono: la
+  temperatura di oggi somiglia a quella di ieri, e mescolando le palline si
+  distrugge la struttura che rende la serie una serie. Con l'autocorrelazione
+  positiva, il caso tipico, il risultato è un intervallo troppo stretto, una
+  fiducia che non c'è. Il rimedio si chiama **block bootstrap** e ricampiona
+  pezzi di serie interi invece che singoli valori; la {doc}`sezione sulla
+  validazione delle serie temporali
   </SerieTemporali/validazione-e-feature>` torna sul perché quei dati vadano
   trattati a parte.
 - Il campione stesso, raccolto male: il bootstrap ne misura la variabilità e non
@@ -663,8 +668,8 @@ che corregge la distorsione di quest'ultimo {cite}`hastie2009elements`.
   percentile = quantili empirici. $B \approx 200$ per un errore standard,
   $\ge 1000$ per i quantili.
 - Il jackknife ricalcola la statistica togliendo un dato per volta: sulla media
-  ritrova $s/\sqrt m$, sulla mediana è inconsistente ($549$ contro i $2061$ del
-  bootstrap, con due soli valori fra le sessanta repliche).
+  ritrova $\hat\sigma/\sqrt m$, sulla mediana è inconsistente ($549$ contro i
+  $2061$ del bootstrap, con due soli valori fra le sessanta repliche).
 - Il percentile sotto-copre con statistiche distorte o asimmetriche: $94{,}53\%$
   contro il $95\%$ nominale su $20\,000$ prove, con intervallo Monte Carlo
   $[94{,}21;\ 94{,}85]$; con un quinto delle prove il margine è largo quanto lo
@@ -673,12 +678,13 @@ che corregge la distorsione di quest'ultimo {cite}`hastie2009elements`.
   valgono per funzioni lisce di medie: sulla mediana il $\mathrm{BCa}$ copre
   come il percentile ($93{,}9\%$ contro $94{,}0\%$), l'intervallo *basic* molto
   meno ($87{,}2\%$).
-- Condizioni di validità: statistica regolare in $F$ (differenziabile secondo
-  Hadamard: medie, funzioni lisce di medie, quantili interni) e dati i.i.d.
-  dalla $F$ che interessa. Cade per statistiche di bordo (massimo, minimo:
-  distribuzione bootstrap degenere, $9$ valori distinti su $10^4$ repliche) e
-  per dati dipendenti (serie temporali: intervalli troppo stretti; serve il
-  *block bootstrap*).
+- Condizioni di validità: statistica regolare in $F$ (medie e funzioni lisce di
+  medie, con varianza finita; quantili interni, differenziabili secondo
+  Hadamard) e dati i.i.d. dalla $F$ che interessa. Cade per statistiche di
+  bordo (massimo, minimo: distribuzione bootstrap degenere, $9$ valori distinti
+  su $10^4$ repliche) e per dati dipendenti (serie temporali: con
+  autocorrelazione positiva, intervalli troppo stretti; serve il *block
+  bootstrap*).
 - La probabilità che un dato compaia in un campione bootstrap è
   $1 - (1-1/m)^m \to 1 - e^{-1} \approx 0{,}632$: è lo stesso calcolo che nel
   bagging produce il terzo di esempi *out-of-bag*, e qui è la ragione per cui

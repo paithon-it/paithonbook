@@ -16,7 +16,7 @@
   impronta: "338a143fa833"
   postilla: "PCA: in certe direzioni i punti variano molto, in altre restano quasi fermi"
 - inizio: "La PCA assume che la varianza"
-  impronta: "40406b348a85"
+  impronta: "f965b9c88c7e"
   postilla: "La PCA non guarda le etichette: la direzione utile può avere varianza piccola"
 - inizio: "In concreto, la PCA serve a"
   impronta: "7a9ba06c9ca0"

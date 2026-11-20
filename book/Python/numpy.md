@@ -272,9 +272,9 @@ x > 25            # array([False, False,  True,  True,  True])
 x[x > 25]         # array([30, 40, 50])  tieni solo i "True"
 ```
 
-Il risultato è un array nuovo, con dentro ricopiati i valori
-scelti: qui la regola delle fette non vale, e scriverci sopra non tocca `x`.
-Se invece metti la condizione a sinistra dell'uguale, allora sì che stai
+Usata per leggere, la condizione dà un array nuovo, con dentro ricopiati i
+valori scelti: qui la regola delle fette non vale, e scriverci sopra non tocca
+`x`. Se invece metti la condizione a sinistra dell'uguale, allora sì che stai
 scrivendo sull'originale, e così correggi un mucchio di valori in un colpo:
 
 ```python
@@ -363,9 +363,11 @@ tre numeri, mentre `[[1], [2], [3]]` è fatto di tre righe da un numero
 ciascuna, cioè una colonna. Le parentesi esterne racchiudono la
 tabella, quelle interne una riga per volta.
 
-La regola pratica: se una delle due forme ha $1$ dove l'altra ha $n$, quel lato
-viene "steso" a $n$. [Il ripetersi è solo apparente: serve a far tornare i conti,
-non consuma memoria]{.pt-matita}.
+La regola pratica: le due forme si confrontano partendo da destra, e alla più
+corta si aggiungono davanti dei lati lunghi uno (così un array lungo quattro
+conta come una riga di quattro); poi, se una delle due forme ha $1$ dove
+l'altra ha $n$, quel lato viene "steso" a $n$. [Il ripetersi è solo apparente:
+serve a far tornare i conti, non consuma memoria]{.pt-matita}.
 
 Se i sovrapprezzi fossero scritti anche in riga, tre numeri contro quattro,
 NumPy si fermerebbe con un errore: nessuno dei due lati vale $1$, quindi non
@@ -406,12 +408,13 @@ $(n, d)$. La media di riga, `X.mean(axis=1)`, ha forma $(n,)$, e per
 sottrarla serve `keepdims=True`, che lascia l'asse con lunghezza $1$ e dà
 $(n, 1)$.
 
-Senza questo argomento le forme non combaciano e NumPy si ferma, tranne in due
-casi: con $n = d$ si allinea in silenzio sull'asse sbagliato, e con $d = 1$
-allarga tutte e due le forme e restituisce una matrice $(n, n)$. Questo secondo
-caso è il più insidioso: una previsione di forma $(n, 1)$ meno un bersaglio di
-forma $(n,)$ dà una matrice $(n, n)$, e l'errore quadratico medio calcolato
-sopra restituisce un numero sbagliato senza nessun avviso.
+Senza questo argomento le forme non combaciano e NumPy si ferma, tranne in tre
+casi: con $n = 1$ il conto torna per caso, con $n = d$ si allinea in silenzio
+sull'asse sbagliato, e con $d = 1$ allarga tutte e due le forme e restituisce
+una matrice $(n, n)$. Quest'ultimo caso è il più insidioso: una previsione di
+forma $(n, 1)$ meno un bersaglio di forma $(n,)$ dà una matrice $(n, n)$, e
+l'errore quadratico medio calcolato sopra restituisce un numero sbagliato senza
+nessun avviso.
 
 `````
 

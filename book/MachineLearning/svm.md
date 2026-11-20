@@ -129,12 +129,12 @@ lunghezza di un elenco di numeri si trova con Pitagora, come la diagonale di
 un rettangolo).
 
 Ad esempio, in una dimensione sola, con il peso $1$, il valore passa da $-1$ a
-$+1$ in due passi, e il corridoio è largo $2$; con il peso $2$ ci passa in un
-passo solo, e il corridoio si stringe a $1$. A un corridoio largo corrisponde
-dunque un elenco corto, e «trova il corridoio più largo» diventa «accorcia
-$\mathbf{w}$ il più possibile, senza infrangere quella regola». C'è una sola
-risposta migliore di tutte, e cercandola non ci si impantana in un falso
-fondo.
+$+1$ spostandosi di due unità, e il corridoio è largo $2$; con il peso $2$ ci
+passa spostandosi di una sola, e il corridoio si stringe a $1$. A un corridoio
+largo corrisponde dunque un elenco corto, e «trova il corridoio più largo»
+diventa «accorcia $\mathbf{w}$ il più possibile, senza infrangere quella
+regola». C'è una sola risposta migliore di tutte, e cercandola non si resta
+intrappolati in una conca che sembra il fondo e non lo è.
 
 `````
 
@@ -174,16 +174,19 @@ dove $\mathbf{w}$ è il vettore dei pesi, $b$ il termine di bias, $\mathbf{x}_i$
 l’$i$-esimo esempio e $y_i \in \{-1,+1\}$ la sua etichetta. È un problema di
 programmazione quadratica *convesso*, con obiettivo strettamente convesso in
 $\mathbf{w}$. Di conseguenza, [se i dati sono separabili la soluzione
-$(\mathbf{w}, b)$ esiste ed è unica]{.pt-matita}, e non ci sono minimi locali
-in cui restare intrappolati; se non lo sono, nessuna coppia rispetta tutti i
-vincoli e il problema non ha soluzione.
+$(\mathbf{w}, b)$ esiste ed è unica]{.pt-matita} (anche $b$, che l'obiettivo
+non contiene, perché all'ottimo ogni classe ha almeno un punto sul bordo del
+margine), e non ci sono minimi locali in cui restare intrappolati; se non lo
+sono, nessuna coppia rispetta tutti i vincoli e il problema non ha soluzione.
 
 Sui dati separabili la regressione logistica non ha un massimo della
 verosimiglianza, e la discesa del gradiente fa crescere la norma dei pesi come
-$\log t$, con $t$ il numero di passi, mentre la loro direzione converge a
-quella del margine rigido {cite}`soudry2018implicit`. Il margine massimo, in
-altre parole, è la soluzione verso cui la logistica tende quando non la si
-ferma, ed è questo il legame fra i due modelli.
+$\log t$, con $t$ il numero di passi, mentre, con un passo abbastanza piccolo,
+la loro direzione converge a quella del margine rigido
+{cite}`soudry2018implicit`, senza bias o con il bias trattato come un peso in
+più, e quindi penalizzato anch'esso. Il margine massimo, in altre parole, è la
+soluzione verso cui la logistica tende quando non la si ferma, ed è questo il
+legame fra i due modelli.
 
 `````
 
@@ -738,9 +741,10 @@ entrano soltanto quelle sul bordo.
 
 Dallo stesso terreno piatto esce una seconda condizione, molto più modesta: i
 due quartieri pagano lo stesso totale. Ad esempio, con cinque case di cui tre
-col cartellino a zero, se quella dei più paga $4$, anche quella dei meno paga
-$4$, e la differenza fa zero. Sembra pura contabilità, ma appena rimetteremo
-la freccia nella lagrangiana questa condizione cancellerà un pezzo intero.
+col cartellino a zero ne restano due, una per quartiere: se quella del
+quartiere dei più paga $4$, anche quella del quartiere dei meno paga $4$, e la
+differenza fa zero. Sembra pura contabilità, ma appena rimetteremo la freccia
+nella lagrangiana questa condizione cancellerà un pezzo intero.
 
 `````
 
@@ -1057,10 +1061,11 @@ l'osservazione che un soldato si batte a lungo e con ferocia per un pezzetto
 di nastro colorato; ecco, commenta Winston, questo è il pezzetto di nastro, ed
 era una cena.
 
-Vapnik aveva già il kernel nella tesi. Non aveva mai pensato che fosse
-importante, e i risultati sulle cifre gli fecero cambiare idea. Fra il
-momento in cui aveva capito i kernel e il momento in cui ne capì l'importanza
-passarono trent'anni.
+Secondo Winston, Vapnik aveva già il kernel nella tesi (l'idea era uscita nel
+1964, nello stesso istituto di Mosca, con Aizerman, Braverman e Rozonoer
+{cite}`aizerman1964theoretical`). Non aveva mai pensato che fosse importante, e
+i risultati sulle cifre gli fecero cambiare idea. Fra il momento in cui aveva
+capito i kernel e il momento in cui ne capì l'importanza passarono trent'anni.
 
 Qui la battuta del caffè smette di essere una battuta. La derivazione che
 abbiamo appena percorso sta in una pagina e si legge in un quarto d'ora; le due

@@ -186,9 +186,9 @@ Nell'ordine più diffuso la temperatura ripesa prima tutti i candidati, e poi il
 top_p taglia su quella classifica *già ripesata*: i due parametri allora non
 sono indipendenti, e la figura lo fa vedere. A temperatura 1 le prime tre
 parole arrivano al 91 per cento e il nucleo è di tre; a temperatura 2 le
-percentuali si riavvicinano fra loro, le prime tre si fermano a ottanta e non
-arrivano più a novanta, così il nucleo diventa di quattro, senza che nessuno
-abbia toccato la soglia. Le superstiti si spartiscono la probabilità di
+percentuali si riavvicinano fra loro, le prime tre si fermano sotto l'ottanta e
+non arrivano più a novanta, così il nucleo diventa di quattro, senza che
+nessuno abbia toccato la soglia. Le superstiti si spartiscono la probabilità di
 quelle buttate via: dopo il taglio la somma torna a cento, sempre.
 
 Quell'ordine, però, lo sceglie chi ha scritto il programma che campiona, la
@@ -251,10 +251,10 @@ prima. Una rosa di candidati si forma così: tieni i nomi migliori finché i lor
 voti, sommati, non arrivano al novanta per cento. Se c'è un favorito
 schiacciante la rosa risulta corta, un nome o due; se l'elezione è combattuta
 te ne servono dieci per fare novanta, e nessuno ha deciso quanti fossero. Qui
-la prima manopola entra nella seconda: la temperatura riavvicina i voti fra
-loro prima dello spoglio, cioè rende l'elezione più combattuta, e la rosa si
-allunga. La soglia non l'hai toccata, eppure il taglio è caduto da un'altra
-parte.
+la prima manopola entra nella seconda: la temperatura alzata riavvicina i voti
+fra loro prima dello spoglio, cioè rende l'elezione più combattuta, e la rosa
+si allunga (abbassata fa il contrario). La soglia non l'hai toccata, eppure il
+taglio è caduto da un'altra parte.
 
 Un'ultima cosa, perché sorprende tutti: nemmeno a temperatura zero il modello
 ti darà *sempre* identica la stessa risposta, e la ragione è che il computer
@@ -287,15 +287,16 @@ normalizzazione, matmul e attenzione non sono invarianti alla dimensione del
 batch, e il batch dipende da quanti altri utenti stanno chiamando in
 quell'istante {cite}`he2025nondeterminism`.
 
-Ne segue che un confronto A/B fra
-due versioni di prompt non si fa a una esecuzione per lato. Si fa sullo stesso
-banco $D$ di domande per tutte e due, e il confronto è appaiato: detti $b$ il
-numero di domande giuste solo con A e $c$ quello delle giuste solo con B, la
-differenza di accuratezza è $(b-c)/|D|$, il suo errore standard è
-$\sqrt{b+c-(b-c)^2/|D|}\,/|D|$, e l'ipotesi che le due versioni si equivalgano
-si saggia con il test di McNemar, $(b-c)^2/(b+c)$ confrontato con una $\chi^2$ a
-un grado di libertà. Se le risposte non sono ripetibili, ogni domanda si ripete
-più volte per lato e si conta la frazione di risposte giuste.
+Ne segue che un confronto A/B fra due versioni di prompt non si fa a una
+esecuzione per lato. Si fa sullo stesso banco $D$ di domande per tutte e due, e
+il confronto è appaiato: detti $b$ il numero di domande giuste solo con A e $c$
+quello delle giuste solo con B, la differenza di accuratezza è $(b-c)/|D|$, il
+suo errore standard è $\sqrt{b+c-(b-c)^2/|D|}\,/|D|$, e l'ipotesi che le due
+versioni si equivalgano si saggia con il test di McNemar, $(b-c)^2/(b+c)$
+confrontato con una $\chi^2$ a un grado di libertà. Se le risposte non sono
+ripetibili, ogni domanda si ripete più volte per lato, e al posto di McNemar si
+confrontano domanda per domanda le due frazioni di risposte giuste (un test $t$
+appaiato sulle differenze).
 
 Il top_p (*nucleus
 sampling* {cite}`holtzman2020curious`) tronca invece la distribuzione al più
@@ -349,8 +350,8 @@ La leva del prompt engineering con più prove a favore è anche la più semplice
 mostrare al modello degli esempi svolti. I nomi che si incontrano contano una
 cosa sola, quanti esempi gli si mostrano: nessuno (*zero-shot*), uno
 (*one-shot*), qualcuno (*few-shot*). *Shot* qui è un tentativo mostrato e non
-uno sparo; e gli esempi non insegnano niente al modello, gli fanno capire che
-cosa vogliamo.
+uno sparo; e gli esempi non cambiano il modello: restano nel testo e gli fanno
+capire che cosa vogliamo.
 
 ```{figure} ../figures/gpt-3-2020.svg
 :name: fig-few-shot
@@ -363,9 +364,9 @@ dopo.
 ```
 
 L'etichetta «pesi invariati» in {numref}`fig-few-shot` è la ragione per cui
-questa tecnica è di *ingegneria* e non di addestramento. [Il modello non ha
-imparato il compito: ha riconosciuto uno schema nel testo che sta leggendo e lo
-ha proseguito]{.pt-matita}. Ed è anche il limite, perché gli esempi occupano
+questa tecnica è di *ingegneria* e non di addestramento. [Il modello non è
+cambiato: ha riconosciuto uno schema nel testo che sta leggendo e lo ha
+proseguito]{.pt-matita}. Ed è anche il limite, perché gli esempi occupano
 contesto a ogni singola chiamata, e si pagano ogni volta. Con GPT-3 Brown e
 colleghi misurano che, sulla maggior parte dei compiti, l'accuratezza sale
 passando da nessun esempio a qualche esempio {cite}`brown2020language`; quanto
@@ -393,7 +394,7 @@ così». Dopo due o tre mani d'esempio ha capito il ritmo, il formato, cosa
 conta, e gioca, finché quelle mani gli restano scoperte sul tavolo:
 toglile, e alla partita dopo si ricomincia da capo.
 Gli esempi non gli hanno insegnato il gioco: gli hanno mostrato lo schema. Col
-modello è identico. Se voglio che etichetti frasi come positive o negative,
+modello è identico. Se voglio che etichetti frasi come positive, negative o neutre,
 gliene mostro qualcuna già etichettata:
 
 ```text
@@ -484,11 +485,11 @@ e per questi compiti serve la catena di pensiero.
 
 Chiedi a un modello «Quanto fa 17 × 24?» e potresti ricevere un numero secco, e
 sbagliato: nel 2020 GPT-3 azzeccava le moltiplicazioni fra due numeri di due
-cifre meno di una volta su tre {cite}`brown2020language`, e con i modelli di
-oggi l'esempio va fatto con numeri più lunghi. Chiedigli di mostrare i passaggi
-e il risultato migliora nettamente: se scrive «17 × 24 = 17 × 20 + 17 × 4 =
-340 + 68 = 408», arriva alla risposta giusta molto più spesso. È la
-chain-of-thought, la catena di pensiero che nella {doc}`sezione su ReAct
+cifre meno di una volta su tre {cite}`brown2020language`, e i modelli di oggi
+sbagliano allo stesso modo solo con numeri molto più lunghi. Chiedigli di
+mostrare i passaggi e il risultato migliora nettamente: se scrive «17 × 24 = 17
+× 20 + 17 × 4 = 340 + 68 = 408», arriva alla risposta giusta molto più spesso.
+È la chain-of-thought, la catena di pensiero che nella {doc}`sezione su ReAct
 </Agenti/agenti-e-tool-use>` il
 modello scriveva fra un'azione e l'altra: far scrivere al modello i passaggi
 intermedi del ragionamento *prima* della conclusione. La propongono nel 2022
@@ -1173,8 +1174,9 @@ vivono ai livelli sopra, il {doc}`contesto <context-engineering>` e il
   (l'ordine lo decide la libreria). Non sono esposte nelle interfacce di chat.
   Inoltre `T = 0` rende deterministica la regola di scelta, non il servizio
   {cite}`he2025nondeterminism`: un A/B fra prompt vuole le stesse domande per i
-  due lati, un confronto appaiato (McNemar) e più di una esecuzione per lato.
-  La matematica del decoding è nella {doc}`sezione sui grandi modelli
+  due lati e un confronto appaiato: McNemar con un'esecuzione per lato, le
+  differenze delle frazioni di risposte giuste con più esecuzioni. La
+  matematica del decoding è nella {doc}`sezione sui grandi modelli
   linguistici </Transformers/llm>`.
 - Gli esempi condizionano il modello senza addestrarlo (*in-context
   learning*, GPT-3 {cite}`brown2020language`): zero-shot, one-shot, few-shot.

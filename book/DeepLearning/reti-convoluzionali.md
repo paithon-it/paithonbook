@@ -228,9 +228,10 @@ casella i tre numeri del colore: $3\times3\times3 = 27$ pesi.
 A questi si aggiunge un ultimo numero, sempre lo stesso, che si somma al
 risultato in ogni posizione. Questo numero alza o abbassa in blocco l'intera
 mappa, e serve a regolare quanto forte debba essere la somiglianza prima che il
-filtro dica «l'ho trovato». Se vale $-2$, ad esempio, una somiglianza da 1 non
-basta più a produrre un risultato positivo. Si chiama *bias*, e fa $27+1 = 28$
-numeri da imparare per filtro.
+filtro dica «l'ho trovato». Se vale $-2$, ad esempio, una finestra la cui somma
+fa 1, abbassata di quel numero, scende sotto zero: non basta più a produrre un
+risultato positivo. Si chiama *bias*, e fa $27+1 = 28$ numeri da imparare per
+filtro.
 
 Uno stampino solo trova un motivo solo, quindi se ne usano tanti, tutti della
 stessa forma e con dentro numeri diversi: chi ha imparato i bordi verticali,
@@ -250,8 +251,8 @@ esempio mette insieme un bordo verticale e uno orizzontale, e ne esce un
 angolo.
 
 La rete impara *cosa* cercare e non *dove* perché lo stampino non cambia mai
-mentre scorre. Che i pesi siano pochi è un altro guadagno, e viene dalla
-finestra piccola.
+mentre scorre. Che i pesi siano pochi è un altro guadagno, e viene dalle due
+cose insieme: la finestra piccola e lo stampino che resta lo stesso.
 
 `````
 
@@ -322,9 +323,9 @@ da imparare, perché la regola è una sola: «tieni il più grande».
 
 In questo modo la mappa si dimezza in larghezza e in altezza, quindi tutti gli
 strati seguenti lavorano su un quarto dei numeri. E ogni casella rimasta ne
-riassume quattro, così il filtro dello strato successivo, pur restando di nove
-caselle, arriva a coprire una fetta di immagine larga il doppio. Questi sono i
-guadagni sicuri.
+riassume quattro, due in larghezza e due in altezza, così il filtro dello
+strato successivo, pur restando di nove caselle, arriva a coprire una fetta di
+immagine larga il doppio. Questi sono i guadagni sicuri.
 
 Ce n'è un altro, ma più piccolo di come lo si racconta di solito. Se il motivo
 si sposta di un pixel e resta dentro lo stesso quadratino, il massimo di quel
@@ -597,11 +598,13 @@ le miscele li sommano e li sottraggono prima di moltiplicare, e così bastano
 quattro moltiplicazioni in tutto, una per quadretto della striscia.
 
 Contate tutte, però, le operazioni sono aumentate: prima sei moltiplicazioni e
-quattro somme, adesso quattro e otto. [Il guadagno arriva in una rete vera,
-dove le miscele si preparano una volta e servono molte volte]{.pt-matita}.
-Quelle di uno stampino si fanno una volta sola, divisioni comprese, perché lo
-stampino non cambia mentre scorre; quelle di un pezzo d'immagine servono a
-tutti gli stampini che ci passano sopra, uno per ogni foglio che esce.
+quattro somme (due per posizione), adesso quattro e otto (quattro per le
+miscele della striscia, quattro per ricomporre), senza contare le miscele dello
+stampino. [Il guadagno arriva in una rete vera, dove le miscele si preparano
+una volta e servono molte volte]{.pt-matita}. Quelle di uno stampino si fanno
+una volta sola, divisioni comprese, perché lo stampino non cambia mentre
+scorre; quelle di un pezzo d'immagine servono a tutti gli stampini che ci
+passano sopra, uno per ogni foglio che esce.
 
 Anche l'ultimo passo, la ricomposizione che dai quattro prodotti tira fuori 14
 e 20, si può rimandare: uno stampino del secondo strato legge insieme i 32
@@ -916,9 +919,10 @@ riga della mappa d'uscita.
 Lo stampino di tre righe si smonta nelle sue righe, e la pagina a quadretti
 nelle sue. Una riga di stampino che scorre su una riga di pagina è l'esempio
 della striscia di poco fa: una fila di totali, uno per posizione. Una riga
-intera del foglio dei risultati, quindi, è la somma di tre di queste file: la
-prima riga dello stampino sulla prima riga della pagina, la seconda sulla
-seconda, la terza sulla terza.
+intera del foglio dei risultati, quindi, è la somma di tre di queste file. Per
+la prima riga dei risultati sono la prima riga dello stampino sulla prima riga
+della pagina, la seconda sulla seconda, la terza sulla terza; per la riga dopo
+si scende di una riga sulla pagina.
 
 Nel capannone con i banchi a scacchiera degli array sistolici si dà allora a
 ogni banco una riga dello stampino, e il banco la tiene per tutto il turno:
@@ -938,8 +942,9 @@ pagina tutti i banchi di una diagonale, e i totali si completano passando al
 banco di sotto.
 
 Conta infatti la distanza. Nelle misure di chi ha progettato il chip, prendere
-un numero dal magazzino equivale a duecento moltiplicazioni, dal tavolo comune
-del chip a sei, dal banco accanto a due, da sopra il banco stesso a una.
+un numero dal magazzino costa in energia quanto duecento moltiplicazioni, dal
+tavolo comune del chip quanto sei, dal banco accanto quanto due, da sopra il
+banco stesso quanto una.
 
 In cambio il capannone va ridisegnato per ogni strato. Uno stampino più
 alto della colonna, o più righe di risultato che colonne di banchi, vanno
@@ -959,8 +964,9 @@ $$
 \mathbf{o}_e = \sum_{r=1}^{R} \mathbf{k}_r \star \mathbf{x}_{r+e-1},
 $$
 
-dove $\mathbf{k}_r$ è la riga $r$ del filtro, $\mathbf{x}_h$ la riga $h$ della
-mappa d'ingresso e $\star$ la correlazione in una dimensione, che dà una riga
+dove $\mathbf{k}_r$ è la riga $r$ del filtro (qui $r$ è un indice, non la
+lunghezza del filtro di Winograd), $\mathbf{x}_h$ la riga $h$ della mappa
+d'ingresso e $\star$ la correlazione in una dimensione, che dà una riga
 d'uscita in cui ogni valore somma tanti prodotti quante sono le colonne del
 filtro.
 

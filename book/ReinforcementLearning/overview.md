@@ -85,9 +85,10 @@ shaping*, «dare forma alla ricompensa». È però un'arma a doppio taglio, perc
 un premio intermedio può cambiare quale sia il comportamento migliore senza che
 nessuno se ne accorga. Premiato per ogni passo che lo avvicina all'uscita, un
 robot può scoprire che gli conviene fare avanti e indietro davanti alla porta,
-incassando a ogni andata. Una sola forma di premio aggiuntivo lascia intatta la
-strategia migliore in qualunque problema {cite}`ng1999policy`, e la racconta la
-sezione su {doc}`esplorazione e ricompensa
+incassando a ogni andata, se allontanarsi non costa niente. Una sola forma di
+premio aggiuntivo lascia intatta la strategia migliore in qualunque problema
+{cite}`ng1999policy`, e la racconta la sezione su {doc}`esplorazione e
+ricompensa
 </DeepReinforcementLearning/esplorazione-e-ricompensa>`.
 
 La regola con cui l'agente sceglie l'azione in ogni stato si chiama
@@ -210,10 +211,10 @@ nessuno lo scrive a mano, perché lo si impara giocando.
 
 Fatta una mossa, si sommano i punti guadagnati subito e il voto migliore fra
 quelli delle mosse possibili dalla posizione nuova, ridotto dal fattore di
-sconto perché quei punti arriveranno un passo più tardi. Quel totale corregge
-il voto della mossa appena fatta. Nessuno ha aspettato l'ultima mossa, eppure
-il giudizio finale, quando arriva, risale indietro di posizione in posizione
-fino all'apertura.
+sconto perché quei punti arriveranno un passo più tardi. Il voto della mossa
+appena fatta si sposta un poco verso quel totale. Nessuno ha aspettato l'ultima
+mossa, eppure il giudizio finale, quando arriva, risale indietro di posizione
+in posizione fino all'apertura.
 
 `````
 

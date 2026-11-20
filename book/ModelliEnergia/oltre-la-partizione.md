@@ -43,7 +43,7 @@ profonda e da quanto è larga: un pozzo strettissimo può essere profondissimo e
 raccogliere pochissimo, una conca larga e appena accennata può raccogliere
 molto.
 
-Confrontare due valli è gratis: si guardano le due altezze. Dire invece che una
+Confrontare due punti è gratis: si guardano le due altezze. Dire invece che una
 valle raccoglie «il 30% di tutta la pioggia che cade sul continente» vuol dire
 aver girato il continente intero, valle per valle: quella misura è la funzione
 di partizione, ed è ciò che trasforma un'altezza in una percentuale.
@@ -221,14 +221,15 @@ crescere senza limite), la distribuzione di $\mathbf{x}_k$ converge a $p_\theta
 Il teorema vuole però anche delle ipotesi sul paesaggio, che Roberts e Tweedie
 hanno reso precise mostrando, fra l'altro, che la diffusione può convergere
 mentre la sua discretizzazione non converge affatto
-{cite}`roberts1996exponential`. L'esempio a doppia buca ne
-viola una: l'ipotesi che $\nabla_{\mathbf{x}} E_\theta$ sia globalmente
-lipschitziano, o che valga almeno una condizione di dissipatività che tenga la
-catena al finito. Con $E(x) = (x^2-1)^2$ il gradiente cresce come $x^3$, non è
-lipschitziano, e a passo fissato la ricorsione diverge oltre una soglia: $|1 -
-2\epsilon(x^2-1)| > 1$, cioè $|x| > \sqrt{1 + 1/\epsilon}$, che a $\epsilon =
-0{,}01$ vale $10{,}05$ (da $10{,}00$ la catena torna in una buca, da $10{,}05$
-esplode in nove passi).
+{cite}`roberts1996exponential`. L'esempio a doppia buca ne viola una: l'ipotesi
+che $\nabla_{\mathbf{x}} E_\theta$ sia globalmente lipschitziano, o che valga
+almeno una condizione di dissipatività che tenga la catena al finito. Con $E(x)
+= (x^2-1)^2$ il gradiente cresce come $x^3$, non è lipschitziano, e a passo
+fissato la ricorsione diverge oltre una soglia: $|1 - 2\epsilon(x^2-1)| > 1$,
+cioè $|x| > \sqrt{1 + 1/\epsilon}$, che a $\epsilon = 0{,}01$ vale $10{,}05$
+(senza il rumore, da $10{,}00$ la ricorsione torna in una buca, mentre da
+$10{,}05$ diverge e in tredici passi esce dai numeri rappresentabili in doppia
+precisione).
 
 Non si vede mai, perché lassù la densità vale $e^{-9800}$, ma è una divergenza
 vera e non un'approssimazione: quella catena, a rigore, è transiente. A passo
@@ -853,11 +854,12 @@ che accettano.
   continente. Nell'esempio a due valli ricostruisce le proporzioni giuste
   entro pochi millesimi; il prezzo è il tempo, e le montagne alte che la
   tengono prigioniera da una parte sola.
-- Seconda via, la pendenza. Invece di dire quanta pioggia tocca a ogni
-  punto, si dice da che parte si scende e quanto ripido: una descrizione tutta
-  locale, che basta a ricostruire la forma del paesaggio. Insegnata su dati
-  sporcati apposta, diventa il compito «indovina il rumore che ti ho aggiunto»,
-  cioè quello che imparano i modelli di diffusione.
+- Seconda via, la pendenza. Invece di dire quanta pioggia tocca a ogni punto,
+  si dice da che parte si scende e quanto ripido: una descrizione tutta locale,
+  che basta a ricostruire la forma del paesaggio (non però le proporzioni fra
+  regioni lontane e separate). Insegnata su dati sporcati apposta, diventa il
+  compito «indovina il rumore che ti ho aggiunto», cioè quello che imparano i
+  modelli di diffusione.
 - Terza via, la domanda sì o no. Al posto di «quanto è probabile questo?»
   si chiede «viene dal mondo o l'ho fabbricato io?», e si addestra il modello
   a smistare i veri dai finti. Funziona, ma dipende dal rumore che gli si

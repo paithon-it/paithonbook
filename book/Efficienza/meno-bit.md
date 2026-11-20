@@ -35,10 +35,10 @@ euro, venticinque su una bottiglia di champagne da cento.
 Su trenta prodotti arrotondi in su e in giù senza una regola, così il peggio
 possibile, sette euro e mezzo, non ti capita mai: il totale sbaglia di qualche
 decina di centesimi. L’errore cresce piano: con dieci volte tanti prodotti
-diventa poco più di tre volte tanto, e per farlo diventare dieci volte tanto di
-prodotti ne servono cento volte tanti. Una rete neurale non usa mai un peso
-alla volta, ma ne somma centinaia, e nella somma gli arrotondamenti si
-mangiano a vicenda.
+diventa poco più di tre volte tanto (la radice quadrata di dieci), e per farlo
+diventare dieci volte tanto di prodotti ne servono cento volte tanti. Una rete
+neurale non usa mai un peso alla volta, ma ne somma centinaia, e nella somma
+gli arrotondamenti si mangiano a vicenda.
 
 Tutto questo regge finché il totale è grosso. Nella lista però ci sono anche i
 resi, che tolgono invece di aggiungere. Senza resi, trenta importi da una
@@ -111,10 +111,10 @@ niente di decisivo. Quando sono proprio loro a portare l’informazione,
 come le componenti anomale delle attivazioni dei modelli linguistici, tagliarli
 vuol dire sbagliare i numeri che contano.
 
-Conta però l’errore sull’uscita, non quello sul peso. Se il passo
-non supera un paio di deviazioni standard dei pesi, l’errore di arrotondamento
-$e = \hat{w} - w$ si comporta come una variabile uniforme su $[-s/2,\, s/2]$,
-indipendente dal peso, con
+Conta però l’errore sull’uscita, non quello sul peso. Se il passo non supera un
+paio di deviazioni standard dei pesi, l’errore di arrotondamento $e = \hat{w} -
+w$ si comporta come una variabile uniforme su $[-s/2,\, s/2]$, scorrelata dal
+peso, con
 
 $$
 \mathbb{E}[e] = 0, \qquad \operatorname{Var}(e) = \frac{1}{s}\int_{-s/2}^{s/2} u^2\,\mathrm{d}u = \frac{s^2}{12}.
@@ -153,15 +153,17 @@ segnale quasi si annulla e l’errore relativo peggiora di molto. Fra i due
 estremi, a parità di errore sui pesi, l’errore relativo sull’uscita può
 cambiare di ordini di grandezza.
 
-L’ipotesi di media nulla sugli arrotondamenti, invece, vale finché il passo non
-supera un paio di deviazioni standard dei pesi, e a quattro bit (due terzi di
-deviazione) come a tre (una e mezza) il passo sta sotto questa soglia: l’errore
-resta centrato, scorrelato dal peso e con la varianza $s^2/12$ del modello
-uniforme. L’ipotesi cade quando i livelli sono così pochi che l’arrotondamento
-diventa una funzione del peso: a due bit i livelli sono $-s$, $0$
-e $s$, il passo vale più di quattro deviazioni, quasi tutti i pesi finiscono
-sullo zero e l’errore è in pratica $-w$, fortemente anticorrelato con il peso;
-ma a due bit, in ogni caso, il modello è compromesso.
+L’ipotesi del modello uniforme, invece, vale finché il passo non supera un paio
+di deviazioni standard dei pesi, e a quattro bit (due terzi di deviazione) come
+a tre (una e mezza) il passo sta sotto questa soglia: l’errore resta centrato,
+scorrelato dal peso e con la varianza $s^2/12$ del modello uniforme. L’ipotesi
+cade quando
+
+i livelli sono così pochi che l’errore si lega al peso: a due bit i livelli
+sono $-s$, $0$ e $s$, il passo vale più di quattro deviazioni, quasi tutti i
+pesi finiscono sullo zero e l’errore è in pratica $-w$, fortemente
+anticorrelato con il peso; ma a due bit, in ogni caso, il modello è
+compromesso.
 
 La scala è il punto delicato. Se la si prende dal massimo in valore assoluto
 del gruppo di numeri che la condividono, un elemento solo la detta, e se
@@ -186,8 +188,9 @@ $$
 con $s = (\max_i w_i - \min_i w_i)/(2^b - 1)$, $z = \mathrm{round}(-\min_i w_i
 / s)$ e $q$ troncato a $[0,\, 2^b - 1]$. Su valori tutti non negativi la forma
 simmetrica usa soltanto i livelli da $0$ a $2^{b-1}-1$, quella asimmetrica
-tutti i $2^b$. Il passo quindi scende da $\max_i w_i/(2^{b-1}-1)$ a $\max_i
-w_i/(2^b-1)$, cioè a poco meno della metà, come avere un bit in più.
+tutti i $2^b$. Il passo quindi scende da $\max_i w_i/(2^{b-1}-1)$ a $(\max_i
+w_i - \min_i w_i)/(2^b-1)$, che non supera $\max_i w_i/(2^b-1)$: almeno a poco
+meno della metà, come avere un bit in più.
 
 Il meccanismo è lo stesso, e gli estremi del gruppo dettano sempre il passo
 (nella forma simmetrica basta il più grande in valore assoluto, qui servono
@@ -366,11 +369,12 @@ sbagliare il numero che conta di più, ed è il caso delle componenti enormi.
 
 Sui pesi dei modelli linguistici grandi il problema di un massimo che allarga
 il passo per tutti si vede poco, e i pesi si arrotondano a otto bit senza
-difficoltà {cite}`xiao2023smoothquant`. Non vale per tutte le reti. Nelle
-reti piccole i pesi di canali diversi possono avere intervalli
-che differiscono di oltre cento volte, e qualche peso anomalo rende meno precisi
-tutti gli altri {cite}`jacob2018quantization`. È lo stesso problema, e il
-rimedio è una scala per canale invece che per tutto lo strato.
+difficoltà {cite}`xiao2023smoothquant`. Non vale per tutte le reti. Nelle reti
+piccole i pesi di canali diversi possono avere intervalli che differiscono di
+oltre cento volte, e qualche peso anomalo rende meno precisi tutti gli altri
+{cite}`jacob2018quantization`. È lo stesso problema: Jacob e colleghi lo
+aggirano addestrando con la quantizzazione simulata, e il rimedio oggi più
+comune è una scala per canale invece che per tutto lo strato.
 
 Sulle attivazioni dei modelli linguistici grandi, cioè sui numeri che scorrono
 da uno strato all’altro, il problema invece è molto marcato: ci sono poche
@@ -466,7 +470,7 @@ vale.
 L’osservazione empirica è che nei Transformer, oltre una certa scala, compaiono
 **caratteristiche anomale sistematiche** (*outlier features*): un numero
 piccolo di dimensioni del canale nascosto assume valori fino a venti volte più
-grandi delle altre, in modo consistente fra token e fra ingressi. Che
+grandi delle altre, in modo sistematico fra token e fra ingressi. Che
 esistessero si sapeva già {cite}`kovaleva2021bert,bondarenko2021understanding`.
 La misura alla scala e il metodo per aggirarle vengono dal lavoro che ha
 reso `int8` praticabile {cite}`dettmers2022llmint8`: la transizione è netta e
@@ -582,8 +586,11 @@ nel mucchio. Il passo, cioè, cresce con il numero: stretto sulle cose piccole
 e largo sulle grandi.
 
 Otto bit si possono spendere così: uno per il segno, quattro per dire dove va
-la virgola, tre per le cifre che contano. Con tre bit di cifre un numero non
-sbaglia mai più di un sedicesimo di sé stesso, poco più del 6%, e in media
+la virgola, tre per le cifre che contano. Con tre bit di cifre fra una potenza
+di due e la successiva ci sono otto gradini; l’errore più grande è mezzo
+gradino, quindi un numero non sbaglia mai più di un sedicesimo di sé stesso,
+poco più del 6%, e in media
+
 sbaglia molto meno, attorno al 2,6%. Chi ha bisogno di arrivare più lontano
 sposta un bit dalle cifre alla virgola: arriva più lontano, ma sbaglia al più
 di un ottavo, il 12,5%.
@@ -593,11 +600,12 @@ ordini di grandezza, si scrivono di solito nel secondo modo; i pesi e i numeri
 che passano da uno strato all'altro nel primo, anche durante l'addestramento.
 
 Anche la virgola ha un limite: con quattro bit si sposta solo di tanti posti, e
-un numero può andare da un sessantaquattresimo a 448 volte l'unità. Si sceglie
-allora per tutto il gruppo l'unità di misura, millimetri o chilometri, in modo
-che il più grande resti sotto 448, e quell'unità è il **fattore di scala**.
-Finché il più piccolo non scende sotto il sessantaquattresimo, ogni numero
-conserva il suo errore piccolo.
+un numero può andare da un sessantaquattresimo a 448 volte l'unità, due limiti
+fissati una volta per tutte dal formato. Si sceglie allora per tutto il gruppo
+l'unità di misura, millimetri o chilometri, in modo che il più grande resti
+sotto 448, e quell'unità è il **fattore di scala**. Finché il più piccolo non
+scende sotto il sessantaquattresimo, ogni numero conserva il suo errore
+piccolo.
 
 Il confronto dice quando conviene. Sui bottoni soli il nastro vince, perché le
 sue tacche fitte sbagliano meno delle tre cifre fisse. Con un tavolo nel
@@ -775,14 +783,14 @@ $$
 $$
 
 È un gradiente sbagliato per costruzione, e a lungo la sua giustificazione è
-stata solo empirica. Per una classe semplice di reti esiste però una
-dimostrazione. In particolare, su una rete a due strati lineari con attivazione
-ReLU binarizzata e ingressi gaussiani, se lo stimatore è scelto bene il
-gradiente che produce (il *coarse gradient*) correla in media positivamente con
-il gradiente della perdita di popolazione, il suo opposto è una direzione di
-discesa e l’algoritmo converge a un punto critico; uno stimatore scelto male
-rende l’addestramento instabile vicino a certi minimi locali
-{cite}`yin2019understanding`.
+stata solo empirica. Per l’arrotondamento delle attivazioni, su una classe
+semplice di reti, esiste però una dimostrazione. In particolare, su una rete a
+due strati lineari con attivazione ReLU binarizzata e ingressi gaussiani, se lo
+stimatore è scelto bene il gradiente che produce (il *coarse gradient*) correla
+in media positivamente con il gradiente della perdita di popolazione, il suo
+opposto è una direzione di discesa e l’algoritmo converge a un punto critico;
+uno stimatore scelto male rende l’addestramento instabile vicino a certi minimi
+locali {cite}`yin2019understanding`.
 
 Il costo di QAT è un altro addestramento, completo o come rifinitura di una
 rete già addestrata, e la regola pratica è la solita: si usa PTQ, si misura, e
@@ -874,12 +882,11 @@ porta il 7,83% al 2,50% quando qualche peso è grande. In nessuno di questi casi
   locale: GPTQ {cite}`frantar2023gptq` compensa sull’uscita l’errore già
   commesso, AWQ {cite}`lin2024awq` protegge i canali che moltiplicano le
   attivazioni grandi.
-- PTQ contro QAT: la seconda mette la quantizzazione nel passaggio in
-  avanti durante l’addestramento e aggira la derivata nulla di
-  $\mathrm{round}$ con lo stimatore diretto
-  {cite}`bengio2013estimating`, cioè un gradiente deliberatamente sbagliato che,
-  scelto bene, su reti semplici ha garanzie di convergenza
-  {cite}`yin2019understanding`.
+- PTQ contro QAT: la seconda mette la quantizzazione nel passaggio in avanti
+  durante l’addestramento e aggira la derivata nulla di $\mathrm{round}$ con lo
+  stimatore diretto {cite}`bengio2013estimating`, cioè un gradiente
+  deliberatamente sbagliato che, scelto bene, ha garanzie di convergenza su
+  reti semplici con attivazioni quantizzate {cite}`yin2019understanding`.
 ```
 
 `````

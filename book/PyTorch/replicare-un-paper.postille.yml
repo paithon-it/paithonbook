@@ -25,7 +25,7 @@
   impronta: "6ca8eb90a423"
   postilla: "Assi scambiati, nessuna eccezione: ogni patch guarda le altre immagini del batch"
 - inizio: "La tabella 1 del paper dichiara,"
-  impronta: "0a1bdd32ef36"
+  impronta: "7e36e25ec0e5"
   postilla: "Le teste si spartiscono le colonne: dal loro numero i parametri non dipendono"
 - inizio: "Due righe hanno un fattore da"
   impronta: "b021b71def0f"

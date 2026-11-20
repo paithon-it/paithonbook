@@ -295,7 +295,7 @@ maiuscola.
 
 Un HMM per il tagging ha come stati nascosti le etichette
 $t_1, \dots, t_n$ e come osservazioni le parole $w_1, \dots, w_n$. Due
-assunzioni lo definiscono: ogni etichetta dipende solo dalla precedente
+ipotesi lo definiscono: ogni etichetta dipende solo dalla precedente
 (catena di Markov del primo ordine) e ogni parola dipende solo dalla
 propria etichetta. La probabilità congiunta si fattorizza allora in
 
@@ -404,11 +404,12 @@ perché ogni categoria «emette» le sue parole:
 | `NOUN` | 0 | 0,2 | 0 |
 | `VERB` | 0 | 0,2 | 0,3 |
 
-Nessuna di queste righe somma a uno, e non è un errore: il resto della
-probabilità va a tutte le altre parole della lingua, che in questo esempio non
-compaiono. E poiché il modello giocattolo ha tre sole categorie, il
-pronome non c'è: qui solo l'articolo può dire «la», anche se in italiano vero,
-come in «La vecchia porta la sbarra», potrebbe essere un pronome.
+Nessuna delle righe di questa seconda tabella somma a uno, e non è un errore:
+il resto della probabilità va a tutte le altre parole della lingua, che in
+questo esempio non compaiono. E poiché il modello giocattolo ha tre sole
+categorie, il pronome non c'è: qui solo l'articolo può dire «la», anche se in
+italiano vero, come in «La vecchia porta la sbarra», potrebbe essere un
+pronome.
 
 Un ultimo punto delicato: la parola «porta», da sola, *non decide*, perché il
 nome e il verbo la pronunciano con la stessa frequenza, 0,2 contro 0,2.
@@ -472,11 +473,12 @@ cambiare unità di misura. Invece di moltiplicare i punteggi si contano gli zeri
 che a ogni incrocio si sommano tranquillamente; alla fine vince il percorso che
 ne ha di meno.
 
-C'è anche un secondo navigatore, che a ogni incrocio, invece di tenere la strada
-migliore, somma i punteggi di tutte le strade che arrivano. A «cigola» trova
-$0{,}0063 + 0{,}0024 \times 0{,}3 = 0{,}0063 + 0{,}00072 = 0{,}00702$: la
-probabilità della frase, sommata su tutte le strade che la possono produrre, di
-cui la strada migliore porta circa nove decimi.
+C'è anche un secondo navigatore, che a ogni incrocio, invece di tenere la
+strada migliore, somma i punteggi di tutte le strade che arrivano. A «cigola»
+trova $0{,}0063 + 0{,}0024 \times 0{,}3 = 0{,}0063 + 0{,}00072 = 0{,}00702$ (il
+primo addendo è la strada migliore di prima, già moltiplicata per lo stesso
+fattore): la probabilità della frase, sommata su tutte le strade che la possono
+produrre, di cui la strada migliore porta circa nove decimi.
 
 Se si fa lo stesso giro anche dalla fine verso l'inizio, i due conti insieme
 dicono, per ogni parola, quanto è probabile ciascuna categoria tenendo conto di
@@ -806,11 +808,11 @@ compiti anche alla sua uscita. (Il lavoro affina anche il modello di linguaggio
 sul testo del compito, senza etichette, prima di congelarlo: è un adattamento al
 dominio, non il fine-tuning supervisionato di BERT.)
 
-L'analisi degli strati conferma la divisione del lavoro: [il primo strato serve
-meglio l'etichettatura grammaticale, l'ultimo la disambiguazione del senso
-delle parole]{.pt-matita}. Con questo schema ELMo migliora i risultati su sei
-compiti diversi, dalle domande e risposte all'implicazione testuale, dai ruoli
-semantici alla coreferenza, dal NER al sentiment. Sul NER del CoNLL-2003,
+L'analisi degli strati conferma la divisione del lavoro: [il primo strato LSTM
+serve meglio l'etichettatura grammaticale, il secondo la disambiguazione del
+senso delle parole]{.pt-matita}. Con questo schema ELMo migliora i risultati su
+sei compiti diversi, dalle domande e risposte all'implicazione testuale, dai
+ruoli semantici alla coreferenza, dal NER al sentiment. Sul NER del CoNLL-2003,
 aggiunto a una BiLSTM-CRF, porta la $F_1$ da $90{,}15$ a $92{,}22$ (media su
 cinque semi), cioè il 21% di errore relativo in meno; il miglior risultato
 precedente era $91{,}93$ {cite}`peters2018deep`.
@@ -857,10 +859,11 @@ ha capito niente di niente, sull'inglese dei giornali azzecca già 92 parole su
 cento, perché tantissime parole sono facili: «the» è sempre un articolo,
 «quickly» quasi sempre un avverbio (come da noi «il» e «velocemente»). Le
 parole ambigue sono meno numerose, ma sono quelle che si usano di più, e in un
-testo inglese di giornale coprono più della metà delle parole scritte. I
-sistemi seri stanno oltre il 97. Ecco perché quei numeri vanno letti sapendo da
-dove si parte: [fra il 92 e il 97 c'è tutto il lavoro]{.pt-matita}, e ci sono
-tutte le parole ambigue, cioè le uniche su cui valga la pena discutere.
+testo inglese di giornale coprono più della metà delle parole scritte; anche
+loro, però, il più delle volte fanno lo stesso mestiere. I sistemi seri stanno
+oltre il 97. Ecco perché quei numeri vanno letti sapendo da dove si parte: [fra
+il 92 e il 97 c'è tutto il lavoro]{.pt-matita}, e ci sono tutte le parole
+ambigue, cioè le uniche su cui valga la pena discutere.
 
 Per le entità quel voto diventa una trappola. Prendi un testo di 100 parole che
 contiene una sola entità, «Enrico Fermi». Un sistema pigro che non evidenzia

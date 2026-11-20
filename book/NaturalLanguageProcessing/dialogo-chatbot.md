@@ -381,18 +381,18 @@ dialogo e $y$ la risposta, con la stessa fattorizzazione autoregressiva della
 traduzione {cite}`sutskever2014sequence`. Uno dei primi chatbot neurali
 end-to-end è quello di Vinyals e Le {cite}`vinyals2015neural`, addestrato su
 log di assistenza tecnica e sottotitoli di film. Il difetto emerse subito:
-[massima verosimiglianza e beam search privilegiano risposte ad alta probabilità
-*marginale*, generiche per costruzione]{.pt-matita} («I don't know»). Li e colleghi
-{cite}`li2016diversity` sostituiscono l'obiettivo di decodifica con una mutua
-informazione pesata, $\hat{y} = \arg\max_y \big[\log P(y \mid x) - \lambda \log
-P(y)\big]$, dove il secondo termine, stimato da un modello di linguaggio sulle
-sole risposte, toglie punti alle risposte probabili a prescindere dal contesto:
-con $\lambda = 1$ è la mutua informazione puntuale, e in pratica si usa
-$\lambda < 1$. Dentro la ricerca, però, quel termine toglie punti anche alle
-frasi fluenti e finisce per premiare quelle sgrammaticate: gli autori lo
-applicano allora ai soli primi token della risposta, dove si decide se sarà
-generica. La variante con il modello inverso, $(1-\lambda)\log P(y \mid x) +
-\lambda \log P(x \mid y)$, non si può calcolare prima che la risposta sia
+[massima verosimiglianza e beam search privilegiano le risposte frequenti in
+sé, probabili in quasi ogni contesto e quindi generiche]{.pt-matita} («I don't
+know»). Li e colleghi {cite}`li2016diversity` sostituiscono l'obiettivo di
+decodifica con una mutua informazione pesata, $\hat{y} = \arg\max_y \big[\log
+P(y \mid x) - \lambda \log P(y)\big]$, dove il secondo termine, stimato da un
+modello di linguaggio sulle sole risposte, toglie punti alle risposte probabili
+a prescindere dal contesto: con $\lambda = 1$ è la mutua informazione puntuale,
+e in pratica si usa $\lambda < 1$. Dentro la ricerca, però, quel termine toglie
+punti anche alle frasi fluenti e finisce per premiare quelle sgrammaticate: gli
+autori lo applicano allora ai soli primi token della risposta, dove si decide
+se sarà generica. La variante con il modello inverso, $(1-\lambda)\log P(y \mid
+x) + \lambda \log P(x \mid y)$, non si può calcolare prima che la risposta sia
 completa; viene quindi applicata riordinando le $N$ migliori ipotesi del beam.
 
 Il salto di qualità arriva con la scala (modelli decoder-only pre-addestrati su
@@ -529,7 +529,7 @@ una responsabilità di cui qualcuno risponde, e per Weizenbaum una scelta così
 non si riduce a un calcolo. La domanda giusta, diceva, [non è cosa le macchine
 *possono* fare, ma cosa *dobbiamo* affidare loro]{.pt-matita}.
 
-Cinquant'anni dopo, la questione si è fatta concreta su tre fronti, e merita
+Oggi la questione si è fatta concreta su tre fronti, e merita
 un tono sobrio: né allarme, né alzata di spalle.
 
 - Antropomorfizzazione, cioè la nostra abitudine ad attribuire qualità umane a
@@ -580,13 +580,13 @@ attaccati a ogni parola, come scatole e come frecce.
   «mh-mh» del ristoratore, e l'appunto riletto ad alta voce); e le parole
   piccole («ne», «lo») pescano il senso nelle battute già dette. Per dialogare
   non basta capire l'ultima frase: bisogna ricordare la partita.
-- Tre famiglie di interlocutori artificiali, tutte e tre ancora vive. A
-  regole, come ELIZA: aggancia uno schema nelle tue parole e te le rigira,
-  nessuna memoria, nessun mondo. A moduli, come lo sportello che riempie le
-  caselle di un formulario facendo domande solo per quelle vuote: è ancora
-  l'ossatura degli assistenti vocali, bravissimi dentro il modulo e nel vuoto
-  un millimetro fuori. Generativi, che scrivono la risposta parola per
-  parola dopo aver letto milioni di dialoghi.
+- Tre famiglie di interlocutori artificiali, tutte e tre ancora vive. A regole,
+  come ELIZA: aggancia uno schema nelle tue parole e te le rigira, nessuna
+  memoria della conversazione (al più una frase di riserva), nessun mondo. A
+  moduli, come lo sportello che riempie le caselle di un formulario facendo
+  domande solo per quelle vuote: è ancora l'ossatura degli assistenti vocali,
+  bravissimi dentro il modulo e nel vuoto un millimetro fuori. Generativi, che
+  scrivono la risposta parola per parola dopo aver letto milioni di dialoghi.
 - Chi impara a *continuare* i testi non sa ancora *rispondere*: serve una
   seconda scuola, fatta di esempi di buone risposte e di giudizi umani, ed è la
   storia della {doc}`sezione sul post-addestramento

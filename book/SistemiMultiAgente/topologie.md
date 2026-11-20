@@ -92,7 +92,8 @@ domande, e per questo Baran ha disegnato tre reti e non due.
 
 `````{tab} Superiore
 
-Sia $G = (V, E)$ il grafo di comunicazione, con $|V| = N$ agenti, e sia
+Sia $G = (V, E)$ il grafo di comunicazione e $A \subseteq V$ l'insieme dei suoi
+$N$ agenti ($A = V$ tranne nella lavagna, il cui centro non è un agente), e sia
 $d(u,v)$ la lunghezza del cammino minimo fra due nodi. Le tre grandezze sono:
 
 $$
@@ -100,26 +101,27 @@ $$
 \qquad
 \Delta(G) = \max_{v \in V} \deg(v),
 \qquad
-\ell(v) = \frac{\bigl|\{(s,t) : v \in \mathrm{sp}(s,t)\}\bigr|}{\binom{N}{2}},
+\ell(v) = \frac{\bigl|\{\{s,t\} \subseteq A : v \in \mathrm{sp}(s,t)\}\bigr|}
+{\binom{N}{2}},
 $$
 
 dove $\mathrm{diam}(G)$ è il diametro (il più lungo dei cammini minimi, cioè il
 caso peggiore di quanti passaggi servono), $\Delta(G)$ è il grado massimo
 (quanti canali fanno capo al nodo più connesso) e $\ell(v)$ è il carico del
-nodo, cioè la frazione di coppie $(s,t)$ per cui almeno un cammino minimo
-$\mathrm{sp}(s,t)$ attraversa $v$ senza averlo come estremo. È una versione
-semplificata della centralità di intermediazione (la *betweenness*) su due
-punti: conta le coppie invece di pesarle con la frazione dei loro cammini
+nodo, cioè la frazione di coppie di agenti $\{s,t\}$ per cui almeno un cammino
+minimo $\mathrm{sp}(s,t)$ attraversa $v$ senza averlo come estremo. È una
+versione semplificata della centralità di intermediazione (la *betweenness*) su
+due punti: conta le coppie invece di pesarle con la frazione dei loro cammini
 minimi che passa per $v$, e le normalizza sul totale $\binom{N}{2}$ delle
-coppie anziché sulle sole coppie che escludono $v$.
+coppie di agenti anziché sulle sole coppie che escludono $v$.
 
 La fragilità si legge da $\kappa(G)$, la connettività per vertici, ossia
 quanti nodi bisogna rimuovere perché il grafo si spezzi. Si noti che negli
 alberi e nelle stelle $\kappa(G) = 1$, e ogni nodo interno è un punto di
 articolazione. Per distinguere fra loro grafi che hanno
 tutti $\kappa(G) = 1$ serve una misura graduata, quella che stampa il programma
-sulle cinque forme: detto $A$ l'insieme degli agenti e $v^{*} = \arg\max_v
-\ell(v)$ il nodo più carico, la **connettività residua** è la frazione di
+sulle cinque forme: detto $v^{*} = \arg\max_v \ell(v)$ il nodo più carico, la
+**connettività residua** è la frazione di
 coppie di agenti ancora collegate dopo averlo tolto,
 
 $$
@@ -148,12 +150,13 @@ $$
 che è il limite di Moore per gli alberi: a $N$ fissato, abbassare il diametro
 obbliga ad alzare $\Delta$ (per la stella, $k = 1$, dà $\Delta \ge N-1$).
 
-Poiché $\kappa(G) = 1$, il nodo con $\ell$ alto è per costruzione quello la cui
-rimozione taglia più coppie. In una rete di calcolatori $\ell(v)$ alto
-significa un instradatore congestionato; in una squadra di agenti significa una
-finestra di contesto che deve contenere tutto ciò che transita, e questo è un
-limite più duro, perché la qualità della lettura degrada prima della lunghezza
-dichiarata (lo misura RULER, nella {doc}`sezione sul contesto
+Nelle topologie ad albero il cammino fra due nodi è unico, quindi $\ell(v)$ è
+esattamente la frazione di coppie che la rimozione di $v$ separa. In una rete
+di calcolatori $\ell(v)$ alto significa un instradatore congestionato; in una
+squadra di agenti significa una finestra di contesto che deve contenere tutto
+ciò che transita, e questo è un limite più duro, perché la qualità della
+lettura degrada prima della lunghezza dichiarata (lo misura RULER, nella
+{doc}`sezione sul contesto
 </IngegneriaLLM/context-engineering>`: nel 2024, di diciassette modelli che
 dichiaravano almeno 32.000 token, solo la metà manteneva prestazioni
 soddisfacenti a quella lunghezza {cite}`hsieh2024ruler`), e perché il testo che
@@ -279,10 +282,10 @@ analizza e passa al terzo, il terzo scrive il rapporto. Come nel gioco,
 nessuno ha visto l'originale tranne il primo.
 
 Da lì viene tutto il resto. Se al secondo passaggio qualcuno capisce male una
-cosa, quell'errore arriva al quinto travestito da verità di partenza, e al
-quinto non c'è nessuno che possa accorgersene: per accorgersene bisognerebbe
-avere in mano il foglietto iniziale, e chi sta in fondo alla fila non ce l'ha
-mai avuto.
+cosa, quell'errore arriva all'ultimo travestito da verità di partenza, e
+all'ultimo non c'è nessuno che possa accorgersene: per accorgersene
+bisognerebbe avere in mano il foglietto iniziale, e chi sta in fondo alla fila
+non ce l'ha mai avuto.
 
 C'è poi la moltiplicazione degli errori. Sei passaggi fatti bene novantacinque
 volte su cento non danno una fila affidabile al novantacinque per cento: danno
@@ -664,8 +667,9 @@ pause, per interrogare una raccolta di riassunti di articoli di informatica,
 con un vocabolario di 1011 parole. Delle ventitré frasi di prova, mai sentite
 prima, ne fraintese il senso di due, cioè ne capì il novantuno per cento (le
 frasi con almeno una parola sbagliata, e non soltanto quelle fraintese nel
-senso, erano il diciannove per cento); su così pochi casi, una percentuale va
-presa come un ordine di grandezza.
+senso, l'articolo le dà al diciannove per cento, che su ventitré frasi non
+corrisponde a un numero intero); su così pochi casi, una percentuale va presa
+come un ordine di grandezza.
 
 `````{tab} Elementare
 

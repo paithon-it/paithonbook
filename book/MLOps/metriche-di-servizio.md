@@ -138,12 +138,12 @@ solo sarebbero indistinguibili.
 Il secondo, per giunta, offre una velocità che chi legge non può sfruttare, e
 per capire perché serve sapere quanto vale un token in parole. Un token è più
 corto di una parola, perché le parole lunghe il modello le spezza in due o tre
-pezzi: su un paragrafo italiano ne servono fra uno e mezzo e due e mezzo, a
-seconda di come il modello è stato addestrato a spezzarle. Un lettore adulto
-legge tre o quattro parole al secondo, quindi sta consumando qualcosa come
-4,5-10 token al secondo. Un sistema che ne consegna 40 va dunque da quattro a
-nove volte più veloce di chi legge, e accelerare ancora non si vede: le parole
-erano già lì prima che l'occhio le raggiungesse.
+pezzi: su un paragrafo italiano ne servono fra uno e mezzo e due e mezzo per
+parola, a seconda di come il modello è stato addestrato a spezzarle. Un lettore
+adulto legge tre o quattro parole al secondo, quindi sta consumando qualcosa
+come 4,5-10 token al secondo. Un sistema che ne consegna 40 va dunque da
+quattro a nove volte più veloce di chi legge, e accelerare ancora non si vede:
+le parole erano già lì prima che l'occhio le raggiungesse.
 
 Il TTFT, invece, si sente sempre,
 perché è tempo in cui sullo schermo non succede niente, e le soglie di Nielsen
@@ -247,11 +247,12 @@ se ne ottiene, $M_w = 2N_p$ i byte dei pesi, $m_{\text{kv}}$ i byte di KV cache
 per token e $B_{\text{picco}}$ la banda della memoria; il secondo è un limite
 inferiore del TPOT. Con $N_p = 7\cdot10^9$, $P_{\text{picco}} = 10^{15}$
 FLOP/s, $\eta = 0{,}5$ e $B_{\text{picco}} = 3$ TB/s, un prompt di 2.048 token
-chiede almeno $2\cdot 7\cdot10^9 \cdot 2048 / (0{,}5\cdot10^{15}) \approx 57$
-ms di prefill, e un passo di decode di una sequenza sola, contando i soli pesi,
-$14\cdot10^9 / (3\cdot10^{12}) \approx 4{,}7$ ms. Quanto il TPOT misurato
-resti lontano da questo limite lo dice la MBU di
-{doc}`Quante repliche accendere </MLOps/capacita-e-costo>`.
+chiede circa $2\cdot 7\cdot10^9 \cdot 2048 / (0{,}5\cdot10^{15}) \approx 57$ ms
+di prefill (con $\eta = 1$ il limite inferiore vero è la metà, 29 ms), e un
+passo di decode di una sequenza sola, contando i soli pesi, $14\cdot10^9 /
+(3\cdot10^{12}) \approx 4{,}7$ ms. Quanto il TPOT misurato resti lontano da
+questo limite lo dice la MBU di {doc}`Quante repliche
+accendere </MLOps/capacita-e-costo>`.
 
 `````
 
@@ -383,16 +384,17 @@ del TPOT, che è una media: la richiesta con duecento intervalli da 20 ms e uno
 da due secondi ha $\text{TPOT} = 29{,}85$ ms, quindi passa una soglia
 $\tau_{\text{p}} = 50$ ms e viene contata fra quelle servite bene, benché
 l'utente l'abbia vista bloccarsi a metà frase. La stessa costruzione con
-$\max_i \text{ITL}$ al posto del TPOT dà un goodput più severo e più aderente
-all'esperienza, e si sorveglia quando la fluidità conta. Il
-throughput è la stessa somma senza l'indicatore,
-$R/\Delta t$: il goodput è dunque il throughput moltiplicato per la frazione
-conforme, e non può mai superarlo. Nella pianificazione della capacità se ne usa la
-variante duale, quella con cui il termine si è diffuso nella letteratura sul
-serving degli LLM {cite}`zhong2024distserve`: il massimo tasso di richieste al
-secondo per GPU che mantiene la conformità sopra una quota fissata (per
-esempio il $90\%$). Definito così è la metrica su cui si dimensiona il servizio,
-perché tiene insieme il costo (le GPU) e la promessa (le soglie).
+$\max_j \text{ITL}_{i,j}$, la pausa più lunga della richiesta $i$, al posto di
+$\text{TPOT}_i$ dà un goodput più severo e più aderente all'esperienza, e si
+sorveglia quando la fluidità conta. Il throughput è la stessa somma senza
+l'indicatore, $R/\Delta t$: il goodput è dunque il throughput moltiplicato per
+la frazione conforme, e non può mai superarlo. Nella pianificazione della
+capacità se ne usa la variante duale, quella con cui il termine si è diffuso
+nella letteratura sul serving degli LLM {cite}`zhong2024distserve`: il massimo
+tasso di richieste al secondo per GPU che mantiene la conformità sopra una
+quota fissata (per esempio il $90\%$). Definito così è la metrica su cui si
+dimensiona il servizio, perché tiene insieme il costo (le GPU) e la promessa
+(le soglie).
 
 Due avvertenze. Il goodput dipende dalle soglie, quindi non è confrontabile fra
 sistemi che ne dichiarano di diverse, e resta un numero interno più che un
@@ -540,9 +542,9 @@ copia pronta e aggiungere solo il seguito.
 Nei sistemi che servono modelli generativi tre casi coprono quasi tutto il
 traffico. L'istruzione di sistema (le righe che spiegano al modello come
 comportarsi) è identica per tutti. Un documento allegato su cui si fanno dieci
-domande è lo stesso dieci volte. Una conversazione, al decimo turno, rimanda
-i nove turni precedenti più l'ultima domanda: quei nove li abbiamo già letti
-nove volte.
+domande è lo stesso dieci volte. Una conversazione, al decimo turno, rimanda i
+nove turni precedenti più l'ultima domanda: quei nove li abbiamo già letti
+tutti, almeno una volta.
 
 Gli appunti che il modello prende su un pezzo di testo dipendono solo da quel
 pezzo e da ciò che lo precede: [se l'inizio è identico, gli appunti sull'inizio
@@ -899,12 +901,12 @@ apparente]{.pt-matita}.
   streaming la velocità percepita è $1/\text{TPOT}$; per una risposta che si
   usa solo intera conta $T$.
 - Prefill e decode sollecitano la GPU in modo opposto: l'intensità aritmetica è
-  pari al numero di token elaborati insieme, quindi il prefill è compute-bound
-  e il decode memory-bound. Sulla stessa GPU l'uno blocca l'altro; i rimedi
-  sono il chunked prefill {cite}`agrawal2024taming`, che spezza il prompt e lo
-  intercala ai passi di decode, e la disaggregazione
-  {cite}`zhong2024distserve`, che li manda su GPU diverse con l'onere di
-  trasferire la KV cache.
+  pari al numero di token elaborati insieme, quindi il prefill di un prompt di
+  almeno qualche centinaio di token è compute-bound e il decode memory-bound.
+  Sulla stessa GPU l'uno blocca l'altro; i rimedi sono il chunked prefill
+  {cite}`agrawal2024taming`, che spezza il prompt e lo intercala ai passi di
+  decode, e la disaggregazione {cite}`zhong2024distserve`, che li manda su GPU
+  diverse con l'onere di trasferire la KV cache.
 - Il goodput conta solo le richieste servite entro gli obiettivi
   dichiarati: allargare il batch alza il throughput e può abbassare il goodput
   (nell'esempio $+60\%$ di richieste servite e $-15\%$ di richieste servite

@@ -165,11 +165,10 @@ perché tutte le sue parti si somigliano, e nella seconda foto un pezzetto di
 cielo vale l'altro.
 
 Il bordo di un tetto va meglio, ma solo a metà: se il pezzetto che stai
-guardando scivola in su o in giù te ne accorgi subito, perché il bordo esce
-dall'inquadratura; se scivola lungo il tetto non te ne accorgi affatto, perché
-in quella direzione il bordo è uguale a sé stesso. Uno spigolo, dove due bordi
-si incontrano, è quello buono: da qualunque parte lo si sposti, qualcosa
-cambia.
+guardando scivola in su o in giù te ne accorgi subito, perché il bordo esce dal
+pezzetto; se scivola lungo il tetto non te ne accorgi affatto, perché in quella
+direzione il bordo è uguale a sé stesso. Uno spigolo, dove due bordi si
+incontrano, è quello buono: da qualunque parte lo si sposti, qualcosa cambia.
 
 Il secondo passaggio è descrivere ogni punto scelto con una piccola scheda
 segnaletica, costruita in modo da non cambiare se l'immagine viene ingrandita,
@@ -203,15 +202,15 @@ I tre pezzi hanno nomi precisi ed età ben definita.
 che valuta la matrice di autocorrelazione dei gradienti in un intorno,
 
 $$
-\mathbf{M} = \sum_{w} \begin{pmatrix} I_x^2 & I_x I_y \\ I_x I_y & I_y^2
+\mathbf{M} = \sum_{\mathcal{W}} \begin{pmatrix} I_x^2 & I_x I_y \\ I_x I_y & I_y^2
 \end{pmatrix},
 $$
 
 dove $I_x$ e $I_y$ sono le derivate parziali dell'immagine e la somma corre sui
-pixel di una finestra $w$ attorno al punto (di solito pesata da una gaussiana).
-Il rilevatore cerca i punti dove entrambi gli autovalori sono grandi
-(variazione in ogni direzione, cioè un angolo), distinguendoli da quelli dove
-uno solo lo è (un bordo, ambiguo lungo la sua direzione)
+pixel di una finestra $\mathcal{W}$ attorno al punto (di solito pesata da una
+gaussiana). Il rilevatore cerca i punti dove entrambi gli autovalori sono
+grandi (variazione in ogni direzione, cioè un angolo), distinguendoli da quelli
+dove uno solo lo è (un bordo, ambiguo lungo la sua direzione)
 {cite}`harris1988combined`.
 
 Il contributo dell'articolo è farlo senza calcolare gli autovalori. La risposta
@@ -333,11 +332,12 @@ centro ottico e può cadere fuori dall'immagine.
 
 L'epipolo va all'infinito quando la **base**, cioè il segmento che unisce i due
 centri ottici, è parallela al piano immagine. È il caso della coppia stereo
-affiancata, e per questo rettificare una coppia consiste nel mandare gli
-epipoli all'infinito. Il parallelismo fra gli assi ottici, invece, non c'entra:
-due fotocamere con assi perfettamente paralleli che si muovono *in avanti*
-hanno l'epipolo dentro l'immagine, nel punto da cui la scena sembra espandersi
-(è il caso di ogni telecamera montata su un'auto).
+affiancata, e per questo rettificare una coppia vuol dire mandare gli epipoli
+all'infinito lungo l'orizzontale e allineare le righe delle due immagini. Il
+parallelismo fra gli assi ottici, invece, non c'entra: due fotocamere con assi
+perfettamente paralleli che si muovono *in avanti* hanno l'epipolo dentro
+l'immagine, nel punto da cui la scena sembra espandersi (è il caso di ogni
+telecamera montata su un'auto).
 
 La condizione va poi verificata su un'immagine alla volta, perché i piani
 immagine sono due. Se, ad esempio, si ruota verso l'interno una sola delle due
@@ -394,17 +394,19 @@ essenziale ha due valori singolari uguali e il terzo nullo, $\mathbf{E} =
 \lVert\mathbf{t}\rVert$, e ne seguono quattro coppie candidate: $\mathbf{R} =
 \mathbf{U}\mathbf{W}\mathbf{V}^\top$ oppure
 $\mathbf{U}\mathbf{W}^\top\mathbf{V}^\top$, dove $\mathbf{W}$ è la rotazione di
-$90^\circ$ attorno all'asse $z$ (con il segno scelto perché $\det\mathbf{R} =
-+1$), e $\mathbf{t} = \pm\mathbf{u}_3$, la terza colonna di $\mathbf{U}$. Solo
-una soluzione, quella giusta, mette i punti triangolati davanti a entrambe le
-fotocamere (è il vincolo di *cheirality*).
+$90^\circ$ attorno all'asse $z$, con $\mathbf{U}$ e $\mathbf{V}$ presi a
+determinante $+1$ (cambiando segno a $\mathbf{E}$ se serve), così che
+$\det\mathbf{R} = +1$, e $\mathbf{t} = \pm\mathbf{u}_3$, la terza colonna di
+$\mathbf{U}$. Solo una soluzione, quella giusta, mette i punti triangolati
+davanti a entrambe le fotocamere (è il vincolo di *cheirality*).
 
 Si noti che la traslazione resta nota solo a meno di scala, perché il vincolo è
-omogeneo in $\mathbf{E}$; è l'ambiguità di scala della *structure from
-motion*. La stima degenera in due casi: se la scena è piana, perché le
-corrispondenze sono legate da un'omografia e non bastano a fissare
-$\mathbf{E}$; e se la fotocamera ruota senza traslare, perché allora
-$\mathbf{t} = \mathbf{0}$ ed $\mathbf{E}$ è nulla {cite}`hartley2004multiple`.
+omogeneo in $\mathbf{E}$; è l'ambiguità di scala della *structure from motion*.
+La stima degenera in due casi: se la scena è piana, perché le corrispondenze
+sono legate da un'omografia: la stima lineare a otto punti degenera, e anche
+con il minimo di cinque restano due soluzioni; e se la fotocamera ruota senza
+traslare, perché allora $\mathbf{t} = \mathbf{0}$ ed $\mathbf{E}$ è nulla
+{cite}`hartley2004multiple`.
 
 In pratica si rettificano le due immagini, cioè si applica a ciascuna
 un'omografia che porta gli epipoli all'infinito. Dopo la rettificazione le
@@ -450,7 +452,9 @@ sempre.
 Questa relazione ha due conseguenze che si toccano con mano. La prima è che la
 visione stereo è precisa da vicino e vaga da lontano: con quella telecamera,
 mezzo pixel di salto misurato male vale un centimetro a due metri e sei metri a
-cinquanta.
+cinquanta. A due metri il salto è di centocinque pixel, e mezzo pixel ne è una
+minuzia; a cinquanta è di poco più di quattro, e mezzo pixel ne è quasi un
+ottavo, e un ottavo di cinquanta metri fa sei metri.
 
 La seconda riguarda le leve su cui si può agire, e sono due: allontanare le
 telecamere fra loro ingrandisce i salti e quindi la precisione, ma restringe la
@@ -650,9 +654,11 @@ scivolare attraverso il secondo.
 `````{tab} Elementare
 
 Da dove escono l'85 e il 45, se il movimento è di 96? Dall'inclinazione del
-palo, che nel disegno è di 62 gradi. In un triangolo rettangolo con un angolo di
-62 gradi, il lato opposto a quell'angolo è sempre $0{,}883$ volte il lato più
-lungo, e il lato accanto $0{,}469$ volte: sono due numeri fissi per
+palo, che nel disegno è di 62 gradi. Il movimento è il lato più lungo di un
+triangolo rettangolo, e i suoi due pezzi, quello di traverso al palo e quello
+lungo il palo, sono gli altri due lati. In un triangolo rettangolo con un
+angolo di 62 gradi, il lato opposto a quell'angolo è sempre $0{,}883$ volte il
+lato più lungo, e il lato accanto $0{,}469$ volte: sono due numeri fissi per
 quell'angolo, e una calcolatrice li dà con i tasti «sin» e «cos».
 
 Il pezzo che sopravvive è quindi $96 \times 0{,}883$, quasi $85$; il pezzo che
@@ -1067,14 +1073,15 @@ visione artificiale non è invecchiata.
 - Il modello stenopeico con la matrice degli intrinseci $\mathbf{K}$
   descrive la fotocamera; stimarla si chiama calibrazione, e senza di essa
   i pixel non si traducono in direzioni e la ricostruzione resta proiettiva.
-- Il vincolo epipolare riduce la ricerca della corrispondenza da un piano
-  a una retta: $\tilde{\mathbf{x}}_R^\top \mathbf{F} \tilde{\mathbf{x}}_L = 0$.
-  Rettificando le immagini quelle rette diventano orizzontali, il che equivale
-  a mandare gli epipoli all'infinito. Dentro RANSAC, il minimo di
-  corrispondenze è sette per $\mathbf{F}$ e cinque per $\mathbf{E}$, non otto.
-  Dalla $\mathbf{E}$ si ricavano $\mathbf{R}$ e $\mathbf{t}$, quest'ultima a
-  meno di scala: delle quattro soluzioni vale quella che mette i punti davanti
-  a entrambe le fotocamere.
+- Il vincolo epipolare riduce la ricerca della corrispondenza da un piano a una
+  retta: $\tilde{\mathbf{x}}_R^\top \mathbf{F} \tilde{\mathbf{x}}_L = 0$.
+  Rettificando le immagini quelle rette diventano orizzontali e si
+  corrispondono riga per riga: gli epipoli vanno all'infinito lungo
+  l'orizzontale. Dentro RANSAC, il minimo di corrispondenze è sette per
+  $\mathbf{F}$ e cinque per $\mathbf{E}$, non otto. Dalla $\mathbf{E}$ si
+  ricavano $\mathbf{R}$ e $\mathbf{t}$, quest'ultima a meno di scala: delle
+  quattro soluzioni vale quella che mette i punti davanti a entrambe le
+  fotocamere.
 - Nel caso rettificato, $Z = fB/d$: la profondità è inversamente
   proporzionale alla disparità, quindi la stereo è precisa da vicino e vaga da
   lontano, e l'errore cresce come $Z^2$.
@@ -1104,6 +1111,6 @@ visione artificiale non è invecchiata.
     immagini in due casi: quando i punti osservati stanno tutti su un piano, e
     quando la fotocamera ruota attorno al proprio centro senza spostarsi, con
     $\mathbf{H} = \mathbf{K}\mathbf{R}\mathbf{K}^{-1}$. Sono i due casi in cui
-    la stima della matrice essenziale degenera, e una trasformazione dello
-    stesso tipo è quella con cui si rettificano le immagini
-    {cite}`hartley2004multiple`.
+    la stima della matrice essenziale degenera o resta ambigua, e una
+    trasformazione dello stesso tipo è quella con cui si rettificano le
+    immagini {cite}`hartley2004multiple`.

@@ -68,9 +68,9 @@ numero che fissa il limite della {doc}`compressione
 che, in media, chi conosce bene l'inglese indovina la lettera successiva con
 una domanda sola, purché ben scelta. Le lettere sono ventisei, eppure una
 domanda basta quasi sempre, perché quello che precede ha già ristretto il campo
-a una o due candidate (ad esempio, dopo «th» ci si aspetta una vocale, dopo «q»
-una «u»); le rare volte in cui il campo resta largo servono più domande, e la
-media le mette nel conto.
+a una o due candidate (ad esempio, dopo «q» viene quasi sempre una «u»); le
+rare volte in cui il campo resta largo servono più domande, e la media le mette
+nel conto.
 
 L'idea che unisce il matematico che contava le lettere a Pietroburgo e
 l'ingegnere dei laboratori Bell è la tesi da cui partono i modelli di
@@ -132,7 +132,7 @@ $$
 dove $w_t$ è la parola in posizione $t$ e ogni fattore è la scommessa sulla
 parola successiva dato il prefisso. [Il problema è la stima, perché i prefissi
 lunghi sono quasi tutti unici e i loro conteggi valgono zero o uno]{.pt-matita}.
-L’**assunzione di Markov** tronca la storia alle ultime $n-1$ parole:
+L’**ipotesi di Markov** tronca la storia alle ultime $n-1$ parole:
 
 $$
 P(w_t \mid w_1, \dots, w_{t-1}) \;\approx\; P(w_t \mid w_{t-n+1}, \dots, w_{t-1}).
@@ -344,9 +344,10 @@ stesso. Le alternative serie sono due, spesso combinate:
   con due funzioni distinte. Il primo è lo **sconto di Good e Turing**: se
   $N_r$ è il numero di bigrammi distinti visti esattamente $r$ volte, un
   conteggio $r$ si ricalcola come $r^* = (r+1)\,N_{r+1}/N_r$, e la massa
-  lasciata agli eventi mai visti è $N_1$ diviso il totale dei bigrammi
-  osservati, cioè la frazione di eventi incontrati una volta sola. Katz lo
-  applica ai soli conteggi piccoli ($r \le 5$), dove è affidabile.
+  lasciata agli eventi mai visti è $N_1/N$, con $N = \sum_r r\,N_r$ il numero
+  totale di occorrenze di bigrammi: la frazione delle occorrenze che cadono su
+  bigrammi visti una volta sola. Katz lo applica ai soli conteggi piccoli ($r
+  \le 5$), dove è affidabile.
 
   Il secondo è un peso di ripiego $\alpha(w_{t-1})$: dopo lo sconto, la somma
   delle probabilità dei bigrammi visti dopo $w_{t-1}$ è inferiore a 1, e il peso
@@ -489,10 +490,11 @@ tutti, e il voto migliorerebbe senza che nessuno abbia studiato di più.
 
 Seconda mossa: capovolgere. Uno diviso un ottavo fa 8. Capovolgere serve a
 rimettere le cose nel verso in cui le vogliamo leggere: più la frase era
-probabile, più il numero di partenza era grande, e più questo viene piccolo.
-Otto è dunque quanto il modello ha «esitato» sull'intera frase. Ma dipende da
-quanto la frase è lunga: una frase lunga il doppio esita di più anche se il
-modello è identico, e così non si possono confrontare due frasi diverse.
+probabile, più il numero di partenza si avvicinava a uno, e più questo scende,
+fino a uno. Otto è dunque quanto il modello ha «esitato» sull'intera frase. Ma
+dipende da quanto la frase è lunga: una frase lunga il doppio esita di più
+anche se il modello è identico, e così non si possono confrontare due frasi
+diverse.
 
 Terza mossa: riportare alla singola scommessa. Le scommesse erano sette, e
 il conto totale è stato un prodotto di sette fattori: cerchiamo allora il
@@ -940,7 +942,7 @@ contare resta un'ottima idea.
   scomponendola, con la regola della catena, in scommesse sulla parola
   successiva; l'idea nasce con i conteggi a mano di Markov sull’*Onegin*
   (1913) e con le «approssimazioni» di Shannon (1948).
-- L’assunzione di Markov tronca la storia alle ultime $n-1$ parole:
+- L’ipotesi di Markov tronca la storia alle ultime $n-1$ parole:
   bigrammi, trigrammi. La stima MLE è un rapporto di conteggi:
   $C(w_{t-1} w_t) / C(w_{t-1})$.
 - I conteggi zero confondono «mai visto» con «impossibile»: servono gli

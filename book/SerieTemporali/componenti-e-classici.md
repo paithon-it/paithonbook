@@ -293,7 +293,7 @@ quanto somigli a uno qualunque, cioè che sia rimasto puro rumore. Alla prima
 domanda rispondono i test ADF e KPSS, alla seconda il test di Ljung-Box, e la
 procedura di Box e Jenkins li applica in sequenza. Se la serie differenziata
 passa tutte e due le prove, il resto, tolto il livello, non ha più niente
-dentro, e la serie era una passeggiata aleatoria.
+dentro, e la serie è compatibile con una passeggiata aleatoria.
 
 Sapere di averne una davanti serve soprattutto a non farsi ingannare da un
 grafico. Ad esempio, la previsione a un passo di una passeggiata aleatoria è,
@@ -304,12 +304,12 @@ semplice delle linee di base, «ripeti l'ultimo valore», che la
 {doc}`sezione sulla validazione </SerieTemporali/validazione-e-feature>`
 chiamerà *naive*.
 
-Su una serie del genere l'unica previsione onesta a
-orizzonte lungo è una retta che parte dall'ultimo valore osservato, piatta se
-la serie non ha una spinta di fondo e inclinata di quella spinta se ce l'ha.
-Attorno, una banda d'incertezza che si allarga come la radice di quanti passi si
-guarda avanti: le scosse future sono indipendenti, e fra scosse indipendenti a
-sommarsi sono le varianze, quindi dopo $h$ passi la varianza è $h$ volte
+Su una serie del genere l'unica previsione onesta a orizzonte lungo, cioè
+guardando lontano, è una retta che parte dall'ultimo valore osservato, piatta
+se la serie non ha una spinta di fondo e inclinata di quella spinta se ce l'ha.
+Attorno, una banda d'incertezza che si allarga come la radice di quanti passi
+si guarda avanti: le scosse future sono indipendenti, e fra scosse indipendenti
+a sommarsi sono le varianze, quindi dopo $h$ passi la varianza è $h$ volte
 quella di un passo, e la larghezza della banda, che va come la deviazione
 standard, cresce come $\sqrt{h}$.
 
@@ -698,10 +698,11 @@ di essa il modello non è identificato, perché $\theta$ e $1/\theta$ danno la
 stessa autocorrelazione ($\rho_1 = \theta/(1+\theta^2)$ vale $0{,}40$ tanto per
 $\theta = 0{,}5$ quanto per $\theta = 2$), quindi la stessa ACF, quindi due
 processi che ACF e PACF non sanno distinguere. La seconda: solo con essa le
-scosse passate $\varepsilon_{t-i}$, che nessuno osserva, si possono ricostruire
-dai dati, cioè solo con essa il modello si può usare per prevedere. Una spia
-utile: quando una serie è stata sovradifferenziata, il $\theta$ stimato finisce
-inchiodato a $-1$ o quasi, cioè sul bordo di questa regione.
+scosse passate $\varepsilon_{t-i}$, che nessuno osserva, coincidono con le
+innovazioni e si possono ricostruire dai valori passati, cioè la previsione si
+scrive direttamente in funzione dei dati. Una spia utile: quando una serie è
+stata sovradifferenziata, il $\theta$ stimato finisce inchiodato a $-1$ o
+quasi, cioè sul bordo di questa regione.
 
 Ricostruire le scosse passate serve a prevedere, e da qui viene un limite
 dell'MA($q$) che si incontra al primo uso. La previsione a orizzonte $h$ è la
@@ -943,9 +944,9 @@ passo, che quasi tutti saltano, è l'unico che dice se il modello è *utile*. Un
 modello buono ha spremuto dalla serie tutta la regolarità che c'era, quindi ciò
 che avanza, la differenza fra previsto e osservato, deve essere indistinguibile
 dal caso. Se negli errori si vede ancora una regolarità, il modello se l'è
-lasciata sfuggire e va cambiato. Se non si vede niente, si è imparato meno di
-quanto sembri: con questi dati nessuna regolarità è saltata fuori, il che non
-esclude che ce ne siano.
+lasciata sfuggire e va cambiato. Se non si vede niente, il modello passa la
+prova, ma la prova dice meno di quanto sembri: con questi dati nessuna
+regolarità è saltata fuori, il che non esclude che ce ne siano.
 
 [Il modello sbagliato lo si riconosce dai suoi errori, non dalle sue
 previsioni]{.pt-matita}. Le previsioni sembrano sempre plausibili; gli errori
@@ -960,11 +961,14 @@ tempi.
 
 **1. Rendere stazionaria la serie.** Si testa, si toglie il necessario, si
 fissa $d$ (e $D$ per la parte stagionale). Sovradifferenziare è un errore reale
-e riconoscibile: introduce autocorrelazione negativa artificiale al ritardo 1 e
-gonfia la varianza. Se ciò che resta era rumore bianco, le cifre sono esatte:
+e riconoscibile: introduce autocorrelazione negativa artificiale al ritardo 1
+e, se la serie $x_t$ che si differenzia ha $\rho_1 < 1/2$, gonfia la varianza,
+perché $\mathrm{Var}(\nabla x_t) = 2\gamma(0)(1-\rho_1)$, con $\gamma(0)$ e
+$\rho_1$ di $x_t$. Se ciò che resta era rumore bianco, le cifre sono esatte:
 $\nabla\varepsilon_t = \varepsilon_t - \varepsilon_{t-1}$ è un MA(1) con
-$\theta = -1$, quindi $\rho_1 = \theta/(1+\theta^2) = -0{,}5$ e la varianza
-raddoppia. Si vede anche dal $\theta$ stimato, che finisce sul bordo della
+$\theta = -1$, quindi la serie differenziata ha
+$\rho_1 = \theta/(1+\theta^2) = -0{,}5$ e la varianza raddoppia. Si vede anche
+dal $\theta$ stimato, che finisce sul bordo della
 regione di invertibilità.
 
 Sui test conviene spendere quattro righe, perché sono due e vanno usati
@@ -1060,7 +1064,8 @@ regressione lineare gaussiana, approssimata per gli ARIMA), l’AICc $=
 Athanasopoulos raccomanda sugli ARIMA e che le loro librerie usano di default
 {cite}`hyndman2021forecasting`. Con seicento osservazioni e quei quattro
 parametri la differenza è di sette centesimi; con quaranta, e sei parametri,
-supera le due unità e cambia la scelta.
+supera le due unità e, poiché pesa più sui modelli più grandi (contro uno a due
+parametri lo scarto è di 2,2), può cambiare la scelta.
 
 Si noti che l'AIC è una quantità relativa. Il suo valore assoluto non
 significa nulla, contano solo le differenze
@@ -1327,7 +1332,10 @@ ugualmente bene i due obiettivi non coincidono. A puntare sull'identificazione
 severamente quante più osservazioni ci sono. La lezione che invece tiene su
 tutti i semi e a tutte e due le numerosità è un'altra: il Ljung-Box sul modello
 scelto non rifiuta mai, e il $p$-value più basso nei quaranta esperimenti è
-$0{,}13$.
+$0{,}13$. Non è una prova che i modelli siano giusti: con un test tarato e
+prove indipendenti, un minimo così alto capiterebbe meno di una volta su
+duecento, ed è il segno che scegliere il modello sugli stessi dati rende il
+test conservativo.
 
 Sul modello vuoto, infine, il $p$-value crolla a zero. Un modello «vuoto»,
 l'ARMA($0,0$), non guarda nessun valore passato e nessun urto passato: dice
@@ -1496,7 +1504,8 @@ stima di ieri, che ogni sera si sposta un poco verso quanto è appena successo.
 Quanto poco lo decide una manopola. Girata tutta da un lato, il metodo insegue
 ogni sussulto e dimentica in fretta; tutta dall'altro, è lento a cambiare idea.
 Messa a 30 su 100, la manopola dà a oggi un peso di 30, e a ogni passo indietro
-il settanta per cento del precedente: 21, poi quasi 15, e così a scendere.
+il settanta per cento del precedente, perché ogni aggiornamento conserva il
+settanta per cento del numero tenuto: 21, poi quasi 15, e così a scendere.
 
 La versione base tiene conto solo del livello (dove sta la serie ora). Se la
 serie sale con costanza, ti serve anche una stima di *quanto* sale: aggiungi il
@@ -1750,16 +1759,16 @@ seconda garanzia bastano media nulla, varianze note e incorrelazione: è meno,
 ma non è poco.
 
 Con $\sigma_\ell^2>0$ e $\sigma_x^2$ costanti la ricorsione su $V$ converge.
-Componendo correzione e predizione si ha
-$V_{t+1|t} = V_{t|t-1}\sigma_x^2/(V_{t|t-1}+\sigma_x^2) + \sigma_\ell^2$;
-dividendo per $\sigma_x^2$, e posti $r = \sigma_\ell^2/\sigma_x^2$ (il
-rapporto segnale-rumore, che è il nome con cui compare anche nel codice, e non
-ha niente a che vedere con le $r$ variabili esogene del SARIMAX) e
-$v = V_{t|t-1}/\sigma_x^2$, l'iterazione diventa $v \mapsto v/(v+1) + r$, che
-ha derivata $1/(v+1)^2 < 1$: è una contrazione, quindi il punto fisso esiste, è
-unico ed è attrattivo. La condizione $v = v/(v+1) + r$ dà
-$v^2 - rv - r = 0$, la cui sola radice positiva (e $v$ è un rapporto di
-varianze) è
+Componendo correzione e predizione si ha $V_{t+1|t} =
+V_{t|t-1}\sigma_x^2/(V_{t|t-1}+\sigma_x^2) + \sigma_\ell^2$; dividendo per
+$\sigma_x^2$, e posti $r = \sigma_\ell^2/\sigma_x^2$ (il rapporto
+segnale-rumore, che è il nome con cui compare anche nel codice, e non ha niente
+a che vedere con le $r$ variabili esogene del SARIMAX) e $v =
+V_{t|t-1}/\sigma_x^2$, l'iterazione diventa $v \mapsto v/(v+1) + r$, che ha
+derivata $1/(v+1)^2 \le 1/(1+r)^2 < 1$ su $v \ge r$, dove l'iterazione entra
+dopo un passo: è una contrazione, quindi il punto fisso esiste, è unico ed è
+attrattivo. La condizione $v = v/(v+1) + r$ dà $v^2 - rv - r = 0$, la cui sola
+radice positiva (e $v$ è un rapporto di varianze) è
 
 $$
 v = \frac{r + \sqrt{r^2 + 4r}}{2},
@@ -1778,7 +1787,7 @@ modelli in forma spazio-stato danno, oltre alle stesse previsioni puntuali,
 anche gli intervalli e un criterio d'informazione per scegliere fra modelli
 {cite}`hyndman2021forecasting`.
 
-Con $\sigma_\ell^2 = 0$ la convergenza si perde: il guadagno scende come
+Con $\sigma_\ell^2 = 0$ la contrazione si perde: il guadagno scende come
 $1/t$, la stima diventa la media campionaria dell'intera serie, e non è più un
 lisciamento esponenziale.
 
@@ -2049,10 +2058,10 @@ for n_oss in (500, 50):
 ```
 
 [In media la stima cade sotto il valore vero, e ci cade tanto più quanto la
-serie è corta]{.pt-matita}: di sei millesimi con cinquecento osservazioni, di
-sei centesimi con cinquanta. Accanto c'è la formula classica che lo prevede,
-$-(1+3\phi)/n$, e l'errore standard, cioè di quanto la stima si sparpaglia
-attorno alla propria media.
+serie è corta]{.pt-matita}: di circa cinque millesimi con cinquecento
+osservazioni, di circa sei centesimi con cinquanta. Accanto c'è la formula
+classica che lo prevede, $-(1+3\phi)/n$, e l'errore standard, cioè di quanto la
+stima si sparpaglia attorno alla propria media.
 
 `````{tab} Elementare
 
@@ -2197,15 +2206,15 @@ colonne di una tabella, da dare ai modelli tabellari già incontrati nel
   dipende dal tipo di non stazionarietà: differenziare ($\nabla x_t = x_t -
   x_{t-1}$) contro un trend stocastico, detrendizzare contro un trend
   deterministico, e ciascuna guasta il caso che l'altra risolve: differenziare
-  un trend deterministico sovradifferenzia, e lascia $\rho_1 = -0{,}5$,
-  varianza doppia e $\theta$ inchiodato sul bordo dell'invertibilità;
-  detrendizzare una radice unitaria la lascia dov'era, cioè non stazionaria. Si
-  testa con ADF e KPSS, che hanno ipotesi nulle opposte. ACF e PACF
-  diagnosticano gli ordini sui processi puri: la PACF si annulla dopo il
-  ritardo $p$ di un AR, l'ACF dopo il ritardo $q$ di un MA, e per «annullarsi»
-  si intende cadere dentro $\pm 1{,}96/\sqrt{n}$, che è una banda puntuale; su
-  un ARMA non si annulla nessuna delle due, e gli ordini si scelgono con una
-  griglia.
+  un trend deterministico sovradifferenzia e, con rumore bianco attorno alla
+  retta, lascia $\rho_1 = -0{,}5$, varianza doppia e $\theta$ inchiodato sul
+  bordo dell'invertibilità; detrendizzare una radice unitaria la lascia
+  dov'era, cioè non stazionaria. Si testa con ADF e KPSS, che hanno ipotesi
+  nulle opposte. ACF e PACF diagnosticano gli ordini sui processi puri: la PACF
+  si annulla dopo il ritardo $p$ di un AR, l'ACF dopo il ritardo $q$ di un MA,
+  e per «annullarsi» si intende cadere dentro $\pm 1{,}96/\sqrt{n}$, che è una
+  banda puntuale; su un ARMA non si annulla nessuna delle due, e gli ordini si
+  scelgono con una griglia.
 - AR($p$) spiega il valore con i $p$ passati; MA($q$) con i $q$ errori
   passati; ARIMA($p,d,q$) unisce i due sulla serie differenziata $d$ volte,
   e SARIMA aggiunge i termini stagionali al ritardo $m$ {cite}`box2015time`.

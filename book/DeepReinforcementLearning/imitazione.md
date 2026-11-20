@@ -102,7 +102,7 @@ scritte da persone. Infine, nella {doc}`sezione sull'RL offline <offline-rl>`, l
 componente supervisionata del Decision Transformer adotta la stessa formulazione,
 condizionata sul ritorno desiderato.
 
-L'assunzione nascosta, che è tutto il problema, è quella di ogni apprendimento
+L'ipotesi nascosta, che è tutto il problema, è quella di ogni apprendimento
 supervisionato: dati indipendenti e identicamente distribuiti. Qui invece non
 lo sono, perché gli stati che l'agente incontrerà dipendono dalle
 azioni che avrà scelto. La distribuzione degli stati è indotta dalla politica e
@@ -161,21 +161,21 @@ inverso**, «inverso» perché di solito da un premio si ricava un modo di
 guidare, e qui si va nel verso opposto. È più laborioso e si trasferisce meglio
 se la strada cambia un poco: un obiettivo lo porti altrove, una collezione di
 reazioni no. Il difetto è che di obiettivi che spiegano quella guida ce n'è
-un'infinità. Il più sfacciato non chiede niente: se ogni viaggio vale zero, il
-pilota è perfetto insieme a chiunque altro.
+un'infinità. Il più sfacciato degli obiettivi non chiede niente: se ogni
+viaggio vale zero, il pilota è perfetto insieme a chiunque altro.
 
-Nemmeno pretendere di più basta.
-Chiedi che tutti i viaggi possibili restino nello stesso ordine, dal migliore
-al peggiore, e ne sopravvivono ancora infiniti: quelli che ripetono la stessa
-cosa in un'altra unità di misura, come contare in euro invece che in centesimi,
-e quelli che spargono lungo la strada premietti che si annullano fra loro.
+Nemmeno pretendere di più basta. Chiedi che l'obiettivo metta tutti i viaggi
+possibili nello stesso ordine in cui li metterebbe il pilota, dal migliore al
+peggiore, e ne sopravvivono ancora infiniti: quelli che ripetono la stessa cosa
+in un'altra unità di misura, come contare in euro invece che in centesimi, e
+quelli che spargono lungo la strada premietti che si annullano fra loro.
 
 Ad esempio, si dà a ogni città una quota (Torino 3, Milano 5, Bologna 4) e a
 ogni tappa si incassa la differenza: da Torino a Milano più due, da Milano a
 Bologna meno uno. Comunque si vada da Torino a Bologna, quei premietti sommano
 a più uno, la quota d'arrivo meno quella di partenza, e quindi non cambiano
-quale viaggio sia il migliore. Guardando solo come guida, sceglierne uno non si
-può.
+quale viaggio sia il migliore. Guardando solo come guida il pilota, fra tutti
+questi obiettivi sceglierne uno non si può: spiegano la stessa guida.
 
 `````
 
@@ -258,10 +258,10 @@ che rende ottimale il comportamento osservato, per poi massimizzarla con i
 metodi dei capitoli precedenti. L'approccio ha un costo di calcolo maggiore, ma
 guadagna in robustezza: la ricompensa è una descrizione compatta e trasferibile
 dell'obiettivo, mentre la politica è una tabella di reazioni valida soltanto
-negli stati già osservati. Se l'ambiente cambia di poco, la ricompensa resta valida
-mentre la politica perde efficacia. Per questa ragione l'RLHF non si ferma alla
-fase supervisionata: il modello di ricompensa addestrato sulle preferenze è una
-ricompensa inferita dal comportamento umano.
+negli stati già osservati. Se l'ambiente cambia di poco, la ricompensa resta
+valida mentre la politica perde efficacia. Una ragione analoga vale per l'RLHF,
+che dopo la fase supervisionata impara una ricompensa: non dal comportamento
+osservato, come l'RL inverso, ma dai confronti fra risposte.
 
 L'RL inverso classico richiede di risolvere un problema di RL completo a ogni
 aggiornamento della ricompensa candidata. **GAIL** {cite}`ho2016generative`
@@ -526,7 +526,7 @@ e questo codice non la prova.
   mossa», e da lì in poi il problema diventa indovinare la risposta giusta,
   invece di imparare per tentativi. Stabile, sicura, parca di dati, e già
   incontrata due volte, nel primo AlphaGo e negli assistenti conversazionali.
-- La crepa sta in un'assunzione che nessuno dichiara: che le situazioni siano
+- La crepa sta in un'ipotesi che nessuno dichiara: che le situazioni siano
   sempre le stesse, decise dal mondo. Non è così, perché le situazioni che
   incontri dipendono dalle azioni che hai fatto, e le azioni dell'allievo non
   sono quelle del maestro.
@@ -562,7 +562,7 @@ e questo codice non la prova.
   l'errore. Stabile, efficiente nei dati, sicura, e già usata due volte (la
   policy iniziale di AlphaGo, la fase supervisionata che precede l'RLHF); sarà
   poi ripresa dal Decision Transformer nell'RL offline.
-- L'assunzione che salta è quella di dati i.i.d.: la distribuzione degli
+- L'ipotesi che salta è quella di dati i.i.d.: la distribuzione degli
   stati è indotta dalla politica e non fissata dal mondo, e quella
   dell'allievo non è quella del maestro.
 - Da qui la composizione degli errori: un errore piccolo porta in uno stato
@@ -576,13 +576,14 @@ e questo codice non la prova.
   vale a patto che il compito sia recuperabile, altrimenti la costante $u$
   del bound cresce con $T$ e si torna al quadrato.
 - L’RL inverso risolve lo stesso problema per un'altra strada: impara la
-  ricompensa invece della politica. Costa di più ed è più
-  trasferibile, perché una ricompensa descrive l'obiettivo mentre una politica
-  descrive solo delle reazioni. È la ragione per cui l'RLHF non si ferma alla
-  fase supervisionata. È però mal posto: dalla sola politica osservata le
-  ricompense compatibili formano un poliedro (inclusa quella nulla), e anche
-  imponendo di preservare l'ordinamento di *tutte* le politiche restano una
-  scala positiva, un termine di shaping potential-based e una ridistribuzione
-  fra gli stati d'arrivo che non ne cambia il valore atteso.
+  ricompensa invece della politica. Costa di più ed è più trasferibile, perché
+  una ricompensa descrive l'obiettivo mentre una politica descrive solo delle
+  reazioni. Una ragione analoga porta l'RLHF oltre la fase supervisionata, con
+  una ricompensa imparata dai confronti fra risposte e non dal comportamento.
+  L'RL inverso è però mal posto: dalla sola politica osservata le ricompense
+  compatibili formano un poliedro (inclusa quella nulla), e anche imponendo di
+  preservare l'ordinamento di *tutte* le politiche restano una scala positiva,
+  un termine di shaping potential-based e una ridistribuzione fra gli stati
+  d'arrivo che non ne cambia il valore atteso.
 ```
 `````

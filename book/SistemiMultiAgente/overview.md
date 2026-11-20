@@ -275,11 +275,11 @@ sono costruiti tutti allo stesso modo.
 Tre colleghi devono rispondere sì o no a una domanda difficile, e ognuno, da
 solo, ci prende sette volte su dieci. Decidendo a maggioranza il gruppo ci
 prende quasi otto volte su dieci (78%), e con nove colleghi il 90%: perché il
-gruppo sbagli servono almeno due errori insieme, che sono più rari di uno. Quel
-78 si ricava elencando i casi uno per uno nella {doc}`sezione sui protocolli e
-il consenso <protocolli-e-consenso>` (il 90 esce allo stesso modo, con molti
-più casi da elencare): si fa con foglio e matita, ma per adesso basta il
-senso.
+gruppo sbagli servono più errori insieme (due su tre, cinque su nove), che sono
+più rari di uno. Quel 78 si ricava elencando i casi uno per uno nella
+{doc}`sezione sui protocolli e il consenso <protocolli-e-consenso>` (il 90 esce
+allo stesso modo, con molti più casi da elencare): si fa con foglio e matita,
+ma per adesso basta il senso.
 
 Il conto però vale solo se i tre sbagliano in modo *diverso*. Se hanno studiato
 sugli stessi appunti sbagliati sbagliano insieme, [la maggioranza conferma

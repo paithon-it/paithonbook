@@ -225,9 +225,9 @@ $|\mathbf{a}^\top\mathbf{b}|\le\lVert\mathbf{a}\rVert\lVert\mathbf{b}\rVert$,
 cioè $\cos\theta\in[-1,1]$. In particolare, due vettori sono ortogonali quando
 $\mathbf{a}^\top\mathbf{b}=0$.
 
-Un singolo neurone artificiale calcola $\sigma(\mathbf{w}^\top\mathbf{x}+b)$,
+Un singolo neurone artificiale calcola $g(\mathbf{w}^\top\mathbf{x}+b)$,
 cioè il prodotto scalare fra i pesi $\mathbf{w}$ e l'input $\mathbf{x}$, più un
-termine di bias $b$, a cui si applica una funzione non lineare $\sigma$ (la
+termine di bias $b$, a cui si applica una funzione non lineare $g$ (la
 funzione di attivazione).
 
 `````
@@ -362,8 +362,8 @@ $(\mathbf{A}\mathbf{B})\mathbf{x}$, che costa $mkn+mn$. Non è però commutativo
 "interne" devono combaciare.
 
 Uno strato *fully-connected* di una rete non è altro che $\mathbf{h} =
-\sigma(\mathbf{W}\mathbf{x}+\mathbf{b})$, cioè una moltiplicazione per la
-matrice dei pesi $\mathbf{W}$, seguita da una non linearità $\sigma$. Poiché
+g(\mathbf{W}\mathbf{x}+\mathbf{b})$, cioè una moltiplicazione per la
+matrice dei pesi $\mathbf{W}$, seguita da una non linearità $g$. Poiché
 tanta parte del calcolo si riduce a prodotti tra matrici, le GPU (nate per fare
 in parallelo lo stesso calcolo su milioni di pixel) sono così efficaci nel deep
 learning.
@@ -418,16 +418,16 @@ Ma non tutte le direzioni vengono ruotate: alcune resistono.
 
 ```{figure} ../figures/autovettori.svg
 :name: fig-autovettori
-:alt: "Animazione: sedici frecce tutte lunghe uno, che partono dall'origine in sedici direzioni diverse, vengono trasformate da una matrice; quasi tutte cambiano direzione, mentre le due sulle diagonali restano sulla propria retta, una allungandosi di tre volte e l'altra senza muoversi."
+:alt: "Animazione: sedici frecce tutte lunghe uno, che partono dall'origine in sedici direzioni diverse, vengono trasformate da una matrice; quasi tutte cambiano direzione, mentre le quattro sulle due diagonali restano sulla propria retta: quelle su una diagonale si allungano di tre volte, quelle sull'altra non si muovono."
 :width: 85%
 
-La matrice $\mathbf{A}=\begin{pmatrix}2&1\\1&2\end{pmatrix}$ è
-applicata a sedici frecce tutte lunghe uno (i *vettori unitari*). Quasi tutte
-ruotano; le due sulle diagonali (in terracotta) restano sulla propria retta:
-una si allunga di $3$ volte, l'altra non si muove affatto. La riga scritta nel
-disegno, $\mathbf{A}\mathbf{v} = \lambda\mathbf{v}$, si legge: «applicare la
-matrice a quella freccia dà la stessa freccia moltiplicata per un numero», e
-quel numero è il $3$ o l’$1$.
+La matrice $\mathbf{A}=\begin{pmatrix}2&1\\1&2\end{pmatrix}$ è applicata a
+sedici frecce tutte lunghe uno (i *vettori unitari*). Quasi tutte ruotano; le
+quattro sulle due diagonali (in terracotta) restano sulla propria retta: quelle
+lungo $(1,1)$ si allungano di $3$ volte, quelle lungo $(1,-1)$ non si muovono
+affatto. La riga scritta nel disegno, $\mathbf{A}\mathbf{v} =
+\lambda\mathbf{v}$, si legge: «applicare la matrice a quella freccia dà la
+stessa freccia moltiplicata per un numero», e quel numero è il $3$ o l’$1$.
 ```
 
 I valori della figura si verificano con due prodotti scalari, uno per riga di
@@ -474,9 +474,9 @@ le venature perpendicolari fra loro.
 Per chi addestra reti il problema arriva con cento tavole tagliate dallo stesso
 tronco, venate tutte uguali, che il colpo attraversa una dopo l'altra, come un
 segnale che ripassa cento volte per lo stesso strato. Gli allungamenti si
-moltiplicano fra loro. Un $1{,}1$ ripetuto cento volte fa $13\,781$ e uno
-$0{,}9$ fa $0{,}000027$, cioè numeri enormi da un capo e indistinguibili da
-zero dall'altro.
+moltiplicano fra loro. Un $1{,}1$ moltiplicato per sé stesso cento volte fa
+$13\,781$ e uno $0{,}9$ fa $0{,}000027$, cioè numeri enormi da un capo e
+indistinguibili da zero dall'altro.
 
 Una rete profonda è una pila di cento tavole incollate una sull'altra.
 All'andata il colpo entra dalla prima e attraversa tutta la pila; in fondo si
@@ -720,9 +720,9 @@ cento tavole), più il pezzo della seconda venatura, che al dodicesimo mese vale
 poco più di mezzo millesimo e si arrotonda via.
 
 Il quadro si guasta in due casi. Il primo si ha quando le due venature si
-riducono a una sola, perché il fattore è doppio. La regola «il numero nuovo è
-due volte il precedente meno quello prima», ad esempio, ha il solo fattore 1,
-doppio, che direbbe «resta com’è»;
+riducono a una sola, perché i due fattori coincidono (si dice che il fattore è
+doppio). La regola «il numero nuovo è due volte il precedente meno quello
+prima», ad esempio, ha il solo fattore 1, doppio, che direbbe «resta com’è»;
 eppure, partendo da 1 e 2, dà 3, 4, 5, 6, una crescita di uno a ogni passo che
 quel fattore non descrive. Nel secondo caso le venature non ci sono, come nella
 tabella che fa girare tutte le frecce, e i numeri non crescono in proporzione

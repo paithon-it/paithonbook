@@ -221,9 +221,10 @@ di giurare sul sole.
 Non sceglie nemmeno fra due o tre finali già pronti, perché la descrizione è
 fatta di trentadue numeri, e su ciascuno di quelli, preso singolarmente, apre
 un ventaglio a cinque alternative; i finali che ne escono, prendendo
-un'alternativa per ogni numero, sono più di quanti se ne possano contare. In
-generale, il futuro di un gioco (e del mondo) non è mai scritto del tutto, e un
-modello che finge di saperlo mente.
+un'alternativa per ogni numero, sono cinque moltiplicato per sé stesso
+trentadue volte, cioè più di ventimila miliardi di miliardi. In generale, il
+futuro di un gioco (e del mondo) non è mai scritto del tutto, e un modello che
+finge di saperlo mente.
 
 `````
 
@@ -411,13 +412,13 @@ no.[^taglie-doom]
 
 `````{tab} Elementare
 
-È il pilota che la sera prima della gara ripassa il circuito a occhi chiusi, lo
-stesso che nella {doc}`sezione sul reinforcement learning basato su modello
-</DeepReinforcementLearning/model-based>` si allenava nel sogno di Dreamer. Il
-ripasso non consuma benzina e non provoca incidenti. Il gioco vero è staccato,
-quindi il punteggio lo tiene il sogno: nello sparatutto è la durata della
-sopravvivenza, e M, oltre al riassunto del momento dopo, prevede anche se sei
-stato colpito; quando decide che l'hai presa, la partita sognata finisce.
+È il pilota che la sera prima della gara ripassa il circuito a occhi chiusi,
+come quello che nella {doc}`sezione sul reinforcement learning basato su
+modello </DeepReinforcementLearning/model-based>` si allenava nel sogno di
+Dreamer. Il ripasso non consuma benzina e non provoca incidenti. Il gioco vero
+è staccato, quindi il punteggio lo tiene il sogno: nello sparatutto è la durata
+della sopravvivenza, e M, oltre al riassunto del momento dopo, prevede anche se
+sei stato colpito; quando decide che l'hai presa, la partita sognata finisce.
 
 Il rischio è che, se nella tua testa una curva è più dolce che in pista, impari
 una traiettoria che domani ti manda nella ghiaia. Lo scarto non resta dov'è:
@@ -680,10 +681,10 @@ umano», lì, è una misura aggregata: si normalizza il punteggio di ogni gioco
 (0 per chi preme tasti a caso, 1 per un giocatore professionista) e la mediana
 sui 55 giochi supera 1.
 
-Per confronto, il DQN, sei anni prima,
-era arrivato al livello di un collaudatore umano professionista su 49 giochi,
-con più del 75% del suo punteggio in 29 di essi {cite}`mnih2015human`, ma
-provando nel gioco vero; e {doc}`MuZero
+Per confronto, il DQN, sei anni prima, era arrivato al livello di un
+collaudatore umano professionista su 49 giochi, con più del 75% del punteggio
+del collaudatore in 29 di essi {cite}`mnih2015human`, ma provando nel gioco
+vero; e {doc}`MuZero
 </DeepReinforcementLearning/model-based>` (arXiv 2019, *Nature* 2020) si
 costruiva un modello di tutt'altro genere, buono per cercare la mossa al
 momento di agire e non per generare quel che si vedrà.
@@ -752,15 +753,16 @@ profondo, e il modello che adoperano non è farina del loro sacco: l'RSSM (il
 modello ricorrente a spazio di stati) lo introduce PlaNet
 {cite}`hafner2019learning`, un anno prima, per pianificare dentro il latente.
 
-Il modello ha una memoria deterministica
-$\mathbf{h}_t = f_\phi(\mathbf{h}_{t-1}, \mathbf{z}_{t-1}, a_{t-1})$, un codice
-stocastico
-$\mathbf{z}_t \sim q_\phi(\mathbf{z}_t \mid \mathbf{h}_t, \mathbf{x}_t)$ che
-guarda il fotogramma e un predittore
+Qui, come in DreamerV3, $\phi$ raccoglie tutti i parametri del modello del
+mondo, decoder compreso, e $\theta$ quelli dell'attore: non sono i $\phi$ e
+$\theta$ dell'encoder e del decoder di World Models. Il modello ha una memoria
+deterministica $\mathbf{h}_t = f_\phi(\mathbf{h}_{t-1}, \mathbf{z}_{t-1},
+a_{t-1})$, un codice stocastico $\mathbf{z}_t \sim q_\phi(\mathbf{z}_t \mid
+\mathbf{h}_t, \mathbf{x}_t)$ che guarda il fotogramma e un predittore
 $\hat{\mathbf{z}}_t \sim p_\phi(\hat{\mathbf{z}}_t \mid \mathbf{h}_t)$ che lo
-indovina senza guardarlo e gira nel sogno; teste separate
-predicono osservazione, ricompensa e continuazione $c_t$ dell'episodio. La loss
-del modello è una variante dell'ELBO sequenziale,
+indovina senza guardarlo e gira nel sogno; teste separate predicono
+osservazione, ricompensa e continuazione $c_t$ dell'episodio. La loss del
+modello è una variante dell'ELBO sequenziale,
 
 $$
 \mathcal{L}(\phi) = \mathbb{E}_{q_\phi}\Big[\sum_{t=1}^{T}\big(
@@ -782,14 +784,15 @@ sono $\beta_{\text{pred}} = \beta_{\text{dyn}} = 1$ e $\beta_{\text{rep}} =
 quando sono già piccoli, così che il latente non si riduca a una dinamica
 banale.
 
-Attore e critico si addestrano dentro rollout immaginati di una
-quindicina di passi ($H = 15$), per contenere l'accumulo degli errori del
-modello. Il critico $p_\psi$ minimizza $-\sum_t \ln p_\psi(R^\lambda_t \mid
-\mathbf{s}_t)$ sul $\lambda$-ritorno $R^\lambda_t = r_t + \gamma
-c_t\big[(1-\lambda)\, v(\mathbf{s}_{t+1}) + \lambda R^\lambda_{t+1}\big]$, con
-$R^\lambda_T = v(\mathbf{s}_T)$, $\mathbf{s}_t = (\mathbf{h}_t, \mathbf{z}_t)$,
-$\gamma = 0{,}997$ e $\lambda = 0{,}95$, che mescola la ricompensa sognata con
-il valore stimato oltre l'orizzonte. L'attore $\pi_\theta$ massimizza
+Attore e critico si addestrano dentro rollout immaginati di una quindicina di
+passi, per contenere l'accumulo degli errori del modello. Il critico $p_\psi$
+minimizza
+$-\sum_t \ln p_\psi(R^\lambda_t \mid \mathbf{s}_t)$ sul $\lambda$-ritorno
+$R^\lambda_t = r_t + \gamma c_t\big[(1-\lambda)\, v(\mathbf{s}_{t+1}) + \lambda
+R^\lambda_{t+1}\big]$, con $R^\lambda_T = v(\mathbf{s}_T)$, $\mathbf{s}_t =
+(\mathbf{h}_t, \mathbf{z}_t)$, $\gamma = 0{,}997$ e $\lambda = 0{,}95$, che
+mescola la ricompensa sognata con il valore stimato oltre l'orizzonte. L'attore
+$\pi_\theta$ massimizza
 
 $$
 \sum_{t}\Big(\mathrm{sg}\Big[\frac{R^\lambda_t - v(\mathbf{s}_t)}{\max(1, S)}\Big]\ln \pi_\theta(a_t \mid \mathbf{s}_t)
@@ -838,14 +841,15 @@ funzioni. Qualche lavoro comincia a mostrarla. Ad esempio, Yang e colleghi
 allenano una policy dentro un simulatore video appreso e la portano su un robot
 vero senza altri ritocchi {cite}`yang2024learning`.
 
-La linea Dreamer, nel settembre 2025,
-ha poi fatto il passo che chiude il cerchio con i generatori di video: Dreamer
-4 si costruisce un modello del mondo a trasformatore abbastanza veloce da
-girare in tempo reale su una scheda grafica, lo impara da 2.500 ore di partite
-a *Minecraft* giocate da persone, e allena la strategia soltanto lì dentro,
-senza mai toccare il gioco durante l'addestramento {cite}`hafner2025training`.
-È il primo agente a ottenere diamanti in quel modo: in partite di un'ora,
-guidato da una sequenza di compiti intermedi, ci riesce nello 0,7% dei casi.
+La linea Dreamer, nel settembre 2025, ha poi fatto il passo che chiude il
+cerchio con i generatori di video: Dreamer 4 si costruisce un modello del mondo
+a trasformatore abbastanza veloce da girare in tempo reale su una scheda
+grafica, lo impara da 2.500 ore di partite a *Minecraft* giocate da persone, e
+allena la strategia prima imitando quelle partite, poi per rinforzo soltanto
+dentro il modello, senza mai toccare il gioco durante l'addestramento
+{cite}`hafner2025training`. È il primo agente a ottenere diamanti in quel modo:
+in partite di un'ora, guidato da una sequenza di compiti intermedi, ci riesce
+nello 0,7% dei casi.
 
 In un esperimento a parte, lo stesso modello impara come le azioni muovono il
 mondo anche da poco materiale: con i comandi registrati per sole 100 ore su
@@ -1069,12 +1073,13 @@ il passato.
   *Take Cover* l'ottimo è $\tau = 1{,}15$ (1092 nel mondo vero contro 868 a
   $\tau = 1$), e già a 1,30 si ricade a 753, tre punti sopra la soglia di
   risoluzione.
-- La linea Dreamer porta l'idea a maturità: DreamerV3 (*Nature*, 2025)
-  impara nell'immaginazione latente su rollout brevi (una quindicina di
-  passi), usa gli stessi iperparametri su più di 150 compiti e trova i
-  diamanti in Minecraft senza dimostrazioni umane, con dodici tappe premiate e
-  il diamante nello 0,4% delle partite a fine addestramento. Dreamer 4 (2025)
-  li ottiene da dati registrati, allenando la policy soltanto nel modello.
+- La linea Dreamer porta l'idea a maturità: DreamerV3 (*Nature*, 2025) impara
+  nell'immaginazione latente su rollout brevi (una quindicina di passi), usa
+  gli stessi iperparametri su più di 150 compiti e trova i diamanti in
+  Minecraft senza dimostrazioni umane, con dodici tappe premiate e il diamante
+  nello 0,4% delle partite a fine addestramento. Dreamer 4 (2025) li ottiene da
+  dati registrati, allenando la policy per imitazione su quei dati e poi per
+  rinforzo soltanto nel modello.
 - È la risposta model-based alla fame di campioni del DQN, con un antenato
   preciso: Dyna di Sutton (1990). L'efficienza, però, vale dove la policy
   cresce nel sogno: su *CarRacing* per addestrare C servono circa 1,8 milioni

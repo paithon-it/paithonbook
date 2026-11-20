@@ -96,11 +96,11 @@ $\mathbf{z} \sim p_z$ (tipicamente gaussiano) in campioni che l'addestramento
 spinge a diventare indistinguibili da quelli reali; la distribuzione da cui
 questi campioni provengono si indica con $p_G$. In generazione $\mathbf{z}$ si
 estrae dallo stesso $p_z$ dell'addestramento: $G$ è stato addestrato soltanto
-dove $p_z$ ha massa, e quando $p_z$ è la normale standard in $L$ dimensioni
-quella massa sta quasi tutta nel guscio $\lVert\mathbf{z}\rVert \approx
-\sqrt{L}$. Ne segue che un $\mathbf{z}$ scelto a mano con norma molto diversa
-(le componenti $1, 2, \dots, L$, per esempio) cade dove l'uscita non è
-controllata.
+dove $p_z$ ha massa, e quando $p_z$ è la normale standard in $L$ dimensioni,
+con $L$ grande, quella massa sta quasi tutta nel guscio $\lVert\mathbf{z}\rVert
+\approx \sqrt{L}$, di spessore dell'ordine di uno. Ne segue che un $\mathbf{z}$
+scelto a mano con norma molto diversa (le componenti $1, 2, \dots, L$, per
+esempio) cade dove l'uscita non è controllata.
 
 `````
 
@@ -242,8 +242,9 @@ cioè spinge $D(G(\mathbf{z}))$ verso $1$. All'ottimo teorico si ha
 $p_G=p_{\text{dati}}$ e $D(\mathbf{x})=\tfrac{1}{2}$ sul supporto dei dati: [il
 discriminatore non sa più decidere]{.pt-matita}. In pratica l'equilibrio è
 delicato: instabilità dell'addestramento e **mode collapse** (il generatore che
-produce sempre la stessa immagine vincente) sono le due difficoltà ricorrenti,
-e la sezione sull'addestramento avversario li riprende uno per uno.
+copre soltanto pochi modi dei dati, al limite rifacendo sempre la stessa
+immagine) sono le due difficoltà ricorrenti, e la sezione sull'addestramento
+avversario li riprende uno per uno.
 
 `````
 
@@ -269,12 +270,12 @@ loro legami), ma anche di fabbricare falsi convincenti.
 
 Dall'intuizione si passa al meccanismo. La {doc}`sezione sull'addestramento
 avversario </GAN/come-funziona>` dice che cosa entra e che cosa esce da
-ciascuna delle due reti, che cosa l'una restituisce all'altra, e
-come dalla funzione di valore ciascuna ricavi la propria loss, cioè la misura
-del proprio errore. Poi il ciclo di addestramento a turni, scritto riga per riga
-in PyTorch, con le sue insidie: il duello che non si stabilizza e il *mode
-collapse*, cioè il generatore che trova un solo campione capace di ingannare il
-discriminatore e si limita a rifare quello.
+ciascuna delle due reti, che cosa l'una restituisce all'altra, e come dalla
+funzione di valore ciascuna ricavi la propria loss, cioè la misura del proprio
+errore. Poi il ciclo di addestramento a turni, scritto riga per riga in
+PyTorch, con le sue insidie: il duello che non si stabilizza e il *mode
+collapse*, cioè il generatore che copre soltanto pochi modi dei dati, al limite
+un solo campione capace di ingannare il discriminatore, rifatto all'infinito.
 
 Da lì nascono due domande. La prima è come si misura se una GAN sta funzionando,
 visto che la sua loss non lo dice: si usano l'Inception Score e soprattutto il

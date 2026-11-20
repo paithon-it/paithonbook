@@ -89,7 +89,8 @@ def costruisci() -> Figura:
         larghezza=680, altezza=490,
         alt="Sedici vettori unitari vengono trasformati da una matrice: quasi "
             "tutti ruotano, quelli sulle due diagonali restano sulla propria "
-            "retta e si limitano ad allungarsi.",
+            "retta: lungo una si allungano di tre volte, lungo l'altra non si "
+            "muovono.",
         corpo="".join(corpo),
         stile=f"""    .vec, .eig {{ transform-box:view-box; transform-origin:{cx:.1f}px {cy:.1f}px; }}
     .vec  {{ stroke:{TEAL}; stroke-width:3; }}

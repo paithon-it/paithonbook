@@ -350,8 +350,9 @@ Il secondo lavoro si chiama Reflexion {cite}`shinn2023reflexion`, e aggiunge il
 tassello mancante: dopo un fallimento l'agente riflette a parole sul proprio
 errore, scrive quella riflessione in memoria e se la ritrova davanti al
 tentativo dopo. È la stazione «rifletti» del nostro ciclo. Self-Refine fa la
-stessa cosa senza memoria, con un solo modello che produce, si critica e si
-corregge {cite}`madaan2023selfrefine`.
+stessa cosa dentro un solo tentativo e senza un segnale esterno: un solo
+modello produce, si critica e si corregge, con le critiche precedenti tenute
+nel prompt {cite}`madaan2023selfrefine`.
 
 Il limite di entrambi sta nell'origine del segnale. Senza un riscontro esterno,
 l'auto-correzione non migliora il ragionamento e a volte lo peggiora, e i
@@ -604,8 +605,8 @@ Ad esempio, se il cancello porta gli sbagli che passano inosservati dal cinque
 al due per cento, cioè ne intercetta tre su cinque ($0{,}05 \cdot (1 - 0{,}6) =
 0{,}02$), le iterazioni pulite su venti passi salgono da trentasei a
 sessantasette su cento ($0{,}98^{20} \approx 0{,}67$). Con gli errori a
-grappoli fa anche di più, perché fermando il primo sbaglio ferma quelli che si
-sarebbe tirato dietro.
+grappoli toglie anche più sbagli dei tre su cinque che intercetta, perché
+fermando il primo ferma quelli che si sarebbe tirato dietro.
 
 Il cancello però lavora dentro il ciclo, e contro l'aritmetica c'è una seconda
 difesa che sta invece attorno: non consegnare al loop tutto il potere il primo
@@ -622,7 +623,9 @@ invece che da un programma.
 Il grado dopo si guadagna sui numeri: quante delle sue proposte erano buone,
 quante hai dovuto rifarle. Servono molti numeri: cento proposte buone
 consecutive non bastano a dire che sbaglia meno di una volta su cento, ne
-servono circa trecento.
+servono circa trecento, perché zero sbagli su un certo numero di prove
+garantiscono, quasi per certo, soltanto un rischio sotto tre diviso quel
+numero.
 
 Il confronto è semplice. Rileggere tutto ti prende un'ora al giorno; uno sbaglio
 che ti sfugge ti fa perdere una giornata intera, e ne capita uno ogni tanto.
@@ -656,9 +659,9 @@ ragione per una settimana {cite}`greyling2026loop`:
   di una *allow-list* (quali file, quali comandi, quali repository) e sotto
   monitoraggio continuo.
 
-Una settimana è una regola pratica, mentre il criterio che la rende misurabile è
-statistico. Se in $m$ revisioni di L2 non si è trovato nessun errore, l'estremo
-superiore dell'intervallo di confidenza al 95% del tasso d'errore è $1 -
+Una settimana è una regola pratica, mentre il criterio che la rende misurabile
+è statistico. Se in $m$ revisioni di L2 non si è trovato nessun errore,
+l'estremo superiore di confidenza unilaterale al 95% del tasso d'errore è $1 -
 0{,}05^{1/m} \approx 3/m$ (la *regola del tre*). Di conseguenza, per poter dire
 che il loop sbaglia meno di una volta su cento servono circa trecento revisioni
 pulite, e la stima di $p_{\text{err}}$ da usare nella disuguaglianza di L2 è
@@ -716,9 +719,9 @@ differenza di una frase, va sorvegliato mentre lavora.
 - Il cancello non lo tiene il modello. Il modello propone, il cancello dispone,
   e il cancello è un controllo automatico (per il codice: dei programmi di
   prova che girano automaticamente). Chiedere al modello se ha finito non
-  basta: tende a dirsi di sì, e preferisce il suo lavoro anche quando non sa
-  che è suo. Il cancello vale quanto le sue prove: se sono poche, o se le
-  scrive chi viene controllato, lascia passare anche il lavoro sbagliato.
+  basta: tende a dirsi di sì, e preferisce il suo lavoro anche quando nessuno
+  gli dice che è suo. Il cancello vale quanto le sue prove: se sono poche, o se
+  le scrive chi viene controllato, lascia passare anche il lavoro sbagliato.
 - Quando il cancello respinge, serve il motivo: si riparte da lì, non da capo.
   Si mette sempre un tetto ai tentativi, altrimenti un giro che non converge
   gira per sempre.
@@ -726,9 +729,9 @@ differenza di una frase, va sorvegliato mentre lavora.
   finisce male più spesso di quanto l'intuito dica: venti passi con il cinque
   per cento di rischio ciascuno, se i passi sbagliano in modo indipendente,
   arrivano puliti in fondo trentasei volte su cento, poco più di una su tre.
-  Nei cicli veri uno sbaglio ne tira dietro altri: i giri puliti sono allora un
-  po’ di più, ma quelli che si sporcano si sporcano di più. In tutti e due i
-  casi il cancello non è un lusso.
+  Nei cicli veri uno sbaglio ne tira dietro altri: i giri puliti sono allora
+  parecchi di più, ma quelli che si sporcano si sporcano di più. In tutti e due
+  i casi il cancello non è un lusso.
 - L'autonomia si concede un gradino alla volta, come a un nuovo assunto: prima
   solo relazioni da leggere, poi proposte da approvare, e solo alla fine, e
   solo dentro confini scritti, il permesso di agire in autonomia. Il gradino si

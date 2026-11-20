@@ -133,9 +133,10 @@ Niente impedisce di mettere due etichette sullo stesso valore. Scrivendo
 senza fabbricare niente di nuovo. Con i numeri la differenza non si sente,
 mentre con una lista si sente eccome, perché la lista si cambia sul posto.
 
-Se `a` è `[1, 2]` e dopo `b = a` scrivi `b.append(3)`, anche `a` adesso è
-`[1, 2, 3]`. La lista, infatti, è una sola, con due etichette attaccate sopra,
-e chi la guarda da `a` vede la modifica fatta passando da `b`.
+Se `a` è `[1, 2]` e dopo `b = a` scrivi `b.append(3)`, che aggiunge un elemento
+in fondo alla lista, anche `a` adesso è `[1, 2, 3]`. La lista, infatti, è una
+sola, con due etichette attaccate sopra, e chi la guarda da `a` vede la
+modifica fatta passando da `b`.
 
 Se volevi una lista a parte, la copia va chiesta: `b = a.copy()`
 fabbrica una seconda lista con dentro gli stessi valori, e da quel momento le

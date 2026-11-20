@@ -8,8 +8,9 @@ descrizione: "Come comprimere il suono in simboli discreti con un codec neurale:
 Per generare suono come un modello di linguaggio genera testo, un simbolo alla
 volta, serve un alfabeto finito e di dimensione ragionevole. Il testo ce l'ha
 dalla lingua, una ventina di lettere. L'audio, dentro il calcolatore, ne ha uno
-sbagliato: i 65.536 livelli con cui si misura ogni campione sono lettere troppe
-e troppo fitte. Quello buono va costruito. A costruirlo sono i **codec
+sbagliato: i 65.536 livelli con cui si misura ogni campione (a 16 bit sono
+$2^{16}$) sono lettere troppe e troppo fitte. Quello buono va costruito. A
+costruirlo sono i **codec
 neurali**, che comprimono l'onda in una fila di indici presi da un elenco
 appreso e da quegli indici sanno rifare il suono.
 
@@ -264,8 +265,9 @@ qualsiasi con due soli numeri interi, `2` e `3`.
 
 Il guadagno sta nei bit. Un numero «qualsiasi» un calcolatore lo scrive di
 solito con 32 risposte sì/no (la virgola mobile a precisione singola), quindi
-il pezzetto di due numeri ne costava 64; per dire «il secondo di quattro»,
-cioè l'indice in un codebook da quattro voci, ne bastano $\log_2 4 = 2$.
+il pezzetto di due numeri ne costava 64; per dire «il secondo di quattro», cioè
+l'indice in un codebook da quattro voci, ne bastano $\log_2 4 = 2$, cioè due
+risposte sì o no.
 
 ## Residual vector quantization: strati di precisione
 
@@ -397,7 +399,7 @@ $8 \cdot 10 \cdot 75$ appena calcolati. Nelle prove d'ascolto MUSHRA (voti
 fino a 100, e più alto è migliore) prende $82{,}9 \pm 2{,}4$ a 6 kbps contro
 $82{,}7 \pm 3{,}2$ di un MP3 a 64 kbps, e lo stesso $82{,}9 \pm 3{,}7$ di Opus
 a 24 kbps, quattro volte il suo bitrate: gli intervalli, al 95 %, si
-sovrappongono largamente, e la qualità percepita è indistinguibile con un
+sovrappongono in gran parte, e la qualità percepita è indistinguibile con un
 decimo dei bit dell'MP3. Il riferimento non compresso prende però
 $95{,}1 \pm 1{,}8$, quindi *entrambi* si distinguono dall'originale.
 

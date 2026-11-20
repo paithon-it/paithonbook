@@ -172,9 +172,10 @@ campo visivo con 24 strati ('#' visto, '.' passato mai visto, ' ' futuro):
    # # # #
 ```
 
-La prima colonna dei numeri è la buona notizia, e va letta come una prova: a
-qualunque profondità, nessun pixel del futuro contribuisce all'uscita. In altri
-termini, le maschere rispettano l'ordine di lettura.
+La prima colonna dei numeri è la buona notizia, e va letta come una prova: alle
+tre profondità provate (e, per come sono fatte le maschere, a qualunque altra),
+nessun pixel del futuro contribuisce all'uscita. In altri termini, le maschere
+rispettano l'ordine di lettura.
 
 La seconda colonna è la sorpresa. Con sei strati ventiquattro pixel del passato
 restano fuori, perché la rete non arriva ancora così lontano e una profondità

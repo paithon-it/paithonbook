@@ -126,7 +126,7 @@ $$
 dove $s_t$ e $a_t$ sono lo stato e l'azione al tempo $t$, $s_{t+1}$ lo stato
 successivo e $\theta$ i parametri (tipicamente di una rete neurale) stimati
 dalle transizioni osservate; spesso si apprende anche un modello della
-ricompensa $r_\theta(s_t, a_t)$. Un modello così abilita tre operazioni:
+ricompensa $r_\theta(s_t, a_t)$. Un modello così consente tre operazioni:
 predizione (srotolare traiettorie future senza toccare l'ambiente),
 pianificazione (cercare, tra le traiettorie immaginate, quella con il ritorno
 più alto) e simulazione di alternative («e se agissi diversamente?»).
@@ -218,11 +218,12 @@ la {doc}`sezione sul reinforcement learning basato su modello
 </DeepReinforcementLearning/model-based>` tratta per esteso).
 
 Il limite è il *model bias*. Se la dinamica vera è $L$-Lipschitz nello stato e
-il modello sbaglia al più di $\epsilon$ in ogni stato raggiunto, a parità di
-azioni lo scarto $e_k$ fra stato immaginato e stato vero soddisfa $e_k \le
-\epsilon + L\,e_{k-1}$ con $e_0 = 0$, quindi $e_k \le \epsilon \sum_{i=0}^{k-1}
-L^{i}$: cresce esponenzialmente per $L > 1$, linearmente per $L = 1$, e resta
-sotto $\epsilon/(1-L)$ per $L < 1$ (la derivazione, con i suoi limiti, è nella
+il modello (deterministico, come la dinamica) sbaglia al più di $\epsilon$ in
+ogni stato che il rollout immaginato visita, a parità di azioni lo scarto $e_k$
+fra stato immaginato e stato vero soddisfa $e_k \le \epsilon + L\,e_{k-1}$ con
+$e_0 = 0$, quindi $e_k \le \epsilon \sum_{i=0}^{k-1} L^{i}$: la maggiorazione
+cresce esponenzialmente per $L > 1$, linearmente per $L = 1$, e resta sotto
+$\epsilon/(1-L)$ per $L < 1$ (la derivazione, con i suoi limiti, è nella
 sezione appena citata).
 
 Peggio, una policy ottimizzata dentro il modello impara a sfruttarne i difetti
@@ -266,22 +267,25 @@ alla fine del 2025 ha lasciato Meta, dove nel 2013 aveva fondato il laboratorio
 di ricerca FAIR, per fondare una società dedicata ai world model.
 
 Dentro quel programma c'è anche la retrocessione dell'apprendimento per
-rinforzo a «ciliegina sulla torta» {cite}`lecun2016cake`, che il dibattito sul
+rinforzo a «ciliegina sulla torta» {cite}`lecun2016cake` (la torta è ciò che si
+impara guardando il mondo, la ciliegina il premio), che il dibattito sul
 rinforzo ha pesato insieme alle obiezioni. L'argomento è il criterio di quel
 dibattito: chi impara per tentativi riceve una correzione poverissima, un
 «bravo» a fine giornata, mentre chi prevede il mondo ne riceve una a ogni
-istante. Da lì viene [la proposta di sostituire i tentativi con la pianificazione
-dentro un modello del mondo]{.pt-matita}, che è l'oggetto delle pagine che seguono.
+istante. Da lì viene [la proposta di sostituire i tentativi con la
+pianificazione dentro un modello del mondo]{.pt-matita}, che è l'oggetto delle
+pagine che seguono.
 
 `````{tab} Elementare
 
 L'accusa di LeCun, in soldoni: un LLM scrive come chi detta una storia una
-parola alla volta senza poter mai rileggere. Ogni parola è una scommessa
-basata sulle precedenti; se una scommessa introduce uno sbaglio (un
-personaggio che cambia nome, un bicchiere che cade verso l'alto) le parole
-dopo costruiscono sopra lo sbaglio, e più la storia è lunga più è probabile
-che deragli. Mettiamo che vada storta una parola su cento: dopo cinquecento
-parole, di cento racconti così ne resta in piedi meno di uno.
+parola alla volta senza poter mai rileggere. Ogni parola è una scommessa basata
+sulle precedenti; se una scommessa introduce uno sbaglio (un personaggio che
+cambia nome, un bicchiere che cade verso l'alto) le parole dopo costruiscono
+sopra lo sbaglio, e più la storia è lunga più è probabile che deragli. Mettiamo
+che vada storta una parola su cento: dopo cinquecento parole, di cento racconti
+così ne resta in piedi meno di uno. Novantanove su cento reggono la prima
+parola, novantanove su cento di quelli la seconda, e così cinquecento volte.
 
 Secondo LeCun, a un sistema simile manca il cinema interiore del gatto: non
 immagina la scena, non prova le alternative nella testa, non ha mai visto un
@@ -308,15 +312,15 @@ Un LLM autoregressivo {cite}`brown2020language` fattorizza la probabilità di
 una sequenza come $P(w_1, \dots, w_n) = \prod_{t=1}^{n} P(w_t \mid w_{<t})$ e
 genera campionando un token alla volta. L'argomento che LeCun ripete nei
 seminari è di natura moltiplicativa: se a ogni token la probabilità di uscire
-dall'insieme delle continuazioni accettabili è $\epsilon$, sempre la stessa e
+dall'insieme delle continuazioni accettabili è $p$, sempre la stessa e
 indipendente da quanto è già stato scritto, e se l'errore non è
 recuperabile, la probabilità che una sequenza di $n$ token resti accettabile
-decade come $(1-\epsilon)^n$: con $\epsilon = 0{,}01$ e $n = 500$ ne resta
+decade come $(1-p)^n$: con $p = 0{,}01$ e $n = 500$ ne resta
 appena $0{,}99^{500} \approx 0{,}007$, meno dell'1%.
 
 Le obiezioni colpiscono proprio le ipotesi: gli errori non sono né indipendenti
 né irrecuperabili (i modelli, empiricamente, si correggono), e nulla fissa
-$\epsilon$ costante al crescere di scala e addestramento
+$p$ costante al crescere di scala e addestramento
 {cite}`kaplan2020scaling`. Esperimenti di *probing*, inoltre, indicano che un
 GPT a 8 strati addestrato soltanto su sequenze di mosse dell'Otello (20 milioni
 di partite sintetiche) sviluppa una rappresentazione interna dello stato della
@@ -354,8 +358,9 @@ ottiene un diamante in *Minecraft* senza dimostrazioni umane: il primo
 algoritmo a riuscirci partendo da zero, dichiarano gli autori, a condizioni che
 la sezione dedicata illustra. Dreamer 4, nel settembre dello stesso anno, ci
 arriva senza mai giocare durante l'addestramento: il modello del mondo lo
-impara da registrazioni di partite giocate da persone, la strategia soltanto
-dentro il modello {cite}`hafner2025training`.
+impara da registrazioni di partite giocate da persone, la strategia prima per
+imitazione su quelle registrazioni, poi per rinforzo soltanto dentro il modello
+{cite}`hafner2025training`.
 
 Seconda risposta, la via di LeCun: prevedere nello spazio delle
 rappresentazioni invece che in quello dei pixel, cioè prevedere il riassunto di
@@ -433,13 +438,13 @@ capito la fisica, o soltanto saperla imitare?
   $p_\theta(s_{t+1} \mid s_t, a_t)$: serve a prevedere, pianificare e provare
   azioni diverse senza farle per davvero. L'idea del «modello in scala
   ridotta della realtà» risale a Kenneth Craik (1943).
-- Model-free prova nel mondo, model-based prova nell'immaginazione: il
-  secondo promette di ridurre le interazioni necessarie (il DQN ne usa decine
-  di milioni di fotogrammi per gioco, il collaudatore umano con cui è
-  confrontato circa due ore di pratica), al costo del *model bias*. Con
-  dinamica $L$-Lipschitz ed errore del modello al più $\epsilon$, lo scarto
-  dopo $k$ passi è maggiorato da $\epsilon \sum_{i<k} L^{i}$: esponenziale per
-  $L > 1$, limitato da $\epsilon/(1-L)$ per $L < 1$.
+- Model-free prova nel mondo, model-based prova nell'immaginazione: il secondo
+  promette di ridurre le interazioni necessarie (il DQN ne usa decine di
+  milioni di fotogrammi per gioco, il collaudatore umano con cui è confrontato
+  circa due ore di pratica), al costo del *model bias*. Con dinamica
+  $L$-Lipschitz ed errore del modello al più $\epsilon$ negli stati immaginati,
+  lo scarto dopo $k$ passi è maggiorato da $\epsilon \sum_{i<k} L^{i}$:
+  esponenziale per $L > 1$, limitato da $\epsilon/(1-L)$ per $L < 1$.
 - Il senso comune è un repertorio di previsioni (fisica intuitiva) che i
   bambini costruiscono guardando, senza etichette: apprendimento
   auto-supervisionato, dove il bersaglio è il futuro stesso. Gli esperimenti

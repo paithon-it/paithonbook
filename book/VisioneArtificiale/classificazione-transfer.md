@@ -251,9 +251,11 @@ gruppetto di foto che passa (il *batch*) tiene nove decimi della media vecchia
 e prende un decimo di quella nuova, anche quando i pesi sono bloccati tutti.
 
 Chi blocca i soli pesi e fa passare le sue lastre si ritrova, dopo qualche
-decina di gruppetti, un appunto tarato sulle lastre invece che sulle foto di
-ImageNet. Così i numeri che la base consegna alla testa cambiano da
-un giro all'altro, e la testa impara inseguendo un bersaglio che si sposta.
+decina di gruppetti (a ognuno la parte di ImageNet si riduce ai nove decimi, e
+dopo venti ne resta poco più di un decimo), un appunto tarato sulle lastre
+invece che sulle foto di ImageNet. Così i numeri che la base consegna alla
+testa cambiano da un giro all'altro, e la testa impara inseguendo un bersaglio
+che si sposta.
 
 [Perché la base resti ferma, a quegli strati va detto di smettere di aggiornare
 l'appunto]{.pt-matita}. Lo si dice anche quando si sbloccano gli ultimi strati

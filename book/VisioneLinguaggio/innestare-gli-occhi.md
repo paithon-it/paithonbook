@@ -10,7 +10,7 @@ Chi innesta una vite non pianta un albero nuovo. Prende un ceppo già radicato,
 scelto perché si adatta a quel terreno e resiste ai suoi parassiti, e ci salda
 sopra un rametto di un'altra pianta, che dà l'uva desiderata. Le due parti
 hanno storie separate e le conservano: il lavoro del vivaista sta nella
-saldatura, la più piccola delle tre cose e l'unica che fabbrica lui.
+saldatura, di solito la più piccola delle tre cose e l'unica che fabbrica lui.
 
 L'architettura che segue funziona come un innesto: il ceppo è il modello di
 linguaggio, già radicato e capace di parlare; il rametto è l'encoder visivo,
@@ -134,10 +134,10 @@ termine quadratico per $(596/52)^2 \approx 131$.
 
 Si noti però che [quel $131$ non è il rapporto fra i due costi]{.pt-matita}: a
 $M + T \approx 600$ e $d_t = 4096$ il termine quadratico vale il $2{,}4\%$ del
-blocco (è il calcolo $4(M+T)^2 d_t$ contro $24
-(M+T) d_t^2$ che la {doc}`sezione sulla risoluzione
-</VisioneLinguaggio/risoluzione-e-dettaglio>` fa per esteso), e i FLOP totali
-per strato scendono di $11{,}7$ volte, cioè quanto la sequenza.
+blocco (è il calcolo $4(M+T)^2 d_t$ contro $24 (M+T) d_t^2$ che la {doc}`sezione
+sulla risoluzione </VisioneLinguaggio/risoluzione-e-dettaglio>` fa per esteso),
+e i FLOP totali per strato scendono di $11{,}7$ volte, poco più di quanto si
+accorcia la sequenza ($596/52 \approx 11{,}5$).
 
 Di conseguenza, a queste lunghezze pesano soprattutto il contesto occupato e la
 KV cache, che crescono linearmente: per un modello da sette miliardi di
@@ -263,14 +263,15 @@ cross-attention dense*.
 
 A monte, il **Perceiver Resampler** risolve il problema del formato variabile.
 È un modulo di attenzione con $K$ latenti appresi $\mathbf{L} \in \mathbb{R}^{K
-\times d}$ (nel lavoro, $K = 64$) che fanno da query; chiavi e valori vengono
+\times d_r}$ (nel lavoro, $K = 64$) che fanno da query; chiavi e valori vengono
 dalla concatenazione $[\mathbf{Z}; \mathbf{L}]$ delle feature visive,
-appiattite in un'unica sequenza e già proiettate in $\mathbb{R}^{N \times d}$
-(la concatenazione avviene lungo l'asse della sequenza, quindi la dimensione di
-feature dev'essere la stessa dei latenti), con i latenti stessi, che quindi
-calcolano l'attenzione anche su di sé: $\mathbf{R} = \mathrm{XAttn}(\mathbf{L},
-[\mathbf{Z}; \mathbf{L}]) \in \mathbb{R}^{K \times d}$, ripetuta per qualche
-strato con un feed-forward dopo ciascuno.
+appiattite in un'unica sequenza e già proiettate in $\mathbb{R}^{N \times d_r}$
+(con $d_r$ la larghezza del Resampler; la concatenazione avviene lungo l'asse
+della sequenza, quindi la dimensione di feature dev'essere la stessa dei
+latenti), con i latenti stessi, che quindi calcolano l'attenzione anche su di
+sé: $\mathbf{R} = \mathrm{XAttn}(\mathbf{L}, [\mathbf{Z}; \mathbf{L}]) \in
+\mathbb{R}^{K \times d_r}$, ripetuta per qualche strato con un feed-forward
+dopo ciascuno.
 
 Qualunque sia $N$ (una sola immagine,
 oppure le feature spazio-temporali di un video) l'uscita ha sempre $K$ righe, e
@@ -278,7 +279,7 @@ il costo a valle diventa indipendente dalla risoluzione e dalla durata: è
 questa, nel lavoro, la ragione del Resampler, perché le cross-attention
 accetterebbero un numero qualunque di chiavi e valori, ma a un costo che cresce
 con $N$ a ogni strato in cui compaiono. Il costo del Resampler è
-$O\big(K(N+K)d\big)$ per strato, lineare in $N$.
+$O\big(K(N+K)d_r\big)$ per strato, lineare in $N$.
 
 Il costo in parametri, però, è severo: gli strati aggiunti sono blocchi di
 attenzione a dimensione piena distribuiti lungo tutta la pila, e nella variante
@@ -490,7 +491,8 @@ Il fascicolo sulla scrivania, però, funziona finché sono quaranta pagine. Se n
 fossero quattromila (una fotografia enorme, oppure un'ora di video, un
 fotogramma dopo l'altro), sfogliarle tutte a ogni domanda non si potrebbe, e il
 collega che riassume tornerebbe ad avere ragione. A parità di pagine
-consegnate, poi, chi le abbia scelte e come conta poco: conta quante sono.
+consegnate, poi, il modo di sceglierle conta meno di quanto si direbbe: a
+contare di più è quante sono.
 
 Ne esce una regola generale, con i suoi confini: quando il collo di bottiglia è
 l'informazione, e non il calcolo, conviene rimandare la selezione al momento in

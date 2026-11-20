@@ -115,11 +115,12 @@ distribuzione continua, per esempio una gaussiana $\pi_\theta(\mathbf{a}\mid
 s)=\mathcal{N}\big(\boldsymbol{\mu}_\theta(s),\, \sigma^2\mathbf{I}\big)$ con
 la media data dalla rete e $\sigma$ fissato o appreso. Il termine che comparirà
 nel gradiente vale allora $\nabla_\theta\log\pi_\theta(\mathbf{a}\mid s)=
-\sigma^{-2}\,\mathbf{J}_\theta(s)^{\top}
-\big(\mathbf{a}-\boldsymbol{\mu}_\theta(s)\big)$, con
-$\mathbf{J}_\theta=\partial\boldsymbol{\mu}_\theta/\partial\theta$ lo jacobiano
-della media. Moltiplicato per l'esito, questo termine sposta la media verso le
-azioni che hanno reso di più {cite}`sutton2018reinforcement`.
+\sigma^{-2}\,\big(\partial\boldsymbol{\mu}_\theta(s)/\partial\theta\big)^{\top}
+\big(\mathbf{a}-\boldsymbol{\mu}_\theta(s)\big)$, con la derivata della media
+(il suo jacobiano) e $\sigma$ fissato: se $\sigma$ è appreso, questo è il
+gradiente rispetto ai soli parametri della media. Moltiplicato per l'esito,
+questo termine sposta la media verso le azioni che hanno reso di più
+{cite}`sutton2018reinforcement`.
 
 Si noti che la notazione segue ora la convenzione dei lavori di deep RL: $r_t$
 è la ricompensa che segue l'azione $a_t$, cioè ciò che la sezione su MDP e
@@ -202,16 +203,16 @@ R(\tau)\big],
 $$
 
 dove $\tau$ è la traiettoria intera e $R(\tau)$ il suo ritorno. Il secondo è
-che la probabilità della traiettoria si fattorizza,
-$p_\theta(\tau) = p(s_0) \prod_t \pi_\theta(a_t \mid s_t)\,
-P(s_{t+1} \mid s_t, a_t)$, e nel logaritmo i fattori dell'ambiente diventano
-addendi che non dipendono da $\theta$. Derivando spariscono, e con loro
-l'ambiente esce di scena,
-$\nabla_\theta \log p_\theta(\tau) = \sum_t \nabla_\theta \log
-\pi_\theta(a_t \mid s_t)$. Il terzo è la causalità: poiché l'azione al passo
-$t$ non può cambiare le ricompense già incassate, i prodotti con le ricompense
-passate hanno valore atteso nullo, e a ciascun addendo resta agganciato solo il
-ritorno da lì in avanti, $G_t$.
+che la probabilità della traiettoria si fattorizza, $p_\theta(\tau) = p(s_0)
+\prod_t \pi_\theta(a_t \mid s_t)\, P(s_{t+1} \mid s_t, a_t)$, e nel logaritmo i
+fattori dell'ambiente diventano addendi che non dipendono da $\theta$.
+Derivando spariscono, e con loro l'ambiente esce di scena, $\nabla_\theta \log
+p_\theta(\tau) = \sum_t \nabla_\theta \log \pi_\theta(a_t \mid s_t)$. Il terzo
+è la causalità: poiché l'azione al passo $t$ non può cambiare le ricompense già
+incassate, i prodotti con le ricompense passate hanno valore atteso nullo, e a
+ciascun addendo resta agganciato solo il ritorno da lì in avanti, scontato
+dall'istante $0$: $\sum_{k\ge t}\gamma^{k} r_k=\gamma^{\,t}G_t$, da cui il
+$\gamma^{\,t}$ della formula.
 
 L'enunciato vale sotto le ipotesi consuete ($\pi_\theta$ differenziabile in
 $\theta$, ricompense limitate, orizzonte finito oppure $\gamma<1$, quanto basta
@@ -220,11 +221,13 @@ stati serve solo nella formulazione a ricompensa media, che qui non si usa) e
 sotto un'altra: il teorema è on-policy.
 
 Infatti, nella forma originale al posto di $G_t$ compare $Q^\pi(s_t,a_t)$, e
-sostituirvi il ritorno osservato è lecito solo perché
-$\mathbb{E}[G_t \mid s_t, a_t] = Q^\pi(s_t,a_t)$, il che richiede che il seguito
-della traiettoria sia stato generato dalla stessa policy che stiamo
-derivando. È l'ipotesi che PPO dovrà correggere con un rapporto di
-importance sampling per riusare i dati della policy vecchia.
+sostituirvi il ritorno osservato è lecito solo perché $\mathbb{E}[G_t \mid s_t,
+a_t] = Q^\pi(s_t,a_t)$, il che richiede che il seguito della traiettoria sia
+stato generato dalla stessa policy che stiamo derivando. È l'ipotesi che PPO
+aggira solo in parte per riusare i dati della policy vecchia: il rapporto di
+importance sampling riaggiusta la probabilità dell'azione, ma stati e vantaggi
+restano quelli della policy vecchia, e per questo l'aggiornamento deve restarle
+vicino.
 
 Il termine $\nabla_\theta \log \pi_\theta(a_t\mid s_t)$ indica *come*
 ritoccare i parametri per rendere più probabile l'azione $a_t$; moltiplicandolo
@@ -330,8 +333,9 @@ $$
 $$
 
 Come d'uso in deep RL, questa stima si indica con $A_t$. Resta tuttavia uno
-stimatore e non la definizione, poiché coincide con $A^\pi$ solo se il critico
-ha ragione, cioè se $V_\phi = V^\pi$.
+stimatore e non la definizione: con un critico esatto, $V_\phi = V^\pi$, vale
+$\mathbb{E}[A_t \mid s_t, a_t] = A^\pi(s_t, a_t)$, ma il singolo $A_t$ resta
+rumoroso; con un critico inesatto è anche distorto.
 
 $A_t$ misura di quanto l'azione compiuta ha superato le *aspettative*
 codificate dal critico, ed è positivo se l'esito è stato migliore del
@@ -432,11 +436,12 @@ esempio, se la mossa aveva il $10\%$ e adesso ha il $12\%$, il rapporto vale
 $1{,}2$; se non è cambiato niente, vale $1$. La fascia disegnata nella figura
 va appunto da $0{,}8$ a $1{,}2$, cioè un quinto in meno e un quinto in più.
 
-L'addestramento serve a far salire la ricompensa attesa, spostando i pesi
-della rete. Appena si esce dalla fascia dalla parte pericolosa, però, quel
-numero smette di salire per quanto ci si sposti ancora. [Il passo resta
-consentito ma non frutta più niente, e una rete che cerca il guadagno non ha
-ragione di farlo]{.pt-matita}.
+L'addestramento serve a far salire la ricompensa attesa, spostando i pesi della
+rete, e ogni spostamento lo giudica una stima di quanto la farebbe salire.
+Appena si esce dalla fascia dalla parte pericolosa, però, quella stima smette
+di salire per quanto ci si sposti ancora. [Il passo resta consentito ma non
+frutta più niente, e una rete che cerca il guadagno non ha ragione di
+farlo]{.pt-matita}.
 
 `````{tab} Elementare
 

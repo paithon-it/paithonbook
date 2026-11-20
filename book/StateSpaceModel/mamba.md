@@ -57,13 +57,14 @@ quanto di ciò che ha in testa tira fuori al momento giusto, e il tempo che le
 dedica.
 
 Il buttafuori non cambia mai una cosa: il ritmo a cui i ricordi gli sbiadiscono
-col passare del tempo. Per questo il tempo dedicato a ciascuno decide quanto
-dimentica a ogni faccia. Quando se la prende comoda,
-chi ha davanti gli si stampa bene in testa, e intanto le facce di prima gli
-sbiadiscono parecchio; se fa passare qualcuno in un lampo, quello non lascia
-traccia e la sua testa resta com'era. Con il solo intervallo ottiene tutte e due
-le cose che gli servono: «di questo mi ricorderò» e «questo non l'ho nemmeno
-visto». È l'intervallo $\Delta$ della vasca, e Mamba lo sceglie a ogni parola.
+col passare del tempo. Per questo, con il ritmo fisso, è il tempo dedicato a
+ciascuno a decidere quanto dimentica a ogni faccia: più tempo, più ricordi
+sbiaditi. Quando se la prende comoda, chi ha davanti gli si stampa bene in
+testa, e intanto le facce di prima gli sbiadiscono parecchio; se fa passare
+qualcuno in un lampo, quello non lascia traccia e la sua testa resta com'era.
+Con il solo intervallo ottiene tutte e due le cose che gli servono: «di questo
+mi ricorderò» e «questo non l'ho nemmeno visto». È l'intervallo $\Delta$ della
+vasca, e Mamba lo sceglie a ogni parola.
 
 Questo meccanismo apre la porta a un tipo di ragionamento che un tornello non
 potrà mai fare, quello che dipende dal contenuto. Prendi il gioco
@@ -100,10 +101,10 @@ $$
 dove $\mathrm{Linear}_N$ proietta $\mathbf{x}_t$ in un vettore di dimensione
 $N$ ($\mathbf{B}_t$ e $\mathbf{C}_t$ sono vettori, ma conservano la maiuscola
 delle matrici $\mathbf{B}$ e $\mathbf{C}$ da cui discendono, come in tutta la
-letteratura), $p$ è il bias appreso del canale (uno per canale, un vettore di
-dimensione $D$ in tutto) e $\mathrm{softplus}(z) = \log(1 + e^z)$ garantisce un
+letteratura), $p$ è il bias appreso del canale (uno per canale, quindi un
+vettore in tutto) e $\mathrm{softplus}(z) = \log(1 + e^z)$ garantisce un
 passo $\Delta_t > 0$. Nell'implementazione $\mathrm{Linear}_1$ è una proiezione
-di rango basso verso tutti i $D$ canali, così che ogni canale abbia il suo
+di rango basso verso tutti i canali, così che ogni canale abbia il suo
 passo; la formula ne scrive la componente di un canale. La matrice
 $\mathbf{A}$, diagonale, resta un parametro fisso, che non dipende dal token.
 Tuttavia la discretizzazione (lo *zero-order hold*, che nella {doc}`sezione sui
@@ -124,11 +125,12 @@ $\bar{\mathbf{B}}_t = \Delta_t \mathbf{B}_t$ è il termine di ingresso, entrambi
 ottenuti da $\Delta_t$ (la ricorrenza è scritta per un canale: $x_t$ è la
 componente dell'attivazione $\mathbf{x}_t$ su quel canale, quindi un numero).
 Poiché $\Delta_t$ dipende da $\mathbf{x}_t$, anche $\bar{\mathbf{A}}_t$ diventa
-di fatto data-dipendente, pur partendo da una $\mathbf{A}$ fissa: un $\Delta_t$
-grande azzera quasi del tutto lo stato ($\bar{\mathbf{A}}_t \to \mathbf{0}$) e
-fa entrare con forza il token corrente; un $\Delta_t$ vicino a zero lascia lo
-stato quasi immutato ($\bar{\mathbf{A}}_t \to \mathbf{I}$) e ignora il token
-($\bar{\mathbf{B}}_t \to \mathbf{0}$) {cite}`gu2023mamba`.
+di fatto data-dipendente, pur partendo da una $\mathbf{A}$ fissa. Poiché
+$\mathbf{A}$ ha elementi negativi (Mamba la parametrizza come $-\exp(\cdot)$),
+un $\Delta_t$ grande azzera quasi del tutto lo stato ($\bar{\mathbf{A}}_t \to
+\mathbf{0}$) e fa entrare con forza il token corrente; un $\Delta_t$ vicino a
+zero lascia lo stato quasi immutato ($\bar{\mathbf{A}}_t \to \mathbf{I}$) e
+ignora il token ($\bar{\mathbf{B}}_t \to \mathbf{0}$) {cite}`gu2023mamba`.
 
 Il ruolo di $\Delta_t$ si vede nel caso più piccolo. Con $N = 1$, $A = -1$,
 $B = 1$ e $\Delta_t = \mathrm{softplus}(s_t)$, dove $s_t$ è la proiezione del
@@ -334,16 +336,17 @@ Blelloch {cite}`blelloch1990prefix`; applicarle alle ricorrenze lineari delle
 reti neurali è un'idea di Martin e Cundy {cite}`martin2018parallelizing`, e da
 lì la riprendono S5 e Mamba.
 
-La GPU, dal canto suo, ha una memoria ad alta capacità ma lenta, la HBM, e
-una memoria molto più piccola e veloce, la SRAM on-chip. Il collo di
-bottiglia di una ricorrenza selettiva è che lo stato espanso ha forma
-$(\texttt{batch}, L, D, N)$ (batch per lunghezza per canali per dimensione
-dello stato) e materializzarlo tutto in HBM sarebbe proibitivo in memoria e in
-banda. Mamba lo evita con la fusione dei kernel (*kernel fusion*): carica i
-parametri $(\Delta, \mathbf{A}, \mathbf{B}, \mathbf{C})$ dalla HBM alla SRAM, esegue *in* SRAM la
-discretizzazione e la ricorrenza tramite il parallel scan, e riporta in HBM
-soltanto l'output $\mathbf{y}$ di dimensione $(\texttt{batch}, L, D)$. Lo stato espanso
-non viene mai scritto nella memoria lenta: nasce e muore in SRAM.
+La GPU, dal canto suo, ha una memoria ad alta capacità ma lenta, la HBM, e una
+memoria molto più piccola e veloce, la SRAM on-chip. Il collo di bottiglia di
+una ricorrenza selettiva è che lo stato espanso ha forma $(\texttt{batch}, L,
+ED, N)$ (batch per lunghezza per canali interni, $E$ volte la dimensione $D$
+del modello, per dimensione dello stato) e materializzarlo tutto in HBM sarebbe
+proibitivo in memoria e in banda. Mamba lo evita con la fusione dei kernel
+(*kernel fusion*): carica i parametri $(\Delta, \mathbf{A}, \mathbf{B},
+\mathbf{C})$ dalla HBM alla SRAM, esegue *in* SRAM la discretizzazione e la
+ricorrenza tramite il parallel scan, e riporta in HBM soltanto l'output
+$\mathbf{y}$ di dimensione $(\texttt{batch}, L, ED)$. Lo stato espanso non
+viene mai scritto nella memoria lenta: nasce e muore in SRAM.
 
 Il peso dello stato espanso si calcola subito. Ad esempio, in Mamba-130M ($D =
 768$, fattore di espansione $E = 2$, quindi 1536 canali interni, e $N = 16$),

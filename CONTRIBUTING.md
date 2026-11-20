@@ -541,6 +541,10 @@ viene riportata a mano nel ramo di lavoro e torna qui con la pubblicazione
 successiva. Il commit che la porta online non è il tuo, ma ti cita come
 coautore: il credito segue la correzione.
 
+Una pull request che aggiunge HTML a una pagina, o che tocca una figura SVG,
+un notebook o una pagina HTML, chiede un passaggio in più: quel materiale si
+guarda riga per riga prima di riportarlo, perché nel sito è codice.
+
 Se ci vuole qualche giorno, non è disinteresse: è che una correzione entra
 quando il capitolo intorno regge ancora.
 

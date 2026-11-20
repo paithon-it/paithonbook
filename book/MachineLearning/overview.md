@@ -220,7 +220,7 @@ il modello riceve soltanto gli input e deve scoprire da sé una struttura
 nascosta. L'esempio classico è il **clustering**, che consiste nel raggruppare
 i clienti di un negozio in segmenti simili senza sapere in anticipo quali
 segmenti esistano. Rientrano in questa famiglia anche la **riduzione della
-dimensionalità**, ovvero la descrizione di ogni esempio con meno numeri,
+dimensionalità**, cioè la descrizione di ogni esempio con meno numeri,
 conservandone il più possibile l'informazione, e il **rilevamento di
 anomalie** senza esempi etichettati, ad esempio una transazione che non
 somiglia alle altre. (Le «dimensioni» sono le colonne della tabella, una per
@@ -243,11 +243,11 @@ copia di sé stesso e, dopo ogni mossa, spostava la valutazione della posizione
 verso quella che otteneva guardando qualche mossa più avanti. Non c'erano,
 però, né una ricompensa esplicita né un trattamento speciale della vittoria.
 
-Si noti che i confini fra le tre famiglie non sono netti.
-Nell'apprendimento auto-supervisionato, con cui si addestrano i modelli
-linguistici, le etichette si ricavano dagli stessi dati (ad esempio la parola
-successiva di un testo), e la loss è quella di un problema supervisionato. Lo
-tratta per esteso il {doc}`capitolo sull'auto-supervisione
+Si noti che i confini fra le tre famiglie non sono netti. Nell'apprendimento
+auto-supervisionato, con cui si addestrano i modelli linguistici, le etichette
+si ricavano dagli stessi dati (ad esempio la parola successiva di un testo), e
+la loss, cioè il numero che misura l'errore, è quella di un problema
+supervisionato. Lo tratta per esteso il {doc}`capitolo sull'auto-supervisione
 </AutoSupervisione/overview>`.
 
 ## Dall'idea al modello: il flusso di un progetto
@@ -462,20 +462,20 @@ Le ragioni individuate sono di natura strutturale.
    il bersaglio vincono di rado nei nodi alti, anche se con pochi esempi per
    nodo qualcuna vince per caso.
 3. L'addestramento di un MLP con la discesa del gradiente, partendo da pesi a
-   simmetria sferica (ad esempio gaussiani indipendenti), è invariante per
-   rotazione. Se si ruotano le colonne con una matrice ortogonale, le
-   previsioni ottenute restano invariate in distribuzione, e pertanto la
-   procedura non può sfruttare la base in cui la tabella è scritta (con Adam,
-   che riscala ogni coordinata separatamente, l'invarianza non è più esatta).
-   Una tabella, al contrario, possiede una sua base naturale, composta da
-   colonne con significati diversi, che una mescolanza cancellerebbe. Si
-   osserva infatti che, dopo una rotazione casuale delle colonne, l'ordine fra
-   alberi e reti si inverte, e fra le reti confrontate solo il ResNet (un MLP
-   con connessioni residue) risulta insensibile alla rotazione
-   {cite}`grinsztajn2022why`. Questo aspetto si lega al punto precedente: una
-   procedura invariante per rotazione richiede, nel caso peggiore, un numero
-   di esempi che cresce almeno linearmente con il numero di feature
-   irrilevanti {cite}`ng2004feature`.
+   simmetria sferica (ad esempio gaussiani indipendenti con la stessa
+   varianza), è invariante per rotazione. Se si ruotano le colonne con una
+   matrice ortogonale, le previsioni ottenute restano invariate in
+   distribuzione, e pertanto la procedura non può sfruttare la base in cui la
+   tabella è scritta (con Adam, che riscala ogni coordinata separatamente,
+   l'invarianza non è più esatta). Una tabella, al contrario, possiede una sua
+   base naturale, composta da colonne con significati diversi, che una
+   mescolanza cancellerebbe. Si osserva infatti che, dopo una rotazione casuale
+   delle colonne, l'ordine fra alberi e reti si inverte, e fra le reti
+   confrontate solo il ResNet (un MLP con connessioni residue) risulta
+   insensibile alla rotazione {cite}`grinsztajn2022why`. Questo aspetto si lega
+   al punto precedente: una procedura invariante per rotazione richiede, nel
+   caso peggiore, un numero di esempi che cresce almeno linearmente con il
+   numero di feature irrilevanti {cite}`ng2004feature`.
 
 Ne segue un'indicazione pratica. [Un gradient boosting si addestra in minuti su
 CPU e va in produzione senza GPU]{.pt-matita}; pertanto, prima di adottare il deep

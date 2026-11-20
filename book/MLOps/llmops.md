@@ -42,10 +42,10 @@ frequente: portare quei pesi dalla memoria della scheda alle unità di calcolo,
 e questo viaggio va rifatto per intero a ogni singolo token. Infatti il modello
 scrive la risposta un token alla volta, e ogni token lo decide guardando tutti
 quelli già scritti (è il modo di generare, *autoregressivo*, studiato nei
-{doc}`grandi modelli linguistici </Transformers/llm>`); di conseguenza a ogni
-passo tutti i miliardi di parametri vengono riletti. Finché le richieste
-servite insieme sono poche, è questa lettura a decidere il tempo e il costo di
-ogni token.
+{doc}`grandi modelli linguistici </Transformers/llm>`); e per deciderlo il
+calcolo attraversa tutto il modello, così a ogni passo tutti i miliardi di
+parametri vengono riletti. Finché le richieste servite insieme sono poche, è
+questa lettura a decidere il tempo e il costo di ogni token.
 
 ```{figure} ../figures/modelli-locali-memoria.svg
 :name: fig-cosa-entra-in-memoria
@@ -117,11 +117,12 @@ banda $B$ e potenza di calcolo di picco $F$, un passo di decodifica su $b$
 sequenze legge i pesi in un tempo $M_w/B$ e fa circa $2Nb$ operazioni in un
 tempo $2Nb/F$: i due si equivalgono per $b^\ast = F M_w/(2NB)$, che in 16 bit,
 dove $M_w = 2N$, vale $F/B$, circa 150 sequenze per una scheda da 312 TFLOP/s e
-2 TB/s di banda e circa 300 per una da 989 TFLOP/s e 3,35 TB/s. Sotto $b^\ast$
-la lettura domina e aggiungere sequenze quasi non allunga il passo; sopra, il
-limite diventa il calcolo. Il *prefill*, che elabora tutti i token del prompt
-in parallelo, ha già molti token per ogni lettura dei pesi, quindi è limitato
-dal calcolo fin dall'inizio.
+2 TB/s di banda e circa 300 per una da 989 TFLOP/s e 3,35 TB/s. Trascurando la
+KV cache, sotto $b^\ast$ la lettura dei pesi domina e aggiungere sequenze quasi
+non allunga il passo; sopra, il limite diventa il calcolo. Il *prefill*, che
+elabora tutti i token del prompt in parallelo, ha già molti token per ogni
+lettura dei pesi, quindi è limitato dal calcolo appena il prompt supera
+$b^\ast$ token, cioè qualche centinaio.
 
 A questo si somma la KV cache vista nel capitolo sui Transformer (key e value
 dei token già letti, tenuti in memoria per non ricalcolarli), che a differenza
@@ -537,9 +538,9 @@ e va saputo: chi lo adotta credendo di stare ancora nel metodo esatto sta
 scambiando qualità per velocità senza essersene accorto.
 
 Un avvertimento pratico: il metodo aiuta nel regime memory-bound, cioè batch
-piccoli e bassa latenza. A batch molto grandi la GPU è già satura di lavoro
-utile e il vantaggio diminuisce, e la tecnica si combina male con la spinta al
-throughput del batching.
+piccoli e bassa latenza. A batch molto grandi, con contesti corti, la GPU è già
+satura di lavoro utile e il vantaggio diminuisce, e la tecnica si combina male
+con la spinta al throughput del batching.
 
 `````
 
@@ -943,10 +944,10 @@ riaddestramento e con degrado contenuto; oltre, il degrado diventa sensibile.
 
 Metà dei pesi a zero, però, non dimezza il tempo per token: la sparsità non
 strutturata riduce i parametri e non il tempo, perché una GPU non sa saltare
-zeri sparsi a caso, e il servizio accelera soltanto con la sparsità strutturata
-2:4 sull'hardware che la esegue, che perde qualche punto in più del $50\%$
-libero e accelera meno del doppio, perché i byte da leggere non si dimezzano.
-Le misure sono in {doc}`Meno pesi </Efficienza/meno-pesi>`.
+zeri sparsi a caso, e il servizio accelera in modo affidabile soltanto con la
+sparsità strutturata 2:4 sull'hardware che la esegue, che perde qualche punto
+in più del $50\%$ libero e accelera meno del doppio, perché i byte da leggere
+non si dimezzano. Le misure sono in {doc}`Meno pesi </Efficienza/meno-pesi>`.
 
 `````
 
@@ -1210,12 +1211,13 @@ nuovo negli Agenti.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Con gli LLM il collo di bottiglia si sposta sulla generazione
-  autoregressiva: la decodifica è memory-bound finché il batch resta sotto
-  $b^\ast = F M_w/(2NB)$ ($F/B$ in 16 bit, circa 150 sequenze su una scheda da
-  312 TFLOP/s e 2 TB/s), mentre il prefill è limitato dal calcolo; e la KV
-  cache, $2\,n_\ell\,h_{kv}\,d_k$ numeri per token, cresce col contesto ed è di
-  ciascuna sequenza, quindi non si ammortizza sul batch.
+- Con gli LLM il collo di bottiglia si sposta sulla generazione autoregressiva:
+  la decodifica è memory-bound finché il batch resta sotto $b^\ast = F
+  M_w/(2NB)$ ($F/B$ in 16 bit, circa 150 sequenze su una scheda da 312 TFLOP/s
+  e 2 TB/s) e, con contesti di migliaia di token, a ogni batch, perché va letta
+  anche la KV cache, mentre il prefill di un prompt lungo è limitato dal
+  calcolo; e la KV cache, $2\,n_\ell\,h_{kv}\,d_k$ numeri per token, cresce col
+  contesto ed è di ciascuna sequenza, quindi non si ammortizza sul batch.
 - Servire un LLM significa batchare tante richieste per ammortizzare
   la lettura dei pesi: la PagedAttention di vLLM pagina la KV cache come un
   sistema operativo, e lo spreco passa dal 60–80% a meno del 4%
@@ -1245,8 +1247,8 @@ nuovo negli Agenti.
   occupati e sulla sola accuratezza zero-shot {cite}`dettmers2023case`, e per
   chi arrotonda senza guardare i dati: i metodi che si tarano su un insieme di
   calibrazione restano fuori da quella misura, e sotto i 4 bit la partita resta
-  aperta. La potatura al 50% (SparseGPT, Wanda) riduce i parametri ma accelera
-  il servizio solo nella forma strutturata 2:4.
+  aperta. La potatura al 50% (SparseGPT, Wanda) riduce i parametri ma accelera il
+  servizio in modo affidabile solo nella forma strutturata 2:4.
 - Anche la KV cache si quantizza: KIVI {cite}`liu2024kivi` a 2 bit, chiavi per
   canale e valori per token, con gli ultimi token in 16 bit, che proteggono la
   qualità; circa 3 bit effettivi, quasi senza perdite su Llama e Mistral, ma su

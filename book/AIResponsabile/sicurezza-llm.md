@@ -273,7 +273,7 @@ Il confronto di {numref}`fig-jailbreak-injection` mostra perché le difese non
 si scambiano. Contro il jailbreak si può addestrare il modello a rifiutare più
 spesso, cioè premiare durante l'addestramento le risposte che a certe richieste
 dicono di no: l'avversario è la persona che sta scrivendo, e sta chiedendo
-qualcosa, quindi rifiutare gli chiude la porta.
+qualcosa, quindi rifiutare gli rende più difficile entrare.
 
 Contro l'iniezione, in tutte e due le forme, addestrarlo a rifiutare abbassa
 la probabilità e non la porta a zero, e la ragione è che il comportamento da
@@ -370,8 +370,8 @@ può allargarsi con la scala, perché un modello più capace copre più forme di
 quante il fine-tuning di sicurezza riesca a coprirne, e questo finché
 l'addestramento di sicurezza non viene esteso alle forme nuove.
 
-Gli autori hanno una misura, su due modelli soli: il più piccolo dei due non sa
-nemmeno leggere le istruzioni in Base64, il più grande le legge e le esegue con
+Gli autori hanno una misura, su due modelli soli: il meno capace dei due non sa
+nemmeno leggere le istruzioni in Base64, il più capace le legge e le esegue con
 meno freni {cite}`wei2023jailbroken`. Il resto, cioè che a ogni salto di scala
 si aprano forme nuove più in fretta di quanto la sicurezza le copra, lo
 scrivono come previsione.
@@ -885,12 +885,12 @@ descrive la copertura del rapporto, non la sicurezza del sistema]{.pt-matita}.
 
 ## Quello che si può promettere
 
-Nessuna delle
-difese descritte qui è una dimostrazione, e non lo diventa mettendole insieme,
-per la ragione da cui siamo partiti col fischietto: al modello arriva un
-canale solo, e in quel canale non c'è scritto da dove viene ciascuna parola.
-Finché è così, qualunque separazione fra istruzioni e dati che avvenga
-*dentro* il modello è una separazione appresa, cioè probabilistica e non garantita.
+Nessuna delle difese descritte qui è una dimostrazione, e non lo diventa
+mettendole insieme, per la ragione da cui siamo partiti col fischietto: al
+modello arriva un canale solo, e in quel canale da dove viene ciascuna parola
+lo si può al più scrivere, non imporre. Finché è così, qualunque separazione
+fra istruzioni e dati che avvenga *dentro* il modello è una separazione
+appresa, cioè probabilistica e non garantita.
 
 Una difesa strutturale vorrebbe due cose: che a ogni pezzetto di testo fosse
 attaccata l'etichetta della sua provenienza, fidata o no, e che il modello la

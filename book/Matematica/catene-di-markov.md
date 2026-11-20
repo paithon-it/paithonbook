@@ -658,8 +658,9 @@ percorrere la catena al contrario.
   $\mathbf{x}_t=\mathbf{P}^t\mathbf{x}_0$. Un processo con memoria $k$ diventa
   markoviano su $n^k$ stati.
 - La stazionaria è l'autovettore di autovalore $1$:
-  $\mathbf{P}\boldsymbol{\pi}=\boldsymbol{\pi}$. Esiste sempre (le colonne
-  sommano a uno) e tutti gli autovalori stanno nel disco unitario.
+  $\mathbf{P}\boldsymbol{\pi}=\boldsymbol{\pi}$. Esiste sempre: le colonne a
+  somma uno danno l'autovalore $1$, e Perron-Frobenius un autovettore non
+  negativo; tutti gli autovalori stanno nel disco unitario.
 - Perron-Frobenius: se $\mathbf{P}$ è irriducibile e aperiodica,
   l'autovalore $1$ è semplice, $\boldsymbol{\pi}$ è unica e positiva, e
   $\mathbf{P}^t\mathbf{x}_0\to\boldsymbol{\pi}$ da ogni partenza.

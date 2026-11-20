@@ -113,10 +113,11 @@ Il confronto fra due parole non è un colpo d'occhio: si fa numero per numero, e
 con una sessantina di numeri per parte servono poco più di cento operazioni per
 ogni casella della tabella. Quella casella, però, è un numero solo, due byte da
 portare in magazzino, quindi le operazioni sono una sessantina per ogni byte
-spostato, mentre il pareggio (il punto in cui il lavoro al tavolo dura quanto la
-corsa) con le macchine di oggi sta oltre i centocinquanta. Anche
-il confronto, che è la parte laboriosa, tiene occupato chi lavora sì e no
-quattro decimi del tempo; il resto lo passa ad aspettare.
+spostato, mentre il pareggio (il punto in cui il lavoro al tavolo dura quanto
+la corsa) con le macchine di oggi sta oltre i centocinquanta. Anche il
+confronto, che è la parte laboriosa, tiene occupato chi lavora sì e no quattro
+decimi del tempo (una sessantina su centocinquanta); il resto lo passa ad
+aspettare.
 
 Si potrebbero sbrigare due lavorazioni in un viaggio solo, portandosi dietro il
 mattarello insieme al coltello, ma non basta, perché la sfoglia in magazzino ci
@@ -298,8 +299,9 @@ the increased FLOPs due to recomputation».
 [Il baratto è dunque calcolo in cambio di traffico]{.pt-matita}, lo stesso del
 *gradient checkpointing* con cui si ricalcolano le attivazioni invece di
 conservarle. Conviene perché i FLOP in più sono prodotti fra matrici, che i
-tensor core eseguono a un costo marginale quasi nullo, mentre i byte
-risparmiati sono accessi alla HBM, la risorsa scarsa. Lo stesso scambio ricorre
+tensor core eseguono in fretta, mentre i byte risparmiati sono accessi alla
+HBM, la risorsa scarsa: finché il kernel resta limitato dalla memoria, il
+calcolo in più costa molto meno del traffico tolto. Lo stesso scambio ricorre
 nel pipeline parallelism della {doc}`sezione sul parallelismo distribuito
 <parallelismo-distribuito>` e in {doc}`Mamba </StateSpaceModel/mamba>`.
 
@@ -311,11 +313,12 @@ dell'ordine di $M_\text{chip}/d_k^2$, che dà l'ordine di grandezza del
 guadagno e non il guadagno, perché le costanti nascoste nei $\Theta$ non
 valgono 1 e le tessere non occupano tutta la memoria veloce.
 
-In concreto, con i 192 KB di SRAM per SM di una A100, poco meno di centomila
-elementi in `float16`, il rapporto varrebbe 24 con $d_k = 64$ e 6 con
-$d_k = 128$. L'articolo, discutendo il teorema, prende un $M_\text{chip}$
-«around 100KB», circa la metà, e su GPT-2 medium ($d_k = 64$) misura un
-traffico diviso per circa nove, che su un carico memory-bound è tanto.
+In concreto, con i 164 KB di shared memory per SM di una A100 (sui 192 KB di
+SRAM), poco più di ottantamila elementi in `float16`, il rapporto varrebbe
+circa 20 con $d_k = 64$ e 5 con $d_k = 128$. L'articolo, discutendo il teorema,
+prende un $M_\text{chip}$ «around 100KB», circa i tre quinti, e su GPT-2 medium
+($d_k = 64$) misura un traffico diviso per circa nove, che su un carico
+memory-bound è tanto.
 
 Il risultato vale per $d_k \le M_\text{chip} \le N d_k$, e in quel regime non
 si fa di meglio. L'articolo dimostra infatti che nessun algoritmo di attenzione
@@ -511,8 +514,9 @@ precedenti, conservati per non ricalcolarli a ogni token nuovo (vanno tenuti
 entrambi, perché la key serve al confronto e il value alla media pesata).
 
 La KV cache cresce in proporzione alla lunghezza del testo, non al suo
-quadrato, ma pesa. Lo mostra un modello vero, il più piccolo di
-Llama 3, con otto miliardi di parametri {cite}`grattafiori2024llama3`:
+quadrato, ma pesa. Lo mostra un modello vero, il più piccolo dei modelli
+dell'articolo su Llama 3, con otto miliardi di parametri
+{cite}`grattafiori2024llama3`:
 
 - 32 strati, ognuno con la propria cache;
 - 32 teste di query ma solo 8 di key e value, perché gruppi di quattro teste
@@ -620,9 +624,9 @@ calcolo, la seconda alza il picco di calcolo e riduce i byte per elemento.
 - **Tensor core sempre più potenti e formati più stretti.** Le unità di matmul
   crescono in throughput di generazione in generazione (Hopper, poi Blackwell)
   e guadagnano formati numerici più compatti, **FP8** (8 bit) su Hopper
-  e FP4 su Blackwell {cite}`shah2024flashattention3`, che dimezzano o riducono a
-  un quarto i byte da spostare rispetto a `float16`, nella stessa logica della
-  precisione mista della sezione {doc}`Prestazioni e scala
+  {cite}`shah2024flashattention3` e FP4 su Blackwell, che dimezzano o riducono
+  a un quarto i byte da spostare rispetto a `float16`, nella stessa logica
+  della precisione mista della sezione {doc}`Prestazioni e scala
   </PyTorch/prestazioni>`. Più i tensor core sono veloci, però, più è facile
   ritrovarsi memory-bound: il ginocchio del roofline si sposta a destra, e la
   partita torna a giocarsi sui byte.

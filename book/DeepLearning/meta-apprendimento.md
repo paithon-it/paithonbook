@@ -12,8 +12,9 @@ La risposta ovvia è dare una ripassata sui dieci esempi a una rete già
 addestrata su tutti i compiti conosciuti. Questa strada funziona quando i
 compiti si somigliano molto, e funziona male quando la famiglia di compiti è
 varia, per una ragione controintuitiva: una rete addestrata su tutti i compiti
-insieme impara la loro media, e la media di una famiglia varia è vicina a
-pochi dei suoi membri e lontana da tutti gli altri.
+insieme impara la loro media, una specie di compito di mezzo, e in una famiglia
+varia il compito di mezzo è vicino a pochi dei suoi membri e lontano da tutti
+gli altri.
 
 Un'altra strada è il **meta-apprendimento**, cioè l'apprendimento
 sull'apprendimento. Invece di addestrare una rete a risolvere i compiti, la si
@@ -49,17 +50,17 @@ bene i tre di prima, ma prepararsi a imparare il quarto in fretta.
 Detta così sembra un gioco di parole, e invece cambia l'allenamento. Chi vuole
 suonare bene i tre strumenti si esercita sui tre strumenti. Chi vuole arrivare
 pronto al quarto deve esercitarsi in un modo strano: prendere ogni tanto uno
-strumento messo da parte, darsi cinque minuti, e poi guardare come suona dopo
-quei cinque minuti. Se suona male, [a essere corretta non è la tecnica di quei
-cinque minuti ma la posizione di partenza da cui li si era
-cominciati]{.pt-matita}.
+strumento messo da parte apposta, come se fosse nuovo, darsi cinque minuti, e
+poi guardare come suona dopo quei cinque minuti. Se suona male, [a essere
+corretta non è la tecnica di quei cinque minuti ma la posizione di partenza da
+cui li si era cominciati]{.pt-matita}.
 
 Per questo l'altra strada fallisce sulle famiglie varie. Chi si esercita sempre
 e solo a suonare bene i tre strumenti che ha, senza mai provare a ripartire da
 zero su un quarto, finisce per aggiustarsi addosso una posizione buona per quei
 tre e per nient'altro, comoda e ferma. Da lì i cinque minuti non bastano.
 
-In un caso va anche peggio, e l'esperimento sulle onde lo mostra in numeri.
+In un caso va anche peggio.
 Quella posizione comoda è un compromesso, tenuto in piedi da tanti piccoli
 aggiustamenti che si bilanciano fra loro. Chi ci sta dentro e prova a cambiarla
 in fretta, con correzioni decise verso il contrabbasso, la sbilancia: invece di
@@ -204,8 +205,9 @@ indovinare *quale* onda, avendone visti dieci punti.
 
 Poiché la media della famiglia si calcola, si può anche vedere in anticipo che
 cosa impara la rete allenata su tutte le onde insieme, che farà da termine di
-paragone. Sommando tutte le onde della famiglia e dividendo, resta un'onda
-sola, sempre la stessa e più bassa della maggior parte delle altre. Sta più o
+paragone. Sommando tutte le onde della famiglia e dividendo, resta un'onda sola
+(le partenze coprono solo mezzo giro, quindi le onde non si annullano del
+tutto), sempre la stessa e più bassa della maggior parte delle altre. Sta più o
 meno a metà strada fra tutte, e per questo è vicina a poche onde e lontana da
 tutte le altre. La rete allenata su tutte le onde insieme converge lì.
 
@@ -585,14 +587,15 @@ fattore medio: 0.53 sulle 4 direzioni che contano, 0.17 sulle altre 36
 
 Sulle classi nuove della stessa famiglia lo spazio appreso porta il
 riconoscimento da un esempio solo da 76,1% a 88,6%, e da cinque esempi da 91,2%
-a 95,6%. Con un esempio solo il rumore pesa di più, e lì scartare le misure
-che non contano rende di più.
+a 95,6%. Con un esempio solo il rumore pesa di più, perché non c'è una media di
+più esempi a smorzarlo, e lì scartare le misure che non contano rende di più.
 
 I fattori medi dicono che cosa è stato imparato, senza che nessuno lo avesse
 detto alla matrice. Le differenze lungo le quattro direzioni che contano
-risultano moltiplicate in media per 0,53, quelle lungo le altre trentasei per
-0,17, cioè circa tre volte più piccole. In altri termini, la matrice ha
-schiacciato le direzioni che non servivano.
+risultano moltiplicate in media per 0,53 (all'inizio valeva uno per tutte, cioè
+le misure così come sono), quelle lungo le altre trentasei per 0,17, cioè circa
+tre volte più piccole. In altri termini, la matrice ha schiacciato le direzioni
+che non servivano.
 
 Sulle classi dell’altra famiglia, invece, lo stesso schiacciamento cade sulle
 direzioni sbagliate, e lo spazio appreso fa peggio delle misure grezze: 64,7%

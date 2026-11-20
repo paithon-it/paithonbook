@@ -165,16 +165,16 @@ vanno messe in conto per come ce le si aspetta. Gli autori insistono che le due
 sono «matematicamente collegate ma con ruoli distinti e complementari»: $F$
 resta la quantità minimizzata nel tempo, e $G$ entra dentro il modello
 generativo come priore sulle politiche (grosso modo: una politica è probabile a
-priori nella misura in cui promette $F$ bassa in futuro)
-{cite}`parr2022active`.
+priori nella misura in cui promette osservazioni vicine a quelle preferite e
+poco ambigue) {cite}`parr2022active`.
 
-Nei modelli
-a stati discreti con cui il libro di Parr e colleghi lavora, il modello
-generativo ha quattro ingredienti: la verosimiglianza $\mathbf{A} = P(o \mid
-s)$, le transizioni $\mathbf{B}$, le preferenze $\mathbf{C}$ sulle osservazioni
-(la $C$ di $P(\tilde{o} \mid C)$ nel paragrafo «Come fa a scegliere una mossa»)
-e il priore $\mathbf{D}$ sullo stato iniziale; e il priore sulle politiche è
-$P(\pi) = \mathrm{softmax}\big(-G(\pi)\big)$.
+Nei modelli a stati discreti con cui il libro di Parr e colleghi lavora, il
+modello generativo ha quattro ingredienti: la verosimiglianza $\mathbf{A} = P(o
+\mid s)$, le transizioni $\mathbf{B}$, le preferenze $\mathbf{C}$ sulle
+osservazioni (la $C$ di $P(\tilde{o} \mid C)$ nel paragrafo «Come fa a
+scegliere una mossa») e il priore $\mathbf{D}$ sullo stato iniziale; e il
+priore sulle politiche è $P(\pi) = \mathrm{softmax}\big(-\gamma\,G(\pi)\big)$,
+con $\gamma > 0$ la precisione sulle politiche.
 
 Il costo si vede subito: $G$ va
 calcolata per ogni politica, e con $n$ azioni possibili a ogni passo e
@@ -449,7 +449,7 @@ Anche l'oggetto
 tecnico centrale ha le sue discussioni. L'energia libera attesa $G(\pi)$,
 quella che ordina le mosse, non coincide con l'energia libera variazionale
 calcolata sulle osservazioni future, e sceglierla come criterio, con la spinta
-a informarsi che porta con sé, è un'assunzione in più e non una conseguenza di
+a informarsi che porta con sé, è un'ipotesi in più e non una conseguenza di
 $F$ {cite}`millidge2021whence`.
 
 ## La stessa formula, sotto un altro nome
@@ -580,10 +580,11 @@ che cosa il sistema diventerà.
   la stessa operazione in due direzioni. Davanti a uno scarto fra quello che ti
   aspettavi e quello che trovi, o cambi idea (percepire) o cambi il mondo
   (agire). Anche imparare è la stessa cosa, solo più lenta.
-- L'obiettivo è non essere sorpresi, e l'obiezione ovvia («allora stattene fermo
-  in una stanza buia») cade subito: la sorpresa si misura rispetto a quello che
-  sei, non a quello che capita. Per un pesce, essere all'asciutto è la cosa più
-  sorprendente possibile, e restare immobile non lo aiuta affatto.
+- L'obiettivo è non essere sorpresi, e l'obiezione ovvia («allora stattene
+  fermo in una stanza buia») trova una risposta pronta, anche se discussa: la
+  sorpresa si misura rispetto a quello che sei, non a quello che capita. Per un
+  pesce, essere all'asciutto è la cosa più sorprendente possibile, e restare
+  immobile non lo aiuta affatto.
 - Per questo un organismo è costretto a muoversi, e ad anticipare: non basta
   sudare quando fa caldo, conviene cercare l'ombra prima. Anticipare vuol
   dire avere un modello di quel che succederà, che è poi l'argomento di questo

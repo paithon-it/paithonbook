@@ -195,7 +195,8 @@ perché questi metodi concentrano la distribuzione, con qualità alta e copertur
 più bassa. In DMD la stabilità la dà una perdita di regressione su coppie
 rumore-immagine generate in anticipo dal maestro: per CIFAR-10 si generano con
 meno dell'uno per cento del calcolo di addestramento, per Stable Diffusion 1.5
-sono dodici milioni, e legano lo studente alle traiettorie del maestro. DMD2
+sono mezzo milione con peso di guida 3 e dodici milioni con peso 8, e legano lo
+studente alle traiettorie del maestro. DMD2
 {cite}`yin2024improved` toglie la regressione e rimedia all'instabilità
 aggiornando il modello del punteggio dello studente più spesso del generatore
 (*two time-scale update rule*); aggiunge poi una perdita avversaria con un
@@ -211,11 +212,11 @@ distillazione del punteggio, e genera in un numero di passi fra uno e quattro.
 
 La differenza sostanziale rispetto alla distillazione progressiva è che [il
 vincolo riguarda la distribuzione, non la traiettoria]{.pt-matita}. Ne segue
-che lo studente può superare il maestro, cosa impossibile per costruzione nella
-famiglia precedente, e lo si è osservato: modelli a uno o due passi che battono
-il maestro a molti passi su punteggi percettivi, pur avendo una copertura delle
-modalità peggiore. Il costo è un addestramento con tre reti in gioco, con la
-stabilità che ne consegue.
+che lo studente può superare il maestro, cosa che nella famiglia precedente la
+perdita non favorisce, perché il suo bersaglio è l'uscita del maestro, e lo si
+è osservato: modelli a uno o due passi che battono il maestro a molti passi su
+punteggi percettivi, pur avendo una copertura delle modalità peggiore. Il costo
+è un addestramento con tre reti in gioco, con la stabilità che ne consegue.
 
 `````
 
@@ -506,10 +507,10 @@ lo dichiarano.
   cosa lungo una traiettoria la trasforma in un generatore a un passo, e
   l'ancora che impedisce la risposta banale è il punto di arrivo, dove la
   risposta si conosce.
-- Tutte e tre sostituiscono la velocità istantanea con qualcosa che contiene
-  già l'integrale, cioè la destinazione o la velocità media sul tratto. Un
-  passo con la velocità media è esatto per definizione; con quella istantanea
-  non lo è, e lo mostra il calcolo.
+- La prima e la terza sostituiscono la velocità istantanea con qualcosa che
+  contiene già l'integrale, cioè la destinazione o la velocità media sul
+  tratto. Un passo con la velocità media è esatto per definizione; con quella
+  istantanea non lo è, e lo mostra il calcolo.
 - I costi: meno varietà nelle immagini (soprattutto per chi fa combaciare le
   distribuzioni; chi insegue le traiettorie perde piuttosto in qualità della
   singola immagine),
@@ -538,7 +539,9 @@ lo dichiarano.
   \mathbf{f}_\phi(\mathbf{x}_s,s)$ lungo la PF-ODE, con
   $\mathbf{f}_\phi(\mathbf{x},\varepsilon)=\mathbf{x}$ imposta dalla
   parametrizzazione $c_{\text{skip}}\mathbf{x}+c_{\text{out}}F_\phi$. Si
-  addestra per distillazione o da zero, con una rete bersaglio a media mobile.
+  addestra per distillazione, con una rete bersaglio a media mobile, o da zero,
+  dove la versione migliorata usa come bersaglio la rete stessa a gradiente
+  fermato.
 - Il quadro unificante è quello delle mappe di flusso: si apprende
   $\Phi_{t\to s}$ invece di $\mathbf{u}_t$. Poiché $\Phi_{t\to s}(\mathbf{x}) =
   \mathbf{x}+(s-t)\bar{\mathbf{u}}$, un passo di Eulero con la velocità

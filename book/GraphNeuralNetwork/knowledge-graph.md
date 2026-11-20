@@ -14,7 +14,7 @@ sapere che Torino è una città, che sta in Italia, che ha un fiume, un
 sindaco e una squadra di calcio, e che «Torino» può anche essere quella
 squadra.
 
-L'idea non era nuova: la stessa struttura era già comparsa tre volte. Negli
+L'idea non era nuova: la stessa struttura era già comparsa più volte. Negli
 anni Sessanta con le reti semantiche di Ross Quillian, schemi in cui i concetti
 sono puntini e le linee fra loro dicono «è un», «ha un», «si trova in». Dal
 1984 con Cyc, il progetto in cui squadre di persone scrivevano a mano, un fatto
@@ -85,7 +85,7 @@ codominio di ogni relazione (`sindaco-di` va da una `Persona` a un
 entra e permettere l'inferenza per ereditarietà, cioè dedurre triple non scritte
 da quelle scritte.
 
-La proprietà semantica decisiva è l’**assunzione di mondo aperto**: [la
+La proprietà semantica decisiva è l’**ipotesi di mondo aperto**: [la
 mancanza di una tripla non è la sua negazione]{.pt-matita}. Ne discende che il
 problema naturale su un knowledge graph, la link prediction, non è una
 classificazione binaria ordinaria: dispone di soli esempi positivi, e gli
@@ -259,7 +259,7 @@ $$
 \big[\, \gamma - f(h,r,t) + f(h',r,t') \,\big]_+ .
 $$
 
-Le triple false non esistono in natura, per l'assunzione di mondo aperto: si
+Le triple false non esistono in natura, per l'ipotesi di mondo aperto: si
 fabbricano corrompendo quelle vere, e per questo l'insieme dei
 negativi $S'_{(h,r,t)}$ porta in pedice la tripla positiva da cui nasce, invece
 di essere un unico insieme globale: si sostituisce una sola delle due
@@ -439,12 +439,11 @@ sono le garanzie a giustificare il costo di costruirlo]{.pt-matita}.
 
 ```{admonition} Da ricordare
 :class: important
-- Un knowledge graph è un grafo di fatti: i nodi sono cose (persone,
-  luoghi, film, prodotti) e ogni arco porta un'etichetta che è un verbo. L'unità
-  minima è una frasetta di tre parole, la tripla: soggetto, relazione,
-  oggetto. Nodi di specie diverse e archi di specie diverse: è un grafo
-  eterogeneo, mentre quelli visti finora avevano nodi tutti della stessa
-  specie.
+- Un knowledge graph è un grafo di fatti: i nodi sono cose (persone, luoghi,
+  film, prodotti) e ogni arco porta un'etichetta che dice la relazione. L'unità
+  minima è una frasetta di tre parole, la tripla: soggetto, relazione, oggetto.
+  Nodi di specie diverse e archi di specie diverse: è un grafo eterogeneo,
+  mentre quelli visti finora avevano nodi tutti della stessa specie.
 - Un arco che manca dice «non lo so», non «è falso»: nessuno ha mai
   scritto tutti i fatti veri del mondo. Ne segue una conseguenza pratica
   fastidiosa: di esempi sbagliati non ce ne sono, e per addestrare un modello
@@ -489,7 +488,7 @@ sono le garanzie a giustificare il costo di costruirlo]{.pt-matita}.
 - Un knowledge graph è un multigrafo diretto etichettato di triple
   (soggetto, relazione, oggetto): nodi ed archi di tipi diversi, cioè un grafo
   eterogeneo, a differenza di tutti quelli visti finora nel capitolo.
-- Vale l’assunzione di mondo aperto: un arco che manca equivale a «non lo
+- Vale l’ipotesi di mondo aperto: un arco che manca equivale a «non lo
   so», non a «è falso». Da qui il fatto che gli esempi negativi non esistano e si
   debbano fabbricare corrompendo le triple vere.
 - Costruirlo è il lavoro: riconoscimento delle entità, collegamento (quale

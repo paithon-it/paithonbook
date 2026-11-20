@@ -62,13 +62,14 @@ immagine, etichetta = dati_train[0]
 print(immagine.shape, etichetta)  # torch.Size([3, 224, 224]) 0
 ```
 
-L'indice di ogni classe segue l'ordine delle cartelle per codice del
-carattere, e non l'ordine in cui le hai in testa. In particolare, le maiuscole
-vengono prima di tutte le minuscole, e le lettere accentate vanno in fondo,
-dopo la zeta. Per tradurre una predizione in una parola si usa quindi
-`dati_train.classes[indice]`, l'unico modo che non riscrive quell'ordine: una
-lista di nomi scritta a mano in un altro ordine produce un modello che sembra
-sbagliare tutto mentre funziona benissimo.
+L'indice di ogni classe segue l'ordine delle cartelle per codice del carattere
+(il numero con cui il computer registra ogni lettera), e non l'ordine in cui le
+hai in testa. In particolare, le maiuscole vengono prima di tutte le minuscole,
+e le lettere accentate vanno in fondo, dopo la zeta. Per tradurre una
+predizione in una parola si usa quindi `dati_train.classes[indice]`, l'unico
+modo che non riscrive quell'ordine: una lista di nomi scritta a mano in un
+altro ordine produce un modello che sembra sbagliare tutto mentre funziona
+benissimo.
 
 ## Scrivere un `Dataset` a mano
 
@@ -304,16 +305,17 @@ La media da sola non basta, e lo si vede con due materie. In italiano i voti
 stanno quasi tutti fra 5 e 7, in matematica vanno dal 2 al 10, e un 8 nella
 prima non è la stessa impresa di un 8 nella seconda. Allora lo scarto dalla
 media si divide per quanto quei voti si sparpagliano di solito, e lo
-sparpagliamento si chiama deviazione standard. Con media 6 e
-sparpagliamento 1 quell'8 diventa 2, con media 6 e sparpagliamento 4
-diventa 0,5.
+sparpagliamento si chiama deviazione standard. Con media 6 e sparpagliamento 1
+quell'8, che sta due punti sopra la media, diventa 2; con media 6 e
+sparpagliamento 4 diventa 0,5, cioè quei due punti divisi per quattro.
 
 Le materie di `Normalize` sono i colori. Per il rosso, il verde e il blu tiene
 una media e uno sparpagliamento a testa, ed ecco perché i numeri della riga
 sono sei, due per colore. Al rosso più acceso, che dopo la conversione vale 1,
-toglie 0,485 e divide per 0,229: viene circa 2,2. Al nero, che vale 0, viene
-circa 2,1 sotto zero. Il rosso prima andava da 0 a 1, e adesso si distende da
-2,1 sotto zero a 2,2 sopra.
+toglie la media, 0,485, e divide il resto per lo sparpagliamento, 0,229: viene
+circa 2,2. Al nero, che vale 0, toglie la stessa media e divide per lo stesso
+numero, e viene circa 2,1 sotto zero. Il rosso prima andava da 0 a 1, e adesso
+si distende da 2,1 sotto zero a 2,2 sopra.
 
 La media di classe si fa sui voti, non sui compiti. Finché sono fogli si
 possono ricopiare, accorciare, riscrivere, ma nessuno ne fa la media. Allo
@@ -451,12 +453,13 @@ vassoio (la batch norm della sezione sul
 [training loop](addestramento.md)), e su metà vassoio quelle medie restano
 giuste e diventano soltanto più ballerine.
 
-Con 2049 esempi, però, l'ultimo vassoio ne avrebbe uno solo, e da un numero solo
-la media si fa ma la misura di quanto i numeri si sparpagliano no. Quando quei
-pezzi ricevono dal vassoio un solo numero per ogni esempio, un vassoio da uno li
-ferma con un errore. Su una fotografia questo non succede, perché lì i numeri su
-cui calcolano sono i pixel, e restano tanti anche con una foto sola. Per non
-pensarci si butta via l'ultimo vassoio quando è incompleto: è `drop_last`.
+Con 2049 esempi, però, dopo sessantaquattro vassoi pieni l'ultimo ne avrebbe
+uno solo, e da un numero solo la media si fa ma la misura di quanto i numeri si
+sparpagliano no. Quando quei pezzi ricevono dal vassoio un solo numero per ogni
+esempio, un vassoio da uno li ferma con un errore. Su una fotografia questo non
+succede, perché lì i numeri su cui calcolano sono i pixel, e restano tanti
+anche con una foto sola. Per non pensarci si butta via l'ultimo vassoio quando
+è incompleto: è `drop_last`.
 
 Alla fine di ogni epoca, poi, gli aiutanti vengono licenziati e riassunti
 subito dopo. Se prepararsi richiede loro qualche secondo, quei secondi si
@@ -597,10 +600,11 @@ esempio, è arrivata a trentasette con trentadue zeri in coda. Gli zeri
 aggiunti sono l’**imbottitura** (in inglese *padding*).
 
 Le lunghezze vanno restituite insieme ai dati perché, dopo l'imbottitura, tutte
-le frasi del batch hanno la stessa larghezza, e [gli zeri aggiunti in coda sono
-indistinguibili da parole vere]{.pt-matita}. Di conseguenza, senza sapere dove
-finisce la frase, il modello imparerebbe che lo zero è una parola come le
-altre, e passerebbe metà del suo tempo a studiare l'imbottitura.
+le frasi del batch hanno la stessa larghezza, e [gli zeri aggiunti in coda, se
+nessuno li esclude, entrano nei calcoli come le parole vere]{.pt-matita}. Di
+conseguenza, senza sapere dove finisce la frase, una rete ricorrente o una
+media sulle posizioni li elaborerebbe come il resto, e il modello passerebbe
+metà del suo tempo a studiare l'imbottitura.
 
 Le lunghezze sono l'informazione che permette di dire «da qui in poi non
 guardare», e si usano in due modi. La {doc}`sezione
@@ -841,8 +845,9 @@ C'è poi un secondo motivo per impacchettare i file, un lavoro che si fa una
 volta sola e serve per sempre. Mentre si scorre tutta la collezione per
 riscriverla, la si sta già leggendo, quindi calcolare intanto media e
 deviazione standard di ogni colore non allunga i tempi. Sono i sei numeri che
-servono a `Normalize` e che erano stati presi in prestito da ImageNet. Sui
-propri dati si calcolano, e vengono meglio.
+servono a `Normalize` e che erano stati presi in prestito da ImageNet. Chi
+addestra da zero li calcola sui propri dati, e descrivono quelle foto meglio di
+quelli presi in prestito.
 
 Anche qui vale la regola della divisione dei dati: i sei numeri si calcolano
 sulle sole foto di addestramento, perché calcolarli su tutte fa entrare le

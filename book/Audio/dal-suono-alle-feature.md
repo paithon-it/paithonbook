@@ -7,19 +7,17 @@ descrizione: "Come si trasforma un suono in numeri per un modello: campionamento
 # Dal suono alle feature
 
 Quando pronunciamo una parola non facciamo altro che spingere aria. Le corde
-vocali vibrano, l'aria si comprime e si dirada (si *rarefà*, dicono i fisici), e
-un'onda di pressione viaggia fino al timpano di chi ascolta, o alla membrana di
-un microfono. Negli anni
-Quaranta, ai Bell Labs, il gruppo guidato da Ralph Potter costruì il *sound
-spectrograph*, una macchina che trasformava quest'onda in un'immagine
-{cite}`koenig1946sound`; e le immagini che ne uscivano le chiamò *visible
-speech*, "parola visibile", riprendendo il titolo dell'alfabeto fonetico che
-Alexander Melville Bell aveva pubblicato ottant'anni prima
-{cite}`potter1947visible`. È esattamente il percorso che compie oggi
-*qualsiasi* sistema che lavora sull'audio (riconoscere una voce, un canto, un
-allarme) prima ancora di provare a capire *cosa* quel suono significhi:
-trasformare un'onda in numeri, e i numeri in un'immagine su cui un modello sa
-lavorare.
+vocali vibrano, l'aria si comprime e si dirada (si *rarefà*, dicono i fisici),
+e un'onda di pressione viaggia fino al timpano di chi ascolta, o alla membrana
+di un microfono. Negli anni Quaranta, ai Bell Labs, il gruppo guidato da Ralph
+Potter costruì il *sound spectrograph*, una macchina che trasformava quest'onda
+in un'immagine {cite}`koenig1946sound`; e le immagini che ne uscivano le chiamò
+*visible speech*, "parola visibile", riprendendo il titolo dell'alfabeto
+fonetico che Alexander Melville Bell aveva pubblicato ottant'anni prima
+{cite}`potter1947visible`. È esattamente il percorso che compie oggi quasi ogni
+sistema che deve riconoscere un suono (una voce, un canto, un allarme) prima
+ancora di provare a capire *cosa* quel suono significhi: trasformare un'onda in
+numeri, e i numeri in un'immagine su cui un modello sa lavorare.
 
 Le **feature** sono le grandezze numeriche con cui si descrive un esempio a un
 modello. Per un suono vanno dai campioni dell'onda fino allo spettrogramma
@@ -155,8 +153,8 @@ vivono lassù, dove la voce non arriva.
 `````{tab} Superiore
 
 È il **teorema del campionamento** di Nyquist–Shannon: per ricostruire senza
-perdita un segnale la cui frequenza massima è $f_{\max}$, la frequenza di
-campionamento deve soddisfare
+perdita un segnale in banda base, con lo spettro fra $0$ e $f_{\max}$, basta
+che la frequenza di campionamento soddisfi
 
 $$
 f_s > 2\,f_{\max},
@@ -180,12 +178,13 @@ $$
 un'interpolazione con un nucleo che si estende all'infinito nei due versi:
 esatta in teoria, approssimata con un filtro troncato in pratica. Se invece il
 segnale contiene componenti oltre la soglia, esse si "ripiegano" su frequenze
-più basse generando l'aliasing. Infatti un coseno a frequenza $f$ dà gli stessi
-campioni di un coseno a $|f - k f_s|$ per ogni intero $k$, quindi dopo il
-campionamento è indistinguibile dalla sua immagine nella banda $[0, f_s/2]$ (ad
-esempio un tono a $5$ kHz campionato a $8$ kHz dà esattamente gli stessi
-campioni di un tono a $3$ kHz). Sono artefatti irreversibili. [Per questo si
-applica un filtro anti-aliasing (passa-basso) *prima* di
+più basse generando l'aliasing. Infatti un coseno $\cos(2\pi f t + \varphi)$ dà
+gli stessi campioni di uno a frequenza $|f - k f_s|$ per ogni intero $k$, con
+la fase di segno opposto quando $f - k f_s < 0$, quindi dopo il campionamento è
+indistinguibile dalla sua immagine nella banda $[0, f_s/2]$ (ad esempio un tono
+a $5$ kHz campionato a $8$ kHz dà esattamente gli stessi campioni di un tono a
+$3$ kHz con la fase cambiata di segno). Sono artefatti irreversibili. [Per
+questo si applica un filtro anti-aliasing (passa-basso) *prima* di
 campionare]{.pt-matita}. La voce viene tipicamente trattata a $f_s =
 16\,\text{kHz}$, un buon compromesso tra fedeltà e peso.
 
@@ -435,9 +434,9 @@ Griffin e Lim lo fa alternando una stima della fase e la ricostruzione che le
 corrisponde, con un errore che non cresce da un'iterazione all'altra ma senza
 garanzia di ritrovare l'originale {cite}`griffin1984signal`.
 
-Il compromesso è teorico e non pratico: viene dalla relazione di
-indeterminazione di Gabor (1946), l'analogo per l'analisi di Fourier del
-principio di indeterminazione di Heisenberg,
+Il compromesso non dipende dall'algoritmo ma dalla matematica: viene dalla
+relazione di indeterminazione di Gabor (1946), l'analogo per l'analisi di
+Fourier del principio di indeterminazione di Heisenberg,
 
 $$
 \sigma_t \cdot \sigma_f \ \geq\ \frac{1}{4\pi},
@@ -760,8 +759,9 @@ istanti diversi.
 - Un suono digitale è una sequenza di numeri (ampiezza nel tempo),
   $x[n] = x(nT_s)$: campionamento del tempo e quantizzazione dell'ampiezza (PCM
   a 16 bit).
-- Il teorema di Nyquist impone $f_s > 2 f_{\max}$: sotto quella soglia
-  compare l'aliasing, e serve un filtro passa-basso *prima* di campionare.
+- Per un segnale in banda base il teorema di Nyquist chiede $f_s > 2 f_{\max}$:
+  sotto quella soglia compare l'aliasing, e serve un filtro passa-basso *prima*
+  di campionare.
 - La trasformata di Fourier passa dal tempo alle frequenze: la DFT è un cambio
   di base ortogonale, invertibile con modulo e fase, calcolata con la FFT in
   $O(N\log N)$, e per un segnale reale bastano $\lfloor N/2\rfloor + 1$

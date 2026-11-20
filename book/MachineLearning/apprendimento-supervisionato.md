@@ -326,10 +326,11 @@ parte in cui il terreno cala, poi un altro da lì, finché non c'è più discesa
 La posizione sul fianco è la coppia $(w, b)$, l'altezza è quanto quella retta
 sbaglia sulle case dell'archivio.
 
-Il piede, qui, non serve, perché l'errore è scritto in una formula e la
-pendenza si calcola stando fermi, come quella di una rampa dalle sue misure. La
-direzione in cui il terreno sale più ripido si chiama gradiente, e camminare
-nel verso opposto, passo dopo passo, è la discesa del gradiente.
+Nella nebbia la discesa si cerca tastando il terreno col piede. Qui non serve,
+perché l'errore è scritto in una formula e la pendenza si calcola stando fermi,
+come quella di una rampa dalle sue misure. La direzione in cui il terreno sale
+più ripido si chiama gradiente, e camminare nel verso opposto, passo dopo
+passo, è la discesa del gradiente.
 
 Chi cammina decide la lunghezza del passo, che cambia tutto: a passi corti ci
 si mette un'eternità, a passi lunghi si scavalca il fondovalle e si rimbalza da
@@ -349,13 +350,13 @@ migliori in un colpo solo, e lo si usa finché i dati stanno comodi; con
 migliaia di colonne, o con tanti esempi da non stare in memoria, la passeggiata
 richiede meno calcolo.
 
-C'è però un intoppo che la nebbia non spiega. In archivio la superficie è
-finita due volte, in metri quadri da una fonte e in centimetri quadrati da
-un'altra, e il fondo della scodella si allunga in un fondovalle piatto. Infatti
-duemila euro al metro quadro e niente all'altra colonna, oppure mille euro al
-metro quadro e dieci centesimi al centimetro quadrato, danno su ogni casa lo
-stesso prezzo (su $80$ m², cioè $800\,000$ cm², la superficie porta $160\,000$
-€ nei due modi).
+C'è però un intoppo che la nebbia non spiega. In archivio la superficie compare
+due volte, in metri quadri da una fonte e in centimetri quadrati da un'altra, e
+il fondo della scodella si allunga in un fondovalle piatto. Infatti duemila
+euro al metro quadro e niente all'altra colonna, oppure mille euro al metro
+quadro e dieci centesimi al centimetro quadrato, danno su ogni casa lo stesso
+prezzo (su $80$ m², cioè $800\,000$ cm², la superficie porta $160\,000$ € nei
+due modi).
 
 Di conseguenza, due colleghi partiti da punti diversi si fermano in due punti
 diversi di quel fondo, con due regole diverse, e il calcolo diretto si inceppa,
@@ -469,9 +470,11 @@ però, serve un taglio fissato da chi usa il filtro, per abitudine $0{,}5$, con
 I pesi si trovano scendendo di nuovo una collina, ma l'altezza adesso si misura
 come in una scommessa: il filtro punta la sua sicurezza, e se sbaglia paga una
 multa tanto più salata quanto più era sicuro. La multa sale di un gradino ogni
-volta che la sicurezza lasciata alla risposta giusta si divide per dieci, e di
-circa mezzo gradino quando si divide per tre, perché tre per tre fa quasi dieci
-(contare le divisioni per dieci è il logaritmo della {doc}`sezione su analisi e
+volta che la sicurezza data alla risposta giusta si divide per dieci (un
+gradino se il filtro le dava una possibilità su dieci, due se una su cento, tre
+se una su mille), e di circa mezzo gradino quando si divide per tre, perché tre
+per tre fa quasi dieci (contare le divisioni per dieci è il logaritmo della
+{doc}`sezione su analisi e
 ottimizzazione </Matematica/analisi-ottimizzazione>`).
 
 Ad esempio, dare $0{,}6$ a un'email che spam non era lascia $0{,}4$ al «no», uno
@@ -851,10 +854,11 @@ $$
 dove $h$ dipende dalla sola $y$ (la misura di base: vale $1$ per la Bernoulli,
 $1/y!$ per la Poisson), $\theta$ è il **parametro naturale** (una lettera che
 qui non indica i parametri del modello, che restano $\mathbf{w}$ e $b$) e
-$A(\theta) = \log\int h(y)e^{\theta y}\,dy$ è la **log-partizione**, cioè il
-logaritmo di ciò che serve a far tornare l'integrale a uno, e che dipende da
-$\theta$. Da $A$ discende tutto, derivando sotto il segno di integrale (lecito
-all'interno dell'insieme dei $\theta$ per cui quell'integrale converge):
+$A(\theta) = \log\int h(y)e^{\theta y}\,dy$ (una somma, per le distribuzioni
+discrete come queste due) è la **log-partizione**, cioè il logaritmo di ciò che
+serve a far tornare l'integrale a uno, e che dipende da $\theta$. Da $A$
+discende tutto, derivando sotto il segno di integrale (lecito all'interno
+dell'insieme dei $\theta$ per cui quell'integrale converge):
 
 $$
 A'(\theta) = \mathbb{E}[y], \qquad A''(\theta) = \operatorname{Var}[y] .
@@ -1301,8 +1305,9 @@ quasi tutti i modelli di scikit-learn.
   e delle distanze che nessuno intendeva metterci.
 - k-NN è non parametrico: non stima parametri, ricorda i dati e li fa votare.
   Costo $O(mn)$ per query ($m$ distanze da $n$ coordinate ciascuna), che gli
-  indici spaziali (KD-tree, ball-tree) portano a circa $O(n\log m)$ sotto le
-  poche decine di dimensioni; sopra, se le coordinate variano in modo quasi
+  indici spaziali (KD-tree, ball-tree) portano a circa $\log m$ distanze, con
+  una costante che cresce in modo esponenziale con $n$: servono sotto le poche
+  decine di dimensioni; sopra, se le coordinate variano in modo quasi
   indipendente, la concentrazione delle distanze affossa gli indici e il metodo
   insieme.
 - Attenzione all’overfitting: imparare a memoria non è capire. Lo tratta la

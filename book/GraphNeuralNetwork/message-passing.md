@@ -123,16 +123,16 @@ libro $\oplus$ indica la concatenazione, che in questo capitolo si scrive
 $\|$.) Dopo $K$ passi, per un compito sull'intero grafo si applica una funzione
 di lettura
 ($\mathrm{READOUT}$), anch'essa invariante alla permutazione,
-$\hat{y}_G = R\big(\{\, \mathbf{h}_v^{(K)} : v \in V \,\}\big)$.
+$\hat{y}_G = R\big(\{\!\{\, \mathbf{h}_v^{(K)} : v \in V \,\}\!\}\big)$.
 
-L'invarianza di $\bigoplus$ è ciò che garantisce l’equivarianza alla
-permutazione anticipata nell'introduzione: rinumerare i nodi non cambia i
-messaggi, perché una somma non ha un primo addendo. Ed è la
-stessa forma astratta («aggrega dai vicini, poi aggiorna») dello schema
-$\mathrm{AGGREGATE}$/$\mathrm{UPDATE}$ visto in apertura del capitolo, qui resa
-esplicita nelle sue tre componenti: la funzione messaggio $M_k$ e
-l'aggiornamento $U_k$, che si apprendono, e l'aggregazione $\bigoplus$, che è
-fissata (somma, media o massimo).
+L'invarianza di $\bigoplus$, insieme al fatto che $M_k$ e $U_k$ sono le stesse
+per ogni nodo, è ciò che garantisce l’equivarianza alla permutazione anticipata
+nell'introduzione: rinumerare i nodi non cambia i messaggi, perché una somma
+non ha un primo addendo. Ed è la stessa forma astratta («aggrega dai vicini,
+poi aggiorna») dello schema $\mathrm{AGGREGATE}$/$\mathrm{UPDATE}$ visto in
+apertura del capitolo, qui resa esplicita nelle sue tre componenti: la funzione
+messaggio $M_k$ e l'aggiornamento $U_k$, che si apprendono, e l'aggregazione
+$\bigoplus$, che è fissata (somma, media o massimo).
 
 `````
 
@@ -217,9 +217,10 @@ di quattro nodi, e subito dopo si dirà perché sono fatti così.
   messaggi.
 - $\mathbf{W}^{(l)} \in \mathbb{R}^{F_l \times F_{l+1}}$ è la matrice dei pesi
   appresi dello strato (la stessa per tutti i nodi, come il filtro di una CNN)
-  e $\sigma$ una non-linearità (di solito la ReLU). È lei a decidere la
-  larghezza del passo successivo: $\mathbf{H}^{(l)}\mathbf{W}^{(l)}$ manda
-  $N \times F_l$ in $N \times F_{l+1}$.
+  e $\sigma$ una non-linearità (di solito la ReLU). È $\mathbf{W}^{(l)}$ a
+  decidere la larghezza del passo successivo:
+  $\mathbf{H}^{(l)}\mathbf{W}^{(l)}$ manda $N \times F_l$ in $N \times
+  F_{l+1}$.
 
 Letta nodo per nodo, la riga matriciale dice «aggrega, poi
 aggiorna»:
@@ -462,27 +463,32 @@ a non leggerci più di quanto ci sia: scala stabile non equivale a
 informazione conservata, perché tutto ciò che non giace lungo l'autovettore
 dominante svanisce comunque.
 
-La forma simmetrica si distingue per la simmetria stessa:
-$\hat{\mathbf{A}}$ è autoaggiunta, quindi ha autovalori reali e una base di
-autovettori ortonormale, mentre $\tilde{\mathbf{D}}^{-1}\tilde{\mathbf{A}}$
-non è simmetrica e i suoi autovettori non sono ortogonali. [È questa proprietà,
-e non il controllo delle scale, a rendere lecito tutto ciò che segue]{.pt-matita}:
-decomporre un segnale sui nodi nelle sue «frequenze» con $\mathbf{U}^\top$,
-moltiplicarle una per una e ricomporre con $\mathbf{U}$ presuppone una base
-ortonormale, e senza di essa la lettura spettrale non sta in piedi.
+La forma simmetrica si distingue per la simmetria stessa: $\hat{\mathbf{A}}$ è
+autoaggiunta, quindi ha autovalori reali e una base di autovettori ortonormale,
+mentre $\tilde{\mathbf{D}}^{-1}\tilde{\mathbf{A}}$ non è simmetrica e i suoi
+autovettori non sono ortogonali. [È questa proprietà, e non il controllo delle
+scale, a rendere comoda tutta la lettura che segue]{.pt-matita}: decomporre un
+segnale sui nodi nelle sue «frequenze» con $\mathbf{U}^\top$, moltiplicarle una
+per una e ricomporre con $\mathbf{U}$ presuppone una base ortonormale;
+$\hat{\mathbf{A}}$ ce l'ha nel prodotto scalare ordinario, mentre
+$\tilde{\mathbf{D}}^{-1}\tilde{\mathbf{A}}$, simile a lei, ne ha una solo nel
+prodotto pesato $\mathbf{x}^\top\tilde{\mathbf{D}}\mathbf{y}$, dove la stessa
+lettura andrebbe rifatta.
 
-Ed è anche la ragione per cui quella forma emerge dai calcoli invece di essere
-una scelta a priori. Qui sta il secondo punto, l’origine spettrale. La GCN
-nasce come approssimazione al prim'ordine di una convoluzione definita nel
-dominio spettrale del grafo: i filtri polinomiali di Čebyšëv di Defferrard,
-Bresson e Vandergheynst {cite}`defferrard2016convolutional`. Troncare quel
-polinomio al primo grado e legare i due coefficienti che restano lascia
-$\mathbf{I}_N + \mathbf{D}^{-1/2}\mathbf{A}\mathbf{D}^{-1/2}$, che il
+Ed è anche la ragione per cui la derivazione spettrale parte dal laplaciano
+simmetrico, da cui quella forma discende. Qui sta il secondo punto, l’origine
+spettrale. La GCN nasce come approssimazione al prim'ordine di una convoluzione
+definita nel dominio spettrale del grafo: i filtri polinomiali di Čebyšëv di
+Defferrard, Bresson e Vandergheynst {cite}`defferrard2016convolutional`.
+Troncare quel polinomio al primo grado e legare i due coefficienti che restano
+lascia $\mathbf{I}_N + \mathbf{D}^{-1/2}\mathbf{A}\mathbf{D}^{-1/2}$, che il
 *renormalization trick* sostituisce con $\hat{\mathbf{A}}$: è da lì che la
-normalizzazione simmetrica emerge dai calcoli, e non è una scelta arbitraria.
-Rispetto al modello originale di Scarselli e colleghi
-{cite}`scarselli2009graph`, che iterava fino a un punto fisso, la GCN fissa un
-numero piccolo di strati e si addestra come una qualunque rete profonda.
+normalizzazione simmetrica emerge dai calcoli, una volta scelto il laplaciano
+simmetrico (partendo da $\mathbf{I}_N - \mathbf{D}^{-1}\mathbf{A}$, gli stessi
+passi darebbero $\tilde{\mathbf{D}}^{-1}\tilde{\mathbf{A}}$). Rispetto al
+modello originale di Scarselli e colleghi {cite}`scarselli2009graph`, che
+iterava fino a un punto fisso, la GCN fissa un numero piccolo di strati e si
+addestra come una qualunque rete profonda.
 
 `````
 
@@ -551,7 +557,9 @@ $$
 $$
 
 simmetrico e semidefinito positivo, quindi diagonalizzabile con autovettori
-ortonormali $\mathbf{U}$ e autovalori reali $\lambda_i \in [0, 2]$.
+ortonormali $\mathbf{U}$ e autovalori reali $\lambda_i \ge 0$; il tetto
+$\lambda_i \le 2$ viene dalla forma quadratica, perché $(a-b)^2 \le
+2(a^2+b^2)$, e si raggiunge solo se il grafo ha una componente bipartita.
 
 Che gli autovalori siano «frequenze» non è un'analogia vaga: si legge dalla
 **forma quadratica** del laplaciano normalizzato, che vale
@@ -597,7 +605,8 @@ località chiedendo moltiplicatori lisci nella frequenza, che è la via che il
 passo successivo rende sistematica.
 
 Entrambi i problemi si risolvono con lo stesso espediente: approssimare
-$g_\theta$ con un polinomio di grado $K$, e in particolare con i polinomi di
+$g_\theta$ con un polinomio di grado $K$ (qui $K$ è il grado del filtro, non il
+numero di strati della rete), e in particolare con i polinomi di
 Čebyšëv {cite}`hammond2011wavelets`,
 
 $$
@@ -643,10 +652,10 @@ fa esplodere i valori: da qui il *renormalization trick*, cioè sostituirla con
 $\hat{\mathbf{A}} =
 \tilde{\mathbf{D}}^{-1/2}\tilde{\mathbf{A}}\tilde{\mathbf{D}}^{-1/2}$ dove
 $\tilde{\mathbf{A}} = \mathbf{A} + \mathbf{I}_N$ e $\tilde{\mathbf{D}}$ è la
-matrice dei gradi di $\tilde{\mathbf{A}}$. È la formula della GCN, e si
-chiude la questione rimasta in sospeso: la normalizzazione simmetrica è quel che
-resta di una convoluzione spettrale dopo due approssimazioni, e non una scelta
-di comodo.
+matrice dei gradi di $\tilde{\mathbf{A}}$. È la formula della GCN, e si chiude
+la questione rimasta in sospeso: la normalizzazione simmetrica è quel che resta
+di una convoluzione spettrale sul laplaciano simmetrico dopo due
+approssimazioni.
 
 I cappi, per inciso, non riscalano soltanto: rendono il grafo non bipartito e
 staccano il fondo dello spettro da $-1$ (su una catena di otto nodi il minimo
@@ -681,7 +690,7 @@ Guarda l'ultima riga. Il nodo partito da $1$ e quello partito da $4$
 sono finiti praticamente sullo stesso numero, e così i due di mezzo. Delle
 differenze di partenza non è rimasto niente, e i due valori diversi che si
 vedono ancora ($2{,}2$ e $2{,}7$) non dicono chi era il nodo: dicono soltanto
-quanti vicini ha, uno i due di bordo e due i due interni.
+quanti vicini ha: un vicino i due nodi di bordo, due vicini i due interni.
 
 Il perché si vede a occhio. Se a ogni giro ognuno si rimescola con i vicini, e
 i vicini fanno lo stesso con i loro, dopo un po’ nessuno ha più niente di suo:
@@ -705,19 +714,18 @@ venti.
 `````{tab} Superiore
 
 Chiamiamo $\lambda_i(\hat{\mathbf{A}})$ gli autovalori dell'operatore appena
-ottenuto: stanno in $[-1, 1]$, il più grande vale $1$, e il suo
-autovettore è $\tilde{\mathbf{D}}^{1/2}\mathbf{1}$, cioè la radice dei gradi.
-Uno strato GCN (a meno di $\mathbf{W}$ e della non linearità) è la
-moltiplicazione per $\hat{\mathbf{A}}$; $K$ strati sono $\hat{\mathbf{A}}^K$,
-che eleva alla $K$ gli autovalori di $\hat{\mathbf{A}}$, e ogni
-autovalore di modulo minore di $1$ svanisce: dopo abbastanza strati
-sopravvive solo la componente lungo l'autovettore dominante, che è la stessa
-per tutti i nodi a meno del loro grado. (Vale su un grafo **connesso**: se le
-componenti connesse sono più d'una, l'autovalore $1$ ha la loro molteplicità e
-il collasso avviene dentro ciascuna componente separatamente. Succede
-in pratica, perché un batch di molecole in PyTorch Geometric *è* un unico grafo
-sconnesso, una componente per molecola, e l'oversmoothing non le mescola fra
-loro.)
+ottenuto: stanno in $[-1, 1]$, il più grande vale $1$, e il suo autovettore è
+$\tilde{\mathbf{D}}^{1/2}\mathbf{1}$, cioè la radice dei gradi. Uno strato GCN
+(a meno di $\mathbf{W}$ e della non linearità) è la moltiplicazione per
+$\hat{\mathbf{A}}$; $K$ strati sono $\hat{\mathbf{A}}^K$, che eleva alla $K$
+gli autovalori di $\hat{\mathbf{A}}$, e ogni autovalore di modulo minore di $1$
+svanisce: dopo abbastanza strati sopravvive solo la componente lungo
+l'autovettore dominante, che è la stessa per tutti i nodi a meno della radice
+del loro grado. (Vale su un grafo **connesso**: se le componenti connesse sono
+più d'una, l'autovalore $1$ ha la loro molteplicità e il collasso avviene
+dentro ciascuna componente separatamente. Succede in pratica, perché un batch
+di molecole in PyTorch Geometric *è* un unico grafo sconnesso, una componente
+per molecola, e l'oversmoothing non le mescola fra loro.)
 
 Sulla catena di quattro nodi, con $\mathbf{X} = (1,2,3,4)^\top$, i quattro
 autovalori di $\hat{\mathbf{A}}$ valgono $1$, $0{,}729$, $0{,}167$ e
@@ -850,11 +858,10 @@ per cui esiste un cammino di lunghezza $\le K$ fino a $v$]{.pt-matita} (il **cam
 recettivo** a $K$ salti, l'analogo del campo recettivo che cresce con la
 profondità nelle CNN). Da qui due indicazioni pratiche. Primo, la profondità va
 scelta in base a quanti salti di distanza sta l'informazione che serve: sui
-grafi di citazioni come Cora bastano due o tre strati, perché il numero di
-nodi raggiunti cresce in fretta col grado (sui compiti in cui l'informazione
-sta lontana, invece, no: è il problema dell'over-squashing). Secondo,
-andare più a fondo senza accorgimenti peggiora i risultati, per due cause che
-si sommano e non sono facili da separare. Applicando molte volte
+grafi di citazioni come Cora bastano due o tre strati (sui compiti in cui
+l'informazione sta lontana, invece, no: è il problema dell'over-squashing).
+Secondo, andare più a fondo senza accorgimenti peggiora i risultati, per due
+cause che si sommano e non sono facili da separare. Applicando molte volte
 $\hat{\mathbf{A}}$, le rappresentazioni dei nodi di una componente connessa si
 avvicinano a vettori che dipendono soltanto dal grado (l’*oversmoothing*); e
 una pila profonda è difficile da addestrare di suo. Kipf e Welling, nella loro
@@ -1051,8 +1058,10 @@ In pratica non serve scrivere lo strato a mano: la libreria **PyTorch
 Geometric** offre `GCNConv`, che aggiunge i cappi e applica la normalizzazione
 simmetrica al volo. Al posto della matrice $\hat{\mathbf{A}}$ intera prende il
 grafo in un formato compatto, `edge_index`, che è la sola lista degli archi (di
-forma `(2, num_archi)`). È l'unica strada praticabile sui grafi grandi, dove
-$\hat{\mathbf{A}}$ intera non entrerebbe in memoria:
+forma `(2, num_archi)`). Sui grafi grandi è la strada praticabile, perché la
+$\hat{\mathbf{A}}$ densa non entrerebbe in memoria (una matrice sparsa andrebbe
+altrettanto bene, ed `edge_index` è proprio l'elenco delle sue posizioni non
+nulle):
 
 ```python
 from torch_geometric.nn import GCNConv
@@ -1130,7 +1139,7 @@ vicini e i pesi di attenzione.
   però per entrambe le forme, quella per righe e quella simmetrica, che sono
   matrici simili e hanno lo stesso spettro. La GCN sceglie la
   simmetrica perché $\hat{\mathbf{A}}$ è autoaggiunta, quindi ha
-  autovettori ortonormali, e questo rende lecita la lettura spettrale da
+  autovettori ortonormali, e questo rende diretta la lettura spettrale da
   cui la formula discende (filtri di Čebyšëv,
   {cite}`defferrard2016convolutional`).
 - Sul grafo le frequenze hanno un senso preciso: un segnale è a bassa

@@ -143,7 +143,7 @@ Nemmeno con quel termine, però, il minimizzatore
 della loss è unico in senso stretto. Con $N_c$ punti di collocazione *finiti*,
 infinite funzioni annullano il residuo in quei punti e rispettano le due
 condizioni iniziali; la soluzione vera è l'unico minimo globale se ci si
-restringe alle soluzioni dell'equazione, ovvero nel limite in cui il residuo è
+restringe alle soluzioni dell'equazione, cioè nel limite in cui il residuo è
 controllato su tutto il dominio e non solo sul campione. Nel mezzo dovrebbe
 pensarci la regolarità della rete, che a rigore non le impedisce affatto di
 oscillare fra un punto di collocazione e il successivo: è un argomento
@@ -171,11 +171,11 @@ $$
 
 Ne segue che [l'errore è controllato dagli scarti iniziali e dall'integrale del
 residuo su tutto l'intervallo]{.pt-matita} (a sua volta, per Cauchy-Schwarz,
-non più grande di $\sqrt{T\int_0^T r_\theta^2}$, la versione continua del
-termine di fisica), non dalla media di $r_\theta^2$ sui punti di collocazione:
-la loss stima quell'integrale con $N_c$ campioni, e un picco stretto che cade
-fra due di essi pesa nell'integrale e non nella loss. La differenza fra le due
-quantità è il divario di generalizzazione della PINN.
+non più grande di $T\sqrt{\frac{1}{T}\int_0^T r_\theta^2}$, con sotto radice la
+versione continua del termine di fisica), non dalla media di $r_\theta^2$ sui
+punti di collocazione: la loss stima quell'integrale con $N_c$ campioni, e un
+picco stretto che cade fra due di essi pesa nell'integrale e non nella loss. La
+differenza fra le due quantità è il divario di generalizzazione della PINN.
 
 Perché allora in pratica si sceglie $\lambda_0$ ben maggiore di 1? La ragione
 che se ne dà non è selezionare il minimo, ma raggiungerlo: i due termini non
@@ -352,7 +352,7 @@ neppure un punto, tranne la partenza.
 
 È un'equazione lineare del secondo ordine a coefficienti costanti: si
 risolve con l'equazione caratteristica $m s^2 + c s + k = 0$,
-ovvero $s^2 + 0{,}4\,s + 4 = 0$ (la lettera $s$, e non $r$, che in questo
+cioè $s^2 + 0{,}4\,s + 4 = 0$ (la lettera $s$, e non $r$, che in questo
 capitolo è già il residuo). Il discriminante è negativo
 ($0{,}16 - 16 < 0$): radici complesse coniugate
 $s = -\gamma \pm i\,\omega_d$, con
@@ -1120,9 +1120,10 @@ serve, cioè quando ha smesso di risolverlo.
 
 Quanto spesso succeda lo dicono i dieci semi: con il coefficiente a 100
 collassano cinque corse su dieci, su un'equazione che si risolve a mano in
-mezza pagina. Dieci corse sono poche, e la frazione vera sta, con una
-confidenza del 95%, fra un quarto e tre quarti; ma anche il limite basso vuol
-dire una corsa su quattro.
+mezza pagina. Dieci corse sono poche, e la frazione vera sta, con l'intervallo
+di Wilson al 95%, fra un quarto e tre quarti (con quello esatto di Clopper e
+Pearson fra un quinto e quattro quinti); ma anche il limite più basso vuol dire
+una corsa su cinque.
 
 Il coefficiente $\lambda_0$ non cambia il quadro. Con $\lambda_0 = 1$, sul seme
 42, la loss di fisica scende a due centomillesimi, quattrocento volte meno che
@@ -1481,14 +1482,14 @@ misura.
 
 `````{tab} Elementare
 
-Questa volta allo studente non si dice da dove parte la molla, e nemmeno
-quanto è dura. Gli si danno venticinque puntini segnati da un sensore un po’
-distratto, ciascuno spostato di qualche centimetro in su o in giù, e la regola
-della molla con un buco al posto della rigidezza. Lui disegna una curva e
-scrive un numero nel buco; il professore dà i voti come prima sulla regola nei
-suoi istanti, e adesso anche sulla distanza dai venticinque puntini, che
-prendono il posto della partenza. A ogni consegna lo studente ritocca insieme
-la curva e il numero.
+Questa volta allo studente non si dice da dove parte la molla, e nemmeno quanto
+è dura. Gli si danno venticinque puntini segnati da un sensore un po’
+distratto, ciascuno spostato in su o in giù di circa un ventesimo dello
+spostamento di partenza, e la regola della molla con un buco al posto della
+rigidezza. Lui disegna una curva e scrive un numero nel buco; il professore dà
+i voti come prima sulla regola nei suoi istanti, e adesso anche sulla distanza
+dai venticinque puntini, che prendono il posto della partenza. A ogni consegna
+lo studente ritocca insieme la curva e il numero.
 
 Il numero si lascia trovare perché la curva lo tradisce: una molla più dura
 oscilla più in fretta, e i puntini dicono quanto in fretta oscilla questa. Se
@@ -1640,9 +1641,10 @@ con l'avvertenza che «il meglio delle PINN» non vuol dire «meglio di tutti».
   corse con $\mathcal{L}_{\text{fisica}}$ più bassa sono quelle con l'errore
   più grande: $u \equiv 0$ annulla il residuo dell'equazione omogenea, e
   $\lambda_0=100$ rende quella scorciatoia meno attraente ma non la vieta. Su
-  dieci semi collassano cinque corse (al 95%, una frazione fra 0,24 e 0,76).
-  Corollario operativo: più semi, la loss di fisica misurata anche fuori dai
-  punti di collocazione, e mai fidarsi della sola loss.
+  dieci semi collassano cinque corse (al 95%, con l'intervallo di Wilson, una
+  frazione fra 0,24 e 0,76). Corollario operativo: più semi, la loss di fisica
+  misurata anche fuori dai punti di collocazione, e mai fidarsi della sola
+  loss.
 - L'idea è del 1994 {cite}`dissanayake1994neural` (vincolo *soft*, penalità
   nella loss), con antecedenti al 1990 {cite}`lee1990neural`; Lagaris 1998
   {cite}`lagaris1998artificial` è la variante a vincolo *hard*. L'esplosione

@@ -105,15 +105,16 @@ GraphSAGE fa su vicinati campionati invece che sul grafo intero, e che abitua i
 pesi a pezzi di grafo sempre diversi.
 
 Due dettagli dell'algoritmo completano il quadro. Dopo ogni strato lo stato si
-normalizza, $\mathbf{h}_v^{(k)} \leftarrow
-\mathbf{h}_v^{(k)} / \lVert \mathbf{h}_v^{(k)} \rVert_2$. In assenza di
-etichette la rete si addestra con la loss di skip-gram sui cammini casuali,
-$\mathcal{L} = -\log \sigma(\mathbf{z}_u^\top \mathbf{z}_v) - Q\,
-\mathbb{E}_{v_n \sim P_n}\log \sigma(-\mathbf{z}_u^\top \mathbf{z}_{v_n})$,
-dove $\sigma$ qui è la sigmoide, $v$ compare vicino a $u$ in un cammino breve,
-$P_n$ è la distribuzione dei negativi e $Q$ il loro numero. È l'obiettivo di
-DeepWalk, con la differenza che $\mathbf{z}_u = \mathbf{h}_u^{(K)}$ esce da una
-funzione delle feature invece che da una riga di tabella.
+normalizza, $\mathbf{h}_v^{(k)} \leftarrow \mathbf{h}_v^{(k)} / \lVert
+\mathbf{h}_v^{(k)} \rVert_2$. In assenza di etichette la rete si addestra con
+la loss di skip-gram sui cammini casuali, $\mathcal{L} = -\log
+\sigma(\mathbf{z}_u^\top \mathbf{z}_v) - Q\, \mathbb{E}_{v_n \sim P_n}\log
+\sigma(-\mathbf{z}_u^\top \mathbf{z}_{v_n})$, dove $\sigma$ qui è la sigmoide,
+$v$ compare vicino a $u$ in un cammino breve, $P_n$ è la distribuzione dei
+negativi e $Q$ il loro numero. È l'obiettivo di skip-gram con *negative
+sampling* che node2vec usa sui cammini (DeepWalk usava la softmax gerarchica),
+con la differenza che $\mathbf{z}_u = \mathbf{h}_u^{(K)}$ esce da una funzione
+delle feature invece che da una riga di tabella.
 
 La funzione $\mathrm{AGGREGATE}$ deve restare invariante all'ordine dei vicini;
 Hamilton et al. ne propongono tre varianti:
@@ -399,12 +400,11 @@ molecole]{.pt-matita}.
 
 `````{tab} Superiore
 
-Il readout aggrega il multinsieme $\{\mathbf{h}_v^{(K)} : v \in V\}$ dei vettori
-dei nodi (multinsieme e non insieme: due nodi con lo stesso vettore contano due
-volte) in un unico
-vettore $\mathbf{h}_G \in \mathbb{R}^{F_K}$ con un'operazione invariante a
-permutazione, che quindi accetta un numero variabile di vettori e ne
-restituisce sempre uno solo della stessa lunghezza; tipicamente
+Il readout aggrega il multinsieme $\{\!\{\mathbf{h}_v^{(K)} : v \in V\}\!\}$
+dei vettori dei nodi (multinsieme e non insieme: due nodi con lo stesso vettore
+contano due volte) in un unico vettore $\mathbf{h}_G \in \mathbb{R}^{F_K}$ con
+un'operazione invariante a permutazione, che quindi accetta un numero variabile
+di vettori e ne restituisce sempre uno solo della stessa lunghezza; tipicamente
 $\mathbf{h}_G = \sum_v \mathbf{h}_v^{(K)}$, oppure la media o il massimo.
 Esistono anche schemi di **pooling gerarchico** (per esempio *DiffPool*), che
 alternano message passing e fusione di gruppi di nodi in super-nodi, costruendo
@@ -525,13 +525,13 @@ nodi.
 nodi, pagamenti negli archi) e le frodi vivono nelle *relazioni*: anelli di
 conti che si rimpallano denaro, o decine di conti che confluiscono tutti sullo
 stesso, prestato da qualcuno perché il denaro ci transiti (in gergo, un
-«mulo»). Un classificatore che guardi i conti uno per uno non se ne accorge; una
-GNN, che propaga il segnale lungo gli archi, sì. Per questo l'antiriciclaggio è
-diventato un banco di prova delle reti su grafo, e un banco severo: sul grafo
-di oltre duecentomila transazioni Bitcoin pubblicato nel 2019 con le etichette
-lecita e illecita, una GCN non batteva ancora una foresta casuale che vedeva,
-di ogni transazione, le caratteristiche proprie e quelle aggregate dei vicini
-diretti {cite}`weber2019anti`.
+«mulo»). Un classificatore che guardi i conti uno per uno non se ne accorge;
+una GNN, che propaga il segnale lungo gli archi, può farlo. Per questo
+l'antiriciclaggio è diventato un banco di prova delle reti su grafo, e un banco
+severo: sul grafo di oltre duecentomila transazioni Bitcoin pubblicato nel 2019
+con le etichette lecita e illecita, una GCN non batteva ancora una foresta
+casuale che vedeva, di ogni transazione, le caratteristiche proprie e quelle
+aggregate dei vicini diretti {cite}`weber2019anti`.
 
 **Mappe e traffico.** Dal 2020 le stime del tempo di percorrenza in Google
 Maps sono calcolate da una GNN sviluppata con DeepMind: la rete stradale è
@@ -597,36 +597,39 @@ affatto.
 
 - **Oversmoothing.** Li, Han e Wu {cite}`li2018deeper` mostrano che uno strato
   GCN è, in sostanza, un passo di *smoothing* laplaciano: iterandolo molte
-  volte le feature dei nodi convergono verso un punto fisso che dipende dai
-  gradi e non dai nodi, rendendoli indistinguibili. La derivazione spettrale
-  della sezione sul message passing lo rende meccanico: $\hat{\mathbf{A}}$ ha
-  autovalori in $[-1,1]$ con il massimo pari a $1$, quindi
-  $\hat{\mathbf{A}}^K$ spegne tutte le componenti tranne quella lungo
-  l'autovettore dominante, che è $\tilde{\mathbf{D}}^{1/2}\mathbf{1}$ e non
-  distingue un nodo dall'altro. Ne segue che, senza accorgimenti, oltre pochi
-  strati l'oversmoothing contribuisce al calo di accuratezza; non è la sola
-  causa, perché anche il gradiente che svanisce rende difficile addestrare una
-  pila profonda. Lo misura l'energia di Dirichlet normalizzata della sezione
-  sul message passing, che tende a zero. I rimedi hanno nomi e forme precise,
-  e sono tre risposte diverse alla stessa domanda.
+  volte le feature dei nodi convergono verso un punto fisso in cui i nodi
+  differiscono solo per un fattore legato al grado, e diventano di fatto
+  indistinguibili. La derivazione spettrale della sezione sul message passing
+  lo rende meccanico: $\hat{\mathbf{A}}$ ha autovalori in $[-1,1]$ con il
+  massimo pari a $1$, quindi $\hat{\mathbf{A}}^K$ spegne tutte le componenti
+  tranne quella lungo l'autovettore dominante, che è
+  $\tilde{\mathbf{D}}^{1/2}\mathbf{1}$: a ogni nodo resta un vettore comune
+  moltiplicato per la radice del proprio grado. Ne segue che, senza
+  accorgimenti, oltre pochi strati l'oversmoothing contribuisce al calo di
+  accuratezza; non è la sola causa, perché anche il gradiente che svanisce
+  rende difficile addestrare una pila profonda. Lo misura l'energia di
+  Dirichlet normalizzata della sezione sul message passing, che tende a zero. I
+  rimedi hanno nomi e forme precise, e sono tre risposte diverse alla stessa
+  domanda.
 
-  **Highway GCN**
-  {cite}`rahimi2018semi` mette un *gate* per strato che decide quanto del
-  vecchio stato lasciar passare accanto al nuovo, e nei loro esperimenti le
-  prestazioni smettono di migliorare attorno ai quattro strati. **Jumping
-  Knowledge Network** {cite}`xu2018jumping` parte da un'osservazione diversa,
-  cioè che nodi diversi vogliono campi recettivi diversi (un hub satura in due
-  salti, un nodo periferico no), e quindi invece di prendere l'uscita
-  dell'ultimo strato le tiene tutte e le combina in un ultimo passo, per
-  concatenazione, per massimo elemento per elemento o con un'attenzione fra
+  **Highway GCN** {cite}`rahimi2018semi` mette un *gate* per strato che decide
+  quanto del vecchio stato lasciar passare accanto al nuovo, e nei loro
+    esperimenti le prestazioni migliorano di poco fino a tre strati e poi restano
+  quasi ferme.
+  **Jumping Knowledge Network** {cite}`xu2018jumping` parte da un'osservazione
+  diversa, cioè che nodi diversi vogliono campi recettivi diversi (un hub
+  satura in due salti, un nodo periferico no), e quindi invece di prendere
+  l'uscita dell'ultimo strato le tiene tutte e le combina in un ultimo passo,
+  per concatenazione, per massimo elemento per elemento o con un'attenzione fra
   gli strati. La concatenazione, con pesi uguali per tutti i nodi, sceglie una
   profondità sola per l'intero grafo; nelle altre due forme è il modello a
   scegliere la profondità nodo per nodo. **DeepGCN** {cite}`li2019deepgcns`
   importa di peso residui e connessioni dense da ResNet e DenseNet contro i
   gradienti che svaniscono, e aggiunge un vicinato dilatato (si prendono i
-  vicini saltandone alcuni) contro l'oversmoothing: con questa combinazione
-  arrivano a 56 strati su nuvole di punti. Sono eccezioni costruite apposta:
-  senza quegli accorgimenti, il limite pratico alla profondità resta.
+  vicini saltandone alcuni) per allargare il campo recettivo senza aggiungere
+  strati: con questa combinazione arrivano a 56 strati su nuvole di punti. Sono
+  eccezioni costruite apposta: senza quegli accorgimenti, il limite pratico
+  alla profondità resta.
 - **Over-squashing.** Alon e Yahav {cite}`alon2021bottleneck` osservano che il
   campo recettivo di un nodo cresce esponenzialmente con il numero di strati,
   mentre il vettore che lo riassume ha dimensione fissa: l'informazione

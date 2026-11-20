@@ -291,15 +291,16 @@ campo recettivo, e cresce in modo esponenziale con la profondità.
 
 `````{tab} Elementare
 
-La storia della serie è un diario, una pagina per giorno. Dieci strati bastano
-per tenere d'occhio più di mille pagine, e nessuno di essi sbircia una pagina
-non ancora scritta. Guardare soltanto all'indietro è la causalità. Coprire
-tanti giorni con pochi strati, invece, è questione di salti che si allargano.
-Ad esempio, diamo a ogni strato una finestra da due giorni, che è la scelta più
-piccola possibile: il primo guarda ieri e oggi, il secondo salta di due giorni,
-il terzo di quattro, il quarto di otto. I salti sommati fanno $1 + 2 + 4 + 8 =
-15$ giorni, più oggi fa sedici; con dieci strati si passano i mille. È la
-dilatazione, e con finestre più larghe di due la copertura cresce ancora.
+La storia della serie è un diario, una pagina per giorno. Dieci strati,
+ciascuno con un salto doppio del precedente, bastano per tenere d'occhio più di
+mille pagine, e nessuno di essi sbircia una pagina non ancora scritta. Guardare
+soltanto all'indietro è la causalità. Coprire tanti giorni con pochi strati,
+invece, è questione di salti che si allargano. Ad esempio, diamo a ogni strato
+una finestra da due giorni, che è la scelta più piccola possibile: il primo
+guarda ieri e oggi, il secondo salta di due giorni, il terzo di quattro, il
+quarto di otto. I salti sommati fanno $1 + 2 + 4 + 8 = 15$ giorni, più oggi fa
+sedici; con dieci strati si passano i mille. È la dilatazione, e con finestre
+più larghe di due la copertura cresce ancora.
 
 [Il sedicesimo giorno indietro, però, con quattro strati non c'è: non sbiadito,
 assente del tutto]{.pt-matita}, e nessuna finestra di ingresso più lunga glielo
@@ -839,8 +840,8 @@ I *foundation model* per le serie temporali riprendono l'idea dei grandi
 modelli linguistici: pre-addestrare un modello su una collezione molto vasta di
 serie, e poi usarlo per prevedere serie mai viste, senza riaddestrarlo. È il
 forecasting *zero-shot*. I primi sono comparsi dal 2023, e rispetto a un
-modello linguistico sono piccoli: da qualche decina a qualche centinaio di
-milioni di parametri.
+modello linguistico sono piccoli: per lo più da pochi milioni a qualche
+centinaio di milioni di parametri, con rare eccezioni oltre il miliardo.
 
 `````{tab} Elementare
 
@@ -1072,12 +1073,14 @@ quanto profondo, è dispensato dal confronto con la linea di base classica.
   ricorrente sbiadisce, una TCN taglia.
 - DeepAR {cite}`salinas2020deepar` è una RNN autoregressiva globale (una rete
   per molte serie) che emette una distribuzione; la previsione multi-passo è
-  per campionamento ancestrale. La banda segue la varianza dell'errore a $h$
-  passi, $\sigma^2\sum_{j<h}\psi_j^2$: si allarga senza limite se il processo
-  non è stazionario; se lo è, tende dal basso alla larghezza di regime, $2
+  per campionamento ancestrale. Per un processo lineare e gaussiano a parametri
+  noti la banda segue la varianza dell'errore a $h$ passi,
+  $\sigma^2\sum_{j<h}\psi_j^2$: si allarga senza limite se il processo non è
+  stazionario; se lo è, tende dal basso alla larghezza di regime, $2
   z_{1-\alpha/2}$ volte la deviazione standard del processo, che l'AR(1) del
   giocattolo non raggiunge in nessun numero finito di passi e un MA($q$)
-  raggiunge al passo $q+1$, quando i $\psi_j$ si annullano.
+  raggiunge al passo $q+1$, quando i $\psi_j$ si annullano; nella rete vera,
+  che non è lineare, la banda si legge soltanto dalle traiettorie campionate.
 - N-BEATS {cite}`oreshkin2020nbeats` usa blocchi di soli MLP
   (percettroni multistrato: pile di strati densi) con doppio residuo
   backcast/forecast, ed è interpretabile quando la base è vincolata. Il suo

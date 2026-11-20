@@ -22,7 +22,7 @@ reti profonde </DeepLearning/ottimizzazione-regolarizzazione>`).
 
 Il terzo era la storia di un sistema che si era rotto senza che nessuno capisse
 perché: qualcuno aveva cambiato il modo di arrotondare i numeri dentro una
-libreria, e l'errore era passato da meno del 25% a quasi il 99%. La
+libreria, e l'errore era passato da meno del 25% a circa il 99,97%. La
 spiegazione, arrivata dopo, smentisce a metà l'aneddoto: quell'arrotondamento
 portava a uno un numero che doveva restare appena sotto, e da lì usciva una
 divisione per zero. Un difetto del programma, quindi, non del metodo.
@@ -162,11 +162,12 @@ sapere in anticipo quale manopola conti, perché il sorteggio gira tutte le
 manopole insieme.
 
 Con più tentativi la probabilità si calcola. Se la stazione si sente su un
-ventesimo della scala, un tentativo a caso la manca diciannove volte su venti;
-ma [se i tentativi sono sessanta, la probabilità di mancarla tutte le volte
-scende sotto il cinque per cento]{.pt-matita}, e novantacinque volte su cento
-almeno uno cade dentro. Si noti che il calcolo resta lo stesso con due manopole
-e con venti.
+ventesimo della scala, un tentativo a caso la manca diciannove volte su venti,
+e per mancarla tutte le volte si moltiplicano fra loro diciannove ventesimi,
+uno per tentativo; ma [se i tentativi sono sessanta, la probabilità di mancarla
+tutte le volte scende sotto il cinque per cento]{.pt-matita}, e novantacinque
+volte su cento almeno uno cade dentro. Si noti che il calcolo resta lo stesso
+con due manopole e con venti.
 
 Tutto però dipende da quanto è larga la stazione. Se si sente su un centesimo
 di scala invece che su un ventesimo, gli stessi sessanta tentativi la trovano
@@ -519,7 +520,7 @@ l'ottimizzazione bayesiana e i tornei in versione moderna la libreria di
 riferimento è Optuna, in cui lo spazio di ricerca si descrive direttamente nel
 codice e le prove peggiori vengono interrotte in corsa.
 
-### Una manopola alla volta: la curva di validazione
+### Un iperparametro alla volta: la curva di validazione
 
 Prima di cercare in più dimensioni si può guardare una dimensione sola. La
 **curva di validazione** riporta, al variare di un iperparametro e con tutto il
@@ -791,7 +792,7 @@ Rahimi.
 
 ```{admonition} Da ricordare
 :class: important
-- Gli iperparametri non si imparano con il gradiente: si cercano, e si
+- Gli iperparametri di norma non si imparano con il gradiente: si cercano, e si
   giudicano su validation o cross-validation, mai sul test.
 - La grid search è esaustiva ma esponenziale nel numero di iperparametri:
   ragionevole solo per una o due dimensioni.

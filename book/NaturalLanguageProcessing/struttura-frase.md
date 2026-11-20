@@ -83,8 +83,9 @@ $n$-gram; le grammatiche a struttura sintagmatica; le grammatiche
 trasformazionali) e ne trae la tesi che fece scuola: gli stati finiti non
 bastano, perché la sintassi annida dipendenze a distanza arbitraria. Il nome
 *context-free* e la scala a quattro livelli che oggi si chiama *gerarchia di
-Chomsky* arrivano tre anni dopo {cite}`chomsky1959certain`, ed è da quella
-scala che l'informatica ha attinto anche i linguaggi di programmazione.
+Chomsky* arrivano tre anni dopo {cite}`chomsky1959certain`, e la stessa classe,
+ritrovata per altra via con la BNF di ALGOL, descrive la sintassi dei linguaggi
+di programmazione.
 
 Una CFG è una quadrupla $G = (\mathcal{N}, \Sigma, R, S)$, dove $\mathcal{N}$
 è l'insieme dei simboli **non terminali** (le categorie sintattiche, che nelle

@@ -461,10 +461,11 @@ $\beta=0{,}9$).
 In una valle stretta la pendenza ha due parti: quella che attraversa la valle,
 che a ogni passo cambia verso perché rimbalza prima contro una parete e poi
 contro l'altra, e quella che scende lungo la valle, che punta sempre dalla
-stessa parte. [Nella somma la prima parte si annulla (una volta è più uno, la
-volta dopo è meno uno), mentre la seconda si accumula]{.pt-matita}. Lungo la
-valle, dove la pendenza è sempre la stessa, il passo diventa $1/(1-\beta)$
-volte più lungo, dieci volte con $\beta=0{,}9$. In definitiva restano meno
+stessa parte. [Nella somma la prima parte si compensa in buona parte (una volta
+è più uno, la volta dopo è meno uno), mentre la seconda si
+accumula]{.pt-matita}. Lungo la valle, dove la pendenza è sempre la stessa, il
+passo diventa $1/(1-\beta)$ volte più lungo, dieci volte con $\beta=0{,}9$,
+mentre di traverso si accorcia a circa la metà. In definitiva restano meno
 rimbalzi e più avanzamento.
 
 La sigla del disegno, **SGD**, sta per *stochastic gradient descent*, cioè
@@ -518,8 +519,9 @@ $\mathbf{v}\leftarrow\beta\mathbf{v}+\mathbf{g}$,
 $\theta\leftarrow\theta-\eta\,\mathbf{v}$, con $\beta\in[0,1)$, tipicamente
 $0{,}9$. Osserviamo che $\mathbf{v}$ somma i gradienti passati con pesi
 $\beta^k$ che decadono in progressione geometrica, e che sulle componenti che
-cambiano segno a ogni passo i contributi si elidono. Adam, infine, aggiunge a
-tutto questo una scala per coordinata.
+cambiano segno a ogni passo i contributi si compensano in parte: pesano in
+tutto $1/(1+\beta)$, contro $1/(1-\beta)$ di quelle di segno costante. Adam,
+infine, aggiunge a tutto questo una scala per coordinata.
 
 `````
 
@@ -705,7 +707,9 @@ $-265{,}363$.
 Vicino a un minimo la loss di una rete è approssimata da una quadratica, per
 cui la soglia che qui separa le due righe che convergono da quella che scappa,
 $\eta<2/L$ con $L=2$, vale anche per una rete con miliardi di pesi, dove $L$ è
-il massimo autovalore dell'hessiana.
+il massimo autovalore dell'hessiana, come condizione per restare in quel
+minimo: oltre la soglia una rete non sempre diverge, e spesso si sposta verso
+una zona più piatta.
 
 La valle stretta si misura allo stesso modo. Su una scodella cento volte più
 ripida di traverso che per il lungo si contano i passi che servono alla discesa

@@ -342,9 +342,10 @@ l'informazione mutua; da tre in su non si riduce a nessuna somma di
 informazioni mutue a coppie, e il linguaggio di parità lo mostra nel modo più
 netto: ogni coppia di bit ha informazione mutua nulla, e le tre posizioni
 insieme hanno multi-informazione di un bit. È la ragione per cui due passi
-bastano e uno no. La quantità non è solo un indice: con un modello perfetto,
-campionare il gruppo dal prodotto delle marginali invece che dalla congiunta
-comporta una divergenza di Kullback-Leibler pari a
+bastano, se il primo scopre una coppia e il secondo il bit restante, e uno no.
+La quantità non è solo un indice: con un modello perfetto, campionare il gruppo
+dal prodotto delle marginali invece che dalla congiunta comporta una divergenza
+di Kullback-Leibler pari a
 $D_{\mathrm{KL}}\big(p(\cdot\mid\mathbf{x}_t)\,\big\Vert\,\prod_{i\in G}
 p(x^{(i)}\mid\mathbf{x}_t)\big) = \mathrm{TC}(G\mid\mathbf{x}_t)$, cioè un bit
 per il gruppo di tre del linguaggio di parità. Ne segue la strategia usata in
@@ -519,8 +520,8 @@ nel continuo si azzera solo con passi infinitamente piccoli.
   multi-informazione del gruppo, non le informazioni mutue a coppie. Sul
   linguaggio di parità le mutue a coppie sono tutte nulle e un passo solo dà lo
   stesso $0{,}499$ di parole valide e otto stati invece di quattro; due passi
-  danno la distribuzione esatta. La strategia pratica è scoprire per prime le
-  posizioni a entropia minima.
+  (prima una coppia, poi il bit restante) danno la distribuzione esatta. La
+  strategia pratica è scoprire per prime le posizioni a entropia minima.
 - Costi: riuso della cache solo nelle varianti a blocchi (la diffusione su
   tutta la sequenza ricalcola a ogni passo l'intera sequenza), verosimiglianza
   disponibile solo come limite. Guadagni:

@@ -166,7 +166,7 @@ molto, cioè hanno varianza grande, mentre lungo altre restano quasi fermi.
 La PCA assume che la varianza sia il segnale. Per questo motivo tiene le
 direzioni a varianza grande, perpendicolari fra loro, e proietta i dati su
 quelle, cioè di ogni punto conserva soltanto le coordinate lungo quelle
-direzioni. L'assunzione vale quando il segnale ha varianza maggiore del rumore,
+direzioni. L'ipotesi vale quando il segnale ha varianza maggiore del rumore,
 ma non è una garanzia, perché la PCA non guarda le etichette, e una direzione a
 varianza piccola può essere quella che separa le classi.
 
@@ -720,11 +720,11 @@ separano in isole ben distinte.
 
 Chi sia «amico» non lo decide una soglia uguale per tutti, perché c'è il
 ragazzino che frequenta trenta persone e quello che ne frequenta tre. Per
-questo si stabilisce in partenza quanti compagni stretti contare, all'incirca,
-e attorno a ciascuno si allarga o si stringe il cerchio finché ne stanno dentro
-quel tanto. Poi si mettono d'accordo le due versioni: se lui la considera
-un'amica e lei lo considera un conoscente, sul foglio finisce una via di mezzo
-fra le due.
+questo si stabilisce in partenza quanti compagni stretti contare, all'incirca
+(è l'iperparametro che si chiama *perplexity*), e attorno a ciascuno si allarga
+o si stringe il cerchio finché ne stanno dentro quel tanto. Poi si mettono
+d'accordo le due versioni: se lui la considera un'amica e lei lo considera un
+conoscente, sul foglio finisce una via di mezzo fra le due.
 
 Il foglio, poi, è piccolo, e tutte le distanze insieme non possono tornare.
 Pretendere che anche le lontananze siano fedeli vorrebbe dire stringere tutti

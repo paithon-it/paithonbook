@@ -179,7 +179,8 @@ il teorema non si applica alla lettera.
 Il metodo ha però un limite intrinseco: la stima campionaria è tanto più
 informativa quanto più il valore di una posizione è robusto rispetto alla
 qualità del gioco. Di conseguenza, nei domini in cui il valore dipende da una
-singola linea forzata, le simulazioni casuali sono rumore puro.
+singola linea forzata, le simulazioni casuali danno una stima sistematicamente
+sbagliata, che più simulazioni non correggono.
 
 `````
 
@@ -398,8 +399,9 @@ quindi non sceglie mai una mossa per raccogliere informazione e non bluffa mai
 Serve una strategia di equilibrio, e i programmi che hanno battuto i
 professionisti di poker la calcolano su una versione astratta del gioco
 minimizzando il rimpianto controfattuale {cite}`zinkevich2008regret`: Libratus
-a due giocatori {cite}`brown2018superhuman`, Pluribus a sei
-{cite}`brown2019superhuman`.
+a due giocatori {cite}`brown2018superhuman`; Pluribus, a sei
+{cite}`brown2019superhuman`, usa lo stesso calcolo senza più la garanzia di
+equilibrio, che con più di due giocatori cade.
 
 `````
 
@@ -431,7 +433,7 @@ impara un modello e ci si cerca dentro.
 - Se manca l’arrivo, la ricerca smette di cercare una strada e si mette a
   migliorare quello che ha, come si fa sistemando i mobili in una stanza: un
   passo alla volta ci si può fermare in una sistemazione che non è la
-  migliore, e accettando ogni tanto un peggioramento se ne esce. Ci si ferma
+  migliore, e accettando ogni tanto un peggioramento se ne può uscire. Ci si ferma
   quando scade il tempo.
 - Se mancano le regole da interrogare, all’inizio cade tutto: non c’è albero,
   non c’è potatura, non c’è niente da guardare avanti. Resta provare e
@@ -452,7 +454,7 @@ impara un modello e ci si cerca dentro.
   arrivo definito, valutazione degli stati intermedi scrivibile. Le altre due,
   esito certo delle azioni e stato pienamente osservabile, cadono già nei
   giochi: con il caso il minimax diventa expectiminimax, con le carte coperte
-  si ragiona sul *belief state*, e nel poker servono strategie di equilibrio.
+  si ragiona sul *belief state*, e nel poker a due servono strategie di equilibrio.
 - Cade la valutazione: si sostituisce $\mathrm{ev}(s)$ con una stima
   campionaria ottenuta simulando partite fino in fondo, e si distribuiscono le
   simulazioni con UCB1 a ogni nodo, risolvendo un problema di esplorazione

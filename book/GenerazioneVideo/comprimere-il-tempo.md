@@ -25,8 +25,10 @@ Rispetto al VAE di Stable Diffusion cambiano due cose. Il latente ha un asse
 temporale, ed è anch’esso una sequenza di fotogrammi, i **fotogrammi latenti**,
 più corta di quella in pixel; ogni fotogramma latente riassume un gruppo di
 fotogrammi consecutivi. E nei VAE di Wan, HunyuanVideo, CogVideoX e LTX-Video
-la compressione nel tempo è causale, cioè un fotogramma latente non dipende da
-nessun fotogramma che venga dopo il suo gruppo.
+le convoluzioni nel tempo sono causali, cioè guardano soltanto il fotogramma
+corrente e i precedenti: un fotogramma latente non dipende da quelli che
+seguono il suo gruppo, a patto che anche gli strati di normalizzazione non
+mescolino i fotogrammi.
 
 ## Quanti numeri restano: dal clip ai token
 
@@ -128,9 +130,10 @@ come ha sempre fatto, cioè ottantuno schede, ciascuna scritta guardando una
 sola immagine. Ogni scheda, presa da sola, è ottima. Il guaio sta fra una
 scheda e l’altra. Il copista ridipinge ogni fotogramma dalla sua scheda, e il
 dettaglio che nella scheda 12 è annotato in un modo, nella 13 è annotato in un
-altro, per esempio la grana di un muro o il bordo di una foglia. Nessuno dei
-due ha mai visto due fotogrammi vicini insieme, quindi nessuno dei due sa che
-dovrebbero andare d’accordo. Proiettato, il muro formicola, ed è lo sfarfallio.
+altro, per esempio la grana di un muro o il bordo di una foglia. Né
+l’archivista né il copista ha mai visto due fotogrammi vicini insieme, quindi
+nessuno dei due sa che dovrebbero andare d’accordo. Proiettato, il muro
+formicola, ed è lo sfarfallio.
 
 Una prima riparazione manda a scuola il solo copista, a studiare film invece di
 fotografie, perché impari a ridipingere fotogrammi vicini in modo che vadano

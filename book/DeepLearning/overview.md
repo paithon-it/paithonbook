@@ -245,7 +245,9 @@ accorge della differenza. Il danno peggiore però si vede al ritorno. La
 correzione risale dall'ultimo strato verso il primo, e a ogni strato viene
 moltiplicata per la pendenza di quella curva, che sulla parte piatta è quasi
 zero. Così a ogni strato risalito si moltiplica per un numero piccolo, e ai
-primi strati non arrivava quasi niente.
+primi strati non arrivava quasi niente: anche dove è più ripida, la pendenza
+della sigmoide non supera un quarto, e cinque strati di quarti lasciano meno di
+un millesimo della correzione.
 
 Il rimedio è lo sportello della {doc}`sezione sulle funzioni di
 attivazione </RetiNeurali/funzioni-attivazione>`: i numeri positivi passano come
@@ -496,7 +498,7 @@ pre-attivazione cambia segno, cioè uno spigolo sulla retta d'ingresso. Al
 massimo $D$ spigoli distinti tagliano la retta in
 
 $$
-N_1 = D + 1
+R_1 = D + 1
 $$
 
 tratti, e su ciascuno la rete è affine. I parametri sono $D$ pesi d'ingresso,
@@ -509,7 +511,7 @@ $k$ è affine in $x$, quindi ciascuna delle $D$ unità vi aggiunge al più uno
 spigolo, e quella regione si divide in al più $D+1$ sottoregioni. Perciò
 
 $$
-N_K \le (D+1)^K ,
+R_K \le (D+1)^K ,
 \qquad
 P_K = 3D + 1 + (K-1)\,D\,(D+1) ,
 $$
@@ -530,9 +532,10 @@ dimensione. Con $D_i$ ingressi il calcolo si complica, e Montúfar e colleghi
 (di larghezza $D \ge D_i$) che di regioni ne fanno almeno
 $\Omega\big((D/D_i)^{(K-1)D_i} D^{D_i}\big)$: stesso verso, divario più largo.
 
-La terza è che il $(D+1)^K$ è invece un limite superiore, che le costruzioni a
-ripiegamento avvicinano senza toccarlo, e a cui una rete addestrata non si
-avvicina affatto.
+La terza è che $(D+1)^K$ è un massimo che, con ingresso scalare e almeno tre
+unità per strato, una costruzione a ripiegamento raggiunge esattamente
+{cite}`serra2018bounding`; una rete addestrata, però, non vi si avvicina
+affatto.
 
 La quarta, e la più importante, è che il numero di regioni misura
 l’**espressività**, cioè quali funzioni la rete può rappresentare, e non dice
@@ -579,15 +582,14 @@ rapporto: 1019 volte
 
 Cinque strati da dieci neuroni hanno $471$ parametri e arrivano al più a
 $161\,051$ regioni, cioè $11^5$, perché ogni strato da dieci neuroni moltiplica
-le regioni al più per undici. [La rete a uno strato che spende quei parametri,
-anzi uno in più, ne fa al più $158$, mille volte meno con la stessa
-spesa]{.pt-matita}.
+le regioni al più per undici (dieci spigoli dividono una linea in undici
+pezzi). [La rete a uno strato che spende quei parametri, anzi uno in più, ne fa
+al più $158$, mille volte meno con la stessa spesa]{.pt-matita}.
 
-I due numeri sono massimi, e uno solo dei due si raggiunge: la rete piatta
-arriva alle sue $158$ regioni mettendo i suoi $157$ spigoli in punti diversi,
-mentre per la profonda nessuno sa costruire pesi che tocchino il massimo.
-Entrambi riguardano le funzioni che la rete può rappresentare, non quelle che
-imparerà.
+I due numeri sono massimi, e si raggiungono tutti e due: la rete piatta arriva
+alle sue $158$ regioni mettendo i suoi $157$ spigoli in punti diversi, la
+profonda con pesi costruiti apposta che ripiegano la retta. Entrambi riguardano
+le funzioni che la rete può rappresentare, non quelle che imparerà.
 
 ## La pila, in codice
 
@@ -694,7 +696,7 @@ quindi, ha la forma della gerarchia ma non ancora il contenuto.
     {cite}`cybenko1989approximation` per le attivazioni a forma di S, cioè per
     quelle curve che schiacciano i numeri in un intervallo stretto e che si
     chiamano *sigmoidi*; Hornik lo estende nel 1991
-    {cite}`hornik1991approximation` a
-    tutte quelle che restano confinate fra due valori; la forma generale,
-    quella che copre anche la ReLU, arriva nel 1993 con Leshno e colleghi
+    {cite}`hornik1991approximation` a tutte quelle che restano confinate fra
+    due valori senza essere costanti; la forma generale, quella che copre anche
+    la ReLU, arriva nel 1993 con Leshno e colleghi
     {cite}`leshno1993multilayer`.

@@ -67,7 +67,8 @@ al ritorno {cite}`kaplan2020scaling`. GPT-3 ha visto 300 miliardi di token, per
 un totale di $6 \cdot 175 \cdot 10^9 \cdot 300 \cdot 10^9 \approx 3{,}1 \cdot
 10^{23}$ operazioni {cite}`brown2020language`. Una A100 in mezza precisione ne
 fa al più $312 \cdot 10^{12}$ al secondo, quindi da sola, anche lavorando
-sempre al massimo, ci metterebbe più di trent'anni.
+sempre al massimo, ci metterebbe circa un miliardo di secondi, cioè più di
+trent'anni.
 
 Nessuna scheda, però, lavora sempre al massimo. La frazione del picco che un
 addestramento riesce a usare si chiama **MFU** (*model FLOPs utilization*)
@@ -160,15 +161,16 @@ Nessuno però è mai sovraccarico, come si vede a mente riducendo il tavolo a
 quattro. Ciascuno taglia la propria lista in quattro pezzetti e nei due giri ne
 spedisce tre più tre (tre e non quattro, perché il pezzetto che alla fine resta
 suo non lo spedisce a nessuno), cioè sei quarti, una volta e mezza la lista
-intera. In otto, sette più sette, 1,75 volte. In quaranta, trentanove più
-trentanove, 1,95 volte.
+intera. In otto, sette ottavi più sette ottavi, 1,75 volte. In quaranta,
+trentanove più trentanove, 1,95 volte.
 
 In generale, raddoppiando il tavolo i pezzetti si dimezzano mentre i passaggi
-raddoppiano, e le due cose quasi si annullano: [chiunque sieda al tavolo manda
-in giro poco meno di due volte la propria lista, mai di più]{.pt-matita}. I
-pezzetti poi partono appena sono pronti, mentre si sta ancora sommando il
-resto, e il tempo del giro si nasconde dentro il tempo del calcolo. Per questo
-il parallelismo dati scala bene su tante schede.
+raddoppiano, e le due cose quasi si annullano: in ogni giro ciascuno spedisce
+poco meno della propria lista, e i giri sono due, quindi [chiunque sieda al
+tavolo manda in giro poco meno di due volte la propria lista, mai di
+più]{.pt-matita}. I pezzetti poi partono appena sono pronti, mentre si sta
+ancora sommando il resto, e il tempo del giro si nasconde dentro il tempo del
+calcolo. Per questo il parallelismo dati scala bene su tante schede.
 
 Il cerchio ha però due difetti. Il primo è il giro in sé: in quaranta il foglio
 cambia di mano quasi ottanta volte, e prima di ogni consegna c'è l'attimo in
@@ -381,8 +383,10 @@ Il tempo iniziale in cui le postazioni si riempiono, e quello finale in cui si
 svuotano, è tempo sprecato, e ha un nome: all'inizio e alla fine della
 lavorazione restano due sacche vuote, e quelle sacche si chiamano **bolla**. La
 bolla si può misurare: con quattro postazioni e un'auto sola se ne va in fumo
-il 75% del tempo, mentre con trentadue auto di seguito si scende sotto il 9%.
-Più micro-batch si mandano di seguito, più la bolla si assottiglia.
+il 75% del tempo, mentre con trentadue auto di seguito si scende sotto il 9%
+(ai trentadue tempi di lavoro se ne aggiungono tre per riempire e svuotare, e
+tre su trentacinque sono sprecati). Più micro-batch si mandano di seguito, più
+la bolla si assottiglia.
 
 C'è anche un altro modo: spezzare il montaggio in otto lavori più corti e dare
 a ogni postazione due lavori non vicini nella fila (il primo e il quinto, per
@@ -791,9 +795,11 @@ Se hai un modello che non entra in una scheda sola, comincia da lì.
 ```
 `````
 
-Un modello che non entrerebbe in nessuna scheda si fa stare in mille, e il tempo
-si accorcia di conseguenza: i più di trent'anni che GPT-3 avrebbe chiesto a una
-scheda sola, sempre al massimo, diventano circa un mese su mille A100 tenute al
-40% del picco. In tutti questi schemi è la macchina a piegarsi al modello. Il
-{doc}`capitolo sull'efficienza </Efficienza/overview>` rovescia la domanda:
-quanto si può restringere il modello, perché di macchina ne serva meno?
+Un modello che non entrerebbe in nessuna scheda si fa stare in mille, e il
+tempo si accorcia di conseguenza: i più di trent'anni che GPT-3 avrebbe chiesto
+a una scheda sola, sempre al massimo, diventano circa un mese su mille A100
+tenute al 40% del picco (divisi per mille fanno una dozzina di giorni, e a
+quella frazione del picco due volte e mezzo tanti). In tutti questi schemi è la
+macchina a piegarsi al modello. Il {doc}`capitolo
+sull'efficienza </Efficienza/overview>` rovescia la domanda: quanto si può
+restringere il modello, perché di macchina ne serva meno?

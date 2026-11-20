@@ -201,12 +201,13 @@ così com'è.
 
 Adesso guarda che multa esce. Lo stampo è più spesso al centro e si assottiglia
 allontanandosi, in un modo particolare: a un passo dal centro lo spessore si è
-diviso una volta per un numero fisso, che dipende da quanto è largo lo stampo, a
-due passi quattro volte, a tre passi nove volte. Le volte sono la distanza al
-quadrato. Il logaritmo, col segno cambiato, conta quante volte lo
-spessore è stato diviso dal centro in giù, come il logaritmo di 1000 conta le
-tre volte del 10: quella parte della multa è la distanza al quadrato, in una
-scala che dipende solo dalla larghezza dello stampo.
+diviso una volta per un numero fisso, che dipende da quanto è largo lo stampo,
+a due passi è stato diviso quattro volte di fila per quello stesso numero, a
+tre passi nove volte. Le volte sono la distanza al quadrato. Il logaritmo, col
+segno cambiato, conta quante volte lo spessore è stato diviso dal centro in
+giù, come il logaritmo di 1000 conta le tre volte del 10: quella parte della
+multa è la distanza al quadrato, in una scala che dipende solo dalla larghezza
+dello stampo.
 
 Ecco il pagamento. La multa ha anche un pezzo fisso, che si paga pure centrando
 in pieno: al centro lo strato non è infinitamente alto, e il suo logaritmo col
@@ -504,7 +505,7 @@ resto della ricetta non cambia.
 
 ## Quando l'incertezza cambia da punto a punto
 
-Fin qui la larghezza della gaussiana è rimasta una costante, un'assunzione
+Fin qui la larghezza della gaussiana è rimasta una costante, un'ipotesi
 forte che ha un nome: **omoschedasticità**, cioè incertezza uguale dappertutto.
 La ricetta però non obbliga a fissarla. Se i parametri della distribuzione sono
 l'uscita della rete, e la varianza è un parametro, allora anche la varianza può
@@ -677,9 +678,10 @@ una per meta':       sigma = 0.115 e 0.552  NLL = 26.8
 ```
 
 La differenza fra le prime due righe è $183{,}788$, cioè il valore stampato
-alla terza riga: la costante vale $\frac{n}{2}\log 2\pi$ e non dipende dai
-residui, quindi minimizzare la log-verosimiglianza negativa a larghezza fissa e
-minimizzare la somma dei quadrati portano nello stesso punto.
+alla terza riga: la costante vale $\frac{m}{2}\log 2\pi$ (nel codice il numero
+$m$ di esempi si chiama `n`) e non dipende dai residui, quindi minimizzare la
+log-verosimiglianza negativa a larghezza fissa e minimizzare la somma dei
+quadrati portano nello stesso punto.
 
 Il secondo gruppo
 mostra che sbagliare la larghezza ha un costo in entrambi i versi: dimezzarla

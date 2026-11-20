@@ -7,7 +7,7 @@
   impronta: "06af093a7d98"
   postilla: "RetNet, 2023: al posto della softmax un decadimento esponenziale fisso"
 - inizio: "RetNet è il primo dei tre"
-  impronta: "ba82fcedfd28"
+  impronta: "41a724ff2d85"
   postilla: "Ritmo fisso in RetNet, ricalcolato per token in Mamba-2, anche per canale in GLA"
 - inizio: "Un blocco RWKV alterna, come un"
   impronta: "525c8852e765"

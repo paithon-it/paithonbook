@@ -67,8 +67,9 @@ un'etichetta che dice da che riga e da che colonna viene.
 
 Quanto grosse tagliare le tessere è una scelta: [a 4 caselle per lato le parole
 sarebbero 64 invece di 256, e leggerle costerebbe quattro volte
-meno]{.pt-matita}. È la manopola con cui si decide quanto far lavorare la
-torre.
+meno]{.pt-matita}, perché quasi tutto il lavoro si fa tessera per tessera e i
+confronti a coppie, a queste lunghezze, pesano poco. È la manopola con cui si
+decide quanto far lavorare la torre.
 
 Da qui in poi il lavoro lo conosciamo dal capitolo sui Transformer: la torre,
 con i suoi piani (in gergo si chiamano blocchi). Le tessere prendono il posto
@@ -216,17 +217,18 @@ $\boldsymbol{\alpha}_c, \boldsymbol{\beta}_c, \boldsymbol{\gamma}_c$ vengono
 dal condizionamento e non hanno niente a che vedere con $\alpha_t$ e $\beta_t$,
 che in questo capitolo sono lo schedule del rumore.
 
-Il suffisso *zero* riguarda
-l'inizializzazione. Azzerare $\boldsymbol{\alpha}_c$ è sufficiente, perché con
-il gate a zero il ramo residuo non passa, e il blocco è l’identità qualunque
-cosa facciano scala e traslazione. Il paper dichiara azzerato quello;
-l'implementazione di riferimento azzera per comodità l'intero ultimo strato
-dell'MLP, e la differenza non si vede, perché finché $\boldsymbol{\alpha}_c =
-0$ il gradiente di scala e traslazione è nullo e a muoversi è solo il gate. Il
-gradiente del gate no, perché vale il prodotto scalare fra ciò che il
-sotto-strato ha prodotto e la direzione in cui l'uscita andrebbe spostata: il
-blocco impara quanto aprirsi pur non contribuendo ancora, e la rete, che
-comincia come un tubo vuoto, riceve gradiente su tutti i gate insieme.
+Il suffisso *zero* riguarda l'inizializzazione. Azzerare
+$\boldsymbol{\alpha}_c$ è sufficiente, perché con il gate a zero il ramo
+residuo non passa, e il blocco è l’identità qualunque cosa facciano scala e
+traslazione. Il paper dichiara azzerato quello; l'implementazione di
+riferimento azzera per comodità l'intero ultimo strato dell'MLP, e la
+differenza non si vede, perché finché $\boldsymbol{\alpha}_c = 0$ il gradiente
+di scala e traslazione è nullo e a muoversi è solo il gate. Il gradiente del
+gate no, perché, canale per canale, vale il prodotto scalare sui token fra ciò
+che il sotto-strato ha prodotto e la direzione in cui l'uscita andrebbe
+spostata: il blocco impara quanto aprirsi pur non contribuendo ancora, e la
+rete, che comincia come un tubo vuoto, riceve gradiente su tutti i gate
+insieme.
 
 Nell'implementazione di riferimento questo succede dal secondo passo, perché
 anche lo strato d'uscita parte da zero e al primo passo si muove solo lui; nel
@@ -308,7 +310,7 @@ Un risultato prezioso perché prevedibile: se so quanto
 miglioro raddoppiando il lavoro, so anche se conviene raddoppiarlo, prima di
 spendere i soldi.
 
-Dodici torri, tutte per lo stesso lavoro ma di taglie diverse.
+Dodici torri, tutte per lo stesso compito ma di taglie diverse.
 Le misure di torre sono quattro, e più grande è la torre più sono i piani e più
 lunghi gli appunti; i modi di tagliare il mosaico sono tre, e più piccole sono
 le tessere più ne entrano a ogni piano. Quattro per tre fa dodici.

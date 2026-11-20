@@ -84,7 +84,7 @@ corrette che si contraddicono, e nessuna delle due è truccata. ProPublica, per�
 non guardava soltanto i falsi allarmi: guardava anche l'errore opposto, le
 persone poi riarrestate che il sistema aveva messo fra quelle «a basso rischio»,
 e le trovava più spesso fra i bianchi. Le richieste in gioco sono quindi tre:
-che l’«alto rischio» ci prenda ugualmente spesso nei due gruppi, come voleva
+che l’«alto rischio» ci azzecchi ugualmente spesso nei due gruppi, come voleva
 l'azienda, e che i due errori (l'allarme dato a chi poi non viene riarrestato e
 quello mancato per chi lo è) capitino con la stessa frequenza, come voleva
 ProPublica. Se nei due gruppi il riarresto non capita con la stessa frequenza,
@@ -114,13 +114,12 @@ capitolo. Northpointe, l'azienda che produceva il software (oggi Equivant),
 rispose con un rapporto il cui titolo è già l'argomento tecnico della disputa:
 *COMPAS Risk Scales: Demonstrating Accuracy Equity and Predictive Parity*
 {cite}`dieterich2016compas`. Fra gli imputati classificati ad alto rischio la
-quota di chi veniva riarrestato era la stessa nei due gruppi. Entrambe le parti
-avevano ragione, e a spiegarlo è un teorema:
-quando i tassi di base delle due popolazioni differiscono, la parità del
-valore predittivo rivendicata dall'azienda e la parità di *entrambi* i tassi
-di errore misurata da ProPublica non possono valere insieme
-{cite}`chouldechova2017fair`. È un vincolo aritmetico, che il codice migliore
-non tocca.
+quota di chi veniva riarrestato era quasi la stessa nei due gruppi. Entrambe le
+parti avevano ragione, e a spiegarlo è un teorema: quando i tassi di base delle
+due popolazioni differiscono, la parità del valore predittivo rivendicata
+dall'azienda e la parità di *entrambi* i tassi di errore misurata da ProPublica
+non possono valere insieme {cite}`chouldechova2017fair`. È un vincolo
+aritmetico, che il codice migliore non tocca.
 
 Due avvertenze, che la sezione sull'equità svilupperà. La prima: «parità del
 valore predittivo» non è sinonimo di «calibrazione», e i teoremi che si citano
@@ -256,7 +255,7 @@ Tre spostamenti quantitativi hanno reso il tema ineludibile.
    classifica come ad alto rischio {cite}`euaiact2024`.
 3. Opacità. Le reti profonde sono ottime nel *cosa* (l'accuratezza) e
    povere nel *perché*: la funzione appresa è distribuita su milioni di pesi,
-   senza un ragionamento leggibile. Cresce così la distanza tra performance
+   senza un ragionamento leggibile. Cresce così la distanza tra capacità
    predittiva e comprensibilità: la tensione che il capitolo
    sull'interpretabilità affronta di petto.
 
@@ -387,8 +386,9 @@ si entra nel merito.
   robustezza e sicurezza, trasparenza, allineamento (che il sistema faccia
   quello che intendevamo, non la lettera di quel che gli abbiamo detto) e
   regole.
-- Perché adesso: i modelli sono potenti, uno solo serve milioni di persone, e
-  quasi nessuno sa spiegare perché ha risposto così. Tutte e tre insieme.
+- Perché adesso: i modelli imparano dai dati anche le abitudini che non
+  c'entrano, uno solo serve milioni di persone, e quasi nessuno sa spiegare
+  perché ha risposto così. Tutte e tre insieme.
 - «Giusto» non è una parola sola. Come per la torta da dividere, ci sono più
   idee di equità tutte ragionevoli, e spesso non si possono avere insieme:
   quale pretendere è una scelta che spetta alle persone, non alla matematica.

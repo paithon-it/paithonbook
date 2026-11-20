@@ -57,7 +57,7 @@ mini-batch (nel codice, *batch*); il $784$ sono i pixel di un'immagine MNIST
 srotolata, $28 \times 28$. Il $128$ e il $10$ sono la seconda matrice, cioè lo
 strato d'uscita del nostro percettrone, che prende 128 numeri e ne produce 10,
 uno per cifra. In altri termini, [sono arrivate 32 immagini appiattite
-direttamente allo strato finale, perché fra i due manca lo strato
+direttamente allo strato finale, perché in mezzo manca lo strato
 nascosto]{.pt-matita}, che avrebbe dovuto portarle da $784$ a $128$.
 
 `````{tab} Elementare
@@ -72,11 +72,12 @@ stesso, senza avvisare, e danno un numero privo di significato. Le cause
 ricorrenti hanno un nome ciascuna.
 
 **Manca l'appiattimento.** Uno strato `nn.Linear` legge un numero solo delle
-dimensioni, l'ultimo, e degli altri non si occupa. Davanti a
-$(3, 224, 224)$ guarda il $224$ finale. Se ne aspettava un altro si ferma; se
-per caso aspettava $224$ va perfino peggio, perché lo strato calcola e nessuno
-protesta: tratta ogni riga di pixel di ogni colore come un esempio a sé, e di
-un'immagine sola ne fa $3 \times 224 = 672$ risposte scollegate invece di una.
+dimensioni, l'ultimo, e tutto quello che sta prima lo prende per un elenco di
+esempi da trattare uno per uno. Davanti a $(3, 224, 224)$ guarda il $224$
+finale. Se si aspettava un numero diverso si ferma; se per caso aspettava $224$
+va perfino peggio, perché lo strato calcola e nessuno protesta: tratta ogni
+riga di pixel di ogni colore come un esempio a sé, e di un'immagine sola ne fa
+$3 \times 224 = 672$ risposte scollegate invece di una.
 
 Serve un `nn.Flatten()` in mezzo, che srotola ogni immagine in un'unica fila di
 $3 \times 224 \times 224 = 150\,528$ numeri e lascia stare il mazzetto,
@@ -101,8 +102,9 @@ si prova il modello su una foto scaricata al volo.
 
 L'operazione inversa ha una trappola: `x.squeeze()`, senza dire quale lato,
 toglie tutti i lati che valgono uno, e su un mazzetto da un esempio solo porta
-via anche quello, riportando l'immagine com'era prima. Il lato si indica
-sempre, con `x.squeeze(dim=...)`, così quello del mazzetto resta dov'è.
+via anche quello, riportando l'immagine com'era prima, senza il lato che il
+modello pretende. Il lato si indica sempre, con `x.squeeze(dim=...)`, così
+quello del mazzetto resta dov'è.
 
 Per trovare il punto in cui la fila si spezza non serve indovinare: si fanno
 stampare le dimensioni a ogni passaggio, e la prima coppia che non combacia è
@@ -499,12 +501,13 @@ paragrafo «Quando fermarsi» della {doc}`sezione sul training loop
   catena.
 - **`shuffle=True` sul `DataLoader` di test.** Non è un errore di per sé, ma
   rende impossibile confrontare le predizioni con le etichette in un ordine
-  stabile. Non cambia invece l'accuratezza: con `model.eval()`
-  è identica cifra per cifra con il mescolamento acceso
-  e con quello spento, perché sono gli stessi esempi in un altro ordine.
-  L'unico numero che cambia è la media delle medie per batch, che però è un
-  errore numerico a sé, spiegato in [dal notebook agli
-  script](dal-notebook-agli-script.md), e si sistema lì.
+  stabile. Non cambia invece l'accuratezza: con `model.eval()` è identica cifra
+  per cifra con il mescolamento acceso e con quello spento, perché sono gli
+  stessi esempi in un altro ordine. L'unico numero che cambia è la media delle
+  medie per batch, perché l'ultimo batch, più piccolo degli altri, contiene
+  ogni volta esempi diversi e pesa quanto gli altri: è un errore di conto a sé,
+  spiegato in [dal notebook agli script](dal-notebook-agli-script.md), e si
+  sistema lì.
 - **La loss diventa `nan`.** La sigla `nan` sta per *not a number* ed è il
   valore che i computer usano per dire "questo calcolo non ha un risultato". Lo
   si ottiene dividendo zero per zero, o sottraendo fra loro due infiniti (il
@@ -687,12 +690,13 @@ volta la direzione che il modello ricava è una media presa male, che traballa d
 un giro all'altro.
 
 Per distinguerle basta una prova: quadruplica il mazzetto, lasciando il passo
-com'è, e riguarda le curve. Se il tremolio si calma era la media presa male;
-se invece le curve saltano identiche la colpa è del passo, e allora ingrandire
-i mazzetti non serve a niente, perché costa più calcolo senza dare niente in
-cambio. Si quadruplica perché il tremolio si dimezza ogni volta che gli esempi
-a giro si quadruplicano, mentre raddoppiando se ne toglie meno di un terzo, e a
-occhio non si vede.
+com'è, e riguarda le curve. Se il tremolio si calma era la media presa male; se
+invece le curve saltano identiche la colpa è del passo, e allora ingrandire i
+mazzetti non serve a niente, perché costa più calcolo senza dare niente in
+cambio. Si quadruplica perché il tremolio scende con la radice quadrata degli
+esempi a giro, e la radice di quattro è due: quadruplicandoli il tremolio si
+dimezza, mentre raddoppiandoli se ne toglie meno di un terzo, e a occhio non si
+vede.
 
 Il collaudo dei dieci esempi, quello del {doc}`flusso di lavoro
 <flusso-di-lavoro>`, si fa prima di lanciare l'addestramento vero: un solo
@@ -734,8 +738,9 @@ Il collaudo canonico prima di ogni addestramento serio è sovradattare di
 proposito un batch solo: si prendono otto o dieci esempi, si disattiva ogni
 regolarizzazione e si addestra su quelli per qualche centinaio di iterazioni.
 Un modello sano arriva a una loss praticamente nulla, perché memorizzare dieci
-esempi è alla portata di qualunque rete con più parametri che esempi (una
-regressione lineare con sei parametri no, e lì il fallimento è atteso).
+esempi è alla portata di qualunque rete che non sia minuscola, e il conto dei
+parametri da solo non basta a dirlo (una regressione lineare con sei parametri
+no, e lì il fallimento è atteso).
 
 Se il modello non ci riesce con un learning rate ordinario (per Adam,
 $10^{-3}$) e senza regolarizzazione, il difetto è quasi sempre nella catena:
@@ -770,8 +775,9 @@ quattro.
    memorizzato niente, quindi non ha alcun vantaggio sui dati visti.
 
 Le prime due, in particolare, si verificano in un minuto: si ricalcola la loss
-di addestramento a fine epoca con `model.eval()`, sugli stessi pesi con cui si
-misura la validazione. Se il paradosso sparisce, non c'era.
+di addestramento a fine epoca con `model.eval()` e senza augmentation (che sta
+nella `transform` del `Dataset`, e `eval()` non la tocca), sugli stessi pesi
+con cui si misura la validazione. Se il paradosso sparisce, non c'era.
 
 ```{code-block} python
 :class: pt-non-eseguibile
@@ -788,7 +794,7 @@ for epoca in range(n_epoche):
         n += X.size(0)
     storia["train"].append(somma / n)
 
-    modello.eval()                            # niente dropout, niente augmentation
+    modello.eval()                            # niente dropout (non l'augmentation)
     with torch.no_grad():
         somma, n = 0.0, 0
         for X, y in loader_val:

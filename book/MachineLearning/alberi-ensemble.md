@@ -769,12 +769,13 @@ preferire]{.pt-matita}.
 Il bagging (e la sua incarnazione migliore, la random forest) parte da alberi a
 varianza alta e la abbatte mediando. È robusto e poco sensibile agli
 iperparametri; in particolare, aggiungere alberi non causa overfitting, perché
-l'errore converge a un limite al crescere di $B$ {cite}`breiman2001random`.
-Quel limite è la media di alberi cresciuti a fondo e può essere un modello
-troppo ricco, ma in pratica il danno è piccolo {cite}`hastie2009elements`. È
-quindi una buona scelta di partenza quando si vuole un modello solido con poca
-messa a punto, e si addestra in parallelo con naturalezza, dato che ogni albero
-dipende solo dal proprio campione.
+l'errore converge a un limite al crescere del numero $B$ di alberi
+{cite}`breiman2001random`. Il limite stesso, però, è la media di alberi
+cresciuti a fondo e può essere un modello troppo ricco, anche se in pratica il
+danno è piccolo {cite}`hastie2009elements`. È quindi una buona scelta di partenza
+quando si vuole un modello solido con poca messa a punto, e si addestra in
+parallelo con naturalezza, dato che ogni albero dipende solo dal proprio
+campione.
 
 Il boosting, invece, parte da alberi deboli a bias alto e lo abbatte
 correggendo gli errori in sequenza. Tipicamente raggiunge l'accuratezza più
@@ -824,11 +825,11 @@ ingresso le loro predizioni e impara quando fidarsi di chi. Può scoprire che il
 primo è affidabile sui casi facili e il secondo sui casi rari, cosa che una
 media fissa non può fare.
 
-C'è una regola da cui dipende tutto: il combinatore va addestrato su
-predizioni che i modelli di base non hanno mai visto in addestramento. Se gli
-si danno le predizioni sui dati con cui quei modelli si sono allenati,
-li vedrà tutti bravissimi, e si fiderà di chi ha imparato a memoria. È
-lo stesso principio del test che non si tocca, applicato un piano più in su.
+C'è una regola da cui dipende tutto: il combinatore va addestrato su predizioni
+fatte su esempi che i modelli di base non hanno mai visto in addestramento. Se
+gli si danno le predizioni sui dati con cui quei modelli si sono allenati, li
+vedrà tutti bravissimi, e si fiderà di chi ha imparato a memoria. È lo stesso
+principio del test che non si tocca, applicato un piano più in su.
 
 Perché tutto questo serva a qualcosa, i modelli devono sbagliare in modi
 diversi. [Tre modelli che sbagliano sugli stessi casi non si correggono a
@@ -1032,16 +1033,17 @@ Su quest'ultimo confronto la terza cifra decide, e il verdetto cambia con la
 forma del test. Quei $p$, infatti, vengono dal calcolo binomiale esatto, mentre
 la versione approssimata che quasi tutti i manuali chiamano test di McNemar,
 con la correzione di continuità, dà $0{,}0500$, la soglia stessa (alla quinta
-cifra, un soffio sopra). Un confronto che si gioca lì non è un confronto vinto.
+cifra, un soffio sopra). Un confronto che si decide alla terza cifra, e che
+cambia verdetto con la forma del test, non si può dire vinto.
 
 L'uscita risponde anche a un'altra domanda, distinta dalla prima: mediare
 probabilità a pesi fissi mette al riparo dal membro medio, ma non promette di
-superare il migliore. La garanzia vale per una perdita convessa delle
-probabilità mediate, come la distanza al quadrato fra probabilità ed esito (il
-punteggio di Brier, dove più basso è meglio) o la log-loss, e non per
-l'accuratezza. Il voto morbido, infatti, media e poi sceglie la classe più
-probabile, e quella scelta è di nuovo una perdita 0-1, dove un comitato può
-finire perfino sotto il membro medio.
+superare il migliore. Questa garanzia, di non fare peggio del membro medio,
+vale per una perdita convessa delle probabilità mediate, come la distanza al
+quadrato fra probabilità ed esito (il punteggio di Brier, dove più basso è
+meglio) o la log-loss, e non per l'accuratezza. Il voto morbido, infatti, media
+e poi sceglie la classe più probabile, e quella scelta è di nuovo una perdita
+0-1, dove un comitato può finire perfino sotto il membro medio.
 
 Sul punteggio di Brier il voto morbido fa $0{,}0961$ contro una
 media dei tre di $0{,}1046$, come la garanzia promette, e perde contro la
@@ -1057,11 +1059,11 @@ con la foresta.
 Lo stacking, invece, impara che di quel modello ci si può fidare poco, come
 mostrano i pesi del combinatore: $6{,}05$ alla foresta, $4{,}86$ al $k$-NN e
 $-1{,}14$ al Bayes ingenuo, un peso piccolo e perfino di segno opposto (con tre
-colonne di probabilità così correlate fra loro, il segno del peso più piccolo
-non si legge come fiducia). È il vantaggio di far decidere i pesi ai dati
-invece che fissarli in anticipo, e la ragione per cui, in un ensemble
-eterogeneo, la media semplice è una scommessa sulla qualità uniforme dei
-membri.
+colonne di probabilità così correlate fra loro conta che il peso sia piccolo,
+mentre il suo segno non si legge come fiducia). È il vantaggio di far decidere
+i pesi ai dati invece che fissarli in anticipo, e la ragione per cui, in un
+ensemble eterogeneo, la media semplice è una scommessa sulla qualità uniforme
+dei membri.
 
 Non è però un invito a impilare tutto, perché il guadagno qui è di poco più di
 un punto e mezzo, per giunta al limite della significatività, pagato con

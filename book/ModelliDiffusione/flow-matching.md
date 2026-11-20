@@ -456,9 +456,9 @@ zero, dove i due modi si equivalgono e la velocità è nulla: è il confine fra
 chi finisce a $-1{,}5$ e chi a $+1{,}5$, un punto solo su tutta la retta.
 
 È questa monotonia che il raddrizzamento sfrutta, e ne segue che in una
-dimensione (e soltanto lì) la mappa che ne esce coincide con quella del
-trasporto ottimo, la mappa che sposterebbe la terra di Monge con la minima
-fatica.
+dimensione (e in più dimensioni solo in casi particolari, come quello
+gaussiano) la mappa che ne esce coincide con quella del trasporto ottimo, la
+mappa che sposterebbe la terra di Monge con la minima fatica.
 
 ## La stessa cosa vista da due parti
 
@@ -473,12 +473,13 @@ si ricava dal punteggio con una formula, e viceversa. Di conseguenza una rete
 addestrata in un modo si può usare nell'altro riscrivendo la sua uscita.
 
 Cambiano tre cose pratiche, e per esse il vocabolario nuovo si è imposto. La
-prima è che, potendo scegliere il percorso, si sceglie quello che si percorre in
-meno passi. La seconda è che il flow matching non chiede che il punto di arrivo
-sia rumore gaussiano, quindi permette di andare da una distribuzione qualsiasi a
-un'altra qualsiasi, per esempio da fotografie diurne a fotografie notturne,
-senza passare dal rumore. La terza è che le formule sono più corte, e formule
-più corte fanno commettere meno errori.
+prima è che, potendo scegliere il percorso, si sceglie quello che si percorre
+in meno passi (dritto, anche se per percorrerlo davvero in pochi passi serve
+poi raddrizzare il campo). La seconda è che il flow matching non chiede che il
+punto di arrivo sia rumore gaussiano, quindi permette di andare da una
+distribuzione qualsiasi a un'altra qualsiasi, per esempio da fotografie diurne
+a fotografie notturne, senza passare dal rumore. La terza è che le formule sono
+più corte, e formule più corte fanno commettere meno errori.
 
 `````
 
@@ -507,20 +508,21 @@ limitato.
 
 Le tre differenze che restano sono operative e sostanziali:
 
-- Libertà nel percorso. $(\alpha_t,\sigma_t)$ diventano una scelta di
-  progetto invece che una conseguenza del programma di rumore, e si sceglie il
-  percorso che minimizza la curvatura delle traiettorie.
+- Libertà nel percorso. $(\alpha_t,\sigma_t)$ diventano una scelta di progetto
+  invece che una conseguenza del programma di rumore, e si sceglie di solito un
+  percorso le cui traiettorie condizionate sono rette (le marginali, in
+  generale, curvano lo stesso).
 - Estremi arbitrari. Il conditional flow matching non richiede
   $p_1=\mathcal{N}(\mathbf{0},\mathbf{I})$: basta poter campionare da entrambe
   le sponde e disporre di un accoppiamento. Da qui la traduzione fra domini e i
   ponti fra distribuzioni, che con la formulazione a SDE richiedevano
   costruzioni ad hoc.
-- Semplicità della loss. Nessun programma di rumore da calibrare e un solo
-  campo da regredire. Resta una scelta di peso, la distribuzione $\pi(t)$ con
-  cui si estrae $t$, perché cambiarla equivale a pesare la loss: l'uniforme
-  dà lo stesso peso a tutti i tempi, ma i tempi intermedi sono i più difficili
-  da predire, e Stable Diffusion 3 li favorisce con una distribuzione
-  logit-normale {cite}`esser2024scaling`.
+- Semplicità della loss. Scelto il percorso, che fa le veci del programma di
+    rumore, c'è un solo campo da stimare con una regressione. Resta una scelta
+  di peso, la distribuzione $\pi(t)$ con cui si estrae $t$, perché cambiarla
+  equivale a pesare la loss: l'uniforme dà lo stesso peso a tutti i tempi, ma i
+  tempi intermedi sono i più difficili da predire, e Stable Diffusion 3 li
+  favorisce con una distribuzione logit-normale {cite}`esser2024scaling`.
 
 Sono queste tre ragioni, e non un vantaggio teorico, ad aver portato le
 architetture di punta (Stable Diffusion 3 e i modelli della sua generazione)

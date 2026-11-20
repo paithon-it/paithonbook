@@ -17,8 +17,8 @@ Se il passaggio giusto non viene ripescato, il generatore non ha modo di
 rimediare. Gli resta solo ricordare, e ricordando un modello inventa molto più
 che leggendo, senza lasciare accanto la fonte con cui controllarlo. La quota
 dei passaggi giusti che la ricerca ripesca si chiama *recall* ed è il tetto
-dell'intero sistema: [nessun accorgimento applicato dopo recupera ciò
-che la ricerca non ha trovato]{.pt-matita}.
+delle risposte che il sistema può fondare su un documento: [nessun accorgimento
+applicato dopo recupera ciò che la ricerca non ha trovato]{.pt-matita}.
 
 L'articolo che ha introdotto la RAG ha misurato il peso di quel tetto. Sulle
 domande la cui risposta non compare in nessun documento recuperato, il sistema
@@ -75,7 +75,7 @@ essere severo, perché al modello arrivi poco e buono. La scritta in fondo al
 disegno la riassume: *a monte* è l'inizio della catena, *a valle* la fine.
 
 La prima delle due ricerche del disegno è quella «densa» di «Cercare per
-rispondere»: domanda e passaggi sono embedding in $\mathbb{R}^d$ e si prendono i
+rispondere»: domanda e passaggi sono embedding in $\mathbb{R}^D$ e si prendono i
 passaggi più vicini alla domanda, anche quando non condividono alcuna parola. La
 ricerca sparsa confronta invece i termini con BM25, una funzione degli anni
 Novanta che resta una base di confronto difficile da battere fuori dal dominio
@@ -294,7 +294,7 @@ da qualche centinaio a qualche migliaio, e nessuna ha un significato leggibile,
 perché le fissa l'addestramento.
 
 La ricerca esatta confronta la domanda con ogni vettore dell'archivio, a uno a
-uno, e costa $O(Nd)$ con $N$ vettori di $d$ numeri: insostenibile quando i
+uno, e costa $O(ND)$ con $N$ vettori di $D$ numeri: insostenibile quando i
 passaggi sono milioni e le domande arrivano una dietro l'altra.
 
 Per questo gli indici approssimati dei vicini più prossimi rinunciano alla
@@ -387,7 +387,7 @@ sintetici a bassa dimensione.
 In particolare, a quattro dimensioni il parametro di ricerca che
 serve per una recall fissata smette di crescere quando l'archivio si allarga; a
 otto dimensioni, con dieci vicini cercati e la recall ferma a $0{,}95$,
-osservano una complessità «non peggiore che logaritmica». È evidenza empirica,
+osservano una complessità «non peggiore che logaritmica». È un risultato empirico,
 non una garanzia dimostrata in generale.
 
 Il logaritmo è in $N$: la maggiore
@@ -476,8 +476,8 @@ tutto $9$. «Il gatto dorme accanto ai fornelli» copre il solo «gatto»: un
 concetto, nessuna coppia, un punto.
 
 Il premio alle coppie non sposta la classifica, perché il calcolo si semplifica
-nel quadrato dei concetti coperti: con $c$ concetti le coppie sono $c(c-1)/2$,
-e $c + 2 \cdot c(c-1)/2 = c^2$, cioè $3^2 = 9$ contro $1^2 = 1$. Il premio
+nel quadrato dei concetti coperti: con $u$ concetti le coppie sono $u(u-1)/2$,
+e $u + 2 \cdot u(u-1)/2 = u^2$, cioè $3^2 = 9$ contro $1^2 = 1$. Il premio
 allarga invece la *distanza* fra i punteggi, che è quello che serve qui.
 
 Un cross-encoder vero non conta le coppie: legge quali concetti
@@ -622,8 +622,9 @@ Il riordino non ha alzato la recall, perché il passaggio giusto era già stato
 recuperato, ma la precisione, cioè la quota di passaggi utili fra quelli
 consegnati al generatore. Le due misure descrivono problemi diversi: la recall
 dice quanto si è perso per strada, la precisione quanto materiale irrilevante
-accompagna quello utile. Il tetto del sistema resta la recall, perché ciò che
-non si trova non si recupera; la precisione si può alzare a valle.
+accompagna quello utile. Il tetto delle risposte fondate su un documento resta
+la recall, perché ciò che non si trova non si recupera; la precisione si può
+alzare a valle.
 
 ## Il RAG che si corregge: Self-RAG e RAG agentico
 
@@ -714,7 +715,7 @@ Un token *Retrieve* decide, passo per passo, se in
 quel momento serve recuperare (`sì`/`no`/`continua`, dove il terzo vuol dire
 mantenere il passaggio corrente invece di cercarne un altro); quando
 il recupero avviene, altri token *critici* danno tre giudizi diversi: se il
-passaggio è rilevante per la domanda, se la frase appena generata è supportata
+passaggio è rilevante per la domanda, se la frase appena generata è sostenuta
 da quel passaggio o lo travisa, e se la risposta nel complesso serve a chi ha
 fatto la domanda, che è l'unico dei tre a non guardare nessun passaggio e viene
 emesso anche quando il recupero non c'è stato.
@@ -753,7 +754,7 @@ Ogni iterazione in più (una riscrittura, un riordino, una seconda tornata di
 ricerca, una pausa in cui il modello si chiede se quello che ha trovato serve
 davvero) vuol dire far lavorare il modello un'altra volta, e ogni volta si paga
 in attesa e in denaro, a token in ingresso e in uscita. Una RAG agentica che fa
-cinque iterazioni non costa cinque volte un recupero secco: a ogni
+cinque iterazioni costa più di cinque volte un recupero secco: a ogni
 iterazione il modello rilegge tutto ciò che le iterazioni precedenti hanno
 raccolto, e quella rilettura si paga per intero, a meno di usare la *cache dei
 prefissi* che alcuni fornitori offrono, con cui la parte già vista costa una
@@ -813,7 +814,7 @@ spesso vanno d'accordo.
 Le metriche proprie di un sistema RAG smontano il giudizio nelle sue
 componenti. La fedeltà (o *groundedness*) misura se ogni affermazione della
 risposta è deducibile dai passaggi recuperati; un modo di stimarla è
-scomporre la risposta in singole *claim* e contare la frazione supportata dal
+scomporre la risposta in singole *claim* e contare la frazione sostenuta dal
 contesto:
 
 $$
@@ -961,7 +962,7 @@ presupposto che nessuna di queste tecniche garantisce.
   invocabile più volte (multi-hop). Ogni iterazione in più costa latenza e
   denaro, e la rilettura del contesto cresce con le iterazioni (la cache dei
   prefissi ne abbassa il prezzo senza fermarne la crescita).
-- Valutare: fedeltà/*groundedness* (la risposta è supportata dai
+- Valutare: fedeltà/*groundedness* (la risposta è sostenuta dai
   passaggi?), pertinenza della risposta, precision/recall del contesto.
   RAGAS {cite}`es2024ragas` stima fedeltà, pertinenza e rilevanza del
   contesto senza risposte di riferimento, con un LLM-giudice (la recall del

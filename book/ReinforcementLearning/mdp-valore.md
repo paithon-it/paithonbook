@@ -982,7 +982,7 @@ Quella mappa ha un nome tecnico, **modello dell'ambiente**, e consiste nelle
 probabilità di transizione $P(s'\mid s,a)$ e nelle ricompense attese $r(s,a)$.
 Non va confuso con il «modello» di cui si parla altrove, la
 rete neurale addestrata: qui modello indica una descrizione di come funziona il
-mondo, niente di più. Il robot del nostro labirinto non ha questa descrizione,
+mondo, niente di più. Un agente nel labirinto non ha questa descrizione,
 e il mondo reale quasi mai la consegna: nessuno può dire a un
 agente, per ogni mossa e in anticipo, con che probabilità troverà traffico o
 come risponderà l'avversario a Go.
@@ -1036,9 +1036,9 @@ famoso.
   Carlo) o con correzioni a ogni passo (differenze temporali).
 - Tutto questo si tiene in una tabella con una casella per situazione, e la
   tabella si scrive finché le situazioni si possono elencare: un milione va
-  benissimo, ma gli scacchi ne hanno uno seguito da quarantaquattro zeri e il
-  Go uno seguito da centosettanta zeri. È il muro che il deep reinforcement
-  learning esiste per aggirare.
+  benissimo, ma gli scacchi ne hanno circa cinque seguito da quarantaquattro
+  zeri e il Go circa due seguito da centosettanta zeri. È il muro che il deep
+  reinforcement learning esiste per aggirare.
 ```
 
 `````
@@ -1065,9 +1065,10 @@ famoso.
   valori direttamente, coi metodi Monte Carlo o con le differenze temporali; e
   senza modello la policy greedy si legge dai valori delle azioni, non da quelli
   degli stati.
-- Tutto l'impianto presuppone $\mathcal{S}$ enumerabile, una casella di
-  tabella per stato: $10^6$ stati si trattano, $10^{44}$ (scacchi) o $10^{170}$
-  (Go) no. È l'ipotesi che il deep reinforcement learning dovrà abbandonare.
+- Tutto l'impianto presuppone $\mathcal{S}$ finito e abbastanza piccolo da
+  tenerne una casella di tabella per stato: $10^6$ stati si trattano, $10^{44}$
+  (scacchi) o $10^{170}$ (Go) no. È l'ipotesi che il deep reinforcement
+  learning dovrà abbandonare.
 ```
 
 `````

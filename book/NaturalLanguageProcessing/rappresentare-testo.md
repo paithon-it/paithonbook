@@ -152,7 +152,8 @@ cioè prodotto scalare nullo e distanza identica per *qualsiasi* coppia. In
 altri termini, [la geometria non porta alcuna informazione
 semantica]{.pt-matita}. In più, con un vocabolario di parole intere, $|V|$ è
 dell'ordine di $10^5$–$10^6$ (con le sottoparole scende a qualche decina di
-migliaia): i vettori sono enormi e sparsissimi.
+migliaia, qualche centinaio di migliaia nei modelli multilingue): i vettori
+sono enormi e sparsissimi.
 
 `````
 
@@ -202,7 +203,8 @@ e premia quelle presenti in pochi.
 La rarità si calcola così: si divide il numero totale di documenti per il
 numero di quelli in cui la parola compare, e del risultato si prende il
 logaritmo naturale, che è solo un modo di schiacciare i numeri grandi perché
-non prendano il sopravvento.
+non prendano il sopravvento: ogni volta che il numero si moltiplica per dieci,
+il logaritmo sale di poco più di due.
 
 Facciamo un esempio su una raccolta di mille documenti. *Il* compare in tutti e
 mille: mille diviso mille fa 1, e il logaritmo di 1 è zero. La rarità di *il*
@@ -283,7 +285,7 @@ e su una raccolta piccola la differenza si vede.
 La variante serve a due cose. La prima è non trovarsi mai a dividere per zero,
 cosa che capiterebbe con una parola presente nel vocabolario ma in nessun
 testo: la libreria fa finta di avere un documento in più, che contiene tutte le
-parole, e così la rarità si calcola sempre. Poi le aggiunge sempre $1$.
+parole, e così la rarità si calcola sempre. Poi alla rarità aggiunge sempre $1$.
 
 La seconda è mettere sulla stessa scala documenti di lunghezza diversa, così che
 un testo lungo non risulti più «pesante» solo perché contiene più parole; a
@@ -649,8 +651,8 @@ dal punto di arrivo, e quel che resta è la freccia che va dall'uno all'altro.
 Per applicarla a *donna* la si somma: se *donna* sta in `(1, 5)`, atterri in
 `(3, 8)`, e se lì vicino c'è *regina* il gioco è fatto. In formula: *re −
 uomo + donna ≈ regina*. I quattro punti disegnano un parallelogramma, e questo
-è il segno che il modello ha catturato il concetto di "regalità" e quello di
-"genere", senza che nessuno glieli abbia mai spiegati.
+sembra il segno che il modello abbia catturato il concetto di "regalità" e
+quello di "genere", senza che nessuno glieli abbia mai spiegati.
 
 C'è però un'avvertenza che quasi nessuno racconta. Se si fa davvero il conto,
 cercando la parola più vicina al punto di arrivo, la vincitrice non è *regina*:
@@ -1127,13 +1129,14 @@ svolgere, e non una classifica generica.
 - One-hot e bag-of-words / TF-IDF danno vettori enormi, sparsi e senza
   nozione di somiglianza tra parole diverse.
 - I word embedding (word2vec, GloVe) sono densi e a bassa dimensione: la
-  vicinanza geometrica riflette la vicinanza di significato, misurata con
-  la similarità del coseno. Sono *statici*: un vettore per tipo di parola, con
-  i sensi di una parola polisemica mescolati.
+  vicinanza geometrica riflette la somiglianza dei contesti d'uso, che spesso,
+  non sempre, è vicinanza di significato (anche *caldo* e *freddo* sono
+  vicini), misurata con la similarità del coseno. Sono *statici*: un vettore
+  per tipo di parola, con i sensi di una parola polisemica mescolati.
 - L’analogia lineare ($\mathbf{v}_{\text{re}} - \mathbf{v}_{\text{uomo}} +
-  \mathbf{v}_{\text{donna}}$) restituisce *regina* solo perché i tre termini di
+  \mathbf{v}_{\text{donna}}$) restituisce *regina* solo se i tre termini di
   ingresso sono esclusi dai candidati: senza quel vincolo, mai scritto nelle
-  equazioni, vince *re* {cite}`nissim2020fair`.
+  equazioni, vince *re* e *regina* resta seconda {cite}`nissim2020fair`.
 - fastText somma i vettori degli *n-grammi di caratteri*: dà un vettore
   anche alle parole mai viste e sfrutta la morfologia; un aiuto concreto per
   lingue a morfologia ricca, dove Bojanowski e colleghi misurano i guadagni

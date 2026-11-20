@@ -143,9 +143,9 @@ Un modello di linguaggio ha un solo compito: indovinare la parola dopo. Su
 questo compito gli si può dare un voto preciso: gli si fa leggere del testo che
 non ha mai visto e si guarda quanta probabilità aveva assegnato alle parole che
 poi sono comparse. Se ne dava tanta, ha indovinato bene; se ne dava poca, male.
-Quel valore, che diminuisce quando il modello impara, è l'errore (in gergo la
-*loss*), da cui deriva anche la misura usata per valutare il modello finito:
-la perplessità.
+Rovesciato in modo che diminuisca quando il modello impara, quel valore è
+l'errore (in gergo la *loss*), da cui deriva anche la misura usata per valutare
+il modello finito: la perplessità.
 
 Tra il 2020 e il 2022 due lavori hanno misurato, con la pazienza di centinaia
 di addestramenti, come cambia quell'errore al crescere delle risorse, e hanno
@@ -224,21 +224,23 @@ colleghi.
 Hoffmann e colleghi {cite}`hoffmann2022training` correggono la conclusione
 operativa di Kaplan (che suggeriva di privilegiare $N$): rifacendo le misure
 trovano che, a budget di calcolo $C$ fissato, il minimo della loss si ottiene
-scalando all'incirca $N_{\mathrm{opt}} \propto C^{0{,}5}$ e
-$D_{\mathrm{opt}} \propto C^{0{,}5}$ (modello e dati crescono *insieme*, in
-proporzione) con un rapporto quasi costante $D/N \approx 20$ token per
-parametro.
+scalando all'incirca $N_{\mathrm{opt}} \propto C^{0{,}5}$ e $D_{\mathrm{opt}}
+\propto C^{0{,}5}$ (modello e dati crescono *insieme*, in proporzione) con un
+rapporto quasi costante $D/N \approx 20$ token per parametro (qui $N$ conta
+tutti i parametri, embedding compresi, a differenza di Kaplan: è una delle
+differenze di misura fra le due leggi {cite}`pearce2024reconciling`).
 
 La verifica empirica è **Chinchilla**: 70 miliardi di parametri
 addestrati su 1.400 miliardi di token che, a parità di calcolo, superano
 Gopher (280 miliardi di parametri, circa 300 miliardi di token). Col senno del
 2022, GPT-3 era fortemente sotto-addestrato.
 
-Il calcolo parte dal costo di un
-addestramento, $C \approx 6ND$ operazioni in virgola mobile: due per parametro
-e per token nel passaggio in avanti, quattro nella retropropagazione. Ponendo
-$D = 20N$ si ricava $C \approx 120N^2$, quindi $N_{\text{opt}} \approx
-\sqrt{C/120}$. In codice bastano poche righe:
+Il calcolo parte dal costo di un addestramento, $C \approx 6ND$ operazioni in
+virgola mobile: due per parametro e per token nel passaggio in avanti, quattro
+nella retropropagazione, trascurando l'attenzione, che per un contesto di $t$
+token aggiunge circa $t/(12\,d_{\text{model}})$, l'1,4% per GPT-3
+{cite}`kaplan2020scaling`. Ponendo $D = 20N$ si ricava $C \approx 120N^2$,
+quindi $N_{\text{opt}} \approx \sqrt{C/120}$. In codice bastano poche righe:
 
 ```python
 # il conto di Hoffmann e colleghi: C = 6 N D, e all'ottimo D = 20 N
@@ -321,9 +323,9 @@ I due modi classici sono quelli della {doc}`sezione sulla traduzione con le
 reti </NaturalLanguageProcessing/seq2seq-traduzione>`. Il primo è prendere ogni
 volta la parola più probabile e tirare dritto (si chiama *greedy*, cioè
 ingorda). Il secondo è meno miope: invece di impegnarsi subito, si portano
-avanti in parallelo le $k$ continuazioni più promettenti, si vede come
-proseguono, e solo alla fine si tiene la migliore delle $k$ (è la *beam
-search*, «ricerca a fascio»). Le quantità come $k$, $T$ e $p$ sono
+avanti in parallelo le $w$ continuazioni più promettenti, si vede come
+proseguono, e solo alla fine si tiene la migliore delle $w$ (è la *beam
+search*, «ricerca a fascio»). Le quantità come $w$, $k$, $T$ e $p$ sono
 iperparametri della decodifica: li sceglie chi usa il modello, e non si
 imparano.
 
@@ -335,7 +337,7 @@ incastrato a girare in tondo («Il gatto nero salta sul muro. Il gatto nero
 salta sul muro. Il gatto nero...»). Gli stessi autori sono andati a controllare
 come è fatto il testo scritto da noi: hanno preso pagine di prosa umana e hanno
 chiesto al modello, parola per parola, quale probabilità assegnasse a ciascuna.
-Risulta che [noi non scegliamo mai la sequenza più probabile]{.pt-matita}: le
+Risulta che [noi non scegliamo quasi mai la sequenza più probabile]{.pt-matita}: le
 nostre frasi sono punteggiate di scelte a media e bassa probabilità, e sono
 queste a renderle vive. Per scrivere come noi, quindi, il modello deve
 rischiare, cioè **campionare**: tirare un dado truccato secondo le sue
@@ -354,8 +356,8 @@ ricomincia da capo.
 
 Nella {numref}`fig-generazione-autoregressiva` la scelta cade ogni volta sul
 candidato più probabile: è la decodifica *greedy*, quella che produce i loop in
-cui il testo si incarta. Temperatura, top-k e top-p servono a non far vincere
-sempre la barra più lunga.
+cui il testo si incarta. Temperatura, top-k e top-p servono a regolare quanto
+spesso vince la barra più lunga.
 
 `````{tab} Elementare
 Tre manopole, tutte con la stessa filosofia: quanta sorpresa vogliamo?
@@ -412,9 +414,9 @@ $\mathbf{z} = (2{,}0;\; 1{,}0;\; 0{,}0;\; -2{,}0)$:
 | divano   | $0{,}0$  | $0{,}016$ | $0{,}089$ | $0{,}174$ |
 | pigiama  | $-2{,}0$ | $0{,}000$ | $0{,}012$ | $0{,}064$ |
 
-A $T=0{,}5$ «muro» passa da 0,657 a 0,867 e «pigiama» praticamente
-scompare; a $T=2$ la distribuzione si appiattisce e «pigiama» sale a 0,064: un
-errore ogni sedici parole, in media.
+A $T=0{,}5$ «muro» passa da 0,657 a 0,867 e «pigiama» praticamente scompare; a
+$T=2$ la distribuzione si appiattisce e «pigiama» sale a 0,064: in questo
+contesto, un'estrazione su sedici, in media.
 
 Il **top-k** limita il campionamento ai $k$ token con probabilità maggiore,
 rinormalizzando: con $k=2$ restano muro e tetto con
@@ -433,10 +435,13 @@ cumulata fa $0{,}657 \to 0{,}899 \to 0{,}988$; siccome $0{,}899 < 0{,}9$, serve
 anche «divano», e il nucleo è {muro, tetto, divano}, rinormalizzato a
 $(0{,}665;\; 0{,}245;\; 0{,}090)$. A differenza di $k$, la taglia del nucleo si
 adatta alla forma della distribuzione: pochi candidati quando il modello è
-sicuro, molti quando è incerto. Holtzman e colleghi mostrano che è la strategia
-che meglio riproduce le statistiche del testo umano nella generazione di testi
-lunghi. Le tre operazioni si compongono: prima la temperatura, poi i tagli
-top-k e top-p, infine il campionamento.
+sicuro, molti quando è incerto. Fra le strategie che confrontano (greedy, beam
+search, campionamento puro, con temperatura e top-k), Holtzman e colleghi
+trovano che è quella che meglio riproduce le statistiche del testo umano nella
+generazione libera. Le tre operazioni si compongono, di solito prima la
+temperatura, poi i tagli top-k e top-p, infine il campionamento; l'ordine
+conta, perché il nucleo dipende da $T$ (con $p = 0{,}9$ ha due parole a $T =
+0{,}5$ e tre a $T = 1$).
 `````
 
 ```{figure} ../figures/decoding-sampling.svg
@@ -565,8 +570,8 @@ query servono $2\,n_{\text{strati}}\,d_{\text{model}}$ numeri per token, mezzo
 megabyte a 16 bit per il modello da sette miliardi, e una finestra di 4.096
 token occupa circa 2 GB *per ogni sequenza nel batch*, da sommare ai ~14 GB dei
 pesi. Con meno teste di chiave e valore questo fabbisogno si riduce (con GQA a
-otto gruppi, a un quarto); da qui l'adozione di MQA, GQA e MLA come standard
-nei modelli recenti.
+otto gruppi, a un quarto); da qui la diffusione di GQA, oggi la scelta più
+comune, e di varianti come MQA e MLA.
 
 Lo stesso ragionamento spiega un'asimmetria che si nota usando
 i servizi commerciali: elaborare il prompt (il *prefill*, parallelo) e generare
@@ -588,7 +593,7 @@ basta spesso a farlo eseguire {cite}`brown2020language`.
 Un solo obiettivo, molti compiti. Nessuno ha insegnato a questo modello a
 riassumere o a tradurre; GPT-2 ci riesce soltanto in modo grezzo (nel riassunto
 di articoli di giornale, di poco meglio di tre frasi prese a caso), ma ci
-riesce senza aver visto un solo esempio del compito.
+riesce senza essere stato addestrato su un solo esempio del compito.
 ```
 
 L'osservazione di {numref}`fig-gpt2-multitask` precede GPT-3 e ne spiega la
@@ -803,9 +808,10 @@ $p_{\text{tok}}$ è la probabilità di azzeccare un singolo token e il calcolo
 suppone che gli errori sui token siano indipendenti l'uno dall'altro. Una
 funzione del genere resta schiacciata vicino a zero e poi si impenna. Ne segue
 che [la discontinuità è prodotta dalla non linearità della metrica, non dal
-modello]{.pt-matita}. Sostituendo l'accuratezza esatta con la distanza di edit,
-o con la log-verosimiglianza della risposta corretta, in molti casi l'emergenza
-svanisce.
+modello]{.pt-matita}. Sostituendo l'accuratezza esatta con la distanza di edit
+fra token, o, nei quesiti a scelta multipla, il voto tutto o niente con il
+punteggio di Brier (l'errore quadratico sulle probabilità date alle opzioni), in
+molti casi l'emergenza svanisce.
 
 Il dibattito non è chiuso, e le due affermazioni vanno tenute distinte. Che gran
 parte delle curve «a salto» siano artefatti di misura è ormai ben argomentato.

@@ -332,12 +332,12 @@ l'attesa intera.
 
 Quanta riserva tenere si ricava dalla rampa. Se la domanda sale di cento
 megawatt al minuto e una centrale ci mette dieci minuti a partire, nel momento
-in cui la si chiama bisogna averne già mille accesi in più, tanti quanti la
-domanda ne aggiungerà mentre si aspetta. [Una rampa lenta vuole poca riserva, un
-salto improvviso ne vorrebbe quanto il salto intero]{.pt-matita}, e nessuna riserva
-ragionevole lo copre. Lo coprono soltanto una centrale che parte così in fretta
-che il salto non fa in tempo a pesare, come Dinorwig, o il palinsesto, che lo fa
-vedere arrivare.
+in cui la si chiama bisogna avere già mille megawatt accesi in più, tanti
+quanti la domanda ne aggiungerà mentre si aspetta. [Una rampa lenta vuole poca
+riserva, un salto improvviso ne vorrebbe quanto il salto intero]{.pt-matita}, e
+nessuna riserva ragionevole lo copre. Lo coprono soltanto una centrale che
+parte così in fretta che il salto non fa in tempo a pesare, come Dinorwig, o il
+palinsesto, che lo fa vedere arrivare.
 
 `````
 

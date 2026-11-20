@@ -293,7 +293,7 @@ un singolo giudice. La risposta è sì, ma a due condizioni, e sono le condizion
 a interessarci. La prima è che ciascun giurato, preso singolarmente, ci prenda
 più della metà delle volte. La seconda è che i giurati sbaglino in modo
 indipendente, cioè che non sbaglino tutti sulle stesse domande. La seconda è
-quella che nei sistemi di agenti salta sempre.
+quella che nei sistemi di agenti salta più spesso.
 
 `````{tab} Elementare
 
@@ -315,12 +315,12 @@ cioè sessantatré, in tutto centottantanove. Quanto al caso in cui sbaglino
 tutte e tre: tre per tre per tre fa ventisette. I quattro numeri messi insieme
 fanno mille, come devono.
 
-La maggioranza ha ragione nei primi due casi, quando ci prendono
-in tre o in due: trecentoquarantatré più quattrocentoquarantuno fa
-settecentottantaquattro su mille. Il gruppo azzecca quasi otto volte su dieci
-mentre ciascuno, preso singolarmente, ne azzecca sette. Il guadagno viene da un
-fatto elementare: perché il gruppo sbagli servono almeno due errori insieme, e
-due errori insieme sono più rari di uno.
+La maggioranza ha ragione nei primi due casi, quando ci prendono in tre o in
+due: trecentoquarantatré più quattrocentoquarantuno fa settecentottantaquattro
+su mille. Il gruppo azzecca quasi otto volte su dieci mentre ciascuno, preso
+singolarmente, ne azzecca sette. Il guadagno viene da un fatto elementare:
+perché il gruppo sbagli servono almeno due errori insieme, e finché ciascuno ci
+prende più spesso di quanto sbagli, due errori insieme sono più rari di uno.
 
 Con cinque persone servirebbero tre errori insieme, e il gruppo sale a
 ottantaquattro volte su cento; con nove ne servirebbero cinque, e si arriva a
@@ -870,13 +870,13 @@ l'ipotesi di **sincronia**.
 
 Tolta quella, il quadro cambia di natura, e per una ragione che con i traditori
 non c'entra niente. Il risultato di Fischer, Lynch e Paterson del 1985
-{cite}`fischer1985impossibility` dice che in un sistema asincrono, dove non
-esiste alcun limite noto ai ritardi di consegna né alla velocità relativa dei
-processi, nessun protocollo deterministico risolve il consenso se anche un solo
-processo può guastarsi, e guastarsi nel modo più mite immaginabile: fermandosi.
-Nessuna malizia, nessun messaggio contraddittorio, nessuna coalizione di
-traditori. Un processo che tace. La ragione, in una riga, è che in un
-sistema asincrono un processo fermo e un processo lento sono
+{cite}`fischer1985impossibility` dice che in un sistema asincrono, dove ogni
+messaggio arriva ma non esiste alcun limite ai ritardi di consegna né alla
+velocità relativa dei processi, nessun protocollo deterministico risolve il
+consenso se anche un solo processo può guastarsi, e guastarsi nel modo più mite
+immaginabile: fermandosi. Nessuna malizia, nessun messaggio contraddittorio,
+nessuna coalizione di traditori. Un processo che tace. La ragione, in una riga,
+è che in un sistema asincrono un processo fermo e un processo lento sono
 indistinguibili: chi aspetta non può sapere se sta aspettando invano, e un
 protocollo che decida comunque si lascia portare a decidere male da un ritardo
 abbastanza sfortunato.
@@ -906,36 +906,37 @@ classico è PBFT di Castro e Liskov {cite}`castro1999practical`. La soglia $n
 \ge f+2$ dei messaggi firmati è, insomma, un risultato sincrono.
 
 È un punto di metodo che vale ben oltre i generali: un risultato di
-impossibilità non dice «impossibile», dice «impossibile sotto queste ipotesi», e
-il lavoro dell'ingegnere è capire quale ipotesi ci si può permettere. Qui le
+impossibilità non dice «impossibile», dice «impossibile sotto queste ipotesi»,
+e il lavoro dell'ingegnere è capire quale ipotesi ci si può permettere. Qui le
 ipotesi da concedere sono due, a due prezzi diversi: la sincronia si paga in
 latenza e in falsi allarmi, la lealtà dei partecipanti si paga in partecipanti,
-tre volte tanti quanti sono i bugiardi che si vogliono tollerare.
+più del triplo dei bugiardi che si vogliono tollerare ($n \ge 3f+1$).
 
 `````
 
 Che cosa c'entra un teorema sui protocolli di consenso con l'intelligenza
-artificiale? C'entra perché parte da una distinzione che qui serve tale e quale.
-Un partecipante **guasto** smette di rispondere: se ne accorge chiunque, basta
-aspettare un po’ e dichiararlo morto, e la cura è avere qualcuno di riserva (se
-uno tace, chiedi a un altro). Un partecipante **bizantino**, cioè bugiardo,
-risponde: risponde in tempo, risponde in modo perfettamente plausibile, e dice
-il falso. Nessuna attesa lo smaschera, perché dal punto di vista del protocollo
-si sta comportando benissimo.
+artificiale? C'entra perché parte da una distinzione che qui serve tale e
+quale. Un partecipante **guasto** smette di rispondere: se ne accorge chiunque,
+basta aspettare un po’ e dichiararlo morto (a costo di scambiare ogni tanto un
+lento per un morto), e la cura è avere qualcuno di riserva (se uno tace, chiedi
+a un altro). Un partecipante **bizantino**, cioè bugiardo, risponde: risponde
+in tempo, risponde in modo perfettamente plausibile, e dice il falso. Nessuna
+attesa lo smaschera, perché dal punto di vista del protocollo si sta
+comportando benissimo.
 
 Un modello di linguaggio che si inventa una cosa e la dice con sicurezza è, in
 questa classificazione, un partecipante bizantino. Non si blocca, non
 restituisce un errore, non abbassa il tono: produce una citazione inesistente
-con lo stesso garbo con cui produce quelle vere. Ecco la ragione tecnica per cui
-la ridondanza ingenua non basta: con $n \ge 3f+1$ partecipanti si tollerano $f$
-bugiardi, ma solo se mentono ciascuno per conto suo, mentre copie dello stesso
-modello sbagliano insieme, sulla stessa domanda e nello stesso verso (sono gli
-errori correlati della sezione sul voto). Le architetture multi-agente costruite
-sull'idea «se sono in tanti, qualcuno se ne accorgerà» contano su
-un'indipendenza che non hanno. Lo stesso terreno lo riprende la {doc}`sezione su
-privacy e robustezza </AIResponsabile/privacy-e-robustezza>`, dove robusto vuol
-dire comportarsi in modo prevedibile quando qualcosa (o qualcuno) prova a farti
-sbagliare.
+con lo stesso garbo con cui produce quelle vere. Ecco la ragione tecnica per
+cui la ridondanza ingenua non basta: con $n \ge 3f+1$ partecipanti si tollerano
+$f$ bugiardi, anche d'accordo fra loro, ma non uno di più, mentre copie dello
+stesso modello sbagliano tutte insieme, sulla stessa domanda e nello stesso
+verso (sono gli errori correlati della sezione sul voto). Le architetture
+multi-agente costruite sull'idea «se sono in tanti, qualcuno se ne accorgerà»
+contano su un'indipendenza che non hanno. Lo stesso terreno lo riprende la
+{doc}`sezione su privacy e robustezza </AIResponsabile/privacy-e-robustezza>`,
+dove robusto vuol dire comportarsi in modo prevedibile quando qualcosa (o
+qualcuno) prova a farti sbagliare.
 
 L'analogia però ha dei limiti. Il teorema descrive un avversario che sceglie la
 strategia peggiore possibile e può mettersi d'accordo con gli altri traditori:

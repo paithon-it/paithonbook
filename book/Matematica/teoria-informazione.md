@@ -80,11 +80,12 @@ i «2,6 bit» del dado: non il costo di una partita, ma il fondo a cui si arriva
 allungandola.
 
 Con una moneta sbilanciata il calcolo è lo stesso, con un'avvertenza: al posto
-del numero di alternative si mette uno diviso la probabilità. Prendi una
-moneta truccata che dà testa $9$ volte su $10$. La testa è "un'alternativa su
-$1/0{,}9 = 1{,}11$": quasi nessuna domanda, $0{,}15$ bit, come ci si
-aspetta. La croce, invece, è "una su $1/0{,}1 = 10$", quanto un dado a dieci
-facce, e vale $3{,}32$ bit: rara, e perciò molto informativa.
+del numero di alternative si mette uno diviso la probabilità. Prendi una moneta
+truccata che dà testa $9$ volte su $10$. La testa è "un'alternativa su $1/0{,}9
+= 1{,}11$": quasi nessuna domanda, $0{,}15$ bit (i bit sono l'esponente a cui
+elevare due per ottenere il numero di alternative), come ci si aspetta. La
+croce, invece, è "una su $1/0{,}1 = 10$", quanto un dado a dieci facce, e vale
+$3{,}32$ bit: rara, e perciò molto informativa.
 
 Una calcolatrice dà quei due esponenti, e per controllarli basta andare nel
 verso facile ed elevare il due. Se $0{,}15$ è giusto, $2^{0{,}15}$ deve fare

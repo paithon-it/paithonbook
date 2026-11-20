@@ -144,9 +144,9 @@ più calcolo e più memoria a ogni passo, $O(d^2)$ per l'aggiornamento. È l'ass
 della capacità grezza.
 
 **2. La struttura della transizione.** È la vera firma di ogni architettura, e
-la tabella unificante della {doc}`sezione sulle architetture lineari
-</AttenzioneLineare/architetture-lineari>` la ordinava per struttura via via
-più ricca:
+la tabella unificante della {doc}`sezione sulla scrittura in
+memoria </AttenzioneLineare/scrivere-nella-memoria>` la ordinava per struttura
+via via più ricca:
 
 $$
 \underbrace{\mathbf{I}}_{\text{lin. attn}}
@@ -187,9 +187,10 @@ guadagna in *recall* preciso. Non in *state tracking*. Grazzi e colleghi
 finita, le cui transizioni hanno autovalori tutti positivi, non risolve nemmeno
 la parità (dire se in una stringa di bit gli uni sono pari o dispari); con gli
 intervalli dichiarati per $\alpha_t$ e $\beta_t$ è il caso di ogni gradino
-della fila. La cura è una riga: $\beta_t \in (0,2)$ invece di $(0,1)$, così che
-l'autovalore $1-\beta_t\lVert\mathbf{k}_t\rVert^2$ possa scendere fino a $-1$
-(e, per Mamba, $\bar a_t \in (-1,1)$).
+della fila. La cura è una riga: $\beta_t \in [0,2]$ invece di $[0,1]$, con
+chiavi di norma unitaria, così che l'autovalore
+$1-\beta_t\lVert\mathbf{k}_t\rVert^2$ possa scendere fino a $-1$ (e, per Mamba,
+$\bar a_t \in (-1,1)$).
 
 Con transizioni che sono prodotti di fattori di questo tipo, ciascuno con
 autovalori in $[-1,1]$, una pila di ricorrenze lineari, con tanti strati quanti
@@ -459,14 +460,14 @@ stesso scheletro sotto il prossimo nome che farà rumore.
 
 ```{admonition} Da ricordare
 :class: important
-- Una sola famiglia: l'attenzione lineare (RetNet, GLA, DeltaNet, le
-  versioni recenti di RWKV e la cella di xLSTM che tiene la memoria a griglia)
-  e Mamba-2 sono lo stesso apparecchio, una memoria di taglia fissa che a ogni
-  parola scrive una voce nuova e rilegge le vecchie. Si addestrano tutti
-  insieme, in parallelo, e generano una parola alla volta con una memoria che
-  non cresce mai. S4 e Mamba-1 gli somigliano molto, ma in loro ogni casella
-  sbiadisce a un ritmo tutto suo, e nessuna posizione delle manopole lo
-  riproduce.
+- Una sola famiglia: l'attenzione lineare (RetNet, GLA, DeltaNet, le versioni
+  recenti di RWKV e la cella di xLSTM che tiene la memoria a griglia) e Mamba-2
+  sono lo stesso apparecchio, una memoria di taglia fissa che a ogni parola
+  scrive una voce nuova e rilegge le vecchie. Ciascuno si addestra guardando
+  tutta la sequenza insieme, in parallelo, e genera una parola alla volta con
+  una memoria che non cresce mai. S4 e Mamba-1 gli somigliano molto, ma in loro
+  ogni casella sbiadisce a un ritmo tutto suo, e nessuna posizione delle
+  manopole lo riproduce.
 - Tre manopole di progetto: quanto è grande la memoria (la capacità
   grezza); come sbiadisce il passato quando arriva il presente (non
   dimenticare nulla, sbiadire tutto in blocco, sbiadire colonna per colonna,
@@ -517,8 +518,8 @@ stesso scheletro sotto il prossimo nome che farà rumore.
 - Una sola famiglia: attenzione lineare (RetNet, GLA, DeltaNet, RWKV dalla v5,
   la cella mLSTM di xLSTM) e *state space model* a transizione scalare
   (Mamba-2) sono tutte RNN lineari a stato fisso $\mathbf{S}_t =
-  \mathbf{S}_{t-1}\, (\text{transizione}_t) + \mathbf{v}_t \mathbf{k}_t^\top$,
-  con lettura $\mathbf{o}_t = \mathbf{S}_t \mathbf{q}_t$. Si addestrano in
+  \mathbf{S}_{t-1}\, (\text{transizione}_t) + (\text{scrittura}_t)$, con
+  lettura $\mathbf{o}_t = \mathbf{S}_t \mathbf{q}_t$. Si addestrano in
   parallelo, fanno inferenza ricorrente a memoria costante per token. Le due
   eccezioni ritagliate dalla sezione sulle architetture lineari restano fuori:
   la RWKV-4, il cui stato è un vettore per canale, e la cella sLSTM, che il

@@ -123,12 +123,13 @@ istruzione. Lo si addestra su un'enorme raccolta di documenti a prevedere come
 prosegua un testo; di solito un secondo addestramento, basato sugli esempi e
 sulle preferenze di valutatori umani, gli insegna poi a seguire le istruzioni.
 [La sua funzione resta continuare un testo, perciò si riscrive ogni compito in
-modo che la risposta sia la continuazione]{.pt-matita}. Ad esempio, non gli si
-chiede «questa email è spam?»: gli si dà da finire un testo che dice «Email:
-*vinci subito un premio*. Questa email è spam? Risposta:», e la parola con cui
-continua è il verdetto. Non gli si chiede di tradurre: gli si dà «Italiano: *il
-gatto nero salta sul muro*. Inglese:». Il programma e i suoi parametri restano
-gli stessi; cambia soltanto il testo che gli si mette davanti.
+modo che la risposta sia la continuazione]{.pt-matita}. Ad esempio, anche
+quando gli si chiede «questa email è spam?», dentro gli arriva un testo da
+finire che dice «Email: *vinci subito un premio*. Questa email è spam?
+Risposta:», e la parola con cui continua è il verdetto. Non gli si chiede di
+tradurre: gli si dà «Italiano: *il gatto nero salta sul muro*. Inglese:». Il
+programma e i suoi parametri restano gli stessi; cambia soltanto il testo che
+gli si mette davanti.
 
 ## Una parabola storica: dalle regole ai Transformer
 

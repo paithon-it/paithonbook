@@ -415,8 +415,8 @@ loop engineering <loop-engineering>`.
   a parole è questo, e Karpathy lo chiama «programmare in inglese» (cioè in
   lingua umana: l'italiano va uguale).
 - Nel foglio che gli si lascia pesano di più gli esempi: due o tre casi già
-  risolti dentro il messaggio lo orientano verso il compito, senza che abbia
-  imparato niente di nuovo. Alla fine della risposta è com'era prima.
+  risolti messi lì lo orientano verso il compito, senza che abbia imparato
+  niente di nuovo. Finita la risposta, il modello è identico a prima.
 - Ci sono tre cerchi, uno dentro l'altro: il singolo messaggio che scrivi,
   tutto il testo che il modello ha davanti mentre risponde (il contesto), e la
   conversazione o il processo che ripete il giro più volte correggendo il tiro

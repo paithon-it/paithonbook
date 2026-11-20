@@ -365,7 +365,8 @@ invece ciascuno sentisse soltanto i due compagni che gli stanno accanto, la
 notizia passerebbe di bocca in bocca e arriverebbe più tardi.) A ogni passo
 tira un po’ verso il proprio ricordo e un po’ verso quello del gruppo, e quanto
 sia quel «po’» lo decide il caso: certe volte il richiamo lo porta appena oltre
-il punto, certe volte lo lascia a mezza strada, e in media lo porta sul punto.
+il punto, certe volte lo lascia a mezza strada, e in media lo porta a tre
+quarti della strada.
 
 Un po’ tira poi dritto per dove stava già andando, perché ha una sua velocità e
 non si ferma di colpo.
@@ -519,12 +520,12 @@ cui poggia è quello degli schemi di Holland. Uno schema $H$ è un insieme di
 genotipi che coincidono in alcune posizioni fissate (per esempio
 $1{*}{*}0{*}$).
 
-Siano $m(H,t)$ il numero di individui della generazione $t$ che
-vi appartengono, $f(H)$ la loro fitness media, $\bar{f}$ quella della
-popolazione, $\delta(H)$ la distanza fra la prima e l'ultima posizione fissata,
-$o(H)$ il numero di posizioni fissate, $\ell$ la lunghezza del genotipo, e
-infine $p_c$ e $p_m$ le probabilità di incrocio e di mutazione. Allora vale la
-disuguaglianza:
+Siano $m(H,t)$ il numero di individui della generazione $t$ che vi
+appartengono, $f(H)$ la loro fitness media, $\bar{f}$ quella della popolazione,
+$\delta(H)$ la distanza fra la prima e l'ultima posizione fissata, $o(H)$ il
+numero di posizioni fissate, $\ell$ la lunghezza del genotipo, e infine $p_c$ e
+$p_m$ le probabilità di incrocio e di mutazione. Allora, con selezione
+proporzionale alla fitness (positiva), vale la disuguaglianza:
 
 $$
 \mathbb{E}\big[m(H, t+1)\big] \;\ge\; m(H, t)\,\frac{f(H)}{\bar{f}}
@@ -550,8 +551,8 @@ solo di saper ricombinare e perturbare, e questo lo rende applicabile a
 permutazioni, alberi, grafi e programmi. Il caso in cui l'individuo è un
 programma si chiama *programmazione genetica*.
 
-Un secondo vantaggio distintivo, che né il gradiente né le altre metaeuristiche
-offrono direttamente, è l'ottimizzazione **multi-obiettivo**. Poiché la
+Un secondo vantaggio, che il gradiente non offre e che condivide con le altre
+metaeuristiche a popolazione, è l'ottimizzazione **multi-obiettivo**. Poiché la
 popolazione è un insieme e non un punto, la si può far convergere non su un
 ottimo ma sull'intero fronte di Pareto dei compromessi fra obiettivi in
 conflitto (ad esempio accuratezza contro latenza, prestazione contro consumo):
@@ -988,7 +989,9 @@ migliore dell'intero gruppo, gridato a tutti; nell'altro le trenta particelle
 stanno in cerchio, e ciascuna sente soltanto le due che le stanno accanto. Con
 gli stessi numeri casuali e le stesse sessanta iterazioni, lo sciame ad anello
 arriva al fondo vero 191 volte su 300 invece di 277: la notizia viaggia di
-vicino in vicino, e in sessanta iterazioni non fa in tempo ad arrivare a tutti.
+vicino in vicino, una quindicina di iterazioni per fare mezzo giro, e
+ricomincia il viaggio ogni volta che qualcuno trova un punto migliore: in
+sessanta iterazioni lo sciame converge più piano.
 
 Gli individui sono identici, cambia soltanto chi ascolta chi, e con questo
 cambia il risultato del gruppo: è la tesi degli storni, dentro un algoritmo.
@@ -1172,7 +1175,7 @@ conoscenze reciproche sei su 453 (l’1,3%).
 
 Le trascrizioni di questi esperimenti sono convincenti. Gli agenti si invitano,
 si ricordano di essersi conosciuti, si giustificano se arrivano tardi. La
-tentazione di usare simulazioni del genere come evidenza sul comportamento umano
+tentazione di usare simulazioni del genere come prova del comportamento umano
 è forte, e senza dati veri alle spalle il salto non è consentito.
 
 Il punto sta in una parola che gli autori usano con cura e che chi li cita
@@ -1335,7 +1338,7 @@ quando, e chi decide dopo.
   comportamenti credibili (*believable*), che è in buona parte ciò che un
   modello di linguaggio sa fare per costruzione e non una scoperta sul
   comportamento umano: valgono come generatore di ipotesi, e come prova sulle
-  persone non bastano, perché sono convincenti proprio in quanto il modello è
+  persone non bastano, poiché sono convincenti proprio perché il modello è
   addestrato a convincere. Un valore predittivo lo hanno soltanto agenti
   costruiti sui dati di persone vere e controllati su risposte che non hanno
   visto.

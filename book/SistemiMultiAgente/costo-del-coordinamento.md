@@ -28,9 +28,9 @@ token vale grosso modo mezza parola (il rapporto preciso dipende da come il
 modello spezza le parole), e una pagina di quattrocento parole ne contiene
 sette o ottocento.
 
-I token sono anche l'unità in cui si paga, perché chi mette a
-disposizione il modello li conta e li fattura, e li conta due volte: quelli
-che il modello scrive e quelli che gli si fanno leggere.
+I token sono anche l'unità in cui si paga, perché chi mette a disposizione il
+modello li conta e li fattura, e li conta in due voci separate: quelli che il
+modello scrive e quelli che gli si fanno leggere.
 
 La {doc}`sezione sulle architetture
 degli agenti </Agenti/architetture-e-valutazione>` ha già detto, a parole, che
@@ -234,16 +234,16 @@ lo scarto sta sul lato della lettura, la parte della spesa che nessuno guarda
 perché non produce niente di visibile.
 
 C'è un secondo effetto, più insidioso, che il totale non mostra. All'ultimo
-turno la finestra di chi parla contiene 18.000 token di conversazione già
-avvenuta, e l'informazione decisiva (una decisione presa al decimo turno, un
-vincolo enunciato al terzo) sta sepolta lì in mezzo. È la posizione peggiore
-per l'effetto *lost in the middle* {cite}`liu2024lost`, già incontrato nel
-{doc}`context engineering </IngegneriaLLM/context-engineering>`: su compiti di
-recupero e di domande su più documenti l'accuratezza è più alta quando
-l'informazione sta all'inizio o alla fine del contesto e scende quando sta nel
-mezzo, in misura diversa da un modello all'altro. Una trascrizione condivisa è
-cara, ed è anche il posto peggiore dove mettere qualcosa che deve essere
-ricordato.
+turno la finestra di chi parla contiene 18.000 token, 16.000 dei quali di
+conversazione già avvenuta, e l'informazione decisiva (una decisione presa al
+decimo turno, un vincolo enunciato al terzo) sta sepolta lì in mezzo. È la
+posizione peggiore per l'effetto *lost in the middle* {cite}`liu2024lost`, già
+incontrato nel {doc}`context engineering </IngegneriaLLM/context-engineering>`:
+su compiti di recupero e di domande su più documenti l'accuratezza è più alta
+quando l'informazione sta all'inizio o alla fine del contesto e scende quando
+sta nel mezzo, in misura diversa da un modello all'altro. Una trascrizione
+condivisa è cara, ed è anche il posto peggiore dove mettere qualcosa che deve
+essere ricordato.
 
 ## Il tetto di Amdahl
 
@@ -593,17 +593,16 @@ con contesto pulito e criteri propri scende a $P(M \mid E) \approx 0{,}3$ e
 lascia passare l’$1{,}5\%$, tre volte meglio a parità di modello. Le due cifre
 sono plausibili, non misurate; conta il verso della disuguaglianza, che non
 dipende dai valori precisi. [Tutto il valore del secondo agente sta in quel
-condizionamento]{.pt-matita}, e sparisce se gli si passa la trascrizione del
+contesto separato]{.pt-matita}, e sparisce se gli si passa la trascrizione del
 primo: a quel punto i due contesti tornano a coincidere.
 
-Il condizionamento toglie però la
-correlazione che viene dal contesto, non quella che viene dai pesi. Se
-produttore e controllore sono lo stesso modello, gli errori che nascono da una
-lacuna del modello restano comuni ai due, e $P(M \mid E)$ non scende sotto la
-quota di quegli errori, come avverte anche la {doc}`sezione sul loop
-engineering </IngegneriaLLM/loop-engineering>`; per abbassarla serve un
-controllore di un altro modello, o un controllo che non sia un modello (un
-test, un tipo, un vincolo).
+Il contesto separato toglie però la correlazione che viene dal contesto, non
+quella che viene dai pesi. Se produttore e controllore sono lo stesso modello,
+gli errori che nascono da una lacuna del modello restano comuni ai due, e $P(M
+\mid E)$ non scende sotto la quota di quegli errori, come avverte anche la
+{doc}`sezione sul loop engineering </IngegneriaLLM/loop-engineering>`; per
+abbassarla serve un controllore di un altro modello, o un controllo che non sia
+un modello (un test, un tipo, un vincolo).
 
 `````
 

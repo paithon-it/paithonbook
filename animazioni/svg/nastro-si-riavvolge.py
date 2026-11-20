@@ -249,13 +249,14 @@ def costruisci() -> Figura:
         corpo.append(f'<text class="ind" x="{bx + bw / 2:.0f}" y="{by + 20}" '
                      f'text-anchor="middle"{a_conto}>{conto_}</text>')
 
-    # --- il contatore, che si riempie in due tempi ------------------------
+    # --- il contatore: resta vuoto finche' i due rami non si sono sommati,
+    # perche' il motore somma i contributi prima di scrivere in x.grad, che
+    # riceve 8 in una volta sola (un hook su x vede solo 8, mai 6) ---------
     vx = GRAD_BOX[0] + 14
     vy = GRAD_BOX[1] + 44
     for testo, accensioni, chiave in (
-            ("vuoto", set(range(0, 5)), "g0"),
-            (n(ramo_q), {5}, "g1"),
-            (f"{n(ramo_q)} + {n(ramo_l)} = {n(grad)}", set(range(6, STATI)), "g2")):
+            ("vuoto", set(range(0, STATI - 1)), "g0"),
+            (f"{n(ramo_q)} + {n(ramo_l)} = {n(grad)}", {STATI - 1}, "g2")):
         a = acceso(chiave, accensioni, anim)
         corpo.append(f'<text class="ind" x="{vx}" y="{vy}"{a}>{testo}</text>')
 
@@ -266,9 +267,9 @@ def costruisci() -> Figura:
         "andata: i rami si ritrovano, e y vale " + n(y),
         "ritorno: si riparte dalla fine, dove la derivata vale 1",
         "ritorno: ogni operazione rilegge il proprio appunto e lo consuma",
-        f"il ramo del quadrato deposita {n(ramo_q)}",
-        f"il ramo lineare deposita {n(ramo_l)}, e si somma al primo",
-        f"x.grad vale {n(grad)}: un contributo per ramo, sommati",
+        f"il ramo del quadrato porta indietro {n(ramo_q)}",
+        f"il ramo lineare porta indietro {n(ramo_l)}, e si somma al primo",
+        f"x.grad riceve {n(grad)} in una volta: i due rami, già sommati",
     ]
     for m, testo in enumerate(momenti):
         ultimo = (m == len(momenti) - 1)
@@ -304,7 +305,8 @@ def costruisci() -> Figura:
             "fondo, e ogni appunto lascia il posto al proprio conto: uno per "
             "due per tre uguale sei nel ramo del quadrato, uno per due uguale "
             "due in quello lineare. In basso a sinistra il contatore x.grad "
-            "si riempie in due tempi, prima 6 e poi 6 più 2 uguale 8. Una "
+            "resta vuoto finché i due contributi, 6 e 2, non si sono sommati, "
+            "e riceve 6 più 2 uguale 8 in una volta sola. Una "
             "riga in fondo ricorda che gli appunti dell'andata li consuma il "
             "ritorno, e che per riavvolgere una seconda volta bisogna rifare "
             "l'andata oppure chiedere prima che restino.",

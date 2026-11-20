@@ -52,13 +52,13 @@ studiato]{.pt-matita}.
 Il foglio conta anche in un modo più sottile. Nel rimescolamento qualche
 risposta è rimasta al suo posto per caso, una su dieci circa, perché dieci
 erano le risposte possibili, e all'esame lo studente ne indovina più o meno
-altrettante.
+altrettante, quante ne indovinerebbe tirando a caso.
 
 Se invece ogni risposta del foglio è sbagliata apposta, mai quella giusta, lo
 studente la impara lo stesso e poi fa peggio del caso, perché ha imparato
 l'unica cosa vera che quel foglio diceva: la risposta giusta non è mai quella,
-e sulle domande nuove, che somigliano a quelle del foglio, evita quella
-risposta.
+e sulle domande nuove, che somigliano a quelle del foglio, evita proprio la
+risposta giusta.
 
 Per andare bene sul foglio vero lo studente non ha avuto bisogno di nessun
 freno, cioè di nessuna delle regole per scoraggiare la memoria che la
@@ -89,10 +89,11 @@ bastano $664$, mentre la rete ne ha $38\,410$. Nel teorema 1 di Zhang e
 colleghi gli esempi si chiamano $n$ e la dimensione $d$.
 
 La conseguenza per le garanzie viste fin qui è immediata. Se l'architettura
-realizza qualunque etichettatura di $S$, allora per la famiglia $\mathcal{H}$
-delle funzioni che essa calcola il sup in $\hat{\mathfrak{R}}_S(\mathcal{H})$
-vale $1$ per ogni $\boldsymbol\sigma$, per cui
-$\hat{\mathfrak{R}}_S(\mathcal{H})=1$: il bound di Rademacher diventa
+realizza qualunque etichettatura di $S$, allora per la famiglia
+$\mathcal{H}\subseteq\{-1,+1\}^{\mathcal{X}}$ dei classificatori binari che
+essa realizza (il segno di un'uscita) il sup in
+$\hat{\mathfrak{R}}_S(\mathcal{H})$ vale $1$ per ogni $\boldsymbol\sigma$, per
+cui $\hat{\mathfrak{R}}_S(\mathcal{H})=1$: il bound di Rademacher diventa
 $R(h)\le\hat{R}_S(h)+1+\dots$, un bound vuoto. Lo stesso vale per il bound VC,
 perché una famiglia che realizza tutte le etichettature di $m$ punti li
 frantuma, e ha quindi dimensione VC almeno $m$.
@@ -288,9 +289,9 @@ sui dati di prova quella rete sbaglia il $3{,}4\%$ (e la rete deterministica da
 cui nasce l’$1{,}8\%$).
 
 Il bound non è vacuo, ma resta parecchie volte sopra la realtà. Con le
-etichette casuali lo stesso bound vale $1{,}352$, cioè si rifiuta di garantire
-qualunque cosa. È il comportamento che ci si aspetta da una misura che dipende
-dall'ipotesi trovata.
+etichette casuali il bound è vacuo (gli autori riportano $1{,}352$, più di
+uno), cioè si rifiuta di garantire qualunque cosa. È il comportamento che ci si
+aspetta da una misura che dipende dall'ipotesi trovata.
 
 **Il bias implicito dell'algoritmo.** La discesa del gradiente non esplora
 $\mathcal{H}$ in modo uniforme. Sui minimi quadrati sovraparametrizzati, ad

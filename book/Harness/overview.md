@@ -276,11 +276,12 @@ strumenti del proprio harness, e un confronto a $H$ fissato favorisce il
 modello addestrato per quell’$H$.
 
 [$H$ non aggiunge capacità a $\theta$: le aggiunge al sistema]{.pt-matita}.
-Nessuna istruzione insegna al modello ciò che non sa, ma un controllo con la
-possibilità di rifare alza il tasso di successo di qualunque modello che riesca
-con una probabilità fra zero e uno. Ogni componente di $H$ codifica un'ipotesi
-su che cosa il modello non sa fare da solo, e il suo valore dipende da
-$\theta$.
+Nessuna istruzione insegna al modello ciò che non sa, ma un controllo che
+respinge il lavoro sbagliato più spesso di quello giusto, con la possibilità di
+rifare e tentativi non del tutto correlati, alza il tasso di successo di
+qualunque modello che riesca con una probabilità fra zero e uno. Ogni
+componente di $H$ codifica un'ipotesi su che cosa il modello non sa fare da
+solo, e il suo valore dipende da $\theta$.
 
 Rajasekaran ne dà due casi: il valutatore separato, che vale il suo costo
 finché il compito sta oltre ciò che il modello fa in modo affidabile da solo e
@@ -382,16 +383,19 @@ vuote, un controllo che approva sempre, un catalogo ridotto), e l’**ablazione*
 lo stima togliendo un componente alla volta. Le cautele che ne limitano la
 portata sono più d'una.
 
-- *Stima e appaiamento.* $\hat{s}$ è una proporzione su esecuzioni
-  stocastiche, e $\Delta\hat{s}_h$ una differenza di due proporzioni. Su
-  campioni indipendenti la sua varianza è la somma delle due, cioè l'ampiezza
+- *Stima e appaiamento.* $\hat{s}$ è una proporzione su esecuzioni stocastiche,
+  e $\Delta\hat{s}_h$ una differenza di due proporzioni. Su campioni
+  indipendenti la sua varianza è la somma delle due, cioè l'ampiezza
   dell'intervallo cresce di $\sqrt{2}$ e il numero di esecuzioni per lo stesso
-  margine raddoppia rispetto al tasso singolo che la {doc}`valutazione degli
+  margine raddoppia per ciascuna configurazione (a varianze uguali) rispetto al
+  tasso singolo che la {doc}`valutazione degli
   agenti </Agenti/architetture-e-valutazione>` dimensiona con l'intervallo di
   Wilson. Sulla stessa batteria però il confronto è appaiato, e va trattato
   come tale (il test di McNemar sui compiti discordanti, o un bootstrap per
-  compito); e le esecuzioni ripetute dello stesso compito non sono
-  indipendenti, quindi la numerosità che conta è $|\mathcal{B}|$, non $n$.
+  compito); e se la stima deve valere per la distribuzione da cui vengono i
+  compiti, e non per la sola batteria fissata, le esecuzioni ripetute dello
+  stesso compito sono correlate, quindi la numerosità che conta è
+  $|\mathcal{B}|$, non $n\,|\mathcal{B}|$.
 - *Interazioni.* $\Delta s$ non è additivo. Se due componenti $h_1, h_2$
   intercettano lo stesso difetto, $\Delta s_{h_1} \approx \Delta s_{h_2}
   \approx 0$ mentre $s(\theta, H) - s(\theta, H \setminus \{h_1, h_2\})$ può

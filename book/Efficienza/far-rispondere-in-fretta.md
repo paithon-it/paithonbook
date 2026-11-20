@@ -144,8 +144,8 @@ domanda è di duecento parole (più precisamente token, i pezzi in cui il modell
 divide il testo), le cose insieme sono duecento, vicino all’ultima riga della
 tabella. Che quel regime sia legato al calcolo, però, dipende dal ginocchio
 della macchina. A sedici bit l’intensità vale il numero di cose insieme, e il
-ginocchio sta a 161 conti per byte su una A100 e a 295 su una H100, quindi
-servono domande di centinaia di token, non di decine.
+ginocchio sta a 161 conti per byte su una A100 (80 GB PCIe) e a 295 su una H100
+SXM, quindi servono domande di centinaia di token, non di decine.
 
 Quando invece scrive la risposta, il modello la scrive una parola alla volta,
 perché per scegliere la parola dopo deve aver scelto quella prima: le cose
@@ -182,9 +182,9 @@ Questo deposito si chiama cache delle chiavi e dei valori. Ne ha già mostrato
 il peso la {doc}`sezione su FlashAttention </GPU/flash-attention>`, e la
 {doc}`sezione sui grandi modelli linguistici </Transformers/llm>`, nel capitolo
 sui Transformer (l’architettura di cui quei modelli sono fatti), spiega come
-funziona nella generazione. Non risolve il problema
-dell’intensità aritmetica: sposta il traffico dai pesi alla cache, che cresce a
-ogni parola scritta.
+funziona nella generazione. Non risolve il problema dell’intensità aritmetica:
+toglie il ricalcolo, ma al traffico dei pesi, che resta, aggiunge quello della
+cache, che cresce a ogni parola scritta.
 
 La seconda idea è riempire la riga, raggruppando le richieste. Se scrivere una
 parola per un solo utente sta nella prima riga, scriverla per

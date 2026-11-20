@@ -201,11 +201,11 @@ giusta.
 
 Il foglio dell'ordine della biblioteca ha duecento righe, una per pezzo, e
 sempre le stesse colonne: il tipo di pezzo, che cos'è («scaffale basso, tre
-ripiani»), come lo si controlla («ci si appoggiano trenta libri e non flette;
-i ripiani entrano senza forzare») e la casella «fatto». La sera del primo giorno
-tutte le caselle sono vuote. Un mese dopo, chi entra e vede un terzo della sala
-già arredato non può dire che il lavoro è finito: il foglio gli mostra
-centoquaranta caselle ancora vuote.
+ripiani»), come lo si controlla («ci si appoggiano trenta libri e non flette; i
+ripiani entrano senza forzare») e la casella «fatto». La sera del primo giorno
+tutte le caselle sono vuote. Un mese dopo, chi entra e vede quasi un terzo
+della sala già arredato non può dire che il lavoro è finito: il foglio gli
+mostra centoquaranta caselle ancora vuote.
 
 Sul foglio c'è una regola scritta in rosso: si può toccare soltanto la casella.
 Non si cancellano righe, non si spostano, non si riscrive il modo di controllare

@@ -168,8 +168,8 @@ imparino tutte e due e ciascuna faccia a turno da giudice dell'altra. Si chiama
 
 `````{tab} Superiore
 
-Definiamo la **funzione azione-valore ottima** $Q^*(s,a)$ come la ricompensa
-scontata attesa se in $s$ eseguiamo $a$ e poi seguiamo la politica ottima.
+Definiamo la **funzione azione-valore ottima** $Q^*(s,a)$ come il ritorno
+scontato atteso se in $s$ eseguiamo $a$ e poi seguiamo la politica ottima.
 Soddisfa l'equazione di ottimalità di Bellman
 
 $$
@@ -234,13 +234,13 @@ $\mathbb{E}[\max_a \hat{Q}(s,a)] \ge \max_a \mathbb{E}[\hat{Q}(s,a)]$, con
 disuguaglianza stretta appena nessuna azione è quasi certamente la migliore. È
 il **bias di massimizzazione**.
 
-Il bias si evita tenendo due stime indipendenti $Q_A$ e $Q_B$ e usandone una
-per scegliere l'azione e l'altra per valutarla, con i ruoli estratti a caso a
-ogni aggiornamento (*Double Q-learning*, di Hado van Hasselt
-{cite}`vanhasselt2010double`). Il bersaglio $Q_B(s', \arg\max_{a'}
-Q_A(s',a'))$ ha un'attesa che non supera il massimo dei valori veri e può
-restare sotto, per cui la sovrastima lascia il posto a una possibile
-sottostima. Da questa idea nasce il Double DQN.
+Il bias si riduce tenendo due stime $Q_A$ e $Q_B$ e usandone una per scegliere
+l'azione e l'altra per valutarla, con i ruoli estratti a caso a ogni
+aggiornamento (*Double Q-learning*, di Hado van Hasselt
+{cite}`vanhasselt2010double`). Se $Q_B$ è non distorta e indipendente da $Q_A$,
+il bersaglio $Q_B(s', \arg\max_{a'} Q_A(s',a'))$ ha un'attesa che non supera il
+massimo dei valori veri e può restare sotto, per cui la sovrastima lascia il
+posto a una possibile sottostima. Da questa idea nasce il Double DQN.
 
 `````
 
@@ -362,8 +362,10 @@ Un $\varepsilon$ costante garantisce esplorazione perpetua; in pratica, però,
 si usa un *decay*, spesso esponenziale, per avvicinarsi gradualmente allo
 sfruttamento puro. [Il decadimento esponenziale sacrifica la garanzia
 teorica]{.pt-matita}. Infatti la convergenza di Watkins e Dayan vuole ogni
-coppia $(s,a)$ visitata infinite volte, e a questo basta che la somma degli
-$\varepsilon$ diverga su ogni stato. Accade, ad esempio, con $\varepsilon
+coppia $(s,a)$ visitata infinite volte, e a questo, purché ogni stato resti
+raggiungibile (episodi che ripartono da stati sorteggiati, o un MDP in cui da
+ogni stato si arriva a ogni altro), basta che la somma degli $\varepsilon$
+diverga sulle visite di ogni stato. Accade, ad esempio, con $\varepsilon
 \propto 1/n(s)$, dove $n(s)$ conta le visite a quello stato, mentre con il
 tempo globale al denominatore la somma può restare finita: uno stato visitato
 ai tempi $t = 2^k$ raccoglie $\sum_k 2^{-k}$.
@@ -504,13 +506,13 @@ fa perdere un punto e chiude comunque la partita, è subito sotto la meta; e c'�
 un muro nella seconda casella della riga di mezzo, contro cui si sbatte
 restando fermi. A ogni passo si sceglie fra su, giù, sinistra, destra.
 
-Le regole non sono quelle del robot della {doc}`sezione sugli MDP
-<mdp-valore>`, dove ogni passo faceva perdere un punto, mentre qui girovagare
-non fa perdere punti. Di conseguenza, a spingere l'agente verso l'uscita c'è
-soltanto lo sconto, che toglie valore al premio quanto più lo si fa aspettare e
-rende così conveniente la strada corta. Sono invece le regole della griglia su
-cui la stessa sezione mostra l'iterazione dei valori (premio $+1$, passi
-gratis, sconto $0{,}9$), con in più la trappola.
+Le regole non sono quelle del mondo a tre caselle della {doc}`sezione sugli MDP
+<mdp-valore>`, dove restare fermi o tornare indietro costava un punto, mentre
+qui girovagare non costa niente. Di conseguenza, a spingere l'agente verso
+l'uscita c'è soltanto lo sconto, che toglie valore al premio quanto più lo si
+fa aspettare e rende così conveniente la strada corta. Sono invece le regole
+della griglia su cui la stessa sezione mostra l'iterazione dei valori (premio
+$+1$, passi gratis, sconto $0{,}9$), con in più la trappola.
 
 ```{figure} ../figures/labirinto-qlearning.svg
 :name: fig-labirinto
@@ -580,9 +582,9 @@ mossa con $-1$, il secondo aggiornamento darebbe $0{,}5\,[-1 + 0{,}45] =
 `````
 
 È il meccanismo TD in azione: [la ricompensa non si propaga a tutta la griglia
-in una volta, ma retrocede verso la partenza di un passo per
-episodio]{.pt-matita} (di più solo se l'episodio ripassa dalla stessa casella),
-come una macchia che si allarga all'indietro dalla meta. Il codice, ambiente
+in una volta, ma retrocede verso la partenza al più di un passo per
+episodio]{.pt-matita} (salvo che l'episodio ripassi dalla stessa casella), come
+una macchia che si allarga all'indietro dalla meta. Il codice, ambiente
 compreso, è breve:
 
 ```python
@@ -804,13 +806,13 @@ voti a zero, e non contiene informazione.
 
 ## Fra un passo e la fine: quanti passi guardare avanti
 
-Nel Q-learning la macchia si allarga all'indietro dalla meta, una casella per
-partita, perché il bersaglio guarda avanti di un passo solo. I metodi Monte
-Carlo, all'estremo opposto, usano il totale della partita e portano la notizia
-a tutte le caselle attraversate in una partita sola: una notizia sola, però, e
-rumorosa. Fra i due estremi c'è una famiglia di metodi, in cui il bersaglio può
-guardare avanti $n$ passi, da $n = 1$, le differenze temporali, fino alla fine
-della partita, Monte Carlo.
+Nel Q-learning la macchia si allarga all'indietro dalla meta, al più una
+casella per partita, perché il bersaglio guarda avanti di un passo solo. I
+metodi Monte Carlo, all'estremo opposto, usano il totale della partita e
+portano la notizia a tutte le caselle attraversate in una partita sola: una
+notizia sola, però, e rumorosa. Fra i due estremi c'è una famiglia di metodi,
+in cui il bersaglio può guardare avanti $n$ passi, da $n = 1$, le differenze
+temporali, fino alla fine della partita, Monte Carlo.
 
 `````{tab} Elementare
 
@@ -893,7 +895,7 @@ con $V$ sparisce e resta il ritorno Monte Carlo.
 Il compromesso è quello classico fra distorsione e varianza: [con $n$ piccolo si
 ha poca varianza e molta distorsione, con $n$ grande il contrario]{.pt-matita}. La
 distorsione ha un limite preciso: il valore atteso del ritorno a $n$ passi
-dista da $v_\pi$ al più $\gamma^n$ volte la distanza della stima da cui parte,
+dista da $V^\pi$ al più $\gamma^n$ volte la distanza della stima da cui parte,
 in norma del massimo (la proprietà di riduzione dell'errore). Nei banchi di
 prova di Sutton e Barto si impara più in fretta a valori intermedi che agli
 estremi {cite}`sutton2018reinforcement`.
@@ -993,20 +995,20 @@ Q($\lambda$) di Watkins.
 
 Lo stesso $\lambda$ ritorna nella {doc}`sezione sul gradiente di policy
 </DeepReinforcementLearning/policy-gradient>`. Là il segnale che guida
-l'apprendimento è il *vantaggio* di una mossa, cioè quanto quella mossa è
-migliore della media delle mosse possibili in quella situazione, e l'errore TD
-di un passo ne è già una stima, la più semplice. La
-*generalized advantage estimation* {cite}`schulman2016high` somma gli errori TD
-dei passi successivi con pesi che calano di $\gamma\lambda$ a ogni passo, come
-le tracce, e $\lambda$ regola di nuovo lo stesso scambio fra distorsione e
-varianza.
+l'apprendimento è il *vantaggio* di una mossa, cioè quanto quella mossa rende
+più della media delle mosse che la strategia stessa sceglierebbe lì, ciascuna
+pesata con la probabilità di sceglierla, e l'errore TD di un passo ne è già una
+stima, la più semplice. La *generalized advantage estimation*
+{cite}`schulman2016high` somma gli errori TD dei passi successivi con pesi che
+calano di $\gamma\lambda$ a ogni passo, come le tracce, e $\lambda$ regola di
+nuovo lo stesso scambio fra distorsione e varianza.
 
 ## Quando la tabella non basta più
 
 Ogni algoritmo visto finora presuppone che le situazioni si possano elencare,
 una riga di tabella ciascuna: un'ipotesi che è comparsa solo fra le condizioni
-della dimostrazione di Watkins e Dayan. Nel labirinto le
-situazioni sono dodici. A scacchi sono più delle molecole d'aria di una
+della dimostrazione di Watkins e Dayan. Nel labirinto le caselle in cui
+l'agente può stare sono undici. A scacchi sono più delle molecole d'aria di una
 stanza. Sullo schermo di un videogioco, dove ogni fotogramma diverso è una
 situazione diversa, i conti della {doc}`sezione sugli MDP <mdp-valore>` danno
 un numero che nessuna tabella può contenere.
@@ -1097,7 +1099,7 @@ una rete al posto della tabella le ha tutte e tre.
   prudente, valuta la politica che segue; Expected SARSA ne prende l'attesa
   sotto $\pi$, e con $\pi$ greedy ridà il Q-learning. Il $\max$ del Q-learning
   porta invece con sé il bias di massimizzazione, che il Double Q-learning
-  elimina con il rischio di una sottostima.
+  riduce con il rischio di una sottostima.
 - TD e Monte Carlo sono i due estremi di un continuo: il ritorno a $n$
   passi sta in mezzo, e il $\lambda$-return li media tutti (vista in
   avanti). Le tracce di eleggibilità sono la vista all'indietro, che

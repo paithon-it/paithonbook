@@ -145,7 +145,7 @@ def costruisci() -> Figura:
             "a cento per cento, mostrano come si distribuisce il coseno fra "
             "due direzioni sorteggiate a caso. A sinistra, in tre dimensioni, "
             "le venti fasce sono tutte alte uguali, un tappeto piatto al "
-            "cinque per cento: ogni angolo è ugualmente probabile, e il "
+            "cinque per cento: ogni valore del coseno è ugualmente probabile, e il "
             "coseno medio vale zero virgola cinquanta. Al centro, in cento "
             "dimensioni, le fasce calano da sinistra a destra e dopo la "
             "sesta non ce n'è quasi più nessuna: il coseno medio vale zero "

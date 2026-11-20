@@ -32,9 +32,9 @@ che quel termine correttivo è la sola cosa che una rete debba imparare
 Passare dai mille passi di DDPM al tempo continuo porta un guadagno sostanziale
 e non estetico. Nel continuo, infatti, le due tradizioni della diffusione
 diventano due casi della stessa equazione; inoltre si scopre che accanto alla
-strada casuale ne esiste una deterministica che produce le stesse immagini, e le
-quattro cose che una rete può imparare si rivelano quattro modi di scrivere lo
-stesso oggetto.
+strada casuale ne esiste una deterministica che produce immagini con la stessa
+distribuzione, e le quattro cose che una rete può imparare si rivelano quattro
+modi di scrivere lo stesso oggetto.
 
 ## Che cosa resta quando i passi diventano infiniti
 
@@ -117,7 +117,7 @@ nulla e varianza $t-s$. È continuo ovunque e derivabile in nessun punto, per
 cui la scrittura $\mathrm{d}\mathbf{w}$ non si può dividere per $\mathrm{d}t$.
 
 [La cosa che rende trattabile tutto il resto è la scelta di una deriva
-affine]{.pt-matita}, $\mathbf{f}(\mathbf{x},t) = f(t)\,\mathbf{x}$ con $f$
+lineare]{.pt-matita}, $\mathbf{f}(\mathbf{x},t) = f(t)\,\mathbf{x}$ con $f$
 scalare. Sotto questa ipotesi il processo condizionato al dato iniziale resta
 gaussiano a ogni istante, e il **nucleo di perturbazione** ha forma chiusa:
 
@@ -140,11 +140,12 @@ partenza e $\sigma_t^2$ la varianza del rumore accumulato. Sono le lettere
 della letteratura sul tempo continuo, e nella {doc}`sezione su come funziona la
 diffusione
 </ModelliDiffusione/come-funziona>` avevano un altro ruolo: là
-$\alpha_t = 1-\beta_t$ era il fattore di un solo passo e $\sigma_t$ la
-deviazione standard del rumore fresco del passo inverso. Per il processo di
-DDPM (della famiglia VP, quella che conserva la varianza) il dizionario è
-$\alpha_t = \sqrt{\bar{\alpha}_t}$ e $\sigma_t = \sqrt{1-\bar{\alpha}_t}$, e da
-qui in avanti, nel tempo continuo, valgono le lettere nuove.
+$\alpha_t = 1-\beta_t$ era il quadrato del fattore di attenuazione di un solo
+passo e $\sigma_t$ la deviazione standard del rumore fresco del passo inverso.
+Per il processo di DDPM (della famiglia VP, quella che conserva la varianza) il
+dizionario è $\alpha_t = \sqrt{\bar{\alpha}_t}$ e $\sigma_t =
+\sqrt{1-\bar{\alpha}_t}$, e da qui in avanti, nel tempo continuo, valgono le
+lettere nuove.
 
 La conseguenza operativa, che spiega perché questi modelli si addestrano in
 tempi umani, ha un nome: il campionamento è **senza simulazione**
@@ -169,11 +170,11 @@ dell'immagine non si distingue più niente, ma tecnicamente c'è ancora, sepolta
 Il nome dice il comportamento: la varianza (la larghezza della nuvola, misurata
 al quadrato) esplode.
 
-La seconda famiglia invece restringe l'immagine mentre aggiunge rumore, e
-lo fa con un dosaggio preciso: quanto toglie di segnale, tanto aggiunge di
-rumore, così che la larghezza complessiva della nuvola resti sempre più o meno
-uguale a uno. È la ricetta di DDPM, e il nome dice anche questo: la varianza si
-conserva.
+La seconda famiglia invece restringe l'immagine mentre aggiunge rumore, e lo fa
+con un dosaggio preciso: quanto toglie di segnale, tanto aggiunge di rumore,
+contando i quadrati come nella ricetta del latte, così che la larghezza
+complessiva della nuvola resti sempre più o meno uguale a uno. È la ricetta di
+DDPM, e il nome dice anche questo: la varianza si conserva.
 
 La differenza pratica sta nella taglia dei numeri con cui la rete lavora. Nella
 prima famiglia i valori diventano enormi verso la fine, e la rete deve
@@ -199,11 +200,11 @@ $$
 g(t) = \sqrt{\frac{\mathrm{d}\sigma^2(t)}{\mathrm{d}t}} ,
 $$
 
-da cui $\alpha_t = 1$ e $\sigma_t = \sigma(t)$: il segnale resta intatto e il
-rumore cresce senza limite. La marginale terminale non tende a nessuna
-distribuzione fissa, e come prior si usa
-$\mathcal{N}(\mathbf{0},\sigma_{\max}^2\mathbf{I})$ con $\sigma_{\max}$
-dell'ordine della massima distanza fra due dati.
+da cui $\alpha_t = 1$ e $\sigma_t^2 = \sigma^2(t) - \sigma^2(0)$, quasi
+$\sigma^2(t)$ per $\sigma(0)$ piccolo: il segnale resta intatto e il rumore
+cresce senza limite. La marginale terminale non tende a nessuna distribuzione
+fissa, e come prior si usa $\mathcal{N}(\mathbf{0},\sigma_{\max}^2\mathbf{I})$
+con $\sigma_{\max}$ dell'ordine della massima distanza fra due dati.
 
 **Variance Preserving (VP), la famiglia di DDPM.**
 
@@ -500,13 +501,16 @@ g^2\Delta p_t$ e invertendo il tempo, dà la SDE all'indietro di Anderson
 
 Ne seguono tre conseguenze:
 
-- **Invertibilità.** La PF-ODE definisce un flusso deterministico
-  $\Phi_{t\to s}$ che, se il campo è lipschitziano in $\mathbf{x}$ (e quindi
-  la soluzione è unica), è una biiezione fra gli *stati* e trasporta
-  $p_{\text{dati}}$ in $p_T$. Da qui l’*inversione DDIM*, cioè integrare la ODE
-  dall'immagine al suo rumore, che serve a editing e interpolazione nello
-  spazio del rumore. Per un campo stimato da una rete la condizione vale; per
-  il punteggio esatto può cadere vicino a $t = 0$, dove i dati si concentrano.
+- **Invertibilità.** La PF-ODE definisce un flusso deterministico $\Phi_{t\to
+  s}$ che, se il campo è lipschitziano in $\mathbf{x}$ (e quindi la soluzione è
+  unica), è una biiezione fra gli *stati* e trasporta $p_{\text{dati}}$ in
+  $p_T$. Da qui l’*inversione DDIM*, cioè integrare la ODE dall'immagine al suo
+  rumore, che serve a editing e interpolazione nello spazio del rumore. Per un
+  campo stimato da una rete la condizione vale su $[\delta, T]$ con $\delta >
+  0$ (con la rete che predice $\boldsymbol{\epsilon}$ il fattore $1/\sigma_t$
+  cresce senza limite per $t \to 0$, ed è una delle ragioni per cui si integra
+  fino a un $\delta$ piccolo e non a zero); per il punteggio esatto può cadere
+  vicino a $t = 0$, dove i dati si concentrano.
 - **Verosimiglianza esatta.** Trattando la PF-ODE come un {doc}`flusso
   normalizzante continuo </VerosimiglianzaEsatta/a-che-serve>` si ottiene $\log
   p_0(\mathbf{x}_0) = \log p_T(\mathbf{x}_T) + \int_0^T
@@ -701,13 +705,16 @@ e, sul percorso VP, $\lVert\hat{\mathbf{v}} - \mathbf{v}\rVert^2 =
 \big(1 + 1/\mathrm{SNR}(t)\big)\lVert\hat{\boldsymbol{\epsilon}} -
 \boldsymbol{\epsilon}\rVert^2$.
 
-La lettura per pesi è di Kingma e colleghi, che
-nel 2021 scrivono il bound variazionale in funzione del solo rapporto
-segnale/rumore {cite}`kingma2021variational` e più tardi mostrano che ogni peso
-monotono in $t$ equivale a un ELBO su dati aumentati con rumore
-{cite}`kingma2023understanding`. Questa prospettiva spiega perché confronti fra
-articoli che dichiaravano obiettivi diversi risultassero poi difficili da
-interpretare: cambiava il peso, non l'obiettivo.
+La lettura per pesi è di Kingma e colleghi, che nel 2021 scrivono il bound
+variazionale in funzione del solo rapporto segnale/rumore
+{cite}`kingma2021variational` e più tardi mostrano che, se il peso misurato
+rispetto a quello dell'ELBO (una funzione del logaritmo del rapporto
+segnale/rumore, non il $w(t)$ della perdita sul rumore) cresce con $t$,
+l'obiettivo equivale a un ELBO su dati aumentati con rumore
+{cite}`kingma2023understanding`; la perdita sul rumore con peso uniforme e
+programma coseno non soddisfa la condizione. Questa prospettiva spiega perché
+confronti fra articoli che dichiaravano obiettivi diversi risultassero poi
+difficili da interpretare: cambiava il peso, non l'obiettivo.
 
 `````
 
@@ -771,7 +778,7 @@ partenza.
 :class: important
 - Il limite $\Delta t\to 0$ dà $\mathrm{d}\mathbf{x} =
   \mathbf{f}(\mathbf{x},t)\mathrm{d}t + g(t)\mathrm{d}\mathbf{w}$. Con deriva
-  affine il nucleo è gaussiano in forma chiusa,
+  lineare il nucleo è gaussiano in forma chiusa,
   $p_t(\mathbf{x}_t\mid\mathbf{x}_0)=\mathcal{N}(\alpha_t\mathbf{x}_0,
   \sigma_t^2\mathbf{I})$, e il campionamento è *simulation-free*.
 - VE: $\mathbf{f}=\mathbf{0}$, $g=\sqrt{\mathrm{d}\sigma^2/\mathrm{d}t}$.

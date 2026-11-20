@@ -175,14 +175,15 @@ quella torre si chiama *stack*).
   `predict` (adesso prevedi). Dopo averne usato uno, l'interfaccia degli altri è
   già nota, e per questo l'API si dice uniforme (l’**API** di una libreria è
   l'insieme dei comandi con cui le si parla).
-- PyTorch (Facebook AI Research, oggi Meta), deep learning: costruisce reti
-  neurali e le addestra, calcolando da sé le derivate che servono a correggerne
-  i parametri (la *differenziazione automatica*), anche sulla GPU, la scheda
-  grafica. Non sta sopra NumPy, perché esegue il calcolo con un motore proprio,
-  scritto in C++, e con NumPy scambia soltanto i dati. In particolare, sulla CPU
-  `torch.from_numpy` e `Tensor.numpy()` condividono la stessa memoria invece di
-  ricopiarli. Il suo concorrente storico è TensorFlow (Google, 2015), che si
-  affianca alla torre nello stesso modo.
+- PyTorch (nato a Facebook AI Research, dal 2022 della PyTorch Foundation),
+  deep learning: costruisce reti neurali e le addestra, calcolando da sé le
+  derivate che servono a correggerne i parametri (la *differenziazione
+  automatica*), anche sulla GPU, la scheda grafica. Non sta sopra NumPy, perché
+  esegue il calcolo con un motore proprio, scritto in C++, e con NumPy scambia
+  soltanto i dati. In particolare, sulla CPU `torch.from_numpy` e
+  `Tensor.numpy()` condividono la stessa memoria invece di ricopiarli. Il suo
+  concorrente storico è TensorFlow (Google, 2015), che si affianca alla torre
+  nello stesso modo.
 
 ```{figure} ../figures/stack-scientifico-python.svg
 :name: fig-stack-python
@@ -293,13 +294,13 @@ addestrare un modello senza possedere un computer potente.
 
 `````{tab} Superiore
 
-L'interprete interattivo è un **REPL** (*read–eval–print loop*); la versione
-arricchita `IPython` ne è il motore. Un notebook Jupyter è un documento
-`.ipynb` (JSON di celle) eseguito da un **kernel** che mantiene lo stato tra
-una cella e l'altra. Da qui la potenza (e i tranelli) dell'esecuzione fuori
-ordine. Poiché lo stato vive nel kernel e non nel file, [un notebook è
-riproducibile solo se, riavviato il kernel e rieseguito dall'alto, produce gli
-stessi risultati]{.pt-matita}.
+L'interprete interattivo è un **REPL** (*read–eval–print loop*); la sua
+versione arricchita, `IPython`, è anche il motore dei notebook Jupyter in
+Python. Un notebook Jupyter è un documento `.ipynb` (JSON di celle) eseguito da
+un **kernel** che mantiene lo stato tra una cella e l'altra. Da qui la potenza
+(e i tranelli) dell'esecuzione fuori ordine. Poiché lo stato vive nel kernel e
+non nel file, [un notebook è riproducibile solo se, riavviato il kernel e
+rieseguito dall'alto, produce gli stessi risultati]{.pt-matita}.
 
 **Google Colab** è un ambiente Jupyter gestito, con acceleratori hardware
 (GPU/TPU) accessibili gratuitamente entro certi limiti, ideale per

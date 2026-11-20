@@ -147,7 +147,7 @@ punto in un luogo che non si disegna ma su cui si ragiona allo stesso modo. Lo
 spazio degli indirizzi si legge come una mappa del significato, perché ne ha la
 proprietà essenziale: frasi con significato simile finiscono in indirizzi
 vicini. Così «il gatto nero salta sul muro» e «the black cat jumps on the wall»
-finiscono nella stessa regione, benché al modello nessuno abbia mai detto che
+finiscono in regioni vicine, benché al modello nessuno abbia mai detto che
 si tratta di due lingue.
 
 La vicinanza va precisata. Le regioni occupate da due lingue sono affiancate e
@@ -258,11 +258,11 @@ opposto, hindi verso urdu, si scende a 86: la simmetria non è garantita nemmeno
 qui.
 
 C'è anche la prova per la strada opposta. Artetxe, Ruder e Yogatama
-{cite}`artetxe2020cross` prendono un modello monolingue, ne congelano tutto
-il corpo e riapprendono soltanto la tabella di embedding nella lingua nuova,
-con lo stesso compito di mascheramento: il trasferimento avviene ugualmente. La
-componente che dipende dalla lingua è quindi il solo embedding in ingresso, e il
-trasferimento passa attraverso il corpo del modello, rimasto invariato.
+{cite}`artetxe2020cross` prendono un modello monolingue, ne congelano tutto il
+corpo e riapprendono soltanto la tabella di embedding nella lingua nuova, con
+lo stesso compito di mascheramento: il trasferimento avviene ugualmente. Basta
+quindi riapprendere l'embedding in ingresso: il corpo del modello, rimasto
+invariato, porta il trasferimento.
 
 **Architettura.** Karthikeyan e colleghi {cite}`karthikeyan2020cross` studiano
 BERT bilingui, con il russo e un inglese artificiale (l'inglese con i caratteri
@@ -613,8 +613,8 @@ si parlano.
   italiano) è la ragione pratica di tutto questo. Attenzione: il fine-tuning
   erode l'allineamento, e il trasferimento non è simmetrico: conta più la
   lingua di partenza (nel campione, quelle SVO) della somiglianza fra le due.
-- La maledizione della multilingualità: a capacità fissa, oltre un certo
-  numero di lingue ognuna in più peggiora tutte le altre. È un vincolo di
-  capacità, e l'unico rimedio pieno è un modello più grande.
+- La maledizione della multilingualità: a capacità fissa, oltre un certo numero
+  di lingue la resa media cala. È un vincolo di capacità: lo allentano un
+  modello più grande o moduli propri per ogni lingua.
 ```
 `````

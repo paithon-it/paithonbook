@@ -81,15 +81,14 @@ sapere più tempo gli serve su ogni pezzo.
 
 La versione a esperti ne assume otto, ciascuno con la sua specialità, e mette
 all'ingresso uno smistatore (è lui il router) che legge le prime righe e passa
-il pezzo al redattore più adatto (o ai due più adatti, se si
-vuole una seconda opinione). Un articolo sul mercato dei calciatori va allo
-sportivo; uno sul restauro di un affresco va all'esperto d'arte. (È un modo di
-dire: nessuno assegna le specialità, i redattori se le trovano lavorando, e
-di rado coincidono con le pagine del giornale.) La redazione nel suo insieme sa
-molte più cose di prima, perché sono otto teste invece di una, mentre il
-lavoro su *un* articolo resta quello di sempre, perché a occuparsene è uno
-solo, o due. Lo smistatore, nel bilancio, non pesa: è una persona sola con un
-elenco di nomi.
+il pezzo al redattore più adatto (o ai due più adatti, se si vuole una seconda
+opinione). Un articolo sul mercato dei calciatori va allo sportivo; uno sul
+restauro di un affresco va all'esperto d'arte. (È un modo di dire: nessuno
+assegna le specialità, i redattori se le trovano lavorando, e di rado
+coincidono con le pagine del giornale.) La redazione nel suo insieme sa molte
+più cose di prima, perché sono otto teste invece di una, mentre il lavoro su
+*un* articolo resta quello di sempre finché a occuparsene è uno solo. Lo
+smistatore, nel bilancio, non pesa: è una persona sola con un elenco di nomi.
 
 Una parte del lavoro, però, non si moltiplica. Ogni pezzo passa comunque per
 la riunione del mattino, dove tutti mettono in comune quello che sanno, e di
@@ -687,7 +686,7 @@ Questa, accanto alla qualità del modello, è la ragione economica della loss di
 bilanciamento.
 
 In inferenza, come mostra in dettaglio la {doc}`sezione su LLMOps
-</MLOps/llmops>`, la generazione è memory-bound, ovvero il tempo per token è
+</MLOps/llmops>`, la generazione è memory-bound, cioè il tempo per token è
 dominato dal trasferimento dei pesi dalla memoria della GPU, non
 dall'aritmetica. L'efficacia della sparsità dipende dalla dimensione del
 batch. Con poche sequenze in elaborazione si leggono solo i $k$ esperti
@@ -810,10 +809,11 @@ diventano probabilità, `torch.topk` tiene i $k$ esperti migliori con i loro
 pesi, e ogni esperto lavora soltanto sui token che lo hanno scelto. Mancano le
 ottimizzazioni vere (lo smistamento dei token fra le schede, i buffer di
 capacità preallocati), e il ciclo `for` sugli esperti sarebbe inaccettabile su
-scala. Manca anche la loss di bilanciamento, necessaria per la correttezza:
-chi addestrasse questo strato così com'è andrebbe incontro, con ogni
-probabilità, al collasso del router. Per calcolarla bastano poche righe, a
-partire da `indici` e `probabilita`, già disponibili nel metodo `forward`.
+scala. Manca anche la loss di bilanciamento, che non serve alla correttezza
+dello strato ma al suo addestramento: chi addestrasse questo strato così com'è
+andrebbe incontro, con ogni probabilità, al collasso del router. Per calcolarla
+bastano poche righe, a partire da `indici` e `probabilita`, già disponibili nel
+metodo `forward`.
 
 ```python
 import torch

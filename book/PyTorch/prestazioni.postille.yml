@@ -43,7 +43,7 @@
   impronta: "5d4d93a47d2c"
   postilla: "Glorot per le simmetriche, He per la ReLU, che perde circa metà del segnale"
 - inizio: "Su uno strato da mille ingressi,"
-  impronta: "fb0ea0827c34"
+  impronta: "fcd6c0ec5e5d"
   postilla: "Pesi più piccoli di He: in una rete profonda con ReLU il segnale svanisce"
 - inizio: "Prima di ogni ottimizzazione, a ogni"
   impronta: "2c5a4f8f6172"

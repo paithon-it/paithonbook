@@ -104,8 +104,8 @@ eseguire tutto il resto.
 
 La divisione in cinque file è quella del capitolo *PyTorch Going Modular* del
 corso di Daniel Bourke (*Learn PyTorch for Deep Learning*): i nomi dei file
-sono i suoi, quelli delle funzioni sono adattati. Non c'è nulla di magico,
-perché è la stessa struttura del capitolo, tradotta in file.
+sono i suoi, quelli delle funzioni sono adattati. Il numero cinque non ha
+niente di speciale: è la struttura di quel capitolo, tradotta in file.
 
 ```text
 progetto/
@@ -349,10 +349,11 @@ def salva_modello(modello, ottimizzatore, epoca, percorso, classi, argomenti):
                 "config": argomenti}, percorso)
 ```
 
-Delle cinque voci che finiscono nel file, di solito mancano
-`"ottimizzatore"` ed `"epoca"`. Questa è la distinzione già vista nella sezione
-[sul training loop](addestramento.md): senza lo stato dell'ottimizzatore il
-file serve a usare il modello, non a riprendere l'addestramento.
+Delle cinque voci che finiscono nel file, nei modelli che si scaricano già
+addestrati di solito mancano `"ottimizzatore"` ed `"epoca"`. Questa è la
+distinzione già vista nella sezione [sul training loop](addestramento.md):
+senza lo stato dell'ottimizzatore il file serve a usare il modello, non a
+riprendere l'addestramento.
 
 ```{figure} ../figures/salvare-e-ricaricare.svg
 :name: fig-serializzazione
@@ -410,7 +411,8 @@ cioè il numero da cui parte la formula che produce una sequenza che *sembra*
 casuale. Stesso seme, stesso punto di partenza, stessa sequenza, e quindi
 stessi pesi iniziali e stesso ordine di mescolamento dei dati. Sulla stessa
 macchina e con le stesse versioni delle librerie si ottiene così lo stesso
-risultato, salvo le ultime cifre dei calcoli fatti su una scheda grafica.
+risultato, salvo le ultime cifre di alcuni calcoli fatti su una scheda grafica,
+che però un addestramento lungo può amplificare fino a pesi finali diversi.
 
 Le righe sono tre perché ogni libreria ha la sua sequenza, e vanno avvisate
 tutte: quella di Python, quella di NumPy (che tante librerie di dati usano) e
@@ -447,8 +449,9 @@ in ordini diversi, dà totali diversi, e non serve sbagliare niente, basta che a
 ogni passaggio si arrotondi. Un conto in banca, ad esempio, tiene i centesimi e
 matura quattro decimi di centesimo di interessi al giorno. Accreditati giorno
 per giorno, spariscono ogni volta nell'arrotondamento, e dopo un anno il saldo
-è quello di partenza; sommati prima fra loro fanno un euro e quarantasei, e il
-saldo si muove. Stessi numeri, ordine diverso, totale diverso.
+è quello di partenza; sommati prima fra loro fanno un euro e quarantasei
+(quattro decimi di centesimo per trecentosessantacinque giorni), e il saldo si
+muove. Stessi numeri, raggruppati in un altro modo, totale diverso.
 
 Una scheda grafica lavora così, spezzando la somma fra migliaia di
 calcoli che avvengono nello stesso momento e consegnano appena hanno finito, e
@@ -466,14 +469,14 @@ di fare lo stesso calcolo e tiene il più veloce; quale vinca dipende da com'è
 messa la scheda quella sera, e la gara rende soltanto se poi lo stesso calcolo
 si ripete mille volte identico.
 
-Con tutti e due gli interruttori i numeri tornano uguali fino all'ultima cifra.
-Sulla scheda grafica serve anche un'impostazione in più per le moltiplicazioni,
-scritta fuori dal programma, senza la quale il primo interruttore ferma tutto
-alla prima. Il determinismo ha due conseguenze: di
-qualche operazione la versione ordinata non esiste e il programma si ferma
-avvisando, mentre il resto va più piano. È un compromesso che si accetta quando
-si dà la caccia a un errore e serve sapere che fra due esecuzioni cambia
-soltanto la modifica fatta.
+Con tutti e due gli interruttori i numeri tornano uguali fino all'ultima cifra,
+ma sulla scheda grafica serve anche un'impostazione in più per le
+moltiplicazioni, scritta fuori dal programma (una variabile d'ambiente): senza,
+il primo interruttore ferma tutto alla prima moltiplicazione. Il determinismo
+ha due conseguenze: di qualche operazione la versione ordinata non esiste e il
+programma si ferma avvisando, mentre il resto va più piano. È un compromesso
+che si accetta quando si dà la caccia a un errore e serve sapere che fra due
+esecuzioni cambia soltanto la modifica fatta.
 
 Poi ci sono gli aiutanti che preparano i vassoi. A ciascuno PyTorch consegna da
 sé un foglio diverso, e lo stesso da una sera all'altra, così i ritagli e gli

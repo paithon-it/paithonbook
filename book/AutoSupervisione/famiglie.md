@@ -46,11 +46,11 @@ permette di averne molti senza doverli calcolare tutti insieme. Qui interessa
 solo il posto che occupa nello schema: [il collasso lo impedisce una forza che
 allontana]{.pt-matita}.
 
-Il limite di questa famiglia sono i rivali. Perché la perdita dica qualcosa ne
+Il limite di questa famiglia sono i rivali. Perché la perdita renda bene ne
 servono migliaia, e ciascuno va elaborato dalla rete. Per questo la seconda e
 la terza famiglia hanno cercato un'altra strada. La quarta, quella che
-ricostruisce il pezzo coperto, ha un'origine indipendente: sul testo,
-con BERT, esisteva dal 2018, prima delle altre due.
+ricostruisce il pezzo coperto, ha un'origine indipendente: sul testo, con BERT,
+esisteva dal 2018, prima delle altre due.
 
 ## La seconda: rendere le due reti diverse
 
@@ -201,9 +201,10 @@ quelle di $\mathbf{Z}^B$: ogni cella di $\mathbf{C}$ vale allora lo stesso
 numero $\rho$, quello che sta sulla diagonale, e il termine di ridondanza paga
 $\lambda \, D(D-1) \, \rho^2$, cioè $D(D-1)$ celle piene quanto la diagonale,
 mentre una rappresentazione con la stessa diagonale e coordinate scorrelate
-pagherebbe zero. Non serve un argomento sulla dinamica dell'ottimizzazione: [la
-penalità si legge sul valore della perdita, perché è scritta
-nell'obiettivo]{.pt-matita}.
+pagherebbe zero con $N > D$, e con $N < D$, dove il rango di $\mathbf{C}$ lo
+impedisce, comunque migliaia di volte meno. Non serve un argomento sulla
+dinamica dell'ottimizzazione: [la penalità si legge sul valore della perdita,
+perché è scritta nell'obiettivo]{.pt-matita}.
 
 **VICReg** {cite}`bardes2022vicreg` arriva alla stessa meta con tre termini
 espliciti. Con $\mathbf{z}_n$ le righe di $\mathbf{Z}$,
@@ -263,7 +264,9 @@ autrice anche il metodo di distillazione della famiglia precedente
 {cite}`caron2021emerging`, e l'equipartizione svolge qui la funzione che là
 svolge la centratura: impedire che una componente dell'uscita assorba tutta la
 massa. Là la sola centratura spinge verso l'uniformità, e per tirare dall'altra
-parte serve l'affilatura; qui il vincolo è uno solo.
+parte serve l'affilatura; qui l'equipartizione esclude il prototipo unico ma
+non l'assegnazione uniforme di ogni vista, e a tirare dall'altra parte è il
+valore piccolo di $\eta$.
 
 `````
 
@@ -508,23 +511,25 @@ guardando la stessa cosa da due lati.
   (sul testo, l'entropia dei token presi da soli), perché la previsione
   migliore diventa la media.
 - Distillazione: stop-gradient sul ramo insegnante, testa di predizione sul
-  solo ramo studente, insegnante come media mobile dello studente (BYOL, DINO;
-  in SimSiam pesi condivisi), e in DINO centratura e affilatura dell'uscita
-  dell'insegnante. La spiegazione del perché la dinamica eviti il collasso è
-  arrivata dopo, su modelli lineari semplificati {cite}`tian2021understanding`.
-- Barlow Twins {cite}`zbontar2021barlow`: si standardizzano le
-  rappresentazioni sul batch, si costruisce la cross-correlazione
-  $\mathbf{C} = \frac{1}{N}(\mathbf{Z}^A)^\top \mathbf{Z}^B$ e la si porta verso
-  l'identità. Diagonale a uno: invarianza. Fuori diagonale a zero: riduzione di
-  ridondanza. I due termini fermano due collassi diversi: l'uscita costante
-  la ferma l'invarianza (la standardizzazione manda $\mathbf{C}$ a zero e quel
-  termine vale $D$), mentre le coordinate tutte uguali le ferma la
-  ridondanza, perché allora ogni cella di $\mathbf{C}$ vale lo stesso numero
-  $\rho$ della diagonale e il termine paga $\lambda D(D-1)\rho^2$, cioè
-  $D(D-1)$ celle piene quanto la diagonale, e coordinate scorrelate
-  pagherebbero zero. Nel lavoro originale $\lambda = 5 \cdot 10^{-3}$,
-  $D = 8192$ e $N = 2048$: con $N < D$ la matrice $\mathbf{C}$ ha rango al più
-  $N - 1$, l'identità non è raggiungibile e la perdita fa da penalità.
+  solo ramo studente (BYOL e SimSiam; DINO non ne ha), insegnante come media
+  mobile dello studente (BYOL, DINO; in SimSiam pesi condivisi), e in DINO
+  centratura e affilatura dell'uscita dell'insegnante. La spiegazione del
+  perché la dinamica eviti il collasso è arrivata dopo, su modelli lineari
+  semplificati {cite}`tian2021understanding`.
+- Barlow Twins {cite}`zbontar2021barlow`: si standardizzano le rappresentazioni
+  sul batch, si costruisce la cross-correlazione $\mathbf{C} =
+  \frac{1}{N}(\mathbf{Z}^A)^\top \mathbf{Z}^B$ e la si porta verso l'identità.
+  Diagonale a uno: invarianza. Fuori diagonale a zero: riduzione di ridondanza.
+  I due termini fermano due collassi diversi: l'uscita costante la ferma
+  l'invarianza (la standardizzazione manda $\mathbf{C}$ a zero e quel termine
+  vale $D$), mentre le coordinate tutte uguali le ferma la ridondanza, perché
+  allora ogni cella di $\mathbf{C}$ vale lo stesso numero $\rho$ della
+  diagonale e il termine paga $\lambda D(D-1)\rho^2$, cioè $D(D-1)$ celle piene
+  quanto la diagonale, e coordinate scorrelate pagherebbero zero con $N > D$, e
+  con $N < D$ comunque migliaia di volte meno. Nel lavoro originale $\lambda =
+  5 \cdot 10^{-3}$, $D = 8192$ e $N = 2048$: con $N < D$ la matrice
+  $\mathbf{C}$ ha rango al più $N - 1$, l'identità non è raggiungibile e la
+  perdita fa da penalità.
 - VICReg {cite}`bardes2022vicreg`: varianza, invarianza, covarianza. Il
   termine di varianza tiene la deviazione standard di ogni coordinata sopra
   una soglia, con una hinge che paga solo sotto, quindi l'anti-collasso è

@@ -26,9 +26,10 @@ L’ottimizzatore è l'oggetto che a ogni iterazione del ciclo corregge i pesi d
 modello usando il gradiente. Il suo iperparametro principale è il learning
 rate, $\eta$ nelle formule (in italiano si dice anche, più brevemente, il
 passo), cioè il fattore per cui il gradiente viene moltiplicato prima di essere
-sottratto dai pesi. Se è troppo piccolo, la loss scende lentamente e nel tempo
-dato può non arrivare in fondo; se è troppo grande, la discesa scavalca il
-punto buono, oscilla o diverge.
+sottratto dai pesi: il gradiente indica la direzione in cui la loss sale, e lo
+si sottrae per andare dalla parte opposta. Se è troppo piccolo, la loss scende
+lentamente e nel tempo dato può non arrivare in fondo; se è troppo grande, la
+discesa scavalca il punto buono, oscilla o diverge.
 
 Di ottimizzatori ce ne sono parecchi, ma per adesso ne bastano due. Il più
 semplice è quello del ciclo visto con la backpropagation, la discesa stocastica
@@ -106,9 +107,10 @@ scende un poco.
 È il metodo con cui si impara con le flashcard, le carte per memorizzare.
 Guardi la domanda e provi a rispondere (passo 1, la previsione). Giri la carta
 e confronti con la risposta giusta: quanto eri lontano? (passo 2, l'errore).
-Butti via gli appunti del giro precedente (passo 3), capisci *in che
-direzione* hai sbagliato, troppo alto? troppo basso? (passo 4), e aggiusti di
-conseguenza il tuo modo di rispondere, un poco alla volta (passo 5).
+Butti via gli appunti del giro precedente, cioè le correzioni che ti eri
+segnato l'ultima volta (passo 3), capisci *in che direzione* hai sbagliato,
+troppo alto? troppo basso? (passo 4), e aggiusti di conseguenza il tuo modo di
+rispondere, un poco alla volta (passo 5).
 
 Poi passi al mazzetto successivo, e quando hai ripassato l'intero mazzo una
 volta hai completato quella che si chiama un’epoca. Ripetuto per migliaia di
@@ -191,10 +193,12 @@ micro-batch, senza un messaggio d'errore.
 L'accumulo coincide con il batch grande vero a meno dell'arrotondamento in
 virgola mobile, ma richiede tre condizioni. Primo, ogni loss va divisa per $k$
 prima del `backward()`: con `reduction="mean"` ogni micro-batch restituisce già
-una media, e sommarne $k$ dà $k$ volte il gradiente. Secondo, i micro-batch
-devono avere tutti la stessa dimensione. Terzo, nel modello non devono esserci
-strati che si tarano sul batch, come la batch norm, che continuerebbe a vedere
-il singolo micro-batch.
+una media, e sommarne $k$ dà $k$ volte il gradiente. Secondo, ogni micro-batch
+deve avere lo stesso denominatore della media: la stessa dimensione e, con
+`weight` o `ignore_index`, la stessa somma di pesi o di target validi
+(altrimenti si somma con `reduction="sum"` e si divide per il totale). Terzo,
+nel modello non devono esserci strati che si tarano sul batch, come la batch
+norm, che continuerebbe a vedere il singolo micro-batch.
 `````
 
 ## `Dataset` e `DataLoader`: la catena di rifornimento
@@ -269,11 +273,13 @@ asincrono verso la GPU, non l'asincronia: quest'ultima richiede anche
 La `transform` `ToTensor()` converte le immagini PIL in tensori `float32` con
 valori in $[0, 1]$ e layout channels-first $(C, H, W)$. Per MNIST si può
 aggiungere `transforms.Normalize((0.1307,), (0.3081,))` (media e deviazione
-standard del dataset), cioè la standardizzazione delle feature della
-{doc}`sezione sulle SVM </MachineLearning/svm-kernel>` applicata ai pixel. Su
-ingressi non centrati, infatti, la discesa del gradiente trova una valle più
-stretta e procede a zigzag. Per le fotografie, l'operazione è descritta nella
-sezione sui {doc}`dati su misura <dati-su-misura>`.
+standard di tutti i pixel del dataset insieme): è la standardizzazione delle
+feature della {doc}`sezione sulle SVM </MachineLearning/svm-kernel>` fatta con
+un'unica media e un'unica scala, invece che pixel per pixel, e porta comunque
+gli ingressi vicino allo zero e a una scala unitaria. Su ingressi non centrati,
+infatti, la discesa del gradiente trova una valle più stretta e procede a
+zigzag. Per le fotografie, l'operazione è descritta nella sezione sui
+{doc}`dati su misura <dati-su-misura>`.
 
 Statisticamente, con esempi estratti in modo uniforme, il gradiente su un
 mini-batch di $B$ esempi è una stima non distorta del gradiente sull'intero
@@ -413,8 +419,8 @@ scala, e cambia soltanto da dove viene il metro.
 
 Per questo all'esame basta anche una carta sola, perché il metro è già
 annotato, mentre durante lo studio quella stessa carta sola blocca tutto: da
-una misura sola non si capisce quanto le cose varino, e il programma si ferma e
-lo dice invece di tirare a indovinare.
+una carta sola si ricava una media, ma non quanto le carte si scostino da
+quella media, e il programma si ferma e lo dice invece di tirare a indovinare.
 
 Il blocco `torch.no_grad()` dice al registratore dei gradienti di spegnersi:
 durante l'esame non si prendono appunti per migliorare, si risponde soltanto, e
@@ -491,11 +497,11 @@ predizioni. Il nostro MLP non ha né dropout né batch norm, quindi qui `eval()`
 è tecnicamente superfluo, ma scriverlo sempre è un'abitudine che evita bug
 sottili appena il modello cresce.
 
-Quando si fa soltanto inferenza esiste una forma più stretta di
-`no_grad()`, `torch.inference_mode()`, che oltre a non registrare rinuncia
-anche al *version counter* e al tracciamento delle viste: è leggermente più
-veloce, ma i tensori che produce non possono poi rientrare in un grafo
-autograd.
+Quando si fa soltanto inferenza esiste una forma più stretta di `no_grad()`,
+`torch.inference_mode()`, che oltre a non registrare rinuncia anche al *version
+counter* e al tracciamento delle viste: è leggermente più veloce, ma i tensori
+che produce non possono essere salvati per un `backward()` né ricevere
+`requires_grad`.
 `````
 
 ## Quando fermarsi: la validazione
@@ -876,12 +882,13 @@ fin qui vanno messi in ordine nel {doc}`flusso di lavoro <flusso-di-lavoro>`.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Il training loop ha cinque passi fissi: forward → loss →
-  `zero_grad()` → `backward()` → `step()`; il clipping va fra `backward()` e
-  `step()`, lo scheduler dopo `step()`. Il terzo passo serve perché i
-  gradienti si accumulano, e non li azzera: li toglie (`p.grad` torna a
-  `None`, e `step()` salta quel parametro). Nell'accumulo dei gradienti si fa
-  una volta ogni $k$ micro-batch, unica eccezione all'ordine.
+- Il training loop ha cinque passi fissi: forward → loss → `zero_grad()` →
+  `backward()` → `step()`; il clipping va fra `backward()` e `step()`, lo
+  scheduler dopo `step()`. Il terzo passo serve perché i gradienti si
+  accumulano, e non li azzera: li toglie (`p.grad` torna a `None`, e `step()`
+  salta i parametri che il `backward()` successivo non raggiunge).
+  Nell'accumulo dei gradienti si fa una volta ogni $k$ micro-batch, unica
+  eccezione all'ordine.
 - `Dataset` consegna gli esempi, `DataLoader` li rimescola e li impila in
   mini-batch: il gradiente sul batch è una stima non distorta, rumorosa ma
   economica, di quello vero.

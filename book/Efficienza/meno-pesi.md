@@ -47,10 +47,11 @@ giocatori con gli stessi minuti lascino lo stesso buco, ma il portiere gioca
 quanto un difensore e non si rimpiazza con la stessa facilità.
 
 La terza è che i buchi si sommino: due che si intendevano bene, tolti insieme,
-si sentono più della somma dei due presi uno per uno. L'ultima è che il criterio
-valga anche tagliando in blocco: vale per un giocatore alla volta, e di pesi se
-ne azzerano nove su dieci in un pomeriggio. Curiosamente il criterio funziona lo
-stesso, e nessuno sa dire bene perché.
+si sentono più della somma dei due presi uno per uno. L'ultima è che il
+criterio valga anche tagliando in blocco: vale per un giocatore alla volta, e
+di pesi se ne azzerano nove su dieci in un pomeriggio. Curiosamente, con il
+ritiro che viene dopo, il criterio funziona lo stesso, e nessuno sa dire bene
+perché.
 
 La prima domenica dice come è andata. Tolti nove pesi su dieci, l'accuratezza
 passa da novantotto a trentanove per cento, cioè da «sbaglia una volta su
@@ -327,8 +328,8 @@ metà degli zeri no, perché tenere il conto delle posizioni costa più di quant
 fa risparmiare. Su una scheda grafica non conviene quasi mai, perché lì la
 moltiplicazione ordinata va così veloce che saltare gli zeri costa più di farli.
 
-Per questo, in pratica, si sente dire che la potatura non fa guadagnare tempo: è
-vero dove i modelli grandi girano davvero.
+Per questo, in pratica, si sente dire che la potatura non fa guadagnare tempo:
+è vero dove i modelli grandi girano davvero, cioè sulle schede grafiche.
 
 Si guadagna invece in spazio, purché gli zeri siano tanti. Per non scriverli,
 infatti, bisogna mettere accanto a ogni numero tenuto l’indirizzo della sua
@@ -1022,10 +1023,11 @@ partenza  solo 4 bit  solo potata  tutte e due  somma
        4        +0.6         +1.5         +1.7   +2.0
 ```
 
-Su cinque partenze, la perdita composta supera la somma delle due in tre casi e
+Su cinque partenze (la somma si fa prima di arrotondare, per cui l’ultima riga
+dà 2,0 e non 2,1), la perdita composta supera la somma delle due in tre casi e
 le resta sotto in due. Quale dei due casi si presenti non si sa prima, e per
-questo la perdita che ci si può permettere in tutto, il budget di errore, non si
-ripartisce a tavolino fra le leve.
+questo la perdita che ci si può permettere in tutto, il budget di errore, non
+si ripartisce a tavolino fra le leve.
 
 Resta comunque un ottimo affare: un decimo dei pesi diversi da zero e un ottavo
 dei bit per ciascuno, per poco più di un punto di accuratezza. Quanto valga in

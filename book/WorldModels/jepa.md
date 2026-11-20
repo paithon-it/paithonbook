@@ -85,7 +85,9 @@ diversi nella sostanza, non per una scheggia in più o in meno. Nel disegno del
 2022 LeCun prevede per questo un ingrediente in più, una variabile che nessuno
 osserva e che dice quale dei due esiti si sta raccontando (in gergo una
 variabile *latente*, cioè nascosta). Nei sistemi costruiti finora quella
-variabile non c'è, e la risposta resta una sola.
+variabile non c'è, e la risposta resta una sola: dove i futuri sono davvero
+due, anche lì si prevede una via di mezzo, solo fra succhi invece che fra
+pixel.
 
 `````
 
@@ -397,12 +399,11 @@ delle rappresentazioni, invece che nei pixel, aggiunge costo, perché c'è un
 secondo encoder da mandare avanti a ogni passo: il paper misura circa il 7% in
 più per iterazione. Quel che risparmia è il *numero* di iterazioni, di circa
 cinque volte (300 epoche di pre-addestramento contro le 1600 di MAE). Cinque
-volte meno passi non bastano però a fare un fattore dieci: quel rapporto
-confronta due addestramenti interi, che oltre alle epoche differiscono in ciò
-che sta attorno al backbone (un predictor fra embedding da una parte, un
-decoder di pixel dall'altra), non due costi per iterazione. Spostare il
-bersaglio nello spazio delle rappresentazioni non rende più economico il
-singolo passo, rende necessari molti meno passi.
+volte meno passi, ciascuno più caro del 7%, non bastano però a fare un fattore
+dieci: il paper non riconcilia i tre numeri, e il fattore dieci va letto come
+lo dichiara, un confronto fra due addestramenti interi e non fra due costi per
+iterazione. Spostare il bersaglio nello spazio delle rappresentazioni non rende
+più economico il singolo passo, rende necessari molti meno passi.
 
 `````
 
@@ -534,7 +535,7 @@ risposte, e conta quante volte quella giusta è fra le cinque; il punteggio fa
 poi la media sui tipi di azione, così che quelle rare pesino quanto quelle
 frequenti (in gergo è il *recall@5*). V-JEPA 2 arriva a 39,7 su cento; il
 miglior sistema precedente, otto volte più grosso, si fermava a 27,6. È un
-progresso grosso su un compito che resta largamente irrisolto, il che è già un
+progresso grosso su un compito che resta in gran parte irrisolto, il che è già un
 buon motivo per diffidare di chi riassume queste cose con «ci riesce».
 
 La parte concettualmente nuova è **V-JEPA 2-AC** (*action-conditioned*,
@@ -570,15 +571,15 @@ zero-shot, «a colpo zero»: nemmeno un tentativo di prova.
 
 Qui però serve la cifra, non l'aggettivo, perché «riesce» dice troppo.
 Raggiungere un punto gli riesce sempre. Posare un oggetto dove va, circa tre
-volte su quattro. Afferrare una tazza, due volte su tre. Afferrare una
-scatola, una volta su quattro. Posare, però, non gli riesce con una foto sola
+volte su quattro. Afferrare una tazza, due volte su tre. Afferrare una scatola,
+una volta su quattro. Posare, però, non gli riesce con una foto sola
 dell'obiettivo: gliene servono tre, e a sceglierle è una persona. Per ogni
-singolo movimento il robot passa
-sedici secondi a immaginare, perché non prova un comando alla volta: ne
-sorteggia ottocento, tiene i dieci il cui esito finisce più vicino
-all'obiettivo, e sorteggia gli ottocento del giro dopo tutti attorno a quei
-dieci. Dieci giri, ottomila futuri immaginati per muovere un dito. È un inizio
-notevole; non è un maggiordomo.
+singolo movimento il robot passa sedici secondi a immaginare, perché, per
+scegliere il comando da eseguire, non ne immagina uno alla volta: ne sorteggia
+ottocento, tiene i dieci il cui esito finisce più vicino all'obiettivo, e
+sorteggia gli ottocento del giro dopo tutti attorno a quei dieci. Dieci giri,
+ottomila futuri immaginati per muovere un dito. È un inizio notevole; non è un
+maggiordomo.
 
 `````
 
@@ -953,17 +954,18 @@ immagini e di ore di video. La logica è la stessa.
   l'energia è l'errore di predizione tra embedding. Che l'encoder del target
   scarti l'irrilevante e non il segnale l'architettura lo permette, non lo
   garantisce.
-- Il pericolo è il solito collasso (embedding costanti, energia bassa
-  ovunque); la difesa dei sistemi reali è l'asimmetria fra i due rami, fatta
-  di tre pezzi (EMA, stop-gradient, predictor su un ramo solo). All'EMA si
-  rinuncia a certe condizioni: SimSiam la toglie senza collassare, con qualche
-  punto di accuratezza in meno, mentre BYOL senza EMA collassa se non si
-  accelera il predictor. Stop-gradient e predictor servono invece insieme: in
-  SimSiam togliere l'uno o l'altro fa collassare
-  {cite}`chen2021exploring,tian2021understanding`; nella mini-JEPA basta lo
-  stop-gradient, e il ruolo del predictor non si vede. L'alternativa senza
-  asimmetria è la regolarizzazione esplicita alla VICReg (varianza per
-  componente sopra una soglia, covarianze fuori diagonale penalizzate).
+- Il pericolo è il solito collasso (embedding costanti, energia bassa ovunque);
+  la difesa dei sistemi reali è l'asimmetria fra i due rami, fatta di tre pezzi
+  (EMA, stop-gradient, predictor su un ramo solo). All'EMA si rinuncia a certe
+  condizioni: SimSiam la toglie senza collassare, con qualche punto di
+  accuratezza in meno, mentre BYOL senza EMA collassa se non si accelera il
+  predictor. Stop-gradient e predictor servono invece insieme: in SimSiam
+  togliere l'uno o l'altro fa collassare
+  {cite}`chen2021exploring,tian2021understanding`; nella mini-JEPA a decidere è
+  lo stop-gradient (tolto insieme all'EMA, il sistema collassa), e il ruolo del
+  predictor non si vede. L'alternativa senza asimmetria è la regolarizzazione
+  esplicita alla VICReg (varianza per componente sopra una soglia, covarianze
+  fuori diagonale penalizzate).
 - I-JEPA {cite}`assran2023self` (CVPR 2023): un ViT predice le rappresentazioni
   di quattro blocchi mascherati dal contesto; niente augmentation artigianali;
   con l’1% delle etichette di ImageNet batte i metodi a ricostruzione di pixel
@@ -971,15 +973,16 @@ immagini e di ore di video. La logica è la stessa.
   costo unitario più basso: il singolo passo è più pesante del 7%,
   i passi sono cinque volte meno, e il fattore dieci confronta due
   addestramenti interi, non due iterazioni.
-- V-JEPA {cite}`bardes2024revisiting` porta lo schema al video (maschere
-  a blocchi contigui estesi su tutta la clip, che coprono in media il 90%; loss
+- V-JEPA {cite}`bardes2024revisiting` porta lo schema al video (maschere a
+  blocchi contigui estesi su tutta la clip, che coprono in media il 90%; loss
   $L_1$); V-JEPA 2 {cite}`assran2025vjepa` scala a oltre un milione di ore di
   video e, con meno di 62 ore di video DROID privi di annotazione su compito,
   ricompensa ed esito (ma con le azioni registrate), ottiene pianificazione
-  robotica zero-shot su bracci Franka mai visti, minimizzando sulle azioni la
-  distanza $L_1$ fra rappresentazione predetta e immagine-obiettivo: successo
-  fra il 25% e il 100% secondo il compito, su venti prove per compito, con 16
-  secondi di calcolo per azione.
+  robotica zero-shot su bracci Franka in due laboratori i cui ambienti non
+  compaiono nei dati di addestramento, minimizzando sulle azioni la distanza
+  $L_1$ fra rappresentazione predetta e immagine-obiettivo: successo fra il 25%
+  e il 100% secondo il compito, su venti prove per compito, con 16 secondi di
+  calcolo per azione.
 - I numeri a rete congelata vanno letti insieme al protocollo: la sonda è un
   *attentive probe* (per V-JEPA 2, quattro blocchi transformer), quindi
   misurano quanto l'informazione sia estraibile, non quanto il modello

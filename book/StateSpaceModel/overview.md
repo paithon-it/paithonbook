@@ -87,14 +87,15 @@ Proprio perché la regola non cambia mai, a quel 3,875 ci si arriva per due
 strade. Passo dopo passo, dal livello di prima a quello di adesso, una parola
 alla volta. Oppure tutto insieme, sommando i getti entrati da quando la vasca
 era vuota, ciascuno sbiadito secondo quanto tempo fa è entrato: 2 + 1 + 0,5 +
-0,25 + 0,125 fa lo stesso numero. Le quote di sbiadimento, 1, 0,5, 0,25, 0,125
-(quanto resta di un litro entrato adesso, un minuto fa, due, tre) e così via,
-sono le stesse a ogni minuto, e messe in fila formano un *filtro*: una fila di
-pesi da far scorrere lungo la sequenza dei getti. Al minuto dopo il filtro
-scivola di un posto e copre sei getti: alla somma si aggiunge in coda 0,0625,
-il getto più vecchio sbiadito cinque volte, e si arriva a 3,9375. La vasca dice
-lo stesso: metà di 3,875, più i due litri nuovi. Siccome nessun minuto aspetta
-il risultato di un altro, il filtro si fa scorrere su tutta la sequenza in un
+0,25 + 0,125 (ogni getto di due litri, moltiplicato per la quota che ne resta)
+fa lo stesso numero. Le quote di sbiadimento, 1, 0,5, 0,25, 0,125 (quanto resta
+di un litro entrato adesso, un minuto fa, due, tre) e così via, sono le stesse
+a ogni minuto, e messe in fila formano un *filtro*: una fila di pesi da far
+scorrere lungo la sequenza dei getti. Al minuto dopo il filtro scivola di un
+posto e copre sei getti: alla somma si aggiunge in coda 0,0625, il getto più
+vecchio sbiadito cinque volte, e si arriva a 3,9375. La vasca dice lo stesso:
+metà di 3,875, più i due litri nuovi. Siccome nessun minuto aspetta il
+risultato di un altro, il filtro si fa scorrere su tutta la sequenza in un
 colpo solo. [Sono quindi lo stesso calcolo visto da due lati]{.pt-matita}, la
 **doppia natura** del modello. Lo si addestra nel secondo modo, veloce perché
 fa tutti i passi insieme, e lo si usa nel primo, economico perché a ogni parola

@@ -133,9 +133,9 @@ punti di vista nuovi.
 
 Avere una funzione che risponde punto per punto non basta, perché bisogna poi
 trasformare quelle risposte in un'immagine. Questo passaggio è il cuore del
-meccanismo e non usa una rete ma la fisica ottocentesca: la legge con cui la
-luce si spegne attraversando qualcosa di torbido, che porta i nomi di Beer e
-Lambert.
+meccanismo e non usa una rete ma la fisica del Settecento e dell'Ottocento: la
+legge con cui la luce si spegne attraversando qualcosa di torbido, che porta i
+nomi di Beer e Lambert.
 
 [Il rendering è differenziabile: autograd attraversa l'intera catena, dal pixel
 reso fino ai pesi della rete]{.pt-matita}. Lungo quella strada, infatti, nessun
@@ -245,9 +245,9 @@ $$
 Chi conosce la grafica riconoscerà l’*alpha compositing* classico, perché la
 forma discreta è il "sopra" di Porter e Duff, con l'opacità ricavata dalla
 densità. I pesi $w_i = T_i \alpha_i$ formano una distribuzione lungo il raggio,
-e la loro massa $\sum_i w_i$ è l'opacità totale, mentre $\sum_i w_i
-t_i$ è la profondità attesa. Di conseguenza una mappa di profondità si ottiene
-gratis, senza una supervisione dedicata.
+e la loro massa $\sum_i w_i$ è l'opacità totale, mentre $\sum_i w_i t_i$,
+divisa per quella massa, è la profondità attesa. Di conseguenza una mappa di
+profondità si ottiene gratis, senza una supervisione dedicata.
 
 Quella però è una somma pesata, non una media: i $w_i$ sommano a uno
 solo se il raggio è completamente opaco, e dove non lo è la profondità va divisa
@@ -403,7 +403,8 @@ che qui si fa in base alla risoluzione più fine che si vuole rappresentare.
 Il NeRF originale era splendido e proibitivo: uno o due giorni di addestramento
 su una GPU per una scena sola, e decine di secondi per rendere un fotogramma.
 Con quei numeri il metodo è un articolo, non una tecnologia. In due anni, però,
-l'addestramento è sceso a pochi minuti e il fotogramma a pochi millisecondi.
+l'addestramento è sceso a pochi minuti e il fotogramma a qualche decina di
+millisecondi; con lo splatting, nel 2023, si arriva al tempo reale.
 
 `````{tab} Elementare
 
@@ -413,12 +414,12 @@ migliaia di pixel. Se la rete è grande, non si finisce più. L'idea che ha
 sbloccato tutto è stata smettere di chiedere alla rete di ricordare anche dove
 stanno le cose, e darle un aiuto.
 
-Sulla scena si appoggia una griglia, e in ogni nodo della griglia c'è un
+Sulla scena si appoggia una griglia, e a ogni nodo della griglia corrisponde un
 foglietto con sopra qualche numero. Quando si chiede il colore di un punto, non
 si costringe più la rete a ricordarsi tutto da sé, ma si vanno a leggere i
-foglietti dei nodi vicini, si mescolano fra loro secondo quanto sono vicini e si
-passa alla rete il risultato. [La rete deve solo interpretare quei numeri, non
-memorizzare la scena, e quindi può essere piccolissima]{.pt-matita}.
+foglietti dei nodi vicini, si mescolano fra loro secondo quanto sono vicini e
+si passa alla rete il risultato. [La rete deve solo interpretare quei numeri,
+non memorizzare la scena, e quindi può essere piccolissima]{.pt-matita}.
 
 C'è anche chi ha tolto la rete del tutto, scrivendo sui foglietti direttamente
 il colore e la solidità. Funziona, ma i foglietti diventano così tanti da
@@ -722,9 +723,9 @@ a $0{,}368$ moltiplicato per sé stesso sei volte, cioè a $0{,}0025$, un
 quattrocentesimo, ed è il quarto di punto percentuale che passa oltre la
 superficie.
 
-A che distanza sta la superficie? Il codice non l'ha mai calcolata, eppure
-lo sa: basta fare la media delle distanze dei sessanta punti pesandole per
-quanto ciascun punto conta. I punti che contano zero non spostano niente, quello
+A che distanza sta la superficie? Il codice non l'ha mai calcolata, eppure lo
+sa: basta sommare le distanze dei sessanta punti, ciascuna moltiplicata per
+quanto quel punto conta. I punti che contano zero non spostano niente, quello
 sulla superficie si prende tutto, e viene $3{,}99$ metri. In questo modo da un
 campo di radianza esce gratis anche una mappa di profondità.
 

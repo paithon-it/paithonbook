@@ -201,10 +201,11 @@ orizzontale.
 La dimensione è il numero delle variabili: una sbarra ne ha una, una piastra
 due, una stanza tre, e il prezzo di un'opzione su cento titoli di borsa ne ha
 cento. La media si stima con $N$ cammini indipendenti, e l'errore della stima
-scende come $\sigma/\sqrt{N}$, come per ogni media di campioni indipendenti
-(è la {doc}`legge dei grandi numeri </Matematica/probabilita-statistica>`),
-cioè come uno diviso la radice del numero di cammini: cento volte più cammini,
-un errore dieci volte più piccolo.
+scende come $\sigma/\sqrt{N}$, come per ogni media di campioni indipendenti (la
+media di $N$ campioni ha varianza $\sigma^2/N$: la {doc}`legge dei grandi
+numeri </Matematica/probabilita-statistica>` garantisce che converge, questo
+dice quanto in fretta), cioè come uno diviso la radice del numero di cammini:
+cento volte più cammini, un errore dieci volte più piccolo.
 
 Il numeratore $\sigma$ è la deviazione
 standard di $\varphi$ nei punti di arrivo, cioè quanto sono sparse le
@@ -301,7 +302,7 @@ dimensione    esatta     stima  errore  nodi di una griglia a 10 per lato
 ```
 
 [In mille dimensioni diecimila cammini sbagliano di un millesimo]{.pt-matita},
-mentre la griglia più grossolana che si possa immaginare avrebbe un uno seguito
+mentre una griglia grossolana, con dieci puntini per lato, avrebbe un uno seguito
 da mille zeri di nodi. In questo esempio l'errore relativo (l'errore diviso per
 il valore esatto) addirittura scende con la dimensione, perché la dispersione
 di $\varphi$ cresce come la radice di $d$ mentre il valore esatto cresce come
@@ -490,18 +491,19 @@ residuo, e una rete che lo controlla in punti sempre nuovi.
 - L'equazione del calore ha una seconda lettura: la temperatura in un punto
   dopo un certo tempo è la media della temperatura iniziale nei punti in cui
   arrivano camminatori casuali partiti da lì.
-- La media si stima con tanti camminatori, come un sondaggio, e l'errore
-  scende come uno diviso la radice di quanti sono, in qualunque dimensione:
-  in mille dimensioni diecimila camminatori sbagliano di un millesimo, dove
-  una griglia avrebbe un uno seguito da mille zeri di nodi. Il sondaggio dà
-  però la temperatura in un punto solo, e se i passi non sono tutti uguali va
-  fatto a passi piccoli.
+- La media si stima con tanti camminatori, come un sondaggio, e l'errore scende
+  come uno diviso la radice di quanti sono, in qualunque dimensione: in mille
+  dimensioni diecimila camminatori sbagliano di un millesimo, dove una griglia
+  da dieci puntini per lato avrebbe un uno seguito da mille zeri di nodi. Il
+  sondaggio dà però la temperatura in un punto solo, e se i passi non sono
+  tutti uguali va fatto a passi piccoli.
 - Una rete impara la temperatura in tutta una regione ascoltando un
   camminatore solo per punto: punita col quadrato, la risposta che le conviene
   è la media.
-- Il metodo vale per le equazioni che diffondono; per le altre si controlla
-  quanto la rete viola l'equazione, e controllarlo in punti sempre nuovi aiuta
-  quando le dimensioni sono tante.
+- Il metodo vale per le equazioni che diffondono, purché il calore prodotto, se
+  dipende dalla temperatura, ne sia una proporzione fissa; per le altre si
+  controlla quanto la rete viola l'equazione, e controllarlo in punti sempre
+  nuovi aiuta quando le dimensioni sono tante.
 ```
 
 `````

@@ -252,9 +252,11 @@ guarda soltanto se il totale sta sopra o sotto lo zero, e un fattore dieci non
 sposta quel confine. Tutte le mattine il vicino esce di casa come te.
 
 Vale però solo finché l'aritmetica è esatta: il computer arrotonda, e ogni
-tanto l'ultima cifra cambia strada (il codice della porta AND ne mostra un
-caso). Il passo diventerà una scelta che conta davvero quando la correzione
-smetterà di essere fissa, nella {doc}`sezione sulla backpropagation
+tanto un arrotondamento sull'ultima cifra basta a far andare le correzioni
+diversamente (il codice della porta AND, che risponde sì solo quando i due
+ingressi sono accesi tutti e due, ne mostra un caso). Il passo diventerà una
+scelta che conta davvero quando la correzione smetterà di essere fissa, nella
+{doc}`sezione sulla backpropagation
 </RetiNeurali/backpropagation>`.
 
 La prima sera, per esteso, con le manopole tutte a zero e il passo a $0{,}1$.
@@ -281,7 +283,8 @@ fermano, e la sua larghezza decide quando. Ad esempio, giornate chiaramente da
 ombrello o da pieno sole lasciano un corridoio comodo, e bastano poche
 correzioni; due giornate quasi identiche che vogliono risposte opposte lo
 assottigliano, e ogni volta che il corridoio si dimezza le correzioni che
-possono servire diventano quattro volte tante.
+possono servire diventano quattro volte tante, perché il loro numero massimo
+cresce col quadrato di quanto il corridoio si stringe.
 
 Largo in proporzione al disegno, però, non in centimetri. Fotocopia il foglio al
 doppio: il corridoio raddoppia, ma raddoppiano anche le distanze dei puntini, e
@@ -351,12 +354,12 @@ Novikoff {cite}`novikoff1962convergence`: il numero di correzioni, partendo da
 $\mathbf{w}=\mathbf{0}$, è al più $(R/\gamma)^2$.
 
 Qui $R = \max_i
-\lVert\mathbf{x}_i\rVert$ è la norma massima degli esempi e $\gamma$ è il
+\lVert\mathbf{x}^{(i)}\rVert$ è la norma massima degli esempi e $\gamma$ è il
 margine geometrico del miglior separatore. Questo margine è la distanza
 dall'iperpiano al punto più vicino, cioè metà del corridoio vuoto fra le due
 classi, misurata nello stesso spazio in cui si lavora dopo aver assorbito
 il bias ($\gamma = \min_i
-|\mathbf{w}^{*\top}\mathbf{x}_i|$ con $\lVert\mathbf{w}^*\rVert = 1$: senza
+|\mathbf{w}^{*\top}\mathbf{x}^{(i)}|$ con $\lVert\mathbf{w}^*\rVert = 1$: senza
 quel vincolo il rapporto non sarebbe nemmeno un numero puro, perché basterebbe
 raddoppiare $\mathbf{w}^*$ per raddoppiare $\gamma$). Il limite vale per la
 versione senza bias, o con il bias assorbito come ingresso costante: è il
@@ -364,17 +367,17 @@ trucco della {numref}`fig-neurone-con-retroazione`, l'ingresso sempre pari a
 $1$, e qui serve (assorbito il bias, quella coordinata in più entra anche
 in $R$).
 
-La dimostrazione sta in due disuguaglianze. Si scrivono le
-etichette come $t_i = 2y_i - 1 \in \{-1,+1\}$: la $k$-esima correzione aggiunge
-$\eta\,t_i\mathbf{x}_i$ su un esempio con
-$t_i\,\mathbf{w}_{k-1}^\top\mathbf{x}_i \le 0$. Ogni correzione fa salire la
-proiezione su $\mathbf{w}^*$ di almeno $\eta\gamma$, perché
-$t_i\,\mathbf{w}^{*\top}\mathbf{x}_i \ge \gamma$, quindi
+La dimostrazione sta in due disuguaglianze. Si scrivono le etichette come
+$t^{(i)} = 2y^{(i)} - 1 \in \{-1,+1\}$: la $k$-esima correzione aggiunge
+$\eta\,t^{(i)}\mathbf{x}^{(i)}$ su un esempio con
+$t^{(i)}\,\mathbf{w}_{k-1}^\top\mathbf{x}^{(i)} \le 0$. Ogni correzione fa
+salire la proiezione su $\mathbf{w}^*$ di almeno $\eta\gamma$, perché
+$t^{(i)}\,\mathbf{w}^{*\top}\mathbf{x}^{(i)} \ge \gamma$, quindi
 $\mathbf{w}_k^\top\mathbf{w}^* \ge k\eta\gamma$. Inoltre, fa crescere il
 quadrato della norma di al più $\eta^2R^2$, perché il termine incrociato
-$2\eta\,t_i\,\mathbf{w}_{k-1}^\top\mathbf{x}_i$ non è positivo, e quindi
-$\lVert\mathbf{w}_k\rVert^2 \le k\eta^2R^2$. Per Cauchy-Schwarz $k\eta\gamma
-\le \mathbf{w}_k^\top\mathbf{w}^* \le \lVert\mathbf{w}_k\rVert \le
+$2\eta\,t^{(i)}\,\mathbf{w}_{k-1}^\top\mathbf{x}^{(i)}$ non è positivo, e
+quindi $\lVert\mathbf{w}_k\rVert^2 \le k\eta^2R^2$. Per Cauchy-Schwarz
+$k\eta\gamma \le \mathbf{w}_k^\top\mathbf{w}^* \le \lVert\mathbf{w}_k\rVert \le
 \sqrt{k}\,\eta R$, da cui $k \le (R/\gamma)^2$: $\eta$ si semplifica, un'altra
 conferma che qui è cosmetico.
 
@@ -392,20 +395,21 @@ senza alcuna garanzia di margine, che le
 Il seme dell'apprendimento moderno è già qui: la regola è la discesa del
 gradiente stocastica, un esempio alla volta, sul *criterio del percettrone*
 $\mathcal{L}(\mathbf{w}) = \sum_i
-\max\big(0,\,-t_i\,\mathbf{w}^\top\mathbf{x}_i\big)$, con $t_i = 2y_i - 1$ e il
-bias assorbito. Sugli esempi classificati bene il termine è nullo e non spinge;
-su quelli sbagliati il suo gradiente è $-t_i\mathbf{x}_i$, e un passo lungo
-$\eta$ è la correzione di Rosenblatt.
+\max\big(0,\,-t^{(i)}\,\mathbf{w}^\top\mathbf{x}^{(i)}\big)$, con $t^{(i)} =
+2y^{(i)} - 1$ e il bias assorbito. Sugli esempi classificati bene il termine è
+nullo e non spinge; su quelli sbagliati il suo gradiente è
+$-t^{(i)}\mathbf{x}^{(i)}$, e un passo lungo $\eta$ è la correzione di
+Rosenblatt.
 
-Sull'angolo, dove $\mathbf{w}^\top\mathbf{x}_i = 0$, la regola sceglie un
-sottogradiente, quello che vuole la convenzione $g(0) = 1$: $-t_i\mathbf{x}_i$
-se l'etichetta è $-1$, zero se è $+1$. Questo fa partire la corsa da
-$\mathbf{w} = \mathbf{0}$, dove il criterio vale già zero, il suo minimo. Si
-noti che la loss ha una soluzione banale, e il separatore viene dalla dinamica,
-non dal minimo. Il margine della hinge, $\max\big(0,\,1 -
-t_i\,\mathbf{w}^\top\mathbf{x}_i\big)$, toglie quella soluzione. È una loss
-lineare a tratti, con un angolo dove il gradino salta: la discesa del gradiente
-su loss derivabili ovunque arriva con la backpropagation.
+Sull'angolo, dove $\mathbf{w}^\top\mathbf{x}^{(i)} = 0$, la regola sceglie un
+sottogradiente, quello che vuole la convenzione $g(0) = 1$:
+$-t^{(i)}\mathbf{x}^{(i)}$ se l'etichetta è $-1$, zero se è $+1$. Questo fa
+partire la corsa da $\mathbf{w} = \mathbf{0}$, dove il criterio vale già zero,
+il suo minimo. Si noti che la loss ha una soluzione banale, e il separatore
+viene dalla dinamica, non dal minimo. Il margine della hinge, $\max\big(0,\,1 -
+t^{(i)}\,\mathbf{w}^\top\mathbf{x}^{(i)}\big)$, toglie quella soluzione. È una
+loss lineare a tratti, con un angolo dove il gradino salta: la discesa del
+gradiente su loss derivabili ovunque arriva con la backpropagation.
 
 `````
 
@@ -473,9 +477,6 @@ una retta che separa non esiste.
 
 ## Il muro dello XOR
 
-Del muro dello XOR si racconta di solito una versione comoda e
-sbagliata.
-
 *Perceptrons*, il libro di Minsky e Papert del 1969
 {cite}`minsky1969perceptrons`, è ricordato per lo XOR ("o esclusivo", che vale
 $1$ quando i due ingressi sono diversi e $0$ quando sono uguali), e cioè per
@@ -507,14 +508,18 @@ angoli opposti del quadrato.
 Sul foglio a quadretti i quattro casi dello XOR sono gli angoli di un quadrato
 di lato $1$, e i due che vogliono uscita $1$, $(0,1)$ e $(1,0)$, stanno in
 angoli opposti. Che nessuna riga li separi si verifica in poche righe di
-calcolo. Basta osservare che il totale del caso $(1,1)$ è quello di $(1,0)$,
-più quello di $(0,1)$, meno quello di $(0,0)$: sommando i primi due ci sono
-tutti e due i pesi, come in $(1,1)$, ma il bias due volte; togliere il totale
-di $(0,0)$, che è il solo bias, lo riporta a una volta sola. I primi due devono
-stare sopra lo zero, il terzo sotto, e togliere un numero negativo è
-aggiungere: il totale di $(1,1)$ finisce sopra lo zero per forza, e il neurone
-dice $1$ dove doveva dire $0$. Un singolo percettrone, sullo XOR, è condannato
-a sbagliare almeno un caso.
+calcolo, guardando di che cosa è fatto il totale di ciascun caso. Il totale del
+caso $(1,1)$ contiene i due pesi più il bias. Quelli di $(1,0)$ e di $(0,1)$, i
+due casi misti con un ingresso acceso e uno spento, contengono un peso
+ciascuno, più il bias: sommati, hanno tutti e due i pesi, come il caso $(1,1)$,
+ma il bias due volte. Il totale di $(0,0)$ è il bias da solo, e togliendolo
+dalla somma il bias torna una volta sola. Ne segue che il totale di $(1,1)$ è la
+somma dei totali dei due casi misti meno quello di $(0,0)$, i due ingressi
+spenti. I due casi misti vogliono uscita uno, e i loro totali devono stare
+sopra lo zero; quello dei due spenti vuole uscita zero, e il suo sta sotto.
+Togliere un numero negativo è aggiungere: il totale dei due ingressi accesi
+finisce sopra lo zero per forza, e il neurone dice $1$ dove doveva dire $0$. Un
+singolo percettrone, sullo XOR, è condannato a sbagliare almeno un caso.
 
 Adesso lascia provare alla macchina, con la regola delle correzioni, e a ogni
 caso sbagliato la riga si sposta un po’. Dopo due o tre giri completi [le quattro
@@ -590,13 +595,14 @@ qualunque, in un angolo qualunque, ribalta la risposta.
 
 Verrebbe da obiettare: e se ogni ispettore dicesse «nella mia zona gli accesi
 sono pari», lasciando al capo il compito di mettere insieme? Non funziona,
-perché il capo non ragiona: sa soltanto sommare le risposte con dei
-pesi e confrontare il totale con una soglia. Combinare «pari» e «pari» e
-«dispari» per sapere com'è il totale è di nuovo lo stesso problema di partenza,
-e una somma pesata non lo risolve. Non resta che guardare l'immagine intera in
-un colpo solo, e l'ordine è grande quanto l'immagine. Un altro compito
-difficile è dire se una figura disegnata è tutta d'un pezzo o spezzata in due:
-più la figura è grande, più punti bisogna guardare insieme.
+perché il capo non ragiona: sa soltanto sommare le risposte con dei pesi e
+confrontare il totale con una soglia. Per sapere com'è il totale, il capo
+dovrebbe contare quante zone hanno risposto «dispari» e dire se sono in numero
+pari o dispari: è di nuovo un problema di parità, lo stesso di partenza, e una
+somma pesata non lo risolve. Non resta che guardare l'immagine intera in un
+colpo solo, e l'ordine è grande quanto l'immagine. Un altro compito difficile è
+dire se una figura disegnata è tutta d'un pezzo o spezzata in due: più la
+figura è grande, più punti bisogna guardare insieme.
 
 Lo XOR è il caso più piccolo della parità, quello con due punti soli. Provaci:
 nessuno acceso fa zero, che è pari, e la risposta è no; uno acceso solo fa uno,
@@ -664,9 +670,9 @@ I teoremi erano corretti e limitati, e riguardavano macchine a uno strato; la
 loro lettura pubblica fu che le reti neurali non funzionavano, e servì quasi un
 ventennio per rimediare. Il libro contribuì a spostare risorse verso l'altro
 modo di fare intelligenza artificiale, quello dei programmi a regole scritte a
-mano (l’**AI simbolica**); ma gli stessi autori indicarono la ragione tecnica
-per cui le reti restarono ferme, e il libro non prova a nasconderla: nessuno
-sapeva come correggere i neuroni in mezzo.
+mano (l’**AI simbolica**); ma gli stessi autori, già nel 1969, ammettevano il
+punto debole: per una rete a più strati nessuno aveva un metodo garantito per
+correggere i neuroni in mezzo.
 
 ## Oltre la linea: strati nascosti e non linearità
 

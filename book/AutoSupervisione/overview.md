@@ -418,12 +418,13 @@ riportata col nome di chi l'ha sostenuta.
 
 ```{admonition} Da ricordare
 :class: important
-- L'apprendimento auto-supervisionato costruisce un pretesto il cui
-  bersaglio è ricavabile dal dato con un'operazione meccanica, e ne conserva
-  l’encoder $f_\theta$, non il compito; nel modello di linguaggio
-  autoregressivo il pretesto coincide con l'uso, e si conserva anche la testa
-  di previsione. Nel linguaggio e nei metodi a maschera la perdita è la
-  cross-entropia del supervisionato e cambia solo chi produce il bersaglio; nei
+- L'apprendimento auto-supervisionato costruisce un pretesto il cui bersaglio è
+  ricavabile dal dato con un'operazione meccanica, e ne conserva l’encoder
+  $f_\theta$, non il compito; nel modello di linguaggio autoregressivo il
+  pretesto coincide con l'uso, e si conserva anche la testa di previsione. Nel
+  linguaggio (parola coperta o successiva) la perdita è la cross-entropia del
+  supervisionato e cambia solo chi produce il bersaglio; nei metodi a maschera
+  sulle immagini può essere anche un errore quadratico sui pixel (MAE); nei
   metodi a due viste cambiano anche perdita e architettura.
 - Il criterio discriminante è l’informazione del bersaglio, e soprattutto il
   suo denominatore: $\log_2 K \approx 10$ bit per immagine per

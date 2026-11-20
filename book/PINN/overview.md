@@ -162,8 +162,8 @@ misure e alle condizioni di partenza, che dicono dove la curva deve passare, e
 che rispetti l'equazione, che dice come deve comportarsi *dappertutto*.
 Sostituita nell'equazione, la candidata lascia uno scarto fra i due lati (la
 variazione che la regola prescrive e quella che la curva ha), il **residuo**, e
-per calcolarlo servono soltanto le derivate della rete, cioè le sue pendenze
-rispetto alle coordinate.
+per calcolarlo servono soltanto la rete e le sue derivate, cioè il suo valore e
+le sue pendenze rispetto alle coordinate.
 
 È il perno di tutto. Per correggere una risposta, di solito, serve avere
 sott'occhio quella giusta, e qui la risposta giusta non ce l'ha nessuno: è
@@ -172,14 +172,15 @@ perché sa dire se una risposta è *sbagliata* anche quando nessuno sa dire qual
 sia quella buona. Per questo [l'equazione può prendere il posto dei dati come
 supervisione]{.pt-matita}.
 
-A rilanciare questo approccio, nel 2019, sono Maziar Raissi, Paris Perdikaris e
-George Karniadakis {cite}`raissi2019physics`, e il nome che le danno è la sigla
-diventata celebre: **Physics-Informed Neural Networks**, PINN, cioè reti
-neurali informate dalla fisica. L'idea però è più vecchia di loro: una rete che
-si corregge sul residuo di un'equazione compare già nel 1994
-{cite}`dissanayake1994neural`, e resta di nicchia per un quarto di secolo
-perché le derivate della rete andavano scritte a mano, caso per caso. Diventa
-praticabile quando le librerie imparano a calcolarle da sole.
+A rilanciare questo approccio, con due preprint del 2017 e l'articolo del 2019,
+sono Maziar Raissi, Paris Perdikaris e George Karniadakis
+{cite}`raissi2019physics`, e il nome che le danno è la sigla diventata celebre:
+**Physics-Informed Neural Networks**, PINN, cioè reti neurali informate dalla
+fisica. L'idea però è più vecchia di loro: una rete che si corregge sul residuo
+di un'equazione compare già nel 1994 {cite}`dissanayake1994neural`, e resta di
+nicchia per un quarto di secolo perché le derivate della rete andavano scritte
+a mano, caso per caso. Diventa praticabile quando le librerie imparano a
+calcolarle da sole.
 
 `````{tab} Elementare
 
@@ -280,11 +281,12 @@ caratteristiche di ordine uno.
 
 Tre proprietà rendono interessante il metodo. La prima viene dall'assenza di
 una griglia; la seconda e la terza dal fatto che misure e legge stanno nella
-stessa loss. Inoltre, alla fine dell'addestramento resta una funzione definita
-in ogni punto del dominio, a cui si può chiedere il valore anche dove nessun
-punto di collocazione è caduto, e con il valore le derivate. Il valore fra due
-nodi, a dire il vero, lo sa dare anche un solutore classico, ricostruendolo per
-interpolazione; le derivate esatte in ogni punto sono il contributo della rete.
+stessa loss. C'è poi un quarto vantaggio: alla fine dell'addestramento resta
+una funzione definita in ogni punto del dominio, a cui si può chiedere il
+valore anche dove nessun punto di collocazione è caduto, e con il valore le
+derivate. Il valore fra due nodi, a dire il vero, lo sa dare anche un solutore
+classico, ricostruendolo per interpolazione; le derivate esatte in ogni punto
+sono il contributo della rete.
 
 La prima proprietà è che non c'è nessuna griglia da costruire. I punti di
 collocazione si estraggono a caso anche dentro una forma complicata, il
@@ -361,16 +363,17 @@ e nessun metodo, classico o neurale, può stimarlo.
 Attenzione però a non attribuirsi un vantaggio che non c'è: nemmeno i metodi
 classici procedono per tentativi. Da quarant'anni gli inversi vincolati da una
 PDE hanno il loro strumento maturo, il **metodo dello stato aggiunto**, che il
-gradiente rispetto a tutti i parametri incogniti lo ottiene con una o due
-risoluzioni del problema diretto {cite}`plessix2006adjoint`; va però scritto
-su misura per ogni equazione, solutore diretto e aggiunto compresi, mentre la
-PINN monta sempre lo stesso problema non vincolato in $(\theta, \alpha)$. La
-{doc}`sezione su dove la fisica aiuta e dove no </PINN/applicazioni-limiti>`
-ci torna sopra, e ci aggiunge un concorrente ancora più economico. È comunque
-questa naturalezza sui problemi inversi ad aver fatto la fortuna delle PINN
-{cite}`raissi2019physics`. Il filone che ne è nato (reti vincolate dalla
-fisica, operatori neurali, scoperta di equazioni dai dati) va oggi sotto il
-nome di **scientific machine learning** {cite}`karniadakis2021physics`.
+gradiente rispetto a tutti i parametri incogniti lo ottiene con una risoluzione
+del problema diretto e una del problema aggiunto {cite}`plessix2006adjoint`; va
+però scritto su misura per ogni equazione, solutore diretto e aggiunto
+compresi, mentre la PINN monta sempre lo stesso problema non vincolato in
+$(\theta, \alpha)$. La {doc}`sezione su dove la fisica aiuta e dove
+no </PINN/applicazioni-limiti>` ci torna sopra, e ci aggiunge un concorrente
+ancora più economico. È comunque questa naturalezza sui problemi inversi ad
+aver fatto la fortuna delle PINN {cite}`raissi2019physics`. Il filone che ne è
+nato (reti vincolate dalla fisica, operatori neurali, scoperta di equazioni dai
+dati) va oggi sotto il nome di **scientific machine learning**
+{cite}`karniadakis2021physics`.
 
 `````
 
@@ -422,11 +425,11 @@ Su un problema standard (equazione nota, geometria regolare, nessun dato da
 integrare) differenze finite ed elementi finiti restano più veloci, più
 accurati e con garanzie di convergenza che un'ottimizzazione non convessa non
 può offrire: per un metodo classico si dimostra un ordine di convergenza,
-l'errore scende come $O(h^p)$ al raffinarsi del passo $h$. Il teorema ha le
-sue ipotesi, e senza di quelle la garanzia non vale: lo schema dev'essere
-consistente e stabile (il teorema di equivalenza di Lax), e la soluzione
-esatta abbastanza regolare, perché su un urto l'ordine effettivo crolla a uno
-o meno, qualunque sia $p$.
+l'errore scende come $O(h^p)$ al raffinarsi del passo $h$. Il teorema ha le sue
+ipotesi, e senza di quelle la garanzia non vale: lo schema dev'essere
+consistente e stabile (il teorema di equivalenza di Lax, per problemi lineari
+ben posti), e la soluzione esatta abbastanza regolare, perché su un urto
+l'ordine effettivo crolla a uno o meno, qualunque sia $p$.
 
 La stabilità ha spesso una forma esplicita: lo schema
 esplicito alle differenze centrate per il calore,

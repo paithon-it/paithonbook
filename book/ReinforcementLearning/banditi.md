@@ -152,10 +152,10 @@ $$
 
 una **media pesata esponenzialmente sul recente**, in cui i pesi decadono
 geometricamente all'indietro. In un problema stazionario la stima tende in
-media a $q_*(a)$, ma la sua varianza non si annulla (continua a inseguire
-l'ultimo tiro), quindi non converge. La media pesata serve quando il problema è
-non stazionario, cioè quando $q_*(a)$ cambia nel tempo, e allora seguire il
-recente è l'obiettivo.
+media a $q_*(a)$, ma se le ricompense sono rumorose la sua varianza non si
+annulla (continua a inseguire l'ultimo tiro), quindi non converge. La media
+pesata serve quando il problema è non stazionario, cioè quando $q_*(a)$ cambia
+nel tempo, e allora seguire il recente è l'obiettivo.
 
 Il criterio che distingue i due casi è lo stesso richiesto dalla garanzia di
 convergenza del {doc}`Q-learning <q-learning>`. Una successione di passi
@@ -172,8 +172,10 @@ la prima chiede che i passi restino abbastanza grandi da lasciarsi alle spalle
 qualunque punto di partenza, la seconda che si accorcino abbastanza in fretta
 da smettere di rincorrere il rumore. Il passo $1/n$ le soddisfa entrambe ($\sum
 1/n$ diverge, $\sum 1/n^2$ converge); [un passo costante $\alpha$ soddisfa la
-prima e viola la seconda, quindi non converge]{.pt-matita}. È la proprietà che
-lo rende adatto ai problemi non stazionari.
+prima e viola la seconda, e con ricompense rumorose la stima non
+converge]{.pt-matita}: è la proprietà che lo rende adatto ai problemi non
+stazionari. Le condizioni bastano, ma non servono: con ricompense
+deterministiche converge anche il passo costante.
 
 `````
 
@@ -309,7 +311,9 @@ abbastanza, la spinta a esplorare sparisce. Se le leve rendono sempre allo
 stesso modo (si dice che il problema è **stazionario**) basta; se invece
 cambiano carattere nel tempo, e servirebbe tornare a esplorare perché le stime
 accumulate non valgono più, non serve a niente. Come scrivono Sutton e Barto,
-l'inizio del tempo capita una volta sola, e non conviene puntarci troppo.
+l'inizio del tempo capita una volta sola, e non conviene puntarci troppo:
+l'ottimismo spinge a esplorare solo all'inizio, e se le leve cambiano dopo non
+torna a farlo.
 
 ### UCB: esplorare in proporzione a quanto poco si sa
 
@@ -391,9 +395,10 @@ $$
 
 dove $N_t(a)$ è il numero di volte che $a$ è stata scelta prima di $t$ e $c >
 0$ regola quanto pesa l'incertezza (le azioni mai provate si trattano come
-massimamente urgenti). Il termine sotto radice è, a meno di costanti, la
-larghezza di un intervallo di confidenza sulla media di $a$: il numeratore $\ln
-t$ cresce con il tempo, il denominatore $N_t(a)$ con l'uso.
+massimamente urgenti). Il termine $c\sqrt{\ln t / N_t(a)}$ è, a meno di
+costanti, la semiampiezza di un intervallo di confidenza sulla media di $a$:
+sotto radice il numeratore $\ln t$ cresce con il tempo, il denominatore
+$N_t(a)$ con l'uso.
 
 La forma $\sqrt{\ln t / N_t(a)}$ non è arbitraria: esce dalla
 {doc}`disuguaglianza di Hoeffding </Matematica/concentrazione>` applicata alla
@@ -412,17 +417,17 @@ tiri
 
 $$
 \mathcal{R}_T = T \max_a q_*(a) - \mathbb{E}\!\left[\sum_{t=1}^{T} R_t\right]
-= \sum_{a} \Delta_a\, \mathbb{E}[N_T(a)],
+= \sum_{a} \Delta_a\, \mathbb{E}[N_{T+1}(a)],
 \qquad \Delta_a = \max_b q_*(b) - q_*(a),
 $$
 
 dove $\mathcal{R}_T$, in calligrafico, è il rimpianto accumulato, $R_t$ resta
 la ricompensa del singolo tiro, $\Delta_a$ è lo scarto della leva $a$ dalla
-migliore e $N_T(a)$ quante volte è stata tirata. Un algoritmo si dice
-**consistente** se $\mathcal{R}_T = o(T^p)$ per ogni $p > 0$ su tutte le
-istanze; la condizione esclude scorciatoie come tirare sempre la stessa leva,
-che trionfa quando quella leva è la migliore e affonda in tutti gli altri casi.
-Lai e Robbins {cite}`lai1985asymptotically` dimostrano che ogni algoritmo
+migliore e $N_{T+1}(a)$ quante volte è stata tirata nei $T$ tiri. Un algoritmo
+si dice **consistente** se $\mathcal{R}_T = o(T^p)$ per ogni $p > 0$ su tutte
+le istanze; la condizione esclude scorciatoie come tirare sempre la stessa
+leva, che trionfa quando quella leva è la migliore e affonda in tutti gli altri
+casi. Lai e Robbins {cite}`lai1985asymptotically` dimostrano che ogni algoritmo
 consistente soddisfa
 
 $$
@@ -550,11 +555,10 @@ preso rispetto al solito]{.pt-matita}, e quel mille sparisce dal conto.
 
 Sul banco di prova di prima la differenza è netta. Il metodo delle preferenze
 azzecca la leva migliore l’84,1% delle volte. Aggiungiamo adesso quattro punti
-a tutte le ricompense: serve solo un numero abbastanza
-grande da coprire le differenze fra le leve, che su questo banco sono
-dell'ordine dell'uno. Il problema non cambia in nulla, perché fra le leve i
-distacchi restano quelli. Con il riferimento si resta all’83,8%; senza, si
-crolla al 48,5%.
+a tutte le ricompense: va bene qualunque numero abbastanza grande da coprire le
+differenze fra le leve, che su questo banco sono dell'ordine dell'uno. Il
+problema non cambia in nulla, perché fra le leve i distacchi restano quelli.
+Con il riferimento si resta all’83,8%; senza, si crolla al 48,5%.
 
 `````
 
@@ -832,7 +836,7 @@ accumulano]{.pt-matita}.
 viene tirata, con la stessa probabilità con cui, secondo ciò che credi in quel
 momento, è lei la migliore. Vale finché di ogni leva credi qualcosa che non
 dipende dalle altre: dove i tiri di una leva dicono qualcosa anche sulle altre,
-l'uguaglianza si perde. La cura che sta perdendo non viene
+l'uguaglianza si perde. La leva che sta perdendo non viene
 mai sospesa del tutto, e la sua quota cala nella misura esatta in cui le prove
 la smentiscono.
 
@@ -1161,10 +1165,10 @@ dal contesto {cite}`li2010contextual`.
   un MDP con un solo stato.
 - Le stime si aggiornano con *stima $\leftarrow$ stima $+$ passo $\cdot$
   errore*: con passo $1/n$ si ottiene la media, con passo costante una media
-  pesata sul recente, che è ciò che serve se il problema non è stazionario.
-  Le condizioni di Robbins-Monro ($\sum \alpha_n = \infty$,
-  $\sum \alpha_n^2 < \infty$) separano i due casi, e torneranno per la
-  convergenza del Q-learning.
+  pesata sul recente, che è ciò che serve se il problema non è stazionario. Le
+  condizioni di Robbins-Monro ($\sum \alpha_n = \infty$, $\sum \alpha_n^2 <
+  \infty$) garantiscono la convergenza (bastano, ma non servono), e torneranno
+  per quella del Q-learning.
 - L'agente avido si chiude in una convinzione mai verificata (36,7% di
   scelte ottime sul banco di prova standard); $\varepsilon$-greedy lo attenua
   con una riga di codice (80,2%), ma esplora a caso, ha rimpianto lineare, e il

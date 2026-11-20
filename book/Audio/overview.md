@@ -98,9 +98,9 @@ voce.
 
 `````{tab} Superiore
 
-Lo Speech Recognition è, formalmente, un problema di trascrizione di
-sequenze: da $\mathbf{X} = (\mathbf{x}_1, \dots, \mathbf{x}_T)$ acustica a una sequenza di parole
-$\hat{W}$. I compiti dell'audio generale hanno firme diverse:
+Lo Speech Recognition è, formalmente, un problema di trasduzione di sequenze:
+da $\mathbf{X} = (\mathbf{x}_1, \dots, \mathbf{x}_T)$ acustica a una sequenza
+di parole $\hat{W}$. I compiti dell'audio generale hanno firme diverse:
 
 - classificazione, dato un segmento, un'unica etichetta su $C$ classi
   ($\hat{y} = \arg\max_c P(c \mid \mathbf{X})$: «violino» vs «pianoforte»);

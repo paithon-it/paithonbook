@@ -549,8 +549,9 @@ comprensione. Su quella domanda si apre il {doc}`capitolo sui world model
   andata bene si tende a ripetere tutto, compresi gli sbagli.
 - Karpathy lo dice così: si sta aspirando la supervisione attraverso una
   cannuccia, e quel poco lo si spalma su tutto quello che si è fatto. Nella
-  stessa risposta però dice anche che il rinforzo è oggi il meglio che si abbia,
-  e che fa scoprire soluzioni che una persona potrebbe non trovare mai.
+  stessa risposta però dice anche che il rinforzo, per quanto terribile, è
+  meglio di quello che c'era prima, e che fa scoprire soluzioni che una persona
+  potrebbe non trovare mai.
 - Una tesi da non confondere con la sua: che il rinforzo restringa invece di
   allargare le capacità del modello non l'ha detta Karpathy, l'hanno misurata
   Yue e colleghi, chiedendo al modello tante risposte alla stessa domanda invece

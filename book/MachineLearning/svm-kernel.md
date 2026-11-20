@@ -104,7 +104,7 @@ Il kernel RBF corrisponde a uno spazio $\phi$ di dimensione *infinita*, che
 sarebbe impossibile da costruire; eppure $k$ si calcola in una riga.
 
 Un'ultima clausola fa del trucco un teorema invece che una speranza.
-L'assunzione «se esiste una funzione $k$ che calcola quel prodotto scalare»
+L'ipotesi «se esiste una funzione $k$ che calcola quel prodotto scalare»
 rovescia l'ordine dei fatti. In pratica non si parte da $\phi$ per
 cercare $k$, ma si sceglie $k$ e si spera che un $\phi$ esista. Esiste se e
 solo se $k$ è simmetrica e **semidefinita positiva**, cioè se ogni **matrice di
@@ -234,9 +234,9 @@ La funzione di decisione è una somma di campane centrate sui vettori di
 supporto, $f(\mathbf{u}) = \sum_i \alpha_i y_i\, e^{-\gamma\lVert\mathbf{x}_i -
 \mathbf{u}\rVert^2} + b$, e i due estremi si leggono nella matrice di Gram. Per
 $\gamma \to \infty$ si ha $\mathbf{K} \to \mathbf{I}$, cioè ogni punto somiglia
-solo a sé stesso. Di conseguenza diventano tutti vettori di supporto,
-l'addestramento è perfetto e lontano dai dati $f$ vale $b$; è la memoria pura,
-con varianza massima.
+solo a sé stesso. Di conseguenza diventano tutti vettori di supporto e, se $C$
+non è troppo piccolo, l'addestramento è perfetto, mentre lontano dai dati $f$
+vale $b$; è la memoria pura, con varianza massima.
 
 Per $\gamma \to 0$, invece, $\mathbf{K} \to \mathbf{1}\mathbf{1}^\top$ e i
 punti diventano indistinguibili. Se però intanto $C$ cresce come
@@ -246,8 +246,9 @@ $(C,\gamma)$ abbastanza ampia contiene già il kernel lineare.
 
 Il gaussiano è il più usato perché è *universale*
 {cite}`steinwart2001influence`: le funzioni del suo spazio approssimano
-qualunque funzione continua su un compatto, e con abbastanza dati la SVM che lo
-usa è consistente.
+qualunque funzione continua su un compatto, e la SVM che lo usa è consistente
+se, al crescere di $m$, $C$ cresce alla velocità giusta (né fermo né troppo in
+fretta).
 
 `````
 
@@ -397,11 +398,13 @@ dall'origine. Ricondotto allo spazio originale, questo equivale a racchiudere i
 dati normali in una regione compatta; ciò che cade fuori è novità o anomalia.
 
 Il parametro $\nu \in (0,1]$, che pesa le violazioni con $1/(\nu m)$, ha un
-doppio significato preciso: è un limite *superiore* alla frazione di esempi di
-addestramento classificati come anomali (i *margin error*) e un limite
-*inferiore* alla frazione di vettori di supporto. A differenza della
-classificazione binaria, in addestramento manca la classe «anomalo», quindi si
-impara solo la forma del normale.
+doppio significato preciso: è un limite *superiore* alla frazione di *margin
+error* (gli esempi di addestramento strettamente oltre il bordo) e un limite
+*inferiore* alla frazione di vettori di supporto. `predict` può segnalarne
+qualcuno in più, perché i vettori di supporto sul bordo, dove la funzione di
+decisione vale zero a meno della tolleranza del solutore, possono uscire anche
+come anomali. A differenza della classificazione binaria, in addestramento
+manca la classe «anomalo», quindi si impara solo la forma del normale.
 
 Molto vicina è la **Support Vector Data Description** (SVDD) di Tax e Duin,
 che invece della separazione dall'origine cerca la *ipersfera* minima che

@@ -306,13 +306,14 @@ alla domanda «in che direzione ritoccare i pixel per migliorare un po’?».
 Quel modo può essere qualsiasi cosa. Ad esempio, la somiglianza a una
 fotografia di riferimento, la fedeltà a un disegno di contorni, il rispetto di
 una palette di colori, l'assenza di volti riconoscibili, il verdetto di un
-modello che valuta la qualità estetica; e fuori dalle immagini, l'energia di una
-molecola o l'aderenza a una legge fisica. Nessuna di queste richiede di toccare
-il modello generativo. Si paga però al momento di generare. Per sapere in che
-direzione ritoccare i pixel bisogna ripercorrere la rete all'indietro, e un
-passo guidato la attraversa due volte invece di una, all'andata e al ritorno.
-Siccome il modello non si sta addestrando, il ritorno costa quanto l'andata, e
-il passo costa quasi il doppio.
+modello che valuta la qualità estetica; e fuori dalle immagini, l'energia di
+una molecola o l'aderenza a una legge fisica. Nessuna di queste richiede di
+toccare il modello generativo. Si paga però al momento di generare. Per sapere
+in che direzione ritoccare i pixel bisogna ripercorrere la rete all'indietro, e
+un passo guidato la attraversa due volte invece di una, all'andata e al
+ritorno. Siccome il modello non si sta addestrando, al ritorno non si calcolano
+le correzioni dei pesi ma solo quella dei pixel, quindi il ritorno costa quanto
+l'andata, e il passo costa quasi il doppio.
 
 Un accorgimento fa la differenza fra funzionare e non funzionare. [La misura va
 applicata non all'immagine rumorosa che si ha in mano, ma alla stima
@@ -368,13 +369,15 @@ pulito come media a posteriori, $\hat{\mathbf{x}}_0 =
 \mathbb{E}[\mathbf{x}_0\mid\mathbf{x}_t]$, un'identità e non un'approssimazione
 (vale a rete ottima, cioè quando $\boldsymbol{\epsilon}_\theta$ coincide con
 $\mathbb{E}[\boldsymbol{\epsilon}\mid\mathbf{x}_t]$). Il secondo è lo scambio
-fra la funzione e la media, $\mathbb{E}[h(\mathbf{x}_0)\mid\mathbf{x}_t]\approx
-h(\mathbb{E}[\mathbf{x}_0\mid\mathbf{x}_t])$, che è un salto di Jensen
-{cite}`chung2023dps`: esatto solo per $h$ affine, di segno noto per $h$
-convessa o concava, e tanto più largo quanto più la posteriore è larga, cioè
-per $t$ grande. È la ragione formale per cui la guida si applica con peso
-crescente verso la fine, e per cui i metodi migliori stimano anche la
-covarianza della posteriore invece di usare la sola media.
+fra la media e la funzione,
+$\log\mathbb{E}[e^{h(\mathbf{x}_0)}\mid\mathbf{x}_t]\approx
+h(\mathbb{E}[\mathbf{x}_0\mid\mathbf{x}_t])$ (la verosimiglianza è $e^{h}$,
+perché $h$ prende il posto di $\log p(c\mid\mathbf{x}_0)$), che è un salto di
+Jensen {cite}`chung2023dps`: esatto quando $e^{h}$ è affine in $\mathbf{x}_0$ o
+la posteriore si concentra in un punto, e tanto più largo quanto più la
+posteriore è larga, cioè per $t$ grande. È la ragione formale per cui la guida
+si applica con peso crescente verso la fine, e per cui i metodi migliori
+stimano anche la covarianza della posteriore invece di usare la sola media.
 
 La famiglia copre i problemi inversi in modo uniforme. Con $h(\mathbf{x}) =
 -\lVert \mathbf{A}\mathbf{x}-\mathbf{y}\rVert^2$ e $\mathbf{A}$ l'operatore di
@@ -526,16 +529,16 @@ Il risultato netto è che [il danno si fa a metà strada]{.pt-matita}. Infatti,
 accesa soltanto nel primo quinto, dove il rumore è massimo, la guida sposta il
 centro di $0{,}161$; soltanto nell'ultimo, dove i dati sono vicini, di
 $0{,}046$; nella fascia fra $0{,}4$ e $0{,}6$ di $0{,}699$. Lo spostamento (la
-colonna «scarto») va di pari passo con la distanza fra i due punteggi (la
+colonna «scarto») segue, a grandi linee, la distanza fra i due punteggi (la
 colonna «divario»): $0{,}028$ nel primo quinto, $0{,}027$ nell'ultimo,
 $0{,}203$ in mezzo.
 
 La ragione è tutta lì: a rumore massimo l'immagine è ancora tutta grana, la
 classe non si vede, i due punteggi indicano quasi la stessa direzione, e
-moltiplicare per sette e mezzo una differenza che è quasi zero non sposta
-niente. Alla fine il soggetto è ormai deciso e di nuovo i due punteggi
-coincidono. In mezzo divergono, e la moltiplicazione per sette e mezzo produce
-uno spostamento grande.
+moltiplicare per sette e mezzo una differenza che è quasi zero sposta poco.
+Alla fine il soggetto è ormai deciso e di nuovo i due punteggi coincidono. In
+mezzo divergono, e la moltiplicazione per sette e mezzo produce uno spostamento
+grande.
 
 Si noti che le cinque righe non si sommano, e non devono: $0{,}161$ più
 $0{,}530$ e via dicendo fa più di $1{,}070$. Un campione spinto fuori strada in
@@ -562,9 +565,9 @@ sola per classe non lo può mostrare affatto.
   credibili e che contengono un gatto» è la direzione verso «immagini
   credibili» più la direzione verso «cose che sembrano gatti». Il primo pezzo
   il modello lo sa; il secondo è tutto quello che il condizionamento aggiunge.
-- Quella riga autorizza a sommare le due bussole così come sono. Alzare la
-  peso della guida oltre l'uno spinge oltre quanto il conto autorizza, e ha
-  un effetto misurabile: sul banco di prova la distribuzione si restringe alla
+- Quella riga autorizza a sommare le due bussole così come sono. Alzare il peso
+  della guida oltre l'uno spinge oltre quanto il conto autorizza, e ha un
+  effetto misurabile: sul banco di prova la distribuzione si restringe alla
   metà e il suo centro finisce nella coda, dove di esempi ce n'era uno su
   sessanta.
 - La guida non è però un difetto da togliere: senza, la richiesta viene seguita
@@ -611,13 +614,13 @@ sola per classe non lo può mostrare affatto.
   {cite}`kynkaanniemi2024guidance`: ad alto rumore, dove il banco vede due
   predizioni quasi uguali, in un modello vero restano lontane e la guida fa
   danno; a basso rumore non serve.
-- Guida senza addestramento: si sostituisce il secondo termine con
-  $\nabla h(\hat{\mathbf{x}}_0)$ per una $h$ qualsiasi derivabile. Copre
-  inpainting, super-risoluzione, deblurring e tomografia con lo stesso codice.
-  Poggia su due gradini: la formula di Tweedie, che è esatta, e lo scambio
-  $\mathbb{E}[h(\mathbf{x}_0)]\approx h(\mathbb{E}[\mathbf{x}_0])$, che è un
-  salto di Jensen, esatto solo per $h$ affine e tanto peggiore quanto più la
-  posteriore è larga.
+- Guida senza addestramento: si sostituisce il secondo termine con $\nabla
+  h(\hat{\mathbf{x}}_0)$ per una $h$ qualsiasi derivabile. Copre inpainting,
+  super-risoluzione, deblurring e tomografia con lo stesso codice. Poggia su
+  due gradini: la formula di Tweedie, che è esatta, e lo scambio
+  $\log\mathbb{E}[e^{h(\mathbf{x}_0)}]\approx h(\mathbb{E}[\mathbf{x}_0])$, che
+  è un salto di Jensen sulla verosimiglianza $e^{h}$, tanto peggiore quanto più
+  la posteriore è larga.
 - Allineamento: gradiente di policy sulla catena di denoising vista come
   MDP, oppure ottimizzazione diretta della preferenza su coppie. Il fallimento
   tipico è il *reward hacking*, che la regolarizzazione KL rallenta senza

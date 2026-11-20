@@ -43,9 +43,9 @@ elettrici. Chi gestisce questi centri misura il peso di quel contorno con il
 del centro e quella assorbita dai soli server. Un PUE di $1{,}1$, per esempio,
 vuol dire che il contorno consuma un decimo di quanto consumano i server.
 
-Su quel contorno, che è una fetta più larga del solo condizionamento, il calo
-dichiarato fu del 15%. Si noti che è il 15% del contorno, e non dell'energia
-totale: un numero meno spettacolare, ma più indicativo.
+Il raffreddamento è solo una parte di quel contorno, e sul contorno intero il
+calo dichiarato fu del 15%. Si noti che è il 15% del contorno, e non
+dell'energia totale: un numero meno spettacolare, ma più indicativo.
 
 Il secondo esempio viene dalla medicina. Una rete neurale addestrata su più di
 novantamila tracciati, raccolti da oltre cinquantamila pazienti, riconosce le
@@ -68,7 +68,7 @@ la forma tridimensionale delle proteine {cite}`jumper2021highly`. Una proteina
 è una catena di amminoacidi, e quella catena si ripiega su se stessa fino ad
 assumere una forma tridimensionale precisa, che ne decide la funzione. La
 sequenza si legge in laboratorio con relativa facilità; la forma in cui si
-ripiegherà, no, e capire come si passasse dall'una all'altra era un problema
+ripiegherà, no, e prevedere la forma partendo dalla sequenza era un problema
 aperto da mezzo secolo.
 
 Conoscere la forma permette agli scienziati di comprendere il ruolo di una
@@ -131,8 +131,8 @@ all'AI responsabile.
   esempi possono portare la risposta scritta accanto da una persona
   (l’etichetta), oppure averla già dentro di sé, come la parola che in una
   frase viene dopo.
-- Dentro il programma c'è un elenco di numeri, i parametri, e sono l'unica
-  cosa che l'addestramento cambia: il comportamento viene dietro.
+- Dentro il programma c'è, quasi sempre, un elenco di numeri, i parametri, e
+  sono l'unica cosa che l'addestramento cambia: il comportamento viene dietro.
 - I tre nomi da tenere distinti: machine learning è ricavare le regole dagli
   esempi; deep learning è farlo con reti a molti strati; reinforcement
   learning è imparare dalle conseguenze delle proprie azioni, con un
@@ -150,12 +150,12 @@ all'AI responsabile.
   un punteggio (la ricompensa), e la policy è la regola con cui l’agente
   sceglie, cioè quello che deve imparare. Si allena dentro una simulazione, e
   portare sul robot vero quello che ha imparato lì resta un problema aperto.
-- Non tutto si può calcolare: nessun programma sa dire, per ogni programma,
-  se si fermerà (Turing), e in ogni sistema di regole abbastanza ricco ci sono
-  verità che le regole non dimostrano (Gödel). I programmi che imparano
-  restano programmi: nessun metodo generale sa dire che cosa farà ciascuno
-  di loro, e un modello preso da solo si può controllare, ma a un costo che
-  cresce in fretta con la sua taglia.
+- Non tutto si può calcolare: nessun programma sa dire, per ogni programma, se
+  si fermerà (Turing), e in ogni sistema di regole abbastanza ricco ci sono
+  verità che le regole non dimostrano (Gödel). I programmi che imparano restano
+  programmi: nessun metodo generale sa dire che cosa farà ciascuno di loro, e
+  un modello preso da solo, su ingressi di lunghezza limitata, si può
+  controllare, ma a un costo che cresce in fretta con la sua taglia.
 - Non è stata una salita continua: fra il 1956 e oggi ci sono due inverni,
   e funziona adesso perché sono arrivati insieme tre ingredienti, i dati,
   la potenza di calcolo e gli algoritmi.
@@ -186,7 +186,7 @@ all'AI responsabile.
 - Il formalismo del reinforcement learning: un agente in uno stato $s_t$
   sceglie $a_t$ secondo una policy $\pi(a \mid s)$, riceve $r_{t+1}$, e
   massimizza il ritorno scontato $\mathbb{E}_{\pi}[\sum_t \gamma^t r_{t+1}]$,
-  finito perché le ricompense sono limitate e $0 \le \gamma < 1$.
+  finito se le ricompense sono limitate e $0 \le \gamma < 1$.
 - Euclide: $\mathrm{MCD}(a,b) = \mathrm{MCD}(b, a \bmod b)$ converge in
   $O(\log \min(a,b))$ passi, cioè $O(n)$ passi su numeri di $n$ cifre; il
   tempo totale è $O(n^2)$, perché ogni cifra di quoziente costa $O(n)$ e le

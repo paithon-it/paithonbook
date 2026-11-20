@@ -283,11 +283,11 @@ a fondo nello stesso tempo. Con ordinamento casuale, e per $b$ moderati, si
 scende a circa $O(b^{3m/4})$ {cite}`russell2020artificial`.
 
 Pearl ha mostrato che fra gli algoritmi che cercano a profondità fissa
-alfa-beta è asintoticamente ottimo {cite}`pearl1982solution`. Il fattore
-$\sqrt{b}$ è però il limite della potatura esatta, e i programmi di scacchi
-più forti scendono sotto 3 perché le aggiungono quella in avanti: la mossa
-nulla, la riduzione delle mosse tardive, la potatura di futilità
-{cite}`russell2020artificial`.
+alfa-beta è asintoticamente ottimo su alberi uniformi con valori delle foglie
+casuali e indipendenti {cite}`pearl1982solution`. Il fattore $\sqrt{b}$ è però
+il limite della potatura esatta, e i programmi di scacchi più forti scendono
+sotto 3 perché le aggiungono quella in avanti: la mossa nulla, la riduzione
+delle mosse tardive, la potatura di futilità {cite}`russell2020artificial`.
 
 Perciò, nei programmi di gioco, l’ordinamento delle mosse fa parte
 dell’algoritmo. Le tecniche classiche sono due. Una è provare per prime, in un

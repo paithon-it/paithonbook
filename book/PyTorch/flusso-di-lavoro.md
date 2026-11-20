@@ -223,14 +223,18 @@ dei problemi veri non potremo mai fare, e per questo conviene farla almeno una
 volta]{.pt-matita}: qui sappiamo con certezza che la macchina funziona.
 
 Si noti che nelle ultime epoche i valori si ripetono: $0{,}0103$ e $0{,}0013$
-tornano a turno. Verso la fine la perdita non si ferma su un valore, ma
-passa dall'uno all'altro dei due a ogni iterazione.
+tornano a turno. Verso la fine la perdita non si ferma su un valore, ma passa
+dall'uno all'altro dei due a ogni iterazione. Lo stesso fa la colonna del test,
+che nella stessa riga sta sempre nella fase opposta, perché si misura dopo la
+correzione dei pesi e il train prima.
 
 Il motivo sta nella misura dell'errore scelta nel codice. La `nn.L1Loss`, cioè
 l'errore assoluto medio, corregge sempre della stessa quantità, che si sia
 lontanissimi o a un capello dal bersaglio: sbagliare di $10$ e sbagliare di
-$0{,}001$ producono la stessa spinta. Non «frena» avvicinandosi, e il passo è
-fisso, sempre $0{,}01$.
+$0{,}001$ producono la stessa spinta. Non «frena» avvicinandosi: quando i
+residui hanno tutti lo stesso segno, come qui verso la fine, il bias si sposta
+sempre di $0{,}01$, il learning rate scritto nel codice, e il peso di una
+quantità fissa anch'essa.
 
 Quindi, arrivata a un capello dal punto giusto, la correzione lo scavalca;
 all'iterazione successiva lo scavalca all'indietro; e da lì in poi i valori
@@ -250,14 +254,15 @@ risposta del modello e quella che dovrebbe dare. Se stampa $0{,}05$ e stiamo
 predicendo dei prezzi in euro, il modello sbaglia in media di cinque centesimi,
 un numero che si può raccontare a chiunque.
 
-C'è un altro modo di sommarli, e la scelta fra i due cambia che cosa il modello
+C'è un altro modo di contarli, e la scelta fra i due cambia che cosa il modello
 impara. Il secondo moltiplica ogni sbaglio per sé stesso, quindi sbagliare il
 doppio conta quattro volte e sbagliare dieci volte tanto conta cento volte (è
 l'errore al quadrato, quello di `nn.MSELoss`).
 
 Dieci case stimate: nove sbagliate di mille euro e una di diecimila. Sommando
 gli euro, la casa storta pesa diecimila contro novemila, poco più di tutte le
-altre insieme. Coi quadrati pesa undici volte tutte le altre insieme.
+altre insieme. Coi quadrati pesa undici volte tutte le altre insieme: cento
+milioni contro nove milioni.
 
 Comanda chi grida più forte. Coi quadrati il modello passa la giornata a
 inseguire quell'unica casa, che magari è una cifra battuta male nel listino, e
@@ -372,8 +377,11 @@ La probabilità serve eccome, ma dopo: [`sigmoid` e `softmax` si applicano sul
 risultato, quando il numero lo deve leggere una persona]{.pt-matita}. Se le
 mettessi dentro il modello, come ultimo strato, consegnerebbero alla funzione
 di perdita dei punteggi già convertiti, che lei convertirebbe una seconda
-volta. È l'errore già visto con la cross-entropy, e anche qui il modello impara
-male senza nessun messaggio rosso, solo con numeri che non migliorano.
+volta, schiacciandoli verso il mezzo: con la sigmoide passata due volte, ad
+esempio, ogni risposta cade fra la metà e poco meno di tre quarti, e un no
+deciso non si può più dire. È l'errore già visto con la cross-entropy, e anche
+qui il modello impara male senza nessun messaggio rosso, solo con numeri che
+non migliorano.
 
 Resta una manopola, che serve appena si esce dagli esempi: le risposte quasi
 mai sono in pari. Su mille buste, novecentonovanta lettere vere e dieci
@@ -382,8 +390,9 @@ sbagliare dieci volte su mille e portare a casa un risultato che sulla carta
 sembra ottimo, mentre la pubblicità passa tutta.
 
 Alla funzione di perdita, però, si può dire quanto pesa ciascuna risposta. Se
-una pubblicità lasciata passare vale quanto novantanove lettere vere buttate,
-le due risposte tornano in pari, e alla furbizia non conviene più.
+una pubblicità lasciata passare vale quanto novantanove lettere vere buttate
+(novecentonovanta diviso dieci, il rapporto fra le due pile), le due risposte
+tornano in pari, e alla furbizia non conviene più.
 `````
 
 `````{tab} Superiore
@@ -466,8 +475,9 @@ Una chiave alla volta vale finché a girarle sei tu. Quando lanci le prove in
 blocco e vai a dormire, conviene estrarre i valori a caso invece di disporli in
 una griglia ordinata. Ad esempio, con due manopole e nove prove la griglia
 prova tre valori per manopola in tutte le combinazioni, quindi della
-temperatura ne avrai viste tre sole; nove tiri a caso te ne fanno vedere nove,
-e la differenza sta tutta qui.
+temperatura ne avrai viste tre sole; nove tiri a caso te ne fanno vedere nove.
+E siccome spesso una delle due manopole conta molto più dell'altra, la
+differenza sta tutta qui.
 
 Un controllo, però, viene prima di tutti e sei, e richiede cinque minuti:
 l'idraulico apre il rubinetto e guarda se l'acqua arriva, perché se non arriva
@@ -475,9 +485,10 @@ la guarnizione non c'entra. Per un modello, il rubinetto è un solo gruppo di
 esempi, una decina, su cui si addestra con un passo normale e senza freni
 finché l'errore non è quasi zero.
 
-Qualunque rete con più pesi che esempi, infatti, ne manda a memoria dieci, e se
-la tua non ci riesce quasi sempre c'è un errore nel codice: stai girando le
-manopole sbagliate.
+Una rete con molti più pesi che esempi, infatti, ha di norma numeri da
+regolare a sufficienza per ricordarli uno per uno, quindi dieci esempi li manda
+a memoria, e se la tua non ci riesce quasi sempre c'è un errore nel codice:
+stai girando le manopole sbagliate.
 `````
 
 `````{tab} Superiore

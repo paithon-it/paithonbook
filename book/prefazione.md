@@ -32,29 +32,31 @@ settimane, dopo ogni notizia, la stessa frase rimbalzava identica sui canali di
 chi commenta questa materia di mestiere, ripetuta da chi non era andato alla
 fonte, mosso dalla frenesia di attrarre pubblico grazie all’ultima notizia in
 *hype*, che dopo tre ore sarebbe stata su ogni testata giornalistica e pagina
-social. Intanto la componente teorica e tecnica del machine learning classico e
-il lavoro del data scientist sono stati i primi a diventare obsoleti: prima di
-ChatGPT chi curava i dati, chi addestrava i modelli e chi li portava in
-produzione facevano mestieri distinti. Poi il mercato ne ha chiesto uno solo,
-capace di prendere il modello aperto del momento da Hugging Face
-{cite}`wolf2020transformers`, istruirlo con un *prompt* perfezionato sul caso
-d'uso e rivenderlo come soluzione innovativa proprietaria (quante start-up ha
-creato l’*in-context learning*?). Il gesto era lo stesso di chi ripeteva la
-frase: usare una cosa senza sapere che cosa fosse e speculare su API a basso
-costo di cui un giorno pagheremo il reale debito (tecnico più che economico).
+social. Intanto, almeno agli occhi del mercato, la componente teorica e tecnica
+del machine learning classico e il lavoro del data scientist sono sembrati i
+primi a diventare superflui: prima di ChatGPT chi curava i dati, chi addestrava
+i modelli e chi li portava in produzione facevano mestieri distinti. Poi molte
+aziende hanno cominciato a cercarne uno solo, capace di prendere il modello
+aperto del momento da Hugging Face {cite}`wolf2020transformers`, istruirlo con
+un *prompt* perfezionato sul caso d'uso e rivenderlo come soluzione innovativa
+proprietaria (quante start-up ha creato l’*in-context learning*?). Il gesto era
+lo stesso di chi ripeteva la frase: usare una cosa senza sapere che cosa fosse
+e speculare su API a basso costo di cui un giorno pagheremo il reale debito
+(tecnico più che economico).
 
 Questo libro cerca di stare dall'altra parte: meno speculazione, più
 architetture, iperparametri e funzioni di costo, con la speranza di rendere
-accessibile la più grande rivoluzione democratica della storia dell’uomo. Dentro
-ci sono i concetti principali dell'intelligenza artificiale, dal *machine
-learning* al *deep learning* al *reinforcement learning* (li definisce
+accessibile a tutti quella che considero una delle grandi trasformazioni
+sociali e culturali di tutti i tempi. Dentro ci sono i concetti principali
+dell'intelligenza artificiale, dal *machine learning* al *deep learning* al
+*reinforcement learning* (li definisce
 l’{doc}`introduzione </Introduzione/overview>`), e i capitoli che li portano in
 produzione e ne discutono le conseguenze. Ogni concetto che conta è spiegato
 *due volte*, una con un'analogia che non chiede prerequisiti e una con le
 formule al posto giusto, e decidi tu da quale parte stare: la {doc}`pagina di
-apertura </intro>` spiega come. Nessuna scorciatoia sulle cose difficili, nessun
-entusiasmo che il testo non sia in grado di giustificare, e le fonti sempre
-citate.
+apertura </intro>` spiega come. Nessuna scorciatoia sulle cose difficili,
+nessun entusiasmo che il testo non sia in grado di giustificare, e le fonti
+sempre citate.
 
 Buona parte di queste pagine nasce da una stretta collaborazione con
 l'intelligenza artificiale stessa: sono io a delineare i temi, a dare la

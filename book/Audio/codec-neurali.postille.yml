@@ -1,7 +1,7 @@
 # Le postille di questa pagina, una per capoverso del testo comune.
 # Ognuna vale finché la sua impronta combacia col testo del capoverso.
 - inizio: "Per generare suono come un modello"
-  impronta: "ce5e410e7be4"
+  impronta: "a51d88be3e91"
   postilla: "65.536 livelli sono troppi: l'alfabeto buono lo costruiscono i codec neurali"
 - inizio: "La parola *codec* non è nuova."
   impronta: "7361fec9aa7e"

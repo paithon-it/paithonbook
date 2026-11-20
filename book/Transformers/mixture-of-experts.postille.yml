@@ -52,7 +52,7 @@
   impronta: "f2c7d539f6db"
   postilla: "Limiti: rifinitura diretta su compiti piccoli, e specializzazione degli esperti"
 - inizio: "La classe `StratoMoE` implementa lo strato"
-  impronta: "a0cf903662d6"
+  impronta: "5899211e8412"
   postilla: "Manca il bilanciamento: addestrato così, il router con ogni probabilità collassa"
 - inizio: "I pesi sono le probabilità dei"
   impronta: "e8984dd0c62f"

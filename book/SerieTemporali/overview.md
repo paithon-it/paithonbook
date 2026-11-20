@@ -35,22 +35,22 @@ cui si legge dove sta andando il tempo): tutti guardano la storia di un
 fenomeno per indovinarne il seguito. In inglese si chiama **forecasting**,
 parola che ricorre nella letteratura e nel codice.
 
-Come metodo sistematico la disciplina nasce nel 1970, con un libro di George
-Box e Gwilym Jenkins destinato a diventare un classico dell'econometria (la
-statistica applicata ai fenomeni economici) e dell'ingegneria
-{cite}`box2015time`. Il loro metodo prevede di identificare che forma ha la
-serie, stimare i numeri del modello e verificare che il modello non abbia
-lasciato fuori niente. Non è la prima idea di previsione statistica, perché
-spiegare un valore con quelli che lo precedono, cioè l’**autoregressione**, è
-un'idea che George Udny Yule usava già nel 1927, sulle macchie solari. Il
-contributo di Box e Jenkins è una procedura completa, che dice come scegliere
-il modello invece di lasciare che se ne inventi uno diverso ogni volta. Dal
-1982 lo statistico greco Spyros Makridakis mette alla prova quei metodi su
-larga scala con le **competizioni M**, gare pubbliche di previsione su un
-migliaio di serie reali nella prima edizione e su centomila nella quarta, del
-2018 {cite}`makridakis2020m4`. La lezione che ne esce è tanto tecnica quanto
-morale: si prevede, sì, ma con umiltà. Nessun modello domina sempre, e
-dichiarare *quanto* siamo incerti conta quanto la previsione stessa.
+Una procedura sistematica per costruire i modelli arriva nel 1970, con un libro
+di George Box e Gwilym Jenkins destinato a diventare un classico
+dell'econometria (la statistica applicata ai fenomeni economici) e
+dell'ingegneria {cite}`box2015time`. Il loro metodo prevede di identificare che
+forma ha la serie, stimare i numeri del modello e verificare che il modello non
+abbia lasciato fuori niente. Non è la prima idea di previsione statistica,
+perché spiegare un valore con quelli che lo precedono, cioè
+l’**autoregressione**, è un'idea che George Udny Yule usava già nel 1927, sulle
+macchie solari. Il contributo di Box e Jenkins è una procedura completa, che
+dice come scegliere il modello invece di lasciare che se ne inventi uno diverso
+ogni volta. Dal 1982 lo statistico greco Spyros Makridakis mette alla prova
+quei metodi su larga scala con le **competizioni M**, gare pubbliche di
+previsione su un migliaio di serie reali nella prima edizione e su centomila
+nella quarta, del 2018 {cite}`makridakis2020m4`. La lezione che ne esce è tanto
+tecnica quanto morale: si prevede, sì, ma con umiltà. Nessun modello domina
+sempre, e dichiarare *quanto* siamo incerti conta quanto la previsione stessa.
 
 ## Che cos'è una serie temporale
 
@@ -423,15 +423,13 @@ $$
 \mathrm{Cov}(X_t, X_{t+k}) = \gamma(k) \;\; \forall t,
 $$
 
-cioè media e varianza costanti e autocovarianza $\gamma(k)$ funzione solo
-del divario $k$ tra due istanti, non della loro posizione assoluta. È
-l'ipotesi su cui poggia l'intera famiglia dei modelli ARMA. Le serie reali la
-violano in tre modi ricorrenti: una tendenza rende $\mu$ variabile nel
-tempo, la stagionalità rende $\mu$ periodica (e, quando è stocastica
-anziché deterministica, fa dipendere l'autocovarianza dalla posizione $t$
-oltre che dal divario $k$), un cambio di regime
-(rottura strutturale) altera $\mu$, $\sigma^2$ o entrambi da un certo istante
-in poi.
+cioè media e varianza costanti e autocovarianza $\gamma(k)$ funzione solo del
+divario $k$ tra due istanti, non della loro posizione assoluta. È l'ipotesi su
+cui poggia l'intera famiglia dei modelli ARMA. Le serie reali la violano in tre
+modi ricorrenti: una tendenza rende $\mu$ variabile nel tempo, la stagionalità
+rende $\mu$ periodica (e, quando ha una radice unitaria stagionale, fa crescere
+la varianza con $t$), un cambio di regime (rottura strutturale) altera $\mu$,
+$\sigma^2$ o entrambi da un certo istante in poi.
 
 La strategia standard è ricondurre la serie alla stazionarietà prima di
 modellarla, e lo strumento dipende da quale delle violazioni si ha davanti.
@@ -574,7 +572,7 @@ sia stretta di troppo si misura, e la {doc}`sezione sulla validazione
   su un processo stazionario converge alla varianza del processo, cioè la
   banda smette di allargarsi; l’*error compounding* della strategia ricorsiva
   è un fenomeno distinto, e riguarda la distorsione che la reiniezione
-  introduce con modelli stimati o non lineari.
+  introduce con modelli mal specificati o non lineari.
 - Ciò che rende il problema difficile è che l'ipotesi i.i.d. cade in due modi
   distinti: dipendenza fra le osservazioni (autocorrelazione) e distribuzione
   che cambia nel tempo (non stazionarietà: tendenza, stagionalità, cambi di

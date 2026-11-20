@@ -434,8 +434,9 @@ nuovi. Se ne nasce uno al giorno e l'artigiano ne rifà uno su dieci, si ferma
 intorno a dieci, perché un chiodo resta lì in media dieci giorni. È questa la
 misura che conta: [quanti chiodi ci sono dipende da quanti ne nascono e da
 quanto a lungo ciascuno resta prima di essere rifatto]{.pt-matita}. E finché
-resta, chi passa lo copia: un chiodo che resta il doppio non lascia il doppio
-dei chiodi, ne lascia di più, perché nel frattempo ha fatto figli.
+resta, chi passa lo copia: un chiodo che resta il doppio lascia più chiodi di
+quanti ne lascerebbe se nessuno lo copiasse, perché nel frattempo ha fatto
+figli.
 
 Una pulizia del venerdì
 che lasciasse ogni chiodo, in media, altrettanto a lungo darebbe più o meno lo
@@ -565,7 +566,7 @@ quanto è costato e quanto è durato un compito, ed è da lì che comincia il
   si copia più volentieri. Le regole d'oro scritte ne fanno nascere meno, la
   pulizia di ogni notte toglie una parte di quelle nate.
 - Quanto disordine c'è dipende da quanto ne nasce e da quanto a lungo resta:
-  pulire poco ma ogni giorno lo fa restare poco, e intanto non lo lascia
+  pulire un poco ogni giorno fa restare poco ogni chiodo, e intanto non lo lascia
   copiare.
 - Anche l'harness si sporca: le precauzioni che non servono più vanno tolte,
   una alla volta, guardando che cosa succede.

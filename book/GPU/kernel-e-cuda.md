@@ -45,9 +45,9 @@ quali*, comincia col ricavare il proprio numero.
 
 Un milione di volantini da consegnare a mano, uno per cassetta della posta, e
 un esercito a disposizione. Non scrivi un milione di ordini diversi. Ne scrivi
-uno solo, che vale per tutti: «guarda il numero cucito sulla tua divisa, va’
-alla cassetta con quel numero, infila il volantino». Poi lo leggi ad alta voce
-una volta, e l'intero esercito parte.
+uno solo, che vale per tutti: «ricava il tuo numero da ciò che hai cucito sulla
+divisa, va’ alla cassetta con quel numero, infila il volantino». Poi lo leggi
+ad alta voce una volta, e l'intero esercito parte.
 
 Il soldato numero 0 va alla cassetta 0, il soldato numero 999.999 alla
 cassetta 999.999, tutti insieme. L'ordine è identico per ognuno; l'unica cosa
@@ -150,7 +150,7 @@ la guardia `i < n` serve per gli ultimi thread di quel blocco.
 
 ```{figure} ../figures/kernel-griglia-indice.svg
 :name: fig-kernel-indice
-:alt: "Un array di otto elementi indicizzati da 0 a 7; sotto, otto thread raggruppati in due blocchi da quattro, ciascuno collegato da una freccia all'elemento dell'array di cui si occupa. Il thread con threadIdx 2 del blocco 1 è evidenziato in terracotta: la formula i = blockIdx per blockDim piu threadIdx dà 1 per 4 piu 2, cioè 6, l'elemento anch'esso evidenziato."
+:alt: "Un array di otto elementi indicizzati da 0 a 7; sotto, otto thread raggruppati in due blocchi da quattro, ciascuno collegato da una freccia all'elemento dell'array di cui si occupa. Il thread con threadIdx 2 del blocco 1 è evidenziato in terracotta: la formula i = blockIdx per blockDim più threadIdx dà 1 per 4 più 2, cioè 6, l'elemento anch'esso evidenziato."
 :width: 90%
 
 L'indice globale, disegnato. Ogni thread sa due cose, il blocco a cui
@@ -283,9 +283,9 @@ appoggiare i numeri.
 Non tutti gli ordini, però, si sbrigano separatamente. Se alla squadra si
 chiede quanti volantini restano in tutto, i numeri vanno messi insieme, e
 passarli di mano in mano uno dopo l'altro vorrebbe dire trentuno passaggi per
-un plotone. Si sommano invece a coppie, poi le coppie a coppie: in cinque turni
-il plotone ha il suo totale, e lo stesso gioco si ripete fra i plotoni della
-squadra.
+un plotone di trentadue. Si sommano invece a coppie, poi le coppie a coppie: in
+cinque turni il plotone ha il suo totale, e lo stesso gioco si ripete fra i
+plotoni della squadra.
 
 Con i numeri con la virgola, però, l'ordine delle somme si sente nell'ultima
 cifra, perché ogni somma arrotonda. Per questo due squadre organizzate in modo
@@ -346,9 +346,11 @@ GPU vera serve a misurare la velocità: che cosa il kernel calcola si vede anche
 sulla CPU, salvo quell'ultima cifra.
 
 Non tutte le operazioni sono elemento per elemento. Una **riduzione** (una
-somma, un massimo) di $K$ valori non si fa con una catena di $K-1$ somme ma ad
-albero, in $\lceil\log_2 K\rceil$ passi: dentro un warp i 32 valori si
-combinano con le istruzioni che scambiano registri fra i thread
+somma, un massimo) di $K$ valori si fa in due tempi: ogni thread somma in
+catena la propria parte, poi i parziali si combinano ad albero, in un numero di
+passi pari al logaritmo in base due dei thread coinvolti. Dentro un warp i 32
+
+valori si combinano con le istruzioni che scambiano registri fra i thread
 (`__shfl_down_sync` in CUDA), mentre fra i warp di un blocco si passa dalla
 shared memory. In Triton, invece, basta `tl.sum` su una tessera, perché
 l'albero lo costruisce il compilatore. È il mattone della softmax e delle
@@ -457,8 +459,9 @@ Le richieste più impegnative restano affidate agli specialisti (kernel scritti
 a mano dal costruttore della GPU), mentre tutto il contorno di operazioni
 piccole viene accorpato. [Meno telefonate, meno viaggi, e lo stesso risultato
 salvo l'ultima cifra]{.pt-matita}, perché in un solo kernel il compilatore può
-fondere una moltiplicazione e una somma in un'unica operazione che arrotonda
-una volta sola, e in virgola mobile ogni arrotondamento si sente.
+anche fondere, dentro un singolo conto, una moltiplicazione e una somma in
+un'unica operazione che arrotonda una volta sola, e in virgola mobile ogni
+arrotondamento si sente.
 
 `````
 
@@ -472,7 +475,7 @@ cui kernel sono scritti e ottimizzati a mano dal produttore dell'hardware (il
 GEMM a tessere che ci sta dentro è il tema della {doc}`sezione sul GEMM
 <gemm-e-tensor-core>`). Per tutto il resto (somme, ReLU, softmax,
 normalizzazioni) usa kernel CUDA propri, uno per operazione. La
-modalità eager è flessibile e immediata da debuggare, ma paga un lancio e
+modalità eager è flessibile e comoda per il debug, ma paga un lancio e
 un viaggio in memoria per ogni riga.
 
 In modalità **compile**, la catena cambia forma. Come descritto in «Prestazioni
@@ -653,10 +656,10 @@ importante di tutti, il prodotto fra matrici, a cui è dedicata la
   convoluzioni, kernel CUDA propri di PyTorch per il resto, softmax e
   normalizzazioni comprese); con `torch.compile` le catene elementwise vengono
   fuse in kernel Triton, riducendo lanci e traffico di memoria.
-- Le riduzioni (somme, massimi) si fanno ad albero, in $\lceil\log_2 K\rceil$
-  passi: dentro il warp con gli scambi fra registri, fra i warp passando dalla
-  shared memory. La somma in virgola mobile non è associativa, quindi l'ordine
-  dell'albero cambia l'ultima cifra.
+- Le riduzioni (somme, massimi) si fanno in catena dentro ogni thread e poi ad
+  albero, in un numero logaritmico di passi: dentro il warp con gli scambi fra
+  registri, fra i warp passando dalla shared memory. La somma in virgola mobile
+  non è associativa, quindi l'ordine dell'albero cambia l'ultima cifra.
 - Un carico è launch-bound quando la CPU impiega più a preparare i lanci che la
   GPU a eseguirli (il decode a batch piccolo: su un modello da un miliardo di
   parametri i lanci costano quanto la lettura dei pesi, su uno da otto miliardi

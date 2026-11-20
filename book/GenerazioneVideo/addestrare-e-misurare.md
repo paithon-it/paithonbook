@@ -407,10 +407,11 @@ clip scartati         : 0.737
 ```
 
 Il passaggio da 832×480 a 1280×720 moltiplica i token per 2,31, il costo delle
-parti lineari dello strato per lo stesso fattore e quello dell’attenzione, che è
-quadratico nella lunghezza, per 5,33: spendere le prime tappe a risoluzione
-bassa è il modo di pagare la parte più cara solo quando il modello genera già
-bene immagini e clip brevi. La {doc}`sezione sull’attenzione nello spazio e nel
+parti lineari dello strato per lo stesso fattore e quello dell’attenzione, che
+è quadratico nella lunghezza, per 5,33, il quadrato del fattore di prima:
+spendere le prime tappe a risoluzione bassa è il modo di pagare la parte più
+cara solo quando il modello genera già bene immagini e clip brevi. La
+{doc}`sezione sull’attenzione nello spazio e nel
 tempo </GenerazioneVideo/spazio-e-tempo>` misura quanto pesi l’attenzione sul
 resto dello strato. Quanto alla cura dei dati, i filtri di Stable Video
 Diffusion tengono 0,263 dei clip e ne scartano 0,737, cioè quasi tre su

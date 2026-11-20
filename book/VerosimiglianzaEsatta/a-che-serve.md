@@ -105,7 +105,7 @@ $3{,}03$; PixelRNN $3{,}00$; PixelCNN++ $2{,}92$. In cima, a $8{,}00$, sta il
 modello che non sa niente. I valori degli autoregressivi sono esatti; quelli
 dei flussi sono limiti superiori perché misurati su pixel dequantizzati.
 
-L'elenco è quello storico, fermo al 2017, e da allora si è mosso: nella tabella
+L'elenco è quello storico, fermo al 2018, e da allora si è mosso: nella tabella
 di VDM {cite}`kingma2021variational` un autoregressivo a Transformer scende a
 $2{,}80$, e VDM stesso, un modello di diffusione addestrato su un limite
 variazionale, a $2{,}65$, meglio di tutti i modelli dell'elenco, con un numero
@@ -187,7 +187,7 @@ diventare quasi indipendenti. Lucas Theis, Aäron van den Oord e Matthias Bethge
 {cite}`theis2016note` lo mostrano già nel 2016: la verosimiglianza media, le
 stime di Parzen (che giudicano un modello mettendo una piccola campana attorno a
 ciascuno dei suoi campioni e guardando quanto i dati veri ci cadono vicino) e
-la qualità visiva dei campioni sono, in alta dimensione, criteri largamente
+la qualità visiva dei campioni sono, in alta dimensione, criteri in gran parte
 slegati, e «ottenere buoni risultati su un criterio non implica necessariamente
 ottenerne sugli altri». Un modello può avere una verosimiglianza eccellente e
 produrre campioni mediocri, e viceversa. La loro conclusione è la regola
@@ -210,9 +210,9 @@ ricostruzioni candidate con lo stesso criterio. In questi ruoli il modello di
 densità non genera niente: sta dentro un sistema più grande e dà voti
 confrontabili.
 
-È anche il ruolo da cui i flussi sono nati {cite}`rezende2015variational`,
-l'inferenza variazionale, il compito di approssimare una distribuzione difficile
-con una che si sa maneggiare: nei VAE
+È anche il ruolo in cui i flussi si sono fatti conoscere
+{cite}`rezende2015variational`, l'inferenza variazionale, il compito di
+approssimare una distribuzione difficile con una che si sa maneggiare: nei VAE
 del capitolo sui modelli latenti l'encoder propone per il latente una
 distribuzione semplice, e un flusso la rende più flessibile lasciandone
 calcolabile la densità, che è proprio ciò che serve all'ELBO.
@@ -407,15 +407,16 @@ escono.
 
 `````{tab} Superiore
 
-Per un campo $\mathbf{v}_t$ continuo nel tempo e lipschitziano in
-$\mathbf{x}$, l'equazione $\mathrm{d}\mathbf{x}_t / \mathrm{d}t =
-\mathbf{v}_t(\mathbf{x}_t)$ ha soluzione unica (teorema di Picard-Lindelöf), e
-la mappa $\Phi_T$ che porta $\mathbf{x}_0$ in $\mathbf{x}_T$ è un
-diffeomorfismo. L'invertibilità e la conservazione della dimensione restano, e
-la regolarità del campo prende il posto dei vincoli sull'architettura: FFJORD
-chiede che $\mathbf{v}_t$ e le sue derivate prime siano lipschitziane, il che
-in pratica impone attivazioni lisce e non la ReLU. La densità lungo la
-traiettoria segue il cambio di variabile istantaneo {cite}`chen2018neural`,
+Per un campo $\mathbf{v}_t$ continuo nel tempo e lipschitziano in $\mathbf{x}$,
+l'equazione $\mathrm{d}\mathbf{x}_t / \mathrm{d}t = \mathbf{v}_t(\mathbf{x}_t)$
+ha soluzione unica (teorema di Picard-Lindelöf), e la mappa $\Phi_T$ che porta
+$\mathbf{x}_0$ in $\mathbf{x}_T$ è invertibile; se $\mathbf{v}_t$ è anche di
+classe $C^1$ in $\mathbf{x}$, è un diffeomorfismo. L'invertibilità e la
+conservazione della dimensione restano, e la regolarità del campo prende il
+posto dei vincoli sull'architettura: FFJORD chiede che $\mathbf{v}_t$ e le sue
+derivate prime siano lipschitziane, il che in pratica impone attivazioni lisce
+e non la ReLU. La densità lungo la traiettoria segue il cambio di variabile
+istantaneo {cite}`chen2018neural`,
 
 $$
 \begin{gathered}
@@ -524,7 +525,7 @@ struttura]{.pt-matita}, e la parola «flusso» ne conserva l'origine.
   densità è misurata su dati dequantizzati. Un limite variazionale fa anche
   meglio (VDM, $2{,}65$), perché per comprimere basta un limite (*bits-back*):
   l'esattezza serve alla probabilità del singolo dato.
-- Verosimiglianza e qualità dei campioni sono criteri largamente indipendenti
+- Verosimiglianza e qualità dei campioni sono criteri in gran parte indipendenti
   in alta dimensione {cite}`theis2016note`: vanno scelti in funzione
   dell'applicazione, non estrapolati l'uno dall'altro.
 - Fallimento OOD {cite}`nalisnick2019do`: flussi, VAE e PixelCNN addestrati

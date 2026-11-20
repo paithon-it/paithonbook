@@ -134,10 +134,10 @@ parola successiva, $\mathcal{L} = -\frac{1}{n-1}\sum_{t=1}^{n-1} \log
 $\hat{\mathbf{y}}_t$ relativa alla parola $w$. La perplessità della
 {doc}`sezione sugli n-gram <modelli-ngram>` è $e^{\mathcal{L}}$ con il
 logaritmo naturale, che è quello delle librerie, e coincide con il $2^{H}$
-calcolato in bit sullo stesso testo. Senza la softmax si ottengono i *logit*, i
-punteggi grezzi: è il formato atteso da `nn.CrossEntropyLoss`, che calcola
-internamente sia la softmax sia il logaritmo. Per questo in PyTorch l'ultimo
-strato di un classificatore omette la softmax.
+calcolato in bit sulle stesse predizioni. Senza la softmax si ottengono i
+*logit*, i punteggi grezzi: è il formato atteso da `nn.CrossEntropyLoss`, che
+calcola internamente sia la softmax sia il logaritmo. Per questo in PyTorch
+l'ultimo strato di un classificatore omette la softmax.
 
 Srotolare, però, ha un costo: la rete srotolata su una sequenza di mille passi
 è una rete profonda mille strati, e per retropropagare bisogna tenere in
@@ -285,14 +285,15 @@ Gers, Jürgen Schmidhuber e Fred Cummins {cite}`gers2000learning`, e nasce da un
 difetto scoperto all'uso.
 
 Su una sequenza che non finisce, e che quindi non azzera mai lo stato,
-$\mathbf{c}_t$ cresce senza fermarsi. La lettura si satura: il valore passa per
-la $\tanh$ (nella forma di oggi), che comprime ogni numero fra $-1$ e $1$, e con
-$\mathbf{c}_t$ molto grande ne esce sempre un estremo, qualunque cosa ci sia
-scritta. La cella smette di distinguere un contenuto dall'altro e torna a
-comportarsi come una ricorrente qualunque. Su un testo che finisce va bene lo
-stesso; su un flusso che non finisce mai (una trasmissione, un sensore, una
-conversazione senza fine) è fatale. La forma con tre cancelli è quella che oggi
-si chiama LSTM senz'altra specificazione.
+$\mathbf{c}_t$ tende a crescere senza limite, perché niente lo riporta
+indietro. La lettura si satura: il valore passa per la $\tanh$ (nella forma di
+oggi), che comprime ogni numero fra $-1$ e $1$, e con $\mathbf{c}_t$ molto
+grande ne esce sempre un estremo, qualunque cosa ci sia scritta. La cella
+smette di distinguere un contenuto dall'altro e torna a comportarsi come una
+ricorrente qualunque. Su un testo che finisce va bene lo stesso; su un flusso
+che non finisce mai (una trasmissione, un sensore, una conversazione senza
+fine) è fatale. La forma con tre cancelli è quella che oggi si chiama LSTM
+senz'altra specificazione.
 
 ```{figure} ../figures/lstm-gru-cancelli-memoria.svg
 :name: fig-cella-lstm
@@ -414,13 +415,14 @@ fattore $\mathrm{diag}(1 - \mathbf{h}_s \odot \mathbf{h}_s)\,\mathbf{W}_{hh}$
 della rete semplice, dove la matrice è la stessa a ogni passo e nessun cancello
 tiene la diagonale vicina a $1$.
 
-Nel 1997 quel fattore era l'identità per
-costruzione, il *constant error carousel* di Hochreiter e Schmidhuber; per la
-stessa ragione conviene inizializzare a $1$ il bias di $\mathbf{f}_t$, che con
-i pesi piccoli di partenza terrebbe il cancello intorno a $0{,}5$ e
-dimezzerebbe il gradiente a ogni passo: Jozefowicz e colleghi lo raccomandano
-notando che pochi lo facevano {cite}`jozefowicz2015empirical`, e `nn.LSTM` di
-PyTorch non lo fa da sé.
+Nel 1997 quel fattore era l'identità per costruzione, il *constant error
+carousel* di Hochreiter e Schmidhuber; per la stessa ragione conviene
+inizializzare a $1$ il bias di $\mathbf{f}_t$: a bias nullo, con i pesi piccoli
+di partenza, il cancello starebbe intorno a $0{,}5$ e dimezzerebbe il gradiente
+a ogni passo. Jozefowicz e colleghi lo raccomandano notando che pochi lo
+facevano {cite}`jozefowicz2015empirical`, e `nn.LSTM` di PyTorch non lo fa da
+sé (i suoi bias per cancello sono due, `bias_ih` e `bias_hh`, e conta la
+somma).
 
 La **GRU** (*Gated Recurrent Unit*,
 {cite}`cho2014learning`) fonde stato e memoria in un solo vettore e usa due
@@ -518,8 +520,9 @@ si passano le lunghezze delle sequenze (con `enforce_sorted=False` se non sono
 ordinate dalla più lunga alla più corta). La rete restituisce allora, come
 secondo valore, lo stato finale `h_n` (per la LSTM la coppia `h_n, c_n`), che
 per ciascuna frase si arresta all'ultima parola reale. Lo si legge come
-`h_n[-1]`: il primo indice di `h_n` scorre sugli strati della rete, anche con
-`batch_first=True`, e `-1` prende l'ultimo.
+`h_n[-1]`: il primo indice di `h_n` scorre sugli strati della rete (per
+direzione, se la rete è bidirezionale: lì `h_n[-1]` è la sola lettura
+all'indietro), anche con `batch_first=True`, e `-1` prende l'ultimo.
 
 Prendere invece `h[:, -1]` dopo aver srotolato l'uscita con
 `pad_packed_sequence` darebbe un vettore di zeri per ogni frase più corta delle

@@ -58,7 +58,7 @@
   impronta: "6ffd4ba89d30"
   postilla: "Una rete grande può interpolare il rumore; contro la U, spesso generalizza bene"
 - inizio: "Il picco di {numref}`fig-double-descent` sta alla"
-  impronta: "64c40f9e4ec7"
+  impronta: "4292f6eb715a"
   postilla: "Oltre la soglia infinite curve interpolano; l'addestramento tende a una regolare"
 - inizio: "Una rete neurale è fatta di"
   impronta: "c7ad6cce2d4a"

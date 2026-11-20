@@ -411,9 +411,10 @@ soltanto affrontando copie di sé, fino a battere nettamente la versione che
 aveva sconfitto Lee Sedol.
 
 Nel 2018 **AlphaZero** {cite}`silver2018general` generalizza il metodo: lo
-stesso programma, senza ritocchi per gioco, padroneggia Go, scacchi e shogi (gli
-scacchi giapponesi), e in tutti e tre batte il programma più forte del momento;
-nel Go, quel programma è il suo stesso predecessore. AlphaZero mostra che cosa
+stesso programma, senza ritocchi per gioco, padroneggia Go, scacchi e shogi
+(gli scacchi giapponesi), e batte Stockfish negli scacchi, Elmo nello shogi e,
+nel Go, il suo stesso predecessore, AlphaGo Zero, nella versione addestrata per
+tre giorni (non quella, più forte, da quaranta). AlphaZero mostra che cosa
 nasce dall'unione di apprendimento per rinforzo, ricerca ad albero e reti
 profonde.
 

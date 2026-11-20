@@ -925,9 +925,9 @@ dell’$87\%$ fa tre passi. Moltiplica la quota per la quota opposta, $0{,}87
 \times 0{,}13 = 0{,}113$, che è quanto balla una singola risposta (al massimo
 quando le due risposte sono alla pari, zero quando tutti rispondono uguale). Ne
 fa la radice, $0{,}34$. La divide per $0{,}5$, che è quanto lo stesso conto dà
-al $50\%$: $0{,}34$ diviso $0{,}5$ fa circa due terzi (all’$80\%$ verrebbe
-$0{,}8$, al $93\%$ circa la metà). I $4{,}5$ punti per due terzi fanno un
-margine di tre punti.
+al $50\%$ (la radice di un mezzo per un mezzo): $0{,}34$ diviso $0{,}5$ fa
+circa due terzi (all’$80\%$ verrebbe $0{,}8$, al $93\%$ circa la metà). I
+$4{,}5$ punti per due terzi fanno un margine di tre punti.
 
 La stima onesta del modello nuovo sta quindi fra l’$84\%$ e il $90\%$, quella
 del vecchio fra l’$83{,}8\%$ e l’$89{,}8\%$. I due intervalli si sovrappongono
@@ -1454,9 +1454,9 @@ dell'ellissoide di covarianza della {doc}`sezione sul determinante
 
 Il coefficiente misura la sola dipendenza lineare, quindi $\rho=0$ non implica
 indipendenza. Ad esempio, se $X$ è distribuita in modo simmetrico attorno allo
-zero, $Y=X^2$ ha correlazione nulla con $X$ e dipendenza perfetta. (La
-simmetria è essenziale: per $X$ uniforme su $[0,1]$ la stessa parabola dà una
-correlazione vicina a $0{,}97$.)
+zero, ha momento quarto finito e $X^2$ non è costante, $Y=X^2$ ha correlazione
+nulla con $X$ e dipendenza perfetta. (La simmetria è essenziale: per $X$
+uniforme su $[0,1]$ la stessa parabola dà una correlazione vicina a $0{,}97$.)
 
 Le strutture da tenere distinte:
 
@@ -1474,7 +1474,7 @@ sono indipendenti finché non si condiziona su $Z$. Per questo gli algoritmi di
 scoperta causale riescono a orientare dai dati questa struttura a v, sotto
 l'ipotesi che ogni indipendenza osservata venga dal grafo (fedeltà). Il verso
 di una catena e un confondente non osservato chiedono invece un intervento
-(esperimento randomizzato) o assunzioni causali esplicite.
+(esperimento randomizzato) o ipotesi causali esplicite.
 
 Nel machine learning la conseguenza ha un nome, *shortcut learning*: il modello
 aggancia la correlazione più comoda del dataset (lo sfondo invece dell'animale,

@@ -340,11 +340,11 @@ funziona è quella da $4 \times 4$.
 
 Il trucco di Euclide per trovare il MCD è elegante: dividi il numero grande per
 il piccolo e guarda il resto. Ad esempio, $12$ diviso $8$ dà resto $4$; ora
-ripeti con $8$ e $4$, e ottieni resto $0$. Appena compare il resto zero,
-l'ultimo numero *per cui* hai diviso (qui $4$) è il MCD. Niente elenchi di
-divisori, niente tentativi: due divisioni e hai finito. E se il resto
-viene zero già alla prima, va bene lo stesso, hai solo finito prima:
-$12$ diviso $6$ dà resto $0$, e il MCD è $6$.
+ripeti con $8$ e $4$, e ottieni resto $0$. Appena compare il resto zero, il MCD
+è il numero per cui hai appena diviso, cioè il divisore dell'ultima divisione
+(qui $4$). Niente elenchi di divisori, niente tentativi: due divisioni e hai
+finito. E se il resto viene zero già alla prima, va bene lo stesso, hai solo
+finito prima: $12$ diviso $6$ dà resto $0$, e il MCD è $6$.
 
 Perché il trucco funziona lo racconta il pavimento. Dal rettangolo di
 $12 \times 8$ ritaglia il quadrato più grande che ci sta, $8 \times 8$: avanza
@@ -359,15 +359,15 @@ quando non avanza niente il lato del quadrato è la piastrella cercata.
 
 Il bello è che le divisioni restano poche anche quando i numeri crescono: per
 due numeri lunghi cento cifre ne bastano al massimo cinquecento, cinque per
-cifra, mentre provare i divisori uno per uno ne chiederebbe fino a un $1$
-seguito da cento zeri. Quel numero è enorme: gli atomi dell'intero universo
-osservabile si stimano intorno a un $1$ seguito da ottanta zeri, cento miliardi
-di miliardi di volte meno.
+cifra, mentre provare i divisori uno per uno, cioè tutti i numeri fino al più
+piccolo dei due, ne chiederebbe fino a un $1$ seguito da cento zeri. Quel
+numero è enorme: gli atomi dell'intero universo osservabile si stimano intorno
+a un $1$ seguito da ottanta zeri, cento miliardi di miliardi di volte meno.
 
-Poche, però, non vuol dire poco tempo. Le divisioni crescono con la
-*lunghezza* dei numeri, al più cinque per ogni cifra in più (in media meno di
-due), e ciascuna, su numeri da
-cento cifre, richiede molto più lavoro che su numeri da una cifra.
+Che le divisioni siano poche, però, non vuol dire che durino poco. Le divisioni
+crescono con la *lunghezza* dei numeri, al più cinque per ogni cifra in più (in
+media meno di due), e ciascuna, su numeri da cento cifre, richiede molto più
+lavoro che su numeri da una cifra.
 `````
 
 `````{tab} Superiore
@@ -384,13 +384,13 @@ divisori comuni coincidono, e quindi il massimo è invariante a ogni
 passo]{.pt-matita}. Ad esempio, per $a=12$ e $b=8$ la successione delle coppie
 è $(12, 8) \to (8, 4) \to (4, 0) \Rightarrow 4$.
 
-Il numero di passi $N$ è $O(\log \min(a, b))$. Più precisamente, se
-$a > b \ge 1$ vale $b \ge F_{N+1} \ge \varphi^{N-1}$, con $F_k$ i numeri di
-Fibonacci e $\varphi = (1+\sqrt{5})/2$ (teorema di Lamé, 1844). Ne segue
-$N \le 1 + \log_\varphi b$, cioè al più cinque passi per cifra decimale di
-$b$; il caso peggiore è quello di due numeri di Fibonacci consecutivi, con
-$\log_\varphi 10 \approx 4{,}79$ passi per cifra. In media i passi sono circa
-$\tfrac{12\ln 2}{\pi^2}\ln b$, poco meno di due per cifra
+Il numero di passi $N$ è $O(\log \min(a, b))$. Più precisamente, se $a > b \ge
+1$ vale $b \ge F_{N+1} \ge \varphi^{N-1}$, con $F_k$ i numeri di Fibonacci e
+$\varphi = (1+\sqrt{5})/2$ (teorema di Lamé, 1844). Ne segue $N \le 1 +
+\log_\varphi b$, cioè, poiché $N$ è intero, al più cinque passi per cifra
+decimale di $b$; il caso peggiore è quello di due numeri di Fibonacci
+consecutivi, con $\log_\varphi 10 \approx 4{,}79$ passi per cifra. In media i
+passi sono circa $\tfrac{12\ln 2}{\pi^2}\ln b$, poco meno di due per cifra
 {cite}`knuth1997seminumerical`.
 
 È per questa efficienza (non solo per l'età) che l'idea di Euclide è ancora oggi
@@ -455,12 +455,12 @@ dalle altre. In altri termini, [nessuno scrive le regole: emergono dai
 dati]{.pt-matita}. In questo senso un programma *impara*; per lo stesso motivo,
 in questo modo di lavorare i dati contano quanto il codice.
 
-Contro questa idea c’è un’obiezione vecchia di quasi due secoli, e un pezzo
-della sua storia si è svolto in Italia, a Torino. Nel 1840 il matematico
-inglese Charles Babbage vi presentò il progetto della sua *macchina analitica*,
-un calcolatore fatto di ingranaggi che avrebbe dovuto eseguire in fila le
-istruzioni scritte su schede di cartone perforate, un po’ come oggi un computer
-esegue un programma. Non fu mai costruita.
+Contro l’idea di un programma che impara c’è un’obiezione vecchia di quasi due
+secoli, e un pezzo della sua storia si è svolto in Italia, a Torino. Nel 1840
+il matematico inglese Charles Babbage vi presentò il progetto della sua
+*macchina analitica*, un calcolatore fatto di ingranaggi che avrebbe dovuto
+eseguire in fila le istruzioni scritte su schede di cartone perforate, un po’
+come oggi un computer esegue un programma. Non fu mai costruita.
 
 A descriverla, in un articolo in francese, fu Luigi Federico Menabrea, un
 ufficiale del genio che insegnava all’Accademia militare di Torino e che quasi
@@ -566,11 +566,11 @@ la ricerca operativa giudicava un piano e la teoria del controllo misurava lo
 scarto dalla rotta. Questa volta, però, il punteggio si vuole alto, e a cercare
 le decisioni che lo fanno salire è l'addestramento, non un ingegnere.
 
-L'addestramento tocca una cosa sola. Dentro un programma che impara c'è un
-elenco di numeri, spesso lunghissimo, detti **parametri**. Tutti insieme si
-indicano con la lettera greca $\theta$ (theta), e la funzione obiettivo, che da
-loro dipende, si scrive $J(\theta)$. L'addestramento cambia soltanto
-$\theta$; il comportamento viene dietro.
+L'addestramento tocca una cosa sola. Dentro un programma che impara c'è, quasi
+sempre, un elenco di numeri, spesso lunghissimo, detti **parametri**. Tutti
+insieme si indicano con la lettera greca $\theta$ (theta), e la funzione
+obiettivo, che da loro dipende, si scrive $J(\theta)$. L'addestramento cambia
+soltanto $\theta$; il comportamento viene dietro.
 
 `````{tab} Elementare
 A un robot aspirapolvere assegni un punteggio: $+1$ per ogni
@@ -661,9 +661,11 @@ dell'apprendimento </TeoriaApprendimento/overview>`.
 
 Nei modelli differenziabili il massimo si cerca salendo lungo il gradiente,
 $\theta \leftarrow \theta + \eta\,\nabla_\theta \hat{J}_n(\theta)$, con $\eta$
-il tasso di apprendimento. In generale, però, $\hat{J}_n$ non è concava, e
-la salita si ferma in un punto stazionario, che può essere un massimo locale e
-non per forza quello globale. Il {doc}`capitolo sul machine learning
+il tasso di apprendimento. In generale, però, $\hat{J}_n$ non è concava, e la
+salita si ferma in un punto stazionario, che può essere un massimo locale e non
+per forza quello globale; e la catena di disuguaglianze sul divario, che usa il
+massimo globale di $\hat{J}_n$, allora non è più garantita. Il {doc}`capitolo
+sul machine learning
 </MachineLearning/overview>` studia come misurare la distanza fra $\hat{J}_n$
 e $J$, e quando fidarsene.
 
@@ -672,8 +674,9 @@ cioè di un sistema che sceglie le azioni che massimizzano l'utilità attesa,
 date le informazioni disponibili. Osserviamo che qui l'ottimizzazione agisce
 sui parametri, non direttamente sulle azioni: $\theta$ determina il
 comportamento del sistema, e la configurazione ottima dei parametri induce le
-scelte migliori che la famiglia di modelli $\{f_\theta\}$ permette, sempre che
-l'ottimizzazione trovi un ottimo globale.
+scelte migliori che la famiglia di modelli $\{f_\theta\}$ (un modello
+$f_\theta$ per ogni valore di $\theta$) permette, sempre che l'ottimizzazione
+trovi un ottimo globale.
 
 Gran parte dei metodi di apprendimento sono variazioni su questo tema. Ad
 esempio, la regressione minimizza un errore quadratico medio, la

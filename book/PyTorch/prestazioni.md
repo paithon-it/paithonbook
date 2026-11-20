@@ -61,9 +61,9 @@ braccia ferme in attesa che arrivi il camion valgono quanto un operaio solo, e
 un camion che fa mille viaggi con un mattone per volta è molto peggio di uno
 che ne porta un bancale. Il materiale sono i numeri, e la strada che li porta
 dal magazzino, la memoria, al cantiere, le unità di calcolo, è stretta rispetto
-al piazzale, così per buona parte della giornata la quantità di materiale in
-arrivo decide quanti muri si tirano su, non quante braccia ci sono ad
-aspettarlo.
+a quanto è grande il cantiere, così per buona parte della giornata la quantità
+di materiale in arrivo decide quanti muri si tirano su, non quante braccia ci
+sono ad aspettarlo.
 `````
 
 `````{tab} Superiore
@@ -458,11 +458,11 @@ coperti, cioè la forma dei dati che arrivano (un vassoio di esempi più grande,
 frasi più lunghe), la ricetta studiata non torna più, così il cuoco si rimette
 a leggere da capo e paga di nuovo lo studio.
 
-Per accorgersene in tempo, prima di ogni piatto dà un'occhiata di controllo, e
-anche quell'occhiata costa. Su un piatto da due ingredienti costa più di quanto
-la riorganizzazione faccia risparmiare, e allora la cucina organizzata resta
-più lenta di quella disordinata anche dopo il primo giro. Si può finire in
-perdita e restarci, altro che pareggiare.
+Per accorgersene in tempo, prima di ogni piatto dà un'occhiata per controllare
+che i coperti siano ancora quelli, e anche quell'occhiata costa. Su un piatto
+da due ingredienti costa più di quanto la riorganizzazione faccia risparmiare,
+e allora la cucina organizzata resta più lenta di quella disordinata anche dopo
+il primo giro. Si può finire in perdita e restarci, altro che pareggiare.
 
 Se nella ricetta c'è un passaggio che si decide solo assaggiando (quanto sale,
 a seconda di com'è venuto), il cuoco non può organizzare tutto prima: la studia
@@ -553,7 +553,7 @@ messe insieme non sarebbero più quelle di una persona sola.
 
 Ogni ritocco, poi, nasce ora da trecento compiti e non dai cento che vede un
 solo correttore: un compito strano capitato nella pila lo sposta di meno, e per
-questo lo si può fare un po’ più deciso.
+questo, fidandosi di più della media, il ritocco si può fare un po’ più deciso.
 
 Le GPU fanno lo stesso: ognuna elabora la sua fetta di esempi, poi tutte
 mettono in comune i gradienti, ne fanno la media e si aggiornano allo stesso
@@ -679,12 +679,13 @@ dà questa uniforme).
 Su uno strato da mille ingressi, $\sqrt{1000}$ fa circa $31{,}6$, quindi i pesi
 nascono tutti fra $-0{,}032$ e $+0{,}032$: piccoli, e più piccoli di He. La
 loro dispersione attorno allo zero, la varianza, vale $1/(3n_{\text{in}})$, un
-sesto dei $2/n_{\text{in}}$ di He. Di conseguenza, in una pila di strati con la
-ReLU il segnale perde a ogni strato un fattore $\sqrt{6} \approx 2{,}4$ in
-ampiezza (trascurando i bias). Su tre strati l'uscita parte già circa quindici
-volte più piccola che con He ($6^{3/2} \approx 14{,}7$), e su una rete
-profonda, dove il fattore si moltiplica a ogni strato, il segnale svanisce. È
-il caso in cui un'inizializzazione esplicita è necessaria.
+sesto dei $2/n_{\text{in}}$ di He. L'ampiezza è la radice quadrata della
+varianza, quindi in una pila di strati con la ReLU il segnale perde a ogni
+strato un fattore $\sqrt{6} \approx 2{,}4$ in ampiezza (trascurando i bias). Su
+tre strati l'uscita parte già circa quindici volte più piccola che con He
+($6^{3/2} \approx 14{,}7$), e su una rete profonda, dove il fattore si
+moltiplica a ogni strato, il segnale svanisce. È il caso in cui
+un'inizializzazione esplicita è necessaria.
 
 Le inizializzazioni pronte stanno in `torch.nn.init`, e i loro nomi finiscono
 tutti con un trattino basso: è la convenzione con cui PyTorch segna le funzioni

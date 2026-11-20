@@ -332,12 +332,13 @@ Una sera salta la corrente mentre l'ordine è al collaudo. [La mattina nessuno
 ricomincia dal disegno]{.pt-matita}: si prende l'ultima foto, che dice
 «riprendere dal collaudo, un tentativo già costruito», e si riparte da lì. Il
 collaudo interrotto si rifà da capo, però, perché nessuno sa a che punto fosse
-arrivato quando la luce è andata via. E la scheda può sbagliare in un modo
-solo: se la luce salta mentre il camion parte, l'ultima foto è di prima, e la
-scheda dice «da spedire». Per questo chi spedisce scrive sulla scheda il numero
-della spedizione prima di chiamare il corriere, e la mattina, invece di
-rispedire, telefona e chiede se la spedizione con quel numero è già partita; il
-corriere, dal canto suo, non accetta due ritiri con lo stesso numero.
+arrivato quando la luce è andata via. E il caso più pericoloso in cui la scheda
+sbaglia è uno: se la luce salta mentre il camion parte, l'ultima foto è di
+prima, e la scheda dice «da spedire». Per questo chi spedisce scrive sulla
+scheda il numero della spedizione prima di chiamare il corriere, e la mattina,
+invece di rispedire, telefona e chiede se la spedizione con quel numero è già
+partita; il corriere, dal canto suo, non accetta due ritiri con lo stesso
+numero.
 
 Il banco della spedizione ha anche un'altra regola, che non c'entra con i
 guasti: lì l'ordine si ferma e aspetta la firma del proprietario, perché un

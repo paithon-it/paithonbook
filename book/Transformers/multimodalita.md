@@ -239,7 +239,8 @@ dell'articolo è competitivo solo se pre-addestrato su dataset molto grandi
 addestramento: con data augmentation aggressiva, regolarizzazione e
 distillazione da una rete convoluzionale, DeiT {cite}`touvron2021training`
 addestra lo stesso modello sul solo ImageNet-1k. La località va quindi inserita
-nell'architettura o appresa con più dati.
+nell'architettura, appresa con più dati o suggerita dall'addestramento
+(augmentation, distillazione da una CNN).
 
 Sul fronte multimodale, **CLIP** {cite}`radford2021learning` allinea in uno
 spazio comune embedding di immagini e testi tramite addestramento contrastivo

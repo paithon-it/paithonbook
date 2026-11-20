@@ -100,7 +100,8 @@ gatto.
 Duecento ritagli non si confrontano a occhio, due a due. Di ognuno si scrive
 prima una scheda descrittiva, e il confronto si fa fra le schede; anzi, per
 giocare se ne usa soltanto un riassunto di poche righe, ricavato dalla scheda,
-e il punteggio si fa sui riassunti.
+e il punteggio si fa sui riassunti (scheda e riassunto li scrivono due pezzi
+della rete, uno dopo l'altro).
 
 Chi li scrive impara in fretta a lasciar fuori i dettagli inutili al gioco, per
 esempio da che punto della foto viene il pezzo, visto che il gemello viene
@@ -123,8 +124,10 @@ appartengono allo stesso animale, che quel pelo e quel muro stanno insieme.
 Bisogna farsi un'idea di *che cosa* raffigura ogni ritaglio, perché è l'unico
 modo di riconoscere il gemello in mezzo a centonovantotto estranei.
 
-Almeno, così sembra. In realtà c'è un modo di vincere senza aver capito niente,
-e quel modo è il problema centrale dell'apprendimento auto-supervisionato.
+Almeno, così sembra. In realtà ci sono modi di vincere senza aver capito
+niente, il più semplice dei quali è confrontare i colori dei due ritagli, e
+queste scorciatoie sono il problema centrale dell'apprendimento
+auto-supervisionato.
 
 `````
 
@@ -133,8 +136,8 @@ e quel modo è il problema centrale dell'apprendimento auto-supervisionato.
 Sia $\mathcal{B} = \{\mathbf{x}_1, \dots, \mathbf{x}_N\}$ un batch di $N$
 immagini. Da ciascuna si campionano due trasformazioni indipendenti $T_1, T_2
 \sim \mathcal{T}$, dove $\mathcal{T}$ è la famiglia di trasformazioni ammesse,
-e si ottengono le viste $\tilde{\mathbf{x}}_1 = T_1(\mathbf{x})$ e
-$\tilde{\mathbf{x}}_2 = T_2(\mathbf{x})$, in tutto $2N$.
+e si ottengono le viste $\tilde{\mathbf{x}}_k^{(1)} = T_1(\mathbf{x}_k)$ e
+$\tilde{\mathbf{x}}_k^{(2)} = T_2(\mathbf{x}_k)$, in tutto $2N$.
 
 Un encoder $f_\theta$ (una ResNet, o un ViT) trasforma ogni vista nella
 rappresentazione $\mathbf{h} = f_\theta(\tilde{\mathbf{x}})$; una **testa di
@@ -194,13 +197,13 @@ ogni negativo è respinto con una forza proporzionale a $p_{ik}$, e al calare di
 $\tau$ quella massa si concentra sui negativi più simili all'ancora, i
 **negativi difficili**, mentre il fattore $1/\tau$ amplifica il tutto.
 
-La InfoNCE ha poi una lettura informativa: con $K$ candidati fra cui
+La InfoNCE ha poi una lettura informativa: con $M$ candidati fra cui
 riconoscere il positivo, e negativi indipendenti, vale
-$I(\mathbf{z}; \mathbf{z}') \geq \log K - \mathcal{L}$
+$I(\mathbf{z}; \mathbf{z}') \geq \log M - \mathcal{L}$
 {cite}`oord2018representation`, dove $I$ è l'informazione mutua, $\mathcal{L}$
-il valore atteso di $\ell_{i,j}$ e qui $K = 2N - 1$ (in SimCLR i negativi
+il valore atteso di $\ell_{i,j}$ e qui $M = 2N - 1$ (in SimCLR i negativi
 vengono a coppie dalla stessa immagine, e il limite va letto come ordine di
-grandezza). Osserviamo che il limite non supera mai $\log K$, quindi con pochi
+grandezza). Osserviamo che il limite non supera mai $\log M$, quindi con pochi
 candidati la perdita non può certificare molta informazione; anche per questo
 i negativi contano.
 
@@ -616,12 +619,12 @@ niente.
 
 La guardia è un registro. Prima di diventare percentuali, le risposte
 dell'insegnante sono punteggi grezzi, uno per casella, e il registro tiene la
-media dei punteggi che ha dato finora; quella media gli si toglie prima di
-fare le percentuali. Se dava sempre $(5;\ 2;\ 2)$, che in
-percentuali fanno circa $(0{,}9;\ 0{,}05;\ 0{,}05)$, il registro dice
-$(5;\ 2;\ 2)$: tolto quello restano tre zeri, punteggi tutti uguali, e il
-modulo che arriva all'allievo diventa $(0{,}33;\ 0{,}33;\ 0{,}33)$. Un foglio
-che non dice niente, e la scorciatoia smette di pagare.
+media dei punteggi che ha dato finora; quella media gli si toglie prima di fare
+le percentuali. Se dava sempre $(5;\ 2;\ 2)$, che in percentuali fanno circa
+$(0{,}9;\ 0{,}05;\ 0{,}05)$, il registro dice $(5;\ 2;\ 2)$: tolto quello
+restano tre zeri, punteggi tutti uguali, e punteggi uguali fanno percentuali
+uguali: il modulo che arriva all'allievo diventa $(0{,}33;\ 0{,}33;\ 0{,}33)$.
+Un foglio che non dice niente, e la scorciatoia smette di pagare.
 
 Il secondo trucco nasce dalla guardia stessa: spalmare la fiducia in parti
 uguali, «33% ciascuna», dove nessuna casella dice più delle altre. Contro questo
@@ -793,11 +796,12 @@ poco meno di un quarto, non a un sedicesimo.
 Gli autori misurano un pretraining da $2{,}8$ a $4{,}1$ volte più rapido
 rispetto alla stessa rete in cui l'encoder riceve anche i segnaposto delle
 patch coperte: il valore più basso con un decoder di otto blocchi su un ViT-L,
-il più alto con un decoder di un blocco su un ViT-H. Il guadagno resta sotto
-il $4{,}2$ che il conto dell'encoder prevede perché il numero è il tempo di
-addestramento nel suo complesso, e il decoder, che riceve la sequenza completa,
-dal mascheramento non guadagna nulla: più è leggero, più ci si avvicina.
-[Il compito diventa così più difficile e insieme più economico]{.pt-matita}.
+il più alto con un decoder di un blocco su un ViT-H. Il conto dell'encoder
+prevede circa $4{,}1$: il ViT-H con il decoder di un blocco ci arriva, gli
+altri restano sotto perché il numero è il tempo di addestramento nel suo
+complesso, e il decoder, che riceve la sequenza completa, dal mascheramento non
+guadagna nulla: più è leggero, più ci si avvicina. [Il compito diventa così più
+difficile e insieme più economico]{.pt-matita}.
 
 La differenza di fondo rispetto ai metodi contrastivi è dove finisce la
 difficoltà. Là stava nelle trasformazioni scelte a mano, cioè nelle invarianze
